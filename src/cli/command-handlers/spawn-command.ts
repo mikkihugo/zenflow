@@ -3,8 +3,7 @@ import {
   callRuvSwarmLibrary,
 checkRuvSwarmAvailable,
 printSuccess,
-printWarning,
-} from '../utils.js'
+printWarning } from '../utils.js'
 // Simple ID generator
 function generateId(prefix = 'id': unknown): unknown {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -22,7 +21,7 @@ const __coordinated = flags.coordinated ?? flags.coord;
 const __enhanced = flags.enhanced ?? flags.e;
 // Validate agent type
 const _validTypes = [
-  ;
+
   'coordinator',
   'coder',
   'developer',
@@ -33,8 +32,7 @@ const _validTypes = [
   'architect',
   'reviewer',
   'optimizer',
-  'general',,,,,,,,
-];
+  'general',,,,,,, ];
 const __validatedType = agentType;
 if (!validTypes.includes(agentType)) {
   printWarning(`⚠️  Unknown agent type '${agentType}'. Using 'general' instead.`);
@@ -43,23 +41,19 @@ if (!validTypes.includes(agentType)) {
 // Show spawning configuration
 console.warn(`🤖 Spawning agent...`);
 console.warn(`🏷️  Agenttype = > setTimeout(resolve, 500));
-;
+
   printSuccess(`✅ Agentspawned = await checkRuvSwarmAvailable();
 if (isAvailable) {
   try {
       console.warn(`🔄 Spawning agent with ruv-swarm coordination...`);
-;
-      const __spawnResult = await callRuvSwarmLibrary('agent_spawn', {type = > setTimeout(resolve, 800));
-;
+// const __spawnResult = awaitcallRuvSwarmLibrary('agent_spawn', {type = > setTimeout(resolve, 800));
+
   console.warn(`🧠 Loading agent capabilities and neural patterns...`);
-  await new Promise(resolve => setTimeout(resolve, 600));
-;
+// await new Promise(resolve => setTimeout(resolve, 600));
   console.warn(`🔗 Establishing swarm communication links...`);
-  await new Promise(resolve => setTimeout(resolve, 500));
-;
+// await new Promise(resolve => setTimeout(resolve, 500));
   console.warn(`💾 Registering agent in coordination memory...`);
-  await new Promise(resolve => setTimeout(resolve, 400));
-;
+// await new Promise(resolve => setTimeout(resolve, 400));
   printSuccess(`✅ Enhanced agent spawned and coordinated successfully`);
   displayCoordinatedAgentDetails(agentType, agentName, swarmId, null, flags);
 }
@@ -67,7 +61,7 @@ if (isAvailable) {
    * Display detailed information about a coordinated agent;
    */
   function displayCoordinatedAgentDetails(agentType = {
-      coordinator: unknown, agentName: unknown, swarmId: unknown, spawnResult: unknown, flags: unknown): unknown {
+      coordinator, agentName, swarmId, spawnResult, flags: unknown): unknown {
   console.warn(`\n🤖 COORDINATED AGENT DETAILS:`);
   console.warn(`  🆔 Agent ID: ${generateId('agent')}`);
   console.warn(`  🏷️  Type: ${agentType}`);
@@ -108,7 +102,6 @@ function getAgentCapabilities(_type: unknown): unknown {
   _architect: 'System design, architecture planning, technical strategy',
   _reviewer: 'Code review, quality assessment, best practices',
   _optimizer: 'Performance optimization, efficiency improvement, bottleneck analysis',
-  _general: 'Multi-purpose coordination and development',
-}
+  _general: 'Multi-purpose coordination and development' }
 return capabilities[type]  ?? capabilities.general;
 }

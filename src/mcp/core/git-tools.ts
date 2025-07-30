@@ -30,7 +30,7 @@ export async function executeGitCommand(
   try {
     const { stdout
 , stderr }
-  = await execAsync(`git $
+  = await execAsync(`git \$
   command
 `,
 {
@@ -52,7 +52,7 @@ if (args.all) {
   cmd += ' -A';
 } else if (args.files?.length && args.files.length > 0) {
   cmd += `;
-$;
+\$;
 args.files.join(' ');
 `;
 } else {
@@ -224,15 +224,15 @@ stash;
 @{${args.index}
 }`
 break;
-case 'pop':
+case 'pop': null
 cmd += ' pop'
 if (args.index !== undefined) cmd += ` stash@{${args.index}}`;
 break;
-case 'drop':
+case 'drop': null
 cmd += ' drop'
 if (args.index !== undefined) cmd += ` stash@{${args.index}}`;
 break;
-case 'clear':
+case 'clear': null
 cmd += ' clear'
 break;
 }
@@ -240,19 +240,19 @@ return await executeGitCommand(cmd, args.path);
 }
   },git_remote = 'remote'
 switch (args.action) {
-  case 'list':
+  case 'list': null
     if (args.verbose) cmd += ' -v';
     break;
-  case 'add':
+  case 'add': null
     cmd += ` add ${args.name} ${args.url}`;
     break;
-  case 'remove':
+  case 'remove': null
     cmd += ` remove ${args.name}`;
     break;
-  case 'show':
+  case 'show': null
     cmd += ` show ${args.name ?? 'origin'}`;
     break;
-  case 'get-url':
+  case 'get-url': null
     cmd += ` get-url ${args.name ?? 'origin'}`;
     break;
 }
@@ -260,20 +260,20 @@ return await executeGitCommand(cmd, args.path);
 }
   },git_tag = 'tag'
 switch (args.action) {
-  case 'list':
+  case 'list': null
     break;
-  case 'create':
+  case 'create': null
     if (args.message) {
       cmd += ` -a ${args.name} -m "${args.message}"`;
     } else {
-      cmd += ` ${args.name}`;
+      cmd += `${args.name}`;
     }
-    if (args.commit) cmd += ` ${args.commit}`;
+    if (args.commit) cmd += `${args.commit}`;
     break;
-  case 'delete':
+  case 'delete': null
     cmd += ` -d ${args.name}`;
     break;
-  case 'show':
+  case 'show': null
     cmd += ` show ${args.name}`;
     break;
 }

@@ -15,7 +15,7 @@ describe('API Gateway App', () => {
     // Clear all mocks
     jest.clearAllMocks();
     // Import the app module
-    const _appModule = await import('../../../src/services/api-gateway/app.js');
+// const _appModule = awaitimport('../../../src/services/api-gateway/app.js');
     _app = appModule.default;
   });
   describe('app initialization', () => {
@@ -32,15 +32,14 @@ describe('API Gateway App', () => {
   });
   describe('health endpoint', () => {
     it('should respond with healthy status', () => {
-      // Get the handler function that was registered
+      // Get the handler function that w
       const _healthHandler = mockApp.get.mock.calls.find((call) => call[0] === '/health')[1];
       expect(healthHandler).toBeDefined();
       // Mock request and response objects
       const _mockReq = {};
       const _mockRes = {
         status: jest.fn().mockReturnThis(),
-        send: jest.fn(),
-      };
+        send: jest.fn() };
     // Call the handler
     healthHandler(mockReq, mockRes);
     // Verify response
@@ -53,8 +52,7 @@ describe('API Gateway App', () => {
       for (let i = 0; i < 3; i++) {
         const _mockRes = {
           status: jest.fn().mockReturnThis(),
-          send: jest.fn(),
-        };
+          send: jest.fn() };
         healthHandler({}, mockRes);
         expect(mockRes.status).toHaveBeenCalledWith(200);
         expect(mockRes.send).toHaveBeenCalledWith({ status: 'healthy' });
@@ -80,7 +78,7 @@ describe('app export', () =>
     expect(app).toBe(mockApp);
   });
   it('should be the default export', async () => {
-    const _appModule = await import('../../../src/services/api-gateway/app.js');
+// const _appModule = awaitimport('../../../src/services/api-gateway/app.js');
     expect(appModule.default).toBeDefined();
     expect(appModule.default).toBe(mockApp);
   });
@@ -92,8 +90,7 @@ describe('health endpoint response format', () =>
     // ; // LINT: unreachable code removed
       const _mockRes = {
         status: jest.fn().mockReturnThis(),
-        send: jest.fn(),
-      };
+        send: jest.fn() };
   healthHandler({}, mockRes);
   const _responseData = mockRes.send.mock.calls[0][0];
   expect(responseData).toEqual({ status: 'healthy' });
@@ -119,8 +116,7 @@ describe('error handling', () =>
         status: jest.fn().mockReturnThis(),
         send: jest.fn().mockImplementation(() => {
           throw new Error('Send error');
-        }),
-      };
+        }) };
   // Should not throw an error
   expect(() => {
     healthHandler({}, mockRes);

@@ -10,6 +10,6 @@ export async function cleanupTestEnv() {
   delete process.env.LOG_LEVEL;
 }
 export const TEST_CONFIG = {
-  timeout: 10000,
-maxRetries: 3
+  timeout,
+maxRetries
 }

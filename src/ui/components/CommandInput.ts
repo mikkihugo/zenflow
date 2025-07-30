@@ -16,7 +16,7 @@ const _CommandInput = (): unknown => {
       const _parts = command.trim().split(' ');
       const _cmd = parts[0];
       const _args = parts.slice(1);
-      await onExecute(cmd, args, {});
+// await onExecute(cmd, args, {});
       setIsExecuting(false);
       setCommand('');
     } else if (key.backspace ?? key.delete) {
@@ -34,17 +34,17 @@ const _CommandInput = (): unknown => {
   : ''
   return React.createElement(;
   flexDirection: 'column', padding;
-  : 1 ,
-  React.createElement(Text, bold: true, color: 'yellow' , '🛠️ Command Execution'),
+
+  React.createElement(Text, bold, color: 'yellow' , '🛠️ Command Execution'),
   React.createElement(
   Box,
   justifyContent: 'center', marginTop
-  : 1 ,
-  React.createElement(Text, bold: true, color: 'magenta' , 'Claude Zen Command Interface')
+
+  React.createElement(Text, bold, color: 'magenta' , 'Claude Zen Command Interface')
   ),
   React.createElement(
   Box,
-  marginTop: 1 ,
+  marginTop,
   React.createElement(Text, null, 'Command: '),
   React.createElement(Text, color: 'cyan' , command),
   React.createElement(
@@ -56,16 +56,16 @@ const _CommandInput = (): unknown => {
   result &&
   React.createElement(
   Box,
-  marginTop: 1, borderStyle
-  : 'single', padding: 1 ,
+  marginTop, borderStyle
+  : 'single', padding,
   React.createElement(
   Box,
   flexDirection: 'column' ,
   React.createElement(
   Text,
-  bold: true,
+  bold,
   color: result.success ? 'green' : 'red',
-  ,
+
   result.success ? '✅ Success' : '❌ Error'
   ),
   React.createElement(Text, null, resultText)
@@ -73,7 +73,7 @@ const _CommandInput = (): unknown => {
   ),
   React.createElement(
   Box,
-  marginTop: 1 ,
+  marginTop,
   React.createElement(
   Text,
   color: 'gray' ,

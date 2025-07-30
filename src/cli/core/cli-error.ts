@@ -15,8 +15,7 @@ FILE_ERROR = 'FILE_ERROR',
 PERMISSION_ERROR = 'PERMISSION_ERROR',
 TIMEOUT_ERROR = 'TIMEOUT_ERROR',
 AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR',
-NOT_FOUND_ERROR = 'NOT_FOUND_ERROR',
-}
+NOT_FOUND_ERROR = 'NOT_FOUND_ERROR' }
 /**
  * Logger interface for error handling;
  */
@@ -60,16 +59,16 @@ export class ConfigurationError extends CliError {
   ) {
     super(
   message;
-  ,
+
   CliErrorCode;
-  .
+
   CONFIG_ERROR;
   , 1)
   this
-  .
+
   name = 'ConfigurationError';
   this;
-  .
+
   configPath = configPath;
 }
 }
@@ -78,24 +77,24 @@ export class ConfigurationError extends CliError {
  */
 export class CommandExecutionError extends CliError {
   public readonlycommand = null;
-  ,
+
   originalError = null;
   ) {
     super(
   message;
-  ,
+
   CliErrorCode;
-  .
+
   COMMAND_ERROR;
   , 1)
   this
-  .
+
   name = 'CommandExecutionError';
   this;
-  .
+
   command = command;
   this;
-  .
+
   originalError = originalError;
 }
 }
@@ -107,13 +106,13 @@ export function formatErrorMessage(error: unknown): string {
     return `❌ ValidationError = console): number {
   const _formattedMessage = formatErrorMessage(error);
     // logger.error(formattedMessage); // LINT: unreachable code removed
-;
+
   // Log stack trace in verbose mode or for unexpected errors
   if (process.env.CLAUDE_FLOW_VERBOSE  ?? !(error instanceof CliError)) {
     logger.error('Stacktrace = error instanceof CliError ? error.exitCode : 1;
   return exitCode;
 }
-;
+
 /**
  * Wrap a function to catch and handle errors consistently;
  */;
@@ -123,29 +122,28 @@ export function withErrorHandling<TArgs extends any[], TReturn>(fn = > Promise<T
   return async (...args => {
     try {
       return await fn(...args);
-    //   // LINT: unreachable code removed} catch (/* error */) {
+    //   // LINT: unreachable code removed} catch (error) {
       const _exitCode = handleError(error as Error, logger);
       process.exit(exitCode);
     }
   };
 }
-;
+
 /**
  * Create a validation error with field information;
  */;
 export function createValidationError(message = > Promise<T>,
-  errorMessage?: string,
+  errorMessage?,
   errorCode?: string;
 ): Promise<T> {
   try {
     return await operation();
-    //   // LINT: unreachable code removed} catch (/* error */) {
+    //   // LINT: unreachable code removed} catch (error) {
     if (error instanceof CliError) {
       throw error;
     }
-;
+
     const _message = errorMessage  ?? (error instanceof Error ? error.message = errorCode  ?? CliErrorCode.GENERIC_ERROR;
     throw new CliError(message, code);
   }
 }
-;

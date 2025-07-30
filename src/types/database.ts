@@ -26,7 +26,7 @@ export interface QueryOptions {
   groupBy?: string[];
   having?: string;
 }
-;
+
 export interface QueryResult<T = any> {success = ============================================================================
 // VECTOR DATABASE (LANCEDB)
 // =============================================================================
@@ -49,7 +49,7 @@ export interface DatabaseOperations {
   disconnect(): Promise<void>;
   ping(): Promise<boolean>;
   getStatus(): Promise<DatabaseStatus>;
-;
+
   // Query execution
   query<T = any>(sql, params?: unknown[], options?: QueryOptions): Promise<QueryResult<T>>;
   execute(sql = ============================================================================;
@@ -66,27 +66,27 @@ export interface DatabaseManager {
   removeDatabase(id: string): Promise<boolean>;
   getDatabase(id: string): Promise<DatabaseOperations | null>;
   getAllDatabases(): Promise<DatabaseConnection[]>;
-;
+
   // Query routing
-  executeQuery(databaseId: string, query: Query, options?: QueryOptions): Promise<QueryResult>;
-  executeBatch(databaseId: string, queries: Query[], options?: QueryOptions): Promise<OperationResult[]>;
-  executeTransaction(databaseId: string, queries: Query[], isolation?: TransactionIsolation): Promise<OperationResult[]>;
-;
+  executeQuery(databaseId, query, options?: QueryOptions): Promise<QueryResult>;
+  executeBatch(databaseId, queries: Query[], options?: QueryOptions): Promise<OperationResult[]>;
+  executeTransaction(databaseId, queries: Query[], isolation?: TransactionIsolation): Promise<OperationResult[]>;
+
   // Health and monitoring
   checkHealth(): Promise<DatabaseHealthReport>;
   getMetrics(): Promise<DatabaseMetrics[]>;
   optimizeAll(): Promise<string[]>;
-;
+
   // Backup and recovery
-  backupDatabase(databaseId: string, location: string): Promise<void>;
-  restoreDatabase(databaseId: string, location: string): Promise<void>;
-  scheduleBackup(databaseId: string, schedule: string): Promise<void>;
-;
+  backupDatabase(databaseId, location: string): Promise<void>;
+  restoreDatabase(databaseId, location: string): Promise<void>;
+  scheduleBackup(databaseId, schedule: string): Promise<void>;
+
   // Migration
-  migrateData(sourceId: string, targetId: string, mapping: JSONObject): Promise<void>;
-  syncDatabases(primaryId: string, replicaIds: string[]): Promise<void>;
+  migrateData(sourceId, targetId, mapping: JSONObject): Promise<void>;
+  syncDatabases(primaryId, replicaIds: string[]): Promise<void>;
 }
-;
+
 export interface DatabaseHealthReport {
   overall: 'healthy' | 'degraded' | 'critical';
   databases: {
@@ -104,4 +104,3 @@ export interface DatabaseHealthReport {
     errors: string[];
   };
 }
-;

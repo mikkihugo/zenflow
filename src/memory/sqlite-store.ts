@@ -10,7 +10,7 @@ import { createDatabase } from './sqlite-wrapper';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = path.dirname(__filename);
-interface SqliteMemoryStoreOptions {
+// interface SqliteMemoryStoreOptions {
   dbName?: string;
   directory?: string;
   cacheSize?: number;
@@ -56,7 +56,7 @@ initialize()
     // ; // LINT: unreachable code removed
     try {
       // Ensure directory exists
-      await fs.mkdir(this.options.directory!, {recursive = path.join(this.options.directory!, this.options.dbName!);
+// await fs.mkdir(this.options.directory!, {recursive = path.join(this.options.directory!, this.options.dbName!);
       this.db = await createDatabase(dbPath);
 
       // Enable WAL mode for better concurrency
@@ -82,8 +82,7 @@ initialize()
         expires_at = excluded.expires_at,
         updated_at = strftime('%s', 'now'),
         access_count = memory_entries.access_count + 1;
-    `),
-    );
+    `));
 
     // Retrieve statement
     this.statements.set(;
@@ -91,8 +90,7 @@ initialize()
       this.db.prepare(`;
       SELECT * FROM memory_entries ;
       WHERE key = ? AND namespace = ? AND (expires_at IS NULL OR expires_at > strftime('%s', 'now'));
-    `),
-    );
+    `));
 
     // List statement
     this.statements.set(;
@@ -102,16 +100,14 @@ initialize()
       WHERE namespace = ? AND (expires_at IS NULL OR expires_at > strftime('%s', 'now'));
       ORDER BY updated_at DESC;
       LIMIT ?;
-    `),
-    );
+    `));
 
     // Delete statement
     this.statements.set(;
       'delete',
       this.db.prepare(`;
       DELETE FROM memory_entries WHERE key = ? AND namespace = ?;
-    `),
-    );
+    `));
 
     // Search statement
     this.statements.set(;
@@ -122,16 +118,14 @@ initialize()
       AND (expires_at IS NULL OR expires_at > strftime('%s', 'now'));
       ORDER BY access_count DESC, updated_at DESC;
       LIMIT ?;
-    `),
-    );
+    `));
 
     // Cleanup statement
     this.statements.set(;
       'cleanup',
       this.db.prepare(`;
       DELETE FROM memory_entries WHERE expires_at IS NOT NULL AND expires_at <= strftime('%s', 'now');
-    `),
-    );
+    `));
 
     // Update access statement
     this.statements.set(;
@@ -140,8 +134,7 @@ initialize()
       UPDATE memory_entries ;
       SET accessed_at = strftime('%s', 'now'), access_count = access_count + 1;
       WHERE key = ? AND namespace = ?;
-    `),
-    );
+    `));
   }
 
   async store(key = {}): Promise<{success = options.namespace  ?? 'default';
@@ -151,13 +144,12 @@ initialize()
 
     try {
       const __result = this.statements;
-        .get('upsert');
-        .run(key, valueStr, namespace, metadata, ttl, expiresAt);
+get('upsert');
+run(key, valueStr, namespace, metadata, ttl, expiresAt);
 
       // Invalidate related cache entries
       this._invalidateCache(`retrieve = {}): Promise<any> {
-    await this.initialize();
-
+// await this.initialize();
     const _namespace = options.namespace  ?? 'default';
     const _cacheKey = this._getCacheKey('retrieve', key, namespace);
 
@@ -191,8 +183,7 @@ initialize()
 
       return result;
     //   // LINT: unreachable code removed} catch (error = {}): Promise<any[]> {
-    await this.initialize();
-
+// await this.initialize();
     const _namespace = options.namespace  ?? 'default';
     const _limit = options.limit  ?? 100;
     const _cacheKey = this._getCacheKey('list', namespace, limit);
@@ -208,8 +199,7 @@ initialize()
 
       const _result = rows.map((row) => ({
         key = {}): Promise<boolean> {
-    await this.initialize();
-
+// await this.initialize();
     const _namespace = options.namespace  ?? 'default';
 
     try {
@@ -218,8 +208,7 @@ initialize()
       // Invalidate related cache entries
       if (result.changes > 0) {
         this._invalidateCache(`retrieve = {}): Promise<any[]> {
-    await this.initialize();
-
+// await this.initialize();
     const _namespace = options.namespace  ?? 'default';
     const _limit = options.limit  ?? 50;
     const _searchPattern = `%${pattern}%`;
@@ -233,8 +222,8 @@ initialize()
 
     try {
       const _rows = this.statements;
-        .get('search');
-        .all(namespace, searchPattern, searchPattern, limit);
+get('search');
+all(namespace, searchPattern, searchPattern, limit);
 
       const _result = rows.map((_row) => ({key = this.statements.get('cleanup').run();
       return result.changes;

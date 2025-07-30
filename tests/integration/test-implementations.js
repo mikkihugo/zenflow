@@ -12,18 +12,18 @@ async function testNeuralEngine() {
     const _engine = new NeuralEngine();
     // Initialize
     console.warn('Initializing neural engine...');
-    const _initialized = await engine.initialize();
+// const _initialized = awaitengine.initialize();
     console.warn('Initialized:', initialized);
     // Get available models
     const _models = engine.getAvailableModels();
     console.warn('Available models:', models.length);
     // Try loading a model
     console.warn('Loading code-completion-base model...');
-    const _loaded = await engine.loadModel('code-completion-base');
+// const _loaded = awaitengine.loadModel('code-completion-base');
     console.warn('Model loaded:', loaded);
     // Test inference
     console.warn('Testing inference...');
-    const _result = await engine.inference('create a function to calculate fibonacci numbers');
+// const _result = awaitengine.inference('create a function to calculate fibonacci numbers');
     console.warn('Generated code:');
     console.warn(result.text);
     console.warn('Confidence:', `${(result.confidence * 100).toFixed(1)}%`);
@@ -41,10 +41,9 @@ async function testQueenCoordinator() {
   console.warn('\n👑 Testing Queen Coordinator...');
   try {
     const _coordinator = new QueenCoordinator({
-      maxConcurrentTasks: 10,
-      enableLoadBalancing: true,
-      consensusThreshold: 0.7,
-    });
+      maxConcurrentTasks,
+      enableLoadBalancing,
+      consensusThreshold: 0.7 });
     // Start coordinator
     console.warn('Starting queen coordinator...');
   // await coordinator.start();
@@ -54,14 +53,13 @@ async function testQueenCoordinator() {
     console.warn('Available queens:', Object.keys(queens));
     // Submit a simple task
     console.warn('Submitting task to queens...');
-    const _taskId = await coordinator.submitTask('create a simple hello world function', {
+// const _taskId = awaitcoordinator.submitTask('create a simple hello world function', {
       type: 'code-generation',
-      priority: 'medium',
-    });
+      priority: 'medium' });
     console.warn('Task submitted:', taskId);
     // Wait for completion
     console.warn('Waiting for task completion...');
-    const _result = await coordinator.waitForTask(taskId, 30000);
+// const _result = awaitcoordinator.waitForTask(taskId, 30000);
     console.warn('Task completed!');
     console.warn('Queen:', result.queenName);
     console.warn('Confidence:', `${(result.confidence * 100).toFixed(1)}%`);
@@ -83,10 +81,9 @@ async function testQueenCollaboration() {
   console.warn('\n🤝 Testing Queen Collaboration...');
   try {
     const _coordinator = new QueenCoordinator({
-      maxConcurrentTasks: 10,
-      enableLoadBalancing: true,
-      consensusThreshold: 0.6,
-    });
+      maxConcurrentTasks,
+      enableLoadBalancing,
+      consensusThreshold: 0.6 });
   // await coordinator.start();
     // Create a task that requires collaboration
     const _task = {
@@ -95,10 +92,9 @@ async function testQueenCollaboration() {
       prompt: 'create a secure user authentication system with proper error handling',
       priority: 'high',
         language: 'javascript',
-        framework: 'express',
-}
+        framework: 'express' }
 console.warn('Testing queen collaboration...');
-const _consensus = await coordinator.executeTask(task, true); // Require consensus
+// const _consensus = awaitcoordinator.executeTask(task, true); // Require consensus
 
 console.warn('Collaboration completed!');
 console.warn('Decision:', consensus.decision);
@@ -121,15 +117,14 @@ async function main() {
   console.warn('🧪 Claude Code Zen - Neural & Queen Implementation Tests');
   console.warn('='.repeat(60));
   const _tests = [
-    { name: 'Neural Engine', fn: testNeuralEngine },
-    { name: 'Queen Coordinator', fn: testQueenCoordinator },
-    { name: 'Queen Collaboration', fn: testQueenCollaboration },
-  ];
+    { name: 'Neural Engine', fn },
+    { name: 'Queen Coordinator', fn },
+    { name: 'Queen Collaboration', fn } ];
   const _passed = 0;
   const _failed = 0;
   for (const test of tests) {
     console.warn(`\n🧪 Running ${test.name} test...`);
-    const _success = await test.fn();
+// const _success = awaittest.fn();
     if (success) {
       passed++;
       console.warn(`✅ ${test.name} test PASSED`);
@@ -145,7 +140,7 @@ async function main() {
   } else {
     console.warn('⚠️ Some tests failed. Check the error messages above.');
   }
-  process.exit(failed === 0 ? 0 : 1);
+  process.exit(failed === 0 ? 0 );
 }
 // Handle errors gracefully
 process.on('unhandledRejection', (error) => {

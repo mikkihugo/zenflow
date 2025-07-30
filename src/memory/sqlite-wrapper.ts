@@ -20,12 +20,12 @@ const _loadError = null
 async function _tryLoadSQLite(): Promise<boolean> {
   try {
     // Try ES module import first
-    const _module = await import('better-sqlite3')
+// const _module = awaitimport('better-sqlite3')
 Database = module.default  ?? module
 sqliteAvailable = true
 return true;
 }
-catch ()
+catch (error)
 {
   // Fallback to CommonJS require
   try {
@@ -33,13 +33,13 @@ catch ()
     Database = require('better-sqlite3');
     sqliteAvailable = true;
     return true;
-    //   // LINT: unreachable code removed} catch () {
+    //   // LINT: unreachable code removed} catch (error) {
     loadError = requireErr;
 
     // Check for specific Windows errors
     if (;
       requireErr.message.includes('was compiled against a different Node.js version')  ?? requireErr.message.includes('Could not locate the bindings file')  ?? requireErr.message.includes('The specified module could not be found')  ?? requireErr.code === 'MODULE_NOT_FOUND';
-    ) 
+    )
       console.warn(`;
 ╔══════════════════════════════════════════════════════════════════════════════╗;
 ║                     Windows SQLite Installation Issue                         ║;
@@ -70,8 +70,7 @@ export async function isSQLiteAvailable(): Promise<boolean> {
   if (sqliteAvailable !== null) {
     return sqliteAvailable;
     //   // LINT: unreachable code removed}
-
-  await tryLoadSQLite();
+// await tryLoadSQLite();
   return sqliteAvailable;
 }
 
@@ -80,7 +79,7 @@ export async function isSQLiteAvailable(): Promise<boolean> {
  */;
 export async function getSQLiteDatabase(): Promise<(new (dbPath = > Database) | null> {
   if (!sqliteAvailable && loadError === null) {
-    await tryLoadSQLite();
+// await tryLoadSQLite();
   }
 
   return Database;
@@ -123,5 +122,4 @@ export default {
   getLoadError,
   createDatabase,
   isWindows,
-  getStorageRecommendations,
-};
+  getStorageRecommendations };

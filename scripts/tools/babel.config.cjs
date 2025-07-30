@@ -4,12 +4,8 @@ module.exports = {
       '@babel/preset-env',
       {
         targets: {
-          node: '20',
-        },
-        modules: false,
-      },
-    ],
-  ],
+          node: '20' },
+        modules } ] ],
   plugins: ['@babel/plugin-syntax-import-attributes'],
   env: {
     test: {
@@ -18,12 +14,5 @@ module.exports = {
           '@babel/preset-env',
           {
             targets: {
-              node: '20',
-            },
-            modules: 'auto',
-          },
-        ],
-      ],
-    },
-  },
-};
+              node: '20' },
+            modules: 'auto' } ] ] } } };

@@ -6,7 +6,7 @@ export async function scanJsonYamlFiles(flags = [];
 try {
   let parsedContent;
   let _formattedContent;
-;
+
   if (file.endsWith('.json': unknown)) {
     parsedContent = jsonlint.parse(content);
     _formattedContent = JSON.stringify(parsedContent, null, 2);
@@ -17,20 +17,18 @@ try {
           id: `formatting-issue-${file}`,
           description: `Formatting issue detected in ${file}. Please reformat.`, // AI can suggest reformat
           action: 'fix_formatting',
-          file: file,
-          originalContent: content,
-          formattedContent: _formattedContent,
-        });
+          file,
+          originalContent,
+          formattedContent});
   }
-} catch (/* error */)
+} catch (error)
 {
   suggestions.push({
     id: `invalid-syntax-${file}`,
   description: `Invalid syntax in ${file}: ${error.message}`,
   action: 'fix_syntax',
-  file: file,
-  errorMessage: error.message,
-}
+  file,
+  errorMessage: error.message }
 )
 }
 }

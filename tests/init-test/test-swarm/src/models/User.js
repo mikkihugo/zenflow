@@ -2,7 +2,7 @@ const _bcrypt = require('bcrypt');
 const { db } = require('./database');
 class User {
   static async create({ username, email, password }) {
-    const _hashedPassword = await bcrypt.hash(password, 10);
+// const _hashedPassword = awaitbcrypt.hash(password, 10);
     return new Promise((resolve, reject) => {
       const _query = `;
     // INSERT INTO users (username, email, password); // LINT: unreachable code removed

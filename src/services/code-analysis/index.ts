@@ -25,7 +25,7 @@ export class CodeAnalysisService {
     this.orchestrator = new CodeAnalysisOrchestrator(config);
     this.watcher = new CodeAnalysisWatcher(config);
   }
-;
+
   async initialize() {
     // Set up event listeners for real-time analysis
     this.watcher.on('analysis => {
@@ -33,37 +33,37 @@ export class CodeAnalysisService {
       console.warn(`🚨 Significant change detected = {}): unknown {
     return await this.orchestrator.analyzeCodebase(options);
     //   // LINT: unreachable code removed}
-;
-  async analyzeFiles(filePaths, options = {}): unknown 
+
+  async analyzeFiles(filePaths, options = {}): unknown
     return await this.orchestrator.analyzeFiles(filePaths, options);
     //   // LINT: unreachable code removed}
-;
-  async startRealTimeAnalysis() 
+
+  async startRealTimeAnalysis()
     if (!this.orchestrator.isInitialized) {
-      await this.initialize();
+// await this.initialize();
     }
     return await this.watcher.startWatching(this.orchestrator);
     //   // LINT: unreachable code removed}
-;
-  async stopRealTimeAnalysis() 
+
+  async stopRealTimeAnalysis()
     return await this.watcher.stopWatching();
     //   // LINT: unreachable code removed}
-;
-  async query(query): unknown 
+
+  async query(query): unknown
     return await this.orchestrator.queryAnalysis(query);
     //   // LINT: unreachable code removed}
-;
+
   async getStats() {
-    const _orchestratorStats = await this.orchestrator.getAnalysisStats();
+// const _orchestratorStats = awaitthis.orchestrator.getAnalysisStats();
     const _watcherStatus = this.watcher.getStatus();
-;
+
     return {
-      ...orchestratorStats,
-    // realTimeAnalysis: watcherStatus, // LINT: unreachable code removed
+..orchestratorStats,
+    // realTimeAnalysis, // LINT: unreachable code removed
     };
-;
-  async cleanup() 
-    await this.watcher.stopWatching();
+
+  async cleanup()
+// await this.watcher.stopWatching();
     return await this.orchestrator.cleanup();
-;
+
 export default CodeAnalysisService;

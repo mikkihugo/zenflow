@@ -3,26 +3,26 @@ import { describe, expect } from '@jest/globals';
 describe('Integration and End-to-End Test Coverage', () => {
   describe('File System Operations', () => {
     it('should handle basic file system patterns', async () => {
-      const _fs = await import('node:fs/promises');
-      const _path = await import('node:path');
-      const _os = await import('node:os');
+// const _fs = awaitimport('node:fs/promises');
+// const _path = awaitimport('node:path');
+// const _os = awaitimport('node:os');
 
       // Test creating and cleaning up temp directories
-      const _tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'claude-zen-test-'));
+// const _tempDir = awaitfs.mkdtemp(path.join(os.tmpdir(), 'claude-zen-test-'));
       // Create a test file
       const _testFile = path.join(tempDir, 'test.txt');
   // await fs.writeFile(testFile, 'test content');
       // Read it back
-      const _content = await fs.readFile(testFile, 'utf8');
+// const _content = awaitfs.readFile(testFile, 'utf8');
       expect(content).toBe('test content');
       // Check file exists
-      const _stats = await fs.stat(testFile);
+// const _stats = awaitfs.stat(testFile);
       expect(stats.isFile()).toBe(true);
       // Clean up
-  // await fs.rm(tempDir, { recursive: true, force: true });
+  // await fs.rm(tempDir, { recursive, force });
     });
     it('should handle path operations', async () => {
-      const _path = await import('node:path');
+// const _path = awaitimport('node:path');
 
       const _testPath = '/path/to/test/file.txt';
       expect(path.dirname(testPath)).toBe('/path/to/test');
@@ -50,7 +50,7 @@ describe('Integration and End-to-End Test Coverage', () => {
       expect(process.env.CLAUDE_ZEN_TEST).toBeUndefined();
     });
     it('should handle OS information', async () => {
-      const _os = await import('node:os');
+// const _os = awaitimport('node:os');
 
       expect(typeof os.platform()).toBe('string');
       expect(typeof os.arch()).toBe('string');
@@ -101,7 +101,7 @@ describe('Integration and End-to-End Test Coverage', () => {
       expect(validUrl.hash).toBe('#fragment');
     });
     it('should handle crypto operations', async () => {
-      const _crypto = await import('node:crypto');
+// const _crypto = awaitimport('node:crypto');
 
       // Test random bytes
       const _randomBytes = crypto.randomBytes(16);
@@ -134,14 +134,12 @@ describe('Integration and End-to-End Test Coverage', () => {
           this.push('chunk1');
           this.push('chunk2');
           this.push(null); // End stream
-        },
-    });
+        } });
     const _writable = new Writable({
         write(chunk, _encoding, callback) {
           writtenData += chunk.toString();
           callback();
-        },
-  });
+        } });
   return new Promise((resolve) => {
     readable.pipe(writable);
     // writable.on('finish', () => { // LINT: unreachable code removed
@@ -154,7 +152,7 @@ describe('Integration and End-to-End Test Coverage', () => {
 describe('JSON and Data Processing', () =>
 {
     it('should handle JSON operations safely', () => {
-      const _data = { name: 'test', value: 123, nested: { key: 'value' } };
+      const _data = { name: 'test', value, nested: { key: 'value' } };
       const _json = JSON.stringify(data);
       expect(typeof json).toBe('string');
       const _parsed = JSON.parse(json);
@@ -163,7 +161,7 @@ describe('JSON and Data Processing', () =>
       expect(() => JSON.parse('invalid json')).toThrow();
     });
     it('should handle data validation patterns', () => {
-      const _validateData = (): unknown => {
+      const _validateData = () => {
         const _errors = [];
         if (!data  ?? typeof data !== 'object') {
           errors.push('Data must be an object');
@@ -177,7 +175,7 @@ describe('JSON and Data Processing', () =>
         }
         return errors;
     //   // LINT: unreachable code removed};
-      expect(validateData({ name: 'John', age: 25 })).toEqual([]);
+      expect(validateData({ name: 'John', age })).toEqual([]);
       expect(validateData({ name: 'Jane' })).toEqual([]);
       expect(validateData({})).toContain('Name is required');
       expect(validateData({ name: 'Bob', age: -5 })).toContain('Age must be a positive number');
@@ -189,8 +187,7 @@ describe('JSON and Data Processing', () =>
         new Error('Generic error'),
         new TypeError('Type error'),
         new RangeError('Range error'),
-        new SyntaxError('Syntax error'),
-      ];
+        new SyntaxError('Syntax error') ];
       errors.forEach((error) => {
         expect(error).toBeInstanceOf(Error);
         expect(typeof error.message).toBe('string');
@@ -219,13 +216,13 @@ describe('JSON and Data Processing', () =>
       expect(executed).toBe(false);
     });
     it('should handle Promise patterns', async () => {
-      const _delayedPromise = (): unknown => {
+      const _delayedPromise = () => {
         return new Promise((resolve) => setTimeout(() => resolve(value), ms));
     //   // LINT: unreachable code removed};
-      const _result = await delayedPromise(10, 'delayed-result');
+// const _result = awaitdelayedPromise(10, 'delayed-result');
       expect(result).toBe('delayed-result');
       const _promises = [delayedPromise(5, 'a'), delayedPromise(10, 'b'), delayedPromise(15, 'c')];
-      const _results = await Promise.all(promises);
+// const _results = awaitPromise.all(promises);
       expect(results).toEqual(['a', 'b', 'c']);
     });
   });
@@ -262,18 +259,17 @@ describe('JSON and Data Processing', () =>
       expect(sum).toBe(15);
     });
     it('should handle object operations', () => {
-      const _obj = { a: 1, b: 2, c: 3 };
+      const _obj = { a, b, c };
       expect(Object.keys(obj)).toEqual(['a', 'b', 'c']);
       expect(Object.values(obj)).toEqual([1, 2, 3]);
       expect(Object.entries(obj)).toEqual([;
         ['a', 1],
         ['b', 2],
-        ['c', 3],
-      ]);
-      const _merged = Object.assign({}, obj, { d: 4 });
-      expect(merged).toEqual({ a: 1, b: 2, c: 3, d: 4 });
-      const _spread = { ...obj, e: 5 };
-      expect(spread).toEqual({ a: 1, b: 2, c: 3, e: 5 });
+        ['c', 3] ]);
+      const _merged = Object.assign({}, obj, { d });
+      expect(merged).toEqual({ a, b, c, d });
+      const _spread = { ...obj, e };
+      expect(spread).toEqual({ a, b, c, e });
     });
   });
   describe('Date and Time Operations', () => {

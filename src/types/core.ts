@@ -107,9 +107,9 @@ export type Mixin<T extends Constructor> = T & Constructor;
 export type EventMap = Record<string, (...args = > void>;
 
 export interface TypedEventEmitter<T extends EventMap> extends EventEmitter {
-  on<K extends keyof T>(event: K, listener: T[K]): this;
-  emit<K extends keyof T>(event: K, ...args: Parameters<T[K]>): boolean;
-  once<K extends keyof T>(event: K, listener: T[K]): this;
-  off<K extends keyof T>(event: K, listener: T[K]): this;
+  on<K extends keyof T>(event, listener: T[K]): this;
+  emit<K extends keyof T>(event, ...args: Parameters<T[K]>): boolean;
+  once<K extends keyof T>(event, listener: T[K]): this;
+  off<K extends keyof T>(event, listener: T[K]): this;
   removeAllListeners<K extends keyof T>(event?: K): this;
 }

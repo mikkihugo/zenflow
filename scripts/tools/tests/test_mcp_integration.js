@@ -11,9 +11,8 @@ async function testMCPIntegration() {
       action: 'store',
       key: 'test-integration',
       value: 'Library integration test successful',
-      namespace: 'tests',
-    });
-    const _memoryResult = await server.executeTool('memory_usage', {
+      namespace: 'tests' });
+// const _memoryResult = awaitserver.executeTool('memory_usage', {
       action: 'retrieve',
       key: 'test-integration',
       namespace: 'tests'

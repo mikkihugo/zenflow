@@ -8,14 +8,14 @@ import { readFile } from 'node:fs/promises';
 // Try to import optional dependencies with fallbacks
 let _parseTypeScript, _parseJavaScript, acorn;
 try {
-  const _tsModule = await import('@typescript-eslint/parser');
+// const _tsModule = awaitimport('@typescript-eslint/parser');
   _parseTypeScript = tsModule.parse;
 } catch (/* _e */) {
   console.warn('TypeScript parser not available, using fallback');
   _parseTypeScript = null;
 }
 try {
-  const _jsModule = await import('esprima');
+// const _jsModule = awaitimport('esprima');
   _parseJavaScript = jsModule.parse;
 } catch (/* _e */) {
   console.warn('Esprima parser not available, using fallback');
@@ -33,13 +33,13 @@ export class ASTParser {
     if(!content) {
       content = await readFile(filePath, 'utf8');
     }
-;
+
     const _language = this.detectLanguage(filePath);
     const __hash = this.generateHash(content);
-;
+
     let _ast;
     let _parseResult;
-;
+
     try {
       switch(language) {
         case 'typescript':;
@@ -50,9 +50,9 @@ export class ASTParser {
         case 'jsx':;
           _parseResult = this.parseJavaScript(content, filePath);
           break;default = parseTypeScript(content, {
-      ...this.config.typeScriptOptions,
+..this.config.typeScriptOptions,
       filePath,project = parseJavaScript(content, {sourceType = acorn.parse(content, {
-          ...this.config.parseOptions,locations = `file = {
+..this.config.parseOptions,locations = `file = {
       functions => {
       switch(node.type) {
         case 'FunctionDeclaration':;
@@ -61,26 +61,26 @@ export class ASTParser {
         case 'MethodDefinition':;
           result.functions.push(this.extractFunctionInfo(node, fileId, filePath));
           break;
-;
+
         case 'ClassDeclaration':;
         case 'ClassExpression':;
           result.classes.push(this.extractClassInfo(node, fileId, filePath));
           break;
-;
+
         case 'VariableDeclarator':;
           result.variables.push(this.extractVariableInfo(node, parent, fileId, filePath));
           break;
-;
+
         case 'ImportDeclaration':;
           result.imports.push(this.extractImportInfo(node, fileId, filePath));
           break;
-;
+
         case 'ExportNamedDeclaration':;
         case 'ExportDefaultDeclaration':;
         case 'ExportAllDeclaration':;
           result.exports.push(this.extractExportInfo(node, fileId, filePath));
           break;
-;
+
         case 'TSInterfaceDeclaration':;
         case 'TSTypeAliasDeclaration':;
         case 'TSEnumDeclaration':;
@@ -90,43 +90,43 @@ export class ASTParser {
           break;
       }
     });
-;
+
     return result;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Extract function information;
    */;
   extractFunctionInfo(node, fileId, filePath): unknown {
     const _name = node.id?.name  ?? node.key?.name  ?? (node.type === 'ArrowFunctionExpression' ? '<anonymous>' : '<unnamed>');
-;
+
     const _start = node.loc?.start?.line  ?? 0;
     const _end = node.loc?.end?.line  ?? 0;
     const _params = node.params  ?? [];
-;
+
     return {id = node.id?.name  ?? '<anonymous>';
     // const _start = node.loc?.start?.line  ?? 0; // LINT: unreachable code removed
     const _end = node.loc?.end?.line  ?? 0;
-;
+
     const _methods = (node.body?.body  ?? []).filter(n => ;
       n.type === 'MethodDefinition'  ?? n.type === 'PropertyDefinition';
     );
-;
+
     return {id = > m.type === 'MethodDefinition').length,property_count = > m.type === 'PropertyDefinition').length,is_exported = > i.expression?.name  ?? i.name)  ?? []
     };
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Extract variable information;
    */;
   extractVariableInfo(node, parent, fileId, filePath): unknown {
     const _name = node.id?.name  ?? '<unnamed>';
     const _line = node.loc?.start?.line  ?? 0;
-;
+
     return {id = node.source?.value  ?? '<unknown>';
     // const _line = node.loc?.start?.line  ?? 0; // LINT: unreachable code removed
     const _importedNames = [];
-    
+
     if(node.specifiers) {
       for(const spec of node.specifiers) {
         if(spec.type === 'ImportDefaultSpecifier') {
@@ -138,11 +138,11 @@ export class ASTParser {
         }
       }
     }
-;
+
     return {id = node.loc?.start?.line  ?? 0;
     // const _exportNames = []; // LINT: unreachable code removed
     let _exportType = 'named';
-    
+
     if(node.type === 'ExportDefaultDeclaration') {
       exportType = 'default';
       exportNames.push('default');
@@ -154,11 +154,11 @@ export class ASTParser {
         exportNames.push(spec.exported?.name  ?? spec.local?.name);
       }
     }
-;
+
     return {id = node.id?.name  ?? '<unnamed>';
     // const _line = node.loc?.start?.line  ?? 0; // LINT: unreachable code removed
     let _kind = 'unknown';
-;
+
     switch(node.type) {
       case 'TSInterfaceDeclaration':;
         kind = 'interface';
@@ -170,17 +170,17 @@ export class ASTParser {
         kind = 'enum';
         break;
     }
-;
+
     return {id = null): unknown {
     if (!node  ?? typeof node !== 'object') return;
     // ; // LINT: unreachable code removed
     callback(node, parent);
-;
+
     for(const key in node) {
       if(key === 'parent'  ?? key === 'leadingComments'  ?? key === 'trailingComments') {
         continue;
       }
-;
+
       const _child = node[key];
       if (Array.isArray(child)) {
         for(const item of child) {
@@ -191,13 +191,13 @@ export class ASTParser {
       }
     }
   }
-;
+
   /**
    * Calculate cyclomatic complexity;
    */;
   calculateCyclomaticComplexity(node): unknown {
     const _complexity = 1; // Base complexity
-    
+
     this.walkAST(node, (child) => {
       switch(child.type) {
         case 'IfStatement':;
@@ -221,10 +221,10 @@ export class ASTParser {
           break;
       }
     });
-;
+
     return complexity;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Calculate cognitive complexity (simplified);
    */;
@@ -232,7 +232,7 @@ export class ASTParser {
     // This is a simplified version - real cognitive complexity is more nuanced
     return Math.floor(this.calculateCyclomaticComplexity(node) * 1.2);
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Detect programming language from file extension;
    */;
@@ -246,24 +246,24 @@ export class ASTParser {
       'mjs': 'javascript',
       'cjs': 'javascript';
     };
-;
+
     return languageMap[ext]  ?? 'unknown';
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Generate consistent file ID;
    */;
   generateFileId(filePath): unknown {
     return createHash('sha256').update(filePath).digest('hex').substring(0, 16);
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Generate content hash;
    */;
   generateHash(content): unknown {
     return createHash('sha256').update(content).digest('hex');
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Check if node is exported
    */;
@@ -279,10 +279,10 @@ export class ASTParser {
       if (current.type?.startsWith('Export')) return true;
     // current = current.parent; // LINT: unreachable code removed
     }
-;
+
     return false;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Extract return type information;
     // */; // LINT: unreachable code removed
@@ -292,7 +292,7 @@ export class ASTParser {
     //   // LINT: unreachable code removed}
     return 'unknown';
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Extract variable type information;
    */;
@@ -305,7 +305,7 @@ export class ASTParser {
     //   // LINT: unreachable code removed}
     return 'unknown';
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Convert type annotation to string;
    */;
@@ -325,7 +325,7 @@ export class ASTParser {
         return 'any';
     // case 'TSTypeReference':; // LINT: unreachable code removed
         return typeAnnotation.typeName?.name  ?? 'object';default = [];
-;
+
     if(node.body?.body) {
       for(const member of node.body.body) {
         if(member.type === 'TSPropertySignature') {
@@ -333,16 +333,16 @@ export class ASTParser {
         }
       }
     }
-;
+
     return properties;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Extract type methods;
    */;
   extractTypeMethods(node): unknown {
     const _methods = [];
-;
+
     if(node.body?.body) {
       for(const member of node.body.body) {
         if(member.type === 'TSMethodSignature') {
@@ -350,27 +350,27 @@ export class ASTParser {
         }
       }
     }
-;
+
     return methods;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Create fallback analysis when parsers are not available;
    */;
   createFallbackAnalysis(content, filePath, language): unknown {
     const _fileId = this.generateFileId(filePath);
-;
+
     // Basic regex-based analysis
     const _functionPattern = /(?:function\s+\w+|const\s+\w+\s*=\s*(?:\([^)]*\)\s*=>|\bfunction\b)|\w+\s*:\s*(?:\([^)]*\)\s*=>|function))/g;
     const _classPattern = /class\s+(\w+)/g;
     const _importPattern = /import\s+.*?from\s+['"`]([^'"`]+)['"`]/g;
     const _exportPattern = /export\s+(?:default\s+)?(?:const|let|var|function|class|interface|type)\s+(\w+)/g;
-    
+
     const _functions = [];
     const _classes = [];
     const _imports = [];
     const _exports = [];
-    
+
     // Extract functions
     let match;
     while ((match = functionPattern.exec(content)) !== null) {
@@ -382,7 +382,7 @@ export class ASTParser {
       exports.push({id = match.match(/(?:function\s+(\w+)|const\s+(\w+)|(\w+)\s*:)/);
     return nameMatch ? (nameMatch[1]  ?? nameMatch[2]  ?? nameMatch[3]) : null;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Count parameters in function signature;
    */;
@@ -392,5 +392,5 @@ export class ASTParser {
     // return paramMatch[1].split(',').filter(p => p.trim()).length; // LINT: unreachable code removed
   }
 }
-;
+
 export default ASTParser;

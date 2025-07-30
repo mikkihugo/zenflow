@@ -7,13 +7,13 @@ import { parentPort } from 'node:worker_threads';
 class SwarmWorker {
   constructor(workerId = workerId;
   this;
-  .
+
   isShuttingDown = false;
   this;
-  .
+
   currentTask = null;
   console;
-  .
+
   warn(`🤖 Swarm worker ${this.workerId} initialized`);
 }
 /**
@@ -33,16 +33,16 @@ initialize();
   try {
       switch(type) {
         case 'execute-task':;
-          await this.executeTask(task);
+// await this.executeTask(task);
           break;
         case 'shutdown':;
-          await this.shutdown();
+// await this.shutdown();
           break;default = task;
     const _startTime = Date.now();
-;
+
     try {
       console.warn(`🔄 Worker ${this.workerId} executing task ${task.id} (${task.type})`);
-;
+
       // Send progress update
       this.sendProgress(task.id, {status = await this.executeAgentSpawn(task);
           break;
@@ -66,12 +66,12 @@ initialize();
           break;
         default = await this.executeGenericTask(task);
       }
-;
+
       const _executionTime = Date.now() - startTime;
-;
+
       // Send completion message
       this.sendCompletion(task.id, {
-        ...result,
+..result,
         executionTime,workerId = null;
     }
   }
@@ -99,14 +99,10 @@ initialize();
       'coordinator': ['planning', 'coordination', 'monitoring', 'resource-management'],
     ('coder');
     : ['code-generation', 'debugging', 'refactoring', 'testing'],
-    ('researcher')
-    : ['data-gathering', 'analysis', 'web-research', 'documentation'],
-    ('analyst')
-    : ['performance-analysis', 'bottleneck-identification', 'optimization'],
-    ('tester')
-    : ['test-generation', 'automation', 'validation', 'quality-assurance'],
-    ('reviewer')
-    : ['code-review', 'best-practices', 'security-analysis', 'compliance']
+    ('researcher'):  ['data-gathering', 'analysis', 'web-research', 'documentation'],
+    ('analyst'):  ['performance-analysis', 'bottleneck-identification', 'optimization'],
+    ('tester'):  ['test-generation', 'automation', 'validation', 'quality-assurance'],
+    ('reviewer'):  ['code-review', 'best-practices', 'security-analysis', 'compliance']
   }
   return capabilities[agentType]  ?? ['general-purpose'];
   //   // LINT: unreachable code removed}
@@ -117,11 +113,11 @@ initialize();
   : unknown
   return {
       strategy,subtasks = > ({
-        ...task,id = === 'parallel' ? 'concurrent' : 'sequential',estimatedTime = [];
+..task,id = === 'parallel' ? 'concurrent' : 'sequential',estimatedTime = [];
   // ; // LINT: unreachable code removed
   for (const _subtask of plan.subtasks) {
     // Simulate subtask execution
-    await this.delay(200);
+// await this.delay(200);
     results.push({subtaskId = > ({bottleneck = === 'high' ? '20-30%' : '5-15%',effort = === 'high' ? 'medium' : 'low';
   }
   ))
@@ -160,10 +156,9 @@ process.on('uncaughtException', (error) => {
   if(parentPort) {
     parentPort.postMessage({type = > process.exit(1), 100); // Brief delay to send message
 });
-;
+
 process.on('unhandledRejection', (reason, _promise) => {
   console.error(`Unhandled rejection in worker ${workerData.workerId}:`, reason);
   if(parentPort) {
     parentPort.postMessage({type = > process.exit(1), 100); // Brief delay to send message
 });
-;

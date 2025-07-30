@@ -26,7 +26,7 @@ app.use('/api/', limiter)
 app.use(express.json())
 app.use(express.urlencoded(
 {
-  extended: true;
+  extended;
 }
 ))
 // Metrics middleware

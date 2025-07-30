@@ -8,15 +8,13 @@ testMatch: [;
     '**/*.test.js',
     '**/*.test.ts',
     '**/*.spec.js',
-    '**/*.spec.ts',
-  ],
-{
+    '**/*.spec.ts' ],
+// {
   ('^.+\\.(ts|tsx)$');
   : 'ts-jest',
   ('^.+\\.(js|jsx)$')
   : 'babel-jest'
-}
-,
+// }
 moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 coverageDirectory: '<rootDir>/coverage',
 collectCoverageFrom: [
@@ -24,22 +22,19 @@ collectCoverageFrom: [
     '!src/**/*.d.ts',
     '!src/**/*.test.{js,ts}',
     '!src/**/__tests__/**',
-    '!src/**/node_modules/**',
-],
-{
-  branches: 95,
-  functions: 95,
-  lines: 95,
-  statements: 95,
-  
-}
-,
+    '!src/**/node_modules/**' ],
+// {
+  branches,
+  functions,
+  lines,
+  statements }
+
 setupFilesAfterEnv: ['<rootDir>/test-setup.js'],
-testTimeout: 30000,
-verbose: true,
-bail: false,
+testTimeout,
+verbose,
+bail,
 maxWorkers: '50%',
-{
+// {
   ('^@/(.*)$');
   : '<rootDir>/src/$1',
   ('^@services/(.*)$')
@@ -50,43 +45,34 @@ maxWorkers: '50%',
   : '<rootDir>/src/models/$1',
   ('^@config/(.*)$')
   : '<rootDir>/src/config/$1'
-}
-,
-{
+// }
+// {
   ('ts-jest');
-  : 
+  : null
         jsx: 'react',
-  esModuleInterop: true,
-  allowSyntheticDefaultImports: true,
-  ,
-  
-}
-,
+  esModuleInterop,
+  allowSyntheticDefaultImports,
+// }
 projects: [
-{
+// {
   displayName: 'Unit Tests',
   testMatch: ['<rootDir>/unit/**/*.test.{js,ts}']
-}
-,
-{
+// }
+// {
   displayName: 'Integration Tests',
   testMatch: ['<rootDir>/integration/**/*.test.{js,ts}']
-}
-,
-{
+// }
+// {
   displayName: 'E2E Tests',
   testMatch: ['<rootDir>/e2e/**/*.test.{js,ts}']
-}
-,
-{
+// }
+// {
   displayName: 'Performance Tests',
   testMatch: ['<rootDir>/performance/**/*.test.{js,ts}']
-}
-,
-{
+// }
+// {
   displayName: 'Security Tests',
   testMatch: ['<rootDir>/security/**/*.test.{js,ts}']
-}
-,
-]
-}
+// }
+// ]
+// }

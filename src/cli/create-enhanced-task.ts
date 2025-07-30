@@ -38,7 +38,7 @@ Workflow;
 Guidelines;
 1 ** Before;
 Starting**
-:
+: null
 - Checkmemory = === 'backend-only' ? '- Focus on backend implementation without frontend concerns' : ''
 }
    $
@@ -53,7 +53,7 @@ $;
 }
 2 ** During;
 Execution**;
-:
+: null
 - Storefindings = === 'phase' ? '- Commit changes after completing each major phase' : ''
 }
    $
@@ -66,7 +66,7 @@ $;
 }
 3 ** Best;
 Practices**;
-:
+: null
 -Use
 the
 Bash

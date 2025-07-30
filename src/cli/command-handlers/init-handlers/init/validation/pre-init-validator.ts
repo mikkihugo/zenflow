@@ -10,16 +10,16 @@ async;
 checkPermissions();
 {
   const __result = {success = `${this.workingDir}/.claude-zen-permission-test`;
-  await node.writeTextFile(testFile, 'test');
-  await node.remove(testFile);
+// await node.writeTextFile(testFile, 'test');
+// await node.remove(testFile);
   // Test directory creation permission
   const _testDir = `${this.workingDir}/.claude-zen-dir-test`;
-  await node.mkdir(testDir);
-  await node.remove(testDir);
-  await node.mkdir(testDir);
-  await node.remove(testDir);
+// await node.mkdir(testDir);
+// await node.remove(testDir);
+// await node.mkdir(testDir);
+// await node.remove(testDir);
 }
-catch (/* error */)
+catch (error)
 {
   result.success = false;
   result.errors.push(`Insufficient permissions in ${this.workingDir}: ${error.message}`);
@@ -33,19 +33,19 @@ async
 checkDiskSpace()
 {
     const _result = {success = new node.Command('df', {args = await command.output();
-;
+
       if(success) {
         const _output = new TextDecoder().decode(stdout);
         const _lines = output.trim().split('\n');
-;
+
         if(lines.length >= 2) {
           const _dataLine = lines[1];
           const _parts = dataLine.split(/\s+/);
-;
+
           if(parts.length >= 4) {
             const _availableKB = parseInt(parts[3]);
             const _availableMB = availableKB / 1024;
-;
+
             // Require at least 100MB free space
             if(availableMB < 100) {
               result.success = false;
@@ -56,13 +56,12 @@ checkDiskSpace()
       'memory-bank.md',
       'coordination.md',
       '.roomodes',
-      'memory/claude-zen-data.json',
-    ];
-;
+      'memory/claude-zen-data.json' ];
+
     // Check critical files
     for(const file of criticalFiles) {
       try {
-        const _stat = await node.stat(`$this.workingDir/$file`);
+// const _stat = awaitnode.stat(`\$this.workingDir/\$file`);
         if(stat.isFile) {
           result.conflicts.push(file);
           if(!force) {
@@ -74,13 +73,13 @@ checkDiskSpace()
           for await (const entry of node.readDir(`${this.workingDir}/${dir}`)) {
             entries.push(entry.name);
           }
-;
+
           if(entries.length > 0) {
             result.conflicts.push(`${dir}/ (${entries.length} items)`);
             if(!force) {
               result.warnings.push(`Directory exists with content = {success = [
       {name = new node.Command(dep.command, {args = await command.output();
-;
+
         if(success) {
           const _version = new TextDecoder().decode(stdout).trim();
           result.dependencies[dep.name] = {
@@ -91,34 +90,34 @@ checkDiskSpace()
         }
       }
     }
-;
+
     return result;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Check environment variables and configuration;
    */;
   async checkEnvironment() {
     const _result = {success = [
       {name = node.env.get(envVar.name);
-;
+
       if(value) {
         result.environment[envVar.name] = 'set';
       } else {
         result.environment[envVar.name] = 'not set';
-;
+
         if(envVar.required) {
           result.success = false;
           result.errors.push(`Required environment variable ${envVar.name} is not set`);
         }
       }
     }
-;
+
     // Check if we're in a git repository
     try {
       const _command = new node.Command('git', {args = await command.output();
       result.environment.gitRepo = success;
-;
+
       if(!success) {
         result.warnings.push('Not in a git repository - version control recommended');
       }
@@ -126,10 +125,10 @@ checkDiskSpace()
       result.environment.gitRepo = false;
       result.warnings.push('Could not check git repository status');
     }
-;
+
     return result;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Run all pre-initialization checks;
    */;
@@ -137,13 +136,11 @@ checkDiskSpace()
     const _results = {permissions = Object.values(results).every((r) => r.success);
     const _allErrors = Object.values(results).flatMap((r) => r.errors  ?? []);
     const _allWarnings = Object.values(results).flatMap((r) => r.warnings  ?? []);
-;
+
     return {
-      success: overallSuccess,
+      success,
     // results, // LINT: unreachable code removed
-      errors: allErrors,
-      warnings: allWarnings,
-    };
+      errors,
+      warnings};
   }
 }
-;

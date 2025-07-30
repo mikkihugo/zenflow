@@ -18,20 +18,17 @@ describe('Bazel-Kuzu Integration', () => {
   beforeEach(async () => {
     // Create temporary test directory
     testDir = path.join(__dirname, '../../tmp/bazel-test');
-  // await fs.mkdir(testDir, { recursive: true });
+  // await fs.mkdir(testDir, { recursive });
     // Initialize graph backend
     _graphBackend = new MemoryBackendPlugin({
       backend: 'kuzu',
     persistDirectory: path.join(testDir, '.kuzu'),
-    enableRelationships: true,
-    ,
-  });
+    enableRelationships });
   // Create test plugin with Kuzu integration
   _plugin = new BazelMonorepoPlugin({
-      workspaceRoot: testDir,
-  enableKuzuIntegration: true,
-  hybridMemory: _graphBackend,
-});
+      workspaceRoot,
+  enableKuzuIntegration,
+  hybridMemory });
 })
 afterEach(async () =>
 {
@@ -43,7 +40,7 @@ afterEach(async () =>
   }
   // Clean up test directory
   try {
-  // await fs.rm(testDir, { recursive: true, force: true });
+  // await fs.rm(testDir, { recursive, force });
     } catch (/* _error */) {
       // Ignore cleanup errors
     }
@@ -73,14 +70,14 @@ test('should initialize with Kuzu integration', async () =>
     try {
   // await graphBackend.initialize();
   // await plugin.initialize();
-      // Check if graph was stored
+      // Check if graph w
       expect(plugin.stats.graphNodesStored).toBeGreaterThan(0);
       // Verify data in graph database
       if (plugin.graphBackend?.storage?.conn) {
         const _conn = plugin.graphBackend.storage.conn;
-        const _result = await conn.query(`;
-          MATCH (t:BazelTarget);
-          RETURN count(t) as target_count;
+// const _result = awaitconn.query(`;
+          MATCH (t);
+          RETURN count(t) ;
         `);
         expect(result[0]?.target_count).toBeGreaterThan(0);
       }
@@ -92,14 +89,14 @@ test('should initialize with Kuzu integration', async () =>
       throw error;
     }
   })
-    test('should perform graph-based impact analysis', async () => 
+    test('should perform graph-based impact analysis', async () =>
   // await createTestBazelWorkspace(testDir)
     try {
   // await graphBackend.initialize();
   // await plugin.initialize();
       // Test change impact analysis
       const _changedFiles = ['src/lib/utils.js'];
-      const _impact = await plugin.analyzeChangeImpactGraph(changedFiles);
+// const _impact = awaitplugin.analyzeChangeImpactGraph(changedFiles);
       expect(impact).toBeDefined();
       expect(impact.affectedTargets).toBeDefined();
       expect(impact.analysisMethod).toBeDefined();
@@ -111,15 +108,15 @@ test('should initialize with Kuzu integration', async () =>
       throw error;
     }
   })
-      test('should generate graph visualizations', async () => 
+      test('should generate graph visualizations', async () =>
   // await createTestBazelWorkspace(testDir)
     try {
   // await graphBackend.initialize();
   // await plugin.initialize();
       // Test different visualization formats
-      const _jsonViz = await plugin.generateDependencyGraphVisualization('json');
-      const _graphvizViz = await plugin.generateDependencyGraphVisualization('graphviz');
-      const _mermaidViz = await plugin.generateDependencyGraphVisualization('mermaid');
+// const _jsonViz = awaitplugin.generateDependencyGraphVisualization('json');
+// const _graphvizViz = awaitplugin.generateDependencyGraphVisualization('graphviz');
+// const _mermaidViz = awaitplugin.generateDependencyGraphVisualization('mermaid');
       expect(jsonViz).toBeDefined();
       expect(jsonViz.nodes).toBeDefined();
       expect(jsonViz.edges).toBeDefined();
@@ -139,8 +136,8 @@ test('should initialize with Kuzu integration', async () =>
     {
       // Test plugin without Kuzu
       const _fallbackPlugin = new BazelMonorepoPlugin({
-      workspaceRoot: testDir,
-      enableKuzuIntegration: false
+      workspaceRoot,
+      enableKuzuIntegration
 })
   // await createTestBazelWorkspace(testDir)
     try {
@@ -149,7 +146,7 @@ test('should initialize with Kuzu integration', async () =>
       expect(fallbackPlugin.graphBackend).toBeNull();
       // Should still work with in-memory analysis
       const _changedFiles = ['src/lib/utils.js'];
-      const _impact = await fallbackPlugin.analyzeChangeImpact(changedFiles);
+// const _impact = awaitfallbackPlugin.analyzeChangeImpact(changedFiles);
       expect(impact).toBeDefined();
       expect(impact.affectedTargets).toBeDefined();
   // await fallbackPlugin.cleanup();
@@ -174,8 +171,8 @@ test --test_output=errors;
 `;
   // await fs.writeFile(path.join(testDir, '.bazelrc'), bazelrcContent);
   // Create source directories
-  // await fs.mkdir(path.join(testDir, 'src/lib'), { recursive: true });
-  // await fs.mkdir(path.join(testDir, 'src/app'), { recursive: true });
+  // await fs.mkdir(path.join(testDir, 'src/lib'), { recursive });
+  // await fs.mkdir(path.join(testDir, 'src/app'), { recursive });
   // Create BUILD files
   const _libBuildContent = `;
 load("@rules_nodejs//nodejs:rules.bzl", "nodejs_library")
@@ -183,8 +180,7 @@ load("@rules_nodejs//nodejs:rules.bzl", "nodejs_library")
 nodejs_library(;
     name = "utils",
     srcs = ["utils.js"],
-    visibility = ["//src/app:__pkg__"],
-);
+    visibility = ["//src/app:__pkg__"]);
 `;
   // await fs.writeFile(path.join(testDir, 'src/lib/BUILD'), libBuildContent);
   const _appBuildContent = `;
@@ -193,8 +189,7 @@ load("@rules_nodejs//nodejs:rules.bzl", "nodejs_binary")
 nodejs_binary(;
     name = "app",
     entry_point = "main.js",
-    deps = ["//src/lib:utils"],
-);
+    deps = ["//src/lib:utils"]);
 `;
   // await fs.writeFile(path.join(testDir, 'src/app/BUILD'), appBuildContent);
   // Create source files

@@ -9,7 +9,7 @@ import { HelpFormatter } from '../help-formatter.js';
 /**
  * Help system options interface;
  */
-interface HelpSystemOptions {
+// interface HelpSystemOptions {
   appName?: string;
   version?: string;
   formatter?: typeof HelpFormatter;
@@ -17,7 +17,7 @@ interface HelpSystemOptions {
 /**
  * Command information interface;
  */
-interface CommandInfo {
+// interface CommandInfo {
   name = {}
 )
 {
@@ -36,11 +36,11 @@ showMainHelp();
   const __commands = this.commandExecutor.listCommands();
   console.warn(`🌊 ${this.appName} v${this.version} - Advanced AI Orchestration Platform\n`);
   console.warn('USAGE = command.name.padEnd(15);
-      console.warn(`  ${name} ${command.description}`);
+      console.warn(`${name} ${command.description}`);
 }
 console.warn(`\nUse "${this.appName} help <command>" for detailed usage information`);
 console.warn(`Use "${this.appName} --version" to show version information\n`);
-console.warn('🚀 QUICKSTART = this.commandExecutor.getCommandInfo(commandName);;
+console.warn('🚀 QUICKSTART = this.commandExecutor.getCommandInfo(commandName);
 if (!commandInfo) {
   console.warn(;
   this.formatter.formatError(;
@@ -49,18 +49,18 @@ if (!commandInfo) {
           return ex;
     //   // LINT: unreachable code removed}
         return `;
-  $this.appName$ex`;
+  \$this.appName\$ex`;
     //   // LINT: unreachable code removed});
     }
-;
+
     // Parse options from details if available
     if (commandInfo.details) {
       helpInfo.options = this.parseOptionsFromDetails(commandInfo.details);
     }
-;
+
     console.warn(this.formatter.formatHelp(helpInfo));
   }
-;
+
   /**
    * Parse options from command details text;
    * @param details - Command details text;
@@ -72,49 +72,48 @@ if (!commandInfo) {
     const _optionsText = optionsMatch[1];
     const _options = [];
     const _optionLines = optionsText.split('\n').filter(line => line.trim());
-;
+
     for (const line of optionLines) {
-      const _match = line.match(/^\s*(--.+?)\s{2,}(.+)$/);
+      const _match = line.match(/^\s*(--.+?)\s{2 }(.+)$/);
       if (match) {
-        const [, flags, description] = match;
-;
+        const [ flags, description] = match;
+
         // Check for default value in description
         const _defaultMatch = description.match(/\(default = {flags = defaultMatch[1];
         }
-;
+
         options.push(option);
       }
     }
-;
+
     return options;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Show version information;
    */;
   public showVersion(): void {
     console.warn(`;
-  v$this.version`);
+  v\$this.version`);
   }
-;
+
   /**
    * Show brief usage information;
    */;
   public showUsage(): void {
     console.warn(`;
   Usage = [
-    ;
+
       'CLAUDE_API_KEY',
       'OPENAI_API_KEY',
       'ANTHROPIC_API_KEY',
-      'HUGGINGFACE_API_KEY';,,,,,,,
-  ];
+      'HUGGINGFACE_API_KEY';,,,,,, ];
   console.warn('\n🔑 APIKEYS = process.env[varName];
   if (value) {
     const _masked = `${value.substring(0, 8)}...${value.substring(value.length - 4)}`;
-    console.warn(`   ${varName}: ${masked}`);
+    console.warn(`${varName}: ${masked}`);
   } else {
-    console.warn(`   ${varName}: not set`);
+    console.warn(`${varName}: not set`);
   }
 }
 }
@@ -136,7 +135,7 @@ showCommandCategories()
     categories[category].push(command);
   }
   console.warn('📋 COMMANDCATEGORIES = command.name.padEnd(12);
-        console.warn(`   ${name} ${command.description}`);
+        console.warn(`${name} ${command.description}`);
 }
 console.warn('');
 }

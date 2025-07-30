@@ -10,9 +10,8 @@ describe('Auth Integration Tests', () => {
       const _userData = {
         username: 'testuser',
         email: 'test@example.com',
-        password: 'password123',
-      };
-    const _response = await request(app).post('/api/auth/register').send(userData).expect(201);
+        password: 'password123' };
+// const _response = awaitrequest(app).post('/api/auth/register').send(userData).expect(201);
     expect(response.body).toHaveProperty('user');
     expect(response.body).toHaveProperty('token');
     expect(response.body.user.email).toBe(userData.email);
@@ -22,9 +21,8 @@ describe('Auth Integration Tests', () => {
       const _userData = {
         username: 'testuser2',
         email: 'invalid-email',
-        password: 'password123',
-      };
-  const _response = await request(app).post('/api/auth/register').send(userData).expect(400);
+        password: 'password123' };
+// const _response = awaitrequest(app).post('/api/auth/register').send(userData).expect(400);
   expect(response.body).toHaveProperty('errors');
 });
 })
@@ -33,9 +31,8 @@ describe('POST /api/auth/login', () =>
   it('should login with valid credentials', async () => {
       const _loginData = {
         email: 'test@example.com',
-        password: 'password123',
-      };
-  const _response = await request(app).post('/api/auth/login').send(loginData).expect(200);
+        password: 'password123' };
+// const _response = awaitrequest(app).post('/api/auth/login').send(loginData).expect(200);
   expect(response.body).toHaveProperty('user');
   expect(response.body).toHaveProperty('token');
   expect(response.body.user.email).toBe(loginData.email);
@@ -46,7 +43,7 @@ it('should reject login with invalid credentials', async () =>
         email: 'test@example.com',
   password: 'wrongpassword'
 }
-const _response = await request(app).post('/api/auth/login').send(loginData).expect(401);
+// const _response = awaitrequest(app).post('/api/auth/login').send(loginData).expect(401);
 expect(response.body.error).toBe('Invalid credentials');
 })
 })

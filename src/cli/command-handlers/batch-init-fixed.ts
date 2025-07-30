@@ -14,16 +14,16 @@ import { ENVIRONMENT_CONFIGS } from './batch-constants.js';
 class BatchProgressTracker {
   constructor(totalProjects = totalProjects;
   this;
-  .
+
   completed = 0;
   this;
-  .
+
   failed = 0;
   this;
-  .
+
   inProgress = new Map();
   this;
-  .
+
   startTime = Date.now();
 }
 startProject(projectName);
@@ -54,13 +54,13 @@ updateDisplay();
       }
     }
   }
-;
+
   getProgressBar(progress): unknown {
     const _filled = Math.floor(progress / 5);
     const _empty = 20 - filled;
     return '█'.repeat(filled) + '░'.repeat(empty);
     //   // LINT: unreachable code removed}
-;
+
   getReport() {
     const _elapsed = Math.floor((Date.now() - this.startTime) / 1000);
     return {total = 5): unknown {
@@ -68,16 +68,16 @@ updateDisplay();
     // this.currentTasks = 0; // LINT: unreachable code removed
     this.queue = [];
   }
-;
+
   async acquire() {
     while(this.currentTasks >= this.maxConcurrency) {
-      await new Promise((resolve) => {
+// await new Promise((resolve) => {
         this.queue.push(resolve);
       });
     }
     this.currentTasks++;
   }
-;
+
   release() {
     this.currentTasks--;
     if(this.queue.length > 0) {
@@ -85,9 +85,9 @@ updateDisplay();
       resolve();
     }
   }
-;
+
   async withResource(fn): unknown {
-    await this.acquire();
+// await this.acquire();
     try {
       return await fn();
     //   // LINT: unreachable code removed} finally {
@@ -95,25 +95,24 @@ updateDisplay();
     }
   }
 }
-;
+
 // Initialize a single project with options
 async function initializeProject(projectPath = {}: unknown): unknown {
   const {
     template = null,
     environment = 'development',
     force = false,
-    minimal = false,
-  } = options;
-;
+    minimal = false } = options;
+
   try {
     // Use the existing init command
-    await initCommand([projectPath], {
+// await initCommand([projectPath], {
       force,
       minimal,
       template,
       environment;
     });
-;
+
     return { success = {}): unknown {
   const {
     parallel = true,
@@ -122,34 +121,32 @@ async function initializeProject(projectPath = {}: unknown): unknown {
     environments = ['development'],
     force = false,
     minimal = false,
-    progressTracking = true,
-  } = options;
-;
+    progressTracking = true } = options;
+
   if(!projects  ?? projects.length === 0) {
     printError('No projects specified for batch initialization');
     return;
     //   // LINT: unreachable code removed}
-;
+
   const _totalProjects = projects.length * environments.length;
   const _tracker = progressTracking ? new BatchProgressTracker(totalProjects) : null;
   const _resourceManager = new ResourceManager(parallel ? maxConcurrency );
-;
+
   printSuccess(`Starting batch initialization for ${projects.length} projects across ${environments.length} environments`);
   console.warn(`Template = [];
-;
+
   for(const project of projects) {
     for(const env of environments) {
       const _projectPath = environments.length > 1 ? `${project}-${env}` : project;
-;
+
       const _initTask = async () => {
         if (tracker) tracker.startProject(projectPath);
-;
-        const _result = await resourceManager.withResource(async () => {
+// const _result = awaitresourceManager.withResource(async () => {
           return await initializeProject(projectPath, {
             template,environment = ===============================');
     // ; // LINT: unreachable code removed
   if(tracker) {
-;
+
     console.warn(`TotalProjects = results.filter((r) => r.success);
   if (successful.length > 0) {
     console.warn('\n✅ Successfullyinitialized = > console.warn(`  - ${r.projectPath}`));
@@ -162,50 +159,49 @@ async function initializeProject(projectPath = {}: unknown): unknown {
   return results;
 }
 // Parse batch initialization config from file
-export async function parseBatchConfig(configFile = await fs.readFile(configFile: unknown, 'utf8': unknown);
+export async function parseBatchConfig(configFile = await fs.readFile(configFile, 'utf8': unknown);
 return JSON.parse(content);
-} catch (/* error */)
+} catch (error)
 {
   printError(`Failed to read batch config file = {}): unknown {
-  const _config = await parseBatchConfig(configFile);
+// const _config = awaitparseBatchConfig(configFile);
   if (!config) return;
     // ; // LINT: unreachable code removed
   const { projects = [], baseOptions = {}, projectConfigs = {} } = config;
-;
+
   // Merge options with config
   const _mergedOptions = { ...baseOptions, ...options };
-;
+
   // If projectConfigs are specified, use them for individual project customization
   if (Object.keys(projectConfigs).length > 0) {  ;
     const _results = [];
     const _resourceManager = new ResourceManager(mergedOptions.maxConcurrency  ?? 5);
-;
+
     for (const [projectName, projectConfig] of Object.entries(projectConfigs)) {
       const _projectOptions = { ...mergedOptions, ...projectConfig };
-      const _result = await resourceManager.withResource(async () => {
+// const _result = awaitresourceManager.withResource(async () => {
         return await initializeProject(projectName, projectOptions);
     //   // LINT: unreachable code removed});
       results.push(result);
     }
-;
+
     return results;
     //   // LINT: unreachable code removed}
-;
+
   // Otherwise, use standard batch init
   return await batchInitCommand(projects, mergedOptions);
 }
-;
+
 // Validation for batch operations
 export function validateBatchOptions(options = [];
 
   if (options.maxConcurrency && (options.maxConcurrency < 1  ?? options.maxConcurrency > 20: unknown)) {
     errors.push('maxConcurrency must be between 1 and 20');
   }
-;
+
   if(options.template && !PROJECT_TEMPLATES[options.template]) {
     errors.push(;
-      `Unknown template: ${options.template}. Available: ${Object.keys(PROJECT_TEMPLATES).join(', ')}`,
-  )
+      `Unknown template: ${options.template}. Available: ${Object.keys(PROJECT_TEMPLATES).join(', ')}`)
 }
 if (options.environments) {
   for (const env of options.environments) {

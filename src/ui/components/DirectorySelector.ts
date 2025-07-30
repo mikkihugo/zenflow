@@ -13,7 +13,7 @@ const _DirectorySelector = (): unknown => {
   useEffect(() => {
     // Get directories in current path
     try {
-;
+
     }
     else;
     if (key.upArrow) {
@@ -45,17 +45,15 @@ return React.createElement(;
 {
   key: dir.path;
 }
-,
+
 React.createElement(
 Text,
 {
   color: isSelected ? 'black' : 'white',
-  backgroundColor: isSelected ? 'cyan' : undefined,
-  bold: isSelected,
-}
-,
-`$
-{
+  backgroundColor: isSelected ? 'cyan' ,
+  bold}
+
+`${
   isSelected ? '▶ ' : '  ';
 }
 $;
@@ -72,7 +70,7 @@ React.createElement(Box,
 {
   marginTop: 1;
 }
-,
+
 React.createElement(Text,
 {
   color: 'gray';

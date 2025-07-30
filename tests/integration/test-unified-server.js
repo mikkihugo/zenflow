@@ -10,10 +10,9 @@ async function testUnifiedServer() {
   try {
     // Create unified interface plugin with MCP enabled
     const _plugin = new UnifiedInterfacePlugin({
-      webPort: 3000,
-      enableMCP: true,
-      theme: 'dark',
-    });
+      webPort,
+      enableMCP,
+      theme: 'dark' });
     // Initialize the plugin
   // await plugin.initialize();
     console.warn('✅ Unified server with MCP started successfully!');

@@ -22,7 +22,7 @@ ruvSwarmProcess.stdout.pipe(process.stdout)
 // Handle stderr with filtering
 const _rlErr = createInterface({
   input: ruvSwarmProcess.stderr,
-crlfDelay: Infinity
+crlfDelay
 })
 const _errorHandled = false;
 rlErr.on('line', (line) => {

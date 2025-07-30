@@ -4,8 +4,7 @@
  */
 
 import { ProviderError } from './types.js';
-
-interface GoogleRequest {contents = 'google'
+// interface GoogleRequest {contents = 'google'
 version = '2024-07-29'
 config = {enabled = {textGeneration = 'us-central1'
 private;
@@ -25,16 +24,16 @@ constructor()
   this.location = config.location ?? this.location;
   this.baseUrl =;
   `https = { ...this.config, ...config };
-    await this.healthCheck();
+// await this.healthCheck();
   }
-;
+
   async generateText(request = Date.now();
     this.validateRequest(request);
     this.emitRequest(request);
-;
+
     try {
       const _googleRequest = {contents = {parts = await this.makeRequest(;
-        ` / $request.model;
+        ` / \$request.model;
   :generateContent`,
   googleRequest
   )
@@ -55,7 +54,7 @@ constructor()
     buffer = lines.pop() ?? '';
     for (const line of lines) {
       if (line.startsWith('data = line.slice(6);
-;
+
       try {
               const _parsed = JSON.parse(data);
               if (parsed.candidates?.[0]?.content?.parts) {
@@ -71,7 +70,7 @@ constructor()
     }
   }
 }
-} catch (/* error */)
+} catch (error)
 {
   this.emitError(error, request);
   throw this.handleError(error);
@@ -96,10 +95,10 @@ for (const msg of messages) {
     // System messages are handled separately in Google's API
     continue;
   }
-;
+
   result.push({role = === 'user' ? 'user' : 'model',parts = await fetch(`${this.baseUrl}${endpoint}`, {method = await response.text();
   const _errorData = {};
-;
+
   try {
     errorData = JSON.parse(text);
   } catch (/* _e */) {
@@ -107,7 +106,7 @@ for (const msg of messages) {
       const _retryAfter = response.headers.get('retry-after');
     return new RateLimitError(this.name, retryAfter ? parseInt(retryAfter) : undefined);
     //   // LINT: unreachable code removed}
-;
+
   return new ProviderError(;
     // errorData.error?.message  ?? errorData.message  ?? 'Unknown error', // LINT: unreachable code removed
       this.name,
@@ -115,7 +114,7 @@ for (const msg of messages) {
       response.status;
     );
 }
-;
+
 private;
 mapFinishReason(reason: string);
 : AIResponse['finishReason'];
@@ -132,18 +131,17 @@ mapFinishReason(reason: string);
       return 'stop';
     //   // LINT: unreachable code removed}
 }
-;
+
 private;
 handleError(error: unknown);
 : Error;
   if (error instanceof ProviderError) {
     return error;
     //   // LINT: unreachable code removed}
-;
+
   return new ProviderError(;
     // error.message  ?? 'Unknown error occurred', // LINT: unreachable code removed
       this.name,
       'UNKNOWN_ERROR';
     );
 }
-;

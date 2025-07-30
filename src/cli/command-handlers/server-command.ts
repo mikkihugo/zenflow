@@ -7,7 +7,7 @@ import fs from 'node:fs';
 
 const _SERVER_PID_FILE = './.claude-zen-server.pid';
 export async function serverCommand(): unknown {
-  case 'start':
+  case 'start': null
   return await startServer(flags);
   // case 'stop':; // LINT: unreachable code removed
   return await stopServer(flags);
@@ -27,23 +27,23 @@ export async function serverCommand(): unknown {
     return await startServerForeground(port, flags);
     //   // LINT: unreachable code removed}
   }
-  catch (/* error */) 
+  catch (error)
   console.error('❌ Failed to startserver = await import('../../api/claude-zen-server.js');
 
   // Configure server options
   claudeZenServer.port = port
   // Start server
-  await claudeZenServer.start()
+// await claudeZenServer.start()
   // Display server information
   displayServerInfo(port, claudeZenServer.generatedRoutes)
   // Handle graceful shutdown
-  process.on('SIGINT', async () => 
+  process.on('SIGINT', async () =>
     console.warn('\n🛑 Shutting down server...')
   await claudeZenServer.stop()
   console.warn('✅ Server stopped gracefully')
   process.exit(0)
   )
-  process.on('SIGTERM', async () => 
+  process.on('SIGTERM', async () =>
     console.warn('\n🛑 Shutting down server...')
   await claudeZenServer.stop()
   console.warn('✅ Server stopped gracefully')
@@ -60,10 +60,10 @@ export async function serverCommand(): unknown {
     '--experimental-websocket', // Enable Node.js 22 WebSocket support
     scriptPath.replace('command-handlers/server-command.js', '../api/claude-zen-server.js');
   ];
-;
+
   const _env = {
-    ...process.env,PORT = spawn('node', nodeArgs, {detached = parseInt(fs.readFileSync(SERVER_PID_FILE, 'utf8'));
-;
+..process.env,PORT = spawn('node', nodeArgs, {detached = parseInt(fs.readFileSync(SERVER_PID_FILE, 'utf8'));
+
       try {
         process.kill(pid, 'SIGTERM');
         fs.unlinkSync(SERVER_PID_FILE);
@@ -78,16 +78,16 @@ else
 {
   // Try graceful stop if server instance is available
   if (claudeZenServer.isRunning) {
-    await claudeZenServer.stop();
+// await claudeZenServer.stop();
     console.warn('✅ Server stopped gracefully');
   } else {
     console.warn('⚠️  Server not found');
   }
 }
-} catch (/* error */)
+} catch (error)
 {
-  console.error('❌ Failed to stopserver = > setTimeout(resolve, 1000));;
-  await startServer(flags);
+  console.error('❌ Failed to stopserver = > setTimeout(resolve, 1000));
+// await startServer(flags);
 }
 /**
  * Show server status;
@@ -98,7 +98,7 @@ console.warn('================================');
 console.warn(`Status = fs.readFileSync(SERVER_PID_FILE, 'utf8');
       console.warn(`PID = await fetch('http://localhost:3000/health');
 if(response.ok) {
-          const _health = await response.json();
+// const _health = awaitresponse.json();
           console.warn(`Port = =============');
   console.warn('Log viewing not implemented yet.');
   console.warn('For now, use daemon mode with --verbose flag for console output');
@@ -136,9 +136,9 @@ if(response.ok) {
   console.warn('  • 🛡️ Built-in security, CORS, and rate limiting');
   console.warn('  • ⚡ High-performance with comprehensive error handling');
 }
-;
+
 // Export command configuration
-export const serverCommandConfig: serverCommand,ler,
+export const serverCommandConfig,ler,
   description: '🚀 Claude Zen API Server - Schema-driven REST API with WebSocket support',
   usage: 'server <command> [options]',
   examples: [;
@@ -149,28 +149,27 @@ export const serverCommandConfig: serverCommand,ler,
     'server stop';
   ],
   details: `;
-Claude Zen API Server Management:
-;
+Claude Zen API Server Management: null
 The server provides a complete schema-driven REST API with:;
   • Auto-generated endpoints from unified schema;
   • Interactive OpenAPI documentation;
   • WebSocket support for real-time updates;
   • Built-in security and rate limiting;
   • Comprehensive error handling
-;
+
 Commands:;
   start      Start the API server (foreground or daemon);
   stop       Stop the running API server;
   restart    Restart the API server;
   status     Show server status and health information;
   logs       View server logs (future feature)
-;
+
 Start Options:;
   --port <port>      Server port (default: 3000);
   --daemon           Run as background daemon process;
   --background       Alias for --daemon;
   --verbose          Show detailed output and monitoring
-;
+
 Server Features:;
   🚀 Schema-driven API generation from unified workflow schema;
   📖 Interactive Swagger UI documentation at /docs;
@@ -179,8 +178,7 @@ Server Features:;
   ⚡ High-performance Express.js with comprehensive metrics;
   📊 Built-in health monitoring and status endpoints;
   🔧 Hot-reload support during development
-;
+
 The server integrates seamlessly with the existing plugin ecosystem;
 and provides API access to all Claude Zen workflow management features.`;
 };
-;

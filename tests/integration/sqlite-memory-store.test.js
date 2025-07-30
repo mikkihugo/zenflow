@@ -16,12 +16,11 @@ describe('SQLite Memory Store Integration Tests', () => {
   beforeEach(async () => {
     // Create temporary test directory
     testDir = path.join(os.tmpdir(), `claude-zen-sqlite-test-${Date.now()}`);
-  // await fs.mkdir(testDir, { recursive: true });
+  // await fs.mkdir(testDir, { recursive });
     // Initialize memory store with test directory
     _memoryStore = new SqliteMemoryStore({
-      directory: testDir,
-    dbName: 'test-memory.db',
-  });
+      directory,
+    dbName: 'test-memory.db' });
 });
 afterEach(async () => {
   // Close database connections
@@ -29,11 +28,11 @@ afterEach(async () => {
     memoryStore.close();
   }
   // Clean up test directory
-  // await fs.rm(testDir, { recursive: true, force: true });
+  // await fs.rm(testDir, { recursive, force });
 });
 describe('SQLite Availability', () => {
   it('should check SQLite availability', async () => {
-    const _available = await isSQLiteAvailable();
+// const _available = awaitisSQLiteAvailable();
     if (!available) {
       const _error = getLoadError();
       console.warn('SQLite not available:', error?.message);
@@ -44,7 +43,7 @@ describe('SQLite Availability', () => {
 });
 describe('Database Initialization', () => {
     it('should initialize database with correct schema', async () => {
-      const _available = await isSQLiteAvailable();
+// const _available = awaitisSQLiteAvailable();
       if (!available) {
         console.warn('Skipping test: SQLite not available');
         return;
@@ -54,14 +53,14 @@ describe('Database Initialization', () => {
       expect(memoryStore.db).toBeDefined();
       // Check if database file exists
       const _dbPath = path.join(testDir, 'test-memory.db');
-      const _dbExists = await fs;
-        .access(dbPath);
-        .then(() => true);
-        .catch(() => false);
+// const _dbExists = awaitfs;
+access(dbPath);
+then(() => true);
+catch(() => false);
       expect(dbExists).toBe(true);
     });
     it('should create tables with correct structure', async () => {
-      const _available = await isSQLiteAvailable();
+// const _available = awaitisSQLiteAvailable();
       if (!available) {
         console.warn('Skipping test: SQLite not available');
         return;
@@ -69,10 +68,10 @@ describe('Database Initialization', () => {
   // await memoryStore.initialize();
       // Check if memory_entries table exists
       const _tableInfo = memoryStore.db;
-        .prepare(`;
+prepare(`;
         SELECT sql FROM sqlite_master WHERE type='table' AND name='memory_entries';
       `);
-        .get();
+get();
       expect(tableInfo).toBeDefined();
       expect(tableInfo.sql).toContain('CREATE TABLE');
       expect(tableInfo.sql).toContain('memory_entries');
@@ -91,13 +90,13 @@ describe('Database Initialization', () => {
   });
   describe('Basic CRUD Operations', () => {
     beforeEach(async () => {
-      const _available = await isSQLiteAvailable();
+// const _available = awaitisSQLiteAvailable();
       if (available) {
   // await memoryStore.initialize();
       }
     });
     it('should store and retrieve string values', async () => {
-      const _available = await isSQLiteAvailable();
+// const _available = awaitisSQLiteAvailable();
       if (!available) {
         console.warn('Skipping test: SQLite not available');
         return;
@@ -105,30 +104,30 @@ describe('Database Initialization', () => {
       const _key = 'test-string';
       const _value = 'Hello, World!';
       // Store value
-      const _storeResult = await memoryStore.store(key, value);
+// const _storeResult = awaitmemoryStore.store(key, value);
       expect(storeResult.success).toBe(true);
       expect(storeResult.size).toBe(value.length);
       // Retrieve value
-      const _retrievedValue = await memoryStore.retrieve(key);
+// const _retrievedValue = awaitmemoryStore.retrieve(key);
       expect(retrievedValue).toBe(value);
     });
     it('should store and retrieve JSON objects', async () => {
-      const _available = await isSQLiteAvailable();
+// const _available = awaitisSQLiteAvailable();
       if (!available) {
         console.warn('Skipping test: SQLite not available');
         return;
     //   // LINT: unreachable code removed}
       const _key = 'test-object';
-      const _value = { name: 'test', count: 42, active: true };
+      const _value = { name: 'test', count, active };
       // Store object
-      const _storeResult = await memoryStore.store(key, value);
+// const _storeResult = awaitmemoryStore.store(key, value);
       expect(storeResult.success).toBe(true);
       // Retrieve object
-      const _retrievedValue = await memoryStore.retrieve(key);
+// const _retrievedValue = awaitmemoryStore.retrieve(key);
       expect(retrievedValue).toEqual(value);
     });
     it('should handle namespaces correctly', async () => {
-      const _available = await isSQLiteAvailable();
+// const _available = awaitisSQLiteAvailable();
       if (!available) {
         console.warn('Skipping test: SQLite not available');
         return;
@@ -141,13 +140,13 @@ describe('Database Initialization', () => {
       // Store in custom namespace
   // await memoryStore.store(key, value2, { namespace: 'custom' });
       // Retrieve from both namespaces
-      const _defaultValue = await memoryStore.retrieve(key);
-      const _customValue = await memoryStore.retrieve(key, { namespace: 'custom' });
+// const _defaultValue = awaitmemoryStore.retrieve(key);
+// const _customValue = awaitmemoryStore.retrieve(key, { namespace: 'custom' });
       expect(defaultValue).toBe(value1);
       expect(customValue).toBe(value2);
     });
     it('should delete entries correctly', async () => {
-      const _available = await isSQLiteAvailable();
+// const _available = awaitisSQLiteAvailable();
       if (!available) {
         console.warn('Skipping test: SQLite not available');
         return;
@@ -160,7 +159,7 @@ describe('Database Initialization', () => {
       let _retrievedValue = await memoryStore.retrieve(key);
       expect(retrievedValue).toBe(value);
       // Delete it
-      const _deleteResult = await memoryStore.delete(key);
+// const _deleteResult = awaitmemoryStore.delete(key);
       expect(deleteResult).toBe(true);
       // Verify it's gone
       retrievedValue = await memoryStore.retrieve(key);
@@ -169,13 +168,13 @@ describe('Database Initialization', () => {
   });
   describe('Advanced Features', () => {
     beforeEach(async () => {
-      const _available = await isSQLiteAvailable();
+// const _available = awaitisSQLiteAvailable();
       if (available) {
   // await memoryStore.initialize();
       }
     });
     it('should handle TTL expiration', async () => {
-      const _available = await isSQLiteAvailable();
+// const _available = awaitisSQLiteAvailable();
       if (!available) {
         console.warn('Skipping test: SQLite not available');
         return;
@@ -196,17 +195,17 @@ describe('Database Initialization', () => {
       expect(retrievedValue).toBeNull();
     });
     it('should list entries with limit', async () => {
-      const _available = await isSQLiteAvailable();
+// const _available = awaitisSQLiteAvailable();
       if (!available) {
         console.warn('Skipping test: SQLite not available');
         return;
     //   // LINT: unreachable code removed}
       // Store multiple entries
       for (let i = 0; i < 5; i++) {
-  // await memoryStore.store(`key-$i`, `value-$i`);
+  // await memoryStore.store(`key-\$i`, `value-\$i`);
       }
       // List with limit
-      const _entries = await memoryStore.list({ limit: 3 });
+// const _entries = awaitmemoryStore.list({ limit });
       expect(entries).toHaveLength(3);
       // Verify entry structure
       expect(entries[0]).toHaveProperty('key');
@@ -216,7 +215,7 @@ describe('Database Initialization', () => {
       expect(entries[0]).toHaveProperty('updatedAt');
     });
     it('should search entries by pattern', async () => {
-      const _available = await isSQLiteAvailable();
+// const _available = awaitisSQLiteAvailable();
       if (!available) {
         console.warn('Skipping test: SQLite not available');
         return;
@@ -226,7 +225,7 @@ describe('Database Initialization', () => {
   // await memoryStore.store('user-settings', 'Settings data');
   // await memoryStore.store('system-config', 'Config data');
       // Search for entries containing 'user'
-      const _userEntries = await memoryStore.search('user');
+// const _userEntries = awaitmemoryStore.search('user');
       expect(userEntries).toHaveLength(2);
       const _keys = userEntries.map((entry) => entry.key);
       expect(keys).toContain('user-profile');
@@ -234,31 +233,31 @@ describe('Database Initialization', () => {
       expect(keys).not.toContain('system-config');
     });
     it('should clean up expired entries', async () => {
-      const _available = await isSQLiteAvailable();
+// const _available = awaitisSQLiteAvailable();
       if (!available) {
         console.warn('Skipping test: SQLite not available');
         return;
     //   // LINT: unreachable code removed}
       // Store entries with different TTLs
   // await memoryStore.store('permanent', 'permanent value'); // No TTL
-  // await memoryStore.store('short-lived', 'short value', { ttl: 1 }); // 1 second
+  // await memoryStore.store('short-lived', 'short value', { ttl }); // 1 second
 
       // Wait for expiration
   // await new Promise((resolve) => setTimeout(resolve, 1100));
       // Run cleanup
-      const _cleanedCount = await memoryStore.cleanup();
+// const _cleanedCount = awaitmemoryStore.cleanup();
       expect(cleanedCount).toBe(1);
       // Verify permanent entry still exists
-      const _permanentValue = await memoryStore.retrieve('permanent');
+// const _permanentValue = awaitmemoryStore.retrieve('permanent');
       expect(permanentValue).toBe('permanent value');
       // Verify expired entry is gone
-      const _expiredValue = await memoryStore.retrieve('short-lived');
+// const _expiredValue = awaitmemoryStore.retrieve('short-lived');
       expect(expiredValue).toBeNull();
     });
   });
   describe('Error Handling', () => {
     it('should handle invalid database path gracefully', async () => {
-      const _available = await isSQLiteAvailable();
+// const _available = awaitisSQLiteAvailable();
       if (!available) {
         console.warn('Skipping test: SQLite not available');
         return;
@@ -266,13 +265,12 @@ describe('Database Initialization', () => {
       // Try to create store with invalid path
       const _invalidStore = new SqliteMemoryStore({
         directory: '/invalid/path/that/does/not/exist',
-        dbName: 'test.db',
-      });
+        dbName: 'test.db' });
       // Should throw error during initialization
   // await expect(invalidStore.initialize()).rejects.toThrow();
     });
     it('should handle concurrent operations safely', async () => {
-      const _available = await isSQLiteAvailable();
+// const _available = awaitisSQLiteAvailable();
       if (!available) {
         console.warn('Skipping test: SQLite not available');
         return;
@@ -281,22 +279,22 @@ describe('Database Initialization', () => {
       // Perform concurrent writes
       const _promises = [];
       for (let i = 0; i < 10; i++) {
-        promises.push(memoryStore.store(`concurrent-$i`, `value-$i`));
+        promises.push(memoryStore.store(`concurrent-\$i`, `value-\$i`));
       }
       // All should succeed
-      const _results = await Promise.all(promises);
+// const _results = awaitPromise.all(promises);
       results.forEach((result) => {
         expect(result.success).toBe(true);
       });
       // Verify all entries were stored
-      const _entries = await memoryStore.list({ limit: 20 });
+// const _entries = awaitmemoryStore.list({ limit });
       const _concurrentEntries = entries.filter((entry) => entry.key.startsWith('concurrent-'));
       expect(concurrentEntries).toHaveLength(10);
     });
   });
   describe('Connection Management', () => {
     it('should handle database close correctly', async () => {
-      const _available = await isSQLiteAvailable();
+// const _available = awaitisSQLiteAvailable();
       if (!available) {
         console.warn('Skipping test: SQLite not available');
         return;
@@ -309,7 +307,7 @@ describe('Database Initialization', () => {
       expect(memoryStore.db).toBeNull();
     });
     it('should reinitialize after close', async () => {
-      const _available = await isSQLiteAvailable();
+// const _available = awaitisSQLiteAvailable();
       if (!available) {
         console.warn('Skipping test: SQLite not available');
         return;
@@ -321,7 +319,7 @@ describe('Database Initialization', () => {
       memoryStore.close();
   // await memoryStore.initialize();
       // Data should still be there
-      const _value = await memoryStore.retrieve('test-key');
+// const _value = awaitmemoryStore.retrieve('test-key');
       expect(value).toBe('test-value');
     });
   });

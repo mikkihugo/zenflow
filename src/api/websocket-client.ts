@@ -5,8 +5,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-
-interface WebSocketClientOptions {
+// interface WebSocketClientOptions {
   reconnect?: boolean;
   reconnectInterval?: number;
   maxReconnectAttempts?: number;
@@ -23,24 +22,23 @@ interface WebSocketClientOptions {
  * - Error handling and recovery;
  */
 export class WebSocketClient extends EventEmitter {
-  constructor(url: string, _options: WebSocketClientOptions = {}) {
+  constructor(url, _options: WebSocketClientOptions = {}) {
     super();
     this.url = url;
     this.options = {
-      reconnect: false,
-    reconnectInterval: 1000,
-    maxReconnectAttempts: 5,
-    timeout: 10000,
-    ...options,
-  }
+      reconnect,
+    reconnectInterval,
+    maxReconnectAttempts,
+    timeout,
+..options }
   this;
-  .
+
   isConnected = false;
   this;
-  .
+
   reconnectAttempts = 0;
   this;
-  .
+
   messageQueue = [];
 }
 /**
@@ -58,7 +56,7 @@ connect();
         const _timeout = setTimeout(() => {
           reject(new Error('WebSocket connection timeout'));
         }, this.options.timeout);
-;
+
         this.ws.onopen = (): unknown => {
           clearTimeout(timeout);
           this.isConnected = true;
@@ -68,7 +66,7 @@ connect();
           this.flushMessageQueue();
           resolve();
         };
-;
+
         this.ws.onmessage = (): unknown => {
           try {
             const _data = JSON.parse(event.data);
@@ -77,26 +75,26 @@ connect();
             this.emit('message', event.data);
           }
         };
-;
+
         this.ws.onclose = (): unknown => {
           clearTimeout(timeout);
           this.isConnected = false;
           this.stopHeartbeat();
           this.emit('disconnected', event.code, event.reason);
-;
+
           if (;
             this.options.reconnect &&;
             this.reconnectAttempts < this.options.maxReconnectAttempts;
-          ) 
+          )
             this.scheduleReconnect();
         };
-;
+
         this.ws.onerror = (): unknown => {
           clearTimeout(timeout);
           this.emit('error', error);
           reject(error);
         };
-      } catch (/* error */) {
+      } catch (error) {
         reject(error);
       }
     });
@@ -127,7 +125,7 @@ send(data: unknown)
   if (this.isConnected && this.ws) {
     try {
         this.ws.send(message);
-      } catch (/* error */) {
+      } catch (error) {
         this.emit('error', error);
         this.queueMessage(message);
       }
@@ -160,7 +158,7 @@ flushMessageQueue();
     if (message) {
       try {
           this.ws.send(message);
-        } catch (/* error */) {
+        } catch (error) {
           this.emit('error', error);
           this.messageQueue.unshift(message);
           break;
@@ -180,10 +178,10 @@ scheduleReconnect();
     this.reconnectAttempts++;
     this.emit('reconnecting', this.reconnectAttempts);
     try {
-        await this.connect();
-      } catch (/* error */) {
+// await this.connect();
+      } catch (error) {
         this.emit('reconnectError', error);
-;
+
         if (this.reconnectAttempts < this.options.maxReconnectAttempts) {
           this.scheduleReconnect();
         } else {
@@ -203,7 +201,7 @@ startHeartbeat();
     if (this.isConnected && this.ws) {
       try {
           this.ws.ping();
-        } catch (/* error */) {
+        } catch (error) {
           this.emit('error', error);
         }
     }
@@ -230,19 +228,19 @@ connected();
 {
     return this.isConnected;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Get connection URL;
    */;
-  get connectionUrl(): string 
+  get connectionUrl(): string
     return this.url;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Get queued message count;
    */;
-  get queuedMessages(): number 
+  get queuedMessages(): number
     return this.messageQueue.length;
-;
+
 // Default export for convenience
 export default WebSocketClient;

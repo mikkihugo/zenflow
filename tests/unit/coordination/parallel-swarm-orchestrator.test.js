@@ -7,30 +7,26 @@ jest.mock('../../../src/coordination/workers/worker-pool.js', () => ({
     initialize: jest.fn(),
 submitTask: jest.fn(),
 getStats: jest.fn(() => ({ utilization: 0.75 })),
-shutdown: jest.fn(),
-})),
-}))
+shutdown: jest.fn() })) }))
 jest.mock('../../../src/cli/command-handlers/swarm-orchestrator.js', () => (
 {
   SwarmOrchestrator: jest.fn().mockImplementation(() => ({
     initialize: jest.fn(),
   executeTask: jest.fn(),
-  getSwarmStatus: jest.fn(() => ({ active: true, tasks: 0 }))
+  getSwarmStatus: jest.fn(() => ({ active, tasks }))
 }
-)),
-}))
+)) }))
 describe('Parallel Swarm Orchestrator', () =>
 {
   let _orchestrator;
   let ParallelSwarmOrchestrator;
   beforeEach(async () => {
     // Dynamic import to get the class after mocks are set up
-    const _module = await import('../../../src/coordination/parallel-swarm-orchestrator.js');
+// const _module = awaitimport('../../../src/coordination/parallel-swarm-orchestrator.js');
     ParallelSwarmOrchestrator = module.ParallelSwarmOrchestrator;
     _orchestrator = new ParallelSwarmOrchestrator({
-      maxWorkers: 4,
-    parallelMode: true,
-  });
+      maxWorkers,
+    parallelMode });
 })
 afterEach(async () =>
 {
@@ -50,10 +46,9 @@ describe('constructor', () =>
   });
   it('should initialize with custom options', () => {
     const _customOrchestrator = new ParallelSwarmOrchestrator({
-        maxWorkers: 8,
-    parallelMode: false,
-    loadBalancingStrategy: 'least-loaded',
-  });
+        maxWorkers,
+    parallelMode,
+    loadBalancingStrategy: 'least-loaded' });
   expect(customOrchestrator.maxWorkers).toBe(8);
   expect(customOrchestrator.parallelMode).toBe(false);
   expect(customOrchestrator.loadBalancingStrategy).toBe('least-loaded');
@@ -76,7 +71,7 @@ describe('initialization', () =>
     }
   });
   it('should skip worker pool in sequential mode', async () => {
-    const _sequentialOrchestrator = new ParallelSwarmOrchestrator({ parallelMode: false });
+    const _sequentialOrchestrator = new ParallelSwarmOrchestrator({ parallelMode });
   // await sequentialOrchestrator.initialize();
     expect(sequentialOrchestrator.workerPool).toBeNull();
   });
@@ -90,8 +85,7 @@ describe('task execution', () =>
       const _tasks = [
         { id: 'task1', type: 'analysis', payload: { file: 'test1.js' } },
         { id: 'task2', type: 'analysis', payload: { file: 'test2.js' } },
-        { id: 'task3', type: 'analysis', payload: { file: 'test3.js' } },
-      ];
+        { id: 'task3', type: 'analysis', payload: { file: 'test3.js' } } ];
       const _executeTasksInParallel = async (tasks) => {
         const _promises = tasks.map((task) => {
           return new Promise((resolve) => {
@@ -99,14 +93,13 @@ describe('task execution', () =>
               resolve({
                 taskId: task.id,
     // result: `Analyzed ${task.payload.file // LINT: unreachable code removed}`,
-                success: true,
-              });
+                success });
             }, Math.random() * 100);
           });
         });
         return Promise.all(promises);
     //   // LINT: unreachable code removed};
-      const _results = await executeTasksInParallel(tasks);
+// const _results = awaitexecuteTasksInParallel(tasks);
       expect(results).toHaveLength(3);
       expect(results[0].taskId).toBe('task1');
       expect(results[1].taskId).toBe('task2');
@@ -126,17 +119,16 @@ describe('task execution', () =>
       } catch (error) {
         expect(error.message).toBe('Task failed');
       }
-      const _successResult = await mockTaskWithFailure('working-task');
+// const _successResult = awaitmockTaskWithFailure('working-task');
       expect(successResult.result).toBe('success');
     });
     it('should balance load across workers', () => {
       const _loadBalancer = {
         strategy: 'round-robin',
         workers: [;
-          { id: 'worker1', load: 2 },
-          { id: 'worker2', load: 1 },
-          { id: 'worker3', load: 3 },
-        ],
+          { id: 'worker1', load },
+          { id: 'worker2', load },
+          { id: 'worker3', load } ],
         selectWorker: function () {
           if (this.strategy === 'round-robin') {
             // Simple round-robin implementation
@@ -146,19 +138,18 @@ describe('task execution', () =>
     //   // LINT: unreachable code removed}
           if (this.strategy === 'least-loaded') {
             return this.workers.reduce((_least, _current) =>;
-    // current.load < least.load ? current : least; // LINT: unreachable code removed
+    // current.load < least.load ? current ; // LINT: unreachable code removed
             );
           }
           return this.workers[0];
-    //   // LINT: unreachable code removed},
-      };
+    //   // LINT: unreachable code removed} };
       const _selectedWorker = loadBalancer.selectWorker();
       expect(selectedWorker).toBeDefined();
       expect(selectedWorker.id).toBeDefined();
       // Test least-loaded strategy
       loadBalancer.strategy = 'least-loaded';
       const _leastLoadedWorker = loadBalancer.selectWorker();
-      expect(leastLoadedWorker.id).toBe('worker2'); // Has load of 1
+      expect(leastLoadedWorker.id).toBe('worker2'); // H of 1
     });
   });
   describe('swarm management', () => {
@@ -170,12 +161,11 @@ describe('task execution', () =>
         swarms: new Map(),
         createSwarm: function (swarmId, /* config */) {
           this.swarms.set(swarmId, {
-            id: swarmId,
+            id,
             config,
             tasks: [],
             status: 'active',
-            createdAt: Date.now(),
-          });
+            createdAt: Date.now() });
           return this.swarms.get(swarmId);
     //   // LINT: unreachable code removed},
         addTaskToSwarm: function (swarmId, /* task */) {
@@ -188,11 +178,10 @@ describe('task execution', () =>
     //   // LINT: unreachable code removed},
         getSwarmStatus: function (swarmId) {
           const _swarm = this.swarms.get(swarmId);
-          return swarm ? swarm.status : null;
-    //   // LINT: unreachable code removed},
-      };
-      const _swarm1 = swarmManager.createSwarm('swarm1', { maxTasks: 10 });
-      const _swarm2 = swarmManager.createSwarm('swarm2', { maxTasks: 5 });
+          return swarm ? swarm.status ;
+    //   // LINT: unreachable code removed} };
+      const _swarm1 = swarmManager.createSwarm('swarm1', { maxTasks });
+      const _swarm2 = swarmManager.createSwarm('swarm2', { maxTasks });
       expect(swarm1.id).toBe('swarm1');
       expect(swarm2.id).toBe('swarm2');
       expect(swarmManager.swarms.size).toBe(2);
@@ -230,8 +219,7 @@ describe('task execution', () =>
             }
           }
           return order;
-    //   // LINT: unreachable code removed},
-      };
+    //   // LINT: unreachable code removed} };
       coordination.addDependency('swarm2', 'swarm1');
       coordination.addDependency('swarm3', 'swarm1');
       coordination.addDependency('swarm3', 'swarm2');
@@ -264,8 +252,7 @@ describe('task execution', () =>
         },
         calculateEfficiency: (speedup, workers) => {
           return speedup / workers;
-    //   // LINT: unreachable code removed},
-      };
+    //   // LINT: unreachable code removed} };
       const _speedup = metricsCalculator.calculateSpeedup(1000, 250);
       expect(speedup).toBe(4.0);
       const _efficiency = metricsCalculator.calculateEfficiency(speedup, 4);
@@ -274,13 +261,12 @@ describe('task execution', () =>
     it('should monitor worker utilization', () => {
       const _utilizationMonitor = {
         workers: [;
-          { id: 'w1', busyTime: 80, totalTime: 100 },
-          { id: 'w2', busyTime: 60, totalTime: 100 },
-          { id: 'w3', busyTime: 90, totalTime: 100 },
-        ],
+          { id: 'w1', busyTime, totalTime },
+          { id: 'w2', busyTime, totalTime },
+          { id: 'w3', busyTime, totalTime } ],
         getWorkerUtilization: function (workerId) {
           const _worker = this.workers.find((w) => w.id === workerId);
-          return worker ? worker.busyTime / worker.totalTime : 0;
+          return worker ? worker.busyTime / worker.totalTime ;
     //   // LINT: unreachable code removed},
         getAverageUtilization: function () {
           const _total = this.workers.reduce(;
@@ -288,8 +274,7 @@ describe('task execution', () =>
             0;
           );
           return total / this.workers.length;
-    //   // LINT: unreachable code removed},
-      };
+    //   // LINT: unreachable code removed} };
       const _w1Utilization = utilizationMonitor.getWorkerUtilization('w1');
       expect(w1Utilization).toBe(0.8);
       const _avgUtilization = utilizationMonitor.getAverageUtilization();
@@ -308,28 +293,26 @@ describe('task execution', () =>
           const _newWorker = {
             id: `${workerId}-restart`,
             status: 'active',
-            restartedAt: Date.now(),
-          };
+            restartedAt: Date.now() };
           return newWorker;
-    //   // LINT: unreachable code removed},
-      };
+    //   // LINT: unreachable code removed} };
       const _error = new Error('Worker crashed');
-      const _newWorker = await failureHandler.handleWorkerFailure('worker1', error);
+// const _newWorker = awaitfailureHandler.handleWorkerFailure('worker1', error);
       expect(newWorker.id).toBe('worker1-restart');
       expect(newWorker.status).toBe('active');
       expect(newWorker.restartedAt).toBeDefined();
     });
     it('should implement retry logic', async () => {
       const _retryHandler = {
-        maxRetries: 3,
-        retryDelay: 100,
+        maxRetries,
+        retryDelay,
         executeWithRetry: async function (task, attempt = 1) {
           try {
             // Simulate task execution that might fail
             if (task.shouldFail && attempt <= 2) {
               throw new Error('Task failed');
             }
-            return { success: true, result: 'Task completed', attempts: attempt };
+            return { success, result: 'Task completed', attempts };
     //   // LINT: unreachable code removed} catch (error) {
             if (attempt >= this.maxRetries) {
               throw new Error(`Task failed after ${this.maxRetries} attempts: ${error.message}`);
@@ -338,16 +321,15 @@ describe('task execution', () =>
   // await new Promise((resolve) => setTimeout(resolve, this.retryDelay * attempt));
             return this.executeWithRetry(task, attempt + 1);
     //   // LINT: unreachable code removed}
-        },
-      };
+        } };
       // Test successful task
-      const _successTask = { id: 'success', shouldFail: false };
-      const _successResult = await retryHandler.executeWithRetry(successTask);
+      const _successTask = { id: 'success', shouldFail };
+// const _successResult = awaitretryHandler.executeWithRetry(successTask);
       expect(successResult.success).toBe(true);
       expect(successResult.attempts).toBe(1);
       // Test task that succeeds after retries
-      const _retryTask = { id: 'retry', shouldFail: true };
-      const _retryResult = await retryHandler.executeWithRetry(retryTask);
+      const _retryTask = { id: 'retry', shouldFail };
+// const _retryResult = awaitretryHandler.executeWithRetry(retryTask);
       expect(retryResult.success).toBe(true);
       expect(retryResult.attempts).toBe(3);
     });
@@ -365,7 +347,7 @@ describe('task execution', () =>
         }
         return true;
     //   // LINT: unreachable code removed};
-      const _result = await cleanup();
+// const _result = awaitcleanup();
       expect(result).toBe(true);
       expect(orchestrator.activeTasks.size).toBe(0);
       expect(orchestrator.taskResults.size).toBe(0);
@@ -383,10 +365,9 @@ describe('task execution', () =>
           if (remainingTasks > 0) {
             console.warn(`Shutdown with ${remainingTasks} tasks still active`);
           }
-          return { graceful: remainingTasks === 0, remainingTasks };
-    //   // LINT: unreachable code removed},
-      };
-      const _result = await shutdownHandler.gracefulShutdown(1000);
+          return { graceful === 0, remainingTasks };
+    //   // LINT: unreachable code removed} };
+// const _result = awaitshutdownHandler.gracefulShutdown(1000);
       expect(result.graceful).toBe(true);
       expect(result.remainingTasks).toBe(0);
     });

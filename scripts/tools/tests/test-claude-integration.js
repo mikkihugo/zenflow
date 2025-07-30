@@ -13,9 +13,8 @@ async function testClaudeIntegration() {
     printInfo('Test 1: Checking Claude Code availability...');
     const _provider = new ClaudeCodeProvider({
       modelId: 'sonnet',
-      customSystemPrompt: 'You are a helpful AI assistant for testing purposes.',
-    });
-    const _isAvailable = await provider.isAvailable();
+      customSystemPrompt: 'You are a helpful AI assistant for testing purposes.' });
+// const _isAvailable = awaitprovider.isAvailable();
     if (!isAvailable) {
       printError('❌ Claude Code CLI is not available. Please install and authenticate.');
       printError('   Run: claude login');
@@ -25,19 +24,19 @@ async function testClaudeIntegration() {
     // Test 2: Simple text generation
     printInfo('\nTest 2: Testing simple text generation...');
     try {
-      const _simpleResponse = await provider.generateText(;
+// const _simpleResponse = awaitprovider.generateText(;
         'Say "Hello from Claude!" and nothing else.';
       );
       printSuccess(`✅ Response: ${simpleResponse}`);
     } catch (/* e */) {
       printWarning(`⚠️  Simple generation failed: ${e.message}`);
       printInfo('Trying with basic prompt...');
-      const _basicResponse = await provider.generateText('Hello');
+// const _basicResponse = awaitprovider.generateText('Hello');
       printSuccess(`✅ Basic response: ${basicResponse}`);
     }
     // Test 3: Task-specific generation
     printInfo('\nTest 3: Testing task-specific generation...');
-    const _taskResponse = await provider.generateForTask(;
+// const _taskResponse = awaitprovider.generateForTask(;
       'analyze-complexity',
       'A simple todo list application with user authentication and real-time updates';
     );
@@ -48,7 +47,7 @@ async function testClaudeIntegration() {
     const _jsonPrompt =;
       'Output a JSON object with these exact fields: {"name": "Claude Flow", "version": "1.0.0", "features": ["AI coordination", "Task management", "Swarm orchestration"]}. Return only the JSON, no other text.';
     try {
-      const _jsonResponse = await provider.generateText(jsonPrompt);
+// const _jsonResponse = awaitprovider.generateText(jsonPrompt);
       // Try to extract JSON from response
       const _jsonStr = jsonResponse;
       const _jsonMatch = jsonResponse.match(/{[^}]+}/s);
@@ -64,8 +63,8 @@ async function testClaudeIntegration() {
     }
     printSuccess('\n🎉 All tests completed successfully!');
     printInfo('Claude Code integration is working properly.');
-  } catch (error) 
-    printError(`\n❌ Test failed: $error.message`);
+  } catch (error)
+    printError(`\n❌ Test failed: \$error.message`);
     if (error.message.includes('authentication')) {
       printInfo('\nPlease authenticate Claude Code:');
       printInfo('1. Run: claude login');

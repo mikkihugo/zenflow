@@ -22,8 +22,7 @@ export interface MockImageOptions {
   height?: number;
   format?: 'png' | 'jpg' | 'jpeg';
   size?: 'small' | 'medium' | 'large';
-}
-
+// }
 /**
  * Mock image result
  */
@@ -34,8 +33,7 @@ export interface MockImageResult {
   format: string;
   size: number;
   mimeType: string;
-}
-
+// }
 /**
  * Mock vision analysis options
  */
@@ -44,8 +42,7 @@ export interface MockVisionOptions {
   layout?: string;
   colors?: string[];
   confidence?: number;
-}
-
+// }
 /**
  * Vision component result
  */
@@ -56,8 +53,7 @@ export interface VisionComponent {
   width: number;
   height: number;
   confidence: number;
-}
-
+// }
 /**
  * Mock vision analysis result
  */
@@ -85,8 +81,7 @@ export interface MockVisionResult {
     modelVersion: string;
     confidence: number;
   };
-}
-
+// }
 /**
  * Mock code generation options
  */
@@ -94,8 +89,7 @@ export interface MockCodeOptions {
   framework?: string;
   language?: string;
   components?: string[];
-}
-
+// }
 /**
  * Generated code file
  */
@@ -104,8 +98,7 @@ export interface GeneratedCodeFile {
   path: string;
   content: string;
   size: number;
-}
-
+// }
 /**
  * Mock code generation result
  */
@@ -120,8 +113,7 @@ export interface MockCodeResult {
     linesOfCode: number;
     dependencies: Record<string, string>;
   };
-}
-
+// }
 /**
  * Wait condition options
  */
@@ -129,8 +121,7 @@ export interface WaitConditionOptions {
   timeout?: number;
   interval?: number;
   errorMessage?: string;
-}
-
+// }
 /**
  * Execution time measurement result
  */
@@ -139,8 +130,7 @@ export interface ExecutionTimeResult<T> {
   duration: number;
   label: string;
   pass: boolean;
-}
-
+// }
 /**
  * Mock HTTP request options
  */
@@ -154,8 +144,7 @@ export interface MockRequestOptions {
   user?: unknown;
   file?: unknown;
   files?: unknown[];
-}
-
+// }
 /**
  * Mock HTTP request
  */
@@ -169,8 +158,7 @@ export interface MockRequest {
   user: unknown;
   file: unknown;
   files: unknown[];
-}
-
+// }
 /**
  * Mock HTTP response
  */
@@ -181,9 +169,8 @@ export interface MockResponse {
   status: (code: number) => MockResponse;
   json: (data: unknown) => MockResponse;
   send: (data: unknown) => MockResponse;
-  setHeader: (name: string, value: string) => MockResponse;
-}
-
+  setHeader: (name, value: string) => MockResponse;
+// }
 /**
  * Performance metrics entry
  */
@@ -192,8 +179,7 @@ export interface MetricsEntry {
   duration: number;
   status: number;
   timestamp: number;
-}
-
+// }
 /**
  * Error metrics entry
  */
@@ -201,8 +187,7 @@ export interface ErrorEntry {
   error: string;
   endpoint: string;
   timestamp: number;
-}
-
+// }
 /**
  * Performance statistics
  */
@@ -213,18 +198,16 @@ export interface PerformanceStats {
   p50: number;
   p95: number;
   p99: number;
-}
-
+// }
 /**
  * Metrics collector
  */
 export interface MetricsCollector {
-  recordRequest: (endpoint: string, duration: number, status: number) => void;
-  recordError: (error: Error, endpoint: string) => void;
+  recordRequest: (endpoint, duration, status: number) => void;
+  recordError: (error, endpoint: string) => void;
   getStats: () => PerformanceStats;
   reset: () => void;
-}
-
+// }
 // =============================================================================
 // TEST HELPER UTILITIES
 // =============================================================================
@@ -262,16 +245,14 @@ export const TestHelpers = {
     } else if (format === 'jpg' || format === 'jpeg') {
       // JPEG header
       buffer.write('\xFF\xD8\xFF', 0);
-    }
-
+// }
     return {
       buffer,
       width,
       height,
       format,
       size: buffer.length,
-      mimeType: `image/${format}`,
-    };
+      mimeType: `image/${format}` };
   },
 
   /**
@@ -282,41 +263,34 @@ export const TestHelpers = {
       components = ['header', 'navigation', 'content', 'footer'],
       layout = 'grid',
       colors = ['#000000', '#FFFFFF', '#FF0000'],
-      confidence = 0.95,
-    } = options;
+      confidence = 0.95 } = options;
 
     return {
       id: TestHelpers.generateTestId('vision'),
       timestamp: new Date().toISOString(),
       components: components.map((name) => ({
-        type: name,
+        type,
         x: Math.random() * 100,
         y: Math.random() * 100,
         width: Math.random() * 200 + 100,
         height: Math.random() * 100 + 50,
-        confidence: confidence + (Math.random() * 0.05 - 0.025),
-      })),
+        confidence: confidence + (Math.random() * 0.05 - 0.025) })),
       layout: {
-        type: layout,
-        columns: layout === 'grid' ? 3 : 1,
-        spacing: 16,
-      },
+        type,
+        columns: layout === 'grid' ? 3 ,
+        spacing},
       colors: {
         primary: colors[0],
         secondary: colors[1],
         accent: colors[2],
-        palette: colors,
-      },
+        palette},
       text: {
-        detected: true,
-        blocks: [],
-      },
+        detected,
+        blocks: [] },
       metadata: {
         processingTime: Math.random() * 100 + 50,
         modelVersion: '1.0.0',
-        confidence,
-      },
-    };
+        confidence } };
   },
 
   /**
@@ -326,8 +300,7 @@ export const TestHelpers = {
     const {
       framework = 'react',
       language = 'javascript',
-      components = ['App', 'Header', 'Content'],
-    } = options;
+      components = ['App', 'Header', 'Content'] } = options;
 
     const codeTemplates: Record<string, (name: string) => string> = {
       react: (name: string) =>
@@ -335,8 +308,7 @@ export const TestHelpers = {
       vue: (name: string) =>
         `<template>\n  <div>${name} Component</div>\n</template>\n\n<script>\nexport default {\n  name: '${name}'\n}\n</script>`,
       angular: (name: string) =>
-        `import { Component } from '@angular/core';\n\n@Component({\n  selector: 'app-${name.toLowerCase()}',\n  template: '<div>${name} Component</div>'\n})\nexport class ${name}Component {}`,
-    };
+        `import { Component } from '@angular/core';\n\n@Component({\n  selector: 'app-${name.toLowerCase()}',\n  template: '<div>${name} Component</div>'\n})\nexport class ${name}Component {}` };
 
     return {
       id: TestHelpers.generateTestId('code'),
@@ -347,16 +319,12 @@ export const TestHelpers = {
         name: `${name}.${language === 'typescript' ? 'tsx' : 'jsx'}`,
         path: `src/components/${name}.${language === 'typescript' ? 'tsx' : 'jsx'}`,
         content: codeTemplates[framework](name),
-        size: codeTemplates[framework](name).length,
-      })),
+        size: codeTemplates[framework](name).length })),
       metadata: {
         generationTime: Math.random() * 200 + 100,
         linesOfCode: components.length * 10,
         dependencies: {
-          [framework]: '^latest',
-        },
-      },
-    };
+          [framework]: '^latest' } } };
   },
 
   /**
@@ -369,16 +337,15 @@ export const TestHelpers = {
     const {
       timeout = 5000,
       interval = 100,
-      errorMessage = 'Condition not met within timeout',
-    } = options;
+      errorMessage = 'Condition not met within timeout' } = options;
 
     const startTime = Date.now();
     while (Date.now() - startTime < timeout) {
       if (await conditionFn()) {
         return true;
-      }
-      await new Promise((resolve) => setTimeout(resolve, interval));
-    }
+// }
+// await new Promise((resolve) => setTimeout(resolve, interval));
+// }
     throw new Error(errorMessage);
   },
 
@@ -390,7 +357,7 @@ export const TestHelpers = {
     label = 'Operation'
   ): Promise<ExecutionTimeResult<T>> {
     const start = process.hrtime.bigint();
-    const result = await fn();
+// const result = awaitfn();
     const end = process.hrtime.bigint();
     const duration = Number(end - start) / 1e6; // Convert to milliseconds
 
@@ -415,8 +382,7 @@ export const TestHelpers = {
       params: options.params ?? {},
       user: options.user ?? null,
       file: options.file ?? null,
-      files: options.files ?? [],
-    };
+      files: options.files ?? [] };
   },
 
   /**
@@ -424,9 +390,9 @@ export const TestHelpers = {
    */
   createMockResponse(): MockResponse {
     const res: MockResponse = {
-      statusCode: 200,
+      statusCode,
       headers: {},
-      body: null,
+      body,
       status: function (code: number) {
         this.statusCode = code;
         return this;
@@ -440,11 +406,10 @@ export const TestHelpers = {
         this.body = data;
         return this;
       },
-      setHeader: function (name: string, value: string) {
+      setHeader: function (name, value: string) {
         this.headers[name] = value;
         return this;
-      },
-    };
+      } };
 
     return res;
   },
@@ -454,15 +419,15 @@ export const TestHelpers = {
    */
   async cleanupTestFiles(directory: string): Promise<void> {
     try {
-      const files = await fs.readdir(directory);
+// const files = awaitfs.readdir(directory);
       for (const file of files) {
         if (file.startsWith('test_')) {
-          await fs.unlink(path.join(directory, file));
-        }
-      }
+// await fs.unlink(path.join(directory, file));
+// }
+// }
     } catch {
       // Directory might not exist
-    }
+// }
   },
 
   /**
@@ -482,35 +447,31 @@ export const TestHelpers = {
       if (batch.length >= batchSize) {
         yield batch;
         batch = [];
-      }
-    }
-
+// }
+// }
     if (batch.length > 0) {
       yield batch;
-    }
+// }
   },
 
   /**
    * Mock AI service responses
    */
-  mockAIResponse(service: string, response: unknown): void {
+  mockAIResponse(service, response: unknown): void {
     const mocks: Record<string, () => void> = {
       gemini: () => {
         const gemini = require('@google/generative-ai');
         gemini.GoogleGenerativeAI.mockImplementation(() => ({
           getGenerativeModel: jest.fn(() => ({
-            generateContent: jest.fn().mockResolvedValue(response),
-          })),
-        }));
+            generateContent: jest.fn().mockResolvedValue(response) })) }));
       },
       openai: () => {
         // Mock OpenAI if needed
-      },
-    };
+      } };
 
     if (mocks[service]) {
       mocks[service]();
-    }
+// }
   },
 
   /**
@@ -520,15 +481,14 @@ export const TestHelpers = {
     const metrics = {
       requests: [] as MetricsEntry[],
       errors: [] as ErrorEntry[],
-      durations: [] as number[],
-    };
+      durations: [] as number[] };
 
     return {
-      recordRequest: (endpoint: string, duration: number, status: number) => {
+      recordRequest: (endpoint, duration, status: number) => {
         metrics.requests.push({ endpoint, duration, status, timestamp: Date.now() });
         metrics.durations.push(duration);
       },
-      recordError: (error: Error, endpoint: string) => {
+      recordError: (error, endpoint: string) => {
         metrics.errors.push({ error: error.message, endpoint, timestamp: Date.now() });
       },
       getStats: (): PerformanceStats => {
@@ -539,16 +499,13 @@ export const TestHelpers = {
           averageDuration: durations.reduce((a, b) => a + b, 0) / durations.length || 0,
           p50: durations[Math.floor(durations.length * 0.5)] || 0,
           p95: durations[Math.floor(durations.length * 0.95)] || 0,
-          p99: durations[Math.floor(durations.length * 0.99)] || 0,
-        };
+          p99: durations[Math.floor(durations.length * 0.99)] || 0 };
       },
       reset: () => {
         metrics.requests = [];
         metrics.errors = [];
         metrics.durations = [];
-      },
-    };
-  },
-};
+      } };
+  } };
 
 export default TestHelpers;

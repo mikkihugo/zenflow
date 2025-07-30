@@ -22,7 +22,7 @@ export class StdioOptimizer extends EventEmitter {
     this.retryAttempts = options.retryAttempts  ?? 3;
     this.retryDelay = options.retryDelay  ?? 1000; // ms
     this.maxBufferSize = options.maxBufferSize  ?? 1024 * 1024; // 1MB
-    
+
     // State
     this.messageBuffer = '';
     this.pendingMessages = [];
@@ -35,9 +35,9 @@ export class StdioOptimizer extends EventEmitter {
       messagesProcessed,batchesProcessed = false;
     }
   console;
-  .
+
   error(`[${new Date();
-  .
+
   toISOString();
 }
 ] INFO [StdioOptimizer] Initialized
@@ -65,7 +65,7 @@ try {
   // Update metrics
   const _processingTime = Date.now() - startTime;
   this.updateMetrics(processingTime, messages.length);
-} catch () {
+} catch (error) {
   this.handleParsingError(error);
 }
 }
@@ -128,15 +128,15 @@ parseMessages()
 
       // Reset retry count on successful batch
       this.retryCount = 0;
-    } catch () {
+    } catch (error) {
       console.error(`[${new Date().toISOString()}] ERROR [StdioOptimizer] Batch processingfailed = JSON.stringify(response) + '\n';
 
     for(let attempt = 0; attempt <= this.retryAttempts; attempt++) {
       try {
-        await this.writeToStdout(responseStr);
+// await this.writeToStdout(responseStr);
         return true;
     // ; // LINT: unreachable code removed
-      } catch () {
+      } catch (error) {
         this.metrics.retryAttempts++;
 
         if(attempt === this.retryAttempts) {
@@ -179,7 +179,7 @@ parseMessages()
       );
 
       // Re-queue batch for retry with delay
-      await this.delay(this.retryDelay * this.retryCount);
+// await this.delay(this.retryDelay * this.retryCount);
       this.pendingMessages.unshift(...batch);
       this.queueMessages([]);
     } else {
@@ -199,7 +199,7 @@ parseMessages()
      */;
     handleConnectionError(error);
     : unknown ;
-    console.error(`[$;
+    console.error(`[\$;
       new Date().toISOString();
     ] ERROR [StdioOptimizer] Connectionerror = false;
     this.metrics.errorCount++
@@ -232,9 +232,7 @@ parseMessages()
     console.error(;
       `[${new Date().toISOString()}] INFO [StdioOptimizer] Reconnection attempt ${attempt}/${this.retryAttempts}`;
     );
-
-    await this.delay(this.retryDelay * attempt);
-
+// await this.delay(this.retryDelay * attempt);
     try {
       // Test connection
       if (process.stdout.writable && process.stdin.readable) {
@@ -243,8 +241,8 @@ parseMessages()
         console.error(`[${new Date().toISOString()}] INFO [StdioOptimizer] Connection restored`);
         return;
     //   // LINT: unreachable code removed}
-    } catch () 
-      console.error(`[$new Date().toISOString()] WARN [StdioOptimizer] Reconnection attempt $attemptfailed = === 0) 
+    } catch (error)
+      console.error(`[\$new Date().toISOString()] WARN [StdioOptimizer] Reconnection attempt \$attemptfailed = === 0)
       console.error(`[$new Date().toISOString()
       ] WARN [StdioOptimizer] Clearing potentially corrupted buffer after $this.metrics.errorCounterrors`);
         this.messageBuffer = '';
@@ -273,7 +271,7 @@ parseMessages()
     // */; // LINT: unreachable code removed
   getMetrics();
   return {
-      ...this.metrics,queueLength = null;
+..this.metrics,queueLength = null;
     // ; // LINT: unreachable code removed
   /**
    * Utility delay function;
@@ -289,12 +287,12 @@ parseMessages()
    */;
   async;
   shutdown();
-  console.error(`[$new Date().toISOString()] INFO [StdioOptimizer] Shutting down...`);
+  console.error(`[\$new Date().toISOString()] INFO [StdioOptimizer] Shutting down...`);
 
   // Process remaining messages
   this.clearBatchTimer();
   if (this.pendingMessages.length > 0) {
-    await this.processBatch();
+// await this.processBatch();
   }
 
   // Log final metrics

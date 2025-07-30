@@ -6,7 +6,7 @@
 import { printInfo, printSuccess } from './src/cli/utils.js';
 
 console.warn('🐝 Claude-Powered Hive Mind Demo\n');
-printInfo('This demo shows Claude as the primary AI for hive coordination.\n');
+printInfo('This demo shows Claude  primary AI for hive coordination.\n');
 // Step 1: Create a simple hive task
 printInfo('Step 1: Creating a task for the hive...');
 const _task = 'Create a simple TODO API with user authentication';
@@ -22,12 +22,12 @@ try {
 if (await provider.isAvailable()) {
   printSuccess('✅ Claude is ready to coordinate!\n');
   // Get task breakdown
-  const _breakdown = await provider.generateForTask('expand-task', task);
+// const _breakdown = awaitprovider.generateForTask('expand-task', task);
   printInfo("Claude's Task Breakdown:");
   console.warn(`${breakdown.substring(0, 500)}...\n`);
   // Show agent delegation
-  const _agentPrompt = `Based on this task: "${task}", what specialized agents would you spawn and what would each do? Format as a list.`;
-  const _agentPlan = await provider.generateText(agentPrompt);
+  const _agentPrompt = `Based on this task: "${task}", what specialized agents would you spawn and what would each do? Format  list.`;
+// const _agentPlan = awaitprovider.generateText(agentPrompt);
   printInfo("Claude's Agent Delegation Plan:");
   console.warn(`${agentPlan.substring(0, 500)}...\n`);
   printSuccess('✅ Claude successfully coordinated the hive!\n');

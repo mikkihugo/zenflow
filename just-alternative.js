@@ -19,7 +19,7 @@ try {
   const _lines = content.split('\n');
   const _currentCommand = null;
   const _currentDescription = '';
-;
+
   for (const line of lines) {
     if (line.startsWith('#') && !line.startsWith('#!/')) {
       currentDescription = line.substring(1).trim();
@@ -27,12 +27,11 @@ try {
       const _commandName = line.split(':')[0].trim();
       if (commandName !== 'default') {
         commands.set(commandName, {
-          description: currentDescription,;
-          script: [],;
-        });
+          description,
+          script: [] });
         currentCommand = commandName;
         currentDescription = '';
-      }
+// }
     } else if (;
       currentCommand &&;
       (line.trim().startsWith('npm run')  ?? line.trim().startsWith('npx')  ?? line.trim().startsWith('@'));
@@ -40,31 +39,31 @@ try {
       const _script = line.trim().startsWith('@') ? line.trim().substring(1) : line.trim();
       if (commands.has(currentCommand)) {
         commands.get(currentCommand).script.push(script);
-      }
-    }
-  }
-} catch (/* error */)
-{
+// }
+// }
+// }
+} catch (error)
+// {
   console.error('Error reading justfile:', error.message);
   process.exit(1);
-}
+// }
 const _args = process.argv.slice(2);
 const _command = args[0] ?? 'default';
 if (command === 'default' ?? command === '--list') {
   console.warn('Available commands:');
   for (const [name, info] of commands) {
-    console.warn(`  ${name.padEnd(20)} ${info.description}`);
-  }
+    console.warn(`${name.padEnd(20)} ${info.description}`);
+// }
   process.exit(0);
-}
+// }
 if (!commands.has(command)) {
   console.error(`Unknown command: ${command}`);
   console.warn('\nAvailable commands:');
   for (const [name, info] of commands) {
-    console.warn(`  ${name.padEnd(20)} ${info.description}`);
-  }
+    console.warn(`${name.padEnd(20)} ${info.description}`);
+// }
   process.exit(1);
-}
+// }
 // Execute the command
 const _commandInfo = commands.get(command);
 console.warn(`Running: ${command}`);
@@ -72,8 +71,8 @@ try {
   for (const script of commandInfo.script) {
     console.warn(`> ${script}`);
     execSync(script, { stdio: 'inherit', cwd: process.cwd() });
-  }
-} catch (/* error */) {
+// }
+} catch (error) {
   console.error(`Command failed: ${error.message}`);
   process.exit(1);
-}
+// }

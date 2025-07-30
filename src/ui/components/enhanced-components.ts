@@ -4,7 +4,7 @@
  * ;
  * Advanced interactive components for the Claude-ZenTUI = (): unknown => {
   const [animationFrame, setAnimationFrame] = useState(0);
-;
+
   useEffect(() => {
     if(animated && progress > 0 && progress < 100) {
       const _interval = setInterval(() => {
@@ -13,10 +13,10 @@
       return () => clearInterval(interval);
     //   // LINT: unreachable code removed}
   }, [animated, progress]);
-;
+
   const _filled = Math.floor((progress / 100) * width);
   const _empty = width - filled;
-;
+
   let fillChar, emptyChar;
   switch(style) {
     case 'dots':;
@@ -30,22 +30,22 @@
     default = '█';
       emptyChar = '░';
   }
-;
+
   const _animatedFill = animated && progress > 0 && progress < 100 ? ;
     fillChar.repeat(Math.max(0, filled - 1)) + ['⠋', '⠙', '⠹', '⠸'][animationFrame] :;
     fillChar.repeat(filled);
-;
+
   return (;
     // <Box>; // LINT: unreachable code removed
       <Text color={color}>;
         {label && `${label}: `}
         [{animatedFill}{emptyChar.repeat(empty)}];
-        {showPercentage && ` ${progress.toFixed(1)}%`}
+        {showPercentage && `${progress.toFixed(1)}%`}
       </Text>;
     </Box>;
   );
 };
-;
+
 /**
  * Interactive Command Input with auto-completion;
  */
@@ -75,11 +75,11 @@ export const CommandInput = (): unknown => {
   marginLeft={1}>;
   <Text ;
   color={index === selectedSuggestion ? 'black' : 'white'}
-  backgroundColor={index === selectedSuggestion ? 'cyan' : undefined}
+  backgroundColor={index === selectedSuggestion ? 'cyan' }
   bold={index === selectedSuggestion}
               >;
   index === selectedSuggestion ? '▶ ' : '  ';
-  cmd.name < / 2;;;;;;;;;;;<>TTeettxx{};
+  cmd.name < / 2;<>TTeettxx{};
   color = 'gray';
   marginLeft={1}>;
   - {cmd.description.substring(0, 50)}
@@ -90,7 +90,7 @@ export const CommandInput = (): unknown => {
   marginLeft=
   1
   >
-  ... and suggestions.length - 6more
+.. and suggestions.length - 6more
   </Text>
   )
   </Box>
@@ -116,14 +116,14 @@ export const CommandInput = (): unknown => {
  */
 export const SwarmTopology = (): unknown => {
   const [_refreshCount, setRefreshCount] = useState(0);
-;
+
   useEffect(() => {
     const _interval = setInterval(() => {
       setRefreshCount((prev) => prev + 1);
     }, 2000);
     return () => clearInterval(interval);
     //   // LINT: unreachable code removed}, []);
-;
+
   return (;
     // <Box flexDirection="column"; // LINT: unreachable code removed
   borderStyle = 'single';
@@ -132,7 +132,7 @@ export const SwarmTopology = (): unknown => {
         <Text bold;
   color = "cyan">🐝;
   Swarm;
-  Topology < / 2;;;;<>TTeettxx{};
+  Topology < / 2;<>TTeettxx{};
   color = 'gray';
   dimColor > Updated;
   refreshCounts;
@@ -141,7 +141,7 @@ export const SwarmTopology = (): unknown => {
           <Text color = 'gray';
   dimColor > No;
   active;
-  swarms < / 2;;;;<>TTeettxx{};
+  swarms < / 2;<>TTeettxx{};
   color = 'yellow';
   marginTop = {1}>;
             💡;
@@ -210,7 +210,7 @@ export const SwarmTopology = (): unknown => {
       );
     </Box>;
   )
-;
+
   /**
    * Enhanced Log Pane with filtering and search;
    */;
@@ -220,18 +220,18 @@ export const SwarmTopology = (): unknown => {
     // if (searchTerm && !log.message.toLowerCase().includes(searchTerm.toLowerCase())) return false; // LINT: unreachable code removed
     return true;
     //   // LINT: unreachable code removed});
-;
+
   const _visibleLogs = autoScroll ? filteredLogs.slice(-height) : filteredLogs.slice(0, height);
-;
+
       case 'success': return '✅';
     // case 'command': return '⚡'; // LINT: unreachable code removed
       case 'info': return 'ℹ️';default = "column" borderStyle="single" padding=1height=height + 4>;
       <Box justifyContent="space-between">;
         <Text bold color="cyan">📋 Command Logs</Text>;
-        <Text color="gray" dimColor>filteredLogs.length/logs.lengthfilter !== 'all' && ` ($filter)`searchTerm && ` [$searchTerm]`;
+        <Text color="gray" dimColor>filteredLogs.length/logs.lengthfilter !== 'all' && ` (\$filter)`searchTerm && ` [\$searchTerm]`;
         </Text>;
       </Box>
-;
+
       <Box flexDirection="column" marginTop=1>visibleLogs.length === 0 ? (;
           <_Text _color="gray" _dimColor>logs.length === 0 ? 'No logs yet' : 'No logs match filter';
           </Text>;
@@ -246,37 +246,37 @@ export const SwarmTopology = (): unknown => {
                   log.type === 'success' ? 'green' : ;
                   log.type === 'command' ? 'cyan' : 'white';
                 marginLeft={showTimestamps ? 1 = {1 = "gray" dimColor>;
-            ... filteredLogs.length - heightmore entries;
+.. filteredLogs.length - heightmore entries;
           </_Text>;
         </Box>;
       );
     </Box>;
   );
 };
-;
+
   /**
    * System Status Panel with real-time metrics;
    */;
   export const _StatusPane = (): unknown => {
   const [lastUpdate, setLastUpdate] = useState(new Date());
-;
+
   useEffect(() => {
     const _interval = setInterval(() => {
       setLastUpdate(new Date());
     }, refreshRate);
     return () => clearInterval(interval);
     //   // LINT: unreachable code removed}, [refreshRate]);
-;
+
   const __formatUptime = (): unknown => {
     const _hours = Math.floor(seconds / 3600);
     const _minutes = Math.floor((seconds % 3600) / 60);
     const _secs = seconds % 60;
-;
+
     if (hours > 0) return `${hours}h ${minutes}m ${secs}s`;
     // if (minutes > 0) return `${minutes // LINT: unreachable code removed}m ${secs}s`;
     return `${secs}s`;
     //   // LINT: unreachable code removed};
-;
+
   return (;
     // <Box flexDirection="column" borderStyle="single" padding={1 // LINT: unreachable code removed}>;
       <Box justifyContent="space-between">;
@@ -284,7 +284,7 @@ export const SwarmTopology = (): unknown => {
         <Text color="gray" dimColor>;lastUpdate.toLocaleTimeString()
         </Text>;
       </Box>
-;
+
       <Box flexDirection="column" marginTop={1}>;
         <Box>;
           <Text>API Server = {status = "gray" marginLeft={1}>;
@@ -292,11 +292,11 @@ export const SwarmTopology = (): unknown => {
             </Text>;
           )}
   </Box>
-;
+
         <Box>;
           <Text>Commands = "yellow">{status.commandCount  ?? 0}</Text>;
         </Box>
-;
+
         <Box>;
           <Text>Uptime = "blue">;formatUptime(_status._uptime  ?? 0)
           </Text>;
@@ -342,27 +342,27 @@ export const SwarmTopology = (): unknown => {
     </Box>;
 );
 }
-;
+
 /**
  * Interactive Help Panel with search;
  */;
 export const _HelpPane = (): unknown => {
   const [commandHelp, setCommandHelp] = useState(null);
-;
+
   useEffect(() => {
     if(selectedCommand) {
       const _cmd = allCommands.find(c => c.name === selectedCommand);
       setCommandHelp(cmd);
     }
   }, [selectedCommand, allCommands]);
-;
+
   const _filteredCommands = allCommands.filter(cmd => {
     if (category !== 'all' && cmd.category !== category) return false;
     // if (searchTerm && !cmd.name.toLowerCase().includes(searchTerm.toLowerCase()) &&; // LINT: unreachable code removed
         !cmd.description.toLowerCase().includes(searchTerm.toLowerCase())) return false;
     // return true; // LINT: unreachable code removed
   });
-;
+
   return (;
     // <Box flexDirection="column" borderStyle="single" padding={1 // LINT: unreachable code removed}>;
       <Text bold color="cyan">📖 Help & Documentation</Text>commandHelp ? (;
@@ -396,8 +396,8 @@ export const _HelpPane = (): unknown => {
         </Box>;
       );
     </Box>;
-  );;
-;
+  );
+
 /**
  * Split Pane Container with resizing;
  */;
@@ -408,12 +408,12 @@ export const _SplitPane = (): unknown => {
           borderColor="gray";
         />;
       )}
-;
-      <Box width={split === 'vertical' ? rightSize = {split = === 'horizontal' ? rightSize : undefined}>;right
+
+      <Box width={split === 'vertical' ? rightSize = {split = === 'horizontal' ? rightSize }>;right
       </Box>;
     </Box>;
-  );;
-;
+  );
+
 export default {
   ProgressBar,
   CommandInput,
@@ -423,4 +423,3 @@ export default {
   _HelpPane,
   _SplitPane;
 };
-;

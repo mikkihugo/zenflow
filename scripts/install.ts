@@ -18,7 +18,7 @@ async function main(): Promise<void> {
     console.warn('🚀 Neural CLI with ruv-FANN integration ready');
     console.warn('🧠 Usage: ./bin/claude-zen neural help');
     console.warn('📖 Full commands: ./bin/claude-zen --help');
-  } catch (/* error */) {
+  } catch (error) {
     const _errorMessage = error instanceof Error ? error.message : String(error);
     console.error('Installation verification failed:', errorMessage);
     process.exit(1);

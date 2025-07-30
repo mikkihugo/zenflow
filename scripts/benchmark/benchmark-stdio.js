@@ -13,9 +13,7 @@ import { StdioOptimizer } from './src/mcp/core/stdio-optimizer.js';
 class StdioBenchmark {
   constructor() {
     this.results = {
-      baseline: {},
-    
-}
+      baseline: {} }
 }
 /**
  * Run complete benchmark suite;
@@ -83,16 +81,16 @@ runOptimizedTest()
   const _messages = this.generateTestMessages(messageCount);
   // Initialize optimized components
   const _stdioOptimizer = new StdioOptimizer({
-      batchSize: 20,
-  batchTimeout: 30,
-  retryAttempts: 2
+      batchSize,
+  batchTimeout,
+  retryAttempts
 })
 const _errorHandler = new MCPErrorHandler({
-      maxRetries: 2,
-retryDelay: 10
+      maxRetries,
+retryDelay
 })
 const _performanceMetrics = new PerformanceMetrics({
-      enableLogging: false
+      enableLogging
 })
 const _startTime = Date.now();
 const _processedCount = 0;
@@ -109,11 +107,11 @@ stdioOptimizer.on('batch', async (batch) => {
   // await errorHandler.executeWithRetry(async () => {
             // Simulate processing time
   // await this.delay(Math.random() * 2);
-            // Simulate 5% error rate (same as baseline)
+            // Simulate 5% error rate (same )
             if (Math.random() < 0.05) {
               throw new Error('Simulated processing error');
             }
-            return { success: true };
+            return { success };
     //   // LINT: unreachable code removed});
           processedCount++;
           performanceMetrics.recordRequestEnd(requestId, true);
@@ -146,11 +144,10 @@ stdioOptimizer.on('batch', async (batch) => {
       throughput: (processedCount / totalTime) * 1000,
       errorRate: errorCount / messageCount,
       avgLatency: totalTime / messageCount,
-      batchSize: 20,
+      batchSize,
       retryAttempts: errorStats.totalErrors - errorStats.permanentFailures,
       circuitBreakerTrips: errorStats.circuitBreakerTrips,
-      performanceMetrics: metrics,
-    };
+      performanceMetrics };
 }
 /**
  * Generate test messages;
@@ -164,9 +161,9 @@ generateTestMessages(count)
           jsonrpc: '2.0',
     method: 'test_method',
     id: `test-${i}`,
-    data: `test data ${i}` 
+    data: `test data ${i}`
 }
-  ,
+
   receivedAt: Date.now()
 })
 }
@@ -261,7 +258,7 @@ createBatches(messages, batchSize);
   /**
    * Utility delay function;
    */
-  delay(ms) 
+  delay(ms)
     return new Promise((resolve) => setTimeout(resolve, ms));
 // Run benchmark if this file is executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {

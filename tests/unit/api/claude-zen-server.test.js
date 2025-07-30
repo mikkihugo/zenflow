@@ -14,8 +14,7 @@ jest.mock('express', () => {
   if (callback) callback();
   return { close: jest.fn() };
   //   // LINT: unreachable code removed}),
-  set: jest.fn(),
-  )
+  set: jest.fn())
   )
   mockExpress.json = jest.fn()
   mockExpress.urlencoded = jest.fn()
@@ -30,17 +29,14 @@ jest.mock('../../../src/api/claude-zen-schema.js', () => ({
   CLAUDE_ZEN_SCHEMA: {
     endpoints: [;
       { path: '/api/health', method: 'GET', handler: 'healthCheck' },
-      { path: '/api/status', method: 'GET', handler: 'statusCheck' },
-    ],
-},
+      { path: '/api/status', method: 'GET', handler: 'statusCheck' } ] },
 generateWorkflowRoutes: jest.fn(),
 generateOpenAPISpec: jest.fn(() => (
 {
   openapi: '3.0.0', info;
   : title: 'Test API'
 }
-)),
-}))
+)) }))
 jest.mock('../../../src/api/agui-websocket-middleware.js', () => (
 {
   integrateAGUIWithWebSocket: jest.fn()
@@ -70,11 +66,10 @@ describe('ClaudeZenServer', () =>
     });
     it('should create server with custom options', () => {
       const _customOptions = {
-        port: 4000,
+        port,
         host: '127.0.0.1',
-        enableWebSocket: false,
-        enableMetrics: false,
-      };
+        enableWebSocket,
+        enableMetrics };
     server = new ClaudeZenServer(customOptions);
     expect(server.options.port).toBe(4000);
     expect(server.options.host).toBe('127.0.0.1');
@@ -85,7 +80,7 @@ describe('ClaudeZenServer', () =>
 describe('server lifecycle', () =>
 {
   beforeEach(() => {
-    server = new ClaudeZenServer({ port: 3001 });
+    server = new ClaudeZenServer({ port });
   });
   it('should start server successfully', async () => {
     const _startPromise = server.start();
@@ -126,10 +121,9 @@ describe('middleware setup', () =>
   it('should configure security middleware', () => {
       // Test that security middleware would be configured
       const _middlewareConfig = {
-        cors: true,
-        helmet: true,
-        rateLimit: true,
-      };
+        cors,
+        helmet,
+        rateLimit };
   expect(middlewareConfig.cors).toBe(true);
   expect(middlewareConfig.helmet).toBe(true);
   expect(middlewareConfig.rateLimit).toBe(true);
@@ -138,8 +132,8 @@ it('should configure body parsing middleware', () =>
 {
   const _bodyParsingConfig = {
         json: { limit: '10mb' },
-  extended: true, limit;
-  : '10mb' 
+  extended, limit;
+  : '10mb'
 }
 expect(bodyParsingConfig.json.limit).toBe('10mb');
 expect(bodyParsingConfig.urlencoded.extended).toBe(true);
@@ -154,9 +148,7 @@ describe('route generation', () =>
       const _mockSchema = {
         endpoints: [;
           { path: '/api/test', method: 'GET', handler: 'testHandler' },
-          { path: '/api/users', method: 'POST', handler: 'createUser' },
-        ],
-      };
+          { path: '/api/users', method: 'POST', handler: 'createUser' } ] };
   // Test schema-based route generation logic
   const _routes = mockSchema.endpoints.map((endpoint) => ({
         path: endpoint.path,
@@ -176,9 +168,8 @@ it('should handle different HTTP methods', () =>
   methods.forEach((method) => {
         const _endpoint = {
           path: `/api/${method.toLowerCase()}`,
-          method: method,
-          handler: `${method.toLowerCase()}Handler`,
-        };
+          method,
+          handler: `${method.toLowerCase()}Handler` };
   expect(endpoint.method).toBe(method);
   expect(endpoint.path).toContain(method.toLowerCase());
 })
@@ -187,15 +178,14 @@ it('should handle different HTTP methods', () =>
 describe('WebSocket integration', () =>
 {
   beforeEach(() => {
-    server = new ClaudeZenServer({ enableWebSocket: true });
+    server = new ClaudeZenServer({ enableWebSocket });
   });
   it('should setup WebSocket server when enabled', () => {
       // Mock WebSocket functionality
       const _wsConfig = {
         enabled: server.options.enableWebSocket,
         port: server.options.port,
-        path: '/ws',
-      };
+        path: '/ws' };
   expect(wsConfig.enabled).toBe(true);
   expect(wsConfig.port).toBe(3000);
   expect(wsConfig.path).toBe('/ws');
@@ -204,7 +194,7 @@ it('should handle WebSocket connections', () =>
 {
   const _mockConnection = {
         id: 'test-connection',
-  readyState: 1, // OPEN
+  readyState, // OPEN
     send;
   : jest.fn(),
   close: jest.fn()
@@ -231,8 +221,7 @@ describe('health and status endpoints', () =>
         status: 'healthy',
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
-        version: '2.0.0-alpha.70',
-      };
+        version: '2.0.0-alpha.70' };
   expect(healthResponse.status).toBe('healthy');
   expect(healthResponse.timestamp).toBeDefined();
   expect(typeof healthResponse.uptime).toBe('number');
@@ -242,7 +231,7 @@ it('should provide status check endpoint', async () =>
 {
   const _statusResponse = {
         server: 'running',
-  connections: 0,
+  connections,
   memory: process.memoryUsage(),
   cpu: process.cpuUsage()
 }
@@ -266,13 +255,11 @@ describe('error handling', () =>
           res.status(500).json({
             error: 'Internal Server Error',
             message: error.message,
-            timestamp: new Date().toISOString(),
-          });
-        }),
-      };
+            timestamp: new Date().toISOString() });
+        }) };
   const _testError = new Error('Test error');
   const _mockRes = {
-        headersSent: false,
+        headersSent,
   status: jest.fn(() => mockRes),
   json: jest.fn()
 }
@@ -287,12 +274,11 @@ message: 'Test error'
 })
 it('should handle 404 errors', () =>
 {
-  const _notFoundHandler = (): unknown => {
+  const _notFoundHandler = () => {
         res.status(404).json({
           error: 'Not Found',
           message: `Route ${req.method} ${req.path} not found`,
-          timestamp: new Date().toISOString(),
-        };
+          timestamp: new Date().toISOString() };
   )
 }
 const _mockReq = { method: 'GET', path: '/api/nonexistent' };
@@ -314,14 +300,13 @@ expect.objectContaining(
 describe('metrics collection', () =>
 {
   beforeEach(() => {
-    server = new ClaudeZenServer({ enableMetrics: true });
+    server = new ClaudeZenServer({ enableMetrics });
   });
   it('should collect request metrics when enabled', () => {
       const _metrics = {
         requests: {
-          total: 0,,,
-          averageResponseTime: 0,
-        },
+          total,,,
+          averageResponseTime },
   recordRequest: function (method, status, /* responseTime */) {
           this.requests.total++;
           this.requests.byMethod[method] = (this.requests.byMethod[method]  ?? 0) + 1;
@@ -329,7 +314,7 @@ describe('metrics collection', () =>
           // Simplified average calculation
           this.requests.averageResponseTime = responseTime;
         }
-  
+
 }
 metrics.recordRequest('GET', 200, 150);
 metrics.recordRequest('POST', 201, 200);
@@ -345,14 +330,14 @@ it('should provide metrics endpoint', () =>
         path: '/api/metrics',
   handler: () => ({
           requests: {
-            total: 100,
-  averageResponseTime: 120,
-  GET: 60, POST;
-  : 30, PUT: 10 ,
+            total,
+  averageResponseTime,
+  GET, POST;
+  , PUT ,
   200
-  : 80, 404: 15, 500: 5 
+  , 404, 500
 }
-,
+
 {
   uptime: process.uptime(),
   memory: process.memoryUsage(),

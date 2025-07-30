@@ -41,13 +41,12 @@ export class HealthMonitor {
     const _timestamp = new Date().toISOString();
     const _results = {
       timestamp,status = Date.now();
-    const _checkResult = await checkFn();
+// const _checkResult = awaitcheckFn();
     const _duration = Date.now() - startTime;
     results.checks[name] = {
-      ...checkResult,
+..checkResult,
     duration,
-    timestamp,
-  }
+    timestamp }
   // Update summary
   switch (_checkResult._status) {
       case 'healthy':;
@@ -71,7 +70,7 @@ if (results._summary._degraded > 0) {
 }
 // Add to history
 this;
-.
+
 addToHistory(results)
 return;
 // results; // LINT: unreachable code removed
@@ -84,9 +83,9 @@ checkDatabase()
 {
   try {
     if (!strategicDocs.db) {
-      await strategicDocs.initialize();
+// await strategicDocs.initialize();
     }
-;
+
     return {status = > t.status === 'healthy').length,totalTables = circuitBreakerManager.getHealthSummary();
     // ; // LINT: unreachable code removed
     const __status = 'healthy';
@@ -96,12 +95,12 @@ checkDatabase()
     if (breakerSummary.overallHealth < 0.5) {
       _status = 'unhealthy';
     }
-;
+
     return {
         status,details = process.cpuUsage();
     // const __memoryUsage = process.memoryUsage(); // LINT: unreachable code removed
     const __uptime = process.uptime();
-;
+
     // Calculate CPU percentage (simplified)
 
     // Memory usage in MB
@@ -114,13 +113,13 @@ checkDatabase()
       // More than 1GB heap
       _status = 'unhealthy';
     }
-;
+
     return {
         status,details = await fs.stat(process.cwd());
     // const _totalSpace = os.totalmem(); // LINT: unreachable code removed
     const _freeSpace = os.freemem();
     const _usedPercent = ((totalSpace - freeSpace) / totalSpace) * 100;
-;
+
     const _status = 'healthy';
     if (usedPercent > 80) {
       status = 'degraded';
@@ -128,11 +127,11 @@ checkDatabase()
     if (usedPercent > 95) {
       status = 'unhealthy';
     }
-;
+
     return {
         status,details = process.memoryUsage();
     // const _heapUsedPercent = (usage.heapUsed / usage.heapTotal) * 100; // LINT: unreachable code removed
-;
+
     let _status = 'healthy';
     if (heapUsedPercent > 80) {
       status = 'degraded';
@@ -140,19 +139,19 @@ checkDatabase()
     if (heapUsedPercent > 95) {
       status = 'unhealthy';
     }
-;
+
     return {
         status,details = 60000): unknown { // Default: 1 minute
     if(this._monitoringEnabled) {
       console.warn('Health monitoring already running');
     // return; // LINT: unreachable code removed
     }
-;
+
     this.monitoringEnabled = true;
     this.monitoringInterval = setInterval(async () => {
       try {
-        const _health = await this.performHealthCheck();
-;
+// const _health = awaitthis.performHealthCheck();
+
         // Simplified logging - only log degraded/unhealthy status
         if(health.status === 'unhealthy') {
           console.warn(`🚨 Systemhealth = === 'unhealthy') {
@@ -200,14 +199,14 @@ performMemoryCleanup();
     try {
       const _memoryUsage = process.memoryUsage();
       const _heapUsedMB = memoryUsage.heapUsed / 1024 / 1024;
-;
+
       if(heapUsedMB > this.maxMemoryUsageMB) {
         console.warn(`⚠️ Health monitor memory usagehigh = this.healthHistory.slice(-this.maxHistorySize);
 }
 // Additional cleanup for very old entries
 const _cutoff = Date.now() - 24 * 60 * 60 * 1000; // 24 hours
 this.healthHistory = this.healthHistory.filter((h) => new Date(h.timestamp).getTime() > cutoff);
-} catch (/* error */)
+} catch (error)
 {
   console.warn('Health history cleanupfailed = [];
 }
@@ -223,7 +222,7 @@ getHealthHistory((maxItems = null));
     //   // LINT: unreachable code removed}
   return [...this.healthHistory]; // Return copy
 }
-;
+
 /**
  * Get health trend analysis;
  */;
@@ -232,12 +231,12 @@ getHealthTrend((minutes = 60));
 {
   const _cutoff = Date.now() - minutes * 60 * 1000;
   const _recentChecks = this.healthHistory.filter((h) => new Date(h.timestamp).getTime() > cutoff);
-;
+
   if (recentChecks.length === 0) {
     return {status = recentChecks.filter(h => h.status === 'healthy').length;
     // ; // LINT: unreachable code removed
     const _healthPercentage = (healthyCount / recentChecks.length) * 100;
-;
+
     const _trendStatus = 'stable';
     if (healthPercentage > 90) {
       trendStatus = 'excellent';
@@ -248,28 +247,28 @@ getHealthTrend((minutes = 60));
     } else {
       trendStatus = 'critical';
     }
-;
+
     return {
       status,timeWindow = await this.performHealthCheck();
     // const _trend = this.getHealthTrend(); // LINT: unreachable code removed
-;
+
     const _report = [
       '📊 SYSTEM HEALTH REPORT',
       '━'.repeat(50),
       `OverallStatus = > ;
-        `  ${check.status === 'healthy' ? '✅' : check.status === 'degraded' ? '⚠️' : '❌'} ${name}: ${check.status}` +;
+        `${check.status === 'healthy' ? '✅' : check.status === 'degraded' ? '⚠️' : '❌'} ${name}: ${check.status}` +;
         (check.reason ? ` - ${check.reason}` : '');
     ),
       '',
       '📈 Health Trend (60min):',
       `Status = > ;
-        `  $breaker.state === 'CLOSED' ? '🟢' : breaker.state === 'HALF_OPEN' ? '🟡' : '🔴'$breaker.name: $breaker.state`;
+        `  \$breaker.state === 'CLOSED' ? '🟢' : breaker.state === 'HALF_OPEN' ? '🟡' : '🔴'\$breaker.name: \$breaker.state`;
       );
     ]
-;
+
     return report.join('\n');
     //   // LINT: unreachable code removed}
 }
-;
+
 // Export singleton instance
 export const _healthMonitor = new HealthMonitor();

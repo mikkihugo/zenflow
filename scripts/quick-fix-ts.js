@@ -10,7 +10,7 @@ const ___dirname = path.dirname(__filename);
 const _swarmNewPath = path.join(__dirname, '../src/cli/commands/swarm-new.ts');
 if (fs.existsSync(swarmNewPath)) {
   const _swarmNewContent = fs.readFileSync(swarmNewPath, 'utf8');
-  // Fix exportPath issue - remove it as it's not in MonitoringConfig type
+  // Fix exportPath issue - remove it 's not in MonitoringConfig type
   swarmNewContent = swarmNewContent.replace(;
   /exportPath: '\.\/metrics'/g,
     "// exportPath: './metrics' // Commented out - not in type definition";
@@ -27,7 +27,7 @@ if (fs.existsSync(swarmNewPath)) {
   // Comment out getStats calls
   swarmNewContent = swarmNewContent.replace(
   /
-const _executorStats = await this;
+// const _executorStats = awaitthis;
 \.executor\.getStats\(\)
   /,
 g('// const executorStats = await this.executor.getStats();')
@@ -51,7 +51,7 @@ if (fs.existsSync(cliCorePath)) {
   // Add proper typing for the problematic line
   cliCoreContent = cliCoreContent.replace(;
   /const commandModule = await commandModules\[commandName\]\(\);/g,
-  ('const commandModule = await (commandModules[commandName] as any)();');
+  ('const commandModule = await (commandModules[commandName] )();');
   )
   fs.writeFileSync(cliCorePath, cliCoreContent)
 }
@@ -89,7 +89,7 @@ if (fs.existsSync(swarmPath)) {
   const _swarmContent = fs.readFileSync(swarmPath, 'utf8');
   swarmContent = swarmContent.replace(;
   /strategy: options\.strategy,/g,
-  ('strategy: options.strategy as any,');
+  ('strategy: options.strategy ,');
   )
   fs.writeFileSync(swarmPath, swarmContent)
 }
@@ -134,29 +134,29 @@ if (fs.existsSync(sparcPath)) {
   // Initialize phases property
   sparcContent = sparcContent.replace(;
   /private phases: SPARCPhase\[\];/g,
-  ('private phases: SPARCPhase[] = [];');
+  ('private phases = [];');
   )
   // Fix index signature issues
   sparcContent = sparcContent.replace(
   /userStories\[projectType\]/g,
-  ('(userStories as any)[projectType]')
+  ('(userStories )[projectType]')
   )
   sparcContent = sparcContent.replace(
   /acceptanceCriteria\[projectType\]/g,
-  ('(acceptanceCriteria as any)[projectType]')
+  ('(acceptanceCriteria )[projectType]')
   )
-  sparcContent = sparcContent.replace(/languages\[language\]/g, '(languages as any)[language]')
+  sparcContent = sparcContent.replace(/languages\[language\]/g, '(languages )[language]')
   sparcContent = sparcContent.replace(
   /projectStructures\[templateKey\]/g,
-  ('(projectStructures as any)[templateKey]')
+  ('(projectStructures )[templateKey]')
   )
   sparcContent = sparcContent.replace(
   /dependencies\[projectType\]/g,
-  ('(dependencies as any)[projectType]')
+  ('(dependencies )[projectType]')
   )
   sparcContent = sparcContent.replace(
   /deploymentConfigs\[projectType\]/g,
-  ('(deploymentConfigs as any)[projectType]')
+  ('(deploymentConfigs )[projectType]')
   )
   fs.writeFileSync(sparcPath, sparcContent)
 }
@@ -182,15 +182,15 @@ if (fs.existsSync(enhancedPath)) {
   )
   enhancedContent = enhancedContent.replace(/async copyFile\(/g, 'override async copyFile(')
   // Change private to protected in base class references
-  enhancedContent = enhancedContent.replace(/this\.fileQueue/g, '(this as any).fileQueue')
-  enhancedContent = enhancedContent.replace(/this\.copiedFiles/g, '(this as any).copiedFiles')
-  enhancedContent = enhancedContent.replace(/this\.options/g, '(this as any).options')
-  enhancedContent = enhancedContent.replace(/this\.fileExists/g, '(this as any).fileExists')
+  enhancedContent = enhancedContent.replace(/this\.fileQueue/g, '(this ).fileQueue')
+  enhancedContent = enhancedContent.replace(/this\.copiedFiles/g, '(this ).copiedFiles')
+  enhancedContent = enhancedContent.replace(/this\.options/g, '(this ).options')
+  enhancedContent = enhancedContent.replace(/this\.fileExists/g, '(this ).fileExists')
   enhancedContent = enhancedContent.replace(
   /this\.calculateFileHash/g,
-  ('(this as any).calculateFileHash');
+  ('(this ).calculateFileHash');
   )
-  enhancedContent = enhancedContent.replace(/this\.errors/g, '(this as any).errors')
+  enhancedContent = enhancedContent.replace(/this\.errors/g, '(this ).errors')
   fs.writeFileSync(enhancedPath, enhancedContent)
 }
 // Fix prompt-manager imports

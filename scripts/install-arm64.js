@@ -6,7 +6,7 @@ import os from 'node:os';
 // Check if SQLite bindings are working
 async function checkSqliteBindings() {
   try {
-    const _Database = await import('better-sqlite3');
+// const _Database = awaitimport('better-sqlite3');
     const _db = new Database.default(':memory:');
     db.close();
     return true;
@@ -20,7 +20,7 @@ async function rebuildSqlite() {
   return new Promise((_resolve) => {
     const _rebuild = spawn('npm', ['rebuild', 'better-sqlite3'], {
       stdio: 'inherit',
-    // shell: true, // LINT: unreachable code removed
+    // shell, // LINT: unreachable code removed
     });
     rebuild.on('close', (code) => {
       if (code === 0) {
@@ -44,10 +44,10 @@ async function main() {
   // Only run on ARM64 macOS
   if (platform === 'darwin' && arch === 'arm64') {
     console.warn('🍎 Detected Apple Silicon (ARM64) Mac');
-    const _bindingsWork = await checkSqliteBindings();
+// const _bindingsWork = awaitcheckSqliteBindings();
     if (!bindingsWork) {
       console.warn('⚠️  SQLite bindings not working for ARM64');
-      const _rebuildSuccess = await rebuildSqlite();
+// const _rebuildSuccess = awaitrebuildSqlite();
       if (!rebuildSuccess) {
         console.warn('');
         console.warn('⚠️  Unable to rebuild SQLite bindings for ARM64');

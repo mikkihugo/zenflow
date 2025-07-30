@@ -9,21 +9,19 @@ async function testDirectWasmLoading() {
   // await fs.access(wasmPath);
     console.warn('✅ WASM file exists:', wasmPath);
     // Read the file
-    const _wasmBuffer = await fs.readFile(wasmPath);
+// const _wasmBuffer = awaitfs.readFile(wasmPath);
     console.warn(`✅ WASM file read successfully, size: ${wasmBuffer.length} bytes`);
     // Try to instantiate
     const _imports = {
       env: {
-        memory: new WebAssembly.Memory({ initial: 256, maximum: 4096 }),
-      },
+        memory: new WebAssembly.Memory({ initial, maximum }) },
         proc_exit: (code) => {
           throw new Error(`WASI exit ${code}`);
         },
         fd_write: () => 0,
         random_get: (_ptr, _len) => {
           return 0;
-    //   // LINT: unreachable code removed},
-      },
+    //   // LINT: unreachable code removed} },
     console.warn('\nInstantiating WASM module...');
     const { instance, module } = await WebAssembly.instantiate(wasmBuffer, imports);
     console.warn('✅ WASM module instantiated successfully!');

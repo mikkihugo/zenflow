@@ -8,13 +8,13 @@
 /**
  * Module alias configuration for build system;
  */
-interface ModuleAliases {
+// interface ModuleAliases {
   [pattern: string]: string;
 }
 /**
  * Build configuration interface;
  */
-interface BuildConfiguration {
+// interface BuildConfiguration {
   moduleAliases: ModuleAliases;
   excludeModules: string[];
   externals: string[];
@@ -30,12 +30,10 @@ export const buildConfig: BuildConfiguration = {
 ('@cliffy/prompt');
 : './src/adapters/cliffy-node.js',
 ('@cliffy/table')
-: './src/adapters/cliffy-node.js',
-},
+: './src/adapters/cliffy-node.js' },
 // Modules to exclude from Node.js build
 excludeModules: [
 'vscode', // VS Code extension API
 ],
 // External modules that should not be bundled
-externals: ['@modelcontextprotocol/sdk', 'better-sqlite3', 'node-pty', 'blessed'],
-}
+externals: ['@modelcontextprotocol/sdk', 'better-sqlite3', 'node-pty', 'blessed'] }

@@ -37,7 +37,7 @@ createTempFile(content);
   const _tempDir = tmpdir();
   const _randomSuffix = randomBytes(8).toString('hex');
   const _tempFilePath = join(tempDir, `${GitHubCliSafe.TEMP_FILE_PREFIX}${randomSuffix}.tmp`);
-  await fs.writeFile(tempFilePath, content, 'utf8');
+// await fs.writeFile(tempFilePath, content, 'utf8');
   return tempFilePath;
 }
 /**
@@ -52,11 +52,11 @@ cleanupTempFile(filePath = = 'string');
 }
 return text;
 // .replace(/`/g, '\\`')           // Escape backticks // LINT: unreachable code removed
-.replace(/\$/g, '\\$')          // Escape dollar signs
-      .replace(/"/g, '\\"')           // Escape double quotes
-      .replace(/\n/g, '\\n')          // Escape newlines
-      .replace(/\r/g, '\\r')          // Escape carriage returns
-      .replace(/\t/g, '\\t') // Escape tabs
+replace(/\$/g, '\\$')          // Escape dollar signs
+replace(/"/g, '\\"')           // Escape double quotes
+replace(/\n/g, '\\n')          // Escape newlines
+replace(/\r/g, '\\r')          // Escape carriage returns
+replace(/\t/g, '\\t') // Escape tabs
 }
 /**
    * Execute GitHub CLI command safely with timeout protection;
@@ -82,10 +82,10 @@ execGhSafe(args =
           arg === '--body' ? `--body-file=${tempFilePath}` ;
         );
       }
-;
+
       // Import runCommand dynamically to avoid circular dependencies
       const { runCommand } = await import('../cli/utils.js');
-      
+
       const _commandPromise = runCommand('gh', finalArgs, {
         cwd,stdout = await TimeoutProtection.withTimeout(;
         commandPromise,
@@ -97,37 +97,36 @@ execGhSafe(args =
       draft = false,
       repo = null;
     } = params;
-;
+
     const _args = ['pr', 'create'];
-;
+
     // Add title (always safe to add directly)
     args.push('--title', title);
-;
+
     // Add base and head
     args.push('--base', base);
     if (head) {
       args.push('--head', head);
     }
-;
+
     // Add draft flag if needed
     if (draft) {
       args.push('--draft');
     }
-;
+
     // Add repo if specified
     if (repo) {
       args.push('--repo', repo);
     }
-;
+
     // Handle body with special characters
     if (body) {
-      if (body.includes('`')  ?? body.includes('$')  ?? body.length > 1000) {
+      if (body.includes('`')  ?? body.includes('\$')  ?? body.length > 1000) {
         // Use temp file for complex bodies
-        const _tempFilePath = await GitHubCliSafe.createTempFile(body);
+// const _tempFilePath = awaitGitHubCliSafe.createTempFile(body);
         args.push('--body-file', tempFilePath);
-;
-        const _result = await GitHubCliSafe.execGhSafe(args);
-        await GitHubCliSafe.cleanupTempFile(tempFilePath);
+// const _result = awaitGitHubCliSafe.execGhSafe(args);
+// await GitHubCliSafe.cleanupTempFile(tempFilePath);
         return result;
     //   // LINT: unreachable code removed}
   else ;
@@ -170,9 +169,9 @@ return await GitHubCliSafe.execGhSafe(args, {timeout = = 'string') {
 }
 // Replace dangerous command substitution patterns
 return command;
-// .replace(/\$\([^)]+\)/g, '""')     // Remove $(command) patterns // LINT: unreachable code removed
-.replace(/`[^`]+`/g, '""')         // Remove `command` patterns
-      .replace(/\$
+// .replace(/\\$\([^)]+\)/g, '""')     // Remove \$(command) patterns // LINT: unreachable code removed
+replace(/`[^`]+`/g, '""')         // Remove `command` patterns
+replace(/\$
 {
   [^}]+
 }

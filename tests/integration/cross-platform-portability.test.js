@@ -15,7 +15,7 @@ describe('Cross-Platform Portability Tests', () => {
     let MCPToolWrapper;
     beforeEach(async () => {
       // Import the MCP wrapper
-      const _mcpModule = await import(
+// const _mcpModule = awaitimport(
         '../../src/cli/command-handlers/simple-commands/hive-mind/mcp-wrapper.js';
       )
       MCPToolWrapper = mcpModule.MCPToolWrapper
@@ -26,7 +26,7 @@ describe('Cross-Platform Portability Tests', () => {
         console.warn('⚠️ MCP Wrapper not available - test skipped due to architectural change');
         return;
     //   // LINT: unreachable code removed}
-      const __wrapper = new MCPToolWrapper({ silent: false });
+      const __wrapper = new MCPToolWrapper({ silent });
       const _consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       // Create a mock for readline.createInterface
       const _mockHandlers = {};
@@ -34,31 +34,27 @@ describe('Cross-Platform Portability Tests', () => {
         on: jest.fn((event, handler) => {
           mockHandlers[event] = handler;
           return mockRlErr;
-    //   // LINT: unreachable code removed}),
-      };
+    //   // LINT: unreachable code removed}) };
       // Mock the readline module
       jest.doMock('readline', () => ({
-        createInterface: jest.fn(() => mockRlErr),
-      }));
+        createInterface: jest.fn(() => mockRlErr) }));
       // Simulate the error handling by calling the line handler directly
       // This simulates what would happen when readline emits a 'line' event
       const _structuredError = JSON.stringify({
         error: {
           code: 'LOGGER_METHOD_MISSING',
-          message: 'logger.logMemoryUsage is not a function',
-        },
-  });
+          message: 'logger.logMemoryUsage is not a function' } });
   // Import readline after mocking
-  const _readline = await import('node:readline');
+// const _readline = awaitimport('node:readline');
 
   // Create the interface (this will use our mock)
   const __rl = readline.createInterface({ input: process.stdin });
-  // Get the handler that was registered for 'line' events
+  // Get the handler that w for 'line' events
   const _lineHandler = mockRlErr.on.mock.calls.find((call) => call[0] === 'line')?.[1];
   if (lineHandler) {
     // Call the handler with our test data
     lineHandler(structuredError);
-    // Verify the error was handled correctly
+    // Verify the error w correctly
     expect(consoleErrorSpy).toHaveBeenCalledWith(;
     expect.stringContaining('Known ruv-swarm logger issue');
     )
@@ -67,7 +63,7 @@ describe('Cross-Platform Portability Tests', () => {
   jest.dontMock('readline');
 });
 test('should fall back to pattern matching for non-JSON errors', async () => {
-      const __wrapper = new MCPToolWrapper({ silent: false });
+      const __wrapper = new MCPToolWrapper({ silent });
       const _consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       // Create a mock readline interface
       const _mockReadline = {
@@ -76,8 +72,7 @@ test('should fall back to pattern matching for non-JSON errors', async () => {
             // Simulate non-JSON error line
             handler('TypeError: logger.logMemoryUsage is not a function');
           }
-        }),
-      };
+        }) };
 // Mock createInterface to return our mock
 jest.doMock('readline', () => ({
         createInterface: jest.fn(() => mockReadline),
@@ -94,7 +89,7 @@ describe('SwarmUI Cross-Platform Process Management', () =>
   let SwarmUI;
   beforeEach(async () => {
     // Import SwarmUI
-    const _swarmUIModule = await import(
+// const _swarmUIModule = awaitimport(
         '../../src/cli/command-handlers/simple-commands/swarm-ui.js';
     )
     SwarmUI = swarmUIModule.default
@@ -103,11 +98,10 @@ describe('SwarmUI Cross-Platform Process Management', () =>
       const _ui = new SwarmUI();
       // Mock process
       const _mockProcess = {
-        pid: 12345,
-        killed: false,
+        pid,
+        killed,
         kill: jest.fn(),
-        unref: jest.fn(),
-      };
+        unref: jest.fn() };
   // Simulate adding a process
   ui.activeProcesses.set('swarm-test', mockProcess);
   expect(ui.activeProcesses.size).toBe(1);
@@ -118,16 +112,15 @@ test('should use process.kill() instead of pkill', async () =>
   const _ui = new SwarmUI();
   // Mock processes
   const _mockProcesses = [
-        { pid: 12345, killed: false, kill: jest.fn() },
-        { pid: 67890, killed: false, kill: jest.fn() },
-      ];
+        { pid, killed, kill: jest.fn() },
+        { pid, killed, kill: jest.fn() } ];
   mockProcesses.forEach((proc, index) => {
     ui.activeProcesses.set(`swarm-${index}`, proc);
   });
   // Mock stopOrphanedProcesses to avoid actual process operations
   ui.stopOrphanedProcesses = jest.fn().mockResolvedValue();
   // await ui.stopSwarm();
-  // Verify process.kill() was called for each process
+  // Verify process.kill() w for each process
   mockProcesses.forEach((proc) => {
     expect(proc.kill).toHaveBeenCalledWith('SIGTERM');
   });
@@ -140,7 +133,7 @@ test('should handle Windows process termination', async () =>
   // Mock Windows platform
   Object.defineProperty(process, 'platform', {
         value: 'win32',
-  configurable: true
+  configurable
 })
 const _execMock = jest.fn((cmd, callback) => {
   if (cmd.includes('wmic')) {
@@ -150,8 +143,7 @@ const _execMock = jest.fn((cmd, callback) => {
   }
 });
 jest.doMock('child_process', () => ({
-        exec: execMock,
-}))
+        exec }))
   // await ui.stopOrphanedProcesses()
 // Verify Windows-specific commands were used
 expect(execMock).toHaveBeenCalledWith(
@@ -161,8 +153,8 @@ expect.any(Function)
 // Restore platform
 Object.defineProperty(process, 'platform',
 {
-  value: originalPlatform,
-  configurable: true
+  value,
+  configurable
 })
 })
 })
@@ -192,7 +184,7 @@ describe('GitHub Command Cross-Platform Executable Check', () =>
     } else {
       // On Unix-like systems, should use 'command -v'
       try {
-          execSync('command -v node', { stdio: 'ignore', shell: true });
+          execSync('command -v node', { stdio: 'ignore', shell });
         } catch (/* _e */) {
           // Command might not exist, that's ok for the test
         }
@@ -209,20 +201,19 @@ describe('Integration Test: Full Workflow', () =>
   test('should handle cross-platform operations without using non-portable commands', async () => {
     // This test verifies that our code doesn't use pkill, which, etc.
     const _sourceFiles = [
-      ;
+
         '../../src/mcp/ruv-swarm-wrapper.js',
         '../../src/cli/simple-commands/swarm-ui.js',
-        '../../src/cli/simple-commands/github.js',,,,,,,,
-    ];
+        '../../src/cli/simple-commands/github.js',,,,,,, ];
     for (const file of sourceFiles) {
       const _filePath = path.join(__dirname, file);
       const { readFile } = await import('node:fs/promises');
 
       try {
-          const _content = await readFile(filePath, 'utf8');
+// const _content = awaitreadFile(filePath, 'utf8');
           // Check for non-portable commands
           expect(content).not.toMatch(/\bpkill\b/);
-          expect(content).not.toMatch(/\bwhich\s+\w+/); // 'which' as a command
+          expect(content).not.toMatch(/\bwhich\s+\w+/); // 'which'  command
 
           // Verify portable alternatives are used
           if (file.includes('swarm-ui')) {

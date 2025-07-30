@@ -20,46 +20,42 @@ CommandRegistry,
 CommandResult,
 ExitCode,
 ParsedArguments,
-ValidationResult,
-} from '../../types/cli.js'
+ValidationResult } from '../../types/cli.js'
 // Re-export core types
 export type {
   JSONArray,
 JSONObject,
 JSONValue,
 Logger as LoggerInterface,
-LogLevel as LogLevelType,
-} from '../../types/core.js'
+LogLevel as LogLevelType } from '../../types/core.js'
 // Argument parsing types and functions
 export type {
   CommandStructure,
 convertToStandardFormat,
 type FlagValidationOptions
-,
+
 FlagValidator,
 generateFlagHelp,
 mergeWithDefaults,
 normalizeFlags,
 type ParsedCommandLineResult
-,
+
 parseCommandLineArguments,
 parseCommandStructure,
 processArrayFlags,
-validatePositionalArguments,
-} from './argument-parser.js'
+validatePositionalArguments } from './argument-parser.js'
 
 export { CircuitBreaker } from './circuit-breaker.js';
 // Error handling types and functions
 export type {
   CliError,
 type CliErrorCode
-,
+
 CommandExecutionError,
 ConfigurationError,
 formatErrorMessage,
 handleError,
-ValidationError,
-} from './cli-error.js'
+ValidationError } from './cli-error.js'
 
 // Command execution
 export { CommandExecutor, createCommandExecutor } from './command-executor.js';
@@ -73,14 +69,14 @@ export type {
 createTempDirectory,
 createTempFile,
 type DirectoryEntry
-,
+
 type DirectoryListingOptions
-,
+
 ensureDirectoryExists,
 type FileEncoding
-,
+
 type FileStats
-,
+
 getFileSize,
 getFileStats,
 isDirectory,
@@ -89,28 +85,26 @@ listDirectoryContents,
 movePathSecurely,
 pathExists,
 type RemovePathOptions
-,
+
 readFileSecurely,
 readJsonFile,
 removePathSafely,
 writeFileSecurely,
-writeJsonFile,
-} from './file-system-utils.js'
+writeJsonFile } from './file-system-utils.js'
 
 export { HealthMonitor } from './health-monitor.js';
 // Help system
 export type {
   CommandExecutor as CommandExecutorInterface,
 type CommandInfo
-,
+
 type HelpInfo
-,
+
 type HelpOption
-,
+
 HelpSystem,
 type HelpSystemOptions
-,
-} from './help-system.js'
+ } from './help-system.js'
 
 // Additional utilities (if they exist as TypeScript files)
 export { InputValidator } from './input-validator.js';

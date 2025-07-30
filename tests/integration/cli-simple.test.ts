@@ -21,7 +21,7 @@ const ___dirname = path.dirname(__filename);
 /**
  * Package.json structure interface;
  */
-interface PackageJson {
+// interface PackageJson {
   name: string;
   version: string;
   description?: string;

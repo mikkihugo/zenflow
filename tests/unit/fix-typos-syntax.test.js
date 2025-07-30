@@ -11,7 +11,7 @@ describe('Typo and Syntax Fixes', () => {
     test('should have fixed processCommuncation to processCommunication', () => {
       const _filePath = path.join(process.cwd(), 'src/ui/console/js/daa-tools.js');
       const _fileContent = fs.readFileSync(filePath, 'utf-8');
-      // Check that the typo has been fixed
+      // Check that the typo h fixed
       expect(fileContent).not.toContain('processCommuncation');
       expect(fileContent).toContain('processCommunication');
       // Check method definition exists
@@ -34,7 +34,7 @@ describe('Typo and Syntax Fixes', () => {
       /mode\.roleDefinition\.length > 100\s*\?\s*`[^`]+`\s*:\s*mode\.roleDefinition/;
       )
       expect(ternaryMatch).toBeTruthy()
-      // Check that Array.isArray ternary is complete (has the : 'None' part)
+      // Check that Array.isArray ternary is complete (h : 'None' part)
       // The pattern is: Array.isArray(mode.groups) ? ... : 'None'}
       const _arrayTernaryPattern = /Array\.isArray\(mode\.groups\)\s*\?[\s\S]+?\)\s*:\s*'None'\}/;
       const _arrayTernaryMatch = fileContent.match(arrayTernaryPattern);

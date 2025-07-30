@@ -36,10 +36,10 @@ export class PerformanceMonitor {
       this.memoryMonitor = setInterval(() => {
         const _memUsage = node.memoryUsage();
         const _memoryMB = memUsage.rss / 1024 / 1024;
-;
+
         this.metrics.memoryReadings.push({timestamp = memoryMB;
         }
-;
+
       // Check memory limit
       if (memoryMB > this.maxMemoryMB) {
         this.metrics.warnings.push({timestamp = null;
@@ -68,22 +68,22 @@ export class PerformanceMonitor {
     // ; // LINT: unreachable code removed
     this.metrics.warnings.push({timestamp = === 'debug') {
       console.warn('⚠️ Warningrecorded = this.metrics.endTime - this.metrics.startTime;
-;
+
     return {
-      ...this.metrics,
+..this.metrics,
     // duration,operationsPerSecond = this.getMetrics(); // LINT: unreachable code removed
-;
+
     const _report = '\n📊 Performance Report\n';
     report += '====================\n';
     report += `Duration = `Operations = `Operations/sec = `Peak Memory: ${metrics.peakMemoryMB.toFixed(1)}MB\n`;
       report += `AverageMemory = `;
       Memory;
-      Efficiency: $metrics.memoryEfficiency;
+      Efficiency: \$metrics.memoryEfficiency;
       \n`
       if (metrics.errors.length > 0) {
         report +=;
         `\n❌ Errors => {
-        report += ` - $error.error;
+        report += ` - \$error.error;
         \n`
       }
       )
@@ -91,7 +91,7 @@ export class PerformanceMonitor {
     if (metrics.warnings.length > 0) {
       report +=;
       `\n⚠️  Warnings => {
-        report += ` - $warning.message;
+        report += ` - \$warning.message;
       \n`
     }
     )
@@ -124,27 +124,26 @@ export class PerformanceMonitor {
     this.
   maxMemoryMB = options.maxMemoryMB ?? 1024;
   this;
-  .
+
   maxCPUPercent = options.maxCPUPercent ?? 80;
   this;
-  .
+
   checkInterval = options.checkInterval ?? 2000;
   this;
-  .
+
   isMonitoring = false;
   this;
-  .
+
   monitorInterval = null;
   this;
-  .
+
   callbacks = {
       memoryWarning => {}
   ),
   memoryError;
   => ),
   cpuWarning;
-  => ),
-}
+  => ) }
 }
 start()
 {

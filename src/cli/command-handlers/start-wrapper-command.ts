@@ -23,34 +23,33 @@ const __api = subArgs.includes('--api') ?? subArgs.includes('-a') ?? flags.api;
 try {
     printSuccess('Starting Claude-Flow Orchestration System...');
     console.warn();
-;
+
     // Start integrated services (API + Dashboard + Queen Council)
     const _services = [];
-;
+
     // 1. Start Claude Zen API server (schema-driven)
     try {
       const { claudeZenServer } = await import('../../api/claude-zen-server.js');
       claudeZenServer.port = apiPort;
-      await claudeZenServer.start();
+// await claudeZenServer.start();
       services.push('API Server');
       printSuccess(`🚀 API Server started on port ${apiPort}`);
       printInfo(`📖Documentation = await import('./dashboard-command.js');
-        await startDashboard({api = await import('./queen-council.js');
-      await queenCouncilCommand(['convene', '--auto', '--silent'], {});
+// await startDashboard({api = await import('./queen-council.js');
+// await queenCouncilCommand(['convene', '--auto', '--silent'], {});
       services.push('Queen Council');
       printSuccess(`👑 Queen Council convened for strategic oversight`);
     } catch (/* _error */) {
       printWarning(`Queen Council auto-convenefailed = await import('./simple-commands/web-server.js');
-        const _server = await startWebServer(port);
-;
+// const _server = awaitstartWebServer(port);
+
         printSuccess(`🌐 Web UI is running!`);
         console.warn(`📍 Open your browser _to => {});
         return;
     //   // LINT: unreachable code removed} catch (/* err */) {
         printError('Failed to launch webUI = await import('./simple-commands/web-server.js');
         const _webServer = new ClaudeCodeWebServer(port);
-        await webServer.start();
-;
+// await webServer.start();
         printSuccess('🌐 Claude Flow Web UI is running!');
         console.warn(`📍 Open your browser to => {});
         return;
@@ -59,42 +58,42 @@ try {
         printWarning('Web UI failed, launching terminal UI...');
         try {
           const { launchEnhancedUI } = await import('./process-ui-enhanced.js');
-          await launchEnhancedUI();
+// await launchEnhancedUI();
           return;
     //   // LINT: unreachable code removed} catch (/* fallbackErr */) {
           // If both fail, show error
           printError('Failed to launchUI = ['memory', 'coordination'];
     const _missingDirs = [];
-;
+
     for(const dir of requiredDirs) {
       try {
-        await node.stat(dir);
+// await node.stat(dir);
       } catch {
         missingDirs.push(dir);
       }
     }
-;
+
     if(missingDirs.length > 0) {
       printWarning('Missing requireddirectories = === 'windows' ? 'cmd.exe' : '/bin/bash'));
-;
+
     // Task queue
     console.warn('   ✓ TaskQueue = compat.terminal.getPid();
-      await compat.safeCall(async () => {
+// await compat.safeCall(async () => {
         if(compat.runtime === 'node') {
           await node.writeTextFile('.claude-zen.pid', pid.toString());
         } else {
-          const _fs = await import('fs/promises');
-          await fs.writeFile('.claude-zen.pid', pid.toString());
+// const _fs = awaitimport('fs/promises');
+// await fs.writeFile('.claude-zen.pid', pid.toString());
         }
       });
       console.warn(`ProcessID = new AbortController();
-;
+
       compat.terminal.onSignal('SIGINT', () => {
         console.warn('\n⏹️  Shutting down orchestrator...');
         cleanup();
         compat.terminal.exit(0);
       });
-;
+
       // Simple heartbeat to show system is alive
       if(!daemon) {
         const __heartbeat = setInterval(() => {
@@ -104,7 +103,7 @@ try {
         }, 30000); // Every 30 seconds
 
         // Wait indefinitely (until Ctrl+C)
-        await new Promise(() => {});
+// await new Promise(() => {});
       }
     }
   } catch (/* _err */) {
@@ -114,28 +113,28 @@ try {
     //   // LINT: unreachable code removed}
   return null;
 }
-;
+
 async function cleanup(): unknown {
   // Clean up resources
   try {
-    await compat.safeCall(async () => {
+// await compat.safeCall(async () => {
       if(compat.runtime === 'node') {
         await node.remove('.claude-zen.pid');
       } else {
-        const _fs = await import('fs/promises');
-        await fs.unlink('.claude-zen.pid');
+// const _fs = awaitimport('fs/promises');
+// await fs.unlink('.claude-zen.pid');
       }
     });
   } catch {
     // File might not exist
   }
-;
+
   console.warn('✓ Terminal pool closed');
   console.warn('✓ Task queue cleared');
   console.warn('✓ Memory bank saved');
   console.warn('✓ Cleanup complete');
 }
-;
+
 function showStartHelp(): unknown {
   console.warn('Start the Claude Zen orchestration system with schema-driven API');
   console.warn();
@@ -199,4 +198,3 @@ function showStartHelp(): unknown {
   console.warn('  /api/prds                    # Product requirements');
   console.warn('  /api/coordination/status     # Multi-service coordination');
 }
-;

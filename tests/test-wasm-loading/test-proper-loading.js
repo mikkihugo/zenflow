@@ -8,7 +8,7 @@ async function testProperWasmLoading() {
     const _wasmModulePath =;
       '/home/codespace/nvm/current/lib/node_modules/ruv-swarm/wasm/ruv_swarm_wasm.js';
     console.warn('1. Importing WASM module from:', wasmModulePath);
-    const _wasmModule = await import(wasmModulePath);
+// const _wasmModule = awaitimport(wasmModulePath);
     console.warn('✅ WASM module imported successfully');
     console.warn('   Available exports:', Object.keys(wasmModule).slice(0, 10).join(', '), '...');
 
@@ -16,7 +16,7 @@ async function testProperWasmLoading() {
     console.warn('\n2. Initializing WASM...');
     const _wasmPath = path.join(path.dirname(wasmModulePath), 'ruv_swarm_wasm_bg.wasm');
     // Read the WASM file
-    const _wasmBuffer = await fs.readFile(wasmPath);
+// const _wasmBuffer = awaitfs.readFile(wasmPath);
     console.warn(`   WASM file size: ${wasmBuffer.length} bytes`);
     // Call the default export (which is __wbg_init)
   // await wasmModule.default(wasmBuffer);

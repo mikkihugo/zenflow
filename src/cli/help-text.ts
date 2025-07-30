@@ -9,7 +9,7 @@ export const VERSION = '2.0.0-alpha.73';
 
 export const MAIN_HELP = `
 🌊 Claude-Flow v${VERSION} - Enterprise-Grade AI Agent Orchestration Platform
-;
+
 🎯 ENTERPRISE FEATURES = {swarm = {agent = commandConfigs[command];
   if(!config) {
     return HelpFormatter.formatError(;
@@ -32,108 +32,81 @@ Unknowncommand = false;
       {
         name: 'hive-mind',
         description: 'Manage hive mind swarm intelligence',
-        aliases: ['hm'],
-      },
+        aliases: ['hm'] },
       {
         name: 'init',
-        description: 'Initialize Claude Flow configuration',
-      },
+        description: 'Initialize Claude Flow configuration' },
       {
         name: 'start',
-        description: 'Start orchestration system',
-      },
+        description: 'Start orchestration system' },
       {
         name: 'swarm',
-        description: 'Execute multi-agent swarm coordination',
-      },
+        description: 'Execute multi-agent swarm coordination' },
       {
         name: 'agent',
-        description: 'Manage individual agents',
-      },
+        description: 'Manage individual agents' },
       {
         name: 'sparc',
-        description: 'Execute SPARC development modes',
-      },
+        description: 'Execute SPARC development modes' },
       {
         name: 'memory',
-        description: 'Manage persistent memory operations',
-      },
+        description: 'Manage persistent memory operations' },
       {
         name: 'github',
-        description: 'Automate GitHub workflows',
-      },
+        description: 'Automate GitHub workflows' },
       {
         name: 'status',
-        description: 'Show system status and health',
-      },
+        description: 'Show system status and health' },
       {
         name: 'config',
-        description: 'Manage configuration settings',
-      },
+        description: 'Manage configuration settings' },
       {
         name: 'session',
-        description: 'Manage sessions and state persistence',
-      },
+        description: 'Manage sessions and state persistence' },
       {
         name: 'terminal',
-        description: 'Terminal pool management',
-      },
+        description: 'Terminal pool management' },
       {
         name: 'workflow',
-        description: 'Manage automated workflows',
-      },
+        description: 'Manage automated workflows' },
       {
         name: 'training',
-        description: 'Neural pattern training',
-      },
+        description: 'Neural pattern training' },
       {
         name: 'coordination',
-        description: 'Swarm coordination commands',
-      },
+        description: 'Swarm coordination commands' },
       {
         name: 'help',
-        description: 'Show help information',
-      },
-    ],
+        description: 'Show help information' } ],
     globalOptions: [;
       {
         flags: '--config <path>',
         description: 'Configuration file path',
-        defaultValue: '.claude/config.json',
-      },
+        defaultValue: '.claude/config.json' },
       {
         flags: '--verbose',
-        description: 'Enable verbose output',
-      },
+        description: 'Enable verbose output' },
       {
         flags: '--quiet',
-        description: 'Suppress non-error output',
-      },
+        description: 'Suppress non-error output' },
       {
         flags: '--json',
-        description: 'Output in JSON format',
-      },
+        description: 'Output in JSON format' },
       {
         flags: '--plain',
-        description: 'Show plain help without emojis',
-      },
+        description: 'Show plain help without emojis' },
       {
         flags: '--help',
-        description: 'Show help information',
-      },
+        description: 'Show help information' },
       {
         flags: '--version',
-        description: 'Show version information',
-      },
-    ],
+        description: 'Show version information' } ],
     examples: [;
       'npx claude-zen@alpha init --sparc',
       'claude-zen hive-mind wizard',
       'claude-zen swarm "Build REST API"',
       'claude-zen agent spawn researcher --name "Research Bot"',
       'claude-zen status --json',
-      'claude-zen memory query "API design"',
-    ],
-  }
+      'claude-zen memory query "API design"' ] }
   return HelpFormatter.formatHelp(helpInfo);
 }

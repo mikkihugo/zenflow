@@ -19,10 +19,9 @@ async function testLibraryIntegration() {
     console.warn('\n🔧 Test 3: Create Instances');
     const _swarmConfig = {
       topology: 'mesh',
-      maxAgents: 3,
+      maxAgents,
       strategy: 'parallel',
-      memoryStore: memoryStore,
-    };
+      memoryStore };
     const _swarm = new Swarm(swarmConfig);
     console.warn('✅ Swarm created:', swarm.id);
     console.warn('\n🎉 Library integration successful\! Ready for claude-zen MCP tools.');

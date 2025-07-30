@@ -6,7 +6,7 @@
 import { performance } from 'node:perf_hooks';
 import { WorkerThreadPool } from '../src/coordination/workers/worker-pool.js';
 
-async function testWorkerThreads(): Promise<void> {
+async function testWorkerThreads() {
   console.warn('🧪 Testing Worker Thread Implementation');
   console.warn('=====================================');
 
@@ -16,21 +16,18 @@ async function testWorkerThreads(): Promise<void> {
     // Initialize worker pool
     console.warn('📋 Initializing worker thread pool...');
     pool = new WorkerThreadPool({
-      maxWorkers: 4,
-      minWorkers: 2,
-      loadBalancingStrategy: 'round-robin',
-    });
+      maxWorkers,
+      minWorkers,
+      loadBalancingStrategy: 'round-robin' });
   // await pool.initialize();
     console.warn('✅ Worker pool initialized');
     // Test 1: Simple task execution
     console.warn('\n🔧 Test 1: Simple task execution');
     const startTime = performance.now();
-
-    const result1 = await pool.executeTask({
+// const result1 = awaitpool.executeTask({
       type: 'agent-spawn',
       agentType: 'coder',
-      name: 'Test Agent',
-    });
+      name: 'Test Agent' });
 
     const endTime = performance.now();
     console.warn(`✅ Task completed in ${(endTime - startTime).toFixed(0)}ms`);
@@ -42,21 +39,16 @@ async function testWorkerThreads(): Promise<void> {
     const parallelTasks = [
       pool.executeTask({
         type: 'neural-analysis',
-        data: { data: 'test-data', analysisType: 'pattern-recognition' },
-      }),
+        data: { data: 'test-data', analysisType: 'pattern-recognition' } }),
       pool.executeTask({
         type: 'code-analysis',
         codebase: 'test-codebase',
-        analysisOptions: {},
-      }),
+        analysisOptions: {} }),
       pool.executeTask({
         type: 'research-task',
         topic: 'test-topic',
-        depth: 'basic',
-      }),
-    ];
-
-    const parallelResults = await Promise.all(parallelTasks);
+        depth: 'basic' }) ];
+// const parallelResults = awaitPromise.all(parallelTasks);
     const parallelEndTime = performance.now();
     console.warn(
       `✅ All parallel tasks completed in ${(parallelEndTime - parallelStartTime).toFixed(0)}ms`
@@ -78,15 +70,14 @@ async function testWorkerThreads(): Promise<void> {
 
     // Test 4: Load balancing
     console.warn('\n🔧 Test 4: Load balancing test');
-    const loadTestTasks = Array.from({ length: 6 }, (_, i) =>
+    const loadTestTasks = Array.from({ length }, (_, i) =>
       pool.executeTask({
         type: 'testing-task',
         testType: 'unit',
         target: `test-${i}`
 })
     );
-
-    const loadTestResults = await Promise.all(loadTestTasks);
+// const loadTestResults = awaitPromise.all(loadTestTasks);
     console.warn(
       `✅ Load balancing test: ${loadTestResults.filter((r) => r.success).length}/${loadTestResults.length} successful`
     );
@@ -107,10 +98,9 @@ async function testWorkerThreads(): Promise<void> {
     if (pool) {
   // await pool.shutdown();
       console.warn('🔄 Worker pool shut down');
-    }
-  }
-}
-
+// }
+// }
+// }
 // Run test if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   try {
@@ -120,7 +110,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   } catch (error) {
     console.error('❌ Worker thread test failed:', error);
     process.exit(1);
-  }
-}
-
+// }
+// }
 export { testWorkerThreads };

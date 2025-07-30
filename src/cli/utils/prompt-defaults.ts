@@ -20,16 +20,16 @@ export interface DefaultEntry {id = ============================================
 export class PromptDefaultsManager {
   private config = {}
 this;
-.
+
   configPath = configPath ?? join(homedir(), '.claude-zen', 'prompt-defaults.json')
 this
-.
+
   environmentDefaults = new Map<string, any>()
 this
-.
+
   loadConfig()
 this
-.
+
   loadEnvironmentDefaults()
 }
 /**
@@ -60,7 +60,7 @@ saveConfig();
       const _dir = join(this.configPath, '..');
       if (!existsSync(dir)) {
         mkdirSync(dir, {recursive = process.env;
-;
+
     // Common defaults from environment
     if (env.CLAUDE_AUTO_APPROVE === '1'  ?? env.CLAUDE_AUTO_APPROVE === 'true') {
       this.environmentDefaults.set('confirm = JSON.parse(env.CLAUDE_PROMPT_DEFAULTS);
@@ -207,7 +207,7 @@ saveConfig();
        * @param target - Target within scope (command name or environment name);
        */
       public
-      clearDefaults(scope?: string, target?: string)
+      clearDefaults(scope?, target?: string)
       : void
       if (scope === 'command' && target && this.config.command) {
         delete this.config.command[target];
@@ -292,7 +292,7 @@ export function setPromptDefault(promptId = {}: unknown): void {
  * @param promptType - Optional prompt type;
  * @returns True if defaults exist;
     // */ // LINT: unreachable code removed
-export function hasPromptDefault(promptId: string, command?: string, promptType?: string): boolean {
+export function hasPromptDefault(promptId, command?, promptType?: string): boolean {
   return getPromptDefaultsManager().hasDefault(promptId, command, promptType);
 }
 /**
@@ -300,7 +300,7 @@ export function hasPromptDefault(promptId: string, command?: string, promptType?
  * @param scope - Scope to clear;
  * @param target - Target within scope;
  */
-export function clearPromptDefaults(scope?: string, target?: string): void {
+export function clearPromptDefaults(scope?, target?: string): void {
   getPromptDefaultsManager().clearDefaults(scope, target);
 }
 /**

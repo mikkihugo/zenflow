@@ -15,22 +15,22 @@ export class RuvSwarm {
     return swarm;
     //   // LINT: unreachable code removed}
 
-  getSwarms() 
+  getSwarms()
     return Array.from(this.swarms.values());
 
 class MockSwarm {
   constructor(config = config.id;
   this;
-  .;
+
   topology = config.topology;
   this;
-  .;
+
   maxAgents = config.maxAgents;
   this;
-  .;
+
   agents = [];
   this;
-  .;
+
   created = new Date().toISOString();
 }
 

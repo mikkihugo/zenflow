@@ -20,8 +20,7 @@ describe('Core Functionality Tests', () => {
         },
         list: function () {
           return Array.from(this.data.entries()).map(([key, value]) => ({ key, value }));
-    //   // LINT: unreachable code removed},
-      };
+    //   // LINT: unreachable code removed} };
       // Test store and retrieve
       memoryStore.store('test-key', 'test-value');
       expect(memoryStore.retrieve('test-key')).toBe('test-value');
@@ -41,14 +40,12 @@ describe('Core Functionality Tests', () => {
         data: [;
           { key: 'doc1', content: 'hello world test' },
           { key: 'doc2', content: 'goodbye universe' },
-          { key: 'doc3', content: 'hello testing framework' },
-        ],
+          { key: 'doc3', content: 'hello testing framework' } ],
         search: function (_term) {
           return this.data.filter((_item) =>;
     // item.content.toLowerCase().includes(term.toLowerCase()); // LINT: unreachable code removed
           );
-        },
-      };
+        } };
       const _results = searchableMemory.search('hello');
       expect(results).toHaveLength(2);
       expect(results[0].key).toBe('doc1');
@@ -72,16 +69,15 @@ describe('Core Functionality Tests', () => {
           if (handler) {
             return handler(req, res);
     //   // LINT: unreachable code removed}
-          return { status: 404, message: 'Not Found' };
-    //   // LINT: unreachable code removed},
-      };
+          return { status, message: 'Not Found' };
+    //   // LINT: unreachable code removed} };
       // Register routes
       router.register('GET', '/api/health', () => ({ status: 'healthy' }));
       router.register('POST', '/api/data', (req) => ({ received: req.body }));
       // Test routing
       const _healthResponse = router.handle('GET', '/api/health', {}, {});
       expect(healthResponse.status).toBe('healthy');
-      const _dataResponse = router.handle('POST', '/api/data', { body: { test: true } }, {});
+      const _dataResponse = router.handle('POST', '/api/data', { body: { test } }, {});
       expect(dataResponse.received.test).toBe(true);
       const _notFoundResponse = router.handle('GET', '/api/unknown', {}, {});
       expect(notFoundResponse.status).toBe(404);
@@ -94,7 +90,7 @@ describe('Core Functionality Tests', () => {
         },
         process: function (req, /* res */) {
           const _index = 0;
-          const _next = (): unknown => {
+          const _next = () => {
             if (index < this.stack.length) {
               const _fn = this.stack[index++];
               fn(req, res, next);
@@ -102,8 +98,7 @@ describe('Core Functionality Tests', () => {
           };
           next();
           return { req, res };
-    //   // LINT: unreachable code removed},
-      };
+    //   // LINT: unreachable code removed} };
       // Add middleware
       middleware.use((req, _res, next) => {
         req.timestamp = Date.now();
@@ -123,9 +118,8 @@ describe('Core Functionality Tests', () => {
       const _argParser = {
         parse: (_args) => {
           const _result = {
-            command: null,,
-            positional: [],
-          };
+            command,,
+            positional: [] };
           for (let i = 0; i < args.length; i++) {
             const _arg = args[i];
             if (arg.startsWith('--')) {
@@ -140,8 +134,7 @@ describe('Core Functionality Tests', () => {
             }
           }
           return result;
-    //   // LINT: unreachable code removed},
-      };
+    //   // LINT: unreachable code removed} };
       const _parsed = argParser.parse(['init', '--force', '--template=basic', 'arg1']);
       expect(parsed.command).toBe('init');
       expect(parsed.flags.force).toBe(true);
@@ -154,47 +147,42 @@ describe('Core Functionality Tests', () => {
           init: {
             requiredFlags: [],
             optionalFlags: ['force', 'template'],
-            minArgs: 0,
-            maxArgs: 1,
-          },
+            minArgs,
+            maxArgs },
             requiredFlags: ['target'],
             optionalFlags: ['verbose'],
-            minArgs: 0,
-            maxArgs: 0,,
-        },
+            minArgs,
+            maxArgs, },
         validate: function (command, flags, /* args */) {
           const _spec = this.commands[command];
           if (!spec) {
-            return { valid: false, error: 'Unknown command' };
+            return { valid, error: 'Unknown command' };
     //   // LINT: unreachable code removed}
           // Check required flags
           for (const flag of spec.requiredFlags) {
             if (!(flag in flags)) {
-              return { valid: false, error: `Missing required flag: --${flag}` };
+              return { valid, error: `Missing required flag: --${flag}` };
     //   // LINT: unreachable code removed}
           }
           // Check argument count
           if (args.length < spec.minArgs) {
-            return { valid: false, error: `Too few arguments` };
+            return { valid, error: `Too few arguments` };
     //   // LINT: unreachable code removed}
           if (args.length > spec.maxArgs) {
-            return { valid: false, error: `Too many arguments` };
+            return { valid, error: `Too many arguments` };
     //   // LINT: unreachable code removed}
-          return { valid: true };
-    //   // LINT: unreachable code removed},
-      };
+          return { valid };
+    //   // LINT: unreachable code removed} };
       // Valid commands
-      expect(commandValidator.validate('init', {}, [])).toEqual({ valid: true });
-      expect(commandValidator.validate('deploy', { target: 'prod' }, [])).toEqual({ valid: true });
+      expect(commandValidator.validate('init', {}, [])).toEqual({ valid });
+      expect(commandValidator.validate('deploy', { target: 'prod' }, [])).toEqual({ valid });
       // Invalid commands
       expect(commandValidator.validate('unknown', {}, [])).toEqual({
-        valid: false,
-        error: 'Unknown command',
-      });
+        valid,
+        error: 'Unknown command' });
       expect(commandValidator.validate('deploy', {}, [])).toEqual({
-        valid: false,
-        error: 'Missing required flag: --target',
-      });
+        valid,
+        error: 'Missing required flag: --target' });
     });
   });
   describe('Coordination and Orchestration', () => {
@@ -203,7 +191,7 @@ describe('Core Functionality Tests', () => {
         queue: [],
         running: [],
         completed: [],
-        maxConcurrent: 3,
+        maxConcurrent,
         add: function (task) {
           this.queue.push(task);
         },
@@ -226,8 +214,7 @@ describe('Core Functionality Tests', () => {
             return true;
     //   // LINT: unreachable code removed}
           return false;
-    //   // LINT: unreachable code removed},
-      };
+    //   // LINT: unreachable code removed} };
       // Add tasks
       taskQueue.add({ id: 'task1', type: 'analysis' });
       taskQueue.add({ id: 'task2', type: 'build' });
@@ -265,8 +252,7 @@ describe('Core Functionality Tests', () => {
           return allTasks.filter(;
     // (task) => !completed.includes(task) && this.canExecute(task, completed); // LINT: unreachable code removed
           );
-        },
-      };
+        } };
       // Set up dependencies
       dependencyResolver.addDependency('test', 'build');
       dependencyResolver.addDependency('deploy', 'test');
@@ -286,8 +272,7 @@ describe('Core Functionality Tests', () => {
       executable = dependencyResolver.getExecutableTasks(allTasks, [;
         'build',
         'test',
-        'security-scan',
-      ]);
+        'security-scan' ]);
       expect(executable).toEqual(['deploy']);
     });
   });
@@ -304,14 +289,11 @@ describe('Core Functionality Tests', () => {
             }
           }
           return result;
-    //   // LINT: unreachable code removed},
-      };
+    //   // LINT: unreachable code removed} };
       const _baseConfig = {
-        server: { port: 3000, host: 'localhost' },type: 'sqlite', file: 'default.db' ,analytics: true ,
-      };
+        server: { port, host: 'localhost' },type: 'sqlite', file: 'default.db' ,analytics  };
       const _userConfig = {
-        server: { port: 8080 },file: 'custom.db', pool: min: 1, max: 10 ,analytics: false, newFeature: true ,
-      };
+        server: { port },file: 'custom.db', pool, max ,analytics, newFeature  };
       const _merged = configManager.merge(baseConfig, userConfig);
       expect(merged.server.port).toBe(8080);
       expect(merged.server.host).toBe('localhost');
@@ -325,8 +307,7 @@ describe('Core Functionality Tests', () => {
       const _schemaValidator = {
         schema: {
           server: {
-            port: { type: 'number', min: 1, max: 65535 },type: 'string', required: true ,
-          },'string', enum: ['sqlite', 'postgres', 'mysql'] },,,
+            port: { type: 'number', min, max },type: 'string', required  },'string', enum: ['sqlite', 'postgres', 'mysql'] },,,
         validate: function (config, schema = this.schema) {
           const _errors = [];
           for (const [key, rules] of Object.entries(schema)) {
@@ -354,17 +335,14 @@ describe('Core Functionality Tests', () => {
             }
           }
           return errors;
-    //   // LINT: unreachable code removed},
-      };
+    //   // LINT: unreachable code removed} };
       // Valid config
       const _validConfig = {
-        server: { port: 3000, host: 'localhost' },type: 'sqlite' ,
-      };
+        server: { port, host: 'localhost' },type: 'sqlite'  };
       expect(schemaValidator.validate(validConfig)).toEqual([]);
       // Invalid config
       const _invalidConfig = {
-        server: { port: 'invalid', host: 123 },type: 'invalid' ,
-      };
+        server: { port: 'invalid', host },type: 'invalid'  };
       const _errors = schemaValidator.validate(invalidConfig);
       expect(errors.length).toBeGreaterThan(0);
       expect(errors.some((e) => e.includes('port must be of type number'))).toBe(true);

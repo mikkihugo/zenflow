@@ -6,104 +6,102 @@
 export class MCPIntegrationLayer {
   constructor(ui = ui;
   this;
-  .
+
   activeTools = new Map();
   this;
-  .
+
   resultCache = new Map();
   this;
-  .
+
   subscriptions = new Set();
   this;
-  .
+
   retryQueue = new Map();
   this;
-  .
+
   maxRetries = 3;
   this;
-  .
+
   retryDelay = 1000;
   // Tool categories for better organization
   this;
-  .
+
   toolCategories = {
       // Swarm Coordination Tools (12)swarm = await this.checkMCPAvailability();
       if(!_mcpAvailable) {
         this.ui.addLog('warning', 'MCP tools not available - using mock implementations');
         this.useMockMode = true;
       }
-;
+
   // Initialize tool monitoring
   this;
-  .
+
   startToolMonitoring();
   // Setup event handlers
   this;
-  .
+
   setupEventHandlers();
   this;
-  .
+
   ui;
-  .
+
   addLog('success', 'MCP Integration Layer initialized successfully');
 }
-catch (/* error */)
+catch (error)
 {
   this.ui.addLog('error', `Failed to initialize MCPintegration = true;
     }
   }
-;
+
   /**
    * Check if MCP tools are available;
    */;
   async checkMCPAvailability() {
     try {
       // Try to access a simple MCP tool
-      const _result = await this.executeToolDirect('features_detect', {});
+// const _result = awaitthis.executeToolDirect('features_detect', {});
       return result && result.success;
-    //   // LINT: unreachable code removed} catch (/* error */) {
+    //   // LINT: unreachable code removed} catch (error) {
       return false;
     //   // LINT: unreachable code removed}
   }
-;
+
   /**
    * Execute MCP tool with full error handling and retry logic;
    */;
   async executeTool(toolName, parameters = {}, options = {}): unknown {
     const _executionId = `exec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-;
+
     try {
       // Store execution info
       this.activeTools.set(executionId, {
         toolName,
         parameters,startTime = await this.executeWithRetry(toolName, parameters, options);
-;
+
       // Cache successful results
       if(result.success) {
         this.cacheResult(toolName, parameters, result);
       }
-;
+
       // Update execution status
       this.activeTools.set(executionId, {
-        ...this.activeTools.get(executionId),status = options.maxRetries  ?? this.maxRetries;
+..this.activeTools.get(executionId),status = options.maxRetries  ?? this.maxRetries;
     let lastError;
-;
+
     for(const attempt = 0; attempt <= maxRetries; attempt++) {
       try {
         if(attempt > 0) {
           // Wait before retry
-          await this.delay(this.retryDelay * Math.pow(2, attempt - 1));
+// await this.delay(this.retryDelay * Math.pow(2, attempt - 1));
           this.ui.addLog('info', `Retrying ${toolName} (attempt ${attempt + 1}/${maxRetries + 1})`);
         }
-;
-        const _result = await this.executeToolDirect(toolName, parameters);
+// const _result = awaitthis.executeToolDirect(toolName, parameters);
         return result;
-    //   // LINT: unreachable code removed} catch (/* error */) {
+    //   // LINT: unreachable code removed} catch (error) {
         lastError = error;
         this.ui.addLog(;
           'warning',
-          `Tool ${toolName} failed on attempt ${attempt + 1}: ${error.message}`,
-  )
+          `Tool ${toolName} failed on attempt ${attempt + 1}: ${error.message}`)
 }
 }
 throw new Error(;
@@ -113,11 +111,11 @@ mcp__claude - zen__$;
   toolName;
 }
 `;
-;
+
       // Check if we have this tool available (would need to be passed from the calling context)
       // For now, simulate execution
       return this.executeMockTool(toolName, parameters);
-    //   // LINT: unreachable code removed} catch (/* error */) {
+    //   // LINT: unreachable code removed} catch (error) {
       throw new Error(`;
 MCP;
 tool;
@@ -138,19 +136,19 @@ executeToolsBatch(toolExecutions, progressCallback)
 {
     const _results = [];
     const _total = toolExecutions.length;
-;
+
     for(let i = 0; i < total; i++) {
       const { toolName, parameters, options } = toolExecutions[i];
-;
+
       try {
-        const _result = await this.executeTool(toolName, parameters, options);
+// const _result = awaitthis.executeTool(toolName, parameters, options);
         results.push({success = this.generateCacheKey(toolName, parameters);
     const __ttl = this.getCacheTTL(toolName);
-;
+
     this.resultCache.set(cacheKey, {
       result,timestamp = this.generateCacheKey(toolName, parameters);
     const _cached = this.resultCache.get(cacheKey);
-;
+
     if (!cached) return null;
     // ; // LINT: unreachable code removed
     const _age = Date.now() - cached.timestamp;
@@ -158,10 +156,10 @@ executeToolsBatch(toolExecutions, progressCallback)
       this.resultCache.delete(cacheKey);
       return null;
     //   // LINT: unreachable code removed}
-;
+
     return cached.result;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Generate cache key for tool execution;
    */;
@@ -179,7 +177,7 @@ executeToolsBatch(toolExecutions, progressCallback)
         this.resultCache.delete(key);
       }
     }
-;
+
   /**
    * Get tools by category;
    */;
@@ -208,7 +206,7 @@ executeToolsBatch(toolExecutions, progressCallback)
       this.notifyUI('tool_cancelled', { executionId });
     }
   }
-;
+
   /**
    * Start monitoring active tools;
    */;
@@ -217,7 +215,7 @@ executeToolsBatch(toolExecutions, progressCallback)
       this.updateToolProgress();
       this.cleanCompletedExecutions();
     }, 1000);
-;
+
   /**
    * Update progress for running tools;
    */;
@@ -230,18 +228,18 @@ executeToolsBatch(toolExecutions, progressCallback)
         execution.progress = Math.min((elapsed / estimatedDuration) * 100, 95);
       }
     }
-;
+
   /**
    * Get estimated duration for tool execution;
    */;
-  getEstimatedDuration(toolName): unknown 
-;
+  getEstimatedDuration(toolName): unknown
+
     for (const [executionId, execution] of this.activeTools.entries()) {
       if(execution.endTime && execution.endTime < oneHourAgo) {
         this.activeTools.delete(executionId);
       }
     }
-;
+
   /**
    * Setup event handlers for real-time updates;
    */;
@@ -252,7 +250,7 @@ executeToolsBatch(toolExecutions, progressCallback)
         this.handleShutdown();
       });
     }
-;
+
   /**
    * Handle system shutdown;
    */;
@@ -263,7 +261,7 @@ executeToolsBatch(toolExecutions, progressCallback)
         this.cancelExecution(executionId);
       }
     }
-;
+
   /**
    * Notify UI of events;
    */;
@@ -273,7 +271,7 @@ executeToolsBatch(toolExecutions, progressCallback)
       const _level = this.getEventLevel(eventType);
       this.ui.addLog(level, message);
     }
-;
+
     // Notify subscribers
     for(const callback of this.subscriptions) {
       try {
@@ -281,23 +279,20 @@ executeToolsBatch(toolExecutions, progressCallback)
       } catch (/* _error */) {
         console.error('Error in eventsubscription = > this.subscriptions.delete(callback);
   }
-;
+
   /**
    * Get comprehensive status;
    */;
   getStatus() {
     const __running = Array.from(this.activeTools.values()).filter(;
-      (e) => e.status === 'running',
-    ).length;
+      (e) => e.status === 'running').length;
     const __completed = Array.from(this.activeTools.values()).filter(;
-      (e) => e.status === 'completed',
-    ).length;
+      (e) => e.status === 'completed').length;
     const __failed = Array.from(this.activeTools.values()).filter(;
-      (e) => e.status === 'failed',
-    ).length;
-;
+      (e) => e.status === 'failed').length;
+
     return {mcpAvailable = > setTimeout(resolve, ms));
     //   // LINT: unreachable code removed}
 }
-;
+
 export default MCPIntegrationLayer;

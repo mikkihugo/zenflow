@@ -18,8 +18,7 @@ TypedResponse,
 type UserContext
 
 ValidationError,
-ValidationResult,
-} from '../types/server.js'
+ValidationResult } from '../types/server.js'
 /**
  * Enhanced request logging middleware
  */
@@ -44,7 +43,7 @@ export function requestLogger(): MiddlewareFunction {
  * Request validation middleware
  */
 export function validateRequest(schema => {
-    const _validation = {params = validateObject(req.params: unknown, schema.params: unknown, 'params': unknown);
+    const _validation = {params = validateObject(req.params, schema.params, 'params': unknown);
 }
 // Validate query
 if (schema.query) {
@@ -107,7 +106,7 @@ if (hasErrors) {
       return res.status(404).json({success = === 'production' ? 'An unexpected error occurred' : err.message,stack = === 'production' ? undefined => {
     // Add success response helper
     res.success = function<T>(data, message?: string) {
-      return this.json({success = function(message, code?: number, details?: JSONObject) {
+      return this.json({success = function(message, code?, details?: JSONObject) {
       const _statusCode = code  ?? 500;
     // return this.status(statusCode).json({success = function<T>(data: T[],pagination = function(data, ttl?: number) { // LINT: unreachable code removed
       if (ttl) {
@@ -119,7 +118,7 @@ if (hasErrors) {
             this.write(JSON.stringify(chunk) + '\n');
     //   // LINT: unreachable code removed}
           this.end();
-        } catch () {
+        } catch (error) {
           this.write(JSON.stringify({error = function<T>(): T {
       return this.params as T;
     //   // LINT: unreachable code removed};

@@ -9,16 +9,16 @@ export async function createClaudeFlowCommands(workingDir = `---name = `---name 
 name: claude-zen-swarm;
 description: Coordinate multi-agent swarms for complex tasks;
 ---
-;
+
 # 🐝 Claude-Flow Swarm Coordination
-;
+
 Advanced multi-agent coordination system with timeout-free execution, distributed memory sharing, and intelligent load balancing.
-;
+
 ## Basic Usage;
 \`\`\`bash;
-./claude-zen swarm "your complex task" --strategy <type> [options];
+/claude-zen swarm "your complex task" --strategy <type> [options];
 \`\`\`
-;
+
 ## 🎯 Swarm Strategies;
 - **auto** - Automatic strategy selection based on task analysis;
 - **development** - Code implementation with review and testing;
@@ -27,7 +27,7 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 - **testing** - Comprehensive quality assurance;
 - **optimization** - Performance tuning and refactoring;
 - **maintenance** - System updates and bug fixes
-;
+
 ## 🤖 Agent Types;
 - **coordinator** - Plans and delegates tasks to other agents;
 - **developer** - Writes code and implements solutions;
@@ -38,14 +38,14 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 - **documenter** - Creates documentation and guides;
 - **monitor** - Tracks performance and system health;
 - **specialist** - Domain-specific expert agents
-;
+
 ## 🔄 Coordination Modes;
 - **centralized** - Single coordinator manages all agents (default);
 - **distributed** - Multiple coordinators share management;
 - **hierarchical** - Tree structure with nested coordination;
 - **mesh** - Peer-to-peer agent collaboration;
 - **hybrid** - Mixed coordination strategies
-;
+
 ## ⚙️ Common Options;
 - \`--strategy <type>\` - Execution strategy;
 - \`--mode <type>\` - Coordination mode;
@@ -61,39 +61,39 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 - \`--encryption\` - Enable data encryption;
 - \`--verbose\` - Detailed logging output;
 - \`--dry-run\` - Show configuration without executing
-;
+
 ## 🌟 Examples
-;
+
 ### Development Swarm with Review;
 \`\`\`bash;
-./claude-zen swarm "Build e-commerce REST API" \\;
+/claude-zen swarm "Build e-commerce REST API" \\;
   --strategy development \\;
   --monitor \\;
   --review \\;
   --testing;
 \`\`\`
-;
+
 ### Long-Running Research Swarm;
 \`\`\`bash;
-./claude-zen swarm "Analyze AI market trends 2024-2025" \\;
+/claude-zen swarm "Analyze AI market trends 2024-2025" \\;
   --strategy research \\;
   --background \\;
   --distributed \\;
   --max-agents 8;
 \`\`\`
-;
+
 ### Performance Optimization Swarm;
 \`\`\`bash;
-./claude-zen swarm "Optimize database queries and API performance" \\;
+/claude-zen swarm "Optimize database queries and API performance" \\;
   --strategy optimization \\;
   --testing \\;
   --parallel \\;
   --monitor;
 \`\`\`
-;
+
 ### Enterprise Development Swarm;
 \`\`\`bash;
-./claude-zen swarm "Implement secure payment processing system" \\;
+/claude-zen swarm "Implement secure payment processing system" \\;
   --strategy development \\;
   --mode distributed \\;
   --max-agents 10 \\;
@@ -104,102 +104,101 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
   --encryption \\;
   --verbose;
 \`\`\`
-;
+
 ### Testing and QA Swarm;
 \`\`\`bash;
-./claude-zen swarm "Comprehensive security audit and testing" \\;
+/claude-zen swarm "Comprehensive security audit and testing" \\;
   --strategy testing \\;
   --review \\;
   --verbose \\;
   --max-agents 6;
 \`\`\`
-;
+
 ## 📊 Monitoring and Control
-;
+
 ### Real-time monitoring:;
 \`\`\`bash;
 # Monitor swarm activity;
-./claude-zen monitor
-;
+/claude-zen monitor
+
 # Monitor specific component;
-./claude-zen monitor --focus swarm;
+/claude-zen monitor --focus swarm;
 \`\`\`
-;
+
 ### Check swarm status:;
 \`\`\`bash;
 # Overall system status;
-./claude-zen status
-;
+/claude-zen status
+
 # Detailed swarm status;
-./claude-zen status --verbose;
+/claude-zen status --verbose;
 \`\`\`
-;
+
 ### View agent activity:;
 \`\`\`bash;
 # List all agents;
-./claude-zen agent list
-;
+/claude-zen agent list
+
 # Agent details;
-./claude-zen agent info <agent-id>;
+/claude-zen agent info <agent-id>;
 \`\`\`
-;
+
 ## 💾 Memory Integration
-;
-Swarms automatically use distributed memory for collaboration:
-;
+
+Swarms automatically use distributed memory for collaboration: null
 \`\`\`bash;
 # Store swarm objectives;
-./claude-zen memory store "swarm_objective" "Build scalable API" --namespace swarm
-;
+/claude-zen memory store "swarm_objective" "Build scalable API" --namespace swarm
+
 # Query swarm progress;
-./claude-zen memory query "swarm_progress" --namespace swarm
-;
+/claude-zen memory query "swarm_progress" --namespace swarm
+
 # Export swarm memory;
-./claude-zen memory export swarm-results.json --namespace swarm
+/claude-zen memory export swarm-results.json --namespace swarm
 \`\`\`
-;
+
 ## 🎯 Key Features
-;
+
 ### Timeout-Free Execution;
 - Background mode for long-running tasks;
 - State persistence across sessions;
 - Automatic checkpoint recovery
-;
+
 ### Work Stealing & Load Balancing;
 - Dynamic task redistribution;
 - Automatic agent scaling;
 - Resource-aware scheduling
-;
+
 ### Circuit Breakers & Fault Tolerance;
 - Automatic retry with exponential backoff;
 - Graceful degradation;
 - Health monitoring and recovery
-;
+
 ### Real-Time Collaboration;
 - Cross-agent communication;
 - Shared memory access;
 - Event-driven coordination
-;
+
 ### Enterprise Security;
 - Role-based access control;
 - Audit logging;
 - Data encryption;
 - Input validation
-;
+
 ## 🔧 Advanced Configuration
-;
+
 ### Dry run to preview:;
 \`\`\`bash;
-./claude-zen swarm "Test task" --dry-run --strategy development;
+/claude-zen swarm "Test task" --dry-run --strategy development;
 \`\`\`
-;
+
 ### Custom quality thresholds:;
 \`\`\`bash;
-./claude-zen swarm "High quality API" \\;
+/claude-zen swarm "High quality API" \\;
   --strategy development \\;
   --quality-threshold 0.95;
 \`\`\`
-;
+
 ### Scheduling algorithms:;
 - FIFO (First In, First Out);
 - Priority-based;
@@ -208,10 +207,10 @@ Swarms automatically use distributed memory for collaboration:
 - Critical Path;
 - Resource-aware;
 - Adaptive
-;
+
 For detailed documentation, see: https://github.com/ruvnet/claude-code-flow/docs/swarm-system.md
 `;
-await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
-await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
+// await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
+// await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
 console.warn('  ✓ Created slash command: /claude-zen-swarm');
 }

@@ -33,7 +33,7 @@ const _errorCount = 0;
 for(const file of manifest.files) {
   const _sourcePath = path.join(SOURCE_DIR, file.source);
   const _destPath = path.join(DEST_DIR, file.destination);
-;
+
   try {
     if (fs.existsSync(sourcePath)) {
       // Ensure destination directory exists
@@ -41,30 +41,27 @@ for(const file of manifest.files) {
       if (!fs.existsSync(destDir)) {
         fs.mkdirSync(destDir, {recursive = '.repeat(50));
 console.warn('InstallationSummary = manifest.files.filter(;
-    (_f) => f.category === category && fs.existsSync(path.join(DEST_DIR, f.destination)),
-  ).length;
-  console.warn(`  ${category}: ${copied}/${info.count} files`);
+    (_f) => f.category === category && fs.existsSync(path.join(DEST_DIR, f.destination))).length;
+  console.warn(`${category}: ${copied}/${info.count} files`);
 }
-;
+
 // Verify installation
 if(errorCount === 0) {
   console.warn('\n✅ Template installation completed successfully!');
-;
+
   // Create a timestamp file
   const _timestamp = new Date().toISOString();
   fs.writeFileSync(;
     path.join(__dirname, '.installed'),
-    `Installed: ${timestamp}\nVersion: ${manifest.version}\n`,
-  );
+    `Installed: ${timestamp}\nVersion: ${manifest.version}\n`);
 } else {
   console.warn('\n⚠️  Template installation completed with errors.');
   console.warn('Please check the error messages above and ensure source files exist.');
 }
-;
+
 // Display next steps
 console.warn('\nNext steps:');
 console.warn('1. Review the installed files in the .claude directory');
 console.warn('2. Run tests to verify functionality: npm test');
 console.warn('3. Package for distribution if needed');
 console.warn('\nFor more information, see README.md');
-;

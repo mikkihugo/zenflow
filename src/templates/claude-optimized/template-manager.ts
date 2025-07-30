@@ -11,13 +11,13 @@ const _commands = {install = > execSync('node install-template.js', {stdio = > e
     if(!_targetPath) {
       console.error('Usage => {
     const _manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
-;
+
     console.warn('Claude Optimized Template');
     console.warn('========================');
     console.warn(`Version = manifest.files.filter((f) => f.category === category).length;
-      console.warn(`  ${category}: ${count} files`);
+      console.warn(`${category}: ${count} files`);
     }
-;
+
 console.warn('\nAvailable commands => {
     console.warn('Updating template...');
 // Run install to get latest files
@@ -32,7 +32,7 @@ if(args.length === 0) {
 if(commands[command]) {
   try {
     commands[command](...args.slice(1));
-  } catch (/* error */) {
+  } catch (error) {
     console.error(`Error executing ${command}:`, error.message);
     process.exit(1);
   }
@@ -41,4 +41,3 @@ if(commands[command]) {
   console.warn(`Available commands: ${Object.keys(commands).join(', ')}`);
   process.exit(1);
 }
-;

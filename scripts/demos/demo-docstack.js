@@ -24,7 +24,7 @@ Accepted - 2025-01-17
 ## Context;
 We need a reliable, scalable database solution for our storage service that supports ACID transactions and complex queries.
 ## Decision;
-We will use PostgreSQL 15+ as our primary storage solution.
+We will use PostgreSQL 15+  primary storage solution.
 ## Consequences;
 ### Positive;
 - Strong ACID compliance for data integrity;
@@ -33,15 +33,13 @@ We will use PostgreSQL 15+ as our primary storage solution.
 - Support for JSON/JSONB for flexible schemas
 ### Negative;
 - Requires more operational expertise than NoSQL alternatives;
-- Vertical scaling has limits compared to distributed databases
+- Vertical scaling h compared to distributed databases
 ## References;
 - PostgreSQL 15 Documentation;
 - Our performance benchmarks showing 10K TPS capability`,
     metadata: {
       dependencies: ['database-infrastructure'],
-      tags: ['database', 'architecture', 'postgresql'],
-    },
-  },
+      tags: ['database', 'architecture', 'postgresql'] } },
   {
     service: 'user-service',
     docType: 'api-documentation',
@@ -70,9 +68,9 @@ Retrieve a list of users with pagination support.
     }
   ],
   "pagination": {
-    "page": 1,
-    "limit": 20,
-    "total": 150;
+    "page",
+    "limit",
+    "total";
   }
 }
 \`\`\`
@@ -105,9 +103,7 @@ Create a new user account.
 | 500 | Internal Server Error |`,
     metadata: {
       tags: ['api', 'rest', 'users'],
-      version: '1.0.0',
-    },
-  },
+      version: '1.0.0' } },
   {
     service: 'payment-service',
     docType: 'security-spec',
@@ -264,10 +260,7 @@ vendor`,
     metadata: {
       compliance: ['PCI-DSS', 'SOC2'],
       tags: ['security', 'compliance', 'payment'],
-      priority: 'critical',
-    },
-  },
-];
+      priority: 'critical' } } ];
 async function simulateDocumentCreation() {
   console.warn(`;
 $;
@@ -382,16 +375,16 @@ function getRouting() {
       approvers: ['architect', 'tech-lead'],
       validation: ['consistency-check', 'dependency-analysis']
 }
-,
+
 ('api-documentation')
-:
+: null
 {
   approvers: ['product-owner'],
   validation: ['completeness-check']
 }
-,
+
 ('security-spec')
-:
+: null
 {
   approvers: ['security-team', 'architect'],
   validation: ['security-scan', 'compliance-check']

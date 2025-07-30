@@ -18,37 +18,36 @@ const _testSuites = [
     command: 'npm',
     args: ['run', 'test:unit'],
     description: 'Run all unit tests for individual components',
-    timeout: 120000, // 2 minutes
+    timeout, // 2 minutes
   },
   {
     name: 'Integration Tests',
     command: 'npm',
     args: ['run', 'test:integration'],
     description: 'Run integration tests for system components',
-    timeout: 300000, // 5 minutes
+    timeout, // 5 minutes
   },
   {
     name: 'End-to-End Tests',
     command: 'npm',
     args: ['run', 'test:e2e'],
     description: 'Run end-to-end swarm coordination tests',
-    timeout: 600000, // 10 minutes
+    timeout, // 10 minutes
   },
   {
     name: 'Performance Tests',
     command: 'npm',
     args: ['run', 'test:performance'],
     description: 'Run performance benchmark tests',
-    timeout: 900000, // 15 minutes
+    timeout, // 15 minutes
   },
   {
     name: 'CLI Tests',
     command: 'npm',
     args: ['run', 'test:cli'],
     description: 'Run CLI command tests',
-    timeout: 180000, // 3 minutes
-  },
-];
+    timeout, // 3 minutes
+  } ];
 // Load tests (optional)
 const _loadTests = [
   {
@@ -56,16 +55,15 @@ const _loadTests = [
     command: 'node',
     args: ['scripts/load-test-swarm.js'],
     description: 'Test swarm coordination under heavy load',
-    timeout: 1200000, // 20 minutes
+    timeout, // 20 minutes
   },
   {
     name: 'Memory Load Test',
     command: 'node',
     args: ['scripts/load-test-memory.js'],
     description: 'Test memory management under high throughput',
-    timeout: 600000, // 10 minutes
-  },
-];
+    timeout, // 10 minutes
+  } ];
 // Docker tests (optional)
 const _dockerTests = [
   {
@@ -73,16 +71,15 @@ const _dockerTests = [
     command: 'docker',
     args: ['build', '-t', 'claude-zen:test', '.'],
     description: 'Test Docker image build',
-    timeout: 600000, // 10 minutes
+    timeout, // 10 minutes
   },
   {
     name: 'Docker Container Test',
     command: 'docker',
     args: ['run', '--rm', 'claude-zen:test', 'claude-zen', '--version'],
     description: 'Test Docker container execution',
-    timeout: 120000, // 2 minutes
-  },
-];
+    timeout, // 2 minutes
+  } ];
 // NPX tests (optional)
 const _npxTests = [
   {
@@ -90,9 +87,8 @@ const _npxTests = [
     command: 'npm',
     args: ['pack'],
     description: 'Test NPX package creation',
-    timeout: 180000, // 3 minutes
-  },
-];
+    timeout, // 3 minutes
+  } ];
 class TestRunner {
   constructor(options = {}) {
     this.verbose = options.verbose ?? false;
@@ -107,16 +103,16 @@ class TestRunner {
     const _timestamp = new Date().toISOString();
     const _prefix = `[${timestamp}]`;
     switch (level) {
-      case 'success':
+      case 'success': null
         console.warn(chalk.green(`${prefix} ✅ ${message}`));
         break;
-      case 'error':
+      case 'error': null
         console.warn(chalk.red(`${prefix} ❌ ${message}`));
         break;
-      case 'warning':
+      case 'warning': null
         console.warn(chalk.yellow(`${prefix} ⚠️  ${message}`));
         break;
-      default:
+      default: null
         console.warn(chalk.blue(`${prefix} ℹ️  ${message}`));
         break;
     }
@@ -126,10 +122,9 @@ class TestRunner {
     const _startTime = Date.now();
     return new Promise((_resolve) => {
       const _child = spawn(test.command, test.args, {
-        cwd: projectRoot,
+        cwd,
       // stdio: this.verbose ? 'inherit' : 'pipe', // LINT: unreachable code removed
-      shell: process.platform === 'win32',
-    });
+      shell: process.platform === 'win32' });
     const _stdout = '';
     const _stderr = '';
     if (!this.verbose) {
@@ -145,22 +140,21 @@ class TestRunner {
         child.kill('SIGTERM');
         const _result = {
           name: test.name,
-          success: false,
+          success,
           error: 'Test timed out',
           duration: Date.now() - startTime,
-          stdout: stdout,
-          stderr: stderr,
-        };
+          stdout,
+          stderr };
     this.results.set(test.name, result);
     resolve(result);
   }
-  ,
+
   test;
-  .
+
   timeout;
   )
   child;
-  .
+
   on('close', (_code)
   => {
   clearTimeout(_timeoutId)
@@ -169,16 +163,16 @@ class TestRunner {
   const;
   _result = {
           name: test.name,
-  success: code
+  success
   === 0,
   exitCode: code
-  ,
+
   duration: duration
-  ,
+
   stdout: stdout
-  ,
-  stderr: stderr
-  
+
+  stderr
+
 }
 if (code === 0) {
   this.log(`Completed: ${test.name} (${duration}ms)`, 'success');
@@ -197,11 +191,11 @@ child.on('error', (error) =>
   clearTimeout(timeoutId);
   const _result = {
           name: test.name,
-  success: false,
+  success,
   error: error.message,
   duration: Date.now() - startTime,
-  stdout: stdout,
-  stderr: stderr
+  stdout,
+  stderr
 }
 this.log(`Error: ${test.name} - ${error.message}`, 'error');
 this.results.set(test.name, result);
@@ -214,12 +208,12 @@ runTestSuite(tests, suiteName)
 {
   this.log(`\n🏃‍♂️ Running ${suiteName} (${tests.length} tests)`);
   if (this.parallel) {
-    const _results = await Promise.all(tests.map((test) => this.runTest(test)));
+// const _results = awaitPromise.all(tests.map((test) => this.runTest(test)));
     return results;
     //   // LINT: unreachable code removed} else {
     const _results = [];
     for (const test of tests) {
-      const _result = await this.runTest(test);
+// const _result = awaitthis.runTest(test);
       results.push(result);
       // Short delay between tests
   // await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -246,10 +240,10 @@ runTestSuite(tests, suiteName)
     if (failed > 0) {
       console.warn(`\n❌ Failed Tests:`);
       results;
-      .filter((r) => !r.success)
-      .forEach((result) => 
+filter((r) => !r.success)
+forEach((result) =>
           console.warn(
-      `   • $chalk.red(result.name): $result.error ?? `Exit code $
+      `   • \$chalk.red(result.name): \$result.error ?? `Exit code $
         result.exitCode
       ``
       )
@@ -257,11 +251,11 @@ runTestSuite(tests, suiteName)
     }
     console.warn(`\n✅ Passed Tests:`);
     results;
-    .filter((r) => r.success)
-    .forEach((result) => 
-        console.warn(`   • $
+filter((r) => r.success)
+forEach((result) =>
+        console.warn(`   • \$
       chalk.green(result.name)
-    : $
+    : \$
       (result.duration / 1000).toFixed(2)
     s`)
     )
@@ -311,7 +305,7 @@ run();
     }
   const _report = this.generateReport();
   // Exit with appropriate code
-  process.exit(report.failed > 0 ? 1 : 0);
+  process.exit(report.failed > 0 ? 1 );
 }
 }
 // CLI handling

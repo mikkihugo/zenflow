@@ -27,7 +27,7 @@ class UpstreamSyncChecker {
       return execSync(command, {
         encoding: 'utf8',
     // stdio: options.silent ? 'pipe' : 'inherit', // LINT: unreachable code removed
-        ...options
+..options
 }
     ).trim()
     catch (error)
@@ -40,33 +40,33 @@ class UpstreamSyncChecker {
     {
       console.warn('🔧 Setting up upstream remote...');
       // Check if upstream remote exists
-      const _remotes = this.execCommand('git remote -v', { silent: true });
+      const _remotes = this.execCommand('git remote -v', { silent });
       if (!remotes?.includes(this.upstreamRemote)) {
         console.warn(`➕ Adding upstream remote: ${this.upstreamUrl}`);
         this.execCommand(`git remote add ${this.upstreamRemote} ${this.upstreamUrl}`);
       }
       // Fetch latest changes
       console.warn('📡 Fetching upstream changes...');
-      this.execCommand(`git fetch ${this.upstreamRemote}`, { silent: true });
+      this.execCommand(`git fetch ${this.upstreamRemote}`, { silent });
     }
     getUpstreamVersion();
     try {
       const _packageJson = this.execCommand(`git show ${this.upstreamRemote}/main:package.json`, {
-        silent: true
+        silent
 })
     if (packageJson) {
       const _parsed = JSON.parse(packageJson);
       return parsed.version;
       //   // LINT: unreachable code removed}
     }
-    catch (/* _error */) 
+    catch (/* _error */)
       console.warn('⚠️ Could not fetch upstream version')
     return 'unknown';
     //   // LINT: unreachable code removed}
     getCommitsBehind();
     try {
       const _commits = this.execCommand(`git rev-list --count HEAD..${this.upstreamRemote}/main`, {
-        silent: true
+        silent
 })
     return parseInt(commits) ?? 0;
     //   // LINT: unreachable code removed} catch (/* _error */) {
@@ -75,7 +75,7 @@ class UpstreamSyncChecker {
     try {
       const _since = `${days} days ago`;
       const _commits = this.execCommand(;
-        `git log ${this.upstreamRemote}/main --since="${since}" --oneline`,silent: true 
+        `git log ${this.upstreamRemote}/main --since="${since}" --oneline`,silent
       );
       return commits ? commits.split('\n').filter((line) => line.trim()) : [];
     //   // LINT: unreachable code removed} catch (/* _error */) {
@@ -85,7 +85,7 @@ class UpstreamSyncChecker {
     getChangedFiles();
     try {
       const _files = this.execCommand(`git diff --name-only HEAD..${this.upstreamRemote}/main`, {
-        silent: true
+        silent
 })
     return files ? files.split('\n').filter((line) => line.trim()) : [];
     //   // LINT: unreachable code removed} catch (/* _error */) {
@@ -93,12 +93,12 @@ class UpstreamSyncChecker {
     analyzeChanges(recentCommits);
     {
       const _analysis = {
-      bugFixes: 0,
-      features: 0,
-      security: 0,
-      performance: 0,
-      breaking: 0,
-      other: 0
+      bugFixes,
+      features,
+      security,
+      performance,
+      breaking,
+      other
 }
     recentCommits.forEach((commit) => {
       const _lower = commit.toLowerCase();
@@ -167,17 +167,17 @@ class UpstreamSyncChecker {
         const _report = {
       timestamp: new Date().toISOString(),
         ours: this.ourVersion,
-        upstream: upstreamVersion,
-        gap: versionGap,
-        ,
-        commitsBehind: commitsBehind,
+        upstream,
+        gap,
+
+        commitsBehind,
         status: syncStatus.status,
         priority: syncStatus.priority,
-        ,
+
         commitsLastWeek: recentCommits.length,
         changedFiles: changedFiles.length,
-        analysis: analysis,
-        ,
+        analysis,
+
         recommendations: this.generateRecommendations(syncStatus, analysis, commitsBehind)
 }
       // Display report
@@ -206,7 +206,7 @@ class UpstreamSyncChecker {
       }
       console.warn(`\n💡 RECOMMENDATIONS:`);
       report.recommendations.forEach((rec) => {
-        console.warn(`   ${rec.icon} ${rec.message}`);
+        console.warn(`${rec.icon} ${rec.message}`);
       });
       // Save status
       this.saveSyncStatus(report);
@@ -284,11 +284,11 @@ class UpstreamSyncChecker {
 const _command = process.argv[2];
 const _checker = new UpstreamSyncChecker();
 switch (command) {
-  case 'quick':
-  case 'status':
+  case 'quick': null
+  case 'status': null
     checker.quickStatus();
     break;
-  default:
+  default: null
     checker.generateReport();
     break;
 }

@@ -20,7 +20,7 @@ console.warn(`Received: ${line.trim()}`);
 rl.prompt();
 }
 }
-export async function replCommand(_args: unknown, _flags: unknown): unknown {
+export async function replCommand(_args, _flags: unknown): unknown {
   printSuccess('Starting interactive REPL mode...');
-  await startRepl();
+// await startRepl();
 }

@@ -17,8 +17,7 @@ function testValidationFunctions() {
     'optimizer',
     'coordinator',
     'architect',
-    'tester',
-  ];
+    'tester' ];
   const _MAX_AGENTS_LIMIT = 100;
   const _MIN_AGENTS_LIMIT = 1;
   class ValidationError extends Error {
@@ -54,7 +53,7 @@ function testValidationFunctions() {
     }
     if (;
       !Number.isInteger(maxAgents)  ?? maxAgents < MIN_AGENTS_LIMIT  ?? maxAgents > MAX_AGENTS_LIMIT;
-    ) 
+    )
       throw new ValidationError(;
         `Invalid maxAgents '${maxAgents}'. Must be an integer between ${MIN_AGENTS_LIMIT} and ${MAX_AGENTS_LIMIT}`,
         'maxAgents';
@@ -111,98 +110,82 @@ function testValidationFunctions() {
     {
       name: 'Invalid topology',
       func: () => validateTopology('invalid-topology'),
-      expectError: true,
-      expectedMessage: 'Invalid topology',
-    },
+      expectError,
+      expectedMessage: 'Invalid topology' },
     {
       name: 'Valid topology - mesh',
       func: () => validateTopology('mesh'),
-      expectError: false,
-      expectedResult: 'mesh',
-    },
+      expectError,
+      expectedResult: 'mesh' },
     {
       name: 'Valid topology - hierarchical (case insensitive)',
       func: () => validateTopology('HIERARCHICAL'),
-      expectError: false,
-      expectedResult: 'hierarchical',
-    },
+      expectError,
+      expectedResult: 'hierarchical' },
     // MaxAgents validation tests
     {
       name: 'Agent count too high',
       func: () => validateMaxAgents(101),
-      expectError: true,
-      expectedMessage: 'Invalid maxAgents',
-    },
+      expectError,
+      expectedMessage: 'Invalid maxAgents' },
     {
       name: 'Agent count too low',
       func: () => validateMaxAgents(0),
-      expectError: true,
-      expectedMessage: 'Invalid maxAgents',
-    },
+      expectError,
+      expectedMessage: 'Invalid maxAgents' },
     {
       name: 'Valid agent count',
       func: () => validateMaxAgents(5),
-      expectError: false,
-      expectedResult: 5,
-    },
+      expectError,
+      expectedResult },
     {
       name: 'Valid agent count from string',
       func: () => validateMaxAgents('10'),
-      expectError: false,
-      expectedResult: 10,
-    },
+      expectError,
+      expectedResult },
     // Agent type validation tests
     {
       name: 'Invalid agent type',
       func: () => validateAgentType('invalid-type'),
-      expectError: true,
-      expectedMessage: 'Invalid agent type',
-    },
+      expectError,
+      expectedMessage: 'Invalid agent type' },
     {
       name: 'Valid agent type - researcher',
       func: () => validateAgentType('researcher'),
-      expectError: false,
-      expectedResult: 'researcher',
-    },
+      expectError,
+      expectedResult: 'researcher' },
     {
       name: 'Valid agent type - coordinator (case insensitive)',
       func: () => validateAgentType('COORDINATOR'),
-      expectError: false,
-      expectedResult: 'coordinator',
-    },
+      expectError,
+      expectedResult: 'coordinator' },
     // Agent name validation tests
     {
       name: 'Agent name with invalid characters',
       func: () => validateAgentName('Test@Agent!'),
-      expectError: true,
-      expectedMessage: 'Agent name can only contain',
-    },
+      expectError,
+      expectedMessage: 'Agent name can only contain' },
     {
       name: 'Valid agent name',
       func: () => validateAgentName('Test Agent 123'),
-      expectError: false,
-      expectedResult: 'Test Agent 123',
-    },
+      expectError,
+      expectedResult: 'Test Agent 123' },
     {
       name: 'Valid agent name with allowed special chars',
       func: () => validateAgentName('Test-Agent_v1.0'),
-      expectError: false,
-      expectedResult: 'Test-Agent_v1.0',
-    },
+      expectError,
+      expectedResult: 'Test-Agent_v1.0' },
     // Task description validation tests
     {
       name: 'Empty task description',
       func: () => validateTaskDescription('   '),
-      expectError: true,
-      expectedMessage: 'Task description cannot be empty',
-    },
+      expectError,
+      expectedMessage: 'Task description cannot be empty' },
     {
       name: 'Valid task description',
       func: () => validateTaskDescription('Create a test application'),
-      expectError: false,
-      expectedResult: 'Create a test application',
-    },
-  ];
+      expectError,
+      expectedResult: 'Create a test application' } ];
   const _passed = 0;
   const _failed = 0;
   for (const test of tests) {

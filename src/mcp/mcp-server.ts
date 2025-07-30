@@ -14,39 +14,39 @@ import { StdioOptimizer } from './core/stdio-optimizer.js';
 // Try to import dependencies, fall back to mocks if not available
 let SqliteMemoryStore, RuvSwarm, initializeAllTools, MCPMessageHandler, MCPToolExecutor;
 try {
-  const _memoryModule = await import('../memory/sqlite-store.js');
+// const _memoryModule = awaitimport('../memory/sqlite-store.js');
   SqliteMemoryStore = memoryModule.SqliteMemoryStore;
-} catch () {
+} catch (error) {
   console.warn('[MCP-Server] SqliteMemoryStore not available, using mock implementation');
-  const _mockModule = await import('./core/mock-memory-store.js');
+// const _mockModule = awaitimport('./core/mock-memory-store.js');
   SqliteMemoryStore = mockModule.SqliteMemoryStore;
 }
 try {
-  const _ruvSwarmModule = await import('../../ruv-FANN/ruv-swarm/npm/src/index.js');
+// const _ruvSwarmModule = awaitimport('../../ruv-FANN/ruv-swarm/npm/src/index.js');
   RuvSwarm = ruvSwarmModule.RuvSwarm;
-} catch () {
+} catch (error) {
   console.warn('[MCP-Server] RuvSwarm not available, using mock implementation');
-  const _mockModule = await import('./core/mock-ruv-swarm.js');
+// const _mockModule = awaitimport('./core/mock-ruv-swarm.js');
   RuvSwarm = mockModule.RuvSwarm;
 }
 try {
-  const _toolsModule = await import('./core/tools-registry.js');
+// const _toolsModule = awaitimport('./core/tools-registry.js');
   initializeAllTools = toolsModule.initializeAllTools;
-} catch () {
+} catch (error) {
   console.warn('[MCP-Server] Tools registry not available, using mock implementation');
-  const _mockModule = await import('./core/mock-tools-registry.js');
+// const _mockModule = awaitimport('./core/mock-tools-registry.js');
   initializeAllTools = mockModule.initializeAllTools;
 }
 try {
-  const _handlerModule = await import('./core/message-handler.js');
+// const _handlerModule = awaitimport('./core/message-handler.js');
   MCPMessageHandler = handlerModule.MCPMessageHandler;
-} catch () {
+} catch (error) {
   console.warn('[MCP-Server] Message handler not available, using simplified version');
   MCPMessageHandler = class {
     async handleMessage(_message): unknown {
       return {jsonrpc = await import('./core/tool-executor.js');
     // MCPToolExecutor = executorModule.MCPToolExecutor; // LINT: unreachable code removed
-} catch () {
+} catch (error) {
   console.warn('[MCP-Server] Tool executor not available, using simplified version');
   MCPToolExecutor = class {
     async executeTool(_name, _args): unknown {
@@ -82,12 +82,12 @@ export class ClaudeFlowMCPServer {
     // Initialize memory store
     this.initializeMemory().catch(_err => {
       console.error(`[${new Date().toISOString()}] ERROR [MCP-Server] Memory initialization failed => {
-      await this.processBatch(batch);
+// await this.processBatch(batch);
     });
 
     // Handle individual errors
     this.stdioOptimizer.on('error', async (error, message) => {
-      await this.handleMessageError(error, message);
+// await this.handleMessageError(error, message);
     });
 
     // Handle connection loss
@@ -104,7 +104,7 @@ export class ClaudeFlowMCPServer {
   async processBatch(batch): unknown {
     const _batchStartTime = Date.now();
     this.performanceMetrics.recordBatchMetrics(batch.length, 0); // Will update processing time later
-    
+
     console.error(`[${new Date().toISOString()}] DEBUG [MCP-Server] Processing batch of ${batch.length} messages`);
 
     for(const item of batch) {
@@ -127,7 +127,7 @@ export class ClaudeFlowMCPServer {
    * @param {Error} error - The error that occurred;
    * @param {Object} message - The message that caused the error
    */;
-  async handleMessageError(error, message): unknown 
+  async handleMessageError(error, message): unknown
     this.performanceMetrics.recordError(error, messageId = this.errorHandler.createErrorResponse(;
       message?.id  ?? null,
       error,
@@ -149,16 +149,15 @@ export class ClaudeFlowMCPServer {
 
     // Setup graceful shutdown
     process.on('SIGINT', async () => {
-      await server.shutdown();
+// await server.shutdown();
       process.exit(0);
     });
 
     process.on('SIGTERM', async () => {
-      await server.shutdown();
+// await server.shutdown();
       process.exit(0);
     });
-
-    await server.start();
+// await server.start();
   }
 
 // Export for use as module (class already exported above)

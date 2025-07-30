@@ -15,7 +15,7 @@ async function main() {
   try {
     const _startTime = Date.now();
     // Run the complete infrastructure test suite
-    const _results = await runInfrastructureTests();
+// const _results = awaitrunInfrastructureTests();
     const _duration = Date.now() - startTime;
     console.warn(`\n${'='.repeat(80)}`);
     console.warn(chalk.bold.cyan('📊 INFRASTRUCTURE TEST RESULTS'));
@@ -26,12 +26,12 @@ async function main() {
       const _status = result.passed ? chalk.green('✅ PASSED') : chalk.red('❌ FAILED');
       const _details = result.passed;
         ? result.mode;
-          ? `($result.mode.toUpperCase()mode)`;
+          ? `(\$result.mode.toUpperCase()mode)`;
           : result.bindingType;
-            ? `($result.bindingType.toUpperCase()bindings)`;
+            ? `(\$result.bindingType.toUpperCase()bindings)`;
             : '';
-        : `($result.error)`;
-      console.warn(`  ${component.toUpperCase().padEnd(20)} ${status} ${chalk.gray(details)}`);
+        : `(\$result.error)`;
+      console.warn(`${component.toUpperCase().padEnd(20)} ${status} ${chalk.gray(details)}`);
     }
     // Display overall score
     console.warn(chalk.bold('\n🎯 Overall Quality Score:'));
@@ -41,7 +41,7 @@ async function main() {
         : results.score >= 80;
           ? chalk.yellow.bold;
           : chalk.red.bold;
-    console.warn(`  ${scoreColor(results.score)}/100`);
+    console.warn(`${scoreColor(results.score)}/100`);
     // Display success/failure status
     if (results.success) {
       console.warn(;
@@ -70,7 +70,7 @@ async function main() {
     console.warn(chalk.gray(`\n⏱️  Total test duration: ${duration}ms`));
     console.warn('='.repeat(80));
     // Exit with appropriate code
-    process.exit(results.success ? 0 : 1);
+    process.exit(results.success ? 0 );
   } catch (error) {
     console.error(chalk.red.bold('\n❌ INFRASTRUCTURE TEST SUITE FAILED'));
     console.error(chalk.red(`Error: ${error.message}`));

@@ -17,51 +17,44 @@ import chalk from 'chalk';
 try {
     // Create session directory
     const _sessionDir = path.resolve(flags.sessionDir  ?? './.claude/hive-mind');
-    await ensureDirectoryExists(sessionDir);
-;
+// await ensureDirectoryExists(sessionDir);
     // Initialize SQLite database
     const _dbPath = path.join(sessionDir, 'hive-mind.db');
-    await initializeDatabase(dbPath, flags.force);
-;
+// await initializeDatabase(dbPath, flags.force);
     // Create configuration file
     const _configPath = path.join(sessionDir, 'config.json');
-    await createConfiguration(configPath, flags);
-;
+// await createConfiguration(configPath, flags);
     // Create required subdirectories
-    await createSubdirectories(sessionDir);
-;
+// await createSubdirectories(sessionDir);
     // Validate initialization
-    await validateInitialization(sessionDir);
-;
+// await validateInitialization(sessionDir);
     spinner.succeed('Hive Mind system initialized successfully');
-;
+
     console.warn(`;
 ${chalk.green('✓ Hive Mind Initialization Complete')}
-;
+
 ${chalk.bold('Created = false): unknown {
   if (existsSync(dbPath) && !force) {
     // Database exists, verify schema
     const _db = new Database(dbPath);
-    await verifyDatabaseSchema(db);
+// await verifyDatabaseSchema(db);
     db.close();
     return;
     //   // LINT: unreachable code removed}
-;
+
   const _db = new Database(dbPath);
-;
+
   try {
     // Create tables with proper indexes
-    await createDatabaseTables(db);
-    await createDatabaseIndexes(db);
-;
+// await createDatabaseTables(db);
+// await createDatabaseIndexes(db);
     // Insert initial data
-    await insertInitialData(db);
-;
+// await insertInitialData(db);
   } finally {
     db.close();
   }
 }
-;
+
 /**
  * Create all required database tables;
  * @param {Database} db - SQLite database instance;
@@ -70,7 +63,7 @@ ${chalk.bold('Created = false): unknown {
     // async function createDatabaseTables(db = [ // LINT: unreachable code removed
     // Sessions table
     `CREATE TABLE IF NOT EXISTS sessions (;
-      id TEXT PRIMARY KEY: unknown, name TEXT NOT NULL: unknown, objective TEXT: unknown, status TEXT DEFAULT 'active': unknown, queen_type TEXT DEFAULT 'strategic': unknown, worker_count INTEGER DEFAULT 4: unknown, created_at INTEGER DEFAULT (strftime('%s': unknown, 'now': unknown)),
+      id TEXT PRIMARY KEY, name TEXT NOT NULL, objective TEXT, status TEXT DEFAULT 'active', queen_type TEXT DEFAULT 'strategic', worker_count INTEGER DEFAULT 4, created_at INTEGER DEFAULT (strftime('%s', 'now': unknown)),
       updated_at INTEGER DEFAULT (strftime('%s', 'now')),
       metadata TEXT;
     )`,
@@ -122,7 +115,7 @@ ${chalk.bold('Created = false): unknown {
       timestamp INTEGER DEFAULT (strftime('%s', 'now'));
     )`;
   ];
-;
+
   for(const tableSQL of tables) {
     db.exec(tableSQL);
   }
@@ -153,7 +146,7 @@ for (const indexSQL of indexes) {
 // async function insertInitialData(db = [ // LINT: unreachable code removed
 {
   key = db.prepare(`;
-    INSERT INTO collective_memory (id: unknown, key: unknown, value: unknown, type: unknown, importance: unknown)
+    INSERT INTO collective_memory (id, key, value, type, importance: unknown)
     VALUES (?, ?, ?, ?, ?);
   `);
   for (const config of defaultConfig) {
@@ -168,38 +161,38 @@ for (const indexSQL of indexes) {
  */
 // async function verifyDatabaseSchema(): unknown {
 const _result = db
-  .prepare(`;
+prepare(`;
       SELECT name FROM sqlite_master ;
       WHERE type='table' AND name=?;
     `)
-  .get(table);
+get(table);
 if (!result) {
   throw new Error(`Missing required table = {version = ['sessions', 'memory', 'logs', 'exports', 'temp'];
-  
+
   for(const subdir of subdirs) {
     const _dirPath = path.join(sessionDir, subdir);
-    await ensureDirectoryExists(dirPath);
+// await ensureDirectoryExists(dirPath);
   }
 }
-;
+
 /**
  * Validate successful initialization;
  * @param {string} sessionDir - Session directory path;
  * @returns {Promise<void>}
  */;
     // async function validateInitialization(sessionDir = [ // LINT: unreachable code removed
-    path.join(sessionDir: unknown, 'hive-mind.db': unknown),
+    path.join(sessionDir, 'hive-mind.db': unknown),
     path.join(sessionDir, 'config.json');
   ];
-;
+
 for(const file of requiredFiles) {
     if (!existsSync(file)) {
       throw new Error(`Required file notcreated = path.join(sessionDir, 'hive-mind.db');
   const _db = new Database(dbPath);
   try {
     const _result = db
-      .prepare('SELECT COUNT(*) as count FROM collective_memory WHERE type = ?')
-      .get('config');
+prepare('SELECT COUNT(*) as count FROM collective_memory WHERE type = ?')
+get('config');
     if (result.count === 0) {
       throw new Error('Database initialization incomplete - no config records found');
     }

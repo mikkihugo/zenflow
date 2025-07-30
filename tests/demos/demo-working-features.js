@@ -16,8 +16,7 @@ async function demoSqliteMemory() {
   try {
     const _memoryStore = new SqliteMemoryStore({
       directory: './demo-memory',
-      dbName: 'demo.db',
-    });
+      dbName: 'demo.db' });
   // await memoryStore.initialize();
     console.warn('✅ SQLite memory store initialized');
     // Store some data
@@ -31,8 +30,8 @@ async function demoSqliteMemory() {
   features: ['sqlite', 'cli', 'plugins']
 })
 // Retrieve data
-const _result1 = await memoryStore.retrieve('demo-key-1');
-const _result2 = await memoryStore.retrieve('demo-key-2');
+// const _result1 = awaitmemoryStore.retrieve('demo-key-1');
+// const _result2 = awaitmemoryStore.retrieve('demo-key-2');
 console.warn('📥 Stored and retrieved data:');
 console.warn('  Key 1:', result1.value);
 console.warn('  Key 2:', result2.value);
@@ -52,19 +51,18 @@ async function demoQueenCoordinator() {
   try {
     const _queen = new QueenCoordinator({
       type: 'strategic',
-      objective: 'Demonstrate working coordination patterns',
-    });
+      objective: 'Demonstrate working coordination patterns' });
   // await queen.initialize();
     console.warn('✅ Queen coordinator initialized');
     console.warn('  Type:', queen.config.name);
     console.warn('  Traits:', queen.config.traits);
     // Make some decisions
-    const _decision1 = await queen.makeDecision({
+// const _decision1 = awaitqueen.makeDecision({
       type: 'task_prioritization',
       options: ['feature-implementation', 'bug-fixes', 'documentation'],
       context: 'development-phase'
 })
-const _decision2 = await queen.makeDecision({
+// const _decision2 = awaitqueen.makeDecision({
       type: 'resource_allocation',
 options: ['database-optimization', 'cli-features', 'testing'],
 context: 'prototype-improvement'
@@ -86,14 +84,12 @@ async function demoStubFeatures() {
   try {
     // Import the stub implementation
     const { RuvSwarm } = await import('./ruv-FANN/ruv-swarm/npm/src/index.js');
-
-    const _swarm = await RuvSwarm.initialize({
+// const _swarm = awaitRuvSwarm.initialize({
       loadingStrategy: 'minimal',
-      debug: true,
-    });
+      debug });
     console.warn('🚧 Neural swarm stub initialized');
-    const _task = await swarm.executeTask({
-      type: 'code-analysis',file: 'demo.js' 
+// const _task = awaitswarm.executeTask({
+      type: 'code-analysis',file: 'demo.js'
 })
 console.warn('🔍 Task execution result:', task)
   // await swarm.shutdown()
@@ -111,41 +107,34 @@ async function showGapSummary() {
     {
       name: 'SQLite Memory',
       status: '✅ Working',
-      details: 'Performance optimized, 84% test pass rate',
-    },
+      details: 'Performance optimized, 84% test pass rate' },
     {
       name: 'Queen Coordinators',
       status: '⚠️ Basic',
-      details: 'Pattern implemented, consensus pending',
-    },
+      details: 'Pattern implemented, consensus pending' },
     {
       name: 'Plugin System',
       status: '⚠️ Foundation',
-      details: 'Architecture present, some dependencies missing',
-    },
+      details: 'Architecture present, some dependencies missing' },
     {
       name: 'Neural Networks',
       status: '❌ Missing',
-      details: 'ruv-FANN submodule empty, stub created',
-    },
+      details: 'ruv-FANN submodule empty, stub created' },
     { name: 'Vision-to-Code', status: '❌ Missing', details: 'Only test fixtures exist' },
     {
       name: 'LanceDB Integration',
       status: '❌ Missing',
-      details: 'Dependencies installed, no implementation',
-    },
+      details: 'Dependencies installed, no implementation' },
     { name: 'Kuzu Integration', status: '❌ Stub Only', details: 'Mock implementation present' },
     { name: 'GPU Acceleration', status: '❌ Missing', details: 'WebGPU/CUDA-WASM not implemented' },
     {
       name: 'Performance Claims',
       status: '❌ Unverified',
-      details: '1M+ req/sec, 84.8% SWE-Bench unsubstantiated',
-    },
-  ];
+      details: '1M+ req/sec, 84.8% SWE-Bench unsubstantiated' } ];
   console.warn('Current Implementation Status:');
   features.forEach((feature) => {
-    console.warn(`  ${feature.status} ${feature.name}`);
-    console.warn(`      ${feature.details}`);
+    console.warn(`${feature.status} ${feature.name}`);
+    console.warn(`${feature.details}`);
   });
   console.warn('\n📊 Overall Assessment: PROTOTYPE STAGE');
   console.warn('🎯 Recommendation: Align documentation with actual capabilities');

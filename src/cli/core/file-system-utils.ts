@@ -28,7 +28,7 @@ export interface FileStats {size = BufferEncoding | 'binary'
     // */ // LINT: unreachable code removed
 export async function ensureDirectoryExists(dirPath = 'utf8': unknown): Promise<string | Buffer> {
   try {
-    const _content = await fs.readFile(filePath
+// const _content = awaitfs.readFile(filePath
 , encoding)
 const __size = typeof content === 'string' ? content.length = encoding === 'utf8' ? 'characters' : 'bytes';
 logger.debug(`Fileread = 'utf8';
@@ -36,18 +36,16 @@ logger.debug(`Fileread = 'utf8';
   try {
     // Ensure directory exists
     const _dir = path.dirname(filePath);
-    await ensureDirectoryExists(dir);
-;
-    await fs.writeFile(filePath, content, encoding);
+// await ensureDirectoryExists(dir);// await fs.writeFile(filePath, content, encoding);
     const _size = typeof content === 'string' ? content.length = encoding === 'utf8' ? 'characters' : 'bytes';
     logger.debug(`Filewritten = path.dirname(destinationPath);
-await ensureDirectoryExists(destDir);
-await fs.copyFile(sourcePath, destinationPath);
+// await ensureDirectoryExists(destDir);
+// await fs.copyFile(sourcePath, destinationPath);
 logger.debug(`File copied = {}
 ): Promise<DirectoryEntry[]> {
   try {
-    const _entries = await fs.readdir(dirPath, {withFileTypes = entries;
-;
+// const _entries = awaitfs.readdir(dirPath, {withFileTypes = entries;
+
     // Filter by type
     if (options.filesOnly) {
       filteredEntries = filteredEntries.filter(entry => entry.isFile());
@@ -55,20 +53,20 @@ logger.debug(`File copied = {}
     if (options.directoriesOnly) {
       filteredEntries = filteredEntries.filter(entry => entry.isDirectory());
     }
-;
+
     // Filter by pattern
     if (options.pattern) {
       const _regex = new RegExp(options.pattern);
       filteredEntries = filteredEntries.filter(entry => regex.test(entry.name));
     }
-;
+
     return {
       size = {}): Promise<boolean> {
   try {
-    const _stats = await fs.stat(targetPath);
+// const _stats = awaitfs.stat(targetPath);
     // ; // LINT: unreachable code removed
     if (stats.isDirectory()) {
-      await fs.rmdir(targetPath, {recursive = === 'ENOENT' && options.ignoreNotFound) {
+// await fs.rmdir(targetPath, {recursive = === 'ENOENT' && options.ignoreNotFound) {
       logger.debug(`Path not found (ignored): ${targetPath}`);
 return true;
 }
@@ -82,15 +80,15 @@ throw new CliError(`Failed to remove '${targetPath}': ${error.message}`);
  * @returns Promise resolving to true if successful;
     // */ // LINT: unreachable code removed
 export async function movePathSecurely(sourcePath = path.dirname(destinationPath: unknown);
-await ensureDirectoryExists(destDir);
-await fs.rename(sourcePath, destinationPath);
+// await ensureDirectoryExists(destDir);
+// await fs.rename(sourcePath, destinationPath);
 logger.debug(`Pathmoved = await fs.stat(filePath);
     return stats.isFile();
     //   // LINT: unreachable code removed} catch {
     return false;
     //   // LINT: unreachable code removed}
 }
-;
+
 /**
  * Check if path is a directory;
  * @param dirPath - Path to check;
@@ -102,7 +100,7 @@ export async function isDirectory(dirPath = await fs.stat(dirPath: unknown);
     return false;
     //   // LINT: unreachable code removed}
 }
-;
+
 /**
  * Get file size in bytes;
  * @param filePath - File path;
@@ -112,7 +110,7 @@ export async function getFileSize(filePath = await fs.stat(filePath: unknown);
     return stats.size;
     //   // LINT: unreachable code removed} catch (error = any>(filePath): Promise<T> {
   try {
-    const _content = await readFileSecurely(filePath, 'utf8') as string;
+// const _content = awaitreadFileSecurely(filePath, 'utf8') as string;
     return JSON.parse(content) as T;
     //   // LINT: unreachable code removed} catch (error = true): Promise<boolean> {
   try {
@@ -123,9 +121,9 @@ export async function getFileSize(filePath = await fs.stat(filePath: unknown);
   const _timestamp = Date.now();
   const _random = Math.random().toString(36).substring(2);
   const _tempPath = path.join(tmpDir, `${prefix}-${timestamp}-${random}${extension}`);
-;
+
   // Create empty file
-  await writeFileSecurely(tempPath, '', 'utf8');
+// await writeFileSecurely(tempPath, '', 'utf8');
   logger.debug(`Temporary filecreated = 'temp');
 : Promise<string>
 {
@@ -133,7 +131,7 @@ export async function getFileSize(filePath = await fs.stat(filePath: unknown);
   const _timestamp = Date.now();
   const _random = Math.random().toString(36).substring(2);
   const _tempPath = path.join(tmpDir, `${prefix}-${timestamp}-${random}`);
-  await ensureDirectoryExists(tempPath);
+// await ensureDirectoryExists(tempPath);
   logger.debug(`Temporary directory created: ${tempPath}`);
   return tempPath;
 }

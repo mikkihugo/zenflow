@@ -14,12 +14,12 @@ class MockMemoryStore {
     this.data = new Map();
   }
   async store(key, value, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` : key;
+    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
     this.data.set(fullKey, value);
-    return { id: fullKey, size: value.length };
+    return { id, size: value.length };
   }
   async retrieve(key, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` : key;
+    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
     return this.data.get(fullKey) || null;
   }
   async search(options = {}) {
@@ -47,8 +47,7 @@ const _c = {
   yellow: '\x1b[33m',
   cyan: '\x1b[36m',
   magenta: '\x1b[35m',
-  red: '\x1b[31m',
-};
+  red: '\x1b[31m' };
 
 // Run GitHub Models CLI
 function runGHModel(prompt, model = 'openai/gpt-4o-mini') {
@@ -84,7 +83,7 @@ function extractJSON(response) {
     return JSON.parse(response);
   } catch (_e) {
     // Look for JSON in code blocks
-    const codeBlockMatch = response.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
+    const codeBlockMatch = response.match(/```(?)?\s*(\{[\s\S]*?\})\s*```/);
     if (codeBlockMatch) {
       return JSON.parse(codeBlockMatch[1]);
     }
@@ -101,12 +100,10 @@ function extractJSON(response) {
 
 // AI Document Analysis
 async function analyzeDocument(docType, service, _docId, content) {
-  const prompt = `Analyze this ${docType} document for ${service}:
-
+  const prompt = `Analyze this ${docType} document for ${service}: null
 "${content}"
 
-Respond with ONLY this JSON (no other text):
-{
+Respond with ONLY this JSON (no other text) {
   "quality_score": <number 1-10>,
   "summary": "<brief summary>",
   "suggested_approvers": ["<role1>", "<role2>"],
@@ -117,7 +114,7 @@ Respond with ONLY this JSON (no other text):
 }`;
 
   try {
-    const response = await runGHModel(prompt);
+// const response = awaitrunGHModel(prompt);
     return extractJSON(response);
   } catch (_error) {
     return null;
@@ -126,12 +123,12 @@ Respond with ONLY this JSON (no other text):
 
 // Review routing decisions
 async function reviewRouting(docType, currentApprovers, content) {
-  const prompt = `Review if these approvers are appropriate for this ${docType}:
+  const prompt = `Review if these approvers are appropriate for this ${docType}: null
 Current approvers: ${currentApprovers.join(', ')}
 
 Document excerpt: "${content.substring(0, 200)}..."
 
-Respond with ONLY JSON:
+Respond with ONLY JSON: null
 {
   "appropriate": true/false,
   "reasoning": "<explanation>",
@@ -141,7 +138,7 @@ Respond with ONLY JSON:
 }`;
 
   try {
-    const response = await runGHModel(prompt);
+// const response = awaitrunGHModel(prompt);
     return extractJSON(response);
   } catch (_error) {
     return null;
@@ -152,7 +149,7 @@ Respond with ONLY JSON:
 async function main() {
   // Test connection first
   try {
-    await runGHModel('Respond with just "Connected"');
+// await runGHModel('Respond with just "Connected"');
   } catch (_error) {
     return;
   }
@@ -171,7 +168,7 @@ Proposed - 2025-01-17
 Our user service stores sessions in memory, which doesn't scale across instances and loses sessions on restart. We need distributed session storage.
 
 ## Decision
-We will use Redis as our session storage backend.
+We will use Redis  session storage backend.
 
 ## Consequences
 ### Positive
@@ -183,17 +180,15 @@ We will use Redis as our session storage backend.
 ### Negative
 - Additional infrastructure dependency
 - Network latency for session ops
-- Need Redis high availability`,
-  };
+- Need Redis high availability` };
 
   // Create document in stack
-  const result = await docStack.createDocument(doc.docType, doc.service, doc.docId, doc.content, {
+// const result = awaitdocStack.createDocument(doc.docType, doc.service, doc.docId, doc.content, {
     dependencies: ['redis-infrastructure'],
-    tags: ['sessions', 'redis'],
-  });
+    tags: ['sessions', 'redis'] });
 
   // Analyze with AI
-  const analysis = await analyzeDocument(doc.docType, doc.service, doc.docId, doc.content);
+// const analysis = awaitanalyzeDocument(doc.docType, doc.service, doc.docId, doc.content);
 
   if (analysis) {
     if (analysis.suggested_approvers?.length > 0) {
@@ -207,7 +202,7 @@ We will use Redis as our session storage backend.
   }
 
   // Review routing
-  const routingReview = await reviewRouting(doc.docType, result.routing.approvers, doc.content);
+// const routingReview = awaitreviewRouting(doc.docType, result.routing.approvers, doc.content);
 
   if (routingReview) {
     if (routingReview.add_approvers?.length > 0) {

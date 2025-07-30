@@ -77,7 +77,7 @@ export class RealFannEngine {
                 return this.generateArchitecturalGuidance(output, prompt, confidence);default = output[0] * 10; // Scale to 0-10
         const _maintainability = output[1] * 100; // Scale to 0-100
         const _bugRisk = output[2] * 10; // Scale to 0-10
-        
+
         return {type = [
     // 'Singleton Pattern', 'Factory Pattern', 'Observer Pattern', // LINT: unreachable code removed
             'Strategy Pattern', 'Command Pattern', 'Adapter Pattern';
@@ -111,12 +111,11 @@ export class RealFannEngine {
         try {
             // Initialize native FANN bindings
             this.nativeBinding = new NativeFannBindings();
-            await this.nativeBinding.initialize();
-
+// await this.nativeBinding.initialize();
             this.logger.info('✅ Native ruv-FANN bindings loaded successfully');
             return true;
     // ; // LINT: unreachable code removed
-        } catch () {
+        } catch (error) {
             this.logger.debug('Native binding loadfailed = [
                 '../ruv-FANN/pkg/ruv_fann.js',
                 './ruv-FANN/pkg/ruv_fann.js',
@@ -126,12 +125,12 @@ export class RealFannEngine {
             for(const wasmPath of wasmPaths) {
                 try {
                     if (existsSync(wasmPath)) {
-                        const _wasmModule = await import(wasmPath);
+// const _wasmModule = awaitimport(wasmPath);
                         await wasmModule.default(); // Initialize WASM
-                        
+
                         if(wasmModule.create_network && ;
                             wasmModule.train_network && ;
-                            wasmModule.run_network) 
+                            wasmModule.run_network)
 
                             this.wasmBinding = wasmModule;
                             this.logger.info(`✅ WASM ruv-FANN bindings loadedfrom = [
@@ -181,7 +180,7 @@ export class RealFannEngine {
             } else if(this.nativeBinding) {
                 // Use native ruv-FANN bindings for real inference
                 const _inputVector = this.preprocessPrompt(prompt);
-                const _inferenceResult = await this.nativeBinding.runInference(model.id, inputVector);
+// const _inferenceResult = awaitthis.nativeBinding.runInference(model.id, inputVector);
                 result = this.postprocessInference(inferenceResult, prompt, modelName);
             } else {
                 // Advanced stub with ML-like behavior (fallback only)
@@ -202,8 +201,7 @@ export class RealFannEngine {
 
             this.logger.debug(`🧠 Inferencecompleted = prompt.length + (prompt.match(/[{}[\]()]/g)  ?? []).length;
         const _processingTime = Math.min(50 + complexity * 2, 500);
-        await new Promise(resolve => setTimeout(resolve, processingTime));
-
+// await new Promise(resolve => setTimeout(resolve, processingTime));
         // Generate context-aware responses based on model task
         switch(config.task) {
             case 'code_generation':;
@@ -220,7 +218,7 @@ export class RealFannEngine {
     // ; // LINT: unreachable code removed
             default = {this = > `class ${this.extractClassName(prompt)} {\n  ${this.generateClassBody(prompt)}\n}`,
             'interface': () => `interface ${this.extractInterfaceName(prompt)} \n  $this.generateInterfaceBody(prompt)\n`,
-            'component': () => `export const _$this.extractComponentName(prompt)= ($this.extractProps(prompt)) => \n  $this.generateComponentBody(prompt)\n;`
+            'component': () => `export const _\$this.extractComponentName(prompt)= (\$this.extractProps(prompt)) => \n  \$this.generateComponentBody(prompt)\n;`
         };
 
         for (const [pattern, generator] of Object.entries(patterns)) {
@@ -251,8 +249,8 @@ export class RealFannEngine {
         const _cyclomaticComplexity = (prompt.match(/if|else|while|for|switch|case/g)  ?? []).length;
         if(cyclomaticComplexity > 10) {
             suggestions.push({type = (prompt.match(/function\s*\w*\s*\([^)]+\)/g)  ?? []);
-            .map(match => (match.match(/,/g)  ?? []).length + 1);
-            .reduce((max, count) => Math.max(max, count), 0);
+map(match => (match.match(/,/g)  ?? []).length + 1);
+reduce((max, count) => Math.max(max, count), 0);
 
         if(parameterCount > 5) {
             suggestions.push({type = prompt.split('\n');
@@ -324,13 +322,13 @@ export class RealFannEngine {
         return match ? match[1] : 'params';
     //   // LINT: unreachable code removed}
 
-    generateFunctionBody(prompt): unknown 
+    generateFunctionBody(prompt): unknown
         if (prompt.includes('return')) {
             return '// Generated function implementation\n  return result;';
         }
         return '// Generated function implementation\n  console.warn("Function executed");';
 
-    generateGenericCode(prompt): unknown 
+    generateGenericCode(prompt): unknown
         return `// Auto-generated basedon = processInput(input);\nreturn result;`;
 }
 
@@ -351,13 +349,13 @@ export class EnhancedNeuralBindingsLoader {
 
         try {
             this.realEngine = new RealFannEngine();
-            await this.realEngine.initialize();
+// await this.realEngine.initialize();
             this.isInitialized = true;
 
             this.logger.info('✅ Enhanced neural bindings with REAL ruv-FANN integration loaded');
             return this.realEngine;
     // ; // LINT: unreachable code removed
-        } catch () {
+        } catch (error) {
             this.logger.error('❌ Failed to load enhanced neuralbindings = new EnhancedNeuralBindingsLoader();
 
 /**

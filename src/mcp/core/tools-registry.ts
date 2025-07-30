@@ -108,15 +108,14 @@ export function _initializeGitTools(): ToolRegistry {
     // */ // LINT: unreachable code removed
 export function _initializeAllTools(): ToolRegistry {
   return {
-    ...initializeClaudeZenTools(),
+..initializeClaudeZenTools(),
   // ...initializeProductTools(), // LINT: unreachable code removed
-  ...initializeNeuralTools(),
-  ...initializeMemoryTools(),
-  ...initializeAgentTools(),
-  ...initializeTaskTools(),
-  ...initializeSystemTools(),
-  ...initializeGitTools(),
-}
+..initializeNeuralTools(),
+..initializeMemoryTools(),
+..initializeAgentTools(),
+..initializeTaskTools(),
+..initializeSystemTools(),
+..initializeGitTools() }
 }
 /**
  * Get tool schema by name;
@@ -145,13 +144,13 @@ if (!schema) {
         return {valid = === 'number' && typeof value !== 'number') {
         return {valid = === 'string' && typeof value !== 'string') {
         return {
-          valid: false,
+          valid,
         // error: `Invalid type for ${key // LINT: unreachable code removed}: expected string, got ${typeof value}`;
       }
     }
   }
 }
-return { valid: true };
+return { valid};
 }
 /**
  * Get tool categories;
@@ -162,42 +161,33 @@ export function _getToolCategories(): ToolCategory[] {
     // { // LINT: unreachable code removed
       name: 'claude-zen',
       description: 'Core Claude Zen operations',
-      count: Object.keys(initializeClaudeZenTools()).length,
-    },
+      count: Object.keys(initializeClaudeZenTools()).length },
     {
       name: 'product',
       description: 'Product management tools',
-      count: Object.keys(initializeProductTools()).length,
-    },
+      count: Object.keys(initializeProductTools()).length },
     {
       name: 'neural',
       description: 'Neural network operations',
-      count: Object.keys(initializeNeuralTools()).length,
-    },
+      count: Object.keys(initializeNeuralTools()).length },
     {
       name: 'memory',
       description: 'Memory management operations',
-      count: Object.keys(_initializeMemoryTools()).length,
-    },
+      count: Object.keys(_initializeMemoryTools()).length },
     {
       name: 'agent',
       description: 'Agent lifecycle management',
-      count: Object.keys(initializeAgentTools()).length,
-    },
+      count: Object.keys(initializeAgentTools()).length },
     {
       name: 'task',
       description: 'Task orchestration and monitoring',
-      count: Object.keys(initializeTaskTools()).length,
-    },
+      count: Object.keys(initializeTaskTools()).length },
     {
       name: 'system',
       description: 'System utilities and features',
-      count: Object.keys(initializeSystemTools()).length,
-    },
+      count: Object.keys(initializeSystemTools()).length },
     {
       name: 'git',
       description: 'Git version control operations',
-      count: Object.keys(initializeGitTools()).length,
-    },
-  ];
+      count: Object.keys(initializeGitTools()).length } ];
 }

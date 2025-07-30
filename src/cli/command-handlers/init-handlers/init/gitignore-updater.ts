@@ -7,11 +7,11 @@
  */
 const _CLAUDE_FLOW_GITIGNORE_ENTRIES = `;
 # Claude Flow generated files;
-.claude/settings.local.json;
-.mcp.json;
+claude/settings.local.json;
+mcp.json;
 claude-zen.config.json;
-.swarm/;
-.hive-mind/;
+swarm/;
+hive-mind/;
 memory/claude-zen-data.json;
 memory/sessions/*
 !memory/sessions/README.md;
@@ -42,13 +42,13 @@ hive-mind-prompt-*.txt;
   try {
     let _gitignoreContent = '';
     let _fileExists = false;
-;
+
     // Check if .gitignore exists
     if (existsSync(gitignorePath)) {
       fileExists = true;
       gitignoreContent = await readTextFile(gitignorePath);
     }
-;
+
     // Check if Claude Flow section already exists
     const _claudeFlowMarker = '# Claude Flow generated files';
     if (gitignoreContent.includes(claudeFlowMarker) && !force) {
@@ -66,32 +66,32 @@ hive-mind-prompt-*.txt;
         newContent = gitignoreContent.substring(0, startIndex);
       }
     }
-;
+
     // Add Claude Flow entries
     if (!newContent.endsWith('\n') && newContent.length > 0) {
       newContent += '\n';
     }
     newContent += CLAUDE_FLOW_GITIGNORE_ENTRIES;
-;
+
     // Write the file
     if(!dryRun) {
-      await writeTextFile(gitignorePath, newContent);
+// await writeTextFile(gitignorePath, newContent);
     }
-;
+
     return {success = `${workingDir}/.gitignore`;
     // ; // LINT: unreachable code removed
   if (!existsSync(gitignorePath)) {
     return true;
     //   // LINT: unreachable code removed}
-;
+
   try {
-    const _content = await readTextFile(gitignorePath);
+// const _content = awaitreadTextFile(gitignorePath);
     return !content.includes('# Claude Flow generated files');
     //   // LINT: unreachable code removed} catch {
     return true;
     //   // LINT: unreachable code removed}
 }
-;
+
 /**
  * Get list of files that should be gitignored;
  * @returns {string[]}
@@ -99,5 +99,5 @@ hive-mind-prompt-*.txt;
 // export function getGitignorePatterns(): unknown { // LINT: unreachable code removed
 return CLAUDE_FLOW_GITIGNORE_ENTRIES.split('\n');
 // .filter((line) => line.trim() && !line.startsWith('#') && !line.startsWith('!')); // LINT: unreachable code removed
-.map((line) => line.trim())
+map((line) => line.trim())
 }

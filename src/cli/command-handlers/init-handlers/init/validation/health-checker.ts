@@ -21,12 +21,11 @@ checkModeAvailability();
         'docs-writer',
         'devops',
         'mcp',
-        'swarm',
-      ];
+        'swarm' ];
   result.modes.total = expectedModes.length;
   // Check each mode
   for (const mode of expectedModes) {
-    const _isAvailable = await this.checkSingleModeAvailability(mode);
+// const _isAvailable = awaitthis.checkSingleModeAvailability(mode);
     if (isAvailable) {
       result.modes.available++;
     } else {
@@ -48,9 +47,9 @@ checkModeAvailability();
     for (const dir of templateDirs) {
       const _dirPath = `${this.workingDir}/${dir}`;
       try {
-        const _stat = await node.stat(dirPath);
+// const _stat = awaitnode.stat(dirPath);
         if (stat.isDirectory) {
-          const _templateCheck = await this.checkTemplateDirectory(dirPath);
+// const _templateCheck = awaitthis.checkTemplateDirectory(dirPath);
           result.templates.found.push(...templateCheck.found);
           result.templates.missing.push(...templateCheck.missing);
           result.templates.corrupted.push(...templateCheck.corrupted);
@@ -64,7 +63,7 @@ checkModeAvailability();
     for (const template of coreTemplates) {
       const _templatePath = `${this.workingDir}/${template}`;
       try {
-        const _content = await node.readTextFile(templatePath);
+// const _content = awaitnode.readTextFile(templatePath);
         if (content.length < 50) {
           result.templates.corrupted.push(template);
         } else {
@@ -84,19 +83,19 @@ checkModeAvailability();
         result.warnings.push('Inconsistency between .roomodes and available commands');
       }
       // Check consistency between CLAUDE.md and actual setup
-      const _claudeCheck = await this.checkClaudeConfigConsistency();
+// const _claudeCheck = awaitthis.checkClaudeConfigConsistency();
       result.consistency.claude = claudeCheck;
       if (!claudeCheck.consistent) {
         result.warnings.push('Inconsistency between CLAUDE.md and actual setup');
       }
       // Check memory configuration consistency
-      const _memoryCheck = await this.checkMemoryConsistency();
+// const _memoryCheck = awaitthis.checkMemoryConsistency();
       result.consistency.memory = memoryCheck;
       if (!memoryCheck.consistent) {
         result.warnings.push('Memory configuration inconsistency detected');
       }
     }
-    catch (/* error */)
+    catch (error)
     {
       result.success = false;
       result.errors.push(`Configuration consistency check failed = {success = await this.checkDiskSpace();
@@ -104,28 +103,28 @@ checkModeAvailability();
       if(!diskCheck.adequate) {
         result.warnings.push('Low disk space detected');
       }
-;
+
       // Check memory usage
-      const _memoryCheck = await this.checkMemoryUsage();
+// const _memoryCheck = awaitthis.checkMemoryUsage();
       result.resources.memory = memoryCheck;
       if(!memoryCheck.adequate) {
         result.warnings.push('High memory usage detected');
       }
-;
+
       // Check file descriptors
-      const _fdCheck = await this.checkFileDescriptors();
+// const _fdCheck = awaitthis.checkFileDescriptors();
       result.resources.fileDescriptors = fdCheck;
       if(!fdCheck.adequate) {
         result.warnings.push('Many open file descriptors');
       }
-;
+
       // Check process limits
-      const _processCheck = await this.checkProcessLimits();
+// const _processCheck = awaitthis.checkProcessLimits();
       result.resources.processes = processCheck;
       if(!processCheck.adequate) {
         result.warnings.push('Process limits may affect operation');
       }
-    } catch (/* error */) {
+    } catch (error) {
       result.warnings.push(`System resource check failed = {success = await this.checkFileSystemHealth();
       result.diagnostics.filesystem = fsHealth;
       if (!fsHealth.healthy) {
@@ -133,29 +132,29 @@ checkModeAvailability();
         result.errors.push(...fsHealth.errors);
       }
       // Process health
-      const _processHealth = await this.checkProcessHealth();
+// const _processHealth = awaitthis.checkProcessHealth();
       result.diagnostics.processes = processHealth;
       if (!processHealth.healthy) {
         result.warnings.push(...processHealth.warnings);
       }
       // Network health (for external dependencies)
-      const _networkHealth = await this.checkNetworkHealth();
+// const _networkHealth = awaitthis.checkNetworkHealth();
       result.diagnostics.network = networkHealth;
       if (!networkHealth.healthy) {
         result.warnings.push(...networkHealth.warnings);
       }
       // Integration health
-      const _integrationHealth = await this.checkIntegrationHealth();
+// const _integrationHealth = awaitthis.checkIntegrationHealth();
       result.diagnostics.integration = integrationHealth;
       if (!integrationHealth.healthy) {
         result.warnings.push(...integrationHealth.warnings);
       }
     }
-    catch (/* error */)
+    catch (error)
     {
       result.success = false;
       result.errors.push(`Health diagnosticsfailed = `${this.workingDir}/.roomodes`;
-      const _content = await node.readTextFile(roomodesPath);
+// const _content = awaitnode.readTextFile(roomodesPath);
       const _config = JSON.parse(content);
       return !!(config.modes?.[mode]);
       //   // LINT: unreachable code removed}
@@ -168,7 +167,7 @@ checkModeAvailability();
       {
         const _result = {found = `${dirPath}/${entry.name}`;
         try {
-          const _stat = await node.stat(filePath);
+// const _stat = awaitnode.stat(filePath);
           if (stat.size === 0) {
             result.corrupted.push(entry.name);
           } else {
@@ -187,7 +186,7 @@ async;
 checkRoomodesConsistency();
 {
   const _result = {consistent = `${this.workingDir}/.roomodes`;
-  const _content = await node.readTextFile(roomodesPath);
+// const _content = awaitnode.readTextFile(roomodesPath);
   const _config = JSON.parse(content);
   if (config.modes) {
     const _commandsDir = `${this.workingDir}/.claude/commands`;
@@ -222,7 +221,7 @@ async
 checkClaudeConfigConsistency()
 {
   const _result = {consistent = `${this.workingDir}/CLAUDE.md`;
-  const _content = await node.readTextFile(claudePath);
+// const _content = awaitnode.readTextFile(claudePath);
   // Check if mentioned commands exist
   const _mentionedCommands = ['claude-zen sparc', 'npm run build', 'npm run test'];
   for (const command of mentionedCommands) {
@@ -232,7 +231,7 @@ checkClaudeConfigConsistency()
       if (parts[0] === 'claude-zen') {
         const _executablePath = `${this.workingDir}/claude-zen`;
         try {
-          await node.stat(executablePath);
+// await node.stat(executablePath);
         } catch {
           result.consistent = false;
           result.issues.push(`Command ${command} mentioned but executable not found`);
@@ -253,34 +252,34 @@ checkMemoryConsistency()
 {
     const _result = {consistent = `${this.workingDir}/memory/claude-zen-data.json`;
       const _data = JSON.parse(await node.readTextFile(memoryDataPath));
-;
+
       // Basic structure validation
       if(!data.agents  ?? !data.tasks) {
         result.consistent = false;
         result.issues.push('Memory data structure incomplete');
       }
-;
+
       // Check directory structure
       const _expectedDirs = ['agents', 'sessions'];
       for(const dir of expectedDirs) {
         try {
-          await node.stat(`${this.workingDir}/memory/${dir}`);
+// await node.stat(`${this.workingDir}/memory/${dir}`);
         } catch {
           result.consistent = false;
           result.issues.push(`Memory directorymissing = false;
       result.issues.push('Cannot validate memory structure');
     }
-;
+
     return result;
     //   // LINT: unreachable code removed}
-;
+
   async checkDiskSpace() {
     const _result = {adequate = new node.Command('df', {args = await command.output();
-;
+
       if(success) {
         const _output = new TextDecoder().decode(stdout);
         const _lines = output.trim().split('\n');
-;
+
         if(lines.length >= 2) {
           const _parts = lines[1].split(/\s+/);
           if(parts.length >= 4) {
@@ -294,17 +293,17 @@ checkMemoryConsistency()
       // Can't check - assume adequate
       result.adequate = true;
     }
-;
+
     return result;
     //   // LINT: unreachable code removed}
-;
+
   async checkMemoryUsage() {
     const _result = {adequate = new node.Command('free', {args = await command.output();
-;
+
       if(success) {
         const _output = new TextDecoder().decode(stdout);
         const _lines = output.trim().split('\n');
-;
+
         for(const line of lines) {
           if (line.startsWith('Mem = line.split(/\s+/);
             if(parts.length >= 3) {
@@ -320,13 +319,13 @@ checkMemoryConsistency()
       // Can't check - assume adequate
       result.adequate = true;
     }
-;
+
     return result;
     //   // LINT: unreachable code removed}
-;
+
   async checkFileDescriptors() {
     const _result = {adequate = new node.Command('sh', {args = await command.output();
-;
+
       if(success) {
         const _count = parseInt(new TextDecoder().decode(stdout).trim());
         result.open = count;
@@ -336,13 +335,13 @@ checkMemoryConsistency()
       // Can't check - assume adequate
       result.adequate = true;
     }
-;
+
     return result;
     //   // LINT: unreachable code removed}
-;
+
   async checkProcessLimits() {
     const _result = {adequate = new node.Command('ulimit', {args = await command.output();
-;
+
       if(success) {
         const _output = new TextDecoder().decode(stdout);
         // Parse ulimit output for important limits
@@ -352,41 +351,36 @@ checkMemoryConsistency()
       // Can't check - assume adequate
       result.adequate = true;
     }
-;
+
     return result;
     //   // LINT: unreachable code removed}
-;
+
   async checkFileSystemHealth() {
     return {
-      healthy: true,
+      healthy,
     // errors: [], // LINT: unreachable code removed
-      readWrite: true,
-      permissions: true,
-    };
+      readWrite,
+      permissions};
   }
-;
+
   async checkProcessHealth() {
     return {
-      healthy: true,
+      healthy,
     // warnings: [], // LINT: unreachable code removed
-      processes: [],
-    };
+      processes: [] };
   }
-;
+
   async checkNetworkHealth() {
     return {
-      healthy: true,
+      healthy,
     // warnings: [], // LINT: unreachable code removed
-      connectivity: true,
-    };
+      connectivity};
   }
-;
+
   async checkIntegrationHealth() {
     return {
-      healthy: true,
+      healthy,
     // warnings: [], // LINT: unreachable code removed
-      integrations: {},
-    };
+      integrations: {} };
   }
 }
-;

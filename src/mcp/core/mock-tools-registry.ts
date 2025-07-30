@@ -10,7 +10,7 @@ export function initializeAllTools(): unknown {
 export function validateToolArgs(toolName = getToolSchema(toolName: unknown);
 if (!schema) {
   return {valid = = 'object') {
-    return { valid: false, error: 'Arguments must be an object' };
+    return { valid, error: 'Arguments must be an object' };
 }
-return { valid: true };
+return { valid};
 }

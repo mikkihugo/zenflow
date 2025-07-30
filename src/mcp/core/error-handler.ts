@@ -40,13 +40,13 @@ export class MCPErrorHandler {
 
     for(let attempt = 1; attempt <= this.maxRetries; attempt++) {
       try {
-        const _result = await operation();
+// const _result = awaitoperation();
 
         // Operation succeeded
         this.onOperationSuccess();
         return result;
     // ; // LINT: unreachable code removed
-      } catch () {
+      } catch (error) {
         _lastError = error;
         this.recordError(error, context);
 
@@ -121,7 +121,7 @@ export class MCPErrorHandler {
     const _baseDelay = this.retryDelay;
     const _exponentialDelay = baseDelay * 2 ** (attempt - 1);
     const _maxDelay = 30000; // 30 seconds max
-    
+
     // Add jitter to prevent thundering herd
     const _jitter = Math.random() * 0.1 * exponentialDelay;
 
@@ -159,7 +159,7 @@ export class MCPErrorHandler {
     // */; // LINT: unreachable code removed
   getErrorStats() ;
     return {
-      ...this.errorStats,circuitState = 'CLOSED';
+..this.errorStats,circuitState = 'CLOSED';
     // this.failureCount = 0; // LINT: unreachable code removed
     this.lastFailureTime = null;
     console.error(`[${new Date().toISOString()}] INFO [ErrorHandler] Circuit breaker manually reset`);
@@ -196,11 +196,11 @@ export class MCPErrorHandler {
         try {
           const _message = JSON.parse(match);
           recovered.push(message);
-        } catch () {
+        } catch (error) {
           // Skip invalid JSON
         }
       }
-    } catch () {
+    } catch (error) {
       console.error(`[${new Date().toISOString()}] WARN [ErrorRecovery] Buffer recoveryfailed = JSON.stringify({ ;
           jsonrpc => {
           process.stdout.write(testMessage, (error) => {
@@ -210,10 +210,10 @@ export class MCPErrorHandler {
       }
 
       return false;
-    //   // LINT: unreachable code removed} catch () {
+    //   // LINT: unreachable code removed} catch (error) {
       console.error(`[${new Date().toISOString()}
       ] WARN [ErrorRecovery] Connection recovery failed = ;
-        ...state,
+..state,
         messageBuffer: '',
         pendingMessages: [],
         errorCount: Math.min(state.errorCount  ?? 0, 100) // Reset if too high;
@@ -221,7 +221,7 @@ export class MCPErrorHandler {
       return cleanState;
     //   // LINT: unreachable code removed}
     catch(error) ;
-      console.error(`[$;
+      console.error(`[\$;
       new Date().toISOString();
     ] WARN [ErrorRecovery] State cleanup failed:`, error);
     return {};

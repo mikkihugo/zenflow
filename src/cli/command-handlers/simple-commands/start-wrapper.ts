@@ -31,26 +31,26 @@ const __swarm =;
 !noSwarm && (subArgs.includes('--swarm') ?? subArgs.includes('-s') ?? flags.swarm ?? !daemon);
 try {
     printSuccess('🚀 Starting Claude Zen Unified Server...');
-;
+
     // Import and start the unified interface plugin
     const { UnifiedInterfacePlugin } = await import('../../../plugins/unified-interface/index.js');
-    
+
     const _server = new UnifiedInterfacePlugin({
       webPort,
       _enableMCP => {
       console.warn('\n🛑 Shutting down unified server...');
-      await server.shutdown();
+// await server.shutdown();
       process.exit(0);
     }
 )
-;
+
 process.on('SIGTERM', async () =>;
-  await server.shutdown();
+// await server.shutdown();
   process.exit(0);
 )
-;
+
 // Keep server running
-await new Promise(() =>;
+// await new Promise(() =>;
 );
 return;
     // ; // LINT: unreachable code removed
@@ -59,8 +59,8 @@ if (web) {
   try {
         // Launch the web server
         const { startWebServer } = await import('./web-server.js');
-        const __server = await startWebServer(port);
-;
+// const __server = awaitstartWebServer(port);
+
         printSuccess(`🌐 Web UI is running!`);
         console.warn(`📍 Open your browser to => {});
         return;
@@ -73,50 +73,50 @@ if (web) {
             });
           }
         });
-;
+
         // Keep process running
-        await new Promise(() => {});
+// await new Promise(() => {});
         return;
     //   // LINT: unreachable code removed} catch (/* err */) {
         // If unified UI fails, fall back to existing terminal UI
         printWarning('Unified UI failed, launching fallback UI...');
         try {
           const { launchEnhancedUI } = await import('./process-ui-enhanced.js');
-          await launchEnhancedUI();
+// await launchEnhancedUI();
           return;
     //   // LINT: unreachable code removed} catch (/* fallbackErr */) {
           printError('Failed to launchUI = ['memory', 'coordination'];
     const _missingDirs = [];
-;
+
     for(const dir of requiredDirs) {
       try {
-        await node.stat(dir);
+// await node.stat(dir);
       } catch {
         missingDirs.push(dir);
       }
     }
-;
+
     if(missingDirs.length > 0) {
       printWarning('Missing requireddirectories = === 'windows' ? 'cmd.exe' : '/bin/bash'));
-;
+
     // Task queue
     console.warn('   ✓ TaskQueue = compat.terminal.getPid();
-      await compat.safeCall(async () => {
+// await compat.safeCall(async () => {
         if(compat.runtime === 'node') {
           await node.writeTextFile('.claude-zen.pid', pid.toString());
         } else {
-          const _fs = await import('fs/promises');
-          await fs.writeFile('.claude-zen.pid', pid.toString());
+// const _fs = awaitimport('fs/promises');
+// await fs.writeFile('.claude-zen.pid', pid.toString());
         }
       });
       console.warn(`ProcessID = new AbortController();
-;
+
       compat.terminal.onSignal('SIGINT', () => {
         console.warn('\n⏹️  Shutting down orchestrator...');
         cleanup();
         compat.terminal.exit(0);
       });
-;
+
       // Simple heartbeat to show system is alive
       if(!daemon) {
         const __heartbeat = setInterval(() => {
@@ -126,39 +126,39 @@ if (web) {
         }, 30000); // Every 30 seconds
 
         // Wait indefinitely (until Ctrl+C)
-        await new Promise(() => {});
+// await new Promise(() => {});
       }
     }
 }
-catch (/* err */) 
+catch (/* err */)
     printError(`Failed to start orchestrationsystem = args.indexOf(flag);
   if(index !== -1 && index < args.length - 1) {
     return args[index + 1];
     //   // LINT: unreachable code removed}
   return null;
 }
-;
+
 async function cleanup(): unknown {
   // Clean up resources
   try {
-    await compat.safeCall(async () => {
+// await compat.safeCall(async () => {
       if(compat.runtime === 'node') {
         await node.remove('.claude-zen.pid');
       } else {
-        const _fs = await import('node:fs/promises');
-        await fs.unlink('.claude-zen.pid');
+// const _fs = awaitimport('node:fs/promises');
+// await fs.unlink('.claude-zen.pid');
       }
     });
   } catch {
     // File might not exist
   }
-;
+
   console.warn('✓ Terminal pool closed');
   console.warn('✓ Task queue cleared');
   console.warn('✓ Memory bank saved');
   console.warn('✓ Cleanup complete');
 }
-;
+
 function _showStartHelp(): unknown {
   console.warn('🚀 START COMMAND - Start Orchestration System\n');
   console.warn('USAGE:');
@@ -214,4 +214,3 @@ function _showStartHelp(): unknown {
   console.warn('  - Use "claude-zen status" to check if running');
   console.warn('  - Use Ctrl+C or "claude-zen stop" to shutdown');
 }
-;

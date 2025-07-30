@@ -6,7 +6,7 @@ export const workflowCoordinator = {name = Date.now();
 
 try {
       const { workflowId, stepId, stepType, stepData } = payload.data;
-;
+
       return {success = [
     // { // LINT: unreachable code removed
     name: 'workflow-coordinator',
@@ -14,4 +14,3 @@ try {
     hook: workflowCoordinator;
   }
 ];
-;

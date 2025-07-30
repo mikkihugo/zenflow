@@ -6,7 +6,7 @@
  * The issue occurs when timestamps are shown in UTC instead of user's local timezone.;
  */
 
-import { promises as fs } from 'node:fs';
+import { promises  } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -20,21 +20,16 @@ async function applyTimezoneFixes() {
   const _fixes = [
     {
       name: 'Add timezone utilities',
-      action: () => copyTimezoneUtils(),
-    },
+      action: () => copyTimezoneUtils() },
     {
       name: 'Update session creation to include timezone info',
-      action: () => updateSessionCreation(),
-    },
+      action: () => updateSessionCreation() },
     {
       name: 'Fix session display to show local time',
-      action: () => updateSessionDisplay(),
-    },
+      action: () => updateSessionDisplay() },
     {
       name: 'Update database schema for timezone support',
-      action: () => updateDatabaseSchema(),
-    },
-  ];
+      action: () => updateDatabaseSchema() } ];
   for (const fix of fixes) {
     try {
       console.warn(`📝 ${fix.name}...`);
@@ -63,7 +58,7 @@ async function copyTimezoneUtils() {
     //   // LINT: unreachable code removed} catch {
     // File doesn't exist, continue with creation
   }
-  // await fs.mkdir(utilsDir, { recursive: true });
+  // await fs.mkdir(utilsDir, { recursive });
   // The timezone utils are already created in the previous step
   console.warn('   ✓ Timezone utilities are available');
 }
@@ -110,7 +105,7 @@ CREATE INDEX IF NOT EXISTS idx_sessions_created_at_local ON sessions(created_at_
 CREATE INDEX IF NOT EXISTS idx_sessions_timezone ON sessions(timezone_name);
 `;
   const _migrationPath = path.join(process.cwd(), 'migrations', 'fix-timezone-issue-246.sql');
-  // await fs.mkdir(path.dirname(migrationPath), { recursive: true });
+  // await fs.mkdir(path.dirname(migrationPath), { recursive });
   // await fs.writeFile(migrationPath, migrationContent.trim());
   console.warn(`📄 Created migration script: ${migrationPath}`);
 }

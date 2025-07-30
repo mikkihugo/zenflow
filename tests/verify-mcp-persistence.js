@@ -14,10 +14,10 @@ red: '\x1b[31m',
 yellow: '\x1b[33m',
 blue: '\x1b[34m',
 reset: '\x1b[0m'
-}
+// }
 function log() {
   console.warn(`${colors[color]}${message}${colors.reset}`);
-}
+// }
 async function runTest() {
   log('🧪 MCP Persistence Verification', 'blue');
   log('Testing issue #312: MCP tools data persistence\n', 'blue');
@@ -33,19 +33,18 @@ async function runTest() {
     testsPassed++;
   } else {
     log(`❌ Database not found at: ${dbPath}`, 'red');
-  }
+// }
   // Test 2: Store data using memory_usage
   testsTotal++;
   log('\n2️⃣ Testing memory_usage store operation...', 'yellow');
   try {
     const _testKey = `verify_test_${Date.now()}`;
     const _testValue = {
-      test: true,
+      test,
       timestamp: new Date().toISOString(),
-      message: 'Testing MCP persistence for issue #312',
-    };
+      message: 'Testing MCP persistence for issue #312' };
     const _storeResult = execSync(;
-      `npx claude-zen@alpha mcp call memory_usage '{"action": "store", "key": "${testKey}", "value": ${JSON.stringify(JSON.stringify(testValue))}, "namespace": "verification"}'`,encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] 
+      `npx claude-zen@alpha mcp call memory_usage '{"action": "store", "key": "${testKey}", "value": ${JSON.stringify(JSON.stringify(testValue))}, "namespace": "verification"}'`,encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe']
     );
     if (storeResult.includes('"success":true')  ?? storeResult.includes('"stored":true')) {
       log('✅ Store operation succeeded', 'green');
@@ -55,38 +54,38 @@ async function runTest() {
     } else {
       log('❌ Store operation failed', 'red');
       log(`   Response: ${storeResult}`, 'red');
-    }
-  }
+// }
+// }
 catch (error)
-{
+// {
   log(`❌ Store operation error: ${error.message}`, 'red');
-}
+// }
 // Test 3: Retrieve the stored data
 testsTotal++;
 log('\n3️⃣ Testing memory_usage retrieve operation...', 'yellow');
 try {
     const _testKey = fs.existsSync('.test-key');
       ? fs.readFileSync('.test-key', 'utf8');
-      : `verify_test_$Date.now()`;
+      : `verify_test_\$Date.now()`;
     const _retrieveResult = execSync(;
-      `npx claude-zen@alpha mcp call memory_usage '{"action": "retrieve", "key": "${testKey}", "namespace": "verification"}'`,encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] 
+      `npx claude-zen@alpha mcp call memory_usage '{"action": "retrieve", "key": "${testKey}", "namespace": "verification"}'`,encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe']
     );
     if (retrieveResult.includes('"found":true')) {
-      log('✅ Retrieve operation succeeded - data was persisted!', 'green');
+      log('✅ Retrieve operation succeeded - data w!', 'green');
       testsPassed++;
     } else {
       log('❌ Retrieve operation failed - data not found', 'red');
-      log(`   Response: $retrieveResult`, 'red');
-    }
+      log(`   Response: \$retrieveResult`, 'red');
+// }
   } catch (error) {
-    log(`❌ Retrieve operation error: $error.message`, 'red');
-  }
+    log(`❌ Retrieve operation error: \$error.message`, 'red');
+// }
 // Test 4: List stored entries
 testsTotal++;
 log('\n4️⃣ Testing memory_usage list operation...', 'yellow');
 try {
     const _listResult = execSync(;
-      `npx claude-zen@alpha mcp call memory_usage '{"action": "list", "namespace": "verification"}'`,encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] 
+      `npx claude-zen@alpha mcp call memory_usage '{"action": "list", "namespace": "verification"}'`,encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe']
     );
     if (listResult.includes('"success":true')) {
       log('✅ List operation succeeded', 'green');
@@ -95,48 +94,48 @@ try {
       try {
         const _parsed = JSON.parse(listResult);
         if (parsed.entries && Array.isArray(parsed.entries)) {
-          log(`   Found $parsed.entries.lengthentries in namespace "verification"`, 'green');
-        }
+          log(`   Found \$parsed.entries.lengthentries in namespace "verification"`, 'green');
+// }
       } catch (/* _e */) {
         // Ignore parse errors
-      }
+// }
     } else {
       log('❌ List operation failed', 'red');
-    }
+// }
   } catch (error) {
-    log(`❌ List operation error: $error.message`, 'red');
-  }
+    log(`❌ List operation error: \$error.message`, 'red');
+// }
 // Test 5: Test hooks persistence
 testsTotal++;
 log('\n5️⃣ Testing hooks notification persistence...', 'yellow');
 try {
-    const _message = `Persistence test $Date.now()`;
+    const _message = `Persistence test \$Date.now()`;
     const _hookResult = execSync(;
-      `npx claude-zen@alpha hooks notify --message "${message}" --level "test"`,encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] 
+      `npx claude-zen@alpha hooks notify --message "${message}" --level "test"`,encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe']
     );
     if (hookResult.includes('saved to .swarm/memory.db')) {
       log('✅ Hook notification persisted to database', 'green');
       testsPassed++;
     } else {
       log('❌ Hook notification not persisted', 'red');
-    }
+// }
   } catch (error) {
-    log(`❌ Hook notification error: $error.message`, 'red');
-  }
+    log(`❌ Hook notification error: \$error.message`, 'red');
+// }
 // Test 6: Database size check (should grow after operations)
 testsTotal++;
 log('\n6️⃣ Checking if database size increased...', 'yellow');
 if (fs.existsSync(dbPath)) {
   const _newSize = fs.statSync(dbPath).size;
-  log(`✅ Database size: $newSizebytes`, 'green');
+  log(`✅ Database size: \$newSizebytes`, 'green');
   if (newSize > 0) {
     testsPassed++;
-  }
+// }
 } else {
   log('❌ Database still not found', 'red');
-}
+// }
 // Summary
-log(`\n$'='.repeat(50)`, 'yellow');
+log(`\n\$'='.repeat(50)`, 'yellow');
 log(;
 `📊 Test Summary: $testsPassed/${testsTotal} passed`,
 testsPassed === testsTotal ? 'green' : 'yellow';
@@ -151,15 +150,15 @@ if (testsPassed === testsTotal) {
 } else {
   log('\n❌ Most tests failed - persistence may not be working', 'red');
   log('Issue #312 may not be fully resolved', 'red');
-}
+// }
 // Cleanup
 if (fs.existsSync('.test-key')) {
   fs.unlinkSync('.test-key');
-}
-}
+// }
+// }
 // Run the test
 runTest().catch((error) =>
-{
+// {
   log(`\n💥 Fatal error: ${error.message}`, 'red');
   process.exit(1);
 })

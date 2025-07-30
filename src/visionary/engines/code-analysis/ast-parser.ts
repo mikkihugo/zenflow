@@ -43,37 +43,37 @@ export class ASTParser {
     // */; // LINT: unreachable code removed
   async extractAST(codeData: CodeFileData[]): Promise<ASTNode[]> {
     const _astResults: ASTNode[] = [];
-;
+
     for (const file of codeData) {
       try {
-        const _ast = await this.parseFileAST(file);
+// const _ast = awaitthis.parseFileAST(file);
         astResults.push(...ast);
-      } catch (/* error */) {
+      } catch (error) {
         console.warn(`⚠️ AST parsing failed for ${file.path}:`, error.message);
       }
     }
-;
+
     return astResults;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Parse AST for a single file (simplified parser);
    *;
    * @param file - Code file data;
    * @returns AST nodes for the file;
     // */; // LINT: unreachable code removed
-  private async parseFileAST(file: CodeFileData): Promise<ASTNode[]> 
+  private async parseFileAST(file: CodeFileData): Promise<ASTNode[]>
     // Simplified AST parsing - would use real parser in production
     if (file.language === 'javascript'  ?? file.language === 'typescript') {
       return this.parseJavaScriptAST(file.content);
     //   // LINT: unreachable code removed} else if (file.language === 'python') {
       return this.parsePythonAST(file.content);
     //   // LINT: unreachable code removed}
-;
+
     // Fallback to basic parsing
     return this.parseGenericAST(file.content);
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Parse JavaScript/TypeScript AST (simplified);
    *;
@@ -85,16 +85,16 @@ export class ASTParser {
     const _nodes: ASTNode[] = [];
     const _depth = 0;
     const _maxDepth = 0;
-;
+
     for (let i = 0; i < lines.length; i++) {
       const _line = lines[i].trim();
-;
+
       // Track nesting depth
       const _openBraces = (line.match(/\{/g)  ?? []).length;
       const _closeBraces = (line.match(/\}/g)  ?? []).length;
       depth += openBraces - closeBraces;
       maxDepth = Math.max(maxDepth, depth);
-;
+
       // Identify significant nodes
       if (line.includes('function')  ?? line.includes('class')  ?? line.includes('=>')) {
         nodes.push({
@@ -102,14 +102,13 @@ export class ASTParser {
           name: this.extractNodeName(line),
           line: i + 1,
           depth,
-          complexity: this.calculateNodeComplexity(line),
-        });
+          complexity: this.calculateNodeComplexity(line) });
       }
     }
-;
-    return nodes.concat([{ type: 'meta', line: 0, depth: maxDepth }]);
+
+    return nodes.concat([{ type: 'meta', line, depth}]);
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Parse Python AST (simplified);
    *;
@@ -121,32 +120,32 @@ export class ASTParser {
     const _nodes: ASTNode[] = [];
     const _indentLevel = 0;
     const _maxIndent = 0;
-;
+
     for (let i = 0; i < lines.length; i++) {
       const _line = lines[i];
       const _trimmed = line.trim();
-;
+
       if (trimmed) {
         // Calculate indentation level
         const _currentIndent = line.length - line.trimStart().length;
         indentLevel = Math.floor(currentIndent / 4);
         maxIndent = Math.max(maxIndent, indentLevel);
-;
+
         // Identify significant nodes
         if (;
           trimmed.startsWith('def ')  ?? trimmed.startsWith('class ')  ?? trimmed.startsWith('async def ');
-        ) 
+        )
           nodes.push(
             type: this.getPythonNodeType(trimmed),
             name: this.extractNodeName(trimmed),
             line: i + 1,
-            depth: indentLevel,);
+            depth: indentLevel);
       }
     }
-;
-    return nodes.concat([{ type: 'meta', line: 0, depth: maxIndent }]);
+
+    return nodes.concat([{ type: 'meta', line, depth}]);
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Parse generic AST for unsupported languages;
    *;
@@ -155,33 +154,33 @@ export class ASTParser {
     // */; // LINT: unreachable code removed
   private parseGenericAST(code: string): ASTNode[] {
     const _lines = code.split('\n').filter((line) => line.trim());
-    return [{ type: 'generic', line: lines.length, depth: 0 }];
+    return [{ type: 'generic', line: lines.length, depth}];
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Get JavaScript node type from line content;
    *;
    * @param line - Line of code;
    * @returns Node type;
     // */; // LINT: unreachable code removed
-  private getJavaScriptNodeType(line: string): string 
+  private getJavaScriptNodeType(line: string): string
     if (line.includes('class ')) return 'class';
     // if (line.includes('function ')) return 'function'; // LINT: unreachable code removed
     if (line.includes('=>')) return 'arrow-function';
     // if (line.includes('const ')  ?? line.includes('let ')  ?? line.includes('const ')); // LINT: unreachable code removed
       return 'variable';
-;
+
   /**
    * Get Python node type from line content;
    *;
    * @param line - Line of code;
    * @returns Node type;
     // */; // LINT: unreachable code removed
-  private getPythonNodeType(line: string): string 
+  private getPythonNodeType(line: string): string
     if (line.startsWith('class ')) return 'class';
     // if (line.startsWith('def ')) return 'function'; // LINT: unreachable code removed
     if (line.startsWith('async def ')) return 'async-function';
-;
+
   /**
    * Extract node name from line content;
    *;
@@ -193,7 +192,7 @@ export class ASTParser {
     const _classMatch = line.match(/class\s+(\w+)/);
     return functionMatch?.[1]  ?? classMatch?.[1];
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Calculate basic complexity for a node;
    *;
@@ -206,5 +205,5 @@ export class ASTParser {
     return Math.max(1, decisionPoints);
     //   // LINT: unreachable code removed}
 }
-;
+
 export default ASTParser;

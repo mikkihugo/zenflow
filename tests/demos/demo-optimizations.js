@@ -10,10 +10,10 @@ async function demonstrateMCPOptimizations() {
   // Create optimized server instance
   console.warn('📡 Creating optimized MCP server...');
   const _server = new ClaudeFlowMCPServer({
-    batchSize: 15,
-    batchTimeout: 100,
-    retryAttempts: 3,
-    enableMetricsLogging: false
+    batchSize,
+    batchTimeout,
+    retryAttempts,
+    enableMetricsLogging
 })
 console.warn('✅ Server created with optimizations:')
 console.warn(`   - Batch size: $
@@ -46,8 +46,7 @@ console.warn('\n📨 Simulating message processing...');
 const _testMessages = [
     {
       message: { jsonrpc: '2.0', method: 'initialize', id: 'init-1', params: {} },
-      receivedAt: Date.now(),
-    },
+      receivedAt: Date.now() },
     { message: { jsonrpc: '2.0', method: 'tools/list', id: 'tools-1' }, receivedAt: Date.now() },
     { message: { jsonrpc: '2.0', method: 'resources/list', id: 'res-1' }, receivedAt: Date.now() },
     {
@@ -55,11 +54,8 @@ const _testMessages = [
         jsonrpc: '2.0',
         method: 'resources/read',
         id: 'read-1',
-        params: { uri: 'performance://summary' },
-      },
-      receivedAt: Date.now(),
-    },
-  ];
+        params: { uri: 'performance://summary' } },
+      receivedAt: Date.now() } ];
 // Process messages through optimized path
 const __processedCount = 0;
 server.stdioOptimizer.on('batch', async (batch) => {
@@ -72,12 +68,12 @@ $;
   batch.length;
 }
 messages;
-...`)
+..`)
 _processedCount += batch.length
 // Simulate processing each message in the batch
 for (const item of batch) {
   try {
-        const _response = await server.handleMessage(item.message);
+// const _response = awaitserver.handleMessage(item.message);
         console.warn(`   ✅ ${item.message.method} -> ${response.result ? 'Success' : 'Response'}`);
       } catch (error) {
         console.warn(`   ❌ ${item.message.method} -> Error: ${error.message}`);
@@ -184,8 +180,8 @@ console.warn(;
 Optimizations: $;
 {
   Object.keys(status.optimization);
-  .filter((k) => status.optimization[k])
-  .join(', ')
+filter((k) => status.optimization[k])
+join(', ')
 }
 `;
 )
@@ -233,7 +229,7 @@ resources.forEach((resource) => {
 // Demonstrate resource reading
 console.warn('\n📖 Reading Performance Summary Resource:');
 try {
-    const _perfSummary = await server.readResource('performance://summary');
+// const _perfSummary = awaitserver.readResource('performance://summary');
     console.warn(`;
 Success;
 rate: $;

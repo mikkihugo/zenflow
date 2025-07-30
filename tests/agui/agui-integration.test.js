@@ -14,8 +14,7 @@ describe('AG-UI Integration Tests', () => {
   beforeEach(() => {
     _adapter = new AGUIAdapter({
       sessionId: 'test-session',
-    threadId: 'test-thread',
-  });
+    threadId: 'test-thread' });
 });
 afterEach(() => {
   adapter.reset();
@@ -42,12 +41,11 @@ describe('AGUIAdapter', () => {
   test('should emit tool call events correctly', (done) => {
     const _eventsReceived = 0;
     const _expectedEvents = [
-      ;
+
         'TOOL_CALL_START',
         'TOOL_CALL_ARGS',
         'TOOL_CALL_END',
-        'TOOL_CALL_RESULT',,,,,,,,
-    ];
+        'TOOL_CALL_RESULT',,,,,,, ];
     adapter.on('agui:event', (event) => {
       expect(expectedEvents).toContain(event.type);
       eventsReceived++;
@@ -113,8 +111,7 @@ describe('AGUIWebSocketMiddleware', () => {
       const _testEvent = {
         type: EventType.CUSTOM,
         name: 'test',
-        value: 'broadcast test',
-      };
+        value: 'broadcast test' };
   const _sentCount = middleware.broadcastAGUIEvent(testEvent);
   expect(sentCount).toBe(2);
   expect(mockWS1.send).toHaveBeenCalled();
@@ -155,8 +152,7 @@ describe('Integration with Claude Code Zen', () =>
         events.push(event);
       });
       const _testState = {
-        queens: { count: 3 },active: 2 ,sqlite: 'healthy' ,
-      };
+        queens: { count },active ,sqlite: 'healthy'  };
   adapter.emitStateSnapshot(testState);
   expect(events).toHaveLength(1);
   expect(events[0].type).toBe(EventType.STATE_SNAPSHOT);

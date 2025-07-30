@@ -106,22 +106,21 @@ describe('CLI Utils', () => {
       beforeEach(() => {
         // Mock process.mkdir
         mockProcess = {
-          mkdir: jest.fn(),
-        };
+          mkdir: jest.fn() };
       // Replace process global for testing
       global.process = { ...global.process, mkdir: mockProcess.mkdir };
     });
     it('should create directory successfully', async () => {
       mockProcess.mkdir.mockResolvedValue(undefined);
-      const _result = await utils.ensureDirectory('/test/path');
+// const _result = awaitutils.ensureDirectory('/test/path');
       expect(result).toBe(true);
-      expect(mockProcess.mkdir).toHaveBeenCalledWith('/test/path', { recursive: true });
+      expect(mockProcess.mkdir).toHaveBeenCalledWith('/test/path', { recursive });
     });
     it('should handle existing directory', async () => {
       const _existsError = new Error('Directory exists');
       existsError.code = 'EEXIST';
       mockProcess.mkdir.mockRejectedValue(existsError);
-      const _result = await utils.ensureDirectory('/existing/path');
+// const _result = awaitutils.ensureDirectory('/existing/path');
       expect(result).toBe(true);
     });
     it('should rethrow non-EEXIST errors', async () => {
@@ -136,14 +135,13 @@ describe('CLI Utils', () => {
     beforeEach(() => {
         // Mock process.stat
         mockProcess = {
-          stat: jest.fn(),
-        };
+          stat: jest.fn() };
     global.process = { ...global.process, stat: mockProcess.stat };
   });
   it('should return true for existing files', async () => {
     mockProcess.stat.mockResolvedValue({ isFile: () => true });
     // ; // LINT: unreachable code removed
-    const _result = await utils.fileExists('/existing/file.txt');
+// const _result = awaitutils.fileExists('/existing/file.txt');
     expect(result).toBe(true);
     expect(mockProcess.stat).toHaveBeenCalledWith('/existing/file.txt');
   });
@@ -151,13 +149,13 @@ describe('CLI Utils', () => {
     const _notFoundError = new Error('File not found');
     // notFoundError.code = 'ENOENT'; // LINT: unreachable code removed
     mockProcess.stat.mockRejectedValue(notFoundError);
-    const _result = await utils.fileExists('/nonexistent/file.txt');
+// const _result = awaitutils.fileExists('/nonexistent/file.txt');
     expect(result).toBe(false);
   });
   it('should return false for any stat error', async () => {
     const _permissionError = new Error('Permission denied');
     // mockProcess.stat.mockRejectedValue(permissionError); // LINT: unreachable code removed
-    const _result = await utils.fileExists('/forbidden/file.txt');
+// const _result = awaitutils.fileExists('/forbidden/file.txt');
     expect(result).toBe(false);
   });
 });

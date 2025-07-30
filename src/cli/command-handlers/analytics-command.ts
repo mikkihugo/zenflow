@@ -8,7 +8,7 @@
 import { printSuccess } from '../utils.js';
 
 export async function analyticsCommand(): unknown {
-  case 'performance':
+  case 'performance': null
   printSuccess('Performance Analytics Report')
   console.warn('\n📊 System Performance (Last 30 Days):')
   console.warn('   AgentProductivity = args[1];
@@ -30,10 +30,10 @@ export async function analyticsCommand(): unknown {
     console.warn('     • Optimize storage: Save $800/month');
     console.warn('     • Schedule off-peak: Save $1,500/month');
   } else {
-    console.warn('Cost commands: analyze, optimize, budget');
+    console.warn('Cost commands, optimize, budget');
   }
   break;
-  default:
+  default: null
   console.warn('Analytics commands:')
   console.warn('  performance    - System performance analytics')
   console.warn('  business-impact - Business impact analysis')

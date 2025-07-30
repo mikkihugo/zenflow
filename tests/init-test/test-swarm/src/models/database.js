@@ -9,7 +9,7 @@ const _db = new sqlite3.Database(dbPath, (err) => {
     logger.info('Connected to SQLite database');
   }
 });
-const _initializeDatabase = (): unknown => {
+const _initializeDatabase = () => {
   return new Promise((_resolve, _reject) => {
     db.serialize(() => {
       // Users table
@@ -78,4 +78,3 @@ const _initializeDatabase = (): unknown => {
   });
 };
 module.exports = { db, initializeDatabase };
-;

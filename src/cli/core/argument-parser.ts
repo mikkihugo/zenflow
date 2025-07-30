@@ -132,15 +132,15 @@ if (args.length === 0) {
  * @param defaults - Default values;
  * @returns Merged flags object;
     // */ // LINT: unreachable code removed
-export function mergeWithDefaults(_cliFlags = ': unknown, ': unknown): Record<string, any> {
+export function mergeWithDefaults(_cliFlags = ', ': unknown): Record<string, any> {
   const _processed = { ...flags };
-;
+
   for (const flagName of flagNames) {
     if (processed[flagName] && typeof processed[flagName] === 'string') {
       processed[flagName] = processed[flagName].split(delimiter).map((item = > item.trim());
     }
   }
-;
+
   return processed;
 }
 // =============================================================================
@@ -202,7 +202,7 @@ requireOneOf<T>((name = null));
       `Flag --${name} must be oneof = null): string | null {
     return this.flags[name]  ?? defaultValue;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Get boolean flag;
    * @param name - Flag name;
@@ -212,7 +212,7 @@ requireOneOf<T>((name = null));
     const _value = this.flags[name];
     return value ? Number(value) : defaultValue;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Get array flag with validation;
    * @param name - Flag name;
@@ -225,7 +225,7 @@ requireOneOf<T>((name = null));
     // if (typeof value === 'string') return value.split(',').map(item => item.trim()); // LINT: unreachable code removed
     return defaultValue;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Validate flag with custom options;
    * @param name - Flag name;
@@ -233,20 +233,20 @@ requireOneOf<T>((name = null));
    * @returns Validated value;
     // */; // LINT: unreachable code removed
   public validateFlag(name = this.flags[name];
-;
+
     // Check if required
     if (options.required && (value === undefined  ?? value === null)) {
       throw new ValidationError(options.errorMessage  ?? `;
     Flag--;
-    $nameis;
+    \$nameis;
     required`);
     }
-;
+
     // Return default if not provided and not required
     if (value === undefined  ?? value === null) {
       return undefined;
     //   // LINT: unreachable code removed}
-;
+
     // Type validation
     if (options.type) {
       switch (options.type) {
@@ -254,7 +254,7 @@ requireOneOf<T>((name = null));
           if (typeof value !== 'string') {
             throw new ValidationError(options.errorMessage  ?? `;
     Flag--;
-    $namemust;
+    \$namemust;
     be;
     a;
     string`);
@@ -264,7 +264,7 @@ requireOneOf<T>((name = null));
           if (isNaN(Number(value))) {
             throw new ValidationError(options.errorMessage  ?? `;
     Flag--;
-    $namemust;
+    \$namemust;
     be;
     a;
     number`);
@@ -274,7 +274,7 @@ requireOneOf<T>((name = null));
           if (typeof value !== 'boolean') {
             throw new ValidationError(options.errorMessage  ?? `;
     Flag--;
-    $namemust;
+    \$namemust;
     be;
     a;
     boolean`);
@@ -284,7 +284,7 @@ requireOneOf<T>((name = null));
           if (!Array.isArray(value)) {
             throw new ValidationError(options.errorMessage  ?? `;
     Flag--;
-    $namemust;
+    \$namemust;
     be;
     an;
     array`);
@@ -292,7 +292,7 @@ requireOneOf<T>((name = null));
           break;
       }
     }
-;
+
     // Valid values check
     if (options.validValues && !options.validValues.includes(value)) {
       throw new ValidationError(;
@@ -354,7 +354,7 @@ requireOneOf<T>((name = null));
       acc[index] = arg;
     // return acc; // LINT: unreachable code removed
   }
-  ,
+
   as
   Record<string, any>
   ),options = > normalizedFlags[key] === true),unknown = []

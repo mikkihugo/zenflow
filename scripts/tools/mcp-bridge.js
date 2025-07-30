@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Claude-Flow MCP Bridge;
- * Exposes service document tools as accessible MCP tools;
+ * Exposes service document tools  MCP tools;
  */
 
 import { ServicesOrchestrator } from './services/orchestrator.js';
@@ -50,8 +50,7 @@ class MCPBridge {
     // serviceName, // LINT: unreachable code removed
     documentType,
     content,
-    approvalMetadata: metadata,
-    )
+    approvalMetadata)
   }
   async listServiceDocuments(_serviceName = null) {
     return await this.mcpServer.handleServiceDocumentManager({
@@ -85,7 +84,7 @@ getStatus()
         running: this.isRunning,
   // version: '2.0.0-alpha.61', // LINT: unreachable code removed
 }
-,
+
 orchestrator: this.orchestrator.getSystemStatus(),
 {
   toolsAvailable: [;
@@ -94,8 +93,7 @@ orchestrator: this.orchestrator.getSystemStatus(),
           'service_document_validator',
           'swarm_init',
           'agent_spawn',
-          'memory_usage',
-        ]
+          'memory_usage' ]
 }
 
 }
@@ -117,27 +115,26 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     // Demo the MCP tools
     console.warn('\n🧪 Testing MCP Service Tools...\n');
     // Test 1: Create service document
-    const _createResult = await bridge.createServiceDocument(;
+// const _createResult = awaitbridge.createServiceDocument(;
       'payment-service',
       'service-description',
         name: 'Payment Service',
         version: '1.0.0',
         description: 'Handles payment processing and billing',
         endpoints: ['/pay', '/refund', '/status'],
-        dependencies: ['user-service', 'notification-service'],
-    );
+        dependencies: ['user-service', 'notification-service']);
     console.warn('📄 Service document created:', createResult.success ? '✅' : '❌');
     // Test 2: List documents
-    const _listResult = await bridge.listServiceDocuments('payment-service');
+// const _listResult = awaitbridge.listServiceDocuments('payment-service');
     console.warn('📋 Documents listed:', listResult.success ? '✅' : '❌');
     // Test 3: Validate document
-    const _validateResult = await bridge.validateServiceDocument(;
+// const _validateResult = awaitbridge.validateServiceDocument(;
       'payment-service',
       'service-description';
     );
     console.warn('✅ Document validated:', validateResult.success ? '✅' : '❌');
     // Test 4: Queue approval
-    const _approvalResult = await bridge.queueApproval(createResult.documentId, 'tech-lead');
+// const _approvalResult = awaitbridge.queueApproval(createResult.documentId, 'tech-lead');
     console.warn('📝 Approval queued:', approvalResult.success ? '✅' : '❌');
     console.warn('\n✨ MCP Bridge fully operational!');
     console.warn('🔌 Connect Claude Desktop with: npx claude-zen@alpha mcp start');

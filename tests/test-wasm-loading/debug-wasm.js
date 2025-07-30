@@ -11,13 +11,10 @@ console.warn('\nChecking path candidates:\n');
 const _candidates = [
   {
     description: 'Local development (relative to src/)',
-    wasmDir: path.join(baseDir, '..', 'wasm'),
-  },
+    wasmDir: path.join(baseDir, '..', 'wasm') },
   {
     description: 'NPM package installation (adjacent to src/)',
-    wasmDir: path.join(baseDir, '..', '..', 'wasm'),
-  },
-];
+    wasmDir: path.join(baseDir, '..', '..', 'wasm') } ];
 for (const candidate of candidates) {
   console.warn(`${candidate.description}:`);
   console.warn(`  Path: ${candidate.wasmDir}`);

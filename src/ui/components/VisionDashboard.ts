@@ -10,17 +10,17 @@ const _VisionDashboard = (): unknown => {
   const [_visions, setVisions] = useState([]);
   const [loading, _setLoading] = useState(true);
   const [_selectedIndex, _setSelectedIndex] = useState(0);
-;
+
   useEffect(() => {
     const __loadVisions = async () => {
       try {
-        const _data = await visionAPI.fetchVisions();
+// const _data = awaitvisionAPI.fetchVisions();
         setVisions(data);
       } catch (/* _error */) {
         console.error('Failed to loadvisions = setInterval(loadVisions, 30000);
     return () => clearInterval(interval);
     //   // LINT: unreachable code removed}, []);
-;
+
   if(loading) {
     return React.createElement(Box, {justifyContent = === 0) {
     return React.createElement(Box, {justifyContent = (): unknown => {
@@ -36,20 +36,20 @@ const _VisionDashboard = (): unknown => {
     // const _totalProgress = phases.reduce((sum, phase) => sum + (phase.progress  ?? 0), 0); // LINT: unreachable code removed
     return Math.round(totalProgress / phases.length);
     //   // LINT: unreachable code removed};
-;
+
   return React.createElement(Box, { flexDirection => {
-;
+
     // return React.createElement(Box, {key = > p.status === 'in_progress')?.name  ?? vision.phases.find(p => p.status === 'pending')?.name  ?? 'All phases complete'; // LINT: unreachable code removed
           );
         );
       );
     }),
-    React.createElement(Box, marginTop: 1, borderStyle: "single", borderColor: "gray", paddingX: 1 ,
+    React.createElement(Box, marginTop, borderStyle: "single", borderColor: "gray", paddingX,
       React.createElement(Text, color: "gray" ,
         "💡 Use arrow keys to navigate • Press Enter to view details • Press R to refresh";
       );
     );
   );
 };
-;
+
 export default VisionDashboard;

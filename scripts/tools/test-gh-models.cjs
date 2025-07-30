@@ -7,21 +7,19 @@ const { spawn } = require('node:child_process');
 
 // Test function
 async function testGHModels() {
-  const prompt = `Here is a document to analyze:
-
+  const prompt = `Here is a document to analyze: null
 "This is a test document for architecture decisions. We need to choose between PostgreSQL and MongoDB for our user service database."
 
-Please analyze this document and respond with ONLY this JSON format (no other text):
-{
-  "quality_score": 8,
+Please analyze this document and respond with ONLY this JSON format (no other text) {
+  "quality_score",
   "summary": "Simple test document",
   "status": "success"
 }`;
 
   try {
-    const result = await runGHModel(prompt, 'openai/gpt-4o-mini');
+// const result = awaitrunGHModel(prompt, 'openai/gpt-4o-mini');
 
-    // Try to parse as JSON
+    // Try to parse 
     try {
       const _parsed = JSON.parse(result);
     } catch (_e) {
@@ -39,8 +37,7 @@ Please analyze this document and respond with ONLY this JSON format (no other te
 function runGHModel(prompt, model = 'openai/gpt-4o-mini') {
   return new Promise((resolve, reject) => {
     const gh = spawn('gh', ['models', 'run', model], {
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
+      stdio: ['pipe', 'pipe', 'pipe'] });
 
     let output = '';
     let errorOutput = '';

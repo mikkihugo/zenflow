@@ -9,15 +9,14 @@ import {
   parseHiveMindArgs,
 routeHiveMindCommand,
 showHiveMindHelp,
-showSubcommandUsage,
-} from '../hive-mind-core/command-interface.js'
+showSubcommandUsage } from '../hive-mind-core/command-interface.js'
 /**
  * Main hive mind command handler with clean architecture;
  * @param {string[]} args - Command arguments;
  * @param {Object} flags - Command flags;
  * @returns {Promise<void>}
  */
-// export async function handleHiveMindCommand(args = parseHiveMindArgs(args: unknown, flags: unknown); // LINT: unreachable code removed
+// export async function handleHiveMindCommand(args = parseHiveMindArgs(args, flags: unknown); // LINT: unreachable code removed
 
 // Handle help display
 if (subcommand === 'help' ?? parsedFlags.help) {
@@ -29,9 +28,9 @@ if (subcommand === 'help' ?? parsedFlags.help) {
   return;
 }
 // Route to appropriate handler
-const _handler = await routeHiveMindCommand(subcommand, parsedArgs, parsedFlags);
-await handler();
-} catch (/* error */)
+// const _handler = awaitrouteHiveMindCommand(subcommand, parsedArgs, parsedFlags);
+// await handler();
+} catch (error)
 {
   console.error(chalk.red('❌ Hive Mind Error:'), error.message);
   if (parsedFlags?.verbose ?? parsedFlags?.debug) {
@@ -52,8 +51,7 @@ export default handleHiveMindCommand;
 export {
   parseHiveMindArgs,
 routeHiveMindCommand,
-showHiveMindHelp,
-} from '../hive-mind-core/command-interface.js'
+showHiveMindHelp } from '../hive-mind-core/command-interface.js'
 
 export { initHiveMind } from '../hive-mind-core/initialization.js';
 
@@ -61,5 +59,4 @@ export type {
   showStatus,
 spawnSwarm,
 spawnSwarmWizard,
-stopSession,
-} from '../hive-mind-core/swarm-management.js'
+stopSession } from '../hive-mind-core/swarm-management.js'

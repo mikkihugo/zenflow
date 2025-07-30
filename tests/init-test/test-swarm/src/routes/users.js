@@ -8,7 +8,7 @@ const _router = express.Router();
 // Get all users (admin only - for now accessible to all authenticated users)
 router.get('/', authenticate, async (_req, res) => {
   try {
-    const _users = await User.findAll();
+// const _users = awaitUser.findAll();
     res.json({ users });
   } catch (error) {
     logger.error('Users fetch error:', error);
@@ -19,8 +19,7 @@ router.get('/', authenticate, async (_req, res) => {
 router.get('/profile', authenticate, async (req, res) => {
   try {
     res.json({
-      user: req.user,
-    });
+      user: req.user });
   } catch (error) {
     logger.error('Profile fetch error:', error);
     res.status(500).json({ error: 'Failed to fetch profile' });
@@ -30,12 +29,12 @@ router.get('/profile', authenticate, async (req, res) => {
 router.get('/:id', authenticate, async (req, res) =>
 {
   try {
-    const _user = await User.findById(req.params.id);
+// const _user = awaitUser.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     //   // LINT: unreachable code removed}
     res.json({ user });
-  } catch (error) 
+  } catch (error)
     logger.error('User fetch error:', error);
     res.status(500).json({ error: 'Failed to fetch user' });
 });
@@ -44,9 +43,8 @@ router.put(;
   '/profile',
   authenticate,
   [;
-    body('username').optional().isLength({ min: 3 }).trim(),
-    body('email').optional().isEmail().normalizeEmail(),
-  ],
+    body('username').optional().isLength({ min }).trim(),
+    body('email').optional().isEmail().normalizeEmail() ],
   async (req, res) => {
     try {
       const _errors = validationResult(req);
@@ -57,12 +55,11 @@ router.put(;
       const _updates = {};
       if (username) updates.username = username;
       if (email) updates.email = email;
-      const _updatedUser = await User.update(req.user.id, updates);
+// const _updatedUser = awaitUser.update(req.user.id, updates);
       logger.info(`User profile updated: ${req.user.email}`);
       res.json({
-        user: updatedUser,
-        message: 'Profile updated successfully',
-      });
+        user,
+        message: 'Profile updated successfully' });
     } catch (error) {
       logger.error('Profile update error:', error);
       res.status(500).json({ error: 'Failed to update profile' });
@@ -73,7 +70,7 @@ router.put(;
 router.put(;
   '/profile/password',
   authenticate,
-  [body('currentPassword').notEmpty(), body('newPassword').isLength({ min: 6 })],
+  [body('currentPassword').notEmpty(), body('newPassword').isLength({ min })],
   async (req, res) => {
     try {
       const _errors = validationResult(req);
@@ -82,18 +79,18 @@ router.put(;
     //   // LINT: unreachable code removed}
       const { currentPassword, newPassword } = req.body;
       // Get user with password
-      const _userWithPassword = await User.findByIdWithPassword(req.user.id);
+// const _userWithPassword = awaitUser.findByIdWithPassword(req.user.id);
       // Verify current password
-      const _isValid = await User.verifyPassword(currentPassword, userWithPassword.password);
+// const _isValid = awaitUser.verifyPassword(currentPassword, userWithPassword.password);
       if (!isValid) {
         return res.status(401).json({ error: 'Current password is incorrect' });
     //   // LINT: unreachable code removed}
       // Update password
-      const _hashedPassword = await bcrypt.hash(newPassword, 10);
+// const _hashedPassword = awaitbcrypt.hash(newPassword, 10);
   // await User.updatePassword(req.user.id, hashedPassword);
       logger.info(`Password updated for user: ${req.user.email}`);
       res.json({ message: 'Password updated successfully' });
-    } catch (error) 
+    } catch (error)
       logger.error('Password update error:', error);
       res.status(500).json({ error: 'Failed to update password' });
   }

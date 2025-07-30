@@ -8,19 +8,19 @@ import blessed from 'blessed';
 class PerformanceMonitor {
   constructor() {
     this.screen = blessed.screen({
-      smartCSR: true,
+      smartCSR,
     title: 'Claude Flow Performance Monitor'
 })
   this
-  .
+
   metrics = {
-      hooks: { calls: 0, avgTime: 0, errors: 0 },
-  memory: { reads: 0, writes: 0, cacheHits: 0 }
-  ,
-  neural: { predictions: 0, trainings: 0, accuracy: 0 }
-  ,
-  agents: { active: 0, pooled: 0, spawns: 0 }
-  
+      hooks: { calls, avgTime, errors },
+  memory: { reads, writes, cacheHits }
+
+  neural: { predictions, trainings, accuracy }
+
+  agents: { active, pooled, spawns }
+
 }
 this.setupUI();
 this.startMonitoring();
@@ -29,27 +29,27 @@ setupUI()
 {
   // Header
   this.header = blessed.box({
-      top: 0,
-  left: 0,
+      top,
+  left,
   width: '100%',
-  height: 3,
+  height,
   content: '{center}Claude Flow Performance Monitor{/center}',
-  tags: true,
+  tags,
   fg: 'white',
   bg: 'blue'
 })
 // Metrics boxes
 this.hookBox = this.createMetricBox(
 {
-  top: 3,
-  left: 0,
+  top,
+  left,
   width: '50%',
   height: '25%',
   label: ' Hook Performance '
 })
 this.memoryBox = this.createMetricBox(
 {
-  top: 3,
+  top,
   left: '50%',
   width: '50%',
   height: '25%',
@@ -58,7 +58,7 @@ this.memoryBox = this.createMetricBox(
 this.neuralBox = this.createMetricBox(
 {
   top: '28%',
-  left: 0,
+  left,
   width: '50%',
   height: '25%',
   label: ' Neural Processing '
@@ -75,28 +75,26 @@ this.agentBox = this.createMetricBox(
 this.logBox = blessed.log(
 {
   top: '53%',
-  left: 0,
+  left,
   width: '100%',
   height: '35%',
   label: ' Live Activity Log ',
-  tags: true,
-  scrollable: true,
-  alwaysScroll: true,
-  mouse: true,
+  tags,
+  scrollable,
+  alwaysScroll,
+  mouse,
   type: 'line',
-  ,
+
   fg: 'white',
   bg: 'black',
-  fg: 'cyan',
-  
-})
+  fg: 'cyan' })
 // Status bar
 this.statusBar = blessed.box(
 {
-  bottom: 0,
-  left: 0,
+  bottom,
+  left,
   width: '100%',
-  height: 3,
+  height,
   content: 'Press q to quit | r to reset metrics | Space to pause',
   fg: 'white',
   bg: 'green'
@@ -118,11 +116,9 @@ createMetricBox(options)
 {
   return blessed.box({ ...options,
   type: 'line',
-  ,
+
   fg: 'white',
-  fg: 'cyan',
-  
-})
+  fg: 'cyan' })
 }
 startMonitoring()
 {
@@ -212,14 +208,13 @@ $;
 // Add log entries
 if (Math.random() > 0.7) {
   const _operations = [
-    ;
+
         '{green-fg}✓{/green-fg} Hook executed: pre-command (12ms)',
         '{green-fg}✓{/green-fg} Memory write: command/pre/12345 (3ms)',
         '{green-fg}✓{/green-fg} Neural prediction: task complexity (5ms)',
         '{yellow-fg}⚡{/yellow-fg} Agent spawned from pool (45ms)',
         '{blue-fg}↻{/blue-fg} Cache hit: prediction/task/analyze',
-        '{green-fg}✓{/green-fg} Parallel batch processed: 10 operations',,,,
-  ];
+        '{green-fg}✓{/green-fg} Parallel batch processed: 10 operations',,, ];
   this.logBox.log(operations[Math.floor(Math.random() * operations.length)]);
 }
 this.screen.render();
@@ -229,13 +224,13 @@ this.logBox.log('{green-fg}✓{/green-fg} Connected to Claude Flow metrics');
 this.logBox.log('{blue-fg}ℹ{/blue-fg} Monitoring performance in real-time...');
 resetMetrics();
 this.metrics = {
-      hooks: { calls: 0, avgTime: 0, errors: 0 },
-reads: 0, writes;
-: 0, cacheHits: 0 ,
-  predictions: 0, trainings
-  : 0, accuracy: 0 ,
-  active: 0, pooled
-  : 0, spawns: 0 ,
+      hooks: { calls, avgTime, errors },
+reads, writes;
+, cacheHits ,
+  predictions, trainings
+  , accuracy ,
+  active, pooled
+  , spawns ,
 this.logBox.log('{yellow-fg}↻{/yellow-fg} Metrics reset')
 // Check if blessed is available
 try {

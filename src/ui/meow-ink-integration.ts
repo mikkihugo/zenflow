@@ -5,7 +5,7 @@
  * Modern CLI with advanced TUIfeaturing = (): unknown => {
   const _filled = Math.floor((progress / 100) * width);
   const _empty = width - filled;
-;
+
   return (;
     // <Box>; // LINT: unreachable code removed
       <Text color={color}>;
@@ -15,16 +15,16 @@
     </Box>;
   );
 };
-;
+
   const [selectedSuggestion, setSelectedSuggestion] = useState(-1);
-;
+
   useEffect(() => {
     // Auto-completion logic
     if(value.length > 0) {
       listCommands().then(commands => {
         const _matches = commands;
-          .filter(cmd => cmd.name.toLowerCase().startsWith(value.toLowerCase()));
-          .slice(0, 5);
+filter(cmd => cmd.name.toLowerCase().startsWith(value.toLowerCase()));
+slice(0, 5);
         setSuggestions(matches);
         setSelectedSuggestion(-1);
       });
@@ -32,7 +32,7 @@
       setSuggestions([]);
     }
   }, [value]);
-;
+
   return (;
     // <Box flexDirection="column">; // LINT: unreachable code removed
       <Box>;
@@ -43,7 +43,7 @@
             <Text ;
               key={cmd.name}
               color={index === selectedSuggestion ? 'cyan' : 'gray'}
-              backgroundColor={index === selectedSuggestion ? 'blue' : undefined}
+              backgroundColor={index === selectedSuggestion ? 'blue' }
             >;
               {cmd.name} - {cmd.description}
             </Text>;
@@ -53,12 +53,12 @@
     </Box>;
   );
 };
-;
+
 const _SwarmTopology = (): unknown => {
   return (;
     // <Box flexDirection="column" borderStyle="single" padding={1 // LINT: unreachable code removed}>;
       <Text bold color="cyan">🐝 Swarm Topology</Text>
-;
+
       {swarms.length === 0 ? (;
         <Text color="gray">No active swarms</Text>;
       ) : (;
@@ -70,7 +70,7 @@ const _SwarmTopology = (): unknown => {
           </Box>;
         ));
       )}
-;
+
       {connections.length > 0 && (;
         <Box flexDirection="column" marginTop={1}>;
           <Text color="gray">Connections = > (;
@@ -83,11 +83,11 @@ const _SwarmTopology = (): unknown => {
     </Box>;
   );
 };
-;
+
   return (;
     // <Box flexDirection="column" borderStyle="single" padding={1 // LINT: unreachable code removed} height={height + 2}>;
       <Text bold color="cyan">📋 Command Logs</Text>
-;
+
       {visibleLogs.map((log, index) => (;
         <Text ;
           key={index}
@@ -96,19 +96,19 @@ const _SwarmTopology = (): unknown => {
           {new Date(log.timestamp).toLocaleTimeString()} {log.message}
         </Text>;
       ))}
-;
+
       {logs.length === 0 && (;
         <Text color="gray">No logs yet</Text>;
       )}
     </Box>;
   );
 };
-;
+
 };
-;
+
 const _HelpPane = (): unknown => {
   const [commandHelp, setCommandHelp] = useState(null);
-;
+
   useEffect(() => {
     if(selectedCommand) {
       // Fetch command help
@@ -118,11 +118,11 @@ const _HelpPane = (): unknown => {
       });
     }
   }, [selectedCommand]);
-;
+
   return (;
     // <Box flexDirection="column" borderStyle="single" padding={1 // LINT: unreachable code removed}>;
       <Text bold color="cyan">📖 Help</Text>
-;
+
       {commandHelp ? (;
         <Box flexDirection="column" marginTop={1}>;
           <Text bold>{commandHelp.name}</Text>;
@@ -146,7 +146,7 @@ const _HelpPane = (): unknown => {
     </Box>;
   );
 };
-;
+
 const _CLIInterface = (): unknown => {
   const [command, setCommand] = useState('');
   const [output, setOutput] = useState([]);
@@ -161,34 +161,34 @@ const _CLIInterface = (): unknown => {
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestion, setSelectedSuggestion] = useState(-1);
   const [viewLayout, setViewLayout] = useState('split'); // 'split', 'full'
-  
+
   const { exit } = useApp();
-;
+
   // Auto-execute initial command
   useEffect(() => {
     if(initialCommand) {
       executeCommandWithOutput(initialCommand, initialArgs, initialFlags);
     }
   }, [initialCommand]);
-;
+
   // Update system status periodically
   useEffect(() => {
     const _updateStatus = async () => {
       try {
-        const _commands = await listCommands();
+// const _commands = awaitlistCommands();
         setSystemStatus(prev => ({
-          ...prev,commandCount = apiServer.getStatus();
+..prev,commandCount = apiServer.getStatus();
           setMetrics({apiCalls = setInterval(updateStatus, 5000);
     return () => clearInterval(interval);
     //   // LINT: unreachable code removed}, [apiServer]);
-;
+
   // Command auto-completion
   useEffect(() => {
     if(command.length > 0) {
       listCommands().then(commands => {
         const _matches = commands;
-          .filter(cmd => cmd.name.toLowerCase().startsWith(command.toLowerCase()));
-          .slice(0, 8);
+filter(cmd => cmd.name.toLowerCase().startsWith(command.toLowerCase()));
+slice(0, 8);
         setSuggestions(matches);
         setSelectedSuggestion(-1);
       });
@@ -196,33 +196,33 @@ const _CLIInterface = (): unknown => {
       setSuggestions([]);
     }
   }, [command]);
-;
+
   const _executeCommandWithOutput = useCallback(async (cmd, args = [], flags = {}) => {
     setIsExecuting(true);
     setCurrentProgress(0);
     const _timestamp = new Date().toISOString();
-;
+
     // Simulate long-running task with progress
     setLongRunningTask({name = setInterval(() => {
         setCurrentProgress(prev => {
-;
+
           setLongRunningTask(task => task ? { ...task,progress = console.log;
       const _originalError = console.error;
-;
+
       console.log = (): unknown => {
         const _logEntry = {type = (): unknown => {
         const _logEntry = { ;
           type = {setCurrentProgress = > task ? { ...task, progress });
         }
       };
-;
+
       // Restore console
       console.log = originalLog;
       console.error = originalError;
-;
+
       clearInterval(progressInterval);
       setCurrentProgress(100);
-;
+
       // Update output with enhanced information
       setOutput(prev => [...prev,
         {type = > ({ ...prev,executions = > [...prev,
@@ -240,19 +240,19 @@ const _CLIInterface = (): unknown => {
       exit();
       return;
     //   // LINT: unreachable code removed}
-;
+
     // Function keys for mode switching
     if(key.f1) { setMode('api'); return; }
     if(key.f2) { setMode('monitoring'); return; }
     if(key.f3) { setMode('help'); return; }
     if(key.f4) { setMode('cli'); return; }
-;
+
     // Layout switching
     if(key.ctrl && input === 'l') {
       setViewLayout(prev => prev === 'split' ? 'full' : 'split');
       return;
     //   // LINT: unreachable code removed}
-;
+
     // Command completion navigation
     if(suggestions.length > 0) {
       if(key.upArrow) {
@@ -269,13 +269,13 @@ const _CLIInterface = (): unknown => {
         return;
     //   // LINT: unreachable code removed}
     }
-;
+
     // Command execution
     if (key.return && command.trim()) {
       const _parts = command.trim().split(' ');
     // const _cmd = parts[0]; // LINT: unreachable code removed
       const _args = parts.slice(1);
-;
+
       // Use suggestion if one is selected
       if(selectedSuggestion >= 0) {
         executeCommandWithOutput(suggestions[selectedSuggestion].name, args, {});
@@ -287,7 +287,7 @@ const _CLIInterface = (): unknown => {
       setCommand('');
       return;
     //   // LINT: unreachable code removed}
-;
+
     // Command input
     if(key.backspace  ?? key.delete) {
       setCommand(prev => prev.slice(0, -1));
@@ -305,7 +305,7 @@ const _CLIInterface = (): unknown => {
       setOutput(prev => [...prev, {type = === 1) {
       setCommand(prev => prev + input);
     }
-;
+
     // Mode-specific inputs
     if(mode === 'api') {
       if (input === 's') startAPIServer();
@@ -320,7 +320,7 @@ const _CLIInterface = (): unknown => {
     // case 'info': return 'yellow';default = (): unknown => { // LINT: unreachable code removed
     return mode === targetMode ? 'cyan' : 'gray';
     //   // LINT: unreachable code removed};
-;
+
   // Main render component with enhanced split-pane layout
   return React.createElement(Box, {flexDirection = === 'cli' }, '[F4] CLI '),
     // React.createElement(Text, {color = === 'api'  // LINT: unreachable code removed}, '[F1] API '),
@@ -348,7 +348,7 @@ const _CLIInterface = (): unknown => {
   render(React.createElement(CLIInterface, {initialCommand = (): unknown => {
   const _cli = createMeowCLI();
   const { input, flags } = cli;
-;
+
   if(flags.ui  ?? flags.terminal) {
     // Launch TUI interface
     launchMeowInkInterface(input[0], input.slice(1), flags);
@@ -359,5 +359,5 @@ const _CLIInterface = (): unknown => {
     // process.exit(0); // LINT: unreachable code removed
   });
 }
-;
+
 export default CLIInterface;

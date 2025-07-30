@@ -4,7 +4,7 @@
  *
  * Usage: ./interactive-docstack.cjs
  *
- * This provides an interactive CLI similar to GitHub models where you can:
+ * This provides an interactive CLI similar to GitHub models where you can: null
  * - Create documents with automatic metadata
  * - Get human feedback on routing/approval
  * - Process documents through the stack
@@ -23,8 +23,7 @@ const colors = {
   yellow: '\x1b[33m',
   cyan: '\x1b[36m',
   magenta: '\x1b[35m',
-  red: '\x1b[31m',
-};
+  red: '\x1b[31m' };
 
 // Mock memory store
 class MockMemoryStore {
@@ -33,13 +32,13 @@ class MockMemoryStore {
   }
 
   async store(key, value, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` : key;
+    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
     this.data.set(fullKey, value);
-    return { id: fullKey, size: value.length };
+    return { id, size: value.length };
   }
 
   async retrieve(key, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` : key;
+    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
     return this.data.get(fullKey) || null;
   }
 
@@ -63,8 +62,7 @@ setupDefaultRules(docStack);
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
-  prompt: `${colors.cyan}docstack> ${colors.reset}`,
-});
+  prompt: `${colors.cyan}docstack> ${colors.reset}` });
 
 // Document templates for quick creation
 const templates = {
@@ -82,8 +80,7 @@ const templates = {
 [What is the change that we're proposing and/or doing?]
 
 ## Consequences
-[What becomes easier or more difficult to do because of this change?]`,
-  },
+[What becomes easier or more difficult to do because of this change?]` },
   api: {
     docType: 'api-documentation',
     template: `# API Documentation
@@ -104,8 +101,7 @@ const templates = {
 {
   "data": []
 }
-\`\`\``,
-  },
+\`\`\`` },
   security: {
     docType: 'security-spec',
     template: `# Security Specification
@@ -118,9 +114,7 @@ const templates = {
 2. [Requirement 2]
 
 ## Implementation
-[How to implement]`,
-  },
-};
+[How to implement]` } };
 
 // Main command processor
 async function processCommand(line) {
@@ -128,56 +122,56 @@ async function processCommand(line) {
   const command = args[0].toLowerCase();
 
   switch (command) {
-    case 'help':
-    case 'h':
+    case 'help': null
+    case 'h': null
       showHelp();
       break;
 
-    case 'create':
-    case 'c':
-      await createDocument(args.slice(1));
+    case 'create': null
+    case 'c': null
+// await createDocument(args.slice(1));
       break;
 
-    case 'review':
-    case 'r':
-      await reviewDocument(args.slice(1));
+    case 'review': null
+    case 'r': null
+// await reviewDocument(args.slice(1));
       break;
 
-    case 'list':
-    case 'ls':
-      await listDocuments(args.slice(1));
+    case 'list': null
+    case 'ls': null
+// await listDocuments(args.slice(1));
       break;
 
-    case 'approve':
-    case 'a':
-      await approveDocument(args.slice(1));
+    case 'approve': null
+    case 'a': null
+// await approveDocument(args.slice(1));
       break;
 
-    case 'validate':
-    case 'v':
-      await validateDocument(args.slice(1));
+    case 'validate': null
+    case 'v': null
+// await validateDocument(args.slice(1));
       break;
 
-    case 'template':
-    case 't':
+    case 'template': null
+    case 't': null
       showTemplates();
       break;
 
-    case 'status':
-    case 's':
-      await showStatus();
+    case 'status': null
+    case 's': null
+// await showStatus();
       break;
 
-    case 'clear':
+    case 'clear': null
       break;
 
-    case 'exit':
-    case 'quit':
-    case 'q':
+    case 'exit': null
+    case 'quit': null
+    case 'q': null
       process.exit(0);
       break;
 
-    default:
+    default: null
       if (line.trim()) {
       }
   }
@@ -199,8 +193,7 @@ async function createDocument(args) {
     api: 'api-documentation',
     security: 'security-spec',
     deploy: 'deployment-guide',
-    guide: 'user-guide',
-  };
+    guide: 'user-guide' };
 
   const docType = typeMap[type] || type;
 
@@ -213,22 +206,22 @@ async function createDocument(args) {
   const metadata = {};
 
   // Dependencies
-  const deps = await question('Dependencies (comma-separated): ');
+// const deps = awaitquestion('Dependencies (comma-separated): ');
   if (deps) metadata.dependencies = deps.split(',').map((d) => d.trim());
 
   // Tags
-  const tags = await question('Tags (comma-separated): ');
+// const tags = awaitquestion('Tags (comma-separated): ');
   if (tags) metadata.tags = tags.split(',').map((t) => t.trim());
 
   // Priority (for certain doc types)
   if (docType === 'security-spec' || docType === 'service-adr') {
-    const priority = await question('Priority (critical/high/medium/low): ');
+// const priority = awaitquestion('Priority (critical/high/medium/low): ');
     if (priority) metadata.priority = priority;
   }
 
   // Create the document
   try {
-    const result = await docStack.createDocument(docType, service, docId, content, metadata);
+// const result = awaitdocStack.createDocument(docType, service, docId, content, metadata);
     if (metadata.dependencies)
       if (metadata.tags)
         if (result.routing.validation?.length > 0) {
@@ -251,9 +244,8 @@ async function reviewDocument(args) {
   const [service, docType, docId] = parts;
 
   try {
-    const doc = await memoryStore.retrieve(`${docType}/${docId}`, {
-      namespace: `service-documents/${service}`,
-    });
+// const doc = awaitmemoryStore.retrieve(`${docType}/${docId}`, {
+      namespace: `service-documents/${service}` });
 
     if (!doc) {
       return;
@@ -271,8 +263,7 @@ async function reviewDocument(args) {
     const _preview = docData.content.split('\n').slice(0, 10).join('\n');
     if (docData.content.split('\n').length > 10) {
     }
-
-    const feedback = await question(
+// const feedback = awaitquestion(
       `\n${colors.cyan}Provide feedback (or press Enter to skip): ${colors.reset}`
     );
 
@@ -284,8 +275,7 @@ async function reviewDocument(args) {
 
 async function listDocuments(args) {
   const service = args[0];
-
-  const allDocs = await memoryStore.search({ pattern: '*' });
+// const allDocs = awaitmemoryStore.search({ pattern: '*' });
 
   const documents = [];
   for (const [key, value] of Object.entries(allDocs)) {
@@ -294,8 +284,7 @@ async function listDocuments(args) {
       if (!service || key.includes(`service-documents/${service}`)) {
         documents.push({
           path: key.replace('service-documents/', '').replace(':', '/'),
-          ...docData.metadata,
-        });
+..docData.metadata });
       }
     }
   }
@@ -325,7 +314,7 @@ async function approveDocument(args) {
   }
 
   const [_path] = args;
-  const approver = await question('Your role (architect/tech-lead/security-team/product-owner): ');
+// const approver = awaitquestion('Your role (architect/tech-lead/security-team/product-owner): ');
 
   if (!approver) {
     return;
@@ -345,8 +334,7 @@ async function validateDocument(args) {
   const validations = [
     { name: 'consistency-check', status: 'pass', message: 'Document structure is consistent' },
     { name: 'dependency-analysis', status: 'pass', message: 'All dependencies are valid' },
-    { name: 'completeness-check', status: 'warning', message: 'Missing implementation details' },
-  ];
+    { name: 'completeness-check', status: 'warning', message: 'Missing implementation details' } ];
 
   validations.forEach((v) => {
     const _icon = v.status === 'pass' ? '✅' : v.status === 'warning' ? '⚠️' : '❌';
@@ -360,9 +348,9 @@ function showTemplates() {
 }
 
 async function showStatus() {
-  const allDocs = await memoryStore.search({ pattern: '*' });
+// const allDocs = awaitmemoryStore.search({ pattern: '*' });
   const _docCount = Object.keys(allDocs).filter((k) => k.includes('service-documents/')).length;
-  const layers = { infrastructure: 0, service: 0, application: 0, business: 0 };
+  const layers = { infrastructure, service, application, business };
 
   for (const value of Object.values(allDocs)) {
     try {
@@ -388,7 +376,7 @@ function question(prompt) {
 
 // Start the REPL
 rl.on('line', async (line) => {
-  await processCommand(line);
+// await processCommand(line);
   rl.prompt();
 });
 

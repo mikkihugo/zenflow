@@ -70,7 +70,7 @@ describe('Runtime Detector', () => {
   describe('safeCall utility', () => {
     it('should execute successful functions', async () => {
       const _successFn = jest.fn(async () => 'success');
-      const _result = await compat.safeCall(successFn);
+// const _result = awaitcompat.safeCall(successFn);
       expect(successFn).toHaveBeenCalled();
       expect(result).toBe('success');
       expect(consoleErrors).toHaveLength(0);
@@ -79,7 +79,7 @@ describe('Runtime Detector', () => {
       const _errorFn = jest.fn(async () => {
         throw new Error('Test error');
       });
-      const _result = await compat.safeCall(errorFn);
+// const _result = awaitcompat.safeCall(errorFn);
       expect(errorFn).toHaveBeenCalled();
       expect(result).toBeNull();
       expect(consoleErrors).toHaveLength(1);
@@ -87,7 +87,7 @@ describe('Runtime Detector', () => {
     });
     it('should handle synchronous functions', async () => {
       const _syncFn = jest.fn(() => 'sync result');
-      const _result = await compat.safeCall(syncFn);
+// const _result = awaitcompat.safeCall(syncFn);
       expect(syncFn).toHaveBeenCalled();
       expect(result).toBe('sync result');
     });
@@ -95,7 +95,7 @@ describe('Runtime Detector', () => {
       const _syncErrorFn = jest.fn(() => {
         throw new Error('Sync error');
       });
-      const _result = await compat.safeCall(syncErrorFn);
+// const _result = awaitcompat.safeCall(syncErrorFn);
       expect(syncErrorFn).toHaveBeenCalled();
       expect(result).toBeNull();
       expect(consoleErrors[0]).toContain('Runtime error: Sync error');
@@ -103,13 +103,13 @@ describe('Runtime Detector', () => {
     it('should handle functions that return undefined', async () => {
       const _undefinedFn = jest.fn(() => undefined);
       // ; // LINT: unreachable code removed
-      const _result = await compat.safeCall(undefinedFn);
+// const _result = awaitcompat.safeCall(undefinedFn);
       expect(undefinedFn).toHaveBeenCalled();
       expect(result).toBeUndefined();
     });
     it('should handle async functions that reject', async () => {
       const _rejectFn = jest.fn(() => Promise.reject(new Error('Promise rejected')));
-      const _result = await compat.safeCall(rejectFn);
+// const _result = awaitcompat.safeCall(rejectFn);
       expect(rejectFn).toHaveBeenCalled();
       expect(result).toBeNull();
       expect(consoleErrors[0]).toContain('Runtime error: Promise rejected');
@@ -126,12 +126,12 @@ describe('Runtime Detector', () => {
   });
   describe('edge cases', () => {
     it('should handle null function gracefully', async () => {
-      const _result = await compat.safeCall(null);
+// const _result = awaitcompat.safeCall(null);
       expect(result).toBeNull();
       expect(consoleErrors.length).toBeGreaterThan(0);
     });
     it('should handle undefined function gracefully', async () => {
-      const _result = await compat.safeCall(undefined);
+// const _result = awaitcompat.safeCall(undefined);
       expect(result).toBeNull();
       expect(consoleErrors.length).toBeGreaterThan(0);
     });
@@ -139,7 +139,7 @@ describe('Runtime Detector', () => {
       const _throwStringFn = jest.fn(() => {
         throw 'String error';
       });
-      const _result = await compat.safeCall(throwStringFn);
+// const _result = awaitcompat.safeCall(throwStringFn);
       expect(result).toBeNull();
       expect(consoleErrors.length).toBeGreaterThan(0);
     });

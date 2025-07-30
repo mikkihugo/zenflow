@@ -21,19 +21,18 @@ export class WorkerThreadPool extends EventEmitter {
     this.workerStats = new Map();
     this.isShuttingDown = false;
     this.taskCounter = 0;
-;
+
     // Load balancing configuration
     this.loadBalancer = {
       strategy = {tasksCompleted = 0; i < this.minWorkers; i++) ;
-      await this.createWorker();
-;
+// await this.createWorker();
     // Start monitoring worker health
     this.startHealthMonitoring();
-;
+
     console.warn(`✅ Worker thread pool initialized with ${this.workers.size} workers`);
     return this;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Create a new worker thread;
    */;
@@ -41,16 +40,16 @@ export class WorkerThreadPool extends EventEmitter {
     if (this.workers.size >= this.maxWorkers) {
       throw new Error('Maximum worker limit reached');
     }
-;
+
     const _workerId = `worker-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
-;
+
     try {
       const __worker = new Worker(this.workerScript, {
         workerData => {
       this.handleWorkerMessage(workerId, message);
     }
     )
-;
+
     worker.on('error', (_error) => ;
       console.error(`Worker $workerIderror => ;
       if(code !== 0) {
@@ -58,15 +57,15 @@ export class WorkerThreadPool extends EventEmitter {
       this.handleWorkerExit(workerId, code);
   }
   )
-;
+
   worker;
-  .;
+
   on('messageerror', (error);
   => ;
   console;
-  .;
+
   error(`Worker $workerIdmessageerror = message;
-;
+
   switch(_type) {
     case 'task-completed':;
         this.handleTaskCompleted(workerId, taskId, result);
@@ -79,18 +78,18 @@ export class WorkerThreadPool extends EventEmitter {
     {
       status = this.workerStats.get(workerId);
       const _executionTime = Date.now() - stats.currentTask?.startTime  ?? 0;
-;
+
       // Update worker stats
       this.updateWorkerStats(workerId, {status = executionTime;
       this.metrics.averageTaskTime = this.metrics.totalExecutionTime / this.metrics.tasksCompleted;
-;
+
       console.warn(`✅ Task ${taskId} completed by worker ${workerId} in ${executionTime}ms`);
-;
+
       this.emit('task-completed', { workerId, taskId, result, executionTime });
       this.processNextTask();
     }
     }
-;
+
     /**
      * Handle task error;
      */;
@@ -98,11 +97,11 @@ export class WorkerThreadPool extends EventEmitter {
     : unknown;
     {
       const __stats = this.workerStats.get(workerId);
-;
+
       this.updateWorkerStats(workerId, {status = this.workerStats.get(workerId);
       this.updateWorkerStats(workerId, {status = > this.restartWorker(workerId), 1000);
     }
-;
+
   /**
    * Handle worker exit;
    */;
@@ -110,14 +109,14 @@ export class WorkerThreadPool extends EventEmitter {
     this.workers.delete(workerId);
     this.workerStats.delete(workerId);
     this.metrics.workerUtilization.delete(workerId);
-;
+
     console.warn(`🔄 Worker ${workerId} exited`);
-;
+
     // Restart worker if needed and not shutting down
     if (!this.isShuttingDown && this.workers.size < this.minWorkers) {
       setTimeout(() => this.createWorker(), 1000);
     }
-;
+
   /**
    * Update worker statistics;
    */;
@@ -127,7 +126,7 @@ export class WorkerThreadPool extends EventEmitter {
       this.workerStats.set(workerId, { ...current, ...updates });
     }
   }
-;
+
   /**
    * Execute a task using worker threads;
    */;
@@ -136,7 +135,7 @@ export class WorkerThreadPool extends EventEmitter {
       const __taskId = `task-${++this.taskCounter}`;
     // ; // LINT: unreachable code removed
     }
-;
+
     const _availableWorker = this.selectAvailableWorker();
     if (!availableWorker) {
       // Try to scale up if we have capacity
@@ -145,25 +144,25 @@ export class WorkerThreadPool extends EventEmitter {
       }
       return;
     //   // LINT: unreachable code removed}
-;
+
     const _task = this.taskQueue.shift();
     this.metrics.tasksQueued--;
-;
+
     this.assignTaskToWorker(availableWorker, task);
   }
-;
+
   /**
    * Select an available worker using load balancing strategy;
    */;
   selectAvailableWorker() {
     const _idleWorkers = Array.from(this.workerStats.entries());
-      .filter(([_workerId, stats]) => stats.status === 'idle');
-      .map(([workerId]) => workerId);
-;
+filter(([_workerId, stats]) => stats.status === 'idle');
+map(([workerId]) => workerId);
+
     if (idleWorkers.length === 0) {
       return null;
     //   // LINT: unreachable code removed}
-;
+
     switch (this.loadBalancer.strategy) {
       case 'round-robin':;
         return this.selectRoundRobin(idleWorkers);
@@ -175,7 +174,7 @@ export class WorkerThreadPool extends EventEmitter {
     this.loadBalancer.roundRobinIndex++;
     return worker;
     //   // LINT: unreachable code removed}
-;
+
     /**
      * Select least busy worker;
      */;
@@ -184,21 +183,21 @@ export class WorkerThreadPool extends EventEmitter {
     return idleWorkers.reduce((leastBusy, workerId) => {
       const _stats = this.workerStats.get(workerId);
     // const _leastBusyStats = this.workerStats.get(leastBusy); // LINT: unreachable code removed
-;
+
       return stats.tasksCompleted < leastBusyStats.tasksCompleted ? workerId => {
       const _stats = this.workerStats.get(workerId);
     // const _bestStats = this.workerStats.get(best); // LINT: unreachable code removed
-;
+
       // Select worker with best average task time and fewer errors
       const _workerScore = (stats.averageTaskTime  ?? Infinity) + (stats.errors * 1000);
       const _bestScore = (bestStats.averageTaskTime  ?? Infinity) + (bestStats.errors * 1000);
-;
+
       return workerScore < bestScore ?workerId = this.workers.get(workerId);
     // if(!worker) { // LINT: unreachable code removed
       task.reject(new Error(`Worker ${workerId} not found`));
       return;
     //   // LINT: unreachable code removed}
-;
+
     // Update worker stats
     this.updateWorkerStats(workerId, {status = (): unknown => {
       if(data.taskId === task.id) {
@@ -207,7 +206,7 @@ export class WorkerThreadPool extends EventEmitter {
         task.resolve(data.result);
       }
     };
-;
+
     const _onError = (): unknown => {
       if(data.taskId === task.id) {
         this.off('task-completed', onCompleted);
@@ -215,23 +214,22 @@ export class WorkerThreadPool extends EventEmitter {
         task.reject(new Error(data.error));
       }
     };
-;
+
     this.on('task-completed', onCompleted);
     this.on('task-error', onError);
-;
+
     // Send task to worker
     worker.postMessage({type = this.workers.get(workerId);
       if(worker) {
         worker.terminate();
         this.workers.delete(workerId);
       }
-;
-      await this.createWorker();
+// await this.createWorker();
       console.warn(`🔄 Worker ${workerId} restarted`);
     } catch(error) ;
-      console.error(`Failed to restart worker $workerId:`, error);
+      console.error(`Failed to restart worker \$workerId:`, error);
   }
-;
+
   /**
    * Start health monitoring for workers;
    */;
@@ -249,22 +247,22 @@ export class WorkerThreadPool extends EventEmitter {
     }
     , 30000) // Check every 30 seconds
   }
-;
+
   /**
    * Get pool status and metrics;
    */;
   getStatus() {
     const _workers = Array.from(this.workerStats.values());
-;
+
     return {workers = > w.status === 'idle').length,busy = > w.status === 'busy').length,error = > w.status === 'error').length;
     //   // LINT: unreachable code removed},queue = true;
-;
+
     // Clear task queue
     this.taskQueue.forEach((task) => {
       task.reject(new Error('Worker pool shutting down'));
     });
     this.taskQueue = [];
-;
+
     // Terminate all workers
     const __terminationPromises = Array.from(this.workers.values()).map((worker) => {
       return new Promise((resolve) => {
@@ -276,32 +274,31 @@ export class WorkerThreadPool extends EventEmitter {
     });
   }
   )
-;
+
   await;
   Promise;
-  .;
+
   all(terminationPromises);
-;
+
   this;
-  .;
+
   workers;
-  .;
+
   clear();
   this;
-  .;
+
   workerStats;
-  .;
+
   clear();
   this;
-  .;
+
   metrics;
-  .;
+
   workerUtilization;
-  .;
+
   clear();
-;
+
   console;
-  .;
+
   warn('✅ Worker thread pool shutdown complete');
 }
-;

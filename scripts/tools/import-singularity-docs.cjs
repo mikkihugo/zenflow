@@ -16,23 +16,22 @@ class MockMemoryStore {
   }
 
   async store(key, value, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` : key;
+    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
     this.data.set(fullKey, value);
 
     // Track this document
     const docData = JSON.parse(value);
     this.documentList.push({
-      key: fullKey,
+      key,
       service: docData.metadata.service,
       type: docData.metadata.type,
       layer: docData.metadata.stack_layer,
-      title: docData.metadata.title || docData.id,
-    });
-    return { id: fullKey, size: value.length };
+      title: docData.metadata.title || docData.id });
+    return { id, size: value.length };
   }
 
   async retrieve(key, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` : key;
+    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
     return this.data.get(fullKey) || null;
   }
 
@@ -61,26 +60,22 @@ const documentsToImport = [
     file: '/home/mhugo/code/singularity-engine/.claude/instructions.md',
     docType: 'user-guide',
     service: 'claude-integration',
-    docId: 'startup-routine-instructions',
-  },
+    docId: 'startup-routine-instructions' },
   {
     file: '/home/mhugo/code/singularity-engine/.claude/commands/analysis/bottleneck-detect.md',
     docType: 'api-documentation',
     service: 'performance-analysis',
-    docId: 'bottleneck-detection-api',
-  },
+    docId: 'bottleneck-detection-api' },
   {
     file: '/home/mhugo/code/singularity-engine/.claude/commands/automation/smart-spawn.md',
     docType: 'api-documentation',
     service: 'automation-service',
-    docId: 'smart-spawn-api',
-  },
-];
+    docId: 'smart-spawn-api' } ];
 
 async function importDocuments() {
   for (const docInfo of documentsToImport) {
     try {
-      const content = await fs.readFile(docInfo.file, 'utf-8');
+// const content = awaitfs.readFile(docInfo.file, 'utf-8');
 
       // Extract title from first heading
       const titleMatch = content.match(/^#\s+(.+)$/m);
@@ -103,14 +98,12 @@ async function importDocuments() {
       if (content.includes('swarm')) dependencies.push('swarm-engine');
       if (content.includes('MCP')) dependencies.push('mcp-protocol');
       if (content.includes('memory')) dependencies.push('memory-store');
-
-      await docStack.createDocument(docInfo.docType, docInfo.service, docInfo.docId, content, {
+// await docStack.createDocument(docInfo.docType, docInfo.service, docInfo.docId, content, {
         title,
         tags,
         dependencies,
         source: 'singularity-engine',
-        imported_from: docInfo.file,
-      });
+        imported_from: docInfo.file });
     } catch (_error) {}
   }
 
@@ -127,11 +120,9 @@ async function importDocuments() {
   const importLog = {
     timestamp: new Date().toISOString(),
     imported_count: summary.length,
-    documents: summary,
-    source: 'singularity-engine',
-  };
-
-  await fs.writeFile(
+    documents,
+    source: 'singularity-engine' };
+// await fs.writeFile(
     '/home/mhugo/code/claude-code-flow/document-import-log.json',
     JSON.stringify(importLog, null, 2)
   );

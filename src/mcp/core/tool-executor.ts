@@ -13,7 +13,7 @@ export class MCPToolExecutor {
    */
   constructor(server = server;
   this;
-  .
+
   executionStats = new Map();
 }
 /**
@@ -33,7 +33,7 @@ executeTool(name, args);
       console.error(`[${new Date().toISOString()}] INFO [Tool-Executor] Executing ${name}...`);
 
       // Route to specific tool handler
-      const _result = await this.routeToolExecution(name, args);
+// const _result = awaitthis.routeToolExecution(name, args);
 
       // Update statistics
       const _executionTime = Date.now() - startTime;
@@ -43,7 +43,7 @@ executeTool(name, args);
 
       return result;
     // ; // LINT: unreachable code removed
-    } catch () {
+    } catch (error) {
       const _executionTime = Date.now() - startTime;
       this.updateExecutionStats(name, executionTime, false);
 
@@ -72,7 +72,7 @@ executeTool(name, args);
     //   // LINT: unreachable code removed}
 
     throw new Error(`Unknown tool categoryfor = await import('node:child_process');
-    
+
     switch(name) {
       case 'claude_zen_init':;
         return this.executeClaudeCommand('init', args);
@@ -94,7 +94,7 @@ executeTool(name, args);
         return this.executeClaudeCommand('github', args);
     // case 'claude_zen_hooks':; // LINT: unreachable code removed
         return this.executeClaudeCommand('hooks', args);default = await import('node:child_process');
-    
+
     try {
       // Build command line arguments
       const _cmdArgs = [];
@@ -162,8 +162,8 @@ executeTool(name, args);
       switch(name) {
         case 'prd_create':;
           result = {id = await this.server.memoryStore.retrieve(`prd = {
-            ...existingPrd,
-            ...args.updates,lastModified = id = id = id = id = id = id = id = {id = [];
+..existingPrd,
+..args.updates,lastModified = id = id = id = id = id = id = id = {id = [];
 
     switch(analysisType) {
       case 'power-interest': {
@@ -172,7 +172,7 @@ executeTool(name, args);
     const _swarmId = `swarm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
     // Create swarm instance using ruv-swarm
-    const _swarm = await this.server.ruvSwarm.createSwarm({
+// const _swarm = awaitthis.server.ruvSwarm.createSwarm({
       id,
       topology,
       maxAgents,
@@ -182,8 +182,7 @@ executeTool(name, args);
     this.server.swarms.set(swarmId, swarm);
 
     // Store in memory
-    await this.server.memoryStore.store(`swarm = args;
-
+// await this.server.memoryStore.store(`swarm = args;
     if(swarmId) {
       const _swarm = this.server.swarms.get(swarmId);
 
@@ -200,7 +199,7 @@ executeTool(name, args);
         if(!key  ?? value === undefined) {
           throw new Error('Store action requires key and value');
         }
-        await this.server.memoryStore.store(key, value, { namespace, ttl });
+// await this.server.memoryStore.store(key, value, { namespace, ttl });
         return {success = await this.server.memoryStore.retrieve(key, { namespace });
     // return {success = await this.server.memoryStore.list({ namespace  // LINT: unreachable code removed});
         return {success = await this.server.memoryStore.search(key, { namespace });

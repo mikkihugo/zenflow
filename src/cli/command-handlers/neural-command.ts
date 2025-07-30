@@ -16,7 +16,7 @@ const _neuralEngine = null;
  * @param {Object} flags - Command flags;
  * @returns {Promise<void>}
  */
-// export async function neuralCommand(args: unknown, flags = args[0]; // LINT: unreachable code removed
+// export async function neuralCommand(args, flags = args[0]; // LINT: unreachable code removed
 const _remainingArgs = args.slice(1: unknown);
 console.warn(chalk.cyan('🧠 Neural AI Development Tools'));
 console.warn(chalk.gray('Powered by ruv-FANN neural intelligence'));
@@ -26,7 +26,7 @@ try {
     if(!neuralEngine) {
       neuralEngine = new NeuralEngine();
       console.warn(chalk.yellow('🔄 Initializing neural engine...'));
-      const _initialized = await neuralEngine.initialize();
+// const _initialized = awaitneuralEngine.initialize();
       if(initialized) {
         console.warn(chalk.green('✅ Neural engine initialized successfully'));
       } else {
@@ -34,71 +34,71 @@ try {
       }
       console.warn();
     }
-;
+
     switch(subcommand) {
       case 'load':;
-        await handleNeuralLoad(remainingArgs, flags);
+// await handleNeuralLoad(remainingArgs, flags);
         break;
-;
+
       case 'models':;
-        await handleNeuralModels(remainingArgs, flags);
+// await handleNeuralModels(remainingArgs, flags);
         break;
-;
+
       case 'infer':;
-        await handleNeuralInfer(remainingArgs, flags);
+// await handleNeuralInfer(remainingArgs, flags);
         break;
-;
+
       case 'benchmark':;
-        await handleNeuralBenchmark(remainingArgs, flags);
+// await handleNeuralBenchmark(remainingArgs, flags);
         break;
-;
+
       case 'status':;
-        await handleNeuralStatus(remainingArgs, flags);
+// await handleNeuralStatus(remainingArgs, flags);
         break;
-;
-      case 'import':
-        await handleNeuralImport(remainingArgs, flags);
+
+      case 'import': null
+// await handleNeuralImport(remainingArgs, flags);
         break;
-;
+
       case 'analyze':;
-        await handleNeuralAnalyze(remainingArgs, flags);
+// await handleNeuralAnalyze(remainingArgs, flags);
         break;
-;
+
       case 'optimize':;
-        await handleNeuralOptimize(remainingArgs, flags);
+// await handleNeuralOptimize(remainingArgs, flags);
         break;default = args[0];
-;
+
   if(!modelName) {
     console.error(chalk.red('❌ Model name required'));
     console.warn(chalk.cyan('Usage = performance.now();
-;
+
   try {
-    const _success = await neuralEngine.loadModel(modelName);
+// const _success = awaitneuralEngine.loadModel(modelName);
     const _loadTime = performance.now() - startTime;
-;
+
     if(success) {
       console.warn(chalk.green(`✅ Model ${modelName} loaded successfully in ${loadTime.toFixed(2)}ms`));
-;
+
       const _modelInfo = neuralEngine.getModelInfo(modelName);
       if(modelInfo) {
         console.warn(chalk.cyan(`📊 ModelInfo = neuralEngine.getAvailableModels();
   const _loadedModels = neuralEngine.getLoadedModels();
-;
+
   for(const model of availableModels) {
     const _isLoaded = loadedModels.some(loaded => loaded.name === model.name);
     const _status = isLoaded ? chalk.green('✅ Loaded') : chalk.gray('⚪ Available');
-;
+
     console.warn(`${status} ${chalk.bold(model.name)}`);
     console.warn(`Type = neuralEngine.getPerformanceMetrics();
   console.warn(chalk.cyan('📊 Neural EngineStatus = args.join(' ');
-;
+
   if(!prompt) {
     console.error(chalk.red('❌ Prompt required'));
     console.warn(chalk.cyan('Usage = performance.now();
-;
+
   try {
     const _options = {model = await neuralEngine.inference(prompt, options);
-;
+
     console.warn(chalk.green('✅ Inference completed'));
     console.warn(chalk.cyan('📝 GeneratedCode = parseInt(flags.iterations)  ?? 10;
   const _prompts = [
@@ -108,48 +108,47 @@ try {
     'fix null pointer exception in this code',
     'generate unit tests for data validation';
   ];
-;
+
   console.warn(chalk.yellow(`Running ${iterations} iterations with ${prompts.length} different prompts...`));
   console.warn();
-;
+
   const __results = [];
-;
+
   for(const _prompt of prompts) {
     console.warn(chalk.gray(`Testing = [];
-;
+
     for(const i = 0; i < iterations; i++) {
       const _startTime = performance.now();
-;
+
       try {
-        await neuralEngine.inference(prompt, {maxTokens = times.reduce((sum, time) => sum + time, 0) / times.length;
-;
+// await neuralEngine.inference(prompt, {maxTokens = times.reduce((sum, time) => sum + time, 0) / times.length;
       results.push({prompt = results.reduce((sum, r) => sum + r.avgTime, 0) / results.length;
   console.warn(chalk.bold.cyan(`OverallAverage = neuralEngine.getPerformanceMetrics();
   const __loadedModels = neuralEngine.getLoadedModels();
-;
+
   // Engine Status
   console.warn(chalk.bold('🔧 EngineStatus = '🔴 Needs Improvement';
     if (metrics.averageInferenceTime < 500) rating = '🟢 Excellent';
     else if (metrics.averageInferenceTime < 1000) rating = '🟡 Good';
     else if (metrics.averageInferenceTime < 2000) rating = '🟠 Fair';
-;
+
     console.warn(`   PerformanceRating = args[0]  ?? '.';
   console.warn(chalk.blue(`📁Analyzing = await initializeSwarm({topology = args[0];
-;
+
   if(!filePath) {
     console.error(chalk.red('❌ File path required'));
     console.warn(chalk.cyan('Usage = await import('fs/promises');
-    const __code = await fs.readFile(filePath, 'utf8');
-;
+// const __code = awaitfs.readFile(filePath, 'utf8');
+
     const __analysisPrompt = `Analyze this code for improvements, bugs, andoptimizations = await neuralEngine.inference(analysisPrompt, {model = === 'ENOENT') {
       console.error(chalk.red('❌ File notfound = args[0];
-;
+
   if(!filePath) {
     console.error(chalk.red('❌ File path required'));
     console.warn(chalk.cyan('Usage = await import('fs/promises');
-    const _code = await fs.readFile(filePath, 'utf8');
-;
-    const _optimizePrompt = `Optimize this _code for better performance, readability, andmaintainability = await neuralEngine.inference(optimizePrompt, {model = filePath.replace(/(\.[^.]+)$/, '.optimized$1');
+// const _code = awaitfs.readFile(filePath, 'utf8');
+
+    const _optimizePrompt = `Optimize this _code for better performance, readability, andmaintainability = await neuralEngine.inference(optimizePrompt, {model = filePath.replace(/(\.[^.]+)\$/, '.optimized\$1');
       // Extract optimized code from result and save
       console.warn();
       console.warn(chalk.yellow(`💾 Optimized version would be savedto = === 'ENOENT') {
@@ -159,7 +158,7 @@ try {
     }
   }
 }
-;
+
 /**
  * Show neural command help;
  */;
@@ -205,4 +204,3 @@ function showNeuralHelp(): unknown {
   console.warn();
   console.warn(chalk.gray('🚀 Powered by ruv-FANN neural intelligence'));
 }
-;

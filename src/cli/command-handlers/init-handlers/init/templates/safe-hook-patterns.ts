@@ -55,21 +55,20 @@ Remove;
 lock;
 file;
 rm;
-'$LOCK_FILE'`,
-  },
+'$LOCK_FILE'` },
   benefits = {name = Path.home() / '.claude' / 'command_queue.jsonl';
 PROCESSING_INTERVAL = 300  # 5 minutes
-;
+
 def process_queue():;
     if not QUEUE_FILE.exists():;
         return
-;
+
     // # Read and clear queue atomically; // LINT: unreachable code removed
     with open(QUEUE_FILE, 'r') as f = f.readlines()
-;
+
     # Clear the queue;
     QUEUE_FILE.unlink()
-;
+
     # Process commands;
     for line inlines = json.loads(line.strip());
             if cmd_data['command'] === 'update-history':;
@@ -84,9 +83,8 @@ def process_queue():;
   SAFE_POST_TOOL_PATTERN,
   SAFE_CONDITIONAL_PATTERN,
   SAFE_BATCH_PATTERN,
-  SAFE_QUEUE_PATTERN,
-];
-;
+  SAFE_QUEUE_PATTERN ];
+
 /**
  * Generate safe hooks documentation;
  */;
@@ -95,7 +93,7 @@ export function generateSafeHooksGuide(): unknown {
 // #; // LINT: unreachable code removed
 🛡️ Safe Hook Patterns
 for Claude Code
-;
+
 ⚠;
 ️ **CRITICAL WARNING**: Stop hooks that call 'claude' commands create infinite loops that can cost thousands of dollars per day!
 #
@@ -116,11 +114,11 @@ $
   p;
 }
 `).join('\n')}
-;
+
 ---
-;
+
 ## ✅ SAFE PATTERNS
-;
+
 ${ALL_SAFE_PATTERNS.map(;
   (pattern) => `;
 #
@@ -139,7 +137,7 @@ $;
   b;
 }
 `).join('\n')}
-;
+
 ${
   pattern.usage;
     ? `**Usage = > `${i + 1}. ${u}`
@@ -150,91 +148,87 @@ $
 {
   pattern.additionalSetup;
     ? `**Additional Setup:**;
-$
+\$
   pattern.additionalSetup.cronJob;
     ? `;
 **Cron Job:**;
 \`\`\`bash;
-$pattern.additionalSetup.cronJob
+\$pattern.additionalSetup.cronJob
 \`\`\`;
 `;
     : '';
 }
-;
+
 ${
   pattern.additionalSetup.updateScript;
     ? `;
 **Update Script:**;
 \`\`\`bash;
-$pattern.additionalSetup.updateScript
+\$pattern.additionalSetup.updateScript
 \`\`\`;
 `;
     : '';
 }`;
     : '';
-;
-$;
+
+\$;
   pattern.processor;
     ? `;
 **Queue Processor:**;
 \`\`\`python;
-$pattern.processor
+\$pattern.processor
 \`\`\`;
 `;
     : '';
 }
-;
+
 ---;
-`,
-).join('')
-;
+`).join('')
+
 ## 🚀 Quick Migration Guide
-;
+
 ### If you currently have this DANGEROUS pattern:;
 \`\`\`json;
-  "hooks": 
+  "hooks": null
     "Stop": ["hooks": ["type": "command", "command": "claude -c -p 'Update history'"]];
 \`\`\`
-;
+
 ### Replace with this SAFE pattern:;
 \`\`\`json;
-  "hooks": 
+  "hooks": null
     "Stop": ["hooks": ["type": "command", "command": "touch ~/.claude/needs_update && echo 'Run: claude -c -p \"Update history\"'"]];
 \`\`\`
-;
+
 ## 🛡️ Hook Safety Tools
-;
-Use claude-zen's built-in safety tools:
-;
+
+Use claude-zen's built-in safety tools: null
 \`\`\`bash;
 # Check your configuration for dangerous patterns;
 claude-zen hook-safety validate
-;
+
 # Enable safe mode (skips all hooks);
 claude-zen hook-safety safe-mode
-;
+
 # Check current safety status;
 claude-zen hook-safety status
-;
+
 # Reset circuit breakers if triggered;
 claude-zen hook-safety reset;
 \`\`\`
-;
+
 ## 📚 Additional Resources
-;
+
 - Issue #166: https://github.com/ruvnet/claude-zen/issues/166
 - Claude Code Hooks Documentation: https://docs.anthropic.com/en/docs/claude-code/hooks
 - Reddit Discussion: https://www.reddit.com/r/ClaudeAI/comments/1ltvi6x/anyone_else_accidentally_create_an_infinite_loop/
 
 ---
-;
+
 **Remember**: When in doubt, use flag-based patterns or PostToolUse hooks instead of Stop hooks!;
 `;
 }
-;
+
 export default {
   DANGEROUS_PATTERN_EXAMPLE,
   ALL_SAFE_PATTERNS,
-  generateSafeHooksGuide,
-};
-;
+  generateSafeHooksGuide };

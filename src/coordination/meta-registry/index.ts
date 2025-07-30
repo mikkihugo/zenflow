@@ -6,7 +6,7 @@
   [key = {}): Promise<string> {
     throw new Error('register() must be implemented by registry backend');
   }
-;
+
   /**
    * Discover entities in the registry;
    * @param {Object} query - Discovery query (tags, patterns, etc.);
@@ -84,10 +84,10 @@ close();
  */
 export class RegistryPluginSystem extends EventEmitter {
   this;
-  .
+
   hooks = new Map();
   this;
-  .
+
   middleware = [];
 }
 /**
@@ -109,7 +109,7 @@ registerPlugin(name, (plugin = {}));
     throw new Error(`Plugin '${name}' not found`);
   }
   if (!plugin.initialized) {
-    await plugin.instance.initialize(registry, { ...plugin.options, ...context });
+// await plugin.instance.initialize(registry, { ...plugin.options, ...context });
     plugin.initialized = true;
     this.emit('pluginInitialized', { name, plugin });
   }
@@ -126,22 +126,22 @@ for (const hook of hooks) {
         result = (await hook(result))  ?? result;
       } catch (_error;
   = 0
-;
+
   const _dispatch = async (i): Promise<any> => {
     if (i <= index) return Promise.reject(new Error('next() called multiple times'));
     // index = i; // LINT: unreachable code removed
-;
+
     const _middleware = this.middleware[i];
     if (i === this.middleware.length) {
       return next(...args);
     //   // LINT: unreachable code removed}
-;
+
     return middleware(operation, args, () => dispatch(i + 1));
     //   // LINT: unreachable code removed};
-;
+
   return dispatch(0);
 }
-;
+
 /**
  * Get plugin by name;
  * @param {string} name - Plugin name;
@@ -150,7 +150,7 @@ for (const hook of hooks) {
 getPlugin(name = this.plugins.get(name);
 return plugin?.instance  ?? null;
 }
-;
+
   /**
    * List all plugins;
    * @returns {Array} - Plugin list;
@@ -158,7 +158,7 @@ return plugin?.instance  ?? null;
   listPlugins():;
   name = > ({
       name,
-      metadata = {}) 
+      metadata = {})
     super();
   this.backend = backend;
   this.options = options;
@@ -167,16 +167,16 @@ return plugin?.instance  ?? null;
   this.swarms = new Map();
   this.id = nanoid();
   this.state = 'initialized';
-;
+
   // Bind plugin system events
   this.pluginSystem.on('pluginRegistered', (event => {
       this.emit('pluginRegistered', event);
     });
-;
+
   this.pluginSystem.on('pluginInitialized', (event => {
       this.emit('pluginInitialized', event);
     });
-;
+
 /**
  * Initialize the meta registry;
  * @param {Object} config - Configuration;
@@ -186,24 +186,24 @@ return plugin?.instance  ?? null;
 initialize((config = {}));
 : Promise<void>;
   this.state = 'initializing';
-;
+
   try {
       // Initialize backend
       if (this.backend.initialize) {
-        await this.backend.initialize(config);
+// await this.backend.initialize(config);
       }
-;
+
       // Initialize plugins
       for (const [name] of this.pluginSystem.plugins) {
-        await this.pluginSystem.initializePlugin(name, this, config);
+// await this.pluginSystem.initializePlugin(name, this, config);
       }
-;
+
       this.state = 'ready';
       this.emit('ready', {id = 'error';
       this.emit('error', error);
       throw error;
     }
-;
+
 /**
  * Register entity through plugin system;
  * @param {string} key - Entity key;
@@ -221,28 +221,25 @@ register((key = {}));
       [data.key, data.value, data.options],
       async (k = > this.backend.register(k, v, o);
     );
-;
-  await this.pluginSystem.executeHooks('afterRegister', {
+// await this.pluginSystem.executeHooks('afterRegister', {
       key = {}): Promise<any[]> {
-    const _data = await this.pluginSystem.executeHooks('beforeDiscover', {
+// const _data = awaitthis.pluginSystem.executeHooks('beforeDiscover', {
       query, options,registry = await this.pluginSystem.executeMiddleware(;
       'discover',
       [data.query, data.options],
       async (q = > this.backend.discover(q, o);
     );
-;
-  await this.pluginSystem.executeHooks('afterDiscover', {
+// await this.pluginSystem.executeHooks('afterDiscover', {
       query = {}): Promise<SwarmCoordinator> {
     const _coordinator = new SwarmCoordinator(swarmId, this, config);
-  await coordinator.initialize();
-;
+// await coordinator.initialize();
   this.coordinators.set(swarmId, coordinator);
   this.swarms.set(swarmId, {id = > ({
       id = {}): MetaRegistry {
     this.pluginSystem.registerPlugin(name, plugin, options);
   return this;
 }
-;
+
 /**
  * Get registry status;
  * @returns {Promise<Object>} - Status information;
@@ -252,15 +249,14 @@ status();
 : Promise<object>;
   // Close all swarm coordinators
   for (const coordinator of this.coordinators.values()) {
-    await coordinator.close?.();
+// await coordinator.close?.();
   }
-;
+
   // Close backend
-  await this.backend.close?.();
-;
+// await this.backend.close?.();
   this.state = 'closed';
   this.emit('closed');
-;
+
 /**
  * Swarm Coordinator for distributed agent management;
  */;
@@ -268,25 +264,25 @@ export class SwarmCoordinator extends EventEmitter {
   ) {
     super();
   this;
-  .;
+
   swarmId = swarmId;
   this;
-  .;
+
   registry = registry;
   this;
-  .;
+
   config = config;
   this;
-  .;
+
   agents = new Map();
   this;
-  .;
+
   topology = (config as any).topology  ?? 'mesh';
   this;
-  .;
+
   state = 'created';
 }
-;
+
 /**
  * Initialize swarm coordinator;
  * @returns {Promise<void>}
@@ -295,12 +291,12 @@ export class SwarmCoordinator extends EventEmitter {
 initialize();
 : Promise<void>;
     this.state = 'initializing';
-;
+
     // Register swarm in meta registry
-    await this.registry.register(`swarm = 'ready';
+// await this.registry.register(`swarm = 'ready';
     this.emit('ready');
   }
-;
+
   /**
    * Register agent in swarm;
    * @param {string} agentId - Agent identifier;
@@ -310,16 +306,16 @@ initialize();
     // async registerAgent(agentId = {id = { // LINT: unreachable code removed}): Promise<any[]> {
     return this.registry.discover({
       tags = {}): Promise<any[]> {
-;
+
     // for (const agentId of agents) { // LINT: unreachable code removed
-      await this.registry.register(`message = > void): Promise<() => void> ;
+// await this.registry.register(`message = > void): Promise<() => void> ;
     return this.registry.backend.watch({tags = 'closing';
     // ; // LINT: unreachable code removed
     // Unregister all agents
     for (const _agentId of this.agents.keys()) {
-      await this.registry.backend.unregister?.(`agent = 'closed';
+// await this.registry.backend.unregister?.(`agent = 'closed';
     this.emit('closed');
   }
 }
-;
+
 export default MetaRegistry;

@@ -14,25 +14,24 @@ files: ['package.json', 'server.js', 'routes/'],
 dependencies: ['express', 'cors', 'helmet'];
 },
 ('fullstack-app')
-:
+: null
 {
   name: 'Full-Stack Application',
   description: 'Complete web application with frontend and backend',
   files: ['package.json', 'client/', 'server/', 'shared/'],
   dependencies: ['express', 'react', 'webpack', 'babel'];
 }
-,
+
 ('cli-tool')
-:
+: null
 {
   name: 'CLI Tool',
   description: 'Command-line interface application',
   files: ['package.json', 'bin/', 'src/', 'README.md'],
   dependencies: ['commander', 'chalk', 'inquirer'];
 }
-,
-('microservice')
-:
+
+('microservice'): null
 {
   name: 'Microservice',
   description: 'Docker-ready microservice with API documentation',
@@ -51,7 +50,7 @@ export const ENVIRONMENT_CONFIGS,
   DEBUG: 'false';
   LOG_LEVEL: 'info';
 }
-,
+
 {
   NODE_ENV: 'production';
   DEBUG: 'false';

@@ -13,8 +13,7 @@ printWarning,
 trainNeuralModel,
 updateNeuralPattern,
 callRuvSwarmLibrary,
-checkRuvSwarmAvailable,
-} from '../utils.js'
+checkRuvSwarmAvailable } from '../utils.js'
 export async function trainingAction(): unknown {
   showTrainingHelp();
   return;
@@ -22,13 +21,13 @@ export async function trainingAction(): unknown {
 try {
     switch(subcommand) {
       case 'neural-train':;
-        await neuralTrainCommand(subArgs, flags);
+// await neuralTrainCommand(subArgs, flags);
         break;
       case 'pattern-learn':;
-        await patternLearnCommand(subArgs, flags);
+// await patternLearnCommand(subArgs, flags);
         break;
       case 'model-update':;
-        await modelUpdateCommand(subArgs, flags);
+// await modelUpdateCommand(subArgs, flags);
         break;default = flags;
   const __data = options.data  ?? 'recent';
   const __model = options.model  ?? 'general-predictor';
@@ -47,7 +46,7 @@ try {
       console.warn(`  • Finalaccuracy = trainingResult.training_time  ?? Math.max(epochs * 0.1, 2);
       console.warn(`  • Trainingtime = 1; i <= Math.min(epochs, 3); i++) {
       console.warn(`  Epoch ${i}/${epochs}: Training... (fallback mode)`);
-      await new Promise((resolve) => setTimeout(resolve, 200));
+// await new Promise((resolve) => setTimeout(resolve, 200));
     }
     printSuccess(`✅ Neural training completed (fallback mode)`);
   }
@@ -78,7 +77,7 @@ console.warn(`🤖 Agenttype = await checkRuvSwarmAvailable();
 {
   printError(`Model update failed: ${updateResult.error ?? 'Unknown error'}`);
 }
-} catch ()
+} catch (error)
 {
   // Fallback to showing success with default metrics
   printSuccess(`✅ Model update completed (using cached patterns)`);
@@ -106,7 +105,7 @@ COMMANDS:;
 
 NEURAL TRAIN OPTIONS:;
   --data <source>   Training data source (default: recent);
-                    Options: recent, historical, custom, swarm-<id>;
+                    Options, historical, custom, swarm-<id>;
   --model <name>    Target model (default: general-predictor);
                     Options: task-predictor, agent-selector, performance-optimizer;
   --epochs <n>      Training epochs (default: 50)

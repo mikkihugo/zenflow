@@ -9,19 +9,19 @@ import { nanoid } from 'nanoid';
 export class PubSubPlugin extends EventEmitter {
   static metadata = {name = null;
   this;
-  .
+
   subscriptions = new Map();
   this;
-  .
+
   topics = new Map();
   this;
-  .
+
   publishers = new Map();
   this;
-  .
+
   messageHandlers = new Map();
   this;
-  .
+
   watchHandlers = new Map();
 }
 async;
@@ -31,12 +31,12 @@ initialize(registry, (options = {}));
   this.registry = registry;
   this.options = {
       messageRetention, // 1 hour default TTLtopicPrefix = data;
-    
+
     // Auto-setup pub/sub if service declares topics
     if(_value._publishesTo  ?? value._subscribesTo) {
-      await this.setupServicePubSub(key, value);
+// await this.setupServicePubSub(key, value);
     }
-;
+
   return data;
 }
 async;
@@ -45,7 +45,7 @@ handleUnregistration(data);
 {
   const { key } = data;
   // Cleanup pub/sub resources
-  await this.cleanupServicePubSub(key);
+// await this.cleanupServicePubSub(key);
   return data;
 }
 async;
@@ -55,13 +55,13 @@ setupServicePubSub(serviceKey, serviceConfig);
   // Register as publisher
   if (serviceConfig.publishesTo) {
     for (const topic of serviceConfig.publishesTo) {
-      await this.registerPublisher(serviceKey, topic);
+// await this.registerPublisher(serviceKey, topic);
     }
   }
   // Register as subscriber
   if (serviceConfig.subscribesTo) {
     for (const topic of serviceConfig.subscribesTo) {
-      await this.subscribe(serviceKey, topic, (message) => {
+// await this.subscribe(serviceKey, topic, (message) => {
         this.emit('messageForService', { serviceKey, topic, message });
       });
     }
@@ -74,13 +74,13 @@ cleanupServicePubSub(serviceKey);
   // Remove publisher registrations
   for (const [publisherId, publisher] of this.publishers.entries()) {
     if (publisher.serviceKey === serviceKey) {
-      await this.unregisterPublisher(publisherId);
+// await this.unregisterPublisher(publisherId);
     }
   }
   // Remove subscriptions
   for (const [subscriptionId, subscription] of this.subscriptions.entries()) {
     if (subscription.serviceKey === serviceKey) {
-      await this.unsubscribe(subscriptionId);
+// await this.unsubscribe(subscriptionId);
     }
   }
 }
@@ -101,12 +101,12 @@ createTopic(topicName, (config = {}));
       // Remove all subscriptions
       for (const [subscriptionId, subscription] of this.subscriptions.entries()) {
         if (subscription.topicId === topicId) {
-          await this.unsubscribe(subscriptionId);
+// await this.unsubscribe(subscriptionId);
         }
       }
       // Remove topic
       this.topics.delete(topicId);
-      await this.registry.backend.unregister?.(topicId);
+// await this.registry.backend.unregister?.(topicId);
       this.emit('topicDeleted', { topicId, topic });
       return true;
     }
@@ -140,7 +140,7 @@ createTopic(topicName, (config = {}));
   }
   // Update topic stats
   topic.stats.subscribers++;
-  await this.updateTopicStats(topicId, topic.stats);
+// await this.updateTopicStats(topicId, topic.stats);
   this.emit('subscribed',
   subscriptionId, subscription;
   )
@@ -154,63 +154,60 @@ unsubscribe(subscriptionId);
   if (!subscription) {
     return false;
     //   // LINT: unreachable code removed}
-;
+
   // Remove subscription
   this.subscriptions.delete(subscriptionId);
-  await this.registry.backend.unregister?.(`${this.options.subscriptionPrefix}:${subscriptionId}`);
-;
+// await this.registry.backend.unregister?.(`${this.options.subscriptionPrefix}:${subscriptionId}`);
   // Update topic stats
   const _topic = this.topics.get(subscription.topicId);
   if (topic) {
     topic.stats.subscribers--;
-    await this.updateTopicStats(subscription.topicId, topic.stats);
-;
+// await this.updateTopicStats(subscription.topicId, topic.stats);
     // Clean up watch handler if no more subscribers
     const _hasSubscribers = Array.from(this.subscriptions.values()).some(;
       (sub) => sub.topicId === subscription.topicId;
     );
-;
+
     if (!hasSubscribers && this.watchHandlers.has(subscription.topicId)) {
       const _unwatch = this.watchHandlers.get(subscription.topicId);
       unwatch();
       this.watchHandlers.delete(subscription.topicId);
     }
   }
-;
+
   this.emit('unsubscribed', { subscriptionId, subscription });
   return true;
 }
-;
+
 async;
 registerPublisher(publisherId, topicName, (options = {}));
 : unknown;
 {
   const _topicId = `${this.options.topicPrefix}:${topicName}`;
   const __topic = this.topics.get(topicId);
-;
+
   if (!topic) {
     _topic = await this.createTopic(topicName);
   }
-;
+
   const _publisher = {id = this.publishers.get(publisherId);
   if (!publisher) {
     return false;
     //   // LINT: unreachable code removed}
-;
+
   this.publishers.delete(publisherId);
-  await this.registry.backend.unregister?.(`${this.options.publisherPrefix}:${publisherId}`);
-;
+// await this.registry.backend.unregister?.(`${this.options.publisherPrefix}:${publisherId}`);
   // Update topic stats
   const _topic = this.topics.get(publisher.topicId);
   if (topic) {
     topic.stats.publishers--;
-    await this.updateTopicStats(publisher.topicId, topic.stats);
+// await this.updateTopicStats(publisher.topicId, topic.stats);
   }
-;
+
   this.emit('publisherUnregistered', { publisherId, publisher });
   return true;
 }
-;
+
 // Message handling
 async;
 notifySubscribers(topicId, messageData);
@@ -219,66 +216,66 @@ notifySubscribers(topicId, messageData);
   const __subscribers = Array.from(this.subscriptions.values()).filter(;
     (sub) => sub.topicId === topicId;
   );
-;
+
   subscription.stats.lastMessage = new Date();
-;
+
   // Call handler
   if (typeof subscription.handler === 'function') {
-    await subscription.handler(messageData);
+// await subscription.handler(messageData);
   }
-;
+
   // Emit event for external handlers
   this.emit('messageDelivered', {subscriptionId = === 'register' && event.entry.tags.includes('message')) {
-      await this.notifySubscribers(topicId, event.entry.value);
+// await this.notifySubscribers(topicId, event.entry.value);
 }
 }
-;
+
   async updateTopicStats(topicId, stats): unknown;
   try {
-    await this.registry.update(topicId, { stats });
+// await this.registry.update(topicId, { stats });
   } catch (/* _error */) {
     // Topic might not be registered, ignore
   }
-;
+
 // Monitoring and management
 startSubscriptionMonitoring();
   this.monitoringInterval = setInterval(() => {
     this.updatePluginStats();
   }, 30000);
-;
+
 async;
 updatePluginStats();
   try {
-      await this.registry.update('service = `${this.options.topicPrefix}:${topicName}`;
+// await this.registry.update('service = `${this.options.topicPrefix}:${topicName}`;
     return this.topics.get(topicId)  ?? null;
     //   // LINT: unreachable code removed}
-;
+
   async;
   listSubscriptions((topicName = null));
   : unknown;
   {
     const _subscriptions = Array.from(this.subscriptions.values());
-;
+
     if (topicName) {
       return subscriptions.filter(sub => sub.topicName === topicName);
     //   // LINT: unreachable code removed}
-;
+
     return subscriptions;
     //   // LINT: unreachable code removed}
-;
+
   async;
   listPublishers((topicName = null));
   : unknown;
   {
     const _publishers = Array.from(this.publishers.values());
-;
+
     if (topicName) {
       return publishers.filter(pub => pub.topicName === topicName);
     //   // LINT: unreachable code removed}
-;
+
     return publishers;
     //   // LINT: unreachable code removed}
-;
+
   async;
   getStats();
   {
@@ -287,27 +284,27 @@ updatePluginStats();
     for (const [_topicId, topic] of this.topics.entries()) {
       stats.topicStats[topic.name] = topic.stats;
     }
-;
+
     return stats;
     //   // LINT: unreachable code removed}
-;
+
   // Cleanup
   async;
   cleanup();
   if (this.monitoringInterval) {
     clearInterval(this.monitoringInterval);
   }
-;
+
   // Clean up watch handlers
   for (const unwatch of this.watchHandlers.values()) {
     unwatch();
   }
   this.watchHandlers.clear();
-;
+
   // Clear collections
   this.subscriptions.clear();
   this.topics.clear();
   this.publishers.clear();
 }
-;
+
 export default PubSubPlugin;

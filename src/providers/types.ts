@@ -33,7 +33,7 @@ export class QuotaExceededError extends ProviderError {
   }
 }
 export class ModelNotAvailableError extends ProviderError {
-  constructor(provider: string, model: string) {
+  constructor(provider, model: string) {
     super(`Model ${model} not available for ${provider}`, provider, 'MODEL_NOT_AVAILABLE');
   }
 }

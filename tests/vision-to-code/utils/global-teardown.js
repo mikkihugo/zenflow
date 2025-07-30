@@ -11,12 +11,12 @@ module.exports = async () => {
     const _testWorkspaceDir = process.env.TEST_WORKSPACE_DIR;
     if (testWorkspaceDir) {
       try {
-  // await fs.rmdir(testWorkspaceDir, { recursive: true });
+  // await fs.rmdir(testWorkspaceDir, { recursive });
         console.warn('✅ Test workspace cleaned up');
       } catch (error) {
         console.warn('⚠️ Failed to clean up test workspace:', error.message);
-      }
-    }
+// }
+// }
     // Clean up test database
     const _testDbPath = process.env.TEST_DATABASE_PATH;
     if (testDbPath) {
@@ -25,8 +25,8 @@ module.exports = async () => {
         console.warn('✅ Test database cleaned up');
       } catch (error) {
         console.warn('⚠️ Failed to clean up test database:', error.message);
-      }
-    }
+// }
+// }
     // Generate final test report
   // await generateTestReport();
     // Clean up environment variables
@@ -37,12 +37,12 @@ module.exports = async () => {
   } catch (error) {
     console.error('❌ Error during test teardown:', error);
     // Don't throw error to avoid breaking test results
-  }
+// }
 };
 async function generateTestReport() {
   try {
     const _reportDir = path.join(process.cwd(), 'tests/visionary/test-results');
-  // await fs.mkdir(reportDir, { recursive: true });
+  // await fs.mkdir(reportDir, { recursive });
     const _testSummary = {
       timestamp: new Date().toISOString(),
         node_version: process.version,
@@ -58,15 +58,13 @@ async function generateTestReport() {
       notes: [;
         'Integration tests completed',
         'Check individual test reports for detailed results',
-        'Performance metrics available in load-test reports',
-      ],
-    };
+        'Performance metrics available in load-test reports' ] };
     const _summaryPath = path.join(reportDir, 'test-execution-summary.json');
   // await fs.writeFile(summaryPath, JSON.stringify(testSummary, null, 2));
     console.warn(`📊 Test execution summary generated: ${summaryPath}`);
-  }
+// }
 catch (error)
-{
+// {
   console.warn('⚠️ Failed to generate test report:', error.message);
-}
-}
+// }
+// }

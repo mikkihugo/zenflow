@@ -7,10 +7,10 @@ export function convertToClaudeCodeMessages(): unknown {
   // ; // LINT: unreachable code removed
   for (const message of messages) {
     switch (message.role) {
-      case 'system':
+      case 'system': null
         systemPrompt = message.content;
         break;
-      case 'user':
+      case 'user': null
         messagesPrompt += `\nHuman = formatAssistantMessage(message);
         messagesPrompt += `;
         \nAssistant = `\nTool Result ($
@@ -45,7 +45,7 @@ if (Array.isArray(content)) {
     //   // LINT: unreachable code removed}
     return '';
     //   // LINT: unreachable code removed});
-    .join(' ')
+join(' ')
   }
   return String(content);
 }
@@ -55,7 +55,7 @@ function _formatAssistantMessage(): unknown {
 }
 return content;
 }
-export function extractJSONFromResponse(text = text.replace(/```json\s*/g: unknown, '': unknown).replace(/```\s*/g, '');
+export function extractJSONFromResponse(text = text.replace(/```json\s*/g, '': unknown).replace(/```\s*/g, '');
 
 // Remove JavaScript variable declarations
 text = text.replace(/^(const|let|var)\s+\w+\s*=\s*/, '');
@@ -69,8 +69,8 @@ try {
 } catch (/* _e */) {
   // Try to fix common issues
   const _fixed = jsonText;
-    .replace(/([,]\s*)(\w+):/g, '$1"$2":') // Quote unquoted keys
-    .replace(/'/g, '"'); // Replace single quotes
+replace(/([ ]\s*)(\w+):/g, '$1"$2":') // Quote unquoted keys
+replace(/'/g, '"'); // Replace single quotes
 
   try {
     return JSON.parse(fixed);
@@ -78,4 +78,3 @@ try {
     return null;
     //   // LINT: unreachable code removed}
 }
-;

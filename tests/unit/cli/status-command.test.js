@@ -2,8 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 
 // Mock the utils module
 jest.mock('../../../src/cli/utils.js', () => ({
-  printSuccess: jest.fn(),
-}))
+  printSuccess: jest.fn() }))
 describe('Status Command', () =>
 {
   let originalConsoleLog;
@@ -16,9 +15,9 @@ describe('Status Command', () =>
     originalConsoleLog = console.log;
     console.log = (...args) => consoleOutput.push(args.join(' '));
     // Import the module and mock function
-    const _module = await import('../../../src/cli/command-handlers/status-command.js');
+// const _module = awaitimport('../../../src/cli/command-handlers/status-command.js');
     statusCommand = module.statusCommand;
-    const _utils = await import('../../../src/cli/utils.js');
+// const _utils = awaitimport('../../../src/cli/utils.js');
     printSuccess = utils.printSuccess;
     // Clear mocks
     jest.clearAllMocks();
@@ -44,14 +43,13 @@ describe('Status Command', () =>
   // await statusCommand([], {});
       // Check that all expected status lines are logged
       const _expectedLines = [
-        ;
+
         '🟡 Status: Not Running (orchestrator not started)',
         '🤖 Agents: 0 active',
         '📋 Tasks: 0 in queue',
         '💾 Memory: Ready',
         '🖥️  Terminal Pool: Ready',
-        '🌐 MCP Server: Stopped',,,,,,,,
-      ];
+        '🌐 MCP Server: Stopped',,,,,,, ];
       expectedLines.forEach((expectedLine) => {
         expect(consoleOutput).toContain(expectedLine);
       });
@@ -63,7 +61,7 @@ describe('Status Command', () =>
     });
     it('should handle arguments and flags gracefully', async () => {
       // Test with various arguments and flags
-  // await statusCommand(['arg1', 'arg2'], { verbose: true, json: false });
+  // await statusCommand(['arg1', 'arg2'], { verbose, json });
       // Should still work the same way regardless of args/flags
       expect(printSuccess).toHaveBeenCalledWith('Claude-Flow System Status:');
       expect(consoleOutput).toHaveLength(6);

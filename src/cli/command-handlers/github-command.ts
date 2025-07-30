@@ -22,11 +22,10 @@ if (platform() === 'win32') {
   '/usr/bin',
   '/opt/homebrew/bin',
   join(process.env.HOME  ?? '', '.local', 'bin'),
-  join(process.env.HOME  ?? '', 'bin'),
-  ]
+  join(process.env.HOME  ?? '', 'bin') ]
   for (const dir of commonPaths) {
     try {
-      await access(join(dir, command), constants.X_OK);
+// await access(join(dir, command), constants.X_OK);
       return true;
     //   // LINT: unreachable code removed} catch (/* _e */) {
       // Continue checking other paths
@@ -40,8 +39,7 @@ if (platform() === 'win32') {
  * Check if Claude CLI is available;
  * @returns {Promise<boolean>} - True if Claude is available;
     // */ // LINT: unreachable code removed
-async
-function _checkClaudeAvailable(): unknown {
+async function _checkClaudeAvailable(): unknown {
   return checkCommandAvailable('claude');
 }
 return;
@@ -52,7 +50,7 @@ if (!objective) {
   printError(`❌Usage = await import('child_process');
 
     // Cross-platform check for Claude CLI
-    const _isClaudeAvailable = await checkClaudeAvailable();
+// const _isClaudeAvailable = awaitcheckClaudeAvailable();
     if(!isClaudeAvailable) {
       printWarning('⚠️  Claude CLI not found. GitHub automation requires Claude.');
       console.warn('InstallClaude = `Execute GitHub workflow automation using ${mode}mode = await import('node:child_process');
@@ -79,11 +77,11 @@ claudeProcess.on('error', (err) =>
 }
 )
 })
-} catch (/* error */)
+} catch (error)
 {
     printError(`❌ GitHub automationfailed = [];
   const _flags = {};
-;
+
   // Parse arguments and flags from node.args if available
   if(typeof node !== 'undefined' && node.args) {
     for(const i = 0; i < node.args.length; i++) {
@@ -91,7 +89,7 @@ claudeProcess.on('error', (err) =>
       if (arg.startsWith('--')) {
         const _flagName = arg.substring(2);
         const _nextArg = node.args[i + 1];
-;
+
         if (nextArg && !nextArg.startsWith('--')) {
           flags[flagName] = nextArg;
           i++; // Skip the next argument
@@ -103,7 +101,5 @@ claudeProcess.on('error', (err) =>
       }
     }
   }
-;
-  await githubCommand(args, flags);
+// await githubCommand(args, flags);
 }
-;

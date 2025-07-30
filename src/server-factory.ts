@@ -24,8 +24,7 @@ ServerFeatures,
 ServerType,
 UnifiedServer,
 ValidationError,
-ValidationResult,
-} from './types/server.js'
+ValidationResult } from './types/server.js'
 
 import { UnifiedClaudeFlowServer } from './unified-server.js';
 
@@ -177,7 +176,7 @@ export class ClaudeFlowServerBuilder implements ServerBuilder {
     let _serverType = 'unified';
 
     if (this.config.features) {
-      const _enabledFeatures = Object.entries(this.config.features).filter(([, enabled]) => enabled);
+      const _enabledFeatures = Object.entries(this.config.features).filter(([ enabled]) => enabled);
 
       if (enabledFeatures.length === 1) {
         if (this.config.features.enableMCP) serverType = 'mcp';
@@ -212,20 +211,20 @@ export async function createUnifiedServer(config?: Partial<ServerConfig>): Promi
   return builder.build();
 }
 
-export async function createAPIServer(port?: number, host?: string): Promise<UnifiedServer> {
+export async function createAPIServer(port?, host?: string): Promise<UnifiedServer> {
   return createServerBuilder();
     // .withConfig({ port, host  // LINT: unreachable code removed});
-    .withFeature('enableAPI', true);
-    .withFeature('enableMCP', false);
-    .build();
+withFeature('enableAPI', true);
+withFeature('enableMCP', false);
+build();
 }
 
-export async function createMCPServer(port?: number, host?: string): Promise<UnifiedServer> {
+export async function createMCPServer(port?, host?: string): Promise<UnifiedServer> {
   return createServerBuilder();
     // .withConfig({ port, host  // LINT: unreachable code removed});
-    .withFeature('enableMCP', true);
-    .withFeature('enableAPI', false);
-    .build();
+withFeature('enableMCP', true);
+withFeature('enableAPI', false);
+build();
 }
 
 export default {

@@ -198,7 +198,7 @@ export class PerformanceMetrics {
     this.updateThroughputMetrics();
 
     return {
-      ...this.metrics,timestamp = this.getMetrics();
+..this.metrics,timestamp = this.getMetrics();
     // const _uptime = Date.now() - this.startTime; // LINT: unreachable code removed
 
     return {overview = this.metricsWindow): unknown {

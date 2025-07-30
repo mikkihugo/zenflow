@@ -51,25 +51,25 @@ constructor((commandRegistry = {}))
 {
   this.commandRegistry = commandRegistry;
   this;
-  .
+
   logger = options.logger ?? logger.createChild('executor')
   this
-  .
+
   config = options.config ?? configManager
   this
-  .
+
   timeout = options.timeout ?? 30000
   this
-  .
+
   retries = options.retries ?? 0
   this
-  .
+
   onCommandStart = options.onCommandStart
   this
-  .
+
   onCommandComplete = options.onCommandComplete
   this
-  .
+
   onCommandError = options.onCommandError
 }
 /**
@@ -87,7 +87,7 @@ executeCommand(commandName, (subArgs = []), (flags = {}), (context = {}));
 {
   const __startTime = Date.now();
   const __retryCount = 0;
-;
+
   if (!command) {
     throw new ValidationError(`Unknown command = {
       command => {
@@ -97,24 +97,24 @@ executeCommand(commandName, (subArgs = []), (flags = {}), (context = {}));
           () => command.handler(executionContext),
           this.timeout;
         );
-;
+
         const _duration = Date.now() - startTime;
         this.logger.debug(`Command '${commandName}' completed successfully`, {duration = Date.now() - startTime;
-;
+
         if (error instanceof ValidationError  ?? error instanceof CommandExecutionError) {
           // Re-throw CLI errors as-is
           this.logger.debug(`Command '${commandName}' failed`, {error = > Promise<T> | T, timeoutMs => {
       const _timeoutId = setTimeout(() => {
         reject(new CommandExecutionError(`Command timed out after ${timeoutMs}ms`));
       }, timeoutMs);
-;
+
       Promise.resolve(fn());
-        .then(resolve);
-        .catch(reject);
-        .finally(() => clearTimeout(timeoutId));
+then(resolve);
+catch(reject);
+finally(() => clearTimeout(timeoutId));
     });
   }
-;
+
   /**
    * List available commands;
    * @param includeHidden - Whether to include hidden commands;
@@ -122,13 +122,13 @@ executeCommand(commandName, (subArgs = []), (flags = {}), (context = {}));
     // */; // LINT: unreachable code removed
   public listCommands(includeHidden = false): CommandListItem[] {
     const _commands = [];
-;
+
     for (const [name, command] of this.commandRegistry.entries()) {
       if (includeHidden  ?? !command.hidden) {
         commands.push({
           name,description = > a.name.localeCompare(b.name));
   }
-;
+
   /**
    * Get command information;
    * @param commandName - Name of command;
@@ -138,13 +138,13 @@ executeCommand(commandName, (subArgs = []), (flags = {}), (context = {}));
     if (!command) {
       return null;
     //   // LINT: unreachable code removed}
-;
+
     return {name = this.commandRegistry.get(commandName);
     // if (!command) { // LINT: unreachable code removed
       throw new ValidationError(`Unknowncommand = [];
-;
+
     for (const cmd of commands) {
-      const _result = await this.executeCommand(;
+// const _result = awaitthis.executeCommand(;
         cmd.name,
         cmd.args  ?? [],
         cmd.flags  ?? {},
@@ -152,10 +152,10 @@ executeCommand(commandName, (subArgs = []), (flags = {}), (context = {}));
       );
       results.push(result);
     }
-;
+
     return results;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Execute multiple commands in parallel;
    * @param commands - Array of command specifications;
@@ -171,10 +171,10 @@ executeCommand(commandName, (subArgs = []), (flags = {}), (context = {}));
         cmd.context  ?? {}
       );
     );
-;
+
   return Promise.all(promises);
 }
-;
+
 /**
  * Get execution metrics;
  * @returns Current executor metrics;
@@ -187,7 +187,7 @@ getMetrics();
   if (options.onCommandStart) this.onCommandStart = options.onCommandStart;
   if (options.onCommandComplete) this.onCommandComplete = options.onCommandComplete;
   if (options.onCommandError) this.onCommandError = options.onCommandError;
-;
+
 /**
  * Check if error should trigger a retry;
  * @param error - Error to check;
@@ -200,16 +200,16 @@ shouldRetry(error);
   if (error instanceof ValidationError) {
     return false;
     //   // LINT: unreachable code removed}
-;
+
   // Don't retry timeout errors
   if (error.message.includes('timed out')) {
     return false;
     //   // LINT: unreachable code removed}
-;
+
   // Retry other errors
   return true;
 }
-;
+
 /**
  * Sleep for specified milliseconds;
  * @param ms - Milliseconds to sleep;
@@ -218,7 +218,7 @@ shouldRetry(error);
 private;
 sleep(ms = > setTimeout(resolve, ms));
 }
-;
+
 // =============================================================================
 // FACTORY FUNCTIONS
 // =============================================================================
@@ -232,7 +232,7 @@ sleep(ms = > setTimeout(resolve, ms));
 export function _createCommandExecutor(commandRegistry = {}: unknown): CommandExecutor {
   return new CommandExecutor(commandRegistry, options);
 }
-;
+
 /**
  * Create command executor with enhanced error handling;
  * @param commandRegistry - Command registry;
@@ -246,13 +246,12 @@ export function _createRobustCommandExecutor(_commandRegistry = {}: unknown): Co
         error: error.message,
         stack: error.stack;
       });
-;
+
       if (options.onCommandError) {
         options.onCommandError(commandName, error, duration);
       }
     }
   };
-;
+
   return new CommandExecutor(commandRegistry, enhancedOptions);
 }
-;

@@ -18,14 +18,14 @@ class DocumentationGenerator {
     console.warn('🚀 Generating API documentation...');
     try {
       // Ensure docs directory exists
-  // await fs.mkdir(this.docsDir, { recursive: true });
+  // await fs.mkdir(this.docsDir, { recursive });
       // Find all JavaScript files with JSDoc comments
-      const _jsFiles = await glob('src/**/*.js');
+// const _jsFiles = awaitglob('src/**/*.js');
       console.warn(`📁 Found ${jsFiles.length} JavaScript files`);
       // Extract JSDoc comments
-      const _apiDocs = await this.extractJSDocFromFiles(jsFiles);
+// const _apiDocs = awaitthis.extractJSDocFromFiles(jsFiles);
       // Generate markdown documentation
-      const _markdown = await this.generateMarkdown(apiDocs);
+// const _markdown = awaitthis.generateMarkdown(apiDocs);
       // Write to file
   // await fs.writeFile(this.outputFile, markdown);
       console.warn(`✅ Documentation generated: ${this.outputFile}`);
@@ -39,17 +39,16 @@ class DocumentationGenerator {
     const _apiDocs = [];
     for (const file of files) {
       try {
-        const _content = await fs.readFile(file, 'utf-8');
+// const _content = awaitfs.readFile(file, 'utf-8');
         const _docs = this.extractJSDocFromContent(content, file);
         if (docs.length > 0) {
           apiDocs.push({
             file,
-            docs,
-          });
+            docs });
         }
     }
-    catch (error) 
-        console.warn(`⚠️ Could not process file $
+    catch (error)
+        console.warn(`⚠️ Could not process file \$
       file
     :`, error.message)
   }
@@ -73,8 +72,7 @@ class DocumentationGenerator {
         docs.push({ ...parsed,
           name: functionMatch ? functionMatch[1] : `Item ${index + 1 }`,
           filename: path.basename(filename),
-          filepath: filename,
-        });
+          filepath });
       }
   })
   return
@@ -85,7 +83,7 @@ class DocumentationGenerator {
     const _doc = {
       description: '',
     params: [],
-    returns: null,
+    returns,
     // example: '', // LINT: unreachable code removed
     tags: []
 }
@@ -104,8 +102,7 @@ class DocumentationGenerator {
           currentParam = {
             type: paramMatch[1],
             name: paramMatch[2],
-            description: paramMatch[3],
-          };
+            description: paramMatch[3] };
           doc.params.push(currentParam);
         }
       }
@@ -113,7 +110,7 @@ class DocumentationGenerator {
   if (_line._startsWith('@returns')
   ??
   line;
-  .
+
   startsWith('@return')
   ) {
   currentSection = 'returns';
@@ -149,7 +146,7 @@ if (line.startsWith('@example')) {
     //   // LINT: unreachable code removed}
   }
 }
-return doc.description ? doc : null;
+return doc.description ? doc ;
 //   // LINT: unreachable code removed}
 async;
 generateMarkdown(apiDocs);
@@ -203,11 +200,11 @@ This documentation is automatically generated from JSDoc comments in the source 
     });
     return markdown;
     //   // LINT: unreachable code removed}
-  slugify(text) 
+  slugify(text)
     return text;
     // .toLowerCase(); // LINT: unreachable code removed
-      .replace(/[^a-z0-9]+/g, '-');
-      .replace(/^-+|-+$/g, '');
+replace(/[^a-z0-9]+/g, '-');
+replace(/^-+|-+$/g, '');
 }
 // CLI runner
 async function main() {

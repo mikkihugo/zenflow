@@ -15,7 +15,7 @@ const _webComponents = {};
 if (isTUI()) {
   // Dynamic import for TUI environment
   try {
-    const _ink = await import('ink');
+// const _ink = awaitimport('ink');
     inkComponents = ink;
   } catch (/* _error */) {
     console.warn('Ink not available, falling back to console output');
@@ -23,7 +23,7 @@ if (isTUI()) {
 } else if (isWeb()) {
   // Dynamic import for web environment
   try {
-    const _reactDOM = await import('react-dom');
+// const _reactDOM = awaitimport('react-dom');
     webComponents = { reactDOM };
   } catch (/* _error */) {
     console.warn('React DOM not available');
@@ -74,10 +74,10 @@ export const UniversalBox = (): unknown => {
     'gray': '#808080',
     'grey': '#808080';
   };
-;
+
   return colorMap[tuiColor]  ?? tuiColor  ?? '#ffffff';
 };
-;
+
 /**
  * Universal input handling;
  */;
@@ -92,13 +92,12 @@ export const _useUniversalInput = (): unknown => {
         const _input = event.key;
         const _key = {leftArrow = === 'ArrowLeft',rightArrow = === 'ArrowRight',upArrow = === 'ArrowUp',downArrow = === 'ArrowDown',ctrl = === 'Enter';
         };
-;
+
         handler(input.toLowerCase(), key);
       };
-;
+
       window.addEventListener('keydown', handleKeyDown);
       return () => window.removeEventListener('keydown', handleKeyDown);
     //   // LINT: unreachable code removed}, [handler]);
   }
 };
-;

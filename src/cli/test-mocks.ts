@@ -31,12 +31,12 @@ export class Agent {
 {
   this.id = config.id ?? 'test-agent';
   this;
-  .
+
   type = config;
-  .
+
   type ?? 'test';
   this;
-  .
+
   config = config
 }
 /**
@@ -130,5 +130,4 @@ export default {
   showAllCommands,
 Agent,
 RuvSwarm,
-SwarmMemory,
-}
+SwarmMemory }

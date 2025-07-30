@@ -28,14 +28,14 @@ export * from './workflow.js';
 // Global type augmentation for the system
 declare global {
   namespace ClaudeCodeFlow {
-    interface SystemContext {
+// interface SystemContext {
       version: string;
       environment: 'development' | 'production' | 'test';
       startTime: Date;
       processId: string;
       instanceId: string;
     }
-    interface Configuration {
+// interface Configuration {
       core: import('./core.js').CoreConfig;
       database: import('./database.js').DatabaseConfig;
       plugins: import('./plugin.js').PluginConfig;

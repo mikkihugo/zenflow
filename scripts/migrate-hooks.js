@@ -13,7 +13,7 @@ const ___dirname = path.dirname(fileURLToPath(import.meta.url));
 async function migrateSettingsFile() {
   try {
     // Read existing settings
-    const _content = await fs.readFile(settingsPath, 'utf8');
+// const _content = awaitfs.readFile(settingsPath, 'utf8');
     const _settings = JSON.parse(content);
     // Check if hooks already in new format
     if (settings.hooks?.PreToolUse) {
@@ -28,8 +28,7 @@ async function migrateSettingsFile() {
     const _newHooks = {
       PreToolUse: [],
       PostToolUse: [],
-      Stop: [],
-    };
+      Stop: [] };
     // Convert preCommandHook
     if (settings.hooks?.preCommandHook) {
       newHooks.PreToolUse.push({
@@ -37,10 +36,7 @@ async function migrateSettingsFile() {
         hooks: [;
           {
             type: 'command',
-            command: `npx claude-zen@alpha hooks pre-command --command "\${command}" --validate-safety true --prepare-resources true`,
-          },
-        ],
-      });
+            command: `npx claude-zen@alpha hooks pre-command --command "\${command}" --validate-safety true --prepare-resources true` } ] });
     }
     // Convert preEditHook
     if (settings.hooks?.preEditHook) {
@@ -49,10 +45,7 @@ async function migrateSettingsFile() {
         hooks: [;
           {
             type: 'command',
-            command: `npx claude-zen@alpha hooks pre-edit --file "\${file}" --auto-assign-agents true --load-context true`,
-          },
-        ],
-      });
+            command: `npx claude-zen@alpha hooks pre-edit --file "\${file}" --auto-assign-agents true --load-context true` } ] });
     }
 // Convert postCommandHook
 if (settings.hooks?.postCommandHook) {
@@ -61,9 +54,7 @@ if (settings.hooks?.postCommandHook) {
   hooks: [;
           {
             type: 'command',
-            command: `npx claude-zen@alpha hooks post-command --command "\${command}" --track-metrics true --store-results true`,
-          },
-        ]
+            command: `npx claude-zen@alpha hooks post-command --command "\${command}" --track-metrics true --store-results true` } ]
 })
 }
 // Convert postEditHook
@@ -73,9 +64,7 @@ if (settings.hooks?.postEditHook) {
   hooks: [;
           {
             type: 'command',
-            command: `npx claude-zen@alpha hooks post-edit --file "\${file}" --format true --update-memory true --train-neural true`,
-          },
-        ]
+            command: `npx claude-zen@alpha hooks post-edit --file "\${file}" --format true --update-memory true --train-neural true` } ]
 })
 }
 // Convert sessionEndHook
@@ -84,9 +73,7 @@ if (settings.hooks?.sessionEndHook) {
         hooks: [;
           {
             type: 'command',
-            command: `npx claude-zen@alpha hooks session-end --generate-summary true --persist-state true --export-metrics true`,
-          },
-        ]
+            command: `npx claude-zen@alpha hooks session-end --generate-summary true --persist-state true --export-metrics true` } ]
 })
 }
 // Update settings with new hooks format
@@ -115,8 +102,7 @@ async function findSettingsFiles() {
   const _locations = [
     path.join(process.cwd(), '.claude', 'settings.json'),
     path.join(process.cwd(), 'settings.json'),
-    path.join(process.env.HOME  ?? '', '.claude', 'settings.json'),
-  ];
+    path.join(process.env.HOME  ?? '', '.claude', 'settings.json') ];
   const _found = [];
   for (const location of locations) {
     try {
@@ -138,7 +124,7 @@ async function main() {
   // await migrateSettingsFile(targetFile);
   } else {
     // Find and migrate all settings files
-    const _files = await findSettingsFiles();
+// const _files = awaitfindSettingsFiles();
     if (files.length === 0) {
       console.warn('❌ No settings.json files found to migrate');
       console.warn('\nSearched locations:');

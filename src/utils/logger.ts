@@ -5,32 +5,32 @@
  */
 export class Logger {}
 
-info(message: string, meta?: object);
+info(message, meta?: object);
 : void
 {
   this.coreLogger.info(message, meta);
 }
-warn(message: string, meta?: object);
+warn(message, meta?: object);
 : void
 {
   this.coreLogger.warn(message, meta);
 }
-error(message: string, error?: Error | null);
+error(message, error?: Error | null);
 : void
 {
   this.coreLogger.error(message, {}, error ?? null);
 }
-debug(message: string, meta?: object);
+debug(message, meta?: object);
 : void
 {
   this.coreLogger.debug(message, meta);
 }
-success(message: string, meta?: object);
+success(message, meta?: object);
 : void
 {
   this.coreLogger.success(message, meta);
 }
-progress(message: string, meta?: object);
+progress(message, meta?: object);
 : void
 {
   this.coreLogger.progress(message, meta);

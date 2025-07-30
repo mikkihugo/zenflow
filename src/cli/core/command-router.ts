@@ -11,7 +11,7 @@ export class CommandRouter {
     this.commands = new Map();
     this.aliases = new Map();
   }
-;
+
   /**
    * Register a command with its handler and metadata;
    * @param {string} name - Command name;
@@ -26,17 +26,17 @@ export class CommandRouter {
     if(typeof config.handler !== 'function') {
       throw new Error(`Command ${name} must have a handler function`);
     }
-;
+
     this.commands.set(name, {
       name,handler = [], flags = {}): unknown {
     const _commandName = this.resolveAlias(name);
     const _command = this.commands.get(commandName);
-;
+
     if(!command) {
       throw new Error(`Unknowncommand = this.resolveAlias(name);
     return this.commands.has(commandName);
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Get command configuration;
    * @param {string} name - Command name or alias;
@@ -46,7 +46,7 @@ export class CommandRouter {
     const _commandName = this.resolveAlias(name);
     return this.commands.get(commandName)  ?? null;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * List all registered commands;
    * @param {boolean} includeHidden - Include hidden commands;
@@ -55,9 +55,9 @@ export class CommandRouter {
   list(includeHidden = false): unknown {
     return Array.from(this.commands.values());
     // .filter(cmd => includeHidden  ?? !cmd.hidden); // LINT: unreachable code removed
-      .sort((a, b) => a.name.localeCompare(b.name));
+sort((a, b) => a.name.localeCompare(b.name));
   }
-;
+
   /**
    * Resolve alias to command name;
    * @param {string} name - Command name or alias;
@@ -66,7 +66,7 @@ export class CommandRouter {
   resolveAlias(name): unknown {
     return this.aliases.get(name)  ?? name;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Get command help;
    * @param {string} name - Command name or alias;
@@ -85,4 +85,3 @@ export class CommandRouter {
     };
   }
 }
-;

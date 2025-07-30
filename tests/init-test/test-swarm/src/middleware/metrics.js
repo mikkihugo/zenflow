@@ -17,7 +17,7 @@ labelNames: ['method', 'route', 'status_code']
 })
 register.registerMetric(httpRequestDuration)
 register.registerMetric(httpRequestTotal)
-const _metricsMiddleware = (): unknown => {
+const _metricsMiddleware = () => {
   const _start = Date.now();
   res.on('finish', () => {
     const _duration = (Date.now() - start) / 1000;
@@ -27,7 +27,7 @@ const _metricsMiddleware = (): unknown => {
   });
   next();
 };
-const _registerMetrics = (): unknown => {
+const _registerMetrics = () => {
   const __metricsPort = process.env.METRICS_PORT  ?? 9090;
   app.get('/metrics', (_req, res) => {
     res.set('Content-Type', register.contentType);

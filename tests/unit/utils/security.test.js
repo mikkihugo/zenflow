@@ -64,27 +64,26 @@ describe('Security Utils', () => {
               (arg) => !arg.includes('$(') && !arg.includes('rm -rf') && !arg.includes(';');
             );
           ).toBe(true);
-        }
+// }
       });
     });
   });
   describe('Security patterns detection', () => {
     it('should identify command injection patterns', () => {
       const _testCases = [
-        { input: 'normal-file.txt', expected: false },
-        { input: '--flag=value', expected: false },
-        { input: '$(echo hello)', expected: true },
-        { input: '`whoami`', expected: true },
-        { input: 'file && rm something', expected: true },
-        { input: 'file  ?? echo "danger"', expected: true },
-        { input: 'file; rm -rf /', expected: true },
-        { input: 'file | cat', expected: true },
-      ];
+        { input: 'normal-file.txt', expected },
+        { input: '--flag=value', expected },
+        { input: '$(echo hello)', expected },
+        { input: '`whoami`', expected },
+        { input: 'file && rm something', expected },
+        { input: 'file  ?? echo "danger"', expected },
+        { input: 'file; rm -rf /', expected },
+        { input: 'file | cat', expected } ];
       testCases.forEach(({ input, expected }) => {
         // Create a simple function to test dangerous patterns
-        const _containsDangerousPatterns = (): unknown => {
+        const _containsDangerousPatterns = () => {
           const _dangerousPatterns = [
-            /\$\(/, // Command substitution $(...)
+            /\\$\(/, // Command substitution \$(...)
             /`[^`]*`/, // Backtick command substitution
             /[;&|]/, // Command separators
             /\.\.\//, // Directory traversal
@@ -99,7 +98,7 @@ describe('Security Utils', () => {
       });
     });
     it('should validate file paths', () => {
-      const _validatePath = (): unknown => {
+      const _validatePath = () => {
         // Simple path validation
         if (typeof path !== 'string') return false;
     // ; // LINT: unreachable code removed
@@ -124,13 +123,13 @@ describe('Security Utils', () => {
   });
   describe('Input sanitization', () => {
     it('should sanitize HTML content', () => {
-      const _sanitizeHtml = (): unknown => {
+      const _sanitizeHtml = () => {
         return input;
     // .replace(/</g, '&lt;'); // LINT: unreachable code removed
-          .replace(/>/g, '&gt;');
-          .replace(/"/g, '&quot;');
-          .replace(/'/g, '&#x27;');
-          .replace(/\//g, '&#x2F;');
+replace(/>/g, '&gt;');
+replace(/"/g, '&quot;');
+replace(/'/g, '&#x27;');
+replace(/\//g, '&#x2F;');
       };
       expect(sanitizeHtml('<script>alert("xss")</script>')).toBe(;
         '&lt;script&gt;alert(&quot;xss&quot;)&lt;&#x2F;script&gt;';
@@ -139,7 +138,7 @@ describe('Security Utils', () => {
       expect(sanitizeHtml("It's a test")).toBe('It&#x27;s a test');
     });
     it('should validate email addresses', () => {
-      const _validateEmail = (): unknown => {
+      const _validateEmail = () => {
         const _emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     //   // LINT: unreachable code removed};
@@ -151,7 +150,7 @@ describe('Security Utils', () => {
       expect(validateEmail('user..double.dot@domain.com')).toBe(false);
     });
     it('should validate URLs', () => {
-      const _validateUrl = (): unknown => {
+      const _validateUrl = () => {
         try {
           const _parsed = new URL(url);
           return ['http:', 'https:'].includes(parsed.protocol);

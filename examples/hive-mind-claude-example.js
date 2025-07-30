@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Example: Using Hive Mind with Claude as primary AI;
+ * Example: Using Hive Mind with Claude  AI;
  */
 
 import { execSync } from 'node:child_process';
@@ -11,44 +11,41 @@ import path from 'node:path';
 const _exampleDir = process.cwd();
 const _hiveMindDir = path.join(exampleDir, '.hive-mind');
 console.warn('🐝 Hive Mind with Claude Example\n');
-// Step 1: Set up the project with Claude as primary
+// Step 1: Set up the project with Claude
 console.warn('Step 1: Initializing project with Claude configuration...');
 try {
-  mkdirSync(hiveMindDir, { recursive: true });
-  // Create llm-provider.json with Claude as primary
+  mkdirSync(hiveMindDir, { recursive });
+  // Create llm-provider.json with Claude
   const _llmConfig = {
     providers: {
       claude: {
-        enabled: true,
-        priority: 1,
+        enabled,
+        priority,
         modelId: 'sonnet',
-        maxTurns: 5,
+        maxTurns,
         customSystemPrompt:;
           'You are an expert AI assistant helping with software development. Be concise and practical.',
             customSystemPrompt:;
               'You are the Queen agent coordinating a hive of specialized agents. Delegate tasks efficiently.',,
-            maxTurns: 10,
+            maxTurns,
             customSystemPrompt:;
               'You are a research specialist. Provide thorough analysis with sources.',,
             customSystemPrompt:;
-              'You are a coding expert. Write clean, well-documented code following best practices.',,
-}
-,
-{
+              'You are a coding expert. Write clean, well-documented code following best practices.', }
+// {
   apiKey: process.env.GEMINI_API_KEY  ?? null,
-  priority: 2
-}
-,
-},
+  priority
+// }
+ },
 defaultProvider: 'claude',
 fallbackProvider: 'google'
-}
+// }
 writeFileSync(path.join(hiveMindDir, 'llm-provider.json'), JSON.stringify(llmConfig, null, 2))
 console.warn('✅ Claude configuration created\n')
 } catch (error)
-{
+// {
   console.error('Failed to create configuration:', error.message);
-}
+// }
 // Step 2: Test Claude availability
 console.warn('Step 2: Checking Claude availability...');
 try {
@@ -61,7 +58,7 @@ try {
   console.warn('2. Run: claude login');
   console.warn('3. Authenticate with your Anthropic account\n');
   process.exit(1);
-}
+// }
 // Step 3: Example hive mind commands
 console.warn('Step 3: Example Hive Mind commands with Claude:\n');
 console.warn('# Launch a hive to build a REST API:');
@@ -90,9 +87,8 @@ subtasks: [;
     'Implement JWT token generation',
     'Create login/logout endpoints',
     'Add authentication middleware',
-    'Write authentication tests',
-  ]
-}
+    'Write authentication tests' ]
+// }
 writeFileSync(path.join(exampleDir, 'example-task.json'), JSON.stringify(exampleTask, null, 2))
 console.warn('✅ Example task created: example-task.json\n')
 // Step 5: Show integration benefits

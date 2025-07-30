@@ -4,8 +4,7 @@
  */
 
 import { ProviderError } from './types.js';
-
-interface AnthropicMessage {role = 'anthropic'
+// interface AnthropicMessage {role = 'anthropic'
 version = '2024-07-29'
 config = {enabled = {textGeneration = 'https = [
     'claude-3-5-sonnet-20241022',
@@ -27,7 +26,7 @@ constructor()
   // Override default config
   this.config = { ...this.config, ...config };
   // Test the connection
-  await this.healthCheck();
+// await this.healthCheck();
 }
 async;
 generateText(request = Date.now();
@@ -36,9 +35,9 @@ this.emitRequest(request);
 try {
       const __anthropicRequest = {model = request.systemPrompt;
       }
-const __response = await this.makeRequest('/messages', anthropicRequest);
+// const __response = awaitthis.makeRequest('/messages', anthropicRequest);
 }
-const _response = await fetch(`${this.baseUrl}/messages`, {method = response.body?.getReader();
+// const _response = awaitfetch(`${this.baseUrl}/messages`, {method = response.body?.getReader();
 if (!reader) {
   throw new ProviderError('No response body', this.name);
 }
@@ -63,7 +62,7 @@ while (true) {
   }
 }
 }
-    } catch (/* error */)
+    } catch (error)
 {
   this.emitError(error, request);
   throw this.handleError(error);
@@ -83,7 +82,7 @@ cleanup();
 }
 private;
 convertMessages(messages = > msg.role !== 'system') // System messages handled separately
-      .map(_msg => ({role = === 'user' ? 'user' : 'assistant',content = await fetch(`${this.baseUrl}${endpoint}`, {method = await response.text();
+map(_msg => ({role = === 'user' ? 'user' : 'assistant',content = await fetch(`${this.baseUrl}${endpoint}`, {method = await response.text();
 const _errorData = {};
 try {
   errorData = JSON.parse(text);
@@ -114,18 +113,17 @@ mapStopReason(reason: string)
       return 'stop';
     //   // LINT: unreachable code removed}
 }
-;
+
 private;
 handleError(error: unknown);
 : Error;
   if (error instanceof ProviderError) {
     return error;
     //   // LINT: unreachable code removed}
-;
+
   return new ProviderError(;
     // error.message  ?? 'Unknown error occurred', // LINT: unreachable code removed
       this.name,
       'UNKNOWN_ERROR';
     );
 }
-;

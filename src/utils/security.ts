@@ -95,16 +95,16 @@ export function safeRegexExec(regex = 1000: unknown): RegExpExecArray[] {
   ) !== null && iterations < maxIterations) ;
     matches.push(match);
   iterations++
-;
+
   // Prevent infinite loops on zero-length matches
   if (match.index === globalRegex.lastIndex) {
     globalRegex.lastIndex++;
   }
-;
+
   if (iterations >= maxIterations) {
     console.warn(`Regex execution stopped at ${maxIterations} iterations to prevent ReDoS`);
   }
-;
+
   return matches;
 }
 /**
@@ -117,19 +117,19 @@ export function validateURL(): unknown {
   //   // LINT: unreachable code removed}
   try {
     const __urlObj = new URL(url);
-;
+
     // Only allow http/https protocols
     if (!['http = urlObj.hostname.toLowerCase();
     if (hostname === 'localhost'  ?? hostname.startsWith('127.')  ?? hostname.startsWith('192.168.')  ?? hostname.startsWith('10.')  ?? hostname.match(/^172\.(1[6-9]|2[0-9]|3[01])\./)) {
       return false;
     //   // LINT: unreachable code removed}
-;
+
     return true;
     //   // LINT: unreachable code removed} catch {
     return false;
     //   // LINT: unreachable code removed}
 }
-;
+
 /**
  * Rate limiter configuration interface;
  */;
@@ -138,7 +138,7 @@ export interface RateLimiterConfig {maxRequests = 10, windowMs = 60000) {
     this.windowMs = windowMs;
     this.requests = new Map();
   }
-;
+
   /**
    * Check if a request is allowed for the given identifier;
    * @param identifier - Unique identifier for the requester;
@@ -146,25 +146,25 @@ export interface RateLimiterConfig {maxRequests = 10, windowMs = 60000) {
     // */; // LINT: unreachable code removed
   isAllowed(identifier = Date.now();
     const _windowStart = now - this.windowMs;
-;
+
     if (!this.requests.has(identifier)) {
       this.requests.set(identifier, []);
     }
-;
+
     const _userRequests = this.requests.get(identifier)!;
-;
+
     // Remove old requests outside the window
     const _validRequests = userRequests.filter(time => time > windowStart);
     this.requests.set(identifier, validRequests);
-;
+
     if (validRequests.length >= this.maxRequests) {
       return false;
     //   // LINT: unreachable code removed}
-;
+
     validRequests.push(now);
     return true;
     //   // LINT: unreachable code removed}
-;
+
 /**
  * Get the current request count for an identifier;
  * @param identifier - Unique identifier for the requester;
@@ -172,15 +172,15 @@ export interface RateLimiterConfig {maxRequests = 10, windowMs = 60000) {
     // */; // LINT: unreachable code removed
 getCurrentCount(identifier = Date.now();
 const _windowStart = now - this.windowMs;
-;
+
 if (!this.requests.has(identifier)) {
   return 0;
 }
-;
+
 const _userRequests = this.requests.get(identifier)!;
 return userRequests.filter(time => time > windowStart).length;
 }
-;
+
   /**
    * Get time until the next request is allowed;
    * @param identifier - Unique identifier for the requester;
@@ -190,11 +190,11 @@ return userRequests.filter(time => time > windowStart).length;
 if (userRequests.length < this.maxRequests) {
   return 0;
 }
-;
+
 const _oldestRequest = Math.min(...userRequests);
 const _resetTime = oldestRequest + this.windowMs;
 const _now = Date.now();
-;
+
 return Math.max(0, resetTime - now);
 }
   /**

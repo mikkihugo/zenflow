@@ -12,8 +12,7 @@ import { FlagValidator } from '../core/argument-parser.js';
 // =============================================================================
 // CONFIG COMMAND TYPES
 // =============================================================================
-
-interface ConfigOptions {force = 'init' | 'show' | 'get' | 'set' | 'validate' | 'reset' | 'help'
+// interface ConfigOptions {force = 'init' | 'show' | 'get' | 'set' | 'validate' | 'reset' | 'help'
 // =============================================================================
 // CONFIG COMMAND IMPLEMENTATION
 // =============================================================================
@@ -25,21 +24,21 @@ const _logger = context.logger.child({command = (context.arguments[0] as ConfigS
 const __options = parseConfigOptions(context
 , logger)
 // Execute subcommand
-const _result = await initConfig(options, logger);
+// const _result = awaitinitConfig(options, logger);
 break;
-case 'show':
+case 'show': null
 result = await showConfig(options, logger)
 break;
-case 'get':
+case 'get': null
 result = await getConfigValue(context.arguments[1], options, logger)
 break;
-case 'set':
+case 'set': null
 result = await setConfigValue(context.arguments[1], context.arguments[2], options, logger)
 break;
-case 'validate':
+case 'validate': null
 result = await validateConfig(options, logger)
 break;
-case 'reset':
+case 'reset': null
 result = await resetConfig(options, logger)
 break;
 default = showConfigHelp(logger)
@@ -61,7 +60,7 @@ const _options = {force = ======================================================
 // =============================================================================
 
 async function initConfig(_options = 'claude-zen.config.json';
-logger.info('Initializing configuration': unknown, {force = await fileExists(_configFile: unknown);
+logger.info('Initializing configuration', {force = await fileExists(_configFile: unknown);
 if (exists && !options.force) {
   logger.warn('Configuration file already exists');
   console.warn('⚠️  Configuration file already exists');
@@ -76,15 +75,14 @@ console.error(`❌ ${errorMessage}`);
 throw error;
 }
 }
-async
-function showConfig(options = 'claude-zen.config.json';
-logger.debug('Showing configuration': unknown, {format = await readJsonFile<ClaudeFlowConfig>(_configFile: unknown);
+async function showConfig(options = 'claude-zen.config.json';
+logger.debug('Showing configuration', {format = await readJsonFile<ClaudeFlowConfig>(_configFile: unknown);
 console.warn('⚙️  Currentconfiguration = === 'json') {
       console.warn(JSON.stringify(config, null, 2));
 } else
 {
   // Pretty format
-  console.warn('\n📋 SystemConfiguration = 'claude-zen.config.json';;
+  console.warn('\n📋 SystemConfiguration = 'claude-zen.config.json';
   if (!key) {
     logger.error('No key provided for get command');
     console.error('❌Usage = await readJsonFile<ClaudeFlowConfig>(configFile);
@@ -107,7 +105,7 @@ console.warn('⚙️  Currentconfiguration = === 'json') {
   }
   async function _setConfigValue(): unknown {
     logger.error('Missing key or value for set command');
-    console.error('❌Usage = await readJsonFile<ClaudeFlowConfig>(configFile, {} as ClaudeFlowConfig);;
+    console.error('❌Usage = await readJsonFile<ClaudeFlowConfig>(configFile, {} as ClaudeFlowConfig);
     // Parse value appropriately
     const _parsedValue = value;
     if (value === 'true') parsedValue = true;
@@ -115,7 +113,7 @@ console.warn('⚙️  Currentconfiguration = === 'json') {
     else if (!Number.isNaN(Number(value)) && value.trim() !== '') parsedValue = Number(value);
     // Set nested value
     setNestedValue(config, key, parsedValue);
-    await writeJsonFile(configFile, config);
+// await writeJsonFile(configFile, config);
     console.warn(`✅ Set ${key} = ${JSON.stringify(parsedValue)}`);
     logger.info('Configuration value set successfully', { key,value = `Failed to set configuration: ${error instanceof Error ? error.message : String(error)}`;
     logger.error(errorMessage, error);
@@ -127,13 +125,13 @@ async;
 function validateConfig(options = 'claude-zen.config.json';
 logger.debug('Validating configuration': unknown);
 try {
-  const _config = await readJsonFile<ClaudeFlowConfig>(configFile);
-;
+// const _config = awaitreadJsonFile<ClaudeFlowConfig>(configFile);
+
   console.warn('⚙️  Validating configuration...');
-;
+
   const _errors = [];
   const _warnings = [];
-;
+
   // Validate required sections
   const _requiredSections = ['terminal', 'orchestrator', 'memory'];
   for (const section of requiredSections) {
@@ -142,7 +140,7 @@ try {
       errors,
       warnings;
     };
-;
+
     if (errors.length === 0 && warnings.length === 0) {
       console.warn('✅ Configuration is valid');
     } else {
@@ -150,28 +148,27 @@ try {
         console.error(`❌ Found ${errors.length} error(s):`);
       errors.forEach((error) => console.warn(`  ❌ ${error}`));
     }
-;
+
     if (warnings.length > 0) {
       console.warn(`⚠️  Found ${warnings.length} warning(s):`);
       warnings.forEach((warning) => console.warn(`  ⚠️  ${warning}`));
     }
   }
-;
+
   logger.info('Configuration validation completed', result);
   return result;
-} catch (/* error */) {
+} catch (error) {
   logger.error('Configuration file not found or invalid', error);
   console.error('❌ Configuration file not found or invalid');
   console.warn('Run "claude-zen config init" to create valid configuration');
   throw new CLIError('Configuration file not found or invalid', 'config');
 }
 }
-async
-function resetConfig(options = ============================================================================;
+async function resetConfig(options = ============================================================================;
 // UTILITY FUNCTIONS
 // =============================================================================
 
-function getNestedValue(obj = > current?.[key]: unknown, _obj: unknown);
+function getNestedValue(obj = > current?.[key], _obj: unknown);
 }
 function setNestedValue(obj = path.split('.': unknown);
 const _last = keys.pop();
@@ -182,10 +179,9 @@ const _target = keys.reduce((current, key) => {
 }, obj);
 target[last] = value;
 }
-async
-function fileExists(filePath = await fs.readFile(filePath: unknown, 'utf-8': unknown);
+async function fileExists(filePath = await fs.readFile(filePath, 'utf-8': unknown);
 return JSON.parse(content);
-} catch (/* error */)
+} catch (error)
 {
   if (defaultValue !== undefined) {
     return defaultValue;
@@ -194,8 +190,8 @@ return JSON.parse(content);
   }
 }
 async;
-function writeJsonFile(filePath = JSON.stringify(data: unknown, null: unknown, 2: unknown);
-await fs.writeFile(filePath, content, 'utf-8');
+function writeJsonFile(filePath = JSON.stringify(data, null, 2: unknown);
+// await fs.writeFile(filePath, content, 'utf-8');
 }
 function _showConfigHelp(logger: Logger): string {
   logger.debug('Showing config help');

@@ -8,10 +8,9 @@ const _router = express.Router();
 router.post(;
 '/register',
 [;
-    body('username').isLength({ min: 3 }).trim(),
+    body('username').isLength({ min }).trim(),
     body('email').isEmail().normalizeEmail(),
-    body('password').isLength({ min: 6 }),
-  ],
+    body('password').isLength({ min }) ],
 async (req, res) => {
   try {
       const _errors = validationResult(req);
@@ -20,22 +19,20 @@ async (req, res) => {
     //   // LINT: unreachable code removed}
       const { username, email, password } = req.body;
       // Check if user exists
-      const _existingUser = await User.findByEmail(email);
+// const _existingUser = awaitUser.findByEmail(email);
       if (existingUser) {
         return res.status(409).json({ error: 'Email already registered' });
     //   // LINT: unreachable code removed}
       // Create user
-      const _user = await User.create({ username, email, password });
+// const _user = awaitUser.create({ username, email, password });
       const _token = generateToken(user.id);
       logger.info(`New user registered: ${email}`);
       res.status(201).json({
         user: {
           id: user.id,
           username: user.username,
-          email: user.email,
-        },
-        token,
-      });
+          email: user.email },
+        token });
     } catch (error) {
       logger.error('Registration error:', error);
       res.status(500).json({ error: 'Registration failed' });
@@ -55,12 +52,12 @@ async (req, res) =>
     //   // LINT: unreachable code removed}
       const { email, password } = req.body;
       // Find user
-      const _user = await User.findByEmail(email);
+// const _user = awaitUser.findByEmail(email);
       if (!user) {
         return res.status(401).json({ error: 'Invalid credentials' });
     //   // LINT: unreachable code removed}
       // Verify password
-      const _isValid = await User.verifyPassword(password, user.password);
+// const _isValid = awaitUser.verifyPassword(password, user.password);
       if (!isValid) {
         return res.status(401).json({ error: 'Invalid credentials' });
     //   // LINT: unreachable code removed}
@@ -70,11 +67,9 @@ async (req, res) =>
         user: {
           id: user.id,
           username: user.username,
-          email: user.email,
-        },
-        token,
-      });
-    } catch (error) 
+          email: user.email },
+        token });
+    } catch (error)
       logger.error('Login error:', error);
       res.status(500).json({ error: 'Login failed' });
   }

@@ -12,7 +12,7 @@ export interface RuvFannBindings {
             console.warn('✅ Using REAL ruv-FANN neural bindings')
 return realBindings;
 }
-} catch ()
+} catch (error)
 {
         const __errorMessage = error instanceof Error ? error.message = null;
     private loadAttempted = false;
@@ -36,7 +36,7 @@ return realBindings;
 
         try {
             // First, try to load the native NAPI bindings
-            const _bindings = await this.loadNativeBindings();
+// const _bindings = awaitthis.loadNativeBindings();
             if (bindings) {
                 this.logger.info('Native ruv-FANN bindings loaded successfully');
                 this.bindings = bindings;
@@ -44,7 +44,7 @@ return realBindings;
     //   // LINT: unreachable code removed}
 
             // Fallback to WASM bindings
-            const _wasmBindings = await this.loadWasmBindings();
+// const _wasmBindings = awaitthis.loadWasmBindings();
             if (wasmBindings) {
                 this.logger.info('WASM ruv-FANN bindings loaded successfully');
                 this.bindings = wasmBindings;
@@ -56,7 +56,7 @@ return realBindings;
             this.bindings = this.createStubBindings();
             return this.bindings;
     // ; // LINT: unreachable code removed
-        } catch () {
+        } catch (error) {
             const __errorMessage = error instanceof Error ? error.message = this.createStubBindings();
             return this.bindings;
     //   // LINT: unreachable code removed}
@@ -70,7 +70,7 @@ return realBindings;
         try {
             // Try to require the native addon
             const _require = createRequire(import.meta.url);
-            
+
             // Check if the binding file exists
             const _possiblePaths = [
                 '../ruv-FANN/target/release/ruv_fann.node',
@@ -92,51 +92,51 @@ return realBindings;
 
             for (const path of wasmPaths) {
                 try {
-                    const _wasmModule = await import(path);
+// const _wasmModule = awaitimport(path);
                     await wasmModule.default(); // Initialize WASM
-                    
+
                     if (wasmModule.loadModel) {
                         this.logger.info(`WASM bindings loadedfrom = error instanceof Error ? error.message => {
                 try {
                     return binding.loadModel(path);
-    //   // LINT: unreachable code removed} catch () {
+    //   // LINT: unreachable code removed} catch (error) {
                     const __errorMessage = error instanceof Error ? error.message => {
                 return binding.unloadModel(modelName);
-    //   // LINT: unreachable code removed} : undefined,
+    //   // LINT: unreachable code removed} ,
 
             inference = ): Promise<string> => ;
                 try {
                     return binding.inference(prompt, options);
-    //   // LINT: unreachable code removed} catch () {
+    //   // LINT: unreachable code removed} catch (error) {
                     const __errorMessage = error instanceof Error ? error.message => {
                 try {
                     return binding.listModels()  ?? [];
-    //   // LINT: unreachable code removed} catch () {
+    //   // LINT: unreachable code removed} catch (error) {
                     const __errorMessage = error instanceof Error ? error.message => {
                 try {
                     return binding.isModelLoaded(modelName);
-    //   // LINT: unreachable code removed} catch () {
+    //   // LINT: unreachable code removed} catch (error) {
                     return false;
     //   // LINT: unreachable code removed}
             },
 
             _batchInference = {}): Promise<string[]> => ;
-                return binding.batchInference(prompts, options);: undefined,
+                return binding.batchInference(prompts, options);,
 
             _finetune => ;
-                return binding.finetune(modelName, trainingData);: undefined,
+                return binding.finetune(modelName, trainingData);,
 
             _benchmark => ;
-                return binding.benchmark(modelName);: undefined,
+                return binding.benchmark(modelName);,
 
             _enableGPU => ;
-                return binding.enableGPU();: undefined,
+                return binding.enableGPU();,
 
             _getGPUInfo => ;
-                return binding.getGPUInfo();: undefined,
+                return binding.getGPUInfo();,
 
             _getMemoryUsage => ;
-                return binding.getMemoryUsage();: undefined,
+                return binding.getMemoryUsage();,
 
             _freeMemory => ;
                 return binding.freeMemory();: undefined;
@@ -152,20 +152,20 @@ return realBindings;
     private wrapWasmBindings(wasmModule => {
                 try {
                     return wasmModule.load_model(path);
-    //   // LINT: unreachable code removed} catch () {
+    //   // LINT: unreachable code removed} catch (error) {
                     const __errorMessage = error instanceof Error ? error.message = {}): Promise<string> => ;
                 try {
                     return wasmModule.inference(prompt, JSON.stringify(options));
-    //   // LINT: unreachable code removed} catch () {
+    //   // LINT: unreachable code removed} catch (error) {
                     const __errorMessage = error instanceof Error ? error.message => {
                 try {
                     const _result = wasmModule.list_models();
                     return JSON.parse(result);
-    //   // LINT: unreachable code removed} catch () {
+    //   // LINT: unreachable code removed} catch (error) {
                     const __errorMessage = error instanceof Error ? error.message => {
                 try {
                     return wasmModule.is_model_loaded(modelName);
-    //   // LINT: unreachable code removed} catch () {
+    //   // LINT: unreachable code removed} catch (error) {
                     return false;
     //   // LINT: unreachable code removed}
             }
@@ -218,7 +218,7 @@ return realBindings;
     //   // LINT: unreachable code removed},
 
             benchmark => {
-                await new Promise(resolve => setTimeout(resolve, 1000));
+// await new Promise(resolve => setTimeout(resolve, 1000));
                 return {
                     modelName,
     // averageInferenceTime => { // LINT: unreachable code removed

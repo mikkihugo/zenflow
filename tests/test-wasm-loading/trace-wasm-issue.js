@@ -16,8 +16,7 @@ async function traceWasmIssue() {
       console.warn(`   - ${name}:`, {
         isPlaceholder: module.isPlaceholder  ?? false,
         hasMemory: !!module.memory,
-        exports: module.exports ? Object.keys(module.exports).slice(0, 5) : [],
-      });
+        exports: module.exports ? Object.keys(module.exports).slice(0, 5) : [] });
     }
   }
 catch (error)

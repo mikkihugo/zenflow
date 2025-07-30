@@ -14,19 +14,18 @@ app.use(express.json());
  * Health check endpoint;
  * @route GET /;
  */
-app.get('/', (_req: Request, res: Response) => {
+app.get('/', (_req, res: Response) => {
   res.json({
     message: 'Claude-Zen API Server',
   status: 'healthy',
   version: '2.0.0-alpha.73',
-  timestamp: new Date().toISOString(),
-});
+  timestamp: new Date().toISOString() });
 })
 /**
  * System status endpoint;
  * @route GET /status;
  */
-app.get('/status', (_req: Request, res: Response) =>
+app.get('/status', (_req, res: Response) =>
 {
   res.json({
     status: 'operational',
@@ -35,11 +34,10 @@ app.get('/status', (_req: Request, res: Response) =>
   ('ruv-FANN');
   : 'integrated',
   memory: 'operational',
-  ,
+
   uptime: process.uptime(),
   memory: process.memoryUsage(),
-  timestamp: new Date().toISOString(),
-}
+  timestamp: new Date().toISOString() }
 )
 })
 // Start server if not imported as module

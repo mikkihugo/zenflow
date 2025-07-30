@@ -31,7 +31,7 @@ export interface TerminalCapabilities {isTTY = any[]
  * Non-interactive function type;
  */
 export type NonInteractiveFunction<_TArgs extends unknown[] = any[], _TReturn = any> = (
-  ...args;
+..args;
 ) => Promise<TReturn>
 // =============================================================================
 // SECURITY UTILITIES
@@ -186,9 +186,9 @@ export type DeepPartial<_T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial
 =
 {
-  [P in keyof T]-?: T[P] extends object ? DeepRequired= > any> = T extends (...args: infer P) => any ? P = > any> = T extends (...args: unknown[]) => infer R ? R = 
+  [P in keyof T]-?: T[P] extends object ? DeepRequired= > any> = T extends (...args: infer P) => any ? P = > any> = T extends (...args: unknown[]) => infer R ? R =
   [P in K]: T[P];
-;
+
 /**
  * Create a type with all keys from T except specific keys;
  */;

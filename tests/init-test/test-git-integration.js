@@ -62,8 +62,7 @@ try {
   if (parsed.committed) {
     console.warn('\n📝 Latest Git Commit:');
     const _latestCommit = execSync('git log -1 --pretty=format:"%h - %s%n%b"', {
-      encoding: 'utf-8',
-    });
+      encoding: 'utf-8' });
     console.warn(latestCommit);
   }
 // Show the generated report if it exists

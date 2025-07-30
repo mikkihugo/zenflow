@@ -11,12 +11,12 @@ class MockMemoryStore {
     this.data = new Map();
   }
   async store(key, value, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` : key;
+    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
     this.data.set(fullKey, value);
-    return { id: fullKey, size: value.length };
+    return { id, size: value.length };
   }
   async retrieve(key, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` : key;
+    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
     return this.data.get(fullKey) || null;
   }
   async search(options = {}) {
@@ -36,7 +36,7 @@ setupDefaultRules(docStack);
 
 async function createTestDocuments() {
   // Document 1: Architecture Decision Record
-  await docStack.createDocument(
+// await docStack.createDocument(
     'service-adr',
     'user-service',
     'use-redis-for-sessions',
@@ -49,7 +49,7 @@ Accepted - 2025-01-17
 Our user service currently stores sessions in memory, which doesn't scale across multiple instances and loses sessions on restart. We need a distributed session storage solution that can handle high load and provide session persistence.
 
 ## Decision
-We will use Redis as our session storage backend for the user service.
+We will use Redis  session storage backend for the user service.
 
 ## Consequences
 ### Positive
@@ -72,12 +72,10 @@ We will use Redis as our session storage backend for the user service.
 - Monitor Redis memory usage and performance`,
     {
       dependencies: ['redis-infrastructure', 'user-service-core'],
-      tags: ['sessions', 'redis', 'scaling', 'architecture'],
-    }
+      tags: ['sessions', 'redis', 'scaling', 'architecture'] }
   );
-
   // Document 2: API Documentation
-  await docStack.createDocument(
+// await docStack.createDocument(
     'api-documentation',
     'payment-service',
     'payment-api-v2',
@@ -87,7 +85,7 @@ We will use Redis as our session storage backend for the user service.
 RESTful API for payment processing operations including credit card payments, refunds, and payment status tracking.
 
 ## Authentication
-All endpoints require Bearer token authentication:
+All endpoints require Bearer token authentication: null
 \`\`\`
 Authorization: Bearer <your-api-token>
 \`\`\`
@@ -104,14 +102,14 @@ Process a new payment
 **Request Body:**
 \`\`\`json
 {
-  "amount": 2500,
+  "amount",
   "currency": "USD",
   "payment_method": {
     "type": "card",
     "card": {
       "number": "4242424242424242",
-      "exp_month": 12,
-      "exp_year": 2025,
+      "exp_month",
+      "exp_year",
       "cvc": "123"
     }
   },
@@ -125,7 +123,7 @@ Process a new payment
 {
   "id": "pay_987654321",
   "status": "succeeded",
-  "amount": 2500,
+  "amount",
   "currency": "USD",
   "created": "2025-01-17T10:30:00Z",
   "customer_id": "cust_123456"
@@ -140,9 +138,9 @@ Retrieve payment details
 {
   "id": "pay_987654321",
   "status": "succeeded",
-  "amount": 2500,
+  "amount",
   "currency": "USD",
-  "refunded": false,
+  "refunded",
   "created": "2025-01-17T10:30:00Z"
 }
 \`\`\`
@@ -153,7 +151,7 @@ Process a refund
 **Request Body:**
 \`\`\`json
 {
-  "amount": 1000,
+  "amount",
   "reason": "Customer request"
 }
 \`\`\`
@@ -172,12 +170,10 @@ Process a refund
 - 100 payments per minute per merchant`,
     {
       dependencies: ['payment-processor', 'fraud-detection'],
-      tags: ['api', 'payments', 'rest', 'documentation'],
-    }
+      tags: ['api', 'payments', 'rest', 'documentation'] }
   );
-
   // Document 3: Security Specification
-  await docStack.createDocument(
+// await docStack.createDocument(
     'security-spec',
     'auth-service',
     'oauth2-implementation',
@@ -245,8 +241,7 @@ Security requirements and implementation guidelines for OAuth 2.0 authentication
     {
       dependencies: ['redis-infrastructure', 'tls-certificates'],
       tags: ['security', 'oauth2', 'authentication', 'compliance'],
-      priority: 'critical',
-    }
+      priority: 'critical' }
   );
   for (const [_key, value] of memoryStore.data) {
     const _doc = JSON.parse(value);

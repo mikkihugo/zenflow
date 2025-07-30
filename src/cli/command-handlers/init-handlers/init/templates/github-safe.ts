@@ -7,12 +7,12 @@ export const githubSafeTemplate = `/**
  * GitHub CLI Safety Helper;
  * Use these utilities for safe GitHub operations in your Claude Flow project;
  */
-;
+
 const { execSync } = require('child_process');
 const _fs = require('fs');  ;
 const _path = require('path');
 const _os = require('os');
-;
+
 class GitHubSafe {
   static TEMP_PREFIX = 'claude-flow-gh-';
   static TIMEOUT = 120000; // 2 minutes
@@ -26,7 +26,7 @@ class GitHubSafe {
     fs.writeFileSync(tempFile, content, 'utf8');
     return tempFile;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Clean up temporary file;
    */;
@@ -35,10 +35,10 @@ class GitHubSafe {
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
       }
-    } catch (/* error */) {
+    } catch (error) {
       console.warn('Failed to cleanup temp file = {}): unknown {
     const { timeout = GitHubSafe.TIMEOUT, input } = options;
-;
+
     let _tempFile = null;
     try {
       // Handle input with special characters via temp file
@@ -48,34 +48,34 @@ class GitHubSafe {
           arg === '--body' ? \`--body-file=\${tempFile}\` ;
         );
       }
-;
+
       const _command = \`gh \${args.join(' ')}\`;
-;
+
     } finally {
       if(tempFile) {
         GitHubSafe.cleanupTempFile(tempFile);
       }
     }
   }
-;
+
   /**
    * Create pull request safely;
    */;
   static createPR({ title, body = '', base = 'main', head, draft = false }): unknown {
     const _args = ['pr', 'create', '--title', title, '--base', base];
-;
+
     if (head) args.push('--head', head);
     if (draft) args.push('--draft');
-;
+
     return GitHubSafe.execGhSafe(args, {input = null): unknown {
     const _args = ['repo', 'view'];
     // if (repo) args.push(repo); // LINT: unreachable code removed
     args.push('--json', 'name,owner,defaultBranch');
-;
+
     return GitHubSafe.execGhSafe(args);
     //   // LINT: unreachable code removed}
 }
-;
+
 module.exports = GitHubSafe;
 `;
 export default githubSafeTemplate;

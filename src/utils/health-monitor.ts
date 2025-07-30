@@ -52,7 +52,7 @@ export class HealthMonitor extends EventEmitter {
    */;
   async getHealth(): Promise<ServerHealth> {
     if (!this.isRunning) {
-      await this.runHealthChecks();
+// await this.runHealthChecks();
     }
 
     return this.buildHealthReport();
@@ -63,8 +63,7 @@ export class HealthMonitor extends EventEmitter {
    */;
   private async runHealthChecks(): Promise<void> {
     const _promises = this.config.checks.map(check => this.runSingleCheck(check));
-    await Promise.allSettled(promises);
-
+// await Promise.allSettled(promises);
     // Build and emit health report
     const _health = this.buildHealthReport();
 
@@ -92,7 +91,7 @@ export class HealthMonitor extends EventEmitter {
     let _result = null;
 
     try {
-      const _checkResult = await this.executeCheck(check);
+// const _checkResult = awaitthis.executeCheck(check);
       const _duration = Date.now() - startTime;
 
       result = {name = this.checks.get(check.name);
@@ -104,7 +103,7 @@ export class HealthMonitor extends EventEmitter {
         result.consecutiveFailures = existing.consecutiveFailures + 1;
       }
 
-    } catch () {
+    } catch (error) {
       error = err as Error;
       const _duration = Date.now() - startTime;
       const _existing = this.checks.get(check.name);
@@ -130,8 +129,7 @@ export class HealthMonitor extends EventEmitter {
     try {
       // This would be implemented based on the specific database type
       // For now, just simulate a database check
-      await new Promise(resolve => setTimeout(resolve, 10));
-
+// await new Promise(resolve => setTimeout(resolve, 10));
       return {name = Date.now();
     // ; // LINT: unreachable code removed
     try {
@@ -141,8 +139,7 @@ export class HealthMonitor extends EventEmitter {
       }
 
       const _controller = new AbortController();
-
-      const _response = await fetch(url, {method = Date.now() - startTime;
+// const _response = awaitfetch(url, {method = Date.now() - startTime;
 
       if (response.ok) {
         return {name = Date.now();
@@ -152,8 +149,7 @@ export class HealthMonitor extends EventEmitter {
       if (!filePath) {
         throw new Error('File path not configured');
       }
-
-      const _stats = await fs.stat(filePath);
+// const _stats = awaitfs.stat(filePath);
 
       return {name = Date.now();
     // ; // LINT: unreachable code removed
@@ -190,7 +186,7 @@ export class HealthMonitor extends EventEmitter {
     // ; // LINT: unreachable code removed
     try {
       // This is a simplified check - in production you'd want to check actual disk usage
-      const __stats = await fs.stat(process.cwd());
+// const __stats = awaitfs.stat(process.cwd());
 
       return {name = result.metadata.usagePercentage as number;
     // const _threshold = result.metadata.threshold as number; // LINT: unreachable code removed

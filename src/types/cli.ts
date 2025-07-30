@@ -10,8 +10,7 @@ CommandExecutionError,
 ConfigurationError,
 formatErrorMessage,
 handleError,
-ValidationError,
-} from '../cli/core/cli-error.js'
+ValidationError } from '../cli/core/cli-error.js'
 // =============================================================================
 // CLI ERROR TYPES
 // =============================================================================
@@ -29,8 +28,7 @@ FILE_ERROR = 'FILE_ERROR',
 PERMISSION_ERROR = 'PERMISSION_ERROR',
 TIMEOUT_ERROR = 'TIMEOUT_ERROR',
 AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR',
-NOT_FOUND_ERROR = 'NOT_FOUND_ERROR',
-}
+NOT_FOUND_ERROR = 'NOT_FOUND_ERROR' }
 /**
  * Logger interface for error handling;
  */
@@ -72,7 +70,7 @@ export interface CommandResult {success = ======================================
  */
 export enum ExitCode {
   SUCCESS = 0
-,
+
 GENERAL_ERROR = 1,
 MISUSE = 2,
 CANNOT_EXECUTE = 126,

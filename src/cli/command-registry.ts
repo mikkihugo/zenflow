@@ -28,36 +28,36 @@ this.logger.debug(`Unregisteredcommand = this.commands.get(name);
     if (definition) {
       return definition;
     //   // LINT: unreachable code removed}
-;
+
     // Check aliases
     const _realName = this.aliases.get(name);
     if (realName) {
       return this.commands.get(realName);
     //   // LINT: unreachable code removed}
-;
+
     return undefined;
     //   // LINT: unreachable code removed}
-;
+
   list(): CommandDefinition[] {
     return Array.from(this.commands.values()).sort((a, b) => ;
     // a.name.localeCompare(b.name); // LINT: unreachable code removed
     );
   }
-;
+
   listByCategory(category = > cmd.category === category);
   }
-;
+
   // Execution method
   async execute(name = this.get(name);
-;
+
     if (!definition) {
       throw new CommandNotFoundError(name);
     }
-;
+
     // Validate command input
     const _validationResults = this.validate(name, context);
     if (validationResults.some(r => !r.valid)) {
-;
+
       throw new InvalidArgumentError(;
         `Validationfailed = > e.message).join(', ');
 }`,
@@ -67,18 +67,18 @@ name
 // Execute command with error handling
 try {
       this.logger.info(`Executingcommand = Date.now();
-      const _result = await definition.handler(context);
+// const _result = awaitdefinition.handler(context);
       const _duration = Date.now() - startTime;
-;
+
       // Enhance result with metadata
 
     const _results = [];
-;
+
     if (!definition) {
       results.push({valid = 0; i < definition.args.length; i++) {
         const _argDef = definition.args[i];
         const _argValue = context.args[i];
-;
+
         // Check required arguments
         if (argDef.required && (argValue === undefined  ?? argValue === '')) {
           results.push({valid = = undefined && argDef.validate) {
@@ -87,7 +87,7 @@ try {
             results.push({valid = definition.args[definition.args.length - 1];
       if (!lastArg?.variadic && context.args.length > definition.args.length) {
         results.push({valid = context.flags[flagDef.name];
-;
+
         // Check required flags
         if (flagDef.required && flagValue === undefined) {
           results.push({valid = = undefined) {
@@ -99,15 +99,15 @@ try {
               results.push({valid = = 'function') {
       throw new CLIError(`Command '${name}' must have a valid handler function`, name);
     }
-;
+
     if (!definition.description  ?? definition.description.trim() === '') {
       throw new CLIError(`Command '${name}' must have a description`, name);
     }
-;
+
     if (!definition.usage  ?? definition.usage.trim() === '') {
       throw new CLIError(`Command '${name}' must have usage information`, name);
     }
-;
+
     // Validate category
     const _validCategories = [
       'core', 'swarm', 'hive', 'plugins', 'neural', 'memory', 'debug', 'utility';
@@ -141,7 +141,7 @@ export async function initializeCommandRegistry(): Promise<void> {
  * Get the global command registry instance;
  */
 export async function getCommandRegistry(): Promise<TypeSafeCommandRegistry> {
-  await initializeCommandRegistry();
+// await initializeCommandRegistry();
   return globalRegistry!;
 }
 // =============================================================================
@@ -152,7 +152,7 @@ export async function getCommandRegistry(): Promise<TypeSafeCommandRegistry> {
  * Create meow CLI with comprehensive TypeScript configuration;
  */
 export async function createMeowCLI(): unknown {
-  await initializeCommandRegistry();
+// await initializeCommandRegistry();
   // Handle legacy context format
   const __commandContext = context as CommandContext;
 }
@@ -164,16 +164,16 @@ else
   if (!definition) {
     console.error(`❌ Unknowncommand = flag.alias ? `, -${flag.alias}` : '';
       const _required = flag.required ? ' (required)' : '';
-;
+
   const _commands = registry.list();
-;
+
   // Group by category
 
     console.warn(`${category.toUpperCase()}:`);
     for (const cmd of cmds) {
       const _deprecated = cmd.deprecated ? ' (deprecated)' : '';
       const _experimental = cmd.isExperimental ? ' (experimental)' : '';
-      console.warn(`  ${cmd.name.padEnd(15)} ${cmd.description}${deprecated}${experimental}`);
+      console.warn(`${cmd.name.padEnd(15)} ${cmd.description}${deprecated}${experimental}`);
     }
     console.warn();
   }
@@ -215,8 +215,7 @@ hasCommand as has,
 getCommand as get,
 registerCommand as register,
 type showCommandHelp as
-help,
-}
+help }
 // =============================================================================
 // UTILITY FUNCTIONS
 // =============================================================================
@@ -228,18 +227,18 @@ _setLevel => {},getLevel = > 'info';
 function _createDefaultConfig(): unknown {
   return { name = === 'development', isProduction = === 'production', isTest = === 'test' }, paths;
   // : ; // LINT: unreachable code removed
-  dataDir: `$;
+  dataDir: `\$;
     process.cwd();
   /,-.;
   `;
   acdeelnuz;
   configDir: `;
-  $process.cwd()/;
-  .claude-zen/config`,
+  \$process.cwd()/;
+claude-zen/config`,
   logsDir;
-  : `$process.cwd()/.claude-zen/logs`,
-  cacheDir: `$process.cwd()/.claude-zen/cache`,
-  tempDir: `$process.cwd()/.claude-zen/temp`
+  : `\$process.cwd()/.claude-zen/logs`,
+  cacheDir: `\$process.cwd()/.claude-zen/cache`,
+  tempDir: `\$process.cwd()/.claude-zen/temp`
 }
 }
 }

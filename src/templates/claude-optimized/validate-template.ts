@@ -21,8 +21,8 @@ try {
 } catch (/* _error */) {
   log('✗ Failed to loadmanifest = 0;
 let _passedTests = 0;
-;
-  function test(description: unknown, condition = path.join(TEMPLATE_DIR: unknown, dirInfo.path: unknown);
+
+  function test(description, condition = path.join(TEMPLATE_DIR, dirInfo.path: unknown);
   test(`Directory ${dirInfo.path} exists`, fs.existsSync(dirPath));
 }
 // Test3 = path.join(TEMPLATE_DIR, file.destination);
@@ -89,8 +89,7 @@ Failed = === 0 ? 'green' : 'red'
 )
 const __percentage = Math.round((passedTests / totalTests) * 100);
 log(;
-`  Successrate = 90 ? 'green' : percentage >= 70 ? 'yellow' : 'red',
-)
+`  Successrate = 90 ? 'green' : percentage >= 70 ? 'yellow' : 'red')
 if (passedTests === totalTests) {
   log('\n🎉 Template validation passed! All files are properly installed.', 'green');
 } else if (percentage >= 90) {

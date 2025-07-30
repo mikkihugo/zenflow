@@ -31,7 +31,7 @@ class DocumentationValidator {
     {
       console.warn('📁 Validating documentation structure...');
       const _requiredFiles = [
-        ;
+
       'docs/api/README.md',
       'docs/api/server-api.md',
       'docs/api/mcp-tools.md',
@@ -41,8 +41,7 @@ class DocumentationValidator {
       'docs/api/workflow-api.md',
       'docs/api/websocket-api.md',
       'docs/api/schema.md',
-      'docs/api/errors.md',,,,,,,,
-      ];
+      'docs/api/errors.md',,,,,,, ];
       for (const file of requiredFiles) {
         try {
   // await fs.access(file);
@@ -54,7 +53,7 @@ class DocumentationValidator {
       }
       // Check examples directory
       try {
-      const _exampleStats = await fs.stat('examples');
+// const _exampleStats = awaitfs.stat('examples');
       if (exampleStats.isDirectory()) {
         console.warn('  ✅ examples directory exists');
       }
@@ -66,12 +65,12 @@ class DocumentationValidator {
     validateMarkdownFiles();
     console.warn('📝 Validating markdown files...');
     try {
-      const _files = await fs.readdir(this.docsDir);
+// const _files = awaitfs.readdir(this.docsDir);
       const _markdownFiles = files.filter((file) => file.endsWith('.md'));
       for (const file of markdownFiles) {
         const _filepath = path.join(this.docsDir, file);
         try {
-          const _content = await fs.readFile(filepath, 'utf-8');
+// const _content = awaitfs.readFile(filepath, 'utf-8');
           this.validateMarkdownContent(file, content);
         } catch (error) {
           this.errors.push(`Cannot read file: ${file} - ${error.message}`);
@@ -121,7 +120,7 @@ class DocumentationValidator {
   async function
   main() {
   const _validator = new DocumentationValidator();
-  const _isValid = await validator.validate();
+// const _isValid = awaitvalidator.validate();
   if (!isValid) {
     process.exit(1);
   }
@@ -129,9 +128,9 @@ class DocumentationValidator {
   // Run if called directly
   if (import._meta._url === `file://${process.argv[1]}`) {
   main()
-  .catch(
+catch(
   console;
-  .
+
   error;
   )
 }

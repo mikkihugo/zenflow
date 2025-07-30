@@ -27,8 +27,7 @@
     this.serviceScopes = await this.loadServiceScopes();
 
     // Register plugin services
-    await this.registerPluginServices();
-
+// await this.registerPluginServices();
     // Start intelligent monitoring
     if(this.options.autoBreakdown) {
       this.startIntelligentMonitoring();
@@ -147,15 +146,15 @@
   }
 
   async loadServiceScopes() {
-    const _registry = await readHiveRegistry();
+// const _registry = awaitreadHiveRegistry();
     const _scopes = {};
     for (const [name, hive] of Object.entries(registry)) {
       const _scopePath = path.join(path.dirname(hive.path), 'scope.md');
       try {
-        const _content = await readFile(scopePath, 'utf8');
+// const _content = awaitreadFile(scopePath, 'utf8');
 
         const _scopeData = {name = scopeData;
-      } catch ()
+      } catch (error)
 {
   // Scope file might not exist, which is fine.
   console.warn(`Could not load scope for ${name}: ${error.message}`);
@@ -176,9 +175,9 @@ startIntelligentMonitoring();
     // Start periodic monitoring for incomplete work and optimization opportunities
     this.monitoringInterval = setInterval(async () => {
       try {
-        await this.analyzeCompleteness();
-        await this.optimizeDelegations();
-      } catch () {
+// await this.analyzeCompleteness();
+// await this.optimizeDelegations();
+      } catch (error) {
         console.warn('Monitoring cycleerror = this.db.prepare(`;
       SELECT v.* FROM visions v ;
       WHERE v.status IN ('draft', 'in_progress');
@@ -200,22 +199,19 @@ startIntelligentMonitoring();
       VALUES (@id, @title, @description, @objectives, @stakeholders, @timeline, @priority, @status, @metadata);
     `);
     stmt.run(vision);
-
-    await this.registry.register(`vision = nanoid();
+// await this.registry.register(`vision = nanoid();
     const _epic = {id = this.db.prepare(`;
         INSERT INTO epics (id, vision_id, title, description, acceptance_criteria, business_value, effort, priority, status, metadata);
         VALUES (@id, @vision_id, @title, @description, @acceptance_criteria, @business_value, @effort, @priority, @status, @metadata);
     `);
     stmt.run(epic);
-
-    await this.registry.register(`epic = nanoid();
+// await this.registry.register(`epic = nanoid();
     const _feature = {id = this.db.prepare(`;
         INSERT INTO features (id, epic_id, title, description, functional_requirements, non_functional_requirements, dependencies, risks, effort, priority, status, metadata);
         VALUES (@id, @epic_id, @title, @description, @functional_requirements, @non_functional_requirements, @dependencies, @risks, @effort, @priority, @status, @metadata);
     `);
     stmt.run(feature);
-
-    await this.registry.register(`feature = this.db.prepare('SELECT * FROM features WHERE id = ?').get(featureId);
+// await this.registry.register(`feature = this.db.prepare('SELECT * FROM features WHERE id = ?').get(featureId);
     if (!feature) throw new Error(`Feature ${featureId} not found`);
 
     const _prd = {id = this.db.prepare(`;
@@ -223,22 +219,19 @@ startIntelligentMonitoring();
         VALUES (@id, @feature_id, @title, @sections, @status, @metadata);
     `);
     stmt.run(prd);
-
-    await this.registry.register(`prd = nanoid();
+// await this.registry.register(`prd = nanoid();
     const _userStory = {id = this.db.prepare(`;
         INSERT INTO user_stories (id, parent_id, parent_type, title, narrative, acceptance_criteria, priority, effort, status, metadata);
         VALUES (@id, @parent_id, @parent_type, @title, @narrative, @acceptance_criteria, @priority, @effort, @status, @metadata);
     `);
     stmt.run(userStory);
-
-    await this.registry.register(`user-story = nanoid();
+// await this.registry.register(`user-story = nanoid();
     const _task = {id = this.db.prepare(`;
         INSERT INTO tasks (id, parent_id, parent_type, title, description, type, priority, effort, skills, dependencies, status, assignee, metadata);
         VALUES (@id, @parent_id, @parent_type, @title, @description, @type, @priority, @effort, @skills, @dependencies, @status, @assignee, @metadata);
     `);
     stmt.run(task);
-
-    await this.registry.register(`task = {}): unknown {
+// await this.registry.register(`task = {}): unknown {
     const _task = this.db.prepare('SELECT * FROM tasks WHERE id = ?').get(taskId);
     if (!task) throw new Error(`Task ${taskId} not found`);
 
@@ -250,14 +243,13 @@ startIntelligentMonitoring();
     stmt.run(assignment);
 
     this.db.prepare('UPDATE tasks SET assignee = ?, status = ? WHERE id = ?').run(queenId, 'assigned', taskId);
-
-    await this.registry.register(`assignment = `;
+// await this.registry.register(`assignment = `;
       VisionTitle = await generateText(breakdownPrompt);
     let epics;
 
     try {
       epics = JSON.parse(aiBreakdown);
-    } catch () {
+    } catch (error) {
       console.warn('Failed to parse AI breakdown, creating fallback epic');
       epics = [{title = 3; // Prevent overwhelming the system
     const _delegatedEpics = [];
@@ -265,21 +257,21 @@ startIntelligentMonitoring();
     for (const [index, epicData] of epics.slice(0, maxConcurrentDelegations).entries()) {
       try {
         // Create the epic in our hierarchy
-        const _epicId = await this.createEpic({title = await this.findRelevantService(epicData);
+// const _epicId = awaitthis.createEpic({title = await this.findRelevantService(epicData);
 
         if(relevantService) {
           // Step4 = ? WHERE id = ?')
-      .run('in_progress', visionId);
+run('in_progress', visionId);
 
-    console.warn(`✅ Vision breakdown complete. Created $epics.lengthepics, delegated $delegatedEpics.length`);
+    console.warn(`✅ Vision breakdown complete. Created \$epics.lengthepics, delegated \$delegatedEpics.length`);
     this.emit('visionBreakdownComplete', { visionId,epics = Object.values(this.serviceScopes);
     if (services.length === 0) return null;
     // ; // LINT: unreachable code removed
     // Simple keyword matching - can be enhanced with AI semantic matching
     const _epicKeywords = [
-      ...this.extractKeywords(epicData.title),
-      ...this.extractKeywords(epicData.description),
-      ...(epicData.relevantServices  ?? []);
+..this.extractKeywords(epicData.title),
+..this.extractKeywords(epicData.description),
+..(epicData.relevantServices  ?? []);
     ];
 
     const _bestMatch = null;
@@ -298,10 +290,10 @@ startIntelligentMonitoring();
     // Only return if we have a reasonable match
     return bestScore > 0.3 ?bestMatch = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by']);
     // return text.toLowerCase(); // LINT: unreachable code removed
-      .replace(/[^a-zA-Z0-9\s]/g, ' ');
-      .split(/\s+/);
-      .filter(word => word.length > 2 && !commonWords.has(word));
-      .slice(0, 20); // Limit to most relevant keywords
+replace(/[^a-zA-Z0-9\s]/g, ' ');
+split(/\s+/);
+filter(word => word.length > 2 && !commonWords.has(word));
+slice(0, 20); // Limit to most relevant keywords
   }
 
   // Calculate keyword match score between two keyword arrays
@@ -315,7 +307,7 @@ startIntelligentMonitoring();
   }
 
   // Delegate an epic to a specific service hive
-  async delegateEpicToService(epicId, epicData, service): unknown 
+  async delegateEpicToService(epicId, epicData, service): unknown
     try {
       console.warn(`📡 Delegating epic "${epicData.title}" toservice = `;
         EPIC DELEGATION from ProjectHive = > `${i + 1}. ${criteria}`).join('\n')}
@@ -325,11 +317,11 @@ startIntelligentMonitoring();
       `;
 
       // Get service hive info from registry
-      const _hiveRegistry = await readHiveRegistry();
+// const _hiveRegistry = awaitreadHiveRegistry();
       const _hiveInfo = hiveRegistry[service.name];
 
       if(!hiveInfo) {
-        throw new Error(`Service hive $service.namenot found in registry`);
+        throw new Error(`Service hive \$service.namenot found in registry`);
       }
 
       // Create assignment record
@@ -349,7 +341,7 @@ startIntelligentMonitoring();
     //   // LINT: unreachable code removed}
 
   // ... Other methods like intelligence engines and hierarchy navigation would also need to be refactored to use the DB ...
-  
+
   async cleanup() {
     if(this.monitoringInterval) {
       clearInterval(this.monitoringInterval);

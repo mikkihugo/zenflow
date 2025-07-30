@@ -6,7 +6,7 @@ export const memoryCache = {name = Date.now();
 
 try {
       const { operation, key, value, ttl } = payload.data;
-;
+
       switch (operation) {
         case 'store':;
           return {success = [
@@ -16,4 +16,3 @@ try {
     hook: memoryCache;
   }
 ];
-;

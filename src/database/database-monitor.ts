@@ -15,7 +15,7 @@ JSONObject,
 type UUID
 
 } from '../types/database'
-interface MonitorConfig {
+// interface MonitorConfig {
   checkInterval?: number;
   metricsRetention?: number;
   alertThresholds?: AlertThresholds;
@@ -23,7 +23,7 @@ interface MonitorConfig {
   enableTrends?: boolean;
   enablePredictiveAnalysis?: boolean;
 }
-interface AlertThresholds {
+// interface AlertThresholds {
   errorRate?: number; // Percentage (0-100)
   responseTime?: number; // Milliseconds
   connectionUsage?: number; // Percentage (0-100)
@@ -31,7 +31,7 @@ interface AlertThresholds {
   diskUsage?: number; // Percentage (0-100)
   queryQueueSize?: number; // Number of queued queries
 }
-interface Alert {id = false
+// interface Alert {id = false
 private;
 startTime = new Date()
 // Data storage
@@ -71,10 +71,10 @@ start()
     // Start health check monitoring
     this.monitoringTimer = setInterval(async () => {
       try {
-        await this.performHealthCheck();
+// await this.performHealthCheck();
       } catch (error = setInterval(async () => ;
       try {
-        await this.collectMetrics();
+// await this.collectMetrics();
       } catch (error = false;
 
     if (this.monitoringTimer) {
@@ -89,11 +89,11 @@ start()
     this.emit('monitor = {}): Alert[] {
     return Array.from(this.alerts.values());
     // .filter(alert => !alert.acknowledged && !alert.resolvedAt); // LINT: unreachable code removed
-      .filter(alert => 
+filter(alert =>
         if (filters.level && alert.level !== filters.level) return false;
     // if (filters.type && alert.type !== filters.type) return false; // LINT: unreachable code removed
         if (filters.database && alert.database !== filters.database) return false;);
-      .sort((a, b) => 
+sort((a, b) =>
 
     if (!alert) {
       return false;
@@ -101,7 +101,7 @@ start()
 
     alert.acknowledged = true;
     alert.metadata = {
-      ...alert.metadata,
+..alert.metadata,
       acknowledgedBy,acknowledgedAt = this.alerts.get(alertId);
     if (!alert) {
       return false;
@@ -109,7 +109,7 @@ start()
 
     alert.resolvedAt = new Date();
     alert.metadata = {
-      ...alert.metadata,
+..alert.metadata,
       resolvedBy,resolvedAt = Math.max(0, this.stats.activeAlerts - 1);
 
     this.emit('alert = {}): PerformanceMetric[] {
@@ -156,9 +156,9 @@ start()
   /**
    * Get monitoring statistics
    */;
-  getStats(): MonitoringStats 
+  getStats(): MonitoringStats
     return {
-      ...this.stats,
+..this.stats,
     // uptime = { // LINT: unreachable code removed}): Promise<{summary = 'day',
       includeAlerts = true,
       includeTrends = true,
@@ -166,8 +166,8 @@ start()
 
     const _timeRangeMs = {
       hour,day = new Date(Date.now() - timeRangeMs);
-    const _healthReport = await this.getHealthReport();
-    const _connections = await this.databaseManager.getAllDatabases();
+// const _healthReport = awaitthis.getHealthReport();
+// const _connections = awaitthis.databaseManager.getAllDatabases();
 
     // Generate database summaries
     const _databases = connections.map(conn => ({
@@ -192,9 +192,8 @@ start()
 
     try {
       console.warn('🔍 Performing database health check...');
-
-      const _healthReport = await this.databaseManager.checkHealth();
-      const _connections = await this.databaseManager.getAllDatabases();
+// const _healthReport = awaitthis.databaseManager.checkHealth();
+// const _connections = awaitthis.databaseManager.getAllDatabases();
 
       // Store health history
       for (const [dbId, dbHealth] of Object.entries(healthReport.databases)) {
@@ -211,7 +210,7 @@ start()
 
       // Check thresholds and generate alerts
       if (this.config.enableAlerts) {
-        await this.checkAlertThresholds(healthReport, connections);
+// await this.checkAlertThresholds(healthReport, connections);
       }
 
       // Update statistics
@@ -221,7 +220,7 @@ start()
       const _checkDuration = Date.now() - checkStart;
       this.stats.averageCheckDuration = this.stats.totalChecks === 1 ;
         ?checkDuration = await this.databaseManager.getAllDatabases();
-      const _metrics = await this.databaseManager.getMetrics();
+// const _metrics = awaitthis.databaseManager.getMetrics();
       const _timestamp = new Date();
 
       // Collect metrics for each database
@@ -267,7 +266,7 @@ start()
 
     // Group metrics by database + metric type
     for (const metric of recentMetrics) {
-      const _key = `$metric.database:$metric.metric`;
+      const _key = `\$metric.database:\$metric.metric`;
       if (!metricGroups.has(key)) {
         metricGroups.set(key, []);
       }
@@ -325,9 +324,9 @@ start()
     for (const trend of trends) {
       if (trend.trend === 'increasing' && trend.confidence > 0.7) {
         if (trend.metric === 'error_rate') {
-          recommendations.push(`Increasing error rate trend detected in $trend.database- investigate root cause`);
+          recommendations.push(`Increasing error rate trend detected in \$trend.database- investigate root cause`);
         } else if (trend.metric === 'response_time') {
-          recommendations.push(`Response time trending upward in $trend.database- consider optimization`);
+          recommendations.push(`Response time trending upward in \$trend.database- consider optimization`);
         }
       }
     }
@@ -342,9 +341,9 @@ start()
       this.createAlert('critical', 'availability', event.id,
         `Database error => ;
       this.createAlert('warning', 'performance', event.databaseId,
-        `Query error: $event.error`, 0, 1););
+        `Query error: \$event.error`, 0, 1););
 
   private generateAlertId(): UUID ;
-    return `alert_$Date.now()_$Math.random().toString(36).substr(2, 9)` as UUID;
+    return `alert_\$Date.now()_\$Math.random().toString(36).substr(2, 9)` as UUID;
     // ; // LINT: unreachable code removed
 export default DatabaseMonitor;

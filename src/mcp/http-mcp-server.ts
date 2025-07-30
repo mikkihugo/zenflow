@@ -15,8 +15,7 @@ type MCPRequest
 
 MCPResponse,
 Tool,
-ToolExecutionResult,
-} from '../types/mcp.js'
+ToolExecutionResult } from '../types/mcp.js'
 // Import types
 import {
   ServerConfig,
@@ -28,8 +27,7 @@ TypedRequest,
 TypedResponse,
 UnifiedServer,
 UserContext,
-ValidationResult,
-} from '../types/server.js'
+ValidationResult } from '../types/server.js'
 
 import { ClaudeFlowMCPServer } from './mcp-server.js';
 /**
@@ -51,7 +49,7 @@ export interface HTTPMCPServerConfig {
 /**
  * Server Metrics
  */
-interface HTTPMCPServerMetrics {requests = null
+// interface HTTPMCPServerMetrics {requests = null
 private;
 _isRunning = false
 // MCP server instance
@@ -130,14 +128,14 @@ this._app.use((req =>
       res.json({
         name => {
       try {
-        const _response = await this._mcpServer.handleMessage({
+// const _response = awaitthis._mcpServer.handleMessage({
           jsonrpc => {
       try {
-        const _response = await this._mcpServer.handleMessage({
+// const _response = awaitthis._mcpServer.handleMessage({
           jsonrpc => {
       try {
         this._metrics.toolCalls++;
-        const _response = await this._mcpServer.handleMessage({
+// const _response = awaitthis._mcpServer.handleMessage({
           jsonrpc => {
       try {
         const _message = req.body;
@@ -146,8 +144,7 @@ this._app.use((req =>
         if ((message as MCPRequest).method === 'tools/call') {
           this._metrics.toolCalls++;
         }
-
-        const _response = await this._mcpServer.handleMessage(message);
+// const _response = awaitthis._mcpServer.handleMessage(message);
         res.json(response);
       } catch (error) ;
         this.handleMCPError(req, res, error as Error, req.body.id);
@@ -156,12 +153,12 @@ this._app.use((req =>
     // List available tools (human-readable)
     this._app.get('/mcp/tools', async (req => {
       try {
-        const _tools = await this._mcpServer.toolsRegistry?.getAllTools()  ?? [];
+// const _tools = awaitthis._mcpServer.toolsRegistry?.getAllTools()  ?? [];
         res.json({success = > ({
             name => {
       try {
         const { toolName } = req.params;
-        const _tools = await this._mcpServer.toolsRegistry?.getAllTools()  ?? [];
+// const _tools = awaitthis._mcpServer.toolsRegistry?.getAllTools()  ?? [];
         const _tool = tools.find(t => t.name === toolName);
 
         if (!tool) {
@@ -204,7 +201,7 @@ this._app.use((req =>
 
     // Cleanup MCP server
     if (this._mcpServer) {
-      await this._mcpServer.cleanup();
+// await this._mcpServer.cleanup();
     }
 
     return new Promise((resolve) => {
@@ -234,13 +231,13 @@ this._app.use((req =>
   // Graceful shutdown
   process.on('SIGINT', async () => {
     console.warn('\n🛑 Received SIGINT, shutting down gracefully...');
-    await server.stop();
+// await server.stop();
     process.exit(0);
   });
 
   process.on('SIGTERM', async () => {
     console.warn('\n🛑 Received SIGTERM, shutting down gracefully...');
-    await server.stop();
+// await server.stop();
     process.exit(0);
   });
 

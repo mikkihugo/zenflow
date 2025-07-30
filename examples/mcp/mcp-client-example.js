@@ -10,7 +10,7 @@ class MCPClientExample {
     this.mcpServer = null;
     this.examples = new Map();
     this.setupExamples();
-  }
+// }
   setupExamples() {
     // Basic swarm examples
     this.examples.set('swarm-init', this.swarmInitExample.bind(this));
@@ -25,22 +25,22 @@ class MCPClientExample {
     this.examples.set('system-diagnostics', this.systemDiagnosticsExample.bind(this));
     // Workflow examples
     this.examples.set('complete-workflow', this.completeWorkflowExample.bind(this));
-  }
+// }
   async initialize() {
     console.warn('🚀 Initializing MCP Client Example');
     this.mcpServer = new ClaudeFlowMCPServer({
       version: '2.0.0-alpha.70',
-    listChanged: true ,
-    subscribe: true, listChanged;
-    : true 
+    listChanged ,
+    subscribe, listChanged;
+
 })
   // await   this
-  .
+
   mcpServer;
-  .
+
   initialize()
   console;
-  .
+
   warn('✅ MCP Server initialized')
   return;
   this;
@@ -49,25 +49,25 @@ class MCPClientExample {
   async callTool(toolName, params = {}) {
     try {
       console.warn(`🔧 Calling tool: ${toolName}`, params);
-      const _result = await this.mcpServer.executeToolCall({
-        name: toolName,
-        arguments: params
+// const _result = awaitthis.mcpServer.executeToolCall({
+        name,
+        arguments
 })
     console.warn(`✅ Tool result:`, result)
     return result;
     //   // LINT: unreachable code removed} catch (error) {
     console.error(`❌ Tool error:`, error);
     throw error;
-  }
-}
+// }
+// }
 // Swarm initialization example
 async;
 swarmInitExample();
-{
+// {
   console.warn('\n🐝 === Swarm Initialization Example ===');
-  const _result = await this.callTool('swarm_init', {
+// const _result = awaitthis.callTool('swarm_init', {
       topology: 'hierarchical',
-  maxAgents: 8,
+  maxAgents,
   strategy: 'adaptive'
 })
 return result;
@@ -75,7 +75,7 @@ return result;
 // Agent spawning example
 async;
 agentSpawnExample();
-{
+// {
   console.warn('\n🤖 === Agent Spawning Example ===');
   // Spawn coordinator agent
   // await this.callTool('agent_spawn', {
@@ -85,26 +85,26 @@ agentSpawnExample();
 })
 // Spawn coder agent
   // await this.callTool('agent_spawn',
-{
+// {
   type: 'coder',
   name: 'CodeGen-Alpha',
   capabilities: ['javascript', 'rust', 'testing', 'documentation']
 })
 // Spawn analyst agent
   // await this.callTool('agent_spawn',
-{
+// {
   type: 'analyst',
   name: 'SystemAnalyzer',
   capabilities: ['performance-analysis', 'security-audit', 'optimization']
 })
 console.warn('✅ All agents spawned successfully')
-}
+// }
 // Task orchestration example
 async
 taskOrchestrateExample()
-{
+// {
   console.warn('\n📋 === Task Orchestration Example ===');
-  const _result = await this.callTool('task_orchestrate', {
+// const _result = awaitthis.callTool('task_orchestrate', {
       task: 'Analyze repository structure and optimize performance bottlenecks',
   strategy: 'parallel',
   priority: 'high'
@@ -114,28 +114,28 @@ return result;
 // Swarm status monitoring example
 async;
 swarmStatusExample();
-{
+// {
   console.warn('\n📊 === Swarm Status Example ===');
   // Basic status
-  const _basicStatus = await this.callTool('swarm_status', {
-      detailed: false
+// const _basicStatus = awaitthis.callTool('swarm_status', {
+      detailed
 })
 console.warn('Basic Status:', basicStatus)
 // Detailed status
-const _detailedStatus = await this.callTool('swarm_status', {
-      detailed: true
+// const _detailedStatus = awaitthis.callTool('swarm_status', {
+      detailed
 })
 console.warn('Detailed Status:', detailedStatus)
 // Agent metrics
-const _agentMetrics = await this.callTool('agent_metrics', {
+// const _agentMetrics = awaitthis.callTool('agent_metrics', {
       agentId: 'coder-alpha'
 })
 console.warn('Agent Metrics:', agentMetrics)
-}
+// }
 // Memory operations example
 async
 memoryOperationsExample()
-{
+// {
   console.warn('\n💾 === Memory Operations Example ===');
   // Store project context
   // await this.callTool('memory_usage', {
@@ -146,13 +146,13 @@ memoryOperationsExample()
   branch: 'main',
   objectives: ['performance-optimization', 'documentation'],
   constraints: ['minimal-changes', 'preserve-api']
-}
+// }
 ),
 namespace: 'project'
 })
 // Store task data
   // await this.callTool('memory_usage',
-{
+// {
   action: 'store',
   key: 'current-task',
   value: JSON.stringify({
@@ -160,93 +160,93 @@ namespace: 'project'
   type: 'optimization',
   target: 'database-queries',
   status: 'in-progress'
-}
+// }
 ),
 namespace: 'tasks'
 })
 // Retrieve data
-const _context = await this.callTool('memory_usage', {
+// const _context = awaitthis.callTool('memory_usage', {
       action: 'retrieve',
 key: 'project-context',
 namespace: 'project'
 })
 console.warn('Retrieved context:', context)
 // List all memories
-const _memories = await this.callTool('memory_usage', {
+// const _memories = awaitthis.callTool('memory_usage', {
       action: 'list',
 namespace: 'project'
 })
 console.warn('All project memories:', memories)
-}
+// }
 // Memory search example
 async
 memorySearchExample()
-{
+// {
   console.warn('\n🔍 === Memory Search Example ===');
   // Search for optimization-related memories
-  const _optimizationResults = await this.callTool('memory_search', {
+// const _optimizationResults = awaitthis.callTool('memory_search', {
       pattern: 'optimization',
-  limit: 5,
+  limit,
   namespace: 'project'
 })
 console.warn('Optimization memories:', optimizationResults)
 // Search for task-related memories
-const _taskResults = await this.callTool('memory_search', {
+// const _taskResults = awaitthis.callTool('memory_search', {
       pattern: 'task*',
-limit: 10,
+limit,
 namespace: 'tasks'
 })
 console.warn('Task memories:', taskResults)
 // Memory analytics
-const _analytics = await this.callTool('memory_analytics', {
+// const _analytics = awaitthis.callTool('memory_analytics', {
       timeframe: '24h'
 })
 console.warn('Memory analytics:', analytics)
-}
+// }
 // Performance analysis example
 async
 performanceAnalysisExample()
-{
+// {
   console.warn('\n📈 === Performance Analysis Example ===');
   // Generate performance report
-  const _performanceReport = await this.callTool('performance_report', {
+// const _performanceReport = awaitthis.callTool('performance_report', {
       format: 'detailed',
   timeframe: '24h'
 })
 console.warn('Performance Report:', performanceReport)
 // Analyze bottlenecks
-const _bottleneckAnalysis = await this.callTool('bottleneck_analyze', {
+// const _bottleneckAnalysis = awaitthis.callTool('bottleneck_analyze', {
       component: 'database',
 metrics: ['response-time', 'throughput', 'error-rate']
 })
 console.warn('Bottleneck Analysis:', bottleneckAnalysis)
-}
+// }
 // System diagnostics example
 async
 systemDiagnosticsExample()
-{
+// {
   console.warn('\n🔧 === System Diagnostics Example ===');
   // Health check
-  const _healthCheck = await this.callTool('health_check', {
+// const _healthCheck = awaitthis.callTool('health_check', {
       components: ['database', 'memory', 'network', 'agents']
 })
 console.warn('Health Check:', healthCheck)
 // Security scan
-const _securityScan = await this.callTool('security_scan', {
+// const _securityScan = awaitthis.callTool('security_scan', {
       scope: 'full',
-includeRecommendations: true
+includeRecommendations
 })
 console.warn('Security Scan:', securityScan)
 // Feature detection
-const _features = await this.callTool('features_detect', {
+// const _features = awaitthis.callTool('features_detect', {
       component: 'system'
 })
 console.warn('Feature Detection:', features)
-}
+// }
 // Complete workflow example
 async
 completeWorkflowExample()
-{
+// {
   console.warn('\n🔄 === Complete Workflow Example ===');
   try {
       // 1. Initialize swarm
@@ -274,15 +274,15 @@ completeWorkflowExample()
     } catch (error) {
       console.error('❌ Workflow error:', error);
       throw error;
-    }
-}
+// }
+// }
 // Run specific example
 async;
 runExample(exampleName);
-{
+// {
   if (!this.examples.has(exampleName)) {
     throw new Error(`Example "${exampleName}" not found`);
-  }
+// }
   console.warn(`\n🎯 Running example: ${exampleName}`);
   return await this.examples.get(exampleName)();
   //   // LINT: unreachable code removed}
@@ -290,7 +290,7 @@ runExample(exampleName);
   listExamples();
   console.warn('\n📋 Available MCP Examples:');
   Array.from(this.examples.keys()).forEach((name, index) => {
-    console.warn(`  ${index + 1}. ${name}`);
+    console.warn(`${index + 1}. ${name}`);
   });
   // Run all examples
   async;
@@ -302,10 +302,10 @@ runExample(exampleName);
   // await example();
       } catch (error) {
         console.error(`❌ Example ${name} failed:`, error);
-      }
-  }
+// }
+// }
   console.warn('\n✅ All examples completed');
-}
+// }
 // CLI runner
 async function main() {
   const _exampleName = process.argv[2];
@@ -320,10 +320,10 @@ async function main() {
   // await client.runAllExamples();
   } else {
   // await client.runExample(exampleName);
-  }
-}
+// }
+// }
 // Run if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
-}
+// }
 export { MCPClientExample };

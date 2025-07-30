@@ -8,17 +8,17 @@ import { printError } from '../utils.js';
 
 export async function backupCommand(): unknown {
     case 'configure':;
-      await handleConfigure(args.slice(1), flags);
+// await handleConfigure(args.slice(1), flags);
       break;
-;
+
     case 'dr':;
-      await handleDr(args.slice(1), flags);
+// await handleDr(args.slice(1), flags);
       break;
-;
+
     case 'restore':;
-      await handleRestore(args.slice(1), flags);
+// await handleRestore(args.slice(1), flags);
       break;default = args[0];
-;
+
   if(drAction === 'configure') {
     printSuccess('Configuring Disaster Recovery...');
     console.warn('🚨 DRConfiguration = === 'test') {
@@ -28,7 +28,7 @@ export async function backupCommand(): unknown {
     printError('Usage: backup restore <backup-id|timestamp>');
     return;
     //   // LINT: unreachable code removed}
-;
+
   printSuccess(`Restoring from backup: ${restorePoint}`);
   console.warn('🔄 Restore Progress:');
   console.warn('   ✓ Located backup in S3');
@@ -40,7 +40,7 @@ export async function backupCommand(): unknown {
   console.warn('   ✓ Verifying restored data');
   console.warn('\n✅ Restore completed successfully');
 }
-;
+
 function _showBackupHelp(): unknown {
   console.warn('Backup commands:');
   console.warn('  configure - Configure backup strategy');
@@ -52,4 +52,3 @@ function _showBackupHelp(): unknown {
   console.warn('  backup dr test');
   console.warn('  backup restore "backup-20240110-023000"');
 }
-;

@@ -16,13 +16,13 @@ class MockMemoryStore {
   }
 
   async store(key, value, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` : key;
+    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
     this.data.set(fullKey, value);
-    return { id: fullKey, size: value.length };
+    return { id, size: value.length };
   }
 
   async retrieve(key, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` : key;
+    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
     return this.data.get(fullKey) || null;
   }
 
@@ -51,15 +51,13 @@ const _colors = {
   yellow: '\x1b[33m',
   cyan: '\x1b[36m',
   magenta: '\x1b[35m',
-  red: '\x1b[31m',
-};
+  red: '\x1b[31m' };
 
 // Run GitHub Models CLI
 async function runGHModel(prompt, model = 'gpt-4o-mini') {
   return new Promise((resolve, reject) => {
     const gh = spawn('gh', ['models', 'run', model], {
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
+      stdio: ['pipe', 'pipe', 'pipe'] });
 
     let output = '';
     let errorOutput = '';
@@ -89,7 +87,7 @@ async function runGHModel(prompt, model = 'gpt-4o-mini') {
 // Check if gh CLI is available
 async function checkGHCLI() {
   try {
-    const response = await runGHModel('Respond with just "OK"', 'openai/gpt-4o-mini');
+// const response = awaitrunGHModel('Respond with just "OK"', 'openai/gpt-4o-mini');
     return response.includes('OK');
   } catch (_error) {
     return false;
@@ -100,18 +98,18 @@ async function checkGHCLI() {
 async function analyzeDocumentWithAI(docType, service, docId, content, metadata) {
   const prompt = `You are an expert document reviewer for microservices architecture. Analyze this document and provide structured feedback.
 
-Document Information:
+Document Information: null
 - Type: ${docType}
-- Service: ${service}  
+- Service: ${service}
 - ID: ${docId}
 
-Current Metadata:
+Current Metadata: null
 ${JSON.stringify(metadata, null, 2)}
 
-Document Content:
+Document Content: null
 ${content}
 
-Please analyze and provide feedback in this JSON format:
+Please analyze and provide feedback in this JSON format: null
 {
   "quality_score": <1-10>,
   "suggested_approvers": ["role1", "role2"],
@@ -127,7 +125,7 @@ Please analyze and provide feedback in this JSON format:
 Focus on practical, actionable feedback. IMPORTANT: Respond with ONLY the JSON object, no other text.`;
 
   try {
-    const response = await runGHModel(prompt, 'openai/gpt-4o-mini');
+// const response = awaitrunGHModel(prompt, 'openai/gpt-4o-mini');
 
     // Extract JSON from response if it contains other text
     const jsonMatch = response.match(/\{[\s\S]*\}/);
@@ -149,10 +147,10 @@ Document Type: ${docType}
 Service: ${service}
 Current Approvers: ${currentApprovers.join(', ')}
 
-Document Content Summary:
+Document Content Summary: null
 ${content.substring(0, 1000)}...
 
-Provide feedback in JSON format:
+Provide feedback in JSON format: null
 {
   "routing_appropriate": true/false,
   "reasoning": "explanation of the routing assessment",
@@ -169,7 +167,7 @@ Provide feedback in JSON format:
 IMPORTANT: Respond with ONLY the JSON object, no other text.`;
 
   try {
-    const response = await runGHModel(prompt, 'openai/gpt-4o-mini');
+// const response = awaitrunGHModel(prompt, 'openai/gpt-4o-mini');
 
     // Extract JSON from response if it contains other text
     const jsonMatch = response.match(/\{[\s\S]*\}/);
@@ -186,20 +184,19 @@ IMPORTANT: Respond with ONLY the JSON object, no other text.`;
 // Generate document from requirements
 async function generateDocumentWithAI(docType, service, requirements) {
   const templates = {
-    'service-adr':
+    'service-adr': null
       'Architecture Decision Record (ADR) template with Status, Context, Decision, Consequences sections',
     'api-documentation': 'API documentation with Overview, Authentication, Endpoints, Examples',
-    'security-spec': 'Security specification with Requirements, Implementation, Compliance details',
-  };
+    'security-spec': 'Security specification with Requirements, Implementation, Compliance details' };
 
   const prompt = `Generate a professional ${docType} document for the ${service} service.
 
 Template Style: ${templates[docType] || 'Standard technical document'}
 
-Requirements:
+Requirements: null
 ${requirements}
 
-Generate a complete, well-structured document following best practices for ${docType}. Include:
+Generate a complete, well-structured document following best practices for ${docType}. Include: null
 - Proper markdown formatting
 - Clear sections and headings
 - Specific technical details where appropriate
@@ -208,7 +205,7 @@ Generate a complete, well-structured document following best practices for ${doc
 Return only the document content, no JSON wrapper.`;
 
   try {
-    const response = await runGHModel(prompt, 'openai/gpt-4o-mini');
+// const response = awaitrunGHModel(prompt, 'openai/gpt-4o-mini');
     return response;
   } catch (_error) {
     return null;
@@ -235,7 +232,7 @@ Proposed - 2025-01-17
 Our user service currently stores sessions in memory, which doesn't scale across multiple instances and loses sessions on restart. We need a distributed session storage solution.
 
 ## Decision
-We will use Redis as our session storage backend for the user service.
+We will use Redis  session storage backend for the user service.
 
 ## Consequences
 ### Positive
@@ -250,17 +247,15 @@ We will use Redis as our session storage backend for the user service.
 - Need to manage Redis high availability`,
     metadata: {
       dependencies: ['redis-infrastructure'],
-      tags: ['sessions', 'redis', 'scaling'],
-    },
-  };
-  const result = await docStack.createDocument(
+      tags: ['sessions', 'redis', 'scaling'] } };
+// const result = awaitdocStack.createDocument(
     demoDoc.docType,
     demoDoc.service,
     demoDoc.docId,
     demoDoc.content,
     demoDoc.metadata
   );
-  const aiAnalysis = await analyzeDocumentWithAI(
+// const aiAnalysis = awaitanalyzeDocumentWithAI(
     demoDoc.docType,
     demoDoc.service,
     demoDoc.docId,
@@ -281,7 +276,7 @@ We will use Redis as our session storage backend for the user service.
     }
 
     // Review routing with AI
-    const routingReview = await reviewRoutingWithAI(
+// const routingReview = awaitreviewRoutingWithAI(
       demoDoc.docType,
       demoDoc.service,
       result.routing.approvers,
@@ -307,5 +302,4 @@ if (require.main === module) {
 module.exports = {
   analyzeDocumentWithAI,
   reviewRoutingWithAI,
-  generateDocumentWithAI,
-};
+  generateDocumentWithAI };

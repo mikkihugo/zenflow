@@ -8,8 +8,7 @@ getVersion,
 init,
 isGpuAvailable,
 NetworkTrainer,
-NeuralNetwork,
-} from '../bindings/index.js'
+NeuralNetwork } from '../bindings/index.js'
 
 /**
  * Network metadata interface;
@@ -30,11 +29,11 @@ initialize();
   if (this.initialized) return;
   // ; // LINT: unreachable code removed
   try {
-      await init();
+// await init();
       const _backendInfo = getBackendInfo();
       console.warn(`🧠 Claude Zen Neural Service initialized with ${backendInfo.backend} backend`);
       console.warn(`Version = true;
-    } catch (/* error */) {
+    } catch (error) {
 
     if (this.networks.has(id)) {
       throw new Error(`Network with id '${id}' already exists`);
@@ -98,7 +97,7 @@ this.networks.set(id,
 {
   network,metadata = > ({
         id,
-  ...entry.metadata
+..entry.metadata
 }
 )
 ),trainers = false
@@ -115,7 +114,7 @@ export async function initializeNeuralService(): Promise<void> {
   return await neuralService.initialize();
 }
 export async function createNeuralNetwork(
-  id: string,
+  id,
 layers: number[],
 options?: JSONObject;
 ): Promise<any>
@@ -126,14 +125,14 @@ export function getNeuralNetwork(id: string): unknown | null {
   return neuralService.getNetwork(id);
 }
 export async function trainNeuralNetwork(
-  networkId: string,
-trainingData: TrainingData,
+  networkId,
+trainingData,
 config?: TrainingConfig;
 ): Promise<any>
 {
   return await neuralService.trainNetwork(networkId, trainingData, config);
 }
-export function predictWithNetwork(networkId: string, input: number[]): number[] {
+export function predictWithNetwork(networkId, input: number[]): number[] {
   return neuralService.predict(networkId, input);
 }
 export function getNeuralServiceStatus(): ServiceStatus {
@@ -146,5 +145,4 @@ NetworkTrainer,
 getVersion as getNeuralVersion,
 isGpuAvailable as isNeuralGpuAvailable,
 getActivationFunctions as getNeuralActivationFunctions,
-getBackendInfo as getNeuralBackendInfo,
-}
+getBackendInfo as getNeuralBackendInfo }

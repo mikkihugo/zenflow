@@ -1,8 +1,8 @@
 import { chromium } from 'playwright';
 
 async function testWebInterface() {
-  const _browser = await chromium.launch({ headless: true });
-  const _page = await browser.newPage();
+// const _browser = awaitchromium.launch({ headless });
+// const _page = awaitbrowser.newPage();
   try {
     console.warn('🌐 Navigating to http://localhost:3000');
   // await page.goto('http://localhost:3000');
@@ -20,10 +20,10 @@ async function testWebInterface() {
       }
     });
     // Check if dashboard loads
-    const _title = await page.title();
+// const _title = awaitpage.title();
     console.warn('📄 Page title:', title);
     // Check if dashboard object exists
-    const _dashboardExists = await page.evaluate(() => {
+// const _dashboardExists = awaitpage.evaluate(() => {
       return typeof window.dashboard !== 'undefined';
     //   // LINT: unreachable code removed});
     console.warn('🎛️ Dashboard object exists:', dashboardExists);
@@ -44,20 +44,20 @@ async function testWebInterface() {
       errors.push(error.message);
     });
     // Check if sidebar buttons exist
-    const _sidebarButtons = await page.locator('.menu-item').count();
+// const _sidebarButtons = awaitpage.locator('.menu-item').count();
     console.warn('📋 Sidebar buttons found:', sidebarButtons);
     // Check global project filter BEFORE visiting Projects tab
-    const _globalFilterBeforeProjects = await page.locator('#global-project-filter').isVisible();
+// const _globalFilterBeforeProjects = awaitpage.locator('#global-project-filter').isVisible();
     console.warn(;
       '🌐 Global project filter visible before Projects tab:',
       globalFilterBeforeProjects;
     );
     if (globalFilterBeforeProjects) {
-      const _optionsBeforeProjects = await page.locator('#global-project-filter option').count();
+// const _optionsBeforeProjects = awaitpage.locator('#global-project-filter option').count();
       console.warn('🔢 Global filter options BEFORE Projects tab:', optionsBeforeProjects);
     }
     // Check if switchTab method exists
-    const _switchTabExists = await page.evaluate(() => {
+// const _switchTabExists = awaitpage.evaluate(() => {
       return window.dashboard && typeof window.dashboard.switchTab === 'function';
     //   // LINT: unreachable code removed});
     console.warn('🔄 switchTab method exists:', switchTabExists);
@@ -72,18 +72,18 @@ async function testWebInterface() {
     // Try clicking Projects tab
     console.warn('🚀 Clicking Projects tab...');
     // Check initial active tab
-    const _initialActiveTab = await page.locator('.tab-content.active').getAttribute('id');
+// const _initialActiveTab = awaitpage.locator('.tab-content.active').getAttribute('id');
     console.warn('🎯 Initial active tab:', initialActiveTab);
   // await page.click('[data-tab="projects"]');
   // await page.waitForTimeout(1000);
     // Check active tab after click
-    const _newActiveTab = await page.locator('.tab-content.active').getAttribute('id');
+// const _newActiveTab = awaitpage.locator('.tab-content.active').getAttribute('id');
     console.warn('🎯 Active tab after click:', newActiveTab);
     // Check if projects content is visible
-    const _projectsContent = await page.locator('#projects').isVisible();
+// const _projectsContent = awaitpage.locator('#projects').isVisible();
     console.warn('📦 Projects content visible:', projectsContent);
     // Check if Create Project button exists
-    const _createButton = await page.locator('text=Create Project').count();
+// const _createButton = awaitpage.locator('text=Create Project').count();
     console.warn('➕ Create Project buttons found:', createButton);
     // Try clicking Create Project button (only if projects content is visible)
     if (createButton > 0 && projectsContent) {
@@ -98,14 +98,14 @@ async function testWebInterface() {
       console.warn('⚠️ Create Project button exists but Projects content is not visible');
     }
     // Check global project filter
-    const _globalFilter = await page.locator('#global-project-filter').isVisible();
+// const _globalFilter = awaitpage.locator('#global-project-filter').isVisible();
     console.warn('🌐 Global project filter visible:', globalFilter);
     if (globalFilter) {
       // Check how many options are in the global dropdown
-      const _globalFilterOptions = await page.locator('#global-project-filter option').count();
+// const _globalFilterOptions = awaitpage.locator('#global-project-filter option').count();
       console.warn('🔢 Global filter options count:', globalFilterOptions);
       // Get the option texts
-      const _optionTexts = await page.locator('#global-project-filter option').allTextContents();
+// const _optionTexts = awaitpage.locator('#global-project-filter option').allTextContents();
       console.warn('📋 Global filter options:', optionTexts);
     }
     // Take a screenshot

@@ -1,13 +1,12 @@
 VisionarySoftwareIntelligenceProcessor as NewProcessor,
 type PipelineConfig
-,
+
 type ProcessingOptions
-,
-} from './index'
+ } from './index'
 /**
  * Legacy configuration interface for backward compatibility;
  */
-interface LegacyConfig {
+// interface LegacyConfig {
   outputDir?: string;
   enableAnalytics?: boolean;
   supportedFormats?: string[];
@@ -65,15 +64,13 @@ export class VisionarySoftwareIntelligenceProcessor {
         'py',
         'java',
         'go',
-        'rs',
-      ],
-    neuralEngine: config.neuralEngine,
-  }
+        'rs' ],
+    neuralEngine: config.neuralEngine }
   this;
-  .
+
   newProcessor = new NewProcessor(newConfig);
   console;
-  .
+
   warn(`;
   ⚠️
   DEPRECATION;
@@ -83,15 +80,14 @@ export class VisionarySoftwareIntelligenceProcessor {
   class;
   is;
   deprecated;
-  .
+
   Please;
   migrate;
   to;
   the;
   new;
   decomposed;
-  architecture:
-;
+  architecture: null
   OLD (1,317 lines, maintenance nightmare):;
   import;
   {
@@ -101,8 +97,7 @@ from;
 ('./software-intelligence-processor');
 
 NEW (7 focused modules, <500 lines each)
-:
-
+: null
 import { VisionarySoftwareIntelligenceProcessor } from './index';
 
 Benefits: Better;
@@ -112,7 +107,7 @@ standards;
 compliance;
 `);
   }
-;
+
   /**
    * Initialize the software intelligence processor;
    *;
@@ -120,11 +115,11 @@ compliance;
    * @returns Initialization status and capabilities;
     // */; // LINT: unreachable code removed
   async initialize(): Promise<{ status: string; capabilities: string[] }> {
-    const _result = await this.newProcessor.initialize();
+// const _result = awaitthis.newProcessor.initialize();
     this.isInitialized = true;
     return result;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Process code files through the intelligence pipeline;
    *;
@@ -137,7 +132,7 @@ compliance;
     if (!this.isInitialized) {
       throw new Error('Processor not initialized. Call initialize() first.');
     }
-;
+
     // Map legacy options to new format
     const _newOptions: Partial<ProcessingOptions> = {
       language: options.language  ?? 'javascript',
@@ -148,12 +143,11 @@ compliance;
       includeBestPractices: options.includeBestPractices,
       includeSecurity: options.includeSecurity,
       includeTests: options.includeTests,
-      generateDocumentation: options.generateDocumentation,
-    };
-;
+      generateDocumentation: options.generateDocumentation };
+
     return this.newProcessor.processCodeIntelligence(codeFiles, newOptions);
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Get current analytics data;
    *;
@@ -163,17 +157,17 @@ compliance;
   async getAnalytics(): Promise<any> {
     return this.newProcessor.getAnalytics();
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Close the processor and cleanup resources;
    *;
    * @deprecated Use the new decomposed architecture instead;
    */;
   async close(): Promise<void> {
-    await this.newProcessor.close();
+// await this.newProcessor.close();
     this.isInitialized = false;
   }
-;
+
   // Legacy method aliases for backward compatibility
 
   /**
@@ -183,42 +177,42 @@ compliance;
     console.warn('⚠️ analyzeCode() is deprecated. Use processCodeIntelligence() instead.');
     return this.processCodeIntelligence(codeFiles, options);
     //   // LINT: unreachable code removed}
-;
+
   /**
    * @deprecated Use the new decomposed architecture;
    */;
-  async executePipeline(codeData: unknown, options: unknown): Promise<any> {
+  async executePipeline(codeData, options: unknown): Promise<any> {
     console.warn('⚠️ executePipeline() is deprecated. Use processCodeIntelligence() instead.');
     // Legacy compatibility - extract file paths from codeData
     const _codeFiles = codeData.map((data: unknown) => data.path  ?? 'unknown');
     return this.processCodeIntelligence(codeFiles, options);
     //   // LINT: unreachable code removed}
-;
+
   /**
    * @deprecated Analytics are now handled automatically;
    */;
   async updateAnalytics(;
-    _processingTime: number,
-    _success: boolean,
+    _processingTime,
+    _success,
     _qualityScore: number;
   ): Promise<void> {
     console.warn('⚠️ updateAnalytics() is deprecated. Analytics are handled automatically.');
     // No-op for compatibility
   }
-;
+
   /**
    * @deprecated Use the new decomposed architecture;
    */;
   async saveAnalysisResults(;
-    output: unknown,
-    _analysisDepth: string,
+    output,
+    _analysisDepth,
     _language: string;
   ): Promise<string> {
     console.warn('⚠️ saveAnalysisResults() is deprecated. Results are saved automatically.');
     return output.metadata?.outputPath  ?? './analysis-output';
     //   // LINT: unreachable code removed}
 }
-;
+
 /**
  * Default export for backward compatibility
  *;
@@ -237,4 +231,3 @@ export function createProcessor(config: LegacyConfig = {}): VisionarySoftwareInt
   );
   return new VisionarySoftwareIntelligenceProcessor(config);
 }
-;

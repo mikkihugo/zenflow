@@ -1,4 +1,4 @@
-import { promises as fs } from 'node:fs';
+import { promises  } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
@@ -8,27 +8,23 @@ jest.mock('../../../src/mcp/core/stdio-optimizer.js', () => ({
   StdioOptimizer: jest.fn().mockImplementation(() => ({
     initialize: jest.fn(),
 optimize: jest.fn(),
-cleanup: jest.fn(),
-})),
-}))
+cleanup: jest.fn() })) }))
 jest.mock('../../../src/mcp/core/error-handler.js', () => (
 {
   MCPErrorHandler: jest.fn().mockImplementation(() => ({
     handleError: jest.fn(),
   formatError: jest.fn()
 }
-)),
-}))
+)) }))
 jest.mock('../../../src/mcp/core/performance-metrics.js', () => (
 {
   PerformanceMetrics: jest.fn().mockImplementation(() => ({
     startTimer: jest.fn(),
   endTimer: jest.fn(),
   recordMetric: jest.fn(),
-  getMetrics: jest.fn(() => ({ requests: 0, averageTime: 0 }))
+  getMetrics: jest.fn(() => ({ requests, averageTime }))
 }
-)),
-}))
+)) }))
 jest.mock('../../../src/memory/sqlite-store.js', () => (
 {
   SqliteMemoryStore: jest.fn().mockImplementation(() => ({
@@ -39,8 +35,7 @@ jest.mock('../../../src/memory/sqlite-store.js', () => (
   search: jest.fn(() => []),
   close: jest.fn()
 }
-)),
-}))
+)) }))
 describe('MCP Server', () =>
 {
   let testDir;
@@ -50,7 +45,7 @@ describe('MCP Server', () =>
   });
   afterEach(async () => {
     try {
-  // await fs.rm(testDir, { recursive: true, force: true });
+  // await fs.rm(testDir, { recursive, force });
     } catch (/* _error */) {
       // Ignore cleanup errors
     }
@@ -98,22 +93,20 @@ describe('MCP Server', () =>
       const _defaultConfig = {
         port: process.env.MCP_PORT  ?? 3000,
           type: 'sqlite',,,
-          enabled: true,
-          autoDiscovery: true,,
-      };
+          enabled,
+          autoDiscovery, };
     expect(defaultConfig.port).toBeDefined();
     expect(defaultConfig.memory.type).toBe('sqlite');
     expect(defaultConfig.tools.enabled).toBe(true);
   });
   it('should validate configuration parameters', () => {
     const _invalidConfigs = [
-      ;
+
         { port: 'invalid' },
         { port: -1 },
-        { port: 70000 },
-        { memory: null },
-        { tools: 'invalid' },,,,,,,,
-    ];
+        { port },
+        { memory },
+        { tools: 'invalid' },,,,,,, ];
     invalidConfigs.forEach((config) => {
       // Test configuration validation logic
       const _isValid = typeof config.port === 'number' && config.port > 0 && config.port < 65536;
@@ -128,11 +121,10 @@ describe('Tool Registry', () =>
   it('should initialize tools registry', () => {
     // Mock tools registry functionality
     const _mockTools = [
-      ;
+
         { name: 'file_read', description: 'Read file contents' },
         { name: 'file_write', description: 'Write file contents' },
-        { name: 'shell_execute', description: 'Execute shell commands' },,,,,,,,
-    ];
+        { name: 'shell_execute', description: 'Execute shell commands' },,,,,,, ];
     expect(mockTools).toHaveLength(3);
     expect(mockTools[0].name).toBe('file_read');
     expect(mockTools[1].name).toBe('file_write');
@@ -143,24 +135,22 @@ describe('Tool Registry', () =>
     const _mockToolExecutor = {
         execute: jest.fn(async (toolName, _args) => {
           if (toolName === 'file_read') {
-            return { content: 'file contents', success: true };
+            return { content: 'file contents', success };
     //   // LINT: unreachable code removed}
           if (toolName === 'file_write') {
-            return { written: true, success: true };
+            return { written, success };
     //   // LINT: unreachable code removed}
-          return { error: 'Unknown tool', success: false };
-    //   // LINT: unreachable code removed}),
-      };
-      const _result1 = await mockToolExecutor.execute('file_read', { path: '/test' });
+          return { error: 'Unknown tool', success };
+    //   // LINT: unreachable code removed}) };
+// const _result1 = awaitmockToolExecutor.execute('file_read', { path: '/test' });
       expect(result1.success).toBe(true);
       expect(result1.content).toBe('file contents');
-      const _result2 = await mockToolExecutor.execute('file_write', {
+// const _result2 = awaitmockToolExecutor.execute('file_write', {
         path: '/test',
-        content: 'data',
-      });
+        content: 'data' });
       expect(result2.success).toBe(true);
       expect(result2.written).toBe(true);
-      const _result3 = await mockToolExecutor.execute('unknown_tool', {});
+// const _result3 = awaitmockToolExecutor.execute('unknown_tool', {});
       expect(result3.success).toBe(false);
       expect(result3.error).toBe('Unknown tool');
     });
@@ -168,21 +158,19 @@ describe('Tool Registry', () =>
   describe('Message Handling', () => {
     it('should handle various MCP message types', () => {
       const _messageTypes = [
-        ;
+
         'initialize',
         'tools/list',
         'tools/call',
         'resources/list',
         'resources/read',
         'prompts/list',
-        'prompts/get',,,,,,,,
-      ];
+        'prompts/get',,,,,,, ];
       messageTypes.forEach((type) => {
         const _message = {
           jsonrpc: '2.0',
-          id: 1,
-          method: type,,
-        };
+          id,
+          method, };
       expect(message.jsonrpc).toBe('2.0');
       expect(message.method).toBe(type);
       expect(typeof message.id).toBe('number');
@@ -191,15 +179,14 @@ describe('Tool Registry', () =>
   it('should validate message format', () => {
       const _validMessage = {
         jsonrpc: '2.0',
-        id: 1,
-        method: 'tools/list',,
-      };
+        id,
+        method: 'tools/list', };
   const _invalidMessages = [
-    ;
+
         {}, // missing required fields
         { jsonrpc: '1.0' }, // wrong version
         { jsonrpc: '2.0', method: 'test' }, // missing id
-        { jsonrpc: '2.0', id: 1 },,,,,,,, // missing method
+        { jsonrpc: '2.0', id },,,,,,,, // missing method
   ];
   // Validate the valid message
   expect(validMessage.jsonrpc).toBe('2.0');
@@ -217,11 +204,10 @@ describe('Performance Metrics', () =>
 {
   it('should track performance metrics', () => {
       const _metrics = {
-        requestCount: 0,
-        totalTime: 0,
-        averageTime: 0,
-        errorCount: 0,
-      };
+        requestCount,
+        totalTime,
+        averageTime,
+        errorCount };
   // Simulate request processing
   const _startTime = Date.now();
   metrics.requestCount++;
@@ -246,8 +232,8 @@ it('should handle error tracking', () =>
             stack: error.stack
 })
 }
-,
-getErrorCount:
+
+getErrorCount: null
 function () {
           return this.errors.length;
     //   // LINT: unreachable code removed}
@@ -263,17 +249,17 @@ describe('Memory Integration', () =>
   it('should integrate with memory store', async () => {
     // Mock memory store operations
     const _mockMemoryStore = {
-        initialized: false,
+        initialized,
     data: new Map(),
     async;
     initialize();
     this.initialized = true;
-    ,
+
     async
     store(key, value)
     if (!this.initialized) throw new Error('Not initialized');
     this.data.set(key, value);
-    ,
+
     async
     retrieve(key)
     {
@@ -287,9 +273,9 @@ describe('Memory Integration', () =>
   // await mockMemoryStore.initialize();
       expect(mockMemoryStore.initialized).toBe(true);
   // await mockMemoryStore.store('test-key', 'test-value');
-      const _retrieved = await mockMemoryStore.retrieve('test-key');
+// const _retrieved = awaitmockMemoryStore.retrieve('test-key');
       expect(retrieved).toBe('test-value');
-      const _allData = await mockMemoryStore.list();
+// const _allData = awaitmockMemoryStore.list();
       expect(allData).toHaveLength(1);
       expect(allData[0].key).toBe('test-key');
     })

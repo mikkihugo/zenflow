@@ -64,11 +64,11 @@ export class NetworkTrainer {
     // */ // LINT: unreachable code removed
   train(;
   trainingInputs: number[][];
-  ,
+
   trainingOutputs: number[][];
-  ,
+
   config: TrainingConfig;
-  ):
+  ): null
   Promise<_number>;
 }
 /**
@@ -105,7 +105,6 @@ createNetwork(layers: number[])
  * Check if WASM is available;
  */
 isAvailable()
-: boolean
 }
 /**
  * WASM fallback implementation;

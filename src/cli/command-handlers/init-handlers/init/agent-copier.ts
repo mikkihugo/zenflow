@@ -10,37 +10,37 @@ const ___dirname = dirname(__filename);
  */
 export async function copyAgentFiles(targetDir = {}: unknown): unknown {
   const { force = false, dryRun = false } = options;
-;
+
   // Path to agent files - try multiple locations for claude-zen structure
-  const _packageAgentsDir = join(__dirname, '../../../../../.claude/agents'); // From npm package  
+  const _packageAgentsDir = join(__dirname, '../../../../../.claude/agents'); // From npm package
   const _localAgentsDir = join(process.cwd(), '.claude/agents');              // Local development
   const _sourceTemplateDir = join(__dirname, '../../../../../templates/.claude/agents'); // Template structure
   const _workspaceAgentsDir = '/workspaces/claude-zen/.claude/agents';   // Workspace development
-  
+
   let _sourceAgentsDir;
-;
+
   // Try multiple source locations with enhanced logging
   for(const dir of [localAgentsDir, packageAgentsDir, workspaceAgentsDir, sourceTemplateDir]) {
     try {
-      await fs.access(dir);
+// await fs.access(dir);
       _sourceAgentsDir = dir;
       console.warn(`  📁 Using agent filesfrom = join(targetDir, '.claude/agents');
-;
+
   console.warn('📁 Copying agent system files...');
   console.warn(`  📂Source = ======;
 >>>>>>> 62a29dfc (🚀 Alpha.73 = [];
     const __errors = [];
-;
+
     // Recursively copy all agent files
-    async function copyRecursive(srcDir: unknown, destDir = await fs.readdir(srcDir: unknown, {withFileTypes = join(_srcDir: unknown, _item._name: unknown);
+    async function copyRecursive(srcDir, destDir = await fs.readdir(srcDir, {withFileTypes = join(_srcDir, _item._name: unknown);
         const _destPath = join(destDir, item.name);
-;
+
         if (item.isDirectory()) {
           if(!dryRun) {
-            await fs.mkdir(destPath, {recursive = force;
+// await fs.mkdir(destPath, {recursive = force;
             if(!force) {
               try {
-                await fs.access(destPath);
+// await fs.access(destPath);
                 // File exists, skip unless force is true
                 continue;
               } catch {
@@ -48,28 +48,26 @@ export async function copyAgentFiles(targetDir = {}: unknown): unknown {
                 shouldCopy = true;
               }
             }
-;
+
             if(shouldCopy && !dryRun) {
-              const _content = await fs.readFile(srcPath, 'utf8');
-              await fs.writeFile(destPath, content, 'utf8');
+// const _content = awaitfs.readFile(srcPath, 'utf8');
+// await fs.writeFile(destPath, content, 'utf8');
               copiedFiles.push(destPath.replace(`${targetDir}/`, ''));
             } else if(dryRun) {
               copiedFiles.push(destPath.replace(`${targetDir}/`, ''));
             }
           } catch(err) ;
-            errors.push(`Failed to copy $item.name: $err.message`);
+            errors.push(`Failed to copy \$item.name: \$err.message`);
         }
       }
     }
-;
-    await copyRecursive(sourceAgentsDir, targetAgentsDir);
-;
+// await copyRecursive(sourceAgentsDir, targetAgentsDir);
     if(!dryRun && copiedFiles.length > 0) {
-      console.warn(`  ✅ Copied $copiedFiles.lengthagent files`);
+      console.warn(`  ✅ Copied \$copiedFiles.lengthagent files`);
       console.warn('  📋 Agent system initialized with 64 specialized agents');
-      console.warn('  🎯 Availablecategories = > console.warn(`    - $error`));
+      console.warn('  🎯 Availablecategories = > console.warn(`    - \$error`));
     }
-;
+
     return {success = false): unknown {
   const _agentDirs = [
     // '.claude', // LINT: unreachable code removed
@@ -100,40 +98,38 @@ export async function copyAgentFiles(targetDir = {}: unknown): unknown {
     '.claude/agents/specialized',
     '.claude/agents/specialized/mobile';
   ];
-;
+
   if(dryRun) {
-    console.warn(`  [DRY RUN] Would create $agentDirs.lengthagent directories`);
+    console.warn(`  [DRY RUN] Would create \$agentDirs.lengthagent directories`);
     return;
     //   // LINT: unreachable code removed}
-;
+
   for(const dir of agentDirs) {
-    await fs.mkdir(join(targetDir, dir), {recursive = join(targetDir, '.claude/agents');
-;
+// await fs.mkdir(join(targetDir, dir), {recursive = join(targetDir, '.claude/agents');
   try {
-    const _categories = await fs.readdir(agentsDir, {withFileTypes = categories.filter(item => item.isDirectory()).map(item => item.name);
-;
+// const _categories = awaitfs.readdir(agentsDir, {withFileTypes = categories.filter(item => item.isDirectory()).map(item => item.name);
+
     const _totalAgents = 0;
     for(const category of agentCategories) {
       const _categoryPath = join(agentsDir, category);
-      const _items = await fs.readdir(categoryPath, {withFileTypes = items.filter(item => item.isFile() && item.name.endsWith('.md'));
+// const _items = awaitfs.readdir(categoryPath, {withFileTypes = items.filter(item => item.isFile() && item.name.endsWith('.md'));
       totalAgents += agentFiles.length;
     }
-;
+
     console.warn('  🔍 Agent system validation:');
-    console.warn(`    • Categories: $agentCategories.length`);
-    console.warn(`    • Total agents: $totalAgents`);
-    console.warn(`    • Categories: $agentCategories.join(', ')`);
-;
+    console.warn(`    • Categories: \$agentCategories.length`);
+    console.warn(`    • Total agents: \$totalAgents`);
+    console.warn(`    • Categories: \$agentCategories.join(', ')`);
+
     return {
       valid: totalAgents > 50, // Should have at least 50+ agents
       categories: agentCategories.length,
     // totalAgents, // LINT: unreachable code removed
       categoryNames: agentCategories;
     };
-;
-  } catch (/* err */) 
-    console.warn(`  ⚠️  Agent system validation failed: $err.message`);
+
+  } catch (/* err */)
+    console.warn(`  ⚠️  Agent system validation failed: \$err.message`);
     return {
-      valid: false,
-  }
+      valid}
 }

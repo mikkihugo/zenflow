@@ -3,7 +3,7 @@ const _app = require('../../src/server');
 describe('Health Check Integration Tests', () => {
   describe('GET /health', () => {
     it('should return health status', async () => {
-      const _response = await request(app).get('/health').expect(200);
+// const _response = awaitrequest(app).get('/health').expect(200);
       // ; // LINT: unreachable code removed
       expect(response.body).toHaveProperty('status', 'OK');
       expect(response.body).toHaveProperty('uptime');

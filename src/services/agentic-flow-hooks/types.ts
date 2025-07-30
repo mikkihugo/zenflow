@@ -100,14 +100,14 @@ export interface HookStorage {
   loadHook(name: string): Promise<HookRegistration | null>;
   listHooks(type?: HookType): Promise<HookRegistration[]>;
   deleteHook(name: string): Promise<void>;
-  saveMetrics(hookName: string, metrics: HookMetrics): Promise<void>;
+  saveMetrics(hookName, metrics: HookMetrics): Promise<void>;
   loadMetrics(hookName: string): Promise<HookMetrics | null>;
 }
 // Hook validation and security
 export interface HookValidator {
   validateHook(hook: Hook): Promise<ValidationResult>;
   validatePayload(payload: HookPayload): Promise<ValidationResult>;
-  checkPermissions(hookName: string, context: HookContext): Promise<boolean>;
+  checkPermissions(hookName, context: HookContext): Promise<boolean>;
 }
 export interface ValidationResult {
   valid: boolean;

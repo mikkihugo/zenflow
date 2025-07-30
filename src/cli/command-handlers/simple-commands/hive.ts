@@ -3,7 +3,7 @@
  * Provides basic implementation that can work without TypeScript;
  */
 export async function hiveCommand(args = (args  ?? []: unknown)
-.join(' ').trim()
+join(' ').trim()
 
 if (!objective ?? flags.help ?? flags.h) {
   showHiveHelp();
@@ -18,10 +18,9 @@ console.warn(`📋Objective = `hive_${Date.now()}_${Math.random().toString(36).s
     { type: '🐝', name: 'Worker-1', role: 'Backend Development' },
     { type: '🐝', name: 'Worker-2', role: 'Frontend Development' },
     { type: '🔍', name: 'Scout-Alpha', role: 'Research & Analysis' },
-    { type: '🛡️', name: 'Guardian-Omega', role: 'Quality Assurance' },
-  ];
+    { type: '🛡️', name: 'Guardian-Omega', role: 'Quality Assurance' } ];
 for (const agent of agents) {
-  console.warn(`  ${agent.type} ${agent.name} - ${agent.role}`);
+  console.warn(`${agent.type} ${agent.name} - ${agent.role}`);
 }
 console.warn('');
 // Show task decomposition
@@ -63,31 +62,31 @@ console.warn('the complete TypeScript implementation to be built.');
 function showHiveHelp(): unknown {
   console.warn(`;
 🐝 Hive Mind - Advanced Multi-Agent Coordination
-;
+
 USAGE:;
   claude-zen hive <objective> [options]
-;
+
 DESCRIPTION:;
   Hive Mind implements advanced swarm intelligence with consensus mechanisms,
   distributed decision-making, and quality-driven execution.
-;
+
 EXAMPLES:;
   claude-zen hive "Build a scalable web application";
   claude-zen hive "Optimize database performance" --consensus unanimous;
   claude-zen hive "Develop ML pipeline" --topology mesh --monitor
-;
+
 TOPOLOGIES:;
   hierarchical   Queen-led hierarchy (default);
   mesh           Peer-to-peer coordination;
   ring           Sequential processing;
   star           Centralized hub
-;
+
 CONSENSUS MECHANISMS:;
   quorum         Simple majority (default);
   unanimous      All agents must agree;
   weighted       Capability-based voting;
   leader         Queen decides with input
-;
+
 OPTIONS:;
   --topology <type>         Swarm topology (default: hierarchical);
   --consensus <type>        Decision mechanism (default: quorum);
@@ -98,14 +97,14 @@ OPTIONS:;
   --background              Run in background;
   --sparc                   Use SPARC methodology;
   --timeout <min>           Timeout minutes (default: 60)
-;
+
 AGENT TYPES:;
   👑 Queen        Orchestrator and decision maker;
   🏗️ Architect    System design and planning;
   🐝 Worker       Implementation and execution;
   🔍 Scout        Research and exploration;
   🛡️ Guardian     Quality and validation
-;
+
 FEATURES:;
   • Consensus-based task decomposition;
   • Capability-based task assignment;
@@ -113,7 +112,7 @@ FEATURES:;
   • Quality-driven result aggregation;
   • Distributed memory sharing;
   • SPARC methodology support
-;
+
 For more info: https://github.com/ruvnet/claude-zen/docs/hive.md
 `);
 }

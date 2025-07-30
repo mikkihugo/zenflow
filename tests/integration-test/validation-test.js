@@ -35,64 +35,54 @@ async function runTests() {
     {
       name: 'Invalid topology',
       args: ['init', 'invalid-topology', '5'],
-      expectFailure: true,
-      expectedMessage: 'Invalid topology',
-    },
+      expectFailure,
+      expectedMessage: 'Invalid topology' },
     {
       name: 'Agent count too high',
       args: ['init', 'mesh', '101'],
-      expectFailure: true,
-      expectedMessage: 'Invalid maxAgents',
-    },
+      expectFailure,
+      expectedMessage: 'Invalid maxAgents' },
     {
       name: 'Agent count too low',
       args: ['init', 'mesh', '0'],
-      expectFailure: true,
-      expectedMessage: 'Invalid maxAgents',
-    },
+      expectFailure,
+      expectedMessage: 'Invalid maxAgents' },
     {
       name: 'Invalid agent type',
       args: ['spawn', 'invalid-type', 'Test Agent'],
-      expectFailure: true,
-      expectedMessage: 'Invalid agent type',
-    },
+      expectFailure,
+      expectedMessage: 'Invalid agent type' },
     {
       name: 'Agent name with invalid characters',
       args: ['spawn', 'researcher', 'Test@Agent!'],
-      expectFailure: true,
-      expectedMessage: 'Agent name can only contain',
-    },
+      expectFailure,
+      expectedMessage: 'Agent name can only contain' },
     {
       name: 'Empty task description',
       args: ['orchestrate', '   '],
-      expectFailure: true,
-      expectedMessage: 'Task description cannot be empty',
-    },
+      expectFailure,
+      expectedMessage: 'Task description cannot be empty' },
     {
       name: 'Valid topology and agent count',
       args: ['init', 'mesh', '5'],
-      expectFailure: false,
-      expectedMessage: 'Swarm initialized',
-    },
+      expectFailure,
+      expectedMessage: 'Swarm initialized' },
     {
       name: 'Valid agent spawn',
       args: ['spawn', 'researcher', 'Test Agent'],
-      expectFailure: false,
-      expectedMessage: 'Agent spawned',
-    },
+      expectFailure,
+      expectedMessage: 'Agent spawned' },
     {
       name: 'Valid task orchestration',
       args: ['orchestrate', 'Create a test application'],
-      expectFailure: false,
-      expectedMessage: 'Task orchestrated',
-    },
-  ];
+      expectFailure,
+      expectedMessage: 'Task orchestrated' } ];
   const _passed = 0;
   const _failed = 0;
   for (const test of tests) {
     console.warn(`\n🔍 Testing: ${test.name}`);
     console.warn(`   Command: ruv-swarm ${test.args.join(' ')}`);
-    const _result = await runCommand(test.args);
+// const _result = awaitrunCommand(test.args);
     const _output = result.stdout + result.stderr;
     if (test.expectFailure) {
       if (result.code !== 0 && output.includes(test.expectedMessage)) {

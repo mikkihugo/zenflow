@@ -17,30 +17,28 @@ export async function initializePlugins(_config = {}: unknown): unknown {
     console.warn('🔌 Plugin system already initialized');
     return globalPluginManager;
     //   // LINT: unreachable code removed}
-;
+
   console.warn('🚀 Initializing Claude Zen Plugin System...');
-;
+
   try {
     // Create plugin manager with enhanced configuration
     globalPluginManager = new PluginManager({pluginDir = [
     // 1. Memory Backend - LanceDB integration(CRITICAL): unknown {name = await import(plugin.importPath);
       let PluginClass;
-;
+
       if(plugin.className === 'default') {
         PluginClass = module.default;
       } else {
         PluginClass = module[plugin.className];
       }
-;
+
       if(!PluginClass) {
         throw new Error(`Plugin class '${plugin.className}' not found in ${plugin.importPath}`);
       }
-;
-      await pluginManager.registerPlugin(plugin.name, PluginClass, plugin.config);
-;
-    } catch (/* error */) {
+// await pluginManager.registerPlugin(plugin.name, PluginClass, plugin.config);
+    } catch (error) {
       console.warn(`⚠️ Failed to register plugin '${plugin.name}': ${error.message}`);
-;
+
       // Continue with other plugins even if one fails
       if(config.strictMode) {
         throw error;
@@ -48,28 +46,28 @@ export async function initializePlugins(_config = {}: unknown): unknown {
     }
   }
 }
-;
+
 /**
  * Display plugin activation summary;
  */;
 function displayActivationSummary(pluginManager = pluginManager.getStatus(: unknown);
-;
+
   console.warn('\n🎯 Plugin ActivationSummary = > p.loaded);
-      .forEach(plugin => {
+forEach(plugin => {
         console.warn(`  🟢 ${plugin.name} (${plugin.class})`);
       });
   }
-;
+
   const _failedPlugins = status.plugins.filter(p => p.enabled && !p.loaded);
   if(failedPlugins.length > 0) {
     console.warn('\n⚠️ Failed to Load => {
       console.warn(`  🔴 ${plugin.name}`);
     });
   }
-;
+
   console.warn('');
 }
-;
+
 /**
  * Get the global plugin manager instance;
  */;
@@ -79,39 +77,39 @@ export function getPluginManager(): unknown {
   }
   return globalPluginManager;
 }
-;
+
 /**
  * Get a specific plugin instance;
  */;
 export function getPlugin(name = getPluginManager(: unknown);
   return manager.getPlugin(name);
 }
-;
+
 /**
  * Check if a plugin is loaded;
  */;
 export function isPluginLoaded(name = getPluginManager(: unknown);
   return manager.isLoaded(name);
 }
-;
+
 /**
  * Register plugin commands with the command registry;
  */;
 export function registerPluginCommands(commandRegistry = getPluginManager(: unknown);
-  
+
   // Check each plugin for command registration capability
   for(const [pluginName, plugin] of manager.loadedPlugins) {
     if(plugin.registerCommands && typeof plugin.registerCommands === 'function') {
       try {
         console.warn(`🔧 Registering commands forplugin = Array.from(globalPluginManager.loadedPlugins.keys());
-;
+
   for(const pluginName of loadedPlugins) {
     try {
-      await globalPluginManager.unloadPlugin(pluginName);
+// await globalPluginManager.unloadPlugin(pluginName);
       console.warn(`✅ Unloadedplugin = null;
   console.warn('🔌 Plugin system shutdown complete');
 }
-;
+
 /**
  * Plugin health check;
  */;
@@ -123,16 +121,16 @@ export async function checkPluginHealth(): unknown {
       if(instance && instance.getHealth && typeof instance.getHealth === 'function') {
         try {
           pluginHealth.details = await instance.getHealth();
-        } catch (/* error */) {
+        } catch (error) {
           pluginHealth.status = 'unhealthy';
           pluginHealth.error = error.message;
         }
       }
     }
-;
+
     health.plugins[plugin.name] = pluginHealth;
   }
-;
+
   // Determine overall health
   const _failedCount = status.registered - status.loaded;
   if(failedCount > status.registered / 2) {
@@ -140,15 +138,15 @@ export async function checkPluginHealth(): unknown {
   } else if(failedCount > 0) {
     health.overall = 'degraded';
   }
-;
+
   return health;
 }
-;
+
 // Handle process shutdown
 process.on('SIGINT', shutdownPlugins);
 process.on('SIGTERM', shutdownPlugins);
 process.on('exit', shutdownPlugins);
-;
+
 export default {
   initializePlugins,
   getPluginManager,
@@ -158,4 +156,3 @@ export default {
   shutdownPlugins,
   checkPluginHealth;
 };
-;

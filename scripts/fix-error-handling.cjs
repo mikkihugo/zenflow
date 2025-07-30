@@ -6,8 +6,7 @@ const glob = require('glob');
 
 // Find all TypeScript files
 const files = glob.sync('src/**/*.ts', {
-  ignore: ['src/**/*.test.ts', 'src/**/*.spec.ts'],
-});
+  ignore: ['src/**/*.test.ts', 'src/**/*.spec.ts'] });
 
 let _totalFixed = 0;
 
@@ -20,29 +19,23 @@ files.forEach((file) => {
     // Fix unknown error types in catch blocks
     {
       regex: /catch\s*\(\s*error\s*\)\s*{([^}]+error\.message)/g,
-      replacement: 'catch (error) {$1',
-    },
+      replacement: 'catch (error) {$1' },
     // Fix error.message access
     {
       regex: /(\$\{|`)error\.message/g,
-      replacement: '$1(error instanceof Error ? error.message : String(error))',
-    },
+      replacement: '$1(error instanceof Error ? error.message : String(error))' },
     // Fix standalone error.message
     {
       regex: /([^`$])error\.message/g,
-      replacement: '$1(error instanceof Error ? error.message : String(error))',
-    },
+      replacement: '$1(error instanceof Error ? error.message : String(error))' },
     // Fix error type annotations
     {
       regex: /catch\s*\(\s*error:\s*any\s*\)/g,
-      replacement: 'catch (error)',
-    },
+      replacement: 'catch (error)' },
     // Fix error type in functions
     {
       regex: /\(error:\s*unknown\)/g,
-      replacement: '(error)',
-    },
-  ];
+      replacement: '(error)' } ];
 
   patterns.forEach((pattern) => {
     const before = content;

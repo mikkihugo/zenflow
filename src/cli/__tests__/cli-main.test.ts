@@ -10,8 +10,7 @@ jest.mock('../command-registry.js', () => ({
   executeCommand: jest.fn(),
 hasCommand: jest.fn(),
 listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm'],
-getCommand: () => ({ flags: [], args: [] }),
-}))
+getCommand: () => ({ flags: [], args: [] }) }))
 jest.mock('../utils.js', () => (
 {
   parseFlags: jest.fn((_args) =>;
@@ -29,9 +28,7 @@ jest.mock('../utils.js', () => (
   getCLIInfo: () => ({
     argv: process.argv.slice(2),
     cwd: process.cwd(),
-    isMainModule: true,
-  }),
-}
+    isMainModule}) }
 ))
 describe('Claude-Flow CLI', () =>
 {
@@ -61,9 +58,8 @@ describe('Claude-Flow CLI', () =>
       )
       hasCommand.mockReturnValue(false)
       // Import after mocks are set up
-      await
+// await
       import('../cli-main.js');
-
       expect(consoleLogSpy).toHaveBeenCalled();
       const _output = consoleLogSpy.mock.calls.join('\n');
       expect(output).toContain('Claude-Flow v2.0.0');
@@ -72,16 +68,14 @@ describe('Claude-Flow CLI', () =>
     test('should show help for --help flag', async () => {
       const { hasCommand } = await import('../command-registry.js');
       hasCommand.mockReturnValue(false);
-      await import('../cli-main.js');
-
+// await import('../cli-main.js');
       expect(consoleLogSpy).toHaveBeenCalled();
       const _output = consoleLogSpy.mock.calls.join('\n');
       expect(output).toContain('Claude-Flow v2.0.0');
     });
     test('should show version for --version flag', async () => {
       process.argv = ['node', 'claude-zen', '--version'];
-      await import('../cli-main.js');
-
+// await import('../cli-main.js');
       expect(consoleLogSpy).toHaveBeenCalledWith('2.0.0');
       expect(process.exit).toHaveBeenCalledWith(0);
     });
@@ -92,36 +86,31 @@ describe('Claude-Flow CLI', () =>
       const { executeCommand, hasCommand } = await import('../command-registry.js');
       hasCommand.mockReturnValue(true);
       executeCommand.mockResolvedValue(undefined);
-      await import('../cli-main.js');
-
+// await import('../cli-main.js');
       expect(hasCommand).toHaveBeenCalledWith('init');
       expect(executeCommand).toHaveBeenCalledWith('init', ['--sparc'], {});
     });
     test('should handle command with multiple arguments', async () => {
       process.argv = [
-        ;
+
         'node',
         'claude-zen',
         'swarm',
         'Build a REST API',
         '--strategy',
-        'development',,,,,,,,
-      ];
+        'development',,,,,,, ];
       const { executeCommand, hasCommand } = await import('../command-registry.js');
       hasCommand.mockReturnValue(true);
       executeCommand.mockResolvedValue(undefined);
-      await import('../cli-main.js');
-
+// await import('../cli-main.js');
       expect(hasCommand).toHaveBeenCalledWith('swarm');
       expect(executeCommand).toHaveBeenCalledWith('swarm', ['Build a REST API'], {
-        strategy: 'development',
-    });
+        strategy: 'development' });
   });
   test('should show error for unknown command', async () => {
     const { hasCommand, listCommands } = await import('../command-registry.js');
     hasCommand.mockReturnValue(false);
-    await import('../cli-main.js');
-
+// await import('../cli-main.js');
     expect(consoleErrorSpy).toHaveBeenCalledWith(;
     expect.stringContaining('Unknown command => {
     test('should parse boolean flags correctly', () => {
@@ -135,26 +124,21 @@ describe('Claude-Flow CLI', () =>
       expect(flags).toEqual({ port => {
     test('should handle command execution errors gracefully', _async () => {
       process.argv = ['node', 'claude-zen', 'init'];
-;
+
       const { executeCommand, hasCommand } = await import('../command-registry.js');
       hasCommand.mockReturnValue(true);
       executeCommand.mockRejectedValue(new Error('Test error'));
-;
-      await import('../cli-main.js');
-
+// await import('../cli-main.js');
       expect(consoleErrorSpy).toHaveBeenCalledWith(;
         expect.stringContaining('Error executing command => {
       process.argv = ['node', 'claude-zen', 'agent'];
-;
+
       const { executeCommand, hasCommand } = await import('../command-registry.js');
       hasCommand.mockReturnValue(true);
       executeCommand.mockRejectedValue(new Error('Missing required argument'));
-;
-      await import('../cli-main.js');
-
+// await import('../cli-main.js');
       expect(consoleErrorSpy).toHaveBeenCalledWith(;
-        expect.stringContaining('Missing required argument'),
-      );
+        expect.stringContaining('Missing required argument'));
     });
   });
 }

@@ -3,8 +3,7 @@
 // Original test from ruv-swarm
 const _originalSIMD = new Uint8Array([
   0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 7, 8, 1, 4, 116, 101, 115, 116,
-  0, 0, 10, 15, 1, 13, 0, 65, 0, 253, 15, 253, 98, 11,
-]);
+  0, 0, 10, 15, 1, 13, 0, 65, 0, 253, 15, 253, 98, 11 ]);
 
 // Alternative SIMD test (more common pattern)
 const _altSIMD = new Uint8Array([
@@ -135,8 +134,7 @@ const _checkSIMDCompile = () => {
   try {
     // Try compiling a module with SIMD
     const bytes = new Uint8Array([
-      0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x05, 0x01, 0x60, 0x00, 0x01, 0x7b,
-    ]);
+      0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x05, 0x01, 0x60, 0x00, 0x01, 0x7b ]);
     WebAssembly.compile(bytes);
     return true;
   } catch (_e) {

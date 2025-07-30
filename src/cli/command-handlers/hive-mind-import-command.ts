@@ -11,9 +11,9 @@ async function generateScopeFromCode(servicePath = path.basename(servicePath: un
 return `;
     // ---name = path.basename(servicePath); // LINT: unreachable code removed
   const _projectJsonPath = path.join(servicePath, 'project.json');
-;
+
   let scopeMdContent;
-;
+
   if (existsSync(projectJsonPath)) {
     const _projectJson = JSON.parse(readFileSync(projectJsonPath, 'utf8'));
     scopeMdContent = `;
@@ -29,7 +29,7 @@ console.warn('------------------');
 console.warn(scopeMdContent);
 console.warn('------------------');
 // This is a placeholder for the interactive prompt
-const _answer = await new Promise((resolve) => {
+// const _answer = awaitnew Promise((resolve) => {
   const __readline = import('node:readline').then((rl) => {
     const _rlInterface = rl.createInterface({ input => {
         rlInterface.close();
@@ -38,9 +38,8 @@ const _answer = await new Promise((resolve) => {
 });
 })
 if (answer.toLowerCase() === 'y') {
-  await createHive([serviceName], {path = await glob('services/*', { onlyDirectories: true });
-
+// await createHive([serviceName], {path = await glob('services/*', { onlyDirectories});
   for (const serviceDir of serviceDirs) {
-    await importService(serviceDir);
+// await importService(serviceDir);
   }
 }

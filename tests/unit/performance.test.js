@@ -24,12 +24,11 @@ describe('Performance Tests', () => {
       expect(Object.keys(result.flags)).toHaveLength(1000);
     });
     test('JSON stringify should handle large datasets efficiently', async () => {
-      const _largeDataset = Array.from({ length: 1000 }, (_, i) => ({
-        id: i,
+      const _largeDataset = Array.from({ length }, (_, i) => ({
+        id,
         name: `Item ${i}`,
         value: Math.random() * 1000,
-        description: `Description for item ${i}`.repeat(5),
-      }));
+        description: `Description for item ${i}`.repeat(5) }));
       const { result, duration } = await perfHelpers.measureTime(() => {
         return JSON.stringify(largeDataset);
     //   // LINT: unreachable code removed});
@@ -38,10 +37,10 @@ describe('Performance Tests', () => {
       expect(result).toContain('Item 999');
     });
     test('deepMerge should handle deeply nested objects efficiently', async () => {
-      const _createDeepObject = (): unknown => {
+      const _createDeepObject = () => {
         const _obj = { value: 'leaf' };
         for (let i = 0; i < depth; i++) {
-          obj = { [`level${i}`]: obj };
+          obj = { [`level${i}`] };
         }
         return obj;
     //   // LINT: unreachable code removed};
@@ -69,13 +68,11 @@ describe('Performance Tests', () => {
     });
     test('memory list with large dataset should be performant', async () => {
       const _largeMemoryData = {
-        entries: Array.from({ length: 10000 }, (_, i) => ({
+        entries: Array.from({ length }, (_, i) => ({
           key: `key${i}`,
           value: `value${i}`,
           timestamp: new Date().toISOString(),
-          tags: [`tag${i % 10}`],
-        })),
-      };
+          tags: [`tag${i % 10}`] })) };
       jest.spyOn(fs, 'readJson').mockResolvedValue(largeMemoryData);
       const { duration } = await perfHelpers.measureTime(async () => {
   // await memoryCommand(['list'], {});
@@ -84,12 +81,10 @@ describe('Performance Tests', () => {
     });
     test('memory search with pattern should be efficient', async () => {
       const _searchableData = {
-        entries: Array.from({ length: 5000 }, (_, i) => ({
+        entries: Array.from({ length }, (_, i) => ({
           key: i % 2 === 0 ? `api/endpoint${i}` : `config/setting${i}`,
           value: `value${i}`,
-          timestamp: new Date().toISOString(),
-        })),
-      };
+          timestamp: new Date().toISOString() })) };
     jest.spyOn(fs, 'readJson').mockResolvedValue(searchableData);
     const { duration } = await perfHelpers.measureTime(async () => {
   // await memoryCommand(['list'], { pattern: 'api/*' });
@@ -103,10 +98,9 @@ describe('Memory Usage Tests', () => {
       const _initialMemory = getMemoryUsage();
       // Perform 100 operations
       for (let i = 0; i < 100; i++) {
-        const _largeArray = Array.from({ length: 1000 }, (_, j) => ({
-          id: j,
-          data: 'x'.repeat(1000),
-        }));
+        const _largeArray = Array.from({ length }, (_, j) => ({
+          id,
+          data: 'x'.repeat(1000) }));
         parseFlags([`--test${i}`, 'value']);
         JSON.stringify(largeArray.slice(0, 10)); // Only format first 10 to keep it reasonable
 
@@ -139,12 +133,11 @@ describe('Concurrent Operations', () =>
   });
   test('should handle concurrent agent operations efficiently', async () => {
     const _mockSwarmData = {
-        agents: Array.from({ length: 100 }, (_, i) => ({
+        agents: Array.from({ length }, (_, i) => ({
           id: `agent-${i}`,
     name: `Agent ${i}`,
     type: 'researcher',
-    status: 'idle',
-  });
+    status: 'idle' });
   )
 }
 jest.spyOn(fs, 'readJson').mockResolvedValue(mockSwarmData);
@@ -163,17 +156,14 @@ describe('Large Data Handling', () =>
 {
   test('should handle large configuration files efficiently', async () => {
       const _largeConfig = {
-        version: '2.0.0',,,,,
-      };
+        version: '2.0.0',,,, };
   // Create large configuration with many properties
   for (let i = 0; i < 1000; i++) {
     largeConfig.features[`feature${i}`] = {
           enabled: i % 2 === 0,
     setting1: `value${i}`,
     setting2: Math.random(),
-    setting3: Array.from({ length: 10 }, (_, j) => `item${j}`),
-    
-}
+    setting3: Array.from({ length }, (_, j) => `item${j}`) }
 }
 const { duration } = await performance.measureTime(() => {
   return JSON.stringify(largeConfig);
@@ -181,17 +171,14 @@ const { duration } = await performance.measureTime(() => {
   expect(duration).toBeLessThan(100); // Should serialize in less than 100ms
 });
 test('should handle large log files efficiently', async () => {
-  const _largeLogs = Array.from({ length: 10000 }, (_, i) => ({
+  const _largeLogs = Array.from({ length }, (_, i) => ({
         timestamp: new Date(Date.now() - i * 1000).toISOString(),
   level: ['info', 'warn', 'error', 'debug'][i % 4],
   message: `Log message ${i}`,
   agentId: `agent-${i % 10}`,
   taskId: `task-${i % 100}`,
   duration: Math.random() * 1000,
-  success: i % 5 !== 0,
-  ,
-  ,
-});
+  success: i % 5 !== 0 });
 )
 const { duration } = await performance.measureTime(() => {
   // Simulate log processing
@@ -225,8 +212,7 @@ describe('Benchmarks', () =>
         // Simulate swarm initialization
         const _swarmData = {
           id: 'test-swarm',
-        agents: Array.from({ length: 8 }, (_, i) => ({ id: `agent-${i}` })),
-      };
+        agents: Array.from({ length }, (_, i) => ({ id: `agent-${i}` })) };
   // await new Promise((resolve) => setTimeout(resolve, 50)); // Simulate setup
       return swarmData;
       //   // LINT: unreachable code removed};

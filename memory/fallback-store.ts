@@ -85,13 +85,13 @@ export interface ContextItem {
  */
 export interface MemoryStore {
   initialize(): Promise<StoreResult>;
-  store(key: string, value: unknown, options?: StoreOptions): Promise<StoreResult>;
+  store(key, value, options?: StoreOptions): Promise<StoreResult>;
   retrieve(key: string): Promise<RetrieveResult>;
   list(pattern?: string): Promise<ListResult>;
   delete(key: string): Promise<StoreResult>;
   clear(): Promise<StoreResult>;
   getContext(contextId: string): Promise<ContextResult>;
-  addToContext(contextId: string, item: unknown): Promise<StoreResult>;
+  addToContext(contextId, item: unknown): Promise<StoreResult>;
   getStats(): Promise<StatsResult>;
 }
 // =============================================================================
@@ -116,7 +116,7 @@ export class FallbackStore implements MemoryStore {
    */
   async initialize(): Promise<StoreResult> {
     this.initialized = true;
-    return { success: true, message: 'Fallback store initialized' };
+    return { success, message: 'Fallback store initialized' };
   }
   /**
    * Store a key-value pair
@@ -125,19 +125,18 @@ export class FallbackStore implements MemoryStore {
    * @param options - Storage options
    * @returns Store operation result
    */
-  async store(key: string, value: unknown, options: StoreOptions = {}): Promise<StoreResult> {
+  async store(key, value, options: StoreOptions = {}): Promise<StoreResult> {
     try {
       const entry: StoreEntry = {
         value,
         timestamp: Date.now(),
         ttl: options.ttl ?? null,
-        metadata: options.metadata ?? {},
-      };
+        metadata: options.metadata ?? {} };
       this.memory.set(key, entry);
-      return { success: true, key };
+      return { success, key };
     } catch (error: any) {
       console.error('Fallback store error:', error);
-      return { success: false, error: error.message };
+      return { success, error: error.message };
     }
   }
   /**
@@ -149,24 +148,23 @@ export class FallbackStore implements MemoryStore {
     try {
       const entry = this.memory.get(key);
       if (!entry) {
-        return { success: false, error: 'Key not found' };
+        return { success, error: 'Key not found' };
       }
 
       // Check TTL
       if (entry.ttl && Date.now() > entry.timestamp + entry.ttl) {
         this.memory.delete(key);
-        return { success: false, error: 'Key expired' };
+        return { success, error: 'Key expired' };
       }
 
       return {
-        success: true,
+        success,
         value: entry.value,
         metadata: entry.metadata,
-        timestamp: entry.timestamp,
-      };
+        timestamp: entry.timestamp };
     } catch (error: any) {
       console.error('Fallback retrieve error:', error);
-      return { success: false, error: error.message };
+      return { success, error: error.message };
     }
   }
   /**
@@ -180,10 +178,10 @@ export class FallbackStore implements MemoryStore {
       const filteredKeys =
         pattern === '*' ? keys : keys.filter((key) => key.includes(pattern.replace('*', '')));
 
-      return { success: true, keys: filteredKeys };
+      return { success, keys};
     } catch (error: any) {
       console.error('Fallback list error:', error);
-      return { success: false, error: error.message };
+      return { success, error: error.message };
     }
   }
   /**
@@ -195,10 +193,10 @@ export class FallbackStore implements MemoryStore {
     try {
       const exists = this.memory.has(key);
       this.memory.delete(key);
-      return { success: true, deleted: exists };
+      return { success, deleted};
     } catch (error: any) {
       console.error('Fallback delete error:', error);
-      return { success: false, error: error.message };
+      return { success, error: error.message };
     }
   }
   /**
@@ -209,10 +207,10 @@ export class FallbackStore implements MemoryStore {
     try {
       this.memory.clear();
       this.contexts.clear();
-      return { success: true };
+      return { success};
     } catch (error: any) {
       console.error('Fallback clear error:', error);
-      return { success: false, error: error.message };
+      return { success, error: error.message };
     }
   }
   /**
@@ -223,10 +221,10 @@ export class FallbackStore implements MemoryStore {
   async getContext(contextId: string): Promise<ContextResult> {
     try {
       const context = this.contexts.get(contextId) ?? [];
-      return { success: true, context };
+      return { success, context };
     } catch (error: any) {
       console.error('Fallback getContext error:', error);
-      return { success: false, error: error.message };
+      return { success, error: error.message };
     }
   }
   /**
@@ -235,16 +233,15 @@ export class FallbackStore implements MemoryStore {
    * @param item - Item to add
    * @returns Store operation result
    */
-  async addToContext(contextId: string, item: unknown): Promise<StoreResult> {
+  async addToContext(contextId, item: unknown): Promise<StoreResult> {
     try {
       if (!this.contexts.has(contextId)) {
         this.contexts.set(contextId, []);
       }
       const context = this.contexts.get(contextId)!;
       const contextItem: ContextItem = {
-        ...(item as Record<string, unknown>),
-        timestamp: Date.now(),
-      };
+..(item as Record<string, unknown>),
+        timestamp: Date.now() };
       context.push(contextItem);
 
       // Keep only last 100 items per context
@@ -252,10 +249,10 @@ export class FallbackStore implements MemoryStore {
         context.splice(0, context.length - 100);
       }
 
-      return { success: true, contextId, itemCount: context.length };
+      return { success, contextId, itemCount: context.length };
     } catch (error: any) {
       console.error('Fallback addToContext error:', error);
-      return { success: false, error: error.message };
+      return { success, error: error.message };
     }
   }
   /**
@@ -265,7 +262,7 @@ export class FallbackStore implements MemoryStore {
   async getStats(): Promise<StatsResult> {
     try {
       return {
-        success: true,
+        success,
         stats: {
           memoryEntries: this.memory.size,
           contexts: this.contexts.size,
@@ -273,12 +270,10 @@ export class FallbackStore implements MemoryStore {
             (sum, ctx) => sum + ctx.length,
             0
           ),
-          type: 'fallback',
-        },
-      };
+          type: 'fallback' } };
     } catch (error: any) {
       console.error('Fallback getStats error:', error);
-      return { success: false, error: error.message };
+      return { success, error: error.message };
     }
   }
   /**
@@ -292,11 +287,10 @@ export class FallbackStore implements MemoryStore {
    * Get memory usage information
    * @returns Memory usage stats
    */
-  getMemoryUsage(): { entries: number; contexts: number } {
+  getMemoryUsage(): { entries: number; contexts} {
     return {
       entries: this.memory.size,
-      contexts: this.contexts.size,
-    };
+      contexts: this.contexts.size };
   }
 }
 // =============================================================================

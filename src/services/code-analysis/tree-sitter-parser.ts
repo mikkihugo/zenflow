@@ -9,21 +9,21 @@ import path from 'node:path';
 // Try to import tree-sitter with fallbacks
 let Parser, JavaScript, TypeScript;
 try {
-  const _TreeSitter = await import('tree-sitter');
+// const _TreeSitter = awaitimport('tree-sitter');
   Parser = TreeSitter.default  ?? TreeSitter;
 } catch (/* _e */) {
   console.warn('Tree-sitter not available, using fallback parsing');
   Parser = null;
 }
 try {
-  const _JSModule = await import('tree-sitter-javascript');
+// const _JSModule = awaitimport('tree-sitter-javascript');
   JavaScript = JSModule.default  ?? JSModule;
 } catch (/* _e */) {
   console.warn('Tree-sitter JavaScript grammar not available');
   JavaScript = null;
 }
 try {
-  const _TSModule = await import('tree-sitter-typescript');
+// const _TSModule = awaitimport('tree-sitter-typescript');
   TypeScript = TSModule.typescript  ?? TSModule.default  ?? TSModule;
 } catch (/* _e */) {
   console.warn('Tree-sitter TypeScript grammar not available');
@@ -62,10 +62,10 @@ export class TreeSitterParser {
     if(!content) {
       content = await readFile(filePath, 'utf8');
     }
-;
+
     const _language = this.detectLanguage(filePath);
     const _parser = this.parsers.get(language);
-;
+
     if(!parser) {
       console.warn(`No tree-sitter parser available for ${language}, using fallback`);
     return this.createFallbackAnalysis(filePath, content, language);
@@ -86,14 +86,14 @@ export class TreeSitterParser {
     }
     break;
     // Comments
-    case 'comment':
+    case 'comment': null
     if (this.config.extractComments) {
       result.comments.push(this.extractComment(node, fileId, content, position));
     }
     break;
     // Module declarations
-    case 'module':
-    case 'namespace_declaration':
+    case 'module': null
+    case 'namespace_declaration': null
     result.modules.push(this.extractModule(node, fileId, content, position))
     break;
   }
@@ -150,7 +150,7 @@ calculateNodeComplexity(node);
     const _nodeType = child.type;
     if (;
     [
-      ;
+
         'if_statement',
         'while_statement',
         'for_statement',
@@ -160,9 +160,8 @@ calculateNodeComplexity(node);
         'case_clause',
         'catch_clause',
         'conditional_expression',
-        'logical_expression',,,,,,,,
-    ].includes(nodeType);
-    ) 
+        'logical_expression',,,,,,, ].includes(nodeType);
+    )
       complexity++
   });
   return complexity;
@@ -311,8 +310,7 @@ isExported(node);
     ('.kt')
     : 'kotlin',
     ('.scala')
-    : 'scala',
-  }
+    : 'scala' }
   return languageMap[ext]  ?? 'unknown';
 }
 /**
@@ -338,10 +336,10 @@ createFallbackAnalysis(filePath, content, language);
 : unknown
 {
   console.warn(`Using fallback analysis for ${language}file = node.childForFieldName('name')  ?? node.childForFieldName('pattern')  ?? node.child(0);
-;
+
     return this.getNodeText(nameNode, content)  ?? '<unnamed>';
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Extract variable type;
    */;
@@ -350,16 +348,16 @@ createFallbackAnalysis(filePath, content, language);
     if(typeNode) {
       return this.getNodeText(typeNode, content);
     //   // LINT: unreachable code removed}
-;
+
     // Try to infer from initializer
     const _initNode = node.childForFieldName('value')  ?? node.childForFieldName('init');
     if(initNode) {
       return this.inferTypeFromNode(initNode, content);
     //   // LINT: unreachable code removed}
-;
+
     return 'unknown';
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Infer type from AST node;
    */;
@@ -397,7 +395,7 @@ createFallbackAnalysis(filePath, content, language);
     }
     return 'unknown';
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Check if variable is constant;
    */;
@@ -413,7 +411,7 @@ createFallbackAnalysis(filePath, content, language);
     }
     return false;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Get import source
    */;
@@ -426,19 +424,19 @@ createFallbackAnalysis(filePath, content, language);
     //   // LINT: unreachable code removed}
     return '';
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Get import specifiers
    */;
   getImportSpecifiers(node, content): unknown {
     const _specifiers = [];
-;
+
     // This would need more sophisticated parsing based on import type
     // For now, return empty array
-    
+
     return specifiers;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Determine import type
    */;
@@ -451,7 +449,7 @@ createFallbackAnalysis(filePath, content, language);
       return 'module';
     //   // LINT: unreachable code removed}
   }
-;
+
   /**
    * Get export names
    */;
@@ -460,7 +458,7 @@ createFallbackAnalysis(filePath, content, language);
     // For now, return empty array
     return [];
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Get export type
    */;
@@ -470,7 +468,7 @@ createFallbackAnalysis(filePath, content, language);
     //   // LINT: unreachable code removed}
     return 'named';
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Get TypeScript type kind;
    */;
@@ -487,7 +485,7 @@ createFallbackAnalysis(filePath, content, language);
     //   // LINT: unreachable code removed}
     return null;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Extract implemented interfaces;
    */;
@@ -495,17 +493,17 @@ createFallbackAnalysis(filePath, content, language);
     // This would need sophisticated parsing
     return [];
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Extract module information;
    */;
   extractModule(node, fileId, content, position): unknown {
     const _name = this.getNodeText(node.childForFieldName('name'), content)  ?? '<unnamed>';
-;
+
     return {
       id: `module:${this.generateFileId(fileId)}:${name}:${position.start.row}`,
   // name, // LINT: unreachable code removed
-  file_id: fileId,
+  file_id,
   start_line: position.start.row,
   end_line: position.end.row,
   is_exported: this.isExported(node);

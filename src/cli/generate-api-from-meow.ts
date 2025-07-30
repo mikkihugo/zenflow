@@ -21,7 +21,7 @@ Object.entries(flags: unknown).forEach(([flagName, flagConfig]) => {
     if(typeof flagConfig === 'object' && flagConfig !== null) {
       schema[flagName] = {type = flagConfig.choices;
       }
-;
+
       if(flagConfig.required) {
         schema[flagName].required = true;
       }
@@ -48,7 +48,7 @@ return example;
 /**
  * Generate GraphQL schema from commands (future enhancement);
  */
-export function generateGraphQLSchema(commands = > commands: unknown, command = > commands.find(_cmd => cmd.name === name: unknown)
+export function generateGraphQLSchema(commands = > commands, command = > commands.find(_cmd => cmd.name === name: unknown)
 },Mutation = [], flags =
 {
 }
@@ -56,7 +56,7 @@ export function generateGraphQLSchema(commands = > commands: unknown, command = 
 {
   // This would call the actual command execution
   return {
-            success: true,
+            success,
   // result: { // LINT: unreachable code removed},
   sessionId: Date.now().toString(),
   duration: 100;

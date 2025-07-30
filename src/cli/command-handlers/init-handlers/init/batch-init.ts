@@ -6,26 +6,24 @@
 import { promises as fs } from 'node:fs';
 
 PerformanceMonitor,
-ResourceThresholdMonitor,
-} from './performance-monitor.js'
+ResourceThresholdMonitor } from './performance-monitor.js'
 
-createMinimalCoordinationMd,
-} from './templates/coordination-md.js'
+createMinimalCoordinationMd } from './templates/coordination-md.js'
 
 // Progress tracking for batch operations
 class BatchProgressTracker {
   constructor(totalProjects = totalProjects;
   this;
-  .
+
   completed = 0;
   this;
-  .
+
   failed = 0;
   this;
-  .
+
   inProgress = new Map();
   this;
-  .
+
   startTime = Date.now();
 }
 startProject(projectName);
@@ -56,13 +54,13 @@ updateDisplay();
       }
     }
   }
-;
+
   getProgressBar(progress): unknown {
     const _filled = Math.floor(progress / 5);
     const _empty = 20 - filled;
     return '█'.repeat(filled) + '░'.repeat(empty);
     //   // LINT: unreachable code removed}
-;
+
   getReport() {
     const _elapsed = Math.floor((Date.now() - this.startTime) / 1000);
     return {total = 5, maxMemoryMB = 1024): unknown {
@@ -71,16 +69,16 @@ updateDisplay();
     this.currentTasks = 0;
     this.queue = [];
   }
-;
+
   async acquire() {
     while(this.currentTasks >= this.maxConcurrency) {
-      await new Promise((resolve) => {
+// await new Promise((resolve) => {
         this.queue.push(resolve);
       });
     }
     this.currentTasks++;
   }
-;
+
   release() {
     this.currentTasks--;
     if(this.queue.length > 0) {
@@ -88,9 +86,9 @@ updateDisplay();
       resolve();
     }
   }
-;
+
   async withResource(fn): unknown {
-    await this.acquire();
+// await this.acquire();
     try {
       return await fn();
     //   // LINT: unreachable code removed} finally {
@@ -98,25 +96,23 @@ updateDisplay();
     }
   }
 }
-;
+
 // Project template definitions
 const _PROJECT_TEMPLATES = {
   'web-api': {name = express();
 const _PORT = process.env.PORT  ?? 3000;
-;
+
 app.use(cors());
 app.use(express.json());
-;
+
 app.get('/', (req, res) => {
   res.json({ message => {
   console.warn(\`Server running on port \${PORT}\`);
 });
-`,
-}
-,
-},
+` }
+ },
 ('react-app')
-:
+: null
 {
   name = production;
   COPY . .;
@@ -127,21 +123,19 @@ app.get('/', (req, res) => {
   version = {ENVIRONMENT = 8080restart = new Command();
   program.name('{{PROJECT_NAME}}').description('{{PROJECT_DESCRIPTION}}').version('1.0.0');
   program;
-  .command('hello')
-  .description('Say hello')
-  .option('-n, --name <name>', 'name to greet', 'World')
-  .action((_options) => 
-    console.warn(\`Hello, \$
+command('hello')
+description('Say hello')
+option('-n, --name <name>', 'name to greet', 'World')
+action((_options) =>
+    console.warn(\`Hello, \\$
     options.name
   !\`)
 }
 )
 program.parse()
 `,
-,
-}
-,
-}
+ }
+ }
 // Environment configurations
 const _ENVIRONMENT_CONFIGS = {
   dev = {}): unknown {
@@ -152,15 +146,14 @@ advanced = false,
 minimal = false,
 force = false,
 sparc = false,
-customConfig = {},
-} = options
+customConfig = {} } = options
 try {
     // Get absolute project path
 
     const _absoluteProjectPath = path.isAbsolute(projectPath);
       ?projectPath = process.cwd();
     process.chdir(absoluteProjectPath);
-;
+
     // Initialize base structure
     const _directories = [
       'memory',
@@ -172,9 +165,8 @@ try {
       'coordination/orchestration',
       '.claude',
       '.claude/commands',
-      '.claude/logs',
-    ];
-;
+      '.claude/logs' ];
+
     // Add template-specific directories
     if(template && PROJECT_TEMPLATES[template]) {
       const _templateConfig = PROJECT_TEMPLATES[template];
@@ -182,39 +174,38 @@ try {
         directories.push(...templateConfig.extraDirs);
       }
     }
-;
+
     // Create all directories in parallel
-    await Promise.all(;
-      directories.map((dir) => fs.mkdir(dir, { recursive => {})),
-    );
-;
+// await Promise.all(;
+      directories.map((dir) => fs.mkdir(dir, { recursive => {})));
+
     // Create configuration files in parallel
     const _fileCreationTasks = [];
-;
+
     // CLAUDE.md
     const _claudeMd = minimal ? createMinimalClaudeMd() : createFullClaudeMd();
     fileCreationTasks.push(fs.writeFile('CLAUDE.md', claudeMd, 'utf8'));
-;
+
     // memory-bank.md
     const _memoryBankMd = minimal ? createMinimalMemoryBankMd() : createFullMemoryBankMd();
     fileCreationTasks.push(fs.writeFile('memory-bank.md', memoryBankMd, 'utf8'));
-;
+
     // coordination.md
     const _coordinationMd = minimal ? createMinimalCoordinationMd() : createFullCoordinationMd();
     fileCreationTasks.push(fs.writeFile('coordination.md', coordinationMd, 'utf8'));
-;
+
     // README files
     fileCreationTasks.push(;
       fs.writeFile('memory/agents/README.md', createAgentsReadme(), 'utf8'),
       fs.writeFile('memory/sessions/README.md', createSessionsReadme(), 'utf8');
     );
-;
+
     // Persistence database
 
       const _envContent = Object.entries(envConfig.config);
-        .map(([key, value]) => `;
-$key = $value`);
-        .join('\n');
+map(([key, value]) => `;
+\$key = \$value`);
+join('\n');
       fileCreationTasks.push(fs.writeFile('.env', envContent, 'utf8'));
     }
 // Template-specific files
@@ -225,14 +216,14 @@ if (template && PROJECT_TEMPLATES[template]) {
       const _fileContent = typeof content === 'object' ? JSON.stringify(content, null, 2) : content;
       // Replace template variables
       fileContent = fileContent;
-      .replace(/
+replace(/
           PROJECT_NAME
       / (()),..;Paaaaabcceeeeeghhjlmnoppprrsttt / { {PROJECT_DESCRIPTION };
     }
     /,g;
     templateConfig.description;
     )
-    .replace(/
+replace(/
           ENVIRONMENT
     / ),eegimnnnortv;
     fileCreationTasks.push(fs.writeFile(filePath, fileContent, 'utf8'));
@@ -240,7 +231,7 @@ if (template && PROJECT_TEMPLATES[template]) {
 }
 }
 // Execute all file creation tasks in parallel
-await Promise.all(fileCreationTasks)
+// await Promise.all(fileCreationTasks)
 // Create Claude commands
 await createClaudeSlashCommands(absoluteProjectPath);
 // Change back to original directory
@@ -256,8 +247,7 @@ minimal = false,
 force = false,
 sparc = false,
 progressTracking = true,
-performanceMonitoring = true,
-} = options
+performanceMonitoring = true } = options
 if (!projects ?? projects.length === 0) {
   printError('No projects specified for batch initialization');
   return;
@@ -269,8 +259,7 @@ const __resourceManager = new ResourceManager(parallel ? maxConcurrency );
 const _perfMonitor = new PerformanceMonitor({
     enabled,logLevel = new ResourceThresholdMonitor({
     maxMemoryMB,
-...ResourceThresholdMonitor.createDefaultCallbacks(),
-})
+..ResourceThresholdMonitor.createDefaultCallbacks() })
 // Calculate optimal settings
 const _optimalConcurrency = BatchOptimizer.calculateOptimalConcurrency(totalProjects);
 const _recommendations = BatchOptimizer.generateRecommendations(totalProjects, options);
@@ -284,7 +273,7 @@ high.Optimal = [];
 for(const project of projects) {
     for(const env of environments) {
       const _projectPath = environments.length > 1 ? `${project}-${env}` : project;
-;
+
       const _initTask = async () => {
         if (tracker) tracker.startProject(projectPath);
         perfMonitor.recordOperation('project-init-start', {
@@ -317,51 +306,50 @@ for(const project of projects) {
   return results;
 }
 // Parse batch initialization config from file
-export async function parseBatchConfig(configFile = await fs.readFile(configFile: unknown, 'utf8': unknown);
+export async function parseBatchConfig(configFile = await fs.readFile(configFile, 'utf8': unknown);
 return JSON.parse(content);
-} catch (/* error */) 
+} catch (error)
   printError(`Failed to read batch config file =
 ): unknown
 {
-  const _config = await parseBatchConfig(configFile);
+// const _config = awaitparseBatchConfig(configFile);
   if (!config) return;
     // ; // LINT: unreachable code removed
   const { projects = [], baseOptions = {}, projectConfigs = {} } = config;
-;
+
   // Merge options with config
   const _mergedOptions = { ...baseOptions, ...options };
-;
+
   // If projectConfigs are specified, use them for individual project customization
   if (Object.keys(projectConfigs).length > 0) {
     const _results = [];
     const _resourceManager = new ResourceManager(mergedOptions.maxConcurrency  ?? 5);
-;
+
     for (const [projectName, projectConfig] of Object.entries(projectConfigs)) {
       const _projectOptions = { ...mergedOptions, ...projectConfig };
-      const _result = await resourceManager.withResource(async () => {
+// const _result = awaitresourceManager.withResource(async () => {
         return await initializeProject(projectName, projectOptions);
     //   // LINT: unreachable code removed});
       results.push(result);
     }
-;
+
     return results;
     //   // LINT: unreachable code removed}
-;
+
   // Otherwise, use standard batch init
   return await batchInitCommand(projects, mergedOptions);
 }
-;
+
 // Validation for batch operations
 export function validateBatchOptions(options = [];
 
-  if (options.maxConcurrency && (options.maxConcurrency < 1  ?? options.maxConcurrency > 20: unknown)) 
+  if (options.maxConcurrency && (options.maxConcurrency < 1  ?? options.maxConcurrency > 20: unknown))
     errors.push('maxConcurrency must be between 1 and 20');
-;
+
   if(options.template && !PROJECT_TEMPLATES[options.template]) {
     errors.push(;
-      `Unknown template: ${options.template}. Available: ${Object.keys(PROJECT_TEMPLATES).join(', ')}`,
-    );
-;
+      `Unknown template: ${options.template}. Available: ${Object.keys(PROJECT_TEMPLATES).join(', ')}`);
+
 if (options.environments) {
   for (const env of options.environments) {
     if (!ENVIRONMENT_CONFIGS[env]) {
@@ -371,9 +359,9 @@ if (options.environments) {
     }
   }
 }
-;
+
 return errors;
 }
-;
+
 // Export template and environment configurations for external use
 export type { PROJECT_TEMPLATES, ENVIRONMENT_CONFIGS };

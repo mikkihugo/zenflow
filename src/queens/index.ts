@@ -17,6 +17,6 @@ export { QueenCoordinator } from './queen-coordinator.js';
 import { QueenCoordinator } from './queen-coordinator.js';
 
 export async function createQueenCoordinator(config = new QueenCoordinator(config: unknown);
-await coordinator.start();
+// await coordinator.start();
 return coordinator;
 }

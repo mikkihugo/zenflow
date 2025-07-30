@@ -16,29 +16,29 @@ class SQLitePerformanceBenchmark {
       testDataSize: options.testDataSize  ?? 1000,
     concurrentOperations: options.concurrentOperations  ?? 10,
     iterationsPerTest: options.iterationsPerTest  ?? 5,
-    ...options
+..options
 }
   this;
-  .
+
   results = {};
   this;
-  .
+
   testDir = null;
   this;
-  .
+
   stores = new Map();
 }
 async;
 initialize();
 {
   // Check SQLite availability
-  const _available = await isSQLiteAvailable();
+// const _available = awaitisSQLiteAvailable();
   if (!available) {
     throw new Error('SQLite not available for benchmarking');
   }
   // Create test directory
   this.testDir = path.join(os.tmpdir(), `sqlite-benchmark-${Date.now()}`);
-  // await fs.mkdir(this.testDir, { recursive: true });
+  // await fs.mkdir(this.testDir, { recursive });
   console.warn(`🧪 SQLite Performance Benchmark Suite`);
   console.warn(`📂 Test directory: ${this.testDir}`);
   console.warn(`📊 Test data size: ${this.options.testDataSize} entries`);
@@ -51,7 +51,7 @@ createStore(name, (options = {}));
   const _store = new SqliteMemoryStore({
       directory: this.testDir,
   dbName: `${name}.db`,
-  ...options
+..options
 })
   // await store.initialize()
 this.stores.set(name, store)
@@ -63,7 +63,7 @@ generateTestData((size = this.options.testDataSize));
   for (let i = 0; i < size; i++) {
     data.push({
         key: `test-key-${i.toString().padStart(6, '0')}`,
-    id: i,
+    id,
     name: `Test Item ${i}`,
     description: `This is test item number ${i} with some additional content to make the data more realistic`,
     tags: [`tag-${i % 10}`, `category-${i % 5}`, `type-${i % 3}`],
@@ -71,8 +71,7 @@ generateTestData((size = this.options.testDataSize));
     priority: i % 5,
     active: i % 2 === 0,
     score: Math.random() * 100,
-    ,
-    ,
+
     namespace: `namespace-${i % 10}`
 })
 }
@@ -82,7 +81,7 @@ async;
 measureOperation(name, operation);
 {
   const _start = performance.now();
-  const _result = await operation();
+// const _result = awaitoperation();
   const _end = performance.now();
   const _duration = end - start;
   if (!this.results[name]) {
@@ -96,8 +95,8 @@ measureOperation(name, operation);
   {
     console.warn('\n📈 Benchmarking Basic Operations...');
     // Test with and without cache
-    const _storeWithCache = await this.createStore('with-cache', { enableCache: true });
-    const _storeWithoutCache = await this.createStore('without-cache', { enableCache: false });
+// const _storeWithCache = awaitthis.createStore('with-cache', { enableCache });
+// const _storeWithoutCache = awaitthis.createStore('without-cache', { enableCache });
     const _testData = this.generateTestData(100);
     for (let iteration = 0; iteration < this.options.iterationsPerTest; iteration++) {
       console.warn(`  Iteration ${iteration + 1}/${this.options.iterationsPerTest}`);
@@ -119,14 +118,14 @@ measureOperation(name, operation);
         // List operations
   // await this.measureOperation(`list${suffix}`, async () => {
           for (let i = 0; i < 10; i++) {
-  // await store.list({ namespace: `namespace-${i}`, limit: 50 });
+  // await store.list({ namespace: `namespace-${i}`, limit });
           }
         });
         // Search operations
   // await this.measureOperation(`search${suffix}`, async () => {
           const _patterns = ['test-key-00', 'Test Item', 'tag-5', 'priority'];
           for (const pattern of patterns) {
-  // await store.search(pattern, { namespace: 'namespace-0', limit: 20 });
+  // await store.search(pattern, { namespace: 'namespace-0', limit });
           }
         });
       }
@@ -136,9 +135,9 @@ measureOperation(name, operation);
   benchmarkConcurrentOperations();
   {
     console.warn('\n⚡ Benchmarking Concurrent Operations...');
-    const _store = await this.createStore('concurrent', {
-      enableCache: true,
-    maxConnections: 4
+// const _store = awaitthis.createStore('concurrent', {
+      enableCache,
+    maxConnections
 })
   const _testData = this.generateTestData(this.options.testDataSize);
   for (let iteration = 0; iteration < this.options.iterationsPerTest; iteration++) {
@@ -149,8 +148,7 @@ measureOperation(name, operation);
       const _promises = chunks.map(async (chunk, chunkIndex) => {
           for (const item of chunk) {
   // await store.store(`${item.key}-${chunkIndex}`, item.value, {
-              namespace: item.namespace,
-            });
+              namespace: item.namespace });
           }
     });
   // await Promise.all(promises);
@@ -182,7 +180,7 @@ measureOperation(name, operation);
           } else if (j % 3 === 1) {
   // await store.retrieve(`mixed-${i}-${j - 1}`);
           } else {
-  // await store.search(`mixed-${i}`, { limit: 10 });
+  // await store.search(`mixed-${i}`, { limit });
           }
         }
       });
@@ -195,7 +193,7 @@ async
 benchmarkIndexPerformance()
 {
   console.warn('\n🔍 Benchmarking Index Performance...');
-  const _storeWithIndexes = await this.createStore('with-indexes');
+// const _storeWithIndexes = awaitthis.createStore('with-indexes');
   // Create a large dataset to test index effectiveness
   const _largeDataset = this.generateTestData(5000);
   // Populate the database
@@ -203,7 +201,7 @@ benchmarkIndexPerformance()
   for (const item of largeDataset) {
   // await storeWithIndexes.store(item.key, item.value, {
         namespace: item.namespace,
-    ttl: Math.random() > 0.5 ? 3600 : null, // Some with TTL
+    ttl: Math.random() > 0.5 ? 3600 , // Some with TTL
   })
 }
 for (let iteration = 0; iteration < this.options.iterationsPerTest; iteration++) {
@@ -211,7 +209,7 @@ for (let iteration = 0; iteration < this.options.iterationsPerTest; iteration++)
   // Test queries that should benefit from indexes
   // await this.measureOperation('namespace-queries', async () => {
     for (let i = 0; i < 10; i++) {
-  // await storeWithIndexes.list({ namespace: `namespace-${i}`, limit: 100 });
+  // await storeWithIndexes.list({ namespace: `namespace-${i}`, limit });
     }
   });
   // await this.measureOperation('expiration-queries', async () => {
@@ -226,7 +224,7 @@ for (let iteration = 0; iteration < this.options.iterationsPerTest; iteration++)
   // await this.measureOperation('pattern-searches', async () => {
     const _patterns = ['test-key-001', 'Test Item 1', 'tag-1', 'namespace-1'];
     for (const pattern of patterns) {
-  // await storeWithIndexes.search(pattern, { limit: 50 });
+  // await storeWithIndexes.search(pattern, { limit });
     }
   });
 }
@@ -235,9 +233,9 @@ async
 benchmarkCacheEffectiveness()
 {
   console.warn('\n💾 Benchmarking Cache Effectiveness...');
-  const _store = await this.createStore('cache-test', {
-      enableCache: true,
-  cacheTimeout: 300000, // 5 minutes
+// const _store = awaitthis.createStore('cache-test', {
+      enableCache,
+  cacheTimeout, // 5 minutes
 })
 const _testData = this.generateTestData(200);
 // Populate data
@@ -263,8 +261,8 @@ for (let iteration = 0; iteration < this.options.iterationsPerTest; iteration++)
   // List operations (cached)
   // await this.measureOperation('cached-list-operations', async () => {
     for (let i = 0; i < 5; i++) {
-  // await store.list({ namespace: `namespace-${i}`, limit: 20 });
-  // await store.list({ namespace: `namespace-${i}`, limit: 20 }); // Should hit cache
+  // await store.list({ namespace: `namespace-${i}`, limit });
+  // await store.list({ namespace: `namespace-${i}`, limit }); // Should hit cache
     }
   });
 }
@@ -299,16 +297,14 @@ generateReport();
   console.warn('\n📊 Generating Performance Report...');
   const _report = {
       timestamp: new Date().toISOString(),
-  testConfiguration: this.options,
-  
-}
+  testConfiguration: this.options }
 // Calculate statistics for each operation
 for (const [operation, measurements] of Object.entries(this.results)) {
   report.results[operation] = this.calculateStats(measurements);
 }
 // Get database and cache statistics
 for (const [name, store] of this.stores) {
-  const _dbStats = await store.getDatabaseStats();
+// const _dbStats = awaitstore.getDatabaseStats();
   const _perfStats = store.getPerformanceStats();
   report.results[`${name}-database-stats`] = dbStats;
   report.results[`${name}-performance-stats`] = perfStats;
@@ -366,7 +362,7 @@ cleanup();
   this.stores.clear();
   // Clean up test directory
   if (this.testDir) {
-  // await fs.rm(this.testDir, { recursive: true, force: true });
+  // await fs.rm(this.testDir, { recursive, force });
   }
 }
 async;

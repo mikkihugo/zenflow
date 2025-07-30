@@ -58,8 +58,7 @@ export class AgentLoader {
     mobile: 'mobile-developer',
     data: 'data-scientist',
     ml: 'ml-engineer',
-    designer: 'ui-designer',
-  }
+    designer: 'ui-designer' }
   /**
    * Built-in agent types that are always available;
    */
@@ -69,23 +68,19 @@ export class AgentLoader {
       displayName: 'Code Analyzer',
       description: 'Analyzes code quality, patterns, and improvements',
       capabilities: ['analysis', 'code-review', 'refactoring'],
-      priority: 1,
-    },
+      priority},
     {
       name: 'system-architect',
       displayName: 'System Architect',
       description: 'Designs system architecture and technical specifications',
       capabilities: ['architecture', 'design', 'planning'],
-      priority: 1,
-    },
+      priority},
     {
       name: 'test-engineer',
       displayName: 'Test Engineer',
       description: 'Creates and manages test suites and quality assurance',
       capabilities: ['testing', 'qa', 'automation'],
-      priority: 2,
-    },
-  ];
+      priority} ];
   private constructor() {
     // Private constructor for singleton
   }
@@ -103,7 +98,7 @@ export class AgentLoader {
       // Set up legacy mappings
       this.setupLegacyMappings();
       // Discover dynamic agents
-      await this.discoverDynamicAgents();
+// await this.discoverDynamicAgents();
       this.initialized = true;
     }
     /**
@@ -116,9 +111,8 @@ export class AgentLoader {
       const _modernAgent = this.agentTypes.get(modern);
       if (modernAgent) {
         this.agentTypes.set(legacy, {
-          ...modernAgent,
-        legacy: true,
-      }
+..modernAgent,
+        legacy}
       )
     }
   }
@@ -128,21 +122,21 @@ export class AgentLoader {
   private async discoverDynamicAgents(): Promise<void> {
     const _agentsDir = join(__dirname, '.');
     try {
-      const _files = await fs.readdir(agentsDir);
-;
+// const _files = awaitfs.readdir(agentsDir);
+
       for (const file of files) {
         if (file === 'agent-loader.ts'  ?? file === 'agent-loader.js') {
           continue;
         }
-;
+
         const _filePath = join(agentsDir, file);
-        const _stats = await fs.stat(filePath);
-;
+// const _stats = awaitfs.stat(filePath);
+
         if (stats.isFile() && (extname(file) === '.js'  ?? extname(file) === '.ts')) {
-          await this.loadAgentFromFile(filePath);
+// await this.loadAgentFromFile(filePath);
         }
       }
-    } catch (/* error */) {
+    } catch (error) {
       console.warn(`⚠️ Could not discover dynamic agents: ${error}`);
     }
   }
@@ -151,25 +145,24 @@ export class AgentLoader {
    */
   private async loadAgentFromFile(filePath: string): Promise<void> {
     try {
-      const _module = await import(filePath);
+// const _module = awaitimport(filePath);
 
       if (module.default && typeof module.default === 'object') {
         const _agentConfig = module.default as AgentType;
-;
+
         if (agentConfig.name && agentConfig.displayName) {
           const _agentType: AgentType = {
             name: agentConfig.name,
             displayName: agentConfig.displayName,
             description: agentConfig.description  ?? 'Dynamic agent',
             capabilities: agentConfig.capabilities  ?? [],
-            priority: agentConfig.priority  ?? 3,
-          };
-;
+            priority: agentConfig.priority  ?? 3 };
+
           this.agentTypes.set(agentType.name, agentType);
         }
       }
   }
-  catch(/* error */) {
+  catch (error) {
     console.warn(`⚠️ Could not load agent from ${filePath}: ${error}`);
   }
 }
@@ -180,87 +173,83 @@ async;
 getAgentType(name: string)
 : Promise<AgentType | null>
 {
-    await this.initialize();
-;
+// await this.initialize();
     const _agent = this.agentTypes.get(name);
     if (agent) {
       return agent;
     //   // LINT: unreachable code removed}
-;
+
     // Try legacy mapping
     const _modernName = AgentLoader.LEGACY_AGENT_MAPPING[name];
     if (modernName) {
       agent = this.agentTypes.get(modernName);
       if (agent) {
         return {
-          ...agent,
-    // legacy: true, // LINT: unreachable code removed
+..agent,
+    // legacy, // LINT: unreachable code removed
         };
       }
     }
-;
+
     return null;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Check if an agent type exists;
    */;
   async hasAgentType(name: string): Promise<boolean> {
-    const _agent = await this.getAgentType(name);
+// const _agent = awaitthis.getAgentType(name);
     return agent !== null;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Get agent types by capability;
    */;
-  async getAgentTypesByCapability(capability: string): Promise<AgentType[]> 
-    await this.initialize();
-;
+  async getAgentTypesByCapability(capability: string): Promise<AgentType[]>
+// await this.initialize();
     return Array.from(this.agentTypes.values()).filter((_agent) =>;
     // agent.capabilities.includes(capability); // LINT: unreachable code removed
     );
-;
+
   /**
    * Get legacy agent mappings;
    */;
-  getLegacyMappings(): Record<string, string> 
+  getLegacyMappings(): Record<string, string>
     return { ...AgentLoader.LEGACY_AGENT_MAPPING };
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Register a new agent type at runtime;
    */;
-  registerAgentType(agentType: AgentType): void 
+  registerAgentType(agentType: AgentType): void
     this.agentTypes.set(agentType.name, agentType);
-;
+
   /**
    * Get all available agent types;
    */;
-  async getAllAgentTypes(): Promise<AgentType[]> 
-    await this.initialize();
+  async getAllAgentTypes(): Promise<AgentType[]>
+// await this.initialize();
     return Array.from(this.agentTypes.values());
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Get statistics about loaded agents;
    */;
   async getStats(): Promise<AgentStats> {
-    await this.initialize();
-;
+// await this.initialize();
     const _agents = Array.from(this.agentTypes.values());
     const _builtin = agents.filter(;
       (a) => !a.legacy && AgentLoader.BUILTIN_AGENTS.some((b) => b.name === a.name);
     ).length;
     const _legacy = agents.filter((a) => a.legacy).length;
     const _dynamic = agents.length - builtin - legacy;
-;
+
     return {
       total: agents.length,
     // builtin, // LINT: unreachable code removed
       legacy,
-      dynamic,
-    };
-;
+      dynamic };
+
 // Export singleton instance
 const _agentLoader = AgentLoader.getInstance();
 export default agentLoader;

@@ -10,9 +10,9 @@ async function basicServerExample() {
   console.warn('🚀 Starting Basic Claude Zen Server Example');
   // Create server instance with configuration
   const _server = new ClaudeZenServer({
-    port: 3001,
+    port,
     host: '0.0.0.0',
-    schema: CLAUDE_ZEN_SCHEMA
+    schema
 })
 try {
     // Start the server
@@ -24,17 +24,17 @@ try {
     // Log available endpoints
     console.warn('\n📋 Available Endpoints:');
     server.generatedRoutes.forEach((route) => {
-      console.warn(`  ${route.method.toUpperCase()} ${route.path} - ${route.description}`);
+      console.warn(`${route.method.toUpperCase()} ${route.path} - ${route.description}`);
     });
     // Example API calls
     console.warn('\n🔗 Making example API calls...');
     // Get visions
-    const _visionsResponse = await fetch('http://localhost:3001/api/v1/visions');
-    const _visions = await visionsResponse.json();
+// const _visionsResponse = awaitfetch('http://localhost:3001/api/v1/visions');
+// const _visions = awaitvisionsResponse.json();
     console.warn('Visions:', visions);
     // Get ADRs
-    const _adrsResponse = await fetch('http://localhost:3001/api/adrs');
-    const _adrs = await adrsResponse.json();
+// const _adrsResponse = awaitfetch('http://localhost:3001/api/adrs');
+// const _adrs = awaitadrsResponse.json();
     console.warn('ADRs:', adrs);
     // Keep server running for demonstration
     console.warn('\n⏳ Server running... Press Ctrl+C to stop');
@@ -54,7 +54,7 @@ try {
 async function advancedServerExample() {
   console.warn('🚀 Starting Advanced Claude Zen Server Example');
   const _server = new ClaudeZenServer({
-    port: 3002,
+    port,
     host: '0.0.0.0'
 })
 // Add custom middleware

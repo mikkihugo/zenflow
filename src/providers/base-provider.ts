@@ -19,22 +19,22 @@ export abstract class BaseProvider extends EventEmitter implements IBaseProvider
   // Simple health check - try to get models
   await;
   this;
-  .
+
   getModels();
   const;
   responseTime = Date.now() - startTime;
   this;
-  .
+
   updateHealthStatus(true, responseTime);
   this;
-  .
+
   emit('health_check', {provider = new Date();
   const;
   timeSinceLastCheck = now.getTime() - this.lastHealthCheck.getTime();
   // Auto health check if it's been too long
   if (timeSinceLastCheck > (this.config.healthCheckInterval  ?? 300000);
   ) {
-      await this.
+// await this.
   healthCheck();
 }
 return {name = [...this.responseTimeHistory].sort((a, b) => a - b);
@@ -127,16 +127,16 @@ delay = this.config.retryDelay ?? 1000;
   )
   try {
     return await operation();
-    //   // LINT: unreachable code removed} catch (/* error */) {
+    //   // LINT: unreachable code removed} catch (error) {
     lastError = error;
-;
+
     // Don't retry on certain error types
     if (;
       error instanceof ProviderError &&;
       ['INVALID_REQUEST', 'MODEL_NOT_SUPPORTED'].includes(error.code);
-    ) 
+    )
       throw error;
-;
+
     if (attempt < maxRetries) {
       await this.sleep(delay * 2 ** attempt); // Exponential backoff
     }
@@ -169,10 +169,7 @@ emitRequest(request: AIRequest);
   timestamp: new Date(),
   id: request.id,
   model: request.model,
-  messageCount: request.messages.length,
-  ,
-}
-)
+  messageCount: request.messages.length })
 }
 protected
 emitResponse(response: AIResponse)
@@ -185,13 +182,10 @@ emitResponse(response: AIResponse)
   id: response.id,
   model: response.model,
   usage: response.usage,
-  responseTime: response.responseTime,
-  ,
-}
-)
+  responseTime: response.responseTime })
 }
 protected
-emitError(error: Error, request?: AIRequest)
+emitError(error, request?: AIRequest)
 : void
 {
   this.emit('error', {
@@ -200,9 +194,6 @@ emitError(error: Error, request?: AIRequest)
   timestamp: new Date(),
   error: error.message,
   requestId: request?.id,
-  model: request?.model,
-  ,
-}
-)
+  model: request?.model })
 }
 }

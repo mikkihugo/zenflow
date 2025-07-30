@@ -22,30 +22,30 @@ export class NativeFannBindings {
       // this.capabilities.inference = true; // LINT: unreachable code removed
       // Test training capability
       try {
-        await this.executeCommand(['--test-training']);
+// await this.executeCommand(['--test-training']);
         this.capabilities.training = true;
-      } catch () {
+      } catch (error) {
         this.logger.debug('Training capability not available');
       }
       // Test GPU capability
       try {
-        await this.executeCommand(['--test-gpu']);
+// await this.executeCommand(['--test-gpu']);
         this.capabilities.gpu = true;
-      } catch () {
+      } catch (error) {
         this.logger.debug('GPU capability not available');
       }
       // Test SIMD capability
       try {
-        await this.executeCommand(['--test-simd']);
+// await this.executeCommand(['--test-simd']);
         this.capabilities.simd = true;
-      } catch () {
+      } catch (error) {
         this.logger.debug('SIMD capability not available');
       }
     }
     catch(error)
     throw new Error(`Capability testingfailed = await this.executeCommand(['--version']);
       return result.stdout.trim();
-    //   // LINT: unreachable code removed} catch () {
+    //   // LINT: unreachable code removed} catch (error) {
       return 'unknown';
     //   // LINT: unreachable code removed}
   }
@@ -83,7 +83,7 @@ export class NativeFannBindings {
   }
   )
   process;
-  .
+
   on('error', (error);
   => {
   reject(error);
@@ -102,7 +102,7 @@ createNetwork(config)
     throw new Error('Native bindings not initialized');
   }
   const _networkConfig = {layers = JSON.stringify(networkConfig);
-  const _result = await this.executeCommand(['create-network'], configJson);
+// const _result = awaitthis.executeCommand(['create-network'], configJson);
   return {id = JSON.stringify({
         network_id,data = await this.executeCommand(['train'], trainingJson);
   // ; // LINT: unreachable code removed
@@ -114,7 +114,7 @@ createNetwork(config)
         networkId,input = await this.executeCommand(['stats', networkId]);
   // return JSON.parse(result.stdout); // LINT: unreachable code removed
 }
-catch ()
+catch (error)
 {
       throw new Error(`Stats retrievalfailed = await this.executeCommand(['load', filePath]);
 

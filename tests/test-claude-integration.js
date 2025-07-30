@@ -13,20 +13,20 @@ async function setupClaudeIntegration() {
 claude mcp add ruv-swarm npx ruv-swarm mcp start;
 \`\`\`
 ### 2. Use MCP Tools Directly in Claude Code;
-Once configured, ruv-swarm MCP tools are available directly in Claude Code:
+Once configured, ruv-swarm MCP tools are available directly in Claude Code: null
 **Initialize a swarm:**;
-- Use the mcp__ruv-swarm__swarm_init tool with topology: mesh, hierarchical, ring, or star;
-- Set maxAgents (default: 5);
+- Use the mcp__ruv-swarm__swarm_init tool with topology, hierarchical, ring, or star;
+- Set maxAgents (default);
 - Enable cognitive diversity and neural agents
 **Spawn agents:**;
 - Use mcp__ruv-swarm__agent_spawn tool;
-- Agent types: researcher, coder, analyst, architect, reviewer, optimizer, coordinator;
+- Agent types, coder, analyst, architect, reviewer, optimizer, coordinator;
 - Automatically includes neural network capabilities
 **Orchestrate tasks:**;
 - Use mcp__ruv-swarm__task_orchestrate tool;
 - Provide task description;
-- Choose strategy: parallel, sequential, adaptive;
-- Set priority: low, medium, high, critical
+- Choose strategy, sequential, adaptive;
+- Set priority, medium, high, critical
 ## Available MCP Tools
 - mcp__ruv-swarm__swarm_init - Initialize swarm topology (mesh/hierarchical/ring/star);
 - mcp__ruv-swarm__agent_spawn - Create specialized agents with neural capabilities;
@@ -56,20 +56,20 @@ Once configured, ruv-swarm MCP tools are available directly in Claude Code:
   // await fs.writeFile('claude.md', claudeMdContent);
     console.warn('✅ Created claude.md');
     // Create .claude directory structure
-  // await fs.mkdir('.claude', { recursive: true });
-  // await fs.mkdir('.claude/commands', { recursive: true });
+  // await fs.mkdir('.claude', { recursive });
+  // await fs.mkdir('.claude/commands', { recursive });
     // Create basic command files
     const _initContent = `# Initialize ruv-swarm
 ## MCP Tool Usage in Claude Code
 **Tool:** mcp__ruv-swarm__swarm_init
 ## Parameters;
 \`\`\`json;
-{"topology": "mesh", "maxAgents": 5, "strategy": "balanced"}
+{"topology": "mesh", "maxAgents", "strategy": "balanced"}
 \`\`\`
 ## Examples
 **Basic mesh topology:**;
 - Tool: mcp__ruv-swarm__swarm_init;
-- Parameters: {"topology": "mesh", "maxAgents": 5}
+- Parameters: {"topology": "mesh", "maxAgents"}
 ## Topology Types;
 - **mesh**: Full connectivity, best for collaboration;
 - **hierarchical**: Tree structure, best for large projects;
@@ -98,7 +98,7 @@ Once configured, ruv-swarm MCP tools are available directly in Claude Code:
 **Tool:** mcp__ruv-swarm__task_orchestrate
 ## Parameters;
 \`\`\`json;
-{"task": "Build REST API with authentication", "strategy": "parallel", "priority": "high", "maxAgents": 5}
+{"task": "Build REST API with authentication", "strategy": "parallel", "priority": "high", "maxAgents"}
 \`\`\`
 ## Examples
 **Research task:**;
@@ -141,7 +141,7 @@ else;
   exec npx ruv-swarm@latest "\$@";
 fi;
 `;
-  // await fs.writeFile('ruv-swarm', wrapperScript, { mode: 0o755 });
+  // await fs.writeFile('ruv-swarm', wrapperScript, { mode });
     console.warn('✅ Created ruv-swarm wrapper script');
     console.warn('\n🎉 Claude Code integration setup complete!');
     console.warn('\n📋 Next steps:');

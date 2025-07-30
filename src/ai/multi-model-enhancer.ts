@@ -10,9 +10,8 @@ export class MultiModelEnhancer {
     // Placeholder for Gemini API call
     return {
       complexity: 0.7,
-    teamSize: 5, duration;
-    : '3 months' ,
-  }
+    teamSize, duration;
+    : '3 months'  }
 }
 static
 async;

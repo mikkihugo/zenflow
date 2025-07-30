@@ -18,17 +18,15 @@ export async function projectCommand(): unknown {
           const _resourceQuotaFlag = args.indexOf('--resource-quota');
           const __securityProfileFlag = args.indexOf('--security-profile');
           const _templateFlag = args.indexOf('--template');
-;
-          printSuccess(`Creatingproject = 0 ? args[isolationFlag + 1] : 'standard'}`,
-          );
+
+          printSuccess(`Creatingproject = 0 ? args[isolationFlag + 1] : 'standard'}`);
           if(resourceQuotaFlag >= 0) {
-            console.warn(`   ResourceQuota = 0 ? args[securityProfileFlag + 1] : 'default'}`,
-          );
+            console.warn(`   ResourceQuota = 0 ? args[securityProfileFlag + 1] : 'default'}`);
           if(templateFlag >= 0) {
             console.warn(`Template = args[1];
           if(!switchProject) {
             printError('Usage = args.includes('--active');
-;
+
           printSuccess('Availableprojects = [
             { name => {
             if (showActive && project.status !== 'active') return;
@@ -36,11 +34,11 @@ export async function projectCommand(): unknown {
             console.warn(`\n📦 ${project.name}`);
             console.warn(`Status = args[1];
           const _configProject = args[2];
-;
+
           if(configAction === 'set' && configProject) {
             const __configKey = args[3];
             const _configValue = args.slice(4).join(' ');
-;
+
             printSuccess(`Updating projectconfiguration = ${configValue}`);
             console.warn('✅ Configuration updated');
           } else if(configAction === 'get' && configProject) {
@@ -50,27 +48,27 @@ export async function projectCommand(): unknown {
             printError('Usage = args[1];
           if(!backupProject) {
             printError('Usage = args.includes('--include-data');
-;
+
           const _outputFlag = args.indexOf('--output');
-;
+
           printSuccess(`Creating backup forproject = outputFlag >= 0;
               ? args[outputFlag + 1];
-              : `$backupProject-backup-$Date.now().tar.gz`;
+              : `\$backupProject-backup-\$Date.now().tar.gz`;
           console.warn(`\n✅ Backupcreated = args[1];
           const _shareTo = args[2];
-;
+
           if(!shareFrom  ?? !shareTo) {
             printError('Usage = args.indexOf('--agents');
-;
+
           printSuccess(`Sharing resources from ${shareFrom} to ${shareTo}`);
           if(agentsFlag >= 0) {
             console.warn(`Agents = 0) ;
             console.warn(`Permissions = 0) {
             console.warn(`Duration = args[1];
-;
+
           if(fedCmd === 'create') {
             const _fedName = args[2];
-;
+
             if(!fedName) {
               printError('Usage = 0) {
               console.warn(`Projects = === 'list') {
@@ -80,10 +78,10 @@ export async function projectCommand(): unknown {
             console.warn('   Coordinator: infrastructure');
             console.warn('   Status: Active');
           } else {
-            console.warn('Federation commands: create, list, workflow');
+            console.warn('Federation commands, list, workflow');
           }
           break;
-;
+
         default:;
           console.warn('Project commands:');
           console.warn('  create    - Create new project with isolation');
@@ -96,11 +94,9 @@ export async function projectCommand(): unknown {
           console.warn('  federation - Manage project federations');
           console.warn('\nExamples:');
           console.warn(;
-            '  project create "unified-app" --isolation strict --resource-quota "agents:15,memory:4GB"',
-          );
+            '  project create "unified-app" --isolation strict --resource-quota "agents,memory:4GB"');
           console.warn('  project switch "unified-app"');
           console.warn('  project monitor "microservices" --real-time');
       }
 }
         }
-;

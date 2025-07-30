@@ -32,7 +32,7 @@ export interface ExtendedProviderMetrics extends BaseProviderMetrics {
       timeline: QualityTimelinePoint[];
       trends: QualityTrends;
       distribution: QualityDistribution;
-;
+
       // Quality by different dimensions
       byDomain: Record<string, number>;
       byUseCase: Record<string, number>;

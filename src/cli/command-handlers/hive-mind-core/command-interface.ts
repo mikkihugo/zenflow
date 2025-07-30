@@ -12,9 +12,9 @@ import { HelpFormatter } from '../../help-formatter.js';
 export function showHiveMindHelp(): unknown {
   console.warn(`;
 ${chalk.yellow('🧠 Claude Flow Hive Mind System')}
-;
+
 ${chalk.bold('USAGE = parseFlags(rawFlags);
-;
+
   const _handler = handlers[subcommand];
   if(!handler) {
     throw new Error(`Unknownsubcommand = new HelpFormatter();

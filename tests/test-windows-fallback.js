@@ -17,7 +17,7 @@ try {
   const { isSQLiteAvailable, isWindows, getStorageRecommendations } = await import(
     '../src/memory/sqlite-wrapper.js';
   );
-  const _sqliteAvailable = await isSQLiteAvailable();
+// const _sqliteAvailable = awaitisSQLiteAvailable();
   console.warn(`✅ SQLite available: ${sqliteAvailable}`);
   console.warn(`✅ Platform is Windows: ${isWindows()}`);
   const _recommendations = getStorageRecommendations();
@@ -29,14 +29,14 @@ try {
 // Test 2: Fallback Store
 console.warn(chalk.yellow('\nTest 2: Fallback Memory Store'));
 try {
-  // FallbackMemoryStore has been migrated to new architecture
-  console.warn('⚠️ FallbackMemoryStore has been migrated to new memory architecture');
+  // FallbackMemoryStore h migrated to new architecture
+  console.warn('⚠️ FallbackMemoryStore h migrated to new memory architecture');
   console.warn('✅ Test skipped - migration complete');
   const _store = new FallbackMemoryStore();
   // await store.initialize();
   // Test basic operations
   // await store.store('test-key', 'test-value', { namespace: 'test' });
-  const _value = await store.retrieve('test-key', { namespace: 'test' });
+// const _value = awaitstore.retrieve('test-key', { namespace: 'test' });
   console.warn(`✅ Fallback store initialized`);
   console.warn(`✅ Using fallback: ${store.isUsingFallback()}`);
   console.warn(`✅ Store/retrieve works: ${value === 'test-value'}`);
@@ -71,7 +71,7 @@ try {
   // await new Promise((resolve) => setTimeout(resolve, 100)); // Wait for async init
 
   // Test memory storage
-  const _result = await wrapper.storeMemory('test-swarm', 'test-key', { data: 'test' });
+// const _result = awaitwrapper.storeMemory('test-swarm', 'test-key', { data: 'test' });
   console.warn(`✅ MCP wrapper initialized`);
   console.warn(`✅ Memory storage works: ${result.success}`);
 } catch (error) {
@@ -82,7 +82,7 @@ console.warn(chalk.yellow('\nTest 5: Windows Error Messages'));
 try {
   // Simulate Windows environment
   const _originalPlatform = process.platform;
-  Object.defineProperty(process, 'platform', { value: 'win32', writable: true });
+  Object.defineProperty(process, 'platform', { value: 'win32', writable });
   const { isWindows } = await import('../src/memory/sqlite-wrapper.js');
 
   if (isWindows()) {
@@ -90,7 +90,7 @@ try {
     console.warn(`✅ Windows installation guide link would be provided`);
   }
   // Restore original platform
-  Object.defineProperty(process, 'platform', { value: originalPlatform, writable: true });
+  Object.defineProperty(process, 'platform', { value, writable });
 } catch (error) {
   console.warn(chalk.red(`❌ Error message test failed: ${error.message}`));
 }

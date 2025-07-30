@@ -42,18 +42,18 @@ class SwarmUI {
     )
     // Objective selection
     this
-    .
+
     objectivesList
-    .
+
     on('select', (item, index)
-    => 
+    =>
       this.
     selectedObjective = this.swarmData.objectives[index]
     this
-    .
+
     updateTasksList()
     this
-    .
+
     log(`Selected objective =>
     {
       const _task = this.swarmData.tasks[index];
@@ -80,7 +80,7 @@ class SwarmUI {
     this.screen.key(['tab'], () =>
     this.screen.focusNext()
     )
-    this.screen.key(['S-tab'], () => 
+    this.screen.key(['S-tab'], () =>
       this.screen.focusPrevious()
     )
   }
@@ -90,14 +90,14 @@ class SwarmUI {
   log('Starting swarm monitoring...');
   // Update interval
   this;
-  .
+
   updateInterval = setInterval(() => {
     this.updateSwarmData();
   }, 2000);
   // Initial update
   await;
   this;
-  .
+
   updateSwarmData();
 }
 async;
@@ -106,28 +106,28 @@ updateSwarmData();
     try {
       // Load swarm data from file system
       const _swarmRunsDir = './swarm-runs';
-;
+
       try {
-        const _runs = await fs.readdir(swarmRunsDir);
+// const _runs = awaitfs.readdir(swarmRunsDir);
         this.swarmData.objectives = [];
         this.swarmData.agents = [];
         this.swarmData.tasks = [];
-;
+
         for(const runDir of runs) {
           const _configPath = path.join(swarmRunsDir, runDir, 'config.json');
           try {
-            const _configData = await fs.readFile(configPath, 'utf-8');
+// const _configData = awaitfs.readFile(configPath, 'utf-8');
             const __config = JSON.parse(configData);
-;
+
             this.swarmData.objectives.push({id = path.join(swarmRunsDir, runDir, 'agents');
             try {
-              const _agents = await fs.readdir(agentsDir);
+// const _agents = awaitfs.readdir(agentsDir);
               for(const agentDir of agents) {
                 const _taskPath = path.join(agentsDir, agentDir, 'task.json');
                 try {
-                  const _taskData = await fs.readFile(taskPath, 'utf-8');
+// const _taskData = awaitfs.readFile(taskPath, 'utf-8');
                   const __task = JSON.parse(taskData);
-;
+
                   this.swarmData.agents.push({id = 'idle';
       }
     } catch(error) ;
@@ -135,16 +135,13 @@ updateSwarmData();
     this.statusBox.setContent(;
     `Status = this.swarmData.objectives.map(;
       (_obj) => `;
-    $obj.status === 'running' ? '🟢' : '🔴';
-    $obj.description.substring(0, 25);
-    ...`,
-    )
+    \$obj.status === 'running' ? '🟢' : '🔴';
+    \$obj.description.substring(0, 25);
+..`)
     this.objectivesList.setItems(objectiveItems.length > 0 ?objectiveItems = this.swarmData.agents.map(;
-    (agent) => `${agent.status === 'active' ? '🤖' : '💤'} ${agent.id.substring(0, 15)}...`,
-    )
+    (agent) => `${agent.status === 'active' ? '🤖' : '💤'} ${agent.id.substring(0, 15)}...`)
     this.agentsList.setItems(agentItems.length > 0 ?agentItems = this.swarmData.tasks.filter(;
-    (task) => task.swarmId === this.selectedObjective.id,
-    )
+    (task) => task.swarmId === this.selectedObjective.id)
     promptBox.destroy();
     this.screen.render();
     )
@@ -157,21 +154,21 @@ updateSwarmData();
   const;
   _process = spawn('claude-zen', args, {detached = `swarm-${Date.now()}`;
   this;
-  .
+
   activeProcesses;
-  .set(
+set(
   processId;
-  ,
+
   process;
   )
   this;
-  .
+
   log(`Launched swarm with PID => {
         this.updateSwarmData();
 , 2000)
 catch(error)
 this.log(`Error creatingobjective = 0;
-;
+
       // First, try to stop tracked processes
       for(const [processId, process] of this.activeProcesses) {
         try {
@@ -186,10 +183,10 @@ this.log(`Error stoppingswarm = === 'win32') ;
       // Windows => {
           if(!error && stdout) {
             const _pids = stdout;
-              .split('\n');
-              .map((line) => line.trim());
-              .filter((line) => /^\d+$/.test(line));
-;
+split('\n');
+map((line) => line.trim());
+filter((line) => /^\d+$/.test(line));
+
             pids.forEach((pid) => {
               // Validate PID before using in command
               const _validatedPID = validatePID(pid);
@@ -211,23 +208,23 @@ this.log(`Error stoppingswarm = === 'win32') ;
           this.log(`Commanderror = 'info'): unknown {
     const _timestamp = new Date().toLocaleTimeString();
     const _levelColors = {info = `{${levelColors[level]  ?? 'white'}-fg}[${timestamp}] ${message}{/}`;
-;
+
     this.logBuffer.push(coloredMessage);
     if(this.logBuffer.length > this.maxLogLines) {
       this.logBuffer.shift();
     }
-;
+
     if(this.logBox) {
       this.logBox.log(coloredMessage);
       this.screen.render();
     }
   }
-;
+
   cleanup() ;
     if(this.updateInterval) {
       clearInterval(this.updateInterval);
     }
-;
+
     // Clean up any remaining processes
     for(const [processId, process] of this.activeProcesses) {
       try {
@@ -240,18 +237,18 @@ this.log(`Error stoppingswarm = === 'win32') ;
     }
     this.activeProcesses.clear();
 }
-;
+
 // Main execution
 async function main(): unknown {
   const _ui = new SwarmUI();
-;
+
   try {
-    await ui.init();
-  } catch (/* error */) {
+// await ui.init();
+  } catch (error) {
     console.error('Failed to initialize Swarm UI => {
   console.error('Uncaught exception => {
   console.error('Unhandledrejection = === `file://${process.argv[1]}`) {
   main();
 }
-;
+
 export default SwarmUI;

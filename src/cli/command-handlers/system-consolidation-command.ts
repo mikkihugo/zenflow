@@ -16,38 +16,36 @@ export async function systemConsolidationCommand(): unknown {
       return await showUnifiedStatus(subArgs.slice(1), flags);
     // case 'consolidate':; // LINT: unreachable code removed
       return await showConsolidationPlan();default = [];
-;
+
   try {
     // Import and start the main system
     const { startCommand } = await import('./start-wrapper-command.js');
-    await startCommand(args, flags);
-;
+// await startCommand(args, flags);
     printSuccess('✅ Unified system started successfully');
     printInfo('📋 Activeservices = > setTimeout(resolve, 2000)); // Wait 2 seconds
-    await startUnifiedSystem(args, flags);
-;
+// await startUnifiedSystem(args, flags);
   } catch (/* _error */) {
     printError(`Failed to restartsystem = await fetch('http://localhost:3000/health');
-    const _health = await response.json();
+// const _health = awaitresponse.json();
     printSuccess(`✅ APIServer = await import('./plugin-status-command.js');
 
     printSuccess(`✅ PluginSystem = await import('../database/strategic-documents-manager.js');
-    await strategicDocs.getAnalytics();
+// await strategicDocs.getAnalytics();
     printSuccess('✅ StrategicDocuments = API + Dashboard + Queen Council (integrated)');
   printInfo('  - server start = API only (individual component)');
   printInfo('  - dashboard start = UI only (individual component)');
   printInfo('  - init = Project setup with template selection');
 }
-;
+
 async function showConsolidationPlan(): unknown {
   printInfo('🔧 Command Consolidation Analysis');
   console.warn();
-;
+
   printInfo('📋 REDUNDANT COMMANDSIDENTIFIED = === claude-zen server start');
   console.warn('  ❌ claude-zen dashboard start (auto-included in start)');
   console.warn('  ❌ Manual queen council convening (auto-convened)');
   console.warn();
-;
+
   printInfo('✅ CONSOLIDATEDSYSTEM = Full integrated system');
   console.warn('     ├── API Server (port 3000)');
   console.warn('     ├── Dashboard (integrated)');
@@ -57,20 +55,20 @@ async function showConsolidationPlan(): unknown {
   console.warn('  🎨 claude-zen dashboard start = UI only (dev/debug)');
   console.warn('  👑 claude-zen queen-council convene = Manual council');
   console.warn();
-;
+
   printInfo('📂 TEMPLATESYSTEM = Project setup (template selection)');
   console.warn('  📋 claude-zen template = Template management');
   console.warn('     Available = {
       name: claude-zen, ruv-FANN-zen');
   console.warn();
-;
+
   printInfo('🎯 RECOMMENDED USAGE:');
   console.warn('  • Start development: claude-zen start');
   console.warn('  • New project: claude-zen init --template claude-zen');
   console.warn('  • Neural project: claude-zen init --template ruv-FANN-zen');
   console.warn('  • System status: claude-zen system status');
 }
-;
+
 function showConsolidationHelp(): unknown {
   console.warn('Claude-Zen System Consolidation Command');
   console.warn();
@@ -88,7 +86,7 @@ function showConsolidationHelp(): unknown {
   console.warn('  claude-zen system status          # Check all components');
   console.warn('  claude-zen system consolidate     # See consolidation plan');
 }
-;
+
 export const systemConsolidationCommandConfig,ame: 'system',
   description: 'Unified system control and consolidation',
   usage: 'system <action> [options]',
@@ -96,4 +94,3 @@ export const systemConsolidationCommandConfig,ame: 'system',
     { name: 'help', description: 'Show help message', alias: 'h' }
   ];
 };
-;

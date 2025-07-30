@@ -28,9 +28,9 @@ class MockAGUIAdapter {
     this.currentToolCallId = null;
     this.events = [];
     this.stats = {
-      messagesCreated: 0,
-    toolCallsExecuted: 0,
-    eventsEmitted: 0
+      messagesCreated,
+    toolCallsExecuted,
+    eventsEmitted
 }
 }
 startTextMessage((messageId = null), (role = 'assistant'));
@@ -39,7 +39,7 @@ startTextMessage((messageId = null), (role = 'assistant'));
   this.currentMessageId = id;
   const _event = {
       type: EventType.TEXT_MESSAGE_START,
-  messageId: id,
+  messageId,
   role,
   timestamp: Date.now(),
   sessionId: this.sessionId
@@ -56,8 +56,8 @@ addTextContent(content, (messageId = null));
   }
   const _event = {
       type: EventType.TEXT_MESSAGE_CONTENT,
-  messageId: id,
-  delta: content,
+  messageId,
+  delta,
   timestamp: Date.now(),
   sessionId: this.sessionId
 }
@@ -70,7 +70,7 @@ endTextMessage((messageId = null))
   // ; // LINT: unreachable code removed
   const _event = {
       type: EventType.TEXT_MESSAGE_END,
-  messageId: id,
+  messageId,
   timestamp: Date.now(),
   sessionId: this.sessionId
 }
@@ -85,8 +85,8 @@ startToolCall(toolName, (toolCallId = null), (parentMessageId = null))
   this.currentToolCallId = id;
   const _event = {
       type: EventType.TOOL_CALL_START,
-  toolCallId: id,
-  toolCallName: toolName,
+  toolCallId,
+  toolCallName,
   parentMessageId,
   timestamp: Date.now(),
   sessionId: this.sessionId
@@ -103,8 +103,8 @@ addToolCallArgs(args, (toolCallId = null));
   }
   const _event = {
       type: EventType.TOOL_CALL_ARGS,
-  toolCallId: id,
-  delta: args,
+  toolCallId,
+  delta,
   timestamp: Date.now(),
   sessionId: this.sessionId
 }
@@ -117,7 +117,7 @@ endToolCall((toolCallId = null))
   // ; // LINT: unreachable code removed
   const _event = {
       type: EventType.TOOL_CALL_END,
-  toolCallId: id,
+  toolCallId,
   timestamp: Date.now(),
   sessionId: this.sessionId
 }
@@ -131,7 +131,7 @@ emitToolCallResult(result, toolCallId, (messageId = null))
   const _resultMessageId = messageId ?? `result-${toolCallId}`;
   const _event = {
       type: EventType.TOOL_CALL_RESULT,
-  messageId: resultMessageId,
+  messageId,
   toolCallId,
   content: typeof result === 'string' ? result : JSON.stringify(result),
   role: 'tool',
@@ -215,15 +215,14 @@ async function runAGUIIntegrationTests() {
         console.warn(`✅ ${name}`);
         passedTests++;
       });
-      .catch((error) => 
-        console.warn(`❌ $name: $error.message`););
+catch((error) =>
+        console.warn(`❌ \$name: \$error.message`););
   }
 // Test 1: Basic adapter creation
 test('Adapter creation with session info', () => {
   const _adapter = new MockAGUIAdapter({
       sessionId: 'test-session',
-  threadId: 'test-thread',
-});
+  threadId: 'test-thread' });
 if (adapter.sessionId !== 'test-session') {
   throw new Error('Session ID not set correctly');
 }
@@ -241,7 +240,7 @@ test('Text message flow generates correct events', () =>
   adapter.endTextMessage(messageId);
   const _events = adapter.events;
   if (events.length !== 4) {
-    throw new Error(`Expected 4 events, got $events.length`);
+    throw new Error(`Expected 4 events, got \$events.length`);
   }
   if (events[0].type !== EventType.TEXT_MESSAGE_START) {
     throw new Error('First event should be TEXT_MESSAGE_START');
@@ -266,7 +265,7 @@ test('Tool call flow generates correct events', () =>
   adapter.emitToolCallResult('Test result', toolCallId);
   const _events = adapter.events;
   if (events.length !== 4) {
-    throw new Error(`Expected 4 events, got $events.length`);
+    throw new Error(`Expected 4 events, got \$events.length`);
   }
   if (events[0].type !== EventType.TOOL_CALL_START) {
     throw new Error('First event should be TOOL_CALL_START');
@@ -283,7 +282,7 @@ test('Queen coordination events', () =>
   adapter.emitQueenEvent('queen-2', 'join_analysis', { specialization: 'optimization' });
   const _events = adapter.events;
   if (events.length !== 2) {
-    throw new Error(`Expected 2 events, got $events.length`);
+    throw new Error(`Expected 2 events, got \$events.length`);
   }
   if (events[0].type !== EventType.CUSTOM ?? events[0].name !== 'queen_action') {
     throw new Error('Should emit custom queen_action events');
@@ -300,7 +299,7 @@ test('Swarm coordination events', () =>
   adapter.emitSwarmEvent('swarm-1', 'execute', ['agent-1'], { action: 'scan' });
   const _events = adapter.events;
   if (events.length !== 2) {
-    throw new Error(`Expected 2 events, got $events.length`);
+    throw new Error(`Expected 2 events, got \$events.length`);
   }
   if (events[0].value.swarmId !== 'swarm-1') {
     throw new Error('Swarm ID should be preserved');
@@ -319,7 +318,7 @@ test('Hive mind coordination events', () =>
 })
 const _events = adapter.events;
 if (events.length !== 1) {
-  throw new Error(`Expected 1 event, got $events.length`);
+  throw new Error(`Expected 1 event, got \$events.length`);
 }
 if (events[0].name !== 'hive_mind') {
   throw new Error('Should emit hive_mind custom event');
@@ -339,13 +338,13 @@ test('Statistics tracking', () =>
   adapter.endToolCall(toolCallId);
   const _stats = adapter.getStats();
   if (stats.messagesCreated !== 1) {
-    throw new Error(`Expected 1 message created, got $stats.messagesCreated`);
+    throw new Error(`Expected 1 message created, got \$stats.messagesCreated`);
   }
   if (stats.toolCallsExecuted !== 1) {
-    throw new Error(`Expected 1 tool call executed, got $stats.toolCallsExecuted`);
+    throw new Error(`Expected 1 tool call executed, got \$stats.toolCallsExecuted`);
   }
   if (stats.eventsEmitted !== 5) {
-    throw new Error(`Expected 5 events emitted, got $stats.eventsEmitted`);
+    throw new Error(`Expected 5 events emitted, got \$stats.eventsEmitted`);
   }
 })
 // Test 8: Claude Code Zen integration simulation
@@ -364,16 +363,16 @@ test('Statistics tracking', () =>
   adapter.emitQueenEvent('queen-3', 'start_analysis', { target: 'neural_patterns' });
   // 3. Tool execution
   const _toolCallId = adapter.startToolCall('analyze_codebase');
-  adapter.addToolCallArgs('{"depth": "full", "include_agui": true}');
+  adapter.addToolCallArgs('{"depth": "full", "include_agui"}');
   adapter.endToolCall(toolCallId);
   // Simulate async tool execution
   // await new Promise((resolve) => setTimeout(resolve, 100));
   adapter.emitToolCallResult(;
-  files_analyzed: 145,
+  files_analyzed,
   agui_integration: 'successful',
-  queens_active: 3,
+  queens_active,
   events_generated: adapter.events.length,
-  ,
+
   toolCallId
   )
   // 4. Swarm coordination
@@ -384,12 +383,11 @@ test('Statistics tracking', () =>
   strategy: 'parallel'
   )
   // 5. Hive mind consensus
-  adapter.emitHiveMindEvent('analysis_complete', 
-      success: true,
+  adapter.emitHiveMindEvent('analysis_complete',
+      success,
   agui_events: adapter.events.length,
-  queens_consensus: true,
-  swarm_efficiency: 0.92,
-  )
+  queens_consensus,
+  swarm_efficiency: 0.92)
   // Validate the simulation
   const _stats = adapter.getStats();
   if (stats.eventsEmitted < 10) {
@@ -403,7 +401,7 @@ test('Statistics tracking', () =>
   }
 })
 // Summary
-console.warn(`\n$'='.repeat(60)`)
+console.warn(`\n\$'='.repeat(60)`)
 console.warn(`📊 Test Results: $passedTests/$
 {
   totalTests;

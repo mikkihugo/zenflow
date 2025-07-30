@@ -8,13 +8,13 @@
 /**
  * Console interface for type safety;
  */
-interface OriginalConsole {
+// interface OriginalConsole {
   log: typeof console.log;
   error: typeof console.error;
   warn: typeof console.warn;
   info: typeof console.info;
   debug: typeof console.debug;
-}
+// }
 /**
  * Global test environment configuration;
  * Sets up environment variables and error handling for tests;
@@ -25,40 +25,39 @@ function setupTestEnvironment(): void {
   process.env.NODE_ENV = 'test';
   // Suppress console output during tests unless explicitly needed
   /* const originalConsole: OriginalConsole = {
-    log: console.log,;
-    error: console.error,;
-    warn: console.warn,;
-    info: console.info,;
-    debug: console.debug,;
-  }; */
+    log: console.log,
+    error: console.error,
+    warn: console.warn,
+    info: console.info,
+    debug: console.debug }; */
   // Store original console for restoration in tests
-  // (global as unknown as { originalConsole: OriginalConsole }).originalConsole = originalConsole;
-}
+  // (global as unknown as { originalConsole}).originalConsole = originalConsole;
+// }
 /**
  * Sets up global error handling for tests;
  * Captures unhandled promise rejections with optional debugging;
  */
 function setupErrorHandling(): void {
-  process.on('unhandledRejection', (reason: unknown, promise: Promise<unknown>) => {
+  process.on('unhandledRejection', (reason, promise: Promise<unknown>) => {
     // Only log in test environment if debugging is enabled
     if (process.env.DEBUG_TESTS) {
       console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-    }
+// }
     // In test environment, we might want to fail the test
     if (process.env.FAIL_ON_UNHANDLED_REJECTION) {
       throw new Error(`Unhandled Promise Rejection: ${String(reason)}`);
-    }
+// }
   });
   process.on('uncaughtException', (error: Error) => {
     if (process.env.DEBUG_TESTS) {
       console.error('Uncaught Exception:', error);
-    }
+// }
     // In test environment, we might want to fail the test
     if (process.env.FAIL_ON_UNCAUGHT_EXCEPTION) {
       throw error;
-    }
+// }
   });
-}
+// }
 /**
  * Configures Jest timeout and global test settings;
  */
@@ -68,11 +67,11 @@ function setupJestConfiguration(): void {
   // Configure global test utilities if needed
   if (typeof globalThis !== 'undefined') {
     // Add any global test utilities here
-    (globalThis as unknown as { testUtils?: unknown }).testUtils = {
+    (globalThis as unknown as { testUtils?}).testUtils = {
       // Add shared test utilities
     };
-  }
-}
+// }
+// }
 /**
  * Main setup function;
  * Initializes all test environment configurations;
@@ -81,6 +80,6 @@ function setupTests(): void {
   setupTestEnvironment();
   setupErrorHandling();
   setupJestConfiguration();
-}
+// }
 // Initialize test setup
 setupTests();

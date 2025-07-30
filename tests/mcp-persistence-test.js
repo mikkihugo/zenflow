@@ -42,10 +42,10 @@ class MCPPersistenceTest {
     try {
   // await testFn();
       this.passedCount++;
-      this.testResults.push({ name, passed: true });
+      this.testResults.push({ name, passed });
       this.log(`✅ ${name}`, 'green');
     } catch (error) {
-      this.testResults.push({ name, passed: false, error: error.message });
+      this.testResults.push({ name, passed, error: error.message });
       this.log(`❌ ${name}: ${error.message}`, 'red');
     }
   }
@@ -76,7 +76,7 @@ testMemoryUsageTool();
   // Store test data
   // await this.runTest('memory_usage store operation', async () => {
     const _key = `test_${Date.now()}`;
-    const _value = { test: true, timestamp: new Date().toISOString() };
+    const _value = { test, timestamp: new Date().toISOString() };
     const _result = execSync(;
     `node src/cli/cli-main.js mcp call memory_usage '{"action": "store", "key": "${key}", "value": ${JSON.stringify(JSON.stringify(value))}, "namespace": "test"}'`,
     encoding: 'utf8';
@@ -85,7 +85,7 @@ testMemoryUsageTool();
       throw new Error('Store operation failed');
     }
     // Verify in database
-    const _rows = await this.queryDatabase(;
+// const _rows = awaitthis.queryDatabase(;
     `SELECT * FROM memory_entries WHERE key = '${key}' AND namespace = 'test'`;
     )
     if (rows.length === 0) {
@@ -95,7 +95,7 @@ testMemoryUsageTool();
   // Retrieve test data
   // await this.runTest('memory_usage retrieve operation', async () => {
     const _key = `test_retrieve_${Date.now()}`;
-    const _value = { retrieve: true, time: Date.now() };
+    const _value = { retrieve, time: Date.now() };
     // First store
     execSync(;
     `npx claude-zen@alpha mcp call memory_usage '{"action": "store", "key": "${key}", "value": ${JSON.stringify(JSON.stringify(value))}, "namespace": "test"}'`,
@@ -137,7 +137,7 @@ testAgentSpawnPersistence();
     // Check if agent info is stored in memory
 
     // Even if not found in specific namespace, the spawn should have created some record
-    // This is a soft check as the implementation might use different storage patterns
+    // This is a soft check  implementation might use different storage patterns
   });
 }
 async;
@@ -147,15 +147,15 @@ testSwarmInitPersistence();
   // await this.runTest('swarm_init persists configuration', async () => {
     const _swarmId = `test_swarm_${Date.now()}`;
     const _result = execSync(;
-    `node src/cli/cli-main.js mcp call swarm_init '{"topology": "mesh", "maxAgents": 3, "swarmId": "${swarmId}"}'`,
+    `node src/cli/cli-main.js mcp call swarm_init '{"topology": "mesh", "maxAgents", "swarmId": "${swarmId}"}'`,
     encoding: 'utf8';
     )
     if (!result.includes('"initialized":true')) {
       throw new Error('Swarm init failed');
     }
     // Verify some persistence happened
-    const _rows = await this.queryDatabase(;
-    `SELECT COUNT(*) as count FROM memory_entries WHERE created_at > datetime('now', '-1 minute')`;
+// const _rows = awaitthis.queryDatabase(;
+    `SELECT COUNT(*)  FROM memory_entries WHERE created_at > datetime('now', '-1 minute')`;
     )
     if (rows[0].count === 0) {
       throw new Error('No new database entries created during swarm init');
@@ -176,7 +176,7 @@ testHooksPersistence();
       throw new Error('Hook notification not saved');
     }
     // Verify in database
-    const _rows = await this.queryDatabase(;
+// const _rows = awaitthis.queryDatabase(;
     `SELECT * FROM messages WHERE key LIKE '%notify%' ORDER BY timestamp DESC LIMIT 1`;
     )
     if (rows.length === 0) {
@@ -189,7 +189,7 @@ testDatabaseStructure();
 {
   this.log('\n🏗️ Testing database structure...', 'blue');
   // await this.runTest('memory_entries table exists', async () => {
-    const _tables = await this.queryDatabase(;
+// const _tables = awaitthis.queryDatabase(;
     `SELECT name FROM sqlite_master WHERE type='table' AND name='memory_entries'`;
     )
     if (tables.length === 0) {
@@ -197,7 +197,7 @@ testDatabaseStructure();
     }
   });
   // await this.runTest('messages table exists', async () => {
-    const _tables = await this.queryDatabase(;
+// const _tables = awaitthis.queryDatabase(;
     `SELECT name FROM sqlite_master WHERE type='table' AND name='messages'`;
     )
     if (tables.length === 0) {
@@ -205,7 +205,7 @@ testDatabaseStructure();
     }
   });
   // await this.runTest('Database indexes exist', async () => {
-    const _indexes = await this.queryDatabase(;
+// const _indexes = awaitthis.queryDatabase(;
     `SELECT name FROM sqlite_master WHERE type='index' AND name LIKE 'idx_%'`;
     )
     if (indexes.length === 0) {
@@ -226,7 +226,7 @@ testConcurrentAccess();
       new Promise((resolve, reject) => {
         try {
               const _result = execSync(;
-                `npx claude-zen@alpha mcp call memory_usage '{"action": "store", "key": "${key}", "value": "test${i}", "namespace": "concurrent"}'`,encoding: 'utf8' 
+                `npx claude-zen@alpha mcp call memory_usage '{"action": "store", "key": "${key}", "value": "test${i}", "namespace": "concurrent"}'`,encoding: 'utf8'
               );
               resolve(result);
             } catch (error) {
@@ -235,7 +235,7 @@ testConcurrentAccess();
       });
       )
     }
-    const _results = await Promise.all(promises);
+// const _results = awaitPromise.all(promises);
     // Verify all succeeded
     for (const result of results) {
       if (!result.includes('"success":true')) {
@@ -243,8 +243,8 @@ testConcurrentAccess();
       }
     }
     // Verify all entries in database
-    const _rows = await this.queryDatabase(;
-    `SELECT COUNT(*) as count FROM memory_entries WHERE namespace = 'concurrent'`;
+// const _rows = awaitthis.queryDatabase(;
+    `SELECT COUNT(*)  FROM memory_entries WHERE namespace = 'concurrent'`;
     )
     if (rows[0].count < 5) {
       throw new Error(`Expected at least 5 concurrent entries, found ${rows[0].count}`);
@@ -287,7 +287,7 @@ saveResults();
   failed: this.testCount - this.passedCount,
   details: this.testResults,
   dbPath: this.dbPath,
-  dbSize: fs.existsSync(this.dbPath) ? fs.statSync(this.dbPath).size : 0
+  dbSize: fs.existsSync(this.dbPath) ? fs.statSync(this.dbPath).size
 }
 // Store results using MCP
 execSync(;

@@ -20,7 +20,7 @@ export class InputValidator {
       /\$\(.*?\)/gi,
       /`.*?`/gi;
     ];
-;
+
     // SQL injection patterns
     this.sqlInjectionPatterns = [
       /('|(\\'))|(;|--|\/\*|\*\/)/gi,
@@ -29,7 +29,7 @@ export class InputValidator {
       /\b(or|and)\s+['"]\w+['"]s*=\s*['"]\w+['"]/gi;
     ];
   }
-;
+
   /**
    * Validate and sanitize string input;
    */;
@@ -43,7 +43,7 @@ export class InputValidator {
       sanitize = true,
       fieldName = 'value';
     } = options;
-;
+
     // Type check
     if(typeof value !== 'string') {
       if(required) {
@@ -51,39 +51,39 @@ export class InputValidator {
       }
       return allowEmpty ? '' : null;
     //   // LINT: unreachable code removed}
-;
+
     // Empty check
     if (!value.trim() && required) {
       throw new CliError(`${fieldName} is required`, 'VALIDATION_ERROR');
     }
-;
+
     // Length validation
     if(value.length < minLength) {
       throw new CliError(`${fieldName} must be at least ${minLength} characters`, 'VALIDATION_ERROR');
     }
-;
+
     if(value.length > maxLength) {
       throw new CliError(`${fieldName} must not exceed ${maxLength} characters`, 'VALIDATION_ERROR');
     }
-;
+
     // Pattern validation
     if (pattern && !pattern.test(value)) {
       throw new CliError(`${fieldName} format is invalid`, 'VALIDATION_ERROR');
     }
-;
+
     // Security validation
     if (this.containsDangerousContent(value)) {
       throw new CliError(`${fieldName} contains potentially dangerous content`, 'SECURITY_ERROR');
     }
-;
+
     if (this.containsSqlInjection(value)) {
       throw new CliError(`${fieldName} contains potential SQL injection`, 'SECURITY_ERROR');
     }
-;
+
     // Sanitization
     return sanitize ? this.sanitizeString(value) : value;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Validate number input;
    */;
@@ -95,7 +95,7 @@ export class InputValidator {
       integer = false,
       fieldName = 'value';
     } = options;
-;
+
     // Convert if string
     if(typeof value === 'string') {
       const _parsed = integer ? parseInt(value, 10) : parseFloat(value);
@@ -107,7 +107,7 @@ export class InputValidator {
     //   // LINT: unreachable code removed}
       value = parsed;
     }
-;
+
     // Type check
     if(typeof value !== 'number') {
       if(required) {
@@ -115,30 +115,30 @@ export class InputValidator {
       }
       return null;
     //   // LINT: unreachable code removed}
-;
+
     // Range validation
     if(value < min) {
       throw new CliError(`${fieldName} must be at least ${min}`, 'VALIDATION_ERROR');
     }
-;
+
     if(value > max) {
       throw new CliError(`${fieldName} must not exceed ${max}`, 'VALIDATION_ERROR');
     }
-;
+
     // Integer validation
     if (integer && !Number.isInteger(value)) {
       throw new CliError(`${fieldName} must be an integer`, 'VALIDATION_ERROR');
     }
-;
+
     return value;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Validate boolean input;
    */;
   validateBoolean(value, options = {}): unknown {
     let { required = false, fieldName = 'value' } = options;
-;
+
     // Convert string representations
     if(typeof value === 'string') {
       const _lower = value.toLowerCase();
@@ -149,7 +149,7 @@ export class InputValidator {
         return false;
     //   // LINT: unreachable code removed}
     }
-;
+
     // Type check
     if(typeof value !== 'boolean') {
       if(required) {
@@ -157,10 +157,10 @@ export class InputValidator {
       }
       return null;
     //   // LINT: unreachable code removed}
-;
+
     return value;
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Validate array input;
    */;
@@ -172,7 +172,7 @@ export class InputValidator {
       itemValidator = null,
       fieldName = 'value';
     } = options;
-;
+
     // Type check
     if (!Array.isArray(value)) {
       if(required) {
@@ -180,16 +180,16 @@ export class InputValidator {
       }
       return null;
     //   // LINT: unreachable code removed}
-;
+
     // Length validation
     if(value.length < minItems) {
       throw new CliError(`${fieldName} must have at least ${minItems} items`, 'VALIDATION_ERROR');
     }
-;
+
     if(value.length > maxItems) {
       throw new CliError(`${fieldName} must not exceed ${maxItems} items`, 'VALIDATION_ERROR');
     }
-;
+
     // Item validation
     if(itemValidator) {
       return value.map((item, _index) => {
@@ -204,16 +204,16 @@ export class InputValidator {
       }
       return null;
     //   // LINT: unreachable code removed}
-;
+
     const _result = {};
-;
+
     // Validate each field in schema
     for (const [key, validator] of Object.entries(schema)) {
       try {
         const _fieldValue = value[key];
         result[key] = validator(fieldValue, {fieldName = > pattern.test(value));
   }
-;
+
   /**
    * Check for SQL injection patterns;
    */;
@@ -226,13 +226,13 @@ export class InputValidator {
   sanitizeString(value): unknown ;
     return value;
     // .replace(/</g, '&lt;'); // LINT: unreachable code removed
-      .replace(/>/g, '&gt;');
-      .replace(/"/g, '&quot;');
-      .replace(/'/g, '&#x27;');
-      .replace(/\//g, '&#x2F;')
-      .replace(/\x00/g, '') // Remove null bytes
-      .trim();
-;
+replace(/>/g, '&gt;');
+replace(/"/g, '&quot;');
+replace(/'/g, '&#x27;');
+replace(/\//g, '&#x2F;')
+replace(/\x00/g, '') // Remove null bytes
+trim();
+
   /**
    * Validate document data;
    */;

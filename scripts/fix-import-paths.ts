@@ -16,14 +16,14 @@ const ___dirname = dirname(__filename);
 /**
  * Import fix configuration;
  */
-interface ImportFix {
+// interface ImportFix {
   from: string;
   to: string;
 }
 /**
  * File processing statistics;
  */
-interface ProcessingStats {
+// interface ProcessingStats {
   filesProcessed: number;
   filesModified: number;
   errorsEncountered: number;
@@ -35,27 +35,23 @@ interface ProcessingStats {
  * @param filePath - Absolute path to the file to process;
  * @param stats - Statistics object to update;
  */
-async function _fixImportPaths(filePath: string, stats: ProcessingStats): Promise<void> {
+async function _fixImportPaths(filePath, stats: ProcessingStats): Promise<void> {
   try {
     stats.filesProcessed++;
-    const _content = await fs.readFile(filePath, 'utf-8');
+// const _content = awaitfs.readFile(filePath, 'utf-8');
     const _modified = false;
     // Fix relative import path depth issues in CLI commands
     if (filePath.includes('/cli/commands/')) {
       const _relativePaths = [
         {
           wrong: '../utils/error-handler.js',
-          correct: '../../utils/error-handler.js',
-        },
+          correct: '../../utils/error-handler.js' },
         {
           wrong: '../core/logger.js',
-          correct: '../../core/logger.js',
-        },
+          correct: '../../core/logger.js' },
         {
           wrong: '../memory/memory-manager.js',
-          correct: '../../memory/memory-manager.js',
-        },
-      ];
+          correct: '../../memory/memory-manager.js' } ];
       for (const pathFix of relativePaths) {
         if (content.includes(pathFix.wrong)) {
           content = content.replace(new RegExp(pathFix.wrong, 'g'), pathFix.correct);
@@ -68,37 +64,29 @@ async function _fixImportPaths(filePath: string, stats: ProcessingStats): Promis
       // EventEmitter should be a value import
       {
         from: "import type { EventEmitter } from 'events';",
-        to: "import { EventEmitter } from 'events';",
-      },
+        to: "import { EventEmitter } from 'events';" },
       {
         from: "import type { EventEmitter } from 'node:events';",
-        to: "import { EventEmitter } from 'node:events';",
-      },
+        to: "import { EventEmitter } from 'node:events';" },
       // Command should be a value import for Cliffy
       {
         from: "import type { Command } from '@cliffy/command';",
-        to: "import { Command } from '@cliffy/command';",
-      },
+        to: "import { Command } from '@cliffy/command';" },
       // Logger should be a value import
       {
         from: "import type { Logger } from '../../core/logger.js';",
-        to: "import { Logger } from '../../core/logger.js';",
-      },
+        to: "import { Logger } from '../../core/logger.js';" },
       {
         from: "import type { AdvancedMemoryManager } from '../../memory/advanced-memory-manager.js';",
-        to: "import { AdvancedMemoryManager } from '../../memory/advanced-memory-manager.js';",
-      },
+        to: "import { AdvancedMemoryManager } from '../../memory/advanced-memory-manager.js';" },
       // Database connections should be value imports
       {
         from: "import type { Database } from 'sqlite3';",
-        to: "import { Database } from 'sqlite3';",
-      },
+        to: "import { Database } from 'sqlite3';" },
       // Express types that are used as constructors
       {
         from: "import type { Express, Router } from 'express';",
-        to: "import { Express } from 'express';",
-      },
-    ];
+        to: "import { Express } from 'express';" } ];
     // Apply type import fixes
     for (const fix of typeImportFixes) {
       if (content.includes(fix.from)) {
@@ -108,7 +96,7 @@ async function _fixImportPaths(filePath: string, stats: ProcessingStats): Promis
     }
     // Fix missing .js extensions in relative imports (ESM requirement)
     const _relativeImportPattern = /from\s+['"](\.\/?[^'"]*?)['"];?/g;
-    content = content.replace(relativeImportPattern, (match: string, importPath: string) => {
+    content = content.replace(relativeImportPattern, (match, importPath: string) => {
       // Don't modify if already has extension or is JSON
       if (importPath.includes('.')) {
         return match;
@@ -122,11 +110,11 @@ async function _fixImportPaths(filePath: string, stats: ProcessingStats): Promis
     //   // LINT: unreachable code removed});
     // Update file if modifications were made
     if (modified) {
-      await fs.writeFile(filePath, content);
+// await fs.writeFile(filePath, content);
       stats.filesModified++;
       console.warn(`✅ Fixed import paths in: ${filePath}`);
     }
-  } catch (/* error */) {
+  } catch (error) {
     stats.errorsEncountered++;
     const _errorMessage = error instanceof Error ? error.message : String(error);
     console.error(`❌ Error processing ${filePath}:`, errorMessage);
@@ -142,19 +130,19 @@ async function _fixImportPaths(filePath: string, stats: ProcessingStats): Promis
 async function findTypeScriptFiles(dir: string): Promise<string[]> {
   const _files: string[] = [];
   try {
-    const _entries = await fs.readdir(dir, { withFileTypes: true });
+// const _entries = awaitfs.readdir(dir, { withFileTypes});
     for (const entry of entries) {
       const _fullPath = join(dir, entry.name);
       // Skip excluded directories
       const _excludedDirs = ['node_modules', 'dist', '.git', 'coverage', 'build'];
       if (entry.isDirectory() && !excludedDirs.includes(entry.name)) {
-        const _subFiles = await findTypeScriptFiles(fullPath);
+// const _subFiles = awaitfindTypeScriptFiles(fullPath);
         files.push(...subFiles);
       } else if (entry.isFile() && entry.name.endsWith('.ts')) {
         files.push(fullPath);
       }
     }
-  } catch (/* error */) {
+  } catch (error) {
     const _errorMessage = error instanceof Error ? error.message : String(error);
     console.error(`Error reading directory ${dir}:`, errorMessage);
   }
@@ -168,12 +156,11 @@ async function _main(): Promise<void> {
   try {
     const _srcDir = join(dirname(__dirname), 'src');
     const _stats: ProcessingStats = {
-      filesProcessed: 0,
-      filesModified: 0,
-      errorsEncountered: 0,
-    };
+      filesProcessed,
+      filesModified,
+      errorsEncountered};
     console.warn('🔍 Scanning for TypeScript files...');
-    const _files = await findTypeScriptFiles(srcDir);
+// const _files = awaitfindTypeScriptFiles(srcDir);
     console.warn(`📁 Found ${files.length} TypeScript files to check for import path issues...`);
 
     // Process files in parallel batches for performance
@@ -181,7 +168,7 @@ async function _main(): Promise<void> {
     for (let i = 0; i < files.length; i += batchSize) {
       const _batch = files.slice(i, i + batchSize);
       const _batchPromises = batch.map((file) => _fixImportPaths(file, stats));
-      await Promise.all(batchPromises);
+// await Promise.all(batchPromises);
       // Progress reporting
       const _progress = Math.min(((i + batchSize) / files.length) * 100, 100);
       console.warn(`📊 Progress: ${progress.toFixed(1)}% (${i + batchSize}/${files.length})`);
@@ -201,7 +188,7 @@ async function _main(): Promise<void> {
       console.warn('\n⚠️ Import path fixes completed with some errors. Check logs above.');
       process.exit(1);
     }
-  } catch (/* error */) {
+  } catch (error) {
     const _errorMessage = error instanceof Error ? error.message : String(error);
     console.error('❌ Fatal error in main process:', errorMessage);
     process.exit(1);

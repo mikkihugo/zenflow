@@ -11,7 +11,7 @@ async function debugServer() {
   try {
     const _app = express();
     app.get('/health', (_req, res) => {
-      res.json({ status: 'ok', port: 3000 });
+      res.json({ status: 'ok', port });
     });
     app.get('/', (_req, res) => {
       res.send('<h1>Debug Server Working</h1>');

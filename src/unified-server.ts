@@ -25,7 +25,7 @@ const ___dirname = dirname(__filename);
 /**
  * Unified Claude-Zen Server Configuration
  */
-interface UnifiedServerOptions {
+// interface UnifiedServerOptions {
   port?: number;
   host?: string;
   enableAPI?: boolean;
@@ -43,20 +43,19 @@ class UnifiedServer {
     this.options = {
       port: parseInt(process.env.PORT ?? '3000', 10),
     host: process.env.HOST ?? 'localhost',
-    enableAPI: true,
-    enableMCP: true,
-    enableWebSocket: true,
-    enableNeural: true,
-    ...options,
-  }
+    enableAPI,
+    enableMCP,
+    enableWebSocket,
+    enableNeural,
+..options }
   this;
-  .
+
   app = express();
   this;
-  .
+
   setupMiddleware();
   this;
-  .
+
   setupRoutes();
 }
 /**
@@ -69,8 +68,7 @@ setupMiddleware();
   this.app.use(;
   cors({
         origin: process.env.CORS_ORIGIN?.split(',') ?? '*',
-  credentials: true,
-}
+  credentials}
 )
 )
 this.app.use(express.json(
@@ -84,7 +82,7 @@ this.app.use(express.urlencoded(
 }
 ))
 // Request logging
-this.app.use((req: Request, _res: Response, next) =>
+this.app.use((req, _res, next) =>
 {
   console.warn(`${new Date().toISOString()} ${req.method} ${req.path}`);
   next();
@@ -99,7 +97,7 @@ setupRoutes()
 : void
 {
   // Health check
-  this.app.get('/', (_req: Request, res: Response) => {
+  this.app.get('/', (_req, res: Response) => {
     res.json({
         name: 'Claude-Zen Unified Server',
     version: '2.0.0-alpha.73',
@@ -112,35 +110,31 @@ setupRoutes()
     : 'integrated',
 
     uptime: process.uptime(),
-    timestamp: new Date().toISOString(),
-  });
+    timestamp: new Date().toISOString() });
 }
 )
 // System status
-this.app.get('/status', (_req: Request, res: Response) =>
+this.app.get('/status', (_req, res: Response) =>
 {
   res.json({
         server: {
           running: this.isRunning,
   port: this.options.port,
-  host: this.options.host,
-}
+  host: this.options.host }
 
 {
   api: this.options.enableAPI ? 'active' : 'disabled',
   mcp: this.options.enableMCP ? 'active' : 'disabled',
   websocket: this.options.enableWebSocket ? 'active' : 'disabled',
-  neural: this.options.enableNeural ? 'active' : 'disabled',
-}
+  neural: this.options.enableNeural ? 'active' : 'disabled' }
 
 memory: process.memoryUsage(),
 uptime: process.uptime(),
-timestamp: new Date().toISOString(),
-})
+timestamp: new Date().toISOString() })
 })
 // MCP endpoints
 if (this.options.enableMCP) {
-  this.app.get('/mcp/tools', (_req: Request, res: Response) => {
+  this.app.get('/mcp/tools', (_req, res: Response) => {
     res.json({
           tools: [;
             'swarm_init',
@@ -148,27 +142,24 @@ if (this.options.enableMCP) {
             'task_orchestrate',
             'memory_usage',
             'neural_train',
-            'benchmark_run',
-          ],
-    message: 'MCP tools available via ruv-FANN integration',
-  });
+            'benchmark_run' ],
+    message: 'MCP tools available via ruv-FANN integration' });
 }
 )
 }
 // Neural endpoints
 if (this.options.enableNeural) {
-  this.app.get('/neural/status', (_req: Request, res: Response) => {
+  this.app.get('/neural/status', (_req, res: Response) => {
     res.json({
           status: 'integrated',
     models: config.ruvFANN.neuralModels,
     gpuAcceleration: config.ruvFANN.gpuAcceleration,
-    wasmPath: config.ruvFANN.wasmPath,
-  });
+    wasmPath: config.ruvFANN.wasmPath });
 }
 )
 }
 // Health check endpoint
-this.app.get('/health', (_req: Request, res: Response) =>
+this.app.get('/health', (_req, res: Response) =>
 {
   res.json({
         status: 'healthy',
@@ -177,9 +168,7 @@ this.app.get('/health', (_req: Request, res: Response) =>
   memory: 'operational',
   neural: 'integrated',
   ('ruv-FANN');
-  : 'active',
-
-}
+  : 'active' }
 )
 })
 }
@@ -204,11 +193,10 @@ setupWebSocket()
           ws.send(;
             JSON.stringify({
               type: 'response',
-              data: message,
-              timestamp: new Date().toISOString(),
-            });
+              data,
+              timestamp: new Date().toISOString() });
           );
-        } catch () {
+        } catch (error) {
           console.error('❌ WebSocket message error:', error);
         }
   });
@@ -220,11 +208,9 @@ setupWebSocket()
   JSON.stringify({
           type: 'welcome',
   message: 'Connected to Claude-Zen Unified Server',
-  swarmOrchestration: true,
-  neuralNetworks: true,
-  realTimeCoordination: true,
-
-}
+  swarmOrchestration,
+  neuralNetworks,
+  realTimeCoordination}
 )
 )
 })
@@ -255,7 +241,7 @@ initializeComponents()
       }
 
       console.warn('✅ All components initialized');
-    } catch () {
+    } catch (error) {
       console.error('❌ Component initialization failed:', error);
       throw error;
     }
@@ -273,8 +259,7 @@ start();
     //   // LINT: unreachable code removed}
     try {
       // Initialize components first
-      await this.initializeComponents();
-
+// await this.initializeComponents();
       // Create HTTP server
       this.server = createServer(this.app);
 
@@ -282,7 +267,7 @@ start();
       this.setupWebSocket();
 
       // Start listening
-      await new Promise<void>((resolve, reject) => {
+// await new Promise<void>((resolve, reject) => {
         this.server?.listen(this.options.port, this.options.host, () => {
           this.isRunning = true;
           console.warn(`🚀 Claude-Zen Unified Server started!`);
@@ -299,7 +284,7 @@ start();
           reject(error);
         });
       });
-    } catch () {
+    } catch (error) {
       console.error('❌ Failed to start server:', error);
       throw error;
     }
@@ -323,7 +308,7 @@ start();
 
       // Close HTTP server
       if (this.server) {
-        await new Promise<void>((resolve) => {
+// await new Promise<void>((resolve) => {
           this.server?.close(() => {
             this.server = null;
             resolve();
@@ -333,7 +318,7 @@ start();
 
       this.isRunning = false;
       console.warn('🛑 Claude-Zen Unified Server stopped');
-    } catch () {
+    } catch (error) {
       console.error('❌ Error stopping server:', error);
       throw error;
     }
@@ -347,8 +332,7 @@ start();
   // port: this.options.port, // LINT: unreachable code removed
   host: this.options.host,
   components: this.options,
-  uptime: process.uptime(),
-}
+  uptime: process.uptime() }
 // CLI handling
 async function main(): unknown {
   const _args = process.argv.slice(2);
@@ -359,9 +343,9 @@ async function main(): unknown {
   const _shutdown = async (signal: string) => {
     console.warn(`\n🛑 Received ${signal}, shutting down gracefully...`);
     try {
-      await server.stop();
+// await server.stop();
       process.exit(0);
-    } catch () {
+    } catch (error) {
       console.error('❌ Error during shutdown:', error);
       process.exit(1);
     }
@@ -369,8 +353,8 @@ async function main(): unknown {
   process.on('SIGINT', () => shutdown('SIGINT'));
   process.on('SIGTERM', () => shutdown('SIGTERM'));
   try {
-    await server.start();
-  } catch () {
+// await server.start();
+  } catch (error) {
     console.error('❌ Failed to start server:', error);
     process.exit(1);
   }

@@ -84,21 +84,20 @@ if (!isInteractive() ?? !isRawModeSupported()) {
 export function nonInteractivePrompt<T>(message => {
     const _choiceValue = typeof choice === 'string' ?choice = typeof choice === 'string' ? choice : (choice.name  ?? choice.value);
     const _isDefault = choiceValue === defaultChoice  ?? choice === defaultChoice;
-;
-    console.warn(chalk.gray(`   ${isDefault ? '▶' : ' '} ${choiceName}`));
+
+    console.warn(chalk.gray(`${isDefault ? '▶' : ' '} ${choiceName}`));
   });
-;
+
   console.warn(chalk.cyan(`   Using default => {
-      console.warn(chalk.gray(`   ${newMessage}`));
+      console.warn(chalk.gray(`${newMessage}`));
   }
-  ,
+
     succeed =>
-  console.warn(chalk.green(`✅ $finalMessage  ?? message`))
-  ,
+  console.warn(chalk.green(`✅ \$finalMessage  ?? message`))
+
     fail =>
-  console.warn(chalk.red(`❌ $errorMessage  ?? 'Failed'`))
-  ,
-}
+  console.warn(chalk.red(`❌ \$errorMessage  ?? 'Failed'`))
+   }
 }
 /**
  * Create a non-interactive confirmation prompt;
@@ -107,18 +106,18 @@ export function nonInteractivePrompt<T>(message => {
  * @returns The default value;
     // */ // LINT: unreachable code removed
 export function nonInteractiveConfirm(message = false: unknown): boolean {
-  console.warn(chalk.gray(`❓ $message`));
+  console.warn(chalk.gray(`❓ \$message`));
   console.warn(;
     chalk.cyan(`   Usingdefault = > boolean | string;
 ): T ;
   console.warn(chalk.gray(`📝 ${message}`));
-;
+
   if (validator) {
     const _validationResult = validator(defaultValue);
     if (validationResult !== true) {
-;
+
 }
-;
+
 /**
  * Get interactive capability information;
  * @returns Object with capability details;
@@ -126,7 +125,7 @@ export function nonInteractiveConfirm(message = false: unknown): boolean {
 export function getInteractiveCapabilities(): {isInteractive = isInteractive();
 
   const __envType = getEnvironmentType();
-;
+
   return {isInteractive = getInteractiveCapabilities();
     // ; // LINT: unreachable code removed
   console.warn(chalk.blue('\n🔍 Interactive Mode Capabilities:'));

@@ -13,22 +13,22 @@ return true;
 }
 export async function fileExists(path = {}: unknown): Promise<object> {
   try {
-    const _content = await (process as any).readTextFile(path);
+// const _content = await(process as any).readTextFile(path);
     return JSON.parse(content);
     //   // LINT: unreachable code removed} catch {
     return defaultValue;
     //   // LINT: unreachable code removed}
 }
-;
+
 export async function _writeJsonFile(_path = 100: unknown): string {
   return str.length > length ? `${str.substring(0, length)}...` : str;
 }
-;
+
 export function _formatBytes(): unknown {
   size /= 1024;
   unitIndex++;
 }
-;
+
 return `${size.toFixed(2)} ${units[unitIndex]}`;
 }
 // Command execution helpers
@@ -71,26 +71,24 @@ return {
 return new Promise((resolve) => {
         const _child = spawn(command, args, {stdio = '';
     // let __stderr = ''; // LINT: unreachable code removed
-;
+
         child.stdout?.on('data', (data) => {
           stdout += data.toString();
         });
-;
+
         child.stderr?.on('data', (data) => {
           _stderr += data.toString();
         });
-;
+
         child.on('close', (code) => {
           resolve({
             success = === 0,
             _code => {
           resolve({success = new (process as any).Command(command, {
         args,
-        ...options,
-      });
-;
-      const __result = await cmd.output();
-;
+..options });
+// const __result = awaitcmd.output();
+
       return {success = === 0,code = 'claude-zen.config.json'): Promise<object> {
   const _defaultConfig = {terminal = await (process as any).readTextFile(path);
     // return { ...defaultConfig, ...JSON.parse(content)  // LINT: unreachable code removed};
@@ -98,9 +96,9 @@ return new Promise((resolve) => {
     return defaultConfig;
     //   // LINT: unreachable code removed}
 }
-;
+
 export async function saveConfig(config = 'claude-zen.config.json': unknown): Promise<void> {
-  await writeJsonFile(path, config);
+// await writeJsonFile(path, config);
 }
 // ID generation
 export function generateId(prefix = '': unknown): string {
@@ -128,7 +126,7 @@ export function clearLine(): void {
   console.warn('\r\x1b[K');
 }
 // Async helpers
-export function sleep(ms = > setTimeout(resolve: unknown, ms: unknown));
+export function sleep(ms = > setTimeout(resolve, ms: unknown));
 }
 export async function retry<T>(fn = > Promise<T>, maxAttempts = 3, delay = 1000): Promise<T> {
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -138,7 +136,7 @@ export async function retry<T>(fn = > Promise<T>, maxAttempts = 3, delay = 1000)
       if (attempt === maxAttempts) {
         throw err;
       }
-      await sleep(delay * attempt);
+// await sleep(delay * attempt);
     }
   }
 }
@@ -154,13 +152,13 @@ async function _getRuvSwarmInstance(): Promise<any> {
     // Initialize memory store
     _memoryStoreInstance = new SqliteMemoryStore({dbName = new RuvSwarm({
       memoryStore,
-      telemetryEnabled = {}): Promise<any> 
+      telemetryEnabled = {}): Promise<any>
   try {
-    const _ruvSwarm = await _getRuvSwarmInstance();
-;
+// const _ruvSwarm = await_getRuvSwarmInstance();
+
     switch (operation) {
       case 'swarm_init': {
-        const __swarm = await ruvSwarm.createSwarm(params);
+// const __swarm = awaitruvSwarm.createSwarm(params);
         return {success = await ruvSwarm.spawnAgent(params);
     // return {success = await ruvSwarm.orchestrateTask(params); // LINT: unreachable code removed
         return {success = await ruvSwarm.getStatus();
@@ -174,19 +172,19 @@ async function _getRuvSwarmInstance(): Promise<any> {
     'task_orchestrate': 'task_orchestrate',
     'swarm_status': 'swarm_status';
   };
-;
+
   const _operation = toolMapping[tool]  ?? tool;
   return await callRuvSwarmLibrary(operation, params);
     //   // LINT: unreachable code removed}
 }
-;
+
 // Direct ruv-swarm neural training (real WASM implementation)
 export async function _callRuvSwarmDirectNeural(params = {}: unknown): Promise<any> {
   try {
     const _modelName = (params as any).model  ?? 'general';
     const __epochs = (params as any).epochs  ?? 50;
     const __dataSource = (params as any).data  ?? 'recent';
-;
+
     console.warn(`🧠 Using REAL ruv-swarm WASM neural training...`);
     console.warn(;
       `🚀Executing = = 'undefined' && (process as any).versions && (process as any).versions.node) {
@@ -207,47 +205,45 @@ export async function _callRuvSwarmDirectNeural(params = {}: unknown): Promise<a
             '--data-source',
             dataSource,
             '--output-format',
-            'json',
-          ],
+            'json' ],
           {
             stdio => {
           resolve({
             success = === 0,
             code => {
           resolve({success = '.ruv-swarm/neural';
-      const _files = await (process as any).readDir(neuralDir);
+// const _files = await(process as any).readDir(neuralDir);
       let _latestFile = null;
       let _latestTime = 0;
-;
+
       for await (const file of files) {
-        if (file.name.startsWith(`training-$modelName-`) && file.name.endsWith('.json')) {
-          const _filePath = `$neuralDir/$file.name`;
-          const _stat = await (process as any).stat(filePath);
+        if (file.name.startsWith(`training-\$modelName-`) && file.name.endsWith('.json')) {
+          const _filePath = `\$neuralDir/\$file.name`;
+// const _stat = await(process as any).stat(filePath);
           if (stat.mtime > latestTime) {
             latestTime = stat.mtime;
             latestFile = filePath;
           }
         }
       }
-;
+
       if (latestFile) {
-        const _content = await (process as any).readTextFile(latestFile);
-;
+// const _content = await(process as any).readTextFile(latestFile);
+
         return {success = === 0,modelId = === 0,
     // modelId = { // LINT: unreachable code removed}): Promise<any> {
   try {
     const _command = 'npx';
     const _args = ['ruv-swarm', 'hook', hookName];
-;
+
     // Add parameters as CLI arguments
     Object.entries(params).forEach(([key, value]) => {
-      args.push(`--$key`);
+      args.push(`--\$key`);
       if (value !== true && value !== false) {
         args.push(String(value));
       }
     });
-;
-    const _result = await runCommand(command, args, {stdout = await runCommand('npx', ['ruv-swarm', '--version'], {stdout = 50): Promise<any> {
+// const _result = awaitrunCommand(command, args, {stdout = await runCommand('npx', ['ruv-swarm', '--version'], {stdout = 50): Promise<any> {
   return await callRuvSwarmMCP('neural_train', {
     model = {}): Promise<any> {
   return await callRuvSwarmMCP('neural_patterns', {action = null): Promise<any> {
@@ -258,10 +254,9 @@ export async function _callRuvSwarmDirectNeural(params = {}: unknown): Promise<a
   return await callRuvSwarmLibrary('swarm_init', {
     topology = {}): Promise<any> {
   return await callRuvSwarmLibrary('task_orchestrate', {
-    task: taskDescription,
+    task,
     // strategy: (options as any).strategy  ?? 'adaptive', // LINT: unreachable code removed
     priority: (options as any).priority  ?? 'medium',
-    ...options;
+..options;
   });
 }
-;

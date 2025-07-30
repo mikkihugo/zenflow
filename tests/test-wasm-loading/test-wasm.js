@@ -10,11 +10,10 @@ async function checkWasmFiles() {
   const _globalPaths = [
     '/home/codespace/nvm/current/lib/node_modules/ruv-swarm/wasm',
     '/usr/local/lib/node_modules/ruv-swarm/wasm',
-    '/usr/lib/node_modules/ruv-swarm/wasm',
-  ];
+    '/usr/lib/node_modules/ruv-swarm/wasm' ];
   for (const path of globalPaths) {
     try {
-      const _files = await fs.readdir(path);
+// const _files = awaitfs.readdir(path);
       console.warn(`✅ Found global installation at: ${path}`);
       console.warn(`   Files: ${files.join(', ')}`);
       // Check for specific WASM files
@@ -33,7 +32,7 @@ async function checkWasmFiles() {
   console.warn('\nChecking local installation...');
   const _localPath = join(__dirname, 'node_modules/ruv-swarm/wasm');
   try {
-    const _files = await fs.readdir(localPath);
+// const _files = awaitfs.readdir(localPath);
     console.warn(`✅ Found local installation at: ${localPath}`);
     console.warn(`   Files: ${files.join(', ')}`);
   } catch (/* _error */) {

@@ -46,7 +46,7 @@ export class MetaRegistryManager extends EventEmitter {
 }
 // Setup federation if configured
 if (options.federation) {
-  await this.setupFederation(name, options.federation);
+// await this.setupFederation(name, options.federation);
 }
 this.emit('registryCreated', { name, registry });
 return registry;
@@ -66,16 +66,16 @@ removeRegistry(name, options =
     //   // LINT: unreachable code removed}
     // Drain connections if graceful shutdown
     if (options.graceful) {
-      await this.drainRegistry(name);
+// await this.drainRegistry(name);
     }
     // Remove from federations
     for (const [fedId, federation] of this.federations.entries()) {
       if (federation.registries.includes(name)) {
-        await this.removeFederationMember(fedId, name);
+// await this.removeFederationMember(fedId, name);
       }
     }
     // Close registry
-    await registryInfo.registry.close();
+// await registryInfo.registry.close();
     // Remove from collection
     this.registries.delete(name);
     // Update active registry if needed
@@ -117,10 +117,10 @@ removeRegistry(name, options =
       }
     }
     const _federation = new RegistryFederation(federationId, this, {registries = = false,
-    ...options
+..options
   }
   )
-  await federation.initialize()
+// await federation.initialize()
   this.federations.set(federationId, federation)
   this.emit('federationCreated', federationId, federation )
   return federation;
@@ -135,13 +135,13 @@ setupFederation(registryName, federationConfig);
   const { federationId, peers = [], role = 'member' } = federationConfig;
   // Create or join federation
   if (!this.federations.has(federationId)) {
-    await this.createFederation(federationId, [registryName], { role });
+// await this.createFederation(federationId, [registryName], { role });
   } else {
-    await this.addFederationMember(federationId, registryName);
+// await this.addFederationMember(federationId, registryName);
   }
   // Setup peer connections
   for (const peer of peers) {
-    await this.connectFederationPeer(federationId, peer);
+// await this.connectFederationPeer(federationId, peer);
   }
 }
 /**
@@ -155,7 +155,7 @@ addFederationMember(federationId, registryName);
   if (!federation) {
     throw new Error(`Federation '${federationId}' not found`);
   }
-  await federation.addMember(registryName);
+// await federation.addMember(registryName);
 }
 /**
  * Remove member from federation;
@@ -168,7 +168,7 @@ removeFederationMember(federationId, registryName);
   if (!federation) {
     return false;
     //   // LINT: unreachable code removed}
-    await federation.removeMember(registryName);
+// await federation.removeMember(registryName);
     return true;
   }
   /**
@@ -184,10 +184,9 @@ removeFederationMember(federationId, registryName);
     const _topology = new RegistryTopology(topologyId, this, {
     type, // mesh, hierarchical, ring, star, etc.
     registries,
-    ...options,
-  }
+..options }
   )
-  await topology.initialize()
+// await topology.initialize()
   this.topologies.set(topologyId, topology)
   this.emit('topologyCreated', topologyId, topology )
   return topology;
@@ -199,58 +198,58 @@ async;
 coordinateOperation(operation, (targets = []), (options = {}));
 : unknown
 {
-;
+
     if(!source) {
       throw new Error(`Source registry '${sourceRegistry}' not found`);
     }
-;
+
     // Discover data to replicate
-    const _data = await source.discover(query, options.discoveryOptions);
-;
+// const _data = awaitsource.discover(query, options.discoveryOptions);
+
     // Replicate to target registries
-    const _results = await Promise.allSettled(;
+// const _results = awaitPromise.allSettled(;
       targetRegistries.map(async (targetName) => {
         const _target = this.getRegistry(targetName);
         if(!target) {
           throw new Error(`Target registry '${targetName}' not found`);
         }
-;
+
         return {registry = > r.status === 'fulfilled').length,failed = > r.status === 'rejected').length;
     //   // LINT: unreachable code removed};
       });
     );
-;
+
     this.emit('dataReplicated', {
       sourceRegistry,
       targetRegistries,itemCount = new Map();
-;
+
     for (const [name, registryInfo] of this.registries.entries()) {
       try {
-        const _health = await registryInfo.registry.status();
+// const _health = awaitregistryInfo.registry.status();
         healthResults.set(name, {status = 'error';
         registryInfo.stats.errors++;
       }
     }
-;
+
     // Handle failover if needed
     if(this.options.failoverEnabled) {
-      await this.handleFailover(healthResults);
+// await this.handleFailover(healthResults);
     }
-;
+
     this.emit('healthCheck', {results = healthResults.get(this.activeRegistry);
-;
+
     if(activeHealth?.status === 'unhealthy') {
       // Find healthy alternative
       for (const [name, health] of healthResults.entries()) {
         if(health.status === 'healthy') {
-;
+
           this.activeRegistry = name;
-;
+
           this.emit('failover', {from = setInterval(() => {
       this.performHealthCheck();
     }, this.options.healthCheckInterval);
   }
-;
+
   /**
    * Start synchronization services;
    */;
@@ -258,15 +257,15 @@ coordinateOperation(operation, (targets = []), (options = {}));
     this.syncInterval = setInterval(() => {
       this.synchronizeFederations();
     }, this.options.syncInterval);
-;
+
   /**
    * Synchronize all federations;
    */;
   async synchronizeFederations() ;
     for (const federation of this.federations.values()) {
-      await federation.synchronize();
+// await federation.synchronize();
     }
-;
+
   /**
    * Setup registry event handlers;
    */;
@@ -278,29 +277,29 @@ coordinateOperation(operation, (targets = []), (options = {}));
       if(registryInfo) {
         registryInfo.stats.errors++;
       });
-;
+
   /**
    * Drain registry connections gracefully;
    */;
   async drainRegistry(name): unknown ;
     // Implementation would gradually reduce traffic to this registry
     this.emit('drainingRegistry', {registry = > setTimeout(resolve, 5000));
-;
+
   /**
    * Get comprehensive manager statistics;
    */;
   async getStats() {
     const _stats = {manager = (stats.registries.byStatus[info.status]  ?? 0) + 1;
     }
-;
+
     // Individual registry stats
     stats.registryDetails = {};
     for (const [name, info] of this.registries.entries()) {
       try {
         stats.registryDetails[name] = await info.registry.status();
-      } catch (/* error */) {
+      } catch (error) {
         stats.registryDetails[name] = {error = 'closing';
-;
+
     // Clear intervals
     if(this.healthMonitor) {
       clearInterval(this.healthMonitor);
@@ -308,27 +307,27 @@ coordinateOperation(operation, (targets = []), (options = {}));
     if(this.syncInterval) {
       clearInterval(this.syncInterval);
     }
-;
+
     // Close federations
     for (const federation of this.federations.values()) {
-      await federation.close();
+// await federation.close();
     }
-;
+
     // Close topologies
     for (const topology of this.topologies.values()) {
-      await topology.close();
+// await topology.close();
     }
-;
+
     // Close all registries
     for (const [name] of this.registries.entries()) {
-      await this.removeRegistry(name);
+// await this.removeRegistry(name);
     }
-;
+
     this.state = 'closed';
     this.emit('closed');
   }
 }
-;
+
 /**
  * Registry Load Balancer;
  * Intelligent routing of requests across registries;
@@ -338,16 +337,16 @@ class RegistryLoadBalancer {
     this.roundRobinIndex = 0;
     this.stats = new Map();
   }
-;
+
   selectRegistry(criteria = {}): unknown {
     const _availableRegistries = Array.from(this.manager.registries.entries());
-      .filter(([name, info]) => info.status === 'active');
-      .map(([name, info]) => (name, ...info ));
-;
+filter(([name, info]) => info.status === 'active');
+map(([name, info]) => (name, ...info ));
+
     if(availableRegistries.length === 0) {
       throw new Error('No healthy registries available');
     }
-;
+
     switch(this.manager.options.loadBalancing) {
       case 'round-robin':;
         return this.roundRobin(availableRegistries);
@@ -360,7 +359,7 @@ class RegistryLoadBalancer {
     this.roundRobinIndex++;
     return selected.registry;
     //   // LINT: unreachable code removed}
-;
+
   leastConnections(registries): unknown {
     // Simplified - in real implementation would track actual connections
     const _selected = registries.reduce((_min, _current) => ;
@@ -377,7 +376,7 @@ class RegistryLoadBalancer {
     // return 1 - errorRate; // LINT: unreachable code removed
   }
 }
-;
+
 /**
  * Registry Federation;
  * Manages distributed coordination across multiple registries;
@@ -392,12 +391,12 @@ class RegistryFederation extends EventEmitter {
     this.syncState = new Map();
     this.conflictResolver = new ConflictResolver(options.conflictResolution);
   }
-;
+
   async initialize() {
     // Setup federation coordination
     this.emit('initialized');
   }
-;
+
   async addMember(registryName): unknown {
     this.members.add(registryName);
     this.emit('memberAdded', { registry = {}): unknown {
@@ -407,52 +406,52 @@ class RegistryFederation extends EventEmitter {
     this.options = options;
     this.connections = new Map();
   }
-;
+
   async initialize() {
-    await this.buildTopology();
+// await this.buildTopology();
     this.emit('initialized');
   }
-;
+
   async buildTopology() {
     // Implementation would create topology-specific connections
     switch(this.options.type) {
       case 'mesh':;
-        await this.buildMeshTopology();
+// await this.buildMeshTopology();
         break;
       case 'hierarchical':;
-        await this.buildHierarchicalTopology();
+// await this.buildHierarchicalTopology();
         break;
       case 'ring':;
-        await this.buildRingTopology();
+// await this.buildRingTopology();
         break;
       case 'star':;
-        await this.buildStarTopology();
+// await this.buildStarTopology();
         break;
     }
   }
-;
+
   async buildMeshTopology() {
     // Connect every registry to every other registry
     const _registries = Array.from(this.options.registries);
     for(let i = 0; i < registries.length; i++) {
       for(let j = i + 1; j < registries.length; j++) {
-        await this.createConnection(registries[i], registries[j]);
+// await this.createConnection(registries[i], registries[j]);
       }
     }
   }
-;
+
   async buildHierarchicalTopology() {
     // Implementation for hierarchical connections
   }
-;
+
   async buildRingTopology() {
     // Implementation for ring connections
   }
-;
+
   async buildStarTopology() {
     // Implementation for star connections
   }
-;
+
   async createConnection(registry1, registry2): unknown {
     const _connectionId = `${registry1}-${registry2}`;
     this.connections.set(connectionId, {
@@ -460,10 +459,10 @@ class RegistryFederation extends EventEmitter {
     this.manager = manager;
     this.options = options;
   }
-;
+
   async execute() {
     const { operation, targets, strategy, timeout } = this.options;
-;
+
     switch(strategy) {
       case 'all-or-nothing':;
         return this.executeAllOrNothing();
@@ -472,49 +471,48 @@ class RegistryFederation extends EventEmitter {
     // case 'quorum':; // LINT: unreachable code removed
         return this.executeQuorum();default = new Map();
     const _rollbackActions = [];
-;
+
     try {
       for(const target of this.options.targets) {
         const _registry = this.manager.getRegistry(target);
         if(!registry) {
           throw new Error(`Registry '${target}' not found`);
         }
-;
-        const _result = await this.executeOnRegistry(registry, this.options.operation);
+// const _result = awaitthis.executeOnRegistry(registry, this.options.operation);
         results.set(target, result);
-;
+
         // Store rollback action
         rollbackActions.push(() => this.rollbackOperation(registry, result));
       }
-;
+
       return {status = > action()));
     // throw error; // LINT: unreachable code removed
     }
   }
-;
+
   async executeBestEffort() {
     // Execute on all, return partial success
-    const _results = await Promise.allSettled(;
+// const _results = awaitPromise.allSettled(;
     // this.options.targets.map(async (target) => { // LINT: unreachable code removed
         const _registry = this.manager.getRegistry(target);
         return this.executeOnRegistry(registry, this.options.operation);
     //   // LINT: unreachable code removed});
     );
-;
+
     return {status = > r.status === 'fulfilled').length,failed = > r.status === 'rejected').length;
     //   // LINT: unreachable code removed};
   }
-;
+
   async executeQuorum() {
     // Require majority success
-    const _results = await this.executeBestEffort();
+// const _results = awaitthis.executeBestEffort();
     const _quorumSize = Math.floor(this.options.targets.length / 2) + 1;
-;
+
     if(results.successful >= quorumSize) {
       return { ...results,status = 'last-write-wins'): unknown {
     this.strategy = strategy;
     //   // LINT: unreachable code removed}
-;
+
   resolve(conflicts): unknown ;
     switch(this.strategy) {
       case 'last-write-wins':;
@@ -527,7 +525,7 @@ class RegistryFederation extends EventEmitter {
       current.timestamp < earliest.timestamp ? current : earliest;
     );
   }
-;
+
   mergeConflicts(conflicts): unknown ;
     // Merge strategy would combine data from all conflicts
     return conflicts[0]; // Simplified

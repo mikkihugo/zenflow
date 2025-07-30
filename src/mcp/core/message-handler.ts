@@ -17,10 +17,10 @@ export class MCPMessageHandler {
    */
   constructor(server = server;
   this;
-  .
+
   toolExecutor = toolExecutor;
   this;
-  .
+
   resourceManager = resourceManager;
 }
 /**
@@ -64,9 +64,9 @@ handleMessage(message);
         }
     }
 }
-catch ()
+catch (error)
 {
-  console.error(`[$new Date().toISOString()] ERROR [MCP-Handler] Tool executionfailed = this.server.resources;
+  console.error(`[\$new Date().toISOString()] ERROR [MCP-Handler] Tool executionfailed = this.server.resources;
 
     console.error(`[${new Date().toISOString()}
   ] INFO [MCP-Handler] Listing $

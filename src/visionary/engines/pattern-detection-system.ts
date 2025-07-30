@@ -96,11 +96,11 @@ export interface ArchitectureAnalysis {
   coupling: 'loose' | 'moderate' | 'tight';
   cohesion: 'high' | 'moderate' | 'low';
   principles: {
-    srp: { score: number; violations: number };
-    ocp: { score: number; violations: number };
-    lsp: { score: number; violations: number };
-    isp: { score: number; violations: number };
-    dip: { score: number; violations: number };
+    srp: { score: number; violations};
+    ocp: { score: number; violations};
+    lsp: { score: number; violations};
+    isp: { score: number; violations};
+    dip: { score: number; violations};
   };
   dependencies: unknown;
   modularity: unknown;
@@ -140,11 +140,11 @@ export class PatternDetectionSystem {
     codeData: CodeFileData[],
     analysis: CodeAnalysisResult
   ): Promise<PatternDetectionResult> {
-    const designPatterns = await this.detectDesignPatterns(codeData, analysis);
-    const antiPatterns = await this.detectAntiPatterns(codeData);
-    const codeSmells = await this.detectCodeSmells(codeData);
-    const architecturalPatterns = await this.detectArchitecturalPatterns(codeData);
-    const idioms = await this.detectLanguageIdioms(codeData);
+// const designPatterns = awaitthis.detectDesignPatterns(codeData, analysis);
+// const antiPatterns = awaitthis.detectAntiPatterns(codeData);
+// const codeSmells = awaitthis.detectCodeSmells(codeData);
+// const architecturalPatterns = awaitthis.detectArchitecturalPatterns(codeData);
+// const idioms = awaitthis.detectLanguageIdioms(codeData);
 
     // Use AI for enhanced pattern detection if available
     let aiDetected: unknown;
@@ -162,8 +162,7 @@ export class PatternDetectionSystem {
       codeSmells,
       architecturalPatterns,
       idioms,
-      aiDetected,
-    };
+      aiDetected };
   }
 
   /**
@@ -191,9 +190,7 @@ export class PatternDetectionSystem {
       recommendations: [
         'Consider applying Single Responsibility Principle more strictly',
         'Reduce coupling between components',
-        'Improve code cohesion within modules',
-      ],
-    };
+        'Improve code cohesion within modules' ] };
   }
 
   /**
@@ -209,7 +206,7 @@ export class PatternDetectionSystem {
   ): Promise<DesignPattern[]> {
     const patterns: DesignPattern[] = [];
     for (const file of codeData) {
-      const filePatterns = await this.detectFileDesignPatterns(file, analysis);
+// const filePatterns = awaitthis.detectFileDesignPatterns(file, analysis);
       patterns.push(...filePatterns);
     }
     return patterns;
@@ -222,7 +219,7 @@ export class PatternDetectionSystem {
    * @returns Design patterns found in file
    */
   private async detectFileDesignPatterns(
-    file: CodeFileData,
+    file,
     _analysis: CodeAnalysisResult
   ): Promise<DesignPattern[]> {
     const patterns: DesignPattern[] = [];
@@ -237,8 +234,7 @@ export class PatternDetectionSystem {
         description: 'Ensures a class has only one instance',
         benefits: ['Controlled access to sole instance', 'Reduced memory footprint'],
         file: file.path,
-        lineNumber: this.findPatternLine(content, 'getInstance'),
-      });
+        lineNumber: this.findPatternLine(content, 'getInstance') });
     }
     // Factory pattern
     if (content.includes('create') && content.includes('new ')) {
@@ -249,8 +245,7 @@ export class PatternDetectionSystem {
         description: 'Creates objects without specifying exact classes',
         benefits: ['Loose coupling', 'Easy extensibility'],
         file: file.path,
-        lineNumber: this.findPatternLine(content, 'create'),
-      });
+        lineNumber: this.findPatternLine(content, 'create') });
     }
     // Observer pattern
     if (
@@ -265,8 +260,7 @@ export class PatternDetectionSystem {
         description: 'Defines subscription mechanism for object notifications',
         benefits: ['Loose coupling', 'Dynamic relationships'],
         file: file.path,
-        lineNumber: this.findPatternLine(content, 'addEventListener|subscribe|notify'),
-      });
+        lineNumber: this.findPatternLine(content, 'addEventListener|subscribe|notify') });
     }
     // Strategy pattern
     if (content.includes('strategy') || this.hasMultipleAlgorithms(content)) {
@@ -277,8 +271,7 @@ export class PatternDetectionSystem {
         description: 'Defines family of algorithms and makes them interchangeable',
         benefits: ['Runtime algorithm selection', 'Easy to extend'],
         file: file.path,
-        lineNumber: this.findPatternLine(content, 'strategy'),
-      });
+        lineNumber: this.findPatternLine(content, 'strategy') });
     }
 
     return patterns;
@@ -292,7 +285,7 @@ export class PatternDetectionSystem {
   private async detectAntiPatterns(codeData: CodeFileData[]): Promise<AntiPattern[]> {
     const antiPatterns: AntiPattern[] = [];
     for (const file of codeData) {
-      const fileAntiPatterns = await this.detectFileAntiPatterns(file);
+// const fileAntiPatterns = awaitthis.detectFileAntiPatterns(file);
       antiPatterns.push(...fileAntiPatterns);
     }
     return antiPatterns;
@@ -318,8 +311,7 @@ export class PatternDetectionSystem {
         impact: 'Difficult to maintain, test, and understand',
         recommendation: 'Break into smaller, focused classes',
         file: file.path,
-        lineNumber: 1,
-      });
+        lineNumber});
     }
     // Long Parameter List
     const longParamMethods = this.findLongParameterMethods(content);
@@ -332,8 +324,7 @@ export class PatternDetectionSystem {
         impact: 'Difficult to understand and maintain',
         recommendation: 'Use parameter object or configuration',
         file: file.path,
-        lineNumber: method.lineNumber,
-      });
+        lineNumber: method.lineNumber });
     });
     // Global State Abuse
     const globalUsage = (content.match(/global\.|window\.|process\.env\./g) ?? []).length;
@@ -346,8 +337,7 @@ export class PatternDetectionSystem {
         impact: 'Unpredictable behavior, difficult testing',
         recommendation: 'Use dependency injection and local state',
         file: file.path,
-        lineNumber: this.findPatternLine(content, 'global\\.|window\\.|process\\.env\\.'),
-      });
+        lineNumber: this.findPatternLine(content, 'global\\.|window\\.|process\\.env\\.') });
     }
 
     return antiPatterns;
@@ -363,7 +353,7 @@ export class PatternDetectionSystem {
   detectCodeSmells(codeData: CodeFileData[]): Promise<CodeSmell[]> {
     const _smells: CodeSmell[] = [];
     for (const file of codeData) {
-      const _fileSmells = await this.detectFileCodeSmells(file);
+// const _fileSmells = awaitthis.detectFileCodeSmells(file);
       smells.push(...fileSmells);
     }
     return smells;
@@ -393,8 +383,7 @@ export class PatternDetectionSystem {
         impact: 'maintainability',
         suggestion: 'Break method into smaller functions',
         file: file.path,
-        lineNumber: method.lineNumber,
-      });
+        lineNumber: method.lineNumber });
     }
     )
     // Duplicate Code
@@ -408,36 +397,34 @@ export class PatternDetectionSystem {
       impact: 'maintainability',
       suggestion: 'Extract common code into reusable function',
       file: file.path,
-      lineNumber: duplicate.locations[0],
-    });
+      lineNumber: duplicate.locations[0] });
   }
   )
 // Dead Code
 const
   _deadCode = this.findDeadCode(content);
   deadCode;
-  .
+
   forEach((dead)
   => {
   smells;
-  .
+
   push({
         smell: 'Dead Code',
   severity: 'low';
-  ,
+
   location: `line ${dead.location}`;
-  ,
+
   description: dead.description;
-  ,
+
   impact: 'readability';
-  ,
+
   suggestion: 'Remove unreachable or unused code';
-  ,
+
   file: file.path;
-  ,
+
   lineNumber: dead.location;
-  ,
-}
+   }
 )
 })
 return smells;
@@ -478,8 +465,7 @@ codeData: CodeFileData[];
     confidence: 0.8,
     description: 'Model-View-Controller architectural pattern',
     components: ['Model', 'View', 'Controller'],
-    benefits: ['Separation of concerns', 'Testability', 'Maintainability'],
-  }
+    benefits: ['Separation of concerns', 'Testability', 'Maintainability'] }
   )
 }
 // Service Layer Pattern
@@ -493,8 +479,7 @@ if (hasServices && hasAPI) {
   confidence: 0.7,
   description: 'Service layer for business logic separation',
   components: ['Services', 'Controllers', 'Data Access'],
-  benefits: ['Business logic encapsulation', 'Reusability'],
-}
+  benefits: ['Business logic encapsulation', 'Reusability'] }
 )
 }
 return patterns;
@@ -512,7 +497,7 @@ detectLanguageIdioms(codeData: CodeFileData[])
 {
   const _idioms: LanguageIdiom[] = [];
   for (const file of codeData) {
-    const _fileIdioms = await this.detectFileIdioms(file);
+// const _fileIdioms = awaitthis.detectFileIdioms(file);
     idioms.push(...fileIdioms);
   }
   return idioms;
@@ -531,10 +516,10 @@ detectLanguageIdioms(codeData: CodeFileData[])
     const _idioms: LanguageIdiom[] = [];
     const _content = file.content;
     switch (file.language) {
-      case 'javascript':
+      case 'javascript': null
         idioms.push(...this.detectJavaScriptIdioms(content, file.path));
         break;
-      case 'python':
+      case 'python': null
         idioms.push(...this.detectPythonIdioms(content, file.path));
         break;
     }
@@ -548,7 +533,7 @@ detectLanguageIdioms(codeData: CodeFileData[])
    * @returns JavaScript idioms;
     // */ // LINT: unreachable code removed
     private
-    detectJavaScriptIdioms(content: string, filePath: string)
+    detectJavaScriptIdioms(content, filePath: string)
     : LanguageIdiom[]
     {
       const _idioms: LanguageIdiom[] = [];
@@ -559,9 +544,8 @@ detectLanguageIdioms(codeData: CodeFileData[])
         idiom: 'Destructuring Assignment',
         usage: `Used ${destructuringCount} times`,
         quality: 'good',
-        file: filePath,
-        lineNumber: this.findPatternLine(content, 'const\\s*\\{[^}]+\\}\\s*='),
-      }
+        file,
+        lineNumber: this.findPatternLine(content, 'const\\s*\\{[^}]+\\}\\s*=') }
       )
     }
     // Arrow functions
@@ -571,9 +555,8 @@ detectLanguageIdioms(codeData: CodeFileData[])
         idiom: 'Arrow Functions',
       usage: `Used ${arrowFunctionCount} times`,
       quality: 'good',
-      file: filePath,
-      lineNumber: this.findPatternLine(content, '=>'),
-    }
+      file,
+      lineNumber: this.findPatternLine(content, '=>') }
     )
   }
   // Template literals
@@ -583,9 +566,8 @@ detectLanguageIdioms(codeData: CodeFileData[])
         idiom: 'Template Literals',
     usage: `Used ${templateLiteralCount} times`,
     quality: 'good',
-    file: filePath,
-    lineNumber: this.findPatternLine(content, '`[^`]*\\$\\{[^}]+\\}[^`]*`'),
-  }
+    file,
+    lineNumber: this.findPatternLine(content, '`[^`]*\\$\\{[^}]+\\}[^`]*`') }
   )
 }
 return idioms;
@@ -598,7 +580,7 @@ return idioms;
    * @returns Python idioms;
     // */ // LINT: unreachable code removed
 private
-detectPythonIdioms(content: string, filePath: string)
+detectPythonIdioms(content, filePath: string)
 : LanguageIdiom[]
 {
   const _idioms: LanguageIdiom[] = [];
@@ -609,9 +591,8 @@ detectPythonIdioms(content: string, filePath: string)
         idiom: 'List Comprehensions',
     usage: `Used ${listCompCount} times`,
     quality: 'good',
-    file: filePath,
-    lineNumber: this.findPatternLine(content, '\\[[^\\]]*for\\s+\\w+\\s+in[^\\]]*\\]'),
-  }
+    file,
+    lineNumber: this.findPatternLine(content, '\\[[^\\]]*for\\s+\\w+\\s+in[^\\]]*\\]') }
   )
 }
 return idioms;
@@ -627,76 +608,76 @@ identifyArchitecturalLayers(patterns: PatternDetectionResult)
 : string[]
 {
     const _layers: string[] = [];
-;
+
     // Check for common architectural layers
     if (patterns.architecturalPatterns.some((p) => p.pattern === 'MVC')) {
       layers.push('presentation', 'business', 'data');
     }
-;
+
     if (patterns.designPatterns.some((p) => p.pattern === 'Repository')) {
       layers.push('data-access');
     }
-;
+
     if (patterns.designPatterns.some((p) => p.pattern === 'Service')) {
       layers.push('service');
     }
-;
+
     return layers.length > 0 ? layers : ['monolithic'];
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Analyze coupling between components;
    *;
    * @param patterns - Detected patterns;
    * @returns Coupling analysis;
     // */; // LINT: unreachable code removed
-  private analyzeCoupling(patterns: PatternDetectionResult): 
+  private analyzeCoupling(patterns: PatternDetectionResult): null
     level: 'loose' | 'moderate' | 'tight';
     issues: string[];{
     const _couplingLevel: 'loose' | 'moderate' | 'tight' = 'loose';
     const _issues: string[] = [];
-;
+
     // Check for tight coupling indicators
     if (patterns.antiPatterns.some((p) => p.antiPattern === 'God Object')) {
       couplingLevel = 'tight';
       issues.push('God objects create tight coupling');
     }
-;
+
     if (patterns.antiPatterns.some((p) => p.antiPattern === 'Global State Abuse')) {
       couplingLevel = 'moderate';
       issues.push('Global state increases coupling');
     }
-;
-    return { level: couplingLevel, issues };
+
+    return { level, issues };
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Analyze cohesion within components;
    *;
    * @param patterns - Detected patterns;
    * @returns Cohesion analysis;
     // */; // LINT: unreachable code removed
-  private analyzeCohesion(patterns: PatternDetectionResult): 
+  private analyzeCohesion(patterns: PatternDetectionResult): null
     level: 'high' | 'moderate' | 'low';
     strengths: string[];
     recommendations: string[];{
     const _cohesionLevel: 'high' | 'moderate' | 'low' = 'moderate';
     const _strengths: string[] = [];
     const _recommendations: string[] = [];
-;
+
     if (patterns.designPatterns.some((p) => p.pattern === 'Single Responsibility')) {
       cohesionLevel = 'high';
       strengths.push('Good separation of concerns');
     }
-;
+
     if (patterns.codeSmells.some((s) => s.smell === 'Long Method')) {
       cohesionLevel = 'low';
       recommendations.push('Break down long methods to improve cohesion');
     }
-;
-    return { level: cohesionLevel, strengths, recommendations };
+
+    return { level, strengths, recommendations };
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Evaluate SOLID principles compliance;
    *;
@@ -709,182 +690,179 @@ identifyArchitecturalLayers(patterns: PatternDetectionResult)
     // ocp: this.evaluateOCP(patterns), // LINT: unreachable code removed
       lsp: this.evaluateLSP(patterns),
       isp: this.evaluateISP(patterns),
-      dip: this.evaluateDIP(patterns),
-  }
-;
+      dip: this.evaluateDIP(patterns) }
+
   /**
    * Evaluate Single Responsibility Principle;
    */;
   private evaluateSRP(patterns: PatternDetectionResult): score: number; violations: number {
     const _score = 0.8;
     const _violations = 0;
-;
+
     // Check for SRP violations
     if (patterns.antiPatterns.some((p) => p.antiPattern === 'God Object')) {
       score -= 0.3;
       violations++;
     }
-;
+
     if (patterns.codeSmells.some((s) => s.smell === 'Long Method')) {
       score -= 0.1;
       violations++;
     }
-;
+
     return { score: Math.max(0, score), violations };
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Evaluate Open/Closed Principle;
    */;
   private evaluateOCP(patterns: PatternDetectionResult): score: number; violations: number {
     const _score = 0.7;
     const _violations = 0;
-;
+
     // Check for extension patterns
     if (patterns.designPatterns.some((p) => p.pattern === 'Strategy')) {
       score += 0.2;
     }
-;
+
     if (patterns.designPatterns.some((p) => p.pattern === 'Factory')) {
       score += 0.1;
     }
-;
+
     return { score: Math.min(1, score), violations };
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Evaluate Liskov Substitution Principle;
    */;
   private evaluateLSP(_patterns: PatternDetectionResult): score: number; violations: number {
     const _score = 0.8;
     const _violations = 0;
-;
+
     // LSP is harder to detect statically, so we give a neutral score
     return { score, violations };
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Evaluate Interface Segregation Principle;
    */;
   private evaluateISP(patterns: PatternDetectionResult): score: number; violations: number {
     const _score = 0.8;
     const _violations = 0;
-;
+
     if (patterns.antiPatterns.some((p) => p.antiPattern === 'Interface Pollution')) {
       score -= 0.3;
       violations++;
     }
-;
+
     return { score: Math.max(0, score), violations };
     //   // LINT: unreachable code removed}
-;
+
   /**
    * Evaluate Dependency Inversion Principle;
    */;
   private evaluateDIP(patterns: PatternDetectionResult): score: number; violations: number {
     const _score = 0.7;
     const _violations = 0;
-;
+
     // Check for dependency injection usage
     if (patterns.designPatterns.some((p) => p.pattern === 'Dependency Injection')) {
       score += 0.2;
     }
-;
+
     if (patterns.antiPatterns.some((p) => p.antiPattern === 'Global State Abuse')) {
       score -= 0.2;
       violations++;
     }
-;
+
     return { score: Math.min(1, score), violations };
     //   // LINT: unreachable code removed}
-;
+
   // Helper methods for pattern detection
 
-  private findPatternLine(content: string, pattern: string): number {
+  private findPatternLine(content, pattern: string): number {
     const _lines = content.split('\n');
     const _regex = new RegExp(pattern, 'i');
-;
+
     for (let i = 0; i < lines.length; i++) {
       if (regex.test(lines[i])) {
         return i + 1;
     //   // LINT: unreachable code removed}
     }
-;
+
     return 1;
     //   // LINT: unreachable code removed}
-;
+
   private hasMultipleAlgorithms(content: string): boolean {
     const _algorithmKeywords = ['algorithm', 'method', 'approach', 'strategy'];
     return algorithmKeywords.some((keyword) => content.toLowerCase().includes(keyword));
     //   // LINT: unreachable code removed}
-;
+
   private findLongParameterMethods(;
     content: string;
   ): Array<name: string; paramCount: number; lineNumber: number > {
-    const _methods: Array<{ name: string; paramCount: number; lineNumber: number }> = [];
+    const _methods: Array<{ name: string; paramCount: number; lineNumber}> = [];
     const _lines = content.split('\n');
-;
+
     for (let i = 0; i < lines.length; i++) {
       const _line = lines[i];
       const _functionMatch = line.match(;
         /function\s+(\w+)\s*\(([^)]*)\)|(\w+)\s*[:=]\s*function\s*\(([^)]*)\)|(\w+)\s*\(([^)]*)\)\s*=>/;
       );
-;
+
       if (functionMatch) {
         const _params = functionMatch[2]  ?? functionMatch[4]  ?? functionMatch[6]  ?? '';
         const _paramCount = params.split(',').filter((p) => p.trim()).length;
-;
+
         if (paramCount > 5) {
           methods.push({
             name: functionMatch[1]  ?? functionMatch[3]  ?? functionMatch[5]  ?? 'anonymous',
             paramCount,
-            lineNumber: i + 1,
-          });
+            lineNumber: i + 1 });
         }
       }
     }
-;
+
     return methods;
     //   // LINT: unreachable code removed}
-;
+
   private findLongMethods(;
     content: string;
   ): Array<name: string; lineCount: number; lineNumber: number > {
-    const _methods: Array<{ name: string; lineCount: number; lineNumber: number }> = [];
+    const _methods: Array<{ name: string; lineCount: number; lineNumber}> = [];
     const _lines = content.split('\n');
-;
+
     for (let i = 0; i < lines.length; i++) {
       const _line = lines[i];
       const _functionMatch = this.matchFunction(line);
-;
+
       if (functionMatch) {
         const _methodLines = this.countMethodLines(lines, i);
         if (methodLines > 50) {
           methods.push({
             name: functionMatch.name,
-            lineCount: methodLines,
-            lineNumber: i + 1,
-          });
+            lineCount,
+            lineNumber: i + 1 });
         }
       }
     }
-;
+
     return methods;
     //   // LINT: unreachable code removed}
-;
+
   private findDuplicateCode(lines: string[]): Array<block: string; locations: number[] > {
     const _duplicates: Array<{ block: string; locations: number[] }> = [];
     const _blockSize = 5;
     const _blocks = new Map<string, number[]>();
-;
+
     // Create sliding window of code blocks
     for (let i = 0; i <= lines.length - blockSize; i++) {
       const _block = lines;
-        .slice(i, i + blockSize);
-        .map((line) => line.trim());
-        .filter((line) => line && !line.startsWith('//'))
-        .join('\n');
-;
+slice(i, i + blockSize);
+map((line) => line.trim());
+filter((line) => line && !line.startsWith('//'))
+join('\n');
+
       if (block.length > 20) {
         if (!blocks.has(block)) {
           blocks.set(block, []);
@@ -892,38 +870,38 @@ identifyArchitecturalLayers(patterns: PatternDetectionResult)
         blocks.get(block)?.push(i + 1);
       }
     }
-;
+
     // Find blocks that appear multiple times
     blocks.forEach((locations, block) => {
       if (locations.length > 1) {
         duplicates.push({ block, locations });
       }
     });
-;
+
     return duplicates.slice(0, 10);
     //   // LINT: unreachable code removed}
-;
+
   private findDeadCode(content: string): Array<location: number; description: string > {
-    const _deadCode: Array<{ location: number; description: string }> = [];
+    const _deadCode: Array<{ location: number; description}> = [];
     const _lines = content.split('\n');
-;
+
     // Look for unreachable code after return statements
     for (let i = 0; i < lines.length - 1; i++) {
       const _line = lines[i].trim();
       const _nextLine = lines[i + 1].trim();
-;
+
       if (;
         line.startsWith('return') &&;
     // nextLine &&; // LINT: unreachable code removed
         !nextLine.startsWith('}') &&;
         !nextLine.startsWith('//')
-      ) 
+      )
         deadCode.push(
           location: i + 2,
           description: 'Unreachable code after return statement',
     return deadCode;
     //   // LINT: unreachable code removed}
-;
+
   private matchFunction(line: string): name: string | null {
     const _functionMatch = line.match(/function\s+(\w+)|(\w+)\s*[:=]\s*function|(\w+)\s*\(/);
     if (functionMatch) {
@@ -931,40 +909,38 @@ identifyArchitecturalLayers(patterns: PatternDetectionResult)
     //   // LINT: unreachable code removed}
     return null;
     //   // LINT: unreachable code removed}
-;
+
   private countMethodLines(lines: string[], startIndex: number): number {
     const _braceCount = 0;
     const _lineCount = 0;
-;
+
     for (let i = startIndex; i < lines.length; i++) {
       const _line = lines[i];
       lineCount++;
-;
+
       braceCount += (line.match(/\{/g)  ?? []).length;
       braceCount -= (line.match(/\}/g)  ?? []).length;
-;
+
       if (braceCount === 0 && i > startIndex) {
         break;
       }
     }
-;
+
     return lineCount;
     //   // LINT: unreachable code removed}
-;
-  private analyzeDependencyStructure(_patterns: PatternDetectionResult): unknown 
+
+  private analyzeDependencyStructure(_patterns: PatternDetectionResult): unknown
     return {
       complexity: 'moderate',
-    // circularDependencies: 0, // LINT: unreachable code removed
-      recommendations: ['Consider dependency injection', 'Reduce inter-module dependencies'],
-  }
-;
-  private analyzeModularity(_patterns: PatternDetectionResult): unknown 
+    // circularDependencies, // LINT: unreachable code removed
+      recommendations: ['Consider dependency injection', 'Reduce inter-module dependencies'] }
+
+  private analyzeModularity(_patterns: PatternDetectionResult): unknown
     return {
-      score: 75,
+      score,
     // strengths: ['Clear separation of concerns'], // LINT: unreachable code removed
-      improvements: ['Consider extracting utility modules'],
-  }
-;
+      improvements: ['Consider extracting utility modules'] }
+
   /**
    * Perform AI-powered pattern analysis (if neural engine available);
    */;
@@ -972,16 +948,15 @@ identifyArchitecturalLayers(patterns: PatternDetectionResult)
     if (!this.config.neuralEngine) {
       throw new Error('Neural engine not available');
     }
-;
+
     const _codeContent = codeData.map((file) => file.content).join('\n\n');
-    const _result = await this.config.neuralEngine.infer('analysis', 'detectPatterns', codeContent);
-;
+// const _result = awaitthis.config.neuralEngine.infer('analysis', 'detectPatterns', codeContent);
+
     return {
-      type: analysisType,
-    // patterns: result, // LINT: unreachable code removed
-      confidence: 0.75,
-    };
+      type,
+    // patterns, // LINT: unreachable code removed
+      confidence: 0.75 };
   }
 }
-;
+
 export default PatternDetectionSystem;

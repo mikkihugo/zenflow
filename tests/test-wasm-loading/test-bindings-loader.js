@@ -12,7 +12,7 @@ async function testBindingsLoader() {
     // Try to import it
     const _loaderURL = pathToFileURL(loaderPath).href;
     console.warn('   URL:', loaderURL);
-    const _loaderModule = await import(loaderURL);
+// const _loaderModule = awaitimport(loaderURL);
     console.warn('✅ Loader module imported successfully');
     console.warn('   Module keys:', Object.keys(loaderModule));
     if (loaderModule.default) {

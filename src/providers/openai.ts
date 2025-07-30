@@ -13,9 +13,8 @@ ProviderCapabilities,
 ProviderConfig,
 ProviderError,
 RateLimitError,
-TokenUsage,
-} from './types.js'
-interface OpenAIMessage {role = 'openai'
+TokenUsage } from './types.js'
+// interface OpenAIMessage {role = 'openai'
 version = '2024-07-29'
 config = {enabled = {textGeneration = 'https = [
     'gpt-4-turbo-preview',
@@ -41,7 +40,7 @@ constructor()
   if (config.model?.includes('gpt-3.5')) {
     this.pricing = {
         inputTokenPrice = { ...this.config, ...config };
-    await this.healthCheck();
+// await this.healthCheck();
   }
   async;
   generateText(request = Date.now();
@@ -50,7 +49,7 @@ constructor()
   try {
       const _openaiRequest = {model = request.functions.map(fn => ({name = 'auto';
       }
-  const _response = await this.makeRequest('/chat/completions', openaiRequest);
+// const _response = awaitthis.makeRequest('/chat/completions', openaiRequest);
   const _choice = response.choices[0];
   if (!reader) {
     throw new ProviderError('No response body', this.name);
@@ -77,7 +76,7 @@ constructor()
     }
   }
 }
-} catch (/* error */)
+} catch (error)
 {
   this.emitError(error, request);
   throw this.handleError(error);
@@ -88,11 +87,11 @@ getModels()
 : Promise<string[]>
 {
   try {
-    const _response = await this.makeRequest('/models', null, 'GET');
+// const _response = awaitthis.makeRequest('/models', null, 'GET');
     return response.data;
     // .filter((model = > this.availableModels.includes(model.id)); // LINT: unreachable code removed
-        .map((model = > model.id);
-  } catch (/* error */) {
+map((model = > model.id);
+  } catch (error) {
     // Fallback to static list if API call fails
     return [...this.availableModels];
     //   // LINT: unreachable code removed}
@@ -111,7 +110,7 @@ getModels()
     const _options = {method = === 'POST') {
       options.body = JSON.stringify(data);
   }
-  const _response = await fetch(`${this.baseUrl}${endpoint}`, options);
+// const _response = awaitfetch(`${this.baseUrl}${endpoint}`, options);
   if (!response.ok) {
     throw await this.createErrorFromResponse(response);
   }

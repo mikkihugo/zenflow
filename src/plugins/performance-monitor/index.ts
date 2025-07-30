@@ -18,11 +18,11 @@ export class PerformanceMonitorPlugin extends EventEmitter {
     this.counters = new Map();
     this.gauges = new Map();
     this.histograms = new Map();
-;
+
     this.isMonitoring = false;
     this.monitoringInterval = null;
     this.persistenceInterval = null;
-;
+
     // Performance observer for async operations
     this.performanceObserver = null;
   }
@@ -30,7 +30,7 @@ export class PerformanceMonitorPlugin extends EventEmitter {
     console.warn('📊 Performance Monitor Plugin initialized');
     // Create persistence directory
     if (this.config.persistence.enabled) {
-      await mkdir(this.config.persistence.path, { recursive => {
+// await mkdir(this.config.persistence.path, { recursive => {
       const _cpus = os.cpus();
       // Calculate CPU usage
       const __cpuUsage = this.calculateCPUUsage(cpus);
@@ -43,7 +43,7 @@ export class PerformanceMonitorPlugin extends EventEmitter {
 
       return {timestamp = > ({
             name => {
-      const _delay = await this.measureEventLoopDelay();
+// const _delay = awaitthis.measureEventLoopDelay();
       // return { // LINT: unreachable code removed
       (timestamp) => {
         // This requires --expose-gc flag
@@ -69,14 +69,14 @@ export class PerformanceMonitorPlugin extends EventEmitter {
           measureEventLoopDelay();
           {
             const _start = process.hrtime.bigint();
-            await new Promise(setImmediate);
+// await new Promise(setImmediate);
             const _end = process.hrtime.bigint();
             return Number(end - start) / 1e6; // Convert to milliseconds
           }
           setupPerformanceObserver();
           try {
       const { PerformanceObserver } = require('node:perf_hooks');
-;
+
       this.performanceObserver = new PerformanceObserver((list) => {
         const _entries = list.getEntries();
         entries.forEach(entry => {
@@ -86,43 +86,43 @@ export class PerformanceMonitorPlugin extends EventEmitter {
           }
         });
       });
-;
+
       this.performanceObserver.observe({entryTypes = true;
-;
+
     // Start metric collection
     this.monitoringInterval = setInterval(async () => {
-      await this.collectMetrics();
+// await this.collectMetrics();
     }, this.config.metricsInterval);
-;
+
     // Start persistence
     if(this.config.persistence.enabled) {
       this.persistenceInterval = setInterval(async () => {
-        await this.persistMetrics();
+// await this.persistMetrics();
       }, this.config.persistence.interval);
     }
-;
+
     // Start aggregation
     if(this.config.aggregation.enabled) {
       this.startAggregation();
     }
-;
+
     console.warn('📊 Monitoring started');
   }
           async;
           collectMetrics();
           try {
       // Collect system metrics
-      const _systemMetrics = await this.collectors.get('system')();
+// const _systemMetrics = awaitthis.collectors.get('system')();
       this.metrics.system.push(systemMetrics);
-;
+
       // Collect process metrics
-      const _processMetrics = await this.collectors.get('process')();
+// const _processMetrics = awaitthis.collectors.get('process')();
       this.metrics.process.push(processMetrics);
-;
+
       // Collect custom metrics
       for(const [name, collector] of this.collectors) {
         if(name !== 'system' && name !== 'process') {
-          const _metrics = await collector();
+// const _metrics = awaitcollector();
           if(metrics) {
             if (!this.metrics.custom.has(name)) {
               this.metrics.custom.set(name, []);
@@ -131,13 +131,12 @@ export class PerformanceMonitorPlugin extends EventEmitter {
           }
         }
       }
-;
+
       // Trim history
       this.trimHistory();
-;
+
       // Check alerts
-      await this.checkAlerts(systemMetrics, processMetrics);
-;
+// await this.checkAlerts(systemMetrics, processMetrics);
       // Emit metrics event
       this.emit('metrics', {system = this.metrics.system.slice(-this.config.historyLimit);
     }
@@ -175,10 +174,8 @@ export class PerformanceMonitorPlugin extends EventEmitter {
               const _units = {
       's',
               ('m');
-              : 60000,
-              ('h')
-              : 3600000
-            }
+
+              ('h')}
             const _match = interval.match(/^(\d+)([smh])$/);
             if (match) {
               const _value = parseInt(match[1]);
@@ -213,7 +210,7 @@ export class PerformanceMonitorPlugin extends EventEmitter {
   ) {
   this.
   aggregated;
-  .set(
+set(
   interval;
   , [])
 }
@@ -278,7 +275,7 @@ incrementCounter(name, (value = 1), (labels = {}));
   recordMeasure(name, duration, (labels = {}));
   : unknown
   this.recordHistogram(
-    `$
+    `\$
   name
   _duration`,
     duration,
@@ -288,20 +285,20 @@ incrementCounter(name, (value = 1), (labels = {}));
   : unknown
   {
     const __labelStr = Object.entries(labels);
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(
+sort(([a], [b]) => a.localeCompare(b))
+map(
     ([_k, _v]) => `
-    $
+    \$
     k
-    =$
+    =\$
   v
   `
     )
-    .join(',')
+join(',')
     return `;
-  // $; // LINT: unreachable code removed
+  // \$; // LINT: unreachable code removed
   name;
-  $;
+  \$;
   labelStr;
   `;
   }
@@ -351,13 +348,13 @@ for (const [key, histogram] of this.histograms) {
   )
 }
 ,aggregated = `
-metrics - $
+metrics - \$
 timestamp.split('T')[0]
-.json`
+json`
 const _filepath = path.join(this.config.persistence.path, filename);
-await writeFile(filepath, JSON.stringify(data, null, 2));
+// await writeFile(filepath, JSON.stringify(data, null, 2));
 }
-catch (/* error */)
+catch (error)
 {
   console.error('Error persistingmetrics = new Date().toISOString().split('T')[0];
   const _filename = `metrics-${today}.json`;
@@ -381,7 +378,7 @@ catch (/* error */)
   }
   console.warn('📊 Loaded historical performance data');
 }
-catch (/* error */)
+catch (error)
 {
   // No historical data, that's OK
   console.warn('📊 No historical data found, starting fresh');
@@ -497,13 +494,13 @@ stopMonitoring()
     this.performanceObserver = null;
   }
   // Final persistence
-  await this.persistMetrics();
+// await this.persistMetrics();
   console.warn('📊 Monitoring stopped');
 }
 async;
 cleanup();
 {
-  await this.stopMonitoring();
+// await this.stopMonitoring();
   this.metrics.system = [];
   this.metrics.process = [];
   this.metrics.custom.clear();

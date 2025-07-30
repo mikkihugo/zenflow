@@ -21,20 +21,20 @@ async function _initializeSessionStorage(): unknown {
         directory,namespace = await fs.readFile(ACTIVE_SESSIONS_FILE, 'utf8');
       return JSON.parse(content);
     //   // LINT: unreachable code removed}
-  } catch (/* _error */) 
+  } catch (/* _error */)
     printWarning(`Failed to load activesessions = await fs.readFile(SESSION_HISTORY_FILE, 'utf8');
       return JSON.parse(content);
     //   // LINT: unreachable code removed}
-  } catch (/* error */) {
+  } catch (error) {
     printWarning(`Failed to load sessionhistory = await loadSessionHistory();
     history.unshift(sessionData);
-;
+
     // Keep only last 100 sessions in history
     if(history.length > 100) {
       history.splice(100);
     }
-;
-    await fs.writeFile(SESSION_HISTORY_FILE, JSON.stringify(history, null, 2));catch (/* error */) {
+
+    await fs.writeFile(SESSION_HISTORY_FILE, JSON.stringify(history, null, 2));catch (error) {
     printError(`Failed to save tohistory = Date.now();
   const _random = Math.random().toString(36).substring(2, 8);
   const _safeName = name.replace(/[^a-zA-Z0-9-]/g, '-').toLowerCase();
@@ -49,14 +49,14 @@ async function _initializeSessionStorage(): unknown {
     gitProcess.stdout.on('data', (data) => {
       gitBranch += data.toString().trim();
     });
-    await new Promise((resolve) => {
+// await new Promise((resolve) => {
       gitProcess.on('close', () => resolve());
     });
     if (gitBranch) {
       context.gitBranch = gitBranch;
     }
   }
-  catch (/* error */)
+  catch (error)
   return context;
 }
 /**
@@ -65,35 +65,34 @@ async function _initializeSessionStorage(): unknown {
 async function _createSession(): unknown {
     printError('Usage = args.slice(1).join(' ')  ?? 'No description provided';
   const _sessionId = generateSessionId(sessionName);
-;
+
   try {
-    const _context = await getCurrentContext();
+// const _context = awaitgetCurrentContext();
     const _sessionData = {id = await loadActiveSessions();
     activeSessions[sessionId] = sessionData;
-    await saveActiveSessions(activeSessions);
-;
+// await saveActiveSessions(activeSessions);
     // Store in memory for cross-session access
     if(memoryStore) {
-      await memoryStore.saveSessionState(sessionId, {userId = await loadActiveSessions();
+// await memoryStore.saveSessionState(sessionId, {userId = await loadActiveSessions();
     const _sessionIds = Object.keys(activeSessions);
-;
+
     if(sessionIds.length === 0) {
       printInfo('No active sessions found.');
       return;
     //   // LINT: unreachable code removed}
-;
+
     printSuccess(`📋 Found ${sessionIds.length} session(s):`);
     console.warn();
-;
+
     // Sort by creation date (newest first)
     const _sortedSessions = sessionIds;
-      .map(id => activeSessions[id]);
-      .sort((a, b) => new Date(b.created) - new Date(a.created));
-;
+map(id => activeSessions[id]);
+sort((a, b) => new Date(b.created) - new Date(a.created));
+
     for(const session of sortedSessions) {
       const _stateIcon = getStateIcon(session.state);
       const _timeAgo = getTimeAgo(new Date(session.updated));
-;
+
       console.warn(`${stateIcon} ${session.name} (${session.id.substring(0, 16)}...)`);
       console.warn(`   📝 ${session.description}`);
       console.warn(`   📍 ${session.context.workingDirectory}`);
@@ -104,15 +103,15 @@ async function _createSession(): unknown {
       console.warn(`   📊 ${session.activities.length} activities, ${session.checkpoints.length} checkpoints`);
       console.warn();
     }
-;
+
     if(flags.verbose && memoryStore) {
       try {
-;
+
         console.warn(`💾 Memory storesessions = args[0];
   if(!sessionId) {
     printError('Usage = await loadActiveSessions();
     let _sessionData = null;
-;
+
     // Try exact match first
     if(activeSessions[sessionId]) {
       sessionData = activeSessions[sessionId];
@@ -121,7 +120,7 @@ async function _createSession(): unknown {
       const _matchingIds = Object.keys(activeSessions).filter(id => ;
         id.includes(sessionId)  ?? activeSessions[id].name.includes(sessionId);
       );
-;
+
       if(matchingIds.length === 0) {
         printError(`Session '${sessionId}' not found.`);
         printInfo('Use "session list" to see available sessions.');
@@ -135,38 +134,37 @@ async function _createSession(): unknown {
         sessionData = activeSessions[matchingIds[0]];
         sessionId = matchingIds[0];
     }
-;
+
     // Update session state
     sessionData.state = SESSION_STATES.ACTIVE;
     sessionData.updated = new Date().toISOString();
     sessionData.activities.push({type = sessionData;
-    await saveActiveSessions(activeSessions);
-;
+// await saveActiveSessions(activeSessions);
     // Restore in memory store
     if(memoryStore) {
-      const _memorySession = await memoryStore.resumeSession(sessionId);
+// const _memorySession = awaitmemoryStore.resumeSession(sessionId);
       if(memorySession) {
         printInfo('💾 Session state restored from memory store');
       }
     }
-;
+
     printSuccess(`✅ Session restored successfully!`);
     console.warn(`🆔 SessionID = sessionData.activities.slice(-5);
       recentActivities.forEach(activity => {
-        console.warn(`   ${activity.timestamp} - ${activity.type}`);
+        console.warn(`${activity.timestamp} - ${activity.type}`);
       });
     }
-;
-  } catch (/* error */) {
+
+  } catch (error) {
     printError(`Failed to restoresession = args[0];
   if(!sessionId) {
     // Try to find active session in current directory
-    const _activeSessions = await loadActiveSessions();
+// const _activeSessions = awaitloadActiveSessions();
     const _currentDir = process.cwd();
     const _matchingSessions = Object.values(activeSessions).filter(_session => ;
       session.context.workingDirectory === currentDir && session.state === SESSION_STATES.ACTIVE;
     );
-;
+
     if(matchingSessions.length === 0) {
       printError('No active session found in current directory.');
       printInfo('Usage => {
@@ -174,32 +172,31 @@ async function _createSession(): unknown {
       });
       return;
     //   // LINT: unreachable code removed}
-;
+
     sessionId = matchingSessions[0].id;
   }
-;
+
   try {
-    const _activeSessions = await loadActiveSessions();
+// const _activeSessions = awaitloadActiveSessions();
     const _sessionData = activeSessions[sessionId];
-;
+
     if(!sessionData) {
       printError(`Session '${sessionId}' not found.`);
       return;
     //   // LINT: unreachable code removed}
-;
+
     // Create checkpoint
     const __checkpoint = {id = new Date().toISOString();
     sessionData.activities.push({type = sessionData;
-    await saveActiveSessions(activeSessions);
-;
+// await saveActiveSessions(activeSessions);
     // Save checkpoint in memory store
     if(memoryStore) {
-      await memoryStore.store(`checkpoint = args[0];
+// await memoryStore.store(`checkpoint = args[0];
   if(!sessionId) {
     printError('Usage = await loadActiveSessions();
     let _sessionData = null;
     let _actualSessionId = null;
-;
+
     // Try exact match first
     if(activeSessions[sessionId]) {
       sessionData = activeSessions[sessionId];
@@ -209,7 +206,7 @@ async function _createSession(): unknown {
       const _matchingIds = Object.keys(activeSessions).filter(id => ;
         id.includes(sessionId)  ?? activeSessions[id].name.includes(sessionId);
       );
-;
+
       if(matchingIds.length === 0) {
         printError(`Session '${sessionId}' not found.`);
         return;
@@ -223,52 +220,50 @@ async function _createSession(): unknown {
         actualSessionId = matchingIds[0];
       }
     }
-;
+
     // Confirm deletion unless force flag is provided
     if(!flags.force) {
       console.warn(`⚠️  About to deletesession = SESSION_STATES.ARCHIVED;
     sessionData.deleted = new Date().toISOString();
-    await saveToHistory(sessionData);
-;
+// await saveToHistory(sessionData);
     // Remove from active sessions
     delete activeSessions[actualSessionId];
-    await saveActiveSessions(activeSessions);
-;
+// await saveActiveSessions(activeSessions);
     // Clean up memory store
     if(memoryStore) {
       try {
         // Remove session-related data from memory
-        await memoryStore.clear({pattern = await loadActiveSessions();
+// await memoryStore.clear({pattern = await loadActiveSessions();
     const _currentDir = process.cwd();
-;
+
     // Find active sessions in current directory
     const _matchingSessions = Object.values(activeSessions).filter(session => ;
       session.context.workingDirectory === currentDir && session.state === SESSION_STATES.ACTIVE;
     );
-;
+
     if(matchingSessions.length === 0) {
       printInfo('No active session found in current directory.');
       console.warn(`📍 Currentdirectory = getStateIcon(session.state);
-;
+
       console.warn(`${stateIcon} Current Session`);
       console.warn(`🆔ID = session.activities.slice(-5);
         if(recentActivities.length === 0) {
           console.warn('   No activities recorded yet.');
         } else {
           recentActivities.forEach(activity => {
-            console.warn(`   ${activity.timestamp} - ${activity.type}`);
+            console.warn(`${activity.timestamp} - ${activity.type}`);
             if(activity.details) {
-              console.warn(`      ${JSON.stringify(activity.details)}`);
+              console.warn(`${JSON.stringify(activity.details)}`);
             }
           });
         }
-;
+
         console.warn('\n📌 Recentcheckpoints = session.checkpoints.slice(-3);
         if(recentCheckpoints.length === 0) {
           console.warn('   No checkpoints created yet.');
         } else {
           recentCheckpoints.forEach(checkpoint => {
-            console.warn(`   ${checkpoint.timestamp} - ${checkpoint.message}`);
+            console.warn(`${checkpoint.timestamp} - ${checkpoint.message}`);
             console.warn(`ID = await memoryStore.getActiveSessions();
         console.warn(`\n💾 Memory Store = {
     [SESSION_STATES.ACTIVE]: '🟢',
@@ -279,7 +274,7 @@ async function _createSession(): unknown {
   };
   return icons[state]  ?? '❓';
 }
-;
+
 /**
  * Get time ago string;
  */;
@@ -289,67 +284,66 @@ function getTimeAgo(date = new Date(: unknown);
   const _minutes = Math.floor(seconds / 60);
   const _hours = Math.floor(minutes / 60);
   const _days = Math.floor(hours / 24);
-;
+
   if (days > 0) return `${days}d ago`;
     // if (hours > 0) return `${hours // LINT: unreachable code removed}h ago`;
   if (_minutes > 0) return `${minutes}m ago`;
     // return 'just now'; // LINT: unreachable code removed
 }
-;
+
 /**
  * Show session command help;
  */;
 function _showSessionHelp(): unknown {
   console.warn(`;
 🖥️  Session Management SystemUSAGE = args[0];
-;
+
   // Show help if no command or help flag
   if(!subCommand  ?? flags.help  ?? flags.h) {
     showSessionHelp();
     return;
     //   // LINT: unreachable code removed}
-;
+
   try {
     switch(subCommand) {
       case 'create':;
-        await createSession(args.slice(1), flags);
+// await createSession(args.slice(1), flags);
         break;
-;
+
       case 'list':;
       case 'ls':;
-        await listSessions(args.slice(1), flags);
+// await listSessions(args.slice(1), flags);
         break;
-;
+
       case 'restore':;
       case 'resume':;
-        await restoreSession(args.slice(1), flags);
+// await restoreSession(args.slice(1), flags);
         break;
-;
+
       case 'save':;
-        await saveSession(args.slice(1), flags);
+// await saveSession(args.slice(1), flags);
         break;
-;
+
       case 'delete':;
       case 'remove':;
       case 'rm':;
-        await deleteSession(args.slice(1), flags);
+// await deleteSession(args.slice(1), flags);
         break;
-;
+
       case 'current':;
       case 'info':;
       case 'status':;
-        await showCurrentSession(args.slice(1), flags);
+// await showCurrentSession(args.slice(1), flags);
         break;
-;
+
       default:;
         printError(`Unknown session command: ${subCommand}`);
         _showSessionHelp();
     }
-  } catch (/* error */) {
+  } catch (error) {
     printError(`Session command failed: ${error.message}`);
     if(flags.verbose) {
       console.error('Stack trace:', error.stack);
     }
   }
 }
-;

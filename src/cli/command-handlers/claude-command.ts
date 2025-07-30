@@ -9,7 +9,7 @@ import { spawn } from 'node:child_process';
 import { printError, printSuccess } from '../utils.js';
 
 export async function claudeCommand(): unknown {
-  case 'spawn':
+  case 'spawn': null
   {
     // Extract task description and flags
     const _taskEndIndex = args.length;
@@ -70,8 +70,7 @@ export async function claudeCommand(): unknown {
       logic.` : ''}\n${parsedFlags.mode === 'frontend-only' ? `Focus on client-side implementation, UI/UX, and user interactions.` : ''}\n${parsedFlags.mode === 'api-only' ? `Focus on API design, documentation, and endpoint implementation.` : ''}\n${parsedFlags.mode === 'full'  ?? !parsedFlags.mode ? `Full-stack development covering all aspects of the application.` : ''}\n\n`;
       const _claudeArgs = [enhancedTask];
       claudeArgs.push('--allowedTools', tools);
-      //DEBUG = > (arg.includes(' ')  ?? arg.includes('\n') ? `"${arg}"` : arg)).join(' ')}`,
-      )
+      //DEBUG = > (arg.includes(' ')  ?? arg.includes('\n') ? `"${arg}"` : arg)).join(' ')}`)
     }
     const _child = spawn('claude', claudeArgs, {
                 env => {
@@ -97,8 +96,8 @@ resolve();
           printSuccess(`Loading workflow: ${workflowFile}`);
   console.warn('📋 Batch execution would process workflow file');
   break;
-  default:
-  console.warn('Claude commands: spawn, batch')
+  default: null
+  console.warn('Claude commands, batch')
   console.warn('\nExamples:')
   console.warn('  claude-zen claude spawn "implement user authentication" --research --parallel')
   console.warn('  claude-zen claude spawn "fix bug in payment system" --no-permissions')

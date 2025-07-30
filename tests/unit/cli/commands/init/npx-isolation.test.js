@@ -18,7 +18,7 @@ describe('Init Command NPX Isolation', () => {
     });
     it('should successfully import init command with npx isolation', async () => {
       // This test verifies that our changes to the init command don't break imports
-      const _initModule = await import('../../../../../src/cli/simple-commands/init/index.js');
+// const _initModule = awaitimport('../../../../../src/cli/simple-commands/init/index.js');
 
       expect(initModule).toBeDefined();
       // The initCommand function should still be exportable
@@ -26,7 +26,7 @@ describe('Init Command NPX Isolation', () => {
     });
     it('should successfully import batch-init with npx isolation', async () => {
       // This test verifies that our changes to batch-init don't break imports
-      const _batchInitModule = await import(
+// const _batchInitModule = awaitimport(
         '../../../../../src/cli/simple-commands/init/batch-init.js';
       )
       expect(batchInitModule).toBeDefined()
@@ -40,9 +40,7 @@ describe('Init Command NPX Isolation', () => {
       // Mock Deno.env if it doesn't exist (we're in Node.js)
       const _mockDeno = {
         env: {
-          toObject: () => ({ ...process.env }),
-        },
-      };
+          toObject: () => ({ ...process.env }) } };
   // This would be used in the actual init command
   const _env = mockDeno.env.toObject();
   expect(env).toBeDefined();
@@ -70,8 +68,7 @@ describe('NPX Cache Isolation Integration', () =>
     // Simulate how the init command would use this
     const _baseEnv = {
       PWD: '/some/working/dir',
-      CUSTOM_VAR: 'test-value',
-    };
+      CUSTOM_VAR: 'test-value' };
   const _isolatedEnv = getIsolatedNpxEnv(baseEnv);
   expect(isolatedEnv.PWD).toBe('/some/working/dir');
   expect(isolatedEnv.CUSTOM_VAR).toBe('test-value');

@@ -4,8 +4,7 @@
  */
 
 import { ProviderError } from './types.js';
-
-interface CohereRequest {model = 'cohere'
+// interface CohereRequest {model = 'cohere'
 version = '2024-07-29'
 config = {enabled = {textGeneration = 'https = [
     'command-r-plus',
@@ -26,7 +25,7 @@ constructor()
     this.baseUrl = config.baseUrl;
   }
   this.config = { ...this.config, ...config };
-  await this.healthCheck();
+// await this.healthCheck();
 }
 async;
 generateText(request = Date.now();
@@ -34,25 +33,25 @@ this.validateRequest(request);
 this.emitRequest(request);
 try {
       const _cohereRequest = {model = await this.makeRequest('/chat', cohereRequest);
-;
+
       if (!reader) {
         throw new ProviderError('No response body', this.name);
       }
-;
+
       const _decoder = new TextDecoder();
       const _buffer = '';
-;
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-;
+
         buffer += decoder.decode(value, {stream = buffer.split('\n');
         buffer = lines.pop()  ?? '';
-;
+
         for (const line of lines) {
           if (line.startsWith('data = line.slice(6);
             if (data === '[DONE]') continue;
-;
+
             try {
               const _parsed = JSON.parse(data);
               if (parsed.text) {
@@ -64,7 +63,7 @@ try {
           }
         }
       }
-} catch (/* error */)
+} catch (error)
 {
   this.emitError(error, request);
   throw this.handleError(error);
@@ -75,10 +74,10 @@ getModels()
 : Promise<string[]>
 {
   try {
-    const _response = await this.makeRequest('/models', null, 'GET');
+// const _response = awaitthis.makeRequest('/models', null, 'GET');
     return response.models;
     // .filter((model = > model.name && this.availableModels.includes(model.name)); // LINT: unreachable code removed
-        .map((model = > model.name);
+map((model = > model.name);
   } catch (/* _error */) {
     return [...this.availableModels];
     //   // LINT: unreachable code removed}
@@ -98,7 +97,7 @@ getModels()
   return '';
   private
   convertToChatHistory(messages = []
-;
+
   // Skip the last user message (it's sent as the main message)
   const _messagesToProcess = messages.slice(0, -1);
   for (const msg of messagesToProcess) {
@@ -108,7 +107,7 @@ getModels()
     const _options = {method = === 'POST') {
       options.body = JSON.stringify(data);
     }
-    const _response = await fetch(`${this.baseUrl}${endpoint}`, options);
+// const _response = awaitfetch(`${this.baseUrl}${endpoint}`, options);
     if (!response.ok) {
       throw await this.createErrorFromResponse(response);
     }
@@ -147,18 +146,17 @@ mapFinishReason(reason: string)
       return 'stop';
     //   // LINT: unreachable code removed}
 }
-;
+
 private;
 handleError(error: unknown);
 : Error;
   if (error instanceof ProviderError) {
     return error;
     //   // LINT: unreachable code removed}
-;
+
   return new ProviderError(;
     // error.message  ?? 'Unknown error occurred', // LINT: unreachable code removed
       this.name,
       'UNKNOWN_ERROR';
     );
 }
-;

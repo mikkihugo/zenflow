@@ -13,8 +13,7 @@ if (global._ruvSwarmInstance) {
 }
 const _simdSupported = RuvSwarm.detectSIMDSupport();
 try {
-  const _instance = await RuvSwarm.initialize({
-    useSIMD: true,
-    debug: false,
-  });
+// const _instance = awaitRuvSwarm.initialize({
+    useSIMD,
+    debug });
 } catch (_error) {}

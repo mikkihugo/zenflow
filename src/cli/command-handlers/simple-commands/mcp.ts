@@ -7,17 +7,17 @@
 import { printSuccess } from '../utils.js';
 
 export async function mcpCommand(): unknown {
-  case 'status':
-  await showMcpStatus(subArgs, flags)
+  case 'status': null
+// await showMcpStatus(subArgs, flags)
   break;
-  case 'tools':
-  await listMcpTools(subArgs, flags)
+  case 'tools': null
+// await listMcpTools(subArgs, flags)
   break;
-  case 'auth':
-  await manageMcpAuth(subArgs, flags)
+  case 'auth': null
+// await manageMcpAuth(subArgs, flags)
   break;
-  case 'config':
-  await showMcpConfig(subArgs, flags)
+  case 'config': null
+// await showMcpConfig(subArgs, flags)
   break;
   default = subArgs.includes('--auto-orchestrator')  ?? flags.autoOrchestrator
   const __daemon = subArgs.includes('--daemon') ?? flags.daemon;
@@ -29,14 +29,14 @@ export async function mcpCommand(): unknown {
     if (autoOrchestrator) {
       console.warn('🚀 Auto-starting orchestrator...');
       console.warn('🧠 Neural networkcapabilities = await import('url');
-      const _path = await import('node:path');
+// const _path = awaitimport('node:path');
       const { spawn } = await import('node:child_process');
 
       const ___filename = fileURLToPath(import.meta.url);
       const ___dirname = path.dirname(__filename);
       const _mcpServerPath = path.join(__dirname, '../../mcp/mcp-server.js');
       // Check if the file exists, and log the path for debugging
-      const _fs = await import('node:fs');
+// const _fs = awaitimport('node:fs');
       if (!fs.existsSync(mcpServerPath)) {
         console.error(`MCP server file not foundat = spawn('node', [mcpServerPath], {
         stdio => {
@@ -46,9 +46,9 @@ export async function mcpCommand(): unknown {
     }
     )
     // Keep the process alive
-    await new Promise(() => ) // Never resolves, keeps server running
+// await new Promise(() => ) // Never resolves, keeps server running
   }
-  catch (/* error */)
+  catch (error)
   {
     console.error('Failed to start MCPserver = getFlag(subArgs, '--port')  ?? flags.port  ?? 3000;
     const _host = getFlag(subArgs, '--host') ?? flags.host ?? 'localhost';
@@ -174,7 +174,7 @@ if (verbose) {
   console.warn('\n📋 DETAILED TOOLINFORMATION = <category> --verbose');
 }
 async function _manageMcpAuth(): unknown {
-  case 'setup':
+  case 'setup': null
   printSuccess('Setting up MCP authentication...')
   console.warn('🔐 Authenticationconfiguration = args.indexOf(flagName);
   return index !== -1 && index + 1 < args.length ? args[index + 1] : null;

@@ -32,8 +32,7 @@ describe('Hive Mind SIGINT Handler', () => {
     // Start hive-mind spawn
     hiveMindProcess = spawn('node', [cliPath, 'hive-mind', 'spawn', 'Test SIGINT handling'], {
       stdio: 'pipe',
-    ...process.env, NODE_ENV: 'test' ,
-  });
+..process.env, NODE_ENV: 'test'  });
   const _output = '';
   const _sessionId = null;
   hiveMindProcess.stdout.on('data', (data) => {
@@ -58,7 +57,7 @@ describe('Hive Mind SIGINT Handler', () => {
     expect(output).toContain('Pausing session...');
     expect(output).toContain('Session paused successfully');
     expect(output).toContain(`claude-zen hive-mind resume ${sessionId}`);
-    // Verify session was paused in database
+    // Verify session w in database
     if (existsSync(dbPath)) {
       const _db = new Database(dbPath);
       const _session = db.prepare('SELECT * FROM sessions WHERE id = ?').get(sessionId);
@@ -73,8 +72,7 @@ describe('Hive Mind SIGINT Handler', () => {
 it('should save checkpoint when pausing session', (_done) => {
   hiveMindProcess = spawn('node', [cliPath, 'hive-mind', 'spawn', 'Test checkpoint saving'], {
       stdio: 'pipe',
-  ...process.env, NODE_ENV: 'test' ,
-});
+..process.env, NODE_ENV: 'test'  });
 const _output = '';
 const _sessionId = null;
 hiveMindProcess.stdout.on('data', (data) => {
@@ -94,8 +92,8 @@ hiveMindProcess.on('exit', () => {
     const _db = new Database(dbPath);
     // Check for checkpoint
     const _checkpoint = db;
-    .prepare('SELECT * FROM session_checkpoints WHERE session_id = ? AND checkpoint_name = ?')
-    .get(sessionId, 'auto-pause')
+prepare('SELECT * FROM session_checkpoints WHERE session_id = ? AND checkpoint_name = ?')
+get(sessionId, 'auto-pause')
     expect(checkpoint).toBeTruthy()
     expect(checkpoint.checkpoint_data).toContain('paused_by_user')
     db.close()
@@ -120,8 +118,7 @@ it('should terminate Claude Code process when SIGINT is received', (done) =>
     'node',
     [cliPath, 'hive-mind', 'spawn', 'Test Claude termination', '--claude'],
     stdio: 'pipe',
-    ...process.env, NODE_ENV: 'test' ,
-    )
+..process.env, NODE_ENV: 'test' )
     const _output = '';
     const _claudeLaunched = false;
     hiveMindProcess.stdout.on('data', (data) => {

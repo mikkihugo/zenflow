@@ -20,14 +20,14 @@ export class ClaudeCodeWebServer {
     this.isRunning = false;
   }
   async createAPIRoutes() {
-    const _express = await import('express');
+// const _express = awaitimport('express');
     const _router = express.Router();
     // Health check endpoint
     router.get('/health', (_req, res) => {
       res.json({ status => {
       res.json({connections = await import('express');
       const _app = express.default();
-;
+
       // Enable CORS
       app.use((_req, res, next) => {
         res.header('Access-Control-Allow-Origin', '*');
@@ -35,18 +35,18 @@ export class ClaudeCodeWebServer {
         res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         next();
       });
-;
+
       // Serve static files
       app.use('/console', express.static(this.uiPath));
       app.use('/api', await this.createAPIRoutes());
-;
+
       // Default route redirects to console
       app.get('/', (_req, res) => {
         res.redirect('/console');
       });
-;
+
       this.server = createServer(app);
-;
+
       // Create WebSocket server
       this.wss = new WebSocketServer({
         server => {
@@ -75,7 +75,7 @@ if (this.wss) {
 }
 // Close HTTP server
 if (this.server) {
-  await new Promise((resolve) => {
+// await new Promise((resolve) => {
     this.server.close(resolve);
   });
 }
@@ -89,18 +89,18 @@ handleRequest(req, res)
 : unknown
 {
   const _url = req.url;
-;
+
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-;
+
   if (req.method === 'OPTIONS') {
     res.writeHead(200);
     res.end();
     return;
     //   // LINT: unreachable code removed}
-;
+
   // Route handling
   if (url === '/'  ?? url === '/console'  ?? url === '/console/') {
     this.serveConsoleHTML(res);
@@ -118,7 +118,7 @@ handleRequest(req, res)
     this.handle404(res);
   }
 }
-;
+
 /**
  * Serve the console HTML with corrected paths;
  */;
@@ -126,26 +126,26 @@ serveConsoleHTML(res);
 : unknown;
 {
   const _filePath = join(this.uiPath, 'index.html');
-;
+
   if (!existsSync(filePath)) {
     this.handle404(res);
     return;
     //   // LINT: unreachable code removed}
-;
+
   try {
     const _content = readFileSync(filePath, 'utf8');
-;
+
     // Fix relative paths to be relative to /console/
     content = content.replace(/href="styles\//g, 'href="/console/styles/');
     content = content.replace(/src="js\//g, 'src="/console/js/');
 
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.end(content);
-  } catch (/* error */) {
+  } catch (error) {
     this.handle500(res, error);
   }
 }
-;
+
 /**
  * Serve a specific file from the UI directory;
  */;
@@ -153,21 +153,21 @@ serveFile(res, filename, contentType);
 : unknown;
 {
   const _filePath = join(this.uiPath, filename);
-;
+
   if (!existsSync(filePath)) {
     this.handle404(res);
     return;
     //   // LINT: unreachable code removed}
-;
+
   try {
     const _content = readFileSync(filePath);
-    res.writeHead(200, { 'Content-Type': contentType });
+    res.writeHead(200, { 'Content-Type'});
     res.end(content);
-  } catch (/* error */) {
+  } catch (error) {
     this.handle500(res, error);
   }
 }
-;
+
 /**
  * Serve static files (CSS, JS, etc.);
  */;
@@ -179,19 +179,19 @@ serveStaticFile(res, requestPath);
     this.handle404(res);
     return;
     //   // LINT: unreachable code removed}
-;
+
   // Determine content type
   const _contentType = this.getContentType(requestPath);
-;
+
   try {
     const _content = readFileSync(filePath);
-    res.writeHead(200, { 'Content-Type': contentType });
+    res.writeHead(200, { 'Content-Type'});
     res.end(content);
-  } catch (/* error */) {
+  } catch (error) {
     this.handle500(res, error);
   }
 }
-;
+
 /**
  * Get content type based on file extension;
  */;
@@ -199,11 +199,11 @@ getContentType(filePath);
 : unknown;
 {
   const _ext = filePath.split('.').pop().toLowerCase();
-;
+
   res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
   res.end(favicon);
 }
-;
+
 /**
  * Handle 403 Forbidden;
  */;
@@ -211,7 +211,7 @@ handle403(res);
 : unknown;
   res.writeHead(403, { 'Content-Type': 'text/plain' });
   res.end('403 Forbidden');
-;
+
 /**
  * Handle 404 Not Found;
  */;
@@ -219,7 +219,7 @@ handle404(res);
 : unknown;
   res.writeHead(404, { 'Content-Type': 'text/plain' });
   res.end('404 Not Found');
-;
+
 /**
  * Handle 500 Internal Server Error;
  */;
@@ -228,19 +228,19 @@ handle500(res, error);
   console.error('Server error => {
       this.handleWebSocketConnection(ws, req);
 )
-;
+
 this.wss.on('error', (_error) =>;
   console.error('WebSocket servererror = req.socket.remoteAddress;
     console.warn(`🔗 New WebSocket connection from ${clientIP}`);
-;
+
   this.connections.add(ws);
-;
+
   // Send welcome message
   this.sendMessage(ws, {
       jsonrpc => {
       this.handleWebSocketMessage(ws, data);
 )
-;
+
 // Handle close
 ws.on('close', (_code, _reason) => {
       console.warn(`❌ WebSocket connection _closed => {
@@ -257,7 +257,7 @@ handleWebSocketMessage(ws, data)
     try {
       const _message = JSON.parse(data.toString());
       console.warn('Received WebSocket message = {jsonrpc = message.params;
-;
+
     // Mock tool execution for demonstration
 
     const __response = {jsonrpc = [
@@ -275,7 +275,7 @@ handleWebSocketMessage(ws, data)
       ws.send(JSON.stringify(message));
     //   // LINT: unreachable code removed}
   }
-;
+
   /**
    * Send error response;
    */;
@@ -285,11 +285,11 @@ handleWebSocketMessage(ws, data)
       this.sendMessage(ws, message);
     });
   }
-;
+
   /**
    * Start heartbeat to check connection health;
    */;
-  startHeartbeat() 
+  startHeartbeat()
     setInterval(() => {
       this.connections.forEach((ws) => {
         if(ws.isAlive === false) {
@@ -297,38 +297,36 @@ handleWebSocketMessage(ws, data)
           this.connections.delete(ws);
           return;
     //   // LINT: unreachable code removed}
-;
+
         ws.isAlive = false;
         ws.ping();
       });
     }, 30000); // 30 seconds
   }
-;
+
   /**
    * Get server status;
    */;
-  getStatus() 
+  getStatus()
     return {running = 3000): unknown {
   const _server = new ClaudeCodeWebServer(port);
     // ; // LINT: unreachable code removed
   try {
-    await server.start();
-;
+// await server.start();
     // Setup graceful shutdown
     const _shutdown = async () => {
       console.warn('\n⏹️  Shutting down web server...');
-      await server.stop();
+// await server.stop();
       process.exit(0);
     };
-;
+
     compat.terminal.onSignal('SIGINT', shutdown);
     compat.terminal.onSignal('SIGTERM', shutdown);
-;
+
     // Keep server running
     return server;
-    //   // LINT: unreachable code removed} catch (/* error */) {
+    //   // LINT: unreachable code removed} catch (error) {
     printError(`_Failed _to _start _webserver = === `file://${process.argv[1]}`) {
   const _port = process.argv[2] ? parseInt(process.argv[2]) : 3000;
-  await startWebServer(port);
+// await startWebServer(port);
 }
-;

@@ -16,23 +16,22 @@ class VerifiableMemoryStore {
   }
 
   async store(key, value, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` : key;
+    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
     this.data.set(fullKey, value);
 
     const docData = JSON.parse(value);
     this.documentList.push({
-      key: fullKey,
+      key,
       service: docData.metadata.service,
       type: docData.metadata.type,
       layer: docData.metadata.stack_layer,
       title: docData.metadata.title || docData.id,
-      size: `${Math.round(value.length / 1024)}KB`,
-    });
-    return { id: fullKey, size: value.length };
+      size: `${Math.round(value.length / 1024)}KB` });
+    return { id, size: value.length };
   }
 
   async retrieve(key, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` : key;
+    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
     return this.data.get(fullKey) || null;
   }
 
@@ -61,33 +60,27 @@ const realDocs = [
     file: '/home/mhugo/code/singularity-engine/docs/SYSTEM_ARCHITECTURE.md',
     docType: 'service-adr',
     service: 'platform-architecture',
-    docId: 'singularity-engine-system-architecture',
-  },
+    docId: 'singularity-engine-system-architecture' },
   {
     file: '/home/mhugo/code/singularity-engine/docs/README.md',
     docType: 'user-guide',
     service: 'platform-docs',
-    docId: 'singularity-engine-overview',
-  },
+    docId: 'singularity-engine-overview' },
   {
     file: '/home/mhugo/code/singularity-engine/docs/NATS_COMPREHENSIVE_GUIDE.md',
     docType: 'deployment-guide',
     service: 'messaging-infrastructure',
-    docId: 'nats-comprehensive-guide',
-  },
+    docId: 'nats-comprehensive-guide' },
   {
     file: '/home/mhugo/code/singularity-engine/docs/MCP_TO_SERVICES_MIGRATION_PLAN.md',
     docType: 'service-adr',
     service: 'mcp-services',
-    docId: 'mcp-to-services-migration',
-  },
+    docId: 'mcp-to-services-migration' },
   {
     file: '/home/mhugo/code/singularity-engine/docs/SERVICE_DOCUMENTATION.md',
     docType: 'api-documentation',
     service: 'platform-services',
-    docId: 'service-documentation-standards',
-  },
-];
+    docId: 'service-documentation-standards' } ];
 
 async function importRealDocs() {
   let _successCount = 0;
@@ -96,12 +89,11 @@ async function importRealDocs() {
     try {
       // Check if file exists
       try {
-        await fs.access(docInfo.file);
+// await fs.access(docInfo.file);
       } catch (_error) {
         continue;
       }
-
-      const content = await fs.readFile(docInfo.file, 'utf-8');
+// const content = awaitfs.readFile(docInfo.file, 'utf-8');
 
       // Extract real metadata from content
       const titleMatch = content.match(/^#\s+(.+)$/m);
@@ -148,17 +140,14 @@ async function importRealDocs() {
       if (lowerContent.includes('memory-service')) dependencies.push('memory-service');
       if (lowerContent.includes('infrastructure-service'))
         dependencies.push('infrastructure-service');
-
-      await docStack.createDocument(docInfo.docType, docInfo.service, docInfo.docId, content, {
+// await docStack.createDocument(docInfo.docType, docInfo.service, docInfo.docId, content, {
         title,
         tags,
         dependencies,
         source: 'singularity-engine-docs',
         original_path: docInfo.file,
         file_size: content.length,
-        word_count: content.split(/\s+/).length,
-      });
-
+        word_count: content.split(/\s+/).length });
       _successCount++;
     } catch (_error) {}
   }
@@ -173,9 +162,8 @@ async function importRealDocs() {
     const _size = doc.size.padEnd(6);
     const _title = doc.title.substring(0, 20);
   });
-  const testDoc = await memoryStore.retrieve('service-adr/singularity-engine-system-architecture', {
-    namespace: 'service-documents/platform-architecture',
-  });
+// const testDoc = awaitmemoryStore.retrieve('service-adr/singularity-engine-system-architecture', {
+    namespace: 'service-documents/platform-architecture' });
 
   if (testDoc) {
     const _parsed = JSON.parse(testDoc);

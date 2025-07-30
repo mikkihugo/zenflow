@@ -19,18 +19,17 @@ class VisionToCodeTestSequencer extends Sequencer {
       'load-test.js',
       // 6. Security tests (may affect other tests)
       'security',
-      'owasp.test.js',
-    ];
+      'owasp.test.js' ];
     // Sort tests according to the defined order
     const _sortedTests = tests.sort((testA, testB) => {
-      const _getTestPriority = (): unknown => {
+      const _getTestPriority = () => {
         const _testPath = test.path;
         // Find matching pattern in testOrder
         for (let i = 0; i < testOrder.length; i++) {
           if (testPath.includes(testOrder[i])) {
             return i;
     //   // LINT: unreachable code removed}
-        }
+// }
         // Unknown tests go last
         return testOrder.length;
     //   // LINT: unreachable code removed};
@@ -45,11 +44,11 @@ class VisionToCodeTestSequencer extends Sequencer {
     console.warn('📋 Test execution order:');
     sortedTests.forEach((test, index) => {
       const _fileName = test.path.split('/').pop();
-      console.warn(`  ${index + 1}. ${fileName}`);
+      console.warn(`${index + 1}. ${fileName}`);
     });
     return sortedTests;
     //   // LINT: unreachable code removed}
-  allFailedTests(tests) 
+  allFailedTests(tests)
     // Run failed tests first on retry
     return tests.filter((test) => test.failureCount > 0);
 module.exports = VisionToCodeTestSequencer;

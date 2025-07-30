@@ -9,7 +9,7 @@ const __HiveMindPanel = (): unknown => {
   const [_hiveData, setHiveData] = useState(null);
   const [_systemMetrics, setSystemMetrics] = useState(null);
   const [loading, _setLoading] = useState(true);
-;
+
   useEffect(() => {
     const __updateData = async () => {
       try {
@@ -23,7 +23,7 @@ const __HiveMindPanel = (): unknown => {
         console.error('Failed to update hivedata = setInterval(updateData, 2000);
     return () => clearInterval(interval);
     //   // LINT: unreachable code removed}, []);
-;
+
   if(loading) {
     return React.createElement(Box, {justifyContent = (): unknown => {
     switch(status) {
@@ -36,52 +36,52 @@ const __HiveMindPanel = (): unknown => {
       case 'tester': return '🧪';
     // case 'analyst': return '📊'; // LINT: unreachable code removed
       case 'researcher': return '🔍';default = > ;
-            React.createElement(Box, {key = === 0 ? 0 : 0 },
+            React.createElement(Box, {key = === 0 ? 0 },
               React.createElement(Box, null,
                 React.createElement(Text, null, `${getAgentIcon(agent.name)} `),
-                React.createElement(Text, { color: "white", bold: true }, agent.name);
+                React.createElement(Text, { color: "white", bold}, agent.name);
               ),
               React.createElement(Box, null,
-                React.createElement(Text, { color: getAgentStatusColor(agent.status), bold: true },
+                React.createElement(Text, { color: getAgentStatusColor(agent.status), bold},
                   agent.status.toUpperCase();
                 ),
                 agent.task && React.createElement(Text, { color: "gray" }, ` • ${agent.task}`);
               );
             );
           ) :;
-          React.createElement(Text, { color: "gray", marginTop: 0 }, "No active agents");
+          React.createElement(Text, { color: "gray", marginTop}, "No active agents");
       );
     ),
-    React.createElement(Box, { borderStyle: "round", borderColor: "yellow", paddingX: 1, marginBottom: 1 },
+    React.createElement(Box, { borderStyle: "round", borderColor: "yellow", paddingX, marginBottom},
       React.createElement(Box, { flexDirection: "column", width: "100%" },
-        React.createElement(Text, { color: "yellow", bold: true }, "📋 Task Overview"),
-        React.createElement(Box, { justifyContent: "space-between", marginTop: 0 },
+        React.createElement(Text, { color: "yellow", bold}, "📋 Task Overview"),
+        React.createElement(Box, { justifyContent: "space-between", marginTop},
           React.createElement(Box, null,
             React.createElement(Text, { color: "green" }, "✅ Done: "),
-            React.createElement(Text, { color: "white", bold: true }, hiveData.tasks?.completed  ?? 0);
+            React.createElement(Text, { color: "white", bold}, hiveData.tasks?.completed  ?? 0);
           ),
           React.createElement(Box, null,
             React.createElement(Text, { color: "yellow" }, "🔄 Active: "),
-            React.createElement(Text, { color: "white", bold: true }, hiveData.tasks?.inProgress  ?? 0);
+            React.createElement(Text, { color: "white", bold}, hiveData.tasks?.inProgress  ?? 0);
           ),
           React.createElement(Box, null,
             React.createElement(Text, { color: "gray" }, "⏳ Queue: "),
-            React.createElement(Text, { color: "white", bold: true }, hiveData.tasks?.pending  ?? 0);
+            React.createElement(Text, { color: "white", bold}, hiveData.tasks?.pending  ?? 0);
           ),
           React.createElement(Box, null,
             React.createElement(Text, { color: "blue" }, "📊 Total: "),
-            React.createElement(Text, { color: "white", bold: true }, hiveData.tasks?.total  ?? 0);
+            React.createElement(Text, { color: "white", bold}, hiveData.tasks?.total  ?? 0);
           );
         );
       );
     ),
-    React.createElement(Box, { justifyContent: "center", marginTop: 1 },
-      React.createElement(Text, { color: hiveData.active ? 'green' : 'red', bold: true },
+    React.createElement(Box, { justifyContent: "center", marginTop},
+      React.createElement(Text, { color: hiveData.active ? 'green' : 'red', bold},
         hiveData.active ? '🟢 HIVE-MIND ACTIVE' : '🔴 HIVE-MIND INACTIVE';
       ),
       React.createElement(Text, { color: "gray" }, ` • Last update: ${new Date().toLocaleTimeString()}`);
     );
   );
 };
-;
+
 export default HiveMindPanel;

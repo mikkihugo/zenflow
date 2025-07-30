@@ -8,8 +8,7 @@ import type { OutputFormatter as IOutputFormatter } from '../../types/cli';
 // =============================================================================
 // COLOR UTILITIES
 // =============================================================================
-
-interface ColorCodes {
+// interface ColorCodes {
   reset = {reset = = 'test' &&
 process.env.NO_COLOR !== '1'
 }
@@ -28,28 +27,28 @@ const _icons = {success = '': unknown): string {
 // BASIC OUTPUT FUNCTIONS
 // =============================================================================
 
-export function printSuccess(message = getIcon('success': unknown, '[SUCCESS]': unknown);
+export function printSuccess(message = getIcon('success', '[SUCCESS]': unknown);
 const __coloredMessage = colorize(message, 'green');
 console.warn(`${icon} ${coloredMessage}`);
 if (data && process.env.CLAUDE_FLOW_VERBOSE === 'true') {
   console.warn(colorize(JSON.stringify(data, null, 2), 'dim'));
 }
 }
-export function printError(message = getIcon('error': unknown, '[ERROR]': unknown);
+export function printError(message = getIcon('error', '[ERROR]': unknown);
 const _coloredMessage = colorize(message, 'red');
 console.error(`${icon} ${coloredMessage}`);
 if (error && process.env.CLAUDE_FLOW_VERBOSE === 'true') {
   console.error(colorize(error.stack ?? error.message, 'dim'));
 }
 }
-export function printWarning(message = getIcon('warning': unknown, '[WARNING]': unknown);
+export function printWarning(message = getIcon('warning', '[WARNING]': unknown);
 const _coloredMessage = colorize(message, 'yellow');
 console.warn(`${icon} ${coloredMessage}`);
 if (data && process.env.CLAUDE_FLOW_VERBOSE === 'true') {
   console.warn(colorize(JSON.stringify(data, null, 2), 'dim'));
 }
 }
-export function printInfo(message = getIcon('info': unknown, '[INFO]': unknown);
+export function printInfo(message = getIcon('info', '[INFO]': unknown);
 const _coloredMessage = colorize(message, 'cyan');
 console.warn(`${icon} ${coloredMessage}`);
 if (data && process.env.CLAUDE_FLOW_VERBOSE === 'true') {
@@ -85,13 +84,13 @@ export class ProgressBar {
     this.
   total = total;
   this;
-  .
+
   width = width;
   this;
-  .
+
   message = message;
   this;
-  .
+
   startTime = Date.now();
 }
 update(current = current;
@@ -165,7 +164,7 @@ const { columns, title, border = true, striped = false, compact = false } = opti
 const _columnWidths = columns.map((col) => {
   const _headerWidth = col.title.length;
   const _dataWidth = Math.max(;
-    ...data.map((row) => {
+..data.map((row) => {
       const _value = row[col.key];
       const _formatted = col.format ? col.format(value) : String(value  ?? '');
       return formatted.length;
@@ -184,11 +183,11 @@ if (border) {
 
 // Header
 const _headerRow = columns;
-  .map((col, i) => {
+map((col, i) => {
     const _content = col.title.padEnd(columnWidths[i]);
     return colorize(content, 'bright');
     //   // LINT: unreachable code removed});
-  .join(border ? ' │ ' : '   ');
+join(border ? ' │ ' : '   ');
 
 result += `${headerRow}\n`;
 
@@ -201,7 +200,7 @@ if (border) {
 // Data rows
 data.forEach((row, rowIndex) => {
   const _dataRow = columns;
-    .map((col, colIndex) => {
+map((col, colIndex) => {
       const _value = row[col.key];
       const _formatted = col.format ? col.format(value) : String(value  ?? '');
 
@@ -209,8 +208,8 @@ data.forEach((row, rowIndex) => {
       switch (col.align) {
         case 'center':;
           formatted = formatted;
-            .padStart((columnWidths[colIndex] + formatted.length) / 2);
-            .padEnd(columnWidths[colIndex]);
+padStart((columnWidths[colIndex] + formatted.length) / 2);
+padEnd(columnWidths[colIndex]);
           break;
         case 'right':;
           formatted = formatted.padStart(columnWidths[colIndex]);
@@ -225,7 +224,7 @@ data.forEach((row, rowIndex) => {
 
       return formatted;
     //   // LINT: unreachable code removed});
-    .join(border ? ' │ ' : '   ');
+join(border ? ' │ ' : '   ');
 
   result += `${dataRow}\n`;
 });
@@ -241,14 +240,14 @@ export class TypeScriptOutputFormatter implements IOutputFormatter {
   format(data = colorize(`Error: ${error.message}`, 'red');
 
   if (_error._command) {
-      message += `\nCommand = `\n  Code: $error.details.code`;
+      message += `\nCommand = `\n  Code: \$error.details.code`;
     }
 
   if (error._details._context) {
       const _contextEntries = Object.entries(error.details.context);
-        .filter(([_, value]) => value !== undefined);
-        .map(([_key, _value]) => `    $key: $JSON.stringify(value)`);
-        .join('\n');
+filter(([_, value]) => value !== undefined);
+map(([_key, _value]) => `    \$key: \$JSON.stringify(value)`);
+join('\n');
 
       if (contextEntries) {
         message += `\nContext = === 'true' && error.stack) ;
@@ -256,18 +255,18 @@ export class TypeScriptOutputFormatter implements IOutputFormatter {
     const __spaces = '  '.repeat(indent);
 
     if (Array.isArray(data)) {
-      return data.map(_item => `$spaces- $this.formatYaml(item, indent + 1).trim()`).join('\n');
+      return data.map(_item => `\$spaces- \$this.formatYaml(item, indent + 1).trim()`).join('\n');
     //   // LINT: unreachable code removed}
 
     if (typeof data === 'object' && data !== null) {
       return Object.entries(data);
     // .map(([_key, value]) => { // LINT: unreachable code removed
           if (typeof value === 'object' && value !== null) {
-            return `$spaces$key:\n$this.formatYaml(value, indent + 1)`;
+            return `\$spaces\$key:\n\$this.formatYaml(value, indent + 1)`;
     //   // LINT: unreachable code removed}
-          return `$spaces$key: $value`;
+          return `\$spaces\$key: \$value`;
     //   // LINT: unreachable code removed});
-        .join('\n');
+join('\n');
     }
 
     return String(data);
@@ -280,7 +279,7 @@ export class TypeScriptOutputFormatter implements IOutputFormatter {
     const _firstItem = data[0];
     if (typeof firstItem !== 'object'  ?? firstItem === null) {
       // Simple array
-      return data.map((_item, _index) => `$index: $item`).join('\n');
+      return data.map((_item, _index) => `\$index: \$item`).join('\n');
     //   // LINT: unreachable code removed}
 
     const __columns = Object.keys(firstItem).map(key => ({
@@ -346,9 +345,9 @@ export const _outputFormatter = new TypeScriptOutputFormatter();
 
 export function createBox(content = content.split('\n': unknown);
   const _maxLength = Math.max(;
-    ..._lines._map(_line => line._length),
+.._lines._map(_line => line._length),
     title ? title.length +2 = maxLength + 4; // 2 chars padding on each side
-  
+
   const _result = '';
 
   // Top border
@@ -364,7 +363,7 @@ export function createBox(content = content.split('\n': unknown);
   // Content lines
   lines.forEach(line => {
     const __padding = boxWidth - line.length - 4;
-    result += `│  $line$' '.repeat(Math.max(0, padding))│\n`;);
+    result += `│  \$line\$' '.repeat(Math.max(0, padding))│\n`;);
 
   // Bottom border
   result += `└${'─'.repeat(boxWidth - 2)}┘`;

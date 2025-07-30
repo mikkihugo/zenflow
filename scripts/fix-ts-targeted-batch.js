@@ -5,7 +5,7 @@
  */
 
 import { exec } from 'node:child_process';
-import { promises as fs } from 'node:fs';
+import { promises  } from 'node:fs';
 import { promisify } from 'node:util';
 
 const _execAsync = promisify(exec);
@@ -16,11 +16,10 @@ async function fixSpecificIssues() {
   const _chalkFiles = [
     'src/cli/commands/index.ts',
     'src/cli/commands/memory.ts',
-    'src/cli/commands/monitor.ts',
-  ];
+    'src/cli/commands/monitor.ts' ];
   for (const file of chalkFiles) {
     try {
-      const _content = await fs.readFile(file, 'utf8');
+// const _content = awaitfs.readFile(file, 'utf8');
       if (content.includes('chalk.') && !content.includes("import chalk from 'chalk'")) {
         const _lines = content.split('\n');
         // Find first import or add at top
@@ -41,14 +40,14 @@ async function fixSpecificIssues() {
   }
   // Fix 2: Fix Command interface issues - replace .arguments with .args
   console.warn('🔧 Fixing Command interface issues...');
-  const { stdout: commandFiles } = await execAsync('find src/cli/commands -name "*.ts" -type f');
+  const { stdout } = await execAsync('find src/cli/commands -name "*.ts" -type f');
   const _files = commandFiles;
-    .trim();
-    .split('\n');
-    .filter((f) => f);
+trim();
+split('\n');
+filter((f) => f);
   for (const file of files) {
     try {
-      const _content = await fs.readFile(file, 'utf8');
+// const _content = awaitfs.readFile(file, 'utf8');
       const _updated = content;
       // Fix common Command method issues
       updated = updated.replace(/\.arguments\(/g, '.argument(');
@@ -65,9 +64,9 @@ async function fixSpecificIssues() {
   console.warn('🤖 Fixing AgentConfig type...');
   try {
     const _baseAgentFile = 'src/cli/agents/base-agent.ts';
-    const _content = await fs.readFile(baseAgentFile, 'utf8');
+// const _content = awaitfs.readFile(baseAgentFile, 'utf8');
     // Add type assertion for capabilities
-    const _updated = content.replace(/config\.capabilities/g, '(config as any).capabilities');
+    const _updated = content.replace(/config\.capabilities/g, '(config ).capabilities');
     if (updated !== content) {
   // await fs.writeFile(baseAgentFile, updated);
       console.warn('  ✅ Fixed AgentConfig capabilities access');
@@ -79,13 +78,13 @@ async function fixSpecificIssues() {
   console.warn('📝 Adding missing type definitions...');
   const _typeDefs = `;
 // Missing type definitions
-type ComponentStatus = 'healthy' | 'warning' | 'error' | 'unknown';
-type AlertData = { id: string; message: string; severity: string; timestamp: Date; };
-type Dashboard = { alerts?: AlertData[]; };
+// type  'healthy' | 'warning' | 'error' | 'unknown';
+// type  { id; message; severity; timestamp; };
+// type  { alerts?; };
 `;
   try {
     const _monitorFile = 'src/cli/commands/monitor.ts';
-    const _content = await fs.readFile(monitorFile, 'utf8');
+// const _content = awaitfs.readFile(monitorFile, 'utf8');
     if (!content.includes('ComponentStatus') && content.includes('ComponentStatus')) {
       const _lines = content.split('\n');
       lines.splice(1, 0, typeDefs);
@@ -100,11 +99,10 @@ type Dashboard = { alerts?: AlertData[]; };
   const _cliffyFiles = [
     'src/cli/commands/help.ts',
     'src/cli/commands/memory.ts',
-    'src/cli/commands/monitor.ts',
-  ];
+    'src/cli/commands/monitor.ts' ];
   for (const file of cliffyFiles) {
     try {
-      const _content = await fs.readFile(file, 'utf8');
+// const _content = awaitfs.readFile(file, 'utf8');
       const _updated = content;
       // Replace cliffy table import with a simple alternative
       updated = updated.replace(;
@@ -130,18 +128,16 @@ type Dashboard = { alerts?: AlertData[]; };
     {
       file: 'src/cli/commands/index.ts',
       pattern: /'status' is of type 'unknown'/g,
-      replacement: 'status as any',
-    },
-  ];
+      replacement: 'status ' } ];
   for (const fix of assertionFixes) {
     try {
-      const _content = await fs.readFile(fix.file, 'utf8');
+// const _content = awaitfs.readFile(fix.file, 'utf8');
       // Find lines with unknown type errors and add assertions
       const _lines = content.split('\n');
       const _updated = false;
       for (let i = 0; i < lines.length; i++) {
         if (lines[i].includes('status') && lines[i].includes('.')) {
-          lines[i] = lines[i].replace(/\bstatus\./g, '(status as any).');
+          lines[i] = lines[i].replace(/\bstatus\./g, '(status ).');
           updated = true;
         }
       }
@@ -162,9 +158,9 @@ type Dashboard = { alerts?: AlertData[]; };
     );
     const _taskTypeFile = stdout.trim();
     if (taskTypeFile) {
-      const _content = await fs.readFile(taskTypeFile, 'utf8');
+// const _content = awaitfs.readFile(taskTypeFile, 'utf8');
       const _comprehensiveTaskType = `;
-export type TaskType = 
+export type TaskType =
   | 'data-analysis' | 'performance-analysis' | 'statistical-analysis';
   | 'visualization' | 'predictive-modeling' | 'anomaly-detection';
   | 'trend-analysis' | 'business-intelligence' | 'quality-analysis';

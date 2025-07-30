@@ -16,10 +16,10 @@ export class WebUIValidator {
     return isValidRuntime && hasPlatform;
     //   // LINT: unreachable code removed}
   )
-;
+
   // Terminal I/O Test
   this;
-  .;
+
   test('Terminal I/O Layer', ();
   => {
       const _terminal = compat.terminal;
@@ -33,21 +33,21 @@ export class WebUIValidator {
     // hasRequiredMethods; // LINT: unreachable code removed
 }
 )
-;
+
 // Component Import Test
-await this.asyncTest('Component Imports', async () =>;
+// await this.asyncTest('Component Imports', async () =>;
   try {
-    await import('./start-wrapper.js');
-    await import('./process-ui-enhanced.js');
+// await import('./start-wrapper.js');
+// await import('./process-ui-enhanced.js');
     return true;
     //   // LINT: unreachable code removed} catch (/* _err */) {
     return false;
     //   // LINT: unreachable code removed}
 }
 )
-;
+
 // UI Instantiation Test
-await this.asyncTest('UI Instantiation', async () =>;
+// await this.asyncTest('UI Instantiation', async () =>;
   try {
     const { EnhancedProcessUI } = await import('./process-ui-enhanced.js');
     const _ui = new EnhancedProcessUI();
@@ -57,18 +57,18 @@ await this.asyncTest('UI Instantiation', async () =>;
     //   // LINT: unreachable code removed}
 }
 )
-;
+
 // File Operations Test
-await this.asyncTest('File Operations', async () =>;
+// await this.asyncTest('File Operations', async () =>;
   try {
-    await compat.safeCall(async () => {
+// await compat.safeCall(async () => {
       if (compat.runtime === 'node') {
         await node.writeTextFile('.webui-test', 'test');
-        await node.remove('.webui-test');
+// await node.remove('.webui-test');
       } else {
-        const _fs = await import('node:fs/promises');
-        await fs.writeFile('.webui-test', 'test');
-        await fs.unlink('.webui-test');
+// const _fs = awaitimport('node:fs/promises');
+// await fs.writeFile('.webui-test', 'test');
+// await fs.unlink('.webui-test');
       }
     });
     return true;
@@ -77,10 +77,10 @@ await this.asyncTest('File Operations', async () =>;
     //   // LINT: unreachable code removed}
 }
 )
-;
+
 this.printSummary();
 return this.results.failed === 0;
-;
+
   test(name, testFn): unknown;
   this.results.total++;
   try {
@@ -96,13 +96,13 @@ return this.results.failed === 0;
     console.warn(`❌ ${name}: ${err.message}`);
     this.results.failed++;
   }
-;
+
 async;
 asyncTest(name, testFn);
 : unknown;
   this.results.total++;
   try {
-    const _result = await testFn();
+// const _result = awaittestFn();
     if (result) {
       console.warn(`✅ ${name}`);
       this.results.passed++;
@@ -114,7 +114,7 @@ asyncTest(name, testFn);
     console.warn(`❌ ${name}: ${err.message}`);
     this.results.failed++;
   }
-;
+
 printSummary();
 {
   console.warn('─'.repeat(50));
@@ -125,10 +125,9 @@ printSummary();
     }
   }
 }
-;
+
 // Auto-run if called directly
 if(import.meta.url === `file = new WebUIValidator();
-  const _success = await validator.runValidation();
+// const _success = awaitvalidator.runValidation();
   process.exit(success ? 0 : 1);
 }
-;

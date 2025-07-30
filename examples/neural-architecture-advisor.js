@@ -17,7 +17,7 @@ async function demonstrateArchitectureAnalysis() {
   const _architect = new ArchitectAdvisor();
   // Test scenarios with varying complexity
   const _scenarios = [
-    {
+// {
       id: 'scenario-1',
       type: 'architecture-analysis',
       prompt:;
@@ -25,10 +25,8 @@ async function demonstrateArchitectureAnalysis() {
       context: {
         budget: 'limited',
         team: 'small',
-        timeline: 'aggressive',
-      },
-    },
-    {
+        timeline: 'aggressive' } },
+// {
       id: 'scenario-2',
       type: 'architecture-analysis',
       prompt:;
@@ -36,12 +34,9 @@ async function demonstrateArchitectureAnalysis() {
       context: {
         scale: 'massive',
         requirements: {
-          realTime: true,
-          highAvailability: true,
-        },
-      },
-    },
-    {
+          realTime,
+          highAvailability } } },
+// {
       id: 'scenario-3',
       type: 'architecture-analysis',
       prompt:;
@@ -50,32 +45,25 @@ async function demonstrateArchitectureAnalysis() {
         industry: 'fintech',
         compliance: ['PCI-DSS', 'SOC2'],
         requirements: {
-          security: true,
-          reliability: true,
-        },
-      },
-    },
-    {
+          security,
+          reliability } } },
+// {
       id: 'scenario-4',
       type: 'architecture-analysis',
       prompt:;
         'Build an AI-powered content recommendation engine that processes millions of articles daily, requires machine learning pipelines, A/B testing, and real-time personalization',
       context: {
         dataVolume: 'high',
-        mlRequired: true,
+        mlRequired,
         requirements: {
-          scalability: true,
-          performance: true,
-        },
-      },
-    },
-  ];
+          scalability,
+          performance } } } ];
   // Process each scenario
   for (const scenario of scenarios) {
     console.warn(`\n${'='.repeat(80)}`);
     console.warn(`📋 Scenario: ${scenario.id}`);
     console.warn(`   Question: ${scenario.prompt}\n`);
-    const _result = await architect.process(scenario);
+// const _result = awaitarchitect.process(scenario);
     console.warn(;
       `🏛️  Recommended Architecture: ${result.recommendation.architecture.toUpperCase()}`;
     );
@@ -84,7 +72,7 @@ async function demonstrateArchitectureAnalysis() {
       `   Neural Contribution: ${(result.metadata.neuralContribution * 100).toFixed(1)}%`;
     );
     console.warn(`\n📐 Architecture Pattern:`);
-    console.warn(`   ${result.recommendation.pattern.description}`);
+    console.warn(`${result.recommendation.pattern.description}`);
     console.warn(`   ✅ Pros: ${result.recommendation.pattern.pros.join(', ')}`);
     console.warn(`   ⚠️  Cons: ${result.recommendation.pattern.cons.join(', ')}`);
     console.warn(`\n🔧 Key Components:`);
@@ -99,35 +87,35 @@ async function demonstrateArchitectureAnalysis() {
     if (tech.suggested) console.warn(`   Neural Suggested: ${tech.suggested.join(', ')}`);
     console.warn(`\n📋 Implementation Plan:`);
     result.recommendation.implementation.slice(0, 3).forEach((step, idx) => {
-      console.warn(`   ${idx + 1}. ${step}`);
+      console.warn(`${idx + 1}. ${step}`);
     });
     console.warn(`   ... and ${result.recommendation.implementation.length - 3} more steps`);
     if (result.recommendation.neuralInsights) {
       console.warn(`\n🧠 Neural Insights:`);
       console.warn(`   "${result.recommendation.neuralInsights.substring(0, 150)}..."`);
-    }
+// }
     console.warn(`\n🎯 Reasoning:`);
     console.warn(;
       result.reasoning;
-        .split('\n');
-        .map((line) => `   $line`);
-        .join('\n');
+split('\n');
+map((line) => `   \$line`);
+join('\n');
     );
     if (result.alternatives && result.alternatives.length > 0) {
       console.warn(`\n🔄 Alternative Approaches:`);
       result.alternatives.forEach((alt) => {
         console.warn(`   - ${alt.architecture} (${(alt.suitability * 100).toFixed(0)}% suitable)`);
-        console.warn(`     ${alt.whenToUse}`);
+        console.warn(`${alt.whenToUse}`);
       });
-    }
+// }
     console.warn(`\n⏱️  Processing Time: ${result.processingTime.toFixed(0)}ms`);
-  }
-}
+// }
+// }
 async function demonstrateQueenCoordination() {
   console.warn(`\n\n${'='.repeat(80)}`);
   console.warn('👑 Demonstrating Multi-Queen Coordination with Neural Networks\n');
   // Create a coordinator with multiple queens including our architect
-  const _coordinator = await createQueenCoordinator({
+// const _coordinator = awaitcreateQueenCoordinator({
     queens: ['CodeQueen', 'ArchitectAdvisor', 'DebugQueen'],
     consensus: 'weighted',
       type: 'sqlite',
@@ -138,22 +126,19 @@ const _complexTask = {
     id: 'complex-1',
 type: 'full-stack-development',
 prompt: 'Build a complete real-time collaborative document editing system like Google Docs',
-{
-  realTime: true,
-  collaboration: true,
-  scalability: true,
-  security: true,
-  
-}
-
-}
+// {
+  realTime,
+  collaboration,
+  scalability,
+  security }
+// }
 console.warn(`📋 Complex Task: $
-{
+// {
   complexTask.prompt;
-}
+// }
 \n`)
 // Let the coordinator handle it
-const _coordinatedResult = await coordinator.processTask(complexTask);
+// const _coordinatedResult = awaitcoordinator.processTask(complexTask);
 console.warn('🏆 Coordinated Result:');
 console.warn(`   Primary Queen: ${coordinatedResult.primaryQueen}`);
 console.warn(`   Overall Confidence: ${(coordinatedResult.confidence * 100).toFixed(1)}%`);
@@ -167,11 +152,11 @@ coordinatedResult.allResults.forEach((result) => {
     console.warn(;
     `   - Neural Contribution: ${(result.metadata.neuralContribution * 100).toFixed(1)}%`;
     )
-  }
+// }
 });
 // Shut down coordinator
   // await coordinator.stop();
-}
+// }
 async function demonstrateNeuralLearning() {
   console.warn(`\n\n${'='.repeat(80)}`);
   console.warn('🧠 Demonstrating Neural Network Learning & Adaptation\n');
@@ -186,33 +171,32 @@ async function demonstrateNeuralLearning() {
       id: `learning-${i}`,
       type: 'architecture-analysis',
       prompt: basePrompt + (i > 0 ? ` (iteration ${i + 1})` : ''),
-          scalability: true,
-          performance: true,,,
-    };
+          scalability,
+          performance,, };
     const _startTime = Date.now();
-    const _result = await architect.process(task);
+// const _result = awaitarchitect.process(task);
     const _totalTime = Date.now() - startTime;
     console.warn(`   Processing Time: ${totalTime}ms`);
     console.warn(`   Neural Engine Time: ${result.processingTime.toFixed(0)}ms`);
     console.warn(`   Confidence: ${(result.confidence * 100).toFixed(1)}%`);
-    // Show if result was cached
+    // Show if result w
     const _neuralStats = architect.neuralEngine.getStats();
     console.warn(`   Cache Size: ${neuralStats.cacheSize}`);
     console.warn(`   Total Inferences: ${neuralStats.totalInferences}`);
     if (neuralStats.totalInferences > 0) {
       const _hitRate = ((neuralStats.cacheHits / neuralStats.totalInferences) * 100).toFixed(1);
       console.warn(`   Cache Hit Rate: ${hitRate}%`);
-    }
-  }
+// }
+// }
 // Show final neural engine statistics
 console.warn('\n📊 Final Neural Engine Statistics:');
 const _finalStats = architect.neuralEngine.getStats();
 console.warn(`   Total Models: ${finalStats.totalModels}`);
 console.warn(`   Loaded Models: ${finalStats.loadedModels}`);
-console.warn(`   Has Bindings: ${finalStats.hasBindings}`);
+console.warn(`   H: ${finalStats.hasBindings}`);
 console.warn(`   Cache Size: ${finalStats.cacheSize}`);
 console.warn(`   Total Inferences: ${finalStats.totalInferences}`);
-}
+// }
 // Run all demonstrations
 async function runDemo() {
   try {
@@ -230,7 +214,7 @@ async function runDemo() {
   } catch (error) {
     console.error('❌ Demo failed:', error);
     process.exit(1);
-  }
-}
+// }
+// }
 // Execute the demo
 runDemo().catch(console.error);

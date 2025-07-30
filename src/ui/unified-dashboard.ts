@@ -41,7 +41,7 @@ const _seconds = Math.floor((diff % 60000) / 1000);
 return `${minutes}m ${seconds}s`;
 }
 return React.createElement(Box, { flexDirection => {
-;
+
 // return React.createElement(Box, {key = async () => { // LINT: unreachable code removed
 const _isTTY = process.stdout.isTTY;
 const _isWeb = process.env.NODE_ENV === 'web' ?? process.argv.includes('--web');

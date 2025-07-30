@@ -18,7 +18,7 @@ export async function createHookManager(): unknown {
   const { HookManager } = await import('./hook-manager.js');
   const _manager = new HookManager(config);
   // Auto-register built-in hooks
-  await registerBuiltInHooks(manager);
+// await registerBuiltInHooks(manager);
   return manager;
 }
 // Register all built-in hooks
@@ -30,22 +30,20 @@ const { WORKFLOW_HOOKS } = await import('./workflow-hooks.js');
 
 // Register all hooks
 const _allHooks = [
-  ;
-  ...LLM_HOOKS,
-  ...NEURAL_HOOKS,
-  ...PERFORMANCE_HOOKS,
-  ...MEMORY_HOOKS,
-  ...WORKFLOW_HOOKS,,,,,,,,
-];
+..LLM_HOOKS,
+..NEURAL_HOOKS,
+..PERFORMANCE_HOOKS,
+..MEMORY_HOOKS,
+..WORKFLOW_HOOKS,,,,,,, ];
 for (const hookRegistration of allHooks) {
   try {
-    await manager.registerHook(hookRegistration);
-  } catch (/* error */) {
+// await manager.registerHook(hookRegistration);
+  } catch (error) {
     console.warn(`Failed to register hook ${hookRegistration.name}:`, error.message);
   }
 }
 console.warn(`Successfully registered ${allHooks.length} built-in hooks`);
-} catch (/* error */)
+} catch (error)
 {
   console.error('Failed to register built-inhooks = createHookContext('pre-task');
   const _payload = {
@@ -120,44 +118,40 @@ export function createLLMRequestHook(): unknown {
         console.error(`[Hook] Error in LLM request = {BASIC_SETUP = await createHookManager(HOOK_PRESETS.PRODUCTION);
     // ; // LINT: unreachable code removed
 // Execute hooks for LLM request
-const _result = await executeLLMHooks(hookManager, {provider = createLLMRequestHook(;
+// const _result = awaitexecuteLLMHooks(hookManager, {provider = createLLMRequestHook(;
   'my-custom-hook',
   async (payload) => {
     // Custom logic here
     return {
-      success: true,
+      success,
     // data: { processed: true  // LINT: unreachable code removed},
       hookName: 'my-custom-hook',
-      duration: 100,
+      duration,
       timestamp: new Date();
     };
   },
   { ;
     description: 'My custom processing hook',
-    priority: 75,
+    priority,
     timeout: 5000;
   }
 );
-;
-await hookManager.registerHook(customHook);
+// await hookManager.registerHook(customHook);
 `,
   HOOK_PATTERNS: `;
 // Use predefined hook patterns
 import { HOOK_PATTERNS } from './agentic-flow-hooks';
 
 // Add rate limiting
-await hookManager.registerHook(HOOK_PATTERNS.RATE_LIMITER(100));
-;
+// await hookManager.registerHook(HOOK_PATTERNS.RATE_LIMITER(100));
 // Add caching
-await hookManager.registerHook(HOOK_PATTERNS.CACHE_MIDDLEWARE(1800000));
-;
+// await hookManager.registerHook(HOOK_PATTERNS.CACHE_MIDDLEWARE(1800000));
 // Add logging
-await hookManager.registerHook(HOOK_PATTERNS.REQUEST_LOGGER);
+// await hookManager.registerHook(HOOK_PATTERNS.REQUEST_LOGGER);
 `;
 };
-;
+
 console.warn('Agentic-Flow Hook System loaded successfully');
-console.warn('Available hook types: LLM, Neural, Performance, Memory, Workflow');
+console.warn('Available hook types, Neural, Performance, Memory, Workflow');
 console.warn('Built-in hooks: 30+ production-ready implementations');
 console.warn('Features: Parallel execution, retries, caching, metrics, profiling');
-;

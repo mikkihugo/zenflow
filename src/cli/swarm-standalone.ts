@@ -27,8 +27,7 @@ if (!objective && !flags.help) {
   console.error('❌Usage = [
   join(__dirname, '../../swarm-demo.ts'),
   join(__dirname, '../../swarm-demo-enhanced.ts'),
-  join(__dirname, '../../../swarm-demo.ts'),
-  ]
+  join(__dirname, '../../../swarm-demo.ts') ]
   const _swarmPath = null;
   for (const path of possiblePaths) {
     if (existsSync(path)) {
@@ -40,7 +39,7 @@ if (!objective && !flags.help) {
     // Fallback to inline implementation without calling back to swarm.js
     console.warn('🐝 Launching swarm system...');
     console.warn(`📋Objective = `swarm_${Math.random().toString(36).substring(2, 11)}_${Math.random().toString(36).substring(2, 11)}`;
-;
+
   if(flags['dry-run']) {
     console.warn(`🆔 SwarmID = = false}`);
     console.warn(`🔒Encryption = await import('child_process');
@@ -71,7 +70,7 @@ claudeProcess.on('error', (err) =>
 }
 )
 })
-} catch (/* error */)
+} catch (error)
 {
     // Fallback if Claude execution fails
     console.warn(`✅ Swarm initialized withID = [objective];
@@ -81,10 +80,9 @@ claudeProcess.on('error', (err) =>
       swarmArgs.push(String(value));
     }
   }
-;
+
   const _node = spawn('node', [swarmPath, ...swarmArgs], {
     stdio => {
     exit(code  ?? 0);
   });
 }
-;

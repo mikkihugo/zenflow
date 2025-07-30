@@ -9,15 +9,15 @@ if(args.length === 0) {
 const _SOURCE_DIR = path.join(__dirname, '.claude');
 const _TARGET_DIR = path.join(TARGET_PROJECT, '.claude');
 const _MANIFEST_PATH = path.join(__dirname, 'manifest.json');
-;
+
 console.warn('Claude Optimized Template Deployment');
 console.warn('====================================');
 console.warn(`Source = ['package.json', 'tsconfig.json', 'node.json', 'go.mod', 'Cargo.toml', 'setup.py'];
 const _hasProjectFile = projectFiles.some(file => fs.existsSync(path.join(TARGET_PROJECT, file)));
-;
+
 if(!hasProjectFile) {
   console.warn('Warning = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
-;
+
 // Create target .claude directory
 if (!fs.existsSync(TARGET_DIR)) {
   fs.mkdirSync(TARGET_DIR, {recursive = path.join(TARGET_DIR, dirInfo.path);
@@ -28,16 +28,16 @@ if (!fs.existsSync(TARGET_DIR)) {
     }
   }
 }
-;
+
 // Copy files
 console.warn('\nDeploying template files...');
 const _successCount = 0;
 const _errorCount = 0;
-;
+
 for(const file of manifest.files) {
   const _sourcePath = path.join(SOURCE_DIR, file.destination);
   const _targetPath = path.join(TARGET_DIR, file.destination);
-;
+
   try {
     if (fs.existsSync(sourcePath)) {
       // Ensure target directory exists
@@ -55,4 +55,3 @@ console.warn('DeploymentSummary = === 0) {
 } else {
   console.warn('\n⚠️  Template deployed with errors. Please check the messages above.');
 }
-;

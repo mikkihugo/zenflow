@@ -78,7 +78,7 @@ export class SqliteMemoryStore {
     return results;
     //   // LINT: unreachable code removed}
 
-  async close() 
+  async close()
     this.storage.clear();
     this.namespaces.clear();
 }

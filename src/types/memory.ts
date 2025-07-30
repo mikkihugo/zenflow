@@ -76,7 +76,7 @@ export interface CleanupResult {
   entriesRemoved: number;
   bytesFreed: number;
   duration: number; // milliseconds
-  
+
   breakdown: {
     expired: number;
     orphaned: number;

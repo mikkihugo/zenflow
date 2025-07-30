@@ -8,10 +8,9 @@ import { afterEach, beforeEach, describe, expect } from '@jest/globals';
 import {
   cleanupAllCaches,
 createIsolatedCache,
-getIsolatedNpxEnv,
-} from '../../../src/utils/npx-isolated-cache.js'
+getIsolatedNpxEnv } from '../../../src/utils/npx-isolated-cache.js'
 describe('NPX Isolated Cache', () =>
-{
+// {
   beforeEach(() => {
     // Clean up any existing caches before each test
     return cleanupAllCaches();
@@ -55,8 +54,7 @@ describe('NPX Isolated Cache', () =>
         it('should merge additional environment variables', () => {
           const _env = getIsolatedNpxEnv({
         CUSTOM_VAR: 'custom-value',
-          NODE_ENV: 'override-value',
-        });
+          NODE_ENV: 'override-value' });
         expect(env.CUSTOM_VAR).toBe('custom-value');
         expect(env.NODE_ENV).toBe('override-value');
         expect(env.NPM_CONFIG_CACHE).toBeDefined();
@@ -64,8 +62,7 @@ describe('NPX Isolated Cache', () =>
       it('should prioritize additional env vars over defaults', () => {
         const _customCacheDir = '/custom/cache/dir';
         const _env = getIsolatedNpxEnv({
-        NPM_CONFIG_CACHE: customCacheDir,
-      });
+        NPM_CONFIG_CACHE });
       expect(env.NPM_CONFIG_CACHE).toBe(customCacheDir);
     });
   });

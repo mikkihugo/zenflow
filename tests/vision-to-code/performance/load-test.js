@@ -14,58 +14,50 @@ export const options = {
     // Normal load scenario
     normal_load: {
       executor: 'ramping-vus',
-startVUs: 0,
+startVUs,
 stages: [;
-        { duration: '2m', target: 100 }, // Ramp up to 100 users
-        { duration: '5m', target: 100 }, // Stay at 100 users
-        { duration: '2m', target: 0 }, // Ramp down
+        { duration: '2m', target }, // Ramp up to 100 users
+        { duration: '5m', target }, // Stay at 100 users
+        { duration: '2m', target }, // Ramp down
       ],
-gracefulRampDown: '30s',
-},
+gracefulRampDown: '30s' },
 // Stress test scenario
-{
+// {
   executor: 'ramping-vus',
-  startVUs: 0,
+  startVUs,
   stages: [;
-        { duration: '2m', target: 100 },
-        { duration: '3m', target: 500 },
-        { duration: '5m', target: 1000 },
-        { duration: '5m', target: 5000 },
-        { duration: '5m', target: 0 },
-      ],
+        { duration: '2m', target },
+        { duration: '3m', target },
+        { duration: '5m', target },
+        { duration: '5m', target },
+        { duration: '5m', target } ],
   gracefulRampDown: '1m',
   startTime: '10m', // Start after normal load test
-}
-,
+// }
 // Spike test scenario
-{
+// {
   executor: 'ramping-vus',
-  startVUs: 0,
+  startVUs,
   stages: [;
-        { duration: '1m', target: 100 },
-        { duration: '30s', target: 5000 }, // Sudden spike
-        { duration: '2m', target: 100 },
-        { duration: '30s', target: 10000 }, // Extreme spike
-        { duration: '2m', target: 0 },
-      ],
+        { duration: '1m', target },
+        { duration: '30s', target }, // Sudden spike
+        { duration: '2m', target },
+        { duration: '30s', target }, // Extreme spike
+        { duration: '2m', target } ],
   startTime: '35m', // Start after stress test
-}
-,
-},
-{
+// }
+ },
+// {
   http_req_duration: [
     'p(95)<100',
-    'p(99)<200',
-  ], // 95% of requests under 100ms
+    'p(99)<200' ], // 95% of requests under 100ms
     http_req_failed;
   : ['rate<0.1'], // Error rate under 10%
     errors: ['rate<0.1'], // Custom error rate
     api_response_time: ['p(95)<100'], // API response time
     vision_analysis_time: ['p(95)<300'], // Vision analysis time
     code_generation_time: ['p(95)<500'], // Code generation time
-}
-
-}
+// }// }
 // Test data
 const _BASE_URL = __ENV.BASE_URL ?? 'http://localhost:3000';
 const _API_KEY = __ENV.API_KEY ?? 'test-api-key';
@@ -77,33 +69,33 @@ function checkResponse() {
   const _success = check(res, {
     [`status is ${expectedStatus}`]: (r) => r.status === expectedStatus,
     'response time < 100ms': (r) => r.timings.duration < 100,
-    'has valid JSON body': (r) => 
+    'h JSON body': (r) =>
       try {
         JSON.parse(r.body);
         return true;
     //   // LINT: unreachable code removed} catch {
         return false;
     //   // LINT: unreachable code removed}
-    },);
+    });
   errorRate.add(!success);
   return success;
-}
+// }
 // Main test scenario
 export default function () {
   const _headers = {
     Authorization: `Bearer ${API_KEY}`,
   ('Content-Type');
   : 'application/json'
-}
+// }
 // Scenario 1: Health check
 const _healthCheck = http.get(`${BASE_URL}/health`);
 checkResponse(healthCheck);
 // Scenario 2: Upload image
 const _uploadPayload = {
-    image: TEST_IMAGE,
+    image,
 format: 'png',
 name: `test-${Date.now()}.png`
-}
+// }
 const _uploadStart = Date.now();
 const _uploadRes = http.post(`${BASE_URL}/api/v1/images/upload`, JSON.stringify(uploadPayload), {
     headers
@@ -112,7 +104,7 @@ const _uploadDuration = Date.now() - uploadStart;
 apiResponseTime.add(uploadDuration);
 if (!checkResponse(uploadRes)) {
   return; // Skip rest of test if upload fails
-}
+// }
 const { imageId } = JSON.parse(uploadRes.body).data;
 // Scenario 3: Analyze image
 const _analysisStart = Date.now();
@@ -128,15 +120,13 @@ if (!checkResponse(analysisRes)) {
     analysisId,
   framework: 'react',
   language: 'typescript',
-  includeTests: true,
-  includeStyles: true,
-  
-}
+  includeTests,
+  includeStyles }
 const _generateStart = Date.now();
 const _generateRes = http.post(;
 `${BASE_URL}/api/v1/code/generate`,
 JSON.stringify(generatePayload),
-{
+// {
   headers;
 })
 const _generateDuration = Date.now() - generateStart;
@@ -144,15 +134,15 @@ codeGenerationTime.add(generateDuration);
 checkResponse(generateRes);
 // Think time between iterations
 sleep(Math.random() * 2 + 1); // 1-3 seconds
-}
+// }
 // Handle summary export
 export function handleSummary() {
   return {
     'summary.html': htmlReport(data),
     // 'summary.json': JSON.stringify(data), // LINT: unreachable code removed
-    stdout: textSummary(data, { indent: ' ', enableColors: true })
-}
-}
+    stdout: textSummary(data, { indent: ' ', enableColors })
+// }
+// }
 // Custom text summary
 function textSummary() {
   const { metrics } = data;
@@ -182,37 +172,35 @@ function textSummary() {
   Object.entries(data.metrics).forEach(([name, metric]) => {
     if (metric.thresholds) {
       const _passed = Object.values(metric.thresholds).every((t) => t.ok);
-      summary += `  ${name}: ${passed ? '✓ PASSED' : '✗ FAILED'}\n`;
-    }
+      summary += `${name}: ${passed ? '✓ PASSED' : '✗ FAILED'}\n`;
+// }
   });
   return summary;
-}
+// }
 // Additional test scenarios for specific endpoints
 export function testConcurrentUploads() {
   const _headers = {
     Authorization: `Bearer ${API_KEY}`,
     'Content-Type': 'application/json'
-}
+// }
 const _batch = [];
 for (let i = 0; i < 10; i++) {
   batch.push([;
       'POST',
       `${BASE_URL}/api/v1/images/upload`,
       JSON.stringify({
-        image: TEST_IMAGE,
+        image,
         format: 'png',
-        name: `batch-${Date.now()}-${i}.png`,
-      }),
-  headers ,
-  ])
-}
+        name: `batch-${Date.now()}-${i}.png` }),
+  headers  ])
+// }
 const _responses = http.batch(batch);
 responses.forEach((res) => checkResponse(res));
-}
+// }
 export function testRateLimiting() {
   const _headers = {
     Authorization: `Bearer ${API_KEY}`
-}
+// }
 // Send rapid requests to trigger rate limiting
 const _rateLimited = false;
 for (let i = 0; i < 100; i++) {
@@ -220,16 +208,16 @@ for (let i = 0; i < 100; i++) {
   if (res.status === 429) {
     rateLimited = true;
     break;
-  }
-}
+// }
+// }
 check(rateLimited, {
     'rate limiting is enforced': (r) => r === true
 })
-}
+// }
 export function testCachePerformance() {
   const _headers = {
     Authorization: `Bearer ${API_KEY}`
-}
+// }
 // First request (cache miss)
 const _firstRes = http.get(`${BASE_URL}/api/v1/projects`, { headers });
 const _firstTime = firstRes.timings.duration;
@@ -239,4 +227,4 @@ const _secondTime = secondRes.timings.duration;
 check(secondTime, {
     'cached response is faster': (t) => t < firstTime * 0.5
 })
-}
+// }

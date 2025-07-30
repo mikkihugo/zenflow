@@ -61,28 +61,17 @@ export interface PluginEvents {
 // Lifecycle events
 ('loading');
 : (pluginName = > void
-('loaded')
-: (pluginName = > void
-('initializing')
-: (pluginName = > void
-('initialized')
-: (pluginName = > void
-('starting')
-: (pluginName = > void
-('started')
-: (pluginName = > void
-('stopping')
-: (pluginName = > void
-('stopped')
-: (pluginName = > void
-('unloading')
-: (pluginName = > void
-('unloaded')
-: (pluginName = > void
-('error')
-: (pluginName = > void
-('restarted')
-: (pluginName = > void
+('loaded'):  (pluginName = > void
+('initializing'):  (pluginName = > void
+('initialized'):  (pluginName = > void
+('starting'):  (pluginName = > void
+('started'):  (pluginName = > void
+('stopping'):  (pluginName = > void
+('stopped'):  (pluginName = > void
+('unloading'):  (pluginName = > void
+('unloaded'):  (pluginName = > void
+('error'):  (pluginName = > void
+('restarted'):  (pluginName = > void
 // Hook events
 ('hook-registered')
 : (pluginName = > void

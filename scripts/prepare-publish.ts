@@ -19,7 +19,7 @@ const _rootDir = path.resolve(__dirname, '..');
 /**
  * Package.json structure interface;
  */
-interface PackageJson {
+// interface PackageJson {
   version: string;
   name: string;
   [key: string]: unknown;
@@ -27,7 +27,7 @@ interface PackageJson {
 /**
  * Version file configuration;
  */
-interface VersionFile {
+// interface VersionFile {
   path: string;
   pattern: RegExp;
   replacement: string;
@@ -35,14 +35,14 @@ interface VersionFile {
 /**
  * Pack file information;
  */
-interface PackFile {
+// interface PackFile {
   path: string;
   size: number;
 }
 /**
  * NPM pack output information;
  */
-interface PackInfo {
+// interface PackInfo {
   files: PackFile[];
   size: number;
 }
@@ -68,37 +68,33 @@ function getVersionFiles(version: string): VersionFile[] {
     // { // LINT: unreachable code removed
       path: 'src/cli/cli-main.ts',
       pattern: /const VERSION = '[^']+';/,
-  replacement: `const VERSION = '${version}';`,
-}
-,
+  replacement: `const VERSION = '${version}';` }
+
 {
   path: 'src/cli/index.ts',
   pattern: /const VERSION = '[^']+';/,
-  replacement: `const VERSION = '${version}';`,
-}
-,
+  replacement: `const VERSION = '${version}';` }
+
 {
   path: 'src/cli/index-remote.ts',
   pattern: /const VERSION = '[^']+';/,
-  replacement: `const VERSION = '${version}';`,
-}
-,
+  replacement: `const VERSION = '${version}';` }
+
 {
   path: 'bin/claude-zen', pattern;
-  : /VERSION="[^"]+"/, replacement: `VERSION="$version"` },
+  : /VERSION="[^"]+"/, replacement: `VERSION="\$version"` },
       path: 'src/cli/commands/status.ts',
   pattern: /version: '[^']+'/g,
   replacement: `version: '${version}'`,
-  ,
+
   path: 'src/cli/init/claude-config.ts',
   pattern: /version: "[^"]+"/g,
   replacement: `version: "${version}"`,
-  ,
+
   path: 'src/cli/init/directory-structure.ts',
   pattern: /version: "[^"]+"/g,
   replacement: `version: "${version}"`,
-  ,
-  ]
+   ]
 }
 /**
  * Updates version strings in source files;
@@ -110,7 +106,7 @@ function updateVersionFiles(version: string): number {
   console.warn('📝 Updating version in source files...');
   const _versionFiles = getVersionFiles(version);
   const _updatedCount = 0;
-  versionFiles.forEach(({ path: filePath, pattern, replacement }) => {
+  versionFiles.forEach(({ path, pattern, replacement }) => {
     const _fullPath = path.join(rootDir, filePath);
     if (fs.existsSync(fullPath)) {
       const _content = fs.readFileSync(fullPath, 'utf8');
@@ -136,7 +132,7 @@ function cleanDistDirectory(): void {
   console.warn('🧹 Cleaning dist directory...');
   const _distDir = path.join(rootDir, 'dist');
   if (fs.existsSync(distDir)) {
-    execSync('rm -rf dist', { cwd: rootDir });
+    execSync('rm -rf dist', { cwd});
     console.warn('   ✅ Cleaned dist directory');
   }
 }
@@ -147,13 +143,13 @@ function buildTypeScriptFiles(): void {
   console.warn('\n🔨 Building TypeScript files...');
   try {
     // First try to build CLI files with relaxed config
-    execSync('npx tsc -p tsconfig.cli.json', { cwd: rootDir, stdio: 'inherit' });
+    execSync('npx tsc -p tsconfig.cli.json', { cwd, stdio: 'inherit' });
     console.warn('   ✅ CLI files built successfully');
   } catch (/* _error */) {
     console.warn('   ⚠️  Build had errors, trying fallback...');
     try {
       // Fallback: try the regular build
-      execSync('npm run build:ts', { cwd: rootDir, stdio: 'inherit' });
+      execSync('npm run build:ts', { cwd, stdio: 'inherit' });
     } catch (/* _fallbackError */) {
       console.warn('   ⚠️  Build had errors, but continuing...');
       // Continue anyway as there might be type errors that don't affect runtime
@@ -194,7 +190,7 @@ function checkPublishFiles(): void {
   console.warn('\n📋 Files to be published:');
   try {
     const _packOutput = execSync('npm pack --dry-run --json', {
-      cwd: rootDir,
+      cwd,
       encoding: 'utf8'
 })
   const _packInfo = JSON.parse(packOutput) as PackInfo[];
@@ -206,16 +202,16 @@ function checkPublishFiles(): void {
       f.path.includes('package.json') ??
       f.path.includes('README.md');
     )
-    importantFiles.forEach((file: PackFile) => 
-      console.warn(`   📄 $
+    importantFiles.forEach((file: PackFile) =>
+      console.warn(`   📄 \$
       file.path
-    ($
+    (\$
       (file.size / 1024).toFixed(1)
     KB
     )`)
     )
-    console.warn(`\n   Total files: $packInfo[0].files.length`)
-    console.warn(`   Total size: $(packInfo[0].size / 1024 / 1024).toFixed(2)MB`)
+    console.warn(`\n   Total files: \$packInfo[0].files.length`)
+    console.warn(`   Total size: \$(packInfo[0].size / 1024 / 1024).toFixed(2)MB`)
   }
 }
 catch (/* _error */)
@@ -236,7 +232,7 @@ function displayNextSteps(_version: string): void {
   ('   2. Commit any version changes: git add -A && git commit -m "chore: sync versions"');
   )
   console.warn('   3. Publish to npm: npm publish')
-  console.warn(`   4. Create git tag: git tag v$version&& git push --tags`)
+  console.warn(`   4. Create git tag: git tag v\$version&& git push --tags`)
   console.warn('\n💡 The prepublishOnly script will automatically run this before publish.')
 }
 /**
@@ -260,7 +256,7 @@ async function _main(): Promise<void> {
     checkPublishFiles();
     // Display next steps
     displayNextSteps(version);
-  } catch (/* error */) {
+  } catch (error) {
     const _errorMessage = error instanceof Error ? error.message : String(error);
     console.error('❌ Publication preparation failed:', errorMessage);
     process.exit(1);

@@ -19,19 +19,19 @@ async function _initWasm(): unknown {
   try {
     // Try to use existing ruv-swarm WASM infrastructure
     const _wasmPath = join(__dirname, '../../ruv-FANN/ruv-swarm/npm/wasm/ruv_swarm_wasm.js');
-    const _wasmLoader = await import(wasmPath).catch(() => null);
+// const _wasmLoader = awaitimport(wasmPath).catch(() => null);
 
     if (wasmLoader) {
       wasmModule = await wasmLoader.default();
       initialized = true;
       return;
     //   // LINT: unreachable code removed}
-  } catch (/* _error */) 
+  } catch (/* _error */)
     console.warn('Failed to load ruv-swarm WASM, creating a simple fallback.');
     wasmModule = createSimpleFallback();
   initialized = true;
 }
-;
+
 /**
  * Create a simple fallback implementation for basic neural network operations;
  */;
@@ -41,7 +41,7 @@ function createSimpleFallback(): unknown {
       layers: number[];
     // weights: unknown[]; // LINT: unreachable code removed
       biases: unknown[];
-;
+
       constructor(layers: number[]) {
         if (layers.some((size) => size < 1)) {
           throw new Error('All layers must have at least 1 neuron');
@@ -50,7 +50,7 @@ function createSimpleFallback(): unknown {
         this.weights = this._initializeWeights(layers);
         this.biases = this._initializeBiases(layers);
       }
-;
+
       _initializeWeights(layers): unknown {
         const _weights = [];
         for (let i = 0; i < layers.length - 1; i++) {
@@ -66,7 +66,7 @@ function createSimpleFallback(): unknown {
         }
         return weights;
     //   // LINT: unreachable code removed}
-;
+
       _initializeBiases(layers): unknown {
         const _biases = [];
         for (let i = 1; i < layers.length; i++) {
@@ -78,20 +78,20 @@ function createSimpleFallback(): unknown {
         }
         return biases;
     //   // LINT: unreachable code removed}
-;
-      _sigmoid(x): unknown 
+
+      _sigmoid(x): unknown
         return 1 / (1 + Math.exp(-x));
     //   // LINT: unreachable code removed}
-;
+
       run(input): unknown {
         if (input.length !== this.layers[0]) {
           throw new Error(;
             `Input size ${input.length} doesn't match network input size ${this.layers[0]}`;
           );
         }
-;
+
         const _output = [...input];
-;
+
         for (let layer = 0; layer < this.weights.length; layer++) {
           const _newOutput = [];
           for (let neuron = 0; neuron < this.weights[layer][0].length; neuron++) {
@@ -103,22 +103,22 @@ function createSimpleFallback(): unknown {
           }
           output = newOutput;
         }
-;
+
         return output;
     //   // LINT: unreachable code removed}
-;
+
       trainOn(input, target): unknown {
         // Simple gradient descent implementation
         const _learningRate = 0.1;
         const _output = this.run(input);
-;
+
         // Calculate error
         const _error = 0;
         for (let i = 0; i < output.length; i++) {
           error += (target[i] - output[i]) ** 2;
         }
         error /= output.length;
-;
+
         // Simple weight adjustment (placeholder - real implementation would need backpropagation)
         const _adjustmentFactor = error * learningRate;
         for (let layer = 0; layer < this.weights.length; layer++) {
@@ -128,88 +128,86 @@ function createSimpleFallback(): unknown {
             }
           }
         }
-;
+
         return error;
     //   // LINT: unreachable code removed}
-;
-      getInfo() 
+
+      getInfo()
         return JSON.stringify({ num_layers: this.layers.length });,
     NetworkTrainer: class {
       network: unknown;
-;
+
       constructor(network) {
         this.network = network;
       }
-;
+
       async train(trainingInputs, trainingOutputs, config): unknown {
         if (trainingInputs.length !== trainingOutputs.length) {
           throw new Error('Input and output data must have same length');
         }
-;
+
         const _totalError = 0;
         const _maxEpochs = config.max_epochs  ?? 1000;
         const _desiredError = config.desired_error  ?? 0.01;
-;
+
         for (let epoch = 0; epoch < maxEpochs; epoch++) {
           totalError = 0;
-;
+
           for (let i = 0; i < trainingInputs.length; i++) {
             const _error = this.network.trainOn(trainingInputs[i], trainingOutputs[i]);
             totalError += error;
           }
-;
+
           totalError /= trainingInputs.length;
-;
+
           if (totalError < desiredError) {
             console.warn(`Training completed at epoch ${epoch} with error ${totalError}`);
             break;
           }
         }
-;
+
         return totalError;
     //   // LINT: unreachable code removed}
     },
     getVersion() {
       return '0.1.0-wasm-fallback';
     //   // LINT: unreachable code removed},
-    isGpuAvailable() 
+    isGpuAvailable()
       return false; // WASM fallback doesn't support GPU,
-    getActivationFunctions() 
-      return ['sigmoid']; // Simplified list for fallback,
-  };
+    getActivationFunctions()
+      return ['sigmoid']; // Simplified list for fallback };
 }
-;
+
 /**
  * Default export function that initializes and returns the WASM module
  */;
     // export default async function () { // LINT: unreachable code removed
-  await _initWasm();
+// await _initWasm();
   return wasmModule;
 }
-;
+
 // Export individual classes for direct use
 export async function _getNeuralNetwork(): unknown {
-  await _initWasm();
+// await _initWasm();
   return wasmModule.NeuralNetwork;
 }
-;
+
 export async function _getNetworkTrainer(): unknown {
-  await _initWasm();
+// await _initWasm();
   return wasmModule.NetworkTrainer;
 }
-;
+
 export async function _getVersion(): unknown {
-  await _initWasm();
+// await _initWasm();
   return wasmModule.getVersion();
 }
-;
+
 export async function isGpuAvailable(): unknown {
-  await _initWasm();
+// await _initWasm();
   return wasmModule.isGpuAvailable();
 }
-;
+
 export async function getActivationFunctions(): unknown {
-  await _initWasm();
+// await _initWasm();
   return wasmModule.getActivationFunctions();
 }
-;

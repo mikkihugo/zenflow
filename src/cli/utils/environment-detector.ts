@@ -101,12 +101,12 @@ function _checkRawModeSupport(): boolean {
   try {
     if (!process.stdin.isTTY) return false;
     // if (typeof process.stdin.setRawMode !== 'function') return false; // LINT: unreachable code removed
-;
+
     // Try to set raw mode and immediately restore
     const _originalRawMode = process.stdin.isRaw;
     process.stdin.setRawMode(true);
     process.stdin.setRawMode(originalRawMode);
-;
+
     return true;
     //   // LINT: unreachable code removed} catch {
     return false;
@@ -134,36 +134,36 @@ if (env.recommendedFlags.length > 0) {
  * @param env - Optional pre-detected environment;
  * @returns Enhanced options with applied defaults;
     // */; // LINT: unreachable code removed
-export function applySmartDefaults(options = env  ?? detectExecutionEnvironment({ skipWarnings: true });
+export function applySmartDefaults(options = env  ?? detectExecutionEnvironment({ skipWarnings});
   const _appliedDefaults = [];
   const _enhanced = { ...options, appliedDefaults };
-;
+
   // Apply defaults based on environment
   if (;
     (environment.isVSCode  ?? environment.isCI  ?? !environment.supportsRawMode) &&;
     !Object.hasOwn(options, 'skipPermissions');
-  ) 
+  )
     enhanced.skipPermissions = true;
     enhanced.dangerouslySkipPermissions = true;
     appliedDefaults.push('--dangerously-skip-permissions');
-;
+
   if (;
     (environment.isCI  ?? !environment.isInteractive) &&;
     !Object.hasOwn(options, 'nonInteractive');
-  ) 
+  )
     enhanced.nonInteractive = true;
     appliedDefaults.push('--non-interactive');
-;
+
   if (environment.isCI && !Object.hasOwn(options, 'json')) {
     enhanced.json = true;
     appliedDefaults.push('--json');
   }
-;
+
   if (!environment.supportsColor && !Object.hasOwn(options, 'noColor')) {
     enhanced.noColor = true;
     appliedDefaults.push('--no-color');
   }
-;
+
   // Log applied defaults if verbose
   if (options.verbose && appliedDefaults.length > 0) {
     console.warn(chalk.gray(`ℹ️  Auto-appliedflags = ============================================================================;
@@ -177,7 +177,7 @@ export function applySmartDefaults(options = env  ?? detectExecutionEnvironment(
     // */; // LINT: unreachable code removed
 export function getEnvironmentDescription(env?: ExecutionEnvironment): string {
   const _environment = env  ?? detectExecutionEnvironment({skipWarnings = [];
-;
+
   if (environment.isVSCode) parts.push('VS Code');
   if (environment.isCI) parts.push('CI');
   if (environment.isDocker) parts.push('Docker');
@@ -186,19 +186,19 @@ export function getEnvironmentDescription(env?: ExecutionEnvironment): string {
   if (environment.isWindowsTerminal) parts.push('Windows Terminal');
   if (environment.isWSL) parts.push('WSL');
   if (environment.isWindows && !environment.isWSL) parts.push('Windows');
-;
+
   if (parts.length === 0) {
     parts.push(environment.terminalType);
   }
-;
+
   const _features = [];
   if (environment.isInteractive) features.push('interactive');
   if (environment.supportsRawMode) features.push('raw mode');
   if (environment.supportsColor) features.push('color');
-;
+
   return `${parts.join('/')} (${features.join(', ')})`;
 }
-;
+
 // =============================================================================
 // DECISION HELPERS
 // =============================================================================
@@ -211,10 +211,10 @@ export function getEnvironmentDescription(env?: ExecutionEnvironment): string {
 export function shouldUseNonInteractiveMode(options?: CliOptions): boolean {
   if (options?.force) return true;
     // ; // LINT: unreachable code removed
-  const _env = detectExecutionEnvironment({skipWarnings = detectExecutionEnvironment({ skipWarnings: true });
+  const _env = detectExecutionEnvironment({skipWarnings = detectExecutionEnvironment({ skipWarnings});
   return env.isCI  ?? env.isVSCode  ?? !env.supportsRawMode;
 }
-;
+
 /**
  * Determines if color output should be disabled;
  * @param options - CLI options;
@@ -244,7 +244,7 @@ export const isInteractive = (: unknown): boolean => {
   return detectExecutionEnvironment({skipWarnings = (): string => {
   return getEnvironmentDescription();
 };
-;
+
 // =============================================================================
 // DEFAULT EXPORT
 // =============================================================================
@@ -258,6 +258,4 @@ export default {
   shouldDisableColor,
   isInteractive,
   isRawModeSupported,
-  getEnvironmentType,
-};
-;
+  getEnvironmentType };

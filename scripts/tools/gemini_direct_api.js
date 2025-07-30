@@ -31,7 +31,7 @@ class GeminiDirectAPI {
    */
   async analyzeNeuralOutput(neuralData, context = {}) {
     const _prompt = `;
-Analyze this neural network output and respond in JSON format:
+Analyze this neural network output and respond in JSON format: null
 Neural Output: ${JSON.stringify(neuralData)}
 Context: ${JSON.stringify(context)}
 Respond with this exact JSON structure:;
@@ -53,17 +53,17 @@ Respond with this exact JSON structure:;
     optimizeSwarm(swarmData, (taskData = {}));
     {
       const _prompt = `;
-Optimize this swarm coordination scenario and respond in JSON format:
+Optimize this swarm coordination scenario and respond in JSON format: null
 Swarm Data: ${JSON.stringify(swarmData)}
 Task Data: ${JSON.stringify(taskData)}
 Respond with this exact JSON structure:;
 {
     "recommended_topology": "mesh|hierarchical|star|ring|hybrid",
     "agent_allocation": {
-        "researchers": 0,
-        "coders": 0,
-        "analysts": 0,
-        "coordinators": 0;
+        "researchers",
+        "coders",
+        "analysts",
+        "coordinators";
     },
     "optimizations": ["specific", "improvements", "to", "make"],
     "expected_improvement": "percentage or description",
@@ -81,7 +81,7 @@ Respond with this exact JSON structure:;
       analyzeCode(code, (language = 'unknown'));
       {
         const _prompt = `;
-Analyze this ${language} code for performance issues and respond in JSON format:
+Analyze this ${language} code for performance issues and respond in JSON format: null
 \`\`\`${language}
 ${code}
 \`\`\`
@@ -116,7 +116,7 @@ Respond with this exact JSON structure:;
         debugNeuralIssue(issue, (errorLogs = ''), (context = {}));
         {
           const _prompt = `;
-Debug this neural network training issue and respond in JSON format:
+Debug this neural network training issue and respond in JSON format: null
 Issue: ${issue}
 Error Logs: ${errorLogs}
 Context: ${JSON.stringify(context)}
@@ -144,9 +144,9 @@ Respond with this exact JSON structure:;
           async;
           analyzeDirectory((pattern = '**/*.{js,ts,rs,ex,exs,py}'), (analysisType = 'performance'));
           try {
-      const _files = await glob(pattern, {
+// const _files = awaitglob(pattern, {
         ignore: ['node_modules/**', '.git/**', 'dist/**', 'build/**'],
-        maxDepth: 3
+        maxDepth
 })
           if (files.length === 0) {
             return { error: 'No files found matching pattern' };
@@ -168,13 +168,13 @@ Respond with this exact JSON structure:;
         }
             }
             const _prompt = `;
-Analyze these codebase files for ${analysisType} issues and respond in JSON format:
+Analyze these codebase files for ${analysisType} issues and respond in JSON format: null
 Files:;
 ${Object.entries(fileContents);
-  .map(([file, content]) => `--- $file---\;
-            n$content.slice(0, 5000);
+map(([file, content]) => `--- \$file---\;
+            n\$content.slice(0, 5000);
             \n`)
-            .join('\n')
+join('\n')
           }
           Respond;
           with this exact
@@ -182,25 +182,16 @@ ${Object.entries(fileContents);
           structure:;
           ('overall_assessment');
           : "summary of codebase quality",
-          ('files_analyzed')
-          : $Object.keys(fileContents).length,
-          ('critical_issues')
-          : [
-          ('file')
-          : "filename",
-          ('issue')
-          : "description",
-          ('severity')
-          : "high|medium|low"
+          ('files_analyzed'):  $Object.keys(fileContents).length,
+          ('critical_issues'):  [
+          ('file'):  "filename",
+          ('issue'):  "description",
+          ('severity'):  "high|medium|low"
           ],
-          ('recommendations')
-          : ["prioritized", "improvements"],
-          ('architecture_suggestions')
-          : ["high-level", "architectural", "improvements"],
-          ('performance_score')
-          : 0.0-1.0,
-          ('next_steps')
-          : ["immediate", "actions", "to", "take"]
+          ('recommendations'):  ["prioritized", "improvements"],
+          ('architecture_suggestions'):  ["high-level", "architectural", "improvements"],
+          ('performance_score'):  0.0-1.0,
+          ('next_steps'):  ["immediate", "actions", "to", "take"]
           `.trim()
           return this.generateContent(prompt, { format: 'json' });
           //   // LINT: unreachable code removed} catch (error) {
@@ -208,8 +199,7 @@ ${Object.entries(fileContents);
             error: `;
           Directory;
           analysis;
-          failed: $error.message`,
-          };
+          failed: \$error.message` };
           //   // LINT: unreachable code removed}
         }
         /**
@@ -230,22 +220,21 @@ ${Object.entries(fileContents);
             console.warn(`;
           🤖 Generating
           with model
-          : $this.model`);
-            console.warn(`📝 Prompt length: $prompt.lengthchars`);
+          : \$this.model`);
+            console.warn(`📝 Prompt length: \$prompt.lengthchars`);
           }
           const _startTime = Date.now();
           if (this.outputFormat === 'stream') {
             return this.generateStreamingContent(model, prompt, options);
             //   // LINT: unreachable code removed}
-            const _result = await Promise.race([;
+// const _result = awaitPromise.race([;
         model.generateContent(prompt),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), this.timeout)),
-      ]);
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), this.timeout)) ]);
             const _endTime = Date.now();
             const _responseText = result.response.text();
             if (this.verbose) {
-              console.warn(`⚡ Generation time: $endTime - startTimems`);
-              console.warn(`📊 Response length: $responseText.lengthchars`);
+              console.warn(`⚡ Generation time: \$endTime - startTimems`);
+              console.warn(`📊 Response length: \$responseText.lengthchars`);
             }
             // Handle different output formats
             if (options.format === 'json') {
@@ -258,17 +247,17 @@ ${Object.entries(fileContents);
             // Fallback: try to parse entire response
             return JSON.parse(responseText);
     //   // LINT: unreachable code removed}
-        } catch (/* parseError */) 
+        } catch (/* parseError */)
           return {
             error: 'Failed to parse JSON response',
-    // raw_response: responseText, // LINT: unreachable code removed
+    // raw_response, // LINT: unreachable code removed
             parse_error: parseError.message
 }
             }
             if (this.outputFormat === 'json') {
               return {
-          success: true,
-              // response: responseText, // LINT: unreachable code removed
+          success,
+              // response, // LINT: unreachable code removed
               model: this.model,
               generation_time_ms: endTime - startTime,
               usage: result.response.usageMetadata  ?? {}
@@ -293,7 +282,7 @@ ${Object.entries(fileContents);
       async;
       generateStreamingContent(model, prompt, (options = {}));
       try {
-      const _result = await model.generateContentStream(prompt);
+// const _result = awaitmodel.generateContentStream(prompt);
       const _chunks = [];
       for await (const chunk of result.stream) {
         const _chunkText = chunk.text();
@@ -312,15 +301,14 @@ ${Object.entries(fileContents);
     //   // LINT: unreachable code removed} catch (/* parseError */) {
           return {
             error: 'Failed to parse JSON from stream',
-    // raw_response: fullResponse, // LINT: unreachable code removed
-            parse_error: parseError.message,
-          };
+    // raw_response, // LINT: unreachable code removed
+            parse_error: parseError.message };
         }
       }
       return fullResponse;
       //   // LINT: unreachable code removed} catch (error) {
       return {
-        error: `Streaming failed: $error.message`,
+        error: `Streaming failed: \$error.message`,
       // model: this.model, // LINT: unreachable code removed
       timestamp: new Date().toISOString()
 }
@@ -343,12 +331,12 @@ Commands:;
   prompt <prompt_text>                 - Direct prompt
 Options:;
   --model <model>        - Gemini model (default: gemini-2.0-flash);
-  --format <format>      - Output format: text, json, stream;
+  --format <format>      - Output format, json, stream;
   --temperature <temp>   - Generation temperature (0.0-1.0);
   --verbose             - Verbose output
 Examples:;
   node gemini_direct_api.js neural '[0.8,0.15,0.05]' '{"task":"classification"}';
-  node gemini_direct_api.js swarm '{"agents":100}' '{"type":"training"}';
+  node gemini_direct_api.js swarm '{"agents"}' '{"type":"training"}';
   node gemini_direct_api.js code 'def train(): pass' python;
   node gemini_direct_api.js directory '**/*.rs' performance
   node gemini_direct_api.js prompt "Explain neural networks" --format json;
@@ -375,8 +363,7 @@ Examples:;
     const _gemini = new GeminiDirectAPI(process.env.GEMINI_API_KEY, {
       model: options.model  ?? 'gemini-2.0-flash',
       outputFormat: options.format  ?? 'json',
-      verbose: options.verbose  ?? false,
-    });
+      verbose: options.verbose  ?? false });
     const _command = cleanArgs[0];
     let _result;
     switch (command) {
@@ -414,13 +401,12 @@ Examples:;
       case 'prompt': {
         const _prompt = cleanArgs.slice(1).join(' ');
         _result = await gemini.generateContent(prompt, {
-          format: options.format === 'json' ? 'json' : undefined,
-          temperature: parseFloat(options.temperature)  ?? 0.1,
-        });
+          format: options.format === 'json' ? 'json' ,
+          temperature: parseFloat(options.temperature)  ?? 0.1 });
         break;
       }
       default:;
-        console.error(`Unknown command: $command`);
+        console.error(`Unknown command: \$command`);
         process.exit(1);
     }
 console.warn(JSON.stringify(result, null, 2));
@@ -430,7 +416,7 @@ console.warn(JSON.stringify(result, null, 2));
   JSON.stringify(;
   error: error.message,
   timestamp: new Date().toISOString(),
-  ,
+
   null,
   2
   )

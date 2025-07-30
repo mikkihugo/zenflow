@@ -17,9 +17,8 @@ import type { FunctionData } from './code-analysis/function-extractor';
 import type {
   CodeMetrics,
 type ComplexityAnalysis
-,
-MetricsCalculator,
-} from './code-analysis/metrics-calculator'
+
+MetricsCalculator } from './code-analysis/metrics-calculator'
 /**
  * Code file data structure;
  */
@@ -118,27 +117,27 @@ export class CodeAnalysisEngine {
     const _totalLines = 0;
     try {
       // Use specialized components for analysis
-      const _ast = await this.astParser.extractAST(codeData);
-      const _functions = await this.functionExtractor.extractFunctions(codeData);
-      const _classes = await this.extractClasses(codeData);
-      const _complexity = await this.metricsCalculator.calculateCodeComplexity(codeData);
-      const _dependencies = await this.analyzeDependencies(codeData);
-      const _metrics = await this.metricsCalculator.calculateMetrics(codeData);
-;
+// const _ast = awaitthis.astParser.extractAST(codeData);
+// const _functions = awaitthis.functionExtractor.extractFunctions(codeData);
+// const _classes = awaitthis.extractClasses(codeData);
+// const _complexity = awaitthis.metricsCalculator.calculateCodeComplexity(codeData);
+// const _dependencies = awaitthis.analyzeDependencies(codeData);
+// const _metrics = awaitthis.metricsCalculator.calculateMetrics(codeData);
+
       totalLines = metrics.totalLines;
-;
+
       // Optional AI analysis
       let _aiInsights;
       if (this.config.neuralEngine) {
         try {
           _aiInsights = await this.performAIAnalysis(codeData, 'code-analysis');
-        } catch (/* error */) {
+        } catch (error) {
           console.warn('AI analysis unavailable:', error.message);
         }
       }
-;
+
       const _analysisTime = Date.now() - startTime;
-;
+
       return {
         ast,
     // functions, // LINT: unreachable code removed
@@ -148,12 +147,11 @@ export class CodeAnalysisEngine {
         metrics,
         _aiInsights,
           filesAnalyzed: codeData.length,
-          totalLinesProcessed: totalLines,
+          totalLinesProcessed,
           analysisTime,
-          language: codeData[0]?.language  ?? 'unknown',,
-      }
+          language: codeData[0]?.language  ?? 'unknown', }
   }
-  catch(/* error */) {
+  catch (error) {
     console.error('❌ Code analysis failed:', error);
     throw error;
   }
@@ -173,15 +171,14 @@ readCodeData(codeFiles: string[])
     if (!existsSync(filePath)) {
       throw new Error(`Code file not found: ${filePath}`);
     }
-    const _content = await readFile(filePath, 'utf8');
-    const _stats = await stat(filePath);
+// const _content = awaitreadFile(filePath, 'utf8');
+// const _stats = awaitstat(filePath);
     codeData.push({
         content,
-    path: filePath,
+    path,
     language: this.detectLanguage(filePath),
     size: stats.size,
-    lastModified: stats.mtime,
-  }
+    lastModified: stats.mtime }
   )
 }
 return codeData;
@@ -224,7 +221,7 @@ extractClasses(codeData: CodeFileData[])
 {
   const _classes: ClassData[] = [];
   for (const file of codeData) {
-    const _fileClasses = await this.extractFileClasses(file);
+// const _fileClasses = awaitthis.extractFileClasses(file);
     classes.push(...fileClasses);
   }
   return classes;
@@ -253,8 +250,7 @@ extractClasses(codeData: CodeFileData[])
         lineNumber: i + 1,
         methodCount: await this.countClassMethods(lines, i),
         lineCount: await this.countClassLines(lines, i),
-        file: file.path,
-      }
+        file: file.path }
       classes.push(cls);
     }
   }
@@ -273,10 +269,9 @@ extractClasses(codeData: CodeFileData[])
   {
     const _dependencies = {
       external: new Set<string>(),
-    internal: new Set<string>(),
-  }
+    internal: new Set<string>() }
   for (const file of codeData) {
-    const _fileDeps = await this.extractFileDependencies(file);
+// const _fileDeps = awaitthis.extractFileDependencies(file);
     fileDeps.external.forEach((dep) => dependencies.external.add(dep));
     fileDeps.internal.forEach((dep) => dependencies.internal.add(dep));
   }
@@ -287,8 +282,7 @@ extractClasses(codeData: CodeFileData[])
   // internal, // LINT: unreachable code removed
   totalCount: external.length + internal.length,
   externalCount: external.length,
-  internalCount: internal.length,
-}
+  internalCount: internal.length }
 }
 // Helper methods
 
@@ -323,8 +317,7 @@ detectLanguage(filePath: string)
   ('.php')
   : 'php',
   ('.rb')
-  : 'ruby',
-}
+  : 'ruby' }
 return languageMap[extension]  ?? 'unknown';
 //   // LINT: unreachable code removed}
 /**
@@ -332,9 +325,9 @@ return languageMap[extension]  ?? 'unknown';
  */
 private
 matchClass(;
-line: string,
+line,
 language: string;
-):
+): null
 {
   name: string;
   extends?: string[]
@@ -344,16 +337,14 @@ language: string;
 {
   const _patterns: Record<string, RegExp> = {
       javascript: /class\s+(\w+)(?:\s+extends\s+(\w+))?(?:\s+implements\s+([^{]+))?/,
-  python: /class\s+(\w+)(?:\(([^)]+)\))?/,
-}
+  python: /class\s+(\w+)(?:\(([^)]+)\))?/ }
 const _pattern = patterns[language] ?? patterns.javascript;
 const _match = line.match(pattern);
 if (match) {
   return {
         name: match[1],
-  // extends: match[2] ? [match[2]] : undefined, // LINT: unreachable code removed
-  implements: match[3] ? match[3].split(',').map((i) => i.trim()) : undefined,
-}
+  // extends: match[2] ? [match[2]] , // LINT: unreachable code removed
+  implements: match[3] ? match[3].split(',').map((i) => i.trim()) }
 }
 return null;
 //   // LINT: unreachable code removed}
@@ -419,8 +410,7 @@ countClassMethods(lines: string[], startLine: number)
     {
       const _dependencies = {
       external: new Set<string>(),
-      internal: new Set<string>(),
-    }
+      internal: new Set<string>() }
     const _lines = file.content.split('\n');
     for (const line of lines) {
       // Extract import statements
@@ -458,16 +448,15 @@ countClassMethods(lines: string[], startLine: number)
         throw new Error('Neural engine not available');
       }
       const _codeContent = codeData.map((file) => file.content).join('\n\n');
-      const _result = await this.config.neuralEngine.infer(;
+// const _result = awaitthis.config.neuralEngine.infer(;
       'analysis',
       'analyzeComplexity',
       codeContent;
       )
       return {
-      type: analysisType,
-      // insights: result, // LINT: unreachable code removed
-      confidence: 0.85,
-    }
+      type,
+      // insights, // LINT: unreachable code removed
+      confidence: 0.85 }
   }
 }
 export default CodeAnalysisEngine;

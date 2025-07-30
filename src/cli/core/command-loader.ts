@@ -12,13 +12,13 @@ import { CommandRouter } from './command-router.js';
 export async function loadCommands(): unknown {
   const _router = new CommandRouter();
   // Core system commands
-  await registerCoreCommands(router);
+// await registerCoreCommands(router);
   // Coordination commands
-  await registerCoordinationCommands(router);
+// await registerCoordinationCommands(router);
   // Management commands
-  await registerManagementCommands(router);
+// await registerManagementCommands(router);
   // Development commands
-  await registerDevelopmentCommands(router);
+// await registerDevelopmentCommands(router);
   return router;
 }
 /**

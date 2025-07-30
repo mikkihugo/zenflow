@@ -44,16 +44,15 @@ export class AGUIAdapter extends EventEmitter {
     this.runId = options.runId ?? `run-${Date.now()}`;
     this.startTime = Date.now();
     this.stats = {
-      messagesCreated: 0,
-    toolCallsExecuted: 0,
-    eventsEmitted: 0,
-    uptime: 0,
-  }
+      messagesCreated,
+    toolCallsExecuted,
+    eventsEmitted,
+    uptime}
 }
 /**
  * Start a new text message;
  */
-startTextMessage(messageId?: string, role: string = 'assistant')
+startTextMessage(messageId?, role: string = 'assistant')
 : string
 {
   const _id = messageId ?? `msg-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
@@ -65,14 +64,12 @@ startTextMessage(messageId?: string, role: string = 'assistant')
   role,
   sessionId: this.sessionId,
   threadId: this.threadId,
-  ,
-}
+   }
 this.activeMessages.set(id, {
       id,
 role,
 startTime: Date.now(),
-content: '',
-})
+content: '' })
 this.stats.messagesCreated++
 this._emitEvent(event)
 return id;
@@ -80,7 +77,7 @@ return id;
 /**
  * Add content to an active text message;
  */
-addTextContent(content: string, messageId?: string)
+addTextContent(content, messageId?: string)
 : void
 {
   const _id = messageId ?? this.currentMessageId;
@@ -93,8 +90,7 @@ addTextContent(content: string, messageId?: string)
   timestamp: Date.now(),
   content,
   sessionId: this.sessionId,
-  ,
-}
+   }
 // Update active message
 const _activeMessage = this.activeMessages.get(id);
 if (activeMessage) {
@@ -116,8 +112,7 @@ endTextMessage(messageId?: string)
   id,
   timestamp: Date.now(),
   sessionId: this.sessionId,
-  ,
-}
+   }
 this.activeMessages.delete(id);
 if (id === this.currentMessageId) {
   this.currentMessageId = null;
@@ -127,7 +122,7 @@ this._emitEvent(event);
 /**
  * Start a tool call execution;
  */
-startToolCall(toolName: string, toolCallId?: string, parentMessageId?: string)
+startToolCall(toolName, toolCallId?, parentMessageId?: string)
 : string
 {
   const _id = toolCallId ?? `tool-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
@@ -139,15 +134,13 @@ startToolCall(toolName: string, toolCallId?: string, parentMessageId?: string)
   toolName,
   parentMessageId,
   sessionId: this.sessionId,
-  ,
-}
+   }
 this.activeToolCalls.set(id, {
       id,
 toolName,
 startTime: Date.now(),
-args: null,
-result: null,
-})
+args,
+result})
 this.stats.toolCallsExecuted++
 this._emitEvent(event)
 return id;
@@ -155,7 +148,7 @@ return id;
 /**
  * Add arguments to an active tool call;
  */
-addToolCallArgs(args: unknown, toolCallId?: string)
+addToolCallArgs(args, toolCallId?: string)
 : void
 {
   const _id = toolCallId ?? this.currentToolCallId;
@@ -168,8 +161,7 @@ addToolCallArgs(args: unknown, toolCallId?: string)
   timestamp: Date.now(),
   args,
   sessionId: this.sessionId,
-  ,
-}
+   }
 // Update active tool call
 const _activeToolCall = this.activeToolCalls.get(id);
 if (activeToolCall) {
@@ -191,8 +183,7 @@ endToolCall(toolCallId?: string)
   id,
   timestamp: Date.now(),
   sessionId: this.sessionId,
-  ,
-}
+   }
 this.activeToolCalls.delete(id);
 if (id === this.currentToolCallId) {
   this.currentToolCallId = null;
@@ -202,7 +193,7 @@ this._emitEvent(event);
 /**
  * Add result to a tool call;
  */
-addToolCallResult(result: unknown, toolCallId?: string)
+addToolCallResult(result, toolCallId?: string)
 : void
 {
   const _id = toolCallId ?? this.currentToolCallId;
@@ -214,8 +205,7 @@ addToolCallResult(result: unknown, toolCallId?: string)
   timestamp: Date.now(),
   result,
   sessionId: this.sessionId,
-  ,
-}
+   }
 // Update active tool call
 const _activeToolCall = this.activeToolCalls.get(id);
 if (activeToolCall) {
@@ -236,14 +226,13 @@ startRun(runId?: string)
   timestamp: Date.now(),
   sessionId: this.sessionId,
   threadId: this.threadId,
-  ,
-}
+   }
 this._emitEvent(event);
 }
 /**
  * Emit a run finished event;
  */
-finishRun(runId?: string, status: string = 'completed')
+finishRun(runId?, status: string = 'completed')
 : void
 {
   const _id = runId ?? this.runId;
@@ -255,8 +244,7 @@ finishRun(runId?: string, status: string = 'completed')
   sessionId: this.sessionId,
   threadId: this.threadId,
   stats: this.getStats(),
-  ,
-}
+   }
 this._emitEvent(event);
 }
 /**
@@ -273,24 +261,22 @@ emitStateSnapshot(state: unknown)
   sessionId: this.sessionId,
   activeMessages: Array.from(this.activeMessages.keys()),
   activeToolCalls: Array.from(this.activeToolCalls.keys()),
-  ,
-}
+   }
 this._emitEvent(event);
 }
 /**
  * Emit a custom event;
  */
-emitCustomEvent(eventType: string, data: unknown)
+emitCustomEvent(eventType, data: unknown)
 : void
 {
   const _event: AGUIEvent = {
-      type: eventType,
+      type,
   id: `custom-${Date.now()}`,
   timestamp: Date.now(),
-  ...data,
+..data,
   sessionId: this.sessionId,
-  ,
-}
+   }
 this._emitEvent(event);
 }
 /**
@@ -300,7 +286,7 @@ getStats()
 : AGUIStats
 {
   return {
-      ...this.stats,
+..this.stats,
   // uptime: Date.now() - this.startTime, // LINT: unreachable code removed
 }
 }
@@ -315,8 +301,7 @@ getActiveSessions()
   // threadId: this.threadId, // LINT: unreachable code removed
   runId: this.runId,
   activeMessages: this.activeMessages.size,
-  activeToolCalls: this.activeToolCalls.size,
-}
+  activeToolCalls: this.activeToolCalls.size }
 }
 /**
  * Reset adapter state;
@@ -329,11 +314,10 @@ reset()
   this.currentMessageId = null;
   this.currentToolCallId = null;
   this.stats = {
-      messagesCreated: 0,
-  toolCallsExecuted: 0,
-  eventsEmitted: 0,
-  uptime: 0,
-}
+      messagesCreated,
+  toolCallsExecuted,
+  eventsEmitted,
+  uptime}
 this.startTime = Date.now();
 }
 /**

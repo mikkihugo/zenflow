@@ -7,8 +7,7 @@ import type {
 JSONObject,
 LifecycleManager,
 ResourceUsage,
-TypedEventEmitter,
-} from './core'
+TypedEventEmitter } from './core'
 
 import type { QueenMetrics } from './queen';
 
@@ -111,7 +110,7 @@ export interface HiveMetrics {
   successRate: number; // 0-1
   averageResponseTime: number; // milliseconds
   efficiency: number; // 0-1
-  
+
   // Queen performance
   queenMetrics: Record<UUID, QueenMetrics>;
   queenCollaboration: Record<string, number>;
