@@ -4,10 +4,10 @@
  * Comprehensive Test Runner for Claude Zen v2.0.0
  */
 
-import { spawn } from 'child_process';
+import { spawn } from 'node:child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import chalk from 'chalk';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,36 +20,36 @@ const testSuites = [
     command: 'npm',
     args: ['run', 'test:unit'],
     description: 'Run all unit tests for individual components',
-    timeout: 120000 // 2 minutes
+    timeout: 120000, // 2 minutes
   },
   {
     name: 'Integration Tests',
     command: 'npm',
     args: ['run', 'test:integration'],
     description: 'Run integration tests for system components',
-    timeout: 300000 // 5 minutes
+    timeout: 300000, // 5 minutes
   },
   {
     name: 'End-to-End Tests',
     command: 'npm',
     args: ['run', 'test:e2e'],
     description: 'Run end-to-end swarm coordination tests',
-    timeout: 600000 // 10 minutes
+    timeout: 600000, // 10 minutes
   },
   {
     name: 'Performance Tests',
     command: 'npm',
     args: ['run', 'test:performance'],
     description: 'Run performance benchmark tests',
-    timeout: 900000 // 15 minutes
+    timeout: 900000, // 15 minutes
   },
   {
     name: 'CLI Tests',
     command: 'npm',
     args: ['run', 'test:cli'],
     description: 'Run CLI command tests',
-    timeout: 180000 // 3 minutes
-  }
+    timeout: 180000, // 3 minutes
+  },
 ];
 
 // Load tests (optional)
@@ -59,15 +59,15 @@ const loadTests = [
     command: 'node',
     args: ['scripts/load-test-swarm.js'],
     description: 'Test swarm coordination under heavy load',
-    timeout: 1200000 // 20 minutes
+    timeout: 1200000, // 20 minutes
   },
   {
     name: 'Memory Load Test',
     command: 'node',
     args: ['scripts/load-test-memory.js'],
     description: 'Test memory management under high throughput',
-    timeout: 600000 // 10 minutes
-  }
+    timeout: 600000, // 10 minutes
+  },
 ];
 
 // Docker tests (optional)
@@ -77,15 +77,15 @@ const dockerTests = [
     command: 'docker',
     args: ['build', '-t', 'claude-zen:test', '.'],
     description: 'Test Docker image build',
-    timeout: 600000 // 10 minutes
+    timeout: 600000, // 10 minutes
   },
   {
     name: 'Docker Container Test',
     command: 'docker',
     args: ['run', '--rm', 'claude-zen:test', 'claude-zen', '--version'],
     description: 'Test Docker container execution',
-    timeout: 120000 // 2 minutes
-  }
+    timeout: 120000, // 2 minutes
+  },
 ];
 
 // NPX tests (optional)
@@ -95,8 +95,8 @@ const npxTests = [
     command: 'npm',
     args: ['pack'],
     description: 'Test NPX package creation',
-    timeout: 180000 // 3 minutes
-  }
+    timeout: 180000, // 3 minutes
+  },
 ];
 
 class TestRunner {
@@ -113,44 +113,43 @@ class TestRunner {
   log(message, level = 'info') {
     const timestamp = new Date().toISOString();
     const prefix = `[${timestamp}]`;
-    
+
     switch (level) {
       case 'success':
-        console.log(chalk.green(`${prefix} ✅ ${message}`));
+        console.warn(chalk.green(`${prefix} ✅ ${message}`));
         break;
       case 'error':
-        console.log(chalk.red(`${prefix} ❌ ${message}`));
+        console.warn(chalk.red(`${prefix} ❌ ${message}`));
         break;
       case 'warning':
-        console.log(chalk.yellow(`${prefix} ⚠️  ${message}`));
+        console.warn(chalk.yellow(`${prefix} ⚠️  ${message}`));
         break;
-      case 'info':
       default:
-        console.log(chalk.blue(`${prefix} ℹ️  ${message}`));
+        console.warn(chalk.blue(`${prefix} ℹ️  ${message}`));
         break;
     }
   }
 
   async runTest(test) {
     this.log(`Starting: ${test.name} - ${test.description}`);
-    
+
     const startTime = Date.now();
-    
+
     return new Promise((resolve) => {
       const child = spawn(test.command, test.args, {
         cwd: projectRoot,
         stdio: this.verbose ? 'inherit' : 'pipe',
-        shell: process.platform === 'win32'
+        shell: process.platform === 'win32',
       });
 
       let stdout = '';
       let stderr = '';
-      
+
       if (!this.verbose) {
         child.stdout?.on('data', (data) => {
           stdout += data.toString();
         });
-        
+
         child.stderr?.on('data', (data) => {
           stderr += data.toString();
         });
@@ -165,7 +164,7 @@ class TestRunner {
           error: 'Test timed out',
           duration: Date.now() - startTime,
           stdout: stdout,
-          stderr: stderr
+          stderr: stderr,
         };
         this.results.set(test.name, result);
         resolve(result);
@@ -174,26 +173,26 @@ class TestRunner {
       child.on('close', (code) => {
         clearTimeout(timeoutId);
         const duration = Date.now() - startTime;
-        
+
         const result = {
           name: test.name,
           success: code === 0,
           exitCode: code,
           duration: duration,
           stdout: stdout,
-          stderr: stderr
+          stderr: stderr,
         };
-        
+
         if (code === 0) {
           this.log(`Completed: ${test.name} (${duration}ms)`, 'success');
         } else {
           this.log(`Failed: ${test.name} (exit code: ${code})`, 'error');
           if (!this.verbose && stderr) {
-            console.log(chalk.red('Error output:'));
-            console.log(stderr);
+            console.warn(chalk.red('Error output:'));
+            console.warn(stderr);
           }
         }
-        
+
         this.results.set(test.name, result);
         resolve(result);
       });
@@ -206,9 +205,9 @@ class TestRunner {
           error: error.message,
           duration: Date.now() - startTime,
           stdout: stdout,
-          stderr: stderr
+          stderr: stderr,
         };
-        
+
         this.log(`Error: ${test.name} - ${error.message}`, 'error');
         this.results.set(test.name, result);
         resolve(result);
@@ -218,18 +217,18 @@ class TestRunner {
 
   async runTestSuite(tests, suiteName) {
     this.log(`\n🏃‍♂️ Running ${suiteName} (${tests.length} tests)`);
-    
+
     if (this.parallel) {
-      const results = await Promise.all(tests.map(test => this.runTest(test)));
+      const results = await Promise.all(tests.map((test) => this.runTest(test)));
       return results;
     } else {
       const results = [];
       for (const test of tests) {
         const result = await this.runTest(test);
         results.push(result);
-        
+
         // Short delay between tests
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
       return results;
     }
@@ -238,84 +237,91 @@ class TestRunner {
   generateReport() {
     const totalTime = Date.now() - this.startTime;
     const results = Array.from(this.results.values());
-    const passed = results.filter(r => r.success).length;
-    const failed = results.filter(r => !r.success).length;
+    const passed = results.filter((r) => r.success).length;
+    const failed = results.filter((r) => !r.success).length;
     const total = results.length;
-    
-    console.log('\n' + '='.repeat(80));
-    console.log(chalk.bold.blue('📊 CLAUDE FLOW v2.0.0 TEST REPORT'));
-    console.log('='.repeat(80));
-    
-    console.log(`\n📈 Summary:`);
-    console.log(`   Total Tests: ${total}`);
-    console.log(`   Passed: ${chalk.green(passed)}`);
-    console.log(`   Failed: ${chalk.red(failed)}`);
-    console.log(`   Success Rate: ${chalk.cyan(((passed / total) * 100).toFixed(1))}%`);
-    console.log(`   Total Time: ${chalk.yellow((totalTime / 1000).toFixed(2))}s`);
-    
+
+    console.warn(`\n${'='.repeat(80)}`);
+    console.warn(chalk.bold.blue('📊 CLAUDE FLOW v2.0.0 TEST REPORT'));
+    console.warn('='.repeat(80));
+
+    console.warn(`\n📈 Summary:`);
+    console.warn(`   Total Tests: ${total}`);
+    console.warn(`   Passed: ${chalk.green(passed)}`);
+    console.warn(`   Failed: ${chalk.red(failed)}`);
+    console.warn(`   Success Rate: ${chalk.cyan(((passed / total) * 100).toFixed(1))}%`);
+    console.warn(`   Total Time: ${chalk.yellow((totalTime / 1000).toFixed(2))}s`);
+
     if (failed > 0) {
-      console.log(`\n❌ Failed Tests:`);
-      results.filter(r => !r.success).forEach(result => {
-        console.log(`   • ${chalk.red(result.name)}: ${result.error || `Exit code ${result.exitCode}`}`);
-      });
+      console.warn(`\n❌ Failed Tests:`);
+      results
+        .filter((r) => !r.success)
+        .forEach((result) => {
+          console.warn(
+            `   • ${chalk.red(result.name)}: ${result.error || `Exit code ${result.exitCode}`}`
+          );
+        });
     }
-    
-    console.log(`\n✅ Passed Tests:`);
-    results.filter(r => r.success).forEach(result => {
-      console.log(`   • ${chalk.green(result.name)}: ${(result.duration / 1000).toFixed(2)}s`);
-    });
-    
+
+    console.warn(`\n✅ Passed Tests:`);
+    results
+      .filter((r) => r.success)
+      .forEach((result) => {
+        console.warn(`   • ${chalk.green(result.name)}: ${(result.duration / 1000).toFixed(2)}s`);
+      });
+
     // Performance summary
-    const performanceResults = results.filter(r => r.name.includes('Performance'));
+    const performanceResults = results.filter((r) => r.name.includes('Performance'));
     if (performanceResults.length > 0) {
-      console.log(`\n⚡ Performance Summary:`);
-      performanceResults.forEach(result => {
+      console.warn(`\n⚡ Performance Summary:`);
+      performanceResults.forEach((result) => {
         if (result.success) {
-          console.log(`   • ${result.name}: ${chalk.green('PASSED')} (${(result.duration / 1000).toFixed(2)}s)`);
+          console.warn(
+            `   • ${result.name}: ${chalk.green('PASSED')} (${(result.duration / 1000).toFixed(2)}s)`
+          );
         } else {
-          console.log(`   • ${result.name}: ${chalk.red('FAILED')}`);
+          console.warn(`   • ${result.name}: ${chalk.red('FAILED')}`);
         }
       });
     }
-    
-    console.log('\n' + '='.repeat(80));
-    
+
+    console.warn(`\n${'='.repeat(80)}`);
+
     return {
       total,
       passed,
       failed,
       successRate: (passed / total) * 100,
       totalTime,
-      results
+      results,
     };
   }
 
   async run() {
     this.log('🚀 Starting Claude Flow v2.0.0 Comprehensive Test Suite');
-    
+
     try {
       // Core test suites
       await this.runTestSuite(testSuites, 'Core Test Suites');
-      
+
       // Optional test suites
       if (this.includeLoad) {
         await this.runTestSuite(loadTests, 'Load Tests');
       }
-      
+
       if (this.includeDocker) {
         await this.runTestSuite(dockerTests, 'Docker Tests');
       }
-      
+
       if (this.includeNpx) {
         await this.runTestSuite(npxTests, 'NPX Tests');
       }
-      
     } catch (error) {
       this.log(`Test runner error: ${error.message}`, 'error');
     }
-    
+
     const report = this.generateReport();
-    
+
     // Exit with appropriate code
     process.exit(report.failed > 0 ? 1 : 0);
   }
@@ -330,14 +336,14 @@ function parseArgs() {
     docker: args.includes('--docker') || args.includes('-d'),
     npx: args.includes('--npx') || args.includes('-n'),
     parallel: args.includes('--parallel') || args.includes('-p'),
-    help: args.includes('--help') || args.includes('-h')
+    help: args.includes('--help') || args.includes('-h'),
   };
-  
+
   return options;
 }
 
 function showHelp() {
-  console.log(`
+  console.warn(`
 ${chalk.bold.blue('Claude Flow v2.0.0 Comprehensive Test Runner')}
 
 ${chalk.bold('Usage:')}
@@ -372,12 +378,12 @@ ${chalk.bold('Test Suites:')}
 // Main execution
 async function main() {
   const options = parseArgs();
-  
+
   if (options.help) {
     showHelp();
     process.exit(0);
   }
-  
+
   const runner = new TestRunner(options);
   await runner.run();
 }

@@ -2,11 +2,10 @@
  * Integration tests for Claude-Flow CLI
  */
 
-import { jest } from '@jest/globals';
-import { spawn } from 'child_process';
+import { spawn } from 'node:child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fs from 'fs-extra';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,7 +24,7 @@ describe('CLI Integration Tests', () => {
 
   afterEach(async () => {
     // Cleanup test directory
-    if (testDir && await fs.pathExists(testDir)) {
+    if (testDir && (await fs.pathExists(testDir))) {
       await fs.remove(testDir);
     }
   });
@@ -34,7 +33,7 @@ describe('CLI Integration Tests', () => {
     test('should show help when no arguments', (done) => {
       const child = spawn(cliPath, ['--help'], {
         stdio: ['pipe', 'pipe', 'pipe'],
-        env: { ...process.env, NODE_ENV: 'test' }
+        env: { ...process.env, NODE_ENV: 'test' },
       });
 
       let stdout = '';
@@ -42,7 +41,7 @@ describe('CLI Integration Tests', () => {
         stdout += data.toString();
       });
 
-      child.on('close', (code) => {
+      child.on('close', (_code) => {
         expect(stdout).toContain('Claude-Flow');
         expect(stdout).toContain('USAGE:');
         expect(stdout).toContain('claude-zen <command> [options]');
@@ -53,7 +52,7 @@ describe('CLI Integration Tests', () => {
     test('should show version', (done) => {
       const child = spawn(cliPath, ['--version'], {
         stdio: ['pipe', 'pipe', 'pipe'],
-        env: { ...process.env, NODE_ENV: 'test' }
+        env: { ...process.env, NODE_ENV: 'test' },
       });
 
       let stdout = '';
@@ -71,7 +70,7 @@ describe('CLI Integration Tests', () => {
     test('should handle unknown command', (done) => {
       const child = spawn(cliPath, ['unknown-command'], {
         stdio: ['pipe', 'pipe', 'pipe'],
-        env: { ...process.env, NODE_ENV: 'test' }
+        env: { ...process.env, NODE_ENV: 'test' },
       });
 
       let stderr = '';
@@ -92,7 +91,7 @@ describe('CLI Integration Tests', () => {
       const child = spawn(cliPath, ['init', '--minimal'], {
         stdio: ['pipe', 'pipe', 'pipe'],
         env: { ...process.env, NODE_ENV: 'test' },
-        cwd: testDir
+        cwd: testDir,
       });
 
       let stdout = '';
@@ -104,11 +103,11 @@ describe('CLI Integration Tests', () => {
         try {
           expect(code).toBe(0);
           expect(stdout).toContain('Claude-Flow initialized');
-          
+
           // Check if .claude directory was created
           const claudeDir = path.join(testDir, '.claude');
           expect(await fs.pathExists(claudeDir)).toBe(true);
-          
+
           done();
         } catch (error) {
           done(error);
@@ -120,7 +119,7 @@ describe('CLI Integration Tests', () => {
       const child = spawn(cliPath, ['init', '--sparc'], {
         stdio: ['pipe', 'pipe', 'pipe'],
         env: { ...process.env, NODE_ENV: 'test' },
-        cwd: testDir
+        cwd: testDir,
       });
 
       let stdout = '';
@@ -132,18 +131,18 @@ describe('CLI Integration Tests', () => {
         try {
           expect(code).toBe(0);
           expect(stdout).toContain('SPARC development environment');
-          
+
           // Check for SPARC files
           const sparcFiles = [
             path.join(testDir, '.roomodes'),
             path.join(testDir, 'CLAUDE.md'),
             path.join(testDir, '.claude', 'commands'),
           ];
-          
+
           for (const file of sparcFiles) {
             expect(await fs.pathExists(file)).toBe(true);
           }
-          
+
           done();
         } catch (error) {
           done(error);
@@ -159,7 +158,7 @@ describe('CLI Integration Tests', () => {
         const child = spawn(cliPath, ['init', '--minimal'], {
           stdio: 'ignore',
           env: { ...process.env, NODE_ENV: 'test' },
-          cwd: testDir
+          cwd: testDir,
         });
         child.on('close', resolve);
       });
@@ -170,17 +169,17 @@ describe('CLI Integration Tests', () => {
       const storeChild = spawn(cliPath, ['memory', 'store', 'test-key', 'test-value'], {
         stdio: ['pipe', 'pipe', 'pipe'],
         env: { ...process.env, NODE_ENV: 'test' },
-        cwd: testDir
+        cwd: testDir,
       });
 
       storeChild.on('close', (code) => {
         expect(code).toBe(0);
-        
+
         // Then retrieve it
         const retrieveChild = spawn(cliPath, ['memory', 'retrieve', 'test-key'], {
           stdio: ['pipe', 'pipe', 'pipe'],
           env: { ...process.env, NODE_ENV: 'test' },
-          cwd: testDir
+          cwd: testDir,
         });
 
         let stdout = '';
@@ -201,14 +200,14 @@ describe('CLI Integration Tests', () => {
       const store1 = spawn(cliPath, ['memory', 'store', 'key1', 'value1'], {
         stdio: 'ignore',
         env: { ...process.env, NODE_ENV: 'test' },
-        cwd: testDir
+        cwd: testDir,
       });
 
       store1.on('close', () => {
         const store2 = spawn(cliPath, ['memory', 'store', 'key2', 'value2'], {
           stdio: 'ignore',
           env: { ...process.env, NODE_ENV: 'test' },
-          cwd: testDir
+          cwd: testDir,
         });
 
         store2.on('close', () => {
@@ -216,7 +215,7 @@ describe('CLI Integration Tests', () => {
           const listChild = spawn(cliPath, ['memory', 'list'], {
             stdio: ['pipe', 'pipe', 'pipe'],
             env: { ...process.env, NODE_ENV: 'test' },
-            cwd: testDir
+            cwd: testDir,
           });
 
           let stdout = '';
@@ -243,7 +242,7 @@ describe('CLI Integration Tests', () => {
         const child = spawn(cliPath, ['init', '--minimal'], {
           stdio: 'ignore',
           env: { ...process.env, NODE_ENV: 'test' },
-          cwd: testDir
+          cwd: testDir,
         });
         child.on('close', resolve);
       });
@@ -253,7 +252,7 @@ describe('CLI Integration Tests', () => {
       const child = spawn(cliPath, ['agent', 'list'], {
         stdio: ['pipe', 'pipe', 'pipe'],
         env: { ...process.env, NODE_ENV: 'test' },
-        cwd: testDir
+        cwd: testDir,
       });
 
       let stdout = '';
@@ -277,7 +276,7 @@ describe('CLI Integration Tests', () => {
       const child = spawn(cliPath, ['agent', 'status'], {
         stdio: ['pipe', 'pipe', 'pipe'],
         env: { ...process.env, NODE_ENV: 'test' },
-        cwd: testDir
+        cwd: testDir,
       });
 
       let stderr = '';
@@ -296,7 +295,7 @@ describe('CLI Integration Tests', () => {
       const child = spawn(cliPath, ['memory', 'store'], {
         stdio: ['pipe', 'pipe', 'pipe'],
         env: { ...process.env, NODE_ENV: 'test' },
-        cwd: testDir
+        cwd: testDir,
       });
 
       let stderr = '';
@@ -321,16 +320,16 @@ describe('CLI Integration Tests', () => {
         features: {
           swarm: true,
           memory: true,
-          github: false
-        }
+          github: false,
+        },
       };
-      
+
       await fs.writeJson(configPath, config);
-      
+
       const child = spawn(cliPath, ['config', 'show'], {
         stdio: ['pipe', 'pipe', 'pipe'],
         env: { ...process.env, NODE_ENV: 'test' },
-        cwd: testDir
+        cwd: testDir,
       });
 
       let stdout = '';

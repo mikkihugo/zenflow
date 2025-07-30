@@ -2,7 +2,7 @@
 
 ## 📍 **MONOREPO LOCATION**
 ```
-/home/mhugo/code/claude-code-flow/
+/home/mhugo/code/claude-zen/
 ```
 
 ## 🏗️ **MONOREPO ARCHITECTURE**
@@ -24,7 +24,7 @@
 ### **🗂️ DIRECTORY STRUCTURE**
 
 ```
-claude-code-flow/                    # 🏠 MONOREPO ROOT
+claude-zen/                    # 🏠 MONOREPO ROOT
 ├── src/                            # 🎯 Main Claude Zen source
 │   ├── cli/                        # 🖥️ CLI system
 │   │   ├── unified-cli-main.js     # 🚀 REVOLUTIONARY CLI
@@ -108,7 +108,7 @@ npm run dev:legacy
 ## 🎯 **FOR GEMINI/AI SYSTEMS**
 
 **To understand this monorepo:**
-1. **Root**: `/home/mhugo/code/claude-code-flow/`
+1. **Root**: `/home/mhugo/code/claude-zen/`
 2. **Main CLI**: `src/cli/claude-zen-main.js` 
 3. **Architecture**: `src/unified-architecture.js`
 4. **ruv-swarm**: `ruv-FANN/ruv-swarm/npm/src/index.js`

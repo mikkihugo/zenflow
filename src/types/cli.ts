@@ -3,7 +3,16 @@
  * Type definitions for command-line interface components
  */
 
-import type { JSONObject } from './core.js';
+// Re-export CLI errors
+export {
+  CliError as CLIError,
+  CliErrorCode,
+  CommandExecutionError,
+  ConfigurationError,
+  formatErrorMessage,
+  handleError,
+  ValidationError,
+} from '../cli/core/cli-error.js';
 
 // =============================================================================
 // CLI ERROR TYPES
@@ -22,101 +31,45 @@ export enum CliErrorCode {
   PERMISSION_ERROR = 'PERMISSION_ERROR',
   TIMEOUT_ERROR = 'TIMEOUT_ERROR',
   AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR',
-  NOT_FOUND_ERROR = 'NOT_FOUND_ERROR'
+  NOT_FOUND_ERROR = 'NOT_FOUND_ERROR',
 }
 
 /**
  * Logger interface for error handling
  */
 export interface ErrorLogger {
-  error(message: string, ...args: any[]): void;
-  warn(message: string, ...args: any[]): void;
-  info(message: string, ...args: any[]): void;
-  debug(message: string, ...args: any[]): void;
-}
-
-// =============================================================================
+  error(message, ...args = ============================================================================
 // COMMAND DEFINITIONS
 // =============================================================================
 
 /**
  * Command argument types
  */
-export type CommandArgumentType = 'string' | 'number' | 'boolean' | 'array' | 'object';
+export type CommandArgumentType = 'string' | 'number' | 'boolean' | 'array' | 'object'
+
+/**
+ * Command flag definition (enhanced)
+ */
+export interface CommandFlag {name = > boolean | string
+}
 
 /**
  * Command argument definition
  */
-export interface CommandArgument {
-  name: string;
-  type: CommandArgumentType;
-  description: string;
-  required?: boolean;
-  default?: any;
-  choices?: string[];
-  validator?: (value: any) => boolean | string;
-  alias?: string;
+export interface CommandArgument {name = > boolean | string
+alias?: string;
 }
 
 /**
  * Command option definition
  */
 export interface CommandOption extends CommandArgument {
-  short?: string;
-  long: string;
-  flag?: boolean;
-}
+  short?: string;long = (context) => Promise<CommandResult>
 
 /**
- * Command context
+ * Command execution result (enhanced)
  */
-export interface CommandContext {
-  command: string;
-  arguments: Record<string, any>;
-  options: Record<string, any>;
-  rawArgs: string[];
-  cwd: string;
-  env: Record<string, string>;
-  logger: ErrorLogger;
-  config: JSONObject;
-}
-
-/**
- * Command handler function
- */
-export type CommandHandler = (context: CommandContext) => Promise<number | void>;
-
-/**
- * Command execution result
- */
-export interface CommandResult {
-  exitCode: number;
-  output?: string;
-  errors?: string[];
-  duration: number;
-  success: boolean;
-}
-
-/**
- * Command definition
- */
-export interface CommandDefinition {
-  name: string;
-  description: string;
-  usage?: string;
-  examples?: string[];
-  arguments?: CommandArgument[];
-  options?: CommandOption[];
-  subcommands?: CommandDefinition[];
-  handler: CommandHandler;
-  aliases?: string[];
-  category?: string;
-  hidden?: boolean;
-  deprecated?: boolean;
-  version?: string;
-}
-
-// =============================================================================
+export interface CommandResult {success = ============================================================================
 // EXIT CODES
 // =============================================================================
 
@@ -124,7 +77,8 @@ export interface CommandDefinition {
  * Exit code constants
  */
 export enum ExitCode {
-  SUCCESS = 0,
+  SUCCESS = 0
+,
   GENERAL_ERROR = 1,
   MISUSE = 2,
   CANNOT_EXECUTE = 126,
@@ -135,102 +89,68 @@ export enum ExitCode {
 }
 
 // =============================================================================
+// VALIDATION TYPES
+// =============================================================================
+
+/**
+ * Validation result
+ */
+export interface ValidationResult {isValid = ============================================================================
+// ERROR TYPES (Extended)
+// =============================================================================
+
+/**
+ * Command not found error
+ */
+export class CommandNotFoundError extends Error {
+  constructor(command = 'CommandNotFoundError';
+  }
+}
+
+/**
+ * Invalid argument error
+ */
+export class InvalidArgumentError extends Error {
+  constructor(argument,reason = 'InvalidArgumentError';
+}
+}
+
+// =============================================================================
 // CONFIGURATION TYPES
 // =============================================================================
 
 /**
  * CLI configuration
  */
-export interface CliConfig {
-  name: string;
-  version: string;
-  description: string;
-  author?: string;
-  license?: string;
-  
-  // Behavior settings
-  exitOnError: boolean;
-  colorOutput: boolean;
-  verboseOutput: boolean;
-  suppressWarnings: boolean;
-  
-  // Help system
-  helpCommand: string;
-  versionCommand: string;
-  generateCompletion: boolean;
-  
-  // Logging
-  logLevel: 'debug' | 'info' | 'warn' | 'error';
-  logFile?: string;
-  
-  // Global options
-  globalOptions: CommandOption[];
-}
-
-/**
- * Configuration source
- */
-export type ConfigSource = 'default' | 'file' | 'env' | 'cli' | 'override';
+export interface CliConfig {name = 'default' | 'file' | 'env' | 'cli' | 'override'
 
 /**
  * Configuration entry
  */
-export interface ConfigEntry {
-  key: string;
-  value: any;
-  source: ConfigSource;
-  priority: number;
-  description?: string;
-}
-
-// =============================================================================
+export interface ConfigEntry {key = ============================================================================
 // PARSING TYPES
 // =============================================================================
 
 /**
  * Parsed arguments
  */
-export interface ParsedArguments {
-  command: string;
-  subcommand?: string;
-  arguments: Record<string, any>;
-  options: Record<string, any>;
-  flags: string[];
-  unknown: string[];
-  errors: string[];
-}
-
-/**
- * Argument parser configuration
- */
-export interface ArgumentParserConfig {
-  allowUnknownOptions: boolean;
-  stopAtFirstUnknown: boolean;
-  ignoreCase: boolean;
-  dashesDenoteOptions: boolean;
-  allowPositionalAfterOptions: boolean;
-}
-
-/**
- * Argument validation result
- */
-export interface ArgumentValidationResult {
-  isValid: boolean;
-  errors: string[];
-  warnings: string[];
-  normalized: Record<string, any>;
-}
-
-// =============================================================================
+export interface ParsedArguments {command = ============================================================================
 // UTILITY TYPES
 // =============================================================================
 
 /**
  * Command name with optional subcommand
  */
-export type CommandName = string | [string, string];
+export type CommandName = string | [string
+, string]
 
 /**
  * Command category
  */
-export type CommandCategory = 'core' | 'development' | 'deployment' | 'configuration' | 'utility' | 'plugin';
+export type CommandCategory =
+  | 'core'
+  | 'development'
+  | 'deployment'
+  | 'configuration'
+  | 'utility'
+  | 'plugin';

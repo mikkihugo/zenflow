@@ -1,26 +1,26 @@
-import { describe, it, expect } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 
 describe('Core Functionality Tests', () => {
   describe('Memory Management', () => {
     it('should handle basic memory operations', () => {
       const memoryStore = {
         data: new Map(),
-        store: function(key, value) {
+        store: function (key, value) {
           this.data.set(key, value);
           return true;
         },
-        retrieve: function(key) {
+        retrieve: function (key) {
           return this.data.get(key) || null;
         },
-        delete: function(key) {
+        delete: function (key) {
           return this.data.delete(key);
         },
-        clear: function() {
+        clear: function () {
           this.data.clear();
         },
-        list: function() {
+        list: function () {
           return Array.from(this.data.entries()).map(([key, value]) => ({ key, value }));
-        }
+        },
       };
 
       // Test store and retrieve
@@ -46,13 +46,13 @@ describe('Core Functionality Tests', () => {
         data: [
           { key: 'doc1', content: 'hello world test' },
           { key: 'doc2', content: 'goodbye universe' },
-          { key: 'doc3', content: 'hello testing framework' }
+          { key: 'doc3', content: 'hello testing framework' },
         ],
-        search: function(term) {
-          return this.data.filter(item => 
+        search: function (term) {
+          return this.data.filter((item) =>
             item.content.toLowerCase().includes(term.toLowerCase())
           );
-        }
+        },
       };
 
       const results = searchableMemory.search('hello');
@@ -70,18 +70,18 @@ describe('Core Functionality Tests', () => {
     it('should handle HTTP request routing', () => {
       const router = {
         routes: new Map(),
-        register: function(method, path, handler) {
+        register: function (method, path, handler) {
           const key = `${method.toUpperCase()}:${path}`;
           this.routes.set(key, handler);
         },
-        handle: function(method, path, req, res) {
+        handle: function (method, path, req, res) {
           const key = `${method.toUpperCase()}:${path}`;
           const handler = this.routes.get(key);
           if (handler) {
             return handler(req, res);
           }
           return { status: 404, message: 'Not Found' };
-        }
+        },
       };
 
       // Register routes
@@ -102,10 +102,10 @@ describe('Core Functionality Tests', () => {
     it('should handle middleware processing', () => {
       const middleware = {
         stack: [],
-        use: function(fn) {
+        use: function (fn) {
           this.stack.push(fn);
         },
-        process: function(req, res) {
+        process: function (req, res) {
           let index = 0;
           const next = () => {
             if (index < this.stack.length) {
@@ -115,16 +115,16 @@ describe('Core Functionality Tests', () => {
           };
           next();
           return { req, res };
-        }
+        },
       };
 
       // Add middleware
-      middleware.use((req, res, next) => {
+      middleware.use((req, _res, next) => {
         req.timestamp = Date.now();
         next();
       });
 
-      middleware.use((req, res, next) => {
+      middleware.use((req, _res, next) => {
         req.processed = true;
         next();
       });
@@ -138,16 +138,16 @@ describe('Core Functionality Tests', () => {
   describe('CLI Command Processing', () => {
     it('should parse command line arguments', () => {
       const argParser = {
-        parse: function(args) {
+        parse: (args) => {
           const result = {
             command: null,
             flags: {},
-            positional: []
+            positional: [],
           };
 
           for (let i = 0; i < args.length; i++) {
             const arg = args[i];
-            
+
             if (arg.startsWith('--')) {
               const [key, value] = arg.slice(2).split('=');
               result.flags[key] = value || true;
@@ -161,7 +161,7 @@ describe('Core Functionality Tests', () => {
           }
 
           return result;
-        }
+        },
       };
 
       const parsed = argParser.parse(['init', '--force', '--template=basic', 'arg1']);
@@ -178,16 +178,16 @@ describe('Core Functionality Tests', () => {
             requiredFlags: [],
             optionalFlags: ['force', 'template'],
             minArgs: 0,
-            maxArgs: 1
+            maxArgs: 1,
           },
           deploy: {
             requiredFlags: ['target'],
             optionalFlags: ['verbose'],
             minArgs: 0,
-            maxArgs: 0
-          }
+            maxArgs: 0,
+          },
         },
-        validate: function(command, flags, args) {
+        validate: function (command, flags, args) {
           const spec = this.commands[command];
           if (!spec) {
             return { valid: false, error: 'Unknown command' };
@@ -209,7 +209,7 @@ describe('Core Functionality Tests', () => {
           }
 
           return { valid: true };
-        }
+        },
       };
 
       // Valid commands
@@ -219,11 +219,11 @@ describe('Core Functionality Tests', () => {
       // Invalid commands
       expect(commandValidator.validate('unknown', {}, [])).toEqual({
         valid: false,
-        error: 'Unknown command'
+        error: 'Unknown command',
       });
       expect(commandValidator.validate('deploy', {}, [])).toEqual({
         valid: false,
-        error: 'Missing required flag: --target'
+        error: 'Missing required flag: --target',
       });
     });
   });
@@ -235,16 +235,16 @@ describe('Core Functionality Tests', () => {
         running: [],
         completed: [],
         maxConcurrent: 3,
-        
-        add: function(task) {
+
+        add: function (task) {
           this.queue.push(task);
         },
-        
-        canStart: function() {
+
+        canStart: function () {
           return this.running.length < this.maxConcurrent && this.queue.length > 0;
         },
-        
-        start: function() {
+
+        start: function () {
           if (this.canStart()) {
             const task = this.queue.shift();
             this.running.push(task);
@@ -252,16 +252,16 @@ describe('Core Functionality Tests', () => {
           }
           return null;
         },
-        
-        complete: function(taskId) {
-          const index = this.running.findIndex(t => t.id === taskId);
+
+        complete: function (taskId) {
+          const index = this.running.findIndex((t) => t.id === taskId);
           if (index >= 0) {
             const task = this.running.splice(index, 1)[0];
             this.completed.push(task);
             return true;
           }
           return false;
-        }
+        },
       };
 
       // Add tasks
@@ -275,8 +275,8 @@ describe('Core Functionality Tests', () => {
 
       // Start tasks
       const task1 = taskQueue.start();
-      const task2 = taskQueue.start();
-      const task3 = taskQueue.start();
+      const _task2 = taskQueue.start();
+      const _task3 = taskQueue.start();
 
       expect(task1.id).toBe('task1');
       expect(taskQueue.running).toHaveLength(3);
@@ -291,24 +291,24 @@ describe('Core Functionality Tests', () => {
     it('should handle dependency resolution', () => {
       const dependencyResolver = {
         dependencies: new Map(),
-        
-        addDependency: function(task, dependency) {
+
+        addDependency: function (task, dependency) {
           if (!this.dependencies.has(task)) {
             this.dependencies.set(task, []);
           }
           this.dependencies.get(task).push(dependency);
         },
-        
-        canExecute: function(task, completed) {
+
+        canExecute: function (task, completed) {
           const deps = this.dependencies.get(task) || [];
-          return deps.every(dep => completed.includes(dep));
+          return deps.every((dep) => completed.includes(dep));
         },
-        
-        getExecutableTasks: function(allTasks, completed) {
-          return allTasks.filter(task => 
-            !completed.includes(task) && this.canExecute(task, completed)
+
+        getExecutableTasks: function (allTasks, completed) {
+          return allTasks.filter(
+            (task) => !completed.includes(task) && this.canExecute(task, completed)
           );
-        }
+        },
       };
 
       // Set up dependencies
@@ -317,7 +317,7 @@ describe('Core Functionality Tests', () => {
       dependencyResolver.addDependency('deploy', 'security-scan');
 
       const allTasks = ['build', 'test', 'deploy', 'security-scan'];
-      
+
       // Initially only build and security-scan can execute
       let executable = dependencyResolver.getExecutableTasks(allTasks, []);
       expect(executable).toContain('build');
@@ -331,7 +331,11 @@ describe('Core Functionality Tests', () => {
       expect(executable).toContain('security-scan');
 
       // After both test and security-scan complete, deploy can execute
-      executable = dependencyResolver.getExecutableTasks(allTasks, ['build', 'test', 'security-scan']);
+      executable = dependencyResolver.getExecutableTasks(allTasks, [
+        'build',
+        'test',
+        'security-scan',
+      ]);
       expect(executable).toEqual(['deploy']);
     });
   });
@@ -339,9 +343,9 @@ describe('Core Functionality Tests', () => {
   describe('Configuration Management', () => {
     it('should handle configuration merging', () => {
       const configManager = {
-        merge: function(base, override) {
+        merge: function (base, override) {
           const result = { ...base };
-          
+
           for (const [key, value] of Object.entries(override)) {
             if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
               result[key] = this.merge(result[key] || {}, value);
@@ -349,21 +353,21 @@ describe('Core Functionality Tests', () => {
               result[key] = value;
             }
           }
-          
+
           return result;
-        }
+        },
       };
 
       const baseConfig = {
         server: { port: 3000, host: 'localhost' },
         database: { type: 'sqlite', file: 'default.db' },
-        features: { analytics: true }
+        features: { analytics: true },
       };
 
       const userConfig = {
         server: { port: 8080 },
         database: { file: 'custom.db', pool: { min: 1, max: 10 } },
-        features: { analytics: false, newFeature: true }
+        features: { analytics: false, newFeature: true },
       };
 
       const merged = configManager.merge(baseConfig, userConfig);
@@ -382,67 +386,67 @@ describe('Core Functionality Tests', () => {
         schema: {
           server: {
             port: { type: 'number', min: 1, max: 65535 },
-            host: { type: 'string', required: true }
+            host: { type: 'string', required: true },
           },
           database: {
-            type: { type: 'string', enum: ['sqlite', 'postgres', 'mysql'] }
-          }
+            type: { type: 'string', enum: ['sqlite', 'postgres', 'mysql'] },
+          },
         },
-        
-        validate: function(config, schema = this.schema) {
+
+        validate: function (config, schema = this.schema) {
           const errors = [];
-          
+
           for (const [key, rules] of Object.entries(schema)) {
             const value = config[key];
-            
+
             if (rules.required && value === undefined) {
               errors.push(`${key} is required`);
               continue;
             }
-            
+
             if (value === undefined) continue;
-            
+
             if (rules.type && typeof value !== rules.type) {
               errors.push(`${key} must be of type ${rules.type}`);
             }
-            
+
             if (rules.min && value < rules.min) {
               errors.push(`${key} must be at least ${rules.min}`);
             }
-            
+
             if (rules.max && value > rules.max) {
               errors.push(`${key} must be at most ${rules.max}`);
             }
-            
+
             if (rules.enum && !rules.enum.includes(value)) {
               errors.push(`${key} must be one of: ${rules.enum.join(', ')}`);
             }
-            
+
             if (typeof rules === 'object' && typeof value === 'object') {
               const nestedErrors = this.validate(value, rules);
-              errors.push(...nestedErrors.map(err => `${key}.${err}`));
+              errors.push(...nestedErrors.map((err) => `${key}.${err}`));
             }
           }
-          
+
           return errors;
-        }
+        },
       };
 
       // Valid config
       const validConfig = {
         server: { port: 3000, host: 'localhost' },
-        database: { type: 'sqlite' }
+        database: { type: 'sqlite' },
       };
       expect(schemaValidator.validate(validConfig)).toEqual([]);
 
       // Invalid config
       const invalidConfig = {
         server: { port: 'invalid', host: 123 },
-        database: { type: 'invalid' }
+        database: { type: 'invalid' },
       };
       const errors = schemaValidator.validate(invalidConfig);
       expect(errors.length).toBeGreaterThan(0);
-      expect(errors.some(e => e.includes('port must be of type number'))).toBe(true);
+      expect(errors.some((e) => e.includes('port must be of type number'))).toBe(true);
     });
   });
 });

@@ -4,7 +4,15 @@
   "description": "JWT authentication, security scanning, and access control for Claude Zen",
   "main": "index.js",
   "type": "module",
-  "keywords": ["claude-zen", "plugin", "security", "authentication", "authorization", "jwt", "scanning"],
+  "keywords": [
+    "claude-zen",
+    "plugin",
+    "security",
+    "authentication",
+    "authorization",
+    "jwt",
+    "scanning"
+  ],
   "author": "Claude Zen Team",
   "license": "MIT",
   "optionalDependencies": {
@@ -38,8 +46,19 @@
     ],
     "security": {
       "scanning": {
-        "patterns": ["password", "api-key", "secret", "script-injection", "eval", "exec"],
-        "severity": ["low", "medium", "high"],
+        "patterns": [
+          "password",
+          "api-key",
+          "secret",
+          "script-injection",
+          "eval",
+          "exec"
+        ],
+        "severity": [
+          "low",
+          "medium",
+          "high"
+        ],
         "quarantine": true
       },
       "rateLimit": {
@@ -48,24 +67,41 @@
         "requests": 100
       },
       "audit": {
-        "actions": ["login", "logout", "permission_denied", "security_violation"],
+        "actions": [
+          "login",
+          "logout",
+          "permission_denied",
+          "security_violation"
+        ],
         "retention": "90 days"
       }
     },
     "roles": [
       {
         "name": "admin",
-        "permissions": ["*"],
+        "permissions": [
+          "*"
+        ],
         "description": "Full system access"
       },
       {
-        "name": "user", 
-        "permissions": ["swarm.create", "swarm.read", "agent.spawn", "task.execute", "export.generate"],
+        "name": "user",
+        "permissions": [
+          "swarm.create",
+          "swarm.read",
+          "agent.spawn",
+          "task.execute",
+          "export.generate"
+        ],
         "description": "Standard user access"
       },
       {
         "name": "readonly",
-        "permissions": ["swarm.read", "task.read", "export.generate"],
+        "permissions": [
+          "swarm.read",
+          "task.read",
+          "export.generate"
+        ],
         "description": "Read-only access"
       }
     ],

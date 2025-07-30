@@ -1,45 +1,44 @@
-import { fileURLToPath, pathToFileURL } from 'url';
-import path from 'path';
-import fs from 'fs/promises';
+import fs from 'node:fs/promises';
+import { pathToFileURL } from 'node:url';
 
 async function testBindingsLoader() {
-  console.log('Testing wasm-bindings-loader.mjs...\n');
-  
-  const loaderPath = '/home/codespace/nvm/current/lib/node_modules/ruv-swarm/wasm/wasm-bindings-loader.mjs';
-  
+  console.warn('Testing wasm-bindings-loader.mjs...\n');
+
+  const loaderPath =
+    '/home/codespace/nvm/current/lib/node_modules/ruv-swarm/wasm/wasm-bindings-loader.mjs';
+
   try {
     // Check if file exists
     await fs.access(loaderPath);
-    console.log('✅ Loader file exists:', loaderPath);
-    
+    console.warn('✅ Loader file exists:', loaderPath);
+
     // Try to import it
     const loaderURL = pathToFileURL(loaderPath).href;
-    console.log('   URL:', loaderURL);
-    
+    console.warn('   URL:', loaderURL);
+
     const loaderModule = await import(loaderURL);
-    console.log('✅ Loader module imported successfully');
-    console.log('   Module keys:', Object.keys(loaderModule));
-    
+    console.warn('✅ Loader module imported successfully');
+    console.warn('   Module keys:', Object.keys(loaderModule));
+
     if (loaderModule.default) {
       const bindingsLoader = loaderModule.default;
-      console.log('\n✅ Found default export');
-      console.log('   Type:', typeof bindingsLoader);
-      
+      console.warn('\n✅ Found default export');
+      console.warn('   Type:', typeof bindingsLoader);
+
       if (typeof bindingsLoader.initialize === 'function') {
-        console.log('\n   Initializing bindings loader...');
+        console.warn('\n   Initializing bindings loader...');
         await bindingsLoader.initialize();
-        console.log('✅ Bindings loader initialized!');
-        
+        console.warn('✅ Bindings loader initialized!');
+
         // Check what functions are available
-        console.log('\n   Available functions:');
+        console.warn('\n   Available functions:');
         for (const key in bindingsLoader) {
           if (typeof bindingsLoader[key] === 'function' && !key.startsWith('_')) {
-            console.log(`     - ${key}`);
+            console.warn(`     - ${key}`);
           }
         }
       }
     }
-    
   } catch (error) {
     console.error('❌ Error:', error.message);
     if (error.stack) {

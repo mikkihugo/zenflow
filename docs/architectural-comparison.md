@@ -2,7 +2,7 @@
 
 ## 📊 Four Repository Analysis Summary
 
-### 1. **Claude-Flow** - `/home/mhugo/code/claude-code-flow/`
+### 1. **Claude-Zen** - `/home/mhugo/code/claude-zen/`
 **Status**: ✅ **RECOMMENDED BASE FOR IMMEDIATE PRODUCTIVITY**
 
 **Architecture**:
@@ -129,7 +129,7 @@ Infrastructure:
 ### **Immediate Implementation**: Claude-Flow
 **Start with Claude-Flow for immediate productivity** (2-3 hours to working system):
 
-1. **✅ Implement missing MCP case handlers** in `/home/mhugo/code/claude-code-flow/src/mcp/mcp-server.js`
+1. **✅ Implement missing MCP case handlers** in `/home/mhugo/code/claude-zen/src/mcp/mcp-server.js`
 2. **✅ Test service document management** with existing swarm infrastructure
 3. **✅ Validate approval workflows** using JSONB metadata
 4. **✅ Deploy cross-service coordination** via Claude Desktop orchestration

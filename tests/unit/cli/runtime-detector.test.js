@@ -1,4 +1,4 @@
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { compat } from '../../../src/cli/runtime-detector.js';
 
 describe('Runtime Detector', () => {
@@ -57,15 +57,15 @@ describe('Runtime Detector', () => {
 
     it('should handle signal registration', () => {
       const mockHandler = jest.fn();
-      
+
       // Mock process.on to avoid actually registering signals in tests
       const originalProcessOn = process.on;
       process.on = jest.fn();
 
       compat.terminal.onSignal('SIGTERM', mockHandler);
-      
+
       expect(process.on).toHaveBeenCalledWith('SIGTERM', mockHandler);
-      
+
       // Restore original process.on
       process.on = originalProcessOn;
     });
@@ -76,9 +76,9 @@ describe('Runtime Detector', () => {
       process.exit = jest.fn();
 
       compat.terminal.exit(0);
-      
+
       expect(process.exit).toHaveBeenCalledWith(0);
-      
+
       // Restore original process.exit
       process.exit = originalProcessExit;
     });
@@ -87,9 +87,9 @@ describe('Runtime Detector', () => {
   describe('safeCall utility', () => {
     it('should execute successful functions', async () => {
       const successFn = jest.fn(async () => 'success');
-      
+
       const result = await compat.safeCall(successFn);
-      
+
       expect(successFn).toHaveBeenCalled();
       expect(result).toBe('success');
       expect(consoleErrors).toHaveLength(0);
@@ -99,9 +99,9 @@ describe('Runtime Detector', () => {
       const errorFn = jest.fn(async () => {
         throw new Error('Test error');
       });
-      
+
       const result = await compat.safeCall(errorFn);
-      
+
       expect(errorFn).toHaveBeenCalled();
       expect(result).toBeNull();
       expect(consoleErrors).toHaveLength(1);
@@ -110,9 +110,9 @@ describe('Runtime Detector', () => {
 
     it('should handle synchronous functions', async () => {
       const syncFn = jest.fn(() => 'sync result');
-      
+
       const result = await compat.safeCall(syncFn);
-      
+
       expect(syncFn).toHaveBeenCalled();
       expect(result).toBe('sync result');
     });
@@ -121,9 +121,9 @@ describe('Runtime Detector', () => {
       const syncErrorFn = jest.fn(() => {
         throw new Error('Sync error');
       });
-      
+
       const result = await compat.safeCall(syncErrorFn);
-      
+
       expect(syncErrorFn).toHaveBeenCalled();
       expect(result).toBeNull();
       expect(consoleErrors[0]).toContain('Runtime error: Sync error');
@@ -131,18 +131,18 @@ describe('Runtime Detector', () => {
 
     it('should handle functions that return undefined', async () => {
       const undefinedFn = jest.fn(() => undefined);
-      
+
       const result = await compat.safeCall(undefinedFn);
-      
+
       expect(undefinedFn).toHaveBeenCalled();
       expect(result).toBeUndefined();
     });
 
     it('should handle async functions that reject', async () => {
       const rejectFn = jest.fn(() => Promise.reject(new Error('Promise rejected')));
-      
+
       const result = await compat.safeCall(rejectFn);
-      
+
       expect(rejectFn).toHaveBeenCalled();
       expect(result).toBeNull();
       expect(consoleErrors[0]).toContain('Runtime error: Promise rejected');
@@ -177,9 +177,9 @@ describe('Runtime Detector', () => {
       const throwStringFn = jest.fn(() => {
         throw 'String error';
       });
-      
+
       const result = await compat.safeCall(throwStringFn);
-      
+
       expect(result).toBeNull();
       expect(consoleErrors.length).toBeGreaterThan(0);
     });

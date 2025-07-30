@@ -1,25 +1,23 @@
 import { logger } from '../utils/logger.js';
 
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, req, res, _next) => {
   logger.error({
     message: err.message,
     stack: err.stack,
     method: req.method,
     url: req.url,
-    ip: req.ip
+    ip: req.ip,
   });
 
   const status = err.status || 500;
-  const message = process.env.NODE_ENV === 'production' 
-    ? 'Internal Server Error' 
-    : err.message;
+  const message = process.env.NODE_ENV === 'production' ? 'Internal Server Error' : err.message;
 
   res.status(status).json({
     error: {
       message,
       status,
-      ...(process.env.NODE_ENV !== 'production' && { stack: err.stack })
-    }
+      ...(process.env.NODE_ENV !== 'production' && { stack: err.stack }),
+    },
   });
 };
 

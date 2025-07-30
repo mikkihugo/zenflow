@@ -1,5 +1,5 @@
-import { describe, it, expect } from '@jest/globals';
-import { validatePID, validateCommandArgs } from '../../../src/utils/security.js';
+import { describe, expect, it } from '@jest/globals';
+import { validateCommandArgs, validatePID } from '../../../src/utils/security.js';
 
 describe('Security Utils', () => {
   describe('validatePID', () => {
@@ -63,16 +63,16 @@ describe('Security Utils', () => {
         ['--output', '/dev/null; rm important.txt'], // Command chaining
       ];
 
-      dangerousArgs.forEach(args => {
+      dangerousArgs.forEach((args) => {
         const result = validateCommandArgs(args);
         // The function should either return null or filter out dangerous args
         if (result !== null) {
           // If not null, ensure no dangerous patterns made it through
-          expect(result.every(arg => 
-            !arg.includes('$(') && 
-            !arg.includes('rm -rf') &&
-            !arg.includes(';')
-          )).toBe(true);
+          expect(
+            result.every(
+              (arg) => !arg.includes('$(') && !arg.includes('rm -rf') && !arg.includes(';')
+            )
+          ).toBe(true);
         }
       });
     });
@@ -95,16 +95,16 @@ describe('Security Utils', () => {
         // Create a simple function to test dangerous patterns
         const containsDangerousPatterns = (str) => {
           const dangerousPatterns = [
-            /\$\(/,  // Command substitution $(...)
+            /\$\(/, // Command substitution $(...)
             /`[^`]*`/, // Backtick command substitution
             /[;&|]/, // Command separators
-            /\.\.\//,  // Directory traversal
+            /\.\.\//, // Directory traversal
             /\/dev\//, // Device files
             /\/proc\//, // Process files
             /\/sys\//, // System files
           ];
-          
-          return dangerousPatterns.some(pattern => pattern.test(str));
+
+          return dangerousPatterns.some((pattern) => pattern.test(str));
         };
 
         const result = containsDangerousPatterns(input);
@@ -116,18 +116,18 @@ describe('Security Utils', () => {
       const validatePath = (path) => {
         // Simple path validation
         if (typeof path !== 'string') return false;
-        
+
         // Reject paths with dangerous patterns
         const dangerousPatterns = [
-          /\.\.\//,  // Directory traversal
-          /^\/etc\//,  // System directories
+          /\.\.\//, // Directory traversal
+          /^\/etc\//, // System directories
           /^\/proc\//,
           /^\/sys\//,
           /^\/dev\//,
-          /\/\.\./,  // Any directory traversal
+          /\/\.\./, // Any directory traversal
         ];
-        
-        return !dangerousPatterns.some(pattern => pattern.test(path));
+
+        return !dangerousPatterns.some((pattern) => pattern.test(path));
       };
 
       expect(validatePath('normal/file.txt')).toBe(true);
@@ -150,14 +150,13 @@ describe('Security Utils', () => {
           .replace(/\//g, '&#x2F;');
       };
 
-      expect(sanitizeHtml('<script>alert("xss")</script>'))
-        .toBe('&lt;script&gt;alert(&quot;xss&quot;)&lt;&#x2F;script&gt;');
-      
-      expect(sanitizeHtml('Hello "world"'))
-        .toBe('Hello &quot;world&quot;');
-      
-      expect(sanitizeHtml("It's a test"))
-        .toBe('It&#x27;s a test');
+      expect(sanitizeHtml('<script>alert("xss")</script>')).toBe(
+        '&lt;script&gt;alert(&quot;xss&quot;)&lt;&#x2F;script&gt;'
+      );
+
+      expect(sanitizeHtml('Hello "world"')).toBe('Hello &quot;world&quot;');
+
+      expect(sanitizeHtml("It's a test")).toBe('It&#x27;s a test');
     });
 
     it('should validate email addresses', () => {

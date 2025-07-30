@@ -4,7 +4,14 @@
   "description": "Email and webhook notification system for Claude Zen events",
   "main": "index.js",
   "type": "module",
-  "keywords": ["claude-zen", "plugin", "notifications", "email", "webhook", "alerts"],
+  "keywords": [
+    "claude-zen",
+    "plugin",
+    "notifications",
+    "email",
+    "webhook",
+    "alerts"
+  ],
   "author": "Claude Zen Team",
   "license": "MIT",
   "dependencies": {
@@ -15,7 +22,7 @@
     "category": "communication",
     "capabilities": [
       "email-notifications",
-      "webhook-notifications",  
+      "webhook-notifications",
       "console-notifications",
       "event-templating",
       "retry-logic",
@@ -30,21 +37,21 @@
         "secure": true
       },
       {
-        "name": "webhook", 
+        "name": "webhook",
         "type": "webhook",
         "description": "HTTP webhook notifications to external services",
         "realtime": true
       },
       {
         "name": "console",
-        "type": "console", 
+        "type": "console",
         "description": "Console output for development and debugging",
         "development": true
       }
     ],
     "events": [
       "task.completed",
-      "task.failed", 
+      "task.failed",
       "swarm.created",
       "agent.spawned",
       "system.error",

@@ -1,17 +1,18 @@
 #!/usr/bin/env node
+
 /**
  * Orchestrator MCP Server - Remote Claude Desktop Access
- * 
+ *
  * PURPOSE: Enable remote Claude Desktop access to Singularity Engine documents
  * PROTOCOL: HTTP on port 3000 (accessible via Cloudflare/nginx)
  * TOOLS: Document management tools always enabled for remote access
  */
 
-import express from 'express';
 import cors from 'cors';
-import { ClaudeFlowMCPServer } from './src/mcp/mcp-server.js';
+import express from 'express';
 import { ServicesOrchestrator } from './services/orchestrator.js';
 import { DocumentStack, setupDefaultRules } from './src/mcp/document-stack.cjs';
+import { ClaudeFlowMCPServer } from './src/mcp/mcp-server.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,7 +29,9 @@ const orchestrator = new ServicesOrchestrator();
 
 // Initialize document stack (always enabled for remote access)
 class MockMemoryStore {
-  constructor() { this.data = new Map(); }
+  constructor() {
+    this.data = new Map();
+  }
   async store(key, value, options = {}) {
     const fullKey = options.namespace ? `${options.namespace}:${key}` : key;
     this.data.set(fullKey, value);
@@ -54,13 +57,13 @@ const documentStack = new DocumentStack(documentMemoryStore);
 setupDefaultRules(documentStack);
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({
     status: 'healthy',
     service: 'claude-zen-mcp',
     version: '2.0.0-alpha.61',
     timestamp: new Date().toISOString(),
-    uptime: process.uptime()
+    uptime: process.uptime(),
   });
 });
 
@@ -69,25 +72,24 @@ app.post('/mcp/tools/:toolName', async (req, res) => {
   try {
     const { toolName } = req.params;
     const args = req.body;
-    
-    console.log(`🔧 MCP Tool Call: ${toolName}`, args);
-    
+
+    console.warn(`🔧 MCP Tool Call: ${toolName}`, args);
+
     const result = await mcpServer.callTool(toolName, args);
-    
+
     res.json({
       success: true,
       tool: toolName,
       result,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-    
   } catch (error) {
     console.error('❌ MCP Tool Error:', error);
     res.status(500).json({
       success: false,
       error: error.message,
       tool: req.params.toolName,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 });
@@ -97,7 +99,7 @@ app.post('/service-documents/create', async (req, res) => {
   try {
     const result = await mcpServer.handleServiceDocumentManager({
       action: 'create',
-      ...req.body
+      ...req.body,
     });
     res.json(result);
   } catch (error) {
@@ -110,7 +112,7 @@ app.get('/service-documents/list/:serviceName?', async (req, res) => {
     const result = await mcpServer.handleServiceDocumentManager({
       action: 'list',
       serviceName: req.params.serviceName,
-      documentType: 'all'
+      documentType: 'all',
     });
     res.json(result);
   } catch (error) {
@@ -160,7 +162,7 @@ app.post('/memory/store', async (req, res) => {
   try {
     const result = await mcpServer.callTool('memory_usage', {
       action: 'store',
-      ...req.body
+      ...req.body,
     });
     res.json(result);
   } catch (error) {
@@ -173,7 +175,7 @@ app.get('/memory/retrieve/:key', async (req, res) => {
     const result = await mcpServer.callTool('memory_usage', {
       action: 'retrieve',
       key: req.params.key,
-      namespace: req.query.namespace
+      namespace: req.query.namespace,
     });
     res.json(result);
   } catch (error) {
@@ -182,17 +184,17 @@ app.get('/memory/retrieve/:key', async (req, res) => {
 });
 
 // System status endpoint
-app.get('/status', async (req, res) => {
+app.get('/status', async (_req, res) => {
   try {
     const systemStatus = orchestrator.getSystemStatus();
     const healthCheck = await orchestrator.healthCheck();
-    
+
     res.json({
       mcp: {
         host: HOST,
         port: PORT,
         status: 'running',
-        uptime: process.uptime()
+        uptime: process.uptime(),
       },
       services: systemStatus,
       health: healthCheck,
@@ -207,8 +209,8 @@ app.get('/status', async (req, res) => {
         'POST /swarm/spawn-agent',
         'POST /memory/store',
         'GET /memory/retrieve/:key',
-        'GET /status'
-      ]
+        'GET /status',
+      ],
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -218,33 +220,32 @@ app.get('/status', async (req, res) => {
 // Start server
 async function startServer() {
   try {
-    console.log('🚀 Starting Claude-Flow HTTP MCP Server...\n');
-    
+    console.warn('🚀 Starting Claude-Flow HTTP MCP Server...\n');
+
     // Initialize MCP and services
     await mcpServer.initializeMemory();
     await orchestrator.start();
-    
+
     // Start HTTP server
     const server = app.listen(PORT, HOST, () => {
-      console.log(`\n🌐 HTTP MCP Server running on http://${HOST}:${PORT}`);
-      console.log('📡 Available endpoints:');
-      console.log(`   • GET  http://${HOST}:${PORT}/health`);
-      console.log(`   • POST http://${HOST}:${PORT}/service-documents/create`);
-      console.log(`   • GET  http://${HOST}:${PORT}/service-documents/list`);
-      console.log(`   • POST http://${HOST}:${PORT}/swarm/init`);
-      console.log(`   • POST http://${HOST}:${PORT}/memory/store`);
-      console.log(`   • GET  http://${HOST}:${PORT}/status`);
-      console.log('\n✅ Server ready for external connections!');
+      console.warn(`\n🌐 HTTP MCP Server running on http://${HOST}:${PORT}`);
+      console.warn('📡 Available endpoints:');
+      console.warn(`   • GET  http://${HOST}:${PORT}/health`);
+      console.warn(`   • POST http://${HOST}:${PORT}/service-documents/create`);
+      console.warn(`   • GET  http://${HOST}:${PORT}/service-documents/list`);
+      console.warn(`   • POST http://${HOST}:${PORT}/swarm/init`);
+      console.warn(`   • POST http://${HOST}:${PORT}/memory/store`);
+      console.warn(`   • GET  http://${HOST}:${PORT}/status`);
+      console.warn('\n✅ Server ready for external connections!');
     });
-    
+
     // Graceful shutdown
     process.on('SIGINT', async () => {
-      console.log('\n🔄 Shutting down server...');
+      console.warn('\n🔄 Shutting down server...');
       server.close();
       await orchestrator.stop();
       process.exit(0);
     });
-    
   } catch (error) {
     console.error('❌ Failed to start server:', error);
     process.exit(1);

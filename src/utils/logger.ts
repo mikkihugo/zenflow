@@ -4,36 +4,41 @@
  * @module Logger
  */
 
-import { Logger as CoreLogger } from '../cli/core/logger.js';
+export class Logger {}
 
-export class Logger {
-    private coreLogger: CoreLogger;
+info(message: string, meta?: object)
+: void
+{
+  this.coreLogger.info(message, meta);
+}
 
-    constructor(component: string) {
-        this.coreLogger = new CoreLogger(component);
-    }
+warn(message: string, meta?: object)
+: void
+{
+  this.coreLogger.warn(message, meta);
+}
 
-    info(message: string, meta?: object): void {
-        this.coreLogger.info(message, meta);
-    }
+error(message: string, error?: Error | null)
+: void
+{
+  this.coreLogger.error(message, {}, error || null);
+}
 
-    warn(message: string, meta?: object): void {
-        this.coreLogger.warn(message, meta);
-    }
+debug(message: string, meta?: object)
+: void
+{
+  this.coreLogger.debug(message, meta);
+}
 
-    error(message: string, error?: Error | null): void {
-        this.coreLogger.error(message, {}, error || null);
-    }
+success(message: string, meta?: object)
+: void
+{
+  this.coreLogger.success(message, meta);
+}
 
-    debug(message: string, meta?: object): void {
-        this.coreLogger.debug(message, meta);
-    }
-
-    success(message: string, meta?: object): void {
-        this.coreLogger.success(message, meta);
-    }
-
-    progress(message: string, meta?: object): void {
-        this.coreLogger.progress(message, meta);
-    }
+progress(message: string, meta?: object)
+: void
+{
+  this.coreLogger.progress(message, meta);
+}
 }

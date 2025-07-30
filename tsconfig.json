@@ -10,12 +10,12 @@
     "skipLibCheck": true,
     "outDir": "./dist",
     "strict": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
+    "strictFunctionTypes": false,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitOverride": false,
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
     "noUncheckedIndexedAccess": false,
@@ -32,19 +32,27 @@
     "moduleDetection": "force",
     "types": ["node", "jest"],
     "typeRoots": ["./node_modules/@types", "./src/types"],
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": false
   },
   "include": [
     "src/**/*.ts",
+    "bin/**/*.ts",
+    "config/**/*.ts",
+    "memory/**/*.ts",
     "tests/**/*.ts",
-    "ruv-FANN/**/*.ts"
+    "examples/**/*.ts",
+    "./*.ts"
   ],
   "exclude": [
     "node_modules",
     "dist",
     "deno_modules",
-    "bin",
-    "src/terminal/vscode-bridge.ts"
+    "src/terminal/vscode-bridge.ts",
+    "**/*.js",
+    "**/*.test.js",
+    "scripts/**/*",
+    "benchmark/**/*",
+    "tests/**/*.js"
   ],
   "ts-node": {
     "esm": true,

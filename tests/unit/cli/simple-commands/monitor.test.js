@@ -1,4 +1,4 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
 
 describe('monitor.js - Real Metrics Implementation', () => {
   let consoleSpy;
@@ -9,7 +9,7 @@ describe('monitor.js - Real Metrics Implementation', () => {
     consoleSpy = {
       log: jest.spyOn(console, 'log').mockImplementation(),
       clear: jest.spyOn(console, 'clear').mockImplementation(),
-      error: jest.spyOn(console, 'error').mockImplementation()
+      error: jest.spyOn(console, 'error').mockImplementation(),
     };
 
     // Setup process spies
@@ -18,20 +18,24 @@ describe('monitor.js - Real Metrics Implementation', () => {
 
   afterEach(() => {
     // Restore all spies
-    Object.values(consoleSpy).forEach(spy => spy.mockRestore());
+    Object.values(consoleSpy).forEach((spy) => spy.mockRestore());
     processExitSpy.mockRestore();
   });
 
   describe('Basic Functionality', () => {
     test('should import without errors', async () => {
-      const monitor = await import('../../../../src/cli/command-handlers/simple-commands/monitor.js');
+      const monitor = await import(
+        '../../../../src/cli/command-handlers/simple-commands/monitor.js'
+      );
       expect(monitor.monitorCommand).toBeDefined();
       expect(monitor.showMonitorHelp).toBeDefined();
     });
 
     test('should collect and display metrics', async () => {
-      const { monitorCommand } = await import('../../../../src/cli/command-handlers/simple-commands/monitor.js');
-      
+      const { monitorCommand } = await import(
+        '../../../../src/cli/command-handlers/simple-commands/monitor.js'
+      );
+
       await monitorCommand([], {});
 
       // Check if metrics were displayed
@@ -40,8 +44,10 @@ describe('monitor.js - Real Metrics Implementation', () => {
     });
 
     test('should show help information', async () => {
-      const { showMonitorHelp } = await import('../../../../src/cli/command-handlers/simple-commands/monitor.js');
-      
+      const { showMonitorHelp } = await import(
+        '../../../../src/cli/command-handlers/simple-commands/monitor.js'
+      );
+
       showMonitorHelp();
 
       const output = consoleSpy.log.mock.calls.join('\n');
@@ -53,12 +59,14 @@ describe('monitor.js - Real Metrics Implementation', () => {
 
   describe('Output Formats', () => {
     test('should output JSON format when specified', async () => {
-      const { monitorCommand } = await import('../../../../src/cli/command-handlers/simple-commands/monitor.js');
-      
+      const { monitorCommand } = await import(
+        '../../../../src/cli/command-handlers/simple-commands/monitor.js'
+      );
+
       await monitorCommand(['--format', 'json'], {});
 
       const calls = consoleSpy.log.mock.calls;
-      const jsonOutput = calls.find(call => {
+      const jsonOutput = calls.find((call) => {
         try {
           JSON.parse(call[0]);
           return true;
@@ -76,8 +84,10 @@ describe('monitor.js - Real Metrics Implementation', () => {
     });
 
     test('should output pretty format by default', async () => {
-      const { monitorCommand } = await import('../../../../src/cli/command-handlers/simple-commands/monitor.js');
-      
+      const { monitorCommand } = await import(
+        '../../../../src/cli/command-handlers/simple-commands/monitor.js'
+      );
+
       await monitorCommand([], {});
 
       const output = consoleSpy.log.mock.calls.join('\n');

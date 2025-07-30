@@ -17,8 +17,8 @@ jest.mock('@google/generative-ai');
 
 // Set up performance monitoring
 if (process.env.MEASURE_PERFORMANCE) {
-  const { performance, PerformanceObserver } = require('perf_hooks');
-  
+  const { performance, PerformanceObserver } = require('node:perf_hooks');
+
   const perfObserver = new PerformanceObserver((items) => {
     items.getEntries().forEach((entry) => {
       if (entry.duration > 100) {
@@ -26,7 +26,7 @@ if (process.env.MEASURE_PERFORMANCE) {
       }
     });
   });
-  
+
   perfObserver.observe({ entryTypes: ['measure'] });
 }
 
@@ -38,10 +38,10 @@ afterAll(async () => {
   // Close database connections
   const db = require('./utils/test-db');
   await db.close();
-  
+
   // Clear all mocks
   jest.clearAllMocks();
-  
+
   // Clear test cache
   jest.clearAllTimers();
 });
@@ -58,5 +58,5 @@ module.exports = {
   clearTestDatabase: require('./utils/test-db').clear,
   createMockRequest: require('./utils/mock-request'),
   createMockResponse: require('./utils/mock-response'),
-  waitForCondition: require('./utils/wait-helpers').waitForCondition
+  waitForCondition: require('./utils/wait-helpers').waitForCondition,
 };

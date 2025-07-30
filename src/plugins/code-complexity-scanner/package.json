@@ -4,7 +4,13 @@
   "description": "Code complexity analysis plugin with AI-powered refactoring suggestions",
   "main": "index.js",
   "type": "module",
-  "keywords": ["claude-zen", "plugin", "code-analysis", "complexity", "refactoring"],
+  "keywords": [
+    "claude-zen",
+    "plugin",
+    "code-analysis",
+    "complexity",
+    "refactoring"
+  ],
   "author": "Claude Zen Team",
   "license": "MIT",
   "dependencies": {
@@ -21,11 +27,23 @@
       "ai-refactor-suggestions",
       "severity-classification"
     ],
-    "fileTypes": [".js", ".jsx", ".ts", ".tsx"],
+    "fileTypes": [
+      ".js",
+      ".jsx",
+      ".ts",
+      ".tsx"
+    ],
     "config": {
       "complexityThreshold": 10,
-      "filePatterns": ["**/*.{js,jsx,ts,tsx}"],
-      "ignorePatterns": ["node_modules/**", ".git/**", ".hive-mind/**", "dist/**"],
+      "filePatterns": [
+        "**/*.{js,jsx,ts,tsx}"
+      ],
+      "ignorePatterns": [
+        "node_modules/**",
+        ".git/**",
+        ".hive-mind/**",
+        "dist/**"
+      ],
       "enableRefactorSuggestions": true
     }
   }

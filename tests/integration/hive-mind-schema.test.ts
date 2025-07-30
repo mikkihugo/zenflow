@@ -1,0 +1,371 @@
+/**
+ * Test for Hive Mind database schema - specifically for issue #403
+ * Issue #403: Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: agents.role
+ *
+ * This test verifies that the database schema is created correctly
+ * and that agents can be inserted with or without a role value.
+ *
+ * @fileoverview Comprehensive database schema validation tests with Google standards
+ * @author Claude Code Flow Team
+ * @version 2.0.0
+ */
+
+import { execSync } from 'node:child_process';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
+import Database from 'better-sqlite3';
+
+/**
+ * Database column information structure
+ */
+interface ColumnInfo {
+  cid: number;
+  name: string;
+  type: string;
+  notnull: number;
+  dflt_value: string | null;
+  pk: number;
+}
+
+/**
+ * SQLite master table entry
+ */
+interface SqliteMasterEntry {
+  type: string;
+  name: string;
+  tbl_name: string;
+  rootpage: number;
+  sql: string;
+}
+
+/**
+ * Database test context
+ */
+interface TestContext {
+  testDir: string;
+  dbPath: string;
+  db: Database.Database | null;
+}
+
+describe('Hive Mind Database Schema - Issue #403', (): void => {
+  let testContext: TestContext;
+
+  beforeEach(async (): Promise<void> => {
+    // Create temporary test directory with unique name
+    const timestamp = Date.now();
+    const testDir = path.join(os.tmpdir(), `claude-zen-hive-test-${timestamp}`);
+    await fs.mkdir(testDir, { recursive: true });
+    process.chdir(testDir);
+
+    // Initialize test context
+    testContext = {
+      testDir,
+      dbPath: path.join(testDir, '.hive-mind', 'hive.db'),
+      db: null,
+    };
+  });
+
+  afterEach(async (): Promise<void> => {
+    // Close database connection if open
+    if (testContext.db?.open) {
+      testContext.db.close();
+      testContext.db = null;
+    }
+
+    // Clean up test directory
+    process.chdir(os.tmpdir());
+    await fs.rm(testContext.testDir, { recursive: true, force: true });
+  });
+
+  describe('Database Initialization via Init Command', (): void => {
+    /**
+     * Verifies that the init command creates database with correct schema
+     */
+    it('should create database with correct schema through init command', async (): Promise<void> => {
+      // Execute init command to create database
+      execSync('node /home/mhugo/code/claude-zen/src/cli/cli-main.js init', {
+        cwd: testContext.testDir,
+        stdio: 'pipe',
+        env: { ...process.env },
+      });
+
+      // Verify database file creation
+      const dbExists = await fs
+        .access(testContext.dbPath)
+        .then((): boolean => true)
+        .catch((): boolean => false);
+      expect(dbExists).toBe(true);
+
+      // Open database and validate schema
+      testContext.db = new Database(testContext.dbPath);
+
+      // Verify agents table exists with correct structure
+      const tableInfo = testContext.db
+        .prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='agents'")
+        .get() as SqliteMasterEntry | undefined;
+
+      expect(tableInfo).toBeDefined();
+      expect(tableInfo?.sql).toContain('CREATE TABLE');
+      expect(tableInfo?.sql).toContain('agents');
+
+      // Critical validation: ensure role column allows NULL values
+      const columns = testContext.db.prepare('PRAGMA table_info(agents)').all() as ColumnInfo[];
+
+      const roleColumn = columns.find((col: ColumnInfo): boolean => col.name === 'role');
+
+      expect(roleColumn).toBeDefined();
+      expect(roleColumn?.notnull).toBe(0); // 0 means NULL allowed, 1 means NOT NULL
+    });
+
+    /**
+     * Tests agent insertion without role value (should succeed)
+     */
+    it('should allow inserting agents without role value', async (): Promise<void> => {
+      // Initialize database through init command
+      execSync('node /home/mhugo/code/claude-zen/src/cli/cli-main.js init', {
+        cwd: testContext.testDir,
+        stdio: 'pipe',
+        env: { ...process.env },
+      });
+
+      testContext.db = new Database(testContext.dbPath);
+
+      // Create required swarm for foreign key constraint
+      const swarmId = `test-swarm-${Date.now()}`;
+      testContext.db
+        .prepare(`
+        INSERT INTO swarms (id, name, objective, topology, status)
+        VALUES (?, ?, ?, ?, ?)
+      `)
+        .run(swarmId, 'Test Swarm', 'Test Objective', 'mesh', 'active');
+
+      // Attempt to insert agent without role - this should succeed
+      const agentId = `test-agent-${Date.now()}`;
+      const insertAgent = (): void => {
+        testContext.db
+          ?.prepare(`
+          INSERT INTO agents (id, swarm_id, name, type, status)
+          VALUES (?, ?, ?, ?, ?)
+        `)
+          .run(agentId, swarmId, 'Test Agent', 'worker', 'active');
+      };
+
+      // Verify insertion succeeds
+      expect(insertAgent).not.toThrow();
+
+      // Validate agent record
+      const agent = testContext.db.prepare('SELECT * FROM agents WHERE id = ?').get(agentId) as
+        | { id: string; role: string | null }
+        | undefined;
+
+      expect(agent).toBeDefined();
+      expect(agent?.id).toBe(agentId);
+      expect(agent?.role).toBeNull(); // Role should be NULL when not provided
+    });
+
+    /**
+     * Tests agent insertion with role value (should succeed)
+     */
+    it('should allow inserting agents with role value', async (): Promise<void> => {
+      // Initialize database
+      execSync('node /home/mhugo/code/claude-zen/src/cli/cli-main.js init', {
+        cwd: testContext.testDir,
+        stdio: 'pipe',
+        env: { ...process.env },
+      });
+
+      testContext.db = new Database(testContext.dbPath);
+
+      // Create required swarm
+      const swarmId = `test-swarm-${Date.now()}`;
+      testContext.db
+        .prepare(`
+        INSERT INTO swarms (id, name, objective, topology, status)
+        VALUES (?, ?, ?, ?, ?)
+      `)
+        .run(swarmId, 'Test Swarm', 'Test Objective', 'mesh', 'active');
+
+      // Insert agent with role
+      const agentId = `test-agent-${Date.now()}`;
+      testContext.db
+        .prepare(`
+        INSERT INTO agents (id, swarm_id, name, type, role, status)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `)
+        .run(agentId, swarmId, 'Test Agent', 'coordinator', 'leader', 'active');
+
+      // Verify agent insertion with role
+      const agent = testContext.db.prepare('SELECT * FROM agents WHERE id = ?').get(agentId) as
+        | { id: string; role: string }
+        | undefined;
+
+      expect(agent).toBeDefined();
+      expect(agent?.id).toBe(agentId);
+      expect(agent?.role).toBe('leader');
+    });
+  });
+
+  describe('Direct Database Schema Tests', (): void => {
+    /**
+     * Validates direct database schema creation
+     */
+    it('should create agents table with nullable role column', async (): Promise<void> => {
+      // Create database directory structure
+      await fs.mkdir(path.join(testContext.testDir, '.hive-mind'), { recursive: true });
+
+      testContext.db = new Database(testContext.dbPath);
+
+      // Create schema matching init command behavior
+      testContext.db.exec(`
+        CREATE TABLE IF NOT EXISTS swarms (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          objective TEXT,
+          topology TEXT DEFAULT 'mesh',
+          status TEXT DEFAULT 'active',
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+        
+        CREATE TABLE IF NOT EXISTS agents (
+          id TEXT PRIMARY KEY,
+          swarm_id TEXT,
+          name TEXT NOT NULL,
+          type TEXT NOT NULL,
+          role TEXT,
+          capabilities TEXT,
+          status TEXT DEFAULT 'active',
+          performance_score REAL DEFAULT 0.5,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (swarm_id) REFERENCES swarms (id)
+        );
+      `);
+
+      // Validate schema structure
+      const columns = testContext.db.prepare('PRAGMA table_info(agents)').all() as ColumnInfo[];
+
+      const roleColumn = columns.find((col: ColumnInfo): boolean => col.name === 'role');
+
+      expect(roleColumn).toBeDefined();
+      expect(roleColumn?.type).toBe('TEXT');
+      expect(roleColumn?.notnull).toBe(0); // Must allow NULL
+      expect(roleColumn?.dflt_value).toBeNull(); // No default value
+    });
+
+    /**
+     * Tests schema migration from NOT NULL to nullable role column
+     */
+    it('should handle schema migration from NOT NULL to nullable', async (): Promise<void> => {
+      // Create database directory
+      await fs.mkdir(path.join(testContext.testDir, '.hive-mind'), { recursive: true });
+
+      // Create database with problematic schema (role NOT NULL)
+      testContext.db = new Database(testContext.dbPath);
+
+      testContext.db.exec(`
+        CREATE TABLE IF NOT EXISTS swarms (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          objective TEXT,
+          topology TEXT DEFAULT 'mesh',
+          status TEXT DEFAULT 'active',
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+        
+        CREATE TABLE IF NOT EXISTS agents (
+          id TEXT PRIMARY KEY,
+          swarm_id TEXT,
+          name TEXT NOT NULL,
+          type TEXT NOT NULL,
+          role TEXT NOT NULL, -- Problematic constraint
+          status TEXT DEFAULT 'idle',
+          capabilities TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (swarm_id) REFERENCES swarms (id)
+        );
+      `);
+
+      // Close database to simulate migration scenario
+      testContext.db.close();
+      testContext.db = null;
+
+      // Run init command with force flag for migration
+      execSync('node /home/mhugo/code/claude-zen/src/cli/cli-main.js init --force', {
+        cwd: testContext.testDir,
+        stdio: 'pipe',
+        env: { ...process.env },
+      });
+
+      // Reopen and verify migration success
+      testContext.db = new Database(testContext.dbPath);
+
+      // Test that we can now insert without role
+      const swarmId = `test-swarm-${Date.now()}`;
+      testContext.db
+        .prepare(`
+        INSERT INTO swarms (id, name, objective, topology, status)
+        VALUES (?, ?, ?, ?, ?)
+      `)
+        .run(swarmId, 'Test Swarm', 'Test Objective', 'mesh', 'active');
+
+      const agentId = `test-agent-${Date.now()}`;
+      const insertAgent = (): void => {
+        testContext.db
+          ?.prepare(`
+          INSERT INTO agents (id, swarm_id, name, type, status)
+          VALUES (?, ?, ?, ?, ?)
+        `)
+          .run(agentId, swarmId, 'Test Agent', 'worker', 'active');
+      };
+
+      // Migration should have fixed the constraint
+      expect(insertAgent).not.toThrow();
+    });
+  });
+
+  describe('Schema Consistency Tests', (): void => {
+    /**
+     * Validates schema consistency across different creation paths
+     */
+    it('should have consistent schema across all database creation paths', async (): Promise<void> => {
+      // Test schema from init command
+      execSync('node /home/mhugo/code/claude-zen/src/cli/cli-main.js init', {
+        cwd: testContext.testDir,
+        stdio: 'pipe',
+        env: { ...process.env },
+      });
+
+      testContext.db = new Database(testContext.dbPath);
+
+      // Get schema information
+      const initSchema = testContext.db
+        .prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='agents'")
+        .get() as SqliteMasterEntry | undefined;
+
+      const initColumns = testContext.db.prepare('PRAGMA table_info(agents)').all() as ColumnInfo[];
+
+      testContext.db.close();
+      testContext.db = null;
+
+      // Clean up for isolation
+      await fs.rm(path.join(testContext.testDir, '.hive-mind'), { recursive: true, force: true });
+
+      // Validate critical schema requirements
+      const roleColumn = initColumns.find((col: ColumnInfo): boolean => col.name === 'role');
+      expect(roleColumn?.notnull).toBe(0); // Must allow NULL
+
+      // Verify required columns exist
+      const requiredColumns = ['id', 'swarm_id', 'name', 'type', 'status'];
+      requiredColumns.forEach((colName: string): void => {
+        const column = initColumns.find((col: ColumnInfo): boolean => col.name === colName);
+        expect(column).toBeDefined();
+      });
+
+      // Validate schema SQL structure
+      expect(initSchema?.sql).toBeDefined();
+      expect(initSchema?.sql).toContain('CREATE TABLE');
+      expect(initSchema?.sql).toContain('agents');
+    });
+  });
+});

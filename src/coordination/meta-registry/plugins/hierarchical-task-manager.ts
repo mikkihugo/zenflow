@@ -1,0 +1,362 @@
+/**
+ * Hierarchical Task Management Plugin
+ * Manages the complete hierarchy = {name = null;
+    this.memoryRag = null;
+    this.architectAdvisor = null;
+    this.db = null;
+    
+    // Intelligence engines
+    this.suggestionEngine = null;
+    this.completenessAnalyzer = null;
+    this.breakdownEngine = null;
+  }
+
+  async initialize(registry, options = {}): any {
+    this.registry = registry;
+    this.options = {dbPath = = false,completenessThreshold = = false,minConfidenceForSuggestion = new Database(this.options.dbPath);
+    this.createSchema();
+
+    // Get dependent plugins
+    this.memoryRag = registry.pluginSystem.getPlugin('memory-rag');
+    this.architectAdvisor = registry.pluginSystem.getPlugin('architect-advisor');
+
+    // Initialize intelligence engines
+    this.initializeIntelligenceEngines();
+
+    // Load all service scopes
+    this.serviceScopes = await this.loadServiceScopes();
+
+    // Register plugin services
+    await this.registerPluginServices();
+
+    // Start intelligent monitoring
+    if(this.options.autoBreakdown) {
+      this.startIntelligentMonitoring();
+    }
+  }
+
+  createSchema() {
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS visions (
+          id TEXT PRIMARY KEY,
+          title TEXT,
+          description TEXT,
+          objectives TEXT,
+          stakeholders TEXT,
+          timeline TEXT,
+          priority TEXT,
+          status TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          metadata TEXT
+      );
+
+      CREATE TABLE IF NOT EXISTS epics (
+          id TEXT PRIMARY KEY,
+          vision_id TEXT,
+          title TEXT,
+          description TEXT,
+          acceptance_criteria TEXT,
+          business_value TEXT,
+          effort TEXT,
+          priority TEXT,
+          status TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          metadata TEXT,
+          FOREIGN KEY (vision_id) REFERENCES visions(id)
+      );
+
+      CREATE TABLE IF NOT EXISTS features (
+          id TEXT PRIMARY KEY,
+          epic_id TEXT,
+          title TEXT,
+          description TEXT,
+          functional_requirements TEXT,
+          non_functional_requirements TEXT,
+          dependencies TEXT,
+          risks TEXT,
+          effort TEXT,
+          priority TEXT,
+          status TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          metadata TEXT,
+          FOREIGN KEY (epic_id) REFERENCES epics(id)
+      );
+
+      CREATE TABLE IF NOT EXISTS prds (
+          id TEXT PRIMARY KEY,
+          feature_id TEXT,
+          title TEXT,
+          sections TEXT,
+          status TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          metadata TEXT,
+          FOREIGN KEY (feature_id) REFERENCES features(id)
+      );
+
+      CREATE TABLE IF NOT EXISTS user_stories (
+          id TEXT PRIMARY KEY,
+          parent_id TEXT,
+          parent_type TEXT,
+          title TEXT,
+          narrative TEXT,
+          acceptance_criteria TEXT,
+          priority TEXT,
+          effort TEXT,
+          status TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          metadata TEXT
+      );
+
+      CREATE TABLE IF NOT EXISTS tasks (
+          id TEXT PRIMARY KEY,
+          parent_id TEXT,
+          parent_type TEXT,
+          title TEXT,
+          description TEXT,
+          type TEXT,
+          priority TEXT,
+          effort TEXT,
+          skills TEXT,
+          dependencies TEXT,
+          status TEXT,
+          assignee TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          metadata TEXT
+      );
+
+      CREATE TABLE IF NOT EXISTS assignments (
+          id TEXT PRIMARY KEY,
+          task_id TEXT,
+          queen_id TEXT,
+          assigned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          context TEXT,
+          status TEXT,
+          progress TEXT,
+          communication TEXT,
+          FOREIGN KEY (task_id) REFERENCES tasks(id)
+      );
+
+      CREATE TABLE IF NOT EXISTS service_scopes (
+          name TEXT PRIMARY KEY,
+          path TEXT,
+          content TEXT,
+          metadata TEXT,
+          last_scanned_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+  }
+
+  async loadServiceScopes() {
+    const registry = await readHiveRegistry();
+    const scopes = {};
+    for (const [name, hive] of Object.entries(registry)) {
+      const scopePath = path.join(path.dirname(hive.path), 'scope.md');
+      try {
+        const content = await readFile(scopePath, 'utf8');
+
+        const scopeData = {name = scopeData;
+      } catch(error) {
+        // Scope file might not exist, which is fine.
+        console.warn(`Could not load scope for ${name}: ${error.message}`);
+      }
+    }
+    return scopes;
+  }
+
+  initializeIntelligenceEngines() {
+    // These would need to be adapted to work with the DB if they have their own persistence logic
+    // For now, assuming they operate in-memory or are stateless
+    // this.suggestionEngine = new SuggestionEngine(this);
+    // this.completenessAnalyzer = new CompletenessAnalyzer(this);
+    // this.breakdownEngine = new BreakdownEngine(this);
+  }
+  
+  startIntelligentMonitoring() {
+    // Start periodic monitoring for incomplete work and optimization opportunities
+    this.monitoringInterval = setInterval(async () => {
+      try {
+        await this.analyzeCompleteness();
+        await this.optimizeDelegations();
+      } catch(error) {
+        console.warn('Monitoring cycleerror = this.db.prepare(`
+      SELECT v.* FROM visions v 
+      WHERE v.status IN ('draft', 'in_progress')
+      AND (SELECT COUNT(*) FROM epics e WHERE e.vision_id = v.id) = 0
+    `).all();
+    
+    for(const vision of incompleteVisions) {
+      if (Math.random() < 0.1) { // Only suggest occasionally to avoid spam
+        this.emit('suggestionGenerated', {type = this.db.prepare(`
+      SELECT * FROM assignments 
+      WHERE status = 'delegated' 
+      AND assigned_at < datetime('now', '-24 hours')
+    `).all();
+    
+    for(const assignment of stalledAssignments) {
+      this.emit('suggestionGenerated', {type = nanoid();
+    const vision = {id = this.db.prepare(`
+      INSERT INTO visions (id, title, description, objectives, stakeholders, timeline, priority, status, metadata)
+      VALUES (@id, @title, @description, @objectives, @stakeholders, @timeline, @priority, @status, @metadata)
+    `);
+    stmt.run(vision);
+
+    await this.registry.register(`vision = nanoid();
+    const epic = {id = this.db.prepare(`
+        INSERT INTO epics (id, vision_id, title, description, acceptance_criteria, business_value, effort, priority, status, metadata)
+        VALUES (@id, @vision_id, @title, @description, @acceptance_criteria, @business_value, @effort, @priority, @status, @metadata)
+    `);
+    stmt.run(epic);
+
+    await this.registry.register(`epic = nanoid();
+    const feature = {id = this.db.prepare(`
+        INSERT INTO features (id, epic_id, title, description, functional_requirements, non_functional_requirements, dependencies, risks, effort, priority, status, metadata)
+        VALUES (@id, @epic_id, @title, @description, @functional_requirements, @non_functional_requirements, @dependencies, @risks, @effort, @priority, @status, @metadata)
+    `);
+    stmt.run(feature);
+
+    await this.registry.register(`feature = this.db.prepare('SELECT * FROM features WHERE id = ?').get(featureId);
+    if (!feature) throw new Error(`Feature ${featureId} not found`);
+
+    const prd = {id = this.db.prepare(`
+        INSERT INTO prds (id, feature_id, title, sections, status, metadata)
+        VALUES (@id, @feature_id, @title, @sections, @status, @metadata)
+    `);
+    stmt.run(prd);
+
+    await this.registry.register(`prd = nanoid();
+    const userStory = {id = this.db.prepare(`
+        INSERT INTO user_stories (id, parent_id, parent_type, title, narrative, acceptance_criteria, priority, effort, status, metadata)
+        VALUES (@id, @parent_id, @parent_type, @title, @narrative, @acceptance_criteria, @priority, @effort, @status, @metadata)
+    `);
+    stmt.run(userStory);
+
+    await this.registry.register(`user-story = nanoid();
+    const task = {id = this.db.prepare(`
+        INSERT INTO tasks (id, parent_id, parent_type, title, description, type, priority, effort, skills, dependencies, status, assignee, metadata)
+        VALUES (@id, @parent_id, @parent_type, @title, @description, @type, @priority, @effort, @skills, @dependencies, @status, @assignee, @metadata)
+    `);
+    stmt.run(task);
+
+    await this.registry.register(`task = {}): any {
+    const task = this.db.prepare('SELECT * FROM tasks WHERE id = ?').get(taskId);
+    if (!task) throw new Error(`Task ${taskId} not found`);
+
+    const assignmentId = nanoid();
+    const assignment = {id = this.db.prepare(`
+        INSERT INTO assignments (id, task_id, queen_id, context, status, progress, communication)
+        VALUES (@id, @task_id, @queen_id, @context, @status, @progress, @communication)
+    `);
+    stmt.run(assignment);
+
+    this.db.prepare('UPDATE tasks SET assignee = ?, status = ? WHERE id = ?').run(queenId, 'assigned', taskId);
+
+    await this.registry.register(`assignment = `
+      VisionTitle = await generateText(breakdownPrompt);
+    let epics;
+    
+    try {
+      epics = JSON.parse(aiBreakdown);
+    } catch(error) {
+      console.warn('Failed to parse AI breakdown, creating fallback epic');
+      epics = [{title = 3; // Prevent overwhelming the system
+    const delegatedEpics = [];
+    
+    for (const [index, epicData] of epics.slice(0, maxConcurrentDelegations).entries()) {
+      try {
+        // Create the epic in our hierarchy
+        const epicId = await this.createEpic({title = await this.findRelevantService(epicData);
+        
+        if(relevantService) {
+          // Step4 = ? WHERE id = ?')
+      .run('in_progress', visionId);
+    
+    console.warn(`✅ Vision breakdown complete. Created ${epics.length} epics, delegated ${delegatedEpics.length}`);
+    this.emit('visionBreakdownComplete', { visionId,epics = Object.values(this.serviceScopes);
+    if (services.length === 0) return null;
+    
+    // Simple keyword matching - can be enhanced with AI semantic matching
+    const epicKeywords = [
+      ...this.extractKeywords(epicData.title),
+      ...this.extractKeywords(epicData.description),
+      ...(epicData.relevantServices || [])
+    ];
+    
+    let bestMatch = null;
+    let bestScore = 0;
+    
+    for(const service of services) {
+      const serviceKeywords = this.extractKeywords(service.content);
+      const score = this.calculateKeywordMatch(epicKeywords, serviceKeywords);
+      
+      if(score > bestScore) {
+        bestScore = score;
+        bestMatch = service;
+      }
+    }
+    
+    // Only return if we have a reasonable match
+    return bestScore > 0.3 ?bestMatch = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by']);
+    return text.toLowerCase()
+      .replace(/[^a-zA-Z0-9\s]/g, ' ')
+      .split(/\s+/)
+      .filter(word => word.length > 2 && !commonWords.has(word))
+      .slice(0, 20); // Limit to most relevant keywords
+  }
+  
+  // Calculate keyword match score between two keyword arrays
+  calculateKeywordMatch(keywords1, keywords2): any {
+    const set1 = new Set(keywords1);
+    const set2 = new Set(keywords2);
+    const intersection = new Set([...set1].filter(x => set2.has(x)));
+    
+    if (set1.size === 0 || set2.size === 0) return 0;
+    return intersection.size / Math.max(set1.size, set2.size);
+  }
+  
+  // Delegate an epic to a specific service hive
+  async delegateEpicToService(epicId, epicData, service): any {
+    try {
+      console.warn(`📡 Delegating epic "${epicData.title}" toservice = `
+        EPIC DELEGATION from ProjectHive = > `${i + 1}. ${criteria}`).join('\n')}
+        
+        Please break this down into actionable tasks and begin implementation.
+        Report progress back to the Project Hive for coordination.
+      `;
+      
+      // Get service hive info from registry
+      const hiveRegistry = await readHiveRegistry();
+      const hiveInfo = hiveRegistry[service.name];
+      
+      if(!hiveInfo) {
+        throw new Error(`Service hive ${service.name} not found in registry`);
+      }
+      
+      // Create assignment record
+      const assignmentId = nanoid();
+      const assignment = {id = this.db.prepare(`
+        INSERT INTO assignments (id, task_id, queen_id, context, status, progress, communication)
+        VALUES (@id, @task_id, @queen_id, @context, @status, @progress, @communication)
+      `);
+      stmt.run(assignment);
+      
+      // Delegate to the service using swarm command
+
+    if (data.description) complexity += Math.min(data.description.length / 100, 3);
+    if (data.objectives?.length) complexity += data.objectives.length * 0.5;
+    if (data.functionalRequirements?.length) complexity += data.functionalRequirements.length * 0.3;
+    return Math.min(complexity, 10);
+  }
+
+  // ... Other methods like intelligence engines and hierarchy navigation would also need to be refactored to use the DB ...
+  
+  async cleanup() {
+    if(this.monitoringInterval) {
+      clearInterval(this.monitoringInterval);
+    }
+    if(this.db) {
+      this.db.close();
+    }
+  }
+}
+
+export default HierarchicalTaskManagerPlugin;

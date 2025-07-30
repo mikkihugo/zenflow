@@ -2,7 +2,7 @@
 // Timestamp: 2025-07-22T14:50:53.620Z
 
 function greet(name) {
-    return `Hello, ${name}! Created by ruv-swarm agent.`;
+  return `Hello, ${name}! Created by ruv-swarm agent.`;
 }
 
 module.exports = { greet };

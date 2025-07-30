@@ -3,9 +3,14 @@
  * Multi-Queen coordination and persistent intelligence system
  */
 
-import { Identifiable, JSONObject, TypedEventEmitter, LifecycleManager, ResourceUsage } from './core';
-import { Queen, Task, TaskResult, Consensus, QueenMetrics } from './queen';
-import { SwarmConfig, SwarmObjective } from './swarm';
+import type {
+  Identifiable,
+  JSONObject,
+  LifecycleManager,
+  ResourceUsage,
+  TypedEventEmitter,
+} from './core';
+import type { QueenMetrics } from './queen';
 
 // =============================================================================
 // HIVE MIND CORE TYPES
@@ -16,373 +21,25 @@ export type CoordinationStrategy = 'centralized' | 'distributed' | 'hybrid' | 'a
 export type DecisionMaking = 'consensus' | 'majority' | 'weighted' | 'expert' | 'autocratic';
 
 export interface HiveConfig {
-  // Core configuration
-  name: string;
-  description: string;
-  version: string;
-  instanceId: string;
-  
-  // Topology and coordination
-  topology: HiveTopology;
-  coordinationStrategy: CoordinationStrategy;
-  decisionMaking: DecisionMaking;
-  maxQueens: number;
-  maxSwarms: number;
-  
-  // Performance settings
-  taskTimeout: number;
-  consensusTimeout: number;
-  healthCheckInterval: number;
-  optimizationInterval: number;
-  
-  // Memory and persistence
-  persistentMemory: boolean;
-  memoryNamespace: string;
-  memoryRetention: number; // days
-  knowledgeSharing: boolean;
-  crossSessionLearning: boolean;
-  
-  // Security and isolation
-  queenIsolation: boolean;
-  resourceIsolation: boolean;
-  sandboxMode: boolean;
-  trustedQueens: string[];
-  
-  // Monitoring and observability
-  detailedLogging: boolean;
-  performanceTracking: boolean;
-  behaviorAnalysis: boolean;
-  predictiveAnalytics: boolean;
-  
-  // Features
-  features: {
-    neuralProcessing: boolean;
-    vectorSearch: boolean;
-    graphAnalysis: boolean;
-    realTimeCoordination: boolean;
-    adaptiveLearning: boolean;
-    selfHealing: boolean;
-    loadBalancing: boolean;
-    autoScaling: boolean;
-  };
-}
-
-// =============================================================================
+  // Core configurationname = ============================================================================
 // HIVE STATE & COORDINATION
 // =============================================================================
 
-export type HiveStatus = 'initializing' | 'active' | 'busy' | 'degraded' | 'maintenance' | 'offline' | 'error';
+export type HiveStatus = 'initializing' | 'active' | 'busy' | 'degraded' | 'maintenance' | 'offline' | 'error'
 
-export interface HiveState {
-  status: HiveStatus;
-  health: number; // 0-1
-  efficiency: number; // 0-1
-  load: number; // 0-1
-  
-  // Queen management
-  activeQueens: number;
-  totalQueens: number;
-  queenDistribution: Record<string, number>;
-  queenHealth: Record<string, number>;
-  
-  // Task management
-  pendingTasks: number;
-  activeTasks: number;
-  completedTasks: number;
-  failedTasks: number;
-  taskBacklog: number;
-  
-  // Performance metrics
-  averageResponseTime: number;
-  throughput: number;
-  successRate: number;
-  resourceUtilization: ResourceUsage;
-  
-  // Learning and adaptation
-  knowledgeSize: number;
-  learningRate: number;
-  adaptationScore: number;
-  memoryUsage: number;
-  
-  // Timestamps
-  lastActivity: Date;
-  lastOptimization: Date;
-  lastHealthCheck: Date;
-  uptime: number;
-}
-
-export interface CoordinationContext {
-  sessionId: string;
-  initiator: string;
-  participants: string[];
-  objective: string;
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  deadline?: Date;
-  
-  // Context data
-  sharedMemory: JSONObject;
-  constraints: string[];
-  resources: string[];
-  dependencies: string[];
-  
-  // Coordination metadata
-  strategy: CoordinationStrategy;
-  consensusRequired: boolean;
-  minimumParticipants: number;
-  maximumDuration: number;
-  
-  // Progress tracking
-  startTime: Date;
-  lastUpdate: Date;
-  milestones: {
-    id: string;
-    description: string;
-    completed: boolean;
-    timestamp?: Date;
-  }[];
-}
-
-// =============================================================================
+export interface HiveState {status = ============================================================================
 // KNOWLEDGE MANAGEMENT
 // =============================================================================
 
-export interface KnowledgeNode extends Identifiable {
-  type: 'pattern' | 'solution' | 'experience' | 'rule' | 'heuristic' | 'case-study';
-  title: string;
-  description: string;
-  content: JSONObject;
-  
-  // Relationships
-  tags: string[];
-  categories: string[];
-  relatedNodes: UUID[];
-  dependencies: UUID[];
-  
-  // Quality and usage
-  confidence: number;
-  usefulness: number;
-  usageCount: number;
-  successRate: number;
-  lastUsed: Date;
-  
-  // Provenance
-  source: string;
-  contributor: string;
-  validation: {
-    validated: boolean;
-    validatedBy: string[];
-    validationDate?: Date;
-    validationScore?: number;
-  };
-  
-  // Evolution
-  version: number;
-  previousVersions: UUID[];
-  parentNode?: UUID;
-  childNodes: UUID[];
-  
-  // Context
-  applicableContexts: string[];
-  requiredCapabilities: string[];
-  domainSpecific: boolean;
-  complexity: 'low' | 'medium' | 'high' | 'expert';
-}
-
-export interface KnowledgeGraph {
-  nodes: Map<UUID, KnowledgeNode>;
-  edges: Map<UUID, KnowledgeEdge>;
-  indexes: {
-    byType: Map<string, Set<UUID>>;
-    byTag: Map<string, Set<UUID>>;
-    byCategory: Map<string, Set<UUID>>;
-    bySource: Map<string, Set<UUID>>;
-    byUsage: UUID[]; // sorted by usage frequency
-    byQuality: UUID[]; // sorted by quality score
-  };
-  
-  // Graph statistics
-  stats: {
-    totalNodes: number;
-    totalEdges: number;
-    averageConnectivity: number;
-    clustersDetected: number;
-    centralNodes: UUID[];
-    isolatedNodes: UUID[];
-  };
-}
-
-export interface KnowledgeEdge extends Identifiable {
-  sourceId: UUID;
-  targetId: UUID;
-  type: 'depends-on' | 'related-to' | 'similar-to' | 'contradicts' | 'extends' | 'implements';
-  weight: number; // 0-1
-  confidence: number; // 0-1
-  bidirectional: boolean;
-  
-  // Context
-  description?: string;
-  conditions?: string[];
-  metadata: JSONObject;
-  
-  // Quality
-  strength: number; // 0-1
-  reliability: number; // 0-1
-  lastValidated: Date;
-  validationCount: number;
-}
-
-// =============================================================================
+export interface KnowledgeNode extends Identifiable {type = ============================================================================
 // DECISION MAKING
 // =============================================================================
 
-export interface Decision extends Identifiable {
-  type: 'strategic' | 'tactical' | 'operational' | 'emergency';
-  title: string;
-  description: string;
-  context: string;
-  
-  // Decision process
-  options: DecisionOption[];
-  criteria: DecisionCriteria[];
-  method: DecisionMaking;
-  participants: string[];
-  facilitator?: string;
-  
-  // Outcome
-  selectedOption?: UUID;
-  rationale: string;
-  confidence: number;
-  consensus: boolean;
-  dissent?: string[];
-  
-  // Implementation
-  implementation: {
-    steps: string[];
-    timeline: Date[];
-    responsibilities: Record<string, string>;
-    dependencies: string[];
-    risks: string[];
-    mitigations: string[];
-  };
-  
-  // Tracking
-  status: 'pending' | 'decided' | 'implemented' | 'evaluated' | 'revised';
-  outcome?: {
-    successful: boolean;
-    actualResults: string;
-    lessons: string[];
-    improvements: string[];
-  };
-  
-  // Metadata
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  reversible: boolean;
-  impact: 'local' | 'regional' | 'global' | 'system-wide';
-  urgency: 'low' | 'medium' | 'high' | 'immediate';
-}
-
-export interface DecisionOption extends Identifiable {
-  title: string;
-  description: string;
-  pros: string[];
-  cons: string[];
-  risks: string[];
-  costs: number;
-  timeline: number; // days
-  confidence: number;
-  feasibility: number;
-  impact: number;
-  supporters: string[];
-  critics: string[];
-  evidence: JSONObject[];
-}
-
-export interface DecisionCriteria extends Identifiable {
-  name: string;
-  description: string;
-  weight: number; // 0-1
-  type: 'quantitative' | 'qualitative' | 'boolean';
-  measurable: boolean;
-  threshold?: number;
-  scale?: string[];
-  importance: 'low' | 'medium' | 'high' | 'critical';
-}
-
-// =============================================================================
+export interface Decision extends Identifiable {type = ============================================================================
 // LEARNING & ADAPTATION
 // =============================================================================
 
-export interface LearningEvent extends Identifiable {
-  type: 'success' | 'failure' | 'observation' | 'feedback' | 'insight' | 'discovery';
-  source: string; // Queen ID or external source
-  context: string;
-  description: string;
-  
-  // Data
-  inputs: JSONObject;
-  outputs: JSONObject;
-  expectedOutputs?: JSONObject;
-  actualResults: JSONObject;
-  
-  // Analysis
-  significance: number; // 0-1
-  confidence: number; // 0-1
-  novelty: number; // 0-1
-  generalizability: number; // 0-1
-  
-  // Classification
-  categories: string[];
-  patterns: string[];
-  principles: string[];
-  
-  // Impact
-  affectedComponents: string[];
-  behaviorChanges: string[];
-  performanceImpact: number;
-  
-  // Learning outcomes
-  knowledgeGained: string[];
-  rulesLearned: string[];
-  strategiesDiscovered: string[];
-  improvementsIdentified: string[];
-}
-
-export interface AdaptationStrategy {
-  name: string;
-  description: string;
-  triggers: string[];
-  conditions: string[];
-  actions: AdaptationAction[];
-  
-  // Effectiveness
-  successRate: number;
-  averageImprovement: number;
-  sideEffects: string[];
-  contraindications: string[];
-  
-  // Usage
-  usageCount: number;
-  lastUsed: Date;
-  contexts: string[];
-  
-  // Evolution
-  version: number;
-  improvements: string[];
-  deprecated: boolean;
-  replacement?: string;
-}
-
-export interface AdaptationAction {
-  type: 'parameter-adjustment' | 'strategy-change' | 'resource-reallocation' | 'topology-modification' | 'queen-specialization';
-  target: string;
-  change: JSONObject;
-  rationale: string;
-  expectedImpact: string;
-  reversible: boolean;
-  riskLevel: 'low' | 'medium' | 'high';
-}
-
-// =============================================================================
+export interface LearningEvent extends Identifiable {type = ============================================================================
 // HIVE MIND EVENTS
 // =============================================================================
 
@@ -391,37 +48,37 @@ export interface HiveEvents {
   'initialized': () => void;
   'started': () => void;
   'stopped': () => void;
-  'error': (error: Error) => void;
+  'error': (error = > void;
   
   // Queen events
-  'queen-joined': (queen: Queen) => void;
-  'queen-left': (queenId: UUID) => void;
-  'queen-failed': (queenId: UUID, error: Error) => void;
-  'queen-recovered': (queenId: UUID) => void;
+  'queen-joined': (queen = > void;
+  'queen-left': (queenId = > void;
+  'queen-failed': (queenId = > void;
+  'queen-recovered': (queenId = > void;
   
   // Task events
-  'task-submitted': (task: Task) => void;
-  'task-assigned': (taskId: UUID, queenIds: UUID[]) => void;
-  'task-completed': (taskId: UUID, result: TaskResult) => void;
-  'task-failed': (taskId: UUID, error: Error) => void;
-  'consensus-reached': (consensus: Consensus) => void;
+  'task-submitted': (task = > void;
+  'task-assigned': (taskId = > void;
+  'task-completed': (taskId = > void;
+  'task-failed': (taskId = > void;
+  'consensus-reached': (consensus = > void;
   
   // Coordination events
-  'coordination-started': (context: CoordinationContext) => void;
-  'coordination-completed': (context: CoordinationContext) => void;
-  'decision-made': (decision: Decision) => void;
+  'coordination-started': (context = > void;
+  'coordination-completed': (context = > void;
+  'decision-made': (decision = > void;
   
   // Learning events
-  'knowledge-updated': (nodeId: UUID, type: string) => void;
-  'pattern-discovered': (pattern: string, confidence: number) => void;
-  'adaptation-triggered': (strategy: string, reason: string) => void;
-  'improvement-detected': (metric: string, improvement: number) => void;
+  'knowledge-updated': (nodeId = > void;
+  'pattern-discovered': (pattern = > void;
+  'adaptation-triggered': (strategy = > void;
+  'improvement-detected': (metric = > void;
   
   // System events
-  'health-changed': (oldHealth: number, newHealth: number) => void;
-  'performance-alert': (metric: string, value: number, threshold: number) => void;
-  'resource-warning': (resource: string, usage: number) => void;
-  'optimization-completed': (improvements: string[]) => void;
+  'health-changed': (oldHealth = > void;
+  'performance-alert': (metric = > void;
+  'resource-warning': (resource = > void;
+  'optimization-completed': (improvements = > void;
 }
 
 // =============================================================================
@@ -430,55 +87,7 @@ export interface HiveEvents {
 
 export interface HiveMind extends TypedEventEmitter<HiveEvents>, LifecycleManager, Identifiable {
   // Configuration
-  readonly config: HiveConfig;
-  readonly state: HiveState;
-  
-  // Queen management
-  registerQueen(queen: Queen): Promise<void>;
-  unregisterQueen(queenId: UUID): Promise<boolean>;
-  getQueen(queenId: UUID): Promise<Queen | null>;
-  getAllQueens(): Promise<Queen[]>;
-  findSuitableQueens(task: Task): Promise<Queen[]>;
-  
-  // Task coordination
-  submitTask(task: Task): Promise<UUID>;
-  assignTask(taskId: UUID, queenIds: UUID[]): Promise<void>;
-  coordinateTask(task: Task, queens: Queen[]): Promise<Consensus>;
-  cancelTask(taskId: UUID): Promise<boolean>;
-  getTaskStatus(taskId: UUID): Promise<Task | null>;
-  
-  // Decision making
-  makeDecision(decision: Decision): Promise<DecisionOption>;
-  evaluateOptions(decision: Decision): Promise<DecisionOption[]>;
-  reachConsensus(decision: Decision): Promise<Consensus>;
-  implementDecision(decisionId: UUID): Promise<void>;
-  
-  // Knowledge management
-  addKnowledge(node: KnowledgeNode): Promise<UUID>;
-  queryKnowledge(query: string, filters?: JSONObject): Promise<KnowledgeNode[]>;
-  updateKnowledge(nodeId: UUID, updates: Partial<KnowledgeNode>): Promise<void>;
-  validateKnowledge(nodeId: UUID, validator: string): Promise<void>;
-  getKnowledgeGraph(): Promise<KnowledgeGraph>;
-  
-  // Learning and adaptation
-  recordLearningEvent(event: LearningEvent): Promise<void>;
-  identifyPatterns(): Promise<string[]>;
-  applyAdaptation(strategy: AdaptationStrategy): Promise<void>;
-  optimizePerformance(): Promise<string[]>;
-  
-  // Monitoring and analytics
-  getMetrics(): Promise<HiveMetrics>;
-  getHealthReport(): Promise<HiveHealthReport>;
-  getPerformanceAnalysis(): Promise<PerformanceAnalysis>;
-  getPredictiveInsights(): Promise<PredictiveInsights>;
-  
-  // Configuration and control
-  updateConfig(updates: Partial<HiveConfig>): Promise<void>;
-  restartHive(): Promise<void>;
-  emergencyShutdown(): Promise<void>;
-}
-
-// =============================================================================
+  readonlyconfig = ============================================================================
 // ANALYTICS AND REPORTING
 // =============================================================================
 

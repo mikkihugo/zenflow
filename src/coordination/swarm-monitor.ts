@@ -2,7 +2,6 @@
 // TODO: This is a stub. Implement the actual SwarmMonitor class.
 
 export class SwarmMonitor {
-    constructor(options: any) {}
-    start(): void {}
-    stop(): void {}
+  start(): void {}
+  stop(): void {}
 }

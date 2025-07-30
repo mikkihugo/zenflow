@@ -4,16 +4,16 @@
  * with alerting, performance tracking, and automated issue detection
  */
 
-import {
-  DatabaseManager,
-  DatabaseHealthReport,
-  DatabaseMetrics,
-  DatabaseConnection,
-  JSONObject,
-  UUID
-} from '../types/database';
-import { JSONValue } from '../types/core';
 import { EventEmitter } from 'events';
+import { JSONValue } from '../types/core';
+import {
+  DatabaseConnection,
+  DatabaseHealthReport,
+  DatabaseManager,
+  DatabaseMetrics,
+  JSONObject,
+  type UUID,
+} from '../types/database';
 
 interface MonitorConfig {
   checkInterval?: number;
@@ -33,112 +33,44 @@ interface AlertThresholds {
   queryQueueSize?: number; // Number of queued queries
 }
 
-interface Alert {
-  id: UUID;
-  level: 'info' | 'warning' | 'critical' | 'emergency';
-  type: 'performance' | 'availability' | 'capacity' | 'security';
-  database: string;
-  message: string;
-  threshold: number;
-  actualValue: number;
-  timestamp: Date;
-  acknowledged: boolean;
-  resolvedAt?: Date;
-  metadata?: JSONObject;
-}
+interface Alert {id = false
+private
+startTime = new Date();
 
-interface PerformanceMetric {
-  timestamp: Date;
-  database: string;
-  metric: string;
-  value: number;
-  unit: string;
-  tags?: Record<string, string>;
-}
+// Data storage
+private
+alerts = new Map();
+private
+metrics = [];
+private
+healthHistory = new Map();
+private
+trends = new Map();
 
-interface TrendAnalysis {
-  metric: string;
-  database: string;
-  trend: 'increasing' | 'decreasing' | 'stable' | 'volatile';
-  rate: number; // Rate of change per hour
-  confidence: number; // 0-1
-  prediction?: {
-    nextHour: number;
-    nextDay: number;
-    nextWeek: number;
-  };
-}
-
-interface MonitoringStats {
-  totalChecks: number;
-  failedChecks: number;
-  activeAlerts: number;
-  resolvedAlerts: number;
-  averageCheckDuration: number;
-  lastCheck: Date;
-  uptime: number;
-}
-
-export class DatabaseMonitor extends EventEmitter {
-  private databaseManager: DatabaseManager;
-  private config: Required<MonitorConfig>;
-  private monitoringTimer?: NodeJS.Timeout;
-  private metricsTimer?: NodeJS.Timeout;
-  private isRunning: boolean = false;
-  private startTime: Date = new Date();
-  
-  // Data storage
-  private alerts: Map<UUID, Alert> = new Map();
-  private metrics: PerformanceMetric[] = [];
-  private healthHistory: Map<string, DatabaseHealthReport[]> = new Map();
-  private trends: Map<string, TrendAnalysis> = new Map();
-  
-  // Statistics
-  private stats: MonitoringStats = {
-    totalChecks: 0,
-    failedChecks: 0,
-    activeAlerts: 0,
-    resolvedAlerts: 0,
-    averageCheckDuration: 0,
-    lastCheck: new Date(),
-    uptime: 0
-  };
-
-  constructor(databaseManager: DatabaseManager, config: MonitorConfig = {}) {
+// Statistics
+private
+stats = {totalChecks = {}) {
     super();
-    
-    this.databaseManager = databaseManager;
-    this.config = {
-      checkInterval: config.checkInterval || 30000, // 30 seconds
-      metricsRetention: config.metricsRetention || 86400000, // 24 hours
-      alertThresholds: {
-        errorRate: 5.0, // 5%
-        responseTime: 1000, // 1 second
-        connectionUsage: 80, // 80%
-        memoryUsage: 85, // 85%
-        diskUsage: 90, // 90%
-        queryQueueSize: 50,
-        ...config.alertThresholds
-      },
-      enableAlerts: config.enableAlerts !== false,
-      enableTrends: config.enableTrends !== false,
-      enablePredictiveAnalysis: config.enablePredictiveAnalysis !== false
+
+this.databaseManager = databaseManager;
+this.config = {checkInterval = = false,enableTrends = = false,enablePredictiveAnalysis = = false
     };
 
-    // Listen to database manager events
-    this.setupEventListeners();
-  }
+// Listen to database manager events
+this.setupEventListeners();
+}
 
   /**
    * Start monitoring
    */
-  start(): void {
+  start(): void
+{
     if (this.isRunning) {
       console.warn('Database monitor is already running');
       return;
     }
 
-    console.log('🔍 Starting database monitor...');
+    console.warn('🔍 Starting database monitor...');
     this.isRunning = true;
     this.startTime = new Date();
 
@@ -146,35 +78,10 @@ export class DatabaseMonitor extends EventEmitter {
     this.monitoringTimer = setInterval(async () => {
       try {
         await this.performHealthCheck();
-      } catch (error: any) {
-        console.error(`Health check failed: ${error.message}`);
-        this.stats.failedChecks++;
-      }
-    }, this.config.checkInterval);
-
-    // Start metrics collection
-    this.metricsTimer = setInterval(async () => {
+      } catch (error = setInterval(async () => 
       try {
         await this.collectMetrics();
-      } catch (error: any) {
-        console.error(`Metrics collection failed: ${error.message}`);
-      }
-    }, Math.min(this.config.checkInterval, 10000)); // Collect metrics more frequently
-
-    console.log('✅ Database monitor started');
-    this.emit('monitor:started');
-  }
-
-  /**
-   * Stop monitoring
-   */
-  stop(): void {
-    if (!this.isRunning) {
-      return;
-    }
-
-    console.log('🛑 Stopping database monitor...');
-    this.isRunning = false;
+      } catch (error = false;
 
     if (this.monitoringTimer) {
       clearInterval(this.monitoringTimer);
@@ -184,32 +91,8 @@ export class DatabaseMonitor extends EventEmitter {
       clearInterval(this.metricsTimer);
     }
 
-    console.log('✅ Database monitor stopped');
-    this.emit('monitor:stopped');
-  }
-
-  /**
-   * Get current health report for all databases
-   */
-  async getHealthReport(): Promise<DatabaseHealthReport> {
-    return this.databaseManager.checkHealth();
-  }
-
-  /**
-   * Get metrics for a specific database
-   */
-  async getDatabaseMetrics(databaseId?: string): Promise<DatabaseMetrics[]> {
-    return this.databaseManager.getMetrics();
-  }
-
-  /**
-   * Get all active alerts
-   */
-  getActiveAlerts(filters: {
-    level?: Alert['level'];
-    type?: Alert['type'];
-    database?: string;
-  } = {}): Alert[] {
+    console.warn('✅ Database monitor stopped');
+    this.emit('monitor = {}): Alert[] {
     return Array.from(this.alerts.values())
       .filter(alert => !alert.acknowledged && !alert.resolvedAt)
       .filter(alert => {
@@ -219,16 +102,7 @@ export class DatabaseMonitor extends EventEmitter {
         return true;
       })
       .sort((a, b) => {
-        const levelOrder = { emergency: 4, critical: 3, warning: 2, info: 1 };
-        return levelOrder[b.level] - levelOrder[a.level];
-      });
-  }
 
-  /**
-   * Acknowledge an alert
-   */
-  acknowledgeAlert(alertId: UUID, acknowledgedBy?: string): boolean {
-    const alert = this.alerts.get(alertId);
     if (!alert) {
       return false;
     }
@@ -236,19 +110,7 @@ export class DatabaseMonitor extends EventEmitter {
     alert.acknowledged = true;
     alert.metadata = {
       ...alert.metadata,
-      acknowledgedBy,
-      acknowledgedAt: new Date().toISOString()
-    };
-
-    this.emit('alert:acknowledged', { alert, acknowledgedBy });
-    return true;
-  }
-
-  /**
-   * Resolve an alert
-   */
-  resolveAlert(alertId: UUID, resolvedBy?: string): boolean {
-    const alert = this.alerts.get(alertId);
+      acknowledgedBy,acknowledgedAt = this.alerts.get(alertId);
     if (!alert) {
       return false;
     }
@@ -256,27 +118,9 @@ export class DatabaseMonitor extends EventEmitter {
     alert.resolvedAt = new Date();
     alert.metadata = {
       ...alert.metadata,
-      resolvedBy,
-      resolvedAt: alert.resolvedAt.toISOString()
-    };
+      resolvedBy,resolvedAt = Math.max(0, this.stats.activeAlerts - 1);
 
-    this.stats.resolvedAlerts++;
-    this.stats.activeAlerts = Math.max(0, this.stats.activeAlerts - 1);
-
-    this.emit('alert:resolved', { alert, resolvedBy });
-    return true;
-  }
-
-  /**
-   * Get historical metrics
-   */
-  getHistoricalMetrics(options: {
-    database?: string;
-    metric?: string;
-    startTime?: Date;
-    endTime?: Date;
-    limit?: number;
-  } = {}): PerformanceMetric[] {
+    this.emit('alert = {}): PerformanceMetric[] {
     let filtered = this.metrics;
 
     if (options.database) {
@@ -316,7 +160,6 @@ export class DatabaseMonitor extends EventEmitter {
     }
 
     return trends;
-  }
 
   /**
    * Get monitoring statistics
@@ -324,73 +167,20 @@ export class DatabaseMonitor extends EventEmitter {
   getStats(): MonitoringStats {
     return {
       ...this.stats,
-      uptime: Date.now() - this.startTime.getTime(),
-      lastCheck: this.stats.lastCheck
-    };
-  }
-
-  /**
-   * Generate performance report
-   */
-  async generateReport(options: {
-    timeRange?: 'hour' | 'day' | 'week' | 'month';
-    includeAlerts?: boolean;
-    includeTrends?: boolean;
-    includeRecommendations?: boolean;
-  } = {}): Promise<{
-    summary: JSONObject;
-    databases: JSONObject[];
-    alerts?: Alert[];
-    trends?: TrendAnalysis[];
-    recommendations?: string[];
-  }> {
-    const {
-      timeRange = 'day',
+      uptime = {}): Promise<{summary = 'day',
       includeAlerts = true,
       includeTrends = true,
       includeRecommendations = true
     } = options;
 
     const timeRangeMs = {
-      hour: 3600000,
-      day: 86400000,
-      week: 604800000,
-      month: 2592000000
-    }[timeRange];
-
-    const startTime = new Date(Date.now() - timeRangeMs);
+      hour,day = new Date(Date.now() - timeRangeMs);
     const healthReport = await this.getHealthReport();
     const connections = await this.databaseManager.getAllDatabases();
 
     // Generate database summaries
     const databases = connections.map(conn => ({
-      id: conn.id,
-      type: conn.type,
-      status: conn.status,
-      queryCount: conn.queryCount,
-      errorCount: conn.errorCount,
-      averageResponseTime: conn.averageResponseTime,
-      health: healthReport.databases[conn.id]?.health || 0
-    }));
-
-    const report: any = {
-      summary: {
-        totalDatabases: connections.length,
-        healthyDatabases: databases.filter(db => (db.health || 0) > 0.8).length,
-        overallHealth: healthReport.overall,
-        totalQueries: databases.reduce((sum, db) => sum + (db.queryCount || 0), 0),
-        totalErrors: databases.reduce((sum, db) => sum + (db.errorCount || 0), 0),
-        averageResponseTime: databases.length > 0 
-          ? databases.reduce((sum, db) => sum + (db.averageResponseTime || 0), 0) / databases.length
-          : 0,
-        reportPeriod: timeRange,
-        generatedAt: new Date().toISOString()
-      },
-      databases
-    };
-
-    if (includeAlerts) {
-      report.alerts = this.getActiveAlerts();
+      id = {summary = > (db.health || 0) > 0.8).length,overallHealth = > sum + (db.queryCount || 0), 0),totalErrors = > sum + (db.errorCount || 0), 0),averageResponseTime = > sum + (db.averageResponseTime || 0), 0) / databases.length = this.getActiveAlerts();
     }
 
     if (includeTrends) {
@@ -410,7 +200,7 @@ export class DatabaseMonitor extends EventEmitter {
     const checkStart = Date.now();
     
     try {
-      console.log('🔍 Performing database health check...');
+      console.warn('🔍 Performing database health check...');
       
       const healthReport = await this.databaseManager.checkHealth();
       const connections = await this.databaseManager.getAllDatabases();
@@ -422,14 +212,7 @@ export class DatabaseMonitor extends EventEmitter {
         }
         
         const history = this.healthHistory.get(dbId)!;
-        history.push({
-          overall: dbHealth.health > 0.8 ? 'healthy' : dbHealth.health > 0.5 ? 'degraded' : 'critical',
-          databases: { [dbId]: dbHealth },
-          systemHealth: healthReport.systemHealth
-        });
-        
-        // Keep only recent history
-        const maxHistory = 100;
+        history.push({overall = 100;
         if (history.length > maxHistory) {
           history.splice(0, history.length - maxHistory);
         }
@@ -446,26 +229,12 @@ export class DatabaseMonitor extends EventEmitter {
       
       const checkDuration = Date.now() - checkStart;
       this.stats.averageCheckDuration = this.stats.totalChecks === 1 
-        ? checkDuration
-        : (this.stats.averageCheckDuration + checkDuration) / 2;
-
-      this.emit('health:checked', { healthReport, duration: checkDuration });
-      
-    } catch (error: any) {
-      this.stats.failedChecks++;
-      this.emit('health:check_failed', { error: error.message });
-      throw error;
-    }
-  }
-
-  private async collectMetrics(): Promise<void> {
-    try {
-      const connections = await this.databaseManager.getAllDatabases();
+        ?checkDuration = await this.databaseManager.getAllDatabases();
       const metrics = await this.databaseManager.getMetrics();
       const timestamp = new Date();
 
       // Collect metrics for each database
-      for (let i = 0; i < connections.length && i < metrics.length; i++) {
+      for (const i = 0; i < connections.length && i < metrics.length; i++) {
         const connection = connections[i];
         const metric = metrics[i];
 
@@ -478,59 +247,19 @@ export class DatabaseMonitor extends EventEmitter {
         
         // Calculate derived metrics
         const errorRate = connection.queryCount > 0 
-          ? (connection.errorCount / connection.queryCount) * 100 
-          : 0;
-        this.storeMetric(timestamp, connection.id, 'error_rate', errorRate, 'percent');
-
-        const connectionUsage = metric.connectionCount > 0 
-          ? (metric.activeConnections / metric.connectionCount) * 100 
-          : 0;
-        this.storeMetric(timestamp, connection.id, 'connection_usage', connectionUsage, 'percent');
-      }
-
-      // Clean up old metrics
-      this.cleanupMetrics();
-
-      // Update trends if enabled
-      if (this.config.enableTrends) {
-        this.updateTrends();
-      }
-
-      this.emit('metrics:collected', { count: this.metrics.length });
-
-    } catch (error: any) {
-      console.error(`Metrics collection failed: ${error.message}`);
-      this.emit('metrics:collection_failed', { error: error.message });
-    }
-  }
-
-  private storeMetric(timestamp: Date, database: string, metric: string, value: number, unit: string): void {
-    this.metrics.push({
-      timestamp,
-      database,
-      metric,
-      value,
-      unit
-    });
-  }
-
-  private cleanupMetrics(): void {
-    const cutoff = new Date(Date.now() - this.config.metricsRetention);
+          ? (connection.errorCount / connection.queryCount) *100 = metric.connectionCount > 0 
+          ? (metric.activeConnections / metric.connectionCount) *100 = new Date(Date.now() - this.config.metricsRetention);
     const before = this.metrics.length;
     
     this.metrics = this.metrics.filter(metric => metric.timestamp >= cutoff);
     
     const removed = before - this.metrics.length;
     if (removed > 0) {
-      console.log(`🧹 Cleaned up ${removed} old metrics`);
+      console.warn(`🧹 Cleaned up ${removed} old metrics`);
     }
   }
 
-  private async checkAlertThresholds(
-    healthReport: DatabaseHealthReport, 
-    connections: DatabaseConnection[]
-  ): Promise<void> {
-    const thresholds = this.config.alertThresholds;
+  private async checkAlertThresholds(healthReport = this.config.alertThresholds;
 
     for (const connection of connections) {
       const dbHealth = healthReport.databases[connection.id];
@@ -541,67 +270,9 @@ export class DatabaseMonitor extends EventEmitter {
         const errorRate = (connection.errorCount / connection.queryCount) * 100;
         if (errorRate > thresholds.errorRate) {
           this.createAlert('critical', 'performance', connection.id,
-            `High error rate: ${errorRate.toFixed(2)}%`,
-            thresholds.errorRate, errorRate);
-        }
-      }
-
-      // Check response time
-      if (thresholds.responseTime && connection.averageResponseTime > thresholds.responseTime) {
-        this.createAlert('warning', 'performance', connection.id,
-          `High response time: ${connection.averageResponseTime}ms`,
-          thresholds.responseTime, connection.averageResponseTime);
-      }
-
-      // Check overall health
-      if (dbHealth.health < 0.5) {
-        this.createAlert('critical', 'availability', connection.id,
-          `Database health critical: ${(dbHealth.health * 100).toFixed(1)}%`,
-          0.5, dbHealth.health);
-      } else if (dbHealth.health < 0.8) {
-        this.createAlert('warning', 'availability', connection.id,
-          `Database health degraded: ${(dbHealth.health * 100).toFixed(1)}%`,
-          0.8, dbHealth.health);
-      }
-    }
-  }
-
-  private createAlert(
-    level: Alert['level'],
-    type: Alert['type'],
-    database: string,
-    message: string,
-    threshold: number,
-    actualValue: number
-  ): void {
-    const alertId = this.generateAlertId();
+            `High errorrate = this.generateAlertId();
     
-    const alert: Alert = {
-      id: alertId,
-      level,
-      type,
-      database,
-      message,
-      threshold,
-      actualValue,
-      timestamp: new Date(),
-      acknowledged: false
-    };
-
-    this.alerts.set(alertId, alert);
-    this.stats.activeAlerts++;
-
-    console.warn(`🚨 Alert [${level.toUpperCase()}]: ${message}`);
-    this.emit('alert:created', alert);
-  }
-
-  private updateTrends(): void {
-    // Simple trend analysis implementation
-    const recentMetrics = this.getHistoricalMetrics({
-      startTime: new Date(Date.now() - 3600000) // Last hour
-    });
-
-    const metricGroups = new Map<string, PerformanceMetric[]>();
+    const alert = {id = this.getHistoricalMetrics({startTime = new Map<string, PerformanceMetric[]>();
     
     // Group metrics by database + metric type
     for (const metric of recentMetrics) {
@@ -622,28 +293,8 @@ export class DatabaseMonitor extends EventEmitter {
       const values = metrics.map(m => m.value);
       const trend = this.calculateTrend(values);
       
-      this.trends.set(key, {
-        metric: metricName,
-        database,
-        trend: trend.direction,
-        rate: trend.rate,
-        confidence: trend.confidence
-      });
-    }
-  }
-
-  private calculateTrend(values: number[]): {
-    direction: 'increasing' | 'decreasing' | 'stable' | 'volatile';
-    rate: number;
-    confidence: number;
-  } {
-    if (values.length < 2) {
-      return { direction: 'stable', rate: 0, confidence: 0 };
-    }
-
-    // Simple linear regression
-    const n = values.length;
-    const x = Array.from({ length: n }, (_, i) => i);
+      this.trends.set(key, {metric = values.length;
+    const x = Array.from({length = > i);
     const sumX = x.reduce((a, b) => a + b, 0);
     const sumY = values.reduce((a, b) => a + b, 0);
     const sumXY = x.reduce((sum, xi, i) => sum + xi * values[i], 0);
@@ -653,18 +304,16 @@ export class DatabaseMonitor extends EventEmitter {
     
     // Calculate coefficient of determination (R²)
     const yMean = sumY / n;
-    const totalVariation = values.reduce((sum, yi) => sum + Math.pow(yi - yMean, 2), 0);
+    const totalVariation = values.reduce((sum, yi) => sum + (yi - yMean) ** 2, 0);
     const residualVariation = values.reduce((sum, yi, i) => {
       const predicted = slope * i + (sumY - slope * sumX) / n;
-      return sum + Math.pow(yi - predicted, 2);
+      return sum + (yi - predicted) ** 2;
     }, 0);
     
     const rSquared = totalVariation > 0 ? 1 - (residualVariation / totalVariation) : 0;
     
     // Determine direction
-    let direction: 'increasing' | 'decreasing' | 'stable' | 'volatile';
-    if (Math.abs(slope) < 0.1) {
-      direction = 'stable';
+    const direction = 'stable';
     } else if (rSquared < 0.5) {
       direction = 'volatile';
     } else if (slope > 0) {
@@ -674,47 +323,14 @@ export class DatabaseMonitor extends EventEmitter {
     }
 
     return {
-      direction,
-      rate: slope,
-      confidence: Math.max(0, Math.min(1, rSquared))
-    };
-  }
-
-  private generateRecommendations(
-    healthReport: DatabaseHealthReport,
-    databases: JSONObject[]
-  ): string[] {
-    const recommendations: string[] = [];
+      direction,rate = [];
 
     // Analyze overall health
     if (healthReport.overall === 'critical') {
-      recommendations.push('URGENT: Multiple databases are in critical state. Immediate attention required.');
-    } else if (healthReport.overall === 'degraded') {
-      recommendations.push('WARNING: System performance is degraded. Review database configurations.');
-    }
-
-    // Analyze individual databases
-    for (const db of databases) {
-      const health = db.health as number || 0;
+      recommendations.push('URGENT = == 'degraded') {
+      recommendations.push('WARNING = db.health as number || 0;
       const errorRate = db.errorCount && db.queryCount 
-        ? (db.errorCount as number / db.queryCount as number) * 100 
-        : 0;
-
-      if (health < 0.5) {
-        recommendations.push(`Critical: Database ${db.id} requires immediate attention`);
-      }
-
-      if (errorRate > 10) {
-        recommendations.push(`High error rate (${errorRate.toFixed(1)}%) in database ${db.id} - investigate query patterns`);
-      }
-
-      if ((db.averageResponseTime as number || 0) > 5000) {
-        recommendations.push(`Slow queries detected in database ${db.id} - consider indexing or query optimization`);
-      }
-    }
-
-    // Check trends
-    const trends = this.getTrendAnalysis();
+        ? (db.errorCount as number / db.queryCount as number) *100 = this.getTrendAnalysis();
     for (const trend of trends) {
       if (trend.trend === 'increasing' && trend.confidence > 0.7) {
         if (trend.metric === 'error_rate') {
@@ -728,27 +344,18 @@ export class DatabaseMonitor extends EventEmitter {
     return recommendations;
   }
 
-  private setupEventListeners(): void {
+  private setupEventListeners(): void 
     // Listen to database manager events for real-time monitoring
-    this.databaseManager.on('database:connected', (event) => {
-      console.log(`📊 Database connected: ${event.id}`);
-      this.emit('database:connected', event);
-    });
-
-    this.databaseManager.on('database:error', (event) => {
+    this.databaseManager.on('database => {
+      console.warn(`📊 Database connected => {
       this.createAlert('critical', 'availability', event.id,
-        `Database error: ${event.error}`, 0, 1);
-    });
-
-    this.databaseManager.on('query:error', (event) => {
+        `Database error => {
       this.createAlert('warning', 'performance', event.databaseId,
         `Query error: ${event.error}`, 0, 1);
     });
-  }
 
-  private generateAlertId(): UUID {
+  private generateAlertId(): UUID 
     return `alert_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` as UUID;
-  }
 }
 
 export default DatabaseMonitor;

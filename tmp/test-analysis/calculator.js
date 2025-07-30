@@ -1,4 +1,3 @@
-
 // Test file for analysis
 function calculateSum(a, b) {
   if (a < 0 || b < 0) {
@@ -11,7 +10,7 @@ class Calculator {
   constructor() {
     this.history = [];
   }
-  
+
   add(a, b) {
     const result = calculateSum(a, b);
     this.history.push({ operation: 'add', a, b, result });
@@ -20,4 +19,3 @@ class Calculator {
 }
 
 export default Calculator;
-

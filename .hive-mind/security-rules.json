@@ -1,9 +1,7 @@
 {
   "authentication": {
     "enabled": true,
-    "methods": [
-      "jwt"
-    ],
+    "methods": ["jwt"],
     "requireMfa": false,
     "sessionTimeout": 86400000
   },
@@ -12,9 +10,7 @@
     "defaultRole": "user",
     "roles": {
       "admin": {
-        "permissions": [
-          "*"
-        ],
+        "permissions": ["*"],
         "description": "Full system access"
       },
       "user": {
@@ -28,11 +24,7 @@
         "description": "Standard user access"
       },
       "readonly": {
-        "permissions": [
-          "swarm.read",
-          "task.read",
-          "export.generate"
-        ],
+        "permissions": ["swarm.read", "task.read", "export.generate"],
         "description": "Read-only access"
       }
     }
@@ -50,20 +42,13 @@
     },
     "cors": {
       "enabled": true,
-      "origins": [
-        "http://localhost:3000"
-      ],
+      "origins": ["http://localhost:3000"],
       "credentials": true
     }
   },
   "audit": {
     "enabled": true,
-    "logActions": [
-      "login",
-      "logout",
-      "permission_denied",
-      "security_violation"
-    ],
+    "logActions": ["login", "logout", "permission_denied", "security_violation"],
     "retentionDays": 90
   }
 }

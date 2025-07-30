@@ -4,9 +4,9 @@
  * Updates the VERSION in bin/claude-zen shell script to match package.json
  */
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,12 +21,9 @@ const binPath = path.join(__dirname, '..', 'bin', 'claude-zen');
 let binContent = fs.readFileSync(binPath, 'utf8');
 
 // Update VERSION line
-binContent = binContent.replace(
-  /^VERSION=".*"$/m,
-  `VERSION="${version}"`
-);
+binContent = binContent.replace(/^VERSION=".*"$/m, `VERSION="${version}"`);
 
 // Write back
 fs.writeFileSync(binPath, binContent);
 
-console.log(`✅ Updated bin/claude-zen VERSION to ${version}`);
+console.warn(`✅ Updated bin/claude-zen VERSION to ${version}`);

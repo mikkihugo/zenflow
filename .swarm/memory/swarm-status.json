@@ -20,7 +20,7 @@
       "role": "Implement vision analysis service with AI/ML integration"
     },
     "language": {
-      "type": "specialist", 
+      "type": "specialist",
       "name": "Language Service Agent",
       "status": "ready",
       "role": "Implement NLP service for text analysis"

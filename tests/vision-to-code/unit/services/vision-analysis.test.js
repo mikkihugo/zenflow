@@ -7,8 +7,8 @@ jest.mock('@/services/vision-analysis', () => ({
     analyzeImage: jest.fn(),
     extractComponents: jest.fn(),
     detectLayout: jest.fn(),
-    extractColors: jest.fn()
-  }))
+    extractColors: jest.fn(),
+  })),
 }));
 
 const { VisionAnalysisService } = require('@/services/vision-analysis');
@@ -28,7 +28,7 @@ describe('Vision Analysis Service', () => {
       // Arrange
       const mockImage = await TestHelpers.createMockImage({ format: 'png' });
       const expectedResult = TestHelpers.createMockVisionResult();
-      
+
       visionService.analyzeImage.mockResolvedValue(expectedResult);
 
       // Act
@@ -40,13 +40,13 @@ describe('Vision Analysis Service', () => {
       expect(result).toEqual(expectedResult);
       expect(visionService.analyzeImage).toHaveBeenCalledWith(mockImage.buffer);
       expect(duration).toBeLessThan(100); // Should complete within 100ms
-      
+
       metricsCollector.recordRequest('analyzeImage', duration, 200);
     });
 
     it('should handle multiple image formats', async () => {
       const formats = ['png', 'jpg', 'webp'];
-      
+
       for (const format of formats) {
         // Arrange
         const mockImage = await TestHelpers.createMockImage({ format });
@@ -68,9 +68,10 @@ describe('Vision Analysis Service', () => {
       visionService.analyzeImage.mockRejectedValue(new Error('Invalid image format'));
 
       // Act & Assert
-      await expect(visionService.analyzeImage(corruptedBuffer))
-        .rejects.toThrow('Invalid image format');
-      
+      await expect(visionService.analyzeImage(corruptedBuffer)).rejects.toThrow(
+        'Invalid image format'
+      );
+
       metricsCollector.recordError(new Error('Invalid image format'), 'analyzeImage');
     });
 
@@ -78,15 +79,16 @@ describe('Vision Analysis Service', () => {
       // Arrange
       const oversizedImage = await TestHelpers.createMockImage({ size: 'large' });
       const maxSize = 5 * 1024 * 1024; // 5MB
-      
+
       if (oversizedImage.buffer.length > maxSize) {
         visionService.analyzeImage.mockRejectedValue(new Error('File size exceeds limit'));
       }
 
       // Act & Assert
       if (oversizedImage.buffer.length > maxSize) {
-        await expect(visionService.analyzeImage(oversizedImage.buffer))
-          .rejects.toThrow('File size exceeds limit');
+        await expect(visionService.analyzeImage(oversizedImage.buffer)).rejects.toThrow(
+          'File size exceeds limit'
+        );
       }
     });
 
@@ -94,27 +96,29 @@ describe('Vision Analysis Service', () => {
       // Arrange
       const imageCount = 10;
       const images = await Promise.all(
-        Array(imageCount).fill().map(() => TestHelpers.createMockImage())
+        Array(imageCount)
+          .fill()
+          .map(() => TestHelpers.createMockImage())
       );
-      
+
       visionService.analyzeImage.mockImplementation(async () => {
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise((resolve) => setTimeout(resolve, 50));
         return TestHelpers.createMockVisionResult();
       });
 
       // Act
       const startTime = Date.now();
       const results = await Promise.all(
-        images.map(img => visionService.analyzeImage(img.buffer))
+        images.map((img) => visionService.analyzeImage(img.buffer))
       );
       const totalDuration = Date.now() - startTime;
 
       // Assert
       expect(results).toHaveLength(imageCount);
       expect(totalDuration).toBeLessThan(200); // Parallel processing should be fast
-      
+
       const stats = metricsCollector.getStats();
-      console.log('Parallel processing stats:', stats);
+      console.warn('Parallel processing stats:', stats);
     });
   });
 
@@ -143,7 +147,7 @@ describe('Vision Analysis Service', () => {
       const components = await visionService.extractComponents(mockResult);
 
       // Assert
-      const sidebar = components.find(c => c.type === 'sidebar');
+      const sidebar = components.find((c) => c.type === 'sidebar');
       expect(sidebar).toBeDefined();
       expect(sidebar.children).toContain('nav-menu');
     });
@@ -166,7 +170,7 @@ describe('Vision Analysis Service', () => {
     it('should detect layout type correctly', async () => {
       // Arrange
       const layouts = ['single-column', 'grid', 'dashboard', 'magazine'];
-      
+
       for (const layoutType of layouts) {
         const mockResult = { layout: { type: layoutType } };
         visionService.detectLayout.mockResolvedValue(mockResult.layout);
@@ -213,7 +217,7 @@ describe('Vision Analysis Service', () => {
       const colors = {
         background: '#FFFFFF',
         text: '#333333',
-        contrastRatio: 12.63
+        contrastRatio: 12.63,
       };
       visionService.extractColors.mockResolvedValue(colors);
 
@@ -230,14 +234,14 @@ describe('Vision Analysis Service', () => {
       const performanceTests = [
         { imageSize: 'small', expectedTime: 50 },
         { imageSize: 'medium', expectedTime: 100 },
-        { imageSize: 'large', expectedTime: 200 }
+        { imageSize: 'large', expectedTime: 200 },
       ];
 
       for (const test of performanceTests) {
         // Arrange
         const mockImage = await TestHelpers.createMockImage({ size: test.imageSize });
         visionService.analyzeImage.mockImplementation(async () => {
-          await new Promise(resolve => setTimeout(resolve, test.expectedTime - 20));
+          await new Promise((resolve) => setTimeout(resolve, test.expectedTime - 20));
           return TestHelpers.createMockVisionResult();
         });
 
@@ -256,13 +260,15 @@ describe('Vision Analysis Service', () => {
     it('should handle concurrent requests efficiently', async () => {
       // Arrange
       const concurrentRequests = 50;
-      const requests = Array(concurrentRequests).fill().map(async (_, index) => {
-        const image = await TestHelpers.createMockImage();
-        return visionService.analyzeImage(image.buffer);
-      });
+      const requests = Array(concurrentRequests)
+        .fill()
+        .map(async (_, _index) => {
+          const image = await TestHelpers.createMockImage();
+          return visionService.analyzeImage(image.buffer);
+        });
 
       visionService.analyzeImage.mockImplementation(async () => {
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await new Promise((resolve) => setTimeout(resolve, 10));
         return TestHelpers.createMockVisionResult();
       });
 
@@ -273,7 +279,7 @@ describe('Vision Analysis Service', () => {
 
       // Assert
       expect(totalDuration).toBeLessThan(500); // Should handle 50 concurrent requests quickly
-      
+
       const stats = metricsCollector.getStats();
       expect(stats.totalRequests).toBe(concurrentRequests);
     });
@@ -281,9 +287,11 @@ describe('Vision Analysis Service', () => {
 
   afterAll(() => {
     const finalStats = metricsCollector.getStats();
-    console.log('Vision Analysis Service Test Statistics:', {
+    console.warn('Vision Analysis Service Test Statistics:', {
       ...finalStats,
-      successRate: ((finalStats.totalRequests - finalStats.totalErrors) / finalStats.totalRequests * 100).toFixed(2) + '%'
+      successRate: `${(
+        ((finalStats.totalRequests - finalStats.totalErrors) / finalStats.totalRequests) * 100
+      ).toFixed(2)}%`,
     });
   });
 });

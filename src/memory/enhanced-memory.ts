@@ -4,10 +4,8 @@
  * with comprehensive type safety and performance optimizations
  */
 
-import { promises as fs } from 'fs';
-import path from 'path';
-import { existsSync, mkdirSync } from 'fs';
-import { JSONObject, JSONValue } from '../types/core';
+import { existsSync, mkdirSync } from 'node:fs';
+import path from 'node:path';
 
 interface EnhancedMemoryOptions {
   directory?: string;
@@ -20,96 +18,41 @@ interface EnhancedMemoryOptions {
   encryptionKey?: string;
 }
 
-interface SessionState {
-  sessionId: string;
-  state?: string;
-  data?: JSONObject;
-  metadata?: JSONObject;
-  saved?: string;
-  resumed?: string;
-  lastActivity?: string;
-  [key: string]: any;
-}
+interface SessionState {sessionId = false
+private
+data = {}
+private
+options = new Map();
+private
+compressionEnabled = {};
+)
+{
+  this.options = {directory = = false,saveInterval = this.options.directory!;
+  this.namespace = this.options.namespace!;
+  this.memoryFile = path.join(this.directory, `${this.namespace}-memory.json`);
+  this.compressionEnabled = this.options.enableCompression!;
+  this.encryptionEnabled = this.options.enableEncryption!;
 
-interface StoredEntry {
-  value: JSONValue;
-  metadata: JSONObject;
-  stored: string;
-  accessed?: string;
-  accessCount?: number;
-  ttl?: number;
-  expiresAt?: string;
-}
-
-interface MemoryStats {
-  totalNamespaces: number;
-  totalKeys: number;
-  sessions: number;
-  memorySize: number;
-  compressionRatio?: number;
-  cacheHitRate?: number;
-  averageAccessTime?: number;
-}
-
-export class EnhancedMemory {
-  private directory: string;
-  private namespace: string;
-  private memoryFile: string;
-  private initialized: boolean = false;
-  private data: Record<string, any> = {};
-  private options: EnhancedMemoryOptions;
-  private saveTimer?: NodeJS.Timeout;
-  private accessStats: Map<string, { count: number; lastAccess: Date }> = new Map();
-  private compressionEnabled: boolean;
-  private encryptionEnabled: boolean;
-
-  constructor(options: EnhancedMemoryOptions = {}) {
-    this.options = {
-      directory: options.directory || './.memory',
-      namespace: options.namespace || 'default',
-      enableCompression: options.enableCompression || false,
-      maxMemorySize: options.maxMemorySize || 100 * 1024 * 1024, // 100MB
-      autoSave: options.autoSave !== false,
-      saveInterval: options.saveInterval || 30000, // 30 seconds
-      enableEncryption: options.enableEncryption || false,
-      ...options
-    };
-
-    this.directory = this.options.directory!;
-    this.namespace = this.options.namespace!;
-    this.memoryFile = path.join(this.directory, `${this.namespace}-memory.json`);
-    this.compressionEnabled = this.options.enableCompression!;
-    this.encryptionEnabled = this.options.enableEncryption!;
-
-    // Start auto-save timer if enabled
-    if (this.options.autoSave) {
-      this.startAutoSave();
-    }
+  // Start auto-save timer if enabled
+  if (this.options.autoSave) {
+    this.startAutoSave();
   }
+}
 
-  /**
-   * Initialize the memory system with enhanced error handling
-   */
-  async initialize(): Promise<void> {
+/**
+ * Initialize the memory system with enhanced error handling
+ */
+async;
+initialize();
+: Promise<void>
+{
     if (this.initialized) return;
 
     try {
       // Ensure memory directory exists
       if (!existsSync(this.directory)) {
-        mkdirSync(this.directory, { recursive: true });
-      }
-
-      // Load existing memory data
-      await this.loadMemoryData();
-      
-      // Perform cleanup of expired entries
-      await this.cleanupExpiredEntries();
-      
-      this.initialized = true;
-      console.log(`✅ Enhanced memory initialized: ${this.namespace}`);
-    } catch (error: any) {
-      console.warn(`Enhanced memory initialization failed: ${error.message}`);
-      this.data = {};
+        mkdirSync(this.directory, {recursive = true;
+      console.warn(`✅ Enhanced memory initialized = {};
       this.initialized = true;
     }
   }
@@ -133,13 +76,10 @@ export class EnhancedMemory {
         }
         
         this.data = JSON.parse(content);
-        console.log(`📁 Loaded memory data: ${Object.keys(this.data).length} namespaces`);
-      } else {
-        this.data = {};
+        console.warn(`📁 Loaded memory data = {};
       }
-    } catch (error: any) {
-      console.warn(`Failed to load memory data: ${error.message}`);
-      this.data = {};
+    } catch (_error) {
+      console.warn(`Failed to load memory data = {};
     }
   }
 
@@ -161,65 +101,14 @@ export class EnhancedMemory {
       }
       
       await fs.writeFile(this.memoryFile, content);
-      console.log(`💾 Memory data saved: ${this.getMemorySize()} bytes`);
-    } catch (error: any) {
-      console.warn(`Failed to save memory data: ${error.message}`);
-    }
-  }
-
-  /**
-   * Store session state data with enhanced metadata
-   */
-  async saveSessionState(sessionId: string, state: SessionState): Promise<boolean> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-
-    try {
-      if (!this.data.sessions) {
-        this.data.sessions = {};
+      console.warn(`💾 Memory data saved = {};
       }
 
-      const enhancedState: SessionState = {
-        ...state,
-        saved: new Date().toISOString(),
-        sessionId: sessionId,
-        lastActivity: new Date().toISOString()
-      };
-
-      this.data.sessions[sessionId] = enhancedState;
+      const _enhancedState = {
+        ...state,saved = _enhancedState;
       
       // Update access stats
-      this.updateAccessStats(`session:${sessionId}`);
-      
-      // Check memory size limit
-      await this.enforceMemoryLimits();
-
-      if (this.options.autoSave) {
-        await this.saveMemoryData();
-      }
-      
-      return true;
-    } catch (error: any) {
-      console.warn(`Failed to save session state: ${error.message}`);
-      return false;
-    }
-  }
-
-  /**
-   * Get list of active sessions with filtering
-   */
-  async getActiveSessions(filter?: {
-    state?: string;
-    maxAge?: number;
-    limit?: number;
-  }): Promise<SessionState[]> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-
-    try {
-      const sessions = this.data.sessions || {};
+      this.updateAccessStats(`session = this.data.sessions || {};
       let sessionList = Object.values(sessions) as SessionState[];
       
       // Apply filters
@@ -245,22 +134,7 @@ export class EnhancedMemory {
       return sessionList.filter(session => 
         session.state === 'active' || session.state === 'pending'
       );
-    } catch (error: any) {
-      console.warn(`Failed to get active sessions: ${error.message}`);
-      return [];
-    }
-  }
-
-  /**
-   * Resume a session by ID with enhanced error handling
-   */
-  async resumeSession(sessionId: string): Promise<SessionState | null> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-
-    try {
-      const sessions = this.data.sessions || {};
+    } catch (error = this.data.sessions || {};
       const session = sessions[sessionId];
       
       if (session) {
@@ -270,36 +144,8 @@ export class EnhancedMemory {
         session.lastActivity = new Date().toISOString();
         
         // Update access stats
-        this.updateAccessStats(`session:${sessionId}`);
-        
-        if (this.options.autoSave) {
-          await this.saveMemoryData();
-        }
-        
-        return session;
-      }
-      
-      return null;
-    } catch (error: any) {
-      console.warn(`Failed to resume session: ${error.message}`);
-      return null;
-    }
-  }
-
-  /**
-   * Store arbitrary data in memory with enhanced options
-   */
-  async store(
-    key: string, 
-    value: JSONValue, 
-    options: {
-      namespace?: string;
-      metadata?: JSONObject;
-      ttl?: number;
-      priority?: 'low' | 'medium' | 'high';
-      tags?: string[];
-    } = {}
-  ): Promise<boolean> {
+        this.updateAccessStats(`session = {}
+  ): Promise<boolean> 
     if (!this.initialized) {
       await this.initialize();
     }
@@ -311,21 +157,7 @@ export class EnhancedMemory {
         this.data[namespace] = {};
       }
 
-      const entry: StoredEntry = {
-        value: value,
-        metadata: {
-          ...options.metadata,
-          priority: options.priority || 'medium',
-          tags: options.tags || [],
-          size: this.calculateSize(value)
-        },
-        stored: new Date().toISOString(),
-        accessCount: 0
-      };
-      
-      // Add TTL if specified
-      if (options.ttl) {
-        entry.ttl = options.ttl;
+      const entry = {value = options.ttl;
         entry.expiresAt = new Date(Date.now() + options.ttl * 1000).toISOString();
       }
 
@@ -341,32 +173,17 @@ export class EnhancedMemory {
         await this.saveMemoryData();
       }
       
-      return true;
-    } catch (error: any) {
-      console.warn(`Failed to store data: ${error.message}`);
-      return false;
-    }
-  }
-
-  /**
-   * Retrieve data from memory with access tracking
-   */
-  async retrieve(
-    key: string, 
-    namespace: string = 'general',
-    options: {
-      updateAccess?: boolean;
-      includeMetadata?: boolean;
-    } = {}
-  ): Promise<JSONValue | StoredEntry | null> {
+      return true;catch (error = 'general',
+    options = 
+  ): Promise<JSONValue | StoredEntry | null> 
     if (!this.initialized) {
       await this.initialize();
     }
 
     try {
       const data = this.data[namespace];
-      if (data && data[key]) {
-        const entry = data[key] as StoredEntry;
+      if (data?.[key]) {
+        let entry = data[key] as StoredEntry;
         
         // Check if entry has expired
         if (entry.expiresAt && new Date(entry.expiresAt) < new Date()) {
@@ -381,33 +198,7 @@ export class EnhancedMemory {
           this.updateAccessStats(`${namespace}:${key}`);
         }
         
-        return options.includeMetadata ? entry : entry.value;
-      }
-      return null;
-    } catch (error: any) {
-      console.warn(`Failed to retrieve data: ${error.message}`);
-      return null;
-    }
-  }
-
-  /**
-   * Search for data with advanced filtering
-   */
-  async search(options: {
-    pattern?: string;
-    namespace?: string;
-    tags?: string[];
-    priority?: 'low' | 'medium' | 'high';
-    limit?: number;
-    sortBy?: 'accessed' | 'stored' | 'accessCount';
-    sortOrder?: 'asc' | 'desc';
-  } = {}): Promise<{ key: string; value: JSONValue; metadata: JSONObject }[]> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-
-    try {
-      const results: { key: string; value: JSONValue; metadata: JSONObject }[] = [];
+        return options.includeMetadata ? entry = {}): Promise<{key = [];
       const {
         pattern,
         namespace,
@@ -454,21 +245,8 @@ export class EnhancedMemory {
           
           if (matches) {
             results.push({
-              key: `${ns}:${key}`,
-              value: entry.value,
-              metadata: entry.metadata
-            });
-          }
-        }
-      }
-      
-      // Sort results
-      results.sort((a, b) => {
-        let aVal: any, bVal: any;
-        
-        switch (sortBy) {
-          case 'accessed':
-            aVal = a.metadata.accessed || a.metadata.stored;
+              key => {
+        let aVal = a.metadata.accessed || a.metadata.stored;
             bVal = b.metadata.accessed || b.metadata.stored;
             break;
           case 'stored':
@@ -478,39 +256,7 @@ export class EnhancedMemory {
           case 'accessCount':
             aVal = a.metadata.accessCount || 0;
             bVal = b.metadata.accessCount || 0;
-            break;
-          default:
-            return 0;
-        }
-        
-        const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
-        return sortOrder === 'asc' ? comparison : -comparison;
-      });
-      
-      return results.slice(0, limit);
-    } catch (error: any) {
-      console.warn(`Failed to search memory: ${error.message}`);
-      return [];
-    }
-  }
-
-  /**
-   * Clear data from memory with advanced options
-   */
-  async clear(options: {
-    pattern?: string;
-    namespace?: string;
-    olderThan?: number;
-    priority?: 'low' | 'medium' | 'high';
-    tags?: string[];
-    dryRun?: boolean;
-  } = {}): Promise<{ cleared: number; items: string[] }> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-
-    try {
-      const cleared: string[] = [];
+            break;default = aVal < bVal ? -1 = == 'asc' ? comparison = ): Promise<{cleared = [];
       const { pattern, namespace, olderThan, priority, tags, dryRun = false } = options;
       
       if (!pattern && !namespace && !olderThan && !priority && !tags) {
@@ -518,10 +264,7 @@ export class EnhancedMemory {
         if (!dryRun) {
           this.data = {};
         }
-        return { cleared: Object.keys(this.data).length, items: ['*'] };
-      }
-      
-      const namespaces = namespace ? [namespace] : Object.keys(this.data);
+        return {cleared = namespace ? [namespace] : Object.keys(this.data);
       
       for (const ns of namespaces) {
         const nsData = this.data[ns];
@@ -565,33 +308,13 @@ export class EnhancedMemory {
         await this.saveMemoryData();
       }
       
-      return { cleared: cleared.length, items: cleared };
-    } catch (error: any) {
-      console.warn(`Failed to clear memory: ${error.message}`);
-      return { cleared: 0, items: [] };
-    }
-  }
-
-  /**
-   * List all stored keys with metadata
-   */
-  async list(options: {
-    namespace?: string;
-    includeMetadata?: boolean;
-    includeExpired?: boolean;
-  } = {}): Promise<string[] | { key: string; metadata: JSONObject }[]> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-
-    try {
-      const { namespace, includeMetadata = false, includeExpired = false } = options;
-      const results: any[] = [];
+      return { cleared = {}): Promise<string[] | {key = false, includeExpired = false } = options;
+      const results = [];
       
       if (namespace) {
-        const data = this.data[namespace];
+        let data = this.data[namespace];
         if (data && typeof data === 'object') {
-          for (const key of Object.keys(data)) {
+          for (let key of Object.keys(data)) {
             const entry = data[key] as StoredEntry;
             
             // Check expiration
@@ -600,16 +323,8 @@ export class EnhancedMemory {
             }
             
             if (includeMetadata) {
-              results.push({ key, metadata: entry.metadata });
-            } else {
-              results.push(key);
-            }
-          }
-        }
-      } else {
-        for (const ns in this.data) {
-          if (typeof this.data[ns] === 'object' && ns !== 'sessions') {
-            for (const key in this.data[ns]) {
+              results.push({ key,metadata = === 'object' && ns !== 'sessions') {
+            for (const key in this._data[ns]) {
               const entry = this.data[ns][key] as StoredEntry;
               
               // Check expiration
@@ -618,43 +333,7 @@ export class EnhancedMemory {
               }
               
               if (includeMetadata) {
-                results.push({ key: `${ns}:${key}`, metadata: entry.metadata });
-              } else {
-                results.push(`${ns}:${key}`);
-              }
-            }
-          }
-        }
-      }
-      
-      return results;
-    } catch (error: any) {
-      console.warn(`Failed to list memory keys: ${error.message}`);
-      return [];
-    }
-  }
-
-  /**
-   * Get comprehensive memory statistics
-   */
-  async getStats(): Promise<MemoryStats | { error: string }> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-
-    try {
-      const stats: MemoryStats = {
-        totalNamespaces: 0,
-        totalKeys: 0,
-        sessions: 0,
-        memorySize: this.getMemorySize(),
-        compressionRatio: this.compressionEnabled ? this.calculateCompressionRatio() : undefined,
-        cacheHitRate: this.calculateCacheHitRate(),
-        averageAccessTime: this.calculateAverageAccessTime()
-      };
-
-      for (const namespace in this.data) {
-        if (typeof this.data[namespace] === 'object') {
+                results.push({ key = {totalNamespaces = === 'object') {
           stats.totalNamespaces++;
           
           if (namespace === 'sessions') {
@@ -666,16 +345,7 @@ export class EnhancedMemory {
       }
 
       return stats;
-    } catch (error: any) {
-      console.warn(`Failed to get memory stats: ${error.message}`);
-      return { error: error.message };
-    }
-  }
-
-  /**
-   * Export memory data to different formats
-   */
-  async export(format: 'json' | 'csv' | 'xml' = 'json'): Promise<string> {
+    } catch (error = 'json'): Promise<string> 
     if (!this.initialized) {
       await this.initialize();
     }
@@ -686,17 +356,7 @@ export class EnhancedMemory {
       case 'csv':
         return this.exportToCSV();
       case 'xml':
-        return this.exportToXML();
-      default:
-        throw new Error(`Unsupported export format: ${format}`);
-    }
-  }
-
-  /**
-   * Cleanup expired entries
-   */
-  private async cleanupExpiredEntries(): Promise<number> {
-    let cleaned = 0;
+        return this.exportToXML();default = 0;
     const now = new Date();
     
     for (const namespace in this.data) {
@@ -712,7 +372,7 @@ export class EnhancedMemory {
     }
     
     if (cleaned > 0) {
-      console.log(`🧹 Cleaned up ${cleaned} expired entries`);
+      console.warn(`🧹 Cleaned up ${cleaned} expired entries`);
     }
     
     return cleaned;
@@ -725,30 +385,16 @@ export class EnhancedMemory {
     const currentSize = this.getMemorySize();
     if (currentSize <= this.options.maxMemorySize!) return;
     
-    console.warn(`⚠️ Memory limit exceeded: ${currentSize} > ${this.options.maxMemorySize}`);
-    
-    // Collect all entries with access information
-    const entries: { ns: string; key: string; entry: StoredEntry; lastAccess: Date }[] = [];
+    console.warn(`⚠️ Memory limitexceeded = [];
     
     for (const namespace in this.data) {
       if (typeof this.data[namespace] === 'object' && namespace !== 'sessions') {
         for (const key in this.data[namespace]) {
           const entry = this.data[namespace][key] as StoredEntry;
-          const accessInfo = this.accessStats.get(`${namespace}:${key}`);
+
           entries.push({
-            ns: namespace,
-            key,
-            entry,
-            lastAccess: accessInfo?.lastAccess || new Date(entry.stored)
-          });
-        }
-      }
-    }
-    
-    // Sort by priority and access time (LRU with priority)
-    entries.sort((a, b) => {
-      const priorityOrder = { low: 0, medium: 1, high: 2 };
-      const aPriority = priorityOrder[a.entry.metadata.priority as keyof typeof priorityOrder] || 1;
+            ns => {
+      const priorityOrder = {low = priorityOrder[a.entry.metadata.priority as keyof typeof priorityOrder] || 1;
       const bPriority = priorityOrder[b.entry.metadata.priority as keyof typeof priorityOrder] || 1;
       
       if (aPriority !== bPriority) {
@@ -759,8 +405,8 @@ export class EnhancedMemory {
     });
     
     // Remove entries until under limit
-    let removedSize = 0;
-    let removedCount = 0;
+    const removedSize = 0;
+    const removedCount = 0;
     
     for (const { ns, key, entry } of entries) {
       if (currentSize - removedSize <= this.options.maxMemorySize! * 0.8) break;
@@ -773,68 +419,17 @@ export class EnhancedMemory {
       removedCount++;
     }
     
-    console.log(`🗑️ Evicted ${removedCount} entries (${removedSize} bytes) to enforce memory limits`);
-  }
+    console.warn(`🗑️ Evicted ${removedCount} entries (${removedSize} bytes) to enforce memory limits`);
 
   /**
    * Update access statistics
    */
-  private updateAccessStats(key: string): void {
-    const existing = this.accessStats.get(key);
-    this.accessStats.set(key, {
-      count: (existing?.count || 0) + 1,
-      lastAccess: new Date()
-    });
-  }
-
-  /**
-   * Calculate memory size in bytes
-   */
-  private getMemorySize(): number {
-    return JSON.stringify(this.data).length;
-  }
-
-  /**
-   * Calculate size of a value
-   */
-  private calculateSize(value: JSONValue): number {
-    return JSON.stringify(value).length;
-  }
-
-  /**
-   * Calculate compression ratio
-   */
-  private calculateCompressionRatio(): number {
-    // Placeholder - would need actual compression implementation
-    return 0.7;
-  }
-
-  /**
-   * Calculate cache hit rate
-   */
-  private calculateCacheHitRate(): number {
-    const totalAccesses = Array.from(this.accessStats.values())
+  private updateAccessStats(key = this.accessStats.get(key);
+    this.accessStats.set(key, {count = Array.from(this.accessStats.values())
       .reduce((sum, stat) => sum + stat.count, 0);
     
     // Simplified hit rate calculation
-    return totalAccesses > 0 ? 0.85 : 0;
-  }
-
-  /**
-   * Calculate average access time
-   */
-  private calculateAverageAccessTime(): number {
-    // Placeholder - would need actual timing measurements
-    return 2.5;
-  }
-
-  /**
-   * Start auto-save timer
-   */
-  private startAutoSave(): void {
-    if (this.saveTimer) return;
-    
-    this.saveTimer = setInterval(async () => {
+    return totalAccesses > 0 ? 0.85 = setInterval(async () => {
       if (this.initialized) {
         await this.saveMemoryData();
       }
@@ -844,44 +439,16 @@ export class EnhancedMemory {
   /**
    * Stop auto-save timer
    */
-  private stopAutoSave(): void {
+  private stopAutoSave(): void 
     if (this.saveTimer) {
       clearInterval(this.saveTimer);
       this.saveTimer = undefined;
     }
-  }
 
   /**
    * Compression methods (placeholder implementations)
    */
-  private compress(data: string): string {
-    // Placeholder - would use actual compression library
-    return data;
-  }
-
-  private decompress(data: string): string {
-    // Placeholder - would use actual decompression library
-    return data;
-  }
-
-  /**
-   * Encryption methods (placeholder implementations)
-   */
-  private encrypt(data: string): string {
-    // Placeholder - would use actual encryption library
-    return data;
-  }
-
-  private decrypt(data: string): string {
-    // Placeholder - would use actual decryption library
-    return data;
-  }
-
-  /**
-   * Export to CSV format
-   */
-  private exportToCSV(): string {
-    const lines = ['Namespace,Key,Value,Metadata,Stored,Accessed,AccessCount'];
+  private compress(data = ['Namespace,Key,Value,Metadata,Stored,Accessed,AccessCount'];
     
     for (const namespace in this.data) {
       if (typeof this.data[namespace] === 'object') {
@@ -932,60 +499,14 @@ export class EnhancedMemory {
   /**
    * Escape XML special characters
    */
-  private escapeXML(str: string): string {
-    return str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&apos;');
-  }
-
-  /**
-   * Cleanup and close
-   */
-  async close(): Promise<void> {
-    console.log('🔒 Closing enhanced memory system...');
-    
-    try {
-      // Stop auto-save timer
-      this.stopAutoSave();
-      
-      // Save final state
-      if (this.initialized) {
-        await this.saveMemoryData();
-      }
-      
-      // Clear data
-      this.data = {};
+  private escapeXML(str = {};
       this.accessStats.clear();
       this.initialized = false;
       
-      console.log('✅ Enhanced memory system closed');
-    } catch (error: any) {
-      console.error(`❌ Error closing enhanced memory: ${error.message}`);
-      throw error;
-    }
-  }
-
-  /**
-   * Get system health information
-   */
-  async getHealth(): Promise<{
-    status: 'healthy' | 'warning' | 'error';
-    metrics: {
-      memoryUsage: number;
-      memoryLimit: number;
-      totalEntries: number;
-      expiredEntries: number;
-      lastSave: string;
-      uptime: number;
-    };
-    issues: string[];
-  }> {
-    const stats = await this.getStats() as MemoryStats;
-    const issues: string[] = [];
-    let status: 'healthy' | 'warning' | 'error' = 'healthy';
+      console.warn('✅ Enhanced memory system closed');
+    } catch (error = await this.getStats() as MemoryStats;
+    const issues = [];
+    let status = 'healthy';
     
     // Check memory usage
     const memoryUsageRatio = stats.memorySize / this.options.maxMemorySize!;

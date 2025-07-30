@@ -1,7 +1,7 @@
 // ESLint 9 Flat Config for Claude Zen
 import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
 import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
 export default [
   // Base config for all files
@@ -63,7 +63,7 @@ export default [
       '**/*.spec.ts',
       '**/__tests__/**/*',
       '**/tests/**/*',
-      'test/**/*'
+      'test/**/*',
     ],
     languageOptions: {
       globals: {
@@ -87,15 +87,15 @@ export default [
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-empty-function': 'off',
       'no-console': 'off',
-      
+
       // Jest-specific best practices
       'prefer-const': 'warn',
       'no-var': 'error',
-      
+
       // Allow test-specific patterns
       'max-lines-per-function': 'off',
       'max-statements': 'off',
-      'complexity': 'off',
+      complexity: 'off',
     },
   },
 
@@ -188,6 +188,8 @@ export default [
       '*.db',
       '*.tgz',
       '*.dump',
+      'scripts/test-monorepo-detection.js',
+      '**/*.d.ts',
     ],
   },
 ];

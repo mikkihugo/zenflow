@@ -29,9 +29,7 @@
     "priority": 3,
     "estimated_hours": 6,
     "actual_hours": null,
-    "dependencies": [
-      "PLAT-001"
-    ],
+    "dependencies": ["PLAT-001"],
     "acceptance_criteria": [
       "Dynamic shard creation/destruction",
       "Load balancing across shards",
@@ -52,9 +50,7 @@
     "priority": 3,
     "estimated_hours": 8,
     "actual_hours": null,
-    "dependencies": [
-      "PLAT-001"
-    ],
+    "dependencies": ["PLAT-001"],
     "acceptance_criteria": [
       "Connection pooling for NIFs",
       "Timeout handling",
@@ -117,11 +113,7 @@
     "priority": 4,
     "estimated_hours": 16,
     "actual_hours": null,
-    "dependencies": [
-      "PLAT-001",
-      "PLAT-004",
-      "PLAT-005"
-    ],
+    "dependencies": ["PLAT-001", "PLAT-004", "PLAT-005"],
     "acceptance_criteria": [
       "Agent execution engine",
       "Claude integration",
@@ -142,15 +134,8 @@
     "priority": 2,
     "estimated_hours": 8,
     "actual_hours": null,
-    "dependencies": [
-      "PLAT-010"
-    ],
-    "acceptance_criteria": [
-      "Python bridge",
-      "Chain management",
-      "Tool mapping",
-      "Error handling"
-    ],
+    "dependencies": ["PLAT-010"],
+    "acceptance_criteria": ["Python bridge", "Chain management", "Tool mapping", "Error handling"],
     "notes": "",
     "assigned_to": "developer",
     "created_date": "2025-06-19T15:30:07.464667",
@@ -186,9 +171,7 @@
     "priority": 2,
     "estimated_hours": 6,
     "actual_hours": null,
-    "dependencies": [
-      "PLAT-020"
-    ],
+    "dependencies": ["PLAT-020"],
     "acceptance_criteria": [
       "Requirement analysis",
       "Cost optimization",

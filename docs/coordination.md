@@ -226,4 +226,4 @@ npx claude-zen monitor --resources --concurrent --real-time
 - Restart stuck agents with batch operations: `npx claude-zen agent batch-restart <agent-ids>`
 - Use concurrent diagnostics: `npx claude-zen debug --all-systems --parallel`
 
-For more information about coordination system optimization, see: https://github.com/ruvnet/claude-code-flow/docs/coordination-batchtools.md
+For more information about coordination system optimization, see: https://github.com/ruvnet/claude-zen/docs/coordination-batchtools.md

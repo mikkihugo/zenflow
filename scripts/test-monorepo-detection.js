@@ -1,25 +1,25 @@
 #\!/usr/bin/env node
 
-console.log("🚀 CLAUDE ZEN MONOREPO DETECTION TEST");
-console.log("=====================================");
-console.log("");
-console.log("📍 MONOREPO ROOT: /home/mhugo/code/claude-code-flow/");
-console.log("✅ Absolute path confirmed");
-console.log("");
-console.log("🏗️ ARCHITECTURE:");
-console.log("   ✅ Ultimate Unified Architecture");
-console.log("   ✅ Native ruv-swarm integration");
-console.log("   ✅ Triple hybrid memory (LanceDB + Kuzu + SQLite)");
-console.log("   ✅ 9+ enterprise plugins");
-console.log("   ✅ Direct imports (no MCP overhead)");
-console.log("");
-console.log("💾 SQLITE STATUS: REQUIRED AND INCLUDED");
-console.log("   ✅ better-sqlite3: ^12.2.0");
-console.log("   ✅ @types/better-sqlite3: ^7.6.13");
-console.log("");
-console.log("🚀 CLI OPTIONS:");
-console.log("   • Legacy: ./bin/claude-zen");
-console.log("   • Revolutionary: ./src/cli/unified-cli-main.js");
-console.log("   • NPM scripts: npm run unified");
-console.log("");
-console.log("✅ MONOREPO STATUS: FULLY OPERATIONAL");
+console.warn("🚀 CLAUDE ZEN MONOREPO DETECTION TEST")
+console.warn('=====================================')
+console.warn('')
+console.warn('📍 MONOREPO ROOT: /home/mhugo/code/claude-zen/');
+console.warn('✅ Absolute path confirmed');
+console.warn('');
+console.warn('🏗️ ARCHITECTURE:');
+console.warn('   ✅ Ultimate Unified Architecture');
+console.warn('   ✅ Native ruv-swarm integration');
+console.warn('   ✅ Triple hybrid memory (LanceDB + Kuzu + SQLite)');
+console.warn('   ✅ 9+ enterprise plugins');
+console.warn('   ✅ Direct imports (no MCP overhead)');
+console.warn('');
+console.warn('💾 SQLITE STATUS: REQUIRED AND INCLUDED');
+console.warn('   ✅ better-sqlite3: ^12.2.0');
+console.warn('   ✅ @types/better-sqlite3: ^7.6.13');
+console.warn('');
+console.warn('🚀 CLI OPTIONS:');
+console.warn('   • Legacy: ./bin/claude-zen');
+console.warn('   • Revolutionary: ./src/cli/unified-cli-main.js');
+console.warn('   • NPM scripts: npm run unified');
+console.warn('');
+console.warn('✅ MONOREPO STATUS: FULLY OPERATIONAL');

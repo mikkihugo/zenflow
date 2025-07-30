@@ -1,7 +1,6 @@
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -9,8 +8,8 @@ const __dirname = dirname(__filename);
 // Simulate the wasm-loader.js environment
 const baseDir = '/home/codespace/nvm/current/lib/node_modules/ruv-swarm/src';
 
-console.log('Base directory:', baseDir);
-console.log('\nChecking path candidates:\n');
+console.warn('Base directory:', baseDir);
+console.warn('\nChecking path candidates:\n');
 
 const candidates = [
   {
@@ -20,18 +19,18 @@ const candidates = [
   {
     description: 'NPM package installation (adjacent to src/)',
     wasmDir: path.join(baseDir, '..', '..', 'wasm'),
-  }
+  },
 ];
 
 for (const candidate of candidates) {
-  console.log(`${candidate.description}:`);
-  console.log(`  Path: ${candidate.wasmDir}`);
+  console.warn(`${candidate.description}:`);
+  console.warn(`  Path: ${candidate.wasmDir}`);
   try {
     fs.accessSync(candidate.wasmDir);
     const files = fs.readdirSync(candidate.wasmDir);
-    console.log(`  ✅ Exists! Files: ${files.filter(f => f.endsWith('.wasm')).join(', ')}`);
+    console.warn(`  ✅ Exists! Files: ${files.filter((f) => f.endsWith('.wasm')).join(', ')}`);
   } catch (error) {
-    console.log(`  ❌ Not found: ${error.message}`);
+    console.warn(`  ❌ Not found: ${error.message}`);
   }
-  console.log();
+  console.warn();
 }

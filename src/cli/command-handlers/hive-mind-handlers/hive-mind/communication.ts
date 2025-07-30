@@ -1,0 +1,258 @@
+/**
+ * Swarm Communication System for Hive Mind
+ * Handles inter-agent messaging and coordination
+ */
+
+import crypto from 'node:crypto';
+
+/**
+ * Message types and their priorities
+ */
+
+this.config = {
+      swarmId = {agents = this.config.encryption ? crypto.randomBytes(32) : null;
+
+this._initialize();
+}
+
+  /**
+   * Initialize communication system
+   */
+  _initialize()
+{
+  // Set up message processing
+  this.messageProcessor = setInterval(() => {
+    this._processMessageBuffer();
+  }, 100);
+
+  // Set up heartbeat
+  this.heartbeatTimer = setInterval(() => {
+    this._sendHeartbeats();
+  }, 10000);
+
+  this.emit('communication = {}): any {
+  const agent = {id = this.state.agents.get(agentId);
+  if (!agent) return;
+
+  // Close channel
+  const channel = this.state.channels.get(agentId);
+  if (channel) {
+    channel.close();
+    this.state.channels.delete(agentId);
+  }
+
+  this.state.agents.delete(agentId);
+
+  // Announce agent departure
+  this.broadcast(
+      {type = 'query'): any {
+    const messageId = this._generateMessageId();
+  const _timestamp = Date.now();
+
+  const envelope = {id = this._encrypt(message);
+  envelope.encrypted = true;
+  this.state.metrics.encrypted++;
+}
+
+// Add to buffer
+this._addToBuffer(envelope);
+
+// Track message
+this.state.messageHistory.set(messageId, {
+      ...envelope,
+      status => {
+      const timeout = setTimeout(() => {
+        reject(new Error(`Message timeout => {
+        clearTimeout(timeout);
+        resolve({ messageId, delivered => {
+        clearTimeout(timeout);
+        reject(error);
+      });
+    });
+  }
+
+  /**
+   * Broadcast message to all agents
+   */
+  broadcast(message, type = 'broadcast'): any {
+    const messageId = this._generateMessageId();
+    const timestamp = Date.now();
+
+    const envelope = {id = 'query'): any {
+    const messageId = this._generateMessageId();
+    const timestamp = Date.now();
+
+    const envelopes = agentIds.map((agentId) => ({id = > this._addToBuffer(envelope));
+
+    this.state.metrics.sent += envelopes.length;
+
+    return { messageId,recipients = 'sync'): any {
+    const messageId = this._generateMessageId();
+    const timestamp = Date.now();
+
+    // Select random agents for initial spread
+    const agents = Array.from(this.state.agents.keys());
+    const selected = this._selectRandomAgents(agents, this.config.gossipFanout);
+
+    selected.forEach((agentId) => {
+      const envelope = {id = selected.length;
+
+    return { messageId,initialTargets = []): any {
+    const consensusId = this._generateMessageId();
+    const timestamp = Date.now();
+
+    // If no validators specified, use all online agents
+    if(validators.length === 0) {
+      validators = Array.from(this.state.agents.keys()).filter(
+        (id) => this.state.agents.get(id).status === 'online',
+      );
+    }
+
+    const votes = new Map();
+
+    // Phase 1 => {
+      const envelope = {id = new Promise((resolve) => {
+        this.once(`vote => {
+          votes.set(agentId, vote);
+          resolve({ agentId, vote });
+        });
+
+        // Timeout for vote
+        setTimeout(() => {
+          if (!votes.has(agentId)) {
+            votes.set(agentId, null);
+            resolve({ agentId, vote = {};
+    let _totalVotes = 0;
+
+    votes.forEach((vote) => {
+      if(vote !== null) {
+        voteCount[vote] = (voteCount[vote] || 0) + 1;
+        _totalVotes++;
+      }
+    });
+
+    // Check if consensus reached
+    const sortedVotes = Object.entries(voteCount).sort((a, b) => b[1] - a[1]);
+    const _winner = sortedVotes[0];
+
+    if(agent) {
+      agent.lastSeen = Date.now();
+      agent.messageCount++;
+    }
+
+    // Decrypt if needed
+    if(envelope.encrypted && this.config.encryption) {
+      try {
+        envelope.message = this._decrypt(envelope.message);
+      } catch(_error) {
+        this.emit('error', {type = envelope.message._gossip;
+
+    // Check if we've seen this message
+    if (gossipData.seen.includes(this.config.swarmId)) {
+      return;
+    }
+
+    // Mark as seen
+    gossipData.seen.push(this.config.swarmId);
+    gossipData.hops++;
+
+    // Process the message
+    this.emit(`gossip = Array.from(this.state.agents.keys()).filter(
+        (id) => !gossipData.seen.includes(id),
+      );
+
+      const selected = this._selectRandomAgents(agents, this.config.gossipFanout);
+
+      selected.forEach((agentId) => {
+
+    switch(phase) {
+      case 'propose':
+        // Agent should vote on proposal
+        this.emit('consensus = {id = new EventEmitter();
+
+    channel.send = (message) => {
+      this.emit(`channel = () => {
+      channel.removeAllListeners();
+    };
+
+    this.state.channels.set(agentId, channel);
+
+    return channel;
+  }
+
+  /**
+   * Add message to buffer
+   */
+  _addToBuffer(envelope): any 
+    this.state.messageBuffer.push(envelope);
+
+    // Limit buffer size
+    if(this.state.messageBuffer.length > this.config.bufferSize) {
+
+      this.emit('message = this.state.messageBuffer.splice(0, 10);
+
+    toProcess.forEach((envelope) => {
+      // Simulate network delay
+      setTimeout(() => {
+        if(envelope.to === '*') {
+          // Broadcast to all agents
+          this.state.agents.forEach((_agent) => {
+            this.emit(`deliver = this.state.messageHistory.get(envelope.id);
+        if(history) {
+          history.status = 'sent';
+          history.sentAt = Date.now();
+        }
+      }, Math.random() * 100);
+    });
+  }
+
+  /**
+   * Send heartbeats to all agents
+   */
+  _sendHeartbeats() {
+    const now = Date.now();
+
+    this.state.agents.forEach((agent, agentId) => {
+      // Check if agent is still responsive
+      if(now - agent.lastSeen > 30000) {
+        agent.status = 'offline';
+        this.emit('agent = {id = [...agents].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, Math.min(count, agents.length));
+  }
+
+  /**
+   * Generate unique message ID
+   */
+  _generateMessageId() {
+    return `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  /**
+   * Encrypt message
+   */
+  _encrypt(data): any {
+    if (!this.encryptionKey) return data;
+
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv('aes-256-cbc', this.encryptionKey, iv);
+
+    let encrypted = cipher.update(JSON.stringify(data), 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+
+    return {iv = Buffer.from(encrypted.iv, 'hex');
+    const decipher = crypto.createDecipheriv('aes-256-cbc', this.encryptionKey, iv);
+
+    const decrypted = decipher.update(encrypted.data, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+
+    return JSON.parse(decrypted);
+  }
+
+  /**
+   * Get communication statistics
+   */
+  getStatistics() {
+
+    this.emit('communication:closed');
+  }
+}

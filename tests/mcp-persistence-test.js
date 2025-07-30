@@ -5,10 +5,10 @@
  * Related to issue #312
  */
 
-import { execSync } from 'child_process';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { execSync } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 // Dynamic import for sqlite3 to handle module loading issues
 let sqlite3;
@@ -27,7 +27,7 @@ const colors = {
   red: '\x1b[31m',
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
-  reset: '\x1b[0m'
+  reset: '\x1b[0m',
 };
 
 class MCPPersistenceTest {
@@ -39,7 +39,7 @@ class MCPPersistenceTest {
   }
 
   log(message, color = 'reset') {
-    console.log(`${colors[color]}${message}${colors.reset}`);
+    console.warn(`${colors[color]}${message}${colors.reset}`);
   }
 
   async runTest(name, testFn) {
@@ -67,7 +67,7 @@ class MCPPersistenceTest {
     if (!sqlite3) {
       throw new Error('sqlite3 module not available - skipping database query');
     }
-    
+
     return new Promise((resolve, reject) => {
       const db = new sqlite3.Database(this.dbPath);
       db.all(query, (err, rows) => {
@@ -85,12 +85,12 @@ class MCPPersistenceTest {
     await this.runTest('memory_usage store operation', async () => {
       const key = `test_${Date.now()}`;
       const value = { test: true, timestamp: new Date().toISOString() };
-      
+
       const result = execSync(
         `node src/cli/cli-main.js mcp call memory_usage '{"action": "store", "key": "${key}", "value": ${JSON.stringify(JSON.stringify(value))}, "namespace": "test"}'`,
         { encoding: 'utf8' }
       );
-      
+
       if (!result.includes('"success":true') && !result.includes('"stored":true')) {
         throw new Error('Store operation failed');
       }
@@ -99,7 +99,7 @@ class MCPPersistenceTest {
       const rows = await this.queryDatabase(
         `SELECT * FROM memory_entries WHERE key = '${key}' AND namespace = 'test'`
       );
-      
+
       if (rows.length === 0) {
         throw new Error('Data not found in database');
       }
@@ -109,19 +109,19 @@ class MCPPersistenceTest {
     await this.runTest('memory_usage retrieve operation', async () => {
       const key = `test_retrieve_${Date.now()}`;
       const value = { retrieve: true, time: Date.now() };
-      
+
       // First store
       execSync(
         `npx claude-zen@alpha mcp call memory_usage '{"action": "store", "key": "${key}", "value": ${JSON.stringify(JSON.stringify(value))}, "namespace": "test"}'`,
         { encoding: 'utf8' }
       );
-      
+
       // Then retrieve
       const result = execSync(
         `node src/cli/cli-main.js mcp call memory_usage '{"action": "retrieve", "key": "${key}", "namespace": "test"}'`,
         { encoding: 'utf8' }
       );
-      
+
       if (!result.includes('"found":true')) {
         throw new Error('Retrieve operation failed');
       }
@@ -133,7 +133,7 @@ class MCPPersistenceTest {
         `node src/cli/cli-main.js mcp call memory_usage '{"action": "list", "namespace": "test"}'`,
         { encoding: 'utf8' }
       );
-      
+
       if (!result.includes('"success":true')) {
         throw new Error('List operation failed');
       }
@@ -145,22 +145,18 @@ class MCPPersistenceTest {
 
     await this.runTest('agent_spawn creates database records', async () => {
       const agentName = `test_agent_${Date.now()}`;
-      
+
       const result = execSync(
         `node src/cli/cli-main.js mcp call agent_spawn '{"type": "researcher", "name": "${agentName}", "capabilities": ["test"]}'`,
         { encoding: 'utf8' }
       );
-      
+
       if (!result.includes('agentId')) {
         throw new Error('Agent spawn failed');
       }
 
       // Check if agent info is stored in memory
-      const memoryCheck = execSync(
-        `node src/cli/cli-main.js mcp call memory_usage '{"action": "search", "pattern": "${agentName}", "namespace": "agents"}'`,
-        { encoding: 'utf8' }
-      );
-      
+
       // Even if not found in specific namespace, the spawn should have created some record
       // This is a soft check as the implementation might use different storage patterns
     });
@@ -171,12 +167,12 @@ class MCPPersistenceTest {
 
     await this.runTest('swarm_init persists configuration', async () => {
       const swarmId = `test_swarm_${Date.now()}`;
-      
+
       const result = execSync(
         `node src/cli/cli-main.js mcp call swarm_init '{"topology": "mesh", "maxAgents": 3, "swarmId": "${swarmId}"}'`,
         { encoding: 'utf8' }
       );
-      
+
       if (!result.includes('"initialized":true')) {
         throw new Error('Swarm init failed');
       }
@@ -185,7 +181,7 @@ class MCPPersistenceTest {
       const rows = await this.queryDatabase(
         `SELECT COUNT(*) as count FROM memory_entries WHERE created_at > datetime('now', '-1 minute')`
       );
-      
+
       if (rows[0].count === 0) {
         throw new Error('No new database entries created during swarm init');
       }
@@ -197,12 +193,12 @@ class MCPPersistenceTest {
 
     await this.runTest('Hooks persist to SQLite', async () => {
       const message = `Test hook ${Date.now()}`;
-      
+
       const result = execSync(
         `node src/cli/cli-main.js hooks notify --message "${message}" --level "test"`,
         { encoding: 'utf8' }
       );
-      
+
       if (!result.includes('saved to .swarm/memory.db')) {
         throw new Error('Hook notification not saved');
       }
@@ -211,7 +207,7 @@ class MCPPersistenceTest {
       const rows = await this.queryDatabase(
         `SELECT * FROM messages WHERE key LIKE '%notify%' ORDER BY timestamp DESC LIMIT 1`
       );
-      
+
       if (rows.length === 0) {
         throw new Error('Hook message not found in database');
       }
@@ -225,7 +221,7 @@ class MCPPersistenceTest {
       const tables = await this.queryDatabase(
         `SELECT name FROM sqlite_master WHERE type='table' AND name='memory_entries'`
       );
-      
+
       if (tables.length === 0) {
         throw new Error('memory_entries table not found');
       }
@@ -235,7 +231,7 @@ class MCPPersistenceTest {
       const tables = await this.queryDatabase(
         `SELECT name FROM sqlite_master WHERE type='table' AND name='messages'`
       );
-      
+
       if (tables.length === 0) {
         throw new Error('messages table not found');
       }
@@ -245,7 +241,7 @@ class MCPPersistenceTest {
       const indexes = await this.queryDatabase(
         `SELECT name FROM sqlite_master WHERE type='index' AND name LIKE 'idx_%'`
       );
-      
+
       if (indexes.length === 0) {
         throw new Error('No indexes found in database');
       }
@@ -257,7 +253,7 @@ class MCPPersistenceTest {
 
     await this.runTest('Concurrent writes succeed', async () => {
       const promises = [];
-      
+
       // Spawn 5 concurrent write operations
       for (let i = 0; i < 5; i++) {
         const key = `concurrent_${Date.now()}_${i}`;
@@ -275,21 +271,21 @@ class MCPPersistenceTest {
           })
         );
       }
-      
+
       const results = await Promise.all(promises);
-      
+
       // Verify all succeeded
       for (const result of results) {
         if (!result.includes('"success":true')) {
           throw new Error('Concurrent write failed');
         }
       }
-      
+
       // Verify all entries in database
       const rows = await this.queryDatabase(
         `SELECT COUNT(*) as count FROM memory_entries WHERE namespace = 'concurrent'`
       );
-      
+
       if (rows[0].count < 5) {
         throw new Error(`Expected at least 5 concurrent entries, found ${rows[0].count}`);
       }
@@ -299,22 +295,22 @@ class MCPPersistenceTest {
   async generateReport() {
     this.log('\n📊 Test Report', 'yellow');
     this.log('='.repeat(50), 'yellow');
-    
+
     this.log(`Total Tests: ${this.testCount}`);
     this.log(`Passed: ${this.passedCount}`, 'green');
     this.log(`Failed: ${this.testCount - this.passedCount}`, 'red');
-    
+
     if (this.testCount === this.passedCount) {
       this.log('\n✨ All tests passed! MCP tools are properly persisting to SQLite.', 'green');
       this.log('🎯 Issue #312 appears to be resolved!', 'green');
     } else {
       this.log('\n⚠️ Some tests failed. Review the results above.', 'red');
-      
+
       // Show failed tests
-      const failed = this.testResults.filter(r => !r.passed);
+      const failed = this.testResults.filter((r) => !r.passed);
       if (failed.length > 0) {
         this.log('\nFailed Tests:', 'red');
-        failed.forEach(test => {
+        failed.forEach((test) => {
           this.log(`  - ${test.name}: ${test.error}`, 'red');
         });
       }
@@ -333,7 +329,7 @@ class MCPPersistenceTest {
       failed: this.testCount - this.passedCount,
       details: this.testResults,
       dbPath: this.dbPath,
-      dbSize: fs.existsSync(this.dbPath) ? fs.statSync(this.dbPath).size : 0
+      dbSize: fs.existsSync(this.dbPath) ? fs.statSync(this.dbPath).size : 0,
     };
 
     // Store results using MCP
@@ -370,7 +366,6 @@ class MCPPersistenceTest {
 
       // Generate report
       await this.generateReport();
-
     } catch (error) {
       this.log(`\n💥 Fatal error: ${error.message}`, 'red');
       process.exit(1);

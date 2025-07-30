@@ -1,0 +1,37 @@
+import yaml from 'js-yaml';
+import jsonlint from 'jsonlint';
+
+export async function scanJsonYamlFiles(flags = [];
+
+try {
+  let parsedContent;
+  let formattedContent;
+
+  if (file.endsWith('.json')) {
+    parsedContent = jsonlint.parse(content);
+    formattedContent = JSON.stringify(parsedContent, null, 2);
+  } else {
+    parsedContent = yaml.load(content);
+    formattedContent = yaml.dump(parsedContent, {indent = = formattedContent.trim()) {
+        suggestions.push({
+          id: `formatting-issue-${file}`,
+          description: `Formatting issue detected in ${file}. Please reformat.`, // AI can suggest reformat
+          action: 'fix_formatting',
+          file: file,
+          originalContent: content,
+          formattedContent: formattedContent,
+        });
+  }
+} catch (error) {
+  suggestions.push({
+    id: `invalid-syntax-${file}`,
+    description: `Invalid syntax in ${file}: ${error.message}`,
+    action: 'fix_syntax',
+    file: file,
+    errorMessage: error.message,
+  });
+}
+}
+
+return suggestions;
+}

@@ -1,5 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
-import request from 'supertest';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ClaudeZenServer } from '../../../src/api/claude-zen-server.js';
 
 // Mock dependencies
@@ -10,11 +9,11 @@ jest.mock('express', () => {
     post: jest.fn(),
     put: jest.fn(),
     delete: jest.fn(),
-    listen: jest.fn((port, callback) => {
+    listen: jest.fn((_port, callback) => {
       if (callback) callback();
       return { close: jest.fn() };
     }),
-    set: jest.fn()
+    set: jest.fn(),
   }));
   mockExpress.json = jest.fn();
   mockExpress.urlencoded = jest.fn();
@@ -22,33 +21,33 @@ jest.mock('express', () => {
   return mockExpress;
 });
 
-jest.mock('cors', () => jest.fn(() => (req, res, next) => next()));
-jest.mock('helmet', () => jest.fn(() => (req, res, next) => next()));
-jest.mock('express-rate-limit', () => jest.fn(() => (req, res, next) => next()));
+jest.mock('cors', () => jest.fn(() => (_req, _res, next) => next()));
+jest.mock('helmet', () => jest.fn(() => (_req, _res, next) => next()));
+jest.mock('express-rate-limit', () => jest.fn(() => (_req, _res, next) => next()));
 jest.mock('swagger-ui-express', () => ({ serve: [], setup: jest.fn() }));
 
 jest.mock('../../../src/api/claude-zen-schema.js', () => ({
   CLAUDE_ZEN_SCHEMA: {
     endpoints: [
       { path: '/api/health', method: 'GET', handler: 'healthCheck' },
-      { path: '/api/status', method: 'GET', handler: 'statusCheck' }
-    ]
+      { path: '/api/status', method: 'GET', handler: 'statusCheck' },
+    ],
   },
   generateWorkflowRoutes: jest.fn(),
-  generateOpenAPISpec: jest.fn(() => ({ openapi: '3.0.0', info: { title: 'Test API' } }))
+  generateOpenAPISpec: jest.fn(() => ({ openapi: '3.0.0', info: { title: 'Test API' } })),
 }));
 
 jest.mock('../../../src/api/agui-websocket-middleware.js', () => ({
-  integrateAGUIWithWebSocket: jest.fn()
+  integrateAGUIWithWebSocket: jest.fn(),
 }));
 
 describe('ClaudeZenServer', () => {
   let server;
-  let mockApp;
+  let _mockApp;
 
   beforeEach(() => {
     server = null;
-    mockApp = null;
+    _mockApp = null;
   });
 
   afterEach(async () => {
@@ -60,7 +59,7 @@ describe('ClaudeZenServer', () => {
   describe('constructor', () => {
     it('should create server with default options', () => {
       server = new ClaudeZenServer();
-      
+
       expect(server).toBeDefined();
       expect(server.options.port).toBe(3000);
       expect(server.options.host).toBe('0.0.0.0');
@@ -73,11 +72,11 @@ describe('ClaudeZenServer', () => {
         port: 4000,
         host: '127.0.0.1',
         enableWebSocket: false,
-        enableMetrics: false
+        enableMetrics: false,
       };
-      
+
       server = new ClaudeZenServer(customOptions);
-      
+
       expect(server.options.port).toBe(4000);
       expect(server.options.host).toBe('127.0.0.1');
       expect(server.options.enableWebSocket).toBe(false);
@@ -92,9 +91,9 @@ describe('ClaudeZenServer', () => {
 
     it('should start server successfully', async () => {
       const startPromise = server.start();
-      
+
       expect(startPromise).toBeInstanceOf(Promise);
-      
+
       try {
         await startPromise;
         expect(server.isRunning).toBe(true);
@@ -118,7 +117,7 @@ describe('ClaudeZenServer', () => {
     it('should handle start errors gracefully', async () => {
       // Mock server start failure
       const invalidServer = new ClaudeZenServer({ port: -1 });
-      
+
       try {
         await invalidServer.start();
       } catch (error) {
@@ -137,7 +136,7 @@ describe('ClaudeZenServer', () => {
       const middlewareConfig = {
         cors: true,
         helmet: true,
-        rateLimit: true
+        rateLimit: true,
       };
 
       expect(middlewareConfig.cors).toBe(true);
@@ -148,7 +147,7 @@ describe('ClaudeZenServer', () => {
     it('should configure body parsing middleware', () => {
       const bodyParsingConfig = {
         json: { limit: '10mb' },
-        urlencoded: { extended: true, limit: '10mb' }
+        urlencoded: { extended: true, limit: '10mb' },
       };
 
       expect(bodyParsingConfig.json.limit).toBe('10mb');
@@ -165,15 +164,15 @@ describe('ClaudeZenServer', () => {
       const mockSchema = {
         endpoints: [
           { path: '/api/test', method: 'GET', handler: 'testHandler' },
-          { path: '/api/users', method: 'POST', handler: 'createUser' }
-        ]
+          { path: '/api/users', method: 'POST', handler: 'createUser' },
+        ],
       };
 
       // Test schema-based route generation logic
-      const routes = mockSchema.endpoints.map(endpoint => ({
+      const routes = mockSchema.endpoints.map((endpoint) => ({
         path: endpoint.path,
         method: endpoint.method.toLowerCase(),
-        handler: endpoint.handler
+        handler: endpoint.handler,
       }));
 
       expect(routes).toHaveLength(2);
@@ -185,12 +184,12 @@ describe('ClaudeZenServer', () => {
 
     it('should handle different HTTP methods', () => {
       const methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
-      
-      methods.forEach(method => {
+
+      methods.forEach((method) => {
         const endpoint = {
           path: `/api/${method.toLowerCase()}`,
           method: method,
-          handler: `${method.toLowerCase()}Handler`
+          handler: `${method.toLowerCase()}Handler`,
         };
 
         expect(endpoint.method).toBe(method);
@@ -209,7 +208,7 @@ describe('ClaudeZenServer', () => {
       const wsConfig = {
         enabled: server.options.enableWebSocket,
         port: server.options.port,
-        path: '/ws'
+        path: '/ws',
       };
 
       expect(wsConfig.enabled).toBe(true);
@@ -222,7 +221,7 @@ describe('ClaudeZenServer', () => {
         id: 'test-connection',
         readyState: 1, // OPEN
         send: jest.fn(),
-        close: jest.fn()
+        close: jest.fn(),
       };
 
       const connectionHandler = {
@@ -231,7 +230,7 @@ describe('ClaudeZenServer', () => {
           ws.send = jest.fn();
         }),
         onMessage: jest.fn(),
-        onClose: jest.fn()
+        onClose: jest.fn(),
       };
 
       connectionHandler.onConnection(mockConnection);
@@ -249,7 +248,7 @@ describe('ClaudeZenServer', () => {
         status: 'healthy',
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
-        version: '2.0.0-alpha.70'
+        version: '2.0.0-alpha.70',
       };
 
       expect(healthResponse.status).toBe('healthy');
@@ -263,7 +262,7 @@ describe('ClaudeZenServer', () => {
         server: 'running',
         connections: 0,
         memory: process.memoryUsage(),
-        cpu: process.cpuUsage()
+        cpu: process.cpuUsage(),
       };
 
       expect(statusResponse.server).toBe('running');
@@ -280,33 +279,33 @@ describe('ClaudeZenServer', () => {
 
     it('should handle server errors gracefully', () => {
       const errorHandler = {
-        handleError: jest.fn((error, req, res, next) => {
+        handleError: jest.fn((error, _req, res, next) => {
           if (res.headersSent) {
             return next(error);
           }
-          
+
           res.status(500).json({
             error: 'Internal Server Error',
             message: error.message,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
-        })
+        }),
       };
 
       const testError = new Error('Test error');
       const mockRes = {
         headersSent: false,
         status: jest.fn(() => mockRes),
-        json: jest.fn()
+        json: jest.fn(),
       };
 
       errorHandler.handleError(testError, {}, mockRes, jest.fn());
-      
+
       expect(mockRes.status).toHaveBeenCalledWith(500);
       expect(mockRes.json).toHaveBeenCalledWith(
         expect.objectContaining({
           error: 'Internal Server Error',
-          message: 'Test error'
+          message: 'Test error',
         })
       );
     });
@@ -316,14 +315,14 @@ describe('ClaudeZenServer', () => {
         res.status(404).json({
           error: 'Not Found',
           message: `Route ${req.method} ${req.path} not found`,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
       };
 
       const mockReq = { method: 'GET', path: '/api/nonexistent' };
       const mockRes = {
         status: jest.fn(() => mockRes),
-        json: jest.fn()
+        json: jest.fn(),
       };
 
       notFoundHandler(mockReq, mockRes);
@@ -332,7 +331,7 @@ describe('ClaudeZenServer', () => {
       expect(mockRes.json).toHaveBeenCalledWith(
         expect.objectContaining({
           error: 'Not Found',
-          message: 'Route GET /api/nonexistent not found'
+          message: 'Route GET /api/nonexistent not found',
         })
       );
     });
@@ -349,21 +348,21 @@ describe('ClaudeZenServer', () => {
           total: 0,
           byMethod: {},
           byStatus: {},
-          averageResponseTime: 0
+          averageResponseTime: 0,
         },
-        
-        recordRequest: function(method, status, responseTime) {
+
+        recordRequest: function (method, status, responseTime) {
           this.requests.total++;
           this.requests.byMethod[method] = (this.requests.byMethod[method] || 0) + 1;
           this.requests.byStatus[status] = (this.requests.byStatus[status] || 0) + 1;
           // Simplified average calculation
           this.requests.averageResponseTime = responseTime;
-        }
+        },
       };
 
       metrics.recordRequest('GET', 200, 150);
       metrics.recordRequest('POST', 201, 200);
-      
+
       expect(metrics.requests.total).toBe(2);
       expect(metrics.requests.byMethod.GET).toBe(1);
       expect(metrics.requests.byMethod.POST).toBe(1);
@@ -379,18 +378,18 @@ describe('ClaudeZenServer', () => {
             total: 100,
             averageResponseTime: 120,
             byMethod: { GET: 60, POST: 30, PUT: 10 },
-            byStatus: { 200: 80, 404: 15, 500: 5 }
+            byStatus: { 200: 80, 404: 15, 500: 5 },
           },
           server: {
             uptime: process.uptime(),
             memory: process.memoryUsage(),
-            cpu: process.cpuUsage()
-          }
-        })
+            cpu: process.cpuUsage(),
+          },
+        }),
       };
 
       const response = metricsEndpoint.handler();
-      
+
       expect(response.requests.total).toBe(100);
       expect(response.requests.byMethod.GET).toBe(60);
       expect(response.server.uptime).toBeDefined();

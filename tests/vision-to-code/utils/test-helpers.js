@@ -1,6 +1,6 @@
-import { promises as fs } from 'fs';
-import path from 'path';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
 
 /**
  * Test helper utilities for Vision-to-Code tests
@@ -17,22 +17,17 @@ class TestHelpers {
    * Create a mock image file for testing
    */
   static async createMockImage(options = {}) {
-    const {
-      width = 800,
-      height = 600,
-      format = 'png',
-      size = 'medium'
-    } = options;
+    const { width = 800, height = 600, format = 'png', size = 'medium' } = options;
 
     // Mock image buffer based on size
     const sizeMap = {
-      small: 1024 * 100,    // 100KB
-      medium: 1024 * 500,   // 500KB
-      large: 1024 * 1024 * 2 // 2MB
+      small: 1024 * 100, // 100KB
+      medium: 1024 * 500, // 500KB
+      large: 1024 * 1024 * 2, // 2MB
     };
 
     const buffer = Buffer.alloc(sizeMap[size] || sizeMap.medium);
-    
+
     // Add mock image headers
     if (format === 'png') {
       // PNG header
@@ -49,8 +44,8 @@ class TestHelpers {
         height,
         format,
         size: buffer.length,
-        mimeType: `image/${format}`
-      }
+        mimeType: `image/${format}`,
+      },
     };
   }
 
@@ -62,44 +57,44 @@ class TestHelpers {
       components = ['header', 'navigation', 'content', 'footer'],
       layout = 'grid',
       colors = ['#000000', '#FFFFFF', '#FF0000'],
-      confidence = 0.95
+      confidence = 0.95,
     } = options;
 
     return {
-      id: this.generateTestId('vision'),
+      id: TestHelpers.generateTestId('vision'),
       timestamp: new Date().toISOString(),
       analysis: {
-        components: components.map(name => ({
+        components: components.map((name) => ({
           type: name,
           bounds: {
             x: Math.random() * 100,
             y: Math.random() * 100,
             width: Math.random() * 200 + 100,
-            height: Math.random() * 100 + 50
+            height: Math.random() * 100 + 50,
           },
-          confidence: confidence + (Math.random() * 0.05 - 0.025)
+          confidence: confidence + (Math.random() * 0.05 - 0.025),
         })),
         layout: {
           type: layout,
           columns: layout === 'grid' ? 3 : 1,
-          spacing: 16
+          spacing: 16,
         },
         colors: {
           primary: colors[0],
           secondary: colors[1],
           accent: colors[2],
-          palette: colors
+          palette: colors,
         },
         text: {
           detected: true,
-          blocks: []
-        }
+          blocks: [],
+        },
       },
       metadata: {
         processingTime: Math.random() * 100 + 50,
         modelVersion: '1.0.0',
-        confidence
-      }
+        confidence,
+      },
     };
   }
 
@@ -110,33 +105,36 @@ class TestHelpers {
     const {
       framework = 'react',
       language = 'javascript',
-      components = ['App', 'Header', 'Content']
+      components = ['App', 'Header', 'Content'],
     } = options;
 
     const codeTemplates = {
-      react: (name) => `import React from 'react';\n\nexport const ${name} = () => {\n  return <div>${name} Component</div>;\n};`,
-      vue: (name) => `<template>\n  <div>${name} Component</div>\n</template>\n\n<script>\nexport default {\n  name: '${name}'\n};\n</script>`,
-      angular: (name) => `import { Component } from '@angular/core';\n\n@Component({\n  selector: 'app-${name.toLowerCase()}',\n  template: '<div>${name} Component</div>'\n})\nexport class ${name}Component {}`
+      react: (name) =>
+        `import React from 'react';\n\nexport const ${name} = () => {\n  return <div>${name} Component</div>;\n};`,
+      vue: (name) =>
+        `<template>\n  <div>${name} Component</div>\n</template>\n\n<script>\nexport default {\n  name: '${name}'\n};\n</script>`,
+      angular: (name) =>
+        `import { Component } from '@angular/core';\n\n@Component({\n  selector: 'app-${name.toLowerCase()}',\n  template: '<div>${name} Component</div>'\n})\nexport class ${name}Component {}`,
     };
 
     return {
-      id: this.generateTestId('code'),
+      id: TestHelpers.generateTestId('code'),
       timestamp: new Date().toISOString(),
       framework,
       language,
-      files: components.map(name => ({
+      files: components.map((name) => ({
         name: `${name}.${language === 'typescript' ? 'tsx' : 'jsx'}`,
         path: `src/components/${name}.${language === 'typescript' ? 'tsx' : 'jsx'}`,
         content: codeTemplates[framework](name),
-        size: codeTemplates[framework](name).length
+        size: codeTemplates[framework](name).length,
       })),
       metadata: {
         generationTime: Math.random() * 200 + 100,
         linesOfCode: components.length * 10,
         dependencies: {
-          [framework]: '^latest'
-        }
-      }
+          [framework]: '^latest',
+        },
+      },
     };
   }
 
@@ -147,7 +145,7 @@ class TestHelpers {
     const {
       timeout = 5000,
       interval = 100,
-      errorMessage = 'Condition not met within timeout'
+      errorMessage = 'Condition not met within timeout',
     } = options;
 
     const startTime = Date.now();
@@ -156,7 +154,7 @@ class TestHelpers {
       if (await conditionFn()) {
         return true;
       }
-      await new Promise(resolve => setTimeout(resolve, interval));
+      await new Promise((resolve) => setTimeout(resolve, interval));
     }
 
     throw new Error(errorMessage);
@@ -169,14 +167,14 @@ class TestHelpers {
     const start = process.hrtime.bigint();
     const result = await fn();
     const end = process.hrtime.bigint();
-    
+
     const duration = Number(end - start) / 1e6; // Convert to milliseconds
-    
+
     return {
       result,
       duration,
       label,
-      pass: duration < 100 // Default threshold
+      pass: duration < 100, // Default threshold
     };
   }
 
@@ -193,7 +191,7 @@ class TestHelpers {
       params: options.params || {},
       user: options.user || null,
       file: options.file || null,
-      files: options.files || []
+      files: options.files || [],
     };
   }
 
@@ -205,25 +203,25 @@ class TestHelpers {
       statusCode: 200,
       headers: {},
       body: null,
-      status: function(code) {
+      status: function (code) {
         this.statusCode = code;
         return this;
       },
-      json: function(data) {
+      json: function (data) {
         this.headers['Content-Type'] = 'application/json';
         this.body = data;
         return this;
       },
-      send: function(data) {
+      send: function (data) {
         this.body = data;
         return this;
       },
-      setHeader: function(name, value) {
+      setHeader: function (name, value) {
         this.headers[name] = value;
         return this;
-      }
+      },
     };
-    
+
     return res;
   }
 
@@ -238,7 +236,7 @@ class TestHelpers {
           await fs.unlink(path.join(directory, file));
         }
       }
-    } catch (error) {
+    } catch (_error) {
       // Directory might not exist
     }
   }
@@ -248,11 +246,11 @@ class TestHelpers {
    */
   static async *generateTestDataBatch(generator, batchSize = 100) {
     let batch = [];
-    let count = 0;
+    let _count = 0;
 
     for await (const item of generator) {
       batch.push(item);
-      count++;
+      _count++;
 
       if (batch.length >= batchSize) {
         yield batch;
@@ -274,13 +272,13 @@ class TestHelpers {
         const gemini = require('@google/generative-ai');
         gemini.GoogleGenerativeAI.mockImplementation(() => ({
           getGenerativeModel: jest.fn(() => ({
-            generateContent: jest.fn().mockResolvedValue(response)
-          }))
+            generateContent: jest.fn().mockResolvedValue(response),
+          })),
         }));
       },
       openai: () => {
         // Mock OpenAI if needed
-      }
+      },
     };
 
     if (mocks[service]) {
@@ -295,7 +293,7 @@ class TestHelpers {
     const metrics = {
       requests: [],
       errors: [],
-      durations: []
+      durations: [],
     };
 
     return {
@@ -314,14 +312,14 @@ class TestHelpers {
           averageDuration: durations.reduce((a, b) => a + b, 0) / durations.length || 0,
           p50: durations[Math.floor(durations.length * 0.5)] || 0,
           p95: durations[Math.floor(durations.length * 0.95)] || 0,
-          p99: durations[Math.floor(durations.length * 0.99)] || 0
+          p99: durations[Math.floor(durations.length * 0.99)] || 0,
         };
       },
       reset: () => {
         metrics.requests = [];
         metrics.errors = [];
         metrics.durations = [];
-      }
+      },
     };
   }
 }

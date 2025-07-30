@@ -4,8 +4,8 @@
  * Validates documentation files for completeness and consistency
  */
 
-import fs from 'fs/promises';
-import path from 'path';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 class DocumentationValidator {
   constructor() {
@@ -16,14 +16,14 @@ class DocumentationValidator {
   }
 
   async validate() {
-    console.log('🔍 Validating API documentation...');
+    console.warn('🔍 Validating API documentation...');
 
     try {
       await this.validateDocumentationStructure();
       await this.validateMarkdownFiles();
-      
+
       this.reportResults();
-      
+
       return this.errors.length === 0;
     } catch (error) {
       console.error('❌ Validation failed:', error);
@@ -32,8 +32,8 @@ class DocumentationValidator {
   }
 
   async validateDocumentationStructure() {
-    console.log('📁 Validating documentation structure...');
-    
+    console.warn('📁 Validating documentation structure...');
+
     const requiredFiles = [
       'docs/api/README.md',
       'docs/api/server-api.md',
@@ -44,16 +44,16 @@ class DocumentationValidator {
       'docs/api/workflow-api.md',
       'docs/api/websocket-api.md',
       'docs/api/schema.md',
-      'docs/api/errors.md'
+      'docs/api/errors.md',
     ];
 
     for (const file of requiredFiles) {
       try {
         await fs.access(file);
-        console.log(`  ✅ ${file}`);
-      } catch (error) {
+        console.warn(`  ✅ ${file}`);
+      } catch (_error) {
         this.errors.push(`Missing required file: ${file}`);
-        console.log(`  ❌ ${file} - Missing`);
+        console.warn(`  ❌ ${file} - Missing`);
       }
     }
 
@@ -61,20 +61,20 @@ class DocumentationValidator {
     try {
       const exampleStats = await fs.stat('examples');
       if (exampleStats.isDirectory()) {
-        console.log('  ✅ examples directory exists');
+        console.warn('  ✅ examples directory exists');
       }
-    } catch (error) {
+    } catch (_error) {
       this.errors.push('Missing examples directory');
     }
   }
 
   async validateMarkdownFiles() {
-    console.log('📝 Validating markdown files...');
-    
+    console.warn('📝 Validating markdown files...');
+
     try {
       const files = await fs.readdir(this.docsDir);
-      const markdownFiles = files.filter(file => file.endsWith('.md'));
-      
+      const markdownFiles = files.filter((file) => file.endsWith('.md'));
+
       for (const file of markdownFiles) {
         const filepath = path.join(this.docsDir, file);
         try {
@@ -106,30 +106,30 @@ class DocumentationValidator {
       this.errors.push(`${filename}: Unclosed code block`);
     }
 
-    console.log(`  ✅ ${filename} - Content validated`);
+    console.warn(`  ✅ ${filename} - Content validated`);
   }
 
   reportResults() {
-    console.log('\n📊 Validation Results:');
-    console.log(`✅ Errors: ${this.errors.length}`);
-    console.log(`⚠️  Warnings: ${this.warnings.length}`);
+    console.warn('\n📊 Validation Results:');
+    console.warn(`✅ Errors: ${this.errors.length}`);
+    console.warn(`⚠️  Warnings: ${this.warnings.length}`);
 
     if (this.errors.length > 0) {
-      console.log('\n❌ Errors:');
-      this.errors.forEach(error => console.log(`  • ${error}`));
+      console.warn('\n❌ Errors:');
+      this.errors.forEach((error) => console.warn(`  • ${error}`));
     }
 
     if (this.warnings.length > 0) {
-      console.log('\n⚠️  Warnings:');
-      this.warnings.forEach(warning => console.log(`  • ${warning}`));
+      console.warn('\n⚠️  Warnings:');
+      this.warnings.forEach((warning) => console.warn(`  • ${warning}`));
     }
 
     if (this.errors.length === 0 && this.warnings.length === 0) {
-      console.log('\n🎉 All documentation is valid!');
+      console.warn('\n🎉 All documentation is valid!');
     } else if (this.errors.length === 0) {
-      console.log('\n✅ Documentation is valid with minor warnings');
+      console.warn('\n✅ Documentation is valid with minor warnings');
     } else {
-      console.log('\n❌ Documentation validation failed');
+      console.warn('\n❌ Documentation validation failed');
     }
   }
 }
@@ -138,7 +138,7 @@ class DocumentationValidator {
 async function main() {
   const validator = new DocumentationValidator();
   const isValid = await validator.validate();
-  
+
   if (!isValid) {
     process.exit(1);
   }

@@ -17,11 +17,7 @@
       "status": "PASS"
     },
     "swarmInit": {
-      "times": [
-        5,
-        5,
-        5
-      ],
+      "times": [5, 5, 5],
       "average": 5,
       "min": 5,
       "max": 5,
@@ -29,21 +25,13 @@
       "status": "PASS"
     },
     "agentSpawn": {
-      "times": [
-        3,
-        3,
-        3
-      ],
+      "times": [3, 3, 3],
       "average": 3,
       "target": 5,
       "status": "PASS"
     },
     "neuralProcessing": {
-      "times": [
-        20,
-        21,
-        20
-      ],
+      "times": [20, 21, 20],
       "average": 20.333333333333332,
       "throughput": 49.18032786885246,
       "target": 50,

@@ -12,13 +12,10 @@ describe('Auth Integration Tests', () => {
       const userData = {
         username: 'testuser',
         email: 'test@example.com',
-        password: 'password123'
+        password: 'password123',
       };
 
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(userData)
-        .expect(201);
+      const response = await request(app).post('/api/auth/register').send(userData).expect(201);
 
       expect(response.body).toHaveProperty('user');
       expect(response.body).toHaveProperty('token');
@@ -30,13 +27,10 @@ describe('Auth Integration Tests', () => {
       const userData = {
         username: 'testuser2',
         email: 'invalid-email',
-        password: 'password123'
+        password: 'password123',
       };
 
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(userData)
-        .expect(400);
+      const response = await request(app).post('/api/auth/register').send(userData).expect(400);
 
       expect(response.body).toHaveProperty('errors');
     });
@@ -46,13 +40,10 @@ describe('Auth Integration Tests', () => {
     it('should login with valid credentials', async () => {
       const loginData = {
         email: 'test@example.com',
-        password: 'password123'
+        password: 'password123',
       };
 
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send(loginData)
-        .expect(200);
+      const response = await request(app).post('/api/auth/login').send(loginData).expect(200);
 
       expect(response.body).toHaveProperty('user');
       expect(response.body).toHaveProperty('token');
@@ -62,13 +53,10 @@ describe('Auth Integration Tests', () => {
     it('should reject login with invalid credentials', async () => {
       const loginData = {
         email: 'test@example.com',
-        password: 'wrongpassword'
+        password: 'wrongpassword',
       };
 
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send(loginData)
-        .expect(401);
+      const response = await request(app).post('/api/auth/login').send(loginData).expect(401);
 
       expect(response.body.error).toBe('Invalid credentials');
     });

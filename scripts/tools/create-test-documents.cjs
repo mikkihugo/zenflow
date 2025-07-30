@@ -7,11 +7,12 @@ const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.c
 
 // Mock memory store
 class MockMemoryStore {
-  constructor() { this.data = new Map(); }
+  constructor() {
+    this.data = new Map();
+  }
   async store(key, value, options = {}) {
     const fullKey = options.namespace ? `${options.namespace}:${key}` : key;
     this.data.set(fullKey, value);
-    console.log(`📁 Stored: ${fullKey}`);
     return { id: fullKey, size: value.length };
   }
   async retrieve(key, options = {}) {
@@ -34,8 +35,6 @@ const docStack = new DocumentStack(memoryStore);
 setupDefaultRules(docStack);
 
 async function createTestDocuments() {
-  console.log('🚀 Creating test documents for Claude Desktop access...\n');
-  
   // Document 1: Architecture Decision Record
   await docStack.createDocument(
     'service-adr',
@@ -73,7 +72,7 @@ We will use Redis as our session storage backend for the user service.
 - Monitor Redis memory usage and performance`,
     {
       dependencies: ['redis-infrastructure', 'user-service-core'],
-      tags: ['sessions', 'redis', 'scaling', 'architecture']
+      tags: ['sessions', 'redis', 'scaling', 'architecture'],
     }
   );
 
@@ -173,7 +172,7 @@ Process a refund
 - 100 payments per minute per merchant`,
     {
       dependencies: ['payment-processor', 'fraud-detection'],
-      tags: ['api', 'payments', 'rest', 'documentation']
+      tags: ['api', 'payments', 'rest', 'documentation'],
     }
   );
 
@@ -246,30 +245,11 @@ Security requirements and implementation guidelines for OAuth 2.0 authentication
     {
       dependencies: ['redis-infrastructure', 'tls-certificates'],
       tags: ['security', 'oauth2', 'authentication', 'compliance'],
-      priority: 'critical'
+      priority: 'critical',
     }
   );
-
-  console.log('\n✅ Created 3 test documents:');
-  console.log('   1. user-service/service-adr/use-redis-for-sessions');
-  console.log('   2. payment-service/api-documentation/payment-api-v2');
-  console.log('   3. auth-service/security-spec/oauth2-implementation');
-  
-  console.log('\n📋 Documents are ready for Claude Desktop access via MCP!');
-  
-  // Show what Claude Desktop can access
-  console.log('\n🔍 What you can do in Claude Desktop:');
-  console.log('   • "List all service documents"');
-  console.log('   • "Show me the payment API documentation"');
-  console.log('   • "Get the Redis session ADR for user service"');
-  console.log('   • "Review the OAuth2 security specification"');
-  console.log('   • "What documents exist for user-service?"');
-  
-  // Show storage information
-  console.log('\n💾 Storage Details:');
-  for (const [key, value] of memoryStore.data) {
-    const doc = JSON.parse(value);
-    console.log(`   ${key} (Layer: ${doc.metadata.stack_layer})`);
+  for (const [_key, value] of memoryStore.data) {
+    const _doc = JSON.parse(value);
   }
 }
 

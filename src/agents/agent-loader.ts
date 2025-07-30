@@ -4,10 +4,9 @@
  * Based on upstream commit 00dd0094
  */
 
-import { promises as fs } from 'fs';
-import { join, extname, basename } from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import { promises as fs } from 'node:fs';
+import { dirname, extname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -17,13 +16,23 @@ export interface AgentType {
   displayName: string;
   description: string;
   capabilities: string[];
-  module?: any;
+  priority: number;
   legacy?: boolean;
 }
 
+export interface AgentStats {
+  total: number;
+  builtin: number;
+  legacy: number;
+  dynamic: number;
+}
+
+/**
+ * Singleton class for loading and managing agent types
+ */
 export class AgentLoader {
   private static instance: AgentLoader;
-  private agentTypes: Map<string, AgentType> = new Map();
+  private agentTypes = new Map<string, AgentType>();
   private initialized = false;
 
   static getInstance(): AgentLoader {
@@ -36,23 +45,23 @@ export class AgentLoader {
   /**
    * Legacy agent mapping for backward compatibility
    */
-  private static LEGACY_AGENT_MAPPING = {
-    'analyst': 'code-analyzer',
-    'architect': 'system-architect',
-    'reviewer': 'code-reviewer',
-    'tester': 'test-engineer',
-    'coordinator': 'swarm-coordinator',
-    'researcher': 'research-specialist',
-    'optimizer': 'performance-optimizer',
-    'security': 'security-specialist',
-    'devops': 'devops-engineer',
-    'frontend': 'frontend-developer',
-    'backend': 'backend-developer',
-    'fullstack': 'fullstack-developer',
-    'mobile': 'mobile-developer',
-    'data': 'data-scientist',
-    'ml': 'ml-engineer',
-    'designer': 'ui-designer'
+  private static LEGACY_AGENT_MAPPING: Record<string, string> = {
+    analyst: 'code-analyzer',
+    architect: 'system-architect',
+    reviewer: 'code-reviewer',
+    tester: 'test-engineer',
+    coordinator: 'swarm-coordinator',
+    researcher: 'research-specialist',
+    optimizer: 'performance-optimizer',
+    security: 'security-specialist',
+    devops: 'devops-engineer',
+    frontend: 'frontend-developer',
+    backend: 'backend-developer',
+    fullstack: 'fullstack-developer',
+    mobile: 'mobile-developer',
+    data: 'data-scientist',
+    ml: 'ml-engineer',
+    designer: 'ui-designer',
   };
 
   /**
@@ -62,91 +71,32 @@ export class AgentLoader {
     {
       name: 'code-analyzer',
       displayName: 'Code Analyzer',
-      description: 'Analyzes code quality, complexity, and patterns',
-      capabilities: ['static-analysis', 'complexity-metrics', 'pattern-detection'],
-      legacy: false
+      description: 'Analyzes code quality, patterns, and improvements',
+      capabilities: ['analysis', 'code-review', 'refactoring'],
+      priority: 1,
     },
     {
       name: 'system-architect',
       displayName: 'System Architect',
-      description: 'Designs system architecture and high-level structure',
-      capabilities: ['architecture-design', 'system-planning', 'technical-decisions'],
-      legacy: false
-    },
-    {
-      name: 'code-reviewer',
-      displayName: 'Code Reviewer',
-      description: 'Reviews code for quality, security, and best practices',
-      capabilities: ['code-review', 'security-audit', 'best-practices'],
-      legacy: false
+      description: 'Designs system architecture and technical specifications',
+      capabilities: ['architecture', 'design', 'planning'],
+      priority: 1,
     },
     {
       name: 'test-engineer',
       displayName: 'Test Engineer',
-      description: 'Creates and executes comprehensive test strategies',
-      capabilities: ['test-creation', 'test-automation', 'quality-assurance'],
-      legacy: false
+      description: 'Creates and manages test suites and quality assurance',
+      capabilities: ['testing', 'qa', 'automation'],
+      priority: 2,
     },
-    {
-      name: 'swarm-coordinator',
-      displayName: 'Swarm Coordinator',
-      description: 'Coordinates multi-agent workflows and task distribution',
-      capabilities: ['task-orchestration', 'agent-coordination', 'workflow-management'],
-      legacy: false
-    },
-    {
-      name: 'research-specialist',
-      displayName: 'Research Specialist',
-      description: 'Conducts research and gathers technical information',
-      capabilities: ['information-gathering', 'technical-research', 'documentation'],
-      legacy: false
-    },
-    {
-      name: 'performance-optimizer',
-      displayName: 'Performance Optimizer',
-      description: 'Optimizes system and code performance',
-      capabilities: ['performance-analysis', 'optimization', 'benchmarking'],
-      legacy: false
-    },
-    {
-      name: 'security-specialist',
-      displayName: 'Security Specialist',
-      description: 'Focuses on security analysis and vulnerability assessment',
-      capabilities: ['security-analysis', 'vulnerability-scanning', 'threat-modeling'],
-      legacy: false
-    },
-    {
-      name: 'devops-engineer',
-      displayName: 'DevOps Engineer',
-      description: 'Handles deployment, infrastructure, and CI/CD',
-      capabilities: ['deployment', 'infrastructure', 'ci-cd', 'monitoring'],
-      legacy: false
-    },
-    {
-      name: 'frontend-developer',
-      displayName: 'Frontend Developer',
-      description: 'Specializes in frontend development and UI/UX',
-      capabilities: ['frontend-development', 'ui-design', 'user-experience'],
-      legacy: false
-    },
-    {
-      name: 'backend-developer',
-      displayName: 'Backend Developer',
-      description: 'Focuses on backend services and API development',
-      capabilities: ['backend-development', 'api-design', 'database-design'],
-      legacy: false
-    },
-    {
-      name: 'fullstack-developer',
-      displayName: 'Full-Stack Developer',
-      description: 'Handles both frontend and backend development',
-      capabilities: ['frontend-development', 'backend-development', 'full-stack'],
-      legacy: false
-    }
   ];
 
+  private constructor() {
+    // Private constructor for singleton
+  }
+
   /**
-   * Initialize the agent loader
+   * Initialize the agent loader and discover available agents
    */
   async initialize(): Promise<void> {
     if (this.initialized) {
@@ -158,23 +108,28 @@ export class AgentLoader {
       this.agentTypes.set(agent.name, agent);
     }
 
-    // Add legacy mappings
+    // Set up legacy mappings
+    this.setupLegacyMappings();
+
+    // Discover dynamic agents
+    await this.discoverDynamicAgents();
+
+    this.initialized = true;
+  }
+
+  /**
+   * Set up legacy agent mappings
+   */
+  private setupLegacyMappings(): void {
     for (const [legacy, modern] of Object.entries(AgentLoader.LEGACY_AGENT_MAPPING)) {
       const modernAgent = this.agentTypes.get(modern);
       if (modernAgent) {
         this.agentTypes.set(legacy, {
           ...modernAgent,
-          name: legacy,
-          displayName: `${modernAgent.displayName} (Legacy)`,
-          legacy: true
+          legacy: true,
         });
       }
     }
-
-    // Discover dynamic agents from filesystem
-    await this.discoverDynamicAgents();
-
-    this.initialized = true;
   }
 
   /**
@@ -182,10 +137,10 @@ export class AgentLoader {
    */
   private async discoverDynamicAgents(): Promise<void> {
     const agentsDir = join(__dirname, '.');
-    
+
     try {
       const files = await fs.readdir(agentsDir);
-      
+
       for (const file of files) {
         if (file === 'agent-loader.ts' || file === 'agent-loader.js') {
           continue;
@@ -193,13 +148,13 @@ export class AgentLoader {
 
         const filePath = join(agentsDir, file);
         const stats = await fs.stat(filePath);
-        
+
         if (stats.isFile() && (extname(file) === '.js' || extname(file) === '.ts')) {
           await this.loadAgentFromFile(filePath);
         }
       }
     } catch (error) {
-      console.log(`⚠️ Could not discover dynamic agents: ${error.message}`);
+      console.warn(`⚠️ Could not discover dynamic agents: ${error}`);
     }
   }
 
@@ -209,43 +164,33 @@ export class AgentLoader {
   private async loadAgentFromFile(filePath: string): Promise<void> {
     try {
       const module = await import(filePath);
-      
+
       if (module.default && typeof module.default === 'object') {
-        const agentConfig = module.default;
-        
+        const agentConfig = module.default as AgentType;
+
         if (agentConfig.name && agentConfig.displayName) {
           const agentType: AgentType = {
             name: agentConfig.name,
             displayName: agentConfig.displayName,
-            description: agentConfig.description || 'Dynamically loaded agent',
+            description: agentConfig.description || 'Dynamic agent',
             capabilities: agentConfig.capabilities || [],
-            module: module,
-            legacy: false
+            priority: agentConfig.priority || 3,
           };
-          
+
           this.agentTypes.set(agentType.name, agentType);
         }
       }
     } catch (error) {
-      console.log(`⚠️ Could not load agent from ${filePath}: ${error.message}`);
+      console.warn(`⚠️ Could not load agent from ${filePath}: ${error}`);
     }
   }
 
   /**
-   * Get all available agent types
-   */
-  async getAgentTypes(): Promise<AgentType[]> {
-    await this.initialize();
-    return Array.from(this.agentTypes.values());
-  }
-
-  /**
-   * Get a specific agent type by name
+   * Get an agent type by name
    */
   async getAgentType(name: string): Promise<AgentType | null> {
     await this.initialize();
-    
-    // Try direct lookup first
+
     let agent = this.agentTypes.get(name);
     if (agent) {
       return agent;
@@ -258,9 +203,7 @@ export class AgentLoader {
       if (agent) {
         return {
           ...agent,
-          name: name,
-          displayName: `${agent.displayName} (Legacy: ${name})`,
-          legacy: true
+          legacy: true,
         };
       }
     }
@@ -281,7 +224,8 @@ export class AgentLoader {
    */
   async getAgentTypesByCapability(capability: string): Promise<AgentType[]> {
     await this.initialize();
-    return Array.from(this.agentTypes.values()).filter(agent =>
+
+    return Array.from(this.agentTypes.values()).filter((agent) =>
       agent.capabilities.includes(capability)
     );
   }
@@ -301,25 +245,35 @@ export class AgentLoader {
   }
 
   /**
-   * Get agent statistics
+   * Get all available agent types
    */
-  async getStats(): Promise<{ total: number; builtin: number; dynamic: number; legacy: number }> {
+  async getAllAgentTypes(): Promise<AgentType[]> {
     await this.initialize();
-    
+    return Array.from(this.agentTypes.values());
+  }
+
+  /**
+   * Get statistics about loaded agents
+   */
+  async getStats(): Promise<AgentStats> {
+    await this.initialize();
+
     const agents = Array.from(this.agentTypes.values());
-    const builtin = agents.filter(a => !a.legacy && AgentLoader.BUILTIN_AGENTS.some(b => b.name === a.name)).length;
-    const legacy = agents.filter(a => a.legacy).length;
+    const builtin = agents.filter(
+      (a) => !a.legacy && AgentLoader.BUILTIN_AGENTS.some((b) => b.name === a.name)
+    ).length;
+    const legacy = agents.filter((a) => a.legacy).length;
     const dynamic = agents.length - builtin - legacy;
-    
+
     return {
       total: agents.length,
       builtin,
+      legacy,
       dynamic,
-      legacy
     };
   }
 }
 
 // Export singleton instance
-export const agentLoader = AgentLoader.getInstance();
+const agentLoader = AgentLoader.getInstance();
 export default agentLoader;

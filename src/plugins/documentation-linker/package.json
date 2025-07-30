@@ -4,7 +4,15 @@
   "description": "Documentation cross-reference validation, broken link detection, and intelligent linking suggestions",
   "main": "index.js",
   "type": "module",
-  "keywords": ["claude-zen", "plugin", "documentation", "linking", "cross-reference", "markdown", "validation"],
+  "keywords": [
+    "claude-zen",
+    "plugin",
+    "documentation",
+    "linking",
+    "cross-reference",
+    "markdown",
+    "validation"
+  ],
   "author": "Claude Zen Team",
   "license": "MIT",
   "dependencies": {
@@ -27,18 +35,26 @@
     "documentTypes": [
       {
         "type": "markdown",
-        "extensions": [".md", ".mdx"],
+        "extensions": [
+          ".md",
+          ".mdx"
+        ],
         "frontMatter": true,
         "linkSupport": true
       },
       {
         "type": "restructuredtext",
-        "extensions": [".rst"],
+        "extensions": [
+          ".rst"
+        ],
         "linkSupport": true
       },
       {
         "type": "asciidoc",
-        "extensions": [".adoc", ".asciidoc"],
+        "extensions": [
+          ".adoc",
+          ".asciidoc"
+        ],
         "linkSupport": true
       }
     ],
@@ -53,11 +69,26 @@
       "contentSimilarity": true
     },
     "linkTypes": [
-      "internal", "external", "relative", "absolute", "anchor", "image", "reference"
+      "internal",
+      "external",
+      "relative",
+      "absolute",
+      "anchor",
+      "image",
+      "reference"
     ],
     "config": {
-      "documentPaths": ["**/*.md", "docs/**/*", "README*"],
-      "ignorePaths": ["node_modules/**", ".git/**", ".hive-mind/**", "dist/**"],
+      "documentPaths": [
+        "**/*.md",
+        "docs/**/*",
+        "README*"
+      ],
+      "ignorePaths": [
+        "node_modules/**",
+        ".git/**",
+        ".hive-mind/**",
+        "dist/**"
+      ],
       "linkCheckTimeout": 5000,
       "similarityThreshold": 0.7,
       "keywordMinLength": 3,

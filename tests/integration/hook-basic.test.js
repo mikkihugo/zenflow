@@ -2,7 +2,7 @@
  * Basic hook functionality tests
  */
 
-import { describe, it, expect } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 
 describe('Hook Basic Tests', () => {
   it('should pass basic test', () => {
@@ -12,12 +12,12 @@ describe('Hook Basic Tests', () => {
   it('should handle hook parameters', () => {
     const options = {
       'validate-safety': true,
-      'prepare-resources': false
+      'prepare-resources': false,
     };
-    
+
     const validateSafety = options['validate-safety'] || options.validate || false;
     const prepareResources = options['prepare-resources'] || false;
-    
+
     expect(validateSafety).toBe(true);
     expect(prepareResources).toBe(false);
   });
@@ -26,13 +26,13 @@ describe('Hook Basic Tests', () => {
     const getAgentTypeFromFile = (filePath) => {
       const ext = filePath.split('.').pop().toLowerCase();
       const agentMap = {
-        'js': 'javascript-developer',
-        'ts': 'typescript-developer',
-        'py': 'python-developer',
-        'go': 'golang-developer',
-        'md': 'technical-writer',
-        'yml': 'devops-engineer',
-        'yaml': 'devops-engineer'
+        js: 'javascript-developer',
+        ts: 'typescript-developer',
+        py: 'python-developer',
+        go: 'golang-developer',
+        md: 'technical-writer',
+        yml: 'devops-engineer',
+        yaml: 'devops-engineer',
       };
       return agentMap[ext] || 'general-developer';
     };
@@ -44,9 +44,9 @@ describe('Hook Basic Tests', () => {
 
   it('should detect dangerous commands', () => {
     const dangerousCommands = ['rm -rf', 'format', 'del /f', 'rmdir /s', 'dd if='];
-    
+
     const isDangerous = (command) => {
-      return dangerousCommands.some(cmd => command.includes(cmd));
+      return dangerousCommands.some((cmd) => command.includes(cmd));
     };
 
     expect(isDangerous('rm -rf /')).toBe(true);

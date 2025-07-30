@@ -6,11 +6,11 @@
  * Orchestrates LanceDB, Kuzu, and Vision-to-Code enhancements
  */
 
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 import { spawn } from 'child_process';
 import { existsSync } from 'fs';
-import { writeFile, mkdir } from 'fs/promises';
+import { mkdir, writeFile } from 'fs/promises';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

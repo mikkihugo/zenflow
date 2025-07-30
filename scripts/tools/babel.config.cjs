@@ -1,25 +1,29 @@
 module.exports = {
   presets: [
-    ['@babel/preset-env', {
-      targets: {
-        node: '20'
+    [
+      '@babel/preset-env',
+      {
+        targets: {
+          node: '20',
+        },
+        modules: false,
       },
-      modules: false
-    }]
+    ],
   ],
-  plugins: [
-    '@babel/plugin-syntax-import-attributes'
-  ],
+  plugins: ['@babel/plugin-syntax-import-attributes'],
   env: {
     test: {
       presets: [
-        ['@babel/preset-env', {
-          targets: {
-            node: '20'
+        [
+          '@babel/preset-env',
+          {
+            targets: {
+              node: '20',
+            },
+            modules: 'auto',
           },
-          modules: 'auto'
-        }]
-      ]
-    }
-  }
+        ],
+      ],
+    },
+  },
 };

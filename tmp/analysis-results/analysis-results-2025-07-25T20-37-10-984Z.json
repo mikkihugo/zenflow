@@ -69,9 +69,7 @@
   "dependencies": {
     "dependencies": [],
     "circularDependencies": [],
-    "orphanFiles": [
-      "tmp/test-analysis/calculator.js"
-    ],
+    "orphanFiles": ["tmp/test-analysis/calculator.js"],
     "metrics": {
       "totalFiles": 0,
       "totalDependencies": 0,
@@ -132,11 +130,7 @@
   "graph": {
     "nodes_inserted": 3,
     "relationships_inserted": 2,
-    "operations": [
-      "source_files",
-      "functions",
-      "classes"
-    ]
+    "operations": ["source_files", "functions", "classes"]
   },
   "timestamp": "2025-07-25T20:37:10.974Z"
 }

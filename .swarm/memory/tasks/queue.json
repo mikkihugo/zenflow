@@ -96,7 +96,12 @@
       "assigned_to": ["queen", "orchestrator", "testing"],
       "status": "pending",
       "priority": "medium",
-      "dependencies": ["vision-service-001", "language-service-001", "codegen-service-001", "orchestrator-service-001"],
+      "dependencies": [
+        "vision-service-001",
+        "language-service-001",
+        "codegen-service-001",
+        "orchestrator-service-001"
+      ],
       "subtasks": [
         "Define service contracts",
         "Implement service discovery",

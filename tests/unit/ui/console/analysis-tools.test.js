@@ -1,4 +1,4 @@
-import { describe, it, expect, jest } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 
 describe('Analysis Tools', () => {
   it('should analyze data', () => {

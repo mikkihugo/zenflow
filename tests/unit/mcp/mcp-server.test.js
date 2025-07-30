@@ -1,22 +1,22 @@
-import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
-import path from 'path';
-import os from 'os';
-import { promises as fs } from 'fs';
+import { promises as fs } from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 // Mock all the dependencies
 jest.mock('../../../src/mcp/core/stdio-optimizer.js', () => ({
   StdioOptimizer: jest.fn().mockImplementation(() => ({
     initialize: jest.fn(),
     optimize: jest.fn(),
-    cleanup: jest.fn()
-  }))
+    cleanup: jest.fn(),
+  })),
 }));
 
 jest.mock('../../../src/mcp/core/error-handler.js', () => ({
   MCPErrorHandler: jest.fn().mockImplementation(() => ({
     handleError: jest.fn(),
-    formatError: jest.fn()
-  }))
+    formatError: jest.fn(),
+  })),
 }));
 
 jest.mock('../../../src/mcp/core/performance-metrics.js', () => ({
@@ -24,8 +24,8 @@ jest.mock('../../../src/mcp/core/performance-metrics.js', () => ({
     startTimer: jest.fn(),
     endTimer: jest.fn(),
     recordMetric: jest.fn(),
-    getMetrics: jest.fn(() => ({ requests: 0, averageTime: 0 }))
-  }))
+    getMetrics: jest.fn(() => ({ requests: 0, averageTime: 0 })),
+  })),
 }));
 
 jest.mock('../../../src/memory/sqlite-store.js', () => ({
@@ -35,8 +35,8 @@ jest.mock('../../../src/memory/sqlite-store.js', () => ({
     retrieve: jest.fn(),
     list: jest.fn(() => []),
     search: jest.fn(() => []),
-    close: jest.fn()
-  }))
+    close: jest.fn(),
+  })),
 }));
 
 describe('MCP Server', () => {
@@ -50,7 +50,7 @@ describe('MCP Server', () => {
   afterEach(async () => {
     try {
       await fs.rm(testDir, { recursive: true, force: true });
-    } catch (error) {
+    } catch (_error) {
       // Ignore cleanup errors
     }
   });
@@ -59,10 +59,10 @@ describe('MCP Server', () => {
     it('should import the MCP server module without errors', async () => {
       // Since the MCP server uses dynamic imports with fallbacks,
       // we'll test that the module can be imported
-      let mcpServerModule;
-      
+      let _mcpServerModule;
+
       try {
-        mcpServerModule = await import('../../../src/mcp/mcp-server.js');
+        _mcpServerModule = await import('../../../src/mcp/mcp-server.js');
       } catch (error) {
         // If import fails, that's part of what we're testing
         expect(error).toBeDefined();
@@ -77,7 +77,7 @@ describe('MCP Server', () => {
     it('should handle missing dependencies gracefully', async () => {
       // Test that the server can start even with missing dependencies
       // This tests the fallback mechanisms
-      
+
       const originalConsoleWarn = console.warn;
       const warnings = [];
       console.warn = (message) => warnings.push(message);
@@ -85,9 +85,9 @@ describe('MCP Server', () => {
       try {
         // Attempt to import the server
         await import('../../../src/mcp/mcp-server.js');
-        
+
         // Should have warnings about missing dependencies
-        expect(warnings.some(w => w.includes('not available'))).toBe(true);
+        expect(warnings.some((w) => w.includes('not available'))).toBe(true);
       } catch (error) {
         // Import might fail, which is acceptable for testing
         expect(error).toBeDefined();
@@ -104,12 +104,12 @@ describe('MCP Server', () => {
         port: process.env.MCP_PORT || 3000,
         memory: {
           type: 'sqlite',
-          options: {}
+          options: {},
         },
         tools: {
           enabled: true,
-          autoDiscovery: true
-        }
+          autoDiscovery: true,
+        },
       };
 
       expect(defaultConfig.port).toBeDefined();
@@ -123,15 +123,13 @@ describe('MCP Server', () => {
         { port: -1 },
         { port: 70000 },
         { memory: null },
-        { tools: 'invalid' }
+        { tools: 'invalid' },
       ];
 
-      invalidConfigs.forEach(config => {
+      invalidConfigs.forEach((config) => {
         // Test configuration validation logic
-        const isValid = typeof config.port === 'number' && 
-                        config.port > 0 && 
-                        config.port < 65536;
-        
+        const isValid = typeof config.port === 'number' && config.port > 0 && config.port < 65536;
+
         if (config.port === 'invalid' || config.port === -1 || config.port === 70000) {
           expect(isValid).toBe(false);
         }
@@ -145,7 +143,7 @@ describe('MCP Server', () => {
       const mockTools = [
         { name: 'file_read', description: 'Read file contents' },
         { name: 'file_write', description: 'Write file contents' },
-        { name: 'shell_execute', description: 'Execute shell commands' }
+        { name: 'shell_execute', description: 'Execute shell commands' },
       ];
 
       expect(mockTools).toHaveLength(3);
@@ -157,7 +155,7 @@ describe('MCP Server', () => {
     it('should handle tool execution', async () => {
       // Mock tool execution
       const mockToolExecutor = {
-        execute: jest.fn(async (toolName, args) => {
+        execute: jest.fn(async (toolName, _args) => {
           if (toolName === 'file_read') {
             return { content: 'file contents', success: true };
           }
@@ -165,14 +163,17 @@ describe('MCP Server', () => {
             return { written: true, success: true };
           }
           return { error: 'Unknown tool', success: false };
-        })
+        }),
       };
 
       const result1 = await mockToolExecutor.execute('file_read', { path: '/test' });
       expect(result1.success).toBe(true);
       expect(result1.content).toBe('file contents');
 
-      const result2 = await mockToolExecutor.execute('file_write', { path: '/test', content: 'data' });
+      const result2 = await mockToolExecutor.execute('file_write', {
+        path: '/test',
+        content: 'data',
+      });
       expect(result2.success).toBe(true);
       expect(result2.written).toBe(true);
 
@@ -191,15 +192,15 @@ describe('MCP Server', () => {
         'resources/list',
         'resources/read',
         'prompts/list',
-        'prompts/get'
+        'prompts/get',
       ];
 
-      messageTypes.forEach(type => {
+      messageTypes.forEach((type) => {
         const message = {
           jsonrpc: '2.0',
           id: 1,
           method: type,
-          params: {}
+          params: {},
         };
 
         expect(message.jsonrpc).toBe('2.0');
@@ -213,14 +214,14 @@ describe('MCP Server', () => {
         jsonrpc: '2.0',
         id: 1,
         method: 'tools/list',
-        params: {}
+        params: {},
       };
 
       const invalidMessages = [
         {}, // missing required fields
         { jsonrpc: '1.0' }, // wrong version
         { jsonrpc: '2.0', method: 'test' }, // missing id
-        { jsonrpc: '2.0', id: 1 } // missing method
+        { jsonrpc: '2.0', id: 1 }, // missing method
       ];
 
       // Validate the valid message
@@ -229,10 +230,9 @@ describe('MCP Server', () => {
       expect(typeof validMessage.method).toBe('string');
 
       // Check invalid messages
-      invalidMessages.forEach(msg => {
-        const isValid = msg.jsonrpc === '2.0' && 
-                        msg.id !== undefined && 
-                        typeof msg.method === 'string';
+      invalidMessages.forEach((msg) => {
+        const isValid =
+          msg.jsonrpc === '2.0' && msg.id !== undefined && typeof msg.method === 'string';
         expect(isValid).toBe(false);
       });
     });
@@ -244,17 +244,17 @@ describe('MCP Server', () => {
         requestCount: 0,
         totalTime: 0,
         averageTime: 0,
-        errorCount: 0
+        errorCount: 0,
       };
 
       // Simulate request processing
       const startTime = Date.now();
       metrics.requestCount++;
-      
+
       // Simulate processing time
       const endTime = startTime + 100;
       const requestTime = endTime - startTime;
-      
+
       metrics.totalTime += requestTime;
       metrics.averageTime = metrics.totalTime / metrics.requestCount;
 
@@ -267,16 +267,16 @@ describe('MCP Server', () => {
     it('should handle error tracking', () => {
       const errorTracker = {
         errors: [],
-        addError: function(error) {
+        addError: function (error) {
           this.errors.push({
             timestamp: Date.now(),
             message: error.message,
-            stack: error.stack
+            stack: error.stack,
           });
         },
-        getErrorCount: function() {
+        getErrorCount: function () {
           return this.errors.length;
-        }
+        },
       };
 
       const testError = new Error('Test error');
@@ -293,25 +293,25 @@ describe('MCP Server', () => {
       const mockMemoryStore = {
         initialized: false,
         data: new Map(),
-        
+
         async initialize() {
           this.initialized = true;
         },
-        
+
         async store(key, value) {
           if (!this.initialized) throw new Error('Not initialized');
           this.data.set(key, value);
         },
-        
+
         async retrieve(key) {
           if (!this.initialized) throw new Error('Not initialized');
           return this.data.get(key) || null;
         },
-        
+
         async list() {
           if (!this.initialized) throw new Error('Not initialized');
           return Array.from(this.data.entries()).map(([key, value]) => ({ key, value }));
-        }
+        },
       };
 
       await mockMemoryStore.initialize();

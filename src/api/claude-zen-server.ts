@@ -4,575 +4,394 @@
  * Replaces hard-coded endpoints with maintainable schema approach
  */
 
-import express, { Application, Request, Response, NextFunction } from 'express';
-import { createServer, Server as HTTPServer } from 'http';
-import { WebSocketServer } from 'ws';
+import { EventEmitter } from 'node:events';
+import { createServer, type Server as HTTPServer } from 'node:http';
 import cors from 'cors';
-import helmet from 'helmet';
+import express, { type Application, type NextFunction, type Request, type Response } from 'express';
 import rateLimit from 'express-rate-limit';
-import swaggerUi from 'swagger-ui-express';
-import { EventEmitter } from 'events';
+import helmet from 'helmet';
 import { v4 as uuidv4 } from 'uuid';
+import { WebSocketServer } from 'ws';
 
-import { 
-  CLAUDE_ZEN_SCHEMA, 
-  generateWorkflowRoutes, 
+import {
+  CLAUDE_ZEN_SCHEMA,
   generateOpenAPISpec,
-  SchemaConfig,
-  GeneratedRoute
+  getWebEnabledCommands,
+  SCHEMA_METADATA,
+  validateCommandArgs,
 } from './claude-zen-schema.js';
-import { integrateAGUIWithWebSocket } from './agui-websocket-middleware.js';
-import { NeuralEngine } from '../neural/neural-engine.js';
-
-// Import types
-import { 
-  UnifiedServer,
-  ServerConfig,
-  ServerStatus,
-  ServerMetrics,
-  ServerHealth,
-  TypedRequest,
-  TypedResponse,
-  RouteDefinition,
-  MiddlewareDefinition,
-  WebSocketClient,
-  WebSocketMessage,
-  ValidationResult,
-  UserContext,
-  SessionContext
-} from '../types/server.js';
-import { 
-  Identifiable, 
-  JSONObject, 
-  JSONValue, 
-  SystemStatus, 
-  HealthCheck,
-  ResourceUsage
-} from '../types/core.js';
 
 /**
- * Claude Zen Server Options
+ * Server configuration interface
  */
-export interface ClaudeZenServerOptions {
+export interface ServerConfig {
   port?: number;
   host?: string;
-  schema?: typeof CLAUDE_ZEN_SCHEMA;
-  enableWebSocket?: boolean;
-  enableMetrics?: boolean;
-  cors?: cors.CorsOptions;
-  rateLimit?: {
-    windowMs?: number;
-    max?: number;
-  };
+  cors?: boolean;
+  helmet?: boolean;
+  rateLimit?: boolean;
+  websocket?: boolean;
+  apiPrefix?: string;
 }
 
 /**
- * Server Metrics Data
+ * Server metrics interface
  */
-interface ServerMetricsData {
+export interface ServerMetrics {
   requests: number;
+  websocketConnections: number;
   errors: number;
   uptime: number;
+  startTime: number;
 }
 
 /**
- * Schema-driven API server with auto-generated endpoints
- * 
- * @description Claude Zen Server provides a unified API with routes auto-generated
- * from the schema definition. Supports REST endpoints, WebSocket connections, 
- * OpenAPI documentation, and real-time metrics.
- * 
- * @example
- * const server = new ClaudeZenServer({
- *   port: 3000,
- *   host: '0.0.0.0'
- * });
- * await server.start();
- * 
- * @since 2.0.0-alpha.70
- * @author Claude Zen Team
+ * Claude Zen Server - Schema-driven API server
  */
-export class ClaudeZenServer extends EventEmitter implements Partial<UnifiedServer> {
-  private readonly _port: number;
-  private readonly _host: string;
-  private readonly _app: Application;
-  private _server: HTTPServer | null = null;
-  private _wss: WebSocketServer | null = null;
-  private _isRunning: boolean = false;
-  
-  // Schema-driven configuration
-  private readonly _schema: typeof CLAUDE_ZEN_SCHEMA;
-  private _generatedRoutes: GeneratedRoute[] = [];
-  
-  // Dynamic storage maps (schema-driven)
-  private _storageInitialized: boolean = false;
-  
-  private _metrics: ServerMetricsData = {
+export class ClaudeZenServer extends EventEmitter {
+  private app: Application;
+  private server: HTTPServer | null = null;
+  private wss: WebSocketServer | null = null;
+  private isRunning = false;
+  private config: ServerConfig;
+
+  // Metrics tracking
+  private metrics: ServerMetrics = {
     requests: 0,
+    websocketConnections: 0,
     errors: 0,
-    uptime: Date.now()
+    uptime: 0,
+    startTime: Date.now(),
   };
-  
-  // Components
-  private _neuralEngine: NeuralEngine;
-  private _aguiMiddleware: any = null;
 
-  // WebSocket clients
-  private _wsClients: Map<string, WebSocketClient> = new Map();
+  // Dynamic storage for schema-driven data
+  private storage = new Map<string, Map<string, any>>();
 
-  // Storage maps will be dynamically created based on schema
-  [key: string]: any;
-
-  /**
-   * Create a new Claude Zen Server instance
-   * 
-   * @param {Object} options - Server configuration options
-   * @param {number} [options.port=3000] - Server port number
-   * @param {string} [options.host='0.0.0.0'] - Server host address
-   * @param {Object} [options.schema] - Schema for route generation
-   * @param {boolean} [options.enableWebSocket=true] - Enable WebSocket support
-   * @param {boolean} [options.enableMetrics=true] - Enable metrics collection
-   * @param {Object} [options.cors] - CORS configuration
-   * @param {Object} [options.rateLimit] - Rate limiting configuration
-   * 
-   * @example
-   * const server = new ClaudeZenServer({
-   *   port: 8080,
-   *   host: 'localhost',
-   *   enableMetrics: true,
-   *   cors: { origin: '*' },
-   *   rateLimit: { windowMs: 60000, max: 100 }
-   * });
-   */
-  constructor(options: ClaudeZenServerOptions = {}) {
+  constructor(config: ServerConfig = {}) {
     super();
-    this._port = options.port || process.env.PORT ? parseInt(process.env.PORT) : 3000;
-    this._host = options.host || process.env.HOST || '0.0.0.0';
-    this._app = express();
-    
-    // Schema-driven configuration
-    this._schema = options.schema || CLAUDE_ZEN_SCHEMA;
-    
-    // Initialize neural engine automatically
-    this._neuralEngine = new NeuralEngine();
-    this.initializeNeuralEngine();
-    
-    this.setupMiddleware(options);
-    this.setupSchemaRoutes();
-    this.setupAGUIIntegration();
-    this.setupErrorHandling();
-  }
 
-  /**
-   * Get server configuration
-   */
-  get config(): ClaudeZenServerOptions {
-    return {
-      port: this._port,
-      host: this._host,
-      enableWebSocket: true,
-      enableMetrics: true
+    this.config = {
+      port: 3000,
+      host: 'localhost',
+      cors: true,
+      helmet: true,
+      rateLimit: true,
+      websocket: true,
+      apiPrefix: '/api',
+      ...config,
     };
+
+    this.app = express();
+    this.initializeStorage();
+    this.setupMiddleware();
+    this.setupRoutes();
   }
 
   /**
-   * Get HTTP server instance
-   */
-  get httpServer(): HTTPServer | null {
-    return this._server;
-  }
-
-  /**
-   * Get WebSocket server instance
-   */
-  get wsServer(): WebSocketServer | null {
-    return this._wss;
-  }
-
-  /**
-   * Get current server status
-   */
-  get status(): SystemStatus {
-    if (!this._isRunning) return 'offline';
-    
-    const hasErrors = this._metrics.errors > 0;
-    const neuralHealthy = this._neuralEngine?.isInitialized || false;
-    
-    if (hasErrors || !neuralHealthy) return 'degraded';
-    return 'healthy';
-  }
-
-  /**
-   * Get current metrics
-   */
-  get metrics(): ServerMetricsData {
-    return { ...this._metrics };
-  }
-
-  /**
-   * Initialize storage based on schema definitions
-   * 
-   * @description Automatically creates storage maps for all schema entities
-   * that define storage requirements. Each entity gets its own storage
-   * with appropriate data structures and indexing.
-   * 
-   * @private
-   * @returns {void}
-   * 
-   * @example
-   * // Schema entity with storage
-   * visions: {
-   *   storage: 'visions',
-   *   // ... other config
-   * }
-   * // Creates: this.storage.visions = new Map()
+   * Initialize storage maps based on schema
    */
   private initializeStorage(): void {
-    if (this._storageInitialized) return;
-
-    // Auto-create storage for all schema entries that define storage
-    Object.entries(this._schema).forEach(([cmdName, cmdConfig]) => {
-      if ((cmdConfig as SchemaConfig).storage) {
-        this[(cmdConfig as SchemaConfig).storage!] = new Map();
+    // Initialize storage for each command that has storage defined
+    Object.entries(CLAUDE_ZEN_SCHEMA).forEach(([_commandName, command]) => {
+      if (command.storage) {
+        if (!this.storage.has(command.storage)) {
+          this.storage.set(command.storage, new Map());
+        }
       }
     });
-    
-    // Initialize with foundational data based on schema hierarchy
-    this.initializeFoundationalData();
-    this._storageInitialized = true;
   }
 
   /**
-   * Initialize foundational data following proper workflow hierarchy
+   * Setup Express middleware
    */
-  private initializeFoundationalData(): void {
-    // Level 1: ADRs (Foundation) - Must come first
-    const foundationalAdrs = [
-      {
-        id: 'adr-001',
-        title: 'Use Elixir/OTP for High Concurrency Services',
-        status: 'accepted',
-        decision: 'Critical services will use Elixir/OTP for 1M+ concurrent operations',
-        context: 'JavaScript services limited to 10K concurrent operations, need 100x improvement',
-        consequences: 'Massive performance gains but requires team training on functional programming',
-        alternatives: ['Node.js clustering', 'Go services', 'Rust services'],
-        implementation_notes: 'Use Nix for environment management, PM2 for process orchestration',
-        created: '2025-01-10T00:00:00Z',
-        updated: new Date().toISOString(),
-        author: 'system-architect',
-        affects: ['all-services'],
-        rationale: 'Actor model provides natural concurrency with fault tolerance'
-      },
-      {
-        id: 'adr-002', 
-        title: 'Schema-Driven API Development',
-        status: 'accepted',
-        decision: 'Use unified schema to auto-generate CLI/TUI/Web interfaces',
-        context: 'Manual endpoint creation leads to inconsistencies and maintenance burden',
-        consequences: 'Consistent interfaces across all access methods, easier maintenance',
-        alternatives: ['Manual endpoint creation', 'Code generation tools', 'GraphQL'],
-        implementation_notes: 'Single source schema generates Express routes, CLI commands, and TUI interfaces',
-        created: '2025-01-25T00:00:00Z',
-        updated: new Date().toISOString(),
-        author: 'api-architect',
-        affects: ['api-server', 'cli-tools', 'web-interface'],
-        rationale: 'DRY principle applied to interface generation'
-      }
-    ];
-
-    // Level 2: Roadmaps (Strategic)
-    const strategicRoadmaps = [
-      {
-        id: 'roadmap-001',
-        title: 'High-Performance Architecture Migration',
-        description: 'Migrate from JavaScript to Elixir/OTP for critical services',
-        status: 'active',
-        timeline: 'medium',
-        adr_references: ['adr-001'],
-        created: new Date().toISOString(),
-        updated: new Date().toISOString(),
-        author: 'technical-lead'
-      }
-    ];
-
-    // Level 5: PRDs (Extended User Stories with Specs)
-    const detailedPrds = [
-      {
-        id: 'prd-001',
-        title: 'Schema-Driven API Endpoints',
-        user_story: 'As a developer, I want API endpoints to be auto-generated from a schema so that I can maintain consistency across interfaces',
-        business_value: 'Reduces development time and eliminates interface inconsistencies',
-        status: 'approved',
-        version: '2.1.0',
-        roadmap_id: 'roadmap-001',
-        stakeholders: ['backend-team', 'frontend-team', 'api-users'],
-        functional_requirements: [
-          'Must auto-generate Express routes from schema definitions',
-          'Must support query parameter validation based on schema',
-          'Must provide consistent error responses across all endpoints'
-        ],
-        non_functional_requirements: [
-          'Route generation time: < 100ms on server startup',
-          'Schema validation overhead: < 10ms per request',
-          'Support for 1000+ concurrent requests'
-        ],
-        acceptance_criteria: [
-          'GIVEN a schema definition WHEN server starts THEN all routes are auto-generated',
-          'GIVEN invalid query parameters WHEN request made THEN validation error returned',
-          'GIVEN schema changes WHEN server restarts THEN routes updated automatically'
-        ],
-        created: '2025-01-25T00:00:00Z',
-        updated: new Date().toISOString(),
-        author: 'product-manager'
-      }
-    ];
-
-    // Level 0: Strategic Visions (High-level direction)
-    const strategicVisions = [
-      {
-        id: 'vision-001',
-        title: 'AI-Powered Customer Service Platform',
-        description: 'Build an intelligent customer service system with multi-language support and predictive analytics',
-        status: 'approved',
-        priority: 'high',
-        expected_roi: '$2.5M',
-        category: 'AI/ML',
-        created_at: '2025-01-15T00:00:00Z',
-        updated_at: new Date().toISOString(),
-        phases: [
-          { name: 'Research & Analysis', status: 'completed', progress: 100, duration: '2 weeks' },
-          { name: 'System Design', status: 'in_progress', progress: 65, duration: '3 weeks' },
-          { name: 'Core Development', status: 'pending', progress: 0, duration: '8 weeks' },
-          { name: 'Testing & QA', status: 'pending', progress: 0, duration: '3 weeks' },
-          { name: 'Deployment', status: 'pending', progress: 0, duration: '1 week' }
-        ],
-        success_metrics: ['Customer satisfaction +40%', 'Response time <30s', 'Multi-language support'],
-        stakeholders: ['Customer Success', 'Engineering', 'Product']
-      },
-      {
-        id: 'vision-002',
-        title: 'Blockchain Supply Chain Tracker',
-        description: 'Transparent supply chain tracking using blockchain technology for end-to-end visibility',
-        status: 'pending',
-        priority: 'medium',
-        expected_roi: '$1.8M',
-        category: 'Blockchain',
-        created_at: '2025-01-20T00:00:00Z',
-        updated_at: new Date().toISOString(),
-        phases: [
-          { name: 'Market Research', status: 'in_progress', progress: 40, duration: '3 weeks' },
-          { name: 'Technical Specification', status: 'pending', progress: 0, duration: '2 weeks' },
-          { name: 'Blockchain Integration', status: 'pending', progress: 0, duration: '6 weeks' },
-          { name: 'UI Development', status: 'pending', progress: 0, duration: '4 weeks' },
-          { name: 'Go Live', status: 'pending', progress: 0, duration: '1 week' }
-        ],
-        success_metrics: ['100% supply chain visibility', 'Fraud reduction 90%', 'Compliance automation'],
-        stakeholders: ['Supply Chain', 'Legal', 'Engineering']
-      },
-      {
-        id: 'vision-003',
-        title: 'Neural Network Code Optimizer',
-        description: 'AI system that automatically optimizes code performance using neural networks and static analysis',
-        status: 'approved',
-        priority: 'high',
-        expected_roi: '$3.2M',
-        category: 'AI/ML',
-        created_at: '2025-01-25T00:00:00Z',
-        updated_at: new Date().toISOString(),
-        phases: [
-          { name: 'Algorithm Research', status: 'completed', progress: 100, duration: '4 weeks' },
-          { name: 'Neural Model Training', status: 'completed', progress: 100, duration: '6 weeks' },
-          { name: 'Integration Development', status: 'in_progress', progress: 80, duration: '5 weeks' },
-          { name: 'Performance Testing', status: 'pending', progress: 0, duration: '2 weeks' },
-          { name: 'Production Release', status: 'pending', progress: 0, duration: '1 week' }
-        ],
-        success_metrics: ['Performance improvement 300%', 'Bug reduction 50%', 'Developer productivity +25%'],
-        stakeholders: ['Engineering', 'DevOps', 'CTO Office']
-      }
-    ];
-
-    // Store in appropriate storage maps
-    if (this.visions) {
-      strategicVisions.forEach(vision => this.visions.set(vision.id, vision));
-    }
-    if (this.adrs) {
-      foundationalAdrs.forEach(adr => this.adrs.set(adr.id, adr));
-    }
-    if (this.roadmaps) {
-      strategicRoadmaps.forEach(roadmap => this.roadmaps.set(roadmap.id, roadmap));
-    }
-    if (this.prds) {
-      detailedPrds.forEach(prd => this.prds.set(prd.id, prd));
-    }
-  }
-
-  /**
-   * Setup middleware with security and performance optimizations
-   */
-  private setupMiddleware(options: ClaudeZenServerOptions): void {
+  private setupMiddleware(): void {
     // Security middleware
-    this._app.use(helmet({
-      contentSecurityPolicy: false, // Disable for Swagger UI
-      crossOriginEmbedderPolicy: false
-    }));
+    if (this.config.helmet) {
+      this.app.use(helmet());
+    }
 
-    // CORS configuration
-    this._app.use(cors({
-      origin: process.env.NODE_ENV === 'production' ? false : '*',
-      credentials: true,
-      ...options.cors
-    }));
+    // CORS middleware
+    if (this.config.cors) {
+      this.app.use(cors());
+    }
 
     // Rate limiting
-    const limiter = rateLimit({
-      windowMs: options.rateLimit?.windowMs || (this._schema as any).__meta?.autoGenerate?.rateLimit?.windowMs || 15 * 60 * 1000,
-      max: options.rateLimit?.max || (this._schema as any).__meta?.autoGenerate?.rateLimit?.max || 1000,
-      message: { error: 'Too many requests, please try again later.' }
-    });
-    this._app.use(limiter);
+    if (this.config.rateLimit) {
+      const limiter = rateLimit({
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 100, // limit each IP to 100 requests per windowMs
+      });
+      this.app.use(limiter);
+    }
 
     // Body parsing
-    this._app.use(express.json({ limit: '10mb' }));
-    this._app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+    this.app.use(express.json({ limit: '10mb' }));
+    this.app.use(express.urlencoded({ extended: true }));
 
     // Request logging and metrics
-    this._app.use((req: Request, res: Response, next: NextFunction) => {
-      this._metrics.requests++;
-      const timestamp = new Date().toISOString();
-      console.log(`${timestamp} ${req.method} ${req.path}`);
+    this.app.use((req: Request, _res: Response, next: NextFunction) => {
+      this.metrics.requests++;
+      console.warn(`${new Date().toISOString()} ${req.method} ${req.path}`);
       next();
     });
   }
 
   /**
-   * Setup routes auto-generated from schema
+   * Setup API routes based on schema
    */
-  private setupSchemaRoutes(): void {
-    // Initialize storage first
-    this.initializeStorage();
+  private setupRoutes(): void {
+    const apiPrefix = this.config.apiPrefix!;
 
-    // Generate OpenAPI documentation
-    const openApiSpec = generateOpenAPISpec(this._schema);
-    
-    // Swagger UI for API documentation
-    this._app.use('/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec, {
-      customSiteTitle: 'Claude Zen API Documentation',
-      customCss: '.swagger-ui .topbar { display: none }'
-    }));
-
-    // Schema endpoint for introspection
-    this._app.get('/api/schema', (req: Request, res: Response) => {
+    // Health check
+    this.app.get('/health', (_req: Request, res: Response) => {
       res.json({
-        success: true,
-        schema: this._schema,
-        routes: this._generatedRoutes,
-        hierarchy: (this._schema as any).__meta?.workflow_hierarchy
+        status: 'healthy',
+        version: SCHEMA_METADATA.version,
+        uptime: Date.now() - this.metrics.startTime,
+        metrics: this.getMetrics(),
       });
     });
 
-    // Auto-generate workflow routes from schema
-    this._generatedRoutes = generateWorkflowRoutes(this._schema, this);
+    // API documentation
+    this.app.get(`${apiPrefix}/docs`, (_req: Request, res: Response) => {
+      const openApiSpec = generateOpenAPISpec();
+      res.json(openApiSpec);
+    });
 
-    // Health endpoint
-    this._app.get('/health', (req: Request, res: Response) => {
+    // Schema info
+    this.app.get(`${apiPrefix}/schema`, (_req: Request, res: Response) => {
       res.json({
-        status: 'ok',
-        uptime: (Date.now() - this._metrics.uptime) / 1000,
-        version: (this._schema as any).__meta?.apiVersion || '2.1.0',
-        timestamp: new Date().toISOString(),
-        routes_generated: this._generatedRoutes.length
+        metadata: SCHEMA_METADATA,
+        commands: Object.keys(CLAUDE_ZEN_SCHEMA),
+        webEnabled: Object.keys(getWebEnabledCommands()),
       });
     });
 
-    // Root endpoint with API info
-    this._app.get('/', (req: Request, res: Response) => {
-      res.json({
-        name: (this._schema as any).__meta?.title || 'Claude Zen API',
-        version: (this._schema as any).__meta?.apiVersion || '2.1.0',
-        description: (this._schema as any).__meta?.description,
-        schema_driven: true,
-        endpoints: {
-          docs: '/docs',
-          schema: '/api/schema',
-          health: '/health'
-        },
-        workflow_hierarchy: (this._schema as any).__meta?.workflow_hierarchy,
-        generated_routes: this._generatedRoutes.length
+    // Generate routes from schema
+    this.generateSchemaRoutes();
+
+    // Generic command execution endpoint
+    this.app.post(`${apiPrefix}/execute`, async (req: Request, res: Response) => {
+      try {
+        const { command, args = {} } = req.body;
+
+        if (!command) {
+          return res.status(400).json({
+            error: 'Command is required',
+            available: Object.keys(CLAUDE_ZEN_SCHEMA),
+          });
+        }
+
+        const result = await this.executeCommand(command, args);
+        res.json(result);
+      } catch (error) {
+        this.metrics.errors++;
+        console.error('Command execution error:', error);
+        res.status(500).json({
+          error: 'Command execution failed',
+          message: error instanceof Error ? error.message : 'Unknown error',
+        });
+      }
+    });
+
+    // Metrics endpoint
+    this.app.get(`${apiPrefix}/metrics`, (_req: Request, res: Response) => {
+      res.json(this.getMetrics());
+    });
+
+    // Error handling
+    this.app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+      this.metrics.errors++;
+      console.error('Server error:', err);
+      res.status(500).json({
+        error: 'Internal server error',
+        message: err.message,
       });
     });
 
-    console.log(`✅ Auto-generated ${this._generatedRoutes.length} routes from schema`);
-    this._generatedRoutes.forEach(route => {
-      console.log(`   ${route.method.toUpperCase()} ${route.endpoint} -> ${route.command}`);
+    // 404 handler
+    this.app.use('*', (req: Request, res: Response) => {
+      res.status(404).json({
+        error: 'Not found',
+        path: req.originalUrl,
+        available: this.getAvailableEndpoints(),
+      });
     });
   }
 
   /**
-   * Setup error handling
+   * Generate routes from schema
    */
-  private setupErrorHandling(): void {
-    // 404 handler (must be after all routes)  
-    this._app.use((req: Request, res: Response) => {
-      res.status(404).json({
-        success: false,
-        error: 'Endpoint not found',
-        message: `${req.method} ${req.originalUrl} is not available`,
-        available_endpoints: this._generatedRoutes.map(r => `${r.method.toUpperCase()} ${r.endpoint}`),
-        timestamp: new Date().toISOString()
-      });
-    });
+  private generateSchemaRoutes(): void {
+    const webCommands = getWebEnabledCommands();
 
-    // Global error handler
-    this._app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-      console.error('Server error:', err);
-      this._metrics.errors++;
-      
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-        message: err.message,
-        timestamp: new Date().toISOString()
-      });
+    Object.entries(webCommands).forEach(([commandName, command]) => {
+      if (!command.interfaces.web) return;
+
+      const { endpoint, method } = command.interfaces.web;
+      const fullPath = `${this.config.apiPrefix}${endpoint}`;
+
+      // Create route handler
+      const handler = async (req: Request, res: Response) => {
+        try {
+          const args = { ...req.query, ...req.body };
+
+          // Validate arguments
+          const validation = validateCommandArgs(commandName, args);
+          if (!validation.valid) {
+            return res.status(400).json({
+              error: 'Validation failed',
+              missing: validation.missing,
+              errors: validation.errors,
+            });
+          }
+
+          // Execute command
+          const result = await this.executeCommand(commandName, args);
+          res.json(result);
+        } catch (error) {
+          this.metrics.errors++;
+          console.error(`Error in ${commandName}:`, error);
+          res.status(500).json({
+            error: 'Command execution failed',
+            command: commandName,
+            message: error instanceof Error ? error.message : 'Unknown error',
+          });
+        }
+      };
+
+      // Register route based on HTTP method
+      switch (method.toUpperCase()) {
+        case 'GET':
+          this.app.get(fullPath, handler);
+          break;
+        case 'POST':
+          this.app.post(fullPath, handler);
+          break;
+        case 'PUT':
+          this.app.put(fullPath, handler);
+          break;
+        case 'DELETE':
+          this.app.delete(fullPath, handler);
+          break;
+        default:
+          console.warn(`Unsupported HTTP method: ${method} for ${commandName}`);
+      }
     });
+  }
+
+  /**
+   * Execute a command
+   */
+  private async executeCommand(commandName: string, args: any): Promise<any> {
+    const command = CLAUDE_ZEN_SCHEMA[commandName];
+
+    if (!command) {
+      throw new Error(`Unknown command: ${commandName}`);
+    }
+
+    // Handle storage-based commands
+    if (command.storage) {
+      const storageMap = this.storage.get(command.storage);
+      if (!storageMap) {
+        throw new Error(`Storage not found for: ${command.storage}`);
+      }
+
+      // Simple CRUD operations based on command name pattern
+      if (commandName.includes('create')) {
+        const id = uuidv4();
+        const item = {
+          id,
+          ...args,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        storageMap.set(id, item);
+        return { success: true, id, item };
+      }
+
+      if (commandName.includes('list')) {
+        return {
+          success: true,
+          items: Array.from(storageMap.values()),
+          total: storageMap.size,
+        };
+      }
+
+      if (commandName.includes('get')) {
+        const item = storageMap.get(args.id);
+        if (!item) {
+          throw new Error(`Item not found: ${args.id}`);
+        }
+        return { success: true, item };
+      }
+
+      if (commandName.includes('update')) {
+        const item = storageMap.get(args.id);
+        if (!item) {
+          throw new Error(`Item not found: ${args.id}`);
+        }
+        const updated = { ...item, ...args, updatedAt: new Date().toISOString() };
+        storageMap.set(args.id, updated);
+        return { success: true, item: updated };
+      }
+
+      if (commandName.includes('delete')) {
+        const existed = storageMap.delete(args.id);
+        return { success: true, deleted: existed };
+      }
+    }
+
+    // Default command execution
+    return {
+      success: true,
+      command: commandName,
+      args,
+      timestamp: new Date().toISOString(),
+      message: `Command ${commandName} executed successfully`,
+    };
   }
 
   /**
    * Start the server
    */
-  async start(): Promise<void> {
-    if (this._isRunning) {
-      throw new Error('Server is already running');
-    }
-
+  async start(): Promise<{ port: number; host: string; urls: string[] }> {
     return new Promise((resolve, reject) => {
-      this._server = this._app.listen(this._port, this._host, (err?: Error) => {
-        if (err) {
-          reject(err);
-          return;
+      try {
+        this.server = createServer(this.app);
+
+        if (this.config.websocket) {
+          this.setupWebSocket();
         }
 
-        this._isRunning = true;
-        
-        // Initialize WebSocket with AG-UI after HTTP server starts
-        this.setupWebSocketWithAGUI();
-        
-        console.log('🚀 Claude Zen API server running on port ' + this._port);
-        console.log('📖 API documentation: http://localhost:' + this._port + '/docs');
-        console.log('🔗 WebSocket endpoint: ws://localhost:' + this._port + '/ws');
-        console.log('🌟 AG-UI protocol: http://localhost:' + this._port + '/agui/status');
-        console.log('✅ Server started successfully');
+        this.server.listen(this.config.port, this.config.host, () => {
+          this.isRunning = true;
+          this.metrics.startTime = Date.now();
 
-        this.emit('started', { port: this._port, host: this._host });
-        resolve();
-      });
+          const result = {
+            port: this.config.port!,
+            host: this.config.host!,
+            urls: [
+              `http://${this.config.host}:${this.config.port}`,
+              `http://${this.config.host}:${this.config.port}${this.config.apiPrefix}`,
+              `http://${this.config.host}:${this.config.port}/health`,
+            ],
+          };
 
-      this._server!.on('error', (err: NodeJS.ErrnoException) => {
-        if (err.code === 'EADDRINUSE') {
-          reject(new Error(`Port ${this._port} is already in use`));
-        } else {
-          reject(err);
-        }
-      });
+          if (this.config.websocket) {
+            result.urls.push(`ws://${this.config.host}:${this.config.port}`);
+          }
+
+          this.emit('started', result);
+          resolve(result);
+        });
+
+        this.server.on('error', (error) => {
+          reject(error);
+        });
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
@@ -580,13 +399,18 @@ export class ClaudeZenServer extends EventEmitter implements Partial<UnifiedServ
    * Stop the server
    */
   async stop(): Promise<void> {
-    if (!this._isRunning) {
-      return;
-    }
-
     return new Promise((resolve) => {
-      this._server!.close(() => {
-        this._isRunning = false;
+      if (!this.server) {
+        resolve();
+        return;
+      }
+
+      if (this.wss) {
+        this.wss.close();
+      }
+
+      this.server.close(() => {
+        this.isRunning = false;
         this.emit('stopped');
         resolve();
       });
@@ -594,216 +418,69 @@ export class ClaudeZenServer extends EventEmitter implements Partial<UnifiedServ
   }
 
   /**
-   * Setup AG-UI protocol integration
+   * Setup WebSocket server
    */
-  private setupAGUIIntegration(): void {
-    // AG-UI will be initialized when WebSocket server starts
-    this._aguiMiddleware = null;
-    
-    // Add AG-UI status endpoint
-    this._app.get('/agui/status', (req: Request, res: Response) => {
-      if (this._aguiMiddleware) {
-        res.json({
-          enabled: true,
-          stats: this._aguiMiddleware.getStats(),
-          adapters: {
-            global: this._aguiMiddleware.getGlobalAdapter().getStats()
-          }
-        });
-      } else {
-        res.json({
-          enabled: false,
-          message: 'AG-UI middleware not initialized'
-        });
-      }
-    });
-    
-    // Add AG-UI events endpoint for testing
-    this._app.post('/agui/emit', (req: Request, res: Response) => {
-      if (!this._aguiMiddleware) {
-        return res.status(400).json({ error: 'AG-UI not initialized' });
-      }
-      
-      const { type, data } = req.body;
-      const globalAdapter = this._aguiMiddleware.getGlobalAdapter();
-      
-      try {
-        switch (type) {
-          case 'text_message':
-            globalAdapter.startTextMessage();
-            globalAdapter.addTextContent(data.content || 'Test message');
-            globalAdapter.endTextMessage();
-            break;
-            
-          case 'tool_call':
-            const toolCallId = globalAdapter.startToolCall(data.name || 'test_tool');
-            globalAdapter.addToolCallArgs(JSON.stringify(data.args || {}));
-            globalAdapter.endToolCall(toolCallId);
-            globalAdapter.emitToolCallResult(data.result || 'Test result', toolCallId);
-            break;
-            
-          case 'queen_action':
-            globalAdapter.emitQueenEvent(data.queenId || 'queen-1', data.action || 'test', data.data || {});
-            break;
-            
-          case 'hive_mind':
-            globalAdapter.emitHiveMindEvent(data.action || 'test', data.data || {});
-            break;
-            
-          default:
-            globalAdapter.emitCustomEvent(type, data);
-        }
-        
-        res.json({ success: true, message: 'AG-UI event emitted' });
-      } catch (error) {
-        res.status(500).json({ error: (error as Error).message });
-      }
-    });
-  }
+  private setupWebSocket(): void {
+    if (!this.server) return;
 
-  /**
-   * Initialize WebSocket server with AG-UI integration
-   */
-  private setupWebSocketWithAGUI(): void {
-    if (this._wss) return; // Already initialized
-    
-    this._wss = new WebSocketServer({ 
-      server: this._server!,
-      path: '/ws'
-    });
-    
-    // Initialize AG-UI middleware
-    this._aguiMiddleware = integrateAGUIWithWebSocket(this._wss, {
-      enableBroadcast: true,
-      enableFiltering: true
-    });
-    
-    // Setup connection handling
-    this._wss.on('connection', (ws, request) => {
-      const clientId = this.generateClientId();
-      
-      const client: WebSocketClient = {
-        id: clientId,
-        socket: ws,
-        metadata: {},
-        connectedAt: new Date(),
-        lastActivity: new Date(),
-        subscriptions: []
-      };
-      
-      this._wsClients.set(clientId, client);
-      console.log(`🔗 New WebSocket connection established: ${clientId}`);
-      
-      // Send welcome message via AG-UI
-      const adapter = this._aguiMiddleware.getClientAdapter(ws);
-      if (adapter) {
-        setTimeout(() => {
-          adapter.emitCustomEvent('welcome', {
-            message: 'Connected to Claude Code Zen with AG-UI support',
-            serverVersion: this.getStatus().schema_version,
-            timestamp: Date.now()
-          });
-        }, 100);
-      }
-      
-      // Handle client disconnect
+    this.wss = new WebSocketServer({ server: this.server });
+
+    this.wss.on('connection', (ws) => {
+      this.metrics.websocketConnections++;
+
       ws.on('close', () => {
-        this._wsClients.delete(clientId);
-        console.log(`🔗 WebSocket connection closed: ${clientId}`);
+        this.metrics.websocketConnections--;
       });
-      
-      ws.on('error', (error) => {
-        console.error(`🔗 WebSocket error for ${clientId}:`, error);
-      });
+
+      ws.send(
+        JSON.stringify({
+          type: 'welcome',
+          message: 'Connected to Claude Zen Server',
+          timestamp: new Date().toISOString(),
+        })
+      );
     });
-    
-    console.log('🚀 WebSocket server initialized with AG-UI protocol support');
   }
 
   /**
-   * Initialize neural engine automatically
+   * Get server metrics
    */
-  private async initializeNeuralEngine(): Promise<void> {
-    try {
-      await this._neuralEngine.initialize();
-      console.log(`🧠 API Server: Neural engine initialized with ${this._neuralEngine.models.size} models`);
-    } catch (error) {
-      console.warn(`⚠️ API Server: Neural engine unavailable: ${(error as Error).message}`);
-    }
-  }
-
-  /**
-   * Get server status
-   */
-  getStatus(): {
-    running: boolean;
-    port: number;
-    uptime: number;
-    requests: number;
-    errors: number;
-    generated_routes: number;
-    schema_version: string | undefined;
-    neural_engine: {
-      initialized: boolean;
-      models: number;
-      cache_size: number;
-    } | null;
-  } {
+  getMetrics(): ServerMetrics {
     return {
-      running: this._isRunning,
-      port: this._port,
-      uptime: (Date.now() - this._metrics.uptime) / 1000,
-      requests: this._metrics.requests,
-      errors: this._metrics.errors,
-      generated_routes: this._generatedRoutes.length,
-      schema_version: (this._schema as any).__meta?.apiVersion,
-      neural_engine: this._neuralEngine ? {
-        initialized: this._neuralEngine.isInitialized,
-        models: this._neuralEngine.models.size,
-        cache_size: this._neuralEngine.cache.size
-      } : null
+      ...this.metrics,
+      uptime: Date.now() - this.metrics.startTime,
     };
   }
 
   /**
-   * Broadcast message to all WebSocket clients
+   * Get available endpoints
    */
-  broadcast(event: string, data: JSONValue): void {
-    if (!this._wss) return;
-    
-    const message: WebSocketMessage = {
-      type: event,
-      data,
-      timestamp: new Date()
-    };
-    
-    for (const client of this._wsClients.values()) {
-      if (client.socket.readyState === client.socket.OPEN) {
-        try {
-          client.socket.send(JSON.stringify(message));
-          client.lastActivity = new Date();
-        } catch (error) {
-          console.error(`Failed to send message to client ${client.id}:`, error);
-        }
+  private getAvailableEndpoints(): string[] {
+    const endpoints = [
+      '/health',
+      `${this.config.apiPrefix}/docs`,
+      `${this.config.apiPrefix}/schema`,
+      `${this.config.apiPrefix}/execute`,
+      `${this.config.apiPrefix}/metrics`,
+    ];
+
+    // Add schema-based endpoints
+    const webCommands = getWebEnabledCommands();
+    Object.values(webCommands).forEach((command) => {
+      if (command.interfaces.web) {
+        endpoints.push(`${this.config.apiPrefix}${command.interfaces.web.endpoint}`);
       }
-    }
+    });
+
+    return endpoints.sort();
   }
 
   /**
-   * Get connected WebSocket clients
+   * Check if server is running
    */
-  getConnectedClients(): WebSocketClient[] {
-    return Array.from(this._wsClients.values());
-  }
-
-  /**
-   * Generate unique client ID
-   */
-  private generateClientId(): string {
-    return `client-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  isServerRunning(): boolean {
+    return this.isRunning;
   }
 }
 
-// Export singleton instance
-export const claudeZenServer = new ClaudeZenServer();
-export default claudeZenServer;
+export default ClaudeZenServer;

@@ -3,8 +3,8 @@
  * Demonstrates sophisticated swarm patterns and coordination strategies
  */
 
+import { EventEmitter } from 'node:events';
 import { ParallelSwarmOrchestrator } from '../src/coordination/parallel-swarm-orchestrator.js';
-import { EventEmitter } from 'events';
 
 class SwarmCoordinationExample extends EventEmitter {
   constructor() {
@@ -15,47 +15,47 @@ class SwarmCoordinationExample extends EventEmitter {
   }
 
   async initialize() {
-    console.log('🚀 Initializing Advanced Swarm Coordination Example');
+    console.warn('🚀 Initializing Advanced Swarm Coordination Example');
 
     this.orchestrator = new ParallelSwarmOrchestrator({
       parallelMode: true,
       maxWorkers: 8,
-      loadBalancingStrategy: 'capability-based'
+      loadBalancingStrategy: 'capability-based',
     });
 
     await this.orchestrator.initialize();
-    
+
     // Set up event handlers
     this.setupEventHandlers();
-    
-    console.log('✅ Swarm coordinator initialized');
+
+    console.warn('✅ Swarm coordinator initialized');
     return this;
   }
 
   setupEventHandlers() {
     this.orchestrator.on('swarm-created', (data) => {
-      console.log(`🐝 Swarm created: ${data.swarmId} (${data.topology})`);
+      console.warn(`🐝 Swarm created: ${data.swarmId} (${data.topology})`);
     });
 
     this.orchestrator.on('task-completed', (data) => {
-      console.log(`✅ Task completed: ${data.taskId} by ${data.agentId}`);
+      console.warn(`✅ Task completed: ${data.taskId} by ${data.agentId}`);
     });
 
     this.orchestrator.on('swarm-metrics', (data) => {
-      console.log(`📊 Swarm metrics: ${JSON.stringify(data)}`);
+      console.warn(`📊 Swarm metrics: ${JSON.stringify(data)}`);
     });
   }
 
   // Example 1: Hierarchical Code Analysis Swarm
   async hierarchicalAnalysisExample() {
-    console.log('\n🏗️ === Hierarchical Code Analysis Swarm ===');
+    console.warn('\n🏗️ === Hierarchical Code Analysis Swarm ===');
 
     const swarmConfig = {
       id: 'analysis-swarm-001',
       topology: 'hierarchical',
       strategy: 'specialized',
       maxAgents: 12,
-      queens: 2
+      queens: 2,
     };
 
     // Create hierarchical swarm
@@ -64,22 +64,38 @@ class SwarmCoordinationExample extends EventEmitter {
     // Spawn Queen coordinators
     await this.spawnQueen(swarm.id, {
       name: 'AnalysisQueen',
-      capabilities: ['orchestration', 'analysis-coordination', 'reporting']
+      capabilities: ['orchestration', 'analysis-coordination', 'reporting'],
     });
 
     await this.spawnQueen(swarm.id, {
-      name: 'OptimizationQueen', 
-      capabilities: ['optimization', 'performance-analysis', 'recommendations']
+      name: 'OptimizationQueen',
+      capabilities: ['optimization', 'performance-analysis', 'recommendations'],
     });
 
     // Spawn specialized agents in hierarchy
     const agents = [
-      { type: 'architect', name: 'ArchAnalyzer', capabilities: ['architecture-review', 'design-patterns'] },
+      {
+        type: 'architect',
+        name: 'ArchAnalyzer',
+        capabilities: ['architecture-review', 'design-patterns'],
+      },
       { type: 'coder', name: 'CodeAnalyzer', capabilities: ['code-quality', 'best-practices'] },
       { type: 'tester', name: 'TestAnalyzer', capabilities: ['test-coverage', 'test-quality'] },
-      { type: 'reviewer', name: 'SecurityAnalyzer', capabilities: ['security-audit', 'vulnerability-scan'] },
-      { type: 'optimizer', name: 'PerfAnalyzer', capabilities: ['performance-analysis', 'bottleneck-detection'] },
-      { type: 'documenter', name: 'DocAnalyzer', capabilities: ['documentation-analysis', 'completeness-check'] }
+      {
+        type: 'reviewer',
+        name: 'SecurityAnalyzer',
+        capabilities: ['security-audit', 'vulnerability-scan'],
+      },
+      {
+        type: 'optimizer',
+        name: 'PerfAnalyzer',
+        capabilities: ['performance-analysis', 'bottleneck-detection'],
+      },
+      {
+        type: 'documenter',
+        name: 'DocAnalyzer',
+        capabilities: ['documentation-analysis', 'completeness-check'],
+      },
     ];
 
     for (const agent of agents) {
@@ -98,26 +114,26 @@ class SwarmCoordinationExample extends EventEmitter {
         { name: 'performance-analysis', assignee: 'PerfAnalyzer', parallel: true },
         { name: 'test-analysis', assignee: 'TestAnalyzer', parallel: true },
         { name: 'documentation-analysis', assignee: 'DocAnalyzer', parallel: true },
-        { name: 'optimization-recommendations', assignee: 'OptimizationQueen', parallel: false }
-      ]
+        { name: 'optimization-recommendations', assignee: 'OptimizationQueen', parallel: false },
+      ],
     };
 
     const result = await this.orchestrateTask(swarm.id, analysisTask);
-    console.log('Analysis Result:', result);
+    console.warn('Analysis Result:', result);
 
     return { swarm, result };
   }
 
   // Example 2: Mesh Network Resilient Processing
   async meshResilienceExample() {
-    console.log('\n🕸️ === Mesh Network Resilient Processing ===');
+    console.warn('\n🕸️ === Mesh Network Resilient Processing ===');
 
     const swarmConfig = {
       id: 'resilient-swarm-002',
       topology: 'mesh',
       strategy: 'balanced',
       maxAgents: 9,
-      faultTolerance: true
+      faultTolerance: true,
     };
 
     const swarm = await this.createSwarm(swarmConfig);
@@ -129,7 +145,7 @@ class SwarmCoordinationExample extends EventEmitter {
         type: 'processor',
         name: `MeshProcessor-${i}`,
         capabilities: ['data-processing', 'fault-tolerance', 'redundancy'],
-        position: { x: (i - 1) % 3, y: Math.floor((i - 1) / 3) }
+        position: { x: (i - 1) % 3, y: Math.floor((i - 1) / 3) },
       });
     }
 
@@ -149,8 +165,8 @@ class SwarmCoordinationExample extends EventEmitter {
       faultTolerance: {
         maxFailures: 2,
         retryStrategy: 'exponential-backoff',
-        failoverTime: 1000
-      }
+        failoverTime: 1000,
+      },
     };
 
     // Simulate failures during processing
@@ -158,20 +174,20 @@ class SwarmCoordinationExample extends EventEmitter {
     setTimeout(() => this.simulateAgentFailure(swarm.id, 'MeshProcessor-7'), 4000);
 
     const result = await this.orchestrateTask(swarm.id, resilientTask);
-    console.log('Resilient Processing Result:', result);
+    console.warn('Resilient Processing Result:', result);
 
     return { swarm, result };
   }
 
   // Example 3: Pipeline Processing with Ring Topology
   async pipelineProcessingExample() {
-    console.log('\n🔄 === Pipeline Processing with Ring Topology ===');
+    console.warn('\n🔄 === Pipeline Processing with Ring Topology ===');
 
     const swarmConfig = {
       id: 'pipeline-swarm-003',
       topology: 'ring',
       strategy: 'sequential',
-      maxAgents: 8
+      maxAgents: 8,
     };
 
     const swarm = await this.createSwarm(swarmConfig);
@@ -185,14 +201,14 @@ class SwarmCoordinationExample extends EventEmitter {
       { name: 'QualityAssurance', capabilities: ['quality-check', 'validation'] },
       { name: 'DataAggregation', capabilities: ['aggregation', 'summarization'] },
       { name: 'ResultFormatting', capabilities: ['formatting', 'output-generation'] },
-      { name: 'DataExport', capabilities: ['export', 'delivery'] }
+      { name: 'DataExport', capabilities: ['export', 'delivery'] },
     ];
 
     for (const stage of pipelineStages) {
       await this.spawnAgent(swarm.id, {
         type: 'processor',
         name: stage.name,
-        capabilities: stage.capabilities
+        capabilities: stage.capabilities,
       });
     }
 
@@ -204,20 +220,20 @@ class SwarmCoordinationExample extends EventEmitter {
       id: 'pipeline-processing-001',
       type: 'sequential-pipeline',
       inputData: this.generateSampleData(),
-      pipeline: pipelineStages.map(stage => stage.name),
+      pipeline: pipelineStages.map((stage) => stage.name),
       checkpoints: true, // Enable progress checkpoints
-      rollbackOnFailure: true
+      rollbackOnFailure: true,
     };
 
     const result = await this.orchestrateTask(swarm.id, pipelineTask);
-    console.log('Pipeline Processing Result:', result);
+    console.warn('Pipeline Processing Result:', result);
 
     return { swarm, result };
   }
 
   // Example 4: Dynamic Load Balancing
   async dynamicLoadBalancingExample() {
-    console.log('\n⚖️ === Dynamic Load Balancing Example ===');
+    console.warn('\n⚖️ === Dynamic Load Balancing Example ===');
 
     const swarmConfig = {
       id: 'loadbalanced-swarm-004',
@@ -228,8 +244,8 @@ class SwarmCoordinationExample extends EventEmitter {
         enabled: true,
         strategy: 'least-loaded',
         rebalanceInterval: 5000,
-        threshold: 0.8
-      }
+        threshold: 0.8,
+      },
     };
 
     const swarm = await this.createSwarm(swarmConfig);
@@ -238,7 +254,7 @@ class SwarmCoordinationExample extends EventEmitter {
     await this.spawnAgent(swarm.id, {
       type: 'coordinator',
       name: 'LoadBalancer',
-      capabilities: ['load-balancing', 'task-distribution', 'monitoring']
+      capabilities: ['load-balancing', 'task-distribution', 'monitoring'],
     });
 
     // Variable-capacity workers
@@ -249,7 +265,7 @@ class SwarmCoordinationExample extends EventEmitter {
         name: `Worker-${i}`,
         capabilities: ['task-processing', 'computation'],
         capacity: Math.floor(Math.random() * 10) + 5, // Random capacity 5-15
-        performance: Math.random() * 0.5 + 0.75 // Random performance 0.75-1.25
+        performance: Math.random() * 0.5 + 0.75, // Random performance 0.75-1.25
       });
     }
 
@@ -259,48 +275,48 @@ class SwarmCoordinationExample extends EventEmitter {
 
     // Generate varying workload
     const tasks = this.generateVariableWorkload(100);
-    
+
     // Monitor load balancing
     const monitor = setInterval(async () => {
       const metrics = await this.getSwarmMetrics(swarm.id);
-      console.log('Load Distribution:', metrics.loadDistribution);
+      console.warn('Load Distribution:', metrics.loadDistribution);
     }, 2000);
 
     const result = await this.distributeWorkload(swarm.id, tasks);
     clearInterval(monitor);
 
-    console.log('Load Balancing Result:', result);
+    console.warn('Load Balancing Result:', result);
     return { swarm, result };
   }
 
   // Example 5: Multi-Swarm Coordination
   async multiSwarmCoordinationExample() {
-    console.log('\n🌐 === Multi-Swarm Coordination Example ===');
+    console.warn('\n🌐 === Multi-Swarm Coordination Example ===');
 
     // Create specialized swarms
     const analysisSwarm = await this.createSwarm({
       id: 'analysis-swarm',
       topology: 'hierarchical',
-      specialization: 'analysis'
+      specialization: 'analysis',
     });
 
     const processingSwarm = await this.createSwarm({
-      id: 'processing-swarm', 
+      id: 'processing-swarm',
       topology: 'mesh',
-      specialization: 'processing'
+      specialization: 'processing',
     });
 
     const reportingSwarm = await this.createSwarm({
       id: 'reporting-swarm',
       topology: 'star',
-      specialization: 'reporting'
+      specialization: 'reporting',
     });
 
     // Set up inter-swarm communication
     await this.establishInterSwarmCommunication([
       analysisSwarm.id,
       processingSwarm.id,
-      reportingSwarm.id
+      reportingSwarm.id,
     ]);
 
     // Coordinate complex multi-swarm workflow
@@ -309,23 +325,33 @@ class SwarmCoordinationExample extends EventEmitter {
       type: 'cross-swarm-collaboration',
       workflow: [
         { swarm: analysisSwarm.id, task: 'initial-analysis', output: 'analysis-results' },
-        { swarm: processingSwarm.id, task: 'data-processing', input: 'analysis-results', output: 'processed-data' },
-        { swarm: reportingSwarm.id, task: 'generate-report', input: 'processed-data', output: 'final-report' }
+        {
+          swarm: processingSwarm.id,
+          task: 'data-processing',
+          input: 'analysis-results',
+          output: 'processed-data',
+        },
+        {
+          swarm: reportingSwarm.id,
+          task: 'generate-report',
+          input: 'processed-data',
+          output: 'final-report',
+        },
       ],
       synchronization: 'barrier', // Wait for each stage to complete
-      errorHandling: 'cascade-rollback'
+      errorHandling: 'cascade-rollback',
     };
 
     const result = await this.orchestrateMultiSwarmTask(multiSwarmTask);
-    console.log('Multi-Swarm Result:', result);
+    console.warn('Multi-Swarm Result:', result);
 
     return { swarms: [analysisSwarm, processingSwarm, reportingSwarm], result };
   }
 
   // Helper methods for swarm operations
   async createSwarm(config) {
-    console.log(`🐝 Creating swarm: ${config.id} (${config.topology})`);
-    
+    console.warn(`🐝 Creating swarm: ${config.id} (${config.topology})`);
+
     const swarm = {
       id: config.id,
       topology: config.topology,
@@ -333,7 +359,7 @@ class SwarmCoordinationExample extends EventEmitter {
       agents: new Map(),
       queens: new Map(),
       createdAt: new Date(),
-      status: 'active'
+      status: 'active',
     };
 
     this.swarms.set(config.id, swarm);
@@ -343,8 +369,8 @@ class SwarmCoordinationExample extends EventEmitter {
   }
 
   async spawnQueen(swarmId, queenConfig) {
-    console.log(`👑 Spawning Queen: ${queenConfig.name} in swarm ${swarmId}`);
-    
+    console.warn(`👑 Spawning Queen: ${queenConfig.name} in swarm ${swarmId}`);
+
     const swarm = this.swarms.get(swarmId);
     if (!swarm) throw new Error(`Swarm ${swarmId} not found`);
 
@@ -355,7 +381,7 @@ class SwarmCoordinationExample extends EventEmitter {
       capabilities: queenConfig.capabilities,
       swarmId,
       status: 'active',
-      spawnedAt: new Date()
+      spawnedAt: new Date(),
     };
 
     swarm.queens.set(queen.id, queen);
@@ -365,8 +391,8 @@ class SwarmCoordinationExample extends EventEmitter {
   }
 
   async spawnAgent(swarmId, agentConfig) {
-    console.log(`🤖 Spawning agent: ${agentConfig.name} in swarm ${swarmId}`);
-    
+    console.warn(`🤖 Spawning agent: ${agentConfig.name} in swarm ${swarmId}`);
+
     const swarm = this.swarms.get(swarmId);
     if (!swarm) throw new Error(`Swarm ${swarmId} not found`);
 
@@ -378,7 +404,7 @@ class SwarmCoordinationExample extends EventEmitter {
       swarmId,
       status: 'active',
       spawnedAt: new Date(),
-      ...agentConfig
+      ...agentConfig,
     };
 
     swarm.agents.set(agent.id, agent);
@@ -388,28 +414,31 @@ class SwarmCoordinationExample extends EventEmitter {
   }
 
   async orchestrateTask(swarmId, task) {
-    console.log(`📋 Orchestrating task: ${task.id} in swarm ${swarmId}`);
-    
+    console.warn(`📋 Orchestrating task: ${task.id} in swarm ${swarmId}`);
+
     const startTime = Date.now();
-    
+
     // Simulate task execution
     return new Promise((resolve) => {
-      setTimeout(() => {
-        const result = {
-          taskId: task.id,
-          swarmId,
-          status: 'completed',
-          executionTime: Date.now() - startTime,
-          results: `Task ${task.id} completed successfully`,
-          metrics: {
-            agentsUsed: Math.floor(Math.random() * 5) + 3,
-            efficiency: Math.random() * 0.3 + 0.7
-          }
-        };
+      setTimeout(
+        () => {
+          const result = {
+            taskId: task.id,
+            swarmId,
+            status: 'completed',
+            executionTime: Date.now() - startTime,
+            results: `Task ${task.id} completed successfully`,
+            metrics: {
+              agentsUsed: Math.floor(Math.random() * 5) + 3,
+              efficiency: Math.random() * 0.3 + 0.7,
+            },
+          };
 
-        this.emit('task-completed', result);
-        resolve(result);
-      }, Math.random() * 3000 + 1000); // 1-4 seconds
+          this.emit('task-completed', result);
+          resolve(result);
+        },
+        Math.random() * 3000 + 1000
+      ); // 1-4 seconds
     });
   }
 
@@ -418,7 +447,7 @@ class SwarmCoordinationExample extends EventEmitter {
     return Array.from({ length: size }, (_, i) => ({
       id: i,
       data: `data-${i}`,
-      value: Math.random() * 100
+      value: Math.random() * 100,
     }));
   }
 
@@ -427,7 +456,7 @@ class SwarmCoordinationExample extends EventEmitter {
       records: 1000,
       format: 'JSON',
       source: 'API',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
@@ -436,27 +465,27 @@ class SwarmCoordinationExample extends EventEmitter {
       id: `task-${i}`,
       complexity: Math.floor(Math.random() * 5) + 1,
       priority: Math.floor(Math.random() * 3) + 1,
-      estimatedTime: Math.random() * 5000 + 1000
+      estimatedTime: Math.random() * 5000 + 1000,
     }));
   }
 
-  async establishMeshConnections(swarmId, agents) {
-    console.log(`🕸️ Establishing mesh connections for swarm ${swarmId}`);
+  async establishMeshConnections(swarmId, _agents) {
+    console.warn(`🕸️ Establishing mesh connections for swarm ${swarmId}`);
     // Implementation would set up full connectivity between all agents
   }
 
-  async establishRingConnections(swarmId, stages) {
-    console.log(`🔄 Establishing ring connections for swarm ${swarmId}`);
+  async establishRingConnections(swarmId, _stages) {
+    console.warn(`🔄 Establishing ring connections for swarm ${swarmId}`);
     // Implementation would set up circular connections
   }
 
   async establishInterSwarmCommunication(swarmIds) {
-    console.log(`🌐 Establishing inter-swarm communication between ${swarmIds.join(', ')}`);
+    console.warn(`🌐 Establishing inter-swarm communication between ${swarmIds.join(', ')}`);
     // Implementation would set up communication channels between swarms
   }
 
   async simulateAgentFailure(swarmId, agentName) {
-    console.log(`⚠️ Simulating failure of agent ${agentName} in swarm ${swarmId}`);
+    console.warn(`⚠️ Simulating failure of agent ${agentName} in swarm ${swarmId}`);
     this.emit('agent-failure', { swarmId, agentName });
   }
 
@@ -466,7 +495,7 @@ class SwarmCoordinationExample extends EventEmitter {
       agentCount: swarm.agents.size,
       queenCount: swarm.queens.size,
       loadDistribution: this.calculateLoadDistribution(swarm),
-      performance: Math.random() * 0.3 + 0.7
+      performance: Math.random() * 0.3 + 0.7,
     };
   }
 
@@ -480,23 +509,23 @@ class SwarmCoordinationExample extends EventEmitter {
   }
 
   async distributeWorkload(swarmId, tasks) {
-    console.log(`⚖️ Distributing ${tasks.length} tasks across swarm ${swarmId}`);
-    
+    console.warn(`⚖️ Distributing ${tasks.length} tasks across swarm ${swarmId}`);
+
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
           totalTasks: tasks.length,
           completedTasks: tasks.length,
           averageTime: Math.random() * 2000 + 1000,
-          loadBalance: 'optimal'
+          loadBalance: 'optimal',
         });
       }, 5000);
     });
   }
 
   async orchestrateMultiSwarmTask(task) {
-    console.log(`🌐 Orchestrating multi-swarm task: ${task.id}`);
-    
+    console.warn(`🌐 Orchestrating multi-swarm task: ${task.id}`);
+
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
@@ -504,7 +533,7 @@ class SwarmCoordinationExample extends EventEmitter {
           status: 'completed',
           swarmsUsed: task.workflow.length,
           totalTime: Math.random() * 5000 + 3000,
-          result: 'Multi-swarm collaboration successful'
+          result: 'Multi-swarm collaboration successful',
         });
       }, 8000);
     });
@@ -512,7 +541,7 @@ class SwarmCoordinationExample extends EventEmitter {
 
   // Run all examples
   async runAllExamples() {
-    console.log('\n🎯 Running all swarm coordination examples...');
+    console.warn('\n🎯 Running all swarm coordination examples...');
 
     try {
       await this.hierarchicalAnalysisExample();
@@ -521,7 +550,7 @@ class SwarmCoordinationExample extends EventEmitter {
       await this.dynamicLoadBalancingExample();
       await this.multiSwarmCoordinationExample();
 
-      console.log('\n✅ All swarm coordination examples completed successfully');
+      console.warn('\n✅ All swarm coordination examples completed successfully');
     } catch (error) {
       console.error('❌ Swarm coordination example failed:', error);
     }
@@ -531,7 +560,7 @@ class SwarmCoordinationExample extends EventEmitter {
 // CLI runner
 async function main() {
   const example = process.argv[2];
-  
+
   const coordinator = new SwarmCoordinationExample();
   await coordinator.initialize();
 
@@ -555,7 +584,9 @@ async function main() {
       await coordinator.runAllExamples();
       break;
     default:
-      console.log('Usage: node swarm-coordination-example.js [hierarchical|mesh|pipeline|loadbalancing|multiswarm|all]');
+      console.warn(
+        'Usage: node swarm-coordination-example.js [hierarchical|mesh|pipeline|loadbalancing|multiswarm|all]'
+      );
       break;
   }
 }

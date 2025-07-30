@@ -4,8 +4,8 @@
  * Generates comprehensive API documentation from JSDoc comments and schema
  */
 
-import fs from 'fs/promises';
-import path from 'path';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import { glob } from 'glob';
 
 class DocumentationGenerator {
@@ -16,7 +16,7 @@ class DocumentationGenerator {
   }
 
   async generate() {
-    console.log('🚀 Generating API documentation...');
+    console.warn('🚀 Generating API documentation...');
 
     try {
       // Ensure docs directory exists
@@ -24,7 +24,7 @@ class DocumentationGenerator {
 
       // Find all JavaScript files with JSDoc comments
       const jsFiles = await glob('src/**/*.js');
-      console.log(`📁 Found ${jsFiles.length} JavaScript files`);
+      console.warn(`📁 Found ${jsFiles.length} JavaScript files`);
 
       // Extract JSDoc comments
       const apiDocs = await this.extractJSDocFromFiles(jsFiles);
@@ -34,7 +34,7 @@ class DocumentationGenerator {
 
       // Write to file
       await fs.writeFile(this.outputFile, markdown);
-      console.log(`✅ Documentation generated: ${this.outputFile}`);
+      console.warn(`✅ Documentation generated: ${this.outputFile}`);
 
       return this.outputFile;
     } catch (error) {
@@ -53,7 +53,7 @@ class DocumentationGenerator {
         if (docs.length > 0) {
           apiDocs.push({
             file,
-            docs
+            docs,
           });
         }
       } catch (error) {
@@ -76,13 +76,15 @@ class DocumentationGenerator {
       if (parsed) {
         // Try to find the function/class that follows this comment
         const afterComment = content.substring(content.indexOf(match) + match.length);
-        const functionMatch = afterComment.match(/(?:export\s+)?(?:class|function|const|let|var)\s+(\w+)/);
-        
+        const functionMatch = afterComment.match(
+          /(?:export\s+)?(?:class|function|const|let|var)\s+(\w+)/
+        );
+
         docs.push({
           ...parsed,
           name: functionMatch ? functionMatch[1] : `Item ${index + 1}`,
           filename: path.basename(filename),
-          filepath: filename
+          filepath: filename,
         });
       }
     });
@@ -91,14 +93,14 @@ class DocumentationGenerator {
   }
 
   parseJSDocComment(comment) {
-    const lines = comment.split('\n').map(line => line.replace(/^\s*\*\s?/, '').trim());
-    
+    const lines = comment.split('\n').map((line) => line.replace(/^\s*\*\s?/, '').trim());
+
     const doc = {
       description: '',
       params: [],
       returns: null,
       example: '',
-      tags: []
+      tags: [],
     };
 
     let currentSection = 'description';
@@ -116,7 +118,7 @@ class DocumentationGenerator {
           currentParam = {
             type: paramMatch[1],
             name: paramMatch[2],
-            description: paramMatch[3]
+            description: paramMatch[3],
           };
           doc.params.push(currentParam);
         }
@@ -126,7 +128,7 @@ class DocumentationGenerator {
         if (returnMatch) {
           doc.returns = {
             type: returnMatch[1],
-            description: returnMatch[2]
+            description: returnMatch[2],
           };
         }
       } else if (line.startsWith('@example')) {
@@ -136,7 +138,7 @@ class DocumentationGenerator {
         if (tagMatch) {
           doc.tags.push({
             name: tagMatch[1],
-            value: tagMatch[2]
+            value: tagMatch[2],
           });
         }
       } else {
@@ -168,9 +170,9 @@ This documentation is automatically generated from JSDoc comments in the source 
 `;
 
     // Generate table of contents
-    apiDocs.forEach(fileDoc => {
+    apiDocs.forEach((fileDoc) => {
       markdown += `- [${fileDoc.file}](#${this.slugify(fileDoc.file)})\n`;
-      fileDoc.docs.forEach(doc => {
+      fileDoc.docs.forEach((doc) => {
         markdown += `  - [${doc.name}](#${this.slugify(doc.name)})\n`;
       });
     });
@@ -178,19 +180,19 @@ This documentation is automatically generated from JSDoc comments in the source 
     markdown += '\n---\n\n';
 
     // Generate detailed documentation
-    apiDocs.forEach(fileDoc => {
+    apiDocs.forEach((fileDoc) => {
       markdown += `## ${fileDoc.file}\n\n`;
-      
-      fileDoc.docs.forEach(doc => {
+
+      fileDoc.docs.forEach((doc) => {
         markdown += `### ${doc.name}\n\n`;
-        
+
         if (doc.description) {
           markdown += `${doc.description}\n\n`;
         }
 
         if (doc.params.length > 0) {
           markdown += '**Parameters:**\n\n';
-          doc.params.forEach(param => {
+          doc.params.forEach((param) => {
             markdown += `- \`${param.name}\` (\`${param.type}\`): ${param.description}\n`;
           });
           markdown += '\n';
@@ -208,7 +210,7 @@ This documentation is automatically generated from JSDoc comments in the source 
 
         if (doc.tags.length > 0) {
           markdown += '**Tags:**\n\n';
-          doc.tags.forEach(tag => {
+          doc.tags.forEach((tag) => {
             markdown += `- **${tag.name}**: ${tag.value}\n`;
           });
           markdown += '\n';
@@ -223,7 +225,8 @@ This documentation is automatically generated from JSDoc comments in the source 
   }
 
   slugify(text) {
-    return text.toLowerCase()
+    return text
+      .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '');
   }

@@ -2,12 +2,12 @@
  * Integration tests for Bazel-Kuzu graph database integration
  */
 
-import { describe, test, expect, beforeEach, afterEach } from '@jest/globals';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { BazelMonorepoPlugin } from '../../src/plugins/bazel-monorepo/index.js';
 import { MemoryBackendPlugin } from '../../src/plugins/memory-backend/index.js';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import fs from 'fs/promises';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,21 +21,21 @@ describe('Bazel-Kuzu Integration', () => {
     // Create temporary test directory
     testDir = path.join(__dirname, '../../tmp/bazel-test');
     await fs.mkdir(testDir, { recursive: true });
-    
+
     // Initialize graph backend
     graphBackend = new MemoryBackendPlugin({
       backend: 'kuzu',
       kuzuConfig: {
         persistDirectory: path.join(testDir, '.kuzu'),
-        enableRelationships: true
-      }
+        enableRelationships: true,
+      },
     });
-    
+
     // Create test plugin with Kuzu integration
     plugin = new BazelMonorepoPlugin({
       workspaceRoot: testDir,
       enableKuzuIntegration: true,
-      hybridMemory: graphBackend
+      hybridMemory: graphBackend,
     });
   });
 
@@ -46,11 +46,11 @@ describe('Bazel-Kuzu Integration', () => {
     if (graphBackend) {
       await graphBackend.cleanup();
     }
-    
+
     // Clean up test directory
     try {
       await fs.rm(testDir, { recursive: true, force: true });
-    } catch (error) {
+    } catch (_error) {
       // Ignore cleanup errors
     }
   });
@@ -58,18 +58,18 @@ describe('Bazel-Kuzu Integration', () => {
   test('should initialize with Kuzu integration', async () => {
     // Create minimal Bazel workspace
     await createTestBazelWorkspace(testDir);
-    
+
     try {
       await graphBackend.initialize();
       await plugin.initialize();
-      
+
       expect(plugin.config.enableKuzuIntegration).toBe(true);
       expect(plugin.graphBackend).toBeDefined();
       expect(plugin.stats.graphNodesStored).toBeGreaterThanOrEqual(0);
     } catch (error) {
       // Skip test if Kuzu is not available
       if (error.message.includes('Kuzu not available')) {
-        console.log('Skipping Kuzu integration test - Kuzu not available');
+        console.warn('Skipping Kuzu integration test - Kuzu not available');
         return;
       }
       throw error;
@@ -78,14 +78,14 @@ describe('Bazel-Kuzu Integration', () => {
 
   test('should store dependency graph in Kuzu', async () => {
     await createTestBazelWorkspace(testDir);
-    
+
     try {
       await graphBackend.initialize();
       await plugin.initialize();
-      
+
       // Check if graph was stored
       expect(plugin.stats.graphNodesStored).toBeGreaterThan(0);
-      
+
       // Verify data in graph database
       if (plugin.graphBackend?.storage?.conn) {
         const conn = plugin.graphBackend.storage.conn;
@@ -93,12 +93,12 @@ describe('Bazel-Kuzu Integration', () => {
           MATCH (t:BazelTarget)
           RETURN count(t) as target_count
         `);
-        
+
         expect(result[0]?.target_count).toBeGreaterThan(0);
       }
     } catch (error) {
       if (error.message.includes('Kuzu not available')) {
-        console.log('Skipping graph storage test - Kuzu not available');
+        console.warn('Skipping graph storage test - Kuzu not available');
         return;
       }
       throw error;
@@ -107,21 +107,21 @@ describe('Bazel-Kuzu Integration', () => {
 
   test('should perform graph-based impact analysis', async () => {
     await createTestBazelWorkspace(testDir);
-    
+
     try {
       await graphBackend.initialize();
       await plugin.initialize();
-      
+
       // Test change impact analysis
       const changedFiles = ['src/lib/utils.js'];
       const impact = await plugin.analyzeChangeImpactGraph(changedFiles);
-      
+
       expect(impact).toBeDefined();
       expect(impact.affectedTargets).toBeDefined();
       expect(impact.analysisMethod).toBeDefined();
     } catch (error) {
       if (error.message.includes('Kuzu not available')) {
-        console.log('Skipping impact analysis test - Kuzu not available');
+        console.warn('Skipping impact analysis test - Kuzu not available');
         return;
       }
       throw error;
@@ -130,28 +130,28 @@ describe('Bazel-Kuzu Integration', () => {
 
   test('should generate graph visualizations', async () => {
     await createTestBazelWorkspace(testDir);
-    
+
     try {
       await graphBackend.initialize();
       await plugin.initialize();
-      
+
       // Test different visualization formats
       const jsonViz = await plugin.generateDependencyGraphVisualization('json');
       const graphvizViz = await plugin.generateDependencyGraphVisualization('graphviz');
       const mermaidViz = await plugin.generateDependencyGraphVisualization('mermaid');
-      
+
       expect(jsonViz).toBeDefined();
       expect(jsonViz.nodes).toBeDefined();
       expect(jsonViz.edges).toBeDefined();
-      
+
       expect(graphvizViz.format).toBe('graphviz');
       expect(graphvizViz.content).toContain('digraph');
-      
+
       expect(mermaidViz.format).toBe('mermaid');
       expect(mermaidViz.content).toContain('graph TD');
     } catch (error) {
       if (error.message.includes('Kuzu not available')) {
-        console.log('Skipping visualization test - Kuzu not available');
+        console.warn('Skipping visualization test - Kuzu not available');
         return;
       }
       throw error;
@@ -162,24 +162,24 @@ describe('Bazel-Kuzu Integration', () => {
     // Test plugin without Kuzu
     const fallbackPlugin = new BazelMonorepoPlugin({
       workspaceRoot: testDir,
-      enableKuzuIntegration: false
+      enableKuzuIntegration: false,
     });
-    
+
     await createTestBazelWorkspace(testDir);
-    
+
     try {
       await fallbackPlugin.initialize();
-      
+
       expect(fallbackPlugin.config.enableKuzuIntegration).toBe(false);
       expect(fallbackPlugin.graphBackend).toBeNull();
-      
+
       // Should still work with in-memory analysis
       const changedFiles = ['src/lib/utils.js'];
       const impact = await fallbackPlugin.analyzeChangeImpact(changedFiles);
-      
+
       expect(impact).toBeDefined();
       expect(impact.affectedTargets).toBeDefined();
-      
+
       await fallbackPlugin.cleanup();
     } catch (error) {
       console.error('Fallback test failed:', error);
@@ -234,21 +234,33 @@ nodejs_binary(
   await fs.writeFile(path.join(testDir, 'src/app/BUILD'), appBuildContent);
 
   // Create source files
-  await fs.writeFile(path.join(testDir, 'src/lib/utils.js'), 'export function util() { return "test"; }');
-  await fs.writeFile(path.join(testDir, 'src/app/main.js'), 'import { util } from "../lib/utils.js"; console.log(util());');
+  await fs.writeFile(
+    path.join(testDir, 'src/lib/utils.js'),
+    'export function util() { return "test"; }'
+  );
+  await fs.writeFile(
+    path.join(testDir, 'src/app/main.js'),
+    'import { util } from "../lib/utils.js"; console.warn(util());'
+  );
 
   // Create package.json files
   const libPackageJson = {
-    name: "test-lib",
-    version: "1.0.0",
-    files: ["utils.js"]
+    name: 'test-lib',
+    version: '1.0.0',
+    files: ['utils.js'],
   };
-  await fs.writeFile(path.join(testDir, 'src/lib/package.json'), JSON.stringify(libPackageJson, null, 2));
+  await fs.writeFile(
+    path.join(testDir, 'src/lib/package.json'),
+    JSON.stringify(libPackageJson, null, 2)
+  );
 
   const appPackageJson = {
-    name: "test-app",
-    version: "1.0.0",
-    files: ["main.js"]
+    name: 'test-app',
+    version: '1.0.0',
+    files: ['main.js'],
   };
-  await fs.writeFile(path.join(testDir, 'src/app/package.json'), JSON.stringify(appPackageJson, null, 2));
+  await fs.writeFile(
+    path.join(testDir, 'src/app/package.json'),
+    JSON.stringify(appPackageJson, null, 2)
+  );
 }

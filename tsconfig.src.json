@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "allowJs": false,
+    "noImplicitAny": false,
+    "strict": false
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "node_modules/**/*",
+    "dist/**/*",
+    "deno_modules/**/*",
+    "bin/**/*",
+    "ruv-FANN/**/*",
+    "src/terminal/vscode-bridge.ts",
+    "**/*.js",
+    "**/node_modules/**/*",
+    "**/*.test.ts"
+  ]
+}

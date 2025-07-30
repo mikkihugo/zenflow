@@ -5,18 +5,18 @@
  * Handles known logger issue in v1.0.8
  */
 
-import { spawn } from 'child_process';
-import { createInterface } from 'readline';
+import { spawn } from 'node:child_process';
+import { createInterface } from 'node:readline';
 
-console.log('🚀 Starting ruv-swarm MCP server with error handling...');
+console.warn('🚀 Starting ruv-swarm MCP server with error handling...');
 
 const ruvSwarmProcess = spawn('npx', ['ruv-swarm', 'mcp', 'start'], {
   stdio: ['pipe', 'pipe', 'pipe'],
   env: {
     ...process.env,
     MCP_MODE: 'stdio',
-    LOG_LEVEL: 'WARN'
-  }
+    LOG_LEVEL: 'WARN',
+  },
 });
 
 // Forward stdin to ruv-swarm
@@ -28,7 +28,7 @@ ruvSwarmProcess.stdout.pipe(process.stdout);
 // Handle stderr with filtering
 const rlErr = createInterface({
   input: ruvSwarmProcess.stderr,
-  crlfDelay: Infinity
+  crlfDelay: Infinity,
 });
 
 let errorHandled = false;
@@ -43,13 +43,13 @@ rlErr.on('line', (line) => {
     }
     return;
   }
-  
+
   // Forward other stderr output
-  process.stderr.write(line + '\n');
+  process.stderr.write(`${line}\n`);
 });
 
 // Handle process exit
-ruvSwarmProcess.on('exit', (code, signal) => {
+ruvSwarmProcess.on('exit', (code, _signal) => {
   if (code !== null && code !== 0) {
     console.error(`\n❌ ruv-swarm exited with code ${code}`);
     console.error('💡 Try using: npx claude-zen@alpha mcp start');

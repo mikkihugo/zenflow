@@ -4,14 +4,14 @@
  * Tests individual systems and cross-system coordination
  */
 
-import { describe, test, expect, beforeAll, afterAll, beforeEach } from '@jest/globals';
-import MultiSystemCoordinator from '../../src/integration/multi-system-coordinator.js';
-import LanceDBInterface from '../../src/database/lancedb-interface.js';
+import { existsSync } from 'node:fs';
+import { mkdir, rm, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import { afterAll, beforeAll, beforeEach, describe, expect, test } from '@jest/globals';
 import KuzuAdvancedInterface from '../../src/database/kuzu-advanced-interface.js';
+import LanceDBInterface from '../../src/database/lancedb-interface.js';
+import MultiSystemCoordinator from '../../src/integration/multi-system-coordinator.js';
 import VisionarySoftwareIntelligenceProcessor from '../../src/visionary/software-intelligence-processor.js';
-import { writeFile, readFile, mkdir, rm } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
 
 describe('Multi-System Integration Tests', () => {
   let coordinator;
@@ -29,20 +29,20 @@ describe('Multi-System Integration Tests', () => {
     coordinator = new MultiSystemCoordinator({
       lancedb: {
         dbPath: path.join(testDataDir, 'vectors'),
-        vectorDim: 128 // Smaller for faster tests
+        vectorDim: 128, // Smaller for faster tests
       },
       kuzu: {
         dbPath: path.join(testDataDir, 'graph'),
         dbName: 'test-graph',
-        enableAnalytics: true
+        enableAnalytics: true,
       },
       vision: {
         outputDir: path.join(testDataDir, 'generated-code'),
-        enableAnalytics: true
+        enableAnalytics: true,
       },
       enableCrossSystemAnalytics: true,
       enableMemorySharing: true,
-      enableIntelligentRouting: true
+      enableIntelligentRouting: true,
     });
 
     await coordinator.initialize();
@@ -52,7 +52,7 @@ describe('Multi-System Integration Tests', () => {
     if (coordinator) {
       await coordinator.close();
     }
-    
+
     // Cleanup test data
     if (existsSync(testDataDir)) {
       await rm(testDataDir, { recursive: true, force: true });
@@ -63,7 +63,7 @@ describe('Multi-System Integration Tests', () => {
     test('should initialize LanceDB with enhanced features', async () => {
       expect(coordinator.lancedb).toBeDefined();
       expect(coordinator.lancedb.isInitialized).toBe(true);
-      
+
       const stats = await coordinator.lancedb.getStats();
       expect(stats).toHaveProperty('tables');
       expect(stats).toHaveProperty('cache_size');
@@ -76,14 +76,14 @@ describe('Multi-System Integration Tests', () => {
           id: 'test_doc_1',
           content: 'JavaScript async functions and promises',
           title: 'Async Programming',
-          source: 'test'
+          source: 'test',
         },
         {
           id: 'test_doc_2',
           content: 'Python list comprehensions and generators',
           title: 'Python Patterns',
-          source: 'test'
-        }
+          source: 'test',
+        },
       ];
 
       const insertCount = await coordinator.lancedb.insertDocuments(documents);
@@ -93,7 +93,7 @@ describe('Multi-System Integration Tests', () => {
       const searchResults = await coordinator.lancedb.semanticSearch('async programming', {
         table: 'documents',
         limit: 5,
-        threshold: 0.1 // Lower threshold for test data
+        threshold: 0.1, // Lower threshold for test data
       });
 
       expect(searchResults).toHaveProperty('results');
@@ -107,14 +107,14 @@ describe('Multi-System Integration Tests', () => {
           id: 'test_code_1',
           code: 'const fetchData = async (url) => { const response = await fetch(url); return response.json(); }',
           language: 'javascript',
-          file_path: 'utils/api.js'
+          file_path: 'utils/api.js',
         },
         {
           id: 'test_code_2',
           code: 'def fetch_data(url): import requests; return requests.get(url).json()',
           language: 'python',
-          file_path: 'utils/api.py'
-        }
+          file_path: 'utils/api.py',
+        },
       ];
 
       const insertCount = await coordinator.lancedb.insertCodeSnippets(codeSnippets);
@@ -124,7 +124,7 @@ describe('Multi-System Integration Tests', () => {
       const codeSearch = await coordinator.lancedb.semanticSearch('fetch data from API', {
         table: 'code_snippets',
         limit: 5,
-        threshold: 0.1
+        threshold: 0.1,
       });
 
       expect(codeSearch.results).toBeDefined();
@@ -132,7 +132,7 @@ describe('Multi-System Integration Tests', () => {
 
     test('should perform vector analytics', async () => {
       const analytics = await coordinator.lancedb.generateAnalytics('documents');
-      
+
       expect(analytics).toHaveProperty('total_vectors');
       expect(analytics).toHaveProperty('vector_dimension');
       expect(analytics).toHaveProperty('density_metrics');
@@ -145,14 +145,14 @@ describe('Multi-System Integration Tests', () => {
         id: `cluster_doc_${i}`,
         content: `Test document ${i} about ${i % 2 === 0 ? 'frontend development' : 'backend development'}`,
         title: `Document ${i}`,
-        source: 'clustering_test'
+        source: 'clustering_test',
       }));
 
       await coordinator.lancedb.insertDocuments(clusterDocs);
 
       const clustering = await coordinator.lancedb.performClustering({
         table: 'documents',
-        numClusters: 3
+        numClusters: 3,
       });
 
       expect(clustering).toHaveProperty('clusters');
@@ -166,7 +166,7 @@ describe('Multi-System Integration Tests', () => {
     test('should initialize Kuzu with advanced features', async () => {
       expect(coordinator.kuzu).toBeDefined();
       expect(coordinator.kuzu.isInitialized).toBe(true);
-      
+
       const stats = await coordinator.kuzu.getAdvancedStats();
       expect(stats).toHaveProperty('performance_metrics');
       expect(stats).toHaveProperty('query_cache_size');
@@ -179,20 +179,20 @@ describe('Multi-System Integration Tests', () => {
           name: 'test-api-service',
           path: '/services/api',
           type: 'microservice',
-          codeStats: { complexity: 'medium', lineCount: 1200, fileCount: 8 }
+          codeStats: { complexity: 'medium', lineCount: 1200, fileCount: 8 },
         },
         {
           name: 'test-auth-service',
           path: '/services/auth',
           type: 'microservice',
-          codeStats: { complexity: 'low', lineCount: 600, fileCount: 4 }
+          codeStats: { complexity: 'low', lineCount: 600, fileCount: 4 },
         },
         {
           name: 'test-db-service',
           path: '/services/database',
           type: 'microservice',
-          codeStats: { complexity: 'high', lineCount: 2000, fileCount: 15 }
-        }
+          codeStats: { complexity: 'high', lineCount: 2000, fileCount: 15 },
+        },
       ];
 
       const insertCount = await coordinator.kuzu.insertServices(services);
@@ -207,16 +207,21 @@ describe('Multi-System Integration Tests', () => {
     test('should perform centrality analysis', async () => {
       // Add relationships between services
       const relationships = [
-        { from: 'test-api-service', to: 'test-auth-service', type: 'DEPENDS_ON', strength: 'strong' },
+        {
+          from: 'test-api-service',
+          to: 'test-auth-service',
+          type: 'DEPENDS_ON',
+          strength: 'strong',
+        },
         { from: 'test-api-service', to: 'test-db-service', type: 'DEPENDS_ON', strength: 'medium' },
-        { from: 'test-auth-service', to: 'test-db-service', type: 'DEPENDS_ON', strength: 'weak' }
+        { from: 'test-auth-service', to: 'test-db-service', type: 'DEPENDS_ON', strength: 'weak' },
       ];
 
       await coordinator.kuzu.insertRelationships(relationships);
 
       const centrality = await coordinator.kuzu.computeCentrality({
         algorithm: 'degree',
-        nodeType: 'Service'
+        nodeType: 'Service',
       });
 
       expect(centrality).toHaveProperty('algorithm');
@@ -229,7 +234,7 @@ describe('Multi-System Integration Tests', () => {
     test('should detect communities in graph', async () => {
       const communities = await coordinator.kuzu.detectCommunities({
         algorithm: 'louvain',
-        nodeType: 'Service'
+        nodeType: 'Service',
       });
 
       expect(communities).toHaveProperty('algorithm');
@@ -244,7 +249,7 @@ describe('Multi-System Integration Tests', () => {
         startNode: 'test-api-service',
         algorithm: 'dfs',
         maxDepth: 3,
-        collectMetrics: true
+        collectMetrics: true,
       });
 
       expect(traversal).toHaveProperty('algorithm');
@@ -256,11 +261,11 @@ describe('Multi-System Integration Tests', () => {
 
     test('should optimize queries and provide suggestions', async () => {
       const query = 'MATCH (s:Service) WHERE s.type = "microservice" RETURN s';
-      
+
       const optimizedResult = await coordinator.kuzu.optimizeQuery(query, {
         analyzeExecution: true,
         suggestImprovement: true,
-        cacheResult: true
+        cacheResult: true,
       });
 
       expect(optimizedResult).toHaveProperty('execution_time');
@@ -291,13 +296,13 @@ describe('Multi-System Integration Tests', () => {
 
     test('should process image and generate React component', async () => {
       const testImagePath = path.join(testDataDir, 'test-ui.png');
-      
+
       const result = await coordinator.vision.processImage(testImagePath, {
         framework: 'react',
         outputName: 'TestComponent',
         includeTests: true,
         optimizeCode: true,
-        generateDocumentation: true
+        generateDocumentation: true,
       });
 
       expect(result).toHaveProperty('success');
@@ -305,7 +310,7 @@ describe('Multi-System Integration Tests', () => {
       expect(result).toHaveProperty('qualityScore');
       expect(result).toHaveProperty('framework');
       expect(result.framework).toBe('react');
-      
+
       // Note: Due to placeholder implementation, success might be limited
       // but the structure should be correct
     });
@@ -313,13 +318,13 @@ describe('Multi-System Integration Tests', () => {
     test('should support multiple frameworks', async () => {
       const testImagePath = path.join(testDataDir, 'test-ui.png');
       const frameworks = ['react', 'vue', 'html'];
-      
+
       for (const framework of frameworks) {
         const result = await coordinator.vision.processImage(testImagePath, {
           framework,
           outputName: `Test${framework.charAt(0).toUpperCase() + framework.slice(1)}Component`,
           includeTests: false,
-          optimizeCode: false
+          optimizeCode: false,
         });
 
         expect(result).toHaveProperty('framework');
@@ -335,7 +340,7 @@ describe('Multi-System Integration Tests', () => {
       const testImagePath = path.join(testDataDir, 'test-ui.png');
       await coordinator.vision.processImage(testImagePath, {
         framework: 'react',
-        outputName: 'AnalyticsTestComponent'
+        outputName: 'AnalyticsTestComponent',
       });
 
       const updatedAnalytics = await coordinator.vision.getAnalytics();
@@ -349,24 +354,22 @@ describe('Multi-System Integration Tests', () => {
         {
           operation: 'semantic-search',
           input: { query: 'React component patterns', type: 'code' },
-          expectedSystems: ['lancedb']
+          expectedSystems: ['lancedb'],
         },
         {
           operation: 'graph-analysis',
-          input: { 
+          input: {
             query: 'MATCH (s:Service) RETURN s',
-            analysisType: 'patterns'
+            analysisType: 'patterns',
           },
-          expectedSystems: ['kuzu']
-        }
+          expectedSystems: ['kuzu'],
+        },
       ];
 
       for (const testCase of testCases) {
-        const result = await coordinator.intelligentRoute(
-          testCase.operation,
-          testCase.input,
-          { limit: 5 }
-        );
+        const result = await coordinator.intelligentRoute(testCase.operation, testCase.input, {
+          limit: 5,
+        });
 
         expect(result).toHaveProperty('success');
         expect(result).toHaveProperty('operationId');
@@ -374,9 +377,7 @@ describe('Multi-System Integration Tests', () => {
         expect(result).toHaveProperty('systemsUsed');
 
         if (result.success) {
-          expect(result.systemsUsed).toEqual(
-            expect.arrayContaining(testCase.expectedSystems)
-          );
+          expect(result.systemsUsed).toEqual(expect.arrayContaining(testCase.expectedSystems));
         }
       }
     });
@@ -402,19 +403,20 @@ describe('Multi-System Integration Tests', () => {
 
     test('should coordinate memory sharing between systems', async () => {
       expect(coordinator.config.enableMemorySharing).toBe(true);
-      
+
       // Test that operations are recorded in shared memory
       const initialStats = await coordinator.generateCrossSystemAnalytics();
-      
+
       // Perform operations across systems
       await coordinator.intelligentRoute('semantic-search', {
         query: 'test integration',
-        type: 'auto'
+        type: 'auto',
       });
 
       const updatedStats = await coordinator.generateCrossSystemAnalytics();
-      expect(updatedStats.integration.cross_system_operations)
-        .toBeGreaterThanOrEqual(initialStats.integration.cross_system_operations);
+      expect(updatedStats.integration.cross_system_operations).toBeGreaterThanOrEqual(
+        initialStats.integration.cross_system_operations
+      );
     });
 
     test('should provide comprehensive system status', async () => {
@@ -440,7 +442,7 @@ describe('Multi-System Integration Tests', () => {
   describe('Performance and Error Handling Tests', () => {
     test('should handle invalid operations gracefully', async () => {
       const result = await coordinator.intelligentRoute('invalid-operation', {
-        query: 'test'
+        query: 'test',
       });
 
       expect(result.success).toBe(false);
@@ -456,21 +458,18 @@ describe('Multi-System Integration Tests', () => {
       for (let i = 0; i < 3; i++) {
         await coordinator.intelligentRoute('semantic-search', {
           query: `test query ${i}`,
-          type: 'auto'
+          type: 'auto',
         });
       }
 
       const updatedStats = await coordinator.generateCrossSystemAnalytics();
-      expect(updatedStats.performance.total_operations)
-        .toBeGreaterThan(initialOperations);
+      expect(updatedStats.performance.total_operations).toBeGreaterThan(initialOperations);
     });
 
     test('should maintain operation history', async () => {
-      const operationsBefore = coordinator.activeOperations.size;
-
       await coordinator.intelligentRoute('semantic-search', {
         query: 'history test',
-        type: 'auto'
+        type: 'auto',
       });
 
       // Operations should be tracked (though may be cleaned up quickly)
@@ -513,10 +512,7 @@ describe('Multi-System Integration Tests', () => {
     });
 
     test('should handle unknown integration patterns', async () => {
-      const result = await coordinator.runIntegrationPattern(
-        'unknown-pattern',
-        'test-data'
-      );
+      const result = await coordinator.runIntegrationPattern('unknown-pattern', 'test-data');
 
       expect(result).toBeNull();
     });
@@ -532,12 +528,12 @@ describe('Individual System Unit Tests', () => {
       if (existsSync(testDbPath)) {
         await rm(testDbPath, { recursive: true, force: true });
       }
-      
+
       lancedb = new LanceDBInterface({
         dbPath: testDbPath,
-        vectorDim: 64 // Small for fast tests
+        vectorDim: 64, // Small for fast tests
       });
-      
+
       await lancedb.initialize();
     });
 
@@ -562,7 +558,7 @@ describe('Individual System Unit Tests', () => {
         id: `batch_doc_${i}`,
         content: `Batch document ${i}`,
         title: `Document ${i}`,
-        source: 'batch_test'
+        source: 'batch_test',
       }));
 
       const insertCount = await lancedb.batchInsert('documents', batchData, 10);
@@ -578,13 +574,13 @@ describe('Individual System Unit Tests', () => {
       if (existsSync(testDbPath)) {
         await rm(testDbPath, { recursive: true, force: true });
       }
-      
+
       kuzu = new KuzuAdvancedInterface({
         dbPath: testDbPath,
         dbName: 'test-unit-graph',
-        enableAnalytics: true
+        enableAnalytics: true,
       });
-      
+
       await kuzu.initializeAdvanced();
     });
 
@@ -606,7 +602,8 @@ describe('Individual System Unit Tests', () => {
 
     test('should calculate query complexity scores', () => {
       const simpleQuery = 'MATCH (n) RETURN n';
-      const complexQuery = 'MATCH (a)-[*1..5]->(b) WHERE a.type = "Service" OPTIONAL MATCH (b)-[:DEPENDS_ON]->(c) RETURN a, b, c';
+      const complexQuery =
+        'MATCH (a)-[*1..5]->(b) WHERE a.type = "Service" OPTIONAL MATCH (b)-[:DEPENDS_ON]->(c) RETURN a, b, c';
 
       const simpleScore = kuzu.calculateQueryComplexity(simpleQuery);
       const complexScore = kuzu.calculateQueryComplexity(complexQuery);
@@ -621,8 +618,7 @@ describe('Individual System Unit Tests', () => {
       // Execute a query to update metrics
       await kuzu.executeQuery('MATCH (n) RETURN count(n)');
 
-      expect(kuzu.performanceMetrics.totalQueries)
-        .toBeGreaterThan(initialMetrics.totalQueries);
+      expect(kuzu.performanceMetrics.totalQueries).toBeGreaterThan(initialMetrics.totalQueries);
     });
   });
 
@@ -634,12 +630,12 @@ describe('Individual System Unit Tests', () => {
       if (existsSync(testOutputDir)) {
         await rm(testOutputDir, { recursive: true, force: true });
       }
-      
+
       vision = new VisionarySoftwareIntelligenceProcessor({
         outputDir: testOutputDir,
-        enableAnalytics: true
+        enableAnalytics: true,
       });
-      
+
       await vision.initialize();
     });
 
@@ -664,7 +660,7 @@ describe('Individual System Unit Tests', () => {
       expect(vision.templates.size).toBeGreaterThan(0);
       expect(vision.templates.has('react')).toBe(true);
       expect(vision.templates.has('vue')).toBe(true);
-      
+
       const reactTemplates = vision.templates.get('react');
       expect(reactTemplates.has('component')).toBe(true);
       expect(reactTemplates.has('layout')).toBe(true);

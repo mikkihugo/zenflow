@@ -3,76 +3,55 @@
  * Comprehensive help generation and display system with rich formatting
  */
 
-import { 
-  HelpSystem as IHelpSystem,
-  CommandDefinition,
-  CommandRegistry,
-  CommandCategory,
-  HelpOptions
-} from '../../types/cli';
-import { colorize, getIcon, createBox, wrapText, formatTable } from './output-formatter';
+import type { CommandCategory, HelpSystem as IHelpSystem } from '../../types/cli';
+import { formatTable, getIcon, wrapText } from './output-formatter';
 
 // =============================================================================
 // HELP SYSTEM IMPLEMENTATION
 // =============================================================================
 
 export class TypeScriptHelpSystem implements IHelpSystem {
-  private defaultOptions: HelpOptions = {
-    includeExamples: true,
-    includeFlags: true,
-    includeAliases: true,
-    colorize: process.stdout.isTTY,
-    width: Math.min(process.stdout.columns || 80, 120)
-  };
+  private defaultOptions = {includeExamples = { ...this.defaultOptions, ...options };
+  let;
+  help = '';
 
-  generateCommandHelp(definition: CommandDefinition, options?: Partial<HelpOptions>): string {
-    const opts = { ...this.defaultOptions, ...options };
-    let help = '';
+  // Command header
+  const;
+  title = `${definition.name} - ${definition.description}`;
+  help;
+  += this.
+  colorizeText(title, 'bright', opts.colorize)
+  + '\n\n'
 
-    // Command header
-    const title = `${definition.name} - ${definition.description}`;
-    help += this.colorizeText(title, 'bright', opts.colorize) + '\n\n';
-
-    // Usage section
-    help += this.colorizeText('USAGE:', 'cyan', opts.colorize) + '\n';
-    help += `  ${definition.usage}\n\n`;
+  // Usage section
+  help;
+  += this.
+  colorizeText('USAGE = `  ${definition.usage}\n\n`;
 
     // Category and metadata
-    help += this.colorizeText('CATEGORY:', 'cyan', opts.colorize) + '\n';
-    help += `  ${this.formatCategory(definition.category)}\n\n`;
+    help += this.colorizeText('CATEGORY = `  ${this.formatCategory(definition.category)}\n\n`;
 
-    // Aliases
-    if (opts.includeAliases && definition.aliases && definition.aliases.length > 0) {
-      help += this.colorizeText('ALIASES:', 'cyan', opts.colorize) + '\n';
-      help += `  ${definition.aliases.join(', ')}\n\n`;
+  // Aliases
+  if (_opts._includeAliases && _definition._aliases && definition.aliases._length > 0) {
+      help += this.colorizeText('ALIASES = `  ${definition.aliases.join(', ')}\n\n`;
     }
 
-    // Arguments section
-    if (definition.args && definition.args.length > 0) {
-      help += this.colorizeText('ARGUMENTS:', 'cyan', opts.colorize) + '\n';
-      for (const arg of definition.args) {
-        const required = arg.required ? this.colorizeText(' (required)', 'red', opts.colorize) : '';
+  // Arguments section
+  if (_definition._args && definition.args._length > 0) {
+      help += this.colorizeText('ARGUMENTS = arg.required ? this.colorizeText(' (required)', 'red', opts.colorize) : '';
         const variadic = arg.variadic ? this.colorizeText(' (variadic)', 'yellow', opts.colorize) : '';
         help += `  ${this.colorizeText(arg.name, 'bright', opts.colorize)}${required}${variadic}\n`;
         help += `    ${arg.description}\n`;
         if (arg.type !== 'string') {
-          help += `    Type: ${arg.type}\n`;
-        }
-      }
-      help += '\n';
+          help += `Type = '\n';
     }
 
     // Flags section
     if (opts.includeFlags && definition.flags && definition.flags.length > 0) {
-      help += this.colorizeText('FLAGS:', 'cyan', opts.colorize) + '\n';
-      
-      for (const flag of definition.flags) {
-        const alias = flag.alias ? `, -${flag.alias}` : '';
+      help += this.colorizeText('FLAGS = flag.alias ? `, -$flag.alias` : '';
         const required = flag.required ? this.colorizeText(' (required)', 'red', opts.colorize) : '';
         const defaultValue = flag.default !== undefined ? 
-          this.colorizeText(` (default: ${flag.default})`, 'dim', opts.colorize) : '';
-        
-        help += `  --${this.colorizeText(flag.name, 'bright', opts.colorize)}${alias}${required}${defaultValue}\n`;
+          this.colorizeText(` (default = `  --${this.colorizeText(flag.name, 'bright', opts.colorize)}${alias}${required}${defaultValue}\n`;
         
         // Wrap description
         const wrappedDesc = wrapText(flag.description, opts.width - 4);
@@ -82,245 +61,146 @@ export class TypeScriptHelpSystem implements IHelpSystem {
         
         // Type and choices
         if (flag.type !== 'boolean') {
-          help += `    Type: ${flag.type}\n`;
-        }
-        
-        if (flag.choices && flag.choices.length > 0) {
-          help += `    Choices: ${flag.choices.join(', ')}\n`;
+          help += `Type = `    Choices: $flag.choices.join(', ')\n`;
         }
         
         help += '\n';
       }
     }
 
-    // Examples section
-    if (opts.includeExamples && definition.examples && definition.examples.length > 0) {
-      help += this.colorizeText('EXAMPLES:', 'cyan', opts.colorize) + '\n';
-      for (const example of definition.examples) {
-        help += `  ${this.colorizeText(example.command, 'green', opts.colorize)}\n`;
+  // Examples section
+  if (_opts._includeExamples && definition._examples && _definition.examples._length > 0) {
+      help += this.colorizeText('EXAMPLES = `  ${this.colorizeText(example.command, 'green', opts.colorize)}\n`;
         help += `    ${example.description}\n\n`;
       }
-    }
+}
 
-    // Status indicators
-    const statusIndicators: string[] = [];
-    
-    if (definition.isExperimental) {
-      statusIndicators.push(this.colorizeText('⚠️  EXPERIMENTAL', 'yellow', opts.colorize));
-    }
-    
-    if (definition.deprecated) {
-      statusIndicators.push(this.colorizeText('🚨 DEPRECATED', 'red', opts.colorize));
-    }
-    
-    if (definition.requiresArchitecture) {
-      statusIndicators.push(this.colorizeText('🏗️  REQUIRES ARCHITECTURE', 'blue', opts.colorize));
-    }
-    
-    if (statusIndicators.length > 0) {
-      help += this.colorizeText('STATUS:', 'cyan', opts.colorize) + '\n';
-      statusIndicators.forEach(indicator => help += `  ${indicator}\n`);
+// Status indicators
+const statusIndicators = [];
+
+if (definition.isExperimental) {
+  statusIndicators.push(this.colorizeText('⚠️  EXPERIMENTAL', 'yellow', opts.colorize));
+}
+
+if (definition.deprecated) {
+  statusIndicators.push(this.colorizeText('🚨 DEPRECATED', 'red', opts.colorize));
+}
+
+if (definition.requiresArchitecture) {
+  statusIndicators.push(this.colorizeText('🏗️  REQUIRES ARCHITECTURE', 'blue', opts.colorize));
+}
+
+if (statusIndicators.length > 0) {
+  help += this.colorizeText('STATUS = > help += `  ${indicator}\n`);
       help += '\n';
-    }
+}
 
-    // Version info
-    if (definition.since) {
-      help += this.colorizeText('SINCE:', 'cyan', opts.colorize) + ` ${definition.since}\n\n`;
-    }
-
-    return help.trim();
-  }
-
-  generateGlobalHelp(registry: CommandRegistry, options?: Partial<HelpOptions>): string {
-    const opts = { ...this.defaultOptions, ...options };
+// Version info
+if (definition.since) {
+  help += this.colorizeText('SINCE = { ...this.defaultOptions, ...options };
     let help = '';
 
-    // Header
-    const title = `${getIcon('rocket')} Claude Zen CLI - Revolutionary Unified Architecture`;
-    help += this.colorizeText(title, 'bright', opts.colorize) + '\n\n';
+  // Header
+  const title = `${getIcon('rocket')} Claude Zen CLI - Revolutionary Unified Architecture`;
+  help += `${this.colorizeText(title, 'bright', opts.colorize)}\n\n`;
 
-    // Description
-    const description = `
+  // Description
+  const description = `
 A powerful CLI for orchestrating AI workflows with swarm intelligence,
 neural networks, vector search, and graph databases.
     `.trim();
-    
-    help += wrapText(description, opts.width).join('\n') + '\n\n';
 
-    // Usage
-    help += this.colorizeText('USAGE:', 'cyan', opts.colorize) + '\n';
-    help += '  claude-zen <command> [options]\n';
+  help += `${wrapText(description, opts.width).join('\n')}\n\n`;
+
+  // Usage
+  help += this.colorizeText('USAGE = '  claude-zen <command> [options]\n';
     help += '  claude-zen <command> --help    # Get help for specific command\n\n';
 
-    // Global flags
-    help += this.colorizeText('GLOBAL FLAGS:', 'cyan', opts.colorize) + '\n';
-    const globalFlags = [
-      { name: 'help', alias: 'h', description: 'Show help information' },
-      { name: 'version', alias: 'v', description: 'Show version information' },
-      { name: 'verbose', description: 'Enable verbose logging' },
-      { name: 'debug', description: 'Enable debug mode' },
-      { name: 'config', description: 'Specify config file path' },
-      { name: 'no-color', description: 'Disable colored output' }
-    ];
-
-    globalFlags.forEach(flag => {
+  // Global flags
+  help += this.colorizeText('GLOBALFLAGS = [
+      { name => {
       const alias = flag.alias ? `, -${flag.alias}` : '';
-      help += `  --${this.colorizeText(flag.name, 'bright', opts.colorize)}${alias}\n`;
-      help += `    ${flag.description}\n`;
-    });
-    help += '\n';
+  help += `  --${this.colorizeText(flag.name, 'bright', opts.colorize)}${alias}\n`;
+  help += `    ${flag.description}\n`;
+}
+)
+help += '\n'
 
-    // Commands by category
-    const commands = registry.list();
-    const categories = this.groupCommandsByCategory(commands);
+// Commands by category
+const commands = registry.list();
+const _categories = this.groupCommandsByCategory(commands);
 
-    help += this.colorizeText('COMMANDS:', 'cyan', opts.colorize) + '\n\n';
+help += this.colorizeText('COMMANDS => {;;;
+if (categoryCommands.length === 0) return;
 
-    Object.entries(categories).forEach(([category, categoryCommands]) => {
-      if (categoryCommands.length === 0) return;
-      
-      help += `  ${this.formatCategory(category as CommandCategory)}:\n`;
-      
-      categoryCommands.forEach(cmd => {
-        const nameWithStatus = this.formatCommandNameWithStatus(cmd, opts.colorize);
-        const paddedName = nameWithStatus.padEnd(20);
-        help += `    ${paddedName} ${cmd.description}\n`;
-      });
-      
-      help += '\n';
-    });
+help += `  ${this.formatCategory(category as CommandCategory)}:\n`;
 
-    // Quick start section
-    help += this.colorizeText('QUICK START:', 'cyan', opts.colorize) + '\n';
-    const quickStartCommands = [
-      { cmd: 'claude-zen init', desc: 'Initialize a new project' },
-      { cmd: 'claude-zen start', desc: 'Start the orchestration system' },
-      { cmd: 'claude-zen status', desc: 'Check system status' },
-      { cmd: 'claude-zen swarm init', desc: 'Initialize swarm coordination' }
-    ];
+categoryCommands.forEach((cmd) => {
+  const nameWithStatus = this.formatCommandNameWithStatus(cmd, opts.colorize);
+  const paddedName = nameWithStatus.padEnd(20);
+  help += `    ${paddedName} ${cmd.description}\n`;
+});
 
-    quickStartCommands.forEach(({ cmd, desc }) => {
-      help += `  ${this.colorizeText(cmd, 'green', opts.colorize)}\n`;
-      help += `    ${desc}\n`;
-    });
-    help += '\n';
+help += '\n';
+})
 
-    // Environment variables
-    help += this.colorizeText('ENVIRONMENT VARIABLES:', 'cyan', opts.colorize) + '\n';
-    const envVars = [
-      { name: 'CLAUDE_FLOW_DEBUG', desc: 'Enable debug mode (true/false)' },
-      { name: 'CLAUDE_FLOW_VERBOSE', desc: 'Enable verbose logging (true/false)' },
-      { name: 'CLAUDE_ZEN_CONFIG', desc: 'Path to configuration file' },
-      { name: 'CLAUDE_ZEN_DATA_DIR', desc: 'Data directory path' },
-      { name: 'NO_COLOR', desc: 'Disable colored output (1/0)' },
-      { name: 'NO_EMOJI', desc: 'Disable emoji icons (1/0)' }
-    ];
+// Quick start section
+help += this.colorizeText('QUICKSTART = [
+{
+  (cmd) => {
+    help += `  ${this.colorizeText(cmd, 'green', opts.colorize)}\n`;
+    help += `    ${desc}\n`;
+  };
+  )
+  help += '\n'
 
-    envVars.forEach(envVar => {
+  // Environment variables
+  help += this.colorizeText('ENVIRONMENTVARIABLES = [
+      { name => {
       help += `  ${this.colorizeText(envVar.name, 'bright', opts.colorize)}\n`;
       help += `    ${envVar.desc}\n`;
     });
     help += '\n';
 
     // Footer
-    help += this.colorizeText('MORE INFORMATION:', 'cyan', opts.colorize) + '\n';
-    help += '  Use "claude-zen <command> --help" for detailed command information\n';
-    help += '  Documentation: https://github.com/your-org/claude-code-flow\n';
-    help += '  Issues: https://github.com/your-org/claude-code-flow/issues\n';
-
-    return help;
-  }
-
-  generateCategoryHelp(category: CommandCategory, registry: CommandRegistry, options?: Partial<HelpOptions>): string {
-    const opts = { ...this.defaultOptions, ...options };
+    help += this.colorizeText('MOREINFORMATION = '  Use "claude-zen <command> --help" for detailed command information\n';
+    help += 'Documentation = '  Issues = { ...this.defaultOptions, ...options };
     const commands = registry.listByCategory(category);
     
     if (commands.length === 0) {
-      return `No commands found in category: ${category}`;
-    }
+      return `No commands found incategory = '';
 
-    let help = '';
+  // Header
+  const title = `${this.formatCategory(category)} Commands`;
+  help += `${this.colorizeText(title, 'bright', opts.colorize)}\n\n`;
 
-    // Header
-    const title = `${this.formatCategory(category)} Commands`;
-    help += this.colorizeText(title, 'bright', opts.colorize) + '\n\n';
+  // Commands table
+  const tableData = commands.map(_cmd => ({name = formatTable(tableData, {columns = '\n\nUse "claude-zen <command> --help" for detailed information about each command.\n';
 
-    // Commands table
-    const tableData = commands.map(cmd => ({
-      name: this.formatCommandNameWithStatus(cmd, opts.colorize),
-      description: cmd.description,
-      aliases: cmd.aliases?.join(', ') || '',
-      status: this.getCommandStatus(cmd)
-    }));
+  return help;
+}
 
-    help += formatTable(tableData, {
-      columns: [
-        { key: 'name', title: 'Command', align: 'left' },
-        { key: 'description', title: 'Description', align: 'left' },
-        { key: 'aliases', title: 'Aliases', align: 'left' },
-        { key: 'status', title: 'Status', align: 'center' }
-      ],
-      border: true,
-      striped: true
-    });
+showCommandHelp(command = registry.get(command)
 
-    help += '\n\nUse "claude-zen <command> --help" for detailed information about each command.\n';
-
-    return help;
+if (!definition) {
+  console.error(this.colorizeText(`❌ Unknowncommand = this.generateCommandHelp(definition, options);
+    console.warn(help);
   }
 
-  showCommandHelp(command: string, registry: CommandRegistry, options?: Partial<HelpOptions>): void {
-    const definition = registry.get(command);
-    
-    if (!definition) {
-      console.error(this.colorizeText(`❌ Unknown command: ${command}`, 'red', options?.colorize));
-      console.log('\nAvailable commands:');
-      this.showGlobalHelp(registry, options);
-      return;
-    }
-
-    const help = this.generateCommandHelp(definition, options);
-    console.log(help);
+  showGlobalHelp(registry = this.generateGlobalHelp(registry, options);
+    console.warn(help);
   }
 
-  showGlobalHelp(registry: CommandRegistry, options?: Partial<HelpOptions>): void {
-    const help = this.generateGlobalHelp(registry, options);
-    console.log(help);
-  }
-
-  showVersion(config: { name: string; version: string; description: string }): void {
-    console.log(`${config.name} v${config.version}`);
-    console.log(config.description);
-    console.log();
-    console.log('🚀 Revolutionary Unified Architecture: ACTIVE');
-    console.log('💎 Features: Native Swarm + Graph DB + Vector Search + Neural Learning');
-  }
-
-  // =============================================================================
+  showVersion(config = ============================================================================
   // HELPER METHODS
   // =============================================================================
 
-  private colorizeText(text: string, color: string, enabled = true): string {
+  private colorizeText(text = true): string {
     if (!enabled) return text;
     return colorize(text, color as any);
   }
 
-  private formatCategory(category: CommandCategory): string {
-    const categoryMap: Record<CommandCategory, string> = {
-      core: '🏗️  Core System',
-      swarm: '🐝 Swarm Intelligence', 
-      hive: '🏠 Hive Management',
-      plugins: '🔌 Plugin System',
-      neural: '🧠 Neural Networks',
-      memory: '💾 Memory Management',
-      debug: '🐛 Debug & Development',
-      utility: '🛠️  Utilities'
-    };
-
-    return categoryMap[category] || category;
-  }
-
-  private formatCommandNameWithStatus(cmd: CommandDefinition, colorize = true): string {
+  private formatCategory(category = {core = true): string {
     let name = cmd.name;
     
     if (!colorize) {
@@ -340,26 +220,8 @@ neural networks, vector search, and graph databases.
     return name;
   }
 
-  private getCommandStatus(cmd: CommandDefinition): string {
-    if (cmd.deprecated) return '🚨 Deprecated';
-    if (cmd.isExperimental) return '⚠️  Experimental';
-    if (cmd.requiresArchitecture) return '🏗️  Advanced';
-    return '✅ Stable';
-  }
-
-  private groupCommandsByCategory(commands: CommandDefinition[]): Record<CommandCategory, CommandDefinition[]> {
-    const categories: Record<CommandCategory, CommandDefinition[]> = {
-      core: [],
-      swarm: [],
-      hive: [],
-      plugins: [],
-      neural: [],
-      memory: [],
-      debug: [],
-      utility: []
-    };
-
-    commands.forEach(cmd => {
+  private getCommandStatus(cmd = {
+      core => {
       if (categories[cmd.category]) {
         categories[cmd.category].push(cmd);
       } else {
@@ -380,9 +242,8 @@ neural networks, vector search, and graph databases.
 // HELP CONTENT GENERATORS
 // =============================================================================
 
-export function generateMarkdownHelp(registry: CommandRegistry): string {
-  const commands = registry.list();
-  let markdown = '';
+export function generateMarkdownHelp(registry = registry.list();
+  const markdown = '';
 
   // Header
   markdown += '# Claude Zen CLI Documentation\n\n';
@@ -410,82 +271,77 @@ export function generateMarkdownHelp(registry: CommandRegistry): string {
       markdown += `${cmd.description}\n\n`;
       
       // Usage
-      markdown += '**Usage:**\n';
-      markdown += `\`\`\`bash\n${cmd.usage}\n\`\`\`\n\n`;
-      
-      // Aliases
-      if (cmd.aliases && cmd.aliases.length > 0) {
-        markdown += `**Aliases:** ${cmd.aliases.map(a => `\`${a}\``).join(', ')}\n\n`;
-      }
-      
-      // Flags
-      if (cmd.flags && cmd.flags.length > 0) {
-        markdown += '**Flags:**\n\n';
-        cmd.flags.forEach(flag => {
-          const alias = flag.alias ? `, \`-${flag.alias}\`` : '';
-          const required = flag.required ? ' *(required)*' : '';
-          const defaultValue = flag.default !== undefined ? ` (default: \`${flag.default}\`)` : '';
-          
-          markdown += `- \`--${flag.name}\`${alias}${required}${defaultValue}\n`;
-          markdown += `  ${flag.description}\n`;
-        });
-        markdown += '\n';
-      }
-      
-      // Examples
-      if (cmd.examples && cmd.examples.length > 0) {
-        markdown += '**Examples:**\n\n';
-        cmd.examples.forEach(example => {
-          markdown += `\`\`\`bash\n${example.command}\n\`\`\`\n`;
-          markdown += `${example.description}\n\n`;
-        });
-      }
+      markdown += '**Usage = `\`\`\`bash\n${cmd.usage}\n\`\`\`\n\n`;
+
+  // Aliases
+  if (cmd.aliases && cmd.aliases.length > 0) {
+    markdown += `**Aliases = > `;
+    \`$a\``).join(', ')
+  }
+  \n\n`
+}
+
+// Flags
+if (cmd.flags && cmd.flags.length > 0) {
+  markdown += '**Flags => {
+  const alias = flag.alias ? `, \`-${flag.alias}\`` : '';
+  const required = flag.required ? ' *(required)*' : '';
+  const _defaultValue = flag.default !== undefined ? ` (default = `- \`--${flag.name}\`${alias}${required}${_defaultValue}\n`;
+  markdown += `  ${flag.description}\n`;
+}
+)
+markdown += '\n'
+}
+
+// Examples
+if (cmd.examples && cmd.examples.length > 0) {
+  markdown += '**Examples => {
+  markdown += `\`\`\`bash\n${example.command}\n\`\`\`\n`;
+  markdown += `${example.description}\n\n`;
+}
+)
+}
+    })
+})
+
+return markdown;
+}
+
+export function generateManPage(registry = registry.list();
+let manPage = '';
+
+// Man page header
+manPage += '.TH CLAUDE-ZEN 1 "$(date)" "Claude Zen CLI" "User Commands"\n';
+manPage += '.SH NAME\n';
+manPage += 'claude-zen \\- Revolutionary AI orchestration platform\n';
+manPage += '.SH SYNOPSIS\n';
+manPage += '.B claude-zen\n';
+manPage += '[\\fIGLOBAL_OPTIONS\\fR] \\fICOMMAND\\fR [\\fICOMMAND_OPTIONS\\fR] [\\fIARGS\\fR]\n';
+manPage += '.SH DESCRIPTION\n';
+manPage +=
+  'Claude Zen is a comprehensive CLI for orchestrating AI workflows with swarm intelligence, neural networks, vector search, and graph databases.\n';
+
+// Commands
+manPage += '.SH COMMANDS\n';
+commands.forEach((cmd) => {
+  manPage += `.SS ${cmd.name}\n`;
+  manPage += `${cmd.description}\n`;
+  manPage += '.PP\n';
+
+  if (cmd.flags && cmd.flags.length > 0) {
+    manPage += '.RS\n';
+    cmd.flags.forEach((flag) => {
+      const alias = flag.alias ? `, \\fB\\-${flag.alias}\\fR` : '';
+      manPage += `.TP\n\\fB\\-\\-${flag.name}\\fR${alias}\n`;
+      manPage += `${flag.description}\n`;
     });
-  });
+    manPage += '.RE\n';
+  }
+});
 
-  return markdown;
-}
-
-export function generateManPage(registry: CommandRegistry): string {
-  const commands = registry.list();
-  let manPage = '';
-
-  // Man page header
-  manPage += '.TH CLAUDE-ZEN 1 "$(date)" "Claude Zen CLI" "User Commands"\n';
-  manPage += '.SH NAME\n';
-  manPage += 'claude-zen \\- Revolutionary AI orchestration platform\n';
-  manPage += '.SH SYNOPSIS\n';
-  manPage += '.B claude-zen\n';
-  manPage += '[\\fIGLOBAL_OPTIONS\\fR] \\fICOMMAND\\fR [\\fICOMMAND_OPTIONS\\fR] [\\fIARGS\\fR]\n';
-  manPage += '.SH DESCRIPTION\n';
-  manPage += 'Claude Zen is a comprehensive CLI for orchestrating AI workflows with swarm intelligence, neural networks, vector search, and graph databases.\n';
-
-  // Commands
-  manPage += '.SH COMMANDS\n';
-  commands.forEach(cmd => {
-    manPage += `.SS ${cmd.name}\n`;
-    manPage += `${cmd.description}\n`;
-    manPage += '.PP\n';
-    
-    if (cmd.flags && cmd.flags.length > 0) {
-      manPage += '.RS\n';
-      cmd.flags.forEach(flag => {
-        const alias = flag.alias ? `, \\fB\\-${flag.alias}\\fR` : '';
-        manPage += `.TP\n\\fB\\-\\-${flag.name}\\fR${alias}\n`;
-        manPage += `${flag.description}\n`;
-      });
-      manPage += '.RE\n';
-    }
-  });
-
-  // Footer
-  manPage += '.SH SEE ALSO\n';
-  manPage += 'For more information, visit https://github.com/your-org/claude-code-flow\n';
-
-  return manPage;
-}
-
-// =============================================================================
+// Footer
+manPage += '.SH SEE ALSO\n';
+manPage += 'For more information, visithttps = ============================================================================
 // GLOBAL HELP SYSTEM INSTANCE
 // =============================================================================
 
@@ -495,17 +351,8 @@ export const helpSystem = new TypeScriptHelpSystem();
 // CONVENIENCE FUNCTIONS
 // =============================================================================
 
-export function showCommandHelp(command: string, registry: CommandRegistry): void {
-  helpSystem.showCommandHelp(command, registry);
-}
-
-export function showGlobalHelp(registry: CommandRegistry): void {
-  helpSystem.showGlobalHelp(registry);
-}
-
-export function showCategoryHelp(category: CommandCategory, registry: CommandRegistry): void {
-  const help = helpSystem.generateCategoryHelp(category, registry);
-  console.log(help);
+export function showCommandHelp(command = helpSystem.generateCategoryHelp(category, registry);
+console.warn(help);
 }
 
 export function showVersion(config: { name: string; version: string; description: string }): void {

@@ -1,26 +1,30 @@
-import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
-import path from 'path';
-import os from 'os';
-import { promises as fs } from 'fs';
+import { promises as fs } from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 // Mock meow and dependencies
-jest.mock('meow', () => jest.fn(() => ({
-  input: [],
-  flags: {},
-  pkg: { version: '2.0.0-alpha.70' },
-  help: 'Usage: claude-zen [command] [options]',
-  showHelp: jest.fn()
-})));
+jest.mock('meow', () =>
+  jest.fn(() => ({
+    input: [],
+    flags: {},
+    pkg: { version: '2.0.0-alpha.70' },
+    help: 'Usage: claude-zen [command] [options]',
+    showHelp: jest.fn(),
+  }))
+);
 
 jest.mock('../../../src/cli/core/command-loader.js', () => ({
-  loadCommands: jest.fn(() => Promise.resolve({
-    commands: new Map([
-      ['init', { handler: jest.fn(), description: 'Initialize project' }],
-      ['status', { handler: jest.fn(), description: 'Show status' }],
-      ['help', { handler: jest.fn(), description: 'Show help' }]
-    ])
-  })),
-  createHelpText: jest.fn(() => 'Claude Zen CLI Help')
+  loadCommands: jest.fn(() =>
+    Promise.resolve({
+      commands: new Map([
+        ['init', { handler: jest.fn(), description: 'Initialize project' }],
+        ['status', { handler: jest.fn(), description: 'Show status' }],
+        ['help', { handler: jest.fn(), description: 'Show help' }],
+      ]),
+    })
+  ),
+  createHelpText: jest.fn(() => 'Claude Zen CLI Help'),
 }));
 
 describe('CLI Command Registry', () => {
@@ -34,7 +38,7 @@ describe('CLI Command Registry', () => {
   afterEach(async () => {
     try {
       await fs.rm(testDir, { recursive: true, force: true });
-    } catch (error) {
+    } catch (_error) {
       // Ignore cleanup errors
     }
   });
@@ -42,15 +46,15 @@ describe('CLI Command Registry', () => {
   describe('command registry initialization', () => {
     it('should initialize command registry', async () => {
       const { initializeCommandRegistry } = await import('../../../src/cli/command-registry.js');
-      
+
       await expect(initializeCommandRegistry()).resolves.not.toThrow();
     });
 
     it('should create meow CLI instance', async () => {
       const { createMeowCLI } = await import('../../../src/cli/command-registry.js');
-      
+
       const cli = await createMeowCLI();
-      
+
       expect(cli).toBeDefined();
       expect(cli.pkg).toBeDefined();
       expect(cli.showHelp).toBeDefined();
@@ -64,19 +68,25 @@ describe('CLI Command Registry', () => {
         description: 'Initialize a new Claude Zen project',
         options: {
           force: { type: 'boolean', description: 'Force overwrite existing files' },
-          template: { type: 'string', description: 'Template to use' }
+          template: { type: 'string', description: 'Template to use' },
         },
-        handler: jest.fn(async (args, flags) => {
+        handler: jest.fn(async (_args, flags) => {
           // Mock init command behavior
           const configFile = path.join(process.cwd(), 'claude-zen.config.js');
-          
-          if (!flags.force && await fs.access(configFile).then(() => true).catch(() => false)) {
+
+          if (
+            !flags.force &&
+            (await fs
+              .access(configFile)
+              .then(() => true)
+              .catch(() => false))
+          ) {
             throw new Error('Configuration already exists. Use --force to overwrite.');
           }
-          
+
           await fs.writeFile(configFile, 'export default { version: "2.0.0" };');
           return { success: true, message: 'Project initialized successfully' };
-        })
+        }),
       };
 
       const result = await initCommand.handler([], {});
@@ -96,13 +106,13 @@ describe('CLI Command Registry', () => {
             initialized: true,
             memory: {
               total: process.memoryUsage().heapTotal,
-              used: process.memoryUsage().heapUsed
+              used: process.memoryUsage().heapUsed,
             },
-            uptime: process.uptime()
+            uptime: process.uptime(),
           };
-          
+
           return status;
-        })
+        }),
       };
 
       const result = await statusCommand.handler();
@@ -120,16 +130,16 @@ describe('CLI Command Registry', () => {
           const commands = [
             'init     - Initialize a new Claude Zen project',
             'status   - Show project status',
-            'help     - Show this help message'
+            'help     - Show this help message',
           ];
-          
+
           if (args.length > 0) {
             const commandName = args[0];
             return `Help for command: ${commandName}`;
           }
-          
+
           return `Available commands:\n${commands.join('\n')}`;
-        })
+        }),
       };
 
       const generalHelp = helpCommand.handler([]);
@@ -145,21 +155,21 @@ describe('CLI Command Registry', () => {
   describe('command validation', () => {
     it('should validate command arguments', () => {
       const validator = {
-        validateArgs: (command, args, flags) => {
+        validateArgs: (command, _args, flags) => {
           const errors = [];
-          
+
           if (command === 'init') {
             if (flags.template && !['basic', 'advanced', 'minimal'].includes(flags.template)) {
               errors.push('Invalid template. Must be one of: basic, advanced, minimal');
             }
           }
-          
+
           if (command === 'unknown') {
             errors.push('Unknown command. Use "claude-zen help" to see available commands.');
           }
-          
+
           return errors;
-        }
+        },
       };
 
       // Valid init command
@@ -183,13 +193,13 @@ describe('CLI Command Registry', () => {
         requiredArgs: ['target'],
         validate: (args) => {
           const missing = [];
-          
+
           if (!args.includes('target') || args.length < 1) {
             missing.push('target');
           }
-          
+
           return missing.length > 0 ? { valid: false, missing } : { valid: true };
-        }
+        },
       };
 
       const validResult = commandSpec.validate(['production']);
@@ -206,7 +216,7 @@ describe('CLI Command Registry', () => {
       const flagParser = {
         parseFlags: (rawFlags) => {
           const parsed = {};
-          
+
           Object.entries(rawFlags).forEach(([key, value]) => {
             if (typeof value === 'boolean') {
               parsed[key] = value;
@@ -218,16 +228,16 @@ describe('CLI Command Registry', () => {
               parsed[key] = value;
             }
           });
-          
+
           return parsed;
-        }
+        },
       };
 
       const flags = flagParser.parseFlags({
         verbose: true,
         force: 'true',
         quiet: false,
-        output: 'json'
+        output: 'json',
       });
 
       expect(flags.verbose).toBe(true);
@@ -238,10 +248,10 @@ describe('CLI Command Registry', () => {
 
     it('should handle short and long flags', () => {
       const flagAliases = {
-        'h': 'help',
-        'v': 'version',
-        'f': 'force',
-        'q': 'quiet'
+        h: 'help',
+        v: 'version',
+        f: 'force',
+        q: 'quiet',
       };
 
       const expandFlag = (flag) => {
@@ -261,7 +271,7 @@ describe('CLI Command Registry', () => {
         name: 'failing-command',
         handler: jest.fn(async () => {
           throw new Error('Command failed');
-        })
+        }),
       };
 
       try {
@@ -278,28 +288,28 @@ describe('CLI Command Registry', () => {
           if (error.code === 'MISSING_ARGS') {
             return `Missing required arguments for '${command}': ${error.missing.join(', ')}`;
           }
-          
+
           if (error.code === 'INVALID_FLAG') {
             return `Invalid flag '${error.flag}' for command '${command}'`;
           }
-          
+
           return `Error executing '${command}': ${error.message}`;
-        }
+        },
       };
 
       const missingArgsError = {
         code: 'MISSING_ARGS',
-        missing: ['target', 'environment']
+        missing: ['target', 'environment'],
       };
-      
+
       const message1 = errorFormatter.formatError(missingArgsError, 'deploy');
       expect(message1).toBe("Missing required arguments for 'deploy': target, environment");
 
       const invalidFlagError = {
         code: 'INVALID_FLAG',
-        flag: '--unknown'
+        flag: '--unknown',
       };
-      
+
       const message2 = errorFormatter.formatError(invalidFlagError, 'init');
       expect(message2).toBe("Invalid flag '--unknown' for command 'init'");
 
@@ -316,18 +326,18 @@ describe('CLI Command Registry', () => {
           { name: 'init', category: 'setup' },
           { name: 'status', category: 'info' },
           { name: 'deploy', category: 'deployment' },
-          { name: 'logs', category: 'debug' }
+          { name: 'logs', category: 'debug' },
         ],
-        
-        getCommandsByCategory: function(category) {
+
+        getCommandsByCategory: function (category) {
           return this.availableCommands
-            .filter(cmd => cmd.category === category)
-            .map(cmd => cmd.name);
+            .filter((cmd) => cmd.category === category)
+            .map((cmd) => cmd.name);
         },
-        
-        getAllCommands: function() {
-          return this.availableCommands.map(cmd => cmd.name);
-        }
+
+        getAllCommands: function () {
+          return this.availableCommands.map((cmd) => cmd.name);
+        },
       };
 
       const setupCommands = commandDiscovery.getCommandsByCategory('setup');

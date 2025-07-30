@@ -4,20 +4,20 @@
  * Verifies that MCP tools persist data without requiring sqlite3 module
  */
 
-import { execSync } from 'child_process';
-import fs from 'fs';
-import path from 'path';
+import { execSync } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const colors = {
   green: '\x1b[32m',
   red: '\x1b[31m',
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
-  reset: '\x1b[0m'
+  reset: '\x1b[0m',
 };
 
 function log(message, color = 'reset') {
-  console.log(`${colors[color]}${message}${colors.reset}`);
+  console.warn(`${colors[color]}${message}${colors.reset}`);
 }
 
 async function runTest() {
@@ -44,21 +44,21 @@ async function runTest() {
   log('\n2️⃣ Testing memory_usage store operation...', 'yellow');
   try {
     const testKey = `verify_test_${Date.now()}`;
-    const testValue = { 
-      test: true, 
+    const testValue = {
+      test: true,
       timestamp: new Date().toISOString(),
-      message: 'Testing MCP persistence for issue #312'
+      message: 'Testing MCP persistence for issue #312',
     };
-    
+
     const storeResult = execSync(
       `npx claude-zen@alpha mcp call memory_usage '{"action": "store", "key": "${testKey}", "value": ${JSON.stringify(JSON.stringify(testValue))}, "namespace": "verification"}'`,
       { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }
     );
-    
+
     if (storeResult.includes('"success":true') || storeResult.includes('"stored":true')) {
       log('✅ Store operation succeeded', 'green');
       testsPassed++;
-      
+
       // Store the key for later retrieval
       fs.writeFileSync('.test-key', testKey);
     } else {
@@ -73,13 +73,15 @@ async function runTest() {
   testsTotal++;
   log('\n3️⃣ Testing memory_usage retrieve operation...', 'yellow');
   try {
-    const testKey = fs.existsSync('.test-key') ? fs.readFileSync('.test-key', 'utf8') : `verify_test_${Date.now()}`;
-    
+    const testKey = fs.existsSync('.test-key')
+      ? fs.readFileSync('.test-key', 'utf8')
+      : `verify_test_${Date.now()}`;
+
     const retrieveResult = execSync(
       `npx claude-zen@alpha mcp call memory_usage '{"action": "retrieve", "key": "${testKey}", "namespace": "verification"}'`,
       { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }
     );
-    
+
     if (retrieveResult.includes('"found":true')) {
       log('✅ Retrieve operation succeeded - data was persisted!', 'green');
       testsPassed++;
@@ -99,18 +101,18 @@ async function runTest() {
       `npx claude-zen@alpha mcp call memory_usage '{"action": "list", "namespace": "verification"}'`,
       { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }
     );
-    
+
     if (listResult.includes('"success":true')) {
       log('✅ List operation succeeded', 'green');
       testsPassed++;
-      
+
       // Try to parse and show entry count
       try {
         const parsed = JSON.parse(listResult);
         if (parsed.entries && Array.isArray(parsed.entries)) {
           log(`   Found ${parsed.entries.length} entries in namespace "verification"`, 'green');
         }
-      } catch (e) {
+      } catch (_e) {
         // Ignore parse errors
       }
     } else {
@@ -129,7 +131,7 @@ async function runTest() {
       `npx claude-zen@alpha hooks notify --message "${message}" --level "test"`,
       { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }
     );
-    
+
     if (hookResult.includes('saved to .swarm/memory.db')) {
       log('✅ Hook notification persisted to database', 'green');
       testsPassed++;
@@ -154,9 +156,12 @@ async function runTest() {
   }
 
   // Summary
-  log('\n' + '='.repeat(50), 'yellow');
-  log(`📊 Test Summary: ${testsPassed}/${testsTotal} passed`, testsPassed === testsTotal ? 'green' : 'yellow');
-  
+  log(`\n${'='.repeat(50)}`, 'yellow');
+  log(
+    `📊 Test Summary: ${testsPassed}/${testsTotal} passed`,
+    testsPassed === testsTotal ? 'green' : 'yellow'
+  );
+
   if (testsPassed === testsTotal) {
     log('\n✨ All tests passed!', 'green');
     log('🎯 MCP tools are properly persisting data to SQLite', 'green');
@@ -176,7 +181,7 @@ async function runTest() {
 }
 
 // Run the test
-runTest().catch(error => {
+runTest().catch((error) => {
   log(`\n💥 Fatal error: ${error.message}`, 'red');
   process.exit(1);
 });

@@ -3,12 +3,12 @@
  */
 
 import { jest } from '@jest/globals';
-import { perfHelpers } from '../utils/test-helpers.js';
 import fs from 'fs-extra';
-import { parseFlags } from '../../cli/utils.js';
-import { deepMerge } from '../../utils/helpers.js';
 import { agentCommand } from '../../cli/simple-commands/agent.js';
 import { memoryCommand } from '../../cli/simple-commands/memory.js';
+import { parseFlags } from '../../cli/utils.js';
+import { deepMerge } from '../../utils/helpers.js';
+import { perfHelpers } from '../utils/test-helpers.js';
 
 describe('Performance Tests', () => {
   describe('Utility Functions Performance', () => {
@@ -31,7 +31,7 @@ describe('Performance Tests', () => {
         id: i,
         name: `Item ${i}`,
         value: Math.random() * 1000,
-        description: `Description for item ${i}`.repeat(5)
+        description: `Description for item ${i}`.repeat(5),
       }));
 
       const { result, duration } = await perfHelpers.measureTime(() => {
@@ -86,8 +86,8 @@ describe('Performance Tests', () => {
           key: `key${i}`,
           value: `value${i}`,
           timestamp: new Date().toISOString(),
-          tags: [`tag${i % 10}`]
-        }))
+          tags: [`tag${i % 10}`],
+        })),
       };
 
       jest.spyOn(fs, 'readJson').mockResolvedValue(largeMemoryData);
@@ -104,8 +104,8 @@ describe('Performance Tests', () => {
         entries: Array.from({ length: 5000 }, (_, i) => ({
           key: i % 2 === 0 ? `api/endpoint${i}` : `config/setting${i}`,
           value: `value${i}`,
-          timestamp: new Date().toISOString()
-        }))
+          timestamp: new Date().toISOString(),
+        })),
       };
 
       jest.spyOn(fs, 'readJson').mockResolvedValue(searchableData);
@@ -121,28 +121,28 @@ describe('Performance Tests', () => {
   describe('Memory Usage Tests', () => {
     test('should not leak memory during repeated operations', async () => {
       const getMemoryUsage = () => process.memoryUsage().heapUsed;
-      
+
       const initialMemory = getMemoryUsage();
-      
+
       // Perform 100 operations
       for (let i = 0; i < 100; i++) {
         const largeArray = Array.from({ length: 1000 }, (_, j) => ({
           id: j,
-          data: 'x'.repeat(1000)
+          data: 'x'.repeat(1000),
         }));
-        
+
         parseFlags([`--test${i}`, 'value']);
         JSON.stringify(largeArray.slice(0, 10)); // Only format first 10 to keep it reasonable
-        
+
         // Force garbage collection if available
         if (global.gc) {
           global.gc();
         }
       }
-      
+
       const finalMemory = getMemoryUsage();
       const memoryIncrease = finalMemory - initialMemory;
-      
+
       // Memory increase should be reasonable (less than 50MB)
       expect(memoryIncrease).toBeLessThan(50 * 1024 * 1024);
     });
@@ -156,12 +156,12 @@ describe('Performance Tests', () => {
 
       const { duration } = await perfHelpers.measureTime(async () => {
         const operations = [];
-        
+
         // Simulate 20 concurrent memory operations
         for (let i = 0; i < 20; i++) {
           operations.push(memoryCommand(['store', `key${i}`, `value${i}`], {}));
         }
-        
+
         await Promise.all(operations);
       });
 
@@ -174,20 +174,20 @@ describe('Performance Tests', () => {
           id: `agent-${i}`,
           name: `Agent ${i}`,
           type: 'researcher',
-          status: 'idle'
-        }))
+          status: 'idle',
+        })),
       };
-      
+
       jest.spyOn(fs, 'readJson').mockResolvedValue(mockSwarmData);
 
       const { duration } = await perfHelpers.measureTime(async () => {
         const operations = [];
-        
+
         // Simulate 10 concurrent agent status checks
         for (let i = 0; i < 10; i++) {
           operations.push(agentCommand(['status'], {}));
         }
-        
+
         await Promise.all(operations);
       });
 
@@ -202,7 +202,7 @@ describe('Performance Tests', () => {
         features: {},
         agents: {},
         tasks: {},
-        memory: {}
+        memory: {},
       };
 
       // Create large configuration with many properties
@@ -212,8 +212,8 @@ describe('Performance Tests', () => {
           config: {
             setting1: `value${i}`,
             setting2: Math.random(),
-            setting3: Array.from({ length: 10 }, (_, j) => `item${j}`)
-          }
+            setting3: Array.from({ length: 10 }, (_, j) => `item${j}`),
+          },
         };
       }
 
@@ -234,14 +234,14 @@ describe('Performance Tests', () => {
           taskId: `task-${i % 100}`,
           metadata: {
             duration: Math.random() * 1000,
-            success: i % 5 !== 0
-          }
-        }
+            success: i % 5 !== 0,
+          },
+        },
       }));
 
       const { duration } = await performance.measureTime(() => {
         // Simulate log processing
-        const errors = largeLogs.filter(log => log.level === 'error');
+        const errors = largeLogs.filter((log) => log.level === 'error');
         const recent = largeLogs.slice(0, 100);
         return { errors: errors.length, recent: recent.length };
       });
@@ -256,7 +256,7 @@ describe('Performance Tests', () => {
       const mockStartupOperations = async () => {
         // Simulate CLI startup operations
         parseFlags(['--help']);
-        await new Promise(resolve => setTimeout(resolve, 10)); // Simulate I/O
+        await new Promise((resolve) => setTimeout(resolve, 10)); // Simulate I/O
         return 'CLI ready';
       };
 
@@ -274,10 +274,10 @@ describe('Performance Tests', () => {
         // Simulate swarm initialization
         const swarmData = {
           id: 'test-swarm',
-          agents: Array.from({ length: 8 }, (_, i) => ({ id: `agent-${i}` }))
+          agents: Array.from({ length: 8 }, (_, i) => ({ id: `agent-${i}` })),
         };
-        
-        await new Promise(resolve => setTimeout(resolve, 50)); // Simulate setup
+
+        await new Promise((resolve) => setTimeout(resolve, 50)); // Simulate setup
         return swarmData;
       };
 

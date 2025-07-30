@@ -6,36 +6,35 @@ async function startUnifiedWeb() {
   const unifiedInterface = new UnifiedInterfacePlugin({
     webPort: 3000,
     defaultMode: 'web',
-    enableMCP: true
+    enableMCP: true,
   });
 
-  console.log('🚀 Starting Unified Interface in Web Mode...');
-  
+  console.warn('🚀 Starting Unified Interface in Web Mode...');
+
   try {
     await unifiedInterface.start('web');
-    console.log('✅ Unified Interface started successfully!');
-    console.log('🌐 Available at: http://localhost:3000');
-    console.log('📡 MCP endpoint: http://localhost:3000/mcp');
-    console.log('🔌 WebSocket: ws://localhost:3000/ws');
-    
+    console.warn('✅ Unified Interface started successfully!');
+    console.warn('🌐 Available at: http://localhost:3000');
+    console.warn('📡 MCP endpoint: http://localhost:3000/mcp');
+    console.warn('🔌 WebSocket: ws://localhost:3000/ws');
+
     // Keep the process running indefinitely
     setInterval(() => {
       // Heartbeat to keep process alive
     }, 30000);
-    
+
     // Graceful shutdown handlers
     process.on('SIGINT', async () => {
-      console.log('\n🛑 Shutting down...');
+      console.warn('\n🛑 Shutting down...');
       await unifiedInterface.shutdown();
       process.exit(0);
     });
-    
+
     process.on('SIGTERM', async () => {
-      console.log('\n🛑 Shutting down...');
+      console.warn('\n🛑 Shutting down...');
       await unifiedInterface.shutdown();
       process.exit(0);
     });
-    
   } catch (error) {
     console.error('❌ Failed to start Unified Interface:', error);
     process.exit(1);

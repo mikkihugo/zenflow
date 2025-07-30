@@ -4,7 +4,16 @@
   "description": "Pluggable AI/LLM providers with automatic fallback and load balancing",
   "main": "index.js",
   "type": "module",
-  "keywords": ["claude-zen", "plugin", "ai", "llm", "providers", "claude", "gemini", "openrouter"],
+  "keywords": [
+    "claude-zen",
+    "plugin",
+    "ai",
+    "llm",
+    "providers",
+    "claude",
+    "gemini",
+    "openrouter"
+  ],
   "author": "Claude Zen Team",
   "license": "MIT",
   "dependencies": {
@@ -26,7 +35,7 @@
     "providers": [
       {
         "name": "claude",
-        "type": "claude-code", 
+        "type": "claude-code",
         "description": "Claude Code integration for high-quality AI assistance",
         "primary": true
       },

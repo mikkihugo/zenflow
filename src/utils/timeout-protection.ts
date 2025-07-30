@@ -4,8 +4,6 @@
  * Based on upstream commits 43ab723d + 3dfd2ee1
  */
 
-import type { JSONObject } from '../types/core.js';
-
 /**
  * Interface for database store cleanup
  */
@@ -17,40 +15,24 @@ export interface DatabaseStore {
 /**
  * Interface for ruv-swarm hook result
  */
-export interface RuvSwarmHookResult {
-  success: boolean;
-  error?: string;
-  timedOut?: boolean;
-  data?: JSONObject;
-}
+export interface RuvSwarmHookResult {success = 3000 // 3 seconds default
 
 /**
- * Timeout Protection class for preventing hanging operations
+ * Wrap a promise with timeout protection
+ * @param promise - The promise to protect
+ * @param timeout - Timeout in milliseconds
+ * @param operation - Description of the operation
+ * @returns Promise that resolves or rejects with timeout
  */
-export class TimeoutProtection {
-  static readonly DEFAULT_TIMEOUT = 3000; // 3 seconds default
-
-  /**
-   * Wrap a promise with timeout protection
-   * @param promise - The promise to protect
-   * @param timeout - Timeout in milliseconds
-   * @param operation - Description of the operation
-   * @returns Promise that resolves or rejects with timeout
-   */
-  static withTimeout<T>(
-    promise: Promise<T>, 
-    timeout: number = TimeoutProtection.DEFAULT_TIMEOUT, 
-    operation: string = 'operation'
-  ): Promise<T> {
-    return Promise.race([
+static
+withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'operation'))
+: Promise<T>
+{
+  return Promise.race([
       promise,
       new Promise<never>((_, reject) => {
-        const timeoutId = setTimeout(() => {
-          reject(new Error(`Timeout: ${operation} exceeded ${timeout}ms`));
-        }, timeout);
-        
-        // Clear timeout if the original promise resolves/rejects first
-        promise.finally(() => clearTimeout(timeoutId));
+        const _timeoutId = setTimeout(() => {
+          reject(new Error(`Timeout = > clearTimeout(timeoutId));
       })
     ]);
   }
@@ -59,9 +41,9 @@ export class TimeoutProtection {
    * Force process exit with timeout (for stubborn processes)
    * @param timeout - Time to wait before force exit
    */
-  static forceExit(timeout: number = 1000): void {
+  static forceExit(timeout = 1000): void {
     setTimeout(() => {
-      console.log('🚨 Force exiting process to prevent hanging...');
+      console.warn('🚨 Force exiting process to prevent hanging...');
       process.exit(0);
     }, timeout);
   }
@@ -81,21 +63,7 @@ export class TimeoutProtection {
         'ruv-swarm availability check'
       );
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      console.log(`⚠️ ruv-swarm check timed out: ${errorMessage}`);
-      return false;
-    }
-  }
-
-  /**
-   * Execute ruv-swarm hook with timeout protection
-   * @param hookName - Name of the hook
-   * @param params - Hook parameters
-   * @returns Hook result or timeout error
-   */
-  static async execRuvSwarmHookWithTimeout(
-    hookName: string, 
-    params: JSONObject = {}
+      const errorMessage = error instanceof Error ? error.message = {}
   ): Promise<RuvSwarmHookResult> {
     try {
       const execPromise = import('../cli/utils.js').then(utils => 
@@ -110,31 +78,8 @@ export class TimeoutProtection {
 
       // Handle null result (function doesn't exist)
       if (result === null) {
-        return {
-          success: false,
-          error: `ruv-swarm hook ${hookName} not available`,
-          timedOut: false
-        };
-      }
-
-      return result as RuvSwarmHookResult;
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      console.log(`⚠️ ruv-swarm hook ${hookName} timed out: ${errorMessage}`);
-      return {
-        success: false,
-        error: errorMessage,
-        timedOut: true
-      };
-    }
-  }
-
-  /**
-   * Cleanup database connections with timeout
-   * @param store - Database store instance
-   */
-  static async cleanupDatabaseWithTimeout(store: DatabaseStore | null | undefined): Promise<void> {
-    if (!store || typeof store.close !== 'function') {
+        return {success = error instanceof Error ? error.message : String(error);
+      console.warn(`⚠️ ruv-swarm hook ${hookName} timedout = = 'function') {
       return;
     }
 
@@ -145,12 +90,8 @@ export class TimeoutProtection {
         'database connection cleanup'
       );
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      console.log(`⚠️ Database cleanup timed out: ${errorMessage}`);
-      // Force close if available
-      if (typeof store.forceClose === 'function') {
+      const _errorMessage = error instanceof Error ? error.message = === 'function') 
         store.forceClose();
-      }
     }
   }
 
@@ -158,8 +99,8 @@ export class TimeoutProtection {
    * Safe process exit handler that prevents hanging
    */
   static setupSafeExit(): void {
-    const exitHandler = (signal: string) => {
-      console.log(`\n🔄 Received ${signal}, performing safe exit...`);
+    const exitHandler = (signal) => {
+      console.warn(`\n🔄 Received ${signal}, performing safe exit...`);
       
       // Set a maximum time for cleanup
       TimeoutProtection.forceExit(3000);
@@ -180,12 +121,8 @@ export class TimeoutProtection {
    * @param operationName - Name of the operation for error messages
    * @returns Wrapped function with timeout protection
    */
-  static wrapWithTimeout<TArgs extends unknown[], TReturn>(
-    fn: (...args: TArgs) => Promise<TReturn>,
-    timeout: number,
-    operationName: string
-  ): (...args: TArgs) => Promise<TReturn> {
-    return async (...args: TArgs): Promise<TReturn> => {
+  static wrapWithTimeout<TArgs extends unknown[], TReturn>(fn = > Promise<TReturn>,timeout = > Promise<TReturn> {
+    return async (..._args => {
       return TimeoutProtection.withTimeout(
         fn(...args),
         timeout,
@@ -202,56 +139,54 @@ export class TimeoutProtection {
    * @param operationName - Name of the operation
    * @returns Result of the function
    */
-  static async withRetryAndTimeout<T>(
-    fn: () => Promise<T>,
-    maxRetries: number = 3,
-    timeout: number = TimeoutProtection.DEFAULT_TIMEOUT,
-    operationName: string = 'operation'
+  static async withRetryAndTimeout<T>(fn = > Promise<T>,
+    maxRetries = 3,
+    timeout = TimeoutProtection.DEFAULT_TIMEOUT,
+    operationName = 'operation'
   ): Promise<T> {
-    let lastError: Error | null = null;
+    let lastError = null;
 
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
-        return await TimeoutProtection.withTimeout(
+    for (const attempt = 1; attempt <= maxRetries; attempt++)
+  try {
+    return await TimeoutProtection.withTimeout(
           fn(),
           timeout,
           `${operationName} (attempt ${attempt}/${maxRetries})`
         );
-      } catch (error) {
-        lastError = error instanceof Error ? error : new Error(String(error));
-        
-        if (attempt === maxRetries) {
-          break;
-        }
-        
-        // Exponential backoff
-        const delay = Math.min(1000 * Math.pow(2, attempt - 1), 10000);
-        await new Promise(resolve => setTimeout(resolve, delay));
-      }
-    }
+  } catch (error) {
+    lastError = error instanceof Error ?error = === maxRetries
+    )
+    break;
 
-    throw lastError || new Error(`${operationName} failed after ${maxRetries} attempts`);
+    // Exponential backoff
+    const delay = Math.min(1000 * 2 ** (attempt - 1), 10000);
+    await new Promise((resolve) => setTimeout(resolve, delay));
   }
 
-  /**
-   * Create a debounced version of a function with timeout protection
-   * @param fn - Function to debounce
-   * @param delay - Debounce delay in milliseconds
-   * @param timeout - Timeout for function execution
-   * @param operationName - Name of the operation
-   * @returns Debounced function
-   */
-  static debounceWithTimeout<TArgs extends unknown[], TReturn>(
-    fn: (...args: TArgs) => Promise<TReturn>,
-    delay: number,
-    timeout: number = TimeoutProtection.DEFAULT_TIMEOUT,
-    operationName: string = 'debounced operation'
-  ): (...args: TArgs) => Promise<TReturn> {
-    let timeoutId: NodeJS.Timeout | null = null;
-    let promiseResolve: ((value: TReturn | PromiseLike<TReturn>) => void) | null = null;
-    let promiseReject: ((reason?: unknown) => void) | null = null;
+  throw lastError || new Error(`${operationName} failed after ${maxRetries} attempts`);
+}
 
-    return (...args: TArgs): Promise<TReturn> => {
+/**
+ * Create a debounced version of a function with timeout protection
+ * @param fn - Function to debounce
+ * @param delay - Debounce delay in milliseconds
+ * @param timeout - Timeout for function execution
+ * @param operationName - Name of the operation
+ * @returns Debounced function
+ */
+static
+debounceWithTimeout<TArgs extends unknown[], TReturn>(fn = > Promise<TReturn>,delay = TimeoutProtection.DEFAULT_TIMEOUT,
+    operationName = 'debounced operation'
+  )
+: (...args = > Promise<TReturn>
+{
+  let timeoutId = null;
+  let _promiseResolve = > void
+  ) | null = null
+  let _promiseReject = > void
+  ) | null = null
+
+  return (...args): Promise<TReturn> => {
       return new Promise<TReturn>((resolve, reject) => {
         // Clear existing timeout
         if (timeoutId) {
@@ -259,8 +194,8 @@ export class TimeoutProtection {
         }
 
         // Store the promise resolvers
-        promiseResolve = resolve;
-        promiseReject = reject;
+        _promiseResolve = resolve;
+        _promiseReject = reject;
 
         // Set new timeout
         timeoutId = setTimeout(async () => {
@@ -277,7 +212,7 @@ export class TimeoutProtection {
         }, delay);
       });
     };
-  }
+}
 }
 
 export default TimeoutProtection;

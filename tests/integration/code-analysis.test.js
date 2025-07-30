@@ -3,9 +3,9 @@
  * Tests the basic functionality of the code analysis integration
  */
 
-import { writeFile, mkdir, rm } from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { mkdir, rm, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,7 +18,7 @@ describe('Code Analysis Integration', () => {
     // Import dynamically to avoid module resolution issues
     const module = await import('../../src/services/code-analysis/index.js');
     CodeAnalysisService = module.default;
-    
+
     testDir = path.join(__dirname, 'test-data');
     await mkdir(testDir, { recursive: true });
     await createTestFiles();
@@ -36,7 +36,7 @@ describe('Code Analysis Integration', () => {
   test('should initialize analysis service', async () => {
     const service = new CodeAnalysisService({
       projectPath: testDir,
-      outputDir: path.join(testDir, 'reports')
+      outputDir: path.join(testDir, 'reports'),
     });
 
     const result = await service.initialize();
@@ -51,15 +51,12 @@ describe('Code Analysis Integration', () => {
   test('should parse AST from test files', async () => {
     const service = new CodeAnalysisService({
       projectPath: testDir,
-      outputDir: path.join(testDir, 'reports')
+      outputDir: path.join(testDir, 'reports'),
     });
 
     await service.initialize();
 
-    const files = [
-      path.join(testDir, 'sample.js'),
-      path.join(testDir, 'class.js')
-    ];
+    const files = [path.join(testDir, 'sample.js'), path.join(testDir, 'class.js')];
 
     const results = await service.analyzeFiles(files, { updateGraph: false });
 
@@ -68,7 +65,7 @@ describe('Code Analysis Integration', () => {
     expect(results.classes.length).toBeGreaterThan(0);
 
     // Check for specific function
-    const processFunction = results.functions.find(f => f.name === 'processData');
+    const processFunction = results.functions.find((f) => f.name === 'processData');
     expect(processFunction).toBeDefined();
     expect(processFunction.cyclomatic_complexity).toBeGreaterThan(10);
 
@@ -78,7 +75,7 @@ describe('Code Analysis Integration', () => {
   test('should analyze dependencies', async () => {
     const service = new CodeAnalysisService({
       projectPath: testDir,
-      outputDir: path.join(testDir, 'reports')
+      outputDir: path.join(testDir, 'reports'),
     });
 
     await service.initialize();
@@ -86,7 +83,7 @@ describe('Code Analysis Integration', () => {
     const results = await service.analyzeCodebase({
       includeDependencies: true,
       includeDuplicates: false,
-      storeInGraph: false
+      storeInGraph: false,
     });
 
     expect(results.dependencies).toBeDefined();
@@ -98,7 +95,7 @@ describe('Code Analysis Integration', () => {
   test('should detect duplicate code', async () => {
     const service = new CodeAnalysisService({
       projectPath: testDir,
-      outputDir: path.join(testDir, 'reports')
+      outputDir: path.join(testDir, 'reports'),
     });
 
     await service.initialize();
@@ -106,7 +103,7 @@ describe('Code Analysis Integration', () => {
     const results = await service.analyzeCodebase({
       includeDependencies: false,
       includeDuplicates: true,
-      storeInGraph: false
+      storeInGraph: false,
     });
 
     expect(results.duplicates).toBeDefined();
@@ -118,7 +115,7 @@ describe('Code Analysis Integration', () => {
   test('should generate analysis summary', async () => {
     const service = new CodeAnalysisService({
       projectPath: testDir,
-      outputDir: path.join(testDir, 'reports')
+      outputDir: path.join(testDir, 'reports'),
     });
 
     await service.initialize();
@@ -151,7 +148,7 @@ function processData(data, options = {}) {
     }
     
     if (Array.isArray(data)) {
-      for (let i = 0; i < data.length; i++) {
+      for (const i = 0; i < data.length; i++) {
         if (!data[i].id) {
           throw new Error('Missing id');
         }

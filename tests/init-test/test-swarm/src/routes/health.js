@@ -1,11 +1,11 @@
 const express = require('express');
 const { db } = require('../models/database');
-const os = require('os');
+const os = require('node:os');
 
 const router = express.Router();
 
 // Health check endpoint
-router.get('/', (req, res) => {
+router.get('/', (_req, res) => {
   const healthcheck = {
     uptime: process.uptime(),
     status: 'OK',
@@ -14,8 +14,8 @@ router.get('/', (req, res) => {
     memory: {
       used: process.memoryUsage(),
       free: os.freemem(),
-      total: os.totalmem()
-    }
+      total: os.totalmem(),
+    },
   };
 
   // Check database connection

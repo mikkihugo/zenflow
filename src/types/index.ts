@@ -3,27 +3,27 @@
  * Comprehensive TypeScript architecture for the entire system
  */
 
+export * from './api.js';
+export * from './cli.js';
+export * from './coordination.js';
 // Re-export all types for easy consumption
 export * from './core.js';
-export * from './queen.js';
-export * from './swarm.js';
-export * from './hive-mind.js';
 export * from './database.js';
-export * from './plugin.js';
-export * from './neural.js';
-export * from './coordination.js';
-export * from './api.js';
-export * from './server.js';
-export * from './memory.js';
-export * from './providers.js';
-export * from './workflow.js';
-export * from './vision.js';
-export * from './mcp.js';
 export * from './events.js';
+export * from './hive-mind.js';
+export * from './mcp.js';
+export * from './memory.js';
 export * from './metrics.js';
+export * from './neural.js';
+export * from './plugin.js';
+export * from './providers.js';
+export * from './queen.js';
 export * from './security.js';
+export * from './server.js';
+export * from './swarm.js';
 export * from './utils.js';
-export * from './cli.js';
+export * from './vision.js';
+export * from './workflow.js';
 
 // Global type augmentation for the system
 declare global {
@@ -48,7 +48,7 @@ declare global {
 
 // Module augmentation for Node.js global
 declare global {
-  var claudeCodeFlow: {
+  const claudeCodeFlow: {
     system: ClaudeCodeFlow.SystemContext;
     config: ClaudeCodeFlow.Configuration;
     hiveMind?: import('./hive-mind.js').HiveMind;

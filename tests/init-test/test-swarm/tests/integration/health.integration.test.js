@@ -4,9 +4,7 @@ const app = require('../../src/server');
 describe('Health Check Integration Tests', () => {
   describe('GET /health', () => {
     it('should return health status', async () => {
-      const response = await request(app)
-        .get('/health')
-        .expect(200);
+      const response = await request(app).get('/health').expect(200);
 
       expect(response.body).toHaveProperty('status', 'OK');
       expect(response.body).toHaveProperty('uptime');

@@ -2,23 +2,23 @@
 
 /**
  * 🎨 VISUAL DEMO OF ENHANCED CLI/TUI FEATURES
- * 
+ *
  * Creates a visual demonstration of the enhanced components
  * without requiring full dependencies.
  */
 
-console.log('🚀 Claude-Zen Enhanced CLI/TUI Features Demo');
-console.log('═'.repeat(60));
-console.log('');
+console.warn('🚀 Claude-Zen Enhanced CLI/TUI Features Demo');
+console.warn('═'.repeat(60));
+console.warn('');
 
 // Demo 1: Progress Bar Styles
-console.log('📊 Enhanced Progress Bars:');
-console.log('');
+console.warn('📊 Enhanced Progress Bars:');
+console.warn('');
 
 function createProgressBar(progress, width = 40, style = 'blocks') {
   const filled = Math.floor((progress / 100) * width);
   const empty = width - filled;
-  
+
   let fillChar, emptyChar;
   switch (style) {
     case 'dots':
@@ -33,133 +33,133 @@ function createProgressBar(progress, width = 40, style = 'blocks') {
       fillChar = '█';
       emptyChar = '░';
   }
-  
+
   return `[${fillChar.repeat(filled)}${emptyChar.repeat(empty)}] ${progress.toFixed(1)}%`;
 }
 
-console.log('  Blocks Style: ' + createProgressBar(75, 30, 'blocks'));
-console.log('  Dots Style:   ' + createProgressBar(60, 30, 'dots'));
-console.log('  Bars Style:   ' + createProgressBar(45, 30, 'bars'));
-console.log('');
+console.warn(`  Blocks Style: ${createProgressBar(75, 30, 'blocks')}`);
+console.warn(`  Dots Style:   ${createProgressBar(60, 30, 'dots')}`);
+console.warn(`  Bars Style:   ${createProgressBar(45, 30, 'bars')}`);
+console.warn('');
 
 // Demo 2: Command Auto-completion
-console.log('⌨️  Command Auto-completion:');
-console.log('');
-console.log('  $ s█');
-console.log('');
-console.log('  Suggestions (2) - ↑/↓ to navigate, Tab to select:');
-console.log('    ▶ status - Show system status');
-console.log('      swarm - Manage swarm operations');
-console.log('');
+console.warn('⌨️  Command Auto-completion:');
+console.warn('');
+console.warn('  $ s█');
+console.warn('');
+console.warn('  Suggestions (2) - ↑/↓ to navigate, Tab to select:');
+console.warn('    ▶ status - Show system status');
+console.warn('      swarm - Manage swarm operations');
+console.warn('');
 
 // Demo 3: API Endpoints
-console.log('🌐 Auto-Generated API Endpoints:');
-console.log('');
-console.log('  ✅ REST API Generation:');
-console.log('     POST /api/execute/init');
-console.log('     POST /api/execute/status');
-console.log('     POST /api/execute/swarm');
-console.log('     GET  /api/commands');
-console.log('     POST /api/validate');
-console.log('');
-console.log('  ✅ WebSocket Support:');
-console.log('     WS   /ws (real-time command execution)');
-console.log('');
-console.log('  ✅ Documentation:');
-console.log('     GET  /docs (Swagger UI)');
-console.log('     GET  /api/openapi.json');
-console.log('');
+console.warn('🌐 Auto-Generated API Endpoints:');
+console.warn('');
+console.warn('  ✅ REST API Generation:');
+console.warn('     POST /api/execute/init');
+console.warn('     POST /api/execute/status');
+console.warn('     POST /api/execute/swarm');
+console.warn('     GET  /api/commands');
+console.warn('     POST /api/validate');
+console.warn('');
+console.warn('  ✅ WebSocket Support:');
+console.warn('     WS   /ws (real-time command execution)');
+console.warn('');
+console.warn('  ✅ Documentation:');
+console.warn('     GET  /docs (Swagger UI)');
+console.warn('     GET  /api/openapi.json');
+console.warn('');
 
 // Demo 4: Split-Pane Layout
-console.log('🎯 Split-Pane TUI Layout:');
-console.log('');
-console.log('┌─ CLI Mode [F4] ─── API [F1] ─── Monitor [F2] ─── Help [F3] ──┐');
-console.log('│                                                Layout: split │');
-console.log('├──────────────────────────────┬───────────────────────────────┤');
-console.log('│ ⌨️  CLI Mode - Enhanced:      │ 📊 System Status              │');
-console.log('│                              │                               │');
-console.log('│ $ init --auto█               │ API Server: ✅ Running :3001  │');
-console.log('│                              │ Commands: 25                  │');
-console.log('│ Suggestions (1):             │ Uptime: 5m 23s                │');
-console.log('│   ▶ init - Initialize project│                               │');
-console.log('│                              │ Metrics:                      │');
-console.log('│ [████████████░░░░░░░] 75.0%   │ API Calls: 150                │');
-console.log('│ Processing: init command     │ Executions: 45                │');
-console.log('│                              │ WebSocket: 3                  │');
-console.log('├──────────────────────────────┼───────────────────────────────┤');
-console.log('│ Command: init --auto         │ 📋 Command Logs               │');
-console.log('│ (Enter to execute)           │                               │');
-console.log('│                              │ 14:32:15 ⚡ $ init --auto     │');
-console.log('│                              │ 14:32:16 ℹ️  Creating dirs... │');
-console.log('│                              │ 14:32:17 ✅ Setup complete    │');
-console.log('└──────────────────────────────┴───────────────────────────────┘');
-console.log('F1-F4: Modes • Tab: Complete • ↑/↓: Navigate • Ctrl+L: Layout');
-console.log('');
+console.warn('🎯 Split-Pane TUI Layout:');
+console.warn('');
+console.warn('┌─ CLI Mode [F4] ─── API [F1] ─── Monitor [F2] ─── Help [F3] ──┐');
+console.warn('│                                                Layout: split │');
+console.warn('├──────────────────────────────┬───────────────────────────────┤');
+console.warn('│ ⌨️  CLI Mode - Enhanced:      │ 📊 System Status              │');
+console.warn('│                              │                               │');
+console.warn('│ $ init --auto█               │ API Server: ✅ Running :3001  │');
+console.warn('│                              │ Commands: 25                  │');
+console.warn('│ Suggestions (1):             │ Uptime: 5m 23s                │');
+console.warn('│   ▶ init - Initialize project│                               │');
+console.warn('│                              │ Metrics:                      │');
+console.warn('│ [████████████░░░░░░░] 75.0%   │ API Calls: 150                │');
+console.warn('│ Processing: init command     │ Executions: 45                │');
+console.warn('│                              │ WebSocket: 3                  │');
+console.warn('├──────────────────────────────┼───────────────────────────────┤');
+console.warn('│ Command: init --auto         │ 📋 Command Logs               │');
+console.warn('│ (Enter to execute)           │                               │');
+console.warn('│                              │ 14:32:15 ⚡ $ init --auto     │');
+console.warn('│                              │ 14:32:16 ℹ️  Creating dirs... │');
+console.warn('│                              │ 14:32:17 ✅ Setup complete    │');
+console.warn('└──────────────────────────────┴───────────────────────────────┘');
+console.warn('F1-F4: Modes • Tab: Complete • ↑/↓: Navigate • Ctrl+L: Layout');
+console.warn('');
 
 // Demo 5: Swarm Topology
-console.log('🐝 Visual Swarm Topology:');
-console.log('');
-console.log('┌─ Swarm Topology ──────────── Updated 0s ago ──┐');
-console.log('│                                               │');
-console.log('│   ▶ worker-swarm (3 agents) - active         │');
-console.log('│       Tasks: 12 | CPU: 45% | Memory: 128MB   │');
-console.log('│                                               │');
-console.log('│     analytics-swarm (2 agents) - idle        │');
-console.log('│       Tasks: 0 | CPU: 5% | Memory: 64MB      │');
-console.log('│                                               │');
-console.log('│   Connections:                                │');
-console.log('│     worker-swarm ←→ analytics-swarm          │');
-console.log('│                                               │');
-console.log('└───────────────────────────────────────────────┘');
-console.log('');
+console.warn('🐝 Visual Swarm Topology:');
+console.warn('');
+console.warn('┌─ Swarm Topology ──────────── Updated 0s ago ──┐');
+console.warn('│                                               │');
+console.warn('│   ▶ worker-swarm (3 agents) - active         │');
+console.warn('│       Tasks: 12 | CPU: 45% | Memory: 128MB   │');
+console.warn('│                                               │');
+console.warn('│     analytics-swarm (2 agents) - idle        │');
+console.warn('│       Tasks: 0 | CPU: 5% | Memory: 64MB      │');
+console.warn('│                                               │');
+console.warn('│   Connections:                                │');
+console.warn('│     worker-swarm ←→ analytics-swarm          │');
+console.warn('│                                               │');
+console.warn('└───────────────────────────────────────────────┘');
+console.warn('');
 
 // Demo 6: WebSocket Messages
-console.log('🔗 WebSocket Real-time Messages:');
-console.log('');
-console.log('  Client → Server:');
-console.log('  {');
-console.log('    "type": "execute_command",');
-console.log('    "command": "status",');
-console.log('    "args": [],');
-console.log('    "flags": { "verbose": true }');
-console.log('  }');
-console.log('');
-console.log('  Server → Client:');
-console.log('  {');
-console.log('    "type": "execution_progress",');
-console.log('    "sessionId": "abc-123",');
-console.log('    "progress": 75,');
-console.log('    "timestamp": "2025-01-25T19:06:00.000Z"');
-console.log('  }');
-console.log('');
+console.warn('🔗 WebSocket Real-time Messages:');
+console.warn('');
+console.warn('  Client → Server:');
+console.warn('  {');
+console.warn('    "type": "execute_command",');
+console.warn('    "command": "status",');
+console.warn('    "args": [],');
+console.warn('    "flags": { "verbose": true }');
+console.warn('  }');
+console.warn('');
+console.warn('  Server → Client:');
+console.warn('  {');
+console.warn('    "type": "execution_progress",');
+console.warn('    "sessionId": "abc-123",');
+console.warn('    "progress": 75,');
+console.warn('    "timestamp": "2025-01-25T19:06:00.000Z"');
+console.warn('  }');
+console.warn('');
 
 // Demo 7: OpenAPI Documentation
-console.log('📖 Generated OpenAPI 3.0 Documentation:');
-console.log('');
-console.log('  📋 Comprehensive API Schema:');
-console.log('     • 15+ endpoint definitions');
-console.log('     • Request/response schemas');
-console.log('     • Validation rules');
-console.log('     • Error handling');
-console.log('     • Security schemes');
-console.log('');
-console.log('  🎯 Interactive Swagger UI:');
-console.log('     • Browse all endpoints');
-console.log('     • Test API calls');
-console.log('     • Download OpenAPI spec');
-console.log('     • Authentication support');
-console.log('');
+console.warn('📖 Generated OpenAPI 3.0 Documentation:');
+console.warn('');
+console.warn('  📋 Comprehensive API Schema:');
+console.warn('     • 15+ endpoint definitions');
+console.warn('     • Request/response schemas');
+console.warn('     • Validation rules');
+console.warn('     • Error handling');
+console.warn('     • Security schemes');
+console.warn('');
+console.warn('  🎯 Interactive Swagger UI:');
+console.warn('     • Browse all endpoints');
+console.warn('     • Test API calls');
+console.warn('     • Download OpenAPI spec');
+console.warn('     • Authentication support');
+console.warn('');
 
-console.log('═'.repeat(60));
-console.log('🎉 Enhanced CLI/TUI Features Demo Complete!');
-console.log('');
-console.log('✨ Key Features Demonstrated:');
-console.log('   • Animated progress bars with multiple styles');
-console.log('   • Interactive command auto-completion');
-console.log('   • Split-pane TUI layout with real-time updates');
-console.log('   • Visual swarm topology monitoring');
-console.log('   • WebSocket real-time command execution');
-console.log('   • Comprehensive OpenAPI documentation');
-console.log('   • Enhanced keyboard navigation (F1-F4, Ctrl+L)');
-console.log('');
-console.log('🚀 Ready for production use with advanced CLI/TUI capabilities!');
+console.warn('═'.repeat(60));
+console.warn('🎉 Enhanced CLI/TUI Features Demo Complete!');
+console.warn('');
+console.warn('✨ Key Features Demonstrated:');
+console.warn('   • Animated progress bars with multiple styles');
+console.warn('   • Interactive command auto-completion');
+console.warn('   • Split-pane TUI layout with real-time updates');
+console.warn('   • Visual swarm topology monitoring');
+console.warn('   • WebSocket real-time command execution');
+console.warn('   • Comprehensive OpenAPI documentation');
+console.warn('   • Enhanced keyboard navigation (F1-F4, Ctrl+L)');
+console.warn('');
+console.warn('🚀 Ready for production use with advanced CLI/TUI capabilities!');

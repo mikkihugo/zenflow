@@ -3,11 +3,11 @@
  * Issue #162: init command does not create .claude/settings.local.json
  */
 
-import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
-import fs from 'fs/promises';
-import path from 'path';
-import { execSync } from 'child_process';
-import os from 'os';
+import { execSync } from 'node:child_process';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 
 describe('Init Command - settings.local.json Creation', () => {
   let testDir;
@@ -30,12 +30,15 @@ describe('Init Command - settings.local.json Creation', () => {
     execSync('npx claude-zen init', {
       cwd: testDir,
       stdio: 'pipe',
-      env: { ...process.env, PATH: `/workspaces/claude-code-flow/node_modules/.bin:${process.env.PATH}` }
+      env: { ...process.env, PATH: `/workspaces/claude-zen/node_modules/.bin:${process.env.PATH}` },
     });
 
     // Check if settings.local.json exists
     const settingsLocalPath = path.join(testDir, '.claude', 'settings.local.json');
-    const exists = await fs.access(settingsLocalPath).then(() => true).catch(() => false);
+    const exists = await fs
+      .access(settingsLocalPath)
+      .then(() => true)
+      .catch(() => false);
     expect(exists).toBe(true);
 
     // Read and parse settings.local.json
@@ -58,12 +61,15 @@ describe('Init Command - settings.local.json Creation', () => {
     execSync('npx claude-zen init --dry-run', {
       cwd: testDir,
       stdio: 'pipe',
-      env: { ...process.env, PATH: `/workspaces/claude-code-flow/node_modules/.bin:${process.env.PATH}` }
+      env: { ...process.env, PATH: `/workspaces/claude-zen/node_modules/.bin:${process.env.PATH}` },
     });
 
     // Check that settings.local.json does not exist
     const settingsLocalPath = path.join(testDir, '.claude', 'settings.local.json');
-    const exists = await fs.access(settingsLocalPath).then(() => true).catch(() => false);
+    const exists = await fs
+      .access(settingsLocalPath)
+      .then(() => true)
+      .catch(() => false);
     expect(exists).toBe(false);
   });
 
@@ -71,14 +77,14 @@ describe('Init Command - settings.local.json Creation', () => {
     // Create initial settings.local.json with different content
     const claudeDir = path.join(testDir, '.claude');
     await fs.mkdir(claudeDir, { recursive: true });
-    
+
     const customSettings = {
       permissions: {
         allow: ['custom-tool'],
-        deny: ['blocked-tool']
-      }
+        deny: ['blocked-tool'],
+      },
     };
-    
+
     const settingsLocalPath = path.join(claudeDir, 'settings.local.json');
     await fs.writeFile(settingsLocalPath, JSON.stringify(customSettings, null, 2));
 
@@ -86,7 +92,7 @@ describe('Init Command - settings.local.json Creation', () => {
     execSync('npx claude-zen init --force', {
       cwd: testDir,
       stdio: 'pipe',
-      env: { ...process.env, PATH: `/workspaces/claude-code-flow/node_modules/.bin:${process.env.PATH}` }
+      env: { ...process.env, PATH: `/workspaces/claude-zen/node_modules/.bin:${process.env.PATH}` },
     });
 
     // Read and verify new content
@@ -105,7 +111,7 @@ describe('Init Command - settings.local.json Creation', () => {
     execSync('npx claude-zen init', {
       cwd: testDir,
       stdio: 'pipe',
-      env: { ...process.env, PATH: `/workspaces/claude-code-flow/node_modules/.bin:${process.env.PATH}` }
+      env: { ...process.env, PATH: `/workspaces/claude-zen/node_modules/.bin:${process.env.PATH}` },
     });
 
     const settingsLocalPath = path.join(testDir, '.claude', 'settings.local.json');

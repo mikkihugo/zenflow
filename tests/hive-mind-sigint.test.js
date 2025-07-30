@@ -2,11 +2,11 @@
  * Tests for SIGINT handling in hive-mind spawn command
  */
 
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
-import { spawn } from 'child_process';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { existsSync } from 'fs';
+import { spawn } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 import Database from 'better-sqlite3';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -36,7 +36,7 @@ describe('Hive Mind SIGINT Handler', () => {
     // Start hive-mind spawn
     hiveMindProcess = spawn('node', [cliPath, 'hive-mind', 'spawn', 'Test SIGINT handling'], {
       stdio: 'pipe',
-      env: { ...process.env, NODE_ENV: 'test' }
+      env: { ...process.env, NODE_ENV: 'test' },
     });
 
     let output = '';
@@ -44,7 +44,7 @@ describe('Hive Mind SIGINT Handler', () => {
 
     hiveMindProcess.stdout.on('data', (data) => {
       output += data.toString();
-      
+
       // Extract session ID from output
       const sessionMatch = output.match(/Session ID:\s+(\S+)/);
       if (sessionMatch && !sessionId) {
@@ -85,7 +85,7 @@ describe('Hive Mind SIGINT Handler', () => {
   it('should save checkpoint when pausing session', (done) => {
     hiveMindProcess = spawn('node', [cliPath, 'hive-mind', 'spawn', 'Test checkpoint saving'], {
       stdio: 'pipe',
-      env: { ...process.env, NODE_ENV: 'test' }
+      env: { ...process.env, NODE_ENV: 'test' },
     });
 
     let output = '';
@@ -93,7 +93,7 @@ describe('Hive Mind SIGINT Handler', () => {
 
     hiveMindProcess.stdout.on('data', (data) => {
       output += data.toString();
-      
+
       const sessionMatch = output.match(/Session ID:\s+(\S+)/);
       if (sessionMatch && !sessionId) {
         sessionId = sessionMatch[1];
@@ -109,15 +109,15 @@ describe('Hive Mind SIGINT Handler', () => {
     hiveMindProcess.on('exit', () => {
       if (existsSync(dbPath) && sessionId) {
         const db = new Database(dbPath);
-        
+
         // Check for checkpoint
-        const checkpoint = db.prepare(
-          'SELECT * FROM session_checkpoints WHERE session_id = ? AND checkpoint_name = ?'
-        ).get(sessionId, 'auto-pause');
-        
+        const checkpoint = db
+          .prepare('SELECT * FROM session_checkpoints WHERE session_id = ? AND checkpoint_name = ?')
+          .get(sessionId, 'auto-pause');
+
         expect(checkpoint).toBeTruthy();
         expect(checkpoint.checkpoint_data).toContain('paused_by_user');
-        
+
         db.close();
       }
 
@@ -127,24 +127,24 @@ describe('Hive Mind SIGINT Handler', () => {
 
   it('should terminate Claude Code process when SIGINT is received', (done) => {
     // This test requires claude command to be available
-    
-    let claudeAvailable = false;
-    
+
+    let _claudeAvailable = false;
+
     try {
       execSync('which claude', { stdio: 'ignore' });
-      claudeAvailable = true;
+      _claudeAvailable = true;
     } catch {
-      console.log('Skipping test: claude command not available');
+      console.warn('Skipping test: claude command not available');
       done();
       return;
     }
 
     hiveMindProcess = spawn(
-      'node', 
+      'node',
       [cliPath, 'hive-mind', 'spawn', 'Test Claude termination', '--claude'],
       {
         stdio: 'pipe',
-        env: { ...process.env, NODE_ENV: 'test' }
+        env: { ...process.env, NODE_ENV: 'test' },
       }
     );
 
@@ -153,7 +153,7 @@ describe('Hive Mind SIGINT Handler', () => {
 
     hiveMindProcess.stdout.on('data', (data) => {
       output += data.toString();
-      
+
       if (output.includes('Claude Code launched with Hive Mind coordination')) {
         claudeLaunched = true;
         setTimeout(() => {

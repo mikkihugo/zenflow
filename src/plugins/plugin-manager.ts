@@ -3,264 +3,81 @@
  * Advanced plugin lifecycle management with health monitoring, security, and metrics
  */
 
-import { EventEmitter } from 'events';
-import { readdir, readFile, access, mkdir } from 'fs/promises';
-import { join, resolve } from 'path';
-import { Worker } from 'worker_threads';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import {
-  PluginManager as IPluginManager,
   Plugin,
-  PluginConfig,
-  PluginManifest,
-  PluginMetadata,
-  PluginContext,
-  PluginHealthResult,
-  PluginHealthReport,
-  PluginSystemHealth,
-  PluginMetrics,
-  PluginDiagnostics,
-  PluginTestResult,
-  PluginEvents,
-  PluginType,
-  PluginStatus,
-  PluginPermission,
-  HookType,
-  HookContext,
-  HookResult,
-  RegisteredHook,
-  PluginAPI,
-  ResourceUsage,
-  ValidationResult,
-  PermissionAuditReport,
-  JSONObject
+  type PluginCacheAPI,
+  type PluginDatabaseAPI,
+  type PluginEventAPI,
+  type PluginFilesystemAPI,
+  type PluginHttpAPI,
+  type PluginQueueAPI,
+  type PluginSecretsAPI,
 } from '../types/plugin.js';
-import {
-  PluginLogger,
-  PluginMemoryAPI,
-  PluginEventAPI,
-  PluginHttpAPI,
-  PluginFilesystemAPI,
-  PluginDatabaseAPI,
-  PluginCacheAPI,
-  PluginQueueAPI,
-  PluginSecretsAPI
-} from '../types/plugin.js';
-import { BasePlugin } from './base-plugin.js';
-import { performance } from 'perf_hooks';
-import crypto from 'crypto';
-import SecurityManager from './security-manager.js';
-import ResourceMonitor from './resource-monitor.js';
 import HealthMonitor from './health-monitor.js';
+import ResourceMonitor from './resource-monitor.js';
+import SecurityManager from './security-manager.js';
 
-interface LoadedPlugin {
-  plugin: Plugin;
-  manifest: PluginManifest;
-  config: PluginConfig;
-  worker?: Worker;
-  sandboxed: boolean;
-  lastHealthCheck: Date;
-  permissions: Set<PluginPermission>;
+interface LoadedPlugin {plugin = new Map()
+private
+hooks = new Map()
+private
+apis = new Map() // pluginName -> apiName -> API
+private
+resourceMonitor = {};
+)
+{
+  super();
+
+  this.config = {pluginDir = this.createSystemContext();
+
+  // Initialize security and monitoring systems
+  this.securityManager = new SecurityManager({enableSecurity = new ResourceMonitor({enabled = new HealthMonitor({enabled = join(path, 'package.json');
+  const manifestContent = await readFile(manifestPath, 'utf-8');
+  const packageJson = JSON.parse(manifestContent);
+
+  // Extract plugin manifest from package.json
+  const manifest = this.extractManifest(packageJson, path);
+
+  // Validate manifest
+  await this.validateManifest(manifest);
+
+  // Create plugin configuration
+  const pluginConfig = {name = await this.loadPluginModule(path, manifest);
+  const PluginClass = pluginModule.default || pluginModule[manifest.name] || pluginModule;
+
+  // Create plugin context
+  const context = this.createPluginContext(manifest, pluginConfig);
+
+  // Instantiate plugin
+  const plugin = new PluginClass(manifest, pluginConfig, context);
+
+  // Security validation
+  await this.securityManager.validatePlugin(plugin, manifest, pluginConfig);
+
+  // Create loaded plugin entry
+  const _loadedPlugin = {plugin = await this.createSandboxWorker(plugin, manifest, pluginConfig);
 }
 
-interface PluginDiscoveryResult {
-  manifest: PluginManifest;
-  path: string;
-  valid: boolean;
-  errors: string[];
-}
+// Store plugin
+this.plugins.set(manifest.name, loadedPlugin);
 
-interface PluginManagerConfig {
-  pluginDir: string;
-  maxPlugins: number;
-  maxMemoryPerPlugin: number;
-  maxCpuPerPlugin: number;
-  enableSandboxing: boolean;
-  enableHealthMonitoring: boolean;
-  healthCheckInterval: number;
-  resourceCheckInterval: number;
-  enableMetrics: boolean;
-  enableSecurity: boolean;
-  autoRestart: boolean;
-  maxRestartAttempts: number;
-  restartDelay: number;
-  permissionAuditInterval: number;
-}
+// Register with health monitor
+this.healthMonitor.registerPlugin(manifest.name, plugin, manifest, pluginConfig);
 
-export class PluginManager extends EventEmitter implements IPluginManager {
-  private plugins: Map<string, LoadedPlugin> = new Map();
-  private hooks: Map<HookType, RegisteredHook[]> = new Map();
-  private apis: Map<string, Map<string, PluginAPI>> = new Map(); // pluginName -> apiName -> API
-  private resourceMonitor: ResourceMonitor;
-  private securityManager: SecurityManager;
-  private healthMonitor: HealthMonitor;
+// Initialize plugin
+await plugin.load(pluginConfig);
 
-  private readonly config: PluginManagerConfig;
-  private readonly systemContext: PluginContext;
+// Register plugin hooks and APIs
+await this.registerPluginIntegrations(plugin, manifest);
 
-  constructor(config: Partial<PluginManagerConfig> = {}) {
-    super();
+this.emit('loaded', manifest.name, plugin.metadata);
+return plugin;
 
-    this.config = {
-      pluginDir: './src/plugins',
-      maxPlugins: 100,
-      maxMemoryPerPlugin: 512, // MB
-      maxCpuPerPlugin: 50, // percentage
-      enableSandboxing: true,
-      enableHealthMonitoring: true,
-      healthCheckInterval: 30000, // 30 seconds
-      resourceCheckInterval: 5000, // 5 seconds
-      enableMetrics: true,
-      enableSecurity: true,
-      autoRestart: true,
-      maxRestartAttempts: 3,
-      restartDelay: 1000,
-      permissionAuditInterval: 300000, // 5 minutes
-      ...config
-    };
-
-    // Initialize system context
-    this.systemContext = this.createSystemContext();
-
-    // Initialize security and monitoring systems
-    this.securityManager = new SecurityManager({
-      enableSecurity: this.config.enableSecurity,
-      isolateMemory: this.config.enableSandboxing,
-      isolateCpu: this.config.enableSandboxing,
-      isolateNetwork: false,
-      isolateFilesystem: this.config.enableSandboxing,
-      maxWorkers: this.config.maxPlugins,
-      workerTimeout: 30000
-    });
-
-    this.resourceMonitor = new ResourceMonitor({
-      enabled: this.config.enableHealthMonitoring,
-      interval: this.config.resourceCheckInterval,
-      enforcementEnabled: this.config.enableSecurity,
-      alertThresholds: {
-        memory: { warning: 75, critical: 90 },
-        cpu: { warning: this.config.maxCpuPerPlugin * 0.8, critical: this.config.maxCpuPerPlugin },
-        disk: { warning: 50, critical: 100 },
-        network: { warning: 1000, critical: 2000 }
-      }
-    });
-
-    this.healthMonitor = new HealthMonitor({
-      enabled: this.config.enableHealthMonitoring,
-      healthCheckInterval: this.config.healthCheckInterval,
-      metricsInterval: 10000, // 10 seconds
-      enablePredictive: true,
-      enableAutomaticRecovery: this.config.autoRestart
-    });
-
-    // Set up event handlers
-    this.setupSecurityEventHandlers();
-    this.setupResourceEventHandlers();
-    this.setupHealthEventHandlers();
-    this.startBackgroundTasks();
-  }
-
-  // Plugin lifecycle management
-  async loadPlugin(path: string, config?: PluginConfig): Promise<Plugin> {
-    try {
-      const manifestPath = join(path, 'package.json');
-      const manifestContent = await readFile(manifestPath, 'utf-8');
-      const packageJson = JSON.parse(manifestContent);
-
-      // Extract plugin manifest from package.json
-      const manifest: PluginManifest = this.extractManifest(packageJson, path);
-      
-      // Validate manifest
-      await this.validateManifest(manifest);
-
-      // Create plugin configuration
-      const pluginConfig: PluginConfig = {
-        name: manifest.name,
-        version: manifest.version,
-        enabled: true,
-        autoLoad: true,
-        settings: manifest.configuration.defaults,
-        environment: {},
-        resources: {
-          memory: Math.min(this.config.maxMemoryPerPlugin, 256),
-          cpu: Math.min(this.config.maxCpuPerPlugin, 25),
-          disk: 100,
-          network: true
-        },
-        permissions: [],
-        sandbox: this.config.enableSandboxing,
-        trustedDomains: [],
-        hooks: {},
-        monitoring: {
-          enabled: this.config.enableHealthMonitoring,
-          metrics: this.config.enableMetrics,
-          logging: true,
-          performance: true,
-          errors: true
-        },
-        development: {
-          hotReload: false,
-          debugMode: false,
-          profiling: false,
-          sourceMaps: true
-        },
-        ...config
-      };
-
-      // Load plugin class
-      const pluginModule = await this.loadPluginModule(path, manifest);
-      const PluginClass = pluginModule.default || pluginModule[manifest.name] || pluginModule;
-
-      // Create plugin context
-      const context = this.createPluginContext(manifest, pluginConfig);
-
-      // Instantiate plugin
-      const plugin: Plugin = new PluginClass(manifest, pluginConfig, context);
-
-      // Security validation
-      await this.securityManager.validatePlugin(plugin, manifest, pluginConfig);
-
-      // Create loaded plugin entry
-      const loadedPlugin: LoadedPlugin = {
-        plugin,
-        manifest,
-        config: pluginConfig,
-        sandboxed: pluginConfig.sandbox,
-        lastHealthCheck: new Date(),
-        permissions: new Set(pluginConfig.permissions)
-      };
-
-      // Setup sandboxing if enabled
-      if (pluginConfig.sandbox) {
-        loadedPlugin.worker = await this.createSandboxWorker(plugin, manifest, pluginConfig);
-      }
-
-      // Store plugin
-      this.plugins.set(manifest.name, loadedPlugin);
-
-      // Register with health monitor
-      this.healthMonitor.registerPlugin(manifest.name, plugin, manifest, pluginConfig);
-
-      // Initialize plugin
-      await plugin.load(pluginConfig);
-
-      // Register plugin hooks and APIs
-      await this.registerPluginIntegrations(plugin, manifest);
-
-      this.emit('loaded', manifest.name, plugin.metadata);
-      return plugin;
-
-    } catch (error) {
-      this.emit('error', path, {
-        message: error.message,
-        stack: error.stack,
-        timestamp: new Date()
-      });
-      throw error;
-    }
-  }
-
-  async unloadPlugin(name: string): Promise<boolean> {
-    const loadedPlugin = this.plugins.get(name);
+} catch (error)
+{
+      this.emit('error', path, {message = this.plugins.get(name);
     if (!loadedPlugin) {
       return false;
     }
@@ -291,23 +108,10 @@ export class PluginManager extends EventEmitter implements IPluginManager {
       this.emit('unloaded', name);
       return true;
 
-    } catch (error) {
-      this.emit('error', name, {
-        message: error.message,
-        stack: error.stack,
-        timestamp: new Date()
-      });
-      throw error;
-    }
-  }
-
-  async reloadPlugin(name: string): Promise<void> {
-    const loadedPlugin = this.plugins.get(name);
+    } catch (_error) {
+      this.emit('error', name, {message = this.plugins.get(name);
     if (!loadedPlugin) {
-      throw new Error(`Plugin not found: ${name}`);
-    }
-
-    const originalPath = loadedPlugin.manifest.entryPoints.main;
+      throw new Error(`Plugin notfound = loadedPlugin.manifest.entryPoints.main;
     const originalConfig = { ...loadedPlugin.config };
 
     await this.unloadPlugin(name);
@@ -316,37 +120,20 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     this.emit('restarted', name);
   }
 
-  async enablePlugin(name: string): Promise<void> {
-    const loadedPlugin = this.plugins.get(name);
+  async enablePlugin(name = this.plugins.get(name);
     if (!loadedPlugin) {
-      throw new Error(`Plugin not found: ${name}`);
-    }
-
-    if (loadedPlugin.config.enabled) {
-      return;
-    }
-
-    loadedPlugin.config.enabled = true;
+      throw new Error(`Plugin notfound = true;
     await loadedPlugin.plugin.start();
   }
 
-  async disablePlugin(name: string): Promise<void> {
-    const loadedPlugin = this.plugins.get(name);
+  async disablePlugin(name = this.plugins.get(name);
     if (!loadedPlugin) {
-      throw new Error(`Plugin not found: ${name}`);
-    }
-
-    if (!loadedPlugin.config.enabled) {
-      return;
-    }
-
-    loadedPlugin.config.enabled = false;
+      throw new Error(`Plugin notfound = false;
     await loadedPlugin.plugin.stop();
   }
 
   // Plugin discovery and management
-  async getPlugin(name: string): Promise<Plugin | null> {
-    const loadedPlugin = this.plugins.get(name);
+  async getPlugin(name = this.plugins.get(name);
     return loadedPlugin?.plugin || null;
   }
 
@@ -360,18 +147,14 @@ export class PluginManager extends EventEmitter implements IPluginManager {
       .map(lp => lp.plugin);
   }
 
-  async getPluginsByType(type: PluginType): Promise<Plugin[]> {
-    return Array.from(this.plugins.values())
-      .filter(lp => lp.manifest.type === type)
+  async getPluginsByType(type = > lp.manifest.type === type)
       .map(lp => lp.plugin);
   }
 
-  async discoverPlugins(directory: string): Promise<PluginManifest[]> {
-    const results: PluginDiscoveryResult[] = [];
+  async discoverPlugins(directory = [];
 
     try {
-      const entries = await readdir(directory, { withFileTypes: true });
-      const pluginDirs = entries.filter(entry => entry.isDirectory());
+      const entries = await readdir(directory, {withFileTypes = entries.filter(entry => entry.isDirectory());
 
       for (const dir of pluginDirs) {
         const pluginPath = join(directory, dir.name);
@@ -379,41 +162,11 @@ export class PluginManager extends EventEmitter implements IPluginManager {
           const result = await this.discoverSinglePlugin(pluginPath);
           results.push(result);
         } catch (error) {
-          results.push({
-            manifest: null as any,
-            path: pluginPath,
-            valid: false,
-            errors: [error.message]
-          });
-        }
-      }
-    } catch (error) {
-      throw new Error(`Failed to discover plugins in ${directory}: ${error.message}`);
-    }
-
-    return results.filter(r => r.valid).map(r => r.manifest);
+          results.push({manifest = > r.valid).map(r => r.manifest);
   }
 
-  async installPlugin(source: string): Promise<Plugin> {
-    // Implementation would handle installing from various sources (npm, git, local)
-    throw new Error('Plugin installation not yet implemented');
-  }
-
-  async uninstallPlugin(name: string): Promise<boolean> {
-    await this.unloadPlugin(name);
-    // Would also remove plugin files
-    return true;
-  }
-
-  async updatePlugin(name: string): Promise<Plugin> {
-    // Implementation would handle updating plugins
-    throw new Error('Plugin updates not yet implemented');
-  }
-
-  // Hook management
-  async executeHooks(type: HookType, context: HookContext): Promise<HookResult[]> {
-    const hooks = this.hooks.get(type) || [];
-    const results: HookResult[] = [];
+  async installPlugin(source = this.hooks.get(type) || [];
+    const results = [];
 
     for (const hook of hooks.sort((a, b) => b.options.priority - a.options.priority)) {
       try {
@@ -442,101 +195,33 @@ export class PluginManager extends EventEmitter implements IPluginManager {
         }
       } catch (error) {
         hook.errorCount++;
-        this.emit('hook-failed', hook.pluginName, type, {
-          message: error.message,
-          stack: error.stack,
-          timestamp: new Date()
-        });
-        
-        if (hook.options.retries > 0) {
-          // Retry logic would be implemented here
-        }
-      }
-    }
-
-    return results;
-  }
-
-  async getHooks(type?: HookType): Promise<RegisteredHook[]> {
-    if (type) {
-      return this.hooks.get(type) || [];
-    }
-    
-    return Array.from(this.hooks.values()).flat();
-  }
-
-  // API management
-  async getAPI(pluginName: string, apiName: string): Promise<PluginAPI | null> {
-    const pluginAPIs = this.apis.get(pluginName);
+        this.emit('hook-failed', hook.pluginName, type, {message = this.apis.get(pluginName);
     return pluginAPIs?.get(apiName) || null;
   }
 
-  async callAPI(pluginName: string, apiName: string, method: string, args: any[]): Promise<any> {
-    const api = await this.getAPI(pluginName, apiName);
+  async callAPI(pluginName = await this.getAPI(pluginName, apiName);
     if (!api) {
-      throw new Error(`API not found: ${pluginName}.${apiName}`);
-    }
-
-    const plugin = await this.getPlugin(pluginName);
+      throw new Error(`API notfound = await this.getPlugin(pluginName);
     if (!plugin) {
-      throw new Error(`Plugin not found: ${pluginName}`);
-    }
-
-    return await plugin.callAPI(apiName, method, args);
-  }
-
-  async getAllAPIs(): Promise<Array<{ plugin: string; api: PluginAPI }>> {
-    const results: Array<{ plugin: string; api: PluginAPI }> = [];
+      throw new Error(`Plugin notfound = [];
     
     for (const [pluginName, pluginAPIs] of this.apis) {
       for (const [apiName, api] of pluginAPIs) {
-        results.push({ plugin: pluginName, api });
-      }
-    }
-    
-    return results;
-  }
+        results.push({plugin = Array.from(this.plugins.values());
 
-  // Health and monitoring
-  async getSystemHealth(): Promise<PluginSystemHealth> {
-    const plugins = Array.from(this.plugins.values());
-    const activePlugins = plugins.filter(p => p.config.enabled).length;
     const errorPlugins = plugins.filter(p => p.plugin.metadata.status === 'error').length;
-    
-    const totalThroughput = plugins.reduce((sum, p) => 
-      sum + (p.plugin.metadata.metrics?.throughput || 0), 0);
-    
-    const averageResponseTime = plugins.reduce((sum, p) => 
-      sum + (p.plugin.metadata.metrics?.averageExecutionTime || 0), 0) / plugins.length;
 
-    const systemLoad = await this.resourceMonitor.getSystemLoad();
     const memoryUsage = await this.resourceMonitor.getMemoryUsage();
 
     const issues = await this.collectSystemIssues();
     const status = errorPlugins === 0 ? 'healthy' : errorPlugins < plugins.length * 0.1 ? 'degraded' : 'critical';
 
     return {
-      status,
-      pluginCount: plugins.length,
-      activePlugins,
-      errorPlugins,
-      performance: {
-        averageResponseTime,
-        totalThroughput,
-        systemLoad,
-        memoryUsage
-      },
-      issues,
-      recommendations: this.generateSystemRecommendations(issues)
-    };
-  }
-
-  async getPluginMetrics(name?: string): Promise<PluginMetrics[]> {
-    const targetPlugins = name ? 
+      status,pluginCount = name ? 
       [this.plugins.get(name)].filter(Boolean) : 
       Array.from(this.plugins.values());
 
-    const results: PluginMetrics[] = [];
+    const results = [];
     
     for (const loadedPlugin of targetPlugins) {
       if (loadedPlugin) {
@@ -549,7 +234,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
   }
 
   async performHealthCheck(): Promise<PluginHealthReport> {
-    const plugins: { [name: string]: PluginHealthResult } = {};
+    const plugins = {};
     const systemHealth = await this.getSystemHealth();
 
     for (const [name, loadedPlugin] of this.plugins) {
@@ -557,77 +242,22 @@ export class PluginManager extends EventEmitter implements IPluginManager {
         plugins[name] = await loadedPlugin.plugin.healthCheck();
         loadedPlugin.lastHealthCheck = new Date();
       } catch (error) {
-        plugins[name] = {
-          status: 'unhealthy',
-          score: 0,
-          issues: [{
-            severity: 'critical',
-            message: `Health check failed: ${error.message}`,
-            component: 'system'
-          }],
-          metrics: {},
-          lastCheck: new Date()
-        };
-      }
-    }
+        plugins[name] = {status = Object.values(plugins).filter(h => h.status === 'healthy').length;
 
-    const healthyCount = Object.values(plugins).filter(h => h.status === 'healthy').length;
-    const degradedCount = Object.values(plugins).filter(h => h.status === 'degraded').length;
-    const unhealthyCount = Object.values(plugins).filter(h => h.status === 'unhealthy').length;
     const criticalIssues = Object.values(plugins)
       .flatMap(h => h.issues)
       .filter(i => i.severity === 'critical').length;
 
-    return {
-      overall: systemHealth.status,
-      timestamp: new Date(),
-      plugins,
-      system: {
-        resourceUsage: await this.resourceMonitor.getSystemResourceUsage(),
-        performance: {
-          averageResponseTime: systemHealth.performance.averageResponseTime,
-          totalThroughput: systemHealth.performance.totalThroughput
-        },
-        errors: systemHealth.issues.map(i => i.issue)
-      },
-      summary: {
-        totalPlugins: this.plugins.size,
-        healthyPlugins: healthyCount,
-        degradedPlugins: degradedCount,
-        unhealthyPlugins: unhealthyCount,
-        criticalIssues
-      }
-    };
-  }
-
-  // Configuration management
-  async updatePluginConfig(name: string, updates: Partial<PluginConfig>): Promise<void> {
-    const loadedPlugin = this.plugins.get(name);
+    return {overall = > i.issue)
+      },summary = this.plugins.get(name);
     if (!loadedPlugin) {
-      throw new Error(`Plugin not found: ${name}`);
-    }
-
-    await loadedPlugin.plugin.configure(updates);
-    Object.assign(loadedPlugin.config, updates);
-  }
-
-  async getPluginConfig(name: string): Promise<PluginConfig | null> {
-    const loadedPlugin = this.plugins.get(name);
+      throw new Error(`Plugin notfound = this.plugins.get(name);
     return loadedPlugin?.config || null;
   }
 
-  async validatePluginConfig(name: string, config: PluginConfig): Promise<ValidationResult[]> {
-    const loadedPlugin = this.plugins.get(name);
+  async validatePluginConfig(name = this.plugins.get(name);
     if (!loadedPlugin) {
-      throw new Error(`Plugin not found: ${name}`);
-    }
-
-    return await loadedPlugin.plugin.validateConfiguration(config);
-  }
-
-  // Security and permissions
-  async checkPermission(pluginName: string, permission: PluginPermission): Promise<boolean> {
-    const loadedPlugin = this.plugins.get(pluginName);
+      throw new Error(`Plugin notfound = this.plugins.get(pluginName);
     if (!loadedPlugin) {
       return false;
     }
@@ -635,30 +265,11 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     return loadedPlugin.permissions.has(permission);
   }
 
-  async grantPermission(pluginName: string, permission: PluginPermission): Promise<void> {
-    const loadedPlugin = this.plugins.get(pluginName);
+  async grantPermission(pluginName = this.plugins.get(pluginName);
     if (!loadedPlugin) {
-      throw new Error(`Plugin not found: ${pluginName}`);
-    }
-
-    loadedPlugin.permissions.add(permission);
-    
-    // Update plugin configuration
-    if (!loadedPlugin.config.permissions.includes(permission)) {
-      loadedPlugin.config.permissions.push(permission);
-    }
-  }
-
-  async revokePermission(pluginName: string, permission: PluginPermission): Promise<void> {
-    const loadedPlugin = this.plugins.get(pluginName);
+      throw new Error(`Plugin notfound = this.plugins.get(pluginName);
     if (!loadedPlugin) {
-      throw new Error(`Plugin not found: ${pluginName}`);
-    }
-
-    loadedPlugin.permissions.delete(permission);
-    
-    // Update plugin configuration
-    const index = loadedPlugin.config.permissions.indexOf(permission);
+      throw new Error(`Plugin notfound = loadedPlugin.config.permissions.indexOf(permission);
     if (index > -1) {
       loadedPlugin.config.permissions.splice(index, 1);
     }
@@ -669,8 +280,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
   }
 
   // Private implementation methods
-  private async loadPluginModule(path: string, manifest: PluginManifest): Promise<any> {
-    const entryPoint = join(path, manifest.entryPoints.main);
+  private async loadPluginModule(path = join(path, manifest.entryPoints.main);
     
     // Check if file exists and is accessible
     await access(entryPoint);
@@ -684,72 +294,12 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     }
   }
 
-  private extractManifest(packageJson: any, path: string): PluginManifest {
-    const claudePlugin = packageJson.claudePlugin || {};
+  private extractManifest(packageJson = packageJson.claudePlugin || {};
     
-    return {
-      name: packageJson.name,
-      version: packageJson.version,
-      description: packageJson.description || '',
-      type: claudePlugin.type || 'custom',
-      author: packageJson.author || '',
-      license: packageJson.license || '',
-      homepage: packageJson.homepage,
-      repository: packageJson.repository?.url,
-      dependencies: {
-        system: claudePlugin.dependencies?.system || [],
-        plugins: claudePlugin.dependencies?.plugins || {},
-        node: packageJson.engines?.node || '>=14.0.0',
-        npm: packageJson.dependencies || {}
-      },
-      capabilities: {
-        hooks: claudePlugin.capabilities?.hooks || [],
-        apis: claudePlugin.capabilities?.apis || [],
-        permissions: claudePlugin.capabilities?.permissions || [],
-        resources: claudePlugin.capabilities?.resources || [],
-        platforms: claudePlugin.capabilities?.platforms || ['linux', 'darwin', 'win32'],
-        languages: claudePlugin.capabilities?.languages || ['javascript', 'typescript']
-      },
-      configuration: {
-        schema: claudePlugin.configuration?.schema || {},
-        defaults: claudePlugin.configuration?.defaults || {},
-        required: claudePlugin.configuration?.required || [],
-        sensitive: claudePlugin.configuration?.sensitive || []
-      },
-      entryPoints: {
-        main: claudePlugin.entryPoints?.main || 'index.js',
-        worker: claudePlugin.entryPoints?.worker,
-        hooks: claudePlugin.entryPoints?.hooks,
-        cli: claudePlugin.entryPoints?.cli,
-        web: claudePlugin.entryPoints?.web
-      },
-      assets: {
-        files: claudePlugin.assets?.files || [],
-        directories: claudePlugin.assets?.directories || [],
-        templates: claudePlugin.assets?.templates || [],
-        schemas: claudePlugin.assets?.schemas || []
-      },
-      keywords: packageJson.keywords || [],
-      category: claudePlugin.category || 'general',
-      maturity: claudePlugin.maturity || 'beta',
-      compatibility: {
-        minVersion: claudePlugin.compatibility?.minVersion || '1.0.0',
-        maxVersion: claudePlugin.compatibility?.maxVersion,
-        breaking: claudePlugin.compatibility?.breaking || []
-      }
-    };
-  }
-
-  private async validateManifest(manifest: PluginManifest): Promise<void> {
-    const errors: string[] = [];
+    return {name = 14.0.0',npm = [];
 
     // Required fields
-    if (!manifest.name) errors.push('Missing required field: name');
-    if (!manifest.version) errors.push('Missing required field: version');
-    if (!manifest.type) errors.push('Missing required field: type');
-
-    // Validate plugin type
-    const validTypes: PluginType[] = [
+    if (!_manifest._name) errors.push('Missing requiredfield = [
       'ai-provider', 'architect-advisor', 'security-auth', 'notifications',
       'export-system', 'documentation-linker', 'workflow-engine', 'github-integration',
       'memory-backend', 'performance-monitor', 'code-analysis', 'test-runner',
@@ -757,81 +307,11 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     ];
     
     if (!validTypes.includes(manifest.type)) {
-      errors.push(`Invalid plugin type: ${manifest.type}`);
-    }
-
-    if (errors.length > 0) {
-      throw new Error(`Invalid plugin manifest: ${errors.join(', ')}`);
-    }
-  }
-
-  private createSystemContext(): PluginContext {
-    return {
-      plugin: null as any, // Will be set per plugin
-      config: null as any, // Will be set per plugin
-      manifest: null as any, // Will be set per plugin
-      system: {
-        version: '2.0.0',
-        environment: process.env.NODE_ENV || 'development',
-        instanceId: crypto.randomUUID(),
-        startTime: new Date()
-      },
-      apis: {
-        logger: new ConsoleLogger(),
-        memory: new InMemoryAPI(),
-        events: new EventAPI(this),
-        http: new HttpAPI(),
-        filesystem: new FilesystemAPI(),
-        database: new DatabaseAPI(),
-        cache: new CacheAPI(),
-        queue: new QueueAPI(),
-        secrets: new SecretsAPI()
-      },
-      hooks: null as any, // Will be set per plugin
-      router: null as any, // Will be set per plugin
-      scheduler: null as any, // Will be set per plugin
-      metrics: null as any, // Will be set per plugin
-      security: {
-        permissions: [],
-        sandbox: false
-      },
-      resources: {
-        allocated: {
-          memory: 0,
-          cpu: 0,
-          disk: 0,
-          network: 0,
-          handles: 0,
-          timestamp: new Date()
-        },
-        limits: [],
-        monitoring: true
-      }
-    };
-  }
-
-  private createPluginContext(manifest: PluginManifest, config: PluginConfig): PluginContext {
-    const context = { ...this.systemContext };
+      errors.push(`Invalid plugin type = { ...this.systemContext };
     context.plugin = null as any; // Will be set after plugin instantiation
     context.config = config;
     context.manifest = manifest;
-    context.security = {
-      permissions: config.permissions,
-      sandbox: config.sandbox,
-      userId: undefined,
-      sessionId: undefined,
-      requestId: undefined
-    };
-    return context;
-  }
-
-  private async createSandboxWorker(plugin: Plugin, manifest: PluginManifest, config: PluginConfig): Promise<Worker> {
-    if (!this.config.enableSandboxing) {
-      throw new Error('Sandboxing is disabled');
-    }
-
-    try {
-      const worker = await this.securityManager.createSandboxedPlugin(plugin, manifest, config);
+    context.security = {permissions = await this.securityManager.createSandboxedPlugin(plugin, manifest, config);
       if (!worker) {
         throw new Error('Failed to create sandboxed worker');
       }
@@ -840,25 +320,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
       this.resourceMonitor.registerPlugin(manifest.name, manifest, config, worker);
 
       return worker;
-    } catch (error: any) {
-      this.emit('error', manifest.name, error);
-      throw error;
-    }
-  }
-
-  private async registerPluginIntegrations(plugin: Plugin, manifest: PluginManifest): Promise<void> {
-    // Register plugin APIs
-    if (!this.apis.has(manifest.name)) {
-      this.apis.set(manifest.name, new Map());
-    }
-
-    // Would register actual plugin hooks and APIs here
-  }
-
-  private async unregisterPluginIntegrations(plugin: Plugin, manifest: PluginManifest): Promise<void> {
-    // Unregister hooks
-    for (const [hookType, hooks] of this.hooks) {
-      const remainingHooks = hooks.filter(h => h.pluginName !== manifest.name);
+    } catch (error = hooks.filter(h => h.pluginName !== manifest.name);
       if (remainingHooks.length === 0) {
         this.hooks.delete(hookType);
       } else {
@@ -870,9 +332,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     this.apis.delete(manifest.name);
   }
 
-  private async discoverSinglePlugin(pluginPath: string): Promise<PluginDiscoveryResult> {
-    try {
-      const manifestPath = join(pluginPath, 'package.json');
+  private async discoverSinglePlugin(pluginPath = join(pluginPath, 'package.json');
       const manifestContent = await readFile(manifestPath, 'utf-8');
       const packageJson = JSON.parse(manifestContent);
       const manifest = this.extractManifest(packageJson, pluginPath);
@@ -881,23 +341,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
       
       return {
         manifest,
-        path: pluginPath,
-        valid: true,
-        errors: []
-      };
-    } catch (error) {
-      return {
-        manifest: null as any,
-        path: pluginPath,
-        valid: false,
-        errors: [error.message]
-      };
-    }
-  }
-
-  private setupEventListeners(): void {
-    // Plugin error handling
-    this.on('error', async (pluginName, error) => {
+        path => {
       const loadedPlugin = this.plugins.get(pluginName);
       if (loadedPlugin && this.config.autoRestart) {
         await this.attemptPluginRestart(pluginName, loadedPlugin);
@@ -905,8 +349,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     });
   }
 
-  private async attemptPluginRestart(pluginName: string, loadedPlugin: LoadedPlugin): Promise<void> {
-    if (loadedPlugin.plugin.metadata.restartCount >= this.config.maxRestartAttempts) {
+  private async attemptPluginRestart(pluginName = this.config.maxRestartAttempts) {
       this.emit('plugin-restart-failed', pluginName, 'Max restart attempts exceeded');
       return;
     }
@@ -938,42 +381,13 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     }
   }
 
-  private async collectSystemIssues(): Promise<Array<{
-    plugin: string;
-    severity: 'low' | 'medium' | 'high' | 'critical';
-    issue: string;
-    impact: string;
-  }>> {
-    const issues: Array<{
-      plugin: string;
-      severity: 'low' | 'medium' | 'high' | 'critical';
-      issue: string;
-      impact: string;
-    }> = [];
+  private async collectSystemIssues(): Promise<Array<{plugin = [];
 
     for (const [name, loadedPlugin] of this.plugins) {
       const health = await loadedPlugin.plugin.healthCheck();
       
       for (const issue of health.issues) {
-        issues.push({
-          plugin: name,
-          severity: issue.severity,
-          issue: issue.message,
-          impact: issue.component
-        });
-      }
-    }
-
-    return issues;
-  }
-
-  private generateSystemRecommendations(issues: Array<{
-    plugin: string;
-    severity: 'low' | 'medium' | 'high' | 'critical';
-    issue: string;
-    impact: string;
-  }>): string[] {
-    const recommendations: string[] = [];
+        issues.push({plugin = [];
     
     const criticalIssues = issues.filter(i => i.severity === 'critical');
     const highIssues = issues.filter(i => i.severity === 'high');
@@ -997,14 +411,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
       // Take action based on severity
       if (violation.blocked) {
         this.emit('plugin-blocked', {
-          pluginName: violation.pluginName,
-          reason: violation.violation,
-          severity: violation.severity
-        });
-      }
-    });
-
-    this.securityManager.on('plugin-sandboxed', (data) => {
+          pluginName => {
       this.emit('plugin-sandboxed', data);
     });
 
@@ -1048,13 +455,8 @@ export class PluginManager extends EventEmitter implements IPluginManager {
       this.emit('plugin-quarantined', data);
     });
 
-    this.resourceMonitor.on('monitoring-error', (error) => {
-      console.error('Resource monitoring error:', error);
-    });
-  }
-
-  private setupHealthEventHandlers(): void {
-    this.healthMonitor.on('health-check-completed', (data) => {
+    this.resourceMonitor.on('monitoring-error', (_error) => {
+      console.error('Resource monitoring error => {
       this.emit('health-check-completed', data);
     });
 
@@ -1063,11 +465,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
       
       // Consider auto-restart for critical health failures
       if (data.consecutiveFailures >= 3 && this.config.autoRestart) {
-        this.emit('auto-restart-triggered', { pluginName: data.pluginName, reason: 'health-check-failures' });
-      }
-    });
-
-    this.healthMonitor.on('health-alert', (alert) => {
+        this.emit('auto-restart-triggered', { pluginName => {
       this.emit('health-alert', alert);
       
       if (alert.severity === 'critical') {
@@ -1087,232 +485,32 @@ export class PluginManager extends EventEmitter implements IPluginManager {
       this.emit('system-health-updated', systemHealth);
       
       if (systemHealth.overall === 'critical') {
-        console.error(`System health is critical: ${systemHealth.score}/100`);
-      }
-    });
-
-    this.healthMonitor.on('automatic-recovery-triggered', async (data) => {
+        console.error(`System health is critical => {
       this.emit('automatic-recovery-triggered', data);
       
       if (this.config.autoRestart) {
         try {
           await this.restartPlugin(data.pluginName);
           console.info(`Auto-restarted plugin ${data.pluginName} due to health issues`);
-        } catch (error: any) {
-          console.error(`Failed to auto-restart plugin ${data.pluginName}:`, error.message);
-        }
-      }
-    });
-
-    this.healthMonitor.on('metrics-collected', (data) => {
+        } catch (error => {
       this.emit('plugin-metrics-collected', data);
     });
 
     this.healthMonitor.on('metrics-error', (error) => {
-      console.error('Health metrics collection error:', error);
-    });
-  }
-
-  // Security and Resource API Methods
-  async validatePluginSecurity(pluginName: string): Promise<ValidationResult> {
-    const pluginData = this.plugins.get(pluginName);
+      console.error('Health metrics collectionerror = this.plugins.get(pluginName);
     if (!pluginData) {
-      return {
-        isValid: false,
-        errors: ['Plugin not found'],
-        warnings: []
-      };
-    }
-
-    return await this.securityManager.validatePluginSecurity(
-      pluginData.plugin,
-      pluginData.manifest,
-      pluginData.config
-    );
-  }
-
-  getPluginSecurityStatus(pluginName: string) {
-    return this.securityManager.getPluginSecurityStatus(pluginName);
-  }
-
-  getPluginResourceUsage(pluginName: string): ResourceUsage | null {
-    return this.resourceMonitor.getResourceUsage(pluginName);
-  }
-
-  getSystemResourceSummary() {
-    return this.resourceMonitor.getSystemResourceSummary();
-  }
-
-  getActiveResourceAlerts(pluginName?: string) {
-    return this.resourceMonitor.getActiveAlerts(pluginName);
-  }
-
-  async generateSecurityReport() {
-    return this.securityManager.getSecurityReport();
-  }
-
-  async generatePermissionAuditReport(): Promise<PermissionAuditReport> {
-    return await this.securityManager.generatePermissionAuditReport();
-  }
-
-  acknowledgeResourceAlert(alertId: string): boolean {
-    return this.resourceMonitor.acknowledgeAlert(alertId);
-  }
-
-  // Health monitoring API methods
-  async getPluginHealth(pluginName: string): Promise<PluginHealthResult | null> {
-    return await this.healthMonitor.getPluginHealth(pluginName);
-  }
-
-  async getPluginHealthReport(pluginName: string): Promise<PluginHealthReport | null> {
-    return await this.healthMonitor.getPluginHealthReport(pluginName);
-  }
-
-  async getSystemHealth(): Promise<any> {
-    return await this.healthMonitor.getSystemHealth();
-  }
-
-  getPluginHealthMetrics(pluginName: string, limit?: number) {
-    return this.healthMonitor.getPluginMetrics(pluginName, limit);
-  }
-
-  async runImmediateHealthCheck(pluginName: string, checkType?: string): Promise<PluginHealthResult | null> {
-    return await this.healthMonitor.runImmediateHealthCheck(pluginName, checkType);
-  }
-
-  // Cleanup method
-  async cleanup(): Promise<void> {
-    // Cleanup security manager
-    await this.securityManager.cleanup();
-    
-    // Cleanup resource monitor
-    await this.resourceMonitor.cleanup();
-    
-    // Cleanup health monitor
-    await this.healthMonitor.cleanup();
-    
-    // Cleanup plugins
-    for (const [pluginName] of this.plugins) {
-      try {
-        await this.unloadPlugin(pluginName);
-      } catch (error) {
-        // Continue cleanup even if individual plugin cleanup fails
-      }
-    }
-    
-    this.plugins.clear();
-    this.hooks.clear();
-    this.apis.clear();
-  }
-}
-
-// Supporting classes (simplified implementations)
-class PermissionAuditor {
-  constructor(private manager: PluginManager) {}
-  
-  async generateReport(): Promise<PermissionAuditReport> {
-    // Implementation would generate comprehensive permission audit
-    return {
-      timestamp: new Date(),
-      plugins: {},
-      summary: {
-        totalPlugins: 0,
-        highRiskPlugins: 0,
-        permissionViolations: 0,
-        recommendations: []
-      }
-    };
-  }
-}
-
-class ResourceMonitor {
-  constructor(private manager: PluginManager, private config: PluginManagerConfig) {}
-  
-  async getSystemLoad(): Promise<number> {
-    // Implementation would return actual system load
-    return 0.5;
-  }
-  
-  async getMemoryUsage(): Promise<number> {
-    const usage = process.memoryUsage();
+      return {isValid = process.memoryUsage();
     return usage.heapUsed / 1024 / 1024; // MB
   }
   
   async getSystemResourceUsage(): Promise<ResourceUsage> {
-    return {
-      memory: await this.getMemoryUsage(),
-      cpu: await this.getSystemLoad() * 100,
-      disk: 0,
-      network: 0,
-      handles: 0,
-      timestamp: new Date()
-    };
-  }
+    return {memory = new Map<string, any>();
   
-  async collectMetrics(): Promise<void> {
-    // Implementation would collect system metrics
-  }
-}
-
-class SecurityManager {
-  constructor(private config: PluginManagerConfig) {}
-  
-  async validatePlugin(plugin: Plugin, manifest: PluginManifest, config: PluginConfig): Promise<void> {
-    // Implementation would perform security validation
-  }
-}
-
-class HealthMonitor {
-  constructor(private manager: PluginManager, private config: PluginManagerConfig) {}
-}
-
-// API implementations (simplified)
-class ConsoleLogger implements PluginLogger {
-  trace(message: string, meta?: JSONObject): void {
-    console.log(`[TRACE] ${message}`, meta);
-  }
-  debug(message: string, meta?: JSONObject): void {
-    console.log(`[DEBUG] ${message}`, meta);
-  }
-  info(message: string, meta?: JSONObject): void {
-    console.log(`[INFO] ${message}`, meta);
-  }
-  warn(message: string, meta?: JSONObject): void {
-    console.warn(`[WARN] ${message}`, meta);
-  }
-  error(message: string, error?: Error, meta?: JSONObject): void {
-    console.error(`[ERROR] ${message}`, error, meta);
-  }
-  fatal(message: string, error?: Error, meta?: JSONObject): void {
-    console.error(`[FATAL] ${message}`, error, meta);
-  }
-}
-
-class InMemoryAPI implements PluginMemoryAPI {
-  private storage = new Map<string, any>();
-  
-  async get(key: string, namespace?: string): Promise<any> {
-    return this.storage.get(`${namespace || 'default'}:${key}`);
-  }
-  
-  async set(key: string, value: any, options?: { ttl?: number; namespace?: string }): Promise<void> {
-    this.storage.set(`${options?.namespace || 'default'}:${key}`, value);
-  }
-  
-  async delete(key: string, namespace?: string): Promise<boolean> {
-    return this.storage.delete(`${namespace || 'default'}:${key}`);
-  }
-  
-  async exists(key: string, namespace?: string): Promise<boolean> {
-    return this.storage.has(`${namespace || 'default'}:${key}`);
-  }
-  
-  async list(namespace?: string): Promise<string[]> {
-    const prefix = `${namespace || 'default'}:`;
+  async get(key = `${namespace || 'default'}:`;
     return Array.from(this.storage.keys()).filter(k => k.startsWith(prefix));
   }
   
-  async clear(namespace?: string): Promise<void> {
+  async clear(namespace?: string): Promise<void> 
     if (namespace) {
       const prefix = `${namespace}:`;
       for (const key of this.storage.keys()) {
@@ -1323,25 +521,18 @@ class InMemoryAPI implements PluginMemoryAPI {
     } else {
       this.storage.clear();
     }
-  }
 }
 
 class EventAPI implements PluginEventAPI {
-  constructor(private emitter: EventEmitter) {}
-  
-  async emit(event: string, data: any): Promise<void> {
-    this.emitter.emit(event, data);
-  }
-  
-  async on(event: string, handler: (data: any) => void): Promise<void> {
+  constructor(private emitter = > void): Promise<void> {
     this.emitter.on(event, handler);
   }
   
-  async off(event: string, handler: (data: any) => void): Promise<void> {
+  async off(event = > void): Promise<void> {
     this.emitter.off(event, handler);
   }
   
-  async once(event: string, handler: (data: any) => void): Promise<void> {
+  async once(event = > void): Promise<void> {
     this.emitter.once(event, handler);
   }
 }

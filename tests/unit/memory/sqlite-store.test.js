@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
-import { promises as fs } from 'fs';
-import path from 'path';
-import os from 'os';
+import { promises as fs } from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { SqliteMemoryStore } from '../../../src/memory/sqlite-store.js';
 
 // Mock dependencies that don't need actual implementation
@@ -11,12 +11,12 @@ const mockSqliteWrapper = () => ({
       run: jest.fn(),
       get: jest.fn(),
       all: jest.fn(),
-      finalize: jest.fn()
+      finalize: jest.fn(),
     })),
     close: jest.fn(),
     exec: jest.fn(),
-    pragma: jest.fn()
-  }))
+    pragma: jest.fn(),
+  })),
 });
 
 jest.mock('../../../src/memory/sqlite-wrapper.js', mockSqliteWrapper);
@@ -29,7 +29,7 @@ describe('SqliteMemoryStore', () => {
     testDir = await fs.mkdtemp(path.join(os.tmpdir(), 'claude-zen-sqlite-test-'));
     memoryStore = new SqliteMemoryStore({
       directory: testDir,
-      dbName: 'test-memory.db'
+      dbName: 'test-memory.db',
     });
   });
 
@@ -39,7 +39,7 @@ describe('SqliteMemoryStore', () => {
     }
     try {
       await fs.rm(testDir, { recursive: true, force: true });
-    } catch (error) {
+    } catch (_error) {
       // Ignore cleanup errors
     }
   });
@@ -57,7 +57,7 @@ describe('SqliteMemoryStore', () => {
       const customOptions = {
         dbName: 'custom.db',
         cacheSize: 5000,
-        enableCache: false
+        enableCache: false,
       };
       const store = new SqliteMemoryStore(customOptions);
       expect(store.options.dbName).toBe('custom.db');
@@ -99,17 +99,19 @@ describe('SqliteMemoryStore', () => {
       const testMemory = {
         key: 'test-key',
         value: 'test-value',
-        metadata: { type: 'test' }
+        metadata: { type: 'test' },
       };
 
       await memoryStore.store(testMemory.key, testMemory.value, testMemory.metadata);
       const retrieved = await memoryStore.retrieve(testMemory.key);
-      
-      expect(retrieved).toEqual(expect.objectContaining({
-        key: testMemory.key,
-        value: testMemory.value,
-        metadata: testMemory.metadata
-      }));
+
+      expect(retrieved).toEqual(
+        expect.objectContaining({
+          key: testMemory.key,
+          value: testMemory.value,
+          metadata: testMemory.metadata,
+        })
+      );
     });
 
     it('should return null for non-existent keys', async () => {
@@ -120,11 +122,11 @@ describe('SqliteMemoryStore', () => {
     it('should list all memories', async () => {
       await memoryStore.store('key1', 'value1');
       await memoryStore.store('key2', 'value2');
-      
+
       const memories = await memoryStore.list();
       expect(memories).toHaveLength(2);
-      expect(memories.map(m => m.key)).toContain('key1');
-      expect(memories.map(m => m.key)).toContain('key2');
+      expect(memories.map((m) => m.key)).toContain('key1');
+      expect(memories.map((m) => m.key)).toContain('key2');
     });
 
     it('should delete memory', async () => {
@@ -140,7 +142,7 @@ describe('SqliteMemoryStore', () => {
     it('should clear all memories', async () => {
       await memoryStore.store('key1', 'value1');
       await memoryStore.store('key2', 'value2');
-      
+
       let memories = await memoryStore.list();
       expect(memories.length).toBeGreaterThan(0);
 
@@ -161,7 +163,7 @@ describe('SqliteMemoryStore', () => {
     it('should search by term', async () => {
       const results = await memoryStore.search('hello');
       expect(results.length).toBeGreaterThanOrEqual(1);
-      expect(results.some(r => r.key === 'search1')).toBe(true);
+      expect(results.some((r) => r.key === 'search1')).toBe(true);
     });
 
     it('should search with limit', async () => {
@@ -188,18 +190,18 @@ describe('SqliteMemoryStore', () => {
       memoryStore = new SqliteMemoryStore({
         directory: testDir,
         enableCache: true,
-        cacheTimeout: 100
+        cacheTimeout: 100,
       });
       await memoryStore.initialize();
     });
 
     it('should cache query results when enabled', async () => {
       await memoryStore.store('cache-test', 'value');
-      
+
       // First call should miss cache
       const result1 = await memoryStore.retrieve('cache-test');
       expect(memoryStore.cacheStats.misses).toBeGreaterThan(0);
-      
+
       // Second call should hit cache (if caching is implemented)
       const result2 = await memoryStore.retrieve('cache-test');
       expect(result1).toEqual(result2);
@@ -210,7 +212,7 @@ describe('SqliteMemoryStore', () => {
     it('should close database connection properly', async () => {
       await memoryStore.initialize();
       expect(memoryStore.db).toBeDefined();
-      
+
       await memoryStore.close();
       // After implementing close method, db should be null
     });

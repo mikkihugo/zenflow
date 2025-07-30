@@ -4,7 +4,15 @@
   "description": "Advanced GitHub repository management, analysis, and automation plugin",
   "main": "index.js",
   "type": "module",
-  "keywords": ["claude-zen", "plugin", "github", "repository", "analysis", "automation", "ci/cd"],
+  "keywords": [
+    "claude-zen",
+    "plugin",
+    "github",
+    "repository",
+    "analysis",
+    "automation",
+    "ci/cd"
+  ],
   "author": "Claude Zen Team",
   "license": "MIT",
   "dependencies": {
@@ -35,7 +43,7 @@
       "autoEnhancements": {
         "pullRequests": {
           "addTests": false,
-          "improveDocs": false, 
+          "improveDocs": false,
           "securityCheck": true,
           "performanceCheck": false
         },
@@ -49,7 +57,7 @@
     },
     "permissions": [
       "repo:read",
-      "repo:write", 
+      "repo:write",
       "issues:write",
       "pull_requests:write",
       "webhooks:write"

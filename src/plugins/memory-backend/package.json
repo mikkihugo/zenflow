@@ -4,7 +4,13 @@
   "description": "Unified memory backend plugin with LanceDB, Kuzu, and SQLite support for Claude Zen monorepo",
   "main": "index.js",
   "type": "module",
-  "keywords": ["claude-zen", "plugin", "storage", "memory", "backend"],
+  "keywords": [
+    "claude-zen",
+    "plugin",
+    "storage",
+    "memory",
+    "backend"
+  ],
   "author": "Claude Zen Team",
   "license": "MIT",
   "dependencies": {
@@ -19,10 +25,20 @@
   "claudeZenPlugin": {
     "name": "memory-backend",
     "category": "storage",
-    "capabilities": ["key-value-storage", "namespacing", "search", "persistence"],
-    "backends": ["chroma", "sqlite", "json", "postgresql"],
+    "capabilities": [
+      "key-value-storage",
+      "namespacing",
+      "search",
+      "persistence"
+    ],
+    "backends": [
+      "chroma",
+      "sqlite",
+      "json",
+      "postgresql"
+    ],
     "config": {
-      "backend": "chroma", 
+      "backend": "chroma",
       "path": "./memory",
       "maxSize": 1000000,
       "compression": false,

@@ -39,51 +39,34 @@
   "events": {
     "task.completed": {
       "enabled": true,
-      "providers": [
-        "console",
-        "webhook"
-      ],
+      "providers": ["console", "webhook"],
       "template": "task_completed"
     },
     "task.failed": {
       "enabled": true,
-      "providers": [
-        "console",
-        "email",
-        "webhook"
-      ],
+      "providers": ["console", "email", "webhook"],
       "template": "task_failed",
       "priority": "high"
     },
     "swarm.created": {
       "enabled": true,
-      "providers": [
-        "console"
-      ],
+      "providers": ["console"],
       "template": "swarm_created"
     },
     "agent.spawned": {
       "enabled": false,
-      "providers": [
-        "console"
-      ],
+      "providers": ["console"],
       "template": "agent_spawned"
     },
     "system.error": {
       "enabled": true,
-      "providers": [
-        "console",
-        "email",
-        "webhook"
-      ],
+      "providers": ["console", "email", "webhook"],
       "template": "system_error",
       "priority": "critical"
     },
     "health.check": {
       "enabled": false,
-      "providers": [
-        "webhook"
-      ],
+      "providers": ["webhook"],
       "template": "health_check"
     }
   },

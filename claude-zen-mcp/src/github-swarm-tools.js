@@ -5,8 +5,8 @@
  * It wraps the `npx ruv-swarm github` commands to provide a consistent MCP interface.
  */
 
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { exec } from 'node:child_process';
+import { promisify } from 'node:util';
 
 const execAsync = promisify(exec);
 
@@ -144,7 +144,10 @@ export const githubSwarmTools = {
       properties: {
         analyze_past_reviews: { type: 'boolean', description: 'Analyze past reviews' },
         identify_patterns: { type: 'boolean', description: 'Identify patterns in reviews' },
-        improve_suggestions: { type: 'boolean', description: 'Improve suggestions based on learning' },
+        improve_suggestions: {
+          type: 'boolean',
+          description: 'Improve suggestions based on learning',
+        },
         reduce_false_positives: { type: 'boolean', description: 'Reduce false positives' },
       },
       required: [],
@@ -197,7 +200,12 @@ export const githubSwarmTools = {
       required: ['pr', 'diff', 'files'],
     },
     async handler(args) {
-      const cliArgs = [`review-comment`, `--pr ${args.pr}`, `--diff '${args.diff}'`, `--files '${args.files}'`];
+      const cliArgs = [
+        `review-comment`,
+        `--pr ${args.pr}`,
+        `--diff '${args.diff}'`,
+        `--files '${args.files}'`,
+      ];
       if (args.style) cliArgs.push(`--style ${args.style}`);
       if (args.include_examples) cliArgs.push('--include-examples');
       if (args.suggest_fixes) cliArgs.push('--suggest-fixes');
@@ -287,7 +295,11 @@ export const githubSwarmTools = {
       required: ['commits', 'merged_prs'],
     },
     async handler(args) {
-      const cliArgs = [`release-plan`, `--commits '${args.commits}'`, `--merged-prs '${args.merged_prs}'`];
+      const cliArgs = [
+        `release-plan`,
+        `--commits '${args.commits}'`,
+        `--merged-prs '${args.merged_prs}'`,
+      ];
       if (args.analyze_commits) cliArgs.push('--analyze-commits');
       if (args.suggest_version) cliArgs.push('--suggest-version');
       if (args.identify_breaking) cliArgs.push('--identify-breaking');
@@ -304,7 +316,10 @@ export const githubSwarmTools = {
       properties: {
         issue_number: { type: 'number', description: 'Issue number' },
         issue_data: { type: 'string', description: 'JSON string of issue data' },
-        auto_decompose: { type: 'boolean', description: 'Automatically decompose the issue into tasks' },
+        auto_decompose: {
+          type: 'boolean',
+          description: 'Automatically decompose the issue into tasks',
+        },
         assign_agents: { type: 'boolean', description: 'Automatically assign agents to the tasks' },
       },
       required: ['issue_number'],
