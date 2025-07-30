@@ -1,19 +1,19 @@
 /**
  * Training Command Module;
- * Converted from JavaScript to TypeScript;
+ * Converted from JavaScript to TypeScript
  */
 {
   Logger, JSONObject, JSONValue, JSONArray;
 }
 from;
 ('../types/core.js');
-printSuccess,;
-printError,;
-printWarning,;
-trainNeuralModel,;
-updateNeuralPattern,;
-callRuvSwarmLibrary,;
-checkRuvSwarmAvailable,;
+printSuccess,
+printError,
+printWarning,
+trainNeuralModel,
+updateNeuralPattern,
+callRuvSwarmLibrary,
+checkRuvSwarmAvailable,
 } from '../utils.js'
 export async function trainingAction(): unknown {
   showTrainingHelp();
@@ -33,12 +33,12 @@ try {
   const __data = options.data  ?? 'recent';
   const __model = options.model  ?? 'general-predictor';
   const _epochs = parseInt(options.epochs  ?? '50');
-;
+
   console.warn(`🧠 Starting neural training...`);
   console.warn(`📊 Datasource = await checkRuvSwarmAvailable();
   if(!isAvailable) {
     printError('ruv-swarm is not available. Please install itwith = await trainNeuralModel(model, data, epochs);
-;
+
     if(trainingResult.success) {
       if(trainingResult.real_training) {
         printSuccess(`✅ REAL neural training completed successfully with ruv-swarm WASM!`);
@@ -59,7 +59,7 @@ console.warn(`🔍 Learning from operation pattern...`: unknown);
 console.warn(`⚙️Operation = await checkRuvSwarmAvailable();
   if(!isAvailable) {
     printError('ruv-swarm is not available. Please install it with = {timestamp = await updateNeuralPattern(operation, outcome, metadata);
-;
+
     if(patternResult.success) {
       printSuccess(`✅ Pattern learning completed`);
       console.warn(`🧠 Updated neural patterns foroperation = flags;
@@ -78,7 +78,7 @@ console.warn(`🤖 Agenttype = await checkRuvSwarmAvailable();
 {
   printError(`Model update failed: ${updateResult.error ?? 'Unknown error'}`);
 }
-} catch (/* err */)
+} catch ()
 {
   // Fallback to showing success with default metrics
   printSuccess(`✅ Model update completed (using cached patterns)`);
@@ -95,43 +95,43 @@ console.warn(`🤖 Agenttype = await checkRuvSwarmAvailable();
 function showTrainingHelp(): unknown {
   console.warn(`;
 🧠 Training Commands - Neural Pattern Learning & Model Updates
-;
+
 USAGE:;
   claude-zen training <command> [options]
-;
+
 COMMANDS:;
   neural-train      Train neural patterns from operations;
   pattern-learn     Learn from specific operation outcomes  ;
   model-update      Update agent models with new insights
-;
+
 NEURAL TRAIN OPTIONS:;
   --data <source>   Training data source (default: recent);
                     Options: recent, historical, custom, swarm-<id>;
   --model <name>    Target model (default: general-predictor);
                     Options: task-predictor, agent-selector, performance-optimizer;
   --epochs <n>      Training epochs (default: 50)
-;
+
 PATTERN LEARN OPTIONS:;
   --operation <op>  Operation type to learn from;
   --outcome <result> Operation outcome (success/failure/partial)
-;
+
 MODEL UPDATE OPTIONS:;
   --agent-type <type>      Agent type to update (coordinator, coder, researcher, etc.);
   --operation-result <res> Result from operation execution
-;
+
 EXAMPLES:;
   # Train from recent swarm operations;
   claude-zen training neural-train --data recent --model task-predictor
-;
+
   # Learn from specific operation;
   claude-zen training pattern-learn --operation "file-creation" --outcome "success"
-;
+
   # Update coordinator model;
   claude-zen training model-update --agent-type coordinator --operation-result "efficient"
-;
+
   # Custom training with specific epochs;
   claude-zen training neural-train --data "swarm-123" --epochs 100 --model "coordinator-predictor"
-;
+
 🎯 Neural training improves:;
   • Task selection accuracy;
   • Agent performance prediction  ;

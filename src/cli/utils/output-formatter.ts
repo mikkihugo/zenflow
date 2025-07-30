@@ -1,6 +1,6 @@
 /**
  * Output Formatting Utilities;
- * Comprehensive output formatting with colors, tables, and structured data;
+ * Comprehensive output formatting with colors, tables, and structured data
  */
 
 import type { OutputFormatter as IOutputFormatter } from '../../types/cli';
@@ -23,7 +23,7 @@ const _icons = {success = '': unknown): string {
     //   // LINT: unreachable code removed}
   return icons[name]  ?? fallback;
 }
-;
+
 // =============================================================================
 // BASIC OUTPUT FUNCTIONS
 // =============================================================================
@@ -79,7 +79,7 @@ export function printVerbose(): unknown {
 // =============================================================================
 
 export class ProgressBar {
-  ,
+
   message = 'Progress';
   ) {
     this.
@@ -158,9 +158,9 @@ fail(errorMessage?: string);
 export function formatTable(): unknown {
     return colorize('No data to display', 'dim');
     //   // LINT: unreachable code removed}
-;
+
 const { columns, title, border = true, striped = false, compact = false } = options;
-;
+
 // Calculate column widths
 const _columnWidths = columns.map((col) => {
   const _headerWidth = col.title.length;
@@ -173,7 +173,7 @@ const _columnWidths = columns.map((col) => {
   );
   return Math.max(headerWidth, dataWidth, col.width  ?? 0);
 });
-;
+
 const _result = '';
 const _padding = compact ?1 = columnWidths.reduce((sum, width) => sum + width + padding * 2, 0) + columns.length - 1;
 result += `${colorize(title.padStart((titleWidth + title.length) / 2).padEnd(titleWidth), 'bright')}\n`;
@@ -181,7 +181,7 @@ if (border) {
   result += `${'═'.repeat(titleWidth)}\n`;
 }
 }
-;
+
 // Header
 const _headerRow = columns;
   .map((col, i) => {
@@ -189,22 +189,22 @@ const _headerRow = columns;
     return colorize(content, 'bright');
     //   // LINT: unreachable code removed});
   .join(border ? ' │ ' : '   ');
-;
+
 result += `${headerRow}\n`;
-;
+
 // Header separator
 if (border) {
   const _separator = columnWidths.map((width) => '─'.repeat(width)).join('─┼─');
   result += `${separator}\n`;
 }
-;
+
 // Data rows
 data.forEach((row, rowIndex) => {
   const _dataRow = columns;
     .map((col, colIndex) => {
       const _value = row[col.key];
       const _formatted = col.format ? col.format(value) : String(value  ?? '');
-;
+
       // Apply alignment
       switch (col.align) {
         case 'center':;
@@ -217,48 +217,48 @@ data.forEach((row, rowIndex) => {
           break;
         default = formatted.padEnd(columnWidths[colIndex]);
       }
-;
+
       // Apply striping
       if (striped && rowIndex % 2 === 1) {
         return colorize(formatted, 'dim');
     //   // LINT: unreachable code removed}
-;
+
       return formatted;
     //   // LINT: unreachable code removed});
     .join(border ? ' │ ' : '   ');
-;
+
   result += `${dataRow}\n`;
 });
-;
+
 return result;
 }
-;
+
 // =============================================================================
 // OUTPUT FORMATTER IMPLEMENTATION
 // =============================================================================
 
 export class TypeScriptOutputFormatter implements IOutputFormatter {
   format(data = colorize(`Error: ${error.message}`, 'red');
-;
+
   if (_error._command) {
       message += `\nCommand = `\n  Code: $error.details.code`;
     }
-;
+
   if (error._details._context) {
       const _contextEntries = Object.entries(error.details.context);
         .filter(([_, value]) => value !== undefined);
         .map(([_key, _value]) => `    $key: $JSON.stringify(value)`);
         .join('\n');
-;
+
       if (contextEntries) {
         message += `\nContext = === 'true' && error.stack) ;
       message += `\n\nStackTrace = 0): string {
     const __spaces = '  '.repeat(indent);
-;
+
     if (Array.isArray(data)) {
       return data.map(_item => `$spaces- $this.formatYaml(item, indent + 1).trim()`).join('\n');
     //   // LINT: unreachable code removed}
-;
+
     if (typeof data === 'object' && data !== null) {
       return Object.entries(data);
     // .map(([_key, value]) => { // LINT: unreachable code removed
@@ -269,10 +269,10 @@ export class TypeScriptOutputFormatter implements IOutputFormatter {
     //   // LINT: unreachable code removed});
         .join('\n');
     }
-;
+
     return String(data);
     //   // LINT: unreachable code removed}
-;
+
   private formatArrayAsTable(data = === 0) ;
       return colorize('No data to display', 'dim');
     // ; // LINT: unreachable code removed
@@ -282,58 +282,58 @@ export class TypeScriptOutputFormatter implements IOutputFormatter {
       // Simple array
       return data.map((_item, _index) => `$index: $item`).join('\n');
     //   // LINT: unreachable code removed}
-;
+
     const __columns = Object.keys(firstItem).map(key => ({
       key,title = = 'object'  ?? data === null) {
       return String(data);
     //   // LINT: unreachable code removed}
-;
+
     const _entries = Object.entries(data).map(([_key, value]) => ({property = === 'object' ? JSON.stringify(value) : String(value);
     }));
-;
+
     const __columns = [;
       {key = '', isLast = true): string {
     const _result = '';
-;
+
     if (typeof data !== 'object'  ?? data === null) {
       return prefix + String(data);
     //   // LINT: unreachable code removed}
-;
+
     const _entries = Object.entries(data);
-;
+
     entries.forEach(([key, value], index) => {
       const _isLastEntry = index === entries.length - 1;
       const _connector = isLastEntry ? '└── ' : '├── ';
       const _nextPrefix = prefix + (isLastEntry ? '    ' : '│   ');
-;
+
       result += prefix + connector + colorize(key, 'bright');
-;
+
       if (typeof value === 'object' && value !== null) {
         result += `\n${this.formatTree(value, nextPrefix, isLastEntry)}`;
       } else {
         result += `: ${colorize(String(value), 'dim')}`;
       }
-;
+
       if (index < entries.length - 1) {
         result += '\n';
       }
     });
-;
+
     return result;
     //   // LINT: unreachable code removed}
-;
+
   private formatText(data = === 'string') {
       return data;
     //   // LINT: unreachable code removed}
-;
+
     if (typeof data === 'object' && data !== null) {
       return JSON.stringify(data, null, 2);
     //   // LINT: unreachable code removed}
-;
+
     return String(data);
     //   // LINT: unreachable code removed}
 }
-;
+
 // =============================================================================
 // GLOBAL FORMATTER INSTANCE
 // =============================================================================
@@ -346,11 +346,11 @@ export const _outputFormatter = new TypeScriptOutputFormatter();
 
 export function createBox(content = content.split('\n': unknown);
   const _maxLength = Math.max(;
-    ..._lines._map(_line => line._length),;
+    ..._lines._map(_line => line._length),
     title ? title.length +2 = maxLength + 4; // 2 chars padding on each side
   
   const _result = '';
-;
+
   // Top border
   if (title) {
     const _titlePadding = Math.max(0, boxWidth - title.length - 4);
@@ -360,47 +360,47 @@ export function createBox(content = content.split('\n': unknown);
   } else {
     result += `┌${'─'.repeat`${boxWidth - 2}┐\n`}`;
   }
-;
+
   // Content lines
   lines.forEach(line => {
     const __padding = boxWidth - line.length - 4;
     result += `│  $line$' '.repeat(Math.max(0, padding))│\n`;);
-;
+
   // Bottom border
   result += `└${'─'.repeat(boxWidth - 2)}┘`;
-;
+
   return result;
 }
-;
+
 export function _truncateString(str = '...': unknown): string {
   if (str.length <= maxLength) {
     return str;
     //   // LINT: unreachable code removed}
-;
+
   return str.substring(0, maxLength - suffix.length) + suffix;
 }
-;
+
 export function _padString(str = 'left': unknown): string {
   if (str.length >= length) {
     return str;
     //   // LINT: unreachable code removed}
-;
+
   const _padding = length - str.length;
-;
+
   switch (align) {
     case 'center': {
       const _leftPad = Math.floor(padding / 2);
       const _rightPad = padding - leftPad;
       return ' '.repeat(leftPad) + str + ' '.repeat(rightPad);
     //   // LINT: unreachable code removed}
-;
+
     case 'right':;
       return ' '.repeat(padding) + str;
     // ; // LINT: unreachable code removed
     case 'left':default = text.split(' ');
   const _lines = [];
   const _currentLine = '';
-;
+
   for (const _word of words) ;
     if ((currentLine + word).length > width) {
       if (currentLine) {
@@ -413,14 +413,14 @@ export function _padString(str = 'left': unknown): string {
     } else {
       currentLine += `${word} `;
     }
-;
+
   if (currentLine) {
     lines.push(currentLine.trim());
   }
-;
+
   return lines;
 }
-;
+
   // =============================================================================
   // EXPORTS
   // =============================================================================
@@ -429,19 +429,18 @@ export function _padString(str = 'left': unknown): string {
   {
   type;
   colors;
-  ,;
+
   icons;
-  ,;
+
   colorize;
-  ,;
+
   type;
   getIcon;
-  ,;
+
   type;
   supportsColor;
-  ,;
+
   ProgressBar;
-  ,;
+
   Spinner;
 }
-;

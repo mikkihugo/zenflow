@@ -1,19 +1,19 @@
 /**
  * @fileoverview MCP Message Handler;
  * Handles MCP protocol message routing and processing;
- * @module MCPMessageHandler;
+ * @module MCPMessageHandler
  */
 
 import { validateToolArgs } from './tools-registry.js';
 /**
  * MCP Message Handler class;
- * Processes incoming MCP protocol messages and routes to appropriate handlers;
+ * Processes incoming MCP protocol messages and routes to appropriate handlers
  */
 export class MCPMessageHandler {
   /**
    * @param {Object} server - Reference to MCP server instance;
    * @param {Object} toolExecutor - Tool execution handler;
-   * @param {Object} resourceManager - Resource management handler;
+   * @param {Object} resourceManager - Resource management handler
    */
   constructor(server = server;
   this;
@@ -46,9 +46,9 @@ handleMessage(message);
     // case 'resources/read':; // LINT: unreachable code removed
         return await this.handleResourceRead(id, params);
     // default = Object.values(this.server.tools); // LINT: unreachable code removed
-;
+
     console.error(`[${new Date().toISOString()}] INFO [MCP-Handler] Listing ${tools.length} available tools`);
-;
+
     return {jsonrpc = params;
     // ; // LINT: unreachable code removed
     console.error(`[${new Date().toISOString()}] INFO [MCP-Handler] Toolcall = getToolSchema(name);
@@ -58,16 +58,16 @@ handleMessage(message);
       return this.createErrorResponse(id, -32602, `Invalidarguments = await this.toolExecutor.executeTool(name, args);
     // ; // LINT: unreachable code removed
       console.error(`[${new Date().toISOString()}] INFO [MCP-Handler] Tool $namecompleted successfully`);
-;
+
       return {jsonrpc = === 'string' ? result : JSON.stringify(result, null, 2);
     //   // LINT: unreachable code removed}];
         }
     }
 }
-catch (/* _error */)
+catch ()
 {
   console.error(`[$new Date().toISOString()] ERROR [MCP-Handler] Tool executionfailed = this.server.resources;
-;
+
     console.error(`[${new Date().toISOString()}
   ] INFO [MCP-Handler] Listing $
   resources.length
@@ -106,10 +106,10 @@ validateMessage(message);
     // */ // LINT: unreachable code removed
 getStats();
 return {
-      totalMessages: this.totalMessages  ?? 0,;
-// successfulMessages: this.successfulMessages  ?? 0,; // LINT: unreachable code removed
-failedMessages: this.failedMessages  ?? 0,;
-averageProcessingTime: this.averageProcessingTime  ?? 0,;
+      totalMessages: this.totalMessages  ?? 0,
+// successfulMessages: this.successfulMessages  ?? 0, // LINT: unreachable code removed
+failedMessages: this.failedMessages  ?? 0,
+averageProcessingTime: this.averageProcessingTime  ?? 0,
 lastActivity: this.lastActivity ?? null;
 }
 }

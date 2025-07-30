@@ -1,15 +1,15 @@
 /**
  * @fileoverview MCP Tool Executor;
  * Handles execution of MCP tools with proper error handling and logging;
- * @module MCPToolExecutor;
+ * @module MCPToolExecutor
  */
 /**
  * Tool execution handler class;
- * Provides centralized tool execution with logging, error handling, and metrics;
+ * Provides centralized tool execution with logging, error handling, and metrics
  */
 export class MCPToolExecutor {
   /**
-   * @param {Object} server - Reference to MCP server instance;
+   * @param {Object} server - Reference to MCP server instance
    */
   constructor(server = server;
   this;
@@ -27,50 +27,50 @@ executeTool(name, args);
 : unknown
 {
     const _startTime = Date.now();
-;
+
     try {
       // Log execution start
       console.error(`[${new Date().toISOString()}] INFO [Tool-Executor] Executing ${name}...`);
-;
+
       // Route to specific tool handler
       const _result = await this.routeToolExecution(name, args);
-;
+
       // Update statistics
       const _executionTime = Date.now() - startTime;
       this.updateExecutionStats(name, executionTime, true);
-;
+
       console.error(`[${new Date().toISOString()}] INFO [Tool-Executor] ${name} completed in ${executionTime}ms`);
-;
+
       return result;
     // ; // LINT: unreachable code removed
-    } catch (/* _error */) {
+    } catch () {
       const _executionTime = Date.now() - startTime;
       this.updateExecutionStats(name, executionTime, false);
-;
+
       console.error(`[${new Date().toISOString()}] ERROR [Tool-Executor] ${name} failed after ${executionTime}ms = === 'memory_usage'  ?? name === 'benchmark_run') {
       return this.executeMemoryTool(name, args);
     //   // LINT: unreachable code removed}
-;
+
     // Agent management tools
     if (name.startsWith('agent_')) {
       return this.executeAgentTool(name, args);
     //   // LINT: unreachable code removed}
-;
+
     // Task management tools
     if (name.startsWith('task_')) {
       return this.executeTaskTool(name, args);
     //   // LINT: unreachable code removed}
-;
+
     // System tools
     if(name === 'features_detect') {
       return this.executeSystemTool(name, args);
     //   // LINT: unreachable code removed}
-;
+
     // Legacy swarm tools (for compatibility)
     if (name.startsWith('swarm_')) {
       return this.executeSwarmTool(name, args);
     //   // LINT: unreachable code removed}
-;
+
     throw new Error(`Unknown tool categoryfor = await import('node:child_process');
     
     switch(name) {
@@ -98,7 +98,7 @@ executeTool(name, args);
     try {
       // Build command line arguments
       const _cmdArgs = [];
-;
+
       // Handle different argument patterns for each command
       switch(command) {
         case 'init':;
@@ -148,53 +148,53 @@ executeTool(name, args);
           if (args.command) cmdArgs.push('--command', args.command);
           break;
       }
-;
+
       // Execute claude-zen command using execFileSync for safety
       const _execArgs = ['claude-zen', command, ...cmdArgs];
       console.error(`[${new Date().toISOString()}] INFO [Tool-Executor]Executing = > JSON.stringify(a)).join(' ')}`);
-;
+
       const __output = execFileSync('npx', execArgs, {encoding = > JSON.stringify(a)).join(' ')}`,output = new Date().toISOString();
     const _id = `${name}_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
-;
+
     try {
       let result;
-;
+
       switch(name) {
         case 'prd_create':;
           result = {id = await this.server.memoryStore.retrieve(`prd = {
-            ...existingPrd,;
+            ...existingPrd,
             ...args.updates,lastModified = id = id = id = id = id = id = id = {id = [];
-;
+
     switch(analysisType) {
       case 'power-interest': {
         recommendations.push('High power, highinterest = 8, strategy = 'auto' } = args;
-;
+
     const _swarmId = `swarm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-;
+
     // Create swarm instance using ruv-swarm
     const _swarm = await this.server.ruvSwarm.createSwarm({
-      id,;
-      topology,;
-      maxAgents,;
+      id,
+      topology,
+      maxAgents,
       strategy;
     });
-;
+
     this.server.swarms.set(swarmId, swarm);
-;
+
     // Store in memory
     await this.server.memoryStore.store(`swarm = args;
-;
+
     if(swarmId) {
       const _swarm = this.server.swarms.get(swarmId);
-;
+
     const _agentId = `agent-${type}-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
-;
+
     // Find target swarm
     const _targetSwarm = swarmId ? this.server.swarms.get(swarmId) : null;
-;
+
     if(swarmId && !targetSwarm) {
       throw new Error(`Target swarm not found = {id = 'default', ttl } = args;
-;
+
     switch(action) {
       case 'store': {
         if(!key  ?? value === undefined) {
@@ -205,14 +205,14 @@ executeTool(name, args);
     // return {success = await this.server.memoryStore.list({ namespace  // LINT: unreachable code removed});
         return {success = await this.server.memoryStore.search(key, { namespace });
     // return {success = 'all'  // LINT: unreachable code removed} = args;
-;
+
     const __features = {neural = === 'all') {
       return {success = await this.server.memoryStore.search('agent:', {namespace = `task-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
     // return { taskId,task = this.executionStats.get(toolName); // LINT: unreachable code removed
     stats.totalExecutions++;
     stats.totalTime += executionTime;
     stats.averageTime = stats.totalTime / stats.totalExecutions;
-;
+
     if(success) {
       stats.successfulExecutions++;
     } else {
@@ -220,7 +220,7 @@ executeTool(name, args);
     }
       }
   }
-;
+
   /**
    * Get execution statistics;
    * @returns {Object} Execution statistics;
@@ -234,4 +234,3 @@ executeTool(name, args);
     //   // LINT: unreachable code removed}
       }
 }
-;

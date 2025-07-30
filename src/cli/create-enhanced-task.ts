@@ -10,11 +10,11 @@ export function createEnhancedTask(task = `# Claude-Flow Enhanced Task
 
 ## Your Task;
 ${task}
-;
+
 ## Claude-Flow System Context
-;
+
 You are running within the Claude-Flow orchestration system, which provides powerful features for complex task management.
-;
+
 ### Configuration;
 - InstanceID = `;
 - **Parallel
@@ -223,7 +223,7 @@ user;
 interfaces`;
     : '';
 }
-;
+
 #;
 #;
 Commit;
@@ -321,7 +321,7 @@ $;
   comprehensively`;
     : '';
 }
-;
+
 Now, please;
 proceed;
 with the task: $;

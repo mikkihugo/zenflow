@@ -1,6 +1,6 @@
 /**
  * Native FANN Bindings for ruv-FANN;
- * Direct integration with compiled Rust neural network;
+ * Direct integration with compiled Rust neural network
  */
 
 import { existsSync } from 'node:fs';
@@ -24,56 +24,56 @@ export class NativeFannBindings {
       try {
         await this.executeCommand(['--test-training']);
         this.capabilities.training = true;
-      } catch (/* _e */) {
+      } catch () {
         this.logger.debug('Training capability not available');
       }
       // Test GPU capability
       try {
         await this.executeCommand(['--test-gpu']);
         this.capabilities.gpu = true;
-      } catch (/* _e */) {
+      } catch () {
         this.logger.debug('GPU capability not available');
       }
       // Test SIMD capability
       try {
         await this.executeCommand(['--test-simd']);
         this.capabilities.simd = true;
-      } catch (/* _e */) {
+      } catch () {
         this.logger.debug('SIMD capability not available');
       }
     }
     catch(error)
     throw new Error(`Capability testingfailed = await this.executeCommand(['--version']);
       return result.stdout.trim();
-    //   // LINT: unreachable code removed} catch (/* error */) {
+    //   // LINT: unreachable code removed} catch () {
       return 'unknown';
     //   // LINT: unreachable code removed}
   }
-;
+
   /**
-   * Execute ruv-FANN command;
+   * Execute ruv-FANN command
    */;
   async executeCommand(args, input = null): unknown {
     return new Promise((resolve, reject) => {
       const _binaryPath = path.join(this.ruvFannPath, 'target/release/ruv-fann');
     // const _process = spawn(binaryPath, args, {cwd = ''; // LINT: unreachable code removed
       const _stderr = '';
-;
+
       if(input) {
         process.stdout.on('data', (data) => {
           stdout += data.toString();
         });
-;
+
         process.stderr.on('data', (data) => {
           stderr += data.toString();
         });
-;
+
         if(input) {
           process.stdin.write(input);
           process.stdin.end();
         }
       }
-;
+
       process.on('close', (code) => {
         if(code === 0) {
           resolve({ stdout, stderr, code });
@@ -92,7 +92,7 @@ export class NativeFannBindings {
 })
 }
 /**
- * Create neural network;
+ * Create neural network
  */
 async
 createNetwork(config)
@@ -114,28 +114,28 @@ createNetwork(config)
         networkId,input = await this.executeCommand(['stats', networkId]);
   // return JSON.parse(result.stdout); // LINT: unreachable code removed
 }
-catch (/* error */)
+catch ()
 {
       throw new Error(`Stats retrievalfailed = await this.executeCommand(['load', filePath]);
-;
+
       return {id = false;
     //   // LINT: unreachable code removed}
-;
+
   /**
-   * Get performance metrics;
+   * Get performance metrics
    */;
   getMetrics() {
     return {
-      isInitialized: this.isInitialized,;
-    // capabilities: { ...this.capabilities  // LINT: unreachable code removed},;
-      backend: 'native',;
+      isInitialized: this.isInitialized,
+    // capabilities: { ...this.capabilities  // LINT: unreachable code removed},
+      backend: 'native',
       performance: {
-        supportsGPU: this.capabilities.gpu,;
-        supportsSIMD: this.capabilities.simd,;
+        supportsGPU: this.capabilities.gpu,
+        supportsSIMD: this.capabilities.simd,
         supportsTraining: this.capabilities.training;
       }
     };
   }
 }
-;
+
 export default NativeFannBindings;
