@@ -2,7 +2,7 @@
 
 /**
  * Comprehensive Test Runner for Steering Document Framework
- * 
+ *
  * Orchestrates all steering tests including unit tests, integration tests,
  * performance benchmarks, and quality validation.
  */
@@ -29,7 +29,7 @@ const RUNNER_CONFIG = {
   verbose: process.env.TEST_VERBOSE === 'true',
   filterPattern: process.env.TEST_FILTER || null,
   timeout: parseInt(process.env.TEST_TIMEOUT) || 300000, // 5 minutes default
-  retries: parseInt(process.env.TEST_RETRIES) || 1
+  retries: parseInt(process.env.TEST_RETRIES) || 1,
 };
 
 class SteeringTestRunner {
@@ -43,10 +43,10 @@ class SteeringTestRunner {
         passed: 0,
         failed: 0,
         skipped: 0,
-        duration: 0
+        duration: 0,
       },
       performance: {},
-      coverage: null
+      coverage: null,
     };
   }
 
@@ -72,7 +72,7 @@ class SteeringTestRunner {
 
       // Determine which test suites to run
       const suites = this.getTestSuites(args);
-      
+
       if (RUNNER_CONFIG.parallel && suites.length > 1) {
         await this.runSuitesParallel(suites);
       } else {
@@ -80,9 +80,9 @@ class SteeringTestRunner {
       }
 
       await this.generateReport();
-      
+
       const success = this.results.summary.failed === 0;
-      
+
       if (success) {
         console.log('\n🎉 All tests passed!');
       } else {
@@ -102,12 +102,12 @@ class SteeringTestRunner {
    */
   async setup() {
     console.log('🔧 Setting up test environment...');
-    
+
     await mkdir(RUNNER_CONFIG.outputDir, { recursive: true });
-    
+
     // Check dependencies
     await this.checkDependencies();
-    
+
     console.log('✅ Test environment ready\n');
   }
 
@@ -116,7 +116,7 @@ class SteeringTestRunner {
    */
   async checkDependencies() {
     const requiredDeps = ['natural']; // For NLP analysis
-    
+
     for (const dep of requiredDeps) {
       try {
         await import(dep);
@@ -134,7 +134,7 @@ class SteeringTestRunner {
       { name: 'unit', description: 'Unit Tests', runner: this.runUnitTests.bind(this) },
       { name: 'integration', description: 'Integration Tests', runner: this.runIntegrationTests.bind(this) },
       { name: 'quality', description: 'Quality Validation', runner: this.runQualityTests.bind(this) },
-      { name: 'performance', description: 'Performance Benchmarks', runner: this.runPerformanceTests.bind(this) }
+      { name: 'performance', description: 'Performance Benchmarks', runner: this.runPerformanceTests.bind(this) },
     ];
 
     if (args.length === 0) {
@@ -142,9 +142,9 @@ class SteeringTestRunner {
     }
 
     // Filter suites based on arguments
-    return allSuites.filter(suite => 
-      args.includes(suite.name) || 
-      (RUNNER_CONFIG.filterPattern && suite.name.includes(RUNNER_CONFIG.filterPattern))
+    return allSuites.filter(suite =>
+      args.includes(suite.name) ||
+      (RUNNER_CONFIG.filterPattern && suite.name.includes(RUNNER_CONFIG.filterPattern)),
     );
   }
 
@@ -153,14 +153,14 @@ class SteeringTestRunner {
    */
   async runSuitesParallel(suites) {
     console.log(`⚡ Running ${suites.length} test suites in parallel...\n`);
-    
+
     const suitePromises = suites.map(async (suite) => {
       const startTime = Date.now();
-      
+
       try {
         console.log(`🚀 Starting ${suite.description}...`);
         const result = await this.runWithTimeout(suite.runner(), RUNNER_CONFIG.timeout);
-        
+
         const duration = Date.now() - startTime;
         const suiteResult = {
           name: suite.name,
@@ -171,14 +171,14 @@ class SteeringTestRunner {
           passed: result.passed || 0,
           failed: result.failed || 0,
           skipped: result.skipped || 0,
-          details: result
+          details: result,
         };
-        
+
         this.results.suites.push(suiteResult);
         this.updateSummary(suiteResult);
-        
+
         console.log(`✅ ${suite.description} completed (${duration}ms)`);
-        
+
       } catch (error) {
         const duration = Date.now() - startTime;
         const suiteResult = {
@@ -191,14 +191,14 @@ class SteeringTestRunner {
           failed: 1,
           skipped: 0,
           error: error.message,
-          details: null
+          details: null,
         };
-        
+
         this.results.suites.push(suiteResult);
         this.updateSummary(suiteResult);
-        
+
         console.log(`❌ ${suite.description} failed (${duration}ms): ${error.message}`);
-        
+
         if (RUNNER_CONFIG.bailOnFailure) {
           throw error;
         }
@@ -213,14 +213,14 @@ class SteeringTestRunner {
    */
   async runSuitesSequential(suites) {
     console.log(`🔄 Running ${suites.length} test suites sequentially...\n`);
-    
+
     for (const suite of suites) {
       const startTime = Date.now();
-      
+
       try {
         console.log(`🚀 Running ${suite.description}...`);
         const result = await this.runWithTimeout(suite.runner(), RUNNER_CONFIG.timeout);
-        
+
         const duration = Date.now() - startTime;
         const suiteResult = {
           name: suite.name,
@@ -231,14 +231,14 @@ class SteeringTestRunner {
           passed: result.passed || 0,
           failed: result.failed || 0,
           skipped: result.skipped || 0,
-          details: result
+          details: result,
         };
-        
+
         this.results.suites.push(suiteResult);
         this.updateSummary(suiteResult);
-        
+
         console.log(`✅ ${suite.description} completed (${duration}ms)\n`);
-        
+
       } catch (error) {
         const duration = Date.now() - startTime;
         const suiteResult = {
@@ -251,14 +251,14 @@ class SteeringTestRunner {
           failed: 1,
           skipped: 0,
           error: error.message,
-          details: null
+          details: null,
         };
-        
+
         this.results.suites.push(suiteResult);
         this.updateSummary(suiteResult);
-        
+
         console.log(`❌ ${suite.description} failed (${duration}ms): ${error.message}\n`);
-        
+
         if (RUNNER_CONFIG.bailOnFailure) {
           throw error;
         }
@@ -272,7 +272,7 @@ class SteeringTestRunner {
   async runUnitTests() {
     const framework = new SteeringTestFramework();
     const success = await framework.runAllTests();
-    
+
     return {
       success,
       total: framework.results.total,
@@ -280,7 +280,7 @@ class SteeringTestRunner {
       failed: framework.results.failed,
       skipped: framework.results.skipped,
       performance: framework.results.performance,
-      errors: framework.results.errors
+      errors: framework.results.errors,
     };
   }
 
@@ -290,14 +290,14 @@ class SteeringTestRunner {
   async runIntegrationTests() {
     const integrationTests = new SteeringIntegrationTests();
     const success = await integrationTests.runAllTests();
-    
+
     return {
       success,
       total: integrationTests.results.total,
       passed: integrationTests.results.passed,
       failed: integrationTests.results.failed,
       performance: integrationTests.results.performance,
-      errors: integrationTests.results.errors
+      errors: integrationTests.results.errors,
     };
   }
 
@@ -306,45 +306,45 @@ class SteeringTestRunner {
    */
   async runQualityTests() {
     console.log('📊 Running quality validation tests...');
-    
+
     const validator = new SteeringQualityValidator({ enableNLP: true });
     const scenarios = generateSteeringScenarios(20);
-    
+
     let passed = 0;
     let failed = 0;
     const qualityResults = [];
-    
+
     for (const scenario of scenarios) {
       try {
         const validation = await validator.validateDocument(
-          scenario.content, 
-          scenario.domain, 
-          'standard'
+          scenario.content,
+          scenario.domain,
+          'standard',
         );
-        
+
         qualityResults.push({
           scenario: scenario.id,
           passed: validation.passed,
           score: validation.overallScore,
-          issues: validation.issues.length
+          issues: validation.issues.length,
         });
-        
+
         if (validation.passed) {
           passed++;
         } else {
           failed++;
         }
-        
+
       } catch (error) {
         failed++;
         qualityResults.push({
           scenario: scenario.id,
           passed: false,
-          error: error.message
+          error: error.message,
         });
       }
     }
-    
+
     return {
       success: failed === 0,
       total: scenarios.length,
@@ -352,7 +352,7 @@ class SteeringTestRunner {
       failed,
       skipped: 0,
       qualityResults,
-      averageScore: qualityResults.reduce((sum, r) => sum + (r.score || 0), 0) / qualityResults.length
+      averageScore: qualityResults.reduce((sum, r) => sum + (r.score || 0), 0) / qualityResults.length,
     };
   }
 
@@ -361,42 +361,42 @@ class SteeringTestRunner {
    */
   async runPerformanceTests() {
     console.log('🚀 Running performance benchmark tests...');
-    
+
     const benchmarkResults = [];
-    
+
     for (const config of PERFORMANCE_CONFIGS) {
       const startTime = Date.now();
-      
+
       try {
         console.log(`  📊 Running ${config.name} benchmark...`);
-        
+
         const scenarios = generateSteeringScenarios(config.scenarios);
         const framework = new SteeringTestFramework();
         await framework.setup();
-        
+
         // Run benchmark
         const batchPromises = [];
         for (let i = 0; i < scenarios.length; i += config.concurrency) {
           const batch = scenarios.slice(i, i + config.concurrency);
-          
+
           const batchPromise = Promise.all(batch.map(async (scenario) => {
             const docStartTime = Date.now();
-            
+
             await framework.orchestrator.createSteeringDocument(scenario.domain, scenario.content);
-            
+
             return Date.now() - docStartTime;
           }));
-          
+
           batchPromises.push(batchPromise);
         }
-        
+
         const batchResults = await Promise.all(batchPromises);
         const allDurations = batchResults.flat();
-        
+
         const totalDuration = Date.now() - startTime;
         const avgDuration = allDurations.reduce((a, b) => a + b, 0) / allDurations.length;
         const throughput = (scenarios.length / totalDuration) * 1000;
-        
+
         benchmarkResults.push({
           config: config.name,
           scenarios: config.scenarios,
@@ -406,29 +406,29 @@ class SteeringTestRunner {
           throughput,
           maxDuration: Math.max(...allDurations),
           minDuration: Math.min(...allDurations),
-          success: totalDuration <= config.maxExecutionTime
+          success: totalDuration <= config.maxExecutionTime,
         });
-        
+
         await framework.cleanup();
-        
+
       } catch (error) {
         benchmarkResults.push({
           config: config.name,
           success: false,
-          error: error.message
+          error: error.message,
         });
       }
     }
-    
+
     const successfulBenchmarks = benchmarkResults.filter(r => r.success).length;
-    
+
     return {
       success: successfulBenchmarks === benchmarkResults.length,
       total: benchmarkResults.length,
       passed: successfulBenchmarks,
       failed: benchmarkResults.length - successfulBenchmarks,
       skipped: 0,
-      benchmarkResults
+      benchmarkResults,
     };
   }
 
@@ -440,7 +440,7 @@ class SteeringTestRunner {
       promise,
       new Promise((_, reject) => {
         setTimeout(() => reject(new Error('Test timeout exceeded')), timeoutMs);
-      })
+      }),
     ]);
   }
 
@@ -460,10 +460,10 @@ class SteeringTestRunner {
   async generateReport() {
     this.results.endTime = Date.now();
     this.results.summary.duration = this.results.endTime - this.results.startTime;
-    
+
     const reportPath = join(RUNNER_CONFIG.outputDir, `test-results-${Date.now()}.json`);
     await writeFile(reportPath, JSON.stringify(this.results, null, 2));
-    
+
     switch (RUNNER_CONFIG.reportFormat) {
       case 'json':
         await this.generateJsonReport();
@@ -483,7 +483,7 @@ class SteeringTestRunner {
     console.log('\n' + '='.repeat(80));
     console.log('📊 TEST EXECUTION SUMMARY');
     console.log('='.repeat(80));
-    
+
     // Overall summary
     console.log(`🔢 Total Tests: ${this.results.summary.total}`);
     console.log(`✅ Passed: ${this.results.summary.passed}`);
@@ -491,14 +491,14 @@ class SteeringTestRunner {
     console.log(`⏭️ Skipped: ${this.results.summary.skipped}`);
     console.log(`⏱️ Duration: ${this.results.summary.duration}ms`);
     console.log(`🎯 Success Rate: ${((this.results.summary.passed / this.results.summary.total) * 100).toFixed(1)}%`);
-    
+
     // Suite breakdown
     console.log('\n📋 Suite Breakdown:');
     this.results.suites.forEach(suite => {
       const status = suite.success ? '✅' : '❌';
       console.log(`   ${status} ${suite.description}: ${suite.passed}/${suite.tests} passed (${suite.duration}ms)`);
     });
-    
+
     // Performance summary
     if (this.results.suites.some(s => s.name === 'performance')) {
       console.log('\n⚡ Performance Summary:');
@@ -511,7 +511,7 @@ class SteeringTestRunner {
         });
       }
     }
-    
+
     // Failures
     const failedSuites = this.results.suites.filter(s => !s.success);
     if (failedSuites.length > 0) {
@@ -546,7 +546,7 @@ class SteeringTestRunner {
    */
   generateHtmlContent() {
     const successRate = ((this.results.summary.passed / this.results.summary.total) * 100).toFixed(1);
-    
+
     return `<!DOCTYPE html>
 <html>
 <head>
@@ -606,7 +606,7 @@ class SteeringTestRunner {
 async function main() {
   const args = process.argv.slice(2);
   const runner = new SteeringTestRunner();
-  
+
   try {
     const success = await runner.run(args);
     process.exit(success ? 0 : 1);

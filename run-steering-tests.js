@@ -24,22 +24,22 @@ class SteeringTestRunner {
     try {
       // 1. Run comprehensive standalone test
       await this.runComprehensiveTest();
-      
-      // 2. Run Jest unit tests  
+
+      // 2. Run Jest unit tests
       await this.runUnitTests();
-      
+
       // 3. Run integration tests
       await this.runIntegrationTests();
-      
+
       // 4. Run performance tests
       await this.runPerformanceTests();
-      
+
       // 5. Run CLI end-to-end tests
       await this.runCliTests();
-      
+
       // Generate final report
       this.generateFinalReport();
-      
+
     } catch (error) {
       console.error(chalk.red('\n❌ Test suite execution failed:'), error.message);
       process.exit(1);
@@ -48,7 +48,7 @@ class SteeringTestRunner {
 
   async runComprehensiveTest() {
     console.log(chalk.blue('📋 Running Comprehensive Steering Test Suite...'));
-    
+
     const testFile = 'test-maestro-steering-complete.js';
     if (!existsSync(testFile)) {
       this.recordTestResult('Comprehensive Test', false, 'Test file not found');
@@ -58,7 +58,7 @@ class SteeringTestRunner {
     try {
       const result = await this.executeCommand('node', [testFile]);
       this.recordTestResult('Comprehensive Test', result.success, result.output);
-      
+
       if (result.success) {
         console.log(chalk.green('✅ Comprehensive test completed successfully'));
       } else {
@@ -69,19 +69,19 @@ class SteeringTestRunner {
       this.recordTestResult('Comprehensive Test', false, error.message);
       console.log(chalk.red('❌ Comprehensive test execution failed'));
     }
-    
+
     console.log('');
   }
 
   async runUnitTests() {
     console.log(chalk.blue('🔬 Running Unit Tests...'));
-    
+
     const unitTestPattern = 'src/__tests__/unit/maestro/steering-documents.test.ts';
-    
+
     try {
       const result = await this.executeCommand('npm', ['test', '--', '--testPathPattern=steering-documents']);
       this.recordTestResult('Unit Tests', result.success, result.output);
-      
+
       if (result.success) {
         console.log(chalk.green('✅ Unit tests passed'));
       } else {
@@ -92,17 +92,17 @@ class SteeringTestRunner {
       this.recordTestResult('Unit Tests', false, error.message);
       console.log(chalk.yellow('⚠️  Unit tests not executed (Jest may not be configured)'));
     }
-    
+
     console.log('');
   }
 
   async runIntegrationTests() {
     console.log(chalk.blue('🔗 Running Integration Tests...'));
-    
+
     try {
       const result = await this.executeCommand('npm', ['test', '--', '--testPathPattern=steering-workflow']);
       this.recordTestResult('Integration Tests', result.success, result.output);
-      
+
       if (result.success) {
         console.log(chalk.green('✅ Integration tests passed'));
       } else {
@@ -113,17 +113,17 @@ class SteeringTestRunner {
       this.recordTestResult('Integration Tests', false, error.message);
       console.log(chalk.yellow('⚠️  Integration tests not executed (Jest may not be configured)'));
     }
-    
+
     console.log('');
   }
 
   async runPerformanceTests() {
     console.log(chalk.blue('⚡ Running Performance Tests...'));
-    
+
     try {
       const result = await this.executeCommand('npm', ['test', '--', '--testPathPattern=steering-performance']);
       this.recordTestResult('Performance Tests', result.success, result.output);
-      
+
       if (result.success) {
         console.log(chalk.green('✅ Performance tests passed'));
         this.extractPerformanceMetrics(result.output);
@@ -135,17 +135,17 @@ class SteeringTestRunner {
       this.recordTestResult('Performance Tests', false, error.message);
       console.log(chalk.yellow('⚠️  Performance tests not executed (Jest may not be configured)'));
     }
-    
+
     console.log('');
   }
 
   async runCliTests() {
     console.log(chalk.blue('🖥️  Running CLI End-to-End Tests...'));
-    
+
     try {
       const result = await this.executeCommand('npm', ['test', '--', '--testPathPattern=steering-cli']);
       this.recordTestResult('CLI Tests', result.success, result.output);
-      
+
       if (result.success) {
         console.log(chalk.green('✅ CLI tests passed'));
       } else {
@@ -156,7 +156,7 @@ class SteeringTestRunner {
       this.recordTestResult('CLI Tests', false, error.message);
       console.log(chalk.yellow('⚠️  CLI tests not executed (CLI commands may not be available)'));
     }
-    
+
     console.log('');
   }
 
@@ -164,7 +164,7 @@ class SteeringTestRunner {
     return new Promise((resolve) => {
       const process = spawn(command, args, {
         stdio: 'pipe',
-        ...options
+        ...options,
       });
 
       let stdout = '';
@@ -182,7 +182,7 @@ class SteeringTestRunner {
         resolve({
           success: code === 0,
           output: stdout + stderr,
-          code
+          code,
         });
       });
 
@@ -190,7 +190,7 @@ class SteeringTestRunner {
         resolve({
           success: false,
           output: error.message,
-          code: -1
+          code: -1,
         });
       });
     });
@@ -201,20 +201,20 @@ class SteeringTestRunner {
       testName,
       success,
       output,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
   }
 
   showTestFailures(output) {
     // Extract and show relevant failure information
     const lines = output.split('\n');
-    const failureLines = lines.filter(line => 
-      line.includes('FAIL') || 
-      line.includes('Error:') || 
+    const failureLines = lines.filter(line =>
+      line.includes('FAIL') ||
+      line.includes('Error:') ||
       line.includes('Expected:') ||
-      line.includes('Received:')
+      line.includes('Received:'),
     );
-    
+
     if (failureLines.length > 0) {
       console.log(chalk.gray('   Failure details:'));
       failureLines.slice(0, 5).forEach(line => {
@@ -231,7 +231,7 @@ class SteeringTestRunner {
     const metrics = {
       singleDocCreation: this.extractMetric(output, /Single document creation took: ([\d.]+)ms/),
       bulkOperations: this.extractMetric(output, /(\d+) documents created in: ([\d.]+)ms/),
-      contextRetrieval: this.extractMetric(output, /Steering context retrieval: ([\d.]+)ms/)
+      contextRetrieval: this.extractMetric(output, /Steering context retrieval: ([\d.]+)ms/),
     };
 
     console.log(chalk.gray('   Performance Metrics:'));
@@ -251,26 +251,26 @@ class SteeringTestRunner {
   generateFinalReport() {
     const endTime = Date.now();
     const totalDuration = endTime - this.startTime;
-    
+
     console.log(chalk.cyan('\n📊 FINAL TEST RESULTS'));
     console.log(chalk.cyan('═'.repeat(30)));
-    
+
     const totalTests = this.testResults.length;
     const passedTests = this.testResults.filter(r => r.success).length;
     const failedTests = totalTests - passedTests;
-    
+
     console.log(`Total Test Suites: ${totalTests}`);
     console.log(`${chalk.green('Passed:')} ${passedTests}`);
     console.log(`${chalk.red('Failed:')} ${failedTests}`);
     console.log(`Success Rate: ${totalTests > 0 ? (passedTests / totalTests * 100).toFixed(1) : 0}%`);
     console.log(`Total Duration: ${(totalDuration / 1000).toFixed(2)}s`);
-    
+
     console.log(chalk.cyan('\n📋 Test Suite Details:'));
     this.testResults.forEach(result => {
       const status = result.success ? chalk.green('✅ PASS') : chalk.red('❌ FAIL');
       console.log(`   ${status} ${result.testName}`);
     });
-    
+
     // Overall assessment
     console.log(chalk.cyan('\n🎯 ASSESSMENT:'));
     if (passedTests === totalTests) {
@@ -283,7 +283,7 @@ class SteeringTestRunner {
       console.log(chalk.red('❌ SIGNIFICANT ISSUES DETECTED'));
       console.log(chalk.red(`   Only ${passedTests}/${totalTests} test suites passed. Major fixes needed.`));
     }
-    
+
     // Implementation status
     console.log(chalk.cyan('\n🔧 IMPLEMENTATION STATUS:'));
     console.log('   ✅ Comprehensive test framework created');
@@ -294,7 +294,7 @@ class SteeringTestRunner {
     console.log('   ✅ Format and standards validation');
     console.log('   ✅ Agent integration and reuse system testing');
     console.log('   ✅ Error handling and edge case coverage');
-    
+
     // Next steps
     console.log(chalk.cyan('\n📝 NEXT STEPS:'));
     if (failedTests > 0) {
@@ -306,9 +306,9 @@ class SteeringTestRunner {
       console.log('   2. Add new tests for new steering document features');
       console.log('   3. Monitor performance metrics for regressions');
     }
-    
+
     console.log(chalk.gray(`\nCompleted at: ${new Date().toLocaleString()}`));
-    
+
     // Exit with appropriate code
     process.exit(failedTests > 0 ? 1 : 0);
   }
