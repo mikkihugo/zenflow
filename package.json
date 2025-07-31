@@ -11,7 +11,7 @@
   ],
   "main": "src/cli/claude-zen-hive-mind.ts",
   "bin": {
-    "claude-zen": "./bin/claude-zen-pkg.ts"
+    "claude-zen": "./bin/claude-zen"
   },
   "scripts": {
     "start": "npx tsx src/unified-server.ts",
