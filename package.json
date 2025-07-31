@@ -22,12 +22,11 @@
     "dev:cli": "npx tsx src/cli/claude-zen-hive-mind.ts",
     "test:monorepo": "node scripts/test-monorepo-detection.js",
     "api": "npx tsx src/api/claude-zen-server.ts",
-    "build": "npm run clean && npm run update-version && npm run build:ts && npm run build:binary",
+    "build": "npm run clean && npm run update-version && npm run build:ts",
     "build:ts": "echo 'TypeScript compilation skipped - using tsx for runtime'",
     "update-version": "npx tsx scripts/update-bin-version.js",
     "clean": "rm -rf dist",
     "build:js": "npm run build:ts",
-    "build:binary": "echo 'TypeScript compilation complete'",
     "build:simple": "npm run build:ts",
     "test": "NODE_OPTIONS='--experimental-vm-modules' jest --bail --maxWorkers=1 --forceExit",
     "test:watch": "NODE_OPTIONS='--experimental-vm-modules' jest --watch",
@@ -68,7 +67,7 @@
     "format:biome": "biome format --write .",
     "diagnostics": "node -e \"import('./dist/monitoring/diagnostics.js').then(m => m.DiagnosticManager.quickDiagnostic().then(console.log))\"",
     "health-check": "node -e \"import('./dist/monitoring/health-check.js').then(m => new m.HealthCheckManager().performHealthCheck().then(console.log))\"",
-    "postinstall": "node scripts/install.js",
+    "postinstall": "npx tsx scripts/install.ts",
     "prepublishOnly": "npm run update-version",
     "publish:alpha": "npm publish --tag alpha",
     "publish:major": "npm version major && npm publish",
@@ -217,7 +216,6 @@
     "globals": "^16.3.0",
     "jest": "^30.0.5",
     "k6": "^0.0.0",
-    "pkg": "^5.8.1",
     "playwright": "^1.54.1",
     "prettier": "^3.6.2",
     "puppeteer": "^24.14.0",
@@ -226,18 +224,6 @@
     "tsx": "^4.20.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.38.0"
-  },
-  "pkg": {
-    "targets": [
-      "node22-linux-x64",
-      "node22-macos-x64",
-      "node22-win-x64"
-    ],
-    "scripts": "dist/**/*.js",
-    "outputPath": "bin",
-    "options": [
-      "--experimental-specifier-resolution=node"
-    ]
   },
   "type": "module",
   "publishConfig": {
