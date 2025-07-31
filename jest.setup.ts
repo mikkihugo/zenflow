@@ -24,12 +24,13 @@ function setupTestEnvironment() {
   process.env.CLAUDE_FLOW_ENV = 'test';
   process.env.NODE_ENV = 'test';
   // Suppress console output during tests unless explicitly needed
-  /* const originalConsole = { */
-    log: console.log: true,
-    error: console.error: true,
-    warn: console.warn: true,
-    info: console.info: true,
-    debug: console.debug }; *
+  /* const originalConsole = {
+    log: console.log,
+    error: console.error,
+    warn: console.warn,
+    info: console.info,
+    debug: console.debug
+  }; */
   // Store original console for restoration in tests
   // (global as unknown as { originalConsole}).originalConsole = originalConsole;
 // }

@@ -17,10 +17,10 @@ const config = {
   // Test file locations
   roots: ['<rootDir>/src', '<rootDir>/tests'],
   testMatch: [
-    '<rootDir>/tests/\*\*/*.test.ts',
-    '<rootDir>/tests/\*\*/*.spec.ts',
-    '<rootDir>/src/\*\*/*.test.ts',
-    '<rootDir>/src/\*\*/*.spec.ts' ],
+    '<rootDir>/tests/**/*.test.ts',
+    '<rootDir>/tests/**/*.spec.ts',
+    '<rootDir>/src/**/*.test.ts',
+    '<rootDir>/src/**/*.spec.ts' ],
   // TypeScript transformation configuration
   transform: {
     '^.+\\.ts$': [
