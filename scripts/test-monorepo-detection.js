@@ -1,4 +1,4 @@
-#\!/usr/bin/env node
+#!/usr/bin/env node
 console.warn(' CLAUDE ZEN MONOREPO DETECTION TEST')
 console.warn('=====================================')
 console.warn('')

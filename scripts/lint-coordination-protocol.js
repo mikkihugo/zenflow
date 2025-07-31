@@ -24,7 +24,7 @@ class LintCoordinationProtocol {
     // Level 3 worker specializations
     this.workerTypes = {
       'syntax-fixer': {
-        description: 'Fixes basic syntax errors like missing semicolons, brackets',;
+        description: 'Fixes basic syntax errors like missing semicolons, brackets'
         patterns: ['semicolon-expected', 'missing-closing-brackets', 'unexpected-token'],;
         priority: 'high';
       },
