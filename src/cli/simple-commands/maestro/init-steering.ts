@@ -8,11 +8,25 @@
 import { mkdir, writeFile } from 'fs/promises';
 import { join } from 'path';
 import chalk from 'chalk';
+import type { Arguments, Argv } from 'yargs';
+
+interface InitSteeringArgs {
+  domain: string;
+}
 
 export const command = 'init-steering <domain>';
 export const describe = 'Initialize steering documents for a domain';
 
-export const handler = async (argv) => {
+export const builder = (yargs: Argv): Argv<InitSteeringArgs> => {
+  return yargs
+    .positional('domain', {
+      describe: 'Domain name for steering initialization',
+      type: 'string',
+      demandOption: true
+    }) as Argv<InitSteeringArgs>;
+};
+
+export const handler = async (argv: Arguments<InitSteeringArgs>): Promise<void> => {
   const { domain } = argv;
   
   console.log(chalk.blue(`🎯 Initializing steering documents for domain: ${domain}`));
@@ -70,7 +84,8 @@ When making decisions in the ${domain} domain:
     console.log(chalk.yellow(`📝 Edit the document to add domain-specific guidance`));
     
   } catch (error) {
-    console.error(chalk.red(`❌ Failed to initialize steering for ${domain}:`), error.message);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error(chalk.red(`❌ Failed to initialize steering for ${domain}:`), errorMessage);
     process.exit(1);
   }
 };

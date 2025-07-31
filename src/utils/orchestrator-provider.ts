@@ -7,9 +7,9 @@ import { EventBus } from '../core/event-bus.js';
 import { Logger } from '../core/logger.js';
 import { ConfigManager } from '../config/config-manager.js';
 
-let orchestratorInstance = null;
+let orchestratorInstance: Orchestrator | null = null;
 
-export function getOrchestratorInstance() {
+export function getOrchestratorInstance(): Orchestrator {
   if (!orchestratorInstance) {
     const configManager = ConfigManager.getInstance();
     const config = configManager.config;
@@ -33,6 +33,6 @@ export function getOrchestratorInstance() {
   return orchestratorInstance;
 }
 
-export function setOrchestratorInstance(instance) {
+export function setOrchestratorInstance(instance: Orchestrator): void {
   orchestratorInstance = instance;
 }

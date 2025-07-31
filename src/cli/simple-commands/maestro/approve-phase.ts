@@ -8,11 +8,48 @@
 import { readFile, writeFile, access } from 'fs/promises';
 import { join } from 'path';
 import chalk from 'chalk';
+import type { Arguments, Argv } from 'yargs';
+
+interface ApprovePhaseArgs {
+  feature: string;
+}
 
 export const command = 'approve-phase <feature>';
 export const describe = 'Approve current phase and progress to next phase';
 
-export const handler = async (argv) => {
+export const builder = (yargs: Argv): Argv<ApprovePhaseArgs> => {
+  return yargs
+    .positional('feature', {
+      describe: 'Feature name for phase approval',
+      type: 'string',
+      demandOption: true
+    }) as Argv<ApprovePhaseArgs>;
+};
+
+interface WorkflowState {
+  featureName: string;
+  currentPhase: string;
+  currentTaskIndex: number;
+  status: string;
+  lastActivity: string;
+  history: Array<{
+    phase: string;
+    status: string;
+    timestamp: string;
+    approver?: string;
+    notes?: string;
+  }>;
+}
+
+interface PhaseApproval {
+  criteria: string[];
+  approver: string;
+  timestamp: string;
+  notes: string;
+  nextActions: string[];
+}
+
+export const handler = async (argv: Arguments<ApprovePhaseArgs>): Promise<void> => {
   const { feature } = argv;
   
   console.log(chalk.blue(`✅ Approving current phase for feature: ${feature}`));
@@ -32,7 +69,7 @@ export const handler = async (argv) => {
     
     // Read current workflow state
     const stateContent = await readFile(stateFile, 'utf-8');
-    const state = JSON.parse(stateContent);
+    const state: WorkflowState = JSON.parse(stateContent);
     
     console.log(chalk.gray(`📊 Current phase: ${state.currentPhase}`));
     console.log(chalk.gray(`📊 Current status: ${state.status}`));
@@ -72,13 +109,14 @@ export const handler = async (argv) => {
     }
     
   } catch (error) {
-    console.error(chalk.red(`❌ Failed to approve phase for ${feature}:`), error.message);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error(chalk.red(`❌ Failed to approve phase for ${feature}:`), errorMessage);
     process.exit(1);
   }
 };
 
-function getNextPhase(currentPhase) {
-  const phaseSequence = {
+function getNextPhase(currentPhase: string): string {
+  const phaseSequence: Record<string, string> = {
     'Requirements Clarification': 'Research & Design',
     'Research & Design': 'Implementation Planning',
     'Implementation Planning': 'Task Execution',
@@ -90,11 +128,11 @@ function getNextPhase(currentPhase) {
   return phaseSequence[currentPhase] || 'Unknown Phase';
 }
 
-async function approveCurrentPhase(state, nextPhase) {
+async function approveCurrentPhase(state: WorkflowState, nextPhase: string): Promise<PhaseApproval> {
   const timestamp = new Date().toISOString().split('T')[0];
   
   // Phase-specific approval criteria
-  const approvalCriteria = {
+  const approvalCriteria: Record<string, string[]> = {
     'Requirements Clarification': [
       'Requirements document completed',
       'User stories defined',
@@ -144,8 +182,8 @@ async function approveCurrentPhase(state, nextPhase) {
   };
 }
 
-function getNextPhaseActions(nextPhase) {
-  const actions = {
+function getNextPhaseActions(nextPhase: string): string[] {
+  const actions: Record<string, string[]> = {
     'Research & Design': [
       'Run maestro generate-design <feature>',
       'Review and refine technical specifications',
@@ -187,7 +225,7 @@ function getNextPhaseActions(nextPhase) {
   return actions[nextPhase] || ['Continue with next phase activities'];
 }
 
-async function generateApprovalContent(feature, currentPhase, approval) {
+async function generateApprovalContent(feature: string, currentPhase: string, approval: PhaseApproval): Promise<string> {
   return `# Phase Approval: ${currentPhase} - ${feature}
 
 *Approved: ${approval.timestamp} | Approver: ${approval.approver}*

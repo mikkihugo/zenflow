@@ -8,11 +8,38 @@
 import { readFile, writeFile, access } from 'fs/promises';
 import { join } from 'path';
 import chalk from 'chalk';
+import type { Arguments, Argv } from 'yargs';
+
+interface GenerateTasksArgs {
+  feature: string;
+}
 
 export const command = 'generate-tasks <feature>';
 export const describe = 'Generate implementation tasks from design specifications';
 
-export const handler = async (argv) => {
+export const builder = (yargs: Argv): Argv<GenerateTasksArgs> => {
+  return yargs
+    .positional('feature', {
+      describe: 'Feature name for task generation',
+      type: 'string',
+      demandOption: true
+    }) as Argv<GenerateTasksArgs>;
+};
+
+interface WorkflowState {
+  featureName: string;
+  currentPhase: string;
+  currentTaskIndex: number;
+  status: string;
+  lastActivity: string;
+  history: Array<{
+    phase: string;
+    status: string;
+    timestamp: string;
+  }>;
+}
+
+export const handler = async (argv: Arguments<GenerateTasksArgs>): Promise<void> => {
   const { feature } = argv;
   
   console.log(chalk.blue(`📋 Generating implementation tasks for feature: ${feature}`));
@@ -52,12 +79,13 @@ export const handler = async (argv) => {
     console.log(chalk.yellow(`🔨 Next: Run 'maestro implement-task ${feature} 1' to start implementation`));
     
   } catch (error) {
-    console.error(chalk.red(`❌ Failed to generate tasks for ${feature}:`), error.message);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error(chalk.red(`❌ Failed to generate tasks for ${feature}:`), errorMessage);
     process.exit(1);
   }
 };
 
-async function generateTasksContent(feature, design) {
+async function generateTasksContent(feature: string, design: string): Promise<string> {
   const timestamp = new Date().toISOString().split('T')[0];
   
   // Analyze design content for task generation
@@ -181,11 +209,11 @@ Each task must meet the following criteria:
 `;
 }
 
-async function updateWorkflowState(specsDir, newPhase) {
+async function updateWorkflowState(specsDir: string, newPhase: string): Promise<void> {
   try {
     const stateFile = join(specsDir, 'workflow-state.json');
     const stateContent = await readFile(stateFile, 'utf-8');
-    const state = JSON.parse(stateContent);
+    const state: WorkflowState = JSON.parse(stateContent);
     
     state.currentPhase = newPhase;
     state.lastActivity = new Date().toISOString();
@@ -198,6 +226,7 @@ async function updateWorkflowState(specsDir, newPhase) {
     await writeFile(stateFile, JSON.stringify(state, null, 2));
     console.log(chalk.gray(`📊 Workflow state updated to: ${newPhase}`));
   } catch (error) {
-    console.log(chalk.yellow(`⚠️  Could not update workflow state: ${error.message}`));
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.log(chalk.yellow(`⚠️  Could not update workflow state: ${errorMessage}`));
   }
 }

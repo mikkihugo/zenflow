@@ -8,11 +8,38 @@
 import { readFile, writeFile, access } from 'fs/promises';
 import { join } from 'path';
 import chalk from 'chalk';
+import type { Arguments, Argv } from 'yargs';
+
+interface GenerateDesignArgs {
+  feature: string;
+}
 
 export const command = 'generate-design <feature>';
 export const describe = 'Generate design document for a feature using collective intelligence';
 
-export const handler = async (argv) => {
+export const builder = (yargs: Argv): Argv<GenerateDesignArgs> => {
+  return yargs
+    .positional('feature', {
+      describe: 'Feature name for design generation',
+      type: 'string',
+      demandOption: true
+    }) as Argv<GenerateDesignArgs>;
+};
+
+interface WorkflowState {
+  featureName: string;
+  currentPhase: string;
+  currentTaskIndex: number;
+  status: string;
+  lastActivity: string;
+  history: Array<{
+    phase: string;
+    status: string;
+    timestamp: string;
+  }>;
+}
+
+export const handler = async (argv: Arguments<GenerateDesignArgs>): Promise<void> => {
   const { feature } = argv;
   
   console.log(chalk.blue(`🎨 Generating design for feature: ${feature}`));
@@ -49,12 +76,13 @@ export const handler = async (argv) => {
     console.log(chalk.yellow(`📝 Next: Run 'maestro generate-tasks ${feature}' to continue`));
     
   } catch (error) {
-    console.error(chalk.red(`❌ Failed to generate design for ${feature}:`), error.message);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error(chalk.red(`❌ Failed to generate design for ${feature}:`), errorMessage);
     process.exit(1);
   }
 };
 
-async function generateDesignContent(feature, requirements) {
+async function generateDesignContent(feature: string, requirements: string): Promise<string> {
   const timestamp = new Date().toISOString().split('T')[0];
   
   // Extract key information from requirements
@@ -315,11 +343,11 @@ DELETE /api/v1/${feature.toLowerCase()}/{id}      # Delete item
 `;
 }
 
-async function updateWorkflowState(specsDir, newPhase) {
+async function updateWorkflowState(specsDir: string, newPhase: string): Promise<void> {
   try {
     const stateFile = join(specsDir, 'workflow-state.json');
     const stateContent = await readFile(stateFile, 'utf-8');
-    const state = JSON.parse(stateContent);
+    const state: WorkflowState = JSON.parse(stateContent);
     
     state.currentPhase = newPhase;
     state.lastActivity = new Date().toISOString();
@@ -332,6 +360,7 @@ async function updateWorkflowState(specsDir, newPhase) {
     await writeFile(stateFile, JSON.stringify(state, null, 2));
     console.log(chalk.gray(`📊 Workflow state updated to: ${newPhase}`));
   } catch (error) {
-    console.log(chalk.yellow(`⚠️  Could not update workflow state: ${error.message}`));
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.log(chalk.yellow(`⚠️  Could not update workflow state: ${errorMessage}`));
   }
 }

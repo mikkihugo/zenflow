@@ -8,12 +8,45 @@
 import { readFile, writeFile, access } from 'fs/promises';
 import { join } from 'path';
 import chalk from 'chalk';
+import type { Arguments, Argv } from 'yargs';
+
+interface ImplementTaskArgs {
+  feature: string;
+  'task-id': string;
+}
 
 export const command = 'implement-task <feature> <task-id>';
 export const describe = 'Implement a specific task from the task breakdown';
 
-export const handler = async (argv) => {
-  const { feature, taskId } = argv;
+export const builder = (yargs: Argv): Argv<ImplementTaskArgs> => {
+  return yargs
+    .positional('feature', {
+      describe: 'Feature name for task implementation',
+      type: 'string',
+      demandOption: true
+    })
+    .positional('task-id', {
+      describe: 'Task ID number to implement',
+      type: 'string',
+      demandOption: true
+    }) as Argv<ImplementTaskArgs>;
+};
+
+interface WorkflowState {
+  featureName: string;
+  currentPhase: string;
+  currentTaskIndex: number;
+  status: string;
+  lastActivity: string;
+  history: Array<{
+    phase: string;
+    status: string;
+    timestamp: string;
+  }>;
+}
+
+export const handler = async (argv: Arguments<ImplementTaskArgs>): Promise<void> => {
+  const { feature, 'task-id': taskId } = argv;
   const taskNumber = parseInt(taskId);
   
   if (isNaN(taskNumber) || taskNumber < 1) {
@@ -72,12 +105,13 @@ export const handler = async (argv) => {
     console.log(chalk.yellow(`🔨 Next: Run 'maestro implement-task ${feature} ${taskNumber + 1}' to continue`));
     
   } catch (error) {
-    console.error(chalk.red(`❌ Failed to implement task ${taskNumber} for ${feature}:`), error.message);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error(chalk.red(`❌ Failed to implement task ${taskNumber} for ${feature}:`), errorMessage);
     process.exit(1);
   }
 };
 
-async function generateImplementationContent(feature, taskNumber, taskDescription) {
+async function generateImplementationContent(feature: string, taskNumber: number, taskDescription: string): Promise<string> {
   const timestamp = new Date().toISOString().split('T')[0];
   
   return `# Implementation: Task ${taskNumber} - ${feature}
@@ -215,7 +249,7 @@ This document outlines the implementation details for Task ${taskNumber} of the 
 `;
 }
 
-async function updateTaskStatus(tasksFile, taskNumber) {
+async function updateTaskStatus(tasksFile: string, taskNumber: number): Promise<void> {
   try {
     const content = await readFile(tasksFile, 'utf-8');
     const lines = content.split('\n');
@@ -232,15 +266,16 @@ async function updateTaskStatus(tasksFile, taskNumber) {
     await writeFile(tasksFile, updatedLines.join('\n'));
     console.log(chalk.gray(`📝 Updated task ${taskNumber} status to completed`));
   } catch (error) {
-    console.log(chalk.yellow(`⚠️  Could not update task status: ${error.message}`));
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.log(chalk.yellow(`⚠️  Could not update task status: ${errorMessage}`));
   }
 }
 
-async function updateWorkflowState(specsDir, newPhase, taskIndex) {
+async function updateWorkflowState(specsDir: string, newPhase: string, taskIndex: number): Promise<void> {
   try {
     const stateFile = join(specsDir, 'workflow-state.json');
     const stateContent = await readFile(stateFile, 'utf-8');
-    const state = JSON.parse(stateContent);
+    const state: WorkflowState = JSON.parse(stateContent);
     
     state.currentPhase = newPhase;
     state.currentTaskIndex = taskIndex;
@@ -254,6 +289,7 @@ async function updateWorkflowState(specsDir, newPhase, taskIndex) {
     await writeFile(stateFile, JSON.stringify(state, null, 2));
     console.log(chalk.gray(`📊 Workflow state updated: ${newPhase} - Task ${taskIndex}`));
   } catch (error) {
-    console.log(chalk.yellow(`⚠️  Could not update workflow state: ${error.message}`));
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.log(chalk.yellow(`⚠️  Could not update workflow state: ${errorMessage}`));
   }
 }

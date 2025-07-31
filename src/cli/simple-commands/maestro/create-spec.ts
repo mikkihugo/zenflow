@@ -8,15 +8,23 @@
 import { mkdir, writeFile } from 'fs/promises';
 import { join } from 'path';
 import chalk from 'chalk';
+import type { Arguments, Argv } from 'yargs';
+
+interface CreateSpecArgs {
+  feature: string;
+  request?: string;
+  output?: string;
+}
 
 export const command = 'create-spec <feature> [request]';
 export const describe = 'Create specification document for a feature';
 
-export const builder = (yargs) => {
+export const builder = (yargs: Argv): Argv<CreateSpecArgs> => {
   return yargs
     .positional('feature', {
       describe: 'Feature name for specification',
-      type: 'string'
+      type: 'string',
+      demandOption: true
     })
     .positional('request', {
       describe: 'Initial requirement description',
@@ -27,11 +35,24 @@ export const builder = (yargs) => {
       alias: 'o',
       describe: 'Output directory',
       type: 'string'
-    });
+    }) as Argv<CreateSpecArgs>;
 };
 
-export const handler = async (argv) => {
-  const { feature, request, output } = argv;
+interface WorkflowState {
+  featureName: string;
+  currentPhase: string;
+  currentTaskIndex: number;
+  status: string;
+  lastActivity: string;
+  history: Array<{
+    phase: string;
+    status: string;
+    timestamp: string;
+  }>;
+}
+
+export const handler = async (argv: Arguments<CreateSpecArgs>): Promise<void> => {
+  const { feature, request = 'Feature specification and requirements', output } = argv;
   
   console.log(chalk.blue(`📋 Creating specification for feature: ${feature}`));
   
@@ -48,7 +69,7 @@ export const handler = async (argv) => {
     console.log(chalk.green(`✅ Requirements created: ${requirementsFile}`));
     
     // Create workflow state tracking
-    const workflowState = {
+    const workflowState: WorkflowState = {
       featureName: feature,
       currentPhase: 'Requirements Clarification',
       currentTaskIndex: 0,
@@ -68,12 +89,13 @@ export const handler = async (argv) => {
     console.log(chalk.yellow(`📝 Next: Run 'maestro generate-design ${feature}' to continue`));
     
   } catch (error) {
-    console.error(chalk.red(`❌ Failed to create spec for ${feature}:`), error.message);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error(chalk.red(`❌ Failed to create spec for ${feature}:`), errorMessage);
     process.exit(1);
   }
 };
 
-function generateRequirementsContent(feature, request) {
+function generateRequirementsContent(feature: string, request: string): string {
   const timestamp = new Date().toISOString().split('T')[0];
   
   return `# Requirements for ${feature}

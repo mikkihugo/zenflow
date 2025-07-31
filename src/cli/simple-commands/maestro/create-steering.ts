@@ -8,15 +8,24 @@
 import { mkdir, writeFile, readFile } from 'fs/promises';
 import { join } from 'path';
 import chalk from 'chalk';
+import type { Arguments, Argv } from 'yargs';
+
+interface CreateSteeringArgs {
+  feature: string;
+  domain?: string;
+  template?: 'product' | 'technical' | 'workflow' | 'security';
+  output?: string;
+}
 
 export const command = 'create-steering <feature> [options]';
 export const describe = 'Create comprehensive steering document for a feature';
 
-export const builder = (yargs) => {
+export const builder = (yargs: Argv): Argv<CreateSteeringArgs> => {
   return yargs
     .positional('feature', {
       describe: 'Feature name for steering document',
-      type: 'string'
+      type: 'string',
+      demandOption: true
     })
     .option('domain', {
       alias: 'd',
@@ -28,18 +37,23 @@ export const builder = (yargs) => {
       alias: 't',
       describe: 'Template type to use',
       type: 'string',
-      choices: ['product', 'technical', 'workflow', 'security'],
-      default: 'technical'
+      choices: ['product', 'technical', 'workflow', 'security'] as const,
+      default: 'technical' as const
     })
     .option('output', {
       alias: 'o',
       describe: 'Output directory',
       type: 'string'
-    });
+    }) as Argv<CreateSteeringArgs>;
 };
 
-export const handler = async (argv) => {
-  const { feature, domain, template, output } = argv;
+interface TemplateConfig {
+  focus: string;
+  sections: [string, string, string, string];
+}
+
+export const handler = async (argv: Arguments<CreateSteeringArgs>): Promise<void> => {
+  const { feature, domain = 'general', template = 'technical', output } = argv;
   
   console.log(chalk.blue(`🎯 Creating steering document for feature: ${feature}`));
   console.log(chalk.gray(`   Domain: ${domain}, Template: ${template}`));
@@ -66,16 +80,21 @@ export const handler = async (argv) => {
     console.log(chalk.blue(`📊 Generated ${lines} lines with ${sections} sections`));
     
   } catch (error) {
-    console.error(chalk.red(`❌ Failed to create steering for ${feature}:`), error.message);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error(chalk.red(`❌ Failed to create steering for ${feature}:`), errorMessage);
     process.exit(1);
   }
 };
 
-async function generateSteeringContent(feature, domain, template) {
+async function generateSteeringContent(
+  feature: string, 
+  domain: string, 
+  template: 'product' | 'technical' | 'workflow' | 'security'
+): Promise<string> {
   const timestamp = new Date().toISOString().split('T')[0];
   
   // Template-specific content generation
-  const templateSections = {
+  const templateSections: Record<string, TemplateConfig> = {
     product: {
       focus: 'product requirements and user experience',
       sections: ['User Stories', 'Acceptance Criteria', 'Product Requirements', 'UX Guidelines']
