@@ -212,6 +212,7 @@
     "axios": "^1.10.0",
     "babel-jest": "^30.0.5",
     "eslint": "^9.31.0",
+    "eslint-formatter-unix": "^8.40.0",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.3.0",
     "jest": "^30.0.5",
