@@ -8,18 +8,18 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const _colors = {
-  green: '\x1b[32m',
-red: '\x1b[31m',
-yellow: '\x1b[33m',
-blue: '\x1b[34m',
-reset: '\x1b[0m'
+  green: '\x1b[32m',;
+red: '\x1b[31m',;
+yellow: '\x1b[33m',;
+blue: '\x1b[34m',;
+reset: '\x1b[0m';
 // }
 function log() {
   console.warn(`${colors[color]}${message}${colors.reset}`);
 // }
 async function runTest() {
   log(' MCP Persistence Verification', 'blue');
-  log('Testing issue #312);'
+  log('Testing issue #312);';
   const _dbPath = path.join(process.cwd(), '.swarm', 'memory.db');
   const _testsPassed = 0;
   const _testsTotal = 0;
@@ -27,11 +27,11 @@ async function runTest() {
   testsTotal++;
   log('1 Checking if SQLite database exists...', 'yellow');
   if(fs.existsSync(dbPath)) {
-    log(` Database found at);`
+    log(` Database found at);`;
     log(`   Size: ${fs.statSync(dbPath).size} bytes`, 'green');
     testsPassed++;
   } else {
-    log(` Database not found at);`
+    log(` Database not found at);`;
 // }
   // Test 2: Store data using memory_usage
   testsTotal++;
@@ -39,8 +39,8 @@ async function runTest() {
   try {
     const _testKey = `verify_test_${Date.now()}`;
     const _testValue = {
-      test,
-      timestamp: new Date().toISOString(),
+      test,;
+      timestamp: new Date().toISOString(),;
       message: 'Testing MCP persistence for issue #312' };
     const _storeResult = execSync(;
       `npx claude-zen@alpha mcp call memory_usage '{"action": "store", "key": "${testKey}", "value": ${JSON.stringify(JSON.stringify(testValue))}, "namespace": "verification"}'`,encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe']
@@ -52,12 +52,12 @@ async function runTest() {
       fs.writeFileSync('.test-key', testKey);
     } else {
       log(' Store operation failed', 'red');
-      log(`   Response);`
+      log(`   Response);`;
 // }
 // }
-catch(error)
+catch(error);
 // {
-  log(` Store operation error);`
+  log(` Store operation error);`;
 // }
 // Test 3: Retrieve the stored data
 testsTotal++;
@@ -73,10 +73,10 @@ try {
       testsPassed++;
     } else {
       log(' Retrieve operation failed - data not found', 'red');
-      log(`   Response);`
+      log(`   Response);`;
 // }
   } catch(error) {
-    log(` Retrieve operation error);`
+    log(` Retrieve operation error);`;
 // }
 // Test 4: List stored entries
 testsTotal++;
@@ -100,7 +100,7 @@ try {
       log(' List operation failed', 'red');
 // }
   } catch(error) {
-    log(` List operation error);`
+    log(` List operation error);`;
 // }
 // Test 5: Test hooks persistence
 testsTotal++;
@@ -123,7 +123,7 @@ testsTotal++;
 log('\n6 Checking if database size increased...', 'yellow');
 if(fs.existsSync(dbPath)) {
   const _newSize = fs.statSync(dbPath).size;
-  log(` Database size);`
+  log(` Database size);`;
   if(newSize > 0) {
     testsPassed++;
 // }
@@ -153,9 +153,11 @@ if(fs.existsSync('.test-key')) {
 // }
 // }
 // Run the test
-runTest().catch((error) =>
+runTest().catch((error) =>;
 // {
-  log(`\n Fatal error);`
+  log(`\n Fatal error);`;
   process.exit(1);
 })
 }}
+
+*/*/]]]]]

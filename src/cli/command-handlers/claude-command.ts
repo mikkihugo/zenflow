@@ -8,7 +8,7 @@ import { spawn  } from 'node:child_process';
 import { printError, printSuccess  } from '..';
 
 export async function claudeCommand() {
-  case 'spawn': null
+  case 'spawn': null;
   //   {
     // Extract task description and flags
     const _taskEndIndex = args.length;
@@ -87,19 +87,21 @@ resolve();
 // }
             catch(/* err */)
 // {
-  printError(`Failed to spawnClaude = args[1];`
+  printError(`Failed to spawnClaude = args[1];`;
           if(!workflowFile) {
-            printError('Usage);'
+            printError('Usage);';
             break;
           //           }
-          printSuccess(`Loading workflow);`
+          printSuccess(`Loading workflow);`;
   console.warn(' Batch execution would process workflow file');
   break;
   // default: null
-  console.warn('Claude commands, batch')
-  console.warn('\nExamples)'
-  console.warn('  claude-zen claude spawn "implement user authentication" --research --parallel')
-  console.warn('  claude-zen claude spawn "fix bug in payment system" --no-permissions')
-  console.warn('  claude-zen claude batch workflow.json --dry-run')
+  console.warn('Claude commands, batch');
+  console.warn('\nExamples)';
+  console.warn('  claude-zen claude spawn "implement user authentication" --research --parallel');
+  console.warn('  claude-zen claude spawn "fix bug in payment system" --no-permissions');
+  console.warn('  claude-zen claude batch workflow.json --dry-run');
 // }
 // }
+
+*/*/)

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-/** Create test documents for Claude Desktop access via MCP
+/** Create test documents for Claude Desktop access via MCP */
 
 const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');
 
@@ -8,7 +8,7 @@ const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.c
 class MockMemoryStore {
   constructor() {
     this.data = new Map();
-
+;
   async store(key, value, options = {}) { 
     const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     this.data.set(fullKey, value);
@@ -29,7 +29,7 @@ class MockMemoryStore {
 const memoryStore = new MockMemoryStore() {;
 const docStack = new DocumentStack(memoryStore);
 setupDefaultRules(docStack);
-
+;
 async function createTestDocuments() {
   // Document 1: Architecture Decision Record
 // await docStack.createDocument('service-adr',
@@ -115,10 +115,12 @@ Security requirements and implementation guidelines for OAuth 2.0 authentication
 - SOC 2 Type II compliance requirements`,`
 {}
       dependencies: ['redis-infrastructure', 'tls-certificates'],
-      tags: ['security', 'oauth2', 'authentication', 'compliance'],
+      tags: ['security', 'oauth2', 'authentication', 'compliance'],;
       priority: 'critical' }
   );
   for(const [_key, value] of memoryStore.data) {
     const _doc = JSON.parse(value);
-
+;
 createTestDocuments().catch(console.error);
+;
+}}}}}

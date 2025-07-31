@@ -10,27 +10,27 @@ export class MCPErrorHandler {
  * @param {Object} options - Configuration options
 
   constructor(options = {}) {
-    this.maxRetries = options.maxRetries  ?? 3;
-    this.retryDelay = options.retryDelay  ?? 1000;
-    this.circuitBreakerThreshold = options.circuitBreakerThreshold  ?? 10;
-    this.circuitBreakerTimeout = options.circuitBreakerTimeout  ?? 30000;
-
+    this.maxRetries = options.maxRetries ?? 3;
+    this.retryDelay = options.retryDelay ?? 1000;
+    this.circuitBreakerThreshold = options.circuitBreakerThreshold ?? 10;
+    this.circuitBreakerTimeout = options.circuitBreakerTimeout ?? 30000;
+;
     // Circuit breaker state
     this.circuitState = 'CLOSED'; // CLOSED, OPEN, HALF_OPEN'
     this.failureCount = 0;
     this.lastFailureTime = null;
     this.successCount = 0;
-
+;
     // Error statistics
     this.errorStats = {
-      totalErrors,
+      totalErrors,;
       recoveredErrors = {}) {
     // Check circuit breaker
   if(this._circuitState === 'OPEN') {'
       if(Date.now() - this.lastFailureTime < this.circuitBreakerTimeout) {
-        throw new Error('Circuit breaker is OPEN - operation rejected');'
+        throw new Error('Circuit breaker is OPEN - operation rejected');';
       } else {
-        this.circuitState = 'HALF_OPEN';'
+        this.circuitState = 'HALF_OPEN';';
         console.error(`[${new Date().toISOString()}] INFO [ErrorHandler] Circuit breaker transitioning to HALF_OPEN`);`
       //       }
     //     }
@@ -47,7 +47,7 @@ export class MCPErrorHandler {
       } catch(error) {
         _lastError = error;
         this.recordError(error, context);
-
+;
         // Don't retry on certain error types'
         if(this.isNonRetryableError(error)) {
           console.error(`[${new Date().toISOString()}] ERROR [ErrorHandler] Non-retryableerror = === this.maxRetries) {`
@@ -57,7 +57,7 @@ export class MCPErrorHandler {
         // Calculate retry delay with exponential backoff
         const _delay = this.calculateRetryDelay(attempt);
         console.error(`[${new Date().toISOString()}] WARN [ErrorHandler] Attempt $attemptfailed, retrying in $delayms = === 'HALF_OPEN') ;'`
-      this.circuitState = 'CLOSED';'
+      this.circuitState = 'CLOSED';';
       this.failureCount = 0;
       console.error(`[${new Date().toISOString()}] INFO [ErrorHandler] Circuit breaker CLOSED after successful operation`);`
   //   }
@@ -68,16 +68,16 @@ export class MCPErrorHandler {
   onOperationFailure(error) ;
     this.failureCount++;
     this.lastFailureTime = Date.now();
-
+;
     // Check if circuit breaker should trip
   if(this.failureCount >= this.circuitBreakerThreshold && this.circuitState === 'CLOSED') {'
-      this.circuitState = 'OPEN';'
+      this.circuitState = 'OPEN';';
       this.errorStats.circuitBreakerTrips++;
       console.error(`[${new Date().toISOString()}] ERROR [ErrorHandler] Circuit breaker OPEN after ${this.failureCount} failures`);`
     //     }
 
     this.errorStats.permanentFailures++;
-
+;
 /** Record error for statistics and analysis
    * @param {Error} error - The error to record
    * @param {Object} context - Error context
@@ -94,7 +94,7 @@ export class MCPErrorHandler {
  */
     // */; // LINT: unreachable code removed
   isNonRetryableError(error) {
-    const _nonRetryablePatterns = [
+    const _nonRetryablePatterns = [;
 // Invalid JSON/i,
 // Method not found/i,
 // Invalid arguments/i,
@@ -116,12 +116,12 @@ export class MCPErrorHandler {
     // */; // LINT: unreachable code removed
   calculateRetryDelay(attempt) {
     const _baseDelay = this.retryDelay;
-    const _exponentialDelay = baseDelay * 2 ** (attempt - 1)
+    const _exponentialDelay = baseDelay * 2 ** (attempt - 1);
     const _maxDelay = 30000; // 30 seconds max
 
     // Add jitter to prevent thundering herd
     const _jitter = Math.random() * 0.1 * exponentialDelay
-
+;
     // return Math.min(exponentialDelay + jitter, maxDelay);
     //   // LINT: unreachable code removed}
 
@@ -183,7 +183,7 @@ export class MCPErrorHandler {
     // */; // LINT: unreachable code removed
   // // static recoverFromParsingError(buffer) {
     const _recovered = [];
-
+;
     try {
       // Try to find valid JSON objects in the buffer
       const _jsonMatches = buffer.match(/\{[^{}]*\}/g)  ?? []
@@ -207,14 +207,14 @@ export class MCPErrorHandler {
       console.error(`[${new Date().toISOString()}`
       ] WARN [ErrorRecovery] Connection recovery failed = ;
 ..state,
-        messageBuffer: '','
-        pendingMessages: [],
-        errorCount: Math.min(state.errorCount  ?? 0, 100) // Reset if too high;
+        messageBuffer: '',';
+        pendingMessages: [],;
+        errorCount: Math.min(state.errorCount ?? 0, 100) // Reset if too high;
 
       // return cleanState;
     //   // LINT: unreachable code removed}
     catch(error) ;
-      console.error(`[\$;`)
+      console.error(`[\$;`);
       new Date().toISOString();
     ] WARN [ErrorRecovery] State cleanup failed:`, error);`
     // return {};

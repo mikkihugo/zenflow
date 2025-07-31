@@ -11,10 +11,10 @@ const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = path.dirname(__filename);
 export class TemplateManager {
   constructor() {
-    this.templatePaths = [
-      path.join(process.cwd(), 'templates'),
-      path.join(__dirname, '../../templates'),
-      path.join(process.env.HOME  ?? process.env.USERPROFILE, '.claude-zen
+    this.templatePaths = [;
+      path.join(process.cwd(), 'templates'),;
+      path.join(__dirname, '../../templates'),;
+      path.join(process.env.HOME ?? process.env.USERPROFILE, '.claude-zen;
     ];
   //   }
 
@@ -22,7 +22,7 @@ export class TemplateManager {
 
   async discoverTemplates() { 
     const _templates = new Map();
-
+;
     for (const templatePath of this.templatePaths) 
       try {
 // const _exists = awaitfs.access(templatePath).then(() => true).catch(() => false); 
@@ -42,18 +42,18 @@ export class TemplateManager {
   async listTemplates() { 
 // const _templates = awaitthis.discoverTemplates();
     const _templateList = Array.from(templates.values());
-
+;
     if(templateList.length === 0) 
       printWarning('No templates found');
       // return [];
     //   // LINT: unreachable code removed}
 
     console.warn('\\n AvailableTemplates = '.repeat(50));
-
+;
     templateList.forEach(template => {
       const { manifest } = template;)
       console.warn(`\\n ${manifest.name}`);
-      console.warn(`Description = '.repeat(50));'`
+      console.warn(`Description = '.repeat(50));'`;
     return templateList;
     //   // LINT: unreachable code removed}
 
@@ -68,7 +68,7 @@ export class TemplateManager {
 
     const { force = false, minimal = false, variant = 'enhanced', addPlugins = true } = options;
     const _absoluteTargetPath = path.resolve(targetPath);
-
+;
     // Check if target directory exists and is not empty
     try {
 // const _targetStats = awaitfs.stat(absoluteTargetPath);
@@ -90,7 +90,7 @@ export class TemplateManager {
     try {
 // const _entries = awaitfs.readdir(sourcePath, {withFileTypes = path.join(sourcePath, entry.name);
         const _targetFile = path.join(targetPath, entry.name);
-
+;
         // Skip template.json and cache directories
   if(entry.name === 'template.json'  ?? entry.name === 'cache'  ?? entry.name === '.swarm') {
           continue;
@@ -117,14 +117,14 @@ export class TemplateManager {
     const _variantFile = variant === 'enhanced' ? 'settings.json' : `settings-$variant}.json`;
     const _sourcePath = path.join(templatePath, variantFile);
     const _targetSettingsPath = path.join(targetPath, '.claude', 'settings.json');
-
+;
     try {
       // Ensure .claude directory exists
 // // await fs.mkdir(path.join(targetPath, '.claude'), {recursive = path.join(templatePath, 'settings.json');
 // // await fs.copyFile(defaultSettingsPath, targetSettingsPath);
         console.warn(` Installed default settings(${variant} variant not found)`);
       } catch(/* fallbackError */) {
-        console.warn(` Could not install settingsvariant = 'enhanced') ;`
+        console.warn(` Could not install settingsvariant = 'enhanced') ;`;
     console.warn('\\n NextSteps = '.repeat(30));
   if(manifest.setup?.postInstall) {
       console.warn('1. Run the setup commands shown above');
@@ -144,7 +144,7 @@ export class TemplateManager {
     const { description = '', version = '1.0.0', category = 'custom' } = options;
     const _sourcePath = process.cwd();
     const _targetPath = path.join(sourcePath, 'templates', templateName);
-
+;
     // Create template directory
 // // await fs.mkdir(targetPath, {recursive = path.join(sourcePath, '.claude');
     try {
@@ -158,7 +158,7 @@ export class TemplateManager {
     // Create template manifest
     const __manifest = {name = // await fs.readdir(source, {withFileTypes = path.join(source, entry.name);
       const _targetFile = path.join(target, entry.name);
-
+;
       if(entry.isDirectory()) {
 // // await this.copyDirectory(sourceFile, targetFile);
       } else {
@@ -170,3 +170,5 @@ export class TemplateManager {
 // export default TemplateManager;
 
 }}}}}}}}}}}}}}}}})))))))
+
+*/*/*/*/*/*/)

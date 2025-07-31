@@ -12,18 +12,18 @@ export async function automationAction() {
 // }
 try {
   switch(subcommand) {
-      case 'auto-agent':
+      case 'auto-agent':;
 // // await autoAgentCommand(subArgs, flags);
         break;
-      case 'smart-spawn':
+      case 'smart-spawn':;
 // // await smartSpawnCommand(subArgs, flags);
         break;
-      case 'workflow-select':
+      case 'workflow-select':;
 // // await workflowSelectCommand(subArgs, flags);
         break;default = flags;
   const __complexity = options['task-complexity']  ?? options.complexity  ?? 'medium';
-  const __swarmId = options['swarm-id']  ?? options.swarmId  ?? generateId('swarm');
-
+  const __swarmId = options['swarm-id']  ?? options.swarmId ?? generateId('swarm');
+;
   console.warn(` Auto-spawning agents based on task complexity...`);
   console.warn(` Task complexity = {coordinator = {coordinator = {coordinator = {coordinator = {`
       coordinator => {)
@@ -32,9 +32,9 @@ try {
     //     }
   //   }
 // )
-console.warn(`   Totalagents = > setTimeout(resolve, 1500))`
-printSuccess(` Auto-agent spawning completed`)
-console.warn(
+console.warn(`   Totalagents = > setTimeout(resolve, 1500))`;
+printSuccess(` Auto-agent spawning completed`);
+console.warn(;
 ` $`
 // {
   agentConfig.total;
@@ -45,27 +45,27 @@ and;
 configured;
 for ${complexity} complexity tasks`;`)
 // )
-console.warn(`
- Agent configuration saved to swarmmemory = flags
-const _requirement = options.requirement ?? 'general-development';)
+console.warn(`;
+ Agent configuration saved to swarmmemory = flags;
+const _requirement = options.requirement ?? 'general-development';);
 const _maxAgents = parseInt(options['max-agents'] ?? options.maxAgents ?? '10');
 console.warn(` Smart spawning agents based on requirements...`);
-console.warn(`Requirement = [];`)
+console.warn(`Requirement = [];`);
 if(requirement.includes('development') ?? requirement.includes('coding')) {
   recommendedAgents.push(;
   //   type = === 0/g)
   //   )
-    recommendedAgents = [
+    recommendedAgents = [;
   //   {
     //     type = > setTimeout(resolve, 1000)
     //     )
     printSuccess(` Smart spawn analysis completed`);
-    console.warn(`\n RECOMMENDED AGENTCONFIGURATION = 0;`)
+    console.warn(`\n RECOMMENDED AGENTCONFIGURATION = 0;`);
 recommendedAgents.forEach((agent) => {
   console.warn(`   ${agent.type});`
   totalRecommended += agent.count;
   //   )
-    console.warn(`\nSUMMARY = maxAgents ? 'Within limits' )`
+    console.warn(`\nSUMMARY = maxAgents ? 'Within limits' )`;
   if(totalRecommended > maxAgents) {
     printWarning(;
     `  Recommended configuration exceeds max agents. Consider increasing limit or simplifying requirements.`;
@@ -85,55 +85,55 @@ console.warn(`\n SELECTED _WORKFLOW => {`)
   console.warn(`\n RECOMMENDED _AGENTS => {`)
     console.warn(`   ${type});`
 });
-console.warn(`\n PRIORITY OPTIMIZATIONS);`
+console.warn(`\n PRIORITY OPTIMIZATIONS);`;
   switch(priority) {
-  case 'speed': null
-    console.warn(`   Speed-optimized);`
+  case 'speed': null;
+    console.warn(`   Speed-optimized);`;
     break;
-  case 'quality': null
-    console.warn(`   Quality-focused);`
+  case 'quality': null;
+    console.warn(`   Quality-focused);`;
     break;
-  case 'cost': null
-    console.warn(`   Cost-efficient);`
+  case 'cost': null;
+    console.warn(`   Cost-efficient);`;
     break;
   // default: null
-    console.warn(`    Balanced approach);`
+    console.warn(`    Balanced approach);`;
 // }
 console.warn(`\n Workflow template saved for project);`
 // }
 function showAutomationHelp() {
-  console.warn(`;`
+  console.warn(`;`;
  Automation Commands - Intelligent Agent & Workflow Management
-
+;
 USAGE);
                              Options, medium, high, enterprise;
   --swarm-id <id>           Target swarm ID for agent spawning
 
-SMART-SPAWN OPTIONS: null
+SMART-SPAWN OPTIONS: null;
   --requirement <req>       Specific requirement description;
                            Examples: "web-development", "data-analysis", "enterprise-api";
   --max-agents <n>         Maximum number of agents to spawn(default)
 
-WORKFLOW-SELECT OPTIONS: null
+WORKFLOW-SELECT OPTIONS: null;
   --project-type <type>     Project type(default);
                            Options: web-app, api, data-analysis, enterprise, general;
   --priority <priority>     Optimization priority(default);
                            Options, quality, cost, balanced
-
-EXAMPLES: null
+;
+EXAMPLES: null;
   # Auto-spawn for complex enterprise task;
   claude-zen automation auto-agent --task-complexity enterprise --swarm-id swarm-123
-
+;
   # Smart spawn for web development;
   claude-zen automation smart-spawn --requirement "web-development" --max-agents 8
-
+;
   # Select workflow for API project optimized for speed;
   claude-zen automation workflow-select --project-type api --priority speed
-
+;
   # Auto-spawn for simple task;
   claude-zen automation auto-agent --task-complexity low
-
- Automation benefits: null
+;
+ Automation benefits: null;
    Optimal resource allocation;
    Intelligent agent selection;
    Workflow optimization;
@@ -143,3 +143,5 @@ EXAMPLES: null
 // }
 
 }}}}}}}}}})))
+
+*/*/]

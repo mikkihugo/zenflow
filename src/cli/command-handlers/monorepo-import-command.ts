@@ -29,11 +29,11 @@ const _options = {maxServices = = false, // default truesetupGraph = = false,   
 const _summary = generateImportSummary(analysis, options);
 // // await saveImportSummary(summary);
 printSuccess(` Monorepo importcompleted = new Map();`
-  const _discoveryStrategies = [
-    discoverByDirectoryStructure,
-    discoverByPackageJson,
-    discoverByDockerfile,
-    discoverByBuildFiles,
+  const _discoveryStrategies = [;
+    discoverByDirectoryStructure,;
+    discoverByPackageJson,;
+    discoverByDockerfile,;
+    discoverByBuildFiles,;
     discoverByNxConfig;
   ];
   for(const strategy of discoveryStrategies) {
@@ -50,19 +50,19 @@ printSuccess(` Monorepo importcompleted = new Map();`
       });
     } catch(error) {
   if(options.verbose) {
-        printWarning(`Strategyfailed = Array.from(services.values());`
+        printWarning(`Strategyfailed = Array.from(services.values());`;
 slice(0, options.maxServices) // Limit to target count
 
-printSuccess(` Found $`
+printSuccess(` Found $`;
 // {
   serviceList.length;
 // }
-services`);`
+services`);`;
 // return serviceList;
 // }
 
 /** Strategy1 = []
-  const _patterns = [
+  const _patterns = [;
     'services/*', */
     'apps/*', */
     'packages/*', */
@@ -76,8 +76,8 @@ services`);`
 
         const _packageContent = JSON.parse(// await readFile(fullPath, 'utf8') {);
         const _servicePath = path.dirname(fullPath);
-        const _serviceName = packageContent.name  ?? path.basename(servicePath);
-
+        const _serviceName = packageContent.name ?? path.basename(servicePath);
+;
         // Skip root package.json
         if(servicePath === monorepoPath) continue;
 
@@ -86,13 +86,13 @@ services`);`
   try {
 
       const _serviceName = path.basename(servicePath);
-
+;
       services.push({name = [];
 
   try {
 
       const _serviceName = path.basename(servicePath);
-
+;
       services.push({name = [];
 
   try {
@@ -108,11 +108,11 @@ services`);`
 
         const _projectConfig = JSON.parse(// await readFile(fullPath, 'utf8'));
         const _servicePath = path.dirname(fullPath);
-        const _serviceName = projectConfig.name  ?? path.basename(servicePath);
-
+        const _serviceName = projectConfig.name ?? path.basename(servicePath);
+;
         services.push({name = === newInfo.type ? existing.type = {services = // await analyzeService(service, options);
       analysis.services.push(serviceAnalysis);
-
+;
       // Build dependency map
   if(serviceAnalysis.dependencies.length > 0) {
         analysis.dependencies.set(service.name, serviceAnalysis.dependencies);
@@ -120,12 +120,12 @@ services`);`
 
       // Extract relationships
       analysis.relationships.push(...serviceAnalysis.relationships);
-
+;
     } catch(error)
 // {
-  printWarning(`;`
- Failed to analyzeservice = detectServicePatterns(analysis.services)
-  printSuccess(` Analysis completed =`
+  printWarning(`;`;
+ Failed to analyzeservice = detectServicePatterns(analysis.services);
+  printSuccess(` Analysis completed =`;
 // {
 ..service,dependencies = [
 ..service.packageInfo.dependencies,
@@ -181,10 +181,10 @@ async function _detectAPIs() {
 // const __files = awaitglob(pattern, {cwd = await glob('**/swagger.{json,yaml,yml}', {cwd = await glob('**/openapi.{json,yaml,yml}', { cwd => {
       apis.push({
         file,type = [];
-
+;
   try {
     // Look for database configuration files
-    const _configPatterns = [
+    const _configPatterns = [;
       '**
       '**
       '**
@@ -211,7 +211,7 @@ async function _detectAPIs() {
       if(deps.typescript) technologies.add('typescript');
       if(deps.prisma) technologies.add('prisma');
       if(deps.mongoose) technologies.add('mongodb');
-      if(deps.pg  ?? deps.postgres) technologies.add('postgresql');
+      if(deps.pg ?? deps.postgres) technologies.add('postgresql');
       if(deps.mysql) technologies.add('mysql');
       if(deps.redis) technologies.add('redis');
       if(deps.graphql) technologies.add('graphql');
@@ -258,7 +258,7 @@ async function _detectAPIs() {
     // Insert hive coordination data if hives exist
 
     analysis.architecturePatterns = patterns;
-
+;
     // Export data for external Kuzu usage
 
     // Close database
@@ -281,7 +281,7 @@ async function _detectAPIs() {
   });
 
   const _dominantTech = Object.entries(techUsage);
-filter(([tech, count]) => count >= Math.ceil(analysis.services.length * 0.5))
+filter(([tech, count]) => count >= Math.ceil(analysis.services.length * 0.5));
 map(([tech]) => tech);
   if(dominantTech.length > 0) {
     recommendations.push({type = analysis.services;)
@@ -294,14 +294,17 @@ map(service => service.name);
   if(apiServices.length > 0) {
     recommendations.push({type = './monorepo-import-summary.json';/g)
 // // await writeFile(summaryPath, JSON.stringify(summary, null, 2));
-  printInfo(` Import summary saved);`
+  printInfo(` Import summary saved);`;
 // }
 
 // export default {
   importMonorepoCommand,
-  discoverServices,
-  analyzeServices,
+  discoverServices,;
+  analyzeServices,;
   setupServiceGraph;
 };
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))))))))))
+
+*/*/
+}}}}}

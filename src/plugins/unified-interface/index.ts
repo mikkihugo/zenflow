@@ -17,8 +17,8 @@ import { join  } from 'path';
 import React, { useEffect, useState  } from 'react';
 import { WebSocket  } from 'ws';
 import type { JSONObject,
-PluginConfig,
-PluginContext,
+PluginConfig,;
+PluginContext,;
 PluginManifest  } from '../../types/plugin.js'
 
 // import { BasePlugin  } from '../base-plugin.js';
@@ -62,7 +62,7 @@ PluginManifest  } from '../../types/plugin.js'
 // const _interfaceConfig = {defaultMode = = false,refreshInterval = = false;
 // // }
 // Store config back to plugin settings
-Object.assign(this.config.settings, interfaceConfig)
+Object.assign(this.config.settings, interfaceConfig);
 // Ensure web // static directory exists
 // // await mkdir(interfaceConfig.staticDir,
 // {
@@ -76,12 +76,12 @@ Object.assign(this.config.settings, interfaceConfig)
       this.context.apis.logger.info('Session started', {sessionId = === 'true') {
 // // await this.cleanup();
 // }
-else
+else;
 // {
   this.context.apis.logger.info('Unified server staying alive for external access');
 // }
 // }
-protected
+protected;
 // async onDestroy() { }
 : Promise<void>
 
@@ -99,7 +99,7 @@ detectInterfaceMode();
 
   // Check command line arguments
   const _args = process.argv.slice(2);
-
+;
   // Check for daemon mode
   if(args.includes('--daemon')) {
     this.config.settings.daemonMode = true;
@@ -133,26 +133,26 @@ detectInterfaceMode();
 // Component registration
 private;
 registerDefaultComponents();
-
+;
   // CLI Components
   this.components.set('cli-header', this.createCliHeader.bind(this));
   this.components.set('cli-table', this.createCliTable.bind(this));
   this.components.set('cli-progress', this.createCliProgress.bind(this));
   this.components.set('cli-prompt', this.createCliPrompt.bind(this));
-
+;
   // TUI Components
   this.components.set('tui-dashboard', this.createTuiDashboard.bind(this));
   this.components.set('tui-sidebar', this.createTuiSidebar.bind(this));
   this.components.set('tui-status', this.createTuiStatus.bind(this));
-
+;
   // Web Components
   this.components.set('web-dashboard', this.createWebDashboard.bind(this));
   this.components.set('web-api', this.createWebApi.bind(this));
-
+;
 // Event handler setup
 private;
 setupEventHandlers();
-
+;
   // Handle process signals
   process.on('SIGINT', () => {
     this.shutdown();
@@ -173,37 +173,37 @@ async;
 startCliMode();
 : Promise<CLIInterface>;
   console.warn(this.createCliHeader('Claude Zen CLI Mode'));
-
+;
   // return {displayTable = > this.displayCliTable(data, headers),showProgress = > this.showCliProgress(message),prompt = > this.showCliPrompt(questions),success = > this.showCliMessage(message, 'success'),error = > this.showCliMessage(message, 'error'),warning = > this.showCliMessage(message, 'warning'),info = > this.showCliMessage(message, 'info'),box = > this.showCliBox(content, options);
 
 private;
 createCliHeader((title = ''));
-
+;
 // {
   const _theme = this.themes[this.config.settings.theme as 'dark' | 'light'];
-
+;
   // return boxen(;
     // chalk.hex(theme.primary).bold(title) + ; // LINT: unreachable code removed(subtitle ? '\n' + chalk.hex(theme.secondary)(subtitle) : ''),
       {padding = this.themes[this.config.settings.theme as 'dark' | 'light'];
 
   const _table = new Table({head = > chalk.hex(theme.primary).bold(h)),
       style => {
-      table.push(row.map(cell => ;))
+      table.push(row.map(cell => ;));
         typeof cell === 'string' ?cell = === 'dark' ? 'cyan' ).start();
 // }
 
 private;
 async;
 showCliPrompt((questions = 'info'));
-
+;
 // {
   const _theme = this.themes[this.config.settings.theme as 'dark' | 'light'];
-
+;
   console.warn(boxen(content, {padding = () => {
       const [activeTab, setActiveTab] = useState('dashboard');
       const [data, setData] = useState<JSONObject>({  });
       const [status, setStatus] = useState('Ready');
-
+;
       // Handle keyboard input
       useInput((input, key) => {
   if(key.ctrl && input === 'c') {
@@ -218,7 +218,7 @@ showCliPrompt((questions = 'info'));
         //         }
 
         // Navigation
-  if(key.leftArrow  ?? key.rightArrow) {
+  if(key.leftArrow ?? key.rightArrow) {
           const _currentIndex = tabs.indexOf(activeTab);
           const _nextIndex = currentIndex > 0 ? currentIndex -1 = currentIndex < tabs.length - 1 ? currentIndex + 1 ;
           //           }
@@ -264,15 +264,15 @@ this.tuiInstance = render(React.createElement(TuiApp));
   // Middleware
   app.use(express.json());
   app.use(express.static(this.config.settings.staticDir));
-
+;
   // Generate web assets
 // // await this.generateWebAssets();
   // API Routes
   this.setupWebRoutes(app);
-
+;
   // Create HTTP server
   this.httpServer = createServer(app);
-
+;
   // Setup WebSocket
 // // await this.setupWebSocketServer();
   // Start the unified server
@@ -290,7 +290,7 @@ this.tuiInstance = render(React.createElement(TuiApp));
   });
 
   this.webServer = app;
-
+;
   // return {httpServer = this.createWebDashboard();
     // // await writeFile(join(this.config.settings.staticDir, 'index.html'), htmlContent); // LINT: unreachable code removed
 
@@ -304,10 +304,10 @@ this.tuiInstance = render(React.createElement(TuiApp));
 
 private;
 createWebDashboard();
-
+;
 // {
   const _theme = this.themes[this.config.settings.theme as 'dark' | 'light'];
-
+;
   // return `<!DOCTYPE html>;`
     // <html lang="en">; // LINT: unreachable code removed
 <head>;
@@ -430,10 +430,10 @@ createWebDashboard();
 
 private;
 createWebStyles();
-
+;
 // {
   const _theme = this.themes[this.config.settings.theme as 'dark' | 'light'];
-
+;
   // return `;`
     // /* CSS styles implementation - truncated for brevity */ // LINT: unreachable code removed
 /* This would contain the full CSS from the original file */
@@ -449,7 +449,7 @@ createWebStyles();
         this.loadData();
     //     }
   connectWebSocket() {
-        const _protocol = window.location.protocol === 'https = window.location.host;'
+        const _protocol = window.location.protocol === 'https = window.location.host;';
         this.ws = new WebSocket(\`\${protocol}//\${host}/ws\`);
 
         this.ws.onopen = () => {
@@ -470,23 +470,23 @@ createWebStyles();
     //     }
 
     async loadData() { 
-        try 
-            const [plugins, stats] = await Promise.all([;)
-                fetch('/api/plugins').then(r => r.json()),
+        try ;
+            const [plugins, stats] = await Promise.all([;);
+                fetch('/api/plugins').then(r => r.json()),;
                 fetch('/api/stats').then(r => r.json());
             ]);
 
             this.data = { plugins, stats };
             this.updateUI();
         } catch(error) {
-            console.error('Failed to loaddata = (this.data.plugins  ?? []).length;'
+            console.error('Failed to loaddata = (this.data.plugins  ?? []).length;';
         document.getElementById('session-count').textContent = ;
-            this.data.stats?.sessions  ?? 0;
+            this.data.stats?.sessions ?? 0;
     //     }
   updateStatus(text, type) {
         const _statusText = document.querySelector('.status-text');
         const _statusDot = document.querySelector('.status-dot');
-
+;
         statusText.textContent = text;
         statusDot.className = \`status-dot status-\${type}\`;
     //     }
@@ -522,13 +522,13 @@ setupWebRoutes(app => {
 
         res.json({ success => {
       try {
-        const _settings = req.body;)
+        const _settings = req.body;);
         Object.assign(this.config.settings, settings);
         res.json({success = new WebSocketServer({ ;
       server => {))
       this.context.apis.logger.info('WebSocket client connected');
       this.wsClients.add(websocket);
-
+;
       websocket.on('message', (data) => {
         try {
           const _message = JSON.parse(data.toString());
@@ -606,9 +606,9 @@ setupWebRoutes(app => {
 
   // Public API methods
   async start(mode?): Promise<any> {
-    const _targetMode = mode  ?? this.currentMode!;
+    const _targetMode = mode ?? this.currentMode!;
   switch(targetMode) {
-      case 'daemon':
+      case 'daemon':;
         // return // await this.startDaemonMode();
     // case 'cli': // LINT: unreachable code removed
         // return // await this.startCliMode();
@@ -713,3 +713,5 @@ setupWebRoutes(app => {
 // export default UnifiedInterfacePlugin;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))))))))
+
+*/*/

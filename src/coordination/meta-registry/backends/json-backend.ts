@@ -34,14 +34,14 @@ export class JSONBackend extends RegistryInterface {
   async register(key, value, options = {}) { 
     const _id = `$key}-${Date.now()}`;`
     const __entry = {
-      key,
-      value,
-      options,
-      id,
+      key,;
+      value,;
+      options,;
+      id,;
       registered = {}) {
 // // // await this.ensureLoaded();
     const _results = [];
-
+;
     for (const [key, _entry] of this.data.entries()) {
       // Skip expired entries
       if(this.isExpired(entry)) {
@@ -51,17 +51,17 @@ export class JSONBackend extends RegistryInterface {
         results.push({ key = {  }) {
 // // // await this.ensureLoaded(); 
     const _entry = this.data.get(key) {;
-    if(!entry  ?? this.isExpired(entry)) {
+    if(!entry ?? this.isExpired(entry)) {
       // return false;
     //   // LINT: unreachable code removed}
 
     // Merge updates
     entry.value = { ...entry.value, ...updates };
     entry.updated = new Date().toISOString();
-
+;
     // Update TTL if provided
   if(options.ttl) {
-      entry.expires = new Date(Date.now() + options.ttl * 1000).toISOString()
+      entry.expires = new Date(Date.now() + options.ttl * 1000).toISOString();
     //     }
 
     this.data.set(key, entry);
@@ -77,11 +77,11 @@ export class JSONBackend extends RegistryInterface {
     this.markForSave();
     this.emitter.emit('change', { type = {}) {'
     const _watcherId = ++this.watcherId;
-
+;
     const __watcher = {
-      id,
-      query,
-      callback,
+      id,;
+      query,;
+      callback,;
       options,created = () => {
       if(this.matchesQuery(event.entry, query)) {
         callback(event);
@@ -89,7 +89,7 @@ export class JSONBackend extends RegistryInterface {
     };
 
     this.emitter.on('change', changeHandler);'
-
+;
     // Return unwatch function return() => {
       this.watchers.delete(watcherId);
     // this.emitter.removeListener('change', changeHandler); // LINT: unreachable code removed'
@@ -99,7 +99,7 @@ export class JSONBackend extends RegistryInterface {
   async health() { 
 // await this.ensureLoaded();
     const __expired = Array.from(this.data.values()).filter(entry => this.isExpired(entry));
-
+;
     return status = true;
     // ; // LINT: unreachable code removed
     try {
@@ -133,7 +133,7 @@ export class JSONBackend extends RegistryInterface {
 
       // Clean expired entries before saving
       this.cleanupExpired();
-
+;
       // Convert Map to array for JSON serialization
       const _entries = Array.from(this.data.values());
       const __data = {version = false;
@@ -141,7 +141,7 @@ export class JSONBackend extends RegistryInterface {
     //     }
 
   async createBackup() { 
-    const _timestamp = new Date().toISOString().replace(/[]/g, '-');'
+    const _timestamp = new Date().toISOString().replace(/[]/g, '-');';
     const _backupPath = `$this.filePath}.backup.${timestamp}`;`
 // await fs.copy(this.filePath, backupPath);
     // Clean old backups
@@ -153,22 +153,22 @@ export class JSONBackend extends RegistryInterface {
   async cleanupBackups() { 
     const _dir = path.dirname(this.filePath);
     const _filename = path.basename(this.filePath);
-
-    try 
+;
+    try ;
 // const _files = awaitfs.readdir(dir);
       const _backupFiles = files;
-filter(file => file.startsWith(`\$filename.backup.`));`
+filter(file => file.startsWith(`\$filename.backup.`));`;
 map(_file => (path = > b.stat.mtime - a.stat.mtime);
-
+;
       // Remove old backups
   for(let i = this.options.maxBackups; i < backupFiles.length; i++) {
 // // await fs.remove(backupFiles[i].path);
       }catch(/* _error */)
-      this.emitter.emit('error', type = === 0 && !this.isLoading)'
+      this.emitter.emit('error', type = === 0 && !this.isLoading)';
 // // await this.load();
   markForSave() ;
     this.needsSave = true;
-
+;
   startAutoSave() ;
     this.saveTimer = setInterval(async() => {
   if(this.needsSave && !this.isSaving) {
@@ -177,7 +177,7 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
         } catch(/* _error */) {
           this.emitter.emit('error', {type = new Date();'
     const _expired = [];
-
+;
     for (const [key, entry] of this.data.entries()) {
       if(entry.expires && new Date(entry.expires) < now) {
         expired.push(key); //       }
@@ -204,12 +204,12 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
     //   // LINT: unreachable code removed}
   applyOptions(results, options) {
     const _filtered = results;
-
+;
     // Apply sorting
   if(options.sort) {
       filtered.sort((a, b) => {
-        const _field = options.sort.field  ?? 'registered';'
-        const _order = options.sort.order  ?? 'asc';'
+        const _field = options.sort.field  ?? 'registered';';
+        const _order = options.sort.order  ?? 'asc';';
         const _valueA = a.metadata[field]  ?? a.value[field];
         const _valueB = b.metadata[field]  ?? b.value[field];
   if(order === 'desc') {'
@@ -220,7 +220,7 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
     //   // LINT: unreachable code removed}
 
   async getFileSize() { }
-    try 
+    try ;
 // const _stats = awaitfs.stat(this.filePath);
       // return stats.size;
     //   // LINT: unreachable code removed} catch(error) ;
@@ -239,9 +239,9 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
   async dump() ;
 // await this.ensureLoaded();
     // return Array.from(this.data.entries()).map(([key, _entry]) => ({ key,
-        id: entry.id,
-        registered: entry.registered,
-        expires: entry.expires,
+        id: entry.id,;
+        registered: entry.registered,;
+        expires: entry.expires,;
         tags: entry.tags;
       }));
 
@@ -249,7 +249,7 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
     this.data.clear();
     this.markForSave();
     this.emitter.emit('cleared');'
-
+;
   size() ;
     // return this.data.size;
 // }
@@ -257,3 +257,5 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
 // export default JSONBackend;
 
 }}}}}}}}}}}}}}}}}}}}}}}}))))))
+
+*/*/

@@ -22,57 +22,57 @@ async function _getHiveMindMetrics() {
     return {available = new Database(dbPath);
     // ; // LINT: unreachable code removed
     const __stats = db;
-prepare(
+prepare(;
     `
-    SELECT(SELECT
-    COUNT(*)
-    FROM
-    swarms
+    SELECT(SELECT;
+    COUNT(*);
+    FROM;
+    swarms;
     ) as total_swarms,
     (SELECT
-    COUNT(*)
-    FROM
-    agents
+    COUNT(*);
+    FROM;
+    agents;
     ) as total_agents,
     (SELECT
-    COUNT(*)
-    FROM
-    tasks
+    COUNT(*);
+    FROM;
+    tasks;
     ) as total_tasks,
     (SELECT
-    COUNT(*)
-    FROM
-    tasks
-    WHERE
-    status = 'completed'
+    COUNT(*);
+    FROM;
+    tasks;
+    WHERE;
+    status = 'completed';
     ) as completed_tasks,
     (SELECT
-    COUNT(*)
-    FROM
-    tasks
-    WHERE
-    status = 'in_progress'
+    COUNT(*);
+    FROM;
+    tasks;
+    WHERE;
+    status = 'in_progress';
     ) as in_progress_tasks,
     (SELECT
-    COUNT(*)
-    FROM
-    tasks
-    WHERE
-    status = 'pending'
+    COUNT(*);
+    FROM;
+    tasks;
+    WHERE;
+    status = 'pending';
     ) as pending_tasks
     `
     //     )
   get() {}
     const __swarmBreakdown = db;
-prepare(
+prepare(;
     `
-    SELECT
-    s.id,
-    s.name,
-    s.objective,
-    COUNT(t.id) as task_count,
-    SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_count,
-    SUM(CASE WHEN t.status = 'in_progress' THEN 1 ELSE 0 END) as in_progress_count,
+    SELECT;
+    s.id,;
+    s.name,;
+    s.objective,;
+    COUNT(t.id) as task_count,;
+    SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_count,;
+    SUM(CASE WHEN t.status = 'in_progress' THEN 1 ELSE 0 END) as in_progress_count,;
     SUM(CASE WHEN t.status = 'pending' THEN 1 ELSE 0 END) as pending_count;
     FROM;
     swarms;
@@ -96,59 +96,59 @@ prepare(
       // return {available = new Database(dbPath);
       // ; // LINT: unreachable code removed
       const __stats = db;
-prepare(
+prepare(;
       `;`
     SELECT;
     (SELECT
-    COUNT(*)
+    COUNT(*);
     FROM;
     swarms;
     ) as total_swarms,
     (SELECT
-    COUNT(*)
-    FROM
-    agents
+    COUNT(*);
+    FROM;
+    agents;
     ) as total_agents,
     (SELECT
-    COUNT(*)
-    FROM
-    tasks
+    COUNT(*);
+    FROM;
+    tasks;
     ) as total_tasks,
     (SELECT
-    COUNT(*)
-    FROM
-    tasks
-    WHERE
-    status = 'completed'
+    COUNT(*);
+    FROM;
+    tasks;
+    WHERE;
+    status = 'completed';
     ) as completed_tasks,
     (SELECT
-    COUNT(*)
-    FROM
-    tasks
-    WHERE
-    status = 'in_progress'
+    COUNT(*);
+    FROM;
+    tasks;
+    WHERE;
+    status = 'in_progress';
     ) as in_progress_tasks,
     (SELECT
-    COUNT(*)
-    FROM
-    tasks
-    WHERE
-    status = 'pending'
+    COUNT(*);
+    FROM;
+    tasks;
+    WHERE;
+    status = 'pending';
     ) as pending_tasks
     `
     //     )
   get() {}
     const __swarmBreakdown = db;
-prepare(
+prepare(;
       `
-    SELECT
-    s.id,
-    s.name,
-    s.topology,
-    s.strategy,
-    COUNT(t.id) as task_count,
-    SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_count,
-    SUM(CASE WHEN t.status = 'in_progress' THEN 1 ELSE 0 END) as in_progress_count,
+    SELECT;
+    s.id,;
+    s.name,;
+    s.topology,;
+    s.strategy,;
+    COUNT(t.id) as task_count,;
+    SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_count,;
+    SUM(CASE WHEN t.status = 'in_progress' THEN 1 ELSE 0 END) as in_progress_count,;
     SUM(CASE WHEN t.status = 'pending' THEN 1 ELSE 0 END) as pending_count;
     FROM;
     swarms;
@@ -167,18 +167,18 @@ prepare(
   all() {}
       db.close();
       // return {
-      available = {available = {total_swarms = > sum + (sys.overall?.total_swarms  ?? 0),
+      available = {available = {total_swarms = > sum + (sys.overall?.total_swarms ?? 0),
       // 0, // LINT: unreachable code removed
-      ),total_agents = > sum + (sys.overall?.total_agents  ?? 0),
-      0),total_tasks = > sum + (sys.overall?.total_tasks  ?? 0),
-      0),completed_tasks = > sum + (sys.overall?.completed_tasks  ?? 0),
-      0),in_progress_tasks = > sum + (sys.overall?.in_progress_tasks  ?? 0),
-      0),pending_tasks = > sum + (sys.overall?.pending_tasks  ?? 0),
+      ),total_agents = > sum + (sys.overall?.total_agents ?? 0),
+      0),total_tasks = > sum + (sys.overall?.total_tasks ?? 0),;
+      0),completed_tasks = > sum + (sys.overall?.completed_tasks ?? 0),;
+      0),in_progress_tasks = > sum + (sys.overall?.in_progress_tasks ?? 0),;
+      0),pending_tasks = > sum + (sys.overall?.pending_tasks ?? 0),;
       0) }
     integration.combined.success_rate =;
     integration.combined.total_tasks > 0;
     ? ((integration.combined.completed_tasks / integration.combined.total_tasks) * 100).toFixed(
-    1;)
+    1;);
     //     )
     : '0'
   //   }
@@ -193,31 +193,31 @@ prepare(
 
   // Show combined overview
   if(metrics.integrated.available) {
-    console.warn(chalk.cyan('Combined SystemOverview = metrics.integrated.combined;'
-    console.warn(`;`
-    TotalSwarms = system.type === 'hive-mind' ? ' Hive-Mind System' : ' ruv-swarm System';)))
+    console.warn(chalk.cyan('Combined SystemOverview = metrics.integrated.combined;';
+    console.warn(`;`;
+    TotalSwarms = system.type === 'hive-mind' ? ' Hive-Mind System' : ' ruv-swarm System';)));
     console.warn(chalk.yellow(`${systemName}));`
     console.warn(chalk.gray(''.repeat(40)));
     const __stats = system.overall;
     console.warn(;
     `  Swarms => {`)
-        const _name = swarm.name  ?? swarm.id.substring(0, 20) + '...';
-        const _total = swarm.task_count  ?? 0;
-        const _completed = swarm.completed_count  ?? 0;
-        const _rate = total > 0 ? ((completed / total) * 100).toFixed(1) : '0'
-        console.warn(`;`)
+        const _name = swarm.name ?? swarm.id.substring(0, 20) + '...';
+        const _total = swarm.task_count ?? 0;
+        const _completed = swarm.completed_count ?? 0;
+        const _rate = total > 0 ? ((completed / total) * 100).toFixed(1) : '0';
+        console.warn(`;`);
     \$chalk.cyan(name);
     : \$completed
-      rate
+      rate;
     %)`)`
   if(swarm.objective) {
       console.warn(`Objective = // await getUnifiedSwarmMetrics();`
   const _fixes = [];
-
+;
   // Check for issues
   if(metrics.hiveMind.available && metrics.ruvSwarm.available) {
     console.warn(chalk.green(' Both swarm systems detected'));
-
+;
     // Check for swarms with 0 tasks
     const _zeroTaskSwarms = [];
   if(metrics.ruvSwarm.swarms) {
@@ -232,7 +232,7 @@ prepare(
   if(zeroTaskSwarms.length > 0) {
       console.warn(chalk.yellow(`  Found ${zeroTaskSwarms.length} swarms with 0 tasks`)
       //       )
-      fixes.push('CREATE_SAMPLE_TASKS')
+      fixes.push('CREATE_SAMPLE_TASKS');
     } else {
       console.warn(chalk.green(' All swarms have task assignments'));
     //     }
@@ -259,21 +259,21 @@ prepare(
 
 async function applyFix(fixType, metrics) {
   switch(fixType) {
-    case 'CREATE_SAMPLE_TASKS': null
+    case 'CREATE_SAMPLE_TASKS': null;
       console.warn(chalk.blue(' Creating sample tasks for empty swarms...'));
 // // await createSampleTasks(metrics);
       break;
-    case 'SETUP_RUV_SWARM': null
+    case 'SETUP_RUV_SWARM': null;
       console.warn(chalk.blue(' Setting up ruv-swarm system...'));
-      console.warn(chalk.gray('  Run));'
+      console.warn(chalk.gray('  Run));';
       break;
-    case 'SETUP_HIVE_MIND': null
+    case 'SETUP_HIVE_MIND': null;
       console.warn(chalk.blue(' Setting up hive-mind system...'));
-      console.warn(chalk.gray('  Run));'
+      console.warn(chalk.gray('  Run));';
       break;
-    case 'SETUP_BOTH_SYSTEMS': null
+    case 'SETUP_BOTH_SYSTEMS': null;
       console.warn(chalk.blue(' Setting up both swarm systems...'));
-      console.warn(chalk.gray('  Run));'
+      console.warn(chalk.gray('  Run));';
       break;
   //   }
 // }
@@ -287,3 +287,6 @@ async function createSampleTasks(_metrics) {
 // }
 
 }}}}}}}}}}}}}}
+
+*/*/*/*/*/*/*/
+}

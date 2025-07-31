@@ -28,14 +28,14 @@ try {
     // Validate initialization
 // // await validateInitialization(sessionDir);
     spinner.succeed('Hive Mind system initialized successfully');
-
-    console.warn(`;`)
+;
+    console.warn(`;`);
 ${chalk.green(' Hive Mind Initialization Complete')}
 
 \${chalk.bold('Created = false)}'
 
   const _db = new Database(dbPath);
-
+;
   try {
     // Create tables with proper indexes
 // // await createDatabaseTables(db);
@@ -53,54 +53,54 @@ ${chalk.green(' Hive Mind Initialization Complete')}
  */
 
     // async function createDatabaseTables(db = [ // LINT)),
-      updated_at INTEGER DEFAULT(strftime('%s', 'now')),
+      updated_at INTEGER DEFAULT(strftime('%s', 'now')),;
       metadata TEXT;
     )`,`
     // Agents table
     `CREATE TABLE IF NOT EXISTS agents(;`
-      id TEXT PRIMARY KEY,
-      session_id TEXT NOT NULL,
-      name TEXT NOT NULL,
+      id TEXT PRIMARY KEY,;
+      session_id TEXT NOT NULL,;
+      name TEXT NOT NULL,;
       //       type TEXT NOT NULL,
-      role TEXT,
-      status TEXT DEFAULT 'idle',
+      role TEXT,;
+      status TEXT DEFAULT 'idle',;
       performance_score REAL DEFAULT 0.0,
-      created_at INTEGER DEFAULT(strftime('%s', 'now')),
-      last_active INTEGER DEFAULT(strftime('%s', 'now')),
+      created_at INTEGER DEFAULT(strftime('%s', 'now')),;
+      last_active INTEGER DEFAULT(strftime('%s', 'now')),;
       FOREIGN KEY(session_id) REFERENCES sessions(id);
     )`,`
     // Memory table
     `CREATE TABLE IF NOT EXISTS collective_memory(;`
-      id TEXT PRIMARY KEY,
-      session_id TEXT,
-      key TEXT NOT NULL,
-      value TEXT NOT NULL,
+      id TEXT PRIMARY KEY,;
+      session_id TEXT,;
+      key TEXT NOT NULL,;
+      value TEXT NOT NULL,;
       //       type TEXT DEFAULT 'general',
       importance REAL DEFAULT 0.5,
-      created_at INTEGER DEFAULT(strftime('%s', 'now')),
-      accessed_at INTEGER DEFAULT(strftime('%s', 'now')),
+      created_at INTEGER DEFAULT(strftime('%s', 'now')),;
+      accessed_at INTEGER DEFAULT(strftime('%s', 'now')),;
       access_count INTEGER DEFAULT 0;
     )`,`
     // Decisions table
     `CREATE TABLE IF NOT EXISTS consensus_decisions(;`
-      id TEXT PRIMARY KEY,
-      session_id TEXT NOT NULL,
-      decision_type TEXT NOT NULL,
-      question TEXT NOT NULL,
-      result TEXT NOT NULL,
-      confidence REAL DEFAULT 0.0,
-      participating_agents TEXT,
-      created_at INTEGER DEFAULT(strftime('%s', 'now')),
+      id TEXT PRIMARY KEY,;
+      session_id TEXT NOT NULL,;
+      decision_type TEXT NOT NULL,;
+      question TEXT NOT NULL,;
+      result TEXT NOT NULL,;
+      confidence REAL DEFAULT 0.0,;
+      participating_agents TEXT,;
+      created_at INTEGER DEFAULT(strftime('%s', 'now')),;
       FOREIGN KEY(session_id) REFERENCES sessions(id);
     )`,`
     // Metrics table
     `CREATE TABLE IF NOT EXISTS performance_metrics(;`
-      id TEXT PRIMARY KEY,
-      session_id TEXT,
-      agent_id TEXT,
-      metric_type TEXT NOT NULL,
-      metric_name TEXT NOT NULL,
-      value REAL NOT NULL,
+      id TEXT PRIMARY KEY,;
+      session_id TEXT,;
+      agent_id TEXT,;
+      metric_type TEXT NOT NULL,;
+      metric_name TEXT NOT NULL,;
+      value REAL NOT NULL,;
       timestamp INTEGER DEFAULT(strftime('%s', 'now'));
     )`;`
   ];
@@ -139,8 +139,8 @@ ${chalk.green(' Hive Mind Initialization Complete')}
  */
 
 // async function verifyDatabaseSchema() {
-const _result = db
-prepare(`;`
+const _result = db;
+prepare(`;`;
       SELECT name FROM sqlite_master ;
       WHERE type='table' AND name=?;
     `)`
@@ -162,9 +162,9 @@ get(table);
   ];
   for(const file of requiredFiles) {
     if(!existsSync(file)) {
-      throw new Error(`Required file notcreated = path.join(sessionDir, 'hive-mind.db'); `
+      throw new Error(`Required file notcreated = path.join(sessionDir, 'hive-mind.db'); `;
   const _db = new Database(dbPath); try {
-    const _result = db
+    const _result = db;
   prepare('SELECT COUNT(*) {as count FROM collective_memory WHERE type = ?')
 get('config');
   if(result.count === 0) {
@@ -174,3 +174,6 @@ get('config');
     db.close();
   //   }
 // }
+
+*/*/*/
+}}}}]

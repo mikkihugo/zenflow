@@ -30,9 +30,9 @@ this.setupAutoRefresh();
         //         }
       }, 10000))
   // Refresh analysis data every 30 seconds
-  this.refreshIntervals.set(
+  this.refreshIntervals.set(;
   'analysis',)
-  setInterval(() =>
+  setInterval(() =>;
   if(this.ui.currentView === ENHANCED_VIEWS.ANALYSIS) {
     this.refreshAnalysisData();
   //   }
@@ -51,22 +51,22 @@ renderNeuralView();
   // Neural status overview
   console.warn(colors.cyan(' Neural Status'));
   console.warn(`  AvailableModels = > j.status === 'running').length)} running`);
-  console.warn(`  WASMSupport = [`
+  console.warn(`  WASMSupport = [`;
       { key => {
         const _status =;
-          job.status === 'completed';)
+          job.status === 'completed';);
             ? colors.green('');
             : job.status === 'running';
               ? colors.yellow('');
               : colors.gray('');
-        console.warn(;)
+        console.warn(;);
           `${status} ${job.pattern_type} -Accuracy = this.getColors();`
   const _data = this.viewData.get('analysis');
   console.warn(colors.white(colors.bold(' Analysis & Monitoring')));
   console.warn();
   // System metrics overview
   console.warn(colors.cyan(' System Metrics'));
-  console.warn(`  TokenUsage = [`
+  console.warn(`  TokenUsage = [`;
       {key = [
       { name => {)
       const _status = colors.green('');
@@ -78,13 +78,13 @@ renderNeuralView();
 
   renderWorkflowView() {
     const _colors = this.getColors();
-
+;
     console.warn(colors.white(colors.bold(' Workflow & Automation')));
     console.warn();
-
+;
     // Workflow status
     console.warn(colors.cyan(' Workflow Status'));
-    console.warn(`  ActiveWorkflows = [`
+    console.warn(`  ActiveWorkflows = [`;
       { key => {)
       const _prefix = colors.yellow(`${index + 1}.`);
       console.warn(`${prefix} ${workflow.name}`);
@@ -102,10 +102,10 @@ renderGitHubView();
   console.warn();
   // GitHub status
   console.warn(colors.cyan(' GitHub Status'));
-  console.warn(`  ConnectedRepos = [`
+  console.warn(`  ConnectedRepos = [`;
       {key = [
       { action => {
-      console.warn(;))
+      console.warn(;));
         `${colors.green('')} ${activity.action} in ${colors.yellow(activity.repo)} ($, { colors.gray(activity.time) })`);
     });
   //   }
@@ -114,13 +114,13 @@ renderGitHubView();
 
   renderDAAView() {
     const _colors = this.getColors();
-
+;
     console.warn(colors.white(colors.bold(' Dynamic Agent Architecture')));
     console.warn();
-
+;
     // DAA status
     console.warn(colors.cyan(' DAA Status'));
-    console.warn(`  DynamicAgents = [`
+    console.warn(`  DynamicAgents = [`;
       {key = [
       { type => {)
       const _status = agent.status === 'active' ? colors.green('') : colors.gray('');
@@ -137,11 +137,11 @@ renderSystemView();
   console.warn();
   // System status
   console.warn(colors.cyan(' System Status'));
-  console.warn(`  SecurityStatus = [`
+  console.warn(`  SecurityStatus = [`;
       {key = [
       { component => {
       const _status =;
-        item.status === 'excellent';)
+        item.status === 'excellent';);
           ? colors.green('');
           : item.status === 'optimal';
             ? colors.green('');
@@ -163,78 +163,78 @@ renderSystemView();
   console.warn();
   // Execution status
   console.warn(colors.cyan(' Execution Status'));
-  console.warn(;)
+  console.warn(;);
   `  ActiveExecutions = this.toolFramework.getCategories();`
     categories.forEach((category, index) => {
       const _tools = this.toolFramework.getToolsByCategory(category);
-      const _prefix = colors.yellow(`;`
+      const _prefix = colors.yellow(`;`;
   \$index +)
-    1`);`
-      console.warn(`;`
+    1`);`;
+      console.warn(`;`;
   \$;
   prefix;
   \$;)
   category.toUpperCase();
   : \$
-    colors.gray(`$`
-    tools.length)
-  tools`)`
+    colors.gray(`$`;
+    tools.length);
+  tools`)`;
   `
   //   )
 // }
 // )
 // Quick actions
 console.warn() {}
-console.warn(colors.cyan(' Quick Actions'))
-console.warn(`
+console.warn(colors.cyan(' Quick Actions'));
+console.warn(`;
 \$)
 colors.yellow('r');
 -Run;
 custom;
-tool`);`
-console.warn(`;`
+tool`);`;
+console.warn(`;`;
 \$;)
 colors.yellow('w');
 -Execute;
-workflow`);`
-console.warn(`;`
+workflow`);`;
+console.warn(`;`;
 \$;)
 colors.yellow('b');
 -Batch;
-execution`);`
-console.warn(`;`
+execution`);`;
+console.warn(`;`;
 \$;)
 colors.yellow('s');
 -Show;
 execution;
-status`);`
+status`);`;
 // }
 
 /** Render tool grid helper;
 
-renderToolGrid(tools, colors, (columns = 2))
+renderToolGrid(tools, colors, (columns = 2));
 : unknown
 // {
   for(const i = 0; i < tools.length; i += columns) {
     const _row = '';
   for(const j = 0; j < columns && i + j < tools.length; j++) {
       const _tool = tools[i + j];
-      const _keyLabel = colors.yellow(`[\$`
-tool.key;)
+      const _keyLabel = colors.yellow(`[\$`;
+tool.key;);
 ]`)`
 const _toolName = colors.white(tool.tool);
 const _desc = colors.gray(tool.desc);
 row += `${keyLabel} ${toolName} - ${desc}`;
 if(j < columns - 1) row += '    ';
 // }
-    console.warn(row)
+    console.warn(row);
 // }
 // }
 
 /** Handle enhanced view input;
 
 // async
-handleEnhancedInput(key, currentView)
+handleEnhancedInput(key, currentView);
 : unknown
 // {
     try {
@@ -286,7 +286,7 @@ handleEnhancedInput(key, currentView)
 /** Refresh analysis data;
 
   async refreshAnalysisData() { 
-    try 
+    try ;
 // const _report = awaitthis.toolFramework.executeTool('performance_report', {timeframe = this.viewData.get('analysis');
       data.lastUpdate = new Date();
     } catch(error) {
@@ -314,3 +314,5 @@ handleEnhancedInput(key, currentView)
 // export default EnhancedUIViews;
 
 }}}}}}}}}}}}}}}) {))))))
+
+*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]

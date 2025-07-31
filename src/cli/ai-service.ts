@@ -1,74 +1,135 @@
+/**
+ * AI Service Module
+ * Converted from JavaScript to TypeScript
+ */
 
-/** Ai Service Module;
-/** Converted from JavaScript to TypeScript;
-
-import { readFile  } from 'node:fs';
+import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { GoogleGenerativeAI  } from '@google';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import inquirer from 'inquirer';
-import { createClaudeCodeProvider  } from '.';
+import { createClaudeCodeProvider } from './claude-code-provider.js';
 
-const _LLM_PROVIDER_FILE = path.join(process.cwd(), '.hive-mind', 'llm-provider.json');
-async function _getProviderConfig() {
+interface ProviderConfig {
+  defaultProvider: string;
+  providers: {
+    google: {
+      apiKey?: string;
+      priority?: number;
+    };
+    claude: {
+      priority?: number;
+    };
+  };
+}
+
+const LLM_PROVIDER_FILE = path.join(process.cwd(), '.hive-mind', 'llm-provider.json');
+
+async function getProviderConfig(): Promise<ProviderConfig> {
   try {
-// const _content = awaitreadFile(LLM_PROVIDER_FILE, 'utf8');
+    const content = await readFile(LLM_PROVIDER_FILE, 'utf8');
     return JSON.parse(content);
-    //   // LINT: unreachable code removed} catch(error) {
-  if(error.code === 'ENOENT') {
-      // return {providers = // await _getProviderConfig();
-    // const _apiKey = process.env.GEMINI_API_KEY  ?? config.providers.google.apiKey; // LINT: unreachable code removed
-  if(!apiKey) {
-    const { key } = // await inquirer.prompt([;
-      {type = key;
-    config.providers.google.apiKey = apiKey;)
-// // await saveProviderConfig(config);
-  //   }
+  } catch (error: any) {
+    if (error.code === 'ENOENT') {
+      // Default configuration if file doesn't exist
+      return {
+        defaultProvider: 'google',
+        providers: {
+          google: {},
+          claude: {}
+        }
+      };
+    }
+    throw error;
+  }
+}
 
-  // return apiKey;
-// }
+async function saveProviderConfig(config: ProviderConfig): Promise<void> {
+  await writeFile(LLM_PROVIDER_FILE, JSON.stringify(config, null, 2));
+}
 
-async function getGenAI() {
-// const _apiKey = awaitgetApiKey();
+async function getApiKey(): Promise<string> {
+  const config = await getProviderConfig();
+  const apiKey = process.env.GEMINI_API_KEY || config.providers.google.apiKey;
+  
+  if (!apiKey) {
+    const { key } = await inquirer.prompt([
+      {
+        type: 'password',
+        name: 'key',
+        message: 'Enter your Google AI API key:'
+      }
+    ]);
+    
+    config.providers.google.apiKey = key;
+    await saveProviderConfig(config);
+    return key;
+  }
+
+  return apiKey;
+}
+
+async function getGenAI(): Promise<GoogleGenerativeAI> {
+  const apiKey = await getApiKey();
   return new GoogleGenerativeAI(apiKey);
-// }
+}
 
-let _claudeProvider = null;
+let claudeProvider: any = null;
 
 async function getClaudeProvider() {
-  if(!claudeProvider) {
-// const __config = await_getProviderConfig();
+  if (!claudeProvider) {
+    const config = await getProviderConfig();
 
     try {
-      claudeProvider = // await createClaudeCodeProvider({ modelId = {  }) {
-// const _provider = awaitgetClaudeProvider();
-  if(!provider) {
+      claudeProvider = await createClaudeCodeProvider({ 
+        modelId: config.providers.claude 
+      });
+    } catch (error) {
+      console.warn('Claude Code not available');
+      return null;
+    }
+  }
+  return claudeProvider;
+}
+
+async function generateTextWithClaude(prompt: string, options: any = {}): Promise<string> {
+  const provider = await getClaudeProvider();
+  if (!provider) {
     console.warn('Claude Code not available, falling back to Google AI');
-    // return generateTextWithGoogle(prompt, options);
-    //   // LINT: unreachable code removed}
+    return generateTextWithGoogle(prompt, options);
+  }
 
   try {
-    // return // await provider.generateText(prompt, options);
-    //   // LINT: unreachable code removed} catch(/* _error */) {
-    console.warn('Claude generationfailed = 'flash' }) {'
-// const _genAI = awaitgetGenAI();
+    return await provider.generateText(prompt, options);
+  } catch (error) {
+    console.warn('Claude generation failed, falling back to Google AI');
+    return generateTextWithGoogle(prompt, options);
+  }
+}
 
-  const _model = genAI.getGenerativeModel({model = // await model.generateContent(prompt);
-// const _response = awaitresult.response;
-  // return response.text();
-// }
+async function generateTextWithGoogle(prompt: string, options: any = {}): Promise<string> {
+  const model = options.model || 'gemini-1.5-flash';
+  const genAI = await getGenAI();
 
-// export async function _generateText(prompt = {}) {
-// const _config = await_getProviderConfig();
+  const modelInstance = genAI.getGenerativeModel({ model });
+  const result = await modelInstance.generateContent(prompt);
+  const response = await result.response;
+  return response.text();
+}
 
-  // Try Claude first if it's the default or has higher priority'
-  if(config.defaultProvider === 'claude'  ?? (config.providers.claude?.priority < config.providers.google?.priority)) {
+export async function generateText(prompt: string, options: any = {}): Promise<string> {
+  const config = await getProviderConfig();
+
+  // Try Claude first if it's the default or has higher priority
+  if (config.defaultProvider === 'claude' || 
+      (config.providers.claude?.priority && config.providers.google?.priority && 
+       config.providers.claude.priority < config.providers.google.priority)) {
     try {
-      // return // await generateTextWithClaude(prompt, options);
-    //   // LINT: unreachable code removed} catch(error) {
-      console.warn('Claude generation failed, falling back to Google AI);'
-      // return // await generateTextWithGoogle(prompt, options);
-    //   // LINT: unreachable code removed}
-  } else
-    // return // await generateTextWithGoogle(prompt, options);
-
-}}}}}}}}}}}))
+      return await generateTextWithClaude(prompt, options);
+    } catch (error) {
+      console.warn('Claude generation failed, falling back to Google AI');
+      return await generateTextWithGoogle(prompt, options);
+    }
+  } else {
+    return await generateTextWithGoogle(prompt, options);
+  }
+}

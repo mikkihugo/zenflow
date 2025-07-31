@@ -4,13 +4,13 @@
 
 import { BaseProvider  } from '.';
 import { AIRequest,
-AIResponse,
-FunctionCall,
-Message,
-ProviderCapabilities,
-ProviderConfig,
-ProviderError,
-RateLimitError,
+AIResponse,;
+FunctionCall,;
+Message,;
+ProviderCapabilities,;
+ProviderConfig,;
+ProviderError,;
+RateLimitError,;
 TokenUsage  } from '.
 // // interface OpenAIMessage {role = 'openai'
 // version = '2024-07-29'
@@ -27,7 +27,7 @@ TokenUsage  } from '.
 // constructor() {}
 // // {
 //   super();
-//   this.pricing = {inputTokenPrice = config.apiKey  ?? process.env.OPENAI_API_KEY;
+//   this.pricing = {inputTokenPrice = config.apiKey ?? process.env.OPENAI_API_KEY;
 //   if(!this.apiKey) {
 //     throw new ProviderError('OpenAI API key is required', this.name, 'MISSING_API_KEY');
 //   //   }
@@ -122,9 +122,9 @@ try {
   // return new RateLimitError(this.name, retryAfter ? parseInt(retryAfter) );
 // }
 // return new ProviderError(;
-// errorData.error?.message  ?? errorData.message  ?? 'Unknown error', // LINT: unreachable code removed
-this.name,
-errorData.error?.type  ?? 'API_ERROR',
+// errorData.error?.message ?? errorData.message  ?? 'Unknown error', // LINT: unreachable code removed
+this.name,;
+errorData.error?.type  ?? 'API_ERROR',;
 response.status;
 // )
 // }
@@ -141,3 +141,5 @@ response.status;
 // }
 
 }}}}}}}}}}}}}}})))))))
+
+*/*/

@@ -11,12 +11,12 @@ import { SqliteMemoryStore  } from '../src/memory/sqlite-store.js';
 import { getLoadError  } from '../src/memory/sqlite-wrapper.js';
 
 const _colors = {
-  green: '\x1b[32m',
-red: '\x1b[31m',
-yellow: '\x1b[33m',
-blue: '\x1b[34m',
-cyan: '\x1b[36m',
-reset: '\x1b[0m'
+  green: '\x1b[32m',;
+red: '\x1b[31m',;
+yellow: '\x1b[33m',;
+blue: '\x1b[34m',;
+cyan: '\x1b[36m',;
+reset: '\x1b[0m';
 // }
 function log() {
   console.warn(`${colors[color]}${message}${colors.reset}`);
@@ -28,7 +28,7 @@ async function validateSQLiteOptimizations() {
 // const _available = awaitisSQLiteAvailable();
   if(!available) {
     const _error = getLoadError();
-    log(` SQLite not available);`
+    log(` SQLite not available);`;
     log('   Performance optimizations cannot be tested', 'yellow');
     // return false;
     //   // LINT: unreachable code removed}
@@ -36,19 +36,19 @@ async function validateSQLiteOptimizations() {
   // Create test directory
   const _testDir = path.join(os.tmpdir(), `sqlite-validation-${Date.now()}`);
   // // await fs.mkdir(testDir, { recursive });
-  log(` Test directory);`
+  log(` Test directory);`;
   const _allTestsPassed = true;
   try {
     // Test 1: Basic functionality with optimizations
-    log('\n Test 1);'
+    log('\n Test 1);';
     const _store = new SqliteMemoryStore({
-      directory,
+      directory,;
       dbName);
   // // await store.initialize();
     log(' Store initialized with optimizations', 'green');
     // Check indexes were created
     const _indexCheck = store.db;
-prepare(`;`
+prepare(`;`;
       SELECT COUNT(*)  FROM sqlite_master ;
       WHERE type = 'index' AND tbl_name = 'memory_entries';
     `);`
@@ -73,11 +73,11 @@ get();
     //     }
     store.close();
     // Test 2: Connection Pool
-    log('\n Test 2);'
+    log('\n Test 2);';
     const _poolDbPath = path.join(testDir, 'pool-test.db');
     const _pool = new SQLiteConnectionPool(poolDbPath, {
-      minConnections,
-      maxConnections
+      minConnections,;
+      maxConnections;
 })
   // // await pool.initialize() {}
 const _poolStats = pool.getStats();
@@ -90,13 +90,13 @@ const _poolStats = pool.getStats();
 // Test concurrent operations
   // // await pool.execute(`;`
       CREATE TABLE IF NOT EXISTS test_concurrent(;
-        id INTEGER PRIMARY KEY,
-        value TEXT;))
+        id INTEGER PRIMARY KEY,;
+        value TEXT;));
       );
     `);`
 const _concurrentOps = [];
   for(let i = 0; i < 10; i++) {
-  concurrentOps.push(;)
+  concurrentOps.push(;);
   pool.execute('INSERT INTO test_concurrent(value) VALUES(?)', [`value-${i}`]);
   //   )
 // }
@@ -105,15 +105,15 @@ const _concurrentOps = [];
   if(result[0].count === 10) {
   log(' Concurrent operations successful', 'green');
 } else {
-  log(` Concurrent operations failed);`
+  log(` Concurrent operations failed);`;
   allTestsPassed = false;
 // }
   // // await pool.shutdown();
 // Test 3: Performance with Large Dataset
-log('\n Test 3);'
+log('\n Test 3);';
 const _perfStore = new SqliteMemoryStore({ directory,
 dbName: 'performance-test.db',
-enableCache
+enableCache;
   })
   // // await perfStore.initialize() {}
 const _start = Date.now();
@@ -121,7 +121,7 @@ const _start = Date.now();
   for(let i = 0; i < 1000; i++) {
   // // await perfStore.store(;
   `perf-key-${i}`,
-  id,
+  id,;
   data: `Performance test entry ${i}`,
   tags: [`tag-${i % 10}`, `category-${i % 5}`],
 
@@ -167,9 +167,9 @@ log(;
 // )
 perfStore.close() {}
 // Test 4: Query Analysis
-log('\n Test 4: Query Analysis', 'blue')
+log('\n Test 4: Query Analysis', 'blue');
 const _analysisStore = new SqliteMemoryStore({ directory,
-dbName: 'analysis-test.db'
+dbName: 'analysis-test.db';
   })
   // // await analysisStore.initialize() {}
 // const _analysis = awaitanalysisStore.analyzeQueryPerformance();
@@ -182,7 +182,7 @@ if(analysis.queryPlans && Object.keys(analysis.queryPlans).length >= 4) {
 analysisStore.close();
 } catch(error)
 // {
-  log(` Test failed with error);`
+  log(` Test failed with error);`;
   console.error(error);
   allTestsPassed = false;
 // }
@@ -209,15 +209,17 @@ log('='.repeat(30), 'blue');
 // Run validation if called directly
   if(import.meta.url === `file) {`
   validateSQLiteOptimizations();
-then((success) =>
-      process.exit(success ? 0 )
+then((success) =>;
+      process.exit(success ? 0 );
   //   )
-catch((error) =>
-      console.error('Validation failed:', error)
-  process.exit(1)
+catch((error) =>;
+      console.error('Validation failed:', error);
+  process.exit(1);
   //   )
 // }
 // export { validateSQLiteOptimizations };
 // export default validateSQLiteOptimizations;
 
 }}}}
+
+*/*/]]]]]]

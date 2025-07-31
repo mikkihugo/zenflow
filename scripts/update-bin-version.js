@@ -20,3 +20,5 @@ binContent = binContent.replace(/^VERSION=".*"$/m, `VERSION="${version}"`); // e
 // Write back
 fs.writeFileSync(binPath, binContent); // eslint-disable-line
 console.warn(` Updated bin/claude-zen VERSION to ${version}`); // eslint-disable-line
+
+*/

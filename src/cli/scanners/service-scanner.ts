@@ -12,8 +12,10 @@ const _registeredServices = Object.keys(registry);
 return unmappedServices.map(dir => ({
     id: `unmapped-${dir}`,
 // description: `Found unmapped service: \${dir // LINT}`,
-action: 'create_hive',))
+action: 'create_hive',));
 servicePath}))
 // }
 
 ))
+
+*/*/

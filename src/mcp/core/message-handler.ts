@@ -17,10 +17,10 @@ import { validateToolArgs  } from '.';
 
   constructor(server = server;
   this;
-
+;
   toolExecutor = toolExecutor;
   this;
-
+;
   resourceManager = resourceManager;
 // }
 
@@ -34,7 +34,7 @@ import { validateToolArgs  } from '.';
   const { method, id, params } = message;
   try {
   switch(method) {
-      case 'initialize':'
+      case 'initialize':';
         // return this.handleInitialize(id, params);
     // case 'tools/list': // LINT: unreachable code removed'
         // return this.handleToolsList(id);
@@ -63,18 +63,18 @@ import { validateToolArgs  } from '.';
         //         }
     //     }
 // }
-catch(error)
+catch(error);
 // {
   console.error(`[\$new Date().toISOString()] ERROR [MCP-Handler] Tool executionfailed = this.server.resources;`
-
+;
     console.error(`[${new Date().toISOString()}`
   ] INFO [MCP-Handler] Listing $
-  resources.length
-  available
-  resources`)`
+  resources.length;
+  available;
+  resources`)`;
   // return {jsonrpc = params;
   // ; // LINT: unreachable code removed
-  console.error(`[$;`)
+  console.error(`[$;`);
   new Date().toISOString();
   ] INFO [MCP-Handler] Readingresource = // // await this.resourceManager.readResource(uri)
   // return {jsonrpc = null) {
@@ -106,10 +106,10 @@ validateMessage(message);
     // */ // LINT: unreachable code removed
 getStats();
 // return {
-      totalMessages: this.totalMessages  ?? 0,
-// successfulMessages: this.successfulMessages  ?? 0, // LINT: unreachable code removed
-failedMessages: this.failedMessages  ?? 0,
-averageProcessingTime: this.averageProcessingTime  ?? 0,
+      totalMessages: this.totalMessages ?? 0,;
+// successfulMessages: this.successfulMessages ?? 0, // LINT: unreachable code removed
+failedMessages: this.failedMessages ?? 0,;
+averageProcessingTime: this.averageProcessingTime ?? 0,;
 lastActivity: this.lastActivity ?? null;
 // }
 // }

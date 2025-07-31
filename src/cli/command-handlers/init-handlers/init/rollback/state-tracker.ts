@@ -3,7 +3,7 @@
 export class StateTracker {
   constructor(workingDir = workingDir;
   this;
-
+;
   stateFile = `${workingDir}
 // }
 
@@ -22,7 +22,7 @@ recordRollbackPoint(type, data);
   //   }
 // // await this.saveState(state);
 // }
-catch(error)
+catch(error);
 // {
       result.success = false;
       result.errors.push(`Failed to record rollback point = {success = // await this.loadState();`
@@ -31,7 +31,7 @@ catch(error)
 
       state.checkpoints = state.checkpoints  ?? [];
       state.checkpoints.push(checkpoint);
-
+;
       // Keep only the last 20 checkpoints
   if(state.checkpoints.length > 20) {
         state.checkpoints = state.checkpoints.slice(-20);
@@ -47,13 +47,13 @@ catch(error)
 // // await this.saveState(state);
         } else {
           result.success = false;
-          result.errors.push(`Checkpoint notfound = false;`)
+          result.errors.push(`Checkpoint notfound = false;`);
       result.errors.push(`Failed to updatecheckpoint = null) {`
     const __result = {success = // await this.loadState();
 
       const _rollbackRecord = {id = state.rollbackHistory  ?? [];
       state.rollbackHistory.push(rollbackRecord);
-
+;
       // Keep only the last 50 rollback records
   if(state.rollbackHistory.length > 50) {
         state.rollbackHistory = state.rollbackHistory.slice(-50);
@@ -71,7 +71,7 @@ catch(error)
 /** Get checkpoints
 
   async getCheckpoints() { 
-    try 
+    try ;
 // const _state = awaitthis.loadState();
       // return state.checkpoints  ?? [];
     //   // LINT: unreachable code removed} catch {
@@ -82,7 +82,7 @@ catch(error)
 /** Get rollback history
 
   async getRollbackHistory() { 
-    try 
+    try ;
 // const _state = awaitthis.loadState();
       // return state.rollbackHistory  ?? [];
     //   // LINT: unreachable code removed} catch {
@@ -94,10 +94,10 @@ catch(error)
 
   async trackFileOperation(operation, filePath, metadata = {}) { 
     const _result = success = await this.loadState();
-
+;
       const _fileOp = {id = state.fileOperations  ?? [];
       state.fileOperations.push(fileOp);
-
+;
       // Keep only the last 100 file operations
   if(state.fileOperations.length > 100) {
         state.fileOperations = state.fileOperations.slice(-100);
@@ -116,11 +116,11 @@ catch(error)
     const _result = success = await this.loadState();
       state.currentPhase = phase;
       state.phaseTimestamp = Date.now();
-
+;
       // Track phase transitions
       state.phaseHistory = state.phaseHistory  ?? [];
       state.phaseHistory.push({
-        phase,timestamp = false;)
+        phase,timestamp = false;);
       result.errors.push(`Failed to setphase = // await this.loadState();`
 
       // return {rollbackPoints = 7) {
@@ -128,7 +128,7 @@ catch(error)
     // const _cutoffTime = Date.now() - daysToKeep * 24 * 60 * 60 * 1000; // LINT: unreachable code removed
 
       let _cleaned = 0;
-
+;
       // Clean rollback points
   if(state.rollbackPoints) {
         const _before = state.rollbackPoints.length;
@@ -181,7 +181,7 @@ catch(error)
       // return {version = Date.now();
     // state.version = '1.0'; // LINT: unreachable code removed
 // // await node.writeTextFile(;
-      this.stateFile,)
+      this.stateFile,);
       JSON.stringify(state, null, 2);
     );
 // // await node.writeTextFile(this.stateFile, JSON.stringify(state, null, 2));
@@ -199,7 +199,7 @@ catch(error)
     const _requiredFields = ['version', 'created', 'lastActivity'];
   for(const field of requiredFields) {
       if(!(field in state)) {
-        result.issues.push(`Missing requiredfield = ['rollbackPoints', 'checkpoints', 'rollbackHistory', 'fileOperations']; `)
+        result.issues.push(`Missing requiredfield = ['rollbackPoints', 'checkpoints', 'rollbackHistory', 'fileOperations']; `);
   for(const field of arrayFields) {
       if(field in state && !Array.isArray(state[field])) {
         result.issues.push(`Field ${field} must be an array`); //       }
@@ -210,3 +210,5 @@ catch(error)
 // }
 
 }}}}}}}}}}}}}}}}}}}}) {)))))))))
+
+*/*/*/*/*/

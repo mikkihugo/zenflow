@@ -21,8 +21,8 @@ try {
   suggestions.push({
     id: `invalid-syntax-${file}`,
   description: `Invalid syntax in ${file}: ${error.message}`,
-  action: 'fix_syntax',
-  file,
+  action: 'fix_syntax',;
+  file,;
   errorMessage: error.message })
 // )
 // }

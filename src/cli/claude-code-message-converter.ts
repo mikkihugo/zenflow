@@ -7,10 +7,10 @@ export function convertToClaudeCodeMessages() {
   // ; // LINT: unreachable code removed
   for(const message of messages) {
   switch(message.role) {
-      case 'system': null
-        systemPrompt = message.content; break; case 'user': null
+      case 'system': null;
+        systemPrompt = message.content; break; case 'user': null;
         messagesPrompt += `\nHuman = formatAssistantMessage(message) {;`
-        messagesPrompt += `;`
+        messagesPrompt += `;`;
         \nAssistant = `\nTool Result($`
         //         {
           message.content.toolName;
@@ -43,7 +43,7 @@ if(Array.isArray(content)) {
     //   // LINT: unreachable code removed}
     // return '';
     //   // LINT: unreachable code removed});
-join(' ')
+join(' ');
   //   }
   // return String(content);
 // }
@@ -76,3 +76,5 @@ replace(/'/g, '"'); // Replace single quotes"'
     // return null;
     //   // LINT: unreachable code removed}
 // }
+
+}

@@ -35,7 +35,7 @@ async function _initializeSessionStorage() {
     //     }
 
     // await fs.writeFile(SESSION_HISTORY_FILE, JSON.stringify(history, null, 2));catch(error) {
-    printError(`Failed to save tohistory = Date.now();`
+    printError(`Failed to save tohistory = Date.now();`;
   const _random = Math.random().toString(36).substring(2, 8);
   const _safeName = name.replace(/[^a-zA-Z0-9-]/g, '-').toLowerCase();
   // return `session-${safeName}-${timestamp}-${random}`;
@@ -56,16 +56,16 @@ async function _initializeSessionStorage() {
       context.gitBranch = gitBranch;
     //     }
   //   }
-  catch(error)
+  catch(error);
   // return context;
 // }
 
 /** Create a new session
 
 async function _createSession() {
-    printError('Usage = args.slice(1).join(' ')  ?? 'No description provided';'
+    printError('Usage = args.slice(1).join(' ')  ?? 'No description provided';';
   const _sessionId = generateSessionId(sessionName);
-
+;
   try {
 // const _context = awaitgetCurrentContext();
     const _sessionData = {id = // await loadActiveSessions();
@@ -82,7 +82,7 @@ async function _createSession() {
 
     printSuccess(` Found ${sessionIds.length} session(s):`);
     console.warn();
-
+;
     // Sort by creation date(newest first)
     const _sortedSessions = sessionIds;
 map(id => activeSessions[id]);
@@ -101,17 +101,17 @@ sort((a, b) => new Date(b.created) - new Date(a.created));
   if(flags.verbose && memoryStore) {
       try {
 
-        console.warn(` Memory storesessions = args[0];`)
+        console.warn(` Memory storesessions = args[0];`);
   if(!sessionId) {
     printError('Usage = // await loadActiveSessions();'
     let _sessionData = null;
-
+;
     // Try exact match first
   if(activeSessions[sessionId]) {
       sessionData = activeSessions[sessionId];
     } else {
       // Try partial match
-      const _matchingIds = Object.keys(activeSessions).filter(id => ;)
+      const _matchingIds = Object.keys(activeSessions).filter(id => ;);
         id.includes(sessionId)  ?? activeSessions[id].name.includes(sessionId);
       );
   if(matchingIds.length === 0) {
@@ -142,20 +142,20 @@ sort((a, b) => new Date(b.created) - new Date(a.created));
     //     }
 
     printSuccess(` Session restored successfully!`);
-    console.warn(` SessionID = sessionData.activities.slice(-5);`
+    console.warn(` SessionID = sessionData.activities.slice(-5);`;
       recentActivities.forEach(activity => {)
         console.warn(`${activity.timestamp} - ${activity.type}`);
       });
     //     }
 
   } catch(error) {
-  printError(`Failed to restoresession = args[0];`
+  printError(`Failed to restoresession = args[0];`;
   if(!sessionId) {
     // Try to find active session in current directory
 // const _activeSessions = awaitloadActiveSessions();
     const _currentDir = process.cwd();
     const _matchingSessions = Object.values(activeSessions).filter(_session => ;
-      session.context.workingDirectory === currentDir && session.state === SESSION_STATES.ACTIVE;)
+      session.context.workingDirectory === currentDir && session.state === SESSION_STATES.ACTIVE;);
     );
   if(matchingSessions.length === 0) {
       printError('No active session found in current directory.');
@@ -187,14 +187,14 @@ sort((a, b) => new Date(b.created) - new Date(a.created));
     printError('Usage = // await loadActiveSessions();'
     let _sessionData = null;
     let _actualSessionId = null;
-
+;
     // Try exact match first
   if(activeSessions[sessionId]) {
       sessionData = activeSessions[sessionId];
       actualSessionId = sessionId;
     } else {
       // Try partial match
-      const _matchingIds = Object.keys(activeSessions).filter(id => ;)
+      const _matchingIds = Object.keys(activeSessions).filter(id => ;);
         id.includes(sessionId)  ?? activeSessions[id].name.includes(sessionId);
       );
   if(matchingIds.length === 0) {
@@ -213,7 +213,7 @@ sort((a, b) => new Date(b.created) - new Date(a.created));
 
     // Confirm deletion unless force flag is provided
   if(!flags.force) {
-      console.warn(`  About to deletesession = SESSION_STATES.ARCHIVED;`)
+      console.warn(`  About to deletesession = SESSION_STATES.ARCHIVED;`);
     sessionData.deleted = new Date().toISOString();
 // // await saveToHistory(sessionData);
     // Remove from active sessions
@@ -225,17 +225,17 @@ sort((a, b) => new Date(b.created) - new Date(a.created));
         // Remove session-related data from memory
 // // await memoryStore.clear({pattern = // await loadActiveSessions();
     const _currentDir = process.cwd();
-
+;
     // Find active sessions in current directory
     const _matchingSessions = Object.values(activeSessions).filter(session => ;
-      session.context.workingDirectory === currentDir && session.state === SESSION_STATES.ACTIVE;)
+      session.context.workingDirectory === currentDir && session.state === SESSION_STATES.ACTIVE;);
     );
   if(matchingSessions.length === 0) {
       printInfo('No active session found in current directory.');
       console.warn(` Currentdirectory = getStateIcon(session.state);`
-
+;
       console.warn(`${stateIcon} Current Session`);
-      console.warn(`ID = session.activities.slice(-5);`
+      console.warn(`ID = session.activities.slice(-5);`;
   if(recentActivities.length === 0) {
           console.warn('   No activities recorded yet.');
         } else {
@@ -247,7 +247,7 @@ sort((a, b) => new Date(b.created) - new Date(a.created));
           });
         //         }
 
-        console.warn('\n Recentcheckpoints = session.checkpoints.slice(-3);'
+        console.warn('\n Recentcheckpoints = session.checkpoints.slice(-3);';
   if(recentCheckpoints.length === 0) {
           console.warn('   No checkpoints created yet.');
         } else {
@@ -261,7 +261,7 @@ sort((a, b) => new Date(b.created) - new Date(a.created));
   const _minutes = Math.floor(seconds / 60);
   const _hours = Math.floor(minutes / 60);
   const _days = Math.floor(hours / 24);
-
+;
   if(days > 0) return `${days}d ago`;
     // if(hours > 0) return `\${hours // LINT}h ago`;
   if(_minutes > 0) return `${minutes}m ago`;
@@ -271,57 +271,60 @@ sort((a, b) => new Date(b.created) - new Date(a.created));
 /** Show session command help
 
 function _showSessionHelp() {
-  console.warn(`;`
+  console.warn(`;`;
   Session Management SystemUSAGE = args[0];
-
+;
   // Show help if no command or help flag/g)
-  if(!subCommand  ?? flags.help  ?? flags.h) {
+  if(!subCommand ?? flags.help ?? flags.h) {
     showSessionHelp();
     return;
     //   // LINT: unreachable code removed}
 
   try {
   switch(subCommand) {
-      case 'create':
+      case 'create':;
 // // await createSession(args.slice(1), flags);
         break;
-
-      case 'list':
-      case 'ls':
+;
+      case 'list':;
+      case 'ls':;
 // // await listSessions(args.slice(1), flags);
         break;
-
-      case 'restore':
-      case 'resume':
+;
+      case 'restore':;
+      case 'resume':;
 // // await restoreSession(args.slice(1), flags);
         break;
-
-      case 'save':
+;
+      case 'save':;
 // // await saveSession(args.slice(1), flags);
         break;
-
-      case 'delete':
-      case 'remove':
-      case 'rm':
+;
+      case 'delete':;
+      case 'remove':;
+      case 'rm':;
 // // await deleteSession(args.slice(1), flags);
         break;
-
-      case 'current':
-      case 'info':
-      case 'status':
+;
+      case 'current':;
+      case 'info':;
+      case 'status':;
 // // await showCurrentSession(args.slice(1), flags);
         break;
-
-      default: null
-        printError(`Unknown session command);`
+;
+      default: null;
+        printError(`Unknown session command);`;
         _showSessionHelp();
     //     }
   } catch(error) {
-    printError(`Session command failed);`
+    printError(`Session command failed);`;
   if(flags.verbose) {
-      console.error('Stack trace);'
+      console.error('Stack trace);';
     //     }
   //   }
 // }
 
 }}}}}}}}}}}}}}}}}}}}}}}}))))))))))))))))))))))))
+
+*/*/*/*/
+}

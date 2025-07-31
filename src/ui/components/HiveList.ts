@@ -8,7 +8,7 @@ import React, { useEffect, useState  } from 'react';'
 const _HiveList = () => {
   const _hiveNames = Object.keys(hives);
   const [selectedIndex, setSelectedIndex] = useState(0);
-
+;
   useEffect(() => {
     // Reset selection if hives change
   if(selectedIndex >= hiveNames.length) {
@@ -29,12 +29,12 @@ const _HiveList = () => {
     // return React.createElement(Box, { borderStyle => {
         const _isSelected = index === selectedIndex;
     // return React.createElement(; // LINT: unreachable code removed
-      Box,key, flexDirection: 'column', marginY,'
+      Box,key, flexDirection: 'column', marginY,';
       React.createElement(;
-        Text,
-          color: isSelected ? 'black' : 'white','
-          backgroundColor: isSelected ? 'cyan' ,'
-          bold,
+        Text,;
+          color: isSelected ? 'black' : 'white',';
+          backgroundColor: isSelected ? 'cyan' ,';
+          bold,;
         `\${isSelected ? ' ' }${name}`;`)))
       ),
       React.createElement(Text, { color);
@@ -48,3 +48,5 @@ const _HiveList = () => {
 // export default HiveList;
 
 }}}
+
+*/*/

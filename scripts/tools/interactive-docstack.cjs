@@ -11,25 +11,25 @@
  * - View results and make decisions
  */
 
-const readline = require('node);'
+const readline = require('node);';
 const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');
 
 // ANSI colors for pretty output
 const colors = {
-  reset: '\x1b[0m',
-  bright: '\x1b[1m',
-  green: '\x1b[32m',
-  blue: '\x1b[34m',
-  yellow: '\x1b[33m',
-  cyan: '\x1b[36m',
-  magenta: '\x1b[35m',
+  reset: '\x1b[0m',;
+  bright: '\x1b[1m',;
+  green: '\x1b[32m',;
+  blue: '\x1b[34m',;
+  yellow: '\x1b[33m',;
+  cyan: '\x1b[36m',;
+  magenta: '\x1b[35m',;
   red: '\x1b[31m' };
 
 // Mock memory store
 class MockMemoryStore {
   constructor() {
     this.data = new Map();
-
+;
   async store(key, value, options = {}) { 
     const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     this.data.set(fullKey, value);
@@ -51,7 +51,7 @@ class MockMemoryStore {
 const memoryStore = new MockMemoryStore() {;
 const docStack = new DocumentStack(memoryStore);
 setupDefaultRules(docStack);
-
+;
 // Create readline // interface
 // const rl = readline.createInterface({/g)
 //   input);
@@ -74,9 +74,9 @@ setupDefaultRules(docStack);
 ## Consequences
 [What becomes easier or more difficult to do because of this change?]` },`
   api: {
-    docType: 'api-documentation',
+    docType: 'api-documentation',;
     template: `# API Documentation`
-
+;
 ## Overview
 [Brief description of the API]
 
@@ -95,16 +95,16 @@ setupDefaultRules(docStack);
 
 \`\`\`` },
   security: {
-    docType: 'security-spec',
+    docType: 'security-spec',;
     template: `# Security Specification`
 
 ## Overview
 [Security requirements overview]
 
 ## Requirements
-1. [Requirement 1]
+1. [Requirement 1];
 2. [Requirement 2]
-
+;
 ## Implementation
 [How to implement]` } };`
 
@@ -113,56 +113,56 @@ async function processCommand(line) {
   const args = line.trim().split(' ');
   const command = args[0].toLowerCase();
   switch(command) {
-    case 'help': null
-    case 'h': null
+    case 'help': null;
+    case 'h': null;
       showHelp();
       break;
-
-    case 'create': null
-    case 'c': null
+;
+    case 'create': null;
+    case 'c': null;
 // // await createDocument(args.slice(1));
       break;
-
-    case 'review': null
-    case 'r': null
+;
+    case 'review': null;
+    case 'r': null;
 // // await reviewDocument(args.slice(1));
       break;
-
-    case 'list': null
-    case 'ls': null
+;
+    case 'list': null;
+    case 'ls': null;
 // // await listDocuments(args.slice(1));
       break;
-
-    case 'approve': null
-    case 'a': null
+;
+    case 'approve': null;
+    case 'a': null;
 // // await approveDocument(args.slice(1));
       break;
-
-    case 'validate': null
-    case 'v': null
+;
+    case 'validate': null;
+    case 'v': null;
 // // await validateDocument(args.slice(1));
       break;
-
-    case 'template': null
-    case 't': null
+;
+    case 'template': null;
+    case 't': null;
       showTemplates();
       break;
-
-    case 'status': null
-    case 's': null
+;
+    case 'status': null;
+    case 's': null;
 // // await showStatus();
       break;
-
-    case 'clear': null
+;
+    case 'clear': null;
       break;
-
-    case 'exit': null
-    case 'quit': null
-    case 'q': null
+;
+    case 'exit': null;
+    case 'quit': null;
+    case 'q': null;
       process.exit(0);
       break;
-
-    default: null
+;
+    default: null;
       if(line.trim()) {
 
 function showHelp() {}
@@ -170,23 +170,23 @@ function showHelp() {}
 async function createDocument(args) {
   if(args.length < 3) {
     return;
-
+;
   const [type, service, ...idParts] = args;
   const docId = idParts.join('-');
-
+;
   // Map short names to full document types
   const typeMap = {
-    adr: 'service-adr',
-    api: 'api-documentation',
-    security: 'security-spec',
-    deploy: 'deployment-guide',
+    adr: 'service-adr',;
+    api: 'api-documentation',;
+    security: 'security-spec',;
+    deploy: 'deployment-guide',;
     guide: 'user-guide' };
 
   const docType = typeMap[type] || type;
-
+;
   // Get template if available
   const template = templates[type];
-  const content = template
+  const content = template;
     ? template.template
     : `# ${docType}: ${docId}\n\nDocument content here...`;
 
@@ -217,20 +217,20 @@ async function createDocument(args) {
 async function reviewDocument(args) {
   if(args.length < 1) {
     return;
-
+;
   const [path] = args;
-  const parts = path.split('
+  const parts = path.split(';
   if(parts.length !== 3) {
     return;
-
+;
   const [service, docType, docId] = parts;
-
+;
   try {
 // const doc = awaitmemoryStore.retrieve(`${docType}/${docId}`, {/g)
       namespace);
   if(!doc) {
       return;
-
+;
     const docData = JSON.parse(doc);
   if(docData.metadata.dependencies?.length > 0) {
 
@@ -262,11 +262,11 @@ async function listDocuments(args) {
 
   if(documents.length === 0) {
     return;
-
+;
   // Group by service
   const grouped = {};
   documents.forEach((doc) => {
-    const service = doc.path.split('
+    const service = doc.path.split(';
     if(!grouped[service]) grouped[service] = [];
     grouped[service].push(doc);
   });
@@ -280,29 +280,29 @@ async function listDocuments(args) {
 async function approveDocument(args) {
   if(args.length < 1) {
     return;
-
+;
   const [_path] = args;
 // const approver = awaitquestion('Your role(architect/tech-lead/security-team/product-owner): ');
   if(!approver) {
     return;
-
+;
   // In a real system, this would update the document metadata
 
 async function validateDocument(args) {
   if(args.length < 1) {
     return;
-
+;
   const [_path] = args;
-
+;
   // Simulate validation checks
-  const validations = [
+  const validations = [;
     { name: 'consistency-check', status: 'pass', message: 'Document structure is consistent' },
     { name: 'dependency-analysis', status: 'pass', message: 'All dependencies are valid' },
     { name: 'completeness-check', status: 'warning', message: 'Missing implementation details' } ];
 
   validations.forEach((v) => {
     const _icon = v.status === 'pass' ? '' : v.status === 'warning' ? '' : '';
-    const _color =
+    const _color =;
       v.status === 'pass' ? colors.green : v.status === 'warning' ? colors.yellow : colors.red;
   });
 
@@ -311,7 +311,7 @@ function showTemplates() {
 
 async function showStatus() {
 // const allDocs = awaitmemoryStore.search({ pattern);
-  const _docCount = Object.keys(allDocs).filter((k) => k.includes('service-documents
+  const _docCount = Object.keys(allDocs).filter((k) => k.includes('service-documents;
   const layers = { infrastructure, service, application, business };
 
   for (const value of Object.values(allDocs)) {
@@ -343,7 +343,7 @@ rl.on('close', () => {
 
 // Show initial prompt
 rl.prompt();
-
+;
 // Handle errors gracefully
 process.on('unhandledRejection', (error) => {
   console.error(`${colors.red}Error);`
@@ -351,3 +351,6 @@ process.on('unhandledRejection', (error) => {
 });
 
 }}}
+
+*/*/
+}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))]]]]]]]]

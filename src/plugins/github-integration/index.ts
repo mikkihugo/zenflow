@@ -27,14 +27,14 @@
   : Promise<void>
   // Clear all state
   this.cache.clear() {}
-  this.requestQueue = []
-  this.rateLimitInfo = null
+  this.requestQueue = [];
+  this.rateLimitInfo = null;
   // Public API Methods
 
 /** Repository Analysis - Deep repository insights;
 
   // async
-  analyzeRepository(owner, (repo = ))
+  analyzeRepository(owner, (repo = ));
   : Promise<RepositoryAnalysis>
   //   {
     const __analysisOptions = {includeIssues = {repository = analysis.repository;
@@ -70,7 +70,7 @@ getRepository((owner = {}));
 : Promise<
 // {
   total_count = {sort = new URLSearchParams({
-      q,
+      q,;
   sort = {};
   ): Promise<GitHubIssue[]>
   //   {
@@ -106,17 +106,17 @@ getRepository((owner = {}));
   : () => packageManagers.push('cargo'),
   ('requirements.txt')
   : () => packageManagers.push('pip'),
-  Pipfile: () => packageManagers.push('pipenv'),
+  Pipfile: () => packageManagers.push('pipenv'),;
   ('poetry.lock')
   : () => packageManagers.push('poetry'),
   ('go.mod')
   : () => packageManagers.push('go modules'),
   ('composer.json')
   : () => packageManagers.push('composer'),
-  Dockerfile: () => buildTools.push('Docker'),
+  Dockerfile: () => buildTools.push('Docker'),;
   ('docker-compose.yml')
   : () => buildTools.push('Docker Compose'),
-  Makefile: () => buildTools.push('Make'),
+  Makefile: () => buildTools.push('Make'),;
   ('webpack.config.js')
   : () => buildTools.push('Webpack'),
   ('vite.config.js')
@@ -158,8 +158,8 @@ analyzeIssues(owner = new Date(Date.now() - timeRangeDays * 24 * 60 * 60 * 1000)
 const _closedIssues = allIssues.filter((issue) => issue.state === 'closed');
 // Calculate average close time
 const __closeTimes = closedIssues;
-filter((issue) => issue.closed_at)
-map((issue) =>
+filter((issue) => issue.closed_at);
+map((issue) =>;
 // {
   const _created = new Date(issue.created_at).getTime();
   const _closed = new Date(issue.closed_at!).getTime();
@@ -175,7 +175,7 @@ const _recentActivity = []; const __thirtyDaysAgo = Date.now() {- 30 * 24 * 60 *
   for(let i = 0; i < 4; i++) {
         const _weekStart = new Date(thirtyDaysAgo + i * 7 * 24 * 60 * 60 * 1000);
         const _weekEnd = new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
-
+;
         const __weekOpened = allIssues.filter(issue => {)
           const _created = new Date(issue.created_at).getTime();
           return created >= weekStart.getTime() && created < weekEnd.getTime();
@@ -193,7 +193,7 @@ const _recentActivity = []; const __thirtyDaysAgo = Date.now() {- 30 * 24 * 60 *
 
       const _closedPRs = allPRs.filter(pr => pr.state === 'closed');
       const _mergedPRs = closedPRs.filter(pr => pr.merged_at);
-
+;
       // Calculate average merge time
       const __mergeTimes = mergedPRs;
 map(pr => {
@@ -206,7 +206,7 @@ map(pr => {
   for(let i = 0; i < 4; i++) {
         const _weekStart = new Date(thirtyDaysAgo + i * 7 * 24 * 60 * 60 * 1000);
         const _weekEnd = new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
-
+;
         const __weekOpened = allPRs.filter(pr => {)
           const _created = new Date(pr.created_at).getTime();
           return created >= weekStart.getTime() && created < weekEnd.getTime();
@@ -243,13 +243,13 @@ map(pr => {
 map(([author, stats]) => (author, ...stats ));
 sort((a, b) => b.commits - a.commits);
 slice(0, 10);
-
+;
       // Generate weekly timeline for the last 4 weeks
       const _fourWeeksAgo = Date.now() - 28 * 24 * 60 * 60 * 1000;
   for(let i = 0; i < 4; i++) {
         const _weekStart = new Date(fourWeeksAgo + i * 7 * 24 * 60 * 60 * 1000);
         const _weekEnd = new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
-
+;
         const __weekCommits = commits.filter(commit => {)
           const _commitDate = new Date(commit.commit.author.date).getTime();
           return commitDate >= weekStart.getTime() && commitDate < weekEnd.getTime();
@@ -258,7 +258,7 @@ slice(0, 10);
         activityTimeline.push({date = // await this.makeRequest<Array<{login = 100`);`
 
       const _totalContributions = contributors.reduce((sum, c) => sum + c.contributions, 0);
-
+;
       // Classify contributors
       const _coreContributors = 0;
       const _regularContributors = 0;
@@ -274,7 +274,7 @@ slice(0, 10);
 
       // Get detailed info for top contributors
       const _topContributors = [];
-
+;
       for (const contributor of contributors.slice(0, 10)) {
         try {
 
@@ -297,9 +297,9 @@ slice(0, 10);
     // Community score(based on stars, forks, contributors)
     const _stars = analysis.metrics.basic.stars;
     const _forks = analysis.metrics.basic.forks;
-    const _contributors = analysis.contributors?.total_contributors  ?? 0;
-
-    factors.community = Math.min(100,)
+    const _contributors = analysis.contributors?.total_contributors ?? 0;
+;
+    factors.community = Math.min(100,);
       (Math.log10(stars + 1) * 20) + ;
       (Math.log10(forks + 1) * 15) + ;
       (contributors * 2);
@@ -310,8 +310,8 @@ slice(0, 10);
 
     // Maintenance score(based on issue resolution and PR merge rate)
   if(analysis.issues && analysis.pullRequests) {
-      const _issueRatio = analysis.issues.closed / (analysis.issues.total  ?? 1);
-      const _prMergeRatio = analysis.pullRequests.merged / (analysis.pullRequests.total  ?? 1);
+      const _issueRatio = analysis.issues.closed / (analysis.issues.total ?? 1);
+      const _prMergeRatio = analysis.pullRequests.merged / (analysis.pullRequests.total ?? 1);
       factors.maintenance = (issueRatio * 50) + (prMergeRatio * 50);
   if(factors.maintenance < 60) {
         recommendations.push('Improve issue resolution and PR merge rates');
@@ -380,3 +380,6 @@ slice(0, 10);
 // export default GitHubIntegrationPlugin;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))
+
+*/*/*/*/*/*/
+}}}}

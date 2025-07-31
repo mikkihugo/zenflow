@@ -19,7 +19,7 @@ checkPermissions();
 // // await node.mkdir(testDir);
 // // await node.remove(testDir);
 // }
-catch(error)
+catch(error);
 // {
   result.success = false;
   result.errors.push(`Insufficient permissions in ${this.workingDir});`
@@ -41,11 +41,11 @@ catch(error)
   if(parts.length >= 4) {
             const _availableKB = parseInt(parts[3]);
             const _availableMB = availableKB / 1024;
-
+;
             // Require at least 100MB free space
   if(availableMB < 100) {
               result.success = false;
-              result.errors.push(;)
+              result.errors.push(;);
                 `Insufficient diskspace = false) {`
     const _result = {success = [
       'CLAUDE.md',
@@ -90,7 +90,7 @@ catch(error)
 /** Check environment variables and configuration
 
   async checkEnvironment() { 
-    const _result = success = [
+    const _result = success = [;
       {name = node.env.get(envVar.name);
   if(value) {
         result.environment[envVar.name] = 'set';
@@ -124,13 +124,15 @@ catch(error)
     const _results = permissions = Object.values(results).every((r) => r.success);
     const _allErrors = Object.values(results).flatMap((r) => r.errors  ?? []);
     const _allWarnings = Object.values(results).flatMap((r) => r.warnings  ?? []);
-
+;
     return {
-      success,
+      success,;
     // results, // LINT: unreachable code removed
-      errors,
+      errors,;
       warnings};
   //   }
 // }
 
 }}}}}}}}}}}}}}}}}}}}))))))
+
+*/*/*/*/]]

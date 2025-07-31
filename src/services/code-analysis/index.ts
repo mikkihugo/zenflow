@@ -27,7 +27,7 @@ export { CodeAnalysisOrchestrator };
 
   async initialize() { 
     // Set up event listeners for real-time analysis
-    this.watcher.on('analysis => '
+    this.watcher.on('analysis => ';
       console.warn(` Real-time analysis => {`))
       console.warn(` Significant change detected = {}) {`
     return // await this.orchestrator.analyzeCodebase(options);
@@ -48,14 +48,14 @@ export { CodeAnalysisOrchestrator };
     // return await this.watcher.stopWatching();
     //   // LINT: unreachable code removed}
 
-  async query(query): unknown
+  async query(query): unknown;
     // return await this.orchestrator.queryAnalysis(query);
     //   // LINT: unreachable code removed}
 
-  async getStats() 
+  async getStats() ;
 // const _orchestratorStats = awaitthis.orchestrator.getAnalysisStats();
     const _watcherStatus = this.watcher.getStatus();
-
+;
     // return {
 ..orchestratorStats,
     // realTimeAnalysis, // LINT: unreachable code removed
@@ -68,3 +68,5 @@ export { CodeAnalysisOrchestrator };
 // export default CodeAnalysisService;
 
 }))
+
+*/*/

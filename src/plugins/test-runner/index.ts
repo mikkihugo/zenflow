@@ -14,14 +14,14 @@ export class TestRunnerPlugin extends EventEmitter {
     this.activeRuns = new Map();
     this.testQueue = [];
     this.stats = {
-      totalRuns,
+      totalRuns,;
       passedRuns = {}) => {
         const _args = [];
-  if(options.coverage  ?? this.config.coverage.enabled) {
+  if(options.coverage ?? this.config.coverage.enabled) {
           args.push('--coverage');
           args.push('--coverageDirectory', path.join(this.config.outputDir, 'coverage', 'jest'));
         //         }
-  if(options.watch  ?? this.config.watch) {
+  if(options.watch ?? this.config.watch) {
           args.push('--watch');
         //         }
   if(options.updateSnapshot) {
@@ -44,7 +44,7 @@ export class TestRunnerPlugin extends EventEmitter {
 
         args.push('--json');
         args.push('--outputFile', path.join(this.config.outputDir, 'jest-results.json'));
-
+;
         // return args;
     //   // LINT: unreachable code removed}
 
@@ -63,7 +63,7 @@ export class TestRunnerPlugin extends EventEmitter {
     })
 
 // Mocha runner
-this.runners.set('mocha',
+this.runners.set('mocha',;
   command = {};)
   ) =>;
   //   {
@@ -88,7 +88,7 @@ this.runners.set('mocha',
   if(this.config.bail) {
       args.push('--bail');
     //     }
-  if(options.watch  ?? this.config.watch) {
+  if(options.watch ?? this.config.watch) {
       args.push('--watch');
     //     }
 
@@ -106,19 +106,19 @@ this.runners.set('mocha',
 // )
 
 // Vitest runner
-this.runners.set('vitest',
+this.runners.set('vitest',;
   command = {};)
   ) =>;
   //   {
     const _args = ['run'];
-  if(options.coverage  ?? this.config.coverage.enabled) {
+  if(options.coverage ?? this.config.coverage.enabled) {
       args.push('--coverage');
       args.push(;
         '--coverage.reportsDirectory',)
         path.join(this.config.outputDir, 'coverage', 'vitest');
       );
     //     }
-  if(options.watch  ?? this.config.watch) {
+  if(options.watch ?? this.config.watch) {
       args.pop(); // Remove 'run'
       args.push('watch');
     //     }
@@ -128,7 +128,7 @@ this.runners.set('vitest',
   if(options.testNamePattern) {
       args.push('--testNamePattern', options.testNamePattern);
     //     }
-  if(!this.config.parallel  ?? options.runInBand) {
+  if(!this.config.parallel ?? options.runInBand) {
       args.push('--no-threads');
     //     }
   if(this.config.bail) {
@@ -137,7 +137,7 @@ this.runners.set('vitest',
 
     args.push('--reporter=json');
     args.push('--outputFile', path.join(this.config.outputDir, 'vitest-results.json'));
-
+;
     // return args;
     //   // LINT: unreachable code removed}
 
@@ -152,7 +152,7 @@ this.runners.set('vitest',
 // )
 
 // AVA runner
-this.runners.set('ava',
+this.runners.set('ava',;
   command = {};)
   ) =>;
   //   {
@@ -163,7 +163,7 @@ this.runners.set('ava',
   if(options.match) {
       args.push('--match', options.match);
     //     }
-  if(options.watch  ?? this.config.watch) {
+  if(options.watch ?? this.config.watch) {
       args.push('--watch');
     //     }
   if(this.config.parallel && !options.serial) {
@@ -177,7 +177,7 @@ this.runners.set('ava',
 
     args.push('--tap');
     args.push('--tap-file', path.join(this.config.outputDir, 'ava-results.tap'));
-
+;
     // return args;
     //   // LINT: unreachable code removed}
 
@@ -192,7 +192,7 @@ this.runners.set('ava',
 // )
 
 // TAP runner
-this.runners.set('tap',
+this.runners.set('tap',;
   command = {};)
   ) =>;
   //   {
@@ -202,7 +202,7 @@ this.runners.set('tap',
     } else {
       args.push('test/\*\*/*.js');
     //     }
-  if(options.coverage  ?? this.config.coverage.enabled) {
+  if(options.coverage ?? this.config.coverage.enabled) {
       args.push('--coverage');
       args.push('--coverage-report=lcov');
       args.push('--coverage-report=json');
@@ -235,7 +235,7 @@ this.runners.set('tap',
 // )
 
 // Tape runner
-this.runners.set('tape',
+this.runners.set('tape',;
   command = {};)
   ) =>;
   //   {
@@ -255,14 +255,14 @@ this.runners.set('tape',
 // }
 // )
 
-console.warn(` Initialized $;`
+console.warn(` Initialized $;`;
 // {
   this.runners.size;
 // }
 test;
-framework;)
+framework;);
 runners`);`
-
+;
   async detectFrameworks();
 // {
   const _detected = [];
@@ -289,9 +289,9 @@ runners`);`
     // No package.json
   //   }
 
-  console.warn(`; `
+  console.warn(`; `;
  Detected testframeworks = detected
-
+;
 // return detected;
 // }
 
@@ -334,7 +334,7 @@ runners`);`
 async;
 loadJestConfig();
 // {
-    const _configPaths = [
+    const _configPaths = [;
       'jest.config.js',
       'jest.config.ts',
       'jest.config.json',
@@ -345,7 +345,7 @@ loadJestConfig();
 // // await access(configPath); 
   if(configPath === 'package.json') {
           const _pkg = JSON.parse(// await readFile(configPath, 'utf8')); 
-          // return pkg.jest  ?? null;
+          // return pkg.jest ?? null;
     //   // LINT: unreachable code removed} else if(configPath.endsWith('.json') {) {
           // return JSON.parse(// await readFile(configPath, 'utf8'));
     //   // LINT: unreachable code removed} else {
@@ -370,23 +370,23 @@ loadJestConfig();
 // // await access(configPath);
   if(configPath === 'package.json') {
           const _pkg = JSON.parse(// await readFile(configPath, 'utf8'));
-          // return pkg.mocha  ?? null;
+          // return pkg.mocha ?? null;
     //   // LINT: unreachable code removed} else if(configPath.endsWith('.json')) {
           // return JSON.parse(// await readFile(configPath, 'utf8'));
     //   // LINT: unreachable code removed} else {
           // return { configFile = {}) {
-    const {
-      framework = this.detectBestFramework(),
+    const { temp } = {};
+      framework = this.detectBestFramework(),;
     // pattern, // LINT: unreachable code removed
-      coverage = this.config.coverage.enabled,
-      watch = false,
-      updateSnapshot = false,
-      testNamePattern,
-      grep,
-      match,
-      bail = this.config.bail,
-      parallel = this.config.parallel,
-      runInBand = false,
+      coverage = this.config.coverage.enabled,;
+      watch = false,;
+      updateSnapshot = false,;
+      testNamePattern,;
+      grep,;
+      match,;
+      bail = this.config.bail,;
+      parallel = this.config.parallel,;
+      runInBand = false,;
       serial = false;
     } = options;
   if(!framework) {
@@ -397,32 +397,32 @@ loadJestConfig();
   if(!runner) {
       throw new Error(`Unsupported testframework = `${framework}-${Date.now()}`;`
   const _runOptions = {
-    pattern,
-    coverage,
-    watch,
-    updateSnapshot,
-    testNamePattern,
-    grep,
-    match,
-    bail,
-    parallel,
-    runInBand,
+    pattern,;
+    coverage,;
+    watch,;
+    updateSnapshot,;
+    testNamePattern,;
+    grep,;
+    match,;
+    bail,;
+    parallel,;
+    runInBand,;
     serial };
 
   console.warn(` Running tests with ${framework}...`);
 
   try {
-    this.emit('run = Date.now();'
+    this.emit('run = Date.now();';
 // const _result = awaitthis.executeTestRunner(framework, runner, runOptions);
     const _duration = Date.now() - startTime;
-
+;
     result.duration = duration;
     result.runId = runId;
     result.framework = framework;
-
+;
     this.results.set(runId, result);
     this.updateStats(result);
-
+;
     // Generate reports
 // // await this.generateReports(runId, result);
     this.emit('run = {runId = JSON.parse(require('fs').readFileSync('package.json', 'utf8'));'
@@ -450,7 +450,7 @@ async;
   const _args = runner.args(options);
   const _output = '';
   const _errorOutput = '';
-
+;
   // return new Promise((resolve, _reject) => {
       const _child = spawn(runner.command, args, {
         cwd => {
@@ -458,9 +458,9 @@ async;
     // this.emit('output', { framework, type => { // LINT);
         this.emit('output', { framework, type => {)
         this.activeRuns.delete(options.runId);
-
+;
         let results;
-
+;
         // Parse results based on framework
   if(framework === 'tape') {
           // Tape outputs to stdout
@@ -476,7 +476,7 @@ async;
 
         results.exitCode = code;
         results.success = code === 0;
-
+;
         // Add coverage data if available
   if(options.coverage) {
           results.coverage = // await this.collectCoverageData(framework);
@@ -508,14 +508,14 @@ async;
     });
 
 normalizeJestResults(results);
-
+;
 // {
     const _normalized = {
       success = {file = {title = === 'failed') {
           normalized.failures.push({)
             file = {success = === 0,summary = () => {
       const _suiteResult = {
-        file = {title = test.duration  ?? 0;
+        file = {title = test.duration ?? 0;
   if(test.state === 'failed' && test.err) {
           normalized.failures.push({file = () => {
   for(const suite of suites  ?? []) {
@@ -559,7 +559,7 @@ normalizeJestResults(results);
   for(const line of lines) {
       // TAP version
       if(line.startsWith('TAP version')) continue; // Test plan
-      const _planMatch = line.match(/^1\.\.(\d+)/); 
+      const _planMatch = line.match(/^1\.\.(\d+)/); ;
   if(planMatch) {
         normalized.summary.total = parseInt(planMatch[1]);
         continue;
@@ -616,12 +616,12 @@ normalizeJestResults(results);
     const _lines = yamlContent.split('\n');
     const _diagnostic = {};
   for(const line of lines) {
-      const _match = line.match(/^\s*(\w+):\s*(.*)$/); 
+      const _match = line.match(/^\s*(\w+):\s*(.*)$/); ;
   if(match) {
         diagnostic[match[1]] = match[2]; //       }
     //     }
 
-    // return diagnostic.message  ?? diagnostic.error  ?? yamlContent.trim() {;
+    // return diagnostic.message ?? diagnostic.error ?? yamlContent.trim() {;
     //   // LINT: unreachable code removed}
   parseOutputFallback(output, errorOutput, framework) {
     // Fallback parser for when structured output isn't available'
@@ -649,8 +649,8 @@ normalizeJestResults(results);
 
   async collectCoverageData(framework) { 
     const _coverageDir = path.join(this.config.outputDir, 'coverage', framework);
-
-    try 
+;
+    try ;
       // Look for coverage summary
       const _summaryPath = path.join(coverageDir, 'coverage-summary.json');
       const _summary = JSON.parse(// await readFile(summaryPath, 'utf8'));
@@ -662,7 +662,7 @@ normalizeJestResults(results);
     // ; // LINT: unreachable code removed
     } catch(error) {
       console.warn(` Could not collect coveragedata = this.config.coverage.threshold.global;`
-
+;
     // return(;/g))
     // summary.lines >= threshold.lines &&; // LINT);
   //   }
@@ -679,10 +679,10 @@ normalizeJestResults(results);
     this.stats.passedTests += result.summary.passed;
     this.stats.failedTests += result.summary.failed;
     this.stats.skippedTests += result.summary.skipped;
-
+;
     // Update average duration
   if(result.duration) {
-      const _totalDuration = this.stats.averageDuration * (this.stats.totalRuns - 1) + result.duration;
+      const _totalDuration = this.stats.averageDuration*(this.stats.totalRuns - 1) + result.duration;
       this.stats.averageDuration = totalDuration / this.stats.totalRuns;
     //     }
 
@@ -695,16 +695,16 @@ normalizeJestResults(results);
   async generateReports(runId, result) { 
     const _reportDir = path.join(this.config.outputDir, 'reports', runId);
 // await mkdir(reportDir,  recursive = {runId = '# Test Failures Report\n\n';
-    content += `Generated = `Total Failures: \$failures.length\n\n`;`
+    content += `Generated = `Total Failures: \$failures.length\n\n`;`;
   for(const failure of failures) {
       content += `## ${failure.test}\n`; content += `**File = '```\n'; content += failure.error  ?? 'No error message';
-      content += '\n```\n\n';`
+      content += '\n```\n\n';`;
     //     }
 // // await writeFile(path.join(reportDir, 'failures.md') {, content);
   //   }
 
   async generateHTMLReport(reportDir, result) { 
-    const _html = `;`
+    const _html = `;`;
 <!DOCTYPE html>;
 <html>;
 <head>;
@@ -779,8 +779,8 @@ normalizeJestResults(results);
     //   // LINT: unreachable code removed}
 
   async watchTests(options = {}) { 
-    const _framework = options.framework  ?? this.detectBestFramework();
-
+    const _framework = options.framework ?? this.detectBestFramework();
+;
     console.warn(` Starting test watcher with $framework}...`);
 
     // return this.runTests({
@@ -818,7 +818,7 @@ normalizeJestResults(results);
       //       }
 
       analysis.byFramework[framework] = (analysis.byFramework[framework]  ?? 0) + 1;
-
+;
       // Count tests(approximate)
       const _testMatches = content.match(/\b(it|test|describe)\s*\(/g);
   if(testMatches) {
@@ -829,7 +829,7 @@ normalizeJestResults(results);
     // Check for coverage configuration
   for(const framework of this.config.frameworks) {
       const _config = this.testConfigs?.[framework]; if(config) {
-        analysis.coverage.configured.push(framework); if(config.coverage  ?? config.collectCoverage) {
+        analysis.coverage.configured.push(framework); if(config.coverage ?? config.collectCoverage) {
           analysis.coverage.hasConfig = true;
         //         }
       //       }
@@ -842,9 +842,9 @@ normalizeJestResults(results);
     // return {
 ..this.stats,activeRuns = 10) {
     const _results = Array.from(this.results.values());
-    // .sort((a, b) => (b.timestamp  ?? 0) - (a.timestamp  ?? 0)); // LINT: unreachable code removed
+    // .sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0)); // LINT: unreachable code removed
 slice(0, limit);
-
+;
     return results;
     // ; // LINT: unreachable code removed
   getResult(runId) ;
@@ -857,10 +857,13 @@ slice(0, limit);
 
     this.activeRuns.clear(); this.results.clear() {;
     this.removeAllListeners();
-
+;
     console.warn(' Test Runner Plugin cleaned up');
 // }
 
 // export default TestRunnerPlugin;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))
+
+*/*/
+}}

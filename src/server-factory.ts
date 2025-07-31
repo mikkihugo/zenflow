@@ -8,20 +8,20 @@ import { JSONObject  } from './types/core.js';
 
 // Import types
 import { HealthCheckDefinition,
-MiddlewareConfig,
-MiddlewareDefinition,
-MonitoringConfig,
+MiddlewareConfig,;
+MiddlewareDefinition,;
+MonitoringConfig,;
 PerformanceConfig,
-ProtocolType,
-RouteDefinition,
-SecurityConfig,
-ServerBuilder,
-ServerConfig,
-ServerFactory,
-ServerFeatures,
-ServerType,
+ProtocolType,;
+RouteDefinition,;
+SecurityConfig,;
+ServerBuilder,;
+ServerConfig,;
+ServerFactory,;
+ServerFeatures,;
+ServerType,;
 UnifiedServer,
-ValidationError,
+ValidationError,;
 ValidationResult  } from './types/server.js'
 
 // import { UnifiedClaudeFlowServer  } from './unified-server.js';
@@ -42,20 +42,20 @@ const _warnings = [];
 // Validate basic configuration
   if(!config.name ?? typeof config.name !== 'string') {
   errors.push({field = = 'string') {
-      errors.push({field = = 'number'  ?? config.port < 1  ?? config.port > 65535) {
+      errors.push({field = = 'number'  ?? config.port < 1 ?? config.port > 65535) {
       errors.push({field = === 0,
-  errors,
+  errors,;
   warnings;
 // }
 // }
 
 /** Get default configuration for server type
 
-getDefaultConfig(
+getDefaultConfig(;
 // type = DEFAULT_CONFIGS[type];/g))
   if(!baseConfig) {
       throw new Error(`Unknown servertype = new Date();`
-
+;
     Object.keys(customConfig).forEach(key => {)
       const _customValue = (customConfig as any)[key];
       const _defaultValue = (merged as any)[key];
@@ -79,7 +79,7 @@ getDefaultConfig(
 
 // export class ClaudeFlowServerBuilder implements ServerBuilder {
   // private config = {};
-  // private factory = factory  ?? new ClaudeFlowServerFactory();
+  // private factory = factory ?? new ClaudeFlowServerFactory();
   //   }
 
 /** Set server configuration
@@ -94,25 +94,25 @@ getDefaultConfig(
     //     }
 
     switch(protocol) {
-      case 'http':
-      case 'https':
+      case 'http':;
+      case 'https':;
   if(!this.config.protocols.http) {
           this.config.protocols.http = { enabled,version = enabled;
         //         }
         break;
-      case 'ws':
-      case 'wss':
+      case 'ws':;
+      case 'wss':;
   if(!this.config.protocols.websocket) {
           this.config.protocols.websocket = { ;
             enabled,path = enabled;
         //         }
         break;
-      case 'mcp':
+      case 'mcp':;
   if(!this.config.protocols.mcp) {
           this.config.protocols.mcp = { enabled,endpoint = enabled;
         //         }
         break;
-      case 'grpc':
+      case 'grpc':;
   if(!this.config.protocols.grpc) {
           this.config.protocols.grpc = { enabled,reflection = enabled;
         //         }
@@ -175,10 +175,10 @@ getDefaultConfig(
     // Get default configuration and merge with custom config
     const _defaultConfig = this.factory.getDefaultConfig(serverType);
     const _finalConfig = this.factory['mergeConfig'](defaultConfig, this.config);
-
+;
     // Create server based on type
   switch(serverType) {
-      case 'api':
+      case 'api':;
         // return this.factory.createAPIServer(finalConfig);
     // case 'mcp': // LINT: unreachable code removed
         // return this.factory.createMCPServer(finalConfig);default = new ClaudeFlowServerFactory();
@@ -214,13 +214,15 @@ build();
 // }
 
 // export default {
-  serverFactory,
-  createServerBuilder,
+  serverFactory,;
+  createServerBuilder,;
   createUnifiedServer,
-  createAPIServer,
-  createMCPServer,
-  ClaudeFlowServerFactory,
+  createAPIServer,;
+  createMCPServer,;
+  ClaudeFlowServerFactory,;
   ClaudeFlowServerBuilder;
 };
 
 }}}}}}))))))
+
+*/*/*/*/*/*/*/*/*/*/*/*/*/

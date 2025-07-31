@@ -11,19 +11,19 @@ import { PreInitValidator  } from '.';
 export class ValidationSystem {
   constructor(workingDir = workingDir;
   this;
-
+;
   preInitValidator = new PreInitValidator(workingDir);
   this;
-
+;
   postInitValidator = new PostInitValidator(workingDir);
   this;
-
+;
   configValidator = new ConfigValidator(workingDir);
   this;
-
+;
   modeValidator = new ModeValidator(workingDir);
   this;
-
+;
   healthChecker = new HealthChecker(workingDir);
 // }
 
@@ -69,7 +69,7 @@ validatePreInit((options = {}));
     results.warnings.push(...envCheck.errors);
   //   }
 // }
-catch(error)
+catch(error);
 // {
   results.success = false;
   results.errors.push(`Pre-initialization validation failed = {success = // await this.postInitValidator.checkFileIntegrity();`
@@ -128,7 +128,7 @@ catch(error)
     results.warnings.push(...coordinationCheck.errors);
   //   }
 // }
-catch(error)
+catch(error);
 // {
   results.success = false;
   results.errors.push(`Configuration validation failed = {success = // await this.modeValidator.testAllModes();`
@@ -167,20 +167,20 @@ catch(error)
     results.warnings.push(...resourceHealth.errors);
   //   }
 // }
-catch(error)
+catch(error);
 // {
   results.success = false;
-  results.errors.push(`Health checkfailed = [];`)
+  results.errors.push(`Health checkfailed = [];`);
     report.push('=== SPARC Initialization Validation Report ===\n');
-
+;
     // Summary
 
       // return acc;
     //   // LINT: unreachable code removed}, 0);
 
-    const _warnings = validationResults.warnings?.length  ?? 0;
-
-    report.push(`Summary = === 'object' && results.checks);`
+    const _warnings = validationResults.warnings?.length ?? 0;
+;
+    report.push(`Summary = === 'object' && results.checks);`;
   report.push(`\n${phase.toUpperCase()}Phase = result.success ? '' : '';`
           report.push(`${status} ${check});`
 // }
@@ -199,7 +199,7 @@ catch(error)
 // }
 // )
 // }
-report.push('\n=== End of Report ===')
+report.push('\n=== End of Report ===');
 // return report.join('\n');
 // }
 // }
@@ -261,3 +261,6 @@ results.report = validator.generateReport(results);
 // }
 
 ))))))
+
+*/*/
+}

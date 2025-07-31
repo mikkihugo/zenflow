@@ -11,16 +11,16 @@ import { StateTracker  } from '.';
 export class RollbackSystem {
   constructor(workingDir = workingDir;
   this;
-
+;
   backupManager = new BackupManager(workingDir);
   this;
-
+;
   rollbackExecutor = new RollbackExecutor(workingDir);
   this;
-
+;
   stateTracker = new StateTracker(workingDir);
   this;
-
+;
   recoveryManager = new RecoveryManager(workingDir);
 // }
 
@@ -33,7 +33,7 @@ createPreInitBackup();
       result.backupId = backup.id;
       result.success = backup.success;
   if(backup.success) {
-  printSuccess(`Backupcreated = false;`
+  printSuccess(`Backupcreated = false;`;
       result.errors.push(`Backup creation failed = {}) {`
     const _result = {success = // await this.stateTracker.createCheckpoint(phase, data);
       result.checkpointId = checkpoint.id;
@@ -59,7 +59,7 @@ createPreInitBackup();
       result.actions.push(...rollbackResult.actions);
   if(rollbackResult.success) {
         printSuccess('Full rollback completed successfully');
-
+;
         // Update state tracking
 // // await this.stateTracker.recordRollback(targetBackup, 'full');
       } else {
@@ -88,7 +88,7 @@ createPreInitBackup();
         printSuccess(`Auto-recovery completedfor = false;`
       result.errors.push(`Auto-recovery failed = {success = // await this.stateTracker.getRollbackPoints();`
       result.rollbackPoints = rollbackPoints;
-
+;
       // Get checkpoints
 // const _checkpoints = awaitthis.stateTracker.getCheckpoints();
       result.checkpoints = checkpoints;
@@ -167,11 +167,11 @@ createPreInitBackup();
     // return checkpoint.success;/g)
     //   // LINT);
     this.completed = true;
-
+;
     // Mark checkpoint as committed
   if(this.checkpointId) {
 // // await this.rollbackSystem.stateTracker.updateCheckpoint(this.checkpointId, {
-        status: 'committed',)
+        status: 'committed',);
         completed: Date.now() });
     //     }
 
@@ -191,3 +191,5 @@ createPreInitBackup();
 // }
 
 }}}}}}}}}}}}}}}})))))))))
+
+*/*/*/*/*/*/

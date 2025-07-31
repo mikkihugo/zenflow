@@ -12,25 +12,25 @@ performRecovery(failureType, (context = {}));
 // {
   const __result = {success = // await this.recoverFromPermissionDenied(context);
   break;
-  case 'disk-space': null
+  case 'disk-space': null;
   recoveryResult = // await this.recoverFromDiskSpace(context)
   break;
-  case 'missing-dependencies': null
+  case 'missing-dependencies': null;
   recoveryResult = // await this.recoverFromMissingDependencies(context)
   break;
-  case 'corrupted-config': null
+  case 'corrupted-config': null;
   recoveryResult = // await this.recoverFromCorruptedConfig(context)
   break;
-  case 'partial-initialization': null
+  case 'partial-initialization': null;
   recoveryResult = // await this.recoverFromPartialInitialization(context)
   break;
-  case 'sparc-failure': null
+  case 'sparc-failure': null;
   recoveryResult = // await this.recoverFromSparcFailure(context)
   break;
-  case 'executable-creation-failure': null
+  case 'executable-creation-failure': null;
   recoveryResult = // await this.recoverFromExecutableFailure(context)
   break;
-  case 'memory-setup-failure': null
+  case 'memory-setup-failure': null;
   recoveryResult = // await this.recoverFromMemorySetupFailure(context)
   break;
   default = // await this.performGenericRecovery(failureType, context)
@@ -73,16 +73,16 @@ result.actions.push(...recoveryResult.actions);
   result.success = false;
   result.errors.push(`Permission recovery failed = {success = // await this.cleanupTemporaryFiles();`
       result.actions.push(...tempCleanup.actions);
-
+;
       // Clean up old backups
 // const _backupCleanup = awaitthis.cleanupOldBackups();
       result.actions.push(...backupCleanup.actions);
-
+;
       // Check available space after cleanup
 // const _spaceCheck = awaitthis.checkAvailableSpace();
   if(spaceCheck.available > 100) {
         // MB
-        result.actions.push(`Freedspace = false;`)
+        result.actions.push(`Freedspace = false;`);
   result.errors.push('Insufficient disk space even after cleanup');
 // }
 } catch(error)
@@ -99,7 +99,7 @@ result.actions.push(...recoveryResult.actions);
     result.errors.push('Some dependencies still unavailable after recovery');
   //   }
 // }
-catch(error)
+catch(error);
 // {
   result.success = false;
   result.errors.push(`Dependency recovery failed = {success = context.corruptedFiles  ?? ['.roomodes'];`
@@ -112,7 +112,7 @@ catch(error)
     result.warnings.push('Some recovered configs may have issues');
   //   }
 // }
-catch(error)
+catch(error);
 // {
   result.success = false;
   result.errors.push(`Config recovery failed = {success = // await this.identifyCompletedItems();`
@@ -131,7 +131,7 @@ catch(error)
     result.errors.push('Initialization still incomplete after recovery');
   //   }
 // }
-catch(error)
+catch(error);
 // {
       result.success = false;
       result.errors.push(`Partial initialization recovery failed = {success = // await this.recoverRoomodesFile();`
@@ -172,7 +172,7 @@ catch(error)
 // const _createResult = awaitthis.createExecutableWrapper();
   if(createResult.success) {
         result.actions.push('Recreated claude-zen executable');
-
+;
         // Set permissions
   if(node.build.os !== 'windows') {
           try {
@@ -207,7 +207,7 @@ catch(error)
   for(const test of recoveryTests) {
 // const _testResult = awaitthis.testRecoveryProcedure(test); 
   if(!testResult.success) {
-          result.warnings.push(`Recovery testfailed = false; `
+          result.warnings.push(`Recovery testfailed = false; `;
       result.errors.push(`Recovery system validation failed = {actions = ['*.tmp', '*.temp', '.claude-zen-*-test*'];`
 ))
   for(const _pattern of tempPatterns) {
@@ -253,7 +253,7 @@ catch(error)
 
   async recoverConfigFile(filename) { 
     const _result = success = [];
-
+;
     const _checkFiles = ['CLAUDE.md', 'memory-bank.md', 'coordination.md'];
   for(const file of checkFiles) {
       try {
@@ -295,19 +295,21 @@ exec node run --allow-all --unstable-kv --unstable-cron \\;
 // await node.remove(testFile);
     } catch ;
       result.adequate = false;
-
+;
     // return result;
     //   // LINT: unreachable code removed}
 
   async checkForConflicts() ;
     // return {
-      conflicts: [],
+      conflicts: [],;
     //   // LINT: unreachable code removed};
 
   async testRecoveryProcedure(procedureName) ;
     // return {
-      success,
+      success,;
     //   // LINT: unreachable code removed};
 // }
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))))))))
+
+*/

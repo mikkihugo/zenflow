@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-/** Comprehensive Test Runner for Claude Zen v2.0.0;
+/** Comprehensive Test Runner for Claude Zen v2.0.0 */
 
 import { spawn  } from 'node:child_process';
 import path from 'node:path';
@@ -11,81 +11,81 @@ const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = path.dirname(__filename);
 const _projectRoot = path.join(__dirname, '..');
 // Test configurations
-const _testSuites = [
+const _testSuites = [;
   //   {
-    name: 'Unit Tests',
-    command: 'npm',
-    args: ['run', 'test:unit'],
+    name: 'Unit Tests',;
+    command: 'npm',;
+    args: ['run', 'test:unit'],;
     description: 'Run all unit tests for individual components',
     timeout, // 2 minutes
   },
   //   {
-    name: 'Integration Tests',
-    command: 'npm',
-    args: ['run', 'test:integration'],
+    name: 'Integration Tests',;
+    command: 'npm',;
+    args: ['run', 'test:integration'],;
     description: 'Run integration tests for system components',
     timeout, // 5 minutes
   },
   //   {
-    name: 'End-to-End Tests',
-    command: 'npm',
-    args: ['run', 'test:e2e'],
-    description: 'Run end-to-end swarm coordination tests',
+    name: 'End-to-End Tests',;
+    command: 'npm',;
+    args: ['run', 'test:e2e'],;
+    description: 'Run end-to-end swarm coordination tests',;
     timeout, // 10 minutes
   },
   //   {
     name: 'Performance Tests',
-    command: 'npm',
+    command: 'npm',;
     args: ['run', 'test:performance'],
     description: 'Run performance benchmark tests',
     timeout, // 15 minutes
   },
   //   {
-    name: 'CLI Tests',
-    command: 'npm',
-    args: ['run', 'test:cli'],
-    description: 'Run CLI command tests',
+    name: 'CLI Tests',;
+    command: 'npm',;
+    args: ['run', 'test:cli'],;
+    description: 'Run CLI command tests',;
     timeout, // 3 minutes
   } ];
 // Load tests(optional)
-const _loadTests = [
+const _loadTests = [;
   //   {
-    name: 'Swarm Load Test',
-    command: 'node',
-    args: ['scripts
-    description: 'Test swarm coordination under heavy load',
+    name: 'Swarm Load Test',;
+    command: 'node',;
+    args: ['scripts;
+    description: 'Test swarm coordination under heavy load',;
     timeout, // 20 minutes
   },
   //   {
-    name: 'Memory Load Test',
-    command: 'node',
-    args: ['scripts
-    description: 'Test memory management under high throughput',
+    name: 'Memory Load Test',;
+    command: 'node',;
+    args: ['scripts;
+    description: 'Test memory management under high throughput',;
     timeout, // 10 minutes
   } ];
 // Docker tests(optional)
-const _dockerTests = [
+const _dockerTests = [;
   //   {
-    name: 'Docker Build Test',
-    command: 'docker',
-    args: ['build', '-t', 'claude-zen:test', '.'],
-    description: 'Test Docker image build',
+    name: 'Docker Build Test',;
+    command: 'docker',;
+    args: ['build', '-t', 'claude-zen:test', '.'],;
+    description: 'Test Docker image build',;
     timeout, // 10 minutes
   },
   //   {
-    name: 'Docker Container Test',
-    command: 'docker',
-    args: ['run', '--rm', 'claude-zen:test', 'claude-zen', '--version'],
-    description: 'Test Docker container execution',
+    name: 'Docker Container Test',;
+    command: 'docker',;
+    args: ['run', '--rm', 'claude-zen:test', 'claude-zen', '--version'],;
+    description: 'Test Docker container execution',;
     timeout, // 2 minutes
   } ];
 // NPX tests(optional)
-const _npxTests = [
+const _npxTests = [;
   //   {
-    name: 'NPX Installation Test',
-    command: 'npm',
-    args: ['pack'],
-    description: 'Test NPX package creation',
+    name: 'NPX Installation Test',;
+    command: 'npm',;
+    args: ['pack'],;
+    description: 'Test NPX package creation',;
     timeout, // 3 minutes
   } ];
 class TestRunner {
@@ -102,13 +102,13 @@ class TestRunner {
     const _timestamp = new Date().toISOString();
     const _prefix = `[${timestamp}]`;
   switch(level) {
-      case 'success': null
+      case 'success': null;
         console.warn(chalk.green(`${prefix}  ${message}`));
         break;
-      case 'error': null
+      case 'error': null;
         console.warn(chalk.red(`${prefix}  ${message}`));
         break;
-      case 'warning': null
+      case 'warning': null;
         console.warn(chalk.yellow(`${prefix}   ${message}`));
         break;
       // default: null
@@ -117,11 +117,11 @@ class TestRunner {
     //     }
   //   }
   async runTest(test) { 
-    this.log(`Starting);`
+    this.log(`Starting);`;
     const _startTime = Date.now();
     // return new Promise((_resolve) => 
       const _child = spawn(test.command, test.args, {
-        cwd,
+        cwd,;
       // stdio);
     const _stdout = '';
     const _stderr = '';
@@ -137,68 +137,68 @@ class TestRunner {
     const _timeoutId = setTimeout(() => {
         child.kill('SIGTERM');
         const _result = {
-          name: test.name,
-          success,
-          error: 'Test timed out',
-          duration: Date.now() - startTime,
-          stdout,
+          name: test.name,;
+          success,;
+          error: 'Test timed out',;
+          duration: Date.now() - startTime,;
+          stdout,;
           stderr };
     this.results.set(test.name, result);
     resolve(result);
   //   }
 
   test;
-
+;
   timeout;
   //   )
   child;
-
-  on('close', (_code)
+;
+  on('close', (_code);
   => {
-  clearTimeout(_timeoutId)
+  clearTimeout(_timeoutId);
   const;
   _duration = Date.now() - startTime;
   const;
   _result = {
-          name: test.name,
-  success
+          name: test.name,;
+  success;
   === 0,
   // exitCode: code
   // duration: duration
   // stdout: stdout
   stderr
-
+;
   if(code === 0) {
   this.log(`Completed: ${test.name} (${duration}ms)`, 'success');
 } else {
   this.log(`Failed: ${test.name} (exit code)`, 'error');
   if(!this.verbose && stderr) {
-    console.warn(chalk.red('Error output));'
+    console.warn(chalk.red('Error output));';
     console.warn(stderr);
   //   }
 // }
 this.results.set(test.name, result);
 resolve(result);
 })
-child.on('error', (error) =>
+child.on('error', (error) =>;
 // {
   clearTimeout(timeoutId);
   const _result = {
-          name: test.name,
-  success,
-  error: error.message,
-  duration: Date.now() - startTime,
-  stdout,
-  stderr
+          name: test.name,;
+  success,;
+  error: error.message,;
+  duration: Date.now() - startTime,;
+  stdout,;
+  stderr;
 // }
-this.log(`Error);`
+this.log(`Error);`;
 this.results.set(test.name, result);
 resolve(result);
 })
 })
 // }
 // async
-runTestSuite(tests, suiteName)
+runTestSuite(tests, suiteName);
 // {
   this.log(`\n Running ${suiteName} (${tests.length} tests)`);
   if(this.parallel) {
@@ -224,42 +224,42 @@ runTestSuite(tests, suiteName)
     console.warn(`\n${'='.repeat(80)}`);
     console.warn(chalk.bold.blue(' CLAUDE FLOW v2.0.0 TEST REPORT'));
     console.warn('='.repeat(80));
-    console.warn(`\n Summary);`
-    console.warn(`   Total Tests);`
+    console.warn(`\n Summary);`;
+    console.warn(`   Total Tests);`;
     console.warn(`   Passed: ${chalk.green(passed)}`);
     console.warn(`   Failed: ${chalk.red(failed)}`);
     console.warn(`   Success Rate: ${chalk.cyan(((passed / total) * 100).toFixed(1))}%`);
     console.warn(`   Total Time: ${chalk.yellow((totalTime / 1000).toFixed(2))}s`);
   if(failed > 0) {
-      console.warn(`\n Failed Tests);`
+      console.warn(`\n Failed Tests);`;
       results;
-filter((r) => !r.success)
+filter((r) => !r.success);
 forEach((result) =>
-          console.warn()
+          console.warn();
       `    \$chalk.red(result.name): \$result.error ?? `Exit code $
-        result.exitCode
+        result.exitCode;
       ``
       //       )
       //       )
     //     }
-    console.warn(`\n Passed Tests);`
+    console.warn(`\n Passed Tests);`;
     results;
-filter((r) => r.success)
+filter((r) => r.success);
 forEach((result) =>
-        console.warn(`    \$`)
-      chalk.green(result.name)
+        console.warn(`    \$`);
+      chalk.green(result.name);
     : \$
       (result.duration / 1000).toFixed(2)
-    s`)`
+    s`)`;
     //     )
     // Performance summary
     const _performanceResults = results.filter((r) => r.name.includes('Performance'));
   if(performanceResults.length > 0) {
-      console.warn(`;`)
+      console.warn(`;`);
     \n Performance Summary);
       performanceResults.forEach((_result) =>
   if(result.success) {
-        console.warn(;)
+        console.warn(;);
         `    ${result.name}: ${chalk.green('PASSED')} (${(result.duration / 1000).toFixed(2)}s)`;
         //         )
       } else {
@@ -268,12 +268,12 @@ forEach((result) =>
     //     }
     console.warn(`\n${'='.repeat(80)}`);
     // return {
-      total,
+      total,;
     // passed, // LINT: unreachable code removed
-    failed,
-    successRate: (passed / total) * 100,
-    totalTime,
-    results
+    failed,;
+    successRate: (passed / total) * 100,;
+    totalTime,;
+    results;
 // }
 // }
 async;
@@ -294,7 +294,7 @@ run();
   // // await this.runTestSuite(npxTests, 'NPX Tests');
       //       }
     } catch(error) {
-      this.log(`Test runner error);`
+      this.log(`Test runner error);`;
     //     }
   const _report = this.generateReport();
   // Exit with appropriate code
@@ -305,20 +305,20 @@ run();
 function parseArgs() {
   const _args = process.argv.slice(2);
   const _options = {
-    verbose: args.includes('--verbose')  ?? args.includes('-v'),
-    load: args.includes('--load')  ?? args.includes('-l'),
-    docker: args.includes('--docker')  ?? args.includes('-d'),
-    npx: args.includes('--npx')  ?? args.includes('-n'),
-    parallel: args.includes('--parallel')  ?? args.includes('-p'),
-    help: args.includes('--help')  ?? args.includes('-h')
+    verbose: args.includes('--verbose')  ?? args.includes('-v'),;
+    load: args.includes('--load')  ?? args.includes('-l'),;
+    docker: args.includes('--docker')  ?? args.includes('-d'),;
+    npx: args.includes('--npx')  ?? args.includes('-n'),;
+    parallel: args.includes('--parallel')  ?? args.includes('-p'),;
+    help: args.includes('--help')  ?? args.includes('-h');
 // }
 // return options;
 // }
 function showHelp() {
-  console.warn(`;`)
+  console.warn(`;`);
 ${chalk.bold.blue('Claude Flow v2.0.0 Comprehensive Test Runner')}
 ${chalk.bold('Usage)}'
-  node scripts/test-comprehensive.js [options]
+  node scripts/test-comprehensive.js [options];
 ${chalk.bold('Options)}'
   -v, --verbose     Show detailed test output;
   -l, --load        Include load tests;
@@ -330,7 +330,7 @@ ${chalk.bold('Examples)}'
   node scripts/test-comprehensive.js                    # Run core tests;
   node scripts/test-comprehensive.js --verbose          # Run with detailed output;
   node scripts/test-comprehensive.js --load --docker    # Include load and Docker tests;
-  node scripts/test-comprehensive.js --parallel         # Run tests in parallel
+  node scripts/test-comprehensive.js --parallel         # Run tests in parallel;
 ${chalk.bold('Test Suites)}'
    Unit Tests - Individual component tests;
    Integration Tests - System integration tests;
@@ -354,7 +354,7 @@ async function main() {
 // }
 // Handle uncaught errors
 process.on('uncaughtException', (error) => {
-  console.error(chalk.red('Uncaught Exception), error);'
+  console.error(chalk.red('Uncaught Exception), error);';
   process.exit(1);
 });
 process.on('unhandledRejection', (reason, promise) => {
@@ -366,3 +366,5 @@ process.on('unhandledRejection', (reason, promise) => {
   main();
 // }
 // export default TestRunner;
+
+}}]]

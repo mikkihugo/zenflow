@@ -26,22 +26,22 @@ const _command = ['node', scriptPath];
 // Execute the migration script
 execSync(command.join(' '), {
       stdio = {
-      handler: 'inherit',
+      handler: 'inherit',;
 cwd: process.cwd() })
 } catch(error)
 // {
-  console.error(' Migration failed);'
+  console.error(' Migration failed);';
   process.exit(1);
 // }
 // }
 // Export the command configuration
 // export const migrateHooksCommandConfig,ler,
   description: 'Migrate settings.json hooks to Claude Code 1.0.51+ format',
-usage: 'migrate-hooks [settings-file]',
+usage: 'migrate-hooks [settings-file]',;
 examples: [;
     'claude-zen migrate-hooks                    # Migrate all found settings.json files',
     'claude-zen migrate-hooks .claude/settings.json  # Migrate specific file' ],
-details: `;`
+details: `;`;
 Migrates old hooks format to new Claude Code 1.0.51+ format: null
    Converts object-based hooks to array-based format;
    Creates backup before making changes;
@@ -49,3 +49,5 @@ Migrates old hooks format to new Claude Code 1.0.51+ format: null
    Searches common locations if no file specified
 
 The migration is safe and creates backups of original files.` }`
+
+*/)

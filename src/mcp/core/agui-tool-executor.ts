@@ -15,17 +15,17 @@ import { MCPToolExecutor  } from '.';
 // export class AGUIMCPToolExecutor extends MCPToolExecutor {
   constructor(server = {}) {
     super(server);
-
+;
     // Create AG-UI adapter for tool execution events
     this.aguiAdapter = new AGUIAdapter({ sessionId = {emitToolEvents = {toolCallsWithEvents = {  }) {
     const { parentMessageId } = context;
     const _toolCallId = null;
-
+;
     try {
       // Emit AG-UI tool call start event
   if(this.options.emitToolEvents) {
         toolCallId = this.aguiAdapter.startToolCall(name, null, parentMessageId);
-
+;
         // Emit arguments if enabled
   if(this.options.includeArgs && args) {
           this.aguiAdapter.addToolCallArgs(JSON.stringify(args), toolCallId);
@@ -41,7 +41,7 @@ import { MCPToolExecutor  } from '.';
       // Emit AG-UI tool call completion events
   if(this.options.emitToolEvents && toolCallId) {
         this.aguiAdapter.endToolCall(toolCallId);
-
+;
         // Emit result if enabled
   if(this.options.includeResults) {
           this.aguiAdapter.emitToolCallResult(result, toolCallId);
@@ -57,7 +57,7 @@ import { MCPToolExecutor  } from '.';
     this.aguiAdapter.emitCustomEvent('tool_chain_started', {')
       chainId,tools = > t.name),timestamp = // // await this.executeTool(name, args, {
 ..context,
-          chainId,)
+          chainId,);
           stepIndex = {}) {
     const _toolCallId = this.aguiAdapter.startToolCall(name, null, context.parentMessageId);
       // Create a progress callback for streaming updates
@@ -95,7 +95,7 @@ import { MCPToolExecutor  } from '.';
 
   existingExecutor.executeTool = async(name, args, context = {  }) => {
     const _toolCallId = null;
-
+;
     try {
       // Start AG-UI tool call
       toolCallId = aguiAdapter.startToolCall(name, null, context.parentMessageId);
@@ -117,7 +117,7 @@ import { MCPToolExecutor  } from '.';
     } catch(/* _error */) {
   if(toolCallId) {
         aguiAdapter.endToolCall(toolCallId);
-        aguiAdapter.emitToolCallResult(`Error = () => aguiAdapter;`
+        aguiAdapter.emitToolCallResult(`Error = () => aguiAdapter;`;
   existingExecutor.connectToAGUIBus = () => {
     aguiAdapter.connectGlobalEmitter(eventBus);
     return existingExecutor;
@@ -129,3 +129,5 @@ import { MCPToolExecutor  } from '.';
 // export default AGUIMCPToolExecutor;
 
 }}}}}}}}}}}}}}}}}}}}}}}))
+
+*/*/*/*/*/*/*/*/*/

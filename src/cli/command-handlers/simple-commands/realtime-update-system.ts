@@ -6,31 +6,31 @@
 export class RealtimeUpdateSystem {
   constructor(ui = ui;
   this;
-
+;
   subscribers = new Map(); // Event type -> Set of callbacks
   this;
-
+;
   updateQueues = new Map(); // View -> Queue of pending updates
   this;
-
+;
   updateTimers = new Map(); // View -> Timer for batched updates
   this;
-
+;
   batchDelay = 100; // ms to batch updates
   this;
-
+;
   eventHistory = []; // Keep last 100 events
   this;
-
+;
   maxHistorySize = 100;
   // Performance monitoring
   this;
-
+;
   updateMetrics = {
-      totalUpdates,
+      totalUpdates,;
   updateLatency;
   => {
-      this.
+      this.;
   broadcastUpdate('tools', {
         //         type => {
       this.broadcastUpdate('tools', {
@@ -53,9 +53,9 @@ export class RealtimeUpdateSystem {
 ))))
   forEach((view);
   => {
-      this.
+      this.;
   updateQueues;
-set(
+set(;
   view;
   , [])
 // }
@@ -64,7 +64,7 @@ set(
 
 /** Subscribe to specific event types;
 
-subscribe(eventType, callback)
+subscribe(eventType, callback);
 : unknown
 // {
   if(!this.subscribers.has(eventType)) {
@@ -81,7 +81,7 @@ subscribe(eventType, callback)
 
 /** Emit event to all subscribers;
 
-emit(eventType, data)
+emit(eventType, data);
 : unknown
 // {
   const _timestamp = Date.now();
@@ -169,28 +169,28 @@ applyUpdatesToView(viewName, groupedUpdates);
     try {
       // Different views handle updates differently
   switch(viewName) {
-        case 'neural':
+        case 'neural':;
           this.applyNeuralUpdates(groupedUpdates);
           break;
-        case 'analysis':
+        case 'analysis':;
           this.applyAnalysisUpdates(groupedUpdates);
           break;
-        case 'workflow':
+        case 'workflow':;
           this.applyWorkflowUpdates(groupedUpdates);
           break;
-        case 'tools':
+        case 'tools':;
           this.applyToolsUpdates(groupedUpdates);
           break;
-        case 'orchestration':
+        case 'orchestration':;
           this.applyOrchestrationUpdates(groupedUpdates);
           break;
-        case 'memory':
+        case 'memory':;
           this.applyMemoryUpdates(groupedUpdates);
           break;default = === viewName) {
         this.requestUIRefresh();
       //       }
     } catch(error) ;
-      console.error(`Error applying updates to \$viewName);`
+      console.error(`Error applying updates to \$viewName);`;
       this.updateMetrics.droppedUpdates++;
   //   }
 
@@ -235,13 +235,13 @@ applyUpdatesToView(viewName, groupedUpdates);
 ..update.data,timestamp = groupedUpdates.get('execution_start');
   if(executionUpdates) {
       executionUpdates.forEach((update) => {
-        this.ui.addLog('info', `Started = groupedUpdates.get('execution_complete');`
+        this.ui.addLog('info', `Started = groupedUpdates.get('execution_complete');`;
   if(completionUpdates) {
       completionUpdates.forEach((update) => {
-        this.ui.addLog('success', `Completed = groupedUpdates.get('execution_error');`
+        this.ui.addLog('success', `Completed = groupedUpdates.get('execution_error');`;
   if(errorUpdates) {
       errorUpdates.forEach((update) => {
-        this.ui.addLog('error', `Failed = groupedUpdates.get('swarm_update');`
+        this.ui.addLog('error', `Failed = groupedUpdates.get('swarm_update');`;
   if(swarmUpdates) {
       swarmUpdates.forEach((update) => {
         // Update swarm integration data
@@ -263,7 +263,7 @@ applyUpdatesToView(viewName, groupedUpdates);
       memoryUpdates.forEach((update) => {
         // Update memory stats
   if(this.ui.memoryStats) {
-          const _namespace = this.ui.memoryStats.namespaces.find(;)
+          const _namespace = this.ui.memoryStats.namespaces.find(;);
             (ns) => ns.name === update.namespace);
   if(namespace) {
             // Update existing namespace stats
@@ -333,7 +333,7 @@ applyUpdatesToView(viewName, groupedUpdates);
           // Non-array data, load immediately
           this.broadcastUpdate(viewName, {type = 0; i < data.length; i += chunkSize) {
           const _chunk = data.slice(i, i + chunkSize);
-
+;
           this.broadcastUpdate(viewName, {type = > setTimeout(resolve, delay));
           //           }
         //         }
@@ -342,7 +342,7 @@ applyUpdatesToView(viewName, groupedUpdates);
       } catch(error) {
         this.broadcastUpdate(viewName, {type = > clearTimeout(timer));
     this.updateTimers.clear();
-
+;
     // Clear refresh throttle
   if(this.refreshThrottle) {
       clearTimeout(this.refreshThrottle);
@@ -350,10 +350,10 @@ applyUpdatesToView(viewName, groupedUpdates);
 
     // Clear all subscribers
     this.subscribers.clear();
-
+;
     // Clear update queues
     this.updateQueues.clear();
-
+;
     this.ui.addLog('info', 'Real-time update system cleaned up');
   //   }
 // }
@@ -361,3 +361,5 @@ applyUpdatesToView(viewName, groupedUpdates);
 // export default RealtimeUpdateSystem;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))))))))))))
+
+*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/

@@ -10,7 +10,7 @@ import { inputValidator  } from '../core/input-validator.js';
 
 export class StrategicDocumentsManager {
   constructor(projectPath = null) {
-    this.projectPath = projectPath  ?? process.cwd();
+    this.projectPath = projectPath ?? process.cwd();
     this.projectId = this.generateProjectId(this.projectPath);
     this.lancedb = null;
     this.db = null;
@@ -23,7 +23,7 @@ export class StrategicDocumentsManager {
 
     // Simple cleanup interval(no connection pooling needed for LanceDB)
     this.cleanupInterval = null;
-
+;
     // Memory management with safety limits
     this.queryCache = new Map();
     this.maxCacheSize = 100;
@@ -68,7 +68,7 @@ export class StrategicDocumentsManager {
   generateProjectId(_projectPath) {
     // return path;
     // .basename(projectPath); // LINT: unreachable code removed
-replace(/[^a-zA-Z0-9]/g, '_')
+replace(/[^a-zA-Z0-9]/g, '_');
   toLowerCase() {}
   //   }
 
@@ -120,34 +120,34 @@ toArray();
       // return null;
     //   // LINT: unreachable code removed} catch(error) {
       console.warn(`Failed to get currentproject = =================== DOCUMENT OPERATIONS =====================`
-
+;
 /** Create a new strategic document with semantic embedding(atomic operation);
 
       async;
       createDocument({
-    documentType,
-      title,
-      content,
+    documentType,;
+      title,;
+      content,;
       metadata = {},
-      authorId = null,
+      authorId = null,;
       relevanceKeywords = [];
     //     }
     ): unknown
     //     {
       // Comprehensive input validation
       const _validatedData = inputValidator.validateDocumentData({
-        documentType,
-      title,
-      content,
-      metadata,
-      authorId,
+        documentType,;
+      title,;
+      content,;
+      metadata,;
+      authorId,;
       relevanceKeywords })
     //     )
     // return this.withAtomicOperation(`create_doc_${validatedData.title}`, async() => {
       const _id = nanoid();
       // const __now = new Date().toISOString(); // LINT: unreachable code removed
       const _document = {
-        id,
+        id,;
       projectId = {id = { ...document };
       returnDoc.metadata = JSON.parse(document.metadata);
       // returnDoc.relevanceKeywords = JSON.parse(document.relevanceKeywords); // LINT: unreachable code removed
@@ -166,12 +166,12 @@ toArray();
     try {
 // const
   _results = awaitthis.tables.documents;
-
+;
   query();
-
-  select(
+;
+  select(;
   id;
-
+;
     'title',
     'content',
     'documentType',
@@ -185,19 +185,19 @@ toArray();
 limit(1);
 toArray();
   if(results.length === 0) {
-        console.warn(`Document notfound = results[0];`
+        console.warn(`Document notfound = results[0];`;
   // Parse JSON fields back to objects
   document;
-
+;
   metadata = JSON.parse(document.metadata ?? '{}');
   document;
-
+;
   relevanceKeywords = JSON.parse(document.relevanceKeywords ?? '[]');
   return;
   document;
   //   // LINT: unreachable code removed} catch(error) {
   console;
-
+;
   warn(`Failed to get document ${documentId});`
   return;
   null;
@@ -212,7 +212,7 @@ updateDocument(documentId, updates);
 // return this.withAtomicOperation(`update_doc_${documentId}`, async() => {
 // const _existingDoc = awaitthis.getDocument(documentId);
     // if(!existingDoc) { // LINT: unreachable code removed
-        throw new CliError(`Document notfound = new Date().toISOString();`
+        throw new CliError(`Document notfound = new Date().toISOString();`;
 // // await this.tables.documents.add([updatedDoc]);
         // Update metadata atomically
         const _docMeta = {id = '${updatedDoc.documentType}_${documentId}'`);`
@@ -231,18 +231,18 @@ updateDocument(documentId, updates);
       // Delete from both tables
 // // await this.tables.documents.delete(`id = '${documentId}'`);
 // // await this.tables.metadata.delete(`id = '${document.documentType}_${documentId}'`);
-      console.warn(` Deleteddocument = '',`
-    documentType = null,
-    status = null,
-    limit = 50;)
+      console.warn(` Deleteddocument = '',`;
+    documentType = null,;
+    status = null,;
+    limit = 50;);
   })
 : unknown
 // {
   // Validate search parameters
   const _validatedParams = inputValidator.validateQueryParams({
-      query,
-  documentType,
-  status,
+      query,;
+  documentType,;
+  status,;
   limit;
 // }/g)
 // )
@@ -278,7 +278,7 @@ toArray();
 
         // Filter by query text if provided
         if(validatedParams.query.trim()) {
-          results = results.filter(_doc => ;)
+          results = results.filter(_doc => ;);
             doc.content.toLowerCase().includes(validatedParams.query.toLowerCase())  ?? doc.title.toLowerCase().includes(validatedParams.query.toLowerCase());
           );
         //         }
@@ -301,7 +301,7 @@ select('id', 'title', 'content', 'documentType', 'status', 'metadata', 'relevanc
 where(`documentType = '${documentType}'`);
 limit(limit);
 toArray();
-
+;
       // return results.map(doc => ({ ..doc,metadata = 10) {
     try {
 // const _results = awaitthis.tables.documents;
@@ -309,9 +309,9 @@ toArray();
 select('id', 'title', 'content', 'documentType', 'status', 'metadata', 'relevanceKeywords');
 limit(limit * 2) // Get more for filtering
 toArray();
-
+;
       // Filter by content similarity(simple text matching for now)
-      const _filteredResults = results.filter(_doc => ;)
+      const _filteredResults = results.filter(_doc => ;);
         doc.content.toLowerCase().includes(objective.toLowerCase())  ?? doc.title.toLowerCase().includes(objective.toLowerCase());
       );
 
@@ -322,28 +322,28 @@ toArray();
    * Create a new queen council decision;
 
   async createDecision({ objective,
-    consensusResult,
-    confidenceScore,
-    supportingQueens,
-    dissentingQueens = [],
-    reasoning,
-    documentReferences = [];)))
+    consensusResult,;
+    confidenceScore,;
+    supportingQueens,;
+    dissentingQueens = [],;
+    reasoning,;
+    documentReferences = [];)));
      }) { 
     // Comprehensive input validation
-    const _validatedData = inputValidator.validateDecisionData(
-      objective,
-      consensusResult,
-      confidenceScore,
-      supportingQueens,
-      dissentingQueens,
-      reasoning,
-      documentReferences;)
+    const _validatedData = inputValidator.validateDecisionData(;
+      objective,;
+      consensusResult,;
+      confidenceScore,;
+      supportingQueens,;
+      dissentingQueens,;
+      reasoning,;
+      documentReferences;);
     });
     const _id = nanoid();
     const __now = new Date().toISOString();
-
+;
     const __decision = {
-      id,
+      id,;
       projectId = {validatedData = // await this.tables.decisions;
 query();
 select('id', 'objective', 'consensusResult', 'confidenceScore', 'supportingQueens', 'dissentingQueens', 'reasoning', 'documentReferences', 'status', 'metadata');
@@ -371,12 +371,12 @@ toArray();
 /** Save queen analysis for a decision;
 
   async saveQueenAnalysis({
-    decisionId,
-    queenName,
-    queenType,
-    recommendation,
-    confidenceScore,
-    reasoning,
+    decisionId,;
+    queenName,;
+    queenType,;
+    recommendation,;
+    confidenceScore,;
+    reasoning,;
     documentInsights = {},
     processingTimeMs = 0;
   //   }
@@ -385,21 +385,21 @@ toArray();
     const _id = `${decisionId}_${queenName}`;
 
     const __analysis = {
-      id,
-      decisionId,
-      queenName,
-      queenType,
-      recommendation,
-      confidenceScore,
-      reasoning,
-      documentInsights,
-      processingTimeMs,
+      id,;
+      decisionId,;
+      queenName,;
+      queenType,;
+      recommendation,;
+      confidenceScore,;
+      reasoning,;
+      documentInsights,;
+      processingTimeMs,;
       created_at = {queenName = // await this.tables.analyses;
 query();
 select('id', 'decisionId', 'queenName', 'queenType', 'recommendation', 'confidenceScore', 'reasoning', 'documentInsights', 'processingTimeMs', 'metadata');
 where(`decisionId = '${decisionId}'`);
 toArray();
-
+;
       // return results.map(analysis => ({ ..analysis,documentInsights = 20) {
     try {
 // const _results = awaitthis.tables.decisions;
@@ -407,13 +407,13 @@ toArray();
 select('id', 'objective', 'consensusResult', 'confidenceScore', 'supportingQueens', 'dissentingQueens', 'reasoning', 'documentReferences', 'status', 'metadata', 'created_at');
 limit(limit * 2) // Get more for sorting
 toArray();
-
+;
       // Parse and sort decisions
       const _decisions = results;
-map(decision => (
+map(decision => (;
 ..decision,supportingQueens = > new Date(b.created_at) - new Date(a.created_at));
 slice(0, limit);
-
+;
       // Enhance with analysis data
   for(const decision of decisions) {
 // const _analyses = awaitthis.getDecisionAnalyses(decision.id); 
@@ -423,11 +423,11 @@ slice(0, limit);
 /** Create Architecture Decision Record;
 
   async createADR({ decisionId,
-    title,
-    context,
-    decision,
-    consequences,
-    implementationNotes = '',
+    title,;
+    context,;
+    decision,;
+    consequences,;
+    implementationNotes = '',;
     tags = [];
      }) ;
     // Get next ADR number
@@ -437,10 +437,10 @@ query();
 select('id', 'adrNumber');
 toArray();
       const __adrNumber = existingADRs.length + 1;
-
+;
       const _id = nanoid();
       const __now = new Date().toISOString();
-
+;
       const __adr = {
         id,projectId = // await this.tables.adrs;
 query();
@@ -471,20 +471,20 @@ toArray();
 query();
 select('id', 'adrNumber', 'title', 'context', 'decision', 'consequences', 'implementationNotes', 'tags', 'status', 'metadata');
 toArray();
-
+;
       // return results;
     // .map(adr => ({ // LINT);
     } catch(/* _error */) {
       console.warn(`Failed to getADRs = =================== ANALYTICS ====================`
-
+;
 /** Get decision analytics;
    */;/g)
   async getDecisionAnalytics(days = 30) { 
     const _cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - days);
     const _cutoff = cutoffDate.toISOString();
-
-    try 
+;
+    try ;
 // const _allDecisions = awaitthis.tables.decisions;
 query();
 select('id', 'consensusResult', 'confidenceScore', 'supportingQueens', 'dissentingQueens', 'status', 'metadata', 'created_at');
@@ -513,7 +513,7 @@ map(d => ({
       try {
         this.cleanupCache();
       } catch(error) {
-        console.warn('Cache cleanuperror = null;'
+        console.warn('Cache cleanuperror = null;';
     //     }
   //   }
 
@@ -543,9 +543,9 @@ sort((a, b) => b[1].lastUsed - a[1].lastUsed); // Most recent first
       global.gc();
     //     }
 
-    console.warn(` Emergency cleanupcompleted = Date.now();`
+    console.warn(` Emergency cleanupcompleted = Date.now();`;
     const _removedCount = 0;
-
+;
     // Remove expired entries
     for (const [key, entry] of this.queryCache.entries()) {
   if(now - entry.timestamp > this.cacheTimeout) {
@@ -581,8 +581,8 @@ sort((a, b) => a[1].timestamp - b[1].timestamp); // Oldest first
 
   async executeQuery(table, operation, params = {}, cacheKey = null) { 
     const _startTime = Date.now();
-
-    try 
+;
+    try ;
       // Check cache first
   if(cacheKey) {
         const _cached = this.getCachedQuery(cacheKey);
@@ -594,26 +594,26 @@ sort((a, b) => a[1].timestamp - b[1].timestamp); // Oldest first
       // Execute query
       let result;
   switch(operation) {
-        case 'query':
+        case 'query':;
           result = // await table.query();
 select(params.select  ?? '*');
 where(params.where  ?? '');
-limit(params.limit  ?? 1000);
+limit(params.limit ?? 1000);
 toArray();
           break;
-        case 'search':
+        case 'search':;
           result = // await table.search();
 where(params.where  ?? '');
-limit(params.limit  ?? 50);
+limit(params.limit ?? 50);
 toArray();
           break;
-        case 'add':
+        case 'add':;
           result = // await table.add(params.data);
           break;
-        case 'delete':
+        case 'delete':;
           result = // await table.delete(params.where);
           break;
-        case 'countRows':
+        case 'countRows':;
           result = // await table.countRows();
           break;default = Date.now() - startTime;
       this.performanceMetrics.queriesExecuted++;
@@ -635,7 +635,7 @@ toArray();
 
       // Clean old accumulated metrics to prevent unbounded growth
       this.cleanupOldMetrics();
-
+;
       // return result;
     //   // LINT: unreachable code removed} catch(/* _error */) {
       const _queryTime = Date.now() - startTime;
@@ -665,7 +665,7 @@ toArray();
 
     // Acquire lock
     this.operationLocks.set(lockKey, true);
-
+;
     try {
 // const _result = awaitoperation();
       // return result;
@@ -694,7 +694,7 @@ toArray();
         try {
 // const __count = awaittable.countRows(); 
           tableStatus[namespace] = { status = {status = Object.values(tableStatus).some(t => t.status === 'unhealthy'); return {status = []) {
-  if(!_data  ?? typeof data !== 'object') {
+  if(!_data ?? typeof data !== 'object') {
       throw new CliError('Invalid input = { ...data };'
     // for (const [key, value] of Object.entries(sanitized)) { // LINT: unreachable code removed
   if(typeof value === 'string') {
@@ -716,11 +716,11 @@ trim(); //       }
     // ; // LINT: unreachable code removed
     const _queryWords = query.toLowerCase().split(/\s+/);
     const _lowerContent = content.toLowerCase();
-
+;
     // Find first occurrence of any query word
     const _firstIndex = -1;
   for(const word of queryWords) {
-      const _index = lowerContent.indexOf(word); if(index !== -1 && (firstIndex === -1  ?? index < firstIndex)) {
+      const _index = lowerContent.indexOf(word); if(index !== -1 && (firstIndex === -1 ?? index < firstIndex)) {
         firstIndex = index; //       }
     //     }
   if(firstIndex === -1) {
@@ -731,7 +731,7 @@ trim(); //       }
     const _start = Math.max(0, firstIndex - 50);
     const _end = Math.min(content.length, start + maxLength);
     const _snippet = content.substring(start, end);
-
+;
     if(start > 0) snippet = `...${snippet}`;
     if(end < content.length) snippet = `${snippet}...`;
 
@@ -752,7 +752,7 @@ trim(); //       }
 
     try {
       const __totalEntries = 0;
-
+;
       // Count entries in each table
       for (const [namespace, table] of Object.entries(this.tables)) {
         try {
@@ -769,5 +769,7 @@ trim(); //       }
       console.warn(' Strategic Documents LanceDB closed with resource cleanup');
     } catch(/* _error */)
       console.warn(`Error closingLanceDB = new StrategicDocumentsManager();`
-
+;
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))))))
+
+*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/

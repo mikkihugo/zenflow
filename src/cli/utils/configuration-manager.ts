@@ -19,10 +19,10 @@ export class TypeScriptConfigurationManager extends EventEmitter implements ICon
   ) {
   super() {}
   this
-
+;
   schema = schema;
   this;
-
+;
   config = this.createDefaultConfig();
   if(initialConfig) {
     this.config = { ...this.config, ...initialConfig };
@@ -33,7 +33,7 @@ export class TypeScriptConfigurationManager extends EventEmitter implements ICon
 // =============================================================================
 
 async;
-load(path?)
+load(path?);
 : Promise<CLIConfig>
 // {
   const _configPath = path ?? this.getDefaultConfigPath();
@@ -56,7 +56,7 @@ load(path?)
         } else if(configPath.endsWith('.js')  ?? configPath.endsWith('.mjs')) {
           // Dynamic import for JS config files
 // const _configModule = awaitimport(configPath);
-          loadedConfig = configModule.default  ?? configModule;
+          loadedConfig = configModule.default ?? configModule;
         } else {
           throw new Error('Unsupported config file format. Use .json, .js, or .mjs');
         //         }
@@ -99,9 +99,9 @@ load(path?)
       const _configDir = pathModule.dirname(configPath);
 // // await fs.mkdir(configDir, {recursive = JSON.stringify(configToSave, null, 2);
       //       }
-    else
+    else;
     if(configPath.endsWith('.js') ?? configPath.endsWith('.mjs')) {
-      content = `module.exports = ${JSON.stringify(configToSave, null, 2)};`
+      content = `export default ${JSON.stringify(configToSave, null, 2)};`
   `;`
     } else {
       // Default to JSON
@@ -112,7 +112,7 @@ load(path?)
     this.configPath = configPath;
     this.emit('config-saved', configToSave, configPath);
   //   }
-  catch(error)
+  catch(error);
   throw new ConfigurationError(;
   `;`
   Failed;
@@ -126,13 +126,13 @@ load(path?)
     // ; // LINT: unreachable code removed
   set<T = any>(key,value = this.get(key);
   this.setNestedValue(this.config, key, value);
-
+;
   // Notify watchers
   this.notifyWatchers(key, value, oldValue);
 
   // Emit change event
   this.emit('config-changed', key, value, oldValue);
-
+;
   has(key = = undefined;
 // }
 
@@ -140,7 +140,7 @@ delete(key = this.has(key);
   if(existed) {
   const _oldValue = this.get(key);
   this.deleteNestedValue(this.config, key);
-
+;
   // Notify watchers
   this.notifyWatchers(key, undefined, oldValue);
 
@@ -157,15 +157,15 @@ delete(key = this.has(key);
   validate(schema = this.schema);
 // {
   const _results = [];
-
+;
   for (const [key, _schemaEntry] of Object.entries(schema)) {
-    const _value = this.get(key); const _result = {key = === undefined  ?? value === null)) {
-        result.valid = false; result.message = `;`
+    const _value = this.get(key); const _result = {key = === undefined ?? value === null)) {
+        result.valid = false; result.message = `;`;
   Required;
   field;
   ('${key}') {;
   is;
-  missing`;`
+  missing`;`;
     results.push(result);
   //   }
 
@@ -179,7 +179,7 @@ delete(key = this.has(key);
   const _actualType = Array.isArray(value) ? 'array' : typeof value;
   if(actualType !== expectedType) {
     result.valid = false;
-    result.message = `;`
+    result.message = `;`;
   Field;
   ('${key}');
   must;
@@ -187,7 +187,7 @@ delete(key = this.has(key);
   of;
   //   type ${expectedType}
   , got $actualType`
-    results.push(result)
+    results.push(result);
   continue;
   // Custom validation function if() {
   const _validationResult = schemaEntry.validation(value);
@@ -212,7 +212,7 @@ results.push(result);
 // CONFIGURATION WATCHING
 // =============================================================================
 
-watch(key = > void)
+watch(key = > void);
 : () => void
 // {
   if(!this.watchers.has(key)) {
@@ -247,7 +247,7 @@ startWatching();
   if(!this.configPath) {
     return;
     //   // LINT: unreachable code removed}
-    const _fs = require('node);'
+    const _fs = require('node);';
     fs.watchFile(this.configPath, async() => {
       try {
 // await this.reload();
@@ -262,7 +262,7 @@ startWatching();
   if(!this.configPath) {
     return;
     //   // LINT: unreachable code removed}
-    const _fs = require('node);'
+    const _fs = require('node);';
     fs.unwatchFile(this.configPath);
   //   }
   // =============================================================================
@@ -287,13 +287,13 @@ startWatching();
   : string
   //   {
   switch(format) {
-      case 'json': null
+      case 'json': null;
         // return JSON.stringify(this.config, null, 2);
       // ; // LINT: unreachable code removed
-      case 'yaml': null
+      case 'yaml': null;
         // return this.toYaml(this.config);
       // ; // LINT: unreachable code removed
-      case 'env': null
+      case 'env': null;
         // return this.toEnvFormat(this.config);
         // default = ============================================================================; // LINT: unreachable code removed
         // PRIVATE HELPER METHODS
@@ -442,3 +442,5 @@ const _globalConfigManager = null;
 // export type { TypeScriptConfigurationManager as ConfigurationManager };
 // export type { CLI_CONFIG_SCHEMA as DEFAULT_CLI_SCHEMA };
 )))))))))))))
+
+*/*/

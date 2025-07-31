@@ -11,14 +11,14 @@ export async function createLocalExecutable(workingDir = false) {
   try {
     if(platform() === 'win32') {
       // Create Windows batch file
-      const __wrapperScript = `@echo off;`
+      const __wrapperScript = `@echo off;`;
 REM Claude-Flow local wrapper;
 REM This script ensures claude-zen runs from your project directory
-
+;
 set PROJECT_DIR=%CD%;
 set PWD=%PROJECT_DIR%;
 set CLAUDE_WORKING_DIR=%PROJECT_DIR%
-
+;
 REM Try to find claude-zen binary;
 REM Check common locations for npm/npx installations
 
@@ -40,26 +40,26 @@ REM 3. Global installation(npm install -g claude-zen);
 where claude-zen >nul 2>nul;
 if %ERRORLEVEL% EQU 0(;
   cd /d "%PROJECT_DIR%";
-  claude-zen %*
+  claude-zen %*;
   exit /b %ERRORLEVEL%;
 // )
 
 REM 4. Fallback to npx(will download if needed);
 cd /d "%PROJECT_DIR%";
-npx claude-zen@latest %*
+npx claude-zen@latest %*;
 `;`
 
       // Write the Windows batch file
   if(!dryRun) {
 // // await writeFile(`${workingDir}/claude-zen.cmd`, wrapperScript, 'utf8');
         console.warn('   Created local claude-zen.cmd executable wrapper');
-        console.warn('    You can nowuse = workingDir.includes('claude-zen');'
+        console.warn('    You can nowuse = workingDir.includes('claude-zen');';
       const _devBinPath = isDevelopment;
         ? `\$workingDir.split('claude-zen')[0]claude-zen/bin/claude-zen`;
         : '';
 
       // Create Unix/Linux/Mac shell script
-      const _wrapperScript = `#!/usr/bin/env bash;`
+      const _wrapperScript = `#!/usr/bin/env bash;`;
 # Claude-Flow local wrapper;
 # This script ensures claude-zen runs from your project directory
 
@@ -80,7 +80,7 @@ if [ -f "${devBinPath}" ]; then;
   cd "\${PROJECT_DIR}";
   exec "${devBinPath}" "$@";
 fi
-
+;
 `;`
     : '';
 }# 1. Local node_modules(npm install claude-zen);
@@ -97,7 +97,7 @@ elif [ -f "\${PROJECT_DIR}/../node_modules/.bin/claude-zen" ]; then;
 elif command -v claude-zen &> /dev/null; then;
   cd "\${PROJECT_DIR}";
   exec claude-zen "$@"
-
+;
 # 4. Fallback to npx(will download if needed);
 else;
   cd "\${PROJECT_DIR}";
@@ -111,11 +111,13 @@ fi;
         // Make it executable
 // // await chmod(`${workingDir}/claude-zen`, 0o755);
         console.warn('   Created local claude-zen executable wrapper');
-        console.warn('    You can now use);'
+        console.warn('    You can now use);';
       //       }
     //     }
   } catch(err) ;
-    console.warn(`    Could not create local executable);`
+    console.warn(`    Could not create local executable);`;
 // }
 
 })
+
+*/*/

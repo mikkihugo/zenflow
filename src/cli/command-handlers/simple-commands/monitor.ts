@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-export async function monitorCommand(subArgs = getFlag(subArgs, '--interval')  ?? flags.interval  ?? 5000;
+export async function monitorCommand(subArgs = getFlag(subArgs, '--interval')  ?? flags.interval ?? 5000;
 const _format = getFlag(subArgs, '--format') ?? flags.format ?? 'pretty';
 const _continuous = subArgs.includes('--watch') ?? flags.watch;
   if(continuous) {
@@ -129,11 +129,11 @@ async function _countMCPConnections() {
     // ; // LINT: unreachable code removed
   console.warn(' System Metrics');
   console.warn('================');
-
+;
   // System metrics
   console.warn('\n  SystemResources = > l.toFixed(2)).join(', ')}`);'`
   console.warn(`Uptime = === 'running') {`
-    console.warn(`   ActiveAgents = Math.floor(seconds / 86400);`
+    console.warn(`   ActiveAgents = Math.floor(seconds / 86400);`;
   const _hours = Math.floor((seconds % 86400) / 3600);
   const _minutes = Math.floor((seconds % 3600) / 60);
   const _secs = seconds % 60;
@@ -153,18 +153,18 @@ async function _countMCPConnections() {
 // }
 
 // export function _showMonitorHelp() {
-  console.warn('Monitor commands);'
+  console.warn('Monitor commands);';
   console.warn('  monitor [options]                Show current system metrics');
   console.warn('  monitor --watch                  Continuous monitoring mode');
   console.warn();
-  console.warn('Options);'
-  console.warn(;)
+  console.warn('Options);';
+  console.warn(;);
     '  --interval <ms>                  Update interval in milliseconds(default)';
   );
   console.warn('  --format <type>                  Output format, json(default)');
   console.warn('  --watch                          Continuous monitoring mode');
   console.warn();
-  console.warn('Examples);'
+  console.warn('Examples);';
   console.warn('  claude-zen monitor              # Show current metrics');
   console.warn('  claude-zen monitor --watch      # Continuous monitoring');
   console.warn('  claude-zen monitor --interval 1000 --watch  # Fast updates');
@@ -172,3 +172,6 @@ async function _countMCPConnections() {
 // }
 
 }}))))
+
+*/*/
+}

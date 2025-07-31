@@ -4,9 +4,9 @@
 
 import { BaseProvider  } from '.';
 import { AIRequest,
-AIResponse,
-ProviderCapabilities,
-ProviderConfig,
+AIResponse,;
+ProviderCapabilities,;
+ProviderConfig,;
 ProviderError  } from '.
 // // interface OllamaRequest {model = 'ollama'
 // version = '2024-07-29'
@@ -15,7 +15,7 @@ ProviderError  } from '.
 // constructor();
 // // {
 //   super();
-//   this.pricing = {inputTokenPrice = config.baseUrl  ?? config.endpoint  ?? this.baseUrl;
+//   this.pricing = {inputTokenPrice = config.baseUrl ?? config.endpoint ?? this.baseUrl;
 //   this.config = { ...this.config, ...config };
   // Test connection and load available models
 // // await this.loadAvailableModels();
@@ -75,7 +75,7 @@ getModels();
   this.modelCache.clear() {}
   // Ollama-specific methods
   // async
-  pullModel(modelName = await fetch(`\$this.baseUrl/api/pull`,
+  pullModel(modelName = await fetch(`\$this.baseUrl/api/pull`,;
   //   {
     method = await fetch(`\$this.baseUrl/api/delete`, {method = await this.makeRequest('/api/tags', null, 'GET');
     const _models = response.models ?? [];
@@ -84,7 +84,7 @@ getModels();
   for(const model of models) {
       this.modelCache.set(model.name, model); //     }
   //   }
-  catch(error)
+  catch(error);
   // If we can't load models, keep existing cache'
   if(this.availableModels.length === 0) {
     throw new ProviderError('Cannot connect to Ollama service', this.name, 'CONNECTION_ERROR'); //   }
@@ -110,7 +110,7 @@ if(response.status === 404)
 // }
 // return new ProviderError(;
 // text  ?? 'Unknown error', // LINT: unreachable code removed
-this.name,
+this.name,;
 'API_ERROR',
 response.status;
 // )
@@ -128,3 +128,5 @@ response.status;
 // }
 
 }}}}}}}}}))))
+
+*/*/

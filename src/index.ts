@@ -9,29 +9,29 @@ const _PORT = parseInt(process.env.PORT ?? '3000', 10);
 // Middleware setup
 app.use(cors());
 app.use(express.json());
-
+;
 /** Health check endpoint;
  * @route GET 
 
 app.get('/', (_req, res) => {
   res.json({ message: 'Claude-Zen API Server',
-  status: 'healthy',
-  version: '2.0.0-alpha.73',)
+  status: 'healthy',;
+  version: '2.0.0-alpha.73',);
   timestamp: new Date().toISOString()   });
 })
 
 /** System status endpoint;
  * @route GET 
 
-app.get('/status', (_req, res) =>
+app.get('/status', (_req, res) =>;
 // {
   res.json({)
     status);
   : 'integrated',
   memory: 'operational',
-
-  uptime: process.uptime(),
-  memory: process.memoryUsage(),
+;
+  uptime: process.uptime(),;
+  memory: process.memoryUsage(),;
   timestamp: new Date().toISOString() }
 // )
 })
@@ -39,8 +39,10 @@ app.get('/status', (_req, res) =>
   if(import.meta.url === `file) {`
   app.listen(PORT, () => {
     console.warn(` Claude-Zen API server running on port ${PORT}`);
-    console.warn(` Environment);`
+    console.warn(` Environment);`;
     console.warn(` Started at: ${new Date().toISOString()}`);
   });
 // }
 // export default app;
+
+*/*/*/*/

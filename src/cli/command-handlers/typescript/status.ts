@@ -62,7 +62,7 @@ async function getResourceUsage(logger = // await import('node);'
     // Get CPU info
 
     const __loadAvg = 'N
-
+;
     try {
       const _loadAvgData = os.loadavg();
       _loadAvg = `${loadAvgData[0].toFixed(2)}, ${loadAvgData[1].toFixed(2)}, ${loadAvgData[2].toFixed(2)}`;
@@ -100,7 +100,7 @@ function formatUptime(milliseconds = === 0) return '0s';
   const _minutes = Math.floor(seconds / 60);
   const _hours = Math.floor(minutes / 60);
   const _days = Math.floor(hours / 24);
-
+;
   if(days > 0) return `${days}d ${hours % 24}h ${minutes % 60}m`;
     // if(hours > 0) return `\${hours // LINT}h ${minutes % 60}m ${seconds % 60}s`;
   if(_minutes > 0) return `${minutes}m ${seconds % 60}s`;
@@ -108,3 +108,6 @@ function formatUptime(milliseconds = === 0) return '0s';
 // }
 
 }}}}}})))))
+
+*/*/
+}

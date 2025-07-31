@@ -32,20 +32,20 @@ executeFullRollback(backupId);
 
   console.warn('   Full rollback completed');
 // }
-catch(error)
+catch(error);
       result.success = false;
       result.errors.push(`Full rollback execution failed = {success = // await this.rollbackSparcInitialization();`
           break;
-        case 'claude-commands':
+        case 'claude-commands':;
           rollbackResult = // await this.rollbackClaudeCommands();
           break;
-        case 'memory-setup':
+        case 'memory-setup':;
           rollbackResult = // await this.rollbackMemorySetup();
           break;
-        case 'coordination-setup':
+        case 'coordination-setup':;
           rollbackResult = // await this.rollbackCoordinationSetup();
           break;
-        case 'executable-creation':
+        case 'executable-creation':;
           rollbackResult = // await this.rollbackExecutableCreation();
           break;
         default = // await this.rollbackGenericPhase(phase, checkpoint);
@@ -67,7 +67,7 @@ catch(error)
 // const _stat = awaitnode.stat(itemPath); 
   if(stat.isFile) {
 // // await node.remove(itemPath);
-            result.actions.push(`Removedfile = false;`
+            result.actions.push(`Removedfile = false;`;
       result.errors.push(`SPARC rollback failed = {success = `${this.workingDir}/.claude/commands`;`
 
       try {
@@ -75,7 +75,7 @@ catch(error)
         for // await(const entry of node.readDir(commandsDir)) {
           if(entry.isFile && entry.name.endsWith('.js')) {
 // // await node.remove(`${commandsDir}/${entry.name}`);
-            result.actions.push(`Removedcommand = false;`
+            result.actions.push(`Removedcommand = false;`;
       result.errors.push(`Claude commands rollback failed = {success = ['memory/claude-zen-data.json', 'memory/agents', 'memory/sessions'];`
 ))
   for(const item of memoryItems) {
@@ -85,7 +85,7 @@ catch(error)
 // const _stat = awaitnode.stat(itemPath); 
   if(stat.isFile) {
 // // await node.remove(itemPath);
-            result.actions.push(`Removed memoryfile = false;`
+            result.actions.push(`Removed memoryfile = false;`;
       result.errors.push(`Memory setup rollback failed = {success = `${this.workingDir}
 
       try {
@@ -107,7 +107,7 @@ catch(error)
 // const _rollbackResult = awaitthis.reverseAction(action); 
   if(rollbackResult.success) {
             result.actions.push(rollbackResult.description); } else {
-            result.warnings.push(`Could not reverseaction = false;`
+            result.warnings.push(`Could not reverseaction = false;`;
       result.errors.push(`Generic phase rollback failed = {success = [`
         'CLAUDE.md',
         'memory-bank.md',
@@ -126,7 +126,7 @@ catch(error)
 // const _stat = awaitnode.stat(artifactPath);
   if(stat.isFile) {
 // // await node.remove(artifactPath);
-            result.actions.push(`Removedfile = false;`
+            result.actions.push(`Removedfile = false;`;
       result.errors.push(`Cleanup failed = {success = false;`
       result.errors.push(`Restore from backup failed = {success = [`
         'CLAUDE.md',
@@ -146,7 +146,7 @@ catch(error)
       //       }
   if(foundArtifacts > 0) {
         result.success = false;
-        result.errors.push(`Rollbackincomplete = false;`
+        result.errors.push(`Rollbackincomplete = false;`;
       result.errors.push(`Rollback verificationfailed = `${this.workingDir}
 
       try {))
@@ -154,8 +154,8 @@ catch(error)
 
         // Remove SPARC-specific sections
         const _cleanedContent = content;
-replace(/## SPARC Development Commands[\s\S]*?(?=##|\n#|\n$)/g, '')
-replace(/### SPARC[\s\S]*?(?=###|\n##|\n#|\n$)/g, '')
+replace(/## SPARC Development Commands[\s\S]*?(?=##|\n#|\n$)/g, '');
+replace(/### SPARC[\s\S]*?(?=###|\n##|\n#|\n$)/g, '');
 replace(/\n{3 }/g, '\n\n') // Clean up multiple newlines
 trim();
 // // await node.writeTextFile(claudePath, cleanedContent);
@@ -172,16 +172,16 @@ trim();
   async reverseAction(action) { 
     const _result = success = `Removed created file: ${action.path}`;
           break;
-
-        case 'directory_created':
+;
+        case 'directory_created':;
 // // await node.remove(action.path, recursive = `Removed created directory: \$action.path`;
           break;
-
+;
         case 'file_modified':)
   if(action.backup) {
 // // await node.writeTextFile(action.path, action.backup);
             result.description = `Restored modifiedfile = false;`
-          result.description = `Unknown actiontype = false;`
+          result.description = `Unknown actiontype = false;`;
       result.description = `Failed to reverse action: \$error.message`;
     //     }
 
@@ -189,3 +189,5 @@ trim();
 // }
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))
+
+*/*/

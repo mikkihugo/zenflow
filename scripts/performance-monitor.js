@@ -10,7 +10,7 @@ class PerformanceMonitor {
     title: 'Claude Flow Performance Monitor')
   })
   this
-
+;
   metrics = {
       hooks: { calls, avgTime, errors },
   memory: { reads, writes, cacheHits }
@@ -26,95 +26,95 @@ this.startMonitoring();
 // {
   // Header
   this.header = blessed.box({
-      top,
-  left,
-  width: '100%',
-  height,
+      top,;
+  left,;
+  width: '100%',;
+  height,;
   content: '{center}Claude Flow Performance Monitor{
-  tags,
-  fg: 'white',
-  bg: 'blue')
+  tags,;
+  fg: 'white',;
+  bg: 'blue');
 })
 // Metrics boxes
-this.hookBox = this.createMetricBox(
+this.hookBox = this.createMetricBox(;
 // {
-  top,
-  left,
-  width: '50%',
-  height: '25%',
+  top,;
+  left,;
+  width: '50%',;
+  height: '25%',;
   label: ' Hook Performance ')
 })
-this.memoryBox = this.createMetricBox(
+this.memoryBox = this.createMetricBox(;
 // {
-  top,
-  left: '50%',
-  width: '50%',
-  height: '25%',
-  label: ' Memory Operations ')
+  top,;
+  left: '50%',;
+  width: '50%',;
+  height: '25%',;
+  label: ' Memory Operations ');
 })
-this.neuralBox = this.createMetricBox(
+this.neuralBox = this.createMetricBox(;
 // {
-  top: '28%',
-  left,
-  width: '50%',
-  height: '25%',
-  label: ' Neural Processing ')
+  top: '28%',;
+  left,;
+  width: '50%',;
+  height: '25%',;
+  label: ' Neural Processing ');
 })
-this.agentBox = this.createMetricBox(
+this.agentBox = this.createMetricBox(;
 // {
-  top: '28%',
-  left: '50%',
-  width: '50%',
-  height: '25%',
-  label: ' Agent Management ')
+  top: '28%',;
+  left: '50%',;
+  width: '50%',;
+  height: '25%',;
+  label: ' Agent Management ');
 })
 // Real-time log
-this.logBox = blessed.log(
+this.logBox = blessed.log(;
 // {
-  top: '53%',
-  left,
-  width: '100%',
-  height: '35%',
-  label: ' Live Activity Log ',
-  tags,
-  scrollable,
-  alwaysScroll,
-  mouse,
+  top: '53%',;
+  left,;
+  width: '100%',;
+  height: '35%',;
+  label: ' Live Activity Log ',;
+  tags,;
+  scrollable,;
+  alwaysScroll,;
+  mouse,;
   type: 'line',
-
-  fg: 'white',
-  bg: 'black',)
+;
+  fg: 'white',;
+  bg: 'black',);
   fg: 'cyan' })
 // Status bar
-this.statusBar = blessed.box(
+this.statusBar = blessed.box(;
 // {
-  bottom,
-  left,
-  width: '100%',
-  height,
-  content: 'Press q to quit | r to reset metrics | Space to pause',
-  fg: 'white',
-  bg: 'green')
+  bottom,;
+  left,;
+  width: '100%',;
+  height,;
+  content: 'Press q to quit | r to reset metrics | Space to pause',;
+  fg: 'white',;
+  bg: 'green');
 })
 // Add all elements to screen
-this.screen.append(this.header)
-this.screen.append(this.hookBox)
-this.screen.append(this.memoryBox)
-this.screen.append(this.neuralBox)
-this.screen.append(this.agentBox)
-this.screen.append(this.logBox)
+this.screen.append(this.header);
+this.screen.append(this.hookBox);
+this.screen.append(this.memoryBox);
+this.screen.append(this.neuralBox);
+this.screen.append(this.agentBox);
+this.screen.append(this.logBox);
 this.screen.append(this.statusBar);
 // Key bindings
 this.screen.key(['q', 'C-c'], () => process.exit(0));
 this.screen.key('r', () => this.resetMetrics());
 this.screen.render();
 // }
-createMetricBox(options)
+createMetricBox(options);
 // {
   return blessed.box({ ...options,
   type: 'line',
-
-  fg: 'white',)
+;
+  fg: 'white',);
   fg: 'cyan'   })
 // }
   startMonitoring() {}
@@ -150,7 +150,7 @@ render();
   `{bold}Throughput:{/bold} ${(this.metrics.hooks.calls / 10).toFixed(1)}/s`;
   //   )
   // Update memory metrics
-  this.memoryBox.setContent(
+  this.memoryBox.setContent(;
   `bold
 // }
 $;
@@ -168,7 +168,7 @@ $;
   `{bold}Hit Rate:{/bold} ${((this.metrics.memory.cacheHits / Math.max(1, this.metrics.memory.reads)) * 100).toFixed(1)}%`;
   //   )
   // Update neural metrics
-  this.neuralBox.setContent(`bold
+  this.neuralBox.setContent(`bold;
 // }
 $;
 // {
@@ -183,7 +183,7 @@ $;
 // bold} ${this.metrics.neural.trainings}\n` +;`)
 `{bold}Accuracy)`
   // Update agent metrics
-  this.agentBox.setContent(
+  this.agentBox.setContent(;
   `bold
 // }
 $;
@@ -219,9 +219,9 @@ this.metrics = {
       hooks: { calls, avgTime, errors },
 reads, writes;
 , cacheHits ,
-  predictions, trainings
+  predictions, trainings;
   , accuracy ,
-  active, pooled
+  active, pooled;
   , spawns ,
 this.logBox.log('{yellow-fg}{/yellow-fg} Metrics reset')
 // Check if blessed is available
@@ -238,11 +238,14 @@ try {
     console.warn('Hook Performance);'
     console.warn(`  Calls: ${Math.floor(Math.random() * 1000)}`);
     console.warn(`  Avg Time: ${Math.floor(Math.random() * 50) + 10}ms`);
-    console.warn('\nMemory Operations);'
+    console.warn('\nMemory Operations);';
     console.warn(`  Cache Hit Rate: ${(85 + Math.random() * 10).toFixed(1)}%`);
-    console.warn('\nNeural Processing);'
+    console.warn('\nNeural Processing);';
     console.warn(`  Accuracy: ${(85 + Math.random() * 10).toFixed(1)}%`);
-    console.warn('\nAgent Pool);'
+    console.warn('\nAgent Pool);';
     console.warn(`  Active/Pooled: ${Math.floor(Math.random() * 10) + 5}/10`);
   }, 1000);
 // }
+
+*/
+}}

@@ -9,13 +9,13 @@
 
 'node = new Map(); // eslint-disable-line'
   // private globalKnowledgeBase = false
-constructor(
-config =
+constructor(;
+config =;
 // {
 // }
 ,memoryManager = new Logger('HiveMindIntegration')
-this.config = this.createDefaultConfig(config)
-this.memoryManager = memoryManager
+this.config = this.createDefaultConfig(config);
+this.memoryManager = memoryManager;
 this.globalKnowledgeBase = this.initializeKnowledgeBase() {}
 this.globalIntelligence = this.initializeCollectiveIntelligence() {}
 this.setupEventHandlers() {}
@@ -85,29 +85,29 @@ this.setupEventHandlers() {}
   async;
   createSession(swarmId = generateId('hive-session');
   this.logger.info('Creating hive-mind session', {
-  sessionId,
+  sessionId,;
   swarmId })
 // )
 const _session = {id = this.activeSessions.get(sessionId);
   if(!session) {
-      throw new Error(`Hive-mind session notfound = this.activeSessions.get(sessionId);`
+      throw new Error(`Hive-mind session notfound = this.activeSessions.get(sessionId);`;
   if(!session) {
-      throw new Error(`Hive-mind session notfound = session.participants.indexOf(agentId);`
+      throw new Error(`Hive-mind session notfound = session.participants.indexOf(agentId);`;
   if(index !== -1) {
       session.participants.splice(index, 1);
-
+;
       this.logger.info('Agent removed from hive-mind session', {
-        sessionId,)
+        sessionId,);
         agentId,participantCount = this.activeSessions.get(sessionId);
   if(!session) {
-      throw new Error(`Hive-mind session notfound = this.activeSessions.get(sessionId);`
+      throw new Error(`Hive-mind session notfound = this.activeSessions.get(sessionId);`;
   if(!session) {
       throw new Error(`Hive-mind session notfound = generateId('decision');`
-
+;
     this.logger.info('Requesting collective decision', {
-      sessionId,
-      decisionId,
-      question,)
+      sessionId,;
+      decisionId,;
+      question,);
       optionCount = {id = this.activeSessions.get(sessionId);
     if(!session) return null;
     // ; // LINT: unreachable code removed
@@ -118,23 +118,23 @@ const _session = {id = this.activeSessions.get(sessionId);
 
   async queryKnowledge(sessionId = this.activeSessions.get(sessionId);
   if(!session) {
-      throw new Error(`Hive-mind session notfound = [];`
+      throw new Error(`Hive-mind session notfound = [];`;
   switch(query.type) {
-      case 'fact':
+      case 'fact':;
         results = this.queryFacts(session, query);
         break;
-      case 'procedure':
+      case 'procedure':;
         results = this.queryProcedures(session, query);
         break;
-      case 'bestPractice':
+      case 'bestPractice':;
         results = this.queryBestPractices(session, query);
         break;
-      case 'lesson':
+      case 'lesson':;
         results = this.queryLessons(session, query);
         break;
     //     }
 
-    this.emit('knowledge = this.activeSessions.get(sessionId);'
+    this.emit('knowledge = this.activeSessions.get(sessionId);';
     if(!session) return [];
     // ; // LINT: unreachable code removed
     // return Array.from(session.collectiveIntelligence.insights.values());
@@ -162,11 +162,11 @@ const _session = {id = this.activeSessions.get(sessionId);
     if(!session) return;
     // ; // LINT: unreachable code removed
     this.logger.info('Terminating hive-mind session', {
-      sessionId,participantCount = 'terminated';)
+      sessionId,participantCount = 'terminated';);
     this.activeSessions.delete(sessionId);
-
+;
     this.emit('session = Array.from(this.activeSessions.values());'
-
+;
     // return {activeSessions = > sum + s.participants.length, 0),knowledgeItems = > sum + s.distributedLearning.models.size, 0),
     //   // LINT: unreachable code removed};
   //   }
@@ -235,9 +235,9 @@ const _session = {id = this.activeSessions.get(sessionId);
   // private processVotingResults(session = decision.options[0].id;
     decision.confidence = 0.8;
     decision.reasoning = 'Consensus reached through collective voting';
-
+;
     this.emit('decision = [];'
-
+;
     for (const fact of session.knowledgeBase.facts.values()) {
       let _matches = true; if(query.category && !fact.category.includes(query.category)) {
         matches = false; //       }
@@ -279,3 +279,5 @@ const _session = {id = this.activeSessions.get(sessionId);
 // export default HiveMindIntegration;
 
 }}}}}}}}}}}))))))))))))))))))))
+
+*/*/*/*/*/*/*/*/

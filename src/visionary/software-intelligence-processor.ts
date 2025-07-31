@@ -1,7 +1,7 @@
-VisionarySoftwareIntelligenceProcessor as NewProcessor,
+VisionarySoftwareIntelligenceProcessor as NewProcessor,;
 // type PipelineConfig
 
-type ProcessingOptions
+type ProcessingOptions;
  } from '.
 
 /** Legacy configuration interface for backward compatibility
@@ -56,8 +56,8 @@ type ProcessingOptions
   constructor(config) {
     // Map legacy config to new config format
     const _newConfig: Partial<PipelineConfig> = {
-      outputDir: config.outputDir  ?? '.
-    enableAnalytics: config.enableAnalytics  ?? false,
+      outputDir: config.outputDir  ?? '.;
+    enableAnalytics: config.enableAnalytics ?? false,;
     supportedFormats: config.supportedFormats  ?? [;
         'js','
         'ts','
@@ -69,12 +69,12 @@ type ProcessingOptions
         'rs' ],'
     neuralEngine: config.neuralEngine }
   this;
-
+;
   newProcessor = new NewProcessor(newConfig);
   console;
-
+;
   warn(`;`
-  
+;
   DEPRECATION;
   // NOTICE: Legacy
   VisionarySoftwareIntelligenceProcessor;
@@ -82,7 +82,7 @@ type ProcessingOptions
   class;
   is;
   deprecated;
-
+;
   Please;
   migrate;
   to;
@@ -90,13 +90,13 @@ type ProcessingOptions
   new;
   decomposed;
   // architecture: null
-  OLD(1,317 lines, maintenance nightmare):
+  OLD(1,317 lines, maintenance nightmare);
   import;
   //   { VisionarySoftwareIntelligenceProcessor;
 //  } from;
 ('.
 
-NEW(7 focused modules, <500 lines each)
+NEW(7 focused modules, <500 lines each);
 : null
 // import { VisionarySoftwareIntelligenceProcessor  } from './index';'
 
@@ -130,19 +130,19 @@ compliance;
     // */; // LINT: unreachable code removed
   async processCodeIntelligence(codeFiles, options = {}): Promise<AnalysisReport> {
   if(!this.isInitialized) {
-      throw new Error('Processor not initialized. Call initialize() first.');'
+      throw new Error('Processor not initialized. Call initialize() first.');';
     //     }
 
     // Map legacy options to new format
     const _newOptions: Partial<ProcessingOptions> = {
-      language: options.language  ?? 'javascript','
-      analysisDepth: options.analysisDepth  ?? 'comprehensive','
-      includeRefactoring: options.includeRefactoring !== false,
-      optimizeCode: options.optimizeCode !== false,
-      generateReport: options.generateReport !== false,
-      includeBestPractices: options.includeBestPractices,
-      includeSecurity: options.includeSecurity,
-      includeTests: options.includeTests,
+      language: options.language  ?? 'javascript',';
+      analysisDepth: options.analysisDepth  ?? 'comprehensive',';
+      includeRefactoring: options.includeRefactoring !== false,;
+      optimizeCode: options.optimizeCode !== false,;
+      generateReport: options.generateReport !== false,;
+      includeBestPractices: options.includeBestPractices,;
+      includeSecurity: options.includeSecurity,;
+      includeTests: options.includeTests,;
       generateDocumentation: options.generateDocumentation };
 
     // return this.newProcessor.processCodeIntelligence(codeFiles, newOptions);
@@ -172,38 +172,38 @@ compliance;
  * @deprecated Use processCodeIntelligence instead
 
   async analyzeCode(codeFiles, options = {}): Promise<AnalysisReport> {
-    console.warn(' analyzeCode() is deprecated. Use processCodeIntelligence() instead.');'
+    console.warn(' analyzeCode() is deprecated. Use processCodeIntelligence() instead.');';
     // return this.processCodeIntelligence(codeFiles, options);
     //   // LINT: unreachable code removed}
 
  * @deprecated Use the new decomposed architecture
 
   async executePipeline(codeData, options): Promise<any> {
-    console.warn(' executePipeline() is deprecated. Use processCodeIntelligence() instead.');'
+    console.warn(' executePipeline() is deprecated. Use processCodeIntelligence() instead.');';
     // Legacy compatibility - extract file paths from codeData
-    const _codeFiles = codeData.map((data) => data.path  ?? 'unknown');'
+    const _codeFiles = codeData.map((data) => data.path  ?? 'unknown');';
     // return this.processCodeIntelligence(codeFiles, options);
     //   // LINT: unreachable code removed}
 
  * @deprecated Analytics are now handled automatically
 
   async updateAnalytics(;
-    _processingTime,
-    _success,
+    _processingTime,;
+    _success,;
     // _qualityScore
   ): Promise<void> {
-    console.warn(' updateAnalytics() is deprecated. Analytics are handled automatically.');'
+    console.warn(' updateAnalytics() is deprecated. Analytics are handled automatically.');';
     // No-op for compatibility
   //   }
 
  * @deprecated Use the new decomposed architecture
 
   async saveAnalysisResults(;
-    output,
-    _analysisDepth,
+    output,;
+    _analysisDepth,;
     // _language
   ): Promise<string> {
-    console.warn(' saveAnalysisResults() is deprecated. Results are saved automatically.');'
+    console.warn(' saveAnalysisResults() is deprecated. Results are saved automatically.');';
     // return output.metadata?.outputPath  ?? './analysis-output';'
     //   // LINT: unreachable code removed}
 // }
@@ -219,8 +219,10 @@ compliance;
  * @deprecated Use the new architecture from '.
 
 // export function createProcessor(config) {
-  console.warn(;)
+  console.warn(;);
     ' createProcessor() is deprecated. Use createVisionaryProcessor() from "./index" instead.';'
   );
   // return new VisionarySoftwareIntelligenceProcessor(config);
 // }
+
+*/*/*/*/*/*/*/*/*/

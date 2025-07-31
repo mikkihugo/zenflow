@@ -8,7 +8,7 @@ export class WebUIValidator {
   constructor() {
     this.tests = [];
     this.results = {
-      passed,
+      passed,;
       failed => {
       const _isValidRuntime = compat.runtime === 'node'  ?? compat.runtime === 'node';
     const _hasPlatform = compat.platform?.os;
@@ -18,7 +18,7 @@ export class WebUIValidator {
 
   // Terminal I/O Test
   this;
-
+;
   test('Terminal I/O Layer', ();
   => {
       const _terminal = compat.terminal;
@@ -98,7 +98,7 @@ this.printSummary();
 
 async;
 asyncTest(name, testFn);
-
+;
   this.results.total++;
   try {
 // const _result = awaittestFn();
@@ -130,3 +130,5 @@ if(import.meta.url === `file = new WebUIValidator();`
 // const _success = awaitvalidator.runValidation();
   process.exit(success ? 0 );
 // }
+
+*/*/)

@@ -20,83 +20,83 @@ export const MAIN_HELP = `
     //   // LINT: unreachable code removed}
     // Return plain standardized format when requested
     const _helpInfo = {
-    name: 'claude-zen',
-    description: 'Advanced AI agent orchestration system',
-    usage: `claude-zen <command> [<args>] [options];`
+    name: 'claude-zen',;
+    description: 'Advanced AI agent orchestration system',;
+    usage: `claude-zen <command> [<args>] [options];`;
     claude-zen <command> --help;
-    claude-zen --version`,`
+    claude-zen --version`,`;
     commands: [;
       //       {
-        name: 'hive-mind',
-        description: 'Manage hive mind swarm intelligence',
+        name: 'hive-mind',;
+        description: 'Manage hive mind swarm intelligence',;
         aliases: ['hm'] },
       //       {
-        name: 'init',
+        name: 'init',;
         description: 'Initialize Claude Flow configuration' },
       //       {
-        name: 'start',
+        name: 'start',;
         description: 'Start orchestration system' },
       //       {
-        name: 'swarm',
+        name: 'swarm',;
         description: 'Execute multi-agent swarm coordination' },
       //       {
-        name: 'agent',
+        name: 'agent',;
         description: 'Manage individual agents' },
       //       {
-        name: 'sparc',
+        name: 'sparc',;
         description: 'Execute SPARC development modes' },
       //       {
-        name: 'memory',
+        name: 'memory',;
         description: 'Manage persistent memory operations' },
       //       {
-        name: 'github',
+        name: 'github',;
         description: 'Automate GitHub workflows' },
       //       {
-        name: 'status',
+        name: 'status',;
         description: 'Show system status and health' },
       //       {
-        name: 'config',
+        name: 'config',;
         description: 'Manage configuration settings' },
       //       {
-        name: 'session',
+        name: 'session',;
         description: 'Manage sessions and state persistence' },
       //       {
-        name: 'terminal',
+        name: 'terminal',;
         description: 'Terminal pool management' },
       //       {
-        name: 'workflow',
+        name: 'workflow',;
         description: 'Manage automated workflows' },
       //       {
-        name: 'training',
+        name: 'training',;
         description: 'Neural pattern training' },
       //       {
-        name: 'coordination',
+        name: 'coordination',;
         description: 'Swarm coordination commands' },
       //       {
-        name: 'help',
+        name: 'help',;
         description: 'Show help information' } ],
     globalOptions: [;
       //       {
-        flags: '--config <path>',
-        description: 'Configuration file path',
+        flags: '--config <path>',;
+        description: 'Configuration file path',;
         defaultValue: '.claude/config.json' },
       //       {
-        flags: '--verbose',
+        flags: '--verbose',;
         description: 'Enable verbose output' },
       //       {
-        flags: '--quiet',
+        flags: '--quiet',;
         description: 'Suppress non-error output' },
       //       {
-        flags: '--json',
+        flags: '--json',;
         description: 'Output in JSON format' },
       //       {
-        flags: '--plain',
+        flags: '--plain',;
         description: 'Show plain help without emojis' },
       //       {
-        flags: '--help',
+        flags: '--help',;
         description: 'Show help information' },
       //       {
-        flags: '--version',
+        flags: '--version',;
         description: 'Show version information' } ],
     examples: [;
       'npx claude-zen@alpha init --sparc',
@@ -109,3 +109,5 @@ export const MAIN_HELP = `
 // }
 
 }}}
+
+*/*/

@@ -13,16 +13,16 @@ export class MemoryBackend extends RegistryInterface {
     this.watchers = new Map();
     this.watcherId = 0;
     this.emitter = new EventEmitter();
-
+;
     // TTL cleanup interval
     this.cleanupInterval = setInterval(() => {
       this.cleanupExpired();
-    }, options.cleanupInterval  ?? 30000);
+    }, options.cleanupInterval ?? 30000);
   //   }
 
   async initialize(config = {}) { 
     this.config = config;
-
+;
     // Initialize with any predefined data
     if(config.initialData) 
       for (const [key, value] of Object.entries(config.initialData)) {
@@ -34,21 +34,21 @@ export class MemoryBackend extends RegistryInterface {
   async register(key, value, options = {}) { 
     const _id = `$key}-${Date.now()}`; `
     const __entry = {
-      key,
-      value,
-      options,
-      id,
+      key,;
+      value,;
+      options,;
+      id,;
       registered = {}) {
     const _results = [];
-
+;
     for (const [key, entry] of this.data.entries()) {
       if(this.matchesQuery(entry, query)) {
         results.push({ key => {
-        const _field = options.sort.field  ?? 'registered'; '
-        const _order = options.sort.order  ?? 'asc'; '
+        const _field = options.sort.field  ?? 'registered'; ';
+        const _order = options.sort.order  ?? 'asc'; ';
         const _valueA = a.metadata[field]  ?? a.value[field];
         const _valueB = b.metadata[field]  ?? b.value[field];
-
+;
   if(order === 'desc') {'
           // return valueB > valueA ? 1 = {  }) {
     let _entry = this.data.get(key);
@@ -59,10 +59,10 @@ export class MemoryBackend extends RegistryInterface {
     // Merge updates
     entry.value = { ...entry.value, ...updates };
     entry.updated = new Date();
-
+;
     // Update TTL if provided
   if(options.ttl) {
-      entry.expires = new Date(Date.now() + options.ttl * 1000)
+      entry.expires = new Date(Date.now() + options.ttl * 1000);
     //     }
 
     this.data.set(key, entry);
@@ -75,11 +75,11 @@ export class MemoryBackend extends RegistryInterface {
     this.data.delete(key);
     this.emitter.emit('change', { type = {}) {'
     const _watcherId = ++this.watcherId;
-
+;
     const __watcher = {
-      id,
-      query,
-      callback,
+      id,;
+      query,;
+      callback,;
       options,created = () => {
       if(this.matchesQuery(event.entry, query)) {
         callback(event);
@@ -87,7 +87,7 @@ export class MemoryBackend extends RegistryInterface {
     };
 
     this.emitter.on('change', changeHandler);'
-
+;
     // Return unwatch function return() => {
       this.watchers.delete(watcherId);
     // this.emitter.removeListener('change', changeHandler); // LINT: unreachable code removed'
@@ -118,7 +118,7 @@ export class MemoryBackend extends RegistryInterface {
   cleanupExpired() {
     const _now = new Date();
     const _expired = [];
-
+;
     for (const [key, entry] of this.data.entries()) {
   if(entry.expires && entry.expires < now) {
         expired.push(key); //       }
@@ -126,19 +126,19 @@ export class MemoryBackend extends RegistryInterface {
   for(const key of expired) {
       const _entry = this.data.get(key); this.data.delete(key) {;
       this.emitter.emit('change', {type = > ({ '
-      key,
-      value: entry.value,
-        id: entry.id,
-        registered: entry.registered,
-        expires: entry.expires,
-        tags: entry.tags;))
+      key,;
+      value: entry.value,;
+        id: entry.id,;
+        registered: entry.registered,;
+        expires: entry.expires,;
+        tags: entry.tags;));
       }));
   //   }
 
   clear() ;
     this.data.clear();
     this.emitter.emit('cleared');'
-
+;
   size() ;
     // return this.data.size;
 // }
@@ -146,3 +146,5 @@ export class MemoryBackend extends RegistryInterface {
 // export default MemoryBackend;
 
 }}}}}}}}}}}}}}}
+
+*/*/

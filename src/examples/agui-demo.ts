@@ -24,7 +24,7 @@ export class AGUIDemoIntegration {
 /** Demo1 = this.adapter.startTextMessage(null, 'assistant');
 
     // Simulate streaming text content
-    const _text = "Hello! I'm demonstrating the AG-UI protocol integration with Claude Code Zen.";'
+    const _text = "Hello! I'm demonstrating the AG-UI protocol integration with Claude Code Zen.";';
   for(const char of text) {
       this.adapter.addTextContent(char, messageId); // await new Promise(resolve => setTimeout(resolve, 50)); // Simulate typing
     //     }
@@ -62,10 +62,10 @@ export class AGUIDemoIntegration {
 // // await new Promise(resolve => setTimeout(resolve, 1000));// // await this.demoStateSynchronization();
       console.warn('\n All AG-UI integration demos completed successfully!');
       console.warn(' FinalStats = new AGUIWebSocketMiddleware(webSocketServer);'
-
+;
     // Connect our demo adapter to the WebSocket middleware
     this.adapter.connectGlobalEmitter(aguiWS.getGlobalAdapter());
-
+;
     // Run demos - events will be broadcast to connected WebSocket clients
 // // await this.runAllDemos();
     // return aguiWS;
@@ -92,14 +92,17 @@ const _demo = new AGUIDemoIntegration();
   if(server?.aguiMiddleware) {
   const _globalAdapter = server.aguiMiddleware.getGlobalAdapter();
   globalAdapter.emitCustomEvent('integration_test', {
-    status: 'success',)
+    status: 'success',);
   timestamp: Date.now() }
 // )
 // }
-console.warn(' AG-UI Integration Test completed')
+console.warn(' AG-UI Integration Test completed');
 // return demo.adapter.getStats();
 // }
 // }
 // export default AGUIDemoIntegration;
 
 }}}}}))
+
+*/*/*/*/*/*/*/
+}

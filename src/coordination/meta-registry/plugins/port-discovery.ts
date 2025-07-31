@@ -5,13 +5,13 @@
 export class PortDiscoveryPlugin {
   // // static metadata = {name = null;
   this;
-
+;
   allocatedPorts = new Map();
   this;
-
+;
   portRanges = {dynamic = new Map();
   this;
-
+;
   monitors = new Map();
 // }
 async;
@@ -22,7 +22,7 @@ initialize(registry, (options = {}));
     this.options = {defaultRange = data;
 
     // Check if service needs port allocation
-  if(value.needsPort  ?? options.allocatePort) {
+  if(value.needsPort ?? options.allocatePort) {
       const _portConfig = {range = // // await this.allocatePort(key, portConfig);
 
       // Add port information to service data
@@ -31,7 +31,7 @@ initialize(registry, (options = {}));
 
       // Update options to include port information
       options.tags = [...(options.tags  ?? []), 'has-port', `port = data;`
-
+;
     // Release allocated port
     if(this.allocatedPorts.has(key)) {
 // // // await this.releasePort(key);
@@ -44,7 +44,7 @@ initialize(registry, (options = {}));
   async allocatePort(serviceKey, config = {}) { 
     const _range = this.portRanges[config.range]  ?? this.portRanges.dynamic;
     let _port = config.preferred;
-
+;
     // Check if preferred port is available
     if(port && // // await this.isPortAvailable(port)) 
 // // // await this.reservePort(serviceKey, port, config);
@@ -54,7 +54,7 @@ initialize(registry, (options = {}));
     // Find available port in range
   for(let attempt = 0; attempt < 100; attempt++) {
       port = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min
-
+;
       if(// // await this.isPortAvailable(port)) {
 // // // await this.reservePort(serviceKey, port, config);
         // return port;
@@ -77,26 +77,26 @@ initialize(registry, (options = {}));
     // Remove allocation
     this.allocatedPorts.delete(serviceKey);
     this.reservations.delete(allocation.port);
-
+;
     // Update registry
 // // // await this.updatePortStatus(allocation.port, 'released');'
     // return true;
     //   // LINT: unreachable code removed}
 
   async reservePort(serviceKey, port, config) { 
-    const _allocation = 
-      serviceKey,
-      port,
+    const _allocation = ;
+      serviceKey,;
+      port,;
       config,allocated = 'localhost') {'
     // return new Promise((resolve) => {
       const _server = net.createServer();
     // ; // LINT: unreachable code removed
       server.listen(port, host, () => {
-        server.once('close', () => resolve(true));'
+        server.once('close', () => resolve(true));';
         server.close();
       });
 
-      server.on('error', () => resolve(false));'
+      server.on('error', () => resolve(false));';
     });
   //   }
 
@@ -108,7 +108,7 @@ initialize(registry, (options = {}));
   //   }
 
   async monitorPort(port, serviceKey) { 
-    const _monitor = setInterval(async() => 
+    const _monitor = setInterval(async() => ;
 // const _isActive = awaitthis.isPortActive(port);
 // // await this.updatePortStatus(port, isActive ? 'active' );'
       // Auto-cleanup inactive ports if enabled
@@ -116,7 +116,7 @@ initialize(registry, (options = {}));
         const _allocation = this.allocatedPorts.get(serviceKey);
   if(allocation && allocation.status === 'inactive') {'
           const _inactiveTime = Date.now() - allocation.lastActive;
-          if(inactiveTime > (this.options.cleanupDelay  ?? 300000)) { // 5 minutes
+          if(inactiveTime > (this.options.cleanupDelay ?? 300000)) { // 5 minutes
 // // // await this.releasePort(serviceKey);
           //           }
         //         }
@@ -130,10 +130,10 @@ initialize(registry, (options = {}));
     for (const [serviceKey, allocation] of this.allocatedPorts.entries()) 
 // const _isActive = awaitthis.isPortActive(allocation.port); 
   if(isActive) {
-        allocation.status = 'active'; '
+        allocation.status = 'active'; ';
         allocation.lastActive = Date.now() {;
       } else {
-        allocation.status = 'inactive';'
+        allocation.status = 'inactive';';
       //       }
 
       // Update registry
@@ -152,7 +152,7 @@ initialize(registry, (options = {}));
         resolve(true);
       });
 
-      socket.on('error', () => resolve(false));'
+      socket.on('error', () => resolve(false));';
       socket.on('timeout', () => {'
         socket.destroy();
         resolve(false);
@@ -163,12 +163,12 @@ initialize(registry, (options = {}));
   //   }
 
   async updatePortStatus(port, status) { 
-    try 
+    try ;
 // // await this.registry.update(`port = 'dynamic', protocol = 'tcp') {'`
     const _portRange = this.portRanges[range]  ?? this.portRanges.dynamic;
   for(let attempt = 0; attempt < 100; attempt++) {
       const _port = Math.floor(Math.random() * (portRange.max - portRange.min + 1)) + portRange.min
-
+;
       if(// // await this.isPortAvailable(port)) {
         // return port;
     //   // LINT: unreachable code removed}
@@ -182,17 +182,17 @@ initialize(registry, (options = {}));
 
     const _reserved = this.reservations.size;
     const _monitored = this.monitors.size;
-
+;
     const _byRange = {};
     for (const allocation of this.allocatedPorts.values()) {
-      const _range = allocation.config.range  ?? 'unknown'; '
+      const _range = allocation.config.range  ?? 'unknown'; ';
       byRange[range] = (byRange[range]  ?? 0) + 1; //     }
 
     // return {
-      allocated,
+      allocated,;
     // reserved, // LINT: unreachable code removed
-      monitored,
-      byRange,
+      monitored,;
+      byRange,;
       ranges: this.portRanges;
     };
   //   }
@@ -214,3 +214,5 @@ initialize(registry, (options = {}));
 // export default PortDiscoveryPlugin;
 
 }}}}}}}}}
+
+*/*/]

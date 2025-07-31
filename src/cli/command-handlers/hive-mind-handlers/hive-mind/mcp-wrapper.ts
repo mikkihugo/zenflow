@@ -23,7 +23,7 @@ this.ruvSwarmInstance = null;
   try {
     this.ruvSwarmInstance = // await RuvSwarm.initialize();
     console.warn('[MCPToolWrapper] RuvSwarm instance initialized.');
-
+;
     // Get default registry and memory-rag plugin
     this.defaultRegistry = this.metaRegistryManager.getRegistry('default');
   if(this.defaultRegistry) {
@@ -39,7 +39,7 @@ this.ruvSwarmInstance = null;
 
         // Track statistics
         this._trackToolUsage(toolName, Date.now() - startTime, true);
-
+;
         // return result;
     //   // LINT: unreachable code removed} catch(error) {
         _lastError = error;
@@ -53,7 +53,7 @@ this.ruvSwarmInstance = null;
 
     // Track failure
     this._trackToolUsage(toolName, Date.now() - startTime, false);
-
+;
     throw new Error(;
       `Failed to execute ${toolName} after ${this.config.retryCount}attempts = [];`
   for(const call of toolCalls) {
@@ -66,20 +66,20 @@ this.ruvSwarmInstance = null;
     //   // LINT: unreachable code removed}
 
     const _startTime = Date.now();
-
+;
     // Intelligent concurrency limit based on tool types
     const _concurrencyLimit = this._calculateOptimalConcurrency(toolCalls);
-
+;
     // Group tools by priority and dependency
     const _toolGroups = this._groupToolsByPriority(toolCalls);
     const _allResults = [];
-
+;
     try {
       // Execute high-priority tools first
   for(const group of toolGroups) {
         const _groupResults = []; for(const i = 0; i < group.length; i += concurrencyLimit) {
           const _batch = group.slice(i, i + concurrencyLimit);
-
+;
           // Execute batch with timeout and retry logic
           const _batchPromises = batch.map((call) =>;
             this._executeWithTimeout(call, this.config.timeout));
@@ -91,14 +91,14 @@ this.ruvSwarmInstance = null;
   if(result.status === 'fulfilled') {
               groupResults.push(result.value);
             } else {
-              console.warn(`Tool executionfailed = Date.now() - startTime;`
+              console.warn(`Tool executionfailed = Date.now() - startTime;`;
     this._trackBatchPerformance(toolCalls.length, executionTime, concurrencyLimit);
 
     // return allResults;
     //   // LINT: unreachable code removed}
   catch(error) {
     console.error('Parallel executionfailed = toolCalls.map((call) => this._getToolCategory(call.tool));'
-
+;
     // Heavy operations(neural, github) need lower concurrency
     const _heavyTypes = ['neural', 'github', 'workflow'];
     const _hasHeavyOps = toolTypes.some((type) => heavyTypes.includes(type));
@@ -113,13 +113,13 @@ this.ruvSwarmInstance = null;
 /** Group tools by execution priority
 
   _groupToolsByPriority(toolCalls);
-
+;
   //   {
     const _priorities = {
       critical => {
       const _category = this._getToolCategory(call.tool);
     const _tool = call.tool;
-
+;
     if(['swarm_init', 'swarm_destroy', 'memory_backup'].includes(tool)) {
       priorities.critical.push(call);
     } else if(['agent_spawn', 'memory_usage', 'neural_train'].includes(tool)) {
@@ -142,17 +142,17 @@ this.ruvSwarmInstance = null;
 
 async;
 _executeWithTimeout(call, timeout);
-
+;
   // return new Promise((resolve, reject) => {
       const _timer = setTimeout(() => {
         reject(new Error(`Tool ${call.tool} timed out after ${timeout}ms`));
     //   // LINT: unreachable code removed}, timeout);
 
       this.executeTool(call.tool, call.params);
-then((result) =>
+then((result) =>;
           clearTimeout(timer);
           resolve(result););
-catch((error) =>
+catch((error) =>;
           clearTimeout(timer);
           reject(error););
     });
@@ -165,7 +165,7 @@ _trackBatchPerformance(toolCount, executionTime, concurrency);
       this.batchStats = {totalBatches = toolCount;
     this.batchStats.totalTime += executionTime;
     this.batchStats.avgConcurrency =;
-      (this.batchStats.avgConcurrency * (this.batchStats.totalBatches - 1) + concurrency) 
+      (this.batchStats.avgConcurrency*(this.batchStats.totalBatches - 1) + concurrency) 
       this.batchStats.totalBatches;
     this.batchStats.avgToolsPerBatch = this.batchStats.totalTools / this.batchStats.totalBatches;
     this.batchStats.avgTimePerTool = this.batchStats.totalTime / this.batchStats.totalTools;
@@ -191,18 +191,18 @@ _trackBatchPerformance(toolCount, executionTime, concurrency);
 // const _swarmForStatus = awaitthis.ruvSwarmInstance.getSwarm(params.swarmId);
         // return swarmForStatus ? swarmForStatus.getStatus() : {status = toolName.replace('github_', '');
     // return // await this.ruvSwarmInstance.githubOperations(params.repo, githubOperation, params); // LINT: unreachable code removed
-      case 'memory_usage':
-      case 'memory_search':
-      case 'memory_persist':
-      case 'memory_namespace':
-      case 'memory_backup':
-      case 'memory_restore':
-      case 'memory_compress':
-      case 'memory_sync':
-      case 'cache_manage':
-      case 'state_snapshot':
-      case 'context_restore':
-      case 'memory_analytics':
+      case 'memory_usage':;
+      case 'memory_search':;
+      case 'memory_persist':;
+      case 'memory_namespace':;
+      case 'memory_backup':;
+      case 'memory_restore':;
+      case 'memory_compress':;
+      case 'memory_sync':;
+      case 'cache_manage':;
+      case 'state_snapshot':;
+      case 'context_restore':;
+      case 'memory_analytics':;
         // RuvSwarm handles its own memory. These calls should be directed to ruv-swarm's internal memory management.'
         // Assuming ruv-swarm exposes a memory management API or handles these implicitly.
         console.warn(`[MCPToolWrapper] Memory tool \$toolNamecalled. Assuming RuvSwarm handles this internally.`);
@@ -228,8 +228,8 @@ _trackBatchPerformance(toolCount, executionTime, concurrency);
     return {tools = > sum + stat.calls, 0),successRate = Array.from(this.toolStats.values()).reduce((sum, stat) => sum + stat.calls, 0);
     // const _successes = Array.from(this.toolStats.values()).reduce(; // LINT) => sum + stat.successes,
       0);
-
-    return total > 0 ? ((successes / total) * 100).toFixed(2) 
+;
+    return total > 0 ? ((successes / total) * 100).toFixed(2) ;
     //   // LINT: unreachable code removed}
 
 /** Calculate average latency
@@ -246,7 +246,7 @@ _trackBatchPerformance(toolCount, executionTime, concurrency);
 
   _calculateThroughput() {
     const _batchStats = this.batchStats;
-    if(!batchStats  ?? batchStats.totalTime === 0) return 0;
+    if(!batchStats ?? batchStats.totalTime === 0) return 0;
     // ; // LINT: unreachable code removed
     // return(batchStats.totalTools / (batchStats.totalTime / 1000)).toFixed(2);
     //   // LINT: unreachable code removed}
@@ -274,7 +274,7 @@ _trackBatchPerformance(toolCount, executionTime, concurrency);
   for(const result of results) {
   if(result?.id && !result.error) {
 // // await this.storeMemory(; 
-            swarmId,)
+            swarmId,);
             `agent-${result.id}`,id = 'knowledge'): unknown
   if(!this._memoryRagPlugin) {
       console.warn('[MCPToolWrapper] MemoryRAGPlugin not available. Memory operations will not be persisted.'); // return {success = // await this.memoryRagPlugin.storeMemory(swarmId, key, value, type) {;
@@ -288,7 +288,7 @@ _trackBatchPerformance(toolCount, executionTime, concurrency);
     //   // LINT: unreachable code removed}
     const _taskId = metadata.taskId  ?? `task-\$Date.now()`;
     const _swarmId = metadata.swarmId  ?? 'default-swarm';
-
+;
     try {
 // const _swarm = awaitthis.ruvSwarmInstance.getSwarm(swarmId);
   if(!swarm) {
@@ -322,7 +322,7 @@ _trackBatchPerformance(toolCount, executionTime, concurrency);
 // const _status = awaitthis.ruvSwarmInstance.getSwarmStatus(swarmId);
       // return status;
     //   // LINT: unreachable code removed} catch(error) {
-      console.error('Error getting swarm status from RuvSwarm);'
+      console.error('Error getting swarm status from RuvSwarm);';
       throw error;
     //     }
   //   }
@@ -332,3 +332,5 @@ _trackBatchPerformance(toolCount, executionTime, concurrency);
 // export type { MCP_TOOLS };
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}))
+
+*/*/*/*/*/*/*/*/*/*/*/

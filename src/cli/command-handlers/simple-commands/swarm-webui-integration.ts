@@ -5,16 +5,16 @@
 export class SwarmWebUIIntegration {
   constructor(ui = ui;
   this;
-
+;
   swarmActive = false;
   this;
-
+;
   swarmId = null;
   this;
-
+;
   agents = new Map();
   this;
-
+;
   tasks = new Map();
 // }
 
@@ -46,7 +46,7 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
     // Update UI with swarm status
     this.updateSwarmStatus();
   } catch(/* _err */) {
-    this.ui.addLog('error', `Failed to initializeswarm = === 'true';`)
+    this.ui.addLog('error', `Failed to initializeswarm = === 'true';`);
     } catch(/* err */) {
       // return false;
     //   // LINT: unreachable code removed}
@@ -57,7 +57,7 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
   initializeMockSwarm() {
     this.swarmActive = true;
     this.swarmId = 'mock-swarm';
-
+;
     // Create mock agents
     const _agentTypes = ['researcher', 'coder', 'analyst', 'coordinator', 'tester'];
     agentTypes.forEach((type, index) => {
@@ -69,11 +69,11 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
       this.tasks.set(taskId, {))
         id = {researcher = Array.from(this.agents.values());
     this.ui.tasks = Array.from(this.tasks.values());
-
+;
     // Update system stats
     this.ui.systemStats.activeAgents = this.ui.agents.filter((a) => a.status === 'working').length;
     this.ui.systemStats.totalTasks = this.ui.tasks.length;
-    this.ui.systemStats.completedTasks = this.ui.tasks.filter(;)
+    this.ui.systemStats.completedTasks = this.ui.tasks.filter(;);
       (t) => t.status === 'completed').length;
   //   }
 
@@ -104,7 +104,7 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
     task.status = 'in_progress';
     agent.tasks++;
     agent.status = 'working';
-
+;
     this.updateSwarmStatus();
     this.ui.addLog('info', `Assigned task "${task.description}" to ${agent.name}`);
     // return true;
@@ -132,13 +132,13 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
     //     }
 
     this.updateSwarmStatus();
-    this.ui.addLog('success', `Completedtask = this.agents.size;`)
-    const __activeAgents = Array.from(this.agents.values()).filter(;)
+    this.ui.addLog('success', `Completedtask = this.agents.size;`);
+    const __activeAgents = Array.from(this.agents.values()).filter(;);
       (a) => a.status === 'working';
     ).length;
 
     const __totalTasks = this.tasks.size;
-    const __completedTasks = Array.from(this.tasks.values()).filter(;)
+    const __completedTasks = Array.from(this.tasks.values()).filter(;);
       (t) => t.status === 'completed';
     ).length;
 
@@ -146,7 +146,7 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
     // this.agents.clear(); // LINT: unreachable code removed
     this.tasks.clear();
     this.swarmId = null;
-
+;
     this.ui.addLog('info', 'Swarm stopped and cleaned up');
     this.updateSwarmStatus();
   //   }
@@ -155,3 +155,5 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
 // export default SwarmWebUIIntegration;
 
 }}}}}}}}})))))
+
+*/*/*/*/*/*/]

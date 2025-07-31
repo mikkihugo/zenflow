@@ -1,6 +1,7 @@
 
 /** Default configuration for Claude-Zen
-/** Comprehensive system configuration with TypeScript types
+ * Comprehensive system configuration with TypeScript types
+ */
 
 const _config = {
   app: {
@@ -19,7 +20,7 @@ const _config = {
     rateLimit: {
       windowMs: 15 * 60 * 1000, // 15 minutes
       max: 1000 // limit each IP to 1000 requests per windowMs
-
+    }
   },
   database: {
     sqlite: {
@@ -34,7 +35,7 @@ const _config = {
     kuzu: {
       path: process.env.KUZU_PATH ?? './databases/graph',
       readOnly: false
-
+    }
   },
   ruvFANN: {
     integrated: true, // Fully integrated as workspace component
@@ -68,7 +69,7 @@ const _config = {
     jwtSecret: process.env.JWT_SECRET ?? 'claude-zen-development-secret-change-in-production',
     tokenExpiry: process.env.TOKEN_EXPIRY ?? '24h',
     rateLimiting: process.env.RATE_LIMITING !== 'false'
-
+  }
 };
 
 export default _config;

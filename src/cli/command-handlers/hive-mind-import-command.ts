@@ -7,15 +7,15 @@ import { glob  } from 'glob';
 import { createHive  } from '.';
 
 async function generateScopeFromCode(servicePath = path.basename(servicePath);
-return `;`
+return `;`;
     // ---name = path.basename(servicePath); // LINT: unreachable code removed
   const _projectJsonPath = path.join(servicePath, 'project.json');
-
+;
   let scopeMdContent;
-
+;
   if(existsSync(projectJsonPath)) {
     const _projectJson = JSON.parse(readFileSync(projectJsonPath, 'utf8'));
-    scopeMdContent = `;`
+    scopeMdContent = `;`;
 ---name = > `- ${dep}`;
 ).join('\n')}
     `
@@ -44,3 +44,5 @@ if(answer.toLowerCase() === 'y') {
 // }
 
 })
+
+*/*/

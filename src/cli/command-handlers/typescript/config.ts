@@ -81,7 +81,7 @@ console.warn('  Currentconfiguration = === 'json') {'
 } else
 // {
   // Pretty format
-  console.warn('\n SystemConfiguration = 'claude-zen.config.json';')
+  console.warn('\n SystemConfiguration = 'claude-zen.config.json';');
   if(!key) {
     logger.error('No key provided for get command');
     console.error('Usage = // await readJsonFile<ClaudeFlowConfig>(configFile);'
@@ -96,10 +96,10 @@ console.warn('  Currentconfiguration = === 'json') {'
       // return undefined;
       //   // LINT: unreachable code removed}
     //     }
-    catch(error)
-    logger.error('Configuration file not found', error)
-    console.error(' Configuration file not found')
-    console.warn('Run "claude-zen config init" to create configuration')
+    catch(error);
+    logger.error('Configuration file not found', error);
+    console.error(' Configuration file not found');
+    console.warn('Run "claude-zen config init" to create configuration');
     throw new CLIError('Configuration file not found', 'config');
   //   }
   async function _setConfigValue() {
@@ -126,16 +126,16 @@ try {
 // const _config = awaitreadJsonFile<ClaudeFlowConfig>(configFile);
 
   console.warn('  Validating configuration...');
-
+;
   const _errors = [];
   const _warnings = [];
-
+;
   // Validate required sections
   const _requiredSections = ['terminal', 'orchestrator', 'memory'];
   for(const section of requiredSections) {
   if(!config[section]) {
       errors.push(`Missing required section = {valid = === 0,`
-      errors,)
+      errors,);
       warnings; }; if(errors.length === 0 && warnings.length === 0) {
       console.warn(' Configuration is valid');
     } else {
@@ -189,7 +189,7 @@ function writeJsonFile(filePath = JSON.stringify(data, null, 2);
 // }
 function _showConfigHelp(logger) {
   logger.debug('Showing config help');
-  console.warn('  Configuration commands);'
+  console.warn('  Configuration commands);';
   console.warn('  init [--force]                   Create default configuration');
   console.warn('  show [--format json]             Display current configuration');
   console.warn('  get <key>                        Get configuration value');
@@ -197,7 +197,7 @@ function _showConfigHelp(logger) {
   console.warn('  validate                         Validate configuration');
   console.warn('  reset --force                    Reset to defaults');
   console.warn();
-  console.warn(' Configuration Keys);'
+  console.warn(' Configuration Keys);';
   console.warn('  terminal.poolSize                Terminal pool size');
   console.warn('  terminal.recycleAfter            Commands before recycle');
   console.warn('  orchestrator.maxConcurrentTasks  Max parallel tasks');
@@ -208,7 +208,7 @@ function _showConfigHelp(logger) {
   console.warn('  mcp.port                         MCP server port');
   console.warn('  logging.level                    Logging level');
   console.warn();
-  console.warn(' Examples);'
+  console.warn(' Examples);';
   console.warn('  claude-zen config init');
   console.warn('  claude-zen config set terminal.poolSize 15');
   console.warn('  claude-zen config get orchestrator.maxConcurrentTasks');
@@ -217,3 +217,5 @@ function _showConfigHelp(logger) {
 // }
 
 }}))))))))))))))))
+
+*/*/

@@ -80,7 +80,7 @@ const _filteredArgs = [];
           resolve({ success = === 0,
             _code => {
           resolve({success = new(process as any).Command(command, {
-        args,)
+        args,);
 ..options   });
 // const __result = awaitcmd.output();
 
@@ -146,7 +146,7 @@ async function _getRuvSwarmInstance(): Promise<any> {
   if(!ruvSwarmInstance) {
     // Initialize memory store
     _memoryStoreInstance = new SqliteMemoryStore({ dbName = new RuvSwarm({
-      memoryStore,
+      memoryStore,;
       telemetryEnabled = {  }): Promise<any>
   try {
 // const _ruvSwarm = await_getRuvSwarmInstance();
@@ -176,11 +176,11 @@ async function _getRuvSwarmInstance(): Promise<any> {
 // export async function _callRuvSwarmDirectNeural(params = {}): Promise<any> {
   try {
     const _modelName = (params as any).model  ?? 'general';
-    const __epochs = (params as any).epochs  ?? 50;
+    const __epochs = (params as any).epochs ?? 50;
     const __dataSource = (params as any).data  ?? 'recent';
-
+;
     console.warn(` Using REAL ruv-swarm WASM neural training...`);
-    console.warn(;)
+    console.warn(;);
       `Executing = = 'undefined' && (process as any).versions && (process as any).versions.node) {`
       // Node.js environment - use spawn with stdio inherit
       const { spawn } = // await import('child_process');
@@ -193,26 +193,26 @@ async function _getRuvSwarmInstance(): Promise<any> {
             'neural',
             'train',
             '--model',
-            modelName,
+            modelName,;
             '--iterations',
-            epochs.toString(),
+            epochs.toString(),;
             '--data-source',
-            dataSource,
+            dataSource,;
             '--output-format',
             'json' ],
           //           {
             stdio => {
           resolve({
-            success = === 0,
+            success = === 0,;
             code => {
           resolve({success = '.ruv-swarm
 // const _files = await(process as any).readDir(neuralDir);
       let _latestFile = null;
       let _latestTime = 0;
-
+;
       for // await(const file of files) {
         if(file.name.startsWith(`training-\$modelName-`) && file.name.endsWith('.json')) {
-          const _filePath = `\$neuralDir
+          const _filePath = `\$neuralDir;
 // const _stat = await(process as any).stat(filePath);
   if(stat.mtime > latestTime) {
             latestTime = stat.mtime;
@@ -228,7 +228,7 @@ async function _getRuvSwarmInstance(): Promise<any> {
   try {
     const _command = 'npx';
     const _args = ['ruv-swarm', 'hook', hookName];
-
+;
     // Add parameters as CLI arguments
     Object.entries(params).forEach(([key, value]) => {
       args.push(`--\$key`);
@@ -247,11 +247,13 @@ async function _getRuvSwarmInstance(): Promise<any> {
   // return // await callRuvSwarmLibrary('swarm_init', {
     topology = {}): Promise<any> {
   // return // await callRuvSwarmLibrary('task_orchestrate', {
-    task,
+    task,;
     // strategy: (options as any).strategy  ?? 'adaptive', // LINT: unreachable code removed
-    priority: (options as any).priority  ?? 'medium',
+    priority: (options as any).priority  ?? 'medium',;
 ..options;
   });
 // }
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))
+
+}]

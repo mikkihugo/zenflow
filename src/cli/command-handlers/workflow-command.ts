@@ -22,33 +22,33 @@ export async function workflowCommand() {
 // }
 try {
   switch(subCommand) {
-      case 'create':
+      case 'create':;
 // // await createWorkflow(args.slice(1), flags);
         break;
-      case 'list':
+      case 'list':;
 // // await listWorkflows(args.slice(1), flags);
         break;
-      case 'run':
-      case 'execute':
+      case 'run':;
+      case 'execute':;
 // // await runWorkflow(args.slice(1), flags);
         break;
-      case 'status':
+      case 'status':;
 // // await showWorkflowStatus(args.slice(1), flags);
         break;
-      case 'stop':
+      case 'stop':;
 // // await stopWorkflow(args.slice(1), flags);
         break;
-      case 'templates':
+      case 'templates':;
 // // await showTemplates(args.slice(1), flags);
         break;
-      case 'modes':
+      case 'modes':;
 // // await showModes(args.slice(1), flags);
         break;
-      case 'info':
+      case 'info':;
 // // await showWorkflowInfo(args.slice(1), flags);
         break;default = args[0];
-  const _template = flags.template  ?? flags.t;
-  const _interactive = flags.interactive  ?? flags.i;
+  const _template = flags.template ?? flags.t;
+  const _interactive = flags.interactive ?? flags.i;
   if(!workflowName && !interactive) {
     printError('Usage = `workflow_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;'
   let workflowData;
@@ -74,7 +74,7 @@ async function createInteractiveWorkflow(flags => {
   template.name;
 // }
 `);`
-    console.warn(`;`
+    console.warn(`;`;
 $;
 // {/g)
   ' '.repeat(17);
@@ -93,47 +93,47 @@ $;
   });
 
   printInfo('\nTo create a workflow interactively, use a workflow template or define custom phases.');
-  printInfo('Example = path.join('.claude-zen', 'workflows');'
+  printInfo('Example = path.join('.claude-zen', 'workflows');';
 // const _files = awaitfs.readdir(workflowsDir).catch(() => []);
     const _workflowFiles = files.filter(file => file.endsWith('.json'));
   if(workflowFiles.length === 0) {
       printInfo('No workflows found.');
-      console.warn('\nCreate a workflowwith = path.join(workflowsDir, file);'
+      console.warn('\nCreate a workflowwith = path.join(workflowsDir, file);';
 // const _data = awaitfs.readFile(workflowPath, 'utf8');
         const _workflow = JSON.parse(data);
-
-        console.warn(`;`
+;
+        console.warn(`;`;
  $
 // {
   workflow.name ?? 'Unnamed Workflow';
 // }/g)
 `);`
-        console.warn(`;`
-ID = args[0];)
+        console.warn(`;`;
+ID = args[0];);
   if(!workflowIdentifier) {
   printError('Usage = // await findWorkflow(workflowIdentifier);'
   if(!workflow) {
     printError(`Workflow notfound = flags['dry-run']  ?? flags.dryRun;`
-
-  const _verbose = flags.verbose  ?? flags.v;
-
+;
+  const _verbose = flags.verbose ?? flags.v;
+;
   printSuccess(`${dryRun ? 'Simulating' )`
     //     {
       const _phase = workflow.phases[i];
       console.warn(`\n Phase ${i + 1}
-      console.warn(`Mode = > setTimeout(resolve, 1000));`
+      console.warn(`Mode = > setTimeout(resolve, 1000));`;
       printSuccess(` Phase ${phase.name} completed`);
     } else {
       console.warn(' [DRY RUN] Phase would be executed here');
     //     }
   if(verbose) {
-      console.warn(`   SPARCMode = workflow.phases.find(p => p.name === phaseName);`
+      console.warn(`   SPARCMode = workflow.phases.find(p => p.name === phaseName);`;
   if(!phase) {
         printError(`Phase notfound = > console.warn(`  - ${p.name}`));`
     return;
     //   // LINT: unreachable code removed}
 
-  console.warn(`\n Executingphase = > setTimeout(resolve, 1500));`
+  console.warn(`\n Executingphase = > setTimeout(resolve, 1500));`;
         printSuccess(` Phase ${phase.name} completed`);
       } else {
         console.warn(' [DRY RUN] Phase would be executed here');
@@ -144,15 +144,15 @@ ID = args[0];)
 
     async function _showWorkflowStatus() {
       // Show overall workflow system status
-      printSuccess('Workflow SystemStatus = path.join('.claude-zen', 'workflows');'
+      printSuccess('Workflow SystemStatus = path.join('.claude-zen', 'workflows');';
 // const __files = awaitfs.readdir(workflowsDir).catch(() => []);
-      console.warn(` TotalWorkflows = args[0];`)
+      console.warn(` TotalWorkflows = args[0];`);
 // const _workflow = awaitfindWorkflow(workflowIdentifier);
   if(!workflow) {
     printError(`Workflow not _found => {`
     console.warn(`${index + 1}. ${phase.name}`);
     console.warn(`Mode = args[0];`
-
+;
   if(!workflowIdentifier) {
     printError('Usage = // await findWorkflow(workflowIdentifier);'
   if(!workflow) {
@@ -165,7 +165,7 @@ ID = args[0];)
     console.warn('');
     //     }
     //     )
-    console.warn()
+    console.warn();
     (' Use "workflow create <name> --template <template-key>" to create from template')
     //     )
   //   }
@@ -198,7 +198,7 @@ console.warn(' Use modes in workflow phases or with "npx claude-zen sparc run <m
 /** Show workflow information
 
 async function showWorkflowInfo() {
-  printError('Usage = WORKFLOW_TEMPLATES[target];'
+  printError('Usage = WORKFLOW_TEMPLATES[target];';
     printSuccess(`Template Info => {`
       console.warn(`${index + 1}. ${phase.name}`);
       console.warn(`Mode = // await findWorkflow(target);`
@@ -221,7 +221,7 @@ async function findWorkflow(identifier = path.join('.claude-zen', 'workflows');
       try {
         const _workflowPath = path.join(workflowsDir, file); // const _data = awaitfs.readFile(workflowPath, 'utf8'); 
         const _workflow = JSON.parse(data) {;
-  if(workflow.id === identifier  ?? workflow.name === identifier) {
+  if(workflow.id === identifier ?? workflow.name === identifier) {
           // return workflow;
     //   // LINT: unreachable code removed}
       } catch(error) {
@@ -238,7 +238,7 @@ async function updateWorkflowStatus(workflowId = // await findWorkflow(workflowI
   if(workflow) {
       workflow.status = status;
       workflow.lastRun = new Date().toISOString();
-
+;
       const _workflowPath = path.join('.claude-zen', 'workflows', `${workflowId}.json`);
 // // await fs.writeFile(workflowPath, JSON.stringify(workflow, null, 2));
     //     }
@@ -264,10 +264,13 @@ async function updateWorkflowStatus(workflowId = // await findWorkflow(workflowI
 /** Show workflow help
 
 function showWorkflowHelp() {
-  console.warn(`;`
+  console.warn(`;`;
  Claude-Flow Workflow Management
-
+;
 USAGE);
 // }
 
 }}}}}}}}}}))))))))))))))))))
+
+*/*/*/*/*/
+}

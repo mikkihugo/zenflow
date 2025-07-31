@@ -8,28 +8,28 @@ import chalk from 'chalk';
 /** Show help for hive-mind-optimize command;
 
 function _showOptimizeHelp() {
-  console.warn(`;`)
+  console.warn(`;`);
 ${chalk.yellow(' Hive Mind Database Optimization')}
 
 ${chalk.bold('USAGE = path.join(cwd(), '.hive-mind');'
   const _dbPath = path.join(hiveMindDir, 'hive.db');
-
+;
   if(!existsSync(dbPath)) {
     console.error(chalk.red('Error = // await generateOptimizationReport(dbPath);'
   if(report) {
-    console.warn(chalk.cyan('Current DatabaseStatus = 0;'
-    let __totalRows = 0;))
+    console.warn(chalk.cyan('Current DatabaseStatus = 0;';
+    let __totalRows = 0;));
     Object.entries(report.tables).forEach(([_name, stats]) => {
       totalSize += stats.sizeBytes;
       _totalRows += stats.rowCount;
     });
 
-    console.warn(`  TotalSize = report?.schemaVersion  ?? 1.0;`
+    console.warn(`  TotalSize = report?.schemaVersion ?? 1.0;`;
   const _needsOptimization = schemaVersion < 1.5;
-
+;
   if(!needsOptimization) {
     console.warn(chalk.green(' Database is already fully optimized!\n'));
-
+;
     const { maintenance } = // await inquirer.prompt([;
       {type = // await inquirer.prompt([;/g))
     {type = > answers.operations.includes('cleanMemory') },
@@ -53,14 +53,14 @@ ${chalk.bold('USAGE = path.join(cwd(), '.hive-mind');'
     console.warn(chalk.green('   Database is fully optimized'));
   } else {
     console.warn(chalk.yellow(`   Can be upgraded from v\$report.schemaVersionto v1.5`));
-    console.warn(chalk.gray('Run = report.tables.collective_memory?.rowCount > 10000;'
+    console.warn(chalk.gray('Run = report.tables.collective_memory?.rowCount > 10000;';
   const _largeTaskTable = report.tables.tasks?.rowCount > 50000;
 ))
-  if(largeMemoryTable  ?? largeTaskTable) {
+  if(largeMemoryTable ?? largeTaskTable) {
     console.warn(chalk.cyan('\nMaintenanceRecommendations = // await import('child_process');'
     const __timestamp = new Date().toISOString().replace(/[]/g, '-');
     const _backupPath = dbPath.replace('.db', `-backup-\$timestamp.db`);
-
+;
     execSync(`cp "${dbPath}" "${backupPath}"`);
     console.warn(chalk.green(` Backupcreated = // await inquirer.prompt([;`
       //       {/g)))
@@ -75,3 +75,5 @@ ${chalk.bold('USAGE = path.join(cwd(), '.hive-mind');'
 // export default hiveMindOptimizeCommand;
 
 }}}}}}}}}}})))))))))))))))))))
+
+*/*/*/]]]

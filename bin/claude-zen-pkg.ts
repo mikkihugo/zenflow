@@ -21,3 +21,4 @@ try {
   execSync(`node ${cliMainJs} ${process.argv.slice(2).join(' ')}`, {
     stdio: 'inherit'
   });
+}

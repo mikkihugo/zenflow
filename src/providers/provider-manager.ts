@@ -2,14 +2,14 @@
 /** Provider Manager;
 /** Central coordination system for multi-LLM provider management;
 
-AIResponse,
-BaseProvider,
-LoadBalancingStrategy,
-ProviderConfig,
-ProviderError,
-ProviderMetrics,
-ProviderStatus,
-QuotaExceededError,
+AIResponse,;
+BaseProvider,;
+LoadBalancingStrategy,;
+ProviderConfig,;
+ProviderError,;
+ProviderMetrics,;
+ProviderStatus,;
+QuotaExceededError,;
 RateLimitError } from '.
 // // interface ProviderInstance {provider = new Map() {}
 // private;
@@ -78,16 +78,16 @@ if(cached)
 
   // Apply load balancing strategy
   switch(this.config.loadBalancing.type) {
-    case 'round_robin':
+    case 'round_robin':;
       // return this.selectRoundRobin(availableProviders);
     // ; // LINT: unreachable code removed
-    case 'least_latency':
+    case 'least_latency':;
       // return this.selectLeastLatency(availableProviders);
     // ; // LINT: unreachable code removed
-    case 'least_cost':
+    case 'least_cost':;
       // return this.selectLeastCost(availableProviders);
     // ; // LINT: unreachable code removed
-    case 'weighted':
+    case 'weighted':;
       // return this.selectWeighted(availableProviders, this.config.loadBalancing.weights  ?? {});
     // ; // LINT: unreachable code removed
     case 'priority': {;
@@ -102,12 +102,12 @@ if(cached)
 
       // Update circuit breaker status
       this.updateCircuitBreaker(provider, false);
-
+;
       // return response;
     //   // LINT: unreachable code removed} catch(error) {
       // Update circuit breaker status
       this.updateCircuitBreaker(provider, true);
-
+;
       // Try fallback if enabled
       if(this.config.enableFallback && ;
 // ! (error instanceof RateLimitError) && ;
@@ -126,7 +126,7 @@ if(cached)
   async;
   selectFallbackProvider(request = === excludeProvider);
   continue;
-
+;
   const _provider = this.providers.get(providerName);
   if(;
     provider &&;
@@ -153,7 +153,7 @@ if(cached)
   return currentCostPerToken < bestCostPerToken ?current = providers.filter(p => weights[p.provider.name] > 0);
     // if(weightedProviders.length === 0) return providers[0]; // LINT: unreachable code removed
 
-  const _totalWeight = weightedProviders.reduce(;)
+  const _totalWeight = weightedProviders.reduce(;);
     (sum, p) => sum + (weights[p.provider.name]  ?? 1),
     0;
   );
@@ -173,15 +173,15 @@ private;
   if(errorRate >= this.config.circuitBreakerThreshold) {
         provider.circuitBreakerOpen = true;
         provider.circuitBreakerOpenTime = new Date();
-
+;
         this.emit('circuit_breaker_opened', { ;
           provider => {
           provider.circuitBreakerOpen = false;
           provider.circuitBreakerOpenTime = undefined;
-
+;
           this.emit('circuit_breaker_closed', {provider = this.hashRequest(request);
     const _cached = this.requestCache.get(hash);
-
+;
     if(cached && Date.now() - cached.timestamp.getTime() < this.config.cacheTimeout) {
       // return { ...cached.response,id = this.hashRequest(request);
     // this.requestCache.set(hash, { // LINT) => {
@@ -222,7 +222,7 @@ private;
     //   // LINT: unreachable code removed}
   getAvailableModels() {: string[] {
     const _models = new Set<string>();
-
+;
     for (const provider of this.providers.values()) {
   if(provider.config.enabled && !provider.circuitBreakerOpen) {
   for(const model of provider.provider.capabilities.models  ?? []) {
@@ -247,3 +247,6 @@ private;
 // }
 
 }}}}}}}}}}})))))))))
+
+*/*/
+}}}}}}

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-/** Claude-Flow MCP Bridge;
-/** Exposes service document tools  MCP tools;
+/** Claude-Flow MCP Bridge
+ * Exposes service document tools as MCP tools
+ */
 
 import { ServicesOrchestrator  } from './services/orchestrator.js';
 import { ClaudeFlowMCPServer  } from './src/mcp/mcp-server.js';
@@ -22,7 +23,7 @@ class MCPBridge {
     this.bindServiceMethods();
     this.isRunning = true;
     console.warn('\n MCP Bridge Ready!');
-    console.warn(' Available MCP Tools);'
+    console.warn(' Available MCP Tools);';
     console.warn('    mcp__claude-zen__service_document_manager');
     console.warn('    mcp__claude-zen__service_approval_workflow');
     console.warn('    mcp__claude-zen__service_document_validator');
@@ -45,17 +46,17 @@ class MCPBridge {
     async;
     createServiceDocument(serviceName, documentType, content, (metadata = }));
     // return await this.mcpServer.handleServiceDocumentManager({
-      action: 'create',
+      action: 'create',;
     // serviceName, // LINT: unreachable code removed
-    documentType,
-    content,)
-    approvalMetadata)
+    documentType,;
+    content,);
+    approvalMetadata);
   //   }
   async listServiceDocuments(_serviceName = null) { 
     // return await this.mcpServer.handleServiceDocumentManager(
-      action: 'list',
+      action: 'list',;
     // serviceName, // LINT: unreachable code removed
-    documentType: 'all')
+    documentType: 'all');
 })
 // }
 async;
@@ -63,26 +64,26 @@ validateServiceDocument(serviceName, documentType);
 // {
   // return await this.mcpServer.handleServiceDocumentValidator({ validateType: 'single-document',
   // serviceName, // LINT: unreachable code removed
-  documentType)
+  documentType);
   })
 // }
 // async
-queueApproval(documentId, approver)
+queueApproval(documentId, approver);
 // {
   // return await this.mcpServer.handleServiceApprovalWorkflow({ action: 'queue',
   // documentId, // LINT: unreachable code removed
-  approver)
+  approver);
   })
 // }
   getStatus() {}
 // {
   // return {
       bridge: {
-        running: this.isRunning,
+        running: this.isRunning,;
   // version: '2.0.0-alpha.61', // LINT: unreachable code removed
 // }
 
-orchestrator: this.orchestrator.getSystemStatus(),
+orchestrator: this.orchestrator.getSystemStatus(),;
 // {
   toolsAvailable: [;
           'service_document_manager',
@@ -115,23 +116,23 @@ orchestrator: this.orchestrator.getSystemStatus(),
       'payment-service',
       'service-description',)
         name);
-    console.warn(' Service document created);'
+    console.warn(' Service document created);';
     // Test 2: List documents
 // const _listResult = awaitbridge.listServiceDocuments('payment-service');
-    console.warn(' Documents listed);'
+    console.warn(' Documents listed);';
     // Test 3: Validate document
 // const _validateResult = awaitbridge.validateServiceDocument(;
       'payment-service',
       'service-description';)
     );
-    console.warn(' Document validated);'
+    console.warn(' Document validated);';
     // Test 4: Queue approval
 // const _approvalResult = awaitbridge.queueApproval(createResult.documentId, 'tech-lead');
-    console.warn(' Approval queued);'
+    console.warn(' Approval queued);';
     console.warn('\n MCP Bridge fully operational!');
-    console.warn(' Connect Claude Desktop with);'
+    console.warn(' Connect Claude Desktop with);';
   } catch(error) {
-    console.error(' Failed to start MCP Bridge);'
+    console.error(' Failed to start MCP Bridge);';
     process.exit(1);
   //   }
 // }

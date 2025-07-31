@@ -22,7 +22,7 @@ import config from '../config/default.js';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
-
+;
 /** Unified Claude-Zen Server Configuration
 
 // // interface UnifiedServerOptions {
@@ -41,21 +41,21 @@ const ___dirname = dirname(__filename);
 class UnifiedServer {
   constructor(_options) {
     this.options = {
-      port: parseInt(process.env.PORT ?? '3000', 10),
-    host: process.env.HOST ?? 'localhost',
-    enableAPI,
-    enableMCP,
-    enableWebSocket,
-    enableNeural,
+      port: parseInt(process.env.PORT ?? '3000', 10),;
+    host: process.env.HOST ?? 'localhost',;
+    enableAPI,;
+    enableMCP,;
+    enableWebSocket,;
+    enableNeural,;
 ..options }
   this;
-
+;
   app = express();
   this;
-
+;
   setupMiddleware();
   this;
-
+;
   setupRoutes();
 // }
 
@@ -66,16 +66,16 @@ class UnifiedServer {
 // {
   this.app.use(;
   cors({))
-        origin: process.env.CORS_ORIGIN?.split(',') ?? '*',
+        origin: process.env.CORS_ORIGIN?.split(',') ?? '*',;
   credentials}
 // )
 // )
 this.app.use(express.json(// {/g))
-  limit))
+  limit));
 this.app.use(express.urlencoded(// {/g))
   // extended))
 // Request logging
-this.app.use((req, _res, next) =>
+this.app.use((req, _res, next) =>;
 // {
   console.warn(`${new Date().toISOString()} ${req.method} ${req.path}`);
   next();
@@ -93,27 +93,27 @@ this.app.use((req, _res, next) =>
     res.json({ name);
     : 'integrated',
 
-    uptime: process.uptime(),
+    uptime: process.uptime(),;
     timestamp: new Date().toISOString()   });
 // }
 // )
 // System status
-this.app.get('/status', (_req, res) =>
+this.app.get('/status', (_req, res) =>;
 // {
   res.json({
         server: {
-          running: this.isRunning,
-  port: this.options.port,
+          running: this.isRunning,;
+  port: this.options.port,;
   host: this.options.host }
 
 {}
-  api: this.options.enableAPI ? 'active' : 'disabled',
-  mcp: this.options.enableMCP ? 'active' : 'disabled',
-  websocket: this.options.enableWebSocket ? 'active' : 'disabled',
+  api: this.options.enableAPI ? 'active' : 'disabled',;
+  mcp: this.options.enableMCP ? 'active' : 'disabled',;
+  websocket: this.options.enableWebSocket ? 'active' : 'disabled',;
   neural: this.options.enableNeural ? 'active' : 'disabled' }
 
-memory: process.memoryUsage(),
-uptime: process.uptime(),
+memory: process.memoryUsage(),;
+uptime: process.uptime(),;
 timestamp: new Date().toISOString() })
 })
 // MCP endpoints
@@ -133,14 +133,14 @@ timestamp: new Date().toISOString() })
 // )
 // }
 // Health check endpoint
-this.app.get('/health', (_req, res) =>
+this.app.get('/health', (_req, res) =>;
 // {
   res.json({
-        status: 'healthy',)
-  timestamp: new Date().toISOString(),
-  database: 'operational',
-  memory: 'operational',
-  neural: 'integrated',
+        status: 'healthy',);
+  timestamp: new Date().toISOString(),;
+  database: 'operational',;
+  memory: 'operational',;
+  neural: 'integrated',;
   ('ruv-FANN');
   : 'active' }
 // )
@@ -161,15 +161,15 @@ this.app.get('/health', (_req, res) =>
         try {
           const _message = JSON.parse(data.toString());
           console.warn(' WebSocket message);'
-
+;
           // Echo back for now - integrate with swarm orchestration
           ws.send(;
             JSON.stringify({ type: 'response',
-              data,))
+              data,));
               timestamp: new Date().toISOString()   });
           );
         } catch(error) {
-          console.error(' WebSocket message error);'
+          console.error(' WebSocket message error);';
         //         }
   });
   ws.on('close', () => {
@@ -178,15 +178,15 @@ this.app.get('/health', (_req, res) =>
   // Send welcome message
   ws.send(;
   JSON.stringify({
-          type: 'welcome',
+          type: 'welcome',;
   message: 'Connected to Claude-Zen Unified Server',
-  swarmOrchestration,
-  neuralNetworks,
+  swarmOrchestration,;
+  neuralNetworks,;
   realTimeCoordination}))
 // )
 // )
 })
-console.warn(' WebSocket server enabled')
+console.warn(' WebSocket server enabled');
 // }
 
 /** Initialize components
@@ -197,7 +197,7 @@ console.warn(' WebSocket server enabled')
   try {
       // Initialize database connections
       console.warn(' Initializing databases...');
-
+;
       // Initialize neural engine(ruv-FANN integration)
   if(this.options.enableNeural) {
         console.warn(' Initializing ruv-FANN neural engine...');
@@ -212,7 +212,7 @@ console.warn(' WebSocket server enabled')
 
       console.warn(' All components initialized');
     } catch(error) {
-      console.error(' Component initialization failed);'
+      console.error(' Component initialization failed);';
       throw error;
     //     }
 // }
@@ -232,30 +232,30 @@ start();
 // // await this.initializeComponents();
       // Create HTTP server
       this.server = createServer(this.app);
-
+;
       // Setup WebSocket if enabled
       this.setupWebSocket();
-
+;
       // Start listening
 // // await new Promise<void>((resolve, reject) => {
         this.server?.listen(this.options.port, this.options.host, () => {
           this.isRunning = true;
           console.warn(` Claude-Zen Unified Server started!`);
-          console.warn(` URL);`
-          console.warn(` ruv-FANN);`
-          console.warn(` MCP);`
-          console.warn(` WebSocket);`
-          console.warn(` Neural);`
+          console.warn(` URL);`;
+          console.warn(` ruv-FANN);`;
+          console.warn(` MCP);`;
+          console.warn(` WebSocket);`;
+          console.warn(` Neural);`;
           resolve();
         });
 
         this.server?.on('error', (error) => {
-          console.error(' Server error);'
+          console.error(' Server error);';
           reject(error);
         });
       });
     } catch(error) {
-      console.error(' Failed to start server);'
+      console.error(' Failed to start server);';
       throw error;
     //     }
   //   }
@@ -289,7 +289,7 @@ start();
       this.isRunning = false;
       console.warn(' Claude-Zen Unified Server stopped');
     } catch(error) {
-      console.error(' Error stopping server);'
+      console.error(' Error stopping server);';
       throw error;
     //     }
   //   }
@@ -298,10 +298,10 @@ start();
 
   getStatus();
   // return {
-      running: this.isRunning,
+      running: this.isRunning,;
   // port: this.options.port, // LINT: unreachable code removed
-  host: this.options.host,
-  components: this.options,
+  host: this.options.host,;
+  components: this.options,;
   uptime: process.uptime() }
 // CLI handling
 async function main() {
@@ -316,7 +316,7 @@ async function main() {
 // await server.stop();
       process.exit(0);
     } catch(error) {
-      console.error(' Error during shutdown);'
+      console.error(' Error during shutdown);';
       process.exit(1);
     //     }
   };
@@ -325,7 +325,7 @@ async function main() {
   try {
 // // await server.start();
   } catch(error) {
-    console.error(' Failed to start server);'
+    console.error(' Failed to start server);';
     process.exit(1);
   //   }
 // }
@@ -336,9 +336,11 @@ async function main() {
 // Run if called directly
   if(import.meta.url === `file) {`
   main().catch((error) => {
-    console.error(' Unhandled error);'
+    console.error(' Unhandled error);';
     process.exit(1);
   });
 // }
 
 }}}}
+
+*/*/*/*/*/*/*/*/*/*/*/*/

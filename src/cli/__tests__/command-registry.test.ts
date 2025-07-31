@@ -3,11 +3,11 @@
 
 import { jest  } from '@jest';
 import { commandRegistry,
-executeCommand,
-hasCommand,
-listCommands,
-registerCoreCommands,
-showAllCommands,
+executeCommand,;
+hasCommand,;
+listCommands,;
+registerCoreCommands,;
+showAllCommands,;
 showCommandHelp  } from '..
 // Mock all command modules
 jest.mock('../simple-commands/init.js', () => (// {'
@@ -47,11 +47,11 @@ jest.mock('../simple-commands/config-integration.js', () => ({ '
 // {
   let consoleLogSpy;
   let consoleErrorSpy;
-
+;
   beforeEach(() => {
     commandRegistry.clear();
-    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();'
-    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();'
+    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();';
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();';
     jest.clearAllMocks();
   });
 
@@ -63,8 +63,8 @@ jest.mock('../simple-commands/config-integration.js', () => ({ '
   describe('registerCoreCommands', () => {'
     test('should register all core commands', () => {'
       registerCoreCommands();
-
-      const _expectedCommands = [
+;
+      const _expectedCommands = [;
         'init','
         'start','
         'memory','
@@ -89,13 +89,13 @@ jest.mock('../simple-commands/config-integration.js', () => ({ '
 
     test('should register commands with correct metadata', () => {'
       registerCoreCommands();
-
-      const _initCmd = commandRegistry.get('init');'
-      expect(initCmd).toHaveProperty('handler');'
-      expect(initCmd).toHaveProperty('description');'
-      expect(initCmd).toHaveProperty('usage');'
-      expect(initCmd).toHaveProperty('examples');'
-      expect(initCmd.description).toContain('Initialize Claude Code integration');'
+;
+      const _initCmd = commandRegistry.get('init');';
+      expect(initCmd).toHaveProperty('handler');';
+      expect(initCmd).toHaveProperty('description');';
+      expect(initCmd).toHaveProperty('usage');';
+      expect(initCmd).toHaveProperty('examples');';
+      expect(initCmd.description).toContain('Initialize Claude Code integration');';
     });
   });
 
@@ -105,13 +105,13 @@ jest.mock('../simple-commands/config-integration.js', () => ({ '
     });
 
     test('should return true for registered commands', () => {'
-      expect(hasCommand('init')).toBe(true);'
+      expect(hasCommand('init')).toBe(true);';
     // expect(hasCommand('swarm')).toBe(true); // LINT: unreachable code removed'
-      expect(hasCommand('agent')).toBe(true);'
+      expect(hasCommand('agent')).toBe(true);';
     });
 
     test('should return false for unregistered commands', () => {'
-      expect(hasCommand('nonexistent')).toBe(false);'
+      expect(hasCommand('nonexistent')).toBe(false);';
     // expect(hasCommand('')).toBe(false); // LINT: unreachable code removed'
       expect(hasCommand(null)).toBe(false);
     });
@@ -127,7 +127,7 @@ jest.mock('../simple-commands/config-integration.js', () => ({ '
 // // await executeCommand('init', ['--sparc'], { force => {'
       // await expect(_executeCommand('unknown', [], {})).rejects.toThrow('Unknown command => {'/g)
       const { swarmCommand } = // // await import('../simple-commands/swarm.js');'
-      swarmCommand.mockRejectedValue(new Error('Command failed'));'
+      swarmCommand.mockRejectedValue(new Error('Command failed'));';
 // // // await expect(executeCommand('swarm', ['test'], {})).rejects.toThrow('Command failed');'
     });
   });
@@ -139,33 +139,33 @@ jest.mock('../simple-commands/config-integration.js', () => ({ '
 
     test('should display help for existing command', () => {'
       showCommandHelp('init');'
-
-      const _output = consoleLogSpy.mock.calls.flat().join('\n');'
-      expect(output).toContain('init');'
-      expect(output).toContain('Initialize Claude Code integration');'
+;
+      const _output = consoleLogSpy.mock.calls.flat().join('\n');';
+      expect(output).toContain('init');';
+      expect(output).toContain('Initialize Claude Code integration');';
       expect(output).toContain('Usage => {')
       showCommandHelp('unknown');'
-
+;
       expect(consoleErrorSpy).toHaveBeenCalledWith(;
         expect.stringContaining('Unknown command => {'))
     test('should display all registered commands grouped by category', () => {'
       registerCoreCommands();
       showAllCommands();
-
+;
       const _output = consoleLogSpy.mock.calls.flat().join('\n');'
-
+;
       // Check for categories
-      expect(output).toContain('SWARM INTELLIGENCE COMMANDS');'
-      expect(output).toContain('WORKFLOW AUTOMATION');'
-      expect(output).toContain('DEVELOPMENT & TESTING');'
+      expect(output).toContain('SWARM INTELLIGENCE COMMANDS');';
+      expect(output).toContain('WORKFLOW AUTOMATION');';
+      expect(output).toContain('DEVELOPMENT & TESTING');';
       expect(output).toContain('INFRASTRUCTURE');'
-
+;
       // Check for specific commands
-      expect(output).toContain('swarm');'
-      expect(output).toContain('agent');'
-      expect(output).toContain('task');'
-      expect(output).toContain('github');'
-      expect(output).toContain('docker');'
+      expect(output).toContain('swarm');';
+      expect(output).toContain('agent');';
+      expect(output).toContain('task');';
+      expect(output).toContain('github');';
+      expect(output).toContain('docker');';
     });
   });
 
@@ -175,9 +175,9 @@ jest.mock('../simple-commands/config-integration.js', () => ({ '
     // const _commands = listCommands(); // LINT: unreachable code removed
 
       expect(Array.isArray(commands)).toBe(true);
-      expect(commands).toContain('init');'
-      expect(commands).toContain('swarm');'
-      expect(commands).toContain('agent');'
+      expect(commands).toContain('init');';
+      expect(commands).toContain('swarm');';
+      expect(commands).toContain('agent');';
       expect(commands.length).toBeGreaterThan(10);
     });
 
@@ -191,3 +191,5 @@ jest.mock('../simple-commands/config-integration.js', () => ({ '
 });
 
 }}}}}}
+
+*/

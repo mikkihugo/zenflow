@@ -53,25 +53,25 @@ import { Logger  } from '../utils/logger.js';
 // export class BaseQueen extends EventEmitter {
   constructor(name = name;
   this;
-
+;
   specialty = specialty;
   this;
-
+;
   confidence = 0.8;
   this;
-
+;
   workload = 0;
   this;
-
+;
   maxConcurrentTasks = 5;
   this;
-
+;
   isActive = true;
   this;
-
+;
   activeTasks = new Set();
   this;
-
+;
   logger = new Logger(`Queen = {tasksProcessed = performance.now();`
 
         try {
@@ -80,18 +80,18 @@ import { Logger  } from '../utils/logger.js';
   // Process task with all queens in parallel
   const;
   results = // // await Promise.allSettled([;/g)
-                this.process(task),
+                this.process(task),;
 ..otherQueens.map(queen => queen.process(task));
             ]);
 
   // Filter successful results
   const;
   successfulResults = results;
-filter((_result) => result.status === 'fulfilled');'
+filter((_result) => result.status === 'fulfilled');';
 map((_result) => result.value);
 filter((_result) => result.confidence > 0.1); // Filter out low-confidence results
   if(_successfulResults._length === 0) {
-                throw new Error('No queens could process this task');'
+                throw new Error('No queens could process this task');';
             //             }
 
   // Determine consensus method based on task importance and queen specialties
@@ -103,14 +103,14 @@ filter((_result) => result.confidence > 0.1); // Filter out low-confidence resul
   const;
   processingTime = performance.now() - startTime;
   consensus;
-
+;
   processingTime = processingTime;
-
+;
   // Update metrics for all participating queens
   this;
-
+;
   updateCollaborationMetrics(successfulResults, consensus);
-
+;
   this;
   emit('collaboration', { task, consensus,results = === 'critical') {'
             // return 'unanimous';'
@@ -118,9 +118,9 @@ filter((_result) => result.confidence > 0.1); // Filter out low-confidence resul
 
   // If there's a clear expert for this task type, use expert method'
   const;
-  expertResult = results.find(;)
+  expertResult = results.find(;);
     (_result) =>;
-      result.queenName.toLowerCase().includes(task.type.split('-')[0]) && result.confidence > 0.9;'
+      result.queenName.toLowerCase().includes(task.type.split('-')[0]) && result.confidence > 0.9;';
   );
   if(_expertResult && _results._length > 2) {
             // return 'expert';'
@@ -141,24 +141,24 @@ filter((_result) => result.confidence > 0.1); // Filter out low-confidence resul
 async;
 reachConsensus(task, results, method);
   switch(method) {
-            case 'unanimous':'
+            case 'unanimous':';
                 // return this.unanimousConsensus(task, results);
     // case 'expert': // LINT: unreachable code removed'
                 // return this.expertConsensus(task, results);
     // case 'weighted': // LINT: unreachable code removed'
                 // return this.weightedConsensus(task, results);default = results.map(r => r.recommendation);
         const _firstRec = recommendations[0];
-
-        const _similarity = recommendations.every(_rec => ;)
+;
+        const _similarity = recommendations.every(_rec => ;);
             this.calculateSimilarity(rec, firstRec) > 0.8;
         );
   if(similarity) {
             // return {taskId = > r.confidence)),participants = this.weightedConsensus(task, results);
     // return { // LINT: unreachable code removed
 ..weighted,method = results.reduce((best, current) => {
-            const _isExpert = current.queenName.toLowerCase().includes(task.type.split('-')[0]);'
+            const _isExpert = current.queenName.toLowerCase().includes(task.type.split('-')[0]);';
             const _hasHigherConfidence = current.confidence > best.confidence;
-
+;
             // return(isExpert && hasHigherConfidence) ?current = > r.queenName !== expert.queenName);
     //   // LINT: unreachable code removed};
     //     }
@@ -179,37 +179,37 @@ reachConsensus(task, results, method);
         // Combine selected results into final decision
         const __decision = this.combineRecommendations(selectedResults.map(r => r.recommendation));
         const __confidence = selectedResults.reduce((sum, r) => sum + r.confidence * r.weight, 0) / cumulativeWeight
-
+;
         // return {taskId = > !selectedResults.some(s => s.queenName === r.queenName));
     //   // LINT: unreachable code removed};
     //     }
   majorityConsensus(task, results) {
         // Group similar recommendations
         const _groups = this.groupSimilarRecommendations(results);
-
+;
         // Find the largest group
         const _majority = groups.reduce((_largest, _current) => ;
             current.length > largest.length ?current = === 0) ;
             throw new Error('No majority found');'
-
+;
         // Use the highest confidence recommendation from the majority group
         const __best = majority.reduce((_best, _current) => ;
             current.confidence > best.confidence ?current = majority.reduce((sum, r) => sum + r.confidence, 0) / majority.length;
-
+;
         // return {taskId = > !majority.includes(r));
     //   // LINT: unreachable code removed};
     //     }
   calculateWeight(result, task) {
         const _weight = result.confidence;
-
+;
         // Boost weight if queen specialty matches task type
         if(result.queenName.toLowerCase().includes(task.type.split('-')[0])) {'
-            weight *= 1.5
+            weight *= 1.5;
         //         }
 
         // Boost weight for faster processing(efficiency bonus)
   if(result.processingTime < 1000) {
-            weight *= 1.1
+            weight *= 1.1;
         //         }
 
         // return Math.min(weight, 2.0); // Cap at 2.0
@@ -218,10 +218,10 @@ reachConsensus(task, results, method);
         // Simple similarity calculation - could be enhanced with ML
         const _words1 = new Set(text1.toLowerCase().split(/\W+/));
         const _words2 = new Set(text2.toLowerCase().split(/\W+/));
-
+;
         const _intersection = new Set([...words1].filter(word => words2.has(word)));
         const _union = new Set([...words1, ...words2]);
-
+;
         // return intersection.size / union.size;
     //   // LINT: unreachable code removed}
   groupSimilarRecommendations(results) {
@@ -243,21 +243,21 @@ reachConsensus(task, results, method);
         // return groups;
     //   // LINT: unreachable code removed}
 
-    combineRecommendations(recommendations): unknown
+    combineRecommendations(recommendations): unknown;
         // Simple combination - take the longest/most detailed recommendation
         // In production, this could use ML to intelligently merge recommendations
         // return recommendations.reduce((_longest, _current) => ;
     // current.length > longest.length ?current = results.find(r => r.queenName === this.name); // LINT: unreachable code removed
   if(myResult) {
             this.metrics.collaborations++;
-
+;
             // Check if my recommendation influenced the consensus
             if(this.calculateSimilarity(myResult.recommendation, consensus.decision) > 0.5) {
                 this.metrics.consensusReached++;
             //             }
         //         }
 
-    async canAcceptTask(task): unknown
+    async canAcceptTask(task): unknown;
   if(!this.isActive) {
             // return false;
     //   // LINT: unreachable code removed}
@@ -281,32 +281,32 @@ reachConsensus(task, results, method);
 
         // Reduce if overloaded
   if(this.workload > 0.8) {
-            suitability *= 0.6
+            suitability *= 0.6;
         //         }
 
         // Boost based on historical performance for this task type
         suitability += this.metrics.specialtyMatch * 0.1
-
+;
         // return Math.min(suitability, 1.0);
     //   // LINT: unreachable code removed}
 
-    trackTaskStart(taskId): unknown
+    trackTaskStart(taskId): unknown;
         this.activeTasks.add(taskId);
         this.workload = Math.min(this.activeTasks.size / this.maxConcurrentTasks, 1.0);
-
-    trackTaskComplete(taskId, result): unknown
+;
+    trackTaskComplete(taskId, result): unknown;
         this.activeTasks.delete(taskId);
         this.workload = Math.min(this.activeTasks.size / this.maxConcurrentTasks, 1.0);
-
+;
         // Update metrics
         this.metrics.tasksProcessed++;
         this.metrics.averageConfidence = ;
-            (this.metrics.averageConfidence * (this.metrics.tasksProcessed - 1) + result.confidence) / 
+            (this.metrics.averageConfidence*(this.metrics.tasksProcessed - 1) + result.confidence) / 
             this.metrics.tasksProcessed;
         this.metrics.averageProcessingTime = ;
-            (this.metrics.averageProcessingTime * (this.metrics.tasksProcessed - 1) + result.processingTime) / 
+            (this.metrics.averageProcessingTime*(this.metrics.tasksProcessed - 1) + result.processingTime) / 
             this.metrics.tasksProcessed;
-
+;
         this.emit('taskComplete', { taskId, result });'
   getName() {}
         // return this.name;
@@ -327,7 +327,7 @@ reachConsensus(task, results, method);
     async shutdown() { 
         this.logger.info(`Shutting down $this.name}...`);`
         this.isActive = false;
-
+;
         // Wait for active tasks to complete(with timeout)
         const _attempts = 0;
   while(this.activeTasks.size > 0 && attempts < 30) {
@@ -335,7 +335,7 @@ reachConsensus(task, results, method);
             attempts++;
         //         }
 
-        this.emit('shutdown');'
+        this.emit('shutdown');';
     //     }
 
 })

@@ -9,7 +9,7 @@ import path from 'node:path';
 export class CodeAnalysisWatcher extends EventEmitter {
   constructor(_config = {}) {
     super();
-
+;
     this.config = {watchPaths = new Map();
     this.changeQueue = new Map();
     this.debounceTimers = new Map();
@@ -26,9 +26,9 @@ export class CodeAnalysisWatcher extends EventEmitter {
     //   // LINT: unreachable code removed}
 
     this.orchestrator = orchestrator;
-
+;
     console.warn(' Starting real-time code analysis watcher...');
-
+;
     try {
       // Discover initial source files
 // const _sourceFiles = awaitthis.discoverSourceFiles();
@@ -43,9 +43,9 @@ export class CodeAnalysisWatcher extends EventEmitter {
 
       // Emit start event
       this.emit('watcher = false;'
-
+;
     console.warn(' File watcher stopped');
-
+;
     // Emit stop event
     this.emit('watcher = watch(dirPath, { recursive => {'))
   if(filename) {
@@ -57,7 +57,7 @@ export class CodeAnalysisWatcher extends EventEmitter {
     watcher.on('error', (error) => {
         console.error(` Watcher error for ${dirPath});`
         this.emit('watcher = filePath;'
-
+;
     if(this.debounceTimers.has(fileKey)) {
       clearTimeout(this.debounceTimers.get(fileKey));
     //     }
@@ -79,7 +79,7 @@ export class CodeAnalysisWatcher extends EventEmitter {
       // Check if file still exists(for 'change' events)
       const _fileExists = false;
       const __fileStats = null;
-
+;
       try {
         _fileStats = // await stat(filePath);
         fileExists = true;
@@ -108,7 +108,7 @@ export class CodeAnalysisWatcher extends EventEmitter {
     // Check for high complexity functions
   if(results.functions) {
       const _highComplexityFunctions = results.functions.filter(;)
-        (f) => (f.cyclomatic_complexity  ?? 0) > 10;
+        (f) => (f.cyclomatic_complexity ?? 0) > 10;
       );
   if(highComplexityFunctions.length > 0) {
         changes.complexityChanges = highComplexityFunctions;
@@ -122,10 +122,10 @@ export class CodeAnalysisWatcher extends EventEmitter {
 
     // Emit significant changes if any
   if(;
-      changes.newExports.length > 0  ?? changes.complexityChanges.length > 0  ?? changes.dependencyChanges.length > 0;
+      changes.newExports.length > 0 ?? changes.complexityChanges.length > 0 ?? changes.dependencyChanges.length > 0;
     ) {
       this.emit('analysis = path.relative(process.cwd(), filePath);'
-
+;
       // Check file extension
       const _validExtensions = ['.js', '.jsx', '.ts', '.tsx'];
       if(!validExtensions.some((ext) => filePath.endsWith(ext))) {
@@ -158,7 +158,7 @@ export class CodeAnalysisWatcher extends EventEmitter {
 /** Get directories to watch based on source files;
 
     getWatchDirectories(sourceFiles);
-
+;
     //     {
       const _directories = new Set();
   for(const file of sourceFiles) {
@@ -183,13 +183,13 @@ export class CodeAnalysisWatcher extends EventEmitter {
 
     async;
     getAllFiles(dirPath);
-
+;
     //     {
       const { readdir, stat } = // await import('node);'
       const { join } = // await import('node);'
 
       const _files = [];
-
+;
       async function walk(currentPath) {
         try {
 // const _entries = awaitreaddir(currentPath);
@@ -228,3 +228,6 @@ export class CodeAnalysisWatcher extends EventEmitter {
 // export default CodeAnalysisWatcher; 
 
 }}}}}}}}) {)))))))
+
+*/*/*/*/*/*/
+}}}

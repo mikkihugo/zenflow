@@ -178,5 +178,7 @@ For detailed documentation, see,//github.com/ruvnet/claude-code-flow/docs/swarm-
 `;`
 // // await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
 // // await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
-console.warn('   Created slash command);'
+console.warn('   Created slash command);';
 // }
+
+*/*/

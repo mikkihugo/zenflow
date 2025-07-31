@@ -19,7 +19,7 @@ if(!fs.existsSync(DEST_DIR)) {
     fs.mkdirSync(destPath, {recursive = path.join(destPath, 'README.md');
     if(!fs.existsSync(readmePath)) {
       fs.writeFileSync(;
-      readmePath,
+      readmePath,;
       `# ${dirName}\n\nThis directory is intentionally empty and will be populated during usage.\n`;)
       //       )
     //     }
@@ -44,11 +44,11 @@ console.warn('InstallationSummary = manifest.files.filter(;'))
 // Verify installation
   if(errorCount === 0) {
   console.warn('\n Template installation completed successfully!');
-
+;
   // Create a timestamp file
   const _timestamp = new Date().toISOString();
-  fs.writeFileSync(;)
-    path.join(__dirname, '.installed'),
+  fs.writeFileSync(;);
+    path.join(__dirname, '.installed'),;
     `Installed: ${timestamp}\nVersion: ${manifest.version}\n`);
 } else {
   console.warn('\n  Template installation completed with errors.');
@@ -56,10 +56,13 @@ console.warn('InstallationSummary = manifest.files.filter(;'))
 // }
 
 // Display next steps
-console.warn('\nNext steps);'
+console.warn('\nNext steps);';
 console.warn('1. Review the installed files in the .claude directory');
 console.warn('2. Run tests to verify functionality);'
 console.warn('3. Package for distribution if needed');
 console.warn('\nFor more information, see README.md');
 
 }}}}}})))
+
+*/*/
+}

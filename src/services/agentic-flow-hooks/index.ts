@@ -28,7 +28,7 @@ const { MEMORY_HOOKS } = await import('.
 const { WORKFLOW_HOOKS } = // await import('./workflow-hooks.js');
 
 // Register all hooks
-const _allHooks = [..LLM_HOOKS,
+const _allHooks = [..LLM_HOOKS,;
 ..NEURAL_HOOKS,
 ..PERFORMANCE_HOOKS,
 ..MEMORY_HOOKS,
@@ -43,7 +43,7 @@ const _allHooks = [..LLM_HOOKS,
 console.warn(`Successfully registered ${allHooks.length} built-in hooks`) {;
 } catch(error)
 // {
-  console.error('Failed to register built-inhooks = createHookContext('pre-task');'
+  console.error('Failed to register built-inhooks = createHookContext('pre-task');';
   const _payload = {
     context,data = // await manager.executeHooks('pre-task', payload);
   // return result;
@@ -92,19 +92,19 @@ return result;
 // Convenience hook creators
 // export function createLLMRequestHook() {
   return {
-    name,type = = false,async = = false,timeout = > Promise<any>,
+    name,type = = false,async = = false,timeout = > Promise<any>,;
     // options = { // LINT: unreachable code removed}
 ) ;
   return {
-    name,type = = false,async = = false,timeout = > Promise<any>,
+    name,type = = false,async = = false,timeout = > Promise<any>,;
     // options = { // LINT: unreachable code removed}
 ) ;
   // return {
-    name,type = = false,async = = false,timeout = > Promise<any>,
+    name,type = = false,async = = false,timeout = > Promise<any>,;
     // options = { // LINT: unreachable code removed}
 ) ;
   // return {
-    name,type = = false,async = = false,timeout = === 'production' ? 'production' : 'development',
+    name,type = = false,async = = false,timeout = === 'production' ? 'production' : 'development',;
     // version = {DEVELOPMENT = {success = 3600000) => createLLMRequestHook(; // LINT) => {
       // Caching logic would go here
       return {
@@ -119,22 +119,22 @@ return result;
   async(payload) => {
     // Custom logic here
     return {
-      success,
+      success,;
     // data: { processed: true  // LINT: unreachable code removed},
-      hookName: 'my-custom-hook',
-      duration,
+      hookName: 'my-custom-hook',;
+      duration,;
       timestamp: new Date();
     };
   },
   { ;
-    description: 'My custom processing hook',
-    priority,
+    description: 'My custom processing hook',;
+    priority,;
     // timeout: 5000
   //   }
 );
 // // await hookManager.registerHook(customHook);
 `,`
-  HOOK_PATTERNS: `;`
+  HOOK_PATTERNS: `;`;
 // Use predefined hook patterns
 // import { HOOK_PATTERNS  } from './agentic-flow-hooks';
 
@@ -149,7 +149,10 @@ return result;
 
 console.warn('Agentic-Flow Hook System loaded successfully');
 console.warn('Available hook types, Neural, Performance, Memory, Workflow');
-console.warn('Built-in hooks);'
+console.warn('Built-in hooks);';
 console.warn('Features);'
-
+;
 }}}}}}}}}}}}}}))))))))
+
+*/*/
+})))

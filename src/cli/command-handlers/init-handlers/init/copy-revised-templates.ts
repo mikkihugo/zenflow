@@ -8,7 +8,7 @@ const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = path.dirname(__filename);
 // Source directory for revised templates(repository root .claude/commands)
 const _REPO_TEMPLATES_DIR = path.join(__dirname, '../../../../.claude/commands');
-
+;
 /** Copy revised template files from repository to target project
 
 export async function copyRevisedTemplates(targetDir = {}) {
@@ -19,7 +19,7 @@ export async function copyRevisedTemplates(targetDir = {}) {
 // // await fs.promises.mkdir(targetCommandsDir, {recursive = [/g)
       {source = path.join(REPO_TEMPLATES_DIR, file.source);
       const _targetPath = path.join(targetDir, file.target);
-
+;
       if(fs.existsSync(sourcePath)) {
         try {
           const _targetDirPath = path.dirname(targetPath);
@@ -28,7 +28,7 @@ export async function copyRevisedTemplates(targetDir = {}) {
     results.success = false;
     results.errors.push(`Failed to copy revisedtemplates = // await fs.promises.readdir(sourceDir, {withFileTypes = path.join(sourceDir, entry.name);`
       const _targetPath = path.join(targetDir, entry.name);
-
+;
       if(entry.isDirectory()) {
         // Create directory and recurse
 // // await fs.promises.mkdir(targetPath, {recursive = path.relative(targetDir, targetPath);
@@ -58,7 +58,7 @@ export async function copyRevisedTemplates(targetDir = {}) {
 // export async function copyRevisedTemplatesByCategory(targetDir = {}) {
   const _results = {success = path.join(REPO_TEMPLATES_DIR, category);
     const _targetCategoryDir = path.join(targetDir, '.claude/commands', category);
-
+;
     if(fs.existsSync(sourceCategoryDir)) {
 // // await fs.promises.mkdir(targetCategoryDir, {recursive = results.errors.length === 0;
   // return results;
@@ -76,7 +76,7 @@ export async function copyRevisedTemplates(targetDir = {}) {
   //   }
   if(missingCategories.length > 0) {
     // return {
-      valid,
+      valid,;
     // error: `Missing required template categories: \${missingCategories.join(', ') // LINT}`;
     };
   //   }
@@ -85,3 +85,5 @@ export async function copyRevisedTemplates(targetDir = {}) {
 // }
 
 }}}}}}}}}}))))))
+
+*/*/]

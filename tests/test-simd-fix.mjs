@@ -8,9 +8,12 @@ import { RuvSwarm  } from './ruv-swarm/npm/src/index-enhanced.js';
   if(global._ruvSwarmInstance) {
   delete global._ruvSwarmInstance;
   global._ruvSwarmInitialized = 0;
-
+;
 const _simdSupported = RuvSwarm.detectSIMDSupport();
 try { // eslint-disable-line
 // const _instance = awaitRuvSwarm.initialize({ useSIMD,/g)
     debug   });
 } catch(_error) {}
+
+*/
+}

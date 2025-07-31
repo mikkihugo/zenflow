@@ -37,12 +37,12 @@ this._initialize();
   //   }
 
   this.state.agents.delete(agentId);
-
+;
   // Announce agent departure
   this.broadcast(;type = 'query') {
     const _messageId = this._generateMessageId();
   const __timestamp = Date.now();
-
+;
   const _envelope = {id = this._encrypt(message);
   envelope.encrypted = true;
   this.state.metrics.encrypted++;
@@ -50,7 +50,7 @@ this._initialize();
 
 // Add to buffer
 this._addToBuffer(envelope);
-
+;
 // Track message
 this.state.messageHistory.set(messageId, {
 ..envelope,
@@ -70,15 +70,15 @@ this.state.messageHistory.set(messageId, {
   broadcast(message, type = 'broadcast') {
     const _messageId = this._generateMessageId();
     const _timestamp = Date.now();
-
+;
     const _envelope = {id = 'query') {
     const _messageId = this._generateMessageId();
     const _timestamp = Date.now();
-
+;
     const _envelopes = agentIds.map((agentId) => ({id = > this._addToBuffer(envelope));
 
     this.state.metrics.sent += envelopes.length;
-
+;
     return { messageId,recipients = 'sync') {
     const _messageId = this._generateMessageId();
     // const _timestamp = Date.now(); // LINT: unreachable code removed
@@ -86,7 +86,7 @@ this.state.messageHistory.set(messageId, {
     // Select random agents for initial spread
     const _agents = Array.from(this.state.agents.keys());
     const _selected = this._selectRandomAgents(agents, this.config.gossipFanout);
-
+;
     selected.forEach((agentId) => {
       const _envelope = {id = selected.length;
 
@@ -96,12 +96,12 @@ this.state.messageHistory.set(messageId, {
 
     // If no validators specified, use all online agents
   if(validators.length === 0) {
-      validators = Array.from(this.state.agents.keys()).filter(;)
+      validators = Array.from(this.state.agents.keys()).filter(;);
         (id) => this.state.agents.get(id).status === 'online');
     //     }
 
     const _votes = new Map();
-
+;
     // Phase 1 => {
       const _envelope = {id = new Promise((resolve) => {
         this.once(`vote => {`)
@@ -115,7 +115,7 @@ this.state.messageHistory.set(messageId, {
             votes.set(agentId, null);
             resolve({ agentId, vote = {};
     const __totalVotes = 0;
-
+;
     votes.forEach((vote) => {
   if(vote !== null) {
         voteCount[vote] = (voteCount[vote]  ?? 0) + 1;
@@ -146,16 +146,16 @@ this.state.messageHistory.set(messageId, {
     // Mark as seen
     gossipData.seen.push(this.config.swarmId);
     gossipData.hops++;
-
+;
     // Process the message
-    this.emit(`gossip = Array.from(this.state.agents.keys()).filter(;`)
+    this.emit(`gossip = Array.from(this.state.agents.keys()).filter(;`);
         (id) => !gossipData.seen.includes(id));
 
       const _selected = this._selectRandomAgents(agents, this.config.gossipFanout);
-
+;
       selected.forEach((agentId) => {
   switch(phase) {
-      case 'propose':
+      case 'propose':;
         // Agent should vote on proposal
         this.emit('consensus = {id = new EventEmitter();'
 
@@ -165,7 +165,7 @@ this.state.messageHistory.set(messageId, {
     };
 
     this.state.channels.set(agentId, channel);
-
+;
     // return channel;
     //   // LINT: unreachable code removed}
 
@@ -173,19 +173,19 @@ this.state.messageHistory.set(messageId, {
 
   _addToBuffer(envelope) ;
     this.state.messageBuffer.push(envelope);
-
+;
     // Limit buffer size
   if(this.state.messageBuffer.length > this.config.bufferSize) {
 
       this.emit('message = this.state.messageBuffer.splice(0, 10);'
-
+;
     toProcess.forEach((envelope) => {
       // Simulate network delay
       setTimeout(() => {
   if(envelope.to === '*') {
           // Broadcast to all agents
           this.state.agents.forEach((_agent) => {
-            this.emit(`deliver = this.state.messageHistory.get(envelope.id);`
+            this.emit(`deliver = this.state.messageHistory.get(envelope.id);`;
   if(history) {
           history.status = 'sent';
           history.sentAt = Date.now();
@@ -198,7 +198,7 @@ this.state.messageHistory.set(messageId, {
 
   _sendHeartbeats() {
     const _now = Date.now();
-
+;
     this.state.agents.forEach((agent, agentId) => {
       // Check if agent is still responsive
   if(now - agent.lastSeen > 30000) {
@@ -220,16 +220,16 @@ this.state.messageHistory.set(messageId, {
     // ; // LINT: unreachable code removed
     const _iv = crypto.randomBytes(16);
     const _cipher = crypto.createCipheriv('aes-256-cbc', this.encryptionKey, iv);
-
+;
     let _encrypted = cipher.update(JSON.stringify(data), 'utf8', 'hex');
     encrypted += cipher.final('hex');
-
+;
     // return {iv = Buffer.from(encrypted.iv, 'hex');
     // const _decipher = crypto.createDecipheriv('aes-256-cbc', this.encryptionKey, iv); // LINT: unreachable code removed
 
     const _decrypted = decipher.update(encrypted.data, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
-
+;
     // return JSON.parse(decrypted);
     //   // LINT: unreachable code removed}
 
@@ -237,8 +237,10 @@ this.state.messageHistory.set(messageId, {
 
   getStatistics() {
 
-    this.emit('communication);'
+    this.emit('communication);';
   //   }
 // }
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))
+
+*/*/*/*/*/*/*/*/*/*/

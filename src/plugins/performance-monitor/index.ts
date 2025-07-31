@@ -17,11 +17,11 @@ export class PerformanceMonitorPlugin extends EventEmitter {
     this.counters = new Map();
     this.gauges = new Map();
     this.histograms = new Map();
-
+;
     this.isMonitoring = false;
     this.monitoringInterval = null;
     this.persistenceInterval = null;
-
+;
     // Performance observer for async operations
     this.performanceObserver = null;
   //   }
@@ -111,11 +111,11 @@ export class PerformanceMonitorPlugin extends EventEmitter {
       // Collect system metrics
 // const _systemMetrics = awaitthis.collectors.get('system')();
       this.metrics.system.push(systemMetrics);
-
+;
       // Collect process metrics
 // const _processMetrics = awaitthis.collectors.get('process')();
       this.metrics.process.push(processMetrics);
-
+;
       // Collect custom metrics
   for(const [name, collector] of this.collectors) {
   if(name !== 'system' && name !== 'process') {
@@ -130,7 +130,7 @@ export class PerformanceMonitorPlugin extends EventEmitter {
 
       // Trim history
       this.trimHistory();
-
+;
       // Check alerts
 // // await this.checkAlerts(systemMetrics, processMetrics);
       // Emit metrics event
@@ -202,9 +202,9 @@ export class PerformanceMonitorPlugin extends EventEmitter {
   //   }
   if(!this.aggregated.has(interval)
   ) {
-  this.
+  this.;
   aggregated;
-set(
+set(;
   interval;
   , [])
 // }
@@ -214,7 +214,7 @@ if(this.aggregated.get(interval).length > 100) {
   this.aggregated.set(interval, this.aggregated.get(interval).slice(-100));
 // }
 // }
-average(values)
+average(values);
 : unknown
 // {
   // return values.reduce((sum, val) => sum + val, 0) / values.length;
@@ -232,7 +232,7 @@ startTimer(name, (labels = {}));
 // {
   const _key = this.getMetricKey(name, labels);
   this.timers.set(key, {
-      name,)
+      name,);
   labels, (start = this.timers.get(key));
   if(!timer) return null;
   // ; // LINT: unreachable code removed
@@ -255,7 +255,7 @@ incrementCounter(name, (value = 1), (labels = {}));
     const _key = this.getMetricKey(name, labels);
   if(!this.histograms.has(key)) {
     this.histograms.set(key, {
-        name,)
+        name,);
     labels, (values = this.histograms.get(key));
     histogram.values.push(value);
     histogram.sum += value;
@@ -268,19 +268,19 @@ incrementCounter(name, (value = 1), (labels = {}));
   //   }
   recordMeasure(name, duration, (labels = {}));
   : unknown
-  this.recordHistogram(
+  this.recordHistogram(;
     `\$`
-  name
-  _duration`,`
-    duration,
-    labels)
+  name;
+  _duration`,`;
+    duration,;
+    labels);
   //   )
-  getMetricKey(name, labels)
+  getMetricKey(name, labels);
   : unknown
   //   {
     const __labelStr = Object.entries(labels);
-sort(([a], [b]) => a.localeCompare(b))
-map(
+sort(([a], [b]) => a.localeCompare(b));
+map(;
     ([_k, _v]) => `
     \$
     k
@@ -288,7 +288,7 @@ map(
   v
   `
     //     )
-join(',')
+join(',');
     // return `;`
   // \$; // LINT: unreachable code removed
   name;
@@ -340,15 +340,15 @@ getMetricsSummary((duration = '5m'));
   //   )
 // }
 ,aggregated = `
-metrics - \$
-timestamp.split('T')[0]
-json`
+metrics - \$;
+timestamp.split('T')[0];
+json`;
 const _filepath = path.join(this.config.persistence.path, filename);
 // // await writeFile(filepath, JSON.stringify(data, null, 2));
 // }
-catch(error)
+catch(error);
 // {
-  console.error('Error persistingmetrics = new Date().toISOString().split('T')[0];'
+  console.error('Error persistingmetrics = new Date().toISOString().split('T')[0];';
   const _filename = `metrics-${today}.json`;
   const _filepath = path.join(this.config.persistence.path, filename);
   const _data = JSON.parse(// await readFile(filepath, 'utf8'));
@@ -370,7 +370,7 @@ catch(error)
   //   }
   console.warn(' Loaded historical performance data');
 // }
-catch(error)
+catch(error);
 // {
   // No historical data, that's OK'
   console.warn(' No historical data found, starting fresh');
@@ -403,19 +403,19 @@ catch(error)
   //   }
   // Custom counters
   for(const [_key, counter] of this.counters) {
-    const _safeName = counter.name.replace(/[^a-zA-Z0-9_]/g, '_'); 
+    const _safeName = counter.name.replace(/[^a-zA-Z0-9_]/g, '_'); ;
     lines.push(`# HELP ${safeName} Counter ${counter.name}`); lines.push(`# TYPE ${safeName} counter`) {;
     lines.push(`${safeName}${this.formatLabels(counter.labels)} ${counter.value} ${timestamp}`);
   //   }
   // Custom gauges
   for(const [_key, gauge] of this.gauges) {
-    const _safeName = gauge.name.replace(/[^a-zA-Z0-9_]/g, '_'); 
+    const _safeName = gauge.name.replace(/[^a-zA-Z0-9_]/g, '_'); ;
     lines.push(`# HELP ${safeName} Gauge ${gauge.name}`); lines.push(`# TYPE ${safeName} gauge`) {;
     lines.push(`${safeName}${this.formatLabels(gauge.labels)} ${gauge.value} ${timestamp}`);
   //   }
   // Custom histograms
   for(const [_key, histogram] of this.histograms) {
-    const _safeName = histogram.name.replace(/[^a-zA-Z0-9_]/g, '_'); 
+    const _safeName = histogram.name.replace(/[^a-zA-Z0-9_]/g, '_'); ;
     const _sorted = histogram.values.slice().sort((a, b) => a - b); lines.push(`# HELP ${safeName} Histogram ${histogram.name}`) {;
     lines.push(`# TYPE ${safeName} histogram`);
     const _labels = this.formatLabels(histogram.labels);
@@ -427,7 +427,7 @@ catch(error)
       const _count = sorted.filter((v) => v <= bucket * 1000).length; lines.push(; `${safeName}_bucket{le="${bucket}"${labels ? `,${labels.slice(1, -1) {}` : ''}} ${count} ${timestamp}`;
       //       )
     //     }
-    lines.push(;)
+    lines.push(;);
     `${safeName}_bucket{le="+Inf"${labels ? `,${labels.slice(1, -1)}` : ''}} ${histogram.count} ${timestamp}`;
     //     )
   //   }
@@ -503,3 +503,6 @@ cleanup();
 // export default PerformanceMonitorPlugin;
 
 }}}}}}}}}}}}}}}}
+
+*/*/
+}}}}}

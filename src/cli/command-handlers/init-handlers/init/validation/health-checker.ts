@@ -38,7 +38,7 @@ checkModeAvailability();
   } else if(result.modes.unavailable.length > 0) {
     result.warnings.push(;
     `${result.modes.unavailable.length} modesunavailable = false;`
-      result.errors.push(`;`
+      result.errors.push(`;`;
     Mode;
     availability;
     check;
@@ -75,7 +75,7 @@ checkModeAvailability();
     // Assess results
   if(result.templates.corrupted.length > 0) {
       result.success = false;
-      result.errors.push(`Corruptedtemplates = false;`)
+      result.errors.push(`Corruptedtemplates = false;`);
       result.errors.push(`Template integrity check failed = {success = // await this.checkRoomodesConsistency();`
       result.consistency.roomodes = roomodesCheck;
   if(!roomodesCheck.consistent) {
@@ -94,7 +94,7 @@ checkModeAvailability();
         result.warnings.push('Memory configuration inconsistency detected');
       //       }
     //     }
-    catch(error)
+    catch(error);
     //     {
       result.success = false;
       result.errors.push(`Configuration consistency check failed = {success = // await this.checkDiskSpace();`
@@ -149,7 +149,7 @@ checkModeAvailability();
         result.warnings.push(...integrationHealth.warnings);
       //       }
     //     }
-    catch(error)
+    catch(error);
     //     {
       result.success = false;
       result.errors.push(`Health diagnosticsfailed = `${this.workingDir}/.roomodes`;`/g)
@@ -259,7 +259,7 @@ checkRoomodesConsistency();
         try {
 // // await node.stat(`${this.workingDir}/memory/${dir}`); 
         } catch {
-          result.consistent = false; result.issues.push(`Memory directorymissing = false;`)
+          result.consistent = false; result.issues.push(`Memory directorymissing = false;`);
       result.issues.push('Cannot validate memory structure') {;
     //     }
 
@@ -344,32 +344,34 @@ checkRoomodesConsistency();
 
   async checkFileSystemHealth() { 
     // return 
-      healthy,
+      healthy,;
     // errors: [], // LINT: unreachable code removed
-      readWrite,
+      readWrite,;
       permissions};
   //   }
 
   async checkProcessHealth() { 
     // return 
-      healthy,
+      healthy,;
     // warnings: [], // LINT: unreachable code removed
       processes: [] };
   //   }
 
   async checkNetworkHealth() { 
     // return 
-      healthy,
+      healthy,;
     // warnings: [], // LINT: unreachable code removed
       connectivity};
   //   }
 
   async checkIntegrationHealth() { 
     // return 
-      healthy,
+      healthy,;
     // warnings: [], // LINT: unreachable code removed
       integrations: {} };
   //   }
 // }
 
 }}}}}}}})))))))))))))))
+
+*/

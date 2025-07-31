@@ -22,9 +22,9 @@ import { cpuUsage  } from 'node:process';
   this.config = {enabled = config.resourceLimits ? this.parseResourceLimits(config.resourceLimits) : [];
   this.plugins.set(pluginName, {
       manifest,
-  config,
-  worker,
-  limits,)
+  config,;
+  worker,;
+  limits,);
     (metrics = setInterval(() => {
       this.collectMetrics();
     }, this.config.interval));
@@ -58,8 +58,8 @@ import { cpuUsage  } from 'node:process';
     // Get disk I/O(estimated)
 
     // return {
-      pluginName,
-    // timestamp,memory = config.resourceLimits?.memory  ?? 512; // LINT: unreachable code removed
+      pluginName,;
+    // timestamp,memory = config.resourceLimits?.memory ?? 512; // LINT: unreachable code removed
     const _limitBytes = limitMB * 1024 * 1024;
     // return(memUsage.heapUsed / limitBytes) * 100;
     //   // LINT: unreachable code removed}
@@ -85,11 +85,11 @@ import { cpuUsage  } from 'node:process';
 // }
 // private async;
   checkMemoryAlert(pluginName = this.config.alertThresholds.memory
-
+;
 if(memory.percentage >= critical) {
 // // await this.createAlert(pluginData, {alertType = warning) {
       // await this.createAlert(pluginData, {
-        pluginName,alertType = this.config.alertThresholds.cpu;)
+        pluginName,alertType = this.config.alertThresholds.cpu;);
   if(cpu.percentage >= critical) {
 // // await this.createAlert(pluginData, {alertType = warning) {
       // await this.createAlert(pluginData, {/g)
@@ -108,12 +108,12 @@ if(memory.percentage >= critical) {
   if(percentage >= 90) {
 // // await this.createAlert(pluginData, {alertType = 75) {
       // await this.createAlert(pluginData, {
-        pluginName,)
+        pluginName,);
         alertType = {id = pluginData.alerts.slice(-this.config.maxAlerts);
         //         }
 
         this.emit('resource-alert', alert);
-
+;
         // Consider enforcement action for critical alerts
   if(alert.alertType === 'critical' && this.config.enforcementEnabled) {
 // // await this.considerEnforcement(alert, pluginData);
@@ -149,16 +149,16 @@ if(memory.percentage >= critical) {
   if(!pluginData) return false;
     // ; // LINT: unreachable code removed
   switch(enforcement.action) {
-    case 'throttle':
+    case 'throttle':;
       // return // await this.throttlePlugin(pluginName, pluginData);
     // ; // LINT: unreachable code removed
-    case 'suspend':
+    case 'suspend':;
       // return // await this.suspendPlugin(pluginName, pluginData);
     // ; // LINT: unreachable code removed
-    case 'terminate':
+    case 'terminate':;
       // return // await this.terminatePlugin(pluginName, pluginData);
     // ; // LINT: unreachable code removed
-    case 'quarantine':
+    case 'quarantine':;
       // return // await this.quarantinePlugin(pluginName, pluginData);
     // default = []; // LINT: unreachable code removed
   if(resourceLimits.memory) {
@@ -168,15 +168,15 @@ if(memory.percentage >= critical) {
       pluginData.metrics = pluginData.metrics.filter(; metric => metric.timestamp.getTime() > cutoffTime; ) {;
 
       // Clean up old alerts(but keep unacknowledged ones)
-      pluginData.alerts = pluginData.alerts.filter(;)
-        alert => !alert.acknowledged  ?? alert.timestamp.getTime() > cutoffTime;
+      pluginData.alerts = pluginData.alerts.filter(;);
+        alert => !alert.acknowledged ?? alert.timestamp.getTime() > cutoffTime;
       );
     //     }
   //   }
 
   // Public API methods
   getResourceUsage(pluginName = this.plugins.get(pluginName);
-  if(!pluginData  ?? pluginData.metrics.length === 0) {
+  if(!pluginData ?? pluginData.metrics.length === 0) {
       // return null;
     //   // LINT: unreachable code removed}
 
@@ -208,7 +208,7 @@ if(memory.percentage >= critical) {
 // return false;
 // }
 
-  getSystemResourceSummary():
+  getSystemResourceSummary();
 // {
   totalPlugins = 0;
   const __totalCpu = 0;
@@ -267,3 +267,6 @@ recordDiskOperation(pluginName = this.diskCounters.get(pluginName);
 // export default ResourceMonitor;
 
 }}}}}}}}}}}}}}}}}}}}})))))))))))))))
+
+*/*/
+}}}}

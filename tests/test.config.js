@@ -10,6 +10,6 @@ export async function cleanupTestEnv() { // eslint-disable-line
   delete process.env.LOG_LEVEL;
 // }
 export const TEST_CONFIG = {
-  timeout,
-maxRetries
+  timeout,;
+maxRetries;
 // }

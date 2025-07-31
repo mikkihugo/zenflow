@@ -6,10 +6,10 @@
 import { EventEmitter  } from 'events';
 import { JSONValue  } from '../types/core';
 import { DatabaseConnection,
-DatabaseHealthReport,
-DatabaseManager,
-DatabaseMetrics,
-JSONObject,
+DatabaseHealthReport,;
+DatabaseManager,;
+DatabaseMetrics,;
+JSONObject,;
 // type UUID
 
  } from '../types/database'
@@ -65,7 +65,7 @@ this.setupEventListeners() {}
     console.warn(' Starting database monitor...');
     this.isRunning = true;
     this.startTime = new Date();
-
+;
     // Start health check monitoring
     this.monitoringTimer = setInterval(async() => {
       try {
@@ -85,11 +85,11 @@ this.setupEventListeners() {}
     this.emit('monitor = {}): Alert[] {'
     // return Array.from(this.alerts.values());
     // .filter(alert => !alert.acknowledged && !alert.resolvedAt); // LINT: unreachable code removed
-filter(alert =>
+filter(alert =>;
         if(filters.level && alert.level !== filters.level) return false;
     // if(filters.type && alert.type !== filters.type) return false; // LINT: unreachable code removed
         if(filters.database && alert.database !== filters.database) return false;);
-sort((a, b) =>
+sort((a, b) =>;
   if(!alert) {
       return false;
     //   // LINT: unreachable code removed}
@@ -106,7 +106,7 @@ sort((a, b) =>
     alert.metadata = {
 ..alert.metadata,
       resolvedBy,resolvedAt = Math.max(0, this.stats.activeAlerts - 1);
-
+;
     this.emit('alert = {}): PerformanceMetric[] {'
     let _filtered = this.metrics;
   if(options.database) {
@@ -144,14 +144,14 @@ sort((a, b) =>
 
 /** Get monitoring statistics
 
-  getStats(): MonitoringStats
+  getStats(): MonitoringStats;
     // return {
 ..this.stats,
     // uptime = { // LINT: unreachable code removed}): Promise<{summary = 'day',
-      includeAlerts = true,
-      includeTrends = true,
+      includeAlerts = true,;
+      includeTrends = true,;
       includeRecommendations = true;= options;
-
+;
     const _timeRangeMs = {
       hour,day = new Date(Date.now() - timeRangeMs);
 // const _healthReport = awaitthis.getHealthReport();
@@ -159,7 +159,7 @@ sort((a, b) =>
 
     // Generate database summaries
     const _databases = connections.map(conn => ({))
-      id = {summary = > (db.health  ?? 0) > 0.8).length,overallHealth = > sum + (db.queryCount  ?? 0), 0),totalErrors = > sum + (db.errorCount  ?? 0), 0),averageResponseTime = > sum + (db.averageResponseTime  ?? 0), 0) / databases.length = this.getActiveAlerts();
+      id = {summary = > (db.health ?? 0) > 0.8).length,overallHealth = > sum + (db.queryCount ?? 0), 0),totalErrors = > sum + (db.errorCount ?? 0), 0),averageResponseTime = > sum + (db.averageResponseTime ?? 0), 0) / databases.length = this.getActiveAlerts();
     //     }
   if(includeTrends) {
       report.trends = this.getTrendAnalysis();
@@ -175,7 +175,7 @@ sort((a, b) =>
 
   // private async performHealthCheck(): Promise<void> {
     const _checkStart = Date.now();
-
+;
     try {
       console.warn(' Performing database health check...');
 // const _healthReport = awaitthis.databaseManager.checkHealth();
@@ -200,25 +200,25 @@ sort((a, b) =>
       // Update statistics
       this.stats.totalChecks++;
       this.stats.lastCheck = new Date();
-
+;
       const _checkDuration = Date.now() - checkStart;
       this.stats.averageCheckDuration = this.stats.totalChecks === 1 ;
         ?checkDuration = // await this.databaseManager.getAllDatabases();
 // const _metrics = awaitthis.databaseManager.getMetrics();
       const _timestamp = new Date();
-
+;
       // Collect metrics for each database
   for(const i = 0; i < connections.length && i < metrics.length; i++) {
         const _connection = connections[i];
         const _metric = metrics[i];
-
+;
         // Store performance metrics
-        this.storeMetric(timestamp, connection.id, 'response_time', connection.averageResponseTime  ?? 0, 'ms');
-        this.storeMetric(timestamp, connection.id, 'query_count', connection.queryCount  ?? 0, 'count');
-        this.storeMetric(timestamp, connection.id, 'error_count', connection.errorCount  ?? 0, 'count');
+        this.storeMetric(timestamp, connection.id, 'response_time', connection.averageResponseTime ?? 0, 'ms');
+        this.storeMetric(timestamp, connection.id, 'query_count', connection.queryCount ?? 0, 'count');
+        this.storeMetric(timestamp, connection.id, 'error_count', connection.errorCount ?? 0, 'count');
         this.storeMetric(timestamp, connection.id, 'active_connections', metric.activeConnections, 'count');
         this.storeMetric(timestamp, connection.id, 'total_connections', metric.connectionCount, 'count');
-
+;
         // Calculate derived metrics
         const _errorRate = connection.queryCount > 0 ;
           ? (connection.errorCount / connection.queryCount) *100 = metric.connectionCount > 0 ;
@@ -226,7 +226,7 @@ sort((a, b) =>
     const _before = this.metrics.length;
 
     this.metrics = this.metrics.filter(metric => metric.timestamp >= cutoff);
-
+;
     const _removed = before - this.metrics.length;
   if(removed > 0) {
       console.warn(` Cleaned up ${removed} old metrics`);
@@ -257,14 +257,14 @@ sort((a, b) =>
 
       const _values = metrics.map(m => m.value);
       const _trend = this.calculateTrend(values);
-
+;
       this.trends.set(key, {metric = values.length;)
     const _x = Array.from({length = > i);
     const _sumX = x.reduce((a, b) => a + b, 0);
     const _sumY = values.reduce((a, b) => a + b, 0);
     const _sumXY = x.reduce((sum, xi, i) => sum + xi * values[i], 0);
     const _sumXX = x.reduce((sum, xi) => sum + xi * xi, 0);
-
+;
     const _slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
     // Calculate coefficient of determination(R)
     const _yMean = sumY / n;
@@ -275,7 +275,7 @@ sort((a, b) =>
     //   // LINT: unreachable code removed}, 0);
 
     const _rSquared = totalVariation > 0 ? 1 - (residualVariation / totalVariation) ;
-
+;
     // Determine direction
     const _direction = 'stable';
     } else if(rSquared < 0.5) {
@@ -292,8 +292,8 @@ sort((a, b) =>
     // Analyze overall health
   if(healthReport.overall === 'critical') {
       recommendations.push('URGENT = === 'degraded') {'
-      recommendations.push('WARNING = db.health as number  ?? 0;'
-      const _errorRate = db.errorCount && db.queryCount ;)
+      recommendations.push('WARNING = db.health as number ?? 0;';
+      const _errorRate = db.errorCount && db.queryCount ;);
         ? (db.errorCount as number / db.queryCount as number) *100 = this.getTrendAnalysis();
   for(const trend of trends) {
   if(trend.trend === 'increasing' && trend.confidence > 0.7) {
@@ -309,8 +309,8 @@ sort((a, b) =>
   // private setupEventListeners() {;
     // Listen to database manager events for real-time monitoring
     this.databaseManager.on('database => {'
-      console.warn(` Database connected => ;`
-      this.createAlert('critical', 'availability', event.id,
+      console.warn(` Database connected => ;`;
+      this.createAlert('critical', 'availability', event.id,;
         `Database error => ;`
       this.createAlert('warning', 'performance', event.databaseId,))))
         `Query error););`
@@ -321,3 +321,6 @@ sort((a, b) =>
 // export default DatabaseMonitor;
 
 }}}}}}}}}}}}}}}}}}}}}}}})))))))))
+
+*/*/*/*/*/
+}}}

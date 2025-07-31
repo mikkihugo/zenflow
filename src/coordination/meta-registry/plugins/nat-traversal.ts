@@ -8,8 +8,8 @@ import { nanoid  } from 'nanoid';'
 export class NATTraversalPlugin {
   // // static metadata = {name = null;
   this;
-
-  stunServers = [
+;
+  stunServers = [;
       'stun.l.google.com = new Map();'
     this.natMappings = new Map();
     this.holePunches = new Map();
@@ -18,13 +18,13 @@ export class NATTraversalPlugin {
 
   async initialize(registry, options = {}) { 
     this.registry = registry;
-    this.options = 
+    this.options = ;
       enableSTUN,enableUPnP = // await this.discoverExternalIP();
       } catch(error) {
         console.warn('STUN discoveryfailed = data;'
-
+;
     // Auto-setup NAT traversal if service needs external connectivity/g)
-  if(value._needsExternalAccess  ?? options._enableNATTraversal) {
+  if(value._needsExternalAccess ?? options._enableNATTraversal) {
 // // // await this.setupServiceNATTraversal(key, value, options);
     //     }
 
@@ -40,16 +40,16 @@ export class NATTraversalPlugin {
     //   // LINT: unreachable code removed}
 
   async setupServiceNATTraversal(serviceKey, serviceConfig, options) { 
-    const _traversalConfig = port = = false,
+    const _traversalConfig = port = = false,;
 ..options.natTraversal;
     };
 
     // Create port mapping
   if(traversalConfig.port) {
 // const _mapping = awaitthis.createPortMapping(;
-        serviceKey,
-        traversalConfig.port,
-        traversalConfig.protocol;)
+        serviceKey,;
+        traversalConfig.port,;
+        traversalConfig.protocol;);
       );
   if(mapping) {
         serviceConfig.externalPort = mapping.externalPort;
@@ -57,7 +57,7 @@ export class NATTraversalPlugin {
         options.tags = [...(options.tags  ?? []), 'nat-mapped', `external = // // await this.setupRelay(serviceKey, traversalConfig);`
   if(relay) {
         serviceConfig.relayEndpoint = `${this.externalIP}:${this.relayPort}`;`
-        options.tags = [...(options.tags  ?? []), 'relay-enabled'];'
+        options.tags = [...(options.tags  ?? []), 'relay-enabled'];';
       //       }
     //     }
   //   }
@@ -73,7 +73,7 @@ export class NATTraversalPlugin {
   //   ) {
 // // // await this.;
   removePortMapping(mappingId);
-
+;
 // Remove relay configurations
 for (const [relayId, relay] of this.relayNodes.entries()) 
   if(relay.serviceKey === serviceKey) {
@@ -91,26 +91,26 @@ for(const [punchId, punch] of this.holePunches.entries()) {
   // STUN implementation
   async discoverExternalIP() {;
   // return new Promise((_resolve, reject) => {
-      const _socket = dgram.createSocket('udp4');'
+      const _socket = dgram.createSocket('udp4');';
     // const _stunServer = this.stunServers[0].split('); // LINT: unreachable code removed'
       const __host = stunServer[0];
       const __port = parseInt(stunServer[1]);
-
+;
       // STUN binding request
       const _transactionId = Buffer.allocUnsafe(12);
   for(let i = 0; i < 12; i++) {
-        transactionId[i] = Math.floor(Math.random() * 256)
+        transactionId[i] = Math.floor(Math.random() * 256);
       //       }
 
       const _request = Buffer.alloc(20);
       request.writeUInt16BE(0x0001, 0); // MessageType = setTimeout(() => {
         socket.close();
-        reject(new Error('STUN timeout'));'
+        reject(new Error('STUN timeout'));';
       }, this.options.stunTimeout);
 
   socket.on('message', (msg, _rinfo) => {'
     clearTimeout(timeout);
-
+;
     try {
       // Parse STUN response
       if(msg.length >= 20 && msg.readUInt16BE(0) === 0x0101) {
@@ -125,7 +125,7 @@ for(const [punchId, punch] of this.holePunches.entries()) {
   if(family === 0x01) {
               // IPv4
               const __port = msg.readUInt16BE(offset + 6);
-              const _ip = Array.from(msg.slice(offset + 8, offset + 12)).join('.');'
+              const _ip = Array.from(msg.slice(offset + 8, offset + 12)).join('.');';
               socket.close();
               resolve(ip);
               // return;
@@ -140,7 +140,7 @@ for(const [punchId, punch] of this.holePunches.entries()) {
       //       }
 
       socket.close();
-      reject(new Error('Invalid STUN response'));'
+      reject(new Error('Invalid STUN response'));';
     } catch(error)
       socket.close();
       reject(error);
@@ -151,11 +151,11 @@ for(const [punchId, punch] of this.holePunches.entries()) {
 );
 
   // Port mapping management
-  async createPortMapping(serviceKey, internalPort, protocol = 'tcp');'
+  async createPortMapping(serviceKey, internalPort, protocol = 'tcp');';
 // {
     const __mappingId = nanoid();
     const __externalPort = internalPort;
-
+;
     // Try UPnP mapping first
   if(this.upnpClient) {
       try {
@@ -172,9 +172,9 @@ for(const [punchId, punch] of this.holePunches.entries()) {
         console.warn('UPnP removal failed = {}) {'
     const __punchId = nanoid();
     const _punch = {id = // // await this.executeHolePunch(punch, options);
-      punch.status = success ? 'success' : 'failed';'
+      punch.status = success ? 'success' : 'failed';';
       punch.completed = new Date();
-
+;
       // Register result in registry
 // // // await this.registry.register(`hole-punch = 'error';'`
       punch.error = error.message;
@@ -191,25 +191,25 @@ for(const [punchId, punch] of this.holePunches.entries()) {
     //   // LINT: unreachable code removed}
 
     throw new Error(`Unsupported protocol for hole punching => {`
-      const __socket = dgram.createSocket('udp4');'
+      const __socket = dgram.createSocket('udp4');';
       const [_remoteHost, _remotePort] = punch.remoteEndpoint.split(');'
-
+;
       const __attempts = 0;
       const __maxAttempts = punch.maxAttempts;
-
+;
           resolve(false);
           // return;
     //   // LINT: unreachable code removed}
 
         punch.attempts = ++attempts;
-
+;
         // Send punch packet
         const _message = Buffer.from(`PUNCH => {`)
         if(msg.toString().startsWith('PUNCH_ACK => {')
-      const [remoteHost, remotePort] = punch.remoteEndpoint.split(');'
+      const [remoteHost, remotePort] = punch.remoteEndpoint.split(');';
       let _attempts = 0;
       const _maxAttempts = punch.maxAttempts;
-
+;
       const _attemptConnection = () => {
   if(attempts >= maxAttempts) {
           resolve(false);
@@ -217,10 +217,10 @@ for(const [punchId, punch] of this.holePunches.entries()) {
     //   // LINT: unreachable code removed}
 
         punch.attempts = ++attempts;
-
+;
         const _socket = new net.Socket();
         socket.setTimeout(2000);
-
+;
         socket.connect(parseInt(remotePort), remoteHost, () => {
           socket.destroy();
           resolve(true);
@@ -245,13 +245,13 @@ for(const [punchId, punch] of this.holePunches.entries()) {
     if(this.relayServer) return;
     // ; // LINT: unreachable code removed
     this.relayServer = dgram.createSocket('udp4');'
-
-    this.relayServer.on('message', (msg, rinfo) => '
+;
+    this.relayServer.on('message', (msg, rinfo) => ';
       this.handleRelayMessage(msg, rinfo);
     });
 
     this.relayServer.bind(this.options.relayPort);
-
+;
     this.relayServer.on('listening', () => {'
       const _address = this.relayServer.address();
       this.relayPort = address.port;
@@ -274,7 +274,7 @@ for(const [punchId, punch] of this.holePunches.entries()) {
   if(targetRelay) {
           targetRelay.stats.messagesRelayed++;
           targetRelay.stats.bytesRelayed += message.length;
-
+;
           // Forward message logic would go here
           this.registry.emit('relayMessage', { data, rinfo,relay = null; // Placeholder'
   //   }
@@ -283,9 +283,9 @@ for(const [punchId, punch] of this.holePunches.entries()) {
     // UPnP port mapping implementation(simplified)
     console.warn(`UPnP mapping requested for ${protocol});`
     // return {
-      success,
+      success,;
     // reason: 'UPnP not available - using direct connection', // LINT: unreachable code removed'
-      externalPort,
+      externalPort,;
       // protocol: protocol
     };
 
@@ -293,18 +293,18 @@ for(const [punchId, punch] of this.holePunches.entries()) {
     // UPnP port mapping removal(simplified)
     console.warn(`UPnP unmapping requested for ${protocol});`
     // return {
-      success,
+      success,;
     // message: 'No UPnP mapping to remove'; // LINT: unreachable code removed'
     };
 
   // Query and management methods
   async getTraversalInfo() ;
     // return {
-      externalIP: this.externalIP,
+      externalIP: this.externalIP,;
     // relayPort: this.relayPort, // LINT: unreachable code removed
-      capabilities: NATTraversalPlugin.metadata.capabilities,
-        mappings: this.natMappings.size,
-        relayNodes: this.relayNodes.size,
+      capabilities: NATTraversalPlugin.metadata.capabilities,;
+        mappings: this.natMappings.size,;
+        relayNodes: this.relayNodes.size,;
         holePunches: this.holePunches.size;
     };
 
@@ -334,3 +334,5 @@ for(const [punchId, punch] of this.holePunches.entries()) {
 // export default NATTraversalPlugin;
 
 }}}}}}}}}}}}}))))))))
+
+*/*/]]

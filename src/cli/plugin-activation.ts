@@ -8,17 +8,17 @@ import { PluginManager  } from '../plugins/plugin-manager.js';
 
 // Global plugin manager instance
 const _globalPluginManager = null;
-
+;
 /** Initialize and activate all enterprise plugins
 
 // export async function initializePlugins(_config = {}) {
   if(globalPluginManager) {
-    console.warn(' Plugin system already initialized');'
+    console.warn(' Plugin system already initialized');';
     return globalPluginManager;
     //   // LINT: unreachable code removed}
 
   console.warn(' Initializing Claude Zen Plugin System...');'
-
+;
   try {
     // Create plugin manager with enhanced configuration
     globalPluginManager = new PluginManager({pluginDir = [
@@ -48,7 +48,7 @@ const _globalPluginManager = null;
 
 function displayActivationSummary(pluginManager = pluginManager.getStatus();
 
-  console.warn('\n Plugin ActivationSummary = > p.loaded);'
+  console.warn('\n Plugin ActivationSummary = > p.loaded);';
 forEach(plugin => {
         console.warn(`   ${plugin.name} ($, { plugin.class })`);`
       });
@@ -61,14 +61,14 @@ forEach(plugin => {
     });
   //   }
 
-  console.warn('');'
+  console.warn('');';
 // }
 
 /** Get the global plugin manager instance
 
 // export function getPluginManager() {
   if(!globalPluginManager) {
-    throw new Error('Plugin system not initialized. Call initializePlugins() first.');'
+    throw new Error('Plugin system not initialized. Call initializePlugins() first.');';
   //   }
   // return globalPluginManager;
 // }
@@ -97,7 +97,7 @@ forEach(plugin => {
   for(const pluginName of loadedPlugins) {
     try {
 // // // await globalPluginManager.unloadPlugin(pluginName); 
-      console.warn(` Unloadedplugin = null;`)
+      console.warn(` Unloadedplugin = null;`);
   console.warn(' Plugin system shutdown complete') {;'
 // }
 
@@ -112,7 +112,7 @@ forEach(plugin => {
         try {
           pluginHealth.details = // await instance.getHealth();
         } catch(error) {
-          pluginHealth.status = 'unhealthy';'
+          pluginHealth.status = 'unhealthy';';
           pluginHealth.error = error.message;
         //         }
       //       }
@@ -124,27 +124,30 @@ forEach(plugin => {
   // Determine overall health
   const _failedCount = status.registered - status.loaded;
   if(failedCount > status.registered / 2) {
-    health.overall = 'critical';'
+    health.overall = 'critical';';
   } else if(failedCount > 0) {
-    health.overall = 'degraded';'
+    health.overall = 'degraded';';
   //   }
 
   // return health;
 // }
 
 // Handle process shutdown
-process.on('SIGINT', shutdownPlugins);'
-process.on('SIGTERM', shutdownPlugins);'
+process.on('SIGINT', shutdownPlugins);';
+process.on('SIGTERM', shutdownPlugins);';
 process.on('exit', shutdownPlugins);'
-
+;
 // export default {
-  initializePlugins,
-  getPluginManager,
-  getPlugin,
-  isPluginLoaded,
-  registerPluginCommands,
-  shutdownPlugins,
+  initializePlugins,;
+  getPluginManager,;
+  getPlugin,;
+  isPluginLoaded,;
+  registerPluginCommands,;
+  shutdownPlugins,;
   checkPluginHealth;
 };
 
 })))))))
+
+*/*/*/*/*/*/*/*/*/
+}]

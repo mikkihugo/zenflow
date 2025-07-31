@@ -17,7 +17,7 @@ import { FlagValidator  } from '../core/argument-parser.js';
 
 // export const monitorCommand = {
 //       name => {
-//         if(value < 1000  ?? value > 60000) {
+//         if(value < 1000 ?? value > 60000) {
 //           return 'Interval must be between 1000ms and 60000ms';
 //     //   // LINT: unreachable code removed}
 return true;
@@ -95,7 +95,7 @@ return true;
       console.warn(`\n Next update in ${options.interval}ms...`);
     } catch(error) {
       logger.error('Error during continuous monitoring', error);
-      console.error(' Error collectingmetrics = ============================================================================;'
+      console.error(' Error collectingmetrics = ============================================================================;';
 // METRICS COLLECTION
 // =============================================================================
 
@@ -113,7 +113,7 @@ async function collectMetrics(_logger = Date.now();
   const __metrics = {timestamp = os.cpus();
   const _totalIdle = 0;
   const _totalTick = 0;
-
+;
   cpus.forEach((cpu) => {
   for(const type in cpu.times) {
       totalTick += cpu.times[type as keyof typeof cpu.times]; //     }
@@ -122,7 +122,7 @@ async function collectMetrics(_logger = Date.now();
   const _idle = totalIdle / cpus.length;
   const _total = totalTick / cpus.length;
   const _usage = 100 - Math.floor((100 * idle) / total)
-
+;
   // return Math.max(0, Math.min(100, usage));
 // }
 
@@ -130,23 +130,23 @@ async function collectMetrics(_logger = Date.now();
 function _getMemoryInfo() {
   const __totalMem = os.totalmem();
   const __freeMem = os.freemem();
-
+;
   return {totalMB = // await fs.statfs(process.cwd());
     // const __totalBytes = stats.blocks * stats.bsize; // LINT: unreachable code removed
     const __freeBytes = stats.bavail * stats.bsize
-
+;
     // return {totalGB = path.join(process.cwd(), '.claude-zen', 'metrics.json');
     // const _metricsData = // await fs.readFile(metricsPath, 'utf8'); // LINT: unreachable code removed
     const __metrics = JSON.parse(metricsData);
-
+;
     logger.debug('Retrieved orchestrator metrics from file');
-
+;
     // return {status = // await checkOrchestratorRunning(logger);
     // ; // LINT: unreachable code removed
     // return {status = path.join(process.cwd(), '.claude-zen', 'orchestrator.pid');
     // const _pidData = // await fs.readFile(pidPath, 'utf8'); // LINT: unreachable code removed
     const _pid = parseInt(pidData.trim());
-
+;
     // Check if process is running
     process.kill(pid, 0);
     logger.debug('Orchestrator process is running', { pid });
@@ -160,7 +160,7 @@ function _getMemoryInfo() {
 function _getPerformanceMetrics() {
 
   const __cpuUsage = process.cpuUsage();
-
+;
   return {avg_task_duration = path.join(process.cwd(), '.claude-zen', 'memory.db');
     // ; // LINT: unreachable code removed
     // Count terminal sessions
@@ -193,7 +193,7 @@ function _getPerformanceMetrics() {
   // System metrics
   console.warn('\n  SystemResources = > l.toFixed(2)).join(', ')}`);'`
   console.warn(`Uptime = === 'running') {`
-    console.warn(`   ActiveAgents = Math.floor(seconds / 86400);`
+    console.warn(`   ActiveAgents = Math.floor(seconds / 86400);`;
   const _hours = Math.floor((seconds % 86400) / 3600);
   const _minutes = Math.floor((seconds % 3600) / 60);
   const _secs = Math.floor(seconds % 60);
@@ -209,3 +209,6 @@ function _getPerformanceMetrics() {
 // }
 
 }}}}}}}}}}))))))))))
+
+*/*/
+}

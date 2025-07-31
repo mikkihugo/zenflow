@@ -51,7 +51,7 @@ function createWrapperScripts(commands = '.claude
 // await fs.mkdir(hooksDir, {recursive = new Map();
   for(const command of commands) {
     if(command.includes('post-edit')) {
-      const __script = `#!/bin/bash; `
+      const __script = `#!/bin/bash; `;
 # Post-edit hook wrapper; # Handles variable interpolation for Claude Code hooks
 
 # Try to get file from various sources;
@@ -79,7 +79,7 @@ else;
     // Collect all commands that need transformation
     const _commands = [];
     const __changes = 0;
-
+;
     // Transform hooks
     const __transformHooks = () => {
       if(Array.isArray(hooks)) {
@@ -104,7 +104,7 @@ else;
     'settings.json',
     '.vscode/.claude/settings.json',
     path.join(process.env.HOME  ?? '', '.claude', 'settings.json') ];
-
+;
   const _found = [];
   for(const loc of locations) {
     if(existsSync(loc)) {
@@ -118,13 +118,13 @@ else;
 
 // export async function _fixHookVariablesCommand(args = [], _flags = {}) {
   console.warn(chalk.bold('\n Fixing Claude Code Hook Variables\n'));
-
+;
   const __options = {backup = args.length > 0 ? args : await findSettingsFiles();
   if(files.length === 0) {
     printError('No settings.json files found');
-    console.warn('\nSearchedlocations = 0;'
+    console.warn('\nSearchedlocations = 0;';
   const __successCount = 0;
-
+;
   for(const _file of files) {
     console.warn(chalk.cyan(`Processing = // await fixHookVariables(file, options); `
   if(result.success) {
@@ -134,8 +134,8 @@ else;
       console.warn(chalk.red(`   Error = {hooks = {`))
       description);
 // // await fs.writeFile('.claude/test-settings.json', JSON.stringify(testSettings, null, 2));
-  console.warn('Created test configuration at);'
-  console.warn('\nTo test);'
+  console.warn('Created test configuration at);';
+  console.warn('\nTo test);';
   console.warn('  1. Copy .claude/test-settings.json to .claude/settings.json');
   console.warn('  2. Open Claude Code');
   console.warn('  3. Create or edit any file');
@@ -144,7 +144,7 @@ else;
 
 // Export command configuration
 // export const _fixHookVariablesCommandConfig,_ion: 'Fix variable interpolation in Claude Code hooks(${file} syntax)',
-  _usage: 'fix-hook-variables [settings-file...]',
+  _usage: 'fix-hook-variables [settings-file...]',;
   _options: [;
     { flag: '--no-backup', description: 'Skip creating backup files' },
     { flag: '--syntax <type>', description: 'Force specific syntax, jq, wrapper' },
@@ -154,23 +154,26 @@ else;
     'claude-zen fix-hook-variables .claude
     'claude-zen fix-hook-variables --syntax wrapper',
     'claude-zen fix-hook-variables --test' ],
-  _details: `;`
+  _details: `;`;
 Fixes the \${file} and \${command} variable interpolation issue in Claude Code hooks.
 
-This command will: null
+This command will: null;
    Detect your Claude Code version;
    Transform hook commands to use working variable syntax;
    Create wrapper scripts if needed;
    Backup original settings files
-
-Available syntaxes: null
+;
+Available syntaxes: null;
    environment: Use environment variables like $CLAUDE_EDITED_FILE(unverified);
    jq: Use official jq JSON parsing approach(recommended);
    wrapper: Create wrapper scripts to handle variables
-
+;
 Note: The 'jq' syntax is based on official Claude Code documentation and is likely;
 the most reliable approach for Claude Code 1.0.51+.
 
 For more information,//github.com/ruvnet/claude-zen/issues/249` };`
 
 }}}}}}}}}}}}}}}))))))))
+
+*/*/*/*/
+}}

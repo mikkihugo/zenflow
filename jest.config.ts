@@ -6,7 +6,9 @@
  * @version 2.0.0
  */
 
-/** Jest configuration object with full TypeScript support
+/**
+ * Jest configuration object with full TypeScript support
+ */
 
 const config = {
   // TypeScript preset with ESM support
@@ -25,9 +27,9 @@ const config = {
   transform: {
     '^.+\\.ts$': [
       'ts-jest',
-      //       {
+      {
         useESM: true,
-        tsconfig: { // eslint-disable-line
+        tsconfig: {
           module: 'es2022',
           moduleResolution: 'node',
           allowSyntheticDefaultImports: true,
@@ -35,7 +37,11 @@ const config = {
           target: 'es2022',
           strict: true,
           noImplicitAny: true,
-          strictNullChecks} } ] },
+          strictNullChecks: true
+        }
+      }
+    ]
+  },
 
   // Module path mapping for clean imports
   moduleNameMapper: {
@@ -44,7 +50,8 @@ const config = {
     '^~/(.*)$': '<rootDir>/src/$1',
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@tests/(.*)$': '<rootDir>/tests/$1',
-    '^test\\.utils$': '<rootDir>/tests/test.utils.ts' },
+    '^test\\.utils$': '<rootDir>/tests/test.utils.ts'
+  },
 
   // Paths to ignore during module resolution
   modulePathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/bin/', '<rootDir>/node_modules/'],
@@ -70,14 +77,16 @@ const config = {
   coverageReporters: ['text', 'lcov', 'html'],
   coverageThreshold: {
     global: {
-      branches: true,
-      functions: true,
-      lines: true,
-      statements} },
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80
+    }
+  },
 
   // Test setup and configuration
-  setupFilesAfterEnv: ['<rootDir>
-  testTimeout: true,
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
+  testTimeout: 30000,
   verbose: true,
   errorOnDeprecated: true,
 
@@ -92,6 +101,9 @@ const config = {
   globals: {
     'ts-jest': {
       useESM: true,
-      isolatedModules} } };
+      isolatedModules: true
+    }
+  }
+};
 
-// export default config;
+export default config;

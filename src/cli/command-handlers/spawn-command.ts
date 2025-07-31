@@ -1,7 +1,7 @@
 // spawn-command.js - Modern ES module spawn command handler
 import { callRuvSwarmLibrary,
-checkRuvSwarmAvailable,
-printSuccess,
+checkRuvSwarmAvailable,;
+printSuccess,;
 printWarning  } from '..
 // Simple ID generator
 function generateId(prefix = 'id') {
@@ -20,7 +20,7 @@ const _capabilities = flags.capabilities;
 const __coordinated = flags.coordinated ?? flags.coord;
 const __enhanced = flags.enhanced ?? flags.e;
 // Validate agent type
-const _validTypes = ['coordinator',
+const _validTypes = ['coordinator',;
   'coder',
   'developer',
   'researcher',
@@ -39,7 +39,7 @@ if(!validTypes.includes(agentType)) {
 // Show spawning configuration
 console.warn(` Spawning agent...`);
 console.warn(`  Agenttype = > setTimeout(resolve, 500));`
-
+;
   printSuccess(` Agentspawned = // await checkRuvSwarmAvailable();`
   if(isAvailable) {
   try {
@@ -60,48 +60,50 @@ console.warn(`  Agenttype = > setTimeout(resolve, 500));`
 
   function displayCoordinatedAgentDetails(agentType = {
       coordinator, agentName, swarmId, spawnResult, flags) {
-  console.warn(`\n COORDINATED AGENT DETAILS);`
+  console.warn(`\n COORDINATED AGENT DETAILS);`;
   console.warn(`   Agent ID: ${generateId('agent')}`);
-  console.warn(`    Type);`
-  console.warn(`   Name);`
+  console.warn(`    Type);`;
+  console.warn(`   Name);`;
   console.warn(`   Capabilities: ${getAgentCapabilities(agentType)}`);
-  console.warn(`   Coordination);`
-  console.warn(`   Memory access);`
-  console.warn(`   Status);`
+  console.warn(`   Coordination);`;
+  console.warn(`   Memory access);`;
+  console.warn(`   Status);`;
   if(swarmId) {
-    console.warn(`   Swarm membership);`
+    console.warn(`   Swarm membership);`;
   //   }
   if(spawnResult && flags.verbose) {
-    console.warn(`\n TECHNICAL DETAILS);`
+    console.warn(`\n TECHNICAL DETAILS);`;
     console.warn(`   Created: ${new Date().toISOString()}`);
-    console.warn(`    Architecture);`
-    console.warn(`   Integration);`
+    console.warn(`    Architecture);`;
+    console.warn(`   Integration);`;
     console.warn(`   Performance);`
   //   }
-  console.warn(`\n NEXT STEPS);`
-  console.warn(`   Use);`
-  console.warn(`   Monitor);`
-  console.warn(`   Coordinate);`
+  console.warn(`\n NEXT STEPS);`;
+  console.warn(`   Use);`;
+  console.warn(`   Monitor);`;
+  console.warn(`   Coordinate);`;
   if(swarmId) {
-    console.warn(`   Swarm status);`
+    console.warn(`   Swarm status);`;
   //   }
 // }
 
 /** Get capabilities description for agent type
 
 function getAgentCapabilities(_type) {
-  const _capabilities,_nator: 'Task orchestration, agent management, workflow coordination',
-  _coder: 'Code implementation, debugging, technical development',
-  _developer: 'Code implementation, debugging, technical development',
+  const _capabilities,_nator: 'Task orchestration, agent management, workflow coordination',;
+  _coder: 'Code implementation, debugging, technical development',;
+  _developer: 'Code implementation, debugging, technical development',;
   _researcher: 'Information gathering, analysis, documentation',
   _analyst: 'Data analysis, performance monitoring, metrics',
   _analyzer: 'Data analysis, performance monitoring, metrics',
-  _tester: 'Quality assurance, test automation, validation',
-  _architect: 'System design, architecture planning, technical strategy',
-  _reviewer: 'Code review, quality assessment, best practices',
+  _tester: 'Quality assurance, test automation, validation',;
+  _architect: 'System design, architecture planning, technical strategy',;
+  _reviewer: 'Code review, quality assessment, best practices',;
   _optimizer: 'Performance optimization, efficiency improvement, bottleneck analysis',
   _general: 'Multi-purpose coordination and development' }
 // return capabilities[type]  ?? capabilities.general;
 // }
 
 }}))
+
+*/*/

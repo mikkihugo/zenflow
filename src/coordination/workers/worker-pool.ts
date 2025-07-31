@@ -12,22 +12,22 @@ const ___dirname = path.dirname(__filename);
 // export class WorkerThreadPool extends EventEmitter {
   constructor(options = {}) {
     super();
-    this.maxWorkers = options.maxWorkers  ?? Math.max(2, Math.floor(os.cpus().length / 2));
-    this.minWorkers = options.minWorkers  ?? 1;
-    this.workerScript = options.workerScript  ?? path.join(__dirname, 'swarm-worker.js');'
+    this.maxWorkers = options.maxWorkers ?? Math.max(2, Math.floor(os.cpus().length / 2));
+    this.minWorkers = options.minWorkers ?? 1;
+    this.workerScript = options.workerScript ?? path.join(__dirname, 'swarm-worker.js');';
     this.taskQueue = [];
     this.workers = new Map();
     this.workerStats = new Map();
     this.isShuttingDown = false;
     this.taskCounter = 0;
-
+;
     // Load balancing configuration
     this.loadBalancer = {
       strategy = {tasksCompleted = 0; i < this.minWorkers; i++) ;
 // // // await this.createWorker();
     // Start monitoring worker health
     this.startHealthMonitoring();
-
+;
     console.warn(` Worker thread pool initialized with ${this.workers.size} workers`);`
     // return this;
     //   // LINT: unreachable code removed}
@@ -36,7 +36,7 @@ const ___dirname = path.dirname(__filename);
 
   async createWorker() { 
     if(this.workers.size >= this.maxWorkers) 
-      throw new Error('Maximum worker limit reached');'
+      throw new Error('Maximum worker limit reached');';
     //     }
 
     const _workerId = `worker-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;`
@@ -48,8 +48,8 @@ const ___dirname = path.dirname(__filename);
     //     }
     //     )
 
-    worker.on('error', (_error) => ;'
-      console.error(`Worker $workerIderror => ;`)
+    worker.on('error', (_error) => ;';
+      console.error(`Worker $workerIderror => ;`);
   if(code !== 0) {
         console.error(`Worker ${workerId} exited with code ${code}`);`
       this.handleWorkerExit(workerId, code);
@@ -57,29 +57,29 @@ const ___dirname = path.dirname(__filename);
   //   )
 
   worker;
-
-  on('messageerror', (error);'
+;
+  on('messageerror', (error);';
   => ;
   console;
   error(`Worker $workerIdmessageerror = message;`
-
+;
   switch(_type) {
-    case 'task-completed':'
+    case 'task-completed':';
         this.handleTaskCompleted(workerId, taskId, result);
     break;
-    case 'task-error':'
+    case 'task-error':';
         this.handleTaskError(workerId, taskId, error);
     break;
     case 'worker-ready': {'
-        this.updateWorkerStats(workerId,
+        this.updateWorkerStats(workerId,;
     //     {/g)
       status = this.workerStats.get(workerId);
-      const _executionTime = Date.now() - stats.currentTask?.startTime  ?? 0;
-
+      const _executionTime = Date.now() - stats.currentTask?.startTime ?? 0;
+;
       // Update worker stats
       this.updateWorkerStats(workerId, {status = executionTime;
       this.metrics.averageTaskTime = this.metrics.totalExecutionTime / this.metrics.tasksCompleted;
-
+;
       console.warn(` Task ${taskId} completed by worker ${workerId} in ${executionTime}ms`);`
 
       this.emit('task-completed', { workerId, taskId, result, executionTime });'
@@ -90,10 +90,10 @@ const ___dirname = path.dirname(__filename);
 /** Handle task error
 
     handleTaskError(workerId, taskId, error);
-
+;
     //     {
       const __stats = this.workerStats.get(workerId);
-
+;
       this.updateWorkerStats(workerId, {status = this.workerStats.get(workerId);
       this.updateWorkerStats(workerId, {status = > this.restartWorker(workerId), 1000);
     //     }
@@ -104,7 +104,7 @@ const ___dirname = path.dirname(__filename);
     this.workers.delete(workerId);
     this.workerStats.delete(workerId);
     this.metrics.workerUtilization.delete(workerId);
-
+;
     console.warn(` Worker ${workerId} exited`);`
 
     // Restart worker if needed and not shutting down
@@ -140,7 +140,7 @@ const ___dirname = path.dirname(__filename);
 
     const _task = this.taskQueue.shift();
     this.metrics.tasksQueued--;
-
+;
     this.assignTaskToWorker(availableWorker, task);
   //   }
 
@@ -148,13 +148,13 @@ const ___dirname = path.dirname(__filename);
 
   selectAvailableWorker() {
     const _idleWorkers = Array.from(this.workerStats.entries());
-filter(([_workerId, stats]) => stats.status === 'idle');'
+filter(([_workerId, stats]) => stats.status === 'idle');';
 map(([workerId]) => workerId);
   if(idleWorkers.length === 0) {
       // return null;
     //   // LINT: unreachable code removed}
   switch(this.loadBalancer.strategy) {
-      case 'round-robin':'
+      case 'round-robin':';
         // return this.selectRoundRobin(idleWorkers);
     // case 'least-busy': // LINT: unreachable code removed'
         // return this.selectLeastBusy(idleWorkers);
@@ -168,7 +168,7 @@ map(([workerId]) => workerId);
 /** Select least busy worker
 
     selectLeastBusy(idleWorkers);
-
+;
     // return idleWorkers.reduce((leastBusy, workerId) => {
       const _stats = this.workerStats.get(workerId);
     // const _leastBusyStats = this.workerStats.get(leastBusy); // LINT: unreachable code removed
@@ -178,9 +178,9 @@ map(([workerId]) => workerId);
     // const _bestStats = this.workerStats.get(best); // LINT: unreachable code removed
 
       // Select worker with best average task time and fewer errors
-      const _workerScore = (stats.averageTaskTime  ?? Infinity) + (stats.errors * 1000)
-      const _bestScore = (bestStats.averageTaskTime  ?? Infinity) + (bestStats.errors * 1000)
-
+      const _workerScore = (stats.averageTaskTime ?? Infinity) + (stats.errors * 1000);
+      const _bestScore = (bestStats.averageTaskTime ?? Infinity) + (bestStats.errors * 1000)
+;
       // return workerScore < bestScore ?workerId = this.workers.get(workerId);
     // if(!worker) { // LINT: unreachable code removed
       task.reject(new Error(`Worker ${workerId} not found`));`
@@ -190,23 +190,23 @@ map(([workerId]) => workerId);
     // Update worker stats
     this.updateWorkerStats(workerId, {status = () => {
   if(data.taskId === task.id) {
-        this.off('task-completed', onCompleted);'
-        this.off('task-error', onError);'
+        this.off('task-completed', onCompleted);';
+        this.off('task-error', onError);';
         task.resolve(data.result);
       //       }
     };
 
     const _onError = () => {
   if(data.taskId === task.id) {
-        this.off('task-completed', onCompleted);'
-        this.off('task-error', onError);'
+        this.off('task-completed', onCompleted);';
+        this.off('task-error', onError);';
         task.reject(new Error(data.error));
       //       }
     };
 
-    this.on('task-completed', onCompleted);'
+    this.on('task-completed', onCompleted);';
     this.on('task-error', onError);'
-
+;
     // Send task to worker
     worker.postMessage({type = this.workers.get(workerId);
   if(worker) {
@@ -216,7 +216,7 @@ map(([workerId]) => workerId);
 // // await this.createWorker();
       console.warn(` Worker ${workerId} restarted`);`
     } catch(error) ;
-      console.error(`Failed to restart worker \$workerId);`
+      console.error(`Failed to restart worker \$workerId);`;
   //   }
 
 /** Start health monitoring for workers
@@ -227,7 +227,7 @@ map(([workerId]) => workerId);
     // ; // LINT: unreachable code removed
     for (const [workerId, stats] of this.workerStats.entries()) {
       // Check for stuck tasks with configurable timeout
-      const _taskTimeout = stats.currentTask.timeout  ?? this.defaultTaskTimeout  ?? 60000; // Default 1 minute
+      const _taskTimeout = stats.currentTask.timeout ?? this.defaultTaskTimeout ?? 60000; // Default 1 minute
       if(stats.currentTask && Date.now() - stats.currentTask.startTime > taskTimeout) {
         console.warn(` Worker ${workerId} appears stuck on task ${stats.currentTask.id}`); `
         this.restartWorker(workerId) {;
@@ -240,20 +240,20 @@ map(([workerId]) => workerId);
 
   getStatus() {
     const _workers = Array.from(this.workerStats.values());
-
+;
     // return {workers = > w.status === 'idle').length,busy = > w.status === 'busy').length,error = > w.status === 'error').length;'
     //   // LINT: unreachable code removed},queue = true;
 
     // Clear task queue
     this.taskQueue.forEach((task) => {
-      task.reject(new Error('Worker pool shutting down'));'
+      task.reject(new Error('Worker pool shutting down'));';
     });
     this.taskQueue = [];
-
+;
     // Terminate all workers
     const __terminationPromises = Array.from(this.workers.values()).map((worker) => {
       return new Promise((resolve) => {
-        worker.on('exit', resolve);'
+        worker.on('exit', resolve);';
     // worker.postMessage({ type => { // LINT);
         resolve();
       }, 5000); // Force terminate after 5 seconds
@@ -263,30 +263,32 @@ map(([workerId]) => workerId);
 
   await;
   Promise;
-
+;
   all(terminationPromises);
-
+;
   this;
-
+;
   workers;
-
+;
   clear();
   this;
-
+;
   workerStats;
-
+;
   clear();
   this;
-
+;
   metrics;
-
+;
   workerUtilization;
-
+;
   clear();
-
+;
   console;
-
-  warn(' Worker thread pool shutdown complete');'
+;
+  warn(' Worker thread pool shutdown complete');';
 // }
 
 }}}}}}}}}}}}}}})))))
+
+*/*/*/*/*/*/*/*/*/*/

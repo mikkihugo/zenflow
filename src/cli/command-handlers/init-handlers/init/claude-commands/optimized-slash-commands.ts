@@ -12,13 +12,13 @@ import { createOptimizedMainSparcCommand  } from '.';
 export async function createOptimizedClaudeSlashCommands(workingDir = null) {
   try {
     console.warn('\n Creating batchtools-optimized Claude Code slash commands...');
-
+;
     // Use template copier with optimized flag
     const __optimizedOptions = {sparc = `${workingDir}
     try {
 // const _roomodesContent = awaitfs.readFile(roomodesPath, 'utf8');
       const _roomodes = JSON.parse(roomodesContent);
-
+;
       // Filter modes if selective initialization is requested
       const _modesToCreate = selectedModes;
         ? roomodes.customModes.filter((mode) => selectedModes.includes(mode.slug));
@@ -32,9 +32,9 @@ export async function createOptimizedClaudeSlashCommands(workingDir = null) {
       console.warn('   Created optimized main slashcommand = // await copyTemplates(workingDir, optimizedOptions);'
   if(!copyResults.success) {
         console.warn(`    Template copierfailed = `---name = // await batchtools.parallel([;/g))
-  read('/src/controller.ts'),
-  read('/src/service.ts'),
-  read('/src/model.ts'),
+  read('/src/controller.ts'),;
+  read('/src/service.ts'),;
+  read('/src/model.ts'),;
   read('/tests/unit.test.ts');
 ]);
 \`\`\`
@@ -43,8 +43,8 @@ export async function createOptimizedClaudeSlashCommands(workingDir = null) {
 \`\`\`javascript;`
 // Create multiple files in parallel
 // // await batchtools.createFiles([path = // await batchtools.concurrent([;/g))
-  analyzeArchitecture(),
-  validateSecurity(),
+  analyzeArchitecture(),;
+  validateSecurity(),;
   checkPerformance(),
   reviewCodeQuality();
 ]);
@@ -134,13 +134,13 @@ Real-time performance monitoring and optimization tools for Claude-Flow operatio
 
 ### Configuration Optimization;
 \`\`\`json;`
-  "performance":
-    "batchtools":
+  "performance";
+    "batchtools";
       "maxConcurrent",
       "batchSize",
       "enableOptimization",
       "smartBatching",
-    "monitoring":
+    "monitoring";
       "realTimeMetrics",
       "performanceLogging",
       "resourceAlerts";
@@ -157,5 +157,7 @@ For comprehensive performance guides, see,//github.com/ruvnet/claude-code-flow/d
 `;`
 // // await node.writeTextFile(`${workingDir}/.claude/commands/performance.md`, performanceCommand);// // await node.writeTextFile(`${workingDir}/.claude/commands/performance.md`, performanceCommand);
   console.warn('   Created slash command);'
-
+;
 }}}}}}))))
+
+*/*/]

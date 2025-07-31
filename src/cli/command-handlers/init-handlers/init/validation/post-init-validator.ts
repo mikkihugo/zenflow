@@ -19,9 +19,9 @@ checkFileIntegrity();
   if(!stat.isFile) {
           result.success = false;
           result.errors.push(`Expected file but found directory = {status = false;`
-          result.errors.push(;))
+          result.errors.push(;));
             `File toosmall = ${file.minSize})`)
-  result.files[file.path] = status =
+  result.files[file.path] = status =;
   = 'windows')
   //   {
     const _isExecutable = (stat.mode & 0o111) !== 0;
@@ -48,7 +48,7 @@ checkFileIntegrity();
 // const _stat = awaitnode.stat(dirPath); 
   if(!stat.isDirectory) {
           result.success = false;
-          result.errors.push(`Expected directory but foundfile = false;`
+          result.errors.push(`Expected directory but foundfile = false;`;
       result.errors.push(`Required directorymissing = `${this.workingDir}
 
       try {))
@@ -82,9 +82,9 @@ checkFileIntegrity();
         //         }
       //       }
     //     }
-    catch(error)
-    result.success = false
-    result.errors.push(`Structure validation failed = success = [path = === 'windows') ;`
+    catch(error);
+    result.success = false;
+    result.errors.push(`Structure validation failed = success = [path = === 'windows') ;`;
       result.warnings.push('Permission checks skipped on Windows');
       // return result;
     // ; // LINT: unreachable code removed
@@ -95,15 +95,15 @@ checkFileIntegrity();
 // const _stat = awaitnode.stat(itemPath); 
         const _actualMode = stat.mode & 0o777;
         const _expectedMode = item.requiredMode;
-
+;
         result.permissions[item.path] = {actual = === expectedMode };
   if(actualMode !== expectedMode) {
           result.warnings.push(;
             `Incorrect permissions on ${item.path}: ` +;)
     `${actualMode.toString(8)} (expected ${expectedMode.toString(8)})`)
   //   }
-  catch(error)
-  result.warnings.push(`Could not check permissions`
+  catch(error);
+  result.warnings.push(`Could not check permissions`;
   for ${item.path})
   )
 // }
@@ -189,7 +189,7 @@ validateSparcStructure();
 // }
 catch;
   structure.valid = false;
-
+;
 // Check .roo directory
 try {
 // const _stat = awaitnode.stat(`${this.workingDir}/.roo`);
@@ -212,3 +212,6 @@ try {
 // }
 
 }}}}}}}}}}}}}}}}}}}}}) {)))))
+
+*/
+}}}]]

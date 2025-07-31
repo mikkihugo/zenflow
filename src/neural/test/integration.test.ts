@@ -12,20 +12,20 @@ async function runNeuralServiceTests() {
       throw new Error('Failed to retrieve network');
     //     }
     console.warn(' Network retrieved successfully');
-
+;
     // Test 4 = {inputs = {learning_rate = // await trainNeuralNetwork('xor-network', trainingData, config);
     console.warn(` Training completed witherror = [[0, 0], [0, 1], [1, 0], [1, 1]];`
-
+;
   for(let i = 0; i < testInputs.length; i++) {
 
-      console.warn(`Input = getNeuralServiceStatus();`
+      console.warn(`Input = getNeuralServiceStatus();`;
     console.warn(' Service status => {')
         console.warn(`    - ${net.id}: ${net.layers} ($, { net.description  ?? 'no description' })`);
       //       }
   //   )
 // }
 // Test7 = getNeuralServiceStatus();
-console.warn(` Multiple networkscreated = new ClaudeZenNeuralService();`
+console.warn(` Multiple networkscreated = new ClaudeZenNeuralService();`;
 // // await customService.initialize();
 // // await customService.createNetwork('custom-net', [2, 3, 1]);
     const _customStatus = customService.getStatus();
@@ -33,9 +33,9 @@ console.warn(` Multiple networkscreated = new ClaudeZenNeuralService();`
 
     customService.dispose();
     console.warn(' Custom service disposed');
-
+;
     console.warn('\n All neural service integration tests passed!');
-
+;
     // Performance test
     console.warn('\n Running neural service performance test...');
     const _perfStart = performance.now();
@@ -47,24 +47,26 @@ console.warn(` Multiple networkscreated = new ClaudeZenNeuralService();`
 
     console.warn(` Performance test = {inputs = // await trainNeuralNetwork('decision-maker', coordinationData, {learning_rate = [0, 1, 0, 1, 0]; // Medium priority, medium conflicts`/g))
 const _decision = predictWithNetwork('decision-maker', testScenario);
-console.warn(;)
+console.warn(;);
 ` Decision for scenario ${testScenario}) => x.toFixed(3)).join(', ')}]`;
 // )
-console.warn(' Claude Zen integration test completed successfully')
+console.warn(' Claude Zen integration test completed successfully');
 } catch(error)
 // {
   console.error(' Claude Zen integration testfailed = === `file) {'`
   runNeuralServiceTests();
-then(() => runClaudeZenIntegrationTest())
-then(() =>
-      console.warn('\n All neural service tests completed successfully!')
-  process.exit(0)
+then(() => runClaudeZenIntegrationTest());
+then(() =>;
+      console.warn('\n All neural service tests completed successfully!');
+  process.exit(0);
   //   )
-catch((error) =>
-      console.error('\n Neural service test suite failed:', error)
-  process.exit(1)
+catch((error) =>;
+      console.error('\n Neural service test suite failed:', error);
+  process.exit(1);
   //   )
 // }
 // export { runNeuralServiceTests, type runClaudeZenIntegrationTest };
 
 }}}}}})))))
+
+*/

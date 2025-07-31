@@ -5,7 +5,7 @@ import { fileURLToPath  } from 'node:url';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
-
+;
 /** Copy all agent files from the installed package to project directory
 
 export async function copyAgentFiles(targetDir = {}) {
@@ -18,7 +18,7 @@ export async function copyAgentFiles(targetDir = {}) {
   const _workspaceAgentsDir = '/workspaces/claude-zen/.claude/agents';   // Workspace development
 
   let _sourceAgentsDir;
-
+;
   // Try multiple source locations with enhanced logging
   for(const dir of [localAgentsDir, packageAgentsDir, workspaceAgentsDir, sourceTemplateDir]) {
     try {
@@ -26,14 +26,14 @@ export async function copyAgentFiles(targetDir = {}) {
       _sourceAgentsDir = dir; console.warn(`   Using agent filesfrom = join(targetDir, '.claude/agents') {;`
 
   console.warn(' Copying agent system files...');
-  console.warn(`  Source = ======;`
+  console.warn(`  Source = ======;`;
 >>>>>>> 62a29dfc( Alpha.73 = [];
     const __errors = [];
-
+;
     // Recursively copy all agent files/g))
     async function copyRecursive(srcDir, destDir = // await fs.readdir(srcDir, {withFileTypes = join(_srcDir, _item._name);
         const _destPath = join(destDir, item.name);
-
+;
         if(item.isDirectory()) {
   if(!dryRun) {
 // // await fs.mkdir(destPath, {recursive = force;/g)
@@ -55,7 +55,7 @@ export async function copyAgentFiles(targetDir = {}) {
               copiedFiles.push(destPath.replace(`${targetDir}/`, ''));
             //             }
           } catch(err) ;
-            errors.push(`Failed to copy \$item.name);`
+            errors.push(`Failed to copy \$item.name);`;
         //         }
       //       }
     //     }
@@ -63,11 +63,11 @@ export async function copyAgentFiles(targetDir = {}) {
   if(!dryRun && copiedFiles.length > 0) {
       console.warn(`   Copied \$copiedFiles.lengthagent files`);
       console.warn('   Agent system initialized with 64 specialized agents');
-      console.warn('   Availablecategories = > console.warn(`    - \$error`));'
+      console.warn('   Availablecategories = > console.warn(`    - \$error`));';
     //     }
 
     // return {success = false) {
-  const _agentDirs = [
+  const _agentDirs = [;
     // '.claude', // LINT: unreachable code removed
     '.claude
     '.claude/agents/core',
@@ -112,22 +112,25 @@ export async function copyAgentFiles(targetDir = {}) {
       totalAgents += agentFiles.length;
     //     }
 
-    console.warn('   Agent system validation);'
-    console.warn(`     Categories);`
-    console.warn(`     Total agents);`
+    console.warn('   Agent system validation);';
+    console.warn(`     Categories);`;
+    console.warn(`     Total agents);`;
     console.warn(`     Categories: \$agentCategories.join(', ')`);
-
+;
     // return {
       valid: totalAgents > 50, // Should have at least 50+ agents
-      categories: agentCategories.length,
+      categories: agentCategories.length,;
     // totalAgents, // LINT: unreachable code removed
       // categoryNames: agentCategories
     };
 
   } catch(/* err */)
-    console.warn(`    Agent system validation failed);`
+    console.warn(`    Agent system validation failed);`;
     // return {
       valid}
 // }
 
 }}}}}}}}))))))))
+
+*/
+}

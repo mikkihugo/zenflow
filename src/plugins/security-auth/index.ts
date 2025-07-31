@@ -21,7 +21,7 @@ export class SecurityAuthPlugin {
     // Setup session cleanup
     this.setupSessionCleanup();
   //   }
-  async loadSecurityRules() 
+  async loadSecurityRules() ;
     try {
 // const _content = awaitreadFile(this.config.securityRulesFile, 'utf8');
       this.securityRules = JSON.parse(content);
@@ -39,37 +39,37 @@ export class SecurityAuthPlugin {
   //   )
   // API Key Authenticator
   this
-
+;
   authenticators;
   set('apikey', {type = []) {
 
   _key = crypto.randomBytes(32).toString('hex');
   this;
-
+;
   keys;
-set(
+set(;
   key;
   , {
   userId;
-
+;
   permissions;
-
+;
   created = this.keys.get(key);
   if(!_keyData) {
           throw new Error('Invalid API key');
         //         }
   keyData;
-
+;
   lastUsed = Date.now();
   return;
   // { // LINT: unreachable code removed
   userId = 'jwt';
   ) {
-    const {
+    const { temp } = {};
   username;
-
+;
   password;
-
+;
   apiKey;
 // }
 = credentials
@@ -102,17 +102,17 @@ try {
 
       // Find session
       const _session = this.sessions.get(decoded.sessionId);
-      if(!session  ?? session.expires < Date.now()) {
+      if(!session ?? session.expires < Date.now()) {
         throw new Error('Session expired');
       //       }
 
       // Update last activity
       session.lastActivity = Date.now();
-
+;
       // return {userId = this.sessions.get(sessionId);
     // if(session) { // LINT: unreachable code removed
       this.sessions.delete(sessionId);
-
+;
       // Audit log
 // // await this.auditLog('logout', {userId = null) {
   if(!this._securityRules._authorization._enabled) {
@@ -153,7 +153,7 @@ try {
   if(matches) {
         issues.push({type = === 'javascript'  ?? type === 'js') {
       // Additional JavaScript-specific checks
-      const _jsPatterns = [
+      const _jsPatterns = [;
 // innerHTML\s*=/gi,
 // document\.write\s*\(/gi,
 // window\.location\s*=/gi;
@@ -176,7 +176,7 @@ try {
     this.rateLimitWindows.set(identifier, window);
 
     const _allowed = window.count <= max;
-
+;
     // return {
       allowed,remaining = this.loginAttempts.get(username)  ?? { count,lastAttempt = Date.now();
     // this.loginAttempts.set(username, attempts); // LINT: unreachable code removed
@@ -215,7 +215,7 @@ try {
     // ; // LINT: unreachable code removed
     const _logEntry = timestamp = [];
     this.auditLogs.push(logEntry);
-
+;
     // Keep only recent logs in memory
   if(this.auditLogs.length > 1000) {
       this.auditLogs = this.auditLogs.slice(-1000);
@@ -229,7 +229,7 @@ try {
     const _apiKeyAuth = this.authenticators.get('apikey');
 // const _key = awaitapiKeyAuth.generateKey(userId, permissions);
 // // await this.auditLog('api_key_generated', {
-      userId,)
+      userId,);
       permissions,timestamp = this.authenticators.get('apikey');
     const _removed = apiKeyAuth.keys.delete(key);
   if(removed) {
@@ -250,3 +250,5 @@ try {
 // export default SecurityAuthPlugin;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))
+
+*/*/

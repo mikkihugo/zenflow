@@ -36,17 +36,17 @@ export class TypeScriptHelpSystem implements IHelpSystem {
     //     }
   // Arguments section
   if(_definition._args && definition.args._length > 0) {
-      help += this.colorizeText('ARGUMENTS = arg.required ? this.colorizeText(' (required)', 'red', opts.colorize) : '';'
+      help += this.colorizeText('ARGUMENTS = arg.required ? this.colorizeText(' (required)', 'red', opts.colorize) : '';';
         const _variadic = arg.variadic ? this.colorizeText(' (variadic)', 'yellow', opts.colorize) : '';
         help += `${this.colorizeText(arg.name, 'bright', opts.colorize)}${required}${variadic}\n`;
         help += `${arg.description}\n`;
   if(arg.type !== 'string') {
-          help += `Type = '\n';`
+          help += `Type = '\n';`;
     //     }
 
     // Flags section
   if(opts.includeFlags && definition.flags && definition.flags.length > 0) {
-      help += this.colorizeText('FLAGS = flag.alias ? `, -\$flag.alias` : '';')
+      help += this.colorizeText('FLAGS = flag.alias ? `, -\$flag.alias` : '';');
         const _required = flag.required ? this.colorizeText(' (required)', 'red', opts.colorize) : '';
         const _defaultValue = flag.default !== undefined ? ;
           this.colorizeText(` (default = `  --${this.colorizeText(flag.name, 'bright', opts.colorize)}${alias}${required}${defaultValue}\n`;`
@@ -59,7 +59,7 @@ export class TypeScriptHelpSystem implements IHelpSystem {
 
         // Type and choices
   if(flag.type !== 'boolean') {
-          help += `Type = `    Choices: \$flag.choices.join(', ')\n`;`
+          help += `Type = `    Choices: \$flag.choices.join(', ')\n`;`;
         //         }
 
         help += '\n';
@@ -94,23 +94,23 @@ const _statusIndicators = [];
   const _title = `${getIcon('rocket')} Claude Zen CLI - Revolutionary Unified Architecture`;
   help += `${this.colorizeText(title, 'bright', opts.colorize)}\n\n`;
   // Description
-  const _description = `;`
+  const _description = `;`;
 A powerful CLI for orchestrating AI workflows with swarm intelligence,
 neural networks, vector search, and graph databases.;
     `.trim();`
   help += `${wrapText(description, opts.width).join('\n')}\n\n`;
   // Usage
-  help += this.colorizeText('USAGE = '  claude-zen <command> [options]\n';'
+  help += this.colorizeText('USAGE = '  claude-zen <command> [options]\n';';
     help += '  claude-zen <command> --help    # Get help for specific command\n\n';
   // Global flags
-  help += this.colorizeText('GLOBALFLAGS = ['
+  help += this.colorizeText('GLOBALFLAGS = [';
       { name => {
       const _alias = flag.alias ? `, -${flag.alias}` : '';))
   help += `  --${this.colorizeText(flag.name, 'bright', opts.colorize)}${alias}\n`;
   help += `${flag.description}\n`;
 // }
 // )
-help += '\n'
+help += '\n';
 // Commands by category
 const _commands = registry.list();
 const __categories = this.groupCommandsByCategory(commands);
@@ -126,46 +126,46 @@ categoryCommands.forEach((cmd) => {
 help += '\n';
 })
 // Quick start section
-help += this.colorizeText('QUICKSTART = ['
+help += this.colorizeText('QUICKSTART = [';
 // {/g)
   (cmd) => {
     help += `${this.colorizeText(cmd, 'green', opts.colorize)}\n`;
     help += `${desc}\n`;
   };
   //   )
-  help += '\n'
+  help += '\n';
   // Environment variables
-  help += this.colorizeText('ENVIRONMENTVARIABLES = ['
+  help += this.colorizeText('ENVIRONMENTVARIABLES = [';
   //   {/g)
     (_name) => {
       help += `${this.colorizeText(envVar.name, 'bright', opts.colorize)}\n`;
       help += `${envVar.desc}\n`;
     };
     //     )
-    help += '\n'
+    help += '\n';
     // Footer
-    help += this.colorizeText('MOREINFORMATION = '  Use "claude-zen <command> --help"
+    help += this.colorizeText('MOREINFORMATION = '  Use "claude-zen <command> --help";
     for detailed command information
     \n';'
-    help += 'Documentation = '  Issues = ...this.defaultOptions, ...options)
+    help += 'Documentation = '  Issues = ...this.defaultOptions, ...options);
     const _commands = registry.listByCategory(category);
   if(commands.length === 0) {
       // return `No commands found incategory = '';`
   // ; // LINT: unreachable code removed
   // Header
-  const _title = `;`
+  const _title = `;`;
       \$this.formatCategory(category);
-      Commands`;`
-  help += `;`
+      Commands`;`;
+  help += `;`;
       \$this.colorizeText(title, 'bright', opts.colorize);
       \n\n`
       // Commands table
       const _tableData = commands.map(_cmd => ({name = formatTable(tableData, {columns = '\n\nUse "claude-zen <command> --help" for detailed information about each command.\n';
       return help;
       //   // LINT: unreachable code removed}/g)))
-      showCommandHelp(command = registry.get(command)
+      showCommandHelp(command = registry.get(command);
   if(!definition) {
-        console.error(this.colorizeText(` Unknowncommand = this.generateCommandHelp(definition, options);`
+        console.error(this.colorizeText(` Unknowncommand = this.generateCommandHelp(definition, options);`;
     console.warn(help);
   //   }
 
@@ -223,7 +223,7 @@ help += this.colorizeText('QUICKSTART = ['
 
 // export function generateMarkdownHelp(registry = registry.list();
   const _markdown = '';
-
+;
   // Header
   markdown += '# Claude Zen CLI Documentation\n\n';
   markdown += 'Revolutionary AI orchestration platform with swarm intelligence.\n\n';
@@ -240,7 +240,7 @@ help += this.colorizeText('QUICKSTART = ['
     markdown += `- [${category.charAt(0).toUpperCase() + category.slice(1)}](#${category})\n`;
   });
   markdown += '\n';
-
+;
   // Commands by category
   Object.entries(categories).forEach(([category, categoryCommands]) => {
     markdown += `## ${category.charAt(0).toUpperCase() + category.slice(1)}\n\n`;
@@ -267,7 +267,7 @@ help += this.colorizeText('QUICKSTART = ['
         markdown += `${flag.description}\n`;
       //       }
       //       )
-markdown += '\n'
+markdown += '\n';
     //     }
     // Examples
   if(cmd.examples && cmd.examples.length > 0) {
@@ -330,3 +330,5 @@ console.warn(help);
 // }
 
 }}}))))))))))))))))))))
+
+*/*/]]]

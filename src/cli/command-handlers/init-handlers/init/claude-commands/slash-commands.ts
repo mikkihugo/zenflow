@@ -16,10 +16,12 @@ export async function createClaudeSlashCommands(workingDir = {force = // await c
 try {
 // // await createClaudeFlowCommands(workingDir);
 } catch(/* err */) {
-  console.warn(`    Could not create Claude Code slash commands);`
+  console.warn(`    Could not create Claude Code slash commands);`;
 // }
 } catch(/* mainErr */)
 // {
-  console.warn(`    Error creating slash commands);`
+  console.warn(`    Error creating slash commands);`;
 // }
 // }
+
+*/*/)

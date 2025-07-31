@@ -4,7 +4,7 @@
 
 /** Advanced interactive components for the Claude-ZenTUI = () => {
   const [animationFrame, setAnimationFrame] = useState(0);
-
+;
   useEffect(() => {
   if(animated && progress > 0 && progress < 100) {
       const _interval = setInterval(() => {
@@ -14,27 +14,27 @@
     //   // LINT: unreachable code removed}
   }, [animated, progress]);
 
-  const _filled = Math.floor((progress / 100) * width)
+  const _filled = Math.floor((progress / 100) * width);
   const _empty = width - filled;
-
+;
   let fillChar, emptyChar;
   switch(style) {
-    case 'dots':'
-      fillChar = '';'
-      emptyChar = '';'
+    case 'dots':';
+      fillChar = '';';
+      emptyChar = '';';
       break;
-    case 'bars':'
-      fillChar = '|';'
-      emptyChar = '';'
+    case 'bars':';
+      fillChar = '|';';
+      emptyChar = '';';
       break;
-    default = '';'
-      emptyChar = '';'
+    default = '';';
+      emptyChar = '';';
   //   }
 
   const _animatedFill = animated && progress > 0 && progress < 100 ? ;
-    fillChar.repeat(Math.max(0, filled - 1)) + ['', '', '', ''][animationFrame] :'
+    fillChar.repeat(Math.max(0, filled - 1)) + ['', '', '', ''][animationFrame] :';
     fillChar.repeat(filled);
-
+;
   // return(;
     // <Box>; // LINT: unreachable code removed
       <Text color={color}>;
@@ -54,19 +54,19 @@
   <Box>;
   <Text color = 'cyan' > $ < /;>Tetx < Text > { value } < /    !&&&&(;'
   >Taacdeeeehllloprtuvx < Text
-  color = 'gray''
-  dimColor > placeholder < 
+  color = 'gray'';
+  dimColor > placeholder < ;
   >Tetx
   //   )
   </Box>suggestions.length > 0 && (
   <Box
-  flexDirection = 'column''
-  marginLeft=
+  flexDirection = 'column'';
+  marginLeft=;
   2
-  marginTop = 1>
+  marginTop = 1>;
   <Text color = 'gray''
   dimColor>;
-  Suggestions(suggestions.length) - 
+  Suggestions(suggestions.length) - ;
   to;
   navigate, Tab;
   toselect = > (;
@@ -77,16 +77,16 @@
   backgroundColor={index === selectedSuggestion ? 'cyan' }'
   bold={index === selectedSuggestion}
               >;
-  index === selectedSuggestion ? ' ' : '  ';'
+  index === selectedSuggestion ? ' ' : '  ';';
   cmd.name < / 2;<>TTeettxx{};
-  color = 'gray';'
+  color = 'gray';';
   marginLeft={1}>;
   - {cmd.description.substring(0, 50)}
-  cmd.description.length > 50 ? '...' : '' < />Tetx < / > Box;'
+  cmd.description.length > 50 ? '...' : '' < />Tetx < / > Box;';
   ))suggestions.length > 6 && (
   <Text color = 'gray''
-  dimColor
-  marginLeft=
+  dimColor;
+  marginLeft=;
   1
   >
 .. and suggestions.length - 6more
@@ -101,7 +101,7 @@
   marginLeft={2}
   marginTop = {1}>;
   <Text color = 'gray';'
-  dimColor>Quickcommands = 'gray';'
+  dimColor>Quickcommands = 'gray';';
   dimColor;
   marginLeft={1}>help, status, init, swarm, memory<
         <
@@ -115,7 +115,7 @@
 
 // export const SwarmTopology = () => {
   const [_refreshCount, setRefreshCount] = useState(0);
-
+;
   useEffect(() => {
     const _interval = setInterval(() => {
       setRefreshCount((prev) => prev + 1);
@@ -140,12 +140,12 @@
               <Box flexDirection="column">;"
                 <Box>;
                   <Text ;
-                    color=;))
-    swarm.id === activeSwarm ? 'cyan' );'
+                    color=;));
+    swarm.id === activeSwarm ? 'cyan' );';
                   <
                   <Text ;
                     color=;
-    swarm.status === 'active' ? 'green' : swarm.status === 'idle' ? 'yellow' : 'red';'
+    swarm.status === 'active' ? 'green' : swarm.status === 'idle' ? 'yellow' : 'red';';
   marginLeft=1;
                   >swarm.status;
                   <
@@ -155,7 +155,7 @@
     4;
   >;
                     <Text color = 'gray';'
-  dimColor>Tasks = 'column';'
+  dimColor>Tasks = 'column';';
   marginTop = 1>;
           <Text color = 'gray';'
   dimColor>Connections = > (;
@@ -189,10 +189,10 @@
     //   // LINT: unreachable code removed});
 
   const _visibleLogs = autoScroll ? filteredLogs.slice(-height) : filteredLogs.slice(0, height);
-
-      case 'success': return '';'
+;
+      case 'success': return '';';
     // case 'command': return ''; // LINT: unreachable code removed'
-      case 'info': return '';default = "column" borderStyle="single" padding=1height=height + 4>;"
+      case 'info': return '';default = "column" borderStyle="single" padding=1height=height + 4>;";
       <Box justifyContent="space-between">;"
         <Text bold color="cyan"> Command Logs<
         <Text color="gray" dimColor>filteredLogs.length/logs.lengthfilter !== 'all' && ` (\$filter)`searchTerm && ` [\$searchTerm]`;`
@@ -207,9 +207,9 @@
               <
               <Text ;
                 color=;
-                  log.type === 'error' ? 'red' :'
-                  log.type === 'success' ? 'green' :'
-                  log.type === 'command' ? 'cyan' : 'white';'
+                  log.type === 'error' ? 'red' :';
+                  log.type === 'success' ? 'green' :';
+                  log.type === 'command' ? 'cyan' : 'white';';
                 marginLeft={showTimestamps ? 1 = {1 = "gray" dimColor>;"
 .. filteredLogs.length - heightmore entries;
           <
@@ -223,7 +223,7 @@
 
   // export const _StatusPane = () => {
   const [lastUpdate, setLastUpdate] = useState(new Date());
-
+;
   useEffect(() => {
     const _interval = setInterval(() => {
       setLastUpdate(new Date());
@@ -235,7 +235,7 @@
     const _hours = Math.floor(seconds / 3600);
     const _minutes = Math.floor((seconds % 3600) / 60);
     const _secs = seconds % 60;
-
+;
     if(hours > 0) return `${hours}h ${minutes}m ${secs}s`;`
     // if(minutes > 0) return `\${minutes // LINT}m ${secs}s`;`
     // return `${secs}s`;`
@@ -258,15 +258,15 @@
   <
 
         <Box>;
-          <Text>Commands = "yellow">{status.commandCount  ?? 0}<
+          <Text>Commands = "yellow">{status.commandCount ?? 0}<
         <
 
         <Box>;
-          <Text>Uptime = "blue">;formatUptime(_status._uptime  ?? 0)"
+          <Text>Uptime = "blue">;formatUptime(_status._uptime ?? 0)"
           <
         </Box>showDetails && metrics && Object.keys(metrics).length > 0 && (;
           <Box;
-  flexDirection = 'column';'
+  flexDirection = 'column';';
   marginTop = {1}>;
             <Text color = 'gray';'
   dimColor>Metrics =;
@@ -311,7 +311,7 @@
 
 // export const _HelpPane = () => {
   const [commandHelp, setCommandHelp] = useState(null);
-
+;
   useEffect(() => {
   if(selectedCommand) {
       const _cmd = allCommands.find(c => c.name === selectedCommand);
@@ -373,13 +373,15 @@
   );
 
 // export default {
-  ProgressBar,
-  CommandInput,
-  SwarmTopology,
-  LogPane,
-  StatusPane,
-  _HelpPane,
+  ProgressBar,;
+  CommandInput,;
+  SwarmTopology,;
+  LogPane,;
+  StatusPane,;
+  _HelpPane,;
   _SplitPane;
 };
 
 }}}}
+
+*/*/*/*/*/*/*/*/

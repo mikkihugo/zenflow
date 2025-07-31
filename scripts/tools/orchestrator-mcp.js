@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
-/** Orchestrator MCP Server - Remote Claude Desktop Access;
- *;
-/** PURPOSE: Enable remote Claude Desktop access to Singularity Engine documents;
-/** PROTOCOL: HTTP on port 3000(accessible via Cloudflare
-/** TOOLS: Document management tools always enabled for remote access;
+/** Orchestrator MCP Server - Remote Claude Desktop Access
+ * 
+ * PURPOSE: Enable remote Claude Desktop access to Singularity Engine documents
+ * PROTOCOL: HTTP on port 3000 (accessible via Cloudflare)
+ * TOOLS: Document management tools always enabled for remote access
+ */
 
 import cors from 'cors';
 import express from 'express';
@@ -55,35 +56,35 @@ class MockMemoryStore {
       // Health check endpoint
       app.get('/health', (_req, res) => {
         res.json({ status: 'healthy',
-        service: 'claude-zen-mcp',
-        version: '2.0.0-alpha.61',)
-        timestamp: new Date().toISOString(),
+        service: 'claude-zen-mcp',;
+        version: '2.0.0-alpha.61',);
+        timestamp: new Date().toISOString(),;
         uptime: process.uptime()   });
     })
     // MCP tools endpoint
-    app.post('/mcp/tools/) =>'
+    app.post('/mcp/tools/) =>';
     try {
     const { toolName } = req.params;
     const _args = req.body;
-    console.warn(` MCP Tool Call);`
+    console.warn(` MCP Tool Call);`;
 // const _result = awaitmcpServer.callTool(toolName, args);
     res.json({ success,
-      tool,
-      result,)
-      timestamp: new Date().toISOString()
+      tool,;
+      result,);
+      timestamp: new Date().toISOString();
   })
-    catch(error)
-    console.error(' MCP Tool Error:', error)
-    res.status(500).json(
-      success,
-    error: error.message,
-    tool: req.params.toolName,)
-    timestamp: new Date().toISOString())
+    catch(error);
+    console.error(' MCP Tool Error:', error);
+    res.status(500).json(;
+      success,;
+    error: error.message,;
+    tool: req.params.toolName,);
+    timestamp: new Date().toISOString());
   })
   // Service document manager endpoints
   app;
-
-  post('/service-documents/create', _async(_req, _res)
+;
+  post('/service-documents/create', _async(_req, _res);
   =>
 // {
   try {
@@ -91,32 +92,32 @@ class MockMemoryStore {
   _result = awaitmcpServer.handleServiceDocumentManager({ action: 'create',
 ..
   req;
-
+;
   body;
-
+;
   })
-  res.json(result)
+  res.json(result);
 // }
-catch(error)
+catch(error);
 // {
   res.status(500).json({ success, error);
 // }
 })
-app.get('/service-documents/list/) =>'
+app.get('/service-documents/list/) =>';
 // {
   try {
 // const _result = awaitmcpServer.handleServiceDocumentManager({ action: 'list',
-      serviceName: req.params.serviceName,
-      documentType: 'all')
+      serviceName: req.params.serviceName,;
+      documentType: 'all');
   })
-  res.json(result)
+  res.json(result);
 // }
-catch(error)
+catch(error);
 // {
   res.status(500).json({ success, error);
 // }
 })
-app.post('/service-documents/validate', async(req, res) =>
+app.post('/service-documents/validate', async(req, res) =>;
 // {
   try {
 // const _result = awaitmcpServer.handleServiceDocumentValidator(req.body);
@@ -125,7 +126,7 @@ app.post('/service-documents/validate', async(req, res) =>
     res.status(500).json({ success, error);
   //   }
 })
-app.post('/service-documents/approve', async(req, res) =>
+app.post('/service-documents/approve', async(req, res) =>;
 // {
   try {
 // const _result = awaitmcpServer.handleServiceApprovalWorkflow(req.body);
@@ -135,7 +136,7 @@ app.post('/service-documents/approve', async(req, res) =>
   //   }
 })
 // Swarm coordination endpoints
-app.post('/swarm/init', async(req, res) =>
+app.post('/swarm/init', async(req, res) =>;
 // {
   try {
 // const _result = awaitmcpServer.callTool('swarm_init', req.body);
@@ -144,7 +145,7 @@ app.post('/swarm/init', async(req, res) =>
     res.status(500).json({ success, error);
   //   }
 })
-app.post('/swarm/spawn-agent', async(req, res) =>
+app.post('/swarm/spawn-agent', async(req, res) =>;
 // {
   try {
 // const _result = awaitmcpServer.callTool('agent_spawn', req.body);
@@ -154,52 +155,52 @@ app.post('/swarm/spawn-agent', async(req, res) =>
   //   }
 })
 // Memory endpoints
-app.post('/memory/store', async(_req, res) =>
+app.post('/memory/store', async(_req, res) =>;
 // {
   try {
 // const _result = awaitmcpServer.callTool('memory_usage', {
-      action: 'store',
+      action: 'store',;
 ..req.body)
 })
-  res.json(result)
+  res.json(result);
 // }
-catch(error)
+catch(error);
 // {
   res.status(500).json({ success, error);
 // }
 })
-app.get('/memory/retrieve/) =>'
+app.get('/memory/retrieve/) =>';
 // {
   try {
 // const _result = awaitmcpServer.callTool('memory_usage', {
-      action: 'retrieve',
-      key: req.params.key,
-      namespace: req.query.namespace)
+      action: 'retrieve',;
+      key: req.params.key,;
+      namespace: req.query.namespace);
 })
-  res.json(result)
+  res.json(result);
 // }
-catch(error)
+catch(error);
 // {
   res.status(500).json({ success, error);
 // }
 })
 // System status endpoint
-app.get('/status', async(_req, res) =>
+app.get('/status', async(_req, res) =>;
 // {
   try {
     const _systemStatus = orchestrator.getSystemStatus();
 // const _healthCheck = awaitorchestrator.healthCheck();
     res.json({
       mcp: {
-        host,
-        port,
-        status: 'running',)
+        host,;
+        port,;
+        status: 'running',);
         uptime: process.uptime() {}
 // }
 
-  services,
-  health,
-  endpoints: [
+  services,;
+  health,;
+  endpoints: [;
   'GET 
   'POST /mcp/tools/:toolName',
   'POST /service-documents/create',
@@ -226,14 +227,14 @@ async function startServer() {
   // // await orchestrator.start();
     // Start HTTP server
     const _server = app.listen(PORT, HOST, () => {
-      console.warn(`\n HTTP MCP Server running on http);`
-      console.warn(' Available endpoints);'
-      console.warn(`    GET  http);`
-      console.warn(`    POST http);`
-      console.warn(`    GET  http);`
-      console.warn(`    POST http);`
-      console.warn(`    POST http);`
-      console.warn(`    GET  http);`
+      console.warn(`\n HTTP MCP Server running on http);`;
+      console.warn(' Available endpoints);';
+      console.warn(`    GET  http);`;
+      console.warn(`    POST http);`;
+      console.warn(`    GET  http);`;
+      console.warn(`    POST http);`;
+      console.warn(`    POST http);`;
+      console.warn(`    GET  http);`;
       console.warn('\n Server ready for external connections!');
     });
     // Graceful shutdown
@@ -244,10 +245,10 @@ async function startServer() {
       process.exit(0);
     });
   } catch(error) {
-    console.error(' Failed to start server);'
+    console.error(' Failed to start server);';
     process.exit(1);
   //   }
 // }
 startServer();
-
+;
 }}}}}}}}}}

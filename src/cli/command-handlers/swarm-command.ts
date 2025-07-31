@@ -6,12 +6,12 @@ import { ParallelSwarmOrchestrator  } from '../../coordination/parallel-swarm-or
 import { printError, printInfo  } from '..';
 
 function _showSwarmHelp() {
-  console.warn(`;`
- SWARM COMMAND - Multi-Agent AI CoordinationUSAGE = args[0];)
+  console.warn(`;`;
+ SWARM COMMAND - Multi-Agent AI CoordinationUSAGE = args[0];);
   const _objective = args.slice(1).join(' ').trim();
-
+;
   // Handle help
-  if(flags.help  ?? flags.h  ?? subcommand === 'help'  ?? (!subcommand && !objective)) {
+  if(flags.help ?? flags.h ?? subcommand === 'help'  ?? (!subcommand && !objective)) {
     showSwarmHelp();
     return;
     //   // LINT: unreachable code removed}
@@ -30,23 +30,23 @@ function _showSwarmHelp() {
       new ParallelSwarmOrchestrator({maxWorkers = flags['swarm-id']  ?? flags.id;
         // return // await stopSwarm(swarmId, orchestrator);
     // ; // LINT: unreachable code removed
-      case 'metrics':
+      case 'metrics':;
         // return // await showSwarmMetrics(flags, orchestrator);
     // ; // LINT: unreachable code removed
-      case 'spawn':
+      case 'spawn':;
         const _targetSwarmId = flags['swarm-id']  ?? flags.id;
   if(!targetSwarmId) {
           printError('Swarm ID required for spawning agents');
-          printInfo('Usage = (subcommand + ' ' + objective).trim();'
+          printInfo('Usage = (subcommand + ' ' + objective).trim();';
         // return // await launchSwarmWithObjective(fullObjective2, flags, orchestrator);
     //   // LINT: unreachable code removed}
   } catch(error) {
     printError(`Swarm command failed = {}, orchestrator = null) ;`
   if(!objective  ?? !objective.trim()) {
     printError('Objective is required');
-    printInfo('Usage = flags.parallel !== false;'
+    printInfo('Usage = flags.parallel !== false;';
   const _orch = orchestrator  ?? (useParallel ? ;
-    new ParallelSwarmOrchestrator({maxWorkers = flags.analysis  ?? flags['read-only'];
+    new ParallelSwarmOrchestrator({maxWorkers = flags.analysis ?? flags['read-only'];
 
   const _swarmOptions = {strategy = = false,priority = // await orch.launchSwarm(objective, swarmOptions);
   printSuccess(` Swarmlaunched = === 'parallel' && result.parallelExecutionStats) {`
@@ -69,11 +69,11 @@ async function showSwarmStatus(flags = flags['swarm-id']  ?? flags.id;
 // const _status = awaitorchestrator.getSwarmStatus(swarmId);
   if(swarmId) {
     // Specific swarm status
-    printInfo(` Swarm Status => ;`
-        console.warn(`  \$index + 1. \$agent.type);`
+    printInfo(` Swarm Status => ;`;
+        console.warn(`  \$index + 1. \$agent.type);`;
         console.warn(`     _Status => {`)
         console.warn(`   ${id}: ${swarm.objective?.substring(0, 50)}...`);
-        console.warn(`Agents = === 'json') ;`
+        console.warn(`Agents = === 'json') ;`;
     console.warn(`\\n${JSON.stringify(status, null, 2)}`);
 
 /** List active swarms
@@ -86,7 +86,7 @@ async function listActiveSwarms(orchestrator = // await orchestrator.getSwarmSta
       Object.entries(status.swarms).forEach(([id, swarm]) => {
         console.warn(` ${id}`);
         console.warn(`Objective = flags['swarm-id']  ?? flags.id;`
-
+;
   if(swarmId) {
 // const _metrics = awaitorchestrator.getSwarmMetrics(swarmId);
   if(flags['output-format'] === 'json') {
@@ -116,3 +116,5 @@ async function listActiveSwarms(orchestrator = // await orchestrator.getSwarmSta
 // }
 
 }}}}}}}}}}}}}}}}}))))))))))))))))
+
+*/*/*/]]

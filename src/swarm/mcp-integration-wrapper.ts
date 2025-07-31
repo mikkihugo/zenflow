@@ -28,7 +28,7 @@ initialize();
 : Promise<void>
 // {
     this.logger.info('Initializing MCP integration wrapper...');
-
+;
     try {
       // Register Claude Flow tools
   if(this.config.enableClaudeFlowTools) {
@@ -49,7 +49,7 @@ initialize();
     const __startTime = performance.now();
 
     this.logger.info('Executing MCP tool', {
-      toolName,)
+      toolName,);
       executionId,agentId = this.toolRegistry.tools.get(toolName);
   if(!tool) {
         throw new Error(`Tool notfound = // await this.getCachedResult(toolName, input, context);`
@@ -62,31 +62,31 @@ initialize();
       // Create abort controller for timeout
       const _abortController = new AbortController();
       this.activeExecutions.set(executionId, abortController);
-
+;
       // Set up timeout
       const _timeoutHandle = setTimeout(() => {
         abortController.abort();
-      }, context.timeout  ?? this.config.toolTimeout);
+      }, context.timeout ?? this.config.toolTimeout);
 
       try {
         // Execute tool with retry logic
 // const _result = awaitthis.executeWithRetry(;
-          tool,
-          input,
-          context,
-          executionId,
-          abortController.signal;)
+          tool,;
+          input,;
+          context,;
+          executionId,;
+          abortController.signal;);
         );
 
         clearTimeout(timeoutHandle);
-
+;
         const _duration = performance.now() - startTime;
         const _executionResult = {success = performance.now() - startTime;
       const _executionResult = {success = [];
   for(const execution of toolExecutions) {
 // const _result = awaitthis.executeTool(; 
-          execution.toolName,
-          execution.input,)
+          execution.toolName,;
+          execution.input,);
           execution.context; ) {;
         results.push(result);
       //       }
@@ -98,7 +98,7 @@ initialize();
     const _promises = toolExecutions.map(async(execution) => {
 // await semaphore.acquire();
       try {
-        return await this.executeTool(;)
+        return await this.executeTool(;);
     // execution.toolName, // LINT);
       } finally {
         semaphore.release();
@@ -144,7 +144,7 @@ initialize();
         this.toolRegistry.categories.set(category, []);
       //       }
       this.toolRegistry.categories.get(category)!.push(tool.name);
-
+;
       // Add capabilities
       const _capabilities = this.extractCapabilities(tool);
   for(const capability of capabilities) {
@@ -158,7 +158,7 @@ initialize();
 
   // private async registerRuvSwarmTools(): Promise<void> {
     this.logger.info('Registering ruv-swarm tools...');
-
+;
     const _ruvSwarmTools = createRuvSwarmTools(this.logger);
   for(const tool of ruvSwarmTools) {
       this.toolRegistry.tools.set(tool.name, tool); // Categorize tool
@@ -166,7 +166,7 @@ initialize();
         this.toolRegistry.categories.set(category, []);
       //       }
       this.toolRegistry.categories.get(category)!.push(tool.name);
-
+;
       // Add capabilities
       const _capabilities = this.extractCapabilities(tool);
   for(const capability of capabilities) {
@@ -179,9 +179,9 @@ initialize();
   //   }
 
   // private async executeWithRetry(tool = null;
-    const _maxRetries = context.maxRetries  ?? this.config.maxRetries;
+    const _maxRetries = context.maxRetries ?? this.config.maxRetries;
   for(const attempt = 1; attempt <= maxRetries; attempt++) { 
-      try 
+      try ;
         // Check if execution was aborted
   if(signal.aborted) {
           throw new Error('Execution aborted');
@@ -197,7 +197,7 @@ initialize();
       //       }
     //     }
 
-    throw lastError  ?? new Error('Tool execution failed after all retries');
+    throw lastError ?? new Error('Tool execution failed after all retries');
   //   }
 
   // private isNonRetryableError(error = [
@@ -260,7 +260,7 @@ initialize();
     // Extract capabilities from tool name and description
     const _text = `${tool.name} ${tool.description}`.toLowerCase();
 
-    const _capabilityPatterns = [
+    const _capabilityPatterns = [;
       'agent', 'task', 'memory', 'system', 'config', 'workflow',
       'terminal', 'swarm', 'neural', 'benchmark', 'monitoring',
       'orchestration', 'coordination', 'analysis', 'research',
@@ -341,3 +341,6 @@ initialize();
 // export default MCPIntegrationWrapper;
 
 }}}}}}}}}}}}}}}))))))))))))))))))))
+
+*/*/*/
+}}}}}}

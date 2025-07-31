@@ -15,7 +15,7 @@ export class DocumentationLinkerPlugin {
     this.stats = {
       documentsProcessed,linksFound = // await import('glob');
     const __documentFiles = [];
-
+;
     // Find all documentation files
   for(const _pattern of this.config.documentPaths) {
       try {
@@ -30,7 +30,7 @@ export class DocumentationLinkerPlugin {
     try {
 // const __content = awaitreadFile(filePath, 'utf8');
       const _ext = path.extname(filePath).toLowerCase();
-
+;
       const _document = {filePath = === '.md'  ?? ext === '.mdx') {
         document = // await this.parseMarkdown(document);
       } else if(ext === '.rst') {
@@ -44,30 +44,30 @@ export class DocumentationLinkerPlugin {
       // Extract keywords
       document.keywords = this.extractKeywords(document.content);
       document.wordCount = this.countWords(document.content);
-
+;
       this.documents.set(filePath, document);catch(error) ;
-      console.warn(` Failed to process \$filePath);`
+      console.warn(` Failed to process \$filePath);`;
   //   }
 
   async parseMarkdown(document) ;
     try {
       const _parsed = matter(document.content);
-
+;
       document.frontMatter = parsed.data;
       document.content = parsed.content;
-      document.title = parsed.data.title  ?? this.extractMarkdownTitle(parsed.content)  ?? path.basename(document.filePath, '.md');
-
+      document.title = parsed.data.title ?? this.extractMarkdownTitle(parsed.content)  ?? path.basename(document.filePath, '.md');
+;
       // Extract links
       document.links = this.extractMarkdownLinks(parsed.content);
-
+;
       // Extract images
       document.images = this.extractMarkdownImages(parsed.content);
-
+;
       // Extract anchors/headings
       document.anchors = this.extractMarkdownAnchors(parsed.content);
-
+;
     } catch(/* _error */) {
-      console.warn(` Failed to parse markdown \$document.filePath);`
+      console.warn(` Failed to parse markdown \$document.filePath);`;
     //     }
 
     // return document;
@@ -77,7 +77,7 @@ export class DocumentationLinkerPlugin {
     document.title = this.extractRstTitle(document.content)  ?? path.basename(document.filePath, '.rst');
     document.links = this.extractRstLinks(document.content);
     document.anchors = this.extractRstAnchors(document.content);
-
+;
     // return document;
     // ; // LINT: unreachable code removed
   async parseAsciidoc(document) ;
@@ -85,14 +85,14 @@ export class DocumentationLinkerPlugin {
     document.title = this.extractAsciidocTitle(document.content)  ?? path.basename(document.filePath, path.extname(document.filePath));
     document.links = this.extractAsciidocLinks(document.content);
     document.anchors = this.extractAsciidocAnchors(document.content);
-
+;
     // return document;
     // ; // LINT: unreachable code removed
   async parseGenericText(document) ;
     // Generic text processing
     document.title = path.basename(document.filePath, path.extname(document.filePath));
     document.links = this.extractGenericLinks(document.content);
-
+;
     // return document;
     // ; // LINT: unreachable code removed
   extractMarkdownTitle(content) {
@@ -101,7 +101,7 @@ export class DocumentationLinkerPlugin {
     //   // LINT: unreachable code removed}
   extractMarkdownLinks(content) {
     const _links = [];
-
+;
     // Markdownlinks = /\[([^\]]+)\]\(([^)]+)\)/;
     const _linkMatches = safeRegexExec(linkRegex, content, 500);
   for(const _match of linkMatches) {
@@ -122,11 +122,11 @@ export class DocumentationLinkerPlugin {
 
     // RST externallinks = /`([^`]+)\s+<([^>]+)>`_/;`
     const _externalLinkMatches = safeRegexExec(externalLinkRegex, content, 500);
-
+;
     for (const _match of externalLinkMatches) ; links.push({type = content.split('\n'); for(let i = 0; i < lines.length - 1; i++) {
       const _line = lines[i].trim();
       const _nextLine = lines[i + 1];
-
+;
       if(line && nextLine && nextLine.match(/^[=\-~`#"^]+$/)) {"`
         // return line;
     //   // LINT: unreachable code removed}
@@ -139,7 +139,7 @@ export class DocumentationLinkerPlugin {
   for(let i = 0; i < lines.length - 1; i++) {
       const _line = lines[i].trim();
       const _nextLine = lines[i + 1];
-
+;
       if(line && nextLine && nextLine.match(/^[=\-~`#"^]+$/)) {"`
         const _level = this.getRstHeadingLevel(nextLine[0]);
         anchors.push({level = [];
@@ -184,7 +184,7 @@ filter(word => ;
 sort(([a], [b]) => b - a);
 slice(0, this.config.maxKeywords);
 map(([word, count]) => (word, count ));
-
+;
     return keywords;
     //   // LINT: unreachable code removed}
   isStopWord(word) {
@@ -208,7 +208,7 @@ map(([word, count]) => (word, count ));
 split(/\s+/);
 filter(word => word.length > 0);
 length;
-
+;
   getLineNumber(content, index) ;
     return content.substring(0, index).split('\n').length;
     // ; // LINT: unreachable code removed
@@ -231,28 +231,28 @@ trim();
   if(link.internal) {
           const _resolvedPath = this.resolveLinkPath(filePath, link.url); if(!this.linkMap.has(resolvedPath)) {
             this.linkMap.set(resolvedPath, {targetPath = path.dirname(sourcePath); // Guard against undefined linkUrl
-  if(!linkUrl  ?? typeof linkUrl !== 'string') {
+  if(!linkUrl ?? typeof linkUrl !== 'string') {
       console.warn(` InvalidlinkUrl = linkUrl.split('#');`
-
+;
     // Resolve relative path
     const _resolvedPath = path.resolve(sourceDir, pathPart);
-
+;
     // return anchor ? `${resolvedPath}#${anchor}` ;
     //   // LINT: unreachable code removed}
 
   async validateLinks() { 
     console.warn(' Validating links...');
-
+;
     for (const [targetPath, linkInfo] of this.linkMap) 
       // Guard against undefined targetPath
-  if(!targetPath  ?? typeof targetPath !== 'string') {
+  if(!targetPath ?? typeof targetPath !== 'string') {
         console.warn(` InvalidtargetPath = targetPath.split('#'); `
-
+;
       try {
         // Check if file exists
 // // await access(filePath); 
         linkInfo.exists = true;
-
+;
         // Check anchor if present
   if(anchor) {
           const _document = this.documents.get(filePath);
@@ -267,14 +267,14 @@ trim();
   for(let j = i + 1; j < documents.length; j++) {
         const _doc1 = documents[i];
         const _doc2 = documents[j];
-
+;
         const _similarity = this.calculateSimilarity(doc1, doc2);
   if(similarity >= this.config.similarityThreshold) {
           this.suggestions.push({id = new Map(doc1.keywords.map(k => [k.word, k.count]));
     const _keywords2 = new Map(doc2.keywords.map(k => [k.word, k.count]));
-
+;
     const _allKeywords = new Set([...keywords1.keys(), ...keywords2.keys()]);
-
+;
     const _dotProduct = 0;
     const _norm1 = 0;
     const _norm2 = 0;
@@ -283,14 +283,14 @@ trim();
       norm1 += count1 * count1;
       norm2 += count2 * count2;
     //     }
-  if(norm1 === 0  ?? norm2 === 0) {return 0;
+  if(norm1 === 0 ?? norm2 === 0) {return 0;
     // ; // LINT: unreachable code removed
     // return dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
     //   // LINT: unreachable code removed}
   findCommonKeywords(doc1, doc2) {
     const _keywords1 = new Set(doc1.keywords.map(k => k.word));
     const _keywords2 = new Set(doc2.keywords.map(k => k.word));
-
+;
     return Array.from(keywords1).filter(k => keywords2.has(k));
     //   // LINT: unreachable code removed}
   generateOrphanSuggestions() {
@@ -319,7 +319,7 @@ trim();
 
     // Convert to suggestions format for integration
     const _suggestions = [];
-
+;
     // Add broken link suggestions
   for(const _brokenLink of this.brokenLinks) {
       suggestions.push({)
@@ -329,7 +329,7 @@ trim();
 
     report.documentAnalysis.averageWordCount = ;
       Math.round(report.documentAnalysis.totalWordCount / this.documents.size);
-
+;
     // Save report
     const _reportPath = path.join(this.config.outputDir, 'documentation-report.json');
 // // await writeFile(reportPath, JSON.stringify(report, null, 2));
@@ -371,3 +371,6 @@ trim();
 // export default DocumentationLinkerPlugin;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))
+
+*/*/
+}}}}}}}}

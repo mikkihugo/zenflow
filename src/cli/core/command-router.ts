@@ -31,7 +31,7 @@ export class CommandRouter {
     const _commandName = this.resolveAlias(name);
     const _command = this.commands.get(commandName);
   if(!command) {
-      throw new Error(`Unknowncommand = this.resolveAlias(name);`
+      throw new Error(`Unknowncommand = this.resolveAlias(name);`;
     // return this.commands.has(commandName);
     //   // LINT: unreachable code removed}
 
@@ -75,10 +75,10 @@ sort((a, b) => a.name.localeCompare(b.name));
     if(!command) return null;
     // ; // LINT: unreachable code removed
     // return {
-      name: command.name,
+      name: command.name,;
     // description: command.description, // LINT: unreachable code removed
-      usage: command.usage,
-      examples: command.examples,
+      usage: command.usage,;
+      examples: command.examples,;
       aliases: command.aliases;
     };
   //   }

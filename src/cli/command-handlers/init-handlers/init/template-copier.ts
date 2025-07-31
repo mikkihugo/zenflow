@@ -6,7 +6,7 @@ import { fileURLToPath  } from 'node:url';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
-
+;
 /** Copy template files from the templates directory to the target directory
  * @param {string} targetDir - The directory to copy templates to
  * @param {Object} options - Options for template copying
@@ -22,16 +22,16 @@ const ___dirname = dirname(__filename);
   const _results = {success = join(__dirname, 'templates');
     // ; // LINT: unreachable code removed
     // Determine which template variants to use
-    const _templateVariant = options.optimized ? 'optimized' :
-                          options.enhanced ? 'enhanced' :
-                          options.minimal ? 'minimal' :
+    const _templateVariant = options.optimized ? 'optimized';
+                          options.enhanced ? 'enhanced';
+                          options.minimal ? 'minimal';
                           options.sparc ? 'sparc' : 'full';
-
+;
     // Core files to copy
 
       const _sourcePath = join(templatesDir, sourceFile);
       const _destPath = join(targetDir, file.destination);
-
+;
       if(// await copyFile(sourcePath, destPath, options)) {
         results.copiedFiles.push(file.destination);
       } else if(!options.dryRun) {
@@ -42,7 +42,7 @@ const ___dirname = dirname(__filename);
     // Copy .claude directory structure
   if(options.enhanced  ?? !options.minimal) {
       const _claudeDir = join(targetDir, '.claude');
-
+;
       // Copy settings.json
       const _settingsSource = options.enhanced ? 'settings.json.enhanced' : 'settings.json';
   if(!options.dryRun) {
@@ -98,12 +98,12 @@ try {
     //     }
   } catch(err) ;
     results.errors.push(`Failed to copy commandtemplates = join(targetDir, '.claude', 'commands', 'sparc');`
-
+;
   try {
   if(!options.dryRun) {
 // // await fs.mkdir(sparcDir, {recursive = // await import('./templates/sparc-modes.js');
     const _sparcTemplates = createSparcModeTemplates();
-
+;
     // Filter templates if selectedModes is specified
     const _templatesToCreate = options.selectedModes ;
       ? Object.entries(sparcTemplates).filter(([filename]) => {
@@ -129,17 +129,17 @@ try {
     //     }
     console.warn(`${options.dryRun ? '[DRY RUN] Would create' );`
     results.copiedFiles.push('.claude/commands/sparc/sparc-modes.md');
-
+;
     // Copy swarm templates
 // // await copySwarmTemplates(templatesDir, targetDir, options, results);
   } catch(err) ;
     results.errors.push(`Failed to copy SPARCtemplates = join(targetDir, '.claude', 'commands', 'swarm');`
-
+;
   try {
   if(!options.dryRun) {
 // // await fs.mkdir(swarmDir, {recursive = // await import('./templates/sparc-modes.js');
     const _swarmTemplates = createSwarmStrategyTemplates();
-
+;
     // Write swarm strategy files
     for (const [filename, content] of Object.entries(swarmTemplates)) {
       const _destPath = join(swarmDir, filename); if(!options.dryRun) {
@@ -151,7 +151,7 @@ try {
     //     }
   } catch(/* err */) {
     results.errors.push(`Failed to copy swarmtemplates = join(targetDir, '.claude', 'helpers');`
-
+;
   try {
   if(!options.dryRun) {
 // // await fs.mkdir(helpersDir, {recursive = ['setup-mcp.sh', 'quick-start.sh', 'github-setup.sh'];/g)
@@ -168,9 +168,9 @@ try {
       //       }
     //     }
   } catch(err) ;
-    results.errors.push(`Failed to copy helperscripts = join(targetDir, 'claude-zen');`
+    results.errors.push(`Failed to copy helperscripts = join(targetDir, 'claude-zen');`;
     const _unixWrapperSource = join(templatesDir, 'claude-zen-universal');
-
+;
     if(// await copyFile(unixWrapperSource, unixWrapperPath, options)) {
   if(!options.dryRun) {
 // // await fs.chmod(unixWrapperPath, 0o755);
@@ -181,7 +181,7 @@ try {
     // Windows batch wrapper
     const _batchWrapperPath = join(targetDir, 'claude-zen.bat');
     const _batchWrapperSource = join(templatesDir, 'claude-zen.bat');
-
+;
     if(// await copyFile(batchWrapperSource, batchWrapperPath, options)) {
       results.copiedFiles.push('claude-zen.bat');
     //     }
@@ -189,12 +189,12 @@ try {
     // PowerShell wrapper
     const _psWrapperPath = join(targetDir, 'claude-zen.ps1');
     const _psWrapperSource = join(templatesDir, 'claude-zen.ps1');
-
+;
     if(// await copyFile(psWrapperSource, psWrapperPath, options)) {
       results.copiedFiles.push('claude-zen.ps1');
     //     }
   } catch(err) ;
-    results.errors.push(`Failed to copy wrapperscripts = [`
+    results.errors.push(`Failed to copy wrapperscripts = [`;
     'memory',
     'memory
     'memory
@@ -290,7 +290,7 @@ async function createMemoryReadmeFiles(targetDir = // await import('./templates/
     //   // LINT: unreachable code removed},
     'claude-zen.ps1': async() =>
       return await fs.readFile(join(__dirname, 'templates', 'claude-zen.ps1'), 'utf8');
-
+;
   const _generator = templateGenerators[filename]  ?? templateGenerators[filename.replace(/\.(sparc|minimal|optimized|enhanced)$/, '')];
   if(generator) {
     try {
@@ -339,3 +339,6 @@ ${commands.map(cmd => `- [${cmd}](.
 // }
 
 }}}}}}}}}}}}}}}}}}}}}})))))))))))))))))
+
+*/*/*/
+}}}}}}}

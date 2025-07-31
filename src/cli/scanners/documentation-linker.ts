@@ -16,7 +16,7 @@ export async function scanForDocumentationLinks() {
     description: `Documents '${doc1.title}' ($, { doc1.file }) and '${doc2.title}' ($, { doc2.file }) share common themes($, { commonKeywords.join(', ') }). Consider adding cross-links.`, // AI can suggest exact link text
       action;
     : 'suggest_doc_link',
-    files: [doc1.file, doc2.file],
+    files: [doc1.file, doc2.file],;
     commonKeywords}
   //   )
 // }

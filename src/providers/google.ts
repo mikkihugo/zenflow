@@ -12,7 +12,7 @@ import { ProviderError  } from '.';
 // constructor() {}
 // // {
 //   super();
-//   this.pricing = {inputTokenPrice = config.apiKey  ?? process.env.GOOGLE_API_KEY;
+//   this.pricing = {inputTokenPrice = config.apiKey ?? process.env.GOOGLE_API_KEY;
 //   this.projectId = config.projectId ?? process.env.GOOGLE_PROJECT_ID;
 //   if(!this.apiKey) {
 //     throw new ProviderError('Google API key is required', this.name, 'MISSING_API_KEY');
@@ -29,12 +29,12 @@ import { ProviderError  } from '.';
   async generateText(request = Date.now();
     this.validateRequest(request);
     this.emitRequest(request);
-
+;
     try {
       const _googleRequest = {contents = {parts = // await this.makeRequest(;
         ` / \$request.model;`
   :generateContent`,`
-  googleRequest)
+  googleRequest);
   //   )
   if(!response.candidates ?? response.candidates.length === 0) {
     throw new ProviderError('No response generated', this.name, 'NO_RESPONSE');
@@ -101,14 +101,14 @@ for (const msg of messages) {
     //   // LINT: unreachable code removed}
 
   // return new ProviderError(;
-    // errorData.error?.message  ?? errorData.message  ?? 'Unknown error', // LINT);
+    // errorData.error?.message ?? errorData.message  ?? 'Unknown error', // LINT);
 // }
 
 private;
 mapFinishReason(reason);
 : AIResponse['finishReason'];
   switch(reason) {
-    case 'FINISH_REASON_STOP':
+    case 'FINISH_REASON_STOP':;
       // return 'stop';
     // case 'FINISH_REASON_MAX_TOKENS': // LINT: unreachable code removed
       // return 'length';
@@ -132,3 +132,6 @@ handleError(error);
 // }
 
 }}}}}}))))
+
+*/*/
+}

@@ -10,13 +10,13 @@ export class JsonYamlValidatorPlugin {
 
         try {
           const _parsed = JSON.parse(content);
-
+;
           // Check formatting
           const _formatted = JSON.stringify(parsed, null, this.config.indentSize);
           if(content.trim() !== formatted.trim()) {
             issues.push({type = // await this.validateJsonStructure(parsed, filename);
           issues.push(...jsonIssues);
-
+;
           // return {valid = JSON.parse(content);
     // return JSON.stringify(parsed, null, this.config.indentSize); // LINT: unreachable code removed
         } catch(error) ;
@@ -25,12 +25,12 @@ export class JsonYamlValidatorPlugin {
         try {
 // const _yaml = awaitimport('js-yaml');
           const _parsed = yaml.load(content);
-
+;
           // Check formatting
           const _formatted = yaml.dump(parsed, {indent = = formatted.trim()) {
             issues.push({ type = // await this.validateYamlStructure(parsed, content, filename);
           issues.push(...yamlIssues);
-
+;
           // return {valid = // await import('js-yaml');
     // const _parsed = yaml.load(content); // LINT: unreachable code removed
           // return yaml.dump(parsed, { ;/g)
@@ -49,7 +49,7 @@ export class JsonYamlValidatorPlugin {
 
         this.stats.issuesFound += fileResult.issues.length;
         results.summary.issuesFound += fileResult.issues.length;
-
+;
         // Convert issues to suggestions
   for(const issue of fileResult.issues) {
   if(issue.severity === 'high'  ?? issue.severity === 'medium') {
@@ -60,7 +60,7 @@ export class JsonYamlValidatorPlugin {
       //       }
 
       results.summary.filesScanned = this.stats.filesScanned;
-
+;
       console.warn(` Scanned ${results.summary.filesScanned} files, found ${results.summary.issuesFound} issues`) {;
 
       // return results;
@@ -82,7 +82,7 @@ find(v => v.extensions.includes(ext));
 // const _validation = awaitvalidator.validate.call(this, content, filePath);
       result.valid = validation.valid;
       result.issues.push(...validation.issues);
-
+;
       // Schema validation
   if(validation.valid && this.config.validateSchema) {
 // const _schemaIssues = awaitthis.validateSchema(validation.parsed, filePath);
@@ -95,7 +95,7 @@ find(v => v.extensions.includes(ext));
       // Security checks
 // const _securityIssues = awaitthis.performSecurityChecks(content, filePath);
       result.issues.push(...securityIssues);
-
+;
     } catch(error) {
       result.valid = false;
       result.issues.push({type = [];
@@ -115,13 +115,13 @@ find(v => v.extensions.includes(ext));
 
   async validateYamlStructure(parsed, content, filename) { 
     const _issues = [];
-
+;
     // Check for tabs(YAML should use spaces)
     if(content.includes('\t')) 
       issues.push({type = content.split('\n');
     const _indentationIssues = this.checkYamlIndentation(lines);
     issues.push(...indentationIssues);
-
+;
     // Docker Compose specific checks
     if(filename.includes('docker-compose')) {
       const _dockerIssues = this.validateDockerCompose(parsed);
@@ -139,7 +139,7 @@ find(v => v.extensions.includes(ext));
 
   async validateSchema(data, filePath) { 
     const _issues = [];
-
+;
     // Find matching schema: }
     let _matchingSchema = null;
     const _fileName = path.basename(filePath);
@@ -220,7 +220,7 @@ find(v => v.extensions.includes(ext));
     //   // LINT: unreachable code removed}
   validateAgainstSchema(data, schema) {
     const _errors = [];
-
+;
     // Simple schema validation
   if(schema.type && typeof data !== schema.type) {
       errors.push(`Expected type ${schema.type}, got ${typeof data}`);
@@ -228,7 +228,7 @@ find(v => v.extensions.includes(ext));
   if(schema.required) {
   for(const field of schema.required) {
         if(!(field in data)) {
-          errors.push(`Missing required field); `
+          errors.push(`Missing required field); `;
         //         }
       //       }
     //     }
@@ -240,8 +240,8 @@ find(v => v.extensions.includes(ext));
     // return {
 ..this.stats,
     // validators: this.validators.size, // LINT: unreachable code removed
-      schemas: this.schemas.size,
-      filePatterns: this.config.filePatterns,
+      schemas: this.schemas.size,;
+      filePatterns: this.config.filePatterns,;
       autoFixEnabled: this.config.autoFix;
     };
 
@@ -254,3 +254,6 @@ find(v => v.extensions.includes(ext));
 // export default JsonYamlValidatorPlugin;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))))))
+
+*/
+}}

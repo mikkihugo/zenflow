@@ -8,7 +8,7 @@ import { log  } from '../core/logger.js';
 
 // Helper function
 const _printSuccess = (msg) => log.success(msg);
-
+;
 import readline from 'node:readline';
 
 async function startRepl() {
@@ -23,3 +23,5 @@ rl.prompt();
   printSuccess('Starting interactive REPL mode...');
 // await startRepl();
 // }
+
+*/*/

@@ -55,12 +55,12 @@ export class AutoSaveMiddleware {
       this.performAutoSave();
     //     }
     this.sessionManager.close();
-
+;
 /** Track a change for auto-save
 
     trackChange(changeType, _data);
     : unknown
-    this.pendingChanges.push(
+    this.pendingChanges.push(;
       //       type = === 'task_completed'  ?? changeType === 'agent_spawned'  ?? changeType === 'consensus_reached';/g)
       //       )
       this.performAutoSave();
@@ -69,37 +69,37 @@ export class AutoSaveMiddleware {
 
       trackTaskProgress(taskId, status, (result = null));
       : unknown
-    this.trackChange('task_progress',
-        taskId,
-        status,)
+    this.trackChange('task_progress',;
+        taskId,;
+        status,);
         result)
-
+;
 /** Track agent activity
 
       trackAgentActivity(agentId, activity, (data = null));
       : unknown
-        this.trackChange('agent_activity',
-      agentId,
-        activity,)
+        this.trackChange('agent_activity',;
+      agentId,;
+        activity,);
         data)
-
+;
 /** Track memory updates
 
     trackMemoryUpdate(key, value, (type = 'general'));
     : unknown
-      this.trackChange('memory_update',
-      key,
-      value,)
+      this.trackChange('memory_update',;
+      key,;
+      value,);
       type)
-
+;
 /** Track consensus decisions
 
-  trackConsensusDecision(topic, decision, votes): unknown
-    this.trackChange('consensus_reached',
-      topic,
-    decision,)
+  trackConsensusDecision(topic, decision, votes): unknown;
+    this.trackChange('consensus_reached',;
+      topic,;
+    decision,);
     votes)
-
+;
 /** Perform auto-save
 
 async;
@@ -123,7 +123,7 @@ performAutoSave();
       const _completedTasks = taskProgress.filter((t) => t.data.status === 'completed').length;
       const _totalTasks = taskProgress.length;
       const _completionPercentage =;
-        totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) 
+        totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) ;
       // Create checkpoint data
       const _checkpointData = {timestamp = `auto-save-${Date.now()}`;
 // // await this.sessionManager.saveCheckpoint(this.sessionId, checkpointName, checkpointData);
@@ -134,7 +134,7 @@ performAutoSave();
 
       // Log all changes as session events
   for(const _change of this.pendingChanges) {
-        this.sessionManager.logSessionEvent(; this.sessionId,
+        this.sessionManager.logSessionEvent(; this.sessionId,;
           'info',
           `Auto-save = []; `)
     } catch(error) {
@@ -148,7 +148,7 @@ performAutoSave();
 /** Clean up all resources and child processes
 
   async cleanup() { 
-    try 
+    try ;
       // Stop the save timer
   if(this.saveTimer) {
         clearInterval(this.saveTimer);
@@ -179,11 +179,11 @@ performAutoSave();
 
       // Close database connection
       this.sessionManager.close();
-
+;
       console.warn('Cleanup completed successfully');
     } catch(error) {
       console.error('Error during cleanup = {}) {'
-  const _saveInterval = options.saveInterval  ?? 30000; // Default 30 seconds
+  const _saveInterval = options.saveInterval ?? 30000; // Default 30 seconds
   const _middleware = new AutoSaveMiddleware(sessionId, sessionManager, saveInterval);
   if(options.autoStart !== false) {
     middleware.start();
@@ -196,3 +196,5 @@ performAutoSave();
 // export default AutoSaveMiddleware;
 
 }}}}}}))
+
+*/*/*/*/*/*/*/*/*/*/*/

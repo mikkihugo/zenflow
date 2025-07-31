@@ -39,9 +39,9 @@ getStats();
   this.hits = 0;
   this.misses = 0;
   this.evictions = 0;
-
+;
 get(key);
-
+;
   if(this.cache.has(key)) {
     const _value = this.cache.get(key);
     // Move to end(most recently used)
@@ -55,10 +55,10 @@ get(key);
 // }
 
 set(key, data);
-
+;
 // {
   const _size = this._estimateSize(data);
-
+;
   // Check memory pressure
   if(this.currentMemory + size > this.maxMemory) {
     this._evictByMemoryPressure(size);
@@ -70,12 +70,12 @@ set(key, data);
   //   }
 
   const __entry = {
-      data,
+      data,;
       size,timestamp = size;
 // }
 
 _estimateSize(obj);
-
+;
   // return JSON.stringify(obj).length * 2; // Rough estimate
 
 _evictLRU();
@@ -101,7 +101,7 @@ forEach(callback);
   });
 
 delete(key);
-
+;
   if(this.cache.has(key)) {
     const _entry = this.cache.get(key);
     this.cache.delete(key);
@@ -118,14 +118,14 @@ getStats();
     // ; // LINT: unreachable code removed
   /** @type {import('better-sqlite3').Database | null} */
   this.db = null;
-
+;
   this.config = {swarmId = = false,enableAsyncOperations = = false,
 ..config,
   this.state = {totalSize = null;
 
   // Optimized cache with LRU eviction
   this.cache = new OptimizedLRUCache(this.config.cacheSize, this.config.cacheMemoryMB);
-
+;
   // Memory pools for frequently created objects
   this.pools = {queryResults = > ({ results => {
           obj.results.length = 0;
@@ -138,19 +138,19 @@ getStats();
           }),
 // Prepared statements for better performance
 this.statements = new Map();
-
+;
 // Background worker for heavy operations
 this.backgroundWorker = null;
-
+;
 this._initialize();
-
+;
 /** Initialize collective memory with optimizations
 
   _initialize();
   try {
       // Open database connection with optimizations
       this.db = new Database(this.config.dbPath);
-
+;
       // Performance optimizations
       this.db.pragma('journal_mode = WAL');
       this.db.pragma('synchronous = NORMAL');
@@ -158,43 +158,43 @@ this._initialize();
       this.db.pragma('temp_store = MEMORY');
       this.db.pragma('mmap_size = 268435456'); // 256MB memory mapping
       this.db.pragma('optimize');
-
+;
       // Ensure table exists with optimized schema: {}
-      this.db.exec(`;`
+      this.db.exec(`;`;
         CREATE TABLE IF NOT EXISTS collective_memory(;
-          id TEXT PRIMARY KEY,
-          swarm_id TEXT NOT NULL,
-          key TEXT NOT NULL,
-          value BLOB,
+          id TEXT PRIMARY KEY,;
+          swarm_id TEXT NOT NULL,;
+          key TEXT NOT NULL,;
+          value BLOB,;
           //           type TEXT DEFAULT 'knowledge',
-          confidence REAL DEFAULT 1.0,
-          created_by TEXT,))
-          created_at INTEGER DEFAULT(strftime('%s','now')),
-          accessed_at INTEGER DEFAULT(strftime('%s','now')),
-          access_count INTEGER DEFAULT 0,
-          compressed INTEGER DEFAULT 0,
-          size INTEGER DEFAULT 0,
+          confidence REAL DEFAULT 1.0,;
+          created_by TEXT,));
+          created_at INTEGER DEFAULT(strftime('%s','now')),;
+          accessed_at INTEGER DEFAULT(strftime('%s','now')),;
+          access_count INTEGER DEFAULT 0,;
+          compressed INTEGER DEFAULT 0,;
+          size INTEGER DEFAULT 0,;
           FOREIGN KEY(swarm_id) REFERENCES swarms(id);
         );
 
         -- Optimized indexes;
         CREATE UNIQUE INDEX IF NOT EXISTS idx_memory_swarm_key ;
         ON collective_memory(swarm_id, key);
-
+;
         CREATE INDEX IF NOT EXISTS idx_memory_type_accessed ;
         ON collective_memory(type, accessed_at DESC);
-
+;
         CREATE INDEX IF NOT EXISTS idx_memory_size_compressed ;
         ON collective_memory(size, compressed);
-
+;
         -- Memory optimization view;
         CREATE VIEW IF NOT EXISTS memory_stats AS;
         SELECT ;
-          swarm_id,
-          type,
-          COUNT(*) as entry_count,
-          SUM(size) as total_size,
-          AVG(access_count) as avg_access,
+          swarm_id,;
+          type,;
+          COUNT(*) as entry_count,;
+          SUM(size) as total_size,;
+          AVG(access_count) as avg_access,;
           MAX(accessed_at) as last_access;
         FROM collective_memory;
         GROUP BY swarm_id, type;
@@ -202,57 +202,57 @@ this._initialize();
 
       // Prepare optimized statements
       this._prepareStatements();
-
+;
       // Load initial statistics
       this._updateStatistics();
-
+;
       // Start background optimization processes
       this._startOptimizationTimers();
-
+;
       // Initialize background worker for heavy operations
   if(this.config.enableAsyncOperations) {
         this._initializeBackgroundWorker();
       //       }
 
-      this.emit('memory = ?, accessed_at = strftime('%s','now'), access_count = access_count + 1,'
+      this.emit('memory = ?, accessed_at = strftime('%s','now'), access_count = access_count + 1,';
           compressed = ?, size = ?;
       WHERE swarm_id = ? AND key = ?;
     `));`
 
     this.statements.set(;
       'select',
-      this.db.prepare(`;`
+      this.db.prepare(`;`;
       SELECT value, type, compressed, confidence, access_count;
       FROM collective_memory;
-      WHERE swarm_id = ? AND key = ?;))
+      WHERE swarm_id = ? AND key = ?;));
     `));`
 
     this.statements.set(;
       'updateAccess',
-      this.db.prepare(`;`
-      UPDATE collective_memory;))
+      this.db.prepare(`;`;
+      UPDATE collective_memory;));
       SET accessed_at = strftime('%s','now'), access_count = access_count + 1;
       WHERE swarm_id = ? AND key = ?;
     `));`
 
     this.statements.set(;
       'searchByPattern',
-      this.db.prepare(`;`
+      this.db.prepare(`;`;
       SELECT key, type, confidence, created_at, accessed_at, access_count;
       FROM collective_memory;
       WHERE swarm_id = ? AND key LIKE ? AND confidence >= ?;
       ORDER BY access_count DESC, confidence DESC;
-      LIMIT ?;))
+      LIMIT ?;));
     `));`
 
     this.statements.set(;
       'getStats',
-      this.db.prepare(`;`
-      SELECT ;))
-        COUNT(*) as count,
-        SUM(size) as totalSize,
-        AVG(confidence) as avgConfidence,
-        SUM(compressed) as compressedCount,
+      this.db.prepare(`;`;
+      SELECT ;));
+        COUNT(*) as count,;
+        SUM(size) as totalSize,;
+        AVG(confidence) as avgConfidence,;
+        SUM(compressed) as compressedCount,;
         AVG(access_count) as avgAccess;
       FROM collective_memory;
       WHERE swarm_id = ?;
@@ -260,15 +260,15 @@ this._initialize();
 
     this.statements.set(;
       'deleteExpired',
-      this.db.prepare(`;`
-      DELETE FROM collective_memory;))
+      this.db.prepare(`;`;
+      DELETE FROM collective_memory;));
       WHERE swarm_id = ? AND type = ? AND(strftime('%s','now') - accessed_at) > ?;
     `));`
 
     this.statements.set(;
       'getLRU',
-      this.db.prepare(`;`
-      SELECT id, size FROM collective_memory;))
+      this.db.prepare(`;`;
+      SELECT id, size FROM collective_memory;));
       WHERE swarm_id = ? AND type NOT IN('system', 'consensus');
       ORDER BY accessed_at ASC, access_count ASC;
       LIMIT ?;
@@ -280,7 +280,7 @@ this._initialize();
   _startOptimizationTimers() {
     // Main garbage collection
     this.gcTimer = setInterval(() => this._garbageCollect(), this.config.gcInterval);
-
+;
     // Database optimization
     this.optimizeTimer = setInterval(() => this._optimizeDatabase(), 1800000); // 30 minutes
 
@@ -301,12 +301,12 @@ this._initialize();
 /** Store data in collective memory
 
   async store(key, value, type = 'knowledge', metadata = {}) { 
-    try 
+    try ;
       const _serialized = JSON.stringify(value);
       const _size = Buffer.byteLength(serialized);
       const _shouldCompress =;
         size > this.config.compressionThreshold && MEMORY_TYPES[type]?.compress;
-
+;
       const _storedValue = serialized;
       let _compressed = 0;
   if(shouldCompress) {
@@ -316,7 +316,7 @@ this._initialize();
       //       }
 
       const _id = `\$this.config.swarmId-\$key-\$Date.now()`;
-
+;
       // Check if key already exists
       const _existing = this.db;
 prepare(;
@@ -331,18 +331,18 @@ get(this.config.swarmId, key);
 prepare(;
             `;`
           UPDATE collective_memory ;
-          SET value = ?, type = ?, confidence = ?,
-              accessed_at = CURRENT_TIMESTAMP, access_count = access_count + 1,
+          SET value = ?, type = ?, confidence = ?,;
+              accessed_at = CURRENT_TIMESTAMP, access_count = access_count + 1,;
               compressed = ?, size = ?;
           WHERE swarm_id = ? AND key = ?;
         `);`
 run(;
-            storedValue,
-            type,
-            metadata.confidence  ?? 1.0,
-            compressed,
-            size,
-            this.config.swarmId,
+            storedValue,;
+            type,;
+            metadata.confidence ?? 1.0,;
+            compressed,;
+            size,;
+            this.config.swarmId,;
             key);
       } else {
         // Insert new entry
@@ -354,20 +354,20 @@ prepare(;
           VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);
         `);`
 run(;
-            id,
-            this.config.swarmId,
-            key,
-            storedValue,
-            type,
-            metadata.confidence  ?? 1.0,
-            metadata.createdBy  ?? 'system',
-            compressed,
+            id,;
+            this.config.swarmId,;
+            key,;
+            storedValue,;
+            type,;
+            metadata.confidence ?? 1.0,;
+            metadata.createdBy  ?? 'system',;
+            compressed,;
             size);
       //       }
 
       // Update cache
       this.cache.set(key, {
-        value,)
+        value,);
         type,timestamp = this.cache.get(key);
         this._trackAccess(key, 'cache_hit');
         // return cached.value;
@@ -392,12 +392,12 @@ get(this.config.swarmId, key);
 prepare(;
           `;`
         UPDATE collective_memory;
-        SET accessed_at = CURRENT_TIMESTAMP,
+        SET accessed_at = CURRENT_TIMESTAMP,;
             access_count = access_count + 1;
         WHERE swarm_id = ? AND key = ?;
       `);`
 run(this.config.swarmId, key);
-
+;
       // Decompress if needed
       const _value = result.value;
   if(result.compressed) {
@@ -410,11 +410,11 @@ run(this.config.swarmId, key);
       this.cache.set(key, {)
         value = {}) {
     try {
-      const _limit = options.limit  ?? 50;
-      const _type = options.type  ?? null;
-      const _minConfidence = options.minConfidence  ?? 0;
-
-      const _query = `;`
+      const _limit = options.limit ?? 50;
+      const _type = options.type ?? null;
+      const _minConfidence = options.minConfidence ?? 0;
+;
+      const _query = `;`;
         SELECT key, type, confidence, created_at, accessed_at, access_count;
         FROM collective_memory;
         WHERE swarm_id = ? ;
@@ -430,10 +430,10 @@ run(this.config.swarmId, key);
 
       query += ' ORDER BY access_count DESC, confidence DESC LIMIT ?';
       params.push(limit);
-
+;
       const _results = this.db.prepare(query).all(...params);
-
-      this._trackAccess(`search = 10) ;`
+;
+      this._trackAccess(`search = 10) ;`;
     try {
       // Get the original memory
 // const _original = awaitthis.retrieve(key);
@@ -453,7 +453,7 @@ prepare(;
         LIMIT ?;
       `);`
 all(key, key, this.config.swarmId, limit);
-
+;
       // return result;
     //   // LINT: unreachable code removed} catch(error) {
       this.emit('error', error);
@@ -462,7 +462,7 @@ all(key, key, this.config.swarmId, limit);
 
 /** Build associations between memories
 
-  async associate(key1, key2, strength = 1.0): unknown
+  async associate(key1, key2, strength = 1.0): unknown;
     try {
       // Store bidirectional association
 // await this.store(;
@@ -471,20 +471,20 @@ prepare(;
           `;`
         SELECT key, value, type, confidence, access_count;
         FROM collective_memory;
-        WHERE swarm_id = ?;))
+        WHERE swarm_id = ?;));
         AND type IN('knowledge', 'result');
         ORDER BY created_at DESC;
         LIMIT 1000;
       `);`
 all(this.config.swarmId);
-
+;
       const _consolidated = new Map();
-
+;
       // Group by similarity(simple implementation)
       memories.forEach((memory) => {
         const _value = JSON.parse(memory.value);
         const _category = this._categorizeMemory(value);
-
+;
         if(!consolidated.has(category)) {
           consolidated.set(category, []);
         //         }
@@ -498,13 +498,13 @@ all(this.config.swarmId);
       consolidated.forEach((group, category) => {
   if(group.length > 1) {
           const _merged = this._mergeMemories(group);
-
+;
           // Store merged memory
-          this.store(`consolidated = === 'string') ;`
+          this.store(`consolidated = === 'string') ;`;
       // return 'text';
     // ; // LINT: unreachable code removed
   if(typeof value === 'object') {
-      const __keys = Object.keys(value).sort().join(');'
+      const __keys = Object.keys(value).sort().join(');';
       // return `object = 0;`
     // const _weightedConfidence = 0; // LINT: unreachable code removed
     const _mergedValue = {};
@@ -513,7 +513,7 @@ all(this.config.swarmId);
       const _weight = memory.access_count + 1;
       totalWeight += weight;
       weightedConfidence += memory.confidence * weight
-
+;
       // Merge values(simple implementation)
   if(typeof memory.value === 'object') {
         Object.assign(mergedValue, memory.value);
@@ -532,10 +532,10 @@ prepare(;
             DELETE FROM collective_memory;
             WHERE swarm_id = ?;
             AND type = ?;
-            AND(julianday('now') - julianday(accessed_at)) * 86400000 > ?
+            AND(julianday('now') - julianday(accessed_at)) * 86400000 > ?;
           `);`
 run(this.config.swarmId, type, config.ttl);
-
+;
           deletedCount += result.changes;
         //         }
       });
@@ -550,20 +550,20 @@ run(this.config.swarmId, type, config.ttl);
 
       // Update statistics
       this._updateStatistics();
-
+;
       this.state.lastGC = now;
   if(deletedCount > 0) {
-        this.emit('memory = this.db;'
+        this.emit('memory = this.db;';
 prepare(;
           `;`
         SELECT id, size FROM collective_memory;
-        WHERE swarm_id = ?;))
+        WHERE swarm_id = ?;));
         AND type NOT IN('system', 'consensus');
         ORDER BY accessed_at ASC, access_count ASC;
         LIMIT 100;
       `);`
 all(this.config.swarmId);
-
+;
       const __freedSize = 0;
       toEvict.forEach((memory) => {
         this.db.prepare('DELETE FROM collective_memory WHERE id = ?').run(memory.id);
@@ -572,11 +572,11 @@ all(this.config.swarmId);
 
       this.emit('memory = 1000');
       this.db.exec('ANALYZE');
-
+;
       // Update database statistics
       this._updateStatistics();
-
-      this.emit('database = Date.now();'
+;
+      this.emit('database = Date.now();';
       const _cacheTimeout = 300000; // 5 minutes
 
       // Clear expired cache entries
@@ -588,8 +588,8 @@ all(this.config.swarmId);
         });
       //       }
 
-      this.emit('cache = this.cache.getStats();'
-      this.state.performanceMetrics.cacheHitRate = cacheStats.hitRate  ?? 0;
+      this.emit('cache = this.cache.getStats();';
+      this.state.performanceMetrics.cacheHitRate = cacheStats.hitRate ?? 0;
 
       // Calculate memory efficiency
       this.state.performanceMetrics.memoryEfficiency =;
@@ -607,22 +607,22 @@ all(this.config.swarmId);
         //         }
       //       }
 
-      this.emit('metrics = this.db;'
+      this.emit('metrics = this.db;';
 prepare(;
         `;`
-      SELECT ;))
-        COUNT(*) as count,
-        SUM(size) as totalSize,
-        AVG(confidence) as avgConfidence,
+      SELECT ;));
+        COUNT(*) as count,;
+        SUM(size) as totalSize,;
+        AVG(confidence) as avgConfidence,;
         SUM(compressed) as compressedCount;
       FROM collective_memory;
       WHERE swarm_id = ?;
     `);`
 get(this.config.swarmId);
-
-    this.state.entryCount = stats.count  ?? 0;
-    this.state.totalSize = stats.totalSize  ?? 0;
-    this.state.avgConfidence = stats.avgConfidence  ?? 1.0;
+;
+    this.state.entryCount = stats.count ?? 0;
+    this.state.totalSize = stats.totalSize ?? 0;
+    this.state.avgConfidence = stats.avgConfidence ?? 1.0;
   if(stats.compressedCount > 0) {
       // Estimate compression ratio
       this.state.compressionRatio = 0.6; // Assume 40% compression
@@ -634,11 +634,11 @@ get(this.config.swarmId);
   _trackAccess(key, operation) {
     const _pattern = this.state.accessPatterns.get(key)  ?? {reads = Date.now();
     this.state.accessPatterns.set(key, pattern);
-
+;
     // Keep access patterns size limited
   if(this.state.accessPatterns.size > 1000) {
       // Remove oldest entries
-      const _sorted = Array.from(this.state.accessPatterns.entries()).sort(;)
+      const _sorted = Array.from(this.state.accessPatterns.entries()).sort(;);
         (a, b) => a[1].lastAccess - b[1].lastAccess);
 
       sorted.slice(0, 100).forEach(([key]) => {
@@ -653,7 +653,7 @@ get(this.config.swarmId);
     // return {swarmId = this.db;
     // .prepare(; // LINT);
 all(this.config.swarmId);
-
+;
       const _snapshot = {swarmId = > ({ ..m,value = 0;
   for(const memory of snapshot.memories) {
 // // await this.store(memory.key, memory.value, memory.type, {
@@ -685,7 +685,7 @@ all(this.config.swarmId);
 // // await memory._optimizeDatabase();
     memory._optimizeCache();
     memory._garbageCollect();
-
+;
     const _duration = performance.now() - startTime;
 
     // return 
@@ -693,15 +693,15 @@ all(this.config.swarmId);
     // const _hotKeys = Array.from(accessPatterns.entries()); // LINT: unreachable code removed
 sort((a, b) => b[1] - a[1]);
 slice(0, Math.min(1000, memoryStats.entryCount * 0.2))
-
+;
     const __optimalCacheEntries = hotKeys.length * 1.2; // 20% buffer
 
     return {
       entries = {timestamp = analytics.performance.avgQueryTime;
-    // report.summary.cacheHitRate = analytics.cache.hitRate  ?? 0; // LINT: unreachable code removed
-    report.summary.memoryEfficiency = analytics.cache.memoryUsage / (1024 * 1024)
+    // report.summary.cacheHitRate = analytics.cache.hitRate ?? 0; // LINT: unreachable code removed
+    report.summary.memoryEfficiency = analytics.cache.memoryUsage / (1024 * 1024);
     // Generate recommendations
-    if((analytics.cache.hitRate  ?? 0) < 70) {
+    if((analytics.cache.hitRate ?? 0) < 70) {
       report.recommendations.push({)
         type);
     //     }
@@ -719,3 +719,5 @@ slice(0, Math.min(1000, memoryStats.entryCount * 0.2))
 // }
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))
+
+*/*/*/*/*/*/*/*/*/*/*/

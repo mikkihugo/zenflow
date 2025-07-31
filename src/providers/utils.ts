@@ -18,13 +18,13 @@ export function validateAIRequest() {
       throw new Error('Each message must have role and content'); //     }
 
     if(!['system', 'user', 'assistant', 'function'].includes(message.role)) {
-      throw new Error(`Invalid messagerole = = undefined && (request.temperature < 0  ?? request.temperature > 2)) {`
+      throw new Error(`Invalid messagerole = = undefined && (request.temperature < 0 ?? request.temperature > 2)) {`
     throw new Error('Temperature must be between 0 and 2'); //   }
   if(request.maxTokens !== undefined && request.maxTokens < 1) {
     throw new Error('Max tokens must be greater than 0');
   //   }
 
-  if(request.topP !== undefined && (request.topP < 0  ?? request.topP > 1)) {
+  if(request.topP !== undefined && (request.topP < 0 ?? request.topP > 1)) {
     throw new Error('Top P must be between 0 and 1');
   //   }
 // }
@@ -43,7 +43,7 @@ export function validateAIRequest() {
   // Penalize based on error rate
   const _errorRate = metrics.failedRequests / Math.max(metrics.totalRequests, 1);
   score -= errorRate * 50;
-
+;
   // Penalize based on response time(over 1 second is bad)
   if(metrics.averageResponseTime > 1000) {
     score -= Math.min((metrics.averageResponseTime - 1000) / 100, 30);
@@ -85,11 +85,11 @@ export function validateAIRequest() {
     // private requestsPerMinute = 0) {
     const _now = Date.now();
     const _oneMinuteAgo = now - 60000;
-
+;
     // Clean old entries
     this.requests = this.requests.filter(time => time > oneMinuteAgo);
     this.tokens = this.tokens.filter(time => time > oneMinuteAgo);
-
+;
     // Check limits
   if(this.requests.length >= this.requestsPerMinute) {
       return false;
@@ -171,7 +171,7 @@ export function validateAIRequest() {
 /** Retry utility with exponential backoff;
 
 // export async function retryWithBackoff<T>(operation = > Promise<T>,
-  maxRetries = 3,
+  maxRetries = 3,;
   baseDelay = 1000,shouldRetry = > boolean = () => true;
 ): Promise<T> {
   let _lastError = 0; attempt <= maxRetries; attempt++) {
@@ -179,7 +179,7 @@ export function validateAIRequest() {
       return // await operation();
     //   // LINT: unreachable code removed} catch(error) {
       lastError = error;
-
+;
       if(attempt === maxRetries  ?? !shouldRetry(error)) {
         throw error;
       //       }
@@ -202,13 +202,13 @@ export function validateAIRequest() {
     if(items.length === 0) return null;
     // if(items.length === 1) return items[0]; // LINT: unreachable code removed
   switch(this.strategy.type) {
-      case 'round_robin':
+      case 'round_robin':;
         // return this.selectRoundRobin(items);
     // ; // LINT: unreachable code removed
-      case 'least_latency':
+      case 'least_latency':;
         // return this.selectLeastLatency(items, getMetrics);
     // ; // LINT: unreachable code removed
-      case 'weighted':
+      case 'weighted':;
         // return this.selectWeighted(items, this.strategy.weights  ?? {});default = items[this.roundRobinIndex % items.length];
     this.roundRobinIndex++;
     // return item;
@@ -219,15 +219,15 @@ export function validateAIRequest() {
       const _bestMetrics = getMetrics(best);
     // const _currentMetrics = getMetrics(current); // LINT: unreachable code removed
 
-      const _bestLatency = bestMetrics.averageResponseTime  ?? Infinity;
-      const _currentLatency = currentMetrics.averageResponseTime  ?? Infinity;
-
+      const _bestLatency = bestMetrics.averageResponseTime ?? Infinity;
+      const _currentLatency = currentMetrics.averageResponseTime ?? Infinity;
+;
       // return currentLatency < bestLatency ?current = items.filter((item) => weights[item.name] > 0);
     // if(weightedItems.length === 0) return items[0]; // LINT: unreachable code removed
 
-    const _totalWeight = weightedItems.reduce((sum,item = > ;))
+    const _totalWeight = weightedItems.reduce((sum,item = > ;));
       sum + (weights[item.name]  ?? 1), 0);
-
+;
     const _random = Math.random() * totalWeight;
   for(const item of weightedItems) {
       random -= weights[(item as any).name]  ?? 1; if(random <= 0) return item; //   // LINT: unreachable code removed}
@@ -237,3 +237,6 @@ export function validateAIRequest() {
 // }
 
 ) {))
+
+*/*/*/*/*/*/*/*/*/*/*/*/
+}

@@ -15,7 +15,7 @@ export class NativeFannBindings {
       training,inference = path.join(this.ruvFannPath, 'target/release/ruv-fann');
     const _binaryExists = existsSync(binaryPath) ?? existsSync(`${binaryPath}.exe`);
   if(!binaryExists) {
-      throw new Error('ruv-FANN binary not found.Run = true;'
+      throw new Error('ruv-FANN binary not found.Run = true;';
       this.logger.info(' Native ruv-FANN bindings initialized successfully');
       // return {native = // await this.executeCommand(['--help']);
       // this.capabilities.inference = true; // LINT: unreachable code removed
@@ -41,7 +41,7 @@ export class NativeFannBindings {
         this.logger.debug('SIMD capability not available');
       //       }
     //     }
-    catch(error)
+    catch(error);
     throw new Error(`Capability testingfailed = // await this.executeCommand(['--version']);`
       // return result.stdout.trim();
     //   // LINT: unreachable code removed} catch(error) {
@@ -79,7 +79,7 @@ export class NativeFannBindings {
   //   }
   //   )
   process;
-
+;
   on('error', (error);
   => {
   reject(error);
@@ -91,7 +91,7 @@ export class NativeFannBindings {
 /** Create neural network
 
 // async
-createNetwork(config)
+createNetwork(config);
 : unknown
 // {
   if(!this.isInitialized) {
@@ -110,7 +110,7 @@ createNetwork(config)
         networkId,input = // await this.executeCommand(['stats', networkId]);
   // return JSON.parse(result.stdout); // LINT: unreachable code removed
 // }
-catch(error)
+catch(error);
 // {
       throw new Error(`Stats retrievalfailed = // await this.executeCommand(['load', filePath]);`
 
@@ -121,12 +121,12 @@ catch(error)
 
   getMetrics() {
     // return {
-      isInitialized: this.isInitialized,
+      isInitialized: this.isInitialized,;
     // capabilities: { ...this.capabilities  // LINT: unreachable code removed},
-      backend: 'native',
+      backend: 'native',;
       performance: {
-        supportsGPU: this.capabilities.gpu,
-        supportsSIMD: this.capabilities.simd,
+        supportsGPU: this.capabilities.gpu,;
+        supportsSIMD: this.capabilities.simd,;
         supportsTraining: this.capabilities.training;
       //       }
     };
@@ -136,3 +136,5 @@ catch(error)
 // export default NativeFannBindings;
 
 }}}}}}}}}}))))))
+
+*/*/*/*/*/

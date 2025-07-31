@@ -13,7 +13,7 @@ export class AIProviderPlugin {
 
   async initialize() { 
     console.warn(' AI Provider Plugin initialized');
-
+;
     // Load provider configuration
 // // await this.loadProviderConfig();
     // Initialize available providers
@@ -22,7 +22,7 @@ export class AIProviderPlugin {
 // // await this.setActiveProvider(this.config.defaultProvider);
   //   }
 
-  async loadProviderConfig() 
+  async loadProviderConfig() ;
     try {
 // const _content = awaitreadFile(this.config.configFile, 'utf8');
       this.providerConfig = JSON.parse(content);
@@ -43,7 +43,7 @@ export class AIProviderPlugin {
             console.warn('Failed to fetch OpenRoutermodels = // await import('@google/generative-ai');'
 
       const _genAI = new GoogleGenerativeAI(;
-        process.env.GEMINI_API_KEY  ?? config.apiKey;
+        process.env.GEMINI_API_KEY ?? config.apiKey;
       );
 
       // return {
@@ -85,8 +85,8 @@ export class AIProviderPlugin {
         console.warn(` ${this.activeProvider} embeddingfailed = Array.from(this.providers.entries());`
 filter(([_, info]) => info.healthy);
 sort(([ a], [ b]) => {
-        const _priorityA = this.providerConfig.providers[a.config]?.priority  ?? 999;
-        const _priorityB = this.providerConfig.providers[b.config]?.priority  ?? 999;
+        const _priorityA = this.providerConfig.providers[a.config]?.priority ?? 999;
+        const _priorityB = this.providerConfig.providers[b.config]?.priority ?? 999;
         return priorityA - priorityB;
     //   // LINT: unreachable code removed});
   for(const [name, info] of sortedProviders) {
@@ -96,7 +96,7 @@ sort(([ a], [ b]) => {
           console.warn(` Fallback successful with ${name}`); // return result;
     //   // LINT: unreachable code removed}
       } catch(_error) {;
-        console.warn(` $namefallbackfailed = this.providers.get(providerName);`
+        console.warn(` $namefallbackfailed = this.providers.get(providerName);`;
   if(!providerInfo  ?? !providerInfo.healthy) {
       // return null;
     //   // LINT: unreachable code removed}
@@ -105,17 +105,17 @@ sort(([ a], [ b]) => {
   if(!provider[method]) {
       console.warn(` Provider ${providerName} doesn't supportmethod = new Promise((_, reject) => {'`
       setTimeout(() => reject(new Error('Provider timeout')), this.config.timeout););
-
+;
     try {
 // const _result = awaitPromise.race([;/g)
-        provider[method](...args),
+        provider[method](...args),;
         timeoutPromise;
       ]);
 
       // Update provider stats
       providerInfo.lastUsed = Date.now();
       providerInfo.errorCount = Math.max(0, providerInfo.errorCount - 1);
-
+;
       // return result;
     //   // LINT: unreachable code removed} catch(error) {
       providerInfo.errorCount++;
@@ -159,7 +159,7 @@ sort(([ a], [ b]) => {
 // // await this.saveProviderConfig();
       // Remove from active providers
       this.providers.delete(providerName);
-
+;
       // Switch to another provider if this was active
   if(this.activeProvider === providerName) {
         const _availableProviders = Array.from(this.providers.keys());
@@ -183,7 +183,7 @@ sort(([ a], [ b]) => {
         try {
 // // await info.instance.cleanup(); 
         } catch(error) {
-          console.warn(`Warning); `
+          console.warn(`Warning); `;
         //         }
       //       }
     //     }
@@ -195,3 +195,5 @@ sort(([ a], [ b]) => {
 // export default AIProviderPlugin;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))
+
+*/*/

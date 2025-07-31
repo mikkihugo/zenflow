@@ -1,12 +1,15 @@
 
-/** Jest Setup File - TypeScript ESM Compatible;
- *;
- * @fileoverview Test environment configuration with strict TypeScript standards;
- * @author Claude Code Flow Team;
- * @version 2.0.0;
+/**
+ * Jest Setup File - TypeScript ESM Compatible
+ *
+ * @fileoverview Test environment configuration with strict TypeScript standards
+ * @author Claude Code Flow Team
+ * @version 2.0.0
  */
 
-/** Console interface for type safety;
+/**
+ * Console interface for type safety
+ */
 
 // // interface OriginalConsole {
 //   log: typeof console.log;
@@ -16,8 +19,10 @@
 //   debug: typeof console.debug;
 // // }
 
-/** Global test environment configuration;
-/** Sets up environment variables and error handling for tests;
+/**
+ * Global test environment configuration
+ * Sets up environment variables and error handling for tests
+ */
 
 function setupTestEnvironment() {
   // Set test environment flags
@@ -33,53 +38,60 @@ function setupTestEnvironment() {
   }; */
   // Store original console for restoration in tests
   // (global as unknown as { originalConsole}).originalConsole = originalConsole;
-// }
+}
 
-/** Sets up global error handling for tests;
-/** Captures unhandled promise rejections with optional debugging;
+/**
+ * Sets up global error handling for tests
+ * Captures unhandled promise rejections with optional debugging
+ */
 
 function setupErrorHandling() {
   process.on('unhandledRejection', (reason, promise) => {
     // Only log in test environment if debugging is enabled
   if(process.env.DEBUG_TESTS) {
-      console.error('Unhandled Rejection at);'
-// }
+      console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  }
     // In test environment, we might want to fail the test
   if(process.env.FAIL_ON_UNHANDLED_REJECTION) {
       throw new Error(`Unhandled Promise Rejection: ${String(reason)}`);
-// }
+  }
   });
   process.on('uncaughtException', (error) => {
   if(process.env.DEBUG_TESTS) {
-      console.error('Uncaught Exception);'
-// }
+      console.error('Uncaught Exception:', error);
+  }
     // In test environment, we might want to fail the test
   if(process.env.FAIL_ON_UNCAUGHT_EXCEPTION) {
       throw error;
-// }
+  }
   });
-// }
+}
 
-/** Configures Jest timeout and global test settings;
+/**
+ * Configures Jest timeout and global test settings
+ */
 
 function setupJestConfiguration() {
   // Set reasonable timeout for integration tests
   jest.setTimeout(30000);
   // Configure global test utilities if needed
   if(typeof globalThis !== 'undefined') {
-    // Add any global test utilities here(globalThis as unknown as { testUtils?}).testUtils = {
+    // Add any global test utilities here
+    (globalThis as unknown as { testUtils?: any }).testUtils = {
       // Add shared test utilities
     };
-// }
-// }
+  }
+}
 
-/** Main setup function;
-/** Initializes all test environment configurations;
+/** Main setup function
+ * Initializes all test environment configurations
+ */
 
 function setupTests() {
   setupTestEnvironment();
   setupErrorHandling();
   setupJestConfiguration();
-// }
+}
+
 // Initialize test setup
 setupTests();

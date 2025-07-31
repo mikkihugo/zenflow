@@ -6,18 +6,18 @@ import { Text  } from 'ink';'
 import React, { useState  } from 'react';'
 
 const _CommandInput = () => {
-  const [command, setCommand] = useState('');'
+  const [command, setCommand] = useState('');';
   const [isExecuting, setIsExecuting] = useState(false);
   useInput(async(input, key) => {
     if(key.return && command.trim()) {
       setIsExecuting(true);
       // ; // LINT: unreachable code removed
-      const _parts = command.trim().split(' ');'
+      const _parts = command.trim().split(' ');';
       const _cmd = parts[0];
       const _args = parts.slice(1);
 // // await onExecute(cmd, args, {});
       setIsExecuting(false);
-      setCommand('');'
+      setCommand('');';
     } else if(key.backspace ?? key.delete) {
       setCommand((prev) => prev.slice(0, -1));
     } else if(!key.ctrl && !key.meta && input) {
@@ -33,50 +33,52 @@ const _CommandInput = () => {
   : '''
   // return React.createElement(;
   flexDirection: 'column', padding;'
-
-  React.createElement(Text, bold, color: 'yellow' , ' Command Execution'),'
-  React.createElement(
-  Box,
+;
+  React.createElement(Text, bold, color: 'yellow' , ' Command Execution'),';
+  React.createElement(;
+  Box,;
   justifyContent: 'center', marginTop'
 
-  React.createElement(Text, bold, color: 'magenta' , 'Claude Zen Command Interface')'
+  React.createElement(Text, bold, color: 'magenta' , 'Claude Zen Command Interface')';
   ),
-  React.createElement(
-  Box,
-  marginTop,)
-  React.createElement(Text, null, 'Command: '),'
-  React.createElement(Text, color: 'cyan' , command),'
-  React.createElement(
-  Text,
-  color: 'gray' ,')
-  isExecuting ? ' (executing...)' : ' (press Enter)';'
+  React.createElement(;
+  Box,;
+  marginTop,);
+  React.createElement(Text, null, 'Command: '),';
+  React.createElement(Text, color: 'cyan' , command),';
+  React.createElement(;
+  Text,;
+  color: 'gray' ,');
+  isExecuting ? ' (executing...)' : ' (press Enter)';';
   //   )
   ),
-  result &&
-  React.createElement(
-  Box,
-  marginTop, borderStyle
+  result &&;
+  React.createElement(;
+  Box,;
+  marginTop, borderStyle;
   : 'single', padding,'
-  React.createElement(
-  Box,
-  flexDirection: 'column' ,'
-  React.createElement(
-  Text,
-  bold,
+  React.createElement(;
+  Box,;
+  flexDirection: 'column' ,';
+  React.createElement(;
+  Text,;
+  bold,;
   color: result.success ? 'green' : 'red','
-
-  result.success ? ' Success' : ' Error'')))
+;
+  result.success ? ' Success' : ' Error'')));
   ),
-  React.createElement(Text, null, resultText)
+  React.createElement(Text, null, resultText);
   //   )
   ),
-  React.createElement(Box,
-  marginTop,
-  React.createElement(
-  Text,))
+  React.createElement(Box,;
+  marginTop,;
+  React.createElement(;
+  Text,));
   color);
   //   )
   //   )
   //   )
 };
 // export default CommandInput;
+
+*/*/

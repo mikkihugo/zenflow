@@ -20,7 +20,7 @@ You are running within the Claude-Flow orchestration system, which provides powe
 - InstanceID = `;`
 - **Parallel
 Execution;
-Enabled**
+Enabled**;
 );
 -Consider;
 both;
@@ -46,7 +46,7 @@ API;
 contracts;
 and;
 user;
-interfaces`;`
+interfaces`;`;
     : '';
 // }
 
@@ -58,7 +58,7 @@ $;
 // {
   flags.commit === 'phase';
     ? `- **Phase`
-Commits**
+Commits**;
 : Commit after completing major phases(planning, implementation, testing)`
 : ''
 // }
@@ -66,15 +66,15 @@ $
 // {
   flags.commit === 'feature';
   ? `- **Feature Commits**: Commit after each feature or`
-  namespace is
-  complete`;`
+  namespace is;
+  complete`;`;
     : '';
 // }
 $;
 // {
   flags.commit === 'manual';
     ? `- **Manual`
-  Commits**
+  Commits**;
   : Only commit when explicitly requested by the user`
   : ''
 // }
@@ -93,12 +93,12 @@ $;
   #
   #
   #
-  No - Permissions
-  Mode
+  No - Permissions;
+  Mode;
   -All
-  file
-  operations
-  will
+  file;
+  operations;
+  will;
   execute;
   without;
   confirmation;
@@ -113,8 +113,8 @@ $;
   are;
   intentional;
   and;
-  well -
-    tested`;`
+  well -;
+    tested`;`;
     : '';
 // }
 $;
@@ -144,7 +144,7 @@ $;
   all;
   command;
   outputs;
-  comprehensively`;`
+  comprehensively`;`;
     : '';
 // }
 

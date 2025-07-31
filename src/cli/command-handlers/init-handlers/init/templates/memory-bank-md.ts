@@ -6,7 +6,7 @@
 
 export function createMinimalMemoryBankMd() {
   return `# Memory Bank`
-
+;
     // ## Quick Reference; // LINT: unreachable code removed
 - Project uses SQLite for memory persistence;
 - Memory is organized by namespaces;
@@ -19,7 +19,7 @@ export function createMinimalMemoryBankMd() {
 // }
 export function createFullMemoryBankMd() {
   return `# Memory Bank Configuration`
-
+;
     // ## Overview; // LINT: unreachable code removed
 The Claude-Flow memory system provides persistent storage and intelligent retrieval of information across agent sessions. It uses a hybrid approach combining SQL databases with semantic search capabilities.
 
@@ -42,7 +42,7 @@ The Claude-Flow memory system provides persistent storage and intelligent retrie
 - \`npx claude-zen memory import <file>\`: Import memory from file
 
 ## Configuration;
-Memory settings are configured in \`claude-zen.config.json\`:
+Memory settings are configured in \`claude-zen.config.json\`;
 \`\`\`json;`
 // {
   "memory": {
@@ -82,7 +82,7 @@ Memory settings are configured in \`claude-zen.config.json\`:
 // Create optimized Memory Bank with batchtools support
 // export async function createOptimizedMemoryBankMd() {
   return `# Memory Bank Configuration(Batchtools Optimized)`
-
+;
     // ## Overview; // LINT: unreachable code removed
 The Claude-Flow memory system provides persistent storage and intelligent retrieval of information across agent sessions. It uses a hybrid approach combining SQL databases with semantic search capabilities.
 
@@ -124,7 +124,7 @@ The Claude-Flow memory system provides persistent storage and intelligent retrie
 - \`npx claude-zen memory batch-cleanup <retention-config>\`: Clean up multiple namespaces in parallel
 
 ## Configuration(Enhanced);
-Memory settings are configured in \`claude-zen.config.json\` with batchtools optimizations: null
+Memory settings are configured in \`claude-zen.config.json\` with batchtools optimizations: null;
 \`\`\`json;`
 // {
   "memory": {
@@ -163,10 +163,10 @@ Memory settings are configured in \`claude-zen.config.json\` with batchtools opt
 \`\`\`bash;`
 # Store SPARC workflow data in parallel;
 npx claude-zen memory batch-store sparc-data.json --namespace sparc --parallel
-
+;
 # Concurrent query across multiple namespaces;
 npx claude-zen memory parallel-query "authentication design" --namespaces arch,impl,test
-
+;
 # Batch export with parallel compression
 npx claude-zen memory concurrent-export project-backup --compress --parallel
 \`\`\`
@@ -175,7 +175,7 @@ npx claude-zen memory concurrent-export project-backup --compress --parallel
 \`\`\`bash;`
 # Monitor concurrent operations;
 npx claude-zen memory stats --concurrent --verbose
-
+;
 # Analyze batch operation performance;
 npx claude-zen memory performance-report --batchtools
 
@@ -249,10 +249,10 @@ npx claude-zen memory index-status --parallel;
 \`\`\`bash;`
 # Check concurrent operation status;
 npx claude-zen memory debug --concurrent
-
+;
 # Analyze batch operation performance;
 npx claude-zen memory analyze --batchtools --verbose
-
+;
 # Validate parallel index integrity;
 npx claude-zen memory index-validate --parallel --repair;
 \`\`\`
@@ -260,3 +260,5 @@ npx claude-zen memory index-validate --parallel --repair;
 For more information about memory system optimization, see,//github.com/ruvnet/claude-zen/docs/memory-batchtools.md
 `;`
 // }
+
+*/*/

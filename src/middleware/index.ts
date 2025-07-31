@@ -10,12 +10,12 @@ import helmet from 'helmet';
 import type { JSONObject  } from '../types/core.js';
 // Import types
 import { MiddlewareFunction,
-SessionContext,
-TypedRequest,
-TypedResponse,
+SessionContext,;
+TypedRequest,;
+TypedResponse,;
 // type UserContext
 
-ValidationError,
+ValidationError,;
 ValidationResult  } from '../types/server.js'
 
 /** Enhanced request logging middleware
@@ -29,7 +29,7 @@ ValidationResult  } from '../types/server.js'
     req.correlation = {
       id => {
       const _duration = Date.now() - start;
-    console.warn(;)
+    console.warn(;);
     `[${new Date().toISOString()}] ${correlationId} ${req.method} ${req.path} - ${res.statusCode} (${duration}ms)`;
     //     )
   };
@@ -83,7 +83,7 @@ const _hasErrors = Object.values(validation).some((v) => !v.valid);
   if(typeof permissions === 'function') {
       hasPermission = permissions(req.user);
     } else {
-      hasPermission = permissions.some(permission => ;)
+      hasPermission = permissions.some(permission => ;);
         req.user!.permissions.includes(permission)  ?? req.user!.roles.some(role => role === 'admin'  ?? role === 'superuser');
       );
     //     }
@@ -101,7 +101,7 @@ const _hasErrors = Object.values(validation).some((v) => !v.valid);
     // Add success response helper/g)
     res.success = function<T>(data, message?) {
       return this.json({success = function(message, code?, details?) {
-      const _statusCode = code  ?? 500;
+      const _statusCode = code ?? 500;
     // return this.status(statusCode).json({success = function<T>(data,pagination = function(data, ttl?) { // LINT: unreachable code removed
   if(ttl) {
         this.set('Cache-Control', `public, max-age=${ttl}`);
@@ -166,12 +166,12 @@ function validateObject() {
       field => {)
   if(typeof schemaValue === 'object' && schemaValue !== null) {
       const _fieldSchema = schemaValue as any;
-
+;
       if(fieldSchema.required && !(key in obj)) {
         errors.push({field = typeof obj[key];)
   if(actualType !== fieldSchema.type) {
           errors.push({field = === 0,
-    errors,
+    errors,;
     warnings;
   };
 // }
@@ -180,19 +180,19 @@ function validateObject() {
 
 function getErrorName(statusCode = {))
       400) {
-  const _errorNames: Record<number, string>,  400: 'Bad Request',
-    401: 'Unauthorized',
-    403: 'Forbidden',
-    404: 'Not Found',
-    405: 'Method Not Allowed',
-    408: 'Request Timeout',
-    409: 'Conflict',
-    422: 'Unprocessable Entity',
-    429: 'Too Many Requests',
-    500: 'Internal Server Error',
-    501: 'Not Implemented',
-    502: 'Bad Gateway',
-    503: 'Service Unavailable',
+  const _errorNames: Record<number, string>,  400: 'Bad Request',;
+    401: 'Unauthorized',;
+    403: 'Forbidden',;
+    404: 'Not Found',;
+    405: 'Method Not Allowed',;
+    408: 'Request Timeout',;
+    409: 'Conflict',;
+    422: 'Unprocessable Entity',;
+    429: 'Too Many Requests',;
+    500: 'Internal Server Error',;
+    501: 'Not Implemented',;
+    502: 'Bad Gateway',;
+    503: 'Service Unavailable',;
     504: 'Gateway Timeout';
   };
 
@@ -201,13 +201,13 @@ function getErrorName(statusCode = {))
 
 // Export all middleware functions
 // export type {
-  securityHeaders as helmet,
+  securityHeaders as helmet,;
   //   type corsMiddleware as cors,
-  compression,
+  compression,;
   //   type rateLimiter as rateLimit,
   //   type timeout as requestTimeout,
-  requestLogger as logging,
-  validateRequest as validation,
+  requestLogger as logging,;
+  validateRequest as validation,;
   //   type authenticate as auth,
   //   type authorize as authz,
   //   type errorHandler as errors,
@@ -216,16 +216,18 @@ function getErrorName(statusCode = {))
 
 // Export default middleware collection
 // export default {
-  requestLogger,
-  validateRequest,
-  authenticate,
-  authorize,
-  errorHandler,
-  enhanceResponse,
-  securityHeaders,
-  corsMiddleware,
-  rateLimiter,
+  requestLogger,;
+  validateRequest,;
+  authenticate,;
+  authorize,;
+  errorHandler,;
+  enhanceResponse,;
+  securityHeaders,;
+  corsMiddleware,;
+  rateLimiter,;
   timeout;
 };
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))))))))
+
+*/*/*/*/*/*/*/*/

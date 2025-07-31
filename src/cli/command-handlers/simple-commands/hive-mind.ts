@@ -5,8 +5,8 @@
 
 import chalk from 'chalk';
 import { parseHiveMindArgs,
-routeHiveMindCommand,
-showHiveMindHelp,
+routeHiveMindCommand,;
+showHiveMindHelp,;
 showSubcommandUsage  } from '../hive-mind-core/command-interface.js'
 
 /** Main hive mind command handler with clean architecture;
@@ -31,13 +31,13 @@ showSubcommandUsage  } from '../hive-mind-core/command-interface.js'
 // // await handler();
 } catch(error)
 // {
-  console.error(chalk.red(' Hive Mind Error), error.message);'
+  console.error(chalk.red(' Hive Mind Error), error.message);';
   if(parsedFlags?.verbose ?? parsedFlags?.debug) {
     console.error(chalk.gray(error.stack));
   //   }
   // Show relevant help for invalid commands
   if(error.message.startsWith('Unknown subcommand)) {'
-    console.warn(chalk.yellow('\nAvailable subcommands));'
+    console.warn(chalk.yellow('\nAvailable subcommands));';
     showHiveMindHelp();
   //   }
   process.exit(1);
@@ -48,12 +48,14 @@ showSubcommandUsage  } from '../hive-mind-core/command-interface.js'
 
 // Export individual functions for testing
 // export { parseHiveMindArgs,
-routeHiveMindCommand,
+routeHiveMindCommand,;
 showHiveMindHelp  } from '../hive-mind-core/command-interface.js'
 
 // export { initHiveMind  } from '../hive-mind-core/initialization.js';
 
 // export type { showStatus,
-spawnSwarm,
-spawnSwarmWizard,
+spawnSwarm,;
+spawnSwarmWizard,;
 stopSession  } from '../hive-mind-core/swarm-management.js'
+
+*/)

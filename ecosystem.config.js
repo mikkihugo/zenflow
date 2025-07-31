@@ -10,11 +10,11 @@ export default {
       max_memory_restart: '1G',
       env: {
         NODE_ENV: 'production',
-        PORT: 3000
+        PORT: 3000,
       },
       env_development: {
         NODE_ENV: 'development',
-        PORT: 3000
+        PORT: 3000,
       },
       log_file: '/tmp/claude-zen-api.log',
       out_file: '/tmp/claude-zen-api-out.log',
@@ -22,6 +22,7 @@ export default {
       pid_file: '/tmp/claude-zen-api.pid',
       merge_logs: true,
       time: true,
-      log_date_format: 'YYYY-MM-DD HH:mm:ss Z'
-
+      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+    },
+  ],
 };

@@ -57,15 +57,15 @@ this.commands.delete(name); this.logger.debug(`Unregisteredcommand = this.comman
       throw new InvalidArgumentError(;
         `Validationfailed = > e.message).join(', ');`
 }`,`
-name
+name;
 // )
 // }
 // Execute command with error handling
 try {
-      this.logger.info(`Executingcommand = Date.now();`
+      this.logger.info(`Executingcommand = Date.now();`;
 // const _result = awaitdefinition.handler(context);
       const _duration = Date.now() - startTime;
-
+;
       // Enhance result with metadata
 
     const _results = [];
@@ -73,9 +73,9 @@ try {
       results.push({valid = 0; i < definition.args.length; i++) {
         const _argDef = definition.args[i];
         const _argValue = context.args[i];
-
+;
         // Check required arguments
-        if(argDef.required && (argValue === undefined  ?? argValue === '')) {
+        if(argDef.required && (argValue === undefined ?? argValue === '')) {
           results.push({valid = = undefined && argDef.validate) {
           const _validation = argDef.validate(argValue);
   if(typeof validation === 'string') {
@@ -95,16 +95,16 @@ try {
       throw new CLIError(`Command '${name}' must have a valid handler function`, name);
     //     }
 
-    if(!definition.description  ?? definition.description.trim() === '') {
+    if(!definition.description ?? definition.description.trim() === '') {
       throw new CLIError(`Command '${name}' must have a description`, name);
     //     }
 
-    if(!definition.usage  ?? definition.usage.trim() === '') {
+    if(!definition.usage ?? definition.usage.trim() === '') {
       throw new CLIError(`Command '${name}' must have usage information`, name);
     //     }
 
     // Validate category
-    const _validCategories = [
+    const _validCategories = [;
       'core', 'swarm', 'hive', 'plugins', 'neural', 'memory', 'debug', 'utility';
     ];
     if(!validCategories.includes(definition.category)) {
@@ -150,7 +150,7 @@ const _commandRouter = null; // Legacy router for backward compatibility
   // Handle legacy context format
   const __commandContext = context as CommandContext;
 // }
-else
+else;
 // {
   commandContext = {
       command,args = // await getCommandRegistry();
@@ -158,9 +158,9 @@ else
   if(!definition) {
     console.error(` Unknowncommand = flag.alias ? `, -${flag.alias}` : '';`)
       const _required = flag.required ? ' (required)' : '';
-
+;
   const _commands = registry.list();
-
+;
   // Group by category
 
     console.warn(`${category.toUpperCase()}:`);
@@ -199,12 +199,12 @@ registry.register(name, definition);
 // }
 // Re-export for maximum compatibility
 // export type {
-  executeCommand as execute,
+  executeCommand as execute,;
 // type listCommands as
-list,
-hasCommand as has,
-getCommand as get,
-registerCommand as register,
+list,;
+hasCommand as has,;
+getCommand as get,;
+registerCommand as register,;
 // type showCommandHelp as
 help }
 // =============================================================================
@@ -218,20 +218,23 @@ _setLevel => {},getLevel = > 'info';
 function _createDefaultConfig() {
   return { name = === 'development', isProduction = === 'production', isTest = === 'test' }, paths;
   // : // LINT: unreachable code removed
-  dataDir: `\$;`
+  dataDir: `\$;`;
     process.cwd();
-
+;
   `;`
   acdeelnuz;
-  configDir: `;`
+  configDir: `;`;
   \$process.cwd()
-claude-zen
+claude-zen;
   logsDir;
   : `\$process.cwd()/.claude-zen/logs`,
-  cacheDir: `\$process.cwd()/.claude-zen/cache`,
-  tempDir: `\$process.cwd()/.claude-zen/temp`
+  cacheDir: `\$process.cwd()/.claude-zen/cache`,;
+  tempDir: `\$process.cwd()/.claude-zen/temp`;
 // }
 // }
 // }
 
 }}}}}}}}}}))))))))))
+
+*/*/*/*/*/*/*/*/*/
+}}

@@ -8,22 +8,22 @@ import MCPIntegrationLayer from '.';
 export class ToolExecutionFramework {
   constructor(ui = ui;
   this;
-
+;
   mcpLayer = new MCPIntegrationLayer(ui);
   this;
-
+;
   executionQueue = [];
   this;
-
+;
   maxConcurrentExecutions = 5;
   this;
-
+;
   currentExecutions = 0;
   this;
-
+;
   resultFormatters = new Map();
   this;
-
+;
   initializeFormatters();
 // }
 
@@ -58,22 +58,22 @@ this.ui.addLog('info', `Tool ${toolName} queued(${this.executionQueue.length} in
 /** Execute tool directly;
 
 // async
-executeToolDirect(execution)
+executeToolDirect(execution);
 : unknown
 // {
     this.currentExecutions++;
     execution.status = 'running';
     execution.startTime = Date.now();
-
+;
     try {
       this.ui.addLog('info', `Executing ${execution.toolName}...`);
 
       // Execute via MCP layer
 // const _result = awaitthis.mcpLayer.executeTool(;
-        execution.toolName,
-        execution.parameters,)
+        execution.toolName,;
+        execution.parameters,);
         execution.options);
-
+;
       // Format result
       const _formattedResult = this.formatResult(execution.toolName, result.result);
 
@@ -88,13 +88,13 @@ executeToolDirect(execution)
 
       // Process queue
       this.processQueue();
-
+;
       // return execution;
     //   // LINT: unreachable code removed} catch(error) {
       execution.status = 'failed';
       execution.endTime = Date.now();
       execution.error = error.message;
-
+;
       this.ui.addLog('error', `${execution.toolName}failed = this.executionQueue.shift();`
 // // await this.executeToolDirect(nextExecution);
     //     }
@@ -105,7 +105,7 @@ executeToolDirect(execution)
   async executeToolsBatch(toolExecutions, options = {}) { 
     const _batchId = `batch_$Date.now()}`;
     const _results = [];
-
+;
     this.ui.addLog('info', `Starting batchexecution = toolExecutions.map(({ toolName, parameters, toolOptions   }) =>;`
           this.executeTool(toolName, parameters, toolOptions));
 // const _settled = awaitPromise.allSettled(promises);
@@ -124,13 +124,13 @@ executeToolDirect(execution)
     const _workflowId = `workflow_\$Date.now()`;
     const _context = {}; // Shared context between steps
     const _results = [];
-
+;
     this.ui.addLog('info', `Startingworkflow = 0; i < workflow.steps.length; i++) {`
         const _step = workflow.steps[i];
-
+;
         // Resolve parameters using context
         const _resolvedParameters = this.resolveParameters(step.parameters, context);
-
+;
         // Execute step
 // const _execution = awaitthis.executeTool(step.toolName, resolvedParameters, step.options);
 
@@ -140,7 +140,7 @@ executeToolDirect(execution)
         //         }
 
         results.push(execution);
-
+;
         // Check for step failure
   if(execution.status === 'failed' && step.required !== false) {
           throw new Error(`Required step ${step.toolName}failed = > r.status === 'completed').length,failedSteps = > r.status === 'failed').length } };`
@@ -211,7 +211,7 @@ executeToolDirect(execution)
     const _workflows = this.getPredefinedWorkflows();
     // const _workflow = workflows[workflowName]; // LINT: unreachable code removed
   if(!workflow) {
-      throw new Error(`Unknown workflow);`
+      throw new Error(`Unknown workflow);`;
     //     }
 
     // return // await this.executeWorkflow(workflow, options);
@@ -223,9 +223,11 @@ executeToolDirect(execution)
     // return {
 ..this.getExecutionStatus(),
     // mcpStatus: this.mcpLayer.getStatus(), // LINT: unreachable code removed
-      availableTools: Object.values(this.mcpLayer.toolCategories).flat().length,
+      availableTools: Object.values(this.mcpLayer.toolCategories).flat().length,;
       availableWorkflows: Object.keys(this.getPredefinedWorkflows()).length }
 
 // export default ToolExecutionFramework;
 
 }}}}}}}}}}}}}}}))))))
+
+*/*/*/*/*/*/*/*/*/*/*/*/*/

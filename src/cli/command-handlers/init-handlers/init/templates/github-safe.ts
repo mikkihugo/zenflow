@@ -9,9 +9,9 @@ export const githubSafeTemplate = `
 /** Use these utilities for safe GitHub operations in your Claude Flow project
 
 const { execSync } = require('child_process');
-const _fs = require('fs');  ;
-const _path = require('path');
-const _os = require('os');
+import _fs from 'fs';;  ;
+import _path from 'path';;
+import _os from 'os';;
 
 class GitHubSafe {
   static TEMP_PREFIX = 'claude-flow-gh-';
@@ -60,7 +60,7 @@ class GitHubSafe {
 
   static createPR({ title, body = '', base = 'main', head, draft = false   }): unknown {
     const _args = ['pr', 'create', '--title', title, '--base', base];
-
+;
     if(head) args.push('--head', head);
     if(draft) args.push('--draft');
 
@@ -68,11 +68,14 @@ class GitHubSafe {
     const _args = ['repo', 'view'];
     // if(repo) args.push(repo); // LINT: unreachable code removed
     args.push('--json', 'name,owner,defaultBranch');
-
+;
     return GitHubSafe.execGhSafe(args);
     //   // LINT: unreachable code removed}
 // }
 
-module.exports = GitHubSafe;
+export default GitHubSafe;
 `;
 export default githubSafeTemplate;
+
+*/*/*/*/*/*/*/*/
+}}}}

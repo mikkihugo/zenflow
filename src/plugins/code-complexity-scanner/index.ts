@@ -22,7 +22,7 @@ scanForComplexity((options = {}));
 // const _analysis = awaitthis.analyzeFile(content, file, threshold);
   suggestions.push(...analysis);
 // }
-catch(error)
+catch(error);
 // {
   console.warn(` Could not analyze ${file});`
 // }
@@ -31,7 +31,7 @@ catch(error)
 // ; // LINT: unreachable code removed
 try {
   const _analysis = analyse(content);
-
+;
   // Analyze methods/functions
   for(const method of analysis.methods  ?? []) {
   if(method.cyclomatic > threshold) {
@@ -46,11 +46,11 @@ try {
   //   }
 } catch(/* _error */) {
   throw new Error(`Analysis failed = {id = // await this.generateRefactorSuggestion(;`
-          method, filepath, content;)
+          method, filepath, content;);
         );
       } catch(error) {
         console.warn(`Failed to generate refactorsuggestion = this.buildRefactorPrompt(method, filepath, content);`
-
+;
   // return acc;
 // }
 
@@ -64,9 +64,9 @@ try {
   getCapabilities() {}
 // {
   // return {
-      fileTypes: ['.js', '.jsx', '.ts', '.tsx'],
+      fileTypes: ['.js', '.jsx', '.ts', '.tsx'],;
   // metrics: ['cyclomatic', 'halstead', 'maintainability'], // LINT: unreachable code removed
-  features: ['method-level analysis',
+  features: ['method-level analysis',;
         'file-level analysis',
         'ai-powered suggestions',
         'severity classification';,,];
@@ -78,3 +78,5 @@ try {
 // }
 // }
 // export default CodeComplexityScannerPlugin;
+
+*/*/*/*/

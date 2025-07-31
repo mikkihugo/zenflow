@@ -20,8 +20,8 @@ import { HelpFormatter  } from '..';
 // )
 // {
   this.commandExecutor = commandExecutor;
-  this.appName = options.appName ?? 'claude-zen';'
-  this.version = options.version ?? '2.0.0';'
+  this.appName = options.appName ?? 'claude-zen';';
+  this.version = options.version ?? '2.0.0';';
   this.formatter = options.formatter ?? HelpFormatter;
 // }
 
@@ -33,12 +33,12 @@ showMainHelp();
 // {
   const __commands = this.commandExecutor.listCommands();
   console.warn(` ${this.appName} v${this.version} - Advanced AI Orchestration Platform\n`);`
-  console.warn('USAGE = command.name.padEnd(15);'
+  console.warn('USAGE = command.name.padEnd(15);';
       console.warn(`${name} ${command.description}`);`
 // }
 console.warn(`\nUse "${this.appName} help <command>" for detailed usage information`);`
 console.warn(`Use "${this.appName} --version" to show version information\n`);`
-console.warn(' QUICKSTART = this.commandExecutor.getCommandInfo(commandName);'
+console.warn(' QUICKSTART = this.commandExecutor.getCommandInfo(commandName);';
   if(!commandInfo) {
   console.warn(;
   this.formatter.formatError(;))
@@ -69,7 +69,7 @@ console.warn(' QUICKSTART = this.commandExecutor.getCommandInfo(commandName);'
     // ; // LINT: unreachable code removed
     const _optionsText = optionsMatch[1];
     const _options = [];
-    const _optionLines = optionsText.split('\n').filter(line => line.trim());'
+    const _optionLines = optionsText.split('\n').filter(line => line.trim());';
   for(const line of optionLines) {
       const _match = line.match(/^\s*(--.+?)\s{2 }(.+)$/)
   if(match) {
@@ -88,19 +88,19 @@ console.warn(' QUICKSTART = this.commandExecutor.getCommandInfo(commandName);'
 /** Show version information
 
   // // public showVersion() {
-    console.warn(`;`)
-  v\$this.version`);`
+    console.warn(`;`);
+  v\$this.version`);`;
   //   }
 
 /** Show brief usage information
 
   // // public showUsage() {
-    console.warn(`;`
-  Usage = ['CLAUDE_API_KEY','
+    console.warn(`;`;
+  Usage = ['CLAUDE_API_KEY',';
       'OPENAI_API_KEY','
       'ANTHROPIC_API_KEY','
       'HUGGINGFACE_API_KEY';,];'
-  console.warn('\n APIKEYS = process.env[varName];'))
+  console.warn('\n APIKEYS = process.env[varName];'));
   if(value) {
     const _masked = `${value.substring(0, 8)}...${value.substring(value.length - 4)}`;`
     console.warn(`${varName});`
@@ -123,10 +123,10 @@ console.warn(' QUICKSTART = this.commandExecutor.getCommandInfo(commandName);'
       categories[category] = []; //     }
     categories[category].push(command) {;
   //   }
-  console.warn(' COMMANDCATEGORIES = command.name.padEnd(12);'
+  console.warn(' COMMANDCATEGORIES = command.name.padEnd(12);';
         console.warn(`${name} ${command.description}`);`
 // }
-console.warn('');'
+console.warn('');';
 // }
   //   }
 
@@ -156,14 +156,14 @@ console.warn('');'
   getCategoryIcon(category);
   : string
   //   {
-    const __icons: Record<string, string>,
-    _setup: '','
-    _control: '','
-    _orchestration: '','
-    _data: '','
-    _development: '','
-    _utility: '','
-    _other: '';'
+    const __icons: Record<string, string>,;
+    _setup: '',';
+    _control: '',';
+    _orchestration: '',';
+    _data: '',';
+    _development: '',';
+    _utility: '',';
+    _other: '';';
   //   }
   // return icons[category]  ?? '';'
 // }
@@ -171,3 +171,5 @@ console.warn('');'
 // Export types for external use
 // export type { HelpSystemOptions, CommandInfo, HelpOption, HelpInfo, CommandExecutor };
 )))))))))
+
+*/*/*/*/*/*/

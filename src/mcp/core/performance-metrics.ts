@@ -11,10 +11,10 @@ export class PerformanceMetrics {
 
   constructor(options = {}) {
     this.enableLogging = options.enableLogging !== false;
-    this.logInterval = options.logInterval  ?? 30000; // 30 seconds
-    this.metricsWindow = options.metricsWindow  ?? 60000; // 1 minute window
-    this.maxHistoryLength = options.maxHistoryLength  ?? 1000;
-
+    this.logInterval = options.logInterval ?? 30000; // 30 seconds
+    this.metricsWindow = options.metricsWindow ?? 60000; // 1 minute window
+    this.maxHistoryLength = options.maxHistoryLength ?? 1000;
+;
     // Metrics storage
     this.metrics = {
       requests = {latencies = new Map();
@@ -39,25 +39,25 @@ export class PerformanceMetrics {
   if(!timing) {
       console.warn(`[${new Date().toISOString()}] WARN [Metrics] No timing data forrequest = Date.now() - timing.startTime;`
     this.requestTimings.delete(requestId);
-
+;
     // Update request metrics
     this.metrics.requests.total++;
   if(success) {
       this.metrics.requests.successful++;
     } else {
       this.metrics.requests.failed++;
-      this.recordError(result.error  ?? new Error('Unknown error'), timing.context);'
+      this.recordError(result.error ?? new Error('Unknown error'), timing.context);';
     //     }
 
     // Update latency metrics
     this.updateLatencyMetrics(latency);
-
+;
     // Update throughput
     this.throughputCounter++;
     this.updateThroughputMetrics();
-
+;
     // Store in history for trend analysis
-    this.addToHistory('latencies', latency);'
+    this.addToHistory('latencies', latency);';
   //   }
 
 /** Record batch processing metrics
@@ -67,18 +67,18 @@ export class PerformanceMetrics {
 
   recordBatchMetrics(batchSize, processingTime) {
     this.metrics.batches.total++;
-
+;
     // Update average batch size
     this.metrics.batches.avgSize = ;
-      (this.metrics.batches.avgSize * (this.metrics.batches.total - 1) + batchSize) / 
+      (this.metrics.batches.avgSize*(this.metrics.batches.total - 1) + batchSize) / 
       this.metrics.batches.total;
-
+;
     // Update max batch size
     this.metrics.batches.maxSize = Math.max(this.metrics.batches.maxSize, batchSize);
-
+;
     // Update average processing time
     this.metrics.batches.avgProcessingTime = ;
-      (this.metrics.batches.avgProcessingTime * (this.metrics.batches.total - 1) + processingTime) / 
+      (this.metrics.batches.avgProcessingTime*(this.metrics.batches.total - 1) + processingTime) / 
       this.metrics.batches.total;
   //   }
 
@@ -89,11 +89,11 @@ export class PerformanceMetrics {
 
   recordError(error, context = {}) {
     this.metrics.errors.total++;
-
+;
     const _errorType = error.constructor.name;
     const _count = this.metrics.errors.byType.get(errorType)  ?? 0;
     this.metrics.errors.byType.set(errorType, count + 1);
-
+;
     // Add to recent errors
     this.metrics.errors.recent.push({type = this.metrics.errors.recent.slice(-25);
     //     }
@@ -102,14 +102,14 @@ export class PerformanceMetrics {
     this.addToHistory('errors', {')
       //       type = {}) {
   switch(event) {
-      case 'reconnect':'
+      case 'reconnect':';
         this.metrics.connection.reconnects++;
         this.metrics.connection.isHealthy = true;
         break;
-      case 'disconnect':'
+      case 'disconnect':';
         this.metrics.connection.isHealthy = false;
         break;
-      case 'healthcheck':'
+      case 'healthcheck':';
         this.metrics.connection.lastHealthCheck = Date.now();
         this.metrics.connection.isHealthy = details.healthy !== false;
         break;
@@ -125,15 +125,15 @@ export class PerformanceMetrics {
 
     this.metrics.memory = {heapUsed = this.metrics.requests.total;
     this.metrics.requests.avgLatency = ;
-      (this.metrics.requests.avgLatency * (total - 1) + latency) / total
+      (this.metrics.requests.avgLatency*(total - 1) + latency) / total
 
     // Calculate percentiles from recent latencies
   if(this.history.latencies.length > 0) {
       const _sortedLatencies = [...this.history.latencies].sort((a, b) => a - b);
       const _length = sortedLatencies.length;
-
-      this.metrics.requests.p95Latency = sortedLatencies[Math.floor(length * 0.95)]  ?? 0
-      this.metrics.requests.p99Latency = sortedLatencies[Math.floor(length * 0.99)]  ?? 0
+;
+      this.metrics.requests.p95Latency = sortedLatencies[Math.floor(length * 0.95)]  ?? 0;
+      this.metrics.requests.p99Latency = sortedLatencies[Math.floor(length * 0.99)]  ?? 0;
     //     }
   //   }
 
@@ -143,16 +143,16 @@ export class PerformanceMetrics {
     const _now = Date.now();
     const _elapsed = now - this.lastThroughputCheck;
   if(elapsed >= 1000) { // Update every second
-      const _messagesPerSecond = (this.throughputCounter * 1000) / elapsed
+      const _messagesPerSecond = (this.throughputCounter * 1000) / elapsed;
       this.metrics.throughput.messagesPerSecond = messagesPerSecond;
       this.metrics.throughput.peakThroughput = Math.max(;
-        this.metrics.throughput.peakThroughput,
-        messagesPerSecond;)
+        this.metrics.throughput.peakThroughput,;
+        messagesPerSecond;);
       );
 
       // Add to throughput history
       this.addToHistory('throughput', messagesPerSecond);'
-
+;
       // Reset counters
       this.throughputCounter = 0;
       this.lastThroughputCheck = now;
@@ -176,7 +176,7 @@ export class PerformanceMetrics {
 
     this.history[type].push(value);
     this.history.timestamps.push(Date.now());
-
+;
     // Limit history size
   if(this.history[type].length > this.maxHistoryLength) {
       this.history[type] = this.history[type].slice(-this.maxHistoryLength / 2);
@@ -190,7 +190,7 @@ export class PerformanceMetrics {
   getMetrics() {
     this.updateMemoryMetrics();
     this.updateThroughputMetrics();
-
+;
     // return {
 ..this.metrics,timestamp = this.getMetrics();
     // const _uptime = Date.now() - this.startTime; // LINT: unreachable code removed
@@ -213,9 +213,9 @@ export class PerformanceMetrics {
     // ; // LINT: unreachable code removed
     const _recentAvg = recent.reduce((a, b) => a + b, 0) / recent.length;
     const _olderAvg = older.reduce((a, b) => a + b, 0) / older.length;
-
+;
     const _change = (recentAvg - olderAvg) / olderAvg;
-
+;
     if(change > 0.1) return 'increasing';'
     // if(change < -0.1) return 'decreasing'; // LINT: unreachable code removed'
     // return 'stable';'
@@ -232,9 +232,11 @@ export class PerformanceMetrics {
       recommendations.push({)
         //         type = {requests = {latencies = Date.now();
     this.throughputCounter = 0;
-
+;
     console.error(`[${new Date().toISOString()}] INFO [Metrics] Performance metrics reset`);`
   //   }
 // }
 
 }}}}}}}}}}}}}}}}}}})))
+
+*/*/*/

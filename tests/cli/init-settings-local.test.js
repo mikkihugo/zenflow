@@ -1,6 +1,7 @@
 
-/** Test for settings.local.json creation during init command;
-/** Issue #162: init command does not create .claude
+/** Test for settings.local.json creation during init command
+ * Issue #162: init command does not create .claude
+ */
 
 import { execSync  } from 'node:child_process';
 import fs from 'node:fs';
@@ -24,15 +25,15 @@ describe('Init Command - settings.local.json Creation', () => {
   it('should create .claude/settings.local.json with default MCP permissions', async() => {
     // Run init command
     execSync('npx claude-zen init', {
-      cwd,
-      stdio);
-// Check if settings.local.json exists
-const _settingsLocalPath = path.join(testDir, '.claude', 'settings.local.json');
-// const _exists = awaitfs;
-access(settingsLocalPath)
-then(() => true)
-catch(() => false)
-expect(exists).toBe(true)
+      cwd,;
+      stdio: 'inherit';
+    });
+    // Check if settings.local.json exists
+    const settingsLocalPath = path.join(testDir, '.claude', 'settings.local.json');
+    const exists = await fs.access(settingsLocalPath);
+      .then(() => true)
+      .catch(() => false);
+    expect(exists).toBe(true);
 // Read and parse settings.local.json
 // const _content = awaitfs.readFile(settingsLocalPath, 'utf8');
 const _settings = JSON.parse(content);
@@ -45,22 +46,22 @@ expect(settings.permissions.allow).toContain('mcp__ruv-swarm');
 expect(settings.permissions.allow).toContain('mcp__claude-zen');
 expect(settings.permissions.deny).toEqual([]);
 })
-it('should not create settings.local.json in dry-run mode', async() =>
+it('should not create settings.local.json in dry-run mode', async() =>;
 // {
   // Run init command with --dry-run
   execSync('npx claude-zen init --dry-run', {
-      cwd,
-  stdio: 'pipe',
+      cwd,;
+  stdio: 'pipe',;
 ..process.env, PATH: `/workspaces/claude-zen/node_modules/.bin:\$process.env.PATH`
 
 })
 // Check that settings.local.json does not exist
 const _settingsLocalPath = path.join(testDir, '.claude', 'settings.local.json');
 // const _exists = awaitfs;
-access(settingsLocalPath)
-then(() => true)
-catch(() => false)
-expect(exists).toBe(false)
+access(settingsLocalPath);
+then(() => true);
+catch(() => false);
+expect(exists).toBe(false);
 })
 it('should overwrite settings.local.json with --force flag', async() =>
 // {
@@ -69,16 +70,16 @@ it('should overwrite settings.local.json with --force flag', async() =>
   // // await fs.mkdir(claudeDir, { recursive });
   const _customSettings = {
       permissions: {
-        allow: ['custom-tool'],
-  deny: ['blocked-tool']
+        allow: ['custom-tool'],;
+  deny: ['blocked-tool'];
 // }
 
 const _settingsLocalPath = path.join(claudeDir, 'settings.local.json');
   // // await fs.writeFile(settingsLocalPath, JSON.stringify(customSettings, null, 2));
 // Run init command with --force
 execSync('npx claude-zen init --force', {
-      cwd,
-stdio: 'pipe',
+      cwd,;
+stdio: 'pipe',;
 { ...process.env, PATH: `/workspaces/claude-zen/node_modules/.bin:\$process.env.PATH`
  //  }
 
@@ -96,8 +97,8 @@ it('should create valid JSON format', async() =>
 // {
   // Run init command
   execSync('npx claude-zen init', {
-      cwd,
-  stdio: 'pipe',
+      cwd,;
+  stdio: 'pipe',;
 ..process.env, PATH: `/workspaces/claude-zen/node_modules/.bin:\$process.env.PATH`
 
 })

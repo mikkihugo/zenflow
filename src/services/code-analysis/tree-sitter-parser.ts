@@ -9,21 +9,21 @@ import path from 'node:path';
 let Parser, JavaScript, TypeScript;
 try {
 // const _TreeSitter = awaitimport('tree-sitter');
-  Parser = TreeSitter.default  ?? TreeSitter;
+  Parser = TreeSitter.default ?? TreeSitter;
 } catch(/* _e */) {
   console.warn('Tree-sitter not available, using fallback parsing');
   Parser = null;
 // }
 try {
 // const _JSModule = awaitimport('tree-sitter-javascript');
-  JavaScript = JSModule.default  ?? JSModule;
+  JavaScript = JSModule.default ?? JSModule;
 } catch(/* _e */) {
   console.warn('Tree-sitter JavaScript grammar not available');
   JavaScript = null;
 // }
 try {
 // const _TSModule = awaitimport('tree-sitter-typescript');
-  TypeScript = TSModule.typescript  ?? TSModule.default  ?? TSModule;
+  TypeScript = TSModule.typescript ?? TSModule.default ?? TSModule;
 } catch(/* _e */) {
   console.warn('Tree-sitter TypeScript grammar not available');
   TypeScript = null;
@@ -84,15 +84,15 @@ try {
     //     }
     break;
     // Comments
-    case 'comment': null
+    case 'comment': null;
   if(this.config.extractComments) {
       result.comments.push(this.extractComment(node, fileId, content, position));
     //     }
     break;
     // Module declarations
-    case 'module': null
-    case 'namespace_declaration': null
-    result.modules.push(this.extractModule(node, fileId, content, position))
+    case 'module': null;
+    case 'namespace_declaration': null;
+    result.modules.push(this.extractModule(node, fileId, content, position));
     break;
   //   }
 // }
@@ -102,7 +102,7 @@ try {
 
 /** Extract function information from tree-sitter node;
 
-extractFunction(node, fileId, content, position)
+extractFunction(node, fileId, content, position);
 : unknown
 // {
   const __name = this.getNodeText(node.childForFieldName('name'), content) ?? '<anonymous>';
@@ -125,7 +125,7 @@ extractFunction(node, fileId, content, position)
   // i < node.childCount; // LINT: unreachable code removed
   i++;
   //   )
-  this.walkAST(node.child(i), callback)
+  this.walkAST(node.child(i), callback);
 // }
 
 /** Get text content of a node;
@@ -158,7 +158,7 @@ calculateNodeComplexity(node);
         'conditional_expression',
         'logical_expression',,].includes(nodeType);
     //     )
-      complexity++
+      complexity++;
   });
   // return complexity;
 // }
@@ -357,13 +357,13 @@ createFallbackAnalysis(filePath, content, language);
 
   inferTypeFromNode(node, content) {
   switch(node.type) {
-      case 'string':
-      case 'template_string':
+      case 'string':;
+      case 'template_string':;
         // return 'string';
     // case 'number': // LINT: unreachable code removed
         // return 'number';
     // case 'true': // LINT: unreachable code removed
-      case 'false':
+      case 'false':;
         // return 'boolean';
     // case 'array': // LINT: unreachable code removed
         // return 'array';
@@ -461,7 +461,7 @@ createFallbackAnalysis(filePath, content, language);
 
   getTypeKind(node) {
   switch(node.type) {
-      case 'interface_declaration':
+      case 'interface_declaration':;
         // return 'interface';
     // case 'type_alias_declaration': // LINT: unreachable code removed
         // return 'type';
@@ -484,13 +484,13 @@ createFallbackAnalysis(filePath, content, language);
 
   extractModule(node, fileId, content, position) {
     const _name = this.getNodeText(node.childForFieldName('name'), content)  ?? '<unnamed>';
-
+;
     // return {
       id: `module:${this.generateFileId(fileId)}:${name}:${position.start.row}`,
   // name, // LINT: unreachable code removed
-  file_id,
-  start_line: position.start.row,
-  end_line: position.end.row,
+  file_id,;
+  start_line: position.start.row,;
+  end_line: position.end.row,;
   is_exported: this.isExported(node);
 // }
 // }
@@ -513,3 +513,5 @@ isLanguageSupported(language);
 // export default TreeSitterParser;
 
 }}}}}}}}}}}}}}}
+
+*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/

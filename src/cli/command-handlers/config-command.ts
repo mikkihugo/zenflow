@@ -4,28 +4,28 @@
 
 // config.js - Configuration management commands
 import { fileExists,
-printError,
-printSuccess,
-printWarning,
-readJsonFile,
+printError,;
+printSuccess,;
+printWarning,;
+readJsonFile,;
 writeJsonFile  } from '..
 export async function configCommand() {
-  case 'init': null
+  case 'init': null;
 // await initConfig(subArgs, flags)
   break;
-  case 'show': null
+  case 'show': null;
 // // await showConfig(subArgs, flags)
   break;
-  case 'get': null
+  case 'get': null;
 // // await getConfigValue(subArgs, flags)
   break;
-  case 'set': null
+  case 'set': null;
 // // await setConfigValue(subArgs, flags)
   break;
-  case 'validate': null
+  case 'validate': null;
 // // await validateConfig(subArgs, flags)
   break;
-  case 'reset': null
+  case 'reset': null;
 // // await resetConfig(subArgs, flags)
   break;
   default = subArgs.includes('--force')  ?? subArgs.includes('-f')
@@ -40,7 +40,7 @@ export async function configCommand() {
     //   // LINT: unreachable code removed}
 
     printSuccess('Initializing Claude-Flow configuration...');
-
+;
     // Create default configuration
 
   const __format = getFlag(subArgs, '--format')  ?? 'pretty';
@@ -51,9 +51,9 @@ export async function configCommand() {
       console.warn(JSON.stringify(config, null, 2));
     } else {
       // Pretty format
-      console.warn('\n SystemConfiguration = subArgs[1];'
+      console.warn('\n SystemConfiguration = subArgs[1];';
   const __configFile = 'claude-zen.config.json';
-
+;
   if(!key) {
     printError('Usage = // await readJsonFile(configFile);'
     const _value = getNestedValue(config, key);
@@ -82,20 +82,20 @@ async function _setConfigValue() {
     printSuccess(`Set ${key} = ${JSON.stringify(parsedValue)}`);
   } catch(err) ;
     printError(`Failed to setconfiguration = 'claude-zen.config.json';`
-
+;
   try {
 // const _config = awaitreadJsonFile(configFile);
 
     printSuccess('Validating configuration...');
-
+;
     const _errors = [];
     const _warnings = [];
-
+;
     // Validate required sections
     const _requiredSections = ['terminal', 'orchestrator', 'memory'];
   for(const section of requiredSections) {
   if(!config[section]) {
-        errors.push(`Missing requiredsection = === 0 && warnings.length === 0) ; `
+        errors.push(`Missing requiredsection = === 0 && warnings.length === 0) ; `;
       printSuccess(' Configuration is valid'); else ;
   if(errors.length > 0) {
         printError(`Found ${errors.length} error(s):`);
@@ -137,7 +137,7 @@ function getNestedValue(obj = > current?.[key], obj);
 // fileExists is now imported from utils.js
 
 function _showConfigHelp() {
-  console.warn('Configuration commands);'
+  console.warn('Configuration commands);';
   console.warn('  init [--force]                   Create default configuration');
   console.warn('  show [--format json]             Display current configuration');
   console.warn('  get <key>                        Get configuration value');
@@ -145,7 +145,7 @@ function _showConfigHelp() {
   console.warn('  validate                         Validate configuration');
   console.warn('  reset --force                    Reset to defaults');
   console.warn();
-  console.warn('Configuration Keys);'
+  console.warn('Configuration Keys);';
   console.warn('  terminal.poolSize                Terminal pool size');
   console.warn('  terminal.recycleAfter            Commands before recycle');
   console.warn('  orchestrator.maxConcurrentTasks  Max parallel tasks');
@@ -154,7 +154,7 @@ function _showConfigHelp() {
   console.warn('  memory.path                      Memory database path');
   console.warn('  agents.maxAgents                 Maximum number of agents');
   console.warn();
-  console.warn('Examples);'
+  console.warn('Examples);';
   console.warn('  claude-zen config init');
   console.warn('  claude-zen config set terminal.poolSize 15');
   console.warn('  claude-zen config get orchestrator.maxConcurrentTasks');
@@ -162,3 +162,5 @@ function _showConfigHelp() {
 // }
 
 })))))))
+
+*/*/

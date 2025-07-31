@@ -20,11 +20,11 @@ const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = path.dirname(__filename);
 // Colors for output
 const _colors = {
-  green: '\x1b[32m',
-red: '\x1b[31m',
-yellow: '\x1b[33m',
-blue: '\x1b[34m',
-reset: '\x1b[0m'
+  green: '\x1b[32m',;
+red: '\x1b[31m',;
+yellow: '\x1b[33m',;
+blue: '\x1b[34m',;
+reset: '\x1b[0m';
 // }
 class MCPPersistenceTest {
   constructor() {
@@ -38,7 +38,7 @@ class MCPPersistenceTest {
   //   }
   async runTest(name, testFn) { 
     this.testCount++;
-    try 
+    try ;
   // await testFn();
       this.passedCount++;
       this.testResults.push({ name, passed   });
@@ -221,7 +221,7 @@ testConcurrentAccess();
     // Spawn 5 concurrent write operations
   for(let i = 0; i < 5; i++) {
       const _key = `concurrent_${Date.now()}_${i}`;
-      promises.push(;)
+      promises.push(;);
       new Promise((resolve, reject) => {
         try {
               const _result = execSync(;
@@ -253,9 +253,9 @@ generateReport();
 // {
   this.log('\n Test Report', 'yellow');
   this.log('='.repeat(50), 'yellow');
-  this.log(`Total Tests);`
-  this.log(`Passed);`
-  this.log(`Failed);`
+  this.log(`Total Tests);`;
+  this.log(`Passed);`;
+  this.log(`Failed);`;
   if(this.testCount === this.passedCount) {
     this.log('\n All tests passed! MCP tools are properly persisting to SQLite.', 'green');
     this.log(' Issue #312 appears to be resolved!', 'green');
@@ -264,7 +264,7 @@ generateReport();
     // Show failed tests
     const _failed = this.testResults.filter((r) => !r.passed);
   if(failed.length > 0) {
-      this.log('\nFailed Tests);'
+      this.log('\nFailed Tests);';
       failed.forEach((test) => {
         this.log(`  - ${test.name});`
       });
@@ -278,13 +278,13 @@ saveResults();
 // {
   const _timestamp = new Date().toISOString();
   const _results = {
-      timestamp,
-  totalTests: this.testCount,
-  passed: this.passedCount,
-  failed: this.testCount - this.passedCount,
-  details: this.testResults,
-  dbPath: this.dbPath,
-  dbSize: fs.existsSync(this.dbPath) ? fs.statSync(this.dbPath).size
+      timestamp,;
+  totalTests: this.testCount,;
+  passed: this.passedCount,;
+  failed: this.testCount - this.passedCount,;
+  details: this.testResults,;
+  dbPath: this.dbPath,;
+  dbSize: fs.existsSync(this.dbPath) ? fs.statSync(this.dbPath).size;
 // }
 // Store results using MCP
 execSync(;
@@ -295,7 +295,7 @@ execSync(;
 // Also save to file
 const _resultsPath = path.join(__dirname, 'mcp-persistence-test-results.json');
 fs.writeFileSync(resultsPath, JSON.stringify(results, null, 2));
-this.log(`\n Results saved to);`
+this.log(`\n Results saved to);`;
 // }
 // async run() { }
 
@@ -318,7 +318,7 @@ this.log(`\n Results saved to);`
       // Generate report
   // // await this.generateReport();
     } catch(error) {
-      this.log(`\n Fatal error);`
+      this.log(`\n Fatal error);`;
       process.exit(1);
     //     }
 // }
@@ -326,5 +326,7 @@ this.log(`\n Results saved to);`
 // Run the tests
 const _tester = new MCPPersistenceTest();
 tester.run().catch(console.error);
-
+;
 }}}
+
+*/*/*/]]]]]

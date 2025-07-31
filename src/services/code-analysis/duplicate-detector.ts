@@ -10,7 +10,7 @@ import { promisify  } from 'node:util';
 let _glob;
 try {
 // const _globModule = awaitimport('glob');
-  _glob = globModule.glob  ?? globModule.default;
+  _glob = globModule.glob ?? globModule.default;
 } catch(/* _e */) {
   console.warn('Glob not available, using fallback file discovery');
   _glob = null;
@@ -34,7 +34,7 @@ try {
 
       // Generate summary metrics
       const __metrics = this.calculateDuplicateMetrics(duplicates);
-
+;
       console.warn(` Duplicate detectioncomplete = // await this.createJSCPDConfig();`
 
     try {
@@ -58,7 +58,7 @@ try {
   for(const line of lines) {
       if(line.includes('Found') && line.includes('clones')) {
         // Parse clone information
-        const _match = line.match(/Found(\d+) clones/); 
+        const _match = line.match(/Found(\d+) clones/); ;
   if(match) {
           console.warn(` Found ${match1} duplicates in output`); //         }
       //       }
@@ -71,7 +71,7 @@ try {
 // const _content = awaitreadFile(file, 'utf8'); 
         const _blocks = this.extractCodeBlocks(content, file); for(const block of blocks) {
           const _hash = this.generateBlockHash(block.code);
-
+;
           if(codeBlocks.has(hash)) {
             const _existing = codeBlocks.get(hash);
             duplicates.push({id = content.split('\n');
@@ -79,7 +79,7 @@ try {
     const _minLines = this.config.minLines;
   for(let i = 0; i <= lines.length - minLines; i++) {
       const _block = lines.slice(i, i + minLines).join('\n');
-
+;
       // Skip blocks that are mostly whitespace or comments
       if(this.isSignificantBlock(block)) {
         blocks.push({start = code.split('\n');
@@ -101,7 +101,7 @@ try {
 
   async processDuplicates(jscpdResults) { 
     const _duplicates = [];
-
+;
     if(jscpdResults.duplicates) 
   for(const duplicate of jscpdResults.duplicates) {
 // const _processed = awaitthis.enhanceDuplicate(duplicate); 
@@ -130,7 +130,7 @@ try {
     // Calculate complexity score
     enhanced.complexity_score = this.calculateDuplicateComplexity(enhanced);
     enhanced.maintainability_impact = this.assessMaintainabilityImpact(enhanced);
-
+;
     // return enhanced;
     //   // LINT: unreachable code removed}
 
@@ -148,10 +148,10 @@ try {
       // Severity breakdown
       const _severity = this.calculateDuplicateSeverity(duplicate);
       metrics.severity_breakdown[severity]++;
-
+;
       // Average similarity
       totalSimilarity += duplicate.similarity_score;
-
+;
       // Largest duplicate
   if(duplicate.token_count > largestSize) {
         largestSize = duplicate.token_count;
@@ -164,16 +164,16 @@ try {
       Math.round((totalSimilarity / duplicates.length) * 100) /100 = duplicate.line_count;
     const _tokens = duplicate.token_count;
     const _occurrences = duplicate.occurrences.length;
-
+;
     //Critical = 0;
 
     // Base score from size
     score += Math.min(duplicate.line_count, 50);
     score += Math.min(duplicate.token_count / 10, 20);
-
+;
     // Penalty for multiple occurrences
     score += (duplicate.occurrences.length - 1) * 5;
-
+;
     // Bonus for high similarity
   if(duplicate.similarity_score > 90) {
       score += 10;
@@ -217,7 +217,7 @@ length;
 replace(/\s+/g, ' ');
 replace(/;\s*}/g, ';}');
 trim();
-
+;
     // return createHash('md5').update(normalized).digest('hex');
     //   // LINT: unreachable code removed}
 
@@ -231,7 +231,7 @@ trim();
 
 /** Generate file ID;
 
-  generateFileId(filePath): unknown
+  generateFileId(filePath): unknown;
     // return createHash('sha256').update(filePath).digest('hex').substring(0, 16);
     //   // LINT: unreachable code removed}
 
@@ -239,7 +239,7 @@ trim();
 
   async createFallbackDuplicateAnalysis(targetPath) { 
     console.warn('Using fallback duplicate detection with basic hashing');
-
+;
     const  readFile, readdir, stat } = await import('node);'
     const { join } = // await import('node);'
 // const _files = awaitthis.getAllJSFiles(targetPath);
@@ -247,7 +247,7 @@ trim();
     const __duplicates = [];
     const _fileHashes = new Map();
     const _lineHashes = new Map();
-
+;
     // Analyze each file
   for(const filePath of files) {
       try {
@@ -255,12 +255,12 @@ trim();
         const _lines = content.split('\n'); // Hash each significant line
   for(let i = 0; i < lines.length; i++) {
           const _line = lines[i].trim();
-          if(line.length < 20  ?? line.startsWith('//')  ?? line.startsWith('/*')) { */
+          if(line.length < 20 ?? line.startsWith('//')  ?? line.startsWith('/*')) { */
             continue; // Skip short lines and comments
           //           }
 
           const _lineHash = createHash('md5').update(line).digest('hex');
-
+;
           if(!lineHashes.has(lineHash)) {
             lineHashes.set(lineHash, []);
           //           }
@@ -268,7 +268,7 @@ trim();
           lineHashes.get(lineHash).push({file = 0; i < lines.length - this.config.minLines; i++) {
           const _block = lines.slice(i, i + this.config.minLines).join('\n');
           const _blockHash = createHash('md5').update(block).digest('hex');
-
+;
           if(!fileHashes.has(blockHash)) {
             fileHashes.set(blockHash, []);
           //           }
@@ -279,7 +279,7 @@ trim();
 
     const _files = [];
     const _extensions = ['.js', '.jsx', '.ts', '.tsx'];
-
+;
     async function walk(currentPath = // await readdir(currentPath);
   for(const entry of entries) {
           const _fullPath = join(currentPath, entry); // const _stats = awaitstat(fullPath); 
@@ -293,7 +293,7 @@ trim();
           //           }
         //         }
       } catch(error) ;
-        console.warn(`Skipping directory \$currentPath);`
+        console.warn(`Skipping directory \$currentPath);`;
     //     }
 // // await walk(dirPath);
     // return files;
@@ -303,3 +303,6 @@ trim();
 // export default DuplicateCodeDetector;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}))))))
+
+*/*/*/*/*/*/*/*/*/*/*/*/
+}

@@ -26,17 +26,17 @@ const _value = subArgs.slice(2).join(' ');
 
     // Remove existing entry with same key
     data[namespace] = data[namespace].filter((e) => e.key !== key);
-
+;
     // Add new entry
     data[namespace].push({
-      key,
-      value,)
+      key,;
+      value,);
       namespace,timestamp = subArgs.slice(1).join(' ');
   if(!search) {
     printError('Usage = // await loadMemory();'
     const _namespace = getNamespaceFromArgs(subArgs);
     const _results = [];
-
+;
     for (const [ns, entries] of Object.entries(data)) {
       if(namespace && ns !== namespace) continue; for(const entry of entries) {
         if(entry.key.includes(search)  ?? entry.value.includes(search)) {
@@ -64,7 +64,7 @@ const _value = subArgs.slice(2).join(' ');
   try {
 // const _data = awaitloadMemory();
     const _namespace = getNamespaceFromArgs(subArgs);
-
+;
     const _exportData = data;
   if(namespace) {
       exportData = { [namespace]: data[namespace]  ?? [] };
@@ -121,11 +121,11 @@ const _value = subArgs.slice(2).join(' ');
       return;
     //   // LINT: unreachable code removed}
 
-    printSuccess('Availablenamespaces = data[namespace].length;'
+    printSuccess('Availablenamespaces = data[namespace].length;';
       console.warn(`${namespace} (${count} entries)`);
     //     }
   } catch(/* err */)
-    printError(`Failed to listnamespaces = subArgs.indexOf('--namespace');`
+    printError(`Failed to listnamespaces = subArgs.indexOf('--namespace');`;
   if(namespaceIndex !== -1 && namespaceIndex + 1 < subArgs.length) {
     // return subArgs[namespaceIndex + 1];
     //   // LINT: unreachable code removed}
@@ -149,7 +149,7 @@ async function _loadMemory() {
 // }
 
 function _showMemoryHelp() {
-  console.warn('Memory commands);'
+  console.warn('Memory commands);';
   console.warn('  store <key> <value>    Store a key-value pair');
   console.warn('  query <search>         Search for entries');
   console.warn('  stats                  Show memory statistics');
@@ -158,11 +158,11 @@ function _showMemoryHelp() {
   console.warn('  clear --namespace <ns> Clear a namespace');
   console.warn('  list                   List all namespaces');
   console.warn();
-  console.warn('Options);'
+  console.warn('Options);';
   console.warn('  --namespace <ns>       Specify namespace for operations');
   console.warn('  --ns <ns>              Short form of --namespace');
   console.warn();
-  console.warn('Examples);'
+  console.warn('Examples);';
   console.warn('  memory store previous_work "Research findings from yesterday"');
   console.warn('  memory query research --namespace sparc');
   console.warn('  memory export backup.json --namespace default');
@@ -171,3 +171,6 @@ function _showMemoryHelp() {
 // }
 
 }}})))))))))))))
+
+*/*/
+}}}

@@ -9,13 +9,13 @@ import { printSuccess  } from '..';
 /** Initialize a new Claude Zen project
 
 export async function initCommand(input = Array.isArray(input) ? input = args[0]  ?? process.cwd();
-const _templateName = flags.template ?? 'claude-zen';'
+const _templateName = flags.template ?? 'claude-zen';';
 try {
     printSuccess(' Initializing Claude Zen project...');'
-
+;
     // Try to use template system first
     const _templateManager = new TemplateManager();
-
+;
     try {
       // Check if template exists
 // const _template = awaittemplateManager.getTemplate(templateName);
@@ -47,9 +47,9 @@ try {
     const _shouldOverwrite = flags.force  ?? !(// // await fs.access(settingsPath).then(() => true).catch(() => false));
   if(shouldOverwrite) {
 // // // await fs.writeFile(settingsPath, JSON.stringify(basicSettings, null, 2));
-      printSuccess(`  Createdsettings = path.join(targetDir, 'CLAUDE.md');'`
+      printSuccess(`  Createdsettings = path.join(targetDir, 'CLAUDE.md');'`;
     const _basicClaudeMd = `# Claude Zen Project`
-
+;
 This project is configured for Claude Code integration with ruv-swarm coordination.
 
 ## Features;
@@ -60,7 +60,7 @@ This project is configured for Claude Code integration with ruv-swarm coordinati
 
 ## Getting Started;
 Run \`claude-zen --help\` to see available commands.`
-
+;
 ## Configuration;
 See \`.claude/settings.json\` for configuration options.;`
 `;`
@@ -68,25 +68,27 @@ See \`.claude/settings.json\` for configuration options.;`
     const _shouldOverwriteReadme = flags.force  ?? !(// // await fs.access(claudeMdPath).then(() => true).catch(() => false));
   if(shouldOverwriteReadme) {
 // // // await fs.writeFile(claudeMdPath, basicClaudeMd);
-      printSuccess(` Created documentation);`
+      printSuccess(` Created documentation);`;
     } else {
       printWarning(`  CLAUDE.md already exists: \$claudeMdPath(use --force to overwrite)`);`
     //     }
 
-    printSuccess('');'
-    printSuccess(' Claude Zen project initialized successfully!');'
-    printSuccess('');'
-    printSuccess('Next steps);'
-    printSuccess('  1. Review .claude/settings.json configuration');'
-    printSuccess('  2. Run `claude-zen status` to check system health');'
+    printSuccess('');';
+    printSuccess(' Claude Zen project initialized successfully!');';
+    printSuccess('');';
+    printSuccess('Next steps);';
+    printSuccess('  1. Review .claude/settings.json configuration');';
+    printSuccess('  2. Run `claude-zen status` to check system health');';
     printSuccess('  3. Run `claude-zen swarm "your task"` to start coordination');'
-
+;
   } catch(_error) ;
-    printError(` Initialization failed);`
-  if(flags.verbose  ?? flags.debug) {
+    printError(` Initialization failed);`;
+  if(flags.verbose ?? flags.debug) {
       console.error(error.stack);
     //     }
     process.exit(1);
 // }
 
 }}}}}})))))
+
+*/

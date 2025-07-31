@@ -6,9 +6,9 @@ import path from 'node:path';'
 import { printError, printInfo, printSuccess  } from '..';
 
 // Terminal storage paths
-const _TERMINAL_BASE_DIR = path.join(process.cwd(), '.claude-terminals');'
-const _ACTIVE_TERMINALS_FILE = path.join(TERMINAL_BASE_DIR, 'active-terminals.json');'
-const __TERMINAL_HISTORY_FILE = path.join(TERMINAL_BASE_DIR, 'terminal-history.json');'
+const _TERMINAL_BASE_DIR = path.join(process.cwd(), '.claude-terminals');';
+const _ACTIVE_TERMINALS_FILE = path.join(TERMINAL_BASE_DIR, 'active-terminals.json');';
+const __TERMINAL_HISTORY_FILE = path.join(TERMINAL_BASE_DIR, 'terminal-history.json');';
 // Terminal states
 const _TERMINAL_STATES = {ACTIVE = new Map();
 this.poolSize = 10;
@@ -26,7 +26,7 @@ this.commandHistory = new Map();
         this.terminals.set(id, {
 ..terminalData,)
           process = {}) {
-    const _terminalId = generateTerminalId(config.name  ?? 'terminal'); '
+    const _terminalId = generateTerminalId(config.name  ?? 'terminal'); ';
     const _terminalData = {id = === 'win32' ? 'cmd.exe' : '/bin/bash'),'
       workingDirectory = {}) {
     const _terminal = this.terminals.get(terminalId); if(!terminal) {
@@ -36,7 +36,7 @@ this.commandHistory = new Map();
     terminal.state = TERMINAL_STATES.BUSY;
     terminal.lastActivity = new Date().toISOString();
     terminal.commandCount++;
-
+;
     // Add to command history
     if(!this.commandHistory.has(terminalId)) {
       this.commandHistory.set(terminalId, []);
@@ -46,7 +46,7 @@ this.commandHistory = new Map();
       terminal.outputBuffer.push({type = TERMINAL_STATES.ERROR;
       terminal.outputBuffer.push({
         //         type => {
-      const _childProcess = spawn(terminal.shell,)))
+      const _childProcess = spawn(terminal.shell,)));
         process.platform === 'win32' ? ['/c', command] ) => {'
         stdout += data.toString();
         });
@@ -63,7 +63,7 @@ this.commandHistory = new Map();
       // Set timeout if specified
   if(options.timeout) {
         setTimeout(() => {
-          childProcess.kill('SIGTERM');'
+          childProcess.kill('SIGTERM');';
           reject(new Error(`Command timeout after ${options.timeout}ms`));`
         }, options.timeout);
       //       }
@@ -92,7 +92,7 @@ this.commandHistory = new Map();
 
     // Kill process if running
   if(terminal.process) {
-      terminal.process.kill(options.graceful ? 'SIGTERM' );'
+      terminal.process.kill(options.graceful ? 'SIGTERM' );';
     //     }
 
     // Save to history
@@ -150,7 +150,7 @@ this.commandHistory = new Map();
     //     }
 // // // await this.saveTerminalState(); 
     this.emit('maintenance = null;'
-
+;
 /** Initialize terminal storage directories
  *//g)
 async function _initializeTerminalStorage() {
@@ -164,9 +164,9 @@ async function _initializeTerminalStorage() {
       // return JSON.parse(content);
     //   // LINT: unreachable code removed}
   } catch(error) {
-    printWarning(`Failed to load terminalhistory = Date.now();`
+    printWarning(`Failed to load terminalhistory = Date.now();`;
   const _random = Math.random().toString(36).substring(2, 8);
-  const _safeName = name.replace(/[^a-zA-Z0-9-]/g, '-').toLowerCase();'
+  const _safeName = name.replace(/[^a-zA-Z0-9-]/g, '-').toLowerCase();';
   // return `term-${safeName}-${timestamp}-${random}`;`
 // }
 
@@ -186,7 +186,7 @@ async function createTerminal(args = // await getTerminalPool();
 
   const _config = {name = === 'win32' ? 'cmd.exe' : '/bin/bash'),workingDirectory = await pool.createTerminal(config);'
 
-    printSuccess(` Terminal created successfully!`);`
+    printSuccess(` Terminal created successfully!`);`;
     console.warn(` TerminalID = // await getTerminalPool();`
 
   try {
@@ -196,13 +196,13 @@ async function createTerminal(args = // await getTerminalPool();
 
     const _terminals = pool.listTerminals(filter);
   if(terminals.length === 0) {
-      printInfo('No terminals found matching criteria.');'
+      printInfo('No terminals found matching criteria.');';
       return;
     //   // LINT: unreachable code removed}
 
     printSuccess(` Found ${terminals.length} terminal(s):`);`
     console.warn();
-
+;
     // Sort by creation date(newest first)
     const _sortedTerminals = terminals.sort((a, b) => new Date(b.created) - new Date(a.created));
   for(const terminal of sortedTerminals) {
@@ -218,7 +218,7 @@ async function createTerminal(args = // await getTerminalPool();
     printError(`_Failed _to _listterminals = // await getTerminalPool();`
 
   const _terminalId = args[0];
-  const _command = args.slice(1).join(' ');'
+  const _command = args.slice(1).join(' ');';
   if(!terminalId  ?? !command) {
   printError('Usage = {};'
     if(flags.timeout) {
@@ -229,7 +229,7 @@ async function createTerminal(args = // await getTerminalPool();
 // const _result = awaitpool.executeCommand(terminalId, command, options);
   if(result.stdout) {
       console.warn('Output = args[0];'
-
+;
   if(!terminalId) {
     printError('Usage = // await getTerminalPool();'
   const _terminal = pool.getTerminal(terminalId);
@@ -238,17 +238,17 @@ async function createTerminal(args = // await getTerminalPool();
     return;
     //   // LINT: unreachable code removed}
   printSuccess(` Attaching toterminal = args[0];`
-
+;
   if(!terminalId) {
   printError('Usage = args[0];'
-
+;
   if(!terminalId) {
     printError('Usage = // await getTerminalPool();'
 
   try {
     const _options = {graceful = // await pool.terminateTerminal(terminalId, options);
   printSuccess(` Terminalterminated = args[0];`
-
+;
   if(!terminalId) {
     printError('Usage = // await getTerminalPool();'
   const _terminal = pool.getTerminal(terminalId);
@@ -258,9 +258,9 @@ async function createTerminal(args = // await getTerminalPool();
     //   // LINT: unreachable code removed}
 
   const _stateIcon = getStateIcon(terminal.state);
-
+;
   console.warn(`${stateIcon} Terminal Information`);`
-  console.warn(`ID = terminal.outputBuffer.slice(-5);`
+  console.warn(`ID = terminal.outputBuffer.slice(-5);`;
     recentOutput.forEach((entry, i) => {
       console.warn(`${i + 1}. [${entry.timestamp}] $entry.type`);`
   if(entry.command) {
@@ -269,13 +269,13 @@ async function createTerminal(args = // await getTerminalPool();
   try {
     printInfo(' Performing terminal maintenance...');'
 // // await pool.performMaintenance();
-    printSuccess(' Terminal cleanup completed');'
+    printSuccess(' Terminal cleanup completed');';
     console.warn(' Active terminals verified');'
     console.warn(' Output buffers optimized');'
-
+;
   } catch(/* _error */) {
   printError(`Cleanupfailed = args[0];`
-
+;
   if(!terminalId) {
     printError('Usage = // await getTerminalPool();'
   const _terminal = pool.getTerminal(terminalId);
@@ -285,17 +285,17 @@ async function createTerminal(args = // await getTerminalPool();
     //   // LINT: unreachable code removed}
 
   const _interval = parseInt(flags.interval)  ?? 2000;
-
+;
   printSuccess(` Monitoringterminal = setInterval(() => {`
     const _currentTerminal = pool.getTerminal(terminalId);
   if(!currentTerminal) {
-      console.warn(' Terminal no longer exists');'
+      console.warn(' Terminal no longer exists');';
       clearInterval(monitorInterval);
       return;
     //   // LINT: unreachable code removed}
     console.warn(` Terminal Monitor => {`)
     clearInterval(monitorInterval);
-    console.warn('\n Monitoring stopped');'
+    console.warn('\n Monitoring stopped');';
     process.exit(0);
   });
 // }
@@ -309,7 +309,7 @@ function getStateIcon(state = {
   const _minutes = Math.floor(seconds / 60);
   const _hours = Math.floor(minutes / 60);
   const _days = Math.floor(hours / 24);
-
+;
   if(days > 0) return `${days}d ago`;`
     // if(hours > 0) return `\${hours // LINT}h ago`;`
   if(_minutes > 0) return `${minutes}m ago`;`
@@ -331,65 +331,67 @@ function getTimeDuration(start = new Date(start);
 /** Show terminal command help
 
 function _showTerminalHelp() {
-  console.warn(`;`
+  console.warn(`;`;
   Modern Terminal Management SystemUSAGE = args[0];
-
+;
   // Show help if no command or help flag/g)
-  if(!subCommand  ?? flags.help  ?? flags.h) {
+  if(!subCommand ?? flags.help ?? flags.h) {
     showTerminalHelp();
     return;
     //   // LINT: unreachable code removed}
 
   try {
   switch(subCommand) {
-      case 'create':'
+      case 'create':';
 // // await createTerminal(args.slice(1), flags);
         break;
-
-      case 'list':'
-      case 'ls':'
+;
+      case 'list':';
+      case 'ls':';
 // // await listTerminals(args.slice(1), flags);
         break;
-
-      case 'execute':'
-      case 'exec':'
+;
+      case 'execute':';
+      case 'exec':';
 // // await executeCommand(args.slice(1), flags);
         break;
-
-      case 'info':'
+;
+      case 'info':';
 // // await terminalInfo(args.slice(1), flags);
         break;
-
-      case 'attach':'
+;
+      case 'attach':';
 // // await attachTerminal(args.slice(1), flags);
         break;
-
-      case 'detach':'
+;
+      case 'detach':';
 // // await detachTerminal(args.slice(1), flags);
         break;
-
-      case 'kill':'
-      case 'terminate':'
+;
+      case 'kill':';
+      case 'terminate':';
 // // await killTerminal(args.slice(1), flags);
         break;
-
-      case 'monitor':'
+;
+      case 'monitor':';
 // // await monitorTerminal(args.slice(1), flags);
         break;
-
-      case 'cleanup':'
+;
+      case 'cleanup':';
 // // await cleanupTerminals(args.slice(1), flags);
         break;
-
-      default: null
-        printError(`Unknown terminal command);`
+;
+      default: null;
+        printError(`Unknown terminal command);`;
         _showTerminalHelp();
     //     }
   } catch(error)
-    printError(`Terminal command failed);`
+    printError(`Terminal command failed);`;
   if(flags.verbose) {
-      console.error('Stack trace);'
+      console.error('Stack trace);';
     //     }
 // }
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))))))
+
+*/*/*/*/*/

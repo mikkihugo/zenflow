@@ -80,16 +80,16 @@ console.warn(`${icon} ${coloredMessage}`);
 
   message = 'Progress';
   ) {
-    this.
+    this.;
   total = total;
   this;
-
+;
   width = width;
   this;
-
+;
   message = message;
   this;
-
+;
   startTime = Date.now();
 // }
 update(current = current;
@@ -103,7 +103,7 @@ const _message = customMessage ?? this.message;
 printSuccess(`${message} completed in ${elapsed}ms`);
 // }
   //   }
-finish(message?)
+finish(message?);
 : void
 // {
   this.update(this.total, message);
@@ -111,7 +111,7 @@ finish(message?)
 // }
 // export class Spinner {
   ) {
-    this.
+    this.;
   message = message;
 // }
 start();
@@ -128,7 +128,7 @@ start();
   //   }
   updateMessage(message = message;
 // }
-stop(finalMessage?)
+stop(finalMessage?);
 : void
 // {
   if(this.interval) {
@@ -162,14 +162,14 @@ const { columns, title, border = true, striped = false, compact = false } = opti
 // Calculate column widths
 const _columnWidths = columns.map((col) => {
   const _headerWidth = col.title.length;
-  const _dataWidth = Math.max(;)
+  const _dataWidth = Math.max(;);
 ..data.map((row) => {
       const _value = row[col.key];
       const _formatted = col.format ? col.format(value) : String(value  ?? '');
       return formatted.length;
     //   // LINT: unreachable code removed});
   );
-  // return Math.max(headerWidth, dataWidth, col.width  ?? 0);
+  // return Math.max(headerWidth, dataWidth, col.width ?? 0);
 });
 
 const _result = '';
@@ -187,7 +187,7 @@ map((col, i) => {
     return colorize(content, 'bright');
     //   // LINT: unreachable code removed});
 join(border ? '  ' );
-
+;
 result += `${headerRow}\n`;
 
 // Header separator
@@ -205,12 +205,12 @@ map((col, colIndex) => {
 
       // Apply alignment
   switch(col.align) {
-        case 'center':
+        case 'center':;
           formatted = formatted;
 padStart((columnWidths[colIndex] + formatted.length) / 2);
 padEnd(columnWidths[colIndex]);
           break;
-        case 'right':
+        case 'right':;
           formatted = formatted.padStart(columnWidths[colIndex]);
           break;
         default = formatted.padEnd(columnWidths[colIndex]);
@@ -224,7 +224,7 @@ padEnd(columnWidths[colIndex]);
       // return formatted;
     //   // LINT: unreachable code removed});
 join(border ? '  ' );
-
+;
   result += `${dataRow}\n`;
 });
 
@@ -238,7 +238,7 @@ join(border ? '  ' );
 // export class TypeScriptOutputFormatter implements IOutputFormatter {
   format(data = colorize(`Error);`
   if(_error._command) {
-      message += `\nCommand = `\n  Code: \$error.details.code`;`
+      message += `\nCommand = `\n  Code: \$error.details.code`;`;
     //     }
   if(error._details._context) {
       const _contextEntries = Object.entries(error.details.context);
@@ -246,10 +246,10 @@ filter(([_, value]) => value !== undefined);
 map(([_key, _value]) => `    \$key: \$JSON.stringify(value)`);
 join('\n');
   if(contextEntries) {
-        message += `\nContext = === 'true' && error.stack) ;`
+        message += `\nContext = === 'true' && error.stack) ;`;
       message += `\n\nStackTrace = 0) {`
     const __spaces = '  '.repeat(indent);
-
+;
     if(Array.isArray(data)) {
       // return data.map(_item => `\$spaces- \$this.formatYaml(item, indent + 1).trim()`).join('\n');
     //   // LINT: unreachable code removed}
@@ -285,7 +285,7 @@ join('\n');
     const _entries = Object.entries(data).map(([_key, value]) => ({ property = === 'object' ? JSON.stringify(value) : String(value);
       }));
 
-    const __columns = [
+    const __columns = [;
       {key = '', isLast = true) {
     const _result = '';
   if(typeof data !== 'object'  ?? data === null) {
@@ -293,12 +293,12 @@ join('\n');
     //   // LINT: unreachable code removed}
 
     const _entries = Object.entries(data);
-
+;
     entries.forEach(([key, value], index) => {
       const _isLastEntry = index === entries.length - 1;
       const _connector = isLastEntry ? ' ' : ' ';
       const _nextPrefix = prefix + (isLastEntry ? '    ' );
-
+;
       result += prefix + connector + colorize(key, 'bright');
   if(typeof value === 'object' && value !== null) {
         result += `\n${this.formatTree(value, nextPrefix, isLastEntry)}`;
@@ -335,12 +335,12 @@ join('\n');
 // =============================================================================
 
 // export function createBox(content = content.split('\n');
-  const _maxLength = Math.max(;)
+  const _maxLength = Math.max(;);
 .._lines._map(_line => line._length),
     title ? title.length +2 = maxLength + 4; // 2 chars padding on each side
 
   const _result = '';
-
+;
   // Top border
   if(title) {
     const _titlePadding = Math.max(0, boxWidth - title.length - 4);
@@ -353,9 +353,9 @@ join('\n');
 
   // Content lines
   lines.forEach(line => {
-    const __padding = boxWidth - line.length - 4;)
+    const __padding = boxWidth - line.length - 4;);
     result += `  \$line\$' '.repeat(Math.max(0, padding))\n`;);
-
+;
   // Bottom border
   result += `${''.repeat(boxWidth - 2)}`;
 
@@ -383,13 +383,13 @@ join('\n');
       // return ' '.repeat(leftPad) + str + ' '.repeat(rightPad);
     //   // LINT: unreachable code removed}
 
-    case 'right':
+    case 'right':;
       // return ' '.repeat(padding) + str;
     // ; // LINT: unreachable code removed
     case 'left' = text.split(' ');
   const _lines = [];
   const _currentLine = '';
-
+;
   for (const _word of words) ; if((currentLine + word).length > width) {
   if(currentLine) {
         lines.push(currentLine.trim()); currentLine = `${word} `;
@@ -415,20 +415,22 @@ join('\n');
   //   {
   type;
   colors;
-
+;
   icons;
-
+;
   colorize;
-
+;
   type;
   getIcon;
-
+;
   type;
   supportsColor;
-
+;
   ProgressBar;
-
+;
   Spinner;
 // }
 
 )))))
+
+*/*/]

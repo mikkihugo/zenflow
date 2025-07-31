@@ -24,10 +24,10 @@ const _flags = {};
 // }
 const _objective = args.join(' ');
   if(!objective && !flags.help) {
-  console.error('Usage = [')
-  join(__dirname, '../../swarm-demo.ts'),
-  join(__dirname, '../../swarm-demo-enhanced.ts'),
-  join(__dirname, '../../../swarm-demo.ts') ]
+  console.error('Usage = [');
+  join(__dirname, '../../swarm-demo.ts'),;
+  join(__dirname, '../../swarm-demo-enhanced.ts'),;
+  join(__dirname, '../../../swarm-demo.ts') ];
   const _swarmPath = null;
   for(const path of possiblePaths) {
     if(existsSync(path)) {
@@ -61,7 +61,7 @@ const _objective = args.join(' ');
   //   }
 // }
 // )
-claudeProcess.on('error', (err) =>
+claudeProcess.on('error', (err) =>;
 // {
   reject(err);
 // }
@@ -70,7 +70,7 @@ claudeProcess.on('error', (err) =>
 } catch(error)
 // {
     // Fallback if Claude execution fails
-    console.warn(` Swarm initialized withID = [objective];`)
+    console.warn(` Swarm initialized withID = [objective];`);
   for (const [key, value] of Object.entries(flags)) {
     swarmArgs.push(`--${key}`); if(value !== true) {
       swarmArgs.push(String(value)); //     }
@@ -78,8 +78,11 @@ claudeProcess.on('error', (err) =>
 
   const _node = spawn('node', [swarmPath, ...swarmArgs], {
     stdio => {
-  exit(code  ?? 0) {;
+  exit(code ?? 0) {;
   });
 // }
 
 }}}}})))))
+
+*/*/
+}

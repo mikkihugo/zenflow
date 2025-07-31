@@ -20,7 +20,7 @@ class SwarmUI {
   //   }
   async init() { 
     // Create blessed screen
-    this.screen = blessed.screen(
+    this.screen = blessed.screen(;
       smartCSR,title = blessed.box({parent = blessed.box({
       parent,top = blessed.box({
       parent,top = blessed.box({
@@ -33,7 +33,7 @@ class SwarmUI {
       parent,top = blessed.log({
       parent,top = blessed.box({
       parent,top = blessed.button({parent = blessed.button({parent = blessed.textbox({
-      parent,))))))))))))))))
+      parent,))))))))))))))));
     (_bottom) => {
       this.cleanup();
       process.exit(0);
@@ -41,17 +41,17 @@ class SwarmUI {
     //     )
     // Objective selection
     this
-
+;
     objectivesList
-
-    on('select', (item, index)
+;
+    on('select', (item, index);
     =>
-      this.
-    selectedObjective = this.swarmData.objectives[index]
-    this
+      this.;
+    selectedObjective = this.swarmData.objectives[index];
+    this;
   updateTasksList() {}
-    this
-  log(`Selected objective =>`
+    this;
+  log(`Selected objective =>`;
     //     {
       const _task = this.swarmData.tasks[index];
       if(task) {
@@ -60,41 +60,41 @@ class SwarmUI {
     //     }
     //     )
     // Create objective button
-    this.createButton.on('press', () =>
+    this.createButton.on('press', () =>;
     this.promptCreateObjective() {}
     //     )
     // Stop swarm button
-    this.stopButton.on('press', () =>
+    this.stopButton.on('press', () =>;
     this.stopSwarm() {}
     //     )
     // Command input
-    this.commandBox.on('submit', (_value) =>
-    this.executeCommand(value)
+    this.commandBox.on('submit', (_value) =>;
+    this.executeCommand(value);
     this.commandBox.clearValue() {}
     this.screen.render() {}
     //     )
     // Focus management
-    this.screen.key(['tab'], () =>
+    this.screen.key(['tab'], () =>;
     this.screen.focusNext() {}
     //     )
-    this.screen.key(['S-tab'], () =>
+    this.screen.key(['S-tab'], () =>;
       this.screen.focusPrevious() {}
     //     )
   //   }
   async startMonitoring();
   //   {
-  this.
+  this.;
   log('Starting swarm monitoring...');
   // Update interval
   this;
-
+;
   updateInterval = setInterval(() => {
     this.updateSwarmData();
   }, 2000);
   // Initial update
   await;
   this;
-
+;
   updateSwarmData();
 // }
 async;
@@ -103,7 +103,7 @@ updateSwarmData();
     try {
       // Load swarm data from file system
       const _swarmRunsDir = '.
-
+;
       try {
 // const _runs = awaitfs.readdir(swarmRunsDir);
         this.swarmData.objectives = [];
@@ -125,16 +125,16 @@ updateSwarmData();
                   this.swarmData.agents.push({id = 'idle';
       //       }/g)
     } catch(error) ;
-      this.log(`Error updating swarmdata = this.swarmData.objectives.filter((o) => o.status === 'running').length;`
+      this.log(`Error updating swarmdata = this.swarmData.objectives.filter((o) => o.status === 'running').length;`;
     this.statusBox.setContent(;
     `Status = this.swarmData.objectives.map(;`))
       (_obj) => `;`
     \$obj.status === 'running' ? '' : '';
     \$obj.description.substring(0, 25);
 ..`)`
-    this.objectivesList.setItems(objectiveItems.length > 0 ?objectiveItems = this.swarmData.agents.map(;))
+    this.objectivesList.setItems(objectiveItems.length > 0 ?objectiveItems = this.swarmData.agents.map(;));
     (agent) => `\${agent.status === 'active' ? '' } ${agent.id.substring(0, 15)}...`)
-    this.agentsList.setItems(agentItems.length > 0 ?agentItems = this.swarmData.tasks.filter(;))
+    this.agentsList.setItems(agentItems.length > 0 ?agentItems = this.swarmData.tasks.filter(;));
     (task) => task.swarmId === this.selectedObjective.id)
     promptBox.destroy();
     this.screen.render();
@@ -143,26 +143,26 @@ updateSwarmData();
   //   }
   async createObjective(description);
   try;
-      this.
-  log(`Creatingobjective = ['swarm', description, '--ui', '--monitor'];`
+      this.;
+  log(`Creatingobjective = ['swarm', description, '--ui', '--monitor'];`;
   const;
   _process = spawn('claude-zen', args, {detached = `swarm-${Date.now()}`;
   this;
-
+;
   activeProcesses;
-set(
+set(;
   processId;
-
+;
   process;
   //   )
   this;
-
+;
   log(`Launched swarm with PID => {`
         this.updateSwarmData();
 , 2000)
-catch(error)
+catch(error);
 this.log(`Error creatingobjective = 0;`
-
+;
       // First, try to stop tracked processes/g)
   for(const [processId, process] of this.activeProcesses) {
         try {
@@ -170,15 +170,15 @@ this.log(`Error creatingobjective = 0;`
   if(process.pid && !process.killed) {
             process.kill('SIGTERM'); stoppedCount++; this.log(`Stopped process ${processId} (PID = 'stopped';`))
 this.updateDisplay() {;
-catch(error)
-this.log(`Error stoppingswarm = === 'win32') ;`
+catch(error);
+this.log(`Error stoppingswarm = === 'win32') ;`;
       // Windows => {
   if(!error && stdout) {
             const _pids = stdout;
 split('\n');
 map((line) => line.trim());
 filter((line) => /^\d+$/.test(line));
-
+;
             pids.forEach((pid) => {
               // Validate PID before using in command
               const _validatedPID = validatePID(pid);
@@ -230,7 +230,7 @@ filter((line) => /^\d+$/.test(line));
 // Main execution
 async function main() {
   const _ui = new SwarmUI();
-
+;
   try {
 // // await ui.init();
   } catch(error) {
@@ -243,3 +243,6 @@ async function main() {
 // export default SwarmUI;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))))))))))))))
+
+*/*/
+}}}

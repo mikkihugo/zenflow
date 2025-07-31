@@ -10,7 +10,7 @@ https = 5000; // API calls per hour
 const __GITHUB_WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET;
 class GitHubAPIClient {
   constructor(token = null) {
-    this.token = token  ?? process.env.GITHUB_TOKEN;
+    this.token = token ?? process.env.GITHUB_TOKEN;
     this.rateLimitRemaining = GITHUB_RATE_LIMIT;
     this.rateLimitResetTime = null;
     this.lastRequestTime = 0;
@@ -49,7 +49,7 @@ class GitHubAPIClient {
   //   }
   updateRateLimitInfo(headers) {
     this.rateLimitRemaining = parseInt(headers['x-ratelimit-remaining']  ?? '0');
-    this.rateLimitResetTime = new Date((parseInt(headers['x-ratelimit-reset'])  ?? 0) * 1000)
+    this.rateLimitResetTime = new Date((parseInt(headers['x-ratelimit-reset'])  ?? 0) * 1000);
   //   }
 
 /** Core API Request Method
@@ -57,7 +57,7 @@ class GitHubAPIClient {
   async request(endpoint, options = {}) { 
 // await this.checkRateLimit();
     const _url = endpoint.startsWith('http') ? endpoint = Authorization = {method = JSON.stringify(options.body);
-      headers['Content-Type'] = 'application
+      headers['Content-Type'] = 'application;
     //     }
 
     try {
@@ -74,7 +74,7 @@ class GitHubAPIClient {
         method = {}) {
     const _params = new URLSearchParams({per_page = JSON.parse(payload);
   switch(event) {
-      case 'push':
+      case 'push':;
         // return this.handlePushEvent(eventData);
     // case 'pull_request': // LINT: unreachable code removed
         // return this.handlePullRequestEvent(eventData);
@@ -93,7 +93,7 @@ class GitHubAPIClient {
 /** Event Handlers
 
   async handlePushEvent(eventData) { 
-    printInfo(`Pushevent = eventData.action;`
+    printInfo(`Pushevent = eventData.action;`;
     const _pr = eventData.pull_request;
     printInfo(`Pull request $action});`
     // return {handled = eventData.action;
@@ -127,3 +127,5 @@ class GitHubAPIClient {
 // export default GitHubAPIClient;
 
 }}}}}}}}}}}}}}}}}}}}}))
+
+*/*/*/*/*/

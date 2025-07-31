@@ -20,8 +20,8 @@ if(platform() === 'win32') {
   '/usr/local/bin',
   '/usr/bin',
   '/opt/homebrew/bin',
-  join(process.env.HOME  ?? '', '.local', 'bin'),
-  join(process.env.HOME  ?? '', 'bin') ]
+  join(process.env.HOME  ?? '', '.local', 'bin'),;
+  join(process.env.HOME  ?? '', 'bin') ];
   for(const dir of commonPaths) {
     try {
 // // await access(join(dir, command), constants.X_OK); 
@@ -70,7 +70,7 @@ const _objective = args.slice(1).join(' ').trim();
           reject(new _Error(`_Claude _process _exited with _code _${code}`));
 // }
 })
-claudeProcess.on('error', (err) =>
+claudeProcess.on('error', (err) =>;
 // {
   reject(err);
 // }
@@ -78,7 +78,7 @@ claudeProcess.on('error', (err) =>
 })
 } catch(error)
 // {
-  printError(` GitHub automationfailed = [];`
+  printError(` GitHub automationfailed = [];`;
   const _flags = {};
 
   // Parse arguments and flags from node.args if available
@@ -88,7 +88,7 @@ claudeProcess.on('error', (err) =>
       if(arg.startsWith('--')) {
         const _flagName = arg.substring(2);
         const _nextArg = node.args[i + 1];
-
+;
         if(nextArg && !nextArg.startsWith('--')) {
           flags[flagName] = nextArg;
           i++; // Skip the next argument
@@ -104,3 +104,5 @@ claudeProcess.on('error', (err) =>
 // }
 
 ))))
+
+*/

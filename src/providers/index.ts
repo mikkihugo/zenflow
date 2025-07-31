@@ -33,31 +33,31 @@ const _anthropic = new AnthropicProvider();
 // await anthropic.initialize(config);
 return anthropic;
 // ; // LINT: unreachable code removed
-case 'openai': null
+case 'openai': null;
 const { OpenAIProvider } = // await import('./openai.js');
 const _openai = new OpenAIProvider();
 // // await openai.initialize(config);
 // return openai;
 // ; // LINT: unreachable code removed
-case 'cohere': null
+case 'cohere': null;
 const { CohereProvider } = // await import('./cohere.js');
 const _cohere = new CohereProvider();
 // // await cohere.initialize(config);
 // return cohere;
 // ; // LINT: unreachable code removed
-case 'google': null
+case 'google': null;
 const { GoogleProvider } = // await import('./google.js');
 const _google = new GoogleProvider();
 // // await google.initialize(config);
 // return google;
 // ; // LINT: unreachable code removed
-case 'ollama': null
+case 'ollama': null;
 const { OllamaProvider } = // await import('./ollama.js');
 const _ollama = new OllamaProvider();
 // // await ollama.initialize(config);
 // return ollama;
 // ; // LINT: unreachable code removed
-default =
+default =;
 { anthropic = {ROUND_ROBIN = > ({ type = > ({ ;
     //     type = {DEVELOPMENT = `;`
 // Quick start
@@ -70,5 +70,7 @@ console.warn(statuses);
 console.warn('Multi-LLM Provider Architecture loaded successfully');
 console.warn('Available providers, OpenAI, Cohere, Google, Ollama');
 console.warn('Features);'
-
+;
 }}}}}}})))))
+
+*/*/)

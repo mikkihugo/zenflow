@@ -16,7 +16,7 @@ import { ProviderError  } from '.';
 // constructor() {}
 // // {
 //   super();
-//   this.pricing = {inputTokenPrice = config.apiKey  ?? process.env.COHERE_API_KEY;
+//   this.pricing = {inputTokenPrice = config.apiKey ?? process.env.COHERE_API_KEY;
 //   if(!this.apiKey) {
 //     throw new ProviderError('Cohere API key is required', this.name, 'MISSING_API_KEY');
 //   //   }
@@ -79,8 +79,8 @@ map((model = > model.name);
   cleanup();
   : Promise<void>
   // private extractUserMessage(messages = messages.length - 1
-  i >= 0
-  i--
+  i >= 0;
+  i--;
   //   )
   if(messages[i].role === 'user') {
     // return messages[i].content;
@@ -116,7 +116,7 @@ map((model = > model.name);
 // }
   // return new ProviderError(;
   // errorData.message  ?? 'Unknown error', // LINT: unreachable code removed
-  this.name,
+  this.name,;
   'API_ERROR',
   response.status;
   //   )
@@ -125,7 +125,7 @@ map((model = > model.name);
 : AIResponse['finishReason']
 // {
   switch(reason) {
-    case 'COMPLETE':
+    case 'COMPLETE':;
       // return 'stop';
     // case 'MAX_TOKENS': // LINT: unreachable code removed
       // return 'length';
@@ -147,3 +147,5 @@ handleError(error);
 // }
 
 }}}}}}}}}))))))
+
+*/*/

@@ -18,11 +18,11 @@ export class PerformanceTest {
   async runTestSuite() { 
     console.warn(' Starting Hive Mind Performance Test Suite...\n');
 
-    const _tests = [
-      this.testBatchAgentSpawning,
-      this.testAsyncOperationQueue,
-      this.testMemoryOperations,
-      this.testConcurrentTaskExecution,
+    const _tests = [;
+      this.testBatchAgentSpawning,;
+      this.testAsyncOperationQueue,;
+      this.testMemoryOperations,;
+      this.testConcurrentTaskExecution,;
       this.testPerformanceOptimizer ];
 
     for (const test of tests) 
@@ -44,7 +44,7 @@ export class PerformanceTest {
     //     }
     const _sequentialTime = performance.now() - sequentialStart;
 
-    const _improvement = (((sequentialTime - batchTime) / sequentialTime) * 100).toFixed(2)
+    const _improvement = (((sequentialTime - batchTime) / sequentialTime) * 100).toFixed(2);
     this.results.push({ test = new PerformanceOptimizer({))
       asyncQueueConcurrency   });
 
@@ -84,7 +84,7 @@ map(async(_, i) => {
     //     }
     const _serialTime = performance.now() - serialStart;
 
-    const _improvement = (((serialTime - pooledTime) / serialTime) * 100).toFixed(2)
+    const _improvement = (((serialTime - pooledTime) / serialTime) * 100).toFixed(2);
     this.results.push({ test = new HiveMindCore({name = [
       'Implement user authentication',
       'Write unit tests',
@@ -96,13 +96,13 @@ map(async(_, i) => {
     // Test concurrent task creation and execution/g))
     const _concurrentStart = performance.now();
     const _taskPromises = tasks.map((description) =>;
-      hiveMind.createTask(description, Math.floor(Math.random() * 10) + 1))
+      hiveMind.createTask(description, Math.floor(Math.random() * 10) + 1));
 // // await Promise.all(taskPromises);
     // Wait for tasks to complete(simulated)
 // // await new Promise((resolve) => setTimeout(resolve, 2000));
     // Get final status
     const _status = hiveMind.getStatus();
-
+;
     this.results.push({test = === tasks.length ? 'PASS' );
 
     console.warn(;
@@ -110,7 +110,7 @@ map(async(_, i) => {
       enableAsyncQueue,enableBatchProcessing = 'test-cache-key';
     const __cacheHits = 0;
     const __cacheMisses = 0;
-
+;
     // First call should be a miss/g))
     const __cacheStart = performance.now();
 // // await optimizer.optimizeWithCache(cacheKey, async() => {
@@ -143,25 +143,25 @@ map(async(_, i) => {
 
     const _totalPassed = 0;
     const _totalTests = this.results.length;
-
+;
     this.results.forEach((result, index) => {
       console.warn(`\n${index + 1}. ${result.test}`);
       console.warn('-'.repeat(40));
-
+;
       Object.entries(result).forEach(([key, value]) => {
   if(key !== 'test' && key !== 'status') {
           console.warn(`${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}`);
         //         }
       });
 
-      console.warn(`Status = === 'PASS') totalPassed++;`
+      console.warn(`Status = === 'PASS') totalPassed++;`;
     });
 
     console.warn('\n' + '='.repeat(80));
-    console.warn(` OverallResults = === totalTests) ;`
+    console.warn(` OverallResults = === totalTests) ;`;
       console.warn(' All performance optimizations are working correctly!');else ;
       console.warn('  Some optimizations may need attention.');
-
+;
     // Performance summary
     const _improvements = this.results;
 filter((r) => r.improvement);
@@ -174,3 +174,6 @@ map((r) => parseFloat(r.improvement));
 // }
 
 }}}}}}}}}}}}}}}}}})))))))))))))
+
+*/*/*/*/
+}

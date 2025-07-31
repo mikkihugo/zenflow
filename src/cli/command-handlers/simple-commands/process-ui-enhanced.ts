@@ -18,7 +18,7 @@ blue = > `\x1b[34m${text}\x1b[0m`,
 magenta = > `\x1b[35m${text}\x1b[0m`,
 bold = > `\x1b[1m${text}\x1b[0m`,
 dim = > `\x1b[2m${text}\x1b[0m` }
-const __PROCESSES = [
+const __PROCESSES = [;
   { id = {_PROCESSES = new Map();
     this.running = true;
     this.selectedIndex = 0;
@@ -29,13 +29,13 @@ const __PROCESSES = [
       totalEntries,totalSize = [];
     this.systemStats = {
       uptime,totalTasks = new SwarmWebUIIntegration(this);
-
+;
     // Initialize process states
     PROCESSES.forEach((p) => {
       this.processes.set(p.id, {
 ..p,
         _status => {
-      this.systemStats.uptime++;)
+      this.systemStats.uptime++;);
     }, 1000);
 
     // Initialize swarm(this will create mock data)
@@ -46,7 +46,7 @@ const __PROCESSES = [
     // Initialize swarm with mock data
 // await this.swarmIntegration.initializeSwarm('hierarchical', 8);
     // Mock memory namespaces
-    this.memoryStats = totalEntries = [
+    this.memoryStats = totalEntries = [;
       {time = [
       {key = '';
     tabs.forEach((tab) => {
@@ -62,29 +62,29 @@ const __PROCESSES = [
   renderProcessView() {
     console.warn(colors.white(colors.bold('Process Management')));
     console.warn();
-
+;
     const _index = 0;
   for(const [_id, process] of this.processes) {
       const _selected = index === this.selectedIndex; const _prefix = selected ? colors.yellow(' ') : '  '; const _status = this.getStatusIcon(process.status) {;
       const _name = selected ? colors.yellow(process.name) : colors.white(process.name);
-
+;
       console.warn(`${prefix}${status} ${name}`);
       console.warn(`${colors.gray(process.description)}`);
   if(process.status === 'running') {
-        const __stats = colors.dim(;)
+        const __stats = colors.dim(;);
           `PID = Array.from(this.processes.values()).filter(;`)
       (p) => p.status === 'running').length;
     console.warn(colors.gray(''.repeat(80)));
     console.warn(;
-      colors.white(;))
+      colors.white(;));
         `Total = > a.status === 'working').length)}
     console.warn(`  TotalTasks = > t.status === 'completed').length)}`);
-    console.warn(;)
+    console.warn(;);
       `  InProgress = > t.status === 'in_progress').length)}`);
-    console.warn(;)
+    console.warn(;);
       `Pending = > t.status === 'pending').length)}`);
     console.warn();
-
+;
     // Recent events
     console.warn(colors.cyan(' Recent Events'));
     this.logs.slice(-3).forEach((log) => {
@@ -97,11 +97,11 @@ const __PROCESSES = [
   if(metrics) {
       console.warn(colors.cyan(' Swarm Status'));
       console.warn(`  Swarm ID => {`
-      const _selected = this.currentView === VIEWS.ORCHESTRATION && index === this.selectedIndex;)
+      const _selected = this.currentView === VIEWS.ORCHESTRATION && index === this.selectedIndex;);
       const _prefix = selected ? colors.yellow(' ') : '  ';
       const _statusIcon = agent.status === 'working' ? colors.green('') : colors.gray('');
       const _name = selected ? colors.yellow(agent.name) : colors.white(agent.name);
-
+;
       console.warn(`${prefix}${statusIcon} ${name} ($, { agent.type })`);
       console.warn(`     _ID => {`
       const _statusColor =;
@@ -118,25 +118,25 @@ const __PROCESSES = [
   if(task.assignedTo) {
         const __agent = this.agents.find((a) => a.id === task.assignedTo);
         console.warn(`       Assigned to => {`
-      const _selected = this.currentView === VIEWS.MEMORY && index === this.selectedIndex;)
+      const _selected = this.currentView === VIEWS.MEMORY && index === this.selectedIndex;);
       const _prefix = selected ? colors.yellow(' ') : '  ';
       const _name = selected ? colors.yellow(ns.name) : colors.white(ns.name);
-
+;
       console.warn(`${prefix}${name}`);
-      console.warn(`Entries = this.logs.slice(-15);`
+      console.warn(`Entries = this.logs.slice(-15);`;
     displayLogs.forEach((log) => {
       const _time = log.time.toLocaleTimeString();
       let icon, color;
   switch(log.level) {
-        case 'success':
+        case 'success':;
           icon = '';
           color = colors.green;
           break;
-        case 'warning':
+        case 'warning':;
           icon = '';
           color = colors.yellow;
           break;
-        case 'error':
+        case 'error':;
           icon = '';
           color = colors.red;
           break;
@@ -155,33 +155,33 @@ const __PROCESSES = [
   renderHelpView() ;
     console.warn(colors.white(colors.bold('Help & Documentation')));
     console.warn();
-
+;
     console.warn(colors.cyan(' Navigation'));
     console.warn(`${colors.yellow('1-6')}     Switch between views`);
     console.warn(`${colors.yellow('Tab')}     Cycle through views`);
     console.warn(`${colors.yellow('/')}     Navigate items(when available)`);
     console.warn();
-
+;
     console.warn(colors.cyan(' Process Controls'));
     console.warn(`${colors.yellow('Space')}   Toggle selected process`);
     console.warn(`${colors.yellow('A')}       Start all processes`);
     console.warn(`${colors.yellow('Z')}       Stop all processes`);
     console.warn(`${colors.yellow('R')}       Restart all processes`);
     console.warn();
-
+;
     console.warn(colors.cyan(' Swarm Orchestration'));
     console.warn(`${colors.yellow('N')}       Spawn new agent`);
     console.warn(`${colors.yellow('T')}       Create new task`);
     console.warn(`${colors.yellow('D')}       Complete task`);
     console.warn(`${colors.yellow('S')}       Show swarm metrics`);
     console.warn();
-
+;
     console.warn(colors.cyan(' Memory Operations'));
     console.warn(`${colors.yellow('S')}       Store new entry`);
     console.warn(`${colors.yellow('G')}       Get/search entries`);
     console.warn(`${colors.yellow('C')}       Clear namespace`);
     console.warn();
-
+;
     console.warn(colors.cyan(' Other'));
     console.warn(`${colors.yellow('L')}       Clear logs`);
     console.warn(`${colors.yellow('H/?')}     Show this help`);
@@ -189,7 +189,7 @@ const __PROCESSES = [
   renderFooter() {
     console.warn();
     console.warn(colors.gray(''.repeat(80)));
-
+;
     // Context-sensitive controls
     const __controls = '';
   switch(this.currentView) {
@@ -209,7 +209,7 @@ const __PROCESSES = [
   //   }
   getStatusIcon(status) {
   switch(status) {
-      case 'running':
+      case 'running':;
         // return colors.green('');
     // case 'stopped': // LINT: unreachable code removed
         // return colors.gray('');
@@ -248,49 +248,49 @@ const __PROCESSES = [
     // ; // LINT: unreachable code removed
     const _rawInput = terminal.decoder.decode(buf.subarray(0, n)).trim();
     const _input = rawInput.split('\n')[0].toLowerCase();
-
+;
     // Global commands
-    switch(input) 
-      case 'q':
-      case 'quit':
+    switch(input) ;
+      case 'q':;
+      case 'quit':;
         this.running = false;
         printSuccess('Goodbye!');
         compat.terminal.exit(0);
         break;
-
-      case '1':
+;
+      case '1':;
         this.currentView = VIEWS.PROCESSES;
         this.selectedIndex = 0;
         break;
-
-      case '2':
+;
+      case '2':;
         this.currentView = VIEWS.STATUS;
         this.selectedIndex = 0;
         break;
-
-      case '3':
+;
+      case '3':;
         this.currentView = VIEWS.ORCHESTRATION;
         this.selectedIndex = 0;
         break;
-
-      case '4':
+;
+      case '4':;
         this.currentView = VIEWS.MEMORY;
         this.selectedIndex = 0;
         break;
-
-      case '5':
+;
+      case '5':;
         this.currentView = VIEWS.LOGS;
         this.selectedIndex = 0;
         break;
-
-      case '6':
-      case '?':
-      case 'h':
-      case 'help':
+;
+      case '6':;
+      case '?':;
+      case 'h':;
+      case 'help':;
         this.currentView = VIEWS.HELP;
         break;
-
-      case 'tab':
+;
+      case 'tab':;
       case '\t': {
         // Cycle through views
         const _viewKeys = Object.values(VIEWS);
@@ -300,9 +300,9 @@ const __PROCESSES = [
         break;
       }default = Math.max(0, this.selectedIndex - 1);
         break;
-
-      case 'down':
-      case 'j':
+;
+      case 'down':;
+      case 'j':;
         this.selectedIndex = Math.min(this.processes.size - 1, this.selectedIndex + 1);
         break;
     //     }
@@ -320,7 +320,7 @@ const __PROCESSES = [
 
       case 't': {
         // Create new task
-        const _sampleTasks = [
+        const _sampleTasks = [;
           'Implement new feature',
           'Fix critical bug',
           'Optimize performance',
@@ -331,7 +331,7 @@ const __PROCESSES = [
         break;
       //       }
 
-      case 'd':
+      case 'd':;
         // Complete selected task(simulate)
   if(this.tasks.length > 0) {
           const _pendingTasks = this.tasks.filter((t) => t.status === 'in_progress');
@@ -343,7 +343,7 @@ const __PROCESSES = [
           //           }
         //         }
         break;
-
+;
       case 's': {
         // Show swarm metrics
         const _metrics = this.swarmIntegration.getSwarmMetrics();
@@ -353,20 +353,20 @@ const __PROCESSES = [
             `Swarmefficiency = [];`)
         this.addLog('info', 'Logs cleared');
         break;
-
-      case 'f':
+;
+      case 'f':;
         this.addLog('info', 'Log filtering not yet implemented');
         break;
     //     }
   //   }
   addLog(level, message) {
     this.logs.push({time = Math.min(;
-      100,))
+      100,));
       Math.max(0, this.systemStats.cpuUsage + (Math.random() - 0.5) * 10));
     this.systemStats.memoryUsage = Math.min(;
-      100,)
+      100,);
       Math.max(0, this.systemStats.memoryUsage + (Math.random() - 0.5) * 5));
-
+;
     // Update process stats
   for(const [id, process] of this.processes) {
   if(process.status === 'running') {
@@ -394,7 +394,7 @@ const __PROCESSES = [
     process.status = 'running';
     process.pid = Math.floor(Math.random() * 10000) + 1000;
     process.uptime = 0;
-
+;
     this.addLog('success', `$process.name} started successfully`);
   //   }
 
@@ -436,3 +436,5 @@ const __PROCESSES = [
 // }
 
 }}}}}}}}}}}}})))
+
+*/*/]]]]]]]]]]]]]]]]]]]]]]]

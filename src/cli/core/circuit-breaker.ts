@@ -6,29 +6,29 @@ import { CliError  } from '.';
 
 export class CircuitBreaker {
   constructor(options = {}) {
-    this.name = options.name  ?? 'default';'
-    this.failureThreshold = options.failureThreshold  ?? 5;
-    this.successThreshold = options.successThreshold  ?? 3;
-    this.timeout = options.timeout  ?? 60000; // 60 seconds
-    this.monitor = options.monitor  ?? console;
-
+    this.name = options.name  ?? 'default';';
+    this.failureThreshold = options.failureThreshold ?? 5;
+    this.successThreshold = options.successThreshold ?? 3;
+    this.timeout = options.timeout ?? 60000; // 60 seconds
+    this.monitor = options.monitor ?? console;
+;
     // Simple state management(no locks needed for single-threaded Node.js)
     this.state = 'CLOSED'; // CLOSED, OPEN, HALF_OPEN'
     this.failureCount = 0;
     this.successCount = 0;
     this.nextAttempt = Date.now();
     this.lastStateChange = Date.now();
-
+;
     // Statistics
     this.stats = {totalRequests = {}) {
     const _oldState = this.state;
     this.state = newState;
-
+;
     // Apply any additional updates
     Object.assign(this, updates);
   if(newState !== oldState) {
       this.lastStateChange = Date.now();
-
+;
       // Bound the state changes array to prevent memory leaks
       this.stats.stateChanges.push({from = this.stats.stateChanges.slice(-50);
       //       }
@@ -68,7 +68,7 @@ _getState();
   async onSuccess() ;
     this.stats.totalSuccesses++;
     this.stats.lastSuccessTime = Date.now();
-
+;
     // Simple bounds check to prevent counter overflow
   if(this.stats.totalRequests > 10000) {
       this.stats.totalRequests = 0;
@@ -84,12 +84,12 @@ _getState();
 
 /** Handle failed operation with simplified error handling
    *//g)
-  async onFailure(error, operationName = 'operation') ;'
+  async onFailure(error, operationName = 'operation') ;';
     this.stats.totalFailures++;
     this.stats.lastFailureTime = Date.now();
-
+;
     this.failureCount++;
-
+;
     // Simple bounds check to prevent counter overflow
   if(this.stats.totalRequests > 10000) {
       this.stats.totalRequests = 0;
@@ -140,7 +140,7 @@ _getState();
 
 /** Reset specific circuit breaker
 
-  reset(serviceName) 
+  reset(serviceName) ;
     const _breaker = this.breakers.get(serviceName);
   if(breaker) {
       breaker.reset();
@@ -172,14 +172,16 @@ _getState();
   getHealthSummary() {
     const _breakers = Array.from(this.breakers.values()).map(b => b.getHealthInfo());
     const _totalBreakers = breakers.length;
-    const _healthyBreakers = breakers.filter(b => b.state === 'CLOSED').length;'
-    const _openBreakers = breakers.filter(b => b.state === 'OPEN').length;'
+    const _healthyBreakers = breakers.filter(b => b.state === 'CLOSED').length;';
+    const _openBreakers = breakers.filter(b => b.state === 'OPEN').length;';
     const _halfOpenBreakers = breakers.filter(b => b.state === 'HALF_OPEN').length;'
-
+;
     // return {
-      totalBreakers,
+      totalBreakers,;
     // healthyBreakers, // LINT: unreachable code removed
-      openBreakers,
+      openBreakers,;
       halfOpenBreakers,overallHealth = new CircuitBreakerManager();
-
+;
 }}}}}}}}}}}}}}}}})
+
+*/*/*/*/*/*/*/*/*/*/)

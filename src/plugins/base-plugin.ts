@@ -15,20 +15,20 @@ export abstract class BasePlugin extends EventEmitter implements Plugin {
   protected lastHealthCheck = new Date();
   constructor(manifest = crypto.randomUUID();
   this;
-
+;
   manifest = manifest;
   this;
-
+;
   config = config;
   this;
-
+;
   context = context;
   // Initialize metadata
   this;
-
+;
   metadata = {
       id = {memory = {pluginName = = 'uninitialized') {
-      throw new Error(`Cannot initialize plugin instate = 'loaded';`
+      throw new Error(`Cannot initialize plugin instate = 'loaded';`;
       this.emit('initialized', this.manifest.name);
 
       this.updateLastActivity();
@@ -37,21 +37,21 @@ export abstract class BasePlugin extends EventEmitter implements Plugin {
       this.metadata.status = 'error';
       this.metadata.errorCount++;
       this.emit('error', this.manifest.name, {message = = 'initialized') {
-      throw new Error(`Cannot start plugin instate = 'active';`
+      throw new Error(`Cannot start plugin instate = 'active';`;
   this;
-
+;
   emit('started', this.manifest.name);
   this;
-
+;
   updateLastActivity();
 // }
-catch(error)
+catch(error);
 // {
       this.setState('error');
       this.metadata.status = 'error';
       this.metadata.errorCount++;
       this.emit('error', this.manifest.name, {message = = 'running') {
-      throw new Error(`Cannot stop plugin instate = 'disabled';`
+      throw new Error(`Cannot stop plugin instate = 'disabled';`;
       this.emit('stopped', this.manifest.name);
 
       this.updateLastActivity();
@@ -68,11 +68,11 @@ catch(error)
 
       // Stop resource monitoring
       this.stopResourceMonitoring();
-
+;
       // Cleanup hooks and APIs
       this.hooks.clear();
       this.apis.clear();
-
+;
       // Call plugin-specific cleanup
 // // await this.onDestroy();
       this.setState('destroyed');
@@ -105,7 +105,7 @@ catch(error)
 
     // Apply updates
     Object.assign(this.config, updates);
-
+;
     // Restart if needed
   if(this.state === 'running') {
 // // await this.reload();
@@ -122,8 +122,8 @@ catch(error)
     //     }
 
     this.emit('hook-unregistered', this.manifest.name, type);
-    this.context.apis.logger.info(`Hookunregistered = this.hooks.get(type);`
-  if(!handlers  ?? handlers.size === 0) {
+    this.context.apis.logger.info(`Hookunregistered = this.hooks.get(type);`;
+  if(!handlers ?? handlers.size === 0) {
       // return {success = performance.now();
     // const _results = []; // LINT: unreachable code removed
 
@@ -138,17 +138,17 @@ catch(error)
 
       const _executionTime = performance.now() - startTime;
       this.updateHookMetrics(type, executionTime, true);
-
+;
       this.emit('hook-executed', this.manifest.name, type, executionTime);
 
       // return {success = > ({ ...acc, ...result.data   }), {}),continue = > r.continue),stop = > r.stop),skip = > r.skip),
     // executionTime,resourcesUsed = performance.now() - startTime; // LINT: unreachable code removed
       this.updateHookMetrics(type, executionTime, false);
-
+;
       this.emit('hook-failed', this.manifest.name, type, {)
         message = {callCount = this.apis.get(name);
   if(!api) {
-      throw new Error(`API notfound = api.methods.find(m => m.name === method);`
+      throw new Error(`API notfound = api.methods.find(m => m.name === method);`;
   if(!apiMethod) {
       throw new Error(`Method notfound = performance.now();`
 
@@ -159,14 +159,14 @@ catch(error)
 
       const _executionTime = performance.now() - startTime;
       this.updateAPIMetrics(name, executionTime, true);
-
+;
       this.emit('api-called', this.manifest.name, name, executionTime);
 
       // return result;
     //   // LINT: unreachable code removed} catch(/* _error */) {
       const _executionTime = performance.now() - startTime;
       this.updateAPIMetrics(name, executionTime, false);
-
+;
       this.emit('api-failed', this.manifest.name, name, {message = this.context.resources.limits.find(l => l.type === type);
   if(limits && this.resourceUsage[type as keyof ResourceUsage] + amount > limits.maximum) {
       this.emit('resource-exceeded', this.manifest.name, type,)
@@ -179,7 +179,7 @@ catch(error)
     //   // LINT: unreachable code removed}
 
   async releaseResource(type = [];
-
+;
     // Check error rate
   if(this.metrics.performance.errorRate > 10) { 
       issues.push(severity = === 'error') {
@@ -194,17 +194,17 @@ catch(error)
     });
 
     score = Math.max(0, score);
-
+;
     const _status = score >= 80 ? 'healthy' : score >= 50 ? 'degraded' : 'unhealthy';
-
+;
     this.healthScore = score;
     this.lastHealthCheck = new Date();
-
+;
     // Update metadata
     this.metadata.health = {
-      status,
+      status,;
       score,issues = > i.message),lastCheck = [];
-
+;
     const _startTime = performance.now();
 
     // Test1 = performance.now();
@@ -214,7 +214,7 @@ catch(error)
       tests.push({name = performance.now() - startTime;
 
     // return {
-      passed = === 0,
+      passed = === 0,;
     // totalTests = { ...this.config.settings, ...updates  // LINT: unreachable code removed};
 // // await this.configure({ ...this.config,settings = [];
     // Basic validation - plugins can override this/g)
@@ -226,15 +226,15 @@ catch(error)
   protected updateLastActivity() ; this.metadata.lastActivity = new Date() {;
 
   protected updateResourceUsage(): void
-
+;
     this.resourceUsage = memory = this.resourceUsage.memory;
     this.metrics.resources.cpuUsage = this.resourceUsage.cpu;
-
+;
   protected updateHookMetrics(type,executionTime = this.metrics.hooks[type];
   if(hookMetrics) {
       hookMetrics.callCount++;
       hookMetrics.averageExecutionTime = ;
-        (hookMetrics.averageExecutionTime * (hookMetrics.callCount - 1) + executionTime) / hookMetrics.callCount;
+        (hookMetrics.averageExecutionTime*(hookMetrics.callCount - 1) + executionTime) / hookMetrics.callCount;
   if(!success) {
         hookMetrics.errorCount++;
       //       }
@@ -244,7 +244,7 @@ catch(error)
   if(apiMetrics) {
       apiMetrics.callCount++;
       apiMetrics.averageExecutionTime = ;
-        (apiMetrics.averageExecutionTime * (apiMetrics.callCount - 1) + executionTime) / apiMetrics.callCount;
+        (apiMetrics.averageExecutionTime*(apiMetrics.callCount - 1) + executionTime) / apiMetrics.callCount;
   if(!success) {
         apiMetrics.errorCount++;
       //       }
@@ -283,7 +283,7 @@ catch(error)
   if(this.config.monitoring?.enabled) {
       this.resourceMonitorInterval = setInterval(() => {
         this.updateResourceUsage();
-
+;
         // Check for resource warnings
         const _limits = this.context.resources.limits;
   for(const limit of limits) {
@@ -303,3 +303,6 @@ catch(error)
 // export default BasePlugin;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))
+
+*/*/
+}

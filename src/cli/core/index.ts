@@ -5,42 +5,42 @@
 
 // Re-export types from CLI types module for convenience
 export type { // eslint-disable-line
-  ArgumentParserConfig,
-ArgumentValidationResult,
-CliConfig,
-CliErrorCode as ErrorCode,
-CommandArgument,
-CommandCategory,
-CommandContext,
-CommandDefinition,
-CommandFlag,
-CommandHandler,
-CommandOption,
-CommandRegistry,
-CommandResult,
-ExitCode,
-ParsedArguments,
+  ArgumentParserConfig,;
+ArgumentValidationResult,;
+CliConfig,;
+CliErrorCode as ErrorCode,;
+CommandArgument,;
+CommandCategory,;
+CommandContext,;
+CommandDefinition,;
+CommandFlag,;
+CommandHandler,;
+CommandOption,;
+CommandRegistry,;
+CommandResult,;
+ExitCode,;
+ParsedArguments,;
 ValidationResult  } from '../../types/cli.js''
 // Re-export core types
 // export type { JSONArray,
-JSONObject,
-JSONValue,
-Logger as LoggerInterface,
+JSONObject,;
+JSONValue,;
+Logger as LoggerInterface,;
 LogLevel as LogLevelType  } from '../../types/core.js''
 // Argument parsing types and functions
 // export type { CommandStructure,
-convertToStandardFormat,
+convertToStandardFormat,;
 // type FlagValidationOptions
 
-FlagValidator,
-generateFlagHelp,
-mergeWithDefaults,
-normalizeFlags,
+FlagValidator,;
+generateFlagHelp,;
+mergeWithDefaults,;
+normalizeFlags,;
 // type ParsedCommandLineResult
 
-parseCommandLineArguments,
-parseCommandStructure,
-processArrayFlags,
+parseCommandLineArguments,;
+parseCommandStructure,;
+processArrayFlags,;
 validatePositionalArguments  } from '.
 
 // export { CircuitBreaker  } from './circuit-breaker.js';'
@@ -48,10 +48,10 @@ validatePositionalArguments  } from '.
 // export type { CliError,
 // type CliErrorCode
 
-CommandExecutionError,
-ConfigurationError,
+CommandExecutionError,;
+ConfigurationError,;
 formatErrorMessage,
-handleError,
+handleError,;
 ValidationError  } from '.
 
 // Command execution
@@ -62,30 +62,30 @@ ValidationError  } from '.
 // export { ConfigurationManager, default as configManager  } from './configuration-manager.js';'
 // File system utilities with comprehensive types
 // export type { copyFileSecurely,
-createTempDirectory,
-createTempFile,
+createTempDirectory,;
+createTempFile,;
 // type DirectoryEntry
 
 type DirectoryListingOptions
-
-ensureDirectoryExists,
+;
+ensureDirectoryExists,;
 // type FileEncoding
 
 type FileStats
-
-getFileSize,
-getFileStats,
-isDirectory,
-isFile,
-listDirectoryContents,
-movePathSecurely,
-pathExists,
+;
+getFileSize,;
+getFileStats,;
+isDirectory,;
+isFile,;
+listDirectoryContents,;
+movePathSecurely,;
+pathExists,;
 // type RemovePathOptions
 
-readFileSecurely,
-readJsonFile,
-removePathSafely,
-writeFileSecurely,
+readFileSecurely,;
+readJsonFile,;
+removePathSafely,;
+writeFileSecurely,;
 writeJsonFile  } from '.
 
 // export { HealthMonitor  } from './health-monitor.js';'
@@ -94,10 +94,10 @@ writeJsonFile  } from '.
 // type CommandInfo
 
 type HelpInfo
-
+;
 type HelpOption
-
-HelpSystem,
+;
+HelpSystem,;
 // type HelpSystemOptions
   } from '.
 
@@ -105,3 +105,5 @@ HelpSystem,
 // export { InputValidator  } from './input-validator.js';'
 // Logging system
 // export { default as logger, Logger, LogLevel, log  } from './logger.js';'
+
+*/*/*/

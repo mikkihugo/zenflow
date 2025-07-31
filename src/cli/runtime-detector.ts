@@ -8,17 +8,19 @@ import process from 'node:process';'
 
 export const compat = {
     runtime = === 'win32' ? 'windows' : os.platform(),'
-arch = > process.pid,
-exit = > process.exit(code),
+arch = > process.pid,;
+exit = > process.exit(code),;
 onSignal = > process.on(signal, handler) },
-safeCall
+safeCall;
 =>
 // {
   try {
     // return // // await fn();
     //   // LINT: unreachable code removed} catch(error) {
-    console.error('Runtime error);'
+    console.error('Runtime error);';
     // return null;
     //   // LINT: unreachable code removed}
 // }
 // }
+
+*/*/

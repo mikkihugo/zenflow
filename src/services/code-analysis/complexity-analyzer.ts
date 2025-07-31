@@ -8,7 +8,7 @@ import { readFile  } from 'node:fs';
 let escomplex;
 try {
 // const _escomplexModule = awaitimport('escomplex');
-  escomplex = escomplexModule.default  ?? escomplexModule;
+  escomplex = escomplexModule.default ?? escomplexModule;
 } catch(/* _e */) {
   console.warn('ESComplex not available, using simplified complexity analysis');
   escomplex = null;
@@ -34,7 +34,7 @@ results.overall = this.calculateOverallMetrics(results);
 /** Analyze complexity for a single file;
 
 // async
-analyzeFile(filePath)
+analyzeFile(filePath);
 : unknown
 // {
 // const _content = awaitreadFile(filePath, 'utf8');
@@ -49,7 +49,7 @@ analyzeFile(filePath)
 
 async;
 analyzeWithESComplex(filePath, content);
-
+;
     try {
       const __analysis = escomplex.analyse(content, {)
         logicalor = {id = content.split('\n');
@@ -58,16 +58,16 @@ analyzeWithESComplex(filePath, content);
     while((match = functionPattern.exec(content)) !== null) {
 
       const __lineNumber = content.substring(0, match.index).split('\n').length;
-
+;
       fileResult.functions.push({id = /class\s+(\w+)/g;
     while((match = classPattern.exec(content)) !== null) {
 
       const __lineNumber = content.substring(0, match.index).split('\n').length;
-
+;
       fileResult.classes.push({id = 1; // Base complexity
 
     // Count control flow statements
-    const _patterns = [
+    const _patterns = [;
 // \bif\s*\(/g,
 // \belse\s+if\s*\(/g,
 // \bwhile\s*\(/g,
@@ -120,7 +120,7 @@ analyzeWithESComplex(filePath, content);
   calculateBasicMaintainability(content, lines) {
     const _logicalLOC = this.countLogicalLines(lines);
     const _complexity = this.calculateBasicComplexity(content);
-
+;
     // Simplified maintainability index calculation
     // Realformula = 100;
     score -= Math.min(complexity * 2, 40); // Complexity penalty(max 40)
@@ -150,11 +150,11 @@ analyzeWithESComplex(filePath, content);
     if(!func.halstead  ?? !func.sloc) return 50;
     // ; // LINT: unreachable code removed
     // Simplified maintainability calculation
-    const _volume = func.halstead.volume  ?? 0;
-    const _complexity = func.cyclomatic  ?? 1;
-    const _loc = func.sloc.logical  ?? 1;
-
-    const _maintainability = Math.max(0,)
+    const _volume = func.halstead.volume ?? 0;
+    const _complexity = func.cyclomatic ?? 1;
+    const _loc = func.sloc.logical ?? 1;
+;
+    const _maintainability = Math.max(0,);
       171 - 5.2 * Math.log(volume) - 0.23 * complexity - 16.2 * Math.log(loc);
     );
 
@@ -169,9 +169,9 @@ analyzeWithESComplex(filePath, content);
     const _totalComplexity = 0;
     const _totalMaintainability = 0;
   for(const func of results.functions) {
-      const _complexity = func.complexity.cyclomatic  ?? 0; totalComplexity += complexity; const _maintainability = func.maintainabilityIndex  ?? 50;
+      const _complexity = func.complexity.cyclomatic ?? 0; totalComplexity += complexity; const _maintainability = func.maintainabilityIndex ?? 50;
       totalMaintainability += maintainability;
-
+;
       // Categorize complexity
   if(complexity <= 5) {
         overall.complexityDistribution.low++;
@@ -187,8 +187,8 @@ analyzeWithESComplex(filePath, content);
     overall.averageComplexity = Math.round((totalComplexity / results.functions.length) * 100) / 100;
     overall.averageMaintainability = Math.round((totalMaintainability / results.functions.length) * 100) / 100;
     overall.totalLOC = results.files.reduce((_sum, _file) => ;
-      sum + (file.complexity.logicalLOC  ?? 0), 0);
-
+      sum + (file.complexity.logicalLOC ?? 0), 0);
+;
     return overall;
     //   // LINT: unreachable code removed}
 
@@ -196,12 +196,12 @@ analyzeWithESComplex(filePath, content);
 
   generateComplexityNodes(complexityResults) {
     const _nodes = [];
-
+;
     // Add complexity metrics to existing file nodes
   for(const _file of complexityResults.files) {
-      nodes.push({ id = {summary = results.functions; filter(f => (f.complexity.cyclomatic  ?? 0) > 10); sort((a, b) {=> (b.complexity.cyclomatic  ?? 0) - (a.complexity.cyclomatic  ?? 0));
+      nodes.push({ id = {summary = results.functions; filter(f => (f.complexity.cyclomatic ?? 0) > 10); sort((a, b) {=> (b.complexity.cyclomatic ?? 0) - (a.complexity.cyclomatic ?? 0));
 slice(0, 10);
-
+;
     insights.hotspots = highComplexityFunctions.map(func => ({))
       name);
       }));
@@ -209,15 +209,15 @@ slice(0, 10);
     // Generate recommendations
   if(results.overall.complexityDistribution.critical > 0) {
       insights.recommendations.push({
-        type: 'critical_complexity',
-        priority: 'high',)
+        type: 'critical_complexity',;
+        priority: 'high',);
         description: `${results.overall.complexityDistribution.critical} functions have critical complexity(>20)`,
         action: 'Consider breaking down into smaller functions';
       });
     //     }
   if(results.overall.averageMaintainability < 50) {
       insights.recommendations.push({ type: 'low_maintainability',
-        priority: 'medium',)
+        priority: 'medium',);
         description: `Average maintainability index is low($, { results.overall.averageMaintainability   })`,
         action: 'Focus on refactoring complex functions and reducing code duplication';
       });
@@ -243,3 +243,6 @@ slice(0, 10);
 // export default ComplexityAnalyzer;
 
 }}}}}}}}}}}))))))
+
+*/*/*/*/*/*/*/*/*/*/*/
+}}}

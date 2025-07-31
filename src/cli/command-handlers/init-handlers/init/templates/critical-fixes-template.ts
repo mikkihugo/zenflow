@@ -5,7 +5,7 @@
 export const criticalFixesTemplate = `# Critical System Fixes Applied
 
 This Claude Flow project includes critical upstream fixes that prevent commonissues = await TimeoutProtection.checkRuvSwarmAvailableWithTimeout();
-
+;
 // Execute hooks with timeout protection
 // const _result = awaitTimeoutProtection.execRuvSwarmHookWithTimeout('pre-task', params);
 
@@ -17,13 +17,13 @@ TimeoutProtection.setupSafeExit();
 
 **Problem Solved**: 2-minute timeouts with backticks and command substitution in GitHub CLI operations
 
-**Features Added**:
+**Features Added**;
 - Safe handling of special characters(\`, \$, ", newlines);
 - Temporary file approach for complex content;
 - Command substitution sanitization;
 - Repository name validation
 
-**Usage**:
+**Usage**;
 \`\`\`javascript;
 // Import GitHub CLI safety utilities
 import GitHubCliSafe from './src/utils/github-cli-safe.js';
@@ -59,7 +59,7 @@ Update agentspawning = === 'analyst') { /* spawn analyst */ }
 
 ## 7. Backward Compatibility
 
-All changes are backward compatible: null
+All changes are backward compatible: null;
 - Existing hook calls continue to work;
 - Legacy agent names are automatically mapped;
 - GitHub CLI operations are enhanced, not replaced;
@@ -82,3 +82,6 @@ All changes are backward compatible: null
 Your Claude Flow project is now protected against hanging processes and common injection vulnerabilities! ;
 `;
 export default criticalFixesTemplate;
+
+*/*/
+}}))

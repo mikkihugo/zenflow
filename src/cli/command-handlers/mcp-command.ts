@@ -6,25 +6,25 @@
 import { printSuccess  } from '..';
 
 export async function mcpCommand() {
-  case 'status': null
+  case 'status': null;
 // await showMcpStatus(subArgs, flags)
   break;
-  case 'start': null
+  case 'start': null;
 // // await startMcpServer(subArgs, flags)
   break;
-  case 'stop': null
+  case 'stop': null;
 // // await stopMcpServer(subArgs, flags)
   break;
-  case 'tools': null
+  case 'tools': null;
 // // await listMcpTools(subArgs, flags)
   break;
-  case 'auth': null
+  case 'auth': null;
 // // await manageMcpAuth(subArgs, flags)
   break;
-  case 'config': null
+  case 'config': null;
 // // await showMcpConfig(subArgs, flags)
   break;
-  default = subArgs.includes('--auto-orchestrator')  ?? flags.autoOrchestrator
+  default = subArgs.includes('--auto-orchestrator')  ?? flags.autoOrchestrator;
   const __daemon = subArgs.includes('--daemon') ?? flags.daemon;
   const _stdio = subArgs.includes('--stdio') ?? flags.stdio ?? true; // Default to stdio mode
   if(stdio) {
@@ -52,9 +52,9 @@ export async function mcpCommand() {
     // Keep the process alive
 // // await new Promise(() => ) // Never resolves, keeps server running
   //   }
-  catch(error)
+  catch(error);
   //   {
-    console.error('Failed to start MCPserver = getFlag(subArgs, '--port')  ?? flags.port  ?? 3000;'
+    console.error('Failed to start MCPserver = getFlag(subArgs, '--port')  ?? flags.port ?? 3000;';
     const _host = getFlag(subArgs, '--host') ?? flags.host ?? 'localhost';
     printSuccess(`Starting Claude Flow MCP server on ${host});`
     console.warn(' HTTP mode not yet implemented, use --stdio for full functionality');
@@ -68,7 +68,7 @@ printSuccess('Claude-Flow MCP Tools & Resources(87 total):');
   console.warn('   swarm_init            Initialize swarm with topology');
   console.warn('   agent_spawn           Create specialized AI agents');
   console.warn('   task_orchestrate      Orchestrate complex workflows');
-  console.warn('   swarm_status          Monitor swarm health
+  console.warn('   swarm_status          Monitor swarm health;
   console.warn('   agent_list            List active agents & capabilities');
   console.warn('   agent_metrics         Agent performance metrics');
   console.warn('   swarm_monitor         Real-time swarm monitoring');
@@ -178,9 +178,9 @@ printSuccess('Claude-Flow MCP Tools & Resources(87 total):');
   console.warn('\n DETAILED TOOLINFORMATION = <category> --verbose');
 // }
 async function _manageMcpAuth() {
-  case 'setup': null
-  printSuccess('Setting up MCP authentication...')
-  console.warn(' Authenticationconfiguration = args.indexOf(flagName);'
+  case 'setup': null;
+  printSuccess('Setting up MCP authentication...');
+  console.warn(' Authenticationconfiguration = args.indexOf(flagName);';
   return index !== -1 && index + 1 < args.length ? args[index + 1] ;
 // }
 function _showMcpHelp() {
@@ -189,8 +189,10 @@ function _showMcpHelp() {
   console.warn('  claude-zen mcp config');
   console.warn('  claude-zen mcp auth setup');
   console.warn();
-  console.warn(' Total);'
+  console.warn(' Total);';
   console.warn(' Full ruv-swarm + DAA + Claude-Flow integration');
 // }
 
 }}})))))
+
+*/*/

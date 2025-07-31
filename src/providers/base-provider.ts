@@ -18,20 +18,20 @@ export abstract class BaseProvider extends EventEmitter implements IBaseProvider
   // Simple health check - try to get models
   await;
   this;
-
+;
   getModels();
   const;
   responseTime = Date.now() - startTime;
   this;
-
+;
   updateHealthStatus(true, responseTime);
   this;
-
+;
   emit('health_check', {provider = new Date();
   const;
   timeSinceLastCheck = now.getTime() - this.lastHealthCheck.getTime();
   // Auto health check if it's been too long'
-  if(timeSinceLastCheck > (this.config.healthCheckInterval  ?? 300000);
+  if(timeSinceLastCheck > (this.config.healthCheckInterval ?? 300000);
   ) {
 // // await this.
   healthCheck();
@@ -45,8 +45,8 @@ this.metrics.latencyP99 = sorted[p99Index] ?? 0;
 // return { ...this.metrics };
 // }
 // Protected helper methods
-protected
-validateRequest(request)
+protected;
+validateRequest(request);
 : void
 // {
   if(!request.messages ?? request.messages.length === 0) {
@@ -58,7 +58,7 @@ validateRequest(request)
   if(!this.capabilities.models?.includes(request.model)) {
     throw new ProviderError(;
     `Model ${request.model} not supported`,
-    this.name,
+    this.name,;
     ('MODEL_NOT_SUPPORTED');
     //     )
   //   }
@@ -68,9 +68,9 @@ calculateCost(usage = (usage.promptTokens / 1000) * this.pricing.inputTokenPrice
 const _outputCost = (usage.completionTokens / 1000) * this.pricing.outputTokenPrice;
 // return inputCost + outputCost;
 // }
-protected
-updateMetrics(request = error.constructor.name
-this.metrics.errorsByType[errorType] = (this.metrics.errorsByType[errorType] ?? 0) + 1
+protected;
+updateMetrics(request = error.constructor.name;
+this.metrics.errorsByType[errorType] = (this.metrics.errorsByType[errorType] ?? 0) + 1;
 } else
 // {
   this.metrics.successfulRequests++;
@@ -90,14 +90,14 @@ this.metrics.errorsByType[errorType] = (this.metrics.errorsByType[errorType] ?? 
   this.responseTimeHistory.reduce((sum, time) => sum + time, 0) / this.responseTimeHistory.length;
 // }
 // }
-protected
-  updateHealthStatus(healthy = healthy
+protected;
+  updateHealthStatus(healthy = healthy;
 this.lastHealthCheck = new Date() {}
   if(healthy && responseTime > 0) {
   this.responseTimeHistory.push(responseTime);
 // }
 // }
-protected
+protected;
   getAverageResponseTime() {}
 : number
 // {
@@ -114,8 +114,8 @@ getErrorRate();
 // }
 protected;
 async;
-withRetry<T>(operation = > Promise<T>,
-maxRetries = this.config.retryAttempts  ?? 3,
+withRetry<T>(operation = > Promise<T>,;
+maxRetries = this.config.retryAttempts ?? 3,;
 delay = this.config.retryDelay ?? 1000;
 // )
 : Promise<T>
@@ -128,7 +128,7 @@ delay = this.config.retryDelay ?? 1000;
     // return // await operation();
     //   // LINT: unreachable code removed} catch(error) {
     lastError = error;
-
+;
     // Don't retry on certain error types'
     if(;
       error instanceof ProviderError &&;
@@ -161,38 +161,40 @@ emitRequest(request);
 : void
 // {
   this.emit('request', {
-    type: 'request',
-  provider: this.name,)
-  timestamp: new Date(),
-  id: request.id,
-  model: request.model,
+    type: 'request',;
+  provider: this.name,);
+  timestamp: new Date(),;
+  id: request.id,;
+  model: request.model,;
   messageCount: request.messages.length })
 // }
-protected
-emitResponse(response)
+protected;
+emitResponse(response);
 : void
 // {
   this.emit('response', {
-    type: 'response',
-  provider: this.name,)
-  timestamp: new Date(),
-  id: response.id,
-  model: response.model,
-  usage: response.usage,
+    type: 'response',;
+  provider: this.name,);
+  timestamp: new Date(),;
+  id: response.id,;
+  model: response.model,;
+  usage: response.usage,;
   responseTime: response.responseTime })
 // }
-protected
-emitError(error, request?)
+protected;
+emitError(error, request?);
 : void
 // {
   this.emit('error', {
-    type: 'error',
-  provider: this.name,)
-  timestamp: new Date(),
-  error: error.message,
-  requestId: request?.id,
+    type: 'error',;
+  provider: this.name,);
+  timestamp: new Date(),;
+  error: error.message,;
+  requestId: request?.id,;
   model: request?.model })
 // }
 // }
 
 ))))
+
+*/*/

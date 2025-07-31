@@ -6,13 +6,13 @@ import { parentPort  } from 'node:worker_threads';'
 class SwarmWorker {
   constructor(workerId = workerId;
   this;
-
+;
   isShuttingDown = false;
   this;
-
+;
   currentTask = null;
   console;
-
+;
   warn(` Swarm worker ${this.workerId} initialized`);`
 // }
 
@@ -21,7 +21,7 @@ class SwarmWorker {
 initialize();
 // {
   if(!parentPort) {
-    throw new Error('Worker must be run in a worker thread');'
+    throw new Error('Worker must be run in a worker thread');';
   //   }
   // Listen for messages from main thread
   parentPort.on('message', (message) => {'
@@ -31,43 +31,43 @@ initialize();
   parentPort.postMessage({type = message;
   try {)
   switch(type) {
-        case 'execute-task':'
+        case 'execute-task':';
 // // // await this.executeTask(task);
           break;
-        case 'shutdown':'
+        case 'shutdown':';
 // // // await this.shutdown();
           break;default = task;
     const _startTime = Date.now();
-
+;
     try {
       console.warn(` Worker ${this.workerId} executing task ${task.id} ($, { task.type })`);`
 
       // Send progress update
       this.sendProgress(task.id, {status = // // await this.executeAgentSpawn(task);
           break;
-        case 'task-coordination':'
+        case 'task-coordination':';
           result = // // await this.executeTaskCoordination(task);
           break;
-        case 'neural-analysis':'
+        case 'neural-analysis':';
           result = // // await this.executeNeuralAnalysis(task);
           break;
         case 'performance-optimization':'
           result = // // await this.executePerformanceOptimization(task);
           break;
-        case 'code-analysis':'
+        case 'code-analysis':';
           result = // // await this.executeCodeAnalysis(task);
           break;
-        case 'research-task':'
+        case 'research-task':';
           result = // // await this.executeResearchTask(task);
           break;
-        case 'testing-task':'
+        case 'testing-task':';
           result = // // await this.executeTestingTask(task);
           break;
         default = // // await this.executeGenericTask(task);
       //       }
 
       const _executionTime = Date.now() - startTime;
-
+;
       // Send completion message
       this.sendCompletion(task.id, {
 ..result,
@@ -77,7 +77,7 @@ initialize();
 
 /** Execute agent spawning task
 
-  async;)
+  async;);
   executeAgentSpawn(task);
   : unknown
   //   {
@@ -127,7 +127,7 @@ analyzeComplexity(codebase);
   // return {cyclomaticComplexity = Math.floor(Math.random() * 50) + 20
   // const __passed = Math.floor(totalTests * 0.92); // LINT: unreachable code removed
   // return {
-      type,
+      type,;
   // target,total = > setTimeout(resolve, ms)); // LINT: unreachable code removed
 // }
 
@@ -160,3 +160,6 @@ process.on('unhandledRejection', (reason, _promise) => {'
   });
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))))))
+
+*/*/*/*/*/*/
+}

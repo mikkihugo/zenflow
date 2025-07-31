@@ -10,11 +10,11 @@ white = > `\x1b[37m${text}\x1b[0m`,
 yellow = > `\x1b[33m${text}\x1b[0m`,
 green = > `\x1b[32m${text}\x1b[0m`,
 red = > `\x1b[31m${text}\x1b[0m` }
-const __PROCESSES = [
+const __PROCESSES = [;
   {id = new Map();
     this.running = true;
     this.selectedIndex = 0;
-
+;
     // Initialize process states
     PROCESSES.forEach((p) => {
       this.processes.set(p.id, {
@@ -22,11 +22,11 @@ const __PROCESSES = [
   for(const [_id, process] of this.processes) {
       const _selected = index === this.selectedIndex; const _prefix = selected ? colors.yellow(' ') : '  '; const _status = this.getStatusIcon(process.status) {;
       const _name = selected ? colors.yellow(process.name) : colors.white(process.name);
-
+;
       console.warn(`${prefix}[${index + 1}] ${status} ${name}`);
       console.warn(`${colors.gray(process.description)}`);
   if(process.status === 'running') {
-        console.warn(;)
+        console.warn(;);
           `\${colors.gray(`PID = new TextDecoder();
     const _encoder = new TextEncoder();
 // // await node.stdout.write(encoder.encode('\nCommand = new Uint8Array(1024);'
@@ -34,10 +34,10 @@ const __PROCESSES = [
     if(n === null) return;
     // ; // LINT}
         break;
-
-      case ' ':
-      case 'enter':
-      case '':
+;
+      case ' ':;
+      case 'enter':;
+      case '':;
 // // await this.toggleSelected();
         break;default = > setTimeout(resolve, 1000));
         //         }
@@ -59,13 +59,13 @@ const __PROCESSES = [
     // ; // LINT: unreachable code removed
     console.warn(colors.yellow(`Starting $process.name}...`));
     process.status = 'starting';
-
+;
     // Simulate startup
 // // await new Promise((resolve) => setTimeout(resolve, 500));
     process.status = 'running';
     process.pid = Math.floor(Math.random() * 10000) + 1000;
     process.uptime = 0;
-
+;
     console.warn(colors.green(` ${process.name} started`));
 
     // Start uptime counter
@@ -121,3 +121,5 @@ const __PROCESSES = [
 // }
 
 })))))
+
+*/*/]]]]]]]]]]]]]

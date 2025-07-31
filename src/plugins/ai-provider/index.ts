@@ -26,8 +26,8 @@ initialize();
 abstract;
 generateText(prompt = false;
 // }
-protected
-parseJSONResponse(text)
+protected;
+parseJSONResponse(text);
 : unknown
 // {
   try {
@@ -46,14 +46,14 @@ parseJSONResponse(text)
 class ClaudeProvider extends BaseProvider {
   // private apiKey = 'https = true;'
   this;
-
+;
   supportsVision = true;
   this;
-
-  apiKey = config.claudeApiKey  ?? config.apiKey  ?? process.env.ANTHROPIC_API_KEY  ?? '';
+;
+  apiKey = config.claudeApiKey ?? config.apiKey ?? process.env.ANTHROPIC_API_KEY  ?? '';
   this;
-
-  model = config.claudeModel  ?? config.model  ?? 'claude-3-sonnet-20240229';
+;
+  model = config.claudeModel ?? config.model  ?? 'claude-3-sonnet-20240229';
 // }
 
 async;
@@ -63,7 +63,7 @@ initialize();
     throw new Error('Claude API key not configured');
   //   }
   this.isReady = true;
-
+;
 async;
 generateText(prompt, (options = {}));
 : Promise<AIProviderResponse>;
@@ -84,7 +84,7 @@ generateText(prompt, (options = {}));
 // const _response = awaitfetch(`${this.baseUrl}/messages`, {method = stream.getReader();
     const _decoder = new TextDecoder();
     let _buffer = '';
-
+;
     try {
   while(true) {
         const { done, value } = // await reader.read();
@@ -117,8 +117,8 @@ class OpenAIProvider extends BaseProvider {
   // private apiKey = true;
     this.supportsEmbeddings = true;
     this.supportsVision = true;
-    this.apiKey = config.openaiApiKey  ?? config.apiKey  ?? process.env.OPENAI_API_KEY  ?? '';
-    this.baseUrl = config.openaiBaseUrl  ?? 'https = config.openaiModel  ?? config.model  ?? 'gpt-4-turbo-preview';'
+    this.apiKey = config.openaiApiKey ?? config.apiKey ?? process.env.OPENAI_API_KEY  ?? '';
+    this.baseUrl = config.openaiBaseUrl  ?? 'https = config.openaiModel ?? config.model  ?? 'gpt-4-turbo-preview';';
     this.embeddingModel = config.embeddingModel  ?? 'text-embedding-3-small';
   //   }
 
@@ -155,7 +155,7 @@ class OpenAIProvider extends BaseProvider {
 // const _response = awaitfetch(`\$this.baseUrl/chat/completions`, {method = stream.getReader();
     // const _decoder = new TextDecoder(); // LINT: unreachable code removed
     let _buffer = '';
-
+;
     try {
   while(true) {
         const { done, value } = // await reader.read();
@@ -218,7 +218,7 @@ class OpenAIProvider extends BaseProvider {
     this.providers.clear() {;
     this.cache.clear();
     this.rateLimiter.clear();
-
+;
   // Public API methods
   async generateText(prompt = {}): Promise<AIProviderResponse> ;
     // return this.executeWithRetry(async() => {
@@ -237,7 +237,7 @@ class OpenAIProvider extends BaseProvider {
         // Update metrics
         const _latency = performance.now() - startTime;
         this.updateMetrics(result, latency);
-
+;
         // Cache result
   if(this.config.settings.caching?.enabled && !options.noCache) {
 // // await this.saveToCache(cacheKey, result);
@@ -262,7 +262,7 @@ class OpenAIProvider extends BaseProvider {
 
         // Validate against schema(basic validation)
         this.validateSchema(result, schema);
-
+;
         // Update metrics
         const __latency = performance.now() - startTime;
         this.updateMetrics({ text = {  }): Promise<EmbeddingResponse> {
@@ -274,7 +274,7 @@ class OpenAIProvider extends BaseProvider {
 // const __result = awaitthis.activeProvider?.createEmbedding(text, options);
     // this.emit('embedding_created', { dimensions = { // LINT: unreachable code removed}): Promise<StreamingResponse> {
     const _requestId = crypto.randomBytes(8).toString('hex');
-
+;
     try {
       // Rate limiting
 // // await this.checkRateLimit();
@@ -292,7 +292,7 @@ class OpenAIProvider extends BaseProvider {
     // ; // LINT: unreachable code removed
     } catch(error)
       this.emit('stream_error', requestId, error = ;
-
+;
   for(const [name, _provider] of this.providers) {
       providers[name] = {
         status = {claude = this.config.settings.provider  ?? 'claude'; const _PrimaryClass = providerClasses[primaryProvider as keyof typeof providerClasses]; if(PrimaryClass) {
@@ -310,8 +310,8 @@ class OpenAIProvider extends BaseProvider {
           this.providers.set(fallbackName, provider);
         } catch(error) {
           this.context.apis.logger.warn(`Failed to initialize fallback ${fallbackName}`, {error = > Promise<T>): Promise<T> {
-    const _maxAttempts = this.config.settings.retryAttempts  ?? 3;
-    const _retryDelay = this.config.settings.retryDelay  ?? 1000;
+    const _maxAttempts = this.config.settings.retryAttempts ?? 3;
+    const _retryDelay = this.config.settings.retryDelay ?? 1000;
     const __lastError = 0; attempt <= maxAttempts; attempt++) ;
       try {
   if(this.activeProvider) {
@@ -331,7 +331,7 @@ class OpenAIProvider extends BaseProvider {
               const _fallbackName = fallbackProviders[fallbackIndex];
               const _fallbackProvider = this.providers.get(fallbackName);
   if(fallbackProvider) {
-                this.context.apis.logger.info(`Switching to fallbackprovider = fallbackProvider;`
+                this.context.apis.logger.info(`Switching to fallbackprovider = fallbackProvider;`;
               //               }
             //             }
           //           }
@@ -348,19 +348,19 @@ class OpenAIProvider extends BaseProvider {
     // ; // LINT: unreachable code removed
     const _now = Date.now();
     const _minute = Math.floor(now / 60000);
-
+;
     if(!this.rateLimiter.has(minute)) {
       this.rateLimiter.set(minute, {requests = this.rateLimiter.get(minute)!;
 
     // Check concurrent requests
-    if(this.activeRequests >= (rateLimitConfig.concurrentRequests  ?? 5)) {
+    if(this.activeRequests >= (rateLimitConfig.concurrentRequests ?? 5)) {
 // // await new Promise<void>(resolve => {
         this.requestQueue.push(resolve);
       });
     //     }
 
     // Check rate limits
-    if(currentMinute.requests >= (rateLimitConfig.requestsPerMinute  ?? 60)) {
+    if(currentMinute.requests >= (rateLimitConfig.requestsPerMinute ?? 60)) {
       const _waitTime = (minute + 1) * 60000 - now;
       this.context.apis.logger.info(`Rate limit reached, waiting ${waitTime}ms`);
 // // await new Promise(resolve => setTimeout(resolve, waitTime));
@@ -378,18 +378,18 @@ class OpenAIProvider extends BaseProvider {
       resolve?.();
     //     }
 
-  // private updateMetrics(result = (result.usage.inputTokens  ?? 0) + (result.usage.outputTokens  ?? 0);
+  // private updateMetrics(result = (result.usage.inputTokens ?? 0) + (result.usage.outputTokens ?? 0);
     //     }
 
     // Update average latency
     this.metrics.averageLatency = ;
-      (this.metrics.averageLatency * (this.metrics.successfulRequests - 1) + latency) / ;
+      (this.metrics.averageLatency*(this.metrics.successfulRequests - 1) + latency) / ;
       this.metrics.successfulRequests;
-
+;
     // Update provider usage
     const _providerName = this.activeProvider!.name;
     this.metrics.providerUsage.set(;
-      providerName,)
+      providerName,);
       (this.metrics.providerUsage.get(providerName)  ?? 0) + 1;
     );
 
@@ -406,7 +406,7 @@ class OpenAIProvider extends BaseProvider {
   // private async getFromCache(key = this.cache.get(key);
     if(!cached) return null;
     // ; // LINT: unreachable code removed
-    const _ttl = this.config.settings.caching?.ttl  ?? 3600000;
+    const _ttl = this.config.settings.caching?.ttl ?? 3600000;
     if(Date.now() - cached.timestamp > ttl) {
       this.cache.delete(key);
       // return null;
@@ -415,7 +415,7 @@ class OpenAIProvider extends BaseProvider {
     // return cached.data;
     //   // LINT: unreachable code removed}
 
-  // private async saveToCache(key = this.config.settings.caching?.maxSize  ?? 100;
+  // private async saveToCache(key = this.config.settings.caching?.maxSize ?? 100;
   if(this.cache.size > maxSize) { 
       const _oldest = Array.from(this.cache.entries());
 sort(([ a], [ b]) => a.timestamp - b.timestamp)[0];
@@ -431,11 +431,11 @@ sort(([ a], [ b]) => a.timestamp - b.timestamp)[0];
       const _cachePath = join(this.config.settings.caching?.path  ?? './.hive-mind/ai-cache', 'cache.json');
 // const _data = awaitreadFile(cachePath, 'utf8');
       const _parsed = JSON.parse(data);
-
+;
       // Load valid entries
       const _now = Date.now();
-      const _ttl = this.config.settings.caching?.ttl  ?? 3600000;
-
+      const _ttl = this.config.settings.caching?.ttl ?? 3600000;
+;
       for (const [key, value] of Object.entries(parsed)) {
         const _cached = value as {data = ttl) {
           this.cache.set(key, cached); //         }
@@ -461,7 +461,7 @@ sort(([ a], [ b]) => a.timestamp - b.timestamp)[0];
 // await writeFile(logPath, JSON.stringify(logEntry) + '\n', {flag = === 'object' && schema.properties) {
       for (const [key, prop] of Object.entries(schema.properties)) {
         const _propSchema = prop as JSONObject; if(propSchema.required && !(key in data)) {
-          throw new Error(`Missing requiredproperty = text.split(' '); `
+          throw new Error(`Missing requiredproperty = text.split(' '); `;
   for(const word of words) {
         yield `${word} `;
         // await new Promise(resolve => setTimeout(resolve, 50)); // Simulate streaming
@@ -472,7 +472,7 @@ sort(([ a], [ b]) => a.timestamp - b.timestamp)[0];
 
   // private wrapStream(stream = this;
     const _totalTokens = 0;
-
+;
     async function* _wrappedGenerator() {
       try {
         for await(const chunk of stream) {
@@ -494,3 +494,6 @@ sort(([ a], [ b]) => a.timestamp - b.timestamp)[0];
 // export default AIProviderPlugin;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}) {)))))))))))))))))))))))))
+
+*/*/
+}}}

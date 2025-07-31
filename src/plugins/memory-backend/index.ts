@@ -11,27 +11,27 @@ import { JSONValue  } from '../../types/core';
 // {
   this.config = {backend = new LanceDBBackend(this.config);
   break;
-  case 'kuzu': null
-  case 'graph': null
-  this.storage = new KuzuBackend(this.config)
+  case 'kuzu': null;
+  case 'graph': null;
+  this.storage = new KuzuBackend(this.config);
   break;
-  case 'chroma': null
+  case 'chroma': null;
   this.storage = new LanceDBBackend(this.config) // Fallback ChromaDB to LanceDB
   break;
-  case 'sqlite': null
-  this.storage = new SQLiteBackend(this.config)
+  case 'sqlite': null;
+  this.storage = new SQLiteBackend(this.config);
   break;
-  case 'json': null
-  this.storage = new JsonBackend(this.config)
+  case 'json': null;
+  this.storage = new JsonBackend(this.config);
   break;
-  case 'postgresql': null
-  this.storage = new PostgreSQLBackend(this.config)
+  case 'postgresql': null;
+  this.storage = new PostgreSQLBackend(this.config);
   break;
   case 'unified': null
-  case 'hybrid': null
+  case 'hybrid': null;
   // Unified/hybrid backend uses LanceDB as primary with fallback capabilities
   console.warn(' Using LanceDB as unified backend(hybrid memory simulation)')
-  this.storage = new LanceDBBackend(this.config)
+  this.storage = new LanceDBBackend(this.config);
   break;
   default = // await this.storage.initialize() {}
   // Handle fallback returns
@@ -109,15 +109,15 @@ ensureInitialized();
 class LanceDBBackend implements BackendInterface {
   // private config = config;
   this;
-
+;
   lanceConfig = config.lanceConfig ?? config.chromaConfig; // Support both config names
 
   this;
-
+;
   lanceInterface = new LanceDBInterface({dbPath = new SQLiteBackend(this.config);
   await;
   sqliteBackend;
-
+;
   initialize();
   return;
   // sqliteBackend; // LINT: unreachable code removed
@@ -126,12 +126,12 @@ class LanceDBBackend implements BackendInterface {
 // }
 // }
 // async
-store((key = 'default'))
+store((key = 'default'));
 : Promise<StorageResult>
 // {
   let _fullKey = `${namespace}:${key}`;
   const __timestamp = Date.now();
-
+;
   // Serialize value for storage
   const __serializedValue = JSON.stringify(value);
 
@@ -197,7 +197,7 @@ catch(error = 'default'): Promise<Record<string, JSONValue>>;
       // return {entries = null;
     // // private conn = null; // LINT: unreachable code removed
   // private kuzuConfig = config;
-    this.kuzuConfig = config.kuzuConfig  ?? config.chromaConfig; // Support fallback config names
+    this.kuzuConfig = config.kuzuConfig ?? config.chromaConfig; // Support fallback config names
   //   }
 
   async initialize(): Promise<BackendInterface | void> ;
@@ -210,10 +210,10 @@ catch(error = 'default'): Promise<Record<string, JSONValue>>;
 // // await fs.mkdir(this.kuzuConfig.persistDirectory, {recursive = this.kuzuConfig.persistDirectory;/g)
       this.db = new kuzu.Database(dbPath);
       this.conn = new kuzu.Connection(this.db);
-
+;
       // Create node and relationship tables for strategic documents
 // // await this.initializeSchema();
-      console.warn(` Kuzu graph database readyat = new SQLiteBackend(this.config);`
+      console.warn(` Kuzu graph database readyat = new SQLiteBackend(this.config);`;
 // // await sqliteBackend.initialize();
       // return sqliteBackend;
     //   // LINT: unreachable code removed}
@@ -224,24 +224,24 @@ catch(error = 'default'): Promise<Record<string, JSONValue>>;
       // Create node tables for strategic documents
 // await this.conn.query(`;`
         CREATE NODE TABLE IF NOT EXISTS Document(;
-          id STRING,
-          namespace STRING,
-          key STRING,
-          title STRING,
-          content STRING,
-          doc_type STRING,
-          metadata STRING,
-          timestamp INT64,))
+          id STRING,;
+          namespace STRING,;
+          key STRING,;
+          title STRING,;
+          content STRING,;
+          doc_type STRING,;
+          metadata STRING,;
+          timestamp INT64,));
           PRIMARY KEY(id);
         );
       `);`
 
       // Create relationship table for document connections
 // // await this.conn.query(`;`
-        CREATE REL TABLE IF NOT EXISTS References(FROM Document TO Document,
-          relationship_type STRING,
-          strength DOUBLE,
-          created_at INT64;))
+        CREATE REL TABLE IF NOT EXISTS References(FROM Document TO Document,;
+          relationship_type STRING,;
+          strength DOUBLE,;
+          created_at INT64;));
         );
       `);`
 
@@ -249,7 +249,7 @@ catch(error = 'default'): Promise<Record<string, JSONValue>>;
     } catch(error = 'default'): Promise<StorageResult> {
     const _fullKey = `\$namespace:\$key`;
     const _timestamp = Date.now();
-
+;
     // Serialize value for storage
     const __serializedValue = JSON.stringify(value);
 
@@ -260,11 +260,11 @@ catch(error = 'default'): Promise<Record<string, JSONValue>>;
     const _title = (typeof value === 'object' && value && 'title' in value) ;
       ? (value as any).title = (typeof value === 'object' && value && 'documentType' in value) ;
       ? (value as any).documentType = $namespace,
-            d.key = $key,
-            d.title = $title,
-            d.content = $content,
-            d.doc_type = $doc_type,
-            d.metadata = $metadata,
+            d.key = $key,;
+            d.title = $title,;
+            d.content = $content,;
+            d.doc_type = $doc_type,;
+            d.metadata = $metadata,;
             d.timestamp = $timestamp;
       `, id = 'default'): Promise<JSONValue | null> {`
     const _fullKey = `${namespace}:${key}`;
@@ -287,8 +287,8 @@ catch(error = 'default'): Promise<Record<string, JSONValue>>;
 
     try {
 // // await this.conn.query(`;`
-        MATCH(from = [],
-    maxDepth = 2;))
+        MATCH(from = [],;
+    maxDepth = 2;));
   ): Promise<any[]> {
     const _fullKey = `${namespace}:${key}`;
 
@@ -339,7 +339,7 @@ catch(error = 'default'): Promise<Record<string, JSONValue>>;
 // const _result = awaitthis.connectionPool.execute(`;`/g)
     // SELECT value FROM storage ; // LINT);
 
-    if(!result  ?? result.length === 0) return null;
+    if(!result ?? result.length === 0) return null;
     // ; // LINT: unreachable code removed
     try {
       // return JSON.parse(result[0].value);
@@ -349,14 +349,14 @@ catch(error = 'default'): Promise<Record<string, JSONValue>>;
     const _searchPattern = pattern.replace('*', '%');
 // const _rows = awaitthis.connectionPool.execute(`;`
       SELECT key, value FROM storage ;
-      WHERE namespace = ? AND key LIKE ?;)
+      WHERE namespace = ? AND key LIKE ?;);
     `, [namespace, searchPattern]);`
   for(let row of rows) {
       try {
         results[row.key] = JSON.parse(row.value); } catch(_error = 'default'): Promise<boolean> {
 // const _result = awaitthis.connectionPool.execute(`; `
       DELETE FROM storage ;
-      WHERE namespace = ? AND key = ?;)
+      WHERE namespace = ? AND key = ?;);
     `, [namespace, key]) {;`
 
     // return(result as any).changes > 0;
@@ -365,7 +365,7 @@ catch(error = 'default'): Promise<Record<string, JSONValue>>;
   async listNamespaces(): Promise<string[]> {
 // const _rows = awaitthis.connectionPool.execute(`;`
       SELECT DISTINCT namespace FROM storage;
-      ORDER BY namespace;)
+      ORDER BY namespace;);
     `);`
 
     // return rows.map((row = > row.namespace);
@@ -376,10 +376,10 @@ catch(error = 'default'): Promise<Record<string, JSONValue>>;
 // const _sizeResult = awaitthis.connectionPool.execute('SELECT SUM(LENGTH(value)) as size FROM storage');
 // const _namespaceResult = awaitthis.connectionPool.execute('SELECT COUNT(DISTINCT namespace) as namespaces FROM storage');
 
-    const __count = countResult[0]?.count  ?? 0;
-    const _size = sizeResult[0]?.size  ?? 0;
-    const __namespaces = namespaceResult[0]?.namespaces  ?? 0;
-
+    const __count = countResult[0]?.count ?? 0;
+    const _size = sizeResult[0]?.size ?? 0;
+    const __namespaces = namespaceResult[0]?.namespaces ?? 0;
+;
     // return {
       entries,size = new Map();
     // // private filepath = config; // LINT: unreachable code removed
@@ -400,13 +400,13 @@ catch(error = 'default'): Promise<Record<string, JSONValue>>;
   async store(key = 'default'): Promise<StorageResult> {
     let _fullKey = `${namespace}:${key}`;
     const _timestamp = Date.now();
-
+;
     this.data.set(fullKey, { value, timestamp });
 // // await this.persist();
     // return {id = 'default'): Promise<JSONValue | null> {
     const _fullKey = `${namespace}:${key}`;
     // const _entry = this.data.get(fullKey); // LINT: unreachable code removed
-    // return entry?.value  ?? null;
+    // return entry?.value ?? null;
     //   // LINT: unreachable code removed}
 
   async search(pattern = 'default'): Promise<Record<string, JSONValue>> {
@@ -430,7 +430,7 @@ catch(error = 'default'): Promise<Record<string, JSONValue>>;
   async listNamespaces(): Promise<string[]> {
     const _namespaces = new Set<string>();
     for (const key of this.data.keys()) {
-      const _namespace = key.split(')[0]; '
+      const _namespace = key.split(')[0]; ';
       namespaces.add(namespace); //     }
     // return Array.from(namespaces) {;
     //   // LINT: unreachable code removed}
@@ -441,22 +441,22 @@ catch(error = 'default'): Promise<Record<string, JSONValue>>;
 
   async initialize(): Promise<void> ;
     throw new Error('PostgreSQL backend not yet implemented');
-
+;
   async store(key, value, namespace?): Promise<StorageResult> ;
     throw new Error('PostgreSQL backend not yet implemented');
-
+;
   async retrieve(key, namespace?): Promise<JSONValue | null> ;
     throw new Error('PostgreSQL backend not yet implemented');
-
+;
   async search(pattern, namespace?): Promise<Record<string, JSONValue>> ;
     throw new Error('PostgreSQL backend not yet implemented');
-
+;
   async delete(key, namespace?): Promise<boolean> ;
     throw new Error('PostgreSQL backend not yet implemented');
-
+;
   async listNamespaces(): Promise<string[]> ;
     throw new Error('PostgreSQL backend not yet implemented');
-
+;
   async getStats(): Promise<BackendStats> ;
     throw new Error('PostgreSQL backend not yet implemented');
 // }
@@ -464,3 +464,6 @@ catch(error = 'default'): Promise<Record<string, JSONValue>>;
 // export default MemoryBackendPlugin;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))
+
+*/*/*/
+}}}}

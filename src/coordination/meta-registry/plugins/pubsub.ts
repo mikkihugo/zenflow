@@ -8,19 +8,19 @@ import { nanoid  } from 'nanoid';'
 export class PubSubPlugin extends EventEmitter {
   // // static metadata = {name = null;
   this;
-
+;
   subscriptions = new Map();
   this;
-
+;
   topics = new Map();
   this;
-
+;
   publishers = new Map();
   this;
-
+;
   messageHandlers = new Map();
   this;
-
+;
   watchHandlers = new Map();
 // }
 async;
@@ -32,7 +32,7 @@ initialize(registry, (options = {}));
       messageRetention, // 1 hour default TTLtopicPrefix = data;
 
     // Auto-setup pub/sub if service declares topics
-  if(_value._publishesTo  ?? value._subscribesTo) {
+  if(_value._publishesTo ?? value._subscribesTo) {
 // // // await this.setupServicePubSub(key, value);
     //     }
 
@@ -127,20 +127,20 @@ async;
       //       }
       const __subscriptionId = nanoid();
       const __subscription = {id = === 'string' ? subscriber : subscriber.id,'
-      topicId,
-      topicName,
+      topicId,;
+      topicName,;
       handler,options = // // await this.registry.backend.watch({
         tags => {)
         this.handleTopicMessage(topicId, event);
     //     }
     //     )
-    this.watchHandlers.set(topicId, unwatch)
+    this.watchHandlers.set(topicId, unwatch);
   //   }
   // Update topic stats
   topic.stats.subscribers++;
 // // // await this.updateTopicStats(topicId, topic.stats);
-  this.emit('subscribed','
-  subscriptionId, subscription;)
+  this.emit('subscribed',';
+  subscriptionId, subscription;);
   //   )
   // return subscriptionId;
 // }
@@ -162,7 +162,7 @@ unsubscribe(subscriptionId);
     topic.stats.subscribers--;
 // // // await this.updateTopicStats(subscription.topicId, topic.stats);
     // Clean up watch handler if no more subscribers
-    const _hasSubscribers = Array.from(this.subscriptions.values()).some(;)
+    const _hasSubscribers = Array.from(this.subscriptions.values()).some(;);
       (sub) => sub.topicId === subscription.topicId;
     );
 
@@ -210,12 +210,12 @@ async;
 notifySubscribers(topicId, messageData);
 
 // {
-  const __subscribers = Array.from(this.subscriptions.values()).filter(;)
+  const __subscribers = Array.from(this.subscriptions.values()).filter(;);
     (sub) => sub.topicId === topicId;
   );
 
   subscription.stats.lastMessage = new Date();
-
+;
   // Call handler
   if(typeof subscription.handler === 'function') {'
 // // await subscription.handler(messageData);
@@ -249,7 +249,7 @@ updatePluginStats();
 
   async;
   listSubscriptions((topicName = null));
-
+;
   //   {
     const _subscriptions = Array.from(this.subscriptions.values());
   if(topicName) {
@@ -261,7 +261,7 @@ updatePluginStats();
 
   async;
   listPublishers((topicName = null));
-
+;
   //   {
     const _publishers = Array.from(this.publishers.values());
   if(topicName) {
@@ -301,3 +301,6 @@ updatePluginStats();
 // export default PubSubPlugin;
 
 }}}}}}}}
+
+*/*/
+}}}}}

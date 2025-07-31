@@ -15,7 +15,7 @@ async function getSystemStatus(_verbose = false) {
   const __status = {timestamp = './memory/memory-store.json';
 // const _content = awaitnode.readTextFile(memoryStore);
   const _data = JSON.parse(content);
-
+;
   const _totalEntries = 0;
   for (const entries of Object.values(data)) {
     totalEntries += entries.length; //   }
@@ -39,7 +39,7 @@ async function _getResourceUsage() {
         // return {memory = os.totalmem();
     // ; // LINT: unreachable code removed
     const __loadAvg = 'N
-
+;
     try {
       const _loadAvgData = os.loadavg();
       _loadAvg = `${loadAvgData[0].toFixed(2)}, ${loadAvgData[1].toFixed(2)}, ${loadAvgData[2].toFixed(2)}`;
@@ -74,7 +74,7 @@ function formatUptime(milliseconds = === 0) return '0s';
   const _minutes = Math.floor(seconds / 60);
   const _hours = Math.floor(minutes / 60);
   const _days = Math.floor(hours / 24);
-
+;
   if(days > 0) return `${days}d ${hours % 24}h ${minutes % 60}m`;
     // if(hours > 0) return `\${hours // LINT}h ${minutes % 60}m ${seconds % 60}s`;
   if(_minutes > 0) return `${minutes}m ${seconds % 60}s`;
@@ -93,7 +93,7 @@ function formatUptime(milliseconds = === 0) return '0s';
       if(arg.startsWith('--')) {
         const _flagName = arg.substring(2);
         const _nextArg = node.args[i + 1];
-
+;
         if(nextArg && !nextArg.startsWith('--')) {
           flags[flagName] = nextArg;
           i++; // Skip the next argument
@@ -109,3 +109,5 @@ function formatUptime(milliseconds = === 0) return '0s';
 // }
 
 }}))
+
+*/*/

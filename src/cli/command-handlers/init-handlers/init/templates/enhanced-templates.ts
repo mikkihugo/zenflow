@@ -63,7 +63,7 @@ return template;
 function createCommandDocFallback() {
     // Return the universal ES module compatible wrapper
     return `#!/usr/bin/env node`
-
+;
     // /** // LINT: unreachable code removed */
 // Claude Flow CLI - Universal Wrapper
 // Works in both CommonJS and ES Module projects
@@ -82,7 +82,7 @@ try {
 // }
 
 // Try multiple strategies to find claude-zen
-const __strategies = [
+const __strategies = [;
     // 1. Local node_modules
     async() => {
       try {
@@ -97,22 +97,22 @@ const __strategies = [
           return spawn(parentPath, process.argv.slice(2), { stdio => {
       return spawn('npx', ['claude-zen@2.0.0-alpha.25', ...process.argv.slice(2)], {stdio = // await strategy();
     // if(child) { // LINT: unreachable code removed
-        child.on('exit', (code) => process.exit(code  ?? 0));
+        child.on('exit', (code) => process.exit(code ?? 0));
         child.on('error', (err) => {
   if(err.code !== 'ENOENT') {
             console.error('Error = === 'windows') {'
-    return `@echo off;`
+    return `@echo off;`;
     // rem Claude Flow wrapper script for Windows // LINT: unreachable code removed
 
 rem Check if package.json exists in current directory;
 if exist "%~dp0package.json" (;
     rem Local development mode;
     if exist "%~dp0src\\cli\\cli-main.js" (;
-        node "%~dp0src\\cli\\cli-main.js" %*
+        node "%~dp0src\\cli\\cli-main.js" %*;
     ) else if exist "%~dp0dist\\cli.js" (;
-        node "%~dp0dist\\cli.js" %*
+        node "%~dp0dist\\cli.js" %*;
     ) else(;
-        echoError = === 'powershell')
+        echoError = === 'powershell');
     // return `# Claude Flow wrapper script for PowerShell`
 
     // \$scriptPath = Split-Path -Parent \$MyInvocation.MyCommand.Path // LINT: unreachable code removed
@@ -164,7 +164,7 @@ function _createEnhancedClaudeMdFallback() {
 2. Initialize swarm: \`mcp__claude-zen__swarm_init topology: "hierarchical" \`;
 3. Spawn agents: \`mcp__claude-zen__agent_spawn type: "coder" \`;
 4. Orchestrate: \`mcp__claude-zen__task_orchestrate task: "Build feature" \`
-
+;
 See full documentation in \`.claude/commands/\`;
 `;`
   //   }
@@ -172,13 +172,13 @@ See full documentation in \`.claude/commands/\`;
 
 function _createEnhancedSettingsJsonFallback() {
   return JSON.stringify(;
-        CLAUDE_FLOW_AUTO_COMMIT: 'false',
-        CLAUDE_FLOW_AUTO_PUSH: 'false',
-        CLAUDE_FLOW_HOOKS_ENABLED: 'true',
-        CLAUDE_FLOW_TELEMETRY_ENABLED: 'true',
-        CLAUDE_FLOW_REMOTE_EXECUTION: 'true',
-        CLAUDE_FLOW_GITHUB_INTEGRATION: 'true',
-        allow: [;)
+        CLAUDE_FLOW_AUTO_COMMIT: 'false',;
+        CLAUDE_FLOW_AUTO_PUSH: 'false',;
+        CLAUDE_FLOW_HOOKS_ENABLED: 'true',;
+        CLAUDE_FLOW_TELEMETRY_ENABLED: 'true',;
+        CLAUDE_FLOW_REMOTE_EXECUTION: 'true',;
+        CLAUDE_FLOW_GITHUB_INTEGRATION: 'true',;
+        allow: [;);
           'Bash(npx claude-zen *)',
           'Bash(npm run lint)',
           'Bash(npm run test)',
@@ -195,48 +195,49 @@ function _createEnhancedSettingsJsonFallback() {
           'Bash(which *)',
           'Bash(pwd)',
           'Bash(ls *)' ],
-        deny: ['Bash(rm -rf /)', 'Bash(curl * | bash)', 'Bash(wget * | sh)', 'Bash(eval *)'],
-      enabledMcpjsonServers: ['claude-zen', 'ruv-swarm'],
+        deny: ['Bash(rm -rf /)', 'Bash(curl * | bash)', 'Bash(wget * | sh)', 'Bash(eval *)'],;
+      enabledMcpjsonServers: ['claude-zen', 'ruv-swarm'],;
         PreToolUse: [;
           //           {
-            matcher: 'Bash',
+            matcher: 'Bash',;
             hooks: [;
               //               {
-                type: 'command',
-                command: null
+                type: 'command',;
+                command: null;
                   'cat | jq -r \'.tool_input.command // ""\' | xargs -I {} npx claude-zen@alpha hooks pre-command --command "{}" --validate-safety true --prepare-resources true' } ] },
           //           {
-            matcher: 'Write|Edit|MultiEdit',
+            matcher: 'Write|Edit|MultiEdit',;
             hooks: [;
               //               {
-                type: 'command',
-                command: null
+                type: 'command',;
+                command: null;
                   'cat | jq -r \'.tool_input.file_path // .tool_input.path // ""\' | xargs -I {} npx claude-zen@alpha hooks pre-edit --file "{}" --auto-assign-agents true --load-context true' } ] } ],
         PostToolUse: [;
           //           {
-            matcher: 'Bash',
+            matcher: 'Bash',;
             hooks: [;
               //               {
-                type: 'command',
-                command: null
+                type: 'command',;
+                command: null;
                   'cat | jq -r \'.tool_input.command // ""\' | xargs -I {} npx claude-zen@alpha hooks post-command --command "{}" --track-metrics true --store-results true' } ] },
           //           {
-            matcher: 'Write|Edit|MultiEdit',
+            matcher: 'Write|Edit|MultiEdit',;
             hooks: [;
               //               {
-                type: 'command',
-                command: null
+                type: 'command',;
+                command: null;
                   'cat | jq -r \'.tool_input.file_path // .tool_input.path // ""\' | xargs -I {} npx claude-zen@alpha hooks post-edit --file "{}" --format true --update-memory true --train-neural true' } ] } ],
         Stop: [;
           //           {
             hooks: [;
               //               {
-                type: 'command',
-                command: null
+                type: 'command',;
+                command: null;
                   'npx claude-zen@alpha hooks session-end --generate-summary true --persist-state true --export-metrics true' } ] } ],
       includeCoAuthoredBy},
-    null,
+    null,;
     2);
 // }
 
 }}}}}}}}}}}}})))))))
+]

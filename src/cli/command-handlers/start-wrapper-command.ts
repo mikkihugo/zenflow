@@ -8,10 +8,8 @@ import { printError, printInfo, printSuccess  } from '..';
 
 export async function startCommand(subArgs = subArgs.includes('--daemon')  ?? subArgs.includes('-d')  ?? flags.daemon;
 const _port =;
-process.env.PORT ??
-  flags.port ??
-  getArgValue(subArgs, '--port') ??
-  getArgValue(subArgs, '-p') ??
+process.env.PORT ?? flags.port ?? getArgValue(subArgs, '--port') ??;
+  getArgValue(subArgs, '-p') ??;
   3000;
 // Use same port for API - everything unified on single port
 const _apiPort = flags['api-port'] ?? getArgValue(subArgs, '--api-port') ?? port;
@@ -22,10 +20,10 @@ const __api = subArgs.includes('--api') ?? subArgs.includes('-a') ?? flags.api;
 try {
     printSuccess('Starting Claude-Flow Orchestration System...');
     console.warn();
-
+;
     // Start integrated services(API + Dashboard + Queen Council)
     const _services = [];
-
+;
     // 1. Start Claude Zen API server(schema-driven)
     try {
       const { claudeZenServer } = // await import('../../api/claude-zen-server.js');
@@ -61,9 +59,9 @@ try {
           return;
     //   // LINT: unreachable code removed} catch(/* fallbackErr */) {
           // If both fail, show error
-  printError('Failed to launchUI = ['memory', 'coordination'];'
+  printError('Failed to launchUI = ['memory', 'coordination'];';
     const _missingDirs = [];
-
+;
     for (const dir of requiredDirs) {
       try {
 // // await node.stat(dir); 
@@ -72,9 +70,9 @@ try {
     //     }
   if(missingDirs.length > 0) {
       printWarning('Missing requireddirectories = === 'windows' ? 'cmd.exe' ));'
-
+;
     // Task queue
-    console.warn('    TaskQueue = compat.terminal.getPid();'
+    console.warn('    TaskQueue = compat.terminal.getPid();';
 // // await compat.safeCall(async() => {
   if(compat.runtime === 'node') {
           await node.writeTextFile('.claude-zen.pid', pid.toString());
@@ -84,7 +82,7 @@ try {
         //         }
       });
       console.warn(`ProcessID = new AbortController();`
-
+;
       compat.terminal.onSignal('SIGINT', () => {
         console.warn('\n  Shutting down orchestrator...');
         cleanup();
@@ -104,7 +102,7 @@ try {
       //       }
     //     }
   } catch(/* _err */) {
-    printError(`Failed to start orchestrationsystem = args.indexOf(flag);`
+    printError(`Failed to start orchestrationsystem = args.indexOf(flag);`;
   if(index !== -1 && index < args.length - 1) {
     // return args[index + 1];
     //   // LINT: unreachable code removed}
@@ -135,9 +133,9 @@ async function cleanup() {
 function showStartHelp() {
   console.warn('Start the Claude Zen orchestration system with schema-driven API');
   console.warn();
-  console.warn('Usage);'
+  console.warn('Usage);';
   console.warn();
-  console.warn('Options);'
+  console.warn('Options);';
   console.warn('  -d, --daemon         Run as daemon in background');
   console.warn('  -p, --port <port>    Server port(default)');
   console.warn('  --api-port <port>    Override API port(default)');
@@ -146,7 +144,7 @@ function showStartHelp() {
   console.warn('  -v, --verbose        Show detailed system activity');
   console.warn('  -h, --help           Show this help message');
   console.warn();
-  console.warn('Examples);'
+  console.warn('Examples);';
   console.warn('  claude-zen start --daemon           # Start as background daemon on port 3000');
   console.warn('  claude-zen start --web              # Start with web interface');
   console.warn('  claude-zen start --port 4000        # Use custom port for everything');
@@ -155,16 +153,16 @@ function showStartHelp() {
   console.warn('  claude-zen start --web              # Launch web-based UI');
   console.warn('  claude-zen start --verbose          # Show detailed logs');
   console.warn();
-  console.warn('Web-based UI);'
-  console.warn('  The --web flag starts a web server with);'
-  console.warn('    - Full-featured web console at http);'
+  console.warn('Web-based UI);';
+  console.warn('  The --web flag starts a web server with);';
+  console.warn('    - Full-featured web console at http);';
   console.warn('    - Real-time WebSocket communication');
   console.warn('    - Mobile-responsive design');
   console.warn('    - Multiple themes and customization options');
   console.warn('    - Claude Flow swarm integration');
   console.warn();
-  console.warn('Terminal-based UI);'
-  console.warn('  The --ui flag launches an advanced multi-view interface with);'
+  console.warn('Terminal-based UI);';
+  console.warn('  The --ui flag launches an advanced multi-view interface with);';
   console.warn();
   console.warn('  Views(press 1-6 to switch):');
   console.warn('    1. Process Management - Start/stop individual components');
@@ -174,13 +172,13 @@ function showStartHelp() {
   console.warn('    5. System Logs - Real-time log viewer with filters');
   console.warn('    6. Help - Comprehensive keyboard shortcuts');
   console.warn();
-  console.warn('  Features);'
+  console.warn('  Features);';
   console.warn('    - Color-coded status indicators');
   console.warn('    - Real-time updates and monitoring');
   console.warn('    - Context-sensitive controls');
   console.warn('    - Tab navigation between views');
   console.warn();
-  console.warn('Notes);'
+  console.warn('Notes);';
   console.warn('  - Requires "claude-zen init" to be run first');
   console.warn('  - Interactive mode shows real-time system status');
   console.warn('  - Daemon mode runs in background(check logs)');
@@ -197,3 +195,5 @@ function showStartHelp() {
 // }
 
 }}}))))))))
+
+*/*/

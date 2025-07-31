@@ -1,5 +1,6 @@
 
-/** Tests for SIGINT handling in hive-mind spawn command;
+/** Tests for SIGINT handling in hive-mind spawn command
+ */
 
 import { spawn  } from 'node:child_process';
 import { existsSync  } from 'node:fs';
@@ -20,17 +21,18 @@ describe('Hive Mind SIGINT Handler', () => {
       const _db = new Database(dbPath);
       db.prepare('DELETE FROM sessions').run();
       db.close();
-    //     }
+    }
   });
   afterEach(() => {
   if(hiveMindProcess && !hiveMindProcess.killed) {
       hiveMindProcess.kill('SIGKILL');
-    //     }
+    }
   });
   it('should pause session when SIGINT is received during spawn', (_done) => {
     // Start hive-mind spawn
     hiveMindProcess = spawn('node', [cliPath, 'hive-mind', 'spawn', 'Test SIGINT handling'], {
-      stdio);
+      stdio: 'pipe';
+    });
   const _output = '';
   const _sessionId = null;
   hiveMindProcess.stdout.on('data', (data) => {
@@ -89,16 +91,16 @@ hiveMindProcess.on('exit', () => {
     const _db = new Database(dbPath);
     // Check for checkpoint
     const _checkpoint = db;
-prepare('SELECT * FROM session_checkpoints WHERE session_id = ? AND checkpoint_name = ?')
-get(sessionId, 'auto-pause')
+prepare('SELECT * FROM session_checkpoints WHERE session_id = ? AND checkpoint_name = ?');
+get(sessionId, 'auto-pause');
     expect(checkpoint).toBeTruthy() {}
-    expect(checkpoint.checkpoint_data).toContain('paused_by_user')
+    expect(checkpoint.checkpoint_data).toContain('paused_by_user');
     db.close() {}
   //   }
   done();
 });
 }, 30000)
-it('should terminate Claude Code process when SIGINT is received', (done) =>
+it('should terminate Claude Code process when SIGINT is received', (done) =>;
 // {
   // This test requires claude command to be available
 
@@ -107,14 +109,14 @@ it('should terminate Claude Code process when SIGINT is received', (done) =>
     execSync('which claude', { stdio);
     _claudeAvailable = true;
   } catch {
-    console.warn('Skipping test);'
+    console.warn('Skipping test);';
     done();
     return;
     //   // LINT: unreachable code removed}
     hiveMindProcess = spawn(;
     'node',
     [cliPath, 'hive-mind', 'spawn', 'Test Claude termination', '--claude'],
-    stdio: 'pipe',
+    stdio: 'pipe',;
 ..process.env, NODE_ENV: 'test' )
     const _output = '';
     const _claudeLaunched = false;

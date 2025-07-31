@@ -72,14 +72,14 @@ export class NotificationPlugin {
     //     }
 
     const _context = {
-      event,
+      event,;
       _timestamp => {
       const _value = this.getNestedValue(context, path.trim());
       return value !== undefined ? String(value) ;
     //   // LINT: unreachable code removed});
   //   }
 
-  getNestedValue(obj, path): unknown
+  getNestedValue(obj, path): unknown;
     // return path.split('.').reduce((current, key) => {
       return current && current[key] !== undefined ? current[key] ;
     //   // LINT: unreachable code removed}, obj);
@@ -95,7 +95,7 @@ export class NotificationPlugin {
     //     }
 
     this.processing = false;
-
+;
   async processNotification(item) { 
     const  notification, providers } = item;
     const _results = [];
@@ -135,7 +135,7 @@ export class NotificationPlugin {
     // throw new Error(`Event ${eventName // LINT);`
   //   }
 
-  async disableEvent(eventName): unknown
+  async disableEvent(eventName): unknown;
   if(this.notificationConfig.events[eventName]) {
       this.notificationConfig.events[eventName].enabled = false;
 // await this.saveNotificationConfig();
@@ -144,7 +144,7 @@ export class NotificationPlugin {
     throw new Error(`Event ${eventName} not found`);
   //   }
 
-  async enableProvider(providerName): unknown
+  async enableProvider(providerName): unknown;
   if(this.notificationConfig.providers[providerName]) {
       this.notificationConfig.providers[providerName].enabled = true;
 // await this.saveNotificationConfig();
@@ -157,7 +157,7 @@ export class NotificationPlugin {
 // // await this.saveNotificationConfig();
       // Remove from active providers
       this.providers.delete(providerName);
-
+;
       // return `Provider ${providerName} disabled`;
     //   // LINT: unreachable code removed}
     throw new Error(`Provider ${providerName} not found`);
@@ -180,7 +180,7 @@ export class NotificationPlugin {
 // // await this.processNotification(event.notification, event.providers);
         } catch(/* _error */) {
           console.warn(' Event processingerror = [];'
-
+;
   for(const providerName of providers) {
       const _providerInfo = this.providers.get(providerName); if(!providerInfo  ?? !providerInfo.enabled) {
         continue; //       }
@@ -189,14 +189,14 @@ export class NotificationPlugin {
 // const __result = awaitproviderInfo.instance.send(notification) {;
         results.push({provider = [];
     this.processing = false;
-
+;
     // Clean up providers/g)
   for(const [name, info] of this.providers) {
   if(info.instance.cleanup) {
         try {
 // // await info.instance.cleanup(); 
         } catch(error) {
-          console.warn(`Warning); `
+          console.warn(`Warning); `;
         //         }
       //       }
     //     }
@@ -210,3 +210,5 @@ export class NotificationPlugin {
         //         }
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))
+
+*/*/

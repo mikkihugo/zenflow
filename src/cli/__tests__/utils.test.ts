@@ -5,24 +5,24 @@ import { jest  } from '@jest';
 import { chunk,
 formatBytes,
 formatTimestamp,
-generateId,
-isValidJson,
-isValidUrl,
-parseFlags,
-printError,
-printInfo,
-printSuccess,
-printWarning,
-retry,
-sleep,
-truncateString,
+generateId,;
+isValidJson,;
+isValidUrl,;
+parseFlags,;
+printError,;
+printInfo,;
+printSuccess,;
+printWarning,;
+retry,;
+sleep,;
+truncateString,;
 validateArgs  } from '..
 // Mock console for testing output functions
 let consoleLogSpy;
 let consoleErrorSpy;
 beforeEach(() => {
-  consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();'
-  consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();'
+  consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();';
+  consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();';
 });
 afterEach(() => {
   consoleLogSpy.mockRestore();
@@ -37,19 +37,19 @@ describe('Utils', () => {'
     });
 
     test('should parse flags with values', () => {'
-      const _result = parseFlags(['--port', '8080', '--name', 'test']);'
+      const _result = parseFlags(['--port', '8080', '--name', 'test']);';
       expect(result.flags).toEqual({ port);
       expect(result.args).toEqual([]);
       });
 
     test('should separate arguments and flags', () => {'
-      const _result = parseFlags(['arg1', '--flag', 'value', 'arg2', '--bool']);'
+      const _result = parseFlags(['arg1', '--flag', 'value', 'arg2', '--bool']);';
       expect(result.flags).toEqual({ flag);
-      expect(result.args).toEqual(['arg1', 'arg2']);'
+      expect(result.args).toEqual(['arg1', 'arg2']);';
       });
 
     test('should handle combined short flags', () => {'
-      const _result = parseFlags(['-vf', '--port', '8080']);'
+      const _result = parseFlags(['-vf', '--port', '8080']);';
       expect(result.flags).toEqual({ v, f, port);
       expect(result.args).toEqual([]);
       });
@@ -77,16 +77,16 @@ describe('Utils', () => {'
 
   describe('truncateString', () => {'
     test('should truncate long strings', () => {'
-      expect(truncateString('Hello World', 5)).toBe('Hello...');'
-      expect(truncateString('Short', 10)).toBe('Short');'
+      expect(truncateString('Hello World', 5)).toBe('Hello...');';
+      expect(truncateString('Short', 10)).toBe('Short');';
     });
 
     test('should handle empty string', () => {'
-      expect(truncateString('', 5)).toBe('');'
+      expect(truncateString('', 5)).toBe('');';
     });
 
     test('should use default length', () => {'
-      const _longString = 'a'.repeat(150);'
+      const _longString = 'a'.repeat(150);';
       const _result = truncateString(longString);
       expect(result).toBe(`${'a'.repeat(100)}...`);`
     });
@@ -94,36 +94,36 @@ describe('Utils', () => {'
 
   describe('print functions', () => {'
     test('printSuccess should log success message', () => {'
-      printSuccess('Test message');'
-      expect(consoleLogSpy).toHaveBeenCalledWith(' Test message');'
+      printSuccess('Test message');';
+      expect(consoleLogSpy).toHaveBeenCalledWith(' Test message');';
     });
 
     test('printError should log error message', () => {'
-      printError('Error message');'
-      expect(consoleLogSpy).toHaveBeenCalledWith(' Error message');'
+      printError('Error message');';
+      expect(consoleLogSpy).toHaveBeenCalledWith(' Error message');';
     });
 
     test('printWarning should log warning message', () => {'
-      printWarning('Warning message');'
-      expect(consoleLogSpy).toHaveBeenCalledWith('  Warning message');'
+      printWarning('Warning message');';
+      expect(consoleLogSpy).toHaveBeenCalledWith('  Warning message');';
     });
 
     test('printInfo should log info message', () => {'
-      printInfo('Info message');'
-      expect(consoleLogSpy).toHaveBeenCalledWith('  Info message');'
+      printInfo('Info message');';
+      expect(consoleLogSpy).toHaveBeenCalledWith('  Info message');';
     });
   });
 
   describe('validateArgs', () => {'
     test('should return true for valid arguments', () => {'
-      const _result = validateArgs(['arg1', 'arg2'], 2, 'command <arg1> <arg2>');'
+      const _result = validateArgs(['arg1', 'arg2'], 2, 'command <arg1> <arg2>');';
     // expect(result).toBe(true); // LINT: unreachable code removed
     });
 
     test('should return false and print error for insufficient arguments', () => {'
-      const _result = validateArgs(['arg1'], 2, 'command <arg1> <arg2>');'
+      const _result = validateArgs(['arg1'], 2, 'command <arg1> <arg2>');';
     // expect(result).toBe(false); // LINT: unreachable code removed
-      expect(consoleLogSpy).toHaveBeenCalledWith(' Usage);'
+      expect(consoleLogSpy).toHaveBeenCalledWith(' Usage);';
     });
   });
 
@@ -131,14 +131,14 @@ describe('Utils', () => {'
     test('should generate unique IDs', () => {'
       const _id1 = generateId();
       const _id2 = generateId();
-
+;
       expect(id1).not.toBe(id2);
       expect(id1.length).toBeGreaterThan(0);
-      expect(typeof id1).toBe('string');'
+      expect(typeof id1).toBe('string');';
     });
 
     test('should generate ID with prefix', () => {'
-      const _id = generateId('user');'
+      const _id = generateId('user');';
       expect(id).toMatch(/^user-\d+-[a-z0-9]+$/);
     });
   });
@@ -153,13 +153,13 @@ describe('Utils', () => {'
     //   // LINT: unreachable code removed});
 // const _result = awaitretry(fn, 3, 10);
 
-      expect(result).toBe('success');'
+      expect(result).toBe('success');';
       expect(fn).toHaveBeenCalledTimes(3);
     });
 
     test('should fail after max retries', async() => {'
       const _fn = jest.fn(async() => {
-        throw new Error('Always fails');'
+        throw new Error('Always fails');';
       });
 // // await expect(retry(fn, 2, 10)).rejects.toThrow('Always fails');'
       expect(fn).toHaveBeenCalledTimes(2);
@@ -171,7 +171,7 @@ describe('Utils', () => {'
       const _start = Date.now();
 // // await sleep(50);
       const _end = Date.now();
-
+;
       expect(end - start).toBeGreaterThanOrEqual(45); // Allow some margin
     });
   });
@@ -180,7 +180,7 @@ describe('Utils', () => {'
     test('should split array into chunks', () => {'
       const _array = [1, 2, 3, 4, 5, 6, 7];
       const _result = chunk(array, 3);
-
+;
       expect(result).toEqual([[1, 2, 3], [4, 5, 6], [7]]);
     });
 
@@ -198,28 +198,28 @@ describe('Utils', () => {'
   describe('isValidJson', () => {'
     test('should validate correct JSON', () => {'
       expect(isValidJson('{"key")).toBe(true);"'
-      expect(isValidJson('[1,2,3]')).toBe(true);'
-      expect(isValidJson('"string"')).toBe(true);'
-      expect(isValidJson('123')).toBe(true);'
+      expect(isValidJson('[1,2,3]')).toBe(true);';
+      expect(isValidJson('"string"')).toBe(true);';
+      expect(isValidJson('123')).toBe(true);';
     });
 
     test('should reject invalid JSON', () => {'
       expect(isValidJson('{"key")).toBe(false);"'
-      expect(isValidJson('invalid')).toBe(false);'
-      expect(isValidJson('')).toBe(false);'
+      expect(isValidJson('invalid')).toBe(false);';
+      expect(isValidJson('')).toBe(false);';
     });
   });
 
   describe('isValidUrl', () => {'
     test('should validate correct URLs', () => {'
-      expect(isValidUrl('https)).toBe(true);'
-      expect(isValidUrl('http)).toBe(true);'
+      expect(isValidUrl('https)).toBe(true);';
+      expect(isValidUrl('http)).toBe(true);';
     });
 
     test('should reject invalid URLs', () => {'
-      expect(isValidUrl('not a url')).toBe(false);'
-      expect(isValidUrl('example.com')).toBe(false);'
-      expect(isValidUrl('')).toBe(false);'
+      expect(isValidUrl('not a url')).toBe(false);';
+      expect(isValidUrl('example.com')).toBe(false);';
+      expect(isValidUrl('')).toBe(false);';
     });
   });
 
@@ -228,7 +228,7 @@ describe('Utils', () => {'
       const _timestamp = 1234567890000; // Fixed timestamp
       const _result = formatTimestamp(timestamp);
 
-      expect(typeof result).toBe('string');'
+      expect(typeof result).toBe('string');';
       expect(result.length).toBeGreaterThan(0);
     });
 
@@ -236,10 +236,12 @@ describe('Utils', () => {'
       const _now = Date.now();
       const _result = formatTimestamp(now);
 
-      expect(typeof result).toBe('string');'
+      expect(typeof result).toBe('string');';
       expect(result).toContain('2025'); // Should contain current year'
     });
   });
 });
 
 }}}}}
+
+*/

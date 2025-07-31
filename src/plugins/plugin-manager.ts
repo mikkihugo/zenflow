@@ -8,16 +8,16 @@ import { Plugin,
 // type PluginCacheAPI
 
 type PluginDatabaseAPI
-
+;
 type PluginEventAPI
-
+;
 type PluginFilesystemAPI
-
+;
 type PluginHttpAPI
-
+;
 type PluginQueueAPI
-
-type PluginSecretsAPI
+;
+type PluginSecretsAPI;
   } from '../types/plugin.js'
 
 // import HealthMonitor from './health-monitor.js';
@@ -74,7 +74,7 @@ this.emit('loaded', manifest.name, plugin.metadata);
 
     try {
       this.emit('unloading', name);
-
+;
       // Stop plugin
 // // await loadedPlugin.plugin.unload();
       // Cleanup security sandbox
@@ -84,15 +84,15 @@ this.emit('loaded', manifest.name, plugin.metadata);
 
       // Unregister from resource monitoring
       this.resourceMonitor.unregisterPlugin(name);
-
+;
       // Unregister from health monitoring
       this.healthMonitor.unregisterPlugin(name);
-
+;
       // Remove hooks and APIs
 // // await this.unregisterPluginIntegrations(loadedPlugin.plugin, loadedPlugin.manifest);
       // Remove from storage
       this.plugins.delete(name);
-
+;
       this.emit('unloaded', name);
       // return true;
     // ; // LINT: unreachable code removed
@@ -108,19 +108,19 @@ this.emit('loaded', manifest.name, plugin.metadata);
 
   async enablePlugin(name = this.plugins.get(name);
   if(!loadedPlugin) {
-      throw new Error(`Plugin notfound = true;`
+      throw new Error(`Plugin notfound = true;`;
 // await loadedPlugin.plugin.start();
   //   }
 
   async disablePlugin(name = this.plugins.get(name);
   if(!loadedPlugin) {
-      throw new Error(`Plugin notfound = false;`
+      throw new Error(`Plugin notfound = false;`;
 // await loadedPlugin.plugin.stop();
   //   }
 
   // Plugin discovery and management
   async getPlugin(name = this.plugins.get(name);
-    // return loadedPlugin?.plugin  ?? null;
+    // return loadedPlugin?.plugin ?? null;
     //   // LINT: unreachable code removed}
 
   async getAllPlugins(): Promise<Plugin[]> {
@@ -138,7 +138,7 @@ map(lp => lp.plugin);
   //   }
 
   async discoverPlugins(directory = [];
-
+;
     try {
 // const _entries = awaitreaddir(directory, {withFileTypes = entries.filter(entry => entry.isDirectory());
   for(const dir of pluginDirs) {
@@ -151,13 +151,13 @@ map(lp => lp.plugin);
 
   async installPlugin(source = this.hooks.get(type)  ?? [];
     const _results = [];
-
+;
     for (const hook of hooks.sort((a, b) => b.options.priority - a.options.priority)) {
       try {
         const _startTime = performance.now(); // const _result = awaitPromise.race([; /g)
           hook.handler(context) {,
           new Promise<never>((_, reject) => ;
-            setTimeout(() => reject(new Error('Hook timeout')), hook.options.timeout  ?? 5000);
+            setTimeout(() => reject(new Error('Hook timeout')), hook.options.timeout ?? 5000);
           );
         ]);
 
@@ -166,11 +166,11 @@ map(lp => lp.plugin);
         // Update hook metrics
         hook.callCount++;
         hook.averageExecutionTime = ;
-          (hook.averageExecutionTime * (hook.callCount - 1) + executionTime) / hook.callCount;
+          (hook.averageExecutionTime*(hook.callCount - 1) + executionTime) / hook.callCount;
         hook.lastCalled = new Date();
-
+;
         results.push(result);
-
+;
         this.emit('hook-executed', hook.pluginName, type, executionTime);
   if(result.stop) {
           break;
@@ -183,20 +183,20 @@ map(lp => lp.plugin);
 
   async callAPI(pluginName = // await this.getAPI(pluginName, apiName);
   if(!api) {
-      throw new Error(`API notfound = await this.getPlugin(pluginName);`
+      throw new Error(`API notfound = await this.getPlugin(pluginName);`;
   if(!plugin) {
-      throw new Error(`Plugin notfound = [];`
+      throw new Error(`Plugin notfound = [];`;
   for(const [pluginName, pluginAPIs] of this.apis) {
   for(const [apiName, api] of pluginAPIs) {
         results.push({plugin = Array.from(this.plugins.values()); const _errorPlugins = plugins.filter(p => p.plugin.metadata.status === 'error').length; // const _memoryUsage = awaitthis.resourceMonitor.getMemoryUsage() {;
 // const _issues = awaitthis.collectSystemIssues();
     const _status = errorPlugins === 0 ? 'healthy' : errorPlugins < plugins.length * 0.1 ? 'degraded' : 'critical';
-
+;
     return {
       status,pluginCount = name ? ;
     // [this.plugins.get(name)].filter(Boolean) : // LINT: unreachable code removed
       Array.from(this.plugins.values());
-
+;
     const _results = [];
   for(const loadedPlugin of targetPlugins) {
   if(loadedPlugin) {
@@ -219,17 +219,17 @@ map(lp => lp.plugin);
     const _criticalIssues = Object.values(plugins);
 flatMap(h => h.issues);
 filter(i => i.severity === 'critical').length;
-
+;
     return {overall = > i.issue);
     //   // LINT: unreachable code removed},summary = this.plugins.get(name);
   if(!loadedPlugin) {
-      throw new Error(`Plugin notfound = this.plugins.get(name);`
-    // return loadedPlugin?.config  ?? null;
+      throw new Error(`Plugin notfound = this.plugins.get(name);`;
+    // return loadedPlugin?.config ?? null;
     //   // LINT: unreachable code removed}
 
   async validatePluginConfig(name = this.plugins.get(name);
   if(!loadedPlugin) {
-      throw new Error(`Plugin notfound = this.plugins.get(pluginName);`
+      throw new Error(`Plugin notfound = this.plugins.get(pluginName);`;
   if(!loadedPlugin) {
       // return false;
     //   // LINT: unreachable code removed}
@@ -239,9 +239,9 @@ filter(i => i.severity === 'critical').length;
 
   async grantPermission(pluginName = this.plugins.get(pluginName);
   if(!loadedPlugin) {
-      throw new Error(`Plugin notfound = this.plugins.get(pluginName);`
+      throw new Error(`Plugin notfound = this.plugins.get(pluginName);`;
   if(!loadedPlugin) {
-      throw new Error(`Plugin notfound = loadedPlugin.config.permissions.indexOf(permission);`
+      throw new Error(`Plugin notfound = loadedPlugin.config.permissions.indexOf(permission);`;
   if(index > -1) {
       loadedPlugin.config.permissions.splice(index, 1);
     //     }
@@ -323,7 +323,7 @@ filter(i => i.severity === 'critical').length;
       return;
     //   // LINT: unreachable code removed}
 
-    try 
+    try ;
 // // await new Promise(resolve => setTimeout(resolve, this.config.restartDelay));
 // // await this.reloadPlugin(pluginName);
       this.emit('plugin-restarted', pluginName);
@@ -369,7 +369,7 @@ filter(i => i.severity === 'critical').length;
   // private setupSecurityEventHandlers() {
     this.securityManager.on('security-violation', (violation) => {
       this.emit('security-violation', violation);
-
+;
       // Take action based on severity
   if(violation.blocked) {
         this.emit('plugin-blocked', {
@@ -389,7 +389,7 @@ filter(i => i.severity === 'critical').length;
   // private setupResourceEventHandlers() {
     this.resourceMonitor.on('resource-alert', (alert) => {
       this.emit('resource-alert', alert);
-
+;
       // Log critical alerts
   if(alert.alertType === 'critical') {
         console.error(`Critical resource alert for ${alert.pluginName});`
@@ -404,7 +404,7 @@ filter(i => i.severity === 'critical').length;
 
     this.resourceMonitor.on('plugin-terminated', async(data) => {
       this.emit('plugin-terminated', data);
-
+;
       // Clean up terminated plugin
       const _pluginData = this.plugins.get(data.pluginName);
   if(pluginData) {
@@ -424,7 +424,7 @@ filter(i => i.severity === 'critical').length;
 
     this.healthMonitor.on('health-check-failed', (data) => {
       this.emit('health-check-failed', data);
-
+;
       // Consider auto-restart for critical health failures
   if(data.consecutiveFailures >= 3 && this.config.autoRestart) {
         this.emit('auto-restart-triggered', { pluginName => {)
@@ -455,7 +455,7 @@ filter(i => i.severity === 'critical').length;
     });
 
     this.healthMonitor.on('metrics-error', (error) => {
-      console.error('Health metrics collectionerror = this.plugins.get(pluginName);'
+      console.error('Health metrics collectionerror = this.plugins.get(pluginName);';
   if(!pluginData) {
       return {isValid = process.memoryUsage();
     // return usage.heapUsed / 1024 / 1024; // MB // LINT: unreachable code removed
@@ -561,3 +561,6 @@ class SecretsAPI implements PluginSecretsAPI {
 // export default PluginManager;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))))))))))))))))))
+
+*/*/
+}}}}}

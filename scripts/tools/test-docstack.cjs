@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
-/** Simple test for document stack - just metadata + rules
+/** Simple test for document stack - just metadata + rules */
 
-const {
-  DocumentStack,
-  setupDefaultRules,
+const { temp } = {};
+  DocumentStack,;
+  setupDefaultRules,;
   documentTemplates } = require('./src/mcp/document-stack.cjs');
 
 // Mock memory store for testing
 class MockMemoryStore {
   constructor() {
     this.data = new Map();
-
+;
   async store(key, value, options = {}) { 
     const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     this.data.set(fullKey, value);
@@ -46,8 +46,8 @@ async function testDocumentStack() {
 {})
       tags);
   const testDoc = {
-    docType: 'service-adr',
-    service: 'payment-service',
+    docType: 'service-adr',;
+    service: 'payment-service',;
     content: 'Payment processing decision...' };
 // const ruleResults = awaitdocStack.applyRules(testDoc);
   ruleResults.forEach((_result) => {});
@@ -60,5 +60,7 @@ async function testDocumentStack() {
 // Run the test
   if(require.main === module) {
   testDocumentStack().catch(console.error);
-
+;
 module.exports = { testDocumentStack };
+
+}}}}}}

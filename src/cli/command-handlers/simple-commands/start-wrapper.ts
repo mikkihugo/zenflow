@@ -7,17 +7,15 @@ import { compat  } from '..';
 export async function startCommand(subArgs = [];
 // }
 // Show help if requested
-if(flags.help  ?? flags.h  ?? subArgs.includes('--help')  ?? subArgs.includes('-h')) {
+if(flags.help ?? flags.h ?? subArgs.includes('--help')  ?? subArgs.includes('-h')) {
   showStartHelp();
   return;
 // }
 // Parse start options
 const _daemon = subArgs.includes('--daemon') ?? subArgs.includes('-d') ?? flags.daemon;
 const _port =;
-process.env.PORT ??
-  flags.port ??
-  getArgValue(subArgs, '--port') ??
-  getArgValue(subArgs, '-p') ??
+process.env.PORT ?? flags.port ?? getArgValue(subArgs, '--port') ??;
+  getArgValue(subArgs, '-p') ??;
   3000;
 const _verbose = subArgs.includes('--verbose') ?? subArgs.includes('-v') ?? flags.verbose;
 // UI defaults to ON, can be disabled with --no-ui
@@ -35,7 +33,7 @@ try {
     const { UnifiedInterfacePlugin } = // await import('../../../plugins/unified-interface/index.js');
 
     const _server = new UnifiedInterfacePlugin({
-      webPort,
+      webPort,;
       _enableMCP => {
       console.warn('\n Shutting down unified server...');
 // // await server.shutdown();
@@ -84,9 +82,9 @@ return;
 // // await launchEnhancedUI();
           return;
     //   // LINT: unreachable code removed} catch(/* fallbackErr */) {
-  printError('Failed to launchUI = ['memory', 'coordination'];'
+  printError('Failed to launchUI = ['memory', 'coordination'];';
     const _missingDirs = [];
-
+;
     for (const dir of requiredDirs) {
       try {
 // // await node.stat(dir); 
@@ -95,9 +93,9 @@ return;
     //     }
   if(missingDirs.length > 0) {
       printWarning('Missing requireddirectories = === 'windows' ? 'cmd.exe' ));'
-
+;
     // Task queue
-    console.warn('    TaskQueue = compat.terminal.getPid();'
+    console.warn('    TaskQueue = compat.terminal.getPid();';
 // // await compat.safeCall(async() => {
   if(compat.runtime === 'node') {
           await node.writeTextFile('.claude-zen.pid', pid.toString());
@@ -107,7 +105,7 @@ return;
         //         }
       });
       console.warn(`ProcessID = new AbortController();`
-
+;
       compat.terminal.onSignal('SIGINT', () => {
         console.warn('\n  Shutting down orchestrator...');
         cleanup();
@@ -128,7 +126,7 @@ return;
     //     }
 // }
 catch(/* err */)
-    printError(`Failed to start orchestrationsystem = args.indexOf(flag);`
+    printError(`Failed to start orchestrationsystem = args.indexOf(flag);`;
   if(index !== -1 && index < args.length - 1) {
     // return args[index + 1];
     //   // LINT: unreachable code removed}
@@ -158,37 +156,37 @@ async function cleanup() {
 
 function _showStartHelp() {
   console.warn(' START COMMAND - Start Orchestration System\n');
-  console.warn('USAGE);'
+  console.warn('USAGE);';
   console.warn('  claude-zen start [options]\n');
-  console.warn('DESCRIPTION);'
+  console.warn('DESCRIPTION);';
   console.warn('  Start Claude-Zen orchestration with UI and swarm intelligence enabled by');
   console.warn('  default. Runs dual MCP architecture for both external and internal coordination.\n');
-  console.warn('OPTIONS);'
-  console.warn('  -d, --daemon         Run as background daemon(disables UI
+  console.warn('OPTIONS);';
+  console.warn('  -d, --daemon         Run as background daemon(disables UI;
   console.warn('  -p, --port <port>    HTTP MCP server port for Claude Desktop(default)');
   console.warn('  --no-ui              Disable interactive user interface');
   console.warn('  --no-swarm           Disable swarm intelligence features');
   console.warn('  -w, --web            Force web-based UI(default when UI enabled)');
   console.warn('  -v, --verbose        Detailed logging');
   console.warn('  -h, --help           Show this help message\n');
-  console.warn('MCP ARCHITECTURE);'
+  console.warn('MCP ARCHITECTURE);';
   console.warn('   HTTP MCP(--port): External Claude Desktop, vision roadmaps');
   console.warn('   STDIO MCP: Internal claude-zen swarm coordination(automatic)\n');
-  console.warn('EXAMPLES);'
-  console.warn('  claude-zen start                         # Default);'
+  console.warn('EXAMPLES);';
+  console.warn('  claude-zen start                         # Default);';
   console.warn('  claude-zen start --no-swarm              # UI + HTTP MCP only');
   console.warn('  claude-zen start --no-ui                 # Swarm + HTTP MCP only'); ;
   console.warn('  claude-zen start --daemon --port 4106    # Background HTTP MCP only');
-  console.warn('Web-based UI);'
-  console.warn('  The --web flag starts a web server with);'
-  console.warn('    - Full-featured web console at http);'
+  console.warn('Web-based UI);';
+  console.warn('  The --web flag starts a web server with);';
+  console.warn('    - Full-featured web console at http);';
   console.warn('    - Real-time WebSocket communication');
   console.warn('    - Mobile-responsive design');
   console.warn('    - Multiple themes and customization options');
   console.warn('    - Claude Flow swarm integration');
   console.warn();
-  console.warn('Terminal-based UI);'
-  console.warn('  The --ui flag launches an advanced multi-view interface with);'
+  console.warn('Terminal-based UI);';
+  console.warn('  The --ui flag launches an advanced multi-view interface with);';
   console.warn();
   console.warn('  Views(press 1-6 to switch):');
   console.warn('    1. Process Management - Start/stop individual components');
@@ -198,13 +196,13 @@ function _showStartHelp() {
   console.warn('    5. System Logs - Real-time log viewer with filters');
   console.warn('    6. Help - Comprehensive keyboard shortcuts');
   console.warn();
-  console.warn('  Features);'
+  console.warn('  Features);';
   console.warn('    - Color-coded status indicators');
   console.warn('    - Real-time updates and monitoring');
   console.warn('    - Context-sensitive controls');
   console.warn('    - Tab navigation between views');
   console.warn();
-  console.warn('Notes);'
+  console.warn('Notes);';
   console.warn('  - Requires "claude-zen init" to be run first');
   console.warn('  - Interactive mode shows real-time system status');
   console.warn('  - Daemon mode runs in background(check logs)');
@@ -213,3 +211,5 @@ function _showStartHelp() {
 // }
 
 ))))
+
+*/*/))

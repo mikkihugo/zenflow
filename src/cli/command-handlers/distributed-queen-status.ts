@@ -31,10 +31,10 @@ checkSystemInitialization();
 // // await this.council.initialize();
       this.statusData.initialization = true;
       printSuccess(' Queen Council system initialized successfully');
-
+;
       // Count available queens
 
-      console.warn(`    TotalQueens = false;`
+      console.warn(`    TotalQueens = false;`;
     //     }
   //   }
 
@@ -42,14 +42,14 @@ checkSystemInitialization();
    *//g)
   async checkDatabaseIntegration() { 
     printInfo(' Checking Database Integration...');
-
-    try 
+;
+    try ;
       // Check strategic documents database
 // // await strategicDocs.initialize();
 // const _backendStats = awaitstrategicDocs.getBackendStats();
   if(backendStats) {
         this.statusData.database = true;
-        printSuccess(` Databaseintegrated = false;`
+        printSuccess(` Databaseintegrated = false;`;
     //     }
 // }
 
@@ -99,9 +99,9 @@ checkQueenCapabilities();
     printWarning(` ${workingFeatures}/${totalFeatures} distribution features available`);
   //   }
 // }
-catch(error)
+catch(error);
 // {
-  printError(` Distribution checkfailed = false;`
+  printError(` Distribution checkfailed = false;`;
     //     }
   //   }
 
@@ -109,14 +109,14 @@ catch(error)
 
   async checkWebSocketIntegration() { 
     printInfo(' Checking WebSocket Integration...');
-
-    try 
+;
+    try ;
       // Check if WebSocket service is available
       this.websocketService = // await WebSocketService.create({clientPort = this.websocketService.getStatus();
 
       this.statusData.websocket = wsStatus.service.initialized;
-
-      console.warn(`    ServiceInitialized = false;`
+;
+      console.warn(`    ServiceInitialized = false;`;
 // }
 // }
 
@@ -142,9 +142,9 @@ catch(error)
   printWarning(` Coordination partially ready(${workingFeatures}/${totalFeatures} features)`);
 // }
 // }
-catch(error)
+catch(error);
 // {
-  printError(` Coordination checkfailed = false;`
+  printError(` Coordination checkfailed = false;`;
     //     }
   //   }
 
@@ -154,9 +154,9 @@ catch(error)
     console.warn('\n' + ''.repeat(80));
     printInfo(' DISTRIBUTED QUEEN COUNCIL READINESS ASSESSMENT');
     console.warn(''.repeat(80));
-
+;
     // Calculate overall readiness score
-    const _readinessFactors = 
+    const _readinessFactors = ;
       'System Initialization': this.statusData.initialization,
       'Database Integration': this.statusData.database,
       'Queen Operations': Object.values(this.statusData.queens).filter(q => q.initialized).length > 0,
@@ -167,12 +167,12 @@ catch(error)
 
     const _readyCount = Object.values(readinessFactors).filter(f => f).length;
     const _totalFactors = Object.keys(readinessFactors).length;
-    const _readinessPercentage = Math.round((readyCount / totalFactors) * 100)
+    const _readinessPercentage = Math.round((readyCount / totalFactors) * 100);
     console.warn(' Readiness Factors => {')
       console.warn(`${ready ? '' );`
     });
 
-    console.warn(`\n OverallReadiness = 90) ;`
+    console.warn(`\n OverallReadiness = 90) ;`;
       this.statusData.readiness = 'FULLY_READY';
       printSuccess(' DISTRIBUTED QUEEN COUNCIL IS FULLY READY FOR PRODUCTION');else if(readinessPercentage >= 70) {
       this.statusData.readiness = 'MOSTLY_READY';
@@ -190,8 +190,8 @@ catch(error)
 filter(([_, queen]) => queen.initialized);
 length;
     const __totalQueens = Object.keys(this.statusData.queens).length;
-
-    console.warn(`\n QueenStatus = new DistributedQueenStatus();`
+;
+    console.warn(`\n QueenStatus = new DistributedQueenStatus();`;
 // const _status = awaitchecker.checkDistributedReadiness();
   if(flags.json) {
     console.warn(JSON.stringify(status, null, 2));
@@ -203,3 +203,5 @@ length;
 // export default DistributedQueenStatus;
 
 }}}}}}})))))))
+
+*/*/*/*/*/*/*/*/

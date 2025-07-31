@@ -10,7 +10,7 @@ export async function launchUI(args = []) {
     // Parse arguments
     const _portValue = getArgValue(args, '--port')  ?? getArgValue(args, '-p');
     const _port = portValue ? parseInt(portValue) ;
-
+;
     const _terminal = args.includes('--terminal')  ?? args.includes('-t');
     const _web = !terminal; // Default to web UI unless terminal is specified
   if(web) {
@@ -32,7 +32,7 @@ export async function launchUI(args = []) {
 
         process.on('SIGINT', shutdown);
         process.on('SIGTERM', shutdown);
-
+;
         // Keep process alive
 // // await new Promise(() => {});
       } catch(/* _err */) {
@@ -58,7 +58,7 @@ export async function launchUI(args = []) {
 
       printSuccess(' Claude-Flow Process Management UI');
       console.warn(''.repeat(60));
-
+;
       // Initialize process manager
       const _processManager = new ProcessManager();
 // // await processManager.initialize();
@@ -70,7 +70,7 @@ export async function launchUI(args = []) {
       console.warn();
       printSuccess(' Shutdown complete');
     } catch(/* fallbackErr */) {
-      printError(`Failed to launch TerminalUI = args.indexOf(flag);`
+      printError(`Failed to launch TerminalUI = args.indexOf(flag);`;
   if(index !== -1 && index < args.length - 1) {
     // return args[index + 1];
     //   // LINT: unreachable code removed}
@@ -83,3 +83,5 @@ export async function launchUI(args = []) {
 // }
 
 }}}})))
+
+*/*/

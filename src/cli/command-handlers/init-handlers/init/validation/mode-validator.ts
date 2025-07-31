@@ -55,7 +55,7 @@ testAllModes();
     catch(error) ;
       result.success = false;
     result.error = error.message
-
+;
     // return result;
     //   // LINT: unreachable code removed}
 
@@ -69,7 +69,7 @@ testAllModes();
   //   }
   catch ;
         result.error = '.roomodes file not found'
-
+;
   // Check for claude-zen executable
   try {
 // const _stat = awaitnode.stat(`${this.workingDir}/claude-zen`);
@@ -80,9 +80,9 @@ testAllModes();
 
   result.initialized = result.hasRoomodes && result.hasExecutable;
 // }
-catch(error)
+catch(error);
   result.error = error.message;
-
+;
 // return result;
 // }
 
@@ -91,7 +91,7 @@ catch(error)
   async getAvailableModes();
 // {
   const _modes = [];
-
+;
   try {
     // Try to get modes from .roomodes
     const _roomodesPath = `${this.workingDir}
@@ -120,7 +120,7 @@ catch(error)
 
 async;
 testModeAccess(modeName);
-
+;
 // {
     const _result = {success = new node.Command('./claude-zen', {args = // await command.output();
   if(success) {
@@ -136,7 +136,7 @@ testModeAccess(modeName);
     //   // LINT: unreachable code removed}
 
       const _modeConfig = config.modes[modeName];
-
+;
       // Basic validation
   if(typeof modeConfig !== 'object') {
         result.error = `Invalid configuration for mode ${modeName}`;
@@ -165,7 +165,7 @@ testModeAccess(modeName);
               result.error = `Mode ${modeName} not listed in available modes`;
             //             }
           } else {
-            result.error = `Mode execution testfailed = `Mode execution failed: \$errorOutput`;`
+            result.error = `Mode execution testfailed = `Mode execution failed: \$errorOutput`;`;
         //         }
       //       }
     } catch(error) {
@@ -195,7 +195,7 @@ testModeAccess(modeName);
 
       // Parse JSON
       const _workflow = JSON.parse(content);
-
+;
       // Basic validation
   if(typeof workflow !== 'object'  ?? workflow === null) {
         result.success = false;
@@ -207,7 +207,7 @@ testModeAccess(modeName);
       const _recommendedFields = ['name', 'description', 'steps'];
   for(const field of recommendedFields) {
         if(!(field in workflow)) {
-          result.success = false; result.error = `Missing recommendedfield = false; `
+          result.success = false; result.error = `Missing recommendedfield = false; `;
       result.error = `Workflow validation failed: \$error.message`;
     //     }
 
@@ -216,3 +216,6 @@ testModeAccess(modeName);
 // }
 
 }}}}}}}}}}}}}}}}) {))))))
+
+*/*/*/*/
+}

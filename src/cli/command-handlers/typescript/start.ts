@@ -15,7 +15,7 @@ import { FlagValidator  } from '../core/argument-parser';
 
 // export const startCommand = {
 //       name => {
-//         if(value < 1  ?? value > 65535) {
+//         if(value < 1 ?? value > 65535) {
 //           return 'Port must be between 1 and 65535';
 //     //   // LINT: unreachable code removed}
 return true;
@@ -122,9 +122,9 @@ return true;
   async function startServer(options = new Date();
   const _endpoints = [];
   const __features = [];
-
+;
   // Add endpoints based on configuration
-  endpoints.push(`;`)
+  endpoints.push(`;`);
     http = // await startUnifiedInterface(options, logger);
     // Create server instance
   if(server && typeof server.shutdown === 'function') {
@@ -169,14 +169,14 @@ async function createBasicServer(_options = // await import('node);'
 
 const _server = http.createServer((req, _res) => {
   const __url = new URL(;
-    req.url  ?? '
+    req.url  ?? ';
     `http = "/health">Health Check</a>;`
             <
           <
         `;`
   );
   break;
-
+;
   default => ;
     server.listen(options.port, (_error?) =>;
   if(error) {
@@ -211,17 +211,17 @@ try {
       process.exit(1);
     //     }
 // }
-process.on('SIGINT', shutdown)
-process.on('SIGTERM', shutdown)
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
 // Handle uncaught exceptions
-process.on('uncaughtException', async(error) =>
+process.on('uncaughtException', async(error) =>;
 // {
   logger.fatal('Uncaught exception', error);
 // await server.shutdown();
   process.exit(1);
 // }
 // )
-process.on('unhandledRejection', async(reason) =>
+process.on('unhandledRejection', async(reason) =>;
 // {
   logger.fatal('Unhandled rejection', reason as Error);
 // await server.shutdown();
@@ -250,7 +250,7 @@ logger.info('Cleanup complete');
 function displayStartupInfo(server, options, logger) {
   console.warn('\n Claude Zen Unified Server Started!\n');
   // Endpoints
-  console.warn(' Available Endpoints);'
+  console.warn(' Available Endpoints);';
   for(const endpoint of server.endpoints) {
     console.warn(`${endpoint}`); //   }
   console.warn(); // Features
@@ -260,20 +260,20 @@ function displayStartupInfo(server, options, logger) {
   console.warn(); // System information
   console.warn('  System Information) {;'
   console.warn(`   Mode: \${options.daemon ? 'Daemon(background)' }`);
-  console.warn(`   Port);`
-  console.warn(`   PID);`
+  console.warn(`   Port);`;
+  console.warn(`   PID);`;
   console.warn(`   Working Directory: ${process.cwd()}`);
-  console.warn(`   Node.js);`
+  console.warn(`   Node.js);`;
   console.warn(`   Platform);`
   console.warn();
   // Usage instructions
   if(options.daemon) {
-    console.warn(' Daemon Mode);'
+    console.warn(' Daemon Mode);';
     console.warn('    Server running in background');
     console.warn('    Use "claude-zen status" to check status');
     console.warn('    Use "claude-zen stop" to shutdown');
   } else {
-    console.warn(' Interactive Mode);'
+    console.warn(' Interactive Mode);';
     console.warn('    Press Ctrl+C to stop the server');
     console.warn('    Open another terminal for commands);'
     console.warn('     - claude-zen agent spawn researcher');
@@ -285,3 +285,6 @@ function displayStartupInfo(server, options, logger) {
 // }
 
 }}})))))))))))))
+
+*/*/
+}}}}

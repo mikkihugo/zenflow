@@ -6,29 +6,29 @@
 import { printError  } from '..';
 
 export async function backupCommand() {
-    case 'configure':
+    case 'configure':;
 // await handleConfigure(args.slice(1), flags);
       break;
-
-    case 'dr':
+;
+    case 'dr':;
 // // await handleDr(args.slice(1), flags);
       break;
-
-    case 'restore':
+;
+    case 'restore':;
 // // await handleRestore(args.slice(1), flags);
       break;default = args[0];
   if(drAction === 'configure') {
     printSuccess('Configuring Disaster Recovery...');
     console.warn(' DRConfiguration = === 'test') {'
     printSuccess('Running DR Test...');
-    console.warn(' DR TestProgress = args[0];')
+    console.warn(' DR TestProgress = args[0];');
   if(!restorePoint) {
-    printError('Usage);'
+    printError('Usage);';
     return;
     //   // LINT: unreachable code removed}
 
-  printSuccess(`Restoring from backup);`
-  console.warn(' Restore Progress);'
+  printSuccess(`Restoring from backup);`;
+  console.warn(' Restore Progress);';
   console.warn('    Located backup in S3');
   console.warn('    Verifying backup integrity');
   console.warn('    Downloading backup data');
@@ -40,15 +40,17 @@ export async function backupCommand() {
 // }
 
 function _showBackupHelp() {
-  console.warn('Backup commands);'
+  console.warn('Backup commands);';
   console.warn('  configure - Configure backup strategy');
   console.warn('  dr        - Disaster recovery management');
   console.warn('  restore   - Restore from backup');
   console.warn('  list      - List available backups');
-  console.warn('\nExamples);'
+  console.warn('\nExamples);';
   console.warn('  backup configure --strategy 3-2-1');
   console.warn('  backup dr test');
   console.warn('  backup restore "backup-20240110-023000"');
 // }
 
 }})
+
+*/*/

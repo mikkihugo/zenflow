@@ -7,39 +7,39 @@ import { agentLoader  } from '../../agents/agent-loader.js';
 import { printError, printSuccess  } from '..';
 
 export async function agentCommand() {
-  case 'spawn':
+  case 'spawn':;
 // await spawnAgent(subArgs, flags);
     break;
-
-  case 'list':
+;
+  case 'list':;
 // // await listAgents(subArgs, flags);
     break;
-
-  case 'hierarchy':
+;
+  case 'hierarchy':;
 // // await manageHierarchy(subArgs, flags);
     break;
-
-  case 'network':
+;
+  case 'network':;
 // // await manageNetwork(subArgs, flags);
     break;
-
-  case 'ecosystem':
+;
+  case 'ecosystem':;
 // // await manageEcosystem(subArgs, flags);
     break;
-
-  case 'provision':
+;
+  case 'provision':;
 // // await provisionAgent(subArgs, flags);
     break;
-
-  case 'terminate':
+;
+  case 'terminate':;
 // // await terminateAgent(subArgs, flags);
     break;
-
-  case 'info':
+;
+  case 'info':;
 // // await showAgentInfo(subArgs, flags);
     break;
   default = subArgs[1]  ?? 'general';
-
+;
   // Check if agent type exists using dynamic loader
 // const _agentTypeInfo = awaitagentLoader.getAgentType(agentType);
   if(!agentTypeInfo) {
@@ -53,7 +53,7 @@ export async function agentCommand() {
   if(agentTypeInfo.legacy) {
     printWarning(`Using legacy agent type '${agentType}'. Consider using '${agentTypeInfo.name}' instead.`);
   //   }
-  printSuccess(`Spawning ${agentTypeInfo.displayName}agent = flags.types  ?? flags.t;`
+  printSuccess(`Spawning ${agentTypeInfo.displayName}agent = flags.types ?? flags.t;`
 
   if(showTypes) {
     printSuccess('Available agenttypes = // await agentLoader.getAgentTypes();'
@@ -62,23 +62,23 @@ export async function agentCommand() {
       const _badge = type.legacy ? ' [LEGACY]' );
       console.warn(`${type.description}`);
       console.warn(`Capabilities = subArgs[1];`
-
+;
   switch(hierarchyCmd) {
-    case 'create':
+    case 'create':;
       const _hierarchyType = subArgs[2]  ?? 'basic';
       printSuccess(`Creating ${hierarchyType} agent hierarchy`);
       console.warn('  Hierarchy structure wouldinclude = subArgs[1];'
-
+;
   switch(networkCmd) {
-    case 'topology':
+    case 'topology':;
   printSuccess('Agent networktopology = subArgs[1];'
-
+;
   switch(ecosystemCmd) {
-    case 'status':
+    case 'status':;
   printSuccess('Agent ecosystemstatus = subArgs[1];'
-
+;
   if(!provision) {
-    printError('Usage = parseInt(provision);'
+    printError('Usage = parseInt(provision);';
   if(isNaN(count)  ?? count < 1) {
     printError('Count must be a positive number');
     return;
@@ -92,14 +92,14 @@ export async function agentCommand() {
 
 async function terminateAgent() {
   printError('Usage = subArgs[1];'
-
+;
   if(!agentId) {
-    printError('Usage = args.indexOf(flagName);'
+    printError('Usage = args.indexOf(flagName);';
   return index !== -1 && index + 1 < args.length ? args[index + 1] ;
 // }
 
 function _showAgentHelp() {
-  console.warn('Agent commands);'
+  console.warn('Agent commands);';
   console.warn('  spawn <type> [--name <name>]     Create new agent');
   console.warn('  list [--verbose]                 List active agents');
   console.warn('  terminate <id>                   Stop specific agent');
@@ -109,14 +109,14 @@ function _showAgentHelp() {
   console.warn('  ecosystem <status|optimize>      Ecosystem management');
   console.warn('  provision <count>                Auto-provision agents');
   console.warn();
-  console.warn('Agent Types);'
+  console.warn('Agent Types);';
   console.warn('  researcher    Research and information gathering');
   console.warn('  coder         Code development and analysis');
   console.warn('  analyst       Data analysis and insights');
   console.warn('  coordinator   Task coordination and management');
   console.warn('  general       Multi-purpose agent');
   console.warn();
-  console.warn('Examples);'
+  console.warn('Examples);';
   console.warn('  claude-zen agent spawn researcher --name "DataBot"');
   console.warn('  claude-zen agent list --verbose');
   console.warn('  claude-zen agent hierarchy create enterprise');
@@ -124,3 +124,5 @@ function _showAgentHelp() {
 // }
 
 }}}}}}}))))))))))
+
+*/*/

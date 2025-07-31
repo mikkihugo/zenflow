@@ -4,13 +4,13 @@
 
 /** Default gitignore entries for Claude Flow
 
-const _CLAUDE_FLOW_GITIGNORE_ENTRIES = `;`
+const _CLAUDE_FLOW_GITIGNORE_ENTRIES = `;`;
 # Claude Flow generated files;
-claude
+claude;
 mcp.json;
 claude-zen.config.json;
-swarm
-hive-mind
+swarm;
+hive-mind;
 // memory
 memory/sessions/* */
 // ! memory/sessions/README.md;
@@ -28,7 +28,7 @@ coordination/orchestration/* */
 claude-zen;
 claude-zen.bat;
 claude-zen.ps1;
-hive-mind-prompt-*.txt
+hive-mind-prompt-*.txt;
 `;`
 
 /** Update or create .gitignore with Claude Flow entries
@@ -42,7 +42,7 @@ hive-mind-prompt-*.txt
   try {
     let _gitignoreContent = '';
     let _fileExists = false;
-
+;
     // Check if .gitignore exists
     if(existsSync(gitignorePath)) {
       fileExists = true;
@@ -72,7 +72,7 @@ hive-mind-prompt-*.txt
       newContent += '\n';
     //     }
     newContent += CLAUDE_FLOW_GITIGNORE_ENTRIES;
-
+;
     // Write the file
   if(!dryRun) {
 // // await writeTextFile(gitignorePath, newContent);
@@ -98,7 +98,9 @@ hive-mind-prompt-*.txt
 // export function getGitignorePatterns() { // LINT: unreachable code removed
 return CLAUDE_FLOW_GITIGNORE_ENTRIES.split('\n');
 // .filter((line) => line.trim() && !line.startsWith('#') && !line.startsWith('!')); // LINT: unreachable code removed
-map((line) => line.trim())
+map((line) => line.trim());
 // }
 
 }}}}}}
+
+*/*/*/*/

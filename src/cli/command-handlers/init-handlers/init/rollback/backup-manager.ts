@@ -7,7 +7,7 @@ import * as node from 'node:fs';
 export class BackupManager {
   constructor(workingDir = workingDir;
   this;
-
+;
   backupDir = `${workingDir}
 // }
 
@@ -20,7 +20,7 @@ createBackup((type = 'manual'), (description = ''));
   const _result = {success = new Date().toISOString().replace(/[]/g, '-');
   const _backupId = `${type}-${timestamp}`;
   result.id = backupId;
-
+;
   // Create backup directory
   const _backupPath = `${this.backupDir}
   result.location = backupPath;
@@ -57,9 +57,9 @@ createBackup((type = 'manual'), (description = ''));
   if(restoreResult.success) {
           result.restored.push(dirInfo.originalPath);
         } else {
-          result.warnings.push(`Failed to restoredirectory = false;`
+          result.warnings.push(`Failed to restoredirectory = false;`;
           result.errors.push(`Backup restorationfailed = [];`
-
+;
     try {))
 // // await this.ensureBackupDir();
 // const _entries = awaitnode.readDir(this.backupDir);
@@ -81,7 +81,7 @@ createBackup((type = 'manual'), (description = ''));
     const _result = success = `${this.backupDir}
 // await node.remove(backupPath, {recursive = false;/g)
       result.errors.push(`Failed to deletebackup = 5);`
-
+;
           //           {
             const _result = {success = // await this.listBackups();
   if(backups.length > keepCount) {
@@ -113,7 +113,7 @@ createBackup((type = 'manual'), (description = ''));
       //       }
     } catch(error) ;
       result.success = false;
-      result.errors.push(`Backup system validationfailed = === 'EEXIST');`
+      result.errors.push(`Backup system validationfailed = === 'EEXIST');`;
           );
           throw error;
         //         }
@@ -122,7 +122,7 @@ createBackup((type = 'manual'), (description = ''));
         getCriticalFiles();
         //         {
           const _files = [];
-          const _potentialFiles = [
+          const _potentialFiles = [;
             'CLAUDE.md',
             'memory-bank.md',
             'coordination.md',
@@ -148,7 +148,7 @@ createBackup((type = 'manual'), (description = ''));
   getCriticalDirectories() {;
         //         {
           const _dirs = [];
-          const _potentialDirs = [
+          const _potentialDirs = [;
             '.claude',
             '.roo',
             'memory
@@ -186,7 +186,7 @@ createBackup((type = 'manual'), (description = ''));
 
       async;
       backupDirectory(relativePath, backupPath);
-
+;
       //       {
         const _result = {success = `${this.workingDir}
         const _destPath = `${backupPath}
@@ -211,7 +211,7 @@ createBackup((type = 'manual'), (description = ''));
 
     async;
     restoreFile(fileInfo, backupPath);
-
+;
     //     {
       const _result = {success = fileInfo.backupPath;
       const _destPath = `${this.workingDir}
@@ -240,7 +240,7 @@ createBackup((type = 'manual'), (description = ''));
 
   //   {
     const _totalSize = 0;
-
+;
     try {
       for // await(const entry of node.readDir(backupPath)) {
         const _entryPath = `${backupPath}
@@ -281,8 +281,11 @@ createBackup((type = 'manual'), (description = ''));
   catch ;
       // Can't check - assume adequate'
       result.adequate = true
-
+;
   // return result;
 // }
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))
+
+*/*/
+}}}}}}

@@ -20,7 +20,7 @@ async function _initializeMetaRegistry() {
     const _ArchitectAdvisorPlugin = (;
 // // await import('../../coordination/meta-registry/plugins/architect-advisor.js');
     ).default
-    const _MemoryRAGPlugin = (
+    const _MemoryRAGPlugin = (;
 // // await import('../../coordination/meta-registry/plugins/memory-rag.js')
     ).default;
     const _PortDiscoveryPlugin = (;
@@ -41,7 +41,7 @@ default;
     // await defaultRegistry.use('port-discovery', new PortDiscoveryPlugin());
 // // await defaultRegistry.use('pubsub', new PubSubPlugin());
 // // await defaultRegistry.use('nat-traversal', new NATTraversalPlugin());
-    hierarchicalTaskManagerPlugin = defaultRegistry.pluginSystem.getPlugin(;)
+    hierarchicalTaskManagerPlugin = defaultRegistry.pluginSystem.getPlugin(;);
     ('hierarchical-task-manager');
     //     )
   if(!hierarchicalTaskManagerPlugin) {
@@ -65,48 +65,48 @@ const __handleVisionCommand = async(subcommand, args, flags) => {
   switch(subcommand) {
     case 'create': {
       console.warn('Creating ADR...');
-
-      const _objective = flags.objective  ?? args[0];
+;
+      const _objective = flags.objective ?? args[0];
   if(!objective) {
         console.error('Objective is required for advanced swarm coordination.');
         return;
     //   // LINT: unreachable code removed}
       const __advancedSwarmConfig = {objective = = false,encryption = = false,cognitiveSupport = hiveMindCore.getStatus().workers; // Assuming getStatus returns worker agents
       console.warn('Agentstatus = // await hiveMindCore.buildConsensus(;'
-    // flags.topic  ?? args[0], // LINT: unreachable code removed/g))
+    // flags.topic ?? args[0], // LINT: unreachable code removed/g))
         flags.options ? flags.options.split(',') : []);
       console.warn('MRAP reasoningexecuted = async(subcommand, args, flags) => {'
   switch(subcommand) {
     case 'analyze': {
       console.warn(' Executing Visionary Software Intelligence analysis...');
-
+;
   const _mainCommand = subArgs[0];
   const _subcommand = subArgs[1];
   const _remainingArgs = subArgs.slice(2);
   switch(mainCommand) {
-    case 'vision':
+    case 'vision':;
 // // await _handleVisionCommand(subcommand, remainingArgs, flags);
       break;
-    case 'adr':
+    case 'adr':;
 // // await handleAdrCommand(subcommand, remainingArgs, flags);
       break;
-    case 'squad':
+    case 'squad':;
 // // await handleSquadCommand(subcommand, remainingArgs, flags);
       break;
-    case 'swarm':
+    case 'swarm':;
 // // await handleAdvancedSwarmCommand(subcommand, remainingArgs, flags);
       break;
-    case 'vsi':
+    case 'vsi':;
 // // await handleVsiCommand(subcommand, remainingArgs, flags);
       break;
-    default: null
-      console.warn(`;`)
+    default: null;
+      console.warn(`;`);
 Usage);
   adr       Manage Architectural Decision Records(create, list);
   squad     Manage development squads(assign-task);
   swarm     Manage advanced swarm coordination(coordinate, agents, mrap);
   vsi       Execute Visionary Software Intelligence workflows(analyze, progress, refactor)
-
+;
 Use 'claude-zen workflow <command> --help' for more details.;
       `);`
       break;
@@ -117,3 +117,5 @@ Use 'claude-zen workflow <command> --help' for more details.;
     //     }
 
 }}}}}}}})))))
+
+*/*/

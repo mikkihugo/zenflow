@@ -9,10 +9,12 @@ try {
 
       // return {success = [
     // { // LINT: unreachable code removed
-    name: 'workflow-coordinator',
-    type: 'workflow-step',
+    name: 'workflow-coordinator',;
+    type: 'workflow-step',;
     // hook: workflowCoordinator
   //   }
 ];
 
 }}}
+
+*/*/

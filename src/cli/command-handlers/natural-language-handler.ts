@@ -16,7 +16,7 @@
     try {
       // 1. Detect intent with confidence scoring
 // const _intent = awaitthis.detectIntent(query);
-      console.warn(` Detectedintent = this.checkSuccessPatterns(query, intent);`
+      console.warn(` Detectedintent = this.checkSuccessPatterns(query, intent);`;
   if(learnedPattern) {
         console.warn(` Using learned successful pattern for similar query`);
         intent.config = { ...intent.config, ...learnedPattern };
@@ -50,7 +50,7 @@
   for(const [intentType, data] of scores) {
   if(data.confidence > bestScore) {
         bestScore = data.confidence; bestIntent = {
-          type,
+          type,;
           confidence = {type = {query = Date.now(); const _results = {queens = plan.queens.map(async(queenType) {=> {
 // const _queenResult = awaitthis.activateQueen(queenType, plan);
         results.queens[queenType] = queenResult;
@@ -58,12 +58,12 @@
     //   // LINT: unreachable code removed});
 // // await Promise.all(queenPromises);
       console.warn(` All queens activated successfully`);
-
+;
       // 2. Initialize swarm if needed
   if(plan.swarmSize > 0) {
         console.warn(` Initializing swarm(size = // await this.hiveMind.coordinate({type = // await this.executeMemoryOperations(plan);`
       console.warn(` Memory operations completed`);
-
+;
       // 4. Fact-check if required
   if(plan.factCheck) {
         console.warn(` Performing fact-check...`);
@@ -96,7 +96,7 @@
 
     // Confidence bonus
     score += intent.confidence * 0.2
-
+;
     // Execution success bonus/g)
     if(result.success) score += 0.2;
 
@@ -107,13 +107,13 @@
   //   }
   calculateExecutionQuality(plan, results) {
     const _qualityScore = 0.5;
-
+;
     // Queens activation success
     const _activeQueens = Object.values(results.queens).filter(q => q.activated).length;
-    qualityScore += (activeQueens / plan.queens.length) * 0.2
+    qualityScore += (activeQueens / plan.queens.length) * 0.2;
     // Memory operations success
     const _successfulMemoryOps = Object.values(results.memory).filter(m => !m.error).length;
-    qualityScore += (successfulMemoryOps / plan.memoryBackends.length) * 0.2
+    qualityScore += (successfulMemoryOps / plan.memoryBackends.length) * 0.2;
     // Fact-check success
     if(results.factCheck?.verified) qualityScore += 0.1;
 
@@ -142,10 +142,10 @@ join('-');
     else if(/architecture|design|structure/.test(query)) intent = 'architecture';
 
     // return {
-      success,
+      success,;
     // intent, // LINT: unreachable code removed
-      confidence: 0.5,
-      fallback,
+      confidence: 0.5,;
+      fallback,;
       result: {
         message: `Fallback routing to ${intent} intent`,
         suggestion: 'Consider rephrasing your query for better intent detection';
@@ -157,3 +157,6 @@ join('-');
 // export default NaturalLanguageHandler;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))
+
+*/*/*/*/
+}}]

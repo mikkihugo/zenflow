@@ -9,31 +9,31 @@ import { generateId  } from '../../utils/helpers.js';
 class SwarmCoordinator {
   constructor(config = config;
   this;
-
+;
   id = config.name ?? generateId('swarm');
   this;
-
+;
   agents = [];
   this;
-
+;
   tasks = [];
   this;
-
+;
   status = 'initializing';
   this;
-
+;
   startTime = Date.now();
 // }
 async;
 initialize();
 // {
   console.warn(`\n Swarminitialized = 'active';`
-
+;
     // Create swarm directory
     const _swarmDir = `./swarm-runs/${this.id}`;
 // // await fs.mkdir(swarmDir, { recursive = {id = {id = 'completed';/g))
     taskObj.endTime = Date.now();
-
+;
     console.warn(`   Task completed in ${(_taskObj._endTime - taskObj._startTime) / 1000}s`);
 
     // return taskObj;
@@ -41,8 +41,8 @@ initialize();
 
   async createAPIProject() { 
     console.warn(`    Creating API project structure...`);
-
-    const _projectDir = '.
+;
+    const _projectDir = '.;
 // // await fs.mkdir(projectDir, recursive = `import express from 'express';`/g)
   const _app = express();
   const __port = process.env.PORT ?? 3000;
@@ -104,7 +104,7 @@ async function executeSwarm(objective = {}) {
     // ; // LINT: unreachable code removed
     // return { success, summary };
     //   // LINT: unreachable code removed} catch(error) {
-    console.error(` Swarm execution failed);`
+    console.error(` Swarm execution failed);`;
     // return { success, error: error.message };
   //   }
 // }
@@ -112,3 +112,5 @@ async function executeSwarm(objective = {}) {
 // export { SwarmCoordinator };
 
 }}}}}}})))))
+
+*/

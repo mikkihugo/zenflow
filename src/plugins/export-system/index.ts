@@ -27,9 +27,9 @@ export class ExportSystemPlugin {
   //   )
   // JSON Exporter
   this
-
+;
   exporters;
-set('json',
+set('json',;
 // {
   //   type = {
 // }
@@ -50,7 +50,7 @@ this.exporters.set('markdown',
   // return this.renderTemplate(template, data, 'markdown');
 // }
 // )
-console.warn(` Initialized $`
+console.warn(` Initialized $`;
 // {
   this.exporters.size;
 // }
@@ -67,7 +67,7 @@ loadTemplates();
 // const _templateFiles = awaitthis.glob(`;`
 $;
 // {
-  this.config.templatesDir;)
+  this.config.templatesDir;);
 } /*.{html,md,json}`);` */
   for(const file of templateFiles) {
       const _name = path.basename(file, path.extname(file)); // const _content = awaitreadFile(file, 'utf8'); 
@@ -120,7 +120,7 @@ $;
     try {
 // // await writeFile(_filename, _content._trim());
     //     }
-  catch(error)
+  catch(error);
 // }
 this.templates.set(name, formats);
 // }
@@ -130,10 +130,10 @@ this.templates.set(name, formats);
 data, (options = {});
 : unknown
 // {
-  const {
+  const { temp } = {};
     format = this.config.defaultFormat,
-  template = 'default',
-  filename,
+  template = 'default',;
+  filename,;
   timestamp = this.config.timestamp }
 = options
 if(!this.exporters.has(format)) {
@@ -146,7 +146,7 @@ const _templateData = this.templates.get(template) ?? this.templates.get('defaul
 // }
 // Add timestamp to data
 const _exportData = {timestamp = this.exporters.get(format);
-// const _content = awaitexporter.export(exportData, {name = filename  ?? this.generateFilename(template, format, timestamp);
+// const _content = awaitexporter.export(exportData, {name = filename ?? this.generateFilename(template, format, timestamp);
 const _outputPath = path.join(this.config.outputDir, outputFilename);
 // Write to file
 if(format === 'pdf' && Buffer.isBuffer(content)) {
@@ -154,12 +154,12 @@ if(format === 'pdf' && Buffer.isBuffer(content)) {
 } else {
 // // await writeFile(outputPath, content, 'utf8');
 // }
-console.warn(` Exportgenerated = includeTimestamp ? ;`)
+console.warn(` Exportgenerated = includeTimestamp ? ;`);
       `_${new Date().toISOString().replace(/[]/g, '-').slice(0, -5)}` : '';
     // return `${template}${timestamp}.${format}`;
     //   // LINT: unreachable code removed}
   renderTemplate(template, data, format) {
-    const _templateContent = template[format]  ?? template.html  ?? template.markdown  ?? '';
+    const _templateContent = template[format]  ?? template.html ?? template.markdown  ?? '';
 
     // Simple template rendering(replace {{variable}} with data)
     // return templateContent.replace(/\{\{([^}]+)\}\}/g, (match, path) => {
@@ -177,15 +177,15 @@ console.warn(` Exportgenerated = includeTimestamp ? ;`)
     // ; // LINT: unreachable code removed
     const _separator = options.separator  ?? ',';
     const _headers = Object.keys(array[0]);
-
-    const _csvContent = [
-      headers.join(separator),
+;
+    const _csvContent = [;
+      headers.join(separator),;
 ..array.map(row => ;
         headers.map(header => {
-          const _value = row[header];))
+          const _value = row[header];));
           const _stringValue = typeof value === 'object' ? JSON.stringify(value) : String(value);
           // Escape quotes and wrap in quotes if contains separator
-          return stringValue.includes(separator)  ?? stringValue.includes('"') ?;"
+          return stringValue.includes(separator)  ?? stringValue.includes('"') ?;";
     // `"\${stringValue.replace(/"/g, '""'); // LINT}`
 "` ;"`
         }).join(separator)
@@ -212,7 +212,7 @@ exportSwarmReport(swarmData, (format = 'pdf'))
 console.warn(` Template '${name}' added`);
 // }
 // async
-removeTemplate(name)
+removeTemplate(name);
 : unknown
 // {
   if(this.templates.has(name)) {
@@ -255,3 +255,5 @@ cleanup();
 // export default ExportSystemPlugin;
 
 }}}}}}}}}}}}})))
+
+*/*/

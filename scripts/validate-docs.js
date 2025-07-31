@@ -8,20 +8,20 @@ import path from 'node:path';
 
 class DocumentationValidator {
   constructor() {
-    this.docsDir = 'docs
+    this.docsDir = 'docs;
     this.examplesDir = 'examples';
     this.errors = [];
     this.warnings = [];
   //   }
   async validate() { 
     console.warn(' Validating API documentation...');
-    try 
+    try ;
   // await this.validateDocumentationStructure();
   // // await this.validateMarkdownFiles();
       this.reportResults();
       // return this.errors.length === 0;
     //   // LINT: unreachable code removed} catch(error) {
-      console.error(' Validation failed);'
+      console.error(' Validation failed);';
       // return false;
     //   // LINT: unreachable code removed}
   //   }
@@ -29,7 +29,7 @@ class DocumentationValidator {
     validateDocumentationStructure();
     //     {
       console.warn(' Validating documentation structure...');
-      const _requiredFiles = ['docs/api/README.md',
+      const _requiredFiles = ['docs/api/README.md',;
       'docs/api/server-api.md',
       'docs/api/mcp-tools.md',
       'docs/api/swarm-coordination.md',
@@ -43,7 +43,7 @@ class DocumentationValidator {
         try {
   // // await fs.access(file); 
         console.warn(`   ${file}`); } catch(/* _error */) {
-        this.errors.push(`Missing required file);`
+        this.errors.push(`Missing required file);`;
         console.warn(`   ${file} - Missing`);
       //       }
       //       }
@@ -68,11 +68,11 @@ class DocumentationValidator {
 // const _content = awaitfs.readFile(filepath, 'utf-8'); 
           this.validateMarkdownContent(file, content) {;
         } catch(error) {
-          this.errors.push(`Cannot read file);`
+          this.errors.push(`Cannot read file);`;
         //         }
       //       }
     } catch(error) {
-      this.errors.push(`Cannot read docs directory);`
+      this.errors.push(`Cannot read docs directory);`;
     //     }
     validateMarkdownContent(filename, content);
     //     {
@@ -85,22 +85,22 @@ class DocumentationValidator {
         this.warnings.push(`${filename});`
       //       }
       // Check for code blocks
-      const _codeBlocks = content.match(/```/g);`
+      const _codeBlocks = content.match(/```/g);`;
   if(codeBlocks && codeBlocks.length % 2 !== 0) {
         this.errors.push(`${filename});`
       //       }
       console.warn(`   ${filename} - Content validated`);
     //     }
     reportResults();
-    console.warn('\n Validation Results);'
-    console.warn(` Errors);`
-    console.warn(`  Warnings);`
+    console.warn('\n Validation Results);';
+    console.warn(` Errors);`;
+    console.warn(`  Warnings);`;
   if(this.errors.length > 0) {
-      console.warn('\n Errors);'
+      console.warn('\n Errors);';
       this.errors.forEach((error) => console.warn(`   ${error}`));
     //     }
   if(this.warnings.length > 0) {
-      console.warn('\n  Warnings);'
+      console.warn('\n  Warnings);';
       this.warnings.forEach((warning) => console.warn(`   ${warning}`));
     //     }
   if(this.errors.length === 0 && this.warnings.length === 0) {
@@ -123,10 +123,12 @@ class DocumentationValidator {
   // Run if called directly
   if(import._meta._url === `file) {`
   main() {}
-catch(
+catch(;
   console;
-
+;
   error;
   //   )
 // }
 // export { DocumentationValidator };
+
+*/*/

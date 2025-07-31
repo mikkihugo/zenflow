@@ -8,13 +8,13 @@ import { ValidationSystem  } from '.';
 export class ValidationTestRunner {
   constructor(workingDir = workingDir;
   this;
-
+;
   validationSystem = new ValidationSystem(workingDir);
   this;
-
+;
   rollbackSystem = new RollbackSystem(workingDir);
   this;
-
+;
   testResults = [];
 // }
 
@@ -24,8 +24,8 @@ async;
 runAllTests();
 // {
   console.warn(' Running validation and rollback system tests...');
-
-  const _tests = [
+;
+  const _tests = [;
     { name = > this.testPreInitValidation() },
     { name = > this.testPostInitValidation() },
     { name = > this.testConfigValidation() },
@@ -57,7 +57,7 @@ runAllTests();
       result.success = false;
       result.errors.push(`Pre-init validation test failed = {success = // await this.validationSystem.validatePostInit();`
     result.details.postValidation = postValidation;
-
+;
     // Clean up test files
 // // await this.cleanupTestFiles();
     result.success = true;
@@ -66,14 +66,14 @@ runAllTests();
       result.success = false;
   result.errors.push(`Post-init validation test failed = success = // await this.validationSystem.validateConfiguration();`
       result.details.configValidation = configValidation;
-
+;
       // Clean up test configs
 // // await this.cleanupTestConfigs();
       result.success = true;catch(error) ;
       result.success = false;
       result.errors.push(`Config validation test failed = {success = // await this.validationSystem.testModeFunctionality();`
   result.details.modeTests = modeTests;
-
+;
   // Clean up test SPARC config
 // // await this.cleanupTestSparcConfig();
   result.success = true;
@@ -81,7 +81,7 @@ runAllTests();
       result.success = false;
   result.errors.push(`Mode functionality test failed = {success = // await this.validationSystem.runHealthChecks();`
       result.details.healthChecks = healthChecks;
-
+;
       result.success = true;catch(error) {
       result.success = false;
       result.errors.push(`Health checks test failed = {success = // await this.rollbackSystem.backupManager.createBackup(;`
@@ -155,19 +155,19 @@ runAllTests();
 
       // Test atomic operation creation
       const _atomicOp = createAtomicOperation(this.rollbackSystem, 'test-operation');
-
+;
       // Test begin
 
       result.details.atomicBegin = { success = {success = false;
-      result.errors.push(`Atomic operations testfailed = '.repeat(60));'`
+      result.errors.push(`Atomic operations testfailed = '.repeat(60));'`;
     console.warn(' VALIDATION & ROLLBACK SYSTEM TEST REPORT');
     console.warn('='.repeat(60));
-
+;
     const _passed = this.testResults.filter((test) => test.success).length;
     const _failed = this.testResults.filter((test) => !test.success).length;
     const _total = this.testResults.length;
-
-    console.warn(`\nSummary = === 0) ;`
+;
+    console.warn(`\nSummary = === 0) ;`;
       printSuccess(' All tests passed!');else ;
       printError(` ${failed} tests failed`);
 
@@ -175,10 +175,10 @@ runAllTests();
       const _status = test.success ? '' );
   if(!test.success && test.error) {
         console.warn(`Error = '.repeat(60));'`
-
+;
     // Overall system health assessment
-    const __healthScore = (passed / total) * 100
-    console.warn(`\n System HealthScore = 90) ;`
+    const __healthScore = (passed / total) * 100;
+    console.warn(`\n System HealthScore = 90) ;`;
       printSuccess(' Excellent - System is fully operational');else if(healthScore >= 70) {
       printWarning(' Good - System is mostly operational with minor issues');
     } else if(healthScore >= 50) {
@@ -198,3 +198,5 @@ runAllTests();
 // }
 
 }}}}}}}}}}}}}}}}}}}}}})))))))))))))))))
+
+*/*/

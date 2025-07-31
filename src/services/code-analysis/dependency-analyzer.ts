@@ -8,14 +8,14 @@ import { readFile  } from 'node:fs';
 let _madge, _cruise;
 try {
 // const _madgeModule = awaitimport('madge');
-  _madge = madgeModule.default  ?? madgeModule;
+  _madge = madgeModule.default ?? madgeModule;
 } catch(/* _e */) {
   console.warn('Madge dependency analyzer not available, using fallback');
   _madge = null;
 // }
 try {
 // const _cruiserModule = awaitimport('dependency-cruiser');
-  _cruise = cruiserModule.cruise  ?? cruiserModule.default;
+  _cruise = cruiserModule.cruise ?? cruiserModule.default;
 } catch(/* _e */) {
   console.warn('Dependency-cruiser not available, using fallback');
   _cruise = null;
@@ -32,10 +32,10 @@ try {
       results.dependencies = this.mergeDependencyResults(madgeResults, cruiserResults);
       results.circularDependencies = madgeResults.circular  ?? [];
       results.orphanFiles = madgeResults.orphans  ?? [];
-
+;
       // Calculate metrics
       results.metrics = this.calculateMetrics(results);
-
+;
       console.warn(` Dependency analysis complete = {fileExtensions = > new RegExp(p.replace('**/', '.*/'))),tsConfig = // await madge(targetPath, madgeConfig);`
 
     // return {
@@ -43,7 +43,7 @@ try {
     // return this.processCruiserResults(cruiseResult); // LINT: unreachable code removed
     } catch(error) {
       console.warn(` Dependency-cruiser analysisfailed = [];`
-
+;
   if(cruiseResult.modules) {
   for(const module of cruiseResult.modules) {
   if(module.dependencies) {
@@ -58,7 +58,7 @@ try {
 ..existing,type = = false,rules = = false,dynamic = new Set();
     const __totalDeps = 0;
     const _maxDepth = 0;
-
+;
     // Collect unique files and count dependencies
   for(const dep of results.dependencies) {
       files.add(dep.from); files.add(dep.to); _totalDeps++;
@@ -66,7 +66,7 @@ try {
 
     // Calculate depth(simplified - just count levels in paths) {
   for(const file of files) {
-      const _depth = file.split('/').length; 
+      const _depth = file.split('/').length; ;
       maxDepth = Math.max(maxDepth, depth); //     }
 
     // return {totalFiles = '.') {
@@ -77,12 +77,12 @@ try {
   for(const cycle of circular) {
         circularPaths.push({
           id = {nodes = graph.nodes.size; const _edgeCount = graph.edges.size; // Graph density
-    graph.metrics.density = nodeCount > 1 ? ;)
-      (2 * edgeCount) {/ (nodeCount * (nodeCount - 1)) ;
+    graph.metrics.density = nodeCount > 1 ? ;);
+      (2 * edgeCount) {/ (nodeCount*(nodeCount - 1)) ;
     // Find central files(high degree)
     const _sortedNodes = Array.from(graph.nodes.values());
 sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
-
+;
     graph.metrics.centralFiles = sortedNodes.slice(0, 5).map(_node => ({file = [];
 ))
   for(const _dep of dependencies) {
@@ -96,7 +96,7 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
   calculateCycleImpact(cycle) {
     // Simplified impact calculation based on cycle length and file types
     const _impact = cycle.length;
-
+;
     // Higher impact for certain file types
   for(const file of cycle) {
       if(file.includes('index.')  ?? file.includes('main.')) {
@@ -138,7 +138,7 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
 
     const _files = [];
     const _extensions = ['.js', '.jsx', '.ts', '.tsx'];
-
+;
     async function walk(currentPath = // await readdir(currentPath);
   for(const entry of entries) {
           const _fullPath = join(currentPath, entry); // const _stats = awaitstat(fullPath); 
@@ -165,7 +165,7 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
     const _imports = [];
     const _importPattern = /import\s+(?:(?)\s+from\s+)?['"`]([^'"`]+)['"`]/g;"'`
     const _requirePattern = /require\s*\(\s*['"`]([^'"`]+)['"`]\s*\)/g;"'`
-
+;
     let match;
     while((match = importPattern.exec(content)) !== null) {
       imports.push({source = requirePattern.exec(content)) !== null) {
@@ -198,3 +198,6 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
 // export default DependencyAnalyzer;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))
+
+*/*/*/*/*/
+}}}}}}}

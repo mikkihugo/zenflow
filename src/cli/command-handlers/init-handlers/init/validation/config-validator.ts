@@ -26,7 +26,7 @@ validateRoomodes();
       try {
         const _config = JSON.parse(content);
         result.config = config;
-
+;
         // Validate structure
         const _validationResult = this.validateRoomodesStructure(config);
   if(!validationResult.valid) {
@@ -36,22 +36,22 @@ validateRoomodes();
         result.warnings.push(...validationResult.warnings);
       } catch(/* _jsonError */) {
         result.success = false;
-        result.errors.push(`Invalid JSON in .roomodes = false;`
+        result.errors.push(`Invalid JSON in .roomodes = false;`;
         result.errors.push(`Could not read .roomodes = {success = `${this.workingDir}
 
     try {))
 // const _content = awaitnode.readTextFile(claudeMdPath);
       result.content = content;
-
+;
       // Check for required sections
-      const _requiredSections = [
+      const _requiredSections = [;
         '# Claude Code Configuration',
         '## Project Overview',
         '## SPARC Development Commands' ];
   for(const section of requiredSections) {
         if(!content.includes(section)) {
           result.warnings.push(`Missing recommendedsection = ['npx claude-zen sparc', 'npm run build', 'npm run test']; `
-
+;
   for(const command of importantCommands) {
         if(!content.includes(command)) {
           result.warnings.push(`Missing important commandreference = false; `)
@@ -67,7 +67,7 @@ validateRoomodes();
       try {
         const _data = JSON.parse(content);
         result.data = data;
-
+;
         // Validate structure
         const _validationResult = this.validateMemoryDataStructure(data);
   if(!validationResult.valid) {
@@ -77,21 +77,21 @@ validateRoomodes();
         result.warnings.push(...validationResult.warnings);
       } catch(/* jsonError */) {
         result.success = false;
-        result.errors.push(`Invalid JSON in memorydata = false;`
+        result.errors.push(`Invalid JSON in memorydata = false;`;
       result.errors.push(`Could not read memory data = {success = `${this.workingDir}
 
     try {))
 // const _content = awaitnode.readTextFile(coordinationPath);
       result.content = content;
-
+;
       // Check for required sections
-      const _requiredSections = [
+      const _requiredSections = [;
         '# Multi-Agent Coordination',
         '## Agent Coordination Patterns',
         '## Memory Management' ];
   for(const section of requiredSections) {
         if(!content.includes(section)) {
-          result.warnings.push(`Missing recommended section in coordination.md = false; `
+          result.warnings.push(`Missing recommended section in coordination.md = false; `;
       result.errors.push(`Could not read coordination.md = {success = `${this.workingDir}/claude-zen`; `
 
     try {))
@@ -174,9 +174,12 @@ validateRoomodes();
     const _requiredFields = ['agents', 'tasks', 'lastUpdated'];
   for(const field of requiredFields) {
       if(!(field in data)) {
-        result.warnings.push(`Missing field in memorydata = = 'number') ; `
+        result.warnings.push(`Missing field in memorydata = = 'number') ; `;
       result.warnings.push('lastUpdated should be a timestamp number'); // return result;
     //   // LINT: unreachable code removed}
 // }
 
 }}}}}}}}}}}}}}}}}}}}}}}}) {)))))))
+
+*/
+}}}}

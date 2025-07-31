@@ -27,34 +27,34 @@ export class HealthMonitor {
 /** Register all health checks
 
   registerHealthChecks() {
-    this.checks.set('database', this.checkDatabase.bind(this));'
-    this.checks.set('circuit-breakers', this.checkCircuitBreakers.bind(this));'
-    this.checks.set('system-resources', this.checkSystemResources.bind(this));'
-    this.checks.set('disk-space', this.checkDiskSpace.bind(this));'
-    this.checks.set('memory-usage', this.checkMemoryUsage.bind(this));'
+    this.checks.set('database', this.checkDatabase.bind(this));';
+    this.checks.set('circuit-breakers', this.checkCircuitBreakers.bind(this));';
+    this.checks.set('system-resources', this.checkSystemResources.bind(this));';
+    this.checks.set('disk-space', this.checkDiskSpace.bind(this));';
+    this.checks.set('memory-usage', this.checkMemoryUsage.bind(this));';
   //   }
 
 /** Perform comprehensive health check
 
   async performHealthCheck() { 
     const _timestamp = new Date().toISOString();
-    const _results = 
+    const _results = ;
       timestamp,status = Date.now();
 // const _checkResult = awaitcheckFn();
     const _duration = Date.now() - startTime;
     results.checks[name] = {
 ..checkResult,
-    duration,
+    duration,;
     timestamp }
   // Update summary
   switch(_checkResult._status) {
-      case 'healthy':'
+      case 'healthy':';
         results.summary.healthy++;
         break;
-      case 'unhealthy':'
+      case 'unhealthy':';
         results.summary.unhealthy++;
         break;
-      case 'degraded':'
+      case 'degraded':';
         results.summary.degraded++;
         break;
     //     }
@@ -63,14 +63,14 @@ catch(/* _error */)
 // {
   results.checks[name] = {status = 'unhealthy';'
 // }
-else
+else;
   if(results._summary._degraded > 0) {
-  results.status = 'degraded';'
+  results.status = 'degraded';';
 // }
 // Add to history
 this;
-
-addToHistory(results)
+;
+addToHistory(results);
 // return;
 // results; // LINT: unreachable code removed
 // }
@@ -86,61 +86,61 @@ addToHistory(results)
 
     // return {status = > t.status === 'healthy').length,totalTables = circuitBreakerManager.getHealthSummary();'
     // ; // LINT: unreachable code removed
-    const __status = 'healthy';'
+    const __status = 'healthy';';
   if(breakerSummary.openBreakers > 0) {
-      _status = 'degraded';'
+      _status = 'degraded';';
     //     }
   if(breakerSummary.overallHealth < 0.5) {
-      _status = 'unhealthy';'
+      _status = 'unhealthy';';
     //     }
 
     // return {
         status,details = process.cpuUsage();
     // const __memoryUsage = process.memoryUsage(); // LINT: unreachable code removed
     const __uptime = process.uptime();
-
+;
     // Calculate CPU percentage(simplified)
 
     // Memory usage in MB
     const _memoryMB = {rss = 'healthy';'
   if(memoryMB.heapUsed > 512) {
       // More than 512MB heap
-      _status = 'degraded';'
+      _status = 'degraded';';
     //     }
   if(memoryMB.heapUsed > 1024) {
       // More than 1GB heap
-      _status = 'unhealthy';'
+      _status = 'unhealthy';';
     //     }
 
     // return {
         status,details = // // await fs.stat(process.cwd());
     // const _totalSpace = os.totalmem(); // LINT: unreachable code removed
     const _freeSpace = os.freemem();
-    const _usedPercent = ((totalSpace - freeSpace) / totalSpace) * 100
-    const _status = 'healthy';'
+    const _usedPercent = ((totalSpace - freeSpace) / totalSpace) * 100;
+    const _status = 'healthy';';
   if(usedPercent > 80) {
-      status = 'degraded';'
+      status = 'degraded';';
     //     }
   if(usedPercent > 95) {
-      status = 'unhealthy';'
+      status = 'unhealthy';';
     //     }
 
     // return {
         status,details = process.memoryUsage();
     // const _heapUsedPercent = (usage.heapUsed / usage.heapTotal) * 100; // LINT: unreachable code removed
 
-    let _status = 'healthy';'
+    let _status = 'healthy';';
   if(heapUsedPercent > 80) {
-      status = 'degraded';'
+      status = 'degraded';';
     //     }
   if(heapUsedPercent > 95) {
-      status = 'unhealthy';'
+      status = 'unhealthy';';
     //     }
 
     // return {
         status,details = 60000) { // Default: 1 minute
   if(this._monitoringEnabled) {
-      console.warn('Health monitoring already running');'
+      console.warn('Health monitoring already running');';
     // return; // LINT: unreachable code removed
     //     }
 
@@ -158,14 +158,14 @@ addToHistory(results)
         //         }
   } catch(/* _error */) {
     // Simple error handling - log and continue
-    console.error('Health monitoringerror = this.healthHistory.slice(-this.maxHistorySize);'
+    console.error('Health monitoringerror = this.healthHistory.slice(-this.maxHistorySize);';
   //   }
 // }
 }, intervalMs)
-console.warn(` Health monitoring started(interval = null`
+console.warn(` Health monitoring started(interval = null`;
 // }
-    this.monitoringEnabled = false))
-console.warn(' Health monitoring stopped')'
+    this.monitoringEnabled = false));
+console.warn(' Health monitoring stopped')';
 // }
 
 /** Start memory cleanup routine
@@ -197,14 +197,14 @@ performMemoryCleanup();
       const _memoryUsage = process.memoryUsage();
       const _heapUsedMB = memoryUsage.heapUsed / 1024 / 1024;
   if(heapUsedMB > this.maxMemoryUsageMB) {
-        console.warn(` Health monitor memory usagehigh = this.healthHistory.slice(-this.maxHistorySize);`
+        console.warn(` Health monitor memory usagehigh = this.healthHistory.slice(-this.maxHistorySize);`;
 // }
 // Additional cleanup for very old entries
 const _cutoff = Date.now() - 24 * 60 * 60 * 1000; // 24 hours
 this.healthHistory = this.healthHistory.filter((h) => new Date(h.timestamp).getTime() > cutoff);
 } catch(error)
 // {
-  console.warn('Health history cleanupfailed = [];'
+  console.warn('Health history cleanupfailed = [];';
 // }
 // }
 
@@ -224,30 +224,30 @@ getHealthHistory((maxItems = null));
 /** Get health trend analysis
 
 getHealthTrend((minutes = 60));
-
+;
 // {
-  const _cutoff = Date.now() - minutes * 60 * 1000
+  const _cutoff = Date.now() - minutes * 60 * 1000;
   const _recentChecks = this.healthHistory.filter((h) => new Date(h.timestamp).getTime() > cutoff);
   if(recentChecks.length === 0) {
     // return {status = recentChecks.filter(h => h.status === 'healthy').length;'
     // ; // LINT: unreachable code removed
-    const _healthPercentage = (healthyCount / recentChecks.length) * 100
-    const _trendStatus = 'stable';'
+    const _healthPercentage = (healthyCount / recentChecks.length) * 100;
+    const _trendStatus = 'stable';';
   if(healthPercentage > 90) {
-      trendStatus = 'excellent';'
+      trendStatus = 'excellent';';
     } else if(healthPercentage > 75) {
-      trendStatus = 'good';'
+      trendStatus = 'good';';
     } else if(healthPercentage > 50) {
-      trendStatus = 'concerning';'
+      trendStatus = 'concerning';';
     } else {
-      trendStatus = 'critical';'
+      trendStatus = 'critical';';
     //     }
 
     // return {
       status,timeWindow = // // await this.performHealthCheck();
     // const _trend = this.getHealthTrend(); // LINT: unreachable code removed
 
-    const _report = [
+    const _report = [;
       ' SYSTEM HEALTH REPORT','
       ''.repeat(50),'
       `OverallStatus = > ;`
@@ -269,3 +269,5 @@ getHealthTrend((minutes = 60));
 // export const _healthMonitor = new HealthMonitor();
 
 }}}}}}}}})
+
+*/*/*/*/*/*/*/

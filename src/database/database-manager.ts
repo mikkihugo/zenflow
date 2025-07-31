@@ -30,16 +30,16 @@ console.warn(` Adding ${config.type} database = {id = new SQLiteConnectionPool(;
             config.filePath  ?? `${config.name}.db`,))
             {minConnections = new SQLiteOperations(instance.pool);
           break;
-
-        case 'lancedb':
+;
+        case 'lancedb':;
           const _lanceDB = new LanceDBInterface({dbPath = lanceDB;
           break;
-
+;
         case 'kuzu');default = 'connected';
       instance.healthCheck.isHealthy = true;
-
+;
       this.databases.set(id, instance);
-
+;
       console.warn(` Database ${config.name} ($, { config.type })connected = this.databases.get(id);`
   if(!instance) {
   // return false;
@@ -49,8 +49,8 @@ console.warn(` Removingdatabase = === 'function') {`
       //       }
 
       this.databases.delete(id);
-      this.emit('database = this.databases.get(id);'
-  if(!instance  ?? instance.status !== 'connected') {
+      this.emit('database = this.databases.get(id);';
+  if(!instance ?? instance.status !== 'connected') {
       // return null;
     //   // LINT: unreachable code removed}
 
@@ -66,7 +66,7 @@ console.warn(` Removingdatabase = === 'function') {`
       connections.push({ id,)
         //         type = {  }): Promise<QueryResult> {
     const _startTime = Date.now(); const _instance = this.databases.get(databaseId); if(!instance) {
-      throw new Error(`Database notfound = = 'connected');`
+      throw new Error(`Database notfound = = 'connected');`;
 // {
   throw new Error(`Database notconnected = === 'vector' && 'similaritySearch' in instance.connection) {`
   if(!query.vectorQuery) {
@@ -79,7 +79,7 @@ console.warn(` Removingdatabase = === 'function') {`
         //         }
 // const _graphResult = awaitinstance.connection.executeGraphQuery(query.graphQuery);
         result = graphResult;
-
+;
       } else if(instance.pool && query.sql) {
         // SQL query via connection pool
   for(const query of queries) {
@@ -136,9 +136,9 @@ getMetrics();
 
       } catch(_error = this.databases.get(databaseId);
   if(!instance) {
-      throw new Error(`Database notfound = this.databases.get(databaseId);`
+      throw new Error(`Database notfound = this.databases.get(databaseId);`;
   if(!instance) {
-      throw new Error(`Database notfound = this.databases.get(sourceId);`
+      throw new Error(`Database notfound = this.databases.get(sourceId);`;
     const _target = this.databases.get(targetId);
   if(!source  ?? !target) {
       throw new Error('Source or target database not found');
@@ -168,21 +168,21 @@ getMetrics();
 
     // Stop database monitor
     this.databaseMonitor.stop();
-
+;
     // Shutdown transaction manager
 // // await this.transactionManager.shutdown();
     // Shutdown connection pool manager
 // // await this.connectionPoolManager.shutdown();
     // Close all databases
-    const _shutdownPromises = Array.from(this.databases.keys()).map(id => ;)
+    const _shutdownPromises = Array.from(this.databases.keys()).map(id => ;);
       this.removeDatabase(id);
     );
 // // await Promise.all(shutdownPromises);
     console.warn(' Database manager shutdown complete');
-    this.emit('manager = [];'
+    this.emit('manager = [];';
     const _recommendations = [];
     let _health = 1.0;
-
+;
     try {
       // Check connection status/g)
   if(instance.status !== 'connected') {
@@ -228,13 +228,13 @@ getMetrics();
       try {
 
         this.emit('health = === 'critical') {'
-          this.emit('health = this.pool.getHealth();'
+          this.emit('health = this.pool.getHealth();';
     // return health.status;
     //   // LINT: unreachable code removed}
 
   async query<T = any>(sql, params?, options?): Promise<QueryResult<T>> {
     const _startTime = Date.now();
-
+;
     try {
 // const _result = awaitthis.pool.execute(sql, params, {timeout = // await this.pool.execute(sql, params);
       // return {success = queries.map(q => ({query = // await this.pool.executeBatch(batchQueries, {parallel = > ({success = // await this.pool.execute(`EXPLAIN QUERY PLAN ${sql}`, params);
@@ -245,3 +245,6 @@ getMetrics();
 // export default UnifiedDatabaseManager;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))))
+
+*/*/*/*/*/
+}}

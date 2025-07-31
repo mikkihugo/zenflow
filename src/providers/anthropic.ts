@@ -15,7 +15,7 @@ import { ProviderError  } from '.';
 // constructor() {}
 // // {
 //   super();
-//   this.pricing = {inputTokenPrice = config.apiKey  ?? process.env.ANTHROPIC_API_KEY;
+//   this.pricing = {inputTokenPrice = config.apiKey ?? process.env.ANTHROPIC_API_KEY;
 //   if(!this.apiKey) {
 //     throw new ProviderError('Anthropic API key is required', this.name, 'MISSING_API_KEY');
 //   //   }
@@ -89,9 +89,9 @@ try {
   // return new RateLimitError(this.name, retryAfter ? parseInt(retryAfter) );
 // }
 // return new ProviderError(;
-// errorData.error?.message  ?? errorData.message  ?? 'Unknown error', // LINT: unreachable code removed
-this.name,
-errorData.error?.type  ?? 'API_ERROR',
+// errorData.error?.message ?? errorData.message  ?? 'Unknown error', // LINT: unreachable code removed
+this.name,;
+errorData.error?.type  ?? 'API_ERROR',;
 response.status;
 // )
 // }
@@ -99,7 +99,7 @@ response.status;
 : AIResponse['finishReason']
 // {
   switch(reason) {
-    case 'end_turn':
+    case 'end_turn':;
       // return 'stop';
     // case 'max_tokens': // LINT: unreachable code removed
       // return 'length';
@@ -121,3 +121,5 @@ handleError(error);
 // }
 
 }}}})))))
+
+*/*/

@@ -6,7 +6,7 @@ export class RuvSwarm {
   constructor(options = {}) {
     this.options = options;
     this.swarms = new Map();
-    console.warn('[Mock] Using mock RuvSwarm implementation');'
+    console.warn('[Mock] Using mock RuvSwarm implementation');';
   //   }
 
   async createSwarm(config) { 
@@ -21,16 +21,16 @@ export class RuvSwarm {
 class MockSwarm {
   constructor(config = config.id;
   this;
-
+;
   topology = config.topology;
   this;
-
+;
   maxAgents = config.maxAgents;
   this;
-
+;
   agents = [];
   this;
-
+;
   created = new Date().toISOString();
 // }
 
@@ -39,7 +39,7 @@ getAgents();
 
 async;
 addAgent(agentConfig);
-
+;
   this.agents.push(agentConfig);
   // return agentConfig;
 
@@ -50,3 +50,5 @@ async;
 cleanup();
   this.agents = [];
 // }
+
+*/)

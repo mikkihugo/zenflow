@@ -4,7 +4,7 @@
     this.memoryRag = null;
     this.architectAdvisor = null;
     this.db = null;
-
+;
     // Intelligence engines
     this.suggestionEngine = null;
     this.completenessAnalyzer = null;
@@ -15,14 +15,14 @@
     this.registry = registry;
     this.options = dbPath = = false,completenessThreshold = = false,minConfidenceForSuggestion = new Database(this.options.dbPath);
     this.createSchema();
-
+;
     // Get dependent plugins
-    this.memoryRag = registry.pluginSystem.getPlugin('memory-rag');'
+    this.memoryRag = registry.pluginSystem.getPlugin('memory-rag');';
     this.architectAdvisor = registry.pluginSystem.getPlugin('architect-advisor');'
-
+;
     // Initialize intelligence engines
     this.initializeIntelligenceEngines();
-
+;
     // Load all service scopes
     this.serviceScopes = // // await this.loadServiceScopes();
 
@@ -34,111 +34,111 @@
     //     }
   //   }
   createSchema() {
-    this.db.exec(`;`
+    this.db.exec(`;`;
       CREATE TABLE IF NOT EXISTS visions(;
-          id TEXT PRIMARY KEY,
-          title TEXT,
-          description TEXT,
-          objectives TEXT,
-          stakeholders TEXT,
-          timeline TEXT,
-          priority TEXT,
-          status TEXT,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          metadata TEXT;))
+          id TEXT PRIMARY KEY,;
+          title TEXT,;
+          description TEXT,;
+          objectives TEXT,;
+          stakeholders TEXT,;
+          timeline TEXT,;
+          priority TEXT,;
+          status TEXT,;
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,;
+          metadata TEXT;));
       );
 
       CREATE TABLE IF NOT EXISTS epics(;
-          id TEXT PRIMARY KEY,
-          vision_id TEXT,
-          title TEXT,
-          description TEXT,
-          acceptance_criteria TEXT,
-          business_value TEXT,
+          id TEXT PRIMARY KEY,;
+          vision_id TEXT,;
+          title TEXT,;
+          description TEXT,;
+          acceptance_criteria TEXT,;
+          business_value TEXT,;
           effort TEXT,
-          priority TEXT,
-          status TEXT,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          metadata TEXT,
+          priority TEXT,;
+          status TEXT,;
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,;
+          metadata TEXT,;
           FOREIGN KEY(vision_id) REFERENCES visions(id);
       );
 
       CREATE TABLE IF NOT EXISTS features(;
-          id TEXT PRIMARY KEY,
-          epic_id TEXT,
-          title TEXT,
-          description TEXT,
+          id TEXT PRIMARY KEY,;
+          epic_id TEXT,;
+          title TEXT,;
+          description TEXT,;
           functional_requirements TEXT,
           non_functional_requirements TEXT,
-          dependencies TEXT,
-          risks TEXT,
+          dependencies TEXT,;
+          risks TEXT,;
           effort TEXT,
-          priority TEXT,
-          status TEXT,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          metadata TEXT,
+          priority TEXT,;
+          status TEXT,;
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,;
+          metadata TEXT,;
           FOREIGN KEY(epic_id) REFERENCES epics(id);
       );
 
       CREATE TABLE IF NOT EXISTS prds(;
-          id TEXT PRIMARY KEY,
-          feature_id TEXT,
-          title TEXT,
-          sections TEXT,
-          status TEXT,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          metadata TEXT,
+          id TEXT PRIMARY KEY,;
+          feature_id TEXT,;
+          title TEXT,;
+          sections TEXT,;
+          status TEXT,;
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,;
+          metadata TEXT,;
           FOREIGN KEY(feature_id) REFERENCES features(id);
       );
 
       CREATE TABLE IF NOT EXISTS user_stories(;
-          id TEXT PRIMARY KEY,
-          parent_id TEXT,
-          parent_type TEXT,
-          title TEXT,
-          narrative TEXT,
-          acceptance_criteria TEXT,
-          priority TEXT,
+          id TEXT PRIMARY KEY,;
+          parent_id TEXT,;
+          parent_type TEXT,;
+          title TEXT,;
+          narrative TEXT,;
+          acceptance_criteria TEXT,;
+          priority TEXT,;
           effort TEXT,
-          status TEXT,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          status TEXT,;
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,;
           metadata TEXT;
       );
 
       CREATE TABLE IF NOT EXISTS tasks(;
-          id TEXT PRIMARY KEY,
-          parent_id TEXT,
-          parent_type TEXT,
-          title TEXT,
-          description TEXT,
+          id TEXT PRIMARY KEY,;
+          parent_id TEXT,;
+          parent_type TEXT,;
+          title TEXT,;
+          description TEXT,;
           //           type TEXT,
-          priority TEXT,
+          priority TEXT,;
           effort TEXT,
-          skills TEXT,
-          dependencies TEXT,
-          status TEXT,
-          assignee TEXT,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          skills TEXT,;
+          dependencies TEXT,;
+          status TEXT,;
+          assignee TEXT,;
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,;
           metadata TEXT;
       );
 
       CREATE TABLE IF NOT EXISTS assignments(;
-          id TEXT PRIMARY KEY,
-          task_id TEXT,
-          queen_id TEXT,
-          assigned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          context TEXT,
-          status TEXT,
-          progress TEXT,
-          communication TEXT,
+          id TEXT PRIMARY KEY,;
+          task_id TEXT,;
+          queen_id TEXT,;
+          assigned_at DATETIME DEFAULT CURRENT_TIMESTAMP,;
+          context TEXT,;
+          status TEXT,;
+          progress TEXT,;
+          communication TEXT,;
           FOREIGN KEY(task_id) REFERENCES tasks(id);
       );
 
       CREATE TABLE IF NOT EXISTS service_scopes(;
-          name TEXT PRIMARY KEY,
-          path TEXT,
-          content TEXT,
-          metadata TEXT,
+          name TEXT PRIMARY KEY,;
+          path TEXT,;
+          content TEXT,;
+          metadata TEXT,;
           last_scanned_at DATETIME DEFAULT CURRENT_TIMESTAMP;
       );
     `);`
@@ -148,7 +148,7 @@
 // const _registry = awaitreadHiveRegistry();
     const _scopes = };
     for (const [name, hive] of Object.entries(registry)) {
-      const _scopePath = path.join(path.dirname(hive.path), 'scope.md'); '
+      const _scopePath = path.join(path.dirname(hive.path), 'scope.md'); ';
       try {
 // const _content = awaitreadFile(scopePath, 'utf8'); '
 
@@ -176,16 +176,16 @@ startIntelligentMonitoring();
 // // await this.analyzeCompleteness();
 // // await this.optimizeDelegations();
       } catch(error) {
-        console.warn('Monitoring cycleerror = this.db.prepare(`;`'
-      SELECT v.* FROM visions v ))
-      WHERE v.status IN('draft', 'in_progress');'
-      AND(SELECT COUNT(*) FROM epics e WHERE e.vision_id = v.id) = 0
+        console.warn('Monitoring cycleerror = this.db.prepare(`;`';
+      SELECT v.* FROM visions v ));
+      WHERE v.status IN('draft', 'in_progress');';
+      AND(SELECT COUNT(*) FROM epics e WHERE e.vision_id = v.id) = 0;
     `).all();`
   for(const vision of incompleteVisions) {
       if(Math.random() < 0.1) { // Only suggest occasionally to avoid spam
         this.emit('suggestionGenerated', {type = this.db.prepare(`; `
-      SELECT * FROM assignments 
-      WHERE status = 'delegated' ; '))
+      SELECT * FROM assignments ;
+      WHERE status = 'delegated' ; '));
       AND assigned_at < datetime('now', '-24 hours') {;'
     `).all();`
   for(const assignment of stalledAssignments) {
@@ -228,7 +228,7 @@ startIntelligentMonitoring();
     `);`
     stmt.run(task);
 // // // await this.registry.register(`task = {}) {`
-    const _task = this.db.prepare('SELECT * FROM tasks WHERE id = ?').get(taskId);'
+    const _task = this.db.prepare('SELECT * FROM tasks WHERE id = ?').get(taskId);';
     if(!task) throw new Error(`Task ${taskId} not found`);`
 
     const _assignmentId = nanoid();
@@ -237,19 +237,19 @@ startIntelligentMonitoring();
         VALUES(@id, @task_id, @queen_id, @context, @status, @progress, @communication);
     `);`
     stmt.run(assignment);
-
-    this.db.prepare('UPDATE tasks SET assignee = ?, status = ? WHERE id = ?').run(queenId, 'assigned', taskId);'
+;
+    this.db.prepare('UPDATE tasks SET assignee = ?, status = ? WHERE id = ?').run(queenId, 'assigned', taskId);';
 // // // await this.registry.register(`assignment = `;`/g)
       VisionTitle = // // await generateText(breakdownPrompt);
     let epics;
-
+;
     try {
       epics = JSON.parse(aiBreakdown);
     } catch(error) {
-      console.warn('Failed to parse AI breakdown, creating fallback epic');'
+      console.warn('Failed to parse AI breakdown, creating fallback epic');';
       epics = [{title = 3; // Prevent overwhelming the system
     const _delegatedEpics = [];
-
+;
     for (const [index, epicData] of epics.slice(0, maxConcurrentDelegations).entries()) {
       try {
         // Create the epic in our hierarchy
@@ -257,13 +257,13 @@ startIntelligentMonitoring();
   if(relevantService) {
           // Step4 = ? WHERE id = ?')'
 run('in_progress', visionId); '
-
+;
     console.warn(` Vision breakdown complete. Created \$epics.lengthepics, delegated \$delegatedEpics.length`) {;`
     this.emit('visionBreakdownComplete', { visionId,epics = Object.values(this.serviceScopes);'
     if(services.length === 0) return null;
     // ; // LINT: unreachable code removed
     // Simple keyword matching - can be enhanced with AI semantic matching
-    const _epicKeywords = [
+    const _epicKeywords = [;
 ..this.extractKeywords(epicData.title),
 ..this.extractKeywords(epicData.description),
 ..(epicData.relevantServices  ?? []);
@@ -281,7 +281,7 @@ run('in_progress', visionId); '
     // Only return if we have a reasonable match
     // return bestScore > 0.3 ?bestMatch = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by']);'
     // return text.toLowerCase(); // LINT: unreachable code removed
-replace(/[^a-zA-Z0-9\s]/g, ' ');'
+replace(/[^a-zA-Z0-9\s]/g, ' ');';
 split(/\s+/);
 filter(word => word.length > 2 && !commonWords.has(word));
 slice(0, 20); // Limit to most relevant keywords
@@ -292,13 +292,13 @@ slice(0, 20); // Limit to most relevant keywords
     const _set1 = new Set(keywords1);
     const _set2 = new Set(keywords2);
     const _intersection = new Set([...set1].filter(x => set2.has(x)));
-
-    if(set1.size === 0  ?? set2.size === 0) return 0;
+;
+    if(set1.size === 0 ?? set2.size === 0) return 0;
     // return intersection.size / Math.max(set1.size, set2.size); // LINT: unreachable code removed
   //   }
 
   // Delegate an epic to a specific service hive
-  async delegateEpicToService(epicId, epicData, service): unknown
+  async delegateEpicToService(epicId, epicData, service): unknown;
     try {
       console.warn(` Delegating epic "${epicData.title}" toservice = `;`)
         EPIC DELEGATION from ProjectHive = > `${i + 1}. ${criteria}`).join('\n')}'
@@ -311,7 +311,7 @@ slice(0, 20); // Limit to most relevant keywords
 // const _hiveRegistry = awaitreadHiveRegistry();
       const _hiveInfo = hiveRegistry[service.name];
   if(!hiveInfo) {
-        throw new Error(`Service hive \$service.namenot found in registry`);`
+        throw new Error(`Service hive \$service.namenot found in registry`);`;
       //       }
 
       // Create assignment record
@@ -321,7 +321,7 @@ slice(0, 20); // Limit to most relevant keywords
         VALUES(@id, @task_id, @queen_id, @context, @status, @progress, @communication);
       `);`
       stmt.run(assignment);
-
+;
       // Delegate to the service using swarm command
 
     if(data.description) complexity += Math.min(data.description.length / 100, 3);
@@ -345,3 +345,6 @@ slice(0, 20); // Limit to most relevant keywords
 // export default HierarchicalTaskManagerPlugin;
 
 }}}}}}}}}}}}}}}}}}}}}}})))))))))))
+
+*/*/
+}]

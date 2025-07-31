@@ -44,11 +44,11 @@ else displayName = ` ${dir.name}`;`
   key: dir.path;
 // }
 
-React.createElement(
-Text,
+React.createElement(;
+Text,;
 // {
-  color: isSelected ? 'black' : 'white','
-  backgroundColor: isSelected ? 'cyan' ,'
+  color: isSelected ? 'black' : 'white',';
+  backgroundColor: isSelected ? 'cyan' ,';
   bold}
 
 `\${isSelected ? ' ' }'`
@@ -62,17 +62,20 @@ $;
 // }
 // )
 ),
-React.createElement(Box,
+React.createElement(Box,;
 // {
   // marginTop: 1
 // }
 
-React.createElement(Text,
+React.createElement(Text,;
 // {
-  color: 'gray';'
+  color: 'gray';';
 // }/g))
 , " Navigate | Enter: Select/Open | ESC: Cancel")"
 // )
 // )
 // }
 // export default DirectorySelector;
+
+*/*/
+}}

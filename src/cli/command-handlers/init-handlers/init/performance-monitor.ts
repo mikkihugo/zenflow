@@ -6,8 +6,8 @@ export class PerformanceMonitor {
   constructor(options = {}) {
     this.enabled = options.enabled !== false;
     this.logLevel = options.logLevel  ?? 'info';
-    this.memoryCheckInterval = options.memoryCheckInterval  ?? 5000; // 5 seconds
-    this.maxMemoryMB = options.maxMemoryMB  ?? 1024; // 1GB default limit
+    this.memoryCheckInterval = options.memoryCheckInterval ?? 5000; // 5 seconds
+    this.maxMemoryMB = options.maxMemoryMB ?? 1024; // 1GB default limit
 
     this.metrics = {
       startTime,endTime = null;
@@ -36,7 +36,7 @@ export class PerformanceMonitor {
       this.memoryMonitor = setInterval(() => {
         const _memUsage = node.memoryUsage();
         const _memoryMB = memUsage.rss / 1024 / 1024;
-
+;
         this.metrics.memoryReadings.push({timestamp = memoryMB;
         //         }
 
@@ -47,11 +47,11 @@ export class PerformanceMonitor {
     //     }/g)
     calculateAverages();
   if(this.metrics.memoryReadings.length > 0) {
-      const _totalMemory = this.metrics.memoryReadings.reduce(;)
+      const _totalMemory = this.metrics.memoryReadings.reduce(;);
       (sum, reading) => sum + reading.memoryMB,
       0;
       //       )
-      this.metrics.averageMemoryMB = totalMemory / this.metrics.memoryReadings.length
+      this.metrics.averageMemoryMB = totalMemory / this.metrics.memoryReadings.length;
     //     }
     recordOperation(operationType, (details = {}));
     : unknown
@@ -68,7 +68,7 @@ export class PerformanceMonitor {
     // ; // LINT: unreachable code removed
     this.metrics.warnings.push({timestamp = === 'debug') {
       console.warn(' Warningrecorded = this.metrics.endTime - this.metrics.startTime;'
-
+;
     // return {
 ..this.metrics,)
     // duration,operationsPerSecond = this.getMetrics(); // LINT: unreachable code removed
@@ -83,7 +83,7 @@ export class PerformanceMonitor {
   if(metrics.errors.length > 0) {
         report +=;
         `\n Errors => {`
-        report += ` - \$error.error;`
+        report += ` - \$error.error;`;
         \n`
       //       }
       //       )
@@ -91,7 +91,7 @@ export class PerformanceMonitor {
   if(metrics.warnings.length > 0) {
       report +=;
       `\n  Warnings => {`
-        report += ` - \$warning.message;`
+        report += ` - \$warning.message;`;
       \n`
     //     }
     //     )
@@ -108,7 +108,7 @@ export class PerformanceMonitor {
         const _memUsage = node.memoryUsage();
         currentMemory = `${(memUsage.rss / 1024 / 1024).toFixed(1)}MB`;
       //       }
-      console.warn(;)
+      console.warn(;);
       `  ${elapsed.toFixed(1)}s |  ${currentMemory} |  ${this.metrics.operationCount} ops`;
       //       )
     //     }
@@ -120,22 +120,22 @@ export class PerformanceMonitor {
   //   {
   constructor(options = {};
   ) {
-    this.
+    this.;
   maxMemoryMB = options.maxMemoryMB ?? 1024;
   this;
-
+;
   maxCPUPercent = options.maxCPUPercent ?? 80;
   this;
-
+;
   checkInterval = options.checkInterval ?? 2000;
   this;
-
+;
   isMonitoring = false;
   this;
-
+;
   monitorInterval = null;
   this;
-
+;
   callbacks = {
       memoryWarning => {}
   ),
@@ -168,8 +168,8 @@ checkResources();
   if(typeof node !== 'undefined' && node.memoryUsage) {
     const _memUsage = node.memoryUsage();
     const _memoryMB = memUsage.rss / 1024 / 1024;
-    const _warningThreshold = this.maxMemoryMB * 0.8
-    const _errorThreshold = this.maxMemoryMB * 0.95
+    const _warningThreshold = this.maxMemoryMB * 0.8;
+    const _errorThreshold = this.maxMemoryMB * 0.95;
   if(memoryMB > errorThreshold) {
       this.callbacks.memoryError(memoryMB, this.maxMemoryMB);
     } else if(memoryMB > warningThreshold) {
@@ -185,8 +185,8 @@ createDefaultCallbacks();
         printInfo(` _Memory _usage _high => {`
         console.error(` Memory usage critical => {`)
   printInfo(` CPU usage high = {}) {`
-    const {
-      cpuCores = 4,
+    const { temp } = {};
+      cpuCores = 4,;
     // memoryGB = 8, // LINT: unreachable code removed
       diskSpeed = 'ssd', // 'ssd' or 'hdd'
     } = systemSpecs;
@@ -205,26 +205,26 @@ createDefaultCallbacks();
   // static estimateCompletionTime(projectCount, (options = {}));
   : unknown
   //   {
-    const {
-      concurrency = 5,
-    template = 'basic',
-    sparc = false,
+    const { temp } = {};
+      concurrency = 5,;
+    template = 'basic',;
+    sparc = false,;
     averageTimePerProject = 15, // seconds
   //   }
   = options
   const _timeMultiplier = 1;
   // Adjust for template complexity
   const _templateMultipliers = {
-      basic,
+      basic,;
   ('web-api');
   : 1.2,
   ('react-app')
   : 1.5,microservice = templateMultipliers[template]  ?? 1
   // Adjust for SPARC
   if(sparc) {
-    timeMultiplier *= 1.3
+    timeMultiplier *= 1.3;
   //   }
-  const __adjustedTime = averageTimePerProject * timeMultiplier
+  const __adjustedTime = averageTimePerProject * timeMultiplier;
   // return {
       sequential = {}) {
     const _recommendations = [];
@@ -247,3 +247,5 @@ createDefaultCallbacks();
 // }
 
 }}}}}}}}}}}}}}}}}}}}
+
+*/*/

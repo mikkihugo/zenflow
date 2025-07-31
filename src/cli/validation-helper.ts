@@ -10,7 +10,7 @@ export class ValidationHelper {
 
   // static validateEnum(value, paramName, validOptions, commandPath) {
     if(!validOptions.includes(value)) {
-      console.error(;)
+      console.error(;);
         HelpFormatter.formatValidationError(value, paramName, validOptions, commandPath));
       process.exit(1);
     //     }
@@ -20,7 +20,7 @@ export class ValidationHelper {
 
   // static validateNumber(value, paramName, min, _max, commandPath) {
     const _num = parseInt(value, 10);
-
+;
     if(Number.isNaN(num)) {
       console.error(;
         HelpFormatter.formatError(;
@@ -67,3 +67,5 @@ export class ValidationHelper {
 // }
 
 }})))
+
+*/*/*/*/*/

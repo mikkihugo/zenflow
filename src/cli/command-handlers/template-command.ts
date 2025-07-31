@@ -2,37 +2,37 @@
 /** Enhanced Template Management Command for Claude Zen
 /** Handles comprehensive templateoperations = fileURLToPath(import.meta.url)
 const ___dirname = path.dirname(__filename);
-
+;
 export async function templateCommand(args = new TemplateManager();
   const _action = args[0];
-
+;
   try {
   switch(action) {
-      case 'list':
+      case 'list':;
 // // await handleListTemplates(templateManager, flags);
         break;
-
-      case 'info':
+;
+      case 'info':;
 // // await handleTemplateInfo(templateManager, args[1], flags);
         break;
-
-      case 'create':
+;
+      case 'create':;
 // // await handleCreateTemplate(templateManager, args[1], flags);
         break;
-
-      case 'install':
+;
+      case 'install':;
 // // await handleInstallTemplate(templateManager, args[1], args[2]  ?? '.', flags);
         break;
-
-      case 'customize':
+;
+      case 'customize':;
 // // await handleCustomizeTemplate(templateManager, args[1], flags);
         break;
-
-      case 'docs':
+;
+      case 'docs':;
 // // await handleTemplateDocs(templateManager, args[1], flags);
         break;
-
-      case 'variants':
+;
+      case 'variants':;
 // // await handleTemplateVariants(templateManager, args[1], flags);
         break;default = // await templateManager.listTemplates();
   if(templates.length === 0) {
@@ -81,13 +81,13 @@ async function handleCustomizeTemplate(templateManager = // await templateManage
   return;
 // }
 console.warn(`\n Customizingtemplate = '.repeat(50));'`
-
+;
   // Show available variants
 // // await handleTemplateVariants(templateManager, templateName, flags);
   // Interactive customization would go here
   console.warn('\n Customizationoptions = // await templateManager.discoverTemplates();'
     const _templateList = Array.from(templates.values());
-
+;
     console.warn('\n TemplateDocumentation = '.repeat(50));
   for(const template of templateList) {
       console.warn(`\n ${template.manifest.name}`); if(template.manifest.documentation) {
@@ -104,8 +104,8 @@ console.warn('='.repeat(50));
   if(documentation.readme) {
       try {
         const __readmePath = path.resolve(template.path, documentation.readme);
-
-        console.warn('\nREADME = path.join(template.path, 'commands');'
+;
+        console.warn('\nREADME = path.join(template.path, 'commands');';
   try {
     const {promises = // await import('node);'
 // // await fs.access(commandsPath);
@@ -117,7 +117,7 @@ console.warn('='.repeat(50));
 
   console.warn(`\n Settings variants for ${templateName});`
   console.warn('='.repeat(50));
-
+;
   // Check for variant files
   const _variants = ['basic', 'enhanced', 'optimized'];
   const _availableVariants = [];
@@ -134,7 +134,7 @@ console.warn('='.repeat(50));
 // const _variantContent = awaitreadFile(variant.path, 'utf8'); 
       const _variantConfig = JSON.parse(variantContent) {;
   if(variantConfig.env) {
-        console.warn('   Environment variables);'
+        console.warn('   Environment variables);';
         for (const [key, value] of Object.entries(variantConfig.env)) {
           console.warn(`${key}); `
         //         }
@@ -143,32 +143,32 @@ console.warn('='.repeat(50));
         console.warn('   Performance features); '
       //       }
   if(variantConfig.hooks) {
-        console.warn('   Hooks);'
+        console.warn('   Hooks);';
       //       }
     } catch(/* _error */) {
-      console.warn('   Configuration);'
+      console.warn('   Configuration);';
     //     }
   //   }
 
-  console.warn('\n Usage);'
+  console.warn('\n Usage);';
   console.warn(`   claude-zen template install ${templateName} ./project --variant <variant-name>`);
 // }
 
 /** Show template command help
 
 function _showTemplateHelp() {
-  console.warn(`;`
+  console.warn(`;`;
  Enhanced Claude Zen Template Management System
-
+;
 Usage);
   --no-plugins            Skip plugin ecosystem installation
 
-Creation Options: null
+Creation Options: null;
   --description <text>     Template description(for create);
   --version <version>      Template version(for create);
   --category <category>    Template category(for create)
 
-Examples: null
+Examples: null;
   claude-zen template list;
   claude-zen template info claude-zen;
   claude-zen template variants claude-zen;
@@ -176,8 +176,8 @@ Examples: null
   claude-zen template docs claude-zen;
   claude-zen template install claude-zen ./my-project --variant optimized;
   claude-zen template create my-template --description "My custom template"
-
-Template Features: null
+;
+Template Features: null;
    Plugin ecosystem templates with pre-configured components;
    Automated setup and post-install configuration;
    Comprehensive documentation and examples;
@@ -192,3 +192,6 @@ Template Features: null
 // export { type templateCommand as default, type handleListTemplates, type handleTemplateInfo, handleCreateTemplate };
 
 }}}}}}}}}}}})))))
+
+*/*/*/*/*/
+}}

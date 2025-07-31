@@ -6,7 +6,7 @@
 
 export function createMinimalClaudeMd() {
   return `# Claude Code Configuration`
-
+;
     // ## CRITICAL = ALL RELATED OPERATIONS" // LINT: unreachable code removed"
 
 ** CORRECT**: Everything in ONE message
@@ -21,7 +21,7 @@ export function createMinimalClaudeMd() {
 **Examples of CORRECT concurrent execution:**
 \`\`\`javascript;`
 //  CORRECT: Everything in ONE message
-[Single Message]:
+[Single Message];
   - TodoWrite { todos: [10+ todos with all statuses/priorities] }
   - Task("Agent 1 with full instructions and hooks");
   - Task("Agent 2 with full instructions and hooks");
@@ -56,7 +56,7 @@ Before sending ANY message, ask yourself: null
 -  Are ALL memory operations concurrent?
 
 If ANY answer is "No", you MUST combine operations into a single message!
-
+;
 ## Project Overview;
 This project uses the SPARC(Specification, Pseudocode, Architecture, Refinement, Completion) methodology for systematic Test-Driven Development with AI assistance through Claude-Flow orchestration.
 
@@ -178,3 +178,5 @@ ALWAYS prefer editing an existing file to creating a new one.;
 NEVER proactively create documentation files(*.md) or README files. Only create documentation files if explicitly requested by the User.
 `;`
 // }
+
+*/*/

@@ -27,7 +27,7 @@ try {
     this.treeSitterParser = new TreeSitterParser(this.config);
     // Initialize Kuzu graph interface if available
     this.kuzuGraph = KuzuGraphInterface ? new KuzuGraphInterface(this.config.kuzu) ;
-
+;
     this.isInitialized = false;
   //   }
 
@@ -35,12 +35,12 @@ try {
 
   async initialize() { 
     console.warn(' Initializing Code Analysis Orchestrator...');
-
-    try 
+;
+    try ;
       // Create output directory
 // // await mkdir(this.config.outputDir, {recursive = true;
       console.warn(' Code analysis system initialized');
-
+;
       // return {
         status = {}) {
   if(!this._isInitialized) {
@@ -48,7 +48,7 @@ try {
     //   // LINT: unreachable code removed}
 
     console.warn(` Starting comprehensive code analysis...`);
-
+;
       const _analysisOptions = {includeDependencies = {summary = // await this.discoverSourceFiles();
       console.warn(`Found ${sourceFiles.length} source files`);
 
@@ -107,7 +107,7 @@ try {
     const { join } = await import('path');
 
     const _files = [];
-
+;
     async function walk(currentPath) {
       try {
 // const _entries = awaitreaddir(currentPath);
@@ -141,7 +141,7 @@ performASTAnalysis(sourceFiles);
 // {
     const _results = {files = 0;
     const __processedFiles = 0;
-
+;
     // Process files in batches
   for(let i = 0; i < sourceFiles.length; i += this.config.batchSize) {
       const __batch = sourceFiles.slice(i, i + this.config.batchSize);
@@ -149,7 +149,7 @@ performASTAnalysis(sourceFiles);
 
           // Store file information
           results.files.push(analysis.file);
-
+;
           // Collect all parsed elements
           results.functions.push(...analysis.functions);
           results.classes.push(...analysis.classes);
@@ -167,7 +167,7 @@ performASTAnalysis(sourceFiles);
     results.metrics.averageComplexity = results.functions.length > 0 ? ;)
       Math.round((totalComplexity / results.functions.length) {* 100) /100 = > b.complexity - a.complexity);
     results.metrics.highComplexityFunctions = results.metrics.highComplexityFunctions.slice(0, 20);
-
+;
     return results;
     //   // LINT: unreachable code removed}
 
@@ -241,7 +241,7 @@ performASTAnalysis(sourceFiles);
       console.warn(` Stored ${graphResults.nodes_inserted} nodes and ${graphResults.relationships_inserted} relationships in graph`);
 
     } catch(error) ;
-      console.error(` Graph storagefailed = files.map(file => (;`
+      console.error(` Graph storagefailed = files.map(file => (;`;
 ..file,complexity_score = [];
 
     // File -> Function relationships/g)))
@@ -253,7 +253,7 @@ performASTAnalysis(sourceFiles);
     // Duplicate relationships
   if(results.duplicates?.duplicates) {
       const _dupRelationships = this.duplicateDetector.generateGraphRelationships(;
-        results.duplicates.duplicates;)
+        results.duplicates.duplicates;);
       );
       relationships.push(...dupRelationships);
     //     }
@@ -265,7 +265,7 @@ performASTAnalysis(sourceFiles);
 
   async generateAnalysisSummary(results) { 
     const __summary = overview = > sum + f.line_count, 0),average_complexity = [];
-
+;
     // High complexity functions
   if(results.ast.metrics.highComplexityFunctions.length > 0) {
       recommendations.push({ type = [];
@@ -274,7 +274,7 @@ performASTAnalysis(sourceFiles);
     for (const _func of results.ast.metrics.highComplexityFunctions.slice(0, 5)) {
       issues.push({
         //         type => {/g)
-      const _severityOrder = {critical = severityOrder[b.severity] - severityOrder[a.severity]; if(severityDiff !== 0) return severityDiff; // return(b.metric  ?? 0) {- (a.metric  ?? 0); // LINT: unreachable code removed
+      const _severityOrder = {critical = severityOrder[b.severity] - severityOrder[a.severity]; if(severityDiff !== 0) return severityDiff; // return(b.metric ?? 0) {- (a.metric ?? 0); // LINT: unreachable code removed
       });
   //   }
 
@@ -294,7 +294,7 @@ performASTAnalysis(sourceFiles);
     // Simplified maintainability index based on file size and estimated complexity
     const _lineScore = Math.max(0, 100 - (file.line_count / 10));
     const _sizeScore = Math.max(0, 100 - (file.size_bytes / 1000));
-
+;
     // return Math.round(((lineScore + sizeScore) / 2) * 100) / 100;
     //   // LINT: unreachable code removed}
 
@@ -302,7 +302,7 @@ performASTAnalysis(sourceFiles);
 
   async saveAnalysisResults(results) { 
     const _timestamp = new Date().toISOString().replace(/[]/g, '-');
-
+;
     // Save comprehensive results
     const _resultsPath = path.join(this.config.outputDir, `analysis-results-$timestamp}.json`);
 // // await writeFile(resultsPath, JSON.stringify(results, null, 2));
@@ -373,3 +373,5 @@ performASTAnalysis(sourceFiles);
 // export default CodeAnalysisOrchestrator;
 
 }}}}}}}}}}}}}}}}}}}}})))))
+
+*/*/*/*/*/*/*/*/*/*/*/*/*/

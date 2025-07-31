@@ -27,7 +27,7 @@ if(fs.existsSync('.claude/tests/test-harness.js')) {
       execSync('cd .claude && node tests/test-harness.js', {stdio = process.argv.slice(2);
   if(args.length === 0) {
   console.warn('Claude Optimized Template Manager');
-  console.warn('Usage = args[0];')
+  console.warn('Usage = args[0];');
   if(commands[command]) {
   try {
     commands[command](...args.slice(1));
@@ -36,9 +36,11 @@ if(fs.existsSync('.claude/tests/test-harness.js')) {
     process.exit(1);
   //   }
 } else {
-  console.error(`Unknown command);`
+  console.error(`Unknown command);`;
   console.warn(`Available commands: ${Object.keys(commands).join(', ')}`);
   process.exit(1);
 // }
 
 }}}}}}}}}}}))))))))
+
+*/*/
