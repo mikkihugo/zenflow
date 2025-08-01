@@ -1,30 +1,12 @@
 /**
- * Memory Backend Plugin Interface - TypeScript Edition
- * Pluggable storage backends for the main system with comprehensive type safety
+ * Memory Storage Backends
+ * Pluggable storage backends for the memory system
+ * Migrated from plugins to proper domain structure
  */
 
-import LanceDBInterface from '../../database/lancedb-interface.js';
-import { BasePlugin } from '../base-plugin.js';
+import { LanceDBInterface } from '../database/lancedb-interface';
 
-// Add VectorDocument interface for LanceDB
-interface VectorDocument {
-  id: string;
-  vector: number[];
-  metadata?: Record<string, any>;
-  timestamp?: number;
-}
-
-import type {
-  HealthStatus,
-  Plugin,
-  PluginConfig,
-  PluginContext,
-  PluginManifest,
-} from '../types.js';
-
-type HealthCheckResult = HealthStatus;
-
-// Types for memory backend
+// Types for memory backend operations
 export type JSONValue =
   | string
   | number
@@ -33,8 +15,6 @@ export type JSONValue =
   | JSONValue[]
   | { [key: string]: JSONValue };
 
-export interface MemoryBackendConfig extends BackendConfig {}
-
 export interface StorageResult {
   id: string;
   timestamp: number;
@@ -42,20 +22,21 @@ export interface StorageResult {
   error?: string;
 }
 
-interface BackendStats {
+export interface BackendStats {
   entries: number;
   size: number;
   lastModified: number;
   namespaces?: number;
 }
 
-interface BackendConfig extends PluginConfig {
+export interface BackendConfig {
   type: 'lancedb' | 'sqlite' | 'json' | 'kuzu';
   path: string;
+  enabled?: boolean;
   [key: string]: any;
 }
 
-interface BackendInterface {
+export interface BackendInterface {
   initialize(): Promise<void>;
   store(key: string, value: JSONValue, namespace?: string): Promise<StorageResult>;
   retrieve(key: string, namespace?: string): Promise<JSONValue | null>;
@@ -63,7 +44,7 @@ interface BackendInterface {
   delete(key: string, namespace?: string): Promise<boolean>;
   listNamespaces(): Promise<string[]>;
   getStats(): Promise<BackendStats>;
-  healthCheck?(): Promise<HealthCheckResult>;
+  healthCheck?(): Promise<{ status: string; score: number; issues: string[]; lastCheck: Date }>;
 }
 
 // Base backend class
@@ -82,7 +63,7 @@ abstract class BaseBackend implements BackendInterface {
   abstract listNamespaces(): Promise<string[]>;
   abstract getStats(): Promise<BackendStats>;
 
-  async healthCheck(): Promise<HealthCheckResult> {
+  async healthCheck() {
     return {
       status: 'healthy',
       score: 100,
@@ -92,145 +73,8 @@ abstract class BaseBackend implements BackendInterface {
   }
 }
 
-// Main Memory Backend Plugin
-export class MemoryBackendPlugin extends BasePlugin {
-  private storage?: BackendInterface;
-  public declare config: BackendConfig;
-  private initialized = false;
-
-  constructor(config: BackendConfig) {
-    const manifest: PluginManifest = {
-      name: 'memory-backend',
-      version: '1.0.0',
-      description: 'Memory backend storage plugin',
-      author: 'claude-flow',
-      license: 'MIT',
-      keywords: ['storage', 'memory'],
-      main: 'index.js',
-      dependencies: { system: [], plugins: {} },
-      configuration: { schema: {}, required: [], defaults: {} },
-      permissions: [],
-      apis: [],
-      hooks: [],
-    };
-
-    const pluginConfig: PluginConfig = {
-      enabled: config.enabled ?? true,
-      priority: config.priority ?? 50,
-      settings: config.settings ?? {},
-    };
-
-    const context: PluginContext = {
-      logger: {
-        debug: (message: string, meta?: unknown) =>
-          console.debug(`[memory-backend] ${message}`, meta),
-        info: (message: string, meta?: unknown) =>
-          console.info(`[memory-backend] ${message}`, meta),
-        warn: (message: string, meta?: unknown) =>
-          console.warn(`[memory-backend] ${message}`, meta),
-        error: (message: string, error?: unknown) =>
-          console.error(`[memory-backend] ${message}`, error),
-      },
-      apis: {
-        logger: {
-          info: (message: string) => console.info(`[memory-backend] ${message}`),
-          error: (message: string) => console.error(`[memory-backend] ${message}`),
-        },
-      },
-      resources: { limits: [] },
-    };
-
-    super(manifest, pluginConfig, context);
-
-    this.config = {
-      enabled: config.enabled ?? true,
-      priority: config.priority ?? 50,
-      settings: config.settings ?? {},
-      type: config.type || 'lancedb',
-      path: config.path || './data',
-    };
-  }
-
-  async onInitialize(): Promise<void> {
-    // Create appropriate backend based on config
-    switch (this.config.type) {
-      case 'lancedb':
-        this.storage = new LanceDBBackend(this.config);
-        break;
-      case 'sqlite':
-        this.storage = new SQLiteBackend(this.config);
-        break;
-      case 'json':
-        this.storage = new JSONBackend(this.config);
-        break;
-      case 'kuzu':
-        this.storage = new KuzuBackend(this.config);
-        break;
-      default:
-        throw new Error(`Unknown backend type: ${this.config.type}`);
-    }
-
-    await this.storage.initialize();
-    this.initialized = true;
-  }
-
-  async onStart(): Promise<void> {
-    this.context.logger.info('Memory backend plugin started');
-  }
-
-  async onStop(): Promise<void> {
-    this.context.logger.info('Memory backend plugin stopped');
-  }
-
-  async onDestroy(): Promise<void> {
-    this.context.logger.info('Memory backend plugin destroyed');
-    this.initialized = false;
-    this.storage = undefined;
-  }
-
-  async store(
-    key: string,
-    value: JSONValue,
-    namespace: string = 'default'
-  ): Promise<StorageResult> {
-    await this.ensureInitialized();
-    return this.storage!.store(key, value, namespace);
-  }
-
-  async retrieve(key: string, namespace: string = 'default'): Promise<JSONValue | null> {
-    await this.ensureInitialized();
-    return this.storage!.retrieve(key, namespace);
-  }
-
-  async search(pattern: string, namespace: string = 'default'): Promise<Record<string, JSONValue>> {
-    await this.ensureInitialized();
-    return this.storage!.search(pattern, namespace);
-  }
-
-  async delete(key: string, namespace: string = 'default'): Promise<boolean> {
-    await this.ensureInitialized();
-    return this.storage!.delete(key, namespace);
-  }
-
-  async listNamespaces(): Promise<string[]> {
-    await this.ensureInitialized();
-    return this.storage!.listNamespaces();
-  }
-
-  async getStats(): Promise<BackendStats> {
-    await this.ensureInitialized();
-    return this.storage!.getStats();
-  }
-
-  private async ensureInitialized(): Promise<void> {
-    if (!this.initialized) {
-      await this.onInitialize();
-    }
-  }
-}
-
-/** LanceDB Backend (Default - Local Vector Database) */
-class LanceDBBackend extends BaseBackend {
+/** LanceDB Backend (Vector Database) */
+export class LanceDBBackend extends BaseBackend {
   private lanceInterface: LanceDBInterface;
 
   constructor(config: BackendConfig) {
@@ -261,20 +105,6 @@ class LanceDBBackend extends BaseBackend {
         ? (value as any).content
         : serializedValue;
 
-    const document = {
-      id: fullKey,
-      content: documentText,
-      source: namespace,
-      title: typeof value === 'object' && value && 'title' in value ? (value as any).title : key,
-      metadata: JSON.stringify({
-        key,
-        namespace,
-        timestamp,
-        serialized_data: serializedValue,
-      }),
-    };
-
-    // Use insertVectors method instead of addDocuments
     const vectorDoc = {
       id: fullKey,
       vector: new Array(384).fill(0), // placeholder vector
@@ -297,10 +127,7 @@ class LanceDBBackend extends BaseBackend {
   }
 
   async retrieve(key: string, namespace: string = 'default'): Promise<JSONValue | null> {
-    const fullKey = `${namespace}:${key}`;
-
     try {
-      // Use searchSimilar method instead of semanticSearch
       const searchResult = await this.lanceInterface.searchSimilar(
         'documents',
         new Array(384).fill(0),
@@ -332,7 +159,6 @@ class LanceDBBackend extends BaseBackend {
     const results: Record<string, JSONValue> = {};
 
     try {
-      // Use searchSimilar for pattern matching
       const searchResult = await this.lanceInterface.searchSimilar(
         'documents',
         new Array(384).fill(0),
@@ -364,13 +190,11 @@ class LanceDBBackend extends BaseBackend {
 
   async delete(key: string, namespace: string = 'default'): Promise<boolean> {
     // LanceDB doesn't have direct delete operations in this interface
-    // This would need to be implemented at the LanceDB level
     console.warn('Delete operation not implemented for LanceDB backend');
     return false;
   }
 
   async listNamespaces(): Promise<string[]> {
-    // Extract namespaces from stored metadata
     try {
       const searchResult = await this.lanceInterface.searchSimilar(
         'documents',
@@ -406,245 +230,8 @@ class LanceDBBackend extends BaseBackend {
   }
 }
 
-/** Kuzu Graph Database Backend */
-class KuzuBackend extends BaseBackend {
-  private db?: any;
-  private conn?: any;
-
-  constructor(config: BackendConfig) {
-    super(config);
-  }
-
-  async initialize(): Promise<void> {
-    try {
-      // Dynamic import for Kuzu
-      const kuzu = await import('kuzu');
-
-      // Ensure persist directory exists
-      const fs = await import('node:fs/promises');
-      const path = await import('node:path');
-      const dbPath = path.join(this.config.path, 'kuzu');
-      await fs.mkdir(dbPath, { recursive: true });
-
-      this.db = new kuzu.Database(dbPath);
-      this.conn = new kuzu.Connection(this.db);
-
-      // Create node and relationship tables for strategic documents
-      await this.initializeSchema();
-
-      console.log('Kuzu graph database ready');
-    } catch (error) {
-      // If Kuzu not available, throw error
-      throw new Error('Kuzu database initialization failed');
-    }
-  }
-
-  private async initializeSchema(): Promise<void> {
-    try {
-      // Create node tables for strategic documents
-      await this.conn.query(`
-        CREATE NODE TABLE IF NOT EXISTS Document(
-          id STRING,
-          namespace STRING,
-          key STRING,
-          title STRING,
-          content STRING,
-          doc_type STRING,
-          metadata STRING,
-          timestamp INT64,
-          PRIMARY KEY(id)
-        )
-      `);
-
-      // Create relationship table for document connections
-      await this.conn.query(`
-        CREATE REL TABLE IF NOT EXISTS References(FROM Document TO Document,
-          relationship_type STRING,
-          strength DOUBLE,
-          created_at INT64
-        )
-      `);
-
-      console.log('Kuzu schema initialized for strategic documents');
-    } catch (error) {
-      console.error('Error initializing Kuzu schema:', error);
-    }
-  }
-
-  async store(
-    key: string,
-    value: JSONValue,
-    namespace: string = 'default'
-  ): Promise<StorageResult> {
-    const fullKey = `${namespace}:${key}`;
-    const timestamp = Date.now();
-
-    // Serialize value for storage
-    const serializedValue = JSON.stringify(value);
-
-    // Extract text content for graph analysis
-    const documentText =
-      typeof value === 'object' && value && 'content' in value
-        ? (value as any).content
-        : serializedValue;
-
-    const title =
-      typeof value === 'object' && value && 'title' in value ? (value as any).title : key;
-
-    const docType =
-      typeof value === 'object' && value && 'documentType' in value
-        ? (value as any).documentType
-        : 'generic';
-
-    try {
-      await this.conn.query(
-        `
-        MERGE (d:Document {id: $id})
-        SET d.namespace = $namespace,
-            d.key = $key,
-            d.title = $title,
-            d.content = $content,
-            d.doc_type = $doc_type,
-            d.metadata = $metadata,
-            d.timestamp = $timestamp
-      `,
-        {
-          id: fullKey,
-          namespace,
-          key,
-          title,
-          content: documentText,
-          doc_type: docType,
-          metadata: serializedValue,
-          timestamp,
-        }
-      );
-
-      return {
-        id: fullKey,
-        timestamp,
-        status: 'success',
-      };
-    } catch (error) {
-      return {
-        id: fullKey,
-        timestamp,
-        status: 'error',
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
-    }
-  }
-
-  async retrieve(key: string, namespace: string = 'default'): Promise<JSONValue | null> {
-    const fullKey = `${namespace}:${key}`;
-
-    try {
-      const result = await this.conn.query(
-        `
-        MATCH (d:Document)
-        WHERE d.id = $id
-        RETURN d.metadata
-      `,
-        { id: fullKey }
-      );
-
-      if (result && result.length > 0) {
-        return JSON.parse(result[0]['d.metadata']);
-      }
-
-      return null;
-    } catch (error) {
-      return null;
-    }
-  }
-
-  async search(pattern: string, namespace: string = 'default'): Promise<Record<string, JSONValue>> {
-    const results: Record<string, JSONValue> = {};
-
-    try {
-      const queryResult = await this.conn.query(
-        `
-        MATCH (d:Document)
-        WHERE d.namespace = $namespace
-        RETURN d.key, d.metadata
-      `,
-        { namespace }
-      );
-
-      for (const row of queryResult || []) {
-        const key = row['d.key'];
-        const metadata = row['d.metadata'];
-        try {
-          if (pattern === '*' || key.includes(pattern.replace('*', ''))) {
-            results[key] = JSON.parse(metadata);
-          }
-        } catch (error) {
-          // Skip invalid entries
-        }
-      }
-    } catch (error) {
-      // Return empty results on error
-    }
-
-    return results;
-  }
-
-  async delete(key: string, namespace: string = 'default'): Promise<boolean> {
-    const fullKey = `${namespace}:${key}`;
-
-    try {
-      await this.conn.query(
-        `
-        MATCH (d:Document)
-        WHERE d.id = $id
-        DELETE d
-      `,
-        { id: fullKey }
-      );
-
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  async listNamespaces(): Promise<string[]> {
-    try {
-      const result = await this.conn.query(`
-        MATCH (d:Document)
-        RETURN DISTINCT d.namespace
-      `);
-
-      return result.map((row: any) => row['d.namespace']).sort();
-    } catch (error) {
-      return [];
-    }
-  }
-
-  async getStats(): Promise<BackendStats> {
-    try {
-      const result = await this.conn.query(`
-        MATCH (d:Document) 
-        RETURN count(d) as count
-      `);
-
-      return {
-        entries: result[0]?.count || 0,
-        size: 0,
-        lastModified: Date.now(),
-      };
-    } catch (error) {
-      return {
-        entries: 0,
-        size: 0,
-        lastModified: Date.now(),
-      };
-    }
-  }
-}
-
 /** SQLite Backend */
-class SQLiteBackend extends BaseBackend {
+export class SQLiteBackend extends BaseBackend {
   private db?: any;
   private dbPath: string;
 
@@ -781,7 +368,7 @@ class SQLiteBackend extends BaseBackend {
   }
 }
 
-// JSON file backend
+/** JSON File Backend */
 export class JSONBackend extends BaseBackend {
   private data = new Map<string, { value: JSONValue; timestamp: number }>();
   private filepath: string;
@@ -879,4 +466,20 @@ export class JSONBackend extends BaseBackend {
   }
 }
 
-export default MemoryBackendPlugin;
+// Backend factory
+export class BackendFactory {
+  static create(config: BackendConfig): BackendInterface {
+    switch (config.type) {
+      case 'lancedb':
+        return new LanceDBBackend(config);
+      case 'sqlite':
+        return new SQLiteBackend(config);
+      case 'json':
+        return new JSONBackend(config);
+      default:
+        throw new Error(`Unknown backend type: ${config.type}`);
+    }
+  }
+}
+
+export default BackendFactory;
