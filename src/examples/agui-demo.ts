@@ -7,7 +7,8 @@
  * @module AGUIDemoIntegration;
  */
 
-import { AGUIAdapter  } from '../ai/agui-adapter.js';
+import { AGUIAdapter } from '@ag-ui/core';
+// AI providers are in plugins, not a separate ai directory
 
 /** Demo class showcasing AG-UI integration;
 
@@ -104,5 +105,4 @@ console.warn(' AG-UI Integration Test completed');
 
 }}}}}))
 
-*/*/*/*/*/*/*/
-}
+/* End of file */

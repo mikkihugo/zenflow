@@ -6,7 +6,7 @@
 
  * @module AGUIMCPToolExecutor
 
-import { AGUIAdapter  } from '../ai/agui-adapter.js';
+import { AGUIAdapter } from '@ag-ui/core';
 import { MCPToolExecutor  } from '.';
 
 /** AG-UI Enhanced Tool Executor
@@ -114,10 +114,11 @@ import { MCPToolExecutor  } from '.';
 
       // return result;
     // ; // LINT: unreachable code removed
-    } catch(/* _error */) {
-  if(toolCallId) {
+    } catch(_error) {
+      if(toolCallId) {
         aguiAdapter.endToolCall(toolCallId);
-        aguiAdapter.emitToolCallResult(`Error = () => aguiAdapter;`;
+      }
+        aguiAdapter.emitToolCallResult('Error occurred');
   existingExecutor.connectToAGUIBus = () => {
     aguiAdapter.connectGlobalEmitter(eventBus);
     return existingExecutor;
@@ -130,4 +131,4 @@ import { MCPToolExecutor  } from '.';
 
 }}}}}}}}}}}}}}}}}}}}}}}))
 
-*/*/*/*/*/*/*/*/*/
+/* End of file */

@@ -3,8 +3,8 @@
  * Balances performance, availability, and resource utilization when selecting agents
  */
 
-import { PerformanceScore } from '../PerformanceScorer.js';
-import { WorkloadMetrics } from '../WorkloadMonitor.js';
+import { PerformanceScore } from '../PerformanceScorer';
+import { WorkloadMetrics } from '../WorkloadMonitor';
 
 export interface AgentCandidate {
   agentId: string;

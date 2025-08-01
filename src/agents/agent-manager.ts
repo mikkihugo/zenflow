@@ -4,8 +4,8 @@
 
 import { EventEmitter } from 'node:events';
 import { spawn, ChildProcess } from 'node:child_process';
-import type { ILogger } from '../core/logger.js';
-import type { IEventBus } from '../core/event-bus.js';
+import type { ILogger } from '../core/logger';
+import type { IEventBus } from '../core/event-bus';
 import type {
   AgentId,
   AgentType,
@@ -16,9 +16,9 @@ import type {
   AgentEnvironment,
   AgentMetrics,
   AgentError,
-} from '../swarm/types.js';
-import type { DistributedMemorySystem } from '../memory/distributed-memory.js';
-import { generateId } from '../utils/helpers.js';
+} from '../../ruv-FANN-zen/ruv-swarm-zen/npm/src/types';
+import type { EnhancedMemory } from '../memory/memory';
+import { generateId } from '../utils/helpers';
 
 export interface AgentManagerConfig {
   maxAgents: number;

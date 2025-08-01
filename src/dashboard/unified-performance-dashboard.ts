@@ -2,9 +2,9 @@
 /** Real-time monitoring and analytics for Claude Flow systems */
 
 import { EventEmitter } from 'node:events';
-import MCPPerformanceMetrics from '../mcp/performance-metrics.js';
-import EnhancedMemory from '../memory/enhanced-memory.js';
-import LanceDBInterface from '../database/lancedb-interface.js';
+import MCPPerformanceMetrics from '../mcp/performance-metrics';
+import EnhancedMemory from '../memory/memory';
+import LanceDBInterface from '../database/lancedb-interface';
 
 interface DashboardConfig {
   refreshInterval?: number;

@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "target": "ES2023",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "allowJs": true,
@@ -28,7 +28,7 @@
     "verbatimModuleSyntax": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "lib": ["ES2022"],
+    "lib": ["ES2023"],
     "moduleDetection": "force",
     "types": ["node", "jest"],
     "typeRoots": ["./node_modules/@types", "./src/types"],

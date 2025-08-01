@@ -3,8 +3,8 @@
  * Implements SOLID principles with strategy pattern for optimization approaches
  */
 
-import { ILogger } from '../../core/logger.js';
-import { AgentManager } from '../../agents/agent-manager.js';
+import { ILogger } from '../../core/logger';
+import { AgentManager } from '../../agents/agent-manager';
 import {
   TaskContext,
   SelectionOptions,
@@ -18,12 +18,12 @@ import {
   TaskDefinition,
   AgentReuseConfig,
   DEFAULT_AGENT_REUSE_CONFIG
-} from './types.js';
-import { AgentRegistry } from './AgentRegistry.js';
-import { AgentPoolManager } from './AgentPoolManager.js';
-import { WorkloadMonitor } from './WorkloadMonitor.js';
-import { PerformanceScorer } from './PerformanceScorer.js';
-import { BalancedSelectionStrategy } from './strategies/BalancedSelectionStrategy.js';
+} from './types';
+import { AgentRegistry } from './AgentRegistry';
+import { AgentPoolManager } from './AgentPoolManager';
+import { WorkloadMonitor } from './WorkloadMonitor';
+import { PerformanceScorer } from './PerformanceScorer';
+import { BalancedSelectionStrategy } from './strategies/BalancedSelectionStrategy';
 
 /**
  * Central orchestrator for intelligent agent selection and reuse

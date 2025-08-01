@@ -6,10 +6,10 @@
  */
 
 import { describe, beforeAll, afterAll, beforeEach, afterEach, it, expect, jest } from '@jest/globals';
-import { EventBus } from '../../core/event-bus.js';
-import { Logger } from '../../core/logger.js';
-import { MaestroSwarmCoordinator, MaestroSwarmConfig } from '../maestro-swarm-coordinator.js';
-import { HiveMindConfig } from '../../hive-mind/types.js';
+import { EventBus } from '../../core/event-bus';
+import { Logger } from '../../core/logger';
+import { MaestroSwarmCoordinator, MaestroSwarmConfig } from '../maestro-swarm-coordinator';
+import { HiveMindConfig } from '../../hive-mind/types';
 import { join } from 'path';
 import { tmpdir } from 'os';
 import { mkdtemp, rm, access } from 'fs/promises';

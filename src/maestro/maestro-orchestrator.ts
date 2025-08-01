@@ -13,21 +13,21 @@ import { EventEmitter } from 'events';
 import { join } from 'path';
 import { readFile, writeFile, mkdir, access } from 'fs/promises';
 // Import agentic-flow hooks system
-import { agenticHookManager, initializeAgenticFlowHooks, type AgenticHookContext } from '../services/agentic-flow-hooks/index.js';
+import { agenticHookManager, initializeAgenticFlowHooks, type AgenticHookContext } from '../services/agentic-flow-hooks/index';
 
 // Core claude-flow infrastructure
-import { IEventBus } from '../core/event-bus.js';
-import { ILogger } from '../core/logger.js';
-import { IMemoryManager } from '../memory/manager.js';
-import { AgentManager } from '../agents/agent-manager.js';
-import { Orchestrator } from '../core/orchestrator.js';
-import { Config } from '../utils/types.js';
-import { SystemError } from '../utils/errors.js';
+import { IEventBus } from '../core/event-bus';
+import { ILogger } from '../core/logger';
+import { IMemoryManager } from '../memory/manager';
+import { AgentManager } from '../agents/agent-manager';
+import { Orchestrator } from '../core/orchestrator';
+import { Config } from '../utils/types';
+import { SystemError } from '../../ruv-FANN-zen/ruv-swarm-zen/npm/src/errors';
 
 // Existing hive mind infrastructure (proven and robust)
-import { HiveMind } from '../hive-mind/core/HiveMind.js';
-import { ConsensusEngine } from '../hive-mind/integration/ConsensusEngine.js';
-import { SwarmOrchestrator } from '../hive-mind/integration/SwarmOrchestrator.js';
+import { HiveMind } from '../hive-mind/core/HiveMind';
+import { ConsensusEngine } from '../hive-mind/integration/ConsensusEngine';
+import { SwarmOrchestrator } from '../hive-mind/integration/SwarmOrchestrator';
 
 // Types for maestro system
 import {
@@ -37,7 +37,7 @@ import {
   TaskItem,
   AgentProfile,
   SteeringContext
-} from './maestro-types.js';
+} from './maestro-types';
 
 // Simple interface for agent pool (minimal-change enhancement)
 interface PooledAgent {
@@ -58,7 +58,7 @@ import {
   AgentSpawnOptions,
   QueenMode,
   AgentCapability
-} from '../hive-mind/types.js';
+} from '../hive-mind/types';
 
 export interface MaestroConfig {
   // Integration with hive mind

@@ -1,0 +1,302 @@
+3cd15f4330031b86bf731e95bfae1ff6
+/* istanbul ignore next */
+function cov_2i5h33q89v() {
+  var path = "/home/mhugo/code/claude-code-flow/src/cli/commands/swarm/swarm-command.ts";
+  var hash = "1a9d42d7f1bd1aa438e973d57cc9bcae18d3dcc9";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/mhugo/code/claude-code-flow/src/cli/commands/swarm/swarm-command.ts",
+    statementMap: {
+      "0": {
+        start: {
+          line: 9,
+          column: 8
+        },
+        end: {
+          line: 21,
+          column: 11
+        }
+      },
+      "1": {
+        start: {
+          line: 24,
+          column: 27
+        },
+        end: {
+          line: 24,
+          column: 42
+        }
+      },
+      "2": {
+        start: {
+          line: 25,
+          column: 8
+        },
+        end: {
+          line: 31,
+          column: 9
+        }
+      },
+      "3": {
+        start: {
+          line: 26,
+          column: 12
+        },
+        end: {
+          line: 30,
+          column: 14
+        }
+      },
+      "4": {
+        start: {
+          line: 34,
+          column: 8
+        },
+        end: {
+          line: 38,
+          column: 10
+        }
+      },
+      "5": {
+        start: {
+          line: 41,
+          column: 8
+        },
+        end: {
+          line: 63,
+          column: 2
+        }
+      }
+    },
+    fnMap: {
+      "0": {
+        name: "(anonymous_0)",
+        decl: {
+          start: {
+            line: 8,
+            column: 4
+          },
+          end: {
+            line: 8,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 8,
+            column: 18
+          },
+          end: {
+            line: 22,
+            column: 5
+          }
+        },
+        line: 8
+      },
+      "1": {
+        name: "(anonymous_1)",
+        decl: {
+          start: {
+            line: 23,
+            column: 4
+          },
+          end: {
+            line: 23,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 23,
+            column: 23
+          },
+          end: {
+            line: 39,
+            column: 5
+          }
+        },
+        line: 23
+      },
+      "2": {
+        name: "(anonymous_2)",
+        decl: {
+          start: {
+            line: 40,
+            column: 4
+          },
+          end: {
+            line: 40,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 40,
+            column: 14
+          },
+          end: {
+            line: 64,
+            column: 5
+          }
+        },
+        line: 40
+      }
+    },
+    branchMap: {
+      "0": {
+        loc: {
+          start: {
+            line: 25,
+            column: 8
+          },
+          end: {
+            line: 31,
+            column: 9
+          }
+        },
+        type: "if",
+        locations: [{
+          start: {
+            line: 25,
+            column: 8
+          },
+          end: {
+            line: 31,
+            column: 9
+          }
+        }, {
+          start: {
+            line: undefined,
+            column: undefined
+          },
+          end: {
+            line: undefined,
+            column: undefined
+          }
+        }],
+        line: 25
+      }
+    },
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0
+    },
+    f: {
+      "0": 0,
+      "1": 0,
+      "2": 0
+    },
+    b: {
+      "0": [0, 0]
+    },
+    inputSourceMap: {
+      file: "/home/mhugo/code/claude-code-flow/src/cli/commands/swarm/swarm-command.ts",
+      mappings: "AAAA;;;;GAIG;AAEH,OAAO,EAAE,WAAW,EAAE,MAAM,4BAA4B,CAAC;AAGzD,MAAM,OAAO,YAAa,SAAQ,WAAW;IAC3C;QACE,KAAK,CAAC;YACJ,IAAI,EAAE,OAAO;YACb,WAAW,EAAE,yBAAyB;YACtC,KAAK,EAAE,0CAA0C;YACjD,QAAQ,EAAE,OAAO;YACjB,OAAO,EAAE,CAAC;YACV,QAAQ,EAAE;gBACR,yBAAyB;gBACzB,wBAAwB;gBACxB,wBAAwB;gBACxB,0BAA0B;aAC3B;SACF,CAAC,CAAC;IACL,CAAC;IAES,KAAK,CAAC,GAAG,CAAC,OAAuB;QACzC,MAAM,UAAU,GAAG,OAAO,CAAC,IAAI,CAAC,CAAC,CAAC,CAAC;QAEnC,IAAI,CAAC,UAAU,EAAE,CAAC;YAChB,OAAO;gBACL,OAAO,EAAE,KAAK;gBACd,KAAK,EAAE,uDAAuD;gBAC9D,QAAQ,EAAE,CAAC;aACZ,CAAC;QACJ,CAAC;QAED,4DAA4D;QAC5D,2BAA2B;QAC3B,OAAO;YACL,OAAO,EAAE,IAAI;YACb,QAAQ,EAAE,CAAC;YACX,OAAO,EAAE,IAAI,CAAC,OAAO,EAAE;SACxB,CAAC;IACJ,CAAC;IAED,OAAO;QACL,OAAO;;;;;;;;;;;;;;;;;;;;;;CAsBV,CAAC;IACA,CAAC;CACF",
+      names: [],
+      sources: ["/home/mhugo/code/claude-code-flow/src/cli/commands/swarm/swarm-command.ts"],
+      sourcesContent: ["/**\n * Base Swarm Command Implementation\n * \n * Base command for all swarm-related operations\n */\n\nimport { BaseCommand } from '../../core/base-command.js';\nimport type { CommandContext, CommandResult } from '../../types/index.js';\n\nexport class SwarmCommand extends BaseCommand {\n  constructor() {\n    super({\n      name: 'swarm',\n      description: 'Manage swarm operations',\n      usage: 'claude-flow swarm <subcommand> [options]',\n      category: 'swarm',\n      minArgs: 1,\n      examples: [\n        'claude-flow swarm start',\n        'claude-flow swarm stop',\n        'claude-flow swarm list',\n        'claude-flow swarm status'\n      ]\n    });\n  }\n\n  protected async run(context: CommandContext): Promise<CommandResult> {\n    const subcommand = context.args[0];\n    \n    if (!subcommand) {\n      return {\n        success: false,\n        error: 'Please specify a swarm subcommand (start, stop, list)',\n        exitCode: 1\n      };\n    }\n\n    // This would delegate to the appropriate subcommand handler\n    // For now, we'll show help\n    return {\n      success: true,\n      exitCode: 0,\n      message: this.getHelp()\n    };\n  }\n\n  getHelp(): string {\n    return `Manage swarm operations\n\nUSAGE:\n  claude-flow swarm <subcommand> [options]\n\nSUBCOMMANDS:\n  start    Start a new swarm\n  stop     Stop an existing swarm\n  list     List all swarms\n  status   Show swarm status (alias for 'claude-flow status')\n\nOPTIONS:\n  -h, --help    Show help\n\nEXAMPLES:\n  claude-flow swarm start\n  claude-flow swarm start --topology mesh --agents 5\n  claude-flow swarm stop\n  claude-flow swarm list\n  claude-flow swarm status\n\nUse 'claude-flow swarm <subcommand> --help' for more information on a subcommand.\n`;\n  }\n}"],
+      version: 3
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "1a9d42d7f1bd1aa438e973d57cc9bcae18d3dcc9"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_2i5h33q89v = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_2i5h33q89v();
+/**
+ * Base Swarm Command Implementation
+ *
+ * Base command for all swarm-related operations
+ */
+import { BaseCommand } from '../../core/base-command.js';
+export class SwarmCommand extends BaseCommand {
+  constructor() {
+    /* istanbul ignore next */
+    cov_2i5h33q89v().f[0]++;
+    cov_2i5h33q89v().s[0]++;
+    super({
+      name: 'swarm',
+      description: 'Manage swarm operations',
+      usage: 'claude-flow swarm <subcommand> [options]',
+      category: 'swarm',
+      minArgs: 1,
+      examples: ['claude-flow swarm start', 'claude-flow swarm stop', 'claude-flow swarm list', 'claude-flow swarm status']
+    });
+  }
+  async run(context) {
+    /* istanbul ignore next */
+    cov_2i5h33q89v().f[1]++;
+    const subcommand =
+    /* istanbul ignore next */
+    (cov_2i5h33q89v().s[1]++, context.args[0]);
+    /* istanbul ignore next */
+    cov_2i5h33q89v().s[2]++;
+    if (!subcommand) {
+      /* istanbul ignore next */
+      cov_2i5h33q89v().b[0][0]++;
+      cov_2i5h33q89v().s[3]++;
+      return {
+        success: false,
+        error: 'Please specify a swarm subcommand (start, stop, list)',
+        exitCode: 1
+      };
+    } else
+    /* istanbul ignore next */
+    {
+      cov_2i5h33q89v().b[0][1]++;
+    }
+    // This would delegate to the appropriate subcommand handler
+    // For now, we'll show help
+    cov_2i5h33q89v().s[4]++;
+    return {
+      success: true,
+      exitCode: 0,
+      message: this.getHelp()
+    };
+  }
+  getHelp() {
+    /* istanbul ignore next */
+    cov_2i5h33q89v().f[2]++;
+    cov_2i5h33q89v().s[5]++;
+    return `Manage swarm operations
+
+USAGE:
+  claude-flow swarm <subcommand> [options]
+
+SUBCOMMANDS:
+  start    Start a new swarm
+  stop     Stop an existing swarm
+  list     List all swarms
+  status   Show swarm status (alias for 'claude-flow status')
+
+OPTIONS:
+  -h, --help    Show help
+
+EXAMPLES:
+  claude-flow swarm start
+  claude-flow swarm start --topology mesh --agents 5
+  claude-flow swarm stop
+  claude-flow swarm list
+  claude-flow swarm status
+
+Use 'claude-flow swarm <subcommand> --help' for more information on a subcommand.
+`;
+  }
+}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJCYXNlQ29tbWFuZCIsIlN3YXJtQ29tbWFuZCIsImNvbnN0cnVjdG9yIiwiY292XzJpNWgzM3E4OXYiLCJmIiwicyIsIm5hbWUiLCJkZXNjcmlwdGlvbiIsInVzYWdlIiwiY2F0ZWdvcnkiLCJtaW5BcmdzIiwiZXhhbXBsZXMiLCJydW4iLCJjb250ZXh0Iiwic3ViY29tbWFuZCIsImFyZ3MiLCJiIiwic3VjY2VzcyIsImVycm9yIiwiZXhpdENvZGUiLCJtZXNzYWdlIiwiZ2V0SGVscCJdLCJzb3VyY2VzIjpbIi9ob21lL21odWdvL2NvZGUvY2xhdWRlLWNvZGUtZmxvdy9zcmMvY2xpL2NvbW1hbmRzL3N3YXJtL3N3YXJtLWNvbW1hbmQudHMiXSwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBCYXNlIFN3YXJtIENvbW1hbmQgSW1wbGVtZW50YXRpb25cbiAqIFxuICogQmFzZSBjb21tYW5kIGZvciBhbGwgc3dhcm0tcmVsYXRlZCBvcGVyYXRpb25zXG4gKi9cblxuaW1wb3J0IHsgQmFzZUNvbW1hbmQgfSBmcm9tICcuLi8uLi9jb3JlL2Jhc2UtY29tbWFuZC5qcyc7XG5pbXBvcnQgdHlwZSB7IENvbW1hbmRDb250ZXh0LCBDb21tYW5kUmVzdWx0IH0gZnJvbSAnLi4vLi4vdHlwZXMvaW5kZXguanMnO1xuXG5leHBvcnQgY2xhc3MgU3dhcm1Db21tYW5kIGV4dGVuZHMgQmFzZUNvbW1hbmQge1xuICBjb25zdHJ1Y3RvcigpIHtcbiAgICBzdXBlcih7XG4gICAgICBuYW1lOiAnc3dhcm0nLFxuICAgICAgZGVzY3JpcHRpb246ICdNYW5hZ2Ugc3dhcm0gb3BlcmF0aW9ucycsXG4gICAgICB1c2FnZTogJ2NsYXVkZS1mbG93IHN3YXJtIDxzdWJjb21tYW5kPiBbb3B0aW9uc10nLFxuICAgICAgY2F0ZWdvcnk6ICdzd2FybScsXG4gICAgICBtaW5BcmdzOiAxLFxuICAgICAgZXhhbXBsZXM6IFtcbiAgICAgICAgJ2NsYXVkZS1mbG93IHN3YXJtIHN0YXJ0JyxcbiAgICAgICAgJ2NsYXVkZS1mbG93IHN3YXJtIHN0b3AnLFxuICAgICAgICAnY2xhdWRlLWZsb3cgc3dhcm0gbGlzdCcsXG4gICAgICAgICdjbGF1ZGUtZmxvdyBzd2FybSBzdGF0dXMnXG4gICAgICBdXG4gICAgfSk7XG4gIH1cblxuICBwcm90ZWN0ZWQgYXN5bmMgcnVuKGNvbnRleHQ6IENvbW1hbmRDb250ZXh0KTogUHJvbWlzZTxDb21tYW5kUmVzdWx0PiB7XG4gICAgY29uc3Qgc3ViY29tbWFuZCA9IGNvbnRleHQuYXJnc1swXTtcbiAgICBcbiAgICBpZiAoIXN1YmNvbW1hbmQpIHtcbiAgICAgIHJldHVybiB7XG4gICAgICAgIHN1Y2Nlc3M6IGZhbHNlLFxuICAgICAgICBlcnJvcjogJ1BsZWFzZSBzcGVjaWZ5IGEgc3dhcm0gc3ViY29tbWFuZCAoc3RhcnQsIHN0b3AsIGxpc3QpJyxcbiAgICAgICAgZXhpdENvZGU6IDFcbiAgICAgIH07XG4gICAgfVxuXG4gICAgLy8gVGhpcyB3b3VsZCBkZWxlZ2F0ZSB0byB0aGUgYXBwcm9wcmlhdGUgc3ViY29tbWFuZCBoYW5kbGVyXG4gICAgLy8gRm9yIG5vdywgd2UnbGwgc2hvdyBoZWxwXG4gICAgcmV0dXJuIHtcbiAgICAgIHN1Y2Nlc3M6IHRydWUsXG4gICAgICBleGl0Q29kZTogMCxcbiAgICAgIG1lc3NhZ2U6IHRoaXMuZ2V0SGVscCgpXG4gICAgfTtcbiAgfVxuXG4gIGdldEhlbHAoKTogc3RyaW5nIHtcbiAgICByZXR1cm4gYE1hbmFnZSBzd2FybSBvcGVyYXRpb25zXG5cblVTQUdFOlxuICBjbGF1ZGUtZmxvdyBzd2FybSA8c3ViY29tbWFuZD4gW29wdGlvbnNdXG5cblNVQkNPTU1BTkRTOlxuICBzdGFydCAgICBTdGFydCBhIG5ldyBzd2FybVxuICBzdG9wICAgICBTdG9wIGFuIGV4aXN0aW5nIHN3YXJtXG4gIGxpc3QgICAgIExpc3QgYWxsIHN3YXJtc1xuICBzdGF0dXMgICBTaG93IHN3YXJtIHN0YXR1cyAoYWxpYXMgZm9yICdjbGF1ZGUtZmxvdyBzdGF0dXMnKVxuXG5PUFRJT05TOlxuICAtaCwgLS1oZWxwICAgIFNob3cgaGVscFxuXG5FWEFNUExFUzpcbiAgY2xhdWRlLWZsb3cgc3dhcm0gc3RhcnRcbiAgY2xhdWRlLWZsb3cgc3dhcm0gc3RhcnQgLS10b3BvbG9neSBtZXNoIC0tYWdlbnRzIDVcbiAgY2xhdWRlLWZsb3cgc3dhcm0gc3RvcFxuICBjbGF1ZGUtZmxvdyBzd2FybSBsaXN0XG4gIGNsYXVkZS1mbG93IHN3YXJtIHN0YXR1c1xuXG5Vc2UgJ2NsYXVkZS1mbG93IHN3YXJtIDxzdWJjb21tYW5kPiAtLWhlbHAnIGZvciBtb3JlIGluZm9ybWF0aW9uIG9uIGEgc3ViY29tbWFuZC5cbmA7XG4gIH1cbn0iXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFBQTs7Ozs7QUFNQSxTQUFTQSxXQUFXLFFBQVEsNEJBQTRCO0FBR3hELE9BQU0sTUFBT0MsWUFBYSxTQUFRRCxXQUFXO0VBQzNDRSxZQUFBO0lBQUE7SUFBQUMsY0FBQSxHQUFBQyxDQUFBO0lBQUFELGNBQUEsR0FBQUUsQ0FBQTtJQUNFLEtBQUssQ0FBQztNQUNKQyxJQUFJLEVBQUUsT0FBTztNQUNiQyxXQUFXLEVBQUUseUJBQXlCO01BQ3RDQyxLQUFLLEVBQUUsMENBQTBDO01BQ2pEQyxRQUFRLEVBQUUsT0FBTztNQUNqQkMsT0FBTyxFQUFFLENBQUM7TUFDVkMsUUFBUSxFQUFFLENBQ1IseUJBQXlCLEVBQ3pCLHdCQUF3QixFQUN4Qix3QkFBd0IsRUFDeEIsMEJBQTBCO0tBRTdCLENBQUM7RUFDSjtFQUVVLE1BQU1DLEdBQUdBLENBQUNDLE9BQXVCO0lBQUE7SUFBQVYsY0FBQSxHQUFBQyxDQUFBO0lBQ3pDLE1BQU1VLFVBQVU7SUFBQTtJQUFBLENBQUFYLGNBQUEsR0FBQUUsQ0FBQSxPQUFHUSxPQUFPLENBQUNFLElBQUksQ0FBQyxDQUFDLENBQUM7SUFBQztJQUFBWixjQUFBLEdBQUFFLENBQUE7SUFFbkMsSUFBSSxDQUFDUyxVQUFVLEVBQUU7TUFBQTtNQUFBWCxjQUFBLEdBQUFhLENBQUE7TUFBQWIsY0FBQSxHQUFBRSxDQUFBO01BQ2YsT0FBTztRQUNMWSxPQUFPLEVBQUUsS0FBSztRQUNkQyxLQUFLLEVBQUUsdURBQXVEO1FBQzlEQyxRQUFRLEVBQUU7T0FDWDtJQUNILENBQUM7SUFBQTtJQUFBO01BQUFoQixjQUFBLEdBQUFhLENBQUE7SUFBQTtJQUVEO0lBQ0E7SUFBQWIsY0FBQSxHQUFBRSxDQUFBO0lBQ0EsT0FBTztNQUNMWSxPQUFPLEVBQUUsSUFBSTtNQUNiRSxRQUFRLEVBQUUsQ0FBQztNQUNYQyxPQUFPLEVBQUUsSUFBSSxDQUFDQyxPQUFPO0tBQ3RCO0VBQ0g7RUFFQUEsT0FBT0EsQ0FBQTtJQUFBO0lBQUFsQixjQUFBLEdBQUFDLENBQUE7SUFBQUQsY0FBQSxHQUFBRSxDQUFBO0lBQ0wsT0FBTzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztDQXNCVjtFQUNDIiwiaWdub3JlTGlzdCI6W119

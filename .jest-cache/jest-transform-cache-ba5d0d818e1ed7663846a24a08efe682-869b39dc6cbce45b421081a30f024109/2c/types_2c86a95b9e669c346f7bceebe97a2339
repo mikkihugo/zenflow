@@ -1,0 +1,472 @@
+03b94fd75fd8cf2bfe6aa41cfa6b445a
+/* istanbul ignore next */
+function cov_i4lm0ysv1() {
+  var path = "/home/mhugo/code/claude-code-flow/src/utils/types.ts";
+  var hash = "1d05d739c0a6aaffbc882dff41af313653ba6ac6";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/mhugo/code/claude-code-flow/src/utils/types.ts",
+    statementMap: {
+      "0": {
+        start: {
+          line: 6,
+          column: 0
+        },
+        end: {
+          line: 36,
+          column: 40
+        }
+      },
+      "1": {
+        start: {
+          line: 8,
+          column: 4
+        },
+        end: {
+          line: 8,
+          column: 52
+        }
+      },
+      "2": {
+        start: {
+          line: 9,
+          column: 4
+        },
+        end: {
+          line: 9,
+          column: 58
+        }
+      },
+      "3": {
+        start: {
+          line: 10,
+          column: 4
+        },
+        end: {
+          line: 10,
+          column: 48
+        }
+      },
+      "4": {
+        start: {
+          line: 11,
+          column: 4
+        },
+        end: {
+          line: 11,
+          column: 46
+        }
+      },
+      "5": {
+        start: {
+          line: 12,
+          column: 4
+        },
+        end: {
+          line: 12,
+          column: 50
+        }
+      },
+      "6": {
+        start: {
+          line: 14,
+          column: 4
+        },
+        end: {
+          line: 14,
+          column: 50
+        }
+      },
+      "7": {
+        start: {
+          line: 15,
+          column: 4
+        },
+        end: {
+          line: 15,
+          column: 52
+        }
+      },
+      "8": {
+        start: {
+          line: 16,
+          column: 4
+        },
+        end: {
+          line: 16,
+          column: 50
+        }
+      },
+      "9": {
+        start: {
+          line: 17,
+          column: 4
+        },
+        end: {
+          line: 17,
+          column: 54
+        }
+      },
+      "10": {
+        start: {
+          line: 18,
+          column: 4
+        },
+        end: {
+          line: 18,
+          column: 48
+        }
+      },
+      "11": {
+        start: {
+          line: 19,
+          column: 4
+        },
+        end: {
+          line: 19,
+          column: 54
+        }
+      },
+      "12": {
+        start: {
+          line: 21,
+          column: 4
+        },
+        end: {
+          line: 21,
+          column: 54
+        }
+      },
+      "13": {
+        start: {
+          line: 22,
+          column: 4
+        },
+        end: {
+          line: 22,
+          column: 54
+        }
+      },
+      "14": {
+        start: {
+          line: 23,
+          column: 4
+        },
+        end: {
+          line: 23,
+          column: 54
+        }
+      },
+      "15": {
+        start: {
+          line: 24,
+          column: 4
+        },
+        end: {
+          line: 24,
+          column: 52
+        }
+      },
+      "16": {
+        start: {
+          line: 26,
+          column: 4
+        },
+        end: {
+          line: 26,
+          column: 50
+        }
+      },
+      "17": {
+        start: {
+          line: 27,
+          column: 4
+        },
+        end: {
+          line: 27,
+          column: 56
+        }
+      },
+      "18": {
+        start: {
+          line: 28,
+          column: 4
+        },
+        end: {
+          line: 28,
+          column: 50
+        }
+      },
+      "19": {
+        start: {
+          line: 29,
+          column: 4
+        },
+        end: {
+          line: 29,
+          column: 62
+        }
+      },
+      "20": {
+        start: {
+          line: 31,
+          column: 4
+        },
+        end: {
+          line: 31,
+          column: 60
+        }
+      },
+      "21": {
+        start: {
+          line: 32,
+          column: 4
+        },
+        end: {
+          line: 32,
+          column: 60
+        }
+      },
+      "22": {
+        start: {
+          line: 33,
+          column: 4
+        },
+        end: {
+          line: 33,
+          column: 60
+        }
+      },
+      "23": {
+        start: {
+          line: 34,
+          column: 4
+        },
+        end: {
+          line: 34,
+          column: 50
+        }
+      },
+      "24": {
+        start: {
+          line: 35,
+          column: 4
+        },
+        end: {
+          line: 35,
+          column: 58
+        }
+      }
+    },
+    fnMap: {
+      "0": {
+        name: "(anonymous_0)",
+        decl: {
+          start: {
+            line: 6,
+            column: 1
+          },
+          end: {
+            line: 6,
+            column: 2
+          }
+        },
+        loc: {
+          start: {
+            line: 6,
+            column: 25
+          },
+          end: {
+            line: 36,
+            column: 1
+          }
+        },
+        line: 6
+      }
+    },
+    branchMap: {
+      "0": {
+        loc: {
+          start: {
+            line: 36,
+            column: 3
+          },
+          end: {
+            line: 36,
+            column: 38
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 36,
+            column: 3
+          },
+          end: {
+            line: 36,
+            column: 15
+          }
+        }, {
+          start: {
+            line: 36,
+            column: 20
+          },
+          end: {
+            line: 36,
+            column: 37
+          }
+        }],
+        line: 36
+      }
+    },
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 0,
+      "10": 0,
+      "11": 0,
+      "12": 0,
+      "13": 0,
+      "14": 0,
+      "15": 0,
+      "16": 0,
+      "17": 0,
+      "18": 0,
+      "19": 0,
+      "20": 0,
+      "21": 0,
+      "22": 0,
+      "23": 0,
+      "24": 0
+    },
+    f: {
+      "0": 0
+    },
+    b: {
+      "0": [0, 0]
+    },
+    inputSourceMap: {
+      file: "/home/mhugo/code/claude-code-flow/src/utils/types.ts",
+      mappings: "AAAA;;GAEG;AAmLH,sBAAsB;AACtB,MAAM,CAAN,IAAY,YAkCX;AAlCD,WAAY,YAAY;IACtB,eAAe;IACf,+CAA+B,CAAA;IAC/B,qDAAqC,CAAA;IACrC,2CAA2B,CAAA;IAC3B,yCAAyB,CAAA;IACzB,6CAA6B,CAAA;IAE7B,cAAc;IACd,6CAA6B,CAAA;IAC7B,+CAA+B,CAAA;IAC/B,6CAA6B,CAAA;IAC7B,iDAAiC,CAAA;IACjC,2CAA2B,CAAA;IAC3B,iDAAiC,CAAA;IAEjC,gBAAgB;IAChB,iDAAiC,CAAA;IACjC,iDAAiC,CAAA;IACjC,iDAAiC,CAAA;IACjC,+CAA+B,CAAA;IAE/B,gBAAgB;IAChB,6CAA6B,CAAA;IAC7B,mDAAmC,CAAA;IACnC,6CAA6B,CAAA;IAC7B,yDAAyC,CAAA;IAEzC,sBAAsB;IACtB,uDAAuC,CAAA;IACvC,uDAAuC,CAAA;IACvC,uDAAuC,CAAA;IACvC,6CAA6B,CAAA;IAC7B,qDAAqC,CAAA;AACvC,CAAC,EAlCW,YAAY,KAAZ,YAAY,QAkCvB",
+      names: [],
+      sources: ["/home/mhugo/code/claude-code-flow/src/utils/types.ts"],
+      sourcesContent: ["/**\n * Core type definitions for Claude-Flow\n */\n\n// Configuration interface\nexport interface Config {\n  env: 'development' | 'production' | 'test';\n  logLevel: 'debug' | 'info' | 'warn' | 'error';\n  enableMetrics?: boolean;\n  orchestrator?: {\n    dataDir?: string;\n    maxAgents?: number;\n    taskTimeout?: number;\n    persistSessions?: boolean;\n    shutdownTimeout?: number;\n    maxConcurrentAgents?: number;\n  };\n  logging?: LoggingConfig;\n  terminal?: {\n    shell?: string;\n    timeout?: number;\n    maxSessions?: number;\n  };\n  memory?: {\n    backend?: 'sqlite' | 'memory';\n    ttl?: number;\n    maxEntries?: number;\n  };\n  coordination?: {\n    enabled?: boolean;\n    maxConnections?: number;\n  };\n  mcp?: {\n    enabled?: boolean;\n    port?: number;\n  };\n  database?: {\n    url: string;\n    poolSize?: number;\n  };\n  redis?: {\n    url: string;\n    keyPrefix?: string;\n  };\n  api?: {\n    port: number;\n    host: string;\n    cors?: {\n      origin: string[];\n      credentials: boolean;\n    };\n  };\n  agents?: {\n    maxConcurrent: number;\n    timeout: number;\n  };\n  security?: {\n    jwtSecret: string;\n    encryptionKey: string;\n  };\n}\n\n// Logging configuration interface\nexport interface LoggingConfig {\n  level: 'debug' | 'info' | 'warn' | 'error';\n  format: 'text' | 'json';\n  destination: 'console' | 'file' | 'both';\n  file?: {\n    path: string;\n    maxSize: number;\n    maxFiles: number;\n  };\n  enableTimestamps?: boolean;\n  enableContext?: boolean;\n}\n\n// Import orchestrator metrics type\nexport interface OrchestratorMetrics {\n  uptime: number;\n  totalAgents: number;\n  activeAgents: number;\n  totalTasks: number;\n  completedTasks: number;\n  failedTasks: number;\n  queuedTasks: number;\n  avgTaskDuration: number;\n  memoryUsage: {\n    rss: number;\n    heapUsed: number;\n    heapTotal: number;\n    external: number;\n    arrayBuffers: number;\n  };\n  cpuUsage: {\n    user: number;\n    system: number;\n  };\n  timestamp: Date;\n}\n\n// Agent-related types\nexport interface AgentProfile {\n  id: string;\n  name: string;\n  type: 'coordinator' | 'researcher' | 'implementer' | 'analyst' | 'custom';\n  capabilities: string[];\n  systemPrompt?: string;\n  maxConcurrentTasks: number;\n  priority?: number;\n  environment?: Record<string, string>;\n  workingDirectory?: string;\n  shell?: string;\n  metadata?: Record<string, unknown>;\n}\n\nexport interface AgentSession {\n  id: string;\n  agentId: string;\n  terminalId: string;\n  startTime: Date;\n  endTime?: Date;\n  status: 'active' | 'idle' | 'terminated' | 'error';\n  lastActivity: Date;\n  memoryBankId: string;\n}\n\n// Task-related types\nexport interface Task {\n  id: string;\n  type: string;\n  description: string;\n  priority: number;\n  dependencies: string[];\n  assignedAgent?: string;\n  status: TaskStatus;\n  input: Record<string, unknown>;\n  output?: Record<string, unknown>;\n  error?: Error;\n  createdAt: Date;\n  startedAt?: Date;\n  completedAt?: Date;\n  metadata?: Record<string, unknown>;\n}\n\nexport type TaskStatus =\n  | 'pending'\n  | 'queued'\n  | 'assigned'\n  | 'running'\n  | 'completed'\n  | 'failed'\n  | 'cancelled';\n\n// Memory-related types\nexport interface MemoryEntry {\n  id: string;\n  agentId: string;\n  sessionId: string;\n  type: 'observation' | 'insight' | 'decision' | 'artifact' | 'error';\n  content: string;\n  context: Record<string, unknown>;\n  timestamp: Date;\n  tags: string[];\n  version: number;\n  parentId?: string;\n  metadata?: Record<string, unknown>;\n}\n\nexport interface MemoryQuery {\n  agentId?: string;\n  sessionId?: string;\n  type?: MemoryEntry['type'];\n  tags?: string[];\n  startTime?: Date;\n  endTime?: Date;\n  search?: string;\n  limit?: number;\n  offset?: number;\n  namespace?: string;\n}\n\n// Event-related types\nexport enum SystemEvents {\n  // Agent events\n  AGENT_SPAWNED = 'agent:spawned',\n  AGENT_TERMINATED = 'agent:terminated',\n  AGENT_ERROR = 'agent:error',\n  AGENT_IDLE = 'agent:idle',\n  AGENT_ACTIVE = 'agent:active',\n\n  // Task events\n  TASK_CREATED = 'task:created',\n  TASK_ASSIGNED = 'task:assigned',\n  TASK_STARTED = 'task:started',\n  TASK_COMPLETED = 'task:completed',\n  TASK_FAILED = 'task:failed',\n  TASK_CANCELLED = 'task:cancelled',\n\n  // Memory events\n  MEMORY_CREATED = 'memory:created',\n  MEMORY_UPDATED = 'memory:updated',\n  MEMORY_DELETED = 'memory:deleted',\n  MEMORY_SYNCED = 'memory:synced',\n\n  // System events\n  SYSTEM_READY = 'system:ready',\n  SYSTEM_SHUTDOWN = 'system:shutdown',\n  SYSTEM_ERROR = 'system:error',\n  SYSTEM_HEALTHCHECK = 'system:healthcheck',\n\n  // Coordination events\n  RESOURCE_ACQUIRED = 'resource:acquired',\n  RESOURCE_RELEASED = 'resource:released',\n  DEADLOCK_DETECTED = 'deadlock:detected',\n  MESSAGE_SENT = 'message:sent',\n  MESSAGE_RECEIVED = 'message:received',\n}\n\nexport interface EventMap extends Record<string, unknown> {\n  [SystemEvents.AGENT_SPAWNED]: { agentId: string; profile: AgentProfile; sessionId: string };\n  [SystemEvents.AGENT_TERMINATED]: { agentId: string; reason: string };\n  [SystemEvents.AGENT_ERROR]: { agentId: string; error: Error };\n  [SystemEvents.AGENT_IDLE]: { agentId: string };\n  [SystemEvents.AGENT_ACTIVE]: { agentId: string; taskId: string };\n\n  [SystemEvents.TASK_CREATED]: { task: Task };\n  [SystemEvents.TASK_ASSIGNED]: { taskId: string; agentId: string };\n  [SystemEvents.TASK_STARTED]: { taskId: string; agentId: string };\n  [SystemEvents.TASK_COMPLETED]: { taskId: string; result: unknown };\n  [SystemEvents.TASK_FAILED]: { taskId: string; error: Error };\n  [SystemEvents.TASK_CANCELLED]: { taskId: string; reason: string };\n\n  [SystemEvents.MEMORY_CREATED]: { entry: MemoryEntry };\n  [SystemEvents.MEMORY_UPDATED]: { entry: MemoryEntry; previousVersion: number };\n  [SystemEvents.MEMORY_DELETED]: { entryId: string };\n  [SystemEvents.MEMORY_SYNCED]: { entries: MemoryEntry[] };\n\n  [SystemEvents.SYSTEM_READY]: { timestamp: Date };\n  [SystemEvents.SYSTEM_SHUTDOWN]: { reason: string };\n  [SystemEvents.SYSTEM_ERROR]: { error: Error; component: string };\n  [SystemEvents.SYSTEM_HEALTHCHECK]: { status: HealthStatus };\n\n  [SystemEvents.RESOURCE_ACQUIRED]: { resourceId: string; agentId: string };\n  [SystemEvents.RESOURCE_RELEASED]: { resourceId: string; agentId: string };\n  [SystemEvents.DEADLOCK_DETECTED]: { agents: string[]; resources: string[] };\n  [SystemEvents.MESSAGE_SENT]: { from: string; to: string; message: Message };\n  [SystemEvents.MESSAGE_RECEIVED]: { from: string; to: string; message: Message };\n\n  // Additional events\n  'metrics:collected': OrchestratorMetrics;\n}\n\n// Configuration types\nexport interface Config {\n  orchestrator: OrchestratorConfig;\n  terminal: TerminalConfig;\n  memory: MemoryConfig;\n  coordination: CoordinationConfig;\n  mcp: MCPConfig;\n  logging: LoggingConfig;\n  credentials?: CredentialsConfig;\n  security?: SecurityConfig;\n}\n\nexport interface OrchestratorConfig {\n  maxConcurrentAgents: number;\n  taskQueueSize: number;\n  healthCheckInterval: number;\n  shutdownTimeout: number;\n  maintenanceInterval?: number;\n  metricsInterval?: number;\n  persistSessions?: boolean;\n  dataDir?: string;\n  sessionRetentionMs?: number;\n  taskHistoryRetentionMs?: number;\n  taskMaxRetries?: number;\n}\n\nexport interface TerminalConfig {\n  type: 'vscode' | 'native' | 'auto';\n  poolSize: number;\n  recycleAfter: number;\n  healthCheckInterval: number;\n  commandTimeout: number;\n}\n\nexport interface MemoryConfig {\n  backend: 'sqlite' | 'markdown' | 'hybrid';\n  cacheSizeMB: number;\n  syncInterval: number;\n  conflictResolution: 'last-write' | 'crdt' | 'manual';\n  retentionDays: number;\n  sqlitePath?: string;\n  markdownDir?: string;\n}\n\nexport interface CoordinationConfig {\n  maxRetries: number;\n  retryDelay: number;\n  deadlockDetection: boolean;\n  resourceTimeout: number;\n  messageTimeout: number;\n}\n\nexport interface MCPConfig {\n  transport: 'stdio' | 'http' | 'websocket';\n  host?: string;\n  port?: number;\n  tlsEnabled?: boolean;\n  authToken?: string;\n  auth?: MCPAuthConfig;\n  loadBalancer?: MCPLoadBalancerConfig;\n  sessionTimeout?: number;\n  maxSessions?: number;\n  enableMetrics?: boolean;\n  corsEnabled?: boolean;\n  corsOrigins?: string[];\n}\n\nexport interface LoggingConfig {\n  level: 'debug' | 'info' | 'warn' | 'error';\n  format: 'json' | 'text';\n  destination: 'console' | 'file' | 'both';\n  filePath?: string;\n  maxFileSize?: number;\n  maxFiles?: number;\n}\n\n// Health and monitoring types\nexport interface HealthStatus {\n  status: 'healthy' | 'degraded' | 'unhealthy';\n  components: Record<string, ComponentHealth>;\n  timestamp: Date;\n}\n\nexport interface ComponentHealth {\n  name: string;\n  status: 'healthy' | 'degraded' | 'unhealthy';\n  lastCheck: Date;\n  error?: string;\n  metrics?: Record<string, number>;\n}\n\n// Message passing types\nexport interface Message {\n  id: string;\n  type: string;\n  payload: unknown;\n  timestamp: Date;\n  priority: number;\n  expiry?: Date;\n}\n\n// Resource management types\nexport interface Resource {\n  id: string;\n  type: string;\n  owner?: string;\n  locked: boolean;\n  lockedBy?: string;\n  lockedAt?: Date;\n  metadata?: Record<string, unknown>;\n}\n\n// MCP types - Full protocol compliance\nexport interface MCPProtocolVersion {\n  major: number;\n  minor: number;\n  patch: number;\n}\n\nexport interface MCPCapabilities {\n  logging?: {\n    level?: 'debug' | 'info' | 'warn' | 'error';\n  };\n  prompts?: {\n    listChanged?: boolean;\n  };\n  resources?: {\n    listChanged?: boolean;\n    subscribe?: boolean;\n  };\n  tools?: {\n    listChanged?: boolean;\n  };\n  sampling?: Record<string, unknown>;\n}\n\nexport interface MCPInitializeParams {\n  protocolVersion: MCPProtocolVersion;\n  capabilities: MCPCapabilities;\n  clientInfo: {\n    name: string;\n    version: string;\n  };\n}\n\nexport interface MCPInitializeResult {\n  protocolVersion: MCPProtocolVersion;\n  capabilities: MCPCapabilities;\n  serverInfo: {\n    name: string;\n    version: string;\n  };\n  instructions?: string;\n}\n\nexport interface MCPTool {\n  name: string;\n  description: string;\n  inputSchema: Record<string, unknown>;\n  handler: (input: unknown, context?: MCPContext) => Promise<unknown>;\n}\n\nexport interface MCPPrompt {\n  name: string;\n  description?: string;\n  arguments?: Array<{\n    name: string;\n    description?: string;\n    required?: boolean;\n  }>;\n}\n\nexport interface MCPResource {\n  uri: string;\n  name: string;\n  description?: string;\n  mimeType?: string;\n}\n\nexport interface MCPRequest {\n  jsonrpc: '2.0';\n  id: string | number;\n  method: string;\n  params?: unknown;\n}\n\nexport interface MCPResponse {\n  jsonrpc: '2.0';\n  id: string | number;\n  result?: unknown;\n  error?: MCPError;\n}\n\nexport interface MCPNotification {\n  jsonrpc: '2.0';\n  method: string;\n  params?: unknown;\n}\n\nexport interface MCPError {\n  code: number;\n  message: string;\n  data?: unknown;\n}\n\nexport interface MCPToolCall {\n  name: string;\n  arguments?: Record<string, unknown>;\n}\n\nexport interface MCPToolResult {\n  content: Array<{\n    type: 'text' | 'image' | 'resource';\n    text?: string;\n    data?: string;\n    mimeType?: string;\n  }>;\n  isError?: boolean;\n}\n\nexport interface MCPLogEntry {\n  level: 'debug' | 'info' | 'warn' | 'error';\n  data?: unknown;\n  logger?: string;\n}\n\nexport interface MCPSession {\n  id: string;\n  clientInfo: {\n    name: string;\n    version: string;\n  };\n  protocolVersion: MCPProtocolVersion;\n  capabilities: MCPCapabilities;\n  isInitialized: boolean;\n  createdAt: Date;\n  lastActivity: Date;\n  transport: 'stdio' | 'http' | 'websocket';\n  authenticated: boolean;\n  authData?: {\n    token?: string;\n    user?: string;\n    permissions?: string[];\n  };\n}\n\nexport interface MCPAuthConfig {\n  enabled: boolean;\n  method: 'token' | 'basic' | 'oauth';\n  tokens?: string[];\n  users?: Array<{\n    username: string;\n    password: string;\n    permissions: string[];\n    roles?: string[];\n  }>;\n  jwtSecret?: string;\n  sessionTimeout?: number;\n}\n\nexport interface MCPLoadBalancerConfig {\n  enabled: boolean;\n  strategy: 'round-robin' | 'least-connections' | 'weighted';\n  maxRequestsPerSecond: number;\n  healthCheckInterval: number;\n  circuitBreakerThreshold: number;\n}\n\nexport interface MCPMetrics {\n  totalRequests: number;\n  successfulRequests: number;\n  failedRequests: number;\n  averageResponseTime: number;\n  activeSessions: number;\n  toolInvocations: Record<string, number>;\n  errors: Record<string, number>;\n  lastReset: Date;\n}\n\n// Interface declarations for dependency injection\nexport interface ILogger {\n  debug(message: string, meta?: unknown): void;\n  info(message: string, meta?: unknown): void;\n  warn(message: string, meta?: unknown): void;\n  error(message: string, error?: unknown): void;\n  configure(config: LoggingConfig): Promise<void>;\n}\n\nexport interface IEventBus {\n  emit(event: string, data?: unknown): void;\n  on(event: string, handler: (data: unknown) => void): void;\n  off(event: string, handler: (data: unknown) => void): void;\n  once(event: string, handler: (data: unknown) => void): void;\n}\n\n// Terminal types\nexport interface Terminal {\n  id: string;\n  pid?: number;\n  type: 'vscode' | 'native';\n  status: 'active' | 'idle' | 'dead';\n}\n\nexport interface TerminalCommand {\n  command: string;\n  args?: string[];\n  env?: Record<string, string>;\n  cwd?: string;\n  timeout?: number;\n}\n\nexport interface MCPContext {\n  sessionId: string;\n  agentId?: string;\n  logger: ILogger;\n}\n\n// Additional configuration interfaces\nexport interface CredentialsConfig {\n  apiKey?: string;\n  token?: string;\n  password?: string;\n  secret?: string;\n  [key: string]: string | undefined;\n}\n\nexport interface SecurityConfig {\n  encryptionEnabled: boolean;\n  auditLogging: boolean;\n  maskSensitiveValues: boolean;\n  allowEnvironmentOverrides: boolean;\n}\n"],
+      version: 3
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "1d05d739c0a6aaffbc882dff41af313653ba6ac6"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_i4lm0ysv1 = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_i4lm0ysv1();
+/**
+ * Core type definitions for Claude-Flow
+ */
+// Event-related types
+export var SystemEvents;
+/* istanbul ignore next */
+cov_i4lm0ysv1().s[0]++;
+(function (SystemEvents) {
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().f[0]++;
+  cov_i4lm0ysv1().s[1]++;
+  // Agent events
+  SystemEvents["AGENT_SPAWNED"] = "agent:spawned";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[2]++;
+  SystemEvents["AGENT_TERMINATED"] = "agent:terminated";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[3]++;
+  SystemEvents["AGENT_ERROR"] = "agent:error";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[4]++;
+  SystemEvents["AGENT_IDLE"] = "agent:idle";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[5]++;
+  SystemEvents["AGENT_ACTIVE"] = "agent:active";
+  // Task events
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[6]++;
+  SystemEvents["TASK_CREATED"] = "task:created";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[7]++;
+  SystemEvents["TASK_ASSIGNED"] = "task:assigned";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[8]++;
+  SystemEvents["TASK_STARTED"] = "task:started";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[9]++;
+  SystemEvents["TASK_COMPLETED"] = "task:completed";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[10]++;
+  SystemEvents["TASK_FAILED"] = "task:failed";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[11]++;
+  SystemEvents["TASK_CANCELLED"] = "task:cancelled";
+  // Memory events
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[12]++;
+  SystemEvents["MEMORY_CREATED"] = "memory:created";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[13]++;
+  SystemEvents["MEMORY_UPDATED"] = "memory:updated";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[14]++;
+  SystemEvents["MEMORY_DELETED"] = "memory:deleted";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[15]++;
+  SystemEvents["MEMORY_SYNCED"] = "memory:synced";
+  // System events
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[16]++;
+  SystemEvents["SYSTEM_READY"] = "system:ready";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[17]++;
+  SystemEvents["SYSTEM_SHUTDOWN"] = "system:shutdown";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[18]++;
+  SystemEvents["SYSTEM_ERROR"] = "system:error";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[19]++;
+  SystemEvents["SYSTEM_HEALTHCHECK"] = "system:healthcheck";
+  // Coordination events
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[20]++;
+  SystemEvents["RESOURCE_ACQUIRED"] = "resource:acquired";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[21]++;
+  SystemEvents["RESOURCE_RELEASED"] = "resource:released";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[22]++;
+  SystemEvents["DEADLOCK_DETECTED"] = "deadlock:detected";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[23]++;
+  SystemEvents["MESSAGE_SENT"] = "message:sent";
+  /* istanbul ignore next */
+  cov_i4lm0ysv1().s[24]++;
+  SystemEvents["MESSAGE_RECEIVED"] = "message:received";
+})(
+/* istanbul ignore next */
+(cov_i4lm0ysv1().b[0][0]++, SystemEvents) ||
+/* istanbul ignore next */
+(cov_i4lm0ysv1().b[0][1]++, SystemEvents = {}));
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJjb3ZfaTRsbTB5c3YxIiwiYWN0dWFsQ292ZXJhZ2UiLCJTeXN0ZW1FdmVudHMiLCJzIiwiZiIsImIiXSwic291cmNlcyI6WyIvaG9tZS9taHVnby9jb2RlL2NsYXVkZS1jb2RlLWZsb3cvc3JjL3V0aWxzL3R5cGVzLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogQ29yZSB0eXBlIGRlZmluaXRpb25zIGZvciBDbGF1ZGUtRmxvd1xuICovXG5cbi8vIENvbmZpZ3VyYXRpb24gaW50ZXJmYWNlXG5leHBvcnQgaW50ZXJmYWNlIENvbmZpZyB7XG4gIGVudjogJ2RldmVsb3BtZW50JyB8ICdwcm9kdWN0aW9uJyB8ICd0ZXN0JztcbiAgbG9nTGV2ZWw6ICdkZWJ1ZycgfCAnaW5mbycgfCAnd2FybicgfCAnZXJyb3InO1xuICBlbmFibGVNZXRyaWNzPzogYm9vbGVhbjtcbiAgb3JjaGVzdHJhdG9yPzoge1xuICAgIGRhdGFEaXI/OiBzdHJpbmc7XG4gICAgbWF4QWdlbnRzPzogbnVtYmVyO1xuICAgIHRhc2tUaW1lb3V0PzogbnVtYmVyO1xuICAgIHBlcnNpc3RTZXNzaW9ucz86IGJvb2xlYW47XG4gICAgc2h1dGRvd25UaW1lb3V0PzogbnVtYmVyO1xuICAgIG1heENvbmN1cnJlbnRBZ2VudHM/OiBudW1iZXI7XG4gIH07XG4gIGxvZ2dpbmc/OiBMb2dnaW5nQ29uZmlnO1xuICB0ZXJtaW5hbD86IHtcbiAgICBzaGVsbD86IHN0cmluZztcbiAgICB0aW1lb3V0PzogbnVtYmVyO1xuICAgIG1heFNlc3Npb25zPzogbnVtYmVyO1xuICB9O1xuICBtZW1vcnk/OiB7XG4gICAgYmFja2VuZD86ICdzcWxpdGUnIHwgJ21lbW9yeSc7XG4gICAgdHRsPzogbnVtYmVyO1xuICAgIG1heEVudHJpZXM/OiBudW1iZXI7XG4gIH07XG4gIGNvb3JkaW5hdGlvbj86IHtcbiAgICBlbmFibGVkPzogYm9vbGVhbjtcbiAgICBtYXhDb25uZWN0aW9ucz86IG51bWJlcjtcbiAgfTtcbiAgbWNwPzoge1xuICAgIGVuYWJsZWQ/OiBib29sZWFuO1xuICAgIHBvcnQ/OiBudW1iZXI7XG4gIH07XG4gIGRhdGFiYXNlPzoge1xuICAgIHVybDogc3RyaW5nO1xuICAgIHBvb2xTaXplPzogbnVtYmVyO1xuICB9O1xuICByZWRpcz86IHtcbiAgICB1cmw6IHN0cmluZztcbiAgICBrZXlQcmVmaXg/OiBzdHJpbmc7XG4gIH07XG4gIGFwaT86IHtcbiAgICBwb3J0OiBudW1iZXI7XG4gICAgaG9zdDogc3RyaW5nO1xuICAgIGNvcnM/OiB7XG4gICAgICBvcmlnaW46IHN0cmluZ1tdO1xuICAgICAgY3JlZGVudGlhbHM6IGJvb2xlYW47XG4gICAgfTtcbiAgfTtcbiAgYWdlbnRzPzoge1xuICAgIG1heENvbmN1cnJlbnQ6IG51bWJlcjtcbiAgICB0aW1lb3V0OiBudW1iZXI7XG4gIH07XG4gIHNlY3VyaXR5Pzoge1xuICAgIGp3dFNlY3JldDogc3RyaW5nO1xuICAgIGVuY3J5cHRpb25LZXk6IHN0cmluZztcbiAgfTtcbn1cblxuLy8gTG9nZ2luZyBjb25maWd1cmF0aW9uIGludGVyZmFjZVxuZXhwb3J0IGludGVyZmFjZSBMb2dnaW5nQ29uZmlnIHtcbiAgbGV2ZWw6ICdkZWJ1ZycgfCAnaW5mbycgfCAnd2FybicgfCAnZXJyb3InO1xuICBmb3JtYXQ6ICd0ZXh0JyB8ICdqc29uJztcbiAgZGVzdGluYXRpb246ICdjb25zb2xlJyB8ICdmaWxlJyB8ICdib3RoJztcbiAgZmlsZT86IHtcbiAgICBwYXRoOiBzdHJpbmc7XG4gICAgbWF4U2l6ZTogbnVtYmVyO1xuICAgIG1heEZpbGVzOiBudW1iZXI7XG4gIH07XG4gIGVuYWJsZVRpbWVzdGFtcHM/OiBib29sZWFuO1xuICBlbmFibGVDb250ZXh0PzogYm9vbGVhbjtcbn1cblxuLy8gSW1wb3J0IG9yY2hlc3RyYXRvciBtZXRyaWNzIHR5cGVcbmV4cG9ydCBpbnRlcmZhY2UgT3JjaGVzdHJhdG9yTWV0cmljcyB7XG4gIHVwdGltZTogbnVtYmVyO1xuICB0b3RhbEFnZW50czogbnVtYmVyO1xuICBhY3RpdmVBZ2VudHM6IG51bWJlcjtcbiAgdG90YWxUYXNrczogbnVtYmVyO1xuICBjb21wbGV0ZWRUYXNrczogbnVtYmVyO1xuICBmYWlsZWRUYXNrczogbnVtYmVyO1xuICBxdWV1ZWRUYXNrczogbnVtYmVyO1xuICBhdmdUYXNrRHVyYXRpb246IG51bWJlcjtcbiAgbWVtb3J5VXNhZ2U6IHtcbiAgICByc3M6IG51bWJlcjtcbiAgICBoZWFwVXNlZDogbnVtYmVyO1xuICAgIGhlYXBUb3RhbDogbnVtYmVyO1xuICAgIGV4dGVybmFsOiBudW1iZXI7XG4gICAgYXJyYXlCdWZmZXJzOiBudW1iZXI7XG4gIH07XG4gIGNwdVVzYWdlOiB7XG4gICAgdXNlcjogbnVtYmVyO1xuICAgIHN5c3RlbTogbnVtYmVyO1xuICB9O1xuICB0aW1lc3RhbXA6IERhdGU7XG59XG5cbi8vIEFnZW50LXJlbGF0ZWQgdHlwZXNcbmV4cG9ydCBpbnRlcmZhY2UgQWdlbnRQcm9maWxlIHtcbiAgaWQ6IHN0cmluZztcbiAgbmFtZTogc3RyaW5nO1xuICB0eXBlOiAnY29vcmRpbmF0b3InIHwgJ3Jlc2VhcmNoZXInIHwgJ2ltcGxlbWVudGVyJyB8ICdhbmFseXN0JyB8ICdjdXN0b20nO1xuICBjYXBhYmlsaXRpZXM6IHN0cmluZ1tdO1xuICBzeXN0ZW1Qcm9tcHQ/OiBzdHJpbmc7XG4gIG1heENvbmN1cnJlbnRUYXNrczogbnVtYmVyO1xuICBwcmlvcml0eT86IG51bWJlcjtcbiAgZW52aXJvbm1lbnQ/OiBSZWNvcmQ8c3RyaW5nLCBzdHJpbmc+O1xuICB3b3JraW5nRGlyZWN0b3J5Pzogc3RyaW5nO1xuICBzaGVsbD86IHN0cmluZztcbiAgbWV0YWRhdGE/OiBSZWNvcmQ8c3RyaW5nLCB1bmtub3duPjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBBZ2VudFNlc3Npb24ge1xuICBpZDogc3RyaW5nO1xuICBhZ2VudElkOiBzdHJpbmc7XG4gIHRlcm1pbmFsSWQ6IHN0cmluZztcbiAgc3RhcnRUaW1lOiBEYXRlO1xuICBlbmRUaW1lPzogRGF0ZTtcbiAgc3RhdHVzOiAnYWN0aXZlJyB8ICdpZGxlJyB8ICd0ZXJtaW5hdGVkJyB8ICdlcnJvcic7XG4gIGxhc3RBY3Rpdml0eTogRGF0ZTtcbiAgbWVtb3J5QmFua0lkOiBzdHJpbmc7XG59XG5cbi8vIFRhc2stcmVsYXRlZCB0eXBlc1xuZXhwb3J0IGludGVyZmFjZSBUYXNrIHtcbiAgaWQ6IHN0cmluZztcbiAgdHlwZTogc3RyaW5nO1xuICBkZXNjcmlwdGlvbjogc3RyaW5nO1xuICBwcmlvcml0eTogbnVtYmVyO1xuICBkZXBlbmRlbmNpZXM6IHN0cmluZ1tdO1xuICBhc3NpZ25lZEFnZW50Pzogc3RyaW5nO1xuICBzdGF0dXM6IFRhc2tTdGF0dXM7XG4gIGlucHV0OiBSZWNvcmQ8c3RyaW5nLCB1bmtub3duPjtcbiAgb3V0cHV0PzogUmVjb3JkPHN0cmluZywgdW5rbm93bj47XG4gIGVycm9yPzogRXJyb3I7XG4gIGNyZWF0ZWRBdDogRGF0ZTtcbiAgc3RhcnRlZEF0PzogRGF0ZTtcbiAgY29tcGxldGVkQXQ/OiBEYXRlO1xuICBtZXRhZGF0YT86IFJlY29yZDxzdHJpbmcsIHVua25vd24+O1xufVxuXG5leHBvcnQgdHlwZSBUYXNrU3RhdHVzID1cbiAgfCAncGVuZGluZydcbiAgfCAncXVldWVkJ1xuICB8ICdhc3NpZ25lZCdcbiAgfCAncnVubmluZydcbiAgfCAnY29tcGxldGVkJ1xuICB8ICdmYWlsZWQnXG4gIHwgJ2NhbmNlbGxlZCc7XG5cbi8vIE1lbW9yeS1yZWxhdGVkIHR5cGVzXG5leHBvcnQgaW50ZXJmYWNlIE1lbW9yeUVudHJ5IHtcbiAgaWQ6IHN0cmluZztcbiAgYWdlbnRJZDogc3RyaW5nO1xuICBzZXNzaW9uSWQ6IHN0cmluZztcbiAgdHlwZTogJ29ic2VydmF0aW9uJyB8ICdpbnNpZ2h0JyB8ICdkZWNpc2lvbicgfCAnYXJ0aWZhY3QnIHwgJ2Vycm9yJztcbiAgY29udGVudDogc3RyaW5nO1xuICBjb250ZXh0OiBSZWNvcmQ8c3RyaW5nLCB1bmtub3duPjtcbiAgdGltZXN0YW1wOiBEYXRlO1xuICB0YWdzOiBzdHJpbmdbXTtcbiAgdmVyc2lvbjogbnVtYmVyO1xuICBwYXJlbnRJZD86IHN0cmluZztcbiAgbWV0YWRhdGE/OiBSZWNvcmQ8c3RyaW5nLCB1bmtub3duPjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBNZW1vcnlRdWVyeSB7XG4gIGFnZW50SWQ/OiBzdHJpbmc7XG4gIHNlc3Npb25JZD86IHN0cmluZztcbiAgdHlwZT86IE1lbW9yeUVudHJ5Wyd0eXBlJ107XG4gIHRhZ3M/OiBzdHJpbmdbXTtcbiAgc3RhcnRUaW1lPzogRGF0ZTtcbiAgZW5kVGltZT86IERhdGU7XG4gIHNlYXJjaD86IHN0cmluZztcbiAgbGltaXQ/OiBudW1iZXI7XG4gIG9mZnNldD86IG51bWJlcjtcbiAgbmFtZXNwYWNlPzogc3RyaW5nO1xufVxuXG4vLyBFdmVudC1yZWxhdGVkIHR5cGVzXG5leHBvcnQgZW51bSBTeXN0ZW1FdmVudHMge1xuICAvLyBBZ2VudCBldmVudHNcbiAgQUdFTlRfU1BBV05FRCA9ICdhZ2VudDpzcGF3bmVkJyxcbiAgQUdFTlRfVEVSTUlOQVRFRCA9ICdhZ2VudDp0ZXJtaW5hdGVkJyxcbiAgQUdFTlRfRVJST1IgPSAnYWdlbnQ6ZXJyb3InLFxuICBBR0VOVF9JRExFID0gJ2FnZW50OmlkbGUnLFxuICBBR0VOVF9BQ1RJVkUgPSAnYWdlbnQ6YWN0aXZlJyxcblxuICAvLyBUYXNrIGV2ZW50c1xuICBUQVNLX0NSRUFURUQgPSAndGFzazpjcmVhdGVkJyxcbiAgVEFTS19BU1NJR05FRCA9ICd0YXNrOmFzc2lnbmVkJyxcbiAgVEFTS19TVEFSVEVEID0gJ3Rhc2s6c3RhcnRlZCcsXG4gIFRBU0tfQ09NUExFVEVEID0gJ3Rhc2s6Y29tcGxldGVkJyxcbiAgVEFTS19GQUlMRUQgPSAndGFzazpmYWlsZWQnLFxuICBUQVNLX0NBTkNFTExFRCA9ICd0YXNrOmNhbmNlbGxlZCcsXG5cbiAgLy8gTWVtb3J5IGV2ZW50c1xuICBNRU1PUllfQ1JFQVRFRCA9ICdtZW1vcnk6Y3JlYXRlZCcsXG4gIE1FTU9SWV9VUERBVEVEID0gJ21lbW9yeTp1cGRhdGVkJyxcbiAgTUVNT1JZX0RFTEVURUQgPSAnbWVtb3J5OmRlbGV0ZWQnLFxuICBNRU1PUllfU1lOQ0VEID0gJ21lbW9yeTpzeW5jZWQnLFxuXG4gIC8vIFN5c3RlbSBldmVudHNcbiAgU1lTVEVNX1JFQURZID0gJ3N5c3RlbTpyZWFkeScsXG4gIFNZU1RFTV9TSFVURE9XTiA9ICdzeXN0ZW06c2h1dGRvd24nLFxuICBTWVNURU1fRVJST1IgPSAnc3lzdGVtOmVycm9yJyxcbiAgU1lTVEVNX0hFQUxUSENIRUNLID0gJ3N5c3RlbTpoZWFsdGhjaGVjaycsXG5cbiAgLy8gQ29vcmRpbmF0aW9uIGV2ZW50c1xuICBSRVNPVVJDRV9BQ1FVSVJFRCA9ICdyZXNvdXJjZTphY3F1aXJlZCcsXG4gIFJFU09VUkNFX1JFTEVBU0VEID0gJ3Jlc291cmNlOnJlbGVhc2VkJyxcbiAgREVBRExPQ0tfREVURUNURUQgPSAnZGVhZGxvY2s6ZGV0ZWN0ZWQnLFxuICBNRVNTQUdFX1NFTlQgPSAnbWVzc2FnZTpzZW50JyxcbiAgTUVTU0FHRV9SRUNFSVZFRCA9ICdtZXNzYWdlOnJlY2VpdmVkJyxcbn1cblxuZXhwb3J0IGludGVyZmFjZSBFdmVudE1hcCBleHRlbmRzIFJlY29yZDxzdHJpbmcsIHVua25vd24+IHtcbiAgW1N5c3RlbUV2ZW50cy5BR0VOVF9TUEFXTkVEXTogeyBhZ2VudElkOiBzdHJpbmc7IHByb2ZpbGU6IEFnZW50UHJvZmlsZTsgc2Vzc2lvbklkOiBzdHJpbmcgfTtcbiAgW1N5c3RlbUV2ZW50cy5BR0VOVF9URVJNSU5BVEVEXTogeyBhZ2VudElkOiBzdHJpbmc7IHJlYXNvbjogc3RyaW5nIH07XG4gIFtTeXN0ZW1FdmVudHMuQUdFTlRfRVJST1JdOiB7IGFnZW50SWQ6IHN0cmluZzsgZXJyb3I6IEVycm9yIH07XG4gIFtTeXN0ZW1FdmVudHMuQUdFTlRfSURMRV06IHsgYWdlbnRJZDogc3RyaW5nIH07XG4gIFtTeXN0ZW1FdmVudHMuQUdFTlRfQUNUSVZFXTogeyBhZ2VudElkOiBzdHJpbmc7IHRhc2tJZDogc3RyaW5nIH07XG5cbiAgW1N5c3RlbUV2ZW50cy5UQVNLX0NSRUFURURdOiB7IHRhc2s6IFRhc2sgfTtcbiAgW1N5c3RlbUV2ZW50cy5UQVNLX0FTU0lHTkVEXTogeyB0YXNrSWQ6IHN0cmluZzsgYWdlbnRJZDogc3RyaW5nIH07XG4gIFtTeXN0ZW1FdmVudHMuVEFTS19TVEFSVEVEXTogeyB0YXNrSWQ6IHN0cmluZzsgYWdlbnRJZDogc3RyaW5nIH07XG4gIFtTeXN0ZW1FdmVudHMuVEFTS19DT01QTEVURURdOiB7IHRhc2tJZDogc3RyaW5nOyByZXN1bHQ6IHVua25vd24gfTtcbiAgW1N5c3RlbUV2ZW50cy5UQVNLX0ZBSUxFRF06IHsgdGFza0lkOiBzdHJpbmc7IGVycm9yOiBFcnJvciB9O1xuICBbU3lzdGVtRXZlbnRzLlRBU0tfQ0FOQ0VMTEVEXTogeyB0YXNrSWQ6IHN0cmluZzsgcmVhc29uOiBzdHJpbmcgfTtcblxuICBbU3lzdGVtRXZlbnRzLk1FTU9SWV9DUkVBVEVEXTogeyBlbnRyeTogTWVtb3J5RW50cnkgfTtcbiAgW1N5c3RlbUV2ZW50cy5NRU1PUllfVVBEQVRFRF06IHsgZW50cnk6IE1lbW9yeUVudHJ5OyBwcmV2aW91c1ZlcnNpb246IG51bWJlciB9O1xuICBbU3lzdGVtRXZlbnRzLk1FTU9SWV9ERUxFVEVEXTogeyBlbnRyeUlkOiBzdHJpbmcgfTtcbiAgW1N5c3RlbUV2ZW50cy5NRU1PUllfU1lOQ0VEXTogeyBlbnRyaWVzOiBNZW1vcnlFbnRyeVtdIH07XG5cbiAgW1N5c3RlbUV2ZW50cy5TWVNURU1fUkVBRFldOiB7IHRpbWVzdGFtcDogRGF0ZSB9O1xuICBbU3lzdGVtRXZlbnRzLlNZU1RFTV9TSFVURE9XTl06IHsgcmVhc29uOiBzdHJpbmcgfTtcbiAgW1N5c3RlbUV2ZW50cy5TWVNURU1fRVJST1JdOiB7IGVycm9yOiBFcnJvcjsgY29tcG9uZW50OiBzdHJpbmcgfTtcbiAgW1N5c3RlbUV2ZW50cy5TWVNURU1fSEVBTFRIQ0hFQ0tdOiB7IHN0YXR1czogSGVhbHRoU3RhdHVzIH07XG5cbiAgW1N5c3RlbUV2ZW50cy5SRVNPVVJDRV9BQ1FVSVJFRF06IHsgcmVzb3VyY2VJZDogc3RyaW5nOyBhZ2VudElkOiBzdHJpbmcgfTtcbiAgW1N5c3RlbUV2ZW50cy5SRVNPVVJDRV9SRUxFQVNFRF06IHsgcmVzb3VyY2VJZDogc3RyaW5nOyBhZ2VudElkOiBzdHJpbmcgfTtcbiAgW1N5c3RlbUV2ZW50cy5ERUFETE9DS19ERVRFQ1RFRF06IHsgYWdlbnRzOiBzdHJpbmdbXTsgcmVzb3VyY2VzOiBzdHJpbmdbXSB9O1xuICBbU3lzdGVtRXZlbnRzLk1FU1NBR0VfU0VOVF06IHsgZnJvbTogc3RyaW5nOyB0bzogc3RyaW5nOyBtZXNzYWdlOiBNZXNzYWdlIH07XG4gIFtTeXN0ZW1FdmVudHMuTUVTU0FHRV9SRUNFSVZFRF06IHsgZnJvbTogc3RyaW5nOyB0bzogc3RyaW5nOyBtZXNzYWdlOiBNZXNzYWdlIH07XG5cbiAgLy8gQWRkaXRpb25hbCBldmVudHNcbiAgJ21ldHJpY3M6Y29sbGVjdGVkJzogT3JjaGVzdHJhdG9yTWV0cmljcztcbn1cblxuLy8gQ29uZmlndXJhdGlvbiB0eXBlc1xuZXhwb3J0IGludGVyZmFjZSBDb25maWcge1xuICBvcmNoZXN0cmF0b3I6IE9yY2hlc3RyYXRvckNvbmZpZztcbiAgdGVybWluYWw6IFRlcm1pbmFsQ29uZmlnO1xuICBtZW1vcnk6IE1lbW9yeUNvbmZpZztcbiAgY29vcmRpbmF0aW9uOiBDb29yZGluYXRpb25Db25maWc7XG4gIG1jcDogTUNQQ29uZmlnO1xuICBsb2dnaW5nOiBMb2dnaW5nQ29uZmlnO1xuICBjcmVkZW50aWFscz86IENyZWRlbnRpYWxzQ29uZmlnO1xuICBzZWN1cml0eT86IFNlY3VyaXR5Q29uZmlnO1xufVxuXG5leHBvcnQgaW50ZXJmYWNlIE9yY2hlc3RyYXRvckNvbmZpZyB7XG4gIG1heENvbmN1cnJlbnRBZ2VudHM6IG51bWJlcjtcbiAgdGFza1F1ZXVlU2l6ZTogbnVtYmVyO1xuICBoZWFsdGhDaGVja0ludGVydmFsOiBudW1iZXI7XG4gIHNodXRkb3duVGltZW91dDogbnVtYmVyO1xuICBtYWludGVuYW5jZUludGVydmFsPzogbnVtYmVyO1xuICBtZXRyaWNzSW50ZXJ2YWw/OiBudW1iZXI7XG4gIHBlcnNpc3RTZXNzaW9ucz86IGJvb2xlYW47XG4gIGRhdGFEaXI/OiBzdHJpbmc7XG4gIHNlc3Npb25SZXRlbnRpb25Ncz86IG51bWJlcjtcbiAgdGFza0hpc3RvcnlSZXRlbnRpb25Ncz86IG51bWJlcjtcbiAgdGFza01heFJldHJpZXM/OiBudW1iZXI7XG59XG5cbmV4cG9ydCBpbnRlcmZhY2UgVGVybWluYWxDb25maWcge1xuICB0eXBlOiAndnNjb2RlJyB8ICduYXRpdmUnIHwgJ2F1dG8nO1xuICBwb29sU2l6ZTogbnVtYmVyO1xuICByZWN5Y2xlQWZ0ZXI6IG51bWJlcjtcbiAgaGVhbHRoQ2hlY2tJbnRlcnZhbDogbnVtYmVyO1xuICBjb21tYW5kVGltZW91dDogbnVtYmVyO1xufVxuXG5leHBvcnQgaW50ZXJmYWNlIE1lbW9yeUNvbmZpZyB7XG4gIGJhY2tlbmQ6ICdzcWxpdGUnIHwgJ21hcmtkb3duJyB8ICdoeWJyaWQnO1xuICBjYWNoZVNpemVNQjogbnVtYmVyO1xuICBzeW5jSW50ZXJ2YWw6IG51bWJlcjtcbiAgY29uZmxpY3RSZXNvbHV0aW9uOiAnbGFzdC13cml0ZScgfCAnY3JkdCcgfCAnbWFudWFsJztcbiAgcmV0ZW50aW9uRGF5czogbnVtYmVyO1xuICBzcWxpdGVQYXRoPzogc3RyaW5nO1xuICBtYXJrZG93bkRpcj86IHN0cmluZztcbn1cblxuZXhwb3J0IGludGVyZmFjZSBDb29yZGluYXRpb25Db25maWcge1xuICBtYXhSZXRyaWVzOiBudW1iZXI7XG4gIHJldHJ5RGVsYXk6IG51bWJlcjtcbiAgZGVhZGxvY2tEZXRlY3Rpb246IGJvb2xlYW47XG4gIHJlc291cmNlVGltZW91dDogbnVtYmVyO1xuICBtZXNzYWdlVGltZW91dDogbnVtYmVyO1xufVxuXG5leHBvcnQgaW50ZXJmYWNlIE1DUENvbmZpZyB7XG4gIHRyYW5zcG9ydDogJ3N0ZGlvJyB8ICdodHRwJyB8ICd3ZWJzb2NrZXQnO1xuICBob3N0Pzogc3RyaW5nO1xuICBwb3J0PzogbnVtYmVyO1xuICB0bHNFbmFibGVkPzogYm9vbGVhbjtcbiAgYXV0aFRva2VuPzogc3RyaW5nO1xuICBhdXRoPzogTUNQQXV0aENvbmZpZztcbiAgbG9hZEJhbGFuY2VyPzogTUNQTG9hZEJhbGFuY2VyQ29uZmlnO1xuICBzZXNzaW9uVGltZW91dD86IG51bWJlcjtcbiAgbWF4U2Vzc2lvbnM/OiBudW1iZXI7XG4gIGVuYWJsZU1ldHJpY3M/OiBib29sZWFuO1xuICBjb3JzRW5hYmxlZD86IGJvb2xlYW47XG4gIGNvcnNPcmlnaW5zPzogc3RyaW5nW107XG59XG5cbmV4cG9ydCBpbnRlcmZhY2UgTG9nZ2luZ0NvbmZpZyB7XG4gIGxldmVsOiAnZGVidWcnIHwgJ2luZm8nIHwgJ3dhcm4nIHwgJ2Vycm9yJztcbiAgZm9ybWF0OiAnanNvbicgfCAndGV4dCc7XG4gIGRlc3RpbmF0aW9uOiAnY29uc29sZScgfCAnZmlsZScgfCAnYm90aCc7XG4gIGZpbGVQYXRoPzogc3RyaW5nO1xuICBtYXhGaWxlU2l6ZT86IG51bWJlcjtcbiAgbWF4RmlsZXM/OiBudW1iZXI7XG59XG5cbi8vIEhlYWx0aCBhbmQgbW9uaXRvcmluZyB0eXBlc1xuZXhwb3J0IGludGVyZmFjZSBIZWFsdGhTdGF0dXMge1xuICBzdGF0dXM6ICdoZWFsdGh5JyB8ICdkZWdyYWRlZCcgfCAndW5oZWFsdGh5JztcbiAgY29tcG9uZW50czogUmVjb3JkPHN0cmluZywgQ29tcG9uZW50SGVhbHRoPjtcbiAgdGltZXN0YW1wOiBEYXRlO1xufVxuXG5leHBvcnQgaW50ZXJmYWNlIENvbXBvbmVudEhlYWx0aCB7XG4gIG5hbWU6IHN0cmluZztcbiAgc3RhdHVzOiAnaGVhbHRoeScgfCAnZGVncmFkZWQnIHwgJ3VuaGVhbHRoeSc7XG4gIGxhc3RDaGVjazogRGF0ZTtcbiAgZXJyb3I/OiBzdHJpbmc7XG4gIG1ldHJpY3M/OiBSZWNvcmQ8c3RyaW5nLCBudW1iZXI+O1xufVxuXG4vLyBNZXNzYWdlIHBhc3NpbmcgdHlwZXNcbmV4cG9ydCBpbnRlcmZhY2UgTWVzc2FnZSB7XG4gIGlkOiBzdHJpbmc7XG4gIHR5cGU6IHN0cmluZztcbiAgcGF5bG9hZDogdW5rbm93bjtcbiAgdGltZXN0YW1wOiBEYXRlO1xuICBwcmlvcml0eTogbnVtYmVyO1xuICBleHBpcnk/OiBEYXRlO1xufVxuXG4vLyBSZXNvdXJjZSBtYW5hZ2VtZW50IHR5cGVzXG5leHBvcnQgaW50ZXJmYWNlIFJlc291cmNlIHtcbiAgaWQ6IHN0cmluZztcbiAgdHlwZTogc3RyaW5nO1xuICBvd25lcj86IHN0cmluZztcbiAgbG9ja2VkOiBib29sZWFuO1xuICBsb2NrZWRCeT86IHN0cmluZztcbiAgbG9ja2VkQXQ/OiBEYXRlO1xuICBtZXRhZGF0YT86IFJlY29yZDxzdHJpbmcsIHVua25vd24+O1xufVxuXG4vLyBNQ1AgdHlwZXMgLSBGdWxsIHByb3RvY29sIGNvbXBsaWFuY2VcbmV4cG9ydCBpbnRlcmZhY2UgTUNQUHJvdG9jb2xWZXJzaW9uIHtcbiAgbWFqb3I6IG51bWJlcjtcbiAgbWlub3I6IG51bWJlcjtcbiAgcGF0Y2g6IG51bWJlcjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBNQ1BDYXBhYmlsaXRpZXMge1xuICBsb2dnaW5nPzoge1xuICAgIGxldmVsPzogJ2RlYnVnJyB8ICdpbmZvJyB8ICd3YXJuJyB8ICdlcnJvcic7XG4gIH07XG4gIHByb21wdHM/OiB7XG4gICAgbGlzdENoYW5nZWQ/OiBib29sZWFuO1xuICB9O1xuICByZXNvdXJjZXM/OiB7XG4gICAgbGlzdENoYW5nZWQ/OiBib29sZWFuO1xuICAgIHN1YnNjcmliZT86IGJvb2xlYW47XG4gIH07XG4gIHRvb2xzPzoge1xuICAgIGxpc3RDaGFuZ2VkPzogYm9vbGVhbjtcbiAgfTtcbiAgc2FtcGxpbmc/OiBSZWNvcmQ8c3RyaW5nLCB1bmtub3duPjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBNQ1BJbml0aWFsaXplUGFyYW1zIHtcbiAgcHJvdG9jb2xWZXJzaW9uOiBNQ1BQcm90b2NvbFZlcnNpb247XG4gIGNhcGFiaWxpdGllczogTUNQQ2FwYWJpbGl0aWVzO1xuICBjbGllbnRJbmZvOiB7XG4gICAgbmFtZTogc3RyaW5nO1xuICAgIHZlcnNpb246IHN0cmluZztcbiAgfTtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBNQ1BJbml0aWFsaXplUmVzdWx0IHtcbiAgcHJvdG9jb2xWZXJzaW9uOiBNQ1BQcm90b2NvbFZlcnNpb247XG4gIGNhcGFiaWxpdGllczogTUNQQ2FwYWJpbGl0aWVzO1xuICBzZXJ2ZXJJbmZvOiB7XG4gICAgbmFtZTogc3RyaW5nO1xuICAgIHZlcnNpb246IHN0cmluZztcbiAgfTtcbiAgaW5zdHJ1Y3Rpb25zPzogc3RyaW5nO1xufVxuXG5leHBvcnQgaW50ZXJmYWNlIE1DUFRvb2wge1xuICBuYW1lOiBzdHJpbmc7XG4gIGRlc2NyaXB0aW9uOiBzdHJpbmc7XG4gIGlucHV0U2NoZW1hOiBSZWNvcmQ8c3RyaW5nLCB1bmtub3duPjtcbiAgaGFuZGxlcjogKGlucHV0OiB1bmtub3duLCBjb250ZXh0PzogTUNQQ29udGV4dCkgPT4gUHJvbWlzZTx1bmtub3duPjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBNQ1BQcm9tcHQge1xuICBuYW1lOiBzdHJpbmc7XG4gIGRlc2NyaXB0aW9uPzogc3RyaW5nO1xuICBhcmd1bWVudHM/OiBBcnJheTx7XG4gICAgbmFtZTogc3RyaW5nO1xuICAgIGRlc2NyaXB0aW9uPzogc3RyaW5nO1xuICAgIHJlcXVpcmVkPzogYm9vbGVhbjtcbiAgfT47XG59XG5cbmV4cG9ydCBpbnRlcmZhY2UgTUNQUmVzb3VyY2Uge1xuICB1cmk6IHN0cmluZztcbiAgbmFtZTogc3RyaW5nO1xuICBkZXNjcmlwdGlvbj86IHN0cmluZztcbiAgbWltZVR5cGU/OiBzdHJpbmc7XG59XG5cbmV4cG9ydCBpbnRlcmZhY2UgTUNQUmVxdWVzdCB7XG4gIGpzb25ycGM6ICcyLjAnO1xuICBpZDogc3RyaW5nIHwgbnVtYmVyO1xuICBtZXRob2Q6IHN0cmluZztcbiAgcGFyYW1zPzogdW5rbm93bjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBNQ1BSZXNwb25zZSB7XG4gIGpzb25ycGM6ICcyLjAnO1xuICBpZDogc3RyaW5nIHwgbnVtYmVyO1xuICByZXN1bHQ/OiB1bmtub3duO1xuICBlcnJvcj86IE1DUEVycm9yO1xufVxuXG5leHBvcnQgaW50ZXJmYWNlIE1DUE5vdGlmaWNhdGlvbiB7XG4gIGpzb25ycGM6ICcyLjAnO1xuICBtZXRob2Q6IHN0cmluZztcbiAgcGFyYW1zPzogdW5rbm93bjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBNQ1BFcnJvciB7XG4gIGNvZGU6IG51bWJlcjtcbiAgbWVzc2FnZTogc3RyaW5nO1xuICBkYXRhPzogdW5rbm93bjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBNQ1BUb29sQ2FsbCB7XG4gIG5hbWU6IHN0cmluZztcbiAgYXJndW1lbnRzPzogUmVjb3JkPHN0cmluZywgdW5rbm93bj47XG59XG5cbmV4cG9ydCBpbnRlcmZhY2UgTUNQVG9vbFJlc3VsdCB7XG4gIGNvbnRlbnQ6IEFycmF5PHtcbiAgICB0eXBlOiAndGV4dCcgfCAnaW1hZ2UnIHwgJ3Jlc291cmNlJztcbiAgICB0ZXh0Pzogc3RyaW5nO1xuICAgIGRhdGE/OiBzdHJpbmc7XG4gICAgbWltZVR5cGU/OiBzdHJpbmc7XG4gIH0+O1xuICBpc0Vycm9yPzogYm9vbGVhbjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBNQ1BMb2dFbnRyeSB7XG4gIGxldmVsOiAnZGVidWcnIHwgJ2luZm8nIHwgJ3dhcm4nIHwgJ2Vycm9yJztcbiAgZGF0YT86IHVua25vd247XG4gIGxvZ2dlcj86IHN0cmluZztcbn1cblxuZXhwb3J0IGludGVyZmFjZSBNQ1BTZXNzaW9uIHtcbiAgaWQ6IHN0cmluZztcbiAgY2xpZW50SW5mbzoge1xuICAgIG5hbWU6IHN0cmluZztcbiAgICB2ZXJzaW9uOiBzdHJpbmc7XG4gIH07XG4gIHByb3RvY29sVmVyc2lvbjogTUNQUHJvdG9jb2xWZXJzaW9uO1xuICBjYXBhYmlsaXRpZXM6IE1DUENhcGFiaWxpdGllcztcbiAgaXNJbml0aWFsaXplZDogYm9vbGVhbjtcbiAgY3JlYXRlZEF0OiBEYXRlO1xuICBsYXN0QWN0aXZpdHk6IERhdGU7XG4gIHRyYW5zcG9ydDogJ3N0ZGlvJyB8ICdodHRwJyB8ICd3ZWJzb2NrZXQnO1xuICBhdXRoZW50aWNhdGVkOiBib29sZWFuO1xuICBhdXRoRGF0YT86IHtcbiAgICB0b2tlbj86IHN0cmluZztcbiAgICB1c2VyPzogc3RyaW5nO1xuICAgIHBlcm1pc3Npb25zPzogc3RyaW5nW107XG4gIH07XG59XG5cbmV4cG9ydCBpbnRlcmZhY2UgTUNQQXV0aENvbmZpZyB7XG4gIGVuYWJsZWQ6IGJvb2xlYW47XG4gIG1ldGhvZDogJ3Rva2VuJyB8ICdiYXNpYycgfCAnb2F1dGgnO1xuICB0b2tlbnM/OiBzdHJpbmdbXTtcbiAgdXNlcnM/OiBBcnJheTx7XG4gICAgdXNlcm5hbWU6IHN0cmluZztcbiAgICBwYXNzd29yZDogc3RyaW5nO1xuICAgIHBlcm1pc3Npb25zOiBzdHJpbmdbXTtcbiAgICByb2xlcz86IHN0cmluZ1tdO1xuICB9PjtcbiAgand0U2VjcmV0Pzogc3RyaW5nO1xuICBzZXNzaW9uVGltZW91dD86IG51bWJlcjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBNQ1BMb2FkQmFsYW5jZXJDb25maWcge1xuICBlbmFibGVkOiBib29sZWFuO1xuICBzdHJhdGVneTogJ3JvdW5kLXJvYmluJyB8ICdsZWFzdC1jb25uZWN0aW9ucycgfCAnd2VpZ2h0ZWQnO1xuICBtYXhSZXF1ZXN0c1BlclNlY29uZDogbnVtYmVyO1xuICBoZWFsdGhDaGVja0ludGVydmFsOiBudW1iZXI7XG4gIGNpcmN1aXRCcmVha2VyVGhyZXNob2xkOiBudW1iZXI7XG59XG5cbmV4cG9ydCBpbnRlcmZhY2UgTUNQTWV0cmljcyB7XG4gIHRvdGFsUmVxdWVzdHM6IG51bWJlcjtcbiAgc3VjY2Vzc2Z1bFJlcXVlc3RzOiBudW1iZXI7XG4gIGZhaWxlZFJlcXVlc3RzOiBudW1iZXI7XG4gIGF2ZXJhZ2VSZXNwb25zZVRpbWU6IG51bWJlcjtcbiAgYWN0aXZlU2Vzc2lvbnM6IG51bWJlcjtcbiAgdG9vbEludm9jYXRpb25zOiBSZWNvcmQ8c3RyaW5nLCBudW1iZXI+O1xuICBlcnJvcnM6IFJlY29yZDxzdHJpbmcsIG51bWJlcj47XG4gIGxhc3RSZXNldDogRGF0ZTtcbn1cblxuLy8gSW50ZXJmYWNlIGRlY2xhcmF0aW9ucyBmb3IgZGVwZW5kZW5jeSBpbmplY3Rpb25cbmV4cG9ydCBpbnRlcmZhY2UgSUxvZ2dlciB7XG4gIGRlYnVnKG1lc3NhZ2U6IHN0cmluZywgbWV0YT86IHVua25vd24pOiB2b2lkO1xuICBpbmZvKG1lc3NhZ2U6IHN0cmluZywgbWV0YT86IHVua25vd24pOiB2b2lkO1xuICB3YXJuKG1lc3NhZ2U6IHN0cmluZywgbWV0YT86IHVua25vd24pOiB2b2lkO1xuICBlcnJvcihtZXNzYWdlOiBzdHJpbmcsIGVycm9yPzogdW5rbm93bik6IHZvaWQ7XG4gIGNvbmZpZ3VyZShjb25maWc6IExvZ2dpbmdDb25maWcpOiBQcm9taXNlPHZvaWQ+O1xufVxuXG5leHBvcnQgaW50ZXJmYWNlIElFdmVudEJ1cyB7XG4gIGVtaXQoZXZlbnQ6IHN0cmluZywgZGF0YT86IHVua25vd24pOiB2b2lkO1xuICBvbihldmVudDogc3RyaW5nLCBoYW5kbGVyOiAoZGF0YTogdW5rbm93bikgPT4gdm9pZCk6IHZvaWQ7XG4gIG9mZihldmVudDogc3RyaW5nLCBoYW5kbGVyOiAoZGF0YTogdW5rbm93bikgPT4gdm9pZCk6IHZvaWQ7XG4gIG9uY2UoZXZlbnQ6IHN0cmluZywgaGFuZGxlcjogKGRhdGE6IHVua25vd24pID0+IHZvaWQpOiB2b2lkO1xufVxuXG4vLyBUZXJtaW5hbCB0eXBlc1xuZXhwb3J0IGludGVyZmFjZSBUZXJtaW5hbCB7XG4gIGlkOiBzdHJpbmc7XG4gIHBpZD86IG51bWJlcjtcbiAgdHlwZTogJ3ZzY29kZScgfCAnbmF0aXZlJztcbiAgc3RhdHVzOiAnYWN0aXZlJyB8ICdpZGxlJyB8ICdkZWFkJztcbn1cblxuZXhwb3J0IGludGVyZmFjZSBUZXJtaW5hbENvbW1hbmQge1xuICBjb21tYW5kOiBzdHJpbmc7XG4gIGFyZ3M/OiBzdHJpbmdbXTtcbiAgZW52PzogUmVjb3JkPHN0cmluZywgc3RyaW5nPjtcbiAgY3dkPzogc3RyaW5nO1xuICB0aW1lb3V0PzogbnVtYmVyO1xufVxuXG5leHBvcnQgaW50ZXJmYWNlIE1DUENvbnRleHQge1xuICBzZXNzaW9uSWQ6IHN0cmluZztcbiAgYWdlbnRJZD86IHN0cmluZztcbiAgbG9nZ2VyOiBJTG9nZ2VyO1xufVxuXG4vLyBBZGRpdGlvbmFsIGNvbmZpZ3VyYXRpb24gaW50ZXJmYWNlc1xuZXhwb3J0IGludGVyZmFjZSBDcmVkZW50aWFsc0NvbmZpZyB7XG4gIGFwaUtleT86IHN0cmluZztcbiAgdG9rZW4/OiBzdHJpbmc7XG4gIHBhc3N3b3JkPzogc3RyaW5nO1xuICBzZWNyZXQ/OiBzdHJpbmc7XG4gIFtrZXk6IHN0cmluZ106IHN0cmluZyB8IHVuZGVmaW5lZDtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBTZWN1cml0eUNvbmZpZyB7XG4gIGVuY3J5cHRpb25FbmFibGVkOiBib29sZWFuO1xuICBhdWRpdExvZ2dpbmc6IGJvb2xlYW47XG4gIG1hc2tTZW5zaXRpdmVWYWx1ZXM6IGJvb2xlYW47XG4gIGFsbG93RW52aXJvbm1lbnRPdmVycmlkZXM6IGJvb2xlYW47XG59XG4iXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7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

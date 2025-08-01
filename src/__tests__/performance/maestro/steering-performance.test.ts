@@ -3,8 +3,8 @@
  * Tests performance benchmarks and scalability for steering document generation
  */
 
-import { MaestroOrchestrator } from '../../../maestro/maestro-orchestrator.js';
-import { readFile, writeFile, mkdir, access, unlink, rmdir } from 'fs/promises';
+import { MaestroOrchestrator } from '../../../maestro/maestro-orchestrator';
+import { readFile, writeFile, mkdir, access, unlink, rm } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
 import { tmpdir } from 'os';
@@ -28,7 +28,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
   afterAll(async () => {
     try {
       if (existsSync(testDirectory)) {
-        await rmdir(testDirectory, { recursive: true });
+        await rm(testDirectory, { recursive: true });
       }
     } catch (error) {
       console.warn(`Warning: Failed to cleanup test directory: ${error}`);

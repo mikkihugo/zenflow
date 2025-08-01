@@ -1,0 +1,47 @@
+63959c204707c16f9b270799d23b5fa5
+/* istanbul ignore next */
+function cov_301oaa3a1() {
+  var path = "/home/mhugo/code/claude-code-flow/src/cli/commands/status/index.ts";
+  var hash = "84794d6353d727359c8a154a8df181ab2cb73b4c";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/mhugo/code/claude-code-flow/src/cli/commands/status/index.ts",
+    statementMap: {},
+    fnMap: {},
+    branchMap: {},
+    s: {},
+    f: {},
+    b: {},
+    inputSourceMap: {
+      file: "/home/mhugo/code/claude-code-flow/src/cli/commands/status/index.ts",
+      mappings: "AAAA;;;;GAIG;AAEH,OAAO,EAAE,aAAa,EAAE,MAAM,qBAAqB,CAAC",
+      names: [],
+      sources: ["/home/mhugo/code/claude-code-flow/src/cli/commands/status/index.ts"],
+      sourcesContent: ["/**\n * Status Command Module\n * \n * Exports the status command implementation\n */\n\nexport { StatusCommand } from './status-command.js';"],
+      version: 3
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "84794d6353d727359c8a154a8df181ab2cb73b4c"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_301oaa3a1 = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_301oaa3a1();
+/**
+ * Status Command Module
+ *
+ * Exports the status command implementation
+ */
+export { StatusCommand } from './status-command.js';
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJTdGF0dXNDb21tYW5kIl0sInNvdXJjZXMiOlsiL2hvbWUvbWh1Z28vY29kZS9jbGF1ZGUtY29kZS1mbG93L3NyYy9jbGkvY29tbWFuZHMvc3RhdHVzL2luZGV4LnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogU3RhdHVzIENvbW1hbmQgTW9kdWxlXG4gKiBcbiAqIEV4cG9ydHMgdGhlIHN0YXR1cyBjb21tYW5kIGltcGxlbWVudGF0aW9uXG4gKi9cblxuZXhwb3J0IHsgU3RhdHVzQ29tbWFuZCB9IGZyb20gJy4vc3RhdHVzLWNvbW1hbmQuanMnOyJdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBQUE7Ozs7O0FBTUEsU0FBU0EsYUFBYSxRQUFRLHFCQUFxQiIsImlnbm9yZUxpc3QiOltdfQ==

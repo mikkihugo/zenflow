@@ -5,7 +5,7 @@
 
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { readFile, writeFile, mkdir, access, unlink, rmdir } from 'fs/promises';
+import { readFile, writeFile, mkdir, access, unlink, rm } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
 import { tmpdir } from 'os';
@@ -37,7 +37,7 @@ describe('Maestro Steering CLI End-to-End', () => {
     // Cleanup test directory
     try {
       if (existsSync(testDirectory)) {
-        await rmdir(testDirectory, { recursive: true });
+        await rm(testDirectory, { recursive: true });
       }
     } catch (error) {
       console.warn(`Warning: Failed to cleanup test directory: ${error}`);
@@ -193,7 +193,7 @@ describe('Maestro Steering CLI End-to-End', () => {
         await simulateCreateSpecCommand('test-feature', 'test request');
         
         process.chdir(originalDir);
-        await rmdir(tempDir, { recursive: true });
+        await rm(tempDir, { recursive: true });
         
       } catch (error) {
         expect(error.message).toContain('directory') || expect(error.message).toContain('structure');

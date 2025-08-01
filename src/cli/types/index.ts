@@ -17,7 +17,7 @@ export type {
   CommandExecutionStats,
   CommandValidationResult,
   CommandRegistry,
-} from './command.js';
+} from './command';
 
 // Configuration-related types
 export type {
@@ -35,7 +35,7 @@ export type {
   ConfigValidationResult,
   ConfigValidationError,
   ConfigValidationWarning,
-} from './config.js';
+} from './config';
 
 // UI-related types
 export type {
@@ -73,7 +73,7 @@ export type {
   UIBlurEvent,
   UIKeyboardEvent,
   UISubmitEvent,
-} from './ui.js';
+} from './ui';
 
 /**
  * Common utility types used across the CLI system

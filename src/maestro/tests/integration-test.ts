@@ -5,11 +5,11 @@
  * AgentManager task-planner template, and AgentRegistry systems.
  */
 
-import { HiveMindPlannerService } from '../services/HiveMindPlannerService.js';
-import { AgentManager } from '../../agents/agent-manager.js';
-import { AgentRegistry } from '../../agents/agent-registry.js';
-import { HiveMind } from '../../hive-mind/core/HiveMind.js';
-import { DistributedMemorySystem } from '../../memory/distributed-memory.js';
+import { HiveMindPlannerService } from '../services/HiveMindPlannerService';
+import { AgentManager } from '../../agents/agent-manager';
+import { AgentRegistry } from '../../agents/agent-registry';
+import { HiveMind } from '../../hive-mind/core/HiveMind';
+import { DistributedMemorySystem } from '../../memory/distributed-memory';
 
 interface TestLogger {
   info(message: string): void;

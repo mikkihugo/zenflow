@@ -28,7 +28,7 @@ class UpstreamSyncChecker {
       return execSync(command, {
         encoding: 'utf8',
         stdio: options.silent ? 'pipe' : 'inherit',
-        ...options
+        ...options,
       });
     } catch(error) {
       throw error;
@@ -37,7 +37,7 @@ class UpstreamSyncChecker {
 
   async checkUpstreamStatus() {
     console.log('\n🔍 Checking upstream sync status...\n');
-    
+
     try {
       // Check if upstream remote exists
       const remotes = this.execCommand('git remote -v', { silent: true });
@@ -53,11 +53,11 @@ class UpstreamSyncChecker {
 
       // Compare versions
       console.log(`📦 Our version: ${this.ourVersion}`);
-      
+
       // Get commit information
       const ourCommit = this.execCommand('git rev-parse HEAD', { silent: true }).trim();
       const upstreamCommit = this.execCommand(`git rev-parse ${this.upstreamRemote}/main`, { silent: true }).trim();
-      
+
       console.log(`🔄 Our commit: ${ourCommit.substring(0, 8)}`);
       console.log(`🔄 Upstream commit: ${upstreamCommit.substring(0, 8)}`);
 
@@ -68,19 +68,19 @@ class UpstreamSyncChecker {
         // Check how many commits behind
         try {
           const behindCount = this.execCommand(
-            `git rev-list --count ${ourCommit}..${upstreamCommit}`, 
-            { silent: true }
+            `git rev-list --count ${ourCommit}..${upstreamCommit}`,
+            { silent: true },
           ).trim();
-          
+
           if (parseInt(behindCount) > 0) {
             console.log(`📊 ${behindCount} commits behind upstream`);
             console.log('📝 Recent upstream changes:');
-            
+
             const recentCommits = this.execCommand(
               `git log --oneline -5 ${this.upstreamRemote}/main`,
-              { silent: true }
+              { silent: true },
             ).trim();
-            
+
             recentCommits.split('\n').forEach(commit => {
               console.log(`   ${commit}`);
             });
@@ -88,7 +88,7 @@ class UpstreamSyncChecker {
         } catch (error) {
           console.log('⚠️ Could not determine sync status');
         }
-        
+
         return false;
       }
     } catch (error) {
@@ -100,14 +100,14 @@ class UpstreamSyncChecker {
   async generateSyncReport() {
     console.log('\n📋 Sync Report Generation');
     console.log('========================');
-    
+
     const isSync = await this.checkUpstreamStatus();
-    
+
     const report = {
       timestamp: new Date().toISOString(),
       ourVersion: this.ourVersion,
       synchronized: isSync,
-      upstreamUrl: this.upstreamUrl
+      upstreamUrl: this.upstreamUrl,
     };
 
     try {

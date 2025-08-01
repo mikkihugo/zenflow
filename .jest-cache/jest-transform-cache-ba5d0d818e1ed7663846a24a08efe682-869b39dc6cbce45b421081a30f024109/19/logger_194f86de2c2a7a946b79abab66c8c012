@@ -1,0 +1,403 @@
+b1238901e9fb3ef495e2d7f8cbc10e02
+/* istanbul ignore next */
+function cov_gvawa96nu() {
+  var path = "/home/mhugo/code/claude-code-flow/src/utils/logger.ts";
+  var hash = "ae8d781127916ac536385cf90cbd08033794b76f";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/mhugo/code/claude-code-flow/src/utils/logger.ts",
+    statementMap: {
+      "0": {
+        start: {
+          line: 10,
+          column: 8
+        },
+        end: {
+          line: 10,
+          column: 50
+        }
+      },
+      "1": {
+        start: {
+          line: 13,
+          column: 8
+        },
+        end: {
+          line: 13,
+          column: 44
+        }
+      },
+      "2": {
+        start: {
+          line: 16,
+          column: 8
+        },
+        end: {
+          line: 16,
+          column: 44
+        }
+      },
+      "3": {
+        start: {
+          line: 19,
+          column: 8
+        },
+        end: {
+          line: 19,
+          column: 58
+        }
+      },
+      "4": {
+        start: {
+          line: 22,
+          column: 8
+        },
+        end: {
+          line: 22,
+          column: 45
+        }
+      },
+      "5": {
+        start: {
+          line: 25,
+          column: 8
+        },
+        end: {
+          line: 25,
+          column: 47
+        }
+      },
+      "6": {
+        start: {
+          line: 28,
+          column: 8
+        },
+        end: {
+          line: 28,
+          column: 48
+        }
+      },
+      "7": {
+        start: {
+          line: 32,
+          column: 22
+        },
+        end: {
+          line: 32,
+          column: 34
+        }
+      }
+    },
+    fnMap: {
+      "0": {
+        name: "(anonymous_0)",
+        decl: {
+          start: {
+            line: 9,
+            column: 4
+          },
+          end: {
+            line: 9,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 9,
+            column: 27
+          },
+          end: {
+            line: 11,
+            column: 5
+          }
+        },
+        line: 9
+      },
+      "1": {
+        name: "(anonymous_1)",
+        decl: {
+          start: {
+            line: 12,
+            column: 4
+          },
+          end: {
+            line: 12,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 12,
+            column: 24
+          },
+          end: {
+            line: 14,
+            column: 5
+          }
+        },
+        line: 12
+      },
+      "2": {
+        name: "(anonymous_2)",
+        decl: {
+          start: {
+            line: 15,
+            column: 4
+          },
+          end: {
+            line: 15,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 15,
+            column: 24
+          },
+          end: {
+            line: 17,
+            column: 5
+          }
+        },
+        line: 15
+      },
+      "3": {
+        name: "(anonymous_3)",
+        decl: {
+          start: {
+            line: 18,
+            column: 4
+          },
+          end: {
+            line: 18,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 18,
+            column: 26
+          },
+          end: {
+            line: 20,
+            column: 5
+          }
+        },
+        line: 18
+      },
+      "4": {
+        name: "(anonymous_4)",
+        decl: {
+          start: {
+            line: 21,
+            column: 4
+          },
+          end: {
+            line: 21,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 21,
+            column: 25
+          },
+          end: {
+            line: 23,
+            column: 5
+          }
+        },
+        line: 21
+      },
+      "5": {
+        name: "(anonymous_5)",
+        decl: {
+          start: {
+            line: 24,
+            column: 4
+          },
+          end: {
+            line: 24,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 24,
+            column: 27
+          },
+          end: {
+            line: 26,
+            column: 5
+          }
+        },
+        line: 24
+      },
+      "6": {
+        name: "(anonymous_6)",
+        decl: {
+          start: {
+            line: 27,
+            column: 4
+          },
+          end: {
+            line: 27,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 27,
+            column: 28
+          },
+          end: {
+            line: 29,
+            column: 5
+          }
+        },
+        line: 27
+      }
+    },
+    branchMap: {
+      "0": {
+        loc: {
+          start: {
+            line: 19,
+            column: 43
+          },
+          end: {
+            line: 19,
+            column: 56
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 19,
+            column: 43
+          },
+          end: {
+            line: 19,
+            column: 48
+          }
+        }, {
+          start: {
+            line: 19,
+            column: 52
+          },
+          end: {
+            line: 19,
+            column: 56
+          }
+        }],
+        line: 19
+      }
+    },
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0
+    },
+    f: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0
+    },
+    b: {
+      "0": [0, 0]
+    },
+    inputSourceMap: {
+      file: "/home/mhugo/code/claude-code-flow/src/utils/logger.ts",
+      mappings: "AAAA;;;;GAIG;AAEH,OAAO,EAAE,YAAY,EAA+B,MAAM,kBAAkB,CAAC;AAE7E,MAAM,OAAO,MAAM;IACT,UAAU,CAAkC;IAEpD,YAAY,SAAkB;QAC5B,IAAI,CAAC,UAAU,GAAG,YAAY,CAAC,SAAS,CAAC,CAAC;IAC5C,CAAC;IAED,IAAI,CAAC,OAAe,EAAE,IAAc;QAClC,IAAI,CAAC,UAAU,CAAC,IAAI,CAAC,OAAO,EAAE,IAAI,CAAC,CAAC;IACtC,CAAC;IAED,IAAI,CAAC,OAAe,EAAE,IAAc;QAClC,IAAI,CAAC,UAAU,CAAC,IAAI,CAAC,OAAO,EAAE,IAAI,CAAC,CAAC;IACtC,CAAC;IAED,KAAK,CAAC,OAAe,EAAE,KAAuB;QAC5C,IAAI,CAAC,UAAU,CAAC,KAAK,CAAC,OAAO,EAAE,EAAE,EAAE,KAAK,IAAI,IAAI,CAAC,CAAC;IACpD,CAAC;IAED,KAAK,CAAC,OAAe,EAAE,IAAc;QACnC,IAAI,CAAC,UAAU,CAAC,KAAK,CAAC,OAAO,EAAE,IAAI,CAAC,CAAC;IACvC,CAAC;IAED,OAAO,CAAC,OAAe,EAAE,IAAc;QACrC,IAAI,CAAC,UAAU,CAAC,OAAO,CAAC,OAAO,EAAE,IAAI,CAAC,CAAC;IACzC,CAAC;IAED,QAAQ,CAAC,OAAe,EAAE,IAAc;QACtC,IAAI,CAAC,UAAU,CAAC,QAAQ,CAAC,OAAO,EAAE,IAAI,CAAC,CAAC;IAC1C,CAAC;CACF;AAED,mCAAmC;AACnC,MAAM,CAAC,MAAM,MAAM,GAAG,IAAI,MAAM,EAAE,CAAC",
+      names: [],
+      sources: ["/home/mhugo/code/claude-code-flow/src/utils/logger.ts"],
+      sourcesContent: ["/**\n * @fileoverview Logger utility for Neural and Queen components\n * Simple wrapper around the core logger for component-specific logging\n * @module Logger\n */\n\nimport { createLogger, type LogLevel, type LogMeta } from './core-logger.js';\n\nexport class Logger {\n  private coreLogger: ReturnType<typeof createLogger>;\n\n  constructor(component?: string) {\n    this.coreLogger = createLogger(component);\n  }\n\n  info(message: string, meta?: LogMeta): void {\n    this.coreLogger.info(message, meta);\n  }\n\n  warn(message: string, meta?: LogMeta): void {\n    this.coreLogger.warn(message, meta);\n  }\n\n  error(message: string, error?: Error | unknown): void {\n    this.coreLogger.error(message, {}, error ?? null);\n  }\n\n  debug(message: string, meta?: LogMeta): void {\n    this.coreLogger.debug(message, meta);\n  }\n\n  success(message: string, meta?: LogMeta): void {\n    this.coreLogger.success(message, meta);\n  }\n\n  progress(message: string, meta?: LogMeta): void {\n    this.coreLogger.progress(message, meta);\n  }\n}\n\n// Export a default logger instance\nexport const logger = new Logger();\n\n// Export types for convenience\nexport type { LogLevel, LogMeta };"],
+      version: 3
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "ae8d781127916ac536385cf90cbd08033794b76f"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_gvawa96nu = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_gvawa96nu();
+/**
+ * @fileoverview Logger utility for Neural and Queen components
+ * Simple wrapper around the core logger for component-specific logging
+ * @module Logger
+ */
+import { createLogger } from './core-logger.js';
+export class Logger {
+  coreLogger;
+  constructor(component) {
+    /* istanbul ignore next */
+    cov_gvawa96nu().f[0]++;
+    cov_gvawa96nu().s[0]++;
+    this.coreLogger = createLogger(component);
+  }
+  info(message, meta) {
+    /* istanbul ignore next */
+    cov_gvawa96nu().f[1]++;
+    cov_gvawa96nu().s[1]++;
+    this.coreLogger.info(message, meta);
+  }
+  warn(message, meta) {
+    /* istanbul ignore next */
+    cov_gvawa96nu().f[2]++;
+    cov_gvawa96nu().s[2]++;
+    this.coreLogger.warn(message, meta);
+  }
+  error(message, error) {
+    /* istanbul ignore next */
+    cov_gvawa96nu().f[3]++;
+    cov_gvawa96nu().s[3]++;
+    this.coreLogger.error(message, {},
+    /* istanbul ignore next */
+    (cov_gvawa96nu().b[0][0]++, error) ??
+    /* istanbul ignore next */
+    (cov_gvawa96nu().b[0][1]++, null));
+  }
+  debug(message, meta) {
+    /* istanbul ignore next */
+    cov_gvawa96nu().f[4]++;
+    cov_gvawa96nu().s[4]++;
+    this.coreLogger.debug(message, meta);
+  }
+  success(message, meta) {
+    /* istanbul ignore next */
+    cov_gvawa96nu().f[5]++;
+    cov_gvawa96nu().s[5]++;
+    this.coreLogger.success(message, meta);
+  }
+  progress(message, meta) {
+    /* istanbul ignore next */
+    cov_gvawa96nu().f[6]++;
+    cov_gvawa96nu().s[6]++;
+    this.coreLogger.progress(message, meta);
+  }
+}
+// Export a default logger instance
+export const logger =
+/* istanbul ignore next */
+(cov_gvawa96nu().s[7]++, new Logger());
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJjb3ZfZ3Zhd2E5Nm51IiwiYWN0dWFsQ292ZXJhZ2UiLCJjcmVhdGVMb2dnZXIiLCJMb2dnZXIiLCJjb3JlTG9nZ2VyIiwiY29uc3RydWN0b3IiLCJjb21wb25lbnQiLCJmIiwicyIsImluZm8iLCJtZXNzYWdlIiwibWV0YSIsIndhcm4iLCJlcnJvciIsImIiLCJkZWJ1ZyIsInN1Y2Nlc3MiLCJwcm9ncmVzcyIsImxvZ2dlciJdLCJzb3VyY2VzIjpbIi9ob21lL21odWdvL2NvZGUvY2xhdWRlLWNvZGUtZmxvdy9zcmMvdXRpbHMvbG9nZ2VyLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogQGZpbGVvdmVydmlldyBMb2dnZXIgdXRpbGl0eSBmb3IgTmV1cmFsIGFuZCBRdWVlbiBjb21wb25lbnRzXG4gKiBTaW1wbGUgd3JhcHBlciBhcm91bmQgdGhlIGNvcmUgbG9nZ2VyIGZvciBjb21wb25lbnQtc3BlY2lmaWMgbG9nZ2luZ1xuICogQG1vZHVsZSBMb2dnZXJcbiAqL1xuXG5pbXBvcnQgeyBjcmVhdGVMb2dnZXIsIHR5cGUgTG9nTGV2ZWwsIHR5cGUgTG9nTWV0YSB9IGZyb20gJy4vY29yZS1sb2dnZXIuanMnO1xuXG5leHBvcnQgY2xhc3MgTG9nZ2VyIHtcbiAgcHJpdmF0ZSBjb3JlTG9nZ2VyOiBSZXR1cm5UeXBlPHR5cGVvZiBjcmVhdGVMb2dnZXI+O1xuXG4gIGNvbnN0cnVjdG9yKGNvbXBvbmVudD86IHN0cmluZykge1xuICAgIHRoaXMuY29yZUxvZ2dlciA9IGNyZWF0ZUxvZ2dlcihjb21wb25lbnQpO1xuICB9XG5cbiAgaW5mbyhtZXNzYWdlOiBzdHJpbmcsIG1ldGE/OiBMb2dNZXRhKTogdm9pZCB7XG4gICAgdGhpcy5jb3JlTG9nZ2VyLmluZm8obWVzc2FnZSwgbWV0YSk7XG4gIH1cblxuICB3YXJuKG1lc3NhZ2U6IHN0cmluZywgbWV0YT86IExvZ01ldGEpOiB2b2lkIHtcbiAgICB0aGlzLmNvcmVMb2dnZXIud2FybihtZXNzYWdlLCBtZXRhKTtcbiAgfVxuXG4gIGVycm9yKG1lc3NhZ2U6IHN0cmluZywgZXJyb3I/OiBFcnJvciB8IHVua25vd24pOiB2b2lkIHtcbiAgICB0aGlzLmNvcmVMb2dnZXIuZXJyb3IobWVzc2FnZSwge30sIGVycm9yID8/IG51bGwpO1xuICB9XG5cbiAgZGVidWcobWVzc2FnZTogc3RyaW5nLCBtZXRhPzogTG9nTWV0YSk6IHZvaWQge1xuICAgIHRoaXMuY29yZUxvZ2dlci5kZWJ1ZyhtZXNzYWdlLCBtZXRhKTtcbiAgfVxuXG4gIHN1Y2Nlc3MobWVzc2FnZTogc3RyaW5nLCBtZXRhPzogTG9nTWV0YSk6IHZvaWQge1xuICAgIHRoaXMuY29yZUxvZ2dlci5zdWNjZXNzKG1lc3NhZ2UsIG1ldGEpO1xuICB9XG5cbiAgcHJvZ3Jlc3MobWVzc2FnZTogc3RyaW5nLCBtZXRhPzogTG9nTWV0YSk6IHZvaWQge1xuICAgIHRoaXMuY29yZUxvZ2dlci5wcm9ncmVzcyhtZXNzYWdlLCBtZXRhKTtcbiAgfVxufVxuXG4vLyBFeHBvcnQgYSBkZWZhdWx0IGxvZ2dlciBpbnN0YW5jZVxuZXhwb3J0IGNvbnN0IGxvZ2dlciA9IG5ldyBMb2dnZXIoKTtcblxuLy8gRXhwb3J0IHR5cGVzIGZvciBjb252ZW5pZW5jZVxuZXhwb3J0IHR5cGUgeyBMb2dMZXZlbCwgTG9nTWV0YSB9OyJdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztJQW9CUTtJQUFBQSxhQUFBLFlBQUFBLENBQUE7TUFBQSxPQUFBQyxjQUFBO0lBQUE7RUFBQTtFQUFBLE9BQUFBLGNBQUE7QUFBQTtBQUFBRCxhQUFBO0FBcEJSOzs7OztBQU1BLFNBQVNFLFlBQVksUUFBcUMsa0JBQWtCO0FBRTVFLE9BQU0sTUFBT0MsTUFBTTtFQUNUQyxVQUFVO0VBRWxCQyxZQUFZQyxTQUFrQjtJQUFBO0lBQUFOLGFBQUEsR0FBQU8sQ0FBQTtJQUFBUCxhQUFBLEdBQUFRLENBQUE7SUFDNUIsSUFBSSxDQUFDSixVQUFVLEdBQUdGLFlBQVksQ0FBQ0ksU0FBUyxDQUFDO0VBQzNDO0VBRUFHLElBQUlBLENBQUNDLE9BQWUsRUFBRUMsSUFBYztJQUFBO0lBQUFYLGFBQUEsR0FBQU8sQ0FBQTtJQUFBUCxhQUFBLEdBQUFRLENBQUE7SUFDbEMsSUFBSSxDQUFDSixVQUFVLENBQUNLLElBQUksQ0FBQ0MsT0FBTyxFQUFFQyxJQUFJLENBQUM7RUFDckM7RUFFQUMsSUFBSUEsQ0FBQ0YsT0FBZSxFQUFFQyxJQUFjO0lBQUE7SUFBQVgsYUFBQSxHQUFBTyxDQUFBO0lBQUFQLGFBQUEsR0FBQVEsQ0FBQTtJQUNsQyxJQUFJLENBQUNKLFVBQVUsQ0FBQ1EsSUFBSSxDQUFDRixPQUFPLEVBQUVDLElBQUksQ0FBQztFQUNyQztFQUVBRSxLQUFLQSxDQUFDSCxPQUFlLEVBQUVHLEtBQXVCO0lBQUE7SUFBQWIsYUFBQSxHQUFBTyxDQUFBO0lBQUFQLGFBQUEsR0FBQVEsQ0FBQTtJQUM1QyxJQUFJLENBQUNKLFVBQVUsQ0FBQ1MsS0FBSyxDQUFDSCxPQUFPLEVBQUUsRUFBRTtJQUFFO0lBQUEsQ0FBQVYsYUFBQSxHQUFBYyxDQUFBLFVBQUFELEtBQUs7SUFBQTtJQUFBLENBQUFiLGFBQUEsR0FBQWMsQ0FBQSxVQUFJLElBQUksRUFBQztFQUNuRDtFQUVBQyxLQUFLQSxDQUFDTCxPQUFlLEVBQUVDLElBQWM7SUFBQTtJQUFBWCxhQUFBLEdBQUFPLENBQUE7SUFBQVAsYUFBQSxHQUFBUSxDQUFBO0lBQ25DLElBQUksQ0FBQ0osVUFBVSxDQUFDVyxLQUFLLENBQUNMLE9BQU8sRUFBRUMsSUFBSSxDQUFDO0VBQ3RDO0VBRUFLLE9BQU9BLENBQUNOLE9BQWUsRUFBRUMsSUFBYztJQUFBO0lBQUFYLGFBQUEsR0FBQU8sQ0FBQTtJQUFBUCxhQUFBLEdBQUFRLENBQUE7SUFDckMsSUFBSSxDQUFDSixVQUFVLENBQUNZLE9BQU8sQ0FBQ04sT0FBTyxFQUFFQyxJQUFJLENBQUM7RUFDeEM7RUFFQU0sUUFBUUEsQ0FBQ1AsT0FBZSxFQUFFQyxJQUFjO0lBQUE7SUFBQVgsYUFBQSxHQUFBTyxDQUFBO0lBQUFQLGFBQUEsR0FBQVEsQ0FBQTtJQUN0QyxJQUFJLENBQUNKLFVBQVUsQ0FBQ2EsUUFBUSxDQUFDUCxPQUFPLEVBQUVDLElBQUksQ0FBQztFQUN6Qzs7QUFHRjtBQUNBLE9BQU8sTUFBTU8sTUFBTTtBQUFBO0FBQUEsQ0FBQWxCLGFBQUEsR0FBQVEsQ0FBQSxPQUFHLElBQUlMLE1BQU0sRUFBRSIsImlnbm9yZUxpc3QiOltdfQ==

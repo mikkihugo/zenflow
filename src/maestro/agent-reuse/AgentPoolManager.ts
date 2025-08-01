@@ -3,8 +3,8 @@
  * Implements Open/Closed principle for extensible pool strategies
  */
 
-import { ILogger } from '../../core/logger.js';
-import { AgentManager } from '../../agents/agent-manager.js';
+import { ILogger } from '../../core/logger';
+import { AgentManager } from '../../agents/agent-manager';
 import {
   AcquiredAgent,
   TaskContext,
@@ -14,8 +14,8 @@ import {
   OptimizationRecommendation,
   OptimizationResult,
   DEFAULT_POOL_MANAGER_CONFIG
-} from './types.js';
-import { AgentRegistry } from './AgentRegistry.js';
+} from './types';
+import { AgentRegistry } from './AgentRegistry';
 
 /**
  * Reuse strategy interface for different reuse approaches

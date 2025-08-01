@@ -7,13 +7,13 @@
 
 import { EventEmitter } from 'events';
 import { v4 as uuidv4 } from 'uuid';
-import { Queen } from './Queen.js';
-import { Agent } from './Agent.js';
-import { Memory } from './Memory.js';
-import { Communication } from './Communication.js';
-import { DatabaseManager } from './DatabaseManager.js';
-import { SwarmOrchestrator } from '../integration/SwarmOrchestrator.js';
-import { ConsensusEngine } from '../integration/ConsensusEngine.js';
+import { Queen } from './Queen';
+import { Agent } from './Agent';
+import { Memory } from './Memory';
+import { Communication } from './Communication';
+import { DatabaseManager } from './DatabaseManager';
+import { SwarmOrchestrator } from '../integration/SwarmOrchestrator';
+import { ConsensusEngine } from '../integration/ConsensusEngine';
 import {
   HiveMindConfig,
   SwarmTopology,
@@ -24,12 +24,12 @@ import {
   SwarmStatus,
   AgentSpawnOptions,
   TaskSubmitOptions,
-} from '../types.js';
+} from '../types';
 
 export class HiveMind extends EventEmitter {
   private id: string;
   private config: HiveMindConfig;
-  private queen: Queen;
+  private queens: Map<string, Queen>;
   private agents: Map<string, Agent>;
   private memory: Memory;
   private communication: Communication;
@@ -43,6 +43,7 @@ export class HiveMind extends EventEmitter {
     super();
     this.config = config;
     this.id = uuidv4();
+    this.queens = new Map();
     this.agents = new Map();
     this.startTime = Date.now();
   }
@@ -67,12 +68,18 @@ export class HiveMind extends EventEmitter {
         config: JSON.stringify(this.config),
       });
 
-      // Initialize Queen
-      this.queen = new Queen({
-        swarmId: this.id,
-        mode: this.config.queenMode,
-        topology: this.config.topology,
-      });
+      // Initialize Multiple Queens for different visionary aspects
+      const queenTypes = this.config.queenTypes || ['strategic', 'technical', 'creative', 'analytical'];
+      for (const queenType of queenTypes) {
+        const queen = new Queen({
+          swarmId: this.id,
+          mode: this.config.queenMode,
+          topology: this.config.topology,
+          type: queenType,
+          visionaryFocus: queenType // Each queen has a different visionary focus
+        });
+        this.queens.set(queenType, queen);
+      }
 
       // Initialize subsystems
       this.memory = new Memory(this.id);
@@ -80,13 +87,14 @@ export class HiveMind extends EventEmitter {
       this.orchestrator = new SwarmOrchestrator(this);
       this.consensus = new ConsensusEngine(this.config.consensusThreshold);
 
-      // Initialize subsystems
-      await Promise.all([
-        this.queen.initialize(),
+      // Initialize all queens and subsystems
+      const initPromises = [
+        ...Array.from(this.queens.values()).map(queen => queen.initialize()),
         this.memory.initialize(),
         this.communication.initialize(),
         this.orchestrator.initialize(),
-      ]);
+      ];
+      await Promise.all(initPromises);
 
       // Set as active swarm
       await this.db.setActiveSwarm(this.id);

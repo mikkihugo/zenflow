@@ -1,0 +1,835 @@
+c96e85e9a2f18dbc8194cb726df48cf5
+/* istanbul ignore next */
+function cov_nmq820egx() {
+  var path = "/home/mhugo/code/claude-code-flow/src/hooks/index.ts";
+  var hash = "b06778c60c5f085794a910700450685c9a6ac2fa";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/mhugo/code/claude-code-flow/src/hooks/index.ts",
+    statementMap: {
+      "0": {
+        start: {
+          line: 13,
+          column: 29
+        },
+        end: {
+          line: 42,
+          column: 1
+        }
+      },
+      "1": {
+        start: {
+          line: 44,
+          column: 35
+        },
+        end: {
+          line: 55,
+          column: 1
+        }
+      },
+      "2": {
+        start: {
+          line: 56,
+          column: 29
+        },
+        end: {
+          line: 68,
+          column: 1
+        }
+      },
+      "3": {
+        start: {
+          line: 69,
+          column: 27
+        },
+        end: {
+          line: 74,
+          column: 1
+        }
+      },
+      "4": {
+        start: {
+          line: 84,
+          column: 8
+        },
+        end: {
+          line: 84,
+          column: 142
+        }
+      },
+      "5": {
+        start: {
+          line: 85,
+          column: 8
+        },
+        end: {
+          line: 85,
+          column: 49
+        }
+      },
+      "6": {
+        start: {
+          line: 91,
+          column: 8
+        },
+        end: {
+          line: 91,
+          column: 141
+        }
+      },
+      "7": {
+        start: {
+          line: 92,
+          column: 8
+        },
+        end: {
+          line: 92,
+          column: 71
+        }
+      },
+      "8": {
+        start: {
+          line: 98,
+          column: 8
+        },
+        end: {
+          line: 98,
+          column: 135
+        }
+      },
+      "9": {
+        start: {
+          line: 99,
+          column: 8
+        },
+        end: {
+          line: 99,
+          column: 42
+        }
+      },
+      "10": {
+        start: {
+          line: 105,
+          column: 8
+        },
+        end: {
+          line: 105,
+          column: 136
+        }
+      },
+      "11": {
+        start: {
+          line: 106,
+          column: 8
+        },
+        end: {
+          line: 106,
+          column: 43
+        }
+      },
+      "12": {
+        start: {
+          line: 112,
+          column: 8
+        },
+        end: {
+          line: 112,
+          column: 141
+        }
+      },
+      "13": {
+        start: {
+          line: 113,
+          column: 8
+        },
+        end: {
+          line: 113,
+          column: 48
+        }
+      },
+      "14": {
+        start: {
+          line: 119,
+          column: 8
+        },
+        end: {
+          line: 119,
+          column: 144
+        }
+      },
+      "15": {
+        start: {
+          line: 120,
+          column: 8
+        },
+        end: {
+          line: 120,
+          column: 49
+        }
+      },
+      "16": {
+        start: {
+          line: 127,
+          column: 4
+        },
+        end: {
+          line: 127,
+          column: 117
+        }
+      },
+      "17": {
+        start: {
+          line: 128,
+          column: 4
+        },
+        end: {
+          line: 132,
+          column: 6
+        }
+      },
+      "18": {
+        start: {
+          line: 129,
+          column: 28
+        },
+        end: {
+          line: 129,
+          column: 85
+        }
+      },
+      "19": {
+        start: {
+          line: 130,
+          column: 21
+        },
+        end: {
+          line: 130,
+          column: 96
+        }
+      },
+      "20": {
+        start: {
+          line: 131,
+          column: 20
+        },
+        end: {
+          line: 131,
+          column: 83
+        }
+      },
+      "21": {
+        start: {
+          line: 138,
+          column: 4
+        },
+        end: {
+          line: 138,
+          column: 123
+        }
+      },
+      "22": {
+        start: {
+          line: 139,
+          column: 4
+        },
+        end: {
+          line: 139,
+          column: 118
+        }
+      },
+      "23": {
+        start: {
+          line: 140,
+          column: 4
+        },
+        end: {
+          line: 140,
+          column: 13
+        }
+      },
+      "24": {
+        start: {
+          line: 143,
+          column: 0
+        },
+        end: {
+          line: 166,
+          column: 3
+        }
+      }
+    },
+    fnMap: {
+      "0": {
+        name: "(anonymous_0)",
+        decl: {
+          start: {
+            line: 83,
+            column: 4
+          },
+          end: {
+            line: 83,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 83,
+            column: 47
+          },
+          end: {
+            line: 86,
+            column: 5
+          }
+        },
+        line: 83
+      },
+      "1": {
+        name: "(anonymous_1)",
+        decl: {
+          start: {
+            line: 90,
+            column: 4
+          },
+          end: {
+            line: 90,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 90,
+            column: 53
+          },
+          end: {
+            line: 93,
+            column: 5
+          }
+        },
+        line: 90
+      },
+      "2": {
+        name: "(anonymous_2)",
+        decl: {
+          start: {
+            line: 97,
+            column: 4
+          },
+          end: {
+            line: 97,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 97,
+            column: 38
+          },
+          end: {
+            line: 100,
+            column: 5
+          }
+        },
+        line: 97
+      },
+      "3": {
+        name: "(anonymous_3)",
+        decl: {
+          start: {
+            line: 104,
+            column: 4
+          },
+          end: {
+            line: 104,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 104,
+            column: 39
+          },
+          end: {
+            line: 107,
+            column: 5
+          }
+        },
+        line: 104
+      },
+      "4": {
+        name: "(anonymous_4)",
+        decl: {
+          start: {
+            line: 111,
+            column: 4
+          },
+          end: {
+            line: 111,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 111,
+            column: 44
+          },
+          end: {
+            line: 114,
+            column: 5
+          }
+        },
+        line: 111
+      },
+      "5": {
+        name: "(anonymous_5)",
+        decl: {
+          start: {
+            line: 118,
+            column: 4
+          },
+          end: {
+            line: 118,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 118,
+            column: 42
+          },
+          end: {
+            line: 121,
+            column: 5
+          }
+        },
+        line: 118
+      },
+      "6": {
+        name: "createHookEngine",
+        decl: {
+          start: {
+            line: 126,
+            column: 16
+          },
+          end: {
+            line: 126,
+            column: 32
+          }
+        },
+        loc: {
+          start: {
+            line: 126,
+            column: 41
+          },
+          end: {
+            line: 133,
+            column: 1
+          }
+        },
+        line: 126
+      },
+      "7": {
+        name: "(anonymous_7)",
+        decl: {
+          start: {
+            line: 129,
+            column: 22
+          },
+          end: {
+            line: 129,
+            column: 23
+          }
+        },
+        loc: {
+          start: {
+            line: 129,
+            column: 28
+          },
+          end: {
+            line: 129,
+            column: 85
+          }
+        },
+        line: 129
+      },
+      "8": {
+        name: "(anonymous_8)",
+        decl: {
+          start: {
+            line: 130,
+            column: 15
+          },
+          end: {
+            line: 130,
+            column: 16
+          }
+        },
+        loc: {
+          start: {
+            line: 130,
+            column: 21
+          },
+          end: {
+            line: 130,
+            column: 96
+          }
+        },
+        line: 130
+      },
+      "9": {
+        name: "(anonymous_9)",
+        decl: {
+          start: {
+            line: 131,
+            column: 14
+          },
+          end: {
+            line: 131,
+            column: 15
+          }
+        },
+        loc: {
+          start: {
+            line: 131,
+            column: 20
+          },
+          end: {
+            line: 131,
+            column: 83
+          }
+        },
+        line: 131
+      },
+      "10": {
+        name: "setupDefaultHooks",
+        decl: {
+          start: {
+            line: 137,
+            column: 22
+          },
+          end: {
+            line: 137,
+            column: 39
+          }
+        },
+        loc: {
+          start: {
+            line: 137,
+            column: 48
+          },
+          end: {
+            line: 141,
+            column: 1
+          }
+        },
+        line: 137
+      }
+    },
+    branchMap: {},
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 0,
+      "10": 0,
+      "11": 0,
+      "12": 0,
+      "13": 0,
+      "14": 0,
+      "15": 0,
+      "16": 0,
+      "17": 0,
+      "18": 0,
+      "19": 0,
+      "20": 0,
+      "21": 0,
+      "22": 0,
+      "23": 0,
+      "24": 0
+    },
+    f: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 0,
+      "10": 0
+    },
+    b: {},
+    inputSourceMap: {
+      file: "/home/mhugo/code/claude-code-flow/src/hooks/index.ts",
+      mappings: "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",
+      names: [],
+      sources: ["/home/mhugo/code/claude-code-flow/src/hooks/index.ts"],
+      sourcesContent: ["/**\n * Legacy Hook System - Migration Notice\n * \n * This hook system has been consolidated with the more advanced agentic-flow-hooks system.\n * All functionality is now available through the modern implementation at:\n * src/services/agentic-flow-hooks/\n * \n * This file provides backward compatibility redirects while we complete the migration.\n */\n\n// Re-export the modern agentic-flow-hooks system\nexport {\n  agenticHookManager,\n  initializeAgenticFlowHooks,\n} from '../services/agentic-flow-hooks/index.js';\n\n// Re-export modern types with compatibility aliases\nexport type {\n  AgenticHookContext as HookExecutionContext,\n  HookRegistration as AgentHook,\n  HookPayload as EventPayload,\n  AgenticHookType as HookTrigger,\n  HookHandlerResult as HookExecutionResult,\n} from '../services/agentic-flow-hooks/types.js';\n\n// Legacy hook templates for backward compatibility\nexport const QUALITY_HOOKS = {\n  CODE_QUALITY: {\n    name: 'Code Quality Monitor',\n    description: 'Automatically runs code quality checks on file changes',\n    type: 'workflow-step' as const,\n    priority: 8,\n    enabled: true\n  },\n  SECURITY_SCAN: {\n    name: 'Security Scanner', \n    description: 'Scans for security vulnerabilities and credential leaks',\n    type: 'workflow-step' as const,\n    priority: 9,\n    enabled: true\n  },\n  DOCUMENTATION_SYNC: {\n    name: 'Documentation Sync',\n    description: 'Automatically updates documentation when specifications change',\n    type: 'workflow-step' as const,\n    priority: 7,\n    enabled: true\n  },\n  PERFORMANCE_MONITOR: {\n    name: 'Performance Monitor',\n    description: 'Analyzes performance impact of code changes', \n    type: 'workflow-step' as const,\n    priority: 6,\n    enabled: true\n  }\n};\n\n// Legacy constants for backward compatibility\nexport const DEFAULT_HOOK_CONFIG = {\n  maxConcurrentHooks: 10,\n  defaultThrottleMs: 1000,\n  defaultDebounceMs: 500,\n  eventQueueSize: 1000,\n  agentPoolSize: 50,\n  enableMetrics: true,\n  enablePersistence: true,\n  logLevel: 'info' as const,\n  watchPatterns: ['**/*.md', '**/*.ts', '**/*.js', '**/*.json'],\n  ignorePatterns: ['node_modules/**', '.git/**', 'dist/**', 'build/**']\n};\n\nexport const HOOK_TRIGGERS = {\n  FILE_SAVE: 'workflow-step',\n  FILE_CHANGE: 'workflow-step',\n  FILE_CREATE: 'workflow-start',\n  FILE_DELETE: 'workflow-complete',\n  TASK_COMPLETE: 'workflow-complete',\n  TASK_FAIL: 'workflow-error',\n  SPEC_UPDATE: 'workflow-step',\n  CODE_CHANGE: 'workflow-step',\n  AGENT_SPAWN: 'workflow-start',\n  WORKFLOW_PHASE: 'workflow-step',\n  TIME_INTERVAL: 'performance-metric'\n} as const;\n\nexport const AGENT_TYPES = {\n  QUALITY_ASSURANCE: 'quality_assurance',\n  SECURITY_SCAN: 'security_scan', \n  DOCUMENTATION_SYNC: 'documentation_sync',\n  PERFORMANCE_ANALYSIS: 'performance_analysis'\n} as const;\n\n/**\n * Migration utility class\n * Provides backward compatibility while encouraging migration to agentic-flow-hooks\n */\nexport class HookUtils {\n  /**\n   * @deprecated Use agenticHookManager.register() instead\n   */\n  static createFilePatternCondition(pattern: string) {\n    console.warn('HookUtils.createFilePatternCondition is deprecated. Use agenticHookManager.register() with proper HookFilter instead.');\n    return { type: 'file_pattern', pattern };\n  }\n\n  /**\n   * @deprecated Use agenticHookManager.register() instead\n   */\n  static createSpawnAgentAction(agentType: string, config: Record<string, any>) {\n    console.warn('HookUtils.createSpawnAgentAction is deprecated. Use agenticHookManager.register() with proper hook handlers instead.');\n    return { type: 'spawn_agent', agentType, agentConfig: config };\n  }\n\n  /**\n   * @deprecated Use agenticHookManager.register() instead\n   */\n  static createQualityHook(options: any) {\n    console.warn('HookUtils.createQualityHook is deprecated. Use agenticHookManager.register() with workflow-step hooks instead.');\n    return QUALITY_HOOKS.CODE_QUALITY;\n  }\n\n  /**\n   * @deprecated Use agenticHookManager.register() instead  \n   */\n  static createSecurityHook(options: any) {\n    console.warn('HookUtils.createSecurityHook is deprecated. Use agenticHookManager.register() with workflow-step hooks instead.');\n    return QUALITY_HOOKS.SECURITY_SCAN;\n  }\n\n  /**\n   * @deprecated Use agenticHookManager.register() instead\n   */\n  static createDocumentationHook(options: any) {\n    console.warn('HookUtils.createDocumentationHook is deprecated. Use agenticHookManager.register() with workflow-step hooks instead.');\n    return QUALITY_HOOKS.DOCUMENTATION_SYNC;\n  }\n\n  /**\n   * @deprecated Use agenticHookManager.register() instead\n   */\n  static createPerformanceHook(options: any) {\n    console.warn('HookUtils.createPerformanceHook is deprecated. Use agenticHookManager.register() with performance-metric hooks instead.');\n    return QUALITY_HOOKS.PERFORMANCE_MONITOR;\n  }\n}\n\n/**\n * @deprecated Use initializeAgenticFlowHooks() instead\n */\nexport function createHookEngine(config?: any) {\n  console.warn('createHookEngine is deprecated. Use initializeAgenticFlowHooks() and agenticHookManager instead.');\n  return {\n    registerHook: () => console.warn('Use agenticHookManager.register() instead'),\n    start: () => console.warn('Hooks are automatically initialized with agenticHookManager'),\n    stop: () => console.warn('Use agenticHookManager shutdown methods instead')\n  };\n}\n\n/**\n * @deprecated Use agenticHookManager.register() for individual hooks instead\n */\nexport async function setupDefaultHooks(engine?: any) {\n  console.warn('setupDefaultHooks is deprecated. Use agenticHookManager.register() to register specific hooks instead.');\n  console.info('Consider migrating to agentic-flow-hooks for advanced pipeline management and neural integration.');\n  return 4; // Return count for backward compatibility\n}\n\n// Migration notice for users\nconsole.info(`\n\uD83D\uDD04 MIGRATION NOTICE: Hook System Consolidation\n\nThe legacy hook system in src/hooks/ has been consolidated with the advanced\nagentic-flow-hooks system for better performance and functionality.\n\n\u2705 New System Features:\n  - Advanced pipeline management\n  - Neural pattern learning  \n  - Performance optimization\n  - Memory coordination hooks\n  - LLM integration hooks\n\n\uD83D\uDCD6 Migration Guide:\n  - Replace AgentHookEngine with agenticHookManager\n  - Update hook registrations to use modern HookRegistration interface\n  - Leverage new hook types: LLM, memory, neural, performance, workflow\n  - See docs/maestro/specs/hooks-refactoring-plan.md for details\n\n\uD83D\uDE80 Get Started:\n  import { agenticHookManager, initializeAgenticFlowHooks } from '../services/agentic-flow-hooks/'\n  await initializeAgenticFlowHooks()\n  agenticHookManager.register({ ... })\n`);"],
+      version: 3
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "b06778c60c5f085794a910700450685c9a6ac2fa"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_nmq820egx = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_nmq820egx();
+/**
+ * Legacy Hook System - Migration Notice
+ *
+ * This hook system has been consolidated with the more advanced agentic-flow-hooks system.
+ * All functionality is now available through the modern implementation at:
+ * src/services/agentic-flow-hooks/
+ *
+ * This file provides backward compatibility redirects while we complete the migration.
+ */
+// Re-export the modern agentic-flow-hooks system
+export { agenticHookManager, initializeAgenticFlowHooks } from '../services/agentic-flow-hooks/index.js';
+// Legacy hook templates for backward compatibility
+export const QUALITY_HOOKS =
+/* istanbul ignore next */
+(cov_nmq820egx().s[0]++, {
+  CODE_QUALITY: {
+    name: 'Code Quality Monitor',
+    description: 'Automatically runs code quality checks on file changes',
+    type: 'workflow-step',
+    priority: 8,
+    enabled: true
+  },
+  SECURITY_SCAN: {
+    name: 'Security Scanner',
+    description: 'Scans for security vulnerabilities and credential leaks',
+    type: 'workflow-step',
+    priority: 9,
+    enabled: true
+  },
+  DOCUMENTATION_SYNC: {
+    name: 'Documentation Sync',
+    description: 'Automatically updates documentation when specifications change',
+    type: 'workflow-step',
+    priority: 7,
+    enabled: true
+  },
+  PERFORMANCE_MONITOR: {
+    name: 'Performance Monitor',
+    description: 'Analyzes performance impact of code changes',
+    type: 'workflow-step',
+    priority: 6,
+    enabled: true
+  }
+});
+// Legacy constants for backward compatibility
+export const DEFAULT_HOOK_CONFIG =
+/* istanbul ignore next */
+(cov_nmq820egx().s[1]++, {
+  maxConcurrentHooks: 10,
+  defaultThrottleMs: 1000,
+  defaultDebounceMs: 500,
+  eventQueueSize: 1000,
+  agentPoolSize: 50,
+  enableMetrics: true,
+  enablePersistence: true,
+  logLevel: 'info',
+  watchPatterns: ['**/*.md', '**/*.ts', '**/*.js', '**/*.json'],
+  ignorePatterns: ['node_modules/**', '.git/**', 'dist/**', 'build/**']
+});
+export const HOOK_TRIGGERS =
+/* istanbul ignore next */
+(cov_nmq820egx().s[2]++, {
+  FILE_SAVE: 'workflow-step',
+  FILE_CHANGE: 'workflow-step',
+  FILE_CREATE: 'workflow-start',
+  FILE_DELETE: 'workflow-complete',
+  TASK_COMPLETE: 'workflow-complete',
+  TASK_FAIL: 'workflow-error',
+  SPEC_UPDATE: 'workflow-step',
+  CODE_CHANGE: 'workflow-step',
+  AGENT_SPAWN: 'workflow-start',
+  WORKFLOW_PHASE: 'workflow-step',
+  TIME_INTERVAL: 'performance-metric'
+});
+export const AGENT_TYPES =
+/* istanbul ignore next */
+(cov_nmq820egx().s[3]++, {
+  QUALITY_ASSURANCE: 'quality_assurance',
+  SECURITY_SCAN: 'security_scan',
+  DOCUMENTATION_SYNC: 'documentation_sync',
+  PERFORMANCE_ANALYSIS: 'performance_analysis'
+});
+/**
+ * Migration utility class
+ * Provides backward compatibility while encouraging migration to agentic-flow-hooks
+ */
+export class HookUtils {
+  /**
+   * @deprecated Use agenticHookManager.register() instead
+   */
+  static createFilePatternCondition(pattern) {
+    /* istanbul ignore next */
+    cov_nmq820egx().f[0]++;
+    cov_nmq820egx().s[4]++;
+    console.warn('HookUtils.createFilePatternCondition is deprecated. Use agenticHookManager.register() with proper HookFilter instead.');
+    /* istanbul ignore next */
+    cov_nmq820egx().s[5]++;
+    return {
+      type: 'file_pattern',
+      pattern
+    };
+  }
+  /**
+   * @deprecated Use agenticHookManager.register() instead
+   */
+  static createSpawnAgentAction(agentType, config) {
+    /* istanbul ignore next */
+    cov_nmq820egx().f[1]++;
+    cov_nmq820egx().s[6]++;
+    console.warn('HookUtils.createSpawnAgentAction is deprecated. Use agenticHookManager.register() with proper hook handlers instead.');
+    /* istanbul ignore next */
+    cov_nmq820egx().s[7]++;
+    return {
+      type: 'spawn_agent',
+      agentType,
+      agentConfig: config
+    };
+  }
+  /**
+   * @deprecated Use agenticHookManager.register() instead
+   */
+  static createQualityHook(options) {
+    /* istanbul ignore next */
+    cov_nmq820egx().f[2]++;
+    cov_nmq820egx().s[8]++;
+    console.warn('HookUtils.createQualityHook is deprecated. Use agenticHookManager.register() with workflow-step hooks instead.');
+    /* istanbul ignore next */
+    cov_nmq820egx().s[9]++;
+    return QUALITY_HOOKS.CODE_QUALITY;
+  }
+  /**
+   * @deprecated Use agenticHookManager.register() instead
+   */
+  static createSecurityHook(options) {
+    /* istanbul ignore next */
+    cov_nmq820egx().f[3]++;
+    cov_nmq820egx().s[10]++;
+    console.warn('HookUtils.createSecurityHook is deprecated. Use agenticHookManager.register() with workflow-step hooks instead.');
+    /* istanbul ignore next */
+    cov_nmq820egx().s[11]++;
+    return QUALITY_HOOKS.SECURITY_SCAN;
+  }
+  /**
+   * @deprecated Use agenticHookManager.register() instead
+   */
+  static createDocumentationHook(options) {
+    /* istanbul ignore next */
+    cov_nmq820egx().f[4]++;
+    cov_nmq820egx().s[12]++;
+    console.warn('HookUtils.createDocumentationHook is deprecated. Use agenticHookManager.register() with workflow-step hooks instead.');
+    /* istanbul ignore next */
+    cov_nmq820egx().s[13]++;
+    return QUALITY_HOOKS.DOCUMENTATION_SYNC;
+  }
+  /**
+   * @deprecated Use agenticHookManager.register() instead
+   */
+  static createPerformanceHook(options) {
+    /* istanbul ignore next */
+    cov_nmq820egx().f[5]++;
+    cov_nmq820egx().s[14]++;
+    console.warn('HookUtils.createPerformanceHook is deprecated. Use agenticHookManager.register() with performance-metric hooks instead.');
+    /* istanbul ignore next */
+    cov_nmq820egx().s[15]++;
+    return QUALITY_HOOKS.PERFORMANCE_MONITOR;
+  }
+}
+/**
+ * @deprecated Use initializeAgenticFlowHooks() instead
+ */
+export function createHookEngine(config) {
+  /* istanbul ignore next */
+  cov_nmq820egx().f[6]++;
+  cov_nmq820egx().s[16]++;
+  console.warn('createHookEngine is deprecated. Use initializeAgenticFlowHooks() and agenticHookManager instead.');
+  /* istanbul ignore next */
+  cov_nmq820egx().s[17]++;
+  return {
+    registerHook: () => {
+      /* istanbul ignore next */
+      cov_nmq820egx().f[7]++;
+      cov_nmq820egx().s[18]++;
+      return console.warn('Use agenticHookManager.register() instead');
+    },
+    start: () => {
+      /* istanbul ignore next */
+      cov_nmq820egx().f[8]++;
+      cov_nmq820egx().s[19]++;
+      return console.warn('Hooks are automatically initialized with agenticHookManager');
+    },
+    stop: () => {
+      /* istanbul ignore next */
+      cov_nmq820egx().f[9]++;
+      cov_nmq820egx().s[20]++;
+      return console.warn('Use agenticHookManager shutdown methods instead');
+    }
+  };
+}
+/**
+ * @deprecated Use agenticHookManager.register() for individual hooks instead
+ */
+export async function setupDefaultHooks(engine) {
+  /* istanbul ignore next */
+  cov_nmq820egx().f[10]++;
+  cov_nmq820egx().s[21]++;
+  console.warn('setupDefaultHooks is deprecated. Use agenticHookManager.register() to register specific hooks instead.');
+  /* istanbul ignore next */
+  cov_nmq820egx().s[22]++;
+  console.info('Consider migrating to agentic-flow-hooks for advanced pipeline management and neural integration.');
+  /* istanbul ignore next */
+  cov_nmq820egx().s[23]++;
+  return 4; // Return count for backward compatibility
+}
+// Migration notice for users
+/* istanbul ignore next */
+cov_nmq820egx().s[24]++;
+console.info(`
+🔄 MIGRATION NOTICE: Hook System Consolidation
+
+The legacy hook system in src/hooks/ has been consolidated with the advanced
+agentic-flow-hooks system for better performance and functionality.
+
+✅ New System Features:
+  - Advanced pipeline management
+  - Neural pattern learning  
+  - Performance optimization
+  - Memory coordination hooks
+  - LLM integration hooks
+
+📖 Migration Guide:
+  - Replace AgentHookEngine with agenticHookManager
+  - Update hook registrations to use modern HookRegistration interface
+  - Leverage new hook types: LLM, memory, neural, performance, workflow
+  - See docs/maestro/specs/hooks-refactoring-plan.md for details
+
+🚀 Get Started:
+  import { agenticHookManager, initializeAgenticFlowHooks } from '../services/agentic-flow-hooks/'
+  await initializeAgenticFlowHooks()
+  agenticHookManager.register({ ... })
+`);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJjb3Zfbm1xODIwZWd4IiwiYWN0dWFsQ292ZXJhZ2UiLCJhZ2VudGljSG9va01hbmFnZXIiLCJpbml0aWFsaXplQWdlbnRpY0Zsb3dIb29rcyIsIlFVQUxJVFlfSE9PS1MiLCJzIiwiQ09ERV9RVUFMSVRZIiwibmFtZSIsImRlc2NyaXB0aW9uIiwidHlwZSIsInByaW9yaXR5IiwiZW5hYmxlZCIsIlNFQ1VSSVRZX1NDQU4iLCJET0NVTUVOVEFUSU9OX1NZTkMiLCJQRVJGT1JNQU5DRV9NT05JVE9SIiwiREVGQVVMVF9IT09LX0NPTkZJRyIsIm1heENvbmN1cnJlbnRIb29rcyIsImRlZmF1bHRUaHJvdHRsZU1zIiwiZGVmYXVsdERlYm91bmNlTXMiLCJldmVudFF1ZXVlU2l6ZSIsImFnZW50UG9vbFNpemUiLCJlbmFibGVNZXRyaWNzIiwiZW5hYmxlUGVyc2lzdGVuY2UiLCJsb2dMZXZlbCIsIndhdGNoUGF0dGVybnMiLCJpZ25vcmVQYXR0ZXJucyIsIkhPT0tfVFJJR0dFUlMiLCJGSUxFX1NBVkUiLCJGSUxFX0NIQU5HRSIsIkZJTEVfQ1JFQVRFIiwiRklMRV9ERUxFVEUiLCJUQVNLX0NPTVBMRVRFIiwiVEFTS19GQUlMIiwiU1BFQ19VUERBVEUiLCJDT0RFX0NIQU5HRSIsIkFHRU5UX1NQQVdOIiwiV09SS0ZMT1dfUEhBU0UiLCJUSU1FX0lOVEVSVkFMIiwiQUdFTlRfVFlQRVMiLCJRVUFMSVRZX0FTU1VSQU5DRSIsIlBFUkZPUk1BTkNFX0FOQUxZU0lTIiwiSG9va1V0aWxzIiwiY3JlYXRlRmlsZVBhdHRlcm5Db25kaXRpb24iLCJwYXR0ZXJuIiwiZiIsImNvbnNvbGUiLCJ3YXJuIiwiY3JlYXRlU3Bhd25BZ2VudEFjdGlvbiIsImFnZW50VHlwZSIsImNvbmZpZyIsImFnZW50Q29uZmlnIiwiY3JlYXRlUXVhbGl0eUhvb2siLCJvcHRpb25zIiwiY3JlYXRlU2VjdXJpdHlIb29rIiwiY3JlYXRlRG9jdW1lbnRhdGlvbkhvb2siLCJjcmVhdGVQZXJmb3JtYW5jZUhvb2siLCJjcmVhdGVIb29rRW5naW5lIiwicmVnaXN0ZXJIb29rIiwic3RhcnQiLCJzdG9wIiwic2V0dXBEZWZhdWx0SG9va3MiLCJlbmdpbmUiLCJpbmZvIl0sInNvdXJjZXMiOlsiL2hvbWUvbWh1Z28vY29kZS9jbGF1ZGUtY29kZS1mbG93L3NyYy9ob29rcy9pbmRleC50cyJdLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIExlZ2FjeSBIb29rIFN5c3RlbSAtIE1pZ3JhdGlvbiBOb3RpY2VcbiAqIFxuICogVGhpcyBob29rIHN5c3RlbSBoYXMgYmVlbiBjb25zb2xpZGF0ZWQgd2l0aCB0aGUgbW9yZSBhZHZhbmNlZCBhZ2VudGljLWZsb3ctaG9va3Mgc3lzdGVtLlxuICogQWxsIGZ1bmN0aW9uYWxpdHkgaXMgbm93IGF2YWlsYWJsZSB0aHJvdWdoIHRoZSBtb2Rlcm4gaW1wbGVtZW50YXRpb24gYXQ6XG4gKiBzcmMvc2VydmljZXMvYWdlbnRpYy1mbG93LWhvb2tzL1xuICogXG4gKiBUaGlzIGZpbGUgcHJvdmlkZXMgYmFja3dhcmQgY29tcGF0aWJpbGl0eSByZWRpcmVjdHMgd2hpbGUgd2UgY29tcGxldGUgdGhlIG1pZ3JhdGlvbi5cbiAqL1xuXG4vLyBSZS1leHBvcnQgdGhlIG1vZGVybiBhZ2VudGljLWZsb3ctaG9va3Mgc3lzdGVtXG5leHBvcnQge1xuICBhZ2VudGljSG9va01hbmFnZXIsXG4gIGluaXRpYWxpemVBZ2VudGljRmxvd0hvb2tzLFxufSBmcm9tICcuLi9zZXJ2aWNlcy9hZ2VudGljLWZsb3ctaG9va3MvaW5kZXguanMnO1xuXG4vLyBSZS1leHBvcnQgbW9kZXJuIHR5cGVzIHdpdGggY29tcGF0aWJpbGl0eSBhbGlhc2VzXG5leHBvcnQgdHlwZSB7XG4gIEFnZW50aWNIb29rQ29udGV4dCBhcyBIb29rRXhlY3V0aW9uQ29udGV4dCxcbiAgSG9va1JlZ2lzdHJhdGlvbiBhcyBBZ2VudEhvb2ssXG4gIEhvb2tQYXlsb2FkIGFzIEV2ZW50UGF5bG9hZCxcbiAgQWdlbnRpY0hvb2tUeXBlIGFzIEhvb2tUcmlnZ2VyLFxuICBIb29rSGFuZGxlclJlc3VsdCBhcyBIb29rRXhlY3V0aW9uUmVzdWx0LFxufSBmcm9tICcuLi9zZXJ2aWNlcy9hZ2VudGljLWZsb3ctaG9va3MvdHlwZXMuanMnO1xuXG4vLyBMZWdhY3kgaG9vayB0ZW1wbGF0ZXMgZm9yIGJhY2t3YXJkIGNvbXBhdGliaWxpdHlcbmV4cG9ydCBjb25zdCBRVUFMSVRZX0hPT0tTID0ge1xuICBDT0RFX1FVQUxJVFk6IHtcbiAgICBuYW1lOiAnQ29kZSBRdWFsaXR5IE1vbml0b3InLFxuICAgIGRlc2NyaXB0aW9uOiAnQXV0b21hdGljYWxseSBydW5zIGNvZGUgcXVhbGl0eSBjaGVja3Mgb24gZmlsZSBjaGFuZ2VzJyxcbiAgICB0eXBlOiAnd29ya2Zsb3ctc3RlcCcgYXMgY29uc3QsXG4gICAgcHJpb3JpdHk6IDgsXG4gICAgZW5hYmxlZDogdHJ1ZVxuICB9LFxuICBTRUNVUklUWV9TQ0FOOiB7XG4gICAgbmFtZTogJ1NlY3VyaXR5IFNjYW5uZXInLCBcbiAgICBkZXNjcmlwdGlvbjogJ1NjYW5zIGZvciBzZWN1cml0eSB2dWxuZXJhYmlsaXRpZXMgYW5kIGNyZWRlbnRpYWwgbGVha3MnLFxuICAgIHR5cGU6ICd3b3JrZmxvdy1zdGVwJyBhcyBjb25zdCxcbiAgICBwcmlvcml0eTogOSxcbiAgICBlbmFibGVkOiB0cnVlXG4gIH0sXG4gIERPQ1VNRU5UQVRJT05fU1lOQzoge1xuICAgIG5hbWU6ICdEb2N1bWVudGF0aW9uIFN5bmMnLFxuICAgIGRlc2NyaXB0aW9uOiAnQXV0b21hdGljYWxseSB1cGRhdGVzIGRvY3VtZW50YXRpb24gd2hlbiBzcGVjaWZpY2F0aW9ucyBjaGFuZ2UnLFxuICAgIHR5cGU6ICd3b3JrZmxvdy1zdGVwJyBhcyBjb25zdCxcbiAgICBwcmlvcml0eTogNyxcbiAgICBlbmFibGVkOiB0cnVlXG4gIH0sXG4gIFBFUkZPUk1BTkNFX01PTklUT1I6IHtcbiAgICBuYW1lOiAnUGVyZm9ybWFuY2UgTW9uaXRvcicsXG4gICAgZGVzY3JpcHRpb246ICdBbmFseXplcyBwZXJmb3JtYW5jZSBpbXBhY3Qgb2YgY29kZSBjaGFuZ2VzJywgXG4gICAgdHlwZTogJ3dvcmtmbG93LXN0ZXAnIGFzIGNvbnN0LFxuICAgIHByaW9yaXR5OiA2LFxuICAgIGVuYWJsZWQ6IHRydWVcbiAgfVxufTtcblxuLy8gTGVnYWN5IGNvbnN0YW50cyBmb3IgYmFja3dhcmQgY29tcGF0aWJpbGl0eVxuZXhwb3J0IGNvbnN0IERFRkFVTFRfSE9PS19DT05GSUcgPSB7XG4gIG1heENvbmN1cnJlbnRIb29rczogMTAsXG4gIGRlZmF1bHRUaHJvdHRsZU1zOiAxMDAwLFxuICBkZWZhdWx0RGVib3VuY2VNczogNTAwLFxuICBldmVudFF1ZXVlU2l6ZTogMTAwMCxcbiAgYWdlbnRQb29sU2l6ZTogNTAsXG4gIGVuYWJsZU1ldHJpY3M6IHRydWUsXG4gIGVuYWJsZVBlcnNpc3RlbmNlOiB0cnVlLFxuICBsb2dMZXZlbDogJ2luZm8nIGFzIGNvbnN0LFxuICB3YXRjaFBhdHRlcm5zOiBbJyoqLyoubWQnLCAnKiovKi50cycsICcqKi8qLmpzJywgJyoqLyouanNvbiddLFxuICBpZ25vcmVQYXR0ZXJuczogWydub2RlX21vZHVsZXMvKionLCAnLmdpdC8qKicsICdkaXN0LyoqJywgJ2J1aWxkLyoqJ11cbn07XG5cbmV4cG9ydCBjb25zdCBIT09LX1RSSUdHRVJTID0ge1xuICBGSUxFX1NBVkU6ICd3b3JrZmxvdy1zdGVwJyxcbiAgRklMRV9DSEFOR0U6ICd3b3JrZmxvdy1zdGVwJyxcbiAgRklMRV9DUkVBVEU6ICd3b3JrZmxvdy1zdGFydCcsXG4gIEZJTEVfREVMRVRFOiAnd29ya2Zsb3ctY29tcGxldGUnLFxuICBUQVNLX0NPTVBMRVRFOiAnd29ya2Zsb3ctY29tcGxldGUnLFxuICBUQVNLX0ZBSUw6ICd3b3JrZmxvdy1lcnJvcicsXG4gIFNQRUNfVVBEQVRFOiAnd29ya2Zsb3ctc3RlcCcsXG4gIENPREVfQ0hBTkdFOiAnd29ya2Zsb3ctc3RlcCcsXG4gIEFHRU5UX1NQQVdOOiAnd29ya2Zsb3ctc3RhcnQnLFxuICBXT1JLRkxPV19QSEFTRTogJ3dvcmtmbG93LXN0ZXAnLFxuICBUSU1FX0lOVEVSVkFMOiAncGVyZm9ybWFuY2UtbWV0cmljJ1xufSBhcyBjb25zdDtcblxuZXhwb3J0IGNvbnN0IEFHRU5UX1RZUEVTID0ge1xuICBRVUFMSVRZX0FTU1VSQU5DRTogJ3F1YWxpdHlfYXNzdXJhbmNlJyxcbiAgU0VDVVJJVFlfU0NBTjogJ3NlY3VyaXR5X3NjYW4nLCBcbiAgRE9DVU1FTlRBVElPTl9TWU5DOiAnZG9jdW1lbnRhdGlvbl9zeW5jJyxcbiAgUEVSRk9STUFOQ0VfQU5BTFlTSVM6ICdwZXJmb3JtYW5jZV9hbmFseXNpcydcbn0gYXMgY29uc3Q7XG5cbi8qKlxuICogTWlncmF0aW9uIHV0aWxpdHkgY2xhc3NcbiAqIFByb3ZpZGVzIGJhY2t3YXJkIGNvbXBhdGliaWxpdHkgd2hpbGUgZW5jb3VyYWdpbmcgbWlncmF0aW9uIHRvIGFnZW50aWMtZmxvdy1ob29rc1xuICovXG5leHBvcnQgY2xhc3MgSG9va1V0aWxzIHtcbiAgLyoqXG4gICAqIEBkZXByZWNhdGVkIFVzZSBhZ2VudGljSG9va01hbmFnZXIucmVnaXN0ZXIoKSBpbnN0ZWFkXG4gICAqL1xuICBzdGF0aWMgY3JlYXRlRmlsZVBhdHRlcm5Db25kaXRpb24ocGF0dGVybjogc3RyaW5nKSB7XG4gICAgY29uc29sZS53YXJuKCdIb29rVXRpbHMuY3JlYXRlRmlsZVBhdHRlcm5Db25kaXRpb24gaXMgZGVwcmVjYXRlZC4gVXNlIGFnZW50aWNIb29rTWFuYWdlci5yZWdpc3RlcigpIHdpdGggcHJvcGVyIEhvb2tGaWx0ZXIgaW5zdGVhZC4nKTtcbiAgICByZXR1cm4geyB0eXBlOiAnZmlsZV9wYXR0ZXJuJywgcGF0dGVybiB9O1xuICB9XG5cbiAgLyoqXG4gICAqIEBkZXByZWNhdGVkIFVzZSBhZ2VudGljSG9va01hbmFnZXIucmVnaXN0ZXIoKSBpbnN0ZWFkXG4gICAqL1xuICBzdGF0aWMgY3JlYXRlU3Bhd25BZ2VudEFjdGlvbihhZ2VudFR5cGU6IHN0cmluZywgY29uZmlnOiBSZWNvcmQ8c3RyaW5nLCBhbnk+KSB7XG4gICAgY29uc29sZS53YXJuKCdIb29rVXRpbHMuY3JlYXRlU3Bhd25BZ2VudEFjdGlvbiBpcyBkZXByZWNhdGVkLiBVc2UgYWdlbnRpY0hvb2tNYW5hZ2VyLnJlZ2lzdGVyKCkgd2l0aCBwcm9wZXIgaG9vayBoYW5kbGVycyBpbnN0ZWFkLicpO1xuICAgIHJldHVybiB7IHR5cGU6ICdzcGF3bl9hZ2VudCcsIGFnZW50VHlwZSwgYWdlbnRDb25maWc6IGNvbmZpZyB9O1xuICB9XG5cbiAgLyoqXG4gICAqIEBkZXByZWNhdGVkIFVzZSBhZ2VudGljSG9va01hbmFnZXIucmVnaXN0ZXIoKSBpbnN0ZWFkXG4gICAqL1xuICBzdGF0aWMgY3JlYXRlUXVhbGl0eUhvb2sob3B0aW9uczogYW55KSB7XG4gICAgY29uc29sZS53YXJuKCdIb29rVXRpbHMuY3JlYXRlUXVhbGl0eUhvb2sgaXMgZGVwcmVjYXRlZC4gVXNlIGFnZW50aWNIb29rTWFuYWdlci5yZWdpc3RlcigpIHdpdGggd29ya2Zsb3ctc3RlcCBob29rcyBpbnN0ZWFkLicpO1xuICAgIHJldHVybiBRVUFMSVRZX0hPT0tTLkNPREVfUVVBTElUWTtcbiAgfVxuXG4gIC8qKlxuICAgKiBAZGVwcmVjYXRlZCBVc2UgYWdlbnRpY0hvb2tNYW5hZ2VyLnJlZ2lzdGVyKCkgaW5zdGVhZCAgXG4gICAqL1xuICBzdGF0aWMgY3JlYXRlU2VjdXJpdHlIb29rKG9wdGlvbnM6IGFueSkge1xuICAgIGNvbnNvbGUud2FybignSG9va1V0aWxzLmNyZWF0ZVNlY3VyaXR5SG9vayBpcyBkZXByZWNhdGVkLiBVc2UgYWdlbnRpY0hvb2tNYW5hZ2VyLnJlZ2lzdGVyKCkgd2l0aCB3b3JrZmxvdy1zdGVwIGhvb2tzIGluc3RlYWQuJyk7XG4gICAgcmV0dXJuIFFVQUxJVFlfSE9PS1MuU0VDVVJJVFlfU0NBTjtcbiAgfVxuXG4gIC8qKlxuICAgKiBAZGVwcmVjYXRlZCBVc2UgYWdlbnRpY0hvb2tNYW5hZ2VyLnJlZ2lzdGVyKCkgaW5zdGVhZFxuICAgKi9cbiAgc3RhdGljIGNyZWF0ZURvY3VtZW50YXRpb25Ib29rKG9wdGlvbnM6IGFueSkge1xuICAgIGNvbnNvbGUud2FybignSG9va1V0aWxzLmNyZWF0ZURvY3VtZW50YXRpb25Ib29rIGlzIGRlcHJlY2F0ZWQuIFVzZSBhZ2VudGljSG9va01hbmFnZXIucmVnaXN0ZXIoKSB3aXRoIHdvcmtmbG93LXN0ZXAgaG9va3MgaW5zdGVhZC4nKTtcbiAgICByZXR1cm4gUVVBTElUWV9IT09LUy5ET0NVTUVOVEFUSU9OX1NZTkM7XG4gIH1cblxuICAvKipcbiAgICogQGRlcHJlY2F0ZWQgVXNlIGFnZW50aWNIb29rTWFuYWdlci5yZWdpc3RlcigpIGluc3RlYWRcbiAgICovXG4gIHN0YXRpYyBjcmVhdGVQZXJmb3JtYW5jZUhvb2sob3B0aW9uczogYW55KSB7XG4gICAgY29uc29sZS53YXJuKCdIb29rVXRpbHMuY3JlYXRlUGVyZm9ybWFuY2VIb29rIGlzIGRlcHJlY2F0ZWQuIFVzZSBhZ2VudGljSG9va01hbmFnZXIucmVnaXN0ZXIoKSB3aXRoIHBlcmZvcm1hbmNlLW1ldHJpYyBob29rcyBpbnN0ZWFkLicpO1xuICAgIHJldHVybiBRVUFMSVRZX0hPT0tTLlBFUkZPUk1BTkNFX01PTklUT1I7XG4gIH1cbn1cblxuLyoqXG4gKiBAZGVwcmVjYXRlZCBVc2UgaW5pdGlhbGl6ZUFnZW50aWNGbG93SG9va3MoKSBpbnN0ZWFkXG4gKi9cbmV4cG9ydCBmdW5jdGlvbiBjcmVhdGVIb29rRW5naW5lKGNvbmZpZz86IGFueSkge1xuICBjb25zb2xlLndhcm4oJ2NyZWF0ZUhvb2tFbmdpbmUgaXMgZGVwcmVjYXRlZC4gVXNlIGluaXRpYWxpemVBZ2VudGljRmxvd0hvb2tzKCkgYW5kIGFnZW50aWNIb29rTWFuYWdlciBpbnN0ZWFkLicpO1xuICByZXR1cm4ge1xuICAgIHJlZ2lzdGVySG9vazogKCkgPT4gY29uc29sZS53YXJuKCdVc2UgYWdlbnRpY0hvb2tNYW5hZ2VyLnJlZ2lzdGVyKCkgaW5zdGVhZCcpLFxuICAgIHN0YXJ0OiAoKSA9PiBjb25zb2xlLndhcm4oJ0hvb2tzIGFyZSBhdXRvbWF0aWNhbGx5IGluaXRpYWxpemVkIHdpdGggYWdlbnRpY0hvb2tNYW5hZ2VyJyksXG4gICAgc3RvcDogKCkgPT4gY29uc29sZS53YXJuKCdVc2UgYWdlbnRpY0hvb2tNYW5hZ2VyIHNodXRkb3duIG1ldGhvZHMgaW5zdGVhZCcpXG4gIH07XG59XG5cbi8qKlxuICogQGRlcHJlY2F0ZWQgVXNlIGFnZW50aWNIb29rTWFuYWdlci5yZWdpc3RlcigpIGZvciBpbmRpdmlkdWFsIGhvb2tzIGluc3RlYWRcbiAqL1xuZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIHNldHVwRGVmYXVsdEhvb2tzKGVuZ2luZT86IGFueSkge1xuICBjb25zb2xlLndhcm4oJ3NldHVwRGVmYXVsdEhvb2tzIGlzIGRlcHJlY2F0ZWQuIFVzZSBhZ2VudGljSG9va01hbmFnZXIucmVnaXN0ZXIoKSB0byByZWdpc3RlciBzcGVjaWZpYyBob29rcyBpbnN0ZWFkLicpO1xuICBjb25zb2xlLmluZm8oJ0NvbnNpZGVyIG1pZ3JhdGluZyB0byBhZ2VudGljLWZsb3ctaG9va3MgZm9yIGFkdmFuY2VkIHBpcGVsaW5lIG1hbmFnZW1lbnQgYW5kIG5ldXJhbCBpbnRlZ3JhdGlvbi4nKTtcbiAgcmV0dXJuIDQ7IC8vIFJldHVybiBjb3VudCBmb3IgYmFja3dhcmQgY29tcGF0aWJpbGl0eVxufVxuXG4vLyBNaWdyYXRpb24gbm90aWNlIGZvciB1c2Vyc1xuY29uc29sZS5pbmZvKGBcbvCflIQgTUlHUkFUSU9OIE5PVElDRTogSG9vayBTeXN0ZW0gQ29uc29saWRhdGlvblxuXG5UaGUgbGVnYWN5IGhvb2sgc3lzdGVtIGluIHNyYy9ob29rcy8gaGFzIGJlZW4gY29uc29saWRhdGVkIHdpdGggdGhlIGFkdmFuY2VkXG5hZ2VudGljLWZsb3ctaG9va3Mgc3lzdGVtIGZvciBiZXR0ZXIgcGVyZm9ybWFuY2UgYW5kIGZ1bmN0aW9uYWxpdHkuXG5cbuKchSBOZXcgU3lzdGVtIEZlYXR1cmVzOlxuICAtIEFkdmFuY2VkIHBpcGVsaW5lIG1hbmFnZW1lbnRcbiAgLSBOZXVyYWwgcGF0dGVybiBsZWFybmluZyAgXG4gIC0gUGVyZm9ybWFuY2Ugb3B0aW1pemF0aW9uXG4gIC0gTWVtb3J5IGNvb3JkaW5hdGlvbiBob29rc1xuICAtIExMTSBpbnRlZ3JhdGlvbiBob29rc1xuXG7wn5OWIE1pZ3JhdGlvbiBHdWlkZTpcbiAgLSBSZXBsYWNlIEFnZW50SG9va0VuZ2luZSB3aXRoIGFnZW50aWNIb29rTWFuYWdlclxuICAtIFVwZGF0ZSBob29rIHJlZ2lzdHJhdGlvbnMgdG8gdXNlIG1vZGVybiBIb29rUmVnaXN0cmF0aW9uIGludGVyZmFjZVxuICAtIExldmVyYWdlIG5ldyBob29rIHR5cGVzOiBMTE0sIG1lbW9yeSwgbmV1cmFsLCBwZXJmb3JtYW5jZSwgd29ya2Zsb3dcbiAgLSBTZWUgZG9jcy9tYWVzdHJvL3NwZWNzL2hvb2tzLXJlZmFjdG9yaW5nLXBsYW4ubWQgZm9yIGRldGFpbHNcblxu8J+agCBHZXQgU3RhcnRlZDpcbiAgaW1wb3J0IHsgYWdlbnRpY0hvb2tNYW5hZ2VyLCBpbml0aWFsaXplQWdlbnRpY0Zsb3dIb29rcyB9IGZyb20gJy4uL3NlcnZpY2VzL2FnZW50aWMtZmxvdy1ob29rcy8nXG4gIGF3YWl0IGluaXRpYWxpemVBZ2VudGljRmxvd0hvb2tzKClcbiAgYWdlbnRpY0hvb2tNYW5hZ2VyLnJlZ2lzdGVyKHsgLi4uIH0pXG5gKTsiXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7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

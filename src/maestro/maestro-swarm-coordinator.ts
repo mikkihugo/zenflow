@@ -11,29 +11,29 @@ import { join } from 'path';
 import { readFile, writeFile, mkdir } from 'fs/promises';
 
 // Native hive mind components
-import { HiveMind } from '../hive-mind/core/HiveMind.js';
-import { Agent } from '../hive-mind/core/Agent.js';
-import { ConsensusEngine } from '../hive-mind/integration/ConsensusEngine.js';
-import { SwarmOrchestrator } from '../hive-mind/integration/SwarmOrchestrator.js';
+import { HiveMind } from '../hive-mind/core/HiveMind';
+import { Agent } from '../hive-mind/core/Agent';
+import { ConsensusEngine } from '../hive-mind/integration/ConsensusEngine';
+import { SwarmOrchestrator } from '../hive-mind/integration/SwarmOrchestrator';
 import {
   HiveMindConfig,
   TaskSubmitOptions,
   AgentCapability,
   Task,
   ConsensusProposal
-} from '../hive-mind/types.js';
+} from '../hive-mind/types';
 
 // Core infrastructure
-import { IEventBus } from '../core/event-bus.js';
-import { ILogger } from '../core/logger.js';
-import { SystemError } from '../utils/errors.js';
+import { IEventBus } from '../core/event-bus';
+import { ILogger } from '../core/logger';
+import { SystemError } from '../utils/errors';
 
 // Maestro types
 import {
   MaestroWorkflowState,
   WorkflowPhase,
   MaestroSpec
-} from './maestro-types.js';
+} from './maestro-types';
 
 export interface MaestroSwarmConfig {
   // Native hive mind configuration

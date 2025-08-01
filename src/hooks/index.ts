@@ -12,7 +12,7 @@
 export {
   agenticHookManager,
   initializeAgenticFlowHooks,
-} from '../services/agentic-flow-hooks/index.js';
+} from '../services/agentic-flow-hooks/index';
 
 // Re-export modern types with compatibility aliases
 export type {
@@ -21,7 +21,7 @@ export type {
   HookPayload as EventPayload,
   AgenticHookType as HookTrigger,
   HookHandlerResult as HookExecutionResult,
-} from '../services/agentic-flow-hooks/types.js';
+} from '../services/agentic-flow-hooks/types';
 
 // Legacy hook templates for backward compatibility
 export const QUALITY_HOOKS = {
@@ -170,7 +170,7 @@ console.info(`
 🔄 MIGRATION NOTICE: Hook System Consolidation
 
 The legacy hook system in src/hooks/ has been consolidated with the advanced
-agentic-flow-hooks system for better performance and functionality.
+agentic-zen-hooks system for better performance and functionality.
 
 ✅ New System Features:
   - Advanced pipeline management
@@ -186,7 +186,7 @@ agentic-flow-hooks system for better performance and functionality.
   - See docs/maestro/specs/hooks-refactoring-plan.md for details
 
 🚀 Get Started:
-  import { agenticHookManager, initializeAgenticFlowHooks } from '../services/agentic-flow-hooks/'
-  await initializeAgenticFlowHooks()
+  import { agenticHookManager, initializeAgenticZenHooks } from '../services/agentic-zen-hooks/'
+  await initializeAgenticZenHooks()
   agenticHookManager.register({ ... })
 `);

@@ -1,0 +1,68 @@
+5e09f16ca5e1c58fd8fa54d5e49337ec
+/* istanbul ignore next */
+function cov_2rhhtzdm71() {
+  var path = "/home/mhugo/code/claude-code-flow/src/cli/commands/index.ts";
+  var hash = "fd3002ab00b35ccde6f3c590325d5b42c89568ea";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/mhugo/code/claude-code-flow/src/cli/commands/index.ts",
+    statementMap: {
+      "0": {
+        start: {
+          line: 12,
+          column: 34
+        },
+        end: {
+          line: 17,
+          column: 1
+        }
+      }
+    },
+    fnMap: {},
+    branchMap: {},
+    s: {
+      "0": 0
+    },
+    f: {},
+    b: {},
+    inputSourceMap: {
+      file: "/home/mhugo/code/claude-code-flow/src/cli/commands/index.ts",
+      mappings: "AAAA;;;;;GAKG;AAEH,OAAO,EAAE,WAAW,EAAE,MAAM,iBAAiB,CAAC;AAC9C,OAAO,EAAE,aAAa,EAAE,MAAM,mBAAmB,CAAC;AAClD,OAAO,EAAE,YAAY,EAAE,iBAAiB,EAAE,gBAAgB,EAAE,gBAAgB,EAAE,MAAM,kBAAkB,CAAC;AACvG,OAAO,EAAE,WAAW,EAAE,MAAM,iBAAiB,CAAC;AAE9C,oCAAoC;AACpC,MAAM,CAAC,MAAM,kBAAkB,GAAG;IAChC,MAAM;IACN,QAAQ;IACR,OAAO;IACP,MAAM;CACE,CAAC",
+      names: [],
+      sources: ["/home/mhugo/code/claude-code-flow/src/cli/commands/index.ts"],
+      sourcesContent: ["/**\n * Command Exports\n * \n * This module exports all available CLI commands for registration\n * with the command registry.\n */\n\nexport { InitCommand } from './init/index.js';\nexport { StatusCommand } from './status/index.js';\nexport { SwarmCommand, SwarmStartCommand, SwarmStopCommand, SwarmListCommand } from './swarm/index.js';\nexport { HelpCommand } from './help/index.js';\n\n// Command metadata for registration\nexport const AVAILABLE_COMMANDS = [\n  'init',\n  'status', \n  'swarm',\n  'help'\n] as const;\n\nexport type AvailableCommand = typeof AVAILABLE_COMMANDS[number];\n"],
+      version: 3
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "fd3002ab00b35ccde6f3c590325d5b42c89568ea"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_2rhhtzdm71 = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_2rhhtzdm71();
+/**
+ * Command Exports
+ *
+ * This module exports all available CLI commands for registration
+ * with the command registry.
+ */
+export { InitCommand } from './init/index.js';
+export { StatusCommand } from './status/index.js';
+export { SwarmCommand, SwarmStartCommand, SwarmStopCommand, SwarmListCommand } from './swarm/index.js';
+export { HelpCommand } from './help/index.js';
+// Command metadata for registration
+export const AVAILABLE_COMMANDS =
+/* istanbul ignore next */
+(cov_2rhhtzdm71().s[0]++, ['init', 'status', 'swarm', 'help']);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJjb3ZfMnJoaHR6ZG03MSIsImFjdHVhbENvdmVyYWdlIiwiSW5pdENvbW1hbmQiLCJTdGF0dXNDb21tYW5kIiwiU3dhcm1Db21tYW5kIiwiU3dhcm1TdGFydENvbW1hbmQiLCJTd2FybVN0b3BDb21tYW5kIiwiU3dhcm1MaXN0Q29tbWFuZCIsIkhlbHBDb21tYW5kIiwiQVZBSUxBQkxFX0NPTU1BTkRTIiwicyJdLCJzb3VyY2VzIjpbIi9ob21lL21odWdvL2NvZGUvY2xhdWRlLWNvZGUtZmxvdy9zcmMvY2xpL2NvbW1hbmRzL2luZGV4LnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogQ29tbWFuZCBFeHBvcnRzXG4gKiBcbiAqIFRoaXMgbW9kdWxlIGV4cG9ydHMgYWxsIGF2YWlsYWJsZSBDTEkgY29tbWFuZHMgZm9yIHJlZ2lzdHJhdGlvblxuICogd2l0aCB0aGUgY29tbWFuZCByZWdpc3RyeS5cbiAqL1xuXG5leHBvcnQgeyBJbml0Q29tbWFuZCB9IGZyb20gJy4vaW5pdC9pbmRleC5qcyc7XG5leHBvcnQgeyBTdGF0dXNDb21tYW5kIH0gZnJvbSAnLi9zdGF0dXMvaW5kZXguanMnO1xuZXhwb3J0IHsgU3dhcm1Db21tYW5kLCBTd2FybVN0YXJ0Q29tbWFuZCwgU3dhcm1TdG9wQ29tbWFuZCwgU3dhcm1MaXN0Q29tbWFuZCB9IGZyb20gJy4vc3dhcm0vaW5kZXguanMnO1xuZXhwb3J0IHsgSGVscENvbW1hbmQgfSBmcm9tICcuL2hlbHAvaW5kZXguanMnO1xuXG4vLyBDb21tYW5kIG1ldGFkYXRhIGZvciByZWdpc3RyYXRpb25cbmV4cG9ydCBjb25zdCBBVkFJTEFCTEVfQ09NTUFORFMgPSBbXG4gICdpbml0JyxcbiAgJ3N0YXR1cycsIFxuICAnc3dhcm0nLFxuICAnaGVscCdcbl0gYXMgY29uc3Q7XG5cbmV4cG9ydCB0eXBlIEF2YWlsYWJsZUNvbW1hbmQgPSB0eXBlb2YgQVZBSUxBQkxFX0NPTU1BTkRTW251bWJlcl07XG4iXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0lBaUJRO0lBQUFBLGNBQUEsWUFBQUEsQ0FBQTtNQUFBLE9BQUFDLGNBQUE7SUFBQTtFQUFBO0VBQUEsT0FBQUEsY0FBQTtBQUFBO0FBQUFELGNBQUE7QUFqQlI7Ozs7OztBQU9BLFNBQVNFLFdBQVcsUUFBUSxpQkFBaUI7QUFDN0MsU0FBU0MsYUFBYSxRQUFRLG1CQUFtQjtBQUNqRCxTQUFTQyxZQUFZLEVBQUVDLGlCQUFpQixFQUFFQyxnQkFBZ0IsRUFBRUMsZ0JBQWdCLFFBQVEsa0JBQWtCO0FBQ3RHLFNBQVNDLFdBQVcsUUFBUSxpQkFBaUI7QUFFN0M7QUFDQSxPQUFPLE1BQU1DLGtCQUFrQjtBQUFBO0FBQUEsQ0FBQVQsY0FBQSxHQUFBVSxDQUFBLE9BQUcsQ0FDaEMsTUFBTSxFQUNOLFFBQVEsRUFDUixPQUFPLEVBQ1AsTUFBTSxDQUNFIiwiaWdub3JlTGlzdCI6W119

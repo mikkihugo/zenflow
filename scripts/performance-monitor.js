@@ -6,16 +6,16 @@ const blessed = require('blessed');
 
 class PerformanceMonitor {
   constructor() {
-    this.screen = blessed.screen({ 
+    this.screen = blessed.screen({
       smartCSR: true,
-      title: 'Claude Flow Performance Monitor'
+      title: 'Claude Flow Performance Monitor',
     });
-    
+
     this.metrics = {
       hooks: { calls: 0, avgTime: 0, errors: 0 },
       memory: { reads: 0, writes: 0, cacheHits: 0 },
       neural: { predictions: 0, trainings: 0, accuracy: 0 },
-      agents: { active: 0, pooled: 0, spawns: 0 }
+      agents: { active: 0, pooled: 0, spawns: 0 },
     };
 
     this.setupUI();
@@ -32,8 +32,8 @@ class PerformanceMonitor {
       tags: true,
       style: {
         fg: 'white',
-        bg: 'blue'
-      }
+        bg: 'blue',
+      },
     });
     // Metrics boxes
     this.hookBox = this.createMetricBox({
@@ -41,28 +41,28 @@ class PerformanceMonitor {
       left: 0,
       width: '50%',
       height: '25%',
-      label: ' Hook Performance '
+      label: ' Hook Performance ',
     });
     this.memoryBox = this.createMetricBox({
       top: 3,
       left: '50%',
       width: '50%',
       height: '25%',
-      label: ' Memory Operations '
+      label: ' Memory Operations ',
     });
     this.neuralBox = this.createMetricBox({
       top: '28%',
       left: 0,
       width: '50%',
       height: '25%',
-      label: ' Neural Processing '
+      label: ' Neural Processing ',
     });
     this.agentBox = this.createMetricBox({
       top: '28%',
       left: '50%',
       width: '50%',
       height: '25%',
-      label: ' Agent Management '
+      label: ' Agent Management ',
     });
     // Real-time log
     this.logBox = blessed.log({
@@ -79,9 +79,9 @@ class PerformanceMonitor {
         fg: 'white',
         bg: 'black',
         border: {
-          fg: 'cyan'
-        }
-      }
+          fg: 'cyan',
+        },
+      },
     });
     // Status bar
     this.statusBar = blessed.box({
@@ -92,8 +92,8 @@ class PerformanceMonitor {
       content: 'Press q to quit | r to reset metrics | Space to pause',
       style: {
         fg: 'white',
-        bg: 'green'
-      }
+        bg: 'green',
+      },
     });
     // Add all elements to screen
     this.screen.append(this.header);
@@ -103,7 +103,7 @@ class PerformanceMonitor {
     this.screen.append(this.agentBox);
     this.screen.append(this.logBox);
     this.screen.append(this.statusBar);
-    
+
     // Key bindings
     this.screen.key(['q', 'C-c'], () => process.exit(0));
     this.screen.key('r', () => this.resetMetrics());
@@ -113,14 +113,14 @@ class PerformanceMonitor {
     return blessed.box({
       ...options,
       border: {
-        type: 'line'
+        type: 'line',
       },
       style: {
         fg: 'white',
         border: {
-          fg: 'cyan'
-        }
-      }
+          fg: 'cyan',
+        },
+      },
     });
   }
   startMonitoring() {
@@ -153,32 +153,32 @@ class PerformanceMonitor {
       `{bold}Total Calls:{/bold} ${this.metrics.hooks.calls}\n` +
       `{bold}Avg Time:{/bold} ${this.metrics.hooks.avgTime}ms\n` +
       `{bold}Error Rate:{/bold} ${((this.metrics.hooks.errors / Math.max(1, this.metrics.hooks.calls)) * 100).toFixed(1)}%\n` +
-      `{bold}Throughput:{/bold} ${(this.metrics.hooks.calls / 10).toFixed(1)}/s`
+      `{bold}Throughput:{/bold} ${(this.metrics.hooks.calls / 10).toFixed(1)}/s`,
     );
-    
+
     // Update memory metrics
     this.memoryBox.setContent(
       `{bold}Reads:{/bold} ${this.metrics.memory.reads}\n` +
       `{bold}Writes:{/bold} ${this.metrics.memory.writes}\n` +
       `{bold}Cache Hits:{/bold} ${this.metrics.memory.cacheHits}\n` +
-      `{bold}Hit Rate:{/bold} ${((this.metrics.memory.cacheHits / Math.max(1, this.metrics.memory.reads)) * 100).toFixed(1)}%`
+      `{bold}Hit Rate:{/bold} ${((this.metrics.memory.cacheHits / Math.max(1, this.metrics.memory.reads)) * 100).toFixed(1)}%`,
     );
-    
+
     // Update neural metrics
     this.neuralBox.setContent(
       `{bold}Predictions:{/bold} ${this.metrics.neural.predictions}\n` +
       `{bold}Trainings:{/bold} ${this.metrics.neural.trainings}\n` +
-      `{bold}Accuracy:{/bold} ${this.metrics.neural.accuracy}%`
+      `{bold}Accuracy:{/bold} ${this.metrics.neural.accuracy}%`,
     );
-    
+
     // Update agent metrics
     this.agentBox.setContent(
       `{bold}Active:{/bold} ${this.metrics.agents.active}\n` +
       `{bold}Pooled:{/bold} ${this.metrics.agents.pooled}\n` +
       `{bold}Total Spawns:{/bold} ${this.metrics.agents.spawns}\n` +
-      `{bold}Pool Efficiency:{/bold} ${((this.metrics.agents.pooled / 15) * 100).toFixed(1)}%`
+      `{bold}Pool Efficiency:{/bold} ${((this.metrics.agents.pooled / 15) * 100).toFixed(1)}%`,
     );
-    
+
     // Add log entries
     if (Math.random() > 0.7) {
       const operations = [
@@ -187,11 +187,11 @@ class PerformanceMonitor {
         '{green-fg}✓{/green-fg} Neural prediction: task complexity (5ms)',
         '{yellow-fg}⚡{/yellow-fg} Agent spawned from pool (45ms)',
         '{blue-fg}💾{/blue-fg} Cache hit: prediction/task/analyze',
-        '{green-fg}✓{/green-fg} Parallel batch processed: 10 operations'
+        '{green-fg}✓{/green-fg} Parallel batch processed: 10 operations',
       ];
       this.logBox.log(operations[Math.floor(Math.random() * operations.length)]);
     }
-    
+
     this.screen.render();
   }
   monitorClaudeFlow() {
@@ -204,7 +204,7 @@ class PerformanceMonitor {
       hooks: { calls: 0, avgTime: 0, errors: 0 },
       memory: { reads: 0, writes: 0, cacheHits: 0 },
       neural: { predictions: 0, trainings: 0, accuracy: 0 },
-      agents: { active: 0, pooled: 0, spawns: 0 }
+      agents: { active: 0, pooled: 0, spawns: 0 },
     };
     this.logBox.log('{yellow-fg}🔄{/yellow-fg} Metrics reset');
   }
@@ -218,7 +218,7 @@ try {
   console.log('Real-time metrics would be displayed here.');
   console.log('\nInstall blessed for interactive dashboard:');
   console.log('npm install blessed\n');
-  
+
   // Fallback text-based monitoring
   setInterval(() => {
     console.log('\n📊 Claude Flow Performance Metrics\n');

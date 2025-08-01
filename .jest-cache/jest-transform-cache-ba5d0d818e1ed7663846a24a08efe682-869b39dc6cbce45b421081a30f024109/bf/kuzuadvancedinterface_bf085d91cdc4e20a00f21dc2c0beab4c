@@ -1,0 +1,703 @@
+bc8d9eba0694251583d74699eabaa7bd
+/* istanbul ignore next */
+function cov_22r0endvqu() {
+  var path = "/home/mhugo/code/claude-code-flow/src/database/kuzu-advanced-interface.ts";
+  var hash = "a8419697599c69bb4fc0f94349e71fd16551bafc";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/mhugo/code/claude-code-flow/src/database/kuzu-advanced-interface.ts",
+    statementMap: {},
+    fnMap: {},
+    branchMap: {},
+    s: {},
+    f: {},
+    b: {},
+    inputSourceMap: {
+      file: "/home/mhugo/code/claude-code-flow/src/database/kuzu-advanced-interface.ts",
+      mappings: ";AACA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;iBAopBiB",
+      names: [],
+      sources: ["/home/mhugo/code/claude-code-flow/src/database/kuzu-advanced-interface.ts"],
+      sourcesContent: ["\n/** Kuzu Advanced Graph Database Interface - Extended Edition TypeScript;\n/** PRODUCTION-GRADE GRAPH OPERATIONS WITH ADVANCED ANALYTICS;\n/** Built on the existing kuzu-graph-interface.js with enhanced capabilities;\n\nimport path from 'node:path';\n// // interface KuzuAdvancedConfig {\n//   enableAnalytics?;\n//   enableCache?;\n//   enableMetrics?;\n//   maxQueryComplexity?;\n//   queryTimeout?;\n//   [key = new Map();\n//   // private queryHistory = []\n// private;\n// performanceMetrics = {}\n// )\n// {\n  super(config);\n  // Enhanced configuration\n  this.advancedConfig = {enableAnalytics = = false,enableCache = = false,enableMetrics = = false,\n  maxQueryComplexity = {totalQueries = {\n      nodeTypes = {GraphMetrics = `node_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;\n  const __now = new Date();\n  const _now = new Date();\n  const { temp } = {};\n    startNode,;\n  algorithm = 'dfs',;\n  maxDepth = 10,;\n  nodeFilter = '',;\n  relationshipFilter = '',;\n  direction = 'both',;\n  collectMetrics = true,;\n  endNode }\n= options\ntry {\n      const __query = this.buildDFSQuery(startNode, maxDepth, nodeFilter, relationshipFilter, direction);\n          break;\n        case 'bfs':;\n          query = this.buildBFSQuery(startNode, maxDepth, nodeFilter, relationshipFilter, direction);\n          break;\n        case 'shortest_path':;\n          query = this.buildShortestPathQuery(startNode, endNode!, nodeFilter, relationshipFilter);\n          break;\n        case 'all_paths':;\n          query = this.buildAllPathsQuery(startNode, endNode!, maxDepth, nodeFilter, relationshipFilter);\n          break;default = // await(this as any).executeQuery(query);\n      const _executionTime = Date.now() - startTime;\n  if(collectMetrics) {\n// // await this.recordTraversalMetrics(algorithm, executionTime, result.data?.length ?? 0);\n      //       }\n\n      // return {\n..result,\n    // algorithm,execution_time = this.buildRelationshipPattern(direction, relationshipFilter); // LINT: unreachable code removed\n    const __filterClause = nodeFilter ? `WHERE ${nodeFilter}` : '';\n\n    // return `;`\n    // MATCH(start = this.buildRelationshipPattern(direction, relationshipFilter); // LINT: unreachable code removed\n    const _filterClause = nodeFilter ? `WHERE \\$nodeFilter` : '';\n;\n    // return `;`\n    // MATCH path=(start = this.buildRelationshipPattern('both', relationshipFilter); // LINT: unreachable code removed\n    const _filterClause = nodeFilter ? `AND ${nodeFilter}` : '';\n\n    // return `;`\n    // MATCH path=shortestPath((start = this.buildRelationshipPattern('both', relationshipFilter); // LINT: unreachable code removed\n    const _filterClause = nodeFilter ? `AND \\$nodeFilter` : '';\n;\n    // return `;`\n    // MATCH path=(start = ''; // LINT: unreachable code removed\n  if(relationshipFilter) {\n      pattern += `:${relationshipFilter}`;\n    //     }\n  switch(direction) {\n      case 'incoming': {;\n        // return `<-[${pattern}]-`;\n    // case 'outgoing': // LINT: unreachable code removed\n        // return `-[${pattern}]->`;\n    // default = { // LINT: unreachable code removed}): Promise<CentralityResult> {\n    const { temp } = {};\n      algorithm = 'degree',;\n      nodeType = 'Service',;\n      relationshipType = '',;\n      normalize = true;\n      //       }\n    } = options;\n\n    try {\n// const __centralityScores = awaitthis.computeDegreeCentrality(nodeType, relationshipType);\n          break;\n        case 'betweenness':;\n          centralityScores = // await this.computeBetweennessCentrality(nodeType, relationshipType);\n          break;\n        case 'closeness':;\n          centralityScores = // await this.computeClosenessCentrality(nodeType, relationshipType);\n          break;\n        case 'eigenvector':;\n          centralityScores = // await this.computeEigenvectorCentrality(nodeType, relationshipType);\n          break;\n        case 'pagerank':;\n          centralityScores = // await this.computePageRank(nodeType, relationshipType);\n          break;default = this.normalizeCentralityScores(centralityScores);\n      //       }\n\n      // Store centrality scores if using real Kuzu\n      if((this.stats as any).usingRealKuzu) {\n// // await this.storeCentralityScores(centralityScores, algorithm);\n      //       }\n\n      // return {\n        algorithm,scores = relationshipType ? `:${relationshipType}` : '';\n    // const __query = `; // LINT: unreachable code removed`\n      MATCH(n = // await(this as any).executeQuery(query);\n    // return result.data?.map((row = > ({node = `MATCH(n) RETURN n.name as node`;\n    // const _nodesResult = // await(this as any).executeQuery(nodesQuery); // LINT: unreachable code removed\n    const _nodes = nodesResult.data?.map((row) => row.node)  ?? [];\n;\n    const _betweennessScores = new Map<string, number>();\n    nodes.forEach((node = > betweennessScores.set(node, 0));\n\n    // Calculate shortest paths between all pairs\n    for (let i = 0; i < Math.min(nodes.length, 20); i++) { // Limit for performance\n      for (let j = i + 1; j < Math.min(nodes.length, 20); j++) {\n        try {\n// const _pathResult = awaitthis.advancedTraversal({startNode = pathResult.data[0].path_nodes  ?? [];\n            // Increment betweenness for intermediate nodes/g)\n  for(let k = 1; k < pathNodes.length - 1; k++) {\n              const _intermNode = pathNodes[k];\n              if(betweennessScores.has(intermNode)) {\n                betweennessScores.set(intermNode, betweennessScores.get(intermNode)! + 1);\n              //               }\n            //             }\n          //           }\n        } catch(error)\n      //       }\n    //     }\n// return Array.from(betweennessScores.entries()).map(([node, _score]) => ({ node,\n// score; // LINT: unreachable code removed\n  }))\n// }\n// private // async\ncomputeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85));\n: Promise<\n// {\n  node = `MATCH(n) RETURN n.name as node`;\n// const _nodesResult = await(this as any).executeQuery(nodesQuery);\n  const _nodes = nodesResult.data?.map((row) => row.node) ?? [];\n  // Initialize PageRank scores\n  const _pageRankScores = new Map<string, number>();\n  const _initialScore = 1.0 / nodes.length;\n  nodes.forEach((node) => pageRankScores.set(node, initialScore));\n  // Get adjacency information\n  const _relFilter = relationshipType ? `:\\$relationshipType` : '';\n  const __adjQuery = `;`;\n      MATCH(source = // await(this as any).executeQuery(adjQuery);\n    const _edges = adjResult.data  ?? [];\n;\n    // Build adjacency lists\n    const _outLinks = new Map<string, string[]>();\n    const _inLinks = new Map<string, string[]>();\n;\n    nodes.forEach((node => {))\n      outLinks.set(node, []);\n      inLinks.set(node, []);\n    });\n\n    edges.forEach((edge => {))\n      if(outLinks.has(edge.source) && inLinks.has(edge.target)) {\n        outLinks.get(edge.source)!.push(edge.target);\n        inLinks.get(edge.target)!.push(edge.source);\n      //       }\n    });\n\n    // PageRank iterations\n  for(const iter = 0; iter < iterations; iter++) {\n      const _newScores = new Map<string, number>();\n;\n      nodes.forEach((node => {))\n        let _score = (1 - dampingFactor) / nodes.length;\n;\n        // Sum contributions from incoming links\n        const _incoming = inLinks.get(node)  ?? [];\n  for(const sourceNode of incoming) {\n          const _sourceScore = pageRankScores.get(sourceNode)  ?? 0; const _sourceOutDegree = (outLinks.get(sourceNode)  ?? []).length; if(sourceOutDegree > 0) {\n            score += dampingFactor*(sourceScore / sourceOutDegree);\n          //           }\n        //         }\n\n        newScores.set(node, score);\n      });\n\n      // Update scores\n      newScores.forEach((score, node) => {\n        pageRankScores.set(node, score);\n      });\n    //     }\n\n    // return Array.from(pageRankScores.entries()).map(([node, score]) => ({ node,\n    // score; // LINT: unreachable code removed\n      }));\n  //   }\n\n/** Community detection using modularity optimization;\n\n  async detectCommunitiesAdvanced(options = {}): Promise<CommunityResult> {\n    const { temp } = {};\n      algorithm = 'louvain',;\n      nodeType = 'Service',;\n      relationshipType = '',;\n      resolution = 1.0;\n    } = options;\n\n    try {\n// const _communities = awaitthis.louvainCommunityDetection(nodeType, relationshipType, resolution);\n          break;\n        case 'label_propagation':;\n          communities = // await this.labelPropagationCommunityDetection(nodeType, relationshipType);\n          break;\n        case 'connected_components':;\n          communities = // await this.connectedComponentsDetection(nodeType, relationshipType);\n          break;default = // await this.calculateModularity(communities, nodeType, relationshipType);\n\n      // Store community results if using real Kuzu\n      if((this.stats as any).usingRealKuzu) {\n// // await this.storeCommunityResults(communities, algorithm, modularity);\n      //       }\n\n      // return {\n        algorithm,;\n    // communities, // LINT: unreachable code removed\n        modularity,num_communities = `;`;\n  MATCH(n);\n  RETURN;\n  n.name as node;\n  `;`\n// const _nodesResult = await(this as any).executeQuery(nodesQuery);\n    const _nodes = nodesResult.data?.map((row) => row.node)  ?? [];\n;\n    const _relFilter = relationshipType ? `;`;\n  :\\$relationshipType` : ''`\n  const __edgesQuery = `;`;\n      MATCH(source = // await(this as any).executeQuery(edgesQuery);\n    const _edges = edgesResult.data  ?? [];\n;\n    // Initialize each node in its own community\n    const _nodeCommunity = new Map<string, number>();\n    nodes.forEach((node = > nodeCommunity.set(node, index));\n\n    // Build adjacency list\n    const _adjacency = new Map<string, string[]>();\n    nodes.forEach((node = > adjacency.set(node, []));\n\n    edges.forEach((edge => {))\n      if(adjacency.has(edge.source) && adjacency.has(edge.target)) {\n        adjacency.get(edge.source)?.push(edge.target);\n  if(edge.source !== edge.target) {\n          adjacency.get(edge.target)?.push(edge.source);\n        //         }\n      //       }\n    });\n\n    // Simplified community optimization(single pass)\n    let _improved = true;\n    let _iteration = 0;\n  while(improved && iteration < 10) {\n      improved = false;\n  for(const node of nodes) {\n        const _currentCommunity = nodeCommunity.get(node)!; const _neighbors = adjacency.get(node)  ?? []; // Count neighbor communities\n        const _neighborCommunities = new Map<number, number>() {;\n        neighbors.forEach((neighbor => {))\n          const _neighborCommunity = nodeCommunity.get(neighbor)!;\n          neighborCommunities.set(neighborCommunity,);\n            (neighborCommunities.get(neighborCommunity)  ?? 0) + 1);\n        });\n\n        // Find best community(most connections)\n        let _bestCommunity = currentCommunity;\n        let _maxConnections = neighborCommunities.get(currentCommunity)  ?? 0;\n;\n        neighborCommunities.forEach((connections, community) => {\n  if(connections > maxConnections) {\n            maxConnections = connections;\n            bestCommunity = community;\n          //           }\n        });\n\n        // Move node if improvement found\n  if(bestCommunity !== currentCommunity && maxConnections > 1) {\n          nodeCommunity.set(node, bestCommunity);\n          improved = true;\n        //         }\n      //       }\n\n      iteration++;\n    //     }\n\n    // Group nodes by community\n    const _communities = new Map<number, string[]>();\n    nodeCommunity.forEach((communityId, node) => {\n      if(!communities.has(communityId)) {\n        communities.set(communityId, []);\n      //       }\n      communities.get(communityId)?.push(node);\n    });\n\n    // Convert to array format\n    // return Array.from(communities.values()).map((_members, _index) => ({ id = {  }): Promise<QueryResult> {\n    const { temp } = {};\n      limit = 100,;\n    // filters = { // LINT: unreachable code removed},\n      includeMetrics = true;\n    } = options;\n\n    try {\n      // Build pattern matching query\n      let _query = this.buildPatternQuery(pattern, filters, limit);\n// const _result = await(this as any).executeQuery(query);\n  if(includeMetrics && result.success) {\n        // Analyze pattern frequency and importance\n\n        // return {\n..result,pattern_metrics = `;`\n  MATCH;\n  \\$pattern`;`\n    // ; // LINT: unreachable code removed\n    // Add filters\n    const _filterClauses = [];\n    Object.entries(filters).forEach(([key, value]) => {\n  if(typeof value === 'string') {\n        filterClauses.push(`;`);\n  $key = '${value}'`);`\n      } else if(typeof value === 'number') {\n        filterClauses.push(`;`);\n  \\$key = \\$value`);`\n      } else if(Array.isArray(value)) {\n        filterClauses.push(`;`);\n  \\$keyIN[\\$value.map((v) => `'${v}'`).join(', ')]`);`\n      //       }\n    });\n  if(filterClauses.length > 0) {\n      query += `;`;\n  WHERE;\n  \\$filterClauses.join(' AND ')`;`\n    //     }\n\n    query += ' RETURN *';\n  if(limit) {\n      query += `;`;\n  LIMIT;\n  \\$limit`;`\n    //     }\n\n    // return query;\n    //   // LINT: unreachable code removed}\n\n/** Advanced query optimization;\n\n  async;\n  optimizeQuery((query = {}));\n  : Promise<success = true,\n      suggestImprovement = true,;\n      cacheResult = true= options\n;\n  try {\n      const _startTime = Date.now();\n;\n      // Check cache first\n      if(cacheResult && this.queryCache.has(query)) {\n        const _cached = this.queryCache.get(query);\n        this.performanceMetrics.cacheHitRate++;\n        // return {\n..cached,from_cache = // await(this as any).executeQuery(query);\n    // const _executionTime = Date.now() - startTime; // LINT: unreachable code removed\n\n      // Analyze execution if requested\n      let __optimization = {};\n  if(analyzeExecution) {\n        _optimization = // await this.analyzeQueryExecution(query, executionTime, result);\n      //       }\n\n      // Cache result\n  if(cacheResult && result.success && this.queryCache.size < 1000) {\n        this.queryCache.set(query, result);\n      //       }\n\n      // Update performance metrics\n      this.updatePerformanceMetrics(query, executionTime, result.success);\n\n      // return {\n..result,\n    // execution_time = {query_complexity = 0; // LINT: unreachable code removed\n\n    // Count different query elements\n    const _matchCount = (query.match(/MATCH/gi)  ?? []).length;\n    const _whereCount = (query.match(/WHERE/gi)  ?? []).length;\n    const _returnCount = (query.match(/RETURN/gi)  ?? []).length;\n    // const _optionalCount = (query.match(/OPTIONAL/gi)  ?? []).length; // LINT: unreachable code removed\n    const _unionCount = (query.match(/UNION/gi)  ?? []).length;\n;\n    // Calculate complexity score\n    complexity += matchCount * 2;\n    complexity += whereCount * 1;\n    complexity += returnCount * 1;\n    // complexity += optionalCount * 3; // LINT: unreachable code removed\n    complexity += unionCount * 5;\n;\n    // Check for complex patterns\n    if(query.includes('*')) complexity += 5; // Variable length paths\n    if(query.includes('shortestPath')) complexity += 10;\n    if(query.includes('allShortestPaths')) complexity += 15;\n\n    // return complexity;\n    //   // LINT: unreachable code removed}\n\n/** Performance monitoring and alerting;\n\n  // private initializePerformanceTracking() ;\n    // Set up performance monitoring\n    setInterval(() => ;\n      this.analyzePerformanceTrends();, 60000); // Every minute\n\n    console.warn(' Performance tracking initialized');\n\n/** Update performance metrics;\n\n  // private updatePerformanceMetrics(query = (this.performanceMetrics.avgExecutionTime + executionTime) / 2;\n\n    // Track slow queries\n  if(executionTime > 5000) {\n      this.performanceMetrics.slowQueries.push({ query = this.queryHistory.slice(-100);\n\n    if(recentQueries.length < 10) return;\n    // ; // LINT: unreachable code removed\n    const _avgTime = recentQueries.reduce((sum, q) => sum + q.execution_time, 0) / recentQueries.length;\n;\n    // Alert on performance degradation\n  if(avgTime > this.performanceMetrics.avgExecutionTime * 2) {\n      console.warn(' Performance Alert = {  }): Promise<{generated_at = true,'\n      includeCentrality = true,;\n      includeCommunities = true,;\n      includePerformance = true;\n    } = options;\n\n    const __report = {generated_at = // await this.generateGraphAnalytics();\n    //     }\n  if(includeCentrality) {\n      report.centrality = // await this.computeCentrality({algorithm = // await this.detectCommunitiesAdvanced({ algorithm);\n    //     }\n  if(includePerformance) {\n      report.performance = this.performanceMetrics;\n    //     }\n\n    // return report;\n    //   // LINT: unreachable code removed}\n\n/** Get graph overview statistics;\n\n  private;\n  async;\n  getGraphOverview();\n  : Promise<;\n  //   {\n    node_count = {node_count = (this as any).connection.querySync(`;`)\n  MATCH(n);\n  RETURN;\n  count(n) as count;\n  `);`\n    const _rows = result.getAllSync();\n  if(rows.length > 0) {\n      overview.node_types[nodeType] = rows[0].count;\n      overview.node_count += rows[0].count;\n    //     }\n    result.close();\n  //   }\n  catch(error) ;\n            overview.node_types[nodeType] = 0;\n// }\n\n// Count relationships by type\nfor (const _relType of Object.keys((this as any).schema.relationships)) {\n          try {\n            const __result = (this as any).connection.querySync(`; `);\n  MATCH()-[r = result.getAllSync(); if(rows.length > 0) {\n              overview.relationship_types[relType] = rows[0].count;\n              overview.relationship_count += rows[0].count;\n            //             }\n            result.close();\n          } catch(error) {\n            overview.relationship_types[relType] = 0;\n          //           }\n        //         }\n      } else {\n        // Fallback to in-memory statistics\n        overview.node_count = (this.stats as any).nodeCount;\n        overview.relationship_count = (this.stats as any).relationshipCount;\n      //       }\n\n      // return overview;\n    // ; // LINT: unreachable code removed\n    } catch(error = `;`\n          CREATE(c = `;`;\n          CREATE(c = // await(this as any).getStats();\n\n    // return {\n..baseStats,performance_metrics = Array.from(this.queryCache.entries());\n    // entries.slice(0, 250).forEach(([key]) => { // LINT: unreachable code removed\n        this.queryCache.delete(key);\n      //       }\n  //   )\n// }\n// Cleanup old query history\n  if(this.queryHistory.length > 500) {\n  this.queryHistory = this.queryHistory.slice(-250);\n// }\n// Cleanup slow queries\n  if(this.performanceMetrics.slowQueries.length > 50) {\n  this.performanceMetrics.slowQueries = this.performanceMetrics.slowQueries.slice(-25);\n// }\nconsole.warn(' Optimization completed');\n// }\n\n/** Enhanced close method;\n\n// async close() { }\n: Promise<void>\n\n  console.warn(' Closing advanced Kuzu interface...');\n  try {\n      // Save performance metrics\n  if(this.advancedConfig.enableMetrics) {\n        const _metricsPath = path.join((this.config as any).dbPath, 'performance_metrics.json');\n// // await writeFile(metricsPath, JSON.stringify(this.performanceMetrics, null, 2));\n      //       }\n\n      // Clear caches\n      this.queryCache.clear();\n      this.queryHistory.length = 0;\n;\n      // Call parent close method\n// // await super.close();\n      console.warn(' Advanced Kuzu interface closed');\n;\n    } catch(_error\n  = === 0)\n  // return scores;\n  // ; // LINT: unreachable code removed\n  const _maxScore = Math.max(...scores.map((s) => s.score));\n  if(maxScore === 0) return scores;\n  // ; // LINT: unreachable code removed\n  return scores.map(score => ({))\n..score,score = 1) return 0;\n  // ; // LINT: unreachable code removed\n  const _totalEdges = (this.stats as any).relationshipCount ?? 1;\n  const _modularity = 0;\n  for(const community of communities) {\n    const _communitySize = community.size; if(communitySize > 1) {\n      // Simplified calculation based on community size\n      const _expectedEdges = (communitySize*(communitySize - 1)) / (2 * totalEdges); modularity += expectedEdges*(1 / communities.length) {;\n    //     }\n  //   }\n  // return Math.min(1, modularity);\n  //   // LINT: unreachable code removed}\n  // private async;\n  recordTraversalMetrics(algorithm = this.graphMetrics.get('traversal_metrics');\n  metrics.push({\n      algorithm,;\n  execution_time,;\n  result_count,);\n  timestamp: new Date().toISOString();\n// }\n// )\n// Keep only recent metrics\n  if(metrics.length > 1000) {\n  metrics.splice(0, 500);\n// }\n// }\n// private // async\nanalyzePatternMetrics(data, pattern);\n: Promise<\n// {\n  // pattern: string\n  // matches_found: number\n  // frequency_score: number\n  // complexity_score: number\n// }\n>\n// {\n  // return {\n      pattern,;\n  // matches_found: data.length, // LINT: unreachable code removed\n  frequency_score: Math.min(1, data.length / 100),;\n  complexity_score: this.calculateQueryComplexity(pattern);\n// }\n// }\n// private // async generateGraphAnalytics() { }\n: Promise<\n\n  // connectivity: unknown\n  // clustering: unknown\n  // paths: unknown\n// }\n>\n// {\n  // return {\n      connectivity: // await this.analyzeConnectivity(),\n  // clustering: // await this.analyzeClusteringCoefficient(), // LINT: unreachable code removed\n  paths: // await this.analyzePathLengths();\n// }\n// }\n// private // async analyzeConnectivity() { }\n: Promise<\n\n  // density: number\n  // components: number\n  // diameter: number\n// }\n>\n// {\n  // Simplified connectivity analysis\n  // return {\n      density: 0.1, // Placeholder\n      components,;\n  // diameter, // LINT: unreachable code removed\n// }\n// }\n// private // async analyzeClusteringCoefficient() { }\n: Promise<\n\n  // global: number\n  // average_local: number\n// }\n>\n// {\n  // Simplified clustering coefficient\n  // return {\n      global: 0.3,;\n  // average_local: 0.25; // LINT: unreachable code removed\n// }\n// }\n// private // async analyzePathLengths() { }\n: Promise<\n\n  // average_shortest_path: number\n  // diameter: number\n  // radius: number\n// }\n>\n// {\n  // Simplified path length analysis\n  // return {\n      average_shortest_path: 3.2,;\n  // diameter, // LINT: unreachable code removed\n  // radius: 3\n// }\n// }\n// }\n// export default KuzuAdvancedInterface;\n\n}}}}}}}}}}}}}}}}}}}}}}))))))))))))))))))))))))))))\n\n/* End of file */"],
+      version: 3
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "a8419697599c69bb4fc0f94349e71fd16551bafc"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_22r0endvqu = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_22r0endvqu();
+export {};
+/** Kuzu Advanced Graph Database Interface - Extended Edition TypeScript;
+/** PRODUCTION-GRADE GRAPH OPERATIONS WITH ADVANCED ANALYTICS;
+/** Built on the existing kuzu-graph-interface.js with enhanced capabilities;
+
+import path from 'node:path';
+// // interface KuzuAdvancedConfig {
+//   enableAnalytics?;
+//   enableCache?;
+//   enableMetrics?;
+//   maxQueryComplexity?;
+//   queryTimeout?;
+//   [key = new Map();
+//   // private queryHistory = []
+// private;
+// performanceMetrics = {}
+// )
+// {
+  super(config);
+  // Enhanced configuration
+  this.advancedConfig = {enableAnalytics = = false,enableCache = = false,enableMetrics = = false,
+  maxQueryComplexity = {totalQueries = {
+      nodeTypes = {GraphMetrics = `node_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const __now = new Date();
+  const _now = new Date();
+  const { temp } = {};
+    startNode,;
+  algorithm = 'dfs',;
+  maxDepth = 10,;
+  nodeFilter = '',;
+  relationshipFilter = '',;
+  direction = 'both',;
+  collectMetrics = true,;
+  endNode }
+= options
+try {
+      const __query = this.buildDFSQuery(startNode, maxDepth, nodeFilter, relationshipFilter, direction);
+          break;
+        case 'bfs':;
+          query = this.buildBFSQuery(startNode, maxDepth, nodeFilter, relationshipFilter, direction);
+          break;
+        case 'shortest_path':;
+          query = this.buildShortestPathQuery(startNode, endNode!, nodeFilter, relationshipFilter);
+          break;
+        case 'all_paths':;
+          query = this.buildAllPathsQuery(startNode, endNode!, maxDepth, nodeFilter, relationshipFilter);
+          break;default = // await(this as any).executeQuery(query);
+      const _executionTime = Date.now() - startTime;
+  if(collectMetrics) {
+// // await this.recordTraversalMetrics(algorithm, executionTime, result.data?.length ?? 0);
+      //       }
+
+      // return {
+..result,
+    // algorithm,execution_time = this.buildRelationshipPattern(direction, relationshipFilter); // LINT: unreachable code removed
+    const __filterClause = nodeFilter ? `WHERE ${nodeFilter}` : '';
+
+    // return `;`
+    // MATCH(start = this.buildRelationshipPattern(direction, relationshipFilter); // LINT: unreachable code removed
+    const _filterClause = nodeFilter ? `WHERE \$nodeFilter` : '';
+;
+    // return `;`
+    // MATCH path=(start = this.buildRelationshipPattern('both', relationshipFilter); // LINT: unreachable code removed
+    const _filterClause = nodeFilter ? `AND ${nodeFilter}` : '';
+
+    // return `;`
+    // MATCH path=shortestPath((start = this.buildRelationshipPattern('both', relationshipFilter); // LINT: unreachable code removed
+    const _filterClause = nodeFilter ? `AND \$nodeFilter` : '';
+;
+    // return `;`
+    // MATCH path=(start = ''; // LINT: unreachable code removed
+  if(relationshipFilter) {
+      pattern += `:${relationshipFilter}`;
+    //     }
+  switch(direction) {
+      case 'incoming': {;
+        // return `<-[${pattern}]-`;
+    // case 'outgoing': // LINT: unreachable code removed
+        // return `-[${pattern}]->`;
+    // default = { // LINT: unreachable code removed}): Promise<CentralityResult> {
+    const { temp } = {};
+      algorithm = 'degree',;
+      nodeType = 'Service',;
+      relationshipType = '',;
+      normalize = true;
+      //       }
+    } = options;
+
+    try {
+// const __centralityScores = awaitthis.computeDegreeCentrality(nodeType, relationshipType);
+          break;
+        case 'betweenness':;
+          centralityScores = // await this.computeBetweennessCentrality(nodeType, relationshipType);
+          break;
+        case 'closeness':;
+          centralityScores = // await this.computeClosenessCentrality(nodeType, relationshipType);
+          break;
+        case 'eigenvector':;
+          centralityScores = // await this.computeEigenvectorCentrality(nodeType, relationshipType);
+          break;
+        case 'pagerank':;
+          centralityScores = // await this.computePageRank(nodeType, relationshipType);
+          break;default = this.normalizeCentralityScores(centralityScores);
+      //       }
+
+      // Store centrality scores if using real Kuzu
+      if((this.stats as any).usingRealKuzu) {
+// // await this.storeCentralityScores(centralityScores, algorithm);
+      //       }
+
+      // return {
+        algorithm,scores = relationshipType ? `:${relationshipType}` : '';
+    // const __query = `; // LINT: unreachable code removed`
+      MATCH(n = // await(this as any).executeQuery(query);
+    // return result.data?.map((row = > ({node = `MATCH(n) RETURN n.name as node`;
+    // const _nodesResult = // await(this as any).executeQuery(nodesQuery); // LINT: unreachable code removed
+    const _nodes = nodesResult.data?.map((row) => row.node)  ?? [];
+;
+    const _betweennessScores = new Map<string, number>();
+    nodes.forEach((node = > betweennessScores.set(node, 0));
+
+    // Calculate shortest paths between all pairs
+    for (let i = 0; i < Math.min(nodes.length, 20); i++) { // Limit for performance
+      for (let j = i + 1; j < Math.min(nodes.length, 20); j++) {
+        try {
+// const _pathResult = awaitthis.advancedTraversal({startNode = pathResult.data[0].path_nodes  ?? [];
+            // Increment betweenness for intermediate nodes/g)
+  for(let k = 1; k < pathNodes.length - 1; k++) {
+              const _intermNode = pathNodes[k];
+              if(betweennessScores.has(intermNode)) {
+                betweennessScores.set(intermNode, betweennessScores.get(intermNode)! + 1);
+              //               }
+            //             }
+          //           }
+        } catch(error)
+      //       }
+    //     }
+// return Array.from(betweennessScores.entries()).map(([node, _score]) => ({ node,
+// score; // LINT: unreachable code removed
+  }))
+// }
+// private // async
+computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85));
+: Promise<
+// {
+  node = `MATCH(n) RETURN n.name as node`;
+// const _nodesResult = await(this as any).executeQuery(nodesQuery);
+  const _nodes = nodesResult.data?.map((row) => row.node) ?? [];
+  // Initialize PageRank scores
+  const _pageRankScores = new Map<string, number>();
+  const _initialScore = 1.0 / nodes.length;
+  nodes.forEach((node) => pageRankScores.set(node, initialScore));
+  // Get adjacency information
+  const _relFilter = relationshipType ? `:\$relationshipType` : '';
+  const __adjQuery = `;`;
+      MATCH(source = // await(this as any).executeQuery(adjQuery);
+    const _edges = adjResult.data  ?? [];
+;
+    // Build adjacency lists
+    const _outLinks = new Map<string, string[]>();
+    const _inLinks = new Map<string, string[]>();
+;
+    nodes.forEach((node => {))
+      outLinks.set(node, []);
+      inLinks.set(node, []);
+    });
+
+    edges.forEach((edge => {))
+      if(outLinks.has(edge.source) && inLinks.has(edge.target)) {
+        outLinks.get(edge.source)!.push(edge.target);
+        inLinks.get(edge.target)!.push(edge.source);
+      //       }
+    });
+
+    // PageRank iterations
+  for(const iter = 0; iter < iterations; iter++) {
+      const _newScores = new Map<string, number>();
+;
+      nodes.forEach((node => {))
+        let _score = (1 - dampingFactor) / nodes.length;
+;
+        // Sum contributions from incoming links
+        const _incoming = inLinks.get(node)  ?? [];
+  for(const sourceNode of incoming) {
+          const _sourceScore = pageRankScores.get(sourceNode)  ?? 0; const _sourceOutDegree = (outLinks.get(sourceNode)  ?? []).length; if(sourceOutDegree > 0) {
+            score += dampingFactor*(sourceScore / sourceOutDegree);
+          //           }
+        //         }
+
+        newScores.set(node, score);
+      });
+
+      // Update scores
+      newScores.forEach((score, node) => {
+        pageRankScores.set(node, score);
+      });
+    //     }
+
+    // return Array.from(pageRankScores.entries()).map(([node, score]) => ({ node,
+    // score; // LINT: unreachable code removed
+      }));
+  //   }
+
+/** Community detection using modularity optimization;
+
+  async detectCommunitiesAdvanced(options = {}): Promise<CommunityResult> {
+    const { temp } = {};
+      algorithm = 'louvain',;
+      nodeType = 'Service',;
+      relationshipType = '',;
+      resolution = 1.0;
+    } = options;
+
+    try {
+// const _communities = awaitthis.louvainCommunityDetection(nodeType, relationshipType, resolution);
+          break;
+        case 'label_propagation':;
+          communities = // await this.labelPropagationCommunityDetection(nodeType, relationshipType);
+          break;
+        case 'connected_components':;
+          communities = // await this.connectedComponentsDetection(nodeType, relationshipType);
+          break;default = // await this.calculateModularity(communities, nodeType, relationshipType);
+
+      // Store community results if using real Kuzu
+      if((this.stats as any).usingRealKuzu) {
+// // await this.storeCommunityResults(communities, algorithm, modularity);
+      //       }
+
+      // return {
+        algorithm,;
+    // communities, // LINT: unreachable code removed
+        modularity,num_communities = `;`;
+  MATCH(n);
+  RETURN;
+  n.name as node;
+  `;`
+// const _nodesResult = await(this as any).executeQuery(nodesQuery);
+    const _nodes = nodesResult.data?.map((row) => row.node)  ?? [];
+;
+    const _relFilter = relationshipType ? `;`;
+  :\$relationshipType` : ''`
+  const __edgesQuery = `;`;
+      MATCH(source = // await(this as any).executeQuery(edgesQuery);
+    const _edges = edgesResult.data  ?? [];
+;
+    // Initialize each node in its own community
+    const _nodeCommunity = new Map<string, number>();
+    nodes.forEach((node = > nodeCommunity.set(node, index));
+
+    // Build adjacency list
+    const _adjacency = new Map<string, string[]>();
+    nodes.forEach((node = > adjacency.set(node, []));
+
+    edges.forEach((edge => {))
+      if(adjacency.has(edge.source) && adjacency.has(edge.target)) {
+        adjacency.get(edge.source)?.push(edge.target);
+  if(edge.source !== edge.target) {
+          adjacency.get(edge.target)?.push(edge.source);
+        //         }
+      //       }
+    });
+
+    // Simplified community optimization(single pass)
+    let _improved = true;
+    let _iteration = 0;
+  while(improved && iteration < 10) {
+      improved = false;
+  for(const node of nodes) {
+        const _currentCommunity = nodeCommunity.get(node)!; const _neighbors = adjacency.get(node)  ?? []; // Count neighbor communities
+        const _neighborCommunities = new Map<number, number>() {;
+        neighbors.forEach((neighbor => {))
+          const _neighborCommunity = nodeCommunity.get(neighbor)!;
+          neighborCommunities.set(neighborCommunity,);
+            (neighborCommunities.get(neighborCommunity)  ?? 0) + 1);
+        });
+
+        // Find best community(most connections)
+        let _bestCommunity = currentCommunity;
+        let _maxConnections = neighborCommunities.get(currentCommunity)  ?? 0;
+;
+        neighborCommunities.forEach((connections, community) => {
+  if(connections > maxConnections) {
+            maxConnections = connections;
+            bestCommunity = community;
+          //           }
+        });
+
+        // Move node if improvement found
+  if(bestCommunity !== currentCommunity && maxConnections > 1) {
+          nodeCommunity.set(node, bestCommunity);
+          improved = true;
+        //         }
+      //       }
+
+      iteration++;
+    //     }
+
+    // Group nodes by community
+    const _communities = new Map<number, string[]>();
+    nodeCommunity.forEach((communityId, node) => {
+      if(!communities.has(communityId)) {
+        communities.set(communityId, []);
+      //       }
+      communities.get(communityId)?.push(node);
+    });
+
+    // Convert to array format
+    // return Array.from(communities.values()).map((_members, _index) => ({ id = {  }): Promise<QueryResult> {
+    const { temp } = {};
+      limit = 100,;
+    // filters = { // LINT: unreachable code removed},
+      includeMetrics = true;
+    } = options;
+
+    try {
+      // Build pattern matching query
+      let _query = this.buildPatternQuery(pattern, filters, limit);
+// const _result = await(this as any).executeQuery(query);
+  if(includeMetrics && result.success) {
+        // Analyze pattern frequency and importance
+
+        // return {
+..result,pattern_metrics = `;`
+  MATCH;
+  \$pattern`;`
+    // ; // LINT: unreachable code removed
+    // Add filters
+    const _filterClauses = [];
+    Object.entries(filters).forEach(([key, value]) => {
+  if(typeof value === 'string') {
+        filterClauses.push(`;`);
+  $key = '${value}'`);`
+      } else if(typeof value === 'number') {
+        filterClauses.push(`;`);
+  \$key = \$value`);`
+      } else if(Array.isArray(value)) {
+        filterClauses.push(`;`);
+  \$keyIN[\$value.map((v) => `'${v}'`).join(', ')]`);`
+      //       }
+    });
+  if(filterClauses.length > 0) {
+      query += `;`;
+  WHERE;
+  \$filterClauses.join(' AND ')`;`
+    //     }
+
+    query += ' RETURN *';
+  if(limit) {
+      query += `;`;
+  LIMIT;
+  \$limit`;`
+    //     }
+
+    // return query;
+    //   // LINT: unreachable code removed}
+
+/** Advanced query optimization;
+
+  async;
+  optimizeQuery((query = {}));
+  : Promise<success = true,
+      suggestImprovement = true,;
+      cacheResult = true= options
+;
+  try {
+      const _startTime = Date.now();
+;
+      // Check cache first
+      if(cacheResult && this.queryCache.has(query)) {
+        const _cached = this.queryCache.get(query);
+        this.performanceMetrics.cacheHitRate++;
+        // return {
+..cached,from_cache = // await(this as any).executeQuery(query);
+    // const _executionTime = Date.now() - startTime; // LINT: unreachable code removed
+
+      // Analyze execution if requested
+      let __optimization = {};
+  if(analyzeExecution) {
+        _optimization = // await this.analyzeQueryExecution(query, executionTime, result);
+      //       }
+
+      // Cache result
+  if(cacheResult && result.success && this.queryCache.size < 1000) {
+        this.queryCache.set(query, result);
+      //       }
+
+      // Update performance metrics
+      this.updatePerformanceMetrics(query, executionTime, result.success);
+
+      // return {
+..result,
+    // execution_time = {query_complexity = 0; // LINT: unreachable code removed
+
+    // Count different query elements
+    const _matchCount = (query.match(/MATCH/gi)  ?? []).length;
+    const _whereCount = (query.match(/WHERE/gi)  ?? []).length;
+    const _returnCount = (query.match(/RETURN/gi)  ?? []).length;
+    // const _optionalCount = (query.match(/OPTIONAL/gi)  ?? []).length; // LINT: unreachable code removed
+    const _unionCount = (query.match(/UNION/gi)  ?? []).length;
+;
+    // Calculate complexity score
+    complexity += matchCount * 2;
+    complexity += whereCount * 1;
+    complexity += returnCount * 1;
+    // complexity += optionalCount * 3; // LINT: unreachable code removed
+    complexity += unionCount * 5;
+;
+    // Check for complex patterns
+    if(query.includes('*')) complexity += 5; // Variable length paths
+    if(query.includes('shortestPath')) complexity += 10;
+    if(query.includes('allShortestPaths')) complexity += 15;
+
+    // return complexity;
+    //   // LINT: unreachable code removed}
+
+/** Performance monitoring and alerting;
+
+  // private initializePerformanceTracking() ;
+    // Set up performance monitoring
+    setInterval(() => ;
+      this.analyzePerformanceTrends();, 60000); // Every minute
+
+    console.warn(' Performance tracking initialized');
+
+/** Update performance metrics;
+
+  // private updatePerformanceMetrics(query = (this.performanceMetrics.avgExecutionTime + executionTime) / 2;
+
+    // Track slow queries
+  if(executionTime > 5000) {
+      this.performanceMetrics.slowQueries.push({ query = this.queryHistory.slice(-100);
+
+    if(recentQueries.length < 10) return;
+    // ; // LINT: unreachable code removed
+    const _avgTime = recentQueries.reduce((sum, q) => sum + q.execution_time, 0) / recentQueries.length;
+;
+    // Alert on performance degradation
+  if(avgTime > this.performanceMetrics.avgExecutionTime * 2) {
+      console.warn(' Performance Alert = {  }): Promise<{generated_at = true,'
+      includeCentrality = true,;
+      includeCommunities = true,;
+      includePerformance = true;
+    } = options;
+
+    const __report = {generated_at = // await this.generateGraphAnalytics();
+    //     }
+  if(includeCentrality) {
+      report.centrality = // await this.computeCentrality({algorithm = // await this.detectCommunitiesAdvanced({ algorithm);
+    //     }
+  if(includePerformance) {
+      report.performance = this.performanceMetrics;
+    //     }
+
+    // return report;
+    //   // LINT: unreachable code removed}
+
+/** Get graph overview statistics;
+
+  private;
+  async;
+  getGraphOverview();
+  : Promise<;
+  //   {
+    node_count = {node_count = (this as any).connection.querySync(`;`)
+  MATCH(n);
+  RETURN;
+  count(n) as count;
+  `);`
+    const _rows = result.getAllSync();
+  if(rows.length > 0) {
+      overview.node_types[nodeType] = rows[0].count;
+      overview.node_count += rows[0].count;
+    //     }
+    result.close();
+  //   }
+  catch(error) ;
+            overview.node_types[nodeType] = 0;
+// }
+
+// Count relationships by type
+for (const _relType of Object.keys((this as any).schema.relationships)) {
+          try {
+            const __result = (this as any).connection.querySync(`; `);
+  MATCH()-[r = result.getAllSync(); if(rows.length > 0) {
+              overview.relationship_types[relType] = rows[0].count;
+              overview.relationship_count += rows[0].count;
+            //             }
+            result.close();
+          } catch(error) {
+            overview.relationship_types[relType] = 0;
+          //           }
+        //         }
+      } else {
+        // Fallback to in-memory statistics
+        overview.node_count = (this.stats as any).nodeCount;
+        overview.relationship_count = (this.stats as any).relationshipCount;
+      //       }
+
+      // return overview;
+    // ; // LINT: unreachable code removed
+    } catch(error = `;`
+          CREATE(c = `;`;
+          CREATE(c = // await(this as any).getStats();
+
+    // return {
+..baseStats,performance_metrics = Array.from(this.queryCache.entries());
+    // entries.slice(0, 250).forEach(([key]) => { // LINT: unreachable code removed
+        this.queryCache.delete(key);
+      //       }
+  //   )
+// }
+// Cleanup old query history
+  if(this.queryHistory.length > 500) {
+  this.queryHistory = this.queryHistory.slice(-250);
+// }
+// Cleanup slow queries
+  if(this.performanceMetrics.slowQueries.length > 50) {
+  this.performanceMetrics.slowQueries = this.performanceMetrics.slowQueries.slice(-25);
+// }
+console.warn(' Optimization completed');
+// }
+
+/** Enhanced close method;
+
+// async close() { }
+: Promise<void>
+
+  console.warn(' Closing advanced Kuzu interface...');
+  try {
+      // Save performance metrics
+  if(this.advancedConfig.enableMetrics) {
+        const _metricsPath = path.join((this.config as any).dbPath, 'performance_metrics.json');
+// // await writeFile(metricsPath, JSON.stringify(this.performanceMetrics, null, 2));
+      //       }
+
+      // Clear caches
+      this.queryCache.clear();
+      this.queryHistory.length = 0;
+;
+      // Call parent close method
+// // await super.close();
+      console.warn(' Advanced Kuzu interface closed');
+;
+    } catch(_error
+  = === 0)
+  // return scores;
+  // ; // LINT: unreachable code removed
+  const _maxScore = Math.max(...scores.map((s) => s.score));
+  if(maxScore === 0) return scores;
+  // ; // LINT: unreachable code removed
+  return scores.map(score => ({))
+..score,score = 1) return 0;
+  // ; // LINT: unreachable code removed
+  const _totalEdges = (this.stats as any).relationshipCount ?? 1;
+  const _modularity = 0;
+  for(const community of communities) {
+    const _communitySize = community.size; if(communitySize > 1) {
+      // Simplified calculation based on community size
+      const _expectedEdges = (communitySize*(communitySize - 1)) / (2 * totalEdges); modularity += expectedEdges*(1 / communities.length) {;
+    //     }
+  //   }
+  // return Math.min(1, modularity);
+  //   // LINT: unreachable code removed}
+  // private async;
+  recordTraversalMetrics(algorithm = this.graphMetrics.get('traversal_metrics');
+  metrics.push({
+      algorithm,;
+  execution_time,;
+  result_count,);
+  timestamp: new Date().toISOString();
+// }
+// )
+// Keep only recent metrics
+  if(metrics.length > 1000) {
+  metrics.splice(0, 500);
+// }
+// }
+// private // async
+analyzePatternMetrics(data, pattern);
+: Promise<
+// {
+  // pattern: string
+  // matches_found: number
+  // frequency_score: number
+  // complexity_score: number
+// }
+>
+// {
+  // return {
+      pattern,;
+  // matches_found: data.length, // LINT: unreachable code removed
+  frequency_score: Math.min(1, data.length / 100),;
+  complexity_score: this.calculateQueryComplexity(pattern);
+// }
+// }
+// private // async generateGraphAnalytics() { }
+: Promise<
+
+  // connectivity: unknown
+  // clustering: unknown
+  // paths: unknown
+// }
+>
+// {
+  // return {
+      connectivity: // await this.analyzeConnectivity(),
+  // clustering: // await this.analyzeClusteringCoefficient(), // LINT: unreachable code removed
+  paths: // await this.analyzePathLengths();
+// }
+// }
+// private // async analyzeConnectivity() { }
+: Promise<
+
+  // density: number
+  // components: number
+  // diameter: number
+// }
+>
+// {
+  // Simplified connectivity analysis
+  // return {
+      density: 0.1, // Placeholder
+      components,;
+  // diameter, // LINT: unreachable code removed
+// }
+// }
+// private // async analyzeClusteringCoefficient() { }
+: Promise<
+
+  // global: number
+  // average_local: number
+// }
+>
+// {
+  // Simplified clustering coefficient
+  // return {
+      global: 0.3,;
+  // average_local: 0.25; // LINT: unreachable code removed
+// }
+// }
+// private // async analyzePathLengths() { }
+: Promise<
+
+  // average_shortest_path: number
+  // diameter: number
+  // radius: number
+// }
+>
+// {
+  // Simplified path length analysis
+  // return {
+      average_shortest_path: 3.2,;
+  // diameter, // LINT: unreachable code removed
+  // radius: 3
+// }
+// }
+// }
+// export default KuzuAdvancedInterface;
+
+}}}}}}}}}}}}}}}}}}}}}}))))))))))))))))))))))))))))
+
+/* End of file */
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiL2hvbWUvbWh1Z28vY29kZS9jbGF1ZGUtY29kZS1mbG93L3NyYy9kYXRhYmFzZS9rdXp1LWFkdmFuY2VkLWludGVyZmFjZS50cyJdLCJzb3VyY2VzQ29udGVudCI6WyJcbi8qKiBLdXp1IEFkdmFuY2VkIEdyYXBoIERhdGFiYXNlIEludGVyZmFjZSAtIEV4dGVuZGVkIEVkaXRpb24gVHlwZVNjcmlwdDtcbi8qKiBQUk9EVUNUSU9OLUdSQURFIEdSQVBIIE9QRVJBVElPTlMgV0lUSCBBRFZBTkNFRCBBTkFMWVRJQ1M7XG4vKiogQnVpbHQgb24gdGhlIGV4aXN0aW5nIGt1enUtZ3JhcGgtaW50ZXJmYWNlLmpzIHdpdGggZW5oYW5jZWQgY2FwYWJpbGl0aWVzO1xuXG5pbXBvcnQgcGF0aCBmcm9tICdub2RlOnBhdGgnO1xuLy8gLy8gaW50ZXJmYWNlIEt1enVBZHZhbmNlZENvbmZpZyB7XG4vLyAgIGVuYWJsZUFuYWx5dGljcz87XG4vLyAgIGVuYWJsZUNhY2hlPztcbi8vICAgZW5hYmxlTWV0cmljcz87XG4vLyAgIG1heFF1ZXJ5Q29tcGxleGl0eT87XG4vLyAgIHF1ZXJ5VGltZW91dD87XG4vLyAgIFtrZXkgPSBuZXcgTWFwKCk7XG4vLyAgIC8vIHByaXZhdGUgcXVlcnlIaXN0b3J5ID0gW11cbi8vIHByaXZhdGU7XG4vLyBwZXJmb3JtYW5jZU1ldHJpY3MgPSB7fVxuLy8gKVxuLy8ge1xuICBzdXBlcihjb25maWcpO1xuICAvLyBFbmhhbmNlZCBjb25maWd1cmF0aW9uXG4gIHRoaXMuYWR2YW5jZWRDb25maWcgPSB7ZW5hYmxlQW5hbHl0aWNzID0gPSBmYWxzZSxlbmFibGVDYWNoZSA9ID0gZmFsc2UsZW5hYmxlTWV0cmljcyA9ID0gZmFsc2UsXG4gIG1heFF1ZXJ5Q29tcGxleGl0eSA9IHt0b3RhbFF1ZXJpZXMgPSB7XG4gICAgICBub2RlVHlwZXMgPSB7R3JhcGhNZXRyaWNzID0gYG5vZGVfJHtEYXRlLm5vdygpfV8ke01hdGgucmFuZG9tKCkudG9TdHJpbmcoMzYpLnN1YnN0cigyLCA5KX1gO1xuICBjb25zdCBfX25vdyA9IG5ldyBEYXRlKCk7XG4gIGNvbnN0IF9ub3cgPSBuZXcgRGF0ZSgpO1xuICBjb25zdCB7IHRlbXAgfSA9IHt9O1xuICAgIHN0YXJ0Tm9kZSw7XG4gIGFsZ29yaXRobSA9ICdkZnMnLDtcbiAgbWF4RGVwdGggPSAxMCw7XG4gIG5vZGVGaWx0ZXIgPSAnJyw7XG4gIHJlbGF0aW9uc2hpcEZpbHRlciA9ICcnLDtcbiAgZGlyZWN0aW9uID0gJ2JvdGgnLDtcbiAgY29sbGVjdE1ldHJpY3MgPSB0cnVlLDtcbiAgZW5kTm9kZSB9XG49IG9wdGlvbnNcbnRyeSB7XG4gICAgICBjb25zdCBfX3F1ZXJ5ID0gdGhpcy5idWlsZERGU1F1ZXJ5KHN0YXJ0Tm9kZSwgbWF4RGVwdGgsIG5vZGVGaWx0ZXIsIHJlbGF0aW9uc2hpcEZpbHRlciwgZGlyZWN0aW9uKTtcbiAgICAgICAgICBicmVhaztcbiAgICAgICAgY2FzZSAnYmZzJzo7XG4gICAgICAgICAgcXVlcnkgPSB0aGlzLmJ1aWxkQkZTUXVlcnkoc3RhcnROb2RlLCBtYXhEZXB0aCwgbm9kZUZpbHRlciwgcmVsYXRpb25zaGlwRmlsdGVyLCBkaXJlY3Rpb24pO1xuICAgICAgICAgIGJyZWFrO1xuICAgICAgICBjYXNlICdzaG9ydGVzdF9wYXRoJzo7XG4gICAgICAgICAgcXVlcnkgPSB0aGlzLmJ1aWxkU2hvcnRlc3RQYXRoUXVlcnkoc3RhcnROb2RlLCBlbmROb2RlISwgbm9kZUZpbHRlciwgcmVsYXRpb25zaGlwRmlsdGVyKTtcbiAgICAgICAgICBicmVhaztcbiAgICAgICAgY2FzZSAnYWxsX3BhdGhzJzo7XG4gICAgICAgICAgcXVlcnkgPSB0aGlzLmJ1aWxkQWxsUGF0aHNRdWVyeShzdGFydE5vZGUsIGVuZE5vZGUhLCBtYXhEZXB0aCwgbm9kZUZpbHRlciwgcmVsYXRpb25zaGlwRmlsdGVyKTtcbiAgICAgICAgICBicmVhaztkZWZhdWx0ID0gLy8gYXdhaXQodGhpcyBhcyBhbnkpLmV4ZWN1dGVRdWVyeShxdWVyeSk7XG4gICAgICBjb25zdCBfZXhlY3V0aW9uVGltZSA9IERhdGUubm93KCkgLSBzdGFydFRpbWU7XG4gIGlmKGNvbGxlY3RNZXRyaWNzKSB7XG4vLyAvLyBhd2FpdCB0aGlzLnJlY29yZFRyYXZlcnNhbE1ldHJpY3MoYWxnb3JpdGhtLCBleGVjdXRpb25UaW1lLCByZXN1bHQuZGF0YT8ubGVuZ3RoID8/IDApO1xuICAgICAgLy8gICAgICAgfVxuXG4gICAgICAvLyByZXR1cm4ge1xuLi5yZXN1bHQsXG4gICAgLy8gYWxnb3JpdGhtLGV4ZWN1dGlvbl90aW1lID0gdGhpcy5idWlsZFJlbGF0aW9uc2hpcFBhdHRlcm4oZGlyZWN0aW9uLCByZWxhdGlvbnNoaXBGaWx0ZXIpOyAvLyBMSU5UOiB1bnJlYWNoYWJsZSBjb2RlIHJlbW92ZWRcbiAgICBjb25zdCBfX2ZpbHRlckNsYXVzZSA9IG5vZGVGaWx0ZXIgPyBgV0hFUkUgJHtub2RlRmlsdGVyfWAgOiAnJztcblxuICAgIC8vIHJldHVybiBgO2BcbiAgICAvLyBNQVRDSChzdGFydCA9IHRoaXMuYnVpbGRSZWxhdGlvbnNoaXBQYXR0ZXJuKGRpcmVjdGlvbiwgcmVsYXRpb25zaGlwRmlsdGVyKTsgLy8gTElOVDogdW5yZWFjaGFibGUgY29kZSByZW1vdmVkXG4gICAgY29uc3QgX2ZpbHRlckNsYXVzZSA9IG5vZGVGaWx0ZXIgPyBgV0hFUkUgXFwkbm9kZUZpbHRlcmAgOiAnJztcbjtcbiAgICAvLyByZXR1cm4gYDtgXG4gICAgLy8gTUFUQ0ggcGF0aD0oc3RhcnQgPSB0aGlzLmJ1aWxkUmVsYXRpb25zaGlwUGF0dGVybignYm90aCcsIHJlbGF0aW9uc2hpcEZpbHRlcik7IC8vIExJTlQ6IHVucmVhY2hhYmxlIGNvZGUgcmVtb3ZlZFxuICAgIGNvbnN0IF9maWx0ZXJDbGF1c2UgPSBub2RlRmlsdGVyID8gYEFORCAke25vZGVGaWx0ZXJ9YCA6ICcnO1xuXG4gICAgLy8gcmV0dXJuIGA7YFxuICAgIC8vIE1BVENIIHBhdGg9c2hvcnRlc3RQYXRoKChzdGFydCA9IHRoaXMuYnVpbGRSZWxhdGlvbnNoaXBQYXR0ZXJuKCdib3RoJywgcmVsYXRpb25zaGlwRmlsdGVyKTsgLy8gTElOVDogdW5yZWFjaGFibGUgY29kZSByZW1vdmVkXG4gICAgY29uc3QgX2ZpbHRlckNsYXVzZSA9IG5vZGVGaWx0ZXIgPyBgQU5EIFxcJG5vZGVGaWx0ZXJgIDogJyc7XG47XG4gICAgLy8gcmV0dXJuIGA7YFxuICAgIC8vIE1BVENIIHBhdGg9KHN0YXJ0ID0gJyc7IC8vIExJTlQ6IHVucmVhY2hhYmxlIGNvZGUgcmVtb3ZlZFxuICBpZihyZWxhdGlvbnNoaXBGaWx0ZXIpIHtcbiAgICAgIHBhdHRlcm4gKz0gYDoke3JlbGF0aW9uc2hpcEZpbHRlcn1gO1xuICAgIC8vICAgICB9XG4gIHN3aXRjaChkaXJlY3Rpb24pIHtcbiAgICAgIGNhc2UgJ2luY29taW5nJzogeztcbiAgICAgICAgLy8gcmV0dXJuIGA8LVske3BhdHRlcm59XS1gO1xuICAgIC8vIGNhc2UgJ291dGdvaW5nJzogLy8gTElOVDogdW5yZWFjaGFibGUgY29kZSByZW1vdmVkXG4gICAgICAgIC8vIHJldHVybiBgLVske3BhdHRlcm59XS0+YDtcbiAgICAvLyBkZWZhdWx0ID0geyAvLyBMSU5UOiB1bnJlYWNoYWJsZSBjb2RlIHJlbW92ZWR9KTogUHJvbWlzZTxDZW50cmFsaXR5UmVzdWx0PiB7XG4gICAgY29uc3QgeyB0ZW1wIH0gPSB7fTtcbiAgICAgIGFsZ29yaXRobSA9ICdkZWdyZWUnLDtcbiAgICAgIG5vZGVUeXBlID0gJ1NlcnZpY2UnLDtcbiAgICAgIHJlbGF0aW9uc2hpcFR5cGUgPSAnJyw7XG4gICAgICBub3JtYWxpemUgPSB0cnVlO1xuICAgICAgLy8gICAgICAgfVxuICAgIH0gPSBvcHRpb25zO1xuXG4gICAgdHJ5IHtcbi8vIGNvbnN0IF9fY2VudHJhbGl0eVNjb3JlcyA9IGF3YWl0dGhpcy5jb21wdXRlRGVncmVlQ2VudHJhbGl0eShub2RlVHlwZSwgcmVsYXRpb25zaGlwVHlwZSk7XG4gICAgICAgICAgYnJlYWs7XG4gICAgICAgIGNhc2UgJ2JldHdlZW5uZXNzJzo7XG4gICAgICAgICAgY2VudHJhbGl0eVNjb3JlcyA9IC8vIGF3YWl0IHRoaXMuY29tcHV0ZUJldHdlZW5uZXNzQ2VudHJhbGl0eShub2RlVHlwZSwgcmVsYXRpb25zaGlwVHlwZSk7XG4gICAgICAgICAgYnJlYWs7XG4gICAgICAgIGNhc2UgJ2Nsb3NlbmVzcyc6O1xuICAgICAgICAgIGNlbnRyYWxpdHlTY29yZXMgPSAvLyBhd2FpdCB0aGlzLmNvbXB1dGVDbG9zZW5lc3NDZW50cmFsaXR5KG5vZGVUeXBlLCByZWxhdGlvbnNoaXBUeXBlKTtcbiAgICAgICAgICBicmVhaztcbiAgICAgICAgY2FzZSAnZWlnZW52ZWN0b3InOjtcbiAgICAgICAgICBjZW50cmFsaXR5U2NvcmVzID0gLy8gYXdhaXQgdGhpcy5jb21wdXRlRWlnZW52ZWN0b3JDZW50cmFsaXR5KG5vZGVUeXBlLCByZWxhdGlvbnNoaXBUeXBlKTtcbiAgICAgICAgICBicmVhaztcbiAgICAgICAgY2FzZSAncGFnZXJhbmsnOjtcbiAgICAgICAgICBjZW50cmFsaXR5U2NvcmVzID0gLy8gYXdhaXQgdGhpcy5jb21wdXRlUGFnZVJhbmsobm9kZVR5cGUsIHJlbGF0aW9uc2hpcFR5cGUpO1xuICAgICAgICAgIGJyZWFrO2RlZmF1bHQgPSB0aGlzLm5vcm1hbGl6ZUNlbnRyYWxpdHlTY29yZXMoY2VudHJhbGl0eVNjb3Jlcyk7XG4gICAgICAvLyAgICAgICB9XG5cbiAgICAgIC8vIFN0b3JlIGNlbnRyYWxpdHkgc2NvcmVzIGlmIHVzaW5nIHJlYWwgS3V6dVxuICAgICAgaWYoKHRoaXMuc3RhdHMgYXMgYW55KS51c2luZ1JlYWxLdXp1KSB7XG4vLyAvLyBhd2FpdCB0aGlzLnN0b3JlQ2VudHJhbGl0eVNjb3JlcyhjZW50cmFsaXR5U2NvcmVzLCBhbGdvcml0aG0pO1xuICAgICAgLy8gICAgICAgfVxuXG4gICAgICAvLyByZXR1cm4ge1xuICAgICAgICBhbGdvcml0aG0sc2NvcmVzID0gcmVsYXRpb25zaGlwVHlwZSA/IGA6JHtyZWxhdGlvbnNoaXBUeXBlfWAgOiAnJztcbiAgICAvLyBjb25zdCBfX3F1ZXJ5ID0gYDsgLy8gTElOVDogdW5yZWFjaGFibGUgY29kZSByZW1vdmVkYFxuICAgICAgTUFUQ0gobiA9IC8vIGF3YWl0KHRoaXMgYXMgYW55KS5leGVjdXRlUXVlcnkocXVlcnkpO1xuICAgIC8vIHJldHVybiByZXN1bHQuZGF0YT8ubWFwKChyb3cgPSA+ICh7bm9kZSA9IGBNQVRDSChuKSBSRVRVUk4gbi5uYW1lIGFzIG5vZGVgO1xuICAgIC8vIGNvbnN0IF9ub2Rlc1Jlc3VsdCA9IC8vIGF3YWl0KHRoaXMgYXMgYW55KS5leGVjdXRlUXVlcnkobm9kZXNRdWVyeSk7IC8vIExJTlQ6IHVucmVhY2hhYmxlIGNvZGUgcmVtb3ZlZFxuICAgIGNvbnN0IF9ub2RlcyA9IG5vZGVzUmVzdWx0LmRhdGE/Lm1hcCgocm93KSA9PiByb3cubm9kZSkgID8/IFtdO1xuO1xuICAgIGNvbnN0IF9iZXR3ZWVubmVzc1Njb3JlcyA9IG5ldyBNYXA8c3RyaW5nLCBudW1iZXI+KCk7XG4gICAgbm9kZXMuZm9yRWFjaCgobm9kZSA9ID4gYmV0d2Vlbm5lc3NTY29yZXMuc2V0KG5vZGUsIDApKTtcblxuICAgIC8vIENhbGN1bGF0ZSBzaG9ydGVzdCBwYXRocyBiZXR3ZWVuIGFsbCBwYWlyc1xuICAgIGZvciAobGV0IGkgPSAwOyBpIDwgTWF0aC5taW4obm9kZXMubGVuZ3RoLCAyMCk7IGkrKykgeyAvLyBMaW1pdCBmb3IgcGVyZm9ybWFuY2VcbiAgICAgIGZvciAobGV0IGogPSBpICsgMTsgaiA8IE1hdGgubWluKG5vZGVzLmxlbmd0aCwgMjApOyBqKyspIHtcbiAgICAgICAgdHJ5IHtcbi8vIGNvbnN0IF9wYXRoUmVzdWx0ID0gYXdhaXR0aGlzLmFkdmFuY2VkVHJhdmVyc2FsKHtzdGFydE5vZGUgPSBwYXRoUmVzdWx0LmRhdGFbMF0ucGF0aF9ub2RlcyAgPz8gW107XG4gICAgICAgICAgICAvLyBJbmNyZW1lbnQgYmV0d2Vlbm5lc3MgZm9yIGludGVybWVkaWF0ZSBub2Rlcy9nKVxuICBmb3IobGV0IGsgPSAxOyBrIDwgcGF0aE5vZGVzLmxlbmd0aCAtIDE7IGsrKykge1xuICAgICAgICAgICAgICBjb25zdCBfaW50ZXJtTm9kZSA9IHBhdGhOb2Rlc1trXTtcbiAgICAgICAgICAgICAgaWYoYmV0d2Vlbm5lc3NTY29yZXMuaGFzKGludGVybU5vZGUpKSB7XG4gICAgICAgICAgICAgICAgYmV0d2Vlbm5lc3NTY29yZXMuc2V0KGludGVybU5vZGUsIGJldHdlZW5uZXNzU2NvcmVzLmdldChpbnRlcm1Ob2RlKSEgKyAxKTtcbiAgICAgICAgICAgICAgLy8gICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAvLyAgICAgICAgICAgICB9XG4gICAgICAgICAgLy8gICAgICAgICAgIH1cbiAgICAgICAgfSBjYXRjaChlcnJvcilcbiAgICAgIC8vICAgICAgIH1cbiAgICAvLyAgICAgfVxuLy8gcmV0dXJuIEFycmF5LmZyb20oYmV0d2Vlbm5lc3NTY29yZXMuZW50cmllcygpKS5tYXAoKFtub2RlLCBfc2NvcmVdKSA9PiAoeyBub2RlLFxuLy8gc2NvcmU7IC8vIExJTlQ6IHVucmVhY2hhYmxlIGNvZGUgcmVtb3ZlZFxuICB9KSlcbi8vIH1cbi8vIHByaXZhdGUgLy8gYXN5bmNcbmNvbXB1dGVDbG9zZW5lc3NDZW50cmFsaXR5KChub2RlVHlwZSA9IDEwKSwgKGRhbXBpbmdGYWN0b3IgPSAwLjg1KSk7XG46IFByb21pc2U8XG4vLyB7XG4gIG5vZGUgPSBgTUFUQ0gobikgUkVUVVJOIG4ubmFtZSBhcyBub2RlYDtcbi8vIGNvbnN0IF9ub2Rlc1Jlc3VsdCA9IGF3YWl0KHRoaXMgYXMgYW55KS5leGVjdXRlUXVlcnkobm9kZXNRdWVyeSk7XG4gIGNvbnN0IF9ub2RlcyA9IG5vZGVzUmVzdWx0LmRhdGE/Lm1hcCgocm93KSA9PiByb3cubm9kZSkgPz8gW107XG4gIC8vIEluaXRpYWxpemUgUGFnZVJhbmsgc2NvcmVzXG4gIGNvbnN0IF9wYWdlUmFua1Njb3JlcyA9IG5ldyBNYXA8c3RyaW5nLCBudW1iZXI+KCk7XG4gIGNvbnN0IF9pbml0aWFsU2NvcmUgPSAxLjAgLyBub2Rlcy5sZW5ndGg7XG4gIG5vZGVzLmZvckVhY2goKG5vZGUpID0+IHBhZ2VSYW5rU2NvcmVzLnNldChub2RlLCBpbml0aWFsU2NvcmUpKTtcbiAgLy8gR2V0IGFkamFjZW5jeSBpbmZvcm1hdGlvblxuICBjb25zdCBfcmVsRmlsdGVyID0gcmVsYXRpb25zaGlwVHlwZSA/IGA6XFwkcmVsYXRpb25zaGlwVHlwZWAgOiAnJztcbiAgY29uc3QgX19hZGpRdWVyeSA9IGA7YDtcbiAgICAgIE1BVENIKHNvdXJjZSA9IC8vIGF3YWl0KHRoaXMgYXMgYW55KS5leGVjdXRlUXVlcnkoYWRqUXVlcnkpO1xuICAgIGNvbnN0IF9lZGdlcyA9IGFkalJlc3VsdC5kYXRhICA/PyBbXTtcbjtcbiAgICAvLyBCdWlsZCBhZGphY2VuY3kgbGlzdHNcbiAgICBjb25zdCBfb3V0TGlua3MgPSBuZXcgTWFwPHN0cmluZywgc3RyaW5nW10+KCk7XG4gICAgY29uc3QgX2luTGlua3MgPSBuZXcgTWFwPHN0cmluZywgc3RyaW5nW10+KCk7XG47XG4gICAgbm9kZXMuZm9yRWFjaCgobm9kZSA9PiB7KSlcbiAgICAgIG91dExpbmtzLnNldChub2RlLCBbXSk7XG4gICAgICBpbkxpbmtzLnNldChub2RlLCBbXSk7XG4gICAgfSk7XG5cbiAgICBlZGdlcy5mb3JFYWNoKChlZGdlID0+IHspKVxuICAgICAgaWYob3V0TGlua3MuaGFzKGVkZ2Uuc291cmNlKSAmJiBpbkxpbmtzLmhhcyhlZGdlLnRhcmdldCkpIHtcbiAgICAgICAgb3V0TGlua3MuZ2V0KGVkZ2Uuc291cmNlKSEucHVzaChlZGdlLnRhcmdldCk7XG4gICAgICAgIGluTGlua3MuZ2V0KGVkZ2UudGFyZ2V0KSEucHVzaChlZGdlLnNvdXJjZSk7XG4gICAgICAvLyAgICAgICB9XG4gICAgfSk7XG5cbiAgICAvLyBQYWdlUmFuayBpdGVyYXRpb25zXG4gIGZvcihjb25zdCBpdGVyID0gMDsgaXRlciA8IGl0ZXJhdGlvbnM7IGl0ZXIrKykge1xuICAgICAgY29uc3QgX25ld1Njb3JlcyA9IG5ldyBNYXA8c3RyaW5nLCBudW1iZXI+KCk7XG47XG4gICAgICBub2Rlcy5mb3JFYWNoKChub2RlID0+IHspKVxuICAgICAgICBsZXQgX3Njb3JlID0gKDEgLSBkYW1waW5nRmFjdG9yKSAvIG5vZGVzLmxlbmd0aDtcbjtcbiAgICAgICAgLy8gU3VtIGNvbnRyaWJ1dGlvbnMgZnJvbSBpbmNvbWluZyBsaW5rc1xuICAgICAgICBjb25zdCBfaW5jb21pbmcgPSBpbkxpbmtzLmdldChub2RlKSAgPz8gW107XG4gIGZvcihjb25zdCBzb3VyY2VOb2RlIG9mIGluY29taW5nKSB7XG4gICAgICAgICAgY29uc3QgX3NvdXJjZVNjb3JlID0gcGFnZVJhbmtTY29yZXMuZ2V0KHNvdXJjZU5vZGUpICA/PyAwOyBjb25zdCBfc291cmNlT3V0RGVncmVlID0gKG91dExpbmtzLmdldChzb3VyY2VOb2RlKSAgPz8gW10pLmxlbmd0aDsgaWYoc291cmNlT3V0RGVncmVlID4gMCkge1xuICAgICAgICAgICAgc2NvcmUgKz0gZGFtcGluZ0ZhY3Rvciooc291cmNlU2NvcmUgLyBzb3VyY2VPdXREZWdyZWUpO1xuICAgICAgICAgIC8vICAgICAgICAgICB9XG4gICAgICAgIC8vICAgICAgICAgfVxuXG4gICAgICAgIG5ld1Njb3Jlcy5zZXQobm9kZSwgc2NvcmUpO1xuICAgICAgfSk7XG5cbiAgICAgIC8vIFVwZGF0ZSBzY29yZXNcbiAgICAgIG5ld1Njb3Jlcy5mb3JFYWNoKChzY29yZSwgbm9kZSkgPT4ge1xuICAgICAgICBwYWdlUmFua1Njb3Jlcy5zZXQobm9kZSwgc2NvcmUpO1xuICAgICAgfSk7XG4gICAgLy8gICAgIH1cblxuICAgIC8vIHJldHVybiBBcnJheS5mcm9tKHBhZ2VSYW5rU2NvcmVzLmVudHJpZXMoKSkubWFwKChbbm9kZSwgc2NvcmVdKSA9PiAoeyBub2RlLFxuICAgIC8vIHNjb3JlOyAvLyBMSU5UOiB1bnJlYWNoYWJsZSBjb2RlIHJlbW92ZWRcbiAgICAgIH0pKTtcbiAgLy8gICB9XG5cbi8qKiBDb21tdW5pdHkgZGV0ZWN0aW9uIHVzaW5nIG1vZHVsYXJpdHkgb3B0aW1pemF0aW9uO1xuXG4gIGFzeW5jIGRldGVjdENvbW11bml0aWVzQWR2YW5jZWQob3B0aW9ucyA9IHt9KTogUHJvbWlzZTxDb21tdW5pdHlSZXN1bHQ+IHtcbiAgICBjb25zdCB7IHRlbXAgfSA9IHt9O1xuICAgICAgYWxnb3JpdGhtID0gJ2xvdXZhaW4nLDtcbiAgICAgIG5vZGVUeXBlID0gJ1NlcnZpY2UnLDtcbiAgICAgIHJlbGF0aW9uc2hpcFR5cGUgPSAnJyw7XG4gICAgICByZXNvbHV0aW9uID0gMS4wO1xuICAgIH0gPSBvcHRpb25zO1xuXG4gICAgdHJ5IHtcbi8vIGNvbnN0IF9jb21tdW5pdGllcyA9IGF3YWl0dGhpcy5sb3V2YWluQ29tbXVuaXR5RGV0ZWN0aW9uKG5vZGVUeXBlLCByZWxhdGlvbnNoaXBUeXBlLCByZXNvbHV0aW9uKTtcbiAgICAgICAgICBicmVhaztcbiAgICAgICAgY2FzZSAnbGFiZWxfcHJvcGFnYXRpb24nOjtcbiAgICAgICAgICBjb21tdW5pdGllcyA9IC8vIGF3YWl0IHRoaXMubGFiZWxQcm9wYWdhdGlvbkNvbW11bml0eURldGVjdGlvbihub2RlVHlwZSwgcmVsYXRpb25zaGlwVHlwZSk7XG4gICAgICAgICAgYnJlYWs7XG4gICAgICAgIGNhc2UgJ2Nvbm5lY3RlZF9jb21wb25lbnRzJzo7XG4gICAgICAgICAgY29tbXVuaXRpZXMgPSAvLyBhd2FpdCB0aGlzLmNvbm5lY3RlZENvbXBvbmVudHNEZXRlY3Rpb24obm9kZVR5cGUsIHJlbGF0aW9uc2hpcFR5cGUpO1xuICAgICAgICAgIGJyZWFrO2RlZmF1bHQgPSAvLyBhd2FpdCB0aGlzLmNhbGN1bGF0ZU1vZHVsYXJpdHkoY29tbXVuaXRpZXMsIG5vZGVUeXBlLCByZWxhdGlvbnNoaXBUeXBlKTtcblxuICAgICAgLy8gU3RvcmUgY29tbXVuaXR5IHJlc3VsdHMgaWYgdXNpbmcgcmVhbCBLdXp1XG4gICAgICBpZigodGhpcy5zdGF0cyBhcyBhbnkpLnVzaW5nUmVhbEt1enUpIHtcbi8vIC8vIGF3YWl0IHRoaXMuc3RvcmVDb21tdW5pdHlSZXN1bHRzKGNvbW11bml0aWVzLCBhbGdvcml0aG0sIG1vZHVsYXJpdHkpO1xuICAgICAgLy8gICAgICAgfVxuXG4gICAgICAvLyByZXR1cm4ge1xuICAgICAgICBhbGdvcml0aG0sO1xuICAgIC8vIGNvbW11bml0aWVzLCAvLyBMSU5UOiB1bnJlYWNoYWJsZSBjb2RlIHJlbW92ZWRcbiAgICAgICAgbW9kdWxhcml0eSxudW1fY29tbXVuaXRpZXMgPSBgO2A7XG4gIE1BVENIKG4pO1xuICBSRVRVUk47XG4gIG4ubmFtZSBhcyBub2RlO1xuICBgO2Bcbi8vIGNvbnN0IF9ub2Rlc1Jlc3VsdCA9IGF3YWl0KHRoaXMgYXMgYW55KS5leGVjdXRlUXVlcnkobm9kZXNRdWVyeSk7XG4gICAgY29uc3QgX25vZGVzID0gbm9kZXNSZXN1bHQuZGF0YT8ubWFwKChyb3cpID0+IHJvdy5ub2RlKSAgPz8gW107XG47XG4gICAgY29uc3QgX3JlbEZpbHRlciA9IHJlbGF0aW9uc2hpcFR5cGUgPyBgO2A7XG4gIDpcXCRyZWxhdGlvbnNoaXBUeXBlYCA6ICcnYFxuICBjb25zdCBfX2VkZ2VzUXVlcnkgPSBgO2A7XG4gICAgICBNQVRDSChzb3VyY2UgPSAvLyBhd2FpdCh0aGlzIGFzIGFueSkuZXhlY3V0ZVF1ZXJ5KGVkZ2VzUXVlcnkpO1xuICAgIGNvbnN0IF9lZGdlcyA9IGVkZ2VzUmVzdWx0LmRhdGEgID8/IFtdO1xuO1xuICAgIC8vIEluaXRpYWxpemUgZWFjaCBub2RlIGluIGl0cyBvd24gY29tbXVuaXR5XG4gICAgY29uc3QgX25vZGVDb21tdW5pdHkgPSBuZXcgTWFwPHN0cmluZywgbnVtYmVyPigpO1xuICAgIG5vZGVzLmZvckVhY2goKG5vZGUgPSA+IG5vZGVDb21tdW5pdHkuc2V0KG5vZGUsIGluZGV4KSk7XG5cbiAgICAvLyBCdWlsZCBhZGphY2VuY3kgbGlzdFxuICAgIGNvbnN0IF9hZGphY2VuY3kgPSBuZXcgTWFwPHN0cmluZywgc3RyaW5nW10+KCk7XG4gICAgbm9kZXMuZm9yRWFjaCgobm9kZSA9ID4gYWRqYWNlbmN5LnNldChub2RlLCBbXSkpO1xuXG4gICAgZWRnZXMuZm9yRWFjaCgoZWRnZSA9PiB7KSlcbiAgICAgIGlmKGFkamFjZW5jeS5oYXMoZWRnZS5zb3VyY2UpICYmIGFkamFjZW5jeS5oYXMoZWRnZS50YXJnZXQpKSB7XG4gICAgICAgIGFkamFjZW5jeS5nZXQoZWRnZS5zb3VyY2UpPy5wdXNoKGVkZ2UudGFyZ2V0KTtcbiAgaWYoZWRnZS5zb3VyY2UgIT09IGVkZ2UudGFyZ2V0KSB7XG4gICAgICAgICAgYWRqYWNlbmN5LmdldChlZGdlLnRhcmdldCk/LnB1c2goZWRnZS5zb3VyY2UpO1xuICAgICAgICAvLyAgICAgICAgIH1cbiAgICAgIC8vICAgICAgIH1cbiAgICB9KTtcblxuICAgIC8vIFNpbXBsaWZpZWQgY29tbXVuaXR5IG9wdGltaXphdGlvbihzaW5nbGUgcGFzcylcbiAgICBsZXQgX2ltcHJvdmVkID0gdHJ1ZTtcbiAgICBsZXQgX2l0ZXJhdGlvbiA9IDA7XG4gIHdoaWxlKGltcHJvdmVkICYmIGl0ZXJhdGlvbiA8IDEwKSB7XG4gICAgICBpbXByb3ZlZCA9IGZhbHNlO1xuICBmb3IoY29uc3Qgbm9kZSBvZiBub2Rlcykge1xuICAgICAgICBjb25zdCBfY3VycmVudENvbW11bml0eSA9IG5vZGVDb21tdW5pdHkuZ2V0KG5vZGUpITsgY29uc3QgX25laWdoYm9ycyA9IGFkamFjZW5jeS5nZXQobm9kZSkgID8/IFtdOyAvLyBDb3VudCBuZWlnaGJvciBjb21tdW5pdGllc1xuICAgICAgICBjb25zdCBfbmVpZ2hib3JDb21tdW5pdGllcyA9IG5ldyBNYXA8bnVtYmVyLCBudW1iZXI+KCkgeztcbiAgICAgICAgbmVpZ2hib3JzLmZvckVhY2goKG5laWdoYm9yID0+IHspKVxuICAgICAgICAgIGNvbnN0IF9uZWlnaGJvckNvbW11bml0eSA9IG5vZGVDb21tdW5pdHkuZ2V0KG5laWdoYm9yKSE7XG4gICAgICAgICAgbmVpZ2hib3JDb21tdW5pdGllcy5zZXQobmVpZ2hib3JDb21tdW5pdHksKTtcbiAgICAgICAgICAgIChuZWlnaGJvckNvbW11bml0aWVzLmdldChuZWlnaGJvckNvbW11bml0eSkgID8/IDApICsgMSk7XG4gICAgICAgIH0pO1xuXG4gICAgICAgIC8vIEZpbmQgYmVzdCBjb21tdW5pdHkobW9zdCBjb25uZWN0aW9ucylcbiAgICAgICAgbGV0IF9iZXN0Q29tbXVuaXR5ID0gY3VycmVudENvbW11bml0eTtcbiAgICAgICAgbGV0IF9tYXhDb25uZWN0aW9ucyA9IG5laWdoYm9yQ29tbXVuaXRpZXMuZ2V0KGN1cnJlbnRDb21tdW5pdHkpICA/PyAwO1xuO1xuICAgICAgICBuZWlnaGJvckNvbW11bml0aWVzLmZvckVhY2goKGNvbm5lY3Rpb25zLCBjb21tdW5pdHkpID0+IHtcbiAgaWYoY29ubmVjdGlvbnMgPiBtYXhDb25uZWN0aW9ucykge1xuICAgICAgICAgICAgbWF4Q29ubmVjdGlvbnMgPSBjb25uZWN0aW9ucztcbiAgICAgICAgICAgIGJlc3RDb21tdW5pdHkgPSBjb21tdW5pdHk7XG4gICAgICAgICAgLy8gICAgICAgICAgIH1cbiAgICAgICAgfSk7XG5cbiAgICAgICAgLy8gTW92ZSBub2RlIGlmIGltcHJvdmVtZW50IGZvdW5kXG4gIGlmKGJlc3RDb21tdW5pdHkgIT09IGN1cnJlbnRDb21tdW5pdHkgJiYgbWF4Q29ubmVjdGlvbnMgPiAxKSB7XG4gICAgICAgICAgbm9kZUNvbW11bml0eS5zZXQobm9kZSwgYmVzdENvbW11bml0eSk7XG4gICAgICAgICAgaW1wcm92ZWQgPSB0cnVlO1xuICAgICAgICAvLyAgICAgICAgIH1cbiAgICAgIC8vICAgICAgIH1cblxuICAgICAgaXRlcmF0aW9uKys7XG4gICAgLy8gICAgIH1cblxuICAgIC8vIEdyb3VwIG5vZGVzIGJ5IGNvbW11bml0eVxuICAgIGNvbnN0IF9jb21tdW5pdGllcyA9IG5ldyBNYXA8bnVtYmVyLCBzdHJpbmdbXT4oKTtcbiAgICBub2RlQ29tbXVuaXR5LmZvckVhY2goKGNvbW11bml0eUlkLCBub2RlKSA9PiB7XG4gICAgICBpZighY29tbXVuaXRpZXMuaGFzKGNvbW11bml0eUlkKSkge1xuICAgICAgICBjb21tdW5pdGllcy5zZXQoY29tbXVuaXR5SWQsIFtdKTtcbiAgICAgIC8vICAgICAgIH1cbiAgICAgIGNvbW11bml0aWVzLmdldChjb21tdW5pdHlJZCk/LnB1c2gobm9kZSk7XG4gICAgfSk7XG5cbiAgICAvLyBDb252ZXJ0IHRvIGFycmF5IGZvcm1hdFxuICAgIC8vIHJldHVybiBBcnJheS5mcm9tKGNvbW11bml0aWVzLnZhbHVlcygpKS5tYXAoKF9tZW1iZXJzLCBfaW5kZXgpID0+ICh7IGlkID0geyAgfSk6IFByb21pc2U8UXVlcnlSZXN1bHQ+IHtcbiAgICBjb25zdCB7IHRlbXAgfSA9IHt9O1xuICAgICAgbGltaXQgPSAxMDAsO1xuICAgIC8vIGZpbHRlcnMgPSB7IC8vIExJTlQ6IHVucmVhY2hhYmxlIGNvZGUgcmVtb3ZlZH0sXG4gICAgICBpbmNsdWRlTWV0cmljcyA9IHRydWU7XG4gICAgfSA9IG9wdGlvbnM7XG5cbiAgICB0cnkge1xuICAgICAgLy8gQnVpbGQgcGF0dGVybiBtYXRjaGluZyBxdWVyeVxuICAgICAgbGV0IF9xdWVyeSA9IHRoaXMuYnVpbGRQYXR0ZXJuUXVlcnkocGF0dGVybiwgZmlsdGVycywgbGltaXQpO1xuLy8gY29uc3QgX3Jlc3VsdCA9IGF3YWl0KHRoaXMgYXMgYW55KS5leGVjdXRlUXVlcnkocXVlcnkpO1xuICBpZihpbmNsdWRlTWV0cmljcyAmJiByZXN1bHQuc3VjY2Vzcykge1xuICAgICAgICAvLyBBbmFseXplIHBhdHRlcm4gZnJlcXVlbmN5IGFuZCBpbXBvcnRhbmNlXG5cbiAgICAgICAgLy8gcmV0dXJuIHtcbi4ucmVzdWx0LHBhdHRlcm5fbWV0cmljcyA9IGA7YFxuICBNQVRDSDtcbiAgXFwkcGF0dGVybmA7YFxuICAgIC8vIDsgLy8gTElOVDogdW5yZWFjaGFibGUgY29kZSByZW1vdmVkXG4gICAgLy8gQWRkIGZpbHRlcnNcbiAgICBjb25zdCBfZmlsdGVyQ2xhdXNlcyA9IFtdO1xuICAgIE9iamVjdC5lbnRyaWVzKGZpbHRlcnMpLmZvckVhY2goKFtrZXksIHZhbHVlXSkgPT4ge1xuICBpZih0eXBlb2YgdmFsdWUgPT09ICdzdHJpbmcnKSB7XG4gICAgICAgIGZpbHRlckNsYXVzZXMucHVzaChgO2ApO1xuICAka2V5ID0gJyR7dmFsdWV9J2ApO2BcbiAgICAgIH0gZWxzZSBpZih0eXBlb2YgdmFsdWUgPT09ICdudW1iZXInKSB7XG4gICAgICAgIGZpbHRlckNsYXVzZXMucHVzaChgO2ApO1xuICBcXCRrZXkgPSBcXCR2YWx1ZWApO2BcbiAgICAgIH0gZWxzZSBpZihBcnJheS5pc0FycmF5KHZhbHVlKSkge1xuICAgICAgICBmaWx0ZXJDbGF1c2VzLnB1c2goYDtgKTtcbiAgXFwka2V5SU5bXFwkdmFsdWUubWFwKCh2KSA9PiBgJyR7dn0nYCkuam9pbignLCAnKV1gKTtgXG4gICAgICAvLyAgICAgICB9XG4gICAgfSk7XG4gIGlmKGZpbHRlckNsYXVzZXMubGVuZ3RoID4gMCkge1xuICAgICAgcXVlcnkgKz0gYDtgO1xuICBXSEVSRTtcbiAgXFwkZmlsdGVyQ2xhdXNlcy5qb2luKCcgQU5EICcpYDtgXG4gICAgLy8gICAgIH1cblxuICAgIHF1ZXJ5ICs9ICcgUkVUVVJOIConO1xuICBpZihsaW1pdCkge1xuICAgICAgcXVlcnkgKz0gYDtgO1xuICBMSU1JVDtcbiAgXFwkbGltaXRgO2BcbiAgICAvLyAgICAgfVxuXG4gICAgLy8gcmV0dXJuIHF1ZXJ5O1xuICAgIC8vICAgLy8gTElOVDogdW5yZWFjaGFibGUgY29kZSByZW1vdmVkfVxuXG4vKiogQWR2YW5jZWQgcXVlcnkgb3B0aW1pemF0aW9uO1xuXG4gIGFzeW5jO1xuICBvcHRpbWl6ZVF1ZXJ5KChxdWVyeSA9IHt9KSk7XG4gIDogUHJvbWlzZTxzdWNjZXNzID0gdHJ1ZSxcbiAgICAgIHN1Z2dlc3RJbXByb3ZlbWVudCA9IHRydWUsO1xuICAgICAgY2FjaGVSZXN1bHQgPSB0cnVlPSBvcHRpb25zXG47XG4gIHRyeSB7XG4gICAgICBjb25zdCBfc3RhcnRUaW1lID0gRGF0ZS5ub3coKTtcbjtcbiAgICAgIC8vIENoZWNrIGNhY2hlIGZpcnN0XG4gICAgICBpZihjYWNoZVJlc3VsdCAmJiB0aGlzLnF1ZXJ5Q2FjaGUuaGFzKHF1ZXJ5KSkge1xuICAgICAgICBjb25zdCBfY2FjaGVkID0gdGhpcy5xdWVyeUNhY2hlLmdldChxdWVyeSk7XG4gICAgICAgIHRoaXMucGVyZm9ybWFuY2VNZXRyaWNzLmNhY2hlSGl0UmF0ZSsrO1xuICAgICAgICAvLyByZXR1cm4ge1xuLi5jYWNoZWQsZnJvbV9jYWNoZSA9IC8vIGF3YWl0KHRoaXMgYXMgYW55KS5leGVjdXRlUXVlcnkocXVlcnkpO1xuICAgIC8vIGNvbnN0IF9leGVjdXRpb25UaW1lID0gRGF0ZS5ub3coKSAtIHN0YXJ0VGltZTsgLy8gTElOVDogdW5yZWFjaGFibGUgY29kZSByZW1vdmVkXG5cbiAgICAgIC8vIEFuYWx5emUgZXhlY3V0aW9uIGlmIHJlcXVlc3RlZFxuICAgICAgbGV0IF9fb3B0aW1pemF0aW9uID0ge307XG4gIGlmKGFuYWx5emVFeGVjdXRpb24pIHtcbiAgICAgICAgX29wdGltaXphdGlvbiA9IC8vIGF3YWl0IHRoaXMuYW5hbHl6ZVF1ZXJ5RXhlY3V0aW9uKHF1ZXJ5LCBleGVjdXRpb25UaW1lLCByZXN1bHQpO1xuICAgICAgLy8gICAgICAgfVxuXG4gICAgICAvLyBDYWNoZSByZXN1bHRcbiAgaWYoY2FjaGVSZXN1bHQgJiYgcmVzdWx0LnN1Y2Nlc3MgJiYgdGhpcy5xdWVyeUNhY2hlLnNpemUgPCAxMDAwKSB7XG4gICAgICAgIHRoaXMucXVlcnlDYWNoZS5zZXQocXVlcnksIHJlc3VsdCk7XG4gICAgICAvLyAgICAgICB9XG5cbiAgICAgIC8vIFVwZGF0ZSBwZXJmb3JtYW5jZSBtZXRyaWNzXG4gICAgICB0aGlzLnVwZGF0ZVBlcmZvcm1hbmNlTWV0cmljcyhxdWVyeSwgZXhlY3V0aW9uVGltZSwgcmVzdWx0LnN1Y2Nlc3MpO1xuXG4gICAgICAvLyByZXR1cm4ge1xuLi5yZXN1bHQsXG4gICAgLy8gZXhlY3V0aW9uX3RpbWUgPSB7cXVlcnlfY29tcGxleGl0eSA9IDA7IC8vIExJTlQ6IHVucmVhY2hhYmxlIGNvZGUgcmVtb3ZlZFxuXG4gICAgLy8gQ291bnQgZGlmZmVyZW50IHF1ZXJ5IGVsZW1lbnRzXG4gICAgY29uc3QgX21hdGNoQ291bnQgPSAocXVlcnkubWF0Y2goL01BVENIL2dpKSAgPz8gW10pLmxlbmd0aDtcbiAgICBjb25zdCBfd2hlcmVDb3VudCA9IChxdWVyeS5tYXRjaCgvV0hFUkUvZ2kpICA/PyBbXSkubGVuZ3RoO1xuICAgIGNvbnN0IF9yZXR1cm5Db3VudCA9IChxdWVyeS5tYXRjaCgvUkVUVVJOL2dpKSAgPz8gW10pLmxlbmd0aDtcbiAgICAvLyBjb25zdCBfb3B0aW9uYWxDb3VudCA9IChxdWVyeS5tYXRjaCgvT1BUSU9OQUwvZ2kpICA/PyBbXSkubGVuZ3RoOyAvLyBMSU5UOiB1bnJlYWNoYWJsZSBjb2RlIHJlbW92ZWRcbiAgICBjb25zdCBfdW5pb25Db3VudCA9IChxdWVyeS5tYXRjaCgvVU5JT04vZ2kpICA/PyBbXSkubGVuZ3RoO1xuO1xuICAgIC8vIENhbGN1bGF0ZSBjb21wbGV4aXR5IHNjb3JlXG4gICAgY29tcGxleGl0eSArPSBtYXRjaENvdW50ICogMjtcbiAgICBjb21wbGV4aXR5ICs9IHdoZXJlQ291bnQgKiAxO1xuICAgIGNvbXBsZXhpdHkgKz0gcmV0dXJuQ291bnQgKiAxO1xuICAgIC8vIGNvbXBsZXhpdHkgKz0gb3B0aW9uYWxDb3VudCAqIDM7IC8vIExJTlQ6IHVucmVhY2hhYmxlIGNvZGUgcmVtb3ZlZFxuICAgIGNvbXBsZXhpdHkgKz0gdW5pb25Db3VudCAqIDU7XG47XG4gICAgLy8gQ2hlY2sgZm9yIGNvbXBsZXggcGF0dGVybnNcbiAgICBpZihxdWVyeS5pbmNsdWRlcygnKicpKSBjb21wbGV4aXR5ICs9IDU7IC8vIFZhcmlhYmxlIGxlbmd0aCBwYXRoc1xuICAgIGlmKHF1ZXJ5LmluY2x1ZGVzKCdzaG9ydGVzdFBhdGgnKSkgY29tcGxleGl0eSArPSAxMDtcbiAgICBpZihxdWVyeS5pbmNsdWRlcygnYWxsU2hvcnRlc3RQYXRocycpKSBjb21wbGV4aXR5ICs9IDE1O1xuXG4gICAgLy8gcmV0dXJuIGNvbXBsZXhpdHk7XG4gICAgLy8gICAvLyBMSU5UOiB1bnJlYWNoYWJsZSBjb2RlIHJlbW92ZWR9XG5cbi8qKiBQZXJmb3JtYW5jZSBtb25pdG9yaW5nIGFuZCBhbGVydGluZztcblxuICAvLyBwcml2YXRlIGluaXRpYWxpemVQZXJmb3JtYW5jZVRyYWNraW5nKCkgO1xuICAgIC8vIFNldCB1cCBwZXJmb3JtYW5jZSBtb25pdG9yaW5nXG4gICAgc2V0SW50ZXJ2YWwoKCkgPT4gO1xuICAgICAgdGhpcy5hbmFseXplUGVyZm9ybWFuY2VUcmVuZHMoKTssIDYwMDAwKTsgLy8gRXZlcnkgbWludXRlXG5cbiAgICBjb25zb2xlLndhcm4oJyBQZXJmb3JtYW5jZSB0cmFja2luZyBpbml0aWFsaXplZCcpO1xuXG4vKiogVXBkYXRlIHBlcmZvcm1hbmNlIG1ldHJpY3M7XG5cbiAgLy8gcHJpdmF0ZSB1cGRhdGVQZXJmb3JtYW5jZU1ldHJpY3MocXVlcnkgPSAodGhpcy5wZXJmb3JtYW5jZU1ldHJpY3MuYXZnRXhlY3V0aW9uVGltZSArIGV4ZWN1dGlvblRpbWUpIC8gMjtcblxuICAgIC8vIFRyYWNrIHNsb3cgcXVlcmllc1xuICBpZihleGVjdXRpb25UaW1lID4gNTAwMCkge1xuICAgICAgdGhpcy5wZXJmb3JtYW5jZU1ldHJpY3Muc2xvd1F1ZXJpZXMucHVzaCh7IHF1ZXJ5ID0gdGhpcy5xdWVyeUhpc3Rvcnkuc2xpY2UoLTEwMCk7XG5cbiAgICBpZihyZWNlbnRRdWVyaWVzLmxlbmd0aCA8IDEwKSByZXR1cm47XG4gICAgLy8gOyAvLyBMSU5UOiB1bnJlYWNoYWJsZSBjb2RlIHJlbW92ZWRcbiAgICBjb25zdCBfYXZnVGltZSA9IHJlY2VudFF1ZXJpZXMucmVkdWNlKChzdW0sIHEpID0+IHN1bSArIHEuZXhlY3V0aW9uX3RpbWUsIDApIC8gcmVjZW50UXVlcmllcy5sZW5ndGg7XG47XG4gICAgLy8gQWxlcnQgb24gcGVyZm9ybWFuY2UgZGVncmFkYXRpb25cbiAgaWYoYXZnVGltZSA+IHRoaXMucGVyZm9ybWFuY2VNZXRyaWNzLmF2Z0V4ZWN1dGlvblRpbWUgKiAyKSB7XG4gICAgICBjb25zb2xlLndhcm4oJyBQZXJmb3JtYW5jZSBBbGVydCA9IHsgIH0pOiBQcm9taXNlPHtnZW5lcmF0ZWRfYXQgPSB0cnVlLCdcbiAgICAgIGluY2x1ZGVDZW50cmFsaXR5ID0gdHJ1ZSw7XG4gICAgICBpbmNsdWRlQ29tbXVuaXRpZXMgPSB0cnVlLDtcbiAgICAgIGluY2x1ZGVQZXJmb3JtYW5jZSA9IHRydWU7XG4gICAgfSA9IG9wdGlvbnM7XG5cbiAgICBjb25zdCBfX3JlcG9ydCA9IHtnZW5lcmF0ZWRfYXQgPSAvLyBhd2FpdCB0aGlzLmdlbmVyYXRlR3JhcGhBbmFseXRpY3MoKTtcbiAgICAvLyAgICAgfVxuICBpZihpbmNsdWRlQ2VudHJhbGl0eSkge1xuICAgICAgcmVwb3J0LmNlbnRyYWxpdHkgPSAvLyBhd2FpdCB0aGlzLmNvbXB1dGVDZW50cmFsaXR5KHthbGdvcml0aG0gPSAvLyBhd2FpdCB0aGlzLmRldGVjdENvbW11bml0aWVzQWR2YW5jZWQoeyBhbGdvcml0aG0pO1xuICAgIC8vICAgICB9XG4gIGlmKGluY2x1ZGVQZXJmb3JtYW5jZSkge1xuICAgICAgcmVwb3J0LnBlcmZvcm1hbmNlID0gdGhpcy5wZXJmb3JtYW5jZU1ldHJpY3M7XG4gICAgLy8gICAgIH1cblxuICAgIC8vIHJldHVybiByZXBvcnQ7XG4gICAgLy8gICAvLyBMSU5UOiB1bnJlYWNoYWJsZSBjb2RlIHJlbW92ZWR9XG5cbi8qKiBHZXQgZ3JhcGggb3ZlcnZpZXcgc3RhdGlzdGljcztcblxuICBwcml2YXRlO1xuICBhc3luYztcbiAgZ2V0R3JhcGhPdmVydmlldygpO1xuICA6IFByb21pc2U8O1xuICAvLyAgIHtcbiAgICBub2RlX2NvdW50ID0ge25vZGVfY291bnQgPSAodGhpcyBhcyBhbnkpLmNvbm5lY3Rpb24ucXVlcnlTeW5jKGA7YClcbiAgTUFUQ0gobik7XG4gIFJFVFVSTjtcbiAgY291bnQobikgYXMgY291bnQ7XG4gIGApO2BcbiAgICBjb25zdCBfcm93cyA9IHJlc3VsdC5nZXRBbGxTeW5jKCk7XG4gIGlmKHJvd3MubGVuZ3RoID4gMCkge1xuICAgICAgb3ZlcnZpZXcubm9kZV90eXBlc1tub2RlVHlwZV0gPSByb3dzWzBdLmNvdW50O1xuICAgICAgb3ZlcnZpZXcubm9kZV9jb3VudCArPSByb3dzWzBdLmNvdW50O1xuICAgIC8vICAgICB9XG4gICAgcmVzdWx0LmNsb3NlKCk7XG4gIC8vICAgfVxuICBjYXRjaChlcnJvcikgO1xuICAgICAgICAgICAgb3ZlcnZpZXcubm9kZV90eXBlc1tub2RlVHlwZV0gPSAwO1xuLy8gfVxuXG4vLyBDb3VudCByZWxhdGlvbnNoaXBzIGJ5IHR5cGVcbmZvciAoY29uc3QgX3JlbFR5cGUgb2YgT2JqZWN0LmtleXMoKHRoaXMgYXMgYW55KS5zY2hlbWEucmVsYXRpb25zaGlwcykpIHtcbiAgICAgICAgICB0cnkge1xuICAgICAgICAgICAgY29uc3QgX19yZXN1bHQgPSAodGhpcyBhcyBhbnkpLmNvbm5lY3Rpb24ucXVlcnlTeW5jKGA7IGApO1xuICBNQVRDSCgpLVtyID0gcmVzdWx0LmdldEFsbFN5bmMoKTsgaWYocm93cy5sZW5ndGggPiAwKSB7XG4gICAgICAgICAgICAgIG92ZXJ2aWV3LnJlbGF0aW9uc2hpcF90eXBlc1tyZWxUeXBlXSA9IHJvd3NbMF0uY291bnQ7XG4gICAgICAgICAgICAgIG92ZXJ2aWV3LnJlbGF0aW9uc2hpcF9jb3VudCArPSByb3dzWzBdLmNvdW50O1xuICAgICAgICAgICAgLy8gICAgICAgICAgICAgfVxuICAgICAgICAgICAgcmVzdWx0LmNsb3NlKCk7XG4gICAgICAgICAgfSBjYXRjaChlcnJvcikge1xuICAgICAgICAgICAgb3ZlcnZpZXcucmVsYXRpb25zaGlwX3R5cGVzW3JlbFR5cGVdID0gMDtcbiAgICAgICAgICAvLyAgICAgICAgICAgfVxuICAgICAgICAvLyAgICAgICAgIH1cbiAgICAgIH0gZWxzZSB7XG4gICAgICAgIC8vIEZhbGxiYWNrIHRvIGluLW1lbW9yeSBzdGF0aXN0aWNzXG4gICAgICAgIG92ZXJ2aWV3Lm5vZGVfY291bnQgPSAodGhpcy5zdGF0cyBhcyBhbnkpLm5vZGVDb3VudDtcbiAgICAgICAgb3ZlcnZpZXcucmVsYXRpb25zaGlwX2NvdW50ID0gKHRoaXMuc3RhdHMgYXMgYW55KS5yZWxhdGlvbnNoaXBDb3VudDtcbiAgICAgIC8vICAgICAgIH1cblxuICAgICAgLy8gcmV0dXJuIG92ZXJ2aWV3O1xuICAgIC8vIDsgLy8gTElOVDogdW5yZWFjaGFibGUgY29kZSByZW1vdmVkXG4gICAgfSBjYXRjaChlcnJvciA9IGA7YFxuICAgICAgICAgIENSRUFURShjID0gYDtgO1xuICAgICAgICAgIENSRUFURShjID0gLy8gYXdhaXQodGhpcyBhcyBhbnkpLmdldFN0YXRzKCk7XG5cbiAgICAvLyByZXR1cm4ge1xuLi5iYXNlU3RhdHMscGVyZm9ybWFuY2VfbWV0cmljcyA9IEFycmF5LmZyb20odGhpcy5xdWVyeUNhY2hlLmVudHJpZXMoKSk7XG4gICAgLy8gZW50cmllcy5zbGljZSgwLCAyNTApLmZvckVhY2goKFtrZXldKSA9PiB7IC8vIExJTlQ6IHVucmVhY2hhYmxlIGNvZGUgcmVtb3ZlZFxuICAgICAgICB0aGlzLnF1ZXJ5Q2FjaGUuZGVsZXRlKGtleSk7XG4gICAgICAvLyAgICAgICB9XG4gIC8vICAgKVxuLy8gfVxuLy8gQ2xlYW51cCBvbGQgcXVlcnkgaGlzdG9yeVxuICBpZih0aGlzLnF1ZXJ5SGlzdG9yeS5sZW5ndGggPiA1MDApIHtcbiAgdGhpcy5xdWVyeUhpc3RvcnkgPSB0aGlzLnF1ZXJ5SGlzdG9yeS5zbGljZSgtMjUwKTtcbi8vIH1cbi8vIENsZWFudXAgc2xvdyBxdWVyaWVzXG4gIGlmKHRoaXMucGVyZm9ybWFuY2VNZXRyaWNzLnNsb3dRdWVyaWVzLmxlbmd0aCA+IDUwKSB7XG4gIHRoaXMucGVyZm9ybWFuY2VNZXRyaWNzLnNsb3dRdWVyaWVzID0gdGhpcy5wZXJmb3JtYW5jZU1ldHJpY3Muc2xvd1F1ZXJpZXMuc2xpY2UoLTI1KTtcbi8vIH1cbmNvbnNvbGUud2FybignIE9wdGltaXphdGlvbiBjb21wbGV0ZWQnKTtcbi8vIH1cblxuLyoqIEVuaGFuY2VkIGNsb3NlIG1ldGhvZDtcblxuLy8gYXN5bmMgY2xvc2UoKSB7IH1cbjogUHJvbWlzZTx2b2lkPlxuXG4gIGNvbnNvbGUud2FybignIENsb3NpbmcgYWR2YW5jZWQgS3V6dSBpbnRlcmZhY2UuLi4nKTtcbiAgdHJ5IHtcbiAgICAgIC8vIFNhdmUgcGVyZm9ybWFuY2UgbWV0cmljc1xuICBpZih0aGlzLmFkdmFuY2VkQ29uZmlnLmVuYWJsZU1ldHJpY3MpIHtcbiAgICAgICAgY29uc3QgX21ldHJpY3NQYXRoID0gcGF0aC5qb2luKCh0aGlzLmNvbmZpZyBhcyBhbnkpLmRiUGF0aCwgJ3BlcmZvcm1hbmNlX21ldHJpY3MuanNvbicpO1xuLy8gLy8gYXdhaXQgd3JpdGVGaWxlKG1ldHJpY3NQYXRoLCBKU09OLnN0cmluZ2lmeSh0aGlzLnBlcmZvcm1hbmNlTWV0cmljcywgbnVsbCwgMikpO1xuICAgICAgLy8gICAgICAgfVxuXG4gICAgICAvLyBDbGVhciBjYWNoZXNcbiAgICAgIHRoaXMucXVlcnlDYWNoZS5jbGVhcigpO1xuICAgICAgdGhpcy5xdWVyeUhpc3RvcnkubGVuZ3RoID0gMDtcbjtcbiAgICAgIC8vIENhbGwgcGFyZW50IGNsb3NlIG1ldGhvZFxuLy8gLy8gYXdhaXQgc3VwZXIuY2xvc2UoKTtcbiAgICAgIGNvbnNvbGUud2FybignIEFkdmFuY2VkIEt1enUgaW50ZXJmYWNlIGNsb3NlZCcpO1xuO1xuICAgIH0gY2F0Y2goX2Vycm9yXG4gID0gPT09IDApXG4gIC8vIHJldHVybiBzY29yZXM7XG4gIC8vIDsgLy8gTElOVDogdW5yZWFjaGFibGUgY29kZSByZW1vdmVkXG4gIGNvbnN0IF9tYXhTY29yZSA9IE1hdGgubWF4KC4uLnNjb3Jlcy5tYXAoKHMpID0+IHMuc2NvcmUpKTtcbiAgaWYobWF4U2NvcmUgPT09IDApIHJldHVybiBzY29yZXM7XG4gIC8vIDsgLy8gTElOVDogdW5yZWFjaGFibGUgY29kZSByZW1vdmVkXG4gIHJldHVybiBzY29yZXMubWFwKHNjb3JlID0+ICh7KSlcbi4uc2NvcmUsc2NvcmUgPSAxKSByZXR1cm4gMDtcbiAgLy8gOyAvLyBMSU5UOiB1bnJlYWNoYWJsZSBjb2RlIHJlbW92ZWRcbiAgY29uc3QgX3RvdGFsRWRnZXMgPSAodGhpcy5zdGF0cyBhcyBhbnkpLnJlbGF0aW9uc2hpcENvdW50ID8/IDE7XG4gIGNvbnN0IF9tb2R1bGFyaXR5ID0gMDtcbiAgZm9yKGNvbnN0IGNvbW11bml0eSBvZiBjb21tdW5pdGllcykge1xuICAgIGNvbnN0IF9jb21tdW5pdHlTaXplID0gY29tbXVuaXR5LnNpemU7IGlmKGNvbW11bml0eVNpemUgPiAxKSB7XG4gICAgICAvLyBTaW1wbGlmaWVkIGNhbGN1bGF0aW9uIGJhc2VkIG9uIGNvbW11bml0eSBzaXplXG4gICAgICBjb25zdCBfZXhwZWN0ZWRFZGdlcyA9IChjb21tdW5pdHlTaXplKihjb21tdW5pdHlTaXplIC0gMSkpIC8gKDIgKiB0b3RhbEVkZ2VzKTsgbW9kdWxhcml0eSArPSBleHBlY3RlZEVkZ2VzKigxIC8gY29tbXVuaXRpZXMubGVuZ3RoKSB7O1xuICAgIC8vICAgICB9XG4gIC8vICAgfVxuICAvLyByZXR1cm4gTWF0aC5taW4oMSwgbW9kdWxhcml0eSk7XG4gIC8vICAgLy8gTElOVDogdW5yZWFjaGFibGUgY29kZSByZW1vdmVkfVxuICAvLyBwcml2YXRlIGFzeW5jO1xuICByZWNvcmRUcmF2ZXJzYWxNZXRyaWNzKGFsZ29yaXRobSA9IHRoaXMuZ3JhcGhNZXRyaWNzLmdldCgndHJhdmVyc2FsX21ldHJpY3MnKTtcbiAgbWV0cmljcy5wdXNoKHtcbiAgICAgIGFsZ29yaXRobSw7XG4gIGV4ZWN1dGlvbl90aW1lLDtcbiAgcmVzdWx0X2NvdW50LCk7XG4gIHRpbWVzdGFtcDogbmV3IERhdGUoKS50b0lTT1N0cmluZygpO1xuLy8gfVxuLy8gKVxuLy8gS2VlcCBvbmx5IHJlY2VudCBtZXRyaWNzXG4gIGlmKG1ldHJpY3MubGVuZ3RoID4gMTAwMCkge1xuICBtZXRyaWNzLnNwbGljZSgwLCA1MDApO1xuLy8gfVxuLy8gfVxuLy8gcHJpdmF0ZSAvLyBhc3luY1xuYW5hbHl6ZVBhdHRlcm5NZXRyaWNzKGRhdGEsIHBhdHRlcm4pO1xuOiBQcm9taXNlPFxuLy8ge1xuICAvLyBwYXR0ZXJuOiBzdHJpbmdcbiAgLy8gbWF0Y2hlc19mb3VuZDogbnVtYmVyXG4gIC8vIGZyZXF1ZW5jeV9zY29yZTogbnVtYmVyXG4gIC8vIGNvbXBsZXhpdHlfc2NvcmU6IG51bWJlclxuLy8gfVxuPlxuLy8ge1xuICAvLyByZXR1cm4ge1xuICAgICAgcGF0dGVybiw7XG4gIC8vIG1hdGNoZXNfZm91bmQ6IGRhdGEubGVuZ3RoLCAvLyBMSU5UOiB1bnJlYWNoYWJsZSBjb2RlIHJlbW92ZWRcbiAgZnJlcXVlbmN5X3Njb3JlOiBNYXRoLm1pbigxLCBkYXRhLmxlbmd0aCAvIDEwMCksO1xuICBjb21wbGV4aXR5X3Njb3JlOiB0aGlzLmNhbGN1bGF0ZVF1ZXJ5Q29tcGxleGl0eShwYXR0ZXJuKTtcbi8vIH1cbi8vIH1cbi8vIHByaXZhdGUgLy8gYXN5bmMgZ2VuZXJhdGVHcmFwaEFuYWx5dGljcygpIHsgfVxuOiBQcm9taXNlPFxuXG4gIC8vIGNvbm5lY3Rpdml0eTogdW5rbm93blxuICAvLyBjbHVzdGVyaW5nOiB1bmtub3duXG4gIC8vIHBhdGhzOiB1bmtub3duXG4vLyB9XG4+XG4vLyB7XG4gIC8vIHJldHVybiB7XG4gICAgICBjb25uZWN0aXZpdHk6IC8vIGF3YWl0IHRoaXMuYW5hbHl6ZUNvbm5lY3Rpdml0eSgpLFxuICAvLyBjbHVzdGVyaW5nOiAvLyBhd2FpdCB0aGlzLmFuYWx5emVDbHVzdGVyaW5nQ29lZmZpY2llbnQoKSwgLy8gTElOVDogdW5yZWFjaGFibGUgY29kZSByZW1vdmVkXG4gIHBhdGhzOiAvLyBhd2FpdCB0aGlzLmFuYWx5emVQYXRoTGVuZ3RocygpO1xuLy8gfVxuLy8gfVxuLy8gcHJpdmF0ZSAvLyBhc3luYyBhbmFseXplQ29ubmVjdGl2aXR5KCkgeyB9XG46IFByb21pc2U8XG5cbiAgLy8gZGVuc2l0eTogbnVtYmVyXG4gIC8vIGNvbXBvbmVudHM6IG51bWJlclxuICAvLyBkaWFtZXRlcjogbnVtYmVyXG4vLyB9XG4+XG4vLyB7XG4gIC8vIFNpbXBsaWZpZWQgY29ubmVjdGl2aXR5IGFuYWx5c2lzXG4gIC8vIHJldHVybiB7XG4gICAgICBkZW5zaXR5OiAwLjEsIC8vIFBsYWNlaG9sZGVyXG4gICAgICBjb21wb25lbnRzLDtcbiAgLy8gZGlhbWV0ZXIsIC8vIExJTlQ6IHVucmVhY2hhYmxlIGNvZGUgcmVtb3ZlZFxuLy8gfVxuLy8gfVxuLy8gcHJpdmF0ZSAvLyBhc3luYyBhbmFseXplQ2x1c3RlcmluZ0NvZWZmaWNpZW50KCkgeyB9XG46IFByb21pc2U8XG5cbiAgLy8gZ2xvYmFsOiBudW1iZXJcbiAgLy8gYXZlcmFnZV9sb2NhbDogbnVtYmVyXG4vLyB9XG4+XG4vLyB7XG4gIC8vIFNpbXBsaWZpZWQgY2x1c3RlcmluZyBjb2VmZmljaWVudFxuICAvLyByZXR1cm4ge1xuICAgICAgZ2xvYmFsOiAwLjMsO1xuICAvLyBhdmVyYWdlX2xvY2FsOiAwLjI1OyAvLyBMSU5UOiB1bnJlYWNoYWJsZSBjb2RlIHJlbW92ZWRcbi8vIH1cbi8vIH1cbi8vIHByaXZhdGUgLy8gYXN5bmMgYW5hbHl6ZVBhdGhMZW5ndGhzKCkgeyB9XG46IFByb21pc2U8XG5cbiAgLy8gYXZlcmFnZV9zaG9ydGVzdF9wYXRoOiBudW1iZXJcbiAgLy8gZGlhbWV0ZXI6IG51bWJlclxuICAvLyByYWRpdXM6IG51bWJlclxuLy8gfVxuPlxuLy8ge1xuICAvLyBTaW1wbGlmaWVkIHBhdGggbGVuZ3RoIGFuYWx5c2lzXG4gIC8vIHJldHVybiB7XG4gICAgICBhdmVyYWdlX3Nob3J0ZXN0X3BhdGg6IDMuMiw7XG4gIC8vIGRpYW1ldGVyLCAvLyBMSU5UOiB1bnJlYWNoYWJsZSBjb2RlIHJlbW92ZWRcbiAgLy8gcmFkaXVzOiAzXG4vLyB9XG4vLyB9XG4vLyB9XG4vLyBleHBvcnQgZGVmYXVsdCBLdXp1QWR2YW5jZWRJbnRlcmZhY2U7XG5cbn19fX19fX19fX19fX19fX19fX19fX0pKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpXG5cbi8qIEVuZCBvZiBmaWxlICovIl0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBQ0EiLCJpZ25vcmVMaXN0IjpbXX0=

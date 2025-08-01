@@ -6,11 +6,11 @@ async function startUnifiedWeb() {
   const _unifiedInterface = new UnifiedInterfacePlugin({
     webPort: 8080,
     defaultMode: 'web',
-    enableMCP: true
+    enableMCP: true,
   });
-console.warn(' Starting Unified Interface in Web Mode...')
-try {
-// // await unifiedInterface.start('web');
+  console.warn(' Starting Unified Interface in Web Mode...');
+  try {
+    // // await unifiedInterface.start('web');
     console.warn(' Unified Interface started successfully!');
     console.warn(' Available at: http://localhost:8080');
     console.warn(' MCP endpoint: /mcp');
@@ -23,13 +23,13 @@ try {
     // Graceful shutdown handlers
     process.on('SIGINT', async() => {
       console.warn('\n Shutting down...');
-// await unifiedInterface.shutdown();
+      // await unifiedInterface.shutdown();
       process.exit(0);
     });
 
     process.on('SIGTERM', async() => {
       console.warn('\n Shutting down...');
-// await unifiedInterface.shutdown();
+      // await unifiedInterface.shutdown();
       process.exit(0);
     });
   } catch(error) {

@@ -250,8 +250,8 @@ export interface EventMap extends Record<string, unknown> {
   'metrics:collected': OrchestratorMetrics;
 }
 
-// Configuration types
-export interface Config {
+// System Configuration types (renamed to avoid conflict)
+export interface SystemConfig {
   orchestrator: OrchestratorConfig;
   terminal: TerminalConfig;
   memory: MemoryConfig;

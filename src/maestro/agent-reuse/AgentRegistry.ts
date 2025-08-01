@@ -3,7 +3,7 @@
  * Implements Single Responsibility principle for agent state management
  */
 
-import { ILogger } from '../../core/logger.js';
+import { ILogger } from '../../core/logger';
 import {
   RegisteredAgent,
   AgentProfile,
@@ -11,7 +11,7 @@ import {
   RegistryStatistics,
   AgentStatusSubscriber,
   PerformanceHistory
-} from './types.js';
+} from './types';
 
 /**
  * Implementation of PerformanceHistory for tracking agent performance

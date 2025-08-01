@@ -1,158 +1,185 @@
+/**
+ * Agentic Zen Hook System - Main Entry Point
+ * 
+ * Provides comprehensive hook management for the Claude-Zen ecosystem.
+ * Supports LLM, memory, neural, performance, and workflow hooks with
+ * advanced pipeline orchestration and metrics collection.
+ */
 
-/** Agentic-Flow Hook System - Main Export;
-/** Comprehensive hook-based automation and workflow management system;
+import { HookManager } from './hook-manager';
+import { LLMHooks } from './llm-hooks';
+import { MemoryHooks } from './memory-hooks';
+import { NeuralHooks } from './neural-hooks';
+import { PerformanceHooks } from './performance-hooks';
+import { WorkflowHooks } from './workflow-hooks';
 
-export { HookManager  } from '.
-// Hook implementations
-export * from '.
-export * from '.
-export * from '.
-export * from '.
-// Core types and manager
-export * from '.
-export * from '.
+// Export types
+export type {
+  AgenticHookType,
+  HookRegistration,
+  HookFilter,
+  HookHandlerResult,
+  AgenticHookContext,
+  HookPayload,
+  HookMetrics,
+  LLMHookPayload,
+  MemoryHookPayload,
+  NeuralHookPayload,
+  PerformanceHookPayload,
+  WorkflowHookPayload
+} from './types';
 
-// Quick start function
-export async function createHookManager() {
-  const { HookManager } = await import('.
-  const _manager = new HookManager(config);
-  // Auto-register built-in hooks
-// // await registerBuiltInHooks(manager);
-  return manager;
-// }
-// Register all built-in hooks
-// export async function registerBuiltInHooks(manager = // await import('./llm-hooks.js');
-const { NEURAL_HOOKS } = await import('.
-const { PERFORMANCE_HOOKS } = await import('.
-const { MEMORY_HOOKS } = await import('.
-const { WORKFLOW_HOOKS } = // await import('./workflow-hooks.js');
+// Export core modules
+export { HookManager } from './hook-manager';
+export { LLMHooks } from './llm-hooks';
+export { MemoryHooks } from './memory-hooks';
+export { NeuralHooks } from './neural-hooks';
+export { PerformanceHooks } from './performance-hooks';
+export { WorkflowHooks } from './workflow-hooks';
 
-// Register all hooks
-const _allHooks = [..LLM_HOOKS,;
-..NEURAL_HOOKS,
-..PERFORMANCE_HOOKS,
-..MEMORY_HOOKS,
-..WORKFLOW_HOOKS,,];
-  for(const hookRegistration of allHooks) {
-  try {
-// // await manager.registerHook(hookRegistration); 
-  } catch(error) {
-    console.warn(`Failed to register hook ${hookRegistration.name}); `
-  //   }
-// }
-console.warn(`Successfully registered ${allHooks.length} built-in hooks`) {;
-} catch(error)
-// {
-  console.error('Failed to register built-inhooks = createHookContext('pre-task');';
-  const _payload = {
-    context,data = // await manager.executeHooks('pre-task', payload);
-  // return result;
-// }
-// export async function executePostTaskHooks(manager = createHookContext('post-task');
-const __payload = {
-    context,data = await manager.executeHooks('post-task', payload);
-return result;
-// }
-// export async function executePreEditHooks(manager = createHookContext('pre-edit');
-const _payload = {
-    context,data = await manager.executeHooks('pre-edit', payload);
-return result;
-// }
-// export async function executePostEditHooks(manager = createHookContext('post-edit');
-const _payload = {
-    context,data = await manager.executeHooks('post-edit', payload);
-return result;
-// }
-// export async function executeLLMHooks(manager = 'llm-request'): Promise<any> {
-  const _context = createHookContext(type);
-  const _payload = {
-    context,data = await manager.executeHooks(type, payload);
-  return result;
-// }
-// export async function executeNeuralHooks(manager = createHookContext('neural-operation');
-const _payload = {
-    context,data = await manager.executeHooks('neural-operation', payload);
-return result;
-// }
-// export async function executePerformanceHooks(manager = createHookContext('performance-metric');
-const _payload = {
-    context,data = await manager.executeHooks('performance-metric', payload);
-return result;
-// }
-// export async function executeMemoryHooks(manager = createHookContext('memory-operation');
-const _payload = {
-    context,data = await manager.executeHooks('memory-operation', payload);
-return result;
-// }
-// export async function executeWorkflowHooks(manager = createHookContext('workflow-step');
-const _payload = {
-    context,data = await manager.executeHooks('workflow-step', payload);
-return result;
-// }
-// Convenience hook creators
-// export function createLLMRequestHook() {
-  return {
-    name,type = = false,async = = false,timeout = > Promise<any>,;
-    // options = { // LINT: unreachable code removed}
-) ;
-  return {
-    name,type = = false,async = = false,timeout = > Promise<any>,;
-    // options = { // LINT: unreachable code removed}
-) ;
-  // return {
-    name,type = = false,async = = false,timeout = > Promise<any>,;
-    // options = { // LINT: unreachable code removed}
-) ;
-  // return {
-    name,type = = false,async = = false,timeout = === 'production' ? 'production' : 'development',;
-    // version = {DEVELOPMENT = {success = 3600000) => createLLMRequestHook(; // LINT) => {
-      // Caching logic would go here
-      return {
-        success => {
-      console.warn(`[Hook] LLM Request => {`)
-  if(_payload._error) {
-        console.error(`[Hook] Error in LLM request = {BASIC_SETUP = // await createHookManager(HOOK_PRESETS.PRODUCTION);`
-    // ; // LINT: unreachable code removed
-// Execute hooks for LLM request
-// const _result = awaitexecuteLLMHooks(hookManager, {provider = createLLMRequestHook(;
-  'my-custom-hook',
-  async(payload) => {
-    // Custom logic here
-    return {
-      success,;
-    // data: { processed: true  // LINT: unreachable code removed},
-      hookName: 'my-custom-hook',;
-      duration,;
-      timestamp: new Date();
-    };
-  },
-  { ;
-    description: 'My custom processing hook',;
-    priority,;
-    // timeout: 5000
-  //   }
-);
-// // await hookManager.registerHook(customHook);
-`,`
-  HOOK_PATTERNS: `;`;
-// Use predefined hook patterns
-// import { HOOK_PATTERNS  } from './agentic-flow-hooks';
-
-// Add rate limiting
-// // await hookManager.registerHook(HOOK_PATTERNS.RATE_LIMITER(100));
-// Add caching
-// // await hookManager.registerHook(HOOK_PATTERNS.CACHE_MIDDLEWARE(1800000));
-// Add logging
-// // await hookManager.registerHook(HOOK_PATTERNS.REQUEST_LOGGER);
-`;`
+// Initialize logger
+const logger = {
+  info: (msg: string) => console.log(`[AgenticZenHooks] ${msg}`),
+  warn: (msg: string) => console.warn(`[AgenticZenHooks] ${msg}`),
+  error: (msg: string) => console.error(`[AgenticZenHooks] ${msg}`),
+  debug: (msg: string) => console.debug(`[AgenticZenHooks] ${msg}`)
 };
 
-console.warn('Agentic-Flow Hook System loaded successfully');
-console.warn('Available hook types, Neural, Performance, Memory, Workflow');
-console.warn('Built-in hooks);';
-console.warn('Features);'
-;
-}}}}}}}}}}}}}}))))))))
+// Global hook manager instance
+export const agenticHookManager = new HookManager(logger);
 
-*/*/
-})))
+/**
+ * Initialize the agentic zen hook system
+ */
+export async function initializeAgenticFlowHooks(): Promise<void> {
+  try {
+    logger.info('Initializing Agentic Zen Hook System...');
+    
+    // Register core hook types
+    const llmHooks = new LLMHooks(logger);
+    const memoryHooks = new MemoryHooks(logger);
+    const neuralHooks = new NeuralHooks(logger);
+    const performanceHooks = new PerformanceHooks(logger);
+    const workflowHooks = new WorkflowHooks(logger);
+    
+    // Initialize each hook type
+    await llmHooks.initialize();
+    await memoryHooks.initialize();
+    await neuralHooks.initialize();
+    await performanceHooks.initialize();
+    await workflowHooks.initialize();
+    
+    // Set up default pipelines
+    await setupDefaultPipelines();
+    
+    // Start metrics collection
+    startMetricsCollection();
+    
+    logger.info('Agentic Zen Hook System initialized successfully');
+  } catch (error) {
+    logger.error(`Failed to initialize hook system: ${error}`);
+    throw error;
+  }
+}
+
+/**
+ * Set up default hook pipelines
+ */
+async function setupDefaultPipelines(): Promise<void> {
+  // LLM call pipeline
+  agenticHookManager.register({
+    id: 'llm-pre-call-optimization',
+    type: 'llm',
+    priority: 10,
+    enabled: true,
+    handler: async (context) => {
+      logger.debug('Pre-LLM call optimization');
+      return { success: true, modified: false };
+    }
+  });
+  
+  // Memory operation pipeline
+  agenticHookManager.register({
+    id: 'memory-pre-operation-validation',
+    type: 'memory',
+    priority: 10,
+    enabled: true,
+    handler: async (context) => {
+      logger.debug('Pre-memory operation validation');
+      return { success: true, modified: false };
+    }
+  });
+  
+  // Workflow execution pipeline
+  agenticHookManager.register({
+    id: 'workflow-execution-tracking',
+    type: 'workflow-step',
+    priority: 5,
+    enabled: true,
+    handler: async (context) => {
+      logger.debug('Workflow step execution tracking');
+      return { success: true, modified: false };
+    }
+  });
+}
+
+/**
+ * Start metrics collection
+ */
+function startMetricsCollection(): void {
+  setInterval(() => {
+    const metrics = agenticHookManager.getMetrics();
+    logger.debug(`Hook metrics: ${JSON.stringify(metrics, null, 2)}`);
+  }, 60000); // Every minute
+}
+
+/**
+ * Shutdown the hook system gracefully
+ */
+export async function shutdownAgenticFlowHooks(): Promise<void> {
+  try {
+    logger.info('Shutting down Agentic Zen Hook System...');
+    await agenticHookManager.shutdown();
+    logger.info('Hook system shutdown complete');
+  } catch (error) {
+    logger.error(`Error during hook system shutdown: ${error}`);
+    throw error;
+  }
+}
+
+/**
+ * Get current hook system status
+ */
+export function getHookSystemStatus(): {
+  initialized: boolean;
+  registeredHooks: number;
+  activeHooks: number;
+  metrics: any;
+} {
+  return {
+    initialized: true,
+    registeredHooks: agenticHookManager.getRegisteredHooks().length,
+    activeHooks: agenticHookManager.getRegisteredHooks().filter(h => h.enabled).length,
+    metrics: agenticHookManager.getMetrics()
+  };
+}
+
+/**
+ * Create a hook context
+ */
+export function createHookContext(
+  type: string,
+  payload: any,
+  metadata?: Record<string, any>
+): any {
+  return {
+    timestamp: Date.now(),
+    type,
+    payload,
+    metadata: metadata || {},
+    session: {
+      id: `session-${Date.now()}`,
+      startTime: Date.now()
+    }
+  };
+}

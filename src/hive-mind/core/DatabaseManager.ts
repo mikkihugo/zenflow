@@ -14,17 +14,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Dynamic import for SQLite wrapper
-let createDatabase: any;
-let isSQLiteAvailable: any;
-let isWindows: any;
-
-async function loadSQLiteWrapper() {
-  const module = await import('../../memory/sqlite-wrapper.js');
-  createDatabase = module.createDatabase;
-  isSQLiteAvailable = module.isSQLiteAvailable;
-  isWindows = module.isWindows;
-}
+// Dynamic import for LanceDB interface
+import { LanceDBInterface } from '../../database/lancedb-interface';
 
 export class DatabaseManager extends EventEmitter {
   private static instance: DatabaseManager;

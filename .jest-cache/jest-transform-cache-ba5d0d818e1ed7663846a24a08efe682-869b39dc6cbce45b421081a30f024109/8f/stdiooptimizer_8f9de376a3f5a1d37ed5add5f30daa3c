@@ -1,0 +1,46 @@
+af668ac16d9472f72d7c4c6281993123
+/* istanbul ignore next */
+function cov_eki9239tg() {
+  var path = "/home/mhugo/code/claude-code-flow/src/mcp/core/stdio-optimizer.ts";
+  var hash = "f4d53dd6dcfafeee0670a42553e12b12ccb4ecb0";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/mhugo/code/claude-code-flow/src/mcp/core/stdio-optimizer.ts",
+    statementMap: {},
+    fnMap: {},
+    branchMap: {},
+    s: {},
+    f: {},
+    b: {},
+    inputSourceMap: {
+      file: "/home/mhugo/code/claude-code-flow/src/mcp/core/stdio-optimizer.ts",
+      mappings: "AAAA;;GAEG;AAEH,6BAA6B;AAC7B,eAAe,EAAE,CAAC",
+      names: [],
+      sources: ["/home/mhugo/code/claude-code-flow/src/mcp/core/stdio-optimizer.ts"],
+      sourcesContent: ["/**\n * @fileoverview stdio optimizer\n */\n\n// Placeholder implementation\nexport default {};\n"],
+      version: 3
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "f4d53dd6dcfafeee0670a42553e12b12ccb4ecb0"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_eki9239tg = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_eki9239tg();
+/**
+ * @fileoverview stdio optimizer
+ */
+// Placeholder implementation
+export default {};
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiL2hvbWUvbWh1Z28vY29kZS9jbGF1ZGUtY29kZS1mbG93L3NyYy9tY3AvY29yZS9zdGRpby1vcHRpbWl6ZXIudHMiXSwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBAZmlsZW92ZXJ2aWV3IHN0ZGlvIG9wdGltaXplclxuICovXG5cbi8vIFBsYWNlaG9sZGVyIGltcGxlbWVudGF0aW9uXG5leHBvcnQgZGVmYXVsdCB7fTtcbiJdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBQUE7OztBQUlBO0FBQ0EsZUFBZSxFQUFFIiwiaWdub3JlTGlzdCI6W119

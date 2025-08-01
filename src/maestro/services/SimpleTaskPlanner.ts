@@ -11,8 +11,8 @@
  * - Fast fallback with basic task generation
  */
 
-import { AgentManager } from '../../agents/agent-manager.js';
-import { ILogger } from '../../core/logger.js';
+import { AgentManager } from '../../agents/agent-manager';
+import { ILogger } from '../../core/logger';
 
 export interface TaskPlannerRequest {
   featureName: string;

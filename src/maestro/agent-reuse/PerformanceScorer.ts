@@ -3,7 +3,7 @@
  * Calculates performance scores for agents based on various metrics
  */
 
-import { WorkloadMetrics } from './WorkloadMonitor.js';
+import { WorkloadMetrics } from './WorkloadMonitor';
 
 export interface PerformanceScore {
   overall: number;

@@ -1725,7 +1725,7 @@ export class ArchitectAdvisorPlugin extends BasePlugin {
       critical: 'high'
     };
 
-    let baseEffort = effortMap[finding.severity] || 'medium';
+    const baseEffort = effortMap[finding.severity] || 'medium';
 
     // Adjust based on number of affected files
     if (finding.files && finding.files.length > 10) {

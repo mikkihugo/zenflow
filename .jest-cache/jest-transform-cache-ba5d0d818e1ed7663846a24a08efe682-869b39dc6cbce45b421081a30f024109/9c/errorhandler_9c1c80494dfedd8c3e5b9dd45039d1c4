@@ -1,0 +1,186 @@
+1b54347b6c0ff6c2ef7f8cabbd11bd0a
+/* istanbul ignore next */
+function cov_9k7fk3dyq() {
+  var path = "/home/mhugo/code/claude-code-flow/src/mcp/core/error-handler.ts";
+  var hash = "d25e12142659bbf93292ba97b59988d01ad18cd6";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/mhugo/code/claude-code-flow/src/mcp/core/error-handler.ts",
+    statementMap: {
+      "0": {
+        start: {
+          line: 10,
+          column: 8
+        },
+        end: {
+          line: 10,
+          column: 31
+        }
+      },
+      "1": {
+        start: {
+          line: 14,
+          column: 8
+        },
+        end: {
+          line: 14,
+          column: 43
+        }
+      },
+      "2": {
+        start: {
+          line: 15,
+          column: 8
+        },
+        end: {
+          line: 15,
+          column: 56
+        }
+      }
+    },
+    fnMap: {
+      "0": {
+        name: "(anonymous_0)",
+        decl: {
+          start: {
+            line: 8,
+            column: 4
+          },
+          end: {
+            line: 8,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 8,
+            column: 30
+          },
+          end: {
+            line: 11,
+            column: 5
+          }
+        },
+        line: 8
+      },
+      "1": {
+        name: "(anonymous_1)",
+        decl: {
+          start: {
+            line: 13,
+            column: 4
+          },
+          end: {
+            line: 13,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 13,
+            column: 23
+          },
+          end: {
+            line: 16,
+            column: 5
+          }
+        },
+        line: 13
+      }
+    },
+    branchMap: {
+      "0": {
+        loc: {
+          start: {
+            line: 8,
+            column: 16
+          },
+          end: {
+            line: 8,
+            column: 28
+          }
+        },
+        type: "default-arg",
+        locations: [{
+          start: {
+            line: 8,
+            column: 26
+          },
+          end: {
+            line: 8,
+            column: 28
+          }
+        }],
+        line: 8
+      }
+    },
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0
+    },
+    f: {
+      "0": 0,
+      "1": 0
+    },
+    b: {
+      "0": [0]
+    },
+    inputSourceMap: {
+      file: "/home/mhugo/code/claude-code-flow/src/mcp/core/error-handler.ts",
+      mappings: "AAAA;;;;GAIG;AAEH,kEAAkE;AAClE,MAAM,OAAO,eAAe;IAC1B,YAAY,OAAO,GAAG,EAAE;QACtB,2CAA2C;QAC3C,IAAI,CAAC,OAAO,GAAG,OAAO,CAAC;IACzB,CAAC;IAED,gDAAgD;IAChD,WAAW,CAAC,KAAK;QACf,OAAO,CAAC,KAAK,CAAC,YAAY,EAAE,KAAK,CAAC,CAAC;QACnC,OAAO,EAAE,OAAO,EAAE,KAAK,EAAE,KAAK,EAAE,KAAK,CAAC,OAAO,EAAE,CAAC;IAClD,CAAC;CACF;AAED,eAAe,eAAe,CAAC",
+      names: [],
+      sources: ["/home/mhugo/code/claude-code-flow/src/mcp/core/error-handler.ts"],
+      sourcesContent: ["/**\n * @fileoverview Enhanced error handling for MCP server\n * Provides retry logic, circuit breaker patterns, and error recovery\n * @module ErrorHandler\n */\n\n/** Enhanced error handler with retry logic and circuit breaker */\nexport class MCPErrorHandler {\n  constructor(options = {}) {\n    // Configuration options for error handling\n    this.options = options;\n  }\n\n  // Placeholder for error handling implementation\n  handleError(error) {\n    console.error('MCP Error:', error);\n    return { success: false, error: error.message };\n  }\n}\n\nexport default MCPErrorHandler;"],
+      version: 3
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "d25e12142659bbf93292ba97b59988d01ad18cd6"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_9k7fk3dyq = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_9k7fk3dyq();
+/**
+ * @fileoverview Enhanced error handling for MCP server
+ * Provides retry logic, circuit breaker patterns, and error recovery
+ * @module ErrorHandler
+ */
+/** Enhanced error handler with retry logic and circuit breaker */
+export class MCPErrorHandler {
+  constructor(options =
+  /* istanbul ignore next */
+  (cov_9k7fk3dyq().b[0][0]++, {})) {
+    /* istanbul ignore next */
+    cov_9k7fk3dyq().f[0]++;
+    cov_9k7fk3dyq().s[0]++;
+    // Configuration options for error handling
+    this.options = options;
+  }
+  // Placeholder for error handling implementation
+  handleError(error) {
+    /* istanbul ignore next */
+    cov_9k7fk3dyq().f[1]++;
+    cov_9k7fk3dyq().s[1]++;
+    console.error('MCP Error:', error);
+    /* istanbul ignore next */
+    cov_9k7fk3dyq().s[2]++;
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+}
+export default MCPErrorHandler;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJjb3ZfOWs3ZmszZHlxIiwiYWN0dWFsQ292ZXJhZ2UiLCJNQ1BFcnJvckhhbmRsZXIiLCJjb25zdHJ1Y3RvciIsIm9wdGlvbnMiLCJiIiwiZiIsInMiLCJoYW5kbGVFcnJvciIsImVycm9yIiwiY29uc29sZSIsInN1Y2Nlc3MiLCJtZXNzYWdlIl0sInNvdXJjZXMiOlsiL2hvbWUvbWh1Z28vY29kZS9jbGF1ZGUtY29kZS1mbG93L3NyYy9tY3AvY29yZS9lcnJvci1oYW5kbGVyLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogQGZpbGVvdmVydmlldyBFbmhhbmNlZCBlcnJvciBoYW5kbGluZyBmb3IgTUNQIHNlcnZlclxuICogUHJvdmlkZXMgcmV0cnkgbG9naWMsIGNpcmN1aXQgYnJlYWtlciBwYXR0ZXJucywgYW5kIGVycm9yIHJlY292ZXJ5XG4gKiBAbW9kdWxlIEVycm9ySGFuZGxlclxuICovXG5cbi8qKiBFbmhhbmNlZCBlcnJvciBoYW5kbGVyIHdpdGggcmV0cnkgbG9naWMgYW5kIGNpcmN1aXQgYnJlYWtlciAqL1xuZXhwb3J0IGNsYXNzIE1DUEVycm9ySGFuZGxlciB7XG4gIGNvbnN0cnVjdG9yKG9wdGlvbnMgPSB7fSkge1xuICAgIC8vIENvbmZpZ3VyYXRpb24gb3B0aW9ucyBmb3IgZXJyb3IgaGFuZGxpbmdcbiAgICB0aGlzLm9wdGlvbnMgPSBvcHRpb25zO1xuICB9XG5cbiAgLy8gUGxhY2Vob2xkZXIgZm9yIGVycm9yIGhhbmRsaW5nIGltcGxlbWVudGF0aW9uXG4gIGhhbmRsZUVycm9yKGVycm9yKSB7XG4gICAgY29uc29sZS5lcnJvcignTUNQIEVycm9yOicsIGVycm9yKTtcbiAgICByZXR1cm4geyBzdWNjZXNzOiBmYWxzZSwgZXJyb3I6IGVycm9yLm1lc3NhZ2UgfTtcbiAgfVxufVxuXG5leHBvcnQgZGVmYXVsdCBNQ1BFcnJvckhhbmRsZXI7Il0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0lBaUJHO0lBQUFBLGFBQUEsWUFBQUEsQ0FBQTtNQUFBLE9BQUFDLGNBQUE7SUFBQTtFQUFBO0VBQUEsT0FBQUEsY0FBQTtBQUFBO0FBQUFELGFBQUE7QUFqQkg7Ozs7O0FBTUE7QUFDQSxPQUFNLE1BQU9FLGVBQWU7RUFDMUJDLFlBQVlDLE9BQU87RUFBQTtFQUFBLENBQUFKLGFBQUEsR0FBQUssQ0FBQSxVQUFHLEVBQUU7SUFBQTtJQUFBTCxhQUFBLEdBQUFNLENBQUE7SUFBQU4sYUFBQSxHQUFBTyxDQUFBO0lBQ3RCO0lBQ0EsSUFBSSxDQUFDSCxPQUFPLEdBQUdBLE9BQU87RUFDeEI7RUFFQTtFQUNBSSxXQUFXQSxDQUFDQyxLQUFLO0lBQUE7SUFBQVQsYUFBQSxHQUFBTSxDQUFBO0lBQUFOLGFBQUEsR0FBQU8sQ0FBQTtJQUNmRyxPQUFPLENBQUNELEtBQUssQ0FBQyxZQUFZLEVBQUVBLEtBQUssQ0FBQztJQUFDO0lBQUFULGFBQUEsR0FBQU8sQ0FBQTtJQUNuQyxPQUFPO01BQUVJLE9BQU8sRUFBRSxLQUFLO01BQUVGLEtBQUssRUFBRUEsS0FBSyxDQUFDRztJQUFPLENBQUU7RUFDakQ7O0FBR0YsZUFBZVYsZUFBZSIsImlnbm9yZUxpc3QiOltdfQ==

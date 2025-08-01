@@ -1,0 +1,144 @@
+cd490ac6c25e95e9ba4e185b70d53866
+/* istanbul ignore next */
+function cov_1sgkm3h42x() {
+  var path = "/home/mhugo/code/claude-code-flow/src/maestro/agent-reuse/types.ts";
+  var hash = "d3793a50ce28ab908c4d48b68173007f12cdfc1b";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/mhugo/code/claude-code-flow/src/maestro/agent-reuse/types.ts",
+    statementMap: {
+      "0": {
+        start: {
+          line: 6,
+          column: 42
+        },
+        end: {
+          line: 23,
+          column: 1
+        }
+      },
+      "1": {
+        start: {
+          line: 24,
+          column: 43
+        },
+        end: {
+          line: 30,
+          column: 1
+        }
+      },
+      "2": {
+        start: {
+          line: 31,
+          column: 47
+        },
+        end: {
+          line: 36,
+          column: 1
+        }
+      },
+      "3": {
+        start: {
+          line: 37,
+          column: 49
+        },
+        end: {
+          line: 48,
+          column: 1
+        }
+      }
+    },
+    fnMap: {},
+    branchMap: {},
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+    },
+    f: {},
+    b: {},
+    inputSourceMap: {
+      file: "/home/mhugo/code/claude-code-flow/src/maestro/agent-reuse/types.ts",
+      mappings: "AAAA;;;GAGG;AAgTH,yBAAyB;AACzB,MAAM,CAAC,MAAM,0BAA0B,GAAqB;IAC1D,cAAc,EAAE,GAAG;IACnB,WAAW,EAAE,EAAE;IACf,gBAAgB,EAAE,GAAG;IACrB,gBAAgB,EAAE,EAAE;IACpB,kBAAkB,EAAE,IAAI;IACxB,qBAAqB,EAAE,MAAM;IAC7B,cAAc,EAAE;QACd,UAAU,EAAE,GAAG;QACf,WAAW,EAAE,GAAG;QAChB,YAAY,EAAE,GAAG;QACjB,OAAO,EAAE,IAAI;QACb,QAAQ,EAAE,IAAI;KACf;IACD,iBAAiB,EAAE,UAAU;IAC7B,aAAa,EAAE,QAAQ;IACvB,YAAY,EAAE,SAAS;CACxB,CAAC;AAEF,MAAM,CAAC,MAAM,2BAA2B,GAAsB;IAC5D,WAAW,EAAE,EAAE;IACf,gBAAgB,EAAE,GAAG;IACrB,mBAAmB,EAAE,KAAK;IAC1B,gBAAgB,EAAE,UAAU;IAC5B,eAAe,EAAE,GAAG;CACrB,CAAC;AAEF,MAAM,CAAC,MAAM,+BAA+B,GAA0B;IACpE,cAAc,EAAE,IAAI;IACpB,iBAAiB,EAAE,GAAG;IACtB,aAAa,EAAE,GAAG;IAClB,aAAa,EAAE,OAAO,CAAC,SAAS;CACjC,CAAC;AAEF,MAAM,CAAC,MAAM,iCAAiC,GAA4B;IACxE,cAAc,EAAE;QACd,UAAU,EAAE,GAAG;QACf,WAAW,EAAE,GAAG;QAChB,YAAY,EAAE,GAAG;QACjB,OAAO,EAAE,IAAI;QACb,QAAQ,EAAE,IAAI;KACf;IACD,iBAAiB,EAAE,OAAO,EAAE,aAAa;IACzC,iBAAiB,EAAE,CAAC;IACpB,mBAAmB,EAAE,GAAG;CACzB,CAAC",
+      names: [],
+      sources: ["/home/mhugo/code/claude-code-flow/src/maestro/agent-reuse/types.ts"],
+      sourcesContent: ["/**\n * Types and interfaces for intelligent agent reuse system\n * Following SOLID principles with clear interface segregation\n */\n\nexport interface TaskContext {\n  id: string;\n  type: string;\n  featureName?: string;\n  priority: number;\n  estimatedDuration?: number;\n  complexity: 'low' | 'medium' | 'high';\n  metadata?: Record<string, any>;\n}\n\nexport interface SelectionOptions {\n  maxAgents?: number;\n  preferReuse?: boolean;\n  qualityThreshold?: number;\n  performanceWeight?: number;\n  workloadBalance?: boolean;\n  priorityBonus?: boolean;\n  taskType?: string;\n  preferExperienced?: boolean;\n}\n\nexport interface ExecutionOptions extends SelectionOptions {\n  timeout?: number;\n  retryCount?: number;\n  failureStrategy?: 'abort' | 'retry' | 'fallback';\n}\n\nexport interface RegisteredAgent {\n  id: string;\n  profile: AgentProfile;\n  status: AgentStatus;\n  currentWorkload: number;\n  capabilities: string[];\n  performanceHistory: PerformanceHistory;\n  registeredAt: Date;\n  lastActivity: Date;\n  metadata?: Record<string, any>;\n}\n\nexport interface AvailableAgent extends RegisteredAgent {\n  estimatedCapacity: number;\n  availabilityScore: number;\n}\n\nexport interface ScoredAgent extends AvailableAgent {\n  score: AgentScore;\n  scoreBreakdown: ScoreBreakdown;\n}\n\nexport interface AcquiredAgent {\n  id: string;\n  type: string;\n  capabilities: string[];\n  source: 'reused' | 'spawned';\n  spawnedAt?: Date;\n  reusedAt?: Date;\n  assignedTaskId?: string;\n}\n\nexport interface AgentScore {\n  total: number;\n  breakdown: ScoreBreakdown;\n}\n\nexport interface ScoreBreakdown {\n  capability: number;\n  performance: number;\n  availability: number;\n  success: number;\n  priority: number;\n}\n\nexport interface AgentSelection {\n  selectedAgents: ScoredAgent[];\n  alternativeAgents: ScoredAgent[];\n  selectionReason: string;\n  confidence: number;\n  estimatedSuccess: number;\n}\n\nexport interface TaskResult {\n  success: boolean;\n  output?: any;\n  duration: number;\n  agentMetrics: AgentMetrics[];\n  error?: Error;\n}\n\nexport interface AgentMetrics {\n  agentId: string;\n  taskDuration: number;\n  cpuUsage: number;\n  memoryUsage: number;\n  successRate: number;\n  qualityScore: number;\n}\n\nexport interface PerformanceHistory {\n  tasksCompleted: number;\n  tasksFailed: number;\n  averageDuration: number;\n  successRate: number;\n  qualityScores: number[];\n  lastUpdated: Date;\n  \n  addCompletion(duration: number, estimatedDuration: number): void;\n  addFailure(reason: string): void;\n  getRecentSuccessRate(window?: number): number;\n  getAverageQuality(window?: number): number;\n}\n\nexport interface WorkloadData {\n  agentId: string;\n  currentLoad: number;\n  estimatedCapacity: number;\n  activeTasks: Map<string, ActiveTask>;\n  performanceHistory: PerformanceHistory;\n  lastUpdated: Date;\n}\n\nexport interface ActiveTask {\n  taskId: string;\n  startTime: Date;\n  estimatedDuration: number;\n  status: 'running' | 'paused' | 'completing';\n}\n\nexport interface RegistryStatistics {\n  totalAgents: number;\n  availableAgents: number;\n  busyAgents: number;\n  averageWorkload: number;\n  capabilityCoverage: number;\n  registryHealth: number;\n}\n\nexport interface WorkloadStatistics {\n  totalAgents: number;\n  averageLoad: number;\n  overloadedAgents: number;\n  idleAgents: number;\n  totalActiveTasks: number;\n  loadDistribution: LoadDistribution;\n}\n\nexport interface LoadDistribution {\n  low: number;    // 0-0.3 load\n  medium: number; // 0.3-0.7 load\n  high: number;   // 0.7-1.0 load\n  overload: number; // >1.0 load\n}\n\nexport interface LoadBalancingResult {\n  assignments: TaskAssignment[];\n  balanceScore: number;\n  estimatedCompletion: Date;\n  recommendations: string[];\n}\n\nexport interface TaskAssignment {\n  taskId: string;\n  agentId: string;\n  estimatedStartTime: Date;\n  estimatedDuration: number;\n  confidence: number;\n}\n\nexport interface PoolOptimizationResult {\n  initialStats: RegistryStatistics;\n  recommendations: OptimizationRecommendation[];\n  results: OptimizationResult[];\n  optimizedAt: Date;\n}\n\nexport interface OptimizationRecommendation {\n  type: 'spawn' | 'cleanup' | 'rebalance' | 'upgrade';\n  reason: string;\n  expectedImpact: number;\n  priority: 'high' | 'medium' | 'low';\n  agentId?: string;\n  agentType?: string;\n}\n\nexport interface OptimizationResult {\n  recommendation: OptimizationRecommendation;\n  applied: boolean;\n  actualImpact?: number;\n  error?: string;\n}\n\nexport type AgentStatus = \n  | 'available'    // Ready for new tasks\n  | 'busy'         // Currently executing tasks\n  | 'overloaded'   // Above capacity threshold\n  | 'maintenance'  // Undergoing maintenance\n  | 'error'        // In error state\n  | 'offline';     // Not responding\n\nexport interface AgentProfile {\n  id: string;\n  name: string;\n  type: string;\n  capabilities?: string[];\n  maxConcurrentTasks: number;\n  priority: number;\n  metadata?: Record<string, any>;\n}\n\nexport interface TaskDefinition {\n  id: string;\n  type: string;\n  description: string;\n  input: any;\n  priority: number;\n  metadata?: Record<string, any>;\n}\n\nexport interface TaskRequirements {\n  capabilities: string[];\n  estimatedDuration?: number;\n  maxDuration?: number;\n  qualityThreshold?: number;\n  specialRequirements?: string[];\n}\n\n// Strategy pattern interfaces\nexport interface SelectionStrategy {\n  selectAgents(scoredAgents: ScoredAgent[], options: SelectionOptions): AgentSelection;\n}\n\nexport interface ReuseStrategy {\n  findReusableAgents(\n    requiredCapabilities: string[],\n    taskContext: TaskContext,\n    maxAgents: number\n  ): Promise<AcquiredAgent[]>;\n}\n\nexport interface ScoringStrategy {\n  getWeights(taskContext: TaskContext): ScoringWeights;\n}\n\nexport interface ScoringWeights {\n  capability: number;\n  performance: number;\n  availability: number;\n  success: number;\n  priority: number;\n}\n\n// Configuration interfaces\nexport interface AgentReuseConfig {\n  // Selection preferences\n  reuseThreshold: number;\n  maxPoolSize: number;\n  cleanupThreshold: number;\n  \n  // Performance tuning\n  selectionTimeout: number;\n  monitoringInterval: number;\n  optimizationFrequency: number;\n  \n  // Scoring weights\n  scoringWeights: ScoringWeights;\n  \n  // Strategy selection\n  selectionStrategy: 'balanced' | 'performance' | 'efficiency' | 'custom';\n  reuseStrategy: 'greedy' | 'conservative' | 'adaptive';\n  poolStrategy: 'static' | 'dynamic' | 'predictive';\n}\n\nexport interface PoolManagerConfig {\n  maxPoolSize: number;\n  cleanupThreshold: number;\n  maintenanceInterval: number;\n  spawningStrategy: 'conservative' | 'aggressive' | 'adaptive';\n  reusePreference: number; // 0-1, higher values prefer reuse more\n}\n\nexport interface WorkloadMonitorConfig {\n  updateInterval: number;\n  overloadThreshold: number;\n  idleThreshold: number;\n  historyWindow: number;\n}\n\nexport interface PerformanceScorerConfig {\n  defaultWeights: ScoringWeights;\n  performanceWindow: number;\n  minimumSampleSize: number;\n  confidenceThreshold: number;\n}\n\n// Subscriber interfaces for Observer pattern\nexport interface AgentStatusSubscriber {\n  onAgentStatusChange(agentId: string, status: AgentStatus, metadata?: any): void;\n}\n\nexport interface WorkloadSubscriber {\n  onWorkloadChange(agentId: string, workload: WorkloadData): void;\n}\n\n// Default configurations\nexport const DEFAULT_AGENT_REUSE_CONFIG: AgentReuseConfig = {\n  reuseThreshold: 0.7,\n  maxPoolSize: 20,\n  cleanupThreshold: 0.1,\n  selectionTimeout: 50,\n  monitoringInterval: 5000,\n  optimizationFrequency: 300000,\n  scoringWeights: {\n    capability: 0.4,\n    performance: 0.3,\n    availability: 0.2,\n    success: 0.08,\n    priority: 0.02\n  },\n  selectionStrategy: 'balanced',\n  reuseStrategy: 'greedy',\n  poolStrategy: 'dynamic'\n};\n\nexport const DEFAULT_POOL_MANAGER_CONFIG: PoolManagerConfig = {\n  maxPoolSize: 20,\n  cleanupThreshold: 0.1,\n  maintenanceInterval: 60000,\n  spawningStrategy: 'adaptive',\n  reusePreference: 0.8\n};\n\nexport const DEFAULT_WORKLOAD_MONITOR_CONFIG: WorkloadMonitorConfig = {\n  updateInterval: 5000,\n  overloadThreshold: 0.8,\n  idleThreshold: 0.1,\n  historyWindow: 3600000 // 1 hour\n};\n\nexport const DEFAULT_PERFORMANCE_SCORER_CONFIG: PerformanceScorerConfig = {\n  defaultWeights: {\n    capability: 0.4,\n    performance: 0.3,\n    availability: 0.2,\n    success: 0.08,\n    priority: 0.02\n  },\n  performanceWindow: 1800000, // 30 minutes\n  minimumSampleSize: 3,\n  confidenceThreshold: 0.6\n};"],
+      version: 3
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "d3793a50ce28ab908c4d48b68173007f12cdfc1b"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_1sgkm3h42x = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_1sgkm3h42x();
+/**
+ * Types and interfaces for intelligent agent reuse system
+ * Following SOLID principles with clear interface segregation
+ */
+// Default configurations
+export const DEFAULT_AGENT_REUSE_CONFIG =
+/* istanbul ignore next */
+(cov_1sgkm3h42x().s[0]++, {
+  reuseThreshold: 0.7,
+  maxPoolSize: 20,
+  cleanupThreshold: 0.1,
+  selectionTimeout: 50,
+  monitoringInterval: 5000,
+  optimizationFrequency: 300000,
+  scoringWeights: {
+    capability: 0.4,
+    performance: 0.3,
+    availability: 0.2,
+    success: 0.08,
+    priority: 0.02
+  },
+  selectionStrategy: 'balanced',
+  reuseStrategy: 'greedy',
+  poolStrategy: 'dynamic'
+});
+export const DEFAULT_POOL_MANAGER_CONFIG =
+/* istanbul ignore next */
+(cov_1sgkm3h42x().s[1]++, {
+  maxPoolSize: 20,
+  cleanupThreshold: 0.1,
+  maintenanceInterval: 60000,
+  spawningStrategy: 'adaptive',
+  reusePreference: 0.8
+});
+export const DEFAULT_WORKLOAD_MONITOR_CONFIG =
+/* istanbul ignore next */
+(cov_1sgkm3h42x().s[2]++, {
+  updateInterval: 5000,
+  overloadThreshold: 0.8,
+  idleThreshold: 0.1,
+  historyWindow: 3600000 // 1 hour
+});
+export const DEFAULT_PERFORMANCE_SCORER_CONFIG =
+/* istanbul ignore next */
+(cov_1sgkm3h42x().s[3]++, {
+  defaultWeights: {
+    capability: 0.4,
+    performance: 0.3,
+    availability: 0.2,
+    success: 0.08,
+    priority: 0.02
+  },
+  performanceWindow: 1800000,
+  // 30 minutes
+  minimumSampleSize: 3,
+  confidenceThreshold: 0.6
+});
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJjb3ZfMXNna20zaDQyeCIsImFjdHVhbENvdmVyYWdlIiwiREVGQVVMVF9BR0VOVF9SRVVTRV9DT05GSUciLCJzIiwicmV1c2VUaHJlc2hvbGQiLCJtYXhQb29sU2l6ZSIsImNsZWFudXBUaHJlc2hvbGQiLCJzZWxlY3Rpb25UaW1lb3V0IiwibW9uaXRvcmluZ0ludGVydmFsIiwib3B0aW1pemF0aW9uRnJlcXVlbmN5Iiwic2NvcmluZ1dlaWdodHMiLCJjYXBhYmlsaXR5IiwicGVyZm9ybWFuY2UiLCJhdmFpbGFiaWxpdHkiLCJzdWNjZXNzIiwicHJpb3JpdHkiLCJzZWxlY3Rpb25TdHJhdGVneSIsInJldXNlU3RyYXRlZ3kiLCJwb29sU3RyYXRlZ3kiLCJERUZBVUxUX1BPT0xfTUFOQUdFUl9DT05GSUciLCJtYWludGVuYW5jZUludGVydmFsIiwic3Bhd25pbmdTdHJhdGVneSIsInJldXNlUHJlZmVyZW5jZSIsIkRFRkFVTFRfV09SS0xPQURfTU9OSVRPUl9DT05GSUciLCJ1cGRhdGVJbnRlcnZhbCIsIm92ZXJsb2FkVGhyZXNob2xkIiwiaWRsZVRocmVzaG9sZCIsImhpc3RvcnlXaW5kb3ciLCJERUZBVUxUX1BFUkZPUk1BTkNFX1NDT1JFUl9DT05GSUciLCJkZWZhdWx0V2VpZ2h0cyIsInBlcmZvcm1hbmNlV2luZG93IiwibWluaW11bVNhbXBsZVNpemUiLCJjb25maWRlbmNlVGhyZXNob2xkIl0sInNvdXJjZXMiOlsiL2hvbWUvbWh1Z28vY29kZS9jbGF1ZGUtY29kZS1mbG93L3NyYy9tYWVzdHJvL2FnZW50LXJldXNlL3R5cGVzLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogVHlwZXMgYW5kIGludGVyZmFjZXMgZm9yIGludGVsbGlnZW50IGFnZW50IHJldXNlIHN5c3RlbVxuICogRm9sbG93aW5nIFNPTElEIHByaW5jaXBsZXMgd2l0aCBjbGVhciBpbnRlcmZhY2Ugc2VncmVnYXRpb25cbiAqL1xuXG5leHBvcnQgaW50ZXJmYWNlIFRhc2tDb250ZXh0IHtcbiAgaWQ6IHN0cmluZztcbiAgdHlwZTogc3RyaW5nO1xuICBmZWF0dXJlTmFtZT86IHN0cmluZztcbiAgcHJpb3JpdHk6IG51bWJlcjtcbiAgZXN0aW1hdGVkRHVyYXRpb24/OiBudW1iZXI7XG4gIGNvbXBsZXhpdHk6ICdsb3cnIHwgJ21lZGl1bScgfCAnaGlnaCc7XG4gIG1ldGFkYXRhPzogUmVjb3JkPHN0cmluZywgYW55Pjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBTZWxlY3Rpb25PcHRpb25zIHtcbiAgbWF4QWdlbnRzPzogbnVtYmVyO1xuICBwcmVmZXJSZXVzZT86IGJvb2xlYW47XG4gIHF1YWxpdHlUaHJlc2hvbGQ/OiBudW1iZXI7XG4gIHBlcmZvcm1hbmNlV2VpZ2h0PzogbnVtYmVyO1xuICB3b3JrbG9hZEJhbGFuY2U/OiBib29sZWFuO1xuICBwcmlvcml0eUJvbnVzPzogYm9vbGVhbjtcbiAgdGFza1R5cGU/OiBzdHJpbmc7XG4gIHByZWZlckV4cGVyaWVuY2VkPzogYm9vbGVhbjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBFeGVjdXRpb25PcHRpb25zIGV4dGVuZHMgU2VsZWN0aW9uT3B0aW9ucyB7XG4gIHRpbWVvdXQ/OiBudW1iZXI7XG4gIHJldHJ5Q291bnQ/OiBudW1iZXI7XG4gIGZhaWx1cmVTdHJhdGVneT86ICdhYm9ydCcgfCAncmV0cnknIHwgJ2ZhbGxiYWNrJztcbn1cblxuZXhwb3J0IGludGVyZmFjZSBSZWdpc3RlcmVkQWdlbnQge1xuICBpZDogc3RyaW5nO1xuICBwcm9maWxlOiBBZ2VudFByb2ZpbGU7XG4gIHN0YXR1czogQWdlbnRTdGF0dXM7XG4gIGN1cnJlbnRXb3JrbG9hZDogbnVtYmVyO1xuICBjYXBhYmlsaXRpZXM6IHN0cmluZ1tdO1xuICBwZXJmb3JtYW5jZUhpc3Rvcnk6IFBlcmZvcm1hbmNlSGlzdG9yeTtcbiAgcmVnaXN0ZXJlZEF0OiBEYXRlO1xuICBsYXN0QWN0aXZpdHk6IERhdGU7XG4gIG1ldGFkYXRhPzogUmVjb3JkPHN0cmluZywgYW55Pjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBBdmFpbGFibGVBZ2VudCBleHRlbmRzIFJlZ2lzdGVyZWRBZ2VudCB7XG4gIGVzdGltYXRlZENhcGFjaXR5OiBudW1iZXI7XG4gIGF2YWlsYWJpbGl0eVNjb3JlOiBudW1iZXI7XG59XG5cbmV4cG9ydCBpbnRlcmZhY2UgU2NvcmVkQWdlbnQgZXh0ZW5kcyBBdmFpbGFibGVBZ2VudCB7XG4gIHNjb3JlOiBBZ2VudFNjb3JlO1xuICBzY29yZUJyZWFrZG93bjogU2NvcmVCcmVha2Rvd247XG59XG5cbmV4cG9ydCBpbnRlcmZhY2UgQWNxdWlyZWRBZ2VudCB7XG4gIGlkOiBzdHJpbmc7XG4gIHR5cGU6IHN0cmluZztcbiAgY2FwYWJpbGl0aWVzOiBzdHJpbmdbXTtcbiAgc291cmNlOiAncmV1c2VkJyB8ICdzcGF3bmVkJztcbiAgc3Bhd25lZEF0PzogRGF0ZTtcbiAgcmV1c2VkQXQ/OiBEYXRlO1xuICBhc3NpZ25lZFRhc2tJZD86IHN0cmluZztcbn1cblxuZXhwb3J0IGludGVyZmFjZSBBZ2VudFNjb3JlIHtcbiAgdG90YWw6IG51bWJlcjtcbiAgYnJlYWtkb3duOiBTY29yZUJyZWFrZG93bjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBTY29yZUJyZWFrZG93biB7XG4gIGNhcGFiaWxpdHk6IG51bWJlcjtcbiAgcGVyZm9ybWFuY2U6IG51bWJlcjtcbiAgYXZhaWxhYmlsaXR5OiBudW1iZXI7XG4gIHN1Y2Nlc3M6IG51bWJlcjtcbiAgcHJpb3JpdHk6IG51bWJlcjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBBZ2VudFNlbGVjdGlvbiB7XG4gIHNlbGVjdGVkQWdlbnRzOiBTY29yZWRBZ2VudFtdO1xuICBhbHRlcm5hdGl2ZUFnZW50czogU2NvcmVkQWdlbnRbXTtcbiAgc2VsZWN0aW9uUmVhc29uOiBzdHJpbmc7XG4gIGNvbmZpZGVuY2U6IG51bWJlcjtcbiAgZXN0aW1hdGVkU3VjY2VzczogbnVtYmVyO1xufVxuXG5leHBvcnQgaW50ZXJmYWNlIFRhc2tSZXN1bHQge1xuICBzdWNjZXNzOiBib29sZWFuO1xuICBvdXRwdXQ/OiBhbnk7XG4gIGR1cmF0aW9uOiBudW1iZXI7XG4gIGFnZW50TWV0cmljczogQWdlbnRNZXRyaWNzW107XG4gIGVycm9yPzogRXJyb3I7XG59XG5cbmV4cG9ydCBpbnRlcmZhY2UgQWdlbnRNZXRyaWNzIHtcbiAgYWdlbnRJZDogc3RyaW5nO1xuICB0YXNrRHVyYXRpb246IG51bWJlcjtcbiAgY3B1VXNhZ2U6IG51bWJlcjtcbiAgbWVtb3J5VXNhZ2U6IG51bWJlcjtcbiAgc3VjY2Vzc1JhdGU6IG51bWJlcjtcbiAgcXVhbGl0eVNjb3JlOiBudW1iZXI7XG59XG5cbmV4cG9ydCBpbnRlcmZhY2UgUGVyZm9ybWFuY2VIaXN0b3J5IHtcbiAgdGFza3NDb21wbGV0ZWQ6IG51bWJlcjtcbiAgdGFza3NGYWlsZWQ6IG51bWJlcjtcbiAgYXZlcmFnZUR1cmF0aW9uOiBudW1iZXI7XG4gIHN1Y2Nlc3NSYXRlOiBudW1iZXI7XG4gIHF1YWxpdHlTY29yZXM6IG51bWJlcltdO1xuICBsYXN0VXBkYXRlZDogRGF0ZTtcbiAgXG4gIGFkZENvbXBsZXRpb24oZHVyYXRpb246IG51bWJlciwgZXN0aW1hdGVkRHVyYXRpb246IG51bWJlcik6IHZvaWQ7XG4gIGFkZEZhaWx1cmUocmVhc29uOiBzdHJpbmcpOiB2b2lkO1xuICBnZXRSZWNlbnRTdWNjZXNzUmF0ZSh3aW5kb3c/OiBudW1iZXIpOiBudW1iZXI7XG4gIGdldEF2ZXJhZ2VRdWFsaXR5KHdpbmRvdz86IG51bWJlcik6IG51bWJlcjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBXb3JrbG9hZERhdGEge1xuICBhZ2VudElkOiBzdHJpbmc7XG4gIGN1cnJlbnRMb2FkOiBudW1iZXI7XG4gIGVzdGltYXRlZENhcGFjaXR5OiBudW1iZXI7XG4gIGFjdGl2ZVRhc2tzOiBNYXA8c3RyaW5nLCBBY3RpdmVUYXNrPjtcbiAgcGVyZm9ybWFuY2VIaXN0b3J5OiBQZXJmb3JtYW5jZUhpc3Rvcnk7XG4gIGxhc3RVcGRhdGVkOiBEYXRlO1xufVxuXG5leHBvcnQgaW50ZXJmYWNlIEFjdGl2ZVRhc2sge1xuICB0YXNrSWQ6IHN0cmluZztcbiAgc3RhcnRUaW1lOiBEYXRlO1xuICBlc3RpbWF0ZWREdXJhdGlvbjogbnVtYmVyO1xuICBzdGF0dXM6ICdydW5uaW5nJyB8ICdwYXVzZWQnIHwgJ2NvbXBsZXRpbmcnO1xufVxuXG5leHBvcnQgaW50ZXJmYWNlIFJlZ2lzdHJ5U3RhdGlzdGljcyB7XG4gIHRvdGFsQWdlbnRzOiBudW1iZXI7XG4gIGF2YWlsYWJsZUFnZW50czogbnVtYmVyO1xuICBidXN5QWdlbnRzOiBudW1iZXI7XG4gIGF2ZXJhZ2VXb3JrbG9hZDogbnVtYmVyO1xuICBjYXBhYmlsaXR5Q292ZXJhZ2U6IG51bWJlcjtcbiAgcmVnaXN0cnlIZWFsdGg6IG51bWJlcjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBXb3JrbG9hZFN0YXRpc3RpY3Mge1xuICB0b3RhbEFnZW50czogbnVtYmVyO1xuICBhdmVyYWdlTG9hZDogbnVtYmVyO1xuICBvdmVybG9hZGVkQWdlbnRzOiBudW1iZXI7XG4gIGlkbGVBZ2VudHM6IG51bWJlcjtcbiAgdG90YWxBY3RpdmVUYXNrczogbnVtYmVyO1xuICBsb2FkRGlzdHJpYnV0aW9uOiBMb2FkRGlzdHJpYnV0aW9uO1xufVxuXG5leHBvcnQgaW50ZXJmYWNlIExvYWREaXN0cmlidXRpb24ge1xuICBsb3c6IG51bWJlcjsgICAgLy8gMC0wLjMgbG9hZFxuICBtZWRpdW06IG51bWJlcjsgLy8gMC4zLTAuNyBsb2FkXG4gIGhpZ2g6IG51bWJlcjsgICAvLyAwLjctMS4wIGxvYWRcbiAgb3ZlcmxvYWQ6IG51bWJlcjsgLy8gPjEuMCBsb2FkXG59XG5cbmV4cG9ydCBpbnRlcmZhY2UgTG9hZEJhbGFuY2luZ1Jlc3VsdCB7XG4gIGFzc2lnbm1lbnRzOiBUYXNrQXNzaWdubWVudFtdO1xuICBiYWxhbmNlU2NvcmU6IG51bWJlcjtcbiAgZXN0aW1hdGVkQ29tcGxldGlvbjogRGF0ZTtcbiAgcmVjb21tZW5kYXRpb25zOiBzdHJpbmdbXTtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBUYXNrQXNzaWdubWVudCB7XG4gIHRhc2tJZDogc3RyaW5nO1xuICBhZ2VudElkOiBzdHJpbmc7XG4gIGVzdGltYXRlZFN0YXJ0VGltZTogRGF0ZTtcbiAgZXN0aW1hdGVkRHVyYXRpb246IG51bWJlcjtcbiAgY29uZmlkZW5jZTogbnVtYmVyO1xufVxuXG5leHBvcnQgaW50ZXJmYWNlIFBvb2xPcHRpbWl6YXRpb25SZXN1bHQge1xuICBpbml0aWFsU3RhdHM6IFJlZ2lzdHJ5U3RhdGlzdGljcztcbiAgcmVjb21tZW5kYXRpb25zOiBPcHRpbWl6YXRpb25SZWNvbW1lbmRhdGlvbltdO1xuICByZXN1bHRzOiBPcHRpbWl6YXRpb25SZXN1bHRbXTtcbiAgb3B0aW1pemVkQXQ6IERhdGU7XG59XG5cbmV4cG9ydCBpbnRlcmZhY2UgT3B0aW1pemF0aW9uUmVjb21tZW5kYXRpb24ge1xuICB0eXBlOiAnc3Bhd24nIHwgJ2NsZWFudXAnIHwgJ3JlYmFsYW5jZScgfCAndXBncmFkZSc7XG4gIHJlYXNvbjogc3RyaW5nO1xuICBleHBlY3RlZEltcGFjdDogbnVtYmVyO1xuICBwcmlvcml0eTogJ2hpZ2gnIHwgJ21lZGl1bScgfCAnbG93JztcbiAgYWdlbnRJZD86IHN0cmluZztcbiAgYWdlbnRUeXBlPzogc3RyaW5nO1xufVxuXG5leHBvcnQgaW50ZXJmYWNlIE9wdGltaXphdGlvblJlc3VsdCB7XG4gIHJlY29tbWVuZGF0aW9uOiBPcHRpbWl6YXRpb25SZWNvbW1lbmRhdGlvbjtcbiAgYXBwbGllZDogYm9vbGVhbjtcbiAgYWN0dWFsSW1wYWN0PzogbnVtYmVyO1xuICBlcnJvcj86IHN0cmluZztcbn1cblxuZXhwb3J0IHR5cGUgQWdlbnRTdGF0dXMgPSBcbiAgfCAnYXZhaWxhYmxlJyAgICAvLyBSZWFkeSBmb3IgbmV3IHRhc2tzXG4gIHwgJ2J1c3knICAgICAgICAgLy8gQ3VycmVudGx5IGV4ZWN1dGluZyB0YXNrc1xuICB8ICdvdmVybG9hZGVkJyAgIC8vIEFib3ZlIGNhcGFjaXR5IHRocmVzaG9sZFxuICB8ICdtYWludGVuYW5jZScgIC8vIFVuZGVyZ29pbmcgbWFpbnRlbmFuY2VcbiAgfCAnZXJyb3InICAgICAgICAvLyBJbiBlcnJvciBzdGF0ZVxuICB8ICdvZmZsaW5lJzsgICAgIC8vIE5vdCByZXNwb25kaW5nXG5cbmV4cG9ydCBpbnRlcmZhY2UgQWdlbnRQcm9maWxlIHtcbiAgaWQ6IHN0cmluZztcbiAgbmFtZTogc3RyaW5nO1xuICB0eXBlOiBzdHJpbmc7XG4gIGNhcGFiaWxpdGllcz86IHN0cmluZ1tdO1xuICBtYXhDb25jdXJyZW50VGFza3M6IG51bWJlcjtcbiAgcHJpb3JpdHk6IG51bWJlcjtcbiAgbWV0YWRhdGE/OiBSZWNvcmQ8c3RyaW5nLCBhbnk+O1xufVxuXG5leHBvcnQgaW50ZXJmYWNlIFRhc2tEZWZpbml0aW9uIHtcbiAgaWQ6IHN0cmluZztcbiAgdHlwZTogc3RyaW5nO1xuICBkZXNjcmlwdGlvbjogc3RyaW5nO1xuICBpbnB1dDogYW55O1xuICBwcmlvcml0eTogbnVtYmVyO1xuICBtZXRhZGF0YT86IFJlY29yZDxzdHJpbmcsIGFueT47XG59XG5cbmV4cG9ydCBpbnRlcmZhY2UgVGFza1JlcXVpcmVtZW50cyB7XG4gIGNhcGFiaWxpdGllczogc3RyaW5nW107XG4gIGVzdGltYXRlZER1cmF0aW9uPzogbnVtYmVyO1xuICBtYXhEdXJhdGlvbj86IG51bWJlcjtcbiAgcXVhbGl0eVRocmVzaG9sZD86IG51bWJlcjtcbiAgc3BlY2lhbFJlcXVpcmVtZW50cz86IHN0cmluZ1tdO1xufVxuXG4vLyBTdHJhdGVneSBwYXR0ZXJuIGludGVyZmFjZXNcbmV4cG9ydCBpbnRlcmZhY2UgU2VsZWN0aW9uU3RyYXRlZ3kge1xuICBzZWxlY3RBZ2VudHMoc2NvcmVkQWdlbnRzOiBTY29yZWRBZ2VudFtdLCBvcHRpb25zOiBTZWxlY3Rpb25PcHRpb25zKTogQWdlbnRTZWxlY3Rpb247XG59XG5cbmV4cG9ydCBpbnRlcmZhY2UgUmV1c2VTdHJhdGVneSB7XG4gIGZpbmRSZXVzYWJsZUFnZW50cyhcbiAgICByZXF1aXJlZENhcGFiaWxpdGllczogc3RyaW5nW10sXG4gICAgdGFza0NvbnRleHQ6IFRhc2tDb250ZXh0LFxuICAgIG1heEFnZW50czogbnVtYmVyXG4gICk6IFByb21pc2U8QWNxdWlyZWRBZ2VudFtdPjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBTY29yaW5nU3RyYXRlZ3kge1xuICBnZXRXZWlnaHRzKHRhc2tDb250ZXh0OiBUYXNrQ29udGV4dCk6IFNjb3JpbmdXZWlnaHRzO1xufVxuXG5leHBvcnQgaW50ZXJmYWNlIFNjb3JpbmdXZWlnaHRzIHtcbiAgY2FwYWJpbGl0eTogbnVtYmVyO1xuICBwZXJmb3JtYW5jZTogbnVtYmVyO1xuICBhdmFpbGFiaWxpdHk6IG51bWJlcjtcbiAgc3VjY2VzczogbnVtYmVyO1xuICBwcmlvcml0eTogbnVtYmVyO1xufVxuXG4vLyBDb25maWd1cmF0aW9uIGludGVyZmFjZXNcbmV4cG9ydCBpbnRlcmZhY2UgQWdlbnRSZXVzZUNvbmZpZyB7XG4gIC8vIFNlbGVjdGlvbiBwcmVmZXJlbmNlc1xuICByZXVzZVRocmVzaG9sZDogbnVtYmVyO1xuICBtYXhQb29sU2l6ZTogbnVtYmVyO1xuICBjbGVhbnVwVGhyZXNob2xkOiBudW1iZXI7XG4gIFxuICAvLyBQZXJmb3JtYW5jZSB0dW5pbmdcbiAgc2VsZWN0aW9uVGltZW91dDogbnVtYmVyO1xuICBtb25pdG9yaW5nSW50ZXJ2YWw6IG51bWJlcjtcbiAgb3B0aW1pemF0aW9uRnJlcXVlbmN5OiBudW1iZXI7XG4gIFxuICAvLyBTY29yaW5nIHdlaWdodHNcbiAgc2NvcmluZ1dlaWdodHM6IFNjb3JpbmdXZWlnaHRzO1xuICBcbiAgLy8gU3RyYXRlZ3kgc2VsZWN0aW9uXG4gIHNlbGVjdGlvblN0cmF0ZWd5OiAnYmFsYW5jZWQnIHwgJ3BlcmZvcm1hbmNlJyB8ICdlZmZpY2llbmN5JyB8ICdjdXN0b20nO1xuICByZXVzZVN0cmF0ZWd5OiAnZ3JlZWR5JyB8ICdjb25zZXJ2YXRpdmUnIHwgJ2FkYXB0aXZlJztcbiAgcG9vbFN0cmF0ZWd5OiAnc3RhdGljJyB8ICdkeW5hbWljJyB8ICdwcmVkaWN0aXZlJztcbn1cblxuZXhwb3J0IGludGVyZmFjZSBQb29sTWFuYWdlckNvbmZpZyB7XG4gIG1heFBvb2xTaXplOiBudW1iZXI7XG4gIGNsZWFudXBUaHJlc2hvbGQ6IG51bWJlcjtcbiAgbWFpbnRlbmFuY2VJbnRlcnZhbDogbnVtYmVyO1xuICBzcGF3bmluZ1N0cmF0ZWd5OiAnY29uc2VydmF0aXZlJyB8ICdhZ2dyZXNzaXZlJyB8ICdhZGFwdGl2ZSc7XG4gIHJldXNlUHJlZmVyZW5jZTogbnVtYmVyOyAvLyAwLTEsIGhpZ2hlciB2YWx1ZXMgcHJlZmVyIHJldXNlIG1vcmVcbn1cblxuZXhwb3J0IGludGVyZmFjZSBXb3JrbG9hZE1vbml0b3JDb25maWcge1xuICB1cGRhdGVJbnRlcnZhbDogbnVtYmVyO1xuICBvdmVybG9hZFRocmVzaG9sZDogbnVtYmVyO1xuICBpZGxlVGhyZXNob2xkOiBudW1iZXI7XG4gIGhpc3RvcnlXaW5kb3c6IG51bWJlcjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBQZXJmb3JtYW5jZVNjb3JlckNvbmZpZyB7XG4gIGRlZmF1bHRXZWlnaHRzOiBTY29yaW5nV2VpZ2h0cztcbiAgcGVyZm9ybWFuY2VXaW5kb3c6IG51bWJlcjtcbiAgbWluaW11bVNhbXBsZVNpemU6IG51bWJlcjtcbiAgY29uZmlkZW5jZVRocmVzaG9sZDogbnVtYmVyO1xufVxuXG4vLyBTdWJzY3JpYmVyIGludGVyZmFjZXMgZm9yIE9ic2VydmVyIHBhdHRlcm5cbmV4cG9ydCBpbnRlcmZhY2UgQWdlbnRTdGF0dXNTdWJzY3JpYmVyIHtcbiAgb25BZ2VudFN0YXR1c0NoYW5nZShhZ2VudElkOiBzdHJpbmcsIHN0YXR1czogQWdlbnRTdGF0dXMsIG1ldGFkYXRhPzogYW55KTogdm9pZDtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBXb3JrbG9hZFN1YnNjcmliZXIge1xuICBvbldvcmtsb2FkQ2hhbmdlKGFnZW50SWQ6IHN0cmluZywgd29ya2xvYWQ6IFdvcmtsb2FkRGF0YSk6IHZvaWQ7XG59XG5cbi8vIERlZmF1bHQgY29uZmlndXJhdGlvbnNcbmV4cG9ydCBjb25zdCBERUZBVUxUX0FHRU5UX1JFVVNFX0NPTkZJRzogQWdlbnRSZXVzZUNvbmZpZyA9IHtcbiAgcmV1c2VUaHJlc2hvbGQ6IDAuNyxcbiAgbWF4UG9vbFNpemU6IDIwLFxuICBjbGVhbnVwVGhyZXNob2xkOiAwLjEsXG4gIHNlbGVjdGlvblRpbWVvdXQ6IDUwLFxuICBtb25pdG9yaW5nSW50ZXJ2YWw6IDUwMDAsXG4gIG9wdGltaXphdGlvbkZyZXF1ZW5jeTogMzAwMDAwLFxuICBzY29yaW5nV2VpZ2h0czoge1xuICAgIGNhcGFiaWxpdHk6IDAuNCxcbiAgICBwZXJmb3JtYW5jZTogMC4zLFxuICAgIGF2YWlsYWJpbGl0eTogMC4yLFxuICAgIHN1Y2Nlc3M6IDAuMDgsXG4gICAgcHJpb3JpdHk6IDAuMDJcbiAgfSxcbiAgc2VsZWN0aW9uU3RyYXRlZ3k6ICdiYWxhbmNlZCcsXG4gIHJldXNlU3RyYXRlZ3k6ICdncmVlZHknLFxuICBwb29sU3RyYXRlZ3k6ICdkeW5hbWljJ1xufTtcblxuZXhwb3J0IGNvbnN0IERFRkFVTFRfUE9PTF9NQU5BR0VSX0NPTkZJRzogUG9vbE1hbmFnZXJDb25maWcgPSB7XG4gIG1heFBvb2xTaXplOiAyMCxcbiAgY2xlYW51cFRocmVzaG9sZDogMC4xLFxuICBtYWludGVuYW5jZUludGVydmFsOiA2MDAwMCxcbiAgc3Bhd25pbmdTdHJhdGVneTogJ2FkYXB0aXZlJyxcbiAgcmV1c2VQcmVmZXJlbmNlOiAwLjhcbn07XG5cbmV4cG9ydCBjb25zdCBERUZBVUxUX1dPUktMT0FEX01PTklUT1JfQ09ORklHOiBXb3JrbG9hZE1vbml0b3JDb25maWcgPSB7XG4gIHVwZGF0ZUludGVydmFsOiA1MDAwLFxuICBvdmVybG9hZFRocmVzaG9sZDogMC44LFxuICBpZGxlVGhyZXNob2xkOiAwLjEsXG4gIGhpc3RvcnlXaW5kb3c6IDM2MDAwMDAgLy8gMSBob3VyXG59O1xuXG5leHBvcnQgY29uc3QgREVGQVVMVF9QRVJGT1JNQU5DRV9TQ09SRVJfQ09ORklHOiBQZXJmb3JtYW5jZVNjb3JlckNvbmZpZyA9IHtcbiAgZGVmYXVsdFdlaWdodHM6IHtcbiAgICBjYXBhYmlsaXR5OiAwLjQsXG4gICAgcGVyZm9ybWFuY2U6IDAuMyxcbiAgICBhdmFpbGFiaWxpdHk6IDAuMixcbiAgICBzdWNjZXNzOiAwLjA4LFxuICAgIHByaW9yaXR5OiAwLjAyXG4gIH0sXG4gIHBlcmZvcm1hbmNlV2luZG93OiAxODAwMDAwLCAvLyAzMCBtaW51dGVzXG4gIG1pbmltdW1TYW1wbGVTaXplOiAzLFxuICBjb25maWRlbmNlVGhyZXNob2xkOiAwLjZcbn07Il0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztJQThUSTtJQUFBQSxjQUFBLFlBQUFBLENBQUE7TUFBQSxPQUFBQyxjQUFBO0lBQUE7RUFBQTtFQUFBLE9BQUFBLGNBQUE7QUFBQTtBQUFBRCxjQUFBO0FBOVRKOzs7O0FBbVRBO0FBQ0EsT0FBTyxNQUFNRSwwQkFBMEI7QUFBQTtBQUFBLENBQUFGLGNBQUEsR0FBQUcsQ0FBQSxPQUFxQjtFQUMxREMsY0FBYyxFQUFFLEdBQUc7RUFDbkJDLFdBQVcsRUFBRSxFQUFFO0VBQ2ZDLGdCQUFnQixFQUFFLEdBQUc7RUFDckJDLGdCQUFnQixFQUFFLEVBQUU7RUFDcEJDLGtCQUFrQixFQUFFLElBQUk7RUFDeEJDLHFCQUFxQixFQUFFLE1BQU07RUFDN0JDLGNBQWMsRUFBRTtJQUNkQyxVQUFVLEVBQUUsR0FBRztJQUNmQyxXQUFXLEVBQUUsR0FBRztJQUNoQkMsWUFBWSxFQUFFLEdBQUc7SUFDakJDLE9BQU8sRUFBRSxJQUFJO0lBQ2JDLFFBQVEsRUFBRTtHQUNYO0VBQ0RDLGlCQUFpQixFQUFFLFVBQVU7RUFDN0JDLGFBQWEsRUFBRSxRQUFRO0VBQ3ZCQyxZQUFZLEVBQUU7Q0FDZjtBQUVELE9BQU8sTUFBTUMsMkJBQTJCO0FBQUE7QUFBQSxDQUFBbkIsY0FBQSxHQUFBRyxDQUFBLE9BQXNCO0VBQzVERSxXQUFXLEVBQUUsRUFBRTtFQUNmQyxnQkFBZ0IsRUFBRSxHQUFHO0VBQ3JCYyxtQkFBbUIsRUFBRSxLQUFLO0VBQzFCQyxnQkFBZ0IsRUFBRSxVQUFVO0VBQzVCQyxlQUFlLEVBQUU7Q0FDbEI7QUFFRCxPQUFPLE1BQU1DLCtCQUErQjtBQUFBO0FBQUEsQ0FBQXZCLGNBQUEsR0FBQUcsQ0FBQSxPQUEwQjtFQUNwRXFCLGNBQWMsRUFBRSxJQUFJO0VBQ3BCQyxpQkFBaUIsRUFBRSxHQUFHO0VBQ3RCQyxhQUFhLEVBQUUsR0FBRztFQUNsQkMsYUFBYSxFQUFFLE9BQU8sQ0FBQztDQUN4QjtBQUVELE9BQU8sTUFBTUMsaUNBQWlDO0FBQUE7QUFBQSxDQUFBNUIsY0FBQSxHQUFBRyxDQUFBLE9BQTRCO0VBQ3hFMEIsY0FBYyxFQUFFO0lBQ2RsQixVQUFVLEVBQUUsR0FBRztJQUNmQyxXQUFXLEVBQUUsR0FBRztJQUNoQkMsWUFBWSxFQUFFLEdBQUc7SUFDakJDLE9BQU8sRUFBRSxJQUFJO0lBQ2JDLFFBQVEsRUFBRTtHQUNYO0VBQ0RlLGlCQUFpQixFQUFFLE9BQU87RUFBRTtFQUM1QkMsaUJBQWlCLEVBQUUsQ0FBQztFQUNwQkMsbUJBQW1CLEVBQUU7Q0FDdEIiLCJpZ25vcmVMaXN0IjpbXX0=

@@ -1,0 +1,58 @@
+27ff9304f7fe6c30b1847caeff1df45a
+/* istanbul ignore next */
+function cov_1p285j04fz() {
+  var path = "/home/mhugo/code/claude-code-flow/src/__tests__/helpers/index.ts";
+  var hash = "57adafa9725cc9b000cf885aeee872d5a7b2637f";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/mhugo/code/claude-code-flow/src/__tests__/helpers/index.ts",
+    statementMap: {},
+    fnMap: {},
+    branchMap: {},
+    s: {},
+    f: {},
+    b: {},
+    inputSourceMap: {
+      file: "/home/mhugo/code/claude-code-flow/src/__tests__/helpers/index.ts",
+      mappings: "AAAA;;;;;;GAMG;AAEH,OAAO,EAAE,WAAW,EAAE,MAAM,mBAAmB,CAAC;AAChD,OAAO,EAAE,eAAe,EAAE,MAAM,wBAAwB,CAAC;AACzD,OAAO,EAAE,gBAAgB,EAAE,MAAM,wBAAwB,CAAC;AAC1D,OAAO,EAAE,sBAAsB,EAAE,MAAM,8BAA8B,CAAC;AACtE,OAAO,EAAE,oBAAoB,EAAE,MAAM,6BAA6B,CAAC;AAEnE,wBAAwB;AACxB,OAAO,EAAE,UAAU,EAAE,MAAM,kBAAkB,CAAC;AAC9C,OAAO,EAAE,kBAAkB,EAAE,MAAM,2BAA2B,CAAC;AAC/D,OAAO,EAAE,oBAAoB,EAAE,MAAM,6BAA6B,CAAC;AACnE,OAAO,EAAE,iBAAiB,EAAE,MAAM,0BAA0B,CAAC",
+      names: [],
+      sources: ["/home/mhugo/code/claude-code-flow/src/__tests__/helpers/index.ts"],
+      sourcesContent: ["/**\n * Test Helper Utilities - Supporting Both London and Classical TDD\n * \n * @fileoverview Comprehensive test utilities for Claude Code Flow\n * Supports both London School (mock-heavy, interaction-focused) \n * and Classical School (real object, state-focused) testing approaches\n */\n\nexport { MockBuilder } from './mock-builder.js';\nexport { TestDataFactory } from './test-data-factory.js';\nexport { AssertionHelpers } from './assertion-helpers.js';\nexport { PerformanceMeasurement } from './performance-measurement.js';\nexport { IntegrationTestSetup } from './integration-test-setup.js';\n\n// Common test utilities\nexport { TestLogger } from './test-logger.js';\nexport { DatabaseTestHelper } from './database-test-helper.js';\nexport { FileSystemTestHelper } from './filesystem-test-helper.js';\nexport { NetworkTestHelper } from './network-test-helper.js';\n\n// Type exports for test configurations\nexport type {\n  MockConfiguration,\n  TestDataOptions,\n  PerformanceTestOptions,\n  IntegrationTestConfig,\n  AssertionOptions\n} from './types.js';"],
+      version: 3
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "57adafa9725cc9b000cf885aeee872d5a7b2637f"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_1p285j04fz = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_1p285j04fz();
+/**
+ * Test Helper Utilities - Supporting Both London and Classical TDD
+ *
+ * @fileoverview Comprehensive test utilities for Claude Code Flow
+ * Supports both London School (mock-heavy, interaction-focused)
+ * and Classical School (real object, state-focused) testing approaches
+ */
+export { MockBuilder } from './mock-builder.js';
+export { TestDataFactory } from './test-data-factory.js';
+export { AssertionHelpers } from './assertion-helpers.js';
+export { PerformanceMeasurement } from './performance-measurement.js';
+export { IntegrationTestSetup } from './integration-test-setup.js';
+// Common test utilities
+export { TestLogger } from './test-logger.js';
+export { DatabaseTestHelper } from './database-test-helper.js';
+export { FileSystemTestHelper } from './filesystem-test-helper.js';
+export { NetworkTestHelper } from './network-test-helper.js';
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJjb3ZfMXAyODVqMDRmeiIsImFjdHVhbENvdmVyYWdlIiwiTW9ja0J1aWxkZXIiLCJUZXN0RGF0YUZhY3RvcnkiLCJBc3NlcnRpb25IZWxwZXJzIiwiUGVyZm9ybWFuY2VNZWFzdXJlbWVudCIsIkludGVncmF0aW9uVGVzdFNldHVwIiwiVGVzdExvZ2dlciIsIkRhdGFiYXNlVGVzdEhlbHBlciIsIkZpbGVTeXN0ZW1UZXN0SGVscGVyIiwiTmV0d29ya1Rlc3RIZWxwZXIiXSwic291cmNlcyI6WyIvaG9tZS9taHVnby9jb2RlL2NsYXVkZS1jb2RlLWZsb3cvc3JjL19fdGVzdHNfXy9oZWxwZXJzL2luZGV4LnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogVGVzdCBIZWxwZXIgVXRpbGl0aWVzIC0gU3VwcG9ydGluZyBCb3RoIExvbmRvbiBhbmQgQ2xhc3NpY2FsIFRERFxuICogXG4gKiBAZmlsZW92ZXJ2aWV3IENvbXByZWhlbnNpdmUgdGVzdCB1dGlsaXRpZXMgZm9yIENsYXVkZSBDb2RlIEZsb3dcbiAqIFN1cHBvcnRzIGJvdGggTG9uZG9uIFNjaG9vbCAobW9jay1oZWF2eSwgaW50ZXJhY3Rpb24tZm9jdXNlZCkgXG4gKiBhbmQgQ2xhc3NpY2FsIFNjaG9vbCAocmVhbCBvYmplY3QsIHN0YXRlLWZvY3VzZWQpIHRlc3RpbmcgYXBwcm9hY2hlc1xuICovXG5cbmV4cG9ydCB7IE1vY2tCdWlsZGVyIH0gZnJvbSAnLi9tb2NrLWJ1aWxkZXIuanMnO1xuZXhwb3J0IHsgVGVzdERhdGFGYWN0b3J5IH0gZnJvbSAnLi90ZXN0LWRhdGEtZmFjdG9yeS5qcyc7XG5leHBvcnQgeyBBc3NlcnRpb25IZWxwZXJzIH0gZnJvbSAnLi9hc3NlcnRpb24taGVscGVycy5qcyc7XG5leHBvcnQgeyBQZXJmb3JtYW5jZU1lYXN1cmVtZW50IH0gZnJvbSAnLi9wZXJmb3JtYW5jZS1tZWFzdXJlbWVudC5qcyc7XG5leHBvcnQgeyBJbnRlZ3JhdGlvblRlc3RTZXR1cCB9IGZyb20gJy4vaW50ZWdyYXRpb24tdGVzdC1zZXR1cC5qcyc7XG5cbi8vIENvbW1vbiB0ZXN0IHV0aWxpdGllc1xuZXhwb3J0IHsgVGVzdExvZ2dlciB9IGZyb20gJy4vdGVzdC1sb2dnZXIuanMnO1xuZXhwb3J0IHsgRGF0YWJhc2VUZXN0SGVscGVyIH0gZnJvbSAnLi9kYXRhYmFzZS10ZXN0LWhlbHBlci5qcyc7XG5leHBvcnQgeyBGaWxlU3lzdGVtVGVzdEhlbHBlciB9IGZyb20gJy4vZmlsZXN5c3RlbS10ZXN0LWhlbHBlci5qcyc7XG5leHBvcnQgeyBOZXR3b3JrVGVzdEhlbHBlciB9IGZyb20gJy4vbmV0d29yay10ZXN0LWhlbHBlci5qcyc7XG5cbi8vIFR5cGUgZXhwb3J0cyBmb3IgdGVzdCBjb25maWd1cmF0aW9uc1xuZXhwb3J0IHR5cGUge1xuICBNb2NrQ29uZmlndXJhdGlvbixcbiAgVGVzdERhdGFPcHRpb25zLFxuICBQZXJmb3JtYW5jZVRlc3RPcHRpb25zLFxuICBJbnRlZ3JhdGlvblRlc3RDb25maWcsXG4gIEFzc2VydGlvbk9wdGlvbnNcbn0gZnJvbSAnLi90eXBlcy5qcyc7Il0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0lBaUJTO0lBQUFBLGNBQUEsWUFBQUEsQ0FBQTtNQUFBLE9BQUFDLGNBQUE7SUFBQTtFQUFBO0VBQUEsT0FBQUEsY0FBQTtBQUFBO0FBQUFELGNBQUE7QUFqQlQ7Ozs7Ozs7QUFRQSxTQUFTRSxXQUFXLFFBQVEsbUJBQW1CO0FBQy9DLFNBQVNDLGVBQWUsUUFBUSx3QkFBd0I7QUFDeEQsU0FBU0MsZ0JBQWdCLFFBQVEsd0JBQXdCO0FBQ3pELFNBQVNDLHNCQUFzQixRQUFRLDhCQUE4QjtBQUNyRSxTQUFTQyxvQkFBb0IsUUFBUSw2QkFBNkI7QUFFbEU7QUFDQSxTQUFTQyxVQUFVLFFBQVEsa0JBQWtCO0FBQzdDLFNBQVNDLGtCQUFrQixRQUFRLDJCQUEyQjtBQUM5RCxTQUFTQyxvQkFBb0IsUUFBUSw2QkFBNkI7QUFDbEUsU0FBU0MsaUJBQWlCLFFBQVEsMEJBQTBCIiwiaWdub3JlTGlzdCI6W119

@@ -1,0 +1,312 @@
+d9edaa43d84d2d6313b43b2f79d65225
+/* istanbul ignore next */
+function cov_1qyty6qown() {
+  var path = "/home/mhugo/code/claude-code-flow/src/cli/ui/screens/index.ts";
+  var hash = "4a722b095a5618730ac903362e60bb9108ce95cf";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/mhugo/code/claude-code-flow/src/cli/ui/screens/index.ts",
+    statementMap: {
+      "0": {
+        start: {
+          line: 11,
+          column: 27
+        },
+        end: {
+          line: 24,
+          column: 1
+        }
+      },
+      "1": {
+        start: {
+          line: 12,
+          column: 65
+        },
+        end: {
+          line: 17,
+          column: 5
+        }
+      },
+      "2": {
+        start: {
+          line: 19,
+          column: 8
+        },
+        end: {
+          line: 19,
+          column: 52
+        }
+      },
+      "3": {
+        start: {
+          line: 19,
+          column: 36
+        },
+        end: {
+          line: 19,
+          column: 50
+        }
+      },
+      "4": {
+        start: {
+          line: 22,
+          column: 8
+        },
+        end: {
+          line: 22,
+          column: 52
+        }
+      },
+      "5": {
+        start: {
+          line: 22,
+          column: 34
+        },
+        end: {
+          line: 22,
+          column: 50
+        }
+      }
+    },
+    fnMap: {
+      "0": {
+        name: "(anonymous_0)",
+        decl: {
+          start: {
+            line: 12,
+            column: 26
+          },
+          end: {
+            line: 12,
+            column: 27
+          }
+        },
+        loc: {
+          start: {
+            line: 12,
+            column: 65
+          },
+          end: {
+            line: 17,
+            column: 5
+          }
+        },
+        line: 12
+      },
+      "1": {
+        name: "(anonymous_1)",
+        decl: {
+          start: {
+            line: 18,
+            column: 24
+          },
+          end: {
+            line: 18,
+            column: 25
+          }
+        },
+        loc: {
+          start: {
+            line: 18,
+            column: 35
+          },
+          end: {
+            line: 20,
+            column: 5
+          }
+        },
+        line: 18
+      },
+      "2": {
+        name: "(anonymous_2)",
+        decl: {
+          start: {
+            line: 19,
+            column: 28
+          },
+          end: {
+            line: 19,
+            column: 29
+          }
+        },
+        loc: {
+          start: {
+            line: 19,
+            column: 36
+          },
+          end: {
+            line: 19,
+            column: 50
+          }
+        },
+        line: 19
+      },
+      "3": {
+        name: "(anonymous_3)",
+        decl: {
+          start: {
+            line: 21,
+            column: 19
+          },
+          end: {
+            line: 21,
+            column: 20
+          }
+        },
+        loc: {
+          start: {
+            line: 21,
+            column: 35
+          },
+          end: {
+            line: 23,
+            column: 5
+          }
+        },
+        line: 21
+      },
+      "4": {
+        name: "(anonymous_4)",
+        decl: {
+          start: {
+            line: 22,
+            column: 26
+          },
+          end: {
+            line: 22,
+            column: 27
+          }
+        },
+        loc: {
+          start: {
+            line: 22,
+            column: 34
+          },
+          end: {
+            line: 22,
+            column: 50
+          }
+        },
+        line: 22
+      }
+    },
+    branchMap: {
+      "0": {
+        loc: {
+          start: {
+            line: 12,
+            column: 47
+          },
+          end: {
+            line: 12,
+            column: 59
+          }
+        },
+        type: "default-arg",
+        locations: [{
+          start: {
+            line: 12,
+            column: 57
+          },
+          end: {
+            line: 12,
+            column: 59
+          }
+        }],
+        line: 12
+      }
+    },
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0
+    },
+    f: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0
+    },
+    b: {
+      "0": [0]
+    },
+    inputSourceMap: {
+      file: "/home/mhugo/code/claude-code-flow/src/cli/ui/screens/index.ts",
+      mappings: "AAAA;;;;;GAKG;AAEH,oBAAoB;AACpB,OAAO,EAAE,QAAQ,EAAE,MAAM,aAAa,CAAC;AACvC,OAAO,EAAE,cAAc,EAAE,MAAM,mBAAmB,CAAC;AA+BnD,8BAA8B;AAC9B,MAAM,CAAC,MAAM,WAAW,GAAG;IACzB,oBAAoB,EAAE,CACpB,GAAW,EACX,KAAa,EACb,MAAkC,EAClC,UAAmC,EAAE,EACrB,EAAE,CAAC,CAAC;QACpB,GAAG;QACH,KAAK;QACL,MAAM;QACN,GAAG,OAAO;KACX,CAAC;IAEF,kBAAkB,EAAE,CAAC,KAAuB,EAAoB,EAAE;QAChE,OAAO,KAAK,CAAC,MAAM,CAAC,IAAI,CAAC,EAAE,CAAC,CAAC,IAAI,CAAC,QAAQ,CAAC,CAAC;IAC9C,CAAC;IAED,aAAa,EAAE,CAAC,KAAuB,EAAE,GAAW,EAA8B,EAAE;QAClF,OAAO,KAAK,CAAC,IAAI,CAAC,IAAI,CAAC,EAAE,CAAC,IAAI,CAAC,GAAG,KAAK,GAAG,CAAC,CAAC;IAC9C,CAAC;CACF,CAAC",
+      names: [],
+      sources: ["/home/mhugo/code/claude-code-flow/src/cli/ui/screens/index.ts"],
+      sourcesContent: ["/**\n * UI Screens - Screen Exports\n * \n * This module exports all screen components for the Claude Flow CLI.\n * Screens represent full-page UI layouts and interactive interfaces.\n */\n\n// Screen components\nexport { MainMenu } from './main-menu';\nexport { SwarmDashboard } from './swarm-dashboard';\n\n// Screen prop types\nexport type { MainMenuProps } from './main-menu';\nexport type { SwarmDashboardProps } from './swarm-dashboard';\n\n// Common screen types\nexport interface BaseScreenProps {\n  onExit?: () => void;\n  onBack?: () => void;\n  title?: string;\n  showHeader?: boolean;\n  showFooter?: boolean;\n}\n\nexport interface NavigationItem {\n  key: string;\n  label: string;\n  description?: string;\n  action: () => void | Promise<void>;\n  disabled?: boolean;\n  icon?: string;\n}\n\nexport interface ScreenRoute {\n  path: string;\n  component: React.ComponentType<any>;\n  title: string;\n  description?: string;\n}\n\n// Screen navigation utilities\nexport const ScreenUtils = {\n  createNavigationItem: (\n    key: string,\n    label: string,\n    action: () => void | Promise<void>,\n    options: Partial<NavigationItem> = {}\n  ): NavigationItem => ({\n    key,\n    label,\n    action,\n    ...options,\n  }),\n  \n  filterEnabledItems: (items: NavigationItem[]): NavigationItem[] => {\n    return items.filter(item => !item.disabled);\n  },\n  \n  findItemByKey: (items: NavigationItem[], key: string): NavigationItem | undefined => {\n    return items.find(item => item.key === key);\n  },\n};\n"],
+      version: 3
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "4a722b095a5618730ac903362e60bb9108ce95cf"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_1qyty6qown = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_1qyty6qown();
+/**
+ * UI Screens - Screen Exports
+ *
+ * This module exports all screen components for the Claude Flow CLI.
+ * Screens represent full-page UI layouts and interactive interfaces.
+ */
+// Screen components
+export { MainMenu } from './main-menu';
+export { SwarmDashboard } from './swarm-dashboard';
+// Screen navigation utilities
+export const ScreenUtils =
+/* istanbul ignore next */
+(cov_1qyty6qown().s[0]++, {
+  createNavigationItem: (key, label, action, options =
+  /* istanbul ignore next */
+  (cov_1qyty6qown().b[0][0]++, {})) => {
+    /* istanbul ignore next */
+    cov_1qyty6qown().f[0]++;
+    cov_1qyty6qown().s[1]++;
+    return {
+      key,
+      label,
+      action,
+      ...options
+    };
+  },
+  filterEnabledItems: items => {
+    /* istanbul ignore next */
+    cov_1qyty6qown().f[1]++;
+    cov_1qyty6qown().s[2]++;
+    return items.filter(item => {
+      /* istanbul ignore next */
+      cov_1qyty6qown().f[2]++;
+      cov_1qyty6qown().s[3]++;
+      return !item.disabled;
+    });
+  },
+  findItemByKey: (items, key) => {
+    /* istanbul ignore next */
+    cov_1qyty6qown().f[3]++;
+    cov_1qyty6qown().s[4]++;
+    return items.find(item => {
+      /* istanbul ignore next */
+      cov_1qyty6qown().f[4]++;
+      cov_1qyty6qown().s[5]++;
+      return item.key === key;
+    });
+  }
+});
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJjb3ZfMXF5dHk2cW93biIsImFjdHVhbENvdmVyYWdlIiwiTWFpbk1lbnUiLCJTd2FybURhc2hib2FyZCIsIlNjcmVlblV0aWxzIiwicyIsImNyZWF0ZU5hdmlnYXRpb25JdGVtIiwia2V5IiwibGFiZWwiLCJhY3Rpb24iLCJvcHRpb25zIiwiYiIsImYiLCJmaWx0ZXJFbmFibGVkSXRlbXMiLCJpdGVtcyIsImZpbHRlciIsIml0ZW0iLCJkaXNhYmxlZCIsImZpbmRJdGVtQnlLZXkiLCJmaW5kIl0sInNvdXJjZXMiOlsiL2hvbWUvbWh1Z28vY29kZS9jbGF1ZGUtY29kZS1mbG93L3NyYy9jbGkvdWkvc2NyZWVucy9pbmRleC50cyJdLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIFVJIFNjcmVlbnMgLSBTY3JlZW4gRXhwb3J0c1xuICogXG4gKiBUaGlzIG1vZHVsZSBleHBvcnRzIGFsbCBzY3JlZW4gY29tcG9uZW50cyBmb3IgdGhlIENsYXVkZSBGbG93IENMSS5cbiAqIFNjcmVlbnMgcmVwcmVzZW50IGZ1bGwtcGFnZSBVSSBsYXlvdXRzIGFuZCBpbnRlcmFjdGl2ZSBpbnRlcmZhY2VzLlxuICovXG5cbi8vIFNjcmVlbiBjb21wb25lbnRzXG5leHBvcnQgeyBNYWluTWVudSB9IGZyb20gJy4vbWFpbi1tZW51JztcbmV4cG9ydCB7IFN3YXJtRGFzaGJvYXJkIH0gZnJvbSAnLi9zd2FybS1kYXNoYm9hcmQnO1xuXG4vLyBTY3JlZW4gcHJvcCB0eXBlc1xuZXhwb3J0IHR5cGUgeyBNYWluTWVudVByb3BzIH0gZnJvbSAnLi9tYWluLW1lbnUnO1xuZXhwb3J0IHR5cGUgeyBTd2FybURhc2hib2FyZFByb3BzIH0gZnJvbSAnLi9zd2FybS1kYXNoYm9hcmQnO1xuXG4vLyBDb21tb24gc2NyZWVuIHR5cGVzXG5leHBvcnQgaW50ZXJmYWNlIEJhc2VTY3JlZW5Qcm9wcyB7XG4gIG9uRXhpdD86ICgpID0+IHZvaWQ7XG4gIG9uQmFjaz86ICgpID0+IHZvaWQ7XG4gIHRpdGxlPzogc3RyaW5nO1xuICBzaG93SGVhZGVyPzogYm9vbGVhbjtcbiAgc2hvd0Zvb3Rlcj86IGJvb2xlYW47XG59XG5cbmV4cG9ydCBpbnRlcmZhY2UgTmF2aWdhdGlvbkl0ZW0ge1xuICBrZXk6IHN0cmluZztcbiAgbGFiZWw6IHN0cmluZztcbiAgZGVzY3JpcHRpb24/OiBzdHJpbmc7XG4gIGFjdGlvbjogKCkgPT4gdm9pZCB8IFByb21pc2U8dm9pZD47XG4gIGRpc2FibGVkPzogYm9vbGVhbjtcbiAgaWNvbj86IHN0cmluZztcbn1cblxuZXhwb3J0IGludGVyZmFjZSBTY3JlZW5Sb3V0ZSB7XG4gIHBhdGg6IHN0cmluZztcbiAgY29tcG9uZW50OiBSZWFjdC5Db21wb25lbnRUeXBlPGFueT47XG4gIHRpdGxlOiBzdHJpbmc7XG4gIGRlc2NyaXB0aW9uPzogc3RyaW5nO1xufVxuXG4vLyBTY3JlZW4gbmF2aWdhdGlvbiB1dGlsaXRpZXNcbmV4cG9ydCBjb25zdCBTY3JlZW5VdGlscyA9IHtcbiAgY3JlYXRlTmF2aWdhdGlvbkl0ZW06IChcbiAgICBrZXk6IHN0cmluZyxcbiAgICBsYWJlbDogc3RyaW5nLFxuICAgIGFjdGlvbjogKCkgPT4gdm9pZCB8IFByb21pc2U8dm9pZD4sXG4gICAgb3B0aW9uczogUGFydGlhbDxOYXZpZ2F0aW9uSXRlbT4gPSB7fVxuICApOiBOYXZpZ2F0aW9uSXRlbSA9PiAoe1xuICAgIGtleSxcbiAgICBsYWJlbCxcbiAgICBhY3Rpb24sXG4gICAgLi4ub3B0aW9ucyxcbiAgfSksXG4gIFxuICBmaWx0ZXJFbmFibGVkSXRlbXM6IChpdGVtczogTmF2aWdhdGlvbkl0ZW1bXSk6IE5hdmlnYXRpb25JdGVtW10gPT4ge1xuICAgIHJldHVybiBpdGVtcy5maWx0ZXIoaXRlbSA9PiAhaXRlbS5kaXNhYmxlZCk7XG4gIH0sXG4gIFxuICBmaW5kSXRlbUJ5S2V5OiAoaXRlbXM6IE5hdmlnYXRpb25JdGVtW10sIGtleTogc3RyaW5nKTogTmF2aWdhdGlvbkl0ZW0gfCB1bmRlZmluZWQgPT4ge1xuICAgIHJldHVybiBpdGVtcy5maW5kKGl0ZW0gPT4gaXRlbS5rZXkgPT09IGtleSk7XG4gIH0sXG59O1xuIl0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0lBbURPO0lBQUFBLGNBQUEsWUFBQUEsQ0FBQTtNQUFBLE9BQUFDLGNBQUE7SUFBQTtFQUFBO0VBQUEsT0FBQUEsY0FBQTtBQUFBO0FBQUFELGNBQUE7QUFuRFA7Ozs7OztBQU9BO0FBQ0EsU0FBU0UsUUFBUSxRQUFRLGFBQWE7QUFDdEMsU0FBU0MsY0FBYyxRQUFRLG1CQUFtQjtBQStCbEQ7QUFDQSxPQUFPLE1BQU1DLFdBQVc7QUFBQTtBQUFBLENBQUFKLGNBQUEsR0FBQUssQ0FBQSxPQUFHO0VBQ3pCQyxvQkFBb0IsRUFBRUEsQ0FDcEJDLEdBQVcsRUFDWEMsS0FBYSxFQUNiQyxNQUFrQyxFQUNsQ0MsT0FBQTtFQUFBO0VBQUEsQ0FBQVYsY0FBQSxHQUFBVyxDQUFBLFVBQW1DLEVBQUUsTUFDakI7SUFBQTtJQUFBWCxjQUFBLEdBQUFZLENBQUE7SUFBQVosY0FBQSxHQUFBSyxDQUFBO0lBQUE7TUFDcEJFLEdBQUc7TUFDSEMsS0FBSztNQUNMQyxNQUFNO01BQ04sR0FBR0M7S0FDSjtHQUFDO0VBRUZHLGtCQUFrQixFQUFHQyxLQUF1QixJQUFzQjtJQUFBO0lBQUFkLGNBQUEsR0FBQVksQ0FBQTtJQUFBWixjQUFBLEdBQUFLLENBQUE7SUFDaEUsT0FBT1MsS0FBSyxDQUFDQyxNQUFNLENBQUNDLElBQUksSUFBSTtNQUFBO01BQUFoQixjQUFBLEdBQUFZLENBQUE7TUFBQVosY0FBQSxHQUFBSyxDQUFBO01BQUEsUUFBQ1csSUFBSSxDQUFDQyxRQUFRO0lBQVIsQ0FBUSxDQUFDO0VBQzdDLENBQUM7RUFFREMsYUFBYSxFQUFFQSxDQUFDSixLQUF1QixFQUFFUCxHQUFXLEtBQWdDO0lBQUE7SUFBQVAsY0FBQSxHQUFBWSxDQUFBO0lBQUFaLGNBQUEsR0FBQUssQ0FBQTtJQUNsRixPQUFPUyxLQUFLLENBQUNLLElBQUksQ0FBQ0gsSUFBSSxJQUFJO01BQUE7TUFBQWhCLGNBQUEsR0FBQVksQ0FBQTtNQUFBWixjQUFBLEdBQUFLLENBQUE7TUFBQSxPQUFBVyxJQUFJLENBQUNULEdBQUcsS0FBS0EsR0FBRztJQUFILENBQUcsQ0FBQztFQUM3QztDQUNEIiwiaWdub3JlTGlzdCI6W119

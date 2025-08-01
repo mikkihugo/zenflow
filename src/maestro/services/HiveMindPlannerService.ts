@@ -11,13 +11,13 @@
  * - Simple, focused interface following Single Responsibility
  */
 
-import { HiveMind } from '../../hive-mind/core/HiveMind.js';
-import { Agent } from '../../hive-mind/core/Agent.js';
-import { TaskSubmitOptions, AgentCapability } from '../../hive-mind/types.js';
-import { ILogger } from '../../core/logger.js';
-import { AgentManager } from '../../agents/agent-manager.js';
-import { AgentRegistry } from '../../agents/agent-registry.js';
-import { AgentState } from '../../swarm/types.js';
+import { HiveMind } from '../../hive-mind/core/HiveMind';
+import { Agent } from '../../hive-mind/core/Agent';
+import { TaskSubmitOptions, AgentCapability } from '../../hive-mind/types';
+import { ILogger } from '../../core/logger';
+import { AgentManager } from '../../agents/agent-manager';
+import { AgentRegistry } from '../../agents/agent-registry';
+import { AgentState } from '../../swarm/types';
 
 export interface PlannerRequest {
   featureName: string;

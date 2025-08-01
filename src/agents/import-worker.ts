@@ -8,8 +8,8 @@
 import { EventEmitter } from 'node:events';
 import { dirname, resolve, relative, extname, join } from 'node:path';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import type { ILogger } from '../utils/logger.js';
-import type { AgentState, AgentCapabilities, TaskDefinition, TaskResult } from '../swarm/types.js';
+import type { ILogger } from '../utils/logger';
+import type { AgentConfig } from '../../ruv-FANN-zen/ruv-swarm-zen/npm/src/types';
 
 export interface ImportIssue {
   type: ImportIssueType;

@@ -3,8 +3,8 @@
  * Tests individual components and functions for steering document creation
  */
 
-import { MaestroOrchestrator } from '../../../maestro/maestro-orchestrator.js';
-import { readFile, writeFile, mkdir, access, unlink, rmdir } from 'fs/promises';
+import { MaestroOrchestrator } from '../../../maestro/maestro-orchestrator';
+import { readFile, writeFile, mkdir, access, unlink, rm } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
 

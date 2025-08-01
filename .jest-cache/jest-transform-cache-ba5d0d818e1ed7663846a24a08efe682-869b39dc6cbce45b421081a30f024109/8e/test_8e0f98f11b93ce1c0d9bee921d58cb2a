@@ -1,0 +1,166 @@
+97dfbbdfff0e99103f964bdd466dd852
+/* istanbul ignore next */
+function cov_1agqs217hj() {
+  var path = "/home/mhugo/code/claude-code-flow/src/bindings/test/test.ts";
+  var hash = "0b412076cc2a91d1aa91fc4ef9a52da23a5c0747";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/mhugo/code/claude-code-flow/src/bindings/test/test.ts",
+    statementMap: {},
+    fnMap: {},
+    branchMap: {},
+    s: {},
+    f: {},
+    b: {},
+    inputSourceMap: {
+      file: "/home/mhugo/code/claude-code-flow/src/bindings/test/test.ts",
+      mappings: ";AACA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EA2HE",
+      names: [],
+      sources: ["/home/mhugo/code/claude-code-flow/src/bindings/test/test.ts"],
+      sourcesContent: ["\n/** Integration tests for ruv-FANN Node.js bindings;\n\nimport { getActivationFunctions,\ngetBackendInfo,;\ngetVersion,;\ninit,;\nisGpuAvailable,;\nNetworkTrainer,;\nNeuralNetwork  } from '..\nasync function runTests() {\n  console.warn(' Running ruv-FANN bindings integration tests...\\n');\n  try {\n    // Initialize the module\n// // await init();\n    console.warn(' Module initialization successful');\n;\n    // Test 1: Create a network\n    const _network = new NeuralNetwork([2, 4, 1]);\n    console.warn(' Network created with layers [2, 4, 1]');\n;\n    // Test 2: Get network info\n    const _info = JSON.parse(network.getInfo());\n    console.warn(' Network info);';\n  if(info.num_input !== 2 ?? info.num_output !== 1) {\n      throw new Error('Network configuration mismatch');\n    //     }\n    console.warn(' Network configuration validated');\n;\n    // Test 3: Run the network\n    const _input = [0.5, 0.8];\n    const _output = network.run(input);\n    console.warn(` Network run with input [${input}] -> output [${output}]`);\n\n    if(!Array.isArray(output)  ?? output.length !== 1) {\n      throw new Error('Invalid network output');\n    //     }\n    console.warn(' Network output validated');\n;\n    // Test 4: Train on a single pattern\n    const _target = [0.3];\n    const _error = network.trainOn(input, target);\n    console.warn(` Training on [${input}] -> [${target}], error);`\n    if(typeof error !== 'number'  ?? Number.isNaN(error)) {\n      throw new Error('Invalid training error value');\n    //     }\n    console.warn(' Training error validated');\n;\n    // Test 5: Batch training\n    const _trainer = new NetworkTrainer(network);\n    console.warn(' Trainer created');\n;\n    const _trainingData = {\n      inputs: [;\n        [0, 0],\n        [0, 1],\n        [1, 0],\n        [1, 1] ],\n      outputs: [[0], [1], [1], [0]] }\n  const _config = {\n      learning_rate: 0.7,;\n  max_epochs,;\n  desired_error: 0.01,;\n  algorithm: 'rprop' }\n// const _finalError = awaittrainer.train(trainingData.inputs, trainingData.outputs, config);\nconsole.warn(` Batch training completed with final error);`;\nif(typeof finalError !== 'number' ?? Number.isNaN(finalError)) {\n  throw new Error('Invalid final training error');\n// }\nconsole.warn(' Batch training validated');\n// Test 6: Verify training results\nconsole.warn('\\n--- Verifying training results ---');\n  for(let i = 0; i < trainingData.inputs.length; i++) {\n  const _testOutput = network.run(trainingData.inputs[i]);\n  console.warn(;);\n  `Input: ${trainingData.inputs[i]} -> Output: ${testOutput[0].toFixed(4)} (Expected)`;\n  //   )\n// }\nconsole.warn('--- Verification complete ---\\n');\n// Test 7: Utility functions\nconst _version = getVersion();\nconst _gpuAvailable = isGpuAvailable();\nconst _activationFunctions = getActivationFunctions();\nconst _backendInfo = getBackendInfo();\nconsole.warn(` Version);`;\nconsole.warn(` GPU Available);`;\nconsole.warn(` Activation Functions: ${activationFunctions.join(', ')}`);\nconsole.warn(` Backend Info: ${JSON.stringify(backendInfo)}`);\n} catch(error)\n// {\n  console.error(' Test failed);';\n  throw error;\n// }\n// }\nasync function runPerformanceTest() {\n  console.warn('\\n  Running performance benchmark...');\n  const _network = new NeuralNetwork([10, 20, 10, 1]);\n  const _iterations = 1000;\n  const _input = Array.from({ length}, () => Math.random());\n  const _startTime = performance.now();\n  for(let i = 0; i < iterations; i++) {\n    network.run(input);\n  //   }\n  const _endTime = performance.now();\n  const _totalTime = endTime - startTime;\n  const _avgTime = totalTime / iterations;\n  console.warn(;);\n  ` Performance test completed: ${iterations} runs in ${totalTime.toFixed(2)}ms(${avgTime.toFixed(4)}ms\n  //   )\n// }\n  if(import.meta.url === `file) {`\n  runTests();\nthen(() => runPerformanceTest())\nthen(() =>;\n      console.warn('\\n All tests and benchmarks completed successfully!');\n  process.exit(0);\n  //   )\ncatch((error) =>;\n      console.error('\\n Test suite failed:', error);\n  process.exit(1);\n  //   )\n// }\n// export { runTests, runPerformanceTest };\n\n*/"],
+      version: 3
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "0b412076cc2a91d1aa91fc4ef9a52da23a5c0747"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_1agqs217hj = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_1agqs217hj();
+export {};
+/** Integration tests for ruv-FANN Node.js bindings;
+
+import { getActivationFunctions,
+getBackendInfo,;
+getVersion,;
+init,;
+isGpuAvailable,;
+NetworkTrainer,;
+NeuralNetwork  } from '..
+async function runTests() {
+  console.warn(' Running ruv-FANN bindings integration tests...\n');
+  try {
+    // Initialize the module
+// // await init();
+    console.warn(' Module initialization successful');
+;
+    // Test 1: Create a network
+    const _network = new NeuralNetwork([2, 4, 1]);
+    console.warn(' Network created with layers [2, 4, 1]');
+;
+    // Test 2: Get network info
+    const _info = JSON.parse(network.getInfo());
+    console.warn(' Network info);';
+  if(info.num_input !== 2 ?? info.num_output !== 1) {
+      throw new Error('Network configuration mismatch');
+    //     }
+    console.warn(' Network configuration validated');
+;
+    // Test 3: Run the network
+    const _input = [0.5, 0.8];
+    const _output = network.run(input);
+    console.warn(` Network run with input [${input}] -> output [${output}]`);
+
+    if(!Array.isArray(output)  ?? output.length !== 1) {
+      throw new Error('Invalid network output');
+    //     }
+    console.warn(' Network output validated');
+;
+    // Test 4: Train on a single pattern
+    const _target = [0.3];
+    const _error = network.trainOn(input, target);
+    console.warn(` Training on [${input}] -> [${target}], error);`
+    if(typeof error !== 'number'  ?? Number.isNaN(error)) {
+      throw new Error('Invalid training error value');
+    //     }
+    console.warn(' Training error validated');
+;
+    // Test 5: Batch training
+    const _trainer = new NetworkTrainer(network);
+    console.warn(' Trainer created');
+;
+    const _trainingData = {
+      inputs: [;
+        [0, 0],
+        [0, 1],
+        [1, 0],
+        [1, 1] ],
+      outputs: [[0], [1], [1], [0]] }
+  const _config = {
+      learning_rate: 0.7,;
+  max_epochs,;
+  desired_error: 0.01,;
+  algorithm: 'rprop' }
+// const _finalError = awaittrainer.train(trainingData.inputs, trainingData.outputs, config);
+console.warn(` Batch training completed with final error);`;
+if(typeof finalError !== 'number' ?? Number.isNaN(finalError)) {
+  throw new Error('Invalid final training error');
+// }
+console.warn(' Batch training validated');
+// Test 6: Verify training results
+console.warn('\n--- Verifying training results ---');
+  for(let i = 0; i < trainingData.inputs.length; i++) {
+  const _testOutput = network.run(trainingData.inputs[i]);
+  console.warn(;);
+  `Input: ${trainingData.inputs[i]} -> Output: ${testOutput[0].toFixed(4)} (Expected)`;
+  //   )
+// }
+console.warn('--- Verification complete ---\n');
+// Test 7: Utility functions
+const _version = getVersion();
+const _gpuAvailable = isGpuAvailable();
+const _activationFunctions = getActivationFunctions();
+const _backendInfo = getBackendInfo();
+console.warn(` Version);`;
+console.warn(` GPU Available);`;
+console.warn(` Activation Functions: ${activationFunctions.join(', ')}`);
+console.warn(` Backend Info: ${JSON.stringify(backendInfo)}`);
+} catch(error)
+// {
+  console.error(' Test failed);';
+  throw error;
+// }
+// }
+async function runPerformanceTest() {
+  console.warn('\n  Running performance benchmark...');
+  const _network = new NeuralNetwork([10, 20, 10, 1]);
+  const _iterations = 1000;
+  const _input = Array.from({ length}, () => Math.random());
+  const _startTime = performance.now();
+  for(let i = 0; i < iterations; i++) {
+    network.run(input);
+  //   }
+  const _endTime = performance.now();
+  const _totalTime = endTime - startTime;
+  const _avgTime = totalTime / iterations;
+  console.warn(;);
+  ` Performance test completed: ${iterations} runs in ${totalTime.toFixed(2)}ms(${avgTime.toFixed(4)}ms
+  //   )
+// }
+  if(import.meta.url === `file) {`
+  runTests();
+then(() => runPerformanceTest())
+then(() =>;
+      console.warn('\n All tests and benchmarks completed successfully!');
+  process.exit(0);
+  //   )
+catch((error) =>;
+      console.error('\n Test suite failed:', error);
+  process.exit(1);
+  //   )
+// }
+// export { runTests, runPerformanceTest };
+
+*/
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiL2hvbWUvbWh1Z28vY29kZS9jbGF1ZGUtY29kZS1mbG93L3NyYy9iaW5kaW5ncy90ZXN0L3Rlc3QudHMiXSwic291cmNlc0NvbnRlbnQiOlsiXG4vKiogSW50ZWdyYXRpb24gdGVzdHMgZm9yIHJ1di1GQU5OIE5vZGUuanMgYmluZGluZ3M7XG5cbmltcG9ydCB7IGdldEFjdGl2YXRpb25GdW5jdGlvbnMsXG5nZXRCYWNrZW5kSW5mbyw7XG5nZXRWZXJzaW9uLDtcbmluaXQsO1xuaXNHcHVBdmFpbGFibGUsO1xuTmV0d29ya1RyYWluZXIsO1xuTmV1cmFsTmV0d29yayAgfSBmcm9tICcuLlxuYXN5bmMgZnVuY3Rpb24gcnVuVGVzdHMoKSB7XG4gIGNvbnNvbGUud2FybignIFJ1bm5pbmcgcnV2LUZBTk4gYmluZGluZ3MgaW50ZWdyYXRpb24gdGVzdHMuLi5cXG4nKTtcbiAgdHJ5IHtcbiAgICAvLyBJbml0aWFsaXplIHRoZSBtb2R1bGVcbi8vIC8vIGF3YWl0IGluaXQoKTtcbiAgICBjb25zb2xlLndhcm4oJyBNb2R1bGUgaW5pdGlhbGl6YXRpb24gc3VjY2Vzc2Z1bCcpO1xuO1xuICAgIC8vIFRlc3QgMTogQ3JlYXRlIGEgbmV0d29ya1xuICAgIGNvbnN0IF9uZXR3b3JrID0gbmV3IE5ldXJhbE5ldHdvcmsoWzIsIDQsIDFdKTtcbiAgICBjb25zb2xlLndhcm4oJyBOZXR3b3JrIGNyZWF0ZWQgd2l0aCBsYXllcnMgWzIsIDQsIDFdJyk7XG47XG4gICAgLy8gVGVzdCAyOiBHZXQgbmV0d29yayBpbmZvXG4gICAgY29uc3QgX2luZm8gPSBKU09OLnBhcnNlKG5ldHdvcmsuZ2V0SW5mbygpKTtcbiAgICBjb25zb2xlLndhcm4oJyBOZXR3b3JrIGluZm8pOyc7XG4gIGlmKGluZm8ubnVtX2lucHV0ICE9PSAyID8/IGluZm8ubnVtX291dHB1dCAhPT0gMSkge1xuICAgICAgdGhyb3cgbmV3IEVycm9yKCdOZXR3b3JrIGNvbmZpZ3VyYXRpb24gbWlzbWF0Y2gnKTtcbiAgICAvLyAgICAgfVxuICAgIGNvbnNvbGUud2FybignIE5ldHdvcmsgY29uZmlndXJhdGlvbiB2YWxpZGF0ZWQnKTtcbjtcbiAgICAvLyBUZXN0IDM6IFJ1biB0aGUgbmV0d29ya1xuICAgIGNvbnN0IF9pbnB1dCA9IFswLjUsIDAuOF07XG4gICAgY29uc3QgX291dHB1dCA9IG5ldHdvcmsucnVuKGlucHV0KTtcbiAgICBjb25zb2xlLndhcm4oYCBOZXR3b3JrIHJ1biB3aXRoIGlucHV0IFske2lucHV0fV0gLT4gb3V0cHV0IFske291dHB1dH1dYCk7XG5cbiAgICBpZighQXJyYXkuaXNBcnJheShvdXRwdXQpICA/PyBvdXRwdXQubGVuZ3RoICE9PSAxKSB7XG4gICAgICB0aHJvdyBuZXcgRXJyb3IoJ0ludmFsaWQgbmV0d29yayBvdXRwdXQnKTtcbiAgICAvLyAgICAgfVxuICAgIGNvbnNvbGUud2FybignIE5ldHdvcmsgb3V0cHV0IHZhbGlkYXRlZCcpO1xuO1xuICAgIC8vIFRlc3QgNDogVHJhaW4gb24gYSBzaW5nbGUgcGF0dGVyblxuICAgIGNvbnN0IF90YXJnZXQgPSBbMC4zXTtcbiAgICBjb25zdCBfZXJyb3IgPSBuZXR3b3JrLnRyYWluT24oaW5wdXQsIHRhcmdldCk7XG4gICAgY29uc29sZS53YXJuKGAgVHJhaW5pbmcgb24gWyR7aW5wdXR9XSAtPiBbJHt0YXJnZXR9XSwgZXJyb3IpO2BcbiAgICBpZih0eXBlb2YgZXJyb3IgIT09ICdudW1iZXInICA/PyBOdW1iZXIuaXNOYU4oZXJyb3IpKSB7XG4gICAgICB0aHJvdyBuZXcgRXJyb3IoJ0ludmFsaWQgdHJhaW5pbmcgZXJyb3IgdmFsdWUnKTtcbiAgICAvLyAgICAgfVxuICAgIGNvbnNvbGUud2FybignIFRyYWluaW5nIGVycm9yIHZhbGlkYXRlZCcpO1xuO1xuICAgIC8vIFRlc3QgNTogQmF0Y2ggdHJhaW5pbmdcbiAgICBjb25zdCBfdHJhaW5lciA9IG5ldyBOZXR3b3JrVHJhaW5lcihuZXR3b3JrKTtcbiAgICBjb25zb2xlLndhcm4oJyBUcmFpbmVyIGNyZWF0ZWQnKTtcbjtcbiAgICBjb25zdCBfdHJhaW5pbmdEYXRhID0ge1xuICAgICAgaW5wdXRzOiBbO1xuICAgICAgICBbMCwgMF0sXG4gICAgICAgIFswLCAxXSxcbiAgICAgICAgWzEsIDBdLFxuICAgICAgICBbMSwgMV0gXSxcbiAgICAgIG91dHB1dHM6IFtbMF0sIFsxXSwgWzFdLCBbMF1dIH1cbiAgY29uc3QgX2NvbmZpZyA9IHtcbiAgICAgIGxlYXJuaW5nX3JhdGU6IDAuNyw7XG4gIG1heF9lcG9jaHMsO1xuICBkZXNpcmVkX2Vycm9yOiAwLjAxLDtcbiAgYWxnb3JpdGhtOiAncnByb3AnIH1cbi8vIGNvbnN0IF9maW5hbEVycm9yID0gYXdhaXR0cmFpbmVyLnRyYWluKHRyYWluaW5nRGF0YS5pbnB1dHMsIHRyYWluaW5nRGF0YS5vdXRwdXRzLCBjb25maWcpO1xuY29uc29sZS53YXJuKGAgQmF0Y2ggdHJhaW5pbmcgY29tcGxldGVkIHdpdGggZmluYWwgZXJyb3IpO2A7XG5pZih0eXBlb2YgZmluYWxFcnJvciAhPT0gJ251bWJlcicgPz8gTnVtYmVyLmlzTmFOKGZpbmFsRXJyb3IpKSB7XG4gIHRocm93IG5ldyBFcnJvcignSW52YWxpZCBmaW5hbCB0cmFpbmluZyBlcnJvcicpO1xuLy8gfVxuY29uc29sZS53YXJuKCcgQmF0Y2ggdHJhaW5pbmcgdmFsaWRhdGVkJyk7XG4vLyBUZXN0IDY6IFZlcmlmeSB0cmFpbmluZyByZXN1bHRzXG5jb25zb2xlLndhcm4oJ1xcbi0tLSBWZXJpZnlpbmcgdHJhaW5pbmcgcmVzdWx0cyAtLS0nKTtcbiAgZm9yKGxldCBpID0gMDsgaSA8IHRyYWluaW5nRGF0YS5pbnB1dHMubGVuZ3RoOyBpKyspIHtcbiAgY29uc3QgX3Rlc3RPdXRwdXQgPSBuZXR3b3JrLnJ1bih0cmFpbmluZ0RhdGEuaW5wdXRzW2ldKTtcbiAgY29uc29sZS53YXJuKDspO1xuICBgSW5wdXQ6ICR7dHJhaW5pbmdEYXRhLmlucHV0c1tpXX0gLT4gT3V0cHV0OiAke3Rlc3RPdXRwdXRbMF0udG9GaXhlZCg0KX0gKEV4cGVjdGVkKWA7XG4gIC8vICAgKVxuLy8gfVxuY29uc29sZS53YXJuKCctLS0gVmVyaWZpY2F0aW9uIGNvbXBsZXRlIC0tLVxcbicpO1xuLy8gVGVzdCA3OiBVdGlsaXR5IGZ1bmN0aW9uc1xuY29uc3QgX3ZlcnNpb24gPSBnZXRWZXJzaW9uKCk7XG5jb25zdCBfZ3B1QXZhaWxhYmxlID0gaXNHcHVBdmFpbGFibGUoKTtcbmNvbnN0IF9hY3RpdmF0aW9uRnVuY3Rpb25zID0gZ2V0QWN0aXZhdGlvbkZ1bmN0aW9ucygpO1xuY29uc3QgX2JhY2tlbmRJbmZvID0gZ2V0QmFja2VuZEluZm8oKTtcbmNvbnNvbGUud2FybihgIFZlcnNpb24pO2A7XG5jb25zb2xlLndhcm4oYCBHUFUgQXZhaWxhYmxlKTtgO1xuY29uc29sZS53YXJuKGAgQWN0aXZhdGlvbiBGdW5jdGlvbnM6ICR7YWN0aXZhdGlvbkZ1bmN0aW9ucy5qb2luKCcsICcpfWApO1xuY29uc29sZS53YXJuKGAgQmFja2VuZCBJbmZvOiAke0pTT04uc3RyaW5naWZ5KGJhY2tlbmRJbmZvKX1gKTtcbn0gY2F0Y2goZXJyb3IpXG4vLyB7XG4gIGNvbnNvbGUuZXJyb3IoJyBUZXN0IGZhaWxlZCk7JztcbiAgdGhyb3cgZXJyb3I7XG4vLyB9XG4vLyB9XG5hc3luYyBmdW5jdGlvbiBydW5QZXJmb3JtYW5jZVRlc3QoKSB7XG4gIGNvbnNvbGUud2FybignXFxuICBSdW5uaW5nIHBlcmZvcm1hbmNlIGJlbmNobWFyay4uLicpO1xuICBjb25zdCBfbmV0d29yayA9IG5ldyBOZXVyYWxOZXR3b3JrKFsxMCwgMjAsIDEwLCAxXSk7XG4gIGNvbnN0IF9pdGVyYXRpb25zID0gMTAwMDtcbiAgY29uc3QgX2lucHV0ID0gQXJyYXkuZnJvbSh7IGxlbmd0aH0sICgpID0+IE1hdGgucmFuZG9tKCkpO1xuICBjb25zdCBfc3RhcnRUaW1lID0gcGVyZm9ybWFuY2Uubm93KCk7XG4gIGZvcihsZXQgaSA9IDA7IGkgPCBpdGVyYXRpb25zOyBpKyspIHtcbiAgICBuZXR3b3JrLnJ1bihpbnB1dCk7XG4gIC8vICAgfVxuICBjb25zdCBfZW5kVGltZSA9IHBlcmZvcm1hbmNlLm5vdygpO1xuICBjb25zdCBfdG90YWxUaW1lID0gZW5kVGltZSAtIHN0YXJ0VGltZTtcbiAgY29uc3QgX2F2Z1RpbWUgPSB0b3RhbFRpbWUgLyBpdGVyYXRpb25zO1xuICBjb25zb2xlLndhcm4oOyk7XG4gIGAgUGVyZm9ybWFuY2UgdGVzdCBjb21wbGV0ZWQ6ICR7aXRlcmF0aW9uc30gcnVucyBpbiAke3RvdGFsVGltZS50b0ZpeGVkKDIpfW1zKCR7YXZnVGltZS50b0ZpeGVkKDQpfW1zXG4gIC8vICAgKVxuLy8gfVxuICBpZihpbXBvcnQubWV0YS51cmwgPT09IGBmaWxlKSB7YFxuICBydW5UZXN0cygpO1xudGhlbigoKSA9PiBydW5QZXJmb3JtYW5jZVRlc3QoKSlcbnRoZW4oKCkgPT47XG4gICAgICBjb25zb2xlLndhcm4oJ1xcbiBBbGwgdGVzdHMgYW5kIGJlbmNobWFya3MgY29tcGxldGVkIHN1Y2Nlc3NmdWxseSEnKTtcbiAgcHJvY2Vzcy5leGl0KDApO1xuICAvLyAgIClcbmNhdGNoKChlcnJvcikgPT47XG4gICAgICBjb25zb2xlLmVycm9yKCdcXG4gVGVzdCBzdWl0ZSBmYWlsZWQ6JywgZXJyb3IpO1xuICBwcm9jZXNzLmV4aXQoMSk7XG4gIC8vICAgKVxuLy8gfVxuLy8gZXhwb3J0IHsgcnVuVGVzdHMsIHJ1blBlcmZvcm1hbmNlVGVzdCB9O1xuXG4qLyJdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUNBIiwiaWdub3JlTGlzdCI6W119
