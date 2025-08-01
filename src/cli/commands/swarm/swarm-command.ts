@@ -7,7 +7,7 @@
 
 import { BaseCommand } from '../../core/base-command';
 import type { CommandContext, CommandResult } from '../../types/index';
-import { launchSwarmTUI } from '../../../ui/swarm-tui-simple';
+import { launchSwarmTUI } from '../../../interfaces/tui/swarm-tui-simple';
 
 export class SwarmCommand extends BaseCommand {
   constructor() {

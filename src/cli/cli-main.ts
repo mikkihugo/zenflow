@@ -13,7 +13,7 @@ import { readFileSync } from 'fs';
 import { CliApp } from './core/app';
 import { initializeServices, Services } from './services/index';
 import { createLogger } from './utils/logger';
-import { launchSwarmTUI } from '../ui/swarm-tui-simple';
+import { launchSwarmTUI } from '../interfaces/tui/swarm-tui-simple';
 
 // ESM __dirname equivalent
 const __filename = fileURLToPath(import.meta.url);
@@ -23,7 +23,7 @@ const __dirname = dirname(__filename);
 import { InitCommand } from './commands/init/init-command';
 import { StatusCommand } from './commands/status/status-command';
 import { SwarmCommand } from './commands/swarm/swarm-command';
-import { MCPCommand } from './commands/mcp/mcp-command';
+// import { MCPCommand } from './commands/mcp/mcp-command';
 import { HelpCommand } from './commands/help/help-command';
 
 /**
@@ -55,7 +55,7 @@ function registerCommands(app: CliApp): void {
   app.registerCommand(new InitCommand());
   app.registerCommand(new StatusCommand());
   app.registerCommand(new SwarmCommand());
-  app.registerCommand(new MCPCommand());
+  // app.registerCommand(new MCPCommand());
   app.registerCommand(new HelpCommand());
 }
 

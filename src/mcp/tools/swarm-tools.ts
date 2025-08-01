@@ -4,8 +4,8 @@
  */
 
 import type { MCPTool, MCPToolResult } from '../types/mcp-types';
-import { SwarmOrchestrator } from '../../maestro/maestro-swarm-coordinator';
-import { createLogger } from '../../utils/logger';
+import { SwarmOrchestrator } from '../../hive-mind/integration/SwarmOrchestrator';
+import { createLogger } from '../../core/logger';
 
 const logger = createLogger({ prefix: 'MCP-Swarm' });
 

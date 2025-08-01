@@ -290,6 +290,7 @@ export class SwarmListCommand extends BaseCommand {
     }
 
     return mockSwarms;
+    }
   }
 
   private sortSwarms(swarms: SwarmInfo[], sortBy: string): SwarmInfo[] {

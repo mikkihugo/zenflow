@@ -6,13 +6,13 @@
 // Re-export from CLI utils logger which is more comprehensive
 export {
   LogLevel,
-  Logger,
   createLogger,
   logger,
   debug,
   info,
   warn,
   error,
+  type Logger,
   type LoggerConfig
 } from '../cli/utils/logger';
 
@@ -25,4 +25,4 @@ export interface ILogger {
   log(level: any, message: string, ...args: any[]): void;
 }
 
-export default Logger;
+export default createLogger;
