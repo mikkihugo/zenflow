@@ -7,7 +7,6 @@
  */
 
 import { fileURLToPath } from 'node:url';
-import { neuralCLI } from '../../ruv-FANN-zen/ruv-swarm-zen/npm/src/neural';
 import { MCPErrorHandler } from './core/error-handler';
 
 // Placeholder implementation for MCP server

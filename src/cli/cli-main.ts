@@ -4,7 +4,7 @@
  * CLI Main Module
  * 
  * Entry point for the Claude Flow CLI application.
- * Integrates the new CliApp architecture with services, utilities, and commands.
+ * Integrates swarm-focused CliApp architecture with TUI, services, and swarm commands.
  */
 
 import { join, dirname } from 'path';
@@ -13,7 +13,7 @@ import { readFileSync } from 'fs';
 import { CliApp } from './core/app';
 import { initializeServices, Services } from './services/index';
 import { createLogger } from './utils/logger';
-// import { renderTui } from '../ui/ink-tui'; // TODO: Implement TUI
+import { launchSwarmTUI } from '../ui/swarm-tui-simple';
 
 // ESM __dirname equivalent
 const __filename = fileURLToPath(import.meta.url);
@@ -23,6 +23,7 @@ const __dirname = dirname(__filename);
 import { InitCommand } from './commands/init/init-command';
 import { StatusCommand } from './commands/status/status-command';
 import { SwarmCommand } from './commands/swarm/swarm-command';
+import { MCPCommand } from './commands/mcp/mcp-command';
 import { HelpCommand } from './commands/help/help-command';
 
 /**
@@ -54,6 +55,7 @@ function registerCommands(app: CliApp): void {
   app.registerCommand(new InitCommand());
   app.registerCommand(new StatusCommand());
   app.registerCommand(new SwarmCommand());
+  app.registerCommand(new MCPCommand());
   app.registerCommand(new HelpCommand());
 }
 
@@ -92,7 +94,7 @@ async function main(): Promise<void> {
       flags: {
         ui: {
           type: 'boolean',
-          description: 'Launch interactive UI',
+          description: 'Launch interactive Swarm TUI for swarm orchestration',
         },
         dryRun: {
           type: 'boolean',
@@ -114,10 +116,14 @@ async function main(): Promise<void> {
     // Handle special UI flag before normal processing
     const args = process.argv.slice(2);
     if (args.includes('--ui')) {
-      logger.info('Launching interactive UI...');
-      // TODO: Implement TUI mode
-      logger.warn('TUI mode not yet implemented');
-      return;
+      logger.info('Launching Swarm TUI...');
+      try {
+        launchSwarmTUI();
+        return;
+      } catch (error) {
+        logger.error('Failed to launch Swarm TUI:', error);
+        logger.info('Falling back to CLI mode...');
+      }
     }
     
     // Set up application event handlers

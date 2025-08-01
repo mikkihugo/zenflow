@@ -241,20 +241,27 @@ export class SwarmStopCommand extends BaseCommand {
   }
 
   private async getRunningSwarms(): Promise<Array<{ id: string; createdAt: Date; agents: number }>> {
-    // This would query the actual swarm registry
-    // For now, return mock data
-    return [
-      {
-        id: 'swarm_1704067200_abc123def',
-        createdAt: new Date(Date.now() - 600000), // 10 minutes ago
-        agents: 5
-      },
-      {
-        id: 'swarm_1704063600_xyz789ghi',
-        createdAt: new Date(Date.now() - 1800000), // 30 minutes ago
-        agents: 3
+    try {
+      const { SwarmOrchestrator } = await import('../../../hive-mind/integration/SwarmOrchestrator');
+      const orchestrator = SwarmOrchestrator.getInstance();
+      
+      if (!orchestrator.isActive) {
+        return [];
       }
-    ];
+      
+      // Get swarm status and convert to expected format
+      const status = await orchestrator.getSwarmStatus();
+      
+      // For now, return a single active swarm if orchestrator is running
+      return status.activeSwarms > 0 ? [{
+        id: `active-swarm-${Date.now()}`,
+        createdAt: new Date(Date.now() - 600000), // Assume started 10 minutes ago
+        agents: status.totalAgents
+      }] : [];
+    } catch (error) {
+      console.error('Failed to get running swarms:', error);
+      return [];
+    }
   }
 
   private async saveSwarmState(swarmId: string): Promise<void> {
@@ -289,9 +296,19 @@ export class SwarmStopCommand extends BaseCommand {
   }
 
   private async forceStopSwarm(swarmId: string): Promise<void> {
-    // Simulate force stop
-    await new Promise(resolve => setTimeout(resolve, 100));
-    console.log(`  ⚡ Swarm '${swarmId}' force stopped`);
+    try {
+      const { SwarmOrchestrator } = await import('../../../hive-mind/integration/SwarmOrchestrator');
+      const orchestrator = SwarmOrchestrator.getInstance();
+      
+      if (orchestrator.isActive) {
+        await orchestrator.shutdown();
+        console.log(`  ⚡ Swarm '${swarmId}' force stopped`);
+      } else {
+        console.log(`  ⚪ Swarm '${swarmId}' was not running`);
+      }
+    } catch (error) {
+      console.error(`Failed to force stop swarm: ${error}`);
+    }
   }
 
   getHelp(): string {

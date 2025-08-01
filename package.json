@@ -1,15 +1,8 @@
 {
-  "name": "@claude-zen/monorepo",
+  "name": "claude-code-zen",
   "version": "2.0.0-alpha.73",
-  "description": "Claude-Zen: Enhanced multi-Queen AI platform with comprehensive neural networks and enterprise features",
-  "workspaces": [
-    "src",
-    "src/bindings",
-    "ruv-FANN-zen/ruv-swarm-zen/npm",
-    "benchmark",
-    "src/plugins/*"
-  ],
-  "main": "src/cli/claude-zen-hive-mind.ts",
+  "description": "Claude Code Zen: Unified AI swarm orchestration platform with neural networks and direct integration",
+  "main": "src/claude-zen-integrated.ts",
   "bin": {
     "claude-zen": "./bin/claude-zen"
   },
@@ -22,6 +15,7 @@
     "dev:cli": "npx tsx src/cli/claude-zen-hive-mind.ts",
     "test:monorepo": "node scripts/test-monorepo-detection.js",
     "api": "npx tsx src/api/claude-zen-server.ts",
+    "mcp": "npx tsx src/mcp/claude-zen-server.ts",
     "build": "npm run clean && npm run update-version && npm run build:ts",
     "build:ts": "tsc -p tsconfig.build.json",
     "build:check": "tsc --noEmit",

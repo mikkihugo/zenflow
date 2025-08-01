@@ -1,0 +1,394 @@
+{
+  "summary": {
+    "totalTests": 27,
+    "successful": 21,
+    "successRate": 77.8,
+    "timestamp": "2025-08-01T12:34:31.096Z"
+  },
+  "results": [
+    {
+      "timestamp": "2025-08-01T12:34:27.670Z",
+      "type": "test",
+      "message": "Starting Direct Integration Test Suite...",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:27.674Z",
+      "type": "info",
+      "message": "==================================================",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:27.674Z",
+      "type": "info",
+      "message": "\n--- Running Package Structure ---",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:27.674Z",
+      "type": "test",
+      "message": "Testing package structure...",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:27.674Z",
+      "type": "info",
+      "message": "Package structure validation passed",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:27.674Z",
+      "type": "info",
+      "message": "Package Structure: PASSED",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:27.674Z",
+      "type": "info",
+      "message": "\n--- Running Import Resolution ---",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:27.675Z",
+      "type": "test",
+      "message": "Testing import resolution...",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:27.733Z",
+      "type": "info",
+      "message": "Import tests passed",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:27.734Z",
+      "type": "info",
+      "message": "Import Resolution: PASSED",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:27.734Z",
+      "type": "info",
+      "message": "\n--- Running CLI Startup ---",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:27.734Z",
+      "type": "test",
+      "message": "Testing CLI startup...",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:28.620Z",
+      "type": "error",
+      "message": "CLI startup failed: \nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\nError [ERR_MODULE_NOT_FOUND]: Cannot find package 'ink-text-input' imported from /home/mhugo/code/claude-code-flow/src/ui/swarm-tui.tsx\n    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:256:9)\n    at packageResolve (node:internal/modules/esm/resolve:768:81)\n    at moduleResolve (node:internal/modules/esm/resolve:854:18)\n    at defaultResolve (node:internal/modules/esm/resolve:984:11)\n    at nextResolve (node:internal/modules/esm/hooks:748:28)\n    at resolveBase (file:///home/mhugo/code/claude-code-flow/node_modules/tsx/dist/esm/index.mjs?1754051668410:2:3811)\n    at resolveDirectory (file:///home/mhugo/code/claude-code-flow/node_modules/tsx/dist/esm/index.mjs?1754051668410:2:4310)\n    at resolveTsPaths (file:///home/mhugo/code/claude-code-flow/node_modules/tsx/dist/esm/index.mjs?1754051668410:2:5051)\n    at resolve (file:///home/mhugo/code/claude-code-flow/node_modules/tsx/dist/esm/index.mjs?1754051668410:2:5428)\n    at nextResolve (node:internal/modules/esm/hooks:748:28) {\n  code: 'ERR_MODULE_NOT_FOUND'\n}\n\nNode.js v22.17.1\n",
+      "success": false
+    },
+    {
+      "timestamp": "2025-08-01T12:34:28.620Z",
+      "type": "error",
+      "message": "CLI Startup: FAILED",
+      "success": false
+    },
+    {
+      "timestamp": "2025-08-01T12:34:28.620Z",
+      "type": "info",
+      "message": "\n--- Running Build Process ---",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:28.620Z",
+      "type": "test",
+      "message": "Testing build process...",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.042Z",
+      "type": "error",
+      "message": "TypeScript compilation failed: ",
+      "success": false
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.042Z",
+      "type": "error",
+      "message": "Build Process: FAILED",
+      "success": false
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.042Z",
+      "type": "info",
+      "message": "\n--- Running Swarm Operations ---",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.043Z",
+      "type": "test",
+      "message": "Testing direct swarm operations...",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.094Z",
+      "type": "error",
+      "message": "Swarm operations test failed: node:internal/modules/esm/resolve:275\n    throw new ERR_MODULE_NOT_FOUND(\n          ^\n\nError [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/mhugo/code/claude-code-flow/src/hive-mind/integration/SwarmOrchestrator.js' imported from /home/mhugo/code/claude-code-flow/temp-swarm-test.mjs\n    at finalizeResolution (node:internal/modules/esm/resolve:275:11)\n    at moduleResolve (node:internal/modules/esm/resolve:860:10)\n    at defaultResolve (node:internal/modules/esm/resolve:984:11)\n    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:780:12)\n    at #cachedDefaultResolve (node:internal/modules/esm/loader:704:25)\n    at ModuleLoader.resolve (node:internal/modules/esm/loader:687:38)\n    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:305:38)\n    at ModuleJob._link (node:internal/modules/esm/module_job:175:49) {\n  code: 'ERR_MODULE_NOT_FOUND',\n  url: 'file:///home/mhugo/code/claude-code-flow/src/hive-mind/integration/SwarmOrchestrator.js'\n}\n\nNode.js v22.17.1\n",
+      "success": false
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.094Z",
+      "type": "error",
+      "message": "Swarm Operations: FAILED",
+      "success": false
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.094Z",
+      "type": "info",
+      "message": "\n--- Running Neural Integration ---",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.094Z",
+      "type": "test",
+      "message": "Testing neural integration...",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.094Z",
+      "type": "info",
+      "message": "Neural components are available",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.094Z",
+      "type": "info",
+      "message": "Neural Integration: PASSED",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.094Z",
+      "type": "info",
+      "message": "\n==================================================",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "\n=== INTEGRATION TEST REPORT ===",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "Total Tests: 27",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "Successful: 21",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "Success Rate: 77.8%",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "\nTest Results:",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ Starting Direct Integration Test Suite...",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ ==================================================",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ \n--- Running Package Structure ---",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ Testing package structure...",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ Package structure validation passed",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ Package Structure: PASSED",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ \n--- Running Import Resolution ---",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ Testing import resolution...",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ Import tests passed",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ Import Resolution: PASSED",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ \n--- Running CLI Startup ---",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ Testing CLI startup...",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ❌ CLI startup failed: \nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\nError [ERR_MODULE_NOT_FOUND]: Cannot find package 'ink-text-input' imported from /home/mhugo/code/claude-code-flow/src/ui/swarm-tui.tsx\n    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:256:9)\n    at packageResolve (node:internal/modules/esm/resolve:768:81)\n    at moduleResolve (node:internal/modules/esm/resolve:854:18)\n    at defaultResolve (node:internal/modules/esm/resolve:984:11)\n    at nextResolve (node:internal/modules/esm/hooks:748:28)\n    at resolveBase (file:///home/mhugo/code/claude-code-flow/node_modules/tsx/dist/esm/index.mjs?1754051668410:2:3811)\n    at resolveDirectory (file:///home/mhugo/code/claude-code-flow/node_modules/tsx/dist/esm/index.mjs?1754051668410:2:4310)\n    at resolveTsPaths (file:///home/mhugo/code/claude-code-flow/node_modules/tsx/dist/esm/index.mjs?1754051668410:2:5051)\n    at resolve (file:///home/mhugo/code/claude-code-flow/node_modules/tsx/dist/esm/index.mjs?1754051668410:2:5428)\n    at nextResolve (node:internal/modules/esm/hooks:748:28) {\n  code: 'ERR_MODULE_NOT_FOUND'\n}\n\nNode.js v22.17.1\n",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ❌ CLI Startup: FAILED",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ \n--- Running Build Process ---",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ Testing build process...",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ❌ TypeScript compilation failed: ",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ❌ Build Process: FAILED",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ \n--- Running Swarm Operations ---",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ Testing direct swarm operations...",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ❌ Swarm operations test failed: node:internal/modules/esm/resolve:275\n    throw new ERR_MODULE_NOT_FOUND(\n          ^\n\nError [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/mhugo/code/claude-code-flow/src/hive-mind/integration/SwarmOrchestrator.js' imported from /home/mhugo/code/claude-code-flow/temp-swarm-test.mjs\n    at finalizeResolution (node:internal/modules/esm/resolve:275:11)\n    at moduleResolve (node:internal/modules/esm/resolve:860:10)\n    at defaultResolve (node:internal/modules/esm/resolve:984:11)\n    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:780:12)\n    at #cachedDefaultResolve (node:internal/modules/esm/loader:704:25)\n    at ModuleLoader.resolve (node:internal/modules/esm/loader:687:38)\n    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:305:38)\n    at ModuleJob._link (node:internal/modules/esm/module_job:175:49) {\n  code: 'ERR_MODULE_NOT_FOUND',\n  url: 'file:///home/mhugo/code/claude-code-flow/src/hive-mind/integration/SwarmOrchestrator.js'\n}\n\nNode.js v22.17.1\n",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ❌ Swarm Operations: FAILED",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ \n--- Running Neural Integration ---",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ Testing neural integration...",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ Neural components are available",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ Neural Integration: PASSED",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ \n==================================================",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ \n=== INTEGRATION TEST REPORT ===",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ Total Tests: 27",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ Successful: 21",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ Success Rate: 77.8%",
+      "success": true
+    },
+    {
+      "timestamp": "2025-08-01T12:34:31.095Z",
+      "type": "info",
+      "message": "  ✅ \nTest Results:",
+      "success": true
+    }
+  ]
+}

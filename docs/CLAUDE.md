@@ -40,14 +40,16 @@ When using ruv-swarm MCP tools with Claude Code:
 
 ### Setup
 ```bash
-# Add ruv-swarm-zen MCP server to Claude Code
-claude mcp add ruv-swarm-zen npx ruv-swarm mcp start
+# Add claude-zen MCP server to Claude Code
+claude mcp add claude-zen npx claude-zen mcp start
 ```
 
 ### Key Tools
-- `mcp__ruv-swarm-zen__swarm_init` - Initialize coordination
-- `mcp__ruv-swarm-zen__agent_spawn` - Create specialized agents
-- `mcp__ruv-swarm-zen__task_orchestrate` - Coordinate complex tasks
+- `mcp__claude-zen__swarm_init` - Initialize coordination
+- `mcp__claude-zen__agent_spawn` - Create specialized agents
+- `mcp__claude-zen__task_orchestrate` - Coordinate complex tasks
+- `mcp__claude-zen__swarm_status` - Monitor coordination
+- `mcp__claude-zen__swarm_monitor` - Real-time performance tracking
 
 ## 🧪 Testing Strategy for Claude-Zen
 

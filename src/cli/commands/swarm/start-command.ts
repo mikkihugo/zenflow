@@ -175,25 +175,37 @@ export class SwarmStartCommand extends BaseCommand {
   }
 
   private async initializeSwarm(config: any): Promise<string> {
-    // This would integrate with the actual swarm orchestration system
-    // For now, we'll simulate the initialization
+    const { SwarmOrchestrator } = await import('../../../hive-mind/integration/SwarmOrchestrator');
+    const orchestrator = SwarmOrchestrator.getInstance();
     
-    const swarmId = `swarm_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    // Initialize orchestrator if not already active
+    if (!orchestrator.isActive) {
+      await orchestrator.initialize();
+    }
     
-    // Simulate initialization delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Create swarm configuration
+    const swarmConfig = {
+      topology: config.topology,
+      maxAgents: config.maxAgents,
+      strategy: config.strategy
+    };
+    
+    const swarmId = await orchestrator.initializeSwarm(swarmConfig);
     
     console.log(`✅ Swarm initialized with ID: ${swarmId}`);
-    console.log(`🌐 Listening on port ${config.port}`);
+    console.log(`🌐 Orchestrator active on topology: ${config.topology}`);
     
     if (config.devMode) {
-      console.log('🔥 Development mode active - hot reloading enabled');
+      console.log('🔥 Development mode active - enhanced logging enabled');
     }
     
     return swarmId;
   }
 
   private async spawnInitialAgents(swarmId: string, config: any): Promise<void> {
+    const { SwarmOrchestrator } = await import('../../../hive-mind/integration/SwarmOrchestrator');
+    const orchestrator = SwarmOrchestrator.getInstance();
+    
     console.log('Spawning initial agents...');
     
     const agentTypes = ['researcher', 'analyst', 'coordinator'];
@@ -201,12 +213,18 @@ export class SwarmStartCommand extends BaseCommand {
     
     for (let i = 0; i < agentsToSpawn; i++) {
       const agentType = agentTypes[i % agentTypes.length];
-      const agentId = `${agentType}-${i + 1}`;
+      const agentConfig = {
+        type: agentType,
+        name: `${agentType}-${i + 1}`,
+        capabilities: [agentType, 'general']
+      };
       
-      // Simulate agent spawning
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
-      console.log(`  ✅ Spawned ${agentType} agent: ${agentId}`);
+      try {
+        const agentId = await orchestrator.spawnAgent(agentConfig);
+        console.log(`  ✅ Spawned ${agentType} agent: ${agentId}`);
+      } catch (error) {
+        console.log(`  ❌ Failed to spawn ${agentType} agent: ${error}`);
+      }
     }
     
     console.log(`✅ ${agentsToSpawn} initial agents spawned successfully`);
