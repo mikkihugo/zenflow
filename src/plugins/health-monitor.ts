@@ -5,7 +5,7 @@
 
 import { performance } from 'node:perf_hooks';
 import { BasePlugin } from './base-plugin.js';
-import type { Plugin, PluginManifest, PluginContext, PluginConfig } from '../types/plugin.js';
+import type { Plugin, PluginManifest, PluginContext, PluginConfig } from './types.js';
 
 interface HealthMetrics {
   timestamp: Date;
@@ -83,8 +83,7 @@ interface PluginData {
   lastHealthResult?: HealthMetrics;
 }
 
-interface HealthMonitorConfig {
-  enabled: boolean;
+interface HealthMonitorConfig extends PluginConfig {
   healthCheckInterval: number;
   metricsInterval: number;
   trendAnalysisInterval: number;
@@ -106,12 +105,15 @@ export class HealthMonitor extends BasePlugin {
   private healthThresholds = new Map<string, HealthThreshold[]>();
   private healthTrends = new Map<string, HealthTrend[]>();
   private systemHealthHistory: SystemHealthSummary[] = [];
-  private readonly config: HealthMonitorConfig;
+  public readonly config: HealthMonitorConfig;
 
-  constructor(manifest: PluginManifest, context: PluginContext, config: Partial<HealthMonitorConfig> = {}) {
-    super(manifest, context, config);
-    this.config = {
+  constructor(manifest: PluginManifest, config: HealthMonitorConfig, context: PluginContext) {
+    super(manifest, config, context);
+    
+    const defaultConfig: HealthMonitorConfig = {
       enabled: true,
+      priority: 50,
+      settings: {},
       healthCheckInterval: 30000, // 30 seconds
       metricsInterval: 10000, // 10 seconds
       trendAnalysisInterval: 300000, // 5 minutes
@@ -122,14 +124,13 @@ export class HealthMonitor extends BasePlugin {
         consecutiveFailures: 3,
         responseTimeWarning: 500,
         responseTimeCritical: 1000
-      },
-      ...config
+      }
     };
+    
+    this.config = { ...defaultConfig, ...config };
   }
 
-  async initialize(): Promise<void> {
-    await super.initialize();
-    
+  async onInitialize(): Promise<void> {
     if (!this.config.enabled) {
       return;
     }
@@ -155,6 +156,38 @@ export class HealthMonitor extends BasePlugin {
     setInterval(() => {
       this.cleanupOldData();
     }, 600000); // Every 10 minutes
+  }
+
+  async onStart(): Promise<void> {
+    this.context.logger.info('Health Monitor plugin started');
+  }
+
+  async onStop(): Promise<void> {
+    if (this.healthCheckInterval) {
+      clearInterval(this.healthCheckInterval);
+      this.healthCheckInterval = undefined;
+    }
+    
+    if (this.metricsCollectionInterval) {
+      clearInterval(this.metricsCollectionInterval);
+      this.metricsCollectionInterval = undefined;
+    }
+    
+    if (this.trendAnalysisInterval) {
+      clearInterval(this.trendAnalysisInterval);
+      this.trendAnalysisInterval = undefined;
+    }
+    
+    this.context.logger.info('Health Monitor plugin stopped');
+  }
+
+  async onDestroy(): Promise<void> {
+    await this.onStop();
+    this.plugins.clear();
+    this.healthThresholds.clear();
+    this.healthTrends.clear();
+    this.systemHealthHistory = [];
+    this.context.logger.info('Health Monitor plugin destroyed');
   }
 
   async registerPlugin(pluginName: string, plugin: Plugin, manifest: PluginManifest, config: PluginConfig): Promise<void> {
@@ -201,7 +234,7 @@ export class HealthMonitor extends BasePlugin {
 
     switch (healthCheck.type) {
       case 'basic':
-        result = await this.performBasicHealthCheck(pluginData.plugin);
+        result = await this.performBasicHealthCheck(pluginName, pluginData.plugin);
         break;
       case 'detailed':
         result = await this.performDetailedHealthCheck(pluginData.plugin);
@@ -216,7 +249,7 @@ export class HealthMonitor extends BasePlugin {
         result = await this.performCustomHealthCheck(pluginData.plugin, healthCheck);
         break;
       default:
-        result = await this.performBasicHealthCheck(pluginData.plugin);
+        result = await this.performBasicHealthCheck(pluginName, pluginData.plugin);
     }
 
     // Update health check result
@@ -243,14 +276,15 @@ export class HealthMonitor extends BasePlugin {
     });
   }
 
-  private async performBasicHealthCheck(plugin: Plugin): Promise<HealthMetrics> {
+  private async performBasicHealthCheck(pluginName: string, plugin: Plugin): Promise<HealthMetrics> {
     const startTime = performance.now();
     const result = await plugin.healthCheck();
     const responseTime = performance.now() - startTime;
 
     // Enhance basic result with response time
-    return {
+    const enhancedResult = {
       ...result,
+      pluginName,
       responseTime,
       timestamp: new Date(),
       performance: {
@@ -263,10 +297,23 @@ export class HealthMonitor extends BasePlugin {
         cpu: 0
       }
     };
+
+    // Ensure all issues have timestamps and proper structure
+    if (enhancedResult.issues) {
+      enhancedResult.issues = enhancedResult.issues.map(issue => ({
+        component: issue.component || pluginName,
+        severity: issue.severity as 'low' | 'medium' | 'high' | 'critical',
+        message: issue.message,
+        timestamp: issue.timestamp || new Date()
+      } as HealthIssue));
+    }
+
+    return enhancedResult;
   }
 
   private async performDetailedHealthCheck(plugin: Plugin): Promise<HealthMetrics> {
-    const basicResult = await this.performBasicHealthCheck(plugin);
+    const pluginName = plugin.name || 'unknown';
+    const basicResult = await this.performBasicHealthCheck(pluginName, plugin);
 
     // Add detailed checks
     const detailedIssues: HealthIssue[] = [];
@@ -351,7 +398,7 @@ export class HealthMonitor extends BasePlugin {
       }
 
       return {
-        pluginName: plugin.manifest.name,
+        pluginName: plugin.metadata.name,
         timestamp: new Date(),
         status: score >= 80 ? 'healthy' : score >= 50 ? 'degraded' : 'unhealthy',
         score: Math.max(0, score),
@@ -369,7 +416,7 @@ export class HealthMonitor extends BasePlugin {
       };
     } catch (error) {
       return {
-        pluginName: plugin.manifest.name,
+        pluginName: plugin.metadata.name,
         timestamp: new Date(),
         status: 'unhealthy',
         score: 0,
@@ -393,7 +440,8 @@ export class HealthMonitor extends BasePlugin {
   }
 
   private async performDependencyHealthCheck(plugin: Plugin): Promise<HealthMetrics> {
-    const basicResult = await this.performBasicHealthCheck(plugin);
+    const pluginName = plugin.name || 'unknown';
+    const basicResult = await this.performBasicHealthCheck(pluginName, plugin);
     const issues: HealthIssue[] = [];
     let score = 100;
     const metrics: Record<string, any> = {};
@@ -445,7 +493,8 @@ export class HealthMonitor extends BasePlugin {
     if (healthCheck.customCheck) {
       return await healthCheck.customCheck(plugin);
     }
-    return await this.performBasicHealthCheck(plugin);
+    const pluginName = plugin.name || 'unknown';
+    return await this.performBasicHealthCheck(pluginName, plugin);
   }
 
   private async collectMetrics(): Promise<void> {
@@ -473,13 +522,19 @@ export class HealthMonitor extends BasePlugin {
     const healthResult = await plugin.healthCheck();
     const responseTime = performance.now() - startTime;
 
+    // Ensure all issues have timestamps
+    const processedIssues = healthResult.issues?.map(issue => ({
+      ...issue,
+      timestamp: issue.timestamp || new Date()
+    })) || [];
+
     return {
       pluginName,
       timestamp,
       status: healthResult.status,
       score: healthResult.score,
       responseTime,
-      issues: healthResult.issues,
+      issues: processedIssues,
       performance: {
         responseTime,
         errorRate: this.calculateErrorRate(plugin),
@@ -777,7 +832,7 @@ export class HealthMonitor extends BasePlugin {
     });
 
     // Performance check for critical plugins
-    if (manifest.priority === 'high' || manifest.category === 'core') {
+    if (config.priority && config.priority > 75) {
       checks.push({
         name: 'performance',
         type: 'performance',
@@ -847,7 +902,7 @@ export class HealthMonitor extends BasePlugin {
     const trends = this.healthTrends.get(pluginName) ?? [];
 
     return {
-      pluginName,
+      pluginName: pluginName,
       currentHealth: pluginData.lastHealthResult,
       recentMetrics,
       trends,
@@ -930,7 +985,6 @@ export class HealthMonitor extends BasePlugin {
     this.healthTrends.clear();
     this.systemHealthHistory.length = 0;
     
-    await super.cleanup();
   }
 }
 

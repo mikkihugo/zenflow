@@ -54,7 +54,7 @@ export class TerminalManager extends EventEmitter {
     this.config = {
       shell: config.shell || (process.platform === 'win32' ? 'cmd.exe' : '/bin/bash'),
       cwd: config.cwd || process.cwd(),
-      env: { ...process.env, ...config.env },
+      env: { ...Object.fromEntries(Object.entries(process.env).filter(([_, value]) => value !== undefined)) as Record<string, string>, ...config.env },
       timeout: config.timeout || 30000,
       maxConcurrentProcesses: config.maxConcurrentProcesses || 10
     };
@@ -109,7 +109,7 @@ export class TerminalManager extends EventEmitter {
         if (!completed) {
           completed = true;
           childProcess.kill('SIGTERM');
-          this.cleanup(processId);
+          this.cleanupProcess(processId);
           
           resolve({
             success: false,
@@ -139,7 +139,7 @@ export class TerminalManager extends EventEmitter {
         if (!completed) {
           completed = true;
           clearTimeout(timeoutHandle);
-          this.cleanup(processId);
+          this.cleanupProcess(processId);
 
           const duration = Date.now() - startTime;
           const result: ProcessResult = {
@@ -166,7 +166,7 @@ export class TerminalManager extends EventEmitter {
         if (!completed) {
           completed = true;
           clearTimeout(timeoutHandle);
-          this.cleanup(processId);
+          this.cleanupProcess(processId);
 
           const duration = Date.now() - startTime;
           this.logger?.error(`Command failed: ${command}`, { processId, error });
@@ -272,7 +272,7 @@ export class TerminalManager extends EventEmitter {
     }
 
     process.kill('SIGTERM');
-    this.cleanup(processId);
+    this.cleanupProcess(processId);
     this.logger?.info(`Process killed: ${processId}`);
     return true;
   }
@@ -309,7 +309,7 @@ export class TerminalManager extends EventEmitter {
     }
   }
 
-  private cleanup(processId: string): void {
+  private cleanupProcess(processId: string): void {
     this.activeProcesses.delete(processId);
   }
 }

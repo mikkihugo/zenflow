@@ -47,4 +47,3 @@ export class JsonYamlValidatorPlugin extends BasePlugin {
 }
 
 export default JsonYamlValidatorPlugin;
-EOF < /dev/null

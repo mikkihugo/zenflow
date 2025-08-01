@@ -20,7 +20,7 @@ interface MCPToolResponse {
 }
 
 export class MCPToolWrapper extends EventEmitter {
-  private toolPrefix = 'mcp__ruv-swarm__';
+  private toolPrefix = 'mcp__ruv-swarm-zen__';
   private isInitialized = false;
 
   constructor() {

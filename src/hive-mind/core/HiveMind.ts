@@ -24,7 +24,7 @@ import {
   SwarmStatus,
   AgentSpawnOptions,
   TaskSubmitOptions,
-} from '../types';
+} from '../types.js';
 
 export class HiveMind extends EventEmitter {
   private id: string;
@@ -220,8 +220,10 @@ export class HiveMind extends EventEmitter {
 
     await agent.initialize();
 
-    // Register with Queen
-    await this.queen.registerAgent(agent);
+    // Register with all Queens
+    for (const queen of this.queens.values()) {
+      await queen.registerAgent(agent);
+    }
 
     // Store in database
     await this.db.createAgent({
@@ -282,8 +284,10 @@ export class HiveMind extends EventEmitter {
     // Submit to orchestrator
     await this.orchestrator.submitTask(task);
 
-    // Notify Queen
-    await this.queen.onTaskSubmitted(task);
+    // Notify all Queens
+    for (const queen of this.queens.values()) {
+      await queen.onTaskSubmitted(task);
+    }
 
     this.emit('taskSubmitted', { task });
 
@@ -453,7 +457,7 @@ export class HiveMind extends EventEmitter {
 
     // Shutdown subsystems
     await Promise.all([
-      this.queen.shutdown(),
+      ...Array.from(this.queens.values()).map(queen => queen.shutdown()),
       this.memory.shutdown(),
       this.communication.shutdown(),
       this.orchestrator.shutdown(),

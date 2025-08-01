@@ -3,21 +3,25 @@
  * Tests the core functionality without dependencies
  */
 
-import { JsonBackend, MemoryBackendConfig, StorageResult } from './index';
+import { JSONBackend, MemoryBackendConfig, StorageResult } from './index';
 
 async function testJsonBackend() {
   console.log('🧪 Testing Memory Backend Plugin - JSON Backend');
   
   const config: MemoryBackendConfig = {
-    backend: 'json',
+    type: 'json',
     path: './test-data/memory-test.json',
-    jsonConfig: {
-      filePath: './test-data/memory-test.json',
-      prettyPrint: true
+    enabled: true,
+    priority: 50,
+    settings: {
+      jsonConfig: {
+        filePath: './test-data/memory-test.json',
+        prettyPrint: true
+      }
     }
   };
 
-  const backend = new JsonBackend(config);
+  const backend = new JSONBackend(config);
   
   try {
     // Test initialization
@@ -104,11 +108,14 @@ async function testInterfaceCompliance() {
   console.log('🧪 Testing interface compliance...');
   
   const config: MemoryBackendConfig = {
-    backend: 'json',
-    path: './test-data/interface-test.json'
+    type: 'json',
+    path: './test-data/interface-test.json',
+    enabled: true,
+    priority: 50,
+    settings: {}
   };
   
-  const backend = new JsonBackend(config);
+  const backend = new JSONBackend(config);
   await backend.initialize();
   
   // Test that all required methods exist and have correct signatures

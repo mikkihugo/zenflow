@@ -35,7 +35,7 @@ export class DocumentationLinkerPlugin extends BasePlugin {
     // Load documentation index from configured sources
     const sources = this.config.settings?.documentationSources || ['./docs', './README.md'];
     
-    for (const source of sources) {
+    for (const source of sources as string[]) {
       try {
         await this.indexDocumentationSource(source);
       } catch (error) {

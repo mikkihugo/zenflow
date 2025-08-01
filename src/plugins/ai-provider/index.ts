@@ -7,13 +7,37 @@ import crypto from 'node:crypto';
 import { performance } from 'node:perf_hooks';
 import { BasePlugin } from '../base-plugin.js';
 import type { 
-  Plugin, 
   PluginContext, 
   PluginManifest, 
-  PluginConfig,
-  PluginMetadata,
-  HealthCheckResult
-} from '../base-plugin.js';
+  PluginConfig
+} from '../types.js';
+import type { HealthStatus } from '../types.js';
+
+// AI Provider Config Interface
+interface AIProviderConfig extends PluginConfig {
+  caching?: {
+    enabled: boolean;
+    ttl: number;
+    maxSize: number;
+  };
+  rateLimiting?: {
+    enabled: boolean;
+    maxRequests: number;
+    windowMs: number;
+  };
+  logging?: {
+    enabled: boolean;
+    level: 'debug' | 'info' | 'warn' | 'error';
+    maxLogs?: number;
+    path?: string;
+  };
+  providers: Record<string, ProviderConfig>;
+  defaultProvider: string;
+  autoEnhance?: boolean;
+  queryExpansion?: boolean;
+  fallbackProviders?: string[];
+  provider?: string;
+}
 
 // Provider interfaces
 interface AIProviderResponse {
@@ -64,14 +88,18 @@ export abstract class BaseProvider {
     this.name = this.constructor.name.replace('Provider', '').toLowerCase();
   }
   
+  public getName(): string {
+    return this.name;
+  }
+  
   abstract initialize(): Promise<void>;
   abstract generateText(prompt: string, options?: any): Promise<AIProviderResponse>;
   
-  async generateStream?(prompt: string, options?: any): AsyncGenerator<StreamChunk>;
+  generateStream?(prompt: string, options?: any): AsyncGenerator<StreamChunk, void, unknown>;
   async generateStructured?<T>(prompt: string, schema: any, options?: any): Promise<StructuredResponse<T>>;
   async generateEmbeddings?(texts: string[]): Promise<number[][]>;
   
-  protected parseJSONResponse(text: string): any {
+  public parseJSONResponse(text: string): any {
     try {
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
@@ -519,10 +547,40 @@ export class AIProviderPlugin extends BasePlugin {
     requests: new Map<string, number[]>(),
     concurrent: new Map<string, number>()
   };
+  declare public config: AIProviderConfig;
   
-  constructor(config: PluginConfig = {}) {
-    super(config);
-    this.activeProvider = config.provider || 'claude';
+  constructor(manifest: PluginManifest, config: AIProviderConfig, context: PluginContext) {
+    super(manifest, config, context);
+    
+    const defaultConfig: AIProviderConfig = {
+      enabled: true,
+      priority: 50,
+      settings: {},
+      caching: {
+        enabled: true,
+        ttl: 3600000, // 1 hour
+        maxSize: 1000
+      },
+      rateLimiting: {
+        enabled: true,
+        maxRequests: 100,
+        windowMs: 60000 // 1 minute
+      },
+      logging: {
+        enabled: true,
+        level: 'info',
+        maxLogs: 1000,
+        path: './logs/ai-provider.log'
+      },
+      providers: {},
+      defaultProvider: 'claude',
+      autoEnhance: false,
+      queryExpansion: false,
+      fallbackProviders: []
+    };
+    
+    this.config = { ...defaultConfig, ...config };
+    this.activeProvider = this.config.defaultProvider;
   }
   
   async onInitialize(): Promise<void> {
@@ -632,27 +690,38 @@ export class AIProviderPlugin extends BasePlugin {
     this.requestLog = [];
   }
   
-  async onHealthCheck(): Promise<Partial<HealthCheckResult>> {
-    const issues: string[] = [];
+  async onHealthCheck(): Promise<Partial<HealthStatus>> {
+    const issues: Array<{
+      component: string;
+      severity: 'low' | 'medium' | 'high' | 'critical';
+      message: string;
+      timestamp?: Date;
+    }> = [];
     const provider = this.providers.get(this.activeProvider);
     
     if (!provider) {
-      issues.push(`Active provider '${this.activeProvider}' not found`);
+      issues.push({
+        component: 'ai-provider',
+        severity: 'critical',
+        message: `Active provider '${this.activeProvider}' not found`,
+        timestamp: new Date()
+      });
     }
     
     // Check provider health
     try {
       await provider?.generateText('Test', { maxTokens: 1 });
     } catch (error) {
-      issues.push(`Provider health check failed: ${error}`);
+      issues.push({
+        component: 'ai-provider',
+        severity: 'high',
+        message: `Provider health check failed: ${error}`,
+        timestamp: new Date()
+      });
     }
     
     return {
-      issues,
-      performance: {
-        cacheHitRate: this.calculateCacheHitRate(),
-        averageLatency: this.calculateAverageLatency()
-      }
+      issues
     };
   }
   
@@ -669,7 +738,7 @@ export class AIProviderPlugin extends BasePlugin {
     };
   }
   
-  async onValidateConfiguration(config: PluginConfig): Promise<string[]> {
+  async onValidateConfiguration(config: AIProviderConfig): Promise<string[]> {
     const errors: string[] = [];
     
     if (config.provider && !['claude', 'openai', 'ollama'].includes(config.provider)) {
@@ -680,8 +749,11 @@ export class AIProviderPlugin extends BasePlugin {
       errors.push('Cache TTL must be positive');
     }
     
-    if (config.rateLimiting?.requestsPerMinute && config.rateLimiting.requestsPerMinute < 1) {
-      errors.push('Rate limit must be at least 1 request per minute');
+    if (config.rateLimiting && typeof config.rateLimiting === 'object') {
+      const rateLimiting = config.rateLimiting as { requestsPerMinute?: number };
+      if (rateLimiting.requestsPerMinute && rateLimiting.requestsPerMinute < 1) {
+        errors.push('Rate limit must be at least 1 request per minute');
+      }
     }
     
     return errors;
@@ -699,7 +771,7 @@ export class AIProviderPlugin extends BasePlugin {
     }
     
     // Check rate limits
-    await this.checkRateLimit(provider.name);
+    await this.checkRateLimit(provider.getName());
     
     const startTime = performance.now();
     
@@ -709,7 +781,7 @@ export class AIProviderPlugin extends BasePlugin {
       // Log request
       this.logRequest({
         type: 'text',
-        provider: provider.name,
+        provider: provider.getName(),
         prompt: prompt.substring(0, 100),
         response: response.text.substring(0, 100),
         latency: performance.now() - startTime,
@@ -721,16 +793,16 @@ export class AIProviderPlugin extends BasePlugin {
         this.addToCache(cacheKey, response);
       }
       
-      this.emit('generation:complete', { provider: provider.name, type: 'text' });
+      this.emit('generation:complete', { provider: provider.getName(), type: 'text' });
       
       return response;
     } catch (error) {
-      this.emit('generation:error', { provider: provider.name, error });
+      this.emit('generation:error', { provider: provider.getName(), error });
       
       // Try fallback provider
       if (this.config.fallbackProviders?.length) {
         for (const fallbackName of this.config.fallbackProviders) {
-          if (fallbackName !== provider.name) {
+          if (fallbackName !== provider.getName()) {
             try {
               return await this.generateText(prompt, fallbackName, options);
             } catch {
@@ -744,14 +816,14 @@ export class AIProviderPlugin extends BasePlugin {
     }
   }
   
-  async generateStream(prompt: string, providerName?: string, options?: any): AsyncGenerator<StreamChunk> {
+  async *generateStream(prompt: string, providerName?: string, options?: any): AsyncGenerator<StreamChunk, void, unknown> {
     const provider = this.getProvider(providerName);
     
     if (!provider.supportsStreaming) {
-      throw new Error(`Provider ${provider.name} does not support streaming`);
+      throw new Error(`Provider ${provider.getName()} does not support streaming`);
     }
     
-    await this.checkRateLimit(provider.name);
+    await this.checkRateLimit(provider.getName());
     
     const startTime = performance.now();
     let totalText = '';
@@ -764,15 +836,15 @@ export class AIProviderPlugin extends BasePlugin {
       
       this.logRequest({
         type: 'stream',
-        provider: provider.name,
+        provider: provider.getName(),
         prompt: prompt.substring(0, 100),
         response: totalText.substring(0, 100),
         latency: performance.now() - startTime
       });
       
-      this.emit('generation:complete', { provider: provider.name, type: 'stream' });
+      this.emit('generation:complete', { provider: provider.getName(), type: 'stream' });
     } catch (error) {
-      this.emit('generation:error', { provider: provider.name, error });
+      this.emit('generation:error', { provider: provider.getName(), error });
       throw error;
     }
   }
@@ -808,7 +880,7 @@ export class AIProviderPlugin extends BasePlugin {
       if (cached) return cached;
     }
     
-    await this.checkRateLimit(provider.name);
+    await this.checkRateLimit(provider.getName());
     
     const response = await provider.generateStructured!<T>(prompt, schema, options);
     
@@ -827,8 +899,8 @@ export class AIProviderPlugin extends BasePlugin {
     }
     
     return {
-      name: provider.name,
-      active: provider.name === this.activeProvider,
+      name: provider.getName(),
+      active: provider.getName() === this.activeProvider,
       capabilities: {
         streaming: provider.supportsStreaming,
         embeddings: provider.supportsEmbeddings,
@@ -895,8 +967,8 @@ export class AIProviderPlugin extends BasePlugin {
     
     const now = Date.now();
     const window = 60000; // 1 minute
-    const limit = this.config.rateLimiting?.requestsPerMinute || 60;
-    const concurrentLimit = this.config.rateLimiting?.concurrent || 10;
+    const limit = (this.config.rateLimiting as any)?.requestsPerMinute || this.config.rateLimiting?.maxRequests || 60;
+    const concurrentLimit = (this.config.rateLimiting as any)?.concurrent || 10;
     
     // Check requests per minute
     const requests = this.rateLimiter.requests.get(provider) || [];
@@ -1037,12 +1109,6 @@ export class AIProviderPlugin extends BasePlugin {
     author: 'Claude Code Flow',
     capabilities: ['ai', 'generation', 'streaming', 'embeddings'],
     configuration: {
-      provider: {
-        type: 'string',
-        default: 'claude',
-        enum: ['claude', 'openai', 'ollama'],
-        description: 'Active AI provider'
-      },
       providers: {
         type: 'object',
         properties: {

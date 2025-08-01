@@ -99,6 +99,15 @@ export interface PluginContext {
       recommended: number;
     }>;
   };
+  mcp?: {
+    call(method: string, params: any): Promise<any>;
+    notify(method: string, params: any): void;
+  };
+  hooks?: {
+    register(type: string, handler: Function): Promise<void>;
+    unregister(type: string, handler: Function): Promise<void>;
+    execute(type: string, data: any): Promise<any>;
+  };
 }
 
 export type PluginState = 
@@ -127,6 +136,67 @@ export interface HealthStatus {
     component: string;
     severity: 'low' | 'medium' | 'high' | 'critical';
     message: string;
+    timestamp?: Date;
   }>;
   lastCheck: Date;
+}
+
+export interface HealthIssue {
+  component: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  message: string;
+  timestamp: Date;
+}
+
+export interface HealthMetrics {
+  timestamp: Date;
+  pluginName: string;
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  score: number;
+  responseTime: number;
+  issues: HealthIssue[];
+  performance: {
+    responseTime: number;
+    errorRate: number;
+    throughput: number;
+  };
+  resources: {
+    memory: number;
+    cpu: number;
+  };
+  dependencies?: Record<string, string>;
+}
+
+// Stream interfaces for AI providers
+export interface StreamChunk {
+  content: string;
+  done: boolean;
+  metadata?: Record<string, any>;
+}
+
+// Configuration interfaces
+export interface AIProviderConfig extends PluginConfig {
+  providers?: Record<string, any>;
+  defaultProvider?: string;
+  caching?: {
+    enabled: boolean;
+    ttl: number;
+    maxSize: number;
+  };
+  rateLimiting?: {
+    enabled: boolean;
+    maxRequests: number;
+    windowMs: number;
+    requestsPerMinute?: number;
+    concurrent?: number;
+  };
+  logging?: {
+    enabled: boolean;
+    level: 'debug' | 'info' | 'warn' | 'error';
+    maxLogs?: number;
+    path?: string;
+  };
+  autoEnhance?: boolean;
+  queryExpansion?: boolean;
+  fallbackProviders?: string[];
 }

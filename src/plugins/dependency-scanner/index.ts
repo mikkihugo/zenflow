@@ -158,8 +158,8 @@ export class DependencyScannerPlugin extends BasePlugin {
    * Analyze individual dependency conflict
    */
   private async analyzeConflict(depName: string, data: any): Promise<any> {
-    const versions = Array.from(data.versions.keys());
-    const conflictType = this.classifyConflict(versions);
+    const versions = Array.from((data.versions as Map<string, any>).keys());
+    const conflictType = this.classifyConflict(versions as string[]);
     const strategy = this.conflictStrategies.get(conflictType) || this.conflictStrategies.get('minor_version');
 
     const conflict: any = {

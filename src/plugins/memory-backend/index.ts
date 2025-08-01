@@ -6,18 +6,30 @@
 
 import { BasePlugin } from '../base-plugin.js';
 import LanceDBInterface from '../../database/lancedb-interface.js';
+
+// Add VectorDocument interface for LanceDB
+interface VectorDocument {
+  id: string;
+  vector: number[];
+  metadata?: Record<string, any>;
+  timestamp?: number;
+}
 import type { 
   Plugin, 
   PluginContext, 
   PluginManifest, 
   PluginConfig,
-  HealthCheckResult
-} from '../base-plugin.js';
+  HealthStatus
+} from '../types.js';
+
+type HealthCheckResult = HealthStatus;
 
 // Types for memory backend
 export type JSONValue = string | number | boolean | null | JSONValue[] | { [key: string]: JSONValue };
 
-interface StorageResult {
+export interface MemoryBackendConfig extends BackendConfig {}
+
+export interface StorageResult {
   id: string;
   timestamp: number;
   status: 'success' | 'error';
@@ -31,7 +43,7 @@ interface BackendStats {
   namespaces?: number;
 }
 
-interface BackendConfig {
+interface BackendConfig extends PluginConfig {
   type: 'lancedb' | 'sqlite' | 'json' | 'kuzu';
   path: string;
   [key: string]: any;
@@ -45,6 +57,7 @@ interface BackendInterface {
   delete(key: string, namespace?: string): Promise<boolean>;
   listNamespaces(): Promise<string[]>;
   getStats(): Promise<BackendStats>;
+  healthCheck?(): Promise<HealthCheckResult>;
 }
 
 // Base backend class
@@ -62,25 +75,69 @@ abstract class BaseBackend implements BackendInterface {
   abstract delete(key: string, namespace?: string): Promise<boolean>;
   abstract listNamespaces(): Promise<string[]>;
   abstract getStats(): Promise<BackendStats>;
+  
+  async healthCheck(): Promise<HealthCheckResult> {
+    return {
+      status: 'healthy',
+      score: 100,
+      issues: [],
+      lastCheck: new Date()
+    };
+  }
 }
 
 // Main Memory Backend Plugin
 export class MemoryBackendPlugin extends BasePlugin {
   private storage?: BackendInterface;
-  private config: BackendConfig;
+  declare public config: BackendConfig;
   private initialized = false;
   
-  constructor(config: PluginConfig) {
-    super({
+  constructor(config: BackendConfig) {
+    const manifest: PluginManifest = {
       name: 'memory-backend',
       version: '1.0.0',
-      ...config
-    });
+      description: 'Memory backend storage plugin',
+      author: 'claude-flow',
+      license: 'MIT',
+      keywords: ['storage', 'memory'],
+      main: 'index.js',
+      dependencies: { system: [], plugins: {} },
+      configuration: { schema: {}, required: [], defaults: {} },
+      permissions: [],
+      apis: [],
+      hooks: []
+    };
+
+    const pluginConfig: PluginConfig = {
+      enabled: config.enabled ?? true,
+      priority: config.priority ?? 50,
+      settings: config.settings ?? {}
+    };
+
+    const context: PluginContext = {
+      logger: {
+        debug: (message: string, meta?: unknown) => console.debug(`[memory-backend] ${message}`, meta),
+        info: (message: string, meta?: unknown) => console.info(`[memory-backend] ${message}`, meta),
+        warn: (message: string, meta?: unknown) => console.warn(`[memory-backend] ${message}`, meta),
+        error: (message: string, error?: unknown) => console.error(`[memory-backend] ${message}`, error)
+      },
+      apis: {
+        logger: {
+          info: (message: string) => console.info(`[memory-backend] ${message}`),
+          error: (message: string) => console.error(`[memory-backend] ${message}`)
+        }
+      },
+      resources: { limits: [] }
+    };
+
+    super(manifest, pluginConfig, context);
     
     this.config = {
+      enabled: config.enabled ?? true,
+      priority: config.priority ?? 50,
+      settings: config.settings ?? {},
       type: config.type || 'lancedb',
-      path: config.path || './data',
-      ...config
+      path: config.path || './data'
     };
   }
   
@@ -106,8 +163,17 @@ export class MemoryBackendPlugin extends BasePlugin {
     await this.storage.initialize();
     this.initialized = true;
   }
-  
+
+  async onStart(): Promise<void> {
+    this.context.logger.info('Memory backend plugin started');
+  }
+
+  async onStop(): Promise<void> {
+    this.context.logger.info('Memory backend plugin stopped');
+  }
+
   async onDestroy(): Promise<void> {
+    this.context.logger.info('Memory backend plugin destroyed');
     this.initialized = false;
     this.storage = undefined;
   }
@@ -189,7 +255,20 @@ class LanceDBBackend extends BaseBackend {
       })
     };
     
-    await this.lanceInterface.addDocuments([document]);
+    // Use insertVectors method instead of addDocuments
+    const vectorDoc = {
+      id: fullKey,
+      vector: new Array(384).fill(0), // placeholder vector
+      metadata: {
+        key,
+        namespace,
+        timestamp,
+        serialized_data: serializedValue,
+        content: documentText
+      }
+    };
+    
+    await this.lanceInterface.insertVectors('documents', [vectorDoc]);
     
     return {
       id: fullKey,
@@ -202,18 +281,18 @@ class LanceDBBackend extends BaseBackend {
     const fullKey = `${namespace}:${key}`;
     
     try {
-      // Use semantic search to find the document
-      const searchResult = await this.lanceInterface.semanticSearch(fullKey, {
-        table: 'documents',
-        limit: 1
+      // Use searchSimilar method instead of semanticSearch
+      const searchResult = await this.lanceInterface.searchSimilar('documents', new Array(384).fill(0), 1, {
+        key: key,
+        namespace: namespace
       });
       
-      if (!searchResult.results || searchResult.results.length === 0) {
+      if (!searchResult || searchResult.length === 0) {
         return null;
       }
       
-      const result = searchResult.results[0];
-      const metadata = JSON.parse(result.metadata || '{}');
+      const result = searchResult[0];
+      const metadata = result.metadata || {};
       
       if (metadata.serialized_data) {
         return JSON.parse(metadata.serialized_data);
@@ -229,15 +308,14 @@ class LanceDBBackend extends BaseBackend {
     const results: Record<string, JSONValue> = {};
     
     try {
-      // Use semantic search with pattern
-      const searchResult = await this.lanceInterface.semanticSearch(pattern, {
-        table: 'documents',
-        limit: 100
+      // Use searchSimilar for pattern matching
+      const searchResult = await this.lanceInterface.searchSimilar('documents', new Array(384).fill(0), 100, {
+        namespace: namespace
       });
       
-      for (const result of searchResult.results || []) {
+      for (const result of searchResult || []) {
         try {
-          const metadata = JSON.parse(result.metadata || '{}');
+          const metadata = result.metadata || {};
           if (metadata.namespace === namespace && metadata.serialized_data) {
             const key = metadata.key;
             if (pattern === '*' || key.includes(pattern.replace('*', ''))) {
@@ -265,15 +343,12 @@ class LanceDBBackend extends BaseBackend {
   async listNamespaces(): Promise<string[]> {
     // Extract namespaces from stored metadata
     try {
-      const searchResult = await this.lanceInterface.semanticSearch('*', {
-        table: 'documents',
-        limit: 1000
-      });
+      const searchResult = await this.lanceInterface.searchSimilar('documents', new Array(384).fill(0), 1000);
       
       const namespaces = new Set<string>();
-      for (const result of searchResult.results || []) {
+      for (const result of searchResult || []) {
         try {
-          const metadata = JSON.parse(result.metadata || '{}');
+          const metadata = result.metadata || {};
           if (metadata.namespace) {
             namespaces.add(metadata.namespace);
           }
@@ -291,8 +366,8 @@ class LanceDBBackend extends BaseBackend {
   async getStats(): Promise<BackendStats> {
     const stats = await this.lanceInterface.getStats();
     return {
-      entries: stats.totalDocuments || 0,
-      size: stats.indexSize || 0,
+      entries: stats.totalVectors || 0,
+      size: stats.indexedVectors || 0,
       lastModified: Date.now()
     };
   }
@@ -414,7 +489,7 @@ class KuzuBackend extends BaseBackend {
         id: fullKey,
         timestamp,
         status: 'error',
-        error: error.message
+        error: error instanceof Error ? error.message : 'Unknown error'
       };
     }
   }
@@ -529,14 +604,14 @@ class SQLiteBackend extends BaseBackend {
   }
   
   async initialize(): Promise<void> {
-    const Database = (await import('better-sqlite3')).default;
+    const { default: Database } = await import('better-sqlite3');
     const fs = await import('node:fs/promises');
     const path = await import('node:path');
     
     // Ensure directory exists
     await fs.mkdir(path.dirname(this.dbPath), { recursive: true });
     
-    this.db = new Database(this.dbPath);
+    this.db = new (Database as any)(this.dbPath);
     
     // Create table
     this.db.exec(`
@@ -651,7 +726,7 @@ class SQLiteBackend extends BaseBackend {
 }
 
 // JSON file backend
-class JSONBackend extends BaseBackend {
+export class JSONBackend extends BaseBackend {
   private data = new Map<string, { value: JSONValue; timestamp: number }>();
   private filepath: string;
   
@@ -695,7 +770,7 @@ class JSONBackend extends BaseBackend {
   async search(pattern: string, namespace: string = 'default'): Promise<Record<string, JSONValue>> {
     const results: Record<string, JSONValue> = {};
     const prefix = `${namespace}:`;
-    for (const [key, entry] of this.data) {
+    for (const [key, entry] of Array.from(this.data.entries())) {
       if (key.startsWith(prefix) && key.includes(pattern)) {
         results[key.substring(prefix.length)] = entry.value;
       }
@@ -712,7 +787,7 @@ class JSONBackend extends BaseBackend {
 
   async listNamespaces(): Promise<string[]> {
     const namespaces = new Set<string>();
-    for (const key of this.data.keys()) {
+    for (const key of Array.from(this.data.keys())) {
       const namespace = key.split(':')[0];
       namespaces.add(namespace);
     }
@@ -736,7 +811,7 @@ class JSONBackend extends BaseBackend {
     
     // Convert Map to object for JSON serialization
     const obj: Record<string, any> = {};
-    for (const [key, value] of this.data) {
+    for (const [key, value] of Array.from(this.data.entries())) {
       obj[key] = value;
     }
     

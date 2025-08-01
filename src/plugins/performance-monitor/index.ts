@@ -7,7 +7,7 @@ import { BasePlugin } from '../base-plugin.js';
 import type { PluginManifest, PluginConfig, PluginContext } from '../types.js';
 
 export class PerformanceMonitorPlugin extends BasePlugin {
-  private metrics: any[] = [];
+  private performanceMetrics: any[] = [];
   private startTime = Date.now();
 
   constructor(manifest: PluginManifest, config: PluginConfig, context: PluginContext) {
@@ -27,12 +27,12 @@ export class PerformanceMonitorPlugin extends BasePlugin {
   }
 
   async onDestroy(): Promise<void> {
-    this.metrics = [];
+    this.performanceMetrics = [];
     this.context.logger.info('Performance Monitor Plugin cleaned up');
   }
 
   recordMetric(name: string, value: number, unit: string = 'ms'): void {
-    this.metrics.push({
+    this.performanceMetrics.push({
       name,
       value,
       unit,
@@ -41,7 +41,7 @@ export class PerformanceMonitorPlugin extends BasePlugin {
   }
 
   getMetrics(): any[] {
-    return [...this.metrics];
+    return [...this.performanceMetrics];
   }
 
   getUptime(): number {
@@ -49,7 +49,7 @@ export class PerformanceMonitorPlugin extends BasePlugin {
   }
 
   getAverageMetric(name: string): number {
-    const namedMetrics = this.metrics.filter(m => m.name === name);
+    const namedMetrics = this.performanceMetrics.filter(m => m.name === name);
     if (namedMetrics.length === 0) return 0;
     return namedMetrics.reduce((sum, m) => sum + m.value, 0) / namedMetrics.length;
   }

@@ -175,10 +175,10 @@ export class MaestroIntegrationTest {
     // Create a task-planner agent to verify template exists
     const agentId = await this.agentManager.createAgent('task-planner', {
       name: 'Test Task Planner',
-      type: 'task-planner',
-      capabilities: ['project-management', 'task-breakdown', 'agile-planning'],
-      maxConcurrentTasks: 1,
-      priority: 90
+      config: {
+        maxConcurrentTasks: 1,
+        priority: 90
+      }
     });
 
     if (!agentId) {
@@ -204,10 +204,10 @@ export class MaestroIntegrationTest {
     // Create agent through AgentManager
     const agentId = await this.agentManager.createAgent('task-planner', {
       name: 'Integration Test Planner',
-      type: 'task-planner',
-      capabilities: ['project-management', 'task-breakdown'],
-      maxConcurrentTasks: 1,
-      priority: 85
+      config: {
+        maxConcurrentTasks: 1,
+        priority: 85
+      }
     });
 
     // Verify agent can be queried through registry

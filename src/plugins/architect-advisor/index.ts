@@ -8,8 +8,9 @@ import { EventEmitter } from 'events';
 import { mkdir, readdir, readFile, stat, writeFile } from 'fs/promises';
 import path from 'path';
 import { BasePlugin } from '../base-plugin';
+import type { PluginManifest, PluginConfig, PluginContext } from '../types';
 
-export interface ArchitectAdvisorConfig {
+export interface ArchitectAdvisorConfig extends PluginConfig {
   confidence_threshold: number;
   max_file_size: number;
   scan_directories: string[];
@@ -121,7 +122,7 @@ export interface Recommendation {
 }
 
 export class ArchitectAdvisorPlugin extends BasePlugin {
-  private config: ArchitectAdvisorConfig;
+  declare public config: ArchitectAdvisorConfig;
   private analysis_history: AnalysisResult[] = [];
   private pattern_library = new Map();
   private code_smells = new Map();
@@ -132,10 +133,13 @@ export class ArchitectAdvisorPlugin extends BasePlugin {
   private principles: Map<string, any>;
   private aiProvider?: any;
 
-  constructor(config: Partial<ArchitectAdvisorConfig> = {}) {
-    super('architect-advisor', '1.0.0');
+  constructor(manifest: PluginManifest, config: ArchitectAdvisorConfig, context: PluginContext) {
+    super(manifest, config, context);
     
-    this.config = {
+    const defaultConfig: ArchitectAdvisorConfig = {
+      enabled: true,
+      priority: 50,
+      settings: {},
       confidence_threshold: 0.7,
       max_file_size: 1024 * 1024, // 1MB
       scan_directories: ['src', 'lib', 'app'],
@@ -144,9 +148,10 @@ export class ArchitectAdvisorPlugin extends BasePlugin {
       patterns_db_path: './config/patterns',
       recommendations_path: './reports/architecture',
       enable_ai_analysis: true,
-      exclude_patterns: ['node_modules', '.git', 'dist', 'build', '.next', '.nuxt'],
-      ...config
+      exclude_patterns: ['node_modules', '.git', 'dist', 'build', '.next', '.nuxt']
     };
+    
+    this.config = { ...defaultConfig, ...config };
 
     // Design Patterns Database
     this.designPatterns = this.initializeDesignPatterns();
@@ -158,7 +163,7 @@ export class ArchitectAdvisorPlugin extends BasePlugin {
     this.principles = this.initializePrinciples();
   }
 
-  async initialize(): Promise<void> {
+  async onInitialize(): Promise<void> {
     try {
       console.log('🏗️ Architect Advisor Plugin initializing...');
       
@@ -183,6 +188,26 @@ export class ArchitectAdvisorPlugin extends BasePlugin {
     } catch (error) {
       console.warn('⚠️ AI Provider not available, using rule-based analysis only');
     }
+  }
+
+  async onStart(): Promise<void> {
+    this.context.logger.info('Architect Advisor plugin started');
+  }
+
+  async onStop(): Promise<void> {
+    this.isAnalyzing = false;
+    this.context.logger.info('Architect Advisor plugin stopped');
+  }
+
+  async onDestroy(): Promise<void> {
+    this.analysis_history = [];
+    this.pattern_library.clear();
+    this.code_smells.clear();
+    this.metrics_cache.clear();
+    this.designPatterns.clear();
+    this.antiPatterns.clear();
+    this.principles.clear();
+    this.context.logger.info('Architect Advisor plugin destroyed');
   }
 
   /**
@@ -264,7 +289,7 @@ export class ArchitectAdvisorPlugin extends BasePlugin {
       try {
         const dirPath = path.join(process.cwd(), dir);
         const dirFiles = await this.scanDirectory(dirPath);
-        files.push(...dirFiles);
+        files.push(...(dirFiles as any[]));
       } catch (error) {
         // Directory doesn't exist, skip
       }
@@ -289,14 +314,14 @@ export class ArchitectAdvisorPlugin extends BasePlugin {
         
         if (entry.isDirectory()) {
           const subFiles = await this.scanDirectory(fullPath);
-          files.push(...subFiles);
+          files.push(...(subFiles as any[]));
         } else if (entry.isFile()) {
           const ext = path.extname(entry.name);
           if (this.config.file_extensions.includes(ext)) {
             const stats = await stat(fullPath);
             if (stats.size <= this.config.max_file_size) {
               const content = await readFile(fullPath, 'utf8');
-              files.push({
+              (files as any[]).push({
                 path: fullPath,
                 relativePath: path.relative(process.cwd(), fullPath),
                 name: entry.name,

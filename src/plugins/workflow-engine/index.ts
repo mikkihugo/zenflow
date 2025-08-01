@@ -149,7 +149,7 @@ export class WorkflowEnginePlugin extends BasePlugin {
     // Loop step
     this.registerStepHandler('loop', async (context: WorkflowContext, params: any) => {
       const items = this.getContextValue(context, params.items);
-      const results = [];
+      const results: any[] = [];
       
       for (const item of items) {
         const loopContext = { ...context, loopItem: item };
@@ -279,10 +279,11 @@ export class WorkflowEnginePlugin extends BasePlugin {
     let definition: WorkflowDefinition;
     
     if (typeof workflowDefinitionOrName === 'string') {
-      definition = this.workflowDefinitions.get(workflowDefinitionOrName);
-      if (!definition) {
+      const foundDefinition = this.workflowDefinitions.get(workflowDefinitionOrName);
+      if (!foundDefinition) {
         throw new Error(`Workflow definition '${workflowDefinitionOrName}' not found`);
       }
+      definition = foundDefinition;
     } else {
       definition = workflowDefinitionOrName;
     }

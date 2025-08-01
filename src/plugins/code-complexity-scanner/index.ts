@@ -11,7 +11,7 @@ export class CodeComplexityScannerPlugin extends BasePlugin {
 
   constructor(manifest: PluginManifest, config: PluginConfig, context: PluginContext) {
     super(manifest, config, context);
-    this.complexityThreshold = config.settings?.complexityThreshold || 10;
+    this.complexityThreshold = (config.settings?.complexityThreshold as number) || 10;
   }
 
   async onInitialize(): Promise<void> {

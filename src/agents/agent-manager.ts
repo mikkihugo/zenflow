@@ -16,9 +16,9 @@ import type {
   AgentEnvironment,
   AgentMetrics,
   AgentError,
-} from '../../ruv-FANN-zen/ruv-swarm-zen/npm/src/types';
-import type { EnhancedMemory } from '../memory/memory';
-import { generateId } from '../utils/helpers';
+} from '../types/agent-types';
+import type { DistributedMemorySystem } from '../memory/distributed-memory.js';
+import { generateId } from '../utils/helpers.js';
 
 export interface AgentManagerConfig {
   maxAgents: number;

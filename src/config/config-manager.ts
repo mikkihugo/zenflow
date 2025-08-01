@@ -29,6 +29,10 @@ export interface SystemConfig {
     host: string;
     timeout: number;
   };
+  orchestrator?: {
+    maxRetries: number;
+    timeout: number;
+  };
 }
 
 /**

@@ -4,7 +4,7 @@
  * @module Logger
  */
 
-import { createLogger, LogLevel } from '../core/logger.js';
+import { createLogger, LogLevel, type LoggerConfig } from '../core/logger.js';
 
 export interface LogMeta {
   timestamp?: string;
@@ -17,7 +17,8 @@ export class Logger {
   private coreLogger: ReturnType<typeof createLogger>;
 
   constructor(component?: string) {
-    this.coreLogger = createLogger(component);
+    const config: Partial<LoggerConfig> = component ? { prefix: component } : {};
+    this.coreLogger = createLogger(config);
   }
 
   info(message: string, meta?: LogMeta): void {
@@ -37,11 +38,11 @@ export class Logger {
   }
 
   success(message: string, meta?: LogMeta): void {
-    this.coreLogger.success(message, meta);
+    this.coreLogger.info(`✅ ${message}`, meta);
   }
 
   progress(message: string, meta?: LogMeta): void {
-    this.coreLogger.progress(message, meta);
+    this.coreLogger.info(`🔄 ${message}`, meta);
   }
 }
 
@@ -49,4 +50,4 @@ export class Logger {
 export const logger = new Logger();
 
 // Export types for convenience
-export type { LogLevel, LogMeta };
+export type { LogLevel };

@@ -187,12 +187,12 @@ export class ResourceMonitor extends BasePlugin {
   constructor(manifest: PluginManifest, config: ResourceMonitorConfig, context: PluginContext) {
     super(manifest, config, context);
     
-    this.resourceConfig = {
+    const defaultConfig = {
       enabled: true,
       interval: 5000, // 5 seconds
       retentionPeriod: 24 * 60 * 60 * 1000, // 24 hours
       maxAlerts: 100,
-      enforcementEnabled: false,
+      enforcementEnabled: false,  
       gracePeriod: 60000, // 1 minute
       alertThresholds: {
         memory: { warning: 80, critical: 95 },
@@ -200,9 +200,10 @@ export class ResourceMonitor extends BasePlugin {
         disk: { warning: 50, critical: 100 }, // MB/s
         network: { warning: 1000, critical: 2000 }, // requests/minute
         handles: { warning: 75, critical: 90 } // percentage
-      },
-      ...config
+      }
     };
+    
+    this.resourceConfig = { ...defaultConfig, ...config };
   }
 
   async onInitialize(): Promise<void> {
@@ -670,7 +671,7 @@ export class ResourceMonitor extends BasePlugin {
     };
   }
 
-  private processPerformanceEntry(entry: PerformanceEntry): void {
+  private processPerformanceEntry(entry: any): void {
     // Process performance entries for additional metrics
     // This would be implemented based on specific needs
   }
