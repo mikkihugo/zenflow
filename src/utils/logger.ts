@@ -4,7 +4,14 @@
  * @module Logger
  */
 
-import { createLogger, type LogLevel, type LogMeta } from './core-logger.js';
+import { createLogger, LogLevel } from '../core/logger.js';
+
+export interface LogMeta {
+  timestamp?: string;
+  level?: LogLevel;
+  context?: string;
+  [key: string]: any;
+}
 
 export class Logger {
   private coreLogger: ReturnType<typeof createLogger>;

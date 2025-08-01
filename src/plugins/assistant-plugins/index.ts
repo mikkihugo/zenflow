@@ -1,807 +1,393 @@
+/**
+ * Assistant Plugins Plugin
+ * AI-powered plugin development assistant
+ */
 
-/** Assistant Plugins Plugin;
-/** AI-powered plugin development assistant;
+import { BasePlugin } from '../base-plugin.js';
+import type { PluginManifest, PluginConfig, PluginContext } from '../types.js';
 
-import { EventEmitter  } from 'node:events';
-import { mkdir  } from 'node:fs';
+export class AssistantPluginsPlugin extends BasePlugin {
+  private knowledgeBase = new Map();
+  private generatedPlugins: any[] = [];
+  private analysisCache = new Map();
 
-export class AssistantPluginsPlugin extends EventEmitter {
-  constructor(_config = {}) {
-    super();
-    this.config = {pluginTemplatesDir = new Map();
-    this.knowledgeBase = new Map();
-    this.generatedPlugins = [];
-    this.analysisCache = new Map();
-  //   }
-  async initialize() { 
-    console.warn(' Assistant Plugins Plugin initialized');
-    // Create directories
-// await mkdir(this.config.pluginTemplatesDir,  recursive = {}) {\n    // Process data\n}',validate = 3) {'
-  for(let _i = 0; i < maxRetries; i++;
-    //     ) {
-    try {
-      // return // await fn();
-    //   // LINT: unreachable code removed} catch(error) {
-      if(i === maxRetries - 1) throw error;
-// // await new Promise((resolve) => setTimeout(resolve, 2 ** i * 1000));
-    //     }
-  //   }
-  `
-// }
-})
-this.knowledgeBase.set('configuration',;
-// {/g)
-      title = {}) ;
-  this.config = defaultOption = ['apiKey', 'endpoint'];
-  for(const key of required) {
-  if(!config[key]) {
-    throw new Error(\`Missing required config => {`
-  let plugin; beforeEach(() => {
-    plugin = new MyPlugin({ testMode => {
-// // await plugin.cleanup(); 
-    }) {;
+  constructor(manifest: PluginManifest, config: PluginConfig, context: PluginContext) {
+    super(manifest, config, context);
+  }
 
-  test('should initialize successfully', async() => {
-// await plugin.initialize();
-    expect(plugin.isReady).toBe(true);
-  });
-});`;`
-  //   }
-// }
-// )
+  async onInitialize(): Promise<void> {
+    this.context.logger.info('Assistant Plugins Plugin initialized');
+    await this.loadKnowledgeBase();
+  }
 
-console.warn(` Loaded \$this.knowledgeBase.sizeknowledge base entries`);
-;
-  async initializeAIProvider();
-// {
-  // Initialize AI provider for code generation
-  // This would integrate with actual AI services
-  console.warn(` AI providerinitialized = 'custom',`;
-      features = [],;
-      dependencies = [],;
-      config = = options;
-;
-    console.warn(` Generatingplugin = this.pluginPatterns.get(pattern)  ?? this.createCustomPattern(features);`
-;
-  // Generate plugin structure
-// const _pluginStructure = awaitthis.generatePluginStructure(;
-    name,;
-    description,;
-    selectedPattern,;
-    config;);
-  );
+  async onStart(): Promise<void> {
+    this.context.logger.info('Assistant Plugins Plugin started');
+  }
 
-  // Generate code
+  async onStop(): Promise<void> {
+    this.context.logger.info('Assistant Plugins Plugin stopped');
+  }
 
-  // Generate tests
-  const __tests = this.config.codeGeneration.includeTests;
-    ? // await this.generateTests(pluginStructure);
+  async onDestroy(): Promise<void> {
+    await this.cleanup();
+  }
 
-  // Generate documentation
-  const __documentation = this.config.codeGeneration.includeDocumentation;
-    ? // await this.generateDocumentation(pluginStructure);
+  private async loadKnowledgeBase(): Promise<void> {
+    // Load plugin development knowledge base
+    this.knowledgeBase.set('patterns', {
+      'event-emitter': {
+        description: 'Event-driven plugin pattern',
+        template: 'class Plugin extends EventEmitter {}',
+        required: ['initialize', 'cleanup'],
+        optional: ['configure', 'validate']
+      },
+      'service': {
+        description: 'Service plugin pattern',
+        template: 'class Plugin implements Service {}',
+        required: ['start', 'stop'],
+        optional: ['healthCheck', 'getStatus']
+      }
+    });
 
-  // Generate examples
-  const __examples = this.config.codeGeneration.includeExamples;
-    ? // await this.generateExamples(pluginStructure);
+    this.knowledgeBase.set('bestPractices', [
+      'Always validate configuration',
+      'Implement proper error handling',
+      'Use async/await for I/O operations',
+      'Clean up resources in cleanup method',
+      'Emit events for important state changes'
+    ]);
 
-  // Create plugin package
-  const __pluginPackage = {
-      name,structure = this.toClassName(name);
-;
-  // return {
-      name,;
-    // className, // LINT: unreachable code removed
-      description,pattern = new Set(['EventEmitter from \'events\'']);
-;
-  // Add pattern-specific imports
-  if(pattern.template?.imports) {
-    pattern.template.imports.forEach((imp) => imports.add(imp));
-  //   }
+    this.context.logger.info(`Loaded ${this.knowledgeBase.size} knowledge base entries`);
+  }
 
-  // Add feature-based imports
-  if(config.features?.includes('file-operations')) { imports.add("{ readFile, writeFile, mkdir  } from 'fs
-    imports.add('path');
-  //   }
+  async generatePlugin(options: {
+    name: string;
+    description: string;
+    pattern?: string;
+    features?: string[];
+    dependencies?: string[];
+    config?: any;
+  }): Promise<any> {
+    const { name, description, pattern = 'event-emitter', features = [], dependencies = [], config = {} } = options;
 
-  if(config.features?.includes('http')) {
-    imports.add('fetch');
-  //   }
+    this.context.logger.info(`Generating plugin: ${name}`);
 
-  if(config.features?.includes('database')) { imports.add("{ Database  } from '.
-  //   }
+    // Generate plugin structure
+    const pluginStructure = await this.generatePluginStructure(name, description, pattern, config);
 
-  // return Array.from(imports);
-// }
+    // Generate code
+    const code = await this.generatePluginCode(pluginStructure, { dependencies, features });
 
-generateProperties(config);
-;
-// {
-    const _properties = ['config', 'initialized = false'];
-;
-    if(config.features?.includes('caching')) {
-      properties.push('cache = new Map()');
-    //     }
+    // Generate tests if requested
+    const tests = this.config.settings?.includeTests ? await this.generateTests(pluginStructure) : null;
 
-    if(config.features?.includes('queue')) {
-      properties.push('queue = []', 'processing = false');
-    //     }
+    // Generate documentation if requested
+    const documentation = this.config.settings?.includeDocumentation ? await this.generateDocumentation(pluginStructure) : null;
 
-    if(config.features?.includes('metrics')) {
-      properties.push('metrics = {operations = Object.entries(config.defaults  ?? {});'
-map(([key, value]) => `${key}: ${JSON.stringify(value)}`);
-join(',\n');
-;
-    return `constructor(config = {}) {`
-    super();
-    // this.config = { // LINT: unreachable code removed
-${configDefaults}\${configDefaults ? ',\n' }      ...config;
+    const pluginPackage = {
+      name,
+      structure: pluginStructure,
+      code,
+      tests,
+      documentation,
+      metadata: {
+        generatedAt: new Date(),
+        generator: 'AssistantPluginsPlugin',
+        version: '1.0.0'
+      }
     };
 
+    this.generatedPlugins.push(pluginPackage);
+    return pluginPackage;
+  }
+
+  private async generatePluginStructure(name: string, description: string, pattern: string, config: any): Promise<any> {
+    const className = this.toClassName(name);
+    const patterns = this.knowledgeBase.get('patterns');
+    const selectedPattern = patterns[pattern] || patterns['event-emitter'];
+
+    return {
+      name,
+      className,
+      description,
+      pattern: selectedPattern,
+      extends: 'BasePlugin',
+      imports: this.generateImports(selectedPattern, config),
+      properties: this.generateProperties(config),
+      constructor: this.generateConstructor(config),
+      methods: this.generateMethods(selectedPattern, config),
+      config
+    };
+  }
+
+  private generateImports(pattern: any, config: any): string[] {
+    const imports = new Set(['import { BasePlugin } from "../base-plugin.js"']);
+    imports.add('import type { PluginManifest, PluginConfig, PluginContext } from "../types.js"');
+
+    // Add pattern-specific imports
+    if (pattern.template?.includes('EventEmitter')) {
+      imports.add('import { EventEmitter } from "events"');
+    }
+
+    // Add feature-based imports
+    if (config.features?.includes('file-operations')) {
+      imports.add('import { readFile, writeFile, mkdir } from "fs/promises"');
+      imports.add('import path from "path"');
+    }
+
+    if (config.features?.includes('http')) {
+      imports.add('import fetch from "node-fetch"');
+    }
+
+    return Array.from(imports);
+  }
+
+  private generateProperties(config: any): string[] {
+    const properties = ['private initialized = false'];
+
+    if (config.features?.includes('caching')) {
+      properties.push('private cache = new Map()');
+    }
+
+    if (config.features?.includes('queue')) {
+      properties.push('private queue: any[] = []', 'private processing = false');
+    }
+
+    if (config.features?.includes('metrics')) {
+      properties.push('private metrics = { operations: 0, errors: 0 }');
+    }
+
+    return properties;
+  }
+
+  private generateConstructor(config: any): string {
+    const configDefaults = Object.entries(config.defaults || {})
+      .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
+      .join(',\n    ');
+
+    return `constructor(manifest: PluginManifest, config: PluginConfig, context: PluginContext) {
+    super(manifest, config, context);
+    ${configDefaults ? `// Default configuration:\n    // ${configDefaults}` : ''}
+  }`;
+  }
+
+  private generateMethods(pattern: any, config: any): any[] {
+    const methods = [];
+
+    // Required lifecycle methods
+    methods.push({
+      name: 'onInitialize',
+      async: true,
+      body: `async onInitialize(): Promise<void> {
+    this.initialized = true;
+    this.emit('initialized');
+    this.context.logger.info('${config.name || 'Plugin'} initialized');
+  }`
+    });
+
+    methods.push({
+      name: 'onStart',
+      async: true,
+      body: `async onStart(): Promise<void> {
+    this.context.logger.info('${config.name || 'Plugin'} started');
+  }`
+    });
+
+    methods.push({
+      name: 'onStop',
+      async: true,
+      body: `async onStop(): Promise<void> {
+    this.context.logger.info('${config.name || 'Plugin'} stopped');
+  }`
+    });
+
+    methods.push({
+      name: 'onDestroy',
+      async: true,
+      body: `async onDestroy(): Promise<void> {
     this.initialized = false;
-  }`;`
-  //   }
-  generateMethods(pattern, config) {
-    const _methods = [];
-;
-    // Required methods from pattern
-  if(pattern.structure?.required) {
-  for(const methodName of pattern.structure.required) {
-        methods.push(this.generateMethod(methodName, pattern, config)); //       }
-    //     }
+    this.emit('cleanup');
+    this.context.logger.info('${config.name || 'Plugin'} cleaned up');
+  }`
+    });
 
-    // Optional methods based on features
-  if(config.features) {
-  for(const feature of config.features) {
-        const _featureMethods = this.getFeatureMethods(feature); methods.push(...featureMethods) {;
-      //       }
-    //     }
-
-    // return methods;
-    //   // LINT: unreachable code removed}
-
-  generateMethod(methodName, pattern, config): unknown
-;
-      this.emit('initialized');
-      console.warn(' ${config.name  ?? 'Plugin'} initialized');catch(error) ;
-      this.emit('error', method = false;);
-      this.emit('cleanup');
-      console.warn(' ${config.name  ?? 'Plugin'} cleaned up');catch(error) ;
-      this.emit('error', method = ) {
-  if(!this.initialized) {
+    // Feature-based methods
+    if (config.features?.includes('processing')) {
+      methods.push({
+        name: 'processData',
+        async: true,
+        body: `async processData(data: any, options: any = {}): Promise<any> {
+    if (!this.initialized) {
       throw new Error('Plugin not initialized');
-    //     }
+    }
 
-    const __startTime = Date.now();
-;
+    const startTime = Date.now();
     try {
-      this.emit('process = // await this.processData(data, options);'
-
-      this.emit('process = [];'
-;
-    // Validation logic/g)
-  if(!data) {
-      errors.push('Data is required');
-    //     }
-  if(errors.length > 0) {
-      const _error = new Error('Validation failed');
-      error.validationErrors = errors;
+      this.emit('process-start', { data, options });
+      const result = await this.doProcessing(data, options);
+      this.emit('process-complete', { data, result, duration: Date.now() - startTime });
+      return result;
+    } catch (error) {
+      this.emit('process-error', { data, error, duration: Date.now() - startTime });
       throw error;
-    //     }
+    }
+  }`
+      });
+    }
 
-    // return true;
-    //   // LINT: unreachable code removed}`;`
-    };
+    return methods;
+  }
 
-    // return {
-      name,;
-    // async = {name = this.cache.get(key); // LINT: unreachable code removed
-      if(Date.now() - entry.timestamp < this.config.cacheTimeout) {
-        // return entry.value;
-    //   // LINT: unreachable code removed}
-      this.cache.delete(key);
-    //     }
-    // return null;
-    //   // LINT: unreachable code removed}`,name = === 0) ;`
-      return;
-    // ; // LINT: unreachable code removed
-    this.processing = true;
-  while(this.queue.length > 0) {
-      const _item = this.queue.shift();
-      try {
-// // await this.processItem(item);
-      } catch(/* _error */) {
-        this.emit('queue = false;';
-  }`;`
-        //         }
-      ];
-    };
+  private async generatePluginCode(structure: any, options: any): Promise<string> {
+    const { imports, className, constructor, methods, properties } = structure;
 
-    // return featureMethods[feature]  ?? [];
-    //   // LINT: unreachable code removed}
-
-  async generatePluginCode(structure, options) { 
-    const  imports, className, constructor, methods, properties } = structure;
-
-    // Generate main plugin file
-    const _mainCode = ` /**` */
- * ${structure.name} Plugin;
+    return `/**
+ * ${structure.name} Plugin
  * ${structure.description}
- * ;
-/** Generated by Assistant Plugins Plugin;
- *Pattern = > `import ${imp};`).join('\n')}
+ * 
+ * Generated by Assistant Plugins Plugin
+ */
 
-// export class ${className} extends ${structure.extends} {
+${imports.join('\n')}
+
+export class ${className} extends ${structure.extends} {
   ${properties.join(';\n  ')};
 
   ${constructor}
 
-\${methods.map(method => {)
-  if(typeof method === 'object') {
-    return `${method.async ? 'async ' }${method.name}\${method.body.includes(method.name) ? method.body.substring(method.body.indexOf('(')) }'}`;'
-    //   // LINT: unreachable code removed}
-  return `${method}`;
-}).join('\n\n')}
+  ${methods.map((method: any) => {
+    if (typeof method === 'object') {
+      return `${method.async ? 'async ' : ''}${method.body}`;
+    }
+    return method;
+  }).join('\n\n  ')}
 
   // Helper methods
-  async \${structure.extends === 'EventEmitter' ? 'emitAsync' }(event, data) {
-    // return new Promise((resolve) => {
-      this.emit(event, data);
-    // setImmediate(resolve); // LINT: unreachable code removed
-    });
-  //   }
-  getStatus() {
-    // return {
-      initialized = {name = {};
-    // ; // LINT: unreachable code removed
-    // Add dependencies based on features
-    if(structure.config.features?.includes('http')) {
-      deps['node-fetch'] = '^3.0.0';
-    //     }
+  private async doProcessing(data: any, options: any): Promise<any> {
+    // Implement your processing logic here
+    return data;
+  }
+}
 
-    if(structure.config.features?.includes('database')) {
-  if(options.database === 'postgres') {
-        deps['pg'] = '^8.0.0';
-      } else if(options.database === 'mysql') {
-        deps['mysql2'] = '^3.0.0';
-      } else if(options.database === 'sqlite') {
-        deps['sqlite3'] = '^5.0.0';
-      //       }
-    //     }
+export default ${className};`;
+  }
 
-    // Add explicit dependencies
-  if(options.dependencies) {
-  for(const dep of options.dependencies) {
-  if(typeof dep === 'string') {
-          deps[dep] = 'latest'; } else {
-          deps[dep.name] = dep.version  ?? 'latest'; //         }
-      //       }
-    //     }
+  private async generateTests(structure: any): Promise<string> {
+    const { className } = structure;
 
-    // return deps;
-    //   // LINT: unreachable code removed}
+    return `import { ${className} } from '../index.js';
 
-  async generateTests(structure) { 
-    const  className, methods } = structure;
+describe('${className}', () => {
+  let plugin: ${className};
 
-    // return `import { ${className} } from '../index.js';`
-    // describe('${className // LINT) => {'
-  let plugin;
-;
   beforeEach(() => {
     plugin = new ${className}({
-      testMode => {
-  if(plugin.initialized) {
-// // await plugin.cleanup();
-    //     }
+      name: '${structure.name}',
+      version: '1.0.0'
+    } as any, {} as any, {
+      logger: console
+    } as any);
   });
 
-  describe('initialization', () => {
-    test('should initialize successfully', async() => {
-// await plugin.initialize();
-      expect(plugin.initialized).toBe(true);
-    });
-
-    test('should emit initialized event', async() => {
-      const _handler = jest.fn();
-      plugin.on('initialized', handler);
-// await plugin.initialize();
-      expect(handler).toHaveBeenCalled();
-    });
-
-    test('should not initialize twice', async() => {
-// await plugin.initialize();
-      await plugin.initialize(); // Should not throw
-
-      expect(plugin.initialized).toBe(true);
-    });
+  afterEach(async () => {
+    if (plugin.initialized) {
+      await plugin.destroy();
+    }
   });
 
-  describe('cleanup', () => {
-    test('should cleanup successfully', async() => {
-// await plugin.initialize();
-// await plugin.cleanup();
-      expect(plugin.initialized).toBe(false);
-    });
-
-    test('should emit cleanup event', async() => {
-// await plugin.initialize();
-      const _handler = jest.fn();
-      plugin.on('cleanup', handler);
-// // await plugin.cleanup();
-      expect(handler).toHaveBeenCalled();
-    });
+  test('should initialize successfully', async () => {
+    await plugin.initialize();
+    expect(plugin.initialized).toBe(true);
   });
 
-${methods.filter(m => m.name !== 'initialize' && m.name !== 'cleanup').map(method => `  describe('${method.name}', () => {`
-    test('should require initialization', async() => {
-// await expect(plugin.${method.name}()).rejects.toThrow('not initialized');
-    });
-
-    test('should ${method.name} successfully', async() => {
-// await plugin.initialize();
-      // Add specific test logic for ${method.name}
-    });
+  test('should cleanup successfully', async () => {
+    await plugin.initialize();
+    await plugin.destroy();
+    expect(plugin.initialized).toBe(false);
   });
-`).join('\n')}`
+});`;
+  }
 
-  describe('error handling', () => {
-    test('should emit error events', async() => {
-      const _handler = jest.fn();
-      plugin.on('error', handler);
-;
-      // Trigger an error scenario
-      // expect(handler).toHaveBeenCalledWith(expect.objectContaining({ error => {/g))
-    test('should return current status', async() => {
-      const _status = plugin.getStatus();
-    // ; // LINT: unreachable code removed
-      expect(status).toHaveProperty('initialized', false);
-      });
-  });
-});`;`
-  //   }
+  private async generateDocumentation(structure: any): Promise<string> {
+    const { name, className, description, methods } = structure;
 
-  async generateDocumentation(structure) { 
-    const  name, className, description, methods, events, config } = structure;
+    return `# ${name} Plugin
 
-    // return `# ${name} Plugin`
-
-    // \${description // LINT}
+${description}
 
 ## Installation
 
-\`\`\`bash;`
-npm install @claude-zen;
+\`\`\`bash
+npm install @claude-code-flow/plugin-${this.toKebabCase(name)}
 \`\`\`
 
 ## Usage
 
-\`\`\`javascript;`
-// import { ${className} } from '@claude-zen/plugin-${this.toKebabCase(name)}';
+\`\`\`typescript
+import { ${className} } from '@claude-code-flow/plugin-${this.toKebabCase(name)}';
 
-const _plugin = new ${className}({ // Configuration options
-  });
+const plugin = new ${className}(manifest, config, context);
 
 // Initialize the plugin
-// // await plugin.initialize();
+await plugin.initialize();
+
 // Use the plugin
-${this.generateUsageExample(structure)}
+// ... your code here
 
 // Clean up when done
-// // await plugin.cleanup();
+await plugin.destroy();
 \`\`\`
-
-## Configuration
-
-${this.generateConfigurationDocs(config)}
 
 ## API Reference
 
 ### Methods
 
-${methods.map(method => {)
-  const _methodName = typeof method === 'object' ? method.name = > `#### \`${event}\`${this.getEventDescription(event)}`
+${methods.map((method: any) => {
+  const methodName = typeof method === 'object' ? method.name : method;
+  return `#### \`${methodName}()\`
 
-\`\`\`javascript;`
-plugin.on('${event}', (data) => {
-  console.warn('${event});'
-});
-\`\`\``).join('\n\n')}
-
-## Examples
-
-### Basic Usage
-
-\`\`\`javascript;`
-${this.generateBasicExample(structure)}
-\`\`\`
-
-### Advanced Usage
-
-\`\`\`javascript;`
-${this.generateAdvancedExample(structure)}
-\`\`\`
-
-## Best Practices
-
-${this.generateBestPractices(structure)}
-
-## Troubleshooting
-
-${this.generateTroubleshooting(structure)}
+Description of ${methodName} method.`;
+}).join('\n\n')}
 
 ## License
 
-MIT`;`;
-  //   }
+MIT`;
+  }
 
-  async generateExamples(structure) { 
-    // return `import  ${structure.className} } from '../index.js';`
-    // async function basicExample() { // LINT: unreachable code removed
-  const _plugin = new ${structure.className}({ // Basic configuration
-    });
+  async analyzePlugin(pluginPath: string): Promise<any> {
+    // Analyze existing plugin for patterns and suggestions
+    this.context.logger.info(`Analyzing plugin: ${pluginPath}`);
+    
+    // This would implement actual plugin analysis
+    return {
+      pluginPath,
+      structure: {},
+      suggestions: [],
+      timestamp: Date.now()
+    };
+  }
 
-  try {
-// // await plugin.initialize();
-    console.warn('Plugin initialized');
-;
-    // Use the plugin
-    ${this.generateExampleUsage(structure)}
+  private toClassName(name: string): string {
+    return name
+      .split(/[-_\s]+/)
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join('') + 'Plugin';
+  }
 
-  } catch(error)
-    console.error('Error = new ${structure.className}({'
-    // Advanced configuration/g))
-    ${structure.config.features?.includes('caching') ? 'cacheTimeout => {'
-    console.error('Pluginerror = > `plugin.on('${event}', (data) => {'`
-    console.warn('${event}););`).join('\n  ')}'`
+  private toKebabCase(name: string): string {
+    return name
+      .replace(/([a-z])([A-Z])/g, '$1-$2')
+      .replace(/[\s_]+/g, '-')
+      .toLowerCase();
+  }
 
-  try {
-// // await plugin.initialize();
-    // Advanced usage
-    ${this.generateAdvancedUsage(structure)}
-
-    // Get status
-    const _status = plugin.getStatus();
-    console.warn('Pluginstatus = === \`file = {}) {'`
-    console.warn(` Analyzingplugin = // await readFile(pluginPath, 'utf8');`
-
-      // Analyze structure
-// const _structure = awaitthis.analyzeStructure(code);
-
-      // Analyze patterns
-      const _patterns = this.config.analysis.detectPatterns ? ;
-// // await this.analyzePatterns(code, structure) ;
-      // Analyze performance
-      const _performance = this.config.analysis.performanceAnalysis ?;
-// // await this.analyzePerformance(code, structure) ;
-      // Check compatibility
-      const _compatibility = this.config.analysis.checkCompatibility ?;
-// // await this.checkCompatibility(code, structure) ;
-      // Generate suggestions
-      const _suggestions = this.config.analysis.suggestImprovements ?;
-// // await this.generateSuggestions(structure, patterns, performance) ;
-      const _analysis = {
-        pluginPath,;
-        structure,;
-        patterns,;
-        performance,
-        compatibility,;
-        suggestions,;
-        timestamp = {classes = code.matchAll(/class\s+(\w+)(?:\s+extends\s+(\w+))?\s*{/g);
-  for(const _match of classMatches) {
-      structure.classes.push({name = code.matchAll(/(?)?(\w+)\s*\([^)]*\)\s*{/g); 
-  for(const match of methodMatches) {
-      if(!['constructor', 'if', 'for', 'while', 'switch'].includes(match[1])) {
-        structure.methods.push(match[1]); //       }
-    //     }
-
-    // Extract event emissions
-    const _eventMatches = code.matchAll(/this\.emit\(['"`]([^'"]+) {['"`]/g);"'
-  for(const match of eventMatches) {
-      if(!structure.events.includes(match[1])) {
-        structure.events.push(match[1]); //       }
-    //     }
-
-    // Extract imports
-    const _importMatches = code.matchAll(/import\s+(?)\s+from\s+['"`]([^'"]+)['"`]/g); "'
-  for(const match of importMatches) {
-      structure.imports.push(match[1]);
-    //     }
-
-    // Extract configuration
-    const _configMatch = code.match(/this\.config\s*=\s*{([^}]+)}/s);
-  if(configMatch) {
-      structure.configuration = this.parseConfiguration(configMatch[1]);
-    //     }
-
-    // return structure;
-    //   // LINT: unreachable code removed}
-
-  async analyzePatterns(code, structure) { 
-    const _detectedPatterns = [];
-;
-    // Check against known patterns
-    for (const [_patternName, pattern] of this.pluginPatterns) 
-      const _score = this.calculatePatternMatch(structure, pattern); if(score > 0.7) {
-        detectedPatterns.push({ name = > ; pattern.structure.required.includes(m) {?? pattern.structure.optional?.includes(m);
-          );
-          });
-      //       }
-    //     }
-
-    // return detectedPatterns;
-    //   // LINT: unreachable code removed}
-  calculatePatternMatch(structure, pattern) {
-    const _requiredMethods = pattern.structure.required  ?? [];
-    const _optionalMethods = pattern.structure.optional  ?? [];
-;
-    const _matchCount = 0;
-    const _totalWeight = 0;
-;
-    // Check required methods(higher weight)
-  for(const method of requiredMethods) {
-      totalWeight += 2; if(structure.methods.includes(method)) {
-        matchCount += 2; //       }
-    //     }
-
-    // Check optional methods(lower weight) {
-  for(const method of optionalMethods) {
-      totalWeight += 1; if(structure.methods.includes(method)) {
-        matchCount += 1; //       }
-    //     }
-
-    // return totalWeight > 0 ? matchCount /totalWeight = [];
-    // const _suggestions = []; // LINT: unreachable code removed
-
-    // Check for async/// await patterns
-  if(code.includes('.then(') {&& code.includes('async')) {
-      issues.push({type = (code.match(/\.on\(/g)  ?? []).length;
-    const _removeListenerCount = (code.match(/\.(off|removeListener)\(/g)  ?? []).length;
-  if(listenerCount > removeListenerCount + 2) {
-      issues.push({type = > code.includes(`async ${m}`)).length,eventEmissions = [
-// \bif\s*\(/g,
-// \belse\s+if\s*\(/g,
-// \belse\s*{/g,
-// \bfor\s*\(/g,
-// \bwhile\s*\(/g,
-// \bdo\s*{/g,
-// \bswitch\s*\(/g,
-// \bcase\s+/g,
-// \bcatch\s*\(/g,
-// \?\s*[^]+:/g // ternary
-    ];
-
-    const _complexity = 1; // Base complexity
-  for(const pattern of patterns) {
-      const _matches = code.match(pattern); if(matches) {
-        complexity += matches.length; //       }
-    //     }
-
-    // return complexity;
-    //   // LINT: unreachable code removed}
-
-  async checkCompatibility(code, structure) { 
-    const _compatibility = nodeVersion = '14.0.0';
-    //     }
-
-    if(code.includes('Promise.allSettled')) {
-      compatibility.nodeVersion = '12.9.0';
-    //     }
-
-    if(code.includes('globalThis')) {
-      compatibility.nodeVersion = '12.0.0';
-    //     }
-
-    // Extract dependencies from imports
-  for(const imp of structure.imports) {
-      if(!imp.startsWith('.') && !imp.startsWith('@claude-zen/')) {
-        compatibility.dependencies.push(imp); //       }
-    //     }
-
-    // return compatibility; 
-    //   // LINT: unreachable code removed}
-
-  async generateSuggestions(structure, patterns, performance) { 
-    const _suggestions = [];
-;
-    // Method suggestions
-    if(!structure.methods.includes('getStatus')) 
-      suggestions.push({type = false;
-}`;`)
-      });
-    //     }
-
-    // Event suggestions
-  if(structure.events.length === 0) {
-      suggestions.push({type = === 0) {
-      suggestions.push({type = > ({type = path.join(;
-      this.config.pluginAnalysisDir,)));
-      `\$path.basename(analysis.pluginPath, '.js')-analysis.json`;
-    );
-// // await writeFile(reportPath, JSON.stringify(analysis, null, 2));
-    // Generate readable report
-    const _readableReport = this.generateReadableReport(analysis);
-    const _readablePath = path.join(;
-      this.config.pluginAnalysisDir,);
-      `\$path.basename(analysis.pluginPath, '.js')-report.md`;
-    );
-// // await writeFile(readablePath, readableReport);
-  //   }
-  generateReadableReport(analysis) {
-    const { structure, patterns, performance, compatibility, suggestions } = analysis;
-
-    // return `# Plugin Analysis Report`
-
-    // **Plugin = > c.name).join(', ')  ?? 'None' // LINT: unreachable code removed}
-- **Methods = > `- ${m}()`).join('\n')}
-
-### Events;
-\$structure.events.map(e => `- ${e}`).join('\n')  ?? 'No events emitted'
-
-## Pattern Analysis
-
-\$patterns?.length > 0 ? patterns.map(p => `### ${p.pattern}`)
-- **Score = > `- **${i.type}** ($, { i.severity }): $i.message`).join('\n')  ?? 'No issues found'}
-
-### Metrics;
-- **AsyncMethods = > `- \$i.message`).join('\n')}` : ''`
-
-## Suggestions
-
-\$suggestions?.map(s => `### ${s.suggestion} (${s.priority} priority);`
-${s.code ? `\`\`\`javascript\n${s.code}\n\`\`\`` : ''}
-\${s.examples ? `Examples = // await this.analyzePlugin(pluginPath);`
-    return analysis.suggestions;
-    //   // LINT}
-
-  async refactorPlugin(pluginPath, improvements = []) { 
-    console.warn(` Refactoringplugin = await readFile(pluginPath, 'utf8');`
-;
-    // Apply improvements
-    let _refactoredCode = originalCode;
-;
-    for (const improvement of improvements) 
-      refactoredCode = // await this.applyImprovement(refactoredCode, improvement); 
-    //     }
-
-    // Format code
-    refactoredCode = this.formatCode(refactoredCode); // Create backup
-    const _backupPath = `${pluginPath}.backup`;
-// // await writeFile(backupPath, originalCode) {;
-    // Write refactored code
-// // await writeFile(pluginPath, refactoredCode);
-    console.warn(` Plugin refactored. Backup saved at ${backupPath}`);
-
-    // return {original = > word.charAt(0).toUpperCase() + word.slice(1));
-    // .join('') + 'Plugin'; // LINT: unreachable code removed
-  //   }
-  toKebabCase(name) {
-    // return name;
-    // .replace(/([a-z])([A-Z])/g, '$1-$2'); // LINT: unreachable code removed
-replace(/[\s_]+/g, '-');
-toLowerCase();
-  //   }
-  createCustomPattern(features) {
-    // return {
-      name = {};
-    // const _lines = configStr.split('\n'); // LINT: unreachable code removed
-  for(const line of lines) {
-      const _match = line.match(/^\s*(\w+):\s*(.+?),?\s*$/); ;
-  if(match) {
-        const [ key, value] = match; try {
-          config[key] = JSON.parse(value) {;
-        } catch(/* e */) {
-          config[key] = value.replace(/['"]/g, '');"';
-        //         }
-      //       }
-    //     }
-
-    // return config;
-    //   // LINT: unreachable code removed}
-  generateUsageExample(structure) {
-    const _mainMethod = structure.methods.find(m => ;
-      ['process', 'execute', 'run', 'transform'].includes(;
-        typeof m = === 'object' ? m.name ;));
-      );
-    );
-  if(mainMethod) {
-      const _methodName = typeof mainMethod === 'object' ? mainMethod.name = // await plugin.${methodName}(data);`;`
-
-    // return '// Use plugin methods';
-    //   // LINT: unreachable code removed}
-
-  generateExampleUsage(structure): unknown;
-    // return this.generateUsageExample(structure);
-    //   // LINT: unreachable code removed}
-  generateAdvancedUsage(structure) {
-    const _examples = [];
-;
-    if(structure.config.features?.includes('queue')) {
-      examples.push(`// Queue multiple items`/g)
-  for(const item of items) {
-// // await plugin.enqueue(item); 
-}`); `
-    //     }
-  if(structure.config.features?.includes('caching') {) {
-      examples.push(`// Use caching`/g)
-const _cached = plugin.getCached('key');
-  if(!cached) {
-// const _result = awaitplugin.process(data);
-  plugin.setCached('key', result);
-}`);`
-    //     }
-
-    // return examples.join('\n    \n    ');
-    //   // LINT: unreachable code removed}
-
-  generateConfigurationDocs(config): unknown;
-  if(!config.defaults) {
-      // return 'No configuration options available.';
-    //   // LINT: unreachable code removed}
-
-    // return Object.entries(config.defaults);
-    // .map(([key, value]) => `- \`\${key // LINT}\` - ${typeof value} (default = {initialize = {`
-      'initialized': 'Emitted when plugin is successfully initialized.',
-      'error': 'Emitted when an error occurs.',
-      'cleanup': 'Emitted when cleanup is complete.',
-      'data = ['
-      '1. Always initialize the plugin before use',
-      '2. Handle errors gracefully and emit error events',
-      '3. Clean up resources when done',
-      '4. Use event emissions for better integration';
-    ];
-
-    if(structure.config.features?.includes('caching')) {
-      practices.push('5. Configure appropriate cache timeouts');
-    //     }
-
-    if(structure.config.features?.includes('queue')) {
-      practices.push('5. Monitor queue size to prevent memory issues');
-    //     }
-
-    // return practices.join('\n');
-    //   // LINT: unreachable code removed}
-
-  generateTroubleshooting(structure): unknown;
-    // return `### Common Issues`
-
-    // 1. **Plugin not initialized error**; // LINT: unreachable code removed
-   - Ensure you call \`// await plugin.initialize()\` before using other methods
-
-2. **Resource cleanup issues**;
-   - Always call \`// await plugin.cleanup()\` when done;
-   - Use try/finally blocks to ensure cleanup
-
-3. **Memory leaks**;
-   - Remove event listeners when no longer needed;
-   - Clear caches periodically if using caching feature
-
-4. **Performance issues**;
-   - Check configuration values;
-   - Monitor resource usage with \`getStatus()\``;`
-
-  async saveGeneratedPlugin(pluginPackage) { 
-    const _pluginDir = path.join(;
-      this.config.pluginTemplatesDir,;
-      'generated',
-      pluginPackage.name;);
-    );
-// // await mkdir(pluginDir, recursive = path.join(pluginDir, filePath);
-// // await mkdir(path.dirname(fullPath), {recursive = path.join(pluginDir, '.plugin-metadata.json');
-// // await writeFile(metadataPath, JSON.stringify(pluginPackage.metadata, null, 2));
-    console.warn(` Plugin saved to ${pluginDir}`);
-  //   }
-
-  async getStats() { }
-    // return patterns = [];
-    // this.analysisCache.clear(); // LINT: unreachable code removed
+  async cleanup(): Promise<void> {
+    this.knowledgeBase.clear();
+    this.generatedPlugins.length = 0;
+    this.analysisCache.clear();
     this.removeAllListeners();
-;
-    console.warn(' Assistant Plugins Plugin cleaned up');
-// }
+    this.context.logger.info('Assistant Plugins Plugin cleaned up');
+  }
+}
 
-// export default AssistantPluginsPlugin;
-
-}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))))))))))))))
-
-*/*/*/
+export default AssistantPluginsPlugin;

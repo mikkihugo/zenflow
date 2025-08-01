@@ -1,469 +1,748 @@
 
-/** Memory Backend Plugin Interface - TypeScript Edition;
-/** Pluggable storage backends for the main system with comprehensive type safety;
+/**
+ * Memory Backend Plugin Interface - TypeScript Edition
+ * Pluggable storage backends for the main system with comprehensive type safety
+ */
 
-import LanceDBInterface from '../../database/lancedb-interface';
-import { JSONValue  } from '../../types/core';
-// // interface MemoryBackendConfig {backend = null
-// private;
-// initialized = false
-// constructor((config = {}))
-// {
-  this.config = {backend = new LanceDBBackend(this.config);
-  break;
-  case 'kuzu': null;
-  case 'graph': null;
-  this.storage = new KuzuBackend(this.config);
-  break;
-  case 'chroma': null;
-  this.storage = new LanceDBBackend(this.config) // Fallback ChromaDB to LanceDB
-  break;
-  case 'sqlite': null;
-  this.storage = new SQLiteBackend(this.config);
-  break;
-  case 'json': null;
-  this.storage = new JsonBackend(this.config);
-  break;
-  case 'postgresql': null;
-  this.storage = new PostgreSQLBackend(this.config);
-  break;
-  case 'unified': null
-  case 'hybrid': null;
-  // Unified/hybrid backend uses LanceDB as primary with fallback capabilities
-  console.warn(' Using LanceDB as unified backend(hybrid memory simulation)')
-  this.storage = new LanceDBBackend(this.config);
-  break;
-  default = // await this.storage.initialize() {}
-  // Handle fallback returns
-  if(result && result !== this.storage) {
-    this.storage = result;
-    //   // LINT: unreachable code removed}
+import { BasePlugin } from '../base-plugin.js';
+import LanceDBInterface from '../../database/lancedb-interface.js';
+import type { 
+  Plugin, 
+  PluginContext, 
+  PluginManifest, 
+  PluginConfig,
+  HealthCheckResult
+} from '../base-plugin.js';
+
+// Types for memory backend
+export type JSONValue = string | number | boolean | null | JSONValue[] | { [key: string]: JSONValue };
+
+interface StorageResult {
+  id: string;
+  timestamp: number;
+  status: 'success' | 'error';
+  error?: string;
+}
+
+interface BackendStats {
+  entries: number;
+  size: number;
+  lastModified: number;
+  namespaces?: number;
+}
+
+interface BackendConfig {
+  type: 'lancedb' | 'sqlite' | 'json' | 'kuzu';
+  path: string;
+  [key: string]: any;
+}
+
+interface BackendInterface {
+  initialize(): Promise<void>;
+  store(key: string, value: JSONValue, namespace?: string): Promise<StorageResult>;
+  retrieve(key: string, namespace?: string): Promise<JSONValue | null>;
+  search(pattern: string, namespace?: string): Promise<Record<string, JSONValue>>;
+  delete(key: string, namespace?: string): Promise<boolean>;
+  listNamespaces(): Promise<string[]>;
+  getStats(): Promise<BackendStats>;
+}
+
+// Base backend class
+abstract class BaseBackend implements BackendInterface {
+  protected config: BackendConfig;
+  
+  constructor(config: BackendConfig) {
+    this.config = config;
+  }
+  
+  abstract initialize(): Promise<void>;
+  abstract store(key: string, value: JSONValue, namespace?: string): Promise<StorageResult>;
+  abstract retrieve(key: string, namespace?: string): Promise<JSONValue | null>;
+  abstract search(pattern: string, namespace?: string): Promise<Record<string, JSONValue>>;
+  abstract delete(key: string, namespace?: string): Promise<boolean>;
+  abstract listNamespaces(): Promise<string[]>;
+  abstract getStats(): Promise<BackendStats>;
+}
+
+// Main Memory Backend Plugin
+export class MemoryBackendPlugin extends BasePlugin {
+  private storage?: BackendInterface;
+  private config: BackendConfig;
+  private initialized = false;
+  
+  constructor(config: PluginConfig) {
+    super({
+      name: 'memory-backend',
+      version: '1.0.0',
+      ...config
+    });
+    
+    this.config = {
+      type: config.type || 'lancedb',
+      path: config.path || './data',
+      ...config
+    };
+  }
+  
+  async onInitialize(): Promise<void> {
+    // Create appropriate backend based on config
+    switch (this.config.type) {
+      case 'lancedb':
+        this.storage = new LanceDBBackend(this.config);
+        break;
+      case 'sqlite':
+        this.storage = new SQLiteBackend(this.config);
+        break;
+      case 'json':
+        this.storage = new JSONBackend(this.config);
+        break;
+      case 'kuzu':
+        this.storage = new KuzuBackend(this.config);
+        break;
+      default:
+        throw new Error(`Unknown backend type: ${this.config.type}`);
+    }
+    
+    await this.storage.initialize();
     this.initialized = true;
-  //   }
-  async;
-  store(key, (value = 'default'));
-  : Promise<StorageResult>
-// await this.ensureInitialized() {}
-  // return this.storage?.store(key, value, namespace);
-  async;
-  retrieve((key = 'default'));
-  : Promise<JSONValue | null>
-// await this.ensureInitialized() {}
-  // return this.storage?.retrieve(key, namespace);
-  async;
-  search((pattern = 'default'));
-  : Promise<Record<string, JSONValue>>
-// await this.ensureInitialized() {}
-  // return this.storage?.search(pattern, namespace);
-  // MEGASWARM = {}): Promise<VectorSearchResult[]> {
-// // await this.ensureInitialized();
-  // Delegate to search method with appropriate parameters
-  if(this.storage?.vectorSearch) {
-    // return this.storage?.vectorSearch(embedding, options);
-  //   }
-  // Fallback to regular search
-// const _results = awaitthis.storage?.search(embedding.toString(), options.namespace ?? 'default');
-  // return Object.entries(results).map(([_key, _value], _index) => ({ id = {  }): Promise<any> {
-// // await this.ensureInitialized();
-  // // Delegate to graph query if available // LINT: unreachable code removed
-  if(this.storage?.graphQuery) {
-    return this.storage?.graphQuery(query, options);
-  //   }
-  // Fallback to regular search
-  // return this.storage?.search(query, options.namespace  ?? 'default');
-// }
-async;
-delete(key = 'default');
-: Promise<boolean>
-// {
-// // await this.ensureInitialized();
-  // return this.storage?.delete(key, namespace);
-// }
-async;
-listNamespaces();
-: Promise<string[]>
-// {
-// // await this.ensureInitialized();
-  // return this.storage?.listNamespaces();
-// }
-async;
-getStats();
-: Promise<BackendStats &
-// {
-  backend = // await this.storage?.getStats();
-  // return {backend = false;
-// }
-private;
-async;
-ensureInitialized();
-: Promise<void>
-// {
-  if(!this.initialized) {
-// // await this.initialize();
-  //   }
-// }
-// }
+  }
+  
+  async onDestroy(): Promise<void> {
+    this.initialized = false;
+    this.storage = undefined;
+  }
+  
+  async store(key: string, value: JSONValue, namespace: string = 'default'): Promise<StorageResult> {
+    await this.ensureInitialized();
+    return this.storage!.store(key, value, namespace);
+  }
+  
+  async retrieve(key: string, namespace: string = 'default'): Promise<JSONValue | null> {
+    await this.ensureInitialized();
+    return this.storage!.retrieve(key, namespace);
+  }
+  
+  async search(pattern: string, namespace: string = 'default'): Promise<Record<string, JSONValue>> {
+    await this.ensureInitialized();
+    return this.storage!.search(pattern, namespace);
+  }
+  
+  async delete(key: string, namespace: string = 'default'): Promise<boolean> {
+    await this.ensureInitialized();
+    return this.storage!.delete(key, namespace);
+  }
+  
+  async listNamespaces(): Promise<string[]> {
+    await this.ensureInitialized();
+    return this.storage!.listNamespaces();
+  }
+  
+  async getStats(): Promise<BackendStats> {
+    await this.ensureInitialized();
+    return this.storage!.getStats();
+  }
+  
+  private async ensureInitialized(): Promise<void> {
+    if (!this.initialized) {
+      await this.onInitialize();
+    }
+  }
+}
 
-/** LanceDB Backend(Default - Local Vector Database);
+/** LanceDB Backend (Default - Local Vector Database) */
+class LanceDBBackend extends BaseBackend {
+  private lanceInterface: LanceDBInterface;
+  
+  constructor(config: BackendConfig) {
+    super(config);
+    this.lanceInterface = new LanceDBInterface({
+      dbPath: `${config.path}/lancedb`
+    });
+  }
+  
+  async initialize(): Promise<void> {
+    await this.lanceInterface.initialize();
+  }
+  
+  async store(key: string, value: JSONValue, namespace: string = 'default'): Promise<StorageResult> {
+    const fullKey = `${namespace}:${key}`;
+    const timestamp = Date.now();
+    
+    // Serialize value for storage
+    const serializedValue = JSON.stringify(value);
+    
+    // For LanceDB, we need to store documents as text content for embeddings
+    const documentText = (typeof value === 'object' && value && 'content' in value) 
+      ? (value as any).content 
+      : serializedValue;
 
-class LanceDBBackend implements BackendInterface {
-  // private config = config;
-  this;
-;
-  lanceConfig = config.lanceConfig ?? config.chromaConfig; // Support both config names
-
-  this;
-;
-  lanceInterface = new LanceDBInterface({dbPath = new SQLiteBackend(this.config);
-  await;
-  sqliteBackend;
-;
-  initialize();
-  return;
-  // sqliteBackend; // LINT: unreachable code removed
-  as;
-  any;
-// }
-// }
-// async
-store((key = 'default'));
-: Promise<StorageResult>
-// {
-  let _fullKey = `${namespace}:${key}`;
-  const __timestamp = Date.now();
-;
-  // Serialize value for storage
-  const __serializedValue = JSON.stringify(value);
-
-  // For LanceDB, we need to store documents as text content for embeddings
-  const __documentText = (typeof value === 'object' && value && 'content' in value) ;
-      ? (value as any).content = === 'string' ? value;
-  //   )
-
-  const __document = {id = === 'object' && value && 'title' in value) ? (value as any).title ,source = 'default'): Promise<JSONValue | null> {
-    const _fullKey = `${namespace}:${key}`;
-
-  try {
+    const document = {
+      id: fullKey,
+      content: documentText,
+      source: namespace,
+      title: (typeof value === 'object' && value && 'title' in value) ? (value as any).title : key,
+      metadata: JSON.stringify({
+        key,
+        namespace,
+        timestamp,
+        serialized_data: serializedValue
+      })
+    };
+    
+    await this.lanceInterface.addDocuments([document]);
+    
+    return {
+      id: fullKey,
+      timestamp,
+      status: 'success'
+    };
+  }
+  
+  async retrieve(key: string, namespace: string = 'default'): Promise<JSONValue | null> {
+    const fullKey = `${namespace}:${key}`;
+    
+    try {
       // Use semantic search to find the document
-// const __searchResult = awaitthis.lanceInterface.semanticSearch(fullKey, {table = === 0) {
-        // return null;
-    //   // LINT: unreachable code removed}
-
-  const _result = searchResult.results[0];
-  const _metadata = JSON.parse(result.metadata  ?? '{}');
-  if(metadata.serialized_data) {
-    // return JSON.parse(metadata.serialized_data);
-    //   // LINT: unreachable code removed}
-
-  // return null;
-// }
-catch(error = 'default'): Promise<Record<string, JSONValue>>;
-// {
-    const _results = {};
-
+      const searchResult = await this.lanceInterface.semanticSearch(fullKey, {
+        table: 'documents',
+        limit: 1
+      });
+      
+      if (!searchResult.results || searchResult.results.length === 0) {
+        return null;
+      }
+      
+      const result = searchResult.results[0];
+      const metadata = JSON.parse(result.metadata || '{}');
+      
+      if (metadata.serialized_data) {
+        return JSON.parse(metadata.serialized_data);
+      }
+      
+      return null;
+    } catch (error) {
+      return null;
+    }
+  }
+  
+  async search(pattern: string, namespace: string = 'default'): Promise<Record<string, JSONValue>> {
+    const results: Record<string, JSONValue> = {};
+    
     try {
       // Use semantic search with pattern
-// const __searchResult = awaitthis.lanceInterface.semanticSearch(pattern, {table = JSON.parse(result.metadata  ?? '{}');
-  if(metadata.namespace === namespace && metadata.serialized_data) {
-            const _key = metadata.key;
-            if(pattern === '*'  ?? key.includes(pattern.replace('*', ''))) {
+      const searchResult = await this.lanceInterface.semanticSearch(pattern, {
+        table: 'documents',
+        limit: 100
+      });
+      
+      for (const result of searchResult.results || []) {
+        try {
+          const metadata = JSON.parse(result.metadata || '{}');
+          if (metadata.namespace === namespace && metadata.serialized_data) {
+            const key = metadata.key;
+            if (pattern === '*' || key.includes(pattern.replace('*', ''))) {
               results[key] = JSON.parse(metadata.serialized_data);
-            //             }
-          //           }
-        } catch(_error = ): Promise<VectorSearchResult[]> {
-    const { namespace = 'default', limit = 10, threshold = 0.7 } = options;
-
-    try {
-      // return // await this.lanceInterface.similaritySearch({/g)
-        vector,k = 'default', limit = 10): Promise<any[]> {
-    try {
-// const _searchResult = awaitthis.lanceInterface.semanticSearch(query, {table = = 'default' ? `metadata LIKE '%"namespace");'`
-          // return {key = 'default'): Promise<boolean> {
-    // LanceDB doesn't have direct delete operations in this interface'
+            }
+          }
+        } catch (error) {
+          // Skip invalid entries
+        }
+      }
+    } catch (error) {
+      // Return empty results on error
+    }
+    
+    return results;
+  }
+  
+  async delete(key: string, namespace: string = 'default'): Promise<boolean> {
+    // LanceDB doesn't have direct delete operations in this interface
     // This would need to be implemented at the LanceDB level
     console.warn('Delete operation not implemented for LanceDB backend');
-    // return false; // LINT: unreachable code removed
-  //   }
-
-  async listNamespaces(): Promise<string[]> ;
+    return false;
+  }
+  
+  async listNamespaces(): Promise<string[]> {
     // Extract namespaces from stored metadata
     try {
-// const _searchResult = awaitthis.lanceInterface.semanticSearch('*', {table = new Set<string>();
-  for(const result of searchResult.results) {
+      const searchResult = await this.lanceInterface.semanticSearch('*', {
+        table: 'documents',
+        limit: 1000
+      });
+      
+      const namespaces = new Set<string>();
+      for (const result of searchResult.results || []) {
         try {
-          const _metadata = JSON.parse(result.metadata  ?? '{}'); if(metadata.namespace) {
-            namespaces.add(metadata.namespace); //           }
-        } catch(_error = // await this.lanceInterface.getStats() {;
-      // return {entries = null;
-    // // private conn = null; // LINT: unreachable code removed
-  // private kuzuConfig = config;
-    this.kuzuConfig = config.kuzuConfig ?? config.chromaConfig; // Support fallback config names
-  //   }
+          const metadata = JSON.parse(result.metadata || '{}');
+          if (metadata.namespace) {
+            namespaces.add(metadata.namespace);
+          }
+        } catch (error) {
+          // Skip invalid entries
+        }
+      }
+      
+      return Array.from(namespaces);
+    } catch (error) {
+      return [];
+    }
+  }
+  
+  async getStats(): Promise<BackendStats> {
+    const stats = await this.lanceInterface.getStats();
+    return {
+      entries: stats.totalDocuments || 0,
+      size: stats.indexSize || 0,
+      lastModified: Date.now()
+    };
+  }
+}
 
-  async initialize(): Promise<BackendInterface | void> ;
+/** Kuzu Graph Database Backend */
+class KuzuBackend extends BaseBackend {
+  private db?: any;
+  private conn?: any;
+  
+  constructor(config: BackendConfig) {
+    super(config);
+  }
+  
+  async initialize(): Promise<void> {
     try {
       // Dynamic import for Kuzu
-// const _kuzu = awaitimport('kuzu');
-
+      const kuzu = await import('kuzu');
+      
       // Ensure persist directory exists
-// const _fs = awaitimport('node);'
-// // await fs.mkdir(this.kuzuConfig.persistDirectory, {recursive = this.kuzuConfig.persistDirectory;/g)
+      const fs = await import('node:fs/promises');
+      const path = await import('node:path');
+      const dbPath = path.join(this.config.path, 'kuzu');
+      await fs.mkdir(dbPath, { recursive: true });
+      
       this.db = new kuzu.Database(dbPath);
       this.conn = new kuzu.Connection(this.db);
-;
+      
       // Create node and relationship tables for strategic documents
-// // await this.initializeSchema();
-      console.warn(` Kuzu graph database readyat = new SQLiteBackend(this.config);`;
-// // await sqliteBackend.initialize();
-      // return sqliteBackend;
-    //   // LINT: unreachable code removed}
-  //   }
-
-  // private async initializeSchema(): Promise<void> {
+      await this.initializeSchema();
+      
+      console.log('Kuzu graph database ready');
+    } catch (error) {
+      // If Kuzu not available, throw error
+      throw new Error('Kuzu database initialization failed');
+    }
+  }
+  
+  private async initializeSchema(): Promise<void> {
     try {
       // Create node tables for strategic documents
-// await this.conn.query(`;`
-        CREATE NODE TABLE IF NOT EXISTS Document(;
-          id STRING,;
-          namespace STRING,;
-          key STRING,;
-          title STRING,;
-          content STRING,;
-          doc_type STRING,;
-          metadata STRING,;
-          timestamp INT64,));
-          PRIMARY KEY(id);
-        );
-      `);`
+      await this.conn.query(`
+        CREATE NODE TABLE IF NOT EXISTS Document(
+          id STRING,
+          namespace STRING,
+          key STRING,
+          title STRING,
+          content STRING,
+          doc_type STRING,
+          metadata STRING,
+          timestamp INT64,
+          PRIMARY KEY(id)
+        )
+      `);
 
       // Create relationship table for document connections
-// // await this.conn.query(`;`
-        CREATE REL TABLE IF NOT EXISTS References(FROM Document TO Document,;
-          relationship_type STRING,;
-          strength DOUBLE,;
-          created_at INT64;));
-        );
-      `);`
+      await this.conn.query(`
+        CREATE REL TABLE IF NOT EXISTS References(FROM Document TO Document,
+          relationship_type STRING,
+          strength DOUBLE,
+          created_at INT64
+        )
+      `);
 
-      console.warn(' Kuzu schema initialized for strategic documents');
-    } catch(error = 'default'): Promise<StorageResult> {
-    const _fullKey = `\$namespace:\$key`;
-    const _timestamp = Date.now();
-;
+      console.log('Kuzu schema initialized for strategic documents');
+    } catch (error) {
+      console.error('Error initializing Kuzu schema:', error);
+    }
+  }
+  
+  async store(key: string, value: JSONValue, namespace: string = 'default'): Promise<StorageResult> {
+    const fullKey = `${namespace}:${key}`;
+    const timestamp = Date.now();
+    
     // Serialize value for storage
-    const __serializedValue = JSON.stringify(value);
-
+    const serializedValue = JSON.stringify(value);
+    
     // Extract text content for graph analysis
-    const __documentText = (typeof value === 'object' && value && 'content' in value) ;
-      ? (value as any).content = === 'string' ? value );
+    const documentText = (typeof value === 'object' && value && 'content' in value) 
+      ? (value as any).content 
+      : serializedValue;
 
-    const _title = (typeof value === 'object' && value && 'title' in value) ;
-      ? (value as any).title = (typeof value === 'object' && value && 'documentType' in value) ;
-      ? (value as any).documentType = $namespace,
-            d.key = $key,;
-            d.title = $title,;
-            d.content = $content,;
-            d.doc_type = $doc_type,;
-            d.metadata = $metadata,;
-            d.timestamp = $timestamp;
-      `, id = 'default'): Promise<JSONValue | null> {`
-    const _fullKey = `${namespace}:${key}`;
+    const title = (typeof value === 'object' && value && 'title' in value) 
+      ? (value as any).title 
+      : key;
+
+    const docType = (typeof value === 'object' && value && 'documentType' in value) 
+      ? (value as any).documentType 
+      : 'generic';
 
     try {
-// const __result = awaitthis.conn.query(`;`/g)
-        MATCH(d = 'default'): Promise<Record<string, JSONValue>> {
-    const _results = {};
+      await this.conn.query(`
+        MERGE (d:Document {id: $id})
+        SET d.namespace = $namespace,
+            d.key = $key,
+            d.title = $title,
+            d.content = $content,
+            d.doc_type = $doc_type,
+            d.metadata = $metadata,
+            d.timestamp = $timestamp
+      `, {
+        id: fullKey,
+        namespace,
+        key,
+        title,
+        content: documentText,
+        doc_type: docType,
+        metadata: serializedValue,
+        timestamp
+      });
 
+      return {
+        id: fullKey,
+        timestamp,
+        status: 'success'
+      };
+    } catch (error) {
+      return {
+        id: fullKey,
+        timestamp,
+        status: 'error',
+        error: error.message
+      };
+    }
+  }
+  
+  async retrieve(key: string, namespace: string = 'default'): Promise<JSONValue | null> {
+    const fullKey = `${namespace}:${key}`;
+    
     try {
-
-        const _metadata = row['d.metadata'];
+      const result = await this.conn.query(`
+        MATCH (d:Document)
+        WHERE d.id = $id
+        RETURN d.metadata
+      `, { id: fullKey });
+      
+      if (result && result.length > 0) {
+        return JSON.parse(result[0]['d.metadata']);
+      }
+      
+      return null;
+    } catch (error) {
+      return null;
+    }
+  }
+  
+  async search(pattern: string, namespace: string = 'default'): Promise<Record<string, JSONValue>> {
+    const results: Record<string, JSONValue> = {};
+    
+    try {
+      const queryResult = await this.conn.query(`
+        MATCH (d:Document)
+        WHERE d.namespace = $namespace
+        RETURN d.key, d.metadata
+      `, { namespace });
+      
+      for (const row of queryResult || []) {
+        const key = row['d.key'];
+        const metadata = row['d.metadata'];
         try {
-          results[key] = JSON.parse(metadata);
-        } catch(error = {}): Promise<any> {
+          if (pattern === '*' || key.includes(pattern.replace('*', ''))) {
+            results[key] = JSON.parse(metadata);
+          }
+        } catch (error) {
+          // Skip invalid entries
+        }
+      }
+    } catch (error) {
+      // Return empty results on error
+    }
+    
+    return results;
+  }
+  
+  async delete(key: string, namespace: string = 'default'): Promise<boolean> {
+    const fullKey = `${namespace}:${key}`;
+    
     try {
-      // return // await this.conn.query(query, options.params  ?? {});
-    //   // LINT: unreachable code removed} catch(error = 1.0;
-  ): Promise<boolean> {
-
-    try {
-// // await this.conn.query(`;`
-        MATCH(from = [],;
-    maxDepth = 2;));
-  ): Promise<any[]> {
-    const _fullKey = `${namespace}:${key}`;
-
-    try {
-      const __relationFilter = '';
-  if(relationshipTypes.length > 0) {
-        const _typeList = relationshipTypes.map(t => `'${t}'`).join(', ');
-        _relationFilter = `WHERE r.relationship_type IN [${typeList}]`;
-      //       }
-
-      let _result = // await this.conn.query(`;`/g)
-        MATCH(start = > ({key = 'default'): Promise<boolean> {
-    const _fullKey = `${namespace}:${key}`;
-
-    try {
-// // await this.conn.query(`;`
-        MATCH(d = // await this.conn.query(`;`/g)))
-        MATCH(d);
-        RETURN DISTINCT d.namespace;
-      `);`
-
-      // return result.map((row = > row['d.namespace']).sort();
-    //   // LINT: unreachable code removed} catch(error = // await this.conn.query(`;`/g)
-        MATCH(d) RETURN count(d) as count;
-      `);`
-
-      // return {entries = config;
-    // this.dbPath = `\${config.path // LINT}/storage.db`;
-
-    this.connectionPool = new SQLiteConnectionPool(this.dbPath, {minConnections = // await import('node);'
-// const _path = awaitimport('node);'
-// // await fs.mkdir(path.dirname(this.dbPath), {recursive = new JsonBackend(this.config);
-// // await jsonBackend.initialize();
-      // return jsonBackend;
-    //   // LINT: unreachable code removed}
-  //   }
-
-  async store(key = 'default'): Promise<StorageResult> {
-    const _fullKey = `${namespace}:${key}`;
-    const _timestamp = Date.now();
-    const _serializedValue = JSON.stringify(value);
-// // await this.connectionPool.execute(`;`/g)
-      INSERT OR REPLACE INTO storage(id, namespace, key, value, timestamp);
-      VALUES(?, ?, ?, ?, ?);
-    `, [fullKey, namespace, key, serializedValue, timestamp]);`
-
-    // return {id = 'default'): Promise<JSONValue | null> {
-// const _result = awaitthis.connectionPool.execute(`;`/g)
-    // SELECT value FROM storage ; // LINT);
-
-    if(!result ?? result.length === 0) return null;
-    // ; // LINT: unreachable code removed
-    try {
-      // return JSON.parse(result[0].value);
-    //   // LINT: unreachable code removed} catch(_error = 'default'): Promise<Record<string, JSONValue>> {
-    const _results = {};
-
-    const _searchPattern = pattern.replace('*', '%');
-// const _rows = awaitthis.connectionPool.execute(`;`
-      SELECT key, value FROM storage ;
-      WHERE namespace = ? AND key LIKE ?;);
-    `, [namespace, searchPattern]);`
-  for(let row of rows) {
-      try {
-        results[row.key] = JSON.parse(row.value); } catch(_error = 'default'): Promise<boolean> {
-// const _result = awaitthis.connectionPool.execute(`; `
-      DELETE FROM storage ;
-      WHERE namespace = ? AND key = ?;);
-    `, [namespace, key]) {;`
-
-    // return(result as any).changes > 0;
-    //   // LINT: unreachable code removed}
-
+      await this.conn.query(`
+        MATCH (d:Document)
+        WHERE d.id = $id
+        DELETE d
+      `, { id: fullKey });
+      
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+  
   async listNamespaces(): Promise<string[]> {
-// const _rows = awaitthis.connectionPool.execute(`;`
-      SELECT DISTINCT namespace FROM storage;
-      ORDER BY namespace;);
-    `);`
-
-    // return rows.map((row = > row.namespace);
-    //   // LINT: unreachable code removed}
-
+    try {
+      const result = await this.conn.query(`
+        MATCH (d:Document)
+        RETURN DISTINCT d.namespace
+      `);
+      
+      return result.map((row: any) => row['d.namespace']).sort();
+    } catch (error) {
+      return [];
+    }
+  }
+  
   async getStats(): Promise<BackendStats> {
-// const _countResult = awaitthis.connectionPool.execute('SELECT COUNT(*) as count FROM storage');
-// const _sizeResult = awaitthis.connectionPool.execute('SELECT SUM(LENGTH(value)) as size FROM storage');
-// const _namespaceResult = awaitthis.connectionPool.execute('SELECT COUNT(DISTINCT namespace) as namespaces FROM storage');
+    try {
+      const result = await this.conn.query(`
+        MATCH (d:Document) 
+        RETURN count(d) as count
+      `);
+      
+      return {
+        entries: result[0]?.count || 0,
+        size: 0,
+        lastModified: Date.now()
+      };
+    } catch (error) {
+      return {
+        entries: 0,
+        size: 0,
+        lastModified: Date.now()
+      };
+    }
+  }
+}
 
-    const __count = countResult[0]?.count ?? 0;
-    const _size = sizeResult[0]?.size ?? 0;
-    const __namespaces = namespaceResult[0]?.namespaces ?? 0;
-;
-    // return {
-      entries,size = new Map();
-    // // private filepath = config; // LINT: unreachable code removed
-    this.filepath = `${config.path}
-  //   }
+/** SQLite Backend */
+class SQLiteBackend extends BaseBackend {
+  private db?: any;
+  private dbPath: string;
+  
+  constructor(config: BackendConfig) {
+    super(config);
+    this.dbPath = `${config.path}/storage.db`;
+  }
+  
+  async initialize(): Promise<void> {
+    const Database = (await import('better-sqlite3')).default;
+    const fs = await import('node:fs/promises');
+    const path = await import('node:path');
+    
+    // Ensure directory exists
+    await fs.mkdir(path.dirname(this.dbPath), { recursive: true });
+    
+    this.db = new Database(this.dbPath);
+    
+    // Create table
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS storage (
+        id TEXT PRIMARY KEY,
+        namespace TEXT NOT NULL,
+        key TEXT NOT NULL,
+        value TEXT NOT NULL,
+        timestamp INTEGER NOT NULL,
+        UNIQUE(namespace, key)
+      )
+    `);
+    
+    // Create indexes
+    this.db.exec(`
+      CREATE INDEX IF NOT EXISTS idx_namespace ON storage(namespace);
+      CREATE INDEX IF NOT EXISTS idx_key ON storage(key);
+    `);
+  }
+  
+  async store(key: string, value: JSONValue, namespace: string = 'default'): Promise<StorageResult> {
+    const fullKey = `${namespace}:${key}`;
+    const timestamp = Date.now();
+    const serializedValue = JSON.stringify(value);
+    
+    const stmt = this.db.prepare(`
+      INSERT OR REPLACE INTO storage(id, namespace, key, value, timestamp)
+      VALUES(?, ?, ?, ?, ?)
+    `);
+    
+    stmt.run(fullKey, namespace, key, serializedValue, timestamp);
+    
+    return {
+      id: fullKey,
+      timestamp,
+      status: 'success'
+    };
+  }
+  
+  async retrieve(key: string, namespace: string = 'default'): Promise<JSONValue | null> {
+    const stmt = this.db.prepare(`
+      SELECT value FROM storage 
+      WHERE namespace = ? AND key = ?
+    `);
+    
+    const result = stmt.get(namespace, key);
+    
+    if (!result) return null;
+    
+    try {
+      return JSON.parse(result.value);
+    } catch (error) {
+      return null;
+    }
+  }
+  
+  async search(pattern: string, namespace: string = 'default'): Promise<Record<string, JSONValue>> {
+    const results: Record<string, JSONValue> = {};
+    const searchPattern = pattern.replace('*', '%');
+    
+    const stmt = this.db.prepare(`
+      SELECT key, value FROM storage 
+      WHERE namespace = ? AND key LIKE ?
+    `);
+    
+    const rows = stmt.all(namespace, searchPattern);
+    
+    for (const row of rows) {
+      try {
+        results[row.key] = JSON.parse(row.value);
+      } catch (error) {
+        // Skip invalid entries
+      }
+    }
+    
+    return results;
+  }
+  
+  async delete(key: string, namespace: string = 'default'): Promise<boolean> {
+    const stmt = this.db.prepare(`
+      DELETE FROM storage 
+      WHERE namespace = ? AND key = ?
+    `);
+    
+    const result = stmt.run(namespace, key);
+    return result.changes > 0;
+  }
+  
+  async listNamespaces(): Promise<string[]> {
+    const stmt = this.db.prepare(`
+      SELECT DISTINCT namespace FROM storage
+      ORDER BY namespace
+    `);
+    
+    const rows = stmt.all();
+    return rows.map((row: any) => row.namespace);
+  }
+  
+  async getStats(): Promise<BackendStats> {
+    const countStmt = this.db.prepare('SELECT COUNT(*) as count FROM storage');
+    const sizeStmt = this.db.prepare("SELECT page_count * page_size as size FROM pragma_page_count(), pragma_page_size()");
+    
+    const countResult = countStmt.get();
+    const sizeResult = sizeStmt.get();
+    
+    return {
+      entries: countResult.count,
+      size: sizeResult.size,
+      lastModified: Date.now()
+    };
+  }
+}
 
-  async initialize(): Promise<void> ;
+// JSON file backend
+class JSONBackend extends BaseBackend {
+  private data = new Map<string, { value: JSONValue; timestamp: number }>();
+  private filepath: string;
+  
+  constructor(config: BackendConfig) {
+    super(config);
+    this.filepath = `${config.path}/memory-backend.json`;
+  }
+  
+  async initialize(): Promise<void> {
     // Load existing data if available
     try {
-// const _fs = awaitimport('node);'
-// const _data = awaitfs.readFile(this.filepath, 'utf8');
-      const _parsed = JSON.parse(data);
+      const fs = await import('node:fs/promises');
+      const data = await fs.readFile(this.filepath, 'utf8');
+      const parsed = JSON.parse(data);
       this.data = new Map(Object.entries(parsed));
     } catch {
-      // File doesn't exist or is corrupted, start fresh'
-    //     }
-
-  async store(key = 'default'): Promise<StorageResult> {
-    let _fullKey = `${namespace}:${key}`;
-    const _timestamp = Date.now();
-;
+      // File doesn't exist or is corrupted, start fresh
+    }
+  }
+  
+  async store(key: string, value: JSONValue, namespace: string = 'default'): Promise<StorageResult> {
+    const fullKey = `${namespace}:${key}`;
+    const timestamp = Date.now();
+    
     this.data.set(fullKey, { value, timestamp });
-// // await this.persist();
-    // return {id = 'default'): Promise<JSONValue | null> {
-    const _fullKey = `${namespace}:${key}`;
-    // const _entry = this.data.get(fullKey); // LINT: unreachable code removed
-    // return entry?.value ?? null;
-    //   // LINT: unreachable code removed}
+    await this.persist();
+    
+    return {
+      id: fullKey,
+      timestamp,
+      status: 'success'
+    };
+  }
+  
+  async retrieve(key: string, namespace: string = 'default'): Promise<JSONValue | null> {
+    const fullKey = `${namespace}:${key}`;
+    const entry = this.data.get(fullKey);
+    return entry?.value ?? null;
+  }
 
-  async search(pattern = 'default'): Promise<Record<string, JSONValue>> {
-    const _results = {};
-    const _prefix = `${namespace}:`;
-  for(const [key, entry] of this.data) {
-      if(key.startsWith(prefix) && key.includes(pattern)) {
-        results[key.substring(prefix.length)] = entry.value; //       }
-    //     }
+  async search(pattern: string, namespace: string = 'default'): Promise<Record<string, JSONValue>> {
+    const results: Record<string, JSONValue> = {};
+    const prefix = `${namespace}:`;
+    for (const [key, entry] of this.data) {
+      if (key.startsWith(prefix) && key.includes(pattern)) {
+        results[key.substring(prefix.length)] = entry.value;
+      }
+    }
+    return results;
+  }
 
-    // return results; 
-    //   // LINT: unreachable code removed}
-
-  async delete(key = 'default') {: Promise<boolean> {
-    const _fullKey = `${namespace}:${key}`;
-    const _deleted = this.data.delete(fullKey);
-    if(deleted) await this.persist();
-    // return deleted;
-    //   // LINT: unreachable code removed}
+  async delete(key: string, namespace: string = 'default'): Promise<boolean> {
+    const fullKey = `${namespace}:${key}`;
+    const deleted = this.data.delete(fullKey);
+    if (deleted) await this.persist();
+    return deleted;
+  }
 
   async listNamespaces(): Promise<string[]> {
-    const _namespaces = new Set<string>();
+    const namespaces = new Set<string>();
     for (const key of this.data.keys()) {
-      const _namespace = key.split(')[0]; ';
-      namespaces.add(namespace); //     }
-    // return Array.from(namespaces) {;
-    //   // LINT: unreachable code removed}
+      const namespace = key.split(':')[0];
+      namespaces.add(namespace);
+    }
+    return Array.from(namespaces);
+  }
+  
+  async getStats(): Promise<BackendStats> {
+    return {
+      entries: this.data.size,
+      size: JSON.stringify(Array.from(this.data.entries())).length,
+      lastModified: Date.now()
+    };
+  }
+  
+  private async persist(): Promise<void> {
+    const fs = await import('node:fs/promises');
+    const dir = this.filepath.substring(0, this.filepath.lastIndexOf('/'));
+    
+    // Ensure directory exists
+    await fs.mkdir(dir, { recursive: true });
+    
+    // Convert Map to object for JSON serialization
+    const obj: Record<string, any> = {};
+    for (const [key, value] of this.data) {
+      obj[key] = value;
+    }
+    
+    await fs.writeFile(this.filepath, JSON.stringify(obj, null, 2));
+  }
+}
 
-  async getStats(): Promise<BackendStats> ;
-    // return {entries = await import('node);'
-    // await fs.mkdir(this.config.path, {recursive = config; // LINT: unreachable code removed
 
-  async initialize(): Promise<void> ;
-    throw new Error('PostgreSQL backend not yet implemented');
-;
-  async store(key, value, namespace?): Promise<StorageResult> ;
-    throw new Error('PostgreSQL backend not yet implemented');
-;
-  async retrieve(key, namespace?): Promise<JSONValue | null> ;
-    throw new Error('PostgreSQL backend not yet implemented');
-;
-  async search(pattern, namespace?): Promise<Record<string, JSONValue>> ;
-    throw new Error('PostgreSQL backend not yet implemented');
-;
-  async delete(key, namespace?): Promise<boolean> ;
-    throw new Error('PostgreSQL backend not yet implemented');
-;
-  async listNamespaces(): Promise<string[]> ;
-    throw new Error('PostgreSQL backend not yet implemented');
-;
-  async getStats(): Promise<BackendStats> ;
-    throw new Error('PostgreSQL backend not yet implemented');
-// }
-
-// export default MemoryBackendPlugin;
-
-}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))
-
-*/*/*/
-}}}}
+export default MemoryBackendPlugin;
