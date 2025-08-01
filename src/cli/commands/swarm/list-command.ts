@@ -1,6 +1,6 @@
 /**
  * Swarm List Command Implementation
- * 
+ *
  * Lists all swarms with their status and information
  */
 
@@ -41,48 +41,48 @@ export class SwarmListCommand extends BaseCommand {
         'claude-flow swarm list',
         'claude-flow swarm list --format json',
         'claude-flow swarm list --status running',
-        'claude-flow swarm list --detailed'
+        'claude-flow swarm list --detailed',
       ],
       flags: {
         format: {
           type: 'string',
           description: 'Output format (table, json, yaml)',
-          default: 'table'
+          default: 'table',
         },
         status: {
           type: 'string',
-          description: 'Filter by status (running, stopped, error, starting, stopping)'
+          description: 'Filter by status (running, stopped, error, starting, stopping)',
         },
         detailed: {
-          type: 'boolean', 
+          type: 'boolean',
           description: 'Show detailed information',
-          default: false
+          default: false,
         },
         'show-history': {
           type: 'boolean',
           description: 'Include stopped swarms in results',
-          default: false
+          default: false,
         },
         sort: {
           type: 'string',
           description: 'Sort by field (created, status, agents, tasks)',
-          default: 'created'
+          default: 'created',
         },
         limit: {
           type: 'number',
-          description: 'Limit number of results'
-        }
-      }
+          description: 'Limit number of results',
+        },
+      },
     });
   }
 
   protected async run(context: CommandContext): Promise<CommandResult> {
     try {
-      const format = context.flags.format as string || 'table';
+      const format = (context.flags.format as string) || 'table';
       const statusFilter = context.flags.status as string;
-      const detailed = context.flags.detailed as boolean || false;
-      const showHistory = context.flags['show-history'] as boolean || false;
-      const sortBy = context.flags.sort as string || 'created';
+      const detailed = (context.flags.detailed as boolean) || false;
+      const showHistory = (context.flags['show-history'] as boolean) || false;
+      const sortBy = (context.flags.sort as string) || 'created';
       const limit = context.flags.limit as number;
 
       // Get swarm list
@@ -90,7 +90,7 @@ export class SwarmListCommand extends BaseCommand {
 
       // Apply filters
       if (statusFilter) {
-        swarms = swarms.filter(swarm => swarm.status === statusFilter);
+        swarms = swarms.filter((swarm) => swarm.status === statusFilter);
       }
 
       // Apply sorting
@@ -112,28 +112,30 @@ export class SwarmListCommand extends BaseCommand {
           swarms,
           count: swarms.length,
           filter: statusFilter,
-          showHistory
-        }
+          showHistory,
+        },
       };
     } catch (error) {
       return {
         success: false,
         error: `Failed to list swarms: ${error instanceof Error ? error.message : String(error)}`,
-        exitCode: 1
+        exitCode: 1,
       };
     }
   }
 
   private async getSwarms(includeHistory: boolean): Promise<SwarmInfo[]> {
     try {
-      const { SwarmOrchestrator } = await import('../../../hive-mind/integration/SwarmOrchestrator');
+      const { SwarmOrchestrator } = await import(
+        '../../../hive-mind/integration/SwarmOrchestrator'
+      );
       const orchestrator = SwarmOrchestrator.getInstance();
-      
+
       const swarms: SwarmInfo[] = [];
-      
+
       if (orchestrator.isActive) {
         const status = await orchestrator.getSwarmStatus();
-        
+
         // Create active swarm info
         const activeSwarm: SwarmInfo = {
           id: `active-swarm-${Date.now()}`,
@@ -148,17 +150,17 @@ export class SwarmListCommand extends BaseCommand {
             total: status.activeTasks + status.completedTasks,
             completed: status.completedTasks,
             failed: 0,
-            active: status.activeTasks
+            active: status.activeTasks,
           },
           memory: {
             usage: `${status.metrics.memoryUsage} MB`,
-            entries: status.totalAgents * 50 // Estimate
-          }
+            entries: status.totalAgents * 50, // Estimate
+          },
         };
-        
+
         swarms.push(activeSwarm);
       }
-      
+
       // Add mock historical data if requested
       if (includeHistory) {
         swarms.push({
@@ -172,15 +174,15 @@ export class SwarmListCommand extends BaseCommand {
             total: 25,
             completed: 23,
             failed: 2,
-            active: 0
+            active: 0,
           },
           memory: {
             usage: '0 MB',
-            entries: 0
-          }
+            entries: 0,
+          },
         });
       }
-      
+
       return swarms;
     } catch (error) {
       console.error('Failed to get swarm information:', error);
@@ -199,97 +201,97 @@ export class SwarmListCommand extends BaseCommand {
             total: 45,
             completed: 38,
             failed: 2,
-            active: 5
+            active: 5,
           },
           memory: {
             usage: '1.2 MB',
-            entries: 234
+            entries: 234,
+          },
+        },
+        {
+          id: 'swarm_1704063600_xyz789ghi',
+          status: 'running',
+          topology: 'hierarchical',
+          agents: 3,
+          maxAgents: 5,
+          createdAt: new Date(Date.now() - 1800000), // 30 minutes ago
+          uptime: 1800000,
+          port: 3001,
+          tasks: {
+            total: 23,
+            completed: 21,
+            failed: 0,
+            active: 2,
+          },
+          memory: {
+            usage: '856 KB',
+            entries: 145,
+          },
+        },
+        {
+          id: 'swarm_1704060000_def456jkl',
+          status: 'starting',
+          topology: 'star',
+          agents: 1,
+          maxAgents: 6,
+          createdAt: new Date(Date.now() - 30000), // 30 seconds ago
+          port: 3002,
+          tasks: {
+            total: 0,
+            completed: 0,
+            failed: 0,
+            active: 0,
+          },
+          memory: {
+            usage: '124 KB',
+            entries: 12,
+          },
+        },
+      ];
+
+      if (includeHistory) {
+        // Add some stopped swarms
+        mockSwarms.push(
+          {
+            id: 'swarm_1704000000_old123abc',
+            status: 'stopped',
+            topology: 'mesh',
+            agents: 0,
+            maxAgents: 4,
+            createdAt: new Date(Date.now() - 7200000), // 2 hours ago
+            tasks: {
+              total: 156,
+              completed: 152,
+              failed: 4,
+              active: 0,
+            },
+            memory: {
+              usage: '2.8 MB',
+              entries: 567,
+            },
+          },
+          {
+            id: 'swarm_1703996400_err789xyz',
+            status: 'error',
+            topology: 'ring',
+            agents: 0,
+            maxAgents: 3,
+            createdAt: new Date(Date.now() - 8100000), // 2.25 hours ago
+            tasks: {
+              total: 12,
+              completed: 8,
+              failed: 4,
+              active: 0,
+            },
+            memory: {
+              usage: '445 KB',
+              entries: 89,
+            },
           }
-        },
-      {
-        id: 'swarm_1704063600_xyz789ghi',
-        status: 'running',
-        topology: 'hierarchical',
-        agents: 3,
-        maxAgents: 5,
-        createdAt: new Date(Date.now() - 1800000), // 30 minutes ago
-        uptime: 1800000,
-        port: 3001,
-        tasks: {
-          total: 23,
-          completed: 21,
-          failed: 0,
-          active: 2
-        },
-        memory: {
-          usage: '856 KB',
-          entries: 145
-        }
-      },
-      {
-        id: 'swarm_1704060000_def456jkl',
-        status: 'starting',
-        topology: 'star',
-        agents: 1,
-        maxAgents: 6,
-        createdAt: new Date(Date.now() - 30000), // 30 seconds ago
-        port: 3002,
-        tasks: {
-          total: 0,
-          completed: 0,
-          failed: 0,
-          active: 0
-        },
-        memory: {
-          usage: '124 KB',
-          entries: 12
-        }
+        );
       }
-    ];
 
-    if (includeHistory) {
-      // Add some stopped swarms
-      mockSwarms.push(
-        {
-          id: 'swarm_1704000000_old123abc',
-          status: 'stopped',
-          topology: 'mesh',
-          agents: 0,
-          maxAgents: 4,
-          createdAt: new Date(Date.now() - 7200000), // 2 hours ago
-          tasks: {
-            total: 156,
-            completed: 152,
-            failed: 4,
-            active: 0
-          },
-          memory: {
-            usage: '2.8 MB',
-            entries: 567
-          }
-        },
-        {
-          id: 'swarm_1703996400_err789xyz',
-          status: 'error',
-          topology: 'ring',
-          agents: 0,
-          maxAgents: 3,
-          createdAt: new Date(Date.now() - 8100000), // 2.25 hours ago
-          tasks: {
-            total: 12,
-            completed: 8,
-            failed: 4,
-            active: 0
-          },
-          memory: {
-            usage: '445 KB',
-            entries: 89
-          }
-        }
-      );
-    }
-
-    return mockSwarms;
+      return mockSwarms;
     }
   }
 
@@ -318,10 +320,10 @@ export class SwarmListCommand extends BaseCommand {
     switch (format.toLowerCase()) {
       case 'json':
         return JSON.stringify(swarms, null, 2);
-      
+
       case 'yaml':
         return this.toYaml(swarms);
-      
+
       case 'table':
       default:
         return this.formatAsTable(swarms, detailed);
@@ -330,7 +332,7 @@ export class SwarmListCommand extends BaseCommand {
 
   private formatAsTable(swarms: SwarmInfo[], detailed: boolean): string {
     const lines: string[] = [];
-    
+
     // Header
     lines.push('Swarm List');
     lines.push('='.repeat(80));
@@ -344,25 +346,33 @@ export class SwarmListCommand extends BaseCommand {
         lines.push(`  Topology: ${swarm.topology}`);
         lines.push(`  Agents: ${swarm.agents}/${swarm.maxAgents}`);
         lines.push(`  Created: ${swarm.createdAt.toLocaleString()}`);
-        
+
         if (swarm.uptime) {
           lines.push(`  Uptime: ${this.formatDuration(swarm.uptime)}`);
         }
-        
+
         if (swarm.port) {
           lines.push(`  Port: ${swarm.port}`);
         }
-        
-        lines.push(`  Tasks: ${swarm.tasks.total} total, ${swarm.tasks.completed} completed, ${swarm.tasks.failed} failed, ${swarm.tasks.active} active`);
+
+        lines.push(
+          `  Tasks: ${swarm.tasks.total} total, ${swarm.tasks.completed} completed, ${swarm.tasks.failed} failed, ${swarm.tasks.active} active`
+        );
         lines.push(`  Memory: ${swarm.memory.usage} (${swarm.memory.entries} entries)`);
         lines.push('');
       }
     } else {
       // Table view
-      lines.push('┌─────────────────────────────┬─────────────┬─────────────┬───────────┬──────────┬─────────────┐');
-      lines.push('│ Swarm ID                    │ Status      │ Topology    │ Agents    │ Tasks    │ Created     │');
-      lines.push('├─────────────────────────────┼─────────────┼─────────────┼───────────┼──────────┼─────────────┤');
-      
+      lines.push(
+        '┌─────────────────────────────┬─────────────┬─────────────┬───────────┬──────────┬─────────────┐'
+      );
+      lines.push(
+        '│ Swarm ID                    │ Status      │ Topology    │ Agents    │ Tasks    │ Created     │'
+      );
+      lines.push(
+        '├─────────────────────────────┼─────────────┼─────────────┼───────────┼──────────┼─────────────┤'
+      );
+
       for (const swarm of swarms) {
         const id = swarm.id.length > 27 ? swarm.id.substring(0, 24) + '...' : swarm.id.padEnd(27);
         const status = `${this.getStatusIcon(swarm.status)} ${swarm.status}`.padEnd(11);
@@ -370,17 +380,19 @@ export class SwarmListCommand extends BaseCommand {
         const agents = `${swarm.agents}/${swarm.maxAgents}`.padEnd(9);
         const tasks = `${swarm.tasks.completed}/${swarm.tasks.total}`.padEnd(8);
         const created = this.formatRelativeTime(swarm.createdAt).padEnd(11);
-        
+
         lines.push(`│ ${id} │ ${status} │ ${topology} │ ${agents} │ ${tasks} │ ${created} │`);
       }
-      
-      lines.push('└─────────────────────────────┴─────────────┴─────────────┴───────────┴──────────┴─────────────┘');
+
+      lines.push(
+        '└─────────────────────────────┴─────────────┴─────────────┴───────────┴──────────┴─────────────┘'
+      );
     }
 
     // Summary
-    const runningCount = swarms.filter(s => s.status === 'running').length;
-    const stoppedCount = swarms.filter(s => s.status === 'stopped').length;
-    const errorCount = swarms.filter(s => s.status === 'error').length;
+    const runningCount = swarms.filter((s) => s.status === 'running').length;
+    const stoppedCount = swarms.filter((s) => s.status === 'stopped').length;
+    const errorCount = swarms.filter((s) => s.status === 'error').length;
     const otherCount = swarms.length - runningCount - stoppedCount - errorCount;
 
     lines.push('');
@@ -400,7 +412,7 @@ export class SwarmListCommand extends BaseCommand {
       stopped: '⚪',
       error: '🔴',
       starting: '🟡',
-      stopping: '🟠'
+      stopping: '🟠',
     };
     return icons[status as keyof typeof icons] || '⚫';
   }
@@ -409,7 +421,7 @@ export class SwarmListCommand extends BaseCommand {
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
-    
+
     if (hours > 0) {
       return `${hours}h ${minutes % 60}m`;
     } else if (minutes > 0) {
@@ -422,12 +434,15 @@ export class SwarmListCommand extends BaseCommand {
   private formatRelativeTime(date: Date): string {
     const now = new Date();
     const diff = now.getTime() - date.getTime();
-    
-    if (diff < 60000) { // Less than 1 minute
+
+    if (diff < 60000) {
+      // Less than 1 minute
       return 'Just now';
-    } else if (diff < 3600000) { // Less than 1 hour
+    } else if (diff < 3600000) {
+      // Less than 1 hour
       return `${Math.floor(diff / 60000)}m ago`;
-    } else if (diff < 86400000) { // Less than 24 hours
+    } else if (diff < 86400000) {
+      // Less than 24 hours
       return `${Math.floor(diff / 3600000)}h ago`;
     } else {
       return date.toLocaleDateString();
@@ -436,7 +451,7 @@ export class SwarmListCommand extends BaseCommand {
 
   private toYaml(swarms: SwarmInfo[]): string {
     let result = 'swarms:\n';
-    
+
     for (const swarm of swarms) {
       result += `  - id: ${swarm.id}\n`;
       result += `    status: ${swarm.status}\n`;
@@ -444,26 +459,26 @@ export class SwarmListCommand extends BaseCommand {
       result += `    agents: ${swarm.agents}\n`;
       result += `    maxAgents: ${swarm.maxAgents}\n`;
       result += `    createdAt: ${swarm.createdAt.toISOString()}\n`;
-      
+
       if (swarm.uptime) {
         result += `    uptime: ${swarm.uptime}\n`;
       }
-      
+
       if (swarm.port) {
         result += `    port: ${swarm.port}\n`;
       }
-      
+
       result += `    tasks:\n`;
       result += `      total: ${swarm.tasks.total}\n`;
       result += `      completed: ${swarm.tasks.completed}\n`;
       result += `      failed: ${swarm.tasks.failed}\n`;
       result += `      active: ${swarm.tasks.active}\n`;
-      
+
       result += `    memory:\n`;
       result += `      usage: ${swarm.memory.usage}\n`;
       result += `      entries: ${swarm.memory.entries}\n`;
     }
-    
+
     return result;
   }
 

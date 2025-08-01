@@ -4,6 +4,7 @@
  */
 
 import { EventEmitter } from 'events';
+
 // Removed ruv-FANN-zen submodule dependency - using direct integration
 // import { daaService, DAAService } from '../ruv-FANN-zen/ruv-swarm-zen/npm/src/daa-service.js';
 
@@ -19,13 +20,27 @@ interface DAAService {
 }
 
 const mockDAAService: DAAService = {
-  async initialize() { console.log('DAA Service initialized (mock)'); },
-  async createAgent(config: any) { return { id: config.id, ...config }; },
-  async destroyAgent(id: string) { console.log(`DAA Agent destroyed: ${id}`); },
-  async createWorkflow(id: string, steps: any[], config: any) { console.log(`Workflow created: ${id}`); },
-  async executeWorkflow(id: string, config: any) { return { success: true, result: 'Mock execution result' }; },
-  async cleanup() { console.log('DAA Service cleaned up'); },
-  on(event: string, handler: (data: any) => void) { console.log(`Event listener added: ${event}`); }
+  async initialize() {
+    console.log('DAA Service initialized (mock)');
+  },
+  async createAgent(config: any) {
+    return { id: config.id, ...config };
+  },
+  async destroyAgent(id: string) {
+    console.log(`DAA Agent destroyed: ${id}`);
+  },
+  async createWorkflow(id: string, steps: any[], config: any) {
+    console.log(`Workflow created: ${id}`);
+  },
+  async executeWorkflow(id: string, config: any) {
+    return { success: true, result: 'Mock execution result' };
+  },
+  async cleanup() {
+    console.log('DAA Service cleaned up');
+  },
+  on(event: string, handler: (data: any) => void) {
+    console.log(`Event listener added: ${event}`);
+  },
 };
 
 const daaService = mockDAAService;
@@ -93,13 +108,13 @@ export class SwarmOrchestrator extends EventEmitter {
 
   constructor(config: Partial<SwarmConfig> = {}) {
     super();
-    
+
     this.config = {
       topology: config.topology || 'mesh',
       maxAgents: config.maxAgents || 50,
       autoScale: config.autoScale ?? true,
       loadBalancing: config.loadBalancing || 'capability-based',
-      failureHandling: config.failureHandling || 'retry'
+      failureHandling: config.failureHandling || 'retry',
     };
 
     this.metrics = {
@@ -110,7 +125,7 @@ export class SwarmOrchestrator extends EventEmitter {
       agentUtilization: new Map(),
       throughput: 0,
       errorRate: 0,
-      resourceEfficiency: 0
+      resourceEfficiency: 0,
     };
 
     this.daaService = daaService;
@@ -136,7 +151,7 @@ export class SwarmOrchestrator extends EventEmitter {
 
       this.isInitialized = true;
       this.emit('initialized', { config: this.config });
-      
+
       console.log('🎯 SwarmOrchestrator initialized successfully');
     } catch (error) {
       console.error('❌ Failed to initialize SwarmOrchestrator:', error);
@@ -162,7 +177,7 @@ export class SwarmOrchestrator extends EventEmitter {
       const agent = await this.daaService.createAgent({
         id: agentConfig.id,
         capabilities: agentConfig.capabilities,
-        cognitivePattern: agentConfig.cognitivePattern || 'adaptive'
+        cognitivePattern: agentConfig.cognitivePattern || 'adaptive',
       });
 
       // Register with orchestrator
@@ -173,10 +188,13 @@ export class SwarmOrchestrator extends EventEmitter {
         maxLoad: agentConfig.maxLoad || 10,
         status: 'available',
         performanceScore: 1.0,
-        cognitivePattern: agentConfig.cognitivePattern || 'adaptive'
+        cognitivePattern: agentConfig.cognitivePattern || 'adaptive',
       });
 
-      this.emit('agentRegistered', { agentId: agentConfig.id, capabilities: agentConfig.capabilities });
+      this.emit('agentRegistered', {
+        agentId: agentConfig.id,
+        capabilities: agentConfig.capabilities,
+      });
       console.log(`🤖 Agent registered: ${agentConfig.id}`);
 
       // Trigger task assignment check
@@ -215,13 +233,13 @@ export class SwarmOrchestrator extends EventEmitter {
         capabilities: taskSpec.requirements?.capabilities || ['general'],
         minAgents: taskSpec.requirements?.minAgents || 1,
         maxAgents: taskSpec.requirements?.maxAgents || 3,
-        timeout: taskSpec.requirements?.timeout || 30000
+        timeout: taskSpec.requirements?.timeout || 30000,
       },
       dependencies: taskSpec.dependencies || [],
       status: 'queued',
       assignedAgents: [],
       progress: 0,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
 
     this.tasks.set(task.id, task);
@@ -284,7 +302,7 @@ export class SwarmOrchestrator extends EventEmitter {
       config: this.config,
       agents: agentStats,
       tasks: taskStats,
-      metrics: this.metrics
+      metrics: this.metrics,
     };
   }
 
@@ -452,7 +470,7 @@ export class SwarmOrchestrator extends EventEmitter {
 
       // Find suitable agents
       const suitableAgents = this.findSuitableAgents(task);
-      
+
       if (suitableAgents.length >= task.requirements.minAgents) {
         this.assignTask(task, suitableAgents);
         this.taskQueue.splice(i, 1);
@@ -462,7 +480,7 @@ export class SwarmOrchestrator extends EventEmitter {
   }
 
   private areDependenciesMet(task: OrchestrationTask): boolean {
-    return task.dependencies.every(depId => {
+    return task.dependencies.every((depId) => {
       const depTask = this.tasks.get(depId);
       return depTask && depTask.status === 'completed';
     });
@@ -470,13 +488,13 @@ export class SwarmOrchestrator extends EventEmitter {
 
   private findSuitableAgents(task: OrchestrationTask): AgentCapabilities[] {
     const candidates = Array.from(this.agents.values())
-      .filter(agent => {
+      .filter((agent) => {
         // Must be available
         if (agent.status !== 'available') return false;
 
         // Must have required capabilities
-        return task.requirements.capabilities.every(cap => 
-          agent.capabilities.includes(cap) || agent.capabilities.includes('general')
+        return task.requirements.capabilities.every(
+          (cap) => agent.capabilities.includes(cap) || agent.capabilities.includes('general')
         );
       })
       .sort((a, b) => {
@@ -499,7 +517,7 @@ export class SwarmOrchestrator extends EventEmitter {
   private async assignTask(task: OrchestrationTask, agents: AgentCapabilities[]): Promise<void> {
     try {
       task.status = 'assigned';
-      task.assignedAgents = agents.map(a => a.id);
+      task.assignedAgents = agents.map((a) => a.id);
       task.startedAt = new Date();
 
       // Update agent status
@@ -510,23 +528,25 @@ export class SwarmOrchestrator extends EventEmitter {
 
       console.log(`🎯 Task assigned: ${task.id} to agents: ${task.assignedAgents.join(', ')}`);
 
-      this.emit('taskAssigned', { 
-        taskId: task.id, 
-        agentIds: task.assignedAgents 
+      this.emit('taskAssigned', {
+        taskId: task.id,
+        agentIds: task.assignedAgents,
       });
 
       // Create workflow in DAA service
       const workflowSteps = [
         {
           id: 'main-execution',
-          task: { 
-            method: 'make_decision', 
-            args: [{ 
-              description: task.description,
-              requirements: task.requirements
-            }] 
-          }
-        }
+          task: {
+            method: 'make_decision',
+            args: [
+              {
+                description: task.description,
+                requirements: task.requirements,
+              },
+            ],
+          },
+        },
       ];
 
       await this.daaService.createWorkflow(task.id, workflowSteps, {});
@@ -534,12 +554,11 @@ export class SwarmOrchestrator extends EventEmitter {
       // Execute the workflow
       const result = await this.daaService.executeWorkflow(task.id, {
         agentIds: task.assignedAgents,
-        parallel: agents.length > 1
+        parallel: agents.length > 1,
       });
 
       // Handle completion
       await this.handleTaskCompletion(task, result);
-
     } catch (error) {
       console.error(`❌ Failed to assign task ${task.id}:`, error);
       await this.handleTaskFailure(task, error as Error);
@@ -575,10 +594,10 @@ export class SwarmOrchestrator extends EventEmitter {
 
     this.metrics.completedTasks++;
 
-    this.emit('taskCompleted', { 
-      taskId: task.id, 
+    this.emit('taskCompleted', {
+      taskId: task.id,
       result: result,
-      executionTime: task.completedAt.getTime() - task.startedAt!.getTime()
+      executionTime: task.completedAt.getTime() - task.startedAt!.getTime(),
     });
 
     console.log(`✅ Task completed: ${task.id}`);
@@ -604,9 +623,9 @@ export class SwarmOrchestrator extends EventEmitter {
 
     this.metrics.failedTasks++;
 
-    this.emit('taskFailed', { 
-      taskId: task.id, 
-      error: error.message 
+    this.emit('taskFailed', {
+      taskId: task.id,
+      error: error.message,
     });
 
     console.log(`❌ Task failed: ${task.id} - ${error.message}`);
@@ -623,25 +642,25 @@ export class SwarmOrchestrator extends EventEmitter {
 
   private sortTaskQueue(): void {
     const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
-    
+
     this.taskQueue.sort((a, b) => {
       // First by priority
       const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
       if (priorityDiff !== 0) return priorityDiff;
-      
+
       // Then by creation time (oldest first)
       return a.createdAt.getTime() - b.createdAt.getTime();
     });
   }
 
   private updateMetrics(): void {
-    const completedTasks = Array.from(this.tasks.values()).filter(t => t.status === 'completed');
-    
+    const completedTasks = Array.from(this.tasks.values()).filter((t) => t.status === 'completed');
+
     if (completedTasks.length > 0) {
       const totalTime = completedTasks.reduce((sum, task) => {
         return sum + (task.completedAt!.getTime() - task.startedAt!.getTime());
       }, 0);
-      
+
       this.metrics.averageExecutionTime = totalTime / completedTasks.length;
     }
 
@@ -652,19 +671,17 @@ export class SwarmOrchestrator extends EventEmitter {
 
     // Calculate throughput (tasks per minute)
     const now = Date.now();
-    const recentTasks = completedTasks.filter(task => 
-      (now - task.completedAt!.getTime()) < 60000
-    );
+    const recentTasks = completedTasks.filter((task) => now - task.completedAt!.getTime() < 60000);
     this.metrics.throughput = recentTasks.length;
 
     // Calculate error rate
-    this.metrics.errorRate = this.metrics.totalTasks > 0 
-      ? this.metrics.failedTasks / this.metrics.totalTasks 
-      : 0;
+    this.metrics.errorRate =
+      this.metrics.totalTasks > 0 ? this.metrics.failedTasks / this.metrics.totalTasks : 0;
 
     // Calculate resource efficiency
-    const avgUtilization = Array.from(this.metrics.agentUtilization.values())
-      .reduce((sum, util) => sum + util, 0) / this.metrics.agentUtilization.size;
+    const avgUtilization =
+      Array.from(this.metrics.agentUtilization.values()).reduce((sum, util) => sum + util, 0) /
+      this.metrics.agentUtilization.size;
     this.metrics.resourceEfficiency = avgUtilization || 0;
   }
 
@@ -676,16 +693,16 @@ export class SwarmOrchestrator extends EventEmitter {
 
     // Auto-scaling logic would go here
     if (avgUtilization > utilizationThreshold && this.agents.size < this.config.maxAgents) {
-      this.emit('scalingRecommendation', { 
-        action: 'scale_up', 
+      this.emit('scalingRecommendation', {
+        action: 'scale_up',
         reason: 'High utilization',
-        currentUtilization: avgUtilization
+        currentUtilization: avgUtilization,
       });
     } else if (avgUtilization < 0.3 && this.agents.size > 1) {
-      this.emit('scalingRecommendation', { 
-        action: 'scale_down', 
+      this.emit('scalingRecommendation', {
+        action: 'scale_down',
         reason: 'Low utilization',
-        currentUtilization: avgUtilization 
+        currentUtilization: avgUtilization,
       });
     }
   }

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Text, useInput, useFocus } from 'ink';
-import { Header, Footer, StatusBadge } from '../components';
-import { BaseScreenProps, NavigationItem, ScreenUtils } from './index';
+import { Box, Text, useFocus, useInput } from 'ink';
+import type React from 'react';
+import { useEffect, useState } from 'react';
+import { Footer, Header, StatusBadge } from '../components';
+import { type BaseScreenProps, type NavigationItem, ScreenUtils } from './index';
 
 export interface MainMenuProps extends BaseScreenProps {
   items?: NavigationItem[];
@@ -14,7 +15,7 @@ export interface MainMenuProps extends BaseScreenProps {
 
 /**
  * MainMenu Component
- * 
+ *
  * Interactive main menu with keyboard navigation.
  * Displays navigation items with highlighting and selection.
  */
@@ -33,31 +34,31 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   const [selectedIndex, setSelectedIndex] = useState(initialSelectedIndex);
   const [isLoading, setIsLoading] = useState(false);
   const { isFocused } = useFocus({ autoFocus: true });
-  
+
   const enabledItems = ScreenUtils.filterEnabledItems(items);
   const visibleItems = enabledItems.slice(0, maxVisibleItems);
-  
+
   // Handle keyboard input
   useInput((input, key) => {
     if (!isFocused || isLoading) return;
-    
+
     if (key.upArrow || input === 'k') {
-      setSelectedIndex(prev => Math.max(0, prev - 1));
+      setSelectedIndex((prev) => Math.max(0, prev - 1));
     } else if (key.downArrow || input === 'j') {
-      setSelectedIndex(prev => Math.min(visibleItems.length - 1, prev + 1));
+      setSelectedIndex((prev) => Math.min(visibleItems.length - 1, prev + 1));
     } else if (key.return || input === ' ') {
       handleSelection();
     } else if (key.escape || input === 'q') {
       onExit?.();
     }
   });
-  
+
   const handleSelection = async () => {
     const selectedItem = visibleItems[selectedIndex];
     if (!selectedItem || selectedItem.disabled) return;
-    
+
     setIsLoading(true);
-    
+
     try {
       await selectedItem.action();
       onSelect?.(selectedItem);
@@ -67,48 +68,40 @@ export const MainMenu: React.FC<MainMenuProps> = ({
       setIsLoading(false);
     }
   };
-  
+
   // Auto-adjust selection if items change
   useEffect(() => {
     if (selectedIndex >= visibleItems.length && visibleItems.length > 0) {
       setSelectedIndex(visibleItems.length - 1);
     }
   }, [visibleItems.length, selectedIndex]);
-  
+
   const shortcuts = [
     { key: '↑/↓ or j/k', description: 'Navigate' },
     { key: 'Enter/Space', description: 'Select' },
     { key: 'q/Esc', description: 'Exit' },
   ];
-  
+
   return (
     <Box flexDirection="column" height="100%">
-      {showHeader && (
-        <Header
-          title={title}
-          version={process.env.npm_package_version}
-          centerAlign
-        />
-      )}
-      
+      {showHeader && <Header title={title} version={process.env.npm_package_version} centerAlign />}
+
       {showStatus && statusText && (
         <Box marginBottom={1} justifyContent="center">
           <StatusBadge status="info" text={statusText} />
         </Box>
       )}
-      
+
       <Box flexDirection="column" flexGrow={1}>
         {visibleItems.length === 0 ? (
           <Box justifyContent="center" flexGrow={1}>
-            <Text dimColor>
-              No menu items available
-            </Text>
+            <Text dimColor>No menu items available</Text>
           </Box>
         ) : (
           visibleItems.map((item, index) => {
             const isSelected = index === selectedIndex;
             const isDisabled = item.disabled;
-            
+
             return (
               <Box key={item.key} marginBottom={0}>
                 <Text
@@ -118,15 +111,10 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                   inverse={isSelected && !isDisabled}
                 >
                   {isSelected ? '▶ ' : '  '}
-                  {item.icon && (
-                    <>
-                      {item.icon}
-                      {' '}
-                    </>
-                  )}
+                  {item.icon && <>{item.icon} </>}
                   {item.label}
                 </Text>
-                
+
                 {item.description && (
                   <Text dimColor>
                     {' - '}
@@ -137,22 +125,15 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             );
           })
         )}
-        
+
         {isLoading && (
           <Box marginTop={1}>
-            <Text color="yellow">
-              ⏳ Processing...
-            </Text>
+            <Text color="yellow">⏳ Processing...</Text>
           </Box>
         )}
       </Box>
-      
-      {showFooter && (
-        <Footer
-          shortcuts={shortcuts}
-          centerAlign
-        />
-      )}
+
+      {showFooter && <Footer shortcuts={shortcuts} centerAlign />}
     </Box>
   );
 };

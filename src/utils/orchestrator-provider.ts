@@ -1,11 +1,11 @@
-import { Orchestrator } from '../core/orchestrator';
-import { TerminalManager } from '../terminal/manager';
-import { MemoryManager } from '../memory/manager';
+import { ConfigManager, type SystemConfig } from '../config/config-manager';
 import { CoordinationManager } from '../coordination/manager';
-import { MCPServer } from '../mcp/server';
 import { EventBus } from '../core/event-bus';
 import { createLogger } from '../core/logger';
-import { ConfigManager, type SystemConfig } from '../config/config-manager';
+import { Orchestrator } from '../core/orchestrator';
+import { MCPServer } from '../mcp/server';
+import { MemoryManager } from '../memory/manager';
+import { TerminalManager } from '../terminal/manager';
 
 let orchestratorInstance: Orchestrator | null = null;
 
@@ -17,8 +17,16 @@ export function getOrchestratorInstance(): Orchestrator {
     const eventBus = new EventBus();
     const terminalManager = new TerminalManager(config.terminal || {}, logger, eventBus);
     const memoryManager = new MemoryManager(config.memory || {}, logger, eventBus);
-    const coordinationManager = new CoordinationManager(config.coordination || { maxAgents: 50, heartbeatInterval: 10000, timeout: 30000 }, logger, eventBus);
-    const mcpServer = new MCPServer(config.mcp || { port: 3000, host: 'localhost', timeout: 30000 }, logger, eventBus);
+    const coordinationManager = new CoordinationManager(
+      config.coordination || { maxAgents: 50, heartbeatInterval: 10000, timeout: 30000 },
+      logger,
+      eventBus
+    );
+    const mcpServer = new MCPServer(
+      config.mcp || { port: 3000, host: 'localhost', timeout: 30000 },
+      logger,
+      eventBus
+    );
 
     orchestratorInstance = new Orchestrator(
       config.orchestrator || {},
@@ -27,7 +35,7 @@ export function getOrchestratorInstance(): Orchestrator {
       coordinationManager,
       mcpServer,
       eventBus,
-      logger,
+      logger
     );
   }
   return orchestratorInstance;

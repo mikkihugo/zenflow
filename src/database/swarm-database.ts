@@ -3,8 +3,8 @@
  * Handles agent state, task persistence, metrics, and coordination data
  */
 
-import { Pool, PoolClient, PoolConfig } from 'pg';
 import { EventEmitter } from 'events';
+import { Pool, type PoolClient, type PoolConfig } from 'pg';
 
 // Types for swarm database operations
 interface SwarmAgent {
@@ -93,7 +93,7 @@ export class SwarmDatabase extends EventEmitter {
       ssl: config.ssl || process.env.SWARM_DB_SSL === 'true',
       maxConnections: config.maxConnections || 20,
       idleTimeoutMillis: config.idleTimeoutMillis || 30000,
-      connectionTimeoutMillis: config.connectionTimeoutMillis || 5000
+      connectionTimeoutMillis: config.connectionTimeoutMillis || 5000,
     };
 
     const poolConfig: PoolConfig = {
@@ -171,7 +171,7 @@ export class SwarmDatabase extends EventEmitter {
       const client = await this.pool.connect();
       const result = await client.query('SELECT NOW() as connected_at');
       client.release();
-      
+
       console.log('🔍 Database connection test successful:', result.rows[0].connected_at);
       return true;
     } catch (error) {
@@ -202,13 +202,13 @@ export class SwarmDatabase extends EventEmitter {
       agent.current_load,
       agent.max_load,
       agent.performance_score,
-      JSON.stringify(agent.metadata)
+      JSON.stringify(agent.metadata),
     ];
 
     try {
       const result = await this.pool.query(query, values);
       const created = this.deserializeAgent(result.rows[0]);
-      
+
       this.emit('agentCreated', { agentId: created.id });
       return created;
     } catch (error) {
@@ -219,7 +219,7 @@ export class SwarmDatabase extends EventEmitter {
 
   async getAgent(agentId: string): Promise<SwarmAgent | null> {
     const query = 'SELECT * FROM swarm_agents WHERE id = $1';
-    
+
     try {
       const result = await this.pool.query(query, [agentId]);
       return result.rows.length > 0 ? this.deserializeAgent(result.rows[0]) : null;
@@ -236,7 +236,7 @@ export class SwarmDatabase extends EventEmitter {
 
     for (const [key, value] of Object.entries(updates)) {
       if (key === 'id' || key === 'created_at') continue;
-      
+
       if (key === 'capabilities' || key === 'metadata') {
         setClause.push(`${key} = $${paramIndex}`);
         values.push(JSON.stringify(value));
@@ -264,11 +264,11 @@ export class SwarmDatabase extends EventEmitter {
     try {
       const result = await this.pool.query(query, values);
       const updated = result.rows.length > 0 ? this.deserializeAgent(result.rows[0]) : null;
-      
+
       if (updated) {
         this.emit('agentUpdated', { agentId: updated.id });
       }
-      
+
       return updated;
     } catch (error) {
       console.error('❌ Failed to update agent:', error);
@@ -278,15 +278,15 @@ export class SwarmDatabase extends EventEmitter {
 
   async deleteAgent(agentId: string): Promise<boolean> {
     const query = 'DELETE FROM swarm_agents WHERE id = $1';
-    
+
     try {
       const result = await this.pool.query(query, [agentId]);
       const deleted = result.rowCount > 0;
-      
+
       if (deleted) {
         this.emit('agentDeleted', { agentId });
       }
-      
+
       return deleted;
     } catch (error) {
       console.error('❌ Failed to delete agent:', error);
@@ -296,10 +296,10 @@ export class SwarmDatabase extends EventEmitter {
 
   async getSwarmAgents(swarmId: string): Promise<SwarmAgent[]> {
     const query = 'SELECT * FROM swarm_agents WHERE swarm_id = $1 ORDER BY created_at';
-    
+
     try {
       const result = await this.pool.query(query, [swarmId]);
-      return result.rows.map(row => this.deserializeAgent(row));
+      return result.rows.map((row) => this.deserializeAgent(row));
     } catch (error) {
       console.error('❌ Failed to get swarm agents:', error);
       throw error;
@@ -309,7 +309,9 @@ export class SwarmDatabase extends EventEmitter {
   /**
    * Task CRUD operations
    */
-  async createTask(task: Omit<SwarmTask, 'created_at' | 'started_at' | 'completed_at'>): Promise<SwarmTask> {
+  async createTask(
+    task: Omit<SwarmTask, 'created_at' | 'started_at' | 'completed_at'>
+  ): Promise<SwarmTask> {
     const query = `
       INSERT INTO swarm_tasks (
         id, swarm_id, description, priority, status, requirements,
@@ -329,13 +331,13 @@ export class SwarmDatabase extends EventEmitter {
       task.progress,
       JSON.stringify(task.result),
       task.error_message,
-      JSON.stringify(task.dependencies)
+      JSON.stringify(task.dependencies),
     ];
 
     try {
       const result = await this.pool.query(query, values);
       const created = this.deserializeTask(result.rows[0]);
-      
+
       this.emit('taskCreated', { taskId: created.id });
       return created;
     } catch (error) {
@@ -346,7 +348,7 @@ export class SwarmDatabase extends EventEmitter {
 
   async getTask(taskId: string): Promise<SwarmTask | null> {
     const query = 'SELECT * FROM swarm_tasks WHERE id = $1';
-    
+
     try {
       const result = await this.pool.query(query, [taskId]);
       return result.rows.length > 0 ? this.deserializeTask(result.rows[0]) : null;
@@ -363,7 +365,7 @@ export class SwarmDatabase extends EventEmitter {
 
     for (const [key, value] of Object.entries(updates)) {
       if (key === 'id' || key === 'created_at') continue;
-      
+
       if (['requirements', 'assigned_agents', 'result', 'dependencies'].includes(key)) {
         setClause.push(`${key} = $${paramIndex}`);
         values.push(JSON.stringify(value));
@@ -390,11 +392,11 @@ export class SwarmDatabase extends EventEmitter {
     try {
       const result = await this.pool.query(query, values);
       const updated = result.rows.length > 0 ? this.deserializeTask(result.rows[0]) : null;
-      
+
       if (updated) {
         this.emit('taskUpdated', { taskId: updated.id });
       }
-      
+
       return updated;
     } catch (error) {
       console.error('❌ Failed to update task:', error);
@@ -415,7 +417,7 @@ export class SwarmDatabase extends EventEmitter {
 
     try {
       const result = await this.pool.query(query, values);
-      return result.rows.map(row => this.deserializeTask(row));
+      return result.rows.map((row) => this.deserializeTask(row));
     } catch (error) {
       console.error('❌ Failed to get swarm tasks:', error);
       throw error;
@@ -437,7 +439,7 @@ export class SwarmDatabase extends EventEmitter {
       metric.agent_id,
       metric.metric_name,
       metric.metric_value,
-      JSON.stringify(metric.metadata)
+      JSON.stringify(metric.metadata),
     ];
 
     try {
@@ -449,7 +451,11 @@ export class SwarmDatabase extends EventEmitter {
     }
   }
 
-  async getMetrics(swarmId: string, metricName?: string, agentId?: string): Promise<SwarmMetrics[]> {
+  async getMetrics(
+    swarmId: string,
+    metricName?: string,
+    agentId?: string
+  ): Promise<SwarmMetrics[]> {
     let query = 'SELECT * FROM swarm_metrics WHERE swarm_id = $1';
     const values = [swarmId];
     let paramIndex = 2;
@@ -470,7 +476,7 @@ export class SwarmDatabase extends EventEmitter {
 
     try {
       const result = await this.pool.query(query, values);
-      return result.rows.map(row => this.deserializeMetric(row));
+      return result.rows.map((row) => this.deserializeMetric(row));
     } catch (error) {
       console.error('❌ Failed to get metrics:', error);
       throw error;
@@ -482,7 +488,7 @@ export class SwarmDatabase extends EventEmitter {
    */
   async withTransaction<T>(callback: (client: PoolClient) => Promise<T>): Promise<T> {
     const client = await this.pool.connect();
-    
+
     try {
       await client.query('BEGIN');
       const result = await callback(client);
@@ -510,14 +516,14 @@ export class SwarmDatabase extends EventEmitter {
   }> {
     try {
       const pool = this.pool as any; // Access private properties
-      
+
       const status = {
         status: 'healthy' as const,
         details: {
           totalConnections: pool.totalCount || 0,
           idleConnections: pool.idleCount || 0,
           waitingClients: pool.waitingCount || 0,
-        }
+        },
       };
 
       // Test with a simple query
@@ -531,8 +537,8 @@ export class SwarmDatabase extends EventEmitter {
           totalConnections: 0,
           idleConnections: 0,
           waitingClients: 0,
-          lastError: error instanceof Error ? error.message : String(error)
-        }
+          lastError: error instanceof Error ? error.message : String(error),
+        },
       };
     }
   }
@@ -616,7 +622,7 @@ export class SwarmDatabase extends EventEmitter {
         created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
         updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
         expires_at TIMESTAMP WITH TIME ZONE
-      )`
+      )`,
     ];
 
     for (const schema of schemas) {
@@ -636,7 +642,7 @@ export class SwarmDatabase extends EventEmitter {
       'CREATE INDEX IF NOT EXISTS idx_swarm_metrics_swarm_id ON swarm_metrics(swarm_id)',
       'CREATE INDEX IF NOT EXISTS idx_swarm_metrics_agent_id ON swarm_metrics(agent_id)',
       'CREATE INDEX IF NOT EXISTS idx_swarm_metrics_name ON swarm_metrics(metric_name)',
-      'CREATE INDEX IF NOT EXISTS idx_swarm_sessions_swarm_id ON swarm_sessions(swarm_id)'
+      'CREATE INDEX IF NOT EXISTS idx_swarm_sessions_swarm_id ON swarm_sessions(swarm_id)',
     ];
 
     for (const index of indexes) {
@@ -651,7 +657,7 @@ export class SwarmDatabase extends EventEmitter {
       try {
         const health = await this.getHealthStatus();
         this.emit('healthCheck', health);
-        
+
         if (health.status !== 'healthy') {
           console.warn('⚠️ Database health check warning:', health.details);
         }
@@ -666,7 +672,7 @@ export class SwarmDatabase extends EventEmitter {
     return {
       ...row,
       capabilities: JSON.parse(row.capabilities || '[]'),
-      metadata: JSON.parse(row.metadata || '{}')
+      metadata: JSON.parse(row.metadata || '{}'),
     };
   }
 
@@ -676,14 +682,14 @@ export class SwarmDatabase extends EventEmitter {
       requirements: JSON.parse(row.requirements || '{}'),
       assigned_agents: JSON.parse(row.assigned_agents || '[]'),
       result: row.result ? JSON.parse(row.result) : undefined,
-      dependencies: JSON.parse(row.dependencies || '[]')
+      dependencies: JSON.parse(row.dependencies || '[]'),
     };
   }
 
   private deserializeMetric(row: any): SwarmMetrics {
     return {
       ...row,
-      metadata: JSON.parse(row.metadata || '{}')
+      metadata: JSON.parse(row.metadata || '{}'),
     };
   }
 }

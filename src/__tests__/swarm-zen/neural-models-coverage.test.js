@@ -6,12 +6,12 @@
 import assert from 'assert';
 import {
   AutoencoderModel,
+  BaseNeuralModel,
   CNNModel,
   GNNModel,
   GRUModel,
   ResNetModel,
   TransformerModel,
-  BaseNeuralModel,
 } from '../src/neural-models/index.js';
 
 describe('Neural Models 100% Coverage', () => {
@@ -19,31 +19,19 @@ describe('Neural Models 100% Coverage', () => {
     it('should handle abstract method calls', () => {
       const base = new BaseNeuralModel();
 
-      assert.throws(
-        () => base.forward(),
-        /Not implemented/,
-      );
+      assert.throws(() => base.forward(), /Not implemented/);
 
-      assert.throws(
-        () => base.backward(),
-        /Not implemented/,
-      );
+      assert.throws(() => base.backward(), /Not implemented/);
     });
 
     it('should handle parameter initialization edge cases', () => {
       const base = new BaseNeuralModel();
 
       // Test with invalid dimensions
-      assert.throws(
-        () => base.initializeParameters({ dimensions: -1 }),
-        /Invalid dimensions/,
-      );
+      assert.throws(() => base.initializeParameters({ dimensions: -1 }), /Invalid dimensions/);
 
       // Test with null config
-      assert.throws(
-        () => base.initializeParameters(null),
-        /Configuration required/,
-      );
+      assert.throws(() => base.initializeParameters(null), /Configuration required/);
     });
 
     it('should handle serialization of complex states', () => {
@@ -57,10 +45,7 @@ describe('Neural Models 100% Coverage', () => {
       const serialized = base.serialize();
       const deserialized = BaseNeuralModel.deserialize(serialized);
 
-      assert.deepEqual(
-        Array.from(deserialized._state.weights),
-        [1, 2, 3],
-      );
+      assert.deepEqual(Array.from(deserialized._state.weights), [1, 2, 3]);
     });
   });
 
@@ -75,52 +60,40 @@ describe('Neural Models 100% Coverage', () => {
       });
     });
 
-    it('should handle encoding with invalid inputs', async() => {
-      await assert.rejects(
-        autoencoder.encode(null),
-        /Invalid input/,
-      );
+    it('should handle encoding with invalid inputs', async () => {
+      await assert.rejects(autoencoder.encode(null), /Invalid input/);
 
       await assert.rejects(
         autoencoder.encode([[1, 2]]), // Wrong dimension
-        /Dimension mismatch/,
+        /Dimension mismatch/
       );
     });
 
-    it('should handle decoding with invalid latent vectors', async() => {
-      await assert.rejects(
-        autoencoder.decode(null),
-        /Invalid latent vector/,
-      );
+    it('should handle decoding with invalid latent vectors', async () => {
+      await assert.rejects(autoencoder.decode(null), /Invalid latent vector/);
 
       await assert.rejects(
         autoencoder.decode([[1, 2]]), // Wrong latent dimension
-        /Latent dimension mismatch/,
+        /Latent dimension mismatch/
       );
     });
 
-    it('should handle training with corrupted data', async() => {
+    it('should handle training with corrupted data', async () => {
       const corruptedData = [
         { input: null, target: [1, 2, 3] },
         { input: [1, 2, 3], target: null },
       ];
 
-      await assert.rejects(
-        autoencoder.train(corruptedData),
-        /Invalid training data/,
-      );
+      await assert.rejects(autoencoder.train(corruptedData), /Invalid training data/);
     });
 
-    it('should handle regularization edge cases', async() => {
+    it('should handle regularization edge cases', async () => {
       autoencoder.setRegularization({
         l1: -0.1, // Invalid negative regularization
         l2: 0.01,
       });
 
-      await assert.rejects(
-        autoencoder.train([]),
-        /Invalid regularization/,
-      );
+      await assert.rejects(autoencoder.train([]), /Invalid regularization/);
     });
   });
 
@@ -135,30 +108,27 @@ describe('Neural Models 100% Coverage', () => {
       });
     });
 
-    it('should handle invalid image dimensions', async() => {
-      await assert.rejects(
-        cnn.forward({ image: null }),
-        /Invalid image input/,
-      );
+    it('should handle invalid image dimensions', async () => {
+      await assert.rejects(cnn.forward({ image: null }), /Invalid image input/);
 
       await assert.rejects(
         cnn.forward({
           image: new Array(3).fill(new Array(32).fill(0)), // Missing dimension
         }),
-        /Invalid image dimensions/,
+        /Invalid image dimensions/
       );
     });
 
-    it('should handle pooling with invalid parameters', async() => {
+    it('should handle pooling with invalid parameters', async () => {
       cnn._poolingSize = -1;
 
       await assert.rejects(
         cnn.forward({ image: new Array(3).fill(new Array(32).fill(new Array(32).fill(0))) }),
-        /Invalid pooling size/,
+        /Invalid pooling size/
       );
     });
 
-    it('should handle batch normalization edge cases', async() => {
+    it('should handle batch normalization edge cases', async () => {
       cnn.enableBatchNorm(true);
 
       // Single sample (batch size 1) should handle differently
@@ -169,7 +139,7 @@ describe('Neural Models 100% Coverage', () => {
       assert(result, 'Should handle batch size 1');
     });
 
-    it('should handle dropout during inference', async() => {
+    it('should handle dropout during inference', async () => {
       cnn.setDropout(0.5);
       cnn.eval(); // Set to evaluation mode
 
@@ -197,48 +167,59 @@ describe('Neural Models 100% Coverage', () => {
       });
     });
 
-    it('should handle invalid graph structures', async() => {
-      await assert.rejects(
-        gnn.forward({ nodes: null, edges: [[0, 1]] }),
-        /Invalid nodes/,
-      );
+    it('should handle invalid graph structures', async () => {
+      await assert.rejects(gnn.forward({ nodes: null, edges: [[0, 1]] }), /Invalid nodes/);
 
       await assert.rejects(
         gnn.forward({
           nodes: [[1, 2, 3]],
           edges: null,
         }),
-        /Invalid edges/,
+        /Invalid edges/
       );
     });
 
-    it('should handle disconnected graphs', async() => {
+    it('should handle disconnected graphs', async () => {
       const result = await gnn.forward({
-        nodes: [[1, 2], [3, 4], [5, 6]],
+        nodes: [
+          [1, 2],
+          [3, 4],
+          [5, 6],
+        ],
         edges: [[0, 1]], // Node 2 is disconnected
       });
 
       assert(result, 'Should handle disconnected nodes');
     });
 
-    it('should handle self-loops in graphs', async() => {
+    it('should handle self-loops in graphs', async () => {
       const result = await gnn.forward({
-        nodes: [[1, 2], [3, 4]],
-        edges: [[0, 0], [0, 1], [1, 1]], // Self-loops
+        nodes: [
+          [1, 2],
+          [3, 4],
+        ],
+        edges: [
+          [0, 0],
+          [0, 1],
+          [1, 1],
+        ], // Self-loops
       });
 
       assert(result, 'Should handle self-loops');
     });
 
-    it('should handle message passing failures', async() => {
+    it('should handle message passing failures', async () => {
       gnn._messagePassingEnabled = false;
 
       await assert.rejects(
         gnn.forward({
-          nodes: [[1, 2], [3, 4]],
+          nodes: [
+            [1, 2],
+            [3, 4],
+          ],
           edges: [[0, 1]],
         }),
-        /Message passing disabled/,
+        /Message passing disabled/
       );
     });
   });
@@ -254,17 +235,17 @@ describe('Neural Models 100% Coverage', () => {
       });
     });
 
-    it('should handle sequence length mismatches', async() => {
+    it('should handle sequence length mismatches', async () => {
       await assert.rejects(
         gru.forward({
           sequence: [[1, 2, 3]], // Wrong input size
           lengths: [10], // Mismatched length
         }),
-        /Sequence length mismatch/,
+        /Sequence length mismatch/
       );
     });
 
-    it('should handle bidirectional processing edge cases', async() => {
+    it('should handle bidirectional processing edge cases', async () => {
       gru.setBidirectional(true);
 
       const result = await gru.forward({
@@ -275,16 +256,13 @@ describe('Neural Models 100% Coverage', () => {
       assert(result, 'Should handle single timestep in bidirectional mode');
     });
 
-    it('should handle gradient clipping edge cases', async() => {
+    it('should handle gradient clipping edge cases', async () => {
       gru.setGradientClipping(-1); // Invalid negative clipping
 
-      await assert.rejects(
-        gru.backward({ gradOutput: [[1, 2, 3]] }),
-        /Invalid gradient clipping/,
-      );
+      await assert.rejects(gru.backward({ gradOutput: [[1, 2, 3]] }), /Invalid gradient clipping/);
     });
 
-    it('should handle hidden state reset', async() => {
+    it('should handle hidden state reset', async () => {
       // Process a sequence
       await gru.forward({
         sequence: [new Array(100).fill(1)],
@@ -315,7 +293,7 @@ describe('Neural Models 100% Coverage', () => {
       });
     });
 
-    it('should handle skip connection failures', async() => {
+    it('should handle skip connection failures', async () => {
       resnet._skipConnections = false;
 
       const result = await resnet.forward({
@@ -325,7 +303,7 @@ describe('Neural Models 100% Coverage', () => {
       assert(result, 'Should work without skip connections (plain network)');
     });
 
-    it('should handle identity mapping edge cases', async() => {
+    it('should handle identity mapping edge cases', async () => {
       // Test with very deep network
       const deepResnet = new ResNetModel({
         numClasses: 10,
@@ -340,14 +318,14 @@ describe('Neural Models 100% Coverage', () => {
       assert(result, 'Should handle very deep architectures');
     });
 
-    it('should handle bottleneck architecture edge cases', async() => {
+    it('should handle bottleneck architecture edge cases', async () => {
       resnet.useBottleneck(true);
 
       await assert.rejects(
         resnet.forward({
           image: new Array(2).fill(new Array(224).fill(new Array(224).fill(0))), // Wrong channels
         }),
-        /Channel dimension mismatch/,
+        /Channel dimension mismatch/
       );
     });
   });
@@ -364,7 +342,7 @@ describe('Neural Models 100% Coverage', () => {
       });
     });
 
-    it('should handle attention mask edge cases', async() => {
+    it('should handle attention mask edge cases', async () => {
       const result = await transformer.forward({
         input: [[1, 2, 3, 4]],
         mask: null, // No mask (full attention)
@@ -373,17 +351,17 @@ describe('Neural Models 100% Coverage', () => {
       assert(result, 'Should work without attention mask');
     });
 
-    it('should handle padding mask edge cases', async() => {
+    it('should handle padding mask edge cases', async () => {
       await assert.rejects(
         transformer.forward({
           input: [[1, 2, 0, 0]], // Padded sequence
           paddingMask: [[1, 1, 1, 1]], // Wrong mask (no padding indicated)
         }),
-        /Padding mask mismatch/,
+        /Padding mask mismatch/
       );
     });
 
-    it('should handle position encoding overflow', async() => {
+    it('should handle position encoding overflow', async () => {
       // Very long sequence
       const longSequence = new Array(5000).fill(1);
 
@@ -391,22 +369,22 @@ describe('Neural Models 100% Coverage', () => {
         transformer.forward({
           input: [longSequence],
         }),
-        /Sequence too long/,
+        /Sequence too long/
       );
     });
 
-    it('should handle multi-head attention failures', async() => {
+    it('should handle multi-head attention failures', async () => {
       transformer._heads[0] = null; // Corrupt one attention head
 
       await assert.rejects(
         transformer.forward({
           input: [[1, 2, 3, 4]],
         }),
-        /Attention head failure/,
+        /Attention head failure/
       );
     });
 
-    it('should handle layer normalization edge cases', async() => {
+    it('should handle layer normalization edge cases', async () => {
       transformer.disableLayerNorm();
 
       const result = await transformer.forward({
@@ -418,7 +396,7 @@ describe('Neural Models 100% Coverage', () => {
   });
 
   describe('Model Ensemble Edge Cases', () => {
-    it('should handle ensemble with mixed model types', async() => {
+    it('should handle ensemble with mixed model types', async () => {
       const models = [
         new CNNModel({ inputChannels: 3, outputClasses: 10 }),
         new GRUModel({ inputSize: 100, hiddenSize: 128 }),
@@ -430,7 +408,7 @@ describe('Neural Models 100% Coverage', () => {
 
       await assert.rejects(
         ensemblePredict(ensemble, { data: [1, 2, 3] }),
-        /Incompatible model types/,
+        /Incompatible model types/
       );
     });
   });
@@ -438,11 +416,9 @@ describe('Neural Models 100% Coverage', () => {
 
 // Helper function for ensemble prediction
 async function ensemblePredict(ensemble, input) {
-  const predictions = await Promise.all(
-    ensemble.models.map(model => model.forward(input)),
-  );
+  const predictions = await Promise.all(ensemble.models.map((model) => model.forward(input)));
 
-  if (!predictions.every(p => p.length === predictions[0].length)) {
+  if (!predictions.every((p) => p.length === predictions[0].length)) {
     throw new Error('Incompatible model types in ensemble');
   }
 

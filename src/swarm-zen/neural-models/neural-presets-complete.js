@@ -115,7 +115,11 @@ export const COMPLETE_NEURAL_PRESETS = {
         backbone: 'CSPDarknet',
         neck: 'PANet',
         head: 'YOLOv5Head',
-        anchors: [[10, 13, 16, 30, 33, 23], [30, 61, 62, 45, 59, 119], [116, 90, 156, 198, 373, 326]],
+        anchors: [
+          [10, 13, 16, 30, 33, 23],
+          [30, 61, 62, 45, 59, 119],
+          [116, 90, 156, 198, 373, 326],
+        ],
       },
       cognitivePatterns: ['systems', 'critical', 'convergent'],
       performance: {
@@ -849,7 +853,7 @@ export class CognitivePatternSelector {
       patterns.push('critical');
     }
     // Remove highly exploratory patterns for precision
-    return patterns.filter(p => p !== 'divergent' || patterns.length > 2);
+    return patterns.filter((p) => p !== 'divergent' || patterns.length > 2);
   }
 
   /**
@@ -870,8 +874,8 @@ export class CognitivePatternSelector {
    */
   handleHighComplexity(patterns) {
     // For high complexity, ensure both analytical and creative patterns
-    const hasAnalytical = patterns.some(p => ['convergent', 'critical', 'systems'].includes(p));
-    const hasCreative = patterns.some(p => ['divergent', 'lateral', 'abstract'].includes(p));
+    const hasAnalytical = patterns.some((p) => ['convergent', 'critical', 'systems'].includes(p));
+    const hasCreative = patterns.some((p) => ['divergent', 'lateral', 'abstract'].includes(p));
 
     if (!hasAnalytical) {
       patterns.push('systems');
@@ -919,7 +923,7 @@ export class CognitivePatternSelector {
     let diversityScore = 0;
     const typesCovered = new Set();
 
-    patterns.forEach(pattern => {
+    patterns.forEach((pattern) => {
       Object.entries(patternTypes).forEach(([type, typePatterns]) => {
         if (typePatterns.includes(pattern)) {
           typesCovered.add(type);
@@ -948,15 +952,15 @@ export class CognitivePatternSelector {
     };
 
     // First, ensure one pattern from each type if possible
-    Object.values(patternTypes).forEach(typePatterns => {
-      const available = patterns.filter(p => typePatterns.includes(p));
+    Object.values(patternTypes).forEach((typePatterns) => {
+      const available = patterns.filter((p) => typePatterns.includes(p));
       if (available.length > 0 && selected.length < targetCount) {
         selected.push(available[0]);
       }
     });
 
     // Fill remaining slots with most unique patterns
-    patterns.forEach(pattern => {
+    patterns.forEach((pattern) => {
       if (!selected.includes(pattern) && selected.length < targetCount) {
         selected.push(pattern);
       }
@@ -1028,8 +1032,8 @@ export class CognitivePatternSelector {
 
     // Cognitive pattern alignment
     if (requirements.cognitivePreference) {
-      const hasPreferred = preset.cognitivePatterns.some(p =>
-        p === requirements.cognitivePreference,
+      const hasPreferred = preset.cognitivePatterns.some(
+        (p) => p === requirements.cognitivePreference
       );
       if (hasPreferred) {
         score += 0.2;
@@ -1102,7 +1106,8 @@ export class NeuralAdaptationEngine {
 
     return {
       accuracyGain: currentAccuracy - baselineAccuracy,
-      relativeGain: baselineAccuracy > 0 ? (currentAccuracy - baselineAccuracy) / baselineAccuracy : 0,
+      relativeGain:
+        baselineAccuracy > 0 ? (currentAccuracy - baselineAccuracy) / baselineAccuracy : 0,
       efficiency: result.trainingTime ? baseline.trainingTime / result.trainingTime : 1,
     };
   }
@@ -1155,11 +1160,11 @@ export class NeuralAdaptationEngine {
   analyzePatternEffectiveness(history) {
     const patternPerformance = new Map();
 
-    history.adaptations.forEach(adaptation => {
+    history.adaptations.forEach((adaptation) => {
       const patterns = adaptation.result.cognitivePatterns || [];
       const gain = adaptation.performanceGain.accuracyGain;
 
-      patterns.forEach(pattern => {
+      patterns.forEach((pattern) => {
         if (!patternPerformance.has(pattern)) {
           patternPerformance.set(pattern, { totalGain: 0, count: 0 });
         }
@@ -1188,8 +1193,8 @@ export class NeuralAdaptationEngine {
    */
   suggestHyperparameters(history) {
     // Analyze successful adaptations
-    const successfulAdaptations = history.adaptations.filter(a =>
-      a.performanceGain.accuracyGain > 0,
+    const successfulAdaptations = history.adaptations.filter(
+      (a) => a.performanceGain.accuracyGain > 0
     );
 
     if (successfulAdaptations.length === 0) {
@@ -1207,7 +1212,7 @@ export class NeuralAdaptationEngine {
       epochs: 0,
     };
 
-    successfulAdaptations.forEach(adaptation => {
+    successfulAdaptations.forEach((adaptation) => {
       const config = adaptation.result.trainingConfig || {};
       hyperparams.learningRate += config.learningRate || 0.001;
       hyperparams.batchSize += config.batchSize || 32;
@@ -1227,8 +1232,10 @@ export class NeuralAdaptationEngine {
    */
   recommendTrainingStrategy(history) {
     const recentPerformance = history.adaptations.slice(-5);
-    const isImproving = recentPerformance.every((a, i) =>
-      i === 0 || a.performanceGain.accuracyGain >= recentPerformance[i - 1].performanceGain.accuracyGain,
+    const isImproving = recentPerformance.every(
+      (a, i) =>
+        i === 0 ||
+        a.performanceGain.accuracyGain >= recentPerformance[i - 1].performanceGain.accuracyGain
     );
 
     if (isImproving) {
@@ -1248,7 +1255,6 @@ export class NeuralAdaptationEngine {
         'Consider data augmentation',
       ],
     };
-
   }
 
   /**
@@ -1279,7 +1285,7 @@ export class NeuralAdaptationEngine {
       const modelStats = insights.modelTypes[modelKey];
       modelStats.count++;
 
-      history.adaptations.forEach(adaptation => {
+      history.adaptations.forEach((adaptation) => {
         const gain = adaptation.performanceGain.accuracyGain;
         modelStats.avgGain += gain;
         modelStats.bestGain = Math.max(modelStats.bestGain, gain);
@@ -1289,7 +1295,7 @@ export class NeuralAdaptationEngine {
     });
 
     // Calculate averages
-    Object.values(insights.modelTypes).forEach(stats => {
+    Object.values(insights.modelTypes).forEach((stats) => {
       if (stats.count > 0) {
         stats.avgGain /= stats.count;
       }

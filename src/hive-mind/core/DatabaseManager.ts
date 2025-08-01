@@ -5,9 +5,9 @@
  * using SQLite as the persistence layer.
  */
 
-import path from 'path';
-import fs from 'fs/promises';
 import { EventEmitter } from 'events';
+import fs from 'fs/promises';
+import path from 'path';
 import { fileURLToPath } from 'url';
 
 // ES module compatibility - define __dirname
@@ -47,10 +47,10 @@ export class DatabaseManager extends EventEmitter {
   async initialize(): Promise<void> {
     // Load SQLite wrapper functions
     await loadSQLiteWrapper();
-    
+
     // Check if SQLite is available
     const sqliteAvailable = await isSQLiteAvailable();
-    
+
     if (!sqliteAvailable) {
       console.warn('SQLite not available, using in-memory storage for Hive Mind');
       this.initializeInMemoryFallback();
@@ -97,12 +97,12 @@ export class DatabaseManager extends EventEmitter {
       memory: new Map(),
       communications: new Map(),
       performance_metrics: new Map(),
-      consensus: new Map()
+      consensus: new Map(),
     };
 
     // Create mock statement methods
     this.statements = new Map();
-    
+
     if (isWindows && isWindows()) {
       console.info(`
 Note: Hive Mind data will not persist between runs on Windows without SQLite.
@@ -134,28 +134,28 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
       this.db.prepare(`
       INSERT INTO swarms (id, name, topology, queen_mode, max_agents, consensus_threshold, memory_ttl, config)
       VALUES (@id, @name, @topology, @queenMode, @maxAgents, @consensusThreshold, @memoryTTL, @config)
-    `),
+    `)
     );
 
     this.statements.set(
       'getSwarm',
       this.db.prepare(`
       SELECT * FROM swarms WHERE id = ?
-    `),
+    `)
     );
 
     this.statements.set(
       'getActiveSwarm',
       this.db.prepare(`
       SELECT id FROM swarms WHERE is_active = 1 LIMIT 1
-    `),
+    `)
     );
 
     this.statements.set(
       'setActiveSwarm',
       this.db.prepare(`
       UPDATE swarms SET is_active = CASE WHEN id = ? THEN 1 ELSE 0 END
-    `),
+    `)
     );
 
     // Agent statements
@@ -164,28 +164,28 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
       this.db.prepare(`
       INSERT INTO agents (id, swarm_id, name, type, status, capabilities, metadata)
       VALUES (@id, @swarmId, @name, @type, @status, @capabilities, @metadata)
-    `),
+    `)
     );
 
     this.statements.set(
       'getAgent',
       this.db.prepare(`
       SELECT * FROM agents WHERE id = ?
-    `),
+    `)
     );
 
     this.statements.set(
       'getAgents',
       this.db.prepare(`
       SELECT * FROM agents WHERE swarm_id = ?
-    `),
+    `)
     );
 
     this.statements.set(
       'updateAgent',
       this.db.prepare(`
       UPDATE agents SET ? WHERE id = ?
-    `),
+    `)
     );
 
     // Task statements
@@ -201,28 +201,28 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
         @dependencies, @assignedAgents, @requireConsensus, @maxAgents,
         @requiredCapabilities, @metadata
       )
-    `),
+    `)
     );
 
     this.statements.set(
       'getTask',
       this.db.prepare(`
       SELECT * FROM tasks WHERE id = ?
-    `),
+    `)
     );
 
     this.statements.set(
       'getTasks',
       this.db.prepare(`
       SELECT * FROM tasks WHERE swarm_id = ? ORDER BY created_at DESC
-    `),
+    `)
     );
 
     this.statements.set(
       'updateTaskStatus',
       this.db.prepare(`
       UPDATE tasks SET status = ? WHERE id = ?
-    `),
+    `)
     );
 
     // Memory statements
@@ -231,14 +231,14 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
       this.db.prepare(`
       INSERT OR REPLACE INTO memory (key, namespace, value, ttl, metadata)
       VALUES (@key, @namespace, @value, @ttl, @metadata)
-    `),
+    `)
     );
 
     this.statements.set(
       'getMemory',
       this.db.prepare(`
       SELECT * FROM memory WHERE key = ? AND namespace = ?
-    `),
+    `)
     );
 
     this.statements.set(
@@ -248,7 +248,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
       WHERE namespace = ? AND (key LIKE ? OR value LIKE ?)
       ORDER BY last_accessed_at DESC
       LIMIT ?
-    `),
+    `)
     );
 
     // Communication statements
@@ -262,7 +262,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
         @from_agent_id, @to_agent_id, @swarm_id, @message_type,
         @content, @priority, @requires_response
       )
-    `),
+    `)
     );
 
     // Performance statements
@@ -271,7 +271,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
       this.db.prepare(`
       INSERT INTO performance_metrics (swarm_id, agent_id, metric_type, metric_value, metadata)
       VALUES (@swarm_id, @agent_id, @metric_type, @metric_value, @metadata)
-    `),
+    `)
     );
   }
 
@@ -310,7 +310,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
       LEFT JOIN agents a ON s.id = a.swarm_id 
       GROUP BY s.id 
       ORDER BY s.created_at DESC
-    `,
+    `
       )
       .all();
   }
@@ -419,7 +419,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
           WHEN 'low' THEN 4 
         END,
         created_at ASC
-    `,
+    `
       )
       .all(swarmId);
   }
@@ -430,7 +430,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
         `
       SELECT * FROM tasks 
       WHERE swarm_id = ? AND status IN ('assigned', 'in_progress')
-    `,
+    `
       )
       .all(swarmId);
   }
@@ -466,7 +466,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
       UPDATE memory 
       SET access_count = access_count + 1, last_accessed_at = CURRENT_TIMESTAMP
       WHERE key = ? AND namespace = ?
-    `,
+    `
       )
       .run(key, namespace);
   }
@@ -490,7 +490,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
       WHERE namespace = ? 
       ORDER BY last_accessed_at DESC 
       LIMIT ?
-    `,
+    `
       )
       .all(namespace, limit);
   }
@@ -503,7 +503,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
         COUNT(*) as totalEntries,
         SUM(LENGTH(value)) as totalSize
       FROM memory
-    `,
+    `
       )
       .get();
 
@@ -521,7 +521,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
         AVG(ttl) as avgTTL
       FROM memory
       WHERE namespace = ?
-    `,
+    `
         )
         .get(namespace) || { entries: 0, size: 0, avgTTL: 0 }
     );
@@ -538,7 +538,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
       SELECT * FROM memory 
       ORDER BY last_accessed_at DESC 
       LIMIT ?
-    `,
+    `
       )
       .all(limit);
   }
@@ -549,7 +549,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
         `
       SELECT * FROM memory 
       WHERE created_at < datetime('now', '-' || ? || ' days')
-    `,
+    `
       )
       .all(daysOld);
   }
@@ -561,7 +561,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
       UPDATE memory 
       SET value = ?, access_count = ?, last_accessed_at = ?
       WHERE key = ? AND namespace = ?
-    `,
+    `
       )
       .run(entry.value, entry.accessCount, entry.lastAccessedAt, entry.key, entry.namespace);
   }
@@ -573,7 +573,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
         `
       DELETE FROM memory 
       WHERE metadata LIKE '%"swarmId":"${swarmId}"%'
-    `,
+    `
       )
       .run();
   }
@@ -584,7 +584,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
         `
       DELETE FROM memory 
       WHERE namespace = ? AND created_at < datetime('now', '-' || ? || ' seconds')
-    `,
+    `
       )
       .run(namespace, ttl);
   }
@@ -600,7 +600,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
         ORDER BY last_accessed_at DESC 
         LIMIT ?
       )
-    `,
+    `
       )
       .run(namespace, namespace, maxEntries);
   }
@@ -625,7 +625,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
           WHEN 'low' THEN 4 
         END,
         timestamp ASC
-    `,
+    `
       )
       .all(agentId);
   }
@@ -637,7 +637,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
       UPDATE communications 
       SET delivered_at = CURRENT_TIMESTAMP 
       WHERE id = ?
-    `,
+    `
       )
       .run(messageId);
   }
@@ -649,7 +649,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
       UPDATE communications 
       SET read_at = CURRENT_TIMESTAMP 
       WHERE id = ?
-    `,
+    `
       )
       .run(messageId);
   }
@@ -660,7 +660,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
         `
       SELECT * FROM communications 
       WHERE swarm_id = ? AND timestamp > datetime('now', '-' || ? || ' milliseconds')
-    `,
+    `
       )
       .all(swarmId, timeWindow);
   }
@@ -678,7 +678,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
         @id, @swarmId, @taskId, @proposal, @requiredThreshold,
         'pending', @deadline
       )
-    `,
+    `
       )
       .run({
         id: proposal.id,
@@ -694,7 +694,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
     proposalId: string,
     agentId: string,
     vote: boolean,
-    reason?: string,
+    reason?: string
   ): Promise<void> {
     const proposal = this.db.prepare('SELECT * FROM consensus WHERE id = ?').get(proposalId);
     if (!proposal) return;
@@ -714,7 +714,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
       UPDATE consensus 
       SET votes = ?, current_votes = ?, total_voters = ?, status = ?
       WHERE id = ?
-    `,
+    `
       )
       .run(JSON.stringify(votes), positiveVotes, totalVoters, status, proposalId);
   }
@@ -737,7 +737,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
         SUM(CASE WHEN status = 'busy' THEN 1 ELSE 0 END) as busyAgents
       FROM agents 
       WHERE swarm_id = ?
-    `,
+    `
       )
       .get(swarmId);
 
@@ -748,7 +748,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
         COUNT(*) as taskBacklog
       FROM tasks 
       WHERE swarm_id = ? AND status IN ('pending', 'assigned')
-    `,
+    `
       )
       .get(swarmId);
 
@@ -772,7 +772,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
       FROM tasks 
       WHERE swarm_id = ? AND completed_at IS NOT NULL
       GROUP BY strategy
-    `,
+    `
       )
       .all(swarmId);
 
@@ -798,7 +798,7 @@ For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/
       AND metadata LIKE '%"swarmId":"${swarmId}"%'
       ORDER BY created_at DESC
       LIMIT 100
-    `,
+    `
       )
       .all();
   }

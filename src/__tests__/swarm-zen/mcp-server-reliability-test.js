@@ -36,7 +36,7 @@ let mcpProcess = null;
 
 // Test utilities
 async function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function addTestResult(name, status, message, error = null, duration = null) {
@@ -55,7 +55,9 @@ function addTestResult(name, status, message, error = null, duration = null) {
   if (status === 'failed') {
     results.summary.failed++;
   }
-  console.log(`${status === 'passed' ? '✅' : '❌'} ${name}: ${message}${duration ? ` (${duration}ms)` : ''}`);
+  console.log(
+    `${status === 'passed' ? '✅' : '❌'} ${name}: ${message}${duration ? ` (${duration}ms)` : ''}`
+  );
 }
 
 // Enhanced server startup test with detailed diagnostics
@@ -85,27 +87,47 @@ async function testServerStartup() {
       console.log('  📥 stderr:', output.trim());
 
       // Enhanced readiness detection
-      if (output.includes('MCP server ready') ||
-          output.includes('Listening on') ||
-          output.includes('stdin/stdout') ||
-          output.includes('stdio mode')) {
+      if (
+        output.includes('MCP server ready') ||
+        output.includes('Listening on') ||
+        output.includes('stdin/stdout') ||
+        output.includes('stdio mode')
+      ) {
         const duration = Date.now() - startTime;
         serverReady = true;
-        addTestResult('MCP Server Startup', 'passed', 'Server started successfully', null, duration);
+        addTestResult(
+          'MCP Server Startup',
+          'passed',
+          'Server started successfully',
+          null,
+          duration
+        );
         resolve({ serverReady: true, logs: initializationLogs });
       }
     });
 
     mcpProcess.on('error', (error) => {
       const duration = Date.now() - startTime;
-      addTestResult('MCP Server Startup', 'failed', 'Failed to start server process', error.message, duration);
+      addTestResult(
+        'MCP Server Startup',
+        'failed',
+        'Failed to start server process',
+        error.message,
+        duration
+      );
       reject({ error, logs: initializationLogs });
     });
 
     mcpProcess.on('exit', (code, signal) => {
       if (!serverReady) {
         const duration = Date.now() - startTime;
-        addTestResult('MCP Server Startup', 'failed', `Server exited unexpectedly (code: ${code}, signal: ${signal})`, null, duration);
+        addTestResult(
+          'MCP Server Startup',
+          'failed',
+          `Server exited unexpectedly (code: ${code}, signal: ${signal})`,
+          null,
+          duration
+        );
         reject({ error: `Process exited with code ${code}`, logs: initializationLogs });
       }
     });
@@ -118,7 +140,13 @@ async function testServerStartup() {
         initializationLogs.forEach((log, index) => {
           console.log(`    ${index + 1}. [${log.type}] ${log.data}`);
         });
-        addTestResult('MCP Server Startup', 'failed', 'Server startup timeout (30s)', null, duration);
+        addTestResult(
+          'MCP Server Startup',
+          'failed',
+          'Server startup timeout (30s)',
+          null,
+          duration
+        );
         reject({ error: 'Server startup timeout', logs: initializationLogs });
       }
     }, 30000); // 30 second timeout
@@ -152,7 +180,13 @@ async function testStdioCommunication() {
         const response = JSON.parse(data.toString().trim());
         if (response.jsonrpc === '2.0' && response.id === 1) {
           responseReceived = true;
-          addTestResult('Stdio Communication', 'passed', 'JSON-RPC communication working', null, duration);
+          addTestResult(
+            'Stdio Communication',
+            'passed',
+            'JSON-RPC communication working',
+            null,
+            duration
+          );
         } else {
           addTestResult('Stdio Communication', 'failed', 'Invalid JSON-RPC response format');
         }
@@ -172,7 +206,7 @@ async function testStdioCommunication() {
 
     // Send test request
     try {
-      mcpProcess.stdin.write(`${JSON.stringify(testRequest) }\n`);
+      mcpProcess.stdin.write(`${JSON.stringify(testRequest)}\n`);
     } catch (error) {
       addTestResult('Stdio Communication', 'failed', 'Failed to write to stdin', error.message);
       resolve();
@@ -205,21 +239,35 @@ async function testServerStability() {
   return new Promise((resolve) => {
     const responseHandler = (data) => {
       try {
-        const lines = data.toString().split('\n').filter(line => line.trim());
+        const lines = data
+          .toString()
+          .split('\n')
+          .filter((line) => line.trim());
         for (const line of lines) {
           const response = JSON.parse(line);
           if (response.jsonrpc === '2.0' && response.id !== undefined) {
             responsesReceived++;
             if (responsesReceived === expectedResponses) {
               const duration = Date.now() - startTime;
-              addTestResult('Server Stability', 'passed', `All ${expectedResponses} requests handled successfully`, null, duration);
+              addTestResult(
+                'Server Stability',
+                'passed',
+                `All ${expectedResponses} requests handled successfully`,
+                null,
+                duration
+              );
               mcpProcess.stdout.removeListener('data', responseHandler);
               resolve();
             }
           }
         }
       } catch (error) {
-        addTestResult('Server Stability', 'failed', 'Invalid JSON in stability test', error.message);
+        addTestResult(
+          'Server Stability',
+          'failed',
+          'Invalid JSON in stability test',
+          error.message
+        );
         mcpProcess.stdout.removeListener('data', responseHandler);
         resolve();
       }
@@ -236,13 +284,19 @@ async function testServerStability() {
         params: req.params,
       };
 
-      mcpProcess.stdin.write(`${JSON.stringify(request) }\n`);
+      mcpProcess.stdin.write(`${JSON.stringify(request)}\n`);
     });
 
     setTimeout(() => {
       if (responsesReceived < expectedResponses) {
         const duration = Date.now() - startTime;
-        addTestResult('Server Stability', 'failed', `Only ${responsesReceived}/${expectedResponses} responses received`, null, duration);
+        addTestResult(
+          'Server Stability',
+          'failed',
+          `Only ${responsesReceived}/${expectedResponses} responses received`,
+          null,
+          duration
+        );
         mcpProcess.stdout.removeListener('data', responseHandler);
         resolve();
       }
@@ -270,7 +324,13 @@ async function testGracefulShutdown() {
       if (code === 0 || signal === 'SIGTERM') {
         addTestResult('Graceful Shutdown', 'passed', 'Server shutdown gracefully', null, duration);
       } else {
-        addTestResult('Graceful Shutdown', 'failed', `Unexpected exit code: ${code}, signal: ${signal}`, null, duration);
+        addTestResult(
+          'Graceful Shutdown',
+          'failed',
+          `Unexpected exit code: ${code}, signal: ${signal}`,
+          null,
+          duration
+        );
       }
       resolve();
     });
@@ -302,7 +362,7 @@ async function testGracefulShutdown() {
 
 // Generate comprehensive report
 async function generateReport() {
-  results.summary.passRate = (results.summary.passed / results.summary.total * 100).toFixed(2);
+  results.summary.passRate = ((results.summary.passed / results.summary.total) * 100).toFixed(2);
 
   const resultsDir = path.join(__dirname, '..', 'docker', 'test-results', 'mcp-reliability');
   const resultsPath = path.join(resultsDir, 'mcp-server-reliability.json');
@@ -361,7 +421,7 @@ async function runReliabilityTests() {
 }
 
 // Handle interrupts
-process.on('SIGINT', async() => {
+process.on('SIGINT', async () => {
   console.log('\nInterrupted, cleaning up...');
   await cleanup();
   process.exit(1);

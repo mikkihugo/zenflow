@@ -3,40 +3,34 @@
  * Unified entry point for all claude-zen components
  */
 
+// CLI and UI
+export * from './cli/cli-main';
+export * from './hive-mind/core/Agent';
+// Hive Mind and Swarm Orchestration
+export * from './hive-mind/core/HiveMind';
+export * from './hive-mind/integration/ConsensusEngine';
+export * from './hive-mind/integration/SwarmOrchestrator';
+// Maestro coordination
+export * from './maestro/maestro-orchestrator';
+export * from './maestro/maestro-swarm-coordinator';
 // Core MCP integration
 export * from './mcp/claude-zen-server';
 export * from './mcp/tools/swarm-tools';
 export * from './mcp/types/mcp-types';
-
-// Hive Mind and Swarm Orchestration
-export * from './hive-mind/core/HiveMind';
-export * from './hive-mind/core/Agent';
-export * from './hive-mind/integration/SwarmOrchestrator';
-export * from './hive-mind/integration/ConsensusEngine';
-
-// Maestro coordination
-export * from './maestro/maestro-orchestrator';
-export * from './maestro/maestro-swarm-coordinator';
-
-// CLI and UI
-export * from './cli/cli-main';
-export * from './ui/swarm-tui';
-
-// Plugin system
-export * from './plugins/plugin-manager';
-
-// Utils and core services
-export * from './utils/logger';
-export * from './utils/types';
-export * from './services/agentic-flow-hooks';
-
 // Neural network integration
 export * from './neural/neural-bridge';
 
+// Plugin system
+export * from './plugins/plugin-manager';
+export * from './services/agentic-flow-hooks';
+export * from './swarm-zen/agent';
 // Swarm-zen integration (from ruv-FANN-zen submodule)
 export * from './swarm-zen/index';
 export * from './swarm-zen/neural';
-export * from './swarm-zen/agent';
+export * from './ui/swarm-tui';
+// Utils and core services
+export * from './utils/logger';
+export * from './utils/types';
 
 /**
  * Claude-Zen integrated system configuration
@@ -48,27 +42,27 @@ export interface ClaudeZenConfig {
     port?: number;
     host?: string;
   };
-  
+
   // Swarm orchestration
   swarm: {
     maxAgents: number;
     topology: 'mesh' | 'hierarchical' | 'ring' | 'star';
     strategy: 'balanced' | 'specialized' | 'adaptive' | 'parallel';
   };
-  
+
   // Neural network settings
   neural: {
     enabled: boolean;
     wasmPath?: string;
     gpuAcceleration?: boolean;
   };
-  
+
   // Database and persistence
   persistence: {
     provider: 'sqlite' | 'postgresql' | 'memory';
     connectionString?: string;
   };
-  
+
   // Plugin configuration
   plugins: {
     paths: string[];
@@ -83,25 +77,25 @@ export const defaultConfig: ClaudeZenConfig = {
   mcp: {
     enabled: true,
     port: 3001,
-    host: 'localhost'
+    host: 'localhost',
   },
   swarm: {
     maxAgents: 8,
     topology: 'hierarchical',
-    strategy: 'parallel'
+    strategy: 'parallel',
   },
   neural: {
     enabled: true,
     wasmPath: './wasm',
-    gpuAcceleration: false
+    gpuAcceleration: false,
   },
   persistence: {
-    provider: 'sqlite'
+    provider: 'sqlite',
   },
   plugins: {
     paths: ['./plugins'],
-    autoLoad: true
-  }
+    autoLoad: true,
+  },
 };
 
 /**
@@ -109,13 +103,13 @@ export const defaultConfig: ClaudeZenConfig = {
  */
 export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {}): Promise<void> {
   const finalConfig = { ...defaultConfig, ...config };
-  
+
   console.log('🚀 Initializing Claude-Zen Integrated System');
   console.log(`   MCP Server: ${finalConfig.mcp.enabled ? 'Enabled' : 'Disabled'}`);
   console.log(`   Swarm Topology: ${finalConfig.swarm.topology}`);
   console.log(`   Neural Networks: ${finalConfig.neural.enabled ? 'Enabled' : 'Disabled'}`);
   console.log(`   Persistence: ${finalConfig.persistence.provider}`);
-  
+
   // Initialize components based on configuration
   if (finalConfig.mcp.enabled) {
     const { ClaudeZenMCPServer } = await import('./mcp/claude-zen-server');
@@ -123,13 +117,13 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
     await mcpServer.start();
     console.log('✅ MCP Server initialized');
   }
-  
+
   // Initialize SwarmOrchestrator
   const { SwarmOrchestrator } = await import('./hive-mind/integration/SwarmOrchestrator');
   const orchestrator = SwarmOrchestrator.getInstance();
   await orchestrator.initialize();
   console.log('✅ Swarm Orchestrator initialized');
-  
+
   // Initialize neural bridge if enabled
   if (finalConfig.neural.enabled) {
     const { NeuralBridge } = await import('./neural/neural-bridge');
@@ -137,7 +131,7 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
     await neuralBridge.initialize();
     console.log('✅ Neural Bridge initialized');
   }
-  
+
   // Initialize plugin system
   if (finalConfig.plugins.autoLoad) {
     const { PluginManager } = await import('./plugins/plugin-manager');
@@ -145,7 +139,7 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
     await pluginManager.initialize();
     console.log('✅ Plugin Manager initialized');
   }
-  
+
   console.log('🎯 Claude-Zen system ready for coordination!');
 }
 
@@ -154,11 +148,11 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
  */
 export async function shutdownClaudeZen(): Promise<void> {
   console.log('🛑 Shutting down Claude-Zen system...');
-  
+
   // Shutdown orchestrator
   const { SwarmOrchestrator } = await import('./hive-mind/integration/SwarmOrchestrator');
   const orchestrator = SwarmOrchestrator.getInstance();
   await orchestrator.shutdown();
-  
+
   console.log('✅ Claude-Zen system shutdown complete');
 }

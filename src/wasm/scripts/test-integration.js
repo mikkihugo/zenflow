@@ -53,8 +53,10 @@ class IntegrationTester {
     log(`\n📊 Test Results:`, 'cyan');
     log(`   ✅ Passed: ${this.passed}`, 'green');
     log(`   ❌ Failed: ${this.failed}`, this.failed > 0 ? 'red' : 'green');
-    log(`   📈 Success Rate: ${((this.passed / this.tests.length) * 100).toFixed(1)}%`,
-      this.failed === 0 ? 'green' : 'yellow');
+    log(
+      `   📈 Success Rate: ${((this.passed / this.tests.length) * 100).toFixed(1)}%`,
+      this.failed === 0 ? 'green' : 'yellow'
+    );
 
     return this.failed === 0;
   }
@@ -331,8 +333,10 @@ async function main() {
           'temp_output.wasm',
         ]);
 
-        if (!result.stdout.includes('Transpilation complete') &&
-            !result.stdout.includes('Success')) {
+        if (
+          !result.stdout.includes('Transpilation complete') &&
+          !result.stdout.includes('Success')
+        ) {
           throw new Error('CLI transpilation did not complete successfully');
         }
       } finally {
@@ -361,8 +365,7 @@ async function main() {
 
       const typesContent = fs.readFileSync(typesFile, 'utf8');
 
-      if (!typesContent.includes('TranspileOptions') ||
-          !typesContent.includes('transpileCuda')) {
+      if (!typesContent.includes('TranspileOptions') || !typesContent.includes('transpileCuda')) {
         throw new Error('TypeScript definitions incomplete');
       }
     } catch (error) {

@@ -6,10 +6,10 @@
  */
 
 import { spawn } from 'child_process';
-import WebSocket from 'ws';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import WebSocket from 'ws';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,7 +38,7 @@ let ws = null;
 
 // Test utilities
 async function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function addTestResult(name, status, message, error = null) {
@@ -84,7 +84,6 @@ async function startMCPServer() {
         resolve();
       }
     });
-
 
     mcpProcess.on('error', (error) => {
       addTestResult('MCP Server Start', 'failed', 'Failed to start server', error.message);
@@ -294,7 +293,7 @@ async function cleanup() {
 
 // Generate report
 async function generateReport() {
-  results.summary.passRate = (results.summary.passed / results.summary.total * 100).toFixed(2);
+  results.summary.passRate = ((results.summary.passed / results.summary.total) * 100).toFixed(2);
 
   const resultsPath = path.join(__dirname, '..', 'test-results', 'mcp-validation.json');
   await fs.mkdir(path.dirname(resultsPath), { recursive: true });
@@ -333,7 +332,7 @@ async function runTests() {
 }
 
 // Handle interrupts
-process.on('SIGINT', async() => {
+process.on('SIGINT', async () => {
   console.log('\nInterrupted, cleaning up...');
   await cleanup();
   process.exit(1);

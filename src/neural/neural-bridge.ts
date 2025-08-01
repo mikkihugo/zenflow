@@ -47,7 +47,7 @@ export class NeuralBridge {
       wasmPath: './wasm',
       gpuAcceleration: false,
       enableTraining: true,
-      ...config
+      ...config,
     };
   }
 
@@ -88,11 +88,7 @@ export class NeuralBridge {
   /**
    * Create a new neural network
    */
-  async createNetwork(
-    id: string,
-    type: NeuralNetwork['type'],
-    layers: number[]
-  ): Promise<string> {
+  async createNetwork(id: string, type: NeuralNetwork['type'], layers: number[]): Promise<string> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -101,7 +97,7 @@ export class NeuralBridge {
       id,
       type,
       layers,
-      status: 'idle'
+      status: 'idle',
     };
 
     this.networks.set(id, network);
@@ -133,14 +129,14 @@ export class NeuralBridge {
     try {
       // Simulate training process
       const startTime = Date.now();
-      
+
       // In a real implementation, this would use the actual neural network
       // training algorithms from the integrated ruv-FANN components
       await this.simulateTraining(network, trainingData, epochs);
-      
+
       const trainingTime = Date.now() - startTime;
       network.status = 'idle';
-      
+
       logger.info(`Training completed for ${networkId} in ${trainingTime}ms`);
       return true;
     } catch (error) {
@@ -166,13 +162,13 @@ export class NeuralBridge {
       // Simulate prediction
       const outputs = await this.simulatePrediction(network, inputs);
       const processingTime = Date.now() - startTime;
-      
+
       network.status = 'idle';
-      
+
       return {
         outputs,
         confidence: Math.random() * 0.3 + 0.7, // Simulate confidence 70-100%
-        processingTime
+        processingTime,
       };
     } catch (error) {
       network.status = 'error';
@@ -212,13 +208,13 @@ export class NeuralBridge {
     wasmEnabled: boolean;
   } {
     const networks = Array.from(this.networks.values());
-    
+
     return {
       totalNetworks: networks.length,
-      activeNetworks: networks.filter(n => n.status !== 'idle').length,
-      trainingNetworks: networks.filter(n => n.status === 'training').length,
+      activeNetworks: networks.filter((n) => n.status !== 'idle').length,
+      trainingNetworks: networks.filter((n) => n.status === 'training').length,
       gpuEnabled: this.config.gpuAcceleration || false,
-      wasmEnabled: !!this.config.wasmPath
+      wasmEnabled: !!this.config.wasmPath,
     };
   }
 
@@ -226,10 +222,10 @@ export class NeuralBridge {
     // In a real implementation, this would load the actual WASM module
     // from the integrated cuda-wasm components
     logger.info('Loading WASM module...');
-    
+
     // Simulate WASM loading
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     logger.info('WASM module loaded');
   }
 
@@ -237,10 +233,10 @@ export class NeuralBridge {
     // In a real implementation, this would initialize GPU acceleration
     // using the WebGPU components from the integrated system
     logger.info('Initializing GPU acceleration...');
-    
+
     // Simulate GPU initialization
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
     logger.info('GPU acceleration initialized');
   }
 
@@ -252,32 +248,29 @@ export class NeuralBridge {
     // Simulate training progress
     const batchSize = Math.min(10, trainingData.inputs.length);
     const batches = Math.ceil(epochs / batchSize);
-    
+
     for (let batch = 0; batch < batches; batch++) {
       // Simulate batch processing
-      await new Promise(resolve => setTimeout(resolve, 10));
-      
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
       if (batch % 100 === 0) {
         logger.debug(`Training progress: ${Math.round((batch / batches) * 100)}%`);
       }
     }
   }
 
-  private async simulatePrediction(
-    network: NeuralNetwork,
-    inputs: number[]
-  ): Promise<number[]> {
+  private async simulatePrediction(network: NeuralNetwork, inputs: number[]): Promise<number[]> {
     // Simulate prediction computation
-    await new Promise(resolve => setTimeout(resolve, 5));
-    
+    await new Promise((resolve) => setTimeout(resolve, 5));
+
     // Generate mock outputs based on network configuration
     const outputSize = network.layers[network.layers.length - 1];
     const outputs: number[] = [];
-    
+
     for (let i = 0; i < outputSize; i++) {
       outputs.push(Math.random() * 2 - 1); // Random value between -1 and 1
     }
-    
+
     return outputs;
   }
 
@@ -286,17 +279,17 @@ export class NeuralBridge {
    */
   async shutdown(): Promise<void> {
     logger.info('Shutting down Neural Bridge...');
-    
+
     // Stop all training processes
     for (const network of this.networks.values()) {
       if (network.status === 'training') {
         network.status = 'idle';
       }
     }
-    
+
     this.networks.clear();
     this.initialized = false;
-    
+
     logger.info('Neural Bridge shutdown complete');
   }
 }

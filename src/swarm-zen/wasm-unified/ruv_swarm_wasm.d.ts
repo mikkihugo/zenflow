@@ -1,5 +1,5 @@
 /* tslint:disable */
- 
+
 /**
  * SIMD feature detection and runtime capabilities
  */
@@ -18,7 +18,10 @@ export function console_error(message: string): void;
 export function console_warn(message: string): void;
 export function format_js_error(error: any): string;
 export function init(): void;
-export function create_neural_network(layers: Uint32Array, activation: ActivationFunction): WasmNeuralNetwork;
+export function create_neural_network(
+  layers: Uint32Array,
+  activation: ActivationFunction
+): WasmNeuralNetwork;
 export function create_swarm_orchestrator(topology: string): WasmSwarmOrchestrator;
 export function create_forecasting_model(model_type: string): WasmForecastingModel;
 export function get_version(): string;
@@ -170,11 +173,22 @@ export class SimdMatrixOps {
   /**
    * SIMD-optimized matrix-vector multiplication
    */
-  matrix_vector_multiply(matrix: Float32Array, vector: Float32Array, rows: number, cols: number): Float32Array;
+  matrix_vector_multiply(
+    matrix: Float32Array,
+    vector: Float32Array,
+    rows: number,
+    cols: number
+  ): Float32Array;
   /**
    * SIMD-optimized matrix-matrix multiplication (small matrices)
    */
-  matrix_multiply(a: Float32Array, b: Float32Array, a_rows: number, a_cols: number, b_cols: number): Float32Array;
+  matrix_multiply(
+    a: Float32Array,
+    b: Float32Array,
+    a_rows: number,
+    a_cols: number,
+    b_cols: number
+  ): Float32Array;
 }
 /**
  * SIMD-accelerated vector operations
@@ -271,16 +285,73 @@ export interface InitOutput {
   readonly agentmemorypool_deallocate_agent_memory: (a: number, b: number, c: number) => void;
   readonly agentmemorypool_total_memory_usage_mb: (a: number) => number;
   readonly agentmemorypool_is_within_memory_target: (a: number) => number;
-  readonly simdvectorops_dot_product: (a: number, b: number, c: number, d: number, e: number) => number;
-  readonly simdvectorops_vector_add: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
-  readonly simdvectorops_vector_scale: (a: number, b: number, c: number, d: number, e: number) => void;
-  readonly simdvectorops_apply_activation: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
-  readonly simdmatrixops_matrix_vector_multiply: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number) => void;
-  readonly simdmatrixops_matrix_multiply: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => void;
+  readonly simdvectorops_dot_product: (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number
+  ) => number;
+  readonly simdvectorops_vector_add: (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number,
+    f: number
+  ) => void;
+  readonly simdvectorops_vector_scale: (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number
+  ) => void;
+  readonly simdvectorops_apply_activation: (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number,
+    f: number
+  ) => void;
+  readonly simdmatrixops_matrix_vector_multiply: (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number,
+    f: number,
+    g: number,
+    h: number
+  ) => void;
+  readonly simdmatrixops_matrix_multiply: (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number,
+    f: number,
+    g: number,
+    h: number,
+    i: number
+  ) => void;
   readonly __wbg_simdbenchmark_free: (a: number, b: number) => void;
   readonly simdbenchmark_new: () => number;
-  readonly simdbenchmark_benchmark_dot_product: (a: number, b: number, c: number, d: number) => void;
-  readonly simdbenchmark_benchmark_activation: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
+  readonly simdbenchmark_benchmark_dot_product: (
+    a: number,
+    b: number,
+    c: number,
+    d: number
+  ) => void;
+  readonly simdbenchmark_benchmark_activation: (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number,
+    f: number
+  ) => void;
   readonly detect_simd_capabilities: (a: number) => void;
   readonly run_simd_verification_suite: (a: number) => void;
   readonly simd_performance_report: (a: number, b: number, c: number) => void;
@@ -350,8 +421,20 @@ export interface InitOutput {
   readonly __wbg_optimizedagentspawner_free: (a: number, b: number) => void;
   readonly __wbg_optimizedagent_free: (a: number, b: number) => void;
   readonly optimizedagentspawner_new: () => number;
-  readonly optimizedagentspawner_spawn_agent: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
-  readonly optimizedagentspawner_release_agent: (a: number, b: number, c: number, d: number) => void;
+  readonly optimizedagentspawner_spawn_agent: (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number,
+    f: number
+  ) => void;
+  readonly optimizedagentspawner_release_agent: (
+    a: number,
+    b: number,
+    c: number,
+    d: number
+  ) => void;
   readonly optimizedagentspawner_get_performance_report: (a: number, b: number) => void;
   readonly optimizedagentspawner_get_active_agent_count: (a: number) => number;
   readonly optimizedagentspawner_is_within_memory_target: (a: number) => number;
@@ -371,21 +454,26 @@ export interface InitOutput {
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;
 /**
-* Instantiates the given `module`, which can either be bytes or
-* a precompiled `WebAssembly.Module`.
-*
-* @param {{ module: SyncInitInput }} module - Passing `SyncInitInput` directly is deprecated.
-*
-* @returns {InitOutput}
-*/
+ * Instantiates the given `module`, which can either be bytes or
+ * a precompiled `WebAssembly.Module`.
+ *
+ * @param {{ module: SyncInitInput }} module - Passing `SyncInitInput` directly is deprecated.
+ *
+ * @returns {InitOutput}
+ */
 export function initSync(module: { module: SyncInitInput } | SyncInitInput): InitOutput;
 
 /**
-* If `module_or_path` is {RequestInfo} or {URL}, makes a request and
-* for everything else, calls `WebAssembly.instantiate` directly.
-*
-* @param {{ module_or_path: InitInput | Promise<InitInput> }} module_or_path - Passing `InitInput` directly is deprecated.
-*
-* @returns {Promise<InitOutput>}
-*/
-export default function __wbg_init (module_or_path?: { module_or_path: InitInput | Promise<InitInput> } | InitInput | Promise<InitInput>): Promise<InitOutput>;
+ * If `module_or_path` is {RequestInfo} or {URL}, makes a request and
+ * for everything else, calls `WebAssembly.instantiate` directly.
+ *
+ * @param {{ module_or_path: InitInput | Promise<InitInput> }} module_or_path - Passing `InitInput` directly is deprecated.
+ *
+ * @returns {Promise<InitOutput>}
+ */
+export default function __wbg_init(
+  module_or_path?:
+    | { module_or_path: InitInput | Promise<InitInput> }
+    | InitInput
+    | Promise<InitInput>
+): Promise<InitOutput>;

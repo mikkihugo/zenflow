@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Text, useInput, useFocus } from 'ink';
-import { Header, Footer, StatusBadge, ProgressBar, Spinner } from '../components';
-import { BaseScreenProps } from './index';
+import { Box, Text, useFocus, useInput } from 'ink';
+import type React from 'react';
+import { useEffect, useState } from 'react';
+import { Footer, Header, ProgressBar, Spinner, StatusBadge } from '../components';
 import { UIUtils } from '../index';
+import type { BaseScreenProps } from './index';
 
 export interface SwarmAgent {
   id: string;
@@ -44,7 +45,7 @@ export interface SwarmDashboardProps extends BaseScreenProps {
 
 /**
  * SwarmDashboard Component
- * 
+ *
  * Real-time dashboard for monitoring swarm status and metrics.
  * Displays agent information, performance metrics, and system health.
  */
@@ -65,24 +66,24 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
   const [selectedView, setSelectedView] = useState<'overview' | 'agents' | 'metrics'>('overview');
   const { isFocused } = useFocus({ autoFocus: true });
-  
+
   // Auto-refresh data
   useEffect(() => {
     if (!onRefresh) return;
-    
+
     const interval = setInterval(async () => {
       if (!isRefreshing) {
         await handleRefresh();
       }
     }, refreshInterval);
-    
+
     return () => clearInterval(interval);
   }, [refreshInterval, onRefresh, isRefreshing]);
-  
+
   // Handle keyboard input
   useInput((input, key) => {
     if (!isFocused) return;
-    
+
     if (input === '1') {
       setSelectedView('overview');
     } else if (input === '2') {
@@ -97,10 +98,10 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
       onBack?.();
     }
   });
-  
+
   const handleRefresh = async () => {
     if (!onRefresh || isRefreshing) return;
-    
+
     setIsRefreshing(true);
     try {
       await onRefresh();
@@ -111,31 +112,26 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
       setIsRefreshing(false);
     }
   };
-  
+
   const renderOverview = () => {
     if (!metrics) {
       return (
         <Box justifyContent="center" flexGrow={1}>
-          <Text dimColor>
-            No metrics available
-          </Text>
+          <Text dimColor>No metrics available</Text>
         </Box>
       );
     }
-    
-    const progressPercentage = metrics.totalTasks > 0 
-      ? (metrics.tasksCompleted / metrics.totalTasks) * 100 
-      : 0;
-    
+
+    const progressPercentage =
+      metrics.totalTasks > 0 ? (metrics.tasksCompleted / metrics.totalTasks) * 100 : 0;
+
     return (
       <Box flexDirection="column" paddingX={2}>
         {/* System Status */}
         <Box marginBottom={1}>
-          <Text bold>
-            System Status: 
-          </Text>
-          <StatusBadge 
-            status={metrics.activeAgents > 0 ? 'success' : 'warning'} 
+          <Text bold>System Status:</Text>
+          <StatusBadge
+            status={metrics.activeAgents > 0 ? 'success' : 'warning'}
             text={metrics.activeAgents > 0 ? 'Active' : 'Idle'}
             showIcon
           />
@@ -144,12 +140,10 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
             {UIUtils.formatDuration(metrics.uptime)}
           </Text>
         </Box>
-        
+
         {/* Progress */}
         <Box flexDirection="column" marginBottom={1}>
-          <Text bold>
-            Overall Progress
-          </Text>
+          <Text bold>Overall Progress</Text>
           <ProgressBar
             current={metrics.tasksCompleted}
             total={metrics.totalTasks}
@@ -158,51 +152,41 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
             width={50}
           />
         </Box>
-        
+
         {/* Key Metrics */}
         <Box flexDirection="column">
-          <Text bold>
-            Key Metrics
-          </Text>
+          <Text bold>Key Metrics</Text>
           <Text>
             • Agents: {metrics.activeAgents}/{metrics.totalAgents} active
           </Text>
           <Text>
             • Tasks: {metrics.tasksInProgress} in progress, {metrics.tasksCompleted} completed
           </Text>
-          <Text>
-            • Throughput: {metrics.performance.throughput.toFixed(1)} tasks/min
-          </Text>
-          <Text>
-            • Error Rate: {(metrics.performance.errorRate * 100).toFixed(1)}%
-          </Text>
-          <Text>
-            • Avg Latency: {metrics.performance.avgLatency.toFixed(0)}ms
-          </Text>
+          <Text>• Throughput: {metrics.performance.throughput.toFixed(1)} tasks/min</Text>
+          <Text>• Error Rate: {(metrics.performance.errorRate * 100).toFixed(1)}%</Text>
+          <Text>• Avg Latency: {metrics.performance.avgLatency.toFixed(0)}ms</Text>
         </Box>
       </Box>
     );
   };
-  
+
   const renderAgents = () => {
     const visibleAgents = agents.slice(0, maxAgentsVisible);
-    
+
     if (visibleAgents.length === 0) {
       return (
         <Box justifyContent="center" flexGrow={1}>
-          <Text dimColor>
-            No agents available
-          </Text>
+          <Text dimColor>No agents available</Text>
         </Box>
       );
     }
-    
+
     return (
       <Box flexDirection="column" paddingX={2}>
         <Text bold marginBottom={1}>
           Active Agents ({visibleAgents.length})
         </Text>
-        
+
         {visibleAgents.map((agent) => {
           const statusMap = {
             active: 'success' as const,
@@ -210,34 +194,28 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
             error: 'error' as const,
             stopped: 'warning' as const,
           };
-          
+
           return (
             <Box key={agent.id} flexDirection="column" marginBottom={1}>
               <Box>
-                <Text bold>
-                  {agent.name}
-                </Text>
+                <Text bold>{agent.name}</Text>
                 <Text dimColor>
                   {' ('}
                   {agent.type}
                   {')'}
                 </Text>
-                <StatusBadge 
-                  status={statusMap[agent.status]} 
+                <StatusBadge
+                  status={statusMap[agent.status]}
                   text={agent.status}
                   variant="minimal"
                 />
               </Box>
-              
+
               {showDetails && (
                 <Box flexDirection="column" paddingLeft={2}>
-                  <Text dimColor>
-                    • Tasks: {agent.tasksCompleted} completed
-                  </Text>
+                  <Text dimColor>• Tasks: {agent.tasksCompleted} completed</Text>
                   {agent.currentTask && (
-                    <Text dimColor>
-                      • Current: {UIUtils.truncateText(agent.currentTask, 40)}
-                    </Text>
+                    <Text dimColor>• Current: {UIUtils.truncateText(agent.currentTask, 40)}</Text>
                   )}
                   <Text dimColor>
                     • Success Rate: {(agent.performance.successRate * 100).toFixed(1)}%
@@ -250,33 +228,29 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
             </Box>
           );
         })}
-        
+
         {agents.length > maxAgentsVisible && (
-          <Text dimColor>
-            ... and {agents.length - maxAgentsVisible} more agents
-          </Text>
+          <Text dimColor>... and {agents.length - maxAgentsVisible} more agents</Text>
         )}
       </Box>
     );
   };
-  
+
   const renderMetrics = () => {
     if (!metrics) {
       return (
         <Box justifyContent="center" flexGrow={1}>
-          <Text dimColor>
-            No detailed metrics available
-          </Text>
+          <Text dimColor>No detailed metrics available</Text>
         </Box>
       );
     }
-    
+
     return (
       <Box flexDirection="column" paddingX={2}>
         <Text bold marginBottom={1}>
           Detailed Metrics
         </Text>
-        
+
         <Box flexDirection="column">
           <Text bold color="cyan">
             Resource Utilization
@@ -284,37 +258,25 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
           <Text>
             • Active Agents: {((metrics.activeAgents / metrics.totalAgents) * 100).toFixed(1)}%
           </Text>
-          <Text>
-            • Task Queue: {metrics.tasksInProgress} pending
-          </Text>
-          
+          <Text>• Task Queue: {metrics.tasksInProgress} pending</Text>
+
           <Text bold color="cyan" marginTop={1}>
             Performance
           </Text>
-          <Text>
-            • Throughput: {metrics.performance.throughput.toFixed(2)} tasks/min
-          </Text>
-          <Text>
-            • Success Rate: {((1 - metrics.performance.errorRate) * 100).toFixed(1)}%
-          </Text>
-          <Text>
-            • Average Latency: {metrics.performance.avgLatency.toFixed(0)}ms
-          </Text>
-          
+          <Text>• Throughput: {metrics.performance.throughput.toFixed(2)} tasks/min</Text>
+          <Text>• Success Rate: {((1 - metrics.performance.errorRate) * 100).toFixed(1)}%</Text>
+          <Text>• Average Latency: {metrics.performance.avgLatency.toFixed(0)}ms</Text>
+
           <Text bold color="cyan" marginTop={1}>
             System Health
           </Text>
-          <Text>
-            • Uptime: {UIUtils.formatDuration(metrics.uptime)}
-          </Text>
-          <Text>
-            • Total Tasks Processed: {metrics.tasksCompleted.toLocaleString()}
-          </Text>
+          <Text>• Uptime: {UIUtils.formatDuration(metrics.uptime)}</Text>
+          <Text>• Total Tasks Processed: {metrics.tasksCompleted.toLocaleString()}</Text>
         </Box>
       </Box>
     );
   };
-  
+
   const renderCurrentView = () => {
     switch (selectedView) {
       case 'agents':
@@ -325,23 +287,20 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
         return renderOverview();
     }
   };
-  
+
   const shortcuts = [
     { key: '1/2/3', description: 'Switch views' },
     { key: 'r/F5', description: 'Refresh' },
     { key: 'b/Backspace', description: 'Back' },
     { key: 'q/Esc', description: 'Exit' },
   ];
-  
+
   return (
     <Box flexDirection="column" height="100%">
       {showHeader && (
-        <Header
-          title={title}
-          subtitle={`Last updated: ${lastRefresh.toLocaleTimeString()}`}
-        />
+        <Header title={title} subtitle={`Last updated: ${lastRefresh.toLocaleTimeString()}`} />
       )}
-      
+
       {/* View Tabs */}
       <Box marginBottom={1} paddingX={2}>
         {(['overview', 'agents', 'metrics'] as const).map((view) => (
@@ -357,24 +316,20 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
             </Text>
           </Box>
         ))}
-        
+
         {isRefreshing && (
           <Box marginLeft={2}>
             <Spinner text="Refreshing..." type="dots" color="yellow" />
           </Box>
         )}
       </Box>
-      
+
       {/* Main Content */}
       <Box flexDirection="column" flexGrow={1}>
         {renderCurrentView()}
       </Box>
-      
-      {showFooter && (
-        <Footer
-          shortcuts={shortcuts}
-        />
-      )}
+
+      {showFooter && <Footer shortcuts={shortcuts} />}
     </Box>
   );
 };

@@ -1,6 +1,6 @@
 /**
  * Claude-Zen WebSocket Client - London School TDD Tests
- * 
+ *
  * Testing the Node.js 22 native WebSocket client using London School principles:
  * - Outside-in development from real-time communication requirements
  * - Mock-driven contracts for connection management
@@ -8,7 +8,7 @@
  * - Focus on client-server interaction patterns
  */
 
-import { jest, describe, it, expect, beforeEach, afterEach } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 
@@ -85,7 +85,6 @@ interface MessageQueueContract {
 }
 
 describe('Claude-Zen WebSocket Client - London School TDD', () => {
-  
   // Mock WebSocket Client class (based on actual implementation structure)
   class MockWebSocketClient {
     private ws: any;
@@ -95,7 +94,7 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
     private heartbeatManager: any;
     private url: string = '';
     private options: any = {};
-    
+
     constructor() {
       this.ws = null;
       this.eventEmitter = mockEventEmitter;
@@ -103,29 +102,29 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
       this.messageQueue = mockMessageQueue;
       this.heartbeatManager = mockHeartbeatManager;
     }
-    
+
     async connect(url: string, options: any = {}) {
       this.url = url;
       this.options = options;
-      
+
       // Create WebSocket connection
       this.ws = mockWebSocket;
       await mockWebSocket.connect(url);
-      
+
       // Setup event handlers
       mockWebSocket.on('open', this.handleOpen.bind(this));
       mockWebSocket.on('message', this.handleMessage.bind(this));
       mockWebSocket.on('close', this.handleClose.bind(this));
       mockWebSocket.on('error', this.handleError.bind(this));
-      
+
       // Start heartbeat if enabled
       if (options.heartbeat) {
         mockHeartbeatManager.start();
       }
-      
+
       return Promise.resolve();
     }
-    
+
     async send(data: any) {
       if (this.isConnected()) {
         return mockWebSocket.send(JSON.stringify(data));
@@ -135,53 +134,52 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
         return Promise.resolve();
       }
     }
-    
+
     isConnected(): boolean {
       return this.ws && mockWebSocket.readyState === mockWebSocket.OPEN;
     }
-    
+
     private handleOpen() {
       mockEventEmitter.emit('connected');
       mockReconnectionManager.resetAttempts();
       mockMessageQueue.flush();
     }
-    
+
     private handleMessage(data: any) {
       const parsed = JSON.parse(data);
       mockEventEmitter.emit('message', parsed);
     }
-    
+
     private handleClose(code: number, reason: string) {
       mockEventEmitter.emit('disconnected', { code, reason });
       mockHeartbeatManager.stop();
-      
+
       if (mockReconnectionManager.shouldReconnect({ code, reason })) {
         this.attemptReconnection();
       }
     }
-    
+
     private handleError(error: any) {
       mockEventEmitter.emit('error', error);
     }
-    
+
     private async attemptReconnection() {
       if (!mockReconnectionManager.isMaxAttemptsReached()) {
         const delay = mockReconnectionManager.getReconnectDelay(1);
         mockReconnectionManager.incrementAttempts();
-        
+
         setTimeout(() => {
           this.connect(this.url, this.options);
         }, delay);
       }
     }
-    
+
     on(event: string, handler: Function) {
       mockEventEmitter.on(event, handler);
     }
   }
 
   describe('🎯 Acceptance Tests - Real-time Communication', () => {
-    
     describe('User Story: WebSocket Connection Management', () => {
       it('should establish connection with proper event handling setup', async () => {
         // Arrange - Mock successful connection
@@ -193,17 +191,17 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
           }
         });
         mockHeartbeatManager.start.mockImplementation(() => {});
-        
+
         const client = new MockWebSocketClient();
         const connectionHandler = jest.fn();
         client.on('connected', connectionHandler);
-        
+
         // Act - Connect to WebSocket server
-        await client.connect('ws://localhost:4000', { 
+        await client.connect('ws://localhost:4000', {
           heartbeat: true,
-          reconnect: true 
+          reconnect: true,
         });
-        
+
         // Assert - Verify connection establishment conversation
         expect(mockWebSocket.connect).toHaveBeenCalledWith('ws://localhost:4000');
         expect(mockWebSocket.on).toHaveBeenCalledWith('open', expect.any(Function));
@@ -220,26 +218,24 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
         mockWebSocket.readyState = mockWebSocket.OPEN;
         mockWebSocket.send.mockResolvedValue(undefined);
         mockMessageQueue.enqueue.mockImplementation(() => {});
-        
+
         const client = new MockWebSocketClient();
         client['ws'] = mockWebSocket; // Simulate connected state
-        
+
         const connectedMessage = { type: 'task-update', data: { status: 'completed' } };
         const disconnectedMessage = { type: 'queen-status', data: { id: 'arch-001' } };
-        
+
         // Act - Send message when connected
         await client.send(connectedMessage);
-        
+
         // Simulate disconnection
         mockWebSocket.readyState = mockWebSocket.CLOSED;
-        
+
         // Send message when disconnected
         await client.send(disconnectedMessage);
-        
+
         // Assert - Verify message handling conversation
-        expect(mockWebSocket.send).toHaveBeenCalledWith(
-          JSON.stringify(connectedMessage)
-        );
+        expect(mockWebSocket.send).toHaveBeenCalledWith(JSON.stringify(connectedMessage));
         expect(mockMessageQueue.enqueue).toHaveBeenCalledWith(disconnectedMessage);
       });
     });
@@ -251,9 +247,9 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
         mockReconnectionManager.isMaxAttemptsReached.mockReturnValue(false);
         mockReconnectionManager.getReconnectDelay.mockReturnValue(1000);
         mockReconnectionManager.incrementAttempts.mockImplementation(() => {});
-        
+
         const client = new MockWebSocketClient();
-        
+
         // Simulate connection established
         mockWebSocket.on.mockImplementation((event, handler) => {
           if (event === 'close') {
@@ -261,16 +257,16 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
             setTimeout(() => handler(1006, 'Connection lost'), 0);
           }
         });
-        
+
         await client.connect('ws://localhost:4000', { reconnect: true });
-        
+
         // Wait for close event to trigger reconnection logic
-        await new Promise(resolve => setTimeout(resolve, 10));
-        
+        await new Promise((resolve) => setTimeout(resolve, 10));
+
         // Assert - Verify reconnection conversation
         expect(mockReconnectionManager.shouldReconnect).toHaveBeenCalledWith({
           code: 1006,
-          reason: 'Connection lost'
+          reason: 'Connection lost',
         });
         expect(mockReconnectionManager.isMaxAttemptsReached).toHaveBeenCalled();
         expect(mockReconnectionManager.getReconnectDelay).toHaveBeenCalledWith(1);
@@ -280,7 +276,6 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
   });
 
   describe('🔗 Contract Verification - Component Integration', () => {
-    
     describe('Heartbeat Integration', () => {
       it('should coordinate heartbeat with connection lifecycle', async () => {
         // Arrange - Mock heartbeat coordination
@@ -288,9 +283,9 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
         mockHeartbeatManager.stop.mockImplementation(() => {});
         mockHeartbeatManager.ping.mockImplementation(() => {});
         mockHeartbeatManager.isHealthy.mockReturnValue(true);
-        
+
         const client = new MockWebSocketClient();
-        
+
         // Mock connection open/close events
         mockWebSocket.on.mockImplementation((event, handler) => {
           if (event === 'open') {
@@ -299,13 +294,13 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
             setTimeout(() => handler(1000, 'Normal closure'), 100);
           }
         });
-        
+
         // Act - Connect and then disconnect
         await client.connect('ws://localhost:4000', { heartbeat: true });
-        
+
         // Simulate close event
-        await new Promise(resolve => setTimeout(resolve, 150));
-        
+        await new Promise((resolve) => setTimeout(resolve, 150));
+
         // Assert - Verify heartbeat lifecycle conversation
         expect(mockHeartbeatManager.start).toHaveBeenCalled();
         expect(mockHeartbeatManager.stop).toHaveBeenCalled();
@@ -318,22 +313,22 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
         mockMessageQueue.flush.mockImplementation(() => {});
         mockMessageQueue.enqueue.mockImplementation(() => {});
         mockReconnectionManager.resetAttempts.mockImplementation(() => {});
-        
+
         const client = new MockWebSocketClient();
-        
+
         // Mock successful reconnection
         mockWebSocket.on.mockImplementation((event, handler) => {
           if (event === 'open') {
             setTimeout(() => handler(), 0);
           }
         });
-        
+
         // Act - Simulate reconnection
         await client.connect('ws://localhost:4000');
-        
+
         // Wait for open event
-        await new Promise(resolve => setTimeout(resolve, 10));
-        
+        await new Promise((resolve) => setTimeout(resolve, 10));
+
         // Assert - Verify message queue integration conversation
         expect(mockMessageQueue.flush).toHaveBeenCalled();
         expect(mockReconnectionManager.resetAttempts).toHaveBeenCalled();
@@ -342,15 +337,14 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
   });
 
   describe('🧪 London School Patterns - WebSocket Communication', () => {
-    
     it('should demonstrate event-driven interaction testing', () => {
       // London School: Test HOW events flow through the system
       const mockEventBus = {
         subscribe: jest.fn(),
         publish: jest.fn(),
-        unsubscribe: jest.fn()
+        unsubscribe: jest.fn(),
       };
-      
+
       const eventDrivenClient = {
         setupEventHandlers: () => {
           mockEventBus.subscribe('connection-status', (status) => {
@@ -358,56 +352,65 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
               mockEventBus.publish('ready-for-messages', true);
             }
           });
-          
+
           mockEventBus.subscribe('message-received', (message) => {
             mockEventBus.publish('message-processed', message.id);
           });
-        }
+        },
       };
-      
+
       // Act - Setup event handling
       eventDrivenClient.setupEventHandlers();
-      
+
       // Simulate events
       mockEventBus.subscribe.mock.calls[0][1]('connected');
       mockEventBus.subscribe.mock.calls[1][1]({ id: 'msg-123', data: 'test' });
-      
+
       // Assert - Verify event interaction conversation
-      expect(mockEventBus.subscribe).toHaveBeenCalledWith('connection-status', expect.any(Function));
+      expect(mockEventBus.subscribe).toHaveBeenCalledWith(
+        'connection-status',
+        expect.any(Function)
+      );
       expect(mockEventBus.subscribe).toHaveBeenCalledWith('message-received', expect.any(Function));
       expect(mockEventBus.publish).toHaveBeenCalledWith('ready-for-messages', true);
       expect(mockEventBus.publish).toHaveBeenCalledWith('message-processed', 'msg-123');
     });
-    
+
     it('should use mocks to drive connection resilience design', () => {
       // London School: Mocks help discover optimal resilience patterns
       const mockResilienceStrategy = {
         evaluateConnectionHealth: jest.fn(),
         determineReconnectionStrategy: jest.fn(),
-        executeRecoveryPlan: jest.fn()
+        executeRecoveryPlan: jest.fn(),
       };
-      
+
       const resilientClient = {
         handleConnectionIssue: async (issue: any) => {
           const health = mockResilienceStrategy.evaluateConnectionHealth(issue);
           const strategy = mockResilienceStrategy.determineReconnectionStrategy(health);
           return mockResilienceStrategy.executeRecoveryPlan(strategy);
-        }
+        },
       };
-      
+
       // Mock the resilience conversation
       mockResilienceStrategy.evaluateConnectionHealth.mockReturnValue({ severity: 'moderate' });
-      mockResilienceStrategy.determineReconnectionStrategy.mockReturnValue({ type: 'exponential-backoff' });
+      mockResilienceStrategy.determineReconnectionStrategy.mockReturnValue({
+        type: 'exponential-backoff',
+      });
       mockResilienceStrategy.executeRecoveryPlan.mockResolvedValue({ success: true });
-      
+
       // Act - Test resilience design
       const connectionIssue = { type: 'timeout', duration: 5000 };
       resilientClient.handleConnectionIssue(connectionIssue);
-      
+
       // Assert - Verify resilience interface exists and behaves correctly
       expect(mockResilienceStrategy.evaluateConnectionHealth).toHaveBeenCalledWith(connectionIssue);
-      expect(mockResilienceStrategy.determineReconnectionStrategy).toHaveBeenCalledWith({ severity: 'moderate' });
-      expect(mockResilienceStrategy.executeRecoveryPlan).toHaveBeenCalledWith({ type: 'exponential-backoff' });
+      expect(mockResilienceStrategy.determineReconnectionStrategy).toHaveBeenCalledWith({
+        severity: 'moderate',
+      });
+      expect(mockResilienceStrategy.executeRecoveryPlan).toHaveBeenCalledWith({
+        type: 'exponential-backoff',
+      });
     });
   });
 
@@ -417,7 +420,7 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
     // Reset WebSocket state
     mockWebSocket.readyState = mockWebSocket.CLOSED;
   });
-  
+
   afterEach(() => {
     jest.restoreAllMocks();
   });

@@ -56,7 +56,7 @@ export class Orchestrator extends EventEmitter {
       timeout: config.timeout || 30000,
       maxConcurrentTasks: config.maxConcurrentTasks || 10,
       enableHealthCheck: config.enableHealthCheck !== false,
-      healthCheckInterval: config.healthCheckInterval || 30000
+      healthCheckInterval: config.healthCheckInterval || 30000,
     };
 
     this.setupEventHandlers();
@@ -83,7 +83,6 @@ export class Orchestrator extends EventEmitter {
       this.isRunning = true;
       this.emit('started');
       this.logger?.info('Orchestrator started successfully');
-
     } catch (error) {
       this.logger?.error('Failed to start orchestrator', { error });
       throw error;
@@ -114,7 +113,6 @@ export class Orchestrator extends EventEmitter {
       this.isRunning = false;
       this.emit('stopped');
       this.logger?.info('Orchestrator stopped successfully');
-
     } catch (error) {
       this.logger?.error('Error stopping orchestrator', { error });
       throw error;
@@ -145,14 +143,12 @@ export class Orchestrator extends EventEmitter {
 
       this.emit('taskCompleted', { taskId: task.id, result, duration });
       return { success: true, output: result, duration };
-
     } catch (error) {
       const duration = Date.now() - startTime;
       this.logger?.error(`Task failed: ${task.id}`, { error, duration });
 
       this.emit('taskFailed', { taskId: task.id, error, duration });
       return { success: false, duration, error: error as Error };
-
     } finally {
       this.activeTasks.delete(task.id);
     }
@@ -171,7 +167,7 @@ export class Orchestrator extends EventEmitter {
       running: this.isRunning,
       activeTasks: this.activeTasks.size,
       name: this.config.name,
-      uptime: this.isRunning ? Date.now() : 0
+      uptime: this.isRunning ? Date.now() : 0,
     };
   }
 
@@ -186,9 +182,7 @@ export class Orchestrator extends EventEmitter {
     // Handle system events if eventBus is available
     if (this.eventBus) {
       this.eventBus.on('system:shutdown', () => {
-        this.stop().catch(error => 
-          this.logger?.error('Error during shutdown', { error })
-        );
+        this.stop().catch((error) => this.logger?.error('Error during shutdown', { error }));
       });
     }
   }
@@ -202,11 +196,11 @@ export class Orchestrator extends EventEmitter {
   private performHealthCheck(): void {
     const status = this.getStatus();
     this.emit('healthCheck', status);
-    
+
     if (status.activeTasks > this.config.maxConcurrentTasks * 0.8) {
-      this.logger?.warn('High task load detected', { 
+      this.logger?.warn('High task load detected', {
         activeTasks: status.activeTasks,
-        maxTasks: this.config.maxConcurrentTasks 
+        maxTasks: this.config.maxConcurrentTasks,
       });
     }
   }
@@ -215,8 +209,8 @@ export class Orchestrator extends EventEmitter {
     const timeout = this.config.timeout;
     const startTime = Date.now();
 
-    while (this.activeTasks.size > 0 && (Date.now() - startTime) < timeout) {
-      await new Promise(resolve => setTimeout(resolve, 100));
+    while (this.activeTasks.size > 0 && Date.now() - startTime < timeout) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
     if (this.activeTasks.size > 0) {
@@ -228,13 +222,13 @@ export class Orchestrator extends EventEmitter {
     // This is a placeholder implementation
     // In a real system, this would delegate to appropriate subsystems
     // based on task.type and use the injected managers
-    
-    await new Promise(resolve => setTimeout(resolve, 100)); // Simulate work
-    
+
+    await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate work
+
     return {
       taskId: task.id,
       result: `Task ${task.type} completed`,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 }

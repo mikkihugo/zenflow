@@ -4,7 +4,7 @@
  */
 
 import { BasePlugin } from '../base-plugin.js';
-import type { PluginManifest, PluginConfig, PluginContext } from '../types.js';
+import type { PluginConfig, PluginContext, PluginManifest } from '../types.js';
 
 export class MarkdownScannerPlugin extends BasePlugin {
   constructor(manifest: PluginManifest, config: PluginConfig, context: PluginContext) {

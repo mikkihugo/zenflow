@@ -138,7 +138,11 @@ class ComprehensiveRepairValidator {
             cwd: '/home/mhugo/code/claude-code-flow',
             stdio: 'pipe',
           });
-          this.recordResult(`TS Compilation: ${tsFile}`, true, 'TypeScript compiles without errors');
+          this.recordResult(
+            `TS Compilation: ${tsFile}`,
+            true,
+            'TypeScript compiles without errors'
+          );
         } catch (tscError) {
           // If tsc fails, at least check if it's valid JavaScript
           execSync(`node -c ${tsFile}`, {
@@ -157,11 +161,7 @@ class ComprehensiveRepairValidator {
   testDependencies() {
     log('\n📦 Testing Dependencies', 'cyan');
 
-    const criticalDeps = [
-      'better-sqlite3',
-      '@lancedb/lancedb',
-      'blessed',
-    ];
+    const criticalDeps = ['better-sqlite3', '@lancedb/lancedb', 'blessed'];
 
     for (const dep of criticalDeps) {
       try {
@@ -174,7 +174,11 @@ class ComprehensiveRepairValidator {
         if (error.message.includes('npm ERR!')) {
           this.recordResult(`Dependency: ${dep}`, false, 'Package not found or version mismatch');
         } else {
-          this.recordResult(`Dependency: ${dep}`, true, 'Package available (version check skipped)');
+          this.recordResult(
+            `Dependency: ${dep}`,
+            true,
+            'Package available (version check skipped)'
+          );
         }
       }
     }
@@ -188,7 +192,11 @@ class ComprehensiveRepairValidator {
       this.recordResult('better-sqlite3 loading', true, 'Library loads successfully');
     } catch (error) {
       if (error.message.includes('NODE_MODULE_VERSION')) {
-        this.recordResult('better-sqlite3 loading', false, 'NODE_MODULE_VERSION mismatch - needs rebuild');
+        this.recordResult(
+          'better-sqlite3 loading',
+          false,
+          'NODE_MODULE_VERSION mismatch - needs rebuild'
+        );
       } else {
         this.recordResult('better-sqlite3 loading', false, `Load error: ${error.message}`);
       }
@@ -242,7 +250,7 @@ class ComprehensiveRepairValidator {
     // Basic structure validation
     const content = require('fs').readFileSync(
       '/home/mhugo/code/claude-code-flow/src/memory/enhanced-memory.ts',
-      'utf8',
+      'utf8'
     );
 
     const requiredComponents = [
@@ -266,7 +274,7 @@ class ComprehensiveRepairValidator {
   testLanceDBInterface() {
     const content = require('fs').readFileSync(
       '/home/mhugo/code/claude-code-flow/src/database/lancedb-interface.ts',
-      'utf8',
+      'utf8'
     );
 
     const requiredComponents = [
@@ -291,7 +299,7 @@ class ComprehensiveRepairValidator {
   testMCPMetrics() {
     const content = require('fs').readFileSync(
       '/home/mhugo/code/claude-code-flow/src/mcp/performance-metrics.ts',
-      'utf8',
+      'utf8'
     );
 
     const requiredComponents = [
@@ -316,7 +324,7 @@ class ComprehensiveRepairValidator {
   testUnifiedDashboard() {
     const content = require('fs').readFileSync(
       '/home/mhugo/code/claude-code-flow/src/dashboard/unified-performance-dashboard.ts',
-      'utf8',
+      'utf8'
     );
 
     const requiredComponents = [
@@ -400,7 +408,7 @@ class ComprehensiveRepairValidator {
         test: () => {
           const content = require('fs').readFileSync(
             '/home/mhugo/code/claude-code-flow/scripts/performance-monitor.js',
-            'utf8',
+            'utf8'
           );
           return content.includes('try {') && content.includes('catch');
         },
@@ -410,7 +418,7 @@ class ComprehensiveRepairValidator {
         test: () => {
           const content = require('fs').readFileSync(
             '/home/mhugo/code/claude-code-flow/src/memory/enhanced-memory.ts',
-            'utf8',
+            'utf8'
           );
           return content.includes('try {') && content.includes('catch');
         },
@@ -420,8 +428,11 @@ class ComprehensiveRepairValidator {
     for (const { name, test } of errorTests) {
       try {
         const hasErrorHandling = test();
-        this.recordResult(name, hasErrorHandling,
-          hasErrorHandling ? 'Proper error handling implemented' : 'No error handling found');
+        this.recordResult(
+          name,
+          hasErrorHandling,
+          hasErrorHandling ? 'Proper error handling implemented' : 'No error handling found'
+        );
       } catch (error) {
         this.recordResult(name, false, `Test failed: ${error.message}`);
       }
@@ -457,12 +468,15 @@ class ComprehensiveRepairValidator {
     log('\n📊 Test Results Summary', 'blue');
     log('='.repeat(50), 'blue');
 
-    const successRate = (this.results.passed / this.results.total * 100).toFixed(1);
+    const successRate = ((this.results.passed / this.results.total) * 100).toFixed(1);
 
     log(`Total Tests: ${this.results.total}`, 'cyan');
     log(`Passed: ${this.results.passed}`, 'green');
     log(`Failed: ${this.results.failed}`, this.results.failed > 0 ? 'red' : 'green');
-    log(`Success Rate: ${successRate}%`, successRate >= 90 ? 'green' : successRate >= 70 ? 'yellow' : 'red');
+    log(
+      `Success Rate: ${successRate}%`,
+      successRate >= 90 ? 'green' : successRate >= 70 ? 'yellow' : 'red'
+    );
 
     if (this.results.failed === 0) {
       log('\n🎉 All tests passed! Comprehensive repair is successful.', 'green');
@@ -481,7 +495,7 @@ class ComprehensiveRepairValidator {
 
     require('fs').writeFileSync(
       '/home/mhugo/code/claude-code-flow/test-results.json',
-      JSON.stringify(report, null, 2),
+      JSON.stringify(report, null, 2)
     );
 
     log(`\n📄 Detailed results saved to: test-results.json`, 'cyan');
@@ -491,7 +505,7 @@ class ComprehensiveRepairValidator {
   generateRecommendations() {
     const recommendations = [];
 
-    const failedTests = this.results.details.filter(d => !d.passed);
+    const failedTests = this.results.details.filter((d) => !d.passed);
 
     for (const failed of failedTests) {
       if (failed.test.includes('better-sqlite3')) {
@@ -529,11 +543,12 @@ class ComprehensiveRepairValidator {
 // Run validation if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   const validator = new ComprehensiveRepairValidator();
-  validator.runAllTests()
-    .then(success => {
+  validator
+    .runAllTests()
+    .then((success) => {
       process.exit(success ? 0 : 1);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('❌ Validation failed:', error);
       process.exit(1);
     });

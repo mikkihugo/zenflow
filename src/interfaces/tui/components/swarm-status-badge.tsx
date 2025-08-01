@@ -1,5 +1,5 @@
-import React from 'react';
 import { Box, Text } from 'ink';
+import type React from 'react';
 
 export interface SwarmStatusBadgeProps {
   status: 'active' | 'idle' | 'busy' | 'error' | 'initializing' | 'coordinating';
@@ -12,7 +12,7 @@ export interface SwarmStatusBadgeProps {
 
 /**
  * SwarmStatusBadge Component - Swarm-focused status indicators
- * 
+ *
  * Displays swarm status with agent-aware styling and swarm-specific states.
  * Supports multi-agent status aggregation and coordination states.
  */
@@ -35,62 +35,43 @@ export const SwarmStatusBadge: React.FC<SwarmStatusBadgeProps> = ({
     };
     return configs[status];
   };
-  
+
   const config = getStatusConfig(status);
   const displayText = text || status.toUpperCase();
-  
+
   if (variant === 'minimal') {
     return (
       <Box>
-        {showIcon && (
-          <Text color={config.color}>
-            {config.icon}
-          </Text>
-        )}
+        {showIcon && <Text color={config.color}>{config.icon}</Text>}
         <Text color={config.color}>
           {!showIcon ? '' : ' '}
           {displayText}
         </Text>
-        {agentCount !== undefined && (
-          <Text dimColor>
-            {' '}({agentCount})
-          </Text>
-        )}
+        {agentCount !== undefined && <Text dimColor> ({agentCount})</Text>}
       </Box>
     );
   }
-  
+
   if (variant === 'detailed') {
     return (
       <Box borderStyle="round" borderColor={config.color} paddingX={1}>
-        {showIcon && (
-          <Text color={config.color}>
-            {config.icon}
-          </Text>
-        )}
+        {showIcon && <Text color={config.color}>{config.icon}</Text>}
         <Text color={config.color} bold>
           {!showIcon ? '' : ' '}
           {displayText}
         </Text>
-        {agentCount !== undefined && (
-          <Text color={config.color}>
-            {' '}[{agentCount} agents]
-          </Text>
-        )}
+        {agentCount !== undefined && <Text color={config.color}> [{agentCount} agents]</Text>}
       </Box>
     );
   }
-  
+
   // Default variant
   return (
     <Box>
       <Text backgroundColor={config.color} color="black">
         {' '}
-        {showIcon ? config.icon : config.bgChar}
-        {' '}
-        {displayText}
-        {agentCount !== undefined ? ` (${agentCount})` : ''}
-        {' '}
+        {showIcon ? config.icon : config.bgChar} {displayText}
+        {agentCount !== undefined ? ` (${agentCount})` : ''}{' '}
       </Text>
     </Box>
   );

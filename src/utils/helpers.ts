@@ -15,7 +15,7 @@ export function generateId(): string {
  * Sleep for specified milliseconds
  */
 export function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
@@ -34,7 +34,7 @@ export async function retry<T>(
     } catch (error) {
       lastError = error as Error;
       if (i < maxRetries - 1) {
-        await sleep(baseDelay * Math.pow(2, i));
+        await sleep(baseDelay * 2 ** i);
       }
     }
   }

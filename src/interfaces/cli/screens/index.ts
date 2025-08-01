@@ -1,17 +1,16 @@
 /**
  * UI Screens - Screen Exports
- * 
+ *
  * This module exports all screen components for the Claude Flow CLI.
  * Screens represent full-page UI layouts and interactive interfaces.
  */
 
-// Screen components
-export { MainMenu } from './main-menu';
-export { SwarmDashboard } from './swarm-dashboard';
-
 // Screen prop types
 export type { MainMenuProps } from './main-menu';
+// Screen components
+export { MainMenu } from './main-menu';
 export type { SwarmDashboardProps } from './swarm-dashboard';
+export { SwarmDashboard } from './swarm-dashboard';
 
 // Common screen types
 export interface BaseScreenProps {
@@ -51,12 +50,12 @@ export const ScreenUtils = {
     action,
     ...options,
   }),
-  
+
   filterEnabledItems: (items: NavigationItem[]): NavigationItem[] => {
-    return items.filter(item => !item.disabled);
+    return items.filter((item) => !item.disabled);
   },
-  
+
   findItemByKey: (items: NavigationItem[], key: string): NavigationItem | undefined => {
-    return items.find(item => item.key === key);
+    return items.find((item) => item.key === key);
   },
 };

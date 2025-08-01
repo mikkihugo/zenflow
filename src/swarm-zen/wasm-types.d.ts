@@ -6,29 +6,29 @@ export interface WASMExports {
   init(): void;
   get_version(): string;
   has_simd_support(): boolean;
-  
+
   // Runtime features
   RuntimeFeatures: {
-    new(): RuntimeFeatures;
+    new (): RuntimeFeatures;
   };
-  
+
   // Swarm class
   RuvSwarm: {
-    new(config: any): RuvSwarm;
+    new (config: any): RuvSwarm;
   };
-  
+
   // Agent class
   JsAgent: {
     readonly prototype: JsAgent;
   };
-  
+
   // Utility functions
   console_log(message: string): void;
   console_error(message: string): void;
   console_warn(message: string): void;
   format_js_error(error: any): string;
   get_wasm_memory_usage(): bigint;
-  
+
   // Array conversion utilities
   js_array_to_vec_f32(array: any): Float32Array;
   vec_f32_to_js_array(vec: Float32Array): any;

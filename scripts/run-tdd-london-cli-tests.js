@@ -8,7 +8,7 @@
  */
 
 import { spawn } from 'child_process';
-import { join, dirname } from 'path';
+import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -31,23 +31,22 @@ async function runCLITests() {
       '^(\\.{1,2}/.*)\\.js$': '$1',
     },
     transform: {
-      '^.+\\.tsx?$': ['ts-jest', {
-        useESM: true,
-        tsconfig: {
-          module: 'esnext',
-          target: 'es2022',
-          moduleResolution: 'node',
-          allowSyntheticDefaultImports: true,
-          esModuleInterop: true,
+      '^.+\\.tsx?$': [
+        'ts-jest',
+        {
+          useESM: true,
+          tsconfig: {
+            module: 'esnext',
+            target: 'es2022',
+            moduleResolution: 'node',
+            allowSyntheticDefaultImports: true,
+            esModuleInterop: true,
+          },
         },
-      }],
+      ],
     },
     setupFilesAfterEnv: [join(rootDir, 'jest.setup.ts')],
-    collectCoverageFrom: [
-      'src/cli/**/*.ts',
-      '!src/cli/**/*.test.ts',
-      '!src/cli/**/*.d.ts',
-    ],
+    collectCoverageFrom: ['src/cli/**/*.ts', '!src/cli/**/*.test.ts', '!src/cli/**/*.d.ts'],
     coverageDirectory: 'coverage/london-cli',
     coverageReporters: ['text', 'lcov', 'html'],
     verbose: true,
@@ -55,8 +54,10 @@ async function runCLITests() {
   };
 
   const jestArgs = [
-    '--config', JSON.stringify(jestConfig),
-    '--testPathPatterns', testPattern,
+    '--config',
+    JSON.stringify(jestConfig),
+    '--testPathPatterns',
+    testPattern,
     '--detectOpenHandles',
     '--forceExit',
     '--runInBand', // Run tests serially for better output
@@ -98,7 +99,9 @@ function displayTestInfo() {
   console.log('📋 Test Configuration:');
   console.log('  - School: London TDD (Interaction-based testing)');
   console.log('  - Focus: CLI command processing behavior');
-  console.log('  - Components: CommandRegistry, BaseCommand, ArgumentParser, OutputFormatter, ErrorHandler');
+  console.log(
+    '  - Components: CommandRegistry, BaseCommand, ArgumentParser, OutputFormatter, ErrorHandler'
+  );
   console.log('  - Approach: Mock external dependencies, test collaborations');
   console.log('  - Pattern: Given-When-Then with behavior verification\n');
 

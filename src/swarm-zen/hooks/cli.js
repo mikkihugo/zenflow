@@ -31,11 +31,13 @@ async function main() {
       process.exit(0); // Success
     }
   } catch (error) {
-    console.error(JSON.stringify({
-      continue: true,
-      error: error.message,
-      stack: process.env.DEBUG ? error.stack : undefined,
-    }));
+    console.error(
+      JSON.stringify({
+        continue: true,
+        error: error.message,
+        stack: process.env.DEBUG ? error.stack : undefined,
+      })
+    );
     process.exit(1); // Non-blocking error
   }
 }

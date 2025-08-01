@@ -16,11 +16,11 @@
  */
 
 import Database from 'better-sqlite3';
-import { Worker } from 'worker_threads';
 import { EventEmitter } from 'events';
-import path from 'path';
 import fs from 'fs';
 import os from 'os';
+import path from 'path';
+import { Worker } from 'worker_threads';
 
 class SQLiteConnectionPool extends EventEmitter {
   constructor(dbPath, options = {}) {
@@ -160,7 +160,10 @@ class SQLiteConnectionPool extends EventEmitter {
   }
 
   async initializeWorkerThreads() {
-    const workerScript = path.join(path.dirname(new URL(import.meta.url).pathname), 'sqlite-worker.js');
+    const workerScript = path.join(
+      path.dirname(new URL(import.meta.url).pathname),
+      'sqlite-worker.js'
+    );
 
     for (let i = 0; i < this.options.maxWorkers; i++) {
       try {
@@ -196,13 +199,13 @@ class SQLiteConnectionPool extends EventEmitter {
 
   configureConnection(db) {
     // Essential SQLite optimizations for high availability
-    db.pragma('journal_mode = WAL');      // Enable WAL mode for concurrent reads
-    db.pragma('synchronous = NORMAL');    // Balance safety and performance
-    db.pragma('temp_store = MEMORY');     // Use memory for temp tables
+    db.pragma('journal_mode = WAL'); // Enable WAL mode for concurrent reads
+    db.pragma('synchronous = NORMAL'); // Balance safety and performance
+    db.pragma('temp_store = MEMORY'); // Use memory for temp tables
     db.pragma('mmap_size = ' + this.options.mmapSize);
     db.pragma('cache_size = ' + this.options.cacheSize);
-    db.pragma('foreign_keys = ON');       // Enable foreign key constraints
-    db.pragma('busy_timeout = 5000');     // 5 second timeout for busy database
+    db.pragma('foreign_keys = ON'); // Enable foreign key constraints
+    db.pragma('busy_timeout = 5000'); // 5 second timeout for busy database
 
     // Optimize query planner
     db.pragma('optimize');
@@ -212,9 +215,9 @@ class SQLiteConnectionPool extends EventEmitter {
     // Configuration for readonly connections - limited pragma statements
     try {
       // These are safe for readonly connections
-      db.pragma('temp_store = MEMORY');     // Use memory for temp tables
+      db.pragma('temp_store = MEMORY'); // Use memory for temp tables
       db.pragma('cache_size = ' + this.options.cacheSize);
-      db.pragma('busy_timeout = 5000');     // 5 second timeout for busy database
+      db.pragma('busy_timeout = 5000'); // 5 second timeout for busy database
     } catch (error) {
       // Some pragma statements might fail on readonly connections
       // This is expected behavior, continue without them
@@ -303,7 +306,7 @@ class SQLiteConnectionPool extends EventEmitter {
 
         // Timeout handling
         setTimeout(() => {
-          const index = this.readQueue.findIndex(item => item.resolve === resolve);
+          const index = this.readQueue.findIndex((item) => item.resolve === resolve);
           if (index !== -1) {
             this.readQueue.splice(index, 1);
             reject(new Error('Reader connection acquire timeout'));
@@ -394,7 +397,6 @@ class SQLiteConnectionPool extends EventEmitter {
 
       worker.once('message', messageHandler);
       worker.postMessage({ sql, params });
-
     } catch (error) {
       this.busyWorkers.delete(worker);
       this.availableWorkers.push(worker);
@@ -429,7 +431,7 @@ class SQLiteConnectionPool extends EventEmitter {
       }
 
       // Check worker threads
-      const workerHealthPromises = this.workers.map(worker => {
+      const workerHealthPromises = this.workers.map((worker) => {
         return new Promise((resolve) => {
           const timeout = setTimeout(() => resolve(false), 1000);
           worker.once('message', (result) => {
@@ -453,7 +455,6 @@ class SQLiteConnectionPool extends EventEmitter {
         readers: this.availableReaders.length,
         stats: this.getStats(),
       });
-
     } catch (error) {
       this.isHealthy = false;
       this.emit('health-check-error', error);
@@ -486,7 +487,10 @@ class SQLiteConnectionPool extends EventEmitter {
 
   async createReplacementWorker() {
     try {
-      const workerScript = path.join(path.dirname(new URL(import.meta.url).pathname), 'sqlite-worker.js');
+      const workerScript = path.join(
+        path.dirname(new URL(import.meta.url).pathname),
+        'sqlite-worker.js'
+      );
       const worker = new Worker(workerScript, {
         workerData: {
           dbPath: this.dbPath,

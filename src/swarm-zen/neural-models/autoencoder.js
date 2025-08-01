@@ -248,7 +248,8 @@ class AutoencoderModel extends NeuralModel {
 
   sampleGaussian() {
     // Box-Muller transform for sampling from standard normal distribution
-    let u = 0, v = 0;
+    let u = 0,
+      v = 0;
     while (u === 0) {
       u = Math.random();
     }
@@ -346,12 +347,7 @@ class AutoencoderModel extends NeuralModel {
         const output = await this.forward(batchInput.data, true);
 
         // Calculate losses
-        const losses = this.calculateLoss(
-          batchInput.data,
-          output,
-          output.mu,
-          output.logVar,
-        );
+        const losses = this.calculateLoss(batchInput.data, output, output.mu, output.logVar);
 
         // Apply beta weighting for VAE
         const totalLoss = losses.reconstruction + beta * losses.kl + losses.sparsity;
@@ -386,10 +382,10 @@ class AutoencoderModel extends NeuralModel {
 
       console.log(
         `Epoch ${epoch + 1}/${epochs} - ` +
-        `Loss: ${avgTrainLoss.toFixed(4)} ` +
-        `(Recon: ${avgReconLoss.toFixed(4)}, ` +
-        `KL: ${avgKLLoss.toFixed(4)}) - ` +
-        `Val Loss: ${valLosses.total.toFixed(4)}`,
+          `Loss: ${avgTrainLoss.toFixed(4)} ` +
+          `(Recon: ${avgReconLoss.toFixed(4)}, ` +
+          `KL: ${avgKLLoss.toFixed(4)}) - ` +
+          `Val Loss: ${valLosses.total.toFixed(4)}`
       );
 
       this.updateMetrics(avgTrainLoss);
@@ -434,7 +430,7 @@ class AutoencoderModel extends NeuralModel {
   // Get only the encoder part for feature extraction
   async getEncoder() {
     return {
-      encode: async(input) => {
+      encode: async (input) => {
         const result = await this.encode(input, false);
         return result.latent;
       },
@@ -449,7 +445,7 @@ class AutoencoderModel extends NeuralModel {
   // Get only the decoder part for generation
   async getDecoder() {
     return {
-      decode: async(latent) => {
+      decode: async (latent) => {
         return await this.decode(latent, false);
       },
       config: {

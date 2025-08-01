@@ -64,28 +64,28 @@ export class ConfigManager {
     return {
       logger: {
         level: 'info',
-        console: true
+        console: true,
       },
       terminal: {
         timeout: 30000,
-        maxConcurrentProcesses: 10
+        maxConcurrentProcesses: 10,
       },
       memory: {
         directory: './data/memory',
         namespace: 'claude-flow',
         enableCompression: false,
-        maxMemorySize: 100 * 1024 * 1024 // 100MB
+        maxMemorySize: 100 * 1024 * 1024, // 100MB
       },
       coordination: {
         maxAgents: 50,
         heartbeatInterval: 10000,
-        timeout: 30000
+        timeout: 30000,
       },
       mcp: {
         port: 3000,
         host: 'localhost',
-        timeout: 30000
-      }
+        timeout: 30000,
+      },
     };
   }
 
@@ -95,7 +95,7 @@ export class ConfigManager {
   updateConfig(updates: Partial<SystemConfig>): void {
     this._config = {
       ...this._config,
-      ...updates
+      ...updates,
     };
   }
 

@@ -1,18 +1,18 @@
 /**
  * Agentic Zen Hook Manager
- * 
+ *
  * Core hook management system for the Claude-Zen ecosystem.
  * Provides hook registration, execution, metrics, and pipeline management.
  */
 
 import { EventEmitter } from 'events';
 import type {
-  AgenticHookType,
-  HookRegistration,
   AgenticHookContext,
+  AgenticHookType,
   HookHandlerResult,
   HookMetrics,
-  HookPipeline
+  HookPipeline,
+  HookRegistration,
 } from './types';
 
 export class HookManager extends EventEmitter {
@@ -53,7 +53,10 @@ export class HookManager extends EventEmitter {
   /**
    * Execute hooks for a specific type
    */
-  async executeHooks(type: AgenticHookType, context: AgenticHookContext): Promise<HookHandlerResult[]> {
+  async executeHooks(
+    type: AgenticHookType,
+    context: AgenticHookContext
+  ): Promise<HookHandlerResult[]> {
     const relevantHooks = this.getHooksForType(type);
     const results: HookHandlerResult[] = [];
 
@@ -62,21 +65,21 @@ export class HookManager extends EventEmitter {
         const startTime = Date.now();
         const result = await this.executeHook(hook, context);
         const duration = Date.now() - startTime;
-        
+
         this.updateMetrics(hook.id, true, duration);
         results.push(result);
-        
+
         this.emit('hookExecuted', { hook: hook.id, result, duration });
       } catch (error) {
         this.updateMetrics(hook.id, false, 0);
         this.logger.error(`Hook execution failed: ${hook.id}`, error);
-        
+
         results.push({
           success: false,
           modified: false,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         });
-        
+
         this.emit('hookError', { hook: hook.id, error });
       }
     }
@@ -87,7 +90,10 @@ export class HookManager extends EventEmitter {
   /**
    * Execute a single hook
    */
-  private async executeHook(hook: HookRegistration, context: AgenticHookContext): Promise<HookHandlerResult> {
+  private async executeHook(
+    hook: HookRegistration,
+    context: AgenticHookContext
+  ): Promise<HookHandlerResult> {
     if (!hook.enabled) {
       return { success: true, modified: false };
     }
@@ -105,7 +111,7 @@ export class HookManager extends EventEmitter {
    */
   private getHooksForType(type: AgenticHookType): HookRegistration[] {
     return Array.from(this.hooks.values())
-      .filter(hook => hook.type === type && hook.enabled)
+      .filter((hook) => hook.type === type && hook.enabled)
       .sort((a, b) => b.priority - a.priority);
   }
 
@@ -133,7 +139,7 @@ export class HookManager extends EventEmitter {
       successfulExecutions: 0,
       failedExecutions: 0,
       averageExecutionTime: 0,
-      errorRate: 0
+      errorRate: 0,
     });
   }
 
@@ -192,7 +198,7 @@ export class HookManager extends EventEmitter {
    * Get hooks by type
    */
   getHooksByType(type: AgenticHookType): HookRegistration[] {
-    return Array.from(this.hooks.values()).filter(hook => hook.type === type);
+    return Array.from(this.hooks.values()).filter((hook) => hook.type === type);
   }
 
   /**
@@ -207,7 +213,10 @@ export class HookManager extends EventEmitter {
   /**
    * Execute a pipeline
    */
-  async executePipeline(pipelineId: string, context: AgenticHookContext): Promise<HookHandlerResult[]> {
+  async executePipeline(
+    pipelineId: string,
+    context: AgenticHookContext
+  ): Promise<HookHandlerResult[]> {
     const pipeline = this.pipelines.get(pipelineId);
     if (!pipeline || !pipeline.enabled) {
       return [];
@@ -217,11 +226,13 @@ export class HookManager extends EventEmitter {
 
     if (pipeline.parallel) {
       // Execute hooks in parallel
-      const promises = pipeline.hooks.map(hookId => {
+      const promises = pipeline.hooks.map((hookId) => {
         const hook = this.hooks.get(hookId);
-        return hook ? this.executeHook(hook, context) : Promise.resolve({ success: false, modified: false, error: 'Hook not found' });
+        return hook
+          ? this.executeHook(hook, context)
+          : Promise.resolve({ success: false, modified: false, error: 'Hook not found' });
       });
-      
+
       const parallelResults = await Promise.allSettled(promises);
       for (const result of parallelResults) {
         if (result.status === 'fulfilled') {
@@ -242,7 +253,7 @@ export class HookManager extends EventEmitter {
             results.push({
               success: false,
               modified: false,
-              error: error instanceof Error ? error.message : String(error)
+              error: error instanceof Error ? error.message : String(error),
             });
           }
         }
@@ -289,9 +300,9 @@ export class HookManager extends EventEmitter {
 
     return {
       registeredHooks: this.hooks.size,
-      activeHooks: Array.from(this.hooks.values()).filter(h => h.enabled).length,
+      activeHooks: Array.from(this.hooks.values()).filter((h) => h.enabled).length,
       pipelines: this.pipelines.size,
-      totalExecutions
+      totalExecutions,
     };
   }
 }

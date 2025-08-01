@@ -1,18 +1,16 @@
 /**
  * Ink UI Components - Main Export Module
- * 
+ *
  * This module exports all UI components, screens, and hooks for the Claude Flow CLI.
  * Built with Ink (React for CLI) for rich terminal user interfaces.
  */
 
 // Component exports
 export * from './components';
-
-// Screen exports
-export * from './screens';
-
 // Hook exports
 export * from './hooks';
+// Screen exports
+export * from './screens';
 
 // Type definitions for UI components
 export interface UITheme {
@@ -70,7 +68,7 @@ export const UIUtils = {
     if (ms < 3600000) return `${(ms / 60000).toFixed(1)}m`;
     return `${(ms / 3600000).toFixed(1)}h`;
   },
-  
+
   formatBytes: (bytes: number): string => {
     const units = ['B', 'KB', 'MB', 'GB', 'TB'];
     let i = 0;
@@ -80,12 +78,12 @@ export const UIUtils = {
     }
     return `${bytes.toFixed(1)}${units[i]}`;
   },
-  
+
   truncateText: (text: string, maxLength: number): string => {
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength - 3) + '...';
   },
-  
+
   centerText: (text: string, width: number): string => {
     const padding = Math.max(0, width - text.length);
     const leftPad = Math.floor(padding / 2);

@@ -5,11 +5,11 @@
  * and validates that all existing functionality works with the new pool.
  */
 
-import { EnhancedMCPTools } from '../src/mcp-tools-enhanced.js';
-import { RuvSwarm } from '../src/index-enhanced.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { RuvSwarm } from '../src/index-enhanced.js';
+import { EnhancedMCPTools } from '../src/mcp-tools-enhanced.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,7 +22,7 @@ console.log('🧪 Starting Pooled Persistence Integration Tests\n');
 // Cleanup function
 function cleanup() {
   try {
-    [TEST_DB_PATH, TEST_DB_PATH + '-wal', TEST_DB_PATH + '-shm'].forEach(file => {
+    [TEST_DB_PATH, TEST_DB_PATH + '-wal', TEST_DB_PATH + '-shm'].forEach((file) => {
       if (fs.existsSync(file)) {
         fs.unlinkSync(file);
       }
@@ -43,7 +43,7 @@ async function testMCPToolsIntegration() {
     const mcpTools = new EnhancedMCPTools();
 
     // Wait for persistence initialization
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Test swarm initialization
     const swarmResult = await mcpTools.swarm_init({
@@ -74,7 +74,9 @@ async function testMCPToolsIntegration() {
     // Test pool statistics
     const statsResult = await mcpTools.pool_stats();
     console.log('✅ Pool statistics working');
-    console.log(`📈 Total operations: ${statsResult.persistence_metrics?.total_operations || 'N/A'}`);
+    console.log(
+      `📈 Total operations: ${statsResult.persistence_metrics?.total_operations || 'N/A'}`
+    );
 
     // Test persistence statistics
     const persistenceResult = await mcpTools.persistence_stats();
@@ -83,7 +85,6 @@ async function testMCPToolsIntegration() {
     console.log(`⚡ Connection pool: ${persistenceResult.connection_pool}`);
 
     console.log('✅ MCP Tools integration test passed\n');
-
   } catch (error) {
     console.error('❌ Test 1 failed:', error.message);
     throw error;
@@ -126,7 +127,9 @@ async function testRuvSwarmCoreIntegration() {
 
     // Test that it's the pooled version
     if (ruvSwarm.persistence.constructor.name !== 'SwarmPersistencePooled') {
-      throw new Error('Expected SwarmPersistencePooled, got ' + ruvSwarm.persistence.constructor.name);
+      throw new Error(
+        'Expected SwarmPersistencePooled, got ' + ruvSwarm.persistence.constructor.name
+      );
     }
 
     console.log('✅ Confirmed using SwarmPersistencePooled');
@@ -140,11 +143,12 @@ async function testRuvSwarmCoreIntegration() {
     // Test pool statistics
     if (typeof ruvSwarm.persistence.getPoolStats === 'function') {
       const poolStats = ruvSwarm.persistence.getPoolStats();
-      console.log(`📊 Pool connections: ${poolStats.activeConnections || 0} active, ${poolStats.availableReaders || 0} readers`);
+      console.log(
+        `📊 Pool connections: ${poolStats.activeConnections || 0} active, ${poolStats.availableReaders || 0} readers`
+      );
     }
 
     console.log('✅ RuvSwarm core integration test passed\n');
-
   } catch (error) {
     console.error('❌ Test 2 failed:', error.message);
     throw error;
@@ -161,7 +165,7 @@ async function testConcurrentOperations() {
     const mcpTools = new EnhancedMCPTools();
 
     // Wait for initialization
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     console.log('📊 Running concurrent operations test');
 
@@ -173,7 +177,7 @@ async function testConcurrentOperations() {
           topology: 'mesh',
           maxAgents: 3,
           strategy: 'balanced',
-        }),
+        })
       );
     }
 
@@ -188,7 +192,7 @@ async function testConcurrentOperations() {
           type: 'researcher',
           name: `Concurrent Agent ${i}`,
           capabilities: ['analysis'],
-        }),
+        })
       );
     }
 
@@ -213,9 +217,10 @@ async function testConcurrentOperations() {
       throw new Error('Pool health check failed during concurrent operations');
     }
 
-    console.log(`🏥 Pool remained healthy during concurrent operations: ${healthResult.healthy || 'N/A'}`);
+    console.log(
+      `🏥 Pool remained healthy during concurrent operations: ${healthResult.healthy || 'N/A'}`
+    );
     console.log('✅ Concurrent operations test passed\n');
-
   } catch (error) {
     console.error('❌ Test 3 failed:', error.message);
     throw error;
@@ -232,7 +237,7 @@ async function testPerformanceComparison() {
     const mcpTools = new EnhancedMCPTools();
 
     // Wait for initialization
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     console.log('📊 Running performance validation');
 
@@ -254,7 +259,8 @@ async function testPerformanceComparison() {
     console.log(`✅ Created ${numOperations} swarms in ${duration}ms`);
     console.log(`⚡ Average: ${avgTime.toFixed(2)}ms per swarm`);
 
-    if (avgTime > 100) { // Should be much faster with pooling
+    if (avgTime > 100) {
+      // Should be much faster with pooling
       console.warn(`⚠️  Average time higher than expected: ${avgTime.toFixed(2)}ms`);
     } else {
       console.log('✅ Performance meets expectations');
@@ -263,12 +269,15 @@ async function testPerformanceComparison() {
     // Test pool statistics after load
     const finalStats = await mcpTools.pool_stats();
     console.log(`📈 Final pool stats:`);
-    console.log(`   - Total operations: ${finalStats.persistence_metrics?.total_operations || 'N/A'}`);
+    console.log(
+      `   - Total operations: ${finalStats.persistence_metrics?.total_operations || 'N/A'}`
+    );
     console.log(`   - Error rate: ${finalStats.persistence_metrics?.error_rate || 'N/A'}`);
-    console.log(`   - Avg response time: ${finalStats.persistence_metrics?.average_response_time || 'N/A'}ms`);
+    console.log(
+      `   - Avg response time: ${finalStats.persistence_metrics?.average_response_time || 'N/A'}ms`
+    );
 
     console.log('✅ Performance validation test passed\n');
-
   } catch (error) {
     console.error('❌ Test 4 failed:', error.message);
     throw error;
@@ -290,7 +299,7 @@ async function testEnvironmentConfiguration() {
     const mcpTools = new EnhancedMCPTools();
 
     // Wait for initialization
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Test that configuration was applied
     const stats = await mcpTools.pool_stats();
@@ -306,7 +315,6 @@ async function testEnvironmentConfiguration() {
     delete process.env.POOL_CACHE_SIZE;
 
     console.log('✅ Environment configuration test passed\n');
-
   } catch (error) {
     console.error('❌ Test 5 failed:', error.message);
     throw error;
@@ -341,7 +349,7 @@ async function runAllTests() {
   console.log('📊 Integration Test Results Summary:');
   console.log(`✅ Passed: ${passed}`);
   console.log(`❌ Failed: ${failed}`);
-  console.log(`📈 Success Rate: ${(passed / (passed + failed) * 100).toFixed(1)}%`);
+  console.log(`📈 Success Rate: ${((passed / (passed + failed)) * 100).toFixed(1)}%`);
 
   if (failed === 0) {
     console.log('\n🎉 All integration tests passed! Pooled persistence is production ready.');

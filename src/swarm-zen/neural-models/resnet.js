@@ -48,10 +48,7 @@ class ResNetModel extends NeuralModel {
       const blockBatchNorm = [];
 
       // Determine block dimensions
-      const outputDim = Math.min(
-        currentDimensions * 2,
-        this.config.hiddenDimensions,
-      );
+      const outputDim = Math.min(currentDimensions * 2, this.config.hiddenDimensions);
 
       // Create layers within block
       for (let layerIdx = 0; layerIdx < this.config.blockDepth; layerIdx++) {
@@ -230,10 +227,10 @@ class ResNetModel extends NeuralModel {
 
       // Update running statistics
       for (let f = 0; f < features; f++) {
-        params.runningMean[f] = params.momentum * params.runningMean[f] +
-                               (1 - params.momentum) * mean[f];
-        params.runningVar[f] = params.momentum * params.runningVar[f] +
-                              (1 - params.momentum) * variance[f];
+        params.runningMean[f] =
+          params.momentum * params.runningMean[f] + (1 - params.momentum) * mean[f];
+        params.runningVar[f] =
+          params.momentum * params.runningVar[f] + (1 - params.momentum) * variance[f];
       }
 
       // Normalize using batch statistics
@@ -249,8 +246,8 @@ class ResNetModel extends NeuralModel {
       for (let b = 0; b < batchSize; b++) {
         for (let f = 0; f < features; f++) {
           const idx = b * features + f;
-          const norm = (input[idx] - params.runningMean[f]) /
-                      Math.sqrt(params.runningVar[f] + 1e-5);
+          const norm =
+            (input[idx] - params.runningMean[f]) / Math.sqrt(params.runningVar[f] + 1e-5);
           normalized[idx] = params.gamma[f] * norm + params.beta[f];
         }
       }
@@ -407,8 +404,8 @@ class ResNetModel extends NeuralModel {
 
       console.log(
         `Epoch ${epoch + 1}/${epochs} - ` +
-        `Train Loss: ${avgTrainLoss.toFixed(4)}, Train Acc: ${(trainAccuracy * 100).toFixed(2)}% - ` +
-        `Val Loss: ${valMetrics.loss.toFixed(4)}, Val Acc: ${(valMetrics.accuracy * 100).toFixed(2)}%`,
+          `Train Loss: ${avgTrainLoss.toFixed(4)}, Train Acc: ${(trainAccuracy * 100).toFixed(2)}% - ` +
+          `Val Loss: ${valMetrics.loss.toFixed(4)}, Val Acc: ${(valMetrics.accuracy * 100).toFixed(2)}%`
       );
     }
 

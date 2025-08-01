@@ -2,7 +2,7 @@
  * Comprehensive test suite for neural network manager
  */
 
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 // Mock the persistence manager
 jest.mock('../src/persistence.js', () => ({
@@ -84,9 +84,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
         expect(network.config.activation).toBe(activation);
       }
 
-      expect(() =>
-        manager.createNetwork('invalid', { activation: 'unknown' }),
-      ).toThrow();
+      expect(() => manager.createNetwork('invalid', { activation: 'unknown' })).toThrow();
     });
   });
 
@@ -99,7 +97,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
         if (layer.weights) {
           const weights = layer.weights.flat();
           const mean = weights.reduce((a, b) => a + b) / weights.length;
-          const variance = weights.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / weights.length;
+          const variance = weights.reduce((a, b) => a + (b - mean) ** 2, 0) / weights.length;
 
           expect(Math.abs(mean)).toBeLessThan(0.1);
           expect(variance).toBeGreaterThan(0);
@@ -134,7 +132,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
       const output = manager.forward('forward-test', input);
 
       expect(output).toHaveLength(2);
-      expect(output.every(v => v >= 0 && v <= 1)).toBe(true);
+      expect(output.every((v) => v >= 0 && v <= 1)).toBe(true);
     });
 
     it('should handle batch forward propagation', () => {
@@ -166,9 +164,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
       }
 
       // Outputs should vary due to dropout
-      const allSame = outputs.every(o =>
-        JSON.stringify(o) === JSON.stringify(outputs[0]),
-      );
+      const allSame = outputs.every((o) => JSON.stringify(o) === JSON.stringify(outputs[0]));
       expect(allSame).toBe(false);
     });
 
@@ -190,9 +186,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
       }
 
       // Outputs should be deterministic
-      const allSame = outputs.every(o =>
-        JSON.stringify(o) === JSON.stringify(outputs[0]),
-      );
+      const allSame = outputs.every((o) => JSON.stringify(o) === JSON.stringify(outputs[0]));
       expect(allSame).toBe(true);
     });
 
@@ -265,7 +259,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
       });
     });
 
-    it('should train on single sample', async() => {
+    it('should train on single sample', async () => {
       const trainingData = [
         { input: [0, 0], output: [0] },
         { input: [0, 1], output: [1] },
@@ -281,11 +275,13 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
       expect(finalError).toBeLessThan(initialError);
     });
 
-    it('should support mini-batch training', async() => {
-      const trainingData = Array(100).fill(null).map(() => ({
-        input: [Math.random(), Math.random()],
-        output: [Math.random()],
-      }));
+    it('should support mini-batch training', async () => {
+      const trainingData = Array(100)
+        .fill(null)
+        .map(() => ({
+          input: [Math.random(), Math.random()],
+          output: [Math.random()],
+        }));
 
       await manager.train('train-test', trainingData, {
         epochs: 10,
@@ -297,16 +293,14 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
       expect(manager.networks.get('train-test').stats.epochs).toBe(10);
     });
 
-    it('should apply momentum correctly', async() => {
+    it('should apply momentum correctly', async () => {
       manager.createNetwork('momentum-test', {
         layers: [2, 3, 1],
         learningRate: 0.1,
         momentum: 0.9,
       });
 
-      const trainingData = [
-        { input: [0.5, 0.5], output: [0.75] },
-      ];
+      const trainingData = [{ input: [0.5, 0.5], output: [0.75] }];
 
       // Train for a few epochs to build up momentum
       await manager.train('momentum-test', trainingData, {
@@ -318,22 +312,26 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
       expect(network.velocities).toBeDefined();
 
       // Velocities should be non-zero
-      const hasNonZeroVelocity = network.velocities.some(v =>
-        v && v.weights && v.weights.some(row => row.some(w => w !== 0)),
+      const hasNonZeroVelocity = network.velocities.some(
+        (v) => v && v.weights && v.weights.some((row) => row.some((w) => w !== 0))
       );
       expect(hasNonZeroVelocity).toBe(true);
     });
 
-    it('should implement early stopping', async() => {
-      const trainingData = Array(50).fill(null).map(() => ({
-        input: [Math.random(), Math.random()],
-        output: [Math.random()],
-      }));
+    it('should implement early stopping', async () => {
+      const trainingData = Array(50)
+        .fill(null)
+        .map(() => ({
+          input: [Math.random(), Math.random()],
+          output: [Math.random()],
+        }));
 
-      const validationData = Array(10).fill(null).map(() => ({
-        input: [Math.random(), Math.random()],
-        output: [Math.random()],
-      }));
+      const validationData = Array(10)
+        .fill(null)
+        .map(() => ({
+          input: [Math.random(), Math.random()],
+          output: [Math.random()],
+        }));
 
       const result = await manager.train('train-test', trainingData, {
         epochs: 1000,
@@ -346,7 +344,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
       expect(result.epochs).toBeLessThan(1000);
     });
 
-    it('should handle gradient clipping', async() => {
+    it('should handle gradient clipping', async () => {
       manager.createNetwork('clip-test', {
         layers: [2, 3, 1],
         learningRate: 10, // Very high to cause gradient explosion
@@ -364,7 +362,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
 
       // Network should remain stable despite high learning rate
       const output = manager.forward('clip-test', [1, 1]);
-      expect(output.every(v => !isNaN(v) && isFinite(v))).toBe(true);
+      expect(output.every((v) => !isNaN(v) && isFinite(v))).toBe(true);
     });
   });
 
@@ -400,7 +398,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
   });
 
   describe('Model Persistence', () => {
-    it('should save model correctly', async() => {
+    it('should save model correctly', async () => {
       manager.createNetwork('save-test');
 
       await manager.saveModel('save-test', 'test-model');
@@ -412,15 +410,30 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
           layers: expect.any(Array),
           config: expect.any(Object),
           stats: expect.any(Object),
-        }),
+        })
       );
     });
 
-    it('should load model correctly', async() => {
+    it('should load model correctly', async () => {
       const savedModel = {
         layers: [
-          { neurons: 3, weights: [[1, 2], [3, 4], [5, 6]], biases: [0.1, 0.2, 0.3] },
-          { neurons: 2, weights: [[7, 8, 9], [10, 11, 12]], biases: [0.4, 0.5] },
+          {
+            neurons: 3,
+            weights: [
+              [1, 2],
+              [3, 4],
+              [5, 6],
+            ],
+            biases: [0.1, 0.2, 0.3],
+          },
+          {
+            neurons: 2,
+            weights: [
+              [7, 8, 9],
+              [10, 11, 12],
+            ],
+            biases: [0.4, 0.5],
+          },
         ],
         config: { activation: 'relu', learningRate: 0.01 },
         stats: { epochs: 100 },
@@ -436,7 +449,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
       expect(network.config.activation).toBe('relu');
     });
 
-    it('should handle missing models gracefully', async() => {
+    it('should handle missing models gracefully', async () => {
       mockPersistence.loadNeuralModel.mockResolvedValue(null);
 
       const loaded = await manager.loadModel('missing', 'non-existent');
@@ -445,7 +458,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
   });
 
   describe('Advanced Features', () => {
-    it('should support learning rate scheduling', async() => {
+    it('should support learning rate scheduling', async () => {
       manager.createNetwork('lr-schedule', {
         layers: [2, 3, 1],
         learningRate: 0.1,
@@ -466,9 +479,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
       });
 
       expect(network.config.learningRate).toBeLessThan(initialLR);
-      expect(network.config.learningRate).toBeCloseTo(
-        initialLR * Math.pow(0.95, 10),
-      );
+      expect(network.config.learningRate).toBeCloseTo(initialLR * 0.95 ** 10);
     });
 
     it('should support batch normalization', () => {
@@ -519,27 +530,23 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
       expect(() => manager.forward('nan-test', input)).toThrow();
     });
 
-    it('should handle Infinity values in training', async() => {
+    it('should handle Infinity values in training', async () => {
       manager.createNetwork('inf-test', {
         layers: [2, 2],
       });
 
-      const trainingData = [
-        { input: [Infinity, 1], output: [0, 1] },
-      ];
+      const trainingData = [{ input: [Infinity, 1], output: [0, 1] }];
 
       await expect(manager.train('inf-test', trainingData)).rejects.toThrow();
     });
 
-    it('should recover from numerical instability', async() => {
+    it('should recover from numerical instability', async () => {
       manager.createNetwork('unstable', {
         layers: [2, 10, 1],
         learningRate: 100, // Extremely high
       });
 
-      const trainingData = [
-        { input: [1000, 1000], output: [0.0001] },
-      ];
+      const trainingData = [{ input: [1000, 1000], output: [0.0001] }];
 
       // Should handle without crashing
       try {
@@ -585,7 +592,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
       expect(forwardTime).toBeLessThan(100); // 10 passes in under 100ms
     });
 
-    it('should clean up resources properly', async() => {
+    it('should clean up resources properly', async () => {
       // Create and destroy multiple networks
       for (let i = 0; i < 100; i++) {
         manager.createNetwork(`temp-${i}`, {

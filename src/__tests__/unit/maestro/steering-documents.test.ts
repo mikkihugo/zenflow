@@ -3,10 +3,10 @@
  * Tests individual components and functions for steering document creation
  */
 
-import { MaestroOrchestrator } from '../../../maestro/maestro-orchestrator';
-import { readFile, writeFile, mkdir, access, unlink, rm } from 'fs/promises';
-import { join } from 'path';
 import { existsSync } from 'fs';
+import { access, mkdir, readFile, rm, unlink, writeFile } from 'fs/promises';
+import { join } from 'path';
+import { MaestroOrchestrator } from '../../../maestro/maestro-orchestrator';
 
 // Mock dependencies
 jest.mock('fs/promises');
@@ -35,26 +35,26 @@ describe('Maestro Steering Document Generation', () => {
     mockConfig = { environment: 'test' };
     mockEventBus = {
       emit: jest.fn(),
-      on: jest.fn()
+      on: jest.fn(),
     };
     mockLogger = {
       info: jest.fn(),
       warn: jest.fn(),
       error: jest.fn(),
-      debug: jest.fn()
+      debug: jest.fn(),
     };
     mockMemoryManager = {
       get: jest.fn(),
       set: jest.fn(),
-      delete: jest.fn()
+      delete: jest.fn(),
     };
     mockAgentManager = {
       createAgent: jest.fn().mockResolvedValue('agent-123'),
       startAgent: jest.fn(),
-      stopAgent: jest.fn()
+      stopAgent: jest.fn(),
     };
     mockMainOrchestrator = {
-      assignTask: jest.fn().mockResolvedValue({ success: true })
+      assignTask: jest.fn().mockResolvedValue({ success: true }),
     };
 
     // Clear all mocks
@@ -79,13 +79,14 @@ describe('Maestro Steering Document Generation', () => {
 
       await maestroOrchestrator.createSteeringDocument(domain, content);
 
-      expect(mockMkdir).toHaveBeenCalledWith(
-        expect.stringContaining('steering'),
-        { recursive: true }
-      );
+      expect(mockMkdir).toHaveBeenCalledWith(expect.stringContaining('steering'), {
+        recursive: true,
+      });
       expect(mockWriteFile).toHaveBeenCalledWith(
         expect.stringContaining(`${domain}.md`),
-        expect.stringContaining(`# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document`),
+        expect.stringContaining(
+          `# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document`
+        ),
         'utf8'
       );
       expect(mockLogger.info).toHaveBeenCalledWith(
@@ -113,7 +114,7 @@ describe('Maestro Steering Document Generation', () => {
       await maestroOrchestrator.createSteeringDocument(domain, content);
 
       const writtenContent = (mockWriteFile as jest.Mock).mock.calls[0][1];
-      
+
       expect(writtenContent).toContain('# Tech Steering Document');
       expect(writtenContent).toContain(content);
       expect(writtenContent).toContain('## Guidelines');
@@ -125,14 +126,14 @@ describe('Maestro Steering Document Generation', () => {
         { domain: 'product', expectedTitle: 'Product Steering Document' },
         { domain: 'architecture', expectedTitle: 'Architecture Steering Document' },
         { domain: 'testing', expectedTitle: 'Testing Steering Document' },
-        { domain: 'deployment', expectedTitle: 'Deployment Steering Document' }
+        { domain: 'deployment', expectedTitle: 'Deployment Steering Document' },
       ];
 
       for (const testCase of testCases) {
         jest.clearAllMocks();
-        
+
         await maestroOrchestrator.createSteeringDocument(testCase.domain, 'Test content');
-        
+
         const writtenContent = (mockWriteFile as jest.Mock).mock.calls[0][1];
         expect(writtenContent).toContain(`# ${testCase.expectedTitle}`);
       }
@@ -254,24 +255,22 @@ User personas and experience guidelines.
     it('should handle file system errors during creation', async () => {
       mockMkdir.mockRejectedValue(new Error('Permission denied'));
 
-      await expect(
-        maestroOrchestrator.createSteeringDocument('test', 'content')
-      ).rejects.toThrow('Permission denied');
+      await expect(maestroOrchestrator.createSteeringDocument('test', 'content')).rejects.toThrow(
+        'Permission denied'
+      );
     });
 
     it('should handle write errors gracefully', async () => {
       mockWriteFile.mockRejectedValue(new Error('Disk full'));
 
-      await expect(
-        maestroOrchestrator.createSteeringDocument('test', 'content')
-      ).rejects.toThrow('Disk full');
+      await expect(maestroOrchestrator.createSteeringDocument('test', 'content')).rejects.toThrow(
+        'Disk full'
+      );
     });
 
     it('should validate domain name input', async () => {
       // Test with empty domain
-      await expect(
-        maestroOrchestrator.createSteeringDocument('', 'content')
-      ).rejects.toThrow(); // Should throw validation error
+      await expect(maestroOrchestrator.createSteeringDocument('', 'content')).rejects.toThrow(); // Should throw validation error
 
       // Test with invalid characters
       await expect(
@@ -292,8 +291,8 @@ User personas and experience guidelines.
 
     it('should handle concurrent steering document creation', async () => {
       const domains = ['concurrent-1', 'concurrent-2', 'concurrent-3'];
-      
-      const promises = domains.map(domain => 
+
+      const promises = domains.map((domain) =>
         maestroOrchestrator.createSteeringDocument(domain, `Content for ${domain}`)
       );
 
@@ -309,29 +308,30 @@ User personas and experience guidelines.
 function validateSteeringDocumentStructure(content: string, domain: string) {
   const requiredSections = ['Purpose', 'Guidelines'];
   const optionalSections = ['Context for Agents', 'Standards', 'Best Practices'];
-  
-  const foundRequired = requiredSections.filter(section => 
-    content.includes(`## ${section}`) || content.includes(`### ${section}`)
+
+  const foundRequired = requiredSections.filter(
+    (section) => content.includes(`## ${section}`) || content.includes(`### ${section}`)
   );
-  
-  const foundOptional = optionalSections.filter(section => 
-    content.includes(`## ${section}`) || content.includes(`### ${section}`)
+
+  const foundOptional = optionalSections.filter(
+    (section) => content.includes(`## ${section}`) || content.includes(`### ${section}`)
   );
-  
-  const missingSections = requiredSections.filter(section => !foundRequired.includes(section));
-  
-  const hasTitle = content.includes(`# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document`);
+
+  const missingSections = requiredSections.filter((section) => !foundRequired.includes(section));
+
+  const hasTitle = content.includes(
+    `# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document`
+  );
   const hasDomainContent = content.toLowerCase().includes(domain.toLowerCase());
   const hasMinimumLength = content.length > 200;
-  
-  const score = (
+
+  const score =
     (foundRequired.length / requiredSections.length) * 0.6 +
     (foundOptional.length / optionalSections.length) * 0.2 +
     (hasTitle ? 0.1 : 0) +
     (hasDomainContent ? 0.05 : 0) +
-    (hasMinimumLength ? 0.05 : 0)
-  );
-  
+    (hasMinimumLength ? 0.05 : 0);
+
   return {
     valid: foundRequired.length === requiredSections.length && hasTitle && hasMinimumLength,
     score,
@@ -340,6 +340,6 @@ function validateSteeringDocumentStructure(content: string, domain: string) {
     missingSections,
     hasTitle,
     domainSpecific: hasDomainContent,
-    minimumLength: hasMinimumLength
+    minimumLength: hasMinimumLength,
   };
 }

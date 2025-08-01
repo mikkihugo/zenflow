@@ -18,10 +18,7 @@
         "sharedMemoryRetrieved": {
           "currentTask": "building-api",
           "progress": 0.75,
-          "dependencies": [
-            "database-setup",
-            "auth-implementation"
-          ]
+          "dependencies": ["database-setup", "auth-implementation"]
         },
         "dbMemoryFound": true,
         "message": "Cross-agent memory access working correctly"

@@ -5,8 +5,8 @@
  * Tests: agent_metrics, swarm_monitor, neural_train, task_results
  */
 
-import { EnhancedMCPTools } from '../src/mcp-tools-enhanced';
 import { RuvSwarm } from '../src/index-enhanced';
+import { EnhancedMCPTools } from '../src/mcp-tools-enhanced';
 
 async function runTests() {
   console.log('🧪 Testing New MCP Tool Methods\n');
@@ -30,7 +30,11 @@ async function runTests() {
       strategy: 'balanced',
     });
     console.log(`   Swarm ID: ${swarmResult.id}`);
-    console.log(`   Features: ${Object.keys(swarmResult.features).filter(f => swarmResult.features[f]).join(', ')}`);
+    console.log(
+      `   Features: ${Object.keys(swarmResult.features)
+        .filter((f) => swarmResult.features[f])
+        .join(', ')}`
+    );
     testsPassed++;
     console.log('   ✅ PASSED\n');
 
@@ -67,7 +71,9 @@ async function runTests() {
         agentId: agents[0].id,
         metricType: 'performance',
       });
-      console.log(`   Agent ${agents[0].name} performance: ${(agentMetrics.agents[0].performance.accuracy_score * 100).toFixed(1)}%`);
+      console.log(
+        `   Agent ${agents[0].name} performance: ${(agentMetrics.agents[0].performance.accuracy_score * 100).toFixed(1)}%`
+      );
 
       testsPassed++;
       console.log('   ✅ PASSED\n');
@@ -87,8 +93,12 @@ async function runTests() {
       });
       console.log(`   Monitoring session: ${monitoring.monitoring_session_id}`);
       console.log(`   Health score: ${(monitoring.swarms[0].health_score * 100).toFixed(1)}%`);
-      console.log(`   CPU usage: ${monitoring.swarms[0].resource_utilization.cpu_usage_percent.toFixed(1)}%`);
-      console.log(`   Memory usage: ${monitoring.swarms[0].resource_utilization.memory_usage_mb.toFixed(1)}MB`);
+      console.log(
+        `   CPU usage: ${monitoring.swarms[0].resource_utilization.cpu_usage_percent.toFixed(1)}%`
+      );
+      console.log(
+        `   Memory usage: ${monitoring.swarms[0].resource_utilization.memory_usage_mb.toFixed(1)}MB`
+      );
 
       testsPassed++;
       console.log('   ✅ PASSED\n');
@@ -212,9 +222,10 @@ async function runTests() {
     if (testsPassed === testsTotal) {
       console.log('\n🎉 All tests passed! MCP methods are working correctly.');
     } else {
-      console.log(`\n⚠️  ${testsTotal - testsPassed} test(s) failed. Please review the implementation.`);
+      console.log(
+        `\n⚠️  ${testsTotal - testsPassed} test(s) failed. Please review the implementation.`
+      );
     }
-
   } catch (error) {
     console.error('💥 Fatal error during testing:', error.message);
     console.error('Stack trace:', error.stack);
@@ -224,7 +235,7 @@ async function runTests() {
 
 // Run tests if this script is executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  runTests().catch(error => {
+  runTests().catch((error) => {
     console.error('💥 Test execution failed:', error.message);
     process.exit(1);
   });

@@ -109,7 +109,12 @@ class NeuralNetwork {
           for (let j = 0; j < this.weights[layer].length; j++) {
             for (let k = 0; k < this.weights[layer][j].length; k++) {
               // Get activation from previous layer (fix indexing)
-              const prevActivation = (layer > 0 && activations[layer]) ? activations[layer][k] : (activations[0] ? activations[0][k] || 0 : 0);
+              const prevActivation =
+                layer > 0 && activations[layer]
+                  ? activations[layer][k]
+                  : activations[0]
+                    ? activations[0][k] || 0
+                    : 0;
               // Better weight update with gradient clipping
               const gradient = outputErrors[j] * prevActivation;
               const clippedGradient = Math.max(-1, Math.min(1, gradient)); // Clip gradients
@@ -188,23 +193,23 @@ class NeuralAgent {
   initializeNetwork() {
     switch (this.type) {
       case 'researcher':
-      // Network for research quality assessment
+        // Network for research quality assessment
         this.network = new NeuralNetwork([10, 20, 10, 3]); // Input: features, Output: quality score
         break;
       case 'coder':
-      // Network for code complexity estimation
+        // Network for code complexity estimation
         this.network = new NeuralNetwork([15, 30, 20, 5]); // Input: code features, Output: complexity levels
         break;
       case 'analyst':
-      // Network for pattern recognition
+        // Network for pattern recognition
         this.network = new NeuralNetwork([20, 40, 30, 10]); // Input: data features, Output: patterns
         break;
       case 'optimizer':
-      // Network for optimization decisions
+        // Network for optimization decisions
         this.network = new NeuralNetwork([12, 24, 16, 4]); // Input: metrics, Output: optimization actions
         break;
       default:
-      // Generic network
+        // Generic network
         this.network = new NeuralNetwork([10, 20, 10, 3]);
     }
   }
@@ -253,7 +258,13 @@ class NeuralAgent {
     const features = [];
 
     // Task type encoding
-    const typeMap = { research: 0.1, development: 0.3, analysis: 0.5, testing: 0.7, optimization: 0.9 };
+    const typeMap = {
+      research: 0.1,
+      development: 0.3,
+      analysis: 0.5,
+      testing: 0.7,
+      optimization: 0.9,
+    };
     features.push(typeMap[task.type] || 0.5);
 
     // Priority encoding
@@ -282,17 +293,32 @@ class NeuralAgent {
     const maxIndex = output.indexOf(Math.max(...output));
 
     switch (this.type) {
-      case 'researcher':
+      case 'researcher': {
         const researchActions = ['deep_analysis', 'quick_scan', 'collaborative_research'];
-        return { action: researchActions[maxIndex] || 'deep_analysis', confidence: output[maxIndex] };
+        return {
+          action: researchActions[maxIndex] || 'deep_analysis',
+          confidence: output[maxIndex],
+        };
+      }
 
-      case 'coder':
+      case 'coder': {
         const codingApproaches = ['refactor', 'optimize', 'implement', 'test', 'document'];
         return { action: codingApproaches[maxIndex] || 'implement', confidence: output[maxIndex] };
+      }
 
-      case 'analyst':
-        const analysisTypes = ['statistical', 'machine_learning', 'visualization', 'report', 'real_time'];
-        return { action: analysisTypes[Math.min(maxIndex, 4)] || 'statistical', confidence: output[maxIndex] };
+      case 'analyst': {
+        const analysisTypes = [
+          'statistical',
+          'machine_learning',
+          'visualization',
+          'report',
+          'real_time',
+        ];
+        return {
+          action: analysisTypes[Math.min(maxIndex, 4)] || 'statistical',
+          confidence: output[maxIndex],
+        };
+      }
 
       default:
         return { action: 'process', confidence: output[maxIndex] };
@@ -304,16 +330,18 @@ class NeuralAgent {
     const baseTime = 100;
     const variability = Math.random() * 50;
 
-    await new Promise(resolve => setTimeout(resolve, baseTime + variability));
+    await new Promise((resolve) => setTimeout(resolve, baseTime + variability));
 
     // Log execution
-    console.log(`   Agent ${this.id} executing ${decision.action} for task ${task.id} (confidence: ${decision.confidence.toFixed(3)})`);
+    console.log(
+      `   Agent ${this.id} executing ${decision.action} for task ${task.id} (confidence: ${decision.confidence.toFixed(3)})`
+    );
   }
 
   updatePerformance(experience) {
     this.performance.tasksCompleted++;
 
-    const successCount = this.experience.filter(e => e.success).length;
+    const successCount = this.experience.filter((e) => e.success).length;
     this.performance.successRate = successCount / this.experience.length;
 
     const totalTime = this.experience.reduce((sum, e) => sum + e.executionTime, 0);
@@ -327,8 +355,8 @@ class NeuralAgent {
     }
 
     // Prepare training data
-    const inputs = this.experience.map(e => e.features);
-    const targets = this.experience.map(e => {
+    const inputs = this.experience.map((e) => e.features);
+    const targets = this.experience.map((e) => {
       // Create target output based on success
       const target = new Array(this.network.layers[this.network.layers.length - 1]).fill(0.1);
       if (e.success) {
@@ -362,11 +390,12 @@ class NeuralAgent {
       experienceCount: this.experience.length,
       networkInfo: {
         layers: this.network.layers,
-        totalWeights: this.network.weights.reduce((sum, layer) =>
-          sum + layer.reduce((layerSum, neuron) => layerSum + neuron.length, 0), 0,
+        totalWeights: this.network.weights.reduce(
+          (sum, layer) => sum + layer.reduce((layerSum, neuron) => layerSum + neuron.length, 0),
+          0
         ),
       },
-      recentDecisions: this.experience.slice(-5).map(e => ({
+      recentDecisions: this.experience.slice(-5).map((e) => ({
         taskId: e.task.id,
         decision: e.decision.action,
         confidence: e.decision.confidence,
@@ -396,11 +425,13 @@ class SwarmIntelligence {
     // Gather all experiences
     const allExperiences = [];
     for (const agent of this.agents.values()) {
-      allExperiences.push(...agent.experience.map(e => ({
-        ...e,
-        agentId: agent.id,
-        agentType: agent.type,
-      })));
+      allExperiences.push(
+        ...agent.experience.map((e) => ({
+          ...e,
+          agentId: agent.id,
+          agentType: agent.type,
+        }))
+      );
     }
 
     // Identify patterns
@@ -426,7 +457,7 @@ class SwarmIntelligence {
 
     // Group by task type and success
     const taskGroups = {};
-    experiences.forEach(exp => {
+    experiences.forEach((exp) => {
       const key = `${exp.task.type}_${exp.decision.action}`;
       if (!taskGroups[key]) {
         taskGroups[key] = { successful: 0, failed: 0, avgTime: 0, totalTime: 0 };
@@ -443,7 +474,8 @@ class SwarmIntelligence {
     // Convert to patterns
     Object.entries(taskGroups).forEach(([key, stats]) => {
       const total = stats.successful + stats.failed;
-      if (total >= 5) { // Minimum sample size
+      if (total >= 5) {
+        // Minimum sample size
         patterns.push({
           id: key,
           successRate: stats.successful / total,
@@ -459,7 +491,7 @@ class SwarmIntelligence {
 
   async updateSwarmNetwork(patterns) {
     // Convert patterns to training data for swarm network
-    const inputs = patterns.map(p => {
+    const inputs = patterns.map((p) => {
       const features = [];
       features.push(p.successRate);
       features.push(p.averageTime / 1000); // Normalize time
@@ -472,8 +504,10 @@ class SwarmIntelligence {
       return features;
     });
 
-    const targets = patterns.map(p => {
-      const target = new Array(this.swarmNetwork.layers[this.swarmNetwork.layers.length - 1]).fill(0.1);
+    const targets = patterns.map((p) => {
+      const target = new Array(this.swarmNetwork.layers[this.swarmNetwork.layers.length - 1]).fill(
+        0.1
+      );
       target[p.recommendation === 'preferred' ? 0 : 1] = 0.9;
       return target;
     });
@@ -498,8 +532,9 @@ class SwarmIntelligence {
     features.push(this.getSwarmLoad());
 
     // Historical performance
-    const relevantPattern = Array.from(this.sharedKnowledge.values())
-      .find(p => p.id.includes(task.type));
+    const relevantPattern = Array.from(this.sharedKnowledge.values()).find((p) =>
+      p.id.includes(task.type)
+    );
 
     if (relevantPattern) {
       features.push(relevantPattern.successRate);
@@ -531,8 +566,14 @@ class SwarmIntelligence {
   }
 
   interpretSwarmOutput(output) {
-    const strategies = ['parallel_processing', 'sequential_processing', 'hierarchical_delegation',
-      'collaborative_solving', 'competitive_solving', 'hybrid_approach'];
+    const strategies = [
+      'parallel_processing',
+      'sequential_processing',
+      'hierarchical_delegation',
+      'collaborative_solving',
+      'competitive_solving',
+      'hybrid_approach',
+    ];
     const maxIndex = output.indexOf(Math.max(...output));
     return strategies[Math.min(maxIndex, strategies.length - 1)];
   }
@@ -580,7 +621,7 @@ async function runNeuralIntegrationTests() {
   }
 
   // Neural Network Basic Tests
-  await test('Neural Network Creation', async() => {
+  await test('Neural Network Creation', async () => {
     const nn = new NeuralNetwork([3, 5, 2]);
     assert.strictEqual(nn.layers.length, 3);
     assert.strictEqual(nn.weights.length, 2);
@@ -589,7 +630,7 @@ async function runNeuralIntegrationTests() {
     assert.strictEqual(nn.weights[1].length, 2); // 2 neurons in output layer
   });
 
-  await test('Neural Network Forward Propagation', async() => {
+  await test('Neural Network Forward Propagation', async () => {
     const nn = new NeuralNetwork([2, 3, 1]);
     const input = [0.5, 0.7];
     const { output } = nn.forward(input);
@@ -598,11 +639,16 @@ async function runNeuralIntegrationTests() {
     assert(output[0] >= 0 && output[0] <= 1); // Sigmoid output
   });
 
-  await test('Neural Network Training', async() => {
+  await test('Neural Network Training', async () => {
     const nn = new NeuralNetwork([2, 8, 4, 1]); // Deeper network for better XOR learning
 
     // XOR problem - classic non-linear test
-    const inputs = [[0, 0], [0, 1], [1, 0], [1, 1]];
+    const inputs = [
+      [0, 0],
+      [0, 1],
+      [1, 0],
+      [1, 1],
+    ];
     const targets = [[0], [1], [1], [0]];
 
     const history = nn.train(inputs, targets, 0.3, 500); // More epochs and better LR
@@ -616,12 +662,14 @@ async function runNeuralIntegrationTests() {
     const improvement = initialError - finalError;
 
     // More realistic assertion - improvement should be positive OR final error should be low
-    assert(improvement > 0 || finalError < 0.5,
-      `Training should show improvement or converge: improvement=${improvement.toFixed(4)}, finalError=${finalError.toFixed(4)}`);
+    assert(
+      improvement > 0 || finalError < 0.5,
+      `Training should show improvement or converge: improvement=${improvement.toFixed(4)}, finalError=${finalError.toFixed(4)}`
+    );
   });
 
   // Neural Agent Tests
-  await test('Neural Agent Creation', async() => {
+  await test('Neural Agent Creation', async () => {
     const agent = new NeuralAgent(uuidv4(), 'researcher', {
       learningRate: 0.1,
       memorySize: 100,
@@ -633,7 +681,7 @@ async function runNeuralIntegrationTests() {
     assert.strictEqual(agent.experience.length, 0);
   });
 
-  await test('Neural Agent Task Processing', async() => {
+  await test('Neural Agent Task Processing', async () => {
     const agent = new NeuralAgent(uuidv4(), 'coder', {});
     const task = {
       id: uuidv4(),
@@ -652,7 +700,7 @@ async function runNeuralIntegrationTests() {
     assert.strictEqual(agent.experience.length, 1);
   });
 
-  await test('Neural Agent Learning from Experience', async() => {
+  await test('Neural Agent Learning from Experience', async () => {
     const agent = new NeuralAgent(uuidv4(), 'analyst', {});
 
     // Process multiple tasks to build experience
@@ -670,10 +718,13 @@ async function runNeuralIntegrationTests() {
     assert(learningResult.experienceCount >= 15);
     assert(typeof learningResult.finalError === 'number');
     assert(typeof learningResult.improvement === 'number');
-    assert(learningResult.improvement >= 0, `Improvement should be non-negative: ${learningResult.improvement}`);
+    assert(
+      learningResult.improvement >= 0,
+      `Improvement should be non-negative: ${learningResult.improvement}`
+    );
   });
 
-  await test('Neural Agent Performance Tracking', async() => {
+  await test('Neural Agent Performance Tracking', async () => {
     const agent = new NeuralAgent(uuidv4(), 'researcher', {});
 
     // Process several tasks
@@ -694,16 +745,12 @@ async function runNeuralIntegrationTests() {
   });
 
   // Swarm Intelligence Tests
-  await test('Swarm Intelligence Initialization', async() => {
+  await test('Swarm Intelligence Initialization', async () => {
     const swarm = new SwarmIntelligence();
 
     // Add multiple agents
     for (let i = 0; i < 5; i++) {
-      const agent = new NeuralAgent(
-        uuidv4(),
-        ['researcher', 'coder', 'analyst'][i % 3],
-        {},
-      );
+      const agent = new NeuralAgent(uuidv4(), ['researcher', 'coder', 'analyst'][i % 3], {});
       swarm.addAgent(agent);
     }
 
@@ -711,7 +758,7 @@ async function runNeuralIntegrationTests() {
     assert(swarm.swarmNetwork);
   });
 
-  await test('Swarm Collective Learning', async() => {
+  await test('Swarm Collective Learning', async () => {
     const swarm = new SwarmIntelligence();
 
     // Create agents with experience
@@ -738,7 +785,7 @@ async function runNeuralIntegrationTests() {
     assert.strictEqual(result.participatingAgents, 6);
   });
 
-  await test('Swarm Decision Making', async() => {
+  await test('Swarm Decision Making', async () => {
     const swarm = new SwarmIntelligence();
 
     // Add diverse agents
@@ -749,7 +796,7 @@ async function runNeuralIntegrationTests() {
       new NeuralAgent(uuidv4(), 'optimizer', {}),
     ];
 
-    agents.forEach(agent => swarm.addAgent(agent));
+    agents.forEach((agent) => swarm.addAgent(agent));
 
     const task = {
       id: uuidv4(),
@@ -768,7 +815,7 @@ async function runNeuralIntegrationTests() {
   });
 
   // Integration Tests
-  await test('End-to-End Neural Agent Workflow', async() => {
+  await test('End-to-End Neural Agent Workflow', async () => {
     const agent = new NeuralAgent(uuidv4(), 'coder', {
       learningRate: 0.2,
       adaptiveThreshold: 0.8,
@@ -790,7 +837,9 @@ async function runNeuralIntegrationTests() {
     // Phase 2: Learning
     console.log('   Phase 2: Learning from experience...');
     const learningResult1 = await agent.learn();
-    console.log(`   Initial learning: Error reduced by ${(learningResult1.improvement || 0).toFixed(4)}`);
+    console.log(
+      `   Initial learning: Error reduced by ${(learningResult1.improvement || 0).toFixed(4)}`
+    );
 
     // Phase 3: More tasks with improved performance
     console.log('   Phase 3: Processing with learned knowledge...');
@@ -807,13 +856,15 @@ async function runNeuralIntegrationTests() {
     const learningResult2 = await agent.learn();
 
     const finalInsights = agent.getInsights();
-    console.log(`   Final performance: ${(finalInsights.performance.successRate * 100).toFixed(1)}% success rate`);
+    console.log(
+      `   Final performance: ${(finalInsights.performance.successRate * 100).toFixed(1)}% success rate`
+    );
 
     assert(finalInsights.performance.tasksCompleted === 10);
     assert(learningResult2.experienceCount > learningResult1.experienceCount);
   });
 
-  await test('Swarm Coordination with Neural Agents', async() => {
+  await test('Swarm Coordination with Neural Agents', async () => {
     console.log('\n   Simulating swarm coordination:');
 
     const swarm = new SwarmIntelligence();
@@ -866,14 +917,16 @@ async function runNeuralIntegrationTests() {
     console.log('   Initiating collective learning...');
     const learningResult = await swarm.collectiveLearning();
 
-    console.log(`   Collective learning complete: ${learningResult.patternsIdentified} patterns found`);
+    console.log(
+      `   Collective learning complete: ${learningResult.patternsIdentified} patterns found`
+    );
 
     assert(learningResult.totalExperiences >= 18); // At least 6 agents * 3 tasks
     assert.strictEqual(learningResult.participatingAgents, 6);
   });
 
   // Performance and Scalability Tests
-  await test('Neural Network Performance with Large Architecture', async() => {
+  await test('Neural Network Performance with Large Architecture', async () => {
     const largeNN = new NeuralNetwork([100, 200, 150, 100, 50, 10]);
     const input = new Array(100).fill(0).map(() => Math.random());
 
@@ -887,24 +940,22 @@ async function runNeuralIntegrationTests() {
     assert(forwardTime < 100); // Should be fast even with large network
   });
 
-  await test('Concurrent Neural Agent Operations', async() => {
+  await test('Concurrent Neural Agent Operations', async () => {
     const agents = [];
     for (let i = 0; i < 10; i++) {
-      agents.push(new NeuralAgent(
-        uuidv4(),
-        ['researcher', 'coder', 'analyst', 'optimizer'][i % 4],
-        {},
-      ));
+      agents.push(
+        new NeuralAgent(uuidv4(), ['researcher', 'coder', 'analyst', 'optimizer'][i % 4], {})
+      );
     }
 
     // Process tasks concurrently
     const startTime = Date.now();
-    const promises = agents.map(agent =>
+    const promises = agents.map((agent) =>
       agent.processTask({
         id: uuidv4(),
         type: 'analysis',
         priority: 'high',
-      }),
+      })
     );
 
     const results = await Promise.all(promises);
@@ -913,7 +964,7 @@ async function runNeuralIntegrationTests() {
     console.log(`   Processed ${results.length} tasks concurrently in ${totalTime}ms`);
 
     assert.strictEqual(results.length, 10);
-    results.forEach(r => assert(r.success !== undefined));
+    results.forEach((r) => assert(r.success !== undefined));
     assert(totalTime < 2000); // Should handle concurrent operations efficiently
   });
 
@@ -926,7 +977,7 @@ async function runNeuralIntegrationTests() {
 
   if (results.errors.length > 0) {
     console.log('\n❌ Failed Tests:');
-    results.errors.forEach(e => {
+    results.errors.forEach((e) => {
       console.log(`  - ${e.test}: ${e.error}`);
     });
   }
@@ -935,19 +986,14 @@ async function runNeuralIntegrationTests() {
 }
 
 // Export for use in other test suites
-export {
-  NeuralNetwork,
-  NeuralAgent,
-  SwarmIntelligence,
-  runNeuralIntegrationTests,
-};
+export { NeuralNetwork, NeuralAgent, SwarmIntelligence, runNeuralIntegrationTests };
 
 // Run tests if called directly
 // Direct execution block
 if (import.meta.url === `file://${process.argv[1]}`) {
   runNeuralIntegrationTests()
-    .then(passed => process.exit(passed ? 0 : 1))
-    .catch(error => {
+    .then((passed) => process.exit(passed ? 0 : 1))
+    .catch((error) => {
       console.error('Fatal error:', error);
       process.exit(1);
     });

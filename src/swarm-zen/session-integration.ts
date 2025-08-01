@@ -1,16 +1,16 @@
 /**
  * Session Integration Layer
- * 
+ *
  * Integrates the SessionManager with the existing RuvSwarm system,
  * providing seamless session persistence for swarm operations.
  */
 
 import { EventEmitter } from 'events';
 import { RuvSwarm } from './index.js';
-import { SessionManager, SessionState, SessionConfig } from './session-manager.js';
 import { SwarmPersistencePooled } from './persistence-pooled.js';
-import { SwarmState, SwarmOptions, SwarmEvent, AgentConfig, Task } from './types.js';
-import { SessionValidator, SessionSerializer, SessionRecovery } from './session-utils.js';
+import { type SessionConfig, SessionManager, type SessionState } from './session-manager.js';
+import { SessionRecovery, SessionSerializer, SessionValidator } from './session-utils.js';
+import type { AgentConfig, SwarmEvent, SwarmOptions, SwarmState, Task } from './types.js';
 
 /**
  * Enhanced RuvSwarm with session management capabilities
@@ -79,7 +79,7 @@ export class SessionEnabledSwarm extends RuvSwarm {
     }
 
     const session = await this.sessionManager.loadSession(sessionId);
-    
+
     // Restore swarm state from session
     await this.restoreFromSessionState(session);
 
@@ -117,10 +117,10 @@ export class SessionEnabledSwarm extends RuvSwarm {
       description || 'Manual checkpoint'
     );
 
-    this.emit('session:checkpoint_created' as SwarmEvent, { 
-      sessionId: this.currentSessionId, 
+    this.emit('session:checkpoint_created' as SwarmEvent, {
+      sessionId: this.currentSessionId,
       checkpointId,
-      description 
+      description,
     });
 
     return checkpointId;
@@ -140,9 +140,9 @@ export class SessionEnabledSwarm extends RuvSwarm {
     const session = await this.sessionManager.loadSession(this.currentSessionId);
     await this.restoreFromSessionState(session);
 
-    this.emit('session:restored' as SwarmEvent, { 
-      sessionId: this.currentSessionId, 
-      checkpointId 
+    this.emit('session:restored' as SwarmEvent, {
+      sessionId: this.currentSessionId,
+      checkpointId,
     });
   }
 
@@ -185,7 +185,7 @@ export class SessionEnabledSwarm extends RuvSwarm {
     await this.saveSession();
 
     await this.sessionManager.hibernateSession(this.currentSessionId);
-    
+
     this.emit('session:hibernated' as SwarmEvent, { sessionId: this.currentSessionId });
     this.currentSessionId = undefined; // Session is no longer active
   }
@@ -200,7 +200,7 @@ export class SessionEnabledSwarm extends RuvSwarm {
 
     const sessionId = this.currentSessionId;
     await this.sessionManager.terminateSession(sessionId, cleanup);
-    
+
     this.emit('session:terminated' as SwarmEvent, { sessionId, cleanup });
     this.currentSessionId = undefined;
   }
@@ -242,13 +242,15 @@ export class SessionEnabledSwarm extends RuvSwarm {
 
     // Auto-save to session if enabled
     if (this.currentSessionId && this.sessionIntegrationEnabled) {
-      setImmediate(() => this.saveSession().catch(error => {
-        this.emit('session:error' as SwarmEvent, { 
-          error: error.message, 
-          operation: 'addAgent',
-          agentId 
-        });
-      }));
+      setImmediate(() =>
+        this.saveSession().catch((error) => {
+          this.emit('session:error' as SwarmEvent, {
+            error: error.message,
+            operation: 'addAgent',
+            agentId,
+          });
+        })
+      );
     }
 
     return agentId;
@@ -262,13 +264,15 @@ export class SessionEnabledSwarm extends RuvSwarm {
 
     // Auto-save to session if enabled
     if (this.currentSessionId && this.sessionIntegrationEnabled) {
-      setImmediate(() => this.saveSession().catch(error => {
-        this.emit('session:error' as SwarmEvent, { 
-          error: error.message, 
-          operation: 'submitTask',
-          taskId 
-        });
-      }));
+      setImmediate(() =>
+        this.saveSession().catch((error) => {
+          this.emit('session:error' as SwarmEvent, {
+            error: error.message,
+            operation: 'submitTask',
+            taskId,
+          });
+        })
+      );
     }
 
     return taskId;
@@ -348,10 +352,10 @@ export class SessionEnabledSwarm extends RuvSwarm {
     (this as any).state.connections = session.swarmState.connections;
     (this as any).state.metrics = session.swarmState.metrics;
 
-    this.emit('swarm:state_restored' as SwarmEvent, { 
+    this.emit('swarm:state_restored' as SwarmEvent, {
       sessionId: session.id,
       agentCount: session.swarmState.agents.size,
-      taskCount: session.swarmState.tasks.size 
+      taskCount: session.swarmState.tasks.size,
     });
   }
 
@@ -405,7 +409,7 @@ export class SessionEnabledSwarm extends RuvSwarm {
 
 /**
  * Session Recovery Service
- * 
+ *
  * Provides automated recovery capabilities for corrupted sessions
  */
 export class SessionRecoveryService extends EventEmitter {
@@ -431,7 +435,7 @@ export class SessionRecoveryService extends EventEmitter {
     try {
       // Load the corrupted session
       const session = await this.sessionManager.loadSession(sessionId);
-      
+
       // Validate session state
       const validation = SessionValidator.validateSessionState(session);
       if (validation.valid) {
@@ -439,21 +443,18 @@ export class SessionRecoveryService extends EventEmitter {
         return true;
       }
 
-      this.emit('recovery:validation_failed', { 
-        sessionId, 
-        errors: validation.errors 
+      this.emit('recovery:validation_failed', {
+        sessionId,
+        errors: validation.errors,
       });
 
       // Attempt recovery using checkpoints
-      const recoveredSession = await SessionRecovery.recoverSession(
-        session,
-        session.checkpoints
-      );
+      const recoveredSession = await SessionRecovery.recoverSession(session, session.checkpoints);
 
       if (!recoveredSession) {
-        this.emit('recovery:failed', { 
-          sessionId, 
-          reason: 'No valid checkpoints found' 
+        this.emit('recovery:failed', {
+          sessionId,
+          reason: 'No valid checkpoints found',
         });
         return false;
       }
@@ -461,17 +462,16 @@ export class SessionRecoveryService extends EventEmitter {
       // Save recovered session
       await this.sessionManager.saveSession(sessionId, recoveredSession.swarmState);
 
-      this.emit('recovery:completed', { 
+      this.emit('recovery:completed', {
         sessionId,
-        recoveredFromCheckpoint: recoveredSession.metadata.recoveredFromCheckpoint 
+        recoveredFromCheckpoint: recoveredSession.metadata.recoveredFromCheckpoint,
       });
 
       return true;
-
     } catch (error) {
-      this.emit('recovery:failed', { 
-        sessionId, 
-        reason: error instanceof Error ? error.message : String(error)
+      this.emit('recovery:failed', {
+        sessionId,
+        reason: error instanceof Error ? error.message : String(error),
       });
       return false;
     } finally {
@@ -494,7 +494,7 @@ export class SessionRecoveryService extends EventEmitter {
 
     for (const session of sessions) {
       const validation = SessionValidator.validateSessionState(session);
-      
+
       if (validation.valid) {
         healthReport.healthy++;
       } else {
@@ -531,33 +531,33 @@ export class SessionRecoveryService extends EventEmitter {
    */
   async scheduleAutoRecovery(): Promise<void> {
     const healthReport = await this.runHealthCheck();
-    
+
     const autoRecoverySessions = healthReport.recoveryRecommendations
       .filter((rec: any) => rec.recommendation === 'automatic_recovery')
       .map((rec: any) => rec.sessionId);
 
-    this.emit('auto_recovery:scheduled', { 
+    this.emit('auto_recovery:scheduled', {
       sessions: autoRecoverySessions,
-      count: autoRecoverySessions.length 
+      count: autoRecoverySessions.length,
     });
 
     for (const sessionId of autoRecoverySessions) {
       try {
         const success = await this.recoverSession(sessionId);
-        this.emit('auto_recovery:session_completed', { 
-          sessionId, 
-          success 
+        this.emit('auto_recovery:session_completed', {
+          sessionId,
+          success,
         });
       } catch (error) {
-        this.emit('auto_recovery:session_failed', { 
-          sessionId, 
-          error: error instanceof Error ? error.message : String(error)
+        this.emit('auto_recovery:session_failed', {
+          sessionId,
+          error: error instanceof Error ? error.message : String(error),
         });
       }
     }
 
-    this.emit('auto_recovery:completed', { 
-      totalSessions: autoRecoverySessions.length 
+    this.emit('auto_recovery:completed', {
+      totalSessions: autoRecoverySessions.length,
     });
   }
 }

@@ -2,13 +2,13 @@
  * Performance benchmarks for ruv-swarm
  */
 
+import assert from 'assert';
+import fs from 'fs';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { RuvSwarm } from '../../src/index-enhanced';
 import { NeuralNetwork } from '../../src/neural-agent';
 import { SwarmPersistence } from '../../src/persistence';
-import assert from 'assert';
-import path, { dirname } from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -62,7 +62,7 @@ class BenchmarkRunner {
   }
 
   report() {
-    console.log(`\n${ '='.repeat(80)}`);
+    console.log(`\n${'='.repeat(80)}`);
     console.log(`Benchmark Results: ${this.name}`);
     console.log('='.repeat(80));
 
@@ -78,7 +78,7 @@ class BenchmarkRunner {
       console.log(`  Ops/sec: ${result.ops_per_second.toFixed(2)}`);
     }
 
-    console.log(`\n${ '='.repeat(80)}`);
+    console.log(`\n${'='.repeat(80)}`);
   }
 }
 
@@ -86,7 +86,7 @@ describe('Performance Benchmarks', () => {
   let ruvSwarm;
   const testDbPath = path.join(__dirname, 'benchmark.db');
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     // Clean up
     if (fs.existsSync(testDbPath)) {
       fs.unlinkSync(testDbPath);
@@ -107,10 +107,10 @@ describe('Performance Benchmarks', () => {
   });
 
   describe('Core Operations Benchmarks', () => {
-    it('should benchmark RuvSwarm initialization', async() => {
+    it('should benchmark RuvSwarm initialization', async () => {
       const benchmark = new BenchmarkRunner('RuvSwarm Initialization');
 
-      const result = await benchmark.run(async() => {
+      const result = await benchmark.run(async () => {
         global._ruvSwarmInstance = null;
         await RuvSwarm.initialize({ enablePersistence: false });
       }, 50);
@@ -119,11 +119,11 @@ describe('Performance Benchmarks', () => {
       assert(result.mean < 100); // Should initialize in less than 100ms
     });
 
-    it('should benchmark swarm creation', async() => {
+    it('should benchmark swarm creation', async () => {
       ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
       const benchmark = new BenchmarkRunner('Swarm Creation');
 
-      const result = await benchmark.run(async() => {
+      const result = await benchmark.run(async () => {
         await ruvSwarm.createSwarm({
           name: 'benchmark-swarm',
           topology: 'mesh',
@@ -135,12 +135,12 @@ describe('Performance Benchmarks', () => {
       assert(result.mean < 10); // Should create swarm in less than 10ms
     });
 
-    it('should benchmark agent spawning', async() => {
+    it('should benchmark agent spawning', async () => {
       ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
       const swarm = await ruvSwarm.createSwarm({ name: 'agent-benchmark' });
       const benchmark = new BenchmarkRunner('Agent Spawning');
 
-      const result = await benchmark.run(async() => {
+      const result = await benchmark.run(async () => {
         await swarm.spawn({
           type: 'researcher',
           enableNeuralNetwork: false,
@@ -151,7 +151,7 @@ describe('Performance Benchmarks', () => {
       assert(result.mean < 5); // Should spawn agent in less than 5ms
     });
 
-    it('should benchmark task orchestration', async() => {
+    it('should benchmark task orchestration', async () => {
       ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
       const swarm = await ruvSwarm.createSwarm({ name: 'task-benchmark' });
 
@@ -162,7 +162,7 @@ describe('Performance Benchmarks', () => {
 
       const benchmark = new BenchmarkRunner('Task Orchestration');
 
-      const result = await benchmark.run(async() => {
+      const result = await benchmark.run(async () => {
         await swarm.orchestrate({
           description: 'Benchmark task',
           priority: 'medium',
@@ -175,7 +175,7 @@ describe('Performance Benchmarks', () => {
   });
 
   describe('Neural Network Benchmarks', () => {
-    it('should benchmark neural network forward propagation', async() => {
+    it('should benchmark neural network forward propagation', async () => {
       const network = new NeuralNetwork({
         networkLayers: [100, 200, 100, 50],
         activationFunction: 'relu',
@@ -186,7 +186,7 @@ describe('Performance Benchmarks', () => {
       const input = new Array(100).fill(0).map(() => Math.random());
       const benchmark = new BenchmarkRunner('Neural Network Forward Pass');
 
-      const result = await benchmark.run(async() => {
+      const result = await benchmark.run(async () => {
         network.forward(input);
       }, 1000);
 
@@ -194,7 +194,7 @@ describe('Performance Benchmarks', () => {
       assert(result.ops_per_second > 1000); // Should handle > 1000 ops/sec
     });
 
-    it('should benchmark neural network training', async() => {
+    it('should benchmark neural network training', async () => {
       const network = new NeuralNetwork({
         networkLayers: [50, 100, 50, 25],
         activationFunction: 'sigmoid',
@@ -206,7 +206,7 @@ describe('Performance Benchmarks', () => {
       const target = new Array(25).fill(0).map(() => Math.random());
       const benchmark = new BenchmarkRunner('Neural Network Training');
 
-      const result = await benchmark.run(async() => {
+      const result = await benchmark.run(async () => {
         network.train(input, target);
       }, 500);
 
@@ -228,11 +228,11 @@ describe('Performance Benchmarks', () => {
       }
     });
 
-    it('should benchmark swarm persistence', async() => {
+    it('should benchmark swarm persistence', async () => {
       const benchmark = new BenchmarkRunner('Swarm Persistence');
       let swarmId = 0;
 
-      const result = await benchmark.run(async() => {
+      const result = await benchmark.run(async () => {
         persistence.createSwarm({
           id: `swarm-${swarmId++}`,
           name: 'Benchmark Swarm',
@@ -245,7 +245,7 @@ describe('Performance Benchmarks', () => {
       assert(result.mean < 5); // Should persist in less than 5ms
     });
 
-    it('should benchmark agent persistence', async() => {
+    it('should benchmark agent persistence', async () => {
       // Create parent swarm
       persistence.createSwarm({
         id: 'parent-swarm',
@@ -257,7 +257,7 @@ describe('Performance Benchmarks', () => {
       const benchmark = new BenchmarkRunner('Agent Persistence');
       let agentId = 0;
 
-      const result = await benchmark.run(async() => {
+      const result = await benchmark.run(async () => {
         persistence.createAgent({
           id: `agent-${agentId++}`,
           swarmId: 'parent-swarm',
@@ -270,7 +270,7 @@ describe('Performance Benchmarks', () => {
       assert(result.mean < 5); // Should persist in less than 5ms
     });
 
-    it('should benchmark memory operations', async() => {
+    it('should benchmark memory operations', async () => {
       // Create parent entities
       persistence.createSwarm({
         id: 'memory-swarm',
@@ -289,7 +289,7 @@ describe('Performance Benchmarks', () => {
       const benchmark = new BenchmarkRunner('Memory Store/Retrieve');
       let keyId = 0;
 
-      const result = await benchmark.run(async() => {
+      const result = await benchmark.run(async () => {
         const key = `key-${keyId++}`;
         const data = { value: Math.random(), timestamp: Date.now() };
 
@@ -304,7 +304,7 @@ describe('Performance Benchmarks', () => {
       assert(result.mean < 10); // Should complete in less than 10ms
     });
 
-    it('should benchmark query performance', async() => {
+    it('should benchmark query performance', async () => {
       // Populate with test data
       const swarmId = 'query-swarm';
       persistence.createSwarm({
@@ -326,7 +326,7 @@ describe('Performance Benchmarks', () => {
 
       const benchmark = new BenchmarkRunner('Agent Query');
 
-      const result = await benchmark.run(async() => {
+      const result = await benchmark.run(async () => {
         persistence.getSwarmAgents(swarmId);
       });
 
@@ -336,11 +336,11 @@ describe('Performance Benchmarks', () => {
   });
 
   describe('Concurrent Operations Benchmarks', () => {
-    it('should benchmark concurrent swarm operations', async() => {
+    it('should benchmark concurrent swarm operations', async () => {
       ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
       const benchmark = new BenchmarkRunner('Concurrent Swarm Operations');
 
-      const result = await benchmark.run(async() => {
+      const result = await benchmark.run(async () => {
         // Create multiple swarms concurrently
         const promises = [];
         for (let i = 0; i < 5; i++) {
@@ -348,7 +348,7 @@ describe('Performance Benchmarks', () => {
             ruvSwarm.createSwarm({
               name: `concurrent-swarm-${i}`,
               topology: 'mesh',
-            }),
+            })
           );
         }
         await Promise.all(promises);
@@ -358,12 +358,12 @@ describe('Performance Benchmarks', () => {
       assert(result.mean < 50); // Should handle 5 concurrent creates in < 50ms
     });
 
-    it('should benchmark concurrent agent operations', async() => {
+    it('should benchmark concurrent agent operations', async () => {
       ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
       const swarm = await ruvSwarm.createSwarm({ name: 'concurrent-test' });
       const benchmark = new BenchmarkRunner('Concurrent Agent Spawning');
 
-      const result = await benchmark.run(async() => {
+      const result = await benchmark.run(async () => {
         // Spawn multiple agents concurrently
         const promises = [];
         for (let i = 0; i < 10; i++) {
@@ -371,7 +371,7 @@ describe('Performance Benchmarks', () => {
             swarm.spawn({
               type: i % 2 === 0 ? 'researcher' : 'coder',
               name: `agent-${i}`,
-            }),
+            })
           );
         }
         await Promise.all(promises);
@@ -383,7 +383,7 @@ describe('Performance Benchmarks', () => {
   });
 
   describe('Memory Usage Benchmarks', () => {
-    it('should measure memory usage for large swarms', async() => {
+    it('should measure memory usage for large swarms', async () => {
       ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
 
       const initialMemory = process.memoryUsage();
@@ -426,7 +426,7 @@ describe('Performance Benchmarks', () => {
   });
 
   describe('Scalability Benchmarks', () => {
-    it('should benchmark scalability with increasing agents', async() => {
+    it('should benchmark scalability with increasing agents', async () => {
       ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
       const swarm = await ruvSwarm.createSwarm({ name: 'scalability-test' });
 
@@ -453,7 +453,9 @@ describe('Performance Benchmarks', () => {
 
       console.log('\nScalability Results:');
       for (const result of results) {
-        console.log(`  ${result.agents} agents: ${result.totalTime.toFixed(2)}ms total, ${result.timePerAgent.toFixed(3)}ms per agent`);
+        console.log(
+          `  ${result.agents} agents: ${result.totalTime.toFixed(2)}ms total, ${result.timePerAgent.toFixed(3)}ms per agent`
+        );
       }
 
       // Time per agent should not increase significantly
@@ -464,7 +466,7 @@ describe('Performance Benchmarks', () => {
   });
 
   describe('Real-world Scenario Benchmarks', () => {
-    it('should benchmark a realistic workflow', async() => {
+    it('should benchmark a realistic workflow', async () => {
       ruvSwarm = await RuvSwarm.initialize({
         enablePersistence: true,
         enableNeuralNetworks: true,
@@ -477,7 +479,7 @@ describe('Performance Benchmarks', () => {
 
       const benchmark = new BenchmarkRunner('Realistic Workflow');
 
-      const result = await benchmark.run(async() => {
+      const result = await benchmark.run(async () => {
         // Create swarm
         const swarm = await ruvSwarm.createSwarm({
           name: 'project-swarm',
@@ -513,7 +515,7 @@ describe('Performance Benchmarks', () => {
         ]);
 
         // Wait for some execution
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await new Promise((resolve) => setTimeout(resolve, 10));
 
         // Get status
         await swarm.getStatus();
@@ -521,11 +523,7 @@ describe('Performance Benchmarks', () => {
         // Store some memory
         if (ruvSwarm.persistence) {
           for (const agent of agents) {
-            ruvSwarm.persistence.storeAgentMemory(
-              agent.id,
-              'workflow_state',
-              { completed: true },
-            );
+            ruvSwarm.persistence.storeAgentMemory(agent.id, 'workflow_state', { completed: true });
           }
         }
       }, 20);

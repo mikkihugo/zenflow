@@ -14,8 +14,8 @@
  */
 
 import { EventEmitter } from 'events';
-import { Logger } from './logger.js';
 import { ErrorFactory } from './errors.js';
+import { Logger } from './logger.js';
 import { generateId } from './utils.js';
 
 export class MonitoringDashboard extends EventEmitter {
@@ -76,13 +76,15 @@ export class MonitoringDashboard extends EventEmitter {
 
       this.logger.info('Monitoring Dashboard initialized successfully');
       this.emit('dashboard:initialized');
-
     } catch (error) {
-      const dashboardError = ErrorFactory.createError('resource',
-        'Failed to initialize monitoring dashboard', {
+      const dashboardError = ErrorFactory.createError(
+        'resource',
+        'Failed to initialize monitoring dashboard',
+        {
           error: error.message,
           component: 'monitoring-dashboard',
-        });
+        }
+      );
       this.logger.error('Monitoring Dashboard initialization failed', dashboardError);
       throw dashboardError;
     }
@@ -269,7 +271,7 @@ export class MonitoringDashboard extends EventEmitter {
     // Trim old metrics based on retention period and max data points
     const cutoffTime = Date.now() - this.options.metricsRetentionPeriod;
     const filtered = metrics
-      .filter(m => m.timestamp.getTime() > cutoffTime)
+      .filter((m) => m.timestamp.getTime() > cutoffTime)
       .slice(-this.options.maxDataPoints);
 
     this.metrics.set(key, filtered);
@@ -354,9 +356,9 @@ export class MonitoringDashboard extends EventEmitter {
 
     for (const [key, metrics] of this.metrics) {
       if (key.startsWith('health.')) {
-        const recentMetrics = metrics.filter(m => m.timestamp.getTime() > since);
+        const recentMetrics = metrics.filter((m) => m.timestamp.getTime() > since);
 
-        recentMetrics.forEach(metric => {
+        recentMetrics.forEach((metric) => {
           healthMetrics.totalChecks++;
           healthMetrics.totalDuration += metric.duration || 0;
 
@@ -403,9 +405,9 @@ export class MonitoringDashboard extends EventEmitter {
 
     for (const [key, metrics] of this.metrics) {
       if (key.startsWith('recovery.')) {
-        const recentMetrics = metrics.filter(m => m.timestamp.getTime() > since);
+        const recentMetrics = metrics.filter((m) => m.timestamp.getTime() > since);
 
-        recentMetrics.forEach(metric => {
+        recentMetrics.forEach((metric) => {
           if (metric.eventType === 'started') {
             recoveryMetrics.startedRecoveries++;
           } else if (metric.eventType === 'completed') {
@@ -432,7 +434,8 @@ export class MonitoringDashboard extends EventEmitter {
     }
 
     if (recoveryMetrics.totalRecoveries > 0) {
-      recoveryMetrics.averageDuration = recoveryMetrics.totalDuration / recoveryMetrics.totalRecoveries;
+      recoveryMetrics.averageDuration =
+        recoveryMetrics.totalDuration / recoveryMetrics.totalRecoveries;
     }
 
     aggregations.set('recovery', recoveryMetrics);
@@ -455,9 +458,9 @@ export class MonitoringDashboard extends EventEmitter {
 
     for (const [key, metrics] of this.metrics) {
       if (key.startsWith('connection.')) {
-        const recentMetrics = metrics.filter(m => m.timestamp.getTime() > since);
+        const recentMetrics = metrics.filter((m) => m.timestamp.getTime() > since);
 
-        recentMetrics.forEach(metric => {
+        recentMetrics.forEach((metric) => {
           if (metric.eventType === 'established') {
             connectionMetrics.establishedConnections++;
           } else if (metric.eventType === 'failed') {
@@ -525,8 +528,10 @@ export class MonitoringDashboard extends EventEmitter {
 
       // Keep only recent trend data
       const cutoffTime = Date.now() - this.options.metricsRetentionPeriod;
-      this.trends.set(category,
-        trend.filter(t => t.timestamp.getTime() > cutoffTime));
+      this.trends.set(
+        category,
+        trend.filter((t) => t.timestamp.getTime() > cutoffTime)
+      );
     }
   }
 
@@ -577,7 +582,6 @@ export class MonitoringDashboard extends EventEmitter {
           stats: connectionData.stats,
         });
       }
-
     } catch (error) {
       this.logger.error('Error collecting system state', {
         error: error.message,
@@ -617,7 +621,8 @@ export class MonitoringDashboard extends EventEmitter {
     // Send to WebSocket clients if any
     for (const client of this.streamingClients) {
       try {
-        if (client.readyState === 1) { // WebSocket.OPEN
+        if (client.readyState === 1) {
+          // WebSocket.OPEN
           client.send(JSON.stringify(update));
         }
       } catch (error) {
@@ -638,11 +643,13 @@ export class MonitoringDashboard extends EventEmitter {
     // Send initial data
     const initialData = this.exportDashboardData();
     try {
-      client.send(JSON.stringify({
-        type: 'initial',
-        timestamp: new Date(),
-        data: initialData,
-      }));
+      client.send(
+        JSON.stringify({
+          type: 'initial',
+          timestamp: new Date(),
+          data: initialData,
+        })
+      );
     } catch (error) {
       this.logger.warn('Error sending initial data to streaming client', {
         error: error.message,
@@ -708,8 +715,7 @@ export class MonitoringDashboard extends EventEmitter {
     }
 
     // Count active alerts
-    activeAlerts = Array.from(this.alerts.values())
-      .filter(alert => !alert.acknowledged).length;
+    activeAlerts = Array.from(this.alerts.values()).filter((alert) => !alert.acknowledged).length;
 
     // Get active recoveries from recovery workflows
     if (this.recoveryWorkflows) {
@@ -783,7 +789,7 @@ export class MonitoringDashboard extends EventEmitter {
    */
   exportAlertData() {
     const recentAlerts = Array.from(this.alerts.values())
-      .filter(alert => {
+      .filter((alert) => {
         const alertAge = Date.now() - alert.timestamp.getTime();
         return alertAge < this.options.metricsRetentionPeriod;
       })
@@ -792,8 +798,8 @@ export class MonitoringDashboard extends EventEmitter {
     return {
       recent: recentAlerts.slice(0, 50), // Last 50 alerts
       breakdown: this.getAlertBreakdown(recentAlerts),
-      acknowledged: recentAlerts.filter(a => a.acknowledged).length,
-      unacknowledged: recentAlerts.filter(a => !a.acknowledged).length,
+      acknowledged: recentAlerts.filter((a) => a.acknowledged).length,
+      unacknowledged: recentAlerts.filter((a) => !a.acknowledged).length,
     };
   }
 
@@ -820,9 +826,7 @@ export class MonitoringDashboard extends EventEmitter {
 
     for (const [key, metrics] of this.metrics) {
       if (key.startsWith(`${category}.`)) {
-        const recent = metrics
-          .filter(m => m.timestamp.getTime() > since)
-          .slice(-limit);
+        const recent = metrics.filter((m) => m.timestamp.getTime() > since).slice(-limit);
         recentMetrics.push(...recent);
       }
     }
@@ -834,7 +838,7 @@ export class MonitoringDashboard extends EventEmitter {
     const breakdown = {};
     const recentMetrics = this.getRecentMetrics(category);
 
-    recentMetrics.forEach(metric => {
+    recentMetrics.forEach((metric) => {
       if (metric.category) {
         breakdown[metric.category] = (breakdown[metric.category] || 0) + 1;
       }
@@ -847,7 +851,7 @@ export class MonitoringDashboard extends EventEmitter {
     const breakdown = {};
     const recentMetrics = this.getRecentMetrics(category);
 
-    recentMetrics.forEach(metric => {
+    recentMetrics.forEach((metric) => {
       if (metric.priority) {
         breakdown[metric.priority] = (breakdown[metric.priority] || 0) + 1;
       }
@@ -860,7 +864,7 @@ export class MonitoringDashboard extends EventEmitter {
     const breakdown = {};
     const recoveryMetrics = this.getRecentMetrics('recovery');
 
-    recoveryMetrics.forEach(metric => {
+    recoveryMetrics.forEach((metric) => {
       if (metric.workflowName) {
         breakdown[metric.workflowName] = (breakdown[metric.workflowName] || 0) + 1;
       }
@@ -871,8 +875,8 @@ export class MonitoringDashboard extends EventEmitter {
 
   getRecoverySuccessRate() {
     const recoveryMetrics = this.getRecentMetrics('recovery');
-    const completed = recoveryMetrics.filter(m => m.eventType === 'completed').length;
-    const failed = recoveryMetrics.filter(m => m.eventType === 'failed').length;
+    const completed = recoveryMetrics.filter((m) => m.eventType === 'completed').length;
+    const failed = recoveryMetrics.filter((m) => m.eventType === 'failed').length;
     const total = completed + failed;
 
     return total > 0 ? (completed / total) * 100 : 0;
@@ -882,7 +886,7 @@ export class MonitoringDashboard extends EventEmitter {
     const breakdown = {};
     const connectionMetrics = this.getRecentMetrics('connection');
 
-    connectionMetrics.forEach(metric => {
+    connectionMetrics.forEach((metric) => {
       if (metric.connectionType) {
         breakdown[metric.connectionType] = (breakdown[metric.connectionType] || 0) + 1;
       }
@@ -897,7 +901,7 @@ export class MonitoringDashboard extends EventEmitter {
     const connectionData = this.connectionManager.exportConnectionData();
     const healthStatus = {};
 
-    connectionData.connections.forEach(connection => {
+    connectionData.connections.forEach((connection) => {
       healthStatus[connection.id] = {
         status: connection.health?.status || 'unknown',
         latency: connection.health?.latency,
@@ -926,7 +930,7 @@ export class MonitoringDashboard extends EventEmitter {
       priority: {},
     };
 
-    alerts.forEach(alert => {
+    alerts.forEach((alert) => {
       breakdown.severity[alert.severity] = (breakdown.severity[alert.severity] || 0) + 1;
       breakdown.category[alert.category] = (breakdown.category[alert.category] || 0) + 1;
       breakdown.priority[alert.priority] = (breakdown.priority[alert.priority] || 0) + 1;
@@ -975,30 +979,22 @@ export class MonitoringDashboard extends EventEmitter {
         {
           title: 'System Health Overview',
           type: 'stat',
-          targets: [
-            { expr: 'ruv_swarm_health_checks_total', legendFormat: 'Health Checks' },
-          ],
+          targets: [{ expr: 'ruv_swarm_health_checks_total', legendFormat: 'Health Checks' }],
         },
         {
           title: 'Recovery Success Rate',
           type: 'stat',
-          targets: [
-            { expr: 'ruv_swarm_recovery_success_rate', legendFormat: 'Success Rate' },
-          ],
+          targets: [{ expr: 'ruv_swarm_recovery_success_rate', legendFormat: 'Success Rate' }],
         },
         {
           title: 'Active Connections',
           type: 'graph',
-          targets: [
-            { expr: 'ruv_swarm_connections_active', legendFormat: 'Active Connections' },
-          ],
+          targets: [{ expr: 'ruv_swarm_connections_active', legendFormat: 'Active Connections' }],
         },
         {
           title: 'Alert Distribution',
           type: 'piechart',
-          targets: [
-            { expr: 'ruv_swarm_alerts_by_severity', legendFormat: '{{severity}}' },
-          ],
+          targets: [{ expr: 'ruv_swarm_alerts_by_severity', legendFormat: '{{severity}}' }],
         },
       ],
     };
@@ -1034,8 +1030,10 @@ export class MonitoringDashboard extends EventEmitter {
   getMonitoringStats() {
     return {
       metricsCount: this.metrics.size,
-      totalDataPoints: Array.from(this.metrics.values())
-        .reduce((sum, metrics) => sum + metrics.length, 0),
+      totalDataPoints: Array.from(this.metrics.values()).reduce(
+        (sum, metrics) => sum + metrics.length,
+        0
+      ),
       aggregationsCount: this.aggregatedMetrics.size,
       activeAlerts: this.alerts.size,
       streamingClients: this.streamingClients.size,

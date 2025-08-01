@@ -1,6 +1,6 @@
-import React from 'react';
 import { Box, Text } from 'ink';
-import { BaseComponentProps } from './index';
+import type React from 'react';
+import type { BaseComponentProps } from './index';
 
 export interface HeaderProps extends BaseComponentProps {
   title: string;
@@ -12,7 +12,7 @@ export interface HeaderProps extends BaseComponentProps {
 
 /**
  * Header Component
- * 
+ *
  * Displays the application header with title, version, and optional subtitle.
  * Supports centered alignment and border styling.
  */
@@ -25,7 +25,7 @@ export const Header: React.FC<HeaderProps> = ({
   testId = 'header',
 }) => {
   const titleText = version ? `${title} v${version}` : title;
-  
+
   return (
     <Box
       flexDirection="column"
@@ -39,12 +39,10 @@ export const Header: React.FC<HeaderProps> = ({
           {titleText}
         </Text>
       </Box>
-      
+
       {subtitle && (
         <Box justifyContent={centerAlign ? 'center' : 'flex-start'} marginTop={0}>
-          <Text dimColor>
-            {subtitle}
-          </Text>
+          <Text dimColor>{subtitle}</Text>
         </Box>
       )}
     </Box>

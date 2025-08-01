@@ -3,11 +3,11 @@
  * Helps debug connection issues and performance problems
  */
 
-import { Logger } from './logger.js';
-import { loggingConfig } from './logging-config.js';
 import fs from 'fs';
 import path from 'path';
 import { performance } from 'perf_hooks';
+import { Logger } from './logger.js';
+import { loggingConfig } from './logging-config.js';
 
 /**
  * Connection diagnostics
@@ -66,7 +66,7 @@ export class ConnectionDiagnostics {
       return acc;
     }, {});
 
-    const failures = this.connectionHistory.filter(e => e.event === 'failed');
+    const failures = this.connectionHistory.filter((e) => e.event === 'failed');
     const recentFailures = failures.slice(-10);
 
     return {
@@ -82,7 +82,7 @@ export class ConnectionDiagnostics {
    * Analyze connection patterns
    */
   analyzePatterns() {
-    const failures = this.connectionHistory.filter(e => e.event === 'failed');
+    const failures = this.connectionHistory.filter((e) => e.event === 'failed');
 
     // Group failures by error type
     const errorTypes = failures.reduce((acc, failure) => {
@@ -93,13 +93,13 @@ export class ConnectionDiagnostics {
 
     // Find time patterns
     const hourlyFailures = new Array(24).fill(0);
-    failures.forEach(failure => {
+    failures.forEach((failure) => {
       const hour = new Date(failure.timestamp).getHours();
       hourlyFailures[hour]++;
     });
 
     // Memory patterns at failure time
-    const memoryAtFailure = failures.map(f => ({
+    const memoryAtFailure = failures.map((f) => ({
       timestamp: f.timestamp,
       heapUsed: f.memoryUsage.heapUsed / (1024 * 1024), // MB
       external: f.memoryUsage.external / (1024 * 1024), // MB
@@ -109,7 +109,8 @@ export class ConnectionDiagnostics {
       errorTypes,
       hourlyFailures,
       memoryAtFailure,
-      avgMemoryAtFailure: memoryAtFailure.reduce((sum, m) => sum + m.heapUsed, 0) / memoryAtFailure.length,
+      avgMemoryAtFailure:
+        memoryAtFailure.reduce((sum, m) => sum + m.heapUsed, 0) / memoryAtFailure.length,
     };
   }
 
@@ -190,10 +191,10 @@ export class PerformanceDiagnostics {
     this.logger = logger || loggingConfig.getLogger('diagnostics', { level: 'DEBUG' });
     this.operations = new Map();
     this.thresholds = {
-      'swarm_init': 1000, // 1 second
-      'agent_spawn': 500, // 500ms
-      'task_orchestrate': 2000, // 2 seconds
-      'neural_train': 5000, // 5 seconds
+      swarm_init: 1000, // 1 second
+      agent_spawn: 500, // 500ms
+      task_orchestrate: 2000, // 2 seconds
+      neural_train: 5000, // 5 seconds
     };
   }
 
@@ -259,7 +260,7 @@ export class PerformanceDiagnostics {
     // This would need to be implemented to store historical data
 
     return completed
-      .filter(op => op.aboveThreshold)
+      .filter((op) => op.aboveThreshold)
       .sort((a, b) => b.duration - a.duration)
       .slice(0, limit);
   }
@@ -307,7 +308,8 @@ export class SystemDiagnostics {
       const sample = this.collectSample();
 
       // Check for anomalies
-      if (sample.memory.heapUsed > 500 * 1024 * 1024) { // 500MB
+      if (sample.memory.heapUsed > 500 * 1024 * 1024) {
+        // 500MB
         this.logger.warn('High memory usage detected', {
           heapUsed: `${(sample.memory.heapUsed / 1024 / 1024).toFixed(2)} MB`,
         });
@@ -343,7 +345,8 @@ export class SystemDiagnostics {
     }
 
     const latest = this.samples[this.samples.length - 1];
-    const avgMemory = this.samples.reduce((sum, s) => sum + s.memory.heapUsed, 0) / this.samples.length;
+    const avgMemory =
+      this.samples.reduce((sum, s) => sum + s.memory.heapUsed, 0) / this.samples.length;
 
     let status = 'healthy';
     const issues = [];
@@ -458,8 +461,8 @@ export class DiagnosticsManager {
       tests,
       summary: {
         total: tests.length,
-        passed: tests.filter(t => t.success).length,
-        failed: tests.filter(t => !t.success).length,
+        passed: tests.filter((t) => t.success).length,
+        failed: tests.filter((t) => !t.success).length,
       },
     };
   }

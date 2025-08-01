@@ -1,16 +1,13 @@
 /**
  * Session Management System - Comprehensive Examples
- * 
+ *
  * This file demonstrates how to use the session management system
  * for persistent swarm orchestration across multiple executions.
  */
 
-import { 
-  SessionEnabledSwarm, 
-  SessionRecoveryService
-} from './session-integration.js';
-import { SessionManager, SessionState } from './session-manager.js';
 import { SwarmPersistencePooled } from './persistence-pooled.js';
+import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration.js';
+import { SessionManager, SessionState } from './session-manager.js';
 import { SessionStats, SessionValidator } from './session-utils.js';
 
 /**
@@ -20,16 +17,19 @@ async function basicSessionExample() {
   console.log('=== Basic Session Example ===');
 
   // Create a session-enabled swarm
-  const swarm = new SessionEnabledSwarm({
-    topology: 'hierarchical',
-    maxAgents: 8,
-    connectionDensity: 0.7,
-    syncInterval: 2000,
-  }, {
-    autoCheckpoint: true,
-    checkpointInterval: 60000, // 1 minute
-    maxCheckpoints: 10,
-  });
+  const swarm = new SessionEnabledSwarm(
+    {
+      topology: 'hierarchical',
+      maxAgents: 8,
+      connectionDensity: 0.7,
+      syncInterval: 2000,
+    },
+    {
+      autoCheckpoint: true,
+      checkpointInterval: 60000, // 1 minute
+      maxCheckpoints: 10,
+    }
+  );
 
   try {
     // Initialize the swarm
@@ -102,7 +102,6 @@ async function basicSessionExample() {
     console.log('Session saved successfully');
 
     return sessionId;
-
   } finally {
     await swarm.destroy();
   }
@@ -156,12 +155,11 @@ async function sessionRecoveryExample(existingSessionId: string) {
       if (currentSession.checkpoints.length > 0) {
         const firstCheckpoint = currentSession.checkpoints[0];
         console.log(`Restoring from checkpoint: ${firstCheckpoint.id}`);
-        
+
         await swarm.restoreFromCheckpoint(firstCheckpoint.id);
         console.log('Successfully restored from checkpoint');
       }
     }
-
   } finally {
     await swarm.destroy();
   }
@@ -188,10 +186,10 @@ async function sessionLifecycleExample() {
     await sessionManager.initialize();
 
     // Create a session
-    const sessionId = await sessionManager.createSession(
-      'Long Running Analysis',
-      { topology: 'distributed', maxAgents: 15 }
-    );
+    const sessionId = await sessionManager.createSession('Long Running Analysis', {
+      topology: 'distributed',
+      maxAgents: 15,
+    });
 
     console.log(`Created session: ${sessionId}`);
 
@@ -201,9 +199,7 @@ async function sessionLifecycleExample() {
         ['analyst-1', { id: 'analyst-1', type: 'analyst' } as any],
         ['researcher-1', { id: 'researcher-1', type: 'researcher' } as any],
       ]),
-      tasks: new Map([
-        ['task-1', { id: 'task-1', description: 'Analyze data' } as any],
-      ]),
+      tasks: new Map([['task-1', { id: 'task-1', description: 'Analyze data' } as any]]),
       topology: 'distributed',
       connections: [],
       metrics: {
@@ -245,7 +241,6 @@ async function sessionLifecycleExample() {
     console.log(`Hibernated session status: ${hibernatedSession.status}`);
 
     return sessionId;
-
   } finally {
     await sessionManager.shutdown();
     await persistence.close();
@@ -269,7 +264,9 @@ async function sessionHealthExample() {
   try {
     // Create some test sessions
     const session1 = await sessionManager.createSession('Healthy Session', { topology: 'mesh' });
-    const session2 = await sessionManager.createSession('Test Session', { topology: 'hierarchical' });
+    const session2 = await sessionManager.createSession('Test Session', {
+      topology: 'hierarchical',
+    });
 
     // Add some checkpoints
     await sessionManager.createCheckpoint(session1, 'Healthy checkpoint');
@@ -278,7 +275,7 @@ async function sessionHealthExample() {
     // Run health check
     console.log('Running health check...');
     const healthReport = await recoveryService.runHealthCheck();
-    
+
     console.log('Health Report:');
     console.log(`- Total sessions: ${healthReport.total}`);
     console.log(`- Healthy sessions: ${healthReport.healthy}`);
@@ -290,7 +287,7 @@ async function sessionHealthExample() {
       const session = await sessionManager.loadSession(sessionId);
       const healthScore = SessionStats.calculateHealthScore(session);
       const summary = SessionStats.generateSummary(session);
-      
+
       console.log(`\nSession ${sessionId}:`);
       console.log(`- Health Score: ${healthScore}/100`);
       console.log(`- Age: ${summary.ageInDays} days`);
@@ -303,7 +300,6 @@ async function sessionHealthExample() {
       console.log('\nScheduling automatic recovery...');
       await recoveryService.scheduleAutoRecovery();
     }
-
   } finally {
     await sessionManager.shutdown();
     await persistence.close();
@@ -316,16 +312,19 @@ async function sessionHealthExample() {
 async function advancedSessionExample() {
   console.log('=== Advanced Session Operations Example ===');
 
-  const swarm = new SessionEnabledSwarm({
-    topology: 'hybrid',
-    maxAgents: 20,
-    connectionDensity: 0.8,
-  }, {
-    autoCheckpoint: true,
-    checkpointInterval: 45000,
-    maxCheckpoints: 8,
-    compressionEnabled: true,
-  });
+  const swarm = new SessionEnabledSwarm(
+    {
+      topology: 'hybrid',
+      maxAgents: 20,
+      connectionDensity: 0.8,
+    },
+    {
+      autoCheckpoint: true,
+      checkpointInterval: 45000,
+      maxCheckpoints: 8,
+      compressionEnabled: true,
+    }
+  );
 
   try {
     await swarm.init();
@@ -347,15 +346,35 @@ async function advancedSessionExample() {
 
     // Create multiple specialized agents
     const agents = [
-      { id: 'data-collector', type: 'researcher', capabilities: ['web-scraping', 'api-integration'] },
-      { id: 'data-cleaner', type: 'analyst', capabilities: ['data-validation', 'outlier-detection'] },
-      { id: 'feature-engineer', type: 'architect', capabilities: ['feature-selection', 'dimensionality-reduction'] },
+      {
+        id: 'data-collector',
+        type: 'researcher',
+        capabilities: ['web-scraping', 'api-integration'],
+      },
+      {
+        id: 'data-cleaner',
+        type: 'analyst',
+        capabilities: ['data-validation', 'outlier-detection'],
+      },
+      {
+        id: 'feature-engineer',
+        type: 'architect',
+        capabilities: ['feature-selection', 'dimensionality-reduction'],
+      },
       { id: 'model-builder', type: 'coder', capabilities: ['deep-learning', 'ensemble-methods'] },
-      { id: 'model-validator', type: 'reviewer', capabilities: ['cross-validation', 'performance-metrics'] },
-      { id: 'deployment-manager', type: 'architect', capabilities: ['containerization', 'monitoring'] },
+      {
+        id: 'model-validator',
+        type: 'reviewer',
+        capabilities: ['cross-validation', 'performance-metrics'],
+      },
+      {
+        id: 'deployment-manager',
+        type: 'architect',
+        capabilities: ['containerization', 'monitoring'],
+      },
     ];
 
-    const agentIds = agents.map(agent => swarm.addAgent(agent));
+    const agentIds = agents.map((agent) => swarm.addAgent(agent));
     console.log(`Created ${agentIds.length} specialized agents`);
 
     // Create complex task dependencies
@@ -414,7 +433,7 @@ async function advancedSessionExample() {
     await swarm.createCheckpoint('Pipeline setup complete');
 
     // Simulate some progress
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     await swarm.createCheckpoint('Data collection phase');
 
@@ -452,11 +471,10 @@ async function advancedSessionExample() {
       console.log('\nTesting session export/import...');
       const exportedData = await swarm.exportSession();
       console.log(`Exported session data: ${exportedData.length} characters`);
-      
+
       // In a real scenario, you would save this to a file
       // and import it in another application instance
     }
-
   } finally {
     await swarm.destroy();
   }
@@ -489,7 +507,6 @@ async function runAllExamples() {
     await advancedSessionExample();
 
     console.log('\n✅ All examples completed successfully!');
-
   } catch (error) {
     console.error('❌ Error running examples:', error);
     process.exit(1);
@@ -509,8 +526,8 @@ declare module './session-integration.js' {
 if (typeof module !== 'undefined' && module.exports) {
   const { SessionEnabledSwarm } = require('./session-integration');
   const { SessionSerializer } = require('./session-utils');
-  
-  SessionEnabledSwarm.prototype.exportSession = async function(): Promise<string> {
+
+  SessionEnabledSwarm.prototype.exportSession = async function (): Promise<string> {
     const session = await this.getCurrentSession();
     if (!session) {
       throw new Error('No active session to export');

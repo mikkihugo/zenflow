@@ -5,9 +5,9 @@
  * Executes all test suites and generates a detailed report
  */
 
+import { spawn } from 'child_process';
 import fs from 'fs/promises';
 import path, { dirname } from 'path';
-import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -114,20 +114,22 @@ class TestReport {
 
     if (this.summary.failedSuites > 0) {
       console.log('\n❌ Failed Suites:');
-      this.suites.filter(s => !s.passed).forEach(suite => {
-        console.log(`  - ${suite.name}`);
-        if (suite.errors && suite.errors.length > 0) {
-          suite.errors.slice(0, 3).forEach(error => {
-            console.log(`    • ${error}`);
-          });
-          if (suite.errors.length > 3) {
-            console.log(`    ... and ${suite.errors.length - 3} more errors`);
+      this.suites
+        .filter((s) => !s.passed)
+        .forEach((suite) => {
+          console.log(`  - ${suite.name}`);
+          if (suite.errors && suite.errors.length > 0) {
+            suite.errors.slice(0, 3).forEach((error) => {
+              console.log(`    • ${error}`);
+            });
+            if (suite.errors.length > 3) {
+              console.log(`    ... and ${suite.errors.length - 3} more errors`);
+            }
           }
-        }
-      });
+        });
     }
 
-    console.log(`\n${ '═'.repeat(60)}`);
+    console.log(`\n${'═'.repeat(60)}`);
     console.log(this.summary.failedSuites === 0 ? '✅ All tests passed!' : '❌ Some tests failed');
   }
 }
@@ -194,13 +196,15 @@ async function runTestSuite(suite, report) {
       suiteResult.totalTests = suiteResult.passedTests + suiteResult.failedTests;
       suiteResult.passed = code === 0 && suiteResult.failedTests === 0;
       suiteResult.exitCode = code;
-      suiteResult.output = output.split('\n').filter(line => line.trim());
+      suiteResult.output = output.split('\n').filter((line) => line.trim());
 
       if (errorOutput) {
-        suiteResult.errors.push(...errorOutput.split('\n').filter(line => line.trim()));
+        suiteResult.errors.push(...errorOutput.split('\n').filter((line) => line.trim()));
       }
 
-      console.log(`\n${suiteResult.passed ? '✅' : '❌'} ${suite.name} completed in ${(suiteResult.duration / 1000).toFixed(2)}s`);
+      console.log(
+        `\n${suiteResult.passed ? '✅' : '❌'} ${suite.name} completed in ${(suiteResult.duration / 1000).toFixed(2)}s`
+      );
 
       report.addSuite(suiteResult);
       resolve(suiteResult);
@@ -303,10 +307,12 @@ class PerformanceMonitor {
   }
 
   getReport() {
-    const avgCpu = this.metrics.cpu.reduce((sum, m) => sum + m.user + m.system, 0) /
-                      (this.metrics.cpu.length || 1) / 1000000; // Convert to seconds
+    const avgCpu =
+      this.metrics.cpu.reduce((sum, m) => sum + m.user + m.system, 0) /
+      (this.metrics.cpu.length || 1) /
+      1000000; // Convert to seconds
 
-    const maxMemory = Math.max(...this.metrics.memory.map(m => m.heapUsed)) / 1024 / 1024; // MB
+    const maxMemory = Math.max(...this.metrics.memory.map((m) => m.heapUsed)) / 1024 / 1024; // MB
 
     return {
       averageCpuSeconds: avgCpu.toFixed(2),
@@ -332,7 +338,7 @@ async function main() {
     perfMonitor.start();
 
     // Check if MCP server is needed
-    const requiresServer = TEST_SUITES.some(suite => suite.requiresServer);
+    const requiresServer = TEST_SUITES.some((suite) => suite.requiresServer);
 
     if (requiresServer) {
       try {
@@ -364,9 +370,8 @@ async function main() {
       await runTestSuite(suite, report);
 
       // Small delay between suites
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
-
   } catch (error) {
     console.error('\n❌ Test runner error:', error);
     process.exitCode = 1;
@@ -400,20 +405,20 @@ async function main() {
 }
 
 // Handle interrupts
-process.on('SIGINT', async() => {
+process.on('SIGINT', async () => {
   console.log('\n⚠️  Test run interrupted');
   await stopMCPServer();
   process.exit(1);
 });
 
-process.on('unhandledRejection', async(error) => {
+process.on('unhandledRejection', async (error) => {
   console.error('\n❌ Unhandled rejection:', error);
   await stopMCPServer();
   process.exit(1);
 });
 
 // Run tests
-main().catch(error => {
+main().catch((error) => {
   console.error('Fatal error:', error);
   process.exit(1);
 });

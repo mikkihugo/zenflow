@@ -1,8 +1,8 @@
 /**
  * TDD London School Swarm - Claude-Zen Acceptance Tests
- * 
+ *
  * Claude-Zen v2.0.0-alpha.73 - Enhanced multi-Queen AI platform
- * 
+ *
  * Following the London School (mockist) approach:
  * - Outside-in development starting from user behavior
  * - Extensive mocking to isolate units and define contracts
@@ -11,7 +11,7 @@
  * - Integration with Claude-Zen's Hive Mind architecture
  */
 
-import { jest, describe, it, expect, beforeEach, afterEach } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 // Mock Dependencies - Contract Definition Phase
 const mockWebApiServer = {
@@ -70,27 +70,28 @@ interface IntegrationContract {
 }
 
 describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
-  
   describe('🎯 Acceptance Tests - Outside-In Development', () => {
-    
     describe('User Story: Web API Integration', () => {
       it('should handle REST API requests and coordinate with MCP server', async () => {
         // Arrange - Mock expectations define the contract
         mockWebApiServer.start.mockResolvedValue(undefined);
         mockWebApiServer.registerRoute.mockImplementation(() => {});
-        mockIntegrationLayer.bridgeWebToMcp.mockResolvedValue({ success: true, data: 'mocked-response' });
-        
+        mockIntegrationLayer.bridgeWebToMcp.mockResolvedValue({
+          success: true,
+          data: 'mocked-response',
+        });
+
         // Act - Simulate user behavior
         await mockWebApiServer.start(3000);
         mockWebApiServer.registerRoute('POST', '/api/task', async (req: any) => {
           return await mockIntegrationLayer.bridgeWebToMcp(req.body);
         });
-        
+
         // Assert - Verify contract interactions
         expect(mockWebApiServer.start).toHaveBeenCalledWith(3000);
         expect(mockWebApiServer.registerRoute).toHaveBeenCalledWith(
-          'POST', 
-          '/api/task', 
+          'POST',
+          '/api/task',
           expect.any(Function)
         );
       });
@@ -105,28 +106,28 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
           method: 'tools/call',
           params: {
             name: 'test-tool',
-            arguments: { input: 'test' }
-          }
+            arguments: { input: 'test' },
+          },
         };
-        
+
         mockMcpServer.initialize.mockResolvedValue(undefined);
-        mockMcpServer.handleStdioMessage.mockResolvedValue({ 
-          jsonrpc: '2.0', 
-          id: 1, 
-          result: { output: 'processed' } 
+        mockMcpServer.handleStdioMessage.mockResolvedValue({
+          jsonrpc: '2.0',
+          id: 1,
+          result: { output: 'processed' },
         });
-        
+
         // Act - Simulate MCP protocol interaction
         await mockMcpServer.initialize({ stdio: true });
         const response = await mockMcpServer.handleStdioMessage(mockStdioMessage);
-        
+
         // Assert - Verify MCP contract compliance
         expect(mockMcpServer.initialize).toHaveBeenCalledWith({ stdio: true });
         expect(mockMcpServer.handleStdioMessage).toHaveBeenCalledWith(mockStdioMessage);
         expect(response).toEqual({
           jsonrpc: '2.0',
           id: 1,
-          result: { output: 'processed' }
+          result: { output: 'processed' },
         });
       });
     });
@@ -136,39 +137,40 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
         // Arrange - Mock WebSocket contract
         const mockConnectionHandler = jest.fn();
         const mockMessageHandler = jest.fn();
-        
+
         mockWebSocketManager.createServer.mockResolvedValue(undefined);
         mockWebSocketManager.onConnection.mockImplementation(mockConnectionHandler);
         mockWebSocketManager.broadcast.mockImplementation(() => {});
-        
+
         // Act - Simulate WebSocket lifecycle
         await mockWebSocketManager.createServer(4000);
         mockWebSocketManager.onConnection(mockConnectionHandler);
         mockWebSocketManager.broadcast('task-update', { status: 'completed' });
-        
+
         // Assert - Verify WebSocket interactions
         expect(mockWebSocketManager.createServer).toHaveBeenCalledWith(4000);
         expect(mockWebSocketManager.onConnection).toHaveBeenCalledWith(mockConnectionHandler);
-        expect(mockWebSocketManager.broadcast).toHaveBeenCalledWith('task-update', { status: 'completed' });
+        expect(mockWebSocketManager.broadcast).toHaveBeenCalledWith('task-update', {
+          status: 'completed',
+        });
       });
     });
   });
 
   describe('🔗 Contract Verification - Mock-Driven Development', () => {
-    
     describe('Integration Layer Contracts', () => {
       it('should coordinate between web API and MCP server with proper error handling', async () => {
         // Arrange - Define contract behavior
         const webRequest = { action: 'process', data: { input: 'test' } };
         const mcpResponse = { success: true, result: 'processed' };
-        
+
         mockIntegrationLayer.bridgeWebToMcp.mockResolvedValue(mcpResponse);
         mockIntegrationLayer.coordinateComponents.mockResolvedValue(undefined);
-        
+
         // Act - Test contract interaction
         await mockIntegrationLayer.coordinateComponents();
         const result = await mockIntegrationLayer.bridgeWebToMcp(webRequest);
-        
+
         // Assert - Verify contract compliance
         expect(mockIntegrationLayer.coordinateComponents).toHaveBeenCalled();
         expect(mockIntegrationLayer.bridgeWebToMcp).toHaveBeenCalledWith(webRequest);
@@ -179,10 +181,11 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
         // Arrange - Mock error scenarios
         const errorResponse = new Error('MCP processing failed');
         mockIntegrationLayer.bridgeWebToMcp.mockRejectedValue(errorResponse);
-        
+
         // Act & Assert - Verify error handling contract
-        await expect(mockIntegrationLayer.bridgeWebToMcp({ invalid: 'data' }))
-          .rejects.toThrow('MCP processing failed');
+        await expect(mockIntegrationLayer.bridgeWebToMcp({ invalid: 'data' })).rejects.toThrow(
+          'MCP processing failed'
+        );
       });
     });
 
@@ -193,35 +196,34 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
         mockWebApiServer.start.mockResolvedValue(undefined);
         mockWebSocketManager.createServer.mockResolvedValue(undefined);
         mockIntegrationLayer.coordinateComponents.mockResolvedValue(undefined);
-        
+
         // Act - Execute initialization sequence
         await mockMcpServer.initialize({ stdio: true });
         await mockWebApiServer.start(3000);
         await mockWebSocketManager.createServer(4000);
         await mockIntegrationLayer.coordinateComponents();
-        
+
         // Assert - Verify interaction order using Jest call order
         const calls = [
           mockMcpServer.initialize.mock.calls,
           mockWebApiServer.start.mock.calls,
           mockWebSocketManager.createServer.mock.calls,
-          mockIntegrationLayer.coordinateComponents.mock.calls
+          mockIntegrationLayer.coordinateComponents.mock.calls,
         ];
-        
-        expect(calls.every(call => call.length > 0)).toBe(true);
+
+        expect(calls.every((call) => call.length > 0)).toBe(true);
       });
     });
   });
 
   describe('🧪 London School Patterns - Behavior Verification', () => {
-    
     it('should demonstrate interaction testing over state testing', () => {
       // London School: Focus on HOW components collaborate
       const mockCollaborator = {
         process: jest.fn().mockReturnValue('result'),
-        validate: jest.fn().mockReturnValue(true)
+        validate: jest.fn().mockReturnValue(true),
       };
-      
+
       // System under test that coordinates with collaborators
       const systemUnderTest = {
         execute: (data: any) => {
@@ -229,12 +231,12 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
             return mockCollaborator.process(data);
           }
           throw new Error('Invalid data');
-        }
+        },
       };
-      
+
       // Act
       const result = systemUnderTest.execute({ valid: true });
-      
+
       // Assert - Verify the conversation between objects
       expect(mockCollaborator.validate).toHaveBeenCalledWith({ valid: true });
       expect(mockCollaborator.process).toHaveBeenCalledWith({ valid: true });
@@ -245,13 +247,13 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
       // London School: Mocks help discover and define interfaces
       const mockEventBus = {
         publish: jest.fn(),
-        subscribe: jest.fn()
+        subscribe: jest.fn(),
       };
-      
+
       const mockTaskProcessor = {
-        process: jest.fn().mockResolvedValue({ success: true })
+        process: jest.fn().mockResolvedValue({ success: true }),
       };
-      
+
       // This test drives the design of how components should interact
       const eventDrivenSystem = {
         handleTask: async (task: any) => {
@@ -259,9 +261,9 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
           const result = await mockTaskProcessor.process(task);
           mockEventBus.publish('task-completed', result);
           return result;
-        }
+        },
       };
-      
+
       // The mock expectations define the contract
       expect(typeof eventDrivenSystem.handleTask).toBe('function');
       expect(mockEventBus.publish).toBeDefined();
@@ -273,7 +275,7 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  
+
   afterEach(() => {
     jest.restoreAllMocks();
   });

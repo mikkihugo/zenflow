@@ -8,9 +8,9 @@
  */
 
 import { exec } from 'node:child_process';
-import { promisify } from 'node:util';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { promisify } from 'node:util';
 
 const execAsync = promisify(exec);
 
@@ -80,7 +80,7 @@ class BuildMonitor {
       import_export: 0,
       null_undefined: 0,
       constructor_issues: 0,
-      other: 0
+      other: 0,
     };
   }
 
@@ -99,7 +99,7 @@ class BuildMonitor {
         timestamp: new Date().toISOString(),
         errorCount: errors.length,
         errors,
-        success: errors.length === 0
+        success: errors.length === 0,
       };
       this.buildHistory.push(buildResult);
       return buildResult;
@@ -111,7 +111,7 @@ class BuildMonitor {
         timestamp: new Date().toISOString(),
         errorCount: errors.length,
         errors,
-        success: false
+        success: false,
       };
       this.buildHistory.push(buildResult);
       return buildResult;
@@ -126,18 +126,18 @@ class BuildMonitor {
    */
   private parseErrors(buildOutput: string): TypeScriptError[] {
     if (!buildOutput) return [];
-    
+
     const errorLines = buildOutput
       .split('\n')
       .filter((line) => line.includes('error TS') || line.includes('Error'));
-    
+
     return errorLines.map((line) => {
       const match = line.match(/([^:]+):\s*error\s+TS(\d+):\s*(.+)/);
       if (match) {
         return {
           file: match[1],
           code: match[2],
-          message: match[3]
+          message: match[3],
         };
       }
       return { message: line };
@@ -166,7 +166,7 @@ class BuildMonitor {
     console.log('🚀 Build-Verifier Agent - Continuous Monitoring Active');
     console.log(`📊 Baseline: ${this.errorCount} errors`);
     console.log('🎯 Target: 0 errors (Alpha Ready)');
-    
+
     while (this.monitoringActive) {
       try {
         // Check for swarm activity
@@ -174,7 +174,7 @@ class BuildMonitor {
         if (swarmActivity) {
           console.log('🔄 Swarm activity detected - Running build verification...');
           const buildResult = await this.runBuild();
-          
+
           if (buildResult.errorCount < this.errorCount) {
             const reduction = this.errorCount - buildResult.errorCount;
             console.log(`✅ Progress! Errors reduced by ${reduction}`);
@@ -189,7 +189,7 @@ class BuildMonitor {
             // Alert swarm of regression
             await this.alertRegression(buildResult);
           }
-          
+
           // Check for alpha readiness
           if (buildResult.errorCount === 0) {
             console.log('🎉 ALPHA RELEASE READY!');
@@ -197,7 +197,7 @@ class BuildMonitor {
             break;
           }
         }
-        
+
         // Wait before next check (30 second intervals)
         await new Promise((resolve) => setTimeout(resolve, 30000));
       } catch (error) {
@@ -263,14 +263,14 @@ class BuildMonitor {
       status: 'ALPHA_READY',
       errorCount: 0,
       buildSuccess: true,
-      verifiedBy: 'Build-Verifier-Agent'
+      verifiedBy: 'Build-Verifier-Agent',
     };
-    
+
     console.log('🏆 ALPHA CERTIFICATION COMPLETE');
     console.log('✅ Zero TypeScript compilation errors');
     console.log('✅ Build successful');
     console.log('🚀 Ready for alpha release');
-    
+
     try {
       await execAsync(
         `npx claude-flow hooks notification --message "🏆 ALPHA CERTIFICATION COMPLETE" --telemetry true`
@@ -295,15 +295,15 @@ class BuildMonitor {
       currentErrorCount: this.errorCount,
       buildHistory: this.buildHistory,
       errorCategories: this.errorCategories,
-      status: this.errorCount === 0 ? 'ALPHA_READY' : 'IN_PROGRESS'
+      status: this.errorCount === 0 ? 'ALPHA_READY' : 'IN_PROGRESS',
     };
-    
+
     // Write report to file
     const reportPath = path.join(process.cwd(), 'build-verification-status.json');
     fs.writeFile(reportPath, JSON.stringify(report, null, 2)).catch((error) => {
       console.error('Failed to write report:', error);
     });
-    
+
     return report;
   }
 }

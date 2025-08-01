@@ -1,13 +1,18 @@
 /**
  * Integration Test Setup - Environment Management
- * 
+ *
  * Comprehensive setup and teardown for integration tests
  */
 
 import { promises as fs } from 'fs';
-import { join } from 'path';
 import { tmpdir } from 'os';
-import type { IntegrationTestConfig, DatabaseTestHelper, FileSystemTestHelper, NetworkTestHelper } from './types';
+import { join } from 'path';
+import type {
+  DatabaseTestHelper,
+  FileSystemTestHelper,
+  IntegrationTestConfig,
+  NetworkTestHelper,
+} from './types';
 
 export class IntegrationTestSetup {
   private config: IntegrationTestConfig;
@@ -20,12 +25,12 @@ export class IntegrationTestSetup {
       environment: {
         database: 'memory',
         filesystem: 'temp',
-        network: 'mock'
+        network: 'mock',
       },
       services: [],
       cleanup: 'aggressive',
       timeout: 30000,
-      ...config
+      ...config,
     };
   }
 
@@ -59,13 +64,13 @@ export class IntegrationTestSetup {
    */
   async cleanup(): Promise<void> {
     const cleanupPromises = [
-      ...this.cleanupCallbacks.map(callback => callback()),
+      ...this.cleanupCallbacks.map((callback) => callback()),
       this.stopServices(),
-      this.cleanupTempDirs()
+      this.cleanupTempDirs(),
     ];
 
     await Promise.allSettled(cleanupPromises);
-    
+
     this.cleanupCallbacks = [];
     this.tempDirs = [];
     this.processes = [];
@@ -81,12 +86,12 @@ export class IntegrationTestSetup {
   }> {
     const workDir = await this.createTempDir(`test-${testName}`);
     const configPath = join(workDir, 'test-config.json');
-    
+
     const envVars = {
       NODE_ENV: 'test',
       TEST_WORK_DIR: workDir,
       TEST_CONFIG_PATH: configPath,
-      TEST_NAME: testName
+      TEST_NAME: testName,
     };
 
     // Create basic test configuration
@@ -95,16 +100,17 @@ export class IntegrationTestSetup {
       workDir,
       database: {
         type: this.config.environment?.database || 'memory',
-        path: this.config.environment?.database === 'sqlite' ? join(workDir, 'test.db') : ':memory:'
+        path:
+          this.config.environment?.database === 'sqlite' ? join(workDir, 'test.db') : ':memory:',
       },
       filesystem: {
         root: workDir,
-        type: this.config.environment?.filesystem || 'temp'
+        type: this.config.environment?.filesystem || 'temp',
       },
       network: {
         type: this.config.environment?.network || 'mock',
-        port: this.getRandomPort()
-      }
+        port: this.getRandomPort(),
+      },
     };
 
     await fs.writeFile(configPath, JSON.stringify(testConfig, null, 2));
@@ -122,13 +128,13 @@ export class IntegrationTestSetup {
     switch (dbType) {
       case 'memory':
         return this.createMemoryDatabaseHelper();
-      
+
       case 'sqlite':
         return await this.createSqliteDatabaseHelper();
-      
+
       case 'postgres':
         return await this.createPostgresDatabaseHelper();
-      
+
       default:
         throw new Error(`Unsupported database type: ${dbType}`);
     }
@@ -140,13 +146,13 @@ export class IntegrationTestSetup {
     switch (fsType) {
       case 'mock':
         return this.createMockFileSystemHelper();
-      
+
       case 'temp':
         return await this.createTempFileSystemHelper();
-      
+
       case 'real':
         return this.createRealFileSystemHelper();
-      
+
       default:
         throw new Error(`Unsupported filesystem type: ${fsType}`);
     }
@@ -158,13 +164,13 @@ export class IntegrationTestSetup {
     switch (networkType) {
       case 'mock':
         return this.createMockNetworkHelper();
-      
+
       case 'localhost':
         return await this.createLocalhostNetworkHelper();
-      
+
       case 'integration':
         return await this.createIntegrationNetworkHelper();
-      
+
       default:
         throw new Error(`Unsupported network type: ${networkType}`);
     }
@@ -199,9 +205,9 @@ export class IntegrationTestSetup {
           delete: (key: string) => memoryDb.delete(key),
           has: (key: string) => memoryDb.has(key),
           clear: () => memoryDb.clear(),
-          size: () => memoryDb.size
+          size: () => memoryDb.size,
         };
-      }
+      },
     };
   }
 
@@ -215,20 +221,23 @@ export class IntegrationTestSetup {
         try {
           const sqlite3 = await import('sqlite3');
           db = new sqlite3.Database(dbPath);
-          
+
           // Create basic tables
           await new Promise<void>((resolve, reject) => {
-            db.exec(`
+            db.exec(
+              `
               CREATE TABLE IF NOT EXISTS test_data (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 key TEXT UNIQUE,
                 value TEXT,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
               );
-            `, (err: any) => {
-              if (err) reject(err);
-              else resolve();
-            });
+            `,
+              (err: any) => {
+                if (err) reject(err);
+                else resolve();
+              }
+            );
           });
         } catch (error) {
           console.warn('SQLite not available, falling back to memory database');
@@ -251,9 +260,9 @@ export class IntegrationTestSetup {
 
       async seed(data: any[]) {
         if (!db) return;
-        
+
         const stmt = db.prepare('INSERT OR REPLACE INTO test_data (key, value) VALUES (?, ?)');
-        
+
         for (const [index, item] of data.entries()) {
           await new Promise<void>((resolve, reject) => {
             stmt.run(`item-${index}`, JSON.stringify(item), (err: any) => {
@@ -262,13 +271,13 @@ export class IntegrationTestSetup {
             });
           });
         }
-        
+
         stmt.finalize();
       },
 
       async reset() {
         if (!db) return;
-        
+
         await new Promise<void>((resolve, reject) => {
           db.run('DELETE FROM test_data', (err: any) => {
             if (err) reject(err);
@@ -279,7 +288,7 @@ export class IntegrationTestSetup {
 
       getConnection() {
         return db;
-      }
+      },
     };
   }
 
@@ -314,7 +323,7 @@ export class IntegrationTestSetup {
 
       restoreFileSystem(): void {
         // Nothing to restore
-      }
+      },
     };
   }
 
@@ -333,9 +342,7 @@ export class IntegrationTestSetup {
       },
 
       async cleanup(): Promise<void> {
-        await Promise.allSettled(
-          tempPaths.map(path => this.removeDir(path))
-        );
+        await Promise.allSettled(tempPaths.map((path) => this.removeDir(path)));
         tempPaths.length = 0;
       },
 
@@ -345,7 +352,7 @@ export class IntegrationTestSetup {
 
       restoreFileSystem(): void {
         // Real filesystem, no restoration needed
-      }
+      },
     };
   }
 
@@ -369,7 +376,7 @@ export class IntegrationTestSetup {
 
       restoreFileSystem(): void {
         console.warn('Real filesystem, nothing to restore');
-      }
+      },
     };
   }
 
@@ -397,7 +404,7 @@ export class IntegrationTestSetup {
 
       clearRequests(): void {
         mockRequests.length = 0;
-      }
+      },
     };
   }
 
@@ -410,17 +417,17 @@ export class IntegrationTestSetup {
       async startMockServer(port: number = this.getRandomPort()): Promise<void> {
         try {
           const http = await import('http');
-          
+
           server = http.createServer((req, res) => {
             const requestData = {
               method: req.method,
               url: req.url,
               headers: req.headers,
-              timestamp: Date.now()
+              timestamp: Date.now(),
             };
-            
+
             requests.push(requestData);
-            
+
             const response = routes.get(req.url || '/');
             if (response) {
               res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -430,7 +437,7 @@ export class IntegrationTestSetup {
               res.end('Not Found');
             }
           });
-          
+
           await new Promise<void>((resolve, reject) => {
             server.listen(port, (err: any) => {
               if (err) reject(err);
@@ -461,7 +468,7 @@ export class IntegrationTestSetup {
 
       clearRequests(): void {
         requests.length = 0;
-      }
+      },
     };
   }
 
@@ -477,16 +484,14 @@ export class IntegrationTestSetup {
   }
 
   private async stopServices(): Promise<void> {
-    await Promise.allSettled(
-      this.processes.map(process => this.stopProcess(process))
-    );
+    await Promise.allSettled(this.processes.map((process) => this.stopProcess(process)));
     this.processes = [];
   }
 
   private async stopProcess(process: any): Promise<void> {
     if (process && process.kill) {
       process.kill('SIGTERM');
-      
+
       // Wait for graceful shutdown
       await new Promise<void>((resolve) => {
         const timeout = setTimeout(() => {
@@ -495,7 +500,7 @@ export class IntegrationTestSetup {
           }
           resolve();
         }, 5000);
-        
+
         process.on('exit', () => {
           clearTimeout(timeout);
           resolve();
@@ -505,7 +510,10 @@ export class IntegrationTestSetup {
   }
 
   private async createTempDir(prefix: string = 'test'): Promise<string> {
-    const tempPath = join(tmpdir(), `claude-code-flow-${prefix}-${Date.now()}-${Math.random().toString(36)}`);
+    const tempPath = join(
+      tmpdir(),
+      `claude-code-flow-${prefix}-${Date.now()}-${Math.random().toString(36)}`
+    );
     await fs.mkdir(tempPath, { recursive: true });
     this.tempDirs.push(tempPath);
     return tempPath;
@@ -524,10 +532,8 @@ export class IntegrationTestSetup {
       return;
     }
 
-    await Promise.allSettled(
-      this.tempDirs.map(dir => this.removeDir(dir))
-    );
-    
+    await Promise.allSettled(this.tempDirs.map((dir) => this.removeDir(dir)));
+
     this.tempDirs.length = 0;
   }
 

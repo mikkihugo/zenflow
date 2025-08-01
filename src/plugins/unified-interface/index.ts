@@ -4,7 +4,7 @@
  */
 
 import { BasePlugin } from '../base-plugin.js';
-import type { PluginManifest, PluginConfig, PluginContext } from '../types.js';
+import type { PluginConfig, PluginContext, PluginManifest } from '../types.js';
 
 export class UnifiedInterfacePlugin extends BasePlugin {
   private registeredInterfaces = new Map();
@@ -35,9 +35,9 @@ export class UnifiedInterfacePlugin extends BasePlugin {
   registerInterface(name: string, interfaceDefinition: any): void {
     this.registeredInterfaces.set(name, {
       ...interfaceDefinition,
-      registeredAt: new Date()
+      registeredAt: new Date(),
     });
-    
+
     this.context.logger.info(`Interface registered: ${name}`);
     this.emit('interface-registered', { name, definition: interfaceDefinition });
   }
@@ -83,12 +83,12 @@ export class UnifiedInterfacePlugin extends BasePlugin {
       id: connectionId,
       createdAt: new Date(),
       lastActivity: new Date(),
-      callCount: 0
+      callCount: 0,
     };
 
     this.activeConnections.add(connection);
     this.context.logger.info(`Connection created: ${connectionId}`);
-    
+
     return {
       id: connectionId,
       call: async (interfaceName: string, method: string, args: any[] = []) => {
@@ -99,14 +99,14 @@ export class UnifiedInterfacePlugin extends BasePlugin {
       disconnect: () => {
         this.activeConnections.delete(connection);
         this.context.logger.info(`Connection closed: ${connectionId}`);
-      }
+      },
     };
   }
 
   getConnectionStats(): any {
     return {
       totalConnections: this.activeConnections.size,
-      registeredInterfaces: this.registeredInterfaces.size
+      registeredInterfaces: this.registeredInterfaces.size,
     };
   }
 }

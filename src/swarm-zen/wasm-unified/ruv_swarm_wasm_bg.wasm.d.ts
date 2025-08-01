@@ -1,5 +1,5 @@
 /* tslint:disable */
- 
+
 export const memory: WebAssembly.Memory;
 export const __wbg_memorypool_free: (a: number, b: number) => void;
 export const memorypool_new: (a: number, b: number) => number;
@@ -21,20 +21,82 @@ export const __wbg_get_poolmetrics_memory_usage_mb: (a: number) => number;
 export const __wbg_set_poolmetrics_memory_usage_mb: (a: number, b: number) => void;
 export const __wbg_agentmemorypool_free: (a: number, b: number) => void;
 export const agentmemorypool_new: () => number;
-export const agentmemorypool_allocate_for_agent: (a: number, b: number, c: number, d: number) => void;
+export const agentmemorypool_allocate_for_agent: (
+  a: number,
+  b: number,
+  c: number,
+  d: number
+) => void;
 export const agentmemorypool_deallocate_agent_memory: (a: number, b: number, c: number) => void;
 export const agentmemorypool_total_memory_usage_mb: (a: number) => number;
 export const agentmemorypool_is_within_memory_target: (a: number) => number;
-export const simdvectorops_dot_product: (a: number, b: number, c: number, d: number, e: number) => number;
-export const simdvectorops_vector_add: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
-export const simdvectorops_vector_scale: (a: number, b: number, c: number, d: number, e: number) => void;
-export const simdvectorops_apply_activation: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
-export const simdmatrixops_matrix_vector_multiply: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number) => void;
-export const simdmatrixops_matrix_multiply: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => void;
+export const simdvectorops_dot_product: (
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  e: number
+) => number;
+export const simdvectorops_vector_add: (
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  e: number,
+  f: number
+) => void;
+export const simdvectorops_vector_scale: (
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  e: number
+) => void;
+export const simdvectorops_apply_activation: (
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  e: number,
+  f: number
+) => void;
+export const simdmatrixops_matrix_vector_multiply: (
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  e: number,
+  f: number,
+  g: number,
+  h: number
+) => void;
+export const simdmatrixops_matrix_multiply: (
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  e: number,
+  f: number,
+  g: number,
+  h: number,
+  i: number
+) => void;
 export const __wbg_simdbenchmark_free: (a: number, b: number) => void;
 export const simdbenchmark_new: () => number;
-export const simdbenchmark_benchmark_dot_product: (a: number, b: number, c: number, d: number) => void;
-export const simdbenchmark_benchmark_activation: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
+export const simdbenchmark_benchmark_dot_product: (
+  a: number,
+  b: number,
+  c: number,
+  d: number
+) => void;
+export const simdbenchmark_benchmark_activation: (
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  e: number,
+  f: number
+) => void;
 export const detect_simd_capabilities: (a: number) => void;
 export const run_simd_verification_suite: (a: number) => void;
 export const simd_performance_report: (a: number, b: number, c: number) => void;
@@ -104,8 +166,20 @@ export const performancemonitor_get_report: (a: number, b: number) => void;
 export const __wbg_optimizedagentspawner_free: (a: number, b: number) => void;
 export const __wbg_optimizedagent_free: (a: number, b: number) => void;
 export const optimizedagentspawner_new: () => number;
-export const optimizedagentspawner_spawn_agent: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
-export const optimizedagentspawner_release_agent: (a: number, b: number, c: number, d: number) => void;
+export const optimizedagentspawner_spawn_agent: (
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  e: number,
+  f: number
+) => void;
+export const optimizedagentspawner_release_agent: (
+  a: number,
+  b: number,
+  c: number,
+  d: number
+) => void;
 export const optimizedagentspawner_get_performance_report: (a: number, b: number) => void;
 export const optimizedagentspawner_get_active_agent_count: (a: number) => number;
 export const optimizedagentspawner_is_within_memory_target: (a: number) => number;

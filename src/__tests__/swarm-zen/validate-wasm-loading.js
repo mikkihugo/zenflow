@@ -73,7 +73,6 @@ async function testWasmLoading() {
       message: 'Successfully created RuvSwarm instance',
     });
     console.log('✅ Created RuvSwarm instance');
-
   } catch (error) {
     results.tests.push({
       name: 'Module Import',
@@ -82,7 +81,6 @@ async function testWasmLoading() {
     });
     console.error('❌ Failed to import module:', error);
     results.summary.failed++;
-
   }
 }
 
@@ -115,7 +113,6 @@ async function testWasmMemory() {
       message: `Expected memory: ${expectedMemoryPages} pages (16MB)`,
     });
     console.log('✅ WASM configured for 16MB initial memory');
-
   } catch (error) {
     results.tests.push({
       name: 'WASM Memory Check',
@@ -177,7 +174,6 @@ async function testWasmFunctionality() {
         console.log('✅ Memory operations verified');
       }
     }
-
   } catch (error) {
     results.tests.push({
       name: 'WASM Functionality',
@@ -227,7 +223,6 @@ async function testNoFallback() {
       console.log('❌ Fallback mode detected!');
       results.summary.failed++;
     }
-
   } catch (error) {
     results.tests.push({
       name: 'Fallback Check',
@@ -242,9 +237,9 @@ async function testNoFallback() {
 async function generateReport() {
   // Calculate summary
   results.summary.total = results.tests.length;
-  results.summary.passed = results.tests.filter(t => t.status === 'passed').length;
-  results.summary.failed = results.tests.filter(t => t.status === 'failed').length;
-  results.summary.passRate = (results.summary.passed / results.summary.total * 100).toFixed(2);
+  results.summary.passed = results.tests.filter((t) => t.status === 'passed').length;
+  results.summary.failed = results.tests.filter((t) => t.status === 'failed').length;
+  results.summary.passRate = ((results.summary.passed / results.summary.total) * 100).toFixed(2);
 
   // Save results
   const resultsPath = path.join(__dirname, '..', 'test-results', 'wasm-validation.json');

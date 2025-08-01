@@ -2,29 +2,29 @@
 
 /**
  * CLI Main Module
- * 
+ *
  * Entry point for the Claude Flow CLI application.
  * Integrates swarm-focused CliApp architecture with TUI, services, and swarm commands.
  */
 
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
 import { readFileSync } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+import { launchSwarmTUI } from '../interfaces/tui/swarm-tui-simple';
 import { CliApp } from './core/app';
 import { initializeServices, Services } from './services/index';
 import { createLogger } from './utils/logger';
-import { launchSwarmTUI } from '../interfaces/tui/swarm-tui-simple';
 
 // ESM __dirname equivalent
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// import { MCPCommand } from './commands/mcp/mcp-command';
+import { HelpCommand } from './commands/help/help-command';
 // Import command classes
 import { InitCommand } from './commands/init/init-command';
 import { StatusCommand } from './commands/status/status-command';
 import { SwarmCommand } from './commands/swarm/swarm-command';
-// import { MCPCommand } from './commands/mcp/mcp-command';
-import { HelpCommand } from './commands/help/help-command';
 
 /**
  * Get package information
@@ -36,13 +36,13 @@ function getPackageInfo() {
     return {
       name: packageData.name || 'claude-flow',
       version: packageData.version || '1.0.0',
-      description: packageData.description || 'Claude Flow CLI'
+      description: packageData.description || 'Claude Flow CLI',
     };
   } catch (error) {
     return {
       name: 'claude-flow',
       version: '1.0.0',
-      description: 'Claude Flow CLI'
+      description: 'Claude Flow CLI',
     };
   }
 }
@@ -65,28 +65,23 @@ function registerCommands(app: CliApp): void {
 async function main(): Promise<void> {
   const logger = createLogger({ prefix: 'CLI' });
   const packageInfo = getPackageInfo();
-  
+
   try {
     // Initialize services first
     logger.info('Initializing services...');
     await initializeServices();
-    
+
     // Create CLI application
     const app = CliApp.create({
       name: packageInfo.name,
       version: packageInfo.version,
       description: packageInfo.description,
       config: {
-        files: [
-          'claude-flow.config.json',
-          '.claude-flow.json',
-        ],
+        files: ['claude-flow.config.json', '.claude-flow.json'],
         envPrefix: 'CLAUDE_FLOW',
         createDefault: true,
       },
-      commandPaths: [
-        join(__dirname, 'commands'),
-      ],
+      commandPaths: [join(__dirname, 'commands')],
       pluginPaths: [
         join(process.cwd(), 'plugins'),
         join(process.cwd(), 'node_modules', '@claude-flow'),
@@ -109,10 +104,10 @@ async function main(): Promise<void> {
       colors: true,
       helpOnEmpty: true,
     });
-    
+
     // Register built-in commands
     registerCommands(app);
-    
+
     // Handle special UI flag before normal processing
     const args = process.argv.slice(2);
     if (args.includes('--ui')) {
@@ -125,36 +120,35 @@ async function main(): Promise<void> {
         logger.info('Falling back to CLI mode...');
       }
     }
-    
+
     // Set up application event handlers
     app.on('initialized', () => {
       logger.info('CLI application initialized');
     });
-    
+
     app.on('command-start', ({ name }) => {
       logger.debug(`Executing command: ${name}`);
     });
-    
+
     app.on('command-complete', ({ name, result }) => {
       logger.debug(`Command '${name}' completed in ${result.executionTime}ms`);
     });
-    
+
     app.on('command-error', ({ name, error }) => {
       logger.error(`Command '${name}' failed:`, error.message);
     });
-    
+
     // Run the application
     const exitCode = await app.run(process.argv.slice(2));
-    
+
     // Clean shutdown
     await app.shutdown();
-    
+
     // Dispose services
     const { serviceRegistry } = await import('./services/index.js');
     await serviceRegistry.dispose();
-    
+
     process.exit(exitCode);
-    
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     const errorStack = error instanceof Error ? error.stack : undefined;
@@ -162,7 +156,7 @@ async function main(): Promise<void> {
     if (errorStack) {
       console.error('Stack trace:', errorStack);
     }
-    
+
     // Try to clean up services on error
     try {
       const { serviceRegistry } = await import('./services/index.js');
@@ -170,7 +164,7 @@ async function main(): Promise<void> {
     } catch (cleanupError) {
       logger.error('Error during cleanup:', cleanupError);
     }
-    
+
     process.exit(1);
   }
 }

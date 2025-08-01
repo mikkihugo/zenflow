@@ -13,11 +13,10 @@
 import { jest } from '@jest/globals';
 import crypto from 'crypto';
 import os from 'os';
-
-// Import components
-import { SessionManager } from '../src/session-manager.js';
 import { HealthMonitor } from '../src/health-monitor.js';
 import { RecoveryWorkflows } from '../src/recovery-workflows.js';
+// Import components
+import { SessionManager } from '../src/session-manager.js';
 
 // Chaos engineering utilities
 class ChaosEngineer {
@@ -79,7 +78,7 @@ class ChaosEngineer {
     }
 
     setTimeout(() => {
-      workers.forEach(worker => worker.stop = true);
+      workers.forEach((worker) => (worker.stop = true));
       this.activeFailures.delete(failure);
       failure.endTime = Date.now();
       this.failureHistory.push(failure);
@@ -131,7 +130,7 @@ class ChaosEngineer {
     }
 
     setTimeout(() => {
-      ioOperations.forEach(op => op.stop = true);
+      ioOperations.forEach((op) => (op.stop = true));
       this.activeFailures.delete(failure);
       failure.endTime = Date.now();
       this.failureHistory.push(failure);
@@ -155,7 +154,7 @@ class ChaosEngineer {
           await require('fs').promises.unlink(tempFile);
 
           // Small delay to prevent complete system lock
-          await new Promise(resolve => setTimeout(resolve, 10));
+          await new Promise((resolve) => setTimeout(resolve, 10));
         } catch (error) {
           // Continue on errors
         }
@@ -167,7 +166,8 @@ class ChaosEngineer {
   }
 
   // Time manipulation (clock skew simulation)
-  simulateClockSkew(skewMs = 300000) { // 5 minutes default
+  simulateClockSkew(skewMs = 300000) {
+    // 5 minutes default
     const failure = {
       id: `clock-skew-${Date.now()}`,
       type: 'clock_skew',
@@ -213,7 +213,7 @@ class ChaosEngineer {
       stat: fs.stat,
     };
 
-    Object.keys(originalMethods).forEach(method => {
+    Object.keys(originalMethods).forEach((method) => {
       fs[method] = (...args) => {
         if (Math.random() < failureRate) {
           return Promise.reject(new Error(`Simulated ${method} failure`));
@@ -224,7 +224,7 @@ class ChaosEngineer {
 
     setTimeout(() => {
       // Restore original methods
-      Object.keys(originalMethods).forEach(method => {
+      Object.keys(originalMethods).forEach((method) => {
         fs[method] = originalMethods[method];
       });
 
@@ -238,16 +238,18 @@ class ChaosEngineer {
 
   // Get chaos metrics
   getMetrics() {
-    const totalRecoveryTime = this.failureHistory.reduce((sum, f) =>
-      sum + (f.endTime - f.startTime), 0);
+    const totalRecoveryTime = this.failureHistory.reduce(
+      (sum, f) => sum + (f.endTime - f.startTime),
+      0
+    );
 
     return {
       ...this.metrics,
       activeFailures: this.activeFailures.size,
       totalFailureHistory: this.failureHistory.length,
-      meanTimeToRecovery: this.failureHistory.length > 0 ?
-        totalRecoveryTime / this.failureHistory.length : 0,
-      failureTypes: [...new Set(this.failureHistory.map(f => f.type))],
+      meanTimeToRecovery:
+        this.failureHistory.length > 0 ? totalRecoveryTime / this.failureHistory.length : 0,
+      failureTypes: [...new Set(this.failureHistory.map((f) => f.type))],
     };
   }
 }
@@ -273,7 +275,7 @@ class RecoveryValidator {
       const testSessionId = await sessionManager.createSession(
         'recovery-validation',
         { topology: 'mesh', maxAgents: 5 },
-        { agents: new Map(), tasks: new Map(), topology: 'mesh', connections: [], metrics: {} },
+        { agents: new Map(), tasks: new Map(), topology: 'mesh', connections: [], metrics: {} }
       );
       await sessionManager.saveSession(testSessionId, { metadata: { validationTest: true } });
       const session = await sessionManager.loadSession(testSessionId);
@@ -285,10 +287,9 @@ class RecoveryValidator {
 
     try {
       // Test HealthMonitor
-      const testCheckId = healthMonitor.registerHealthCheck(
-        'recovery.validation',
-        async () => ({ validated: true }),
-      );
+      const testCheckId = healthMonitor.registerHealthCheck('recovery.validation', async () => ({
+        validated: true,
+      }));
       const healthResult = await healthMonitor.runHealthCheck('recovery.validation');
       validation.healthMonitorHealth = healthResult.status === 'healthy';
     } catch (error) {
@@ -300,9 +301,7 @@ class RecoveryValidator {
       recoveryWorkflows.registerWorkflow('recovery.validation', {
         description: 'Recovery validation workflow',
         triggers: ['validation.test'],
-        steps: [
-          { name: 'validate', action: async () => ({ validated: true }) },
-        ],
+        steps: [{ name: 'validate', action: async () => ({ validated: true }) }],
         priority: 'low',
       });
       const execution = await recoveryWorkflows.triggerRecovery('validation.test');
@@ -311,9 +310,10 @@ class RecoveryValidator {
       validation.details.recoveryWorkflowsError = error.message;
     }
 
-    validation.overallHealth = validation.sessionManagerHealth &&
-                               validation.healthMonitorHealth &&
-                               validation.recoveryWorkflowsHealth;
+    validation.overallHealth =
+      validation.sessionManagerHealth &&
+      validation.healthMonitorHealth &&
+      validation.recoveryWorkflowsHealth;
 
     this.validationResults.push(validation);
     return validation;
@@ -325,7 +325,7 @@ class RecoveryValidator {
 
   getRecoverySuccessRate() {
     if (this.validationResults.length === 0) return 0;
-    const successful = this.validationResults.filter(v => v.overallHealth).length;
+    const successful = this.validationResults.filter((v) => v.overallHealth).length;
     return (successful / this.validationResults.length) * 100;
   }
 }
@@ -375,12 +375,12 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       const sessionId = await sessionManager.createSession(
         'memory-chaos-test',
         { topology: 'mesh', maxAgents: 10 },
-        { agents: new Map(), tasks: new Map(), topology: 'mesh', connections: [], metrics: {} },
+        { agents: new Map(), tasks: new Map(), topology: 'mesh', connections: [], metrics: {} }
       );
 
       const baselineCheckpoint = await sessionManager.createCheckpoint(
         sessionId,
-        'Before memory chaos',
+        'Before memory chaos'
       );
 
       // Inject severe memory pressure
@@ -394,9 +394,11 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       const operations = [];
       for (let i = 0; i < 10; i++) {
         operations.push(
-          sessionManager.saveSession(sessionId, {
-            metadata: { chaosIteration: i, timestamp: Date.now() },
-          }).catch(error => ({ error: error.message })),
+          sessionManager
+            .saveSession(sessionId, {
+              metadata: { chaosIteration: i, timestamp: Date.now() },
+            })
+            .catch((error) => ({ error: error.message }))
         );
       }
 
@@ -404,7 +406,9 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
 
       // Validate recovery
       const validation = await recoveryValidator.validateSystemRecovery(
-        sessionManager, healthMonitor, recoveryWorkflows,
+        sessionManager,
+        healthMonitor,
+        recoveryWorkflows
       );
 
       expect(validation.overallHealth).toBe(true);
@@ -433,7 +437,7 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       // Monitor system during starvation
       const healthResults = [];
       for (let i = 0; i < 5; i++) {
-        await new Promise(resolve => setTimeout(resolve, 800));
+        await new Promise((resolve) => setTimeout(resolve, 800));
         try {
           const result = await healthMonitor.runHealthCheck('chaos.cpu.monitor');
           healthResults.push(result);
@@ -443,11 +447,13 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       }
 
       // Wait for CPU starvation to end
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Validate system recovery
       const postChaosValidation = await recoveryValidator.validateSystemRecovery(
-        sessionManager, healthMonitor, recoveryWorkflows,
+        sessionManager,
+        healthMonitor,
+        recoveryWorkflows
       );
 
       expect(postChaosValidation.overallHealth).toBe(true);
@@ -482,16 +488,16 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       const ioFailure = await chaosEngineer.simulateDiskIOSaturation(5000);
 
       // Attempt operations during I/O stress
-      const sessionId = await sessionManager.createSession(
-        'io-chaos-test',
-        { topology: 'star', maxAgents: 5 },
-      );
+      const sessionId = await sessionManager.createSession('io-chaos-test', {
+        topology: 'star',
+        maxAgents: 5,
+      });
 
       // Trigger I/O recovery workflow
       const recoveryExecution = await recoveryWorkflows.triggerRecovery('io.failure');
 
       // Wait for I/O saturation to end
-      await new Promise(resolve => setTimeout(resolve, 6000));
+      await new Promise((resolve) => setTimeout(resolve, 6000));
 
       expect(recoveryExecution.status).toMatch(/completed|failed/);
 
@@ -528,10 +534,10 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       });
 
       // Create session before partition
-      const sessionId = await sessionManager.createSession(
-        'network-partition-test',
-        { topology: 'mesh', maxAgents: 8 },
-      );
+      const sessionId = await sessionManager.createSession('network-partition-test', {
+        topology: 'mesh',
+        maxAgents: 8,
+      });
 
       // Start network partition
       const networkFailure = await chaosEngineer.simulateNetworkPartition(4000);
@@ -545,7 +551,7 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       });
 
       // Wait for partition to heal
-      await new Promise(resolve => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 5000));
 
       expect(recoveryExecution.status).toBeDefined();
 
@@ -558,10 +564,10 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       await sessionManager.initialize();
       await healthMonitor.initialize();
 
-      const sessionId = await sessionManager.createSession(
-        'clock-skew-test',
-        { topology: 'ring', maxAgents: 6 },
-      );
+      const sessionId = await sessionManager.createSession('clock-skew-test', {
+        topology: 'ring',
+        maxAgents: 6,
+      });
 
       // Record timestamps before skew
       const beforeSkew = Date.now();
@@ -580,7 +586,7 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
 
       const checkpointId = await sessionManager.createCheckpoint(
         sessionId,
-        'Checkpoint during time skew',
+        'Checkpoint during time skew'
       );
 
       // Restore normal time
@@ -621,7 +627,7 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
                   return { success: true, retries };
                 } catch (error) {
                   retries++;
-                  await new Promise(resolve => setTimeout(resolve, Math.pow(2, retries) * 100));
+                  await new Promise((resolve) => setTimeout(resolve, 2 ** retries * 100));
                 }
               }
 
@@ -636,10 +642,10 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       const syscallFailure = chaosEngineer.simulateSystemCallFailures(0.3, 6000);
 
       // Perform operations during failures
-      const sessionId = await sessionManager.createSession(
-        'syscall-chaos-test',
-        { topology: 'hierarchical', maxAgents: 4 },
-      );
+      const sessionId = await sessionManager.createSession('syscall-chaos-test', {
+        topology: 'hierarchical',
+        maxAgents: 4,
+      });
 
       // Trigger recovery workflow
       const recoveryExecution = await recoveryWorkflows.triggerRecovery('syscall.failure');
@@ -658,18 +664,20 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       }
 
       // Wait for system call failures to end
-      await new Promise(resolve => setTimeout(resolve, 7000));
+      await new Promise((resolve) => setTimeout(resolve, 7000));
 
       // Validate final system state
       const validation = await recoveryValidator.validateSystemRecovery(
-        sessionManager, healthMonitor, recoveryWorkflows,
+        sessionManager,
+        healthMonitor,
+        recoveryWorkflows
       );
 
       expect(validation.overallHealth).toBe(true);
       expect(operationResults.length).toBe(10);
 
       // At least some operations should succeed even during failures
-      const successfulOps = operationResults.filter(r => r.success).length;
+      const successfulOps = operationResults.filter((r) => r.success).length;
       expect(successfulOps).toBeGreaterThan(0);
     });
   });
@@ -684,14 +692,14 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       healthMonitor.setRecoveryWorkflows(recoveryWorkflows);
 
       // Create baseline system state
-      const sessionId = await sessionManager.createSession(
-        'compound-chaos-test',
-        { topology: 'mesh', maxAgents: 12 },
-      );
+      const sessionId = await sessionManager.createSession('compound-chaos-test', {
+        topology: 'mesh',
+        maxAgents: 12,
+      });
 
       const baselineCheckpoint = await sessionManager.createCheckpoint(
         sessionId,
-        'Before compound chaos',
+        'Before compound chaos'
       );
 
       // Launch multiple chaos events simultaneously
@@ -712,10 +720,12 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       const monitoringInterval = 1000;
 
       for (let i = 0; i < monitoringDuration / monitoringInterval; i++) {
-        await new Promise(resolve => setTimeout(resolve, monitoringInterval));
+        await new Promise((resolve) => setTimeout(resolve, monitoringInterval));
 
         const validation = await recoveryValidator.validateSystemRecovery(
-          sessionManager, healthMonitor, recoveryWorkflows,
+          sessionManager,
+          healthMonitor,
+          recoveryWorkflows
         );
 
         monitoringResults.push({
@@ -727,11 +737,13 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       }
 
       // Wait for all chaos events to complete
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // Final system validation
       const finalValidation = await recoveryValidator.validateSystemRecovery(
-        sessionManager, healthMonitor, recoveryWorkflows,
+        sessionManager,
+        healthMonitor,
+        recoveryWorkflows
       );
 
       // System should eventually recover
@@ -754,10 +766,10 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       await recoveryWorkflows.initialize();
 
       // Create session with structured data
-      const sessionId = await sessionManager.createSession(
-        'data-consistency-chaos',
-        { topology: 'star', maxAgents: 8 },
-      );
+      const sessionId = await sessionManager.createSession('data-consistency-chaos', {
+        topology: 'star',
+        maxAgents: 8,
+      });
 
       // Establish known data patterns
       const dataPattern = {
@@ -776,17 +788,21 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
 
       const consistencyCheckpoint = await sessionManager.createCheckpoint(
         sessionId,
-        'Data consistency baseline',
+        'Data consistency baseline'
       );
 
       // Start prolonged chaos (multiple waves)
       const chaosWaves = [
         // Wave 1: Memory pressure
-        { delay: 0, chaos: () => chaosEngineer.simulateMemoryPressure({
-          allocations: 30,
-          sizePerAllocation: 3 * 1024 * 1024,
-          duration: 4000,
-        })},
+        {
+          delay: 0,
+          chaos: () =>
+            chaosEngineer.simulateMemoryPressure({
+              allocations: 30,
+              sizePerAllocation: 3 * 1024 * 1024,
+              duration: 4000,
+            }),
+        },
         // Wave 2: CPU starvation
         { delay: 2000, chaos: () => chaosEngineer.simulateCPUStarvation(0.8, 4000) },
         // Wave 3: I/O saturation
@@ -796,14 +812,14 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       ];
 
       // Launch chaos waves
-      chaosWaves.forEach(wave => {
+      chaosWaves.forEach((wave) => {
         setTimeout(wave.chaos, wave.delay);
       });
 
       // Continue data operations during chaos
       const dataOperations = [];
       for (let i = 0; i < 20; i++) {
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
         try {
           // Modify data pattern
@@ -831,7 +847,7 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       }
 
       // Wait for all chaos to complete
-      await new Promise(resolve => setTimeout(resolve, 12000));
+      await new Promise((resolve) => setTimeout(resolve, 12000));
 
       // Validate data consistency
       const finalSession = await sessionManager.loadSession(sessionId);
@@ -853,7 +869,7 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       expect(finalPattern.sequence.slice(0, 100)).toEqual(dataPattern.sequence);
 
       console.log(`Data operations during chaos: ${dataOperations.length} attempted`);
-      console.log(`Successful operations: ${dataOperations.filter(op => op.success).length}`);
+      console.log(`Successful operations: ${dataOperations.filter((op) => op.success).length}`);
     });
   });
 
@@ -921,19 +937,21 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
           });
         }
 
-        await new Promise(resolve => setTimeout(resolve, 800));
+        await new Promise((resolve) => setTimeout(resolve, 800));
       }
 
       // Wait for memory pressure to end
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       expect(recoveryAttempts.length).toBe(10);
 
       // At least some recovery attempts should succeed
-      const successfulAttempts = recoveryAttempts.filter(a => a.status === 'completed').length;
+      const successfulAttempts = recoveryAttempts.filter((a) => a.status === 'completed').length;
       expect(successfulAttempts).toBeGreaterThan(0);
 
-      console.log(`Recovery attempts: ${recoveryAttempts.length}, successful: ${successfulAttempts}`);
+      console.log(
+        `Recovery attempts: ${recoveryAttempts.length}, successful: ${successfulAttempts}`
+      );
     });
 
     test('should validate recovery effectiveness metrics', async () => {
@@ -944,10 +962,10 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       // Create multiple sessions for comprehensive testing
       const sessionIds = [];
       for (let i = 0; i < 5; i++) {
-        const sessionId = await sessionManager.createSession(
-          `metrics-test-${i}`,
-          { topology: 'mesh', maxAgents: 6 + i },
-        );
+        const sessionId = await sessionManager.createSession(`metrics-test-${i}`, {
+          topology: 'mesh',
+          maxAgents: 6 + i,
+        });
         sessionIds.push(sessionId);
       }
 
@@ -958,7 +976,7 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
         chaosEngineer.simulateDiskIOSaturation(6000),
       ];
 
-      await Promise.all(chaosPromises.map(p => p.catch(() => {})));
+      await Promise.all(chaosPromises.map((p) => p.catch(() => {})));
 
       // Measure recovery effectiveness
       const measurementDuration = 8000;
@@ -966,22 +984,22 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       const effectivenessMetrics = [];
 
       for (let i = 0; i < measurementDuration / measurementInterval; i++) {
-        await new Promise(resolve => setTimeout(resolve, measurementInterval));
+        await new Promise((resolve) => setTimeout(resolve, measurementInterval));
 
         const startTime = Date.now();
         const validations = await Promise.all(
-          sessionIds.map(async sessionId => {
+          sessionIds.map(async (sessionId) => {
             try {
               const session = await sessionManager.loadSession(sessionId);
               return { sessionId, healthy: session.status === 'active' };
             } catch (error) {
               return { sessionId, healthy: false, error: error.message };
             }
-          }),
+          })
         );
         const responseTime = Date.now() - startTime;
 
-        const healthyCount = validations.filter(v => v.healthy).length;
+        const healthyCount = validations.filter((v) => v.healthy).length;
         const healthPercentage = (healthyCount / sessionIds.length) * 100;
 
         effectivenessMetrics.push({
@@ -994,7 +1012,7 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       }
 
       // Wait for all chaos to complete
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // Final effectiveness assessment
       const finalMetrics = effectivenessMetrics[effectivenessMetrics.length - 1];
@@ -1004,10 +1022,14 @@ describe('Chaos Engineering Test Suite - Session Persistence', () => {
       const earlyMetrics = effectivenessMetrics.slice(0, 3);
       const lateMetrics = effectivenessMetrics.slice(-3);
 
-      const earlyAvgHealth = earlyMetrics.reduce((sum, m) => sum + m.healthPercentage, 0) / earlyMetrics.length;
-      const lateAvgHealth = lateMetrics.reduce((sum, m) => sum + m.healthPercentage, 0) / lateMetrics.length;
+      const earlyAvgHealth =
+        earlyMetrics.reduce((sum, m) => sum + m.healthPercentage, 0) / earlyMetrics.length;
+      const lateAvgHealth =
+        lateMetrics.reduce((sum, m) => sum + m.healthPercentage, 0) / lateMetrics.length;
 
-      console.log(`Recovery trend: Early health ${earlyAvgHealth.toFixed(2)}%, Late health ${lateAvgHealth.toFixed(2)}%`);
+      console.log(
+        `Recovery trend: Early health ${earlyAvgHealth.toFixed(2)}%, Late health ${lateAvgHealth.toFixed(2)}%`
+      );
 
       // System should show improvement over time (recovery)
       expect(lateAvgHealth).toBeGreaterThanOrEqual(earlyAvgHealth - 10); // Allow some variance

@@ -4,9 +4,9 @@
  * Generate comprehensive test report for ruv-swarm
  */
 
+import { execSync } from 'child_process';
 import fs from 'fs';
 import path, { dirname } from 'path';
-import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -61,12 +61,7 @@ class TestReportGenerator {
   }
 
   countTestFiles() {
-    const testDirs = [
-      'test/unit',
-      'test/integration',
-      'test/performance',
-      'test',
-    ];
+    const testDirs = ['test/unit', 'test/integration', 'test/performance', 'test'];
 
     let totalFiles = 0;
     for (const dir of testDirs) {
@@ -76,7 +71,7 @@ class TestReportGenerator {
         totalFiles += files.length;
         this.reportData.testSuites[dir] = {
           files: files.length,
-          fileList: files.map(f => path.relative(path.join(__dirname, '..'), f)),
+          fileList: files.map((f) => path.relative(path.join(__dirname, '..'), f)),
         };
       }
     }
@@ -112,7 +107,9 @@ class TestReportGenerator {
 
       // Parse test results
       if (fs.existsSync(path.join(__dirname, '..', 'test-results.json'))) {
-        const results = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'test-results.json'), 'utf8'));
+        const results = JSON.parse(
+          fs.readFileSync(path.join(__dirname, '..', 'test-results.json'), 'utf8')
+        );
         this.parseTestResults(results);
       }
     } catch (error) {
@@ -372,7 +369,10 @@ Version: ${this.reportData.version}
     if (this.reportData.summary.totalTests === 0) {
       return 0;
     }
-    return ((this.reportData.summary.totalPassed / this.reportData.summary.totalTests) * 100).toFixed(2);
+    return (
+      (this.reportData.summary.totalPassed / this.reportData.summary.totalTests) *
+      100
+    ).toFixed(2);
   }
 
   getCoverageStatus(percentage) {
@@ -384,7 +384,7 @@ Version: ${this.reportData.version}
 // Direct execution block
 {
   const generator = new TestReportGenerator();
-  generator.generate().catch(error => {
+  generator.generate().catch((error) => {
     console.error('Error generating report:', error);
     process.exit(1);
   });

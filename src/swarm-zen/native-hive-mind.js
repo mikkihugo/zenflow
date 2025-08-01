@@ -13,9 +13,9 @@
  * ULTRA-PERFORMANCE: 10x faster than MCP-based coordination
  */
 
+import { EventEmitter } from 'events';
 import { RuvSwarm } from './index.js';
 import { UnifiedLancePersistence } from './unified-lance-persistence.js';
-import { EventEmitter } from 'events';
 
 export class NativeHiveMind extends EventEmitter {
   constructor(options = {}) {
@@ -101,11 +101,12 @@ export class NativeHiveMind extends EventEmitter {
       this.initialized = true;
 
       console.log('✅ Native Hive-Mind System initialized successfully');
-      console.log(`🎯 Features: Semantic=${this.options.enableSemanticMemory}, Graph=${this.options.enableGraphRelationships}, Neural=${this.options.enableNeuralLearning}`);
+      console.log(
+        `🎯 Features: Semantic=${this.options.enableSemanticMemory}, Graph=${this.options.enableGraphRelationships}, Neural=${this.options.enableNeuralLearning}`
+      );
 
       // Emit ready event
       this.emit('ready');
-
     } catch (error) {
       console.error('❌ Failed to initialize Native Hive-Mind:', error);
       throw error;
@@ -155,25 +156,30 @@ export class NativeHiveMind extends EventEmitter {
     const swarm = await this.ruvSwarm.createSwarm(swarmConfig);
 
     // Store in unified persistence with relationships
-    await this.unifiedPersistence.storeEntity('swarm', swarm.id, {
-      name: swarmConfig.name,
-      topology: swarmConfig.topology,
-      maxAgents: swarmConfig.maxAgents,
-      strategy: swarmConfig.strategy,
-      status: 'active',
-      content: `Swarm ${swarmConfig.name} with ${swarmConfig.topology} topology for ${swarmConfig.maxAgents} agents`,
-      description: `Intelligent coordination system using ${swarmConfig.strategy} strategy`,
-    }, {
-      namespace: 'hive-mind',
-      relationships: [
-        {
-          toEntityType: 'system',
-          toEntityId: 'hive-mind-core',
-          relationshipType: 'belongs_to',
-          strength: 1.0,
-        },
-      ],
-    });
+    await this.unifiedPersistence.storeEntity(
+      'swarm',
+      swarm.id,
+      {
+        name: swarmConfig.name,
+        topology: swarmConfig.topology,
+        maxAgents: swarmConfig.maxAgents,
+        strategy: swarmConfig.strategy,
+        status: 'active',
+        content: `Swarm ${swarmConfig.name} with ${swarmConfig.topology} topology for ${swarmConfig.maxAgents} agents`,
+        description: `Intelligent coordination system using ${swarmConfig.strategy} strategy`,
+      },
+      {
+        namespace: 'hive-mind',
+        relationships: [
+          {
+            toEntityType: 'system',
+            toEntityId: 'hive-mind-core',
+            relationshipType: 'belongs_to',
+            strength: 1.0,
+          },
+        ],
+      }
+    );
 
     // Emit native event (no MCP needed)
     this.emit('swarm:created', { swarm, config: swarmConfig });
@@ -227,33 +233,38 @@ export class NativeHiveMind extends EventEmitter {
     });
 
     // Store in unified persistence with rich relationships
-    await this.unifiedPersistence.storeEntity('agent', agent.id, {
-      name: agentConfig.name,
-      type: agentConfig.type,
-      swarmId: swarm.id,
-      capabilities: agentConfig.capabilities,
-      cognitivePattern: agentConfig.cognitivePattern,
-      status: 'idle',
-      content: `${agentConfig.type} agent specialized in ${agentConfig.capabilities.join(', ')}`,
-      description: `Intelligent agent with ${agentConfig.cognitivePattern} cognitive pattern`,
-    }, {
-      namespace: 'hive-mind',
-      relationships: [
-        {
-          toEntityType: 'swarm',
-          toEntityId: swarm.id,
-          relationshipType: 'member_of',
-          strength: 1.0,
-        },
-        // Create capability relationships
-        ...agentConfig.capabilities.map(capability => ({
-          toEntityType: 'capability',
-          toEntityId: capability,
-          relationshipType: 'has_capability',
-          strength: 0.8,
-        })),
-      ],
-    });
+    await this.unifiedPersistence.storeEntity(
+      'agent',
+      agent.id,
+      {
+        name: agentConfig.name,
+        type: agentConfig.type,
+        swarmId: swarm.id,
+        capabilities: agentConfig.capabilities,
+        cognitivePattern: agentConfig.cognitivePattern,
+        status: 'idle',
+        content: `${agentConfig.type} agent specialized in ${agentConfig.capabilities.join(', ')}`,
+        description: `Intelligent agent with ${agentConfig.cognitivePattern} cognitive pattern`,
+      },
+      {
+        namespace: 'hive-mind',
+        relationships: [
+          {
+            toEntityType: 'swarm',
+            toEntityId: swarm.id,
+            relationshipType: 'member_of',
+            strength: 1.0,
+          },
+          // Create capability relationships
+          ...agentConfig.capabilities.map((capability) => ({
+            toEntityType: 'capability',
+            toEntityId: capability,
+            relationshipType: 'has_capability',
+            strength: 0.8,
+          })),
+        ],
+      }
+    );
 
     // Add to global agents
     this.globalAgents.set(agent.id, {
@@ -314,33 +325,38 @@ export class NativeHiveMind extends EventEmitter {
     });
 
     // Store in unified persistence with semantic content
-    await this.unifiedPersistence.storeEntity('task', task.id, {
-      description: taskConfig.task,
-      priority: taskConfig.priority,
-      strategy: taskConfig.strategy,
-      swarmId: selectedSwarm.id,
-      assigned_agents: task.assignedAgents || [],
-      status: 'orchestrated',
-      content: taskConfig.task,
-      estimatedDuration: taskConfig.estimatedDuration,
-    }, {
-      namespace: 'hive-mind',
-      relationships: [
-        {
-          toEntityType: 'swarm',
-          toEntityId: selectedSwarm.id,
-          relationshipType: 'orchestrated_by',
-          strength: 1.0,
-        },
-        // Create relationships with assigned agents
-        ...(task.assignedAgents || []).map(agentId => ({
-          toEntityType: 'agent',
-          toEntityId: agentId,
-          relationshipType: 'assigned_to',
-          strength: 0.9,
-        })),
-      ],
-    });
+    await this.unifiedPersistence.storeEntity(
+      'task',
+      task.id,
+      {
+        description: taskConfig.task,
+        priority: taskConfig.priority,
+        strategy: taskConfig.strategy,
+        swarmId: selectedSwarm.id,
+        assigned_agents: task.assignedAgents || [],
+        status: 'orchestrated',
+        content: taskConfig.task,
+        estimatedDuration: taskConfig.estimatedDuration,
+      },
+      {
+        namespace: 'hive-mind',
+        relationships: [
+          {
+            toEntityType: 'swarm',
+            toEntityId: selectedSwarm.id,
+            relationshipType: 'orchestrated_by',
+            strength: 1.0,
+          },
+          // Create relationships with assigned agents
+          ...(task.assignedAgents || []).map((agentId) => ({
+            toEntityType: 'agent',
+            toEntityId: agentId,
+            relationshipType: 'assigned_to',
+            strength: 0.9,
+          })),
+        ],
+      }
+    );
 
     // Learn from orchestration pattern
     if (this.options.enableNeuralLearning) {
@@ -421,19 +437,22 @@ export class NativeHiveMind extends EventEmitter {
     console.log(`🔍 NATIVE: Semantic search for: "${query}"...`);
 
     // Perform hybrid search using unified persistence
-    const results = await this.unifiedPersistence.hybridQuery({
-      semantic: query,
-      relational: {
-        entityType: options.entityType || 'agents',
-        filters: options.filters || {},
-        orderBy: options.orderBy,
+    const results = await this.unifiedPersistence.hybridQuery(
+      {
+        semantic: query,
+        relational: {
+          entityType: options.entityType || 'agents',
+          filters: options.filters || {},
+          orderBy: options.orderBy,
+        },
+        graph: {
+          startEntity: options.startEntity,
+          relationshipTypes: options.relationshipTypes || [],
+          maxDepth: searchOptions.maxDepth,
+        },
       },
-      graph: {
-        startEntity: options.startEntity,
-        relationshipTypes: options.relationshipTypes || [],
-        maxDepth: searchOptions.maxDepth,
-      },
-    }, searchOptions);
+      searchOptions
+    );
 
     return {
       success: true,
@@ -466,19 +485,21 @@ export class NativeHiveMind extends EventEmitter {
         outcome,
         timestamp: Date.now(),
       },
-      success ? 1.0 : 0.0,
+      success ? 1.0 : 0.0
     );
 
     // Update pattern success rate
     await this.unifiedPersistence.updateNeuralPatternSuccess(
       'coordination',
       `${operation}_${context.agentType || 'general'}`,
-      success,
+      success
     );
 
     this.hiveMindState.neuralPatternsLearned++;
 
-    console.log(`🧠 NATIVE: Learned from coordination: ${operation} -> ${success ? 'SUCCESS' : 'FAILURE'}`);
+    console.log(
+      `🧠 NATIVE: Learned from coordination: ${operation} -> ${success ? 'SUCCESS' : 'FAILURE'}`
+    );
   }
 
   /**
@@ -487,21 +508,21 @@ export class NativeHiveMind extends EventEmitter {
   async formRelationship(fromEntity, toEntity, relationshipType, strength = 1.0, metadata = {}) {
     if (!this.options.enableGraphRelationships) return;
 
-    await this.unifiedPersistence.createRelationships(
-      fromEntity.type,
-      fromEntity.id,
-      [{
+    await this.unifiedPersistence.createRelationships(fromEntity.type, fromEntity.id, [
+      {
         toEntityType: toEntity.type,
         toEntityId: toEntity.id,
         relationshipType,
         strength,
         metadata,
-      }],
-    );
+      },
+    ]);
 
     this.hiveMindState.relationshipsFormed++;
 
-    console.log(`🔗 NATIVE: Formed relationship: ${fromEntity.type}:${fromEntity.id} -[${relationshipType}]-> ${toEntity.type}:${toEntity.id}`);
+    console.log(
+      `🔗 NATIVE: Formed relationship: ${fromEntity.type}:${fromEntity.id} -[${relationshipType}]-> ${toEntity.type}:${toEntity.id}`
+    );
   }
 
   // ADVANCED COORDINATION METHODS
@@ -528,11 +549,17 @@ export class NativeHiveMind extends EventEmitter {
 
       // Capability match (if we have agent data)
       const agents = Array.from(swarm.agents.values());
-      const capabilityMatch = this.calculateCapabilityMatch(agents, taskConfig.requiredCapabilities);
+      const capabilityMatch = this.calculateCapabilityMatch(
+        agents,
+        taskConfig.requiredCapabilities
+      );
       score += capabilityMatch * 0.5;
 
       // Topology suitability
-      const topologyScore = this.calculateTopologyScore(swarm.wasmSwarm.config?.topology_type, taskConfig);
+      const topologyScore = this.calculateTopologyScore(
+        swarm.wasmSwarm.config?.topology_type,
+        taskConfig
+      );
       score += topologyScore * 0.2;
 
       if (score > bestScore) {
@@ -552,8 +579,8 @@ export class NativeHiveMind extends EventEmitter {
 
     for (const agent of agents) {
       if (agent.capabilities && agent.capabilities.length > 0) {
-        const matches = requiredCapabilities.filter(cap =>
-          agent.capabilities.includes(cap),
+        const matches = requiredCapabilities.filter((cap) =>
+          agent.capabilities.includes(cap)
         ).length;
         totalMatch += matches / requiredCapabilities.length;
         agentCount++;
@@ -566,27 +593,27 @@ export class NativeHiveMind extends EventEmitter {
   calculateTopologyScore(topology, taskConfig) {
     // Different topologies are better for different task types
     const topologyScores = {
-      'hierarchical': {
-        'planning': 0.9,
-        'coordination': 0.8,
-        'analysis': 0.7,
-        'execution': 0.6,
+      hierarchical: {
+        planning: 0.9,
+        coordination: 0.8,
+        analysis: 0.7,
+        execution: 0.6,
       },
-      'mesh': {
-        'brainstorming': 0.9,
-        'research': 0.8,
-        'collaboration': 0.8,
-        'exploration': 0.7,
+      mesh: {
+        brainstorming: 0.9,
+        research: 0.8,
+        collaboration: 0.8,
+        exploration: 0.7,
       },
-      'ring': {
-        'sequential': 0.9,
-        'pipeline': 0.8,
-        'workflow': 0.7,
+      ring: {
+        sequential: 0.9,
+        pipeline: 0.8,
+        workflow: 0.7,
       },
-      'star': {
-        'centralized': 0.9,
-        'reporting': 0.8,
-        'control': 0.7,
+      star: {
+        centralized: 0.9,
+        reporting: 0.8,
+        control: 0.7,
       },
     };
 
@@ -598,18 +625,18 @@ export class NativeHiveMind extends EventEmitter {
 
   inferTaskType(taskDescription) {
     const keywords = {
-      'planning': ['plan', 'design', 'architect', 'strategy'],
-      'research': ['research', 'analyze', 'study', 'investigate'],
-      'brainstorming': ['brainstorm', 'ideate', 'creative', 'explore'],
-      'coordination': ['coordinate', 'manage', 'organize', 'orchestrate'],
-      'execution': ['implement', 'build', 'create', 'develop'],
-      'analysis': ['analyze', 'evaluate', 'assess', 'review'],
+      planning: ['plan', 'design', 'architect', 'strategy'],
+      research: ['research', 'analyze', 'study', 'investigate'],
+      brainstorming: ['brainstorm', 'ideate', 'creative', 'explore'],
+      coordination: ['coordinate', 'manage', 'organize', 'orchestrate'],
+      execution: ['implement', 'build', 'create', 'develop'],
+      analysis: ['analyze', 'evaluate', 'assess', 'review'],
     };
 
     const lowerTask = taskDescription.toLowerCase();
 
     for (const [type, words] of Object.entries(keywords)) {
-      if (words.some(word => lowerTask.includes(word))) {
+      if (words.some((word) => lowerTask.includes(word))) {
         return type;
       }
     }
@@ -630,7 +657,7 @@ export class NativeHiveMind extends EventEmitter {
       'orchestration',
       `${pattern.taskType}_${pattern.swarmTopology}`,
       pattern,
-      0.8, // Initial success rate assumption
+      0.8 // Initial success rate assumption
     );
   }
 
@@ -650,7 +677,7 @@ export class NativeHiveMind extends EventEmitter {
         { type: 'agent', id: agentData.agent.id },
         { type: 'capability', id: capability },
         'has_capability',
-        0.8,
+        0.8
       );
     }
   }
@@ -675,17 +702,22 @@ export class NativeHiveMind extends EventEmitter {
     console.log(`🧠 Hive-Mind: Coordination decision - ${decisionData.operation}`);
 
     // Store coordination decision in unified memory
-    await this.unifiedPersistence.storeEntity('decision', decisionData.id, {
-      operation: decisionData.operation,
-      context: decisionData.context,
-      decision: decisionData.decision,
-      reasoning: decisionData.reasoning,
-      content: `Decision: ${decisionData.decision} for ${decisionData.operation}`,
-      timestamp: decisionData.timestamp,
-    }, {
-      namespace: 'coordination',
-      relationships: decisionData.relatedEntities || [],
-    });
+    await this.unifiedPersistence.storeEntity(
+      'decision',
+      decisionData.id,
+      {
+        operation: decisionData.operation,
+        context: decisionData.context,
+        decision: decisionData.decision,
+        reasoning: decisionData.reasoning,
+        content: `Decision: ${decisionData.decision} for ${decisionData.operation}`,
+        timestamp: decisionData.timestamp,
+      },
+      {
+        namespace: 'coordination',
+        relationships: decisionData.relatedEntities || [],
+      }
+    );
   }
 
   // UTILITY METHODS

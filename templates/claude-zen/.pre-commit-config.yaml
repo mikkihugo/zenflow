@@ -1,0 +1,50 @@
+# Pre-commit hooks for document-driven development
+# Ensures quality and consistency of documentation
+
+repos:
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.37.0
+    hooks:
+      - id: markdownlint
+        name: Lint markdown documents
+        files: '^docs/.*\.md$'
+        args: ['--config', '.markdownlint.yml']
+
+  # Document validation
+  - repo: local
+    hooks:
+      - id: validate-docs
+        name: Validate document structure and versioning
+        entry: node scripts/validate-docs.js
+        language: node
+        files: '^docs/.*\.md$'
+        pass_filenames: false
+        
+      - id: check-version-consistency
+        name: Check document version consistency
+        entry: node scripts/check-versions.js
+        language: node
+        files: '^docs/.*\.md$'
+        pass_filenames: false
+
+  # General quality checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+        files: '^docs/.*\.md$'
+      - id: end-of-file-fixer
+        files: '^docs/.*\.md$'
+      - id: check-merge-conflict
+      - id: check-yaml
+        files: '\.(yml|yaml)$'
+      - id: check-json
+        files: '\.json$'
+        
+  # Spell checking (optional - commented out by default)
+  # - repo: https://github.com/crate-ci/typos
+  #   rev: v1.16.23
+  #   hooks:
+  #     - id: typos
+  #       files: '^docs/.*\.md$'

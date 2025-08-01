@@ -103,7 +103,9 @@ export class DAACognition {
     // Initialize in distributed memory
     this.initializeDistributedMemory(agentId);
 
-    console.log(`Initialized DAA cognitive agent ${agentId} with autonomy level ${daaAgent.autonomyLevel}`);
+    console.log(
+      `Initialized DAA cognitive agent ${agentId} with autonomy level ${daaAgent.autonomyLevel}`
+    );
 
     return daaAgent;
   }
@@ -124,7 +126,6 @@ export class DAACognition {
       return this.daaPatterns.swarm_cognition;
     }
     return this.daaPatterns.decentralized_learning;
-
   }
 
   /**
@@ -249,9 +250,8 @@ export class DAACognition {
   isRelevantToDecision(key, value, decision) {
     // Simple relevance check based on keywords
     const decisionKeywords = decision.context?.keywords || [];
-    return decisionKeywords.some(keyword =>
-      key.includes(keyword) ||
-      (typeof value === 'string' && value.includes(keyword)),
+    return decisionKeywords.some(
+      (keyword) => key.includes(keyword) || (typeof value === 'string' && value.includes(keyword))
     );
   }
 
@@ -261,7 +261,7 @@ export class DAACognition {
    * @param {Object} decision - Current decision
    */
   findSimilarDecisions(agent, decision) {
-    return agent.consensusState.decisions.filter(pastDecision => {
+    return agent.consensusState.decisions.filter((pastDecision) => {
       // Simple similarity based on decision type
       return pastDecision.decision === decision.type;
     });
@@ -276,7 +276,7 @@ export class DAACognition {
       return 0.5;
     }
 
-    const successfulDecisions = decisions.filter(d => d.outcome === 'success').length;
+    const successfulDecisions = decisions.filter((d) => d.outcome === 'success').length;
     return successfulDecisions / decisions.length;
   }
 
@@ -326,7 +326,10 @@ export class DAACognition {
       agentId,
       decision: consensusResult.approved ? 'approve' : 'reject',
       confidence: consensusResult.consensusLevel,
-      reasoning: [...localEvaluation.reasoning, `Consensus level: ${(consensusResult.consensusLevel * 100).toFixed(1)}%`],
+      reasoning: [
+        ...localEvaluation.reasoning,
+        `Consensus level: ${(consensusResult.consensusLevel * 100).toFixed(1)}%`,
+      ],
       timestamp: Date.now(),
       autonomous: false,
       proposalId: proposal.id,
@@ -462,7 +465,7 @@ export class DAACognition {
 
     agent.learningState.sharedKnowledge.set(
       `peer_decision_${message.decision.timestamp}`,
-      peerDecision,
+      peerDecision
     );
   }
 
@@ -546,8 +549,8 @@ export class DAACognition {
     }
 
     // Look for sequences
-    const isSequential = samples.every((sample, idx) =>
-      idx === 0 || this.isSequentialWith(samples[idx - 1], sample),
+    const isSequential = samples.every(
+      (sample, idx) => idx === 0 || this.isSequentialWith(samples[idx - 1], sample)
     );
 
     if (isSequential) {
@@ -582,8 +585,8 @@ export class DAACognition {
     const insights = [];
 
     // Generate insights based on pattern combinations
-    const hasSequential = patterns.some(p => p.type === 'sequential');
-    const hasFrequency = patterns.some(p => p.type === 'frequency');
+    const hasSequential = patterns.some((p) => p.type === 'sequential');
+    const hasFrequency = patterns.some((p) => p.type === 'frequency');
 
     if (hasSequential && hasFrequency) {
       insights.push({
@@ -663,7 +666,7 @@ export class DAACognition {
 
     agent.learningState.sharedKnowledge.set(
       `shared_${message.from}_${message.learning.timestamp}`,
-      sharedKnowledge,
+      sharedKnowledge
     );
 
     // Check for emergent patterns
@@ -690,7 +693,7 @@ export class DAACognition {
     // Collect all shared knowledge
     for (const [_key, knowledge] of agent.learningState.sharedKnowledge) {
       if (knowledge.patterns) {
-        knowledge.patterns.forEach(pattern => {
+        knowledge.patterns.forEach((pattern) => {
           const patternKey = `${pattern.type}_${pattern.description}`;
           if (!aggregated.patterns.has(patternKey)) {
             aggregated.patterns.set(patternKey, {
@@ -710,7 +713,7 @@ export class DAACognition {
     // Calculate consensus level
     const totalPeers = agent.peerConnections.size;
     if (totalPeers > 0) {
-      aggregated.patterns.forEach(pattern => {
+      aggregated.patterns.forEach((pattern) => {
         pattern.consensusLevel = pattern.sources.length / totalPeers;
       });
     }
@@ -748,7 +751,7 @@ export class DAACognition {
    */
   deduplicateInsights(insights) {
     const seen = new Set();
-    return insights.filter(insight => {
+    return insights.filter((insight) => {
       const key = `${insight.type}_${insight.description}`;
       if (seen.has(key)) {
         return false;
@@ -788,7 +791,7 @@ export class DAACognition {
     const collectivePatterns = this.analyzeCollectivePatterns();
 
     // Check for emergence criteria
-    collectivePatterns.forEach(pattern => {
+    collectivePatterns.forEach((pattern) => {
       if (pattern.occurrence > 0.7 && pattern.diversity > 0.5) {
         const emergentBehavior = {
           type: 'pattern_emergence',
@@ -892,13 +895,10 @@ export class DAACognition {
     agent.emergentTraits.add(message.behavior.type);
 
     // Store in local memory for future reference
-    agent.localMemory.set(
-      `emergent_${message.behavior.type}_${Date.now()}`,
-      {
-        ...message.behavior,
-        reportedBy: message.from,
-      },
-    );
+    agent.localMemory.set(`emergent_${message.behavior.type}_${Date.now()}`, {
+      ...message.behavior,
+      reportedBy: message.from,
+    });
   }
 
   /**
@@ -921,10 +921,11 @@ export class DAACognition {
       stats.autonomyLevels[level] = (stats.autonomyLevels[level] || 0) + 1;
 
       // Knowledge statistics
-      stats.distributedKnowledge += agent.localMemory.size + agent.learningState.sharedKnowledge.size;
+      stats.distributedKnowledge +=
+        agent.localMemory.size + agent.learningState.sharedKnowledge.size;
 
       // Decision statistics
-      agent.consensusState.decisions.forEach(decision => {
+      agent.consensusState.decisions.forEach((decision) => {
         if (decision.autonomous) {
           stats.autonomousDecisions++;
         } else {
@@ -934,11 +935,13 @@ export class DAACognition {
     }
 
     // Average metrics
-    stats.avgKnowledgePerAgent = stats.totalAgents > 0 ?
-      stats.distributedKnowledge / stats.totalAgents : 0;
+    stats.avgKnowledgePerAgent =
+      stats.totalAgents > 0 ? stats.distributedKnowledge / stats.totalAgents : 0;
 
-    stats.autonomyRate = (stats.autonomousDecisions + stats.consensusDecisions) > 0 ?
-      stats.autonomousDecisions / (stats.autonomousDecisions + stats.consensusDecisions) : 0;
+    stats.autonomyRate =
+      stats.autonomousDecisions + stats.consensusDecisions > 0
+        ? stats.autonomousDecisions / (stats.autonomousDecisions + stats.consensusDecisions)
+        : 0;
 
     return stats;
   }

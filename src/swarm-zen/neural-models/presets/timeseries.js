@@ -359,7 +359,9 @@ export const timeSeriesPresets = {
 // Export utility function to get preset by name
 export const getTimeSeriesPreset = (presetName) => {
   if (!timeSeriesPresets[presetName]) {
-    throw new Error(`Time series preset '${presetName}' not found. Available presets: ${Object.keys(timeSeriesPresets).join(', ')}`);
+    throw new Error(
+      `Time series preset '${presetName}' not found. Available presets: ${Object.keys(timeSeriesPresets).join(', ')}`
+    );
   }
   return timeSeriesPresets[presetName];
 };

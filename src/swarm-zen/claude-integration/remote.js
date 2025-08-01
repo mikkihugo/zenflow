@@ -13,8 +13,8 @@ class RemoteWrapperGenerator {
   }
 
   /**
-     * Generate bash wrapper script for Unix-like systems
-     */
+   * Generate bash wrapper script for Unix-like systems
+   */
   generateBashWrapper() {
     return `#!/usr/bin/env bash
 # ${this.packageName} local wrapper
@@ -63,8 +63,8 @@ find_and_execute "\$@"
   }
 
   /**
-     * Generate Windows batch wrapper script
-     */
+   * Generate Windows batch wrapper script
+   */
   generateBatchWrapper() {
     return `@echo off
 REM ${this.packageName} local wrapper (Windows)
@@ -113,8 +113,8 @@ goto :eof
   }
 
   /**
-     * Generate PowerShell wrapper script
-     */
+   * Generate PowerShell wrapper script
+   */
   generatePowerShellWrapper() {
     return `#!/usr/bin/env pwsh
 # ${this.packageName} local wrapper (PowerShell)
@@ -176,8 +176,8 @@ Find-And-Execute $Arguments
   }
 
   /**
-     * Generate Claude helper scripts
-     */
+   * Generate Claude helper scripts
+   */
   generateClaudeHelpers() {
     const bashHelper = `#!/usr/bin/env bash
 # Claude Code Direct Swarm Invocation Helper
@@ -299,8 +299,8 @@ if "%1"=="research" (
   }
 
   /**
-     * Create all wrapper scripts
-     */
+   * Create all wrapper scripts
+   */
   async createWrappers() {
     console.log('🔧 Creating remote wrapper scripts...');
 
@@ -331,9 +331,8 @@ if "%1"=="research" (
         createdFiles.push(script.name);
       }
 
-      console.log(`✅ Created wrapper scripts: ${ createdFiles.join(', ')}`);
+      console.log(`✅ Created wrapper scripts: ${createdFiles.join(', ')}`);
       return { files: createdFiles, success: true };
-
     } catch (error) {
       console.error('❌ Failed to create wrapper scripts:', error.message);
       throw error;
@@ -341,8 +340,8 @@ if "%1"=="research" (
   }
 
   /**
-     * Create Claude helper scripts
-     */
+   * Create Claude helper scripts
+   */
   async createClaudeHelpers() {
     console.log('🤖 Creating Claude helper scripts...');
 
@@ -370,9 +369,8 @@ if "%1"=="research" (
         createdFiles.push(script.name);
       }
 
-      console.log(`✅ Created Claude helper scripts: ${ createdFiles.join(', ')}`);
+      console.log(`✅ Created Claude helper scripts: ${createdFiles.join(', ')}`);
       return { files: createdFiles, success: true };
-
     } catch (error) {
       console.error('❌ Failed to create Claude helper scripts:', error.message);
       throw error;
@@ -380,8 +378,8 @@ if "%1"=="research" (
   }
 
   /**
-     * Create all remote scripts
-     */
+   * Create all remote scripts
+   */
   async createAll() {
     console.log('🌐 Setting up remote execution capabilities...');
 

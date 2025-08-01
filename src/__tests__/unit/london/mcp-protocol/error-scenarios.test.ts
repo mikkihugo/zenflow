@@ -1,6 +1,6 @@
 /**
  * MCP Error Scenarios - TDD London Style
- * 
+ *
  * Tests error handling scenarios using London School principles:
  * - Mock error conditions and failure modes
  * - Test error propagation and recovery mechanisms
@@ -8,13 +8,8 @@
  * - Focus on error handling interactions and contracts
  */
 
-import { jest, describe, it, expect, beforeEach, afterEach } from '@jest/globals';
-import type {
-  MCPRequest,
-  MCPResponse,
-  MCPError,
-  MCPContext
-} from '../../../../utils/types';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import type { MCPContext, MCPError, MCPRequest, MCPResponse } from '../../../../utils/types';
 
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 
@@ -23,41 +18,41 @@ const mockErrorHandler = {
   createErrorResponse: jest.fn(),
   logError: jest.fn(),
   shouldRetry: jest.fn(),
-  handleRecovery: jest.fn()
+  handleRecovery: jest.fn(),
 };
 
 const mockCircuitBreaker = {
   isOpen: jest.fn(),
   recordSuccess: jest.fn(),
   recordFailure: jest.fn(),
-  getState: jest.fn()
+  getState: jest.fn(),
 };
 
 const mockRetryManager = {
   shouldRetry: jest.fn(),
   getRetryDelay: jest.fn(),
   recordAttempt: jest.fn(),
-  resetRetries: jest.fn()
+  resetRetries: jest.fn(),
 };
 
 const mockLogger = {
   debug: jest.fn(),
   info: jest.fn(),
   warn: jest.fn(),
-  error: jest.fn()
+  error: jest.fn(),
 };
 
 const mockMetricsCollector = {
   recordError: jest.fn(),
   recordRetry: jest.fn(),
   recordCircuitBreakerTrip: jest.fn(),
-  incrementErrorCounter: jest.fn()
+  incrementErrorCounter: jest.fn(),
 };
 
 const mockAlertManager = {
   sendAlert: jest.fn(),
   isAlertThresholdReached: jest.fn(),
-  recordErrorOccurrence: jest.fn()
+  recordErrorOccurrence: jest.fn(),
 };
 
 // === CONTRACT INTERFACES ===
@@ -107,11 +102,11 @@ class MockMCPErrorHandler implements ErrorHandlerContract {
   ) {}
 
   async handleError(error: Error, context: ErrorContext): Promise<MCPResponse> {
-    this.logger.error('Handling MCP error', { 
-      error: error.message, 
+    this.logger.error('Handling MCP error', {
+      error: error.message,
       requestId: context.requestId,
       method: context.method,
-      attempt: context.attemptNumber 
+      attempt: context.attemptNumber,
     });
 
     // Classify the error
@@ -120,15 +115,15 @@ class MockMCPErrorHandler implements ErrorHandlerContract {
 
     // Check circuit breaker
     if (this.circuitBreaker.isOpen()) {
-      this.logger.warn('Circuit breaker is open, failing fast', { 
-        requestId: context.requestId 
+      this.logger.warn('Circuit breaker is open, failing fast', {
+        requestId: context.requestId,
       });
       return this.createCircuitBreakerErrorResponse(context);
     }
 
     // Create recovery plan
     const recoveryPlan = this.createRecoveryPlan(error, context);
-    
+
     // Check if we should alert
     if (recoveryPlan.alertRequired) {
       this.alertManager.recordErrorOccurrence(classification.type);
@@ -136,7 +131,7 @@ class MockMCPErrorHandler implements ErrorHandlerContract {
         this.alertManager.sendAlert({
           type: classification.type,
           severity: classification.severity,
-          context: context
+          context: context,
         });
       }
     }
@@ -156,35 +151,35 @@ class MockMCPErrorHandler implements ErrorHandlerContract {
 
   createRecoveryPlan(error: Error, context: ErrorContext): RecoveryPlan {
     const classification = this.classifyError(error);
-    
+
     switch (classification.type) {
       case 'timeout':
         return {
           strategy: 'retry',
           maxAttempts: 3,
           backoffMs: 1000,
-          alertRequired: classification.severity === 'high'
+          alertRequired: classification.severity === 'high',
         };
       case 'resource':
         return {
           strategy: 'circuit-break',
           maxAttempts: 1,
           backoffMs: 0,
-          alertRequired: true
+          alertRequired: true,
         };
       case 'network':
         return {
           strategy: 'retry',
           maxAttempts: 5,
           backoffMs: 2000,
-          alertRequired: classification.severity !== 'low'
+          alertRequired: classification.severity !== 'low',
         };
       default:
         return {
           strategy: 'escalate',
           maxAttempts: 1,
           backoffMs: 0,
-          alertRequired: classification.severity === 'critical'
+          alertRequired: classification.severity === 'critical',
         };
     }
   }
@@ -204,25 +199,25 @@ class MockMCPErrorHandler implements ErrorHandlerContract {
   }
 
   private async attemptRecovery(
-    error: Error, 
-    context: ErrorContext, 
+    error: Error,
+    context: ErrorContext,
     plan: RecoveryPlan
   ): Promise<MCPResponse> {
-    this.logger.info('Attempting error recovery', { 
+    this.logger.info('Attempting error recovery', {
       strategy: plan.strategy,
       attempt: context.attemptNumber,
-      requestId: context.requestId 
+      requestId: context.requestId,
     });
 
     const recoverySuccessful = await this.executeRecovery(plan);
-    
+
     if (recoverySuccessful) {
       this.metrics.recordRetry(context.method, context.attemptNumber);
       // In real implementation, would re-execute the original request
       return {
         jsonrpc: '2.0',
         id: context.requestId,
-        result: { recovered: true, strategy: plan.strategy }
+        result: { recovered: true, strategy: plan.strategy },
       };
     }
 
@@ -237,17 +232,17 @@ class MockMCPErrorHandler implements ErrorHandlerContract {
       error: {
         code: -32000,
         message: 'Service temporarily unavailable',
-        data: { 
+        data: {
           reason: 'circuit_breaker_open',
-          retryAfter: 30000 
-        }
-      }
+          retryAfter: 30000,
+        },
+      },
     };
   }
 
   private createFinalErrorResponse(
-    error: Error, 
-    context: ErrorContext, 
+    error: Error,
+    context: ErrorContext,
     classification: ErrorClassification
   ): MCPResponse {
     return this.errorHandler.createErrorResponse(context.requestId, {
@@ -258,16 +253,14 @@ class MockMCPErrorHandler implements ErrorHandlerContract {
         severity: classification.severity,
         requestId: context.requestId,
         method: context.method,
-        attempts: context.attemptNumber
-      }
+        attempts: context.attemptNumber,
+      },
     });
   }
 }
 
 describe('MCP Error Scenarios - London TDD', () => {
-  
   describe('🎯 Acceptance Tests - Error Classification', () => {
-    
     describe('User Story: Classify Different Error Types', () => {
       it('should classify validation errors correctly', async () => {
         // Arrange - Mock validation error classification
@@ -278,11 +271,11 @@ describe('MCP Error Scenarios - London TDD', () => {
           recoverable: false,
           retryable: false,
           code: -32602,
-          category: 'client_error'
+          category: 'client_error',
         });
 
         const errorHandler = new MockMCPErrorHandler();
-        
+
         // Act - Classify validation error
         const classification = errorHandler.classifyError(validationError);
 
@@ -304,11 +297,11 @@ describe('MCP Error Scenarios - London TDD', () => {
           recoverable: true,
           retryable: true,
           code: -32000,
-          category: 'server_error'
+          category: 'server_error',
         });
 
         const errorHandler = new MockMCPErrorHandler();
-        
+
         // Act - Classify timeout error
         const classification = errorHandler.classifyError(timeoutError);
 
@@ -329,11 +322,11 @@ describe('MCP Error Scenarios - London TDD', () => {
           recoverable: true,
           retryable: false,
           code: -32001,
-          category: 'server_error'
+          category: 'server_error',
         });
 
         const errorHandler = new MockMCPErrorHandler();
-        
+
         // Act - Classify resource error
         const classification = errorHandler.classifyError(resourceError);
 
@@ -348,7 +341,6 @@ describe('MCP Error Scenarios - London TDD', () => {
   });
 
   describe('🔄 Acceptance Tests - Error Recovery', () => {
-    
     describe('User Story: Retry Transient Errors', () => {
       it('should retry timeout errors with exponential backoff', async () => {
         // Arrange - Mock timeout error retry scenario
@@ -359,14 +351,14 @@ describe('MCP Error Scenarios - London TDD', () => {
           recoverable: true,
           retryable: true,
           code: -32000,
-          category: 'server_error'
+          category: 'server_error',
         });
         mockCircuitBreaker.isOpen.mockReturnValue(false);
         mockRetryManager.shouldRetry.mockReturnValue(true);
         mockAlertManager.isAlertThresholdReached.mockReturnValue(false);
 
         const errorHandler = new MockMCPErrorHandler();
-        
+
         const errorContext: ErrorContext = {
           requestId: 'retry-test-1',
           method: 'tools/call',
@@ -376,8 +368,8 @@ describe('MCP Error Scenarios - London TDD', () => {
             jsonrpc: '2.0',
             id: 'retry-test-1',
             method: 'tools/call',
-            params: { name: 'test_tool' }
-          }
+            params: { name: 'test_tool' },
+          },
         };
 
         // Act - Handle timeout error
@@ -391,12 +383,12 @@ describe('MCP Error Scenarios - London TDD', () => {
           expect.objectContaining({
             strategy: 'retry',
             attempt: 1,
-            requestId: 'retry-test-1'
+            requestId: 'retry-test-1',
           })
         );
         expect(mockRetryManager.shouldRetry).toHaveBeenCalled();
         expect(mockMetricsCollector.recordRetry).toHaveBeenCalledWith('tools/call', 1);
-        
+
         expect(response.result).toBeDefined();
         expect(response.result.recovered).toBe(true);
         expect(response.result.strategy).toBe('retry');
@@ -411,7 +403,7 @@ describe('MCP Error Scenarios - London TDD', () => {
           recoverable: true,
           retryable: true,
           code: -32003,
-          category: 'network_error'
+          category: 'network_error',
         });
         mockCircuitBreaker.isOpen.mockReturnValue(false);
         mockErrorHandler.createErrorResponse.mockReturnValue({
@@ -425,13 +417,13 @@ describe('MCP Error Scenarios - London TDD', () => {
               severity: 'medium',
               requestId: 'max-retries-1',
               method: 'tools/call',
-              attempts: 5
-            }
-          }
+              attempts: 5,
+            },
+          },
         });
 
         const errorHandler = new MockMCPErrorHandler();
-        
+
         const errorContext: ErrorContext = {
           requestId: 'max-retries-1',
           method: 'tools/call',
@@ -441,8 +433,8 @@ describe('MCP Error Scenarios - London TDD', () => {
             jsonrpc: '2.0',
             id: 'max-retries-1',
             method: 'tools/call',
-            params: { name: 'failing_tool' }
-          }
+            params: { name: 'failing_tool' },
+          },
         };
 
         // Act - Handle error with max retries exceeded
@@ -455,8 +447,8 @@ describe('MCP Error Scenarios - London TDD', () => {
             code: -32003,
             message: 'Persistent failure',
             data: expect.objectContaining({
-              attempts: 5
-            })
+              attempts: 5,
+            }),
           })
         );
         expect(response.error).toBeDefined();
@@ -472,7 +464,7 @@ describe('MCP Error Scenarios - London TDD', () => {
         mockMetricsCollector.recordCircuitBreakerTrip.mockReturnValue(undefined);
 
         const errorHandler = new MockMCPErrorHandler();
-        
+
         const errorContext: ErrorContext = {
           requestId: 'circuit-break-1',
           method: 'tools/call',
@@ -482,8 +474,8 @@ describe('MCP Error Scenarios - London TDD', () => {
             jsonrpc: '2.0',
             id: 'circuit-break-1',
             method: 'tools/call',
-            params: { name: 'unstable_tool' }
-          }
+            params: { name: 'unstable_tool' },
+          },
         };
 
         // Act - Handle error with circuit breaker open
@@ -491,12 +483,11 @@ describe('MCP Error Scenarios - London TDD', () => {
 
         // Assert - Verify circuit breaker fail-fast
         expect(mockCircuitBreaker.isOpen).toHaveBeenCalled();
-        expect(mockLogger.warn).toHaveBeenCalledWith(
-          'Circuit breaker is open, failing fast',
-          { requestId: 'circuit-break-1' }
-        );
+        expect(mockLogger.warn).toHaveBeenCalledWith('Circuit breaker is open, failing fast', {
+          requestId: 'circuit-break-1',
+        });
         expect(mockMetricsCollector.recordCircuitBreakerTrip).toHaveBeenCalled();
-        
+
         expect(response.error).toBeDefined();
         expect(response.error.code).toBe(-32000);
         expect(response.error.message).toBe('Service temporarily unavailable');
@@ -513,7 +504,7 @@ describe('MCP Error Scenarios - London TDD', () => {
           recoverable: true,
           retryable: false,
           code: -32001,
-          category: 'resource_error'
+          category: 'resource_error',
         });
         mockCircuitBreaker.isOpen.mockReturnValue(false);
         mockCircuitBreaker.recordFailure.mockReturnValue(undefined);
@@ -525,13 +516,13 @@ describe('MCP Error Scenarios - London TDD', () => {
             message: 'Database connection failed',
             data: {
               type: 'resource',
-              severity: 'critical'
-            }
-          }
+              severity: 'critical',
+            },
+          },
         });
 
         const errorHandler = new MockMCPErrorHandler();
-        
+
         const errorContext: ErrorContext = {
           requestId: 'resource-fail-1',
           method: 'data/query',
@@ -541,8 +532,8 @@ describe('MCP Error Scenarios - London TDD', () => {
             jsonrpc: '2.0',
             id: 'resource-fail-1',
             method: 'data/query',
-            params: { query: 'SELECT * FROM users' }
-          }
+            params: { query: 'SELECT * FROM users' },
+          },
         };
 
         // Act - Handle resource error
@@ -558,7 +549,6 @@ describe('MCP Error Scenarios - London TDD', () => {
   });
 
   describe('🚨 Acceptance Tests - Alert Management', () => {
-    
     describe('User Story: Error Alerting', () => {
       it('should send alerts for critical errors', async () => {
         // Arrange - Mock critical error alerting
@@ -569,7 +559,7 @@ describe('MCP Error Scenarios - London TDD', () => {
           recoverable: false,
           retryable: false,
           code: -32603,
-          category: 'system_error'
+          category: 'system_error',
         });
         mockCircuitBreaker.isOpen.mockReturnValue(false);
         mockAlertManager.recordErrorOccurrence.mockReturnValue(undefined);
@@ -581,12 +571,12 @@ describe('MCP Error Scenarios - London TDD', () => {
           error: {
             code: -32603,
             message: 'System failure detected',
-            data: { type: 'internal', severity: 'critical' }
-          }
+            data: { type: 'internal', severity: 'critical' },
+          },
         });
 
         const errorHandler = new MockMCPErrorHandler();
-        
+
         const errorContext: ErrorContext = {
           requestId: 'critical-1',
           method: 'system/status',
@@ -596,8 +586,8 @@ describe('MCP Error Scenarios - London TDD', () => {
             jsonrpc: '2.0',
             id: 'critical-1',
             method: 'system/status',
-            params: {}
-          }
+            params: {},
+          },
         };
 
         // Act - Handle critical error
@@ -609,7 +599,7 @@ describe('MCP Error Scenarios - London TDD', () => {
         expect(mockAlertManager.sendAlert).toHaveBeenCalledWith({
           type: 'internal',
           severity: 'critical',
-          context: errorContext
+          context: errorContext,
         });
         expect(response.error.data.severity).toBe('critical');
       });
@@ -623,14 +613,14 @@ describe('MCP Error Scenarios - London TDD', () => {
           recoverable: false,
           retryable: false,
           code: -32602,
-          category: 'client_error'
+          category: 'client_error',
         });
         mockCircuitBreaker.isOpen.mockReturnValue(false);
         mockAlertManager.recordErrorOccurrence.mockReturnValue(undefined);
         mockAlertManager.isAlertThresholdReached.mockReturnValue(false);
 
         const errorHandler = new MockMCPErrorHandler();
-        
+
         const errorContext: ErrorContext = {
           requestId: 'minor-1',
           method: 'tools/validate',
@@ -640,8 +630,8 @@ describe('MCP Error Scenarios - London TDD', () => {
             jsonrpc: '2.0',
             id: 'minor-1',
             method: 'tools/validate',
-            params: { name: '' }
-          }
+            params: { name: '' },
+          },
         };
 
         // Act - Handle minor error
@@ -655,7 +645,6 @@ describe('MCP Error Scenarios - London TDD', () => {
   });
 
   describe('🔗 Contract Verification - Error Response Format', () => {
-    
     describe('Error Response Standards', () => {
       it('should format error responses according to JSON-RPC 2.0 spec', async () => {
         // Arrange - Mock standard error response formatting
@@ -666,7 +655,7 @@ describe('MCP Error Scenarios - London TDD', () => {
           recoverable: false,
           retryable: false,
           code: -32601,
-          category: 'client_error'
+          category: 'client_error',
         });
         mockCircuitBreaker.isOpen.mockReturnValue(false);
         mockErrorHandler.createErrorResponse.mockReturnValue({
@@ -680,13 +669,13 @@ describe('MCP Error Scenarios - London TDD', () => {
               severity: 'medium',
               requestId: 'format-test-1',
               method: 'unknown/method',
-              attempts: 1
-            }
-          }
+              attempts: 1,
+            },
+          },
         });
 
         const errorHandler = new MockMCPErrorHandler();
-        
+
         const errorContext: ErrorContext = {
           requestId: 'format-test-1',
           method: 'unknown/method',
@@ -696,8 +685,8 @@ describe('MCP Error Scenarios - London TDD', () => {
             jsonrpc: '2.0',
             id: 'format-test-1',
             method: 'unknown/method',
-            params: {}
-          }
+            params: {},
+          },
         };
 
         // Act - Handle error for response formatting
@@ -715,7 +704,7 @@ describe('MCP Error Scenarios - London TDD', () => {
             severity: 'medium',
             requestId: 'format-test-1',
             method: 'unknown/method',
-            attempts: 1
+            attempts: 1,
           })
         );
         expect(response.result).toBeUndefined(); // Error responses should not have result
@@ -724,7 +713,6 @@ describe('MCP Error Scenarios - London TDD', () => {
   });
 
   describe('🧪 London School Patterns - Error Interaction Flow', () => {
-    
     it('should demonstrate complete error handling workflow', async () => {
       // Arrange - Mock complete error workflow
       const workflowError = new Error('Complex system error');
@@ -734,7 +722,7 @@ describe('MCP Error Scenarios - London TDD', () => {
         recoverable: true,
         retryable: true,
         code: -32003,
-        category: 'network_error'
+        category: 'network_error',
       });
       mockCircuitBreaker.isOpen.mockReturnValue(false);
       mockRetryManager.shouldRetry.mockReturnValue(false); // Recovery fails
@@ -747,12 +735,12 @@ describe('MCP Error Scenarios - London TDD', () => {
         error: {
           code: -32003,
           message: 'Complex system error',
-          data: { type: 'network', severity: 'high' }
-        }
+          data: { type: 'network', severity: 'high' },
+        },
       });
 
       const errorHandler = new MockMCPErrorHandler();
-      
+
       const errorContext: ErrorContext = {
         requestId: 'workflow-1',
         method: 'complex/operation',
@@ -762,8 +750,8 @@ describe('MCP Error Scenarios - London TDD', () => {
           jsonrpc: '2.0',
           id: 'workflow-1',
           method: 'complex/operation',
-          params: { complex: true }
-        }
+          params: { complex: true },
+        },
       };
 
       // Act - Handle complex error workflow
@@ -776,7 +764,7 @@ describe('MCP Error Scenarios - London TDD', () => {
           error: 'Complex system error',
           requestId: 'workflow-1',
           method: 'complex/operation',
-          attempt: 2
+          attempt: 2,
         })
       );
       expect(mockErrorHandler.classifyError).toHaveBeenCalledWith(workflowError);
@@ -791,7 +779,7 @@ describe('MCP Error Scenarios - London TDD', () => {
       expect(mockAlertManager.isAlertThresholdReached).toHaveBeenCalledWith('network');
       expect(mockAlertManager.sendAlert).toHaveBeenCalled();
       expect(mockErrorHandler.createErrorResponse).toHaveBeenCalled();
-      
+
       expect(response.error).toBeDefined();
       expect(response.error.code).toBe(-32003);
     });
@@ -801,7 +789,7 @@ describe('MCP Error Scenarios - London TDD', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  
+
   afterEach(() => {
     jest.restoreAllMocks();
   });

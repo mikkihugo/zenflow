@@ -1,95 +1,92 @@
 /**
  * CLI Utilities Index
- * 
+ *
  * This module re-exports all CLI utility functions for convenient importing.
  * Provides common utilities for logging, file operations, validation, and formatting.
  */
 
-// Logging utilities
-export {
-  createLogger,
-  LogLevel,
-  type Logger,
-  type LoggerConfig,
-  formatMessage,
-  colorize,
-  Colors,
-} from './logger';
-
 // File system utilities
 export {
-  readFile,
-  writeFile,
-  fileExists,
-  directoryExists,
-  createDirectory,
-  ensureDirectory,
   copyFile,
-  moveFile,
-  deleteFile,
+  createDirectory,
+  type DirectoryListing,
   deleteDirectory,
-  listFiles,
-  listDirectories,
-  getFileStats,
-  isFile,
-  isDirectory,
+  deleteFile,
+  directoryExists,
+  ensureDirectory,
+  type FileStats,
+  fileExists,
+  getDirectoryName,
   getFileExtension,
   getFileName,
-  getDirectoryName,
+  getFileStats,
+  isDirectory,
+  isFile,
   joinPath,
-  resolvePath,
+  listDirectories,
+  listFiles,
+  moveFile,
+  readFile,
   relativePath,
-  type FileStats,
-  type DirectoryListing,
+  resolvePath,
+  writeFile,
 } from './file-system';
-
-// Validation utilities
-export {
-  validateRequired,
-  validateString,
-  validateNumber,
-  validateBoolean,
-  validateArray,
-  validateObject,
-  validateUrl,
-  validateEmail,
-  validateFilePath,
-  validateDirectoryPath,
-  validatePort,
-  validateVersion,
-  validateUuid,
-  isValidJson,
-  parseJson,
-  validateJsonSchema,
-  type ValidationRule,
-  type ValidationContext,
-  type ValidatorFunction,
-} from './validation';
-
 // Formatting utilities
 export {
-  formatTable,
-  formatList,
-  formatJson,
-  formatYaml,
-  formatMarkdown,
-  formatProgress,
-  formatDuration,
+  alignText,
+  type FormattingOptions,
   formatBytes,
   formatDate,
+  formatDuration,
+  formatJson,
+  formatList,
+  formatMarkdown,
+  formatProgress,
   formatRelativeTime,
-  truncateText,
-  padText,
-  wrapText,
-  alignText,
-  stripAnsi,
+  formatTable,
+  formatYaml,
   getTerminalWidth,
-  type TableOptions,
   type ListOptions,
   type ProgressOptions,
-  type FormattingOptions,
+  padText,
+  stripAnsi,
+  type TableOptions,
   type TextAlignment,
+  truncateText,
+  wrapText,
 } from './formatting';
+// Logging utilities
+export {
+  Colors,
+  colorize,
+  createLogger,
+  formatMessage,
+  type Logger,
+  type LoggerConfig,
+  LogLevel,
+} from './logger';
+// Validation utilities
+export {
+  isValidJson,
+  parseJson,
+  type ValidationContext,
+  type ValidationRule,
+  type ValidatorFunction,
+  validateArray,
+  validateBoolean,
+  validateDirectoryPath,
+  validateEmail,
+  validateFilePath,
+  validateJsonSchema,
+  validateNumber,
+  validateObject,
+  validatePort,
+  validateRequired,
+  validateString,
+  validateUrl,
+  validateUuid,
+  validateVersion,
+} from './validation';
 
 /**
  * Common utility functions
@@ -98,8 +95,8 @@ export {
 /**
  * Sleep for a specified number of milliseconds
  */
-export const sleep = (ms: number): Promise<void> => 
-  new Promise(resolve => setTimeout(resolve, ms));
+export const sleep = (ms: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * Retry a function with exponential backoff
@@ -110,22 +107,22 @@ export async function retry<T>(
   baseDelay: number = 1000
 ): Promise<T> {
   let lastError: Error;
-  
+
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       return await fn();
     } catch (error) {
       lastError = error as Error;
-      
+
       if (attempt === maxRetries) {
         throw lastError;
       }
-      
-      const delay = baseDelay * Math.pow(2, attempt);
+
+      const delay = baseDelay * 2 ** attempt;
       await sleep(delay);
     }
   }
-  
+
   throw lastError!;
 }
 
@@ -137,7 +134,7 @@ export function debounce<T extends (...args: any[]) => any>(
   delay: number
 ): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout;
-  
+
   return (...args: Parameters<T>): void => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => fn(...args), delay);
@@ -152,10 +149,10 @@ export function throttle<T extends (...args: any[]) => any>(
   delay: number
 ): (...args: Parameters<T>) => void {
   let lastCall = 0;
-  
+
   return (...args: Parameters<T>): void => {
     const now = Date.now();
-    
+
     if (now - lastCall >= delay) {
       lastCall = now;
       fn(...args);
@@ -169,11 +166,11 @@ export function throttle<T extends (...args: any[]) => any>(
 export function generateId(length: number = 8): string {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let result = '';
-  
+
   for (let i = 0; i < length; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  
+
   return result;
 }
 
@@ -184,27 +181,27 @@ export function deepClone<T>(obj: T): T {
   if (obj === null || typeof obj !== 'object') {
     return obj;
   }
-  
+
   if (obj instanceof Date) {
     return new Date(obj.getTime()) as T;
   }
-  
+
   if (obj instanceof Array) {
-    return obj.map(item => deepClone(item)) as T;
+    return obj.map((item) => deepClone(item)) as T;
   }
-  
+
   if (typeof obj === 'object') {
     const cloned = {} as T;
-    
+
     for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
+      if (Object.hasOwn(obj, key)) {
         cloned[key] = deepClone(obj[key]);
       }
     }
-    
+
     return cloned;
   }
-  
+
   return obj;
 }
 
@@ -213,21 +210,21 @@ export function deepClone<T>(obj: T): T {
  */
 export function deepMerge<T>(...objects: Partial<T>[]): T {
   const result = {} as T;
-  
+
   for (const obj of objects) {
     for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
+      if (Object.hasOwn(obj, key)) {
         const value = obj[key];
-        
+
         if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
-          result[key] = deepMerge(result[key] || {} as any, value);
+          result[key] = deepMerge(result[key] || ({} as any), value);
         } else {
           result[key] = value as T[Extract<keyof T, string>];
         }
       }
     }
   }
-  
+
   return result;
 }
 
@@ -238,19 +235,19 @@ export function isEmpty(value: unknown): boolean {
   if (value === null || value === undefined) {
     return true;
   }
-  
+
   if (typeof value === 'string') {
     return value.trim() === '';
   }
-  
+
   if (Array.isArray(value)) {
     return value.length === 0;
   }
-  
+
   if (typeof value === 'object') {
     return Object.keys(value).length === 0;
   }
-  
+
   return false;
 }
 
@@ -290,14 +287,14 @@ export function sanitizeFilename(str: string): string {
  */
 export function parseArgs(args: string[]): Record<string, string | boolean> {
   const result: Record<string, string | boolean> = {};
-  
+
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    
+
     if (arg.startsWith('--')) {
       const key = arg.slice(2);
       const nextArg = args[i + 1];
-      
+
       if (nextArg && !nextArg.startsWith('-')) {
         result[key] = nextArg;
         i++; // Skip next argument as it's the value
@@ -309,6 +306,6 @@ export function parseArgs(args: string[]): Record<string, string | boolean> {
       result[key] = true;
     }
   }
-  
+
   return result;
 }

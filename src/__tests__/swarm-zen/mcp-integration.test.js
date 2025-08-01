@@ -5,9 +5,9 @@
 
 import assert from 'assert';
 import { spawn } from 'child_process';
-import WebSocket from 'ws';
-import { v4 as uuidv4 } from 'uuid';
 import { promises as fs } from 'fs';
+import { v4 as uuidv4 } from 'uuid';
+import WebSocket from 'ws';
 
 // Test configuration
 const MCP_SERVER_URL = 'ws://localhost:3000/mcp';
@@ -110,7 +110,7 @@ class MCPTestClient {
     if (!filter) {
       return this.notifications;
     }
-    return this.notifications.filter(n => n.method === filter);
+    return this.notifications.filter((n) => n.method === filter);
   }
 }
 
@@ -160,7 +160,7 @@ async function runMCPIntegrationTests() {
     }
 
     // 1. Test Initialize
-    await test('MCP Initialize', async() => {
+    await test('MCP Initialize', async () => {
       const result = await client.sendRequest('initialize', {
         protocolVersion: '2024-11-05',
         clientInfo: {
@@ -175,15 +175,20 @@ async function runMCPIntegrationTests() {
 
       // More flexible assertions
       assert(result, 'Initialize should return a result');
-      assert(result.protocolVersion || result.capabilities, 'Should have protocol version or capabilities');
+      assert(
+        result.protocolVersion || result.capabilities,
+        'Should have protocol version or capabilities'
+      );
 
       if (result.serverInfo) {
-        console.log(`   Server: ${result.serverInfo.name} v${result.serverInfo.version || 'unknown'}`);
+        console.log(
+          `   Server: ${result.serverInfo.name} v${result.serverInfo.version || 'unknown'}`
+        );
       }
     });
 
     // 2. Test Tools List
-    await test('MCP Tools List', async() => {
+    await test('MCP Tools List', async () => {
       const result = await client.sendRequest('tools/list');
 
       assert(result, 'Tools list should return a result');
@@ -196,7 +201,7 @@ async function runMCPIntegrationTests() {
         console.log(`   Example tool: ${tools[0].name || tools[0]}`);
       }
 
-      const toolNames = result.tools.map(t => t.name);
+      const toolNames = result.tools.map((t) => t.name);
       const expectedTools = [
         'ruv-swarm.spawn',
         'ruv-swarm.orchestrate',
@@ -210,14 +215,14 @@ async function runMCPIntegrationTests() {
         'ruv-swarm.agent.list',
       ];
 
-      expectedTools.forEach(tool => {
+      expectedTools.forEach((tool) => {
         assert(toolNames.includes(tool), `Missing tool: ${tool}`);
       });
     });
 
     // 3. Test Swarm Init (Agent Spawn)
     let agentId;
-    await test('MCP Tool: ruv-swarm.spawn', async() => {
+    await test('MCP Tool: ruv-swarm.spawn', async () => {
       const result = await client.sendRequest('tools/call', {
         name: 'ruv-swarm.spawn',
         arguments: {
@@ -238,7 +243,7 @@ async function runMCPIntegrationTests() {
     });
 
     // 4. Test Agent List
-    await test('MCP Tool: ruv-swarm.agent.list', async() => {
+    await test('MCP Tool: ruv-swarm.agent.list', async () => {
       const result = await client.sendRequest('tools/call', {
         name: 'ruv-swarm.agent.list',
         arguments: {
@@ -249,11 +254,11 @@ async function runMCPIntegrationTests() {
 
       assert(Array.isArray(result.agents));
       assert(result.count >= 1);
-      assert(result.agents.some(a => a.id === agentId));
+      assert(result.agents.some((a) => a.id === agentId));
     });
 
     // 5. Test Memory Store
-    await test('MCP Tool: ruv-swarm.memory.store', async() => {
+    await test('MCP Tool: ruv-swarm.memory.store', async () => {
       const testData = {
         framework_analysis: {
           react: { performance: 'excellent', learning_curve: 'moderate' },
@@ -277,7 +282,7 @@ async function runMCPIntegrationTests() {
     });
 
     // 6. Test Memory Get
-    await test('MCP Tool: ruv-swarm.memory.get', async() => {
+    await test('MCP Tool: ruv-swarm.memory.get', async () => {
       const result = await client.sendRequest('tools/call', {
         name: 'ruv-swarm.memory.get',
         arguments: {
@@ -293,7 +298,7 @@ async function runMCPIntegrationTests() {
 
     // 7. Test Task Create
     let taskId;
-    await test('MCP Tool: ruv-swarm.task.create', async() => {
+    await test('MCP Tool: ruv-swarm.task.create', async () => {
       const result = await client.sendRequest('tools/call', {
         name: 'ruv-swarm.task.create',
         arguments: {
@@ -312,7 +317,7 @@ async function runMCPIntegrationTests() {
     });
 
     // 8. Test Query Swarm State
-    await test('MCP Tool: ruv-swarm.query', async() => {
+    await test('MCP Tool: ruv-swarm.query', async () => {
       const result = await client.sendRequest('tools/call', {
         name: 'ruv-swarm.query',
         arguments: {
@@ -332,7 +337,7 @@ async function runMCPIntegrationTests() {
     });
 
     // 9. Test Monitor (with short duration)
-    await test('MCP Tool: ruv-swarm.monitor', async() => {
+    await test('MCP Tool: ruv-swarm.monitor', async () => {
       client.clearNotifications();
 
       const result = await client.sendRequest('tools/call', {
@@ -347,14 +352,14 @@ async function runMCPIntegrationTests() {
       assert(result.duration_secs === 5);
 
       // Wait a bit and check for notifications
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const notifications = client.getNotifications('ruv-swarm/event');
       console.log(`   Received ${notifications.length} notifications`);
     });
 
     // 10. Test Orchestrate
-    await test('MCP Tool: ruv-swarm.orchestrate', async() => {
+    await test('MCP Tool: ruv-swarm.orchestrate', async () => {
       const result = await client.sendRequest('tools/call', {
         name: 'ruv-swarm.orchestrate',
         arguments: {
@@ -374,7 +379,7 @@ async function runMCPIntegrationTests() {
     });
 
     // 11. Test Optimize
-    await test('MCP Tool: ruv-swarm.optimize', async() => {
+    await test('MCP Tool: ruv-swarm.optimize', async () => {
       const result = await client.sendRequest('tools/call', {
         name: 'ruv-swarm.optimize',
         arguments: {
@@ -393,7 +398,7 @@ async function runMCPIntegrationTests() {
     });
 
     // 12. Test Workflow Execute
-    await test('MCP Tool: ruv-swarm.workflow.execute', async() => {
+    await test('MCP Tool: ruv-swarm.workflow.execute', async () => {
       // First, create a simple workflow file
       const workflowPath = '/tmp/test-workflow.json';
       const workflow = {
@@ -401,7 +406,10 @@ async function runMCPIntegrationTests() {
         steps: [
           { action: 'spawn', params: { agent_type: 'coder' } },
           { action: 'spawn', params: { agent_type: 'tester' } },
-          { action: 'create_task', params: { task_type: 'development', description: 'Build feature X' } },
+          {
+            action: 'create_task',
+            params: { task_type: 'development', description: 'Build feature X' },
+          },
         ],
       };
 
@@ -427,7 +435,7 @@ async function runMCPIntegrationTests() {
     });
 
     // Test Concurrency
-    await test('Concurrent Operations', async() => {
+    await test('Concurrent Operations', async () => {
       const promises = [];
 
       // Spawn multiple agents concurrently
@@ -439,17 +447,17 @@ async function runMCPIntegrationTests() {
               agent_type: ['researcher', 'coder', 'analyst', 'tester', 'reviewer'][i],
               name: `concurrent-agent-${i}`,
             },
-          }),
+          })
         );
       }
 
       const results = await Promise.all(promises);
       assert(results.length === 5);
-      results.forEach(r => assert(r.agent_id));
+      results.forEach((r) => assert(r.agent_id));
     });
 
     // Test Error Handling
-    await test('Error Handling: Invalid Agent Type', async() => {
+    await test('Error Handling: Invalid Agent Type', async () => {
       try {
         await client.sendRequest('tools/call', {
           name: 'ruv-swarm.spawn',
@@ -463,7 +471,7 @@ async function runMCPIntegrationTests() {
       }
     });
 
-    await test('Error Handling: Missing Required Parameters', async() => {
+    await test('Error Handling: Missing Required Parameters', async () => {
       try {
         await client.sendRequest('tools/call', {
           name: 'ruv-swarm.task.create',
@@ -479,7 +487,7 @@ async function runMCPIntegrationTests() {
     });
 
     // Test Persistence Across Sessions
-    await test('Persistence: Memory Across Reconnection', async() => {
+    await test('Persistence: Memory Across Reconnection', async () => {
       // Store data
       await client.sendRequest('tools/call', {
         name: 'ruv-swarm.memory.store',
@@ -491,7 +499,7 @@ async function runMCPIntegrationTests() {
 
       // Disconnect and reconnect
       await client.disconnect();
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       await client.connect();
 
       // Re-initialize
@@ -512,11 +520,13 @@ async function runMCPIntegrationTests() {
 
       // Note: This might fail if session-based storage is used
       // In production, implement proper persistent storage
-      console.log(`   Persistence test result: ${result.found ? 'Data persisted' : 'Data not persisted (session-based storage)'}`);
+      console.log(
+        `   Persistence test result: ${result.found ? 'Data persisted' : 'Data not persisted (session-based storage)'}`
+      );
     });
 
     // Performance Benchmarks
-    await test('Performance: Rapid Agent Spawning', async() => {
+    await test('Performance: Rapid Agent Spawning', async () => {
       const startTime = Date.now();
       const promises = [];
 
@@ -528,30 +538,31 @@ async function runMCPIntegrationTests() {
               agent_type: 'researcher',
               name: `perf-test-agent-${i}`,
             },
-          }),
+          })
         );
       }
 
       await Promise.all(promises);
       const duration = Date.now() - startTime;
 
-      console.log(`   Spawned 10 agents in ${duration}ms (${(duration / 10).toFixed(1)}ms per agent)`);
+      console.log(
+        `   Spawned 10 agents in ${duration}ms (${(duration / 10).toFixed(1)}ms per agent)`
+      );
       assert(duration < 5000, 'Agent spawning too slow');
     });
 
     // Test Custom MCP Methods
-    await test('Custom Method: ruv-swarm/status', async() => {
+    await test('Custom Method: ruv-swarm/status', async () => {
       const result = await client.sendRequest('ruv-swarm/status');
       assert(result);
       console.log(`   Status: ${JSON.stringify(result, null, 2).substring(0, 100)}...`);
     });
 
-    await test('Custom Method: ruv-swarm/metrics', async() => {
+    await test('Custom Method: ruv-swarm/metrics', async () => {
       const result = await client.sendRequest('ruv-swarm/metrics');
       assert(result);
       console.log(`   Metrics: ${JSON.stringify(result, null, 2).substring(0, 100)}...`);
     });
-
   } catch (error) {
     console.error('Test suite error:', error);
     results.failed++;
@@ -568,7 +579,7 @@ async function runMCPIntegrationTests() {
 
   if (results.errors.length > 0) {
     console.log('\n❌ Failed Tests:');
-    results.errors.forEach(e => {
+    results.errors.forEach((e) => {
       console.log(`  - ${e.test}: ${e.error}`);
     });
   }
@@ -652,7 +663,9 @@ async function runIntegrationScenarios() {
       name: 'ruv-swarm.query',
       arguments: { include_metrics: true },
     });
-    console.log(`  ✅ Final state: ${state.total_agents} agents, ${state.active_tasks} active tasks`);
+    console.log(
+      `  ✅ Final state: ${state.total_agents} agents, ${state.active_tasks} active tasks`
+    );
 
     // Scenario 2: Development Pipeline
     console.log('\n🛠️  Scenario 2: Development Pipeline');
@@ -680,7 +693,7 @@ async function runIntegrationScenarios() {
       },
     });
 
-    await new Promise(resolve => setTimeout(resolve, 3500));
+    await new Promise((resolve) => setTimeout(resolve, 3500));
     const events = client.getNotifications('ruv-swarm/event');
     console.log(`  ✅ Captured ${events.length} events during monitoring`);
 
@@ -750,7 +763,6 @@ async function runIntegrationScenarios() {
       },
     });
     console.log(`  ✅ Created neural learning task: ${learningResult.task_id}`);
-
   } finally {
     await client.disconnect();
   }
@@ -759,7 +771,7 @@ async function runIntegrationScenarios() {
 // Main test runner
 async function main() {
   console.log('🧪 RUV-SWARM MCP Integration Test Suite');
-  console.log('=' .repeat(50));
+  console.log('='.repeat(50));
   console.log(`Started: ${new Date().toISOString()}\n`);
 
   // Check if MCP server is running
@@ -780,7 +792,7 @@ async function main() {
   // Run integration scenarios
   await runIntegrationScenarios();
 
-  console.log(`\n${ '='.repeat(50)}`);
+  console.log(`\n${'='.repeat(50)}`);
   console.log(`Completed: ${new Date().toISOString()}`);
 
   process.exit(testsPassed ? 0 : 1);
@@ -794,7 +806,7 @@ process.on('unhandledRejection', (error) => {
 
 // Run tests if called directly
 // Direct execution
-main().catch(error => {
+main().catch((error) => {
   console.error('Fatal error:', error);
   process.exit(1);
 });

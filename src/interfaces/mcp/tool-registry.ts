@@ -1,6 +1,6 @@
 /**
  * MCP Tool Registry
- * 
+ *
  * Manages registration and execution of MCP tools for the HTTP MCP server.
  * Provides a centralized registry for all available tools and their schemas.
  */
@@ -34,12 +34,15 @@ export interface MCPToolInfo {
  */
 export class MCPToolRegistry {
   private tools = new Map<string, MCPToolDefinition>();
-  private executionStats = new Map<string, {
-    calls: number;
-    totalTime: number;
-    errors: number;
-    lastCalled: Date;
-  }>();
+  private executionStats = new Map<
+    string,
+    {
+      calls: number;
+      totalTime: number;
+      errors: number;
+      lastCalled: Date;
+    }
+  >();
 
   constructor() {
     logger.debug('Initializing MCP Tool Registry');
@@ -58,7 +61,7 @@ export class MCPToolRegistry {
 
     const tool: MCPToolDefinition = {
       ...schema,
-      handler: this.wrapHandler(schema.name, handler)
+      handler: this.wrapHandler(schema.name, handler),
     };
 
     this.tools.set(schema.name, tool);
@@ -85,10 +88,10 @@ export class MCPToolRegistry {
    * List all registered tools
    */
   async listTools(): Promise<MCPToolInfo[]> {
-    return Array.from(this.tools.values()).map(tool => ({
+    return Array.from(this.tools.values()).map((tool) => ({
       name: tool.name,
       description: tool.description,
-      inputSchema: tool.inputSchema
+      inputSchema: tool.inputSchema,
     }));
   }
 
@@ -126,7 +129,7 @@ export class MCPToolRegistry {
     for (const [toolName, toolStats] of this.executionStats.entries()) {
       stats[toolName] = {
         ...toolStats,
-        averageTime: toolStats.calls > 0 ? toolStats.totalTime / toolStats.calls : 0
+        averageTime: toolStats.calls > 0 ? toolStats.totalTime / toolStats.calls : 0,
       };
     }
 
@@ -137,11 +140,15 @@ export class MCPToolRegistry {
    * Get registry statistics
    */
   getRegistryStats(): any {
-    const totalCalls = Array.from(this.executionStats.values())
-      .reduce((sum, stats) => sum + stats.calls, 0);
-    
-    const totalErrors = Array.from(this.executionStats.values())
-      .reduce((sum, stats) => sum + stats.errors, 0);
+    const totalCalls = Array.from(this.executionStats.values()).reduce(
+      (sum, stats) => sum + stats.calls,
+      0
+    );
+
+    const totalErrors = Array.from(this.executionStats.values()).reduce(
+      (sum, stats) => sum + stats.errors,
+      0
+    );
 
     return {
       totalTools: this.tools.size,
@@ -149,7 +156,7 @@ export class MCPToolRegistry {
       totalErrors,
       errorRate: totalCalls > 0 ? (totalErrors / totalCalls) * 100 : 0,
       mostUsedTool: this.getMostUsedTool(),
-      lastActivity: this.getLastActivity()
+      lastActivity: this.getLastActivity(),
     };
   }
 
@@ -251,22 +258,22 @@ export class MCPToolRegistry {
   private wrapHandler(toolName: string, handler: (params: any) => Promise<any>) {
     return async (params: any): Promise<any> => {
       const startTime = Date.now();
-      
+
       try {
         logger.debug(`Executing tool: ${toolName}`, { params });
-        
+
         const result = await handler(params);
-        
+
         const executionTime = Date.now() - startTime;
         this.updateSuccessStats(toolName, executionTime);
-        
+
         logger.debug(`Tool ${toolName} completed in ${executionTime}ms`);
-        
+
         return result;
       } catch (error) {
         const executionTime = Date.now() - startTime;
         logger.error(`Tool ${toolName} failed after ${executionTime}ms:`, error);
-        
+
         this.updateErrorStats(toolName);
         throw error;
       }
@@ -281,7 +288,7 @@ export class MCPToolRegistry {
       calls: 0,
       totalTime: 0,
       errors: 0,
-      lastCalled: new Date()
+      lastCalled: new Date(),
     });
   }
 

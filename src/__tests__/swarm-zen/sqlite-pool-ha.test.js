@@ -5,11 +5,11 @@
  * by testing under various failure scenarios and high-load conditions.
  */
 
-import { SQLiteConnectionPool } from '../src/sqlite-pool.js';
-import { SwarmPersistencePooled } from '../src/persistence-pooled.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { SwarmPersistencePooled } from '../src/persistence-pooled.js';
+import { SQLiteConnectionPool } from '../src/sqlite-pool.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -79,7 +79,6 @@ async function testPoolInitialization() {
 
     await pool.close();
     console.log('✅ Pool closed successfully\n');
-
   } catch (error) {
     console.error('❌ Test 1 failed:', error.message);
     throw error;
@@ -125,7 +124,7 @@ async function testConcurrentReads() {
 
     for (let i = 0; i < CONCURRENT_CONNECTIONS; i++) {
       concurrentReads.push(
-        pool.read('SELECT * FROM test_data WHERE id = ?', [Math.floor(Math.random() * 1000) + 1]),
+        pool.read('SELECT * FROM test_data WHERE id = ?', [Math.floor(Math.random() * 1000) + 1])
       );
     }
 
@@ -136,7 +135,7 @@ async function testConcurrentReads() {
     console.log(`⚡ Average: ${(duration / CONCURRENT_CONNECTIONS).toFixed(2)}ms per read`);
 
     // Verify all reads succeeded
-    if (results.every(result => result.length > 0)) {
+    if (results.every((result) => result.length > 0)) {
       console.log('✅ All concurrent reads succeeded');
     } else {
       throw new Error('Some concurrent reads failed');
@@ -144,7 +143,6 @@ async function testConcurrentReads() {
 
     await pool.close();
     console.log('✅ Concurrent read test passed\n');
-
   } catch (error) {
     console.error('❌ Test 2 failed:', error.message);
     throw error;
@@ -188,10 +186,11 @@ async function testWriteQueueUnderLoad() {
     for (let thread = 0; thread < CONCURRENT_CONNECTIONS; thread++) {
       for (let op = 0; op < OPERATIONS_PER_CONNECTION; op++) {
         writePromises.push(
-          pool.write(
-            'INSERT INTO load_test (thread_id, operation_id, value) VALUES (?, ?, ?)',
-            [thread, op, `data-${thread}-${op}`],
-          ),
+          pool.write('INSERT INTO load_test (thread_id, operation_id, value) VALUES (?, ?, ?)', [
+            thread,
+            op,
+            `data-${thread}-${op}`,
+          ])
         );
       }
     }
@@ -201,7 +200,7 @@ async function testWriteQueueUnderLoad() {
 
     const totalOperations = CONCURRENT_CONNECTIONS * OPERATIONS_PER_CONNECTION;
     console.log(`✅ Completed ${totalOperations} write operations in ${duration}ms`);
-    console.log(`⚡ Throughput: ${(totalOperations / duration * 1000).toFixed(2)} ops/sec`);
+    console.log(`⚡ Throughput: ${((totalOperations / duration) * 1000).toFixed(2)} ops/sec`);
 
     // Verify all writes succeeded
     const count = await pool.read('SELECT COUNT(*) as total FROM load_test');
@@ -213,7 +212,6 @@ async function testWriteQueueUnderLoad() {
 
     await pool.close();
     console.log('✅ Write queue test passed\n');
-
   } catch (error) {
     console.error('❌ Test 3 failed:', error.message);
     throw error;
@@ -250,10 +248,11 @@ async function testWorkerThreadPerformance() {
 
     // Insert test data
     for (let i = 0; i < 5000; i++) {
-      await pool.write(
-        'INSERT INTO worker_test (category, value, description) VALUES (?, ?, ?)',
-        [`category-${i % 10}`, Math.floor(Math.random() * 1000), `description-${i}`],
-      );
+      await pool.write('INSERT INTO worker_test (category, value, description) VALUES (?, ?, ?)', [
+        `category-${i % 10}`,
+        Math.floor(Math.random() * 1000),
+        `description-${i}`,
+      ]);
     }
 
     console.log('📊 Created complex test data (5000 rows)');
@@ -264,7 +263,8 @@ async function testWorkerThreadPerformance() {
 
     for (let i = 0; i < 20; i++) {
       workerPromises.push(
-        pool.executeInWorker(`
+        pool.executeInWorker(
+          `
           SELECT category, 
                  COUNT(*) as count, 
                  AVG(value) as avg_value,
@@ -273,7 +273,9 @@ async function testWorkerThreadPerformance() {
           FROM worker_test 
           WHERE category = ? 
           GROUP BY category
-        `, [`category-${i % 10}`]),
+        `,
+          [`category-${i % 10}`]
+        )
       );
     }
 
@@ -284,7 +286,7 @@ async function testWorkerThreadPerformance() {
     console.log(`⚡ Average: ${(duration / 20).toFixed(2)}ms per query`);
 
     // Verify results
-    if (results.every(result => result.length > 0)) {
+    if (results.every((result) => result.length > 0)) {
       console.log('✅ All worker thread queries succeeded');
     } else {
       throw new Error('Some worker thread queries failed');
@@ -292,7 +294,6 @@ async function testWorkerThreadPerformance() {
 
     await pool.close();
     console.log('✅ Worker thread test passed\n');
-
   } catch (error) {
     console.error('❌ Test 4 failed:', error.message);
     throw error;
@@ -336,7 +337,7 @@ async function testHAPersistenceLayer() {
           name: `Agent ${i}`,
           type: 'researcher',
           capabilities: ['research', 'analysis'],
-        }),
+        })
       );
     }
 
@@ -350,7 +351,7 @@ async function testHAPersistenceLayer() {
         persistence.storeMemory(`agent-${i}`, 'test-key', {
           value: `test-value-${i}`,
           timestamp: Date.now(),
-        }),
+        })
       );
     }
 
@@ -362,14 +363,10 @@ async function testHAPersistenceLayer() {
     for (let i = 0; i < 100; i++) {
       if (i % 2 === 0) {
         // Read operation
-        mixedPromises.push(
-          persistence.getAgent(`agent-${i % 50}`),
-        );
+        mixedPromises.push(persistence.getAgent(`agent-${i % 50}`));
       } else {
         // Write operation
-        mixedPromises.push(
-          persistence.updateAgentStatus(`agent-${i % 50}`, 'busy'),
-        );
+        mixedPromises.push(persistence.updateAgentStatus(`agent-${i % 50}`, 'busy'));
       }
     }
 
@@ -398,7 +395,6 @@ async function testHAPersistenceLayer() {
 
     await persistence.close();
     console.log('✅ HA Persistence layer test passed\n');
-
   } catch (error) {
     console.error('❌ Test 5 failed:', error.message);
     throw error;
@@ -447,16 +443,18 @@ async function testStressTestSustainedLoad() {
           if (Math.random() > 0.3) {
             // Read operation (70% of operations)
             operations.push(
-              pool.read('SELECT COUNT(*) as count FROM stress_test')
+              pool
+                .read('SELECT COUNT(*) as count FROM stress_test')
                 .then(() => operationCount++)
-                .catch(() => errorCount++),
+                .catch(() => errorCount++)
             );
           } else {
             // Write operation (30% of operations)
             operations.push(
-              pool.write('INSERT INTO stress_test (data) VALUES (?)', [`data-${operationCount}`])
+              pool
+                .write('INSERT INTO stress_test (data) VALUES (?)', [`data-${operationCount}`])
                 .then(() => operationCount++)
-                .catch(() => errorCount++),
+                .catch(() => errorCount++)
             );
           }
         }
@@ -466,21 +464,22 @@ async function testStressTestSustainedLoad() {
         operations.length = 0;
 
         // Brief pause to prevent overwhelming
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await new Promise((resolve) => setTimeout(resolve, 10));
       }
     };
 
     await loadTest();
 
     const duration = Date.now() - startTime;
-    const throughput = (operationCount / duration * 1000).toFixed(2);
+    const throughput = ((operationCount / duration) * 1000).toFixed(2);
 
     console.log(`✅ Completed ${operationCount} operations in ${duration}ms`);
     console.log(`⚡ Throughput: ${throughput} ops/sec`);
-    console.log(`❌ Errors: ${errorCount} (${(errorCount / operationCount * 100).toFixed(2)}%)`);
+    console.log(`❌ Errors: ${errorCount} (${((errorCount / operationCount) * 100).toFixed(2)}%)`);
 
-    if (errorCount / operationCount > 0.01) { // Allow up to 1% error rate
-      throw new Error(`Error rate too high: ${(errorCount / operationCount * 100).toFixed(2)}%`);
+    if (errorCount / operationCount > 0.01) {
+      // Allow up to 1% error rate
+      throw new Error(`Error rate too high: ${((errorCount / operationCount) * 100).toFixed(2)}%`);
     }
 
     // Check pool health after stress test
@@ -491,7 +490,6 @@ async function testStressTestSustainedLoad() {
 
     await pool.close();
     console.log('✅ Stress test passed\n');
-
   } catch (error) {
     console.error('❌ Test 6 failed:', error.message);
     throw error;
@@ -535,7 +533,7 @@ async function testConnectionRecovery() {
     const stressPromises = [];
     for (let i = 0; i < 100; i++) {
       stressPromises.push(
-        pool.write('INSERT INTO recovery_test (value) VALUES (?)', [`stress-${i}`]),
+        pool.write('INSERT INTO recovery_test (value) VALUES (?)', [`stress-${i}`])
       );
     }
 
@@ -557,7 +555,6 @@ async function testConnectionRecovery() {
 
     await pool.close();
     console.log('✅ Connection recovery test passed\n');
-
   } catch (error) {
     console.error('❌ Test 7 failed:', error.message);
     throw error;
@@ -594,7 +591,7 @@ async function runAllTests() {
   console.log('📊 Test Results Summary:');
   console.log(`✅ Passed: ${passed}`);
   console.log(`❌ Failed: ${failed}`);
-  console.log(`📈 Success Rate: ${(passed / (passed + failed) * 100).toFixed(1)}%`);
+  console.log(`📈 Success Rate: ${((passed / (passed + failed)) * 100).toFixed(1)}%`);
 
   if (failed === 0) {
     console.log('\n🎉 All tests passed! Connection pool is production ready.');

@@ -14,7 +14,7 @@ describe('Error Recovery and Resilience Integration', () => {
     sandbox = sinon.createSandbox();
   });
 
-  afterEach(async() => {
+  afterEach(async () => {
     if (swarm) {
       await swarm.shutdown();
     }
@@ -25,7 +25,7 @@ describe('Error Recovery and Resilience Integration', () => {
   });
 
   describe('Component Failure Recovery', () => {
-    it('should recover from agent failures gracefully', async() => {
+    it('should recover from agent failures gracefully', async () => {
       swarm = new RuvSwarm();
       await swarm.init({
         topology: 'mesh',
@@ -57,7 +57,7 @@ describe('Error Recovery and Resilience Integration', () => {
         if (taskStatus.status === 'completed' || taskStatus.status === 'failed') {
           break;
         }
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
 
       // Verify task completed despite agent failure
@@ -67,7 +67,7 @@ describe('Error Recovery and Resilience Integration', () => {
       expect(taskStatus.result).to.exist;
     });
 
-    it('should handle cascading failures', async() => {
+    it('should handle cascading failures', async () => {
       swarm = new RuvSwarm();
       await swarm.init({
         topology: 'hierarchical',
@@ -105,13 +105,13 @@ describe('Error Recovery and Resilience Integration', () => {
       swarm.on('recovery', (event) => recoveryEvents.push(event));
 
       // Wait for recovery
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
 
       // Verify cascade protection
       expect(recoveryEvents).to.have.lengthOf.at.least(1);
 
       const status = await swarm.getStatus();
-      const activeAgents = status.agents.filter(a => a.status !== 'failed');
+      const activeAgents = status.agents.filter((a) => a.status !== 'failed');
 
       // Coordinator and other branch should survive
       expect(activeAgents).to.include.deep.members([
@@ -120,11 +120,11 @@ describe('Error Recovery and Resilience Integration', () => {
       ]);
 
       // Workers under failed mid-level should be reassigned
-      const reassignedWorkers = recoveryEvents.filter(e => e.type === 'reassignment');
+      const reassignedWorkers = recoveryEvents.filter((e) => e.type === 'reassignment');
       expect(reassignedWorkers).to.have.lengthOf.at.least(2);
     });
 
-    it('should implement circuit breaker pattern', async() => {
+    it('should implement circuit breaker pattern', async () => {
       swarm = new RuvSwarm();
       await swarm.init({
         topology: 'mesh',
@@ -165,24 +165,24 @@ describe('Error Recovery and Resilience Integration', () => {
         } catch (error) {
           results.push({ success: false, error: error.message });
         }
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 500));
       }
 
       // Verify circuit breaker behavior
-      const failures = results.filter(r => !r.success);
-      const circuitOpenErrors = failures.filter(f => f.error.includes('Circuit breaker open'));
+      const failures = results.filter((r) => !r.success);
+      const circuitOpenErrors = failures.filter((f) => f.error.includes('Circuit breaker open'));
 
       expect(failures).to.have.lengthOf.at.least(3);
       expect(circuitOpenErrors).to.have.lengthOf.at.least(1);
 
       // Eventually should succeed after circuit closes
-      const successes = results.filter(r => r.success);
+      const successes = results.filter((r) => r.success);
       expect(successes).to.have.lengthOf.at.least(1);
     });
   });
 
   describe('Database and Persistence Recovery', () => {
-    it('should handle database connection failures', async() => {
+    it('should handle database connection failures', async () => {
       swarm = new RuvSwarm();
 
       // Mock database with intermittent failures
@@ -228,7 +228,7 @@ describe('Error Recovery and Resilience Integration', () => {
       expect(mockDb.prepare.callCount).to.be.greaterThan(2);
     });
 
-    it('should implement write-ahead logging for recovery', async() => {
+    it('should implement write-ahead logging for recovery', async () => {
       swarm = new RuvSwarm();
       await swarm.init({
         topology: 'mesh',
@@ -247,10 +247,12 @@ describe('Error Recovery and Resilience Integration', () => {
 
       const tasks = [];
       for (let i = 0; i < 5; i++) {
-        tasks.push(swarm.orchestrateTask({
-          task: `Task ${i}`,
-          persistent: true,
-        }));
+        tasks.push(
+          swarm.orchestrateTask({
+            task: `Task ${i}`,
+            persistent: true,
+          })
+        );
       }
 
       await Promise.all(tasks);
@@ -278,7 +280,7 @@ describe('Error Recovery and Resilience Integration', () => {
       await recoveredSwarm.shutdown();
     });
 
-    it('should handle corrupted state gracefully', async() => {
+    it('should handle corrupted state gracefully', async () => {
       // Create corrupted database
       const corruptDb = new Database(':memory:');
       corruptDb.exec(`
@@ -320,7 +322,7 @@ describe('Error Recovery and Resilience Integration', () => {
   });
 
   describe('Network and Communication Recovery', () => {
-    it('should handle network partition scenarios', async() => {
+    it('should handle network partition scenarios', async () => {
       swarm = new RuvSwarm();
       await swarm.init({
         topology: 'mesh',
@@ -356,13 +358,13 @@ describe('Error Recovery and Resilience Integration', () => {
       });
 
       // Wait for tasks
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // Heal partition
       swarm.healPartition();
 
       // Wait for reconciliation
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Verify both tasks completed and state reconciled
       const allTasks = await swarm.getAllTasks();
@@ -376,14 +378,14 @@ describe('Error Recovery and Resilience Integration', () => {
       expect(conflicts).to.be.an('array');
 
       if (conflicts.length > 0) {
-        conflicts.forEach(conflict => {
+        conflicts.forEach((conflict) => {
           expect(conflict).to.have.property('resolved', true);
           expect(conflict).to.have.property('resolution');
         });
       }
     });
 
-    it('should implement retry with exponential backoff', async() => {
+    it('should implement retry with exponential backoff', async () => {
       swarm = new RuvSwarm();
       await swarm.init({
         topology: 'star',
@@ -402,7 +404,7 @@ describe('Error Recovery and Resilience Integration', () => {
 
       // Mock flaky network
       let attempts = 0;
-      const flakyNetwork = sandbox.stub(swarm._network, 'send').callsFake(async() => {
+      const flakyNetwork = sandbox.stub(swarm._network, 'send').callsFake(async () => {
         attempts++;
         if (attempts < 4) {
           throw new Error('Network timeout');
@@ -426,7 +428,7 @@ describe('Error Recovery and Resilience Integration', () => {
       expect(elapsed).to.be.at.least(700);
     });
 
-    it('should handle message queue overflow', async() => {
+    it('should handle message queue overflow', async () => {
       swarm = new RuvSwarm();
       await swarm.init({
         topology: 'mesh',
@@ -445,11 +447,13 @@ describe('Error Recovery and Resilience Integration', () => {
       // Flood with messages
       const messages = [];
       for (let i = 0; i < 150; i++) {
-        messages.push(swarm.broadcastMessage({
-          type: 'update',
-          priority: i < 50 ? 'low' : 'high',
-          data: `Message ${i}`,
-        }));
+        messages.push(
+          swarm.broadcastMessage({
+            type: 'update',
+            priority: i < 50 ? 'low' : 'high',
+            data: `Message ${i}`,
+          })
+        );
       }
 
       await Promise.all(messages);
@@ -462,13 +466,13 @@ describe('Error Recovery and Resilience Integration', () => {
 
       // High priority messages should be preserved
       const remainingMessages = await swarm.getQueuedMessages();
-      const highPriorityCount = remainingMessages.filter(m => m.priority === 'high').length;
+      const highPriorityCount = remainingMessages.filter((m) => m.priority === 'high').length;
       expect(highPriorityCount).to.be.greaterThan(50);
     });
   });
 
   describe('Resource Management and Cleanup', () => {
-    it('should prevent resource leaks under stress', async() => {
+    it('should prevent resource leaks under stress', async () => {
       swarm = new RuvSwarm();
       await swarm.init({
         topology: 'mesh',
@@ -488,31 +492,33 @@ describe('Error Recovery and Resilience Integration', () => {
 
         // Spawn many agents
         for (let i = 0; i < 20; i++) {
-          agents.push(await swarm.spawnAgent({
-            type: 'coder',
-            ephemeral: true,
-          }));
+          agents.push(
+            await swarm.spawnAgent({
+              type: 'coder',
+              ephemeral: true,
+            })
+          );
         }
 
         // Execute tasks
-        const tasks = agents.map(agent =>
+        const tasks = agents.map((agent) =>
           swarm.executeAgentTask(agent.id, {
             task: 'Memory intensive operation',
             data: Buffer.alloc(1024 * 1024), // 1MB per task
-          }),
+          })
         );
 
         await Promise.all(tasks);
 
         // Destroy agents
-        await Promise.all(agents.map(a => swarm.destroyAgent(a.id)));
+        await Promise.all(agents.map((a) => swarm.destroyAgent(a.id)));
 
         // Force GC if available
         if (global.gc) {
           global.gc();
         }
 
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
 
       // Check memory didn't grow excessively
@@ -527,7 +533,7 @@ describe('Error Recovery and Resilience Integration', () => {
       expect(status.agents).to.have.lengthOf(0);
     });
 
-    it('should handle graceful degradation under load', async() => {
+    it('should handle graceful degradation under load', async () => {
       swarm = new RuvSwarm();
       await swarm.init({
         topology: 'mesh',
@@ -548,11 +554,13 @@ describe('Error Recovery and Resilience Integration', () => {
       // Generate high load
       const tasks = [];
       for (let i = 0; i < 30; i++) {
-        tasks.push(swarm.orchestrateTask({
-          task: `High load task ${i}`,
-          priority: i < 10 ? 'high' : 'normal',
-          estimatedLoad: 1,
-        }));
+        tasks.push(
+          swarm.orchestrateTask({
+            task: `High load task ${i}`,
+            priority: i < 10 ? 'high' : 'normal',
+            estimatedLoad: 1,
+          })
+        );
       }
 
       // Monitor degradation
@@ -560,18 +568,20 @@ describe('Error Recovery and Resilience Integration', () => {
       swarm.on('degradation', (event) => degradationEvents.push(event));
 
       // Wait for processing
-      await new Promise(resolve => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 5000));
 
       // Verify graceful degradation occurred
       expect(degradationEvents).to.have.lengthOf.at.least(1);
 
       const results = await Promise.allSettled(tasks);
-      const completed = results.filter(r => r.status === 'fulfilled').length;
-      const rejected = results.filter(r => r.status === 'rejected').length;
+      const completed = results.filter((r) => r.status === 'fulfilled').length;
+      const rejected = results.filter((r) => r.status === 'rejected').length;
 
       // High priority tasks should complete
       const highPriorityResults = results.slice(0, 10);
-      const highPriorityCompleted = highPriorityResults.filter(r => r.status === 'fulfilled').length;
+      const highPriorityCompleted = highPriorityResults.filter(
+        (r) => r.status === 'fulfilled'
+      ).length;
       expect(highPriorityCompleted).to.be.at.least(8);
 
       // Some lower priority might be rejected

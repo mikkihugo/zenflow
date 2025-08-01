@@ -1,12 +1,12 @@
 /**
  * File System Test Helper - File System Testing Utilities
- * 
+ *
  * Comprehensive file system testing support for both mocked and real environments
  */
 
 import { promises as fs } from 'fs';
-import { join, dirname, relative, resolve } from 'path';
 import { tmpdir } from 'os';
+import { dirname, join, relative, resolve } from 'path';
 
 export interface FileSystemTestHelper {
   createTempDir(prefix?: string): Promise<string>;
@@ -32,10 +32,10 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
 
   async createTempDir(prefix: string = 'test'): Promise<string> {
     const tempPath = join(
-      tmpdir(), 
+      tmpdir(),
       `claude-test-${prefix}-${Date.now()}-${Math.random().toString(36).substring(2)}`
     );
-    
+
     await fs.mkdir(tempPath, { recursive: true });
     this.tempDirs.push(tempPath);
     return tempPath;
@@ -93,9 +93,7 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
   async listFiles(path: string): Promise<string[]> {
     try {
       const entries = await fs.readdir(path, { withFileTypes: true });
-      return entries
-        .filter(entry => entry.isFile())
-        .map(entry => join(path, entry.name));
+      return entries.filter((entry) => entry.isFile()).map((entry) => join(path, entry.name));
     } catch {
       return [];
     }
@@ -112,7 +110,7 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
     const destDir = dirname(dest);
     await fs.mkdir(destDir, { recursive: true });
     await fs.rename(src, dest);
-    
+
     const srcIndex = this.createdFiles.indexOf(src);
     if (srcIndex > -1) {
       this.createdFiles[srcIndex] = dest;
@@ -129,13 +127,13 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
       ctime: stats.ctime,
       isFile: stats.isFile(),
       isDirectory: stats.isDirectory(),
-      mode: stats.mode
+      mode: stats.mode,
     };
   }
 
   watchFile(path: string, callback: (event: string) => void): () => void {
     let watcher: any = null;
-    
+
     const startWatching = async () => {
       try {
         const { watch } = await import('chokidar');
@@ -176,7 +174,7 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
 
   async cleanup(): Promise<void> {
     // Stop all watchers
-    this.watchers.forEach(stop => {
+    this.watchers.forEach((stop) => {
       try {
         stop();
       } catch {
@@ -186,15 +184,11 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
     this.watchers = [];
 
     // Clean up created files
-    await Promise.allSettled(
-      this.createdFiles.map(file => this.deleteFile(file))
-    );
+    await Promise.allSettled(this.createdFiles.map((file) => this.deleteFile(file)));
     this.createdFiles = [];
 
     // Clean up temp directories
-    await Promise.allSettled(
-      this.tempDirs.map(dir => this.deleteDirectory(dir))
-    );
+    await Promise.allSettled(this.tempDirs.map((dir) => this.deleteDirectory(dir)));
     this.tempDirs = [];
   }
 }
@@ -213,7 +207,7 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
   async createFile(path: string, content: string): Promise<void> {
     const normalizedPath = this.normalizePath(path);
     this.files.set(normalizedPath, content);
-    
+
     // Ensure parent directories exist
     const dir = dirname(normalizedPath);
     if (dir !== normalizedPath) {
@@ -231,11 +225,11 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
   async readFile(path: string): Promise<string> {
     const normalizedPath = this.normalizePath(path);
     const content = this.files.get(normalizedPath);
-    
+
     if (content === undefined) {
       throw new Error(`ENOENT: no such file or directory, open '${path}'`);
     }
-    
+
     return content;
   }
 
@@ -253,19 +247,19 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
 
   async deleteDirectory(path: string): Promise<void> {
     const normalizedPath = this.normalizePath(path);
-    
+
     // Remove the directory
     this.directories.delete(normalizedPath);
-    
+
     // Remove all files and subdirectories under this path
     const pathPrefix = normalizedPath + '/';
-    
+
     for (const filePath of this.files.keys()) {
       if (filePath.startsWith(pathPrefix)) {
         this.files.delete(filePath);
       }
     }
-    
+
     for (const dirPath of this.directories) {
       if (dirPath.startsWith(pathPrefix)) {
         this.directories.delete(dirPath);
@@ -277,7 +271,7 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
     const normalizedPath = this.normalizePath(path);
     const pathPrefix = normalizedPath === '/' ? '' : normalizedPath + '/';
     const files: string[] = [];
-    
+
     for (const filePath of this.files.keys()) {
       if (filePath.startsWith(pathPrefix)) {
         const relativePath = filePath.substring(pathPrefix.length);
@@ -286,7 +280,7 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
         }
       }
     }
-    
+
     return files.sort();
   }
 
@@ -303,34 +297,34 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
 
   async getFileStats(path: string): Promise<any> {
     const normalizedPath = this.normalizePath(path);
-    
+
     if (!this.fileExists(normalizedPath)) {
       throw new Error(`ENOENT: no such file or directory, stat '${path}'`);
     }
-    
+
     const isFile = this.files.has(normalizedPath);
     const isDirectory = this.directories.has(normalizedPath);
     const content = this.files.get(normalizedPath) || '';
-    
+
     return {
       size: content.length,
       mtime: new Date(),
       ctime: new Date(),
       isFile,
       isDirectory,
-      mode: isFile ? 0o644 : 0o755
+      mode: isFile ? 0o644 : 0o755,
     };
   }
 
   watchFile(path: string, callback: (event: string) => void): () => void {
     const normalizedPath = this.normalizePath(path);
-    
+
     if (!this.watchers.has(normalizedPath)) {
       this.watchers.set(normalizedPath, []);
     }
-    
+
     this.watchers.get(normalizedPath)!.push(callback);
-    
+
     return () => {
       const callbacks = this.watchers.get(normalizedPath);
       if (callbacks) {
@@ -338,7 +332,7 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
         if (index > -1) {
           callbacks.splice(index, 1);
         }
-        
+
         if (callbacks.length === 0) {
           this.watchers.delete(normalizedPath);
         }
@@ -358,7 +352,7 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
   }
 
   // Mock-specific methods
-  
+
   /**
    * Get all files in the mock filesystem
    */
@@ -391,7 +385,7 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
   private triggerWatchers(path: string, event: string): void {
     const callbacks = this.watchers.get(path);
     if (callbacks) {
-      callbacks.forEach(callback => {
+      callbacks.forEach((callback) => {
         try {
           callback(event);
         } catch (error) {
@@ -418,12 +412,12 @@ export async function createTestProject(
   files: Record<string, string>
 ): Promise<string> {
   const projectDir = await helper.createTempDir(projectName);
-  
+
   for (const [filePath, content] of Object.entries(files)) {
     const fullPath = join(projectDir, filePath);
     await helper.createFile(fullPath, content);
   }
-  
+
   return projectDir;
 }
 
@@ -440,12 +434,12 @@ export async function createTestWorkspace(
   const srcDir = join(workspaceDir, 'src');
   const testDir = join(workspaceDir, 'tests');
   const configDir = join(workspaceDir, 'config');
-  
+
   await Promise.all([
     helper.createDirectory(srcDir),
     helper.createDirectory(testDir),
-    helper.createDirectory(configDir)
+    helper.createDirectory(configDir),
   ]);
-  
+
   return { workspaceDir, srcDir, testDir, configDir };
 }

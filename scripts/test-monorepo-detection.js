@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-console.warn(' CLAUDE ZEN MONOREPO DETECTION TEST')
-console.warn('=====================================')
-console.warn('')
-console.warn(' MONOREPO ROOT: /home/mhugo/code/claude-zen/')
-console.warn(' Absolute path confirmed')
-console.warn('')
+console.warn(' CLAUDE ZEN MONOREPO DETECTION TEST');
+console.warn('=====================================');
+console.warn('');
+console.warn(' MONOREPO ROOT: /home/mhugo/code/claude-zen/');
+console.warn(' Absolute path confirmed');
+console.warn('');
 console.warn(' ARCHITECTURE:');
 console.warn('    Ultimate Unified Architecture');
 console.warn('    Native ruv-swarm integration');

@@ -3,11 +3,13 @@
  */
 
 import Database from 'better-sqlite3';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 
 class SwarmPersistence {
-  constructor(dbPath = path.join(new URL('.', import.meta.url).pathname, '..', 'data', 'ruv-swarm.db')) {
+  constructor(
+    dbPath = path.join(new URL('.', import.meta.url).pathname, '..', 'data', 'ruv-swarm.db')
+  ) {
     // Ensure data directory exists
     const dataDir = path.dirname(dbPath);
     if (!fs.existsSync(dataDir)) {
@@ -140,14 +142,14 @@ class SwarmPersistence {
       swarm.topology,
       swarm.maxAgents,
       swarm.strategy,
-      JSON.stringify(swarm.metadata || {}),
+      JSON.stringify(swarm.metadata || {})
     );
   }
 
   getActiveSwarms() {
     const stmt = this.db.prepare('SELECT * FROM swarms WHERE status = ?');
     const swarms = stmt.all('active');
-    return swarms.map(s => {
+    return swarms.map((s) => {
       s.metadata = JSON.parse(s.metadata || '{}');
       return s;
     });
@@ -166,7 +168,7 @@ class SwarmPersistence {
       agent.type,
       JSON.stringify(agent.capabilities || []),
       JSON.stringify(agent.neuralConfig || {}),
-      JSON.stringify(agent.metrics || {}),
+      JSON.stringify(agent.metrics || {})
     );
   }
 
@@ -198,7 +200,7 @@ class SwarmPersistence {
     const stmt = this.db.prepare(query);
     const agents = stmt.all(...params);
 
-    return agents.map(a => {
+    return agents.map((a) => {
       a.capabilities = JSON.parse(a.capabilities || '[]');
       a.neural_config = JSON.parse(a.neural_config || '{}');
       a.metrics = JSON.parse(a.metrics || '{}');
@@ -218,7 +220,7 @@ class SwarmPersistence {
       task.description,
       task.priority || 'medium',
       task.status || 'pending',
-      JSON.stringify(task.assignedAgents || []),
+      JSON.stringify(task.assignedAgents || [])
     );
   }
 
@@ -263,7 +265,7 @@ class SwarmPersistence {
     const stmt = this.db.prepare(query);
     const tasks = stmt.all(...params);
 
-    return tasks.map(t => {
+    return tasks.map((t) => {
       t.assigned_agents = JSON.parse(t.assigned_agents || '[]');
       t.result = t.result ? JSON.parse(t.result) : null;
       return t;
@@ -294,11 +296,10 @@ class SwarmPersistence {
     }
     const stmt = this.db.prepare('SELECT * FROM agent_memory WHERE agent_id = ?');
     const memories = stmt.all(agentId);
-    return memories.map(m => {
+    return memories.map((m) => {
       m.value = JSON.parse(m.value);
       return m;
     });
-
   }
 
   // Neural network operations
@@ -314,7 +315,7 @@ class SwarmPersistence {
       JSON.stringify(network.architecture),
       JSON.stringify(network.weights),
       JSON.stringify(network.trainingData || {}),
-      JSON.stringify(network.performanceMetrics || {}),
+      JSON.stringify(network.performanceMetrics || {})
     );
   }
 
@@ -338,7 +339,7 @@ class SwarmPersistence {
     const stmt = this.db.prepare('SELECT * FROM neural_networks WHERE agent_id = ?');
     const networks = stmt.all(agentId);
 
-    return networks.map(n => {
+    return networks.map((n) => {
       n.architecture = JSON.parse(n.architecture);
       n.weights = JSON.parse(n.weights);
       n.training_data = JSON.parse(n.training_data || '{}');
@@ -390,7 +391,7 @@ class SwarmPersistence {
     `);
     const events = stmt.all(swarmId, limit);
 
-    return events.map(e => {
+    return events.map((e) => {
       e.event_data = JSON.parse(e.event_data || '{}');
       return e;
     });
@@ -420,10 +421,12 @@ class SwarmPersistence {
     `);
 
     const memory = stmt.get(agentId, key);
-    return memory ? {
-      ...memory,
-      value: JSON.parse(memory.value),
-    } : null;
+    return memory
+      ? {
+          ...memory,
+          value: JSON.parse(memory.value),
+        }
+      : null;
   }
 
   getAllMemory(agentId) {
@@ -438,7 +441,7 @@ class SwarmPersistence {
     `);
 
     const memories = stmt.all(agentId);
-    return memories.map(m => ({
+    return memories.map((m) => ({
       ...m,
       value: JSON.parse(m.value),
     }));
@@ -450,7 +453,9 @@ class SwarmPersistence {
   }
 
   cleanupExpiredMemory() {
-    const stmt = this.db.prepare('DELETE FROM agent_memory WHERE expires_at IS NOT NULL AND expires_at <= CURRENT_TIMESTAMP');
+    const stmt = this.db.prepare(
+      'DELETE FROM agent_memory WHERE expires_at IS NOT NULL AND expires_at <= CURRENT_TIMESTAMP'
+    );
     return stmt.run();
   }
 

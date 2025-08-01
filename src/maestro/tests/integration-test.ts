@@ -1,15 +1,15 @@
 /**
  * Integration Test for Maestro + AgentManager Integration
- * 
+ *
  * Tests the complete integration between HiveMindPlannerService,
  * AgentManager task-planner template, and AgentRegistry systems.
  */
 
-import { HiveMindPlannerService } from '../services/HiveMindPlannerService';
 import { AgentManager } from '../../agents/agent-manager';
 import { AgentRegistry } from '../../agents/agent-registry';
 import { HiveMind } from '../../hive-mind/core/HiveMind';
 import { DistributedMemorySystem } from '../../memory/distributed-memory';
+import { HiveMindPlannerService } from '../services/HiveMindPlannerService';
 
 interface TestLogger {
   info(message: string): void;
@@ -105,9 +105,8 @@ export class MaestroIntegrationTest {
       return {
         success: true,
         results,
-        errors
+        errors,
       };
-
     } catch (error) {
       const errorMsg = `Integration test failed: ${error instanceof Error ? error.message : String(error)}`;
       errors.push(errorMsg);
@@ -116,7 +115,7 @@ export class MaestroIntegrationTest {
       return {
         success: false,
         results,
-        errors
+        errors,
       };
     } finally {
       await this.cleanup();
@@ -155,7 +154,7 @@ export class MaestroIntegrationTest {
       autoSpawn: false,
       enableConsensus: false,
       enableMemory: true,
-      enableCommunication: false
+      enableCommunication: false,
     });
     await this.hiveMind.initialize();
 
@@ -171,14 +170,14 @@ export class MaestroIntegrationTest {
     }
 
     this.logger.info('Checking for task-planner template in AgentManager...');
-    
+
     // Create a task-planner agent to verify template exists
     const agentId = await this.agentManager.createAgent('task-planner', {
       name: 'Test Task Planner',
       config: {
         maxConcurrentTasks: 1,
-        priority: 90
-      }
+        priority: 90,
+      },
     });
 
     if (!agentId) {
@@ -186,7 +185,7 @@ export class MaestroIntegrationTest {
     }
 
     this.logger.info(`Task-planner agent created successfully: ${agentId}`);
-    
+
     // Clean up the test agent
     await this.agentManager.stopAgent(agentId);
   }
@@ -206,14 +205,14 @@ export class MaestroIntegrationTest {
       name: 'Integration Test Planner',
       config: {
         maxConcurrentTasks: 1,
-        priority: 85
-      }
+        priority: 85,
+      },
     });
 
     // Verify agent can be queried through registry
     const agents = await this.agentRegistry.queryAgents({
       type: 'task-planner' as any,
-      namePattern: 'Integration Test Planner'
+      namePattern: 'Integration Test Planner',
     });
 
     if (agents.length === 0) {
@@ -274,7 +273,7 @@ A secure authentication system with JWT tokens and role-based access control.
 - HTTPS enforcement
       `,
       requirements: 'System must be production-ready with comprehensive testing',
-      timeoutMs: 30000
+      timeoutMs: 30000,
     };
 
     const response = await this.plannerService.generateTaskPlan(testRequest);
@@ -302,21 +301,18 @@ A secure authentication system with JWT tokens and role-based access control.
     this.logger.info('Testing hive mind fallback...');
 
     // Create planner service without AgentManager integration
-    const fallbackPlannerService = new HiveMindPlannerService(
-      this.hiveMind,
-      this.logger as any
-    );
+    const fallbackPlannerService = new HiveMindPlannerService(this.hiveMind, this.logger as any);
 
     // Spawn some hive mind agents for fallback testing
     await this.hiveMind.spawnAgent({
       type: 'architect',
-      name: 'Fallback Architect'
+      name: 'Fallback Architect',
     });
 
     const testRequest = {
       featureName: 'Simple API Service',
       designContent: 'Basic REST API with CRUD operations',
-      timeoutMs: 30000
+      timeoutMs: 30000,
     };
 
     const response = await fallbackPlannerService.generateTaskPlan(testRequest);
@@ -340,8 +336,12 @@ A secure authentication system with JWT tokens and role-based access control.
 
     const status = await this.plannerService.getStatus();
 
-    this.logger.info(`Status report: TaskPlanners=${status.availableTaskPlanners}, Architects=${status.availableArchitects}, Specialists=${status.availableSpecialists}, Total=${status.totalAgents}`);
-    this.logger.info(`System availability: AgentManager=${status.agentManagerAvailable}, Registry=${status.agentRegistryAvailable}`);
+    this.logger.info(
+      `Status report: TaskPlanners=${status.availableTaskPlanners}, Architects=${status.availableArchitects}, Specialists=${status.availableSpecialists}, Total=${status.totalAgents}`
+    );
+    this.logger.info(
+      `System availability: AgentManager=${status.agentManagerAvailable}, Registry=${status.agentRegistryAvailable}`
+    );
 
     if (status.totalAgents < 1) {
       throw new Error('No agents available in either system');
@@ -369,7 +369,9 @@ A secure authentication system with JWT tokens and role-based access control.
 
       this.logger.info('Cleanup completed successfully');
     } catch (error) {
-      this.logger.error(`Cleanup failed: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        `Cleanup failed: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 
@@ -386,33 +388,33 @@ A secure authentication system with JWT tokens and role-based access control.
  */
 export async function runMaestroIntegrationTests(): Promise<void> {
   const testRunner = new MaestroIntegrationTest();
-  
+
   console.log('🧪 Starting Maestro AgentManager Integration Tests...\n');
-  
+
   const results = await testRunner.runTests();
-  
+
   console.log('\n📊 Test Results:');
   console.log('================');
-  
-  results.results.forEach(result => {
+
+  results.results.forEach((result) => {
     console.log(result);
   });
-  
+
   if (results.errors.length > 0) {
     console.log('\n❌ Errors:');
-    results.errors.forEach(error => {
+    results.errors.forEach((error) => {
       console.log(`   ${error}`);
     });
   }
-  
+
   console.log('\n📋 Detailed Logs:');
   console.log('==================');
-  testRunner.getTestLogs().forEach(log => {
+  testRunner.getTestLogs().forEach((log) => {
     console.log(`   ${log}`);
   });
-  
+
   console.log(`\n🏁 Integration test ${results.success ? 'PASSED' : 'FAILED'}`);
-  
+
   if (!results.success) {
     process.exit(1);
   }

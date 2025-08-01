@@ -1,6 +1,6 @@
 /**
  * Configuration Loader
- * 
+ *
  * Loads and validates CLI configuration from multiple sources:
  * - Configuration files (JSON, YAML)
  * - Environment variables
@@ -8,14 +8,11 @@
  * - Default values
  */
 
-import { readFile, access } from 'fs/promises';
-import { join, resolve } from 'path';
-import { homedir } from 'os';
+import { access, readFile } from 'fs/promises';
 import { load as yamlLoad } from 'js-yaml';
-import type {
-  CliConfig,
-  ConfigValidationResult
-} from '../types/index';
+import { homedir } from 'os';
+import { join, resolve } from 'path';
+import type { CliConfig, ConfigValidationResult } from '../types/index';
 
 /**
  * Configuration source types
@@ -24,7 +21,7 @@ export enum ConfigSource {
   DEFAULT = 'default',
   FILE = 'file',
   ENVIRONMENT = 'environment',
-  ARGUMENT = 'argument'
+  ARGUMENT = 'argument',
 }
 
 /**
@@ -43,22 +40,22 @@ export interface ConfigEntry<T = unknown> {
 export interface ConfigLoadOptions {
   /** Configuration file paths to try (in order) */
   configFiles?: string[];
-  
+
   /** Environment variable prefix */
   envPrefix?: string;
-  
+
   /** Whether to load user config from home directory */
   loadUserConfig?: boolean;
-  
+
   /** Whether to load project config from current directory */
   loadProjectConfig?: boolean;
-  
+
   /** Command line arguments to merge */
   cliArgs?: Record<string, unknown>;
-  
+
   /** Validation mode */
   validate?: boolean;
-  
+
   /** Whether to create default config if none found */
   createDefault?: boolean;
 }
@@ -72,13 +69,13 @@ export class ConfigLoader {
     '.claude-zen.yaml',
     '.claude-zen.yml',
     'claude-zen.config.js',
-    'claude-zen.config.json'
+    'claude-zen.config.json',
   ];
 
   private static readonly USER_CONFIG_FILES = [
     '.claude-zen/config.json',
     '.claude-zen/config.yaml',
-    '.config/claude-zen/config.json'
+    '.config/claude-zen/config.json',
   ];
 
   private loadedConfig: CliConfig | null = null;
@@ -95,7 +92,7 @@ export class ConfigLoader {
       loadProjectConfig = true,
       cliArgs = {},
       validate = true,
-      createDefault = true
+      createDefault = true,
     } = options;
 
     // Start with default configuration
@@ -140,7 +137,7 @@ export class ConfigLoader {
 
       if (validation.warnings.length > 0) {
         console.warn('Configuration warnings:');
-        validation.warnings.forEach(w => console.warn(`  - ${w}`));
+        validation.warnings.forEach((w) => console.warn(`  - ${w}`));
       }
     }
 
@@ -158,14 +155,14 @@ export class ConfigLoader {
         version: '2.0.0',
         description: 'Claude-Zen CLI',
         author: 'rUv',
-        license: 'MIT'
+        license: 'MIT',
       },
       defaults: {
         debug: false,
         verbose: false,
         format: 'text',
         timeout: 30000,
-        retries: 3
+        retries: 3,
       },
       plugins: {
         enabled: true,
@@ -177,8 +174,8 @@ export class ConfigLoader {
         security: {
           requireSignatures: false,
           allowedSources: ['local', 'official'],
-          sandboxed: false
-        }
+          sandboxed: false,
+        },
       },
       swarm: {
         enabled: true,
@@ -186,74 +183,76 @@ export class ConfigLoader {
         defaultTopology: 'mesh',
         coordination: {
           strategy: 'balanced',
-          timeout: 30000
-        }
+          timeout: 30000,
+        },
       },
       database: {
         type: 'sqlite',
         connection: {
-          database: 'claude-zen.db'
+          database: 'claude-zen.db',
         },
         pool: {
           min: 1,
           max: 10,
           acquireTimeoutMillis: 30000,
-          idleTimeoutMillis: 600000
+          idleTimeoutMillis: 600000,
         },
         migrations: {
           directory: 'migrations',
           autoRun: true,
-          tableName: 'migrations'
-        }
+          tableName: 'migrations',
+        },
       },
       ui: {
         theme: 'dark',
         animations: {
           enabled: true,
-          duration: 200
-        }
+          duration: 200,
+        },
       },
       logging: {
         level: 'info',
-        outputs: [{
-          type: 'console',
-          enabled: true,
-          config: {}
-        }],
+        outputs: [
+          {
+            type: 'console',
+            enabled: true,
+            config: {},
+          },
+        ],
         format: 'text',
         includeTimestamp: true,
         includeLevel: true,
-        rotateFiles: false
+        rotateFiles: false,
       },
       security: {
         encryption: {
           algorithm: 'aes-256-gcm',
           keySize: 256,
-          keyRotationDays: 30
+          keyRotationDays: 30,
         },
         authentication: {
           enabled: false,
-          provider: 'local'
+          provider: 'local',
         },
         rateLimit: {
           enabled: true,
           windowMs: 60000,
           maxRequests: 100,
-          skipSuccessfulRequests: false
-        }
+          skipSuccessfulRequests: false,
+        },
       },
       performance: {
         caching: {
           enabled: true,
           ttl: 300000,
-          maxSize: 1000
+          maxSize: 1000,
         },
         optimization: {
           enabled: true,
           lazy: true,
-          compression: true
-        }
-      }
+          compression: true,
+        },
+      },
     };
   }
 
@@ -262,22 +261,19 @@ export class ConfigLoader {
    */
   private async loadUserConfig(): Promise<Partial<CliConfig> | null> {
     const homeDir = homedir();
-    
+
     for (const fileName of ConfigLoader.USER_CONFIG_FILES) {
       const configPath = join(homeDir, fileName);
-      
+
       try {
         const config = await this.loadConfigFile(configPath);
         if (config) {
           this.setConfigSource('user', config, ConfigSource.FILE, 10, configPath);
           return config;
         }
-      } catch (error) {
-        // Continue to next file if current one fails
-        continue;
-      }
+      } catch (error) {}
     }
-    
+
     return null;
   }
 
@@ -286,22 +282,19 @@ export class ConfigLoader {
    */
   private async loadProjectConfig(configFiles: string[]): Promise<Partial<CliConfig> | null> {
     const currentDir = process.cwd();
-    
+
     for (const fileName of configFiles) {
       const configPath = join(currentDir, fileName);
-      
+
       try {
         const config = await this.loadConfigFile(configPath);
         if (config) {
           this.setConfigSource('project', config, ConfigSource.FILE, 20, configPath);
           return config;
         }
-      } catch (error) {
-        // Continue to next file if current one fails
-        continue;
-      }
+      } catch (error) {}
     }
-    
+
     return null;
   }
 
@@ -312,7 +305,7 @@ export class ConfigLoader {
     try {
       await access(filePath);
       const content = await readFile(filePath, 'utf-8');
-      
+
       if (filePath.endsWith('.json')) {
         return JSON.parse(content) as Partial<CliConfig>;
       } else if (filePath.endsWith('.yaml') || filePath.endsWith('.yml')) {
@@ -322,7 +315,7 @@ export class ConfigLoader {
         const module = await import(resolve(filePath));
         return module.default || module;
       }
-      
+
       return null;
     } catch (error) {
       return null;
@@ -335,16 +328,20 @@ export class ConfigLoader {
   private loadEnvironmentConfig(prefix: string): Partial<CliConfig> {
     const config: Partial<CliConfig> = {};
     const envPrefix = `${prefix}_`;
-    
+
     // Simple environment variable mapping
     if (process.env[`${envPrefix}DEBUG`]) {
       this.setNestedProperty(config, 'defaults.debug', process.env[`${envPrefix}DEBUG`] === 'true');
     }
-    
+
     if (process.env[`${envPrefix}VERBOSE`]) {
-      this.setNestedProperty(config, 'defaults.verbose', process.env[`${envPrefix}VERBOSE`] === 'true');
+      this.setNestedProperty(
+        config,
+        'defaults.verbose',
+        process.env[`${envPrefix}VERBOSE`] === 'true'
+      );
     }
-    
+
     return config;
   }
 
@@ -354,7 +351,7 @@ export class ConfigLoader {
   private setNestedProperty(obj: any, path: string, value: unknown): void {
     const keys = path.split('.');
     let current = obj;
-    
+
     for (let i = 0; i < keys.length - 1; i++) {
       const key = keys[i];
       if (!(key in current) || typeof current[key] !== 'object') {
@@ -362,7 +359,7 @@ export class ConfigLoader {
       }
       current = current[key];
     }
-    
+
     current[keys[keys.length - 1]] = value;
   }
 
@@ -378,7 +375,7 @@ export class ConfigLoader {
    */
   private deepMerge(target: any, source: any): any {
     const result = { ...target };
-    
+
     for (const key in source) {
       if (source[key] !== null && typeof source[key] === 'object' && !Array.isArray(source[key])) {
         result[key] = this.deepMerge(target[key] || {}, source[key]);
@@ -386,7 +383,7 @@ export class ConfigLoader {
         result[key] = source[key];
       }
     }
-    
+
     return result;
   }
 
@@ -394,10 +391,10 @@ export class ConfigLoader {
    * Set configuration source information
    */
   private setConfigSource(
-    key: string, 
-    value: unknown, 
-    source: ConfigSource, 
-    priority: number, 
+    key: string,
+    value: unknown,
+    source: ConfigSource,
+    priority: number,
     path?: string
   ): void {
     this.configSources.set(key, { value, source, priority, path });
@@ -409,24 +406,24 @@ export class ConfigLoader {
   validate(config: CliConfig): ConfigValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
-    
+
     // Basic validation checks
     if (!config.app?.name) {
       errors.push('Application name is required');
     }
-    
+
     if (!config.app?.version) {
       errors.push('Application version is required');
     }
-    
+
     if (config.swarm?.maxAgents && config.swarm.maxAgents < 1) {
       errors.push('Maximum agents must be at least 1');
     }
-    
+
     return {
       valid: errors.length === 0,
       errors,
-      warnings
+      warnings,
     };
   }
 

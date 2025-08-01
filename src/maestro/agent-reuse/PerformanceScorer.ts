@@ -3,7 +3,7 @@
  * Calculates performance scores for agents based on various metrics
  */
 
-import { WorkloadMetrics } from './WorkloadMonitor';
+import type { WorkloadMetrics } from './WorkloadMonitor';
 
 export interface PerformanceScore {
   overall: number;
@@ -39,7 +39,7 @@ export class PerformanceScorer {
       speed: weights.speed || 0.3,
       reliability: weights.reliability || 0.4,
       resourceEfficiency: weights.resourceEfficiency || 0.2,
-      availability: weights.availability || 0.1
+      availability: weights.availability || 0.1,
     };
   }
 
@@ -65,12 +65,11 @@ export class PerformanceScorer {
     const resourceEfficiency = this.calculateResourceEfficiencyScore(workloadMetrics);
     const availability = this.calculateAvailabilityScore(taskHistory.uptime);
 
-    const overall = (
+    const overall =
       speed * this.weights.speed +
       reliability * this.weights.reliability +
       resourceEfficiency * this.weights.resourceEfficiency +
-      availability * this.weights.availability
-    );
+      availability * this.weights.availability;
 
     const score: PerformanceScore = {
       overall,
@@ -78,7 +77,7 @@ export class PerformanceScorer {
       reliability,
       resourceEfficiency,
       availability,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     this.recordScore(agentId, score, taskHistory);
@@ -109,7 +108,7 @@ export class PerformanceScorer {
 
     const successRate = completedTasks / totalTasks;
     const reliabilityFromErrors = Math.max(0, 1 - errorRate);
-    
+
     // Average of success rate and error-based reliability
     return (successRate + reliabilityFromErrors) / 2;
   }
@@ -121,9 +120,9 @@ export class PerformanceScorer {
     // Lower resource usage = higher efficiency
     const cpuEfficiency = Math.max(0, 1 - metrics.cpuUsage);
     const memoryEfficiency = Math.max(0, 1 - metrics.memoryUsage);
-    
+
     // Weighted average (CPU is more important)
-    return (cpuEfficiency * 0.6 + memoryEfficiency * 0.4);
+    return cpuEfficiency * 0.6 + memoryEfficiency * 0.4;
   }
 
   /**
@@ -154,7 +153,7 @@ export class PerformanceScorer {
         totalTasks: 0,
         successfulTasks: 0,
         averageResponseTime: 0,
-        uptimePercentage: 0
+        uptimePercentage: 0,
       });
     }
 
@@ -192,19 +191,22 @@ export class PerformanceScorer {
     }
 
     const recentScores = history.scores.slice(-count);
-    const sum = recentScores.reduce((acc, score) => ({
-      overall: acc.overall + score.overall,
-      speed: acc.speed + score.speed,
-      reliability: acc.reliability + score.reliability,
-      resourceEfficiency: acc.resourceEfficiency + score.resourceEfficiency,
-      availability: acc.availability + score.availability
-    }), {
-      overall: 0,
-      speed: 0,
-      reliability: 0,
-      resourceEfficiency: 0,
-      availability: 0
-    });
+    const sum = recentScores.reduce(
+      (acc, score) => ({
+        overall: acc.overall + score.overall,
+        speed: acc.speed + score.speed,
+        reliability: acc.reliability + score.reliability,
+        resourceEfficiency: acc.resourceEfficiency + score.resourceEfficiency,
+        availability: acc.availability + score.availability,
+      }),
+      {
+        overall: 0,
+        speed: 0,
+        reliability: 0,
+        resourceEfficiency: 0,
+        availability: 0,
+      }
+    );
 
     const scoreCount = recentScores.length;
     return {
@@ -213,7 +215,7 @@ export class PerformanceScorer {
       reliability: sum.reliability / scoreCount,
       resourceEfficiency: sum.resourceEfficiency / scoreCount,
       availability: sum.availability / scoreCount,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 
@@ -229,11 +231,11 @@ export class PerformanceScorer {
    */
   rankAgents(agentIds: string[]): Array<{ agentId: string; score: number }> {
     const rankings = agentIds
-      .map(agentId => {
+      .map((agentId) => {
         const score = this.getCurrentScore(agentId);
         return {
           agentId,
-          score: score?.overall || 0
+          score: score?.overall || 0,
         };
       })
       .sort((a, b) => b.score - a.score);
@@ -263,13 +265,15 @@ export class PerformanceScorer {
     requiredCapabilities: string[],
     taskContext: any
   ): Promise<Array<{ agent: any; score: number }>> {
-    return candidates.map(agent => {
-      const agentId = agent.id || agent.agentId;
-      const currentScore = this.getCurrentScore(agentId);
-      return {
-        agent,
-        score: currentScore?.overall || 0.5
-      };
-    }).sort((a, b) => b.score - a.score);
+    return candidates
+      .map((agent) => {
+        const agentId = agent.id || agent.agentId;
+        const currentScore = this.getCurrentScore(agentId);
+        return {
+          agent,
+          score: currentScore?.overall || 0.5,
+        };
+      })
+      .sort((a, b) => b.score - a.score);
   }
 }

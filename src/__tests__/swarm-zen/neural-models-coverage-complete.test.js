@@ -9,25 +9,24 @@
  * Target: 1,500+ test assertions for neural models
  */
 
-import { describe, test, expect, beforeEach, afterEach } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import {
-  createNeuralModel,
-  MODEL_PRESETS,
-  getModelPreset,
-  NeuralModel,
-  TransformerModel,
-  CNNModel,
-  GRUModel,
   AutoencoderModel,
+  CNNModel,
+  createNeuralModel,
   GNNModel,
-  ResNetModel,
-  VAEModel,
+  GRUModel,
+  getModelPreset,
   LSTMModel,
+  MODEL_PRESETS,
+  NeuralModel,
+  ResNetModel,
+  TransformerModel,
+  VAEModel,
 } from '../src/neural-models/index.js';
 import { COMPLETE_NEURAL_PRESETS } from '../src/neural-models/neural-presets-complete.js';
 
 describe('🧠 Complete Neural Models Coverage', () => {
-
   // ================================
   // BASE NEURAL MODEL TESTS
   // ================================
@@ -63,22 +62,24 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(model.config.lossFunction).toBe('mse');
     });
 
-    test('should implement forward pass interface', async() => {
+    test('should implement forward pass interface', async () => {
       const model = new NeuralModel({});
       const input = [0.1, 0.2, 0.3];
 
       await expect(model.forward(input)).rejects.toThrow('forward method must be implemented');
     });
 
-    test('should implement backward pass interface', async() => {
+    test('should implement backward pass interface', async () => {
       const model = new NeuralModel({});
       const output = [0.8, 0.2];
       const target = [1.0, 0.0];
 
-      await expect(model.backward(output, target)).rejects.toThrow('backward method must be implemented');
+      await expect(model.backward(output, target)).rejects.toThrow(
+        'backward method must be implemented'
+      );
     });
 
-    test('should implement training interface', async() => {
+    test('should implement training interface', async () => {
       const model = new NeuralModel({});
       const trainingData = { inputs: [], targets: [] };
 
@@ -156,7 +157,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
     test('should create transformer with all presets', () => {
       const presets = ['small', 'base', 'large'];
 
-      presets.forEach(preset => {
+      presets.forEach((preset) => {
         const config = MODEL_PRESETS.transformer[preset];
         const model = new TransformerModel(config);
 
@@ -195,7 +196,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       });
 
       const input = Array.from({ length: 10 }, () =>
-        Array.from({ length: 128 }, () => Math.random()),
+        Array.from({ length: 128 }, () => Math.random())
       );
 
       const attention = model.computeMultiHeadAttention(input, 0);
@@ -214,7 +215,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       });
 
       const input = Array.from({ length: 50 }, () =>
-        Array.from({ length: 256 }, () => Math.random()),
+        Array.from({ length: 256 }, () => Math.random())
       );
 
       const encoded = model.applyPositionalEncoding(input);
@@ -224,7 +225,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(encoded).not.toEqual(input); // Should be modified
     });
 
-    test('should perform forward pass through all layers', async() => {
+    test('should perform forward pass through all layers', async () => {
       const model = new TransformerModel({
         dimensions: 64,
         heads: 2,
@@ -233,7 +234,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       });
 
       const input = Array.from({ length: 5 }, () =>
-        Array.from({ length: 64 }, () => Math.random()),
+        Array.from({ length: 64 }, () => Math.random())
       );
 
       const output = await model.forward(input);
@@ -243,7 +244,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(output[0].length).toBe(64);
     });
 
-    test('should handle variable sequence lengths', async() => {
+    test('should handle variable sequence lengths', async () => {
       const model = new TransformerModel({
         dimensions: 32,
         heads: 2,
@@ -263,7 +264,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       }
     });
 
-    test('should train with teacher forcing', async() => {
+    test('should train with teacher forcing', async () => {
       const model = new TransformerModel({
         dimensions: 32,
         heads: 2,
@@ -272,9 +273,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       });
 
       const trainingData = {
-        inputs: [
-          Array.from({ length: 5 }, () => Array.from({ length: 32 }, () => Math.random())),
-        ],
+        inputs: [Array.from({ length: 5 }, () => Array.from({ length: 32 }, () => Math.random()))],
         targets: [
           Array.from({ length: 5 }, () => Array.from({ length: 100 }, () => Math.random())),
         ],
@@ -287,7 +286,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(model.trainingHistory.length).toBeGreaterThan(0);
     });
 
-    test('should generate text with beam search', async() => {
+    test('should generate text with beam search', async () => {
       const model = new TransformerModel({
         dimensions: 32,
         heads: 2,
@@ -296,7 +295,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       });
 
       const prompt = Array.from({ length: 3 }, () =>
-        Array.from({ length: 32 }, () => Math.random()),
+        Array.from({ length: 32 }, () => Math.random())
       );
 
       const generated = await model.generate(prompt, {
@@ -319,7 +318,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
     test('should create CNN with all presets', () => {
       const presets = ['mnist', 'cifar10', 'imagenet'];
 
-      presets.forEach(preset => {
+      presets.forEach((preset) => {
         const config = MODEL_PRESETS.cnn[preset];
         const model = new CNNModel(config);
 
@@ -357,9 +356,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
         outputSize: 2,
       });
 
-      const input = Array.from({ length: 8 }, () =>
-        Array.from({ length: 8 }, () => Math.random()),
-      );
+      const input = Array.from({ length: 8 }, () => Array.from({ length: 8 }, () => Math.random()));
 
       const output = model.convolve(input, 0);
 
@@ -377,9 +374,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       });
 
       const input = Array.from({ length: 4 }, () =>
-        Array.from({ length: 4 }, () =>
-          Array.from({ length: 2 }, () => Math.random()),
-        ),
+        Array.from({ length: 4 }, () => Array.from({ length: 2 }, () => Math.random()))
       );
 
       const pooled = model.maxPool(input, 2, 2);
@@ -398,9 +393,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       });
 
       const featureMaps = Array.from({ length: 4 }, () =>
-        Array.from({ length: 4 }, () =>
-          Array.from({ length: 3 }, () => Math.random()),
-        ),
+        Array.from({ length: 4 }, () => Array.from({ length: 3 }, () => Math.random()))
       );
 
       const flattened = model.flatten(featureMaps);
@@ -409,32 +402,28 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(flattened.length).toBe(48); // 4 * 4 * 3
     });
 
-    test('should perform forward pass through CNN', async() => {
+    test('should perform forward pass through CNN', async () => {
       const model = new CNNModel({
         inputShape: [8, 8, 1],
-        convLayers: [
-          { filters: 4, kernelSize: 3, stride: 1, activation: 'relu' },
-        ],
+        convLayers: [{ filters: 4, kernelSize: 3, stride: 1, activation: 'relu' }],
         denseLayers: [16],
         outputSize: 3,
         dropoutRate: 0.2,
       });
 
-      const input = Array.from({ length: 8 }, () =>
-        Array.from({ length: 8 }, () => Math.random()),
-      );
+      const input = Array.from({ length: 8 }, () => Array.from({ length: 8 }, () => Math.random()));
 
       const output = await model.forward(input);
 
       expect(output).toBeDefined();
       expect(output.length).toBe(3);
-      output.forEach(val => {
+      output.forEach((val) => {
         expect(val).toBeGreaterThanOrEqual(0);
         expect(val).toBeLessThanOrEqual(1);
       });
     });
 
-    test('should train on image classification', async() => {
+    test('should train on image classification', async () => {
       const model = new CNNModel({
         inputShape: [4, 4, 1],
         convLayers: [{ filters: 2, kernelSize: 2 }],
@@ -444,13 +433,9 @@ describe('🧠 Complete Neural Models Coverage', () => {
 
       const trainingData = {
         inputs: Array.from({ length: 10 }, () =>
-          Array.from({ length: 4 }, () =>
-            Array.from({ length: 4 }, () => Math.random()),
-          ),
+          Array.from({ length: 4 }, () => Array.from({ length: 4 }, () => Math.random()))
         ),
-        targets: Array.from({ length: 10 }, () =>
-          Array.from({ length: 2 }, () => Math.random()),
-        ),
+        targets: Array.from({ length: 10 }, () => Array.from({ length: 2 }, () => Math.random())),
       };
 
       const result = await model.train(trainingData, { epochs: 3 });
@@ -470,9 +455,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
         outputSize: 1,
       });
 
-      const input = Array.from({ length: 5 }, () =>
-        Array.from({ length: 5 }, () => Math.random()),
-      );
+      const input = Array.from({ length: 5 }, () => Array.from({ length: 5 }, () => Math.random()));
 
       const validOutput = model.convolve(input, 0); // Valid padding
       const sameOutput = model.convolve(input, 1); // Same padding
@@ -491,10 +474,8 @@ describe('🧠 Complete Neural Models Coverage', () => {
 
       const batch = Array.from({ length: 4 }, () =>
         Array.from({ length: 2 }, () =>
-          Array.from({ length: 2 }, () =>
-            Array.from({ length: 2 }, () => Math.random()),
-          ),
-        ),
+          Array.from({ length: 2 }, () => Array.from({ length: 2 }, () => Math.random()))
+        )
       );
 
       const normalized = model.batchNormalize(batch, 0);
@@ -513,7 +494,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
     test('should create LSTM with all presets', () => {
       const presets = ['text_generation', 'sentiment_analysis', 'time_series_forecast'];
 
-      presets.forEach(preset => {
+      presets.forEach((preset) => {
         const config = MODEL_PRESETS.lstm[preset];
         const model = new LSTMModel(config);
 
@@ -577,7 +558,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       const output = model.sigmoid(input);
 
       expect(output).toHaveLength(5);
-      output.forEach(val => {
+      output.forEach((val) => {
         expect(val).toBeGreaterThan(0);
         expect(val).toBeLessThan(1);
       });
@@ -596,14 +577,14 @@ describe('🧠 Complete Neural Models Coverage', () => {
       const output = model.tanh(input);
 
       expect(output).toHaveLength(5);
-      output.forEach(val => {
+      output.forEach((val) => {
         expect(val).toBeGreaterThan(-1);
         expect(val).toBeLessThan(1);
       });
       expect(output[2]).toBeCloseTo(0, 1); // tanh(0) = 0
     });
 
-    test('should process sequence forward pass', async() => {
+    test('should process sequence forward pass', async () => {
       const model = new LSTMModel({
         inputSize: 8,
         hiddenSize: 16,
@@ -613,7 +594,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       });
 
       const sequence = Array.from({ length: 10 }, () =>
-        Array.from({ length: 8 }, () => Math.random()),
+        Array.from({ length: 8 }, () => Math.random())
       );
 
       const output = await model.forward(sequence);
@@ -623,7 +604,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(output[0].length).toBe(4);
     });
 
-    test('should handle bidirectional LSTM', async() => {
+    test('should handle bidirectional LSTM', async () => {
       const model = new LSTMModel({
         inputSize: 6,
         hiddenSize: 12,
@@ -634,7 +615,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       });
 
       const sequence = Array.from({ length: 5 }, () =>
-        Array.from({ length: 6 }, () => Math.random()),
+        Array.from({ length: 6 }, () => Math.random())
       );
 
       const output = await model.forward(sequence);
@@ -643,7 +624,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(output.length).toBe(3); // Final output only
     });
 
-    test('should train on sequence data', async() => {
+    test('should train on sequence data', async () => {
       const model = new LSTMModel({
         inputSize: 4,
         hiddenSize: 8,
@@ -653,13 +634,9 @@ describe('🧠 Complete Neural Models Coverage', () => {
 
       const trainingData = {
         inputs: Array.from({ length: 20 }, () =>
-          Array.from({ length: 5 }, () =>
-            Array.from({ length: 4 }, () => Math.random()),
-          ),
+          Array.from({ length: 5 }, () => Array.from({ length: 4 }, () => Math.random()))
         ),
-        targets: Array.from({ length: 20 }, () =>
-          Array.from({ length: 2 }, () => Math.random()),
-        ),
+        targets: Array.from({ length: 20 }, () => Array.from({ length: 2 }, () => Math.random())),
       };
 
       const result = await model.train(trainingData, { epochs: 3 });
@@ -687,7 +664,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(model.cellStates[0]).toEqual(Array(10).fill(0));
     });
 
-    test('should generate sequence', async() => {
+    test('should generate sequence', async () => {
       const model = new LSTMModel({
         inputSize: 3,
         hiddenSize: 6,
@@ -716,7 +693,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
     test('should create GRU with all presets', () => {
       const presets = ['text_classification', 'sequence_generation', 'time_series'];
 
-      presets.forEach(preset => {
+      presets.forEach((preset) => {
         const config = MODEL_PRESETS.gru[preset];
         const model = new GRUModel(config);
 
@@ -763,7 +740,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(hidden.length).toBe(16);
     });
 
-    test('should process sequence through GRU', async() => {
+    test('should process sequence through GRU', async () => {
       const model = new GRUModel({
         inputSize: 12,
         hiddenSize: 24,
@@ -773,7 +750,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       });
 
       const sequence = Array.from({ length: 15 }, () =>
-        Array.from({ length: 12 }, () => Math.random()),
+        Array.from({ length: 12 }, () => Math.random())
       );
 
       const output = await model.forward(sequence);
@@ -783,7 +760,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(output[0].length).toBe(6);
     });
 
-    test('should handle bidirectional GRU', async() => {
+    test('should handle bidirectional GRU', async () => {
       const model = new GRUModel({
         inputSize: 10,
         hiddenSize: 20,
@@ -793,7 +770,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       });
 
       const sequence = Array.from({ length: 8 }, () =>
-        Array.from({ length: 10 }, () => Math.random()),
+        Array.from({ length: 10 }, () => Math.random())
       );
 
       const output = await model.forward(sequence);
@@ -802,7 +779,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(output.length).toBe(5);
     });
 
-    test('should train GRU on text classification', async() => {
+    test('should train GRU on text classification', async () => {
       const model = new GRUModel({
         inputSize: 50,
         hiddenSize: 100,
@@ -813,13 +790,9 @@ describe('🧠 Complete Neural Models Coverage', () => {
 
       const trainingData = {
         inputs: Array.from({ length: 30 }, () =>
-          Array.from({ length: 20 }, () =>
-            Array.from({ length: 50 }, () => Math.random()),
-          ),
+          Array.from({ length: 20 }, () => Array.from({ length: 50 }, () => Math.random()))
         ),
-        targets: Array.from({ length: 30 }, () =>
-          Array.from({ length: 3 }, () => Math.random()),
-        ),
+        targets: Array.from({ length: 30 }, () => Array.from({ length: 3 }, () => Math.random())),
       };
 
       const result = await model.train(trainingData, { epochs: 2 });
@@ -855,7 +828,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
     test('should create autoencoder with all presets', () => {
       const presets = ['mnist_compress', 'image_denoise', 'vae_generation'];
 
-      presets.forEach(preset => {
+      presets.forEach((preset) => {
         const config = MODEL_PRESETS.autoencoder[preset];
         const model = new AutoencoderModel(config);
 
@@ -885,7 +858,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(model.bottleneck).toBeDefined();
     });
 
-    test('should encode input to latent space', async() => {
+    test('should encode input to latent space', async () => {
       const model = new AutoencoderModel({
         inputSize: 100,
         encoderLayers: [80, 60],
@@ -899,7 +872,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(encoded.length).toBe(20);
     });
 
-    test('should decode from latent space', async() => {
+    test('should decode from latent space', async () => {
       const model = new AutoencoderModel({
         inputSize: 100,
         encoderLayers: [80, 60],
@@ -913,7 +886,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(decoded.length).toBe(100);
     });
 
-    test('should perform forward pass (encode + decode)', async() => {
+    test('should perform forward pass (encode + decode)', async () => {
       const model = new AutoencoderModel({
         inputSize: 50,
         encoderLayers: [40, 30],
@@ -932,7 +905,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(output.latent.length).toBe(10);
     });
 
-    test('should train on reconstruction task', async() => {
+    test('should train on reconstruction task', async () => {
       const model = new AutoencoderModel({
         inputSize: 20,
         encoderLayers: [16, 12],
@@ -941,9 +914,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       });
 
       const trainingData = {
-        inputs: Array.from({ length: 50 }, () =>
-          Array.from({ length: 20 }, () => Math.random()),
-        ),
+        inputs: Array.from({ length: 50 }, () => Array.from({ length: 20 }, () => Math.random())),
       };
 
       const result = await model.train(trainingData, { epochs: 5 });
@@ -985,7 +956,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(loss).toBeLessThan(1);
     });
 
-    test('should generate new samples', async() => {
+    test('should generate new samples', async () => {
       const model = new AutoencoderModel({
         inputSize: 16,
         encoderLayers: [12, 8],
@@ -1000,7 +971,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(samples[0].length).toBe(16);
     });
 
-    test('should interpolate between samples', async() => {
+    test('should interpolate between samples', async () => {
       const model = new AutoencoderModel({
         inputSize: 8,
         encoderLayers: [6],
@@ -1026,7 +997,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
     test('should create VAE with all presets', () => {
       const presets = ['mnist_vae', 'cifar_vae', 'beta_vae'];
 
-      presets.forEach(preset => {
+      presets.forEach((preset) => {
         const config = MODEL_PRESETS.vae[preset];
         const model = new VAEModel(config);
 
@@ -1056,7 +1027,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(model.config.betaKL).toBe(1.0);
     });
 
-    test('should encode to mean and log variance', async() => {
+    test('should encode to mean and log variance', async () => {
       const model = new VAEModel({
         inputSize: 100,
         encoderLayers: [80, 60],
@@ -1090,7 +1061,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(sample.length).toBe(5);
     });
 
-    test('should decode from latent sample', async() => {
+    test('should decode from latent sample', async () => {
       const model = new VAEModel({
         inputSize: 64,
         latentDimensions: 8,
@@ -1105,7 +1076,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(decoded.length).toBe(64);
     });
 
-    test('should perform VAE forward pass', async() => {
+    test('should perform VAE forward pass', async () => {
       const model = new VAEModel({
         inputSize: 28,
         latentDimensions: 4,
@@ -1143,7 +1114,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(typeof klDiv).toBe('number');
     });
 
-    test('should train VAE with ELBO loss', async() => {
+    test('should train VAE with ELBO loss', async () => {
       const model = new VAEModel({
         inputSize: 16,
         latentDimensions: 3,
@@ -1153,9 +1124,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       });
 
       const trainingData = {
-        inputs: Array.from({ length: 40 }, () =>
-          Array.from({ length: 16 }, () => Math.random()),
-        ),
+        inputs: Array.from({ length: 40 }, () => Array.from({ length: 16 }, () => Math.random())),
       };
 
       const result = await model.train(trainingData, { epochs: 3 });
@@ -1167,7 +1136,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(model.trainingHistory.length).toBe(3);
     });
 
-    test('should generate new samples from prior', async() => {
+    test('should generate new samples from prior', async () => {
       const model = new VAEModel({
         inputSize: 12,
         latentDimensions: 2,
@@ -1182,7 +1151,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(samples[0].length).toBe(12);
     });
 
-    test('should interpolate in latent space', async() => {
+    test('should interpolate in latent space', async () => {
       const model = new VAEModel({
         inputSize: 20,
         latentDimensions: 4,
@@ -1225,7 +1194,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
     test('should create GNN with all presets', () => {
       const presets = ['social_network', 'molecular', 'knowledge_graph'];
 
-      presets.forEach(preset => {
+      presets.forEach((preset) => {
         const config = MODEL_PRESETS.gnn[preset];
         const model = new GNNModel(config);
 
@@ -1354,7 +1323,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(updated.length).toBe(12);
     });
 
-    test('should perform forward pass on graph', async() => {
+    test('should perform forward pass on graph', async () => {
       const model = new GNNModel({
         nodeDimensions: 3,
         edgeDimensions: 2,
@@ -1385,7 +1354,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(output.nodeOutputs[0].length).toBe(2);
     });
 
-    test('should train on graph classification', async() => {
+    test('should train on graph classification', async () => {
       const model = new GNNModel({
         nodeDimensions: 2,
         edgeDimensions: 1,
@@ -1397,11 +1366,17 @@ describe('🧠 Complete Neural Models Coverage', () => {
       const trainingData = {
         graphs: [
           {
-            nodes: [[0.1, 0.2], [0.3, 0.4]],
+            nodes: [
+              [0.1, 0.2],
+              [0.3, 0.4],
+            ],
             edges: [{ source: 0, target: 1, features: [0.5] }],
           },
           {
-            nodes: [[0.6, 0.7], [0.8, 0.9]],
+            nodes: [
+              [0.6, 0.7],
+              [0.8, 0.9],
+            ],
             edges: [{ source: 0, target: 1, features: [0.1] }],
           },
         ],
@@ -1415,7 +1390,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(model.trainingHistory.length).toBe(2);
     });
 
-    test('should handle different graph sizes', async() => {
+    test('should handle different graph sizes', async () => {
       const model = new GNNModel({
         nodeDimensions: 2,
         hiddenDimensions: 4,
@@ -1453,7 +1428,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
     test('should create ResNet with all presets', () => {
       const presets = ['resnet18', 'resnet34', 'resnet50'];
 
-      presets.forEach(preset => {
+      presets.forEach((preset) => {
         const config = MODEL_PRESETS.resnet[preset];
         const model = new ResNetModel(config);
 
@@ -1492,9 +1467,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       });
 
       const input = Array.from({ length: 8 }, () =>
-        Array.from({ length: 8 }, () =>
-          Array.from({ length: 32 }, () => Math.random()),
-        ),
+        Array.from({ length: 8 }, () => Array.from({ length: 32 }, () => Math.random()))
       );
 
       const output = model.computeResidualBlock(input, 0);
@@ -1513,15 +1486,11 @@ describe('🧠 Complete Neural Models Coverage', () => {
       });
 
       const input = Array.from({ length: 4 }, () =>
-        Array.from({ length: 4 }, () =>
-          Array.from({ length: 16 }, () => Math.random()),
-        ),
+        Array.from({ length: 4 }, () => Array.from({ length: 16 }, () => Math.random()))
       );
 
       const processed = Array.from({ length: 4 }, () =>
-        Array.from({ length: 4 }, () =>
-          Array.from({ length: 16 }, () => Math.random()),
-        ),
+        Array.from({ length: 4 }, () => Array.from({ length: 16 }, () => Math.random()))
       );
 
       const output = model.applySkipConnection(input, processed);
@@ -1542,10 +1511,8 @@ describe('🧠 Complete Neural Models Coverage', () => {
 
       const batch = Array.from({ length: 8 }, () =>
         Array.from({ length: 4 }, () =>
-          Array.from({ length: 4 }, () =>
-            Array.from({ length: 16 }, () => Math.random()),
-          ),
-        ),
+          Array.from({ length: 4 }, () => Array.from({ length: 16 }, () => Math.random()))
+        )
       );
 
       const normalized = model.batchNormalize(batch, 0);
@@ -1563,9 +1530,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       });
 
       const featureMaps = Array.from({ length: 8 }, () =>
-        Array.from({ length: 8 }, () =>
-          Array.from({ length: 64 }, () => Math.random()),
-        ),
+        Array.from({ length: 8 }, () => Array.from({ length: 64 }, () => Math.random()))
       );
 
       const pooled = model.globalAveragePool(featureMaps);
@@ -1574,7 +1539,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       expect(pooled.length).toBe(64);
     });
 
-    test('should perform forward pass through ResNet', async() => {
+    test('should perform forward pass through ResNet', async () => {
       const model = new ResNetModel({
         numBlocks: 2,
         blockDepth: 1,
@@ -1584,21 +1549,19 @@ describe('🧠 Complete Neural Models Coverage', () => {
         outputDimensions: 5,
       });
 
-      const input = Array.from({ length: 8 }, () =>
-        Array.from({ length: 8 }, () => Math.random()),
-      );
+      const input = Array.from({ length: 8 }, () => Array.from({ length: 8 }, () => Math.random()));
 
       const output = await model.forward(input);
 
       expect(output).toBeDefined();
       expect(output.length).toBe(5);
-      output.forEach(val => {
+      output.forEach((val) => {
         expect(val).toBeGreaterThanOrEqual(0);
         expect(val).toBeLessThanOrEqual(1);
       });
     });
 
-    test('should train ResNet on classification', async() => {
+    test('should train ResNet on classification', async () => {
       const model = new ResNetModel({
         numBlocks: 1,
         blockDepth: 1,
@@ -1610,13 +1573,9 @@ describe('🧠 Complete Neural Models Coverage', () => {
 
       const trainingData = {
         inputs: Array.from({ length: 20 }, () =>
-          Array.from({ length: 4 }, () =>
-            Array.from({ length: 4 }, () => Math.random()),
-          ),
+          Array.from({ length: 4 }, () => Array.from({ length: 4 }, () => Math.random()))
         ),
-        targets: Array.from({ length: 20 }, () =>
-          Array.from({ length: 3 }, () => Math.random()),
-        ),
+        targets: Array.from({ length: 20 }, () => Array.from({ length: 3 }, () => Math.random())),
       };
 
       const result = await model.train(trainingData, { epochs: 2 });
@@ -1633,7 +1592,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
         { name: 'ResNet-50', numBlocks: 8, blockDepth: 3 },
       ];
 
-      architectures.forEach(arch => {
+      architectures.forEach((arch) => {
         const model = new ResNetModel({
           numBlocks: arch.numBlocks,
           blockDepth: arch.blockDepth,
@@ -1667,9 +1626,7 @@ describe('🧠 Complete Neural Models Coverage', () => {
       });
 
       const input = Array.from({ length: 8 }, () =>
-        Array.from({ length: 8 }, () =>
-          Array.from({ length: 16 }, () => Math.random()),
-        ),
+        Array.from({ length: 8 }, () => Array.from({ length: 16 }, () => Math.random()))
       );
 
       const downsampled = model.downsample(input, 2);

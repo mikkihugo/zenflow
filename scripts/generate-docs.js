@@ -92,7 +92,7 @@ class DocumentationGenerator {
   }
 
   parseJSDocComment(comment) {
-    const lines = comment.split('\n').map(line => line.replace(/^\s*\*\s?/, '').trim());
+    const lines = comment.split('\n').map((line) => line.replace(/^\s*\*\s?/, '').trim());
     const doc = {
       description: '',
       params: [],
@@ -171,9 +171,9 @@ This documentation is automatically generated from JSDoc comments in the source 
 `;
 
     // Generate table of contents
-    apiDocs.forEach(fileDoc => {
+    apiDocs.forEach((fileDoc) => {
       markdown += `- [${fileDoc.file}](#${this.slugify(fileDoc.file)})\n`;
-      fileDoc.docs.forEach(doc => {
+      fileDoc.docs.forEach((doc) => {
         markdown += `  - [${doc.name}](#${this.slugify(doc.name)})\n`;
       });
     });
@@ -181,10 +181,10 @@ This documentation is automatically generated from JSDoc comments in the source 
     markdown += '\n---\n\n';
 
     // Generate detailed documentation
-    apiDocs.forEach(fileDoc => {
+    apiDocs.forEach((fileDoc) => {
       markdown += `## ${fileDoc.file}\n\n`;
 
-      fileDoc.docs.forEach(doc => {
+      fileDoc.docs.forEach((doc) => {
         markdown += `### ${doc.name}\n\n`;
 
         if (doc.description) {
@@ -193,7 +193,7 @@ This documentation is automatically generated from JSDoc comments in the source 
 
         if (doc.params.length > 0) {
           markdown += '**Parameters:**\n\n';
-          doc.params.forEach(param => {
+          doc.params.forEach((param) => {
             markdown += `- \`${param.name}\` (\`${param.type}\`): ${param.description}\n`;
           });
           markdown += '\n';
@@ -211,7 +211,7 @@ This documentation is automatically generated from JSDoc comments in the source 
 
         if (doc.tags.length > 0) {
           markdown += '**Tags:**\n\n';
-          doc.tags.forEach(tag => {
+          doc.tags.forEach((tag) => {
             markdown += `- **${tag.name}**: ${tag.value}\n`;
           });
           markdown += '\n';

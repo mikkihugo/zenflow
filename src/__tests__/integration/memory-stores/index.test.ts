@@ -1,12 +1,12 @@
 /**
  * Memory Stores Integration Test Suite Index
- * 
+ *
  * This file provides a comprehensive test runner and integration point
  * for all memory store tests, demonstrating the hybrid testing approach
  * with both London School (mocked dependencies) and Classical School (real operations).
  */
 
-import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
 
 // Import all memory store test modules
 import './sqlite-persistence.test';
@@ -33,7 +33,7 @@ class MemoryStoreTestRunner {
     passedTests: 0,
     failedTests: 0,
     duration: 0,
-    coverage: { london: 0, classical: 0 }
+    coverage: { london: 0, classical: 0 },
   };
 
   private startTime: number = 0;
@@ -94,13 +94,13 @@ describe('Memory Stores Integration Test Suite', () => {
           benefits: ['Fast execution', 'Isolated tests', 'Predictable results'],
           examples: [
             'Mock SQLite connections',
-            'Mock LanceDB database operations', 
+            'Mock LanceDB database operations',
             'Mock storage backends',
             'Mock cache implementations',
-            'Mock corruption scenarios'
-          ]
+            'Mock corruption scenarios',
+          ],
         },
-        
+
         classical: {
           description: 'Test real implementations and data flow',
           benefits: ['Real behavior validation', 'Integration confidence', 'Performance insights'],
@@ -109,8 +109,8 @@ describe('Memory Stores Integration Test Suite', () => {
             'Real vector similarity calculations',
             'True session lifecycle management',
             'Actual cache algorithm performance',
-            'Real data integrity validation'
-          ]
+            'Real data integrity validation',
+          ],
         },
 
         hybrid: {
@@ -120,9 +120,9 @@ describe('Memory Stores Integration Test Suite', () => {
             'Implementation correctness (Classical)',
             'Performance benchmarking',
             'Edge case handling',
-            'System integration validation'
-          ]
-        }
+            'System integration validation',
+          ],
+        },
       };
 
       expect(testingApproaches.london.examples).toHaveLength(5);
@@ -132,10 +132,10 @@ describe('Memory Stores Integration Test Suite', () => {
       // Verify that we have tests covering all major areas
       const testAreas = [
         'sqlite-persistence',
-        'lancedb-vector-operations', 
+        'lancedb-vector-operations',
         'session-management',
         'cache-performance',
-        'data-integrity'
+        'data-integrity',
       ];
 
       expect(testAreas).toHaveLength(5);
@@ -145,28 +145,28 @@ describe('Memory Stores Integration Test Suite', () => {
       const coverageAreas = {
         persistence: {
           london: ['Mock database connections', 'Mock query execution'],
-          classical: ['Real data storage', 'Actual persistence validation']
+          classical: ['Real data storage', 'Actual persistence validation'],
         },
-        
+
         vectorOperations: {
           london: ['Mock vector database', 'Mock search operations'],
-          classical: ['Real similarity calculations', 'Actual vector math']
+          classical: ['Real similarity calculations', 'Actual vector math'],
         },
-        
+
         sessionManagement: {
           london: ['Mock session storage', 'Mock lifecycle events'],
-          classical: ['Real session data', 'Actual expiration handling']  
+          classical: ['Real session data', 'Actual expiration handling'],
         },
-        
+
         cachePerformance: {
           london: ['Mock cache strategies', 'Mock eviction policies'],
-          classical: ['Real performance measurement', 'Actual algorithm comparison']
+          classical: ['Real performance measurement', 'Actual algorithm comparison'],
         },
-        
+
         dataIntegrity: {
           london: ['Mock corruption scenarios', 'Mock repair attempts'],
-          classical: ['Real checksum validation', 'Actual data recovery']
-        }
+          classical: ['Real checksum validation', 'Actual data recovery'],
+        },
       };
 
       // Verify comprehensive coverage
@@ -183,32 +183,36 @@ describe('Memory Stores Integration Test Suite', () => {
         {
           category: 'SQLite Operations',
           metrics: ['Writes per second', 'Reads per second', 'Concurrent operations'],
-          approach: 'Classical - actual database operations'
+          approach: 'Classical - actual database operations',
         },
         {
-          category: 'Vector Calculations', 
-          metrics: ['Similarity computations/sec', 'High-dimensional performance', 'Batch processing'],
-          approach: 'Classical - real mathematical operations'
+          category: 'Vector Calculations',
+          metrics: [
+            'Similarity computations/sec',
+            'High-dimensional performance',
+            'Batch processing',
+          ],
+          approach: 'Classical - real mathematical operations',
         },
         {
           category: 'Cache Performance',
           metrics: ['Hit rate optimization', 'Eviction efficiency', 'Memory usage'],
-          approach: 'Classical - actual cache algorithm performance'
+          approach: 'Classical - actual cache algorithm performance',
         },
         {
           category: 'Session Management',
           metrics: ['Session creation rate', 'Cleanup efficiency', 'Concurrent access'],
-          approach: 'Classical - real session lifecycle operations'
+          approach: 'Classical - real session lifecycle operations',
         },
         {
           category: 'Data Integrity',
           metrics: ['Validation speed', 'Repair success rate', 'Corruption detection'],
-          approach: 'Classical - actual integrity operations'
-        }
+          approach: 'Classical - actual integrity operations',
+        },
       ];
 
       expect(benchmarkCategories).toHaveLength(5);
-      benchmarkCategories.forEach(benchmark => {
+      benchmarkCategories.forEach((benchmark) => {
         expect(benchmark.metrics).toHaveLength(3);
         expect(benchmark.approach).toContain('Classical');
       });
@@ -218,41 +222,41 @@ describe('Memory Stores Integration Test Suite', () => {
       const errorScenarios = {
         sqliteErrors: [
           'Connection failures',
-          'Disk space exhaustion', 
+          'Disk space exhaustion',
           'Concurrent access conflicts',
-          'Corruption recovery'
+          'Corruption recovery',
         ],
-        
+
         vectorErrors: [
           'Dimension mismatches',
           'Invalid vector data',
           'Memory limitations',
-          'Calculation overflow'
+          'Calculation overflow',
         ],
-        
+
         sessionErrors: [
           'Expired session access',
           'Concurrent modifications',
           'Storage failures',
-          'Cleanup failures'
+          'Cleanup failures',
         ],
-        
+
         cacheErrors: [
           'Memory pressure',
           'Eviction failures',
           'Strategy conflicts',
-          'Performance degradation'
+          'Performance degradation',
         ],
-        
+
         integrityErrors: [
           'Checksum validation failures',
           'Repair impossibility',
           'Corruption detection limits',
-          'Backup unavailability'
-        ]
+          'Backup unavailability',
+        ],
       };
 
-      Object.values(errorScenarios).forEach(scenarios => {
+      Object.values(errorScenarios).forEach((scenarios) => {
         expect(scenarios).toHaveLength(4);
       });
 
@@ -264,32 +268,32 @@ describe('Memory Stores Integration Test Suite', () => {
         {
           pattern: 'High-frequency reads with occasional writes',
           stores: ['Cache', 'SQLite'],
-          testingApproach: 'Classical for performance, London for error injection'
+          testingApproach: 'Classical for performance, London for error injection',
         },
         {
           pattern: 'Vector similarity search with caching',
           stores: ['LanceDB', 'Cache'],
-          testingApproach: 'Classical for math accuracy, London for database mocking'
+          testingApproach: 'Classical for math accuracy, London for database mocking',
         },
         {
           pattern: 'Session-based data with expiration',
           stores: ['Session Management', 'SQLite'],
-          testingApproach: 'Classical for lifecycle, London for storage failures'
+          testingApproach: 'Classical for lifecycle, London for storage failures',
         },
         {
           pattern: 'Data integrity with automatic repair',
           stores: ['Data Integrity', 'All stores'],
-          testingApproach: 'Classical for validation, London for corruption simulation'
+          testingApproach: 'Classical for validation, London for corruption simulation',
         },
         {
           pattern: 'Multi-store coordination and consistency',
           stores: ['All stores'],
-          testingApproach: 'Hybrid for comprehensive integration testing'
-        }
+          testingApproach: 'Hybrid for comprehensive integration testing',
+        },
       ];
 
       expect(usagePatterns).toHaveLength(5);
-      usagePatterns.forEach(pattern => {
+      usagePatterns.forEach((pattern) => {
         expect(pattern.stores.length).toBeGreaterThan(0);
         expect(pattern.testingApproach).toBeDefined();
       });
@@ -303,22 +307,22 @@ describe('Memory Stores Integration Test Suite', () => {
           totalSuites: 5,
           estimatedTests: 150, // Approximate based on all test files
           coverageTypes: ['London', 'Classical', 'Hybrid'],
-          performanceBenchmarks: 15 // Estimated performance tests
+          performanceBenchmarks: 15, // Estimated performance tests
         },
-        
+
         testDistribution: {
           londonTests: 60, // ~40% - Fast isolated tests
-          classicalTests: 75, // ~50% - Real implementation tests  
-          hybridIntegration: 15 // ~10% - Combined approach tests
+          classicalTests: 75, // ~50% - Real implementation tests
+          hybridIntegration: 15, // ~10% - Combined approach tests
         },
-        
+
         qualityIndicators: {
           mockUsage: 'Appropriate - External dependencies only',
           realDataTesting: 'Comprehensive - All core operations',
           performanceTesting: 'Included - Benchmarks for each component',
           errorTesting: 'Thorough - Edge cases and failures',
-          integrationTesting: 'Complete - Cross-component interactions'
-        }
+          integrationTesting: 'Complete - Cross-component interactions',
+        },
       };
 
       expect(qualityMetrics.testExecution.totalSuites).toBe(5);

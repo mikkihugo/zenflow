@@ -149,7 +149,6 @@ class TDDLondonTestRunner {
       }
 
       return { success: failed === 0, passed, failed, skipped };
-
     } catch (error) {
       console.error(`Failed to run ${suite.name}`);
       log(error.message, 'red');
@@ -201,8 +200,8 @@ class TDDLondonTestRunner {
     log(`   Failed: ${this.results.failed}`, this.results.failed > 0 ? 'red' : 'green');
     log(`   Skipped: ${this.results.skipped}`, 'yellow');
 
-    const successRate = this.results.total > 0 ?
-      Math.round((this.results.passed / this.results.total) * 100) : 0;
+    const successRate =
+      this.results.total > 0 ? Math.round((this.results.passed / this.results.total) * 100) : 0;
 
     log(`\n🎯 Success Rate: ${successRate}%`, successRate >= 80 ? 'green' : 'red');
 
@@ -230,8 +229,9 @@ class TDDLondonTestRunner {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const runner = new TDDLondonTestRunner();
 
-  runner.runAllTests()
-    .then(success => {
+  runner
+    .runAllTests()
+    .then((success) => {
       if (success) {
         log('\n🎯 TDD London School validation complete!', 'green');
         process.exit(0);
@@ -240,7 +240,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
         process.exit(1);
       }
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('Test runner crashed:');
       console.error(error);
       process.exit(1);

@@ -3,7 +3,7 @@
  * Runs all edge case tests and provides comprehensive coverage summary
  */
 
-import { describe, it, expect } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -22,7 +22,7 @@ describe('Edge Case Test Suite - Complete Coverage', () => {
   it('should have all edge case test files present', () => {
     const fs = require('fs');
 
-    edgeCaseTests.forEach(testFile => {
+    edgeCaseTests.forEach((testFile) => {
       const fullPath = path.join(__dirname, testFile);
       expect(fs.existsSync(fullPath)).toBe(true);
     });
@@ -260,11 +260,11 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   console.log('🚀 Starting edge case test suite...');
 
   runAllEdgeCaseTests()
-    .then(results => {
+    .then((results) => {
       console.log('🎉 Edge case test suite completed');
       console.log('Results:', results);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('💥 Test suite failed:', error);
       process.exit(1);
     });

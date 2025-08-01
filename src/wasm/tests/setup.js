@@ -11,14 +11,13 @@ global.navigator = {
 };
 
 global.WebAssembly = global.WebAssembly || {
-  Module: function() {},
-  instantiate: function() {
-    return Promise.resolve({
+  Module: () => {},
+  instantiate: () =>
+    Promise.resolve({
       instance: {
         exports: {},
       },
-    });
-  },
+    }),
 };
 
 // Setup test utilities

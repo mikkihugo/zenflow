@@ -246,7 +246,6 @@ __global__ void customKernel(float* input, float* output, int n) {
       this.updatePerformanceMetrics(result.profile);
 
       this.log('✅ Transpilation completed successfully');
-
     } catch (error) {
       this.log('❌ Transpilation failed:', error.message);
       this.displayError(error.message);
@@ -259,7 +258,7 @@ __global__ void customKernel(float* input, float* output, int n) {
 
   async simulateTranspilation(code) {
     // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Mock transpilation result
     return {
@@ -369,7 +368,6 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       this.displayAnalysis(result);
 
       this.log('✅ Analysis completed');
-
     } catch (error) {
       this.log('❌ Analysis failed:', error.message);
     } finally {
@@ -379,7 +377,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
 
   async simulateAnalysis(code) {
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
     return {
       memoryPattern: 'coalesced',
@@ -392,9 +390,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         'Consider using grid-stride loop',
         'Thread utilization is excellent',
       ],
-      bottlenecks: [
-        { type: 'memory', severity: 'low', description: 'Memory bandwidth limited' },
-      ],
+      bottlenecks: [{ type: 'memory', severity: 'low', description: 'Memory bandwidth limited' }],
     };
   }
 
@@ -410,7 +406,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
 
   switchTab(tab) {
     // Update tab buttons
-    document.querySelectorAll('[id^="tab-"]').forEach(btn => {
+    document.querySelectorAll('[id^="tab-"]').forEach((btn) => {
       btn.className = 'px-3 py-1 bg-gray-600 text-white rounded';
     });
     document.getElementById(`tab-${tab}`).className = 'px-3 py-1 bg-blue-500 text-white rounded';
@@ -423,21 +419,24 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         if (this.currentTranspilation) {
           outputArea.innerHTML = `<pre><code class="language-wasm">${this.escapeHtml(this.currentTranspilation.wasm)}</code></pre>`;
         } else {
-          outputArea.innerHTML = '<div class="text-gray-400 text-center pt-20">Transpile code to see WebAssembly output</div>';
+          outputArea.innerHTML =
+            '<div class="text-gray-400 text-center pt-20">Transpile code to see WebAssembly output</div>';
         }
         break;
       case 'webgpu':
         if (this.currentTranspilation) {
           outputArea.innerHTML = `<pre><code class="language-glsl">${this.escapeHtml(this.currentTranspilation.webgpu)}</code></pre>`;
         } else {
-          outputArea.innerHTML = '<div class="text-gray-400 text-center pt-20">Transpile code to see WebGPU shader</div>';
+          outputArea.innerHTML =
+            '<div class="text-gray-400 text-center pt-20">Transpile code to see WebGPU shader</div>';
         }
         break;
       case 'analysis':
         if (this.currentAnalysis) {
           outputArea.innerHTML = this.formatAnalysis(this.currentAnalysis);
         } else {
-          outputArea.innerHTML = '<div class="text-gray-400 text-center pt-20">Analyze code to see performance insights</div>';
+          outputArea.innerHTML =
+            '<div class="text-gray-400 text-center pt-20">Analyze code to see performance insights</div>';
         }
         break;
     }
@@ -459,7 +458,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
                 <div>
                     <h3 class="text-lg font-semibold mb-2">Optimization Suggestions</h3>
                     <ul class="text-sm space-y-1">
-                        ${analysis.suggestions.map(s => `<li class="text-green-400">• ${s}</li>`).join('')}
+                        ${analysis.suggestions.map((s) => `<li class="text-green-400">• ${s}</li>`).join('')}
                     </ul>
                 </div>
                 
@@ -479,10 +478,14 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   updatePerformanceMetrics(profile) {
     if (!profile) return;
 
-    document.getElementById('exec-time').textContent = `${profile.estimatedPerformance.executionTime.toFixed(2)} ms`;
-    document.getElementById('throughput').textContent = `${profile.estimatedPerformance.throughput.toFixed(1)} GOPS`;
-    document.getElementById('memory-usage').textContent = `${(profile.binarySize / 1024).toFixed(1)} KB`;
-    document.getElementById('efficiency').textContent = `${(profile.estimatedPerformance.throughput / 10 * 100).toFixed(0)}%`;
+    document.getElementById('exec-time').textContent =
+      `${profile.estimatedPerformance.executionTime.toFixed(2)} ms`;
+    document.getElementById('throughput').textContent =
+      `${profile.estimatedPerformance.throughput.toFixed(1)} GOPS`;
+    document.getElementById('memory-usage').textContent =
+      `${(profile.binarySize / 1024).toFixed(1)} KB`;
+    document.getElementById('efficiency').textContent =
+      `${((profile.estimatedPerformance.throughput / 10) * 100).toFixed(0)}%`;
   }
 
   async runKernel() {
@@ -499,7 +502,6 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
 
       this.log(`✅ Kernel executed successfully in ${result.executionTime.toFixed(2)}ms`);
       this.log(`📊 Processed ${result.elementsProcessed} elements`);
-
     } catch (error) {
       this.log('❌ Kernel execution failed:', error.message);
     } finally {
@@ -533,7 +535,6 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
           memoryBandwidth: results.bandwidth,
         },
       });
-
     } catch (error) {
       this.log('❌ Benchmark failed:', error.message);
     } finally {
@@ -551,7 +552,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
 
   async simulateKernelExecution(config) {
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     return {
       executionTime: 0.5 + Math.random() * 2,
@@ -566,7 +567,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     const baseTime = 0.5 + Math.random() * 0.5;
 
     for (let i = 0; i < config.iterations; i++) {
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 10));
       times.push(baseTime + (Math.random() - 0.5) * 0.2);
     }
 
@@ -578,7 +579,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       minTime: times[0],
       maxTime: times[times.length - 1],
       throughput: config.dataSize / avgTime / 1000,
-      bandwidth: config.dataSize * 3 * 4 / avgTime / 1000000,
+      bandwidth: (config.dataSize * 3 * 4) / avgTime / 1000000,
     };
   }
 

@@ -4,11 +4,11 @@
  */
 
 import { exec } from 'child_process';
-import { promisify } from 'util';
-import { readFile, writeFile, mkdir, access, unlink, rm } from 'fs/promises';
-import { join } from 'path';
 import { existsSync } from 'fs';
+import { access, mkdir, readFile, rm, unlink, writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
+import { join } from 'path';
+import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
@@ -20,20 +20,24 @@ describe('Maestro Steering CLI End-to-End', () => {
     // Create temporary test directory
     testDirectory = join(tmpdir(), `maestro-steering-cli-test-${Date.now()}`);
     await mkdir(testDirectory, { recursive: true });
-    
+
     // Change to test directory
     originalCwd = process.cwd();
     process.chdir(testDirectory);
 
     // Setup test project structure
-    await mkdir(join(testDirectory, '.claude', 'claude-flow', 'maestro', 'steering'), { recursive: true });
-    await mkdir(join(testDirectory, '.claude', 'claude-flow', 'maestro', 'specs'), { recursive: true });
+    await mkdir(join(testDirectory, '.claude', 'claude-flow', 'maestro', 'steering'), {
+      recursive: true,
+    });
+    await mkdir(join(testDirectory, '.claude', 'claude-flow', 'maestro', 'specs'), {
+      recursive: true,
+    });
   });
 
   afterAll(async () => {
     // Restore original directory
     process.chdir(originalCwd);
-    
+
     // Cleanup test directory
     try {
       if (existsSync(testDirectory)) {
@@ -47,23 +51,31 @@ describe('Maestro Steering CLI End-to-End', () => {
   describe('maestro init-steering command', () => {
     it('should create steering document with default content', async () => {
       const domain = 'cli-test-default';
-      
+
       // Note: This would be the actual CLI command if the system was fully built
       // For testing purposes, we simulate the command execution
       const command = `npx claude-flow maestro init-steering ${domain}`;
-      
+
       try {
         // Simulate CLI command execution
         await simulateInitSteeringCommand(domain);
-        
+
         // Verify steering document was created
-        const steeringPath = join(testDirectory, '.claude', 'claude-flow', 'maestro', 'steering', `${domain}.md`);
+        const steeringPath = join(
+          testDirectory,
+          '.claude',
+          'claude-flow',
+          'maestro',
+          'steering',
+          `${domain}.md`
+        );
         expect(existsSync(steeringPath)).toBe(true);
-        
+
         const content = await readFile(steeringPath, 'utf8');
-        expect(content).toContain(`# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document`);
+        expect(content).toContain(
+          `# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document`
+        );
         expect(content).toContain('## Guidelines');
-        
       } catch (error) {
         // If CLI is not available, document the expected behavior
         console.log('CLI command simulation:', command);
@@ -74,31 +86,46 @@ describe('Maestro Steering CLI End-to-End', () => {
     it('should create steering document with custom content', async () => {
       const domain = 'cli-test-custom';
       const customContent = 'Custom steering guidelines for testing';
-      
+
       try {
         await simulateInitSteeringCommand(domain, customContent);
-        
-        const steeringPath = join(testDirectory, '.claude', 'claude-flow', 'maestro', 'steering', `${domain}.md`);
+
+        const steeringPath = join(
+          testDirectory,
+          '.claude',
+          'claude-flow',
+          'maestro',
+          'steering',
+          `${domain}.md`
+        );
         expect(existsSync(steeringPath)).toBe(true);
-        
+
         const content = await readFile(steeringPath, 'utf8');
         expect(content).toContain(customContent);
-        
       } catch (error) {
-        console.log('CLI command would be:', `npx claude-flow maestro init-steering ${domain} -c "${customContent}"`);
+        console.log(
+          'CLI command would be:',
+          `npx claude-flow maestro init-steering ${domain} -c "${customContent}"`
+        );
       }
     });
 
     it('should handle multiple steering document creation', async () => {
       const domains = ['multi-product', 'multi-tech', 'multi-structure'];
-      
+
       for (const domain of domains) {
         try {
           await simulateInitSteeringCommand(domain, `Guidelines for ${domain}`);
-          
-          const steeringPath = join(testDirectory, '.claude', 'claude-flow', 'maestro', 'steering', `${domain}.md`);
+
+          const steeringPath = join(
+            testDirectory,
+            '.claude',
+            'claude-flow',
+            'maestro',
+            'steering',
+            `${domain}.md`
+          );
           expect(existsSync(steeringPath)).toBe(true);
-          
         } catch (error) {
           console.log('CLI command would be:', `npx claude-flow maestro init-steering ${domain}`);
         }
@@ -117,46 +144,63 @@ describe('Maestro Steering CLI End-to-End', () => {
     it('should create spec with steering context integration', async () => {
       const featureName = 'cli-auth-system';
       const request = 'Implement secure user authentication with modern standards';
-      
+
       try {
         await simulateCreateSpecCommand(featureName, request);
-        
-        const specPath = join(testDirectory, '.claude', 'claude-flow', 'maestro', 'specs', featureName, 'requirements.md');
+
+        const specPath = join(
+          testDirectory,
+          '.claude',
+          'claude-flow',
+          'maestro',
+          'specs',
+          featureName,
+          'requirements.md'
+        );
         expect(existsSync(specPath)).toBe(true);
-        
+
         const content = await readFile(specPath, 'utf8');
         expect(content).toContain(`# Requirements for ${featureName}`);
         expect(content).toContain(request);
-        
+
         // Should include steering context if properly integrated
         // expect(content).toContain('Steering Context Applied');
-        
       } catch (error) {
-        console.log('CLI command would be:', `npx claude-flow maestro create-spec ${featureName} -r "${request}"`);
+        console.log(
+          'CLI command would be:',
+          `npx claude-flow maestro create-spec ${featureName} -r "${request}"`
+        );
       }
     });
 
     it('should complete full workflow from steering to implementation', async () => {
       const featureName = 'cli-full-workflow';
       const request = 'Complete workflow testing feature';
-      
+
       try {
         // 1. Create spec
         await simulateCreateSpecCommand(featureName, request);
-        
+
         // 2. Generate design (would use steering context)
         await simulateGenerateDesignCommand(featureName);
-        
+
         // 3. Generate tasks
         await simulateGenerateTasksCommand(featureName);
-        
+
         // 4. Verify all files were created
         const specFiles = ['requirements.md', 'design.md', 'tasks.md'];
         for (const file of specFiles) {
-          const filePath = join(testDirectory, '.claude', 'claude-flow', 'maestro', 'specs', featureName, file);
+          const filePath = join(
+            testDirectory,
+            '.claude',
+            'claude-flow',
+            'maestro',
+            'specs',
+            featureName,
+            file
+          );
           expect(existsSync(filePath)).toBe(true);
         }
-        
       } catch (error) {
         console.log('Full workflow CLI commands would be:');
         console.log(`1. npx claude-flow maestro create-spec ${featureName} -r "${request}"`);
@@ -169,7 +213,7 @@ describe('Maestro Steering CLI End-to-End', () => {
   describe('CLI error handling and validation', () => {
     it('should handle invalid domain names in steering creation', async () => {
       const invalidDomains = ['', 'domain/with/slashes', 'domain with spaces'];
-      
+
       for (const invalidDomain of invalidDomains) {
         try {
           await simulateInitSteeringCommand(invalidDomain);
@@ -186,34 +230,40 @@ describe('Maestro Steering CLI End-to-End', () => {
         // Try to create spec without proper project structure
         const tempDir = join(tmpdir(), 'no-structure-test');
         await mkdir(tempDir, { recursive: true });
-        
+
         const originalDir = process.cwd();
         process.chdir(tempDir);
-        
+
         await simulateCreateSpecCommand('test-feature', 'test request');
-        
+
         process.chdir(originalDir);
         await rm(tempDir, { recursive: true });
-        
       } catch (error) {
-        expect(error.message).toContain('directory') || expect(error.message).toContain('structure');
+        expect(error.message).toContain('directory') ||
+          expect(error.message).toContain('structure');
       }
     });
 
     it('should validate steering document content and structure', async () => {
       const domain = 'validation-test';
-      
+
       try {
         await simulateInitSteeringCommand(domain, 'Valid content for testing');
-        
-        const steeringPath = join(testDirectory, '.claude', 'claude-flow', 'maestro', 'steering', `${domain}.md`);
+
+        const steeringPath = join(
+          testDirectory,
+          '.claude',
+          'claude-flow',
+          'maestro',
+          'steering',
+          `${domain}.md`
+        );
         const content = await readFile(steeringPath, 'utf8');
-        
+
         // Validate structure
         expect(content).toMatch(/^# .+ Steering Document$/m);
         expect(content).toContain('## Guidelines');
         expect(content.length).toBeGreaterThan(100);
-        
       } catch (error) {
         console.log('Validation test would check steering document structure');
       }
@@ -223,16 +273,15 @@ describe('Maestro Steering CLI End-to-End', () => {
   describe('CLI performance and usability', () => {
     it('should complete steering operations within acceptable time', async () => {
       const startTime = Date.now();
-      
+
       try {
         await simulateInitSteeringCommand('performance-test', 'Performance testing content');
-        
+
         const endTime = Date.now();
         const duration = endTime - startTime;
-        
+
         // Should complete within 5 seconds for single operation
         expect(duration).toBeLessThan(5000);
-        
       } catch (error) {
         console.log('Performance test would measure CLI command execution time');
       }
@@ -241,13 +290,12 @@ describe('Maestro Steering CLI End-to-End', () => {
     it('should provide clear progress feedback during operations', async () => {
       // This would test actual CLI output for progress indicators
       const domain = 'feedback-test';
-      
+
       try {
         const result = await simulateInitSteeringCommand(domain, 'Feedback testing');
-        
+
         // CLI should provide status updates
         expect(result).toBeDefined();
-        
       } catch (error) {
         console.log('CLI should provide feedback like:');
         console.log('📋 Creating steering document for feedback-test...');
@@ -257,20 +305,26 @@ describe('Maestro Steering CLI End-to-End', () => {
 
     it('should handle concurrent CLI operations gracefully', async () => {
       const domains = ['concurrent-1', 'concurrent-2', 'concurrent-3'];
-      
+
       try {
-        const promises = domains.map(domain => 
+        const promises = domains.map((domain) =>
           simulateInitSteeringCommand(domain, `Concurrent content for ${domain}`)
         );
-        
+
         await Promise.all(promises);
-        
+
         // Verify all operations completed successfully
         for (const domain of domains) {
-          const steeringPath = join(testDirectory, '.claude', 'claude-flow', 'maestro', 'steering', `${domain}.md`);
+          const steeringPath = join(
+            testDirectory,
+            '.claude',
+            'claude-flow',
+            'maestro',
+            'steering',
+            `${domain}.md`
+          );
           expect(existsSync(steeringPath)).toBe(true);
         }
-        
       } catch (error) {
         console.log('Concurrent CLI operations should be handled gracefully');
       }
@@ -284,7 +338,7 @@ describe('Maestro Steering CLI End-to-End', () => {
     // Simulate the maestro init-steering command
     const steeringDir = join(testDirectory, '.claude', 'claude-flow', 'maestro', 'steering');
     await mkdir(steeringDir, { recursive: true });
-    
+
     const steeringContent = content || `Guidelines and standards for ${domain} domain development.`;
     const documentContent = `# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document
 
@@ -294,10 +348,10 @@ ${steeringContent}
 
 [Provide specific guidelines for the '${domain}' domain. E.g., API design, testing, security, coding style.]
 `;
-    
+
     const steeringPath = join(steeringDir, `${domain}.md`);
     await writeFile(steeringPath, documentContent, 'utf8');
-    
+
     return { success: true, path: steeringPath };
   }
 
@@ -305,7 +359,7 @@ ${steeringContent}
     // Simulate the maestro create-spec command
     const specDir = join(testDirectory, '.claude', 'claude-flow', 'maestro', 'specs', featureName);
     await mkdir(specDir, { recursive: true });
-    
+
     const requirementsContent = `# Requirements for ${featureName}
 
 ## High-Level Request
@@ -328,10 +382,10 @@ ${request}
 
 *Generated by Maestro CLI Simulation*
 `;
-    
+
     const requirementsPath = join(specDir, 'requirements.md');
     await writeFile(requirementsPath, requirementsContent, 'utf8');
-    
+
     return { success: true, path: requirementsPath };
   }
 
@@ -359,10 +413,18 @@ Performance benchmarks and optimization strategies.
 
 *Generated by Maestro CLI Simulation*
 `;
-    
-    const designPath = join(testDirectory, '.claude', 'claude-flow', 'maestro', 'specs', featureName, 'design.md');
+
+    const designPath = join(
+      testDirectory,
+      '.claude',
+      'claude-flow',
+      'maestro',
+      'specs',
+      featureName,
+      'design.md'
+    );
     await writeFile(designPath, designContent, 'utf8');
-    
+
     return { success: true, path: designPath };
   }
 
@@ -391,10 +453,18 @@ Performance benchmarks and optimization strategies.
 
 *Generated by Maestro CLI Simulation*
 `;
-    
-    const tasksPath = join(testDirectory, '.claude', 'claude-flow', 'maestro', 'specs', featureName, 'tasks.md');
+
+    const tasksPath = join(
+      testDirectory,
+      '.claude',
+      'claude-flow',
+      'maestro',
+      'specs',
+      featureName,
+      'tasks.md'
+    );
     await writeFile(tasksPath, tasksContent, 'utf8');
-    
+
     return { success: true, path: tasksPath };
   }
 });

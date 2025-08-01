@@ -7,8 +7,8 @@ const { execSync } = require('child_process');
 console.log('🚀 CUDA-Rust-WASM Post-install Setup');
 
 // Check if we're in development (npm link) or production
-const isDev = process.env.npm_lifecycle_event === 'install' &&
-              process.cwd().includes('cuda-rust-wasm');
+const isDev =
+  process.env.npm_lifecycle_event === 'install' && process.cwd().includes('cuda-rust-wasm');
 
 if (isDev) {
   console.log('📋 Development mode detected, skipping post-install');
@@ -32,7 +32,7 @@ const optionalDeps = [
 ];
 
 console.log('📋 Checking optional dependencies...');
-optionalDeps.forEach(dep => {
+optionalDeps.forEach((dep) => {
   try {
     execSync(`which ${dep.name}`, { stdio: 'ignore' });
     console.log(`  ✅ ${dep.name} found`);
@@ -82,10 +82,7 @@ async function main() {
 main();
 `;
 
-  fs.writeFileSync(
-    path.join(exampleDir, 'vector_add.js'),
-    exampleContent,
-  );
+  fs.writeFileSync(path.join(exampleDir, 'vector_add.js'), exampleContent);
 
   console.log('✅ Example created at cuda-examples/vector_add.js');
 }

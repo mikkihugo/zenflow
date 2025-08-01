@@ -3,10 +3,10 @@
  * Shows how to use inline mocks instead of separate mock files
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import {
-  createMockWasmModule,
   createMockWasmLoader,
+  createMockWasmModule,
   createWasmModuleSpy,
   WasmModuleTestDouble,
 } from '../helpers/wasm-test-helpers.js';
@@ -64,19 +64,28 @@ describe('TDD London Style WASM Testing Examples', () => {
       module.destroy(swarmId);
 
       // Assert - Verify interaction sequence
-      expect(wasmSpy.verifyInteractionSequence([
-        'init',
-        'createSwarm',
-        'addAgent',
-        'assignTask',
-        'getState',
-        'destroy',
-      ])).toBe(true);
+      expect(
+        wasmSpy.verifyInteractionSequence([
+          'init',
+          'createSwarm',
+          'addAgent',
+          'assignTask',
+          'getState',
+          'destroy',
+        ])
+      ).toBe(true);
 
       // Verify no unexpected interactions
-      expect(wasmSpy.verifyNoUnexpectedInteractions([
-        'init', 'createSwarm', 'addAgent', 'assignTask', 'getState', 'destroy',
-      ])).toBe(true);
+      expect(
+        wasmSpy.verifyNoUnexpectedInteractions([
+          'init',
+          'createSwarm',
+          'addAgent',
+          'assignTask',
+          'getState',
+          'destroy',
+        ])
+      ).toBe(true);
 
       // Check specific interactions
       const interactions = wasmSpy.getInteractions();

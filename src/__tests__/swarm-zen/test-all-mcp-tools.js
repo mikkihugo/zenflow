@@ -5,9 +5,9 @@
  */
 
 import { spawn } from 'child_process';
+import fs from 'fs';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -78,7 +78,7 @@ async function executeMcpTool(toolName, args = {}) {
     });
 
     // Send request
-    mcp.stdin.write(`${JSON.stringify(request) }\n`);
+    mcp.stdin.write(`${JSON.stringify(request)}\n`);
     mcp.stdin.end();
   });
 }
@@ -86,7 +86,7 @@ async function executeMcpTool(toolName, args = {}) {
 // Test all MCP tools
 async function testAllMcpTools() {
   log('\n🚀 Starting Comprehensive MCP Tools Test Suite', 'cyan');
-  log('=' .repeat(60), 'cyan');
+  log('='.repeat(60), 'cyan');
 
   const results = {
     passed: 0,
@@ -121,7 +121,7 @@ async function testAllMcpTools() {
       type,
       name: `agent-${type}-${index + 1}`,
       capabilities: [`capability-${index + 1}`, `capability-${index + 2}`],
-    }),
+    })
   );
 
   try {
@@ -310,9 +310,9 @@ async function testAllMcpTools() {
   }
 
   // Summary
-  log(`\n${ '=' .repeat(60)}`, 'cyan');
+  log(`\n${'='.repeat(60)}`, 'cyan');
   log('📊 Test Summary', 'cyan');
-  log('=' .repeat(60), 'cyan');
+  log('='.repeat(60), 'cyan');
   log(`Total Tests: ${results.passed + results.failed}`, 'blue');
   log(`Passed: ${results.passed}`, 'green');
   log(`Failed: ${results.failed}`, results.failed > 0 ? 'red' : 'green');
@@ -321,7 +321,8 @@ async function testAllMcpTools() {
   log('\nTool Results:', 'blue');
   Object.entries(results.tools).forEach(([tool, result]) => {
     const status = result.status === 'passed' ? '✅' : result.status === 'failed' ? '❌' : '⚠️';
-    const color = result.status === 'passed' ? 'green' : result.status === 'failed' ? 'red' : 'yellow';
+    const color =
+      result.status === 'passed' ? 'green' : result.status === 'failed' ? 'red' : 'yellow';
     log(`  ${status} ${tool}: ${result.status.toUpperCase()}`, color);
   });
 
@@ -333,14 +334,14 @@ async function testAllMcpTools() {
   }
 
   // Final result
-  log(`\n${ '=' .repeat(60)}`, 'cyan');
+  log(`\n${'='.repeat(60)}`, 'cyan');
   if (results.failed === 0) {
     log('🎉 All MCP tools are working correctly!', 'green');
     log('✨ The 5-agent swarm was successfully created and tested.', 'green');
   } else {
     log('⚠️  Some tests failed. Please check the errors above.', 'red');
   }
-  log('=' .repeat(60), 'cyan');
+  log('='.repeat(60), 'cyan');
 
   // Save detailed results
   const resultsPath = path.join(__dirname, 'mcp-test-results.json');
@@ -349,7 +350,7 @@ async function testAllMcpTools() {
 }
 
 // Run tests
-testAllMcpTools().catch(error => {
+testAllMcpTools().catch((error) => {
   log('\n💥 Fatal error during testing:', 'red');
   log(error.message, 'red');
   process.exit(1);

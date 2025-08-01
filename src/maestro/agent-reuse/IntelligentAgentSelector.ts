@@ -3,27 +3,27 @@
  * Implements SOLID principles with strategy pattern for optimization approaches
  */
 
-import { ILogger } from '../../core/logger';
-import { AgentManager } from '../../agents/agent-manager';
-import {
-  TaskContext,
-  SelectionOptions,
-  ExecutionOptions,
-  AgentSelection,
-  TaskResult,
-  RegisteredAgent,
-  AvailableAgent,
-  ScoredAgent,
-  AcquiredAgent,
-  TaskDefinition,
-  AgentReuseConfig,
-  DEFAULT_AGENT_REUSE_CONFIG
-} from './types';
-import { AgentRegistry } from './AgentRegistry';
-import { AgentPoolManager } from './AgentPoolManager';
-import { WorkloadMonitor } from './WorkloadMonitor';
-import { PerformanceScorer } from './PerformanceScorer';
+import type { AgentManager } from '../../agents/agent-manager';
+import type { ILogger } from '../../core/logger';
+import type { AgentPoolManager } from './AgentPoolManager';
+import type { AgentRegistry } from './AgentRegistry';
+import type { PerformanceScorer } from './PerformanceScorer';
 import { BalancedSelectionStrategy } from './strategies/BalancedSelectionStrategy';
+import {
+  type AcquiredAgent,
+  type AgentReuseConfig,
+  type AgentSelection,
+  AvailableAgent,
+  DEFAULT_AGENT_REUSE_CONFIG,
+  type ExecutionOptions,
+  RegisteredAgent,
+  ScoredAgent,
+  type SelectionOptions,
+  type TaskContext,
+  type TaskDefinition,
+  type TaskResult,
+} from './types';
+import type { WorkloadMonitor } from './WorkloadMonitor';
 
 /**
  * Central orchestrator for intelligent agent selection and reuse
@@ -35,7 +35,7 @@ export class IntelligentAgentSelector {
 
   constructor(
     private agentRegistry: AgentRegistry,
-    private poolManager: AgentPoolManager, 
+    private poolManager: AgentPoolManager,
     private workloadMonitor: WorkloadMonitor,
     private performanceScorer: PerformanceScorer,
     private agentManager: AgentManager,
@@ -56,23 +56,24 @@ export class IntelligentAgentSelector {
     options: SelectionOptions = {}
   ): Promise<AgentSelection> {
     const startTime = Date.now();
-    
+
     try {
       this.logger.info(`Selecting agents for capabilities: [${requiredCapabilities.join(', ')}]`);
 
       // Step 1: Find candidates with matching capabilities
       const candidates = await this.agentRegistry.findCapableAgents(requiredCapabilities);
-      
+
       if (candidates.length === 0) {
-        this.logger.warn(`No agents found with required capabilities: [${requiredCapabilities.join(', ')}]`);
+        this.logger.warn(
+          `No agents found with required capabilities: [${requiredCapabilities.join(', ')}]`
+        );
         return this.createEmptySelection('No capable agents found');
       }
 
       // Step 2: Apply workload filtering to get available agents
-      const availableCandidates = await this.workloadMonitor.filterByAvailability(
-        candidates,
-        { capabilities: requiredCapabilities }
-      );
+      const availableCandidates = await this.workloadMonitor.filterByAvailability(candidates, {
+        capabilities: requiredCapabilities,
+      });
 
       if (availableCandidates.length === 0) {
         this.logger.warn('No available agents found after workload filtering');
@@ -90,14 +91,19 @@ export class IntelligentAgentSelector {
       const selection = this.selectionStrategy.selectAgents(scoredCandidates, options);
 
       const selectionTime = Date.now() - startTime;
-      this.logger.info(`Agent selection completed in ${selectionTime}ms, selected ${selection.selectedAgents.length} agents`);
+      this.logger.info(
+        `Agent selection completed in ${selectionTime}ms, selected ${selection.selectedAgents.length} agents`
+      );
 
       return selection;
-
     } catch (error) {
       const selectionTime = Date.now() - startTime;
-      this.logger.error(`Agent selection failed after ${selectionTime}ms: ${error instanceof Error ? error.message : String(error)}`);
-      return this.createEmptySelection(`Selection failed: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        `Agent selection failed after ${selectionTime}ms: ${error instanceof Error ? error.message : String(error)}`
+      );
+      return this.createEmptySelection(
+        `Selection failed: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 
@@ -123,7 +129,7 @@ export class IntelligentAgentSelector {
         featureName: task.metadata?.featureName,
         priority: task.priority,
         complexity: this.determineComplexity(task),
-        metadata: task.metadata
+        metadata: task.metadata,
       };
 
       // Step 1: Acquire optimal agents (reuse-first strategy)
@@ -146,35 +152,37 @@ export class IntelligentAgentSelector {
       await this.updateAgentPerformanceMetrics(agents, result);
 
       const executionTime = Date.now() - executionStart;
-      this.logger.info(`Task ${task.id} completed in ${executionTime}ms using ${agents.length} agents`);
+      this.logger.info(
+        `Task ${task.id} completed in ${executionTime}ms using ${agents.length} agents`
+      );
 
       return {
         ...result,
         duration: executionTime,
-        agentMetrics: this.generateAgentMetrics(agents, result)
+        agentMetrics: this.generateAgentMetrics(agents, result),
       };
-
     } catch (error) {
       const executionTime = Date.now() - executionStart;
-      this.logger.error(`Task execution failed after ${executionTime}ms: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        `Task execution failed after ${executionTime}ms: ${error instanceof Error ? error.message : String(error)}`
+      );
 
       return {
         success: false,
         duration: executionTime,
         agentMetrics: [],
-        error: error as Error
+        error: error as Error,
       };
-
     } finally {
       // Step 4: Release agents back to pool
       if (acquiredAgents.length > 0) {
         await this.poolManager.releaseAgents(
-          acquiredAgents.map(a => a.id),
+          acquiredAgents.map((a) => a.id),
           {
             id: task.id,
             type: task.type,
             priority: task.priority,
-            complexity: 'medium'
+            complexity: 'medium',
           }
         );
       }
@@ -193,19 +201,16 @@ export class IntelligentAgentSelector {
     // For now, use the first agent (primary) for execution
     // Future enhancement: parallel execution across multiple agents
     const primaryAgent = agents[0];
-    
+
     try {
       // Update agent status to busy
       await this.agentRegistry.updateAgentStatus(primaryAgent.id, 'busy', {
         assignedTask: task.id,
-        startTime: new Date()
+        startTime: new Date(),
       });
 
       // Track task assignment for workload monitoring
-      this.workloadMonitor.trackTaskAssignment(
-        primaryAgent.id,
-        task.id
-      );
+      this.workloadMonitor.trackTaskAssignment(primaryAgent.id, task.id);
 
       // Execute through existing orchestrator infrastructure (simplified)
       // In real implementation, this would integrate with the main orchestrator
@@ -221,16 +226,15 @@ export class IntelligentAgentSelector {
       // Update agent status back to available
       await this.agentRegistry.updateAgentStatus(primaryAgent.id, 'available', {
         lastTask: task.id,
-        completedAt: new Date()
+        completedAt: new Date(),
       });
 
       return executionResult;
-
     } catch (error) {
       // Update agent status on error
       await this.agentRegistry.updateAgentStatus(primaryAgent.id, 'error', {
         lastError: error instanceof Error ? error.message : String(error),
-        errorAt: new Date()
+        errorAt: new Date(),
       });
 
       throw error;
@@ -241,15 +245,18 @@ export class IntelligentAgentSelector {
    * Simulate task execution (placeholder for integration with main orchestrator)
    * In production, this would delegate to the main orchestrator system
    */
-  private async simulateTaskExecution(task: TaskDefinition, agent: AcquiredAgent): Promise<TaskResult> {
+  private async simulateTaskExecution(
+    task: TaskDefinition,
+    agent: AcquiredAgent
+  ): Promise<TaskResult> {
     // Simulate variable execution time based on task complexity
     const baseTime = 1000; // 1 second base
-    const complexityMultiplier = task.metadata?.complexity === 'high' ? 3 : 
-                                task.metadata?.complexity === 'medium' ? 2 : 1;
+    const complexityMultiplier =
+      task.metadata?.complexity === 'high' ? 3 : task.metadata?.complexity === 'medium' ? 2 : 1;
     const executionTime = baseTime * complexityMultiplier;
 
     // Simulate execution delay
-    await new Promise(resolve => setTimeout(resolve, Math.min(executionTime, 5000)));
+    await new Promise((resolve) => setTimeout(resolve, Math.min(executionTime, 5000)));
 
     // Simulate success/failure based on agent reliability (90% success rate)
     const success = Math.random() > 0.1;
@@ -259,7 +266,7 @@ export class IntelligentAgentSelector {
       output: success ? { result: `Task ${task.id} completed by agent ${agent.id}` } : undefined,
       duration: executionTime,
       agentMetrics: [],
-      error: success ? undefined : new Error('Simulated task execution failure')
+      error: success ? undefined : new Error('Simulated task execution failure'),
     };
   }
 
@@ -280,13 +287,13 @@ export class IntelligentAgentSelector {
               result.duration // Use actual duration as estimated for now
             );
           } else {
-            registeredAgent.performanceHistory.addFailure(
-              result.error?.message || 'Unknown error'
-            );
+            registeredAgent.performanceHistory.addFailure(result.error?.message || 'Unknown error');
           }
         }
       } catch (error) {
-        this.logger.warn(`Failed to update performance metrics for agent ${agent.id}: ${error instanceof Error ? error.message : String(error)}`);
+        this.logger.warn(
+          `Failed to update performance metrics for agent ${agent.id}: ${error instanceof Error ? error.message : String(error)}`
+        );
       }
     }
   }
@@ -295,13 +302,13 @@ export class IntelligentAgentSelector {
    * Generate comprehensive agent metrics for reporting
    */
   private generateAgentMetrics(agents: AcquiredAgent[], result: TaskResult): any[] {
-    return agents.map(agent => ({
+    return agents.map((agent) => ({
       agentId: agent.id,
       taskDuration: result.duration,
       cpuUsage: Math.random() * 50, // Simulated
       memoryUsage: Math.random() * 100, // Simulated
       successRate: result.success ? 1.0 : 0.0,
-      qualityScore: result.success ? 0.8 + Math.random() * 0.2 : 0.0
+      qualityScore: result.success ? 0.8 + Math.random() * 0.2 : 0.0,
     }));
   }
 
@@ -317,7 +324,7 @@ export class IntelligentAgentSelector {
     // Determine based on task type
     const highComplexityTypes = ['system-design', 'architecture', 'complex-implementation'];
     const mediumComplexityTypes = ['implementation', 'testing', 'code-review'];
-    
+
     if (highComplexityTypes.includes(task.type)) return 'high';
     if (mediumComplexityTypes.includes(task.type)) return 'medium';
     return 'low';
@@ -332,7 +339,7 @@ export class IntelligentAgentSelector {
       alternativeAgents: [],
       selectionReason: reason,
       confidence: 0,
-      estimatedSuccess: 0
+      estimatedSuccess: 0,
     };
   }
 
@@ -349,7 +356,7 @@ export class IntelligentAgentSelector {
       registry: this.agentRegistry.getRegistryStats(),
       workload: this.workloadMonitor.getWorkloadStatistics(),
       pool: await this.poolManager.getPoolStatistics(),
-      reuse: await this.getReuseStatistics()
+      reuse: await this.getReuseStatistics(),
     };
   }
 
@@ -367,7 +374,7 @@ export class IntelligentAgentSelector {
       totalTasks: 100,
       reusedTasks: 75,
       reuseRate: 0.75,
-      averageSelectionTime: 35
+      averageSelectionTime: 35,
     };
   }
 
@@ -376,11 +383,13 @@ export class IntelligentAgentSelector {
    */
   async optimizeSystem(): Promise<any> {
     this.logger.info('Starting system optimization');
-    
+
     const poolOptimization = await this.poolManager.optimizePool();
-    
-    this.logger.info(`System optimization completed with ${poolOptimization.results.length} optimizations applied`);
-    
+
+    this.logger.info(
+      `System optimization completed with ${poolOptimization.results.length} optimizations applied`
+    );
+
     return poolOptimization;
   }
 
@@ -389,12 +398,12 @@ export class IntelligentAgentSelector {
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down Intelligent Agent Selector');
-    
+
     // Cleanup would be implemented here
     // - Stop monitoring intervals
     // - Release all agents
     // - Clear registries
-    
+
     this.logger.info('Intelligent Agent Selector shutdown complete');
   }
 }

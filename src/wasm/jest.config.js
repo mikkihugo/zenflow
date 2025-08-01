@@ -1,9 +1,6 @@
 module.exports = {
   testEnvironment: 'node',
-  testMatch: [
-    '**/__tests__/**/*.test.js',
-    '**/?(*.)+(spec|test).js',
-  ],
+  testMatch: ['**/__tests__/**/*.test.js', '**/?(*.)+(spec|test).js'],
   collectCoverageFrom: [
     'dist/**/*.js',
     'cli/**/*.js',
@@ -12,14 +9,8 @@ module.exports = {
     '!**/node_modules/**',
   ],
   coverageDirectory: 'coverage',
-  coverageReporters: [
-    'text',
-    'lcov',
-    'html',
-  ],
-  setupFilesAfterEnv: [
-    '<rootDir>/tests/setup.js',
-  ],
+  coverageReporters: ['text', 'lcov', 'html'],
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
   testTimeout: 30000,
   verbose: true,
   forceExit: true,

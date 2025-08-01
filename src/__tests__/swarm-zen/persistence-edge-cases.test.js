@@ -2,7 +2,7 @@
  * Edge case and error handling tests for persistence module
  */
 
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import Database from 'better-sqlite3';
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -51,18 +51,18 @@ describe('PersistenceManager Edge Cases', () => {
   });
 
   describe('Database Connection Issues', () => {
-    it('should handle database initialization failure', async() => {
+    it('should handle database initialization failure', async () => {
       Database.mockImplementation(() => {
         throw new Error('Cannot open database');
       });
 
-      await expect(async() => {
+      await expect(async () => {
         const _persistence = new PersistenceManager();
         return _persistence; // Assign to variable to avoid 'new' for side effects
       }).rejects.toThrow('Cannot open database');
     });
 
-    it('should handle database corruption', async() => {
+    it('should handle database corruption', async () => {
       mockDb.exec.mockImplementation(() => {
         throw new Error('Database disk image is malformed');
       });
@@ -70,7 +70,7 @@ describe('PersistenceManager Edge Cases', () => {
       await expect(persistence.initialize()).rejects.toThrow('malformed');
     });
 
-    it('should retry on database lock', async() => {
+    it('should retry on database lock', async () => {
       let attempts = 0;
       mockStmt.run.mockImplementation(() => {
         attempts++;
@@ -89,11 +89,11 @@ describe('PersistenceManager Edge Cases', () => {
   });
 
   describe('Memory Storage Edge Cases', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await persistence.initialize();
     });
 
-    it('should handle extremely large memory values', async() => {
+    it('should handle extremely large memory values', async () => {
       const largeData = {
         array: new Array(10000).fill('x'.repeat(100)),
         nested: {},
@@ -112,20 +112,21 @@ describe('PersistenceManager Edge Cases', () => {
       expect(result).toBe(true);
     });
 
-    it('should handle circular references in memory data', async() => {
+    it('should handle circular references in memory data', async () => {
       const circularData = { name: 'test' };
       circularData.self = circularData;
 
-      await expect(persistence.storeMemory('circular', circularData))
-        .rejects.toThrow('Converting circular structure');
+      await expect(persistence.storeMemory('circular', circularData)).rejects.toThrow(
+        'Converting circular structure'
+      );
     });
 
-    it('should handle special characters in keys', async() => {
+    it('should handle special characters in keys', async () => {
       const specialKeys = [
         'key/with/slashes',
         'key with spaces',
         'key"with"quotes',
-        'key\'with\'apostrophes',
+        "key'with'apostrophes",
         'key\\with\\backslashes',
         'key\nwith\nnewlines',
         'key\twith\ttabs',
@@ -145,23 +146,19 @@ describe('PersistenceManager Edge Cases', () => {
       }
     });
 
-    it('should handle null and undefined values', async() => {
+    it('should handle null and undefined values', async () => {
       mockStmt.run.mockReturnValue({ changes: 1 });
 
-      await expect(persistence.storeMemory(null, {}))
-        .rejects.toThrow();
+      await expect(persistence.storeMemory(null, {})).rejects.toThrow();
 
-      await expect(persistence.storeMemory(undefined, {}))
-        .rejects.toThrow();
+      await expect(persistence.storeMemory(undefined, {})).rejects.toThrow();
 
-      await expect(persistence.storeMemory('key', null))
-        .rejects.toThrow();
+      await expect(persistence.storeMemory('key', null)).rejects.toThrow();
 
-      await expect(persistence.storeMemory('key', undefined))
-        .rejects.toThrow();
+      await expect(persistence.storeMemory('key', undefined)).rejects.toThrow();
     });
 
-    it('should handle concurrent memory operations', async() => {
+    it('should handle concurrent memory operations', async () => {
       mockStmt.run.mockReturnValue({ changes: 1 });
 
       const promises = [];
@@ -170,45 +167,44 @@ describe('PersistenceManager Edge Cases', () => {
       }
 
       const results = await Promise.all(promises);
-      expect(results.every(r => r === true)).toBe(true);
+      expect(results.every((r) => r === true)).toBe(true);
     });
   });
 
   describe('Memory Retrieval Edge Cases', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await persistence.initialize();
     });
 
-    it('should handle corrupted JSON data', async() => {
+    it('should handle corrupted JSON data', async () => {
       mockStmt.get.mockReturnValue({ value: 'invalid json{' });
 
       const result = await persistence.retrieveMemory('corrupted');
       expect(result).toBeNull();
     });
 
-    it('should handle missing memory gracefully', async() => {
+    it('should handle missing memory gracefully', async () => {
       mockStmt.get.mockReturnValue(undefined);
 
       const result = await persistence.retrieveMemory('nonexistent');
       expect(result).toBeNull();
     });
 
-    it('should handle database errors during retrieval', async() => {
+    it('should handle database errors during retrieval', async () => {
       mockStmt.get.mockImplementation(() => {
         throw new Error('Disk I/O error');
       });
 
-      await expect(persistence.retrieveMemory('key'))
-        .rejects.toThrow('Disk I/O error');
+      await expect(persistence.retrieveMemory('key')).rejects.toThrow('Disk I/O error');
     });
   });
 
   describe('Memory Listing Edge Cases', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await persistence.initialize();
     });
 
-    it('should handle complex glob patterns', async() => {
+    it('should handle complex glob patterns', async () => {
       const patterns = [
         '**/deep/path/**',
         '[a-z]*[0-9]',
@@ -228,19 +224,21 @@ describe('PersistenceManager Edge Cases', () => {
       }
     });
 
-    it('should handle empty results', async() => {
+    it('should handle empty results', async () => {
       mockStmt.all.mockReturnValue([]);
 
       const results = await persistence.listMemory('*');
       expect(results).toEqual([]);
     });
 
-    it('should handle very large result sets', async() => {
-      const largeResults = Array(10000).fill(null).map((_, i) => ({
-        key: `key-${i}`,
-        value: '{"data": "test"}',
-        metadata: '{"accessed": 0}',
-      }));
+    it('should handle very large result sets', async () => {
+      const largeResults = Array(10000)
+        .fill(null)
+        .map((_, i) => ({
+          key: `key-${i}`,
+          value: '{"data": "test"}',
+          metadata: '{"accessed": 0}',
+        }));
 
       mockStmt.all.mockReturnValue(largeResults);
 
@@ -250,19 +248,19 @@ describe('PersistenceManager Edge Cases', () => {
   });
 
   describe('Neural Model Edge Cases', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await persistence.initialize();
     });
 
-    it('should handle invalid model data', async() => {
-      await expect(persistence.saveNeuralModel('agent1', 'model1', null))
-        .rejects.toThrow();
+    it('should handle invalid model data', async () => {
+      await expect(persistence.saveNeuralModel('agent1', 'model1', null)).rejects.toThrow();
 
-      await expect(persistence.saveNeuralModel('agent1', 'model1', 'not-an-object'))
-        .rejects.toThrow();
+      await expect(
+        persistence.saveNeuralModel('agent1', 'model1', 'not-an-object')
+      ).rejects.toThrow();
     });
 
-    it('should handle model name conflicts', async() => {
+    it('should handle model name conflicts', async () => {
       const modelData = { weights: [1, 2, 3] };
 
       mockStmt.run.mockReturnValue({ changes: 1 });
@@ -277,7 +275,7 @@ describe('PersistenceManager Edge Cases', () => {
       expect(mockStmt.run).toHaveBeenCalledTimes(2);
     });
 
-    it('should handle large neural models', async() => {
+    it('should handle large neural models', async () => {
       const largeModel = {
         weights: new Array(1000000).fill(0).map(() => Math.random()),
         biases: new Array(10000).fill(0).map(() => Math.random()),
@@ -294,16 +292,15 @@ describe('PersistenceManager Edge Cases', () => {
   });
 
   describe('Training Data Edge Cases', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await persistence.initialize();
     });
 
-    it('should handle empty training data', async() => {
-      await expect(persistence.saveTrainingData('session1', []))
-        .rejects.toThrow();
+    it('should handle empty training data', async () => {
+      await expect(persistence.saveTrainingData('session1', [])).rejects.toThrow();
     });
 
-    it('should handle malformed training data', async() => {
+    it('should handle malformed training data', async () => {
       const malformedData = [
         { input: [1, 2], output: [1] },
         { input: [1], output: [1, 2] }, // Mismatched dimensions
@@ -318,7 +315,7 @@ describe('PersistenceManager Edge Cases', () => {
       expect(result).toBe(true);
     });
 
-    it('should handle training data with NaN or Infinity', async() => {
+    it('should handle training data with NaN or Infinity', async () => {
       const problematicData = [
         { input: [1, NaN, 3], output: [1] },
         { input: [1, 2, 3], output: [Infinity] },
@@ -333,15 +330,15 @@ describe('PersistenceManager Edge Cases', () => {
   });
 
   describe('Database Maintenance Edge Cases', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await persistence.initialize();
     });
 
-    it('should handle cleanup during active operations', async() => {
+    it('should handle cleanup during active operations', async () => {
       // Simulate active operations
-      const storePromises = Array(10).fill(null).map((_, i) =>
-        persistence.storeMemory(`active-${i}`, { data: i }),
-      );
+      const storePromises = Array(10)
+        .fill(null)
+        .map((_, i) => persistence.storeMemory(`active-${i}`, { data: i }));
 
       // Run cleanup while operations are in progress
       const cleanupPromise = persistence.cleanup();
@@ -352,18 +349,17 @@ describe('PersistenceManager Edge Cases', () => {
       expect(mockDb.exec).toHaveBeenCalledWith('VACUUM');
     });
 
-    it('should handle database close with pending operations', async() => {
+    it('should handle database close with pending operations', async () => {
       const pendingOps = [];
 
       // Create operations that will be pending
       for (let i = 0; i < 5; i++) {
         pendingOps.push(
-          new Promise(resolve => {
+          new Promise((resolve) => {
             setTimeout(() => {
-              persistence.storeMemory(`pending-${i}`, { data: i })
-                .then(resolve);
+              persistence.storeMemory(`pending-${i}`, { data: i }).then(resolve);
             }, 100);
-          }),
+          })
         );
       }
 
@@ -374,7 +370,7 @@ describe('PersistenceManager Edge Cases', () => {
       await expect(Promise.all(pendingOps)).rejects.toThrow();
     });
 
-    it('should handle VACUUM failure', async() => {
+    it('should handle VACUUM failure', async () => {
       mockDb.exec.mockImplementation((sql) => {
         if (sql === 'VACUUM') {
           throw new Error('database or disk is full');
@@ -386,11 +382,11 @@ describe('PersistenceManager Edge Cases', () => {
   });
 
   describe('Transaction Edge Cases', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await persistence.initialize();
     });
 
-    it('should rollback on transaction failure', async() => {
+    it('should rollback on transaction failure', async () => {
       const rollbackFn = jest.fn();
       mockDb.transaction.mockImplementation((fn) => {
         try {
@@ -405,13 +401,14 @@ describe('PersistenceManager Edge Cases', () => {
         throw new Error('constraint violation');
       });
 
-      await expect(persistence.storeMemory('key', { data: 'test' }))
-        .rejects.toThrow('constraint violation');
+      await expect(persistence.storeMemory('key', { data: 'test' })).rejects.toThrow(
+        'constraint violation'
+      );
 
       expect(rollbackFn).toHaveBeenCalled();
     });
 
-    it('should handle nested transactions', async() => {
+    it('should handle nested transactions', async () => {
       let transactionDepth = 0;
       mockDb.transaction.mockImplementation((fn) => {
         transactionDepth++;
@@ -434,11 +431,11 @@ describe('PersistenceManager Edge Cases', () => {
   });
 
   describe('Resource Limits', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await persistence.initialize();
     });
 
-    it('should handle memory pressure', async() => {
+    it('should handle memory pressure', async () => {
       // Simulate low memory by storing many large objects
       const promises = [];
 
@@ -454,22 +451,24 @@ describe('PersistenceManager Edge Cases', () => {
 
       // Should handle without crashing
       const results = await Promise.allSettled(promises);
-      const successful = results.filter(r => r.status === 'fulfilled').length;
+      const successful = results.filter((r) => r.status === 'fulfilled').length;
       expect(successful).toBeGreaterThan(0);
     });
 
-    it('should enforce reasonable limits on batch operations', async() => {
-      const hugeBatch = Array(10000).fill(null).map((_, i) => ({
-        key: `batch-${i}`,
-        value: { data: i },
-      }));
+    it('should enforce reasonable limits on batch operations', async () => {
+      const hugeBatch = Array(10000)
+        .fill(null)
+        .map((_, i) => ({
+          key: `batch-${i}`,
+          value: { data: i },
+        }));
 
       // Should process in chunks rather than all at once
       const results = [];
       for (let i = 0; i < hugeBatch.length; i += 100) {
         const chunk = hugeBatch.slice(i, i + 100);
         const chunkResults = await Promise.all(
-          chunk.map(item => persistence.storeMemory(item.key, item.value)),
+          chunk.map((item) => persistence.storeMemory(item.key, item.value))
         );
         results.push(...chunkResults);
       }

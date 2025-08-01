@@ -21,9 +21,9 @@ export interface SwarmMetrics {
   totalTasks: number;
   uptime: number;
   performance: {
-    throughput: number;          // tasks per minute
-    errorRate: number;           // 0-1 percentage
-    avgLatency: number;          // milliseconds
+    throughput: number; // tasks per minute
+    errorRate: number; // 0-1 percentage
+    avgLatency: number; // milliseconds
   };
 }
 
@@ -120,7 +120,7 @@ export interface BaseUIProps {
 }
 
 // Event types for swarm UI interactions
-export type SwarmUIEvent = 
+export type SwarmUIEvent =
   | 'swarm:initialized'
   | 'swarm:agent_added'
   | 'swarm:agent_removed'

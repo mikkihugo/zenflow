@@ -21,7 +21,7 @@ if (!process.env.DEBUG) {
 // Global test utilities
 global.testUtils = {
   // Wait for async operations
-  wait: (ms) => new Promise(resolve => setTimeout(resolve, ms)),
+  wait: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
 
   // Create mock data
   createMockSwarmConfig: (overrides = {}) => ({
@@ -57,12 +57,14 @@ global.testUtils = {
 if (typeof WebAssembly === 'undefined') {
   global.WebAssembly = {
     validate: jest.fn(() => false),
-    instantiate: jest.fn(() => Promise.resolve({
-      module: {},
-      instance: {
-        exports: {},
-      },
-    })),
+    instantiate: jest.fn(() =>
+      Promise.resolve({
+        module: {},
+        instance: {
+          exports: {},
+        },
+      })
+    ),
     Module: jest.fn(),
     Instance: jest.fn(),
     Memory: jest.fn(() => ({ buffer: new ArrayBuffer(1024) })),
@@ -83,7 +85,7 @@ if (typeof performance === 'undefined') {
 }
 
 // Clean up function for tests
-global.cleanupTest = async() => {
+global.cleanupTest = async () => {
   // Reset global state
   if (global._ruvSwarmInstance) {
     if (global._ruvSwarmInstance.persistence) {
@@ -111,13 +113,13 @@ expect.extend({
       message: () => `expected ${received} to be within range ${floor} - ${ceiling}`,
       pass: false,
     };
-
   },
 
   toHaveValidId(received) {
-    const pass = typeof received === 'string' &&
-                 received.length > 0 &&
-                 (received.includes('-') || received.includes('_'));
+    const pass =
+      typeof received === 'string' &&
+      received.length > 0 &&
+      (received.includes('-') || received.includes('_'));
     if (pass) {
       return {
         message: () => `expected ${received} not to be a valid ID`,
@@ -128,7 +130,6 @@ expect.extend({
       message: () => `expected ${received} to be a valid ID (string with separator)`,
       pass: false,
     };
-
   },
 });
 

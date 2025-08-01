@@ -1,4 +1,3 @@
-
 /**  AG-UI Enhanced MCP Tool Executor
 
 /** Extends the existing MCP tool executor with AG-UI protocol events

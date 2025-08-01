@@ -1,11 +1,12 @@
 #!/usr/bin/env node
+
 /**
  * Build script for ruv-swarm WASM module
  */
 
+import { execSync } from 'child_process';
 import fs from 'fs/promises';
 import path from 'path';
-import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,7 +26,9 @@ async function build() {
       execSync('wasm-pack --version', { stdio: 'ignore' });
     } catch (error) {
       console.error('Error: wasm-pack is not installed.');
-      console.error('Install it with: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh');
+      console.error(
+        'Install it with: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh'
+      );
       process.exit(1);
     }
 
@@ -44,16 +47,16 @@ async function build() {
 
     // Build standard WASM module
     console.log('Building standard WASM module...');
-    execSync(
-      `wasm-pack build --target web --out-dir ${wasmDir} --no-typescript`,
-      { cwd: crateDir, stdio: 'inherit' },
-    );
+    execSync(`wasm-pack build --target web --out-dir ${wasmDir} --no-typescript`, {
+      cwd: crateDir,
+      stdio: 'inherit',
+    });
 
     // Build SIMD-optimized module
     console.log('\nBuilding SIMD-optimized WASM module...');
     execSync(
       `RUSTFLAGS="-C target-feature=+simd128" wasm-pack build --target web --out-dir ${wasmSIMDDir} --no-typescript`,
-      { cwd: crateDir, stdio: 'inherit' },
+      { cwd: crateDir, stdio: 'inherit' }
     );
 
     // Copy SIMD module to main wasm directory
@@ -89,7 +92,6 @@ async function build() {
 
     console.log('\nBuild completed successfully!');
     console.log(`WASM modules are in: ${wasmDir}`);
-
   } catch (error) {
     console.error('\nBuild failed:', error.message);
     process.exit(1);

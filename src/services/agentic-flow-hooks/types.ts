@@ -1,12 +1,12 @@
 /**
  * Agentic Zen Hook System - Type Definitions
- * 
+ *
  * Comprehensive type definitions for the Claude-Zen hook system.
  * Provides type safety for LLM, memory, neural, performance, and workflow hooks.
  */
 
 // Core hook types
-export type AgenticHookType = 
+export type AgenticHookType =
   | 'llm'
   | 'memory'
   | 'neural'
@@ -29,7 +29,7 @@ export interface AgenticHookContext {
 }
 
 // Hook payloads for different types
-export type HookPayload = 
+export type HookPayload =
   | LLMHookPayload
   | MemoryHookPayload
   | NeuralHookPayload

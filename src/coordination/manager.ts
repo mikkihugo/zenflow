@@ -55,7 +55,7 @@ export class CoordinationManager extends EventEmitter {
       maxAgents: config.maxAgents,
       heartbeatInterval: config.heartbeatInterval,
       timeout: config.timeout,
-      enableHealthCheck: config.enableHealthCheck !== false
+      enableHealthCheck: config.enableHealthCheck !== false,
     };
 
     this.setupEventHandlers();
@@ -120,7 +120,7 @@ export class CoordinationManager extends EventEmitter {
       capabilities: agentConfig.capabilities,
       lastHeartbeat: new Date(),
       taskCount: 0,
-      created: new Date()
+      created: new Date(),
     };
 
     this.agents.set(agent.id, agent);
@@ -158,7 +158,7 @@ export class CoordinationManager extends EventEmitter {
       priority: taskConfig.priority,
       status: 'pending',
       created: new Date(),
-      metadata: taskConfig.metadata
+      metadata: taskConfig.metadata,
     };
 
     this.tasks.set(task.id, task);
@@ -172,8 +172,8 @@ export class CoordinationManager extends EventEmitter {
    * Get available agents
    */
   getAvailableAgents(): Agent[] {
-    return Array.from(this.agents.values()).filter(agent => 
-      agent.status === 'idle' || agent.status === 'busy'
+    return Array.from(this.agents.values()).filter(
+      (agent) => agent.status === 'idle' || agent.status === 'busy'
     );
   }
 
@@ -181,7 +181,7 @@ export class CoordinationManager extends EventEmitter {
    * Get agents by capability
    */
   getAgentsByCapability(capability: string): Agent[] {
-    return Array.from(this.agents.values()).filter(agent =>
+    return Array.from(this.agents.values()).filter((agent) =>
       agent.capabilities.includes(capability)
     );
   }
@@ -190,9 +190,7 @@ export class CoordinationManager extends EventEmitter {
    * Get pending tasks
    */
   getPendingTasks(): Task[] {
-    return Array.from(this.tasks.values()).filter(task => 
-      task.status === 'pending'
-    );
+    return Array.from(this.tasks.values()).filter((task) => task.status === 'pending');
   }
 
   /**
@@ -217,7 +215,7 @@ export class CoordinationManager extends EventEmitter {
     if (task) {
       task.status = status;
       this.emit('taskStatusChanged', { taskId, status });
-      
+
       if (status === 'completed' || status === 'failed') {
         // Free up the assigned agent
         if (task.assignedAgent) {
@@ -249,13 +247,13 @@ export class CoordinationManager extends EventEmitter {
 
     return {
       totalAgents: agents.length,
-      availableAgents: agents.filter(a => a.status === 'idle').length,
-      busyAgents: agents.filter(a => a.status === 'busy').length,
-      offlineAgents: agents.filter(a => a.status === 'offline').length,
+      availableAgents: agents.filter((a) => a.status === 'idle').length,
+      busyAgents: agents.filter((a) => a.status === 'busy').length,
+      offlineAgents: agents.filter((a) => a.status === 'offline').length,
       totalTasks: tasks.length,
-      pendingTasks: tasks.filter(t => t.status === 'pending').length,
-      runningTasks: tasks.filter(t => t.status === 'running').length,
-      completedTasks: tasks.filter(t => t.status === 'completed').length
+      pendingTasks: tasks.filter((t) => t.status === 'pending').length,
+      runningTasks: tasks.filter((t) => t.status === 'running').length,
+      completedTasks: tasks.filter((t) => t.status === 'completed').length,
     };
   }
 
@@ -297,10 +295,11 @@ export class CoordinationManager extends EventEmitter {
 
   private async assignTask(task: Task, requiredCapabilities: string[]): Promise<void> {
     // Find suitable agents
-    const suitableAgents = Array.from(this.agents.values()).filter(agent =>
-      agent.status === 'idle' &&
-      (requiredCapabilities.length === 0 || 
-       requiredCapabilities.some(cap => agent.capabilities.includes(cap)))
+    const suitableAgents = Array.from(this.agents.values()).filter(
+      (agent) =>
+        agent.status === 'idle' &&
+        (requiredCapabilities.length === 0 ||
+          requiredCapabilities.some((cap) => agent.capabilities.includes(cap)))
     );
 
     if (suitableAgents.length === 0) {

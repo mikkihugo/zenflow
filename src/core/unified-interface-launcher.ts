@@ -1,13 +1,17 @@
 /**
  * Unified Interface Launcher
- * 
+ *
  * Handles launching the appropriate interface (CLI/TUI/Web) based on environment
  * and configuration. Integrates with all core systems directly without plugins.
  */
 
 import { EventEmitter } from 'events';
 import { createLogger } from '../utils/logger.js';
-import { InterfaceModeDetector, InterfaceMode, ModeDetectionOptions } from './interface-mode-detector.js';
+import {
+  type InterfaceMode,
+  InterfaceModeDetector,
+  type ModeDetectionOptions,
+} from './interface-mode-detector.js';
 
 const logger = createLogger('InterfaceLauncher');
 
@@ -59,7 +63,7 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
    */
   async launch(options: LaunchOptions = {}): Promise<LaunchResult> {
     const detection = InterfaceModeDetector.detect(options);
-    
+
     if (!options.silent) {
       logger.info(`🚀 Launching ${detection.mode.toUpperCase()} interface`);
       logger.info(`Reason: ${detection.reason}`);
@@ -73,7 +77,7 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
       return {
         mode: detection.mode,
         success: false,
-        error
+        error,
       };
     }
 
@@ -98,13 +102,13 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
         this.activeInterface = {
           mode: detection.mode,
           url: result.url,
-          pid: result.pid
+          pid: result.pid,
         };
 
         this.emit('interface:launched', {
           mode: detection.mode,
           url: result.url,
-          pid: result.pid
+          pid: result.pid,
         });
 
         if (!options.silent) {
@@ -116,15 +120,14 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
       }
 
       return result;
-
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       logger.error(`❌ Failed to launch ${detection.mode} interface:`, errorMessage);
-      
+
       return {
         mode: detection.mode,
         success: false,
-        error: errorMessage
+        error: errorMessage,
       };
     }
   }
@@ -138,11 +141,11 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
     try {
       // Dynamic import of CLI interface
       const { CLIInterface } = await import('../interfaces/cli/cli-interface.js');
-      
+
       const cli = new CLIInterface({
         theme: options.config?.theme || 'dark',
         verbose: options.verbose || false,
-        coreSystem: options.config?.coreSystem
+        coreSystem: options.config?.coreSystem,
       });
 
       await cli.initialize();
@@ -151,9 +154,8 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
       return {
         mode: 'cli',
         success: true,
-        pid: process.pid
+        pid: process.pid,
       };
-
     } catch (error) {
       // Fallback to basic CLI if the interface file doesn't exist
       logger.warn('CLI interface file not found, using basic CLI');
@@ -170,11 +172,11 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
     try {
       // Dynamic import of TUI interface
       const { TUIInterface } = await import('../interfaces/tui/tui-interface.js');
-      
+
       const tui = new TUIInterface({
         theme: options.config?.theme || 'dark',
         realTime: options.config?.realTime || true,
-        coreSystem: options.config?.coreSystem
+        coreSystem: options.config?.coreSystem,
       });
 
       await tui.initialize();
@@ -183,12 +185,11 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
       return {
         mode: 'tui',
         success: true,
-        pid: process.pid
+        pid: process.pid,
       };
-
     } catch (error) {
       logger.error('Failed to launch TUI interface:', error);
-      
+
       // Fallback to CLI
       logger.info('Falling back to CLI interface');
       return this.launchCLI(options);
@@ -200,18 +201,18 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
    */
   private async launchWeb(options: LaunchOptions, port?: number): Promise<LaunchResult> {
     const webPort = port || options.webPort || 3456;
-    
+
     logger.debug(`Launching Web interface on port ${webPort}`);
 
     try {
       // Dynamic import of Web interface
       const { WebInterface } = await import('../interfaces/web/web-interface.js');
-      
+
       const web = new WebInterface({
         port: webPort,
         theme: options.config?.theme || 'dark',
         realTime: options.config?.realTime !== false,
-        coreSystem: options.config?.coreSystem
+        coreSystem: options.config?.coreSystem,
       });
 
       await web.initialize();
@@ -223,16 +224,15 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
         mode: 'web',
         server,
         url,
-        pid: process.pid
+        pid: process.pid,
       };
 
       return {
         mode: 'web',
         success: true,
         url,
-        pid: process.pid
+        pid: process.pid,
       };
-
     } catch (error) {
       logger.error('Failed to launch Web interface:', error);
       throw error;
@@ -244,10 +244,10 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
    */
   private async launchBasicCLI(options: LaunchOptions): Promise<LaunchResult> {
     logger.info('🔧 Claude Code Zen - Basic CLI Mode');
-    
+
     if (options.config?.coreSystem) {
       const system = options.config.coreSystem;
-      
+
       try {
         // Show system status
         const status = await system.getSystemStatus();
@@ -255,7 +255,7 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
         console.log(`   Version: ${status.version}`);
         console.log(`   Status: ${status.status}`);
         console.log(`   Uptime: ${Math.round(status.uptime / 1000)}s`);
-        
+
         console.log('\n🔧 Available Components:');
         for (const [name, info] of Object.entries(status.components)) {
           console.log(`   ${name}: ${info.status}`);
@@ -266,7 +266,6 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
         console.log('   claude-zen --tui     - Launch TUI interface');
         console.log('   claude-zen --web     - Launch web interface');
         console.log('   claude-zen --help    - Show help');
-
       } catch (error) {
         logger.error('Failed to show system status:', error);
       }
@@ -280,7 +279,7 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
     return {
       mode: 'cli',
       success: true,
-      pid: process.pid
+      pid: process.pid,
     };
   }
 
@@ -297,7 +296,7 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
       active: !!this.activeInterface,
       mode: this.activeInterface?.mode,
       url: this.activeInterface?.url,
-      pid: this.activeInterface?.pid
+      pid: this.activeInterface?.pid,
     };
   }
 
@@ -325,12 +324,11 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
       }
 
       this.emit('interface:shutdown', {
-        mode: this.activeInterface.mode
+        mode: this.activeInterface.mode,
       });
 
       this.activeInterface = undefined;
       logger.info('Interface shutdown complete');
-
     } catch (error) {
       logger.error('Error during interface shutdown:', error);
       throw error;
@@ -342,7 +340,7 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
    */
   async restart(options: LaunchOptions = {}): Promise<LaunchResult> {
     logger.info('Restarting interface...');
-    
+
     await this.shutdown();
     return this.launch(options);
   }
@@ -378,7 +376,7 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
 
     process.on('SIGINT', () => shutdown('SIGINT'));
     process.on('SIGTERM', () => shutdown('SIGTERM'));
-    
+
     // Handle uncaught exceptions
     process.on('uncaughtException', async (error) => {
       logger.error('Uncaught exception:', error);

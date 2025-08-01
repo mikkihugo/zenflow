@@ -2,7 +2,7 @@
 
 /**
  * Final CLI Integration Test
- * 
+ *
  * Tests the CLI with simplified dependencies to ensure it works end-to-end
  */
 
@@ -11,10 +11,10 @@ import { spawn } from 'child_process';
 async function runCommand(command, args = [], timeout = 10000) {
   return new Promise((resolve, reject) => {
     console.log(`🧪 Running: ${command} ${args.join(' ')}`);
-    
+
     const proc = spawn(command, args, {
       stdio: 'pipe',
-      timeout
+      timeout,
     });
 
     let stdout = '';
@@ -55,15 +55,15 @@ async function testCLI() {
       args: ['tsx', 'src/cli/cli-main.ts', '--help'],
       timeout: 15000,
       expectSuccess: false, // May fail due to dependencies, but should show structure
-      description: 'Test if CLI structure is accessible'
+      description: 'Test if CLI structure is accessible',
     },
     {
-      name: 'Swarm Command Help', 
+      name: 'Swarm Command Help',
       command: 'npx',
       args: ['tsx', 'src/cli/cli-main.ts', 'swarm', 'help'],
       timeout: 15000,
       expectSuccess: false,
-      description: 'Test if swarm commands are accessible'
+      description: 'Test if swarm commands are accessible',
     },
     {
       name: 'TypeScript Compilation Check',
@@ -71,8 +71,8 @@ async function testCLI() {
       args: ['tsc', '--noEmit', '--skipLibCheck', 'src/cli/cli-main.ts'],
       timeout: 20000,
       expectSuccess: false, // May have some issues but should not crash
-      description: 'Test if main CLI file compiles'
-    }
+      description: 'Test if main CLI file compiles',
+    },
   ];
 
   let passedTests = 0;
@@ -81,12 +81,12 @@ async function testCLI() {
   for (const test of tests) {
     console.log(`\n📋 Test: ${test.name}`);
     console.log(`   ${test.description}`);
-    
+
     try {
       const result = await runCommand(test.command, test.args, test.timeout);
-      
+
       const success = test.expectSuccess ? result.code === 0 : true; // Any non-crash is success for expected failures
-      
+
       if (success || result.stdout.length > 0) {
         console.log(`✅ ${test.name}: PASSED`);
         console.log(`   Exit code: ${result.code}`);
@@ -99,22 +99,21 @@ async function testCLI() {
         console.log(`   Exit code: ${result.code}`);
         console.log(`   Error: ${result.stderr.substring(0, 200)}`);
       }
-      
+
       results.push({
         name: test.name,
         success,
         code: result.code,
         stdout: result.stdout,
-        stderr: result.stderr
+        stderr: result.stderr,
       });
-      
     } catch (error) {
       console.log(`❌ ${test.name}: ERROR`);
       console.log(`   Error: ${error.message}`);
       results.push({
         name: test.name,
         success: false,
-        error: error.message
+        error: error.message,
       });
     }
   }
@@ -141,17 +140,17 @@ async function testCLI() {
   console.log('4. Use direct SwarmOrchestrator integration');
 
   console.log('\n✅ SYSTEM READY FOR DEVELOPMENT!');
-  
+
   return passedTests >= 1; // Consider success if at least one test passes
 }
 
 // Run the test
 testCLI()
-  .then(success => {
+  .then((success) => {
     console.log(`\n🏁 Final result: ${success ? 'SUCCESS' : 'NEEDS ATTENTION'}`);
     process.exit(success ? 0 : 1);
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('❌ Test runner error:', error);
     process.exit(1);
   });

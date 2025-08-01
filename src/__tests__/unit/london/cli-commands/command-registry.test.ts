@@ -1,20 +1,20 @@
 /**
  * Command Registry Tests - TDD London School
- * 
+ *
  * Tests the behavior and interactions of the CommandRegistry class
  * using mocks for external dependencies and focusing on collaboration
  * between objects rather than state verification.
  */
 
-import { EventEmitter } from 'events';
 import { jest } from '@jest/globals';
-import { CommandRegistry } from '../../../../cli/core/command-registry';
+import { EventEmitter } from 'events';
 import { BaseCommand } from '../../../../cli/core/base-command';
-import type { 
-  CommandMetadata, 
-  CommandContext, 
+import { CommandRegistry } from '../../../../cli/core/command-registry';
+import type {
+  CommandConfig,
+  CommandContext,
+  CommandMetadata,
   CommandResult,
-  CommandConfig 
 } from '../../../../cli/types/index';
 
 // Mock BaseCommand for testing
@@ -27,7 +27,7 @@ class MockCommand extends BaseCommand {
     return {
       success: true,
       exitCode: 0,
-      message: `Mock command ${this.config.name} executed`
+      message: `Mock command ${this.config.name} executed`,
     };
   }
 
@@ -39,7 +39,7 @@ class MockCommand extends BaseCommand {
 // Mock fs/promises
 jest.mock('fs/promises', () => ({
   readdir: jest.fn(),
-  stat: jest.fn()
+  stat: jest.fn(),
 }));
 
 // Mock path
@@ -48,7 +48,7 @@ jest.mock('path', () => ({
   extname: jest.fn((path: string) => {
     const parts = (path as string).split('.');
     return parts.length > 1 ? `.${parts[parts.length - 1]}` : '';
-  })
+  }),
 }));
 
 describe('CommandRegistry - TDD London', () => {
@@ -58,7 +58,7 @@ describe('CommandRegistry - TDD London', () => {
   beforeEach(() => {
     registry = new CommandRegistry();
     mockEventHandler = jest.fn();
-    
+
     // Listen to all events for behavior verification
     registry.on('command-registered', mockEventHandler);
     registry.on('command-unregistered', mockEventHandler);
@@ -78,11 +78,11 @@ describe('CommandRegistry - TDD London', () => {
         config: {
           name: 'test-command',
           description: 'Test command',
-          category: 'core'
+          category: 'core',
         },
         handler: jest.fn() as any,
         registeredAt: new Date(),
-        available: true
+        available: true,
       };
 
       // Act
@@ -93,9 +93,9 @@ describe('CommandRegistry - TDD London', () => {
         name: 'test-command',
         metadata: expect.objectContaining({
           config: expect.objectContaining({
-            name: 'test-command'
-          })
-        })
+            name: 'test-command',
+          }),
+        }),
       });
     });
 
@@ -106,11 +106,11 @@ describe('CommandRegistry - TDD London', () => {
           name: 'status',
           description: 'Show status',
           aliases: ['st', 'stat'],
-          category: 'core'
+          category: 'core',
         },
         handler: jest.fn() as any,
         registeredAt: new Date(),
-        available: true
+        available: true,
       };
 
       // Act
@@ -129,20 +129,21 @@ describe('CommandRegistry - TDD London', () => {
         config: { name: 'duplicate', description: 'First' },
         handler: jest.fn() as any,
         registeredAt: new Date(),
-        available: true
+        available: true,
       };
       const metadata2: CommandMetadata = {
         config: { name: 'duplicate', description: 'Second' },
         handler: jest.fn() as any,
         registeredAt: new Date(),
-        available: true
+        available: true,
       };
 
       registry.register(metadata1);
 
       // Act & Assert - verify error behavior
-      expect(() => registry.register(metadata2))
-        .toThrow("Command 'duplicate' is already registered");
+      expect(() => registry.register(metadata2)).toThrow(
+        "Command 'duplicate' is already registered"
+      );
     });
 
     it('should throw error when registering duplicate aliases', () => {
@@ -151,20 +152,19 @@ describe('CommandRegistry - TDD London', () => {
         config: { name: 'cmd1', description: 'First', aliases: ['c'] },
         handler: jest.fn() as any,
         registeredAt: new Date(),
-        available: true
+        available: true,
       };
       const metadata2: CommandMetadata = {
         config: { name: 'cmd2', description: 'Second', aliases: ['c'] },
         handler: jest.fn() as any,
         registeredAt: new Date(),
-        available: true
+        available: true,
       };
 
       registry.register(metadata1);
 
       // Act & Assert - verify alias conflict behavior
-      expect(() => registry.register(metadata2))
-        .toThrow("Alias 'c' is already registered");
+      expect(() => registry.register(metadata2)).toThrow("Alias 'c' is already registered");
     });
   });
 
@@ -175,15 +175,19 @@ describe('CommandRegistry - TDD London', () => {
         { name: 'status', description: 'Show status', category: 'core' as const },
         { name: 'init', description: 'Initialize project', category: 'core' as const },
         { name: 'deploy', description: 'Deploy application', category: 'utility' as const },
-        { name: 'experimental-feature', description: 'Test feature', category: 'experimental' as const }
+        {
+          name: 'experimental-feature',
+          description: 'Test feature',
+          category: 'experimental' as const,
+        },
       ];
 
-      commands.forEach(config => {
+      commands.forEach((config) => {
         registry.register({
           config,
           handler: jest.fn() as any,
           registeredAt: new Date(),
-          available: true
+          available: true,
         });
       });
     });
@@ -195,7 +199,7 @@ describe('CommandRegistry - TDD London', () => {
 
       // Assert - verify filtering behavior
       expect(coreCommands).toHaveLength(2);
-      expect(coreCommands.map(cmd => cmd.config.name)).toEqual(
+      expect(coreCommands.map((cmd) => cmd.config.name)).toEqual(
         expect.arrayContaining(['status', 'init'])
       );
       expect(utilityCommands).toHaveLength(1);
@@ -211,10 +215,10 @@ describe('CommandRegistry - TDD London', () => {
       // Assert - verify search behavior
       expect(statusResults).toHaveLength(1);
       expect(statusResults[0].config.name).toBe('status');
-      
+
       expect(initResults).toHaveLength(1);
       expect(initResults[0].config.name).toBe('init');
-      
+
       expect(deployResults).toHaveLength(1);
       expect(deployResults[0].config.name).toBe('deploy');
     });
@@ -225,7 +229,7 @@ describe('CommandRegistry - TDD London', () => {
 
       // Assert - verify listing behavior
       expect(allCommands).toHaveLength(4);
-      const names = allCommands.map(cmd => cmd.config.name);
+      const names = allCommands.map((cmd) => cmd.config.name);
       expect(names).toEqual(['deploy', 'experimental-feature', 'init', 'status']);
     });
   });
@@ -238,7 +242,7 @@ describe('CommandRegistry - TDD London', () => {
       mockHandler = jest.fn().mockResolvedValue({
         success: true,
         exitCode: 0,
-        message: 'Handler executed'
+        message: 'Handler executed',
       });
 
       mockContext = {
@@ -249,14 +253,14 @@ describe('CommandRegistry - TDD London', () => {
         cwd: '/test/dir',
         env: {},
         debug: false,
-        verbose: true
+        verbose: true,
       };
 
       registry.register({
         config: { name: 'test-cmd', description: 'Test command' },
         handler: mockHandler,
         registeredAt: new Date(),
-        available: true
+        available: true,
       });
     });
 
@@ -267,7 +271,7 @@ describe('CommandRegistry - TDD London', () => {
       // Assert - verify event emission behavior
       expect(mockEventHandler).toHaveBeenCalledWith({
         name: 'test-cmd',
-        context: mockContext
+        context: mockContext,
       });
     });
 
@@ -284,7 +288,7 @@ describe('CommandRegistry - TDD London', () => {
       const expectedResult = {
         success: true,
         exitCode: 0,
-        message: 'Handler executed'
+        message: 'Handler executed',
       };
       mockHandler.mockResolvedValue(expectedResult);
 
@@ -294,7 +298,7 @@ describe('CommandRegistry - TDD London', () => {
       // Assert - verify success event behavior
       expect(mockEventHandler).toHaveBeenCalledWith({
         name: 'test-cmd',
-        result: expectedResult
+        result: expectedResult,
       });
     });
 
@@ -309,14 +313,14 @@ describe('CommandRegistry - TDD London', () => {
       // Assert - verify error handling behavior
       expect(mockEventHandler).toHaveBeenCalledWith({
         name: 'test-cmd',
-        error
+        error,
       });
 
       expect(result).toEqual({
         success: false,
         error: 'Handler failed',
         exitCode: 1,
-        executionTime: 0
+        executionTime: 0,
       });
     });
 
@@ -329,21 +333,21 @@ describe('CommandRegistry - TDD London', () => {
         success: false,
         error: "Command 'unknown-cmd' not found",
         exitCode: 127,
-        executionTime: 0
+        executionTime: 0,
       });
     });
 
     it('should execute command through alias', async () => {
       // Arrange
       registry.register({
-        config: { 
-          name: 'long-command', 
+        config: {
+          name: 'long-command',
           description: 'Long command name',
-          aliases: ['lc']
+          aliases: ['lc'],
         },
         handler: mockHandler,
         registeredAt: new Date(),
-        available: true
+        available: true,
       });
 
       // Act
@@ -353,7 +357,7 @@ describe('CommandRegistry - TDD London', () => {
       expect(mockHandler).toHaveBeenCalledWith(mockContext);
       expect(mockEventHandler).toHaveBeenCalledWith({
         name: 'lc',
-        context: mockContext
+        context: mockContext,
       });
     });
   });
@@ -365,7 +369,7 @@ describe('CommandRegistry - TDD London', () => {
       mockCommand = new MockCommand({
         name: 'mock-cmd',
         description: 'Mock command',
-        category: 'core'
+        category: 'core',
       });
 
       // Spy on command methods
@@ -384,7 +388,7 @@ describe('CommandRegistry - TDD London', () => {
         cwd: '/test',
         env: {},
         debug: false,
-        verbose: false
+        verbose: false,
       };
 
       // Act
@@ -423,14 +427,14 @@ describe('CommandRegistry - TDD London', () => {
     beforeEach(() => {
       mockHandler = jest.fn().mockResolvedValue({
         success: true,
-        exitCode: 0
+        exitCode: 0,
       });
 
       registry.register({
         config: { name: 'tracked-cmd', description: 'Tracked command' },
         handler: mockHandler,
         registeredAt: new Date(),
-        available: true
+        available: true,
       });
     });
 
@@ -444,7 +448,7 @@ describe('CommandRegistry - TDD London', () => {
         cwd: '/test',
         env: {},
         debug: false,
-        verbose: false
+        verbose: false,
       };
 
       // Act
@@ -453,8 +457,8 @@ describe('CommandRegistry - TDD London', () => {
 
       // Assert - verify usage tracking behavior
       const stats = registry.getUsageStats();
-      const cmdStats = stats.find(s => s.name === 'tracked-cmd');
-      
+      const cmdStats = stats.find((s) => s.name === 'tracked-cmd');
+
       expect(cmdStats).toBeDefined();
       expect(cmdStats!.usageCount).toBe(2);
       expect(cmdStats!.lastUsed).toBeGreaterThan(0);
@@ -467,9 +471,9 @@ describe('CommandRegistry - TDD London', () => {
     beforeEach(() => {
       mockCommand = new MockCommand({
         name: 'cleanup-test',
-        description: 'Cleanup test command'
+        description: 'Cleanup test command',
       });
-      
+
       jest.spyOn(mockCommand, 'dispose');
       registry.registerCommand(mockCommand);
     });
@@ -505,7 +509,7 @@ describe('CommandRegistry - TDD London', () => {
         commandCount: 1,
         pluginCount: 0,
         aliasCount: 0,
-        loadingPaths: []
+        loadingPaths: [],
       });
     });
   });

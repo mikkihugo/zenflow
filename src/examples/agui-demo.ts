@@ -1,4 +1,3 @@
-
 /**  AG-UI Integration Demo for Claude Code Zen;
  *;
 /** Demonstrates the AG-UI protocol integration with the existing architecture;

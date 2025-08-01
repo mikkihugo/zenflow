@@ -1,14 +1,14 @@
 /**
  * Unified Export System - Direct Integration
- * 
+ *
  * Multi-format export system integrated directly into core
  * Supports JSON, YAML, CSV, XML, and custom formats
  */
 
 import { EventEmitter } from 'events';
+import { mkdir, writeFile } from 'fs/promises';
+import { dirname, join } from 'path';
 import { createLogger } from '../utils/logger.js';
-import { writeFile, mkdir } from 'fs/promises';
-import { join, dirname } from 'path';
 
 const logger = createLogger('UnifiedExport');
 
@@ -62,9 +62,7 @@ export class UnifiedExportSystem extends EventEmitter {
       mimeType: 'application/json',
       description: 'Export data as JSON format',
       export: (data: any, options?: ExportOptions) => {
-        return options?.pretty !== false 
-          ? JSON.stringify(data, null, 2)
-          : JSON.stringify(data);
+        return options?.pretty !== false ? JSON.stringify(data, null, 2) : JSON.stringify(data);
       },
       validate: (data: any) => {
         try {
@@ -73,7 +71,7 @@ export class UnifiedExportSystem extends EventEmitter {
         } catch {
           return false;
         }
-      }
+      },
     });
 
     // YAML Exporter
@@ -85,7 +83,7 @@ export class UnifiedExportSystem extends EventEmitter {
       export: (data: any, options?: ExportOptions) => {
         return this.convertToYAML(data, 0);
       },
-      validate: (data: any) => data !== undefined && data !== null
+      validate: (data: any) => data !== undefined && data !== null,
     });
 
     // CSV Exporter
@@ -98,7 +96,7 @@ export class UnifiedExportSystem extends EventEmitter {
         return this.convertToCSV(data);
       },
       validate: (data: any) => Array.isArray(data) && data.length > 0,
-      supports: ['array']
+      supports: ['array'],
     });
 
     // XML Exporter
@@ -110,7 +108,7 @@ export class UnifiedExportSystem extends EventEmitter {
       export: (data: any, options?: ExportOptions) => {
         return `<?xml version="1.0" encoding="UTF-8"?>\n<root>\n${this.convertToXML(data, 1)}\n</root>`;
       },
-      validate: (data: any) => data !== undefined && data !== null
+      validate: (data: any) => data !== undefined && data !== null,
     });
 
     // Markdown Exporter (for documents)
@@ -122,7 +120,7 @@ export class UnifiedExportSystem extends EventEmitter {
       export: (data: any, options?: ExportOptions) => {
         return this.convertToMarkdown(data);
       },
-      validate: (data: any) => typeof data === 'object' && data !== null
+      validate: (data: any) => typeof data === 'object' && data !== null,
     });
 
     // Plain Text Exporter
@@ -136,7 +134,7 @@ export class UnifiedExportSystem extends EventEmitter {
         if (typeof data === 'object') return JSON.stringify(data, null, 2);
         return String(data);
       },
-      validate: () => true
+      validate: () => true,
     });
 
     // HTML Exporter (for reports)
@@ -148,7 +146,7 @@ export class UnifiedExportSystem extends EventEmitter {
       export: (data: any, options?: ExportOptions) => {
         return this.convertToHTML(data, options);
       },
-      validate: (data: any) => data !== undefined && data !== null
+      validate: (data: any) => data !== undefined && data !== null,
     });
 
     logger.info(`Registered ${this.exporters.size} built-in exporters`);
@@ -168,7 +166,7 @@ export class UnifiedExportSystem extends EventEmitter {
    */
   async exportData(data: any, format: string, options: ExportOptions = {}): Promise<ExportResult> {
     const exporter = this.exporters.get(format.toLowerCase());
-    
+
     if (!exporter) {
       throw new Error(`Unsupported export format: ${format}`);
     }
@@ -187,8 +185,7 @@ export class UnifiedExportSystem extends EventEmitter {
       const size = Buffer.byteLength(exportedData, 'utf8');
 
       // Generate filename if not provided
-      const filename = options.filename || 
-        `export_${timestamp}${exporter.extension}`;
+      const filename = options.filename || `export_${timestamp}${exporter.extension}`;
 
       // Save to file if output path provided
       if (options.outputPath) {
@@ -208,8 +205,8 @@ export class UnifiedExportSystem extends EventEmitter {
           ...options.metadata,
           exporter: exporter.name,
           mimeType: exporter.mimeType,
-          outputPath: options.outputPath
-        }
+          outputPath: options.outputPath,
+        },
       };
 
       this.exportHistory.push(result);
@@ -217,7 +214,6 @@ export class UnifiedExportSystem extends EventEmitter {
       logger.info(`Successfully exported data as ${format.toUpperCase()}: ${filename}`);
 
       return result;
-
     } catch (error) {
       const result: ExportResult = {
         id: exportId,
@@ -226,7 +222,7 @@ export class UnifiedExportSystem extends EventEmitter {
         size: 0,
         timestamp,
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
 
       this.exportHistory.push(result);
@@ -239,16 +235,20 @@ export class UnifiedExportSystem extends EventEmitter {
   /**
    * Export data to multiple formats
    */
-  async batchExport(data: any, formats: string[], options: ExportOptions = {}): Promise<ExportResult[]> {
+  async batchExport(
+    data: any,
+    formats: string[],
+    options: ExportOptions = {}
+  ): Promise<ExportResult[]> {
     const results: ExportResult[] = [];
 
     for (const format of formats) {
       try {
         const result = await this.exportData(data, format, {
           ...options,
-          filename: options.filename 
+          filename: options.filename
             ? `${options.filename.replace(/\.[^/.]+$/, '')}.${format}`
-            : undefined
+            : undefined,
         });
         results.push(result);
       } catch (error) {
@@ -264,22 +264,28 @@ export class UnifiedExportSystem extends EventEmitter {
   /**
    * Export document workflow data
    */
-  async exportWorkflowData(workflowData: {
-    vision?: any[];
-    adrs?: any[];
-    prds?: any[];
-    epics?: any[];
-    features?: any[];
-    tasks?: any[];
-  }, format: string, options: ExportOptions = {}): Promise<ExportResult> {
-    
+  async exportWorkflowData(
+    workflowData: {
+      vision?: any[];
+      adrs?: any[];
+      prds?: any[];
+      epics?: any[];
+      features?: any[];
+      tasks?: any[];
+    },
+    format: string,
+    options: ExportOptions = {}
+  ): Promise<ExportResult> {
     const documentData = {
       metadata: {
         exportedAt: new Date().toISOString(),
         workflow: 'Vision → ADRs → PRDs → Epics → Features → Tasks → Code',
-        totalDocuments: Object.values(workflowData).reduce((sum, docs) => sum + (docs?.length || 0), 0)
+        totalDocuments: Object.values(workflowData).reduce(
+          (sum, docs) => sum + (docs?.length || 0),
+          0
+        ),
       },
-      ...workflowData
+      ...workflowData,
     };
 
     return this.exportData(documentData, format, {
@@ -287,20 +293,24 @@ export class UnifiedExportSystem extends EventEmitter {
       filename: options.filename || `workflow_export_${Date.now()}.${format}`,
       metadata: {
         ...options.metadata,
-        type: 'workflow_export'
-      }
+        type: 'workflow_export',
+      },
     });
   }
 
   /**
    * Export system status and metrics
    */
-  async exportSystemStatus(statusData: any, format: string, options: ExportOptions = {}): Promise<ExportResult> {
+  async exportSystemStatus(
+    statusData: any,
+    format: string,
+    options: ExportOptions = {}
+  ): Promise<ExportResult> {
     const systemExport = {
       timestamp: new Date().toISOString(),
       system: 'Claude Code Zen',
       version: '2.0.0-alpha.73',
-      ...statusData
+      ...statusData,
     };
 
     return this.exportData(systemExport, format, {
@@ -308,8 +318,8 @@ export class UnifiedExportSystem extends EventEmitter {
       filename: options.filename || `system_status_${Date.now()}.${format}`,
       metadata: {
         ...options.metadata,
-        type: 'system_status'
-      }
+        type: 'system_status',
+      },
     });
   }
 
@@ -327,7 +337,7 @@ export class UnifiedExportSystem extends EventEmitter {
 
     // Convert each row
     for (const row of data) {
-      const values = headers.map(header => {
+      const values = headers.map((header) => {
         const value = row[header];
         // Escape values that contain commas or quotes
         if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
@@ -343,49 +353,54 @@ export class UnifiedExportSystem extends EventEmitter {
 
   private convertToYAML(obj: any, indent: number): string {
     const spaces = '  '.repeat(indent);
-    
+
     if (obj === null) return 'null';
     if (typeof obj === 'boolean') return obj.toString();
     if (typeof obj === 'number') return obj.toString();
     if (typeof obj === 'string') return `"${obj.replace(/"/g, '\\"')}"`;
-    
+
     if (Array.isArray(obj)) {
       if (obj.length === 0) return '[]';
-      return obj.map(item => `${spaces}- ${this.convertToYAML(item, 0)}`).join('\n');
+      return obj.map((item) => `${spaces}- ${this.convertToYAML(item, 0)}`).join('\n');
     }
-    
+
     if (typeof obj === 'object') {
       const entries = Object.entries(obj);
       if (entries.length === 0) return '{}';
-      
+
       return entries
         .map(([key, value]) => `${spaces}${key}: ${this.convertToYAML(value, indent + 1)}`)
         .join('\n');
     }
-    
+
     return String(obj);
   }
 
   private convertToXML(obj: any, indent: number): string {
     const spaces = '  '.repeat(indent);
-    
+
     if (typeof obj === 'string' || typeof obj === 'number' || typeof obj === 'boolean') {
       return `${spaces}<value>${this.escapeXML(String(obj))}</value>`;
     }
-    
+
     if (Array.isArray(obj)) {
-      return obj.map((item, index) => 
-        `${spaces}<item index="${index}">\n${this.convertToXML(item, indent + 1)}\n${spaces}</item>`
-      ).join('\n');
+      return obj
+        .map(
+          (item, index) =>
+            `${spaces}<item index="${index}">\n${this.convertToXML(item, indent + 1)}\n${spaces}</item>`
+        )
+        .join('\n');
     }
-    
+
     if (typeof obj === 'object' && obj !== null) {
       return Object.entries(obj)
-        .map(([key, value]) => 
-          `${spaces}<${this.sanitizeXMLTag(key)}>\n${this.convertToXML(value, indent + 1)}\n${spaces}</${this.sanitizeXMLTag(key)}>`
-        ).join('\n');
+        .map(
+          ([key, value]) =>
+            `${spaces}<${this.sanitizeXMLTag(key)}>\n${this.convertToXML(value, indent + 1)}\n${spaces}</${this.sanitizeXMLTag(key)}>`
+        )
+        .join('\n');
     }
-    
+
     return `${spaces}<value>${this.escapeXML(String(obj))}</value>`;
   }
 
@@ -439,8 +454,8 @@ export class UnifiedExportSystem extends EventEmitter {
   }
 
   private convertToHTML(data: any, options?: ExportOptions): string {
-    const title = (data.title || 'Claude Code Zen Export');
-    
+    const title = data.title || 'Claude Code Zen Export';
+
     let html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -558,7 +573,7 @@ export class UnifiedExportSystem extends EventEmitter {
       extension: exporter.extension,
       mimeType: exporter.mimeType,
       description: exporter.description,
-      supports: exporter.supports
+      supports: exporter.supports,
     }));
   }
 
@@ -577,11 +592,11 @@ export class UnifiedExportSystem extends EventEmitter {
   } {
     const stats = {
       totalExports: this.exportHistory.length,
-      successfulExports: this.exportHistory.filter(e => e.success).length,
-      failedExports: this.exportHistory.filter(e => !e.success).length,
+      successfulExports: this.exportHistory.filter((e) => e.success).length,
+      failedExports: this.exportHistory.filter((e) => !e.success).length,
       formatBreakdown: {} as Record<string, number>,
       totalSize: 0,
-      averageSize: 0
+      averageSize: 0,
     };
 
     for (const record of this.exportHistory) {

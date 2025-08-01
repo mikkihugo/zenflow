@@ -3,31 +3,33 @@
  * Exports all available neural network architectures
  */
 
-export { NeuralModel } from './base.js';
-export { TransformerModel } from './transformer.js';
-export { CNNModel } from './cnn.js';
-export { GRUModel } from './gru.js';
 export { AutoencoderModel } from './autoencoder.js';
+export { NeuralModel } from './base.js';
+export { CNNModel } from './cnn.js';
 export { GNNModel } from './gnn.js';
-export { ResNetModel } from './resnet.js';
-export { VAEModel } from './vae.js';
+export { GRUModel } from './gru.js';
 export { LSTMModel } from './lstm.js';
+export { ResNetModel } from './resnet.js';
+export { TransformerModel } from './transformer.js';
+export { VAEModel } from './vae.js';
 
 // Model factory for easy instantiation
 export const createNeuralModel = (type, config = {}) => {
   const models = {
-    transformer: () => import('./transformer.js').then(m => new m.TransformerModel(config)),
-    cnn: () => import('./cnn.js').then(m => new m.CNNModel(config)),
-    gru: () => import('./gru.js').then(m => new m.GRUModel(config)),
-    autoencoder: () => import('./autoencoder.js').then(m => new m.AutoencoderModel(config)),
-    gnn: () => import('./gnn.js').then(m => new m.GNNModel(config)),
-    resnet: () => import('./resnet.js').then(m => new m.ResNetModel(config)),
-    vae: () => import('./vae.js').then(m => new m.VAEModel(config)),
-    lstm: () => import('./lstm.js').then(m => new m.LSTMModel(config)),
+    transformer: () => import('./transformer.js').then((m) => new m.TransformerModel(config)),
+    cnn: () => import('./cnn.js').then((m) => new m.CNNModel(config)),
+    gru: () => import('./gru.js').then((m) => new m.GRUModel(config)),
+    autoencoder: () => import('./autoencoder.js').then((m) => new m.AutoencoderModel(config)),
+    gnn: () => import('./gnn.js').then((m) => new m.GNNModel(config)),
+    resnet: () => import('./resnet.js').then((m) => new m.ResNetModel(config)),
+    vae: () => import('./vae.js').then((m) => new m.VAEModel(config)),
+    lstm: () => import('./lstm.js').then((m) => new m.LSTMModel(config)),
   };
 
   if (!models[type]) {
-    throw new Error(`Unknown neural model type: ${type}. Available types: ${Object.keys(models).join(', ')}`);
+    throw new Error(
+      `Unknown neural model type: ${type}. Available types: ${Object.keys(models).join(', ')}`
+    );
   }
 
   return models[type]();

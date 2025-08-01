@@ -1,17 +1,17 @@
 /**
  * SQLite Persistence Integration Tests
- * 
+ *
  * Hybrid Testing Approach:
  * - London School: Mock connections and external dependencies
  * - Classical School: Test actual data operations and persistence
  */
 
-import { Database } from 'sqlite3';
-import { promisify } from 'util';
+import { constants } from 'fs';
+import { access, unlink } from 'fs/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';
-import { unlink, access } from 'fs/promises';
-import { constants } from 'fs';
+import { Database } from 'sqlite3';
+import { promisify } from 'util';
 
 // Mock SQLite connection interface
 interface MockSQLiteConnection {
@@ -57,7 +57,7 @@ class SQLiteMemoryStore {
         updated_at INTEGER NOT NULL
       )`,
       `CREATE INDEX IF NOT EXISTS idx_sessions_created ON sessions(created_at)`,
-      `CREATE INDEX IF NOT EXISTS idx_sessions_updated ON sessions(updated_at)`
+      `CREATE INDEX IF NOT EXISTS idx_sessions_updated ON sessions(updated_at)`,
     ];
 
     for (const query of queries) {
@@ -67,7 +67,7 @@ class SQLiteMemoryStore {
 
   async store(sessionId: string, data: any, metadata?: any): Promise<void> {
     if (!this.isInitialized) throw new Error('Database not initialized');
-    
+
     const now = Date.now();
     await this.run(
       `INSERT OR REPLACE INTO sessions (id, data, metadata, created_at, updated_at) 
@@ -78,43 +78,40 @@ class SQLiteMemoryStore {
 
   async retrieve(sessionId: string): Promise<any> {
     if (!this.isInitialized) throw new Error('Database not initialized');
-    
-    return this.get(
-      'SELECT data, metadata FROM sessions WHERE id = ?',
-      [sessionId]
-    );
+
+    return this.get('SELECT data, metadata FROM sessions WHERE id = ?', [sessionId]);
   }
 
   async listSessions(): Promise<string[]> {
     if (!this.isInitialized) throw new Error('Database not initialized');
-    
+
     const rows = await this.all('SELECT id FROM sessions ORDER BY updated_at DESC');
     return rows.map((row: any) => row.id);
   }
 
   async deleteSession(sessionId: string): Promise<boolean> {
     if (!this.isInitialized) throw new Error('Database not initialized');
-    
+
     const result = await this.run('DELETE FROM sessions WHERE id = ?', [sessionId]);
     return result.changes > 0;
   }
 
   async getStats(): Promise<{ totalSessions: number; totalSize: number }> {
     if (!this.isInitialized) throw new Error('Database not initialized');
-    
+
     const result = await this.get(
       'SELECT COUNT(*) as count, SUM(LENGTH(data)) as size FROM sessions'
     );
-    
+
     return {
       totalSessions: result.count || 0,
-      totalSize: result.size || 0
+      totalSize: result.size || 0,
     };
   }
 
   private run(query: string, params: any[] = []): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.db!.run(query, params, function(err) {
+      this.db!.run(query, params, function (err) {
         if (err) reject(err);
         else resolve({ changes: this.changes, lastID: this.lastID });
       });
@@ -162,7 +159,7 @@ describe('SQLite Persistence Integration Tests', () => {
   beforeEach(() => {
     // Create temporary database path for classical tests
     dbPath = join(tmpdir(), `test-sqlite-${Date.now()}.db`);
-    
+
     // Create mock connection for London-style tests
     mockConnection = {
       isOpen: true,
@@ -171,7 +168,7 @@ describe('SQLite Persistence Integration Tests', () => {
       close: jest.fn(),
       beginTransaction: jest.fn(),
       commit: jest.fn(),
-      rollback: jest.fn()
+      rollback: jest.fn(),
     };
   });
 
@@ -179,7 +176,7 @@ describe('SQLite Persistence Integration Tests', () => {
     if (store) {
       await store.close();
     }
-    
+
     // Clean up test database file
     try {
       await access(dbPath, constants.F_OK);
@@ -193,7 +190,7 @@ describe('SQLite Persistence Integration Tests', () => {
     it('should handle connection initialization gracefully', async () => {
       const mockDb = {
         connect: jest.fn().mockResolvedValue(mockConnection),
-        close: jest.fn().mockResolvedValue(undefined)
+        close: jest.fn().mockResolvedValue(undefined),
       };
 
       mockConnection.run.mockResolvedValue({ changes: 0 });
@@ -207,16 +204,14 @@ describe('SQLite Persistence Integration Tests', () => {
 
     it('should handle connection failures appropriately', async () => {
       const mockDb = {
-        connect: jest.fn().mockRejectedValue(new Error('Connection failed'))
+        connect: jest.fn().mockRejectedValue(new Error('Connection failed')),
       };
 
       await expect(mockDb.connect()).rejects.toThrow('Connection failed');
     });
 
     it('should mock query execution properly', async () => {
-      mockConnection.query.mockResolvedValue([
-        { id: 'session1', data: '{"test": true}' }
-      ]);
+      mockConnection.query.mockResolvedValue([{ id: 'session1', data: '{"test": true}' }]);
 
       const result = await mockConnection.query('SELECT * FROM sessions');
       expect(result).toHaveLength(1);
@@ -269,13 +264,16 @@ describe('SQLite Persistence Integration Tests', () => {
       const complexData = {
         nested: {
           array: [1, 2, 3, { deep: 'value' }],
-          map: new Map([['key1', 'value1'], ['key2', 'value2']]),
+          map: new Map([
+            ['key1', 'value1'],
+            ['key2', 'value2'],
+          ]),
           date: new Date().toISOString(),
-          buffer: Buffer.from('test data').toString('base64')
+          buffer: Buffer.from('test data').toString('base64'),
         },
         functions: null, // Functions can't be serialized
         undefined: null, // Undefined becomes null
-        symbols: null // Symbols can't be serialized
+        symbols: null, // Symbols can't be serialized
       };
 
       await store.store(sessionId, complexData);
@@ -289,11 +287,11 @@ describe('SQLite Persistence Integration Tests', () => {
 
     it('should list sessions in correct order', async () => {
       const sessions = ['session-1', 'session-2', 'session-3'];
-      
+
       for (let i = 0; i < sessions.length; i++) {
         await store.store(sessions[i], { index: i });
         // Small delay to ensure different timestamps
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await new Promise((resolve) => setTimeout(resolve, 10));
       }
 
       const listed = await store.listSessions();
@@ -319,14 +317,14 @@ describe('SQLite Persistence Integration Tests', () => {
 
     it('should calculate statistics accurately', async () => {
       const testData = { message: 'Test data for statistics' };
-      
+
       await store.store('stats-1', testData);
       await store.store('stats-2', { ...testData, extra: 'more data' });
 
       const stats = await store.getStats();
       expect(stats.totalSessions).toBe(2);
       expect(stats.totalSize).toBeGreaterThan(0);
-      
+
       // Size should be reasonable (JSON stringified data)
       expect(stats.totalSize).toBeLessThan(1000); // Sanity check
     });
@@ -336,7 +334,7 @@ describe('SQLite Persistence Integration Tests', () => {
       const largeDataSet = Array.from({ length: 1000 }, (_, i) => ({
         id: i,
         data: `Large data chunk ${i}`.repeat(10),
-        timestamp: Date.now() + i
+        timestamp: Date.now() + i,
       }));
 
       for (let i = 0; i < 100; i++) {
@@ -357,11 +355,11 @@ describe('SQLite Persistence Integration Tests', () => {
       const originalData = {
         critical: 'important data',
         timestamp: Date.now(),
-        nested: { values: [1, 2, 3, 4, 5] }
+        nested: { values: [1, 2, 3, 4, 5] },
       };
 
       await store.store('integrity-test', originalData);
-      
+
       // Retrieve multiple times to ensure consistency
       for (let i = 0; i < 10; i++) {
         const retrieved = await store.retrieve('integrity-test');
@@ -381,13 +379,13 @@ describe('SQLite Persistence Integration Tests', () => {
       const concurrentOperations = Array.from({ length: 10 }, async (_, i) => {
         const sessionId = `concurrent-${i}`;
         const data = { index: i, timestamp: Date.now() };
-        
+
         await store.store(sessionId, data);
         return store.retrieve(sessionId);
       });
 
       const results = await Promise.all(concurrentOperations);
-      
+
       expect(results).toHaveLength(10);
       results.forEach((result, index) => {
         expect(result).toBeDefined();
@@ -406,7 +404,7 @@ describe('SQLite Persistence Integration Tests', () => {
 
       const retrieved = await store.retrieve(sessionId);
       const parsed = JSON.parse(retrieved.data);
-      
+
       expect(parsed).toEqual(updatedData);
       expect(parsed.version).toBe(2);
       expect(parsed.extra).toBe('field');
@@ -416,24 +414,26 @@ describe('SQLite Persistence Integration Tests', () => {
   describe('Error Handling', () => {
     it('should throw error when not initialized', async () => {
       const uninitializedStore = new SQLiteMemoryStore(dbPath);
-      
-      await expect(uninitializedStore.store('test', {})).rejects.toThrow('Database not initialized');
+
+      await expect(uninitializedStore.store('test', {})).rejects.toThrow(
+        'Database not initialized'
+      );
       await expect(uninitializedStore.retrieve('test')).rejects.toThrow('Database not initialized');
       await expect(uninitializedStore.listSessions()).rejects.toThrow('Database not initialized');
     });
 
     it('should handle invalid database paths gracefully', async () => {
       const invalidStore = new SQLiteMemoryStore('/invalid/path/database.db');
-      
+
       await expect(invalidStore.initialize()).rejects.toThrow();
     });
 
     it('should handle corrupted data gracefully', async () => {
       await store.initialize();
-      
+
       // Store valid data first
       await store.store('test-session', { valid: 'data' });
-      
+
       // The store should handle JSON parsing errors gracefully
       // This would require modifying the store to handle parse errors
       const retrieved = await store.retrieve('test-session');
@@ -450,19 +450,19 @@ describe('SQLite Persistence Integration Tests', () => {
     it('should benchmark write operations', async () => {
       const iterations = 1000;
       const testData = { benchmark: 'write test', data: 'x'.repeat(1000) };
-      
+
       const startTime = process.hrtime.bigint();
-      
+
       for (let i = 0; i < iterations; i++) {
         await store.store(`benchmark-write-${i}`, testData);
       }
-      
+
       const endTime = process.hrtime.bigint();
       const durationMs = Number(endTime - startTime) / 1_000_000;
       const operationsPerSecond = (iterations / durationMs) * 1000;
-      
+
       console.log(`Write performance: ${operationsPerSecond.toFixed(0)} ops/sec`);
-      
+
       // Should handle at least 100 writes per second
       expect(operationsPerSecond).toBeGreaterThan(100);
     });
@@ -470,24 +470,24 @@ describe('SQLite Persistence Integration Tests', () => {
     it('should benchmark read operations', async () => {
       const iterations = 100;
       const testData = { benchmark: 'read test', data: 'y'.repeat(1000) };
-      
+
       // Pre-populate data
       for (let i = 0; i < iterations; i++) {
         await store.store(`benchmark-read-${i}`, testData);
       }
-      
+
       const startTime = process.hrtime.bigint();
-      
+
       for (let i = 0; i < iterations; i++) {
         await store.retrieve(`benchmark-read-${i}`);
       }
-      
+
       const endTime = process.hrtime.bigint();
       const durationMs = Number(endTime - startTime) / 1_000_000;
       const operationsPerSecond = (iterations / durationMs) * 1000;
-      
+
       console.log(`Read performance: ${operationsPerSecond.toFixed(0)} ops/sec`);
-      
+
       // Should handle at least 200 reads per second
       expect(operationsPerSecond).toBeGreaterThan(200);
     });

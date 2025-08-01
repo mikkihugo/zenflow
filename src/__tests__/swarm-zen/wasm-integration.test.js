@@ -3,22 +3,23 @@
  * Tests progressive loading, neural networks, and swarm orchestration
  */
 
-import { RuvSwarm } from '../src/index-enhanced';
-import { WasmModuleLoader } from '../src/wasm-loader';
-import { EnhancedMCPTools } from '../src/mcp-tools-enhanced';
-import { NeuralNetworkManager } from '../src/neural-network-manager';
-
 import assert from 'assert';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { RuvSwarm } from '../src/index-enhanced';
+import { EnhancedMCPTools } from '../src/mcp-tools-enhanced';
+import { NeuralNetworkManager } from '../src/neural-network-manager';
+import { WasmModuleLoader } from '../src/wasm-loader';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Test utilities
 function assertApprox(actual, expected, tolerance = 0.01) {
-  assert(Math.abs(actual - expected) < tolerance,
-    `Expected ${actual} to be approximately ${expected} (tolerance: ${tolerance})`);
+  assert(
+    Math.abs(actual - expected) < tolerance,
+    `Expected ${actual} to be approximately ${expected} (tolerance: ${tolerance})`
+  );
 }
 
 async function measureTime(fn) {
@@ -105,7 +106,10 @@ class WasmIntegrationTests {
     // Test 3: Core module loading
     const coreModule = await loader.loadModule('core');
     assert(coreModule, 'Core module should load');
-    assert(coreModule.exports || coreModule.isPlaceholder, 'Core module should have exports or be placeholder');
+    assert(
+      coreModule.exports || coreModule.isPlaceholder,
+      'Core module should have exports or be placeholder'
+    );
 
     // Test 4: Module status
     const status = loader.getModuleStatus();
@@ -247,10 +251,12 @@ class WasmIntegrationTests {
 
     // Test 3: Training
     const trainingData = {
-      samples: Array(10).fill(null).map(() => ({
-        input: new Array(128).fill(Math.random()),
-        target: new Array(128).fill(Math.random()),
-      })),
+      samples: Array(10)
+        .fill(null)
+        .map(() => ({
+          input: new Array(128).fill(Math.random()),
+          target: new Array(128).fill(Math.random()),
+        })),
     };
 
     const metrics = await network.train(trainingData, {
@@ -262,10 +268,9 @@ class WasmIntegrationTests {
 
     // Test 4: Collaborative learning setup
     const network2 = await nnManager.createAgentNeuralNetwork('test-agent-2');
-    const session = await nnManager.enableCollaborativeLearning(
-      ['test-agent-1', 'test-agent-2'],
-      { strategy: 'federated' },
-    );
+    const session = await nnManager.enableCollaborativeLearning(['test-agent-1', 'test-agent-2'], {
+      strategy: 'federated',
+    });
     assert(session.id, 'Collaborative session should have ID');
   }
 
@@ -356,7 +361,7 @@ class WasmIntegrationTests {
         this.ruvSwarm.createSwarm({
           name: `perf-swarm-${i}`,
           maxAgents: 10,
-        }),
+        })
       );
       swarmTimes.push(time);
     }
@@ -369,9 +374,7 @@ class WasmIntegrationTests {
     const agentTimes = [];
 
     for (let i = 0; i < 10; i++) {
-      const { time } = await measureTime(() =>
-        swarm.spawn({ type: 'researcher' }),
-      );
+      const { time } = await measureTime(() => swarm.spawn({ type: 'researcher' }));
       agentTimes.push(time);
     }
 
@@ -380,9 +383,7 @@ class WasmIntegrationTests {
 
     // Test 3: WASM module loading performance
     const loader = new WasmModuleLoader();
-    const { time: loadTime } = await measureTime(() =>
-      loader.initialize('progressive'),
-    );
+    const { time: loadTime } = await measureTime(() => loader.initialize('progressive'));
     assert(loadTime < 2000, 'Progressive loading should complete under 2s');
   }
 
@@ -405,7 +406,7 @@ class WasmIntegrationTests {
   }
 
   printSummary(passed, failed) {
-    console.log(`\n${ '='.repeat(60)}`);
+    console.log(`\n${'='.repeat(60)}`);
     console.log('📊 Test Summary');
     console.log('='.repeat(60));
     console.log(`✅ Passed: ${passed}`);
@@ -413,7 +414,7 @@ class WasmIntegrationTests {
     console.log(`📈 Success Rate: ${((passed / (passed + failed)) * 100).toFixed(1)}%`);
 
     console.log('\n📋 Detailed Results:');
-    this.testResults.forEach(result => {
+    this.testResults.forEach((result) => {
       const icon = result.status === 'passed' ? '✅' : '❌';
       const time = result.time ? ` (${result.time.toFixed(1)}ms)` : '';
       const error = result.error ? ` - ${result.error}` : '';
@@ -433,7 +434,7 @@ class WasmIntegrationTests {
 // Direct execution block
 {
   const tests = new WasmIntegrationTests();
-  tests.runAll().catch(error => {
+  tests.runAll().catch((error) => {
     console.error('❌ Test suite failed:', error);
     process.exit(1);
   });

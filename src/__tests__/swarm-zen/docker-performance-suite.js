@@ -5,11 +5,11 @@
  * Comprehensive performance benchmarks across all features
  */
 
-import { RuvSwarm, NeuralAgent } from '../src/index.js';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { performance } from 'perf_hooks';
+import { fileURLToPath } from 'url';
+import { NeuralAgent, RuvSwarm } from '../src/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,7 +40,7 @@ const results = {
 
 // Benchmark utilities
 function benchmark(name, fn, iterations = 1000) {
-  return new Promise(async(resolve) => {
+  return new Promise(async (resolve) => {
     console.log(`Running: ${name}`);
     const timings = [];
 
@@ -96,10 +96,14 @@ async function benchmarkSwarmCreation() {
     return swarm;
   });
 
-  await benchmark('Swarm Creation (Large)', () => {
-    const swarm = new RuvSwarm({ maxAgents: 64 });
-    return swarm;
-  }, 100);
+  await benchmark(
+    'Swarm Creation (Large)',
+    () => {
+      const swarm = new RuvSwarm({ maxAgents: 64 });
+      return swarm;
+    },
+    100
+  );
 }
 
 async function benchmarkAgentOperations() {
@@ -112,7 +116,7 @@ async function benchmarkAgentOperations() {
     swarm.spawnAgent(`agent-${Date.now()}`, 'researcher');
   });
 
-  await benchmark('Agent Communication', async() => {
+  await benchmark('Agent Communication', async () => {
     const agent1 = swarm.agents[0];
     const agent2 = swarm.agents[1];
     if (agent1 && agent2) {
@@ -120,7 +124,7 @@ async function benchmarkAgentOperations() {
     }
   });
 
-  await benchmark('Agent Task Assignment', async() => {
+  await benchmark('Agent Task Assignment', async () => {
     const agent = swarm.agents[0];
     if (agent) {
       await agent.assignTask({ type: 'analyze', data: 'benchmark-data' });
@@ -135,18 +139,22 @@ async function benchmarkNeuralOperations() {
   const agent = new NeuralAgent('neural-bench', 'researcher');
   await agent.initialize();
 
-  await benchmark('Neural Forward Pass', async() => {
+  await benchmark('Neural Forward Pass', async () => {
     const input = new Float32Array(128).fill(0.5);
     await agent.neuralNetwork.forward(input);
   });
 
-  await benchmark('Neural Training Step', async() => {
-    const input = new Float32Array(128).fill(0.5);
-    const target = new Float32Array(64).fill(0.8);
-    await agent.neuralNetwork.train(input, target);
-  }, 100);
+  await benchmark(
+    'Neural Training Step',
+    async () => {
+      const input = new Float32Array(128).fill(0.5);
+      const target = new Float32Array(64).fill(0.8);
+      await agent.neuralNetwork.train(input, target);
+    },
+    100
+  );
 
-  await benchmark('Pattern Recognition', async() => {
+  await benchmark('Pattern Recognition', async () => {
     const pattern = { type: 'test', features: new Array(32).fill(0.5) };
     await agent.recognizePattern(pattern);
   });
@@ -188,22 +196,30 @@ async function benchmarkTaskOrchestration() {
     swarm.spawnAgent(`worker-${i}`, 'researcher');
   }
 
-  await benchmark('Simple Task Orchestration', async() => {
-    await swarm.orchestrateTask({
-      type: 'analyze',
-      data: 'benchmark-task',
-      priority: 'high',
-    });
-  }, 100);
+  await benchmark(
+    'Simple Task Orchestration',
+    async () => {
+      await swarm.orchestrateTask({
+        type: 'analyze',
+        data: 'benchmark-task',
+        priority: 'high',
+      });
+    },
+    100
+  );
 
-  await benchmark('Complex Task Orchestration', async() => {
-    await swarm.orchestrateTask({
-      type: 'multi-phase',
-      phases: ['collect', 'analyze', 'synthesize'],
-      data: new Array(1000).fill(0),
-      priority: 'critical',
-    });
-  }, 10);
+  await benchmark(
+    'Complex Task Orchestration',
+    async () => {
+      await swarm.orchestrateTask({
+        type: 'multi-phase',
+        phases: ['collect', 'analyze', 'synthesize'],
+        data: new Array(1000).fill(0),
+        priority: 'critical',
+      });
+    },
+    10
+  );
 }
 
 async function benchmarkWASMSpecific() {
@@ -231,8 +247,8 @@ async function generatePerformanceReport() {
     totalBenchmarks: results.benchmarks.length,
     avgMeanTime: results.benchmarks.reduce((sum, b) => sum + b.mean, 0) / results.benchmarks.length,
     avgP95Time: results.benchmarks.reduce((sum, b) => sum + b.p95, 0) / results.benchmarks.length,
-    fastestOperation: results.benchmarks.reduce((min, b) => b.mean < min.mean ? b : min),
-    slowestOperation: results.benchmarks.reduce((max, b) => b.mean > max.mean ? b : max),
+    fastestOperation: results.benchmarks.reduce((min, b) => (b.mean < min.mean ? b : min)),
+    slowestOperation: results.benchmarks.reduce((max, b) => (b.mean > max.mean ? b : max)),
   };
 
   results.summary = aggregateStats;
@@ -265,8 +281,12 @@ async function generatePerformanceReport() {
   console.log(`Total Benchmarks: ${aggregateStats.totalBenchmarks}`);
   console.log(`Average Mean Time: ${aggregateStats.avgMeanTime.toFixed(3)}ms`);
   console.log(`Average P95 Time: ${aggregateStats.avgP95Time.toFixed(3)}ms`);
-  console.log(`Fastest Operation: ${aggregateStats.fastestOperation.name} (${aggregateStats.fastestOperation.mean.toFixed(3)}ms)`);
-  console.log(`Slowest Operation: ${aggregateStats.slowestOperation.name} (${aggregateStats.slowestOperation.mean.toFixed(3)}ms)`);
+  console.log(
+    `Fastest Operation: ${aggregateStats.fastestOperation.name} (${aggregateStats.fastestOperation.mean.toFixed(3)}ms)`
+  );
+  console.log(
+    `Slowest Operation: ${aggregateStats.slowestOperation.name} (${aggregateStats.slowestOperation.mean.toFixed(3)}ms)`
+  );
   console.log(`Performance Grade: ${grade}`);
   console.log('');
   console.log(`Results saved to: ${resultsPath}`);

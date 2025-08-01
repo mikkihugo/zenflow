@@ -2,43 +2,37 @@
  * RuvSwarm - WASM-based swarm orchestration with cognitive diversity
  */
 
+import { AgentPool, type BaseAgent, createAgent } from './agent.js';
 import {
-  SwarmOptions,
-  SwarmState,
-  SwarmTopology,
-  SwarmEventEmitter,
-  SwarmEvent,
-  AgentConfig,
-  Task,
-  TaskStatus,
-  Message,
-  MessageType,
-  SwarmMetrics,
+  type AgentConfig,
   Connection,
-  WasmModule,
+  type Message,
+  MessageType,
+  type SwarmEvent,
+  type SwarmEventEmitter,
+  type SwarmMetrics,
+  type SwarmOptions,
+  type SwarmState,
+  SwarmTopology,
+  type Task,
+  type TaskStatus,
+  type WasmModule,
 } from './types.js';
-
 import {
-  generateId,
-  validateSwarmOptions,
   formatMetrics,
-  recommendTopology,
+  generateId,
   priorityToNumber,
+  recommendTopology,
+  validateSwarmOptions,
 } from './utils.js';
 
-import {
-  BaseAgent,
-  createAgent,
-  AgentPool,
-} from './agent.js';
-
-export * from './types.js';
-export * from './utils.js';
 export * from './agent.js';
 export * from './neural-network.js';
+export * from './session-integration.js';
 export * from './session-manager.js';
 export * from './session-utils.js';
-export * from './session-integration.js';
+export * from './types.js';
+export * from './utils.js';
 
 /**
  * Main RuvSwarm class for orchestrating swarm operations
@@ -113,7 +107,7 @@ export class RuvSwarm implements SwarmEventEmitter {
 
       this.isInitialized = true;
       this.startSyncLoop();
-      
+
       this.emit('swarm:initialized', { options: this.options });
     } catch (error) {
       throw new Error(`Failed to initialize swarm: ${error}`);
@@ -155,7 +149,7 @@ export class RuvSwarm implements SwarmEventEmitter {
     this.updateConnections(agent.id);
 
     this.emit('agent:added', { agentId: agent.id, config });
-    
+
     return agent.id;
   }
 
@@ -174,10 +168,10 @@ export class RuvSwarm implements SwarmEventEmitter {
 
     this.state.agents.delete(agentId);
     this.agentPool.removeAgent(agentId);
-    
+
     // Remove connections
     this.state.connections = this.state.connections.filter(
-      conn => conn.from !== agentId && conn.to !== agentId,
+      (conn) => conn.from !== agentId && conn.to !== agentId
     );
 
     this.emit('agent:removed', { agentId });
@@ -224,7 +218,7 @@ export class RuvSwarm implements SwarmEventEmitter {
    * Get all tasks with a specific status
    */
   getTasksByStatus(status: TaskStatus): Task[] {
-    return Array.from(this.state.tasks.values()).filter(task => task.status === status);
+    return Array.from(this.state.tasks.values()).filter((task) => task.status === status);
   }
 
   /**
@@ -261,7 +255,7 @@ export class RuvSwarm implements SwarmEventEmitter {
   emit(event: SwarmEvent, data: any): void {
     const handlers = this.eventHandlers.get(event);
     if (handlers) {
-      handlers.forEach(handler => {
+      handlers.forEach((handler) => {
         try {
           handler(data);
         } catch (error) {
@@ -303,7 +297,7 @@ export class RuvSwarm implements SwarmEventEmitter {
   private async assignTask(task: Task): Promise<void> {
     // Find suitable agent based on task requirements
     const agent = this.agentPool.getAvailableAgent();
-    
+
     if (!agent) {
       // No available agents, queue the task
       console.log(`No available agents for task ${task.id}, queuing...`);
@@ -312,7 +306,7 @@ export class RuvSwarm implements SwarmEventEmitter {
 
     task.status = 'assigned';
     task.assignedAgents = [agent.id];
-    
+
     this.emit('task:assigned', { taskId: task.id, agentId: agent.id });
 
     // Send task assignment message
@@ -331,27 +325,26 @@ export class RuvSwarm implements SwarmEventEmitter {
     try {
       task.status = 'in_progress';
       const startTime = Date.now();
-      
+
       const result = await agent.execute(task);
-      
+
       task.status = 'completed';
       task.result = result;
-      
+
       const executionTime = Date.now() - startTime;
       this.updateMetrics(true, executionTime);
-      
+
       this.emit('task:completed', { taskId: task.id, result });
-      
     } catch (error) {
       task.status = 'failed';
       task.error = error as Error;
-      
+
       this.updateMetrics(false, 0);
-      
+
       this.emit('task:failed', { taskId: task.id, error });
     } finally {
       this.agentPool.releaseAgent(agent.id);
-      
+
       // Check for pending tasks
       const pendingTasks = this.getTasksByStatus('pending');
       if (pendingTasks.length > 0) {
@@ -364,50 +357,51 @@ export class RuvSwarm implements SwarmEventEmitter {
 
   private updateConnections(newAgentId: string): void {
     const agents = Array.from(this.state.agents.keys());
-    
+
     switch (this.options.topology) {
-    case 'mesh':
-      // Connect to all other agents
-      for (const agentId of agents) {
-        if (agentId !== newAgentId) {
+      case 'mesh':
+        // Connect to all other agents
+        for (const agentId of agents) {
+          if (agentId !== newAgentId) {
+            this.state.connections.push({
+              from: newAgentId,
+              to: agentId,
+              weight: 1,
+              type: 'coordination',
+            });
+          }
+        }
+        break;
+
+      case 'hierarchical':
+        // Connect to parent/children based on position
+        if (agents.length > 1) {
+          const parentIndex = Math.floor((agents.indexOf(newAgentId) - 1) / 2);
+          if (parentIndex >= 0) {
+            this.state.connections.push({
+              from: newAgentId,
+              to: agents[parentIndex],
+              weight: 1,
+              type: 'control',
+            });
+          }
+        }
+        break;
+
+      case 'distributed': {
+        // Random connections based on density
+        const numConnections = Math.floor(agents.length * this.options.connectionDensity);
+        const shuffled = agents.filter((id) => id !== newAgentId).sort(() => Math.random() - 0.5);
+        for (let i = 0; i < Math.min(numConnections, shuffled.length); i++) {
           this.state.connections.push({
             from: newAgentId,
-            to: agentId,
-            weight: 1,
-            type: 'coordination',
+            to: shuffled[i],
+            weight: Math.random(),
+            type: 'data',
           });
         }
+        break;
       }
-      break;
-        
-    case 'hierarchical':
-      // Connect to parent/children based on position
-      if (agents.length > 1) {
-        const parentIndex = Math.floor((agents.indexOf(newAgentId) - 1) / 2);
-        if (parentIndex >= 0) {
-          this.state.connections.push({
-            from: newAgentId,
-            to: agents[parentIndex],
-            weight: 1,
-            type: 'control',
-          });
-        }
-      }
-      break;
-        
-    case 'distributed':
-      // Random connections based on density
-      const numConnections = Math.floor(agents.length * this.options.connectionDensity);
-      const shuffled = agents.filter(id => id !== newAgentId).sort(() => Math.random() - 0.5);
-      for (let i = 0; i < Math.min(numConnections, shuffled.length); i++) {
-        this.state.connections.push({
-          from: newAgentId,
-          to: shuffled[i],
-          weight: Math.random(),
-          type: 'data',
-        });
-      }
-      break;
     }
   }
 
@@ -422,7 +416,7 @@ export class RuvSwarm implements SwarmEventEmitter {
     if (success && executionTime > 0) {
       const totalCompleted = this.state.metrics.completedTasks;
       const currentAvg = this.state.metrics.averageCompletionTime;
-      this.state.metrics.averageCompletionTime = 
+      this.state.metrics.averageCompletionTime =
         (currentAvg * (totalCompleted - 1) + executionTime) / totalCompleted;
     }
 
@@ -445,10 +439,7 @@ export class RuvSwarm implements SwarmEventEmitter {
 
       // Update agent utilization metrics
       for (const agent of Array.from(this.state.agents.values())) {
-        this.state.metrics.agentUtilization.set(
-          agent.id,
-          agent.state.status === 'busy' ? 1 : 0,
-        );
+        this.state.metrics.agentUtilization.set(agent.id, agent.state.status === 'busy' ? 1 : 0);
       }
     }, this.options.syncInterval);
   }

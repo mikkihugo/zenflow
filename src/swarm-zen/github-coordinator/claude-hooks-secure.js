@@ -85,7 +85,10 @@ class SecureClaudeGitHubHooks {
     // Remove potential prompt injection patterns
     let sanitized = taskDescription
       // Remove common injection starters
-      .replace(/^\s*(ignore|disregard|forget|override)\s+(previous|above|all)\s+(instructions?|prompts?|rules?)/gi, '')
+      .replace(
+        /^\s*(ignore|disregard|forget|override)\s+(previous|above|all)\s+(instructions?|prompts?|rules?)/gi,
+        ''
+      )
       // Remove system prompt attempts
       .replace(/\b(system|assistant|user|human):\s*/gi, '')
       // Remove instruction keywords
@@ -113,14 +116,13 @@ class SecureClaudeGitHubHooks {
       const sanitizedTaskText = CommandSanitizer.sanitizeMessage(taskText);
 
       // Simple, safe keyword matching
-      const keywords = sanitizedDescription.toLowerCase()
+      const keywords = sanitizedDescription
+        .toLowerCase()
         .split(/\s+/)
-        .filter(word => word.length > 2 && /^[a-zA-Z0-9-_]+$/.test(word))
+        .filter((word) => word.length > 2 && /^[a-zA-Z0-9-_]+$/.test(word))
         .slice(0, 10); // Limit keywords to prevent DoS
 
-      return keywords.some(keyword =>
-        sanitizedTaskText.toLowerCase().includes(keyword),
-      );
+      return keywords.some((keyword) => sanitizedTaskText.toLowerCase().includes(keyword));
     } catch (error) {
       this.logOperation('matching_error', `Safe matching failed: ${error.message}`);
       return false;
@@ -159,10 +161,16 @@ class SecureClaudeGitHubHooks {
         // CRITICAL: Validate issue number before claiming
         const validatedIssueNumber = CommandSanitizer.validateIssueNumber(matchedTask.number);
 
-        const claimed = await this.coordinator.claimTask(this.swarmId, validatedIssueNumber, metadata);
+        const claimed = await this.coordinator.claimTask(
+          this.swarmId,
+          validatedIssueNumber,
+          metadata
+        );
         if (claimed) {
           this.activeTask = validatedIssueNumber;
-          this.logOperation('task_claimed', `Claimed issue #${validatedIssueNumber}`, { title: matchedTask.title });
+          this.logOperation('task_claimed', `Claimed issue #${validatedIssueNumber}`, {
+            title: matchedTask.title,
+          });
           console.log(`✅ Claimed GitHub issue #${validatedIssueNumber}: ${matchedTask.title}`);
           return { claimed: true, issue: validatedIssueNumber };
         }
@@ -171,7 +179,6 @@ class SecureClaudeGitHubHooks {
       this.logOperation('no_match', 'No matching GitHub issue found');
       console.log('ℹ️ No matching GitHub issue found, proceeding without claim');
       return { claimed: false };
-
     } catch (error) {
       this.logOperation('pre_task_error', `Pre-task hook failed: ${error.message}`, metadata);
       console.error('❌ Pre-task hook error:', error.message);
@@ -205,7 +212,6 @@ class SecureClaudeGitHubHooks {
         ...metadata,
       });
       console.log(`📝 Updated GitHub issue #${this.activeTask} with edit progress`);
-
     } catch (error) {
       this.logOperation('post_edit_error', `Post-edit hook failed: ${error.message}`, metadata);
       console.error('❌ Post-edit hook error:', error.message);
@@ -229,7 +235,11 @@ class SecureClaudeGitHubHooks {
         const message = `✅ **Task Completed**\n\n${sanitizedSummary}`;
         await this.coordinator.updateTaskProgress(this.swarmId, this.activeTask, message, metadata);
 
-        this.logOperation('task_completed', `Task completed for issue #${this.activeTask}`, metadata);
+        this.logOperation(
+          'task_completed',
+          `Task completed for issue #${this.activeTask}`,
+          metadata
+        );
 
         // Note: Auto-close functionality removed for security
         // Issues should be manually closed after review
@@ -240,7 +250,6 @@ class SecureClaudeGitHubHooks {
       }
 
       this.activeTask = null;
-
     } catch (error) {
       this.logOperation('post_task_error', `Post-task hook failed: ${error.message}`, metadata);
       console.error('❌ Post-task hook error:', error.message);
@@ -258,7 +267,11 @@ class SecureClaudeGitHubHooks {
       if (Object.keys(status.swarmStatus).length > 1) {
         console.log('⚠️ Multiple swarms detected, checking for conflicts...');
 
-        this.logOperation('conflict_check', `Multiple swarms detected: ${Object.keys(status.swarmStatus).length}`, metadata);
+        this.logOperation(
+          'conflict_check',
+          `Multiple swarms detected: ${Object.keys(status.swarmStatus).length}`,
+          metadata
+        );
 
         return {
           hasConflicts: false,
@@ -269,7 +282,6 @@ class SecureClaudeGitHubHooks {
       }
 
       return { hasConflicts: false };
-
     } catch (error) {
       this.logOperation('conflict_error', `Conflict detection failed: ${error.message}`, metadata);
       console.error('❌ Conflict detection error:', error.message);
@@ -296,7 +308,6 @@ class SecureClaudeGitHubHooks {
         board: `${baseUrl}/projects`,
         security: `${baseUrl}/security`,
       };
-
     } catch (error) {
       this.logOperation('dashboard_error', `Dashboard URL generation failed: ${error.message}`);
       throw new Error('Failed to generate dashboard URLs');
@@ -347,9 +358,8 @@ async function registerSecureHooks(options = {}) {
       'check-conflicts': () => hooks.detectConflicts({ source: 'claude-code' }),
       'get-dashboard': () => hooks.getDashboardUrl(),
       'get-security-log': (args) => hooks.getSecurityAuditLog(args?.limit),
-      'cleanup': () => hooks.cleanup(),
+      cleanup: () => hooks.cleanup(),
     };
-
   } catch (error) {
     console.error('❌ Failed to register secure hooks:', error.message);
     throw error;

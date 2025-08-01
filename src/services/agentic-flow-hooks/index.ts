@@ -1,6 +1,6 @@
 /**
  * Agentic Zen Hook System - Main Entry Point
- * 
+ *
  * Provides comprehensive hook management for the Claude-Zen ecosystem.
  * Supports LLM, memory, neural, performance, and workflow hooks with
  * advanced pipeline orchestration and metrics collection.
@@ -13,28 +13,27 @@ import { NeuralHooks } from './neural-hooks';
 import { PerformanceHooks } from './performance-hooks';
 import { WorkflowHooks } from './workflow-hooks';
 
-// Export types
-export type {
-  AgenticHookType,
-  HookRegistration,
-  HookFilter,
-  HookHandlerResult,
-  AgenticHookContext,
-  HookPayload,
-  HookMetrics,
-  LLMHookPayload,
-  MemoryHookPayload,
-  NeuralHookPayload,
-  PerformanceHookPayload,
-  WorkflowHookPayload
-} from './types';
-
 // Export core modules
 export { HookManager } from './hook-manager';
 export { LLMHooks } from './llm-hooks';
 export { MemoryHooks } from './memory-hooks';
 export { NeuralHooks } from './neural-hooks';
 export { PerformanceHooks } from './performance-hooks';
+// Export types
+export type {
+  AgenticHookContext,
+  AgenticHookType,
+  HookFilter,
+  HookHandlerResult,
+  HookMetrics,
+  HookPayload,
+  HookRegistration,
+  LLMHookPayload,
+  MemoryHookPayload,
+  NeuralHookPayload,
+  PerformanceHookPayload,
+  WorkflowHookPayload,
+} from './types';
 export { WorkflowHooks } from './workflow-hooks';
 
 // Initialize logger
@@ -42,7 +41,7 @@ const logger = {
   info: (msg: string) => console.log(`[AgenticZenHooks] ${msg}`),
   warn: (msg: string) => console.warn(`[AgenticZenHooks] ${msg}`),
   error: (msg: string) => console.error(`[AgenticZenHooks] ${msg}`),
-  debug: (msg: string) => console.debug(`[AgenticZenHooks] ${msg}`)
+  debug: (msg: string) => console.debug(`[AgenticZenHooks] ${msg}`),
 };
 
 // Global hook manager instance
@@ -54,27 +53,27 @@ export const agenticHookManager = new HookManager(logger);
 export async function initializeAgenticFlowHooks(): Promise<void> {
   try {
     logger.info('Initializing Agentic Zen Hook System...');
-    
+
     // Register core hook types
     const llmHooks = new LLMHooks(logger);
     const memoryHooks = new MemoryHooks(logger);
     const neuralHooks = new NeuralHooks(logger);
     const performanceHooks = new PerformanceHooks(logger);
     const workflowHooks = new WorkflowHooks(logger);
-    
+
     // Initialize each hook type
     await llmHooks.initialize();
     await memoryHooks.initialize();
     await neuralHooks.initialize();
     await performanceHooks.initialize();
     await workflowHooks.initialize();
-    
+
     // Set up default pipelines
     await setupDefaultPipelines();
-    
+
     // Start metrics collection
     startMetricsCollection();
-    
+
     logger.info('Agentic Zen Hook System initialized successfully');
   } catch (error) {
     logger.error(`Failed to initialize hook system: ${error}`);
@@ -95,9 +94,9 @@ async function setupDefaultPipelines(): Promise<void> {
     handler: async (context) => {
       logger.debug('Pre-LLM call optimization');
       return { success: true, modified: false };
-    }
+    },
   });
-  
+
   // Memory operation pipeline
   agenticHookManager.register({
     id: 'memory-pre-operation-validation',
@@ -107,9 +106,9 @@ async function setupDefaultPipelines(): Promise<void> {
     handler: async (context) => {
       logger.debug('Pre-memory operation validation');
       return { success: true, modified: false };
-    }
+    },
   });
-  
+
   // Workflow execution pipeline
   agenticHookManager.register({
     id: 'workflow-execution-tracking',
@@ -119,7 +118,7 @@ async function setupDefaultPipelines(): Promise<void> {
     handler: async (context) => {
       logger.debug('Workflow step execution tracking');
       return { success: true, modified: false };
-    }
+    },
   });
 }
 
@@ -159,19 +158,15 @@ export function getHookSystemStatus(): {
   return {
     initialized: true,
     registeredHooks: agenticHookManager.getRegisteredHooks().length,
-    activeHooks: agenticHookManager.getRegisteredHooks().filter(h => h.enabled).length,
-    metrics: agenticHookManager.getMetrics()
+    activeHooks: agenticHookManager.getRegisteredHooks().filter((h) => h.enabled).length,
+    metrics: agenticHookManager.getMetrics(),
   };
 }
 
 /**
  * Create a hook context
  */
-export function createHookContext(
-  type: string,
-  payload: any,
-  metadata?: Record<string, any>
-): any {
+export function createHookContext(type: string, payload: any, metadata?: Record<string, any>): any {
   return {
     timestamp: Date.now(),
     type,
@@ -179,7 +174,7 @@ export function createHookContext(
     metadata: metadata || {},
     session: {
       id: `session-${Date.now()}`,
-      startTime: Date.now()
-    }
+      startTime: Date.now(),
+    },
   };
 }

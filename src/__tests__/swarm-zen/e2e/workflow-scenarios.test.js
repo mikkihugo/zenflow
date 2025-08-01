@@ -3,18 +3,18 @@
  * Tests complete user scenarios from initialization to results
  */
 
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { RuvSwarm } from '../../src/index-enhanced.js';
-import { EnhancedMCPTools } from '../../src/mcp-tools-enhanced.js';
 import fs from 'fs/promises';
 import path from 'path';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { RuvSwarm } from '../../src/index-enhanced.js';
+import { EnhancedMCPTools } from '../../src/mcp-tools-enhanced.js';
 
 describe('E2E Workflow Scenarios', () => {
   let ruvSwarm;
   let mcpTools;
   let testDir;
 
-  beforeAll(async() => {
+  beforeAll(async () => {
     // Create test directory for outputs
     testDir = path.join(process.cwd(), 'test-outputs', `e2e-${Date.now()}`);
     await fs.mkdir(testDir, { recursive: true });
@@ -33,7 +33,7 @@ describe('E2E Workflow Scenarios', () => {
     await mcpTools.initialize();
   });
 
-  afterAll(async() => {
+  afterAll(async () => {
     if (ruvSwarm) {
       await ruvSwarm.cleanup();
     }
@@ -42,7 +42,7 @@ describe('E2E Workflow Scenarios', () => {
   });
 
   describe('Machine Learning Pipeline Workflow', () => {
-    it('should complete full ML pipeline from data to predictions', async() => {
+    it('should complete full ML pipeline from data to predictions', async () => {
       console.log('\n🔬 Starting ML Pipeline Workflow...');
 
       // Step 1: Create swarm for ML tasks
@@ -136,9 +136,9 @@ describe('E2E Workflow Scenarios', () => {
 
       // Step 7: Make predictions
       console.log('🔮 Making predictions...');
-      const testSamples = Array(10).fill(null).map(() =>
-        new Float32Array(20).map(() => Math.random()),
-      );
+      const testSamples = Array(10)
+        .fill(null)
+        .map(() => new Float32Array(20).map(() => Math.random()));
 
       const predictions = await network.predict(testSamples);
       expect(predictions).toHaveLength(10);
@@ -156,7 +156,7 @@ describe('E2E Workflow Scenarios', () => {
   });
 
   describe('Time Series Forecasting Workflow', () => {
-    it('should forecast time series data using specialized models', async() => {
+    it('should forecast time series data using specialized models', async () => {
       console.log('\n📈 Starting Time Series Forecasting Workflow...');
 
       // Step 1: Create forecasting swarm
@@ -221,7 +221,7 @@ describe('E2E Workflow Scenarios', () => {
 
       // Step 6: Evaluate forecast accuracy
       const evaluation = await pipeline.evaluate({
-        actualValues: timeSeriesData.slice(-24).map(d => d.value),
+        actualValues: timeSeriesData.slice(-24).map((d) => d.value),
         metrics: ['mae', 'rmse', 'mape', 'smape'],
       });
 
@@ -233,7 +233,7 @@ describe('E2E Workflow Scenarios', () => {
   });
 
   describe('Distributed Task Processing Workflow', () => {
-    it('should process complex tasks across multiple agents', async() => {
+    it('should process complex tasks across multiple agents', async () => {
       console.log('\n🚀 Starting Distributed Task Processing...');
 
       // Step 1: Create processing swarm
@@ -249,38 +249,50 @@ describe('E2E Workflow Scenarios', () => {
         stages: [
           {
             name: 'data-collection',
-            subtasks: Array(50).fill(null).map((_, i) => ({
-              id: `collect-${i}`,
-              type: 'fetch',
-              source: `dataset-${i}`,
-              size: Math.floor(Math.random() * 1000000),
-            })),
+            subtasks: Array(50)
+              .fill(null)
+              .map((_, i) => ({
+                id: `collect-${i}`,
+                type: 'fetch',
+                source: `dataset-${i}`,
+                size: Math.floor(Math.random() * 1000000),
+              })),
           },
           {
             name: 'data-processing',
-            subtasks: Array(50).fill(null).map((_, i) => ({
-              id: `process-${i}`,
-              type: 'transform',
-              operations: ['normalize', 'feature-extract', 'aggregate'],
-              dependsOn: [`collect-${i}`],
-            })),
+            subtasks: Array(50)
+              .fill(null)
+              .map((_, i) => ({
+                id: `process-${i}`,
+                type: 'transform',
+                operations: ['normalize', 'feature-extract', 'aggregate'],
+                dependsOn: [`collect-${i}`],
+              })),
           },
           {
             name: 'analysis',
-            subtasks: Array(10).fill(null).map((_, i) => ({
-              id: `analyze-${i}`,
-              type: 'analyze',
-              algorithms: ['statistical', 'ml-based'],
-              dependsOn: Array(5).fill(null).map((_, j) => `process-${i * 5 + j}`),
-            })),
+            subtasks: Array(10)
+              .fill(null)
+              .map((_, i) => ({
+                id: `analyze-${i}`,
+                type: 'analyze',
+                algorithms: ['statistical', 'ml-based'],
+                dependsOn: Array(5)
+                  .fill(null)
+                  .map((_, j) => `process-${i * 5 + j}`),
+              })),
           },
           {
             name: 'reporting',
-            subtasks: [{
-              id: 'final-report',
-              type: 'aggregate',
-              dependsOn: Array(10).fill(null).map((_, i) => `analyze-${i}`),
-            }],
+            subtasks: [
+              {
+                id: 'final-report',
+                type: 'aggregate',
+                dependsOn: Array(10)
+                  .fill(null)
+                  .map((_, i) => `analyze-${i}`),
+              },
+            ],
           },
         ],
       };
@@ -306,7 +318,9 @@ describe('E2E Workflow Scenarios', () => {
         monitoring: {
           interval: 100,
           onProgress: (progress) => {
-            console.log(`  Progress: ${progress.completed}/${progress.total} tasks (${progress.percentage.toFixed(1)}%)`);
+            console.log(
+              `  Progress: ${progress.completed}/${progress.total} tasks (${progress.percentage.toFixed(1)}%)`
+            );
           },
         },
       });
@@ -323,7 +337,8 @@ describe('E2E Workflow Scenarios', () => {
 
       // Step 6: Check agent utilization
       const utilization = await processingSwarm.getAgentUtilization();
-      const avgUtilization = utilization.reduce((sum, u) => sum + u.utilization, 0) / utilization.length;
+      const avgUtilization =
+        utilization.reduce((sum, u) => sum + u.utilization, 0) / utilization.length;
       expect(avgUtilization).toBeGreaterThan(0.6); // At least 60% average utilization
 
       console.log(`✅ Distributed processing completed in ${(duration / 1000).toFixed(2)}s`);
@@ -331,7 +346,7 @@ describe('E2E Workflow Scenarios', () => {
   });
 
   describe('Real-time Collaboration Workflow', () => {
-    it('should handle real-time collaborative editing scenario', async() => {
+    it('should handle real-time collaborative editing scenario', async () => {
       console.log('\n👥 Starting Real-time Collaboration Workflow...');
 
       // Step 1: Create collaboration swarm
@@ -363,42 +378,48 @@ describe('E2E Workflow Scenarios', () => {
       const editPromises = [];
 
       // Editor 1 adds content
-      editPromises.push(editors[0].execute({
-        task: 'edit-document',
-        operation: {
-          type: 'insert',
-          position: document.content.length,
-          text: 'Section 1: Introduction\n',
-        },
-        documentId: document.id,
-      }));
+      editPromises.push(
+        editors[0].execute({
+          task: 'edit-document',
+          operation: {
+            type: 'insert',
+            position: document.content.length,
+            text: 'Section 1: Introduction\n',
+          },
+          documentId: document.id,
+        })
+      );
 
       // Editor 2 adds content concurrently
-      editPromises.push(editors[1].execute({
-        task: 'edit-document',
-        operation: {
-          type: 'insert',
-          position: document.content.length,
-          text: 'Section 2: Methods\n',
-        },
-        documentId: document.id,
-      }));
+      editPromises.push(
+        editors[1].execute({
+          task: 'edit-document',
+          operation: {
+            type: 'insert',
+            position: document.content.length,
+            text: 'Section 2: Methods\n',
+          },
+          documentId: document.id,
+        })
+      );
 
       // Reviewer adds comments
-      editPromises.push(editors[2].execute({
-        task: 'add-comment',
-        comment: {
-          position: 0,
-          text: 'Needs more detail in introduction',
-        },
-        documentId: document.id,
-      }));
+      editPromises.push(
+        editors[2].execute({
+          task: 'add-comment',
+          comment: {
+            position: 0,
+            text: 'Needs more detail in introduction',
+          },
+          documentId: document.id,
+        })
+      );
 
       const results = await Promise.all(editPromises);
 
       // Step 5: Verify conflict resolution
-      expect(results.every(r => r.success)).toBe(true);
-      expect(results.some(r => r.conflictResolved)).toBe(true);
+      expect(results.every((r) => r.success)).toBe(true);
+      expect(results.some((r) => r.conflictResolved)).toBe(true);
 
       // Step 6: Check final document state
       const finalDoc = await collabSwarm.getSharedState(document.id);
@@ -412,7 +433,7 @@ describe('E2E Workflow Scenarios', () => {
   });
 
   describe('Adaptive Learning Workflow', () => {
-    it('should adapt agent behavior based on performance', async() => {
+    it('should adapt agent behavior based on performance', async () => {
       console.log('\n🧬 Starting Adaptive Learning Workflow...');
 
       // Step 1: Create adaptive swarm
@@ -495,7 +516,7 @@ describe('E2E Workflow Scenarios', () => {
 
       for (const [agentId, data] of performanceTracker.agents) {
         // Test on a different task type
-        const newTaskType = performanceTracker.taskTypes.find(t => t !== data.taskType);
+        const newTaskType = performanceTracker.taskTypes.find((t) => t !== data.taskType);
         const result = await data.agent.execute({
           task: newTaskType,
           complexity: 'medium',
@@ -510,7 +531,8 @@ describe('E2E Workflow Scenarios', () => {
       }
 
       // Verify some knowledge transfer
-      const avgNewTaskPerf = newTaskResults.reduce((sum, r) => sum + r.performance, 0) / newTaskResults.length;
+      const avgNewTaskPerf =
+        newTaskResults.reduce((sum, r) => sum + r.performance, 0) / newTaskResults.length;
       expect(avgNewTaskPerf).toBeGreaterThan(0.6); // Reasonable performance on new tasks
 
       console.log('✅ Adaptive learning workflow completed!');
@@ -518,7 +540,7 @@ describe('E2E Workflow Scenarios', () => {
   });
 
   describe('Fault Tolerance Workflow', () => {
-    it('should handle agent failures and recover gracefully', async() => {
+    it('should handle agent failures and recover gracefully', async () => {
       console.log('\n🛡️ Starting Fault Tolerance Workflow...');
 
       // Step 1: Create resilient swarm
@@ -536,17 +558,21 @@ describe('E2E Workflow Scenarios', () => {
       // Step 2: Create critical task with checkpoints
       const criticalTask = {
         id: 'critical-computation',
-        steps: Array(20).fill(null).map((_, i) => ({
-          id: `step-${i}`,
-          computation: 'heavy',
-          checkpointable: true,
-        })),
+        steps: Array(20)
+          .fill(null)
+          .map((_, i) => ({
+            id: `step-${i}`,
+            computation: 'heavy',
+            checkpointable: true,
+          })),
       };
 
       // Step 3: Start task execution
       console.log('⚡ Starting critical task...');
       const agents = await Promise.all(
-        Array(4).fill(null).map(() => resilientSwarm.spawn({ type: 'analyst' })),
+        Array(4)
+          .fill(null)
+          .map(() => resilientSwarm.spawn({ type: 'analyst' }))
       );
 
       let completedSteps = 0;
@@ -559,12 +585,12 @@ describe('E2E Workflow Scenarios', () => {
       });
 
       // Step 4: Simulate agent failures
-      setTimeout(async() => {
+      setTimeout(async () => {
         console.log('💥 Simulating agent failure...');
         await agents[0].simulateFailure();
       }, 2000);
 
-      setTimeout(async() => {
+      setTimeout(async () => {
         console.log('💥 Simulating another agent failure...');
         await agents[1].simulateFailure();
       }, 4000);

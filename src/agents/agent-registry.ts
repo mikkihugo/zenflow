@@ -1,6 +1,6 @@
 /**
  * Agent Registry - Manages registration and discovery of agents
- * 
+ *
  * Provides a centralized registry for agent management, allowing
  * agents to be discovered, queried, and managed across the system.
  */
@@ -8,12 +8,12 @@
 import { EventEmitter } from 'events';
 import type { DistributedMemorySystem } from '../memory/distributed-memory';
 import type {
+  AgentCapabilities,
   AgentId,
-  AgentType, 
+  AgentMetrics,
   AgentState,
   AgentStatus,
-  AgentCapabilities,
-  AgentMetrics
+  AgentType,
 } from '../types/agent-types';
 
 export interface AgentRegistryQuery {
@@ -103,7 +103,7 @@ export class AgentRegistry extends EventEmitter {
     metrics?: AgentMetrics;
   }): Promise<void> {
     const now = new Date();
-    
+
     const registeredAgent: RegisteredAgent = {
       id: agent.id,
       name: agent.name,
@@ -149,11 +149,14 @@ export class AgentRegistry extends EventEmitter {
   /**
    * Update agent status and metrics
    */
-  async updateAgent(agentId: AgentId, updates: {
-    status?: AgentStatus;
-    metrics?: Partial<AgentMetrics>;
-    capabilities?: AgentCapabilities;
-  }): Promise<void> {
+  async updateAgent(
+    agentId: AgentId,
+    updates: {
+      status?: AgentStatus;
+      metrics?: Partial<AgentMetrics>;
+      capabilities?: AgentCapabilities;
+    }
+  ): Promise<void> {
     const agent = this.agents.get(agentId);
     if (!agent) return;
 
@@ -192,8 +195,8 @@ export class AgentRegistry extends EventEmitter {
    */
   async queryAgents(query: AgentRegistryQuery = {}): Promise<RegisteredAgent[]> {
     const agents = Array.from(this.agents.values());
-    
-    return agents.filter(agent => {
+
+    return agents.filter((agent) => {
       // Type filter
       if (query.type && agent.type !== query.type) {
         return false;
@@ -214,9 +217,10 @@ export class AgentRegistry extends EventEmitter {
 
       // Capabilities filter
       if (query.capabilities && query.capabilities.length > 0) {
-        const hasAllCapabilities = query.capabilities.every(cap =>
-          agent.capabilities.skills.includes(cap) ||
-          agent.capabilities.specializations.includes(cap)
+        const hasAllCapabilities = query.capabilities.every(
+          (cap) =>
+            agent.capabilities.skills.includes(cap) ||
+            agent.capabilities.specializations.includes(cap)
         );
         if (!hasAllCapabilities) {
           return false;
@@ -249,9 +253,7 @@ export class AgentRegistry extends EventEmitter {
 
     // Exclude specific agents
     if (criteria.excludeAgents) {
-      candidates = candidates.filter(agent => 
-        !criteria.excludeAgents!.includes(agent.id)
-      );
+      candidates = candidates.filter((agent) => !criteria.excludeAgents!.includes(agent.id));
     }
 
     // Sort by priority
@@ -265,11 +267,12 @@ export class AgentRegistry extends EventEmitter {
           return b.health - a.health;
         case 'availability':
           return a.metrics.tasksInProgress - b.metrics.tasksInProgress;
-        default:
+        default: {
           // Default: balanced scoring
           const scoreA = this.calculateSelectionScore(a);
           const scoreB = this.calculateSelectionScore(b);
           return scoreB - scoreA;
+        }
       }
     });
 
@@ -296,7 +299,7 @@ export class AgentRegistry extends EventEmitter {
    * Get agents by type
    */
   getAgentsByType(type: AgentType): RegisteredAgent[] {
-    return Array.from(this.agents.values()).filter(agent => agent.type === type);
+    return Array.from(this.agents.values()).filter((agent) => agent.type === type);
   }
 
   /**
@@ -304,15 +307,21 @@ export class AgentRegistry extends EventEmitter {
    */
   getStats() {
     const agents = Array.from(this.agents.values());
-    const byType = agents.reduce((acc, agent) => {
-      acc[agent.type] = (acc[agent.type] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const byType = agents.reduce(
+      (acc, agent) => {
+        acc[agent.type] = (acc[agent.type] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
-    const byStatus = agents.reduce((acc, agent) => {
-      acc[agent.status] = (acc[agent.status] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const byStatus = agents.reduce(
+      (acc, agent) => {
+        acc[agent.status] = (acc[agent.status] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     return {
       totalAgents: agents.length,
@@ -320,7 +329,8 @@ export class AgentRegistry extends EventEmitter {
       agentsByStatus: byStatus,
       averageLoadFactor: agents.reduce((sum, a) => sum + a.loadFactor, 0) / agents.length || 0,
       averageHealth: agents.reduce((sum, a) => sum + a.health, 0) / agents.length || 0,
-      averageSuccessRate: agents.reduce((sum, a) => sum + a.metrics.successRate, 0) / agents.length || 0,
+      averageSuccessRate:
+        agents.reduce((sum, a) => sum + a.metrics.successRate, 0) / agents.length || 0,
     };
   }
 
@@ -329,7 +339,7 @@ export class AgentRegistry extends EventEmitter {
   private async loadExistingRegistrations(): Promise<void> {
     try {
       const entries = await this.memory.list(`${this.namespace}/agents/*`);
-      
+
       for (const entry of entries) {
         if (entry.value && typeof entry.value === 'object') {
           const agent = entry.value as RegisteredAgent;
@@ -393,30 +403,34 @@ export class AgentRegistry extends EventEmitter {
 
   private calculateLoadFactor(metrics?: AgentMetrics): number {
     if (!metrics) return 0;
-    
+
     // Simple load factor calculation
-    const taskLoad = metrics.tasksInProgress / Math.max(1, metrics.tasksCompleted + metrics.tasksInProgress);
+    const taskLoad =
+      metrics.tasksInProgress / Math.max(1, metrics.tasksCompleted + metrics.tasksInProgress);
     const resourceLoad = (metrics.resourceUsage.memory + metrics.resourceUsage.cpu) / 2;
-    
+
     return Math.min(1, taskLoad * 0.6 + resourceLoad * 0.4);
   }
 
   private calculateHealth(metrics?: AgentMetrics, status?: AgentStatus): number {
     if (!metrics) return 1.0;
-    
+
     let health = 1.0;
-    
+
     // Status penalty
     if (status === 'error') health *= 0.5;
     if (status === 'terminated') health = 0;
-    
+
     // Success rate factor
     health *= metrics.successRate;
-    
+
     // Resource usage penalty
-    const resourcePenalty = Math.max(0, (metrics.resourceUsage.memory + metrics.resourceUsage.cpu) / 2 - 0.8);
+    const resourcePenalty = Math.max(
+      0,
+      (metrics.resourceUsage.memory + metrics.resourceUsage.cpu) / 2 - 0.8
+    );
     health -= resourcePenalty * 0.3;
-    
+
     return Math.max(0, Math.min(1, health));
   }
 
@@ -425,7 +439,7 @@ export class AgentRegistry extends EventEmitter {
     const availabilityScore = (1 - agent.loadFactor) * 0.3;
     const performanceScore = agent.metrics.successRate * 0.4;
     const healthScore = agent.health * 0.3;
-    
+
     return availabilityScore + performanceScore + healthScore;
   }
 }

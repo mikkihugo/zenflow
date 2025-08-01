@@ -20,9 +20,9 @@
 
 import { spawn } from 'child_process';
 import { promises as fs } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 import os from 'os';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -75,7 +75,7 @@ class TestRunner {
       verbose: false,
     };
 
-    args.forEach(arg => {
+    args.forEach((arg) => {
       switch (arg) {
         case '--unit-only':
           options.comprehensive = false;
@@ -118,22 +118,28 @@ class TestRunner {
     const testPath = join(__dirname, testSuite.file);
 
     return new Promise((resolve) => {
-      const jestProcess = spawn('npx', [
-        'jest',
-        testPath,
-        '--verbose',
-        '--coverage',
-        '--testTimeout', testSuite.timeout.toString(),
-        '--forceExit',
-        '--detectOpenHandles',
-        '--colors',
-      ], {
-        stdio: this.options.verbose ? 'inherit' : 'pipe',
-        env: {
-          ...process.env,
-          NODE_OPTIONS: '--experimental-vm-modules --experimental-wasm-modules --max-old-space-size=4096',
-        },
-      });
+      const jestProcess = spawn(
+        'npx',
+        [
+          'jest',
+          testPath,
+          '--verbose',
+          '--coverage',
+          '--testTimeout',
+          testSuite.timeout.toString(),
+          '--forceExit',
+          '--detectOpenHandles',
+          '--colors',
+        ],
+        {
+          stdio: this.options.verbose ? 'inherit' : 'pipe',
+          env: {
+            ...process.env,
+            NODE_OPTIONS:
+              '--experimental-vm-modules --experimental-wasm-modules --max-old-space-size=4096',
+          },
+        }
+      );
 
       let stdout = '';
       let stderr = '';
@@ -208,7 +214,7 @@ class TestRunner {
       return this.testSuites;
     }
 
-    return this.testSuites.filter(suite => {
+    return this.testSuites.filter((suite) => {
       if (this.options.unitOnly && suite.categories.includes('unit')) return true;
       if (this.options.integrationOnly && suite.categories.includes('integration')) return true;
       if (this.options.performanceOnly && suite.categories.includes('performance')) return true;
@@ -228,7 +234,7 @@ class TestRunner {
 
     const suitesToRun = this.filterTestSuites();
     console.log(`\nRunning ${suitesToRun.length} test suite(s):`);
-    suitesToRun.forEach(suite => {
+    suitesToRun.forEach((suite) => {
       console.log(`  - ${suite.name} (${suite.categories.join(', ')})`);
     });
 
@@ -252,7 +258,7 @@ class TestRunner {
       }
 
       // Brief pause between tests
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     }
 
     return this.generateSummary();
@@ -261,8 +267,8 @@ class TestRunner {
   generateSummary() {
     const totalDuration = Date.now() - this.startTime;
     const results = Array.from(this.results.values());
-    const successful = results.filter(r => r.success);
-    const failed = results.filter(r => !r.success);
+    const successful = results.filter((r) => r.success);
+    const failed = results.filter((r) => !r.success);
 
     const summary = {
       timestamp: new Date(),
@@ -271,7 +277,7 @@ class TestRunner {
       successful: successful.length,
       failed: failed.length,
       successRate: (successful.length / results.length) * 100,
-      results: results.map(r => ({
+      results: results.map((r) => ({
         name: r.name,
         success: r.success,
         duration: r.duration,
@@ -305,7 +311,9 @@ class TestRunner {
     this.results.forEach((result, suiteId) => {
       if (result.stdout) {
         // Simple regex to extract coverage percentages
-        const coverageMatch = result.stdout.match(/All files.*?(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)/);
+        const coverageMatch = result.stdout.match(
+          /All files.*?(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)/
+        );
         if (coverageMatch) {
           coverageInfo.details.push({
             suite: suiteId,
@@ -320,10 +328,15 @@ class TestRunner {
 
     // Calculate average coverage
     if (coverageInfo.details.length > 0) {
-      coverageInfo.statements = coverageInfo.details.reduce((sum, d) => sum + d.statements, 0) / coverageInfo.details.length;
-      coverageInfo.branches = coverageInfo.details.reduce((sum, d) => sum + d.branches, 0) / coverageInfo.details.length;
-      coverageInfo.functions = coverageInfo.details.reduce((sum, d) => sum + d.functions, 0) / coverageInfo.details.length;
-      coverageInfo.lines = coverageInfo.details.reduce((sum, d) => sum + d.lines, 0) / coverageInfo.details.length;
+      coverageInfo.statements =
+        coverageInfo.details.reduce((sum, d) => sum + d.statements, 0) /
+        coverageInfo.details.length;
+      coverageInfo.branches =
+        coverageInfo.details.reduce((sum, d) => sum + d.branches, 0) / coverageInfo.details.length;
+      coverageInfo.functions =
+        coverageInfo.details.reduce((sum, d) => sum + d.functions, 0) / coverageInfo.details.length;
+      coverageInfo.lines =
+        coverageInfo.details.reduce((sum, d) => sum + d.lines, 0) / coverageInfo.details.length;
     }
 
     return coverageInfo;
@@ -332,13 +345,13 @@ class TestRunner {
   generateRecommendations() {
     const recommendations = [];
     const results = Array.from(this.results.values());
-    const failed = results.filter(r => !r.success);
+    const failed = results.filter((r) => !r.success);
 
     if (failed.length > 0) {
       recommendations.push(`${failed.length} test suite(s) failed - review error logs for issues`);
     }
 
-    const longRunning = results.filter(r => r.duration > 300000); // > 5 minutes
+    const longRunning = results.filter((r) => r.duration > 300000); // > 5 minutes
     if (longRunning.length > 0) {
       recommendations.push('Some tests took longer than 5 minutes - consider optimization');
     }
@@ -348,7 +361,7 @@ class TestRunner {
       recommendations.push('Code coverage below 90% - consider adding more unit tests');
     }
 
-    if (results.every(r => r.success)) {
+    if (results.every((r) => r.success)) {
       recommendations.push('All tests passed! Consider running in different environments');
     }
 
@@ -378,14 +391,14 @@ class TestRunner {
     }
 
     console.log('\n📋 TEST RESULTS:');
-    summary.results.forEach(result => {
+    summary.results.forEach((result) => {
       const status = result.success ? '✅' : '❌';
       const duration = (result.duration / 1000).toFixed(2);
       console.log(`  ${status} ${result.name} (${duration}s)`);
     });
 
     console.log('\n💡 RECOMMENDATIONS:');
-    summary.recommendations.forEach(rec => {
+    summary.recommendations.forEach((rec) => {
       console.log(`  • ${rec}`);
     });
 
@@ -464,7 +477,9 @@ class TestRunner {
 
     <div class="test-results">
         <h3 style="margin: 0; padding: 15px; background: #f8f9fa; border-bottom: 1px solid #dee2e6;">Test Results</h3>
-        ${summary.results.map(result => `
+        ${summary.results
+          .map(
+            (result) => `
             <div class="test-result">
                 <div>
                     <div class="test-name">${result.name}</div>
@@ -474,13 +489,15 @@ class TestRunner {
                     ${result.success ? '✅ PASSED' : '❌ FAILED'}
                 </div>
             </div>
-        `).join('')}
+        `
+          )
+          .join('')}
     </div>
 
     <div class="recommendations">
         <h3>💡 Recommendations</h3>
         <ul>
-            ${summary.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+            ${summary.recommendations.map((rec) => `<li>${rec}</li>`).join('')}
         </ul>
     </div>
 
@@ -511,11 +528,12 @@ class TestRunner {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const runner = new TestRunner();
 
-  runner.runAllTests()
-    .then(summary => {
+  runner
+    .runAllTests()
+    .then((summary) => {
       process.exit(summary.failed > 0 ? 1 : 0);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('Test runner failed:', error);
       process.exit(1);
     });

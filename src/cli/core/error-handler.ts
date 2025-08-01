@@ -1,14 +1,14 @@
 /**
  * Error Handler
- * 
+ *
  * Global error handling system for the CLI application.
  * Provides error formatting, debugging support, and error reporting.
  */
 
-import { writeFile } from 'fs/promises';
-import { join } from 'path';
-import { homedir } from 'os';
 import chalk from 'chalk';
+import { writeFile } from 'fs/promises';
+import { homedir } from 'os';
+import { join } from 'path';
 import type { CommandContext, CommandResult } from '../types/index';
 
 /**
@@ -18,7 +18,7 @@ export enum ErrorSeverity {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 
 /**
@@ -32,7 +32,7 @@ export enum ErrorCategory {
   PERMISSION = 'permission',
   CONFIG = 'config',
   USER = 'user',
-  INTERNAL = 'internal'
+  INTERNAL = 'internal',
 }
 
 /**
@@ -97,9 +97,9 @@ export class ErrorHandler {
         includeContext: false,
         includeEnvironment: false,
         maxLogSize: 10 * 1024 * 1024, // 10MB
-        anonymize: true
+        anonymize: true,
       },
-      ...config
+      ...config,
     };
   }
 
@@ -116,20 +116,24 @@ export class ErrorHandler {
   /**
    * Handle an error with full context
    */
-  async handle(error: Error, context?: CommandContext, metadata?: Record<string, unknown>): Promise<void> {
+  async handle(
+    error: Error,
+    context?: CommandContext,
+    metadata?: Record<string, unknown>
+  ): Promise<void> {
     const errorInfo = this.analyzeError(error, context, metadata);
-    
+
     // Add to error log
     this.addToLog(errorInfo);
-    
+
     // Display error to user
     this.displayError(errorInfo);
-    
+
     // Report error if enabled
     if (this.config.reporting.enabled) {
       await this.reportError(errorInfo);
     }
-    
+
     // Exit on critical errors if configured
     if (this.config.exitOnCritical && errorInfo.severity === ErrorSeverity.CRITICAL) {
       process.exit(1);
@@ -140,18 +144,18 @@ export class ErrorHandler {
    * Handle command execution errors
    */
   async handleCommandError(
-    error: Error, 
-    commandName: string, 
+    error: Error,
+    commandName: string,
     context: CommandContext
   ): Promise<CommandResult> {
     const metadata = { command: commandName };
     await this.handle(error, context, metadata);
-    
+
     return {
       success: false,
       error: error.message,
       exitCode: this.getExitCode(error),
-      executionTime: 0
+      executionTime: 0,
     };
   }
 
@@ -161,7 +165,7 @@ export class ErrorHandler {
   handleUnhandledRejection(reason: unknown, promise: Promise<unknown>): void {
     const error = reason instanceof Error ? reason : new Error(String(reason));
     const metadata = { unhandledRejection: true, promise: promise.toString() };
-    
+
     this.handle(error, undefined, metadata).catch(console.error);
   }
 
@@ -170,9 +174,9 @@ export class ErrorHandler {
    */
   handleUncaughtException(error: Error): void {
     const metadata = { uncaughtException: true };
-    
+
     this.handle(error, undefined, metadata).catch(console.error);
-    
+
     // Always exit on uncaught exceptions
     process.exit(1);
   }
@@ -184,7 +188,7 @@ export class ErrorHandler {
     process.on('unhandledRejection', (reason, promise) => {
       this.handleUnhandledRejection(reason, promise);
     });
-    
+
     process.on('uncaughtException', (error) => {
       this.handleUncaughtException(error);
     });
@@ -193,11 +197,15 @@ export class ErrorHandler {
   /**
    * Analyze error and extract information
    */
-  private analyzeError(error: Error, context?: CommandContext, metadata?: Record<string, unknown>): ErrorInfo {
+  private analyzeError(
+    error: Error,
+    context?: CommandContext,
+    metadata?: Record<string, unknown>
+  ): ErrorInfo {
     const category = this.categorizeError(error);
     const severity = this.assessSeverity(error, category);
     const suggestions = this.generateSuggestions(error, category);
-    
+
     return {
       error,
       context,
@@ -207,7 +215,7 @@ export class ErrorHandler {
       stack: error.stack,
       metadata,
       suggestions,
-      recoverable: this.isRecoverable(error, category)
+      recoverable: this.isRecoverable(error, category),
     };
   }
 
@@ -217,31 +225,43 @@ export class ErrorHandler {
   private categorizeError(error: Error): ErrorCategory {
     const message = error.message.toLowerCase();
     const name = error.name.toLowerCase();
-    
-    if (name.includes('validation') || message.includes('invalid') || message.includes('required')) {
+
+    if (
+      name.includes('validation') ||
+      message.includes('invalid') ||
+      message.includes('required')
+    ) {
       return ErrorCategory.VALIDATION;
     }
-    
-    if (message.includes('permission') || message.includes('access') || name.includes('permission')) {
+
+    if (
+      message.includes('permission') ||
+      message.includes('access') ||
+      name.includes('permission')
+    ) {
       return ErrorCategory.PERMISSION;
     }
-    
-    if (message.includes('network') || message.includes('connection') || message.includes('timeout')) {
+
+    if (
+      message.includes('network') ||
+      message.includes('connection') ||
+      message.includes('timeout')
+    ) {
       return ErrorCategory.NETWORK;
     }
-    
+
     if (message.includes('config') || message.includes('configuration')) {
       return ErrorCategory.CONFIG;
     }
-    
+
     if (name.includes('system') || message.includes('system')) {
       return ErrorCategory.SYSTEM;
     }
-    
+
     if (error.stack?.includes('user') || message.includes('user')) {
       return ErrorCategory.USER;
     }
-    
+
     return ErrorCategory.INTERNAL;
   }
 
@@ -253,17 +273,17 @@ export class ErrorHandler {
     if (category === ErrorCategory.SYSTEM || error.name === 'FatalError') {
       return ErrorSeverity.CRITICAL;
     }
-    
+
     // High severity errors
     if (category === ErrorCategory.PERMISSION || category === ErrorCategory.CONFIG) {
       return ErrorSeverity.HIGH;
     }
-    
+
     // Medium severity errors
     if (category === ErrorCategory.NETWORK || category === ErrorCategory.EXECUTION) {
       return ErrorSeverity.MEDIUM;
     }
-    
+
     // Low severity errors (validation, user errors)
     return ErrorSeverity.LOW;
   }
@@ -274,44 +294,44 @@ export class ErrorHandler {
   private generateSuggestions(error: Error, category: ErrorCategory): string[] {
     const suggestions: string[] = [];
     const message = error.message.toLowerCase();
-    
+
     switch (category) {
       case ErrorCategory.VALIDATION:
         suggestions.push('Check your command arguments and flags');
         suggestions.push('Use --help to see usage information');
         break;
-        
+
       case ErrorCategory.PERMISSION:
         suggestions.push('Check file/directory permissions');
         suggestions.push('Try running with appropriate privileges');
         break;
-        
+
       case ErrorCategory.NETWORK:
         suggestions.push('Check your internet connection');
         suggestions.push('Verify the service endpoint is accessible');
         suggestions.push('Try again in a few moments');
         break;
-        
+
       case ErrorCategory.CONFIG:
         suggestions.push('Check your configuration file');
         suggestions.push('Reset to default configuration if needed');
         break;
-        
+
       case ErrorCategory.SYSTEM:
         suggestions.push('Check system resources (disk space, memory)');
         suggestions.push('Verify system dependencies are installed');
         break;
     }
-    
+
     // Specific message-based suggestions
     if (message.includes('command not found')) {
       suggestions.push('Check if the command is installed and in PATH');
     }
-    
+
     if (message.includes('no such file')) {
       suggestions.push('Verify the file path exists');
     }
-    
+
     return suggestions;
   }
 
@@ -319,11 +339,7 @@ export class ErrorHandler {
    * Check if error is recoverable
    */
   private isRecoverable(error: Error, category: ErrorCategory): boolean {
-    return [
-      ErrorCategory.VALIDATION,
-      ErrorCategory.USER,
-      ErrorCategory.NETWORK
-    ].includes(category);
+    return [ErrorCategory.VALIDATION, ErrorCategory.USER, ErrorCategory.NETWORK].includes(category);
   }
 
   /**
@@ -331,21 +347,21 @@ export class ErrorHandler {
    */
   private displayError(errorInfo: ErrorInfo): void {
     const { error, category, severity, suggestions } = errorInfo;
-    
+
     // Main error message
     const severityColor = this.getSeverityColor(severity);
     const categoryText = category.toUpperCase();
-    
+
     console.error();
     console.error(severityColor(`${categoryText} ERROR:`), error.message);
-    
+
     // Stack trace in debug mode
     if (this.config.debug && error.stack) {
       console.error();
       console.error(chalk.gray('Stack trace:'));
       console.error(chalk.gray(error.stack));
     }
-    
+
     // Context information in verbose mode
     if (this.config.verbose && errorInfo.context) {
       console.error();
@@ -354,7 +370,7 @@ export class ErrorHandler {
       console.error(chalk.gray(`Flags: ${JSON.stringify(errorInfo.context.flags)}`));
       console.error(chalk.gray(`Input: ${errorInfo.context.input.join(' ')}`));
     }
-    
+
     // Suggestions
     if (this.config.showSuggestions && suggestions && suggestions.length > 0) {
       console.error();
@@ -363,7 +379,7 @@ export class ErrorHandler {
         console.error(chalk.yellow(`  • ${suggestion}`));
       }
     }
-    
+
     console.error();
   }
 
@@ -374,7 +390,7 @@ export class ErrorHandler {
     if (!this.config.colors) {
       return (text: string) => text;
     }
-    
+
     switch (severity) {
       case ErrorSeverity.CRITICAL:
         return chalk.red.bold;
@@ -404,7 +420,7 @@ export class ErrorHandler {
    */
   private addToLog(errorInfo: ErrorInfo): void {
     this.errorLog.push(errorInfo);
-    
+
     // Trim log if too large
     if (this.errorLog.length > this.maxLogEntries) {
       this.errorLog = this.errorLog.slice(-this.maxLogEntries);
@@ -417,7 +433,7 @@ export class ErrorHandler {
   private async reportError(errorInfo: ErrorInfo): Promise<void> {
     try {
       const report = this.formatErrorReport(errorInfo);
-      
+
       if (this.config.reporting.logFile) {
         await this.writeToLogFile(report);
       }
@@ -436,33 +452,33 @@ export class ErrorHandler {
       category: errorInfo.category,
       severity: errorInfo.severity,
       message: errorInfo.error.message,
-      name: errorInfo.error.name
+      name: errorInfo.error.name,
     };
-    
+
     if (this.config.reporting.includeStack && errorInfo.stack) {
       report.stack = errorInfo.stack;
     }
-    
+
     if (this.config.reporting.includeContext && errorInfo.context) {
       report.context = {
         args: errorInfo.context.args,
         flags: errorInfo.context.flags,
-        inputLength: errorInfo.context.input.length
+        inputLength: errorInfo.context.input.length,
       };
     }
-    
+
     if (this.config.reporting.includeEnvironment) {
       report.environment = {
         nodeVersion: process.version,
         platform: process.platform,
-        arch: process.arch
+        arch: process.arch,
       };
     }
-    
+
     if (errorInfo.metadata) {
       report.metadata = errorInfo.metadata;
     }
-    
+
     return JSON.stringify(report, null, 2);
   }
 
@@ -473,7 +489,7 @@ export class ErrorHandler {
     const logFile = this.config.reporting.logFile || join(homedir(), '.claude-zen-errors.log');
     const timestamp = new Date().toISOString();
     const logEntry = `\\n--- ${timestamp} ---\\n${report}\\n`;
-    
+
     await writeFile(logFile, logEntry, { flag: 'a' });
   }
 
@@ -490,24 +506,24 @@ export class ErrorHandler {
       total: this.errorLog.length,
       byCategory: {} as Record<ErrorCategory, number>,
       bySeverity: {} as Record<ErrorSeverity, number>,
-      recent: this.errorLog.slice(-10)
+      recent: this.errorLog.slice(-10),
     };
-    
+
     // Initialize counters
-    Object.values(ErrorCategory).forEach(category => {
+    Object.values(ErrorCategory).forEach((category) => {
       stats.byCategory[category] = 0;
     });
-    
-    Object.values(ErrorSeverity).forEach(severity => {
+
+    Object.values(ErrorSeverity).forEach((severity) => {
       stats.bySeverity[severity] = 0;
     });
-    
+
     // Count errors
     for (const errorInfo of this.errorLog) {
       stats.byCategory[errorInfo.category]++;
       stats.bySeverity[errorInfo.severity]++;
     }
-    
+
     return stats;
   }
 

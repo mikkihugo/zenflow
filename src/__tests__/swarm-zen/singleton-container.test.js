@@ -3,7 +3,7 @@
  * Tests memory safety, concurrent access, and proper lifecycle management
  */
 
-import { SingletonContainer, getContainer, resetContainer } from '../src/singleton-container.js';
+import { getContainer, resetContainer, SingletonContainer } from '../src/singleton-container.js';
 
 // Test class for dependency injection
 class TestService {
@@ -53,7 +53,7 @@ async function runTests() {
         console.log(`✅ ${name}`);
         testsPassed++;
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(`❌ ${name}: ${error.message}`);
       });
   }
@@ -161,7 +161,9 @@ async function runTests() {
 
     const stats = container.getStats();
     if (stats.registeredServices !== 100 || stats.activeInstances !== 100) {
-      throw new Error(`Expected 100 services and instances, got ${stats.registeredServices}/${stats.activeInstances}`);
+      throw new Error(
+        `Expected 100 services and instances, got ${stats.registeredServices}/${stats.activeInstances}`
+      );
     }
 
     container.destroy();
@@ -178,9 +180,7 @@ async function runTests() {
     container.register('concurrent', () => new TestService('concurrent'));
 
     // Simulate concurrent access
-    const promises = Array.from({ length: 10 }, () =>
-      Promise.resolve(container.get('concurrent')),
-    );
+    const promises = Array.from({ length: 10 }, () => Promise.resolve(container.get('concurrent')));
 
     const instances = await Promise.all(promises);
 
@@ -272,7 +272,8 @@ async function runTests() {
     const endTime = Date.now();
     const duration = endTime - startTime;
 
-    if (duration > 100) { // Should be very fast
+    if (duration > 100) {
+      // Should be very fast
       throw new Error(`Performance test too slow: ${duration}ms`);
     }
 
@@ -318,12 +319,14 @@ async function runTests() {
 
 // Run tests if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  runTests().then(success => {
-    process.exit(success ? 0 : 1);
-  }).catch(error => {
-    console.error('Test runner error:', error);
-    process.exit(1);
-  });
+  runTests()
+    .then((success) => {
+      process.exit(success ? 0 : 1);
+    })
+    .catch((error) => {
+      console.error('Test runner error:', error);
+      process.exit(1);
+    });
 }
 
 export { runTests };

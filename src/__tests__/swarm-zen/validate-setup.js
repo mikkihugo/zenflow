@@ -43,7 +43,7 @@ const testFiles = [
   'README.md',
 ];
 
-testFiles.forEach(file => {
+testFiles.forEach((file) => {
   const filePath = path.join(__dirname, file);
   check(`  ${file}`, fs.existsSync(filePath), `File not found: ${filePath}`);
 });
@@ -59,10 +59,12 @@ try {
   const packageJson = require('../package.json');
   const requiredDeps = ['ws', 'uuid', 'better-sqlite3'];
 
-  requiredDeps.forEach(dep => {
-    check(`  ${dep}`,
+  requiredDeps.forEach((dep) => {
+    check(
+      `  ${dep}`,
       packageJson.dependencies[dep] || packageJson.devDependencies[dep],
-      'Missing dependency in package.json');
+      'Missing dependency in package.json'
+    );
   });
 } catch (error) {
   check('  package.json', false, error.message);
@@ -77,7 +79,7 @@ check(`  Node.js version (${nodeVersion})`, majorVersion >= 14, 'Node.js 14+ req
 // Check if we can import required modules
 console.log('\n📚 Checking module imports:');
 const modules = ['ws', 'uuid', 'sqlite3'];
-modules.forEach(mod => {
+modules.forEach((mod) => {
   try {
     require(mod);
     check(`  ${mod}`, true);
@@ -92,7 +94,7 @@ const mcpServerPath = path.join(__dirname, '..', '..', 'crates', 'ruv-swarm-mcp'
 check('  MCP server crate', fs.existsSync(mcpServerPath), 'MCP server crate not found');
 
 // Summary
-console.log(`\n${ '='.repeat(50)}`);
+console.log(`\n${'='.repeat(50)}`);
 console.log('📊 Validation Summary:');
 console.log(`  ✅ Passed: ${passed}`);
 console.log(`  ❌ Failed: ${failed}`);

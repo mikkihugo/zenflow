@@ -1,54 +1,54 @@
 /**
  * Classical TDD (Detroit School) - Neural Algorithms Test Suite
- * 
+ *
  * Comprehensive test suite for neural network algorithms
  * Focus: Real computations, mathematical correctness, no mocks
  */
 
-import { describe, it, expect } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 
 describe('Neural Algorithms - Classical TDD Test Suite', () => {
   describe('Test Suite Overview', () => {
     it('should validate complete neural network testing approach', () => {
       // This test serves as documentation for the Classical TDD approach
       // used throughout the neural algorithms test suite
-      
+
       const testSuiteComponents = {
         'ruv-fann-integration': {
           purpose: 'Test actual WASM neural network integration',
           approach: 'Direct API calls, real network creation',
           focus: 'Cross-language interoperability, resource management',
-          noMocks: true
+          noMocks: true,
         },
         'training-convergence': {
           purpose: 'Validate training algorithm convergence behavior',
           approach: 'Mathematical validation on known problems',
           focus: 'Algorithm correctness, convergence properties',
-          noMocks: true
+          noMocks: true,
         },
         'prediction-accuracy': {
           purpose: 'Test prediction accuracy on known datasets',
           approach: 'Real data, statistical accuracy metrics',
           focus: 'Function approximation, pattern recognition',
-          noMocks: true
+          noMocks: true,
         },
         'memory-efficiency': {
           purpose: 'Monitor actual memory allocation patterns',
           approach: 'System resource monitoring, leak detection',
           focus: 'Resource management, scalability',
-          noMocks: true
+          noMocks: true,
         },
         'simd-optimization': {
           purpose: 'Verify SIMD performance and correctness',
           approach: 'Performance benchmarking, mathematical validation',
           focus: 'Optimization effectiveness, accuracy preservation',
-          noMocks: true
-        }
+          noMocks: true,
+        },
       };
 
       // Validate test suite structure
       expect(Object.keys(testSuiteComponents)).toHaveLength(5);
-      
+
       // Ensure all components follow Classical TDD principles
       for (const [name, component] of Object.entries(testSuiteComponents)) {
         expect(component.noMocks).toBe(true);
@@ -65,7 +65,7 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
         'Performance measurement and benchmarking',
         'Cross-platform compatibility verification',
         'Statistical accuracy metrics',
-        'Error condition and edge case testing'
+        'Error condition and edge case testing',
       ];
 
       expect(classicalTddPrinciples.length).toBeGreaterThanOrEqual(7);
@@ -78,13 +78,13 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
         'Mathematical Accuracy': 'Numerical precision and convergence validation',
         'Resource Awareness': 'Memory and CPU usage monitoring',
         'Cross-Platform': 'WASM integration and CPU feature detection',
-        'Maintainability': 'Tests serve as executable documentation',
-        'Regression Protection': 'Performance and accuracy regression detection'
+        Maintainability: 'Tests serve as executable documentation',
+        'Regression Protection': 'Performance and accuracy regression detection',
       };
 
       // Verify comprehensive benefit coverage
       expect(Object.keys(benefits)).toHaveLength(7);
-      
+
       for (const [benefit, description] of Object.entries(benefits)) {
         expect(description).toBeTruthy();
         expect(description.length).toBeGreaterThan(20);
@@ -103,11 +103,11 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
         'Validate prediction accuracy',
         'Monitor memory usage throughout process',
         'Verify SIMD optimizations when available',
-        'Clean up resources properly'
+        'Clean up resources properly',
       ];
 
       expect(workflow).toHaveLength(8);
-      
+
       // Each step should be covered by specific test files
       const testFileCoverage = {
         'Initialize WASM neural network module': 'ruv-fann-integration.test.ts',
@@ -117,7 +117,7 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
         'Validate prediction accuracy': 'prediction-accuracy.test.ts',
         'Monitor memory usage throughout process': 'memory-efficiency.test.ts',
         'Verify SIMD optimizations when available': 'simd-optimization.test.ts',
-        'Clean up resources properly': 'memory-efficiency.test.ts'
+        'Clean up resources properly': 'memory-efficiency.test.ts',
       };
 
       for (const step of workflow) {
@@ -130,43 +130,34 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
       const algorithmsToTest = {
         'Training Algorithms': [
           'Incremental Backpropagation',
-          'Batch Backpropagation', 
+          'Batch Backpropagation',
           'RProp',
           'QuickProp',
-          'Cascade Correlation'
+          'Cascade Correlation',
         ],
-        'Activation Functions': [
-          'Sigmoid',
-          'Tanh',
-          'ReLU',
-          'Leaky ReLU',
-          'GELU',
-          'Swish'
-        ],
-        'Network Architectures': [
-          'Feedforward',
-          'Multi-layer Perceptron',
-          'Cascade Networks'
-        ],
+        'Activation Functions': ['Sigmoid', 'Tanh', 'ReLU', 'Leaky ReLU', 'GELU', 'Swish'],
+        'Network Architectures': ['Feedforward', 'Multi-layer Perceptron', 'Cascade Networks'],
         'Optimization Techniques': [
           'SIMD Matrix Operations',
           'Memory Pool Management',
           'Parallel Training',
-          'Batch Processing'
-        ]
+          'Batch Processing',
+        ],
       };
 
       // Validate comprehensive algorithm coverage
       expect(Object.keys(algorithmsToTest)).toHaveLength(4);
-      
+
       for (const [category, algorithms] of Object.entries(algorithmsToTest)) {
         expect(algorithms.length).toBeGreaterThan(0);
         expect(Array.isArray(algorithms)).toBe(true);
       }
 
       // Total algorithm count should be substantial
-      const totalAlgorithms = Object.values(algorithmsToTest)
-        .reduce((sum, algorithms) => sum + algorithms.length, 0);
+      const totalAlgorithms = Object.values(algorithmsToTest).reduce(
+        (sum, algorithms) => sum + algorithms.length,
+        0
+      );
       expect(totalAlgorithms).toBeGreaterThanOrEqual(18);
     });
   });
@@ -176,12 +167,12 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
       // Document required test environment features
       const environmentRequirements = {
         'Node.js Version': process.version,
-        'Architecture': process.arch,
-        'Platform': process.platform,
+        Architecture: process.arch,
+        Platform: process.platform,
         'Memory Available': process.memoryUsage().rss < 1024 * 1024 * 1024, // Less than 1GB initially
         'Performance Timing': typeof performance !== 'undefined',
         'TypeScript Support': true, // Validated by test execution
-        'Jest Framework': expect.getState !== undefined
+        'Jest Framework': expect.getState !== undefined,
       };
 
       // Validate environment meets requirements
@@ -200,18 +191,18 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
         'Node.js Environment': typeof process !== 'undefined',
         'WebAssembly Support': typeof WebAssembly !== 'undefined',
         'SIMD Detection': process.arch === 'x64', // Simplified check
-        'Memory Management': true // Garbage collection available
+        'Memory Management': true, // Garbage collection available
       };
 
       // At least Node.js environment should be available for testing
       expect(wasmCompatibility['Node.js Environment']).toBe(true);
-      
+
       // Log environment information for debugging
       console.log('Test Environment:', {
         nodeVersion: process.version,
         architecture: process.arch,
         platform: process.platform,
-        wasmSupport: typeof WebAssembly !== 'undefined'
+        wasmSupport: typeof WebAssembly !== 'undefined',
       });
     });
   });
@@ -224,14 +215,14 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
         'XOR Training Convergence': { maxEpochs: 5000, targetError: 0.01 },
         'Matrix Multiplication (100x100)': { maxTime: 50, unit: 'ms' }, // < 50ms
         'Memory Per Small Network': { maxMemory: 10, unit: 'MB' }, // < 10MB
-        'SIMD Speedup Factor': { minSpeedup: 1.0, unit: 'x' } // At least 1x (no slowdown)
+        'SIMD Speedup Factor': { minSpeedup: 1.0, unit: 'x' }, // At least 1x (no slowdown)
       };
 
       // Validate baseline structure
       for (const [operation, baseline] of Object.entries(performanceBaselines)) {
         expect(baseline).toBeDefined();
         expect(typeof baseline).toBe('object');
-        
+
         if ('maxTime' in baseline) {
           expect(baseline.maxTime).toBeGreaterThan(0);
         }
@@ -263,12 +254,12 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
         'Cross Platform Compatibility',
         'Resource Cleanup',
         'Optimization Verification',
-        'Regression Detection'
+        'Regression Detection',
       ];
 
       // Each area should be covered by the test suite
       expect(testCoverageAreas.length).toBeGreaterThanOrEqual(10);
-      
+
       // Map to specific test files
       const coverageMapping = {
         'API Integration': ['ruv-fann-integration.test.ts'],
@@ -280,7 +271,7 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
         'Cross Platform Compatibility': ['simd-optimization.test.ts'],
         'Resource Cleanup': ['memory-efficiency.test.ts'],
         'Optimization Verification': ['simd-optimization.test.ts'],
-        'Regression Detection': ['training-convergence.test.ts', 'prediction-accuracy.test.ts']
+        'Regression Detection': ['training-convergence.test.ts', 'prediction-accuracy.test.ts'],
       };
 
       for (const area of testCoverageAreas) {
@@ -298,12 +289,12 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
         'System Integration': 'Cross-language WASM integration tested',
         'Resource Monitoring': 'Memory usage and performance patterns observed',
         'Regression Protection': 'Performance and accuracy degradation detected',
-        'Documentation Value': 'Tests serve as executable specifications'
+        'Documentation Value': 'Tests serve as executable specifications',
       };
 
       // Validate advantages are well-defined
       expect(Object.keys(classicalTddAdvantages)).toHaveLength(7);
-      
+
       for (const [advantage, description] of Object.entries(classicalTddAdvantages)) {
         expect(description).toBeTruthy();
         expect(description.length).toBeGreaterThan(30);
@@ -317,7 +308,7 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
         'Performance-critical algorithms',
         'Cross-platform compatibility',
         'Resource-intensive operations',
-        'Scientific computing applications'
+        'Scientific computing applications',
       ];
 
       expect(idealUseCases.length).toBeGreaterThanOrEqual(6);
@@ -327,34 +318,34 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
 
 /**
  * Neural Algorithms Test Suite - Classical TDD Implementation
- * 
+ *
  * This comprehensive test suite demonstrates Classical TDD (Detroit School) principles
  * applied to neural network algorithms. The approach focuses on:
- * 
+ *
  * 1. REAL BEHAVIOR TESTING
  *    - No mocks or stubs
  *    - Actual neural network computations
  *    - Cross-language WASM integration
  *    - Real system resource monitoring
- * 
+ *
  * 2. MATHEMATICAL CORRECTNESS
  *    - Training convergence validation
- *    - Prediction accuracy measurement  
+ *    - Prediction accuracy measurement
  *    - Numerical precision verification
  *    - Statistical performance metrics
- * 
+ *
  * 3. PERFORMANCE VERIFICATION
  *    - SIMD optimization effectiveness
  *    - Memory usage patterns
  *    - Training speed benchmarks
  *    - Resource cleanup validation
- * 
+ *
  * 4. COMPREHENSIVE COVERAGE
  *    - Multiple training algorithms
  *    - Various activation functions
  *    - Different network architectures
  *    - Edge cases and error conditions
- * 
+ *
  * Benefits over London School TDD:
  * - Higher confidence in neural network behavior
  * - Performance regression detection
@@ -362,14 +353,14 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
  * - Cross-platform compatibility verification
  * - Resource usage monitoring
  * - Executable documentation
- * 
+ *
  * Test Files:
  * - ruv-fann-integration.test.ts: WASM integration and API testing
  * - training-convergence.test.ts: Training algorithm validation
  * - prediction-accuracy.test.ts: Accuracy measurement on known datasets
  * - memory-efficiency.test.ts: Resource usage and leak detection
  * - simd-optimization.test.ts: Performance optimization verification
- * 
+ *
  * This approach is ideal for:
  * - Neural network libraries
  * - Mathematical computation libraries

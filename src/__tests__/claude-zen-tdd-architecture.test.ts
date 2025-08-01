@@ -1,10 +1,10 @@
 /**
  * Claude-Zen TDD London School Architecture Tests
- * 
+ *
  * System Identity: Claude-Zen v2.0.0-alpha.73
  * Neural Framework: ruv-FANN (should be renamed to ruv-FANN-zen)
  * Architecture: Enhanced multi-Queen AI platform with Hive Mind
- * 
+ *
  * TDD London School Approach:
  * 1. Outside-in development from user stories
  * 2. Mock-driven contracts for Queen coordination
@@ -12,7 +12,7 @@
  * 4. Neural integration testing with ruv-FANN-zen
  */
 
-import { jest, describe, it, expect, beforeEach, afterEach } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 // === CLAUDE-ZEN ARCHITECTURE MOCKS ===
 
@@ -79,7 +79,7 @@ const mockWebSocketManager = {
 // === CONTRACT INTERFACES ===
 
 interface HiveMindContract {
-  initialize(config: { queens: string[], neuralFramework: boolean }): Promise<void>;
+  initialize(config: { queens: string[]; neuralFramework: boolean }): Promise<void>;
   spawnQueen(type: string, config: any): Promise<string>;
   coordinateQueens(task: any): Promise<any>;
   processTask(task: any): Promise<any>;
@@ -101,38 +101,36 @@ interface NeuralFrameworkContract {
 }
 
 describe('Claude-Zen TDD London School Architecture', () => {
-  
   describe('🧠 Acceptance Tests - Claude-Zen User Stories', () => {
-    
     describe('User Story: Multi-Queen Task Processing', () => {
       it('should coordinate multiple Queens to solve complex development tasks', async () => {
         // Arrange - Mock the entire Queen coordination workflow
         mockHiveMind.initialize.mockResolvedValue(undefined);
         mockHiveMind.spawnQueen.mockResolvedValue('queen-1');
         mockHiveMind.coordinateQueens.mockResolvedValue({ success: true });
-        
+
         const complexTask = {
           type: 'full-stack-development',
           requirements: ['architecture', 'implementation', 'testing'],
-          priority: 'high'
+          priority: 'high',
         };
-        
+
         // Act - Simulate Claude-Zen processing a complex task
-        await mockHiveMind.initialize({ 
-          queens: ['architect', 'code', 'debug'], 
-          neuralFramework: true 
+        await mockHiveMind.initialize({
+          queens: ['architect', 'code', 'debug'],
+          neuralFramework: true,
         });
-        
+
         const architectQueenId = await mockHiveMind.spawnQueen('architect', {});
         const codeQueenId = await mockHiveMind.spawnQueen('code', {});
         const debugQueenId = await mockHiveMind.spawnQueen('debug', {});
-        
+
         const result = await mockHiveMind.coordinateQueens(complexTask);
-        
+
         // Assert - Verify Claude-Zen orchestration contracts
-        expect(mockHiveMind.initialize).toHaveBeenCalledWith({ 
-          queens: ['architect', 'code', 'debug'], 
-          neuralFramework: true 
+        expect(mockHiveMind.initialize).toHaveBeenCalledWith({
+          queens: ['architect', 'code', 'debug'],
+          neuralFramework: true,
         });
         expect(mockHiveMind.spawnQueen).toHaveBeenCalledTimes(3);
         expect(mockHiveMind.coordinateQueens).toHaveBeenCalledWith(complexTask);
@@ -144,29 +142,29 @@ describe('Claude-Zen TDD London School Architecture', () => {
       it('should integrate ruv-FANN-zen for intelligent Queen decisions', async () => {
         // Arrange - Mock neural framework integration
         mockNeuralFramework.initializeNetwork.mockResolvedValue(undefined);
-        mockNeuralFramework.predict.mockResolvedValue({ 
-          recommendation: 'use-pattern-X', 
-          confidence: 0.92 
+        mockNeuralFramework.predict.mockResolvedValue({
+          recommendation: 'use-pattern-X',
+          confidence: 0.92,
         });
-        
+
         const decisionContext = {
           codebase: 'typescript-monorepo',
           pattern: 'dependency-injection',
-          complexity: 'high'
+          complexity: 'high',
         };
-        
+
         // Act - Simulate neural-enhanced Queen decision
         await mockNeuralFramework.initializeNetwork('decision-transformer');
         const prediction = await mockNeuralFramework.predict(decisionContext);
-        
+
         // Use prediction in Queen coordination
         mockQueens.architectQueen.design.mockResolvedValue({
           pattern: prediction.recommendation,
-          confidence: prediction.confidence
+          confidence: prediction.confidence,
         });
-        
+
         const designResult = await mockQueens.architectQueen.design(decisionContext);
-        
+
         // Assert - Verify neural integration contract
         expect(mockNeuralFramework.initializeNetwork).toHaveBeenCalledWith('decision-transformer');
         expect(mockNeuralFramework.predict).toHaveBeenCalledWith(decisionContext);
@@ -181,59 +179,63 @@ describe('Claude-Zen TDD London School Architecture', () => {
         mockWebSocketManager.createQueenChannels.mockResolvedValue(undefined);
         mockWebSocketManager.broadcastQueenStatus.mockImplementation(() => {});
         mockWebSocketManager.streamTaskProgress.mockImplementation(() => {});
-        
+
         const taskProgress = {
           taskId: 'task-123',
           queens: ['architect', 'code'],
           progress: {
             architect: { stage: 'design', completion: 0.8 },
-            code: { stage: 'implementation', completion: 0.4 }
-          }
+            code: { stage: 'implementation', completion: 0.4 },
+          },
         };
-        
+
         // Act - Simulate real-time workflow
         await mockWebSocketManager.createQueenChannels(['architect', 'code']);
         mockWebSocketManager.broadcastQueenStatus(taskProgress.progress);
         mockWebSocketManager.streamTaskProgress(taskProgress);
-        
+
         // Assert - Verify real-time communication contracts
-        expect(mockWebSocketManager.createQueenChannels).toHaveBeenCalledWith(['architect', 'code']);
-        expect(mockWebSocketManager.broadcastQueenStatus).toHaveBeenCalledWith(taskProgress.progress);
+        expect(mockWebSocketManager.createQueenChannels).toHaveBeenCalledWith([
+          'architect',
+          'code',
+        ]);
+        expect(mockWebSocketManager.broadcastQueenStatus).toHaveBeenCalledWith(
+          taskProgress.progress
+        );
         expect(mockWebSocketManager.streamTaskProgress).toHaveBeenCalledWith(taskProgress);
       });
     });
   });
 
   describe('🔗 Contract Verification - Claude-Zen Component Integration', () => {
-    
     describe('Hive Mind ↔ Queen Coordination', () => {
       it('should verify proper Queen lifecycle management', async () => {
         // Arrange - Mock Queen lifecycle
         mockHiveMind.spawnQueen.mockResolvedValue('queen-arch-001');
         mockQueens.architectQueen.coordinate.mockResolvedValue(undefined);
         mockHiveMind.getQueenStatus.mockResolvedValue([
-          { id: 'queen-arch-001', type: 'architect', status: 'active' }
+          { id: 'queen-arch-001', type: 'architect', status: 'active' },
         ]);
-        
+
         // Act - Test Queen lifecycle
         const queenId = await mockHiveMind.spawnQueen('architect', {
           specialization: 'microservices',
-          experience: 'senior'
+          experience: 'senior',
         });
-        
+
         await mockQueens.architectQueen.coordinate(['queen-code-001']);
         const status = await mockHiveMind.getQueenStatus();
-        
+
         // Assert - Verify lifecycle contracts
         expect(mockHiveMind.spawnQueen).toHaveBeenCalledWith('architect', {
           specialization: 'microservices',
-          experience: 'senior'
+          experience: 'senior',
         });
         expect(mockQueens.architectQueen.coordinate).toHaveBeenCalledWith(['queen-code-001']);
         expect(status).toContainEqual({
           id: 'queen-arch-001',
-          type: 'architect', 
-          status: 'active'
+          type: 'architect',
+          status: 'active',
         });
       });
     });
@@ -243,30 +245,30 @@ describe('Claude-Zen TDD London School Architecture', () => {
         // Arrange - Mock API to MCP bridge
         const apiRequest = {
           endpoint: '/api/queens/architect/analyze',
-          payload: { codebase: 'react-app', task: 'refactor' }
+          payload: { codebase: 'react-app', task: 'refactor' },
         };
-        
+
         const mcpToolCall = {
           method: 'tools/call',
           params: {
             name: 'architect-analyze',
-            arguments: apiRequest.payload
-          }
+            arguments: apiRequest.payload,
+          },
         };
-        
+
         mockClaudeZenApi.handleTaskRequest.mockResolvedValue({
           status: 'processing',
-          queenId: 'arch-001'
+          queenId: 'arch-001',
         });
-        
+
         mockMcpServer.handleToolCall.mockResolvedValue({
-          result: { analysis: 'component-extraction-recommended' }
+          result: { analysis: 'component-extraction-recommended' },
         });
-        
+
         // Act - Test API to MCP bridge
         const apiResponse = await mockClaudeZenApi.handleTaskRequest(apiRequest);
         const mcpResponse = await mockMcpServer.handleToolCall(mcpToolCall);
-        
+
         // Assert - Verify bridging contract
         expect(mockClaudeZenApi.handleTaskRequest).toHaveBeenCalledWith(apiRequest);
         expect(mockMcpServer.handleToolCall).toHaveBeenCalledWith(mcpToolCall);
@@ -277,38 +279,43 @@ describe('Claude-Zen TDD London School Architecture', () => {
   });
 
   describe('🏗️ London School Patterns - Claude-Zen Style', () => {
-    
     it('should demonstrate Queen collaboration through interaction testing', () => {
       // London School: Test HOW Queens collaborate, not WHAT they contain
       const mockTaskCoordinator = {
         assignTask: jest.fn(),
         trackProgress: jest.fn(),
-        synthesizeResults: jest.fn()
+        synthesizeResults: jest.fn(),
       };
-      
+
       const claudeZenOrchestrator = {
         processComplexTask: async (task: any) => {
           mockTaskCoordinator.assignTask('architect', task.designPhase);
           mockTaskCoordinator.assignTask('code', task.implementationPhase);
           mockTaskCoordinator.trackProgress('all');
           return mockTaskCoordinator.synthesizeResults();
-        }
+        },
       };
-      
+
       // Act - Test the orchestration conversation
       const complexTask = {
         designPhase: { type: 'architecture', scope: 'full-system' },
-        implementationPhase: { type: 'coding', language: 'typescript' }
+        implementationPhase: { type: 'coding', language: 'typescript' },
       };
-      
+
       mockTaskCoordinator.synthesizeResults.mockReturnValue({ success: true });
-      
+
       // Execute the orchestration
       claudeZenOrchestrator.processComplexTask(complexTask);
-      
+
       // Assert - Verify the orchestration conversation
-      expect(mockTaskCoordinator.assignTask).toHaveBeenCalledWith('architect', complexTask.designPhase);
-      expect(mockTaskCoordinator.assignTask).toHaveBeenCalledWith('code', complexTask.implementationPhase);
+      expect(mockTaskCoordinator.assignTask).toHaveBeenCalledWith(
+        'architect',
+        complexTask.designPhase
+      );
+      expect(mockTaskCoordinator.assignTask).toHaveBeenCalledWith(
+        'code',
+        complexTask.implementationPhase
+      );
       expect(mockTaskCoordinator.trackProgress).toHaveBeenCalledWith('all');
       expect(mockTaskCoordinator.synthesizeResults).toHaveBeenCalled();
     });
@@ -318,33 +325,33 @@ describe('Claude-Zen TDD London School Architecture', () => {
       const mockQueenRegistry = {
         register: jest.fn(),
         lookup: jest.fn(),
-        invoke: jest.fn()
+        invoke: jest.fn(),
       };
-      
+
       const mockCapabilityMatcher = {
         findBestQueen: jest.fn(),
-        assessCompatibility: jest.fn()
+        assessCompatibility: jest.fn(),
       };
-      
+
       // This test drives the design of dynamic Queen discovery
       const dynamicQueenSystem = {
         handleUnknownTask: async (task: any) => {
           const bestQueen = mockCapabilityMatcher.findBestQueen(task);
           const compatibility = mockCapabilityMatcher.assessCompatibility(bestQueen, task);
-          
+
           if (compatibility > 0.8) {
             return mockQueenRegistry.invoke(bestQueen, task);
           }
-          
+
           throw new Error('No suitable Queen found');
-        }
+        },
       };
-      
+
       // The test defines the contract through mock expectations
       mockCapabilityMatcher.findBestQueen.mockReturnValue('specialized-queen-v2');
       mockCapabilityMatcher.assessCompatibility.mockReturnValue(0.95);
       mockQueenRegistry.invoke.mockResolvedValue({ result: 'task-completed' });
-      
+
       // Verify the interface exists and behaves correctly
       expect(typeof dynamicQueenSystem.handleUnknownTask).toBe('function');
       expect(mockCapabilityMatcher.findBestQueen).toBeDefined();
@@ -356,7 +363,7 @@ describe('Claude-Zen TDD London School Architecture', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  
+
   afterEach(() => {
     jest.restoreAllMocks();
   });

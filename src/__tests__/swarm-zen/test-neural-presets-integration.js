@@ -3,9 +3,9 @@
  * Verify 27+ neural model presets with cognitive patterns
  */
 
+import { COMPLETE_NEURAL_PRESETS } from '../src/neural-models/neural-presets-complete.js';
 import { NeuralNetworkManager } from '../src/neural-network-manager.js';
 import { WasmModuleLoader } from '../src/wasm-loader.js';
-import { COMPLETE_NEURAL_PRESETS } from '../src/neural-models/neural-presets-complete.js';
 
 async function testNeuralPresetsIntegration() {
   console.log('🧠 Testing Neural Presets Integration (27+ Models)...\n');
@@ -47,7 +47,7 @@ async function testNeuralPresetsIntegration() {
           requiresPrecision: test.modelType === 'cnn',
           requiresCreativity: test.modelType === 'diffusion',
           complexity: 'high',
-        },
+        }
       );
 
       const presetInfo = neuralManager.getAgentPresetInfo(test.agentId);
@@ -79,7 +79,9 @@ async function testNeuralPresetsIntegration() {
 
     recommendations.slice(0, 3).forEach((rec, idx) => {
       console.log(`    ${idx + 1}. ${rec.preset.name} (${rec.modelType})`);
-      console.log(`       Score: ${rec.score.toFixed(2)}, Patterns: ${rec.cognitivePatterns.join(', ')}`);
+      console.log(
+        `       Score: ${rec.score.toFixed(2)}, Patterns: ${rec.cognitivePatterns.join(', ')}`
+      );
     });
   }
 
@@ -110,7 +112,7 @@ async function testNeuralPresetsIntegration() {
     const patterns = neuralManager.cognitivePatternSelector.selectPatternsForPreset(
       'transformer',
       'bert_base',
-      scenario.config,
+      scenario.config
     );
 
     console.log(`    Selected patterns: ${patterns.join(', ')}`);
@@ -136,8 +138,8 @@ async function testNeuralPresetsIntegration() {
 
   // List all unique model types
   const uniqueModels = new Set();
-  Object.values(COMPLETE_NEURAL_PRESETS).forEach(categoryPresets => {
-    Object.values(categoryPresets).forEach(preset => {
+  Object.values(COMPLETE_NEURAL_PRESETS).forEach((categoryPresets) => {
+    Object.values(categoryPresets).forEach((preset) => {
       uniqueModels.add(preset.model);
     });
   });
@@ -151,17 +153,14 @@ async function testNeuralPresetsIntegration() {
   console.log('\n🔄 Test 6: Neural Adaptation Engine');
 
   // Simulate training and adaptation
-  const adaptationTest = await (async() => {
+  const adaptationTest = await (async () => {
     const agentId = 'adaptive-agent';
 
     try {
       // Create agent with adaptation enabled
-      await neuralManager.createAgentFromPreset(
-        agentId,
-        'transformer',
-        'gpt_small',
-        { enableMetaLearning: true },
-      );
+      await neuralManager.createAgentFromPreset(agentId, 'transformer', 'gpt_small', {
+        enableMetaLearning: true,
+      });
 
       // Simulate training results
       const trainingResult = {
@@ -171,13 +170,14 @@ async function testNeuralPresetsIntegration() {
       };
 
       // Fine-tune with cognitive evolution
-      await neuralManager.fineTuneNetwork(agentId,
+      await neuralManager.fineTuneNetwork(
+        agentId,
         { samples: Array(100).fill({ input: [1, 2, 3], target: 1 }) },
         {
           epochs: 5,
           enableCognitiveEvolution: true,
           enableMetaLearning: true,
-        },
+        }
       );
 
       // Get adaptation recommendations
@@ -198,7 +198,7 @@ async function testNeuralPresetsIntegration() {
   console.log('\n✅ Test 6 passed: Neural adaptation engine functional');
 
   // Summary
-  console.log(`\n${ '='.repeat(60)}`);
+  console.log(`\n${'='.repeat(60)}`);
   console.log('🎉 NEURAL PRESETS INTEGRATION TEST SUMMARY');
   console.log('='.repeat(60));
   console.log(`✅ Model Types Available: ${Object.keys(modelTypes).length}`);

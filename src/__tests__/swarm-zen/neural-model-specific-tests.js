@@ -70,7 +70,9 @@ class ModelSpecificTests {
       memoryRetention: results.reduce((a, b) => a + b.memoryRetention, 0) / results.length,
     };
 
-    console.log(`✅ Sequential memory test complete: ${this.results.lstm.sequentialMemory.averageAccuracy.toFixed(2)}% accuracy`);
+    console.log(
+      `✅ Sequential memory test complete: ${this.results.lstm.sequentialMemory.averageAccuracy.toFixed(2)}% accuracy`
+    );
   }
 
   async testAttentionMultiHeadFocus() {
@@ -85,9 +87,9 @@ class ModelSpecificTests {
       // Simulate multi-head attention test
       const performance = {
         heads: headCount,
-        accuracy: 85 + (headCount * 0.5) + Math.random() * 5,
-        focusQuality: 80 + (headCount * 0.8) + Math.random() * 5,
-        computeTime: 100 + (headCount * 20) + Math.random() * 10,
+        accuracy: 85 + headCount * 0.5 + Math.random() * 5,
+        focusQuality: 80 + headCount * 0.8 + Math.random() * 5,
+        computeTime: 100 + headCount * 20 + Math.random() * 10,
       };
 
       results.push(performance);
@@ -95,13 +97,15 @@ class ModelSpecificTests {
 
     this.results.attention.multiHead = {
       configurations: results,
-      optimalHeads: results.sort((a, b) =>
-        (a.accuracy / a.computeTime) - (b.accuracy / b.computeTime),
+      optimalHeads: results.sort(
+        (a, b) => a.accuracy / a.computeTime - b.accuracy / b.computeTime
       )[0].heads,
       scalability: 'linear',
     };
 
-    console.log(`✅ Multi-head attention test complete: Optimal heads = ${this.results.attention.multiHead.optimalHeads}`);
+    console.log(
+      `✅ Multi-head attention test complete: Optimal heads = ${this.results.attention.multiHead.optimalHeads}`
+    );
   }
 
   async testTransformerParallelization() {
@@ -114,7 +118,7 @@ class ModelSpecificTests {
       console.log(`Testing batch size: ${batch}`);
 
       const singleTime = 100;
-      const batchTime = singleTime + (batch * 2); // Simulated parallel efficiency
+      const batchTime = singleTime + batch * 2; // Simulated parallel efficiency
       const efficiency = (singleTime * batch) / batchTime;
 
       results.push({
@@ -127,11 +131,13 @@ class ModelSpecificTests {
 
     this.results.transformer.parallelization = {
       batchTests: results,
-      maxEfficiency: Math.max(...results.map(r => r.efficiency)),
+      maxEfficiency: Math.max(...results.map((r) => r.efficiency)),
       optimalBatch: results.sort((a, b) => b.throughput - a.throughput)[0].batchSize,
     };
 
-    console.log(`✅ Parallelization test complete: Max efficiency = ${this.results.transformer.parallelization.maxEfficiency.toFixed(1)}%`);
+    console.log(
+      `✅ Parallelization test complete: Max efficiency = ${this.results.transformer.parallelization.maxEfficiency.toFixed(1)}%`
+    );
   }
 
   async testFeedforwardLatency() {
@@ -144,7 +150,7 @@ class ModelSpecificTests {
       console.log(`Testing input size: ${size}`);
 
       const baseLatency = 0.5; // ms
-      const latency = baseLatency + (size * 0.001) + Math.random() * 0.1;
+      const latency = baseLatency + size * 0.001 + Math.random() * 0.1;
 
       results.push({
         inputSize: size,
@@ -156,10 +162,12 @@ class ModelSpecificTests {
     this.results.feedforward.latency = {
       measurements: results,
       avgLatency: results.reduce((a, b) => a + b.latency, 0) / results.length,
-      p99Latency: Math.max(...results.map(r => r.latency)),
+      p99Latency: Math.max(...results.map((r) => r.latency)),
     };
 
-    console.log(`✅ Latency test complete: Avg = ${this.results.feedforward.latency.avgLatency.toFixed(2)}ms`);
+    console.log(
+      `✅ Latency test complete: Avg = ${this.results.feedforward.latency.avgLatency.toFixed(2)}ms`
+    );
   }
 
   async testModelGeneralization() {
@@ -222,12 +230,12 @@ class ModelSpecificTests {
           feedforward: 1.0, // Constant
         }[model];
 
-        const memory = baseMemory * Math.pow(length / 100, scalingFactor - 1);
+        const memory = baseMemory * (length / 100) ** (scalingFactor - 1);
 
         results.push({
           sequenceLength: length,
           memoryUsage: memory,
-          efficiency: baseMemory / memory * 100,
+          efficiency: (baseMemory / memory) * 100,
         });
       }
 
@@ -311,22 +319,34 @@ class ModelSpecificTests {
 
   displaySummary() {
     console.log('\n📊 MODEL-SPECIFIC TEST SUMMARY');
-    console.log('=' .repeat(60));
+    console.log('='.repeat(60));
 
     console.log('\n🧠 LSTM:');
-    console.log(`  Sequential Memory: ${this.results.lstm.sequentialMemory.averageAccuracy.toFixed(1)}% accuracy`);
-    console.log(`  Memory Retention: ${this.results.lstm.sequentialMemory.memoryRetention.toFixed(1)}%`);
-    console.log(`  Generalization Robustness: ${this.results.lstm.generalization.robustness.toFixed(1)}%`);
+    console.log(
+      `  Sequential Memory: ${this.results.lstm.sequentialMemory.averageAccuracy.toFixed(1)}% accuracy`
+    );
+    console.log(
+      `  Memory Retention: ${this.results.lstm.sequentialMemory.memoryRetention.toFixed(1)}%`
+    );
+    console.log(
+      `  Generalization Robustness: ${this.results.lstm.generalization.robustness.toFixed(1)}%`
+    );
 
     console.log('\n🎯 Attention:');
     console.log(`  Optimal Head Count: ${this.results.attention.multiHead.optimalHeads}`);
     console.log(`  Scalability: ${this.results.attention.multiHead.scalability}`);
-    console.log(`  Generalization Robustness: ${this.results.attention.generalization.robustness.toFixed(1)}%`);
+    console.log(
+      `  Generalization Robustness: ${this.results.attention.generalization.robustness.toFixed(1)}%`
+    );
 
     console.log('\n⚡ Transformer:');
-    console.log(`  Max Parallel Efficiency: ${this.results.transformer.parallelization.maxEfficiency.toFixed(1)}%`);
+    console.log(
+      `  Max Parallel Efficiency: ${this.results.transformer.parallelization.maxEfficiency.toFixed(1)}%`
+    );
     console.log(`  Optimal Batch Size: ${this.results.transformer.parallelization.optimalBatch}`);
-    console.log(`  Generalization Robustness: ${this.results.transformer.generalization.robustness.toFixed(1)}%`);
+    console.log(
+      `  Generalization Robustness: ${this.results.transformer.generalization.robustness.toFixed(1)}%`
+    );
 
     console.log('\n🚀 Feedforward:');
     console.log(`  Average Latency: ${this.results.feedforward.latency.avgLatency.toFixed(2)}ms`);

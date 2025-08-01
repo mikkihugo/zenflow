@@ -9,10 +9,10 @@ import type { Config } from 'jest';
 const config: Config = {
   // Modern TypeScript ESM preset
   preset: 'ts-jest/presets/default-esm',
-  
+
   // Enable ESM support for .ts files
   extensionsToTreatAsEsm: ['.ts'],
-  
+
   // Node test environment
   testEnvironment: 'node',
 
@@ -22,7 +22,7 @@ const config: Config = {
     '<rootDir>/tests/**/*.test.ts',
     '<rootDir>/tests/**/*.spec.ts',
     '<rootDir>/src/**/*.test.ts',
-    '<rootDir>/src/**/*.spec.ts'
+    '<rootDir>/src/**/*.spec.ts',
   ],
 
   // Modern TypeScript transformation (Jest 30 + ts-jest 29 style)
@@ -32,9 +32,9 @@ const config: Config = {
       {
         useESM: true,
         // Use project tsconfig.json (which already has isolatedModules: true)
-        tsconfig: './tsconfig.json'
-      }
-    ]
+        tsconfig: './tsconfig.json',
+      },
+    ],
   },
 
   // ESM-compatible module name mapping
@@ -45,25 +45,21 @@ const config: Config = {
     '^../services/(.*)\\.(js|ts)$': '<rootDir>/src/services/$1',
     '^../../services/(.*)\\.(js|ts)$': '<rootDir>/src/services/$1',
     '^../../../services/(.*)\\.(js|ts)$': '<rootDir>/src/services/$1',
-    // Handle core paths  
+    // Handle core paths
     '^../../core/(.*)\\.(js|ts)$': '<rootDir>/src/core/$1',
     // Path aliases
     '^~/(.*)$': '<rootDir>/src/$1',
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@tests/(.*)$': '<rootDir>/tests/$1',
-    '^test\\.utils$': '<rootDir>/tests/test.utils.ts'
+    '^test\\.utils$': '<rootDir>/tests/test.utils.ts',
   },
 
   // Ignore patterns for module resolution
-  modulePathIgnorePatterns: [
-    '<rootDir>/dist/',
-    '<rootDir>/bin/',
-    '<rootDir>/node_modules/'
-  ],
+  modulePathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/bin/', '<rootDir>/node_modules/'],
 
   // Transform ignore patterns - allow ESM modules to be transformed
   transformIgnorePatterns: [
-    'node_modules/(?!(chalk|ora|inquirer|nanoid|fs-extra|ansi-styles|ruv-swarm|@modelcontextprotocol|better-sqlite3)/)'
+    'node_modules/(?!(chalk|ora|inquirer|nanoid|fs-extra|ansi-styles|ruv-swarm|@modelcontextprotocol|better-sqlite3)/)',
   ],
 
   // Coverage configuration
@@ -77,7 +73,7 @@ const config: Config = {
     '!src/**/examples/**',
     '!src/**/fallback/**',
     '!src/plugins/**/node_modules/**',
-    '!src/**/*.min.js'
+    '!src/**/*.min.js',
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
@@ -86,18 +82,18 @@ const config: Config = {
       branches: 75, // Slightly lower for practical use
       functions: 75,
       lines: 75,
-      statements: 75
-    }
+      statements: 75,
+    },
   },
 
   // Test setup and timeouts
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
   testTimeout: 30000,
   verbose: true,
-  
+
   // Jest 30 features
   errorOnDeprecated: true,
-  
+
   // File extensions
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node', 'mts', 'cts'],
 
@@ -109,7 +105,7 @@ const config: Config = {
   // Performance optimizations for Jest 30
   maxWorkers: '50%',
   cache: true,
-  cacheDirectory: '<rootDir>/.jest-cache'
+  cacheDirectory: '<rootDir>/.jest-cache',
 };
 
 export default config;

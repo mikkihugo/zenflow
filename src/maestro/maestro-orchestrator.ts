@@ -1,42 +1,44 @@
 /**
  * Maestro Orchestrator - Refactored and Cleaned Up
- * 
+ *
  * A specifications-driven development orchestrator that integrates seamlessly
  * with the existing claude-flow hive mind infrastructure for collective intelligence,
  * consensus-based decision making, and advanced workflow automation.
- * 
+ *
  * This refactored version eliminates duplicate implementations and leverages
  * the proven hive mind system for enhanced reliability and performance.
  */
 
 import { EventEmitter } from 'events';
+import { access, mkdir, readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
-import { readFile, writeFile, mkdir, access } from 'fs/promises';
-// Import agentic-flow hooks system
-import { agenticHookManager, initializeAgenticFlowHooks, type AgenticHookContext } from '../services/agentic-flow-hooks/index';
-
-// Core claude-flow infrastructure
-import { IEventBus } from '../core/event-bus';
-import { ILogger } from '../core/logger';
-import { IMemoryManager } from '../memory/manager';
-import { AgentManager } from '../agents/agent-manager';
-import { Orchestrator } from '../core/orchestrator';
-import { Config } from '../utils/types';
 import { SystemError } from '../../ruv-FANN-zen/ruv-swarm-zen/npm/src/errors';
-
+import type { AgentManager } from '../agents/agent-manager';
+// Core claude-flow infrastructure
+import type { IEventBus } from '../core/event-bus';
+import type { ILogger } from '../core/logger';
+import type { Orchestrator } from '../core/orchestrator';
 // Existing hive mind infrastructure (proven and robust)
 import { HiveMind } from '../hive-mind/core/HiveMind';
-import { ConsensusEngine } from '../hive-mind/integration/ConsensusEngine';
-import { SwarmOrchestrator } from '../hive-mind/integration/SwarmOrchestrator';
+import type { ConsensusEngine } from '../hive-mind/integration/ConsensusEngine';
+import type { SwarmOrchestrator } from '../hive-mind/integration/SwarmOrchestrator';
+import type { IMemoryManager } from '../memory/manager';
+// Import agentic-flow hooks system
+import {
+  type AgenticHookContext,
+  agenticHookManager,
+  initializeAgenticFlowHooks,
+} from '../services/agentic-flow-hooks/index';
+import type { Config } from '../utils/types';
 
 // Types for maestro system
 import {
+  type AgentProfile,
   MaestroSpec,
-  MaestroWorkflowState,
-  WorkflowPhase,
+  type MaestroWorkflowState,
+  SteeringContext,
   TaskItem,
-  AgentProfile,
-  SteeringContext
+  type WorkflowPhase,
 } from './maestro-types';
 
 // Simple interface for agent pool (minimal-change enhancement)
@@ -52,12 +54,12 @@ interface PooledAgent {
 
 // Remove SimpleTaskPlanner dependency - using direct agent management
 import {
-  HiveMindConfig,
-  ConsensusProposal,
-  TaskSubmitOptions,
+  type AgentCapability,
   AgentSpawnOptions,
-  QueenMode,
-  AgentCapability
+  type ConsensusProposal,
+  type HiveMindConfig,
+  type QueenMode,
+  type TaskSubmitOptions,
 } from '../hive-mind/types';
 
 export interface MaestroConfig {
@@ -65,12 +67,12 @@ export interface MaestroConfig {
   enableHiveMind: boolean;
   consensusThreshold: number;
   maxAgents: number;
-  
+
   // Maestro-specific features
   enableLivingDocumentation: boolean;
   enableAgentHooks: boolean;
   enablePatternLearning: boolean;
-  
+
   // File system settings
   specsDirectory: string;
   steeringDirectory: string;
@@ -84,23 +86,23 @@ export class MaestroOrchestrator extends EventEmitter {
   private maestroState: Map<string, MaestroWorkflowState> = new Map();
   private specsDirectory: string;
   private steeringDirectory: string;
-  
+
   // Hive mind integration (leveraging existing robust systems)
   private hiveMind?: HiveMind;
   private consensusEngine?: ConsensusEngine;
   private swarmOrchestrator?: SwarmOrchestrator;
-  
+
   // Removed SimpleTaskPlanner - using direct agent management
-  
+
   private agenticHooksInitialized: boolean = false;
-  
+
   // File watchers for living documentation
   private fileWatchers: Map<string, any> = new Map();
-  
+
   // Simple agent pool for reuse (minimal-change enhancement)
   private agentPool: Map<string, PooledAgent> = new Map();
   private capabilityIndex: Map<string, Set<string>> = new Map();
-  
+
   constructor(
     private config: Config,
     private eventBus: IEventBus,
@@ -111,7 +113,7 @@ export class MaestroOrchestrator extends EventEmitter {
     private maestroConfig: Partial<MaestroConfig> = {}
   ) {
     super();
-    
+
     this.specsDirectory = join(process.cwd(), '.claude', 'claude-flow', 'maestro', 'specs');
     this.steeringDirectory = join(process.cwd(), '.claude', 'claude-flow', 'maestro', 'steering');
 
@@ -119,11 +121,11 @@ export class MaestroOrchestrator extends EventEmitter {
     if (this.maestroConfig.enableAgentHooks) {
       this.initializeAgenticHooks();
     }
-    
+
     this.setupEventHandlers();
     this.logger.info('Maestro Orchestrator initialized');
   }
-  
+
   /**
    * Initialize hive mind integration for advanced features
    */
@@ -132,7 +134,7 @@ export class MaestroOrchestrator extends EventEmitter {
       this.logger.info('Hive mind integration disabled');
       return null;
     }
-    
+
     try {
       // Configure hive mind for Maestro workflows
       const hiveMindConfig: HiveMindConfig = {
@@ -145,33 +147,34 @@ export class MaestroOrchestrator extends EventEmitter {
         autoSpawn: true,
         enableConsensus: true,
         enableMemory: true,
-        enableCommunication: true
+        enableCommunication: true,
       };
-      
+
       // Initialize hive mind with existing infrastructure
       this.hiveMind = new HiveMind(hiveMindConfig);
       const swarmId = await this.hiveMind.initialize();
-      
+
       // Get access to integrated subsystems
       this.consensusEngine = (this.hiveMind as any).consensus;
       this.swarmOrchestrator = (this.hiveMind as any).orchestrator;
-      
+
       this.logger.info(`Maestro hive mind initialized: ${swarmId}`);
       return swarmId;
-      
     } catch (error) {
-      this.logger.error(`Failed to initialize hive mind: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        `Failed to initialize hive mind: ${error instanceof Error ? error.message : String(error)}`
+      );
       throw error;
     }
   }
-  
+
   /**
    * Create a new specification using the 3-file system
    */
   async createSpec(featureName: string, initialRequest: string): Promise<void> {
     const featurePath = join(this.specsDirectory, featureName);
     await mkdir(featurePath, { recursive: true });
-    
+
     // Initialize workflow state
     const workflowState: MaestroWorkflowState = {
       featureName,
@@ -179,15 +182,17 @@ export class MaestroOrchestrator extends EventEmitter {
       currentTaskIndex: 0,
       status: 'paused',
       lastActivity: new Date(),
-      history: [{
-        phase: 'Requirements Clarification' as WorkflowPhase,
-        status: 'in-progress' as 'completed' | 'failed' | 'in-progress' | 'approved',
-        timestamp: new Date()
-      }]
+      history: [
+        {
+          phase: 'Requirements Clarification' as WorkflowPhase,
+          status: 'in-progress' as 'completed' | 'failed' | 'in-progress' | 'approved',
+          timestamp: new Date(),
+        },
+      ],
     };
-    
+
     this.maestroState.set(featureName, workflowState);
-    
+
     // Create requirements.md
     const requirementsContent = `# Requirements for ${featureName}
 
@@ -215,33 +220,37 @@ ${initialRequest}
 
 *Generated by Maestro Orchestrator*
 `;
-    
+
     await writeFile(join(featurePath, 'requirements.md'), requirementsContent, 'utf8');
-    
+
     this.logger.info(`Created specification for '${featureName}'`);
     this.eventBus.emit('maestro:spec_created', { featureName });
-    
+
     // Trigger agentic hooks for spec creation
     if (this.agenticHooksInitialized) {
       try {
-        await agenticHookManager.executeHooks('workflow-start', {
-          workflowId: `maestro-${featureName}`,
-          state: { featureName, phase: 'spec-creation' }
-        } as any, {
-          sessionId: `maestro-session-${Date.now()}`,
-          timestamp: Date.now(),
-          correlationId: `maestro-${featureName}`,
-          metadata: { featureName },
-          memory: { namespace: 'maestro', provider: 'memory', cache: new Map() },
-          neural: { modelId: 'default', patterns: null as any, training: null as any },
-          performance: { metrics: new Map(), bottlenecks: [], optimizations: [] }
-        } as AgenticHookContext);
+        await agenticHookManager.executeHooks(
+          'workflow-start',
+          {
+            workflowId: `maestro-${featureName}`,
+            state: { featureName, phase: 'spec-creation' },
+          } as any,
+          {
+            sessionId: `maestro-session-${Date.now()}`,
+            timestamp: Date.now(),
+            correlationId: `maestro-${featureName}`,
+            metadata: { featureName },
+            memory: { namespace: 'maestro', provider: 'memory', cache: new Map() },
+            neural: { modelId: 'default', patterns: null as any, training: null as any },
+            performance: { metrics: new Map(), bottlenecks: [], optimizations: [] },
+          } as AgenticHookContext
+        );
       } catch (error) {
         this.logger.warn('Failed to execute agentic hooks:', error);
       }
     }
   }
-  
+
   /**
    * Generate design using hive mind collective intelligence
    */
@@ -250,60 +259,69 @@ ${initialRequest}
     if (!state) {
       throw new SystemError(`No workflow state found for '${featureName}'`);
     }
-    
+
     const featurePath = join(this.specsDirectory, featureName);
     const requirementsPath = join(featurePath, 'requirements.md');
-    
+
     try {
       await access(requirementsPath);
     } catch {
-      throw new SystemError(`Requirements file not found for '${featureName}'. Run create-spec first.`);
+      throw new SystemError(
+        `Requirements file not found for '${featureName}'. Run create-spec first.`
+      );
     }
-    
+
     const requirementsContent = await readFile(requirementsPath, 'utf8');
-    
+
     // Use hive mind for collective design generation if available
     if (this.hiveMind && this.swarmOrchestrator) {
       await this.generateDesignWithHiveMind(featureName, requirementsContent);
     } else {
       await this.generateDesignWithAgentManager(featureName, requirementsContent);
     }
-    
+
     // Update workflow state
     state.currentPhase = 'Research & Design' as WorkflowPhase;
     state.lastActivity = new Date();
     state.history.push({
       phase: 'Research & Design' as WorkflowPhase,
       status: 'completed',
-      timestamp: new Date()
+      timestamp: new Date(),
     });
-    
+
     this.logger.info(`Generated design for '${featureName}'`);
     this.eventBus.emit('maestro:design_generated', { featureName });
   }
-  
+
   /**
    * Generate design using hive mind collective intelligence
    */
-  private async generateDesignWithHiveMind(featureName: string, requirements: string): Promise<void> {
+  private async generateDesignWithHiveMind(
+    featureName: string,
+    requirements: string
+  ): Promise<void> {
     const taskOptions: TaskSubmitOptions = {
       description: `Generate comprehensive design for ${featureName}`,
       priority: 'high',
       strategy: 'adaptive',
-      requiredCapabilities: ['system_design' as AgentCapability, 'architecture' as AgentCapability, 'technical_writing' as AgentCapability],
+      requiredCapabilities: [
+        'system_design' as AgentCapability,
+        'architecture' as AgentCapability,
+        'technical_writing' as AgentCapability,
+      ],
       metadata: {
         maestroFeature: featureName,
         maestroPhase: 'Research & Design',
-        requirements
-      }
+        requirements,
+      },
     };
-    
+
     // Submit to hive mind orchestrator
     const task = await this.hiveMind!.submitTask(taskOptions);
-    
+
     // Wait for completion with timeout
     const result = await this.waitForTaskCompletion(task.id, 300000); // 5 minutes
-    
+
     // Create design.md with hive mind results
     const designContent = `# Design for ${featureName}
 
@@ -339,15 +357,18 @@ ${result.implementationStrategy || 'Step-by-step implementation approach with ri
 *Agents involved: ${result.agentCount || 'Multiple'} specialized agents*
 *Quality score: ${result.qualityScore ? (result.qualityScore * 100).toFixed(1) + '%' : 'High'}*
 `;
-    
+
     const featurePath = join(this.specsDirectory, featureName);
     await writeFile(join(featurePath, 'design.md'), designContent, 'utf8');
   }
-  
+
   /**
    * Generate design using consistent agent management
    */
-  private async generateDesignWithAgentManager(featureName: string, requirements: string): Promise<void> {
+  private async generateDesignWithAgentManager(
+    featureName: string,
+    requirements: string
+  ): Promise<void> {
     const designTask = {
       id: `design-task-${featureName}-${Date.now()}`,
       type: 'design-generation',
@@ -358,16 +379,16 @@ ${result.implementationStrategy || 'Step-by-step implementation approach with ri
         outputPath: join(this.specsDirectory, featureName, 'design.md'),
         instructions: [
           'Create comprehensive system architecture',
-          'Define API endpoints and data structures', 
+          'Define API endpoints and data structures',
           'Include security and performance considerations',
-          'Provide implementation strategy'
-        ]
+          'Provide implementation strategy',
+        ],
       },
       priority: 80,
-      metadata: { 
-        featureName, 
+      metadata: {
+        featureName,
         maestroPhase: 'Research & Design',
-        outputPath: join(this.specsDirectory, featureName, 'design.md')
+        outputPath: join(this.specsDirectory, featureName, 'design.md'),
       },
     };
 
@@ -377,13 +398,13 @@ ${result.implementationStrategy || 'Step-by-step implementation approach with ri
       'design-generation',
       2
     );
-    await this.executeTaskWithManagedAgent(
-      optimalAgentTypes,
-      designTask,
-      ['design', 'architecture', 'analysis']
-    );
+    await this.executeTaskWithManagedAgent(optimalAgentTypes, designTask, [
+      'design',
+      'architecture',
+      'analysis',
+    ]);
   }
-  
+
   /**
    * Generate tasks from design using intelligent decomposition
    */
@@ -392,39 +413,44 @@ ${result.implementationStrategy || 'Step-by-step implementation approach with ri
     if (!state) {
       throw new SystemError(`No workflow state found for '${featureName}'`);
     }
-    
+
     const featurePath = join(this.specsDirectory, featureName);
     const designPath = join(featurePath, 'design.md');
-    
+
     try {
       await access(designPath);
     } catch {
-      throw new SystemError(`Design file not found for '${featureName}'. Run generate-design first.`);
+      throw new SystemError(
+        `Design file not found for '${featureName}'. Run generate-design first.`
+      );
     }
-    
+
     const designContent = await readFile(designPath, 'utf8');
-    
+
     // Generate tasks using simple task planner
     const tasksContent = await this.generateTasksWithSimplePlanner(featureName, designContent);
     await writeFile(join(featurePath, 'tasks.md'), tasksContent, 'utf8');
-    
+
     // Update workflow state
     state.currentPhase = 'Implementation Planning' as WorkflowPhase;
     state.lastActivity = new Date();
     state.history.push({
       phase: 'Implementation Planning' as WorkflowPhase,
       status: 'completed',
-      timestamp: new Date()
+      timestamp: new Date(),
     });
-    
+
     this.logger.info(`Generated tasks for '${featureName}'`);
     this.eventBus.emit('maestro:tasks_generated', { featureName });
   }
-  
+
   /**
    * Generate tasks using consistent agent management pattern
    */
-  private async generateTasksWithSimplePlanner(featureName: string, designContent: string): Promise<string> {
+  private async generateTasksWithSimplePlanner(
+    featureName: string,
+    designContent: string
+  ): Promise<string> {
     // Create task planning task with consistent structure
     const taskPlanningTask = {
       id: `task-planning-${featureName}-${Date.now()}`,
@@ -440,28 +466,29 @@ ${result.implementationStrategy || 'Step-by-step implementation approach with ri
           'Create 5-8 specific, actionable tasks with acceptance criteria',
           'Organize tasks by logical implementation sequence',
           'Include dependency relationships between tasks',
-          'Format as markdown with checkboxes'
-        ]
+          'Format as markdown with checkboxes',
+        ],
       },
       priority: 85,
       metadata: {
         featureName,
         maestroPhase: 'Implementation Planning',
-        outputPath: join(this.specsDirectory, featureName, 'tasks.md')
+        outputPath: join(this.specsDirectory, featureName, 'tasks.md'),
       },
     };
 
     try {
       this.logger.info(`Generating tasks for ${featureName} using consistent agent management`);
-      
+
       // Execute with consistent agent management pattern
       const result = await this.executeTaskPlanningWithManagedAgent(taskPlanningTask);
-      
+
       this.logger.info(`Task plan generated successfully for ${featureName}`);
       return result;
-      
     } catch (error) {
-      this.logger.warn(`Agent-based task planning failed: ${error instanceof Error ? error.message : String(error)}, falling back to basic generation`);
+      this.logger.warn(
+        `Agent-based task planning failed: ${error instanceof Error ? error.message : String(error)}, falling back to basic generation`
+      );
       return this.generateBasicTasksFromDesign(featureName, designContent);
     }
   }
@@ -476,27 +503,32 @@ ${result.implementationStrategy || 'Step-by-step implementation approach with ri
       'task-planning',
       1
     );
-    await this.executeTaskWithManagedAgent(
-      optimalPlannerTypes, 
-      taskPlanningTask,
-      ['project-management', 'task-breakdown', 'planning']
-    );
-    
+    await this.executeTaskWithManagedAgent(optimalPlannerTypes, taskPlanningTask, [
+      'project-management',
+      'task-breakdown',
+      'planning',
+    ]);
+
     // Try to read the generated output file
     try {
       const outputPath = taskPlanningTask.metadata.outputPath;
       const generatedContent = await readFile(outputPath, 'utf8');
-      
+
       // If content was generated, format and return it
       if (generatedContent && generatedContent.length > 0) {
         return this.formatTaskPlanningOutput(generatedContent, taskPlanningTask.input.featureName);
       }
     } catch (error) {
-      this.logger.debug(`Could not read task planning output: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.debug(
+        `Could not read task planning output: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
-    
+
     // Fallback to basic task generation
-    return this.generateBasicTasksFromDesign(taskPlanningTask.input.featureName, taskPlanningTask.input.designContent);
+    return this.generateBasicTasksFromDesign(
+      taskPlanningTask.input.featureName,
+      taskPlanningTask.input.designContent
+    );
   }
 
   /**
@@ -512,18 +544,20 @@ ${result.implementationStrategy || 'Step-by-step implementation approach with ri
       const tasks = output.tasks || output.taskList || [];
       const dependencies = output.dependencies || '';
       const notes = output.notes || output.implementationNotes || '';
-      
+
       if (Array.isArray(tasks) && tasks.length > 0) {
         return `# Implementation Tasks for ${featureName}
 
 ## Task Breakdown
 
-${tasks.map((task: any, index: number) => {
-  if (typeof task === 'string') {
-    return task.startsWith('- [ ]') ? task : `- [ ] ${task}`;
-  }
-  return `- [ ] ${task.description || task.name || `Task ${index + 1}`}`;
-}).join('\n')}
+${tasks
+  .map((task: any, index: number) => {
+    if (typeof task === 'string') {
+      return task.startsWith('- [ ]') ? task : `- [ ] ${task}`;
+    }
+    return `- [ ] ${task.description || task.name || `Task ${index + 1}`}`;
+  })
+  .join('\n')}
 
 ${dependencies ? `## Dependencies\n${dependencies}\n` : ''}
 ${notes ? `## Implementation Notes\n${notes}\n` : ''}
@@ -555,7 +589,10 @@ ${JSON.stringify(output, null, 2)}
   /**
    * Fallback: Generate basic tasks from design content
    */
-  private async generateBasicTasksFromDesign(featureName: string, designContent: string): Promise<string> {
+  private async generateBasicTasksFromDesign(
+    featureName: string,
+    designContent: string
+  ): Promise<string> {
     // Extract key components from design for task generation
     const tasks = [
       '- [ ] Set up project structure and dependencies',
@@ -567,9 +604,9 @@ ${JSON.stringify(output, null, 2)}
       '- [ ] Add comprehensive tests',
       '- [ ] Create documentation',
       '- [ ] Performance optimization',
-      '- [ ] Integration testing'
+      '- [ ] Integration testing',
     ];
-    
+
     return `# Implementation Tasks for ${featureName}
 
 ## Task List
@@ -585,7 +622,7 @@ ${tasks.join('\n')}
 *Generated by Maestro Basic Task Generation (Fallback)*
 `;
   }
-  
+
   /**
    * Implement a specific task with optional consensus validation
    */
@@ -594,47 +631,57 @@ ${tasks.join('\n')}
     if (!state) {
       throw new SystemError(`No workflow state found for '${featureName}'`);
     }
-    
+
     const featurePath = join(this.specsDirectory, featureName);
     const tasksPath = join(featurePath, 'tasks.md');
-    
+
     // Read and validate task
     const tasksContent = await readFile(tasksPath, 'utf8');
-    const taskLines = tasksContent.split('\n').filter(line => line.startsWith('- [ ]') || line.startsWith('- [x]'));
-    
+    const taskLines = tasksContent
+      .split('\n')
+      .filter((line) => line.startsWith('- [ ]') || line.startsWith('- [x]'));
+
     if (taskId < 1 || taskId > taskLines.length) {
-      throw new SystemError(`Invalid task ID ${taskId} for feature '${featureName}'. Valid range: 1-${taskLines.length}`);
+      throw new SystemError(
+        `Invalid task ID ${taskId} for feature '${featureName}'. Valid range: 1-${taskLines.length}`
+      );
     }
-    
-    const taskDescription = taskLines[taskId - 1].substring(taskLines[taskId - 1].indexOf(']') + 2).trim();
-    
+
+    const taskDescription = taskLines[taskId - 1]
+      .substring(taskLines[taskId - 1].indexOf(']') + 2)
+      .trim();
+
     // Use consensus validation if hive mind is available and enabled
     if (this.consensusEngine && this.maestroConfig.enableHiveMind) {
       await this.implementTaskWithConsensus(featureName, taskId, taskDescription);
     } else {
       await this.implementTaskDirect(featureName, taskId, taskDescription);
     }
-    
+
     // Mark task as completed
     const updatedTasksContent = tasksContent.replace(
       taskLines[taskId - 1],
       taskLines[taskId - 1].replace('- [ ]', '- [x]')
     );
     await writeFile(tasksPath, updatedTasksContent, 'utf8');
-    
+
     // Update workflow state
     state.currentPhase = 'Task Execution' as WorkflowPhase;
     state.currentTaskIndex = taskId;
     state.lastActivity = new Date();
-    
+
     this.logger.info(`Implemented task ${taskId} for '${featureName}': ${taskDescription}`);
     this.eventBus.emit('maestro:task_implemented', { featureName, taskId, taskDescription });
   }
-  
+
   /**
    * Implement task with hive mind consensus validation
    */
-  private async implementTaskWithConsensus(featureName: string, taskId: number, taskDescription: string): Promise<void> {
+  private async implementTaskWithConsensus(
+    featureName: string,
+    taskId: number,
+    taskDescription: string
+  ): Promise<void> {
     // Create consensus proposal for task implementation
     const proposal: ConsensusProposal = {
       id: `maestro-task-${featureName}-${taskId}-${Date.now()}`,
@@ -644,7 +691,7 @@ ${tasks.join('\n')}
         featureName,
         taskId,
         taskDescription,
-        details: `Implement task: ${taskDescription}`
+        details: `Implement task: ${taskDescription}`,
       },
       requiredThreshold: this.maestroConfig.consensusThreshold || 0.66,
       deadline: new Date(Date.now() + 300000), // 5 minutes
@@ -654,34 +701,40 @@ ${tasks.join('\n')}
         type: 'task_implementation',
         featureName,
         taskId,
-        taskDescription
-      }
+        taskDescription,
+      },
     };
-    
+
     // Submit proposal and wait for consensus
     const proposalId = await this.consensusEngine!.createProposal(proposal);
     const consensusResult = await this.waitForConsensusResult(proposalId, 300000);
-    
+
     if (!consensusResult.achieved) {
-      throw new SystemError(`Consensus failed for task ${taskId}: ${consensusResult.reason || 'Insufficient votes'}`);
+      throw new SystemError(
+        `Consensus failed for task ${taskId}: ${consensusResult.reason || 'Insufficient votes'}`
+      );
     }
-    
+
     this.logger.info(`Consensus achieved for task ${taskId}: ${consensusResult.finalRatio}`);
-    
+
     // Proceed with implementation
     await this.implementTaskDirect(featureName, taskId, taskDescription);
   }
-  
+
   /**
    * Direct task implementation using consistent agent management
    */
-  private async implementTaskDirect(featureName: string, taskId: number, taskDescription: string): Promise<void> {
+  private async implementTaskDirect(
+    featureName: string,
+    taskId: number,
+    taskDescription: string
+  ): Promise<void> {
     const requirementsPath = join(this.specsDirectory, featureName, 'requirements.md');
     const designPath = join(this.specsDirectory, featureName, 'design.md');
-    
+
     const requirementsContent = await readFile(requirementsPath, 'utf8');
     const designContent = await readFile(designPath, 'utf8');
-    
+
     // Create implementation task with consistent structure
     const implementationTask = {
       id: `impl-task-${featureName}-${taskId}-${Date.now()}`,
@@ -693,13 +746,13 @@ ${tasks.join('\n')}
         taskDescription,
         requirements: requirementsContent,
         design: designContent,
-        context: await this.getSteeringContext('developer')
+        context: await this.getSteeringContext('developer'),
       },
       priority: 90,
-      metadata: { 
-        featureName, 
+      metadata: {
+        featureName,
         taskId,
-        maestroPhase: 'Task Execution' 
+        maestroPhase: 'Task Execution',
       },
     };
 
@@ -709,13 +762,13 @@ ${tasks.join('\n')}
       'task-implementation',
       2
     );
-    await this.executeTaskWithManagedAgent(
-      optimalDeveloperTypes, 
-      implementationTask,
-      ['implementation', 'coding', 'testing']
-    );
+    await this.executeTaskWithManagedAgent(optimalDeveloperTypes, implementationTask, [
+      'implementation',
+      'coding',
+      'testing',
+    ]);
   }
-  
+
   /**
    * Approve a workflow phase with optional consensus
    */
@@ -724,49 +777,55 @@ ${tasks.join('\n')}
     if (!state) {
       throw new SystemError(`No workflow state found for '${featureName}'`);
     }
-    
+
     const currentPhase = state.currentPhase;
-    
+
     // Phase progression logic
     const phaseProgression: Record<string, string> = {
       'Requirements Clarification': 'Research & Design',
-      'Research & Design': 'Implementation Planning', 
+      'Research & Design': 'Implementation Planning',
       'Implementation Planning': 'Task Execution',
-      'Task Execution': 'Completed'
+      'Task Execution': 'Completed',
     };
-    
+
     const nextPhase = phaseProgression[currentPhase];
     if (!nextPhase) {
       throw new SystemError(`Cannot progress from phase '${currentPhase}'`);
     }
-    
+
     // Update state
     state.currentPhase = nextPhase as WorkflowPhase;
     state.lastActivity = new Date();
     state.history.push({
       phase: nextPhase as WorkflowPhase,
       status: 'approved' as 'completed' | 'failed' | 'in-progress' | 'approved',
-      timestamp: new Date()
+      timestamp: new Date(),
     });
-    
-    this.logger.info(`Approved phase transition for '${featureName}': ${currentPhase} -> ${nextPhase}`);
-    this.eventBus.emit('maestro:phase_approved', { featureName, fromPhase: currentPhase, toPhase: nextPhase });
+
+    this.logger.info(
+      `Approved phase transition for '${featureName}': ${currentPhase} -> ${nextPhase}`
+    );
+    this.eventBus.emit('maestro:phase_approved', {
+      featureName,
+      fromPhase: currentPhase,
+      toPhase: nextPhase,
+    });
   }
-  
+
   /**
    * Get current workflow state
    */
   getWorkflowState(featureName: string): MaestroWorkflowState | undefined {
     return this.maestroState.get(featureName);
   }
-  
+
   /**
    * Create steering document for project context
    */
   async createSteeringDocument(domain: string, content: string): Promise<void> {
     await mkdir(this.steeringDirectory, { recursive: true });
     const steeringPath = join(this.steeringDirectory, `${domain}.md`);
-    
+
     const steeringContent = `# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document
 
 ${content}
@@ -775,11 +834,11 @@ ${content}
 
 [Provide specific guidelines for the '${domain}' domain. E.g., API design, testing, security, coding style.]
 `;
-    
+
     await writeFile(steeringPath, steeringContent, 'utf8');
     this.logger.info(`Created steering document for '${domain}' at '${steeringPath}'`);
   }
-  
+
   /**
    * Enhanced agent management with reuse-first strategy (minimal-change improvement)
    * Single Responsibility: Manages agent lifecycle for any task type
@@ -787,53 +846,60 @@ ${content}
    * Dependency Inversion: Depends on abstractions, not concrete implementations
    */
   private async executeTaskWithManagedAgent(
-    agentTypes: string[], 
-    task: any, 
+    agentTypes: string[],
+    task: any,
     capabilities: string[]
   ): Promise<void> {
     const acquiredAgents: string[] = [];
     const spawnedAgents: string[] = [];
-    
+
     try {
       // Step 1: Try to reuse existing agents first (minimal-change enhancement)
       const reusedAgents = await this.findReusableAgents(capabilities, agentTypes.length);
       acquiredAgents.push(...reusedAgents);
-      
+
       // Step 2: Spawn additional agents only if needed
       const needed = agentTypes.length - reusedAgents.length;
       if (needed > 0) {
         const typesToSpawn = agentTypes.slice(0, needed);
-        
+
         for (const agentType of typesToSpawn) {
           try {
-            const agentProfile = this.createStandardAgentProfile(agentType, task.metadata?.featureName, capabilities);
+            const agentProfile = this.createStandardAgentProfile(
+              agentType,
+              task.metadata?.featureName,
+              capabilities
+            );
             const resolvedType = this.getAgentTemplate(agentType);
             const agentId = await this.agentManager.createAgent(resolvedType, agentProfile);
             await this.agentManager.startAgent(agentId);
-            
+
             // Add to pool for future reuse
             await this.addAgentToPool(agentId, resolvedType, capabilities);
-            
+
             spawnedAgents.push(agentId);
             acquiredAgents.push(agentId);
           } catch (error) {
-            this.logger.warn(`Failed to spawn ${agentType} (resolved to ${this.getAgentTemplate(agentType)}): ${error instanceof Error ? error.message : String(error)}`);
+            this.logger.warn(
+              `Failed to spawn ${agentType} (resolved to ${this.getAgentTemplate(agentType)}): ${error instanceof Error ? error.message : String(error)}`
+            );
           }
         }
       }
-      
+
       // Step 3: Mark reused agents as busy
       await this.markAgentsAsBusy(reusedAgents, task.id);
-      
+
       // Assign task to first available agent (fallback to default)
       const assignedAgent = acquiredAgents[0] || 'default';
       task.assignedAgent = assignedAgent;
-      
+
       // Execute task through main orchestrator
       await this.mainOrchestrator.assignTask(task);
-      
-      this.logger.info(`Task ${task.id} executed with ${reusedAgents.length} reused + ${spawnedAgents.length} spawned agents`);
-      
+
+      this.logger.info(
+        `Task ${task.id} executed with ${reusedAgents.length} reused + ${spawnedAgents.length} spawned agents`
+      );
     } finally {
       // Step 4: Release agents back to pool (enhanced cleanup)
       await this.releaseAgentsToPool(acquiredAgents, spawnedAgents);
@@ -843,17 +909,21 @@ ${content}
   /**
    * Create standardized agent profile (KISS + SOLID principles + alias support)
    */
-  private createStandardAgentProfile(agentType: string, featureName?: string, capabilities?: string[]): AgentProfile {
+  private createStandardAgentProfile(
+    agentType: string,
+    featureName?: string,
+    capabilities?: string[]
+  ): AgentProfile {
     // Resolve agent type aliases
     const resolvedType = this.getAgentTemplate(agentType);
-    
+
     return {
       id: `${agentType}-${featureName || 'default'}-${Date.now()}`,
       name: `${agentType}${featureName ? ` for ${featureName}` : ''}`,
       type: resolvedType, // Use resolved type for actual agent creation
       capabilities: capabilities || this.getDefaultCapabilitiesForAgentType(agentType),
       maxConcurrentTasks: 1,
-      priority: this.getDefaultPriorityForAgentType(agentType)
+      priority: this.getDefaultPriorityForAgentType(agentType),
     };
   }
 
@@ -862,8 +932,8 @@ ${content}
    */
   private getAgentTemplate(agentType: string): string {
     const aliasMap: Record<string, string> = {
-      'planner': 'task-planner',
-      'coder': 'developer'
+      planner: 'task-planner',
+      coder: 'developer',
     };
     return aliasMap[agentType] || agentType;
   }
@@ -875,27 +945,32 @@ ${content}
     const capabilityMap: Record<string, string[]> = {
       // Core Architecture & Design
       'design-architect': ['design', 'architecture', 'analysis'],
-      'system-architect': ['system-architecture', 'scalability', 'performance', 'distributed-systems'],
-      
+      'system-architect': [
+        'system-architecture',
+        'scalability',
+        'performance',
+        'distributed-systems',
+      ],
+
       // Development & Implementation
-      'developer': ['implementation', 'coding', 'testing'],
-      'coder': ['implementation', 'coding', 'testing'],
-      
+      developer: ['implementation', 'coding', 'testing'],
+      coder: ['implementation', 'coding', 'testing'],
+
       // Project Management & Planning
       'task-planner': ['project-management', 'task-breakdown', 'planning'],
-      'planner': ['project-management', 'task-breakdown', 'planning'],
-      
+      planner: ['project-management', 'task-breakdown', 'planning'],
+
       // Quality Assurance & Testing
-      'tester': ['testing', 'quality-assurance', 'test-automation'],
-      'reviewer': ['code-review', 'quality-assurance', 'analysis'],
-      
+      tester: ['testing', 'quality-assurance', 'test-automation'],
+      reviewer: ['code-review', 'quality-assurance', 'analysis'],
+
       // Research & Analysis (previously unused templates now integrated)
-      'researcher': ['research', 'analysis', 'documentation'],
-      'analyst': ['analysis', 'data-processing', 'visualization'],
+      researcher: ['research', 'analysis', 'documentation'],
+      analyst: ['analysis', 'data-processing', 'visualization'],
       'requirements-engineer': ['requirements', 'documentation', 'analysis'],
-      'steering-author': ['documentation', 'governance', 'content-creation']
+      'steering-author': ['documentation', 'governance', 'content-creation'],
     };
-    
+
     return capabilityMap[agentType] || ['general'];
   }
 
@@ -905,28 +980,28 @@ ${content}
   private getDefaultPriorityForAgentType(agentType: string): number {
     const priorityMap: Record<string, number> = {
       // Critical Implementation (Highest Priority)
-      'developer': 90,
-      'coder': 90,
-      
-      // Architecture & Planning (High Priority)  
+      developer: 90,
+      coder: 90,
+
+      // Architecture & Planning (High Priority)
       'design-architect': 85,
       'system-architect': 85,
       'task-planner': 85,
-      'planner': 85,
-      
+      planner: 85,
+
       // Quality Assurance (Medium-High Priority)
-      'tester': 80,
-      'reviewer': 75,
-      
+      tester: 80,
+      reviewer: 75,
+
       // Research & Analysis (Medium Priority)
-      'researcher': 70,
-      'analyst': 70,
+      researcher: 70,
+      analyst: 70,
       'requirements-engineer': 75,
-      
+
       // Documentation & Governance (Lower Priority)
-      'steering-author': 65
+      'steering-author': 65,
     };
-    
+
     return priorityMap[agentType] || 70;
   }
 
@@ -935,21 +1010,21 @@ ${content}
    * Replaces hardcoded agent arrays with intelligent selection
    */
   private async getOptimalAgentTypes(
-    requiredCapabilities: string[], 
+    requiredCapabilities: string[],
     taskType: string,
     maxAgents: number = 2
   ): Promise<string[]> {
     // Check for available agents with matching capabilities first
     const availableAgents = await this.findReusableAgents(requiredCapabilities, maxAgents);
-    
+
     if (availableAgents.length >= maxAgents) {
       // Use existing agents if available
-      return availableAgents.map(agentId => {
+      return availableAgents.map((agentId) => {
         const pooledAgent = this.agentPool.get(agentId);
         return pooledAgent?.type || 'general';
       });
     }
-    
+
     // Fallback to configured agent types based on capabilities and task type
     return this.getConfiguredAgentTypes(requiredCapabilities, taskType, maxAgents);
   }
@@ -958,7 +1033,7 @@ ${content}
    * Get configured agent types based on task requirements (replaces hardcoded arrays)
    */
   private getConfiguredAgentTypes(
-    requiredCapabilities: string[], 
+    requiredCapabilities: string[],
     taskType: string,
     maxAgents: number
   ): string[] {
@@ -968,26 +1043,26 @@ ${content}
       'task-planning': ['task-planner', 'planner'],
       'task-implementation': ['developer', 'coder'],
       'code-review': ['reviewer', 'analyst'],
-      'research': ['researcher', 'analyst'],
-      'documentation': ['requirements-engineer', 'steering-author']
+      research: ['researcher', 'analyst'],
+      documentation: ['requirements-engineer', 'steering-author'],
     };
 
     // Capability-based fallback mapping
     const capabilityAgents: Record<string, string[]> = {
-      'design': ['design-architect', 'system-architect'],
-      'architecture': ['system-architect', 'design-architect'],
+      design: ['design-architect', 'system-architect'],
+      architecture: ['system-architect', 'design-architect'],
       'system-architecture': ['system-architect'],
-      'implementation': ['developer', 'coder'],
-      'coding': ['developer', 'coder'],
-      'testing': ['tester', 'developer'],
+      implementation: ['developer', 'coder'],
+      coding: ['developer', 'coder'],
+      testing: ['tester', 'developer'],
       'project-management': ['task-planner'],
       'task-breakdown': ['task-planner'],
-      'planning': ['task-planner', 'planner'],
-      'analysis': ['analyst', 'researcher'],
-      'research': ['researcher', 'analyst'],
-      'documentation': ['requirements-engineer', 'steering-author'],
+      planning: ['task-planner', 'planner'],
+      analysis: ['analyst', 'researcher'],
+      research: ['researcher', 'analyst'],
+      documentation: ['requirements-engineer', 'steering-author'],
       'code-review': ['reviewer', 'analyst'],
-      'quality-assurance': ['reviewer', 'tester']
+      'quality-assurance': ['reviewer', 'tester'],
     };
 
     // Try task type first
@@ -996,12 +1071,12 @@ ${content}
     // If no direct task type match, build from capabilities
     if (agentTypes.length === 0) {
       const typeSet = new Set<string>();
-      
+
       for (const capability of requiredCapabilities) {
         const possibleTypes = capabilityAgents[capability] || [];
-        possibleTypes.forEach(type => typeSet.add(type));
+        possibleTypes.forEach((type) => typeSet.add(type));
       }
-      
+
       agentTypes = Array.from(typeSet);
     }
 
@@ -1017,26 +1092,29 @@ ${content}
   /**
    * Find reusable agents with matching capabilities (minimal-change enhancement)
    */
-  private async findReusableAgents(requiredCapabilities: string[], maxAgents: number): Promise<string[]> {
+  private async findReusableAgents(
+    requiredCapabilities: string[],
+    maxAgents: number
+  ): Promise<string[]> {
     const reusableAgents: string[] = [];
-    
+
     try {
       // Find agents with matching capabilities using capability index
       let candidateIds: Set<string> | null = null;
-      
+
       for (const capability of requiredCapabilities) {
         const agentsWithCapability = this.capabilityIndex.get(capability);
-        
+
         if (!agentsWithCapability || agentsWithCapability.size === 0) {
           continue; // Skip if no agents have this capability
         }
-        
+
         if (candidateIds === null) {
           candidateIds = new Set(agentsWithCapability);
         } else {
           // Find intersection - agents with ALL required capabilities
           const intersection = new Set<string>();
-          candidateIds.forEach(id => {
+          candidateIds.forEach((id) => {
             if (agentsWithCapability.has(id)) {
               intersection.add(id);
             }
@@ -1044,34 +1122,41 @@ ${content}
           candidateIds = intersection;
         }
       }
-      
+
       // Get available agents from candidates
       if (candidateIds && candidateIds.size > 0) {
         for (const agentId of candidateIds) {
           if (reusableAgents.length >= maxAgents) break;
-          
+
           const pooledAgent = this.agentPool.get(agentId);
           if (pooledAgent && pooledAgent.status === 'available') {
             reusableAgents.push(agentId);
           }
         }
       }
-      
+
       if (reusableAgents.length > 0) {
-        this.logger.info(`Found ${reusableAgents.length} reusable agents for capabilities: [${requiredCapabilities.join(', ')}]`);
+        this.logger.info(
+          `Found ${reusableAgents.length} reusable agents for capabilities: [${requiredCapabilities.join(', ')}]`
+        );
       }
-      
     } catch (error) {
-      this.logger.warn(`Error finding reusable agents: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.warn(
+        `Error finding reusable agents: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
-    
+
     return reusableAgents;
   }
 
   /**
    * Add agent to pool for future reuse (minimal-change enhancement)
    */
-  private async addAgentToPool(agentId: string, agentType: string, capabilities: string[]): Promise<void> {
+  private async addAgentToPool(
+    agentId: string,
+    agentType: string,
+    capabilities: string[]
+  ): Promise<void> {
     try {
       const pooledAgent: PooledAgent = {
         id: agentId,
@@ -1080,12 +1165,12 @@ ${content}
         status: 'available',
         lastUsed: new Date(),
         usageCount: 0,
-        createdAt: new Date()
+        createdAt: new Date(),
       };
-      
+
       // Add to main pool
       this.agentPool.set(agentId, pooledAgent);
-      
+
       // Update capability index for efficient lookup
       for (const capability of capabilities) {
         if (!this.capabilityIndex.has(capability)) {
@@ -1093,11 +1178,14 @@ ${content}
         }
         this.capabilityIndex.get(capability)!.add(agentId);
       }
-      
-      this.logger.debug(`Added agent ${agentId} (${agentType}) to pool with capabilities: [${capabilities.join(', ')}]`);
-      
+
+      this.logger.debug(
+        `Added agent ${agentId} (${agentType}) to pool with capabilities: [${capabilities.join(', ')}]`
+      );
     } catch (error) {
-      this.logger.warn(`Failed to add agent ${agentId} to pool: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.warn(
+        `Failed to add agent ${agentId} to pool: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 
@@ -1114,7 +1202,9 @@ ${content}
           pooledAgent.usageCount++;
         }
       } catch (error) {
-        this.logger.warn(`Failed to mark agent ${agentId} as busy: ${error instanceof Error ? error.message : String(error)}`);
+        this.logger.warn(
+          `Failed to mark agent ${agentId} as busy: ${error instanceof Error ? error.message : String(error)}`
+        );
       }
     }
   }
@@ -1126,16 +1216,19 @@ ${content}
     for (const agentId of allAgents) {
       try {
         const pooledAgent = this.agentPool.get(agentId);
-        
+
         if (pooledAgent) {
           // If agent was spawned for this task and has low usage, consider cleanup
           const wasSpawned = spawnedAgents.includes(agentId);
-          const shouldKeepInPool = !wasSpawned || pooledAgent.usageCount > 1 || this.shouldKeepAgent(pooledAgent);
-          
+          const shouldKeepInPool =
+            !wasSpawned || pooledAgent.usageCount > 1 || this.shouldKeepAgent(pooledAgent);
+
           if (shouldKeepInPool) {
             // Return to pool as available
             pooledAgent.status = 'available';
-            this.logger.debug(`Released agent ${agentId} back to pool (usage: ${pooledAgent.usageCount})`);
+            this.logger.debug(
+              `Released agent ${agentId} back to pool (usage: ${pooledAgent.usageCount})`
+            );
           } else {
             // Cleanup agent and remove from pool
             await this.cleanupPooledAgent(agentId);
@@ -1144,9 +1237,10 @@ ${content}
           // Agent not in pool, cleanup immediately
           await this.agentManager.stopAgent(agentId);
         }
-        
       } catch (error) {
-        this.logger.warn(`Failed to release agent ${agentId}: ${error instanceof Error ? error.message : String(error)}`);
+        this.logger.warn(
+          `Failed to release agent ${agentId}: ${error instanceof Error ? error.message : String(error)}`
+        );
       }
     }
   }
@@ -1156,8 +1250,10 @@ ${content}
    */
   private shouldKeepAgent(pooledAgent: PooledAgent): boolean {
     const maxPoolSize = 10; // Simple pool size limit
-    const currentPoolSize = Array.from(this.agentPool.values()).filter(a => a.status === 'available').length;
-    
+    const currentPoolSize = Array.from(this.agentPool.values()).filter(
+      (a) => a.status === 'available'
+    ).length;
+
     // Keep if under pool limit and recently used
     const recentlyUsed = Date.now() - pooledAgent.lastUsed.getTime() < 1800000; // 30 minutes
     return currentPoolSize < maxPoolSize && (recentlyUsed || pooledAgent.usageCount > 2);
@@ -1169,7 +1265,7 @@ ${content}
   private async cleanupPooledAgent(agentId: string): Promise<void> {
     try {
       const pooledAgent = this.agentPool.get(agentId);
-      
+
       // Remove from capability index
       if (pooledAgent) {
         for (const capability of pooledAgent.capabilities) {
@@ -1182,17 +1278,18 @@ ${content}
           }
         }
       }
-      
+
       // Remove from pool
       this.agentPool.delete(agentId);
-      
+
       // Stop the actual agent
       await this.agentManager.stopAgent(agentId);
-      
+
       this.logger.debug(`Cleaned up agent ${agentId} and removed from pool`);
-      
     } catch (error) {
-      this.logger.warn(`Failed to cleanup pooled agent ${agentId}: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.warn(
+        `Failed to cleanup pooled agent ${agentId}: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 
@@ -1205,7 +1302,9 @@ ${content}
       try {
         await this.cleanupPooledAgent(agentId);
       } catch (error) {
-        this.logger.warn(`Failed to cleanup agent ${agentId}: ${error instanceof Error ? error.message : String(error)}`);
+        this.logger.warn(
+          `Failed to cleanup agent ${agentId}: ${error instanceof Error ? error.message : String(error)}`
+        );
       }
     }
   }
@@ -1215,22 +1314,24 @@ ${content}
    */
   private async shutdownAgentPool(): Promise<void> {
     this.logger.info(`Shutting down agent pool with ${this.agentPool.size} agents`);
-    
+
     const allAgentIds = Array.from(this.agentPool.keys());
-    
+
     // Cleanup all pooled agents
     for (const agentId of allAgentIds) {
       try {
         await this.cleanupPooledAgent(agentId);
       } catch (error) {
-        this.logger.warn(`Failed to cleanup pooled agent ${agentId} during shutdown: ${error instanceof Error ? error.message : String(error)}`);
+        this.logger.warn(
+          `Failed to cleanup pooled agent ${agentId} during shutdown: ${error instanceof Error ? error.message : String(error)}`
+        );
       }
     }
-    
+
     // Clear data structures
     this.agentPool.clear();
     this.capabilityIndex.clear();
-    
+
     this.logger.info('Agent pool shutdown complete');
   }
 
@@ -1247,7 +1348,7 @@ ${content}
   } {
     const agents = Array.from(this.agentPool.values());
     const totalAgents = agents.length;
-    
+
     if (totalAgents === 0) {
       return {
         totalAgents: 0,
@@ -1255,26 +1356,26 @@ ${content}
         busyAgents: 0,
         averageUsage: 0,
         capabilitiesCovered: 0,
-        reuseRate: 0
+        reuseRate: 0,
       };
     }
-    
-    const availableAgents = agents.filter(a => a.status === 'available').length;
-    const busyAgents = agents.filter(a => a.status === 'busy').length;
+
+    const availableAgents = agents.filter((a) => a.status === 'available').length;
+    const busyAgents = agents.filter((a) => a.status === 'busy').length;
     const averageUsage = agents.reduce((sum, a) => sum + a.usageCount, 0) / totalAgents;
     const capabilitiesCovered = this.capabilityIndex.size;
-    
+
     // Calculate reuse rate (agents with usage > 1)
-    const reusedAgents = agents.filter(a => a.usageCount > 1).length;
+    const reusedAgents = agents.filter((a) => a.usageCount > 1).length;
     const reuseRate = totalAgents > 0 ? reusedAgents / totalAgents : 0;
-    
+
     return {
       totalAgents,
       availableAgents,
       busyAgents,
       averageUsage,
       capabilitiesCovered,
-      reuseRate
+      reuseRate,
     };
   }
 
@@ -1284,18 +1385,20 @@ ${content}
   async getSteeringContext(agentType: string, filePath?: string): Promise<string> {
     let context = '';
     const steeringFiles = ['product.md', 'tech.md', 'structure.md'];
-    
+
     for (const file of steeringFiles) {
       try {
-        context += await readFile(join(this.steeringDirectory, file), 'utf8') + '\n\n---\n\n';
+        context += (await readFile(join(this.steeringDirectory, file), 'utf8')) + '\n\n---\n\n';
       } catch (error) {
-        this.logger.warn(`Could not read steering file ${file}: ${error instanceof Error ? error.message : String(error)}`);
+        this.logger.warn(
+          `Could not read steering file ${file}: ${error instanceof Error ? error.message : String(error)}`
+        );
       }
     }
-    
+
     return context || 'No steering context available.';
   }
-  
+
   /**
    * Initialize agentic hooks system
    */
@@ -1305,7 +1408,7 @@ ${content}
         await initializeAgenticFlowHooks();
         this.agenticHooksInitialized = true;
         this.logger.info('Agentic hooks system initialized for Maestro');
-        
+
         // Register Maestro-specific hooks
         this.registerMaestroHooks();
       } catch (error) {
@@ -1313,7 +1416,7 @@ ${content}
       }
     }
   }
-  
+
   /**
    * Register Maestro-specific hooks
    */
@@ -1326,22 +1429,22 @@ ${content}
         this.logger.info('Maestro spec creation hook triggered');
         return { continue: true };
       },
-      priority: 50
+      priority: 50,
     });
-    
+
     agenticHookManager.register({
-      id: 'maestro-task-completed', 
+      id: 'maestro-task-completed',
       type: 'workflow-step',
       handler: async (payload, context) => {
         this.logger.info('Maestro task completion hook triggered');
         return { continue: true };
       },
-      priority: 50
+      priority: 50,
     });
-    
+
     this.logger.info('Maestro-specific hooks registered');
   }
-  
+
   /**
    * Setup event handlers
    */
@@ -1350,22 +1453,22 @@ ${content}
     this.eventBus.on('maestro:phase_approved', this.handlePhaseApproved.bind(this));
     this.eventBus.on('maestro:task_implemented', this.handleTaskImplemented.bind(this));
   }
-  
+
   /**
    * Event handlers
    */
   private async handleSpecCreated(data: any): Promise<void> {
     this.logger.info(`Spec created event: ${JSON.stringify(data)}`);
   }
-  
+
   private async handlePhaseApproved(data: any): Promise<void> {
     this.logger.info(`Phase approved event: ${JSON.stringify(data)}`);
   }
-  
+
   private async handleTaskImplemented(data: any): Promise<void> {
     this.logger.info(`Task implemented event: ${JSON.stringify(data)}`);
   }
-  
+
   /**
    * Utility: Wait for task completion in hive mind
    */
@@ -1374,11 +1477,11 @@ ${content}
       const timeout = setTimeout(() => {
         reject(new Error(`Task timeout: ${taskId}`));
       }, timeoutMs);
-      
+
       const checkInterval = setInterval(async () => {
         try {
           const task = await this.hiveMind!.getTask(taskId);
-          
+
           if (task.status === 'completed') {
             clearTimeout(timeout);
             clearInterval(checkInterval);
@@ -1396,7 +1499,7 @@ ${content}
       }, 2000);
     });
   }
-  
+
   /**
    * Utility: Wait for consensus result
    */
@@ -1405,18 +1508,18 @@ ${content}
       const timeout = setTimeout(() => {
         reject(new Error(`Consensus timeout for proposal ${proposalId}`));
       }, timeoutMs);
-      
+
       const checkInterval = setInterval(async () => {
         try {
           const status = await this.consensusEngine!.getProposalStatus(proposalId);
-          
+
           if (status.status === 'achieved') {
             clearTimeout(timeout);
             clearInterval(checkInterval);
             resolve({
               achieved: true,
               finalRatio: status.currentRatio,
-              reason: 'Consensus achieved'
+              reason: 'Consensus achieved',
             });
           } else if (status.status === 'failed') {
             clearTimeout(timeout);
@@ -1424,7 +1527,7 @@ ${content}
             resolve({
               achieved: false,
               finalRatio: status.currentRatio,
-              reason: 'Consensus failed'
+              reason: 'Consensus failed',
             });
           }
         } catch (error) {
@@ -1435,19 +1538,19 @@ ${content}
       }, 1000);
     });
   }
-  
+
   /**
    * Shutdown orchestrator and cleanup resources
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down Maestro Orchestrator');
-    
+
     // Close file watchers
     for (const [featureName, watcher] of this.fileWatchers) {
       await watcher.close();
       this.logger.info(`Closed file watcher for '${featureName}'`);
     }
-    
+
     // Shutdown agentic hooks if initialized
     if (this.agenticHooksInitialized) {
       // Unregister Maestro hooks
@@ -1464,12 +1567,12 @@ ${content}
       await this.hiveMind.shutdown();
       this.logger.info('Hive mind shutdown complete');
     }
-    
+
     // Cleanup agent pool (minimal-change enhancement)
     await this.shutdownAgentPool();
-    
+
     // Task planner removed - using direct agent management
-    
+
     this.logger.info('Maestro Orchestrator shutdown complete');
   }
 }

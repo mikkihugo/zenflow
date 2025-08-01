@@ -7,17 +7,17 @@
 
 import { EventEmitter } from 'events';
 import { v4 as uuidv4 } from 'uuid';
-import { DatabaseManager } from './DatabaseManager.js';
 import { MCPToolWrapper } from '../integration/MCPToolWrapper.js';
 import {
-  AgentType,
-  AgentStatus,
-  AgentCapability,
+  type AgentCapability,
+  type AgentConfig,
+  type AgentStatus,
+  type AgentType,
+  type ExecutionResult,
+  type Message,
   Task,
-  Message,
-  AgentConfig,
-  ExecutionResult,
 } from '../types.js';
+import { DatabaseManager } from './DatabaseManager.js';
 
 export class Agent extends EventEmitter {
   public readonly id: string;
@@ -348,7 +348,7 @@ export class Agent extends EventEmitter {
   protected async communicateProgress(
     taskId: string,
     phase: string,
-    progress: number,
+    progress: number
   ): Promise<void> {
     await this.sendMessage(null, 'progress_update', {
       taskId,
@@ -609,7 +609,7 @@ export class Agent extends EventEmitter {
     if (patterns.suggestedCapabilities) {
       // Update capabilities based on learning
       const newCapabilities = patterns.suggestedCapabilities.filter(
-        (cap: string) => !this.capabilities.includes(cap),
+        (cap: string) => !this.capabilities.includes(cap)
       );
 
       if (newCapabilities.length > 0) {

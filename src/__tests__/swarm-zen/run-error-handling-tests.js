@@ -12,18 +12,11 @@ const testConfig = {
   verbose: true,
   testTimeout: 30000,
   setupFilesAfterEnv: ['<rootDir>/test/setup.js'],
-  testMatch: [
-    '**/test/error-handling-validation.test.js',
-    '**/test/mcp-integration.test.js',
-  ],
+  testMatch: ['**/test/error-handling-validation.test.js', '**/test/mcp-integration.test.js'],
   collectCoverage: true,
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
-  collectCoverageFrom: [
-    'src/errors.js',
-    'src/schemas.js',
-    'src/mcp-tools-enhanced.js',
-  ],
+  collectCoverageFrom: ['src/errors.js', 'src/schemas.js', 'src/mcp-tools-enhanced.js'],
 };
 
 // Mock console to capture error logs during testing
@@ -85,7 +78,7 @@ class TestResults {
       totalPassed,
       totalFailed,
       totalTime,
-      passRate: totalTests > 0 ? (totalPassed / totalTests * 100).toFixed(2) : 0,
+      passRate: totalTests > 0 ? ((totalPassed / totalTests) * 100).toFixed(2) : 0,
       categories: this.results,
     };
   }
@@ -117,7 +110,6 @@ async function runErrorHandlingTests() {
     // Test 4: Performance and Edge Cases
     console.log('\\n⚡ Testing Performance and Edge Cases...');
     await testPerformanceAndEdgeCases(results);
-
   } catch (error) {
     console.error('❌ Test runner error:', error);
   } finally {
@@ -162,7 +154,7 @@ async function testErrorClasses(results) {
     }
 
     const suggestions = error.getSuggestions();
-    if (!suggestions.some(s => s.includes('testField'))) {
+    if (!suggestions.some((s) => s.includes('testField'))) {
       throw new Error('Missing field-specific suggestion');
     }
   });
@@ -353,7 +345,7 @@ async function testMCPIntegration(results) {
   };
 
   // Test MCP tools initialization
-  await runTest(results, 'integration', 'MCP Tools initialization', async() => {
+  await runTest(results, 'integration', 'MCP Tools initialization', async () => {
     const { EnhancedMCPTools } = await import('../src/mcp-tools-enhanced.js');
     const tools = new EnhancedMCPTools(mockRuvSwarm);
 
@@ -369,7 +361,7 @@ async function testMCPIntegration(results) {
   });
 
   // Test error handling in swarm_init
-  await runTest(results, 'integration', 'swarm_init error handling', async() => {
+  await runTest(results, 'integration', 'swarm_init error handling', async () => {
     const { EnhancedMCPTools } = await import('../src/mcp-tools-enhanced.js');
     const tools = new EnhancedMCPTools();
 
@@ -399,7 +391,7 @@ async function testMCPIntegration(results) {
   });
 
   // Test error statistics
-  await runTest(results, 'integration', 'Error statistics tracking', async() => {
+  await runTest(results, 'integration', 'Error statistics tracking', async () => {
     const { EnhancedMCPTools } = await import('../src/mcp-tools-enhanced.js');
     const { ValidationError, WasmError } = await import('../src/errors.js');
 
@@ -473,7 +465,7 @@ async function testPerformanceAndEdgeCases(results) {
   });
 
   // Test memory usage with many errors
-  await runTest(results, 'performance', 'Memory usage with error log limit', async() => {
+  await runTest(results, 'performance', 'Memory usage with error log limit', async () => {
     const { EnhancedMCPTools } = await import('../src/mcp-tools-enhanced.js');
     const tools = new EnhancedMCPTools();
 
@@ -541,7 +533,7 @@ async function runTest(results, category, testName, testFunction) {
 function generateReport(results) {
   const summary = results.getSummary();
 
-  console.log(`\\n${ '='.repeat(60)}`);
+  console.log(`\\n${'='.repeat(60)}`);
   console.log('🧪 ERROR HANDLING TEST RESULTS');
   console.log('='.repeat(60));
 
@@ -559,18 +551,20 @@ function generateReport(results) {
 
     if (data.failed > 0) {
       console.log('   Failed Tests:');
-      data.tests.filter(t => !t.passed).forEach(test => {
-        console.log(`     ❌ ${test.name}: ${test.error}`);
-      });
+      data.tests
+        .filter((t) => !t.passed)
+        .forEach((test) => {
+          console.log(`     ❌ ${test.name}: ${test.error}`);
+        });
     }
   });
 
   // Console capture analysis
   if (consoleCapture.length > 0) {
     console.log('\\n📝 Console Output Analysis:');
-    const errorLogs = consoleCapture.filter(c => c.level === 'error').length;
-    const warnLogs = consoleCapture.filter(c => c.level === 'warn').length;
-    const infoLogs = consoleCapture.filter(c => c.level === 'log').length;
+    const errorLogs = consoleCapture.filter((c) => c.level === 'error').length;
+    const warnLogs = consoleCapture.filter((c) => c.level === 'warn').length;
+    const infoLogs = consoleCapture.filter((c) => c.level === 'log').length;
 
     console.log(`   Error logs: ${errorLogs}`);
     console.log(`   Warning logs: ${warnLogs}`);
@@ -588,7 +582,8 @@ function generateReport(results) {
   }
 
   // Performance insights
-  const avgDuration = summary.totalTests > 0 ? (summary.totalTime / summary.totalTests).toFixed(2) : 0;
+  const avgDuration =
+    summary.totalTests > 0 ? (summary.totalTime / summary.totalTests).toFixed(2) : 0;
   console.log('\\n⚡ Performance:');
   console.log(`   Average test duration: ${avgDuration}ms`);
 
@@ -598,7 +593,7 @@ function generateReport(results) {
     console.log('   ✅ Test performance is good');
   }
 
-  console.log(`\\n${ '='.repeat(60)}`);
+  console.log(`\\n${'='.repeat(60)}`);
 }
 
 // Run the tests

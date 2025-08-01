@@ -1,14 +1,15 @@
 /**
  * TUI Interface - Terminal User Interface
- * 
+ *
  * Full-screen terminal interface built with React/Ink
  * Real-time updates, keyboard navigation, multi-panel layout
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { render, Box, Text, useInput, useApp, Static } from 'ink';
-import { createLogger } from '../../utils/logger.js';
 import chalk from 'chalk';
+import { Box, render, Static, Text, useApp, useInput } from 'ink';
+import type React from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { createLogger } from '../../utils/logger.js';
 
 export interface TUIConfig {
   port?: number;
@@ -66,13 +67,13 @@ const TUIApp: React.FC<{ config: TUIConfig }> = ({ config }) => {
       swarms: { active: 0, total: 0 },
       tasks: { pending: 0, active: 0, completed: 0 },
       resources: { cpu: '0%', memory: '0%', disk: '0%' },
-      uptime: '0m'
+      uptime: '0m',
     },
     swarms: [],
     tasks: [],
     logs: [],
     isLoading: true,
-    error: null
+    error: null,
   });
 
   // Keyboard shortcuts
@@ -85,19 +86,19 @@ const TUIApp: React.FC<{ config: TUIConfig }> = ({ config }) => {
     if (config.enableKeyboardShortcuts !== false) {
       switch (input) {
         case '1':
-          setState(prev => ({ ...prev, activeTab: 'dashboard' }));
+          setState((prev) => ({ ...prev, activeTab: 'dashboard' }));
           break;
         case '2':
-          setState(prev => ({ ...prev, activeTab: 'swarms' }));
+          setState((prev) => ({ ...prev, activeTab: 'swarms' }));
           break;
         case '3':
-          setState(prev => ({ ...prev, activeTab: 'tasks' }));
+          setState((prev) => ({ ...prev, activeTab: 'tasks' }));
           break;
         case '4':
-          setState(prev => ({ ...prev, activeTab: 'documents' }));
+          setState((prev) => ({ ...prev, activeTab: 'documents' }));
           break;
         case '5':
-          setState(prev => ({ ...prev, activeTab: 'logs' }));
+          setState((prev) => ({ ...prev, activeTab: 'logs' }));
           break;
         case 'r':
           refreshData();
@@ -111,11 +112,11 @@ const TUIApp: React.FC<{ config: TUIConfig }> = ({ config }) => {
 
   // Data fetching
   const refreshData = useCallback(async () => {
-    setState(prev => ({ ...prev, isLoading: true, error: null }));
-    
+    setState((prev) => ({ ...prev, isLoading: true, error: null }));
+
     try {
       // Simulate API calls - in real implementation, these would be actual service calls
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       const mockSystemStatus: SystemStatus = {
         system: 'healthy',
@@ -123,7 +124,7 @@ const TUIApp: React.FC<{ config: TUIConfig }> = ({ config }) => {
         swarms: { active: 2, total: 5 },
         tasks: { pending: 3, active: 1, completed: 12 },
         resources: { cpu: '45%', memory: '60%', disk: '23%' },
-        uptime: '2h 15m'
+        uptime: '2h 15m',
       };
 
       const mockSwarms: SwarmInfo[] = [
@@ -133,7 +134,7 @@ const TUIApp: React.FC<{ config: TUIConfig }> = ({ config }) => {
           status: 'active',
           agents: 4,
           tasks: 8,
-          progress: 65
+          progress: 65,
         },
         {
           id: 'swarm-2',
@@ -141,8 +142,8 @@ const TUIApp: React.FC<{ config: TUIConfig }> = ({ config }) => {
           status: 'active',
           agents: 6,
           tasks: 12,
-          progress: 40
-        }
+          progress: 40,
+        },
       ];
 
       const mockTasks: TaskInfo[] = [
@@ -152,7 +153,7 @@ const TUIApp: React.FC<{ config: TUIConfig }> = ({ config }) => {
           status: 'active',
           assignedAgents: ['agent-1', 'agent-2'],
           progress: 75,
-          eta: '15m'
+          eta: '15m',
         },
         {
           id: 'task-2',
@@ -160,30 +161,33 @@ const TUIApp: React.FC<{ config: TUIConfig }> = ({ config }) => {
           status: 'pending',
           assignedAgents: [],
           progress: 0,
-          eta: '30m'
-        }
+          eta: '30m',
+        },
       ];
 
       const mockLogs = [
-        { timestamp: new Date().toISOString(), level: 'info', message: 'Swarm initialized successfully' },
+        {
+          timestamp: new Date().toISOString(),
+          level: 'info',
+          message: 'Swarm initialized successfully',
+        },
         { timestamp: new Date().toISOString(), level: 'info', message: 'Processing PRD document' },
-        { timestamp: new Date().toISOString(), level: 'warn', message: 'Agent pool running low' }
+        { timestamp: new Date().toISOString(), level: 'warn', message: 'Agent pool running low' },
       ];
 
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         systemStatus: mockSystemStatus,
         swarms: mockSwarms,
         tasks: mockTasks,
         logs: mockLogs,
-        isLoading: false
+        isLoading: false,
       }));
-
     } catch (error) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         error: error instanceof Error ? error.message : 'Unknown error',
-        isLoading: false
+        isLoading: false,
       }));
     }
   }, []);
@@ -191,32 +195,35 @@ const TUIApp: React.FC<{ config: TUIConfig }> = ({ config }) => {
   // Auto-refresh
   useEffect(() => {
     refreshData();
-    
+
     if (config.refreshInterval) {
       const interval = setInterval(refreshData, config.refreshInterval);
       return () => clearInterval(interval);
     }
   }, [refreshData, config.refreshInterval]);
 
-  const theme = config.theme === 'light' ? {
-    primary: '#0969da',
-    secondary: '#656d76',
-    background: '#ffffff',
-    surface: '#f6f8fa',
-    accent: '#1a7f37',
-    success: '#1a7f37',
-    warning: '#d1242f',
-    error: '#cf222e'
-  } : {
-    primary: '#58a6ff',
-    secondary: '#7d8590',
-    background: '#0d1117',
-    surface: '#21262d',
-    accent: '#238636',
-    success: '#238636',
-    warning: '#d29922',
-    error: '#f85149'
-  };
+  const theme =
+    config.theme === 'light'
+      ? {
+          primary: '#0969da',
+          secondary: '#656d76',
+          background: '#ffffff',
+          surface: '#f6f8fa',
+          accent: '#1a7f37',
+          success: '#1a7f37',
+          warning: '#d1242f',
+          error: '#cf222e',
+        }
+      : {
+          primary: '#58a6ff',
+          secondary: '#7d8590',
+          background: '#0d1117',
+          surface: '#21262d',
+          accent: '#238636',
+          success: '#238636',
+          warning: '#d29922',
+          error: '#f85149',
+        };
 
   const renderHeader = () => (
     <Box flexDirection="column" marginBottom={1}>
@@ -228,11 +235,11 @@ const TUIApp: React.FC<{ config: TUIConfig }> = ({ config }) => {
           {new Date().toLocaleTimeString()} | {state.systemStatus.uptime} uptime
         </Text>
       </Box>
-      
+
       <Box marginTop={1}>
         {(['dashboard', 'swarms', 'tasks', 'documents', 'logs'] as TabName[]).map((tab, index) => (
           <Box key={tab} marginRight={1}>
-            <Text 
+            <Text
               color={state.activeTab === tab ? theme.primary : theme.secondary}
               bold={state.activeTab === tab}
             >
@@ -246,32 +253,53 @@ const TUIApp: React.FC<{ config: TUIConfig }> = ({ config }) => {
 
   const renderDashboard = () => (
     <Box flexDirection="column">
-      <Text color={theme.primary} bold marginBottom={1}>📊 System Dashboard</Text>
-      
+      <Text color={theme.primary} bold marginBottom={1}>
+        📊 System Dashboard
+      </Text>
+
       <Box flexDirection="row" justifyContent="space-between" marginBottom={1}>
         <Box flexDirection="column" width="30%">
-          <Text color={theme.secondary} bold>System Health</Text>
+          <Text color={theme.secondary} bold>
+            System Health
+          </Text>
           <Text color={theme.success}>● {state.systemStatus.system}</Text>
           <Text>Version: {state.systemStatus.version}</Text>
         </Box>
-        
+
         <Box flexDirection="column" width="30%">
-          <Text color={theme.secondary} bold>Resources</Text>
-          <Text>CPU: {getResourceColor(state.systemStatus.resources.cpu)} {state.systemStatus.resources.cpu}</Text>
-          <Text>Memory: {getResourceColor(state.systemStatus.resources.memory)} {state.systemStatus.resources.memory}</Text>
-          <Text>Disk: {getResourceColor(state.systemStatus.resources.disk)} {state.systemStatus.resources.disk}</Text>
+          <Text color={theme.secondary} bold>
+            Resources
+          </Text>
+          <Text>
+            CPU: {getResourceColor(state.systemStatus.resources.cpu)}{' '}
+            {state.systemStatus.resources.cpu}
+          </Text>
+          <Text>
+            Memory: {getResourceColor(state.systemStatus.resources.memory)}{' '}
+            {state.systemStatus.resources.memory}
+          </Text>
+          <Text>
+            Disk: {getResourceColor(state.systemStatus.resources.disk)}{' '}
+            {state.systemStatus.resources.disk}
+          </Text>
         </Box>
-        
+
         <Box flexDirection="column" width="30%">
-          <Text color={theme.secondary} bold>Activity</Text>
-          <Text>Swarms: {state.systemStatus.swarms.active}/{state.systemStatus.swarms.total}</Text>
+          <Text color={theme.secondary} bold>
+            Activity
+          </Text>
+          <Text>
+            Swarms: {state.systemStatus.swarms.active}/{state.systemStatus.swarms.total}
+          </Text>
           <Text>Active Tasks: {state.systemStatus.tasks.active}</Text>
           <Text>Completed: {state.systemStatus.tasks.completed}</Text>
         </Box>
       </Box>
 
       <Box flexDirection="column" marginTop={1}>
-        <Text color={theme.secondary} bold>Recent Activity</Text>
+        <Text color={theme.secondary} bold>
+          Recent Activity
+        </Text>
         {state.logs.slice(0, 5).map((log, index) => (
           <Text key={index} color={getLogColor(log.level)}>
             {log.timestamp.split('T')[1].substring(0, 8)} [{log.level.toUpperCase()}] {log.message}
@@ -283,18 +311,31 @@ const TUIApp: React.FC<{ config: TUIConfig }> = ({ config }) => {
 
   const renderSwarms = () => (
     <Box flexDirection="column">
-      <Text color={theme.primary} bold marginBottom={1}>🐝 Active Swarms</Text>
-      
-      {state.swarms.map(swarm => (
-        <Box key={swarm.id} flexDirection="column" borderStyle="round" borderColor={theme.secondary} padding={1} marginBottom={1}>
+      <Text color={theme.primary} bold marginBottom={1}>
+        🐝 Active Swarms
+      </Text>
+
+      {state.swarms.map((swarm) => (
+        <Box
+          key={swarm.id}
+          flexDirection="column"
+          borderStyle="round"
+          borderColor={theme.secondary}
+          padding={1}
+          marginBottom={1}
+        >
           <Box justifyContent="space-between">
             <Text bold>{swarm.name}</Text>
             <Text color={getStatusColor(swarm.status)}>● {swarm.status}</Text>
           </Box>
-          <Text>Agents: {swarm.agents} | Tasks: {swarm.tasks}</Text>
+          <Text>
+            Agents: {swarm.agents} | Tasks: {swarm.tasks}
+          </Text>
           <Box>
             <Text>Progress: </Text>
-            <Text color={theme.accent}>[{generateProgressBar(swarm.progress)}] {swarm.progress}%</Text>
+            <Text color={theme.accent}>
+              [{generateProgressBar(swarm.progress)}] {swarm.progress}%
+            </Text>
           </Box>
         </Box>
       ))}
@@ -303,18 +344,31 @@ const TUIApp: React.FC<{ config: TUIConfig }> = ({ config }) => {
 
   const renderTasks = () => (
     <Box flexDirection="column">
-      <Text color={theme.primary} bold marginBottom={1}>✅ Task Management</Text>
-      
-      {state.tasks.map(task => (
-        <Box key={task.id} flexDirection="column" borderStyle="round" borderColor={theme.secondary} padding={1} marginBottom={1}>
+      <Text color={theme.primary} bold marginBottom={1}>
+        ✅ Task Management
+      </Text>
+
+      {state.tasks.map((task) => (
+        <Box
+          key={task.id}
+          flexDirection="column"
+          borderStyle="round"
+          borderColor={theme.secondary}
+          padding={1}
+          marginBottom={1}
+        >
           <Box justifyContent="space-between">
             <Text bold>{task.title}</Text>
             <Text color={getStatusColor(task.status)}>● {task.status}</Text>
           </Box>
-          <Text>Agents: {task.assignedAgents.length > 0 ? task.assignedAgents.join(', ') : 'None'}</Text>
+          <Text>
+            Agents: {task.assignedAgents.length > 0 ? task.assignedAgents.join(', ') : 'None'}
+          </Text>
           <Box>
             <Text>Progress: </Text>
-            <Text color={theme.accent}>[{generateProgressBar(task.progress)}] {task.progress}%</Text>
+            <Text color={theme.accent}>
+              [{generateProgressBar(task.progress)}] {task.progress}%
+            </Text>
             <Text> ETA: {task.eta}</Text>
           </Box>
         </Box>
@@ -324,7 +378,9 @@ const TUIApp: React.FC<{ config: TUIConfig }> = ({ config }) => {
 
   const renderDocuments = () => (
     <Box flexDirection="column">
-      <Text color={theme.primary} bold marginBottom={1}>📄 Document Workflow</Text>
+      <Text color={theme.primary} bold marginBottom={1}>
+        📄 Document Workflow
+      </Text>
       <Text color={theme.secondary}>Vision → ADRs → PRDs → Epics → Features → Tasks → Code</Text>
       <Text marginTop={1}>Document management features coming soon...</Text>
     </Box>
@@ -332,8 +388,10 @@ const TUIApp: React.FC<{ config: TUIConfig }> = ({ config }) => {
 
   const renderLogs = () => (
     <Box flexDirection="column">
-      <Text color={theme.primary} bold marginBottom={1}>📋 System Logs</Text>
-      
+      <Text color={theme.primary} bold marginBottom={1}>
+        📋 System Logs
+      </Text>
+
       <Static items={state.logs}>
         {(log, index) => (
           <Box key={index}>
@@ -454,11 +512,10 @@ export class TUIInterface {
 
       // Launch React/Ink app
       const { waitUntilExit } = render(<TUIApp config={this.config} />);
-      
+
       await waitUntilExit();
-      
+
       this.logger.info('TUI interface closed');
-      
     } catch (error) {
       this.logger.error('TUI interface failed:', error);
       throw error;
@@ -481,8 +538,8 @@ export class TUIInterface {
         'keyboard-navigation',
         'progress-bars',
         'status-indicators',
-        'log-streaming'
-      ]
+        'log-streaming',
+      ],
     };
   }
 }

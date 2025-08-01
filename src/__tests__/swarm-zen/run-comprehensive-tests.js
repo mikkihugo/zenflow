@@ -5,11 +5,11 @@
  * Executes all test suites with coverage and performance tracking
  */
 
+import chalk from 'chalk';
 import { spawn } from 'child_process';
 import fs from 'fs/promises';
 import path from 'path';
 import { performance } from 'perf_hooks';
-import chalk from 'chalk';
 
 const TEST_SUITES = [
   {
@@ -72,7 +72,7 @@ class TestRunner {
     this.displaySummary();
 
     // Exit with appropriate code
-    const failedCritical = this.results.some(r => r.critical && !r.success);
+    const failedCritical = this.results.some((r) => r.critical && !r.success);
     process.exit(failedCritical ? 1 : 0);
   }
 
@@ -80,9 +80,10 @@ class TestRunner {
     console.log(chalk.yellow('\n🔍 Checking prerequisites...'));
 
     // Check WASM files
-    const wasmExists = await fs.access(
-      path.join(process.cwd(), 'wasm/ruv_swarm_wasm_bg.wasm'),
-    ).then(() => true).catch(() => false);
+    const wasmExists = await fs
+      .access(path.join(process.cwd(), 'wasm/ruv_swarm_wasm_bg.wasm'))
+      .then(() => true)
+      .catch(() => false);
 
     if (!wasmExists) {
       console.log(chalk.red('❌ WASM files not found. Building...'));
@@ -193,15 +194,15 @@ class TestRunner {
       suites: this.results,
       summary: {
         total: this.results.length,
-        passed: this.results.filter(r => r.success).length,
-        failed: this.results.filter(r => !r.success && !r.skipped).length,
-        skipped: this.results.filter(r => r.skipped).length,
+        passed: this.results.filter((r) => r.success).length,
+        failed: this.results.filter((r) => !r.success && !r.skipped).length,
+        skipped: this.results.filter((r) => r.skipped).length,
       },
     };
 
     await fs.writeFile(
       path.join(reportDir, `test-report-${Date.now()}.json`),
-      JSON.stringify(testReport, null, 2),
+      JSON.stringify(testReport, null, 2)
     );
 
     // Coverage report
@@ -213,8 +214,7 @@ class TestRunner {
 
       // Generate coverage badge
       const coveragePercent = coverageData.total.lines.pct;
-      const badgeColor = coveragePercent >= 90 ? 'green' :
-        coveragePercent >= 80 ? 'yellow' : 'red';
+      const badgeColor = coveragePercent >= 90 ? 'green' : coveragePercent >= 80 ? 'yellow' : 'red';
 
       console.log(chalk.bold(`\n📈 Coverage: ${coveragePercent}% (${badgeColor})`));
     } catch (error) {
@@ -225,7 +225,7 @@ class TestRunner {
     const perfReport = await this.generatePerformanceReport();
     await fs.writeFile(
       path.join(reportDir, 'performance-summary.json'),
-      JSON.stringify(perfReport, null, 2),
+      JSON.stringify(perfReport, null, 2)
     );
 
     console.log(chalk.green('✅ Reports generated'));
@@ -241,11 +241,11 @@ class TestRunner {
     };
 
     // Parse performance test output
-    const perfTest = this.results.find(r => r.name.includes('Performance'));
+    const perfTest = this.results.find((r) => r.name.includes('Performance'));
     if (perfTest && perfTest.output) {
       // Extract metrics from output (simplified)
       const lines = perfTest.output.split('\n');
-      lines.forEach(line => {
+      lines.forEach((line) => {
         if (line.includes('initialization:')) {
           const match = line.match(/avg=(\d+\.?\d*)/);
           if (match) {
@@ -259,9 +259,7 @@ class TestRunner {
     return {
       timestamp: new Date().toISOString(),
       metrics,
-      meetsTargets: Object.values(metrics).every(m =>
-        m.actual === null || m.actual <= m.target,
-      ),
+      meetsTargets: Object.values(metrics).every((m) => m.actual === null || m.actual <= m.target),
     };
   }
 
@@ -273,7 +271,7 @@ class TestRunner {
 
     // Test results
     console.log(chalk.bold('\nTest Results:'));
-    this.results.forEach(result => {
+    this.results.forEach((result) => {
       const icon = result.skipped ? '⚪' : result.success ? '✅' : '❌';
       const time = result.duration ? ` (${(result.duration / 1000).toFixed(2)}s)` : '';
       console.log(`  ${icon} ${result.name}${time}`);
@@ -289,9 +287,9 @@ class TestRunner {
     }
 
     // Overall summary
-    const passed = this.results.filter(r => r.success).length;
-    const failed = this.results.filter(r => !r.success && !r.skipped).length;
-    const skipped = this.results.filter(r => r.skipped).length;
+    const passed = this.results.filter((r) => r.success).length;
+    const failed = this.results.filter((r) => !r.success && !r.skipped).length;
+    const skipped = this.results.filter((r) => r.skipped).length;
 
     console.log(chalk.bold('\nOverall Summary:'));
     console.log(`  Total:    ${this.results.length} suites`);
@@ -312,7 +310,7 @@ class TestRunner {
 
 // Run tests
 const runner = new TestRunner();
-runner.run().catch(error => {
+runner.run().catch((error) => {
   console.error(chalk.red('Fatal error:', error));
   process.exit(1);
 });

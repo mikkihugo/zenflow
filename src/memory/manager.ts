@@ -1,6 +1,6 @@
 /**
  * Memory Manager - System memory management
- * 
+ *
  * Uses the existing memory.ts as the implementation.
  */
 

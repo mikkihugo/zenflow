@@ -14,10 +14,16 @@ class ClaudeDocsGenerator {
   }
 
   /**
-     * Generate main claude.md configuration file with protection
-     */
+   * Generate main claude.md configuration file with protection
+   */
   async generateClaudeMd(options = {}) {
-    const { force = false, merge = false, backup = false, noBackup = false, interactive = true } = options;
+    const {
+      force = false,
+      merge = false,
+      backup = false,
+      noBackup = false,
+      interactive = true,
+    } = options;
 
     // Check if CLAUDE.md already exists
     const filePath = path.join(this.workingDir, 'CLAUDE.md');
@@ -36,7 +42,9 @@ class ClaudeDocsGenerator {
         }
       } else {
         // Non-interactive mode - fail safely
-        throw new Error('CLAUDE.md already exists. Use --force to overwrite, --backup to backup existing, or --merge to combine.');
+        throw new Error(
+          'CLAUDE.md already exists. Use --force to overwrite, --backup to backup existing, or --merge to combine.'
+        );
       }
     } else if (fileExists && force) {
       // Force flag: overwrite with optional backup creation
@@ -44,7 +52,9 @@ class ClaudeDocsGenerator {
         await this.createBackup(filePath);
         console.log('📄 Backing up existing CLAUDE.md before force overwrite');
       } else {
-        console.log('⚠️  Force overwriting existing CLAUDE.md (no backup - disabled by --no-backup)');
+        console.log(
+          '⚠️  Force overwriting existing CLAUDE.md (no backup - disabled by --no-backup)'
+        );
       }
     } else if (fileExists && backup && !force && !merge) {
       // Backup flag: create backup then overwrite
@@ -628,15 +638,24 @@ Remember: **ruv-swarm coordinates, Claude Code creates!** Start with \`mcp__ruv-
   }
 
   /**
-     * Generate command documentation files in organized subdirectories
-     */
+   * Generate command documentation files in organized subdirectories
+   */
   async generateCommandDocs() {
     const commandsDir = path.join(this.workingDir, '.claude', 'commands');
     await fs.mkdir(commandsDir, { recursive: true });
 
     // Create subdirectories
-    const subdirs = ['coordination', 'monitoring', 'memory', 'workflows', 'hooks',
-      'optimization', 'analysis', 'training', 'automation'];
+    const subdirs = [
+      'coordination',
+      'monitoring',
+      'memory',
+      'workflows',
+      'hooks',
+      'optimization',
+      'analysis',
+      'training',
+      'automation',
+    ];
     for (const subdir of subdirs) {
       await fs.mkdir(path.join(commandsDir, subdir), { recursive: true });
     }
@@ -647,7 +666,8 @@ Remember: **ruv-swarm coordinates, Claude Code creates!** Start with \`mcp__ruv-
         title: 'Initialize Coordination Framework',
         tool: 'mcp__ruv-swarm-zen__swarm_init',
         params: '{"topology": "mesh", "maxAgents": 5, "strategy": "balanced"}',
-        description: 'Set up a coordination topology to guide Claude Code\'s approach to complex tasks',
+        description:
+          "Set up a coordination topology to guide Claude Code's approach to complex tasks",
         details: `This tool creates a coordination framework that helps Claude Code:
 - Break down complex problems systematically
 - Approach tasks from multiple perspectives
@@ -659,8 +679,10 @@ Remember: This does NOT create actual coding agents. It creates a coordination p
       'coordination/spawn.md': {
         title: 'Create Cognitive Patterns',
         tool: 'mcp__ruv-swarm-zen__agent_spawn',
-        params: '{"type": "researcher", "name": "Literature Analysis", "capabilities": ["deep-analysis"]}',
-        description: 'Define cognitive patterns that represent different approaches Claude Code can take',
+        params:
+          '{"type": "researcher", "name": "Literature Analysis", "capabilities": ["deep-analysis"]}',
+        description:
+          'Define cognitive patterns that represent different approaches Claude Code can take',
         details: `Agent types represent thinking patterns, not actual coders:
 - **researcher**: Systematic exploration approach
 - **coder**: Implementation-focused thinking
@@ -673,8 +695,10 @@ These patterns guide how Claude Code approaches different aspects of your task.`
       'coordination/orchestrate.md': {
         title: 'Coordinate Task Execution',
         tool: 'mcp__ruv-swarm-zen__task_orchestrate',
-        params: '{"task": "Implement authentication system", "strategy": "parallel", "priority": "high"}',
-        description: 'Break down and coordinate complex tasks for systematic execution by Claude Code',
+        params:
+          '{"task": "Implement authentication system", "strategy": "parallel", "priority": "high"}',
+        description:
+          'Break down and coordinate complex tasks for systematic execution by Claude Code',
         details: `Orchestration strategies:
 - **parallel**: Claude Code works on independent components simultaneously
 - **sequential**: Step-by-step execution for dependent tasks
@@ -1049,8 +1073,8 @@ ${config.details}
   }
 
   /**
-     * Generate settings.json with hook configurations
-     */
+   * Generate settings.json with hook configurations
+   */
   async generateSettingsJson() {
     const settings = {
       env: {
@@ -1078,12 +1102,7 @@ ${config.details}
           'Bash(pwd)',
           'Bash(ls *)',
         ],
-        deny: [
-          'Bash(rm -rf /)',
-          'Bash(curl * | bash)',
-          'Bash(wget * | sh)',
-          'Bash(eval *)',
-        ],
+        deny: ['Bash(rm -rf /)', 'Bash(curl * | bash)', 'Bash(wget * | sh)', 'Bash(eval *)'],
       },
       hooks: {},
       mcpServers: {
@@ -1108,8 +1127,8 @@ ${config.details}
   }
 
   /**
-     * Check if file exists
-     */
+   * Check if file exists
+   */
   async fileExists(filePath) {
     try {
       await fs.access(filePath);
@@ -1120,8 +1139,8 @@ ${config.details}
   }
 
   /**
-     * Create backup of existing file
-     */
+   * Create backup of existing file
+   */
   async createBackup(filePath) {
     const timestamp = new Date().toISOString().slice(0, 19).replace(/[:-]/g, '');
     const backupPath = `${filePath}.backup.${timestamp}`;
@@ -1137,8 +1156,8 @@ ${config.details}
   }
 
   /**
-     * Clean up old backup files (keep last 5)
-     */
+   * Clean up old backup files (keep last 5)
+   */
   async cleanupOldBackups(filePath) {
     const dir = path.dirname(filePath);
     const baseName = path.basename(filePath);
@@ -1146,7 +1165,7 @@ ${config.details}
     try {
       const files = await fs.readdir(dir);
       const backupFiles = files
-        .filter(file => file.startsWith(`${baseName}.backup.`))
+        .filter((file) => file.startsWith(`${baseName}.backup.`))
         .sort()
         .reverse(); // Most recent first
 
@@ -1166,8 +1185,8 @@ ${config.details}
   }
 
   /**
-     * Prompt user for action when CLAUDE.md exists
-     */
+   * Prompt user for action when CLAUDE.md exists
+   */
   async promptUserAction(filePath) {
     // In a CLI environment, we need to use a different approach
     // For now, we'll use process.stdin/stdout directly
@@ -1207,8 +1226,8 @@ ${config.details}
   }
 
   /**
-     * Merge ruv-swarm content with existing CLAUDE.md
-     */
+   * Merge ruv-swarm content with existing CLAUDE.md
+   */
   async mergeClaudeMd(filePath, noBackup = false) {
     try {
       const existingContent = await fs.readFile(filePath, 'utf8');
@@ -1241,8 +1260,8 @@ ${config.details}
   }
 
   /**
-     * Get the ruv-swarm specific content (full content from generateClaudeMd)
-     */
+   * Get the ruv-swarm specific content (full content from generateClaudeMd)
+   */
   getRuvSwarmContent() {
     // Return the complete ruv-swarm configuration content
     const content = `# Claude Code Configuration for ruv-swarm
@@ -1416,8 +1435,8 @@ Remember: **ruv-swarm coordinates, Claude Code creates!** Start with \`mcp__ruv-
   }
 
   /**
-     * Intelligently combine ruv-swarm content with existing content
-     */
+   * Intelligently combine ruv-swarm content with existing content
+   */
   intelligentMerge(existingContent, ruvSwarmContent) {
     const existingLines = existingContent.split('\n');
     const newLines = ruvSwarmContent.split('\n');
@@ -1439,16 +1458,18 @@ Remember: **ruv-swarm coordinates, Claude Code creates!** Start with \`mcp__ruv-
     // Intelligently insert ruv-swarm content
     console.log('📝 Integrating ruv-swarm configuration into existing CLAUDE.md');
     return this.intelligentInsert(existingLines, newLines);
-
   }
 
   /**
-     * Find existing ruv-swarm section in content
-     */
+   * Find existing ruv-swarm section in content
+   */
   findRuvSwarmSection(lines) {
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].toLowerCase();
-      if (line.includes('ruv-swarm') && (line.startsWith('#') || line.includes('claude code configuration'))) {
+      if (
+        line.includes('ruv-swarm') &&
+        (line.startsWith('#') || line.includes('claude code configuration'))
+      ) {
         return i;
       }
     }
@@ -1456,8 +1477,8 @@ Remember: **ruv-swarm coordinates, Claude Code creates!** Start with \`mcp__ruv-
   }
 
   /**
-     * Intelligently insert new content based on context
-     */
+   * Intelligently insert new content based on context
+   */
   intelligentInsert(existingLines, newLines) {
     // Look for appropriate insertion points
     let insertIndex = -1;
@@ -1497,8 +1518,8 @@ Remember: **ruv-swarm coordinates, Claude Code creates!** Start with \`mcp__ruv-
   }
 
   /**
-     * Find the end of a markdown section
-     */
+   * Find the end of a markdown section
+   */
   findSectionEnd(lines, startIndex) {
     // Look for next top-level heading or end of file
     for (let i = startIndex + 1; i < lines.length; i++) {
@@ -1514,8 +1535,8 @@ Remember: **ruv-swarm coordinates, Claude Code creates!** Start with \`mcp__ruv-
   }
 
   /**
-     * Generate all documentation files
-     */
+   * Generate all documentation files
+   */
   async generateAll(options = {}) {
     console.log('📚 Generating Claude Code documentation...');
 
@@ -1533,9 +1554,9 @@ Remember: **ruv-swarm coordinates, Claude Code creates!** Start with \`mcp__ruv-
       console.log('✅ Documentation generated successfully');
       console.log('   - CLAUDE.md');
       console.log('   - .claude/settings.json (with enhanced hooks)');
-      console.log(`   - .claude/commands/ directory with ${ totalCommands } files`);
-      console.log(`     • Basic commands: ${ results.commands.files.length}`);
-      console.log(`     • Advanced optimization: ${ results.advancedCommands.files.length}`);
+      console.log(`   - .claude/commands/ directory with ${totalCommands} files`);
+      console.log(`     • Basic commands: ${results.commands.files.length}`);
+      console.log(`     • Advanced optimization: ${results.advancedCommands.files.length}`);
 
       return results;
     } catch (error) {

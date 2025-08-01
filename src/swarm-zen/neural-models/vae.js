@@ -119,7 +119,11 @@ class VAEModel extends NeuralModel {
 
     // Compute mean and log variance
     const mu = this.linearTransform(h, this.encoder.muLayer.weight, this.encoder.muLayer.bias);
-    const logVar = this.linearTransform(h, this.encoder.logVarLayer.weight, this.encoder.logVarLayer.bias);
+    const logVar = this.linearTransform(
+      h,
+      this.encoder.logVarLayer.weight,
+      this.encoder.logVarLayer.bias
+    );
 
     // Reparameterization trick
     const z = this.reparameterize(mu, logVar, training);
@@ -156,7 +160,8 @@ class VAEModel extends NeuralModel {
 
   sampleGaussian() {
     // Box-Muller transform for Gaussian sampling
-    let u = 0, v = 0;
+    let u = 0,
+      v = 0;
     while (u === 0) {
       u = Math.random();
     } // Converting [0,1) to (0,1)
@@ -361,8 +366,8 @@ class VAEModel extends NeuralModel {
 
       console.log(
         `Epoch ${epoch + 1}/${epochs} - ` +
-        `Recon Loss: ${avgReconLoss.toFixed(4)}, KL Loss: ${avgKLLoss.toFixed(4)} - ` +
-        `Val Recon: ${valLosses.reconstruction.toFixed(4)}, Val KL: ${valLosses.kl.toFixed(4)}`,
+          `Recon Loss: ${avgReconLoss.toFixed(4)}, KL Loss: ${avgKLLoss.toFixed(4)} - ` +
+          `Val Recon: ${valLosses.reconstruction.toFixed(4)}, Val KL: ${valLosses.kl.toFixed(4)}`
       );
     }
 

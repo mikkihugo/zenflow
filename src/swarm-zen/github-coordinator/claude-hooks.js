@@ -3,9 +3,9 @@
  * Automatically coordinates swarm activities with GitHub
  */
 
-import GHCoordinator from './gh-cli-coordinator.js';
 // const fs = require('fs').promises; // Unused - will be used in future implementation
 import path from 'path';
+import GHCoordinator from './gh-cli-coordinator.js';
 
 class ClaudeGitHubHooks {
   constructor(options = {}) {
@@ -31,9 +31,9 @@ class ClaudeGitHubHooks {
 
       // Find best matching task (simple keyword matching for now)
       const keywords = taskDescription.toLowerCase().split(' ');
-      const matchedTask = tasks.find(task => {
+      const matchedTask = tasks.find((task) => {
         const taskText = `${task.title} ${task.body || ''}`.toLowerCase();
-        return keywords.some(keyword => taskText.includes(keyword));
+        return keywords.some((keyword) => taskText.includes(keyword));
       });
 
       if (matchedTask) {

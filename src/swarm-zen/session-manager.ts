@@ -1,9 +1,9 @@
 /**
  * Session Management System for RuvSwarm
- * 
+ *
  * Provides comprehensive session management with persistence integration,
  * state serialization, checkpoint system, and recovery mechanisms.
- * 
+ *
  * Architecture:
  * - SessionManager: Main class handling session lifecycle
  * - SessionState: Interface for session data structure
@@ -12,11 +12,11 @@
  * - Integration with existing persistence layer
  */
 
-import { EventEmitter } from 'events';
-import { SwarmPersistencePooled } from './persistence-pooled.js';
-import { SwarmState, SwarmOptions, AgentConfig, Task, SwarmEvent } from './types.js';
-import { generateId } from './utils.js';
 import crypto from 'crypto';
+import { EventEmitter } from 'events';
+import type { SwarmPersistencePooled } from './persistence-pooled.js';
+import { AgentConfig, SwarmEvent, type SwarmOptions, type SwarmState, Task } from './types.js';
+import { generateId } from './utils.js';
 
 export interface SessionState {
   id: string;
@@ -69,16 +69,13 @@ export class SessionManager extends EventEmitter {
   private checkpointTimers: Map<string, NodeJS.Timeout>;
   private initialized: boolean = false;
 
-  constructor(
-    persistence: SwarmPersistencePooled,
-    config: SessionConfig = {}
-  ) {
+  constructor(persistence: SwarmPersistencePooled, config: SessionConfig = {}) {
     super();
-    
+
     this.persistence = persistence;
     this.activeSessions = new Map();
     this.checkpointTimers = new Map();
-    
+
     this.config = {
       autoCheckpoint: config.autoCheckpoint ?? true,
       checkpointInterval: config.checkpointInterval ?? 300000, // 5 minutes
@@ -115,18 +112,19 @@ export class SessionManager extends EventEmitter {
     try {
       // Ensure persistence layer is initialized
       await this.persistence.initialize();
-      
+
       // Create session tables if they don't exist
       await this.initializeSessionTables();
-      
+
       // Restore active sessions
       await this.restoreActiveSessions();
-      
+
       this.initialized = true;
       this.emit('manager:initialized');
-      
     } catch (error) {
-      throw new Error(`Failed to initialize SessionManager: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to initialize SessionManager: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 
@@ -173,20 +171,23 @@ export class SessionManager extends EventEmitter {
 
     // Store in database
     await this.ensureInitialized();
-    await this.persistence.pool!.write(`
+    await this.persistence.pool!.write(
+      `
       INSERT INTO sessions (id, name, status, swarm_options, swarm_state, metadata, created_at, last_accessed_at, version)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `, [
-      sessionId,
-      name,
-      'active',
-      this.serializeData(swarmOptions),
-      this.serializeData(sessionState.swarmState),
-      this.serializeData(sessionState.metadata),
-      now.toISOString(),
-      now.toISOString(),
-      sessionState.version,
-    ]);
+    `,
+      [
+        sessionId,
+        name,
+        'active',
+        this.serializeData(swarmOptions),
+        this.serializeData(sessionState.swarmState),
+        this.serializeData(sessionState.metadata),
+        now.toISOString(),
+        now.toISOString(),
+        sessionState.version,
+      ]
+    );
 
     // Add to active sessions
     this.activeSessions.set(sessionId, sessionState);
@@ -215,10 +216,9 @@ export class SessionManager extends EventEmitter {
     }
 
     // Load from database
-    const sessions = await (await this.getPool()).read(
-      'SELECT * FROM sessions WHERE id = ?',
-      [sessionId]
-    );
+    const sessions = await (await this.getPool()).read('SELECT * FROM sessions WHERE id = ?', [
+      sessionId,
+    ]);
 
     if (sessions.length === 0) {
       throw new Error(`Session ${sessionId} not found`);
@@ -230,7 +230,9 @@ export class SessionManager extends EventEmitter {
       name: sessionData.name,
       createdAt: new Date(sessionData.created_at),
       lastAccessedAt: new Date(),
-      lastCheckpointAt: sessionData.last_checkpoint_at ? new Date(sessionData.last_checkpoint_at) : undefined,
+      lastCheckpointAt: sessionData.last_checkpoint_at
+        ? new Date(sessionData.last_checkpoint_at)
+        : undefined,
       status: sessionData.status as SessionStatus,
       swarmState: this.deserializeData(sessionData.swarm_state),
       swarmOptions: this.deserializeData(sessionData.swarm_options),
@@ -272,15 +274,14 @@ export class SessionManager extends EventEmitter {
     session.lastAccessedAt = new Date();
 
     // Update in database
-    await (await this.getPool()).write(`
+    await (await this.getPool()).write(
+      `
       UPDATE sessions 
       SET swarm_state = ?, last_accessed_at = ?
       WHERE id = ?
-    `, [
-      this.serializeData(session.swarmState),
-      session.lastAccessedAt.toISOString(),
-      sessionId,
-    ]);
+    `,
+      [this.serializeData(session.swarmState), session.lastAccessedAt.toISOString(), sessionId]
+    );
 
     this.emit('session:saved', { sessionId });
   }
@@ -316,18 +317,21 @@ export class SessionManager extends EventEmitter {
     };
 
     // Store checkpoint in database
-    await (await this.getPool()).write(`
+    await (await this.getPool()).write(
+      `
       INSERT INTO session_checkpoints (id, session_id, timestamp, checksum, state_data, description, metadata)
       VALUES (?, ?, ?, ?, ?, ?, ?)
-    `, [
-      checkpointId,
-      sessionId,
-      now.toISOString(),
-      checksum,
-      stateData,
-      description,
-      this.serializeData(metadata),
-    ]);
+    `,
+      [
+        checkpointId,
+        sessionId,
+        now.toISOString(),
+        checksum,
+        stateData,
+        description,
+        this.serializeData(metadata),
+      ]
+    );
 
     // Add to session checkpoints
     session.checkpoints.push(checkpoint);
@@ -340,9 +344,12 @@ export class SessionManager extends EventEmitter {
     }
 
     // Update session last checkpoint time
-    await (await this.getPool()).write(`
+    await (await this.getPool()).write(
+      `
       UPDATE sessions SET last_checkpoint_at = ? WHERE id = ?
-    `, [now.toISOString(), sessionId]);
+    `,
+      [now.toISOString(), sessionId]
+    );
 
     this.emit('checkpoint:created', { sessionId, checkpointId, description });
     return checkpointId;
@@ -380,7 +387,7 @@ export class SessionManager extends EventEmitter {
     if (options.validateState !== false) {
       const expectedChecksum = checkpointData.checksum;
       const actualChecksum = this.calculateChecksum(stateData);
-      
+
       if (expectedChecksum !== actualChecksum) {
         if (!options.ignoreCorruption) {
           throw new Error(`Checkpoint ${checkpointId} integrity check failed`);
@@ -508,16 +515,12 @@ export class SessionManager extends EventEmitter {
 
     if (cleanup) {
       // Delete all checkpoints
-      await (await this.getPool()).write(
-        'DELETE FROM session_checkpoints WHERE session_id = ?',
-        [sessionId]
-      );
+      await (await this.getPool()).write('DELETE FROM session_checkpoints WHERE session_id = ?', [
+        sessionId,
+      ]);
 
       // Delete session record
-      await (await this.getPool()).write(
-        'DELETE FROM sessions WHERE id = ?',
-        [sessionId]
-      );
+      await (await this.getPool()).write('DELETE FROM sessions WHERE id = ?', [sessionId]);
     }
 
     this.emit('session:terminated', { sessionId, cleanup });
@@ -573,7 +576,9 @@ export class SessionManager extends EventEmitter {
       name: sessionData.name,
       createdAt: new Date(sessionData.created_at),
       lastAccessedAt: new Date(sessionData.last_accessed_at),
-      lastCheckpointAt: sessionData.last_checkpoint_at ? new Date(sessionData.last_checkpoint_at) : undefined,
+      lastCheckpointAt: sessionData.last_checkpoint_at
+        ? new Date(sessionData.last_checkpoint_at)
+        : undefined,
       status: sessionData.status as SessionStatus,
       swarmState: this.deserializeData(sessionData.swarm_state),
       swarmOptions: this.deserializeData(sessionData.swarm_options),
@@ -617,8 +622,12 @@ export class SessionManager extends EventEmitter {
         GROUP BY status
       `);
 
-      const totalSessions = await (await this.getPool()).read('SELECT COUNT(*) as total FROM sessions');
-      const totalCheckpoints = await (await this.getPool()).read('SELECT COUNT(*) as total FROM session_checkpoints');
+      const totalSessions = await (await this.getPool()).read(
+        'SELECT COUNT(*) as total FROM sessions'
+      );
+      const totalCheckpoints = await (await this.getPool()).read(
+        'SELECT COUNT(*) as total FROM session_checkpoints'
+      );
 
       return {
         totalSessions: totalSessions[0].total,
@@ -638,7 +647,6 @@ export class SessionManager extends EventEmitter {
   /**
    * Private helper methods
    */
-
 
   private async initializeSessionTables(): Promise<void> {
     // Create sessions table
@@ -672,10 +680,18 @@ export class SessionManager extends EventEmitter {
     `);
 
     // Create indexes
-    await (await this.getPool()).write('CREATE INDEX IF NOT EXISTS idx_sessions_status ON sessions(status)');
-    await (await this.getPool()).write('CREATE INDEX IF NOT EXISTS idx_sessions_last_accessed ON sessions(last_accessed_at)');
-    await (await this.getPool()).write('CREATE INDEX IF NOT EXISTS idx_checkpoints_session ON session_checkpoints(session_id)');
-    await (await this.getPool()).write('CREATE INDEX IF NOT EXISTS idx_checkpoints_timestamp ON session_checkpoints(timestamp)');
+    await (await this.getPool()).write(
+      'CREATE INDEX IF NOT EXISTS idx_sessions_status ON sessions(status)'
+    );
+    await (await this.getPool()).write(
+      'CREATE INDEX IF NOT EXISTS idx_sessions_last_accessed ON sessions(last_accessed_at)'
+    );
+    await (await this.getPool()).write(
+      'CREATE INDEX IF NOT EXISTS idx_checkpoints_session ON session_checkpoints(session_id)'
+    );
+    await (await this.getPool()).write(
+      'CREATE INDEX IF NOT EXISTS idx_checkpoints_timestamp ON session_checkpoints(timestamp)'
+    );
   }
 
   private async restoreActiveSessions(): Promise<void> {
@@ -689,7 +705,9 @@ export class SessionManager extends EventEmitter {
         name: sessionData.name,
         createdAt: new Date(sessionData.created_at),
         lastAccessedAt: new Date(sessionData.last_accessed_at),
-        lastCheckpointAt: sessionData.last_checkpoint_at ? new Date(sessionData.last_checkpoint_at) : undefined,
+        lastCheckpointAt: sessionData.last_checkpoint_at
+          ? new Date(sessionData.last_checkpoint_at)
+          : undefined,
         status: sessionData.status as SessionStatus,
         swarmState: this.deserializeData(sessionData.swarm_state),
         swarmOptions: this.deserializeData(sessionData.swarm_options),
@@ -725,17 +743,16 @@ export class SessionManager extends EventEmitter {
   }
 
   private async updateSessionAccess(sessionId: string): Promise<void> {
-    await (await this.getPool()).write(
-      'UPDATE sessions SET last_accessed_at = ? WHERE id = ?',
-      [new Date().toISOString(), sessionId]
-    );
+    await (await this.getPool()).write('UPDATE sessions SET last_accessed_at = ? WHERE id = ?', [
+      new Date().toISOString(),
+      sessionId,
+    ]);
   }
 
   private async deleteCheckpoint(checkpointId: string): Promise<void> {
-    await (await this.getPool()).write(
-      'DELETE FROM session_checkpoints WHERE id = ?',
-      [checkpointId]
-    );
+    await (await this.getPool()).write('DELETE FROM session_checkpoints WHERE id = ?', [
+      checkpointId,
+    ]);
   }
 
   private startAutoCheckpoint(sessionId: string): void {
@@ -747,7 +764,10 @@ export class SessionManager extends EventEmitter {
       try {
         await this.createCheckpoint(sessionId, 'Auto checkpoint');
       } catch (error) {
-        this.emit('checkpoint:error', { sessionId, error: error instanceof Error ? error.message : String(error) });
+        this.emit('checkpoint:error', {
+          sessionId,
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
     }, this.config.checkpointInterval);
 

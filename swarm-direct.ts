@@ -34,7 +34,7 @@ class DirectSwarm {
 
   async init(): Promise<void> {
     if (this.initialized) return;
-    
+
     console.log('🚀 Initializing Direct Swarm...');
     await daaService.initialize();
     this.initialized = true;
@@ -50,14 +50,14 @@ class DirectSwarm {
     await daaService.createAgent({
       id,
       capabilities,
-      cognitivePattern: 'adaptive'
+      cognitivePattern: 'adaptive',
     });
 
     const agent: Agent = {
       id,
       role,
       capabilities,
-      status: 'active'
+      status: 'active',
     };
 
     this.agents.set(id, agent);
@@ -73,17 +73,21 @@ class DirectSwarm {
 
     // Create simple workflow
     const workflowId = `task-${Date.now()}`;
-    await daaService.createWorkflow(workflowId, [
-      {
-        id: 'main-task',
-        task: { method: 'make_decision', args: [{ description: task.description }] }
-      }
-    ], {});
+    await daaService.createWorkflow(
+      workflowId,
+      [
+        {
+          id: 'main-task',
+          task: { method: 'make_decision', args: [{ description: task.description }] },
+        },
+      ],
+      {}
+    );
 
     // Execute with assigned agents
     const result = await daaService.executeWorkflow(workflowId, {
       agentIds: task.assignedAgents,
-      parallel: true
+      parallel: true,
     });
 
     const duration = Date.now() - startTime;
@@ -94,7 +98,7 @@ class DirectSwarm {
       taskId: workflowId,
       completed: result.complete,
       duration,
-      agentResults: result.stepResults
+      agentResults: result.stepResults,
     };
   }
 
@@ -135,19 +139,18 @@ async function demo(): Promise<void> {
     const result = await swarm.executeTask({
       description: 'Build and test a new feature',
       assignedAgents: ['coder', 'tester', 'reviewer'],
-      priority: 'high'
+      priority: 'high',
     });
 
     console.log('📊 Result:', {
       taskId: result.taskId,
       completed: result.completed,
       duration: result.duration + 'ms',
-      agents: swarm.getAgents().map(a => `${a.id}(${a.role})`)
+      agents: swarm.getAgents().map((a) => `${a.id}(${a.role})`),
     });
 
     // Shutdown
     await swarm.shutdown();
-
   } catch (error) {
     console.error('❌ Demo failed:', error);
     await swarm.shutdown();
@@ -158,11 +161,13 @@ export { DirectSwarm };
 
 // Run if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  demo().then(() => {
-    console.log('🎉 Demo completed');
-    process.exit(0);
-  }).catch(error => {
-    console.error('💥 Demo failed:', error);
-    process.exit(1);
-  });
+  demo()
+    .then(() => {
+      console.log('🎉 Demo completed');
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error('💥 Demo failed:', error);
+      process.exit(1);
+    });
 }

@@ -11,9 +11,9 @@
  * with a single, ultra-high-performance unified backend.
  */
 
-import { SwarmPersistencePooled } from './persistence-pooled.js';
-import path from 'path';
 import fs from 'fs/promises';
+import path from 'path';
+import { SwarmPersistencePooled } from './persistence-pooled.js';
 
 export class UnifiedLancePersistence {
   constructor(options = {}) {
@@ -95,8 +95,9 @@ export class UnifiedLancePersistence {
       this.initializing = false;
 
       console.log('✅ Unified Lance-Swarm Persistence initialized successfully');
-      console.log(`📊 Features: Vector=${this.options.enableVectorSearch}, Graph=${this.options.enableGraphTraversal}, Neural=${this.options.enableNeuralPatterns}`);
-
+      console.log(
+        `📊 Features: Vector=${this.options.enableVectorSearch}, Graph=${this.options.enableGraphTraversal}, Neural=${this.options.enableNeuralPatterns}`
+      );
     } catch (error) {
       this.initializing = false;
       console.error('❌ Failed to initialize Unified Lance-Swarm Persistence:', error);
@@ -121,21 +122,22 @@ export class UnifiedLancePersistence {
         console.log(`🧠 LanceDB table '${this.options.collection}' opened`);
       } catch (error) {
         // Table doesn't exist, create it with vector schema
-        const sampleData = [{
-          id: 'sample',
-          content: 'Sample content for vector embedding',
-          embedding: new Array(this.options.vectorDimensions).fill(0.0),
-          entity_type: 'sample',
-          entity_id: 'sample',
-          namespace: 'sample',
-          metadata: JSON.stringify({}),
-          created_at: new Date().toISOString(),
-        }];
+        const sampleData = [
+          {
+            id: 'sample',
+            content: 'Sample content for vector embedding',
+            embedding: new Array(this.options.vectorDimensions).fill(0.0),
+            entity_type: 'sample',
+            entity_id: 'sample',
+            namespace: 'sample',
+            metadata: JSON.stringify({}),
+            created_at: new Date().toISOString(),
+          },
+        ];
 
         this.lanceTable = await this.lanceDb.createTable(this.options.collection, sampleData);
         console.log(`🧠 LanceDB table '${this.options.collection}' created with vector schema`);
       }
-
     } catch (error) {
       console.warn(`⚠️ LanceDB initialization failed: ${error.message}`);
       this.options.enableVectorSearch = false;
@@ -236,7 +238,6 @@ export class UnifiedLancePersistence {
         hasVector: this.options.enableVectorSearch && (data.content || data.description),
         hasRelations: options.relationships?.length || 0,
       };
-
     } catch (error) {
       console.error(`Failed to store entity ${entityType}:${entityId}:`, error);
       throw error;
@@ -266,12 +267,7 @@ export class UnifiedLancePersistence {
         });
 
       case 'memory':
-        return this.sqlitePersistence.storeMemory(
-          data.agentId,
-          data.key,
-          data.value,
-          data.ttlSecs,
-        );
+        return this.sqlitePersistence.storeMemory(data.agentId, data.key, data.value, data.ttlSecs);
 
       default:
         throw new Error(`Unknown entity type: ${entityType}`);
@@ -341,7 +337,7 @@ export class UnifiedLancePersistence {
       if (this.options.enableVectorSearch && query.semantic) {
         results.vector_results = await this.vectorSimilaritySearch(
           query.semantic,
-          options.vectorLimit || 10,
+          options.vectorLimit || 10
         );
       }
 
@@ -349,7 +345,7 @@ export class UnifiedLancePersistence {
       if (query.relational) {
         results.relational_results = await this.relationalSearch(
           query.relational,
-          options.relationalLimit || 20,
+          options.relationalLimit || 20
         );
       }
 
@@ -358,7 +354,7 @@ export class UnifiedLancePersistence {
         results.graph_results = await this.graphTraversal(
           query.graph.startEntity,
           query.graph.relationshipTypes,
-          query.graph.maxDepth || 2,
+          query.graph.maxDepth || 2
         );
       }
 
@@ -368,7 +364,6 @@ export class UnifiedLancePersistence {
       this.updateStats('hybridQueries', startTime);
 
       return results;
-
     } catch (error) {
       console.error('Hybrid query failed:', error);
       throw error;
@@ -381,19 +376,16 @@ export class UnifiedLancePersistence {
     const queryEmbedding = await this.generateEmbedding(queryText);
 
     // Use LanceDB's vector search
-    const results = await this.lanceTable
-      .search(queryEmbedding)
-      .limit(limit)
-      .toArray();
+    const results = await this.lanceTable.search(queryEmbedding).limit(limit).toArray();
 
     this.updateStats('vectorQueries');
 
-    return results.map(result => ({
+    return results.map((result) => ({
       id: result.id,
       entity_type: result.entity_type,
       entity_id: result.entity_id,
       content: result.content,
-      similarity: result._distance ? (1 - result._distance) : 1.0,
+      similarity: result._distance ? 1 - result._distance : 1.0,
       metadata: JSON.parse(result.metadata || '{}'),
     }));
   }
@@ -495,7 +487,7 @@ export class UnifiedLancePersistence {
     const combined = new Map();
 
     // Add vector results
-    results.vector_results.forEach(item => {
+    results.vector_results.forEach((item) => {
       const key = `${item.entity_type}:${item.entity_id}`;
       combined.set(key, {
         ...item,
@@ -505,7 +497,7 @@ export class UnifiedLancePersistence {
     });
 
     // Add relational results
-    results.relational_results.forEach(item => {
+    results.relational_results.forEach((item) => {
       const key = `${item.entity_type || 'unknown'}:${item.id}`;
       const existing = combined.get(key);
 
@@ -524,7 +516,7 @@ export class UnifiedLancePersistence {
     });
 
     // Add graph results
-    results.graph_results.forEach(item => {
+    results.graph_results.forEach((item) => {
       const key = `${item.entity_type}:${item.entity_id}`;
       const existing = combined.get(key);
 
@@ -546,8 +538,7 @@ export class UnifiedLancePersistence {
     });
 
     // Sort by combined score
-    return Array.from(combined.values())
-      .sort((a, b) => b.combined_score - a.combined_score);
+    return Array.from(combined.values()).sort((a, b) => b.combined_score - a.combined_score);
   }
 
   // RELATIONSHIP MANAGEMENT
@@ -558,20 +549,23 @@ export class UnifiedLancePersistence {
     for (const rel of relationships) {
       const relationshipId = `rel_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-      await this.sqlitePersistence.pool.write(`
+      await this.sqlitePersistence.pool.write(
+        `
         INSERT OR REPLACE INTO entity_relationships 
         (id, from_entity_type, from_entity_id, to_entity_type, to_entity_id, relationship_type, strength, metadata)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      `, [
-        relationshipId,
-        fromEntityType,
-        fromEntityId,
-        rel.toEntityType,
-        rel.toEntityId,
-        rel.relationshipType,
-        rel.strength || 1.0,
-        JSON.stringify(rel.metadata || {}),
-      ]);
+      `,
+        [
+          relationshipId,
+          fromEntityType,
+          fromEntityId,
+          rel.toEntityType,
+          rel.toEntityId,
+          rel.relationshipType,
+          rel.strength || 1.0,
+          JSON.stringify(rel.metadata || {}),
+        ]
+      );
     }
   }
 
@@ -582,30 +576,30 @@ export class UnifiedLancePersistence {
 
     const patternId = `pattern_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-    return this.sqlitePersistence.pool.write(`
+    return this.sqlitePersistence.pool.write(
+      `
       INSERT OR REPLACE INTO neural_patterns 
       (id, pattern_type, pattern_name, pattern_data, success_rate, usage_count)
       VALUES (?, ?, ?, ?, ?, 1)
-    `, [
-      patternId,
-      patternType,
-      patternName,
-      JSON.stringify(patternData),
-      successRate,
-    ]);
+    `,
+      [patternId, patternType, patternName, JSON.stringify(patternData), successRate]
+    );
   }
 
   async getNeuralPatterns(patternType, limit = 10) {
     if (!this.options.enableNeuralPatterns) return [];
 
-    const patterns = await this.sqlitePersistence.pool.read(`
+    const patterns = await this.sqlitePersistence.pool.read(
+      `
       SELECT * FROM neural_patterns 
       WHERE pattern_type = ? 
       ORDER BY success_rate DESC, usage_count DESC 
       LIMIT ?
-    `, [patternType, limit]);
+    `,
+      [patternType, limit]
+    );
 
-    return patterns.map(p => ({
+    return patterns.map((p) => ({
       ...p,
       pattern_data: JSON.parse(p.pattern_data),
     }));
@@ -614,10 +608,13 @@ export class UnifiedLancePersistence {
   async updateNeuralPatternSuccess(patternType, patternName, wasSuccessful) {
     if (!this.options.enableNeuralPatterns) return;
 
-    const pattern = await this.sqlitePersistence.pool.read(`
+    const pattern = await this.sqlitePersistence.pool.read(
+      `
       SELECT success_rate, usage_count FROM neural_patterns 
       WHERE pattern_type = ? AND pattern_name = ?
-    `, [patternType, patternName]);
+    `,
+      [patternType, patternName]
+    );
 
     if (pattern.length === 0) return;
 
@@ -627,11 +624,14 @@ export class UnifiedLancePersistence {
       ? (current.success_rate * current.usage_count + 1) / newUsageCount
       : (current.success_rate * current.usage_count) / newUsageCount;
 
-    await this.sqlitePersistence.pool.write(`
+    await this.sqlitePersistence.pool.write(
+      `
       UPDATE neural_patterns 
       SET success_rate = ?, usage_count = ?, last_used = CURRENT_TIMESTAMP
       WHERE pattern_type = ? AND pattern_name = ?
-    `, [newSuccessRate, newUsageCount, patternType, patternName]);
+    `,
+      [newSuccessRate, newUsageCount, patternType, patternName]
+    );
   }
 
   // UTILITY METHODS
@@ -648,8 +648,7 @@ export class UnifiedLancePersistence {
 
     if (startTime) {
       const duration = Date.now() - startTime;
-      this.stats.averageResponseTime =
-        (this.stats.averageResponseTime + duration) / 2;
+      this.stats.averageResponseTime = (this.stats.averageResponseTime + duration) / 2;
     }
   }
 

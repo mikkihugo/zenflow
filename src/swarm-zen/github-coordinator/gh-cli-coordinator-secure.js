@@ -22,7 +22,8 @@ class SecureGHCoordinator {
     this.config = {
       owner: CommandSanitizer.validateRepoIdentifier(options.owner || process.env.GITHUB_OWNER),
       repo: CommandSanitizer.validateRepoIdentifier(options.repo || process.env.GITHUB_REPO),
-      dbPath: options.dbPath || path.join(__dirname, '..', '..', 'data', 'gh-coordinator-secure.db'),
+      dbPath:
+        options.dbPath || path.join(__dirname, '..', '..', 'data', 'gh-coordinator-secure.db'),
       labelPrefix: CommandSanitizer.sanitizeLabel(options.labelPrefix || 'swarm-'),
       ...options,
     };
@@ -79,10 +80,12 @@ class SecureGHCoordinator {
    */
   logSecurityEvent(eventType, details, metadata = {}) {
     try {
-      this.db.prepare(`
+      this.db
+        .prepare(`
         INSERT INTO security_log (event_type, details, ip_address, user_agent)
         VALUES (?, ?, ?, ?)
-      `).run(eventType, details, metadata.ip || 'unknown', metadata.userAgent || 'unknown');
+      `)
+        .run(eventType, details, metadata.ip || 'unknown', metadata.userAgent || 'unknown');
     } catch (error) {
       console.error('Failed to log security event:', error);
     }
@@ -112,9 +115,9 @@ class SecureGHCoordinator {
       const issues = JSON.parse(result.stdout);
 
       // Filter out already assigned tasks
-      const availableIssues = issues.filter(issue => {
+      const availableIssues = issues.filter((issue) => {
         // Check if issue has swarm assignment label
-        const hasSwarmLabel = issue.labels.some(l => l.name.startsWith(this.config.labelPrefix));
+        const hasSwarmLabel = issue.labels.some((l) => l.name.startsWith(this.config.labelPrefix));
         // Check if issue is assigned
         const isAssigned = issue.assignees.length > 0;
 
@@ -123,7 +126,6 @@ class SecureGHCoordinator {
 
       this.logSecurityEvent('task_list', `Retrieved ${availableIssues.length} available tasks`);
       return availableIssues;
-
     } catch (error) {
       this.logSecurityEvent('task_list_error', error.message);
       console.error('Failed to get available tasks:', error.message);
@@ -161,16 +163,25 @@ class SecureGHCoordinator {
       await CommandSanitizer.safeExec('gh', commentArgs, { stdio: 'ignore' });
 
       // Record in local database
-      this.db.prepare(`
+      this.db
+        .prepare(`
         INSERT OR REPLACE INTO swarm_tasks (issue_number, swarm_id, locked_at, lock_expires)
         VALUES (?, ?, strftime('%s', 'now'), strftime('%s', 'now', '+1 hour'))
-      `).run(validatedIssueNumber, sanitizedSwarmId);
+      `)
+        .run(validatedIssueNumber, sanitizedSwarmId);
 
-      this.logSecurityEvent('task_claimed', `Task ${validatedIssueNumber} claimed by swarm ${sanitizedSwarmId}`, metadata);
+      this.logSecurityEvent(
+        'task_claimed',
+        `Task ${validatedIssueNumber} claimed by swarm ${sanitizedSwarmId}`,
+        metadata
+      );
       return true;
-
     } catch (error) {
-      this.logSecurityEvent('task_claim_error', `Failed to claim task ${issueNumber}: ${error.message}`, metadata);
+      this.logSecurityEvent(
+        'task_claim_error',
+        `Failed to claim task ${issueNumber}: ${error.message}`,
+        metadata
+      );
       console.error(`Failed to claim task ${issueNumber}:`, error.message);
       return false;
     }
@@ -198,11 +209,18 @@ class SecureGHCoordinator {
       // Remove from database
       this.db.prepare('DELETE FROM swarm_tasks WHERE issue_number = ?').run(validatedIssueNumber);
 
-      this.logSecurityEvent('task_released', `Task ${validatedIssueNumber} released by swarm ${sanitizedSwarmId}`, metadata);
+      this.logSecurityEvent(
+        'task_released',
+        `Task ${validatedIssueNumber} released by swarm ${sanitizedSwarmId}`,
+        metadata
+      );
       return true;
-
     } catch (error) {
-      this.logSecurityEvent('task_release_error', `Failed to release task ${issueNumber}: ${error.message}`, metadata);
+      this.logSecurityEvent(
+        'task_release_error',
+        `Failed to release task ${issueNumber}: ${error.message}`,
+        metadata
+      );
       console.error(`Failed to release task ${issueNumber}:`, error.message);
       return false;
     }
@@ -228,11 +246,18 @@ class SecureGHCoordinator {
 
       await CommandSanitizer.safeExec('gh', commentArgs, { stdio: 'ignore' });
 
-      this.logSecurityEvent('task_progress', `Progress updated for task ${validatedIssueNumber} by swarm ${sanitizedSwarmId}`, metadata);
+      this.logSecurityEvent(
+        'task_progress',
+        `Progress updated for task ${validatedIssueNumber} by swarm ${sanitizedSwarmId}`,
+        metadata
+      );
       return true;
-
     } catch (error) {
-      this.logSecurityEvent('task_progress_error', `Failed to update task ${issueNumber}: ${error.message}`, metadata);
+      this.logSecurityEvent(
+        'task_progress_error',
+        `Failed to update task ${issueNumber}: ${error.message}`,
+        metadata
+      );
       console.error(`Failed to update task ${issueNumber}:`, error.message);
       return false;
     }
@@ -249,7 +274,7 @@ class SecureGHCoordinator {
       }
 
       // Validate each allocation
-      const validatedAllocations = allocations.map(allocation => ({
+      const validatedAllocations = allocations.map((allocation) => ({
         issue: CommandSanitizer.validateIssueNumber(allocation.issue),
         swarm_id: CommandSanitizer.sanitizeSwarmId(allocation.swarm_id),
       }));
@@ -295,7 +320,7 @@ class SecureGHCoordinator {
 This PR updates the task allocation for active swarms.
 
 ### Allocations:
-${validatedAllocations.map(a => `- Issue #${a.issue}: Assigned to swarm ${a.swarm_id}`).join('\n')}
+${validatedAllocations.map((a) => `- Issue #${a.issue}: Assigned to swarm ${a.swarm_id}`).join('\n')}
 
 This is an automated update from the secure swarm coordinator.`;
 
@@ -309,11 +334,18 @@ This is an automated update from the secure swarm coordinator.`;
 
       const result = await CommandSanitizer.safeExec('gh', prArgs, { encoding: 'utf8' });
 
-      this.logSecurityEvent('pr_created', `Allocation PR created for ${validatedAllocations.length} tasks`, metadata);
+      this.logSecurityEvent(
+        'pr_created',
+        `Allocation PR created for ${validatedAllocations.length} tasks`,
+        metadata
+      );
       return result.stdout.trim();
-
     } catch (error) {
-      this.logSecurityEvent('pr_creation_error', `Failed to create allocation PR: ${error.message}`, metadata);
+      this.logSecurityEvent(
+        'pr_creation_error',
+        `Failed to create allocation PR: ${error.message}`,
+        metadata
+      );
       console.error('Failed to create allocation PR:', error.message);
       return null;
     }
@@ -333,14 +365,14 @@ This is an automated update from the secure swarm coordinator.`;
       const result = await CommandSanitizer.safeExec('gh', args, { encoding: 'utf8' });
       const issues = JSON.parse(result.stdout);
 
-      const swarmTasks = issues.filter(issue =>
-        issue.labels.some(l => l.name.startsWith(this.config.labelPrefix)),
+      const swarmTasks = issues.filter((issue) =>
+        issue.labels.some((l) => l.name.startsWith(this.config.labelPrefix))
       );
 
       // Group by swarm
       const swarmStatus = {};
-      swarmTasks.forEach(issue => {
-        const swarmLabel = issue.labels.find(l => l.name.startsWith(this.config.labelPrefix));
+      swarmTasks.forEach((issue) => {
+        const swarmLabel = issue.labels.find((l) => l.name.startsWith(this.config.labelPrefix));
         if (swarmLabel) {
           const swarmId = swarmLabel.name.replace(this.config.labelPrefix, '');
           if (!swarmStatus[swarmId]) {
@@ -353,7 +385,10 @@ This is an automated update from the secure swarm coordinator.`;
         }
       });
 
-      this.logSecurityEvent('status_check', `Retrieved status for ${Object.keys(swarmStatus).length} swarms`);
+      this.logSecurityEvent(
+        'status_check',
+        `Retrieved status for ${Object.keys(swarmStatus).length} swarms`
+      );
 
       return {
         totalIssues: issues.length,
@@ -361,7 +396,6 @@ This is an automated update from the secure swarm coordinator.`;
         availableTasks: issues.length - swarmTasks.length,
         swarmStatus,
       };
-
     } catch (error) {
       this.logSecurityEvent('status_error', `Failed to get coordination status: ${error.message}`);
       console.error('Failed to get coordination status:', error.message);
@@ -373,10 +407,12 @@ This is an automated update from the secure swarm coordinator.`;
    * Clean up stale locks - SECURE VERSION
    */
   async cleanupStaleLocks() {
-    const staleTasks = this.db.prepare(`
+    const staleTasks = this.db
+      .prepare(`
       SELECT issue_number, swarm_id FROM swarm_tasks 
       WHERE lock_expires < strftime('%s', 'now')
-    `).all();
+    `)
+      .all();
 
     let cleanedCount = 0;
     for (const task of staleTasks) {
@@ -396,11 +432,13 @@ This is an automated update from the secure swarm coordinator.`;
    * Get security log entries
    */
   getSecurityLog(limit = 100) {
-    return this.db.prepare(`
+    return this.db
+      .prepare(`
       SELECT * FROM security_log 
       ORDER BY timestamp DESC 
       LIMIT ?
-    `).all(Math.min(limit, 1000));
+    `)
+      .all(Math.min(limit, 1000));
   }
 
   /**

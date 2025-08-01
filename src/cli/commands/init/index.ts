@@ -1,6 +1,6 @@
 /**
  * Init Command Module
- * 
+ *
  * Exports the init command implementation
  */
 

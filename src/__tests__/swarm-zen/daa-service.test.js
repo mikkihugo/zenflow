@@ -14,17 +14,17 @@ describe('DAA Service', () => {
     service = new DAAService();
   });
 
-  afterEach(async() => {
+  afterEach(async () => {
     await service.cleanup();
   });
 
   describe('Initialization', () => {
-    test('should initialize successfully', async() => {
+    test('should initialize successfully', async () => {
       await expect(service.initialize()).resolves.not.toThrow();
       expect(service.initialized).toBe(true);
     });
 
-    test('should emit initialized event', async() => {
+    test('should emit initialized event', async () => {
       const listener = jest.fn();
       service.on('initialized', listener);
 
@@ -33,7 +33,7 @@ describe('DAA Service', () => {
       expect(listener).toHaveBeenCalled();
     });
 
-    test('should handle multiple initialization calls', async() => {
+    test('should handle multiple initialization calls', async () => {
       await service.initialize();
       await service.initialize(); // Should not throw
 
@@ -42,11 +42,11 @@ describe('DAA Service', () => {
   });
 
   describe('Agent Lifecycle Management', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await service.initialize();
     });
 
-    test('should create agent with capabilities', async() => {
+    test('should create agent with capabilities', async () => {
       const agent = await service.createAgent('test-agent', ['decision_making', 'learning']);
 
       expect(agent).toBeDefined();
@@ -56,7 +56,7 @@ describe('DAA Service', () => {
       expect(agent.status).toBe('active');
     });
 
-    test('should emit agentCreated event', async() => {
+    test('should emit agentCreated event', async () => {
       const listener = jest.fn();
       service.on('agentCreated', listener);
 
@@ -68,7 +68,7 @@ describe('DAA Service', () => {
       });
     });
 
-    test('should destroy agent', async() => {
+    test('should destroy agent', async () => {
       await service.createAgent('test-agent');
 
       const result = await service.destroyAgent('test-agent');
@@ -77,7 +77,7 @@ describe('DAA Service', () => {
       expect(service.agents.has('test-agent')).toBe(false);
     });
 
-    test('should batch create agents', async() => {
+    test('should batch create agents', async () => {
       const configs = [
         { id: 'agent-1', capabilities: ['learning'] },
         { id: 'agent-2', capabilities: ['decision_making'] },
@@ -87,11 +87,11 @@ describe('DAA Service', () => {
       const results = await service.batchCreateAgents(configs);
 
       expect(results).toHaveLength(3);
-      expect(results.every(r => r.success)).toBe(true);
+      expect(results.every((r) => r.success)).toBe(true);
       expect(service.agents.size).toBe(3);
     });
 
-    test('should persist and restore agent state', async() => {
+    test('should persist and restore agent state', async () => {
       const agent = await service.createAgent('persistent-agent', ['memory_management']);
 
       // Save state
@@ -149,12 +149,12 @@ describe('DAA Service', () => {
       uncertainty: 0.0,
     };
 
-    beforeEach(async() => {
+    beforeEach(async () => {
       await service.initialize();
       agent = await service.createAgent('perf-agent', ['decision_making']);
     });
 
-    test('should make decision within 1ms latency threshold', async() => {
+    test('should make decision within 1ms latency threshold', async () => {
       const latencies = [];
 
       // Capture latency from events
@@ -175,18 +175,20 @@ describe('DAA Service', () => {
       expect(avgLatency).toBeLessThan(5.0); // Relaxed for test environment
     });
 
-    test('should handle batch decisions efficiently', async() => {
-      const decisions = Array(20).fill(null).map((_, i) => ({
-        agentId: 'perf-agent',
-        context: { ...testContext, uncertainty: i * 0.05 },
-      }));
+    test('should handle batch decisions efficiently', async () => {
+      const decisions = Array(20)
+        .fill(null)
+        .map((_, i) => ({
+          agentId: 'perf-agent',
+          context: { ...testContext, uncertainty: i * 0.05 },
+        }));
 
       const start = performance.now();
       const results = await service.batchMakeDecisions(decisions);
       const duration = performance.now() - start;
 
       expect(results).toHaveLength(20);
-      expect(results.every(r => r.success)).toBe(true);
+      expect(results.every((r) => r.success)).toBe(true);
 
       // Batch should be more efficient than sequential
       const perDecision = duration / 20;
@@ -196,7 +198,7 @@ describe('DAA Service', () => {
   });
 
   describe('Multi-Agent Workflow Coordination', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await service.initialize();
 
       // Create agents for workflow
@@ -207,20 +209,20 @@ describe('DAA Service', () => {
       ]);
     });
 
-    test('should create and execute simple workflow', async() => {
+    test('should create and execute simple workflow', async () => {
       const workflow = await service.createWorkflow(
         'simple-workflow',
         [
           {
             id: 'step1',
-            task: async(agent) => ({ agent: agent.id, result: 'step1-complete' }),
+            task: async (agent) => ({ agent: agent.id, result: 'step1-complete' }),
           },
           {
             id: 'step2',
-            task: async(agent) => ({ agent: agent.id, result: 'step2-complete' }),
+            task: async (agent) => ({ agent: agent.id, result: 'step2-complete' }),
           },
         ],
-        { 'step2': ['step1'] },
+        { step2: ['step1'] }
       );
 
       expect(workflow.id).toBe('simple-workflow');
@@ -239,23 +241,23 @@ describe('DAA Service', () => {
       expect(status.progress.completed).toBe(2);
     });
 
-    test('should enforce workflow dependencies', async() => {
+    test('should enforce workflow dependencies', async () => {
       await service.createWorkflow(
         'dependent-workflow',
         [
-          { id: 'A', task: async() => 'A' },
-          { id: 'B', task: async() => 'B' },
-          { id: 'C', task: async() => 'C' },
+          { id: 'A', task: async () => 'A' },
+          { id: 'B', task: async () => 'B' },
+          { id: 'C', task: async () => 'C' },
         ],
         {
-          'B': ['A'],
-          'C': ['A', 'B'],
-        },
+          B: ['A'],
+          C: ['A', 'B'],
+        }
       );
 
       // Try to execute C before dependencies
       await expect(
-        service.executeWorkflowStep('dependent-workflow', 'C', ['worker-1']),
+        service.executeWorkflowStep('dependent-workflow', 'C', ['worker-1'])
       ).rejects.toThrow('Dependency A not completed');
 
       // Execute in correct order
@@ -267,18 +269,18 @@ describe('DAA Service', () => {
       expect(status.status).toBe('completed');
     });
 
-    test('should handle parallel workflow execution', async() => {
+    test('should handle parallel workflow execution', async () => {
       await service.createWorkflow(
         'parallel-workflow',
         [
-          { id: 'parallel-1', task: async() => new Promise(r => setTimeout(() => r('p1'), 50)) },
-          { id: 'parallel-2', task: async() => new Promise(r => setTimeout(() => r('p2'), 50)) },
-          { id: 'parallel-3', task: async() => new Promise(r => setTimeout(() => r('p3'), 50)) },
-          { id: 'final', task: async() => 'done' },
+          { id: 'parallel-1', task: async () => new Promise((r) => setTimeout(() => r('p1'), 50)) },
+          { id: 'parallel-2', task: async () => new Promise((r) => setTimeout(() => r('p2'), 50)) },
+          { id: 'parallel-3', task: async () => new Promise((r) => setTimeout(() => r('p3'), 50)) },
+          { id: 'final', task: async () => 'done' },
         ],
         {
-          'final': ['parallel-1', 'parallel-2', 'parallel-3'],
-        },
+          final: ['parallel-1', 'parallel-2', 'parallel-3'],
+        }
       );
 
       // Execute parallel steps concurrently
@@ -302,7 +304,7 @@ describe('DAA Service', () => {
   });
 
   describe('State Synchronization', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await service.initialize();
 
       await service.batchCreateAgents([
@@ -312,7 +314,7 @@ describe('DAA Service', () => {
       ]);
     });
 
-    test('should synchronize states across agents', async() => {
+    test('should synchronize states across agents', async () => {
       // Set different states
       service.agentStates.saveState('sync-agent-1', {
         status: 'active',
@@ -329,14 +331,18 @@ describe('DAA Service', () => {
       });
 
       // Synchronize
-      const synced = await service.synchronizeStates(['sync-agent-1', 'sync-agent-2', 'sync-agent-3']);
+      const synced = await service.synchronizeStates([
+        'sync-agent-1',
+        'sync-agent-2',
+        'sync-agent-3',
+      ]);
 
       expect(synced.size).toBe(2); // agent-3 has no saved state
       expect(synced.get('sync-agent-1').data).toBe('agent1-data');
       expect(synced.get('sync-agent-2').data).toBe('agent2-data');
     });
 
-    test('should emit synchronization event', async() => {
+    test('should emit synchronization event', async () => {
       const listener = jest.fn();
       service.on('statesSynchronized', listener);
 
@@ -346,17 +352,17 @@ describe('DAA Service', () => {
         expect.objectContaining({
           agentIds: ['sync-agent-1', 'sync-agent-2'],
           duration: expect.any(Number),
-        }),
+        })
       );
     });
   });
 
   describe('Resource Management', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await service.initialize();
     });
 
-    test('should optimize resources', async() => {
+    test('should optimize resources', async () => {
       const result = await service.optimizeResources();
 
       // Result format depends on WASM implementation
@@ -369,7 +375,7 @@ describe('DAA Service', () => {
       expect(status.wasm.memoryUsage).toBeGreaterThanOrEqual(0);
     });
 
-    test('should clean up resources', async() => {
+    test('should clean up resources', async () => {
       // Create some agents
       await service.batchCreateAgents([
         { id: 'cleanup-1' },
@@ -387,12 +393,12 @@ describe('DAA Service', () => {
   });
 
   describe('Performance Monitoring', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await service.initialize();
       await service.createAgent('metrics-agent', ['decision_making']);
     });
 
-    test('should track performance metrics', async() => {
+    test('should track performance metrics', async () => {
       // Make some decisions
       const context = {
         environment_state: {
@@ -449,23 +455,23 @@ describe('DAA Service', () => {
   });
 
   describe('Error Handling', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await service.initialize();
     });
 
-    test('should handle agent not found errors', async() => {
-      await expect(
-        service.makeDecision('non-existent', {}),
-      ).rejects.toThrow('Agent non-existent not found');
+    test('should handle agent not found errors', async () => {
+      await expect(service.makeDecision('non-existent', {})).rejects.toThrow(
+        'Agent non-existent not found'
+      );
     });
 
-    test('should handle workflow not found errors', async() => {
+    test('should handle workflow not found errors', async () => {
       await expect(
-        service.executeWorkflowStep('non-existent-workflow', 'step1', ['agent1']),
+        service.executeWorkflowStep('non-existent-workflow', 'step1', ['agent1'])
       ).rejects.toThrow('Workflow non-existent-workflow not found');
     });
 
-    test('should track agent errors', async() => {
+    test('should track agent errors', async () => {
       await service.createAgent('error-agent');
 
       // Force an error by passing invalid context
@@ -485,27 +491,31 @@ describe('DAA Service', () => {
 describe('DAA Service Performance Benchmarks', () => {
   let service;
 
-  beforeAll(async() => {
+  beforeAll(async () => {
     service = new DAAService();
     await service.initialize();
   });
 
-  afterAll(async() => {
+  afterAll(async () => {
     await service.cleanup();
   });
 
-  test('should handle 100 agents without degradation', async() => {
-    const configs = Array(100).fill(null).map((_, i) => ({
-      id: `bench-agent-${i}`,
-      capabilities: ['decision_making'],
-    }));
+  test('should handle 100 agents without degradation', async () => {
+    const configs = Array(100)
+      .fill(null)
+      .map((_, i) => ({
+        id: `bench-agent-${i}`,
+        capabilities: ['decision_making'],
+      }));
 
     const start = performance.now();
     const results = await service.batchCreateAgents(configs);
     const duration = performance.now() - start;
 
-    expect(results.every(r => r.success)).toBe(true);
-    console.log(`Created 100 agents in ${duration.toFixed(0)}ms (${(duration / 100).toFixed(2)}ms per agent)`);
+    expect(results.every((r) => r.success)).toBe(true);
+    console.log(
+      `Created 100 agents in ${duration.toFixed(0)}ms (${(duration / 100).toFixed(2)}ms per agent)`
+    );
 
     // Cleanup bench agents
     for (const config of configs) {
@@ -513,7 +523,7 @@ describe('DAA Service Performance Benchmarks', () => {
     }
   });
 
-  test('should maintain sub-millisecond latency under load', async() => {
+  test('should maintain sub-millisecond latency under load', async () => {
     // Create test agents
     const agents = await service.batchCreateAgents([
       { id: 'load-test-1', capabilities: ['decision_making'] },
@@ -546,10 +556,12 @@ describe('DAA Service Performance Benchmarks', () => {
     const latencies = [];
     service.on('decisionMade', ({ latency }) => latencies.push(latency));
 
-    const decisions = Array(1000).fill(null).map((_, i) => ({
-      agentId: `load-test-${(i % 3) + 1}`,
-      context,
-    }));
+    const decisions = Array(1000)
+      .fill(null)
+      .map((_, i) => ({
+        agentId: `load-test-${(i % 3) + 1}`,
+        context,
+      }));
 
     const start = performance.now();
     await service.batchMakeDecisions(decisions);
@@ -561,7 +573,9 @@ describe('DAA Service Performance Benchmarks', () => {
     console.log(`1000 decisions in ${totalDuration.toFixed(0)}ms`);
     console.log(`Average latency: ${avgLatency.toFixed(3)}ms`);
     console.log(`Max latency: ${maxLatency.toFixed(3)}ms`);
-    console.log(`95th percentile: ${latencies.sort((a, b) => a - b)[Math.floor(latencies.length * 0.95)].toFixed(3)}ms`);
+    console.log(
+      `95th percentile: ${latencies.sort((a, b) => a - b)[Math.floor(latencies.length * 0.95)].toFixed(3)}ms`
+    );
 
     // Cleanup
     for (const agent of agents) {

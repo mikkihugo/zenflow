@@ -1,15 +1,15 @@
 /**
  * Unified Documentation Linker - Direct Integration
- * 
+ *
  * Links code references to documentation and generates cross-references
  * Integrated directly into core without plugin architecture
  */
 
 import { EventEmitter } from 'events';
-import { createLogger } from '../utils/logger.js';
-import { readdir, readFile, writeFile, stat } from 'fs/promises';
-import { join, extname, relative } from 'path';
 import { existsSync } from 'fs';
+import { readdir, readFile, stat, writeFile } from 'fs/promises';
+import { extname, join, relative } from 'path';
+import { createLogger } from '../utils/logger.js';
 
 const logger = createLogger('UnifiedDocLinker');
 
@@ -17,7 +17,17 @@ export interface DocumentationIndex {
   id: string;
   title: string;
   path: string;
-  type: 'vision' | 'adr' | 'prd' | 'epic' | 'feature' | 'task' | 'spec' | 'readme' | 'api' | 'guide';
+  type:
+    | 'vision'
+    | 'adr'
+    | 'prd'
+    | 'epic'
+    | 'feature'
+    | 'task'
+    | 'spec'
+    | 'readme'
+    | 'api'
+    | 'guide';
   keywords: string[];
   sections: Array<{
     title: string;
@@ -86,13 +96,21 @@ export class UnifiedDocumentationLinker extends EventEmitter {
   constructor(config: any = {}) {
     super();
     this.config = {
-      documentationPaths: ['./docs', './adrs', './prds', './epics', './features', './tasks', './specs'],
+      documentationPaths: [
+        './docs',
+        './adrs',
+        './prds',
+        './epics',
+        './features',
+        './tasks',
+        './specs',
+      ],
       codePaths: ['./src', './lib'],
       supportedExtensions: ['.md', '.txt', '.rst', '.adoc'],
       excludePatterns: ['node_modules', '.git', 'dist', 'build'],
       keywordThreshold: 0.6,
       confidenceThreshold: 0.7,
-      ...config
+      ...config,
     };
   }
 
@@ -112,7 +130,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
       this.emit('initialized', {
         documentsIndexed: this.documentationIndex.size,
         codeReferences: this.codeReferences.length,
-        crossReferences: this.crossReferences.length
+        crossReferences: this.crossReferences.length,
       });
 
       logger.info('Documentation linker ready');
@@ -143,7 +161,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
         const fullPath = join(directoryPath, entry.name);
 
         // Skip excluded patterns
-        if (this.config.excludePatterns.some(pattern => fullPath.includes(pattern))) {
+        if (this.config.excludePatterns.some((pattern) => fullPath.includes(pattern))) {
           continue;
         }
 
@@ -162,7 +180,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
     try {
       const content = await readFile(filePath, 'utf8');
       const stats = await stat(filePath);
-      
+
       const documentIndex: DocumentationIndex = {
         id: this.generateDocumentId(filePath),
         title: this.extractTitle(content, filePath),
@@ -173,14 +191,13 @@ export class UnifiedDocumentationLinker extends EventEmitter {
         metadata: {
           created: stats.birthtime,
           modified: stats.mtime,
-          size: stats.size
+          size: stats.size,
         },
-        links: this.extractLinks(content)
+        links: this.extractLinks(content),
       };
 
       this.documentationIndex.set(documentIndex.id, documentIndex);
       this.emit('document:indexed', documentIndex);
-
     } catch (error) {
       logger.warn(`Failed to index document ${filePath}:`, error);
     }
@@ -207,7 +224,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
         const fullPath = join(directoryPath, entry.name);
 
         // Skip excluded patterns
-        if (this.config.excludePatterns.some(pattern => fullPath.includes(pattern))) {
+        if (this.config.excludePatterns.some((pattern) => fullPath.includes(pattern))) {
           continue;
         }
 
@@ -239,7 +256,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
             line: lineNumber,
             type: 'todo',
             text: todoMatch[1].trim(),
-            context: this.getContextLines(lines, i, 2)
+            context: this.getContextLines(lines, i, 2),
           });
         }
 
@@ -251,7 +268,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
             line: lineNumber,
             type: 'comment',
             text: docCommentMatch[1].trim(),
-            context: this.getContextLines(lines, i, 1)
+            context: this.getContextLines(lines, i, 1),
           });
         }
 
@@ -265,18 +282,19 @@ export class UnifiedDocumentationLinker extends EventEmitter {
               line: lineNumber,
               type: functionMatch[0].includes('class') ? 'class' : 'function',
               text: `${functionMatch[0]} needs documentation`,
-              context: this.getContextLines(lines, i, 3)
+              context: this.getContextLines(lines, i, 3),
             });
           }
         }
       }
-
     } catch (error) {
       logger.warn(`Failed to analyze code file ${filePath}:`, error);
     }
   }
 
-  private async addCodeReference(reference: Omit<CodeReference, 'suggestedLinks' | 'confidence'>): Promise<void> {
+  private async addCodeReference(
+    reference: Omit<CodeReference, 'suggestedLinks' | 'confidence'>
+  ): Promise<void> {
     const suggestedLinks = this.findRelatedDocumentation(reference.text);
     const confidence = this.calculateLinkConfidence(reference.text, suggestedLinks);
 
@@ -284,7 +302,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
       this.codeReferences.push({
         ...reference,
         suggestedLinks,
-        confidence
+        confidence,
       });
 
       this.emit('code:reference:found', { ...reference, suggestedLinks, confidence });
@@ -326,15 +344,15 @@ export class UnifiedDocumentationLinker extends EventEmitter {
           source: `${codeRef.file}:${codeRef.line}`,
           description: `Consider creating documentation for: ${codeRef.text}`,
           priority: 'medium',
-          autoFixable: false
+          autoFixable: false,
         });
       }
     }
 
     // Enhancement suggestions for existing documentation
     for (const [docId, doc] of this.documentationIndex) {
-      const relatedCode = this.codeReferences.filter(ref => 
-        ref.suggestedLinks.some(link => link.documentId === docId)
+      const relatedCode = this.codeReferences.filter((ref) =>
+        ref.suggestedLinks.some((link) => link.documentId === docId)
       );
 
       if (relatedCode.length > 0) {
@@ -343,7 +361,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
           source: doc.path,
           description: `Add links to ${relatedCode.length} related code references`,
           priority: 'low',
-          autoFixable: true
+          autoFixable: true,
         });
       }
     }
@@ -357,7 +375,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
           target: crossRef.targetDocument,
           description: `Strong relationship detected: ${crossRef.linkType}`,
           priority: 'high',
-          autoFixable: true
+          autoFixable: true,
         });
       }
     }
@@ -398,7 +416,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
     report.push('');
 
     // High-confidence code references
-    const highConfidenceRefs = this.codeReferences.filter(ref => ref.confidence > 0.8);
+    const highConfidenceRefs = this.codeReferences.filter((ref) => ref.confidence > 0.8);
     if (highConfidenceRefs.length > 0) {
       report.push('## High-Confidence Code References');
       for (const ref of highConfidenceRefs.slice(0, 10)) {
@@ -426,7 +444,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
       for (const crossRef of sortedCrossRefs) {
         const sourceDoc = this.documentationIndex.get(crossRef.sourceDocument);
         const targetDoc = this.documentationIndex.get(crossRef.targetDocument);
-        
+
         if (sourceDoc && targetDoc) {
           report.push(`### ${sourceDoc.title} → ${targetDoc.title}`);
           report.push(`**Relationship**: ${crossRef.linkType}`);
@@ -472,7 +490,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
     }> = [];
 
     const lowerText = text.toLowerCase();
-    const words = lowerText.split(/\s+/).filter(word => word.length > 3);
+    const words = lowerText.split(/\s+/).filter((word) => word.length > 3);
 
     for (const [docId, doc] of this.documentationIndex) {
       let score = 0;
@@ -489,7 +507,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
       // Check title similarity
       const titleWords = doc.title.toLowerCase().split(/\s+/);
       for (const word of words) {
-        if (titleWords.some(titleWord => titleWord.includes(word) || word.includes(titleWord))) {
+        if (titleWords.some((titleWord) => titleWord.includes(word) || word.includes(titleWord))) {
           score += 2;
           reasons.push(`title similarity: ${word}`);
         }
@@ -512,33 +530,35 @@ export class UnifiedDocumentationLinker extends EventEmitter {
           documentId: docId,
           title: doc.title,
           relevance,
-          reason: reasons.slice(0, 3).join(', ')
+          reason: reasons.slice(0, 3).join(', '),
         });
       }
     }
 
-    return related
-      .sort((a, b) => b.relevance - a.relevance)
-      .slice(0, 5);
+    return related.sort((a, b) => b.relevance - a.relevance).slice(0, 5);
   }
 
   private calculateLinkConfidence(text: string, suggestedLinks: any[]): number {
     if (suggestedLinks.length === 0) return 0;
 
-    const maxRelevance = Math.max(...suggestedLinks.map(link => link.relevance));
+    const maxRelevance = Math.max(...suggestedLinks.map((link) => link.relevance));
     const textSpecificity = Math.min(text.length / 100, 1); // Longer text is more specific
     const linkCount = Math.min(suggestedLinks.length / 3, 1); // More links indicate higher relevance
 
-    return (maxRelevance * 0.6 + textSpecificity * 0.2 + linkCount * 0.2);
+    return maxRelevance * 0.6 + textSpecificity * 0.2 + linkCount * 0.2;
   }
 
-  private analyzeDocumentRelationship(doc1: DocumentationIndex, doc2: DocumentationIndex): CrossReference | null {
+  private analyzeDocumentRelationship(
+    doc1: DocumentationIndex,
+    doc2: DocumentationIndex
+  ): CrossReference | null {
     // Simple relationship analysis
-    const commonKeywords = doc1.keywords.filter(k => doc2.keywords.includes(k));
-    
+    const commonKeywords = doc1.keywords.filter((k) => doc2.keywords.includes(k));
+
     if (commonKeywords.length > 0) {
       let linkType: CrossReference['linkType'] = 'references';
-      let confidence = commonKeywords.length / Math.max(doc1.keywords.length, doc2.keywords.length);
+      const confidence =
+        commonKeywords.length / Math.max(doc1.keywords.length, doc2.keywords.length);
 
       // Determine relationship type based on document types
       if (doc1.type === 'vision' && doc2.type === 'prd') linkType = 'implements';
@@ -552,7 +572,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
           targetDocument: doc2.id,
           linkType,
           confidence,
-          context: `Common keywords: ${commonKeywords.join(', ')}`
+          context: `Common keywords: ${commonKeywords.join(', ')}`,
         };
       }
     }
@@ -565,7 +585,19 @@ export class UnifiedDocumentationLinker extends EventEmitter {
   }
 
   private isCodeFile(filename: string): boolean {
-    const codeExtensions = ['.js', '.ts', '.jsx', '.tsx', '.py', '.java', '.go', '.rs', '.cpp', '.c', '.h'];
+    const codeExtensions = [
+      '.js',
+      '.ts',
+      '.jsx',
+      '.tsx',
+      '.py',
+      '.java',
+      '.go',
+      '.rs',
+      '.cpp',
+      '.c',
+      '.h',
+    ];
     return codeExtensions.includes(extname(filename));
   }
 
@@ -585,7 +617,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
 
   private determineDocumentType(filePath: string, content: string): DocumentationIndex['type'] {
     const path = filePath.toLowerCase();
-    
+
     if (path.includes('/vision/')) return 'vision';
     if (path.includes('/adr')) return 'adr';
     if (path.includes('/prd')) return 'prd';
@@ -595,18 +627,21 @@ export class UnifiedDocumentationLinker extends EventEmitter {
     if (path.includes('/spec')) return 'spec';
     if (path.includes('readme')) return 'readme';
     if (content.includes('API') || content.includes('api')) return 'api';
-    
+
     return 'guide';
   }
 
   private extractKeywords(content: string): string[] {
     const keywords = new Set<string>();
-    
+
     // Extract from headings
     const headings = content.match(/^#+\s+(.+)$/gm) || [];
     for (const heading of headings) {
-      const words = heading.replace(/^#+\s+/, '').toLowerCase().split(/\s+/);
-      words.forEach(word => {
+      const words = heading
+        .replace(/^#+\s+/, '')
+        .toLowerCase()
+        .split(/\s+/);
+      words.forEach((word) => {
         if (word.length > 3) keywords.add(word);
       });
     }
@@ -621,26 +656,28 @@ export class UnifiedDocumentationLinker extends EventEmitter {
     return Array.from(keywords).slice(0, 20); // Limit to top 20
   }
 
-  private extractSections(content: string): Array<{ title: string; level: number; content: string }> {
+  private extractSections(
+    content: string
+  ): Array<{ title: string; level: number; content: string }> {
     const sections: Array<{ title: string; level: number; content: string }> = [];
     const lines = content.split('\n');
-    
+
     let currentSection: { title: string; level: number; content: string } | null = null;
 
     for (const line of lines) {
       const headingMatch = line.match(/^(#+)\s+(.+)$/);
-      
+
       if (headingMatch) {
         // Save previous section
         if (currentSection) {
           sections.push(currentSection);
         }
-        
+
         // Start new section
         currentSection = {
           title: headingMatch[2].trim(),
           level: headingMatch[1].length,
-          content: ''
+          content: '',
         };
       } else if (currentSection) {
         currentSection.content += line + '\n';
@@ -655,9 +692,12 @@ export class UnifiedDocumentationLinker extends EventEmitter {
     return sections;
   }
 
-  private extractLinks(content: string): Array<{ type: 'internal' | 'external' | 'code'; target: string; text: string }> {
-    const links: Array<{ type: 'internal' | 'external' | 'code'; target: string; text: string }> = [];
-    
+  private extractLinks(
+    content: string
+  ): Array<{ type: 'internal' | 'external' | 'code'; target: string; text: string }> {
+    const links: Array<{ type: 'internal' | 'external' | 'code'; target: string; text: string }> =
+      [];
+
     // Markdown links
     const markdownLinks = content.match(/\[([^\]]+)\]\(([^)]+)\)/g) || [];
     for (const link of markdownLinks) {

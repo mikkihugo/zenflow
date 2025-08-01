@@ -6,6 +6,7 @@
 
 import { exec } from 'child_process';
 import util from 'util';
+
 const execPromise = util.promisify(exec);
 
 // Test each MCP tool
@@ -80,7 +81,9 @@ async function testMcpTools() {
 
     try {
       const cmd = `echo '${JSON.stringify(test.request)}' | node bin/ruv-swarm.js mcp start --protocol=stdio 2>/dev/null`;
-      const { stdout, stderr } = await execPromise(cmd, { cwd: '/workspaces/ruv-FANN/ruv-swarm/npm' });
+      const { stdout, stderr } = await execPromise(cmd, {
+        cwd: '/workspaces/ruv-FANN/ruv-swarm/npm',
+      });
 
       if (stdout) {
         const lines = stdout.trim().split('\n');

@@ -1,18 +1,18 @@
 /**
  * Web Interface - Browser-based Dashboard
- * 
+ *
  * Modern web dashboard with WebSocket updates, RESTful API, and responsive design
  * Supports both standalone and daemon modes
  */
 
-import express, { Express, Request, Response } from 'express';
-import { createServer, Server as HTTPServer } from 'http';
+import express, { type Express, Request, Response } from 'express';
+import { existsSync } from 'fs';
+import { mkdir, readFile, writeFile } from 'fs/promises';
+import { createServer, type Server as HTTPServer } from 'http';
+import { dirname, join } from 'path';
 import { Server as SocketIOServer } from 'socket.io';
-import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { createLogger } from '../../utils/logger.js';
-import { readFile, writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -71,9 +71,9 @@ export class WebInterface {
     this.server = createServer(this.app);
     this.io = new SocketIOServer(this.server, {
       cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-      }
+        origin: '*',
+        methods: ['GET', 'POST'],
+      },
     });
 
     this.setupMiddleware();
@@ -124,9 +124,9 @@ export class WebInterface {
     return new Promise((resolve, reject) => {
       this.server.listen(this.config.port, this.config.host, () => {
         const url = `http://${this.config.host === '0.0.0.0' ? 'localhost' : this.config.host}:${this.config.port}`;
-        
+
         this.logger.info(`🌐 Web interface running at ${url}`);
-        
+
         if (!this.config.daemon) {
           console.log(`\n🚀 Claude Code Zen Web Dashboard`);
           console.log(`   Access at: ${url}`);
@@ -155,7 +155,10 @@ export class WebInterface {
       this.app.use((req, res, next) => {
         res.header('Access-Control-Allow-Origin', '*');
         res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+        res.header(
+          'Access-Control-Allow-Headers',
+          'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+        );
         if (req.method === 'OPTIONS') {
           res.sendStatus(200);
         } else {
@@ -170,7 +173,7 @@ export class WebInterface {
 
     // Session management
     this.app.use((req, res, next) => {
-      const sessionId = req.headers['x-session-id'] as string || this.generateSessionId();
+      const sessionId = (req.headers['x-session-id'] as string) || this.generateSessionId();
       req.sessionId = sessionId;
 
       if (!this.sessions.has(sessionId)) {
@@ -181,8 +184,8 @@ export class WebInterface {
           preferences: {
             theme: this.config.theme!,
             refreshInterval: 5000,
-            notifications: true
-          }
+            notifications: true,
+          },
         });
       } else {
         const session = this.sessions.get(sessionId)!;
@@ -215,7 +218,7 @@ export class WebInterface {
         status: 'healthy',
         timestamp: new Date().toISOString(),
         version: '2.0.0-alpha.73',
-        uptime: process.uptime()
+        uptime: process.uptime(),
       });
     });
 
@@ -297,8 +300,8 @@ export class WebInterface {
         session: session?.preferences,
         system: {
           theme: this.config.theme,
-          realTime: this.config.realTime
-        }
+          realTime: this.config.realTime,
+        },
       });
     });
 
@@ -333,7 +336,7 @@ export class WebInterface {
       // Send initial data
       socket.emit('connected', {
         sessionId: socket.handshake.headers['x-session-id'] || socket.id,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       // Handle client events
@@ -389,7 +392,7 @@ export class WebInterface {
       this.io.emit(event, {
         event,
         data,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
   }
@@ -403,12 +406,12 @@ export class WebInterface {
       version: '2.0.0-alpha.73',
       swarms: { active: 2, total: 5 },
       tasks: { pending: 3, active: 1, completed: 12 },
-      resources: { 
-        cpu: Math.floor(Math.random() * 100) + '%', 
-        memory: Math.floor(Math.random() * 100) + '%', 
-        disk: '23%' 
+      resources: {
+        cpu: Math.floor(Math.random() * 100) + '%',
+        memory: Math.floor(Math.random() * 100) + '%',
+        disk: '23%',
       },
-      uptime: Math.floor(process.uptime() / 60) + 'm'
+      uptime: Math.floor(process.uptime() / 60) + 'm',
     };
   }
 
@@ -420,7 +423,7 @@ export class WebInterface {
         status: 'active',
         agents: 4,
         tasks: 8,
-        progress: Math.floor(Math.random() * 100)
+        progress: Math.floor(Math.random() * 100),
       },
       {
         id: 'swarm-2',
@@ -428,8 +431,8 @@ export class WebInterface {
         status: 'active',
         agents: 6,
         tasks: 12,
-        progress: Math.floor(Math.random() * 100)
-      }
+        progress: Math.floor(Math.random() * 100),
+      },
     ];
   }
 
@@ -441,7 +444,7 @@ export class WebInterface {
         status: 'active',
         assignedAgents: ['agent-1', 'agent-2'],
         progress: Math.floor(Math.random() * 100),
-        eta: '15m'
+        eta: '15m',
       },
       {
         id: 'task-2',
@@ -449,8 +452,8 @@ export class WebInterface {
         status: 'pending',
         assignedAgents: [],
         progress: 0,
-        eta: '30m'
-      }
+        eta: '30m',
+      },
     ];
   }
 
@@ -461,15 +464,15 @@ export class WebInterface {
         type: 'prd',
         title: 'User Authentication System',
         status: 'active',
-        lastModified: new Date().toISOString()
+        lastModified: new Date().toISOString(),
       },
       {
         id: 'doc-2',
         type: 'adr',
         title: 'Database Architecture Decision',
         status: 'draft',
-        lastModified: new Date().toISOString()
-      }
+        lastModified: new Date().toISOString(),
+      },
     ];
   }
 
@@ -481,7 +484,7 @@ export class WebInterface {
       agents: config.agents || 4,
       tasks: 0,
       progress: 0,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     this.logger.info(`Created swarm: ${swarm.name}`);
@@ -496,7 +499,7 @@ export class WebInterface {
       assignedAgents: [],
       progress: 0,
       eta: config.eta || '30m',
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     this.logger.info(`Created task: ${task.title}`);
@@ -505,16 +508,16 @@ export class WebInterface {
 
   private async executeCommand(command: string, args: any[]): Promise<any> {
     this.logger.info(`Executing command: ${command}`);
-    
+
     // Mock command execution
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     return {
       command,
       args,
       output: `Command '${command}' executed successfully`,
       exitCode: 0,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
@@ -628,7 +631,9 @@ export class WebInterface {
     </div>
     
     <script>
-        ${this.config.realTime ? `
+        ${
+          this.config.realTime
+            ? `
         const socket = io();
         
         socket.on('connect', () => {
@@ -644,16 +649,22 @@ export class WebInterface {
             console.log('Tasks update:', data);
             // Update tasks display
         });
-        ` : ''}
+        `
+            : ''
+        }
         
         // Auto-refresh page data every 5 seconds if WebSocket is disabled
-        ${!this.config.realTime ? `
+        ${
+          !this.config.realTime
+            ? `
         setInterval(() => {
             fetch('${this.config.apiPrefix}/status')
                 .then(r => r.json())
                 .then(data => console.log('Status:', data));
         }, 5000);
-        ` : ''}
+        `
+            : ''
+        }
     </script>
 </body>
 </html>`;
@@ -668,10 +679,10 @@ export class WebInterface {
 
   private async gracefulShutdown(): Promise<void> {
     this.logger.info('Shutting down web interface...');
-    
+
     this.io.close();
     this.server.close();
-    
+
     // Cleanup PID file
     if (this.pid) {
       try {
@@ -680,7 +691,7 @@ export class WebInterface {
         // Ignore cleanup errors
       }
     }
-    
+
     process.exit(0);
   }
 
@@ -701,8 +712,8 @@ export class WebInterface {
         'websocket-updates',
         'session-management',
         'command-execution',
-        'mobile-friendly'
-      ]
+        'mobile-friendly',
+      ],
     };
   }
 }

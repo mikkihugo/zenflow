@@ -1,6 +1,6 @@
 /**
  * Error Handler Tests - TDD London School
- * 
+ *
  * Tests the behavior of error handling functionality using mocks
  * and interaction-based testing. Focuses on how the error handler
  * collaborates with logging, formatting, and recovery systems.
@@ -53,7 +53,10 @@ interface ErrorMetrics {
   averageHandlingTime: number;
 }
 
-type ErrorHandlerFunction = (error: Error, context?: ErrorContext) => Promise<ErrorResult> | ErrorResult;
+type ErrorHandlerFunction = (
+  error: Error,
+  context?: ErrorContext
+) => Promise<ErrorResult> | ErrorResult;
 
 interface RecoveryStrategy {
   name: string;
@@ -80,7 +83,7 @@ class MockErrorHandler implements ErrorHandler {
     errorsByType: {},
     recoveredErrors: 0,
     fatalErrors: 0,
-    averageHandlingTime: 0
+    averageHandlingTime: 0,
   };
   private logger: MockLogger;
   private handleFunction: jest.Mock;
@@ -91,32 +94,33 @@ class MockErrorHandler implements ErrorHandler {
       error: jest.fn(),
       warn: jest.fn(),
       info: jest.fn(),
-      debug: jest.fn()
+      debug: jest.fn(),
     };
   }
 
   async handle(error: Error, context?: ErrorContext): Promise<ErrorResult> {
     const startTime = Date.now();
-    
+
     // Update metrics
     this.metrics.totalErrors++;
     const errorType = error.constructor.name;
     this.metrics.errorsByType[errorType] = (this.metrics.errorsByType[errorType] || 0) + 1;
-    
+
     // Call mock function for testing
     const result = await this.handleFunction(error, context);
-    
+
     // Update timing metrics
     const handlingTime = Date.now() - startTime;
-    this.metrics.averageHandlingTime = 
-      (this.metrics.averageHandlingTime * (this.metrics.totalErrors - 1) + handlingTime) / this.metrics.totalErrors;
-    
+    this.metrics.averageHandlingTime =
+      (this.metrics.averageHandlingTime * (this.metrics.totalErrors - 1) + handlingTime) /
+      this.metrics.totalErrors;
+
     if (result.recovered) {
       this.metrics.recoveredErrors++;
     } else if (result.exitCode !== 0) {
       this.metrics.fatalErrors++;
     }
-    
+
     return result;
   }
 
@@ -130,7 +134,7 @@ class MockErrorHandler implements ErrorHandler {
 
   addRecoveryStrategy(strategy: RecoveryStrategy): void {
     // Insert strategy in priority order
-    const index = this.recoveryStrategies.findIndex(s => s.priority < strategy.priority);
+    const index = this.recoveryStrategies.findIndex((s) => s.priority < strategy.priority);
     if (index === -1) {
       this.recoveryStrategies.push(strategy);
     } else {
@@ -162,14 +166,20 @@ class MockErrorHandler implements ErrorHandler {
 
 // Custom error types for testing
 class ValidationError extends Error {
-  constructor(message: string, public field?: string) {
+  constructor(
+    message: string,
+    public field?: string
+  ) {
     super(message);
     this.name = 'ValidationError';
   }
 }
 
 class NetworkError extends Error {
-  constructor(message: string, public statusCode?: number) {
+  constructor(
+    message: string,
+    public statusCode?: number
+  ) {
     super(message);
     this.name = 'NetworkError';
   }
@@ -193,7 +203,7 @@ describe('ErrorHandler - TDD London', () => {
       error: jest.fn(),
       warn: jest.fn(),
       info: jest.fn(),
-      debug: jest.fn()
+      debug: jest.fn(),
     };
     errorHandler = new MockErrorHandler(mockHandleFunction, mockLogger);
   });
@@ -204,7 +214,7 @@ describe('ErrorHandler - TDD London', () => {
       const error = new Error('Test error');
       const context: ErrorContext = {
         command: 'test-command',
-        severity: 'medium'
+        severity: 'medium',
       };
       const expectedResult: ErrorResult = {
         handled: true,
@@ -212,7 +222,7 @@ describe('ErrorHandler - TDD London', () => {
         exitCode: 1,
         message: 'Test error handled',
         retryable: false,
-        logged: true
+        logged: true,
       };
       mockHandleFunction.mockResolvedValue(expectedResult);
 
@@ -232,14 +242,14 @@ describe('ErrorHandler - TDD London', () => {
 
       mockHandleFunction.mockImplementation(async () => {
         // Add small delay to simulate processing time
-        await new Promise(resolve => setTimeout(resolve, 1));
+        await new Promise((resolve) => setTimeout(resolve, 1));
         return {
           handled: true,
           recovered: false,
           exitCode: 1,
           message: 'Error handled',
           retryable: false,
-          logged: true
+          logged: true,
         };
       });
 
@@ -268,7 +278,7 @@ describe('ErrorHandler - TDD London', () => {
           exitCode: 0,
           message: 'Recovered from timeout',
           retryable: true,
-          logged: true
+          logged: true,
         })
         .mockResolvedValueOnce({
           handled: true,
@@ -276,7 +286,7 @@ describe('ErrorHandler - TDD London', () => {
           exitCode: 1,
           message: 'Fatal error occurred',
           retryable: false,
-          logged: true
+          logged: true,
         });
 
       // Act
@@ -299,7 +309,7 @@ describe('ErrorHandler - TDD London', () => {
         exitCode: 0,
         message: 'Validation error recovered',
         retryable: true,
-        logged: false
+        logged: false,
       });
 
       // Act
@@ -335,7 +345,7 @@ describe('ErrorHandler - TDD London', () => {
         logErrors: true,
         showStack: true,
         colorOutput: false,
-        verboseErrors: true
+        verboseErrors: true,
       };
 
       // Act
@@ -357,7 +367,7 @@ describe('ErrorHandler - TDD London', () => {
       expect(appliedDefaults).toEqual({
         logErrors: true,
         showStack: false,
-        colorOutput: true
+        colorOutput: true,
       });
     });
   });
@@ -369,21 +379,21 @@ describe('ErrorHandler - TDD London', () => {
         name: 'low-priority',
         canRecover: jest.fn(() => true),
         recover: jest.fn().mockResolvedValue(true),
-        priority: 1
+        priority: 1,
       };
 
       const highPriorityStrategy: RecoveryStrategy = {
         name: 'high-priority',
         canRecover: jest.fn(() => true),
         recover: jest.fn().mockResolvedValue(true),
-        priority: 10
+        priority: 10,
       };
 
       const mediumPriorityStrategy: RecoveryStrategy = {
         name: 'medium-priority',
         canRecover: jest.fn(() => true),
         recover: jest.fn().mockResolvedValue(true),
-        priority: 5
+        priority: 5,
       };
 
       // Act
@@ -393,10 +403,10 @@ describe('ErrorHandler - TDD London', () => {
 
       // Assert - verify priority-based ordering
       const strategies = errorHandler.getRecoveryStrategies();
-      expect(strategies.map(s => s.name)).toEqual([
+      expect(strategies.map((s) => s.name)).toEqual([
         'high-priority',
         'medium-priority',
-        'low-priority'
+        'low-priority',
       ]);
     });
 
@@ -406,14 +416,14 @@ describe('ErrorHandler - TDD London', () => {
         name: 'retry',
         canRecover: jest.fn(() => true),
         recover: jest.fn().mockResolvedValue(false), // Fails to recover
-        priority: 5
+        priority: 5,
       };
 
       const fallbackStrategy: RecoveryStrategy = {
         name: 'fallback',
         canRecover: jest.fn(() => true),
         recover: jest.fn().mockResolvedValue(true), // Successfully recovers
-        priority: 1
+        priority: 1,
       };
 
       errorHandler.addRecoveryStrategy(retryStrategy);
@@ -435,7 +445,7 @@ describe('ErrorHandler - TDD London', () => {
       const context: ErrorContext = {
         command: 'create-user',
         args: ['john'],
-        flags: { name: 'john' }
+        flags: { name: 'john' },
       };
 
       mockHandleFunction.mockResolvedValue({
@@ -445,7 +455,7 @@ describe('ErrorHandler - TDD London', () => {
         message: 'Please provide a valid email address',
         suggestion: 'Use --email flag to specify email',
         retryable: true,
-        logged: false
+        logged: false,
       });
 
       // Act
@@ -463,7 +473,7 @@ describe('ErrorHandler - TDD London', () => {
       const networkError = new NetworkError('Connection timeout', 408);
       const context: ErrorContext = {
         command: 'deploy',
-        severity: 'high'
+        severity: 'high',
       };
 
       mockHandleFunction.mockResolvedValue({
@@ -473,7 +483,7 @@ describe('ErrorHandler - TDD London', () => {
         message: 'Network connection failed',
         suggestion: 'Check your internet connection and try again',
         retryable: true,
-        logged: true
+        logged: true,
       });
 
       // Act
@@ -490,7 +500,7 @@ describe('ErrorHandler - TDD London', () => {
       const commandError = new CommandNotFoundError('deplyo'); // Typo
       const context: ErrorContext = {
         command: 'deplyo',
-        args: ['app']
+        args: ['app'],
       };
 
       mockHandleFunction.mockResolvedValue({
@@ -500,7 +510,7 @@ describe('ErrorHandler - TDD London', () => {
         message: "Command 'deplyo' not found",
         suggestion: "Did you mean 'deploy'?",
         retryable: false,
-        logged: false
+        logged: false,
       });
 
       // Act
@@ -520,7 +530,7 @@ describe('ErrorHandler - TDD London', () => {
       const error = new Error('Test error with stack');
       const context: ErrorContext = {
         command: 'test',
-        severity: 'high'
+        severity: 'high',
       };
 
       mockHandleFunction.mockResolvedValue({
@@ -529,7 +539,7 @@ describe('ErrorHandler - TDD London', () => {
         exitCode: 1,
         message: 'Error logged',
         retryable: false,
-        logged: true
+        logged: true,
       });
 
       // Act
@@ -555,7 +565,7 @@ describe('ErrorHandler - TDD London', () => {
           exitCode: 0,
           message: 'Low severity handled quietly',
           retryable: false,
-          logged: false // Low severity might not be logged
+          logged: false, // Low severity might not be logged
         })
         .mockResolvedValueOnce({
           handled: true,
@@ -563,7 +573,7 @@ describe('ErrorHandler - TDD London', () => {
           exitCode: 1,
           message: 'Critical error logged',
           retryable: false,
-          logged: true // Critical errors always logged
+          logged: true, // Critical errors always logged
         });
 
       // Act
@@ -585,7 +595,7 @@ describe('ErrorHandler - TDD London', () => {
         args: ['missing-app'],
         flags: { env: 'production' },
         user: 'developer',
-        session: 'session-123'
+        session: 'session-123',
       };
 
       mockHandleFunction.mockResolvedValue({
@@ -595,7 +605,7 @@ describe('ErrorHandler - TDD London', () => {
         message: "File 'missing-app' not found for production deployment",
         suggestion: 'Check if the application name is correct',
         retryable: true,
-        logged: true
+        logged: true,
       });
 
       // Act
@@ -621,7 +631,7 @@ describe('ErrorHandler - TDD London', () => {
           message: 'Access denied: insufficient privileges',
           suggestion: 'Contact your administrator',
           retryable: false,
-          logged: true
+          logged: true,
         })
         .mockResolvedValueOnce({
           handled: true,
@@ -630,7 +640,7 @@ describe('ErrorHandler - TDD London', () => {
           message: 'This command requires administrator privileges',
           suggestion: 'Try using sudo or contact support',
           retryable: false,
-          logged: false
+          logged: false,
         });
 
       // Act
@@ -651,19 +661,19 @@ describe('ErrorHandler - TDD London', () => {
         new ValidationError('Field required'),
         new NetworkError('Timeout'),
         new ValidationError('Invalid format'),
-        new Error('Generic error')
+        new Error('Generic error'),
       ];
 
       mockHandleFunction.mockImplementation(async () => {
         // Add small delay to simulate processing time
-        await new Promise(resolve => setTimeout(resolve, 1));
+        await new Promise((resolve) => setTimeout(resolve, 1));
         return {
           handled: true,
           recovered: false,
           exitCode: 1,
           message: 'Error handled',
           retryable: false,
-          logged: true
+          logged: true,
         };
       });
 
@@ -678,7 +688,7 @@ describe('ErrorHandler - TDD London', () => {
       expect(metrics.errorsByType).toEqual({
         ValidationError: 2,
         NetworkError: 1,
-        Error: 1
+        Error: 1,
       });
       expect(metrics.averageHandlingTime).toBeGreaterThan(0);
     });

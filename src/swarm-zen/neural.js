@@ -3,9 +3,9 @@
  * Provides neural training, status, and pattern analysis using WASM
  */
 
-import { RuvSwarm } from './index-enhanced.js';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { RuvSwarm } from './index-enhanced.js';
 
 // Pattern memory configuration for different cognitive patterns
 // Optimized to use 250-300 MB range with minimal variance
@@ -47,23 +47,39 @@ class NeuralCLI {
       console.log('🧠 Neural Network Status\n');
 
       // Get neural network status from WASM
-      const status = rs.wasmLoader.modules.get('core')?.neural_status ?
-        rs.wasmLoader.modules.get('core').neural_status() :
-        'Neural networks not available';
+      const status = rs.wasmLoader.modules.get('core')?.neural_status
+        ? rs.wasmLoader.modules.get('core').neural_status()
+        : 'Neural networks not available';
 
       // Load persistence information
       const persistenceInfo = await this.loadPersistenceInfo();
 
       // Display training sessions and saved models
-      console.log(`Training Sessions: ${persistenceInfo.totalSessions} sessions | 📁 ${persistenceInfo.savedModels} saved models\n`);
+      console.log(
+        `Training Sessions: ${persistenceInfo.totalSessions} sessions | 📁 ${persistenceInfo.savedModels} saved models\n`
+      );
 
       console.log('📊 System Status:');
-      console.log(`   WASM Core: ${rs.wasmLoader.modules.has('core') ? '✅ Loaded' : '❌ Not loaded'}`);
-      console.log(`   Neural Module: ${rs.features.neural_networks ? '✅ Enabled' : '❌ Disabled'}`);
-      console.log(`   SIMD Support: ${rs.features.simd_support ? '✅ Available' : '❌ Not available'}`);
+      console.log(
+        `   WASM Core: ${rs.wasmLoader.modules.has('core') ? '✅ Loaded' : '❌ Not loaded'}`
+      );
+      console.log(
+        `   Neural Module: ${rs.features.neural_networks ? '✅ Enabled' : '❌ Disabled'}`
+      );
+      console.log(
+        `   SIMD Support: ${rs.features.simd_support ? '✅ Available' : '❌ Not available'}`
+      );
 
       console.log('\n🤖 Models:');
-      const models = ['attention', 'lstm', 'transformer', 'feedforward', 'cnn', 'gru', 'autoencoder'];
+      const models = [
+        'attention',
+        'lstm',
+        'transformer',
+        'feedforward',
+        'cnn',
+        'gru',
+        'autoencoder',
+      ];
 
       for (let i = 0; i < models.length; i++) {
         const model = models[i];
@@ -83,7 +99,7 @@ class NeuralCLI {
         // Add training status
         if (modelInfo.lastTrained) {
           const trainedDate = new Date(modelInfo.lastTrained);
-          const dateStr = `${trainedDate.toLocaleDateString() } ${ trainedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+          const dateStr = `${trainedDate.toLocaleDateString()} ${trainedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
           statusLine += ` ✅ Trained ${dateStr}`;
         } else if (modelInfo.hasSavedWeights) {
           statusLine += ' 🔄 Loaded from session';
@@ -105,11 +121,15 @@ class NeuralCLI {
       console.log('📈 Performance Metrics:');
       console.log(`   Total Training Time: ${persistenceInfo.totalTrainingTime}`);
       console.log(`   Average Accuracy: ${persistenceInfo.averageAccuracy}%`);
-      console.log(`   Best Model: ${persistenceInfo.bestModel.name} (${persistenceInfo.bestModel.accuracy}% accuracy)`);
+      console.log(
+        `   Best Model: ${persistenceInfo.bestModel.name} (${persistenceInfo.bestModel.accuracy}% accuracy)`
+      );
 
       if (persistenceInfo.sessionContinuity) {
         console.log('\n🔄 Session Continuity:');
-        console.log(`   Models loaded from previous session: ${persistenceInfo.sessionContinuity.loadedModels}`);
+        console.log(
+          `   Models loaded from previous session: ${persistenceInfo.sessionContinuity.loadedModels}`
+        );
         console.log(`   Session started: ${persistenceInfo.sessionContinuity.sessionStart}`);
         console.log(`   Persistent memory: ${persistenceInfo.sessionContinuity.memorySize}`);
       }
@@ -118,7 +138,6 @@ class NeuralCLI {
         console.log('\n🔍 WASM Neural Status:');
         console.log(JSON.stringify(status, null, 2));
       }
-
     } catch (error) {
       console.error('❌ Error getting neural status:', error.message);
       process.exit(1);
@@ -147,10 +166,12 @@ class NeuralCLI {
         const loss = Math.exp(-progress * 2) + Math.random() * 0.1;
         const accuracy = Math.min(95, 60 + progress * 30 + Math.random() * 5);
 
-        process.stdout.write(`\r🔄 Training: [${'█'.repeat(Math.floor(progress * 20))}${' '.repeat(20 - Math.floor(progress * 20))}] ${(progress * 100).toFixed(0)}% | Loss: ${loss.toFixed(4)} | Accuracy: ${accuracy.toFixed(1)}%`);
+        process.stdout.write(
+          `\r🔄 Training: [${'█'.repeat(Math.floor(progress * 20))}${' '.repeat(20 - Math.floor(progress * 20))}] ${(progress * 100).toFixed(0)}% | Loss: ${loss.toFixed(4)} | Accuracy: ${accuracy.toFixed(1)}%`
+        );
 
         // Simulate training delay
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
 
         // Call WASM training if available
         if (rs.wasmLoader.modules.get('core')?.neural_train) {
@@ -179,7 +200,6 @@ class NeuralCLI {
       console.log(`📊 Results saved to: ${path.relative(process.cwd(), outputFile)}`);
       console.log(`🎯 Final Accuracy: ${results.finalAccuracy}%`);
       console.log(`📉 Final Loss: ${results.finalLoss}`);
-
     } catch (error) {
       console.error('\n❌ Training failed:', error.message);
       process.exit(1);
@@ -214,56 +234,71 @@ class NeuralCLI {
         attention: {
           'Focus Patterns': ['Sequential attention', 'Parallel processing', 'Context switching'],
           'Learned Behaviors': ['Code completion', 'Error detection', 'Pattern recognition'],
-          'Strengths': ['Long sequences', 'Context awareness', 'Multi-modal input'],
+          Strengths: ['Long sequences', 'Context awareness', 'Multi-modal input'],
         },
         lstm: {
           'Memory Patterns': ['Short-term memory', 'Long-term dependencies', 'Sequence modeling'],
           'Learned Behaviors': ['Time series prediction', 'Sequential decision making'],
-          'Strengths': ['Temporal data', 'Sequence learning', 'Memory retention'],
+          Strengths: ['Temporal data', 'Sequence learning', 'Memory retention'],
         },
         transformer: {
           'Attention Patterns': ['Self-attention', 'Cross-attention', 'Multi-head attention'],
           'Learned Behaviors': ['Complex reasoning', 'Parallel processing', 'Feature extraction'],
-          'Strengths': ['Large contexts', 'Parallel computation', 'Transfer learning'],
+          Strengths: ['Large contexts', 'Parallel computation', 'Transfer learning'],
         },
       };
 
       // Add cognitive patterns to the patterns object
       patterns.convergent = {
-        'Cognitive Patterns': ['Focused problem-solving', 'Analytical thinking', 'Solution convergence'],
+        'Cognitive Patterns': [
+          'Focused problem-solving',
+          'Analytical thinking',
+          'Solution convergence',
+        ],
         'Learned Behaviors': ['Optimization', 'Error reduction', 'Goal achievement'],
-        'Strengths': ['Efficiency', 'Precision', 'Consistency'],
+        Strengths: ['Efficiency', 'Precision', 'Consistency'],
       };
       patterns.divergent = {
         'Cognitive Patterns': ['Creative exploration', 'Idea generation', 'Lateral connections'],
         'Learned Behaviors': ['Innovation', 'Pattern breaking', 'Novel solutions'],
-        'Strengths': ['Creativity', 'Flexibility', 'Discovery'],
+        Strengths: ['Creativity', 'Flexibility', 'Discovery'],
       };
       patterns.lateral = {
-        'Cognitive Patterns': ['Non-linear thinking', 'Cross-domain connections', 'Indirect approaches'],
+        'Cognitive Patterns': [
+          'Non-linear thinking',
+          'Cross-domain connections',
+          'Indirect approaches',
+        ],
         'Learned Behaviors': ['Problem reframing', 'Alternative paths', 'Unexpected insights'],
-        'Strengths': ['Innovation', 'Adaptability', 'Breakthrough thinking'],
+        Strengths: ['Innovation', 'Adaptability', 'Breakthrough thinking'],
       };
       patterns.systems = {
         'Cognitive Patterns': ['Holistic thinking', 'System dynamics', 'Interconnection mapping'],
         'Learned Behaviors': ['Dependency analysis', 'Feedback loops', 'Emergent properties'],
-        'Strengths': ['Big picture view', 'Complex relationships', 'System optimization'],
+        Strengths: ['Big picture view', 'Complex relationships', 'System optimization'],
       };
       patterns.critical = {
         'Cognitive Patterns': ['Critical evaluation', 'Judgment formation', 'Validation processes'],
         'Learned Behaviors': ['Quality assessment', 'Risk analysis', 'Decision validation'],
-        'Strengths': ['Error detection', 'Quality control', 'Rational judgment'],
+        Strengths: ['Error detection', 'Quality control', 'Rational judgment'],
       };
       patterns.abstract = {
         'Cognitive Patterns': ['Conceptual thinking', 'Generalization', 'Abstract reasoning'],
         'Learned Behaviors': ['Pattern extraction', 'Concept formation', 'Theory building'],
-        'Strengths': ['High-level thinking', 'Knowledge transfer', 'Model building'],
+        Strengths: ['High-level thinking', 'Knowledge transfer', 'Model building'],
       };
 
       // Handle 'all' pattern type
       if (patternType === 'all') {
         // Show all patterns
-        const cognitivePatterns = ['convergent', 'divergent', 'lateral', 'systems', 'critical', 'abstract'];
+        const cognitivePatterns = [
+          'convergent',
+          'divergent',
+          'lateral',
+          'systems',
+          'critical',
+          'abstract',
+        ];
         const neuralModels = ['attention', 'lstm', 'transformer'];
 
         console.log('📊 Cognitive Patterns:\n');
@@ -271,7 +306,7 @@ class NeuralCLI {
           console.log(`🔷 ${pattern.charAt(0).toUpperCase() + pattern.slice(1)} Pattern:`);
           for (const [category, items] of Object.entries(patterns[pattern])) {
             console.log(`  📌 ${category}:`);
-            items.forEach(item => {
+            items.forEach((item) => {
               console.log(`     • ${item}`);
             });
           }
@@ -283,7 +318,7 @@ class NeuralCLI {
           console.log(`🔶 ${model.charAt(0).toUpperCase() + model.slice(1)} Model:`);
           for (const [category, items] of Object.entries(patterns[model])) {
             console.log(`  📌 ${category}:`);
-            items.forEach(item => {
+            items.forEach((item) => {
               console.log(`     • ${item}`);
             });
           }
@@ -304,7 +339,7 @@ class NeuralCLI {
 
         for (const [category, items] of Object.entries(patternData)) {
           console.log(`📊 ${category}:`);
-          items.forEach(item => {
+          items.forEach((item) => {
             console.log(`   • ${item}`);
           });
           console.log('');
@@ -314,7 +349,7 @@ class NeuralCLI {
       // Show activation patterns (simulated)
       console.log('🔥 Activation Patterns:');
       const activationTypes = ['ReLU', 'Sigmoid', 'Tanh', 'GELU', 'Swish'];
-      activationTypes.forEach(activation => {
+      activationTypes.forEach((activation) => {
         const usage = (Math.random() * 100).toFixed(1);
         console.log(`   ${activation.padEnd(8)} ${usage}% usage`);
       });
@@ -323,10 +358,11 @@ class NeuralCLI {
       console.log(`   Inference Speed: ${(Math.random() * 100 + 50).toFixed(0)} ops/sec`);
 
       // Use pattern-specific memory configuration
-      const memoryUsage = await this.getPatternMemoryUsage(patternType === 'all' ? 'convergent' : patternType);
+      const memoryUsage = await this.getPatternMemoryUsage(
+        patternType === 'all' ? 'convergent' : patternType
+      );
       console.log(`   Memory Usage: ${memoryUsage.toFixed(0)} MB`);
       console.log(`   Energy Efficiency: ${(85 + Math.random() * 10).toFixed(1)}%`);
-
     } catch (error) {
       console.error('❌ Error analyzing patterns:', error.message);
       process.exit(1);
@@ -358,7 +394,8 @@ class NeuralCLI {
         models: {},
       };
 
-      const modelTypes = modelType === 'all' ? ['attention', 'lstm', 'transformer', 'feedforward'] : [modelType];
+      const modelTypes =
+        modelType === 'all' ? ['attention', 'lstm', 'transformer', 'feedforward'] : [modelType];
 
       for (const model of modelTypes) {
         weights.models[model] = {
@@ -382,9 +419,11 @@ class NeuralCLI {
       console.log(`🧠 Models: ${Object.keys(weights.models).join(', ')}`);
 
       // Show summary
-      const totalParams = Object.values(weights.models).reduce((sum, model) => sum + model.parameters, 0);
+      const totalParams = Object.values(weights.models).reduce(
+        (sum, model) => sum + model.parameters,
+        0
+      );
       console.log(`🔢 Total Parameters: ${totalParams.toLocaleString()}`);
-
     } catch (error) {
       console.error('❌ Export failed:', error.message);
       process.exit(1);
@@ -398,8 +437,8 @@ class NeuralCLI {
     }
 
     const recentResults = trainingResults.slice(-5); // Last 5 iterations
-    const lossVariance = this.calculateVariance(recentResults.map(r => r.loss));
-    const accuracyTrend = this.calculateTrend(recentResults.map(r => r.accuracy));
+    const lossVariance = this.calculateVariance(recentResults.map((r) => r.loss));
+    const accuracyTrend = this.calculateTrend(recentResults.map((r) => r.accuracy));
 
     if (lossVariance < 0.001 && accuracyTrend > 0) {
       return 'converged';
@@ -409,7 +448,6 @@ class NeuralCLI {
       return 'improving';
     }
     return 'needs_adjustment';
-
   }
 
   // Helper method to calculate variance
@@ -418,7 +456,7 @@ class NeuralCLI {
       return 0;
     }
     const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
-    return values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length;
+    return values.reduce((sum, val) => sum + (val - mean) ** 2, 0) / values.length;
   }
 
   // Helper method to calculate trend (positive = improving)
@@ -467,7 +505,10 @@ class NeuralCLI {
                 modelDetails[modelType] = {};
               }
 
-              if (!modelDetails[modelType].lastTrained || new Date(data.timestamp) > new Date(modelDetails[modelType].lastTrained)) {
+              if (
+                !modelDetails[modelType].lastTrained ||
+                new Date(data.timestamp) > new Date(modelDetails[modelType].lastTrained)
+              ) {
                 modelDetails[modelType].lastTrained = data.timestamp;
                 modelDetails[modelType].lastAccuracy = data.finalAccuracy;
                 modelDetails[modelType].iterations = data.iterations;
@@ -505,7 +546,8 @@ class NeuralCLI {
       }
 
       // Calculate average accuracy
-      const averageAccuracy = accuracyCount > 0 ? (totalAccuracy / accuracyCount).toFixed(1) : '0.0';
+      const averageAccuracy =
+        accuracyCount > 0 ? (totalAccuracy / accuracyCount).toFixed(1) : '0.0';
 
       // Format training time
       const formatTime = (ms) => {
@@ -522,11 +564,15 @@ class NeuralCLI {
       };
 
       // Check for session continuity (mock data for now, could be enhanced with actual session tracking)
-      const sessionContinuity = totalSessions > 0 ? {
-        loadedModels: Object.keys(modelDetails).filter(m => modelDetails[m].hasSavedWeights).length,
-        sessionStart: new Date().toLocaleString(),
-        memorySize: `${(Math.random() * 50 + 10).toFixed(1)} MB`,
-      } : null;
+      const sessionContinuity =
+        totalSessions > 0
+          ? {
+              loadedModels: Object.keys(modelDetails).filter((m) => modelDetails[m].hasSavedWeights)
+                .length,
+              sessionStart: new Date().toLocaleString(),
+              memorySize: `${(Math.random() * 50 + 10).toFixed(1)} MB`,
+            }
+          : null;
 
       return {
         totalSessions,
@@ -537,7 +583,6 @@ class NeuralCLI {
         bestModel,
         sessionContinuity,
       };
-
     } catch (err) {
       // Directory doesn't exist or can't be read
       return {

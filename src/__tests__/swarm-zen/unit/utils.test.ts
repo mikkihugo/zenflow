@@ -1,9 +1,9 @@
 import {
+  calculateCognitiveDiversity,
   generateId,
   getDefaultCognitiveProfile,
-  calculateCognitiveDiversity,
-  recommendTopology,
   priorityToNumber,
+  recommendTopology,
   validateSwarmOptions,
 } from '../src/utils';
 

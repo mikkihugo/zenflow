@@ -3,11 +3,11 @@
  * Achieves 80%+ coverage for src/hooks/index.js (521+ lines)
  */
 
-import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
+import { execSync } from 'child_process';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,7 +22,7 @@ describe('Hooks System - Complete Coverage', () => {
   let testTempDir;
   let originalEnv;
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     originalEnv = { ...process.env };
     testTempDir = path.join(__dirname, `test-temp-${Date.now()}`);
 
@@ -82,7 +82,7 @@ describe('Hooks System - Complete Coverage', () => {
             let result;
 
             switch (hookType) {
-            // Pre-operation hooks
+              // Pre-operation hooks
               case 'pre-edit':
                 result = await this.preEditHook(args);
                 break;
@@ -208,7 +208,7 @@ describe('Hooks System - Complete Coverage', () => {
 
           // Validate command safety
           const dangerousCommands = ['rm -rf', 'dd if=', 'mkfs', 'fdisk'];
-          const isDangerous = dangerousCommands.some(cmd => command.includes(cmd));
+          const isDangerous = dangerousCommands.some((cmd) => command.includes(cmd));
 
           if (isDangerous) {
             return {
@@ -617,17 +617,22 @@ describe('Hooks System - Complete Coverage', () => {
         autoAssignAgent(fileType) {
           const assignments = {
             '.js': { agent: 'javascript-expert', capabilities: ['javascript', 'node', 'testing'] },
-            '.ts': { agent: 'typescript-expert', capabilities: ['typescript', 'types', 'advanced'] },
+            '.ts': {
+              agent: 'typescript-expert',
+              capabilities: ['typescript', 'types', 'advanced'],
+            },
             '.py': { agent: 'python-expert', capabilities: ['python', 'data', 'ml'] },
             '.md': { agent: 'documentation-expert', capabilities: ['markdown', 'docs', 'writing'] },
             '.json': { agent: 'config-expert', capabilities: ['json', 'config', 'data'] },
             '.css': { agent: 'style-expert', capabilities: ['css', 'design', 'responsive'] },
           };
 
-          return assignments[fileType] || {
-            agent: 'general-expert',
-            capabilities: ['general', 'analysis'],
-          };
+          return (
+            assignments[fileType] || {
+              agent: 'general-expert',
+              capabilities: ['general', 'analysis'],
+            }
+          );
         }
 
         generateHash(content) {
@@ -656,11 +661,13 @@ describe('Hooks System - Complete Coverage', () => {
           const words = description.toLowerCase().split(' ');
 
           for (const [level, indicators] of Object.entries(complexityIndicators)) {
-            if (indicators.some(indicator => words.includes(indicator))) {
+            if (indicators.some((indicator) => words.includes(indicator))) {
               return {
                 level,
-                score: Object.keys(complexityIndicators).indexOf(level) / Object.keys(complexityIndicators).length,
-                indicators: indicators.filter(i => words.includes(i)),
+                score:
+                  Object.keys(complexityIndicators).indexOf(level) /
+                  Object.keys(complexityIndicators).length,
+                indicators: indicators.filter((i) => words.includes(i)),
               };
             }
           }
@@ -892,7 +899,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(hooks.sessionData.performance).toBeDefined();
     });
 
-    test('should handle all pre-operation hooks', async() => {
+    test('should handle all pre-operation hooks', async () => {
       const hooks = new RuvSwarmHooks();
       const preHooks = ['pre-edit', 'pre-bash', 'pre-task', 'pre-search', 'pre-mcp'];
 
@@ -902,11 +909,15 @@ describe('Hooks System - Complete Coverage', () => {
       }
     });
 
-    test('should handle all post-operation hooks', async() => {
+    test('should handle all post-operation hooks', async () => {
       const hooks = new RuvSwarmHooks();
       const postHooks = [
-        'post-edit', 'post-bash', 'post-task', 'post-search',
-        'post-web-search', 'post-web-fetch',
+        'post-edit',
+        'post-bash',
+        'post-task',
+        'post-search',
+        'post-web-search',
+        'post-web-fetch',
       ];
 
       for (const hookType of postHooks) {
@@ -915,11 +926,13 @@ describe('Hooks System - Complete Coverage', () => {
       }
     });
 
-    test('should handle all MCP hooks', async() => {
+    test('should handle all MCP hooks', async () => {
       const hooks = new RuvSwarmHooks();
       const mcpHooks = [
-        'mcp-swarm-initialized', 'mcp-agent-spawned',
-        'mcp-task-orchestrated', 'mcp-neural-trained',
+        'mcp-swarm-initialized',
+        'mcp-agent-spawned',
+        'mcp-task-orchestrated',
+        'mcp-neural-trained',
       ];
 
       for (const hookType of mcpHooks) {
@@ -928,11 +941,9 @@ describe('Hooks System - Complete Coverage', () => {
       }
     });
 
-    test('should handle all system hooks', async() => {
+    test('should handle all system hooks', async () => {
       const hooks = new RuvSwarmHooks();
-      const systemHooks = [
-        'notification', 'session-end', 'session-restore', 'agent-complete',
-      ];
+      const systemHooks = ['notification', 'session-end', 'session-restore', 'agent-complete'];
 
       for (const hookType of systemHooks) {
         const result = await hooks.handleHook(hookType, { test: 'data' });
@@ -942,7 +953,7 @@ describe('Hooks System - Complete Coverage', () => {
   });
 
   describe('Pre-Operation Hooks - Detailed Coverage', () => {
-    test('pre-edit hook should auto-assign agents', async() => {
+    test('pre-edit hook should auto-assign agents', async () => {
       const hooks = new RuvSwarmHooks();
 
       const result = await hooks.handleHook('pre-edit', {
@@ -956,7 +967,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(result.fileType).toBe('.js');
     });
 
-    test('pre-bash hook should validate command safety', async() => {
+    test('pre-bash hook should validate command safety', async () => {
       const hooks = new RuvSwarmHooks();
 
       // Test dangerous command blocking
@@ -976,7 +987,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(safeResult.optimizedCommand).toContain('--parallel');
     });
 
-    test('pre-task hook should analyze complexity and auto-spawn', async() => {
+    test('pre-task hook should analyze complexity and auto-spawn', async () => {
       const hooks = new RuvSwarmHooks();
 
       const result = await hooks.handleHook('pre-task', {
@@ -991,7 +1002,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(result.resources.prepared).toBe(true);
     });
 
-    test('pre-search hook should handle caching', async() => {
+    test('pre-search hook should handle caching', async () => {
       const hooks = new RuvSwarmHooks();
 
       // First search - should continue
@@ -1004,7 +1015,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(firstResult.optimizedPattern).toBeDefined();
     });
 
-    test('pre-mcp hook should validate tools', async() => {
+    test('pre-mcp hook should validate tools', async () => {
       const hooks = new RuvSwarmHooks();
 
       // Test invalid tool
@@ -1028,7 +1039,7 @@ describe('Hooks System - Complete Coverage', () => {
   });
 
   describe('Post-Operation Hooks - Detailed Coverage', () => {
-    test('post-edit hook should format and train', async() => {
+    test('post-edit hook should format and train', async () => {
       const hooks = new RuvSwarmHooks();
 
       const result = await hooks.handleHook('post-edit', {
@@ -1043,7 +1054,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(hooks.sessionData.metrics.filesProcessed).toBe(1);
     });
 
-    test('post-bash hook should analyze performance', async() => {
+    test('post-bash hook should analyze performance', async () => {
       const hooks = new RuvSwarmHooks();
 
       const result = await hooks.handleHook('post-bash', {
@@ -1057,7 +1068,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(result.learned).toBe(true);
     });
 
-    test('post-task hook should generate summary', async() => {
+    test('post-task hook should generate summary', async () => {
       const hooks = new RuvSwarmHooks();
 
       const result = await hooks.handleHook('post-task', {
@@ -1071,7 +1082,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(hooks.sessionData.metrics.tasksCompleted).toBe(1);
     });
 
-    test('post-search hook should cache results', async() => {
+    test('post-search hook should cache results', async () => {
       const hooks = new RuvSwarmHooks();
 
       const result = await hooks.handleHook('post-search', {
@@ -1085,7 +1096,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(result.tokensSaved).toBe(5);
     });
 
-    test('post-web-search hook should extract insights', async() => {
+    test('post-web-search hook should extract insights', async () => {
       const hooks = new RuvSwarmHooks();
 
       const result = await hooks.handleHook('post-web-search', {
@@ -1098,7 +1109,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(result.cached).toBe(true);
     });
 
-    test('post-web-fetch hook should process content', async() => {
+    test('post-web-fetch hook should process content', async () => {
       const hooks = new RuvSwarmHooks();
 
       const result = await hooks.handleHook('post-web-fetch', {
@@ -1113,7 +1124,7 @@ describe('Hooks System - Complete Coverage', () => {
   });
 
   describe('MCP Hooks - Detailed Coverage', () => {
-    test('mcp-swarm-initialized hook should track swarm data', async() => {
+    test('mcp-swarm-initialized hook should track swarm data', async () => {
       const hooks = new RuvSwarmHooks();
 
       const result = await hooks.handleHook('mcp-swarm-initialized', {
@@ -1128,7 +1139,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(hooks.sessionData.agents.has('swarm-config')).toBe(true);
     });
 
-    test('mcp-agent-spawned hook should track agents', async() => {
+    test('mcp-agent-spawned hook should track agents', async () => {
       const hooks = new RuvSwarmHooks();
 
       const result = await hooks.handleHook('mcp-agent-spawned', {
@@ -1144,7 +1155,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(hooks.sessionData.agents.has('test-agent')).toBe(true);
     });
 
-    test('mcp-task-orchestrated hook should create plan', async() => {
+    test('mcp-task-orchestrated hook should create plan', async () => {
       const hooks = new RuvSwarmHooks();
 
       const result = await hooks.handleHook('mcp-task-orchestrated', {
@@ -1158,7 +1169,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(result.estimatedDuration).toBeGreaterThan(0);
     });
 
-    test('mcp-neural-trained hook should track training', async() => {
+    test('mcp-neural-trained hook should track training', async () => {
       const hooks = new RuvSwarmHooks();
 
       const result = await hooks.handleHook('mcp-neural-trained', {
@@ -1175,7 +1186,7 @@ describe('Hooks System - Complete Coverage', () => {
   });
 
   describe('System Hooks - Detailed Coverage', () => {
-    test('notification hook should store notifications', async() => {
+    test('notification hook should store notifications', async () => {
       const hooks = new RuvSwarmHooks();
 
       const result = await hooks.handleHook('notification', {
@@ -1190,7 +1201,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(hooks.sessionData.notifications).toHaveLength(1);
     });
 
-    test('session-end hook should export metrics', async() => {
+    test('session-end hook should export metrics', async () => {
       const hooks = new RuvSwarmHooks();
 
       const result = await hooks.handleHook('session-end', {
@@ -1204,7 +1215,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(result.generatedSummary.summary).toContain('Session completed');
     });
 
-    test('session-restore hook should load memory', async() => {
+    test('session-restore hook should load memory', async () => {
       const hooks = new RuvSwarmHooks();
 
       const result = await hooks.handleHook('session-restore', {
@@ -1217,7 +1228,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(result.restoredData.loaded).toBe(true);
     });
 
-    test('agent-complete hook should update performance', async() => {
+    test('agent-complete hook should update performance', async () => {
       const hooks = new RuvSwarmHooks();
 
       // First spawn an agent
@@ -1238,7 +1249,7 @@ describe('Hooks System - Complete Coverage', () => {
   });
 
   describe('Error Handling and Edge Cases', () => {
-    test('should handle hook execution errors', async() => {
+    test('should handle hook execution errors', async () => {
       const hooks = new RuvSwarmHooks();
 
       // Override a method to throw error
@@ -1251,7 +1262,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(result.fallback).toContain('Hook error');
     });
 
-    test('should handle unknown hook types', async() => {
+    test('should handle unknown hook types', async () => {
       const hooks = new RuvSwarmHooks();
 
       const result = await hooks.handleHook('unknown-hook-type', {});
@@ -1260,7 +1271,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(result.reason).toContain('Unknown hook type');
     });
 
-    test('should track performance metrics', async() => {
+    test('should track performance metrics', async () => {
       const hooks = new RuvSwarmHooks();
 
       // Execute multiple hooks
@@ -1273,7 +1284,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(hooks.sessionData.performance.averageHookTime).toBeGreaterThan(0);
     });
 
-    test('should handle cache size limits', async() => {
+    test('should handle cache size limits', async () => {
       const hooks = new RuvSwarmHooks();
       hooks.config.maxCacheSize = 2;
 
@@ -1288,7 +1299,7 @@ describe('Hooks System - Complete Coverage', () => {
   });
 
   describe('Advanced Features and Optimization', () => {
-    test('should optimize search patterns', async() => {
+    test('should optimize search patterns', async () => {
       const hooks = new RuvSwarmHooks();
 
       const optimized = hooks.optimizeSearchPattern('camelCase pattern');
@@ -1297,7 +1308,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(optimized).toContain('[_-]?');
     });
 
-    test('should select appropriate agent types', async() => {
+    test('should select appropriate agent types', async () => {
       const hooks = new RuvSwarmHooks();
 
       const testType = hooks.selectAgentType('implement unit tests', 0);
@@ -1309,7 +1320,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(codeType).toBe('coder');
     });
 
-    test('should prepare resources based on complexity', async() => {
+    test('should prepare resources based on complexity', async () => {
       const hooks = new RuvSwarmHooks();
 
       const simpleResources = await hooks.prepareResources({ level: 'simple', score: 0.25 });
@@ -1319,7 +1330,7 @@ describe('Hooks System - Complete Coverage', () => {
       expect(simpleResources.cpuCores).toBeLessThan(complexResources.cpuCores);
     });
 
-    test('should handle concurrent hook execution', async() => {
+    test('should handle concurrent hook execution', async () => {
       const hooks = new RuvSwarmHooks();
 
       const promises = [
@@ -1331,7 +1342,7 @@ describe('Hooks System - Complete Coverage', () => {
       const results = await Promise.all(promises);
 
       expect(results).toHaveLength(3);
-      expect(results.every(r => r.continue)).toBe(true);
+      expect(results.every((r) => r.continue)).toBe(true);
     });
   });
 });

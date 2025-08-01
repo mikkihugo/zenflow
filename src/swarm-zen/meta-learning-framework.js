@@ -336,8 +336,8 @@ class MetaLearningFramework {
       return 0.5;
     }
 
-    const successfulAdaptations = experiences.filter(exp =>
-      exp.adaptationResult && exp.adaptationResult.success,
+    const successfulAdaptations = experiences.filter(
+      (exp) => exp.adaptationResult && exp.adaptationResult.success
     ).length;
 
     return successfulAdaptations / experiences.length;
@@ -379,7 +379,7 @@ class MetaLearningFramework {
       return 0.5;
     }
 
-    const transferExperiences = experiences.filter(exp => exp.transferLearning);
+    const transferExperiences = experiences.filter((exp) => exp.transferLearning);
     if (transferExperiences.length === 0) {
       return 0.5;
     }
@@ -826,7 +826,6 @@ class MetaLearningFramework {
       return 'step_decay'; // Stepwise reduction for complex tasks
     }
     return 'constant'; // Keep constant for stable cases
-
   }
 
   /**
@@ -945,7 +944,7 @@ class MetaLearningFramework {
         metrics.averageLearningTime = this.updateRunningAverage(
           metrics.averageLearningTime,
           experience.metrics.trainingTime,
-          metrics.totalExperiences,
+          metrics.totalExperiences
         );
       }
 
@@ -953,7 +952,7 @@ class MetaLearningFramework {
         metrics.averageAccuracy = this.updateRunningAverage(
           metrics.averageAccuracy,
           experience.metrics.accuracy,
-          metrics.totalExperiences,
+          metrics.totalExperiences
         );
       }
     }
@@ -999,7 +998,7 @@ class MetaLearningFramework {
       agentId,
       adaptationStrategy,
       sourceData,
-      targetData,
+      targetData
     );
 
     // Record domain adaptation experience
@@ -1066,14 +1065,14 @@ class MetaLearningFramework {
     }
 
     // Flatten samples to get all numeric values
-    const values = samples.flat().filter(v => typeof v === 'number');
+    const values = samples.flat().filter((v) => typeof v === 'number');
 
     if (values.length === 0) {
       return { mean: 0, variance: 0 };
     }
 
     const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
-    const variance = values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / values.length;
+    const variance = values.reduce((sum, v) => sum + (v - mean) ** 2, 0) / values.length;
 
     return { mean, variance };
   }
@@ -1129,10 +1128,10 @@ class MetaLearningFramework {
       return 0.5;
     }
 
-    const intersection = new Set([...sourceLabels].filter(x => targetLabels.has(x)));
+    const intersection = new Set([...sourceLabels].filter((x) => targetLabels.has(x)));
     const union = new Set([...sourceLabels, ...targetLabels]);
 
-    return 1 - (intersection.size / union.size); // Jaccard distance
+    return 1 - intersection.size / union.size; // Jaccard distance
   }
 
   /**
@@ -1143,7 +1142,7 @@ class MetaLearningFramework {
     const labels = new Set();
 
     if (data.samples) {
-      data.samples.forEach(sample => {
+      data.samples.forEach((sample) => {
         if (sample.label !== undefined) {
           labels.add(sample.label);
         }
@@ -1194,7 +1193,6 @@ class MetaLearningFramework {
       return 'label_adaptation';
     }
     return 'fine_tuning';
-
   }
 
   /**
@@ -1299,7 +1297,7 @@ class MetaLearningFramework {
     for (const [agentId, experiences] of this.agentExperiences.entries()) {
       totalExperiences += experiences.length;
 
-      const adaptations = experiences.filter(exp => exp.type === 'domain_adaptation');
+      const adaptations = experiences.filter((exp) => exp.type === 'domain_adaptation');
       totalAdaptations += adaptations.length;
 
       const metrics = this.learningMetrics.get(agentId);

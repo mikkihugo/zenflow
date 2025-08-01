@@ -1,6 +1,6 @@
 /**
  * Document-Driven Development System - HIVE SYSTEM CORE
- * 
+ *
  * The focused hive system that works with existing document workflows:
  * - Vision → ADRs → PRDs → Epics → Features → Tasks → Code
  * - Background swarm assistance (hidden but available)
@@ -9,10 +9,10 @@
  */
 
 import { EventEmitter } from 'events';
-import { createLogger } from '../utils/logger.js';
-import { join } from 'path';
-import { readFile, writeFile, mkdir, readdir } from 'fs/promises';
 import { existsSync } from 'fs';
+import { mkdir, readdir, readFile, writeFile } from 'fs/promises';
+import { join } from 'path';
+import { createLogger } from '../utils/logger.js';
 
 const logger = createLogger('DocumentDriven');
 
@@ -32,13 +32,13 @@ export interface VisionaryDocument {
 
 export interface DocumentWorkspace {
   root: string;
-  vision?: string;        // vision/
-  adrs?: string;         // adrs/
-  prds?: string;         // prds/
-  epics?: string;        // epics/
-  features?: string;     // features/
-  tasks?: string;        // tasks/
-  specs?: string;        // specs/ (Maestro addition)
+  vision?: string; // vision/
+  adrs?: string; // adrs/
+  prds?: string; // prds/
+  epics?: string; // epics/
+  features?: string; // features/
+  tasks?: string; // tasks/
+  specs?: string; // specs/ (Maestro addition)
   implementation?: string; // src/
 }
 
@@ -63,7 +63,7 @@ export class DocumentDrivenSystem extends EventEmitter {
    */
   async initialize(): Promise<void> {
     logger.info('🚀 Initializing Document-Driven Development System');
-    
+
     logger.info('✅ Document-Driven System ready');
     this.emit('initialized');
   }
@@ -73,36 +73,36 @@ export class DocumentDrivenSystem extends EventEmitter {
    */
   async loadWorkspace(workspacePath: string): Promise<string> {
     const workspaceId = `workspace-${Date.now()}`;
-    
+
     const workspace: DocumentWorkspace = {
       root: workspacePath,
-      vision: join(workspacePath, 'vision'),
-      adrs: join(workspacePath, 'adrs'),
-      prds: join(workspacePath, 'prds'),
-      epics: join(workspacePath, 'epics'),
-      features: join(workspacePath, 'features'),
-      tasks: join(workspacePath, 'tasks'),
-      specs: join(workspacePath, 'specs'), // Maestro's specs
-      implementation: join(workspacePath, 'src')
+      vision: join(workspacePath, 'docs/01-vision'),
+      adrs: join(workspacePath, 'docs/02-adrs'),
+      prds: join(workspacePath, 'docs/03-prds'),
+      epics: join(workspacePath, 'docs/04-epics'),
+      features: join(workspacePath, 'docs/05-features'),
+      tasks: join(workspacePath, 'docs/06-tasks'),
+      specs: join(workspacePath, 'docs/07-specs'), // Maestro's specs
+      implementation: join(workspacePath, 'src'),
     };
 
     const context: WorkflowContext = {
       workspace,
       activeDocuments: new Map(),
-      swarmSupport: true
+      swarmSupport: true,
     };
 
     this.workspaces.set(workspaceId, context);
-    
+
     // Load existing documents
     await this.scanDocuments(workspaceId);
-    
+
     // Setup document watchers for real-time updates
     this.setupDocumentWatchers(workspaceId);
-    
+
     logger.info(`📁 Loaded workspace: ${workspacePath}`);
     this.emit('workspace:loaded', { workspaceId, path: workspacePath });
-    
+
     return workspaceId;
   }
 
@@ -115,14 +115,14 @@ export class DocumentDrivenSystem extends EventEmitter {
 
     const docType = this.getDocumentType(docPath);
     const content = await readFile(docPath, 'utf8');
-    
+
     logger.info(`📄 Processing ${docType} document: ${docPath}`);
 
     const doc: VisionaryDocument = {
       type: docType,
       path: docPath,
       content,
-      metadata: await this.extractMetadata(content)
+      metadata: await this.extractMetadata(content),
     };
 
     context.activeDocuments.set(docPath, doc);
@@ -149,11 +149,11 @@ export class DocumentDrivenSystem extends EventEmitter {
         break;
     }
 
-    this.emit('document:created', { 
-      workspaceId, 
-      path: docPath, 
-      type: docType, 
-      document: doc 
+    this.emit('document:created', {
+      workspaceId,
+      path: docPath,
+      type: docType,
+      document: doc,
     });
   }
 
@@ -162,12 +162,12 @@ export class DocumentDrivenSystem extends EventEmitter {
    */
   private async processVisionDocument(workspaceId: string, doc: VisionaryDocument): Promise<void> {
     logger.info('🔮 Processing Vision document');
-    
+
     // Emit event for workflow processing
     this.emit('document:processed', {
       workspaceId,
       document: doc,
-      suggestedNextSteps: ['Create ADRs', 'Create PRDs']
+      suggestedNextSteps: ['Create ADRs', 'Create PRDs'],
     });
   }
 
@@ -176,11 +176,11 @@ export class DocumentDrivenSystem extends EventEmitter {
    */
   private async processADR(workspaceId: string, doc: VisionaryDocument): Promise<void> {
     logger.info('📐 Processing ADR document');
-    
+
     this.emit('document:processed', {
       workspaceId,
       document: doc,
-      suggestedNextSteps: ['Review architecture', 'Update related PRDs']
+      suggestedNextSteps: ['Review architecture', 'Update related PRDs'],
     });
   }
 
@@ -189,16 +189,16 @@ export class DocumentDrivenSystem extends EventEmitter {
    */
   private async processPRD(workspaceId: string, doc: VisionaryDocument): Promise<void> {
     const context = this.workspaces.get(workspaceId)!;
-    
+
     logger.info('📋 Processing PRD document');
-    
+
     // Set phase for structured processing
     context.maestroPhase = 'requirements';
-    
+
     this.emit('document:processed', {
       workspaceId,
       document: doc,
-      suggestedNextSteps: ['Generate epics', 'Create user stories']
+      suggestedNextSteps: ['Generate epics', 'Create user stories'],
     });
   }
 
@@ -207,11 +207,11 @@ export class DocumentDrivenSystem extends EventEmitter {
    */
   private async processEpic(workspaceId: string, doc: VisionaryDocument): Promise<void> {
     logger.info('🏔️ Processing Epic document');
-    
+
     this.emit('document:processed', {
       workspaceId,
       document: doc,
-      suggestedNextSteps: ['Break down into features']
+      suggestedNextSteps: ['Break down into features'],
     });
   }
 
@@ -220,16 +220,16 @@ export class DocumentDrivenSystem extends EventEmitter {
    */
   private async processFeature(workspaceId: string, doc: VisionaryDocument): Promise<void> {
     const context = this.workspaces.get(workspaceId)!;
-    
+
     logger.info('⭐ Processing Feature document');
-    
+
     // Set planning phase
     context.maestroPhase = 'planning';
-    
+
     this.emit('document:processed', {
       workspaceId,
       document: doc,
-      suggestedNextSteps: ['Create implementation tasks']
+      suggestedNextSteps: ['Create implementation tasks'],
     });
   }
 
@@ -238,16 +238,16 @@ export class DocumentDrivenSystem extends EventEmitter {
    */
   private async processTask(workspaceId: string, doc: VisionaryDocument): Promise<void> {
     const context = this.workspaces.get(workspaceId)!;
-    
+
     logger.info('✅ Processing Task document');
-    
+
     // Set execution phase
     context.maestroPhase = 'execution';
-    
+
     this.emit('document:processed', {
       workspaceId,
       document: doc,
-      suggestedNextSteps: ['Generate implementation code']
+      suggestedNextSteps: ['Generate implementation code'],
     });
   }
 
@@ -257,7 +257,7 @@ export class DocumentDrivenSystem extends EventEmitter {
   private async scanDocuments(workspaceId: string): Promise<void> {
     const context = this.workspaces.get(workspaceId)!;
     const dirs = Object.entries(context.workspace);
-    
+
     for (const [type, path] of dirs) {
       if (path && existsSync(path) && type !== 'root' && type !== 'implementation') {
         try {
@@ -267,12 +267,12 @@ export class DocumentDrivenSystem extends EventEmitter {
               const fullPath = join(path, file);
               const docType = this.getDocumentType(fullPath);
               const content = await readFile(fullPath, 'utf8');
-              
+
               context.activeDocuments.set(fullPath, {
                 type: docType,
                 path: fullPath,
                 content,
-                metadata: await this.extractMetadata(content)
+                metadata: await this.extractMetadata(content),
               });
             }
           }
@@ -281,7 +281,7 @@ export class DocumentDrivenSystem extends EventEmitter {
         }
       }
     }
-    
+
     logger.info(`📚 Loaded ${context.activeDocuments.size} documents`);
   }
 
@@ -289,13 +289,13 @@ export class DocumentDrivenSystem extends EventEmitter {
    * Determine document type from path
    */
   private getDocumentType(path: string): VisionaryDocument['type'] {
-    if (path.includes('/vision/')) return 'vision';
-    if (path.includes('/adrs/')) return 'adr';
-    if (path.includes('/prds/')) return 'prd';
-    if (path.includes('/epics/')) return 'epic';
-    if (path.includes('/features/')) return 'feature';
-    if (path.includes('/tasks/')) return 'task';
-    if (path.includes('/specs/')) return 'spec';
+    if (path.includes('/01-vision/') || path.includes('/vision/')) return 'vision';
+    if (path.includes('/02-adrs/') || path.includes('/adrs/')) return 'adr';
+    if (path.includes('/03-prds/') || path.includes('/prds/')) return 'prd';
+    if (path.includes('/04-epics/') || path.includes('/epics/')) return 'epic';
+    if (path.includes('/05-features/') || path.includes('/features/')) return 'feature';
+    if (path.includes('/06-tasks/') || path.includes('/tasks/')) return 'task';
+    if (path.includes('/07-specs/') || path.includes('/specs/')) return 'spec';
     return 'task'; // default
   }
 
@@ -305,7 +305,7 @@ export class DocumentDrivenSystem extends EventEmitter {
   private async extractMetadata(content: string): Promise<any> {
     // Parse frontmatter or other metadata
     const metadata: any = {};
-    
+
     // Simple extraction - would be more sophisticated
     const lines = content.split('\n');
     for (const line of lines.slice(0, 10)) {
@@ -313,10 +313,14 @@ export class DocumentDrivenSystem extends EventEmitter {
       if (line.startsWith('Created:')) metadata.created = new Date(line.substring(8).trim());
       if (line.startsWith('Status:')) metadata.status = line.substring(7).trim();
       if (line.startsWith('Related:')) {
-        metadata.relatedDocs = line.substring(8).trim().split(',').map(s => s.trim());
+        metadata.relatedDocs = line
+          .substring(8)
+          .trim()
+          .split(',')
+          .map((s) => s.trim());
       }
     }
-    
+
     return metadata;
   }
 

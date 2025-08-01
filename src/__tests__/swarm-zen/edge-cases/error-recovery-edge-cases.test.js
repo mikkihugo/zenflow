@@ -3,7 +3,7 @@
  * Tests error propagation, recovery mechanisms, and failure scenarios
  */
 
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { RuvSwarm } from '../../src/index-enhanced.js';
 import { EnhancedMCPTools } from '../../src/mcp-tools-enhanced.js';
 import { SwarmPersistence } from '../../src/persistence.js';
@@ -26,7 +26,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
   });
 
   describe('Error Propagation Edge Cases', () => {
-    it('should handle nested error chains', async() => {
+    it('should handle nested error chains', async () => {
       const createNestedError = () => {
         try {
           throw new Error('Level 1 error');
@@ -49,11 +49,12 @@ describe('Error Handling and Recovery Edge Cases', () => {
 
       await mcpTools.initialize(mockRuvSwarm);
 
-      await expect(mcpTools.swarm_init({ topology: 'mesh' }))
-        .rejects.toThrow(/Level 4.*Level 3.*Level 2.*Level 1/);
+      await expect(mcpTools.swarm_init({ topology: 'mesh' })).rejects.toThrow(
+        /Level 4.*Level 3.*Level 2.*Level 1/
+      );
     });
 
-    it('should handle error aggregation from multiple sources', async() => {
+    it('should handle error aggregation from multiple sources', async () => {
       const errors = [];
 
       const failingOperations = [
@@ -63,11 +64,9 @@ describe('Error Handling and Recovery Edge Cases', () => {
         () => Promise.reject(new Error('Permission error')),
       ];
 
-      const results = await Promise.allSettled(
-        failingOperations.map(op => op()),
-      );
+      const results = await Promise.allSettled(failingOperations.map((op) => op()));
 
-      results.forEach(result => {
+      results.forEach((result) => {
         if (result.status === 'rejected') {
           errors.push(result.reason.message);
         }
@@ -80,7 +79,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
       expect(errors).toContain('Permission error');
     });
 
-    it('should handle circular error references', async() => {
+    it('should handle circular error references', async () => {
       const createCircularError = () => {
         const error1 = new Error('Error 1');
         const error2 = new Error('Error 2');
@@ -106,14 +105,14 @@ describe('Error Handling and Recovery Edge Cases', () => {
   });
 
   describe('Recovery Mechanism Edge Cases', () => {
-    it('should implement exponential backoff with jitter', async() => {
+    it('should implement exponential backoff with jitter', async () => {
       let attemptCount = 0;
       const maxAttempts = 5;
       const backoffTimes = [];
 
-      const unreliableOperation = async() => {
+      const unreliableOperation = async () => {
         attemptCount++;
-        const backoffTime = Math.pow(2, attemptCount - 1) * 100; // Exponential backoff
+        const backoffTime = 2 ** (attemptCount - 1) * 100; // Exponential backoff
         const jitter = Math.random() * 100; // Add jitter
         const totalWait = backoffTime + jitter;
 
@@ -126,7 +125,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
         return `Success after ${attemptCount} attempts`;
       };
 
-      const retryWithBackoff = async(operation, maxRetries = 5) => {
+      const retryWithBackoff = async (operation, maxRetries = 5) => {
         for (let i = 0; i < maxRetries; i++) {
           try {
             return await operation();
@@ -136,7 +135,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
             }
 
             const backoffTime = backoffTimes[i];
-            await new Promise(resolve => setTimeout(resolve, backoffTime));
+            await new Promise((resolve) => setTimeout(resolve, backoffTime));
           }
         }
       };
@@ -152,7 +151,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
       expect(backoffTimes[2]).toBeGreaterThan(backoffTimes[1]);
     });
 
-    it('should handle recovery from corrupted state', async() => {
+    it('should handle recovery from corrupted state', async () => {
       class StatefulService {
         constructor() {
           this.state = { healthy: true, data: [] };
@@ -173,7 +172,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
         async recover() {
           // Simulate recovery process
           this.state = { healthy: true, data: [] };
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 100));
         }
 
         async safeOperation() {
@@ -204,7 +203,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
       expect(service.state.healthy).toBe(true);
     });
 
-    it('should handle cascading failures with circuit breaker', async() => {
+    it('should handle cascading failures with circuit breaker', async () => {
       class CircuitBreaker {
         constructor(threshold = 5, timeout = 60000) {
           this.failureThreshold = threshold;
@@ -251,7 +250,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
       const circuitBreaker = new CircuitBreaker(3, 1000);
       let operationCount = 0;
 
-      const flakyOperation = async() => {
+      const flakyOperation = async () => {
         operationCount++;
         if (operationCount <= 5) {
           throw new Error(`Operation failed (${operationCount})`);
@@ -261,18 +260,18 @@ describe('Error Handling and Recovery Edge Cases', () => {
 
       // First 3 failures should succeed in failing
       for (let i = 0; i < 3; i++) {
-        await expect(circuitBreaker.execute(flakyOperation))
-          .rejects.toThrow(/Operation failed/);
+        await expect(circuitBreaker.execute(flakyOperation)).rejects.toThrow(/Operation failed/);
       }
 
       expect(circuitBreaker.state).toBe('OPEN');
 
       // Next attempts should fail immediately due to circuit breaker
-      await expect(circuitBreaker.execute(flakyOperation))
-        .rejects.toThrow(/Circuit breaker is OPEN/);
+      await expect(circuitBreaker.execute(flakyOperation)).rejects.toThrow(
+        /Circuit breaker is OPEN/
+      );
 
       // Wait for timeout and try again
-      await new Promise(resolve => setTimeout(resolve, 1100));
+      await new Promise((resolve) => setTimeout(resolve, 1100));
 
       // Should succeed now (operationCount > 5)
       const result = await circuitBreaker.execute(flakyOperation);
@@ -282,7 +281,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
   });
 
   describe('Resource Cleanup on Failure', () => {
-    it('should cleanup resources even when cleanup fails', async() => {
+    it('should cleanup resources even when cleanup fails', async () => {
       const resources = [];
       let cleanupSuccesses = 0;
       let cleanupFailures = 0;
@@ -305,7 +304,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
         }
       }
 
-      const acquireResources = async() => {
+      const acquireResources = async () => {
         const acquired = [];
         try {
           // Acquire resources, some will fail cleanup
@@ -316,21 +315,22 @@ describe('Error Handling and Recovery Edge Cases', () => {
 
           // Simulate operation failure
           throw new Error('Operation failed');
-
         } catch (error) {
           // Cleanup all resources, even if some cleanups fail
-          const cleanupPromises = acquired.map(resource =>
-            resource.cleanup().catch(err => ({ error: err.message })),
+          const cleanupPromises = acquired.map((resource) =>
+            resource.cleanup().catch((err) => ({ error: err.message }))
           );
 
           const cleanupResults = await Promise.allSettled(cleanupPromises);
 
           // Count successful cleanups
           const successfulCleanups = cleanupResults.filter(
-            result => result.status === 'fulfilled' && !result.value?.error,
+            (result) => result.status === 'fulfilled' && !result.value?.error
           ).length;
 
-          throw new Error(`Operation failed. Cleaned up ${successfulCleanups}/${acquired.length} resources`);
+          throw new Error(
+            `Operation failed. Cleaned up ${successfulCleanups}/${acquired.length} resources`
+          );
         }
       };
 
@@ -340,7 +340,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
       expect(cleanupFailures).toBe(3); // 3 resources should fail cleanup
     });
 
-    it('should handle nested resource cleanup failures', async() => {
+    it('should handle nested resource cleanup failures', async () => {
       const cleanupLog = [];
 
       class NestedResource {
@@ -354,11 +354,11 @@ describe('Error Handling and Recovery Edge Cases', () => {
           cleanupLog.push(`Cleaning up ${this.id}`);
 
           // Cleanup children first
-          const childCleanupPromises = this.children.map(child =>
-            child.cleanup().catch(error => {
+          const childCleanupPromises = this.children.map((child) =>
+            child.cleanup().catch((error) => {
               cleanupLog.push(`Child cleanup failed: ${error.message}`);
               return { error };
-            }),
+            })
           );
 
           await Promise.all(childCleanupPromises);
@@ -394,7 +394,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
   });
 
   describe('Error Context Preservation', () => {
-    it('should preserve error context through async boundaries', async() => {
+    it('should preserve error context through async boundaries', async () => {
       const createContextualError = (context) => {
         const error = new Error('Base error');
         error.context = context;
@@ -402,12 +402,12 @@ describe('Error Handling and Recovery Edge Cases', () => {
         return error;
       };
 
-      const asyncOperation1 = async() => {
-        await new Promise(resolve => setImmediate(resolve));
+      const asyncOperation1 = async () => {
+        await new Promise((resolve) => setImmediate(resolve));
         throw createContextualError({ operation: 'async-1', step: 'validation' });
       };
 
-      const asyncOperation2 = async() => {
+      const asyncOperation2 = async () => {
         try {
           await asyncOperation1();
         } catch (error) {
@@ -418,7 +418,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
         }
       };
 
-      const asyncOperation3 = async() => {
+      const asyncOperation3 = async () => {
         try {
           await asyncOperation2();
         } catch (error) {
@@ -438,7 +438,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
       }
     });
 
-    it('should handle error context serialization', async() => {
+    it('should handle error context serialization', async () => {
       const createComplexError = () => {
         const error = new Error('Complex error');
         error.context = {
@@ -484,7 +484,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
   });
 
   describe('Timeout and Cancellation Edge Cases', () => {
-    it('should handle operation cancellation during execution', async() => {
+    it('should handle operation cancellation during execution', async () => {
       const { AbortController } = globalThis;
 
       if (!AbortController) {
@@ -495,13 +495,13 @@ describe('Error Handling and Recovery Edge Cases', () => {
       const controller = new AbortController();
       const { signal } = controller;
 
-      const longRunningOperation = async(signal) => {
+      const longRunningOperation = async (signal) => {
         for (let i = 0; i < 1000; i++) {
           if (signal.aborted) {
             throw new Error('Operation was cancelled');
           }
 
-          await new Promise(resolve => setTimeout(resolve, 10));
+          await new Promise((resolve) => setTimeout(resolve, 10));
         }
         return 'Completed';
       };
@@ -509,38 +509,37 @@ describe('Error Handling and Recovery Edge Cases', () => {
       // Cancel after 100ms
       setTimeout(() => controller.abort(), 100);
 
-      await expect(longRunningOperation(signal))
-        .rejects.toThrow('Operation was cancelled');
+      await expect(longRunningOperation(signal)).rejects.toThrow('Operation was cancelled');
     });
 
-    it('should handle timeout with resource cleanup', async() => {
+    it('should handle timeout with resource cleanup', async () => {
       const resources = [];
 
-      const operationWithResources = async(timeoutMs) => {
+      const operationWithResources = async (timeoutMs) => {
         const acquiredResources = [];
         const timeoutPromise = new Promise((_, reject) => {
           setTimeout(() => reject(new Error('Operation timeout')), timeoutMs);
         });
 
         try {
-          const workPromise = (async() => {
+          const workPromise = (async () => {
             // Acquire resources
             for (let i = 0; i < 5; i++) {
               const resource = { id: i, acquired: true };
               acquiredResources.push(resource);
               resources.push(resource);
-              await new Promise(resolve => setTimeout(resolve, 50));
+              await new Promise((resolve) => setTimeout(resolve, 50));
             }
 
             // Do work (this will timeout)
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
             return 'Work completed';
           })();
 
           return await Promise.race([workPromise, timeoutPromise]);
         } catch (error) {
           // Cleanup resources on timeout
-          acquiredResources.forEach(resource => {
+          acquiredResources.forEach((resource) => {
             resource.acquired = false;
           });
           throw error;
@@ -550,17 +549,17 @@ describe('Error Handling and Recovery Edge Cases', () => {
       await expect(operationWithResources(200)).rejects.toThrow('Operation timeout');
 
       // Check that resources were cleaned up
-      const acquiredResources = resources.filter(r => r.acquired);
+      const acquiredResources = resources.filter((r) => r.acquired);
       expect(acquiredResources).toHaveLength(0);
     });
   });
 
   describe('Error Recovery Strategies', () => {
-    it('should implement retry with different strategies', async() => {
+    it('should implement retry with different strategies', async () => {
       const strategies = {
         immediate: (attempt) => 0,
         linear: (attempt) => attempt * 100,
-        exponential: (attempt) => Math.pow(2, attempt) * 100,
+        exponential: (attempt) => 2 ** attempt * 100,
         fibonacci: (() => {
           const fib = [100, 100];
           return (attempt) => {
@@ -579,7 +578,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
         let attempts = 0;
         const maxAttempts = 4;
 
-        const retryWithStrategy = async(operation, strategy) => {
+        const retryWithStrategy = async (operation, strategy) => {
           for (let attempt = 0; attempt < maxAttempts; attempt++) {
             try {
               return await operation();
@@ -589,12 +588,12 @@ describe('Error Handling and Recovery Edge Cases', () => {
               }
 
               const delay = strategy(attempt);
-              await new Promise(resolve => setTimeout(resolve, Math.min(delay, 1000)));
+              await new Promise((resolve) => setTimeout(resolve, Math.min(delay, 1000)));
             }
           }
         };
 
-        const flakyOperation = async() => {
+        const flakyOperation = async () => {
           attempts++;
           if (attempts < 3) {
             throw new Error(`${strategyName} attempt ${attempts} failed`);

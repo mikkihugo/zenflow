@@ -3,7 +3,7 @@
  * Tests promise handling, timeouts, race conditions, and async edge cases
  */
 
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { RuvSwarm } from '../../src/index-enhanced.js';
 import { NeuralAgent } from '../../src/neural-agent.js';
 import { SwarmPersistence } from '../../src/persistence.js';
@@ -15,7 +15,7 @@ describe('Async Operations Edge Cases', () => {
   let ruv;
   let swarm;
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     // Initialize with mocks
     ruv = {
       createSwarm: jest.fn().mockResolvedValue({
@@ -34,10 +34,11 @@ describe('Async Operations Edge Cases', () => {
   });
 
   describe('Promise Timeout Scenarios', () => {
-    it('should timeout after max wait period', async() => {
-      const longOperation = () => new Promise((resolve) => {
-        setTimeout(() => resolve('completed'), 10000); // 10 seconds
-      });
+    it('should timeout after max wait period', async () => {
+      const longOperation = () =>
+        new Promise((resolve) => {
+          setTimeout(() => resolve('completed'), 10000); // 10 seconds
+        });
 
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => reject(new Error('Operation timeout')), 5000);
@@ -50,7 +51,7 @@ describe('Async Operations Edge Cases', () => {
       await expect(racePromise).rejects.toThrow('Operation timeout');
     });
 
-    it('should handle multiple timeout scenarios', async() => {
+    it('should handle multiple timeout scenarios', async () => {
       jest.useFakeTimers();
 
       const operations = [
@@ -94,8 +95,8 @@ describe('Async Operations Edge Cases', () => {
   });
 
   describe('Promise Rejection Handling', () => {
-    it('should handle nested promise rejections', async() => {
-      const nestedOperation = async() => {
+    it('should handle nested promise rejections', async () => {
+      const nestedOperation = async () => {
         try {
           await Promise.resolve().then(() => {
             return Promise.reject(new Error('Inner rejection'));
@@ -109,11 +110,11 @@ describe('Async Operations Edge Cases', () => {
       await expect(nestedOperation()).rejects.toThrow('Wrapped: Inner rejection');
     });
 
-    it('should handle promise rejection in finally block', async() => {
+    it('should handle promise rejection in finally block', async () => {
       let cleanupCalled = false;
       let errorInFinally = false;
 
-      const operationWithFinally = async() => {
+      const operationWithFinally = async () => {
         try {
           throw new Error('Main error');
         } finally {
@@ -132,7 +133,7 @@ describe('Async Operations Edge Cases', () => {
       expect(errorInFinally).toBe(true);
     });
 
-    it('should handle unhandled promise rejections in callbacks', async() => {
+    it('should handle unhandled promise rejections in callbacks', async () => {
       const events = [];
 
       // Track unhandled rejections
@@ -148,7 +149,7 @@ describe('Async Operations Edge Cases', () => {
       }, 0);
 
       // Wait for event loop
-      await new Promise(resolve => setImmediate(resolve));
+      await new Promise((resolve) => setImmediate(resolve));
 
       process.off('unhandledRejection', unhandledHandler);
 
@@ -158,13 +159,13 @@ describe('Async Operations Edge Cases', () => {
   });
 
   describe('Race Condition Edge Cases', () => {
-    it('should handle concurrent state modifications', async() => {
+    it('should handle concurrent state modifications', async () => {
       const sharedState = { counter: 0, operations: [] };
 
-      const increment = async(id) => {
+      const increment = async (id) => {
         const current = sharedState.counter;
         // Simulate async operation
-        await new Promise(resolve => setImmediate(resolve));
+        await new Promise((resolve) => setImmediate(resolve));
         sharedState.counter = current + 1;
         sharedState.operations.push(id);
       };
@@ -182,22 +183,28 @@ describe('Async Operations Edge Cases', () => {
       expect(sharedState.operations.length).toBe(100);
     });
 
-    it('should handle promise settlement order', async() => {
+    it('should handle promise settlement order', async () => {
       const results = [];
 
       const promises = [
-        new Promise(resolve => setTimeout(() => {
-          results.push(1);
-          resolve(1);
-        }, 100)),
-        new Promise(resolve => setTimeout(() => {
-          results.push(2);
-          resolve(2);
-        }, 50)),
-        new Promise(resolve => setTimeout(() => {
-          results.push(3);
-          resolve(3);
-        }, 75)),
+        new Promise((resolve) =>
+          setTimeout(() => {
+            results.push(1);
+            resolve(1);
+          }, 100)
+        ),
+        new Promise((resolve) =>
+          setTimeout(() => {
+            results.push(2);
+            resolve(2);
+          }, 50)
+        ),
+        new Promise((resolve) =>
+          setTimeout(() => {
+            results.push(3);
+            resolve(3);
+          }, 75)
+        ),
       ];
 
       jest.useRealTimers();
@@ -211,7 +218,7 @@ describe('Async Operations Edge Cases', () => {
   });
 
   describe('Async Iterator Edge Cases', () => {
-    it('should handle async generator errors', async() => {
+    it('should handle async generator errors', async () => {
       async function* problematicGenerator() {
         yield 1;
         yield 2;
@@ -236,7 +243,7 @@ describe('Async Operations Edge Cases', () => {
       expect(errorCaught).toBe(true);
     });
 
-    it('should handle async generator cleanup', async() => {
+    it('should handle async generator cleanup', async () => {
       let cleanupCalled = false;
 
       async function* generatorWithCleanup() {
@@ -263,13 +270,13 @@ describe('Async Operations Edge Cases', () => {
   });
 
   describe('Concurrent Async Operations', () => {
-    it('should handle Promise.allSettled with mixed results', async() => {
+    it('should handle Promise.allSettled with mixed results', async () => {
       const operations = [
         Promise.resolve('success-1'),
         Promise.reject(new Error('failure-1')),
         Promise.resolve('success-2'),
         Promise.reject(new Error('failure-2')),
-        new Promise(resolve => setTimeout(() => resolve('delayed'), 100)),
+        new Promise((resolve) => setTimeout(() => resolve('delayed'), 100)),
       ];
 
       jest.useRealTimers();
@@ -289,7 +296,7 @@ describe('Async Operations Edge Cases', () => {
       expect(results[4]).toEqual({ status: 'fulfilled', value: 'delayed' });
     });
 
-    it('should handle Promise.race with all rejections', async() => {
+    it('should handle Promise.race with all rejections', async () => {
       const rejections = [
         new Promise((_, reject) => setTimeout(() => reject(new Error('Error 1')), 100)),
         new Promise((_, reject) => setTimeout(() => reject(new Error('Error 2')), 50)),
@@ -302,7 +309,7 @@ describe('Async Operations Edge Cases', () => {
       await expect(Promise.race(rejections)).rejects.toThrow('Error 2');
     });
 
-    it('should handle Promise.any with all rejections', async() => {
+    it('should handle Promise.any with all rejections', async () => {
       const rejections = [
         Promise.reject(new Error('Error 1')),
         Promise.reject(new Error('Error 2')),
@@ -314,7 +321,7 @@ describe('Async Operations Edge Cases', () => {
   });
 
   describe('Async Queue Edge Cases', () => {
-    it('should handle queue overflow', async() => {
+    it('should handle queue overflow', async () => {
       class AsyncQueue {
         constructor(maxSize = 10) {
           this.queue = [];
@@ -351,23 +358,23 @@ describe('Async Operations Edge Cases', () => {
 
       // Fill queue to capacity
       for (let i = 0; i < 5; i++) {
-        await queue.add(async() => {
+        await queue.add(async () => {
           results.push(i);
         });
       }
 
       // This should throw
-      await expect(queue.add(async() => {})).rejects.toThrow('Queue overflow');
+      await expect(queue.add(async () => {})).rejects.toThrow('Queue overflow');
 
       // Wait for processing
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       expect(results.length).toBe(5);
     });
   });
 
   describe('Async Resource Cleanup', () => {
-    it('should cleanup resources on async failure', async() => {
+    it('should cleanup resources on async failure', async () => {
       const resources = [];
       let cleanupCount = 0;
 
@@ -391,7 +398,7 @@ describe('Async Operations Edge Cases', () => {
         }
       }
 
-      const acquireResources = async() => {
+      const acquireResources = async () => {
         const acquired = [];
         try {
           for (let i = 0; i < 5; i++) {
@@ -401,7 +408,7 @@ describe('Async Operations Edge Cases', () => {
           }
         } catch (error) {
           // Cleanup all acquired resources
-          await Promise.all(acquired.map(r => r.cleanup()));
+          await Promise.all(acquired.map((r) => r.cleanup()));
           throw error;
         }
       };
@@ -412,35 +419,33 @@ describe('Async Operations Edge Cases', () => {
   });
 
   describe('Async Event Emitter Edge Cases', () => {
-    it('should handle async event listeners with errors', async() => {
+    it('should handle async event listeners with errors', async () => {
       const { EventEmitter } = await import('events');
       const emitter = new EventEmitter();
       const results = [];
 
       // Add multiple async listeners, some failing
-      emitter.on('test', async() => {
+      emitter.on('test', async () => {
         results.push('listener-1-start');
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise((resolve) => setTimeout(resolve, 50));
         results.push('listener-1-end');
       });
 
-      emitter.on('test', async() => {
+      emitter.on('test', async () => {
         results.push('listener-2-start');
         throw new Error('Listener 2 failed');
       });
 
-      emitter.on('test', async() => {
+      emitter.on('test', async () => {
         results.push('listener-3-start');
-        await new Promise(resolve => setTimeout(resolve, 25));
+        await new Promise((resolve) => setTimeout(resolve, 25));
         results.push('listener-3-end');
       });
 
       // Emit and wait for all listeners
       const promises = [];
-      emitter.listeners('test').forEach(listener => {
-        promises.push(
-          listener().catch(err => ({ error: err.message })),
-        );
+      emitter.listeners('test').forEach((listener) => {
+        promises.push(listener().catch((err) => ({ error: err.message })));
       });
 
       emitter.emit('test');

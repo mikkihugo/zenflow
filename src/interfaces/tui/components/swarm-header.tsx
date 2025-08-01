@@ -1,6 +1,6 @@
-import React from 'react';
 import { Box, Text } from 'ink';
-import { SwarmStatus } from '../types';
+import type React from 'react';
+import type { SwarmStatus } from '../types';
 
 export interface SwarmHeaderProps {
   title: string;
@@ -14,7 +14,7 @@ export interface SwarmHeaderProps {
 
 /**
  * SwarmHeader Component - Swarm-focused header for swarm applications
- * 
+ *
  * Displays swarm application header with status, topology info, and real-time metrics.
  * Optimized for swarm orchestration and coordination display.
  */
@@ -28,17 +28,22 @@ export const SwarmHeader: React.FC<SwarmHeaderProps> = ({
   testId = 'swarm-header',
 }) => {
   const titleText = version ? `${title} v${version}` : title;
-  
+
   const getStatusIcon = (status?: SwarmStatus['status']) => {
     switch (status) {
-      case 'active': return '🟢';
-      case 'initializing': return '🟡';
-      case 'error': return '🔴';
-      case 'idle': return '⚪';
-      default: return '⚫';
+      case 'active':
+        return '🟢';
+      case 'initializing':
+        return '🟡';
+      case 'error':
+        return '🔴';
+      case 'idle':
+        return '⚪';
+      default:
+        return '⚫';
     }
   };
-  
+
   return (
     <Box
       flexDirection="column"
@@ -53,24 +58,24 @@ export const SwarmHeader: React.FC<SwarmHeaderProps> = ({
         </Text>
         {swarmStatus && (
           <Text color="gray">
-            {' '}{getStatusIcon(swarmStatus.status)} {swarmStatus.status}
+            {' '}
+            {getStatusIcon(swarmStatus.status)} {swarmStatus.status}
           </Text>
         )}
       </Box>
-      
+
       {swarmStatus && (
         <Box justifyContent={centerAlign ? 'center' : 'flex-start'} marginTop={0}>
           <Text dimColor>
-            Topology: {swarmStatus.topology} • Agents: {swarmStatus.activeAgents}/{swarmStatus.totalAgents}
+            Topology: {swarmStatus.topology} • Agents: {swarmStatus.activeAgents}/
+            {swarmStatus.totalAgents}
           </Text>
         </Box>
       )}
-      
+
       {subtitle && (
         <Box justifyContent={centerAlign ? 'center' : 'flex-start'} marginTop={0}>
-          <Text dimColor>
-            {subtitle}
-          </Text>
+          <Text dimColor>{subtitle}</Text>
         </Box>
       )}
     </Box>

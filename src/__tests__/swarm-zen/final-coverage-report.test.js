@@ -97,24 +97,25 @@ class FinalCoverageReport {
 
     // Count test files created
     const testDir = path.join(__dirname);
-    const testFiles = fs.readdirSync(testDir).filter(file =>
-      file.endsWith('.test.js') && file.includes('comprehensive'),
-    );
+    const testFiles = fs
+      .readdirSync(testDir)
+      .filter((file) => file.endsWith('.test.js') && file.includes('comprehensive'));
 
     this.achievements.testSuitesCreated = testFiles.length;
 
     // Calculate total tests created
-    this.achievements.testsCreated = (
+    this.achievements.testsCreated =
       this.achievements.mcpToolsTested +
       this.achievements.daaFeaturesTested +
       this.achievements.errorHandlingScenarios +
       this.achievements.edgeCasesCovered +
-      this.achievements.protocolTestsCovered
-    );
+      this.achievements.protocolTestsCovered;
 
     // Calculate coverage improvement
-    this.achievements.coverageImprovement =
-      ((this.metrics.afterCoverage - this.metrics.beforeCoverage) / this.metrics.targetCoverage * 100).toFixed(2);
+    this.achievements.coverageImprovement = (
+      ((this.metrics.afterCoverage - this.metrics.beforeCoverage) / this.metrics.targetCoverage) *
+      100
+    ).toFixed(2);
 
     console.log(`   Test suites created: ${this.achievements.testSuitesCreated}`);
     console.log(`   Total tests created: ${this.achievements.testsCreated}`);
@@ -122,10 +123,15 @@ class FinalCoverageReport {
   }
 
   generateHTML() {
-    const passRate = this.metrics.actualTests > 0 ?
-      (this.metrics.passedTests / this.metrics.actualTests * 100).toFixed(1) : '0.0';
+    const passRate =
+      this.metrics.actualTests > 0
+        ? ((this.metrics.passedTests / this.metrics.actualTests) * 100).toFixed(1)
+        : '0.0';
 
-    const coverageProgress = (this.metrics.afterCoverage / this.metrics.targetCoverage * 100).toFixed(1);
+    const coverageProgress = (
+      (this.metrics.afterCoverage / this.metrics.targetCoverage) *
+      100
+    ).toFixed(1);
 
     return `
 <!DOCTYPE html>
@@ -410,7 +416,7 @@ class FinalCoverageReport {
 
   async generateReport() {
     console.log('\n🏆 Generating Final Test Coverage Report');
-    console.log('=' .repeat(60));
+    console.log('='.repeat(60));
 
     await this.analyzeTestReports();
     await this.calculateAchievements();
@@ -427,7 +433,10 @@ class FinalCoverageReport {
         totalTestsCreated: this.achievements.testsCreated,
         coverageAchieved: this.metrics.afterCoverage,
         coverageTarget: this.metrics.targetCoverage,
-        progressTowardsTarget: (this.metrics.afterCoverage / this.metrics.targetCoverage * 100).toFixed(2),
+        progressTowardsTarget: (
+          (this.metrics.afterCoverage / this.metrics.targetCoverage) *
+          100
+        ).toFixed(2),
       },
       testSuites: [
         {
@@ -494,13 +503,17 @@ class FinalCoverageReport {
     console.log(`   🧪 Total Tests Created: ${this.achievements.testsCreated}`);
     console.log(`   📊 Code Coverage: ${this.metrics.afterCoverage}%`);
     console.log(`   ✅ Actual Tests Run: ${this.metrics.actualTests}`);
-    console.log(`   🎆 Pass Rate: ${(this.metrics.passedTests / Math.max(this.metrics.actualTests, 1) * 100).toFixed(1)}%`);
+    console.log(
+      `   🎆 Pass Rate: ${((this.metrics.passedTests / Math.max(this.metrics.actualTests, 1)) * 100).toFixed(1)}%`
+    );
     console.log('');
 
     console.log('📊 COVERAGE ANALYSIS:');
     console.log(`   🎯 Target: ${this.metrics.targetCoverage}%`);
     console.log(`   📈 Achieved: ${this.metrics.afterCoverage}%`);
-    console.log(`   🚀 Progress: ${(this.metrics.afterCoverage / this.metrics.targetCoverage * 100).toFixed(1)}% of target`);
+    console.log(
+      `   🚀 Progress: ${((this.metrics.afterCoverage / this.metrics.targetCoverage) * 100).toFixed(1)}% of target`
+    );
     console.log('');
 
     console.log('📄 REPORTS GENERATED:');

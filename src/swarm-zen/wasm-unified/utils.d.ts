@@ -1,30 +1,30 @@
 // Additional TypeScript utilities for ruv-swarm WASM
 
 export interface SwarmConfig {
-    maxAgents: number;
-    topology: 'mesh' | 'star' | 'ring' | 'hierarchical';
-    enableSIMD?: boolean;
-    memoryBudgetMB?: number;
+  maxAgents: number;
+  topology: 'mesh' | 'star' | 'ring' | 'hierarchical';
+  enableSIMD?: boolean;
+  memoryBudgetMB?: number;
 }
 
 export interface AgentConfig {
-    name: string;
-    type: 'researcher' | 'coder' | 'analyst' | 'optimizer' | 'coordinator';
-    cognitivePattern?: 'convergent' | 'divergent' | 'lateral' | 'systems' | 'critical' | 'abstract';
+  name: string;
+  type: 'researcher' | 'coder' | 'analyst' | 'optimizer' | 'coordinator';
+  cognitivePattern?: 'convergent' | 'divergent' | 'lateral' | 'systems' | 'critical' | 'abstract';
 }
 
 export interface TaskConfig {
-    name: string;
-    description: string;
-    priority?: 'low' | 'medium' | 'high' | 'critical';
+  name: string;
+  description: string;
+  priority?: 'low' | 'medium' | 'high' | 'critical';
 }
 
 export interface PerformanceMetrics {
-    agentCount: number;
-    taskCount: number;
-    memoryUsageMB: number;
-    executionTimeMs: number;
-    agentsPerMB: number;
+  agentCount: number;
+  taskCount: number;
+  memoryUsageMB: number;
+  executionTimeMs: number;
+  agentsPerMB: number;
 }
 
 // Helper functions

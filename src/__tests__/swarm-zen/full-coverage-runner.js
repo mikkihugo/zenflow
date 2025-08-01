@@ -1,13 +1,14 @@
 #!/usr/bin/env node
+
 /**
  * Full Coverage Test Runner
  * Runs all source files to ensure code execution and coverage
  */
 
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 import { promises as fs } from 'fs';
 import { createRequire } from 'module';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -20,7 +21,6 @@ async function loadModule(path, isESM = true) {
       return await import(path);
     }
     return require(path);
-
   } catch (error) {
     console.log(`  ⚠️  Failed to load ${path}: ${error.message}`);
     return null;
@@ -109,7 +109,7 @@ async function runCoverageTests() {
   console.log('\n📦 Testing Neural Models:');
   const models = await loadModule('../src/neural-models/index.js');
   if (models) {
-    const modelTypes = Object.keys(models).filter(k => k.endsWith('Model'));
+    const modelTypes = Object.keys(models).filter((k) => k.endsWith('Model'));
     console.log(`  ✓ neural-models - ${modelTypes.length} models available`);
   }
 
@@ -172,7 +172,7 @@ async function runCoverageTests() {
 }
 
 // Run the tests
-runCoverageTests().catch(error => {
+runCoverageTests().catch((error) => {
   console.error('❌ Coverage test failed:', error);
   process.exit(1);
 });

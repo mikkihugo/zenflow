@@ -2,9 +2,9 @@
  * Simple test for CLAUDE.md protection - compatible with existing test setup
  */
 
+import assert from 'assert';
 import fs from 'fs/promises';
 import path from 'path';
-import assert from 'assert';
 
 // Test the protection logic in a way that's compatible with the existing test runner
 async function runProtectionTests() {
@@ -26,28 +26,34 @@ async function runProtectionTests() {
   }
 
   // Create temporary test directory
-  const testDir = path.join(process.cwd(), `temp-test-${ Date.now()}`);
+  const testDir = path.join(process.cwd(), `temp-test-${Date.now()}`);
   await fs.mkdir(testDir, { recursive: true });
 
   try {
     // Test file existence checking
-    await test('should detect when CLAUDE.md exists', async() => {
+    await test('should detect when CLAUDE.md exists', async () => {
       const claudePath = path.join(testDir, 'CLAUDE.md');
       await fs.writeFile(claudePath, 'existing content');
 
-      const exists = await fs.access(claudePath).then(() => true).catch(() => false);
+      const exists = await fs
+        .access(claudePath)
+        .then(() => true)
+        .catch(() => false);
       assert(exists === true);
     });
 
-    await test('should detect when CLAUDE.md does not exist', async() => {
+    await test('should detect when CLAUDE.md does not exist', async () => {
       const claudePath = path.join(testDir, 'NONEXISTENT.md');
 
-      const exists = await fs.access(claudePath).then(() => true).catch(() => false);
+      const exists = await fs
+        .access(claudePath)
+        .then(() => true)
+        .catch(() => false);
       assert(exists === false);
     });
 
     // Test backup creation
-    await test('should create backup with timestamp', async() => {
+    await test('should create backup with timestamp', async () => {
       const claudePath = path.join(testDir, 'CLAUDE.md');
       const originalContent = 'original content for backup test';
       await fs.writeFile(claudePath, originalContent);
@@ -58,7 +64,10 @@ async function runProtectionTests() {
       await fs.copyFile(claudePath, backupPath);
 
       // Check backup was created
-      const backupExists = await fs.access(backupPath).then(() => true).catch(() => false);
+      const backupExists = await fs
+        .access(backupPath)
+        .then(() => true)
+        .catch(() => false);
       assert(backupExists === true);
 
       // Check backup content matches original
@@ -70,7 +79,7 @@ async function runProtectionTests() {
     });
 
     // Test content merging logic
-    await test('should merge content correctly', async() => {
+    await test('should merge content correctly', async () => {
       const existingContent = `# My Project Configuration
 
 This is important project information that should be preserved.
@@ -113,7 +122,7 @@ Remember: **ruv-swarm coordinates, Claude Code creates!**`;
     });
 
     // Test section detection
-    await test('should detect section ends correctly', async() => {
+    await test('should detect section ends correctly', async () => {
       const lines = [
         '# First Section',
         'Content here',
@@ -138,10 +147,10 @@ Remember: **ruv-swarm coordinates, Claude Code creates!**`;
     });
 
     // Test argument parsing logic
-    await test('should parse CLI arguments correctly', async() => {
+    await test('should parse CLI arguments correctly', async () => {
       // Simulate argument parsing
       function parseArgs(args) {
-        const positionalArgs = args.filter(arg => !arg.startsWith('--'));
+        const positionalArgs = args.filter((arg) => !arg.startsWith('--'));
         const setupClaude = args.includes('--claude');
         const forceSetup = args.includes('--force');
         const mergeSetup = args.includes('--merge');
@@ -176,7 +185,7 @@ Remember: **ruv-swarm coordinates, Claude Code creates!**`;
     });
 
     // Test error handling scenarios
-    await test('should handle protection scenarios correctly', async() => {
+    await test('should handle protection scenarios correctly', async () => {
       // Simulate protection logic
       function shouldProceed(fileExists, options) {
         if (!fileExists) {
@@ -224,7 +233,6 @@ Remember: **ruv-swarm coordinates, Claude Code creates!**`;
     if (failed > 0) {
       throw new Error(`${failed} tests failed`);
     }
-
   } finally {
     // Clean up test directory
     try {
@@ -240,7 +248,7 @@ export { runProtectionTests };
 
 // Run directly if this is the main module
 if (process.argv[1].endsWith('claude-md-protection-simple.test.js')) {
-  runProtectionTests().catch(error => {
+  runProtectionTests().catch((error) => {
     console.error('Protection test error:', error);
     process.exit(1);
   });

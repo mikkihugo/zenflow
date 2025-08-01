@@ -4,7 +4,9 @@ const heap = new Array(128).fill(undefined);
 
 heap.push(undefined, null, true, false);
 
-function getObject(idx) { return heap[idx]; }
+function getObject(idx) {
+  return heap[idx];
+}
 
 let heap_next = heap.length;
 
@@ -25,9 +27,18 @@ function handleError(f, args) {
   }
 }
 
-const cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true }) : { decode: () => { throw Error('TextDecoder not available'); } } );
+const cachedTextDecoder =
+  typeof TextDecoder !== 'undefined'
+    ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true })
+    : {
+        decode: () => {
+          throw Error('TextDecoder not available');
+        },
+      };
 
-if (typeof TextDecoder !== 'undefined') { cachedTextDecoder.decode(); };
+if (typeof TextDecoder !== 'undefined') {
+  cachedTextDecoder.decode();
+}
 
 let cachedUint8ArrayMemory0 = null;
 
@@ -45,27 +56,34 @@ function getStringFromWasm0(ptr, len) {
 
 let WASM_VECTOR_LEN = 0;
 
-const cachedTextEncoder = (typeof TextEncoder !== 'undefined' ? new TextEncoder('utf-8') : { encode: () => { throw Error('TextEncoder not available'); } } );
+const cachedTextEncoder =
+  typeof TextEncoder !== 'undefined'
+    ? new TextEncoder('utf-8')
+    : {
+        encode: () => {
+          throw Error('TextEncoder not available');
+        },
+      };
 
-const encodeString = (typeof cachedTextEncoder.encodeInto === 'function'
-  ? function (arg, view) {
-    return cachedTextEncoder.encodeInto(arg, view);
-  }
-  : function (arg, view) {
-    const buf = cachedTextEncoder.encode(arg);
-    view.set(buf);
-    return {
-      read: arg.length,
-      written: buf.length,
-    };
-  });
+const encodeString =
+  typeof cachedTextEncoder.encodeInto === 'function'
+    ? (arg, view) => cachedTextEncoder.encodeInto(arg, view)
+    : (arg, view) => {
+        const buf = cachedTextEncoder.encode(arg);
+        view.set(buf);
+        return {
+          read: arg.length,
+          written: buf.length,
+        };
+      };
 
 function passStringToWasm0(arg, malloc, realloc) {
-
   if (realloc === undefined) {
     const buf = cachedTextEncoder.encode(arg);
     const ptr = malloc(buf.length, 1) >>> 0;
-    getUint8ArrayMemory0().subarray(ptr, ptr + buf.length).set(buf);
+    getUint8ArrayMemory0()
+      .subarray(ptr, ptr + buf.length)
+      .set(buf);
     WASM_VECTOR_LEN = buf.length;
     return ptr;
   }
@@ -79,7 +97,7 @@ function passStringToWasm0(arg, malloc, realloc) {
 
   for (; offset < len; offset++) {
     const code = arg.charCodeAt(offset);
-    if (code > 0x7F) break;
+    if (code > 0x7f) break;
     mem[ptr + offset] = code;
   }
 
@@ -87,7 +105,7 @@ function passStringToWasm0(arg, malloc, realloc) {
     if (offset !== 0) {
       arg = arg.slice(offset);
     }
-    ptr = realloc(ptr, len, len = offset + arg.length * 3, 1) >>> 0;
+    ptr = realloc(ptr, len, (len = offset + arg.length * 3), 1) >>> 0;
     const view = getUint8ArrayMemory0().subarray(ptr + offset, ptr + len);
     const ret = encodeString(arg, view);
 
@@ -102,7 +120,12 @@ function passStringToWasm0(arg, malloc, realloc) {
 let cachedDataViewMemory0 = null;
 
 function getDataViewMemory0() {
-  if (cachedDataViewMemory0 === null || cachedDataViewMemory0.buffer.detached === true || (cachedDataViewMemory0.buffer.detached === undefined && cachedDataViewMemory0.buffer !== wasm.memory.buffer)) {
+  if (
+    cachedDataViewMemory0 === null ||
+    cachedDataViewMemory0.buffer.detached === true ||
+    (cachedDataViewMemory0.buffer.detached === undefined &&
+      cachedDataViewMemory0.buffer !== wasm.memory.buffer)
+  ) {
     cachedDataViewMemory0 = new DataView(wasm.memory.buffer);
   }
   return cachedDataViewMemory0;
@@ -116,7 +139,7 @@ function debugString(val) {
   // primitive types
   const type = typeof val;
   if (type == 'number' || type == 'boolean' || val == null) {
-    return  `${val}`;
+    return `${val}`;
   }
   if (type == 'string') {
     return `"${val}"`;
@@ -144,7 +167,7 @@ function debugString(val) {
     if (length > 0) {
       debug += debugString(val[0]);
     }
-    for(let i = 1; i < length; i++) {
+    for (let i = 1; i < length; i++) {
       debug += ', ' + debugString(val[i]);
     }
     debug += ']';
@@ -519,34 +542,52 @@ export function get_features() {
  * @enum {0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17}
  */
 export const ActivationFunction = Object.freeze({
-  Linear: 0, '0': 'Linear',
-  Sigmoid: 1, '1': 'Sigmoid',
-  SymmetricSigmoid: 2, '2': 'SymmetricSigmoid',
-  Tanh: 3, '3': 'Tanh',
-  ReLU: 4, '4': 'ReLU',
-  LeakyReLU: 5, '5': 'LeakyReLU',
-  Swish: 6, '6': 'Swish',
-  Gaussian: 7, '7': 'Gaussian',
-  Elliot: 8, '8': 'Elliot',
-  SymmetricElliot: 9, '9': 'SymmetricElliot',
-  Sine: 10, '10': 'Sine',
-  Cosine: 11, '11': 'Cosine',
-  SinSymmetric: 12, '12': 'SinSymmetric',
-  CosSymmetric: 13, '13': 'CosSymmetric',
-  ThresholdSymmetric: 14, '14': 'ThresholdSymmetric',
-  Threshold: 15, '15': 'Threshold',
-  StepSymmetric: 16, '16': 'StepSymmetric',
-  Step: 17, '17': 'Step',
+  Linear: 0,
+  0: 'Linear',
+  Sigmoid: 1,
+  1: 'Sigmoid',
+  SymmetricSigmoid: 2,
+  2: 'SymmetricSigmoid',
+  Tanh: 3,
+  3: 'Tanh',
+  ReLU: 4,
+  4: 'ReLU',
+  LeakyReLU: 5,
+  5: 'LeakyReLU',
+  Swish: 6,
+  6: 'Swish',
+  Gaussian: 7,
+  7: 'Gaussian',
+  Elliot: 8,
+  8: 'Elliot',
+  SymmetricElliot: 9,
+  9: 'SymmetricElliot',
+  Sine: 10,
+  10: 'Sine',
+  Cosine: 11,
+  11: 'Cosine',
+  SinSymmetric: 12,
+  12: 'SinSymmetric',
+  CosSymmetric: 13,
+  13: 'CosSymmetric',
+  ThresholdSymmetric: 14,
+  14: 'ThresholdSymmetric',
+  Threshold: 15,
+  15: 'Threshold',
+  StepSymmetric: 16,
+  16: 'StepSymmetric',
+  Step: 17,
+  17: 'Step',
 });
 
-const AgentMemoryPoolFinalization = (typeof FinalizationRegistry === 'undefined')
-  ? { register: () => {}, unregister: () => {} }
-  : new FinalizationRegistry(ptr => wasm.__wbg_agentmemorypool_free(ptr >>> 0, 1));
+const AgentMemoryPoolFinalization =
+  typeof FinalizationRegistry === 'undefined'
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry((ptr) => wasm.__wbg_agentmemorypool_free(ptr >>> 0, 1));
 /**
  * Agent memory pool specifically optimized for neural network agents
  */
 export class AgentMemoryPool {
-
   __destroy_into_raw() {
     const ptr = this.__wbg_ptr;
     this.__wbg_ptr = 0;
@@ -565,14 +606,18 @@ export class AgentMemoryPool {
     return this;
   }
   /**
-     * Allocate memory for an agent based on complexity
-     * @param {string} complexity
-     * @returns {Uint8Array | undefined}
-     */
+   * Allocate memory for an agent based on complexity
+   * @param {string} complexity
+   * @returns {Uint8Array | undefined}
+   */
   allocate_for_agent(complexity) {
     try {
       const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-      const ptr0 = passStringToWasm0(complexity, wasm.__wbindgen_export_2, wasm.__wbindgen_export_3);
+      const ptr0 = passStringToWasm0(
+        complexity,
+        wasm.__wbindgen_export_2,
+        wasm.__wbindgen_export_3
+      );
       const len0 = WASM_VECTOR_LEN;
       wasm.agentmemorypool_allocate_for_agent(retptr, this.__wbg_ptr, ptr0, len0);
       const r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
@@ -588,40 +633,40 @@ export class AgentMemoryPool {
     }
   }
   /**
-     * Return agent memory to the appropriate pool
-     * @param {Uint8Array} memory
-     */
+   * Return agent memory to the appropriate pool
+   * @param {Uint8Array} memory
+   */
   deallocate_agent_memory(memory) {
     const ptr0 = passArray8ToWasm0(memory, wasm.__wbindgen_export_2);
     const len0 = WASM_VECTOR_LEN;
     wasm.agentmemorypool_deallocate_agent_memory(this.__wbg_ptr, ptr0, len0);
   }
   /**
-     * Get total memory usage across all pools
-     * @returns {number}
-     */
+   * Get total memory usage across all pools
+   * @returns {number}
+   */
   total_memory_usage_mb() {
     const ret = wasm.agentmemorypool_total_memory_usage_mb(this.__wbg_ptr);
     return ret;
   }
   /**
-     * Check if memory usage is within target (< 50MB for 10 agents)
-     * @returns {boolean}
-     */
+   * Check if memory usage is within target (< 50MB for 10 agents)
+   * @returns {boolean}
+   */
   is_within_memory_target() {
     const ret = wasm.agentmemorypool_is_within_memory_target(this.__wbg_ptr);
     return ret !== 0;
   }
 }
 
-const MemoryPoolFinalization = (typeof FinalizationRegistry === 'undefined')
-  ? { register: () => {}, unregister: () => {} }
-  : new FinalizationRegistry(ptr => wasm.__wbg_memorypool_free(ptr >>> 0, 1));
+const MemoryPoolFinalization =
+  typeof FinalizationRegistry === 'undefined'
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry((ptr) => wasm.__wbg_memorypool_free(ptr >>> 0, 1));
 /**
  * Memory pool for efficient memory management
  */
 export class MemoryPool {
-
   __destroy_into_raw() {
     const ptr = this.__wbg_ptr;
     this.__wbg_ptr = 0;
@@ -634,10 +679,10 @@ export class MemoryPool {
     wasm.__wbg_memorypool_free(ptr, 0);
   }
   /**
-     * Create a new memory pool with specified block size and maximum blocks
-     * @param {number} block_size
-     * @param {number} max_blocks
-     */
+   * Create a new memory pool with specified block size and maximum blocks
+   * @param {number} block_size
+   * @param {number} max_blocks
+   */
   constructor(block_size, max_blocks) {
     const ret = wasm.memorypool_new(block_size, max_blocks);
     this.__wbg_ptr = ret >>> 0;
@@ -645,9 +690,9 @@ export class MemoryPool {
     return this;
   }
   /**
-     * Allocate a memory block from the pool
-     * @returns {Uint8Array | undefined}
-     */
+   * Allocate a memory block from the pool
+   * @returns {Uint8Array | undefined}
+   */
   allocate() {
     try {
       const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
@@ -665,46 +710,46 @@ export class MemoryPool {
     }
   }
   /**
-     * Return a memory block to the pool for reuse
-     * @param {Uint8Array} block
-     */
+   * Return a memory block to the pool for reuse
+   * @param {Uint8Array} block
+   */
   deallocate(block) {
     const ptr0 = passArray8ToWasm0(block, wasm.__wbindgen_export_2);
     const len0 = WASM_VECTOR_LEN;
     wasm.memorypool_deallocate(this.__wbg_ptr, ptr0, len0);
   }
   /**
-     * Get the number of available blocks in the pool
-     * @returns {number}
-     */
+   * Get the number of available blocks in the pool
+   * @returns {number}
+   */
   available_blocks() {
     const ret = wasm.memorypool_available_blocks(this.__wbg_ptr);
     return ret >>> 0;
   }
   /**
-     * Get total memory usage in bytes
-     * @returns {number}
-     */
+   * Get total memory usage in bytes
+   * @returns {number}
+   */
   memory_usage() {
     const ret = wasm.memorypool_memory_usage(this.__wbg_ptr);
     return ret >>> 0;
   }
   /**
-     * Get pool efficiency metrics
-     * @returns {PoolMetrics}
-     */
+   * Get pool efficiency metrics
+   * @returns {PoolMetrics}
+   */
   get_metrics() {
     const ret = wasm.memorypool_get_metrics(this.__wbg_ptr);
     return PoolMetrics.__wrap(ret);
   }
 }
 
-const OptimizedAgentFinalization = (typeof FinalizationRegistry === 'undefined')
-  ? { register: () => {}, unregister: () => {} }
-  : new FinalizationRegistry(ptr => wasm.__wbg_optimizedagent_free(ptr >>> 0, 1));
+const OptimizedAgentFinalization =
+  typeof FinalizationRegistry === 'undefined'
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry((ptr) => wasm.__wbg_optimizedagent_free(ptr >>> 0, 1));
 
 export class OptimizedAgent {
-
   __destroy_into_raw() {
     const ptr = this.__wbg_ptr;
     this.__wbg_ptr = 0;
@@ -718,12 +763,12 @@ export class OptimizedAgent {
   }
 }
 
-const OptimizedAgentSpawnerFinalization = (typeof FinalizationRegistry === 'undefined')
-  ? { register: () => {}, unregister: () => {} }
-  : new FinalizationRegistry(ptr => wasm.__wbg_optimizedagentspawner_free(ptr >>> 0, 1));
+const OptimizedAgentSpawnerFinalization =
+  typeof FinalizationRegistry === 'undefined'
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry((ptr) => wasm.__wbg_optimizedagentspawner_free(ptr >>> 0, 1));
 
 export class OptimizedAgentSpawner {
-
   __destroy_into_raw() {
     const ptr = this.__wbg_ptr;
     this.__wbg_ptr = 0;
@@ -742,18 +787,26 @@ export class OptimizedAgentSpawner {
     return this;
   }
   /**
-     * @param {string} agent_type
-     * @param {string} complexity
-     * @returns {string}
-     */
+   * @param {string} agent_type
+   * @param {string} complexity
+   * @returns {string}
+   */
   spawn_agent(agent_type, complexity) {
     let deferred4_0;
     let deferred4_1;
     try {
       const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-      const ptr0 = passStringToWasm0(agent_type, wasm.__wbindgen_export_2, wasm.__wbindgen_export_3);
+      const ptr0 = passStringToWasm0(
+        agent_type,
+        wasm.__wbindgen_export_2,
+        wasm.__wbindgen_export_3
+      );
       const len0 = WASM_VECTOR_LEN;
-      const ptr1 = passStringToWasm0(complexity, wasm.__wbindgen_export_2, wasm.__wbindgen_export_3);
+      const ptr1 = passStringToWasm0(
+        complexity,
+        wasm.__wbindgen_export_2,
+        wasm.__wbindgen_export_3
+      );
       const len1 = WASM_VECTOR_LEN;
       wasm.optimizedagentspawner_spawn_agent(retptr, this.__wbg_ptr, ptr0, len0, ptr1, len1);
       const r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
@@ -763,7 +816,8 @@ export class OptimizedAgentSpawner {
       let ptr3 = r0;
       let len3 = r1;
       if (r3) {
-        ptr3 = 0; len3 = 0;
+        ptr3 = 0;
+        len3 = 0;
         throw takeObject(r2);
       }
       deferred4_0 = ptr3;
@@ -775,8 +829,8 @@ export class OptimizedAgentSpawner {
     }
   }
   /**
-     * @param {string} agent_id
-     */
+   * @param {string} agent_id
+   */
   release_agent(agent_id) {
     try {
       const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
@@ -793,8 +847,8 @@ export class OptimizedAgentSpawner {
     }
   }
   /**
-     * @returns {string}
-     */
+   * @returns {string}
+   */
   get_performance_report() {
     let deferred1_0;
     let deferred1_1;
@@ -812,27 +866,27 @@ export class OptimizedAgentSpawner {
     }
   }
   /**
-     * @returns {number}
-     */
+   * @returns {number}
+   */
   get_active_agent_count() {
     const ret = wasm.optimizedagentspawner_get_active_agent_count(this.__wbg_ptr);
     return ret >>> 0;
   }
   /**
-     * @returns {boolean}
-     */
+   * @returns {boolean}
+   */
   is_within_memory_target() {
     const ret = wasm.optimizedagentspawner_is_within_memory_target(this.__wbg_ptr);
     return ret !== 0;
   }
 }
 
-const PerformanceMonitorFinalization = (typeof FinalizationRegistry === 'undefined')
-  ? { register: () => {}, unregister: () => {} }
-  : new FinalizationRegistry(ptr => wasm.__wbg_performancemonitor_free(ptr >>> 0, 1));
+const PerformanceMonitorFinalization =
+  typeof FinalizationRegistry === 'undefined'
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry((ptr) => wasm.__wbg_performancemonitor_free(ptr >>> 0, 1));
 
 export class PerformanceMonitor {
-
   __destroy_into_raw() {
     const ptr = this.__wbg_ptr;
     this.__wbg_ptr = 0;
@@ -851,47 +905,47 @@ export class PerformanceMonitor {
     return this;
   }
   /**
-     * @param {number} time
-     */
+   * @param {number} time
+   */
   record_load_time(time) {
     wasm.performancemonitor_record_load_time(this.__wbg_ptr, time);
   }
   /**
-     * @param {number} time
-     */
+   * @param {number} time
+   */
   record_spawn_time(time) {
     wasm.performancemonitor_record_spawn_time(this.__wbg_ptr, time);
   }
   /**
-     * @param {number} bytes
-     */
+   * @param {number} bytes
+   */
   update_memory_usage(bytes) {
     wasm.performancemonitor_update_memory_usage(this.__wbg_ptr, bytes);
   }
   /**
-     * @returns {number}
-     */
+   * @returns {number}
+   */
   get_average_spawn_time() {
     const ret = wasm.performancemonitor_get_average_spawn_time(this.__wbg_ptr);
     return ret;
   }
   /**
-     * @returns {number}
-     */
+   * @returns {number}
+   */
   get_memory_usage_mb() {
     const ret = wasm.performancemonitor_get_memory_usage_mb(this.__wbg_ptr);
     return ret;
   }
   /**
-     * @returns {boolean}
-     */
+   * @returns {boolean}
+   */
   meets_performance_targets() {
     const ret = wasm.performancemonitor_meets_performance_targets(this.__wbg_ptr);
     return ret !== 0;
   }
   /**
-     * @returns {string}
-     */
+   * @returns {string}
+   */
   get_report() {
     let deferred1_0;
     let deferred1_1;
@@ -910,12 +964,12 @@ export class PerformanceMonitor {
   }
 }
 
-const PerformanceTimerFinalization = (typeof FinalizationRegistry === 'undefined')
-  ? { register: () => {}, unregister: () => {} }
-  : new FinalizationRegistry(ptr => wasm.__wbg_performancetimer_free(ptr >>> 0, 1));
+const PerformanceTimerFinalization =
+  typeof FinalizationRegistry === 'undefined'
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry((ptr) => wasm.__wbg_performancetimer_free(ptr >>> 0, 1));
 
 export class PerformanceTimer {
-
   __destroy_into_raw() {
     const ptr = this.__wbg_ptr;
     this.__wbg_ptr = 0;
@@ -928,8 +982,8 @@ export class PerformanceTimer {
     wasm.__wbg_performancetimer_free(ptr, 0);
   }
   /**
-     * @param {string} name
-     */
+   * @param {string} name
+   */
   constructor(name) {
     const ptr0 = passStringToWasm0(name, wasm.__wbindgen_export_2, wasm.__wbindgen_export_3);
     const len0 = WASM_VECTOR_LEN;
@@ -939,8 +993,8 @@ export class PerformanceTimer {
     return this;
   }
   /**
-     * @returns {number}
-     */
+   * @returns {number}
+   */
   elapsed() {
     const ret = wasm.performancetimer_elapsed(this.__wbg_ptr);
     return ret;
@@ -950,14 +1004,14 @@ export class PerformanceTimer {
   }
 }
 
-const PoolMetricsFinalization = (typeof FinalizationRegistry === 'undefined')
-  ? { register: () => {}, unregister: () => {} }
-  : new FinalizationRegistry(ptr => wasm.__wbg_poolmetrics_free(ptr >>> 0, 1));
+const PoolMetricsFinalization =
+  typeof FinalizationRegistry === 'undefined'
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry((ptr) => wasm.__wbg_poolmetrics_free(ptr >>> 0, 1));
 /**
  * Pool metrics for monitoring
  */
 export class PoolMetrics {
-
   static __wrap(ptr) {
     ptr = ptr >>> 0;
     const obj = Object.create(PoolMetrics.prototype);
@@ -978,78 +1032,78 @@ export class PoolMetrics {
     wasm.__wbg_poolmetrics_free(ptr, 0);
   }
   /**
-     * @returns {number}
-     */
+   * @returns {number}
+   */
   get total_blocks() {
     const ret = wasm.__wbg_get_poolmetrics_total_blocks(this.__wbg_ptr);
     return ret >>> 0;
   }
   /**
-     * @param {number} arg0
-     */
+   * @param {number} arg0
+   */
   set total_blocks(arg0) {
     wasm.__wbg_set_poolmetrics_total_blocks(this.__wbg_ptr, arg0);
   }
   /**
-     * @returns {number}
-     */
+   * @returns {number}
+   */
   get free_blocks() {
     const ret = wasm.__wbg_get_poolmetrics_free_blocks(this.__wbg_ptr);
     return ret >>> 0;
   }
   /**
-     * @param {number} arg0
-     */
+   * @param {number} arg0
+   */
   set free_blocks(arg0) {
     wasm.__wbg_set_poolmetrics_free_blocks(this.__wbg_ptr, arg0);
   }
   /**
-     * @returns {number}
-     */
+   * @returns {number}
+   */
   get block_size() {
     const ret = wasm.__wbg_get_poolmetrics_block_size(this.__wbg_ptr);
     return ret >>> 0;
   }
   /**
-     * @param {number} arg0
-     */
+   * @param {number} arg0
+   */
   set block_size(arg0) {
     wasm.__wbg_set_poolmetrics_block_size(this.__wbg_ptr, arg0);
   }
   /**
-     * @returns {number}
-     */
+   * @returns {number}
+   */
   get reuse_count() {
     const ret = wasm.__wbg_get_poolmetrics_reuse_count(this.__wbg_ptr);
     return ret >>> 0;
   }
   /**
-     * @param {number} arg0
-     */
+   * @param {number} arg0
+   */
   set reuse_count(arg0) {
     wasm.__wbg_set_poolmetrics_reuse_count(this.__wbg_ptr, arg0);
   }
   /**
-     * @returns {number}
-     */
+   * @returns {number}
+   */
   get memory_usage_mb() {
     const ret = wasm.__wbg_get_poolmetrics_memory_usage_mb(this.__wbg_ptr);
     return ret;
   }
   /**
-     * @param {number} arg0
-     */
+   * @param {number} arg0
+   */
   set memory_usage_mb(arg0) {
     wasm.__wbg_set_poolmetrics_memory_usage_mb(this.__wbg_ptr, arg0);
   }
 }
 
-const RuntimeFeaturesFinalization = (typeof FinalizationRegistry === 'undefined')
-  ? { register: () => {}, unregister: () => {} }
-  : new FinalizationRegistry(ptr => wasm.__wbg_runtimefeatures_free(ptr >>> 0, 1));
+const RuntimeFeaturesFinalization =
+  typeof FinalizationRegistry === 'undefined'
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry((ptr) => wasm.__wbg_runtimefeatures_free(ptr >>> 0, 1));
 
 export class RuntimeFeatures {
-
   __destroy_into_raw() {
     const ptr = this.__wbg_ptr;
     this.__wbg_ptr = 0;
@@ -1068,29 +1122,29 @@ export class RuntimeFeatures {
     return this;
   }
   /**
-     * @returns {boolean}
-     */
+   * @returns {boolean}
+   */
   get simd_available() {
     const ret = wasm.runtimefeatures_simd_available(this.__wbg_ptr);
     return ret !== 0;
   }
   /**
-     * @returns {boolean}
-     */
+   * @returns {boolean}
+   */
   get threads_available() {
     const ret = wasm.runtimefeatures_threads_available(this.__wbg_ptr);
     return ret !== 0;
   }
   /**
-     * @returns {bigint}
-     */
+   * @returns {bigint}
+   */
   get memory_limit() {
     const ret = wasm.runtimefeatures_memory_limit(this.__wbg_ptr);
     return BigInt.asUintN(64, ret);
   }
   /**
-     * @returns {string}
-     */
+   * @returns {string}
+   */
   get_features_json() {
     let deferred1_0;
     let deferred1_1;
@@ -1109,14 +1163,14 @@ export class RuntimeFeatures {
   }
 }
 
-const SimdBenchmarkFinalization = (typeof FinalizationRegistry === 'undefined')
-  ? { register: () => {}, unregister: () => {} }
-  : new FinalizationRegistry(ptr => wasm.__wbg_simdbenchmark_free(ptr >>> 0, 1));
+const SimdBenchmarkFinalization =
+  typeof FinalizationRegistry === 'undefined'
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry((ptr) => wasm.__wbg_simdbenchmark_free(ptr >>> 0, 1));
 /**
  * Performance benchmarking utilities
  */
 export class SimdBenchmark {
-
   __destroy_into_raw() {
     const ptr = this.__wbg_ptr;
     this.__wbg_ptr = 0;
@@ -1135,11 +1189,11 @@ export class SimdBenchmark {
     return this;
   }
   /**
-     * Benchmark SIMD vs scalar dot product
-     * @param {number} size
-     * @param {number} iterations
-     * @returns {string}
-     */
+   * Benchmark SIMD vs scalar dot product
+   * @param {number} size
+   * @param {number} iterations
+   * @returns {string}
+   */
   benchmark_dot_product(size, iterations) {
     let deferred1_0;
     let deferred1_1;
@@ -1157,18 +1211,22 @@ export class SimdBenchmark {
     }
   }
   /**
-     * Benchmark SIMD vs scalar activation functions
-     * @param {number} size
-     * @param {number} iterations
-     * @param {string} activation
-     * @returns {string}
-     */
+   * Benchmark SIMD vs scalar activation functions
+   * @param {number} size
+   * @param {number} iterations
+   * @param {string} activation
+   * @returns {string}
+   */
   benchmark_activation(size, iterations, activation) {
     let deferred2_0;
     let deferred2_1;
     try {
       const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-      const ptr0 = passStringToWasm0(activation, wasm.__wbindgen_export_2, wasm.__wbindgen_export_3);
+      const ptr0 = passStringToWasm0(
+        activation,
+        wasm.__wbindgen_export_2,
+        wasm.__wbindgen_export_3
+      );
       const len0 = WASM_VECTOR_LEN;
       wasm.simdbenchmark_benchmark_activation(retptr, this.__wbg_ptr, size, iterations, ptr0, len0);
       const r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
@@ -1183,14 +1241,14 @@ export class SimdBenchmark {
   }
 }
 
-const SimdMatrixOpsFinalization = (typeof FinalizationRegistry === 'undefined')
-  ? { register: () => {}, unregister: () => {} }
-  : new FinalizationRegistry(ptr => wasm.__wbg_simdmatrixops_free(ptr >>> 0, 1));
+const SimdMatrixOpsFinalization =
+  typeof FinalizationRegistry === 'undefined'
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry((ptr) => wasm.__wbg_simdmatrixops_free(ptr >>> 0, 1));
 /**
  * SIMD-accelerated matrix operations
  */
 export class SimdMatrixOps {
-
   __destroy_into_raw() {
     const ptr = this.__wbg_ptr;
     this.__wbg_ptr = 0;
@@ -1209,13 +1267,13 @@ export class SimdMatrixOps {
     return this;
   }
   /**
-     * SIMD-optimized matrix-vector multiplication
-     * @param {Float32Array} matrix
-     * @param {Float32Array} vector
-     * @param {number} rows
-     * @param {number} cols
-     * @returns {Float32Array}
-     */
+   * SIMD-optimized matrix-vector multiplication
+   * @param {Float32Array} matrix
+   * @param {Float32Array} vector
+   * @param {number} rows
+   * @param {number} cols
+   * @returns {Float32Array}
+   */
   matrix_vector_multiply(matrix, vector, rows, cols) {
     try {
       const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
@@ -1223,7 +1281,16 @@ export class SimdMatrixOps {
       const len0 = WASM_VECTOR_LEN;
       const ptr1 = passArrayF32ToWasm0(vector, wasm.__wbindgen_export_2);
       const len1 = WASM_VECTOR_LEN;
-      wasm.simdmatrixops_matrix_vector_multiply(retptr, this.__wbg_ptr, ptr0, len0, ptr1, len1, rows, cols);
+      wasm.simdmatrixops_matrix_vector_multiply(
+        retptr,
+        this.__wbg_ptr,
+        ptr0,
+        len0,
+        ptr1,
+        len1,
+        rows,
+        cols
+      );
       const r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
       const r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
       const v3 = getArrayF32FromWasm0(r0, r1).slice();
@@ -1234,14 +1301,14 @@ export class SimdMatrixOps {
     }
   }
   /**
-     * SIMD-optimized matrix-matrix multiplication (small matrices)
-     * @param {Float32Array} a
-     * @param {Float32Array} b
-     * @param {number} a_rows
-     * @param {number} a_cols
-     * @param {number} b_cols
-     * @returns {Float32Array}
-     */
+   * SIMD-optimized matrix-matrix multiplication (small matrices)
+   * @param {Float32Array} a
+   * @param {Float32Array} b
+   * @param {number} a_rows
+   * @param {number} a_cols
+   * @param {number} b_cols
+   * @returns {Float32Array}
+   */
   matrix_multiply(a, b, a_rows, a_cols, b_cols) {
     try {
       const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
@@ -1249,7 +1316,17 @@ export class SimdMatrixOps {
       const len0 = WASM_VECTOR_LEN;
       const ptr1 = passArrayF32ToWasm0(b, wasm.__wbindgen_export_2);
       const len1 = WASM_VECTOR_LEN;
-      wasm.simdmatrixops_matrix_multiply(retptr, this.__wbg_ptr, ptr0, len0, ptr1, len1, a_rows, a_cols, b_cols);
+      wasm.simdmatrixops_matrix_multiply(
+        retptr,
+        this.__wbg_ptr,
+        ptr0,
+        len0,
+        ptr1,
+        len1,
+        a_rows,
+        a_cols,
+        b_cols
+      );
       const r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
       const r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
       const v3 = getArrayF32FromWasm0(r0, r1).slice();
@@ -1261,14 +1338,14 @@ export class SimdMatrixOps {
   }
 }
 
-const SimdVectorOpsFinalization = (typeof FinalizationRegistry === 'undefined')
-  ? { register: () => {}, unregister: () => {} }
-  : new FinalizationRegistry(ptr => wasm.__wbg_simdvectorops_free(ptr >>> 0, 1));
+const SimdVectorOpsFinalization =
+  typeof FinalizationRegistry === 'undefined'
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry((ptr) => wasm.__wbg_simdvectorops_free(ptr >>> 0, 1));
 /**
  * SIMD-accelerated vector operations
  */
 export class SimdVectorOps {
-
   __destroy_into_raw() {
     const ptr = this.__wbg_ptr;
     this.__wbg_ptr = 0;
@@ -1287,11 +1364,11 @@ export class SimdVectorOps {
     return this;
   }
   /**
-     * SIMD-optimized vector dot product
-     * @param {Float32Array} a
-     * @param {Float32Array} b
-     * @returns {number}
-     */
+   * SIMD-optimized vector dot product
+   * @param {Float32Array} a
+   * @param {Float32Array} b
+   * @returns {number}
+   */
   dot_product(a, b) {
     const ptr0 = passArrayF32ToWasm0(a, wasm.__wbindgen_export_2);
     const len0 = WASM_VECTOR_LEN;
@@ -1301,11 +1378,11 @@ export class SimdVectorOps {
     return ret;
   }
   /**
-     * SIMD-optimized vector addition
-     * @param {Float32Array} a
-     * @param {Float32Array} b
-     * @returns {Float32Array}
-     */
+   * SIMD-optimized vector addition
+   * @param {Float32Array} a
+   * @param {Float32Array} b
+   * @returns {Float32Array}
+   */
   vector_add(a, b) {
     try {
       const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
@@ -1324,11 +1401,11 @@ export class SimdVectorOps {
     }
   }
   /**
-     * SIMD-optimized vector scaling
-     * @param {Float32Array} vec
-     * @param {number} scalar
-     * @returns {Float32Array}
-     */
+   * SIMD-optimized vector scaling
+   * @param {Float32Array} vec
+   * @param {number} scalar
+   * @returns {Float32Array}
+   */
   vector_scale(vec, scalar) {
     try {
       const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
@@ -1345,17 +1422,21 @@ export class SimdVectorOps {
     }
   }
   /**
-     * SIMD-optimized activation function application
-     * @param {Float32Array} vec
-     * @param {string} activation
-     * @returns {Float32Array}
-     */
+   * SIMD-optimized activation function application
+   * @param {Float32Array} vec
+   * @param {string} activation
+   * @returns {Float32Array}
+   */
   apply_activation(vec, activation) {
     try {
       const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
       const ptr0 = passArrayF32ToWasm0(vec, wasm.__wbindgen_export_2);
       const len0 = WASM_VECTOR_LEN;
-      const ptr1 = passStringToWasm0(activation, wasm.__wbindgen_export_2, wasm.__wbindgen_export_3);
+      const ptr1 = passStringToWasm0(
+        activation,
+        wasm.__wbindgen_export_2,
+        wasm.__wbindgen_export_3
+      );
       const len1 = WASM_VECTOR_LEN;
       wasm.simdvectorops_apply_activation(retptr, this.__wbg_ptr, ptr0, len0, ptr1, len1);
       const r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
@@ -1369,12 +1450,12 @@ export class SimdVectorOps {
   }
 }
 
-const WasmAgentFinalization = (typeof FinalizationRegistry === 'undefined')
-  ? { register: () => {}, unregister: () => {} }
-  : new FinalizationRegistry(ptr => wasm.__wbg_wasmagent_free(ptr >>> 0, 1));
+const WasmAgentFinalization =
+  typeof FinalizationRegistry === 'undefined'
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry((ptr) => wasm.__wbg_wasmagent_free(ptr >>> 0, 1));
 
 export class WasmAgent {
-
   __destroy_into_raw() {
     const ptr = this.__wbg_ptr;
     this.__wbg_ptr = 0;
@@ -1387,9 +1468,9 @@ export class WasmAgent {
     wasm.__wbg_wasmagent_free(ptr, 0);
   }
   /**
-     * @param {string} id
-     * @param {string} agent_type
-     */
+   * @param {string} id
+   * @param {string} agent_type
+   */
   constructor(id, agent_type) {
     const ptr0 = passStringToWasm0(id, wasm.__wbindgen_export_2, wasm.__wbindgen_export_3);
     const len0 = WASM_VECTOR_LEN;
@@ -1401,8 +1482,8 @@ export class WasmAgent {
     return this;
   }
   /**
-     * @returns {string}
-     */
+   * @returns {string}
+   */
   get id() {
     let deferred1_0;
     let deferred1_1;
@@ -1420,8 +1501,8 @@ export class WasmAgent {
     }
   }
   /**
-     * @returns {string}
-     */
+   * @returns {string}
+   */
   get agent_type() {
     let deferred1_0;
     let deferred1_1;
@@ -1439,8 +1520,8 @@ export class WasmAgent {
     }
   }
   /**
-     * @returns {string}
-     */
+   * @returns {string}
+   */
   get status() {
     let deferred1_0;
     let deferred1_1;
@@ -1458,25 +1539,25 @@ export class WasmAgent {
     }
   }
   /**
-     * @param {string} status
-     */
+   * @param {string} status
+   */
   set_status(status) {
     const ptr0 = passStringToWasm0(status, wasm.__wbindgen_export_2, wasm.__wbindgen_export_3);
     const len0 = WASM_VECTOR_LEN;
     wasm.wasmagent_set_status(this.__wbg_ptr, ptr0, len0);
   }
   /**
-     * @param {string} capability
-     */
+   * @param {string} capability
+   */
   add_capability(capability) {
     const ptr0 = passStringToWasm0(capability, wasm.__wbindgen_export_2, wasm.__wbindgen_export_3);
     const len0 = WASM_VECTOR_LEN;
     wasm.wasmagent_add_capability(this.__wbg_ptr, ptr0, len0);
   }
   /**
-     * @param {string} capability
-     * @returns {boolean}
-     */
+   * @param {string} capability
+   * @returns {boolean}
+   */
   has_capability(capability) {
     const ptr0 = passStringToWasm0(capability, wasm.__wbindgen_export_2, wasm.__wbindgen_export_3);
     const len0 = WASM_VECTOR_LEN;
@@ -1485,12 +1566,12 @@ export class WasmAgent {
   }
 }
 
-const WasmForecastingModelFinalization = (typeof FinalizationRegistry === 'undefined')
-  ? { register: () => {}, unregister: () => {} }
-  : new FinalizationRegistry(ptr => wasm.__wbg_wasmforecastingmodel_free(ptr >>> 0, 1));
+const WasmForecastingModelFinalization =
+  typeof FinalizationRegistry === 'undefined'
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry((ptr) => wasm.__wbg_wasmforecastingmodel_free(ptr >>> 0, 1));
 
 export class WasmForecastingModel {
-
   static __wrap(ptr) {
     ptr = ptr >>> 0;
     const obj = Object.create(WasmForecastingModel.prototype);
@@ -1511,8 +1592,8 @@ export class WasmForecastingModel {
     wasm.__wbg_wasmforecastingmodel_free(ptr, 0);
   }
   /**
-     * @param {string} model_type
-     */
+   * @param {string} model_type
+   */
   constructor(model_type) {
     const ptr0 = passStringToWasm0(model_type, wasm.__wbindgen_export_2, wasm.__wbindgen_export_3);
     const len0 = WASM_VECTOR_LEN;
@@ -1522,9 +1603,9 @@ export class WasmForecastingModel {
     return this;
   }
   /**
-     * @param {Float64Array} input
-     * @returns {Float64Array}
-     */
+   * @param {Float64Array} input
+   * @returns {Float64Array}
+   */
   predict(input) {
     try {
       const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
@@ -1541,8 +1622,8 @@ export class WasmForecastingModel {
     }
   }
   /**
-     * @returns {string}
-     */
+   * @returns {string}
+   */
   get_model_type() {
     let deferred1_0;
     let deferred1_1;
@@ -1561,12 +1642,12 @@ export class WasmForecastingModel {
   }
 }
 
-const WasmNeuralNetworkFinalization = (typeof FinalizationRegistry === 'undefined')
-  ? { register: () => {}, unregister: () => {} }
-  : new FinalizationRegistry(ptr => wasm.__wbg_wasmneuralnetwork_free(ptr >>> 0, 1));
+const WasmNeuralNetworkFinalization =
+  typeof FinalizationRegistry === 'undefined'
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry((ptr) => wasm.__wbg_wasmneuralnetwork_free(ptr >>> 0, 1));
 
 export class WasmNeuralNetwork {
-
   static __wrap(ptr) {
     ptr = ptr >>> 0;
     const obj = Object.create(WasmNeuralNetwork.prototype);
@@ -1587,9 +1668,9 @@ export class WasmNeuralNetwork {
     wasm.__wbg_wasmneuralnetwork_free(ptr, 0);
   }
   /**
-     * @param {Uint32Array} layers
-     * @param {ActivationFunction} activation
-     */
+   * @param {Uint32Array} layers
+   * @param {ActivationFunction} activation
+   */
   constructor(layers, activation) {
     const ptr0 = passArray32ToWasm0(layers, wasm.__wbindgen_export_2);
     const len0 = WASM_VECTOR_LEN;
@@ -1599,23 +1680,23 @@ export class WasmNeuralNetwork {
     return this;
   }
   /**
-     * @param {number} min
-     * @param {number} max
-     */
+   * @param {number} min
+   * @param {number} max
+   */
   randomize_weights(min, max) {
     wasm.wasmneuralnetwork_randomize_weights(this.__wbg_ptr, min, max);
   }
   /**
-     * @param {Float64Array} weights
-     */
+   * @param {Float64Array} weights
+   */
   set_weights(weights) {
     const ptr0 = passArrayF64ToWasm0(weights, wasm.__wbindgen_export_2);
     const len0 = WASM_VECTOR_LEN;
     wasm.wasmneuralnetwork_set_weights(this.__wbg_ptr, ptr0, len0);
   }
   /**
-     * @returns {Float64Array}
-     */
+   * @returns {Float64Array}
+   */
   get_weights() {
     try {
       const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
@@ -1630,9 +1711,9 @@ export class WasmNeuralNetwork {
     }
   }
   /**
-     * @param {Float64Array} inputs
-     * @returns {Float64Array}
-     */
+   * @param {Float64Array} inputs
+   * @returns {Float64Array}
+   */
   run(inputs) {
     try {
       const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
@@ -1650,12 +1731,12 @@ export class WasmNeuralNetwork {
   }
 }
 
-const WasmSwarmOrchestratorFinalization = (typeof FinalizationRegistry === 'undefined')
-  ? { register: () => {}, unregister: () => {} }
-  : new FinalizationRegistry(ptr => wasm.__wbg_wasmswarmorchestrator_free(ptr >>> 0, 1));
+const WasmSwarmOrchestratorFinalization =
+  typeof FinalizationRegistry === 'undefined'
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry((ptr) => wasm.__wbg_wasmswarmorchestrator_free(ptr >>> 0, 1));
 
 export class WasmSwarmOrchestrator {
-
   static __wrap(ptr) {
     ptr = ptr >>> 0;
     const obj = Object.create(WasmSwarmOrchestrator.prototype);
@@ -1676,8 +1757,8 @@ export class WasmSwarmOrchestrator {
     wasm.__wbg_wasmswarmorchestrator_free(ptr, 0);
   }
   /**
-     * @param {string} topology
-     */
+   * @param {string} topology
+   */
   constructor(topology) {
     const ptr0 = passStringToWasm0(topology, wasm.__wbindgen_export_2, wasm.__wbindgen_export_3);
     const len0 = WASM_VECTOR_LEN;
@@ -1687,9 +1768,9 @@ export class WasmSwarmOrchestrator {
     return this;
   }
   /**
-     * @param {string} config
-     * @returns {string}
-     */
+   * @param {string} config
+   * @returns {string}
+   */
   spawn(config) {
     let deferred2_0;
     let deferred2_1;
@@ -1709,9 +1790,9 @@ export class WasmSwarmOrchestrator {
     }
   }
   /**
-     * @param {string} config
-     * @returns {WasmTaskResult}
-     */
+   * @param {string} config
+   * @returns {WasmTaskResult}
+   */
   orchestrate(config) {
     const ptr0 = passStringToWasm0(config, wasm.__wbindgen_export_2, wasm.__wbindgen_export_3);
     const len0 = WASM_VECTOR_LEN;
@@ -1719,23 +1800,23 @@ export class WasmSwarmOrchestrator {
     return WasmTaskResult.__wrap(ret);
   }
   /**
-     * @param {string} agent_id
-     */
+   * @param {string} agent_id
+   */
   add_agent(agent_id) {
     const ptr0 = passStringToWasm0(agent_id, wasm.__wbindgen_export_2, wasm.__wbindgen_export_3);
     const len0 = WASM_VECTOR_LEN;
     wasm.wasmswarmorchestrator_add_agent(this.__wbg_ptr, ptr0, len0);
   }
   /**
-     * @returns {number}
-     */
+   * @returns {number}
+   */
   get_agent_count() {
     const ret = wasm.wasmswarmorchestrator_get_agent_count(this.__wbg_ptr);
     return ret >>> 0;
   }
   /**
-     * @returns {string}
-     */
+   * @returns {string}
+   */
   get_topology() {
     let deferred1_0;
     let deferred1_1;
@@ -1753,9 +1834,9 @@ export class WasmSwarmOrchestrator {
     }
   }
   /**
-     * @param {boolean} detailed
-     * @returns {string}
-     */
+   * @param {boolean} detailed
+   * @returns {string}
+   */
   get_status(detailed) {
     let deferred1_0;
     let deferred1_1;
@@ -1774,12 +1855,12 @@ export class WasmSwarmOrchestrator {
   }
 }
 
-const WasmTaskResultFinalization = (typeof FinalizationRegistry === 'undefined')
-  ? { register: () => {}, unregister: () => {} }
-  : new FinalizationRegistry(ptr => wasm.__wbg_wasmtaskresult_free(ptr >>> 0, 1));
+const WasmTaskResultFinalization =
+  typeof FinalizationRegistry === 'undefined'
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry((ptr) => wasm.__wbg_wasmtaskresult_free(ptr >>> 0, 1));
 
 export class WasmTaskResult {
-
   static __wrap(ptr) {
     ptr = ptr >>> 0;
     const obj = Object.create(WasmTaskResult.prototype);
@@ -1800,8 +1881,8 @@ export class WasmTaskResult {
     wasm.__wbg_wasmtaskresult_free(ptr, 0);
   }
   /**
-     * @returns {string}
-     */
+   * @returns {string}
+   */
   get task_id() {
     let deferred1_0;
     let deferred1_1;
@@ -1819,8 +1900,8 @@ export class WasmTaskResult {
     }
   }
   /**
-     * @returns {string}
-     */
+   * @returns {string}
+   */
   get description() {
     let deferred1_0;
     let deferred1_1;
@@ -1838,8 +1919,8 @@ export class WasmTaskResult {
     }
   }
   /**
-     * @returns {string}
-     */
+   * @returns {string}
+   */
   get status() {
     let deferred1_0;
     let deferred1_1;
@@ -1857,8 +1938,8 @@ export class WasmTaskResult {
     }
   }
   /**
-     * @returns {string[]}
-     */
+   * @returns {string[]}
+   */
   get assigned_agents() {
     try {
       const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
@@ -1873,8 +1954,8 @@ export class WasmTaskResult {
     }
   }
   /**
-     * @returns {string}
-     */
+   * @returns {string}
+   */
   get priority() {
     let deferred1_0;
     let deferred1_1;
@@ -1898,11 +1979,12 @@ async function __wbg_load(module, imports) {
     if (typeof WebAssembly.instantiateStreaming === 'function') {
       try {
         return await WebAssembly.instantiateStreaming(module, imports);
-
       } catch (e) {
         if (module.headers.get('Content-Type') != 'application/wasm') {
-          console.warn('`WebAssembly.instantiateStreaming` failed because your server does not serve Wasm with `application/wasm` MIME type. Falling back to `WebAssembly.instantiate` which is slower. Original error:\n', e);
-
+          console.warn(
+            '`WebAssembly.instantiateStreaming` failed because your server does not serve Wasm with `application/wasm` MIME type. Falling back to `WebAssembly.instantiate` which is slower. Original error:\n',
+            e
+          );
         } else {
           throw e;
         }
@@ -1911,13 +1993,11 @@ async function __wbg_load(module, imports) {
 
     const bytes = await module.arrayBuffer();
     return await WebAssembly.instantiate(bytes, imports);
-
   } else {
     const instance = await WebAssembly.instantiate(module, imports);
 
     if (instance instanceof WebAssembly.Instance) {
       return { instance, module };
-
     } else {
       return instance;
     }
@@ -1927,18 +2007,19 @@ async function __wbg_load(module, imports) {
 function __wbg_get_imports() {
   const imports = {};
   imports.wbg = {};
-  imports.wbg.__wbg_buffer_609cc3eee51ed158 = function(arg0) {
+  imports.wbg.__wbg_buffer_609cc3eee51ed158 = (arg0) => {
     const ret = getObject(arg0).buffer;
     return addHeapObject(ret);
   };
-  imports.wbg.__wbg_call_672a4d21634d4a24 = function() { return handleError(function (arg0, arg1) {
-    const ret = getObject(arg0).call(getObject(arg1));
-    return addHeapObject(ret);
-  }, arguments); };
-  imports.wbg.__wbg_error_524f506f44df1645 = function(arg0) {
+  imports.wbg.__wbg_call_672a4d21634d4a24 = () =>
+    handleError((arg0, arg1) => {
+      const ret = getObject(arg0).call(getObject(arg1));
+      return addHeapObject(ret);
+    }, arguments);
+  imports.wbg.__wbg_error_524f506f44df1645 = (arg0) => {
     console.error(getObject(arg0));
   };
-  imports.wbg.__wbg_error_7534b8e9a36f1ab4 = function(arg0, arg1) {
+  imports.wbg.__wbg_error_7534b8e9a36f1ab4 = (arg0, arg1) => {
     let deferred0_0;
     let deferred0_1;
     try {
@@ -1949,19 +2030,20 @@ function __wbg_get_imports() {
       wasm.__wbindgen_export_1(deferred0_0, deferred0_1, 1);
     }
   };
-  imports.wbg.__wbg_from_2a5d3e218e67aa85 = function(arg0) {
+  imports.wbg.__wbg_from_2a5d3e218e67aa85 = (arg0) => {
     const ret = Array.from(getObject(arg0));
     return addHeapObject(ret);
   };
-  imports.wbg.__wbg_get_67b2ba62fc30de12 = function() { return handleError(function (arg0, arg1) {
-    const ret = Reflect.get(getObject(arg0), getObject(arg1));
-    return addHeapObject(ret);
-  }, arguments); };
-  imports.wbg.__wbg_get_b9b93047fe3cf45b = function(arg0, arg1) {
+  imports.wbg.__wbg_get_67b2ba62fc30de12 = () =>
+    handleError((arg0, arg1) => {
+      const ret = Reflect.get(getObject(arg0), getObject(arg1));
+      return addHeapObject(ret);
+    }, arguments);
+  imports.wbg.__wbg_get_b9b93047fe3cf45b = (arg0, arg1) => {
     const ret = getObject(arg0)[arg1 >>> 0];
     return addHeapObject(ret);
   };
-  imports.wbg.__wbg_instanceof_Error_4d54113b22d20306 = function(arg0) {
+  imports.wbg.__wbg_instanceof_Error_4d54113b22d20306 = (arg0) => {
     let result;
     try {
       result = getObject(arg0) instanceof Error;
@@ -1971,7 +2053,7 @@ function __wbg_get_imports() {
     const ret = result;
     return ret;
   };
-  imports.wbg.__wbg_instanceof_Window_def73ea0955fc569 = function(arg0) {
+  imports.wbg.__wbg_instanceof_Window_def73ea0955fc569 = (arg0) => {
     let result;
     try {
       result = getObject(arg0) instanceof Window;
@@ -1981,117 +2063,117 @@ function __wbg_get_imports() {
     const ret = result;
     return ret;
   };
-  imports.wbg.__wbg_length_e2d2a49132c1b256 = function(arg0) {
+  imports.wbg.__wbg_length_e2d2a49132c1b256 = (arg0) => {
     const ret = getObject(arg0).length;
     return ret;
   };
-  imports.wbg.__wbg_log_c222819a41e063d3 = function(arg0) {
+  imports.wbg.__wbg_log_c222819a41e063d3 = (arg0) => {
     console.log(getObject(arg0));
   };
-  imports.wbg.__wbg_message_97a2af9b89d693a3 = function(arg0) {
+  imports.wbg.__wbg_message_97a2af9b89d693a3 = (arg0) => {
     const ret = getObject(arg0).message;
     return addHeapObject(ret);
   };
-  imports.wbg.__wbg_new_780abee5c1739fd7 = function(arg0) {
+  imports.wbg.__wbg_new_780abee5c1739fd7 = (arg0) => {
     const ret = new Float32Array(getObject(arg0));
     return addHeapObject(ret);
   };
-  imports.wbg.__wbg_new_8a6f238a6ece86ea = function() {
+  imports.wbg.__wbg_new_8a6f238a6ece86ea = () => {
     const ret = new Error();
     return addHeapObject(ret);
   };
-  imports.wbg.__wbg_newnoargs_105ed471475aaf50 = function(arg0, arg1) {
+  imports.wbg.__wbg_newnoargs_105ed471475aaf50 = (arg0, arg1) => {
     const ret = new Function(getStringFromWasm0(arg0, arg1));
     return addHeapObject(ret);
   };
-  imports.wbg.__wbg_newwithbyteoffsetandlength_e6b7e69acd4c7354 = function(arg0, arg1, arg2) {
+  imports.wbg.__wbg_newwithbyteoffsetandlength_e6b7e69acd4c7354 = (arg0, arg1, arg2) => {
     const ret = new Float32Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
     return addHeapObject(ret);
   };
-  imports.wbg.__wbg_now_807e54c39636c349 = function() {
+  imports.wbg.__wbg_now_807e54c39636c349 = () => {
     const ret = Date.now();
     return ret;
   };
-  imports.wbg.__wbg_random_3ad904d98382defe = function() {
+  imports.wbg.__wbg_random_3ad904d98382defe = () => {
     const ret = Math.random();
     return ret;
   };
-  imports.wbg.__wbg_stack_0ed75d68575b0f3c = function(arg0, arg1) {
+  imports.wbg.__wbg_stack_0ed75d68575b0f3c = (arg0, arg1) => {
     const ret = getObject(arg1).stack;
     const ptr1 = passStringToWasm0(ret, wasm.__wbindgen_export_2, wasm.__wbindgen_export_3);
     const len1 = WASM_VECTOR_LEN;
     getDataViewMemory0().setInt32(arg0 + 4 * 1, len1, true);
     getDataViewMemory0().setInt32(arg0 + 4 * 0, ptr1, true);
   };
-  imports.wbg.__wbg_static_accessor_GLOBAL_88a902d13a557d07 = function() {
+  imports.wbg.__wbg_static_accessor_GLOBAL_88a902d13a557d07 = () => {
     const ret = typeof global === 'undefined' ? null : global;
     return isLikeNone(ret) ? 0 : addHeapObject(ret);
   };
-  imports.wbg.__wbg_static_accessor_GLOBAL_THIS_56578be7e9f832b0 = function() {
+  imports.wbg.__wbg_static_accessor_GLOBAL_THIS_56578be7e9f832b0 = () => {
     const ret = typeof globalThis === 'undefined' ? null : globalThis;
     return isLikeNone(ret) ? 0 : addHeapObject(ret);
   };
-  imports.wbg.__wbg_static_accessor_SELF_37c5d418e4bf5819 = function() {
+  imports.wbg.__wbg_static_accessor_SELF_37c5d418e4bf5819 = () => {
     const ret = typeof self === 'undefined' ? null : self;
     return isLikeNone(ret) ? 0 : addHeapObject(ret);
   };
-  imports.wbg.__wbg_static_accessor_WINDOW_5de37043a91a9c40 = function() {
+  imports.wbg.__wbg_static_accessor_WINDOW_5de37043a91a9c40 = () => {
     const ret = typeof window === 'undefined' ? null : window;
     return isLikeNone(ret) ? 0 : addHeapObject(ret);
   };
-  imports.wbg.__wbg_warn_4ca3906c248c47c4 = function(arg0) {
+  imports.wbg.__wbg_warn_4ca3906c248c47c4 = (arg0) => {
     console.warn(getObject(arg0));
   };
-  imports.wbg.__wbindgen_debug_string = function(arg0, arg1) {
+  imports.wbg.__wbindgen_debug_string = (arg0, arg1) => {
     const ret = debugString(getObject(arg1));
     const ptr1 = passStringToWasm0(ret, wasm.__wbindgen_export_2, wasm.__wbindgen_export_3);
     const len1 = WASM_VECTOR_LEN;
     getDataViewMemory0().setInt32(arg0 + 4 * 1, len1, true);
     getDataViewMemory0().setInt32(arg0 + 4 * 0, ptr1, true);
   };
-  imports.wbg.__wbindgen_is_undefined = function(arg0) {
+  imports.wbg.__wbindgen_is_undefined = (arg0) => {
     const ret = getObject(arg0) === undefined;
     return ret;
   };
-  imports.wbg.__wbindgen_memory = function() {
+  imports.wbg.__wbindgen_memory = () => {
     const ret = wasm.memory;
     return addHeapObject(ret);
   };
-  imports.wbg.__wbindgen_number_get = function(arg0, arg1) {
+  imports.wbg.__wbindgen_number_get = (arg0, arg1) => {
     const obj = getObject(arg1);
-    const ret = typeof(obj) === 'number' ? obj : undefined;
+    const ret = typeof obj === 'number' ? obj : undefined;
     getDataViewMemory0().setFloat64(arg0 + 8 * 1, isLikeNone(ret) ? 0 : ret, true);
     getDataViewMemory0().setInt32(arg0 + 4 * 0, !isLikeNone(ret), true);
   };
-  imports.wbg.__wbindgen_object_clone_ref = function(arg0) {
+  imports.wbg.__wbindgen_object_clone_ref = (arg0) => {
     const ret = getObject(arg0);
     return addHeapObject(ret);
   };
-  imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
+  imports.wbg.__wbindgen_object_drop_ref = (arg0) => {
     takeObject(arg0);
   };
-  imports.wbg.__wbindgen_string_get = function(arg0, arg1) {
+  imports.wbg.__wbindgen_string_get = (arg0, arg1) => {
     const obj = getObject(arg1);
-    const ret = typeof(obj) === 'string' ? obj : undefined;
-    const ptr1 = isLikeNone(ret) ? 0 : passStringToWasm0(ret, wasm.__wbindgen_export_2, wasm.__wbindgen_export_3);
+    const ret = typeof obj === 'string' ? obj : undefined;
+    const ptr1 = isLikeNone(ret)
+      ? 0
+      : passStringToWasm0(ret, wasm.__wbindgen_export_2, wasm.__wbindgen_export_3);
     const len1 = WASM_VECTOR_LEN;
     getDataViewMemory0().setInt32(arg0 + 4 * 1, len1, true);
     getDataViewMemory0().setInt32(arg0 + 4 * 0, ptr1, true);
   };
-  imports.wbg.__wbindgen_string_new = function(arg0, arg1) {
+  imports.wbg.__wbindgen_string_new = (arg0, arg1) => {
     const ret = getStringFromWasm0(arg0, arg1);
     return addHeapObject(ret);
   };
-  imports.wbg.__wbindgen_throw = function(arg0, arg1) {
+  imports.wbg.__wbindgen_throw = (arg0, arg1) => {
     throw new Error(getStringFromWasm0(arg0, arg1));
   };
 
   return imports;
 }
 
-function __wbg_init_memory(imports, memory) {
-
-}
+function __wbg_init_memory(imports, memory) {}
 
 function __wbg_finalize_init(instance, module) {
   wasm = instance.exports;
@@ -2102,7 +2184,6 @@ function __wbg_finalize_init(instance, module) {
   cachedUint32ArrayMemory0 = null;
   cachedUint8ArrayMemory0 = null;
 
-
   wasm.__wbindgen_start();
   return wasm;
 }
@@ -2110,10 +2191,9 @@ function __wbg_finalize_init(instance, module) {
 function initSync(module) {
   if (wasm !== undefined) return wasm;
 
-
   if (typeof module !== 'undefined') {
     if (Object.getPrototypeOf(module) === Object.prototype) {
-      ({module} = module);
+      ({ module } = module);
     } else {
       console.warn('using deprecated parameters for `initSync()`; pass a single object instead');
     }
@@ -2135,12 +2215,13 @@ function initSync(module) {
 async function __wbg_init(module_or_path) {
   if (wasm !== undefined) return wasm;
 
-
   if (typeof module_or_path !== 'undefined') {
     if (Object.getPrototypeOf(module_or_path) === Object.prototype) {
-      ({module_or_path} = module_or_path);
+      ({ module_or_path } = module_or_path);
     } else {
-      console.warn('using deprecated parameters for the initialization function; pass a single object instead');
+      console.warn(
+        'using deprecated parameters for the initialization function; pass a single object instead'
+      );
     }
   }
 
@@ -2149,7 +2230,11 @@ async function __wbg_init(module_or_path) {
   }
   const imports = __wbg_get_imports();
 
-  if (typeof module_or_path === 'string' || (typeof Request === 'function' && module_or_path instanceof Request) || (typeof URL === 'function' && module_or_path instanceof URL)) {
+  if (
+    typeof module_or_path === 'string' ||
+    (typeof Request === 'function' && module_or_path instanceof Request) ||
+    (typeof URL === 'function' && module_or_path instanceof URL)
+  ) {
     module_or_path = fetch(module_or_path);
   }
 

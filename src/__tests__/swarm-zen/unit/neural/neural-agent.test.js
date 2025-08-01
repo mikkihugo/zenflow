@@ -2,14 +2,15 @@
  * Unit tests for Neural Agent module
  */
 
-import { NeuralAgent,
-  NeuralAgentFactory,
-  NeuralNetwork,
-  COGNITIVE_PATTERNS,
-  AGENT_COGNITIVE_PROFILES,
-} from '../../../src/neural-agent';
 import assert from 'assert';
 import { EventEmitter } from 'events';
+import {
+  AGENT_COGNITIVE_PROFILES,
+  COGNITIVE_PATTERNS,
+  NeuralAgent,
+  NeuralAgentFactory,
+  NeuralNetwork,
+} from '../../../src/neural-agent';
 
 // Mock base agent for testing
 class MockAgent {
@@ -109,7 +110,7 @@ describe('NeuralNetwork Tests', () => {
       const input = [1, 0, 0, 1];
       const result = network.forward(input);
       assert.strictEqual(result.output.length, 2);
-      result.output.forEach(val => {
+      result.output.forEach((val) => {
         assert(val >= 0 && val <= 1); // Sigmoid outputs
       });
     });
@@ -207,7 +208,7 @@ describe('NeuralAgent Tests', () => {
   });
 
   describe('Task Analysis', () => {
-    it('should analyze task', async() => {
+    it('should analyze task', async () => {
       const task = {
         description: 'Analyze the data and create a report',
         priority: 'high',
@@ -224,7 +225,7 @@ describe('NeuralAgent Tests', () => {
       assert('confidence' in analysis);
     });
 
-    it('should apply cognitive pattern to analysis', async() => {
+    it('should apply cognitive pattern to analysis', async () => {
       const task = { description: 'Create innovative solution' };
       const analysis = await neuralAgent.analyzeTask(task);
 
@@ -234,7 +235,7 @@ describe('NeuralAgent Tests', () => {
   });
 
   describe('Task Execution', () => {
-    it('should execute task with neural enhancement', async() => {
+    it('should execute task with neural enhancement', async () => {
       const task = {
         id: 'task-123',
         description: 'Research new algorithms',
@@ -264,7 +265,7 @@ describe('NeuralAgent Tests', () => {
       neuralAgent.executeTask(task);
     });
 
-    it('should update cognitive state after execution', async() => {
+    it('should update cognitive state after execution', async () => {
       const task = {
         description: 'Complex research task',
         priority: 'high',
@@ -277,7 +278,7 @@ describe('NeuralAgent Tests', () => {
       assert(neuralAgent.cognitiveState.fatigue > initialFatigue);
     });
 
-    it('should track learning history', async() => {
+    it('should track learning history', async () => {
       const task = {
         id: 'task-123',
         description: 'Learn from this task',
@@ -300,7 +301,7 @@ describe('NeuralAgent Tests', () => {
       const vector = neuralAgent._taskToVector(task);
       assert(Array.isArray(vector));
       assert.strictEqual(vector.length, neuralAgent.neuralNetwork.layers[0]);
-      vector.forEach(val => {
+      vector.forEach((val) => {
         assert(typeof val === 'number');
       });
     });
@@ -416,7 +417,7 @@ describe('NeuralAgent Tests', () => {
   });
 
   describe('Rest Functionality', () => {
-    it('should reduce fatigue when resting', async() => {
+    it('should reduce fatigue when resting', async () => {
       // Increase fatigue first
       neuralAgent.cognitiveState.fatigue = 0.8;
       neuralAgent.cognitiveState.attention = 0.4;
@@ -557,7 +558,7 @@ describe('Cognitive Profiles Tests', () => {
 
   it('should have valid cognitive patterns', () => {
     const validPatterns = Object.values(COGNITIVE_PATTERNS);
-    Object.values(AGENT_COGNITIVE_PROFILES).forEach(profile => {
+    Object.values(AGENT_COGNITIVE_PROFILES).forEach((profile) => {
       assert(validPatterns.includes(profile.primary));
       assert(validPatterns.includes(profile.secondary));
     });

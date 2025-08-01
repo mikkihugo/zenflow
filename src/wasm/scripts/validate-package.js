@@ -146,14 +146,7 @@ class PackageValidator {
     }
 
     // Check for files that shouldn't be included
-    const excludedFiles = [
-      'Cargo.toml',
-      'Cargo.lock',
-      'src/',
-      'target/',
-      'tests/',
-      '.git/',
-    ];
+    const excludedFiles = ['Cargo.toml', 'Cargo.lock', 'src/', 'target/', 'tests/', '.git/'];
 
     for (const file of excludedFiles) {
       if (this.fileExists(file)) {
@@ -227,12 +220,7 @@ class PackageValidator {
       return;
     }
 
-    const distFiles = [
-      'index.js',
-      'index.d.ts',
-      'index.esm.js',
-      'index.browser.js',
-    ];
+    const distFiles = ['index.js', 'index.d.ts', 'index.esm.js', 'index.browser.js'];
 
     for (const file of distFiles) {
       const filePath = `dist/${file}`;
@@ -243,8 +231,11 @@ class PackageValidator {
         const stats = fs.statSync(path.join(this.basePath, filePath));
         if (stats.size === 0) {
           this.addError(`Dist file is empty: ${file}`);
-        } else if (stats.size > 5 * 1024 * 1024) { // 5MB
-          this.addWarning(`Dist file is large (${Math.round(stats.size / 1024 / 1024)}MB): ${file}`);
+        } else if (stats.size > 5 * 1024 * 1024) {
+          // 5MB
+          this.addWarning(
+            `Dist file is large (${Math.round(stats.size / 1024 / 1024)}MB): ${file}`
+          );
         }
       } else {
         this.addError(`Missing dist file: ${file}`);
@@ -269,7 +260,7 @@ class PackageValidator {
         this.addError('CLI missing shebang line');
       }
 
-      if (cliContent.includes('require(\'../dist\')')) {
+      if (cliContent.includes("require('../dist')")) {
         this.addSuccess('CLI imports from dist/');
       } else {
         this.addWarning('CLI should import from dist/ directory');
@@ -362,12 +353,12 @@ class PackageValidator {
     } else if (this.errors.length === 0) {
       log('\n⚠️  Package has warnings but is ready for publication', 'yellow');
       log('\nConsider addressing warnings before publishing:', 'yellow');
-      this.warnings.forEach(warning => log(`   • ${warning}`, 'yellow'));
+      this.warnings.forEach((warning) => log(`   • ${warning}`, 'yellow'));
       return true;
     } else {
       log('\n💥 Package has errors and is NOT ready for publication', 'red');
       log('\nPlease fix these errors:', 'red');
-      this.errors.forEach(error => log(`   • ${error}`, 'red'));
+      this.errors.forEach((error) => log(`   • ${error}`, 'red'));
       return false;
     }
   }
@@ -376,12 +367,15 @@ class PackageValidator {
 // Run validation if this file is executed directly
 if (require.main === module) {
   const validator = new PackageValidator();
-  validator.run().then(success => {
-    process.exit(success ? 0 : 1);
-  }).catch(error => {
-    log(`\n💥 Validation failed: ${error.message}`, 'red');
-    process.exit(1);
-  });
+  validator
+    .run()
+    .then((success) => {
+      process.exit(success ? 0 : 1);
+    })
+    .catch((error) => {
+      log(`\n💥 Validation failed: ${error.message}`, 'red');
+      process.exit(1);
+    });
 }
 
 module.exports = PackageValidator;

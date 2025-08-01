@@ -7,15 +7,15 @@
 
 import { EventEmitter } from 'events';
 import { performance } from 'perf_hooks';
-import { DatabaseManager } from './DatabaseManager.js';
 import { MCPToolWrapper } from '../integration/MCPToolWrapper.js';
-import {
+import type {
   MemoryEntry,
   MemoryNamespace,
-  MemoryStats,
-  MemorySearchOptions,
   MemoryPattern,
+  MemorySearchOptions,
+  MemoryStats,
 } from '../types.js';
+import { DatabaseManager } from './DatabaseManager.js';
 
 /**
  * High-performance LRU Cache with memory management
@@ -180,7 +180,7 @@ export class Memory extends EventEmitter {
       enablePooling?: boolean;
       compressionThreshold?: number;
       batchSize?: number;
-    } = {},
+    } = {}
   ) {
     super();
     this.swarmId = swarmId;
@@ -262,8 +262,8 @@ export class Memory extends EventEmitter {
           obj.value = '';
           obj.ttl = 0;
           obj.accessCount = 0;
-        },
-      ),
+        }
+      )
     );
 
     // Pool for search results
@@ -274,8 +274,8 @@ export class Memory extends EventEmitter {
         (obj) => {
           obj.results.length = 0;
           Object.keys(obj.metadata).forEach((k) => delete obj.metadata[k]);
-        },
-      ),
+        }
+      )
     );
   }
 
@@ -383,7 +383,7 @@ export class Memory extends EventEmitter {
    * Batch store operation for high-throughput scenarios
    */
   async storeBatch(
-    entries: Array<{ key: string; value: any; namespace?: string; ttl?: number }>,
+    entries: Array<{ key: string; value: any; namespace?: string; ttl?: number }>
   ): Promise<void> {
     const startTime = performance.now();
     const batchResults = [];
@@ -929,7 +929,7 @@ export class Memory extends EventEmitter {
         'learned-patterns',
         patterns,
         'performance-metrics',
-        3600, // 1 hour TTL
+        3600 // 1 hour TTL
       );
     }
 
@@ -952,7 +952,7 @@ export class Memory extends EventEmitter {
           'access-patterns',
           patterns,
           'learning-data',
-          86400, // 1 day
+          86400 // 1 day
         );
       }
     }, 300000); // Every 5 minutes
@@ -1284,7 +1284,7 @@ export class Memory extends EventEmitter {
     if (this.cache.size > maxCacheSize) {
       // Evict least recently used entries
       const entries = Array.from(this.cache.entries()).sort(
-        (a, b) => a[1].lastAccessedAt.getTime() - b[1].lastAccessedAt.getTime(),
+        (a, b) => a[1].lastAccessedAt.getTime() - b[1].lastAccessedAt.getTime()
       );
 
       const toEvict = entries.slice(0, entries.length - maxCacheSize);
@@ -1366,10 +1366,10 @@ export class Memory extends EventEmitter {
             max: Math.max(...durations),
             min: Math.min(...durations),
           },
-        ]),
+        ])
       ),
       pools: Object.fromEntries(
-        Array.from(this.objectPools.entries()).map(([name, pool]) => [name, pool.getStats()]),
+        Array.from(this.objectPools.entries()).map(([name, pool]) => [name, pool.getStats()])
       ),
       accessPatterns: {
         total: this.accessPatterns.size,

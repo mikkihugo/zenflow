@@ -1,6 +1,6 @@
 /**
  * UI Type Definitions
- * 
+ *
  * This module defines interfaces for the CLI user interface system,
  * including themes, components, and screen state management.
  */
@@ -11,28 +11,28 @@
 export interface UITheme {
   /** Theme identifier */
   name: string;
-  
+
   /** Theme display name */
   displayName: string;
-  
+
   /** Theme description */
   description?: string;
-  
+
   /** Color palette */
   colors: UIColorPalette;
-  
+
   /** Typography settings */
   typography: UITypography;
-  
+
   /** Spacing configuration */
   spacing: UISpacing;
-  
+
   /** Border configuration */
   borders: UIBorders;
-  
+
   /** Animation settings */
   animations: UIAnimations;
-  
+
   /** Component-specific styles */
   components: UIComponentStyles;
 }
@@ -48,7 +48,7 @@ export interface UIColorPalette {
     dark: string;
     contrast: string;
   };
-  
+
   /** Secondary colors */
   secondary: {
     main: string;
@@ -56,7 +56,7 @@ export interface UIColorPalette {
     dark: string;
     contrast: string;
   };
-  
+
   /** Semantic colors */
   semantic: {
     success: string;
@@ -64,7 +64,7 @@ export interface UIColorPalette {
     error: string;
     info: string;
   };
-  
+
   /** Background colors */
   background: {
     default: string;
@@ -72,7 +72,7 @@ export interface UIColorPalette {
     elevated: string;
     overlay: string;
   };
-  
+
   /** Text colors */
   text: {
     primary: string;
@@ -80,7 +80,7 @@ export interface UIColorPalette {
     disabled: string;
     hint: string;
   };
-  
+
   /** Border colors */
   border: {
     default: string;
@@ -88,7 +88,7 @@ export interface UIColorPalette {
     dark: string;
     focus: string;
   };
-  
+
   /** Status colors */
   status: {
     active: string;
@@ -108,7 +108,7 @@ export interface UITypography {
     monospace: string;
     display: string;
   };
-  
+
   /** Font sizes */
   fontSize: {
     xs: string;
@@ -118,7 +118,7 @@ export interface UITypography {
     xl: string;
     xxl: string;
   };
-  
+
   /** Font weights */
   fontWeight: {
     light: number;
@@ -126,14 +126,14 @@ export interface UITypography {
     medium: number;
     bold: number;
   };
-  
+
   /** Line heights */
   lineHeight: {
     tight: number;
     normal: number;
     relaxed: number;
   };
-  
+
   /** Letter spacing */
   letterSpacing: {
     tight: string;
@@ -148,7 +148,7 @@ export interface UITypography {
 export interface UISpacing {
   /** Base spacing unit */
   unit: number;
-  
+
   /** Spacing scale */
   scale: {
     xs: number;
@@ -158,7 +158,7 @@ export interface UISpacing {
     xl: number;
     xxl: number;
   };
-  
+
   /** Component-specific spacing */
   component: {
     padding: number;
@@ -178,7 +178,7 @@ export interface UIBorders {
     medium: number;
     thick: number;
   };
-  
+
   /** Border radius */
   radius: {
     none: number;
@@ -187,7 +187,7 @@ export interface UIBorders {
     lg: number;
     full: number;
   };
-  
+
   /** Border styles */
   style: {
     solid: string;
@@ -206,7 +206,7 @@ export interface UIAnimations {
     normal: number;
     slow: number;
   };
-  
+
   /** Easing functions */
   easing: {
     linear: string;
@@ -214,7 +214,7 @@ export interface UIAnimations {
     easeOut: string;
     easeInOut: string;
   };
-  
+
   /** Animation types */
   types: {
     fadeIn: UIAnimationConfig;
@@ -232,13 +232,13 @@ export interface UIAnimations {
 export interface UIAnimationConfig {
   /** Animation duration */
   duration: number;
-  
+
   /** Animation easing */
   easing: string;
-  
+
   /** Animation keyframes */
   keyframes?: Record<string, Record<string, string>>;
-  
+
   /** Animation delay */
   delay?: number;
 }
@@ -249,22 +249,22 @@ export interface UIAnimationConfig {
 export interface UIComponentStyles {
   /** Button styles */
   button: UIButtonStyles;
-  
+
   /** Input styles */
   input: UIInputStyles;
-  
+
   /** Table styles */
   table: UITableStyles;
-  
+
   /** Modal styles */
   modal: UIModalStyles;
-  
+
   /** Navigation styles */
   navigation: UINavigationStyles;
-  
+
   /** Card styles */
   card: UICardStyles;
-  
+
   /** Progress styles */
   progress: UIProgressStyles;
 }
@@ -281,7 +281,7 @@ export interface UIButtonStyles {
     ghost: UIComponentVariant;
     danger: UIComponentVariant;
   };
-  
+
   /** Button sizes */
   sizes: {
     sm: UIComponentSize;
@@ -300,7 +300,7 @@ export interface UIInputStyles {
     filled: UIComponentVariant;
     outline: UIComponentVariant;
   };
-  
+
   /** Input states */
   states: {
     default: UIComponentState;
@@ -316,14 +316,14 @@ export interface UIInputStyles {
 export interface UITableStyles {
   /** Table header styles */
   header: UIComponentVariant;
-  
+
   /** Table row styles */
   row: {
     default: UIComponentVariant;
     hover: UIComponentVariant;
     selected: UIComponentVariant;
   };
-  
+
   /** Table cell styles */
   cell: UIComponentVariant;
 }
@@ -334,13 +334,13 @@ export interface UITableStyles {
 export interface UIModalStyles {
   /** Modal overlay */
   overlay: UIComponentVariant;
-  
+
   /** Modal content */
   content: UIComponentVariant;
-  
+
   /** Modal header */
   header: UIComponentVariant;
-  
+
   /** Modal footer */
   footer: UIComponentVariant;
 }
@@ -351,14 +351,14 @@ export interface UIModalStyles {
 export interface UINavigationStyles {
   /** Navigation container */
   container: UIComponentVariant;
-  
+
   /** Navigation items */
   item: {
     default: UIComponentVariant;
     active: UIComponentVariant;
     hover: UIComponentVariant;
   };
-  
+
   /** Navigation dividers */
   divider: UIComponentVariant;
 }
@@ -369,13 +369,13 @@ export interface UINavigationStyles {
 export interface UICardStyles {
   /** Card container */
   container: UIComponentVariant;
-  
+
   /** Card header */
   header: UIComponentVariant;
-  
+
   /** Card body */
   body: UIComponentVariant;
-  
+
   /** Card footer */
   footer: UIComponentVariant;
 }
@@ -386,10 +386,10 @@ export interface UICardStyles {
 export interface UIProgressStyles {
   /** Progress bar container */
   container: UIComponentVariant;
-  
+
   /** Progress bar fill */
   fill: UIComponentVariant;
-  
+
   /** Progress text */
   text: UIComponentVariant;
 }
@@ -400,28 +400,28 @@ export interface UIProgressStyles {
 export interface UIComponentVariant {
   /** Background color */
   backgroundColor?: string;
-  
+
   /** Text color */
   color?: string;
-  
+
   /** Border style */
   border?: string;
-  
+
   /** Border radius */
   borderRadius?: string;
-  
+
   /** Padding */
   padding?: string;
-  
+
   /** Margin */
   margin?: string;
-  
+
   /** Font size */
   fontSize?: string;
-  
+
   /** Font weight */
   fontWeight?: number | string;
-  
+
   /** Additional CSS properties */
   [key: string]: string | number | undefined;
 }
@@ -432,13 +432,13 @@ export interface UIComponentVariant {
 export interface UIComponentSize {
   /** Height */
   height: string;
-  
+
   /** Padding */
   padding: string;
-  
+
   /** Font size */
   fontSize: string;
-  
+
   /** Icon size */
   iconSize?: string;
 }
@@ -449,7 +449,7 @@ export interface UIComponentSize {
 export interface UIComponentState {
   /** State styles */
   styles: UIComponentVariant;
-  
+
   /** State animation */
   animation?: UIAnimationConfig;
 }
@@ -457,7 +457,7 @@ export interface UIComponentState {
 /**
  * UI component type union
  */
-export type UIComponent = 
+export type UIComponent =
   | 'button'
   | 'input'
   | 'select'
@@ -487,34 +487,34 @@ export type UIComponent =
 export interface ScreenState {
   /** Current screen identifier */
   currentScreen: string;
-  
+
   /** Screen history stack */
   history: string[];
-  
+
   /** Screen data */
   data: Record<string, unknown>;
-  
+
   /** Loading states */
   loading: Record<string, boolean>;
-  
+
   /** Error states */
   errors: Record<string, string | null>;
-  
+
   /** Form states */
   forms: Record<string, FormState>;
-  
+
   /** Modal states */
   modals: Record<string, ModalState>;
-  
+
   /** Notification states */
   notifications: NotificationState[];
-  
+
   /** Selection states */
   selections: Record<string, unknown>;
-  
+
   /** Filter states */
   filters: Record<string, FilterState>;
-  
+
   /** Pagination states */
   pagination: Record<string, PaginationState>;
 }
@@ -525,19 +525,19 @@ export interface ScreenState {
 export interface FormState {
   /** Form values */
   values: Record<string, unknown>;
-  
+
   /** Form errors */
   errors: Record<string, string>;
-  
+
   /** Form touched fields */
   touched: Record<string, boolean>;
-  
+
   /** Form validation state */
   isValid: boolean;
-  
+
   /** Form submission state */
   isSubmitting: boolean;
-  
+
   /** Form dirty state */
   isDirty: boolean;
 }
@@ -548,13 +548,13 @@ export interface FormState {
 export interface ModalState {
   /** Whether modal is open */
   isOpen: boolean;
-  
+
   /** Modal data */
   data?: unknown;
-  
+
   /** Modal size */
   size?: 'sm' | 'md' | 'lg' | 'xl';
-  
+
   /** Modal type */
   type?: 'default' | 'confirmation' | 'alert' | 'form';
 }
@@ -565,22 +565,22 @@ export interface ModalState {
 export interface NotificationState {
   /** Notification ID */
   id: string;
-  
+
   /** Notification type */
   type: 'success' | 'warning' | 'error' | 'info';
-  
+
   /** Notification title */
   title: string;
-  
+
   /** Notification message */
   message: string;
-  
+
   /** Auto-dismiss timeout */
   timeout?: number;
-  
+
   /** Whether notification is persistent */
   persistent?: boolean;
-  
+
   /** Notification actions */
   actions?: NotificationAction[];
 }
@@ -591,10 +591,10 @@ export interface NotificationState {
 export interface NotificationAction {
   /** Action label */
   label: string;
-  
+
   /** Action handler */
   onClick: () => void;
-  
+
   /** Action style */
   style?: 'primary' | 'secondary' | 'danger';
 }
@@ -605,10 +605,10 @@ export interface NotificationAction {
 export interface FilterState {
   /** Filter values */
   values: Record<string, unknown>;
-  
+
   /** Active filters */
   active: string[];
-  
+
   /** Filter options */
   options: Record<string, FilterOption[]>;
 }
@@ -619,13 +619,13 @@ export interface FilterState {
 export interface FilterOption {
   /** Option value */
   value: unknown;
-  
+
   /** Option label */
   label: string;
-  
+
   /** Option count */
   count?: number;
-  
+
   /** Whether option is disabled */
   disabled?: boolean;
 }
@@ -636,19 +636,19 @@ export interface FilterOption {
 export interface PaginationState {
   /** Current page */
   currentPage: number;
-  
+
   /** Total pages */
   totalPages: number;
-  
+
   /** Items per page */
   itemsPerPage: number;
-  
+
   /** Total items */
   totalItems: number;
-  
+
   /** Whether there is a next page */
   hasNext: boolean;
-  
+
   /** Whether there is a previous page */
   hasPrevious: boolean;
 }
@@ -659,19 +659,19 @@ export interface PaginationState {
 export interface UIEventHandlers {
   /** Click event handler */
   onClick?: (event: UIClickEvent) => void;
-  
+
   /** Change event handler */
   onChange?: (event: UIChangeEvent) => void;
-  
+
   /** Focus event handler */
   onFocus?: (event: UIFocusEvent) => void;
-  
+
   /** Blur event handler */
   onBlur?: (event: UIBlurEvent) => void;
-  
+
   /** Keydown event handler */
   onKeyDown?: (event: UIKeyboardEvent) => void;
-  
+
   /** Submit event handler */
   onSubmit?: (event: UISubmitEvent) => void;
 }
@@ -682,10 +682,10 @@ export interface UIEventHandlers {
 export interface UIClickEvent {
   /** Event target */
   target: unknown;
-  
+
   /** Click coordinates */
   coordinates?: { x: number; y: number };
-  
+
   /** Modifier keys */
   modifiers?: {
     ctrl: boolean;
@@ -698,10 +698,10 @@ export interface UIClickEvent {
 export interface UIChangeEvent {
   /** Event target */
   target: unknown;
-  
+
   /** New value */
   value: unknown;
-  
+
   /** Previous value */
   previousValue?: unknown;
 }
@@ -709,7 +709,7 @@ export interface UIChangeEvent {
 export interface UIFocusEvent {
   /** Event target */
   target: unknown;
-  
+
   /** Related target */
   relatedTarget?: unknown;
 }
@@ -717,7 +717,7 @@ export interface UIFocusEvent {
 export interface UIBlurEvent {
   /** Event target */
   target: unknown;
-  
+
   /** Related target */
   relatedTarget?: unknown;
 }
@@ -725,13 +725,13 @@ export interface UIBlurEvent {
 export interface UIKeyboardEvent {
   /** Event target */
   target: unknown;
-  
+
   /** Key code */
   key: string;
-  
+
   /** Key code */
   keyCode: number;
-  
+
   /** Modifier keys */
   modifiers: {
     ctrl: boolean;
@@ -744,10 +744,10 @@ export interface UIKeyboardEvent {
 export interface UISubmitEvent {
   /** Event target */
   target: unknown;
-  
+
   /** Form data */
   data: Record<string, unknown>;
-  
+
   /** Prevent default behavior */
   preventDefault: () => void;
 }

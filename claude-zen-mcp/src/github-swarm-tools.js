@@ -1,4 +1,3 @@
-
 // MCP Tools for GitHub Swarm Integration
 
 // This file provides MCP tools for interacting with GitHub-related swarm commands.
@@ -201,4 +200,4 @@ export const _githubSwarmTools = {
       if (args.suggest_tests) cliArgs.push('--suggest-tests');
       if (args.optimize_pipeline) cliArgs.push('--optimize-pipeline');
       return await executeRuvSwarmCommand('', cliArgs);
-    //   // LINT: unreachable code removed} },;
+//   // LINT: unreachable code removed} },;

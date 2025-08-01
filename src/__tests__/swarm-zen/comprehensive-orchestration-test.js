@@ -14,7 +14,7 @@ process.chdir(path.join(__dirname, '..'));
 import { EnhancedMCPTools } from '../src/mcp-tools-enhanced';
 
 async function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function comprehensiveOrchestrationTest() {
@@ -87,7 +87,9 @@ async function comprehensiveOrchestrationTest() {
         maxAgents: 1,
       });
       capabilityResults.push(result);
-      console.log(`✅ Assigned "${task.description}" to agent with ${task.capabilities} capability`);
+      console.log(
+        `✅ Assigned "${task.description}" to agent with ${task.capabilities} capability`
+      );
     }
 
     // Test 5: Test maxAgents parameter
@@ -98,7 +100,9 @@ async function comprehensiveOrchestrationTest() {
       maxAgents: 3,
       strategy: 'parallel',
     });
-    console.log(`✅ Multi-agent task assigned to ${multiAgentTask.assigned_agents.length} agents (max: 3)`);
+    console.log(
+      `✅ Multi-agent task assigned to ${multiAgentTask.assigned_agents.length} agents (max: 3)`
+    );
 
     // Test 6: Test task queue when all agents are busy
     console.log('\n6️⃣ Testing task queue with busy agents...');
@@ -156,13 +160,19 @@ async function comprehensiveOrchestrationTest() {
     console.log('\n8️⃣ Testing swarm metrics...');
     const swarmStatus = await mcpTools.swarm_status({ verbose: true });
     console.log(`📊 Active swarms: ${swarmStatus.active_swarms}`);
-    console.log(`🔧 Runtime features: ${Object.keys(swarmStatus.runtime_info.features).filter(f => swarmStatus.runtime_info.features[f]).join(', ')}`);
+    console.log(
+      `🔧 Runtime features: ${Object.keys(swarmStatus.runtime_info.features)
+        .filter((f) => swarmStatus.runtime_info.features[f])
+        .join(', ')}`
+    );
 
     // Test 9: Test memory usage tracking
     console.log('\n9️⃣ Testing memory usage tracking...');
     const memoryUsage = await mcpTools.memory_usage({ detail: 'summary' });
     console.log(`💾 Total memory: ${memoryUsage.total_mb.toFixed(2)} MB`);
-    console.log(`   WASM: ${memoryUsage.wasm_mb.toFixed(2)} MB, JS: ${memoryUsage.javascript_mb.toFixed(2)} MB`);
+    console.log(
+      `   WASM: ${memoryUsage.wasm_mb.toFixed(2)} MB, JS: ${memoryUsage.javascript_mb.toFixed(2)} MB`
+    );
 
     // Test 10: Test error handling
     console.log('\n🔟 Testing error handling...');
@@ -197,7 +207,6 @@ async function comprehensiveOrchestrationTest() {
     console.log('   - Agent state transitions (idle ↔ busy)');
 
     return true;
-
   } catch (error) {
     console.error('\n❌ Comprehensive test failed:', error.message);
     console.error(error.stack);
@@ -208,10 +217,10 @@ async function comprehensiveOrchestrationTest() {
 // Run the comprehensive test
 // Direct execution
 comprehensiveOrchestrationTest()
-  .then(success => {
+  .then((success) => {
     process.exit(success ? 0 : 1);
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('Unhandled error:', error);
     process.exit(1);
   });

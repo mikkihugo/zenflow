@@ -383,7 +383,9 @@ export const graphPresets = {
 // Export utility function to get preset by name
 export const getGraphPreset = (presetName) => {
   if (!graphPresets[presetName]) {
-    throw new Error(`Graph preset '${presetName}' not found. Available presets: ${Object.keys(graphPresets).join(', ')}`);
+    throw new Error(
+      `Graph preset '${presetName}' not found. Available presets: ${Object.keys(graphPresets).join(', ')}`
+    );
   }
   return graphPresets[presetName];
 };

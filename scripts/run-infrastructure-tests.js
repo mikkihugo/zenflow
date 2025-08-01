@@ -40,11 +40,12 @@ async function main() {
 
     // Display overall score
     console.warn(chalk.bold('\n📈 Overall Quality Score:'));
-    const scoreColor = results.score >= 92
-      ? chalk.green.bold
-      : results.score >= 80
-        ? chalk.yellow.bold
-        : chalk.red.bold;
+    const scoreColor =
+      results.score >= 92
+        ? chalk.green.bold
+        : results.score >= 80
+          ? chalk.yellow.bold
+          : chalk.red.bold;
     console.warn(`${scoreColor(results.score)}/100`);
 
     // Display success/failure status
@@ -58,13 +59,14 @@ async function main() {
     if (results.recommendations && results.recommendations.length > 0) {
       console.warn(chalk.bold('\n💡 Recommendations for Improvement:'));
       for (const rec of results.recommendations) {
-        const priorityColor = rec.priority === 'CRITICAL'
-          ? chalk.red.bold
-          : rec.priority === 'HIGH'
-            ? chalk.red
-            : rec.priority === 'MEDIUM'
-              ? chalk.yellow
-              : chalk.green;
+        const priorityColor =
+          rec.priority === 'CRITICAL'
+            ? chalk.red.bold
+            : rec.priority === 'HIGH'
+              ? chalk.red
+              : rec.priority === 'MEDIUM'
+                ? chalk.yellow
+                : chalk.green;
         console.warn(`\n  ${priorityColor(rec.priority)} - ${chalk.bold(rec.component)}`);
         console.warn(`    Issue: ${rec.issue}`);
         console.warn(`    Action: ${chalk.cyan(rec.action)}`);

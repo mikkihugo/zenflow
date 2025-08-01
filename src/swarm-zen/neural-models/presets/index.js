@@ -3,10 +3,14 @@
  * Centralized access to all production-ready neural network configurations
  */
 
-import { nlpPresets, getNLPPreset, availableNLPPresets } from './nlp.js';
-import { visionPresets, getVisionPreset, availableVisionPresets } from './vision.js';
-import { timeSeriesPresets, getTimeSeriesPreset, availableTimeSeriesPresets } from './timeseries.js';
-import { graphPresets, getGraphPreset, availableGraphPresets } from './graph.js';
+import { availableGraphPresets, getGraphPreset, graphPresets } from './graph.js';
+import { availableNLPPresets, getNLPPreset, nlpPresets } from './nlp.js';
+import {
+  availableTimeSeriesPresets,
+  getTimeSeriesPreset,
+  timeSeriesPresets,
+} from './timeseries.js';
+import { availableVisionPresets, getVisionPreset, visionPresets } from './vision.js';
 
 // Combined presets object
 export const NEURAL_PRESETS = {
@@ -17,12 +21,7 @@ export const NEURAL_PRESETS = {
 };
 
 // Category-specific getters
-export {
-  getNLPPreset,
-  getVisionPreset,
-  getTimeSeriesPreset,
-  getGraphPreset,
-};
+export { getNLPPreset, getVisionPreset, getTimeSeriesPreset, getGraphPreset };
 
 // Available presets lists
 export {
@@ -42,7 +41,9 @@ export const getPreset = (category, presetName) => {
   };
 
   if (!categoryMap[category]) {
-    throw new Error(`Unknown preset category: ${category}. Available categories: ${Object.keys(categoryMap).join(', ')}`);
+    throw new Error(
+      `Unknown preset category: ${category}. Available categories: ${Object.keys(categoryMap).join(', ')}`
+    );
   }
 
   return categoryMap[category](presetName);
@@ -58,7 +59,9 @@ export const getCategoryPresets = (category) => {
   };
 
   if (!categoryMap[category]) {
-    throw new Error(`Unknown preset category: ${category}. Available categories: ${Object.keys(categoryMap).join(', ')}`);
+    throw new Error(
+      `Unknown preset category: ${category}. Available categories: ${Object.keys(categoryMap).join(', ')}`
+    );
   }
 
   return categoryMap[category];
@@ -174,7 +177,7 @@ export const getPresetStatistics = () => {
     stats.categories[category] = Object.keys(presets).length;
     stats.totalPresets += Object.keys(presets).length;
 
-    Object.values(presets).forEach(preset => {
+    Object.values(presets).forEach((preset) => {
       // Count model types
       const modelType = preset.model;
       stats.models[modelType] = (stats.models[modelType] || 0) + 1;
@@ -238,19 +241,34 @@ export const PRESET_MODEL_TYPES = [
 
 // Utility function to validate preset configuration
 export const validatePresetConfig = (preset) => {
-  const requiredFields = ['name', 'description', 'model', 'config', 'training', 'performance', 'useCase'];
-  const missingFields = requiredFields.filter(field => !preset[field]);
+  const requiredFields = [
+    'name',
+    'description',
+    'model',
+    'config',
+    'training',
+    'performance',
+    'useCase',
+  ];
+  const missingFields = requiredFields.filter((field) => !preset[field]);
 
   if (missingFields.length > 0) {
     throw new Error(`Preset validation failed. Missing fields: ${missingFields.join(', ')}`);
   }
 
   // Validate performance fields
-  const requiredPerformanceFields = ['expectedAccuracy', 'inferenceTime', 'memoryUsage', 'trainingTime'];
-  const missingPerfFields = requiredPerformanceFields.filter(field => !preset.performance[field]);
+  const requiredPerformanceFields = [
+    'expectedAccuracy',
+    'inferenceTime',
+    'memoryUsage',
+    'trainingTime',
+  ];
+  const missingPerfFields = requiredPerformanceFields.filter((field) => !preset.performance[field]);
 
   if (missingPerfFields.length > 0) {
-    throw new Error(`Preset performance validation failed. Missing fields: ${missingPerfFields.join(', ')}`);
+    throw new Error(
+      `Preset performance validation failed. Missing fields: ${missingPerfFields.join(', ')}`
+    );
   }
 
   return true;
@@ -258,14 +276,14 @@ export const validatePresetConfig = (preset) => {
 
 // Export default preset recommendations by use case
 export const DEFAULT_RECOMMENDATIONS = {
-  'chatbot': { category: 'nlp', preset: 'conversational_ai' },
-  'sentiment_analysis': { category: 'nlp', preset: 'sentiment_analysis_social' },
-  'object_detection': { category: 'vision', preset: 'object_detection_realtime' },
-  'face_recognition': { category: 'vision', preset: 'facial_recognition_secure' },
-  'stock_prediction': { category: 'timeseries', preset: 'stock_market_prediction' },
-  'weather_forecast': { category: 'timeseries', preset: 'weather_forecasting' },
-  'fraud_detection': { category: 'graph', preset: 'fraud_detection_financial' },
-  'recommendation': { category: 'graph', preset: 'recommendation_engine' },
+  chatbot: { category: 'nlp', preset: 'conversational_ai' },
+  sentiment_analysis: { category: 'nlp', preset: 'sentiment_analysis_social' },
+  object_detection: { category: 'vision', preset: 'object_detection_realtime' },
+  face_recognition: { category: 'vision', preset: 'facial_recognition_secure' },
+  stock_prediction: { category: 'timeseries', preset: 'stock_market_prediction' },
+  weather_forecast: { category: 'timeseries', preset: 'weather_forecasting' },
+  fraud_detection: { category: 'graph', preset: 'fraud_detection_financial' },
+  recommendation: { category: 'graph', preset: 'recommendation_engine' },
 };
 
 // Get recommended preset for a use case

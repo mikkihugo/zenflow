@@ -11,7 +11,7 @@
  */
 
 import { execSync } from 'child_process';
-import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
 class LintSystemTester {
@@ -176,7 +176,7 @@ export class TestClass {
 
       // Override the getFilesToProcess method to use our test files
       terminator.getFilesToProcess = async () => {
-        return this.createTestFiles().map(file => join(this.testDir, file));
+        return this.createTestFiles().map((file) => join(this.testDir, file));
       };
 
       const results = await terminator.run();
@@ -189,7 +189,6 @@ export class TestClass {
 
       this.logMemory('lint-terminator-test-complete', results);
       return results;
-
     } catch (error) {
       this.testResults.set('lint-terminator', {
         success: false,
@@ -214,7 +213,7 @@ export class TestClass {
 
       // Override the getErrorFiles method to use our test files
       fixer.getErrorFiles = async () => {
-        return this.createTestFiles().map(file => join(this.testDir, file));
+        return this.createTestFiles().map((file) => join(this.testDir, file));
       };
 
       const results = await fixer.run();
@@ -227,7 +226,6 @@ export class TestClass {
 
       this.logMemory('advanced-lint-fixer-test-complete', results);
       return results;
-
     } catch (error) {
       this.testResults.set('advanced-lint-fixer', {
         success: false,
@@ -266,11 +264,13 @@ export class TestClass {
 
       this.logMemory('coordination-protocol-test-complete', {
         workersGenerated: results.taskDistribution.size,
-        totalTasks: Array.from(results.taskDistribution.values()).reduce((sum, tasks) => sum + tasks.length, 0),
+        totalTasks: Array.from(results.taskDistribution.values()).reduce(
+          (sum, tasks) => sum + tasks.length,
+          0
+        ),
       });
 
       return results;
-
     } catch (error) {
       this.testResults.set('coordination-protocol', {
         success: false,
@@ -304,7 +304,12 @@ export class TestClass {
         { line: 3, col: 15, message: 'Missing semicolon', type: 'semicolon-expected' },
       ],
       'missing-brackets.js': [
-        { line: 4, col: 40, message: 'Missing closing parenthesis', type: 'missing-closing-brackets' },
+        {
+          line: 4,
+          col: 40,
+          message: 'Missing closing parenthesis',
+          type: 'missing-closing-brackets',
+        },
         { line: 7, col: 25, message: 'Missing closing bracket', type: 'missing-closing-brackets' },
       ],
       'typescript-errors.ts': [
@@ -558,7 +563,6 @@ export class TestClass {
       });
 
       return report;
-
     } catch (error) {
       this.logMemory('test-suite-error', { error: error.message });
       console.error('❌ Test suite failed:', error);
@@ -575,13 +579,16 @@ export class TestClass {
 // Execute if run directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   const tester = new LintSystemTester();
-  tester.run().then(report => {
-    console.log('\\n✅ All tests completed successfully');
-    process.exit(report.summary.failed > 0 ? 1 : 0);
-  }).catch(error => {
-    console.error('❌ Test suite failed:', error);
-    process.exit(1);
-  });
+  tester
+    .run()
+    .then((report) => {
+      console.log('\\n✅ All tests completed successfully');
+      process.exit(report.summary.failed > 0 ? 1 : 0);
+    })
+    .catch((error) => {
+      console.error('❌ Test suite failed:', error);
+      process.exit(1);
+    });
 }
 
 export default LintSystemTester;

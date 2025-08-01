@@ -4,11 +4,11 @@
  */
 
 import assert from 'assert';
-import sqlite3 from 'sqlite3';
-import path, { dirname } from 'path';
 import { promises as fs } from 'fs';
-import { v4 as uuidv4 } from 'uuid';
+import path, { dirname } from 'path';
+import sqlite3 from 'sqlite3';
 import { fileURLToPath } from 'url';
+import { v4 as uuidv4 } from 'uuid';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -25,7 +25,7 @@ class SwarmPersistence {
 
   async connect() {
     return new Promise((resolve, reject) => {
-      this.db = new (sqlite3.verbose()).Database(this.dbPath, (err) => {
+      this.db = new (sqlite3.verbose().Database)(this.dbPath, (err) => {
         if (err) {
           reject(err);
         } else {
@@ -212,9 +212,7 @@ class SwarmPersistence {
             INSERT OR REPLACE INTO memory (key, value, ttl_seconds, expires_at)
             VALUES (?, ?, ?, ?)
         `;
-    const expiresAt = ttlSeconds
-      ? new Date(Date.now() + ttlSeconds * 1000).toISOString()
-      : null;
+    const expiresAt = ttlSeconds ? new Date(Date.now() + ttlSeconds * 1000).toISOString() : null;
     return this.run(sql, [key, JSON.stringify(value), ttlSeconds, expiresAt]);
   }
 
@@ -278,12 +276,7 @@ class SwarmPersistence {
             INSERT INTO metrics (metric_type, agent_id, value, metadata)
             VALUES (?, ?, ?, ?)
         `;
-    return this.run(sql, [
-      metricType,
-      agentId,
-      value,
-      metadata ? JSON.stringify(metadata) : null,
-    ]);
+    return this.run(sql, [metricType, agentId, value, metadata ? JSON.stringify(metadata) : null]);
   }
 
   async getMetrics(metricType, since = null, agentId = null) {
@@ -307,7 +300,7 @@ class SwarmPersistence {
   // Helper methods
   run(sql, params = []) {
     return new Promise((resolve, reject) => {
-      this.db.run(sql, params, function(err) {
+      this.db.run(sql, params, function (err) {
         if (err) {
           reject(err);
         } else {
@@ -373,7 +366,7 @@ async function runPersistenceTests() {
     await db.initSchema();
 
     // Test Agent Persistence
-    await test('Agent Creation and Retrieval', async() => {
+    await test('Agent Creation and Retrieval', async () => {
       const agent = {
         id: uuidv4(),
         name: 'test-researcher',
@@ -393,7 +386,7 @@ async function runPersistenceTests() {
       assert.deepStrictEqual(retrieved.capabilities, agent.capabilities);
     });
 
-    await test('Agent Status Update', async() => {
+    await test('Agent Status Update', async () => {
       const agentId = uuidv4();
       await db.createAgent({
         id: agentId,
@@ -407,7 +400,7 @@ async function runPersistenceTests() {
     });
 
     // Test Task Persistence
-    await test('Task Creation and Status Updates', async() => {
+    await test('Task Creation and Status Updates', async () => {
       const agentId = uuidv4();
       await db.createAgent({
         id: agentId,
@@ -440,7 +433,7 @@ async function runPersistenceTests() {
     });
 
     // Test Memory Persistence
-    await test('Memory Storage and Retrieval', async() => {
+    await test('Memory Storage and Retrieval', async () => {
       const key = 'test_config';
       const value = {
         framework: 'React',
@@ -453,7 +446,7 @@ async function runPersistenceTests() {
       assert.deepStrictEqual(retrieved, value);
     });
 
-    await test('Memory TTL Expiration', async() => {
+    await test('Memory TTL Expiration', async () => {
       const key = 'temp_data';
       const value = { temp: true };
 
@@ -465,7 +458,7 @@ async function runPersistenceTests() {
       assert.deepStrictEqual(retrieved, value);
 
       // Wait for expiration
-      await new Promise(resolve => setTimeout(resolve, 1100));
+      await new Promise((resolve) => setTimeout(resolve, 1100));
 
       // Should be expired
       retrieved = await db.getMemory(key);
@@ -473,7 +466,7 @@ async function runPersistenceTests() {
     });
 
     // Test Swarm State Persistence
-    await test('Swarm State Save and Restore', async() => {
+    await test('Swarm State Save and Restore', async () => {
       const state = {
         topology: 'mesh',
         agents: ['agent1', 'agent2', 'agent3'],
@@ -490,7 +483,7 @@ async function runPersistenceTests() {
     });
 
     // Test Neural Weights Persistence
-    await test('Neural Weight Storage', async() => {
+    await test('Neural Weight Storage', async () => {
       const agentId = uuidv4();
       await db.createAgent({
         id: agentId,
@@ -514,7 +507,7 @@ async function runPersistenceTests() {
     });
 
     // Test Metrics Persistence
-    await test('Metrics Recording and Retrieval', async() => {
+    await test('Metrics Recording and Retrieval', async () => {
       const agentId = uuidv4();
 
       // Record various metrics
@@ -531,22 +524,24 @@ async function runPersistenceTests() {
 
       const allMetrics = await db.all(
         'SELECT DISTINCT metric_type FROM metrics WHERE agent_id = ?',
-        [agentId],
+        [agentId]
       );
       assert.strictEqual(allMetrics.length, 3);
     });
 
     // Test Concurrent Operations
-    await test('Concurrent Write Operations', async() => {
+    await test('Concurrent Write Operations', async () => {
       const promises = [];
 
       // Create 10 agents concurrently
       for (let i = 0; i < 10; i++) {
-        promises.push(db.createAgent({
-          id: uuidv4(),
-          name: `concurrent-agent-${i}`,
-          agent_type: 'coder',
-        }));
+        promises.push(
+          db.createAgent({
+            id: uuidv4(),
+            name: `concurrent-agent-${i}`,
+            agent_type: 'coder',
+          })
+        );
       }
 
       await Promise.all(promises);
@@ -556,7 +551,7 @@ async function runPersistenceTests() {
     });
 
     // Test Transaction-like Operations
-    await test('Complex State Update', async() => {
+    await test('Complex State Update', async () => {
       const agentId = uuidv4();
       const taskId = uuidv4();
 
@@ -593,7 +588,7 @@ async function runPersistenceTests() {
     });
 
     // Test Data Recovery
-    await test('Database Recovery After Close/Reopen', async() => {
+    await test('Database Recovery After Close/Reopen', async () => {
       // Store test data
       const testKey = 'recovery_test';
       const testValue = { important: 'data', timestamp: Date.now() };
@@ -609,13 +604,14 @@ async function runPersistenceTests() {
     });
 
     // Test Cleanup Operations
-    await test('Expired Memory Cleanup', async() => {
+    await test('Expired Memory Cleanup', async () => {
       // Create some expired entries
       for (let i = 0; i < 5; i++) {
-        await db.run(
-          'INSERT INTO memory (key, value, expires_at) VALUES (?, ?, ?)',
-          [`expired_${i}`, '{}', new Date(Date.now() - 1000).toISOString()],
-        );
+        await db.run('INSERT INTO memory (key, value, expires_at) VALUES (?, ?, ?)', [
+          `expired_${i}`,
+          '{}',
+          new Date(Date.now() - 1000).toISOString(),
+        ]);
       }
 
       // Create valid entries
@@ -631,19 +627,21 @@ async function runPersistenceTests() {
     });
 
     // Test Performance with Large Dataset
-    await test('Performance: Bulk Operations', async() => {
+    await test('Performance: Bulk Operations', async () => {
       const startTime = Date.now();
       const count = 100;
 
       // Bulk insert agents
       const agents = [];
       for (let i = 0; i < count; i++) {
-        agents.push(db.createAgent({
-          id: uuidv4(),
-          name: `perf-agent-${i}`,
-          agent_type: ['researcher', 'coder', 'analyst'][i % 3],
-          capabilities: { index: i },
-        }));
+        agents.push(
+          db.createAgent({
+            id: uuidv4(),
+            name: `perf-agent-${i}`,
+            agent_type: ['researcher', 'coder', 'analyst'][i % 3],
+            capabilities: { index: i },
+          })
+        );
       }
 
       await Promise.all(agents);
@@ -651,10 +649,7 @@ async function runPersistenceTests() {
 
       // Query performance
       const queryStart = Date.now();
-      const coders = await db.all(
-        'SELECT * FROM agents WHERE agent_type = ?',
-        ['coder'],
-      );
+      const coders = await db.all('SELECT * FROM agents WHERE agent_type = ?', ['coder']);
       const queryTime = Date.now() - queryStart;
 
       console.log(`   Inserted ${count} agents in ${insertTime}ms`);
@@ -663,7 +658,6 @@ async function runPersistenceTests() {
       assert(insertTime < 5000); // Should complete within 5 seconds
       assert(queryTime < 100); // Query should be fast
     });
-
   } catch (error) {
     console.error('Test suite error:', error);
     results.failed++;
@@ -686,7 +680,7 @@ async function runPersistenceTests() {
 
   if (results.errors.length > 0) {
     console.log('\n❌ Failed Tests:');
-    results.errors.forEach(e => {
+    results.errors.forEach((e) => {
       console.log(`  - ${e.test}: ${e.error}`);
     });
   }
@@ -700,8 +694,8 @@ export { SwarmPersistence, runPersistenceTests };
 // Run tests when this file is executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   runPersistenceTests()
-    .then(passed => process.exit(passed ? 0 : 1))
-    .catch(error => {
+    .then((passed) => process.exit(passed ? 0 : 1))
+    .catch((error) => {
       console.error('Fatal error:', error);
       process.exit(1);
     });

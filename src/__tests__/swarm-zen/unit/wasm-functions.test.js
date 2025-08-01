@@ -3,20 +3,20 @@
  * Tests all exported WASM functions with comprehensive coverage
  */
 
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { WasmModuleLoader } from '../../src/wasm-loader.js';
 import { performance } from 'perf_hooks';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { WasmModuleLoader } from '../../src/wasm-loader.js';
 
 describe('WASM Functions Unit Tests', () => {
   let wasmModule;
   let loader;
 
-  beforeAll(async() => {
+  beforeAll(async () => {
     loader = new WasmModuleLoader();
     wasmModule = await loader.loadModule('core');
   });
 
-  afterAll(async() => {
+  afterAll(async () => {
     if (loader) {
       await loader.cleanup();
     }
@@ -81,7 +81,7 @@ describe('WASM Functions Unit Tests', () => {
       const agents = wasmModule.exports.listAgents();
       expect(Array.isArray(agents)).toBe(true);
       expect(agents.length).toBeGreaterThan(0);
-      expect(agents.some(a => a.id === agentId)).toBe(true);
+      expect(agents.some((a) => a.id === agentId)).toBe(true);
     });
 
     it('should remove an agent', () => {
@@ -90,7 +90,7 @@ describe('WASM Functions Unit Tests', () => {
       expect(result).toBe(true);
 
       const agents = wasmModule.exports.listAgents();
-      expect(agents.some(a => a.id === agentId)).toBe(false);
+      expect(agents.some((a) => a.id === agentId)).toBe(false);
     });
   });
 
@@ -128,7 +128,7 @@ describe('WASM Functions Unit Tests', () => {
       expect(status.agentCount).toBe(1);
     });
 
-    it('should orchestrate task in swarm', async() => {
+    it('should orchestrate task in swarm', async () => {
       expect(swarmId).toBeDefined();
       const task = {
         description: 'Test task',
@@ -197,7 +197,10 @@ describe('WASM Functions Unit Tests', () => {
         inputs: [new Float32Array(10).fill(0.5)],
         targets: [new Float32Array(5).fill(0.8)],
       };
-      const loss = wasmModule.exports.train(networkId, trainingData, { epochs: 1, learningRate: 0.01 });
+      const loss = wasmModule.exports.train(networkId, trainingData, {
+        epochs: 1,
+        learningRate: 0.01,
+      });
       expect(typeof loss).toBe('number');
       expect(loss).toBeGreaterThanOrEqual(0);
     });
@@ -259,7 +262,7 @@ describe('WASM Functions Unit Tests', () => {
       expect(memoryAfter.heapUsed).toBeGreaterThan(memoryBefore.heapUsed);
 
       // Cleanup
-      allocations.forEach(ptr => wasmModule.exports.deallocate(ptr));
+      allocations.forEach((ptr) => wasmModule.exports.deallocate(ptr));
 
       // Force garbage collection if available
       if (wasmModule.exports.collectGarbage) {

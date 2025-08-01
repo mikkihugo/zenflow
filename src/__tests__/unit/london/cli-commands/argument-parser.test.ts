@@ -1,6 +1,6 @@
 /**
  * Argument Parser Tests - TDD London School
- * 
+ *
  * Tests the behavior of argument parsing functionality using mocks
  * and interaction-based testing. Focuses on how the parser collaborates
  * with other components rather than testing implementation details.
@@ -86,7 +86,7 @@ class MockArgumentParser implements ArgumentParser {
 
   addCommand(config: CommandDefinition): void {
     this.commands.set(config.name, config);
-    config.aliases?.forEach(alias => {
+    config.aliases?.forEach((alias) => {
       this.commands.set(alias, config);
     });
   }
@@ -133,7 +133,7 @@ describe('ArgumentParser - TDD London', () => {
         args: ['arg1', 'arg2'],
         flags: {},
         unknown: [],
-        raw: args
+        raw: args,
       };
       mockParseFunction.mockReturnValue(expectedResult);
 
@@ -153,10 +153,10 @@ describe('ArgumentParser - TDD London', () => {
         args: ['app'],
         flags: {
           verbose: true,
-          env: 'production'
+          env: 'production',
         },
         unknown: [],
-        raw: args
+        raw: args,
       };
       mockParseFunction.mockReturnValue(expectedResult);
 
@@ -166,7 +166,7 @@ describe('ArgumentParser - TDD London', () => {
       // Assert - verify flag parsing behavior
       expect(result.flags).toEqual({
         verbose: true,
-        env: 'production'
+        env: 'production',
       });
       expect(result.args).toEqual(['app']);
     });
@@ -180,7 +180,7 @@ describe('ArgumentParser - TDD London', () => {
         args: [],
         flags: {},
         unknown: ['--unknown-flag', 'value'],
-        raw: args
+        raw: args,
       };
       mockParseFunction.mockReturnValue(expectedResult);
 
@@ -200,10 +200,10 @@ describe('ArgumentParser - TDD London', () => {
         args: [],
         flags: {
           debug: true,
-          verbose: false
+          verbose: false,
         },
         unknown: [],
-        raw: args
+        raw: args,
       };
       mockParseFunction.mockReturnValue(expectedResult);
 
@@ -222,10 +222,10 @@ describe('ArgumentParser - TDD London', () => {
         command: 'build',
         args: [],
         flags: {
-          include: ['file1.js', 'file2.js']
+          include: ['file1.js', 'file2.js'],
         },
         unknown: [],
-        raw: args
+        raw: args,
       };
       mockParseFunction.mockReturnValue(expectedResult);
 
@@ -249,22 +249,22 @@ describe('ArgumentParser - TDD London', () => {
             name: 'env',
             type: 'string',
             description: 'Environment to deploy to',
-            required: true
+            required: true,
           },
           {
             name: 'verbose',
             type: 'boolean',
             description: 'Verbose output',
-            aliases: ['v']
-          }
+            aliases: ['v'],
+          },
         ],
         args: [
           {
             name: 'target',
             description: 'Deployment target',
-            required: true
-          }
-        ]
+            required: true,
+          },
+        ],
       };
 
       // Act
@@ -296,7 +296,7 @@ describe('ArgumentParser - TDD London', () => {
       // Arrange
       const commandConfig: CommandDefinition = {
         name: 'status',
-        aliases: ['st', 'stat', 's']
+        aliases: ['st', 'stat', 's'],
       };
 
       // Act
@@ -304,7 +304,7 @@ describe('ArgumentParser - TDD London', () => {
 
       // Assert - verify alias behavior
       const aliases = ['st', 'stat', 's'];
-      aliases.forEach(alias => {
+      aliases.forEach((alias) => {
         expect(parser.hasCommand(alias)).toBe(true);
         expect(parser.getCommand(alias)).toBe(commandConfig);
       });
@@ -319,13 +319,13 @@ describe('ArgumentParser - TDD London', () => {
         args: [],
         flags: { env: 'production' },
         unknown: [],
-        raw: ['deploy', '--env', 'production']
+        raw: ['deploy', '--env', 'production'],
       };
 
       const validationResult: ValidationResult = {
         valid: false,
         errors: ['Missing required argument: target'],
-        warnings: []
+        warnings: [],
       };
 
       mockValidateFunction.mockReturnValue(validationResult);
@@ -347,13 +347,13 @@ describe('ArgumentParser - TDD London', () => {
         args: ['app'],
         flags: {}, // Missing required --env flag
         unknown: [],
-        raw: ['deploy', 'app']
+        raw: ['deploy', 'app'],
       };
 
       const validationResult: ValidationResult = {
         valid: false,
         errors: ['Required flag --env is missing'],
-        warnings: []
+        warnings: [],
       };
 
       mockValidateFunction.mockReturnValue(validationResult);
@@ -372,16 +372,16 @@ describe('ArgumentParser - TDD London', () => {
         command: 'config',
         args: [],
         flags: {
-          port: 'not-a-number' // Should be number
+          port: 'not-a-number', // Should be number
         },
         unknown: [],
-        raw: ['config', '--port', 'not-a-number']
+        raw: ['config', '--port', 'not-a-number'],
       };
 
       const validationResult: ValidationResult = {
         valid: false,
         errors: ['Flag --port must be a number'],
-        warnings: []
+        warnings: [],
       };
 
       mockValidateFunction.mockReturnValue(validationResult);
@@ -400,16 +400,16 @@ describe('ArgumentParser - TDD London', () => {
         command: 'build',
         args: [],
         flags: {
-          'old-flag': true
+          'old-flag': true,
         },
         unknown: [],
-        raw: ['build', '--old-flag']
+        raw: ['build', '--old-flag'],
       };
 
       const validationResult: ValidationResult = {
         valid: true,
         errors: [],
-        warnings: ['Flag --old-flag is deprecated, use --new-flag instead']
+        warnings: ['Flag --old-flag is deprecated, use --new-flag instead'],
       };
 
       mockValidateFunction.mockReturnValue(validationResult);
@@ -432,7 +432,7 @@ describe('ArgumentParser - TDD London', () => {
         stopAtFirstUnknown: true,
         flagPrefix: '--',
         helpFlag: ['help', 'h'],
-        versionFlag: ['version', 'v']
+        versionFlag: ['version', 'v'],
       };
 
       // Act
@@ -475,7 +475,7 @@ describe('ArgumentParser - TDD London', () => {
         args: [],
         flags: {},
         unknown: [],
-        raw: []
+        raw: [],
       };
       mockParseFunction.mockReturnValue(expectedResult);
 
@@ -495,10 +495,10 @@ describe('ArgumentParser - TDD London', () => {
         command: 'command',
         args: [],
         flags: {
-          'flag-without-value': true // Boolean flag
+          'flag-without-value': true, // Boolean flag
         },
         unknown: [],
-        raw: args
+        raw: args,
       };
       mockParseFunction.mockReturnValue(expectedResult);
 
@@ -516,10 +516,10 @@ describe('ArgumentParser - TDD London', () => {
         command: 'deploy',
         args: [],
         flags: {
-          message: 'Deploy v1.0.0 with "quotes" and spaces'
+          message: 'Deploy v1.0.0 with "quotes" and spaces',
         },
         unknown: [],
-        raw: args
+        raw: args,
       };
       mockParseFunction.mockReturnValue(expectedResult);
 
@@ -538,7 +538,7 @@ describe('ArgumentParser - TDD London', () => {
         args: ['file1.js', 'file2.js', 'file3.js'],
         flags: {},
         unknown: [],
-        raw: args
+        raw: args,
       };
       mockParseFunction.mockReturnValue(expectedResult);
 

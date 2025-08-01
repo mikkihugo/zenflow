@@ -5,13 +5,16 @@
  * Basic implementation without complex dependencies
  */
 
-import React, { useState, useEffect } from 'react';
-import { render, Text, Box, useInput, useApp } from 'ink';
+import { Box, render, Text, useApp, useInput } from 'ink';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 
 // Simple swarm status display
 const SwarmStatus: React.FC<{ status: any }> = ({ status }) => (
   <Box flexDirection="column" padding={1} borderStyle="round" borderColor="cyan">
-    <Text color="cyan" bold>🐝 Swarm Status</Text>
+    <Text color="cyan" bold>
+      🐝 Swarm Status
+    </Text>
     <Text>Active Swarms: {status.activeSwarms || 0}</Text>
     <Text>Total Agents: {status.totalAgents || 0}</Text>
     <Text>Active Tasks: {status.activeTasks || 0}</Text>
@@ -22,13 +25,13 @@ const SwarmStatus: React.FC<{ status: any }> = ({ status }) => (
 // Simple menu component
 const SwarmMenu: React.FC<{ onSelect: (action: string) => void }> = ({ onSelect }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  
+
   const menuItems = [
     { label: '🚀 Initialize Swarm', value: 'init' },
     { label: '🤖 Spawn Agent', value: 'spawn' },
     { label: '📋 Create Task', value: 'task' },
     { label: '📊 View Status', value: 'status' },
-    { label: '❌ Exit', value: 'exit' }
+    { label: '❌ Exit', value: 'exit' },
   ];
 
   useInput((input, key) => {
@@ -43,14 +46,17 @@ const SwarmMenu: React.FC<{ onSelect: (action: string) => void }> = ({ onSelect 
 
   return (
     <Box flexDirection="column" padding={1}>
-      <Text color="yellow" bold>Select an action:</Text>
+      <Text color="yellow" bold>
+        Select an action:
+      </Text>
       {menuItems.map((item, index) => (
         <Text
           key={item.value}
           color={index === selectedIndex ? 'cyan' : 'white'}
           backgroundColor={index === selectedIndex ? 'blue' : undefined}
         >
-          {index === selectedIndex ? '> ' : '  '}{item.label}
+          {index === selectedIndex ? '> ' : '  '}
+          {item.label}
         </Text>
       ))}
     </Box>
@@ -65,7 +71,7 @@ const SwarmTUI: React.FC = () => {
     activeSwarms: 0,
     totalAgents: 0,
     activeTasks: 0,
-    metrics: { successRate: 100 }
+    metrics: { successRate: 100 },
   });
 
   const handleMenuSelect = async (action: string) => {
@@ -74,33 +80,33 @@ const SwarmTUI: React.FC = () => {
         setCurrentView('loading');
         // Simulate swarm initialization
         setTimeout(() => {
-          setStatus(prev => ({ ...prev, activeSwarms: prev.activeSwarms + 1 }));
+          setStatus((prev) => ({ ...prev, activeSwarms: prev.activeSwarms + 1 }));
           setCurrentView('menu');
         }, 2000);
         break;
-        
+
       case 'spawn':
         setCurrentView('loading');
         // Simulate agent spawning
         setTimeout(() => {
-          setStatus(prev => ({ ...prev, totalAgents: prev.totalAgents + 1 }));
+          setStatus((prev) => ({ ...prev, totalAgents: prev.totalAgents + 1 }));
           setCurrentView('menu');
         }, 1500);
         break;
-        
+
       case 'task':
         setCurrentView('loading');
         // Simulate task creation
         setTimeout(() => {
-          setStatus(prev => ({ ...prev, activeTasks: prev.activeTasks + 1 }));
+          setStatus((prev) => ({ ...prev, activeTasks: prev.activeTasks + 1 }));
           setCurrentView('menu');
         }, 1000);
         break;
-        
+
       case 'status':
         setCurrentView('status');
         break;
-        
+
       case 'exit':
         exit();
         break;
@@ -121,9 +127,7 @@ const SwarmTUI: React.FC = () => {
         </Text>
       </Box>
 
-      {currentView === 'menu' && (
-        <SwarmMenu onSelect={handleMenuSelect} />
-      )}
+      {currentView === 'menu' && <SwarmMenu onSelect={handleMenuSelect} />}
 
       {currentView === 'status' && (
         <Box flexDirection="column">

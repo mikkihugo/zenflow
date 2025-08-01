@@ -108,7 +108,8 @@ async function testMcpServerStartup() {
     console.log('\n📋 Test 3: Development Script Consistency');
 
     const mcpServerDevScript = packageJson.scripts['mcp:server:dev'];
-    const expectedDevScript = 'cd ../crates/ruv-swarm-mcp && cargo watch -x \'run --bin ruv-swarm-mcp-stdio\'';
+    const expectedDevScript =
+      "cd ../crates/ruv-swarm-mcp && cargo watch -x 'run --bin ruv-swarm-mcp-stdio'";
 
     if (mcpServerDevScript === expectedDevScript) {
       console.log('✅ PASSED: Development script is consistent');
@@ -128,7 +129,6 @@ async function testMcpServerStartup() {
     console.log('- MCP server starts successfully');
 
     return true;
-
   } catch (error) {
     console.error('❌ Test failed with error:', error.message);
     return false;
@@ -138,10 +138,10 @@ async function testMcpServerStartup() {
 // Run the test if this script is executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   testMcpServerStartup()
-    .then(success => {
+    .then((success) => {
       process.exit(success ? 0 : 1);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('Fatal error:', error);
       process.exit(1);
     });

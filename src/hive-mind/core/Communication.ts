@@ -6,15 +6,15 @@
  */
 
 import { EventEmitter } from 'events';
-import { DatabaseManager } from './DatabaseManager.js';
-import { Agent } from './Agent.js';
-import {
-  Message,
-  MessageType,
-  MessagePriority,
-  CommunicationStats,
+import type {
   CommunicationChannel,
+  CommunicationStats,
+  Message,
+  MessagePriority,
+  MessageType,
 } from '../types.js';
+import type { Agent } from './Agent.js';
+import { DatabaseManager } from './DatabaseManager.js';
 
 export class Communication extends EventEmitter {
   private swarmId: string;
@@ -126,7 +126,7 @@ export class Communication extends EventEmitter {
     fromAgentId: string,
     type: MessageType,
     content: any,
-    priority: MessagePriority = 'normal',
+    priority: MessagePriority = 'normal'
   ): Promise<void> {
     const message: Message = {
       id: this.generateMessageId(),
@@ -150,7 +150,7 @@ export class Communication extends EventEmitter {
     channelName: string,
     fromAgentId: string,
     content: any,
-    priority: MessagePriority = 'normal',
+    priority: MessagePriority = 'normal'
   ): Promise<void> {
     const channel = this.channels.get(channelName);
     if (!channel) {
@@ -187,7 +187,7 @@ export class Communication extends EventEmitter {
     fromAgentId: string,
     toAgentId: string,
     query: any,
-    timeout: number = 5000,
+    timeout: number = 5000
   ): Promise<any> {
     const message: Message = {
       id: this.generateMessageId(),

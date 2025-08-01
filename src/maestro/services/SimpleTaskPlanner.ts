@@ -1,9 +1,9 @@
 /**
  * Simple Task Planner - Streamlined Integration
- * 
+ *
  * Lightweight task planning service that directly leverages existing
  * AgentManager task-planner template with minimal overhead.
- * 
+ *
  * Key Features:
  * - Direct AgentManager integration without dual-system complexity
  * - Simple interface following Single Responsibility
@@ -11,8 +11,8 @@
  * - Fast fallback with basic task generation
  */
 
-import { AgentManager } from '../../agents/agent-manager';
-import { ILogger } from '../../core/logger';
+import type { AgentManager } from '../../agents/agent-manager';
+import type { ILogger } from '../../core/logger';
 
 export interface TaskPlannerRequest {
   featureName: string;
@@ -30,7 +30,6 @@ export interface TaskPlannerResponse {
  * Streamlined task planner with minimal overhead
  */
 export class SimpleTaskPlanner {
-  
   constructor(
     private agentManager: AgentManager,
     private logger: ILogger
@@ -49,18 +48,20 @@ export class SimpleTaskPlanner {
         return {
           success: true,
           taskMarkdown: agentResult,
-          method: 'agent'
+          method: 'agent',
         };
       }
     } catch (error) {
-      this.logger.warn(`Agent planning failed: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.warn(
+        `Agent planning failed: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
 
     // Fast fallback to basic task generation
     return {
       success: true,
       taskMarkdown: this.generateBasicTasks(request),
-      method: 'fallback'
+      method: 'fallback',
     };
   }
 
@@ -69,7 +70,7 @@ export class SimpleTaskPlanner {
    */
   private async tryAgentPlanning(request: TaskPlannerRequest): Promise<string | null> {
     let agentId: string | null = null;
-    
+
     try {
       // Create task-planner agent
       agentId = await this.agentManager.createAgent('task-planner', {
@@ -77,7 +78,7 @@ export class SimpleTaskPlanner {
         type: 'task-planner',
         capabilities: ['project-management', 'task-breakdown'],
         maxConcurrentTasks: 1,
-        priority: 90
+        priority: 90,
       });
 
       if (!agentId) return null;
@@ -91,27 +92,28 @@ export class SimpleTaskPlanner {
         type: 'task-planning',
         description: `Generate tasks for ${request.featureName}`,
         input: {
-          prompt: this.createSimplePrompt(request)
+          prompt: this.createSimplePrompt(request),
         },
         priority: 90,
-        metadata: { featureName: request.featureName }
+        metadata: { featureName: request.featureName },
       };
 
       const result = await this.agentManager.executeTask(agentId, task);
-      
+
       if (result?.output) {
         return this.formatTaskOutput(result.output, request.featureName);
       }
 
       return null;
-
     } finally {
       // Always cleanup agent
       if (agentId) {
         try {
           await this.agentManager.stopAgent(agentId);
         } catch (error) {
-          this.logger.warn(`Failed to cleanup agent ${agentId}: ${error instanceof Error ? error.message : String(error)}`);
+          this.logger.warn(
+            `Failed to cleanup agent ${agentId}: ${error instanceof Error ? error.message : String(error)}`
+          );
         }
       }
     }
@@ -191,7 +193,7 @@ ${JSON.stringify(output, null, 2)}
       const hasAgentManager = !!this.agentManager;
       return {
         available: hasAgentManager,
-        method: hasAgentManager ? 'agent' : 'fallback'
+        method: hasAgentManager ? 'agent' : 'fallback',
       };
     } catch {
       return { available: false, method: 'fallback' };

@@ -11,7 +11,7 @@ import { ValidationError } from './errors.js';
 class BaseValidator {
   static validate(value, schema, fieldName = 'value') {
     try {
-      return this.validateValue(value, schema, fieldName);
+      return BaseValidator.validateValue(value, schema, fieldName);
     } catch (error) {
       if (error instanceof ValidationError) {
         throw error;
@@ -19,7 +19,7 @@ class BaseValidator {
       throw new ValidationError(
         `Validation failed for ${fieldName}: ${error.message}`,
         fieldName,
-        value,
+        value
       );
     }
   }
@@ -27,12 +27,7 @@ class BaseValidator {
   static validateValue(value, schema, fieldName) {
     // Handle required fields
     if (schema.required && (value === undefined || value === null)) {
-      throw new ValidationError(
-        `${fieldName} is required`,
-        fieldName,
-        value,
-        schema.type,
-      );
+      throw new ValidationError(`${fieldName} is required`, fieldName, value, schema.type);
     }
 
     // Handle optional fields
@@ -41,12 +36,12 @@ class BaseValidator {
     }
 
     // Type validation
-    if (schema.type && !this.validateType(value, schema.type)) {
+    if (schema.type && !BaseValidator.validateType(value, schema.type)) {
       throw new ValidationError(
         `${fieldName} must be of type ${schema.type}`,
         fieldName,
         value,
-        schema.type,
+        schema.type
       );
     }
 
@@ -57,7 +52,7 @@ class BaseValidator {
           `${fieldName} must be at least ${schema.min}`,
           fieldName,
           value,
-          schema.type,
+          schema.type
         );
       }
       if (schema.max !== undefined && value > schema.max) {
@@ -65,16 +60,11 @@ class BaseValidator {
           `${fieldName} must be at most ${schema.max}`,
           fieldName,
           value,
-          schema.type,
+          schema.type
         );
       }
       if (schema.integer && !Number.isInteger(value)) {
-        throw new ValidationError(
-          `${fieldName} must be an integer`,
-          fieldName,
-          value,
-          'integer',
-        );
+        throw new ValidationError(`${fieldName} must be an integer`, fieldName, value, 'integer');
       }
     }
 
@@ -86,7 +76,7 @@ class BaseValidator {
           `${fieldName} must be at least ${schema.minLength} characters/items long`,
           fieldName,
           value,
-          schema.type,
+          schema.type
         );
       }
       if (schema.maxLength !== undefined && length > schema.maxLength) {
@@ -94,7 +84,7 @@ class BaseValidator {
           `${fieldName} must be at most ${schema.maxLength} characters/items long`,
           fieldName,
           value,
-          schema.type,
+          schema.type
         );
       }
     }
@@ -105,7 +95,7 @@ class BaseValidator {
         `${fieldName} must be one of: ${schema.enum.join(', ')}`,
         fieldName,
         value,
-        `enum(${schema.enum.join('|')})`,
+        `enum(${schema.enum.join('|')})`
       );
     }
 
@@ -117,7 +107,7 @@ class BaseValidator {
           `${fieldName} does not match the required pattern`,
           fieldName,
           value,
-          'string(pattern)',
+          'string(pattern)'
         );
       }
     }
@@ -126,13 +116,17 @@ class BaseValidator {
     if (schema.type === 'object' && schema.properties) {
       for (const [propName, propSchema] of Object.entries(schema.properties)) {
         if (value[propName] !== undefined) {
-          value[propName] = this.validateValue(value[propName], propSchema, `${fieldName}.${propName}`);
+          value[propName] = BaseValidator.validateValue(
+            value[propName],
+            propSchema,
+            `${fieldName}.${propName}`
+          );
         } else if (propSchema.required) {
           throw new ValidationError(
             `${fieldName}.${propName} is required`,
             `${fieldName}.${propName}`,
             undefined,
-            propSchema.type,
+            propSchema.type
           );
         }
       }
@@ -141,7 +135,7 @@ class BaseValidator {
     // Array item validation
     if (schema.type === 'array' && schema.items) {
       for (let i = 0; i < value.length; i++) {
-        value[i] = this.validateValue(value[i], schema.items, `${fieldName}[${i}]`);
+        value[i] = BaseValidator.validateValue(value[i], schema.items, `${fieldName}[${i}]`);
       }
     }
 
@@ -208,7 +202,16 @@ const MCPSchemas = {
   agent_spawn: {
     type: {
       type: 'string',
-      enum: ['researcher', 'coder', 'analyst', 'optimizer', 'coordinator', 'tester', 'reviewer', 'documenter'],
+      enum: [
+        'researcher',
+        'coder',
+        'analyst',
+        'optimizer',
+        'coordinator',
+        'tester',
+        'reviewer',
+        'documenter',
+      ],
       default: 'researcher',
     },
     name: {
@@ -435,7 +438,16 @@ const MCPSchemas = {
   neural_patterns: {
     pattern: {
       type: 'string',
-      enum: ['all', 'convergent', 'divergent', 'lateral', 'systems', 'critical', 'abstract', 'adaptive'],
+      enum: [
+        'all',
+        'convergent',
+        'divergent',
+        'lateral',
+        'systems',
+        'critical',
+        'abstract',
+        'adaptive',
+      ],
       default: 'all',
     },
   },
@@ -738,7 +750,7 @@ class ValidationUtils {
         `No validation schema found for tool: ${toolName}`,
         'toolName',
         toolName,
-        'string',
+        'string'
       );
     }
 
@@ -767,7 +779,7 @@ class ValidationUtils {
     // Check for unexpected parameters
     const allowedFields = Object.keys(schema);
     const providedFields = Object.keys(params);
-    const unexpectedFields = providedFields.filter(field => !allowedFields.includes(field));
+    const unexpectedFields = providedFields.filter((field) => !allowedFields.includes(field));
 
     if (unexpectedFields.length > 0) {
       console.warn(`Unexpected parameters for ${toolName}: ${unexpectedFields.join(', ')}`);
@@ -796,7 +808,7 @@ class ValidationUtils {
         type: fieldSchema.type,
         required: fieldSchema.required || false,
         default: fieldSchema.default,
-        description: this.generateFieldDescription(fieldName, fieldSchema),
+        description: ValidationUtils.generateFieldDescription(fieldName, fieldSchema),
       };
 
       if (fieldSchema.enum) {
@@ -879,10 +891,6 @@ class ValidationUtils {
 /**
  * Export validation schemas and utilities
  */
-export {
-  MCPSchemas,
-  BaseValidator,
-  ValidationUtils,
-};
+export { MCPSchemas, BaseValidator, ValidationUtils };
 
 export default ValidationUtils;

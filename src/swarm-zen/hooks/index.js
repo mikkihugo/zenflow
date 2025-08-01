@@ -3,9 +3,9 @@
  * Provides automated coordination, formatting, and learning capabilities
  */
 
+import { execSync } from 'child_process';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { SwarmPersistence } from '../persistence.js';
 
@@ -45,12 +45,12 @@ class RuvSwarmHooks {
   }
 
   /**
-     * Main hook handler - routes to specific hook implementations
-     */
+   * Main hook handler - routes to specific hook implementations
+   */
   async handleHook(hookType, args) {
     try {
       switch (hookType) {
-      // Pre-operation hooks
+        // Pre-operation hooks
         case 'pre-edit':
           return await this.preEditHook(args);
         case 'pre-bash':
@@ -110,8 +110,8 @@ class RuvSwarmHooks {
   }
 
   /**
-     * Pre-search hook - Prepare cache and optimize search
-     */
+   * Pre-search hook - Prepare cache and optimize search
+   */
   async preSearchHook(args) {
     const { pattern } = args;
 
@@ -122,7 +122,8 @@ class RuvSwarmHooks {
 
     // Check cache for similar patterns
     const cachedResult = this.sessionData.searchCache.get(pattern);
-    if (cachedResult && Date.now() - cachedResult.timestamp < 300000) { // 5 min cache
+    if (cachedResult && Date.now() - cachedResult.timestamp < 300000) {
+      // 5 min cache
       return {
         continue: true,
         cached: true,
@@ -139,8 +140,8 @@ class RuvSwarmHooks {
   }
 
   /**
-     * Pre-MCP hook - Validate MCP tool state
-     */
+   * Pre-MCP hook - Validate MCP tool state
+   */
   async preMcpHook(args) {
     const { tool, params } = args;
 
@@ -175,8 +176,8 @@ class RuvSwarmHooks {
   }
 
   /**
-     * Pre-edit hook - Ensure coordination before file modifications
-     */
+   * Pre-edit hook - Ensure coordination before file modifications
+   */
   async preEditHook(args) {
     const { file } = args;
 
@@ -218,8 +219,8 @@ class RuvSwarmHooks {
   }
 
   /**
-     * Pre-task hook - Auto-spawn agents and optimize topology
-     */
+   * Pre-task hook - Auto-spawn agents and optimize topology
+   */
   async preTaskHook(args) {
     const { description, autoSpawnAgents, optimizeTopology } = args;
 
@@ -250,8 +251,8 @@ class RuvSwarmHooks {
   }
 
   /**
-     * Post-edit hook - Format and learn from edits
-     */
+   * Post-edit hook - Format and learn from edits
+   */
   async postEditHook(args) {
     const { file, autoFormat, trainPatterns, updateGraph } = args;
     const result = {
@@ -286,8 +287,8 @@ class RuvSwarmHooks {
   }
 
   /**
-     * Post-task hook - Analyze performance and update coordination
-     */
+   * Post-task hook - Analyze performance and update coordination
+   */
   async postTaskHook(args) {
     const { taskId, analyzePerformance, updateCoordination } = args;
 
@@ -322,8 +323,8 @@ class RuvSwarmHooks {
   }
 
   /**
-     * Post-web-search hook - Analyze results and update knowledge
-     */
+   * Post-web-search hook - Analyze results and update knowledge
+   */
   async postWebSearchHook(args) {
     const { query, updateKnowledge } = args;
 
@@ -333,7 +334,7 @@ class RuvSwarmHooks {
     }
 
     const patterns = this.extractSearchPatterns(query);
-    patterns.forEach(pattern => {
+    patterns.forEach((pattern) => {
       const count = this.sessionData.searchPatterns.get(pattern) || 0;
       this.sessionData.searchPatterns.set(pattern, count + 1);
     });
@@ -355,8 +356,8 @@ class RuvSwarmHooks {
   }
 
   /**
-     * Post-web-fetch hook - Extract patterns and cache content
-     */
+   * Post-web-fetch hook - Extract patterns and cache content
+   */
   async postWebFetchHook(args) {
     const { url, extractPatterns, cacheContent } = args;
 
@@ -387,8 +388,8 @@ class RuvSwarmHooks {
   }
 
   /**
-     * Notification hook - Handle notifications with swarm status
-     */
+   * Notification hook - Handle notifications with swarm status
+   */
   async notificationHook(args) {
     const { message, level, withSwarmStatus, sendTelemetry, type, context, agentId } = args;
 
@@ -433,8 +434,8 @@ class RuvSwarmHooks {
   }
 
   /**
-     * Pre-bash hook - Validate commands before execution
-     */
+   * Pre-bash hook - Validate commands before execution
+   */
   async preBashHook(args) {
     const { command } = args;
 
@@ -465,8 +466,8 @@ class RuvSwarmHooks {
   }
 
   /**
-     * MCP swarm initialized hook - Persist configuration
-     */
+   * MCP swarm initialized hook - Persist configuration
+   */
   async mcpSwarmInitializedHook(args) {
     const { swarmId, topology, persistConfig, enableMonitoring } = args;
 
@@ -484,7 +485,7 @@ class RuvSwarmHooks {
       await fs.mkdir(configDir, { recursive: true });
       await fs.writeFile(
         path.join(configDir, 'swarm-config.json'),
-        JSON.stringify(swarmConfig, null, 2),
+        JSON.stringify(swarmConfig, null, 2)
       );
     }
 
@@ -505,8 +506,8 @@ class RuvSwarmHooks {
   }
 
   /**
-     * MCP agent spawned hook - Update roster and train
-     */
+   * MCP agent spawned hook - Update roster and train
+   */
   async mcpAgentSpawnedHook(args) {
     const { agentId, type, updateRoster, trainSpecialization } = args;
 
@@ -549,8 +550,8 @@ class RuvSwarmHooks {
   }
 
   /**
-     * MCP task orchestrated hook - Monitor and optimize
-     */
+   * MCP task orchestrated hook - Monitor and optimize
+   */
   async mcpTaskOrchestratedHook(args) {
     const { taskId, monitorProgress, optimizeDistribution } = args;
 
@@ -598,8 +599,8 @@ class RuvSwarmHooks {
   }
 
   /**
-     * MCP neural trained hook - Save improvements
-     */
+   * MCP neural trained hook - Save improvements
+   */
   async mcpNeuralTrainedHook(args) {
     const { improvement, saveWeights, updatePatterns } = args;
 
@@ -624,7 +625,7 @@ class RuvSwarmHooks {
 
       await fs.writeFile(
         path.join(weightsDir, `weights-${Date.now()}.json`),
-        JSON.stringify(weightData, null, 2),
+        JSON.stringify(weightData, null, 2)
       );
 
       result.saved = true;
@@ -649,8 +650,8 @@ class RuvSwarmHooks {
   }
 
   /**
-     * Agent complete hook - Commit to git with detailed report
-     */
+   * Agent complete hook - Commit to git with detailed report
+   */
   async agentCompleteHook(args) {
     const { agent, prompt, output, commitToGit, generateReport, pushToGithub } = args;
 
@@ -682,7 +683,7 @@ ${prompt || 'No prompt available'}
 \`\`\`
 
 ## Output Summary
-${output ? `### Key Accomplishments\n${ this.extractKeyPoints(output)}` : 'No output captured'}
+${output ? `### Key Accomplishments\n${this.extractKeyPoints(output)}` : 'No output captured'}
 
 ## Performance Metrics
 - **Total Operations**: ${this.sessionData.operations.length}
@@ -694,12 +695,12 @@ ${output ? `### Key Accomplishments\n${ this.extractKeyPoints(output)}` : 'No ou
 ${this.getModifiedFilesList()}
 
 ## Coordination Activity
-- **Memory Operations**: ${this.sessionData.operations.filter(op => op.type === 'memory').length}
-- **Hook Executions**: ${this.sessionData.operations.filter(op => op.type === 'hook').length}
+- **Memory Operations**: ${this.sessionData.operations.filter((op) => op.type === 'memory').length}
+- **Hook Executions**: ${this.sessionData.operations.filter((op) => op.type === 'hook').length}
 - **Neural Training**: ${this.sessionData.metrics.patternsImproved} patterns improved
 
 ## Learnings & Patterns
-${this.sessionData.learnings.length > 0 ? this.sessionData.learnings.map(l => `- ${l.type || 'General'}: ${l.description || JSON.stringify(l)}`).join('\n') : 'No specific learnings captured'}
+${this.sessionData.learnings.length > 0 ? this.sessionData.learnings.map((l) => `- ${l.type || 'General'}: ${l.description || JSON.stringify(l)}`).join('\n') : 'No specific learnings captured'}
 
 ---
 *Generated by ruv-swarm agent coordination system*
@@ -728,7 +729,7 @@ Agent: ${agentName}
 Timestamp: ${timestamp}
 
 ## Task Summary
-${prompt ? `${prompt.split('\n')[0].substring(0, 100) }...` : 'No task description'}
+${prompt ? `${prompt.split('\n')[0].substring(0, 100)}...` : 'No task description'}
 
 ## Achievements
 ${this.extractBulletPoints(output)}
@@ -762,7 +763,6 @@ EOF
           } else {
             console.log('ℹ️ No changes to commit');
           }
-
         } catch (gitError) {
           console.error('Git operation failed:', gitError.message);
         }
@@ -785,7 +785,6 @@ EOF
         committed: commitToGit,
         duration: this.formatDuration(Date.now() - this.sessionData.startTime),
       };
-
     } catch (error) {
       console.error('Agent complete hook error:', error);
       return {
@@ -796,15 +795,15 @@ EOF
   }
 
   /**
-     * Extract key points from output
-     */
+   * Extract key points from output
+   */
   extractKeyPoints(output) {
-    const lines = output.split('\n').filter(l => l.trim());
+    const lines = output.split('\n').filter((l) => l.trim());
     const keyPoints = [];
 
     // Look for bullet points or numbered items
-    lines.forEach(line => {
-      if (line.match(/^[\-\*•]\s/) || line.match(/^\d+\.\s/)) {
+    lines.forEach((line) => {
+      if (line.match(/^[-*•]\s/) || line.match(/^\d+\.\s/)) {
         keyPoints.push(line);
       }
     });
@@ -818,8 +817,8 @@ EOF
   }
 
   /**
-     * Extract bullet points for commit message
-     */
+   * Extract bullet points for commit message
+   */
   extractBulletPoints(output) {
     if (!output) {
       return '- No specific achievements captured';
@@ -828,33 +827,33 @@ EOF
     const points = this.extractKeyPoints(output)
       .split('\n')
       .slice(0, 5)
-      .map(p => `- ${p.replace(/^[\-\*•\d+\.\s]+/, '').trim()}`);
+      .map((p) => `- ${p.replace(/^[-*•\d+.\s]+/, '').trim()}`);
 
     return points.length > 0 ? points.join('\n') : '- Task completed successfully';
   }
 
   /**
-     * Get count of modified files
-     */
+   * Get count of modified files
+   */
   getModifiedFilesCount() {
-    const fileOps = this.sessionData.operations.filter(op =>
-      ['edit', 'write', 'create'].includes(op.type),
+    const fileOps = this.sessionData.operations.filter((op) =>
+      ['edit', 'write', 'create'].includes(op.type)
     );
 
-    const uniqueFiles = new Set(fileOps.map(op => op.file).filter(Boolean));
+    const uniqueFiles = new Set(fileOps.map((op) => op.file).filter(Boolean));
     return uniqueFiles.size;
   }
 
   /**
-     * Get list of modified files
-     */
+   * Get list of modified files
+   */
   getModifiedFilesList() {
-    const fileOps = this.sessionData.operations.filter(op =>
-      ['edit', 'write', 'create'].includes(op.type),
+    const fileOps = this.sessionData.operations.filter((op) =>
+      ['edit', 'write', 'create'].includes(op.type)
     );
 
     const fileMap = new Map();
-    fileOps.forEach(op => {
+    fileOps.forEach((op) => {
       if (op.file) {
         if (!fileMap.has(op.file)) {
           fileMap.set(op.file, []);
@@ -873,8 +872,8 @@ EOF
   }
 
   /**
-     * Session restore hook - Load previous state
-     */
+   * Session restore hook - Load previous state
+   */
   async sessionRestoreHook(args) {
     const { loadMemory, loadAgents } = args;
 
@@ -893,7 +892,12 @@ EOF
       // Load memory state
       if (loadMemory) {
         const memoryPath = path.join(sessionDir, 'memory-state.json');
-        if (await fs.access(memoryPath).then(() => true).catch(() => false)) {
+        if (
+          await fs
+            .access(memoryPath)
+            .then(() => true)
+            .catch(() => false)
+        ) {
           const memory = JSON.parse(await fs.readFile(memoryPath, 'utf-8'));
           this.sessionData = { ...this.sessionData, ...memory };
           result.restored.memory = true;
@@ -903,9 +907,14 @@ EOF
       // Load agent roster
       if (loadAgents) {
         const rosterPath = path.join(sessionDir, 'agent-roster.json');
-        if (await fs.access(rosterPath).then(() => true).catch(() => false)) {
+        if (
+          await fs
+            .access(rosterPath)
+            .then(() => true)
+            .catch(() => false)
+        ) {
           const roster = JSON.parse(await fs.readFile(rosterPath, 'utf-8'));
-          roster.forEach(agent => {
+          roster.forEach((agent) => {
             this.sessionData.agents.set(agent.id, agent);
           });
           result.restored.agents = true;
@@ -914,12 +923,16 @@ EOF
 
       // Load metrics
       const metricsPath = path.join(sessionDir, 'session-metrics.json');
-      if (await fs.access(metricsPath).then(() => true).catch(() => false)) {
+      if (
+        await fs
+          .access(metricsPath)
+          .then(() => true)
+          .catch(() => false)
+      ) {
         const metrics = JSON.parse(await fs.readFile(metricsPath, 'utf-8'));
         this.sessionData.metrics = { ...this.sessionData.metrics, ...metrics };
         result.restored.metrics = true;
       }
-
     } catch (error) {
       console.error('Session restore error:', error.message);
     }
@@ -928,8 +941,8 @@ EOF
   }
 
   /**
-     * Session end hook - Generate summary and persist state
-     */
+   * Session end hook - Generate summary and persist state
+   */
   async sessionEndHook(args) {
     const { generateSummary, saveMemory, exportMetrics } = args;
     const sessionDir = path.join(process.cwd(), '.claude', 'sessions');
@@ -1006,7 +1019,10 @@ EOF
     try {
       // Check if swarm is initialized via file or global state
       const statusFile = path.join(process.cwd(), '.ruv-swarm', 'status.json');
-      const exists = await fs.access(statusFile).then(() => true).catch(() => false);
+      const exists = await fs
+        .access(statusFile)
+        .then(() => true)
+        .catch(() => false);
 
       if (exists) {
         const status = JSON.parse(await fs.readFile(statusFile, 'utf-8'));
@@ -1086,7 +1102,7 @@ EOF
       timestamp: Date.now(),
       improvement,
       confidence,
-      pattern: `edit_pattern_${ path.extname(filePath)}`,
+      pattern: `edit_pattern_${path.extname(filePath)}`,
     });
 
     return {
@@ -1123,8 +1139,8 @@ EOF
     const resourceMap = {
       'npm test': { duration: 30000, requiresAgent: true, agentType: 'coordinator' },
       'npm run build': { duration: 60000, requiresAgent: true, agentType: 'optimizer' },
-      'git': { duration: 1000, requiresAgent: false },
-      'ls': { duration: 100, requiresAgent: false },
+      git: { duration: 1000, requiresAgent: false },
+      ls: { duration: 100, requiresAgent: false },
     };
 
     for (const [pattern, resources] of Object.entries(resourceMap)) {
@@ -1146,20 +1162,28 @@ Duration: ${this.formatDuration(duration)}
 Token Reduction: ${this.sessionData.metrics.tokensSaved} tokens
 
 ## Swarm Activity
-- Active Agents: ${agentList.length} (${agentList.map(a => a.type).join(', ')})
+- Active Agents: ${agentList.length} (${agentList.map((a) => a.type).join(', ')})
 - Operations Performed: ${this.sessionData.operations.length}
-- Files Modified: ${new Set(this.sessionData.operations.map(o => o.file)).size}
+- Files Modified: ${new Set(this.sessionData.operations.map((o) => o.file)).size}
 - Neural Improvements: ${this.sessionData.metrics.patternsImproved}
 
 ## Operations Breakdown
-${this.sessionData.operations.slice(-10).map(op =>
-    `- ${new Date(op.timestamp).toLocaleTimeString()}: ${op.type} on ${op.file} (${op.agent})`,
-  ).join('\n')}
+${this.sessionData.operations
+  .slice(-10)
+  .map(
+    (op) =>
+      `- ${new Date(op.timestamp).toLocaleTimeString()}: ${op.type} on ${op.file} (${op.agent})`
+  )
+  .join('\n')}
 
 ## Learning Highlights
-${this.sessionData.learnings.slice(-5).map(l =>
-    `- Pattern "${l.pattern}" improved by ${(l.improvement * 100).toFixed(1)}% (confidence: ${l.confidence})`,
-  ).join('\n')}
+${this.sessionData.learnings
+  .slice(-5)
+  .map(
+    (l) =>
+      `- Pattern "${l.pattern}" improved by ${(l.improvement * 100).toFixed(1)}% (confidence: ${l.confidence})`
+  )
+  .join('\n')}
 
 ## Performance Metrics
 - Average Operation Time: ${(duration / this.sessionData.operations.length / 1000).toFixed(1)}s
@@ -1186,21 +1210,28 @@ ${this.sessionData.learnings.slice(-5).map(l =>
         duration_ms: duration,
         operations_per_minute: (this.sessionData.operations.length / (duration / 60000)).toFixed(1),
         tokens_saved: this.sessionData.metrics.tokensSaved,
-        efficiency_score: (this.sessionData.metrics.tokensSaved / this.sessionData.operations.length).toFixed(1),
+        efficiency_score: (
+          this.sessionData.metrics.tokensSaved / this.sessionData.operations.length
+        ).toFixed(1),
       },
       learning: {
         patterns_improved: this.sessionData.metrics.patternsImproved,
-        average_improvement: (this.sessionData.learnings.reduce((acc, l) => acc + l.improvement, 0) / this.sessionData.learnings.length).toFixed(3),
-        confidence_average: (this.sessionData.learnings.reduce((acc, l) => acc + l.confidence, 0) / this.sessionData.learnings.length).toFixed(2),
+        average_improvement: (
+          this.sessionData.learnings.reduce((acc, l) => acc + l.improvement, 0) /
+          this.sessionData.learnings.length
+        ).toFixed(3),
+        confidence_average: (
+          this.sessionData.learnings.reduce((acc, l) => acc + l.confidence, 0) /
+          this.sessionData.learnings.length
+        ).toFixed(2),
       },
       agents: {
         total_spawned: this.sessionData.agents.size,
         by_type: Object.fromEntries(
-          Array.from(this.sessionData.agents.values())
-            .reduce((acc, agent) => {
-              acc.set(agent.type, (acc.get(agent.type) || 0) + 1);
-              return acc;
-            }, new Map()),
+          Array.from(this.sessionData.agents.values()).reduce((acc, agent) => {
+            acc.set(agent.type, (acc.get(agent.type) || 0) + 1);
+            return acc;
+          }, new Map())
         ),
       },
     };
@@ -1217,7 +1248,6 @@ ${this.sessionData.learnings.slice(-5).map(l =>
       return `${minutes}m ${seconds % 60}s`;
     }
     return `${seconds}s`;
-
   }
 
   // Additional helper methods for optimization
@@ -1235,11 +1265,11 @@ ${this.sessionData.learnings.slice(-5).map(l =>
     let estimatedMinutes = 5;
 
     // Check for complex keywords
-    if (keywords.complex.some(k => desc.includes(k))) {
+    if (keywords.complex.some((k) => desc.includes(k))) {
       complexity = 'complex';
       score = 3;
       estimatedMinutes = 60;
-    } else if (keywords.medium.some(k => desc.includes(k))) {
+    } else if (keywords.medium.some((k) => desc.includes(k))) {
       complexity = 'medium';
       score = 2;
       estimatedMinutes = 30;
@@ -1332,11 +1362,12 @@ ${this.sessionData.learnings.slice(-5).map(l =>
 
     // Add edges for related files
     const relatedFiles = await this.findRelatedFiles(file);
-    relatedFiles.forEach(related => {
-      if (!graph.edges.find(e =>
-        (e.from === nodeId && e.to === related) ||
-                (e.from === related && e.to === nodeId),
-      )) {
+    relatedFiles.forEach((related) => {
+      if (
+        !graph.edges.find(
+          (e) => (e.from === nodeId && e.to === related) || (e.from === related && e.to === nodeId)
+        )
+      ) {
         graph.edges.push({
           from: nodeId,
           to: related,
@@ -1352,16 +1383,23 @@ ${this.sessionData.learnings.slice(-5).map(l =>
     const efficiencyScore = Math.max(0, Math.min(1, baselineTime / performance.completionTime));
 
     // Adjust for agent utilization
-    const agentUtilization = performance.agentsUsed.length > 0 ?
-      0.8 + (0.2 * Math.min(1, 3 / performance.agentsUsed.length)) : 0.5;
+    const agentUtilization =
+      performance.agentsUsed.length > 0
+        ? 0.8 + 0.2 * Math.min(1, 3 / performance.agentsUsed.length)
+        : 0.5;
 
     return {
       score: (efficiencyScore * agentUtilization).toFixed(2),
       timeEfficiency: efficiencyScore.toFixed(2),
       agentEfficiency: agentUtilization.toFixed(2),
-      rating: efficiencyScore > 0.8 ? 'excellent' :
-        efficiencyScore > 0.6 ? 'good' :
-          efficiencyScore > 0.4 ? 'fair' : 'needs improvement',
+      rating:
+        efficiencyScore > 0.8
+          ? 'excellent'
+          : efficiencyScore > 0.6
+            ? 'good'
+            : efficiencyScore > 0.4
+              ? 'fair'
+              : 'needs improvement',
     };
   }
 
@@ -1369,7 +1407,8 @@ ${this.sessionData.learnings.slice(-5).map(l =>
     const bottlenecks = [];
 
     // Time-based bottlenecks
-    if (performance.completionTime > 300000) { // > 5 minutes
+    if (performance.completionTime > 300000) {
+      // > 5 minutes
       bottlenecks.push({
         type: 'time',
         severity: 'high',
@@ -1470,19 +1509,19 @@ ${this.sessionData.learnings.slice(-5).map(l =>
     // Extract file type patterns
     const fileTypes = query.match(/\.(js|ts|py|go|rs|md|json|yaml)\b/gi);
     if (fileTypes) {
-      patterns.push(...fileTypes.map(ft => `filetype:${ft}`));
+      patterns.push(...fileTypes.map((ft) => `filetype:${ft}`));
     }
 
     // Extract function/class patterns
     const codePatterns = query.match(/\b(function|class|interface|struct|impl)\s+\w+/gi);
     if (codePatterns) {
-      patterns.push(...codePatterns.map(cp => `code:${cp}`));
+      patterns.push(...codePatterns.map((cp) => `code:${cp}`));
     }
 
     // Extract scope patterns
     const scopePatterns = query.match(/\b(src|test|lib|bin|docs?)\//gi);
     if (scopePatterns) {
-      patterns.push(...scopePatterns.map(sp => `scope:${sp}`));
+      patterns.push(...scopePatterns.map((sp) => `scope:${sp}`));
     }
 
     return patterns;
@@ -1494,7 +1533,12 @@ ${this.sessionData.learnings.slice(-5).map(l =>
     // Load existing knowledge base
     let kb = {};
     try {
-      if (await fs.access(kbPath).then(() => true).catch(() => false)) {
+      if (
+        await fs
+          .access(kbPath)
+          .then(() => true)
+          .catch(() => false)
+      ) {
         kb = JSON.parse(await fs.readFile(kbPath, 'utf-8'));
       }
     } catch (_error) {
@@ -1516,7 +1560,7 @@ ${this.sessionData.learnings.slice(-5).map(l =>
       if (!kb.patterns) {
         kb.patterns = {};
       }
-      data.patterns.forEach(pattern => {
+      data.patterns.forEach((pattern) => {
         kb.patterns[pattern] = (kb.patterns[pattern] || 0) + 1;
       });
     }
@@ -1541,7 +1585,7 @@ ${this.sessionData.learnings.slice(-5).map(l =>
       patterns.push(`domain:${urlObj.hostname}`);
 
       // Path patterns
-      const pathParts = urlObj.pathname.split('/').filter(p => p);
+      const pathParts = urlObj.pathname.split('/').filter((p) => p);
       if (pathParts.length > 0) {
         patterns.push(`path:/${pathParts[0]}`); // Top level path
       }
@@ -1574,7 +1618,12 @@ ${this.sessionData.learnings.slice(-5).map(l =>
   async getSwarmStatus() {
     try {
       const statusPath = path.join(process.cwd(), '.ruv-swarm', 'status.json');
-      if (await fs.access(statusPath).then(() => true).catch(() => false)) {
+      if (
+        await fs
+          .access(statusPath)
+          .then(() => true)
+          .catch(() => false)
+      ) {
         return JSON.parse(await fs.readFile(statusPath, 'utf-8'));
       }
     } catch (_error) {
@@ -1583,8 +1632,8 @@ ${this.sessionData.learnings.slice(-5).map(l =>
 
     return {
       agents: this.sessionData.agents,
-      activeTasks: this.sessionData.operations.filter(op =>
-        Date.now() - op.timestamp < 300000, // Last 5 minutes
+      activeTasks: this.sessionData.operations.filter(
+        (op) => Date.now() - op.timestamp < 300000 // Last 5 minutes
       ).length,
       health: 'operational',
     };
@@ -1604,7 +1653,9 @@ ${this.sessionData.learnings.slice(-5).map(l =>
     };
 
     // Async write without blocking
-    fs.appendFile(telemetryPath, `${JSON.stringify(telemetryEvent) }\n`).catch(() => { /* intentionally empty */ });
+    fs.appendFile(telemetryPath, `${JSON.stringify(telemetryEvent)}\n`).catch(() => {
+      /* intentionally empty */
+    });
   }
 
   // Helper methods for other functionality
@@ -1637,11 +1688,28 @@ ${this.sessionData.learnings.slice(-5).map(l =>
     // Generate mock neural network weights for demonstration
     return {
       layers: [
-        { neurons: 128, weights: Array(128).fill(0).map(() => Math.random() - 0.5) },
-        { neurons: 64, weights: Array(64).fill(0).map(() => Math.random() - 0.5) },
-        { neurons: 32, weights: Array(32).fill(0).map(() => Math.random() - 0.5) },
+        {
+          neurons: 128,
+          weights: Array(128)
+            .fill(0)
+            .map(() => Math.random() - 0.5),
+        },
+        {
+          neurons: 64,
+          weights: Array(64)
+            .fill(0)
+            .map(() => Math.random() - 0.5),
+        },
+        {
+          neurons: 32,
+          weights: Array(32)
+            .fill(0)
+            .map(() => Math.random() - 0.5),
+        },
       ],
-      biases: Array(224).fill(0).map(() => Math.random() - 0.5),
+      biases: Array(224)
+        .fill(0)
+        .map(() => Math.random() - 0.5),
     };
   }
 
@@ -1650,11 +1718,10 @@ ${this.sessionData.learnings.slice(-5).map(l =>
     const agents = Array.from(this.sessionData.agents.values());
     const allocation = {};
 
-    agents.forEach(agent => {
+    agents.forEach((agent) => {
       // Allocate based on agent type and current load
-      const load = this.sessionData.operations.filter(op =>
-        op.agent === agent.id &&
-                Date.now() - op.timestamp < 60000,
+      const load = this.sessionData.operations.filter(
+        (op) => op.agent === agent.id && Date.now() - op.timestamp < 60000
       ).length;
 
       allocation[agent.id] = {
@@ -1703,7 +1770,7 @@ ${this.sessionData.learnings.slice(-5).map(l =>
     const recentOps = this.sessionData.operations.slice(-10);
     const agentCounts = {};
 
-    recentOps.forEach(op => {
+    recentOps.forEach((op) => {
       if (op.agent) {
         agentCounts[op.agent] = (agentCounts[op.agent] || 0) + 1;
       }
@@ -1737,7 +1804,7 @@ ${this.sessionData.learnings.slice(-5).map(l =>
       related.push(filePath.replace('.ts', '.d.ts'));
     }
 
-    return related.filter(f => f !== filePath);
+    return related.filter((f) => f !== filePath);
   }
 
   /**
@@ -1782,9 +1849,9 @@ ${this.sessionData.learnings.slice(-5).map(l =>
       const memories = await this.persistence.getAllMemory(targetAgentId);
 
       return memories
-        .filter(memory => memory.key.startsWith('notifications/'))
-        .filter(memory => !type || memory.value.type === type)
-        .map(memory => memory.value)
+        .filter((memory) => memory.key.startsWith('notifications/'))
+        .filter((memory) => !type || memory.value.type === type)
+        .map((memory) => memory.value)
         .sort((a, b) => b.timestamp - a.timestamp);
     } catch (error) {
       console.error('❌ Failed to retrieve notifications from database:', error.message);

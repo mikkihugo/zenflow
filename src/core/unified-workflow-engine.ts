@@ -1,15 +1,15 @@
 /**
  * Unified Workflow Engine - Direct Integration
- * 
+ *
  * Document lifecycle workflow engine integrated directly into core
  * Handles Vision → ADRs → PRDs → Epics → Features → Tasks → Code
  */
 
 import { EventEmitter } from 'events';
-import { createLogger } from '../utils/logger.js';
-import { UnifiedMemorySystem } from './unified-memory-system.js';
-import { mkdir, readdir, readFile, writeFile, unlink } from 'fs/promises';
+import { mkdir, readdir, readFile, unlink, writeFile } from 'fs/promises';
 import { join } from 'path';
+import { createLogger } from '../utils/logger.js';
+import type { UnifiedMemorySystem } from './unified-memory-system.js';
 
 const logger = createLogger('UnifiedWorkflow');
 
@@ -74,33 +74,33 @@ const DOCUMENT_WORKFLOWS: WorkflowDefinition[] = [
     documentTypes: ['vision'],
     triggers: [
       { event: 'document:created', condition: 'documentType === "vision"' },
-      { event: 'document:updated', condition: 'documentType === "vision"' }
+      { event: 'document:updated', condition: 'documentType === "vision"' },
     ],
     steps: [
       {
         type: 'extract-requirements',
         name: 'Extract architectural requirements from vision',
-        params: { outputKey: 'architectural_requirements' }
+        params: { outputKey: 'architectural_requirements' },
       },
       {
         type: 'identify-decisions',
         name: 'Identify key architectural decisions needed',
-        params: { outputKey: 'decision_points' }
+        params: { outputKey: 'decision_points' },
       },
       {
         type: 'generate-adrs',
         name: 'Generate ADR documents',
-        params: { 
+        params: {
           outputKey: 'generated_adrs',
-          templatePath: 'templates/adr-template.md'
-        }
+          templatePath: 'templates/adr-template.md',
+        },
       },
       {
         type: 'save-documents',
         name: 'Save generated ADRs to workspace',
-        params: { documentType: 'adr' }
-      }
-    ]
+        params: { documentType: 'adr' },
+      },
+    ],
   },
   {
     name: 'vision-to-prds',
@@ -111,66 +111,64 @@ const DOCUMENT_WORKFLOWS: WorkflowDefinition[] = [
       {
         type: 'extract-product-requirements',
         name: 'Extract product requirements from vision',
-        params: { outputKey: 'product_requirements' }
+        params: { outputKey: 'product_requirements' },
       },
       {
         type: 'define-user-stories',
         name: 'Define user stories and acceptance criteria',
-        params: { outputKey: 'user_stories' }
+        params: { outputKey: 'user_stories' },
       },
       {
         type: 'generate-prds',
         name: 'Generate PRD documents',
-        params: { 
+        params: {
           outputKey: 'generated_prds',
-          templatePath: 'templates/prd-template.md'
-        }
+          templatePath: 'templates/prd-template.md',
+        },
       },
       {
         type: 'save-documents',
         name: 'Save generated PRDs to workspace',
-        params: { documentType: 'prd' }
-      }
-    ]
+        params: { documentType: 'prd' },
+      },
+    ],
   },
   {
     name: 'prd-to-epics',
     description: 'Break down PRD into epic-level features',
     version: '1.0.0',
     documentTypes: ['prd'],
-    triggers: [
-      { event: 'document:created', condition: 'documentType === "prd"' }
-    ],
+    triggers: [{ event: 'document:created', condition: 'documentType === "prd"' }],
     steps: [
       {
         type: 'analyze-prd',
         name: 'Analyze PRD for feature groupings',
-        params: { outputKey: 'feature_analysis' }
+        params: { outputKey: 'feature_analysis' },
       },
       {
         type: 'create-epics',
         name: 'Create epic-level feature groups',
-        params: { outputKey: 'epics' }
+        params: { outputKey: 'epics' },
       },
       {
         type: 'estimate-effort',
         name: 'Estimate effort for each epic',
-        params: { outputKey: 'effort_estimates' }
+        params: { outputKey: 'effort_estimates' },
       },
       {
         type: 'generate-epic-docs',
         name: 'Generate epic documents',
-        params: { 
+        params: {
           outputKey: 'generated_epics',
-          templatePath: 'templates/epic-template.md'
-        }
+          templatePath: 'templates/epic-template.md',
+        },
       },
       {
         type: 'save-documents',
         name: 'Save generated epics to workspace',
-        params: { documentType: 'epic' }
-      }
-    ]
+        params: { documentType: 'epic' },
+      },
+    ],
   },
   {
     name: 'epic-to-features',
@@ -181,27 +179,27 @@ const DOCUMENT_WORKFLOWS: WorkflowDefinition[] = [
       {
         type: 'decompose-epic',
         name: 'Decompose epic into features',
-        params: { outputKey: 'features' }
+        params: { outputKey: 'features' },
       },
       {
         type: 'define-acceptance-criteria',
         name: 'Define acceptance criteria for features',
-        params: { outputKey: 'acceptance_criteria' }
+        params: { outputKey: 'acceptance_criteria' },
       },
       {
         type: 'generate-feature-docs',
         name: 'Generate feature documents',
-        params: { 
+        params: {
           outputKey: 'generated_features',
-          templatePath: 'templates/feature-template.md'
-        }
+          templatePath: 'templates/feature-template.md',
+        },
       },
       {
         type: 'save-documents',
         name: 'Save generated features to workspace',
-        params: { documentType: 'feature' }
-      }
-    ]
+        params: { documentType: 'feature' },
+      },
+    ],
   },
   {
     name: 'feature-to-tasks',
@@ -212,37 +210,37 @@ const DOCUMENT_WORKFLOWS: WorkflowDefinition[] = [
       {
         type: 'analyze-feature',
         name: 'Analyze feature for implementation tasks',
-        params: { outputKey: 'task_analysis' }
+        params: { outputKey: 'task_analysis' },
       },
       {
         type: 'create-tasks',
         name: 'Create implementation tasks',
-        params: { outputKey: 'tasks' }
+        params: { outputKey: 'tasks' },
       },
       {
         type: 'estimate-tasks',
         name: 'Estimate task complexity and duration',
-        params: { outputKey: 'task_estimates' }
+        params: { outputKey: 'task_estimates' },
       },
       {
         type: 'sequence-tasks',
         name: 'Determine task dependencies and sequence',
-        params: { outputKey: 'task_sequence' }
+        params: { outputKey: 'task_sequence' },
       },
       {
         type: 'generate-task-docs',
         name: 'Generate task documents',
-        params: { 
+        params: {
           outputKey: 'generated_tasks',
-          templatePath: 'templates/task-template.md'
-        }
+          templatePath: 'templates/task-template.md',
+        },
       },
       {
         type: 'save-documents',
         name: 'Save generated tasks to workspace',
-        params: { documentType: 'task' }
-      }
-    ]
+        params: { documentType: 'task' },
+      },
+    ],
   },
   {
     name: 'task-to-code',
@@ -253,30 +251,30 @@ const DOCUMENT_WORKFLOWS: WorkflowDefinition[] = [
       {
         type: 'analyze-task',
         name: 'Analyze task for implementation approach',
-        params: { outputKey: 'implementation_plan' }
+        params: { outputKey: 'implementation_plan' },
       },
       {
         type: 'generate-code',
         name: 'Generate implementation code',
-        params: { outputKey: 'generated_code' }
+        params: { outputKey: 'generated_code' },
       },
       {
         type: 'generate-tests',
         name: 'Generate unit tests',
-        params: { outputKey: 'generated_tests' }
+        params: { outputKey: 'generated_tests' },
       },
       {
         type: 'generate-docs',
         name: 'Generate code documentation',
-        params: { outputKey: 'generated_docs' }
+        params: { outputKey: 'generated_docs' },
       },
       {
         type: 'save-implementation',
         name: 'Save code to implementation directory',
-        params: { outputPath: 'src/implementation' }
-      }
-    ]
-  }
+        params: { outputPath: 'src/implementation' },
+      },
+    ],
+  },
 ];
 
 export class UnifiedWorkflowEngine extends EventEmitter {
@@ -303,7 +301,7 @@ export class UnifiedWorkflowEngine extends EventEmitter {
       stepTimeout: 300000, // 5 minutes
       retryDelay: 1000,
       enableVisualization: false,
-      ...config
+      ...config,
     };
 
     this.registerBuiltInHandlers();
@@ -336,7 +334,10 @@ export class UnifiedWorkflowEngine extends EventEmitter {
   private registerBuiltInHandlers(): void {
     // Document processing handlers
     this.registerStepHandler('extract-requirements', this.handleExtractRequirements.bind(this));
-    this.registerStepHandler('extract-product-requirements', this.handleExtractProductRequirements.bind(this));
+    this.registerStepHandler(
+      'extract-product-requirements',
+      this.handleExtractProductRequirements.bind(this)
+    );
     this.registerStepHandler('identify-decisions', this.handleIdentifyDecisions.bind(this));
     this.registerStepHandler('analyze-prd', this.handleAnalyzePRD.bind(this));
     this.registerStepHandler('decompose-epic', this.handleDecomposeEpic.bind(this));
@@ -378,7 +379,10 @@ export class UnifiedWorkflowEngine extends EventEmitter {
   /**
    * Register a custom step handler
    */
-  registerStepHandler(type: string, handler: (context: WorkflowContext, params: any) => Promise<any>): void {
+  registerStepHandler(
+    type: string,
+    handler: (context: WorkflowContext, params: any) => Promise<any>
+  ): void {
     this.stepHandlers.set(type, handler);
     logger.debug(`Registered step handler: ${type}`);
   }
@@ -394,18 +398,24 @@ export class UnifiedWorkflowEngine extends EventEmitter {
   /**
    * Start a workflow
    */
-  async startWorkflow(workflowName: string, context: WorkflowContext = {}): Promise<{ success: boolean; workflowId?: string; error?: string }> {
+  async startWorkflow(
+    workflowName: string,
+    context: WorkflowContext = {}
+  ): Promise<{ success: boolean; workflowId?: string; error?: string }> {
     const definition = this.workflowDefinitions.get(workflowName);
     if (!definition) {
       throw new Error(`Workflow definition '${workflowName}' not found`);
     }
 
     // Check concurrent workflow limit
-    const activeCount = Array.from(this.activeWorkflows.values())
-      .filter(w => w.status === 'running').length;
-    
+    const activeCount = Array.from(this.activeWorkflows.values()).filter(
+      (w) => w.status === 'running'
+    ).length;
+
     if (activeCount >= this.config.maxConcurrentWorkflows) {
-      throw new Error(`Maximum concurrent workflows (${this.config.maxConcurrentWorkflows}) reached`);
+      throw new Error(
+        `Maximum concurrent workflows (${this.config.maxConcurrentWorkflows}) reached`
+      );
     }
 
     const workflowId = `workflow-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -419,7 +429,7 @@ export class UnifiedWorkflowEngine extends EventEmitter {
       stepResults: {},
       completedSteps: [],
       startTime: new Date().toISOString(),
-      progress: 0
+      progress: 0,
     };
 
     this.activeWorkflows.set(workflowId, workflow);
@@ -428,7 +438,7 @@ export class UnifiedWorkflowEngine extends EventEmitter {
     await this.memory.store(`workflow:${workflowId}`, workflow, 'workflows');
 
     // Start execution asynchronously
-    this.executeWorkflow(workflow).catch(error => {
+    this.executeWorkflow(workflow).catch((error) => {
       logger.error(`Workflow ${workflowId} failed:`, error);
     });
 
@@ -439,7 +449,12 @@ export class UnifiedWorkflowEngine extends EventEmitter {
   /**
    * Start workflow based on document event
    */
-  async processDocumentEvent(event: string, documentType: string, document: any, context: WorkflowContext = {}): Promise<string[]> {
+  async processDocumentEvent(
+    event: string,
+    documentType: string,
+    document: any,
+    context: WorkflowContext = {}
+  ): Promise<string[]> {
     const startedWorkflows: string[] = [];
 
     for (const [name, definition] of this.workflowDefinitions) {
@@ -455,7 +470,10 @@ export class UnifiedWorkflowEngine extends EventEmitter {
           // Check condition if present
           if (trigger.condition) {
             try {
-              const conditionMet = this.evaluateCondition({ documentType, document, ...context }, trigger.condition);
+              const conditionMet = this.evaluateCondition(
+                { documentType, document, ...context },
+                trigger.condition
+              );
               if (!conditionMet) continue;
             } catch (error) {
               logger.warn(`Failed to evaluate trigger condition for ${name}:`, error);
@@ -468,7 +486,7 @@ export class UnifiedWorkflowEngine extends EventEmitter {
             const result = await this.startWorkflow(name, {
               ...context,
               currentDocument: document,
-              documentType
+              documentType,
             });
 
             if (result.success && result.workflowId) {
@@ -527,7 +545,11 @@ export class UnifiedWorkflowEngine extends EventEmitter {
   /**
    * Execute a single workflow step
    */
-  private async executeWorkflowStep(workflow: WorkflowState, step: WorkflowStep, stepIndex: number): Promise<void> {
+  private async executeWorkflowStep(
+    workflow: WorkflowState,
+    step: WorkflowStep,
+    stepIndex: number
+  ): Promise<void> {
     const stepId = `step-${stepIndex}`;
     let retries = 0;
     const maxRetries = step.retries !== undefined ? step.retries : 0;
@@ -577,17 +599,18 @@ export class UnifiedWorkflowEngine extends EventEmitter {
           step,
           result,
           duration,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
         this.emit('step:completed', { workflowId: workflow.id, stepId, result, duration });
         logger.debug(`Step ${step.name || step.type} completed in ${duration}ms`);
         break;
-
       } catch (error) {
         retries++;
-        logger.warn(`Step ${step.name || step.type} failed (attempt ${retries}/${maxRetries + 1}): ${(error as Error).message}`);
-        
+        logger.warn(
+          `Step ${step.name || step.type} failed (attempt ${retries}/${maxRetries + 1}): ${(error as Error).message}`
+        );
+
         if (retries > maxRetries) {
           this.emit('step:failed', { workflowId: workflow.id, stepId, error });
 
@@ -604,7 +627,7 @@ export class UnifiedWorkflowEngine extends EventEmitter {
           }
         } else {
           // Wait before retry
-          await new Promise(resolve => setTimeout(resolve, this.config.retryDelay * retries));
+          await new Promise((resolve) => setTimeout(resolve, this.config.retryDelay * retries));
         }
       }
     }
@@ -624,34 +647,37 @@ export class UnifiedWorkflowEngine extends EventEmitter {
       'System must be scalable to handle 10k+ concurrent users',
       'Data must be persisted reliably with ACID guarantees',
       'API must follow RESTful principles',
-      'System must be cloud-native and container-ready'
+      'System must be cloud-native and container-ready',
     ];
 
     logger.info('Extracted architectural requirements from vision document');
     return requirements;
   }
 
-  private async handleExtractProductRequirements(context: WorkflowContext, params: any): Promise<any> {
+  private async handleExtractProductRequirements(
+    context: WorkflowContext,
+    params: any
+  ): Promise<any> {
     const document = context.currentDocument;
-    
+
     const requirements = {
       functional: [
         'User authentication and authorization',
         'Data CRUD operations',
         'Real-time notifications',
-        'Search and filtering capabilities'
+        'Search and filtering capabilities',
       ],
       nonFunctional: [
         'Response time < 200ms for API calls',
         '99.9% uptime SLA',
         'Support for 10k concurrent users',
-        'Mobile-responsive design'
+        'Mobile-responsive design',
       ],
       businessRules: [
         'Users can only access their own data',
         'Admin users have full system access',
-        'Data retention policy of 7 years'
-      ]
+        'Data retention policy of 7 years',
+      ],
     };
 
     logger.info('Extracted product requirements from vision document');
@@ -667,7 +693,7 @@ export class UnifiedWorkflowEngine extends EventEmitter {
       title: `Architecture Decision: ${req}`,
       status: 'proposed',
       date: new Date().toISOString().split('T')[0],
-      content: `# ADR-${String(index + 1).padStart(3, '0')}: ${req}\n\n## Status\nProposed\n\n## Context\n${req}\n\n## Decision\nTo be determined through analysis and discussion.\n\n## Consequences\nTo be evaluated based on chosen solution.`
+      content: `# ADR-${String(index + 1).padStart(3, '0')}: ${req}\n\n## Status\nProposed\n\n## Context\n${req}\n\n## Decision\nTo be determined through analysis and discussion.\n\n## Consequences\nTo be evaluated based on chosen solution.`,
     }));
 
     logger.info(`Generated ${adrs.length} ADR documents`);
@@ -688,10 +714,10 @@ export class UnifiedWorkflowEngine extends EventEmitter {
 
       await mkdir(dirPath, { recursive: true });
       await writeFile(filePath, doc.content);
-      
+
       // Store in memory system
       await this.memory.storeDocument(documentType, doc.id || filename, doc);
-      
+
       savedPaths.push(filePath);
     }
 
@@ -754,7 +780,7 @@ export class UnifiedWorkflowEngine extends EventEmitter {
 
   private async handleDelay(context: WorkflowContext, params: any): Promise<any> {
     const duration = params.duration || 1000;
-    await new Promise(resolve => setTimeout(resolve, duration));
+    await new Promise((resolve) => setTimeout(resolve, duration));
     return { delayed: duration };
   }
 
@@ -779,7 +805,9 @@ export class UnifiedWorkflowEngine extends EventEmitter {
    */
   private evaluateCondition(context: WorkflowContext, expression: string): boolean {
     try {
-      const contextVars = Object.keys(context).map(key => `const ${key} = context.${key};`).join('\n');
+      const contextVars = Object.keys(context)
+        .map((key) => `const ${key} = context.${key};`)
+        .join('\n');
       const func = new Function('context', `${contextVars}\n return ${expression};`);
       return func(context);
     } catch (error) {
@@ -791,7 +819,7 @@ export class UnifiedWorkflowEngine extends EventEmitter {
   private getContextValue(context: WorkflowContext, path: string): any {
     const parts = path.split('.');
     let value = context;
-    
+
     for (const part of parts) {
       value = value?.[part];
     }
@@ -817,13 +845,13 @@ export class UnifiedWorkflowEngine extends EventEmitter {
   private async loadPersistedWorkflows(): Promise<void> {
     try {
       const files = await readdir(this.config.persistencePath);
-      const workflowFiles = files.filter(f => f.endsWith('.workflow.json'));
-      
+      const workflowFiles = files.filter((f) => f.endsWith('.workflow.json'));
+
       for (const file of workflowFiles) {
         try {
           const filePath = join(this.config.persistencePath, file);
           const data = JSON.parse(await readFile(filePath, 'utf8'));
-          
+
           if (data.status === 'running' || data.status === 'paused') {
             this.activeWorkflows.set(data.id, data);
             logger.info(`Loaded persisted workflow: ${data.id}`);
@@ -850,7 +878,7 @@ export class UnifiedWorkflowEngine extends EventEmitter {
 
     for (const [id, workflow] of this.activeWorkflows) {
       const age = now - new Date(workflow.startTime).getTime();
-      
+
       // Clean up completed workflows older than 1 hour
       if (workflow.status === 'completed' && age > 3600000) {
         this.activeWorkflows.delete(id);
@@ -874,13 +902,14 @@ export class UnifiedWorkflowEngine extends EventEmitter {
    * Public workflow management methods
    */
   async getActiveWorkflows(): Promise<WorkflowState[]> {
-    return Array.from(this.activeWorkflows.values())
-      .filter(w => ['running', 'paused'].includes(w.status));
+    return Array.from(this.activeWorkflows.values()).filter((w) =>
+      ['running', 'paused'].includes(w.status)
+    );
   }
 
   async getWorkflowHistory(limit: number = 100): Promise<WorkflowState[]> {
     const workflows = await this.memory.search('workflow:*', 'workflows');
-    
+
     return Object.values(workflows)
       .sort((a: any, b: any) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime())
       .slice(0, limit);
@@ -894,10 +923,10 @@ export class UnifiedWorkflowEngine extends EventEmitter {
       paused: 0,
       completed: 0,
       failed: 0,
-      cancelled: 0
+      cancelled: 0,
     };
 
-    workflows.forEach(w => {
+    workflows.forEach((w) => {
       metrics[w.status] = (metrics[w.status] || 0) + 1;
     });
 
@@ -923,7 +952,7 @@ export class UnifiedWorkflowEngine extends EventEmitter {
       delete workflow.pausedAt;
 
       // Resume execution
-      this.executeWorkflow(workflow).catch(error => {
+      this.executeWorkflow(workflow).catch((error) => {
         logger.error(`Workflow ${workflowId} failed after resume:`, error);
       });
 

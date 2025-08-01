@@ -56,7 +56,6 @@ async function verifyNoWarnings() {
       warnings.forEach((w, i) => console.log(`  ${i + 1}. ${w}`));
       process.exit(1);
     }
-
   } catch (error) {
     console.error('❌ Test failed:', error.message);
     process.exit(1);

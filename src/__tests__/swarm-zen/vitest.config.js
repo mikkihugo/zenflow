@@ -3,8 +3,8 @@
  * Optimized for WASM testing and high coverage targets
  */
 
-import { defineConfig } from 'vitest/config';
 import path from 'path';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
@@ -28,10 +28,7 @@ export default defineConfig({
       },
 
       // Include/exclude patterns
-      include: [
-        'src/**/*.{js,ts}',
-        'crates/*/pkg/**/*.js',
-      ],
+      include: ['src/**/*.{js,ts}', 'crates/*/pkg/**/*.js'],
       exclude: [
         'node_modules',
         'test',

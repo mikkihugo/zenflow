@@ -1,9 +1,9 @@
 /**
  * Hive Mind Planner Service - Integrated with AgentManager System
- * 
+ *
  * Leverages existing AgentManager task-planner template and AgentRegistry
  * for intelligent task planning. Follows KISS and SOLID principles.
- * 
+ *
  * Key Features:
  * - Uses AgentManager task-planner template (lines 501-552 in agent-manager.ts)
  * - Integrates with AgentRegistry for agent selection and coordination
@@ -11,12 +11,12 @@
  * - Simple, focused interface following Single Responsibility
  */
 
-import { HiveMind } from '../../hive-mind/core/HiveMind';
-import { Agent } from '../../hive-mind/core/Agent';
-import { TaskSubmitOptions, AgentCapability } from '../../hive-mind/types';
-import { ILogger } from '../../core/logger';
-import { AgentManager } from '../../agents/agent-manager';
-import { AgentRegistry } from '../../agents/agent-registry';
+import type { AgentManager } from '../../agents/agent-manager';
+import type { AgentRegistry } from '../../agents/agent-registry';
+import type { ILogger } from '../../core/logger';
+import type { Agent } from '../../hive-mind/core/Agent';
+import type { HiveMind } from '../../hive-mind/core/HiveMind';
+import type { AgentCapability, TaskSubmitOptions } from '../../hive-mind/types';
 import { AgentState } from '../../swarm/types';
 
 export interface PlannerRequest {
@@ -39,7 +39,6 @@ export interface PlannerResponse {
  * Follows Single Responsibility Principle - only handles planning coordination
  */
 export class HiveMindPlannerService {
-
   constructor(
     private hiveMind: HiveMind,
     private logger: ILogger,
@@ -67,13 +66,13 @@ export class HiveMindPlannerService {
 
       // Fallback to hive mind agents
       const plannerAgent = await this.findBestHiveMindAgent(designContent);
-      
+
       if (!plannerAgent) {
         this.logger.warn('No suitable agents available in either system');
         return {
           success: false,
           error: 'No suitable planner agents available',
-          plannerType: 'fallback'
+          plannerType: 'fallback',
         };
       }
 
@@ -89,23 +88,27 @@ export class HiveMindPlannerService {
           featureName,
           designContent,
           requirements: requirements || '',
-          plannerType: plannerAgent.type
-        }
+          plannerType: plannerAgent.type,
+        },
       };
 
-      this.logger.info(`Submitting task planning to ${plannerAgent.type} agent: ${plannerAgent.id}`);
+      this.logger.info(
+        `Submitting task planning to ${plannerAgent.type} agent: ${plannerAgent.id}`
+      );
       const task = await this.hiveMind.submitTask(taskOptions);
 
       // Wait for completion
       const result = await this.waitForPlanningCompletion(task.id, timeoutMs);
 
       if (result.success && result.taskMarkdown) {
-        this.logger.info(`Task plan generated successfully for ${featureName} using ${plannerAgent.type}`);
+        this.logger.info(
+          `Task plan generated successfully for ${featureName} using ${plannerAgent.type}`
+        );
         return {
           success: true,
           taskMarkdown: result.taskMarkdown,
           agentUsed: plannerAgent.id,
-          plannerType: plannerAgent.type as 'architect' | 'specialist'
+          plannerType: plannerAgent.type as 'architect' | 'specialist',
         };
       }
 
@@ -113,15 +116,16 @@ export class HiveMindPlannerService {
         success: false,
         error: result.error || 'Planning task failed',
         agentUsed: plannerAgent.id,
-        plannerType: plannerAgent.type as 'architect' | 'specialist'
+        plannerType: plannerAgent.type as 'architect' | 'specialist',
       };
-
     } catch (error) {
-      this.logger.error(`Hive mind task planning failed for ${featureName}: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        `Hive mind task planning failed for ${featureName}: ${error instanceof Error ? error.message : String(error)}`
+      );
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        plannerType: 'fallback'
+        plannerType: 'fallback',
       };
     }
   }
@@ -135,7 +139,7 @@ export class HiveMindPlannerService {
       const taskPlannerAgents = await this.agentRegistry!.queryAgents({
         type: 'task-planner' as any,
         status: 'idle',
-        healthThreshold: 0.7
+        healthThreshold: 0.7,
       });
 
       if (taskPlannerAgents.length === 0) {
@@ -146,43 +150,45 @@ export class HiveMindPlannerService {
           type: 'task-planner',
           capabilities: ['project-management', 'task-breakdown', 'agile-planning'],
           maxConcurrentTasks: 1,
-          priority: 90
+          priority: 90,
         });
 
         await this.agentManager!.startAgent(agentId);
-        
+
         // Execute planning task
         const planningResult = await this.executePlanningWithAgentManager(agentId, request);
-        
+
         // Cleanup agent after use
         await this.agentManager!.stopAgent(agentId);
-        
+
         return {
           success: true,
           taskMarkdown: planningResult,
           agentUsed: agentId,
-          plannerType: 'task-planner'
+          plannerType: 'task-planner',
         };
       } else {
         // Use existing task-planner agent
         const agent = taskPlannerAgents[0];
         this.logger.info(`Using existing task-planner agent: ${agent.id.id}`);
-        
+
         const planningResult = await this.executePlanningWithAgentManager(agent.id.id, request);
-        
+
         return {
           success: true,
           taskMarkdown: planningResult,
           agentUsed: agent.id.id,
-          plannerType: 'task-planner'
+          plannerType: 'task-planner',
         };
       }
     } catch (error) {
-      this.logger.warn(`AgentManager planning failed: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.warn(
+        `AgentManager planning failed: ${error instanceof Error ? error.message : String(error)}`
+      );
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        plannerType: 'fallback'
+        plannerType: 'fallback',
       };
     }
   }
@@ -190,9 +196,12 @@ export class HiveMindPlannerService {
   /**
    * Execute planning task using AgentManager infrastructure
    */
-  private async executePlanningWithAgentManager(agentId: string, request: PlannerRequest): Promise<string> {
+  private async executePlanningWithAgentManager(
+    agentId: string,
+    request: PlannerRequest
+  ): Promise<string> {
     const planningPrompt = this.createPlanningPrompt(request);
-    
+
     // Use AgentManager's task execution capabilities
     const task = {
       id: `planning-${request.featureName}-${Date.now()}`,
@@ -202,22 +211,22 @@ export class HiveMindPlannerService {
         featureName: request.featureName,
         designContent: request.designContent,
         requirements: request.requirements || '',
-        prompt: planningPrompt
+        prompt: planningPrompt,
       },
       priority: 90,
       metadata: {
         type: 'maestro_task_planning',
-        featureName: request.featureName
-      }
+        featureName: request.featureName,
+      },
     };
 
     // Execute through AgentManager
     const result = await this.agentManager!.executeTask(agentId, task);
-    
+
     if (result && result.output) {
       return this.formatAgentManagerResult(result.output, request.featureName);
     }
-    
+
     return this.createFallbackTaskPlan(request.featureName);
   }
 
@@ -263,7 +272,11 @@ Generate the task breakdown now:
 
     // Extract structured content if available
     if (output && output.tasks) {
-      return this.createStructuredTaskMarkdown(featureName, output.tasks, 'AgentManager task-planner');
+      return this.createStructuredTaskMarkdown(
+        featureName,
+        output.tasks,
+        'AgentManager task-planner'
+      );
     }
 
     return this.createFallbackTaskPlan(featureName);
@@ -275,7 +288,7 @@ Generate the task breakdown now:
    */
   private async findBestHiveMindAgent(designContent: string): Promise<Agent | null> {
     const agents = await this.hiveMind.getAgents();
-    const availableAgents = agents.filter(agent => agent.status === 'idle');
+    const availableAgents = agents.filter((agent) => agent.status === 'idle');
 
     if (availableAgents.length === 0) {
       this.logger.warn('No idle agents available for task planning');
@@ -283,16 +296,15 @@ Generate the task breakdown now:
     }
 
     // Priority 1: Look for architect agents (best for system design planning)
-    const architects = availableAgents.filter(agent => agent.type === 'architect');
+    const architects = availableAgents.filter((agent) => agent.type === 'architect');
     if (architects.length > 0) {
       this.logger.info(`Found ${architects.length} available architect agent(s) for planning`);
       return architects[0]; // Return first available architect
     }
 
     // Priority 2: Look for specialist agents with relevant capabilities
-    const specialists = availableAgents.filter(agent => 
-      agent.type === 'specialist' && 
-      this.hasRelevantCapabilities(agent, designContent)
+    const specialists = availableAgents.filter(
+      (agent) => agent.type === 'specialist' && this.hasRelevantCapabilities(agent, designContent)
     );
     if (specialists.length > 0) {
       this.logger.info(`Found ${specialists.length} relevant specialist agent(s) for planning`);
@@ -300,7 +312,7 @@ Generate the task breakdown now:
     }
 
     // Priority 3: Use any available specialist
-    const anySpecialists = availableAgents.filter(agent => agent.type === 'specialist');
+    const anySpecialists = availableAgents.filter((agent) => agent.type === 'specialist');
     if (anySpecialists.length > 0) {
       this.logger.info(`Using available specialist agent for planning`);
       return anySpecialists[0];
@@ -316,10 +328,12 @@ Generate the task breakdown now:
    */
   private hasRelevantCapabilities(agent: Agent, designContent: string): boolean {
     const capabilities = agent.capabilities || [];
-    
+
     // Check for system design capabilities
-    if (capabilities.includes('system_design' as AgentCapability) || 
-        capabilities.includes('architecture_patterns' as AgentCapability)) {
+    if (
+      capabilities.includes('system_design' as AgentCapability) ||
+      capabilities.includes('architecture_patterns' as AgentCapability)
+    ) {
       return true;
     }
 
@@ -361,14 +375,17 @@ Generate the task breakdown now:
   /**
    * Wait for planning task completion with timeout
    */
-  private async waitForPlanningCompletion(taskId: string, timeoutMs: number): Promise<{
+  private async waitForPlanningCompletion(
+    taskId: string,
+    timeoutMs: number
+  ): Promise<{
     success: boolean;
     taskMarkdown?: string;
     error?: string;
   }> {
     return new Promise((resolve) => {
       const startTime = Date.now();
-      
+
       const checkInterval = setInterval(async () => {
         try {
           // Check timeout
@@ -380,10 +397,10 @@ Generate the task breakdown now:
 
           // Check task status
           const task = await this.hiveMind.getTask(taskId);
-          
+
           if (task.status === 'completed') {
             clearInterval(checkInterval);
-            
+
             try {
               const result = task.result ? JSON.parse(task.result) : null;
               const taskMarkdown = this.formatPlanningResult(result, task.metadata);
@@ -391,15 +408,16 @@ Generate the task breakdown now:
             } catch (parseError) {
               resolve({ success: false, error: 'Failed to parse planning result' });
             }
-            
           } else if (task.status === 'failed') {
             clearInterval(checkInterval);
             resolve({ success: false, error: task.error || 'Planning task failed' });
           }
-          
         } catch (error) {
           clearInterval(checkInterval);
-          resolve({ success: false, error: error instanceof Error ? error.message : String(error) });
+          resolve({
+            success: false,
+            error: error instanceof Error ? error.message : String(error),
+          });
         }
       }, 3000); // Check every 3 seconds
     });
@@ -429,7 +447,11 @@ Generate the task breakdown now:
   /**
    * Create structured task markdown from AgentManager or hive mind results
    */
-  private createStructuredTaskMarkdown(featureName: string, tasks: any[], plannerType: string): string {
+  private createStructuredTaskMarkdown(
+    featureName: string,
+    tasks: any[],
+    plannerType: string
+  ): string {
     let markdown = `# Implementation Tasks for ${featureName}\n\n`;
     markdown += `*Generated by ${plannerType} agent*\n\n`;
 
@@ -441,7 +463,7 @@ Generate the task breakdown now:
         }
         if (task.acceptance && Array.isArray(task.acceptance)) {
           markdown += `**Acceptance Criteria:**\n`;
-          task.acceptance.forEach(criteria => {
+          task.acceptance.forEach((criteria) => {
             markdown += `- [ ] ${criteria}\n`;
           });
           markdown += '\n';
@@ -470,7 +492,7 @@ Generate the task breakdown now:
         }
         if (task.acceptance && Array.isArray(task.acceptance)) {
           markdown += `**Acceptance Criteria:**\n`;
-          task.acceptance.forEach(criteria => {
+          task.acceptance.forEach((criteria) => {
             markdown += `- [ ] ${criteria}\n`;
           });
           markdown += '\n';
@@ -487,18 +509,18 @@ Generate the task breakdown now:
   private createFallbackTaskPlan(featureName: string): string {
     const basicTasks = [
       'Set up project structure and dependencies',
-      'Implement core data models and interfaces', 
+      'Implement core data models and interfaces',
       'Create API endpoints and routing',
       'Implement business logic and validation',
       'Add comprehensive testing suite',
       'Create documentation and examples',
-      'Integration testing and deployment preparation'
+      'Integration testing and deployment preparation',
     ];
 
     let markdown = `# Implementation Tasks for ${featureName}\n\n`;
     markdown += `*Generated by fallback task generation*\n\n`;
     markdown += `## Task Breakdown\n\n`;
-    
+
     basicTasks.forEach((task, index) => {
       markdown += `### ${index + 1}. ${task}\n\n`;
       markdown += `**Status**: Pending\n\n`;
@@ -516,12 +538,12 @@ Generate the task breakdown now:
   private createBasicTaskMarkdown(featureName: string, result: any, plannerType: string): string {
     const basicTasks = [
       'Set up project structure and dependencies',
-      'Implement core data models and interfaces', 
+      'Implement core data models and interfaces',
       'Create API endpoints and routing',
       'Implement business logic and validation',
       'Add comprehensive testing suite',
       'Create documentation and examples',
-      'Integration testing and deployment preparation'
+      'Integration testing and deployment preparation',
     ];
 
     let markdown = `# Implementation Tasks for ${featureName}\n\n`;
@@ -565,37 +587,41 @@ Generate the task breakdown now:
         try {
           const taskPlannerAgents = await this.agentRegistry.queryAgents({
             type: 'task-planner' as any,
-            status: 'idle'
+            status: 'idle',
           });
           taskPlanners = taskPlannerAgents.length;
           agentManagerAvailable = true;
           agentRegistryAvailable = true;
         } catch (error) {
-          this.logger.warn(`AgentRegistry query failed: ${error instanceof Error ? error.message : String(error)}`);
+          this.logger.warn(
+            `AgentRegistry query failed: ${error instanceof Error ? error.message : String(error)}`
+          );
         }
       }
 
       // Check hive mind agents
       const agents = await this.hiveMind.getAgents();
-      const idleAgents = agents.filter(agent => agent.status === 'idle');
-      
+      const idleAgents = agents.filter((agent) => agent.status === 'idle');
+
       return {
         availableTaskPlanners: taskPlanners,
-        availableArchitects: idleAgents.filter(a => a.type === 'architect').length,
-        availableSpecialists: idleAgents.filter(a => a.type === 'specialist').length,
+        availableArchitects: idleAgents.filter((a) => a.type === 'architect').length,
+        availableSpecialists: idleAgents.filter((a) => a.type === 'specialist').length,
         totalAgents: agents.length + taskPlanners,
         agentManagerAvailable,
-        agentRegistryAvailable
+        agentRegistryAvailable,
       };
     } catch (error) {
-      this.logger.error(`Failed to get planner service status: ${error instanceof Error ? error.message : String(error)}`);
-      return { 
+      this.logger.error(
+        `Failed to get planner service status: ${error instanceof Error ? error.message : String(error)}`
+      );
+      return {
         availableTaskPlanners: 0,
-        availableArchitects: 0, 
-        availableSpecialists: 0, 
+        availableArchitects: 0,
+        availableSpecialists: 0,
         totalAgents: 0,
         agentManagerAvailable: false,
-        agentRegistryAvailable: false
+        agentRegistryAvailable: false,
       };
     }
   }

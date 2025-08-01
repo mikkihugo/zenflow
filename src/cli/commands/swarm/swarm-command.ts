@@ -1,13 +1,13 @@
 /**
  * Swarm Command - MCP Integration Proxy
- * 
+ *
  * Delegates swarm operations to claude-zen MCP tools for proper coordination.
  * Provides convenient CLI interface that uses the MCP-based swarm system.
  */
 
+import { launchSwarmTUI } from '../../../interfaces/tui/swarm-tui-simple';
 import { BaseCommand } from '../../core/base-command';
 import type { CommandContext, CommandResult } from '../../types/index';
-import { launchSwarmTUI } from '../../../interfaces/tui/swarm-tui-simple';
 
 export class SwarmCommand extends BaseCommand {
   constructor() {
@@ -17,17 +17,13 @@ export class SwarmCommand extends BaseCommand {
       usage: 'claude-zen swarm <subcommand> [options]',
       category: 'swarm',
       minArgs: 0, // Allow for interactive TUI mode
-      examples: [
-        'claude-zen swarm ui',
-        'claude-zen swarm status',
-        'claude-zen swarm help'
-      ]
+      examples: ['claude-zen swarm ui', 'claude-zen swarm status', 'claude-zen swarm help'],
     });
   }
 
   protected async run(context: CommandContext): Promise<CommandResult> {
     const subcommand = context.args[0];
-    
+
     // If no subcommand, launch interactive TUI
     if (!subcommand) {
       try {
@@ -38,7 +34,7 @@ export class SwarmCommand extends BaseCommand {
         return {
           success: false,
           error: `Failed to launch Swarm TUI: ${error}`,
-          exitCode: 1
+          exitCode: 1,
         };
       }
     }
@@ -66,7 +62,7 @@ export class SwarmCommand extends BaseCommand {
       return {
         success: false,
         error: `Failed to launch Swarm TUI: ${error}`,
-        exitCode: 1
+        exitCode: 1,
       };
     }
   }
@@ -88,11 +84,11 @@ export class SwarmCommand extends BaseCommand {
     console.log('   3. Or launch the TUI: claude-zen swarm ui');
     console.log('');
     console.log('📖 See CLAUDE.md for complete MCP integration guide');
-    
+
     return {
       success: true,
       exitCode: 0,
-      message: 'Swarm status and integration guide displayed'
+      message: 'Swarm status and integration guide displayed',
     };
   }
 
@@ -105,7 +101,9 @@ export class SwarmCommand extends BaseCommand {
     console.log(`🐝 Swarm Command: ${subcommand}`);
     console.log('');
     console.log('⚠️  Swarm operations are managed via claude-zen MCP integration.');
-    console.log('   Direct CLI commands have been replaced with MCP tools for better coordination.');
+    console.log(
+      '   Direct CLI commands have been replaced with MCP tools for better coordination.'
+    );
     console.log('');
     console.log('🚀 To use swarm features:');
     console.log('');
@@ -118,21 +116,20 @@ export class SwarmCommand extends BaseCommand {
     console.log('');
     console.log('      2. Use MCP tools in Claude Code:');
     console.log('         - mcp__claude-zen__swarm_init');
-    console.log('         - mcp__claude-zen__agent_spawn');  
+    console.log('         - mcp__claude-zen__agent_spawn');
     console.log('         - mcp__claude-zen__task_orchestrate');
     console.log('');
     console.log('   📖 Documentation:');
     console.log('      See CLAUDE.md for complete integration guide');
     console.log('');
-    console.log('💡 This ensures proper coordination with Claude Code\'s workflow orchestration.');
+    console.log("💡 This ensures proper coordination with Claude Code's workflow orchestration.");
 
     return {
       success: true,
       exitCode: 0,
-      message: 'MCP integration guide displayed'
+      message: 'MCP integration guide displayed',
     };
   }
-
 
   getHelp(): string {
     return `🐝 Swarm Operations - Direct Integration

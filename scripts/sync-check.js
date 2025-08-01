@@ -18,7 +18,7 @@ class UpstreamSyncChecker {
     try {
       const packageJson = JSON.parse(readFileSync('./package.json', 'utf8'));
       return packageJson.version;
-    } catch(error) {
+    } catch (error) {
       return 'unknown';
     }
   }
@@ -30,7 +30,7 @@ class UpstreamSyncChecker {
         stdio: options.silent ? 'pipe' : 'inherit',
         ...options,
       });
-    } catch(error) {
+    } catch (error) {
       throw error;
     }
   }
@@ -56,7 +56,9 @@ class UpstreamSyncChecker {
 
       // Get commit information
       const ourCommit = this.execCommand('git rev-parse HEAD', { silent: true }).trim();
-      const upstreamCommit = this.execCommand(`git rev-parse ${this.upstreamRemote}/main`, { silent: true }).trim();
+      const upstreamCommit = this.execCommand(`git rev-parse ${this.upstreamRemote}/main`, {
+        silent: true,
+      }).trim();
 
       console.log(`🔄 Our commit: ${ourCommit.substring(0, 8)}`);
       console.log(`🔄 Upstream commit: ${upstreamCommit.substring(0, 8)}`);
@@ -69,7 +71,7 @@ class UpstreamSyncChecker {
         try {
           const behindCount = this.execCommand(
             `git rev-list --count ${ourCommit}..${upstreamCommit}`,
-            { silent: true },
+            { silent: true }
           ).trim();
 
           if (parseInt(behindCount) > 0) {
@@ -78,10 +80,10 @@ class UpstreamSyncChecker {
 
             const recentCommits = this.execCommand(
               `git log --oneline -5 ${this.upstreamRemote}/main`,
-              { silent: true },
+              { silent: true }
             ).trim();
 
-            recentCommits.split('\n').forEach(commit => {
+            recentCommits.split('\n').forEach((commit) => {
               console.log(`   ${commit}`);
             });
           }
@@ -125,8 +127,9 @@ class UpstreamSyncChecker {
 // CLI execution
 if (import.meta.url === `file://${process.argv[1]}`) {
   const checker = new UpstreamSyncChecker();
-  checker.generateSyncReport()
-    .then(report => {
+  checker
+    .generateSyncReport()
+    .then((report) => {
       if (report.synchronized) {
         console.log('\n✅ Sync check completed successfully');
         process.exit(0);
@@ -135,7 +138,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
         process.exit(1);
       }
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('❌ Sync check failed:', error);
       process.exit(1);
     });

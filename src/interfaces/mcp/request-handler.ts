@@ -1,12 +1,12 @@
 /**
  * MCP Request Handler
- * 
+ *
  * Handles MCP protocol requests and routes them to appropriate tool handlers.
  * Implements the Model Context Protocol specification for tool calls.
  */
 
 import { createLogger } from './simple-logger.js';
-import { MCPToolRegistry } from './tool-registry.js';
+import type { MCPToolRegistry } from './tool-registry.js';
 
 const logger = createLogger('MCP-RequestHandler');
 
@@ -56,22 +56,22 @@ export class MCPRequestHandler {
 
   constructor(toolRegistry: MCPToolRegistry) {
     this.toolRegistry = toolRegistry;
-    
+
     this.serverInfo = {
       name: 'claude-zen-http-mcp',
       version: '2.0.0',
-      description: 'Claude-Zen HTTP MCP Server for Claude Desktop integration'
+      description: 'Claude-Zen HTTP MCP Server for Claude Desktop integration',
     };
 
     this.capabilities = {
       tools: {},
       resources: {
         list: true,
-        read: true
+        read: true,
       },
       notifications: {
-        initialized: true
-      }
+        initialized: true,
+      },
     };
   }
 
@@ -81,14 +81,14 @@ export class MCPRequestHandler {
   async handleRequest(request: MCPRequest): Promise<MCPResponse> {
     const response: MCPResponse = {
       jsonrpc: '2.0',
-      id: request.id
+      id: request.id,
     };
 
     try {
       logger.debug(`Processing MCP request: ${request.method}`, {
         id: request.id,
         method: request.method,
-        hasParams: !!request.params
+        hasParams: !!request.params,
       });
 
       switch (request.method) {
@@ -133,19 +133,18 @@ export class MCPRequestHandler {
                 'tools/call',
                 'resources/list',
                 'resources/read',
-                'ping'
-              ]
-            }
+                'ping',
+              ],
+            },
           };
       }
-
     } catch (error) {
       logger.error(`Request processing error for ${request.method}:`, error);
-      
+
       response.error = {
         code: -32603,
         message: 'Internal error',
-        data: error instanceof Error ? error.message : String(error)
+        data: error instanceof Error ? error.message : String(error),
       };
     }
 
@@ -158,7 +157,7 @@ export class MCPRequestHandler {
   private async handleInitialize(params: any): Promise<any> {
     logger.info('MCP server initialization requested', {
       clientInfo: params?.clientInfo,
-      protocolVersion: params?.protocolVersion
+      protocolVersion: params?.protocolVersion,
     });
 
     this.initialized = true;
@@ -166,7 +165,7 @@ export class MCPRequestHandler {
     return {
       protocolVersion: '2024-11-05',
       capabilities: this.capabilities,
-      serverInfo: this.serverInfo
+      serverInfo: this.serverInfo,
     };
   }
 
@@ -175,10 +174,10 @@ export class MCPRequestHandler {
    */
   private async handleInitialized(params: any): Promise<any> {
     logger.info('MCP client initialization completed', { params });
-    
+
     return {
       status: 'acknowledged',
-      message: 'Server ready for requests'
+      message: 'Server ready for requests',
     };
   }
 
@@ -187,9 +186,9 @@ export class MCPRequestHandler {
    */
   private async handleToolsList(): Promise<any> {
     const tools = await this.toolRegistry.listTools();
-    
+
     logger.debug(`Listing ${tools.length} available tools`);
-    
+
     return { tools };
   }
 
@@ -206,7 +205,7 @@ export class MCPRequestHandler {
     logger.info(`Executing tool: ${toolName}`, {
       tool: toolName,
       hasArgs: !!toolArgs,
-      argKeys: toolArgs ? Object.keys(toolArgs) : []
+      argKeys: toolArgs ? Object.keys(toolArgs) : [],
     });
 
     // Check if tool exists
@@ -217,25 +216,28 @@ export class MCPRequestHandler {
     // Execute the tool
     try {
       const result = await this.toolRegistry.executeTool(toolName, toolArgs);
-      
+
       // Format result for MCP protocol
       return {
-        content: [{
-          type: 'text',
-          text: typeof result === 'string' ? result : JSON.stringify(result, null, 2)
-        }],
-        isError: false
+        content: [
+          {
+            type: 'text',
+            text: typeof result === 'string' ? result : JSON.stringify(result, null, 2),
+          },
+        ],
+        isError: false,
       };
-
     } catch (error) {
       logger.error(`Tool execution failed: ${toolName}`, error);
-      
+
       return {
-        content: [{
-          type: 'text',
-          text: `Tool execution failed: ${error instanceof Error ? error.message : String(error)}`
-        }],
-        isError: true
+        content: [
+          {
+            type: 'text',
+            text: `Tool execution failed: ${error instanceof Error ? error.message : String(error)}`,
+          },
+        ],
+        isError: true,
       };
     }
   }
@@ -250,21 +252,21 @@ export class MCPRequestHandler {
           uri: 'claude-zen://status',
           name: 'System Status',
           description: 'Current Claude-Zen system status and metrics',
-          mimeType: 'application/json'
+          mimeType: 'application/json',
         },
         {
           uri: 'claude-zen://tools',
           name: 'Tool Registry',
           description: 'Information about registered MCP tools',
-          mimeType: 'application/json'
+          mimeType: 'application/json',
         },
         {
           uri: 'claude-zen://metrics',
           name: 'Performance Metrics',
           description: 'Tool execution statistics and performance data',
-          mimeType: 'application/json'
-        }
-      ]
+          mimeType: 'application/json',
+        },
+      ],
     };
   }
 
@@ -283,29 +285,35 @@ export class MCPRequestHandler {
     switch (uri) {
       case 'claude-zen://status':
         return {
-          contents: [{
-            uri,
-            mimeType: 'application/json',
-            text: JSON.stringify(await this.getSystemStatus(), null, 2)
-          }]
+          contents: [
+            {
+              uri,
+              mimeType: 'application/json',
+              text: JSON.stringify(await this.getSystemStatus(), null, 2),
+            },
+          ],
         };
 
       case 'claude-zen://tools':
         return {
-          contents: [{
-            uri,
-            mimeType: 'application/json',
-            text: JSON.stringify(await this.getToolsInfo(), null, 2)
-          }]
+          contents: [
+            {
+              uri,
+              mimeType: 'application/json',
+              text: JSON.stringify(await this.getToolsInfo(), null, 2),
+            },
+          ],
         };
 
       case 'claude-zen://metrics':
         return {
-          contents: [{
-            uri,
-            mimeType: 'application/json',
-            text: JSON.stringify(await this.getMetrics(), null, 2)
-          }]
+          contents: [
+            {
+              uri,
+              mimeType: 'application/json',
+              text: JSON.stringify(await this.getMetrics(), null, 2),
+            },
+          ],
         };
 
       default:
@@ -322,7 +330,7 @@ export class MCPRequestHandler {
       timestamp: new Date().toISOString(),
       server: this.serverInfo.name,
       version: this.serverInfo.version,
-      uptime: process.uptime()
+      uptime: process.uptime(),
     };
   }
 
@@ -331,7 +339,7 @@ export class MCPRequestHandler {
    */
   private async getSystemStatus(): Promise<any> {
     const memUsage = process.memoryUsage();
-    
+
     return {
       server: this.serverInfo,
       status: 'running',
@@ -339,13 +347,13 @@ export class MCPRequestHandler {
       uptime: Math.floor(process.uptime()),
       memory: {
         used: Math.round(memUsage.heapUsed / 1024 / 1024) + 'MB',
-        total: Math.round(memUsage.heapTotal / 1024 / 1024) + 'MB'
+        total: Math.round(memUsage.heapTotal / 1024 / 1024) + 'MB',
       },
       tools: {
         registered: this.toolRegistry.getToolCount(),
-        stats: this.toolRegistry.getRegistryStats()
+        stats: this.toolRegistry.getRegistryStats(),
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
@@ -355,19 +363,19 @@ export class MCPRequestHandler {
   private async getToolsInfo(): Promise<any> {
     const tools = await this.toolRegistry.listTools();
     const stats = this.toolRegistry.getToolStats();
-    
+
     return {
       totalTools: tools.length,
-      tools: tools.map(tool => ({
+      tools: tools.map((tool) => ({
         ...tool,
         stats: stats[tool.name] || {
           calls: 0,
           totalTime: 0,
           errors: 0,
-          averageTime: 0
-        }
+          averageTime: 0,
+        },
       })),
-      registryStats: this.toolRegistry.getRegistryStats()
+      registryStats: this.toolRegistry.getRegistryStats(),
     };
   }
 
@@ -383,9 +391,9 @@ export class MCPRequestHandler {
         memory: process.memoryUsage(),
         cpu: process.cpuUsage(),
         platform: process.platform,
-        nodeVersion: process.version
+        nodeVersion: process.version,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 

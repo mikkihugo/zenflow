@@ -1,18 +1,18 @@
 /**
  * BaseCommand Tests - TDD London School
- * 
+ *
  * Tests the behavior and interactions of the BaseCommand abstract class
  * using mocks for dependencies and focusing on command lifecycle,
  * validation behavior, and hook interactions.
  */
 
 import { jest } from '@jest/globals';
-import { BaseCommand, CommandHooks } from '../../../../cli/core/base-command';
-import type { 
-  CommandContext, 
-  CommandResult, 
+import { BaseCommand, type CommandHooks } from '../../../../cli/core/base-command';
+import type {
   CommandConfig,
-  CommandValidationResult 
+  CommandContext,
+  CommandResult,
+  CommandValidationResult,
 } from '../../../../cli/types/index';
 
 // Concrete implementation for testing
@@ -21,11 +21,13 @@ class TestCommand extends BaseCommand {
 
   constructor(config: CommandConfig, mockRun?: jest.Mock) {
     super(config);
-    this.mockRun = mockRun || jest.fn().mockResolvedValue({
-      success: true,
-      exitCode: 0,
-      message: 'Test command executed'
-    });
+    this.mockRun =
+      mockRun ||
+      jest.fn().mockResolvedValue({
+        success: true,
+        exitCode: 0,
+        message: 'Test command executed',
+      });
   }
 
   protected async run(context: CommandContext): Promise<CommandResult> {
@@ -72,18 +74,18 @@ describe('BaseCommand - TDD London', () => {
         required: {
           type: 'string',
           description: 'Required flag',
-          required: true
+          required: true,
         },
         optional: {
           type: 'boolean',
           description: 'Optional flag',
-          default: false
+          default: false,
         },
         number: {
           type: 'number',
-          description: 'Number flag'
-        }
-      }
+          description: 'Number flag',
+        },
+      },
     };
 
     command = new TestCommand(config);
@@ -106,7 +108,7 @@ describe('BaseCommand - TDD London', () => {
       cwd: '/test/dir',
       env: {},
       debug: false,
-      verbose: false
+      verbose: false,
     };
   });
 
@@ -121,9 +123,7 @@ describe('BaseCommand - TDD London', () => {
 
       // Assert - verify start event emission
       expect(mockEventHandler).toHaveBeenCalledWith(mockContext);
-      expect(mockEventHandler).toHaveBeenCalledWith(
-        expect.objectContaining({ success: true })
-      );
+      expect(mockEventHandler).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
     });
 
     it('should emit complete event with execution time', async () => {
@@ -134,7 +134,7 @@ describe('BaseCommand - TDD London', () => {
       expect(mockEventHandler).toHaveBeenCalledWith(
         expect.objectContaining({
           success: true,
-          executionTime: expect.any(Number)
+          executionTime: expect.any(Number),
         })
       );
     });
@@ -143,7 +143,7 @@ describe('BaseCommand - TDD London', () => {
       // Arrange
       const slowCommand = new TestCommand(
         { name: 'slow', description: 'Slow command' },
-        jest.fn().mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)))
+        jest.fn().mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)))
       );
 
       // Act
@@ -155,7 +155,7 @@ describe('BaseCommand - TDD London', () => {
         success: false,
         error: 'Command is already executing',
         exitCode: 1,
-        executionTime: 0
+        executionTime: 0,
       });
 
       await promise1; // Cleanup
@@ -187,7 +187,7 @@ describe('BaseCommand - TDD London', () => {
       // Arrange
       const invalidContext = {
         ...mockContext,
-        flags: {} // Missing required flag
+        flags: {}, // Missing required flag
       };
 
       // Act
@@ -198,8 +198,8 @@ describe('BaseCommand - TDD London', () => {
         expect.objectContaining({
           valid: false,
           errors: expect.arrayContaining([
-            expect.stringContaining('Required flag --required is missing')
-          ])
+            expect.stringContaining('Required flag --required is missing'),
+          ]),
         })
       );
 
@@ -207,7 +207,7 @@ describe('BaseCommand - TDD London', () => {
         success: false,
         error: expect.stringContaining('Validation failed'),
         exitCode: 1,
-        executionTime: expect.any(Number)
+        executionTime: expect.any(Number),
       });
     });
 
@@ -217,8 +217,8 @@ describe('BaseCommand - TDD London', () => {
         ...mockContext,
         flags: {
           required: 'test-value',
-          number: 'not-a-number' // Invalid type
-        }
+          number: 'not-a-number', // Invalid type
+        },
       };
 
       // Act
@@ -233,7 +233,7 @@ describe('BaseCommand - TDD London', () => {
       // Arrange - Too few arguments
       const tooFewArgs = {
         ...mockContext,
-        args: [] // Less than minArgs (1)
+        args: [], // Less than minArgs (1)
       };
 
       // Act
@@ -246,7 +246,7 @@ describe('BaseCommand - TDD London', () => {
       // Arrange - Too many arguments
       const tooManyArgs = {
         ...mockContext,
-        args: ['arg1', 'arg2', 'arg3', 'arg4'] // More than maxArgs (3)
+        args: ['arg1', 'arg2', 'arg3', 'arg4'], // More than maxArgs (3)
       };
 
       // Act
@@ -262,7 +262,7 @@ describe('BaseCommand - TDD London', () => {
       const customValidation = jest.fn().mockResolvedValue({
         valid: false,
         errors: ['Custom validation failed'],
-        warnings: ['Custom warning']
+        warnings: ['Custom warning'],
       });
       command.setCustomValidation(customValidation);
 
@@ -273,7 +273,7 @@ describe('BaseCommand - TDD London', () => {
       expect(customValidation).toHaveBeenCalledWith(mockContext);
       expect(result.success).toBe(false);
       expect(result.error).toContain('Custom validation failed');
-      
+
       expect(mockEventHandler).toHaveBeenCalledWith(['Custom warning']);
     });
 
@@ -300,7 +300,7 @@ describe('BaseCommand - TDD London', () => {
         afterValidation: jest.fn(),
         beforeExecution: jest.fn(),
         afterExecution: jest.fn(),
-        onError: jest.fn()
+        onError: jest.fn(),
       };
 
       command.registerHooks(mockHooks);
@@ -357,12 +357,12 @@ describe('BaseCommand - TDD London', () => {
     it('should allow hooks to be registered partially', async () => {
       // Arrange
       const partialHooks = {
-        beforeExecution: jest.fn()
+        beforeExecution: jest.fn(),
       };
-      
+
       const partialCommand = new TestCommand({
         name: 'partial',
-        description: 'Partial hooks'
+        description: 'Partial hooks',
       });
       partialCommand.registerHooks(partialHooks);
 
@@ -382,7 +382,7 @@ describe('BaseCommand - TDD London', () => {
         { name: 'error', description: 'Error command' },
         jest.fn().mockRejectedValue(error)
       );
-      
+
       const errorEventHandler = jest.fn();
       errorCommand.on('error', errorEventHandler);
 
@@ -395,7 +395,7 @@ describe('BaseCommand - TDD London', () => {
         success: false,
         error: 'Run method failed',
         exitCode: 1,
-        executionTime: expect.any(Number)
+        executionTime: expect.any(Number),
       });
     });
 
@@ -415,7 +415,7 @@ describe('BaseCommand - TDD London', () => {
         success: false,
         error: 'String error',
         exitCode: 1,
-        executionTime: expect.any(Number)
+        executionTime: expect.any(Number),
       });
     });
   });
@@ -429,11 +429,11 @@ describe('BaseCommand - TDD London', () => {
       expect(metadata).toEqual({
         config: expect.objectContaining({
           name: 'test-command',
-          description: 'Test command for validation'
+          description: 'Test command for validation',
         }),
         handler: expect.any(Function),
         registeredAt: expect.any(Date),
-        available: true
+        available: true,
       });
     });
 
@@ -445,7 +445,7 @@ describe('BaseCommand - TDD London', () => {
       // Assert - verify immutability
       expect(config1).toEqual(config2);
       expect(config1).not.toBe(config2);
-      
+
       // Modify copy and verify original is unaffected
       config1.name = 'modified';
       expect(command.getConfig().name).toBe('test-command');
@@ -464,7 +464,7 @@ describe('BaseCommand - TDD London', () => {
       const commandWithExamples = new TestCommand({
         name: 'examples',
         description: 'Command with examples',
-        examples: ['example 1', 'example 2']
+        examples: ['example 1', 'example 2'],
       });
 
       // Act

@@ -1,4 +1,3 @@
-
 /** Kuzu Advanced Graph Database Interface - Extended Edition TypeScript;
 /** PRODUCTION-GRADE GRAPH OPERATIONS WITH ADVANCED ANALYTICS;
 /** Built on the existing kuzu-graph-interface.js with enhanced capabilities;

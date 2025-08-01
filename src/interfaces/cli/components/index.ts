@@ -1,25 +1,24 @@
 /**
  * UI Components - Component Exports
- * 
+ *
  * This module exports all reusable UI components for the Claude Flow CLI.
  * Components are built with Ink for rich terminal interfaces.
  */
 
-// Basic UI components
-export { Header } from './header';
-export { Footer } from './footer';
-export { Spinner } from './spinner';
-export { ProgressBar } from './progress-bar';
-export { StatusBadge } from './status-badge';
+export type { ErrorMessageProps } from './error-message';
 export { ErrorMessage } from './error-message';
-
+export type { FooterProps } from './footer';
+export { Footer } from './footer';
 // Component prop types
 export type { HeaderProps } from './header';
-export type { FooterProps } from './footer';
-export type { SpinnerProps } from './spinner';
+// Basic UI components
+export { Header } from './header';
 export type { ProgressBarProps } from './progress-bar';
+export { ProgressBar } from './progress-bar';
+export type { SpinnerProps } from './spinner';
+export { Spinner } from './spinner';
 export type { StatusBadgeProps } from './status-badge';
-export type { ErrorMessageProps } from './error-message';
+export { StatusBadge } from './status-badge';
 
 // Common component types
 export interface BaseComponentProps {

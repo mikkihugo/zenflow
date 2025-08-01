@@ -1,14 +1,14 @@
 /**
  * MCP Protocol Compliance Test Suite - TDD London Style
- * 
+ *
  * Comprehensive test suite for MCP (Model Context Protocol) compliance
  * using London School TDD principles:
- * 
+ *
  * - Outside-in development from protocol specifications
  * - Mock-driven contracts for all external dependencies
  * - Behavior verification over state testing
  * - Focus on component interactions and communication protocols
- * 
+ *
  * Test Coverage Areas:
  * 1. Protocol Message Validation
  * 2. Tool Registration and Discovery
@@ -17,7 +17,7 @@
  * 5. Streaming Support and Backpressure
  */
 
-import { describe, it, expect } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 
 // Import all MCP protocol test suites
 import './protocol-message-validation.test';
@@ -27,15 +27,14 @@ import './error-scenarios.test';
 import './streaming-support.test';
 
 describe('🎯 MCP Protocol Compliance - London TDD Test Suite', () => {
-  
   describe('📋 Test Suite Overview', () => {
     it('should provide comprehensive MCP protocol coverage', () => {
       const testAreas = [
         'Protocol Message Validation',
-        'Tool Registration and Discovery', 
+        'Tool Registration and Discovery',
         'Request/Response Handling',
         'Error Scenarios and Recovery',
-        'Streaming Support and Backpressure'
+        'Streaming Support and Backpressure',
       ];
 
       // Assert test coverage areas are defined
@@ -53,7 +52,7 @@ describe('🎯 MCP Protocol Compliance - London TDD Test Suite', () => {
         'Mock-driven contracts',
         'Behavior verification',
         'Interaction testing',
-        'Communication focus'
+        'Communication focus',
       ];
 
       // Verify London School principles are applied
@@ -72,7 +71,7 @@ describe('🎯 MCP Protocol Compliance - London TDD Test Suite', () => {
         'method field for requests and notifications',
         'params field optional for requests',
         'result or error field for responses',
-        'no id field for notifications'
+        'no id field for notifications',
       ];
 
       // Verify JSON-RPC 2.0 requirements are covered
@@ -85,13 +84,13 @@ describe('🎯 MCP Protocol Compliance - London TDD Test Suite', () => {
       const mcpMethods = [
         'initialize',
         'tools/list',
-        'tools/call', 
+        'tools/call',
         'resources/list',
         'resources/read',
         'prompts/list',
         'prompts/get',
         'logging/setLevel',
-        'notifications/message'
+        'notifications/message',
       ];
 
       // Verify MCP method coverage
@@ -110,7 +109,7 @@ describe('🎯 MCP Protocol Compliance - London TDD Test Suite', () => {
         'Verify method calls and parameters',
         'Test component communication',
         'Focus on contracts not implementation',
-        'Outside-in test design'
+        'Outside-in test design',
       ];
 
       // Verify interaction testing patterns
@@ -125,7 +124,7 @@ describe('🎯 MCP Protocol Compliance - London TDD Test Suite', () => {
         'Contract-based mocking',
         'Behavior-driven mocks',
         'Clear mock isolation',
-        'Mock state management'
+        'Mock state management',
       ];
 
       // Verify mocking strategies are applied
@@ -142,7 +141,7 @@ describe('🎯 MCP Protocol Compliance - London TDD Test Suite', () => {
         clearArrangement: true,
         behaviorFocus: true,
         contractVerification: true,
-        comprehensiveCoverage: true
+        comprehensiveCoverage: true,
       };
 
       // Verify quality standards
@@ -159,7 +158,7 @@ describe('🎯 MCP Protocol Compliance - London TDD Test Suite', () => {
         'Clear test names',
         'Behavior specifications',
         'Contract definitions',
-        'London School annotations'
+        'London School annotations',
       ];
 
       // Verify documentation standards
@@ -173,10 +172,10 @@ describe('🎯 MCP Protocol Compliance - London TDD Test Suite', () => {
     it('should organize tests by acceptance criteria', () => {
       const testOrganization = [
         'Acceptance Tests - Core functionality',
-        'Contract Verification - Component integration', 
+        'Contract Verification - Component integration',
         'London School Patterns - Interaction focus',
         'Error Scenarios - Failure modes',
-        'Performance Tests - Non-functional requirements'
+        'Performance Tests - Non-functional requirements',
       ];
 
       // Verify test organization structure
@@ -191,7 +190,7 @@ describe('🎯 MCP Protocol Compliance - London TDD Test Suite', () => {
         contractVerification: '🔗 Contract Verification',
         londonPatterns: '🧪 London School Patterns',
         errorScenarios: '🚨 Error Scenarios',
-        streamingTests: '🌊 Streaming Tests'
+        streamingTests: '🌊 Streaming Tests',
       };
 
       // Verify naming consistency
@@ -204,39 +203,39 @@ describe('🎯 MCP Protocol Compliance - London TDD Test Suite', () => {
 
 /**
  * Test Suite Summary:
- * 
+ *
  * This comprehensive MCP protocol compliance test suite provides:
- * 
+ *
  * ✅ Protocol Message Validation
  *    - JSON-RPC 2.0 compliance testing
  *    - MCP method validation
  *    - Parameter schema validation
  *    - Message format verification
- * 
- * ✅ Tool Registration and Discovery  
+ *
+ * ✅ Tool Registration and Discovery
  *    - Tool registration workflow
  *    - Tool discovery mechanisms
  *    - Tool metadata validation
  *    - Registry management contracts
- * 
+ *
  * ✅ Request/Response Handling
  *    - Request processing lifecycle
  *    - Response generation patterns
  *    - Timeout and error handling
  *    - Session management
- * 
+ *
  * ✅ Error Scenarios and Recovery
  *    - Error classification and handling
  *    - Retry mechanisms and backoff
  *    - Circuit breaker patterns
  *    - Alert management
- * 
+ *
  * ✅ Streaming Support and Backpressure
  *    - Stream creation and lifecycle
  *    - Data chunk processing
  *    - Backpressure management
  *    - Buffer optimization
- * 
+ *
  * London School TDD Benefits:
  * - Outside-in development from protocol requirements
  * - Clear component contracts and interfaces

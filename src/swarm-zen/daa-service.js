@@ -4,9 +4,9 @@
  * and multi-agent workflow coordination with < 1ms cross-boundary call latency
  */
 
-import { WasmModuleLoader } from './wasm-loader.js';
-import { performance } from 'perf_hooks';
 import EventEmitter from 'events';
+import { performance } from 'perf_hooks';
+import { WasmModuleLoader } from './wasm-loader.js';
 
 // Performance monitoring utilities
 class PerformanceMonitor {
@@ -41,7 +41,9 @@ class PerformanceMonitor {
 
     const threshold = this.thresholds[metric.operation];
     if (threshold && duration > threshold) {
-      console.warn(`⚠️ Performance warning: ${metric.operation} took ${duration.toFixed(2)}ms (threshold: ${threshold}ms)`);
+      console.warn(
+        `⚠️ Performance warning: ${metric.operation} took ${duration.toFixed(2)}ms (threshold: ${threshold}ms)`
+      );
     }
 
     return {
@@ -52,8 +54,9 @@ class PerformanceMonitor {
   }
 
   getAverageLatency(operation) {
-    const relevantMetrics = Array.from(this.metrics.values())
-      .filter(m => m.operation === operation);
+    const relevantMetrics = Array.from(this.metrics.values()).filter(
+      (m) => m.operation === operation
+    );
 
     if (relevantMetrics.length === 0) {
       return 0;
@@ -173,21 +176,25 @@ class WorkflowCoordinator {
 
       const task = step.task || step.action;
       if (!task) {
-        console.warn(`⚠️ Step ${step.id} has no task or action defined - this may cause runtime errors`);
+        console.warn(
+          `⚠️ Step ${step.id} has no task or action defined - this may cause runtime errors`
+        );
       } else if (typeof task === 'object' && !task.method) {
-        console.warn(`⚠️ Step ${step.id} task object missing 'method' property - this may cause runtime errors`);
+        console.warn(
+          `⚠️ Step ${step.id} task object missing 'method' property - this may cause runtime errors`
+        );
       }
     }
 
     const workflow = {
       id: workflowId,
-      steps: new Map(steps.map(s => [s.id, s])),
+      steps: new Map(steps.map((s) => [s.id, s])),
       dependencies,
       status: 'pending',
       createdAt: Date.now(),
       completedSteps: new Set(),
       activeSteps: new Set(),
-      pendingSteps: new Set(steps.map(s => s.id)),
+      pendingSteps: new Set(steps.map((s) => s.id)),
     };
 
     this.workflows.set(workflowId, workflow);
@@ -242,7 +249,7 @@ class WorkflowCoordinator {
     const results = [];
 
     // Parallel execution for independent agent tasks
-    const promises = agents.map(async(agent) => {
+    const promises = agents.map(async (agent) => {
       if (step.agentFilter && !step.agentFilter(agent)) {
         return null;
       }
@@ -278,11 +285,10 @@ class WorkflowCoordinator {
         console.error(`❌ Error executing method '${task.method}' on agent:`, error);
         return null;
       }
-
     });
 
     const agentResults = await Promise.all(promises);
-    return agentResults.filter(r => r !== null);
+    return agentResults.filter((r) => r !== null);
   }
 
   getWorkflowStatus(workflowId) {
@@ -369,7 +375,6 @@ export class DAAService extends EventEmitter {
 
       const timing = this.performance.endTimer(timerId);
       console.log(`✅ DAA Service initialized in ${timing.duration.toFixed(2)}ms`);
-
     } catch (error) {
       console.error('Failed to initialize DAA Service:', error);
       throw error;
@@ -436,7 +441,7 @@ export class DAAService extends EventEmitter {
         wasmAgent = {
           id,
           capabilities: new Set(capabilities),
-          make_decision: async(context) => {
+          make_decision: async (context) => {
             // Simple decision logic
             return JSON.stringify({
               decision: 'proceed',
@@ -445,7 +450,7 @@ export class DAAService extends EventEmitter {
               timestamp: new Date().toISOString(),
             });
           },
-          get_status: async() => {
+          get_status: async () => {
             return JSON.stringify({
               status: 'active',
               id,
@@ -453,7 +458,7 @@ export class DAAService extends EventEmitter {
               timestamp: new Date().toISOString(),
             });
           },
-          adapt: async(feedback) => {
+          adapt: async (feedback) => {
             return JSON.stringify({
               adaptation: 'completed',
               feedback_processed: true,
@@ -461,14 +466,14 @@ export class DAAService extends EventEmitter {
               timestamp: new Date().toISOString(),
             });
           },
-          coordinate: async() => {
+          coordinate: async () => {
             return JSON.stringify({
               coordination: 'active',
               peers_contacted: 0,
               timestamp: new Date().toISOString(),
             });
           },
-          optimize_resources: async() => {
+          optimize_resources: async () => {
             return JSON.stringify({
               optimization: 'completed',
               memory_saved: 0.1,
@@ -530,7 +535,6 @@ export class DAAService extends EventEmitter {
       console.log(`🤖 Created agent ${id} in ${timing.duration.toFixed(2)}ms`);
 
       return agent;
-
     } catch (error) {
       console.error(`Failed to create agent ${id}:`, error);
       throw error;
@@ -569,7 +573,10 @@ export class DAAService extends EventEmitter {
       previousPattern,
       newPattern,
       improvement: Math.random() * 0.3, // Simulated improvement
-      insights: [`Adapted from ${previousPattern} to ${newPattern}`, 'Performance-based adaptation'],
+      insights: [
+        `Adapted from ${previousPattern} to ${newPattern}`,
+        'Performance-based adaptation',
+      ],
     };
   }
 
@@ -589,7 +596,7 @@ export class DAAService extends EventEmitter {
 
     if (parallel && agentIds.length > 1) {
       // Execute steps in parallel across agents
-      const promises = Array.from(workflow.steps.values()).map(async(step, index) => {
+      const promises = Array.from(workflow.steps.values()).map(async (step, index) => {
         const assignedAgent = agentIds[index % agentIds.length];
         const result = await this.executeWorkflowStep(workflowId, step.id, [assignedAgent]);
         completedSteps++;
@@ -695,7 +702,7 @@ export class DAAService extends EventEmitter {
       performanceTrend: 'stable',
       detailedMetrics: {
         totalAgents: allAgents.length,
-        activeAgents: allAgents.filter(a => a.status === 'active').length,
+        activeAgents: allAgents.filter((a) => a.status === 'active').length,
         systemUptime: Date.now() - (this.initTime || Date.now()),
       },
     };
@@ -719,12 +726,15 @@ export class DAAService extends EventEmitter {
 
     // System-wide analysis
     const allAgents = Array.from(this.agents.values());
-    const patterns = allAgents.map(a => a.cognitivePattern || 'adaptive');
+    const patterns = allAgents.map((a) => a.cognitivePattern || 'adaptive');
 
     return {
       patterns: [...new Set(patterns)],
       effectiveness: 0.82,
-      recommendations: ['Diversify cognitive patterns', 'Balance convergent and divergent thinking'],
+      recommendations: [
+        'Diversify cognitive patterns',
+        'Balance convergent and divergent thinking',
+      ],
       optimizationScore: 0.78,
     };
   }
@@ -741,11 +751,14 @@ export class DAAService extends EventEmitter {
 
     this.agentStates.saveState(agentId, {
       cognitivePattern: pattern,
-      patternHistory: [...(agent.patternHistory || []), {
-        from: previousPattern,
-        to: pattern,
-        timestamp: Date.now(),
-      }],
+      patternHistory: [
+        ...(agent.patternHistory || []),
+        {
+          from: previousPattern,
+          to: pattern,
+          timestamp: Date.now(),
+        },
+      ],
     });
 
     return {
@@ -798,7 +811,7 @@ export class DAAService extends EventEmitter {
 
     return {
       totalAgents: allAgents.length,
-      activeAgents: allAgents.filter(a => a.status === 'active').length,
+      activeAgents: allAgents.filter((a) => a.status === 'active').length,
       tasksCompleted: allAgents.reduce((sum, a) => sum + (a.metrics?.tasksCompleted || 0), 0),
       avgTaskTime: 150 + Math.random() * 100,
       learningCycles: allAgents.length * 10,
@@ -837,7 +850,6 @@ export class DAAService extends EventEmitter {
       console.log(`🗑️ Destroyed agent ${id}`);
 
       return true;
-
     } catch (error) {
       console.error(`Failed to destroy agent ${id}:`, error);
       return false;
@@ -877,7 +889,8 @@ export class DAAService extends EventEmitter {
       // Update average response time
       const prevAvg = agent.metrics.averageResponseTime;
       agent.metrics.averageResponseTime =
-        (prevAvg * (agent.metrics.decisionsMade - 1) + timing.duration) / agent.metrics.decisionsMade;
+        (prevAvg * (agent.metrics.decisionsMade - 1) + timing.duration) /
+        agent.metrics.decisionsMade;
 
       this.emit('decisionMade', {
         agentId,
@@ -887,7 +900,6 @@ export class DAAService extends EventEmitter {
       });
 
       return decision;
-
     } catch (error) {
       agent.metrics.errors++;
       console.error(`Decision making failed for agent ${agentId}:`, error);
@@ -901,7 +913,7 @@ export class DAAService extends EventEmitter {
 
     this.emit('workflowCreated', {
       workflowId,
-      steps: steps.map(s => s.id),
+      steps: steps.map((s) => s.id),
       dependencies,
     });
 
@@ -913,7 +925,7 @@ export class DAAService extends EventEmitter {
 
     try {
       // Get agents for execution
-      const agents = agentIds.map(id => {
+      const agents = agentIds.map((id) => {
         const agent = this.agents.get(id);
         if (!agent) {
           throw new Error(`Agent ${id} not found`);
@@ -935,7 +947,6 @@ export class DAAService extends EventEmitter {
       });
 
       return result;
-
     } catch (error) {
       console.error('Workflow step execution failed:', error);
       throw error;
@@ -969,7 +980,6 @@ export class DAAService extends EventEmitter {
       });
 
       return states;
-
     } catch (error) {
       console.error('State synchronization failed:', error);
       throw error;
@@ -993,7 +1003,6 @@ export class DAAService extends EventEmitter {
       this.emit('resourcesOptimized', { result });
 
       return result;
-
     } catch (error) {
       console.error('Resource optimization failed:', error);
       throw error;
@@ -1051,7 +1060,7 @@ export class DAAService extends EventEmitter {
   }
 
   async batchMakeDecisions(decisions) {
-    const promises = decisions.map(async({ agentId, context }) => {
+    const promises = decisions.map(async ({ agentId, context }) => {
       try {
         const decision = await this.makeDecision(agentId, context);
         return { success: true, agentId, decision };
@@ -1080,7 +1089,6 @@ export class DAAService extends EventEmitter {
       console.log('🧹 DAA Service cleanup completed', optimization);
 
       this.emit('cleanup', optimization);
-
     } catch (error) {
       console.error('Cleanup failed:', error);
     }
@@ -1097,8 +1105,8 @@ export class DAAService extends EventEmitter {
       },
       workflows: {
         count: this.workflows.workflows.size,
-        active: Array.from(this.workflows.workflows.values())
-          .filter(w => w.status === 'running').length,
+        active: Array.from(this.workflows.workflows.values()).filter((w) => w.status === 'running')
+          .length,
       },
       wasm: {
         modules: this.wasmLoader.getModuleStatus(),

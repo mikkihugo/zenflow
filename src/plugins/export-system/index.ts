@@ -4,7 +4,7 @@
  */
 
 import { BasePlugin } from '../base-plugin.js';
-import type { PluginManifest, PluginConfig, PluginContext } from '../types.js';
+import type { PluginConfig, PluginContext, PluginManifest } from '../types.js';
 
 export class ExportSystemPlugin extends BasePlugin {
   private exporters = new Map();
@@ -28,7 +28,7 @@ export class ExportSystemPlugin extends BasePlugin {
   }
 
   async onDestroy(): Promise<void> {
-    await this.cleanup();  
+    await this.cleanup();
   }
 
   private setupExporters(): void {
@@ -37,15 +37,15 @@ export class ExportSystemPlugin extends BasePlugin {
       name: 'JSON Exporter',
       extension: '.json',
       mimeType: 'application/json',
-      export: (data: any) => JSON.stringify(data, null, 2)
+      export: (data: any) => JSON.stringify(data, null, 2),
     });
 
     // CSV exporter
     this.exporters.set('csv', {
-      name: 'CSV Exporter', 
+      name: 'CSV Exporter',
       extension: '.csv',
       mimeType: 'text/csv',
-      export: (data: any[]) => this.convertToCSV(data)
+      export: (data: any[]) => this.convertToCSV(data),
     });
 
     // YAML exporter
@@ -53,15 +53,15 @@ export class ExportSystemPlugin extends BasePlugin {
       name: 'YAML Exporter',
       extension: '.yaml',
       mimeType: 'text/yaml',
-      export: (data: any) => this.convertToYAML(data)
+      export: (data: any) => this.convertToYAML(data),
     });
 
     // XML exporter
     this.exporters.set('xml', {
       name: 'XML Exporter',
-      extension: '.xml', 
+      extension: '.xml',
       mimeType: 'application/xml',
-      export: (data: any) => this.convertToXML(data)
+      export: (data: any) => this.convertToXML(data),
     });
   }
 
@@ -70,7 +70,7 @@ export class ExportSystemPlugin extends BasePlugin {
    */
   async exportData(data: any, format: string, options: any = {}): Promise<any> {
     const exporter = this.exporters.get(format.toLowerCase());
-    
+
     if (!exporter) {
       throw new Error(`Unsupported export format: ${format}`);
     }
@@ -83,7 +83,7 @@ export class ExportSystemPlugin extends BasePlugin {
         timestamp: new Date(),
         size: exportedData.length,
         filename: options.filename || `export_${Date.now()}${exporter.extension}`,
-        success: true
+        success: true,
       };
 
       this.exportHistory.push(exportRecord);
@@ -92,7 +92,7 @@ export class ExportSystemPlugin extends BasePlugin {
       return {
         data: exportedData,
         metadata: exportRecord,
-        mimeType: exporter.mimeType
+        mimeType: exporter.mimeType,
       };
     } catch (error) {
       const errorRecord = {
@@ -100,7 +100,7 @@ export class ExportSystemPlugin extends BasePlugin {
         format,
         timestamp: new Date(),
         error: error instanceof Error ? error.message : 'Unknown error',
-        success: false
+        success: false,
       };
 
       this.exportHistory.push(errorRecord);
@@ -112,20 +112,22 @@ export class ExportSystemPlugin extends BasePlugin {
   /**
    * Export multiple datasets
    */
-  async batchExport(datasets: Array<{data: any, format: string, filename?: string}>): Promise<any[]> {
+  async batchExport(
+    datasets: Array<{ data: any; format: string; filename?: string }>
+  ): Promise<any[]> {
     const results: any[] = [];
 
     for (const dataset of datasets) {
       try {
         const result = await this.exportData(dataset.data, dataset.format, {
-          filename: dataset.filename
+          filename: dataset.filename,
         });
         results.push(result);
       } catch (error) {
         results.push({
           error: error instanceof Error ? error.message : 'Unknown error',
           format: dataset.format,
-          filename: dataset.filename
+          filename: dataset.filename,
         });
       }
     }
@@ -144,7 +146,7 @@ export class ExportSystemPlugin extends BasePlugin {
 
     // Convert each row
     for (const row of data) {
-      const values = headers.map(header => {
+      const values = headers.map((header) => {
         const value = row[header];
         // Escape values that contain commas or quotes
         if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
@@ -165,22 +167,22 @@ export class ExportSystemPlugin extends BasePlugin {
 
   private objectToYAML(obj: any, indent: number): string {
     const spaces = '  '.repeat(indent);
-    
+
     if (obj === null) return 'null';
     if (typeof obj === 'boolean') return obj.toString();
     if (typeof obj === 'number') return obj.toString();
     if (typeof obj === 'string') return `"${obj.replace(/"/g, '\\"')}"`;
-    
+
     if (Array.isArray(obj)) {
-      return obj.map(item => `${spaces}- ${this.objectToYAML(item, 0)}`).join('\n');
+      return obj.map((item) => `${spaces}- ${this.objectToYAML(item, 0)}`).join('\n');
     }
-    
+
     if (typeof obj === 'object') {
       return Object.entries(obj)
         .map(([key, value]) => `${spaces}${key}: ${this.objectToYAML(value, indent + 1)}`)
         .join('\n');
     }
-    
+
     return String(obj);
   }
 
@@ -190,24 +192,29 @@ export class ExportSystemPlugin extends BasePlugin {
 
   private objectToXML(obj: any, indent: number): string {
     const spaces = '  '.repeat(indent);
-    
+
     if (typeof obj === 'string' || typeof obj === 'number' || typeof obj === 'boolean') {
       return `${spaces}<value>${obj}</value>`;
     }
-    
+
     if (Array.isArray(obj)) {
-      return obj.map((item, index) => 
-        `${spaces}<item index="${index}">\n${this.objectToXML(item, indent + 1)}\n${spaces}</item>`
-      ).join('\n');
+      return obj
+        .map(
+          (item, index) =>
+            `${spaces}<item index="${index}">\n${this.objectToXML(item, indent + 1)}\n${spaces}</item>`
+        )
+        .join('\n');
     }
-    
+
     if (typeof obj === 'object' && obj !== null) {
       return Object.entries(obj)
-        .map(([key, value]) => 
-          `${spaces}<${key}>\n${this.objectToXML(value, indent + 1)}\n${spaces}</${key}>`
-        ).join('\n');
+        .map(
+          ([key, value]) =>
+            `${spaces}<${key}>\n${this.objectToXML(value, indent + 1)}\n${spaces}</${key}>`
+        )
+        .join('\n');
     }
-    
+
     return `${spaces}<value>${String(obj)}</value>`;
   }
 
@@ -226,7 +233,7 @@ export class ExportSystemPlugin extends BasePlugin {
       format: key,
       name: exporter.name,
       extension: exporter.extension,
-      mimeType: exporter.mimeType
+      mimeType: exporter.mimeType,
     }));
   }
 
@@ -244,10 +251,10 @@ export class ExportSystemPlugin extends BasePlugin {
   getExportStats(): any {
     const stats = {
       totalExports: this.exportHistory.length,
-      successfulExports: this.exportHistory.filter(e => e.success).length,
-      failedExports: this.exportHistory.filter(e => !e.success).length,
+      successfulExports: this.exportHistory.filter((e) => e.success).length,
+      failedExports: this.exportHistory.filter((e) => !e.success).length,
       formatBreakdown: {} as any,
-      totalSize: 0
+      totalSize: 0,
     };
 
     for (const record of this.exportHistory) {

@@ -1,6 +1,6 @@
 /**
  * Data Integrity Integration Tests
- * 
+ *
  * Hybrid Testing Approach:
  * - London School: Mock storage backends and corruption scenarios
  * - Classical School: Test actual data validation and error recovery
@@ -33,9 +33,12 @@ interface ValidationResult {
 
 // Data integrity utilities
 class DataIntegrityUtils {
-  static calculateChecksum(data: any, algorithm: 'sha256' | 'md5' | 'crc32' = 'sha256'): DataChecksum {
+  static calculateChecksum(
+    data: any,
+    algorithm: 'sha256' | 'md5' | 'crc32' = 'sha256'
+  ): DataChecksum {
     const serialized = typeof data === 'string' ? data : JSON.stringify(data);
-    
+
     let hash: string;
     switch (algorithm) {
       case 'sha256':
@@ -46,23 +49,23 @@ class DataIntegrityUtils {
         break;
       case 'crc32':
         // Simple CRC32 implementation for testing
-        hash = this.crc32(serialized).toString(16);
+        hash = DataIntegrityUtils.crc32(serialized).toString(16);
         break;
       default:
         throw new Error(`Unsupported algorithm: ${algorithm}`);
     }
-    
+
     return { algorithm, value: hash };
   }
 
   static validateChecksum(data: any, expectedChecksum: DataChecksum): boolean {
-    const actualChecksum = this.calculateChecksum(data, expectedChecksum.algorithm);
+    const actualChecksum = DataIntegrityUtils.calculateChecksum(data, expectedChecksum.algorithm);
     return actualChecksum.value === expectedChecksum.value;
   }
 
   static detectCorruption(original: any, current: any): string[] {
     const issues: string[] = [];
-    
+
     if (typeof original !== typeof current) {
       issues.push(`Type mismatch: expected ${typeof original}, got ${typeof current}`);
       return issues;
@@ -80,61 +83,69 @@ class DataIntegrityUtils {
         issues.push('Array structure corrupted');
         return issues;
       }
-      
+
       if (original.length !== current.length) {
         issues.push(`Array length mismatch: expected ${original.length}, got ${current.length}`);
       }
-      
+
       for (let i = 0; i < Math.min(original.length, current.length); i++) {
-        const subIssues = this.detectCorruption(original[i], current[i]);
-        issues.push(...subIssues.map(issue => `Array[${i}]: ${issue}`));
+        const subIssues = DataIntegrityUtils.detectCorruption(original[i], current[i]);
+        issues.push(...subIssues.map((issue) => `Array[${i}]: ${issue}`));
       }
     } else if (typeof original === 'object') {
       const originalKeys = Object.keys(original).sort();
       const currentKeys = Object.keys(current).sort();
-      
+
       if (originalKeys.length !== currentKeys.length) {
-        issues.push(`Object key count mismatch: expected ${originalKeys.length}, got ${currentKeys.length}`);
+        issues.push(
+          `Object key count mismatch: expected ${originalKeys.length}, got ${currentKeys.length}`
+        );
       }
-      
-      const missingKeys = originalKeys.filter(key => !(key in current));
-      const extraKeys = currentKeys.filter(key => !(key in original));
-      
+
+      const missingKeys = originalKeys.filter((key) => !(key in current));
+      const extraKeys = currentKeys.filter((key) => !(key in original));
+
       if (missingKeys.length > 0) {
         issues.push(`Missing keys: ${missingKeys.join(', ')}`);
       }
-      
+
       if (extraKeys.length > 0) {
         issues.push(`Extra keys: ${extraKeys.join(', ')}`);
       }
-      
+
       for (const key of originalKeys) {
         if (key in current) {
-          const subIssues = this.detectCorruption(original[key], current[key]);
-          issues.push(...subIssues.map(issue => `Object.${key}: ${issue}`));
+          const subIssues = DataIntegrityUtils.detectCorruption(original[key], current[key]);
+          issues.push(...subIssues.map((issue) => `Object.${key}: ${issue}`));
         }
       }
     } else if (original !== current) {
-      issues.push(`Value mismatch: expected ${JSON.stringify(original)}, got ${JSON.stringify(current)}`);
+      issues.push(
+        `Value mismatch: expected ${JSON.stringify(original)}, got ${JSON.stringify(current)}`
+      );
     }
-    
+
     return issues;
   }
 
-  static attemptRepair<T>(corrupted: T, reference: T, strategy: 'merge' | 'replace' | 'selective' = 'selective'): T {
+  static attemptRepair<T>(
+    corrupted: T,
+    reference: T,
+    strategy: 'merge' | 'replace' | 'selective' = 'selective'
+  ): T {
     if (strategy === 'replace') {
       return reference;
     }
-    
+
     if (strategy === 'merge' && typeof corrupted === 'object' && typeof reference === 'object') {
       if (corrupted === null || reference === null) {
         return reference;
       }
-      
+
       if (Array.isArray(reference)) {
         return reference; // For arrays, replace entirely
       }
-      
+
       const merged = { ...corrupted };
       for (const [key, value] of Object.entries(reference)) {
         if (!(key in merged) || merged[key] === null || merged[key] === undefined) {
@@ -143,21 +154,21 @@ class DataIntegrityUtils {
       }
       return merged as T;
     }
-    
+
     // Selective repair - only fix obvious corruption
     if (corrupted === null || corrupted === undefined) {
       return reference;
     }
-    
+
     return corrupted;
   }
 
   private static crc32(str: string): number {
-    let crc = 0 ^ (-1);
+    let crc = 0 ^ -1;
     for (let i = 0; i < str.length; i++) {
-      crc = (crc >>> 8) ^ this.crcTable[(crc ^ str.charCodeAt(i)) & 0xFF];
+      crc = (crc >>> 8) ^ DataIntegrityUtils.crcTable[(crc ^ str.charCodeAt(i)) & 0xff];
     }
-    return (crc ^ (-1)) >>> 0;
+    return (crc ^ -1) >>> 0;
   }
 
   private static crcTable = (() => {
@@ -165,7 +176,7 @@ class DataIntegrityUtils {
     for (let i = 0; i < 256; i++) {
       let c = i;
       for (let j = 0; j < 8; j++) {
-        c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
+        c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
       }
       table[i] = c;
     }
@@ -181,11 +192,13 @@ class IntegrityStorage extends EventEmitter {
   private autoRepair = true;
   private redundancyLevel = 1;
 
-  constructor(options: {
-    validationEnabled?: boolean;
-    autoRepair?: boolean;
-    redundancyLevel?: number;
-  } = {}) {
+  constructor(
+    options: {
+      validationEnabled?: boolean;
+      autoRepair?: boolean;
+      redundancyLevel?: number;
+    } = {}
+  ) {
     super();
     this.validationEnabled = options.validationEnabled ?? true;
     this.autoRepair = options.autoRepair ?? true;
@@ -203,7 +216,7 @@ class IntegrityStorage extends EventEmitter {
       checksum,
       timestamp,
       version,
-      metadata
+      metadata,
     };
 
     this.records.set(id, record);
@@ -225,10 +238,10 @@ class IntegrityStorage extends EventEmitter {
 
     if (this.validationEnabled) {
       const validation = await this.validateRecord(record);
-      
+
       if (!validation.valid) {
         this.emit('corruptionDetected', { id, errors: validation.errors });
-        
+
         if (this.autoRepair) {
           const repaired = await this.attemptRepair(id, record);
           if (repaired) {
@@ -236,7 +249,7 @@ class IntegrityStorage extends EventEmitter {
             return repaired;
           }
         }
-        
+
         throw new Error(`Data integrity violation for ${id}: ${validation.errors.join(', ')}`);
       }
     }
@@ -273,7 +286,7 @@ class IntegrityStorage extends EventEmitter {
     return {
       valid: errors.length === 0,
       errors,
-      warnings
+      warnings,
     };
   }
 
@@ -285,12 +298,12 @@ class IntegrityStorage extends EventEmitter {
     for (const [id, record] of this.records.entries()) {
       try {
         const validation = await this.validateRecord(record);
-        
+
         if (validation.valid) {
           valid++;
         } else {
           corrupted++;
-          
+
           if (this.autoRepair) {
             const repairedRecord = await this.attemptRepair(id, record);
             if (repairedRecord) {
@@ -307,7 +320,10 @@ class IntegrityStorage extends EventEmitter {
     return { valid, corrupted, repaired };
   }
 
-  async attemptRepair(id: string, corruptedRecord: IntegrityRecord): Promise<IntegrityRecord | null> {
+  async attemptRepair(
+    id: string,
+    corruptedRecord: IntegrityRecord
+  ): Promise<IntegrityRecord | null> {
     // Try backup first
     const backup = this.backupRecords.get(id);
     if (backup) {
@@ -327,15 +343,15 @@ class IntegrityStorage extends EventEmitter {
           backup.data,
           'selective'
         );
-        
+
         const repairedRecord: IntegrityRecord = {
           ...corruptedRecord,
           data: repairedData,
           checksum: DataIntegrityUtils.calculateChecksum(repairedData),
           version: corruptedRecord.version + 1,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         };
-        
+
         this.records.set(id, repairedRecord);
         this.emit('repairedSelectively', { id });
         return { ...repairedRecord };
@@ -347,7 +363,10 @@ class IntegrityStorage extends EventEmitter {
     return null;
   }
 
-  async simulateCorruption(id: string, corruptionType: 'checksum' | 'data' | 'structure'): Promise<boolean> {
+  async simulateCorruption(
+    id: string,
+    corruptionType: 'checksum' | 'data' | 'structure'
+  ): Promise<boolean> {
     const record = this.records.get(id);
     if (!record) {
       return false;
@@ -357,7 +376,7 @@ class IntegrityStorage extends EventEmitter {
       case 'checksum':
         record.checksum.value = 'corrupted_checksum';
         break;
-      
+
       case 'data':
         if (typeof record.data === 'object' && record.data !== null) {
           record.data = { ...record.data, corrupted: true };
@@ -365,7 +384,7 @@ class IntegrityStorage extends EventEmitter {
           record.data = 'CORRUPTED';
         }
         break;
-      
+
       case 'structure':
         if (typeof record.data === 'object' && !Array.isArray(record.data)) {
           delete record.data.someKey;
@@ -388,7 +407,7 @@ class IntegrityStorage extends EventEmitter {
       totalRecords: this.records.size,
       backupRecords: this.backupRecords.size,
       validationEnabled: this.validationEnabled,
-      autoRepair: this.autoRepair
+      autoRepair: this.autoRepair,
     };
   }
 
@@ -412,23 +431,23 @@ class MockCorruptedStorage {
 
   async store(id: string, data: any): Promise<any> {
     this.operations.push(`store:${id}`);
-    
+
     if (this.shouldCorrupt && Math.random() < this.corruptionRate) {
       // Simulate corruption during storage
       const corrupted = typeof data === 'object' ? { ...data, __corrupted: true } : 'CORRUPTED';
       return { success: false, data: corrupted, error: 'Storage corruption' };
     }
-    
+
     return { success: true, data, checksum: 'mock_checksum' };
   }
 
   async retrieve(id: string): Promise<any> {
     this.operations.push(`retrieve:${id}`);
-    
+
     if (this.shouldCorrupt && Math.random() < this.corruptionRate) {
       return { success: false, error: 'Retrieval corruption' };
     }
-    
+
     return { success: true, data: { id, mockData: true } };
   }
 }
@@ -437,20 +456,20 @@ describe('Data Integrity Integration Tests', () => {
   describe('Data Integrity Utils (Classical School)', () => {
     it('should calculate checksums correctly', () => {
       const data = { message: 'test data', number: 42 };
-      
+
       const sha256Checksum = DataIntegrityUtils.calculateChecksum(data, 'sha256');
       const md5Checksum = DataIntegrityUtils.calculateChecksum(data, 'md5');
       const crc32Checksum = DataIntegrityUtils.calculateChecksum(data, 'crc32');
-      
+
       expect(sha256Checksum.algorithm).toBe('sha256');
       expect(sha256Checksum.value).toHaveLength(64); // SHA256 hex length
-      
+
       expect(md5Checksum.algorithm).toBe('md5');
       expect(md5Checksum.value).toHaveLength(32); // MD5 hex length
-      
+
       expect(crc32Checksum.algorithm).toBe('crc32');
       expect(crc32Checksum.value).toMatch(/^[0-9a-f]+$/); // Hex string
-      
+
       // Same data should produce same checksums
       const duplicate = DataIntegrityUtils.calculateChecksum(data, 'sha256');
       expect(duplicate.value).toBe(sha256Checksum.value);
@@ -459,9 +478,9 @@ describe('Data Integrity Integration Tests', () => {
     it('should validate checksums correctly', () => {
       const data = { test: 'validation data' };
       const checksum = DataIntegrityUtils.calculateChecksum(data);
-      
+
       expect(DataIntegrityUtils.validateChecksum(data, checksum)).toBe(true);
-      
+
       const modifiedData = { test: 'modified data' };
       expect(DataIntegrityUtils.validateChecksum(modifiedData, checksum)).toBe(false);
     });
@@ -472,13 +491,17 @@ describe('Data Integrity Integration Tests', () => {
         age: 30,
         address: {
           street: '123 Main St',
-          city: 'Anytown'
+          city: 'Anytown',
         },
-        hobbies: ['reading', 'coding']
+        hobbies: ['reading', 'coding'],
       };
 
       // No corruption
-      const identical = { ...original, address: { ...original.address }, hobbies: [...original.hobbies] };
+      const identical = {
+        ...original,
+        address: { ...original.address },
+        hobbies: [...original.hobbies],
+      };
       expect(DataIntegrityUtils.detectCorruption(original, identical)).toHaveLength(0);
 
       // Value corruption
@@ -489,12 +512,12 @@ describe('Data Integrity Integration Tests', () => {
       // Missing key
       const { name, ...missingKey } = original;
       const keyIssues = DataIntegrityUtils.detectCorruption(original, missingKey);
-      expect(keyIssues.some(issue => issue.includes('Missing keys: name'))).toBe(true);
+      expect(keyIssues.some((issue) => issue.includes('Missing keys: name'))).toBe(true);
 
       // Array corruption
       const arrayCorrupted = { ...original, hobbies: ['reading'] };
       const arrayIssues = DataIntegrityUtils.detectCorruption(original, arrayCorrupted);
-      expect(arrayIssues.some(issue => issue.includes('Array length mismatch'))).toBe(true);
+      expect(arrayIssues.some((issue) => issue.includes('Array length mismatch'))).toBe(true);
     });
 
     it('should attempt data repair using different strategies', () => {
@@ -525,7 +548,7 @@ describe('Data Integrity Integration Tests', () => {
       storage = new IntegrityStorage({
         validationEnabled: true,
         autoRepair: true,
-        redundancyLevel: 1
+        redundancyLevel: 1,
       });
     });
 
@@ -561,7 +584,7 @@ describe('Data Integrity Integration Tests', () => {
       // Create storage without auto-repair to test error detection
       const noRepairStorage = new IntegrityStorage({
         validationEnabled: true,
-        autoRepair: false
+        autoRepair: false,
       });
 
       const testData = { important: 'data', value: 42 };
@@ -572,8 +595,10 @@ describe('Data Integrity Integration Tests', () => {
       expect(corrupted).toBe(true);
 
       // Should throw error due to corruption (no auto-repair)
-      await expect(noRepairStorage.retrieve('corruption-test')).rejects.toThrow(/Data integrity violation|Checksum validation failed/);
-      
+      await expect(noRepairStorage.retrieve('corruption-test')).rejects.toThrow(
+        /Data integrity violation|Checksum validation failed/
+      );
+
       await noRepairStorage.clear();
     });
 
@@ -604,7 +629,7 @@ describe('Data Integrity Integration Tests', () => {
       expect(record1.version).toBe(1);
 
       // Add small delay to ensure timestamp difference
-      await new Promise(resolve => setTimeout(resolve, 1));
+      await new Promise((resolve) => setTimeout(resolve, 1));
 
       const updatedData = { version: 'v2' };
       const record2 = await storage.store('version-test', updatedData);
@@ -703,10 +728,10 @@ describe('Data Integrity Integration Tests', () => {
       await storage.store('event-test', { test: 'data' });
       await storage.retrieve('event-test');
 
-      expect(events.some(e => e.type === 'stored')).toBe(true);
-      expect(events.some(e => e.type === 'retrieved')).toBe(true);
+      expect(events.some((e) => e.type === 'stored')).toBe(true);
+      expect(events.some((e) => e.type === 'retrieved')).toBe(true);
 
-      const storeEvent = events.find(e => e.type === 'stored');
+      const storeEvent = events.find((e) => e.type === 'stored');
       expect(storeEvent?.data.id).toBe('event-test');
     });
 
@@ -720,7 +745,7 @@ describe('Data Integrity Integration Tests', () => {
         // Expected to fail
       }
 
-      expect(events.some(e => e.type === 'corruptionDetected')).toBe(true);
+      expect(events.some((e) => e.type === 'corruptionDetected')).toBe(true);
     });
   });
 
@@ -730,7 +755,7 @@ describe('Data Integrity Integration Tests', () => {
     beforeEach(() => {
       storage = new IntegrityStorage({
         validationEnabled: true,
-        autoRepair: true
+        autoRepair: true,
       });
     });
 
@@ -772,7 +797,11 @@ describe('Data Integrity Integration Tests', () => {
 
       // Randomly corrupt some records
       const corruptedCount = Math.floor(recordCount * corruptionRate);
-      const corruptionTypes: Array<'checksum' | 'data' | 'structure'> = ['checksum', 'data', 'structure'];
+      const corruptionTypes: Array<'checksum' | 'data' | 'structure'> = [
+        'checksum',
+        'data',
+        'structure',
+      ];
 
       for (let i = 0; i < corruptedCount; i++) {
         const recordIndex = Math.floor(Math.random() * recordCount);
@@ -785,8 +814,10 @@ describe('Data Integrity Integration Tests', () => {
 
       expect(results.valid + results.corrupted).toBe(recordCount);
       expect(results.corrupted).toBeGreaterThanOrEqual(0);
-      
-      console.log(`Mixed corruption test: ${results.valid} valid, ${results.corrupted} corrupted, ${results.repaired} repaired`);
+
+      console.log(
+        `Mixed corruption test: ${results.valid} valid, ${results.corrupted} corrupted, ${results.repaired} repaired`
+      );
     });
   });
 
@@ -812,19 +843,19 @@ describe('Data Integrity Integration Tests', () => {
               notifications: {
                 email: true,
                 push: false,
-                sms: true
-              }
-            }
-          }
+                sms: true,
+              },
+            },
+          },
         },
         metadata: {
           created: Date.now(),
           tags: ['important', 'user-data'],
           flags: {
             verified: true,
-            premium: false
-          }
-        }
+            premium: false,
+          },
+        },
       };
 
       const record = await storage.store('complex-data', complexData);
@@ -842,10 +873,10 @@ describe('Data Integrity Integration Tests', () => {
             port: 5432,
             credentials: {
               username: 'admin',
-              password: 'secret'
-            }
-          }
-        }
+              password: 'secret',
+            },
+          },
+        },
       };
 
       await storage.store('nested-test', originalData);
@@ -862,7 +893,7 @@ describe('Data Integrity Integration Tests', () => {
         ),
         lookup: Object.fromEntries(
           Array.from({ length: 1000 }, (_, i) => [`key_${i}`, `value_${i}`])
-        )
+        ),
       };
 
       const startTime = process.hrtime.bigint();
@@ -875,7 +906,9 @@ describe('Data Integrity Integration Tests', () => {
       const storeDuration = Number(storeTime - startTime) / 1_000_000;
       const retrieveDuration = Number(retrieveTime - storeTime) / 1_000_000;
 
-      console.log(`Large dataset - Store: ${storeDuration.toFixed(2)}ms, Retrieve: ${retrieveDuration.toFixed(2)}ms`);
+      console.log(
+        `Large dataset - Store: ${storeDuration.toFixed(2)}ms, Retrieve: ${retrieveDuration.toFixed(2)}ms`
+      );
 
       expect(retrieved!.data).toEqual(largeData);
       expect(storeDuration).toBeLessThan(1000); // Should complete within 1 second

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 /**
  * Comprehensive Test Suite for Issue #91 MCP Server Fixes
  * Tests: timeout resolution, ANSI escape handling, JSON parsing, notifications/initialized
@@ -7,11 +8,11 @@
  * Version: 1.0.0
  */
 
+import { strict as assert } from 'assert';
 import { spawn } from 'child_process';
 import { readFileSync, writeFileSync } from 'fs';
-import { strict as assert } from 'assert';
-import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -155,8 +156,8 @@ class MCPServerTester {
             server.kill();
 
             // Validate responses
-            const initResponse = responses.find(r => r.id === 1);
-            const notificationResponse = responses.find(r => r.id === 2);
+            const initResponse = responses.find((r) => r.id === 1);
+            const notificationResponse = responses.find((r) => r.id === 2);
 
             if (!initResponse) {
               reject(new Error('No response to initialize request'));
@@ -219,7 +220,11 @@ class MCPServerTester {
               const response = JSON.parse(line.trim());
               jsonResponses.push(response);
             } catch (parseError) {
-              reject(new Error(`JSON parse error: ${parseError.message}. Line: ${line.substring(0, 100)}`));
+              reject(
+                new Error(
+                  `JSON parse error: ${parseError.message}. Line: ${line.substring(0, 100)}`
+                )
+              );
               return;
             }
           }
@@ -249,7 +254,7 @@ class MCPServerTester {
               return;
             }
 
-            const response = jsonResponses.find(r => r.id === 1);
+            const response = jsonResponses.find((r) => r.id === 1);
             if (!response) {
               reject(new Error('No response to tools/list request'));
               return;
@@ -336,7 +341,11 @@ class MCPServerTester {
                 server.kill();
 
                 if (responseCount < 5) {
-                  reject(new Error(`Expected 5 responses, got ${responseCount} - server may have timed out`));
+                  reject(
+                    new Error(
+                      `Expected 5 responses, got ${responseCount} - server may have timed out`
+                    )
+                  );
                 } else {
                   resolve();
                 }
@@ -417,8 +426,15 @@ class MCPServerTester {
             }
 
             // Check for improved error message
-            if (!errorResponse.error.data || !errorResponse.error.data.includes('Supported methods:')) {
-              reject(new Error('Error response should include helpful information about supported methods'));
+            if (
+              !errorResponse.error.data ||
+              !errorResponse.error.data.includes('Supported methods:')
+            ) {
+              reject(
+                new Error(
+                  'Error response should include helpful information about supported methods'
+                )
+              );
               return;
             }
 
@@ -524,7 +540,9 @@ class MCPServerTester {
     console.log('Testing fixes for Issue #91');
 
     await this.runTest('Server Startup Without ANSI Codes', () => this.testServerStartup());
-    await this.runTest('notifications/initialized Handling', () => this.testNotificationsInitialized());
+    await this.runTest('notifications/initialized Handling', () =>
+      this.testNotificationsInitialized()
+    );
     await this.runTest('JSON Parsing with stderr Output', () => this.testJsonParsingWithStderr());
     await this.runTest('Connection Stability', () => this.testConnectionStability());
     await this.runTest('Enhanced Error Handling', () => this.testErrorHandling());
@@ -538,7 +556,7 @@ class MCPServerTester {
 
     if (this.results.failed > 0) {
       console.log('\n❌ Failed Tests:');
-      this.results.errors.forEach(error => {
+      this.results.errors.forEach((error) => {
         console.log(`  - ${error.name}: ${error.error}`);
       });
     }
@@ -559,12 +577,15 @@ class MCPServerTester {
 // Run tests if called directly
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const tester = new MCPServerTester();
-  tester.runAllTests().then(success => {
-    process.exit(success ? 0 : 1);
-  }).catch(error => {
-    console.error('Test suite error:', error.message);
-    process.exit(1);
-  });
+  tester
+    .runAllTests()
+    .then((success) => {
+      process.exit(success ? 0 : 1);
+    })
+    .catch((error) => {
+      console.error('Test suite error:', error.message);
+      process.exit(1);
+    });
 }
 
 export { MCPServerTester };

@@ -1,20 +1,20 @@
 /**
  * Command Registry
- * 
+ *
  * Manages command registration, discovery, and execution.
  * Supports dynamic command loading and plugin architecture.
  */
 
 import { EventEmitter } from 'events';
 import { readdir, stat } from 'fs/promises';
-import { join, extname } from 'path';
+import { extname, join } from 'path';
 import type {
+  AsyncResult,
   CommandConfig,
   CommandContext,
+  CommandMetadata,
   CommandResult,
   CommandRegistry as ICommandRegistry,
-  CommandMetadata,
-  AsyncResult
 } from '../types/index';
 import { BaseCommand } from './base-command';
 
@@ -69,18 +69,18 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
     }
 
     this.emit('initializing');
-    
+
     try {
       // Load plugins first
       await this.loadPlugins();
-      
+
       // Then load commands from configured paths
       await this.loadCommands();
-      
+
       this.isInitialized = true;
       this.emit('initialized', {
         commandCount: this.commands.size,
-        pluginCount: this.plugins.size
+        pluginCount: this.plugins.size,
       });
     } catch (error) {
       this.emit('initialization-error', error);
@@ -99,7 +99,7 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
     const entry: CommandEntry = {
       ...metadata,
       loadTime: Date.now(),
-      usageCount: 0
+      usageCount: 0,
     };
 
     this.commands.set(metadata.config.name, entry);
@@ -122,7 +122,7 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
    */
   registerCommand(command: BaseCommand): void {
     this.register(command.metadata);
-    
+
     // Store the command instance for execution
     const entry = this.commands.get(command.metadata.config.name);
     if (entry) {
@@ -150,10 +150,10 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
     if (entry.command) {
       entry.command.dispose();
     }
-    
+
     this.commands.delete(name);
     this.emit('command-unregistered', { name });
-    
+
     return true;
   }
 
@@ -163,7 +163,7 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
   get(name: string): CommandMetadata | undefined {
     // Check direct name first
     let entry = this.commands.get(name);
-    
+
     // Check aliases if not found
     if (!entry) {
       const actualName = this.aliases.get(name);
@@ -194,15 +194,16 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
    * Get all registered commands metadata
    */
   list(): CommandMetadata[] {
-    return Array.from(this.commands.values())
-      .sort((a, b) => a.config.name.localeCompare(b.config.name));
+    return Array.from(this.commands.values()).sort((a, b) =>
+      a.config.name.localeCompare(b.config.name)
+    );
   }
 
   /**
    * Get commands by category
    */
   findByCategory(category: string): CommandMetadata[] {
-    return this.list().filter(cmd => cmd.config.category === category);
+    return this.list().filter((cmd) => cmd.config.category === category);
   }
 
   /**
@@ -210,11 +211,13 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
    */
   search(query: string): CommandMetadata[] {
     const lowerQuery = query.toLowerCase();
-    
-    return this.list().filter(cmd => {
-      return cmd.config.name.toLowerCase().includes(lowerQuery) ||
-             cmd.config.description.toLowerCase().includes(lowerQuery) ||
-             cmd.config.category?.toLowerCase().includes(lowerQuery);
+
+    return this.list().filter((cmd) => {
+      return (
+        cmd.config.name.toLowerCase().includes(lowerQuery) ||
+        cmd.config.description.toLowerCase().includes(lowerQuery) ||
+        cmd.config.category?.toLowerCase().includes(lowerQuery)
+      );
     });
   }
 
@@ -223,13 +226,13 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
    */
   async execute(name: string, context: CommandContext): Promise<CommandResult> {
     const entry = this.get(name) as CommandEntry;
-    
+
     if (!entry) {
       return {
         success: false,
         error: `Command '${name}' not found`,
         exitCode: 127,
-        executionTime: 0
+        executionTime: 0,
       };
     }
 
@@ -242,7 +245,7 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
     }
 
     this.emit('command-executing', { name, context });
-    
+
     try {
       let result: CommandResult;
 
@@ -260,12 +263,12 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
     } catch (error) {
       const commandError = error instanceof Error ? error : new Error(String(error));
       this.emit('command-error', { name, error: commandError });
-      
+
       return {
         success: false,
         error: commandError.message,
         exitCode: 1,
-        executionTime: 0
+        executionTime: 0,
       };
     }
   }
@@ -299,7 +302,7 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
       loadedCommands: 0,
       failedCommands: 0,
       loadTime: 0,
-      errors: []
+      errors: [],
     };
 
     for (const loadingPath of this.loadingPaths) {
@@ -308,7 +311,7 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
       } catch (error) {
         stats.errors.push({
           path: loadingPath,
-          error: error instanceof Error ? error : new Error(String(error))
+          error: error instanceof Error ? error : new Error(String(error)),
         });
         stats.failedCommands++;
       }
@@ -316,7 +319,7 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
 
     stats.loadTime = Date.now() - startTime;
     this.emit('commands-loaded', stats);
-    
+
     return stats;
   }
 
@@ -326,14 +329,14 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
   private async loadCommandsFromPath(path: string, stats: LoadingStats): Promise<void> {
     try {
       const pathStat = await stat(path);
-      
+
       if (pathStat.isDirectory()) {
         const files = await readdir(path);
-        
+
         for (const file of files) {
           const filePath = join(path, file);
           const fileExt = extname(file);
-          
+
           if (['.js', '.ts'].includes(fileExt)) {
             await this.loadCommandFromFile(filePath, stats);
           }
@@ -344,7 +347,7 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
     } catch (error) {
       stats.errors.push({
         path,
-        error: error instanceof Error ? error : new Error(String(error))
+        error: error instanceof Error ? error : new Error(String(error)),
       });
       stats.failedCommands++;
     }
@@ -356,16 +359,16 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
   private async loadCommandFromFile(filePath: string, stats: LoadingStats): Promise<void> {
     try {
       stats.totalCommands++;
-      
+
       // Dynamic import with proper error handling
       const module = await import(filePath);
-      
+
       // Look for command exports
       const commandClass = module.default || module.Command;
-      
+
       if (commandClass && typeof commandClass === 'function') {
         const command = new commandClass() as BaseCommand;
-        
+
         if (command instanceof BaseCommand) {
           this.registerCommand(command);
           stats.loadedCommands++;
@@ -379,7 +382,7 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
     } catch (error) {
       stats.errors.push({
         path: filePath,
-        error: error instanceof Error ? error : new Error(String(error))
+        error: error instanceof Error ? error : new Error(String(error)),
       });
       stats.failedCommands++;
       this.emit('command-load-error', { path: filePath, error });
@@ -410,14 +413,14 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
             return {
               success: true,
               message: `Dynamic command '${commandConfig.name}' executed`,
-              exitCode: 0
+              exitCode: 0,
             };
           },
           registeredAt: new Date(),
           available: true,
-          plugin: plugin.name
+          plugin: plugin.name,
         };
-        
+
         this.register(metadata);
       }
 
@@ -451,7 +454,7 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
 
       this.plugins.delete(name);
       this.emit('plugin-unregistered', { name });
-      
+
       return true;
     } catch (error) {
       this.emit('plugin-error', { name, error });
@@ -475,7 +478,7 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
     return Array.from(this.commands.entries()).map(([name, entry]) => ({
       name,
       usageCount: entry.usageCount,
-      lastUsed: entry.lastUsed
+      lastUsed: entry.lastUsed,
     }));
   }
 
@@ -495,7 +498,7 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
 
     this.aliases.clear();
     this.isInitialized = false;
-    
+
     this.emit('cleared');
   }
 
@@ -514,7 +517,7 @@ export class CommandRegistry extends EventEmitter implements ICommandRegistry {
       commandCount: this.commands.size,
       pluginCount: this.plugins.size,
       aliasCount: this.aliases.size,
-      loadingPaths: [...this.loadingPaths]
+      loadingPaths: [...this.loadingPaths],
     };
   }
 

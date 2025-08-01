@@ -1,4 +1,3 @@
-
 /**
  * Jest Setup File - TypeScript ESM Compatible
  *
@@ -48,22 +47,22 @@ function setupTestEnvironment() {
 function setupErrorHandling() {
   process.on('unhandledRejection', (reason, promise) => {
     // Only log in test environment if debugging is enabled
-  if(process.env.DEBUG_TESTS) {
+    if (process.env.DEBUG_TESTS) {
       console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  }
+    }
     // In test environment, we might want to fail the test
-  if(process.env.FAIL_ON_UNHANDLED_REJECTION) {
+    if (process.env.FAIL_ON_UNHANDLED_REJECTION) {
       throw new Error(`Unhandled Promise Rejection: ${String(reason)}`);
-  }
+    }
   });
   process.on('uncaughtException', (error) => {
-  if(process.env.DEBUG_TESTS) {
+    if (process.env.DEBUG_TESTS) {
       console.error('Uncaught Exception:', error);
-  }
+    }
     // In test environment, we might want to fail the test
-  if(process.env.FAIL_ON_UNCAUGHT_EXCEPTION) {
+    if (process.env.FAIL_ON_UNCAUGHT_EXCEPTION) {
       throw error;
-  }
+    }
   });
 }
 
@@ -75,7 +74,7 @@ function setupJestConfiguration() {
   // Set reasonable timeout for integration tests
   jest.setTimeout(30000);
   // Configure global test utilities if needed
-  if(typeof globalThis !== 'undefined') {
+  if (typeof globalThis !== 'undefined') {
     // Add any global test utilities here
     (globalThis as unknown as { testUtils?: any }).testUtils = {
       // Add shared test utilities

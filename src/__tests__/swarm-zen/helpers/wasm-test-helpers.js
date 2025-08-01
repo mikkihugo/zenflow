@@ -123,17 +123,15 @@ export function createWasmModuleSpy() {
     module: mockModule,
     getInteractions: () => [...interactions],
     verifyInteractionSequence: (expectedSequence) => {
-      const actualSequence = interactions.map(i => i.method);
-      return expectedSequence.every((method, index) =>
-        actualSequence[index] === method,
-      );
+      const actualSequence = interactions.map((i) => i.method);
+      return expectedSequence.every((method, index) => actualSequence[index] === method);
     },
     verifyNoUnexpectedInteractions: (allowedMethods) => {
-      return interactions.every(i => allowedMethods.includes(i.method));
+      return interactions.every((i) => allowedMethods.includes(i.method));
     },
     reset: () => {
       interactions.length = 0;
-      Object.values(mockModule).forEach(fn => {
+      Object.values(mockModule).forEach((fn) => {
         if (fn.mockClear) fn.mockClear();
       });
     },
@@ -173,23 +171,19 @@ export class WasmModuleTestDouble {
 
   returns(value) {
     const lastExpectation = this.expectations[this.expectations.length - 1];
-    this.stubs.set(
-      `${lastExpectation.method}-${JSON.stringify(lastExpectation.args)}`,
-      value,
-    );
+    this.stubs.set(`${lastExpectation.method}-${JSON.stringify(lastExpectation.args)}`, value);
     return this;
   }
 
   createModule() {
-    const testDouble = this;
     const methods = ['init', 'createSwarm', 'addAgent', 'assignTask', 'getState', 'destroy'];
 
     const module = {};
-    methods.forEach(method => {
+    methods.forEach((method) => {
       module[method] = jest.fn((...args) => {
-        testDouble.actualCalls.push({ method, args });
+        this.actualCalls.push({ method, args });
         const key = `${method}-${JSON.stringify(args)}`;
-        return testDouble.stubs.get(key) ?? undefined;
+        return this.stubs.get(key) ?? undefined;
       });
     });
 
@@ -197,18 +191,19 @@ export class WasmModuleTestDouble {
   }
 
   verify() {
-    const unmetExpectations = this.expectations.filter(expectation => {
-      return !this.actualCalls.some(call =>
-        call.method === expectation.method &&
-        JSON.stringify(call.args) === JSON.stringify(expectation.args),
+    const unmetExpectations = this.expectations.filter((expectation) => {
+      return !this.actualCalls.some(
+        (call) =>
+          call.method === expectation.method &&
+          JSON.stringify(call.args) === JSON.stringify(expectation.args)
       );
     });
 
     if (unmetExpectations.length > 0) {
       throw new Error(
-        `Unmet expectations:\n${unmetExpectations.map(e =>
-          `  - ${e.method}(${e.args.join(', ')})`,
-        ).join('\n')}`,
+        `Unmet expectations:\n${unmetExpectations
+          .map((e) => `  - ${e.method}(${e.args.join(', ')})`)
+          .join('\n')}`
       );
     }
   }

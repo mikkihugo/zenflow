@@ -1,6 +1,6 @@
 /**
  * Status Command Implementation
- * 
+ *
  * Shows swarm status, configuration, and active agents
  */
 
@@ -52,45 +52,45 @@ export class StatusCommand extends BaseCommand {
         'claude-flow status',
         'claude-flow status --format json',
         'claude-flow status --detailed',
-        'claude-flow status --watch'
+        'claude-flow status --watch',
       ],
       flags: {
         format: {
           type: 'string',
           description: 'Output format (table, json, yaml)',
-          default: 'table'
+          default: 'table',
         },
         detailed: {
           type: 'boolean',
           description: 'Show detailed status information',
-          default: false
+          default: false,
         },
         watch: {
           type: 'boolean',
           description: 'Watch status changes in real-time',
-          default: false
+          default: false,
         },
         'show-config': {
           type: 'boolean',
           description: 'Include configuration in output',
-          default: false
+          default: false,
         },
         'show-memory': {
           type: 'boolean',
           description: 'Include memory statistics',
-          default: false
-        }
-      }
+          default: false,
+        },
+      },
     });
   }
 
   protected async run(context: CommandContext): Promise<CommandResult> {
     try {
-      const format = context.flags.format as string || 'table';
-      const detailed = context.flags.detailed as boolean || false;
-      const watch = context.flags.watch as boolean || false;
-      const showConfig = context.flags['show-config'] as boolean || false;
-      const showMemory = context.flags['show-memory'] as boolean || false;
+      const format = (context.flags.format as string) || 'table';
+      const detailed = (context.flags.detailed as boolean) || false;
+      const watch = (context.flags.watch as boolean) || false;
+      const showConfig = (context.flags['show-config'] as boolean) || false;
+      const showMemory = (context.flags['show-memory'] as boolean) || false;
 
       if (watch) {
         return await this.watchStatus(format, detailed, showConfig, showMemory);
@@ -103,21 +103,25 @@ export class StatusCommand extends BaseCommand {
         success: true,
         exitCode: 0,
         message: output,
-        data: status
+        data: status,
       };
     } catch (error) {
       return {
         success: false,
         error: `Failed to get status: ${error instanceof Error ? error.message : String(error)}`,
-        exitCode: 1
+        exitCode: 1,
       };
     }
   }
 
-  private async getSwarmStatus(detailed: boolean, showConfig: boolean, showMemory: boolean): Promise<any> {
+  private async getSwarmStatus(
+    detailed: boolean,
+    showConfig: boolean,
+    showMemory: boolean
+  ): Promise<any> {
     // This would integrate with the actual swarm system
     // For now, we'll return mock data to demonstrate the structure
-    
+
     const baseStatus = {
       swarm: {
         active: true,
@@ -129,7 +133,7 @@ export class StatusCommand extends BaseCommand {
             status: 'active' as const,
             uptime: 1800000, // 30 minutes in ms
             tasksCompleted: 15,
-            lastActivity: new Date(Date.now() - 30000).toISOString()
+            lastActivity: new Date(Date.now() - 30000).toISOString(),
           },
           {
             id: 'agent-002',
@@ -137,7 +141,7 @@ export class StatusCommand extends BaseCommand {
             status: 'idle' as const,
             uptime: 1680000, // 28 minutes in ms
             tasksCompleted: 8,
-            lastActivity: new Date(Date.now() - 300000).toISOString()
+            lastActivity: new Date(Date.now() - 300000).toISOString(),
           },
           {
             id: 'agent-003',
@@ -145,16 +149,16 @@ export class StatusCommand extends BaseCommand {
             status: 'busy' as const,
             uptime: 900000, // 15 minutes in ms
             tasksCompleted: 22,
-            lastActivity: new Date(Date.now() - 5000).toISOString()
-          }
+            lastActivity: new Date(Date.now() - 5000).toISOString(),
+          },
         ],
         performance: {
           totalTasks: 67,
           completedTasks: 45,
           failedTasks: 2,
           averageResponseTime: 1250,
-          currentLoad: 0.65
-        }
+          currentLoad: 0.65,
+        },
       },
       system: {
         version: '2.0.0',
@@ -163,8 +167,8 @@ export class StatusCommand extends BaseCommand {
         nodeVersion: process.version,
         platform: process.platform,
         arch: process.arch,
-        memoryUsage: process.memoryUsage()
-      }
+        memoryUsage: process.memoryUsage(),
+      },
     };
 
     if (showMemory) {
@@ -174,7 +178,7 @@ export class StatusCommand extends BaseCommand {
         size: '2.4 MB',
         entries: 156,
         connections: 3,
-        queries: 1247
+        queries: 1247,
       };
     }
 
@@ -183,35 +187,35 @@ export class StatusCommand extends BaseCommand {
         swarm: {
           topology: 'mesh',
           maxAgents: 8,
-          strategy: 'balanced'
+          strategy: 'balanced',
         },
         neural: {
           enabled: true,
           models: ['claude-3-haiku', 'claude-3-sonnet'],
-          defaultModel: 'claude-3-haiku'
+          defaultModel: 'claude-3-haiku',
         },
         memory: {
           provider: 'sqlite',
           persistent: true,
-          maxSize: '100MB'
-        }
+          maxSize: '100MB',
+        },
       };
     }
 
     if (detailed) {
       // Add detailed information for each agent
-      baseStatus.swarm.agents = baseStatus.swarm.agents.map(agent => ({
+      baseStatus.swarm.agents = baseStatus.swarm.agents.map((agent) => ({
         ...agent,
         memory: {
           heap: Math.floor(Math.random() * 50) + 10,
-          external: Math.floor(Math.random() * 20) + 5
+          external: Math.floor(Math.random() * 20) + 5,
         },
         cpu: Math.floor(Math.random() * 30) + 5,
         tasks: {
           queued: Math.floor(Math.random() * 5),
           running: agent.status === 'busy' ? 1 : 0,
-          completed: agent.tasksCompleted
-        }
+          completed: agent.tasksCompleted,
+        },
       }));
     }
 
@@ -222,10 +226,10 @@ export class StatusCommand extends BaseCommand {
     switch (format.toLowerCase()) {
       case 'json':
         return JSON.stringify(status, null, 2);
-      
+
       case 'yaml':
         return this.toYaml(status);
-      
+
       case 'table':
       default:
         return this.formatAsTable(status);
@@ -234,7 +238,7 @@ export class StatusCommand extends BaseCommand {
 
   private formatAsTable(status: any): string {
     const lines: string[] = [];
-    
+
     // Header
     lines.push('Claude Flow Status');
     lines.push('='.repeat(50));
@@ -260,7 +264,9 @@ export class StatusCommand extends BaseCommand {
     const perf = status.swarm.performance;
     lines.push('Performance:');
     lines.push(`  Total Tasks: ${perf.totalTasks}`);
-    lines.push(`  Completed: ${perf.completedTasks} (${Math.round(perf.completedTasks / perf.totalTasks * 100)}%)`);
+    lines.push(
+      `  Completed: ${perf.completedTasks} (${Math.round((perf.completedTasks / perf.totalTasks) * 100)}%)`
+    );
     lines.push(`  Failed: ${perf.failedTasks}`);
     lines.push(`  Avg Response: ${perf.averageResponseTime}ms`);
     lines.push(`  Current Load: ${Math.round(perf.currentLoad * 100)}%`);
@@ -271,25 +277,26 @@ export class StatusCommand extends BaseCommand {
     lines.push('┌────────────┬────────────┬─────────┬─────────┬─────────────┬──────────────┐');
     lines.push('│ Agent ID   │ Type       │ Status  │ Tasks   │ Uptime      │ Last Active  │');
     lines.push('├────────────┼────────────┼─────────┼─────────┼─────────────┼──────────────┤');
-    
+
     for (const agent of status.swarm.agents) {
-      const statusEmoji = {
-        active: '🟢',
-        idle: '🟡',
-        busy: '🔵',
-        error: '🔴'
-      }[agent.status] || '⚪';
-      
+      const statusEmoji =
+        {
+          active: '🟢',
+          idle: '🟡',
+          busy: '🔵',
+          error: '🔴',
+        }[agent.status] || '⚪';
+
       const id = agent.id.padEnd(10);
       const type = agent.type.padEnd(10);
       const statusText = `${statusEmoji} ${agent.status}`.padEnd(7);
       const tasks = agent.tasksCompleted.toString().padEnd(7);
       const uptime = this.formatDuration(agent.uptime).padEnd(11);
       const lastActive = this.formatTime(agent.lastActivity).padEnd(12);
-      
+
       lines.push(`│ ${id} │ ${type} │ ${statusText} │ ${tasks} │ ${uptime} │ ${lastActive} │`);
     }
-    
+
     lines.push('└────────────┴────────────┴─────────┴─────────┴─────────────┴──────────────┘');
 
     // Memory information (if requested)
@@ -315,7 +322,12 @@ export class StatusCommand extends BaseCommand {
     return lines.join('\n');
   }
 
-  private async watchStatus(format: string, detailed: boolean, showConfig: boolean, showMemory: boolean): Promise<CommandResult> {
+  private async watchStatus(
+    format: string,
+    detailed: boolean,
+    showConfig: boolean,
+    showMemory: boolean
+  ): Promise<CommandResult> {
     console.log('Watching status (Press Ctrl+C to exit)...\n');
 
     const updateInterval = 2000; // 2 seconds
@@ -331,32 +343,34 @@ export class StatusCommand extends BaseCommand {
     while (running) {
       // Clear console
       process.stdout.write('\x1B[2J\x1B[0f');
-      
+
       try {
         const status = await this.getSwarmStatus(detailed, showConfig, showMemory);
         const output = this.formatOutput(status, format);
-        
+
         console.log(output);
         console.log(`\nLast updated: ${new Date().toLocaleTimeString()}`);
-        
-        await new Promise(resolve => setTimeout(resolve, updateInterval));
+
+        await new Promise((resolve) => setTimeout(resolve, updateInterval));
       } catch (error) {
-        console.error(`Error updating status: ${error instanceof Error ? error.message : String(error)}`);
-        await new Promise(resolve => setTimeout(resolve, updateInterval));
+        console.error(
+          `Error updating status: ${error instanceof Error ? error.message : String(error)}`
+        );
+        await new Promise((resolve) => setTimeout(resolve, updateInterval));
       }
     }
 
     return {
       success: true,
       exitCode: 0,
-      message: 'Status watching completed'
+      message: 'Status watching completed',
     };
   }
 
   private toYaml(obj: any, indent = 0): string {
     const spaces = '  '.repeat(indent);
     let result = '';
-    
+
     for (const [key, value] of Object.entries(obj)) {
       if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
         result += `${spaces}${key}:\n`;
@@ -375,7 +389,7 @@ export class StatusCommand extends BaseCommand {
         result += `${spaces}${key}: ${value}\n`;
       }
     }
-    
+
     return result;
   }
 
@@ -383,7 +397,7 @@ export class StatusCommand extends BaseCommand {
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
-    
+
     if (hours > 0) {
       return `${hours}h ${minutes % 60}m`;
     } else if (minutes > 0) {
@@ -397,10 +411,12 @@ export class StatusCommand extends BaseCommand {
     const date = new Date(timestamp);
     const now = new Date();
     const diff = now.getTime() - date.getTime();
-    
-    if (diff < 60000) { // Less than 1 minute
+
+    if (diff < 60000) {
+      // Less than 1 minute
       return 'Just now';
-    } else if (diff < 3600000) { // Less than 1 hour
+    } else if (diff < 3600000) {
+      // Less than 1 hour
       return `${Math.floor(diff / 60000)}m ago`;
     } else {
       return date.toLocaleTimeString();

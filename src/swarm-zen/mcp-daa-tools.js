@@ -27,11 +27,7 @@ export class DAA_MCPTools {
     try {
       await this.ensureInitialized();
 
-      const {
-        enableLearning = true,
-        enableCoordination = true,
-        persistenceMode = 'auto',
-      } = params;
+      const { enableLearning = true, enableCoordination = true, persistenceMode = 'auto' } = params;
 
       const result = {
         success: true,
@@ -174,13 +170,7 @@ export class DAA_MCPTools {
     try {
       await this.ensureInitialized();
 
-      const {
-        agent_id,
-        agentId,
-        feedback,
-        performanceScore = 0.5,
-        suggestions = [],
-      } = params;
+      const { agent_id, agentId, feedback, performanceScore = 0.5, suggestions = [] } = params;
 
       const id = agent_id || agentId;
       if (!id) {
@@ -225,13 +215,7 @@ export class DAA_MCPTools {
     try {
       await this.ensureInitialized();
 
-      const {
-        id,
-        name,
-        steps = [],
-        dependencies = {},
-        strategy = 'parallel',
-      } = params;
+      const { id, name, steps = [], dependencies = {}, strategy = 'parallel' } = params;
 
       if (!id || !name) {
         throw new Error('Workflow ID and name are required');
@@ -270,16 +254,13 @@ export class DAA_MCPTools {
     try {
       await this.ensureInitialized();
 
-      const {
-        workflow_id,
-        workflowId,
-        agentIds = [],
-        parallelExecution = true,
-      } = params;
+      const { workflow_id, workflowId, agentIds = [], parallelExecution = true } = params;
 
       const id = workflow_id || workflowId;
       if (!id) {
-        throw new Error('Workflow ID is required. Provide either workflow_id or workflowId parameter.');
+        throw new Error(
+          'Workflow ID is required. Provide either workflow_id or workflowId parameter.'
+        );
       }
 
       const executionResult = await daaService.executeWorkflow(id, {
@@ -332,21 +313,21 @@ export class DAA_MCPTools {
       const targetIds = target_agents || targetAgentIds || [];
 
       if (!sourceId) {
-        throw new Error('Source agent ID is required. Provide either source_agent or sourceAgentId parameter.');
+        throw new Error(
+          'Source agent ID is required. Provide either source_agent or sourceAgentId parameter.'
+        );
       }
       if (!targetIds || targetIds.length === 0) {
-        throw new Error('Target agent IDs are required. Provide either target_agents or targetAgentIds parameter with at least one agent ID.');
+        throw new Error(
+          'Target agent IDs are required. Provide either target_agents or targetAgentIds parameter with at least one agent ID.'
+        );
       }
 
-      const sharingResults = await daaService.shareKnowledge(
-        sourceId,
-        targetIds,
-        {
-          domain: knowledgeDomain,
-          content: knowledgeContent,
-          timestamp: new Date().toISOString(),
-        },
-      );
+      const sharingResults = await daaService.shareKnowledge(sourceId, targetIds, {
+        domain: knowledgeDomain,
+        content: knowledgeContent,
+        timestamp: new Date().toISOString(),
+      });
 
       const result = {
         source_agent: sourceId,
@@ -427,13 +408,7 @@ export class DAA_MCPTools {
     try {
       await this.ensureInitialized();
 
-      const {
-        agent_id,
-        agentId,
-        pattern,
-        action,
-        analyze = false,
-      } = params;
+      const { agent_id, agentId, pattern, action, analyze = false } = params;
 
       const id = agent_id || agentId;
       const shouldAnalyze = action === 'analyze' || analyze;
@@ -476,7 +451,6 @@ export class DAA_MCPTools {
         this.mcpTools.recordToolMetrics('daa_cognitive_pattern', startTime, 'success');
       }
       return result;
-
     } catch (error) {
       if (this.mcpTools?.recordToolMetrics) {
         this.mcpTools.recordToolMetrics('daa_cognitive_pattern', startTime, 'error', error.message);
@@ -494,12 +468,7 @@ export class DAA_MCPTools {
     try {
       await this.ensureInitialized();
 
-      const {
-        sourceDomain,
-        targetDomain,
-        transferMode = 'adaptive',
-        agentIds = [],
-      } = params;
+      const { sourceDomain, targetDomain, transferMode = 'adaptive', agentIds = [] } = params;
 
       const metaLearningResult = await daaService.performMetaLearning({
         sourceDomain,
@@ -583,7 +552,12 @@ export class DAA_MCPTools {
       return result;
     } catch (error) {
       if (this.mcpTools?.recordToolMetrics) {
-        this.mcpTools.recordToolMetrics('daa_performance_metrics', startTime, 'error', error.message);
+        this.mcpTools.recordToolMetrics(
+          'daa_performance_metrics',
+          startTime,
+          'error',
+          error.message
+        );
       }
       throw error;
     }
@@ -602,7 +576,11 @@ export class DAA_MCPTools {
           properties: {
             enableLearning: { type: 'boolean', description: 'Enable autonomous learning' },
             enableCoordination: { type: 'boolean', description: 'Enable peer coordination' },
-            persistenceMode: { type: 'string', enum: ['auto', 'memory', 'disk'], description: 'Persistence mode' },
+            persistenceMode: {
+              type: 'string',
+              enum: ['auto', 'memory', 'disk'],
+              description: 'Persistence mode',
+            },
           },
         },
       },
@@ -613,8 +591,16 @@ export class DAA_MCPTools {
           type: 'object',
           properties: {
             id: { type: 'string', description: 'Unique agent identifier' },
-            capabilities: { type: 'array', items: { type: 'string' }, description: 'Agent capabilities' },
-            cognitivePattern: { type: 'string', enum: ['convergent', 'divergent', 'lateral', 'systems', 'critical', 'adaptive'], description: 'Cognitive thinking pattern' },
+            capabilities: {
+              type: 'array',
+              items: { type: 'string' },
+              description: 'Agent capabilities',
+            },
+            cognitivePattern: {
+              type: 'string',
+              enum: ['convergent', 'divergent', 'lateral', 'systems', 'critical', 'adaptive'],
+              description: 'Cognitive thinking pattern',
+            },
             learningRate: { type: 'number', description: 'Learning rate (0-1)' },
             enableMemory: { type: 'boolean', description: 'Enable persistent memory' },
           },
@@ -631,7 +617,11 @@ export class DAA_MCPTools {
             agentId: { type: 'string', description: 'Agent ID to adapt (legacy)' },
             feedback: { type: 'string', description: 'Feedback message' },
             performanceScore: { type: 'number', description: 'Performance score (0-1)' },
-            suggestions: { type: 'array', items: { type: 'string' }, description: 'Improvement suggestions' },
+            suggestions: {
+              type: 'array',
+              items: { type: 'string' },
+              description: 'Improvement suggestions',
+            },
           },
           required: ['agent_id'],
         },
@@ -646,7 +636,11 @@ export class DAA_MCPTools {
             name: { type: 'string', description: 'Workflow name' },
             steps: { type: 'array', description: 'Workflow steps' },
             dependencies: { type: 'object', description: 'Step dependencies' },
-            strategy: { type: 'string', enum: ['parallel', 'sequential', 'adaptive'], description: 'Execution strategy' },
+            strategy: {
+              type: 'string',
+              enum: ['parallel', 'sequential', 'adaptive'],
+              description: 'Execution strategy',
+            },
           },
           required: ['id', 'name'],
         },
@@ -673,8 +667,16 @@ export class DAA_MCPTools {
           properties: {
             source_agent: { type: 'string', description: 'Source agent ID' },
             sourceAgentId: { type: 'string', description: 'Source agent ID (legacy)' },
-            target_agents: { type: 'array', items: { type: 'string' }, description: 'Target agent IDs' },
-            targetAgentIds: { type: 'array', items: { type: 'string' }, description: 'Target agent IDs (legacy)' },
+            target_agents: {
+              type: 'array',
+              items: { type: 'string' },
+              description: 'Target agent IDs',
+            },
+            targetAgentIds: {
+              type: 'array',
+              items: { type: 'string' },
+              description: 'Target agent IDs (legacy)',
+            },
             knowledgeDomain: { type: 'string', description: 'Knowledge domain' },
             knowledgeContent: { type: 'object', description: 'Knowledge to share' },
           },
@@ -700,8 +702,16 @@ export class DAA_MCPTools {
           properties: {
             agent_id: { type: 'string', description: 'Agent ID' },
             agentId: { type: 'string', description: 'Agent ID (legacy)' },
-            action: { type: 'string', enum: ['analyze', 'change'], description: 'Action to perform' },
-            pattern: { type: 'string', enum: ['convergent', 'divergent', 'lateral', 'systems', 'critical', 'adaptive'], description: 'New pattern to set' },
+            action: {
+              type: 'string',
+              enum: ['analyze', 'change'],
+              description: 'Action to perform',
+            },
+            pattern: {
+              type: 'string',
+              enum: ['convergent', 'divergent', 'lateral', 'systems', 'critical', 'adaptive'],
+              description: 'New pattern to set',
+            },
             analyze: { type: 'boolean', description: 'Analyze patterns instead of changing' },
           },
         },
@@ -714,8 +724,16 @@ export class DAA_MCPTools {
           properties: {
             sourceDomain: { type: 'string', description: 'Source knowledge domain' },
             targetDomain: { type: 'string', description: 'Target knowledge domain' },
-            transferMode: { type: 'string', enum: ['adaptive', 'direct', 'gradual'], description: 'Transfer mode' },
-            agentIds: { type: 'array', items: { type: 'string' }, description: 'Specific agents to update' },
+            transferMode: {
+              type: 'string',
+              enum: ['adaptive', 'direct', 'gradual'],
+              description: 'Transfer mode',
+            },
+            agentIds: {
+              type: 'array',
+              items: { type: 'string' },
+              description: 'Specific agents to update',
+            },
           },
         },
       },
@@ -725,7 +743,11 @@ export class DAA_MCPTools {
         inputSchema: {
           type: 'object',
           properties: {
-            category: { type: 'string', enum: ['all', 'system', 'performance', 'efficiency', 'neural'], description: 'Metrics category' },
+            category: {
+              type: 'string',
+              enum: ['all', 'system', 'performance', 'efficiency', 'neural'],
+              description: 'Metrics category',
+            },
             timeRange: { type: 'string', description: 'Time range (e.g., 1h, 24h, 7d)' },
           },
         },

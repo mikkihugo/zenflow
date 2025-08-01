@@ -1,10 +1,10 @@
 /**
  * Performance Measurement Utilities
- * 
+ *
  * Comprehensive performance testing for both London and Classical TDD
  */
 
-import type { PerformanceTestOptions, PerformanceMetrics } from './types';
+import type { PerformanceMetrics, PerformanceTestOptions } from './types';
 
 export class PerformanceMeasurement {
   private options: PerformanceTestOptions;
@@ -21,14 +21,14 @@ export class PerformanceMeasurement {
       maxExecutionTime: 1000,
       memoryThresholds: {
         heap: 50 * 1024 * 1024, // 50MB
-        external: 10 * 1024 * 1024 // 10MB
+        external: 10 * 1024 * 1024, // 10MB
       },
       statistics: {
         percentiles: [50, 95, 99],
         includeVariance: true,
-        includeDeviation: true
+        includeDeviation: true,
       },
-      ...options
+      ...options,
     };
   }
 
@@ -70,7 +70,8 @@ export class PerformanceMeasurement {
       memoryMeasurements.push({
         heap: endMemory.heapUsed - startMemory.heapUsed,
         external: endMemory.external - startMemory.external,
-        total: (endMemory.heapUsed + endMemory.external) - (startMemory.heapUsed + startMemory.external)
+        total:
+          endMemory.heapUsed + endMemory.external - (startMemory.heapUsed + startMemory.external),
       });
     }
 
@@ -116,7 +117,8 @@ export class PerformanceMeasurement {
       memoryMeasurements.push({
         heap: endMemory.heapUsed - startMemory.heapUsed,
         external: endMemory.external - startMemory.external,
-        total: (endMemory.heapUsed + endMemory.external) - (startMemory.heapUsed + startMemory.external)
+        total:
+          endMemory.heapUsed + endMemory.external - (startMemory.heapUsed + startMemory.external),
       });
     }
 
@@ -142,7 +144,7 @@ export class PerformanceMeasurement {
       const opStart = performance.now();
       await fn();
       const opEnd = performance.now();
-      
+
       operations.push(opEnd - opStart);
       operationCount++;
     }
@@ -155,10 +157,10 @@ export class PerformanceMeasurement {
       memoryUsage: {
         heap: 0,
         external: 0,
-        total: 0
+        total: 0,
       },
       throughput,
-      statistics: this.calculateStatistics(operations)
+      statistics: this.calculateStatistics(operations),
     };
 
     this.measurements.push({ name, metrics, timestamp: Date.now() });
@@ -176,17 +178,20 @@ export class PerformanceMeasurement {
 
     for (const benchmark of benchmarks) {
       const isAsync = benchmark.fn.constructor.name === 'AsyncFunction';
-      const metrics = isAsync 
+      const metrics = isAsync
         ? await this.measureAsync(benchmark.name, benchmark.fn as () => Promise<T>, options)
         : this.measureSync(benchmark.name, benchmark.fn as () => T, options);
-      
+
       results.push({ name: benchmark.name, metrics });
     }
 
     // Rank by execution time (lower is better)
     const ranked = results
-      .sort((a, b) => (a.metrics.statistics?.mean || a.metrics.executionTime) - 
-                      (b.metrics.statistics?.mean || b.metrics.executionTime))
+      .sort(
+        (a, b) =>
+          (a.metrics.statistics?.mean || a.metrics.executionTime) -
+          (b.metrics.statistics?.mean || b.metrics.executionTime)
+      )
       .map((result, index) => ({ ...result, ranking: index + 1 }));
 
     return ranked;
@@ -211,24 +216,24 @@ export class PerformanceMeasurement {
 
     await Promise.all(promises);
 
-    const successfulOps = operations.filter(op => op.success);
-    const failedOps = operations.filter(op => !op.success);
-    const durations = successfulOps.map(op => op.duration);
+    const successfulOps = operations.filter((op) => op.success);
+    const failedOps = operations.filter((op) => !op.success);
+    const durations = successfulOps.map((op) => op.duration);
 
     const metrics: PerformanceMetrics = {
       executionTime: Date.now() - startTime,
       memoryUsage: {
         heap: 0,
         external: 0,
-        total: 0
+        total: 0,
       },
-      throughput: (successfulOps.length / ((Date.now() - startTime) / 1000)),
+      throughput: successfulOps.length / ((Date.now() - startTime) / 1000),
       statistics: {
         ...this.calculateStatistics(durations),
         successRate: successfulOps.length / operations.length,
         errorRate: failedOps.length / operations.length,
-        totalOperations: operations.length
-      } as any
+        totalOperations: operations.length,
+      } as any,
     };
 
     this.measurements.push({ name, metrics, timestamp: Date.now() });
@@ -244,7 +249,7 @@ export class PerformanceMeasurement {
     iterations: number = 100
   ): Promise<{ hasLeak: boolean; memoryGrowth: number; measurements: number[] }> {
     const memoryMeasurements: number[] = [];
-    
+
     // Force initial garbage collection
     if (global.gc) {
       global.gc();
@@ -252,12 +257,12 @@ export class PerformanceMeasurement {
 
     for (let i = 0; i < iterations; i++) {
       await fn();
-      
+
       // Force garbage collection every 10 iterations
       if (i % 10 === 0 && global.gc) {
         global.gc();
       }
-      
+
       const memory = process.memoryUsage();
       memoryMeasurements.push(memory.heapUsed + memory.external);
     }
@@ -265,17 +270,17 @@ export class PerformanceMeasurement {
     // Calculate memory growth trend
     const firstQuarter = memoryMeasurements.slice(0, Math.floor(iterations / 4));
     const lastQuarter = memoryMeasurements.slice(-Math.floor(iterations / 4));
-    
+
     const firstAverage = firstQuarter.reduce((a, b) => a + b, 0) / firstQuarter.length;
     const lastAverage = lastQuarter.reduce((a, b) => a + b, 0) / lastQuarter.length;
-    
+
     const memoryGrowth = lastAverage - firstAverage;
-    const hasLeak = memoryGrowth > (firstAverage * 0.1); // 10% growth threshold
+    const hasLeak = memoryGrowth > firstAverage * 0.1; // 10% growth threshold
 
     return {
       hasLeak,
       memoryGrowth,
-      measurements: memoryMeasurements
+      measurements: memoryMeasurements,
     };
   }
 
@@ -306,11 +311,11 @@ export class PerformanceMeasurement {
     for (const measurement of this.measurements) {
       report += `Test: ${measurement.name}\n`;
       report += `Execution Time: ${measurement.metrics.executionTime.toFixed(2)}ms\n`;
-      
+
       if (measurement.metrics.throughput) {
         report += `Throughput: ${measurement.metrics.throughput.toFixed(2)} ops/sec\n`;
       }
-      
+
       if (measurement.metrics.statistics) {
         const stats = measurement.metrics.statistics;
         report += `Statistics:\n`;
@@ -318,16 +323,16 @@ export class PerformanceMeasurement {
         report += `  Median: ${stats.median.toFixed(2)}ms\n`;
         report += `  P95: ${stats.p95.toFixed(2)}ms\n`;
         report += `  P99: ${stats.p99.toFixed(2)}ms\n`;
-        
+
         if (stats.variance) {
           report += `  Variance: ${stats.variance.toFixed(2)}\n`;
         }
-        
+
         if (stats.standardDeviation) {
           report += `  Std Dev: ${stats.standardDeviation.toFixed(2)}\n`;
         }
       }
-      
+
       report += `Memory Usage:\n`;
       report += `  Heap: ${(measurement.metrics.memoryUsage.heap / 1024 / 1024).toFixed(2)}MB\n`;
       report += `  External: ${(measurement.metrics.memoryUsage.external / 1024 / 1024).toFixed(2)}MB\n`;
@@ -343,17 +348,18 @@ export class PerformanceMeasurement {
     memoryMeasurements: Array<{ heap: number; external: number; total: number }>
   ): PerformanceMetrics {
     const executionTime = timeMeasurements.reduce((a, b) => a + b, 0) / timeMeasurements.length;
-    
+
     const avgMemory = {
       heap: memoryMeasurements.reduce((sum, m) => sum + m.heap, 0) / memoryMeasurements.length,
-      external: memoryMeasurements.reduce((sum, m) => sum + m.external, 0) / memoryMeasurements.length,
-      total: memoryMeasurements.reduce((sum, m) => sum + m.total, 0) / memoryMeasurements.length
+      external:
+        memoryMeasurements.reduce((sum, m) => sum + m.external, 0) / memoryMeasurements.length,
+      total: memoryMeasurements.reduce((sum, m) => sum + m.total, 0) / memoryMeasurements.length,
     };
 
     return {
       executionTime,
       memoryUsage: avgMemory,
-      statistics: this.calculateStatistics(timeMeasurements)
+      statistics: this.calculateStatistics(timeMeasurements),
     };
   }
 
@@ -361,18 +367,20 @@ export class PerformanceMeasurement {
     const sorted = [...measurements].sort((a, b) => a - b);
     const sum = measurements.reduce((a, b) => a + b, 0);
     const mean = sum / measurements.length;
-    
-    const median = sorted.length % 2 === 0
-      ? (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2
-      : sorted[Math.floor(sorted.length / 2)];
+
+    const median =
+      sorted.length % 2 === 0
+        ? (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2
+        : sorted[Math.floor(sorted.length / 2)];
 
     const p95Index = Math.floor(sorted.length * 0.95);
     const p99Index = Math.floor(sorted.length * 0.99);
-    
+
     const p95 = sorted[p95Index];
     const p99 = sorted[p99Index];
-    
-    const variance = measurements.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / measurements.length;
+
+    const variance =
+      measurements.reduce((sum, val) => sum + (val - mean) ** 2, 0) / measurements.length;
     const standardDeviation = Math.sqrt(variance);
 
     return {
@@ -381,7 +389,7 @@ export class PerformanceMeasurement {
       p95,
       p99,
       variance,
-      standardDeviation
+      standardDeviation,
     };
   }
 
@@ -396,13 +404,13 @@ export class PerformanceMeasurement {
         await fn();
         operations.push({
           duration: performance.now() - start,
-          success: true
+          success: true,
         });
       } catch (error) {
         operations.push({
           duration: performance.now() - start,
           success: false,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         });
       }
     }

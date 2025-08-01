@@ -3,11 +3,11 @@
  * Tests the complete steering document workflow with real file system operations
  */
 
-import { MaestroOrchestrator } from '../../../maestro/maestro-orchestrator';
-import { readFile, writeFile, mkdir, access, unlink, rm } from 'fs/promises';
-import { join } from 'path';
 import { existsSync } from 'fs';
+import { access, mkdir, readFile, rm, unlink, writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
+import { join } from 'path';
+import { MaestroOrchestrator } from '../../../maestro/maestro-orchestrator';
 
 describe('Maestro Steering Workflow Integration', () => {
   let maestroOrchestrator: MaestroOrchestrator;
@@ -41,26 +41,26 @@ describe('Maestro Steering Workflow Integration', () => {
     mockConfig = { environment: 'test' };
     mockEventBus = {
       emit: jest.fn(),
-      on: jest.fn()
+      on: jest.fn(),
     };
     mockLogger = {
       info: jest.fn(),
       warn: jest.fn(),
       error: jest.fn(),
-      debug: jest.fn()
+      debug: jest.fn(),
     };
     mockMemoryManager = {
       get: jest.fn(),
       set: jest.fn(),
-      delete: jest.fn()
+      delete: jest.fn(),
     };
     mockAgentManager = {
       createAgent: jest.fn().mockResolvedValue('agent-123'),
       startAgent: jest.fn(),
-      stopAgent: jest.fn()
+      stopAgent: jest.fn(),
     };
     mockMainOrchestrator = {
-      assignTask: jest.fn().mockResolvedValue({ success: true })
+      assignTask: jest.fn().mockResolvedValue({ success: true }),
     };
 
     // Create orchestrator instance with test directory
@@ -73,7 +73,7 @@ describe('Maestro Steering Workflow Integration', () => {
       mockMainOrchestrator,
       {
         enableHiveMind: false,
-        steeringDirectory: join(testDirectory, 'steering')
+        steeringDirectory: join(testDirectory, 'steering'),
       }
     );
   });
@@ -85,7 +85,7 @@ describe('Maestro Steering Workflow Integration', () => {
         'Product vision and user experience guidelines',
         'Technology standards and development practices',
         'Project organization and file structure',
-        'Security guidelines and best practices'
+        'Security guidelines and best practices',
       ];
 
       // Create all steering documents
@@ -97,16 +97,21 @@ describe('Maestro Steering Workflow Integration', () => {
       for (const domain of domains) {
         const filePath = join(testDirectory, 'steering', `${domain}.md`);
         expect(existsSync(filePath)).toBe(true);
-        
+
         const content = await readFile(filePath, 'utf8');
-        expect(content).toContain(`# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document`);
+        expect(content).toContain(
+          `# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document`
+        );
         expect(content).toContain('## Guidelines');
       }
     });
 
     it('should integrate steering context with spec creation', async () => {
       // First create steering documents
-      await maestroOrchestrator.createSteeringDocument('product', 'User-centered design principles');
+      await maestroOrchestrator.createSteeringDocument(
+        'product',
+        'User-centered design principles'
+      );
       await maestroOrchestrator.createSteeringDocument('tech', 'Clean architecture standards');
 
       // Then create a spec (simulated)
@@ -170,7 +175,7 @@ ${steeringContext}
       const testDomains = [
         { domain: 'consistency-product', content: 'Product consistency guidelines' },
         { domain: 'consistency-tech', content: 'Technical consistency guidelines' },
-        { domain: 'consistency-custom', content: 'Custom domain consistency guidelines' }
+        { domain: 'consistency-custom', content: 'Custom domain consistency guidelines' },
       ];
 
       for (const testCase of testDomains) {
@@ -192,18 +197,18 @@ ${steeringContext}
         {
           domain: 'api-design',
           content: 'RESTful API design standards',
-          expectedKeywords: ['API', 'REST', 'endpoint']
+          expectedKeywords: ['API', 'REST', 'endpoint'],
         },
         {
           domain: 'testing',
           content: 'Comprehensive testing strategies',
-          expectedKeywords: ['test', 'coverage', 'automation']
+          expectedKeywords: ['test', 'coverage', 'automation'],
         },
         {
           domain: 'deployment',
           content: 'CI/CD and deployment practices',
-          expectedKeywords: ['deployment', 'CI/CD', 'pipeline']
-        }
+          expectedKeywords: ['deployment', 'CI/CD', 'pipeline'],
+        },
       ];
 
       for (const test of domainSpecificTests) {
@@ -214,10 +219,10 @@ ${steeringContext}
 
         // Verify domain-specific content
         expect(content).toContain(test.content);
-        
+
         // Check for domain-specific keywords in generated content
         const contentLower = content.toLowerCase();
-        const domainKeywordsFound = test.expectedKeywords.some(keyword => 
+        const domainKeywordsFound = test.expectedKeywords.some((keyword) =>
           contentLower.includes(keyword.toLowerCase())
         );
         expect(domainKeywordsFound).toBe(true);
@@ -225,7 +230,10 @@ ${steeringContext}
     });
 
     it('should maintain proper markdown formatting', async () => {
-      await maestroOrchestrator.createSteeringDocument('markdown-test', 'Testing markdown formatting');
+      await maestroOrchestrator.createSteeringDocument(
+        'markdown-test',
+        'Testing markdown formatting'
+      );
 
       const filePath = join(testDirectory, 'steering', 'markdown-test.md');
       const content = await readFile(filePath, 'utf8');
@@ -246,9 +254,11 @@ ${steeringContext}
         // These should either be sanitized or throw appropriate errors
         try {
           await maestroOrchestrator.createSteeringDocument(invalidDomain, 'test content');
-          
+
           // If it doesn't throw, verify the file was created with sanitized name
-          const sanitizedDomain = invalidDomain.replace(/[^a-zA-Z0-9-_]/g, '-').replace(/^-+|-+$/g, '');
+          const sanitizedDomain = invalidDomain
+            .replace(/[^a-zA-Z0-9-_]/g, '-')
+            .replace(/^-+|-+$/g, '');
           if (sanitizedDomain) {
             const filePath = join(testDirectory, 'steering', `${sanitizedDomain}.md`);
             const exists = existsSync(filePath);
@@ -263,9 +273,9 @@ ${steeringContext}
 
     it('should handle concurrent steering document creation', async () => {
       const concurrentDomains = Array.from({ length: 5 }, (_, i) => `concurrent-${i}`);
-      
+
       // Create all documents concurrently
-      const promises = concurrentDomains.map(domain => 
+      const promises = concurrentDomains.map((domain) =>
         maestroOrchestrator.createSteeringDocument(domain, `Content for ${domain}`)
       );
 
@@ -275,7 +285,7 @@ ${steeringContext}
       for (const domain of concurrentDomains) {
         const filePath = join(testDirectory, 'steering', `${domain}.md`);
         expect(existsSync(filePath)).toBe(true);
-        
+
         const content = await readFile(filePath, 'utf8');
         expect(content).toContain(`Content for ${domain}`);
       }
@@ -283,12 +293,12 @@ ${steeringContext}
 
     it('should handle large steering document content', async () => {
       const largeContent = 'Large content section. '.repeat(1000); // ~20KB content
-      
+
       await maestroOrchestrator.createSteeringDocument('large-content', largeContent);
 
       const filePath = join(testDirectory, 'steering', 'large-content.md');
       const content = await readFile(filePath, 'utf8');
-      
+
       expect(content).toContain(largeContent);
       expect(content.length).toBeGreaterThan(20000);
     });
@@ -297,19 +307,22 @@ ${steeringContext}
   describe('performance and scalability', () => {
     it('should create steering documents efficiently', async () => {
       const startTime = Date.now();
-      
+
       // Create 10 steering documents
       const domains = Array.from({ length: 10 }, (_, i) => `perf-test-${i}`);
       for (const domain of domains) {
-        await maestroOrchestrator.createSteeringDocument(domain, `Performance test content for ${domain}`);
+        await maestroOrchestrator.createSteeringDocument(
+          domain,
+          `Performance test content for ${domain}`
+        );
       }
-      
+
       const endTime = Date.now();
       const duration = endTime - startTime;
-      
+
       // Should complete within reasonable time (adjust threshold as needed)
       expect(duration).toBeLessThan(5000); // 5 seconds for 10 documents
-      
+
       // Verify all documents were created
       for (const domain of domains) {
         const filePath = join(testDirectory, 'steering', `${domain}.md`);
@@ -324,7 +337,10 @@ ${steeringContext}
 
       for (let i = 0; i < iterations; i++) {
         const startTime = Date.now();
-        await maestroOrchestrator.createSteeringDocument(`${domain}-${i}`, `Iteration ${i} content`);
+        await maestroOrchestrator.createSteeringDocument(
+          `${domain}-${i}`,
+          `Iteration ${i} content`
+        );
         const endTime = Date.now();
         durations.push(endTime - startTime);
       }
@@ -332,7 +348,7 @@ ${steeringContext}
       // Check performance consistency (no significant degradation)
       const averageDuration = durations.reduce((a, b) => a + b, 0) / durations.length;
       const maxDuration = Math.max(...durations);
-      
+
       // Max duration shouldn't be more than 3x average (adjust as needed)
       expect(maxDuration).toBeLessThan(averageDuration * 3);
     });
@@ -341,13 +357,13 @@ ${steeringContext}
   describe('agent integration workflow', () => {
     it('should track agent usage across steering document operations', async () => {
       const initialStats = maestroOrchestrator.getAgentPoolStats();
-      
+
       // Create multiple steering documents
       await maestroOrchestrator.createSteeringDocument('agent-test-1', 'Content 1');
       await maestroOrchestrator.createSteeringDocument('agent-test-2', 'Content 2');
-      
+
       const finalStats = maestroOrchestrator.getAgentPoolStats();
-      
+
       // Verify agent pool statistics are being tracked
       expect(finalStats).toBeDefined();
       expect(typeof finalStats.totalAgents).toBe('number');

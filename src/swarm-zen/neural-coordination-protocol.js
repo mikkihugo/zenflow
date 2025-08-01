@@ -406,7 +406,10 @@ class NeuralCoordinationProtocol {
       let score = 0;
 
       // Score based on agent count and scalability
-      const scalabilityScore = this.calculateScalabilityScore(agentCount, strategy.characteristics.scalability);
+      const scalabilityScore = this.calculateScalabilityScore(
+        agentCount,
+        strategy.characteristics.scalability
+      );
       score += scalabilityScore * 0.3;
 
       // Score based on trust level and robustness requirements
@@ -416,7 +419,10 @@ class NeuralCoordinationProtocol {
 
       // Score based on task complexity
       if (taskComplexity > 0.7) {
-        if (strategy.characteristics.decisionFlow === 'lateral' || strategy.characteristics.decisionFlow === 'emergent') {
+        if (
+          strategy.characteristics.decisionFlow === 'lateral' ||
+          strategy.characteristics.decisionFlow === 'emergent'
+        ) {
           score += 0.2;
         }
       } else {
@@ -431,7 +437,10 @@ class NeuralCoordinationProtocol {
       }
 
       // Performance-based preferences
-      if (session.strategy === 'parallel' && strategy.characteristics.communicationPattern === 'mesh') {
+      if (
+        session.strategy === 'parallel' &&
+        strategy.characteristics.communicationPattern === 'mesh'
+      ) {
         score += 0.15;
       }
 
@@ -536,7 +545,6 @@ class NeuralCoordinationProtocol {
       return this.consensusProtocols.get('gossip');
     }
     return this.consensusProtocols.get('proof_of_stake');
-
   }
 
   /**
@@ -747,7 +755,10 @@ class NeuralCoordinationProtocol {
 
       // Apply consensus if required
       if (coordinationSession.consensusProtocol) {
-        const consensusResult = await this.executeConsensusProtocol(coordinationSession, coordinationResult);
+        const consensusResult = await this.executeConsensusProtocol(
+          coordinationSession,
+          coordinationResult
+        );
         coordinationResult.consensus = consensusResult;
       }
 
@@ -760,7 +771,6 @@ class NeuralCoordinationProtocol {
       coordinationSession.coordinationState = 'completed';
 
       return coordinationResult;
-
     } catch (error) {
       coordinationSession.coordinationState = 'error';
       console.error(`Coordination failed for session ${session.id}:`, error);
@@ -996,7 +1006,7 @@ class NeuralCoordinationProtocol {
         agentId,
         currentPolicy,
         sharedReward,
-        session,
+        session
       );
       agentPolicies.set(agentId, updatedPolicy);
     }
@@ -1095,7 +1105,8 @@ class NeuralCoordinationProtocol {
         metrics.consensusParticipation++;
         if (result.success) {
           const currentSuccess = metrics.coordinationSuccessRate * metrics.consensusParticipation;
-          metrics.coordinationSuccessRate = (currentSuccess + 1) / (metrics.consensusParticipation + 1);
+          metrics.coordinationSuccessRate =
+            (currentSuccess + 1) / (metrics.consensusParticipation + 1);
         } else {
           const currentSuccess = metrics.coordinationSuccessRate * metrics.consensusParticipation;
           metrics.coordinationSuccessRate = currentSuccess / (metrics.consensusParticipation + 1);
@@ -1190,7 +1201,7 @@ class NeuralCoordinationProtocol {
     const agreements = new Map();
 
     for (const [agentId, agentNegotiations] of negotiations.entries()) {
-      const agentAgreements = agentNegotiations.filter(n => n.outcome === 'agreement');
+      const agentAgreements = agentNegotiations.filter((n) => n.outcome === 'agreement');
       agreements.set(agentId, agentAgreements);
     }
 
@@ -1248,7 +1259,7 @@ class NeuralCoordinationProtocol {
       bids.set(agentId, { agentId, bid, task: task.id });
     }
 
-    const winningBid = Math.max(...bids.values().map(b => b.bid));
+    const winningBid = Math.max(...bids.values().map((b) => b.bid));
     const winner = Array.from(bids.entries()).find(([id, bid]) => bid.bid === winningBid)?.[0];
 
     return { task, bids, winner, winningBid };
@@ -1336,7 +1347,7 @@ class NeuralCoordinationProtocol {
 
   async runByzantineConsensus(decisions, session) {
     // Simplified Byzantine consensus
-    const values = Array.from(decisions.values()).map(d => d.value);
+    const values = Array.from(decisions.values()).map((d) => d.value);
     const median = values.sort()[Math.floor(values.length / 2)];
     return { consensusValue: median, participants: decisions.size };
   }

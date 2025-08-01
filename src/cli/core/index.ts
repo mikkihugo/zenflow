@@ -1,42 +1,37 @@
 /**
  * CLI Core Module
- * 
+ *
  * This module re-exports all core CLI components for convenient importing.
  * Provides the foundation for the command-line interface.
  */
 
-// Core application components
-export { CliApp } from './app';
-export { CommandRegistry } from './command-registry';
-export { BaseCommand } from './base-command';
-export { ErrorHandler } from './error-handler';
-export { ConfigLoader } from './config-loader';
-
 // Re-export commonly used types from CLI types
 export type {
+  AsyncResult,
+  CliConfig,
   CommandConfig,
   CommandContext,
-  CommandResult,
   CommandHandler,
   CommandMetadata,
-  CommandValidationResult,
   CommandRegistry as ICommandRegistry,
-  CliConfig,
+  CommandResult,
+  CommandValidationResult,
   Result,
-  AsyncResult
 } from '../types/index';
-
 // Re-export core interfaces and types
 export type { CliAppOptions } from './app';
+// Core application components
+export { CliApp } from './app';
+export { BaseCommand } from './base-command';
 export type { CommandPlugin } from './command-registry';
-export type { 
-  ErrorInfo, 
-  ErrorHandlerConfig 
-} from './error-handler';
-export type { 
-  ConfigLoadOptions, 
-  ConfigEntry 
+export { CommandRegistry } from './command-registry';
+export type {
+  ConfigEntry,
+  ConfigLoadOptions,
 } from './config-loader';
-
-export { ErrorSeverity, ErrorCategory } from './error-handler';
-export { ConfigSource } from './config-loader';
+export { ConfigLoader, ConfigSource } from './config-loader';
+export type {
+  ErrorHandlerConfig,
+  ErrorInfo,
+} from './error-handler';
+export { ErrorCategory, ErrorHandler, ErrorSeverity } from './error-handler';

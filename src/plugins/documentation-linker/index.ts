@@ -4,7 +4,7 @@
  */
 
 import { BasePlugin } from '../base-plugin.js';
-import type { PluginManifest, PluginConfig, PluginContext } from '../types.js';
+import type { PluginConfig, PluginContext, PluginManifest } from '../types.js';
 
 export class DocumentationLinkerPlugin extends BasePlugin {
   private linkMap = new Map();
@@ -34,7 +34,7 @@ export class DocumentationLinkerPlugin extends BasePlugin {
   private async loadDocumentationIndex(): Promise<void> {
     // Load documentation index from configured sources
     const sources = this.config.settings?.documentationSources || ['./docs', './README.md'];
-    
+
     for (const source of sources as string[]) {
       try {
         await this.indexDocumentationSource(source);
@@ -52,14 +52,14 @@ export class DocumentationLinkerPlugin extends BasePlugin {
       title: 'Getting Started',
       path: './docs/getting-started.md',
       keywords: ['setup', 'installation', 'quickstart'],
-      sections: ['Prerequisites', 'Installation', 'Configuration']
+      sections: ['Prerequisites', 'Installation', 'Configuration'],
     });
 
     this.documentationCache.set('api-reference', {
       title: 'API Reference',
       path: './docs/api.md',
       keywords: ['api', 'methods', 'functions', 'classes'],
-      sections: ['Core API', 'Plugin API', 'Utilities']
+      sections: ['Core API', 'Plugin API', 'Utilities'],
     });
   }
 
@@ -82,22 +82,22 @@ export class DocumentationLinkerPlugin extends BasePlugin {
       totalFiles: codeFiles.length,
       totalLinks: links.length,
       links,
-      linksByType: this.groupLinksByType(links)
+      linksByType: this.groupLinksByType(links),
     };
   }
 
   private async analyzeFileForLinks(file: string): Promise<any[]> {
     const links: any[] = [];
-    
+
     // Mock file content analysis
     const content = await this.readFile(file);
-    
+
     // Find TODO comments that could link to documentation
     const todoMatches = content.matchAll(/\/\/ TODO: (.*)/g);
     for (const match of todoMatches) {
       const todoText = match[1];
       const relatedDocs = this.findRelatedDocumentation(todoText);
-      
+
       if (relatedDocs.length > 0) {
         links.push({
           type: 'todo-to-docs',
@@ -105,7 +105,7 @@ export class DocumentationLinkerPlugin extends BasePlugin {
           line: this.getLineNumber(content, match.index!),
           text: todoText,
           suggestedLinks: relatedDocs,
-          confidence: this.calculateLinkConfidence(todoText, relatedDocs)
+          confidence: this.calculateLinkConfidence(todoText, relatedDocs),
         });
       }
     }
@@ -115,7 +115,7 @@ export class DocumentationLinkerPlugin extends BasePlugin {
     for (const match of commentMatches) {
       const comment = match[1];
       const relatedDocs = this.findRelatedDocumentation(comment);
-      
+
       if (relatedDocs.length > 0) {
         links.push({
           type: 'comment-enhancement',
@@ -123,7 +123,7 @@ export class DocumentationLinkerPlugin extends BasePlugin {
           line: this.getLineNumber(content, match.index!),
           existingComment: comment.trim(),
           suggestedLinks: relatedDocs,
-          confidence: this.calculateLinkConfidence(comment, relatedDocs)
+          confidence: this.calculateLinkConfidence(comment, relatedDocs),
         });
       }
     }
@@ -177,9 +177,9 @@ class App {
           title: (doc as any).title,
           path: (doc as any).path,
           score,
-          relevantSections: (doc as any).sections.filter((s: string) => 
+          relevantSections: (doc as any).sections.filter((s: string) =>
             lowerText.includes(s.toLowerCase())
-          )
+          ),
         });
       }
     }
@@ -189,17 +189,17 @@ class App {
 
   private calculateLinkConfidence(text: string, relatedDocs: any[]): number {
     if (relatedDocs.length === 0) return 0;
-    
-    const maxScore = Math.max(...relatedDocs.map(d => d.score));
+
+    const maxScore = Math.max(...relatedDocs.map((d) => d.score));
     const textLength = text.length;
-    
+
     // Higher confidence for shorter, more specific text with high-scoring matches
     let confidence = Math.min(maxScore / 5, 1) * 100;
-    
+
     // Adjust for text specificity
     if (textLength < 50) confidence *= 1.2;
     else if (textLength > 200) confidence *= 0.8;
-    
+
     return Math.round(Math.min(confidence, 100));
   }
 
@@ -219,9 +219,9 @@ class App {
    */
   async generateCrossReferences(): Promise<string> {
     const links = Array.from(this.linkMap.values()).flat();
-    
+
     let crossRef = '# Cross-Reference Documentation\n\n';
-    
+
     // Group by documentation source
     const bySource = new Map();
     for (const link of links) {
@@ -233,7 +233,7 @@ class App {
           file: link.file,
           line: link.line,
           type: link.type,
-          text: link.text || link.existingComment
+          text: link.text || link.existingComment,
         });
       }
     }
@@ -241,7 +241,7 @@ class App {
     for (const [docPath, references] of bySource) {
       crossRef += `## ${docPath}\n\n`;
       crossRef += 'Referenced by:\n\n';
-      
+
       for (const ref of references) {
         crossRef += `- **${ref.file}:${ref.line}** (${ref.type})\n`;
         crossRef += `  _${ref.text.substring(0, 100)}${ref.text.length > 100 ? '...' : ''}_\n\n`;
@@ -262,8 +262,8 @@ class App {
         'automatic-link-detection',
         'confidence-scoring',
         'cross-reference-generation',
-        'keyword-matching'
-      ]
+        'keyword-matching',
+      ],
     };
   }
 

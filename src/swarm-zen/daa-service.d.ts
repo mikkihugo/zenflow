@@ -58,7 +58,15 @@ export interface EnvironmentState {
 
 export interface Action {
   id: string;
-  action_type: 'Compute' | 'Communicate' | 'Allocate' | 'Learn' | 'Monitor' | 'Heal' | 'Coordinate' | 'Plan';
+  action_type:
+    | 'Compute'
+    | 'Communicate'
+    | 'Allocate'
+    | 'Learn'
+    | 'Monitor'
+    | 'Heal'
+    | 'Coordinate'
+    | 'Plan';
   cost: number;
   expected_reward: number;
   risk: number;
@@ -191,7 +199,7 @@ export interface BatchResult<T> {
 
 // WASM Type Definitions
 export interface WasmAutonomousAgent {
-  new(id: string): WasmAutonomousAgent;
+  new (id: string): WasmAutonomousAgent;
   id: string;
   autonomy_level: number;
   learning_rate: number;
@@ -207,7 +215,7 @@ export interface WasmAutonomousAgent {
 }
 
 export interface WasmCoordinator {
-  new(): WasmCoordinator;
+  new (): WasmCoordinator;
   add_agent(agent: WasmAutonomousAgent): void;
   remove_agent(agent_id: string): boolean;
   agent_count(): number;
@@ -220,7 +228,7 @@ export interface WasmCoordinator {
 }
 
 export interface WasmResourceManager {
-  new(max_memory_mb: number): WasmResourceManager;
+  new (max_memory_mb: number): WasmResourceManager;
   allocate_memory(size_mb: number): boolean;
   deallocate_memory(size_mb: number): boolean;
   get_memory_usage(): number;
@@ -250,9 +258,20 @@ export interface DAAServiceEvents {
   initialized: () => void;
   agentCreated: (data: { agentId: string; capabilities: string[] }) => void;
   agentDestroyed: (data: { agentId: string }) => void;
-  decisionMade: (data: { agentId: string; decision: any; latency: number; withinThreshold: boolean }) => void;
+  decisionMade: (data: {
+    agentId: string;
+    decision: any;
+    latency: number;
+    withinThreshold: boolean;
+  }) => void;
   workflowCreated: (data: { workflowId: string; steps: string[]; dependencies: any }) => void;
-  workflowStepCompleted: (data: { workflowId: string; stepId: string; agentIds: string[]; duration: number; result: any }) => void;
+  workflowStepCompleted: (data: {
+    workflowId: string;
+    stepId: string;
+    agentIds: string[];
+    duration: number;
+    result: any;
+  }) => void;
   statesSynchronized: (data: { agentIds: string[]; duration: number }) => void;
   resourcesOptimized: (data: { result: any }) => void;
   cleanup: (data: any) => void;
@@ -260,37 +279,44 @@ export interface DAAServiceEvents {
 
 export declare class DAAService extends EventEmitter {
   constructor();
-  
+
   // Lifecycle
   initialize(): Promise<void>;
   cleanup(): Promise<void>;
-  
+
   // Agent management
   createAgent(id: string, capabilities?: string[]): Promise<Agent>;
   destroyAgent(id: string): Promise<boolean>;
   batchCreateAgents(configs: BatchCreateConfig[]): Promise<BatchResult<BatchCreateConfig>[]>;
-  
+
   // Decision making
   makeDecision(agentId: string, context: DecisionContext): Promise<any>;
   batchMakeDecisions(decisions: BatchDecisionConfig[]): Promise<BatchResult<BatchDecisionConfig>[]>;
-  
+
   // Workflow management
-  createWorkflow(workflowId: string, steps: WorkflowStep[], dependencies?: { [stepId: string]: string[] }): Promise<Workflow>;
+  createWorkflow(
+    workflowId: string,
+    steps: WorkflowStep[],
+    dependencies?: { [stepId: string]: string[] }
+  ): Promise<Workflow>;
   executeWorkflowStep(workflowId: string, stepId: string, agentIds: string[]): Promise<any>;
-  
+
   // State management
   synchronizeStates(agentIds: string[]): Promise<Map<string, AgentState>>;
-  
+
   // Resource management
   optimizeResources(): Promise<any>;
-  
+
   // Monitoring
   getPerformanceMetrics(): PerformanceMetrics;
   getStatus(): ServiceStatus;
-  
+
   // Event handling
   on<K extends keyof DAAServiceEvents>(event: K, listener: DAAServiceEvents[K]): this;
-  emit<K extends keyof DAAServiceEvents>(event: K, ...args: Parameters<DAAServiceEvents[K]>): boolean;
+  emit<K extends keyof DAAServiceEvents>(
+    event: K,
+    ...args: Parameters<DAAServiceEvents[K]>
+  ): boolean;
 }
 
 export declare const daaService: DAAService;

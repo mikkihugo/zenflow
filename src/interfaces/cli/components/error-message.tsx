@@ -1,7 +1,7 @@
-import React from 'react';
 import { Box, Text } from 'ink';
-import { BaseComponentProps } from './index';
+import type React from 'react';
 import { defaultTheme } from '../index';
+import type { BaseComponentProps } from './index';
 
 export interface ErrorMessageProps extends BaseComponentProps {
   title?: string;
@@ -19,7 +19,7 @@ export interface ErrorMessageProps extends BaseComponentProps {
 
 /**
  * ErrorMessage Component
- * 
+ *
  * Displays error messages with optional details and actions.
  * Supports different severity levels and formatting.
  */
@@ -53,11 +53,11 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
       defaultTitle: 'Information',
     },
   };
-  
+
   const config = variantConfig[variant];
   const displayTitle = title || config.defaultTitle;
   const detailsList = Array.isArray(details) ? details : details ? [details] : [];
-  
+
   return (
     <Box
       flexDirection="column"
@@ -69,38 +69,29 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
       {/* Title */}
       <Box marginBottom={message ? 1 : 0}>
         <Text bold color={config.color}>
-          {showIcon && (
-            <>
-              {config.icon}
-              {' '}
-            </>
-          )}
+          {showIcon && <>{config.icon} </>}
           {displayTitle}
         </Text>
       </Box>
-      
+
       {/* Main message */}
       <Box marginBottom={detailsList.length > 0 ? 1 : 0}>
-        <Text>
-          {message}
-        </Text>
+        <Text>{message}</Text>
       </Box>
-      
+
       {/* Details */}
       {detailsList.length > 0 && (
         <Box flexDirection="column" marginBottom={actions.length > 0 ? 1 : 0}>
           {detailsList.map((detail, index) => (
             <Box key={index}>
               <Text dimColor>
-                {defaultTheme.symbols.bullet}
-                {' '}
-                {detail}
+                {defaultTheme.symbols.bullet} {detail}
               </Text>
             </Box>
           ))}
         </Box>
       )}
-      
+
       {/* Actions */}
       {actions.length > 0 && (
         <Box flexDirection="column">
@@ -109,9 +100,7 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
           </Text>
           {actions.map((action, index) => (
             <Box key={index}>
-              <Text color="cyan">
-                {action.key}
-              </Text>
+              <Text color="cyan">{action.key}</Text>
               <Text>
                 {' - '}
                 {action.label}
@@ -132,22 +121,11 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
 };
 
 // Utility functions for common error scenarios
-export const createErrorMessage = (
-  message: string,
-  options: Partial<ErrorMessageProps> = {}
-) => {
-  return (
-    <ErrorMessage
-      message={message}
-      {...options}
-    />
-  );
+export const createErrorMessage = (message: string, options: Partial<ErrorMessageProps> = {}) => {
+  return <ErrorMessage message={message} {...options} />;
 };
 
-export const createValidationError = (
-  field: string,
-  requirement: string
-) => {
+export const createValidationError = (field: string, requirement: string) => {
   return (
     <ErrorMessage
       title="Validation Error"

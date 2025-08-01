@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 /**
  * Enhanced MCP Server Implementation for Issue #91
  * Fixes: timeout issues, ANSI escape codes, JSON parsing errors, and notifications/initialized handling
@@ -8,10 +9,10 @@
  * License: MIT
  */
 
-import { readFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 import { randomUUID } from 'crypto';
+import { readFileSync } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
 // Get version from package.json
 const __filename = fileURLToPath(import.meta.url);
@@ -76,13 +77,27 @@ class MCPSafeLogger {
     }
   }
 
-  info(message, data = {}) { this._safeLog('ℹ️  INFO ', message, data); }
-  warn(message, data = {}) { this._safeLog('⚠️  WARN ', message, data); }
-  error(message, data = {}) { this._safeLog('❌ ERROR', message, data); }
-  debug(message, data = {}) { this._safeLog('🔍 DEBUG', message, data); }
-  trace(message, data = {}) { this._safeLog('🔎 TRACE', message, data); }
-  success(message, data = {}) { this._safeLog('✅ SUCCESS', message, data); }
-  fatal(message, data = {}) { this._safeLog('💀 FATAL', message, data); }
+  info(message, data = {}) {
+    this._safeLog('ℹ️  INFO ', message, data);
+  }
+  warn(message, data = {}) {
+    this._safeLog('⚠️  WARN ', message, data);
+  }
+  error(message, data = {}) {
+    this._safeLog('❌ ERROR', message, data);
+  }
+  debug(message, data = {}) {
+    this._safeLog('🔍 DEBUG', message, data);
+  }
+  trace(message, data = {}) {
+    this._safeLog('🔎 TRACE', message, data);
+  }
+  success(message, data = {}) {
+    this._safeLog('✅ SUCCESS', message, data);
+  }
+  fatal(message, data = {}) {
+    this._safeLog('💀 FATAL', message, data);
+  }
 
   startOperation(operationName, metadata = {}) {
     const operationId = randomUUID();
@@ -103,12 +118,15 @@ class MCPSafeLogger {
     this.operations.delete(operationId);
 
     const level = success ? 'info' : 'warn';
-    this[level](`${success ? '✅' : '⚠️'} Operation ${success ? 'completed' : 'failed'}: ${operation.name}`, {
-      operationId,
-      duration,
-      success,
-      ...metadata,
-    });
+    this[level](
+      `${success ? '✅' : '⚠️'} Operation ${success ? 'completed' : 'failed'}: ${operation.name}`,
+      {
+        operationId,
+        duration,
+        success,
+        ...metadata,
+      }
+    );
   }
 
   logConnection(type, sessionId, details = {}) {
@@ -143,7 +161,7 @@ class EnhancedMCPHandler {
         read: true,
       },
       notifications: {
-        initialized: true,  // CRITICAL: Support for notifications/initialized
+        initialized: true, // CRITICAL: Support for notifications/initialized
       },
     };
   }
@@ -193,7 +211,14 @@ class EnhancedMCPHandler {
           // ENHANCED: Better error handling for unknown methods
           this.logger.warn(`⚡ Operation failed: ${request.method}`, {
             method: request.method,
-            supported: ['initialize', 'notifications/initialized', 'tools/list', 'tools/call', 'resources/list', 'resources/read'],
+            supported: [
+              'initialize',
+              'notifications/initialized',
+              'tools/list',
+              'tools/call',
+              'resources/list',
+              'resources/read',
+            ],
             suggestion: 'Check MCP protocol documentation for valid methods',
           });
 
@@ -410,7 +435,10 @@ class EnhancedMCPHandler {
         toolFound = true;
       }
       // Try DAA tools if available
-      else if (this.mcpTools.daaMcpTools && typeof this.mcpTools.daaMcpTools[toolName] === 'function') {
+      else if (
+        this.mcpTools.daaMcpTools &&
+        typeof this.mcpTools.daaMcpTools[toolName] === 'function'
+      ) {
         result = await this.mcpTools.daaMcpTools[toolName](toolArgs);
         toolFound = true;
       }
@@ -422,10 +450,12 @@ class EnhancedMCPHandler {
         });
 
         return {
-          content: [{
-            type: 'text',
-            text: typeof result === 'string' ? result : JSON.stringify(result, null, 2),
-          }],
+          content: [
+            {
+              type: 'text',
+              text: typeof result === 'string' ? result : JSON.stringify(result, null, 2),
+            },
+          ],
         };
       } else {
         this.logger.endOperation(toolOpId, false, {
@@ -433,7 +463,9 @@ class EnhancedMCPHandler {
           availableTools: Object.keys(this.mcpTools),
         });
 
-        throw new Error(`Unknown tool: ${toolName}. Available tools: ${Object.keys(this.mcpTools).join(', ')}`);
+        throw new Error(
+          `Unknown tool: ${toolName}. Available tools: ${Object.keys(this.mcpTools).join(', ')}`
+        );
       }
     } catch (error) {
       this.logger.endOperation(toolOpId, false, { error: error.message });
@@ -464,23 +496,28 @@ class EnhancedMCPHandler {
     const { uri } = params;
 
     switch (uri) {
-      case 'swarm://status':
+      case 'swarm://status': {
         const status = await this.mcpTools.swarm_status({ verbose: true });
         return {
-          contents: [{
-            uri,
-            mimeType: 'application/json',
-            text: JSON.stringify(status, null, 2),
-          }],
+          contents: [
+            {
+              uri,
+              mimeType: 'application/json',
+              text: JSON.stringify(status, null, 2),
+            },
+          ],
         };
+      }
 
       case 'swarm://logs':
         return {
-          contents: [{
-            uri,
-            mimeType: 'text/plain',
-            text: 'Swarm logs would be provided here...',
-          }],
+          contents: [
+            {
+              uri,
+              mimeType: 'text/plain',
+              text: 'Swarm logs would be provided here...',
+            },
+          ],
         };
 
       default:
@@ -648,7 +685,6 @@ class EnhancedMCPServer {
 
         // Send response to stdout (JSON-RPC)
         this.sendResponse(response);
-
       } catch (handlerError) {
         this.logger.endOperation(opId, false, { error: handlerError.message });
 
@@ -664,7 +700,6 @@ class EnhancedMCPServer {
         };
         this.sendResponse(errorResponse);
       }
-
     } catch (parseError) {
       this.logger.error('JSON parse error', {
         error: parseError.message,
@@ -695,7 +730,6 @@ class EnhancedMCPServer {
       if (process.stdout.flush) {
         process.stdout.flush();
       }
-
     } catch (writeError) {
       this.logger.fatal('Failed to write response to stdout', {
         writeError: writeError.message,

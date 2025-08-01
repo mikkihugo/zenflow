@@ -5,9 +5,9 @@
  * WASM loading, memory management, and Claude Code Flow coordination.
  */
 
+import { getClaudeFlow } from './claude-flow-enhanced.js';
 import { RuvSwarm } from './index-enhanced.js';
 import { WasmModuleLoader } from './wasm-loader.js';
-import { getClaudeFlow } from './claude-flow-enhanced.js';
 
 class PerformanceBenchmarks {
   constructor() {
@@ -102,7 +102,6 @@ class PerformanceBenchmarks {
 
       this.results.set('full_suite', results);
       return results;
-
     } catch (error) {
       console.error('❌ Benchmark suite failed:', error);
       throw error;
@@ -147,7 +146,7 @@ class PerformanceBenchmarks {
 
         try {
           const performanceReport = JSON.parse(
-            coreModule.exports.simd_performance_report(size, iterCount),
+            coreModule.exports.simd_performance_report(size, iterCount)
           );
 
           const speedup = performanceReport.vector_operations?.speedup_factor || 1.0;
@@ -162,7 +161,6 @@ class PerformanceBenchmarks {
 
           totalSpeedup += speedup;
           validTests++;
-
         } catch (error) {
           console.warn(`Failed to benchmark ${operation} with size ${size}:`, error);
           results.operations[operation].sizes[size] = {
@@ -172,13 +170,14 @@ class PerformanceBenchmarks {
         }
       }
 
-      results.operations[operation].averageSpeedup = validTests > 0 ? totalSpeedup / validTests : 1.0;
+      results.operations[operation].averageSpeedup =
+        validTests > 0 ? totalSpeedup / validTests : 1.0;
     }
 
     // Calculate overall SIMD performance score
     const speedups = Object.values(results.operations)
-      .map(op => op.averageSpeedup)
-      .filter(s => s > 0);
+      .map((op) => op.averageSpeedup)
+      .filter((s) => s > 0);
 
     results.averageSpeedup = speedups.reduce((acc, s) => acc + s, 0) / speedups.length;
     results.performanceScore = Math.min(100, (results.averageSpeedup - 1.0) * 25); // Max score at 5x speedup
@@ -220,7 +219,6 @@ class PerformanceBenchmarks {
           memoryUsage,
           success: true,
         };
-
       } catch (error) {
         results.strategies[strategy] = {
           error: error.message,
@@ -244,7 +242,7 @@ class PerformanceBenchmarks {
       results.recommendations.push('Loading strategies have similar performance');
     }
 
-    results.performanceScore = Math.max(0, 100 - (progressiveTime / 100)); // Good if under 100ms
+    results.performanceScore = Math.max(0, 100 - progressiveTime / 100); // Good if under 100ms
 
     return results;
   }
@@ -320,11 +318,11 @@ class PerformanceBenchmarks {
       };
 
       // Calculate performance score
-      const avgAllocationTime = Object.values(results.allocation)
-        .reduce((acc, a) => acc + a.avgTimePerAllocation, 0) / Object.keys(results.allocation).length;
+      const avgAllocationTime =
+        Object.values(results.allocation).reduce((acc, a) => acc + a.avgTimePerAllocation, 0) /
+        Object.keys(results.allocation).length;
 
       results.performanceScore = Math.max(0, 100 - avgAllocationTime); // Good if under 1ms average
-
     } catch (error) {
       results.error = error.message;
       results.performanceScore = 0;
@@ -423,7 +421,6 @@ class PerformanceBenchmarks {
       // Calculate performance score
       const mediumNetworkThroughput = results.networkSizes.medium?.throughput || 0;
       results.performanceScore = Math.min(100, mediumNetworkThroughput / 10); // Good if >1000 inferences/sec
-
     } catch (error) {
       results.error = error.message;
       results.performanceScore = 0;
@@ -469,8 +466,8 @@ class PerformanceBenchmarks {
       const execStartTime = performance.now();
 
       // Simulate parallel execution
-      const batchPromises = testWorkflow.steps.map(async(step, index) => {
-        await new Promise(resolve => setTimeout(resolve, 10 + Math.random() * 20));
+      const batchPromises = testWorkflow.steps.map(async (step, index) => {
+        await new Promise((resolve) => setTimeout(resolve, 10 + Math.random() * 20));
         return { stepId: step.id, completed: true };
       });
 
@@ -500,12 +497,10 @@ class PerformanceBenchmarks {
       };
 
       // Calculate overall score
-      results.performanceScore = (
+      results.performanceScore =
         Math.min(100, speedupFactor * 20) * 0.4 + // Parallelization (40%)
         batchingReport.complianceScore * 0.3 + // Batching compliance (30%)
-        Math.min(100, 100 - createTime) * 0.3 // Creation speed (30%)
-      );
-
+        Math.min(100, 100 - createTime) * 0.3; // Creation speed (30%)
     } catch (error) {
       results.error = error.message;
       results.performanceScore = 0;
@@ -534,7 +529,7 @@ class PerformanceBenchmarks {
 
         // Create batch of parallel tasks
         const tasks = Array.from({ length: batchSize }, (_, i) =>
-          this.simulateAsyncTask(10 + Math.random() * 10, `task_${i}`),
+          this.simulateAsyncTask(10 + Math.random() * 10, `task_${i}`)
         );
 
         // Execute in parallel
@@ -561,7 +556,7 @@ class PerformanceBenchmarks {
         const startTime = performance.now();
 
         const tasks = Array.from({ length: batchSize }, (_, i) =>
-          this.simulateAsyncTask(taskType.duration, `${taskType.name}_${i}`),
+          this.simulateAsyncTask(taskType.duration, `${taskType.name}_${i}`)
         );
 
         await Promise.all(tasks);
@@ -584,7 +579,7 @@ class PerformanceBenchmarks {
         const startTime = performance.now();
 
         const tasks = Array.from({ length: size }, () =>
-          this.simulateAsyncTask(20, 'scalability_test'),
+          this.simulateAsyncTask(20, 'scalability_test')
         );
 
         await Promise.all(tasks);
@@ -602,11 +597,11 @@ class PerformanceBenchmarks {
       }
 
       // Calculate performance score
-      const avgEfficiency = Object.values(results.taskTypes)
-        .reduce((acc, t) => acc + t.efficiency, 0) / Object.keys(results.taskTypes).length;
+      const avgEfficiency =
+        Object.values(results.taskTypes).reduce((acc, t) => acc + t.efficiency, 0) /
+        Object.keys(results.taskTypes).length;
 
       results.performanceScore = Math.min(100, avgEfficiency * 100);
-
     } catch (error) {
       results.error = error.message;
       results.performanceScore = 0;
@@ -660,11 +655,10 @@ class PerformanceBenchmarks {
       const featureCount = Object.values(results.features).filter(Boolean).length;
       const performanceCount = Object.values(results.performance).filter(Boolean).length;
 
-      results.performanceScore = (
-        (featureCount / Object.keys(results.features).length) * 60 +
-        (performanceCount / Object.keys(results.performance).length) * 40
-      ) * 100;
-
+      results.performanceScore =
+        ((featureCount / Object.keys(results.features).length) * 60 +
+          (performanceCount / Object.keys(results.performance).length) * 40) *
+        100;
     } catch (error) {
       results.error = error.message;
       results.performanceScore = 0;
@@ -697,9 +691,9 @@ class PerformanceBenchmarks {
       simdOperations: 0.25,
       wasmLoading: 0.15,
       memoryManagement: 0.15,
-      neuralNetworks: 0.20,
+      neuralNetworks: 0.2,
       claudeFlowCoordination: 0.15,
-      parallelExecution: 0.10,
+      parallelExecution: 0.1,
     };
 
     let totalScore = 0;
@@ -744,13 +738,18 @@ class PerformanceBenchmarks {
    * Simulate activation function
    */
   simulateActivation(vector, activation) {
-    return vector.map(x => {
+    return vector.map((x) => {
       switch (activation) {
-        case 'relu': return Math.max(0, x);
-        case 'sigmoid': return 1 / (1 + Math.exp(-x));
-        case 'tanh': return Math.tanh(x);
-        case 'gelu': return 0.5 * x * (1 + Math.tanh(Math.sqrt(2 / Math.PI) * (x + 0.044715 * x ** 3)));
-        default: return x;
+        case 'relu':
+          return Math.max(0, x);
+        case 'sigmoid':
+          return 1 / (1 + Math.exp(-x));
+        case 'tanh':
+          return Math.tanh(x);
+        case 'gelu':
+          return 0.5 * x * (1 + Math.tanh(Math.sqrt(2 / Math.PI) * (x + 0.044715 * x ** 3)));
+        default:
+          return x;
       }
     });
   }
@@ -762,7 +761,7 @@ class PerformanceBenchmarks {
     const startTime = performance.now();
 
     // Simulate work with setTimeout
-    await new Promise(resolve => setTimeout(resolve, duration));
+    await new Promise((resolve) => setTimeout(resolve, duration));
 
     return {
       taskId,
@@ -880,9 +879,7 @@ class PerformanceBenchmarks {
    * Generate CSV data for export
    */
   generateCSVData(results) {
-    const rows = [
-      ['Category', 'Metric', 'Value', 'Score'],
-    ];
+    const rows = [['Category', 'Metric', 'Value', 'Score']];
 
     for (const [category, data] of Object.entries(results.benchmarks)) {
       if (data.performanceScore !== undefined) {
@@ -890,7 +887,7 @@ class PerformanceBenchmarks {
       }
     }
 
-    return rows.map(row => row.join(',')).join('\n');
+    return rows.map((row) => row.join(',')).join('\n');
   }
 }
 

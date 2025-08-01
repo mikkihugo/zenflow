@@ -53,13 +53,7 @@ const config = {
 
   // Neural Agent Configuration
   neural: {
-    models: [
-      'adaptive',
-      'pattern-recognition',
-      'optimization',
-      'learning',
-      'research-optimized',
-    ],
+    models: ['adaptive', 'pattern-recognition', 'optimization', 'learning', 'research-optimized'],
     training: {
       iterations: 10,
       batchSize: 5,
@@ -262,7 +256,7 @@ if (platformConfig) {
   config.swarm.maxAgents.stress = Math.min(config.swarm.maxAgents.stress, platformConfig.maxAgents);
   config.swarm.performance.maxMemoryUsage = Math.min(
     config.swarm.performance.maxMemoryUsage,
-    platformConfig.maxMemory,
+    platformConfig.maxMemory
   );
 }
 

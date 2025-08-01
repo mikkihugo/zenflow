@@ -2,18 +2,23 @@
  * Comprehensive test suite for Session Management System
  */
 
-import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
-import { SessionManager, SessionState, SessionConfig } from './session-manager.js';
-import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration.js';
-import { SessionValidator, SessionSerializer, SessionRecovery, SessionStats } from './session-utils.js';
+import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { SwarmPersistencePooled } from './persistence-pooled.js';
-import { SwarmOptions, SwarmState } from './types.js';
+import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration.js';
+import { SessionConfig, SessionManager, type SessionState } from './session-manager.js';
+import {
+  SessionRecovery,
+  SessionSerializer,
+  SessionStats,
+  SessionValidator,
+} from './session-utils.js';
+import type { SwarmOptions, SwarmState } from './types.js';
 
 // Mock persistence layer
 class MockPersistence extends SwarmPersistencePooled {
   private mockData: Map<string, any> = new Map();
   public initialized: boolean = false;
-  
+
   constructor() {
     super(':memory:'); // Use in-memory SQLite for testing
   }
@@ -34,10 +39,20 @@ class MockPersistence extends SwarmPersistencePooled {
       }
       return [];
     }),
-    
+
     write: jest.fn(async (sql: string, params?: any[]) => {
       if (sql.includes('INSERT INTO sessions')) {
-        const [id, name, status, swarmOptions, swarmState, metadata, createdAt, lastAccessedAt, version] = params || [];
+        const [
+          id,
+          name,
+          status,
+          swarmOptions,
+          swarmState,
+          metadata,
+          createdAt,
+          lastAccessedAt,
+          version,
+        ] = params || [];
         this.mockData.set(id, {
           type: 'session',
           id,
@@ -72,7 +87,7 @@ class MockPersistence extends SwarmPersistencePooled {
 describe('SessionManager', () => {
   let persistence: MockPersistence;
   let sessionManager: SessionManager;
-  
+
   const mockSwarmOptions: SwarmOptions = {
     topology: 'mesh',
     maxAgents: 10,
@@ -98,13 +113,13 @@ describe('SessionManager', () => {
   beforeEach(async () => {
     persistence = new MockPersistence();
     await persistence.initialize();
-    
+
     sessionManager = new SessionManager(persistence, {
       autoCheckpoint: false, // Disable for testing
       checkpointInterval: 60000,
       maxCheckpoints: 5,
     });
-    
+
     await sessionManager.initialize();
   });
 
@@ -132,7 +147,7 @@ describe('SessionManager', () => {
       );
 
       const loadedSession = await sessionManager.loadSession(sessionId);
-      
+
       expect(loadedSession.id).toBe(sessionId);
       expect(loadedSession.name).toBe('Test Session');
       expect(loadedSession.status).toBe('active');
@@ -156,7 +171,7 @@ describe('SessionManager', () => {
 
       await sessionManager.saveSession(sessionId, updatedState);
       const savedSession = await sessionManager.loadSession(sessionId);
-      
+
       expect(savedSession.swarmState.metrics.totalTasks).toBe(5);
       expect(savedSession.swarmState.metrics.completedTasks).toBe(3);
     });
@@ -185,7 +200,7 @@ describe('SessionManager', () => {
       );
 
       await sessionManager.hibernateSession(sessionId);
-      
+
       // Session should be hibernated and removed from active sessions
       const session = await sessionManager.loadSession(sessionId);
       expect(session.status).toBe('hibernated');
@@ -199,7 +214,7 @@ describe('SessionManager', () => {
       );
 
       await sessionManager.terminateSession(sessionId);
-      
+
       const session = await sessionManager.loadSession(sessionId);
       expect(session.status).toBe('terminated');
     });
@@ -213,10 +228,7 @@ describe('SessionManager', () => {
         mockSwarmState
       );
 
-      const checkpointId = await sessionManager.createCheckpoint(
-        sessionId,
-        'Test checkpoint'
-      );
+      const checkpointId = await sessionManager.createCheckpoint(sessionId, 'Test checkpoint');
 
       expect(checkpointId).toBeDefined();
       expect(checkpointId).toMatch(/^checkpoint_/);
@@ -230,10 +242,7 @@ describe('SessionManager', () => {
       );
 
       // Create initial checkpoint
-      const checkpointId = await sessionManager.createCheckpoint(
-        sessionId,
-        'Initial state'
-      );
+      const checkpointId = await sessionManager.createCheckpoint(sessionId, 'Initial state');
 
       // Modify session state
       const modifiedState = {
@@ -262,7 +271,7 @@ describe('SessionManager', () => {
       );
 
       const stats = await sessionManager.getSessionStats(sessionId);
-      
+
       expect(stats).toHaveProperty('sessionId', sessionId);
       expect(stats).toHaveProperty('name', 'Test Session');
       expect(stats).toHaveProperty('status', 'active');
@@ -275,7 +284,7 @@ describe('SessionManager', () => {
       await sessionManager.createSession('Session 2', mockSwarmOptions, mockSwarmState);
 
       const globalStats = await sessionManager.getSessionStats();
-      
+
       expect(globalStats).toHaveProperty('totalSessions');
       expect(globalStats).toHaveProperty('activeSessions');
       expect(globalStats).toHaveProperty('statusBreakdown');
@@ -284,9 +293,9 @@ describe('SessionManager', () => {
 
   describe('Error Handling', () => {
     test('should handle non-existent session', async () => {
-      await expect(
-        sessionManager.loadSession('non-existent-session')
-      ).rejects.toThrow('Session non-existent-session not found');
+      await expect(sessionManager.loadSession('non-existent-session')).rejects.toThrow(
+        'Session non-existent-session not found'
+      );
     });
 
     test('should handle invalid checkpoint restoration', async () => {
@@ -319,7 +328,7 @@ describe('SessionEnabledSwarm', () => {
       },
       persistence
     );
-    
+
     await swarm.init();
   });
 
@@ -329,9 +338,9 @@ describe('SessionEnabledSwarm', () => {
 
   test('should create session-enabled swarm', async () => {
     const sessionId = await swarm.createSession('Test Swarm Session');
-    
+
     expect(sessionId).toBeDefined();
-    
+
     const currentSession = await swarm.getCurrentSession();
     expect(currentSession).not.toBeNull();
     expect(currentSession!.name).toBe('Test Swarm Session');
@@ -339,24 +348,24 @@ describe('SessionEnabledSwarm', () => {
 
   test('should auto-save on agent addition', async () => {
     const sessionId = await swarm.createSession('Test Swarm Session');
-    
+
     const agentId = swarm.addAgent({
       id: 'test-agent',
       type: 'researcher',
     });
 
     expect(agentId).toBeDefined();
-    
+
     // Give some time for auto-save to complete
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     const session = await swarm.getCurrentSession();
     expect(session!.swarmState.agents.size).toBeGreaterThan(0);
   });
 
   test('should create and restore from checkpoint', async () => {
     const sessionId = await swarm.createSession('Test Swarm Session');
-    
+
     swarm.addAgent({
       id: 'test-agent',
       type: 'researcher',
@@ -373,7 +382,7 @@ describe('SessionEnabledSwarm', () => {
 
     // Restore from checkpoint
     await swarm.restoreFromCheckpoint(checkpointId);
-    
+
     const session = await swarm.getCurrentSession();
     expect(session!.swarmState.agents.size).toBe(1); // Should have only the first agent
   });
@@ -528,7 +537,7 @@ describe('SessionStats', () => {
 
   test('should generate session summary', () => {
     const summary = SessionStats.generateSummary(testSession);
-    
+
     expect(summary).toHaveProperty('id', 'test-session');
     expect(summary).toHaveProperty('name', 'Test Session');
     expect(summary).toHaveProperty('status', 'active');
@@ -537,7 +546,7 @@ describe('SessionStats', () => {
     expect(summary).toHaveProperty('tasks');
     expect(summary).toHaveProperty('checkpoints');
     expect(summary).toHaveProperty('performance');
-    
+
     expect(summary.agents.total).toBe(1);
     expect(summary.tasks.total).toBe(10);
     expect(summary.tasks.completed).toBe(8);
@@ -554,12 +563,12 @@ describe('SessionRecoveryService', () => {
   beforeEach(async () => {
     persistence = new MockPersistence();
     await persistence.initialize();
-    
+
     sessionManager = new SessionManager(persistence, {
       autoCheckpoint: false,
     });
     await sessionManager.initialize();
-    
+
     recoveryService = new SessionRecoveryService(sessionManager);
   });
 
@@ -573,13 +582,13 @@ describe('SessionRecoveryService', () => {
     await sessionManager.createSession('Session 2', { topology: 'hierarchical' });
 
     const healthReport = await recoveryService.runHealthCheck();
-    
+
     expect(healthReport).toHaveProperty('total');
     expect(healthReport).toHaveProperty('healthy');
     expect(healthReport).toHaveProperty('corrupted');
     expect(healthReport).toHaveProperty('needsRecovery');
     expect(healthReport).toHaveProperty('recoveryRecommendations');
-    
+
     expect(healthReport.total).toBeGreaterThanOrEqual(2);
   });
 });
@@ -589,13 +598,13 @@ describe('Session Management Integration', () => {
   test('should handle complete session lifecycle', async () => {
     const persistence = new MockPersistence();
     await persistence.initialize();
-    
+
     const swarm = new SessionEnabledSwarm(
       { topology: 'mesh', maxAgents: 10 },
       { autoCheckpoint: false },
       persistence
     );
-    
+
     await swarm.init();
 
     try {
@@ -608,7 +617,7 @@ describe('Session Management Integration', () => {
         id: 'test-agent',
         type: 'researcher',
       });
-      
+
       const taskId = await swarm.submitTask({
         description: 'Test task',
         priority: 'medium',
@@ -637,7 +646,6 @@ describe('Session Management Integration', () => {
 
       // Terminate session
       await swarm.terminateSession();
-      
     } finally {
       await swarm.destroy();
     }

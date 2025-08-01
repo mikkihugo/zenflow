@@ -5,42 +5,36 @@
 
 // Core components
 export * from './components';
-
+// Re-export key components for convenience
+export {
+  SwarmHeader,
+  SwarmOverview,
+  SwarmProgressBar,
+  SwarmSpinner,
+  SwarmStatusBadge,
+} from './components';
 // Screens
 export * from './screens';
-
-// Types
-export * from './types';
-
-// Utilities
-export * from './utils';
-
 // Main TUI export
 export { default as SwarmTUI, launchSwarmTUI } from './swarm-tui';
 export { launchSwarmTUI as launchSwarmTUISimple } from './swarm-tui-simple';
-
 // Re-export key types for convenience
-export type { 
-  SwarmStatus, 
-  SwarmMetrics, 
-  SwarmAgent, 
-  SwarmTask,
-  SwarmCoordination,
-  SwarmMemory,
+export type {
   NeuralPatterns,
-  SwarmUIEvent,
+  SwarmAgent,
+  SwarmCoordination,
   SwarmEventData,
-  SwarmUIConfig
+  SwarmMemory,
+  SwarmMetrics,
+  SwarmStatus,
+  SwarmTask,
+  SwarmUIConfig,
+  SwarmUIEvent,
 } from './types';
-
-// Re-export key components for convenience
-export { 
-  SwarmHeader,
-  SwarmSpinner,
-  SwarmStatusBadge,
-  SwarmProgressBar,
-  SwarmOverview
-} from './components';
+// Types
+export * from './types';
+// Utilities
+export * from './utils';
 
 // Configuration and theme
 export const SwarmUIConfig = {

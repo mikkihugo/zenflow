@@ -64,9 +64,12 @@ class NeuralBenchmark {
         'ruv-swarm',
         'neural',
         'train',
-        '--model', model,
-        '--iterations', iterations.toString(),
-        '--learning-rate', '0.001',
+        '--model',
+        model,
+        '--iterations',
+        iterations.toString(),
+        '--learning-rate',
+        '0.001',
       ]);
 
       modelResults.timings.training = Date.now() - trainStart;
@@ -85,7 +88,8 @@ class NeuralBenchmark {
         'ruv-swarm',
         'neural',
         'patterns',
-        '--model', model,
+        '--model',
+        model,
       ]);
 
       modelResults.timings.patternAnalysis = Date.now() - patternStart;
@@ -104,8 +108,10 @@ class NeuralBenchmark {
         'ruv-swarm',
         'neural',
         'export',
-        '--model', model,
-        '--output', exportPath,
+        '--model',
+        model,
+        '--output',
+        exportPath,
       ]);
 
       modelResults.timings.export = Date.now() - exportStart;
@@ -138,7 +144,7 @@ class NeuralBenchmark {
     const lines = output.split('\n');
     let currentCategory = null;
 
-    lines.forEach(line => {
+    lines.forEach((line) => {
       if (line.includes('📊')) {
         currentCategory = line.replace('📊', '').replace(':', '').trim();
         patterns[currentCategory] = [];
@@ -169,8 +175,8 @@ class NeuralBenchmark {
     const layers = Math.floor(Math.random() * 8) + 4;
 
     return {
-      totalMemory: profile.base + (profile.perLayer * layers),
-      peakMemory: (profile.base + (profile.perLayer * layers)) * profile.overhead,
+      totalMemory: profile.base + profile.perLayer * layers,
+      peakMemory: (profile.base + profile.perLayer * layers) * profile.overhead,
       efficiency: 85 + Math.random() * 10,
       layerCount: layers,
     };
@@ -203,7 +209,7 @@ class NeuralBenchmark {
 
   calculateVariance(values) {
     const mean = values.reduce((a, b) => a + b) / values.length;
-    return values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length;
+    return values.reduce((sum, val) => sum + (val - mean) ** 2, 0) / values.length;
   }
 
   async runFullBenchmark() {
@@ -224,12 +230,19 @@ class NeuralBenchmark {
 
     // Save results
     const outputFile = path.join(outputDir, `neural-benchmark-${Date.now()}.json`);
-    await fs.writeFile(outputFile, JSON.stringify({
-      timestamp: new Date().toISOString(),
-      duration: Date.now() - this.startTime,
-      results: this.results,
-      analysis,
-    }, null, 2));
+    await fs.writeFile(
+      outputFile,
+      JSON.stringify(
+        {
+          timestamp: new Date().toISOString(),
+          duration: Date.now() - this.startTime,
+          results: this.results,
+          analysis,
+        },
+        null,
+        2
+      )
+    );
 
     // Display summary
     this.displaySummary(analysis);
@@ -266,12 +279,15 @@ class NeuralBenchmark {
     });
 
     // Generate recommendations
-    const bestAccuracy = Object.entries(analysis.performance)
-      .sort((a, b) => b[1].accuracy - a[1].accuracy)[0];
-    const bestSpeed = Object.entries(analysis.performance)
-      .sort((a, b) => b[1].inferenceSpeed - a[1].inferenceSpeed)[0];
-    const mostEfficient = Object.entries(analysis.memory)
-      .sort((a, b) => b[1].efficiency - a[1].efficiency)[0];
+    const bestAccuracy = Object.entries(analysis.performance).sort(
+      (a, b) => b[1].accuracy - a[1].accuracy
+    )[0];
+    const bestSpeed = Object.entries(analysis.performance).sort(
+      (a, b) => b[1].inferenceSpeed - a[1].inferenceSpeed
+    )[0];
+    const mostEfficient = Object.entries(analysis.memory).sort(
+      (a, b) => b[1].efficiency - a[1].efficiency
+    )[0];
 
     analysis.recommendations = [
       `Best accuracy: ${bestAccuracy[0]} (${bestAccuracy[1].accuracy}%)`,
@@ -284,7 +300,7 @@ class NeuralBenchmark {
 
   displaySummary(analysis) {
     console.log('\n📊 COMPARATIVE ANALYSIS SUMMARY');
-    console.log('=' .repeat(60));
+    console.log('='.repeat(60));
 
     console.log('\n🎯 Performance Metrics:');
     Object.entries(analysis.performance).forEach(([model, metrics]) => {
@@ -297,16 +313,20 @@ class NeuralBenchmark {
 
     console.log('\n💾 Memory Usage:');
     Object.entries(analysis.memory).forEach(([model, metrics]) => {
-      console.log(`${model.toUpperCase()}: ${metrics.totalMemory}MB (${metrics.efficiency.toFixed(1)}% efficient)`);
+      console.log(
+        `${model.toUpperCase()}: ${metrics.totalMemory}MB (${metrics.efficiency.toFixed(1)}% efficient)`
+      );
     });
 
     console.log('\n🏗️ Architecture Complexity:');
     Object.entries(analysis.architecture).forEach(([model, arch]) => {
-      console.log(`${model.toUpperCase()}: ${arch.layers} layers, ${arch.parameters.toLocaleString()} parameters`);
+      console.log(
+        `${model.toUpperCase()}: ${arch.layers} layers, ${arch.parameters.toLocaleString()} parameters`
+      );
     });
 
     console.log('\n🎯 Recommendations:');
-    analysis.recommendations.forEach(rec => console.log(`  • ${rec}`));
+    analysis.recommendations.forEach((rec) => console.log(`  • ${rec}`));
   }
 }
 

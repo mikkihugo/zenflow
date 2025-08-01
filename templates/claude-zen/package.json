@@ -1,0 +1,27 @@
+{
+  "name": "claude-zen-project",
+  "version": "1.0.0",
+  "description": "Document-driven development project with Claude Zen integration",
+  "scripts": {
+    "docs:lint": "markdownlint docs/ --config .markdownlint.yml",
+    "docs:lint:fix": "markdownlint docs/ --config .markdownlint.yml --fix",
+    "docs:version": "node scripts/version-manager.js",
+    "docs:validate": "node scripts/validate-docs.js",
+    "docs:changelog": "node scripts/generate-changelog.js",
+    "docs:check": "npm run docs:lint && npm run docs:validate",
+    "pre-commit": "npm run docs:check"
+  },
+  "devDependencies": {
+    "markdownlint-cli": "^0.37.0",
+    "js-yaml": "^4.1.0",
+    "glob": "^10.3.0",
+    "commander": "^11.0.0"
+  },
+  "keywords": [
+    "documentation",
+    "document-driven-development",
+    "claude-zen",
+    "versioning",
+    "markdown"
+  ]
+}

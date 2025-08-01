@@ -1,4 +1,3 @@
-
 /** Build Configuration for Claude Zen
  *
  * @fileoverview TypeScript build configuration with Google standards
@@ -30,13 +29,13 @@ export const buildConfig = {
   // Module aliases for Node.js build compatibility
   moduleAliases: {
     '@cliffy/ansi/colors': './src/adapters/cliffy-node.js',
-'@cliffy/command': './src/adapters/cliffy-node.js',
-    '@cliffy/prompt': './src/adapters/cliffy-node.js'
+    '@cliffy/command': './src/adapters/cliffy-node.js',
+    '@cliffy/prompt': './src/adapters/cliffy-node.js',
   },
   // Modules to exclude from Node.js build
   excludeModules: [
-    'vscode' // VS Code extension API
+    'vscode', // VS Code extension API
   ],
   // External modules that should not be bundled
-  externals: ['@modelcontextprotocol/sdk', 'better-sqlite3', 'node-pty', 'blessed']
+  externals: ['@modelcontextprotocol/sdk', 'better-sqlite3', 'node-pty', 'blessed'],
 };

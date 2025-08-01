@@ -1,13 +1,13 @@
 /**
  * Session Management Utilities
- * 
+ *
  * Helper functions and utilities for session management,
  * including serialization, validation, migration, and recovery.
  */
 
-import { SwarmState, SwarmOptions, AgentConfig, Task } from './types.js';
-import { SessionState, SessionCheckpoint, SessionStatus } from './session-manager.js';
 import crypto from 'crypto';
+import type { SessionCheckpoint, SessionState, SessionStatus } from './session-manager.js';
+import { AgentConfig, type SwarmOptions, type SwarmState, Task } from './types.js';
 
 /**
  * Session validation utilities
@@ -37,7 +37,13 @@ export class SessionValidator {
     }
 
     // Status validation
-    const validStatuses: SessionStatus[] = ['active', 'paused', 'hibernated', 'terminated', 'corrupted'];
+    const validStatuses: SessionStatus[] = [
+      'active',
+      'paused',
+      'hibernated',
+      'terminated',
+      'corrupted',
+    ];
     if (!validStatuses.includes(state.status)) {
       errors.push(`Invalid session status: ${state.status}`);
     }
@@ -46,7 +52,7 @@ export class SessionValidator {
     if (!state.swarmState) {
       errors.push('Missing swarm state');
     } else {
-      const swarmErrors = this.validateSwarmState(state.swarmState);
+      const swarmErrors = SessionValidator.validateSwarmState(state.swarmState);
       errors.push(...swarmErrors);
     }
 
@@ -54,7 +60,7 @@ export class SessionValidator {
     if (!state.swarmOptions) {
       errors.push('Missing swarm options');
     } else {
-      const optionsErrors = this.validateSwarmOptions(state.swarmOptions);
+      const optionsErrors = SessionValidator.validateSwarmOptions(state.swarmOptions);
       errors.push(...optionsErrors);
     }
 
@@ -99,16 +105,26 @@ export class SessionValidator {
   static validateSwarmOptions(options: SwarmOptions): string[] {
     const errors: string[] = [];
 
-    if (options.maxAgents !== undefined && (typeof options.maxAgents !== 'number' || options.maxAgents <= 0)) {
+    if (
+      options.maxAgents !== undefined &&
+      (typeof options.maxAgents !== 'number' || options.maxAgents <= 0)
+    ) {
       errors.push('Invalid maxAgents value');
     }
 
-    if (options.connectionDensity !== undefined && 
-        (typeof options.connectionDensity !== 'number' || options.connectionDensity < 0 || options.connectionDensity > 1)) {
+    if (
+      options.connectionDensity !== undefined &&
+      (typeof options.connectionDensity !== 'number' ||
+        options.connectionDensity < 0 ||
+        options.connectionDensity > 1)
+    ) {
       errors.push('Invalid connectionDensity value');
     }
 
-    if (options.syncInterval !== undefined && (typeof options.syncInterval !== 'number' || options.syncInterval <= 0)) {
+    if (
+      options.syncInterval !== undefined &&
+      (typeof options.syncInterval !== 'number' || options.syncInterval <= 0)
+    ) {
       errors.push('Invalid syncInterval value');
     }
 
@@ -200,15 +216,15 @@ export class SessionSerializer {
       lastAccessedAt: session.lastAccessedAt.toISOString(),
       lastCheckpointAt: session.lastCheckpointAt?.toISOString(),
       status: session.status,
-      swarmState: this.serializeSwarmState(session.swarmState),
+      swarmState: SessionSerializer.serializeSwarmState(session.swarmState),
       swarmOptions: session.swarmOptions,
       metadata: session.metadata,
-      checkpoints: session.checkpoints.map(cp => ({
+      checkpoints: session.checkpoints.map((cp) => ({
         id: cp.id,
         sessionId: cp.sessionId,
         timestamp: cp.timestamp.toISOString(),
         checksum: cp.checksum,
-        state: this.serializeSwarmState(cp.state),
+        state: SessionSerializer.serializeSwarmState(cp.state),
         description: cp.description,
         metadata: cp.metadata,
       })),
@@ -232,7 +248,7 @@ export class SessionSerializer {
       lastAccessedAt: new Date(data.lastAccessedAt),
       lastCheckpointAt: data.lastCheckpointAt ? new Date(data.lastCheckpointAt) : undefined,
       status: data.status,
-      swarmState: this.deserializeSwarmState(data.swarmState),
+      swarmState: SessionSerializer.deserializeSwarmState(data.swarmState),
       swarmOptions: data.swarmOptions,
       metadata: data.metadata,
       checkpoints: data.checkpoints.map((cp: any) => ({
@@ -240,7 +256,7 @@ export class SessionSerializer {
         sessionId: cp.sessionId,
         timestamp: new Date(cp.timestamp),
         checksum: cp.checksum,
-        state: this.deserializeSwarmState(cp.state),
+        state: SessionSerializer.deserializeSwarmState(cp.state),
         description: cp.description,
         metadata: cp.metadata,
       })),
@@ -257,8 +273,8 @@ export class SessionMigrator {
    * Migrate session from older version
    */
   static migrateSession(session: any, fromVersion: string, toVersion: string): SessionState {
-    const migrations = this.getMigrationPath(fromVersion, toVersion);
-    
+    const migrations = SessionMigrator.getMigrationPath(fromVersion, toVersion);
+
     let currentSession = session;
     for (const migration of migrations) {
       currentSession = migration(currentSession);
@@ -270,12 +286,15 @@ export class SessionMigrator {
   /**
    * Get migration path between versions
    */
-  private static getMigrationPath(fromVersion: string, toVersion: string): Array<(session: any) => any> {
+  private static getMigrationPath(
+    fromVersion: string,
+    toVersion: string
+  ): Array<(session: any) => any> {
     const migrations: Array<(session: any) => any> = [];
 
     // Example migrations (add as needed)
     if (fromVersion === '0.9.0' && toVersion === '1.0.0') {
-      migrations.push(this.migrate_0_9_0_to_1_0_0);
+      migrations.push(SessionMigrator.migrate_0_9_0_to_1_0_0);
     }
 
     return migrations;
@@ -329,7 +348,7 @@ export class SessionRecovery {
   ): Promise<SessionState | null> {
     // Try to recover from the most recent valid checkpoint
     const sortedCheckpoints = checkpoints
-      .filter(cp => this.validateCheckpointIntegrity(cp))
+      .filter((cp) => SessionRecovery.validateCheckpointIntegrity(cp))
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
     if (sortedCheckpoints.length === 0) {
@@ -337,7 +356,7 @@ export class SessionRecovery {
     }
 
     const latestCheckpoint = sortedCheckpoints[0];
-    
+
     try {
       // Reconstruct session from checkpoint
       const recoveredSession: SessionState = {
@@ -348,7 +367,7 @@ export class SessionRecovery {
         lastCheckpointAt: latestCheckpoint.timestamp,
         status: 'active',
         swarmState: latestCheckpoint.state,
-        swarmOptions: corruptedSession.swarmOptions || this.getDefaultSwarmOptions(),
+        swarmOptions: corruptedSession.swarmOptions || SessionRecovery.getDefaultSwarmOptions(),
         metadata: {
           ...corruptedSession.metadata,
           recovered: true,
@@ -495,7 +514,7 @@ export class SessionStats {
    */
   static generateSummary(session: SessionState): Record<string, any> {
     const metrics = session.swarmState.metrics;
-    const healthScore = this.calculateHealthScore(session);
+    const healthScore = SessionStats.calculateHealthScore(session);
 
     return {
       id: session.id,
@@ -506,7 +525,9 @@ export class SessionStats {
       lastAccessedAt: session.lastAccessedAt,
       lastCheckpointAt: session.lastCheckpointAt,
       ageInDays: Math.floor((Date.now() - session.createdAt.getTime()) / (1000 * 60 * 60 * 24)),
-      daysSinceAccess: Math.floor((Date.now() - session.lastAccessedAt.getTime()) / (1000 * 60 * 60 * 24)),
+      daysSinceAccess: Math.floor(
+        (Date.now() - session.lastAccessedAt.getTime()) / (1000 * 60 * 60 * 24)
+      ),
       agents: {
         total: session.swarmState.agents.size,
         topology: session.swarmState.topology,
@@ -524,10 +545,13 @@ export class SessionStats {
       },
       performance: {
         throughput: metrics.throughput,
-        agentUtilization: Array.from(metrics.agentUtilization.entries()).reduce((acc, [id, util]) => {
-          acc[id] = util;
-          return acc;
-        }, {} as Record<string, number>),
+        agentUtilization: Array.from(metrics.agentUtilization.entries()).reduce(
+          (acc, [id, util]) => {
+            acc[id] = util;
+            return acc;
+          },
+          {} as Record<string, number>
+        ),
       },
       version: session.version,
     };

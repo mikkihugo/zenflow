@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
 import { Box, Text } from 'ink';
-import { BaseComponentProps } from './index';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { defaultTheme } from '../index';
+import type { BaseComponentProps } from './index';
 
 export interface SpinnerProps extends BaseComponentProps {
   text?: string;
@@ -12,7 +13,7 @@ export interface SpinnerProps extends BaseComponentProps {
 
 /**
  * Spinner Component
- * 
+ *
  * Displays an animated loading spinner with customizable text and style.
  * Supports multiple animation types and colors.
  */
@@ -24,35 +25,28 @@ export const Spinner: React.FC<SpinnerProps> = ({
   testId = 'spinner',
 }) => {
   const [frame, setFrame] = useState(0);
-  
+
   const animations = {
     dots: ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'],
     line: ['-', '\\', '|', '/'],
     arc: ['◜', '◝', '◞', '◟'],
     bounce: ['⠁', '⠂', '⠄', '⡀', '⢀', '⠠', '⠐', '⠈'],
   };
-  
+
   const frames = animations[type] || animations.dots;
-  
+
   useEffect(() => {
     const interval = setInterval(() => {
       setFrame((prevFrame) => (prevFrame + 1) % frames.length);
     }, speed);
-    
+
     return () => clearInterval(interval);
   }, [frames.length, speed]);
-  
+
   return (
     <Box>
-      <Text color={color}>
-        {frames[frame]}
-      </Text>
-      {text && (
-        <Text>
-          {' '}
-          {text}
-        </Text>
-      )}
+      <Text color={color}>{frames[frame]}</Text>
+      {text && <Text> {text}</Text>}
     </Box>
   );
 };

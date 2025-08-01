@@ -71,7 +71,7 @@ describe('Error Handling System', () => {
       expect(error.field).toBe('testField');
       expect(error.value).toBe('badValue');
       expect(error.expectedType).toBe('string');
-      expect(error.getSuggestions()).toContain('Check the \'testField\' parameter');
+      expect(error.getSuggestions()).toContain("Check the 'testField' parameter");
     });
 
     test('SwarmError should include swarm context', () => {
@@ -388,7 +388,7 @@ describe('Enhanced MCP Tools Error Handling', () => {
   });
 
   describe('Integration with MCP Tools', () => {
-    test('swarm_init should use enhanced error handling', async() => {
+    test('swarm_init should use enhanced error handling', async () => {
       // Mock to throw an error
       mockRuvSwarm.createSwarm = jest.fn().mockRejectedValue(new Error('WASM module not loaded'));
 
@@ -399,7 +399,7 @@ describe('Enhanced MCP Tools Error Handling', () => {
       expect(mcpTools.errorLog[0].tool).toBe('swarm_init');
     });
 
-    test('should handle validation errors in swarm_init', async() => {
+    test('should handle validation errors in swarm_init', async () => {
       const invalidParams = {
         topology: 'invalid-topology',
         maxAgents: 'not-a-number',
@@ -408,7 +408,7 @@ describe('Enhanced MCP Tools Error Handling', () => {
       await expect(mcpTools.swarm_init(invalidParams)).rejects.toThrow(ValidationError);
     });
 
-    test('agent_spawn should use enhanced error handling', async() => {
+    test('agent_spawn should use enhanced error handling', async () => {
       // First initialize a swarm
       mockRuvSwarm.createSwarm = jest.fn().mockResolvedValue({
         id: 'test-swarm',
@@ -422,7 +422,7 @@ describe('Enhanced MCP Tools Error Handling', () => {
       await expect(mcpTools.agent_spawn({ type: 'researcher' })).rejects.toThrow();
 
       // Check that error was logged with proper context
-      const agentError = mcpTools.errorLog.find(log => log.tool === 'agent_spawn');
+      const agentError = mcpTools.errorLog.find((log) => log.tool === 'agent_spawn');
       expect(agentError).toBeDefined();
       expect(agentError.error.message).toContain('Neural network error');
     });

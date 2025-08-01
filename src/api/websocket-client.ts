@@ -1,4 +1,3 @@
-
 /** Node.js 22 Native WebSocket Client Implementation
  * Uses the built-in WebSocket client available in Node.js 22+
  * Provides high-performance, standards-compliant WebSocket connectivity
@@ -43,7 +42,7 @@ export class WebSocketClient extends EventEmitter {
       reconnectInterval: 1000,
       maxReconnectAttempts: 10,
       timeout: 30000,
-      ...options
+      ...options,
     };
   }
 
@@ -53,7 +52,7 @@ export class WebSocketClient extends EventEmitter {
       try {
         // Use Node.js 22 built-in WebSocket
         this.ws = new WebSocket(this.url);
-        
+
         const timeout = setTimeout(() => {
           reject(new Error('WebSocket connection timeout'));
         }, this.options.timeout);
@@ -96,7 +95,7 @@ export class WebSocketClient extends EventEmitter {
           this.emit('error', error);
           reject(error);
         };
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
@@ -104,12 +103,12 @@ export class WebSocketClient extends EventEmitter {
 
   /** Disconnect from WebSocket server */
   disconnect(): void {
-    if(this.reconnectTimer) {
+    if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
     }
     this.stopHeartbeat();
-    if(this.ws && this.isConnected) {
+    if (this.ws && this.isConnected) {
       this.ws.close();
     }
     this.isConnected = false;
@@ -117,14 +116,13 @@ export class WebSocketClient extends EventEmitter {
 
   /** Send message to server */
 
-send(data)
-: void
+  send(data): void;
   send(data: any): void {
     const message = typeof data === 'string' ? data : JSON.stringify(data);
-    if(this.isConnected && this.ws) {
+    if (this.isConnected && this.ws) {
       try {
         this.ws.send(message);
-      } catch(error) {
+      } catch (error) {
         this.emit('error', error);
         this.queueMessage(message);
       }
@@ -137,19 +135,19 @@ send(data)
   private queueMessage(message: string): void {
     this.messageQueue.push(message);
     // Limit queue size to prevent memory issues
-    if(this.messageQueue.length > 1000) {
+    if (this.messageQueue.length > 1000) {
       this.messageQueue.shift();
     }
   }
 
   /** Send all queued messages */
   private flushMessageQueue(): void {
-    while(this.messageQueue.length > 0 && this.isConnected) {
+    while (this.messageQueue.length > 0 && this.isConnected) {
       const message = this.messageQueue.shift();
-      if(message) {
+      if (message) {
         try {
           this.ws!.send(message);
-        } catch(error) {
+        } catch (error) {
           this.emit('error', error);
           this.messageQueue.unshift(message);
           break;
@@ -161,14 +159,14 @@ send(data)
   /** Schedule reconnection attempt */
   private scheduleReconnect(): void {
     const delay = this.options.reconnectInterval! * 2 ** this.reconnectAttempts;
-    this.reconnectTimer = setTimeout(async() => {
+    this.reconnectTimer = setTimeout(async () => {
       this.reconnectAttempts++;
       this.emit('reconnecting', this.reconnectAttempts);
       try {
         await this.connect();
-      } catch(error) {
+      } catch (error) {
         this.emit('reconnectError', error);
-        if(this.reconnectAttempts < this.options.maxReconnectAttempts!) {
+        if (this.reconnectAttempts < this.options.maxReconnectAttempts!) {
           this.scheduleReconnect();
         } else {
           this.emit('reconnectFailed');
@@ -180,11 +178,11 @@ send(data)
   /** Start heartbeat mechanism */
   private startHeartbeat(): void {
     this.heartbeatTimer = setInterval(() => {
-      if(this.isConnected && this.ws) {
+      if (this.isConnected && this.ws) {
         try {
           // Note: WebSocket ping might not be available, use a message instead
           this.ws.send(JSON.stringify({ type: 'ping' }));
-        } catch(error) {
+        } catch (error) {
           this.emit('error', error);
         }
       }
@@ -193,7 +191,7 @@ send(data)
 
   /** Stop heartbeat mechanism */
   private stopHeartbeat(): void {
-    if(this.heartbeatTimer) {
+    if (this.heartbeatTimer) {
       clearInterval(this.heartbeatTimer);
       this.heartbeatTimer = null;
     }

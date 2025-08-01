@@ -20,18 +20,6 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "include": [
-    "src/**/*",
-    "cli/**/*",
-    "bindings/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "target",
-    "tests",
-    "examples",
-    "**/*.test.ts",
-    "**/*.spec.ts"
-  ]
+  "include": ["src/**/*", "cli/**/*", "bindings/**/*"],
+  "exclude": ["node_modules", "dist", "target", "tests", "examples", "**/*.test.ts", "**/*.spec.ts"]
 }

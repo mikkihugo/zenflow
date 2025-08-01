@@ -9,69 +9,142 @@ export interface AgentId {
   instance: number;
 }
 
-export type AgentType = 
+export type AgentType =
   // Core Foundation Agents
-  | 'coder' | 'analyst' | 'researcher' | 'coordinator' | 'tester' | 'architect' 
-  | 'debug' | 'queen' | 'specialist' | 'reviewer' | 'optimizer' | 'documenter'
-  | 'monitor' | 'planner'
-  
+  | 'coder'
+  | 'analyst'
+  | 'researcher'
+  | 'coordinator'
+  | 'tester'
+  | 'architect'
+  | 'debug'
+  | 'queen'
+  | 'specialist'
+  | 'reviewer'
+  | 'optimizer'
+  | 'documenter'
+  | 'monitor'
+  | 'planner'
+
   // Development Agents
-  | 'requirements-engineer' | 'design-architect' | 'task-planner'
-  | 'developer' | 'system-architect' | 'steering-author'
-  | 'dev-backend-api' | 'frontend-dev' | 'fullstack-dev' | 'api-dev'
-  
+  | 'requirements-engineer'
+  | 'design-architect'
+  | 'task-planner'
+  | 'developer'
+  | 'system-architect'
+  | 'steering-author'
+  | 'dev-backend-api'
+  | 'frontend-dev'
+  | 'fullstack-dev'
+  | 'api-dev'
+
   // Testing Agents
-  | 'unit-tester' | 'integration-tester' | 'e2e-tester' | 'performance-tester'
-  | 'tdd-london-swarm' | 'production-validator'
-  
+  | 'unit-tester'
+  | 'integration-tester'
+  | 'e2e-tester'
+  | 'performance-tester'
+  | 'tdd-london-swarm'
+  | 'production-validator'
+
   // Architecture Agents
-  | 'arch-system-design' | 'database-architect' | 'cloud-architect' | 'security-architect'
-  
+  | 'arch-system-design'
+  | 'database-architect'
+  | 'cloud-architect'
+  | 'security-architect'
+
   // DevOps Agents
-  | 'ops-cicd-github' | 'infrastructure-ops' | 'monitoring-ops' | 'deployment-ops'
-  
+  | 'ops-cicd-github'
+  | 'infrastructure-ops'
+  | 'monitoring-ops'
+  | 'deployment-ops'
+
   // Documentation Agents
-  | 'docs-api-openapi' | 'user-guide-writer' | 'technical-writer' | 'readme-writer'
-  
+  | 'docs-api-openapi'
+  | 'user-guide-writer'
+  | 'technical-writer'
+  | 'readme-writer'
+
   // Analysis Agents
-  | 'analyze-code-quality' | 'performance-analyzer' | 'security-analyzer' | 'refactoring-analyzer'
-  
+  | 'analyze-code-quality'
+  | 'performance-analyzer'
+  | 'security-analyzer'
+  | 'refactoring-analyzer'
+
   // Data Agents
-  | 'data-ml-model' | 'etl-specialist' | 'analytics-specialist' | 'visualization-specialist'
-  
+  | 'data-ml-model'
+  | 'etl-specialist'
+  | 'analytics-specialist'
+  | 'visualization-specialist'
+
   // Specialized Agents
-  | 'spec-mobile-react-native' | 'embedded-specialist' | 'blockchain-specialist' | 'ai-ml-specialist'
-  
+  | 'spec-mobile-react-native'
+  | 'embedded-specialist'
+  | 'blockchain-specialist'
+  | 'ai-ml-specialist'
+
   // GitHub Integration Agents
-  | 'code-review-swarm' | 'github-modes' | 'issue-tracker' | 'multi-repo-swarm'
-  | 'pr-manager' | 'project-board-sync' | 'release-manager' | 'release-swarm'
-  | 'repo-architect' | 'swarm-issue' | 'swarm-pr' | 'sync-coordinator'
-  | 'workflow-automation' | 'github-pr-manager'
-  
-  // Swarm Coordination Agents  
-  | 'adaptive-coordinator' | 'hierarchical-coordinator' | 'mesh-coordinator'
-  | 'coordinator-swarm-init' | 'orchestrator-task' | 'memory-coordinator'
-  | 'swarm-memory-manager' | 'collective-intelligence-coordinator'
-  
+  | 'code-review-swarm'
+  | 'github-modes'
+  | 'issue-tracker'
+  | 'multi-repo-swarm'
+  | 'pr-manager'
+  | 'project-board-sync'
+  | 'release-manager'
+  | 'release-swarm'
+  | 'repo-architect'
+  | 'swarm-issue'
+  | 'swarm-pr'
+  | 'sync-coordinator'
+  | 'workflow-automation'
+  | 'github-pr-manager'
+
+  // Swarm Coordination Agents
+  | 'adaptive-coordinator'
+  | 'hierarchical-coordinator'
+  | 'mesh-coordinator'
+  | 'coordinator-swarm-init'
+  | 'orchestrator-task'
+  | 'memory-coordinator'
+  | 'swarm-memory-manager'
+  | 'collective-intelligence-coordinator'
+
   // Consensus & Distributed Systems
-  | 'byzantine-coordinator' | 'consensus-builder' | 'crdt-synchronizer'
-  | 'gossip-coordinator' | 'performance-benchmarker' | 'quorum-manager'
-  | 'raft-manager' | 'security-manager'
-  
+  | 'byzantine-coordinator'
+  | 'consensus-builder'
+  | 'crdt-synchronizer'
+  | 'gossip-coordinator'
+  | 'performance-benchmarker'
+  | 'quorum-manager'
+  | 'raft-manager'
+  | 'security-manager'
+
   // Performance & Optimization
-  | 'benchmark-suite' | 'load-balancer' | 'performance-monitor'
-  | 'resource-allocator' | 'topology-optimizer'
-  
+  | 'benchmark-suite'
+  | 'load-balancer'
+  | 'performance-monitor'
+  | 'resource-allocator'
+  | 'topology-optimizer'
+
   // SPARC Methodology Agents
-  | 'specification' | 'architecture' | 'refinement' | 'pseudocode'
-  | 'sparc-coordinator' | 'implementer-sparc-coder'
-  
+  | 'specification'
+  | 'architecture'
+  | 'refinement'
+  | 'pseudocode'
+  | 'sparc-coordinator'
+  | 'implementer-sparc-coder'
+
   // Smart Automation Agents
-  | 'automation-smart-agent' | 'base-template-generator' | 'migration-plan'
-  
+  | 'automation-smart-agent'
+  | 'base-template-generator'
+  | 'migration-plan'
+
   // Maestro specs-driven agent types (legacy compatibility)
-  | 'requirements_analyst' | 'design_architect' | 'task_planner'
-  | 'implementation_coder' | 'quality_reviewer' | 'steering_documenter';
+  | 'requirements_analyst'
+  | 'design_architect'
+  | 'task_planner'
+  | 'implementation_coder'
+  | 'quality_reviewer'
+  | 'steering_documenter';
 
 export type AgentStatus = 'initializing' | 'idle' | 'busy' | 'error' | 'terminated' | 'offline';
 

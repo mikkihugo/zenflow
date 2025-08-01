@@ -3,10 +3,10 @@
  * Author: Bron refactor 2025‑07‑01
  */
 
-import path from 'node:path';
-import { promises as fs, existsSync, accessSync } from 'node:fs';
-import { fileURLToPath, pathToFileURL } from 'node:url';
 import { webcrypto as nodeCrypto } from 'node:crypto';
+import { accessSync, existsSync, promises as fs } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 // ────────────────────────────────────────────────────────────────────────────────
 // helpers ────────────────────────────────────────────────────────────────────────
@@ -36,10 +36,38 @@ class WasmModuleLoader {
       },
 
       /* legacy / optional stubs */
-      neural: { path: './wasm/ruv-fann.wasm', size: 1024 * 1024, priority: 'medium', dependencies: ['core'], exists: true, optional: true },
-      forecasting: { path: './wasm/neuro-divergent.wasm', size: 1536 * 1024, priority: 'medium', dependencies: ['core'], exists: true, optional: true },
-      swarm: { path: './wasm/ruv_swarm_simd.wasm', size: 768 * 1024, priority: 'high', dependencies: ['core'], exists: true, optional: true },
-      persistence: { path: './wasm/ruv-swarm-persistence.wasm', size: 256 * 1024, priority: 'high', dependencies: ['core'], exists: false, optional: true },
+      neural: {
+        path: './wasm/ruv-fann.wasm',
+        size: 1024 * 1024,
+        priority: 'medium',
+        dependencies: ['core'],
+        exists: true,
+        optional: true,
+      },
+      forecasting: {
+        path: './wasm/neuro-divergent.wasm',
+        size: 1536 * 1024,
+        priority: 'medium',
+        dependencies: ['core'],
+        exists: true,
+        optional: true,
+      },
+      swarm: {
+        path: './wasm/ruv_swarm_simd.wasm',
+        size: 768 * 1024,
+        priority: 'high',
+        dependencies: ['core'],
+        exists: true,
+        optional: true,
+      },
+      persistence: {
+        path: './wasm/ruv-swarm-persistence.wasm',
+        size: 256 * 1024,
+        priority: 'high',
+        dependencies: ['core'],
+        exists: false,
+        optional: true,
+      },
     };
   }
 
@@ -80,11 +108,9 @@ class WasmModuleLoader {
     }
 
     /* ensure deps first */
-    await Promise.all(info.dependencies.map(dep => this.loadModule(dep)));
+    await Promise.all(info.dependencies.map((dep) => this.loadModule(dep)));
 
-    const p = (name === 'core')
-      ? this.#loadCoreBindings()
-      : this.#instantiateRaw(name, info);
+    const p = name === 'core' ? this.#loadCoreBindings() : this.#instantiateRaw(name, info);
 
     this.loadingPromises.set(name, p);
     try {
@@ -119,19 +145,21 @@ class WasmModuleLoader {
 
     // Check cache first
     const cached = this.wasmCache.get(cacheKey);
-    if (cached && (Date.now() - cached.timestamp < this.cacheTimeout)) {
+    if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
       console.error(`✨ Using cached WASM module: ${name}`);
       return cached.module;
     }
 
     let buffer;
-    if (typeof window !== 'undefined') { // browser
+    if (typeof window !== 'undefined') {
+      // browser
       const resp = await fetch(wasmPath);
       if (!resp.ok) {
         throw new Error(`fetch failed: ${resp.statusText}`);
       }
       buffer = await resp.arrayBuffer();
-    } else { // Node
+    } else {
+      // Node
       buffer = await fs.readFile(wasmPath).catch(() => null);
       if (!buffer) {
         return this.#placeholder(name);
@@ -166,7 +194,6 @@ class WasmModuleLoader {
           }
         } catch (pathError) {
           console.debug(`❌ Failed to load from ${pathCandidate.description}:`, pathError.message);
-          continue;
         }
       }
 
@@ -191,7 +218,7 @@ class WasmModuleLoader {
     const base = {
       env: { memory: new WebAssembly.Memory({ initial: 256, maximum: 4096 }) },
       wasi_snapshot_preview1: {
-        proc_exit: c => {
+        proc_exit: (c) => {
           throw new Error(`WASI exit ${c}`);
         },
         fd_write: () => 0,
@@ -228,21 +255,24 @@ class WasmModuleLoader {
     await this.loadModule('core');
   }
   async #loadAllModules() {
-    return Promise.all(Object.keys(this.moduleManifest).map(n => this.loadModule(n)));
+    return Promise.all(Object.keys(this.moduleManifest).map((n) => this.loadModule(n)));
   }
   #setupLazyProxies() {
     const proxyBag = {};
     for (const n of Object.keys(this.moduleManifest)) {
-      proxyBag[n] = new Proxy({}, {
-        get: (_, p) => {
-          if (!this.modules.has(n)) {
-            throw new Error(
-              `Module '${n}' not yet loaded; await loader.loadModule('${n}') first`,
-            );
-          }
-          return this.modules.get(n).exports[p];
-        },
-      });
+      proxyBag[n] = new Proxy(
+        {},
+        {
+          get: (_, p) => {
+            if (!this.modules.has(n)) {
+              throw new Error(
+                `Module '${n}' not yet loaded; await loader.loadModule('${n}') first`
+              );
+            }
+            return this.modules.get(n).exports[p];
+          },
+        }
+      );
     }
     return proxyBag;
   }
@@ -259,7 +289,7 @@ class WasmModuleLoader {
             path.join(cwd, '..', 'wasm'),
             path.join(cwd, 'wasm'),
           ];
-          return potentialPaths.find(p => {
+          return potentialPaths.find((p) => {
             try {
               accessSync(p);
               return true;
@@ -290,9 +320,7 @@ class WasmModuleLoader {
           if (result) {
             return result;
           }
-        } catch {
-          continue;
-        }
+        } catch {}
       }
 
       return null;
@@ -338,7 +366,7 @@ class WasmModuleLoader {
         jsBindings: null,
         inline: true,
       },
-    ].filter(candidate => {
+    ].filter((candidate) => {
       if (candidate.inline) {
         return true;
       }
@@ -385,12 +413,14 @@ class WasmModuleLoader {
           module: initialized,
           exports: initialized,
           memory: initialized.memory || new WebAssembly.Memory({ initial: 256, maximum: 4096 }),
-          getTotalMemoryUsage: initialized.getTotalMemoryUsage || (() => {
-            if (initialized.memory && initialized.memory.buffer) {
-              return initialized.memory.buffer.byteLength;
-            }
-            return 256 * 65536;
-          }),
+          getTotalMemoryUsage:
+            initialized.getTotalMemoryUsage ||
+            (() => {
+              if (initialized.memory && initialized.memory.buffer) {
+                return initialized.memory.buffer.byteLength;
+              }
+              return 256 * 65536;
+            }),
           isPlaceholder: false,
         };
       } catch (loaderError) {
@@ -474,7 +504,9 @@ class WasmModuleLoader {
 
       // Neural network functions
       create_neural_network: (layers, neurons_per_layer) => {
-        console.error(`Creating neural network with ${layers} layers and ${neurons_per_layer} neurons per layer`);
+        console.error(
+          `Creating neural network with ${layers} layers and ${neurons_per_layer} neurons per layer`
+        );
         return 1;
       },
 
@@ -538,7 +570,8 @@ class WasmModuleLoader {
     if (!b) {
       return '0 B';
     }
-    const k = 1024, i = Math.floor(Math.log(b) / Math.log(k));
+    const k = 1024,
+      i = Math.floor(Math.log(b) / Math.log(k));
     return `${(b / k ** i).toFixed(1)} ${['B', 'KB', 'MB', 'GB'][i]}`;
   }
 

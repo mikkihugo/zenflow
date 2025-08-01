@@ -7,14 +7,14 @@
 
 import { EventEmitter } from 'events';
 import { DatabaseManager } from '../core/DatabaseManager.js';
-import { MCPToolWrapper } from './MCPToolWrapper.js';
-import {
-  ConsensusProposal,
-  ConsensusVote,
-  ConsensusResult,
-  VotingStrategy,
+import type {
   ConsensusMetrics,
+  ConsensusProposal,
+  ConsensusResult,
+  ConsensusVote,
+  VotingStrategy,
 } from '../types.js';
+import { MCPToolWrapper } from './MCPToolWrapper.js';
 
 export class ConsensusEngine extends EventEmitter {
   private threshold: number;
@@ -134,7 +134,7 @@ export class ConsensusEngine extends EventEmitter {
   async getVotingRecommendation(
     proposalId: string,
     agentId: string,
-    agentType: string,
+    agentType: string
   ): Promise<any> {
     const proposal = this.activeProposals.get(proposalId);
     if (!proposal) {
@@ -325,7 +325,7 @@ export class ConsensusEngine extends EventEmitter {
    */
   private async handleConsensusAchieved(
     proposal: ConsensusProposal,
-    result: ConsensusResult,
+    result: ConsensusResult
   ): Promise<void> {
     // Update proposal status
     await this.db.updateConsensusStatus(proposal.id, 'achieved');
@@ -353,7 +353,7 @@ export class ConsensusEngine extends EventEmitter {
    */
   private async handleConsensusFailed(
     proposal: ConsensusProposal,
-    result: ConsensusResult,
+    result: ConsensusResult
   ): Promise<void> {
     // Update proposal status
     await this.db.updateConsensusStatus(proposal.id, 'failed');
@@ -416,7 +416,7 @@ export class ConsensusEngine extends EventEmitter {
   private async broadcastConsensusResult(
     proposal: ConsensusProposal,
     result: ConsensusResult,
-    achieved: boolean,
+    achieved: boolean
   ): Promise<void> {
     await this.db.createCommunication({
       from_agent_id: 'consensus-engine',
@@ -438,7 +438,7 @@ export class ConsensusEngine extends EventEmitter {
    */
   private async executeConsensusDecision(
     proposal: ConsensusProposal,
-    result: ConsensusResult,
+    result: ConsensusResult
   ): Promise<void> {
     if (!proposal.taskId) return;
 

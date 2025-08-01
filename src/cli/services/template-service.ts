@@ -1,18 +1,18 @@
 /**
  * Template Service
- * 
+ *
  * Provides template operations for project initialization and code generation.
  * Supports multiple template engines, variable substitution, and custom templates.
  */
 
-import { readFile, writeFile, readdir, stat } from 'fs/promises';
-import { existsSync } from 'fs';
-import { join, dirname, basename, extname } from 'path';
 import { EventEmitter } from 'events';
-import { createLogger, type Logger } from '../utils/logger';
-import { ensureDirectory, copyFile, findFiles, isDirectory } from '../utils/file-system';
-import { validateString, validateObject } from '../utils/validation';
+import { existsSync } from 'fs';
+import { readdir, readFile, stat, writeFile } from 'fs/promises';
+import { basename, dirname, extname, join } from 'path';
 import type { Result, ValidationResult } from '../types/index';
+import { copyFile, ensureDirectory, findFiles, isDirectory } from '../utils/file-system';
+import { createLogger, type Logger } from '../utils/logger';
+import { validateObject, validateString } from '../utils/validation';
 
 /**
  * Template variable definition
@@ -20,25 +20,25 @@ import type { Result, ValidationResult } from '../types/index';
 export interface TemplateVariable {
   /** Variable name */
   name: string;
-  
+
   /** Variable description */
   description: string;
-  
+
   /** Variable type */
   type: 'string' | 'number' | 'boolean' | 'array' | 'object';
-  
+
   /** Default value */
   defaultValue?: any;
-  
+
   /** Whether variable is required */
   required?: boolean;
-  
+
   /** Validation pattern (for strings) */
   pattern?: string;
-  
+
   /** Allowed values (enum) */
   allowedValues?: any[];
-  
+
   /** Prompt message for interactive input */
   prompt?: string;
 }
@@ -49,7 +49,7 @@ export interface TemplateVariable {
 export interface TemplateContext {
   /** Template variables */
   variables: Record<string, any>;
-  
+
   /** Template metadata */
   metadata: {
     templateName: string;
@@ -57,7 +57,7 @@ export interface TemplateContext {
     generatedAt: Date;
     generatedBy: string;
   };
-  
+
   /** Helper functions */
   helpers: Record<string, (...args: any[]) => any>;
 }
@@ -68,40 +68,40 @@ export interface TemplateContext {
 export interface TemplateConfig {
   /** Template name */
   name: string;
-  
+
   /** Template version */
   version: string;
-  
+
   /** Template description */
   description: string;
-  
+
   /** Template author */
   author?: string;
-  
+
   /** Template license */
   license?: string;
-  
+
   /** Template tags */
   tags?: string[];
-  
+
   /** Template variables */
   variables: TemplateVariable[];
-  
+
   /** Files to ignore during template processing */
   ignore?: string[];
-  
+
   /** File patterns to process */
   include?: string[];
-  
+
   /** Template engine to use */
   engine?: 'handlebars' | 'mustache' | 'simple' | 'custom';
-  
+
   /** Custom template engine configuration */
   engineConfig?: Record<string, any>;
-  
+
   /** Post-processing scripts */
   postProcess?: string[];
-  
+
   /** Dependencies to install */
   dependencies?: {
     npm?: string[];
@@ -115,19 +115,19 @@ export interface TemplateConfig {
 export interface ProjectTemplate {
   /** Template configuration */
   config: TemplateConfig;
-  
+
   /** Template directory path */
   path: string;
-  
+
   /** Template files */
   files: string[];
-  
+
   /** Template size in bytes */
   size: number;
-  
+
   /** Template creation date */
   createdAt: Date;
-  
+
   /** Template modification date */
   modifiedAt: Date;
 }
@@ -138,25 +138,25 @@ export interface ProjectTemplate {
 export interface TemplateRenderResult {
   /** Render success */
   success: boolean;
-  
+
   /** Render message */
   message: string;
-  
+
   /** Generated files */
   generatedFiles: string[];
-  
+
   /** Skipped files */
   skippedFiles: string[];
-  
+
   /** Errors encountered */
   errors: Array<{
     file: string;
     error: string;
   }>;
-  
+
   /** Render duration */
   duration: number;
-  
+
   /** Output directory */
   outputDir: string;
 }
@@ -167,13 +167,13 @@ export interface TemplateRenderResult {
 export interface TemplateEngine {
   /** Engine name */
   name: string;
-  
+
   /** Render template content */
   render(content: string, context: TemplateContext): Promise<string>;
-  
+
   /** Check if file should be processed */
   shouldProcess(filePath: string): boolean;
-  
+
   /** Get file patterns this engine handles */
   getPatterns(): string[];
 }
@@ -183,22 +183,25 @@ export interface TemplateEngine {
  */
 class SimpleTemplateEngine implements TemplateEngine {
   name = 'simple';
-  
+
   async render(content: string, context: TemplateContext): Promise<string> {
     let result = content;
-    
+
     // Replace variables using {{variable}} syntax
     for (const [key, value] of Object.entries(context.variables)) {
       const pattern = new RegExp(`\\{\\{\\s*${key}\\s*\\}\\}`, 'g');
       result = result.replace(pattern, String(value));
     }
-    
+
     // Replace metadata variables
     result = result.replace(/\{\{\s*templateName\s*\}\}/g, context.metadata.templateName);
     result = result.replace(/\{\{\s*templateVersion\s*\}\}/g, context.metadata.templateVersion);
-    result = result.replace(/\{\{\s*generatedAt\s*\}\}/g, context.metadata.generatedAt.toISOString());
+    result = result.replace(
+      /\{\{\s*generatedAt\s*\}\}/g,
+      context.metadata.generatedAt.toISOString()
+    );
     result = result.replace(/\{\{\s*generatedBy\s*\}\}/g, context.metadata.generatedBy);
-    
+
     // Apply helper functions
     for (const [helperName, helperFn] of Object.entries(context.helpers)) {
       const pattern = new RegExp(`\\{\\{\\s*${helperName}\\s*\\(([^)]+)\\)\\s*\\}\\}`, 'g');
@@ -211,15 +214,15 @@ class SimpleTemplateEngine implements TemplateEngine {
         }
       });
     }
-    
+
     return result;
   }
-  
+
   shouldProcess(filePath: string): boolean {
     const ext = extname(filePath).toLowerCase();
     return !['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.ico', '.zip', '.tar', '.gz'].includes(ext);
   }
-  
+
   getPatterns(): string[] {
     return ['**/*'];
   }
@@ -233,18 +236,23 @@ const DEFAULT_HELPERS = {
   lowercase: (str: string) => str.toLowerCase(),
   capitalize: (str: string) => str.charAt(0).toUpperCase() + str.slice(1),
   camelCase: (str: string) => str.replace(/[-_\s](.)/g, (_, char) => char.toUpperCase()),
-  kebabCase: (str: string) => str.replace(/[A-Z]/g, (char) => '-' + char.toLowerCase()).replace(/^-/, ''),
-  snakeCase: (str: string) => str.replace(/[A-Z]/g, (char) => '_' + char.toLowerCase()).replace(/^_/, ''),
-  pascalCase: (str: string) => str.charAt(0).toUpperCase() + str.slice(1).replace(/[-_\s](.)/g, (_, char) => char.toUpperCase()),
-  pluralize: (str: string) => str.endsWith('s') ? str : str + 's',
-  singularize: (str: string) => str.endsWith('s') ? str.slice(0, -1) : str,
+  kebabCase: (str: string) =>
+    str.replace(/[A-Z]/g, (char) => '-' + char.toLowerCase()).replace(/^-/, ''),
+  snakeCase: (str: string) =>
+    str.replace(/[A-Z]/g, (char) => '_' + char.toLowerCase()).replace(/^_/, ''),
+  pascalCase: (str: string) =>
+    str.charAt(0).toUpperCase() +
+    str.slice(1).replace(/[-_\s](.)/g, (_, char) => char.toUpperCase()),
+  pluralize: (str: string) => (str.endsWith('s') ? str : str + 's'),
+  singularize: (str: string) => (str.endsWith('s') ? str.slice(0, -1) : str),
   now: () => new Date().toISOString(),
   timestamp: () => Date.now(),
-  uuid: () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  }),
+  uuid: () =>
+    'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      const r = (Math.random() * 16) | 0;
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    }),
 };
 
 /**
@@ -256,16 +264,16 @@ export class TemplateService extends EventEmitter {
   private engines = new Map<string, TemplateEngine>();
   private templates = new Map<string, ProjectTemplate>();
   private initialized = false;
-  
+
   constructor(config?: Record<string, any>) {
     super();
     this.logger = createLogger({ prefix: 'TemplateService' });
     this.templatesDir = config?.templatesDir || join(process.cwd(), 'templates');
-    
+
     // Register default template engine
     this.registerEngine(new SimpleTemplateEngine());
   }
-  
+
   /**
    * Initialize the template service
    */
@@ -273,14 +281,14 @@ export class TemplateService extends EventEmitter {
     if (this.initialized) {
       return;
     }
-    
+
     try {
       // Ensure templates directory exists
       await ensureDirectory(this.templatesDir);
-      
+
       // Load available templates
       await this.loadTemplates();
-      
+
       this.initialized = true;
       this.logger.info('Template service initialized');
     } catch (error) {
@@ -288,7 +296,7 @@ export class TemplateService extends EventEmitter {
       throw error;
     }
   }
-  
+
   /**
    * Dispose the template service
    */
@@ -296,18 +304,18 @@ export class TemplateService extends EventEmitter {
     if (!this.initialized) {
       return;
     }
-    
+
     try {
       this.templates.clear();
       this.engines.clear();
       this.initialized = false;
-      
+
       this.logger.info('Template service disposed');
     } catch (error) {
       this.logger.error('Error disposing template service:', error);
     }
   }
-  
+
   /**
    * Health check for the service
    */
@@ -319,7 +327,7 @@ export class TemplateService extends EventEmitter {
           message: 'Service not initialized',
         };
       }
-      
+
       // Check if templates directory exists
       if (!existsSync(this.templatesDir)) {
         return {
@@ -327,10 +335,10 @@ export class TemplateService extends EventEmitter {
           message: 'Templates directory not accessible',
         };
       }
-      
+
       const templateCount = this.templates.size;
       const engineCount = this.engines.size;
-      
+
       return {
         healthy: true,
         message: `${templateCount} templates, ${engineCount} engines`,
@@ -342,7 +350,7 @@ export class TemplateService extends EventEmitter {
       };
     }
   }
-  
+
   /**
    * Register a template engine
    */
@@ -350,7 +358,7 @@ export class TemplateService extends EventEmitter {
     this.engines.set(engine.name, engine);
     this.logger.debug(`Registered template engine: ${engine.name}`);
   }
-  
+
   /**
    * Get available templates
    */
@@ -368,7 +376,7 @@ export class TemplateService extends EventEmitter {
       };
     }
   }
-  
+
   /**
    * Get a specific template
    */
@@ -381,7 +389,7 @@ export class TemplateService extends EventEmitter {
           error: new Error(`Template '${name}' not found`),
         };
       }
-      
+
       return {
         success: true,
         data: template,
@@ -393,7 +401,7 @@ export class TemplateService extends EventEmitter {
       };
     }
   }
-  
+
   /**
    * Render a template to a target directory
    */
@@ -408,18 +416,18 @@ export class TemplateService extends EventEmitter {
     } = {}
   ): Promise<Result<TemplateRenderResult>> {
     const startTime = Date.now();
-    
+
     try {
       this.logger.info(`Rendering template '${templateName}' to '${outputDir}'`);
-      
+
       // Get template
       const templateResult = await this.getTemplate(templateName);
       if (!templateResult.success) {
         return templateResult as Result<TemplateRenderResult>;
       }
-      
+
       const template = templateResult.data;
-      
+
       // Validate variables
       const validationResult = await this.validateVariables(template.config.variables, variables);
       if (!validationResult.valid) {
@@ -428,7 +436,7 @@ export class TemplateService extends EventEmitter {
           error: new Error(`Variable validation failed: ${validationResult.errors[0]?.message}`),
         };
       }
-      
+
       // Prepare template context
       const context: TemplateContext = {
         variables,
@@ -443,7 +451,7 @@ export class TemplateService extends EventEmitter {
           ...options.customHelpers,
         },
       };
-      
+
       // Get template engine
       const engineName = template.config.engine || 'simple';
       const engine = this.engines.get(engineName);
@@ -453,12 +461,12 @@ export class TemplateService extends EventEmitter {
           error: new Error(`Template engine '${engineName}' not found`),
         };
       }
-      
+
       // Ensure output directory exists (unless dry run)
       if (!options.dryRun) {
         await ensureDirectory(outputDir);
       }
-      
+
       const result: TemplateRenderResult = {
         success: true,
         message: 'Template rendered successfully',
@@ -468,37 +476,37 @@ export class TemplateService extends EventEmitter {
         duration: 0,
         outputDir,
       };
-      
+
       // Process template files
       for (const relativeFilePath of template.files) {
         const sourceFilePath = join(template.path, relativeFilePath);
         const targetFilePath = join(outputDir, relativeFilePath);
-        
+
         try {
           // Check if file should be skipped
           if (this.shouldSkipFile(relativeFilePath, template.config)) {
             result.skippedFiles.push(relativeFilePath);
             continue;
           }
-          
+
           // Check if target exists and overwrite is disabled
           if (!options.overwrite && existsSync(targetFilePath) && !options.dryRun) {
             result.skippedFiles.push(relativeFilePath);
             this.logger.debug(`Skipped existing file: ${relativeFilePath}`);
             continue;
           }
-          
+
           // Process file
           if (engine.shouldProcess(sourceFilePath)) {
             // Read, render, and write template file
             const content = await readFile(sourceFilePath, 'utf8');
             const renderedContent = await engine.render(content, context);
-            
+
             if (!options.dryRun) {
               await ensureDirectory(dirname(targetFilePath));
               await writeFile(targetFilePath, renderedContent, 'utf8');
             }
-            
+
             result.generatedFiles.push(relativeFilePath);
             this.logger.debug(`Processed template file: ${relativeFilePath}`);
           } else {
@@ -507,7 +515,7 @@ export class TemplateService extends EventEmitter {
               await ensureDirectory(dirname(targetFilePath));
               await copyFile(sourceFilePath, targetFilePath, { overwrite: options.overwrite });
             }
-            
+
             result.generatedFiles.push(relativeFilePath);
             this.logger.debug(`Copied binary file: ${relativeFilePath}`);
           }
@@ -519,20 +527,20 @@ export class TemplateService extends EventEmitter {
           this.logger.error(`Error processing file ${relativeFilePath}:`, error);
         }
       }
-      
+
       result.duration = Date.now() - startTime;
-      
+
       // Run post-processing scripts
       if (template.config.postProcess && !options.dryRun) {
         await this.runPostProcessing(template.config.postProcess, outputDir);
       }
-      
+
       this.emit('templateRendered', {
         templateName,
         outputDir,
         result,
       });
-      
+
       return {
         success: true,
         data: result,
@@ -544,7 +552,7 @@ export class TemplateService extends EventEmitter {
       };
     }
   }
-  
+
   /**
    * Create a new template from a directory
    */
@@ -555,7 +563,7 @@ export class TemplateService extends EventEmitter {
   ): Promise<Result<ProjectTemplate>> {
     try {
       this.logger.info(`Creating template '${templateName}' from '${sourceDir}'`);
-      
+
       // Validate source directory
       if (!(await isDirectory(sourceDir))) {
         return {
@@ -563,25 +571,25 @@ export class TemplateService extends EventEmitter {
           error: new Error(`Source directory '${sourceDir}' does not exist`),
         };
       }
-      
+
       // Create template directory
       const templateDir = join(this.templatesDir, templateName);
       await ensureDirectory(templateDir);
-      
+
       // Copy source files to template directory
       const files = await findFiles(sourceDir, '**/*', { recursive: true });
       const relativeFiles: string[] = [];
-      
+
       for (const file of files) {
         const relativePath = file.replace(sourceDir, '').replace(/^[\\/]/, '');
         const targetPath = join(templateDir, relativePath);
-        
+
         await ensureDirectory(dirname(targetPath));
         await copyFile(file, targetPath, { overwrite: true });
-        
+
         relativeFiles.push(relativePath);
       }
-      
+
       // Create template configuration
       const templateConfig: TemplateConfig = {
         name: templateName,
@@ -598,11 +606,11 @@ export class TemplateService extends EventEmitter {
         postProcess: config.postProcess || [],
         dependencies: config.dependencies,
       };
-      
+
       // Save template configuration
       const configPath = join(templateDir, 'template.json');
       await writeFile(configPath, JSON.stringify(templateConfig, null, 2));
-      
+
       // Create template object
       const template: ProjectTemplate = {
         config: templateConfig,
@@ -612,12 +620,12 @@ export class TemplateService extends EventEmitter {
         createdAt: new Date(),
         modifiedAt: new Date(),
       };
-      
+
       // Add to templates cache
       this.templates.set(templateName, template);
-      
+
       this.emit('templateCreated', { templateName, template });
-      
+
       return {
         success: true,
         data: template,
@@ -629,7 +637,7 @@ export class TemplateService extends EventEmitter {
       };
     }
   }
-  
+
   /**
    * Load templates from the templates directory
    */
@@ -638,28 +646,28 @@ export class TemplateService extends EventEmitter {
       if (!existsSync(this.templatesDir)) {
         return;
       }
-      
+
       const entries = await readdir(this.templatesDir, { withFileTypes: true });
-      
+
       for (const entry of entries) {
         if (entry.isDirectory()) {
           const templateDir = join(this.templatesDir, entry.name);
           const configPath = join(templateDir, 'template.json');
-          
+
           if (existsSync(configPath)) {
             try {
               const configData = await readFile(configPath, 'utf8');
               const config = JSON.parse(configData) as TemplateConfig;
-              
+
               // Get template files
               const files = await findFiles(templateDir, '**/*', { recursive: true });
               const relativeFiles = files
-                .map(file => file.replace(templateDir, '').replace(/^[\\/]/, ''))
-                .filter(file => file !== 'template.json');
-              
+                .map((file) => file.replace(templateDir, '').replace(/^[\\/]/, ''))
+                .filter((file) => file !== 'template.json');
+
               // Get directory stats
               const stats = await stat(templateDir);
-              
+
               const template: ProjectTemplate = {
                 config,
                 path: templateDir,
@@ -668,7 +676,7 @@ export class TemplateService extends EventEmitter {
                 createdAt: stats.birthtime,
                 modifiedAt: stats.mtime,
               };
-              
+
               this.templates.set(config.name, template);
               this.logger.debug(`Loaded template: ${config.name}`);
             } catch (error) {
@@ -681,7 +689,7 @@ export class TemplateService extends EventEmitter {
       this.logger.error('Failed to load templates:', error);
     }
   }
-  
+
   /**
    * Validate template variables
    */
@@ -691,10 +699,10 @@ export class TemplateService extends EventEmitter {
   ): Promise<ValidationResult> {
     const errors: ValidationResult['errors'] = [];
     const warnings: ValidationResult['warnings'] = [];
-    
+
     for (const templateVar of templateVars) {
       const value = providedVars[templateVar.name];
-      
+
       // Check required variables
       if (templateVar.required && (value === undefined || value === null)) {
         errors.push({
@@ -706,25 +714,25 @@ export class TemplateService extends EventEmitter {
         });
         continue;
       }
-      
+
       // Skip validation if variable is not provided and not required
       if (value === undefined || value === null) {
         continue;
       }
-      
+
       // Validate variable type and constraints
       const validation = this.validateVariable(templateVar, value);
       errors.push(...validation.errors);
       warnings.push(...validation.warnings);
     }
-    
+
     return {
       valid: errors.length === 0,
       errors,
       warnings,
     };
   }
-  
+
   /**
    * Validate a single template variable
    */
@@ -735,80 +743,88 @@ export class TemplateService extends EventEmitter {
           fieldName: templateVar.name,
           pattern: templateVar.pattern ? new RegExp(templateVar.pattern) : undefined,
         });
-      
+
       case 'number':
         if (typeof value !== 'number') {
           return {
             valid: false,
-            errors: [{
-              message: `Variable '${templateVar.name}' must be a number`,
-              code: 'INVALID_TYPE',
-              path: templateVar.name,
-              expected: 'number',
-              actual: typeof value,
-            }],
+            errors: [
+              {
+                message: `Variable '${templateVar.name}' must be a number`,
+                code: 'INVALID_TYPE',
+                path: templateVar.name,
+                expected: 'number',
+                actual: typeof value,
+              },
+            ],
             warnings: [],
           };
         }
         break;
-      
+
       case 'boolean':
         if (typeof value !== 'boolean') {
           return {
             valid: false,
-            errors: [{
-              message: `Variable '${templateVar.name}' must be a boolean`,
-              code: 'INVALID_TYPE',
-              path: templateVar.name,
-              expected: 'boolean',
-              actual: typeof value,
-            }],
+            errors: [
+              {
+                message: `Variable '${templateVar.name}' must be a boolean`,
+                code: 'INVALID_TYPE',
+                path: templateVar.name,
+                expected: 'boolean',
+                actual: typeof value,
+              },
+            ],
             warnings: [],
           };
         }
         break;
-      
+
       case 'array':
         if (!Array.isArray(value)) {
           return {
             valid: false,
-            errors: [{
-              message: `Variable '${templateVar.name}' must be an array`,
-              code: 'INVALID_TYPE',
-              path: templateVar.name,
-              expected: 'array',
-              actual: typeof value,
-            }],
+            errors: [
+              {
+                message: `Variable '${templateVar.name}' must be an array`,
+                code: 'INVALID_TYPE',
+                path: templateVar.name,
+                expected: 'array',
+                actual: typeof value,
+              },
+            ],
             warnings: [],
           };
         }
         break;
-      
+
       case 'object':
         return validateObject(value, {
           fieldName: templateVar.name,
           allowNull: false,
         });
     }
-    
+
     // Check allowed values
     if (templateVar.allowedValues && !templateVar.allowedValues.includes(value)) {
       return {
         valid: false,
-        errors: [{
-          message: `Variable '${templateVar.name}' must be one of: ${templateVar.allowedValues.join(', ')}`,
-          code: 'INVALID_VALUE',
-          path: templateVar.name,
-          expected: templateVar.allowedValues.join(' | '),
-          actual: value,
-        }],
+        errors: [
+          {
+            message: `Variable '${templateVar.name}' must be one of: ${templateVar.allowedValues.join(', ')}`,
+            code: 'INVALID_VALUE',
+            path: templateVar.name,
+            expected: templateVar.allowedValues.join(' | '),
+            actual: value,
+          },
+        ],
         warnings: [],
       };
     }
-    
+
     return { valid: true, errors: [], warnings: [] };
   }
-  
+
   /**
    * Check if a file should be skipped during template processing
    */
@@ -822,7 +838,7 @@ export class TemplateService extends EventEmitter {
         }
       }
     }
-    
+
     // Check include patterns
     if (config.include) {
       let included = false;
@@ -837,10 +853,10 @@ export class TemplateService extends EventEmitter {
         return true;
       }
     }
-    
+
     return false;
   }
-  
+
   /**
    * Run post-processing scripts
    */
@@ -848,21 +864,21 @@ export class TemplateService extends EventEmitter {
     for (const script of scripts) {
       try {
         this.logger.info(`Running post-processing script: ${script}`);
-        
+
         const { spawn } = await import('child_process');
         const process = spawn('sh', ['-c', script], {
           cwd: outputDir,
           stdio: ['ignore', 'pipe', 'pipe'],
         });
-        
+
         process.stdout?.on('data', (data) => {
           this.logger.debug(`Script output: ${data.toString().trim()}`);
         });
-        
+
         process.stderr?.on('data', (data) => {
           this.logger.warn(`Script error: ${data.toString().trim()}`);
         });
-        
+
         await new Promise<void>((resolve, reject) => {
           process.on('exit', (code) => {
             if (code === 0) {

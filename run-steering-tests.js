@@ -5,10 +5,10 @@
  * Runs all steering document tests and provides comprehensive results
  */
 
-import { spawn } from 'child_process';
-import { join } from 'path';
-import { existsSync } from 'fs';
 import chalk from 'chalk';
+import { spawn } from 'child_process';
+import { existsSync } from 'fs';
+import { join } from 'path';
 
 class SteeringTestRunner {
   constructor() {
@@ -39,7 +39,6 @@ class SteeringTestRunner {
 
       // Generate final report
       this.generateFinalReport();
-
     } catch (error) {
       console.error(chalk.red('\n❌ Test suite execution failed:'), error.message);
       process.exit(1);
@@ -79,7 +78,11 @@ class SteeringTestRunner {
     const unitTestPattern = 'src/__tests__/unit/maestro/steering-documents.test.ts';
 
     try {
-      const result = await this.executeCommand('npm', ['test', '--', '--testPathPattern=steering-documents']);
+      const result = await this.executeCommand('npm', [
+        'test',
+        '--',
+        '--testPathPattern=steering-documents',
+      ]);
       this.recordTestResult('Unit Tests', result.success, result.output);
 
       if (result.success) {
@@ -100,7 +103,11 @@ class SteeringTestRunner {
     console.log(chalk.blue('🔗 Running Integration Tests...'));
 
     try {
-      const result = await this.executeCommand('npm', ['test', '--', '--testPathPattern=steering-workflow']);
+      const result = await this.executeCommand('npm', [
+        'test',
+        '--',
+        '--testPathPattern=steering-workflow',
+      ]);
       this.recordTestResult('Integration Tests', result.success, result.output);
 
       if (result.success) {
@@ -121,7 +128,11 @@ class SteeringTestRunner {
     console.log(chalk.blue('⚡ Running Performance Tests...'));
 
     try {
-      const result = await this.executeCommand('npm', ['test', '--', '--testPathPattern=steering-performance']);
+      const result = await this.executeCommand('npm', [
+        'test',
+        '--',
+        '--testPathPattern=steering-performance',
+      ]);
       this.recordTestResult('Performance Tests', result.success, result.output);
 
       if (result.success) {
@@ -143,7 +154,11 @@ class SteeringTestRunner {
     console.log(chalk.blue('🖥️  Running CLI End-to-End Tests...'));
 
     try {
-      const result = await this.executeCommand('npm', ['test', '--', '--testPathPattern=steering-cli']);
+      const result = await this.executeCommand('npm', [
+        'test',
+        '--',
+        '--testPathPattern=steering-cli',
+      ]);
       this.recordTestResult('CLI Tests', result.success, result.output);
 
       if (result.success) {
@@ -208,16 +223,17 @@ class SteeringTestRunner {
   showTestFailures(output) {
     // Extract and show relevant failure information
     const lines = output.split('\n');
-    const failureLines = lines.filter(line =>
-      line.includes('FAIL') ||
-      line.includes('Error:') ||
-      line.includes('Expected:') ||
-      line.includes('Received:'),
+    const failureLines = lines.filter(
+      (line) =>
+        line.includes('FAIL') ||
+        line.includes('Error:') ||
+        line.includes('Expected:') ||
+        line.includes('Received:')
     );
 
     if (failureLines.length > 0) {
       console.log(chalk.gray('   Failure details:'));
-      failureLines.slice(0, 5).forEach(line => {
+      failureLines.slice(0, 5).forEach((line) => {
         console.log(chalk.gray(`   ${line.trim()}`));
       });
       if (failureLines.length > 5) {
@@ -256,17 +272,19 @@ class SteeringTestRunner {
     console.log(chalk.cyan('═'.repeat(30)));
 
     const totalTests = this.testResults.length;
-    const passedTests = this.testResults.filter(r => r.success).length;
+    const passedTests = this.testResults.filter((r) => r.success).length;
     const failedTests = totalTests - passedTests;
 
     console.log(`Total Test Suites: ${totalTests}`);
     console.log(`${chalk.green('Passed:')} ${passedTests}`);
     console.log(`${chalk.red('Failed:')} ${failedTests}`);
-    console.log(`Success Rate: ${totalTests > 0 ? (passedTests / totalTests * 100).toFixed(1) : 0}%`);
+    console.log(
+      `Success Rate: ${totalTests > 0 ? ((passedTests / totalTests) * 100).toFixed(1) : 0}%`
+    );
     console.log(`Total Duration: ${(totalDuration / 1000).toFixed(2)}s`);
 
     console.log(chalk.cyan('\n📋 Test Suite Details:'));
-    this.testResults.forEach(result => {
+    this.testResults.forEach((result) => {
       const status = result.success ? chalk.green('✅ PASS') : chalk.red('❌ FAIL');
       console.log(`   ${status} ${result.testName}`);
     });
@@ -278,10 +296,14 @@ class SteeringTestRunner {
       console.log(chalk.green('   Maestro steering document generation is working perfectly.'));
     } else if (passedTests >= totalTests * 0.8) {
       console.log(chalk.yellow('⚠️  MOSTLY SUCCESSFUL'));
-      console.log(chalk.yellow(`   ${passedTests}/${totalTests} test suites passed. Review failed tests.`));
+      console.log(
+        chalk.yellow(`   ${passedTests}/${totalTests} test suites passed. Review failed tests.`)
+      );
     } else {
       console.log(chalk.red('❌ SIGNIFICANT ISSUES DETECTED'));
-      console.log(chalk.red(`   Only ${passedTests}/${totalTests} test suites passed. Major fixes needed.`));
+      console.log(
+        chalk.red(`   Only ${passedTests}/${totalTests} test suites passed. Major fixes needed.`)
+      );
     }
 
     // Implementation status
@@ -317,7 +339,7 @@ class SteeringTestRunner {
 // Check if this script is being run directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   const runner = new SteeringTestRunner();
-  runner.runAllTests().catch(error => {
+  runner.runAllTests().catch((error) => {
     console.error(chalk.red('Fatal error:'), error);
     process.exit(1);
   });

@@ -7,20 +7,20 @@ declare module 'ruv-swarm' {
   // Main RuvSwarm class
   export class RuvSwarm {
     constructor();
-    
+
     static initialize(options?: RuvSwarmOptions): Promise<RuvSwarm>;
     static detectSIMDSupport(): boolean;
     static getVersion(): string;
     static getMemoryUsage(): MemoryUsage | null;
     static getRuntimeFeatures(): RuntimeFeatures;
-    
+
     wasmLoader: WasmModuleLoader;
     persistence: SwarmPersistence | null;
     activeSwarms: Map<string, Swarm>;
     globalAgents: Map<string, Agent>;
     metrics: GlobalMetrics;
     features: SwarmFeatures;
-    
+
     detectFeatures(useSIMD?: boolean): Promise<void>;
     createSwarm(config: SwarmConfig): Promise<Swarm>;
     getSwarmStatus(swarmId: string, detailed?: boolean): Promise<SwarmStatus>;
@@ -55,7 +55,7 @@ declare module 'ruv-swarm' {
     id: string;
     agents: Map<string, Agent>;
     tasks: Map<string, Task>;
-    
+
     spawn(config: AgentConfig): Promise<Agent>;
     spawnAgent(name: string, type?: AgentType, options?: any): Promise<Agent>;
     orchestrate(taskConfig: TaskConfig): Promise<Task>;
@@ -84,7 +84,7 @@ declare module 'ruv-swarm' {
     capabilities: string[];
     neuralNetworkId: string | null;
     status: 'idle' | 'busy' | 'offline';
-    
+
     execute(task: any): Promise<TaskResult>;
     getMetrics(): Promise<AgentMetrics>;
     updateStatus(status: string): Promise<void>;
@@ -106,7 +106,7 @@ declare module 'ruv-swarm' {
     status: 'pending' | 'in_progress' | 'completed' | 'failed';
     assignedAgents: string[];
     result: any;
-    
+
     getStatus(): Promise<TaskStatus>;
     getResults(): Promise<any>;
   }
@@ -117,7 +117,7 @@ declare module 'ruv-swarm' {
     loadingPromises: Map<string, Promise<WasmModule>>;
     loadingStrategy: 'eager' | 'on-demand' | 'progressive';
     moduleManifest: ModuleManifest;
-    
+
     initialize(strategy?: string): Promise<boolean>;
     loadModule(moduleName: string): Promise<WasmModule>;
     getModuleStatus(): ModuleStatusMap;
@@ -127,9 +127,9 @@ declare module 'ruv-swarm' {
   // Enhanced MCP Tools
   export class EnhancedMCPTools {
     constructor();
-    
+
     initialize(): Promise<RuvSwarm>;
-    
+
     // Core MCP tools
     swarm_init(params: SwarmInitParams): Promise<SwarmInitResult>;
     agent_spawn(params: AgentSpawnParams): Promise<AgentSpawnResult>;
@@ -138,7 +138,7 @@ declare module 'ruv-swarm' {
     benchmark_run(params: BenchmarkParams): Promise<BenchmarkResult>;
     features_detect(params: FeaturesParams): Promise<FeaturesResult>;
     memory_usage(params: MemoryParams): Promise<MemoryResult>;
-    
+
     // Neural network tools
     neural_status(params: NeuralStatusParams): Promise<NeuralStatusResult>;
     neural_train(params: NeuralTrainParams): Promise<NeuralTrainResult>;
@@ -148,13 +148,20 @@ declare module 'ruv-swarm' {
   // Neural Network Manager
   export class NeuralNetworkManager {
     constructor(wasmLoader: WasmModuleLoader);
-    
+
     neuralNetworks: Map<string, NeuralNetwork>;
     templates: NeuralTemplates;
-    
+
     createAgentNeuralNetwork(agentId: string, config?: NeuralConfig): Promise<NeuralNetwork>;
-    fineTuneNetwork(agentId: string, trainingData: TrainingData, options?: TrainingOptions): Promise<NeuralMetrics>;
-    enableCollaborativeLearning(agentIds: string[], options?: CollaborativeOptions): Promise<CollaborativeSession>;
+    fineTuneNetwork(
+      agentId: string,
+      trainingData: TrainingData,
+      options?: TrainingOptions
+    ): Promise<NeuralMetrics>;
+    enableCollaborativeLearning(
+      agentIds: string[],
+      options?: CollaborativeOptions
+    ): Promise<CollaborativeSession>;
     getNetworkMetrics(agentId: string): NeuralMetrics | null;
     saveNetworkState(agentId: string, filePath: string): Promise<boolean>;
     loadNetworkState(agentId: string, filePath: string): Promise<boolean>;
@@ -236,7 +243,14 @@ declare module 'ruv-swarm' {
     };
   }
 
-  export type CognitivePattern = 'convergent' | 'divergent' | 'lateral' | 'systems' | 'critical' | 'abstract' | 'adaptive';
+  export type CognitivePattern =
+    | 'convergent'
+    | 'divergent'
+    | 'lateral'
+    | 'systems'
+    | 'critical'
+    | 'abstract'
+    | 'adaptive';
 
   export interface RuntimeFeatures {
     webassembly: boolean;

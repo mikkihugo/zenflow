@@ -1,6 +1,6 @@
 /**
  * Help Command Module
- * 
+ *
  * Exports the help command implementation
  */
 

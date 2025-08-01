@@ -1,7 +1,7 @@
-import React from 'react';
 import { Box, Text } from 'ink';
-import { BaseComponentProps, StatusType } from './index';
+import type React from 'react';
 import { defaultTheme } from '../index';
+import type { BaseComponentProps, StatusType } from './index';
 
 export interface StatusBadgeProps extends BaseComponentProps {
   status: StatusType;
@@ -13,7 +13,7 @@ export interface StatusBadgeProps extends BaseComponentProps {
 
 /**
  * StatusBadge Component
- * 
+ *
  * Displays status indicators with icons and text.
  * Supports multiple status types and visual variants.
  */
@@ -52,22 +52,22 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       defaultText: 'Pending',
     },
   };
-  
+
   const config = statusConfig[status];
   const displayText = text || config.defaultText;
-  
+
   const getBorderStyle = () => {
     if (variant === 'outline') return 'round';
     return undefined;
   };
-  
+
   const getPadding = () => {
     if (variant === 'solid' || variant === 'outline') {
       return size === 'small' ? 0 : size === 'large' ? 1 : 0;
     }
     return 0;
   };
-  
+
   return (
     <Box
       borderStyle={getBorderStyle()}
@@ -75,11 +75,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       padding={getPadding()}
       display="inline-flex"
     >
-      <Text
-        color={config.color}
-        bold={variant === 'solid'}
-        dimColor={variant === 'minimal'}
-      >
+      <Text color={config.color} bold={variant === 'solid'} dimColor={variant === 'minimal'}>
         {showIcon && (
           <>
             {config.icon}

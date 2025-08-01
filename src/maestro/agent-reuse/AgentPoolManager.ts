@@ -3,19 +3,19 @@
  * Implements Open/Closed principle for extensible pool strategies
  */
 
-import { ILogger } from '../../core/logger';
-import { AgentManager } from '../../agents/agent-manager';
+import type { AgentManager } from '../../agents/agent-manager';
+import type { ILogger } from '../../core/logger';
+import type { AgentRegistry } from './AgentRegistry';
 import {
-  AcquiredAgent,
-  TaskContext,
-  AgentProfile,
-  PoolManagerConfig,
-  PoolOptimizationResult,
-  OptimizationRecommendation,
-  OptimizationResult,
-  DEFAULT_POOL_MANAGER_CONFIG
+  type AcquiredAgent,
+  type AgentProfile,
+  DEFAULT_POOL_MANAGER_CONFIG,
+  type OptimizationRecommendation,
+  type OptimizationResult,
+  type PoolManagerConfig,
+  type PoolOptimizationResult,
+  type TaskContext,
 } from './types';
-import { AgentRegistry } from './AgentRegistry';
 
 /**
  * Reuse strategy interface for different reuse approaches
@@ -44,9 +44,8 @@ class GreedyReuseStrategy implements ReuseStrategy {
     maxAgents: number
   ): Promise<AcquiredAgent[]> {
     const capableAgents = await this.registry.findCapableAgents(requiredCapabilities);
-    const availableAgents = capableAgents.filter(agent => 
-      agent.status === 'available' && 
-      agent.currentWorkload < 0.8 // Don't reuse overloaded agents
+    const availableAgents = capableAgents.filter(
+      (agent) => agent.status === 'available' && agent.currentWorkload < 0.8 // Don't reuse overloaded agents
     );
 
     // Sort by workload (prefer less busy agents)
@@ -62,7 +61,7 @@ class GreedyReuseStrategy implements ReuseStrategy {
         capabilities: agent.capabilities,
         source: 'reused',
         reusedAt: new Date(),
-        assignedTaskId: taskContext.id
+        assignedTaskId: taskContext.id,
       });
     }
 
@@ -88,29 +87,29 @@ class DynamicPoolOptimizer {
   ): Promise<string[]> {
     // Simple strategy: prefer agents that match the most capabilities
     // In production, this would use more sophisticated optimization
-    
+
     const capabilityPriority = this.analyzeCapabilityNeeds(requiredCapabilities);
     const optimalTypes: string[] = [];
 
     // Map capabilities to agent types (simplified mapping)
     const capabilityToTypeMap: Record<string, string[]> = {
-      'design': ['design-architect'],
-      'architecture': ['design-architect', 'system-architect'],
+      design: ['design-architect'],
+      architecture: ['design-architect', 'system-architect'],
       'system-architecture': ['system-architect'],
-      'implementation': ['developer'],
-      'coding': ['developer', 'coder'],
-      'testing': ['tester', 'developer'],
+      implementation: ['developer'],
+      coding: ['developer', 'coder'],
+      testing: ['tester', 'developer'],
       'project-management': ['task-planner'],
       'task-breakdown': ['task-planner'],
-      'planning': ['task-planner'],
-      'analysis': ['analyst', 'researcher'],
-      'research': ['researcher'],
-      'documentation': ['requirements-engineer', 'steering-author']
+      planning: ['task-planner'],
+      analysis: ['analyst', 'researcher'],
+      research: ['researcher'],
+      documentation: ['requirements-engineer', 'steering-author'],
     };
 
     // Select types based on required capabilities
     const typeScores: Record<string, number> = {};
-    
+
     for (const capability of requiredCapabilities) {
       const possibleTypes = capabilityToTypeMap[capability] || ['general'];
       for (const type of possibleTypes) {
@@ -120,7 +119,7 @@ class DynamicPoolOptimizer {
 
     // Sort by score and select top types
     const sortedTypes = Object.entries(typeScores)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .map(([type]) => type);
 
     return sortedTypes.slice(0, count);
@@ -131,7 +130,7 @@ class DynamicPoolOptimizer {
     if (!agent) return true; // Clean up non-existent agents
 
     const stats = this.registry.getRegistryStats();
-    
+
     // Don't cleanup if we're below minimum pool size
     if (stats.totalAgents <= 3) return false;
 
@@ -152,7 +151,7 @@ class DynamicPoolOptimizer {
         type: 'spawn',
         reason: 'Low availability ratio - need more agents',
         expectedImpact: 0.3,
-        priority: 'high'
+        priority: 'high',
       });
     }
 
@@ -162,7 +161,7 @@ class DynamicPoolOptimizer {
         type: 'cleanup',
         reason: 'High number of idle agents - cleanup needed',
         expectedImpact: 0.2,
-        priority: 'medium'
+        priority: 'medium',
       });
     }
 
@@ -174,20 +173,22 @@ class DynamicPoolOptimizer {
         type: 'rebalance',
         reason: 'High workload variance - rebalancing needed',
         expectedImpact: 0.25,
-        priority: 'medium'
+        priority: 'medium',
       });
     }
 
     return recommendations;
   }
 
-  async applyOptimizations(recommendations: OptimizationRecommendation[]): Promise<OptimizationResult[]> {
+  async applyOptimizations(
+    recommendations: OptimizationRecommendation[]
+  ): Promise<OptimizationResult[]> {
     const results: OptimizationResult[] = [];
 
     for (const recommendation of recommendations) {
       try {
         let applied = false;
-        
+
         switch (recommendation.type) {
           case 'cleanup':
             applied = await this.performCleanup();
@@ -202,14 +203,13 @@ class DynamicPoolOptimizer {
         results.push({
           recommendation,
           applied,
-          actualImpact: applied ? recommendation.expectedImpact : 0
+          actualImpact: applied ? recommendation.expectedImpact : 0,
         });
-
       } catch (error) {
         results.push({
           recommendation,
           applied: false,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         });
       }
     }
@@ -227,11 +227,11 @@ class DynamicPoolOptimizer {
 
   private calculateWorkloadVariance(agents: any[]): number {
     if (agents.length === 0) return 0;
-    
-    const workloads = agents.map(a => a.currentWorkload);
+
+    const workloads = agents.map((a) => a.currentWorkload);
     const mean = workloads.reduce((sum, w) => sum + w, 0) / workloads.length;
-    const variance = workloads.reduce((sum, w) => sum + Math.pow(w - mean, 2), 0) / workloads.length;
-    
+    const variance = workloads.reduce((sum, w) => sum + (w - mean) ** 2, 0) / workloads.length;
+
     return Math.sqrt(variance);
   }
 
@@ -264,7 +264,9 @@ class AgentLifecycleManager {
       await this.registry.unregisterAgent(agentId);
       this.logger.info(`Cleaned up agent: ${agentId}`);
     } catch (error) {
-      this.logger.error(`Failed to cleanup agent ${agentId}: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        `Failed to cleanup agent ${agentId}: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 
@@ -272,10 +274,12 @@ class AgentLifecycleManager {
     try {
       // Basic maintenance - update last activity
       await this.registry.updateAgentStatus(agentId, 'available', {
-        maintainedAt: new Date()
+        maintainedAt: new Date(),
       });
     } catch (error) {
-      this.logger.warn(`Failed to maintain agent ${agentId}: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.warn(
+        `Failed to maintain agent ${agentId}: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 }
@@ -296,9 +300,14 @@ export class AgentPoolManager {
     config: Partial<PoolManagerConfig> = {}
   ) {
     this.config = { ...DEFAULT_POOL_MANAGER_CONFIG, ...config };
-    
+
     this.reuseStrategy = new GreedyReuseStrategy(this.registry, this.config, this.logger);
-    this.lifecycleManager = new AgentLifecycleManager(this.agentManager, this.registry, this.config, this.logger);
+    this.lifecycleManager = new AgentLifecycleManager(
+      this.agentManager,
+      this.registry,
+      this.config,
+      this.logger
+    );
     this.poolOptimizer = new DynamicPoolOptimizer(this.registry, this.config, this.logger);
 
     this.logger.info('Agent Pool Manager initialized');
@@ -312,7 +321,9 @@ export class AgentPoolManager {
     taskContext: TaskContext,
     maxAgents: number = 2
   ): Promise<AcquiredAgent[]> {
-    this.logger.info(`Acquiring agents for task ${taskContext.id}, capabilities: [${requiredCapabilities.join(', ')}]`);
+    this.logger.info(
+      `Acquiring agents for task ${taskContext.id}, capabilities: [${requiredCapabilities.join(', ')}]`
+    );
 
     const acquiredAgents: AcquiredAgent[] = [];
 
@@ -329,23 +340,22 @@ export class AgentPoolManager {
       // Step 2: Spawn additional agents if needed
       const needed = maxAgents - reusableAgents.length;
       if (needed > 0) {
-        const newAgents = await this.spawnOptimalAgents(
-          requiredCapabilities,
-          taskContext,
-          needed
-        );
+        const newAgents = await this.spawnOptimalAgents(requiredCapabilities, taskContext, needed);
         acquiredAgents.push(...newAgents);
       }
 
       // Step 3: Mark agents as assigned
       await this.assignAgentsToTask(acquiredAgents, taskContext);
 
-      this.logger.info(`Acquired ${acquiredAgents.length} agents for task ${taskContext.id} (${reusableAgents.length} reused, ${acquiredAgents.length - reusableAgents.length} spawned)`);
+      this.logger.info(
+        `Acquired ${acquiredAgents.length} agents for task ${taskContext.id} (${reusableAgents.length} reused, ${acquiredAgents.length - reusableAgents.length} spawned)`
+      );
 
       return acquiredAgents;
-
     } catch (error) {
-      this.logger.error(`Failed to acquire agents for task ${taskContext.id}: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        `Failed to acquire agents for task ${taskContext.id}: ${error instanceof Error ? error.message : String(error)}`
+      );
       throw error;
     }
   }
@@ -359,7 +369,7 @@ export class AgentPoolManager {
     count: number
   ): Promise<AcquiredAgent[]> {
     const spawnedAgents: AcquiredAgent[] = [];
-    
+
     try {
       // Use pool optimizer to determine optimal agent types
       const optimalTypes = await this.poolOptimizer.selectOptimalTypesForSpawning(
@@ -373,30 +383,32 @@ export class AgentPoolManager {
           const profile = this.createOptimalProfile(agentType, requiredCapabilities, taskContext);
           const agentId = await this.agentManager.createAgent(agentType, profile);
           await this.agentManager.startAgent(agentId);
-          
+
           const acquiredAgent: AcquiredAgent = {
             id: agentId,
             type: agentType,
             capabilities: profile.capabilities || [],
             source: 'spawned',
             spawnedAt: new Date(),
-            assignedTaskId: taskContext.id
+            assignedTaskId: taskContext.id,
           };
 
           spawnedAgents.push(acquiredAgent);
           await this.registry.registerAgent(agentId, profile);
-          
+
           this.logger.info(`Spawned new agent: ${agentId} (${agentType})`);
-          
         } catch (error) {
-          this.logger.warn(`Failed to spawn ${agentType}: ${error instanceof Error ? error.message : String(error)}`);
+          this.logger.warn(
+            `Failed to spawn ${agentType}: ${error instanceof Error ? error.message : String(error)}`
+          );
         }
       }
 
       return spawnedAgents;
-
     } catch (error) {
-      this.logger.error(`Failed to spawn agents: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        `Failed to spawn agents: ${error instanceof Error ? error.message : String(error)}`
+      );
       return spawnedAgents; // Return whatever we managed to spawn
     }
   }
@@ -418,23 +430,28 @@ export class AgentPoolManager {
       priority: this.determinePriorityForContext(taskContext),
       metadata: {
         createdFor: taskContext.id,
-        requiredCapabilities
-      }
+        requiredCapabilities,
+      },
     };
   }
 
   /**
    * Assign acquired agents to the specific task
    */
-  private async assignAgentsToTask(agents: AcquiredAgent[], taskContext: TaskContext): Promise<void> {
+  private async assignAgentsToTask(
+    agents: AcquiredAgent[],
+    taskContext: TaskContext
+  ): Promise<void> {
     for (const agent of agents) {
       try {
         await this.registry.updateAgentStatus(agent.id, 'busy', {
           assignedTask: taskContext.id,
-          assignedAt: new Date()
+          assignedAt: new Date(),
         });
       } catch (error) {
-        this.logger.warn(`Failed to assign agent ${agent.id} to task ${taskContext.id}: ${error instanceof Error ? error.message : String(error)}`);
+        this.logger.warn(
+          `Failed to assign agent ${agent.id} to task ${taskContext.id}: ${error instanceof Error ? error.message : String(error)}`
+        );
       }
     }
   }
@@ -450,12 +467,12 @@ export class AgentPoolManager {
         // Update agent status to available
         await this.registry.updateAgentStatus(agentId, 'available', {
           lastTask: taskContext.id,
-          releasedAt: new Date()
+          releasedAt: new Date(),
         });
-        
+
         // Decide whether to keep or cleanup based on pool optimization
         const shouldCleanup = await this.poolOptimizer.shouldCleanupAgent(agentId, taskContext);
-        
+
         if (shouldCleanup) {
           await this.lifecycleManager.cleanupAgent(agentId);
           this.logger.info(`Cleaned up agent ${agentId} after task completion`);
@@ -464,7 +481,9 @@ export class AgentPoolManager {
           await this.lifecycleManager.maintainAgent(agentId);
         }
       } catch (error) {
-        this.logger.warn(`Failed to release agent ${agentId}: ${error instanceof Error ? error.message : String(error)}`);
+        this.logger.warn(
+          `Failed to release agent ${agentId}: ${error instanceof Error ? error.message : String(error)}`
+        );
       }
     }
   }
@@ -474,24 +493,24 @@ export class AgentPoolManager {
    */
   async optimizePool(): Promise<PoolOptimizationResult> {
     this.logger.info('Starting pool optimization');
-    
+
     const stats = this.registry.getRegistryStats();
-    
+
     // Identify optimization opportunities
     const recommendations = await this.poolOptimizer.analyzePoolHealth(stats);
-    
+
     // Apply optimizations
     const results = await this.poolOptimizer.applyOptimizations(recommendations);
-    
+
     const optimizationResult: PoolOptimizationResult = {
       initialStats: stats,
       recommendations,
       results,
-      optimizedAt: new Date()
+      optimizedAt: new Date(),
     };
 
     this.logger.info(`Pool optimization completed: ${results.length} optimizations applied`);
-    
+
     return optimizationResult;
   }
 
@@ -511,7 +530,7 @@ export class AgentPoolManager {
       totalReused: 75,
       reuseRate: 0.75,
       averagePoolSize: 8,
-      cleanupRate: 0.15
+      cleanupRate: 0.15,
     };
   }
 
@@ -521,11 +540,11 @@ export class AgentPoolManager {
   private determinePriorityForContext(taskContext: TaskContext): number {
     // Base priority from task
     let priority = taskContext.priority || 70;
-    
+
     // Adjust based on complexity
     if (taskContext.complexity === 'high') priority += 10;
     if (taskContext.complexity === 'low') priority -= 5;
-    
+
     // Ensure within valid range
     return Math.max(50, Math.min(100, priority));
   }
@@ -535,19 +554,21 @@ export class AgentPoolManager {
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down Agent Pool Manager');
-    
+
     // Release all active agents
     const allAgents = this.registry.getAllActiveAgents();
-    const agentIds = allAgents.map(agent => agent.id);
-    
+    const agentIds = allAgents.map((agent) => agent.id);
+
     for (const agentId of agentIds) {
       try {
         await this.lifecycleManager.cleanupAgent(agentId);
       } catch (error) {
-        this.logger.warn(`Failed to cleanup agent ${agentId} during shutdown: ${error instanceof Error ? error.message : String(error)}`);
+        this.logger.warn(
+          `Failed to cleanup agent ${agentId} during shutdown: ${error instanceof Error ? error.message : String(error)}`
+        );
       }
     }
-    
+
     this.logger.info('Agent Pool Manager shutdown complete');
   }
 }

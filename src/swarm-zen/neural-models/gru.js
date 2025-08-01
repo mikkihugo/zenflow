@@ -35,8 +35,7 @@ class GRUModel extends NeuralModel {
       const layerGates = [];
 
       for (let dir = 0; dir < directions; dir++) {
-        const inputSize = layer === 0 ? this.config.inputSize :
-          this.config.hiddenSize * directions;
+        const inputSize = layer === 0 ? this.config.inputSize : this.config.hiddenSize * directions;
 
         // GRU has 3 gates: reset, update, and candidate
         const gates = {
@@ -98,12 +97,7 @@ class GRUModel extends NeuralModel {
     let layerInput = input;
 
     for (let layer = 0; layer < this.config.numLayers; layer++) {
-      const layerOutput = await this.processLayer(
-        layerInput,
-        hiddenStates[layer],
-        layer,
-        training,
-      );
+      const layerOutput = await this.processLayer(layerInput, hiddenStates[layer], layer, training);
 
       layerInput = layerOutput.output;
       hiddenStates[layer] = layerOutput.finalHidden;
@@ -147,9 +141,7 @@ class GRUModel extends NeuralModel {
       const isBackward = dir === 1;
 
       // Process sequence in appropriate direction
-      const sequenceOutput = new Float32Array(
-        batchSize * sequenceLength * this.config.hiddenSize,
-      );
+      const sequenceOutput = new Float32Array(batchSize * sequenceLength * this.config.hiddenSize);
 
       let hidden = hiddenStates[dir];
 
@@ -160,8 +152,8 @@ class GRUModel extends NeuralModel {
         const xt = new Float32Array(batchSize * inputSize);
         for (let b = 0; b < batchSize; b++) {
           for (let i = 0; i < inputSize; i++) {
-            xt[b * inputSize + i] = input[b * sequenceLength * inputSize +
-                                         timeStep * inputSize + i];
+            xt[b * inputSize + i] =
+              input[b * sequenceLength * inputSize + timeStep * inputSize + i];
           }
         }
         xt.shape = [batchSize, inputSize];
@@ -173,9 +165,9 @@ class GRUModel extends NeuralModel {
         // Store output
         for (let b = 0; b < batchSize; b++) {
           for (let h = 0; h < this.config.hiddenSize; h++) {
-            sequenceOutput[b * sequenceLength * this.config.hiddenSize +
-                         timeStep * this.config.hiddenSize + h] =
-              hidden[b * this.config.hiddenSize + h];
+            sequenceOutput[
+              b * sequenceLength * this.config.hiddenSize + timeStep * this.config.hiddenSize + h
+            ] = hidden[b * this.config.hiddenSize + h];
           }
         }
       }
@@ -217,14 +209,12 @@ class GRUModel extends NeuralModel {
 
         // Input contribution
         for (let i = 0; i < inputSize; i++) {
-          sum += input[b * inputSize + i] *
-                 gates.resetInput[i * hiddenSize + h];
+          sum += input[b * inputSize + i] * gates.resetInput[i * hiddenSize + h];
         }
 
         // Hidden contribution
         for (let hh = 0; hh < hiddenSize; hh++) {
-          sum += hidden[b * hiddenSize + hh] *
-                 gates.resetHidden[hh * hiddenSize + h];
+          sum += hidden[b * hiddenSize + hh] * gates.resetHidden[hh * hiddenSize + h];
         }
 
         resetGate[b * hiddenSize + h] = 1 / (1 + Math.exp(-sum)); // sigmoid
@@ -239,14 +229,12 @@ class GRUModel extends NeuralModel {
 
         // Input contribution
         for (let i = 0; i < inputSize; i++) {
-          sum += input[b * inputSize + i] *
-                 gates.updateInput[i * hiddenSize + h];
+          sum += input[b * inputSize + i] * gates.updateInput[i * hiddenSize + h];
         }
 
         // Hidden contribution
         for (let hh = 0; hh < hiddenSize; hh++) {
-          sum += hidden[b * hiddenSize + hh] *
-                 gates.updateHidden[hh * hiddenSize + h];
+          sum += hidden[b * hiddenSize + hh] * gates.updateHidden[hh * hiddenSize + h];
         }
 
         updateGate[b * hiddenSize + h] = 1 / (1 + Math.exp(-sum)); // sigmoid
@@ -261,14 +249,12 @@ class GRUModel extends NeuralModel {
 
         // Input contribution
         for (let i = 0; i < inputSize; i++) {
-          sum += input[b * inputSize + i] *
-                 gates.candidateInput[i * hiddenSize + h];
+          sum += input[b * inputSize + i] * gates.candidateInput[i * hiddenSize + h];
         }
 
         // Hidden contribution (modulated by reset gate)
         for (let hh = 0; hh < hiddenSize; hh++) {
-          const modulatedHidden = resetGate[b * hiddenSize + hh] *
-                                 hidden[b * hiddenSize + hh];
+          const modulatedHidden = resetGate[b * hiddenSize + hh] * hidden[b * hiddenSize + hh];
           sum += modulatedHidden * gates.candidateHidden[hh * hiddenSize + h];
         }
 
@@ -298,18 +284,14 @@ class GRUModel extends NeuralModel {
       for (let t = 0; t < sequenceLength; t++) {
         // Copy forward direction
         for (let h = 0; h < hiddenSize; h++) {
-          output[b * sequenceLength * hiddenSize * 2 +
-                t * hiddenSize * 2 + h] =
-            forward[b * sequenceLength * hiddenSize +
-                   t * hiddenSize + h];
+          output[b * sequenceLength * hiddenSize * 2 + t * hiddenSize * 2 + h] =
+            forward[b * sequenceLength * hiddenSize + t * hiddenSize + h];
         }
 
         // Copy backward direction
         for (let h = 0; h < hiddenSize; h++) {
-          output[b * sequenceLength * hiddenSize * 2 +
-                t * hiddenSize * 2 + hiddenSize + h] =
-            backward[b * sequenceLength * hiddenSize +
-                    t * hiddenSize + h];
+          output[b * sequenceLength * hiddenSize * 2 + t * hiddenSize * 2 + hiddenSize + h] =
+            backward[b * sequenceLength * hiddenSize + t * hiddenSize + h];
         }
       }
     }
@@ -327,8 +309,7 @@ class GRUModel extends NeuralModel {
     for (let b = 0; b < batchSize; b++) {
       for (let h = 0; h < hiddenSize; h++) {
         lastTimeStep[b * hiddenSize + h] =
-          input[b * sequenceLength * hiddenSize +
-               (sequenceLength - 1) * hiddenSize + h];
+          input[b * sequenceLength * hiddenSize + (sequenceLength - 1) * hiddenSize + h];
       }
     }
 
@@ -342,8 +323,9 @@ class GRUModel extends NeuralModel {
         let sum = this.outputLayer.bias[o];
 
         for (let h = 0; h < hiddenSize; h++) {
-          sum += lastTimeStep[b * hiddenSize + h] *
-                 this.outputLayer.weight[h * this.config.outputSize + o];
+          sum +=
+            lastTimeStep[b * hiddenSize + h] *
+            this.outputLayer.weight[h * this.config.outputSize + o];
         }
 
         output[b * this.config.outputSize + o] = sum;
@@ -422,12 +404,13 @@ class GRUModel extends NeuralModel {
 
       console.log(
         `Epoch ${epoch + 1}/${epochs} - ` +
-        `Train Loss: ${avgTrainLoss.toFixed(4)}, ${
-          this.config.outputSize > 1 ?
-            `Train Acc: ${(avgTrainAccuracy * 100).toFixed(2)}%, ` : ''
-        }Val Loss: ${valMetrics.loss.toFixed(4)}${
-          this.config.outputSize > 1 ?
-            `, Val Acc: ${(valMetrics.accuracy * 100).toFixed(2)}%` : ''}`,
+          `Train Loss: ${avgTrainLoss.toFixed(4)}, ${
+            this.config.outputSize > 1 ? `Train Acc: ${(avgTrainAccuracy * 100).toFixed(2)}%, ` : ''
+          }Val Loss: ${valMetrics.loss.toFixed(4)}${
+            this.config.outputSize > 1
+              ? `, Val Acc: ${(valMetrics.accuracy * 100).toFixed(2)}%`
+              : ''
+          }`
       );
 
       this.updateMetrics(avgTrainLoss, avgTrainAccuracy);

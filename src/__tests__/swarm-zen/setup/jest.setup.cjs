@@ -46,66 +46,86 @@ if (typeof global.WebAssembly === 'undefined') {
 }
 
 // Mock worker_threads for environments that don't support it
-jest.mock('worker_threads', () => ({
-  Worker: jest.fn(),
-  isMainThread: true,
-  parentPort: null,
-  workerData: null,
-  MessageChannel: jest.fn(),
-  MessagePort: jest.fn(),
-  moveMessagePortToContext: jest.fn(),
-  receiveMessageOnPort: jest.fn(),
-  threadId: 0,
-}), { virtual: true });
+jest.mock(
+  'worker_threads',
+  () => ({
+    Worker: jest.fn(),
+    isMainThread: true,
+    parentPort: null,
+    workerData: null,
+    MessageChannel: jest.fn(),
+    MessagePort: jest.fn(),
+    moveMessagePortToContext: jest.fn(),
+    receiveMessageOnPort: jest.fn(),
+    threadId: 0,
+  }),
+  { virtual: true }
+);
 
 // Mock fs/promises for Node.js compatibility
-jest.mock('fs/promises', () => ({
-  readFile: jest.fn(),
-  writeFile: jest.fn(),
-  mkdir: jest.fn(),
-  readdir: jest.fn(),
-  stat: jest.fn(),
-  access: jest.fn(),
-}), { virtual: true });
+jest.mock(
+  'fs/promises',
+  () => ({
+    readFile: jest.fn(),
+    writeFile: jest.fn(),
+    mkdir: jest.fn(),
+    readdir: jest.fn(),
+    stat: jest.fn(),
+    access: jest.fn(),
+  }),
+  { virtual: true }
+);
 
 // Mock better-sqlite3 for tests that don't need real database
-jest.mock('better-sqlite3', () => {
-  return jest.fn().mockImplementation(() => ({
-    prepare: jest.fn().mockReturnValue({
-      run: jest.fn(),
-      get: jest.fn(),
-      all: jest.fn().mockReturnValue([]),
-      iterate: jest.fn(),
-    }),
-    exec: jest.fn(),
-    close: jest.fn(),
-    transaction: jest.fn().mockReturnValue(() => {}),
-    pragma: jest.fn(),
-  }));
-}, { virtual: true });
+jest.mock(
+  'better-sqlite3',
+  () => {
+    return jest.fn().mockImplementation(() => ({
+      prepare: jest.fn().mockReturnValue({
+        run: jest.fn(),
+        get: jest.fn(),
+        all: jest.fn().mockReturnValue([]),
+        iterate: jest.fn(),
+      }),
+      exec: jest.fn(),
+      close: jest.fn(),
+      transaction: jest.fn().mockReturnValue(() => {}),
+      pragma: jest.fn(),
+    }));
+  },
+  { virtual: true }
+);
 
 // Mock UUID generation for consistent test results
-jest.mock('uuid', () => ({
-  v4: jest.fn(() => `mock-uuid-${ Date.now() }-${ Math.random().toString(36).substr(2, 9)}`),
-}), { virtual: true });
+jest.mock(
+  'uuid',
+  () => ({
+    v4: jest.fn(() => `mock-uuid-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`),
+  }),
+  { virtual: true }
+);
 
 // Mock WebSocket for MCP tests
-jest.mock('ws', () => ({
-  WebSocket: jest.fn().mockImplementation(() => ({
-    on: jest.fn(),
-    send: jest.fn(),
-    close: jest.fn(),
-    readyState: 1, // OPEN
-    CONNECTING: 0,
-    OPEN: 1,
-    CLOSING: 2,
-    CLOSED: 3,
-  })),
-  WebSocketServer: jest.fn().mockImplementation(() => ({
-    on: jest.fn(),
-    close: jest.fn(),
-  })),
-}), { virtual: true });
+jest.mock(
+  'ws',
+  () => ({
+    WebSocket: jest.fn().mockImplementation(() => ({
+      on: jest.fn(),
+      send: jest.fn(),
+      close: jest.fn(),
+      readyState: 1, // OPEN
+      CONNECTING: 0,
+      OPEN: 1,
+      CLOSING: 2,
+      CLOSED: 3,
+    })),
+    WebSocketServer: jest.fn().mockImplementation(() => ({
+      on: jest.fn(),
+      close: jest.fn(),
+    })),
+  }),
+  { virtual: true }
+);
 
 // Performance polyfill for older Node.js versions
 if (typeof global.performance === 'undefined') {
@@ -129,13 +149,13 @@ global.testUtils = {
   /**
    * Wait for a specific amount of time
    */
-  wait: (ms) => new Promise(resolve => setTimeout(resolve, ms)),
+  wait: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
 
   /**
    * Create a mock agent configuration
    */
   createMockAgent: (overrides = {}) => ({
-    id: `mock-agent-${ Date.now()}`,
+    id: `mock-agent-${Date.now()}`,
     type: 'researcher',
     name: 'test-agent',
     capabilities: ['research', 'analysis'],
@@ -147,7 +167,7 @@ global.testUtils = {
    * Create a mock swarm configuration
    */
   createMockSwarm: (overrides = {}) => ({
-    id: `mock-swarm-${ Date.now()}`,
+    id: `mock-swarm-${Date.now()}`,
     name: 'test-swarm',
     topology: 'mesh',
     maxAgents: 10,
@@ -159,7 +179,7 @@ global.testUtils = {
    * Create a mock task configuration
    */
   createMockTask: (overrides = {}) => ({
-    id: `mock-task-${ Date.now()}`,
+    id: `mock-task-${Date.now()}`,
     description: 'Test task',
     priority: 'medium',
     status: 'pending',

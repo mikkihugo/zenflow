@@ -3,25 +3,23 @@
  * Comprehensive coverage for src/neural-models/presets/* and neural-presets-complete.js
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { COMPLETE_NEURAL_PRESETS } from '../../src/neural-models/neural-presets-complete.js';
 // Import all preset modules
 import {
-  NEURAL_PRESETS,
-  getPreset,
-  getCategoryPresets,
   getAllPresetNames,
-  searchPresetsByUseCase,
-  searchPresetsByAccuracy,
-  searchPresetsByInferenceTime,
+  getCategoryPresets,
+  getPreset,
   getPresetStatistics,
-  validatePresetConfig,
   getRecommendedPreset,
+  NEURAL_PRESETS,
   PRESET_CATEGORIES,
   PRESET_MODEL_TYPES,
+  searchPresetsByAccuracy,
+  searchPresetsByInferenceTime,
+  searchPresetsByUseCase,
+  validatePresetConfig,
 } from '../../src/neural-models/presets/index.js';
-
-import { COMPLETE_NEURAL_PRESETS } from '../../src/neural-models/neural-presets-complete.js';
 
 describe('Neural Presets Edge Cases and E2E Tests', () => {
   beforeEach(() => {
@@ -43,7 +41,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
 
     it('should handle getPreset with valid category and preset', () => {
       // Test with actual presets from each category
-      Object.keys(NEURAL_PRESETS).forEach(category => {
+      Object.keys(NEURAL_PRESETS).forEach((category) => {
         const presets = NEURAL_PRESETS[category];
         const presetNames = Object.keys(presets);
 
@@ -58,11 +56,13 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
     });
 
     it('should throw error for invalid category in getPreset', () => {
-      expect(() => getPreset('invalid-category', 'some-preset')).toThrow('Unknown preset category: invalid-category');
+      expect(() => getPreset('invalid-category', 'some-preset')).toThrow(
+        'Unknown preset category: invalid-category'
+      );
     });
 
     it('should handle getCategoryPresets for all categories', () => {
-      Object.keys(NEURAL_PRESETS).forEach(category => {
+      Object.keys(NEURAL_PRESETS).forEach((category) => {
         const presets = getCategoryPresets(category);
         expect(presets).toBeDefined();
         expect(typeof presets).toBe('object');
@@ -70,7 +70,9 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
     });
 
     it('should throw error for invalid category in getCategoryPresets', () => {
-      expect(() => getCategoryPresets('non-existent')).toThrow('Unknown preset category: non-existent');
+      expect(() => getCategoryPresets('non-existent')).toThrow(
+        'Unknown preset category: non-existent'
+      );
     });
 
     it('should return all preset names by category', () => {
@@ -81,7 +83,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       expect(allNames).toHaveProperty('timeseries');
       expect(allNames).toHaveProperty('graph');
 
-      Object.values(allNames).forEach(names => {
+      Object.values(allNames).forEach((names) => {
         expect(Array.isArray(names)).toBe(true);
       });
     });
@@ -92,7 +94,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       const results = searchPresetsByUseCase('classification');
 
       expect(Array.isArray(results)).toBe(true);
-      results.forEach(result => {
+      results.forEach((result) => {
         expect(result).toHaveProperty('category');
         expect(result).toHaveProperty('presetName');
         expect(result).toHaveProperty('preset');
@@ -103,8 +105,8 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
 
         expect(
           useCase.includes('classification') ||
-          name.includes('classification') ||
-          description.includes('classification'),
+            name.includes('classification') ||
+            description.includes('classification')
         ).toBe(true);
       });
     });
@@ -119,7 +121,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
 
       expect(Array.isArray(highAccuracyResults)).toBe(true);
 
-      highAccuracyResults.forEach(result => {
+      highAccuracyResults.forEach((result) => {
         expect(result).toHaveProperty('accuracy');
         expect(result.accuracy).toBeGreaterThanOrEqual(90);
       });
@@ -127,7 +129,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       // Results should be sorted by accuracy (descending)
       for (let i = 1; i < highAccuracyResults.length; i++) {
         expect(highAccuracyResults[i - 1].accuracy).toBeGreaterThanOrEqual(
-          highAccuracyResults[i].accuracy,
+          highAccuracyResults[i].accuracy
         );
       }
     });
@@ -142,16 +144,14 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
 
       expect(Array.isArray(fastResults)).toBe(true);
 
-      fastResults.forEach(result => {
+      fastResults.forEach((result) => {
         expect(result).toHaveProperty('inferenceTime');
         expect(result.inferenceTime).toBeLessThanOrEqual(50);
       });
 
       // Results should be sorted by inference time (ascending)
       for (let i = 1; i < fastResults.length; i++) {
-        expect(fastResults[i - 1].inferenceTime).toBeLessThanOrEqual(
-          fastResults[i].inferenceTime,
-        );
+        expect(fastResults[i - 1].inferenceTime).toBeLessThanOrEqual(fastResults[i].inferenceTime);
       }
     });
 
@@ -220,21 +220,21 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       expect(stats.totalPresets).toBeGreaterThan(0);
 
       // Verify category counts
-      Object.keys(NEURAL_PRESETS).forEach(category => {
+      Object.keys(NEURAL_PRESETS).forEach((category) => {
         expect(stats.categories).toHaveProperty(category);
         expect(typeof stats.categories[category]).toBe('number');
       });
 
       // Verify accuracy ranges
       const accuracyKeys = ['90-100%', '80-89%', '70-79%', 'below-70%'];
-      accuracyKeys.forEach(key => {
+      accuracyKeys.forEach((key) => {
         expect(stats.accuracyRanges).toHaveProperty(key);
         expect(typeof stats.accuracyRanges[key]).toBe('number');
       });
 
       // Verify inference time ranges
       const timeKeys = ['under-10ms', '10-50ms', '50-100ms', 'over-100ms'];
-      timeKeys.forEach(key => {
+      timeKeys.forEach((key) => {
         expect(stats.inferenceTimeRanges).toHaveProperty(key);
         expect(typeof stats.inferenceTimeRanges[key]).toBe('number');
       });
@@ -246,7 +246,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       // Verify that model counts make sense
       expect(typeof stats.models).toBe('object');
 
-      PRESET_MODEL_TYPES.forEach(modelType => {
+      PRESET_MODEL_TYPES.forEach((modelType) => {
         if (stats.models[modelType]) {
           expect(typeof stats.models[modelType]).toBe('number');
           expect(stats.models[modelType]).toBeGreaterThan(0);
@@ -305,7 +305,9 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       };
 
       expect(() => validatePresetConfig(incompletePreset)).toThrow('Preset validation failed');
-      expect(() => validatePresetConfig(incompletePreset)).toThrow('Missing fields: model, config, training, performance, useCase');
+      expect(() => validatePresetConfig(incompletePreset)).toThrow(
+        'Missing fields: model, config, training, performance, useCase'
+      );
     });
 
     it('should throw error for missing performance fields', () => {
@@ -322,8 +324,12 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
         useCase: 'Test',
       };
 
-      expect(() => validatePresetConfig(presetMissingPerf)).toThrow('Preset performance validation failed');
-      expect(() => validatePresetConfig(presetMissingPerf)).toThrow('Missing fields: inferenceTime, memoryUsage, trainingTime');
+      expect(() => validatePresetConfig(presetMissingPerf)).toThrow(
+        'Preset performance validation failed'
+      );
+      expect(() => validatePresetConfig(presetMissingPerf)).toThrow(
+        'Missing fields: inferenceTime, memoryUsage, trainingTime'
+      );
     });
 
     it('should handle null or undefined preset', () => {
@@ -359,7 +365,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
         'recommendation',
       ];
 
-      knownUseCases.forEach(useCase => {
+      knownUseCases.forEach((useCase) => {
         const preset = getRecommendedPreset(useCase);
 
         if (preset) {
@@ -372,13 +378,9 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
     });
 
     it('should return null for unknown use cases', () => {
-      const unknownUseCases = [
-        'unknown-use-case',
-        'non-existent',
-        'random-task',
-      ];
+      const unknownUseCases = ['unknown-use-case', 'non-existent', 'random-task'];
 
-      unknownUseCases.forEach(useCase => {
+      unknownUseCases.forEach((useCase) => {
         const preset = getRecommendedPreset(useCase);
         expect(preset).toBeNull();
       });
@@ -426,11 +428,13 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
     });
 
     it('should ensure all model types are represented in presets', () => {
-      const allPresets = Object.values(NEURAL_PRESETS).flatMap(category => Object.values(category));
-      const usedModelTypes = new Set(allPresets.map(preset => preset.model));
+      const allPresets = Object.values(NEURAL_PRESETS).flatMap((category) =>
+        Object.values(category)
+      );
+      const usedModelTypes = new Set(allPresets.map((preset) => preset.model));
 
       // At least some of the model types should be used
-      const intersection = PRESET_MODEL_TYPES.filter(type => usedModelTypes.has(type));
+      const intersection = PRESET_MODEL_TYPES.filter((type) => usedModelTypes.has(type));
       expect(intersection.length).toBeGreaterThan(0);
     });
   });
@@ -448,7 +452,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       expect(typeof transformerPresets).toBe('object');
 
       // Check specific transformer presets
-      Object.values(transformerPresets).forEach(preset => {
+      Object.values(transformerPresets).forEach((preset) => {
         expect(preset).toHaveProperty('name');
         expect(preset).toHaveProperty('description');
         expect(preset).toHaveProperty('model');
@@ -462,15 +466,21 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
 
     it('should validate cognitive patterns in complete presets', () => {
       const validCognitivePatterns = [
-        'convergent', 'divergent', 'lateral', 'systems', 'critical', 'abstract', 'adaptive',
+        'convergent',
+        'divergent',
+        'lateral',
+        'systems',
+        'critical',
+        'abstract',
+        'adaptive',
       ];
 
-      Object.values(COMPLETE_NEURAL_PRESETS).forEach(categoryPresets => {
-        Object.values(categoryPresets).forEach(preset => {
+      Object.values(COMPLETE_NEURAL_PRESETS).forEach((categoryPresets) => {
+        Object.values(categoryPresets).forEach((preset) => {
           if (preset.cognitivePatterns) {
             expect(Array.isArray(preset.cognitivePatterns)).toBe(true);
 
-            preset.cognitivePatterns.forEach(pattern => {
+            preset.cognitivePatterns.forEach((pattern) => {
               expect(validCognitivePatterns).toContain(pattern);
             });
           }
@@ -479,8 +489,8 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
     });
 
     it('should ensure performance metrics are properly formatted', () => {
-      Object.values(COMPLETE_NEURAL_PRESETS).forEach(categoryPresets => {
-        Object.values(categoryPresets).forEach(preset => {
+      Object.values(COMPLETE_NEURAL_PRESETS).forEach((categoryPresets) => {
+        Object.values(categoryPresets).forEach((preset) => {
           if (preset.performance) {
             expect(preset.performance).toHaveProperty('expectedAccuracy');
             expect(preset.performance).toHaveProperty('inferenceTime');
@@ -528,17 +538,15 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       const results = searchPresetsByUseCase(searchTerm);
 
       // Should find presets from potentially multiple categories
-      const categoriesFound = new Set(results.map(r => r.category));
+      const categoriesFound = new Set(results.map((r) => r.category));
       expect(categoriesFound.size).toBeGreaterThanOrEqual(1);
 
       // All results should match the search term
-      results.forEach(result => {
+      results.forEach((result) => {
         const preset = result.preset;
-        const searchableText = [
-          preset.name || '',
-          preset.description || '',
-          preset.useCase || '',
-        ].join(' ').toLowerCase();
+        const searchableText = [preset.name || '', preset.description || '', preset.useCase || '']
+          .join(' ')
+          .toLowerCase();
 
         expect(searchableText).toContain(searchTerm.toLowerCase());
       });
@@ -547,8 +555,8 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
     it('should provide comprehensive model type coverage', () => {
       const modelCounts = {};
 
-      Object.values(NEURAL_PRESETS).forEach(categoryPresets => {
-        Object.values(categoryPresets).forEach(preset => {
+      Object.values(NEURAL_PRESETS).forEach((categoryPresets) => {
+        Object.values(categoryPresets).forEach((preset) => {
           if (preset.model) {
             modelCounts[preset.model] = (modelCounts[preset.model] || 0) + 1;
           }
@@ -559,7 +567,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       expect(Object.keys(modelCounts).length).toBeGreaterThan(0);
 
       // Each model type should be used at least once if present
-      Object.values(modelCounts).forEach(count => {
+      Object.values(modelCounts).forEach((count) => {
         expect(count).toBeGreaterThan(0);
       });
     });
@@ -583,9 +591,11 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       const recommendation = getRecommendedPreset('sentiment_analysis');
 
       // Step 5: Validate selected presets
-      [...chatbotPresets, ...visionPresets, ...highAccuracyPresets, ...fastPresets].forEach(result => {
-        expect(() => validatePresetConfig(result.preset)).not.toThrow();
-      });
+      [...chatbotPresets, ...visionPresets, ...highAccuracyPresets, ...fastPresets].forEach(
+        (result) => {
+          expect(() => validatePresetConfig(result.preset)).not.toThrow();
+        }
+      );
 
       if (recommendation) {
         expect(() => validatePresetConfig(recommendation)).not.toThrow();
@@ -608,16 +618,18 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       const performanceAnalysis = {
         speedOptimized: fastInferencePresets.length,
         accuracyOptimized: highAccuracyPresets.length,
-        balanced: fastInferencePresets.filter(fast =>
-          highAccuracyPresets.some(accurate =>
-            fast.category === accurate.category &&
-            fast.presetName === accurate.presetName,
-          ),
+        balanced: fastInferencePresets.filter((fast) =>
+          highAccuracyPresets.some(
+            (accurate) =>
+              fast.category === accurate.category && fast.presetName === accurate.presetName
+          )
         ).length,
       };
 
       // Should have options for different optimization strategies
-      expect(performanceAnalysis.speedOptimized + performanceAnalysis.accuracyOptimized).toBeGreaterThan(0);
+      expect(
+        performanceAnalysis.speedOptimized + performanceAnalysis.accuracyOptimized
+      ).toBeGreaterThan(0);
     });
 
     it('should support preset customization workflow', () => {
@@ -628,7 +640,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
         // Step 2: Create customized version
         const customizedPreset = {
           ...basePreset,
-          name: `Customized ${ basePreset.name}`,
+          name: `Customized ${basePreset.name}`,
           config: {
             ...basePreset.config,
             customParameter: 'custom_value',
@@ -670,13 +682,13 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       });
 
       // Most presets should be valid
-      const validCount = validationResults.filter(r => r.valid).length;
+      const validCount = validationResults.filter((r) => r.valid).length;
       const totalCount = validationResults.length;
 
       expect(validCount / totalCount).toBeGreaterThan(0.8); // At least 80% should be valid
 
       // Log any invalid presets for debugging
-      const invalidPresets = validationResults.filter(r => !r.valid);
+      const invalidPresets = validationResults.filter((r) => !r.valid);
       if (invalidPresets.length > 0) {
         console.warn('Invalid presets found:', invalidPresets);
       }
@@ -707,9 +719,9 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       });
     });
 
-    it('should handle concurrent preset operations', async() => {
+    it('should handle concurrent preset operations', async () => {
       // Simulate concurrent access to presets
-      const concurrentOperations = Array.from({ length: 10 }, async(_, i) => {
+      const concurrentOperations = Array.from({ length: 10 }, async (_, i) => {
         const category = ['nlp', 'vision', 'timeseries', 'graph'][i % 4];
 
         return Promise.all([
@@ -724,7 +736,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
 
       // All operations should complete successfully
       expect(results).toHaveLength(10);
-      results.forEach(result => {
+      results.forEach((result) => {
         expect(result).toHaveLength(4); // 4 operations per concurrent batch
       });
     });
@@ -749,7 +761,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       expect(stats.totalPresets).toBeGreaterThan(0);
 
       // Verify structure is maintained
-      Object.keys(NEURAL_PRESETS).forEach(category => {
+      Object.keys(NEURAL_PRESETS).forEach((category) => {
         expect(NEURAL_PRESETS[category]).toBeDefined();
         expect(typeof NEURAL_PRESETS[category]).toBe('object');
       });
@@ -767,7 +779,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
         '', // Empty string
       ];
 
-      specialSearchTerms.forEach(term => {
+      specialSearchTerms.forEach((term) => {
         expect(() => {
           const results = searchPresetsByUseCase(term);
           expect(Array.isArray(results)).toBe(true);

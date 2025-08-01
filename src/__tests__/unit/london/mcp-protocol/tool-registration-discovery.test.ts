@@ -1,6 +1,6 @@
 /**
  * MCP Tool Registration and Discovery - TDD London Style
- * 
+ *
  * Tests tool registration and discovery mechanisms using London School principles:
  * - Mock tool registry to focus on registration contracts
  * - Test tool discovery and enumeration behavior
@@ -8,14 +8,14 @@
  * - Focus on interaction patterns between components
  */
 
-import { jest, describe, it, expect, beforeEach, afterEach } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import type {
-  MCPTool,
+  MCPContext,
   MCPRequest,
   MCPResponse,
+  MCPTool,
   MCPToolCall,
   MCPToolResult,
-  MCPContext
 } from '../../../../utils/types';
 
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
@@ -27,33 +27,33 @@ const mockToolRegistry = {
   list: jest.fn(),
   exists: jest.fn(),
   validateTool: jest.fn(),
-  getSchema: jest.fn()
+  getSchema: jest.fn(),
 };
 
 const mockSchemaValidator = {
   validateToolDefinition: jest.fn(),
   validateInputSchema: jest.fn(),
-  validateToolCall: jest.fn()
+  validateToolCall: jest.fn(),
 };
 
 const mockLogger = {
   debug: jest.fn(),
   info: jest.fn(),
   warn: jest.fn(),
-  error: jest.fn()
+  error: jest.fn(),
 };
 
 const mockMetricsCollector = {
   recordToolRegistration: jest.fn(),
   recordToolDiscovery: jest.fn(),
   recordToolCall: jest.fn(),
-  incrementCounter: jest.fn()
+  incrementCounter: jest.fn(),
 };
 
 const mockEventBus = {
   emit: jest.fn(),
   on: jest.fn(),
-  off: jest.fn()
+  off: jest.fn(),
 };
 
 // === CONTRACT INTERFACES ===
@@ -98,16 +98,16 @@ class MockMCPToolManager implements ToolRegistryContract, ToolDiscoveryContract 
 
   async registerTool(tool: MCPTool): Promise<RegistrationResult> {
     this.logger.info('Registering tool', { name: tool.name });
-    
+
     // Validate tool definition
     const validation = await this.validateToolDefinition(tool);
     if (!validation.valid) {
       this.metrics.recordToolRegistration(tool.name, 'failed');
-      return { 
-        success: false, 
-        toolName: tool.name, 
+      return {
+        success: false,
+        toolName: tool.name,
         errors: validation.errors,
-        warnings: validation.warnings 
+        warnings: validation.warnings,
       };
     }
 
@@ -122,27 +122,27 @@ class MockMCPToolManager implements ToolRegistryContract, ToolDiscoveryContract 
 
     // Register with registry
     const registered = this.registry.register(tool);
-    
+
     if (registered) {
       this.metrics.recordToolRegistration(tool.name, 'success');
       this.logger.info('Tool registered successfully', { name: tool.name });
-      return { 
-        success: true, 
+      return {
+        success: true,
         toolName: tool.name,
-        warnings: validation.warnings 
+        warnings: validation.warnings,
       };
     }
 
-    return { 
-      success: false, 
-      toolName: tool.name, 
-      errors: ['Registry registration failed'] 
+    return {
+      success: false,
+      toolName: tool.name,
+      errors: ['Registry registration failed'],
     };
   }
 
   async unregisterTool(name: string): Promise<boolean> {
     this.logger.info('Unregistering tool', { name });
-    
+
     const exists = this.registry.exists(name);
     if (!exists) {
       this.logger.warn('Tool not found for unregistration', { name });
@@ -161,7 +161,7 @@ class MockMCPToolManager implements ToolRegistryContract, ToolDiscoveryContract 
   async discoverTools(): Promise<MCPTool[]> {
     this.logger.debug('Discovering available tools');
     this.metrics.recordToolDiscovery();
-    
+
     return this.registry.list();
   }
 
@@ -173,17 +173,17 @@ class MockMCPToolManager implements ToolRegistryContract, ToolDiscoveryContract 
   async validateToolDefinition(tool: MCPTool): Promise<ValidationResult> {
     const schemaValidation = this.validator.validateToolDefinition(tool);
     const inputSchemaValidation = this.validator.validateInputSchema(tool.inputSchema);
-    
+
     return {
       valid: schemaValidation.valid && inputSchemaValidation.valid,
       errors: [...schemaValidation.errors, ...inputSchemaValidation.errors],
-      warnings: [...schemaValidation.warnings, ...inputSchemaValidation.warnings]
+      warnings: [...schemaValidation.warnings, ...inputSchemaValidation.warnings],
     };
   }
 
   async handleToolsList(request: MCPRequest): Promise<MCPResponse> {
     this.logger.debug('Handling tools/list request', { id: request.id });
-    
+
     const tools = await this.discoverTools();
     return this.generateToolsResponse(tools);
   }
@@ -193,47 +193,45 @@ class MockMCPToolManager implements ToolRegistryContract, ToolDiscoveryContract 
       jsonrpc: '2.0',
       id: 'tools-list',
       result: {
-        tools: tools.map(tool => ({
+        tools: tools.map((tool) => ({
           name: tool.name,
           description: tool.description,
-          inputSchema: tool.inputSchema
-        }))
-      }
+          inputSchema: tool.inputSchema,
+        })),
+      },
     };
   }
 
   filterToolsByCapabilities(tools: MCPTool[], capabilities: string[]): MCPTool[] {
-    return tools.filter(tool => 
-      capabilities.some(cap => 
-        tool.name.includes(cap) || 
-        tool.description.toLowerCase().includes(cap.toLowerCase())
+    return tools.filter((tool) =>
+      capabilities.some(
+        (cap) =>
+          tool.name.includes(cap) || tool.description.toLowerCase().includes(cap.toLowerCase())
       )
     );
   }
 }
 
 describe('MCP Tool Registration and Discovery - London TDD', () => {
-  
   describe('🎯 Acceptance Tests - Tool Registration', () => {
-    
     describe('User Story: Register New Tool', () => {
       it('should register a valid tool with proper validation', async () => {
         // Arrange - Mock successful tool registration
         mockSchemaValidator.validateToolDefinition.mockReturnValue({
           valid: true,
           errors: [],
-          warnings: []
+          warnings: [],
         });
         mockSchemaValidator.validateInputSchema.mockReturnValue({
           valid: true,
           errors: [],
-          warnings: []
+          warnings: [],
         });
         mockToolRegistry.exists.mockReturnValue(false);
         mockToolRegistry.register.mockReturnValue(true);
 
         const toolManager = new MockMCPToolManager();
-        
+
         const validTool: MCPTool = {
           name: 'code_analyzer',
           description: 'Analyzes code quality and patterns',
@@ -243,33 +241,30 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
             properties: {
               codebase: { type: 'string', description: 'Path to codebase' },
               language: { type: 'string', enum: ['typescript', 'javascript', 'python'] },
-              includeTests: { type: 'boolean', default: false }
-            }
+              includeTests: { type: 'boolean', default: false },
+            },
           },
-          handler: jest.fn()
+          handler: jest.fn(),
         };
 
         // Act - Register the tool
         const result = await toolManager.registerTool(validTool);
 
         // Assert - Verify registration conversation (London School focus)
-        expect(mockLogger.info).toHaveBeenCalledWith(
-          'Registering tool', 
-          { name: 'code_analyzer' }
-        );
+        expect(mockLogger.info).toHaveBeenCalledWith('Registering tool', { name: 'code_analyzer' });
         expect(mockSchemaValidator.validateToolDefinition).toHaveBeenCalledWith(validTool);
         expect(mockSchemaValidator.validateInputSchema).toHaveBeenCalledWith(validTool.inputSchema);
         expect(mockToolRegistry.exists).toHaveBeenCalledWith('code_analyzer');
         expect(mockToolRegistry.register).toHaveBeenCalledWith(validTool);
         expect(mockEventBus.emit).toHaveBeenCalledWith('tool:registered', {
           name: 'code_analyzer',
-          tool: validTool
+          tool: validTool,
         });
         expect(mockMetricsCollector.recordToolRegistration).toHaveBeenCalledWith(
-          'code_analyzer', 
+          'code_analyzer',
           'success'
         );
-        
+
         expect(result.success).toBe(true);
         expect(result.toolName).toBe('code_analyzer');
       });
@@ -279,21 +274,21 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
         mockSchemaValidator.validateToolDefinition.mockReturnValue({
           valid: false,
           errors: ['Tool name cannot be empty', 'Description is required'],
-          warnings: []
+          warnings: [],
         });
         mockSchemaValidator.validateInputSchema.mockReturnValue({
           valid: true,
           errors: [],
-          warnings: []
+          warnings: [],
         });
 
         const toolManager = new MockMCPToolManager();
-        
+
         const invalidTool: MCPTool = {
           name: '', // Invalid: empty name
           description: '', // Invalid: empty description
           inputSchema: { type: 'object' },
-          handler: jest.fn()
+          handler: jest.fn(),
         };
 
         // Act - Attempt to register invalid tool
@@ -312,28 +307,28 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
         mockSchemaValidator.validateToolDefinition.mockReturnValue({
           valid: true,
           errors: [],
-          warnings: ['Tool updated with new capabilities']
+          warnings: ['Tool updated with new capabilities'],
         });
         mockSchemaValidator.validateInputSchema.mockReturnValue({
           valid: true,
           errors: [],
-          warnings: []
+          warnings: [],
         });
         mockToolRegistry.exists.mockReturnValue(true); // Tool already exists
         mockToolRegistry.register.mockReturnValue(true);
 
         const toolManager = new MockMCPToolManager();
-        
+
         const updatedTool: MCPTool = {
           name: 'existing_tool',
           description: 'Updated tool with enhanced features',
           inputSchema: {
             type: 'object',
             properties: {
-              newFeature: { type: 'boolean' }
-            }
+              newFeature: { type: 'boolean' },
+            },
           },
-          handler: jest.fn()
+          handler: jest.fn(),
         };
 
         // Act - Re-register existing tool
@@ -341,13 +336,12 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
 
         // Assert - Verify update conversation
         expect(mockToolRegistry.exists).toHaveBeenCalledWith('existing_tool');
-        expect(mockLogger.warn).toHaveBeenCalledWith(
-          'Tool already registered, updating', 
-          { name: 'existing_tool' }
-        );
+        expect(mockLogger.warn).toHaveBeenCalledWith('Tool already registered, updating', {
+          name: 'existing_tool',
+        });
         expect(mockEventBus.emit).toHaveBeenCalledWith('tool:updated', {
           name: 'existing_tool',
-          tool: updatedTool
+          tool: updatedTool,
         });
         expect(result.success).toBe(true);
         expect(result.warnings).toContain('Tool updated with new capabilities');
@@ -366,14 +360,11 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
         const result = await toolManager.unregisterTool('test_tool');
 
         // Assert - Verify unregistration conversation
-        expect(mockLogger.info).toHaveBeenCalledWith(
-          'Unregistering tool', 
-          { name: 'test_tool' }
-        );
+        expect(mockLogger.info).toHaveBeenCalledWith('Unregistering tool', { name: 'test_tool' });
         expect(mockToolRegistry.exists).toHaveBeenCalledWith('test_tool');
         expect(mockToolRegistry.unregister).toHaveBeenCalledWith('test_tool');
         expect(mockEventBus.emit).toHaveBeenCalledWith('tool:unregistered', {
-          name: 'test_tool'
+          name: 'test_tool',
         });
         expect(result).toBe(true);
       });
@@ -389,10 +380,9 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
 
         // Assert - Verify non-existent tool handling
         expect(mockToolRegistry.exists).toHaveBeenCalledWith('nonexistent_tool');
-        expect(mockLogger.warn).toHaveBeenCalledWith(
-          'Tool not found for unregistration', 
-          { name: 'nonexistent_tool' }
-        );
+        expect(mockLogger.warn).toHaveBeenCalledWith('Tool not found for unregistration', {
+          name: 'nonexistent_tool',
+        });
         expect(mockToolRegistry.unregister).not.toHaveBeenCalled();
         expect(result).toBe(false);
       });
@@ -400,7 +390,6 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
   });
 
   describe('🔍 Acceptance Tests - Tool Discovery', () => {
-    
     describe('User Story: List Available Tools', () => {
       it('should discover and return all registered tools', async () => {
         // Arrange - Mock tool discovery
@@ -409,20 +398,20 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
             name: 'analyze_code',
             description: 'Code analysis tool',
             inputSchema: { type: 'object' },
-            handler: jest.fn()
+            handler: jest.fn(),
           },
           {
             name: 'format_code',
             description: 'Code formatting tool',
             inputSchema: { type: 'object' },
-            handler: jest.fn()
+            handler: jest.fn(),
           },
           {
             name: 'test_runner',
             description: 'Test execution tool',
             inputSchema: { type: 'object' },
-            handler: jest.fn()
-          }
+            handler: jest.fn(),
+          },
         ];
 
         mockToolRegistry.list.mockReturnValue(mockTools);
@@ -450,32 +439,31 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
               type: 'object',
               required: ['input'],
               properties: {
-                input: { type: 'string' }
-              }
+                input: { type: 'string' },
+              },
             },
-            handler: jest.fn()
-          }
+            handler: jest.fn(),
+          },
         ];
 
         mockToolRegistry.list.mockReturnValue(mockTools);
 
         const toolManager = new MockMCPToolManager();
-        
+
         const toolsListRequest: MCPRequest = {
           jsonrpc: '2.0',
           id: 'tools-list-1',
           method: 'tools/list',
-          params: {}
+          params: {},
         };
 
         // Act - Handle tools/list request
         const response = await toolManager.handleToolsList(toolsListRequest);
 
         // Assert - Verify MCP response generation
-        expect(mockLogger.debug).toHaveBeenCalledWith(
-          'Handling tools/list request', 
-          { id: 'tools-list-1' }
-        );
+        expect(mockLogger.debug).toHaveBeenCalledWith('Handling tools/list request', {
+          id: 'tools-list-1',
+        });
         expect(response.jsonrpc).toBe('2.0');
         expect(response.result).toBeDefined();
         expect(response.result.tools).toHaveLength(1);
@@ -486,9 +474,9 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
             type: 'object',
             required: ['input'],
             properties: {
-              input: { type: 'string' }
-            }
-          }
+              input: { type: 'string' },
+            },
+          },
         });
       });
     });
@@ -501,39 +489,39 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
             name: 'code_analyzer',
             description: 'Analyzes code quality and complexity',
             inputSchema: { type: 'object' },
-            handler: jest.fn()
+            handler: jest.fn(),
           },
           {
             name: 'test_generator',
             description: 'Generates unit tests automatically',
             inputSchema: { type: 'object' },
-            handler: jest.fn()
+            handler: jest.fn(),
           },
           {
             name: 'doc_writer',
             description: 'Creates documentation from code',
             inputSchema: { type: 'object' },
-            handler: jest.fn()
-          }
+            handler: jest.fn(),
+          },
         ];
 
         const toolManager = new MockMCPToolManager();
 
         // Act - Filter tools by capabilities
-        const codeRelatedTools = toolManager.filterToolsByCapabilities(
-          allTools, 
-          ['code', 'analyzer']
-        );
-        const testRelatedTools = toolManager.filterToolsByCapabilities(
-          allTools, 
-          ['test', 'testing']
-        );
+        const codeRelatedTools = toolManager.filterToolsByCapabilities(allTools, [
+          'code',
+          'analyzer',
+        ]);
+        const testRelatedTools = toolManager.filterToolsByCapabilities(allTools, [
+          'test',
+          'testing',
+        ]);
 
         // Assert - Verify filtering logic
         expect(codeRelatedTools).toHaveLength(2); // code_analyzer + doc_writer (from 'code')
-        expect(codeRelatedTools.map(t => t.name)).toContain('code_analyzer');
-        expect(codeRelatedTools.map(t => t.name)).toContain('doc_writer');
-        
+        expect(codeRelatedTools.map((t) => t.name)).toContain('code_analyzer');
+        expect(codeRelatedTools.map((t) => t.name)).toContain('doc_writer');
+
         expect(testRelatedTools).toHaveLength(1); // test_generator
         expect(testRelatedTools[0].name).toBe('test_generator');
       });
@@ -541,7 +529,6 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
   });
 
   describe('🔗 Contract Verification - Tool Access', () => {
-    
     describe('Individual Tool Access', () => {
       it('should retrieve specific tool by name', async () => {
         // Arrange - Mock specific tool retrieval
@@ -549,7 +536,7 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
           name: 'specific_tool',
           description: 'A specific tool for testing',
           inputSchema: { type: 'object' },
-          handler: jest.fn()
+          handler: jest.fn(),
         };
 
         mockToolRegistry.get.mockReturnValue(specificTool);
@@ -560,10 +547,7 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
         const retrievedTool = await toolManager.getTool('specific_tool');
 
         // Assert - Verify tool retrieval conversation
-        expect(mockLogger.debug).toHaveBeenCalledWith(
-          'Getting tool', 
-          { name: 'specific_tool' }
-        );
+        expect(mockLogger.debug).toHaveBeenCalledWith('Getting tool', { name: 'specific_tool' });
         expect(mockToolRegistry.get).toHaveBeenCalledWith('specific_tool');
         expect(retrievedTool).toEqual(specificTool);
       });
@@ -585,50 +569,49 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
   });
 
   describe('🧪 London School Patterns - Event-Driven Registration', () => {
-    
     it('should demonstrate event-driven tool lifecycle management', async () => {
       // Arrange - Mock complete tool lifecycle with events
       mockSchemaValidator.validateToolDefinition.mockReturnValue({
         valid: true,
         errors: [],
-        warnings: []
+        warnings: [],
       });
       mockSchemaValidator.validateInputSchema.mockReturnValue({
         valid: true,
         errors: [],
-        warnings: []
+        warnings: [],
       });
       mockToolRegistry.exists.mockReturnValue(false);
       mockToolRegistry.register.mockReturnValue(true);
       mockToolRegistry.unregister.mockReturnValue(true);
 
       const toolManager = new MockMCPToolManager();
-      
+
       const lifecycleTool: MCPTool = {
         name: 'lifecycle_tool',
         description: 'Tool for testing lifecycle events',
         inputSchema: { type: 'object' },
-        handler: jest.fn()
+        handler: jest.fn(),
       };
 
       // Act - Register tool
       await toolManager.registerTool(lifecycleTool);
-      
+
       // Update exists mock for unregistration
       mockToolRegistry.exists.mockReturnValue(true);
-      
+
       // Act - Unregister tool
       await toolManager.unregisterTool('lifecycle_tool');
 
       // Assert - Verify complete event conversation
       expect(mockEventBus.emit).toHaveBeenCalledWith('tool:registered', {
         name: 'lifecycle_tool',
-        tool: lifecycleTool
+        tool: lifecycleTool,
       });
       expect(mockEventBus.emit).toHaveBeenCalledWith('tool:unregistered', {
-        name: 'lifecycle_tool'
+        name: 'lifecycle_tool',
       });
-      
+
       // Verify call order
       const emitCalls = mockEventBus.emit.mock.calls;
       expect(emitCalls[0][0]).toBe('tool:registered');
@@ -640,7 +623,7 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  
+
   afterEach(() => {
     jest.restoreAllMocks();
   });

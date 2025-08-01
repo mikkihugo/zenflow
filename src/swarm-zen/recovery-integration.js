@@ -14,15 +14,15 @@
  */
 
 import { EventEmitter } from 'events';
-import { Logger } from './logger.js';
+import ChaosEngineering from './chaos-engineering.js';
+import ConnectionStateManager from './connection-state-manager.js';
 import { ErrorFactory } from './errors.js';
-import { generateId } from './utils.js';
 
 import HealthMonitor from './health-monitor.js';
-import RecoveryWorkflows from './recovery-workflows.js';
-import ConnectionStateManager from './connection-state-manager.js';
+import { Logger } from './logger.js';
 import MonitoringDashboard from './monitoring-dashboard.js';
-import ChaosEngineering from './chaos-engineering.js';
+import RecoveryWorkflows from './recovery-workflows.js';
+import { generateId } from './utils.js';
 
 export class RecoveryIntegration extends EventEmitter {
   constructor(options = {}) {
@@ -110,13 +110,15 @@ export class RecoveryIntegration extends EventEmitter {
       });
 
       this.emit('integration:initialized');
-
     } catch (error) {
-      const integrationError = ErrorFactory.createError('resource',
-        'Failed to initialize recovery integration system', {
+      const integrationError = ErrorFactory.createError(
+        'resource',
+        'Failed to initialize recovery integration system',
+        {
           error: error.message,
           component: 'recovery-integration',
-        });
+        }
+      );
       this.logger.error('Recovery Integration initialization failed', integrationError);
       throw integrationError;
     }
@@ -187,7 +189,7 @@ export class RecoveryIntegration extends EventEmitter {
       this.logger.debug(`Initializing component: ${name}`);
 
       const componentOptions = {
-        ...this.options[name] || {},
+        ...(this.options[name] || {}),
         ...options,
       };
 
@@ -209,7 +211,6 @@ export class RecoveryIntegration extends EventEmitter {
       });
 
       this.emit('component:initialized', { name, component });
-
     } catch (error) {
       this.logger.error(`Failed to initialize component: ${name}`, {
         error: error.message,
@@ -325,8 +326,9 @@ export class RecoveryIntegration extends EventEmitter {
 
     this.logger.info('Component integrations completed', {
       totalIntegrations: integrations.length,
-      successfulIntegrations: Array.from(this.integrationStatus.values())
-        .filter(status => status.status === 'success').length,
+      successfulIntegrations: Array.from(this.integrationStatus.values()).filter(
+        (status) => status.status === 'success'
+      ).length,
     });
   }
 
@@ -338,9 +340,12 @@ export class RecoveryIntegration extends EventEmitter {
     const integrationKey = `${from}->${to}`;
 
     try {
-      const fromComponent = from === 'mcpTools' ? this.mcpTools :
-        from === 'persistence' ? this.persistence :
-          this[from];
+      const fromComponent =
+        from === 'mcpTools'
+          ? this.mcpTools
+          : from === 'persistence'
+            ? this.persistence
+            : this[from];
       const toComponent = this[to];
 
       if (!fromComponent || !toComponent) {
@@ -370,7 +375,6 @@ export class RecoveryIntegration extends EventEmitter {
           reason: `Method '${method}' not found on component '${to}'`,
         });
       }
-
     } catch (error) {
       this.integrationStatus.set(integrationKey, {
         status: 'failed',
@@ -408,12 +412,14 @@ export class RecoveryIntegration extends EventEmitter {
 
       this.logger.info('Recovery Integration System started successfully');
       this.emit('integration:started');
-
     } catch (error) {
-      const startError = ErrorFactory.createError('resource',
-        'Failed to start recovery integration system', {
+      const startError = ErrorFactory.createError(
+        'resource',
+        'Failed to start recovery integration system',
+        {
           error: error.message,
-        });
+        }
+      );
       this.logger.error('Recovery Integration start failed', startError);
       throw startError;
     }
@@ -440,7 +446,6 @@ export class RecoveryIntegration extends EventEmitter {
 
       this.logger.info('Recovery Integration System stopped successfully');
       this.emit('integration:stopped');
-
     } catch (error) {
       this.logger.error('Error stopping recovery integration system', {
         error: error.message,
@@ -641,7 +646,8 @@ export class RecoveryIntegration extends EventEmitter {
     const memUsage = process.memoryUsage();
     const heapUsedMB = memUsage.heapUsed / 1024 / 1024;
 
-    if (heapUsedMB > 512) { // More than 512MB
+    if (heapUsedMB > 512) {
+      // More than 512MB
       this.logger.info('Performing memory optimization', {
         heapUsedMB: heapUsedMB.toFixed(2),
       });
@@ -706,8 +712,10 @@ export class RecoveryIntegration extends EventEmitter {
     }
 
     if (validationErrors.length > 0) {
-      throw ErrorFactory.createError('configuration',
-        `Configuration validation failed: ${validationErrors.join(', ')}`);
+      throw ErrorFactory.createError(
+        'configuration',
+        `Configuration validation failed: ${validationErrors.join(', ')}`
+      );
     }
 
     this.logger.debug('Configuration validation passed');
@@ -790,7 +798,6 @@ export class RecoveryIntegration extends EventEmitter {
       await this.shutdown();
 
       this.emit('emergency:shutdown', { reason });
-
     } catch (error) {
       this.logger.error('Error during emergency shutdown', {
         error: error.message,

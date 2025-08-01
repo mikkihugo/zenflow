@@ -3,9 +3,9 @@
  * MCP tools for neural network operations
  */
 
-import type { MCPTool, MCPToolResult } from '../types/mcp-types';
 import { NeuralBridge, type NeuralConfig, type TrainingData } from '../../neural/neural-bridge';
 import { createLogger } from '../../utils/logger';
+import type { MCPTool, MCPToolResult } from '../types/mcp-types';
 
 const logger = createLogger({ prefix: 'MCP-Neural' });
 
@@ -40,59 +40,63 @@ export const neuralCreateTool: MCPTool = {
     properties: {
       networkId: {
         type: 'string',
-        description: 'Unique identifier for the neural network'
+        description: 'Unique identifier for the neural network',
       },
       type: {
         type: 'string',
         enum: ['feedforward', 'lstm', 'transformer', 'autoencoder'],
-        description: 'Type of neural network architecture'
+        description: 'Type of neural network architecture',
       },
       layers: {
         type: 'array',
         items: { type: 'number' },
-        description: 'Array defining layer sizes (e.g., [784, 128, 64, 10])'
-      }
+        description: 'Array defining layer sizes (e.g., [784, 128, 64, 10])',
+      },
     },
-    required: ['networkId', 'type', 'layers']
+    required: ['networkId', 'type', 'layers'],
   },
   handler: async (params: NeuralCreateParams): Promise<MCPToolResult> => {
     try {
       logger.info('Creating neural network:', params);
-      
+
       const neuralBridge = NeuralBridge.getInstance();
       const networkId = await neuralBridge.createNetwork(
         params.networkId,
         params.type,
         params.layers
       );
-      
+
       logger.info(`Neural network created: ${networkId}`);
-      
+
       return {
         success: true,
-        content: [{
-          type: 'text',
-          text: `🧠 Neural network created successfully!
+        content: [
+          {
+            type: 'text',
+            text: `🧠 Neural network created successfully!
 
 Network ID: ${networkId}
 Type: ${params.type}
 Architecture: ${params.layers.join(' → ')} neurons
 Status: Ready for training
 
-The neural network is now available for training and predictions.`
-        }]
+The neural network is now available for training and predictions.`,
+          },
+        ],
       };
     } catch (error) {
       logger.error('Neural network creation failed:', error);
       return {
         success: false,
-        content: [{
-          type: 'text',
-          text: `❌ Neural network creation failed: ${error instanceof Error ? error.message : String(error)}`
-        }]
+        content: [
+          {
+            type: 'text',
+            text: `❌ Neural network creation failed: ${error instanceof Error ? error.message : String(error)}`,
+          },
+        ],
       };
     }
-  }
+  },
 };
 
 /**
@@ -106,7 +110,7 @@ export const neuralTrainTool: MCPTool = {
     properties: {
       networkId: {
         type: 'string',
-        description: 'ID of the neural network to train'
+        description: 'ID of the neural network to train',
       },
       trainingData: {
         type: 'object',
@@ -115,77 +119,86 @@ export const neuralTrainTool: MCPTool = {
             type: 'array',
             items: {
               type: 'array',
-              items: { type: 'number' }
+              items: { type: 'number' },
             },
-            description: 'Training input data'
+            description: 'Training input data',
           },
           outputs: {
             type: 'array',
             items: {
               type: 'array',
-              items: { type: 'number' }
+              items: { type: 'number' },
             },
-            description: 'Training output data'
-          }
+            description: 'Training output data',
+          },
         },
-        required: ['inputs', 'outputs']
+        required: ['inputs', 'outputs'],
       },
       epochs: {
         type: 'number',
         description: 'Number of training epochs',
-        default: 1000
-      }
+        default: 1000,
+      },
     },
-    required: ['networkId', 'trainingData']
+    required: ['networkId', 'trainingData'],
   },
   handler: async (params: NeuralTrainParams): Promise<MCPToolResult> => {
     try {
-      logger.info('Training neural network:', { networkId: params.networkId, epochs: params.epochs });
-      
+      logger.info('Training neural network:', {
+        networkId: params.networkId,
+        epochs: params.epochs,
+      });
+
       const neuralBridge = NeuralBridge.getInstance();
       const success = await neuralBridge.trainNetwork(
         params.networkId,
         params.trainingData,
         params.epochs || 1000
       );
-      
+
       if (success) {
         logger.info(`Neural network training completed: ${params.networkId}`);
-        
+
         return {
           success: true,
-          content: [{
-            type: 'text',
-            text: `🎯 Neural network training completed!
+          content: [
+            {
+              type: 'text',
+              text: `🎯 Neural network training completed!
 
 Network ID: ${params.networkId}
 Training Samples: ${params.trainingData.inputs.length}
 Epochs: ${params.epochs || 1000}
 Status: Training successful
 
-The neural network is now ready for predictions.`
-          }]
+The neural network is now ready for predictions.`,
+            },
+          ],
         };
       } else {
         return {
           success: false,
-          content: [{
-            type: 'text',
-            text: `❌ Neural network training failed for ${params.networkId}`
-          }]
+          content: [
+            {
+              type: 'text',
+              text: `❌ Neural network training failed for ${params.networkId}`,
+            },
+          ],
         };
       }
     } catch (error) {
       logger.error('Neural network training failed:', error);
       return {
         success: false,
-        content: [{
-          type: 'text',
-          text: `❌ Neural network training failed: ${error instanceof Error ? error.message : String(error)}`
-        }]
+        content: [
+          {
+            type: 'text',
+            text: `❌ Neural network training failed: ${error instanceof Error ? error.message : String(error)}`,
+          },
+        ],
       };
     }
-  }
+  },
 };
 
 /**
@@ -199,51 +212,55 @@ export const neuralPredictTool: MCPTool = {
     properties: {
       networkId: {
         type: 'string',
-        description: 'ID of the neural network to use for prediction'
+        description: 'ID of the neural network to use for prediction',
       },
       inputs: {
         type: 'array',
         items: { type: 'number' },
-        description: 'Input data for prediction'
-      }
+        description: 'Input data for prediction',
+      },
     },
-    required: ['networkId', 'inputs']
+    required: ['networkId', 'inputs'],
   },
   handler: async (params: NeuralPredictParams): Promise<MCPToolResult> => {
     try {
       logger.info('Making neural prediction:', { networkId: params.networkId });
-      
+
       const neuralBridge = NeuralBridge.getInstance();
       const result = await neuralBridge.predict(params.networkId, params.inputs);
-      
+
       logger.info(`Neural prediction completed: ${params.networkId}`);
-      
+
       return {
         success: true,
-        content: [{
-          type: 'text',
-          text: `🔮 Neural network prediction completed!
+        content: [
+          {
+            type: 'text',
+            text: `🔮 Neural network prediction completed!
 
 Network ID: ${params.networkId}
 Input: [${params.inputs.join(', ')}]
-Output: [${result.outputs.map(x => x.toFixed(4)).join(', ')}]
+Output: [${result.outputs.map((x) => x.toFixed(4)).join(', ')}]
 Confidence: ${(result.confidence * 100).toFixed(1)}%
 Processing Time: ${result.processingTime}ms
 
-The neural network has processed your input successfully.`
-        }]
+The neural network has processed your input successfully.`,
+          },
+        ],
       };
     } catch (error) {
       logger.error('Neural prediction failed:', error);
       return {
         success: false,
-        content: [{
-          type: 'text',
-          text: `❌ Neural prediction failed: ${error instanceof Error ? error.message : String(error)}`
-        }]
+        content: [
+          {
+            type: 'text',
+            text: `❌ Neural prediction failed: ${error instanceof Error ? error.message : String(error)}`,
+          },
+        ],
       };
     }
-  }
+  },
 };
 
 /**
@@ -254,19 +271,20 @@ export const neuralStatusTool: MCPTool = {
   description: 'Get status of neural networks and system',
   inputSchema: {
     type: 'object',
-    properties: {}
+    properties: {},
   },
   handler: async (): Promise<MCPToolResult> => {
     try {
       const neuralBridge = NeuralBridge.getInstance();
       const stats = neuralBridge.getStats();
       const networks = neuralBridge.listNetworks();
-      
+
       return {
         success: true,
-        content: [{
-          type: 'text',
-          text: `🧠 Neural System Status
+        content: [
+          {
+            type: 'text',
+            text: `🧠 Neural System Status
 
 System Information:
   Total Networks: ${stats.totalNetworks}
@@ -276,22 +294,25 @@ System Information:
   WASM Support: ${stats.wasmEnabled ? 'Enabled' : 'Disabled'}
 
 Network Details:
-${networks.map(net => `  • ${net.id} (${net.type}) - Status: ${net.status}`).join('\n')}
+${networks.map((net) => `  • ${net.id} (${net.type}) - Status: ${net.status}`).join('\n')}
 
-The neural system is operational and ready for AI tasks.`
-        }]
+The neural system is operational and ready for AI tasks.`,
+          },
+        ],
       };
     } catch (error) {
       logger.error('Neural status check failed:', error);
       return {
         success: false,
-        content: [{
-          type: 'text',
-          text: `❌ Neural status check failed: ${error instanceof Error ? error.message : String(error)}`
-        }]
+        content: [
+          {
+            type: 'text',
+            text: `❌ Neural status check failed: ${error instanceof Error ? error.message : String(error)}`,
+          },
+        ],
       };
     }
-  }
+  },
 };
 
 /**
@@ -302,51 +323,61 @@ export const neuralListTool: MCPTool = {
   description: 'List all available neural networks',
   inputSchema: {
     type: 'object',
-    properties: {}
+    properties: {},
   },
   handler: async (): Promise<MCPToolResult> => {
     try {
       const neuralBridge = NeuralBridge.getInstance();
       const networks = neuralBridge.listNetworks();
-      
+
       if (networks.length === 0) {
         return {
           success: true,
-          content: [{
-            type: 'text',
-            text: `📋 Neural Networks
+          content: [
+            {
+              type: 'text',
+              text: `📋 Neural Networks
 
-No neural networks found. Create one using neural_create tool.`
-          }]
+No neural networks found. Create one using neural_create tool.`,
+            },
+          ],
         };
       }
-      
+
       return {
         success: true,
-        content: [{
-          type: 'text',
-          text: `📋 Neural Networks (${networks.length} total)
+        content: [
+          {
+            type: 'text',
+            text: `📋 Neural Networks (${networks.length} total)
 
-${networks.map(net => `🧠 ${net.id}
+${networks
+  .map(
+    (net) => `🧠 ${net.id}
    Type: ${net.type}
    Architecture: ${net.layers.join(' → ')} neurons
    Status: ${net.status}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
-Use neural_train to train networks or neural_predict to make predictions.`
-        }]
+Use neural_train to train networks or neural_predict to make predictions.`,
+          },
+        ],
       };
     } catch (error) {
       logger.error('Neural list failed:', error);
       return {
         success: false,
-        content: [{
-          type: 'text',
-          text: `❌ Neural list failed: ${error instanceof Error ? error.message : String(error)}`
-        }]
+        content: [
+          {
+            type: 'text',
+            text: `❌ Neural list failed: ${error instanceof Error ? error.message : String(error)}`,
+          },
+        ],
       };
     }
-  }
+  },
 };
 
 // Export all neural tools
@@ -355,5 +386,5 @@ export const neuralTools = {
   neural_train: neuralTrainTool,
   neural_predict: neuralPredictTool,
   neural_status: neuralStatusTool,
-  neural_list: neuralListTool
+  neural_list: neuralListTool,
 };

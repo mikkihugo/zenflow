@@ -1,6 +1,6 @@
 /**
  * Help Command Implementation
- * 
+ *
  * Shows help for all commands or specific command help
  */
 
@@ -30,29 +30,29 @@ export class HelpCommand extends BaseCommand {
         'claude-flow help',
         'claude-flow help init',
         'claude-flow help swarm start',
-        'claude-flow help --category core'
+        'claude-flow help --category core',
       ],
       flags: {
         category: {
           type: 'string',
-          description: 'Show commands in specific category'
+          description: 'Show commands in specific category',
         },
         all: {
           type: 'boolean',
           description: 'Show all commands including deprecated',
-          default: false
+          default: false,
         },
         examples: {
           type: 'boolean',
           description: 'Show examples for all commands',
-          default: false
+          default: false,
         },
         'no-color': {
           type: 'boolean',
           description: 'Disable colored output',
-          default: false
-        }
-      }
+          default: false,
+        },
+      },
     });
   }
 
@@ -64,20 +64,24 @@ export class HelpCommand extends BaseCommand {
     if (category) {
       const validCategories = ['core', 'swarm', 'config', 'utility', 'experimental'];
       if (!validCategories.includes(category)) {
-        errors.push(`Invalid category '${category}'. Valid categories: ${validCategories.join(', ')}`);
+        errors.push(
+          `Invalid category '${category}'. Valid categories: ${validCategories.join(', ')}`
+        );
       }
     }
 
-    return errors.length > 0 || warnings.length > 0 ? { valid: errors.length === 0, errors, warnings } : null;
+    return errors.length > 0 || warnings.length > 0
+      ? { valid: errors.length === 0, errors, warnings }
+      : null;
   }
 
   protected async run(context: CommandContext): Promise<CommandResult> {
     try {
       const commandName = context.args[0];
       const category = context.flags.category as string;
-      const showAll = context.flags.all as boolean || false;
-      const showExamples = context.flags.examples as boolean || false;
-      const noColor = context.flags['no-color'] as boolean || false;
+      const showAll = (context.flags.all as boolean) || false;
+      const showExamples = (context.flags.examples as boolean) || false;
+      const noColor = (context.flags['no-color'] as boolean) || false;
 
       if (commandName) {
         // Show help for specific command
@@ -85,7 +89,7 @@ export class HelpCommand extends BaseCommand {
         return {
           success: true,
           exitCode: 0,
-          message: helpText
+          message: helpText,
         };
       } else {
         // Show general help
@@ -93,14 +97,14 @@ export class HelpCommand extends BaseCommand {
         return {
           success: true,
           exitCode: 0,
-          message: helpText
+          message: helpText,
         };
       }
     } catch (error) {
       return {
         success: false,
         error: `Failed to show help: ${error instanceof Error ? error.message : String(error)}`,
-        exitCode: 1
+        exitCode: 1,
       };
     }
   }
@@ -108,16 +112,16 @@ export class HelpCommand extends BaseCommand {
   private async getCommandHelp(commandName: string, noColor: boolean): Promise<string> {
     // This would integrate with the command registry to get actual command help
     // For now, we'll provide help for our implemented commands
-    
+
     const commands = this.getAvailableCommands();
-    
+
     // Handle subcommands (e.g., "swarm start")
     const parts = commandName.split(' ');
     const mainCommand = parts[0];
     const subCommand = parts[1];
 
-    const command = commands.find(cmd => 
-      cmd.name === mainCommand || (cmd.aliases && cmd.aliases.includes(mainCommand))
+    const command = commands.find(
+      (cmd) => cmd.name === mainCommand || (cmd.aliases && cmd.aliases.includes(mainCommand))
     );
 
     if (!command) {
@@ -127,21 +131,23 @@ export class HelpCommand extends BaseCommand {
     let helpText = '';
 
     // Add colors if not disabled
-    const colors = noColor ? {
-      title: (text: string) => text,
-      header: (text: string) => text,
-      command: (text: string) => text,
-      flag: (text: string) => text,
-      example: (text: string) => text,
-      description: (text: string) => text
-    } : {
-      title: (text: string) => `\x1b[1m\x1b[36m${text}\x1b[0m`, // Bold cyan
-      header: (text: string) => `\x1b[1m${text}\x1b[0m`, // Bold
-      command: (text: string) => `\x1b[32m${text}\x1b[0m`, // Green
-      flag: (text: string) => `\x1b[33m${text}\x1b[0m`, // Yellow
-      example: (text: string) => `\x1b[90m${text}\x1b[0m`, // Dark gray
-      description: (text: string) => text
-    };
+    const colors = noColor
+      ? {
+          title: (text: string) => text,
+          header: (text: string) => text,
+          command: (text: string) => text,
+          flag: (text: string) => text,
+          example: (text: string) => text,
+          description: (text: string) => text,
+        }
+      : {
+          title: (text: string) => `\x1b[1m\x1b[36m${text}\x1b[0m`, // Bold cyan
+          header: (text: string) => `\x1b[1m${text}\x1b[0m`, // Bold
+          command: (text: string) => `\x1b[32m${text}\x1b[0m`, // Green
+          flag: (text: string) => `\x1b[33m${text}\x1b[0m`, // Yellow
+          example: (text: string) => `\x1b[90m${text}\x1b[0m`, // Dark gray
+          description: (text: string) => text,
+        };
 
     // Title
     helpText += colors.title(`Claude Flow - ${command.name.toUpperCase()} Command`);
@@ -185,22 +191,29 @@ export class HelpCommand extends BaseCommand {
     return helpText;
   }
 
-  private async getGeneralHelp(category?: string, showAll?: boolean, showExamples?: boolean, noColor?: boolean): Promise<string> {
-    const colors = noColor ? {
-      title: (text: string) => text,
-      header: (text: string) => text,
-      command: (text: string) => text,
-      description: (text: string) => text,
-      category: (text: string) => text,
-      example: (text: string) => text
-    } : {
-      title: (text: string) => `\x1b[1m\x1b[36m${text}\x1b[0m`,
-      header: (text: string) => `\x1b[1m${text}\x1b[0m`,
-      command: (text: string) => `\x1b[32m${text}\x1b[0m`,
-      description: (text: string) => text,
-      category: (text: string) => `\x1b[35m${text}\x1b[0m`,
-      example: (text: string) => `\x1b[90m${text}\x1b[0m`
-    };
+  private async getGeneralHelp(
+    category?: string,
+    showAll?: boolean,
+    showExamples?: boolean,
+    noColor?: boolean
+  ): Promise<string> {
+    const colors = noColor
+      ? {
+          title: (text: string) => text,
+          header: (text: string) => text,
+          command: (text: string) => text,
+          description: (text: string) => text,
+          category: (text: string) => text,
+          example: (text: string) => text,
+        }
+      : {
+          title: (text: string) => `\x1b[1m\x1b[36m${text}\x1b[0m`,
+          header: (text: string) => `\x1b[1m${text}\x1b[0m`,
+          command: (text: string) => `\x1b[32m${text}\x1b[0m`,
+          description: (text: string) => text,
+          category: (text: string) => `\x1b[35m${text}\x1b[0m`,
+          example: (text: string) => `\x1b[90m${text}\x1b[0m`,
+        };
 
     let helpText = '';
 
@@ -208,7 +221,8 @@ export class HelpCommand extends BaseCommand {
     helpText += colors.title('Claude Flow CLI') + '\n';
     helpText += '='.repeat(50) + '\n\n';
 
-    helpText += colors.description('A powerful swarm orchestration and neural coordination system') + '\n\n';
+    helpText +=
+      colors.description('A powerful swarm orchestration and neural coordination system') + '\n\n';
 
     // Usage
     helpText += colors.header('USAGE:') + '\n';
@@ -231,15 +245,15 @@ export class HelpCommand extends BaseCommand {
       if (categoryCommands.length === 0) continue;
 
       helpText += colors.header(`${cat.toUpperCase()} COMMANDS:`) + '\n';
-      
+
       for (const command of categoryCommands) {
-        const nameAndAliases = command.aliases 
+        const nameAndAliases = command.aliases
           ? `${command.name} (${command.aliases.join(', ')})`
           : command.name;
-        
+
         const deprecated = command.deprecated ? ' [DEPRECATED]' : '';
         helpText += `  ${colors.command(nameAndAliases.padEnd(20))} ${command.description}${deprecated}\n`;
-        
+
         if (showExamples && command.examples && command.examples.length > 0) {
           helpText += `    ${colors.example('Example: ' + command.examples[0])}\n`;
         }
@@ -271,30 +285,21 @@ export class HelpCommand extends BaseCommand {
         description: 'Initialize a new claude-flow project',
         usage: 'claude-flow init [project-name] [options]',
         category: 'core',
-        examples: [
-          'claude-flow init',
-          'claude-flow init my-project --template typescript'
-        ]
+        examples: ['claude-flow init', 'claude-flow init my-project --template typescript'],
       },
       {
         name: 'status',
         description: 'Show swarm status and information',
         usage: 'claude-flow status [options]',
         category: 'core',
-        examples: [
-          'claude-flow status',
-          'claude-flow status --detailed'
-        ]
+        examples: ['claude-flow status', 'claude-flow status --detailed'],
       },
       {
         name: 'swarm',
         description: 'Manage swarm operations',
         usage: 'claude-flow swarm <subcommand> [options]',
         category: 'swarm',
-        examples: [
-          'claude-flow swarm start',
-          'claude-flow swarm list'
-        ]
+        examples: ['claude-flow swarm start', 'claude-flow swarm list'],
       },
       {
         name: 'help',
@@ -302,21 +307,22 @@ export class HelpCommand extends BaseCommand {
         usage: 'claude-flow help [command] [options]',
         category: 'utility',
         aliases: ['h'],
-        examples: [
-          'claude-flow help',
-          'claude-flow help init'
-        ]
-      }
+        examples: ['claude-flow help', 'claude-flow help init'],
+      },
     ];
   }
 
-  private groupCommandsByCategory(commands: CommandInfo[], categoryFilter?: string, showAll?: boolean): Record<string, CommandInfo[]> {
+  private groupCommandsByCategory(
+    commands: CommandInfo[],
+    categoryFilter?: string,
+    showAll?: boolean
+  ): Record<string, CommandInfo[]> {
     const categories: Record<string, CommandInfo[]> = {
       core: [],
       swarm: [],
       config: [],
       utility: [],
-      experimental: []
+      experimental: [],
     };
 
     for (const command of commands) {

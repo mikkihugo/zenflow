@@ -4,11 +4,13 @@
 
 // Test memory-config.js
 import { getMemoryConfig } from '../src/memory-config.js';
+
 const config = getMemoryConfig();
 console.log('✓ memory-config.js tested');
 
 // Test index.js
 import { RuvSwarm } from '../src/index.js';
+
 try {
   const version = RuvSwarm.getVersion();
   const simd = RuvSwarm.detectSIMDSupport();
@@ -20,6 +22,7 @@ try {
 
 // Test persistence.js
 import { SwarmPersistence } from '../src/persistence.js';
+
 try {
   const persistence = new SwarmPersistence();
   console.log('✓ persistence.js tested');
@@ -29,6 +32,7 @@ try {
 
 // Test neural-agent.js
 import { NeuralAgent } from '../src/neural-agent.js';
+
 try {
   const agent = new NeuralAgent({ type: 'researcher' });
   console.log('✓ neural-agent.js tested');
@@ -38,6 +42,7 @@ try {
 
 // Test wasm-loader.js
 import { WasmLoader } from '../src/wasm-loader.js';
+
 try {
   const loader = new WasmLoader();
   const supported = loader.isSupported();
@@ -48,20 +53,24 @@ try {
 
 // Test benchmark.js
 import { BenchmarkCLI } from '../src/benchmark.js';
+
 const bench = new BenchmarkCLI();
 console.log('✓ benchmark.js tested');
 
 // Test neural.js
 import { NeuralCLI, PATTERN_MEMORY_CONFIG } from '../src/neural.js';
+
 const neural = new NeuralCLI();
 console.log('✓ neural.js tested');
 
 // Test index-enhanced.js
 import { RuvSwarm as RuvSwarmEnhanced } from '../src/index-enhanced.js';
+
 console.log('✓ index-enhanced.js tested');
 
 // Test neural-network-manager.js
 import { NeuralNetworkManager } from '../src/neural-network-manager.js';
+
 try {
   const manager = new NeuralNetworkManager();
   console.log('✓ neural-network-manager.js tested');
@@ -71,14 +80,15 @@ try {
 
 // Test neural models
 import {
-  NeuralModel,
-  TransformerModel,
-  CNNModel,
-  GRUModel,
   AutoencoderModel,
+  CNNModel,
   GNNModel,
+  GRUModel,
+  NeuralModel,
   ResNetModel,
+  TransformerModel,
 } from '../src/neural-models/index.js';
+
 console.log('✓ neural-models tested');
 
 // Test hooks

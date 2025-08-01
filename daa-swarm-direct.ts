@@ -5,7 +5,7 @@
  * Uses ruv-swarm DAA service directly with full type safety
  */
 
-import { daaService, DAAService } from './ruv-FANN-zen/ruv-swarm-zen/npm/src/daa-service.js';
+import { DAAService, daaService } from './ruv-FANN-zen/ruv-swarm-zen/npm/src/daa-service.js';
 
 // Type definitions for DAA Swarm
 interface SwarmConfig {
@@ -131,16 +131,16 @@ class DAASwarmDirector {
     capabilities: any;
   }> {
     console.log('🚀 Initializing DAA Swarm Direct TypeScript Integration...');
-    
+
     try {
       // Initialize DAA service
       await daaService.initialize();
-      
+
       const {
         maxAgents = 5,
         enableLearning = true,
         enableCoordination = true,
-        topology = 'mesh'
+        topology = 'mesh',
       } = config;
 
       this.config = {
@@ -148,7 +148,7 @@ class DAASwarmDirector {
         enableLearning,
         enableCoordination,
         topology,
-        swarmId: this.swarmId
+        swarmId: this.swarmId,
       };
 
       // Set up event listeners with proper typing
@@ -157,21 +157,20 @@ class DAASwarmDirector {
       daaService.on('workflowStepCompleted', this.handleWorkflowStep.bind(this));
 
       this.initialized = true;
-      
+
       const capabilities = daaService.getCapabilities();
-      
+
       console.log('✅ DAA Swarm initialized:', {
         swarmId: this.swarmId,
         capabilities,
-        config: this.config
+        config: this.config,
       });
 
       return {
         success: true,
         swarmId: this.swarmId,
-        capabilities
+        capabilities,
       };
-
     } catch (error) {
       console.error('❌ Failed to initialize DAA swarm:', error);
       throw error;
@@ -189,7 +188,7 @@ class DAASwarmDirector {
     console.log(`🤖 Spawning ${agentConfigs.length} agents...`);
 
     const results: AgentResult[] = [];
-    
+
     for (const config of agentConfigs) {
       try {
         const agent = await daaService.createAgent({
@@ -197,13 +196,13 @@ class DAASwarmDirector {
           capabilities: config.capabilities || ['general'],
           cognitivePattern: config.cognitivePattern || 'adaptive',
           learningRate: config.learningRate || 0.001,
-          enableMemory: config.enableMemory !== false
+          enableMemory: config.enableMemory !== false,
         });
 
         const enhancedAgent: Agent = {
           ...agent,
           role: config.role || 'worker',
-          swarmId: this.swarmId
+          swarmId: this.swarmId,
         };
 
         this.agents.set(config.id, enhancedAgent);
@@ -212,17 +211,16 @@ class DAASwarmDirector {
           success: true,
           agentId: config.id,
           role: config.role,
-          capabilities: Array.from(agent.capabilities)
+          capabilities: Array.from(agent.capabilities),
         });
 
         console.log(`✅ Spawned agent: ${config.id} (${config.role})`);
-
       } catch (error) {
         console.error(`❌ Failed to spawn agent ${config.id}:`, error);
         results.push({
           success: false,
           agentId: config.id,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         });
       }
     }
@@ -238,11 +236,7 @@ class DAASwarmDirector {
       throw new Error('Swarm not initialized');
     }
 
-    const {
-      strategy = 'parallel',
-      maxAgents = this.config.maxAgents,
-      timeout = 30000
-    } = options;
+    const { strategy = 'parallel', maxAgents = this.config.maxAgents, timeout = 30000 } = options;
 
     console.log(`🎯 Coordinating task: "${task.description}"`);
 
@@ -252,23 +246,26 @@ class DAASwarmDirector {
       const steps: TaskStep[] = task.steps || [
         {
           id: 'analyze',
-          task: { method: 'make_decision', args: [{ task: task.description, phase: 'analysis' }] }
+          task: { method: 'make_decision', args: [{ task: task.description, phase: 'analysis' }] },
         },
         {
           id: 'execute',
-          task: { method: 'make_decision', args: [{ task: task.description, phase: 'execution' }] }
+          task: { method: 'make_decision', args: [{ task: task.description, phase: 'execution' }] },
         },
         {
           id: 'validate',
-          task: { method: 'make_decision', args: [{ task: task.description, phase: 'validation' }] }
-        }
+          task: {
+            method: 'make_decision',
+            args: [{ task: task.description, phase: 'validation' }],
+          },
+        },
       ];
 
       await daaService.createWorkflow(workflowId, steps, task.dependencies || {});
 
       // Select agents for the task
       const availableAgents = Array.from(this.agents.keys()).slice(0, maxAgents);
-      
+
       if (availableAgents.length === 0) {
         throw new Error('No agents available for task coordination');
       }
@@ -277,7 +274,7 @@ class DAASwarmDirector {
       const startTime = Date.now();
       const result = await daaService.executeWorkflow(workflowId, {
         agentIds: availableAgents,
-        parallel: strategy === 'parallel'
+        parallel: strategy === 'parallel',
       });
 
       const duration = Date.now() - startTime;
@@ -285,7 +282,7 @@ class DAASwarmDirector {
       console.log(`✅ Task completed in ${duration}ms:`, {
         workflowId,
         stepsCompleted: result.stepsCompleted,
-        agentsInvolved: result.agentsInvolved.length
+        agentsInvolved: result.agentsInvolved.length,
       });
 
       return {
@@ -293,9 +290,8 @@ class DAASwarmDirector {
         workflowId,
         duration,
         result,
-        agentsInvolved: result.agentsInvolved
+        agentsInvolved: result.agentsInvolved,
       };
-
     } catch (error) {
       console.error('❌ Task coordination failed:', error);
       throw error;
@@ -306,8 +302,8 @@ class DAASwarmDirector {
    * Enable knowledge sharing between agents
    */
   async shareKnowledge(
-    sourceAgentId: string, 
-    targetAgentIds: string[], 
+    sourceAgentId: string,
+    targetAgentIds: string[],
     knowledge: KnowledgeData
   ): Promise<{ updatedAgents: string[]; transferRate: number }> {
     console.log(`🧠 Sharing knowledge from ${sourceAgentId} to ${targetAgentIds.length} agents`);
@@ -316,16 +312,15 @@ class DAASwarmDirector {
       const result = await daaService.shareKnowledge(sourceAgentId, targetAgentIds, {
         domain: knowledge.domain || 'general',
         content: knowledge.content,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
 
       console.log(`✅ Knowledge shared successfully:`, {
         updatedAgents: result.updatedAgents.length,
-        transferRate: result.transferRate
+        transferRate: result.transferRate,
       });
 
       return result;
-
     } catch (error) {
       console.error('❌ Knowledge sharing failed:', error);
       throw error;
@@ -349,28 +344,30 @@ class DAASwarmDirector {
       config: this.config,
       agents: {
         total: this.agents.size,
-        active: Array.from(this.agents.values()).filter(a => a.status === 'active').length,
+        active: Array.from(this.agents.values()).filter((a) => a.status === 'active').length,
         roles: Array.from(this.agents.values()).reduce((acc: Record<string, number>, agent) => {
           const role = agent.role || 'unknown';
           acc[role] = (acc[role] || 0) + 1;
           return acc;
-        }, {})
+        }, {}),
       },
       service: serviceStatus,
       performance: performanceMetrics,
-      uptime: Date.now() - parseInt(this.swarmId.split('-')[1])
+      uptime: Date.now() - parseInt(this.swarmId.split('-')[1]),
     };
   }
 
   /**
    * Adapt agents based on performance feedback
    */
-  async adaptAgents(feedbackData: Record<string, AdaptationFeedback>): Promise<Array<{
-    agentId: string;
-    success: boolean;
-    adaptation?: any;
-    error?: string;
-  }>> {
+  async adaptAgents(feedbackData: Record<string, AdaptationFeedback>): Promise<
+    Array<{
+      agentId: string;
+      success: boolean;
+      adaptation?: any;
+      error?: string;
+    }>
+  > {
     console.log('🔄 Adapting agents based on feedback...');
 
     const results = [];
@@ -379,25 +376,26 @@ class DAASwarmDirector {
       try {
         const agentFeedback = feedbackData[agentId] || {
           performanceScore: 0.7,
-          feedback: 'Standard performance'
+          feedback: 'Standard performance',
         };
 
         const adaptation = await daaService.adaptAgent(agentId, agentFeedback);
-        
+
         results.push({
           agentId,
           success: true,
-          adaptation
+          adaptation,
         });
 
-        console.log(`✅ Adapted agent ${agentId}: ${adaptation.previousPattern} → ${adaptation.newPattern}`);
-
+        console.log(
+          `✅ Adapted agent ${agentId}: ${adaptation.previousPattern} → ${adaptation.newPattern}`
+        );
       } catch (error) {
         console.error(`❌ Failed to adapt agent ${agentId}:`, error);
         results.push({
           agentId,
           success: false,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         });
       }
     }
@@ -423,7 +421,7 @@ class DAASwarmDirector {
    * Get agents by role
    */
   getAgentsByRole(role: string): Agent[] {
-    return Array.from(this.agents.values()).filter(agent => agent.role === role);
+    return Array.from(this.agents.values()).filter((agent) => agent.role === role);
   }
 
   /**
@@ -433,21 +431,21 @@ class DAASwarmDirector {
     console.log(`📢 Agent created event:`, event.agentId);
   }
 
-  private handleDecisionMade(event: { 
-    agentId: string; 
-    decision: any; 
-    latency: number; 
-    withinThreshold: boolean 
+  private handleDecisionMade(event: {
+    agentId: string;
+    decision: any;
+    latency: number;
+    withinThreshold: boolean;
   }): void {
     console.log(`🧠 Decision made by ${event.agentId} (${event.latency.toFixed(2)}ms)`);
   }
 
-  private handleWorkflowStep(event: { 
-    workflowId: string; 
-    stepId: string; 
-    agentIds: string[]; 
-    duration: number; 
-    result: any 
+  private handleWorkflowStep(event: {
+    workflowId: string;
+    stepId: string;
+    agentIds: string[];
+    duration: number;
+    result: any;
   }): void {
     console.log(`⚡ Workflow step completed: ${event.stepId} (${event.duration.toFixed(2)}ms)`);
   }
@@ -471,7 +469,6 @@ class DAASwarmDirector {
       this.initialized = false;
 
       console.log('✅ DAA swarm cleanup completed');
-
     } catch (error) {
       console.error('❌ Cleanup failed:', error);
     }
@@ -492,7 +489,7 @@ async function demonstrateSwarmUsage(): Promise<{
     await swarm.initialize({
       maxAgents: 6,
       topology: 'hierarchical',
-      enableLearning: true
+      enableLearning: true,
     });
 
     // Spawn specialized agents with typed configs
@@ -501,76 +498,91 @@ async function demonstrateSwarmUsage(): Promise<{
         id: 'coordinator',
         role: 'coordinator',
         capabilities: ['coordination', 'planning', 'monitoring'],
-        cognitivePattern: 'systems'
+        cognitivePattern: 'systems',
       },
       {
         id: 'analyst',
-        role: 'analyst', 
+        role: 'analyst',
         capabilities: ['analysis', 'research', 'evaluation'],
-        cognitivePattern: 'critical'
+        cognitivePattern: 'critical',
       },
       {
         id: 'coder',
         role: 'coder',
         capabilities: ['coding', 'implementation', 'testing'],
-        cognitivePattern: 'convergent'
+        cognitivePattern: 'convergent',
       },
       {
         id: 'optimizer',
         role: 'optimizer',
         capabilities: ['optimization', 'performance', 'efficiency'],
-        cognitivePattern: 'adaptive'
-      }
+        cognitivePattern: 'adaptive',
+      },
     ]);
 
     // Coordinate a complex task with typed parameters
-    const taskResult = await swarm.coordinateTask({
-      description: 'Implement and optimize a new TypeScript feature',
-      steps: [
-        {
-          id: 'requirements',
-          task: { method: 'make_decision', args: [{ phase: 'requirements', task: 'analyze TS requirements' }] }
-        },
-        {
-          id: 'design',
-          task: { method: 'make_decision', args: [{ phase: 'design', task: 'create TS system design' }] }
-        },
-        {
-          id: 'implement',
-          task: { method: 'make_decision', args: [{ phase: 'implementation', task: 'write TypeScript code' }] }
-        },
-        {
-          id: 'optimize',
-          task: { method: 'make_decision', args: [{ phase: 'optimization', task: 'optimize TS performance' }] }
-        }
-      ],
-      dependencies: {} // Remove dependencies for this demo
-    }, {
-      strategy: 'sequential',
-      maxAgents: 4
-    });
+    const taskResult = await swarm.coordinateTask(
+      {
+        description: 'Implement and optimize a new TypeScript feature',
+        steps: [
+          {
+            id: 'requirements',
+            task: {
+              method: 'make_decision',
+              args: [{ phase: 'requirements', task: 'analyze TS requirements' }],
+            },
+          },
+          {
+            id: 'design',
+            task: {
+              method: 'make_decision',
+              args: [{ phase: 'design', task: 'create TS system design' }],
+            },
+          },
+          {
+            id: 'implement',
+            task: {
+              method: 'make_decision',
+              args: [{ phase: 'implementation', task: 'write TypeScript code' }],
+            },
+          },
+          {
+            id: 'optimize',
+            task: {
+              method: 'make_decision',
+              args: [{ phase: 'optimization', task: 'optimize TS performance' }],
+            },
+          },
+        ],
+        dependencies: {}, // Remove dependencies for this demo
+      },
+      {
+        strategy: 'sequential',
+        maxAgents: 4,
+      }
+    );
 
     // Share knowledge between agents with typed data
     await swarm.shareKnowledge('coordinator', ['analyst', 'coder'], {
       domain: 'typescript-insights',
       content: {
         bestPractices: ['use strict types', 'leverage generics', 'implement interfaces'],
-        lessons: ['type safety prevents bugs', 'generics enable reusability']
-      }
+        lessons: ['type safety prevents bugs', 'generics enable reusability'],
+      },
     });
 
     // Adapt agents with typed feedback
     await swarm.adaptAgents({
-      'coordinator': {
+      coordinator: {
         performanceScore: 0.9,
         feedback: 'Excellent coordination',
-        suggestions: ['continue current approach']
+        suggestions: ['continue current approach'],
       },
-      'coder': {
+      coder: {
         performanceScore: 0.8,
         feedback: 'Good implementation',
-        suggestions: ['focus on type safety']
-      }
+        suggestions: ['focus on type safety'],
+      },
     });
 
     // Get status with type safety
@@ -584,9 +596,8 @@ async function demonstrateSwarmUsage(): Promise<{
       success: true,
       swarmId: swarm.swarmId,
       taskResult,
-      finalStatus: status
+      finalStatus: status,
     };
-
   } catch (error) {
     console.error('💥 Swarm demonstration failed:', error);
     await swarm.cleanup();
@@ -596,25 +607,25 @@ async function demonstrateSwarmUsage(): Promise<{
 
 // Export for use as module
 export { DAASwarmDirector, demonstrateSwarmUsage };
-export type { 
-  SwarmConfig, 
-  AgentConfig, 
-  Task, 
-  TaskResult, 
-  SwarmStatus, 
+export type {
+  SwarmConfig,
+  AgentConfig,
+  Task,
+  TaskResult,
+  SwarmStatus,
   Agent,
   KnowledgeData,
-  AdaptationFeedback
+  AdaptationFeedback,
 };
 
 // Run demonstration if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   demonstrateSwarmUsage()
-    .then(result => {
+    .then((result) => {
       console.log('🎉 TypeScript Swarm demonstration completed successfully:', result.success);
       process.exit(0);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('💥 Demonstration failed:', error);
       process.exit(1);
     });

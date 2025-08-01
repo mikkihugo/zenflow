@@ -1,12 +1,12 @@
 /**
  * Init Command Implementation
- * 
+ *
  * Initializes a new claude-flow project with templates and configuration
  */
 
-import path from 'path';
-import fs from 'fs/promises';
 import { existsSync } from 'fs';
+import fs from 'fs/promises';
+import path from 'path';
 import { BaseCommand } from '../../core/base-command';
 import type { CommandContext, CommandResult, CommandValidationResult } from '../../types/index';
 
@@ -22,30 +22,30 @@ export class InitCommand extends BaseCommand {
       examples: [
         'claude-flow init',
         'claude-flow init my-project',
-        'claude-flow init --template typescript'
+        'claude-flow init --template typescript',
       ],
       flags: {
         template: {
           type: 'string',
           description: 'Project template to use',
-          default: 'basic'
+          default: 'basic',
         },
         force: {
           type: 'boolean',
           description: 'Overwrite existing files',
-          default: false
+          default: false,
         },
         'skip-install': {
           type: 'boolean',
           description: 'Skip npm package installation',
-          default: false
+          default: false,
         },
         'skip-git': {
           type: 'boolean',
           description: 'Skip git repository initialization',
-          default: false
-        }
-      }
+          default: false,
+        },
+      },
     });
   }
 
@@ -74,16 +74,18 @@ export class InitCommand extends BaseCommand {
       errors.push(`Invalid template '${template}'. Valid templates: ${validTemplates.join(', ')}`);
     }
 
-    return errors.length > 0 || warnings.length > 0 ? { valid: errors.length === 0, errors, warnings } : null;
+    return errors.length > 0 || warnings.length > 0
+      ? { valid: errors.length === 0, errors, warnings }
+      : null;
   }
 
   protected async run(context: CommandContext): Promise<CommandResult> {
     try {
       const projectName = context.args[0] || 'claude-flow-project';
-      const template = context.flags.template as string || 'basic';
-      const force = context.flags.force as boolean || false;
-      const skipInstall = context.flags['skip-install'] as boolean || false;
-      const skipGit = context.flags['skip-git'] as boolean || false;
+      const template = (context.flags.template as string) || 'basic';
+      const force = (context.flags.force as boolean) || false;
+      const skipInstall = (context.flags['skip-install'] as boolean) || false;
+      const skipGit = (context.flags['skip-git'] as boolean) || false;
 
       const projectPath = path.resolve(context.cwd, projectName);
 
@@ -92,7 +94,7 @@ export class InitCommand extends BaseCommand {
         return {
           success: false,
           error: `Directory '${projectName}' already exists. Use --force to overwrite.`,
-          exitCode: 1
+          exitCode: 1,
         };
       }
 
@@ -120,27 +122,25 @@ export class InitCommand extends BaseCommand {
           projectPath,
           template,
           gitInitialized: !skipGit,
-          dependenciesInstalled: !skipInstall
-        }
+          dependenciesInstalled: !skipInstall,
+        },
       };
     } catch (error) {
       return {
         success: false,
         error: `Failed to initialize project: ${error instanceof Error ? error.message : String(error)}`,
-        exitCode: 1
+        exitCode: 1,
       };
     }
   }
 
-  private async copyTemplate(template: string, projectPath: string, projectName: string): Promise<void> {
+  private async copyTemplate(
+    template: string,
+    projectPath: string,
+    projectName: string
+  ): Promise<void> {
     // Create basic project structure
-    const directories = [
-      'src',
-      'config',
-      'docs',
-      'tests',
-      'templates'
-    ];
+    const directories = ['src', 'config', 'docs', 'tests', 'templates'];
 
     for (const dir of directories) {
       await fs.mkdir(path.join(projectPath, dir), { recursive: true });
@@ -153,18 +153,21 @@ export class InitCommand extends BaseCommand {
       description: 'A claude-flow project',
       main: template === 'typescript' ? 'dist/index.js' : 'src/index.js',
       scripts: {
-        'start': 'claude-flow swarm start',
-        'dev': 'claude-flow swarm start --dev',
-        'test': 'npm test',
-        'build': template === 'typescript' ? 'tsc' : 'echo "No build step needed"'
+        start: 'claude-flow swarm start',
+        dev: 'claude-flow swarm start --dev',
+        test: 'npm test',
+        build: template === 'typescript' ? 'tsc' : 'echo "No build step needed"',
       },
       dependencies: {
-        'claude-flow': '^2.0.0'
+        'claude-flow': '^2.0.0',
       },
-      devDependencies: template === 'typescript' ? {
-        'typescript': '^5.0.0',
-        '@types/node': '^20.0.0'
-      } : {}
+      devDependencies:
+        template === 'typescript'
+          ? {
+              typescript: '^5.0.0',
+              '@types/node': '^20.0.0',
+            }
+          : {},
     };
 
     await fs.writeFile(
@@ -177,16 +180,16 @@ export class InitCommand extends BaseCommand {
       swarm: {
         topology: 'mesh',
         maxAgents: 5,
-        strategy: 'balanced'
+        strategy: 'balanced',
       },
       memory: {
         provider: 'sqlite',
-        persistent: true
+        persistent: true,
       },
       neural: {
         enabled: true,
-        models: ['claude-3-haiku', 'claude-3-sonnet']
-      }
+        models: ['claude-3-haiku', 'claude-3-sonnet'],
+      },
     };
 
     await fs.writeFile(
@@ -195,9 +198,8 @@ export class InitCommand extends BaseCommand {
     );
 
     // Create main entry file
-    const mainContent = template === 'typescript' 
-      ? this.getTypescriptMainContent()
-      : this.getJavascriptMainContent();
+    const mainContent =
+      template === 'typescript' ? this.getTypescriptMainContent() : this.getJavascriptMainContent();
 
     const mainFile = template === 'typescript' ? 'index.ts' : 'index.js';
     await fs.writeFile(path.join(projectPath, 'src', mainFile), mainContent);
@@ -214,10 +216,10 @@ export class InitCommand extends BaseCommand {
           strict: true,
           esModuleInterop: true,
           skipLibCheck: true,
-          forceConsistentCasingInFileNames: true
+          forceConsistentCasingInFileNames: true,
         },
         include: ['src/**/*'],
-        exclude: ['node_modules', 'dist']
+        exclude: ['node_modules', 'dist'],
       };
 
       await fs.writeFile(
@@ -237,7 +239,7 @@ export class InitCommand extends BaseCommand {
       '.env',
       '*.log',
       '.DS_Store',
-      'claude-flow-data.db'
+      'claude-flow-data.db',
     ].join('\n');
 
     await fs.writeFile(path.join(projectPath, '.gitignore'), gitignore);
@@ -246,10 +248,10 @@ export class InitCommand extends BaseCommand {
   private async initGitRepository(projectPath: string): Promise<void> {
     try {
       const { spawn } = await import('child_process');
-      
+
       return new Promise((resolve, reject) => {
         const git = spawn('git', ['init'], { cwd: projectPath });
-        
+
         git.on('close', (code) => {
           if (code === 0) {
             resolve();
@@ -261,17 +263,19 @@ export class InitCommand extends BaseCommand {
         git.on('error', reject);
       });
     } catch (error) {
-      throw new Error(`Failed to initialize git repository: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to initialize git repository: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 
   private async installDependencies(projectPath: string): Promise<void> {
     try {
       const { spawn } = await import('child_process');
-      
+
       return new Promise((resolve, reject) => {
         const npm = spawn('npm', ['install'], { cwd: projectPath });
-        
+
         npm.on('close', (code) => {
           if (code === 0) {
             resolve();
@@ -283,7 +287,9 @@ export class InitCommand extends BaseCommand {
         npm.on('error', reject);
       });
     } catch (error) {
-      throw new Error(`Failed to install dependencies: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to install dependencies: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 

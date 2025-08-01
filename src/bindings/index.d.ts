@@ -1,4 +1,3 @@
-
 /** TypeScript definitions for ruv-FANN Node.js bindings */
 
 export interface TrainingConfig {
@@ -59,8 +58,8 @@ export class NetworkTrainer {
    * @returns Promise resolving to final training error
    */
   train(
-    trainingInputs: number[][], 
-    trainingOutputs: number[][], 
+    trainingInputs: number[][],
+    trainingOutputs: number[][],
     config?: TrainingConfig
   ): Promise<number>;
 }
@@ -84,12 +83,12 @@ export function getActivationFunctions(): string[];
 export interface WasmFallback {
   /** Initialize WASM module */
   init(): Promise<void>;
-  
+
   /** Create neural network using WASM
    * @param layers Layer configuration
    */
   createNetwork(layers: number[]): unknown;
-  
+
   /** Check if WASM is available */
   isAvailable(): boolean;
 }

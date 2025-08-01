@@ -2,13 +2,13 @@
  * Unit tests for RuvSwarm core class
  */
 
-import { RuvSwarm, Swarm, Agent, Task } from '../../../src/index-enhanced.js';
 import assert from 'assert';
+import { Agent, RuvSwarm, Swarm, Task } from '../../../src/index-enhanced.js';
 
 describe('RuvSwarm Core Tests', () => {
   let ruvSwarm;
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     // Reset global instance
     global._ruvSwarmInstance = null;
     global._ruvSwarmInitialized = 0;
@@ -21,14 +21,14 @@ describe('RuvSwarm Core Tests', () => {
   });
 
   describe('Initialization', () => {
-    it('should initialize with default options', async() => {
+    it('should initialize with default options', async () => {
       ruvSwarm = await RuvSwarm.initialize();
       assert(ruvSwarm instanceof RuvSwarm);
       assert(ruvSwarm.wasmLoader);
       assert.strictEqual(typeof ruvSwarm.features, 'object');
     });
 
-    it('should initialize with custom options', async() => {
+    it('should initialize with custom options', async () => {
       ruvSwarm = await RuvSwarm.initialize({
         enablePersistence: false,
         enableNeuralNetworks: false,
@@ -40,7 +40,7 @@ describe('RuvSwarm Core Tests', () => {
       assert.strictEqual(ruvSwarm.features.neural_networks, false);
     });
 
-    it('should return same instance on multiple initializations', async() => {
+    it('should return same instance on multiple initializations', async () => {
       const instance1 = await RuvSwarm.initialize();
       const instance2 = await RuvSwarm.initialize();
       assert.strictEqual(instance1, instance2);
@@ -76,11 +76,11 @@ describe('RuvSwarm Core Tests', () => {
   });
 
   describe('Swarm Creation', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
     });
 
-    it('should create swarm with default config', async() => {
+    it('should create swarm with default config', async () => {
       const swarm = await ruvSwarm.createSwarm({});
       assert(swarm instanceof Swarm);
       assert(swarm.id);
@@ -88,7 +88,7 @@ describe('RuvSwarm Core Tests', () => {
       assert.strictEqual(swarm.tasks.size, 0);
     });
 
-    it('should create swarm with custom config', async() => {
+    it('should create swarm with custom config', async () => {
       const config = {
         name: 'test-swarm',
         topology: 'hierarchical',
@@ -103,7 +103,7 @@ describe('RuvSwarm Core Tests', () => {
       assert.strictEqual(ruvSwarm.metrics.totalSwarms, 1);
     });
 
-    it('should track multiple swarms', async() => {
+    it('should track multiple swarms', async () => {
       const swarm1 = await ruvSwarm.createSwarm({ name: 'swarm1' });
       const swarm2 = await ruvSwarm.createSwarm({ name: 'swarm2' });
       assert.strictEqual(ruvSwarm.activeSwarms.size, 2);
@@ -116,12 +116,12 @@ describe('RuvSwarm Core Tests', () => {
   describe('Swarm Status', () => {
     let swarm;
 
-    beforeEach(async() => {
+    beforeEach(async () => {
       ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
       swarm = await ruvSwarm.createSwarm({ name: 'status-test-swarm' });
     });
 
-    it('should get swarm status', async() => {
+    it('should get swarm status', async () => {
       const status = await ruvSwarm.getSwarmStatus(swarm.id);
       assert(status);
       assert(status.agents);
@@ -130,7 +130,7 @@ describe('RuvSwarm Core Tests', () => {
       assert.strictEqual(status.tasks.total, 0);
     });
 
-    it('should throw error for non-existent swarm', async() => {
+    it('should throw error for non-existent swarm', async () => {
       try {
         await ruvSwarm.getSwarmStatus('non-existent-id');
         assert.fail('Should have thrown error');
@@ -139,21 +139,21 @@ describe('RuvSwarm Core Tests', () => {
       }
     });
 
-    it('should get all swarms', async() => {
+    it('should get all swarms', async () => {
       const swarm2 = await ruvSwarm.createSwarm({ name: 'another-swarm' });
       const allSwarms = await ruvSwarm.getAllSwarms();
       assert.strictEqual(allSwarms.length, 2);
-      assert(allSwarms.some(s => s.id === swarm.id));
-      assert(allSwarms.some(s => s.id === swarm2.id));
+      assert(allSwarms.some((s) => s.id === swarm.id));
+      assert(allSwarms.some((s) => s.id === swarm2.id));
     });
   });
 
   describe('Global Metrics', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
     });
 
-    it('should provide global metrics', async() => {
+    it('should provide global metrics', async () => {
       const swarm = await ruvSwarm.createSwarm({ name: 'metrics-swarm' });
       const agent = await swarm.spawn({ type: 'researcher' });
 
@@ -166,7 +166,7 @@ describe('RuvSwarm Core Tests', () => {
       assert(metrics.timestamp);
     });
 
-    it('should aggregate metrics from multiple swarms', async() => {
+    it('should aggregate metrics from multiple swarms', async () => {
       const swarm1 = await ruvSwarm.createSwarm({ name: 'swarm1' });
       const swarm2 = await ruvSwarm.createSwarm({ name: 'swarm2' });
 
@@ -181,11 +181,11 @@ describe('RuvSwarm Core Tests', () => {
   });
 
   describe('Feature Detection', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
     });
 
-    it('should detect features', async() => {
+    it('should detect features', async () => {
       await ruvSwarm.detectFeatures(true);
       assert('simd_support' in ruvSwarm.features);
       assert('neural_networks' in ruvSwarm.features);
@@ -198,13 +198,13 @@ describe('RuvSwarm Core Tests', () => {
 describe('Swarm Class Tests', () => {
   let ruvSwarm, swarm;
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
     swarm = await ruvSwarm.createSwarm({ name: 'test-swarm' });
   });
 
   describe('Agent Spawning', () => {
-    it('should spawn agent with default config', async() => {
+    it('should spawn agent with default config', async () => {
       const agent = await swarm.spawn({});
       assert(agent instanceof Agent);
       assert(agent.id);
@@ -213,7 +213,7 @@ describe('Swarm Class Tests', () => {
       assert(Array.isArray(agent.capabilities));
     });
 
-    it('should spawn agent with custom config', async() => {
+    it('should spawn agent with custom config', async () => {
       const config = {
         type: 'coder',
         name: 'test-coder',
@@ -226,7 +226,7 @@ describe('Swarm Class Tests', () => {
       assert.deepStrictEqual(agent.capabilities, ['javascript', 'python']);
     });
 
-    it('should track spawned agents', async() => {
+    it('should track spawned agents', async () => {
       const agent1 = await swarm.spawn({ type: 'researcher' });
       const agent2 = await swarm.spawn({ type: 'coder' });
       assert.strictEqual(swarm.agents.size, 2);
@@ -236,14 +236,14 @@ describe('Swarm Class Tests', () => {
   });
 
   describe('Task Orchestration', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       // Spawn some agents for task assignment
       await swarm.spawn({ type: 'researcher' });
       await swarm.spawn({ type: 'coder' });
       await swarm.spawn({ type: 'analyst' });
     });
 
-    it('should orchestrate task with default config', async() => {
+    it('should orchestrate task with default config', async () => {
       const task = await swarm.orchestrate({
         description: 'Test task',
       });
@@ -254,7 +254,7 @@ describe('Swarm Class Tests', () => {
       assert(task.assignedAgents.length > 0);
     });
 
-    it('should orchestrate task with custom config', async() => {
+    it('should orchestrate task with custom config', async () => {
       const taskConfig = {
         description: 'Complex task',
         priority: 'high',
@@ -268,7 +268,7 @@ describe('Swarm Class Tests', () => {
       assert(task.assignedAgents.length <= 2);
     });
 
-    it('should throw error when no agents available', async() => {
+    it('should throw error when no agents available', async () => {
       // Create new swarm without agents
       const emptySwarm = await ruvSwarm.createSwarm({ name: 'empty-swarm' });
       try {
@@ -279,7 +279,7 @@ describe('Swarm Class Tests', () => {
       }
     });
 
-    it('should track orchestrated tasks', async() => {
+    it('should track orchestrated tasks', async () => {
       const task1 = await swarm.orchestrate({ description: 'Task 1' });
       const task2 = await swarm.orchestrate({ description: 'Task 2' });
       assert.strictEqual(swarm.tasks.size, 2);
@@ -289,7 +289,7 @@ describe('Swarm Class Tests', () => {
   });
 
   describe('Agent Selection', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await swarm.spawn({ type: 'researcher', capabilities: ['research', 'analysis'] });
       await swarm.spawn({ type: 'coder', capabilities: ['javascript', 'python'] });
       await swarm.spawn({ type: 'analyst', capabilities: ['analysis', 'reporting'] });
@@ -298,7 +298,7 @@ describe('Swarm Class Tests', () => {
     it('should select available agents', () => {
       const agents = swarm.selectAvailableAgents();
       assert.strictEqual(agents.length, 3);
-      agents.forEach(agent => {
+      agents.forEach((agent) => {
         assert.notStrictEqual(agent.status, 'busy');
       });
     });
@@ -306,7 +306,7 @@ describe('Swarm Class Tests', () => {
     it('should filter agents by capabilities', () => {
       const agents = swarm.selectAvailableAgents(['analysis']);
       assert.strictEqual(agents.length, 2);
-      agents.forEach(agent => {
+      agents.forEach((agent) => {
         assert(agent.capabilities.includes('analysis'));
       });
     });
@@ -318,13 +318,13 @@ describe('Swarm Class Tests', () => {
   });
 
   describe('Swarm Status', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await swarm.spawn({ type: 'researcher' });
       await swarm.spawn({ type: 'coder' });
       await swarm.orchestrate({ description: 'Test task' });
     });
 
-    it('should get basic status', async() => {
+    it('should get basic status', async () => {
       const status = await swarm.getStatus(false);
       assert(status);
       assert.strictEqual(status.id, swarm.id);
@@ -332,7 +332,7 @@ describe('Swarm Class Tests', () => {
       assert.strictEqual(status.tasks.total, 1);
     });
 
-    it('should get detailed status', async() => {
+    it('should get detailed status', async () => {
       const status = await swarm.getStatus(true);
       assert(status);
       assert(status.agents);
@@ -341,7 +341,7 @@ describe('Swarm Class Tests', () => {
   });
 
   describe('Swarm Monitoring', () => {
-    it('should monitor swarm', async() => {
+    it('should monitor swarm', async () => {
       const result = await swarm.monitor(1000, 100);
       assert(result);
       assert.strictEqual(result.duration, 1000);
@@ -351,7 +351,7 @@ describe('Swarm Class Tests', () => {
   });
 
   describe('Swarm Termination', () => {
-    it('should terminate swarm', async() => {
+    it('should terminate swarm', async () => {
       const swarmId = swarm.id;
       await swarm.terminate();
       assert(!ruvSwarm.activeSwarms.has(swarmId));
@@ -362,7 +362,7 @@ describe('Swarm Class Tests', () => {
 describe('Agent Class Tests', () => {
   let ruvSwarm, swarm, agent;
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
     swarm = await ruvSwarm.createSwarm({ name: 'test-swarm' });
     agent = await swarm.spawn({ type: 'researcher', name: 'test-agent' });
@@ -380,7 +380,7 @@ describe('Agent Class Tests', () => {
   });
 
   describe('Task Execution', () => {
-    it('should execute task', async() => {
+    it('should execute task', async () => {
       const result = await agent.execute({ description: 'Test task' });
       assert(result);
       assert.strictEqual(result.status, 'completed');
@@ -388,7 +388,7 @@ describe('Agent Class Tests', () => {
       assert(result.executionTime);
     });
 
-    it('should update status during execution', async() => {
+    it('should update status during execution', async () => {
       const promise = agent.execute({ description: 'Test task' });
       // Status should be busy during execution
       assert.strictEqual(agent.status, 'busy');
@@ -399,7 +399,7 @@ describe('Agent Class Tests', () => {
   });
 
   describe('Agent Metrics', () => {
-    it('should provide metrics', async() => {
+    it('should provide metrics', async () => {
       const metrics = await agent.getMetrics();
       assert(metrics);
       assert('tasksCompleted' in metrics);
@@ -410,7 +410,7 @@ describe('Agent Class Tests', () => {
   });
 
   describe('Status Updates', () => {
-    it('should update status', async() => {
+    it('should update status', async () => {
       await agent.updateStatus('busy');
       assert.strictEqual(agent.status, 'busy');
       await agent.updateStatus('idle');
@@ -422,7 +422,7 @@ describe('Agent Class Tests', () => {
 describe('Task Class Tests', () => {
   let ruvSwarm, swarm, task;
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
     swarm = await ruvSwarm.createSwarm({ name: 'test-swarm' });
 
@@ -445,9 +445,9 @@ describe('Task Class Tests', () => {
   });
 
   describe('Task Execution', () => {
-    it('should execute task automatically', async() => {
+    it('should execute task automatically', async () => {
       // Wait for task to complete
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       assert.strictEqual(task.status, 'completed');
       assert.strictEqual(task.progress, 1.0);
@@ -456,21 +456,18 @@ describe('Task Class Tests', () => {
       assert(task.endTime);
     });
 
-    it('should track execution time', async() => {
+    it('should track execution time', async () => {
       // Wait for task to complete
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const executionTime = task.endTime - task.startTime;
       assert(executionTime > 0);
-      assert.strictEqual(
-        task.result.execution_summary.execution_time_ms,
-        executionTime,
-      );
+      assert.strictEqual(task.result.execution_summary.execution_time_ms, executionTime);
     });
   });
 
   describe('Task Status', () => {
-    it('should get task status', async() => {
+    it('should get task status', async () => {
       const status = await task.getStatus();
       assert(status);
       assert.strictEqual(status.id, task.id);
@@ -482,9 +479,9 @@ describe('Task Class Tests', () => {
   });
 
   describe('Task Results', () => {
-    it('should get task results after completion', async() => {
+    it('should get task results after completion', async () => {
       // Wait for task to complete
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const results = await task.getResults();
       assert(results);

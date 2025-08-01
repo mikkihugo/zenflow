@@ -1,6 +1,6 @@
 /**
  * Test Logger - Specialized logging for test environments
- * 
+ *
  * Provides structured logging for both London and Classical TDD approaches
  */
 
@@ -60,7 +60,7 @@ export class TestLogger {
       method,
       args,
       result,
-      category: 'interaction'
+      category: 'interaction',
     });
   }
 
@@ -73,7 +73,7 @@ export class TestLogger {
       before,
       after,
       operation,
-      category: 'state-change'
+      category: 'state-change',
     });
   }
 
@@ -85,7 +85,7 @@ export class TestLogger {
       operation,
       duration,
       category: 'performance',
-      ...context
+      ...context,
     });
   }
 
@@ -99,7 +99,7 @@ export class TestLogger {
       passed,
       expected,
       actual,
-      category: 'assertion'
+      category: 'assertion',
     });
   }
 
@@ -114,14 +114,14 @@ export class TestLogger {
    * Get logs by level
    */
   getLogsByLevel(level: LogEntry['level']): LogEntry[] {
-    return this.logs.filter(log => log.level === level);
+    return this.logs.filter((log) => log.level === level);
   }
 
   /**
    * Get logs by category
    */
   getLogsByCategory(category: string): LogEntry[] {
-    return this.logs.filter(log => log.context?.category === category);
+    return this.logs.filter((log) => log.context?.category === category);
   }
 
   /**
@@ -139,11 +139,13 @@ export class TestLogger {
       return JSON.stringify(this.logs, null, 2);
     }
 
-    return this.logs.map(log => {
-      const timestamp = new Date(log.timestamp).toISOString();
-      const context = log.context ? ` | ${JSON.stringify(log.context)}` : '';
-      return `[${timestamp}] ${log.level.toUpperCase()}: ${log.message}${context}`;
-    }).join('\n');
+    return this.logs
+      .map((log) => {
+        const timestamp = new Date(log.timestamp).toISOString();
+        const context = log.context ? ` | ${JSON.stringify(log.context)}` : '';
+        return `[${timestamp}] ${log.level.toUpperCase()}: ${log.message}${context}`;
+      })
+      .join('\n');
   }
 
   /**
@@ -162,7 +164,7 @@ export class TestLogger {
       message,
       timestamp: Date.now(),
       context,
-      testName: this.testName
+      testName: this.testName,
     };
 
     this.logs.push(entry);

@@ -5,10 +5,10 @@
  * Model Context Protocol server for claude-zen swarm coordination tools
  */
 
-import { MCPServer } from './server.js';
-import { swarmTools } from './tools/swarm-tools.js';
-import { neuralTools } from './tools/neural-tools.js';
 import { createLogger } from '../utils/logger.js';
+import { MCPServer } from './server.js';
+import { neuralTools } from './tools/neural-tools.js';
+import { swarmTools } from './tools/swarm-tools.js';
 import type { MCPTool } from './types/mcp-types.js';
 
 /**
@@ -19,12 +19,16 @@ export class ClaudeZenMCPServer extends MCPServer {
   private logger = createLogger({ prefix: 'MCP-Claude-Zen' });
 
   constructor() {
-    super({
-      port: 3001,
-      host: 'localhost',
-      timeout: 30000,
-      enabled: true
-    }, undefined, undefined);
+    super(
+      {
+        port: 3001,
+        host: 'localhost',
+        timeout: 30000,
+        enabled: true,
+      },
+      undefined,
+      undefined
+    );
 
     this.tools = swarmTools;
     this.setupSwarmHandlers();
@@ -56,7 +60,9 @@ export class ClaudeZenMCPServer extends MCPServer {
         const result = await tool.handler(args || {});
         return result;
       } catch (error) {
-        throw new Error(`Tool execution failed: ${error instanceof Error ? error.message : String(error)}`);
+        throw new Error(
+          `Tool execution failed: ${error instanceof Error ? error.message : String(error)}`
+        );
       }
     });
 
@@ -100,10 +106,10 @@ export class ClaudeZenMCPServer extends MCPServer {
 // CLI entry point
 async function startServer(): Promise<void> {
   const server = new ClaudeZenMCPServer();
-  
+
   try {
     await server.start();
-    
+
     // Handle graceful shutdown
     process.on('SIGINT', async () => {
       console.log('\nShutting down Claude-Zen MCP Server...');
@@ -119,7 +125,6 @@ async function startServer(): Promise<void> {
 
     // Keep the process alive
     process.stdin.resume();
-    
   } catch (error) {
     console.error('Failed to start Claude-Zen MCP Server:', error);
     process.exit(1);

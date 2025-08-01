@@ -1,6 +1,6 @@
 /**
  * Interfaces Module
- * 
+ *
  * Unified export for all interface types:
  * - CLI: Command line interface components
  * - TUI: Terminal UI components (Ink React)
@@ -10,15 +10,12 @@
 
 // CLI Interface
 export * from './cli';
-
-// TUI Interface  
-export * from './tui';
-
-// Web Interface
-export * from './web';
-
 // MCP Interface
 export * from './mcp';
+// TUI Interface
+export * from './tui';
+// Web Interface
+export * from './web';
 
 // Interface types
 export interface InterfaceConfig {
@@ -38,12 +35,12 @@ export const InterfaceUtils = {
     if (process.stdout.isTTY && !process.argv.includes('--no-tui')) return 'tui';
     return 'cli';
   },
-  
+
   validateConfig(config: InterfaceConfig): boolean {
     return ['cli', 'tui', 'web', 'mcp'].includes(config.mode);
-  }
+  },
 };
 
 export default {
-  InterfaceUtils
+  InterfaceUtils,
 };

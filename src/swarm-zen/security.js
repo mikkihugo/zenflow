@@ -11,7 +11,9 @@ import path from 'path';
  * WASM module integrity verification
  */
 export class WasmIntegrityVerifier {
-  constructor(hashesPath = path.join(new URL('.', import.meta.url).pathname, '..', 'wasm', 'checksums.json')) {
+  constructor(
+    hashesPath = path.join(new URL('.', import.meta.url).pathname, '..', 'wasm', 'checksums.json')
+  ) {
     this.hashesPath = hashesPath;
     this.knownHashes = new Map();
     this.initialized = false;
@@ -140,7 +142,7 @@ export class CommandSanitizer {
     }
 
     // Validate all arguments
-    const sanitizedArgs = args.map(arg => this.validateArgument(arg));
+    const sanitizedArgs = args.map((arg) => CommandSanitizer.validateArgument(arg));
 
     return { command, args: sanitizedArgs };
   }
@@ -157,14 +159,14 @@ export class DependencyVerifier {
         '..',
         'node_modules',
         packageName,
-        'package.json',
+        'package.json'
       );
 
       const packageData = JSON.parse(await fs.readFile(packageJsonPath, 'utf8'));
 
       if (packageData.version !== expectedVersion) {
         throw new SecurityError(
-          `Package version mismatch for ${packageName}: expected ${expectedVersion}, got ${packageData.version}`,
+          `Package version mismatch for ${packageName}: expected ${expectedVersion}, got ${packageData.version}`
         );
       }
 

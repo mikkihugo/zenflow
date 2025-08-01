@@ -3,9 +3,9 @@
  * Tests numerical stability, gradient issues, and model training edge cases
  */
 
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
-import { NeuralNetworkManager } from '../../src/neural-network-manager.js';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { NeuralAgent } from '../../src/neural-agent.js';
+import { NeuralNetworkManager } from '../../src/neural-network-manager.js';
 
 describe('Neural Network Edge Cases', () => {
   let manager;
@@ -15,7 +15,7 @@ describe('Neural Network Edge Cases', () => {
   });
 
   describe('Numerical Stability Edge Cases', () => {
-    it('should handle NaN inputs gracefully', async() => {
+    it('should handle NaN inputs gracefully', async () => {
       const config = {
         type: 'feedforward',
         layers: [4, 8, 4],
@@ -40,13 +40,13 @@ describe('Neural Network Edge Cases', () => {
         expect(Array.isArray(result)).toBe(true);
 
         // Output should either be valid numbers or NaN (consistent behavior)
-        result.forEach(value => {
+        result.forEach((value) => {
           expect(typeof value).toBe('number');
         });
       }
     });
 
-    it('should handle Infinity inputs', async() => {
+    it('should handle Infinity inputs', async () => {
       const config = {
         type: 'feedforward',
         layers: [2, 4, 2],
@@ -73,13 +73,13 @@ describe('Neural Network Edge Cases', () => {
         expect(result.length).toBe(2);
 
         // tanh should clamp infinite values to -1 or 1
-        result.forEach(value => {
+        result.forEach((value) => {
           expect(Math.abs(value)).toBeLessThanOrEqual(1);
         });
       }
     });
 
-    it('should handle very small numbers (underflow)', async() => {
+    it('should handle very small numbers (underflow)', async () => {
       const config = {
         type: 'feedforward',
         layers: [3, 5, 3],
@@ -101,7 +101,7 @@ describe('Neural Network Edge Cases', () => {
         expect(result.length).toBe(3);
 
         // Should handle underflow gracefully
-        result.forEach(value => {
+        result.forEach((value) => {
           expect(isFinite(value)).toBe(true);
           expect(value).toBeGreaterThanOrEqual(0);
           expect(value).toBeLessThanOrEqual(1);
@@ -109,7 +109,7 @@ describe('Neural Network Edge Cases', () => {
       }
     });
 
-    it('should handle very large numbers (overflow)', async() => {
+    it('should handle very large numbers (overflow)', async () => {
       const config = {
         type: 'feedforward',
         layers: [2, 3, 2],
@@ -131,7 +131,7 @@ describe('Neural Network Edge Cases', () => {
         expect(result.length).toBe(2);
 
         // ReLU should pass through positive values or zero
-        result.forEach(value => {
+        result.forEach((value) => {
           expect(value).toBeGreaterThanOrEqual(0);
           expect(isFinite(value) || value === Infinity).toBe(true);
         });
@@ -140,7 +140,7 @@ describe('Neural Network Edge Cases', () => {
   });
 
   describe('Gradient Edge Cases', () => {
-    it('should handle vanishing gradients', async() => {
+    it('should handle vanishing gradients', async () => {
       const config = {
         type: 'feedforward',
         layers: [2, 10, 10, 10, 10, 10, 2], // Deep network
@@ -189,7 +189,7 @@ describe('Neural Network Edge Cases', () => {
       expect(weightsChanged).toBe(true);
     });
 
-    it('should handle exploding gradients', async() => {
+    it('should handle exploding gradients', async () => {
       const config = {
         type: 'feedforward',
         layers: [2, 5, 2],
@@ -221,9 +221,7 @@ describe('Neural Network Edge Cases', () => {
 
           // Track gradient magnitude
           const currentWeights = network.getWeights();
-          const gradientMagnitude = Math.sqrt(
-            currentWeights.reduce((sum, w) => sum + w * w, 0),
-          );
+          const gradientMagnitude = Math.sqrt(currentWeights.reduce((sum, w) => sum + w * w, 0));
 
           gradientHistory.push(gradientMagnitude);
           maxGradient = Math.max(maxGradient, gradientMagnitude);
@@ -231,7 +229,6 @@ describe('Neural Network Edge Cases', () => {
           // Network should handle large gradients without crashing
           expect(isFinite(loss)).toBe(true);
           expect(isFinite(gradientMagnitude)).toBe(true);
-
         } catch (error) {
           // If training fails due to numerical issues, that's acceptable
           expect(error.message).toMatch(/numerical|overflow|gradient/i);
@@ -245,7 +242,7 @@ describe('Neural Network Edge Cases', () => {
   });
 
   describe('Model Architecture Edge Cases', () => {
-    it('should handle single neuron networks', async() => {
+    it('should handle single neuron networks', async () => {
       const config = {
         type: 'feedforward',
         layers: [1, 1],
@@ -260,7 +257,7 @@ describe('Neural Network Edge Cases', () => {
       expect(result[0]).toBeLessThan(1);
     });
 
-    it('should handle networks with skip connections', async() => {
+    it('should handle networks with skip connections', async () => {
       const config = {
         type: 'residual',
         layers: [4, 8, 8, 4],
@@ -274,12 +271,12 @@ describe('Neural Network Edge Cases', () => {
       const result = await network.forward(input);
 
       expect(result).toHaveLength(4);
-      result.forEach(value => {
+      result.forEach((value) => {
         expect(isFinite(value)).toBe(true);
       });
     });
 
-    it('should handle extremely wide networks', async() => {
+    it('should handle extremely wide networks', async () => {
       const config = {
         type: 'feedforward',
         layers: [10, 1000, 10], // Very wide hidden layer
@@ -292,12 +289,12 @@ describe('Neural Network Edge Cases', () => {
       const result = await network.forward(input);
 
       expect(result).toHaveLength(10);
-      result.forEach(value => {
+      result.forEach((value) => {
         expect(isFinite(value)).toBe(true);
       });
     });
 
-    it('should handle extremely deep networks', async() => {
+    it('should handle extremely deep networks', async () => {
       const config = {
         type: 'feedforward',
         layers: [2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2], // Very deep
@@ -310,14 +307,14 @@ describe('Neural Network Edge Cases', () => {
       const result = await network.forward(input);
 
       expect(result).toHaveLength(2);
-      result.forEach(value => {
+      result.forEach((value) => {
         expect(isFinite(value)).toBe(true);
       });
     });
   });
 
   describe('Training Data Edge Cases', () => {
-    it('should handle empty training data', async() => {
+    it('should handle empty training data', async () => {
       const config = {
         type: 'feedforward',
         layers: [2, 3, 2],
@@ -329,7 +326,7 @@ describe('Neural Network Edge Cases', () => {
       await expect(network.train([])).rejects.toThrow(/empty|no data/i);
     });
 
-    it('should handle inconsistent input dimensions', async() => {
+    it('should handle inconsistent input dimensions', async () => {
       const config = {
         type: 'feedforward',
         layers: [2, 3, 2],
@@ -347,7 +344,7 @@ describe('Neural Network Edge Cases', () => {
       await expect(network.train(inconsistentData)).rejects.toThrow(/dimension|size/i);
     });
 
-    it('should handle inconsistent output dimensions', async() => {
+    it('should handle inconsistent output dimensions', async () => {
       const config = {
         type: 'feedforward',
         layers: [2, 3, 2],
@@ -365,7 +362,7 @@ describe('Neural Network Edge Cases', () => {
       await expect(network.train(inconsistentData)).rejects.toThrow(/dimension|size/i);
     });
 
-    it('should handle duplicate training samples', async() => {
+    it('should handle duplicate training samples', async () => {
       const config = {
         type: 'feedforward',
         layers: [2, 3, 2],
@@ -387,7 +384,7 @@ describe('Neural Network Edge Cases', () => {
   });
 
   describe('Activation Function Edge Cases', () => {
-    it('should handle unknown activation functions', async() => {
+    it('should handle unknown activation functions', async () => {
       const config = {
         type: 'feedforward',
         layers: [2, 3, 2],
@@ -397,7 +394,7 @@ describe('Neural Network Edge Cases', () => {
       await expect(manager.create(config)).rejects.toThrow(/activation|unknown/i);
     });
 
-    it('should handle custom activation functions', async() => {
+    it('should handle custom activation functions', async () => {
       const config = {
         type: 'feedforward',
         layers: [2, 3, 2],
@@ -409,17 +406,17 @@ describe('Neural Network Edge Cases', () => {
       const result = await network.forward([0.5, -0.5]);
 
       expect(result).toHaveLength(2);
-      result.forEach(value => {
+      result.forEach((value) => {
         expect(value).toBeGreaterThanOrEqual(0);
         expect(value).toBeLessThanOrEqual(1);
       });
     });
 
-    it('should handle activation functions with extreme outputs', async() => {
+    it('should handle activation functions with extreme outputs', async () => {
       const config = {
         type: 'feedforward',
         layers: [2, 3, 2],
-        activation: (x) => x > 0 ? 1e10 : -1e10, // Extreme activation
+        activation: (x) => (x > 0 ? 1e10 : -1e10), // Extreme activation
       };
 
       const network = await manager.create(config);
@@ -427,14 +424,14 @@ describe('Neural Network Edge Cases', () => {
       const result = await network.forward([1, -1]);
 
       expect(result).toHaveLength(2);
-      result.forEach(value => {
+      result.forEach((value) => {
         expect(Math.abs(value)).toBeGreaterThan(1000);
       });
     });
   });
 
   describe('Batch Processing Edge Cases', () => {
-    it('should handle single sample batches', async() => {
+    it('should handle single sample batches', async () => {
       const config = {
         type: 'feedforward',
         layers: [2, 3, 2],
@@ -450,7 +447,7 @@ describe('Neural Network Edge Cases', () => {
       expect(isFinite(result.loss)).toBe(true);
     });
 
-    it('should handle very large batches', async() => {
+    it('should handle very large batches', async () => {
       const config = {
         type: 'feedforward',
         layers: [2, 3, 2],
@@ -473,7 +470,7 @@ describe('Neural Network Edge Cases', () => {
       expect(isFinite(result.loss)).toBe(true);
     });
 
-    it('should handle batches with mixed sample qualities', async() => {
+    it('should handle batches with mixed sample qualities', async () => {
       const config = {
         type: 'feedforward',
         layers: [2, 3, 2],
@@ -497,7 +494,7 @@ describe('Neural Network Edge Cases', () => {
   });
 
   describe('Memory Management in Neural Networks', () => {
-    it('should handle memory cleanup during training', async() => {
+    it('should handle memory cleanup during training', async () => {
       const config = {
         type: 'feedforward',
         layers: [10, 100, 100, 10],

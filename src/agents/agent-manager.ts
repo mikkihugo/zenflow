@@ -2,22 +2,22 @@
  * Comprehensive agent management system
  */
 
+import { type ChildProcess, spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import { spawn, ChildProcess } from 'node:child_process';
-import type { ILogger } from '../core/logger';
 import type { IEventBus } from '../core/event-bus';
+import type { ILogger } from '../core/logger';
+import type { DistributedMemorySystem } from '../memory/distributed-memory.js';
 import type {
-  AgentId,
-  AgentType,
-  AgentStatus,
-  AgentState,
   AgentCapabilities,
   AgentConfig,
   AgentEnvironment,
-  AgentMetrics,
   AgentError,
+  AgentId,
+  AgentMetrics,
+  AgentState,
+  AgentStatus,
+  AgentType,
 } from '../types/agent-types';
-import type { DistributedMemorySystem } from '../memory/distributed-memory.js';
 import { generateId } from '../utils/helpers.js';
 
 export interface AgentManagerConfig {
@@ -152,7 +152,7 @@ export class AgentManager extends EventEmitter {
     config: Partial<AgentManagerConfig>,
     logger: ILogger,
     eventBus: IEventBus,
-    memory: DistributedMemorySystem,
+    memory: DistributedMemorySystem
   ) {
     super();
     this.logger = logger;
@@ -605,7 +605,7 @@ export class AgentManager extends EventEmitter {
       startupScript: './scripts/start-developer.ts',
     });
 
-    // System Architect Agent Template  
+    // System Architect Agent Template
     this.templates.set('system-architect', {
       name: 'System Architect Agent',
       type: 'system-architect',
@@ -849,7 +849,7 @@ export class AgentManager extends EventEmitter {
 
     // Gracefully shutdown all agents
     const shutdownPromises = Array.from(this.agents.keys()).map((agentId) =>
-      this.stopAgent(agentId, 'shutdown'),
+      this.stopAgent(agentId, 'shutdown')
     );
 
     await Promise.all(shutdownPromises);
@@ -865,7 +865,7 @@ export class AgentManager extends EventEmitter {
       name?: string;
       config?: Partial<AgentConfig>;
       environment?: Partial<AgentEnvironment>;
-    } = {},
+    } = {}
   ): Promise<string> {
     if (this.agents.size >= this.config.maxAgents) {
       throw new Error('Maximum agent limit reached');
@@ -1086,7 +1086,7 @@ export class AgentManager extends EventEmitter {
       autoScale?: boolean;
       scaleUpThreshold?: number;
       scaleDownThreshold?: number;
-    },
+    }
   ): Promise<string> {
     const template = this.templates.get(templateName);
     if (!template) {
@@ -1140,7 +1140,7 @@ export class AgentManager extends EventEmitter {
 
     if (targetSize < pool.minSize || targetSize > pool.maxSize) {
       throw new Error(
-        `Target size ${targetSize} outside pool limits [${pool.minSize}, ${pool.maxSize}]`,
+        `Target size ${targetSize} outside pool limits [${pool.minSize}, ${pool.maxSize}]`
       );
     }
 
@@ -1200,7 +1200,7 @@ export class AgentManager extends EventEmitter {
 
   private async performHealthChecks(): Promise<void> {
     const healthPromises = Array.from(this.agents.keys()).map((agentId) =>
-      this.checkAgentHealth(agentId),
+      this.checkAgentHealth(agentId)
     );
 
     await Promise.allSettled(healthPromises);
@@ -1567,7 +1567,7 @@ export class AgentManager extends EventEmitter {
 
   private updateResourceUsage(
     agentId: string,
-    usage: { cpu: number; memory: number; disk: number },
+    usage: { cpu: number; memory: number; disk: number }
   ): void {
     this.resourceUsage.set(agentId, usage);
   }

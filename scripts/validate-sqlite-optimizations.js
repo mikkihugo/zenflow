@@ -68,7 +68,10 @@ async function validateSQLiteOptimizations() {
     // For now, just test basic file operations since SQLite import is failing
     const testFile = path.join(testDir, 'test.db');
     await fs.promises.writeFile(testFile, 'test data');
-    const exists = await fs.promises.access(testFile).then(() => true).catch(() => false);
+    const exists = await fs.promises
+      .access(testFile)
+      .then(() => true)
+      .catch(() => false);
 
     if (exists) {
       log('✅ Basic file operations work', 'green');
@@ -110,14 +113,14 @@ async function validateSQLiteOptimizations() {
     const memoryAfter = process.memoryUsage().heapUsed;
     const memoryDiff = memoryAfter - memoryBefore;
 
-    log(`📊 Memory usage: ${Math.round(memoryDiff / 1024 / 1024 * 100) / 100}MB`, 'cyan');
+    log(`📊 Memory usage: ${Math.round((memoryDiff / 1024 / 1024) * 100) / 100}MB`, 'cyan');
 
-    if (memoryDiff < 50 * 1024 * 1024) { // Less than 50MB
+    if (memoryDiff < 50 * 1024 * 1024) {
+      // Less than 50MB
       log('✅ Memory usage within acceptable range', 'green');
     } else {
       log('⚠️ Memory usage higher than expected', 'yellow');
     }
-
   } catch (error) {
     log(`❌ Test failed: ${error.message}`, 'red');
     allTestsPassed = false;
@@ -147,10 +150,10 @@ async function validateSQLiteOptimizations() {
 // Run validation if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   validateSQLiteOptimizations()
-    .then(success => {
+    .then((success) => {
       process.exit(success ? 0 : 1);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('Validation script failed:', error);
       process.exit(1);
     });

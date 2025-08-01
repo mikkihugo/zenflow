@@ -1,27 +1,27 @@
 /**
  * Classical TDD (Detroit School) - Prediction Accuracy Tests
- * 
+ *
  * Focus: Test actual prediction results and mathematical accuracy
  * No mocks - verify real predictions on known datasets and mathematical functions
  */
 
-import { describe, it, expect, beforeEach } from '@jest/globals';
-import { 
-  initializeNeuralWasm, 
-  createNeuralNetwork, 
+import { beforeEach, describe, expect, it } from '@jest/globals';
+import {
+  ACTIVATION_FUNCTIONS,
+  createNeuralNetwork,
   createTrainer,
+  initializeNeuralWasm,
+  type NetworkConfig,
   NeuralNetwork,
   NeuralTrainer,
-  NetworkConfig,
-  TrainingConfig,
-  TrainingDataConfig,
-  ACTIVATION_FUNCTIONS,
-  TRAINING_ALGORITHMS
+  TRAINING_ALGORITHMS,
+  type TrainingConfig,
+  type TrainingDataConfig,
 } from '../../../../../ruv-FANN-zen/ruv-swarm-zen/npm/src/neural-network';
 
 describe('Prediction Accuracy - Classical TDD', () => {
   let wasmModule: any;
-  
+
   beforeEach(async () => {
     try {
       wasmModule = await initializeNeuralWasm();
@@ -43,23 +43,28 @@ describe('Prediction Accuracy - Classical TDD', () => {
         hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
         outputSize: 1,
         outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
-        randomSeed: 101
+        randomSeed: 101,
       };
 
       const trainingConfig: TrainingConfig = {
         algorithm: TRAINING_ALGORITHMS.RPROP,
         maxEpochs: 500,
-        targetError: 0.01
+        targetError: 0.01,
       };
 
       const andData: TrainingDataConfig = {
-        inputs: [[0, 0], [0, 1], [1, 0], [1, 1]],
-        outputs: [[0], [0], [0], [1]]
+        inputs: [
+          [0, 0],
+          [0, 1],
+          [1, 0],
+          [1, 1],
+        ],
+        outputs: [[0], [0], [0], [1]],
       };
 
       const network = await createNeuralNetwork(networkConfig);
       const trainer = await createTrainer(trainingConfig);
-      
+
       network.setTrainingData(andData);
       await trainer.trainUntilTarget(network, andData, 0.01, 500);
 
@@ -68,14 +73,14 @@ describe('Prediction Accuracy - Classical TDD', () => {
         { input: [0, 0], expected: 0, name: '0 AND 0' },
         { input: [0, 1], expected: 0, name: '0 AND 1' },
         { input: [1, 0], expected: 0, name: '1 AND 0' },
-        { input: [1, 1], expected: 1, name: '1 AND 1' }
+        { input: [1, 1], expected: 1, name: '1 AND 1' },
       ];
 
       let correctPredictions = 0;
       for (const test of predictions) {
         const result = await network.run(test.input);
         const predicted = result[0] > 0.5 ? 1 : 0;
-        
+
         expect(predicted).toBe(test.expected);
         if (predicted === test.expected) correctPredictions++;
       }
@@ -96,23 +101,28 @@ describe('Prediction Accuracy - Classical TDD', () => {
         hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
         outputSize: 1,
         outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
-        randomSeed: 202
+        randomSeed: 202,
       };
 
       const trainingConfig: TrainingConfig = {
         algorithm: TRAINING_ALGORITHMS.RPROP,
         maxEpochs: 300,
-        targetError: 0.01
+        targetError: 0.01,
       };
 
       const orData: TrainingDataConfig = {
-        inputs: [[0, 0], [0, 1], [1, 0], [1, 1]],
-        outputs: [[0], [1], [1], [1]]
+        inputs: [
+          [0, 0],
+          [0, 1],
+          [1, 0],
+          [1, 1],
+        ],
+        outputs: [[0], [1], [1], [1]],
       };
 
       const network = await createNeuralNetwork(networkConfig);
       const trainer = await createTrainer(trainingConfig);
-      
+
       network.setTrainingData(orData);
       await trainer.trainUntilTarget(network, orData, 0.01, 300);
 
@@ -121,14 +131,14 @@ describe('Prediction Accuracy - Classical TDD', () => {
         { input: [0, 0], expected: 0, name: '0 OR 0' },
         { input: [0, 1], expected: 1, name: '0 OR 1' },
         { input: [1, 0], expected: 1, name: '1 OR 0' },
-        { input: [1, 1], expected: 1, name: '1 OR 1' }
+        { input: [1, 1], expected: 1, name: '1 OR 1' },
       ];
 
       let correctPredictions = 0;
       for (const test of predictions) {
         const result = await network.run(test.input);
         const predicted = result[0] > 0.5 ? 1 : 0;
-        
+
         expect(predicted).toBe(test.expected);
         if (predicted === test.expected) correctPredictions++;
       }
@@ -148,23 +158,28 @@ describe('Prediction Accuracy - Classical TDD', () => {
         hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
         outputSize: 1,
         outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
-        randomSeed: 303
+        randomSeed: 303,
       };
 
       const trainingConfig: TrainingConfig = {
         algorithm: TRAINING_ALGORITHMS.RPROP,
         maxEpochs: 1000,
-        targetError: 0.01
+        targetError: 0.01,
       };
 
       const xorData: TrainingDataConfig = {
-        inputs: [[0, 0], [0, 1], [1, 0], [1, 1]],
-        outputs: [[0], [1], [1], [0]]
+        inputs: [
+          [0, 0],
+          [0, 1],
+          [1, 0],
+          [1, 1],
+        ],
+        outputs: [[0], [1], [1], [0]],
       };
 
       const network = await createNeuralNetwork(networkConfig);
       const trainer = await createTrainer(trainingConfig);
-      
+
       network.setTrainingData(xorData);
       const result = await trainer.trainUntilTarget(network, xorData, 0.01, 1000);
 
@@ -175,14 +190,14 @@ describe('Prediction Accuracy - Classical TDD', () => {
         { input: [0, 0], expected: 0, name: '0 XOR 0' },
         { input: [0, 1], expected: 1, name: '0 XOR 1' },
         { input: [1, 0], expected: 1, name: '1 XOR 0' },
-        { input: [1, 1], expected: 0, name: '1 XOR 1' }
+        { input: [1, 1], expected: 0, name: '1 XOR 1' },
       ];
 
       let correctPredictions = 0;
       for (const test of predictions) {
         const networkResult = await network.run(test.input);
         const predicted = networkResult[0] > 0.5 ? 1 : 0;
-        
+
         if (predicted === test.expected) correctPredictions++;
       }
 
@@ -203,22 +218,22 @@ describe('Prediction Accuracy - Classical TDD', () => {
         inputSize: 1,
         hiddenLayers: [
           { size: 6, activation: ACTIVATION_FUNCTIONS.SIGMOID },
-          { size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID }
+          { size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID },
         ],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.LINEAR
+        outputActivation: ACTIVATION_FUNCTIONS.LINEAR,
       };
 
       const trainingConfig: TrainingConfig = {
         algorithm: TRAINING_ALGORITHMS.RPROP,
         maxEpochs: 800,
-        targetError: 0.05
+        targetError: 0.05,
       };
 
       // Quadratic function: y = x^2
       const quadraticData: TrainingDataConfig = {
         inputs: [],
-        outputs: []
+        outputs: [],
       };
 
       for (let i = 0; i <= 10; i++) {
@@ -230,7 +245,7 @@ describe('Prediction Accuracy - Classical TDD', () => {
 
       const network = await createNeuralNetwork(networkConfig);
       const trainer = await createTrainer(trainingConfig);
-      
+
       network.setTrainingData(quadraticData);
       await trainer.trainUntilTarget(network, quadraticData, 0.05, 800);
 
@@ -239,7 +254,7 @@ describe('Prediction Accuracy - Classical TDD', () => {
         { x: 0.0, expected: 0.0 },
         { x: 0.5, expected: 0.25 },
         { x: 0.7, expected: 0.49 },
-        { x: 1.0, expected: 1.0 }
+        { x: 1.0, expected: 1.0 },
       ];
 
       for (const point of testPoints) {
@@ -250,7 +265,7 @@ describe('Prediction Accuracy - Classical TDD', () => {
       // Test interpolation accuracy
       const interpolationTests = [
         { x: 0.25, expected: 0.0625 },
-        { x: 0.75, expected: 0.5625 }
+        { x: 0.75, expected: 0.5625 },
       ];
 
       for (const test of interpolationTests) {
@@ -270,22 +285,22 @@ describe('Prediction Accuracy - Classical TDD', () => {
         inputSize: 1,
         hiddenLayers: [
           { size: 10, activation: ACTIVATION_FUNCTIONS.TANH },
-          { size: 8, activation: ACTIVATION_FUNCTIONS.TANH }
+          { size: 8, activation: ACTIVATION_FUNCTIONS.TANH },
         ],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.LINEAR
+        outputActivation: ACTIVATION_FUNCTIONS.LINEAR,
       };
 
       const trainingConfig: TrainingConfig = {
         algorithm: TRAINING_ALGORITHMS.RPROP,
         maxEpochs: 1200,
-        targetError: 0.1
+        targetError: 0.1,
       };
 
       // Cosine function over [0, 2π]
       const cosineData: TrainingDataConfig = {
         inputs: [],
-        outputs: []
+        outputs: [],
       };
 
       for (let i = 0; i <= 16; i++) {
@@ -298,17 +313,17 @@ describe('Prediction Accuracy - Classical TDD', () => {
 
       const network = await createNeuralNetwork(networkConfig);
       const trainer = await createTrainer(trainingConfig);
-      
+
       network.setTrainingData(cosineData);
       await trainer.trainUntilTarget(network, cosineData, 0.1, 1200);
 
       // Test key cosine values
       const testPoints = [
-        { x: 0, expected: 1 },        // cos(0) = 1
-        { x: 0.25, expected: 0 },     // cos(π/2) ≈ 0
-        { x: 0.5, expected: -1 },     // cos(π) = -1
-        { x: 0.75, expected: 0 },     // cos(3π/2) ≈ 0
-        { x: 1, expected: 1 }         // cos(2π) = 1
+        { x: 0, expected: 1 }, // cos(0) = 1
+        { x: 0.25, expected: 0 }, // cos(π/2) ≈ 0
+        { x: 0.5, expected: -1 }, // cos(π) = -1
+        { x: 0.75, expected: 0 }, // cos(3π/2) ≈ 0
+        { x: 1, expected: 1 }, // cos(2π) = 1
       ];
 
       for (const point of testPoints) {
@@ -328,46 +343,68 @@ describe('Prediction Accuracy - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [
-          { size: 8, activation: ACTIVATION_FUNCTIONS.SIGMOID }
-        ],
+        hiddenLayers: [{ size: 8, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
         outputSize: 2,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID
+        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
       };
 
       const trainingConfig: TrainingConfig = {
         algorithm: TRAINING_ALGORITHMS.RPROP,
         maxEpochs: 600,
-        targetError: 0.1
+        targetError: 0.1,
       };
 
       // Two classes: left half vs right half of unit square
       const patternData: TrainingDataConfig = {
         inputs: [
           // Left half (Class 0)
-          [0.1, 0.1], [0.1, 0.5], [0.1, 0.9],
-          [0.2, 0.2], [0.2, 0.7], [0.3, 0.4],
-          [0.4, 0.1], [0.4, 0.6], [0.4, 0.9],
+          [0.1, 0.1],
+          [0.1, 0.5],
+          [0.1, 0.9],
+          [0.2, 0.2],
+          [0.2, 0.7],
+          [0.3, 0.4],
+          [0.4, 0.1],
+          [0.4, 0.6],
+          [0.4, 0.9],
           // Right half (Class 1)
-          [0.6, 0.1], [0.6, 0.5], [0.6, 0.9],
-          [0.7, 0.2], [0.7, 0.7], [0.8, 0.4],
-          [0.9, 0.1], [0.9, 0.6], [0.9, 0.9]
+          [0.6, 0.1],
+          [0.6, 0.5],
+          [0.6, 0.9],
+          [0.7, 0.2],
+          [0.7, 0.7],
+          [0.8, 0.4],
+          [0.9, 0.1],
+          [0.9, 0.6],
+          [0.9, 0.9],
         ],
         outputs: [
           // Class 0 (left)
-          [1, 0], [1, 0], [1, 0],
-          [1, 0], [1, 0], [1, 0],
-          [1, 0], [1, 0], [1, 0],
+          [1, 0],
+          [1, 0],
+          [1, 0],
+          [1, 0],
+          [1, 0],
+          [1, 0],
+          [1, 0],
+          [1, 0],
+          [1, 0],
           // Class 1 (right)
-          [0, 1], [0, 1], [0, 1],
-          [0, 1], [0, 1], [0, 1],
-          [0, 1], [0, 1], [0, 1]
-        ]
+          [0, 1],
+          [0, 1],
+          [0, 1],
+          [0, 1],
+          [0, 1],
+          [0, 1],
+          [0, 1],
+          [0, 1],
+          [0, 1],
+        ],
       };
 
       const network = await createNeuralNetwork(networkConfig);
       const trainer = await createTrainer(trainingConfig);
-      
+
       network.setTrainingData(patternData);
       await trainer.trainUntilTarget(network, patternData, 0.1, 600);
 
@@ -378,14 +415,14 @@ describe('Prediction Accuracy - Classical TDD', () => {
         { input: [0.35, 0.8], expectedClass: 0, name: 'left side' },
         { input: [0.65, 0.2], expectedClass: 1, name: 'right side' },
         { input: [0.75, 0.6], expectedClass: 1, name: 'right side' },
-        { input: [0.85, 0.4], expectedClass: 1, name: 'right side' }
+        { input: [0.85, 0.4], expectedClass: 1, name: 'right side' },
       ];
 
       let correctClassifications = 0;
       for (const test of testPoints) {
         const prediction = await network.run(test.input);
         const predictedClass = prediction[0] > prediction[1] ? 0 : 1;
-        
+
         if (predictedClass === test.expectedClass) {
           correctClassifications++;
         }
@@ -407,36 +444,36 @@ describe('Prediction Accuracy - Classical TDD', () => {
         inputSize: 2,
         hiddenLayers: [
           { size: 12, activation: ACTIVATION_FUNCTIONS.TANH },
-          { size: 8, activation: ACTIVATION_FUNCTIONS.TANH }
+          { size: 8, activation: ACTIVATION_FUNCTIONS.TANH },
         ],
         outputSize: 2,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID
+        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
       };
 
       const trainingConfig: TrainingConfig = {
         algorithm: TRAINING_ALGORITHMS.RPROP,
         maxEpochs: 1000,
-        targetError: 0.15
+        targetError: 0.15,
       };
 
       // Generate circular pattern data
       const circularData: TrainingDataConfig = {
         inputs: [],
-        outputs: []
+        outputs: [],
       };
 
       // Inner circle (radius < 0.3) - Class 0
       // Outer ring (0.5 < radius < 0.8) - Class 1
       for (let i = 0; i < 60; i++) {
         const angle = (i / 60) * 2 * Math.PI;
-        
+
         // Inner circle points
         const innerRadius = 0.1 + Math.random() * 0.2; // radius 0.1-0.3
         const innerX = 0.5 + innerRadius * Math.cos(angle);
         const innerY = 0.5 + innerRadius * Math.sin(angle);
         circularData.inputs.push([innerX, innerY]);
         circularData.outputs.push([1, 0]); // Class 0
-        
+
         // Outer ring points
         const outerRadius = 0.5 + Math.random() * 0.3; // radius 0.5-0.8
         const outerX = 0.5 + outerRadius * Math.cos(angle);
@@ -447,7 +484,7 @@ describe('Prediction Accuracy - Classical TDD', () => {
 
       const network = await createNeuralNetwork(networkConfig);
       const trainer = await createTrainer(trainingConfig);
-      
+
       network.setTrainingData(circularData);
       await trainer.trainUntilTarget(network, circularData, 0.15, 1000);
 
@@ -458,14 +495,14 @@ describe('Prediction Accuracy - Classical TDD', () => {
         { input: [0.5, 0.4], expectedClass: 0, name: 'inner circle' },
         { input: [0.8, 0.5], expectedClass: 1, name: 'outer ring' },
         { input: [0.5, 0.2], expectedClass: 1, name: 'outer ring' },
-        { input: [0.2, 0.5], expectedClass: 1, name: 'outer ring' }
+        { input: [0.2, 0.5], expectedClass: 1, name: 'outer ring' },
       ];
 
       let correctClassifications = 0;
       for (const test of testPoints) {
         const prediction = await network.run(test.input);
         const predictedClass = prediction[0] > prediction[1] ? 0 : 1;
-        
+
         if (predictedClass === test.expectedClass) {
           correctClassifications++;
         }
@@ -487,47 +524,46 @@ describe('Prediction Accuracy - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 1,
-        hiddenLayers: [
-          { size: 6, activation: ACTIVATION_FUNCTIONS.SIGMOID }
-        ],
+        hiddenLayers: [{ size: 6, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.LINEAR
+        outputActivation: ACTIVATION_FUNCTIONS.LINEAR,
       };
 
       const trainingConfig: TrainingConfig = {
         algorithm: TRAINING_ALGORITHMS.RPROP,
         maxEpochs: 400,
-        targetError: 0.05
+        targetError: 0.05,
       };
 
       // Train on subset of linear function y = 3x + 1
       const trainingData: TrainingDataConfig = {
         inputs: [[0.1], [0.3], [0.5], [0.7], [0.9]], // Skip some points
-        outputs: [[1.3], [1.9], [2.5], [3.1], [3.7]]
+        outputs: [[1.3], [1.9], [2.5], [3.1], [3.7]],
       };
 
       const network = await createNeuralNetwork(networkConfig);
       const trainer = await createTrainer(trainingConfig);
-      
+
       network.setTrainingData(trainingData);
       await trainer.trainUntilTarget(network, trainingData, 0.05, 400);
 
       // Test generalization on unseen points
       const testPoints = [
-        { input: 0.0, expected: 1.0 },   // y = 3*0 + 1 = 1
-        { input: 0.2, expected: 1.6 },   // y = 3*0.2 + 1 = 1.6
-        { input: 0.4, expected: 2.2 },   // y = 3*0.4 + 1 = 2.2
-        { input: 0.6, expected: 2.8 },   // y = 3*0.6 + 1 = 2.8
-        { input: 0.8, expected: 3.4 },   // y = 3*0.8 + 1 = 3.4
-        { input: 1.0, expected: 4.0 }    // y = 3*1 + 1 = 4 (extrapolation)
+        { input: 0.0, expected: 1.0 }, // y = 3*0 + 1 = 1
+        { input: 0.2, expected: 1.6 }, // y = 3*0.2 + 1 = 1.6
+        { input: 0.4, expected: 2.2 }, // y = 3*0.4 + 1 = 2.2
+        { input: 0.6, expected: 2.8 }, // y = 3*0.6 + 1 = 2.8
+        { input: 0.8, expected: 3.4 }, // y = 3*0.8 + 1 = 3.4
+        { input: 1.0, expected: 4.0 }, // y = 3*1 + 1 = 4 (extrapolation)
       ];
 
       let accurateGeneralizations = 0;
       for (const test of testPoints) {
         const prediction = await network.run([test.input]);
         const error = Math.abs(prediction[0] - test.expected);
-        
-        if (error < 0.3) { // Allow 10% error for generalization
+
+        if (error < 0.3) {
+          // Allow 10% error for generalization
           accurateGeneralizations++;
         }
       }
@@ -551,11 +587,11 @@ describe('Prediction Accuracy - Classical TDD', () => {
         hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
         outputSize: 1,
         outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
-        randomSeed: 999 // Fixed seed for reproducibility
+        randomSeed: 999, // Fixed seed for reproducibility
       };
 
       const network = await createNeuralNetwork(networkConfig);
-      
+
       const testInput = [0.6, 0.4];
       const predictions: number[] = [];
 
@@ -572,22 +608,22 @@ describe('Prediction Accuracy - Classical TDD', () => {
       }
 
       // Verify predictions are valid
-      expect(predictions.every(p => isFinite(p))).toBe(true);
-      expect(predictions.every(p => p >= 0 && p <= 1)).toBe(true);
+      expect(predictions.every((p) => isFinite(p))).toBe(true);
+      expect(predictions.every((p) => p >= 0 && p <= 1)).toBe(true);
     });
   });
 });
 
 /**
  * Classical TDD Principles Demonstrated:
- * 
+ *
  * 1. No mocks - testing actual prediction accuracy on real data
  * 2. Mathematical correctness validation through known functions
  * 3. Pattern recognition accuracy measurement
  * 4. Generalization capability testing on unseen data
  * 5. Consistency verification across multiple runs
  * 6. Statistical accuracy metrics and thresholds
- * 
+ *
  * This is ideal for:
  * - Neural network accuracy validation
  * - Function approximation verification

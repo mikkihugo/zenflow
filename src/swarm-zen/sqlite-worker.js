@@ -5,8 +5,8 @@
  * to prevent blocking the main thread during heavy database workloads.
  */
 
-import { parentPort, workerData } from 'worker_threads';
 import Database from 'better-sqlite3';
+import { parentPort, workerData } from 'worker_threads';
 
 class SQLiteWorker {
   constructor(dbPath, options = {}) {
@@ -32,7 +32,6 @@ class SQLiteWorker {
           this.handleMessage(message);
         });
       }
-
     } catch (error) {
       if (parentPort) {
         parentPort.postMessage({
@@ -76,7 +75,6 @@ class SQLiteWorker {
           error: 'Invalid message format',
         });
       }
-
     } catch (error) {
       parentPort.postMessage({
         error: error.message,

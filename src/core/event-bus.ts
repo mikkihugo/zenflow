@@ -57,12 +57,12 @@ export class EventBus extends EventEmitter implements IEventBus {
    * Get event statistics
    */
   getStats(): { eventNames: string[]; listenerCount: number } {
-    const eventNames = this.eventNames().map(name => String(name));
+    const eventNames = this.eventNames().map((name) => String(name));
     const listenerCount = eventNames.reduce((sum, name) => sum + this.listenerCount(name), 0);
-    
+
     return {
       eventNames,
-      listenerCount
+      listenerCount,
     };
   }
 }

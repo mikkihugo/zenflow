@@ -3,14 +3,14 @@
  * Implements Single Responsibility principle for agent state management
  */
 
-import { ILogger } from '../../core/logger';
-import {
-  RegisteredAgent,
+import type { ILogger } from '../../core/logger';
+import type {
   AgentProfile,
   AgentStatus,
-  RegistryStatistics,
   AgentStatusSubscriber,
-  PerformanceHistory
+  PerformanceHistory,
+  RegisteredAgent,
+  RegistryStatistics,
 } from './types';
 
 /**
@@ -23,27 +23,27 @@ class AgentPerformanceHistory implements PerformanceHistory {
   successRate: number = 1.0;
   qualityScores: number[] = [];
   lastUpdated: Date = new Date();
-  
+
   private durations: number[] = [];
   private failures: string[] = [];
 
   addCompletion(duration: number, estimatedDuration: number): void {
     this.tasksCompleted++;
     this.durations.push(duration);
-    
+
     // Keep only recent durations (last 100)
     if (this.durations.length > 100) {
       this.durations = this.durations.slice(-100);
     }
-    
+
     this.averageDuration = this.durations.reduce((sum, d) => sum + d, 0) / this.durations.length;
     this.successRate = this.tasksCompleted / (this.tasksCompleted + this.tasksFailed);
     this.lastUpdated = new Date();
-    
+
     // Add quality score based on duration accuracy
     const accuracy = Math.max(0, 1 - Math.abs(duration - estimatedDuration) / estimatedDuration);
     this.qualityScores.push(Math.min(1, accuracy + 0.5));
-    
+
     if (this.qualityScores.length > 50) {
       this.qualityScores = this.qualityScores.slice(-50);
     }
@@ -52,11 +52,11 @@ class AgentPerformanceHistory implements PerformanceHistory {
   addFailure(reason: string): void {
     this.tasksFailed++;
     this.failures.push(reason);
-    
+
     if (this.failures.length > 50) {
       this.failures = this.failures.slice(-50);
     }
-    
+
     this.successRate = this.tasksCompleted / (this.tasksCompleted + this.tasksFailed);
     this.qualityScores.push(0); // Failed tasks get 0 quality
     this.lastUpdated = new Date();
@@ -65,14 +65,14 @@ class AgentPerformanceHistory implements PerformanceHistory {
   getRecentSuccessRate(window: number = 10): number {
     const recentTotal = Math.min(window, this.tasksCompleted + this.tasksFailed);
     if (recentTotal === 0) return 1.0;
-    
+
     const recentFailures = Math.min(window, this.tasksFailed);
     return Math.max(0, (recentTotal - recentFailures) / recentTotal);
   }
 
   getAverageQuality(window: number = 20): number {
     if (this.qualityScores.length === 0) return 0.8; // Default quality
-    
+
     const recentScores = this.qualityScores.slice(-window);
     return recentScores.reduce((sum, score) => sum + score, 0) / recentScores.length;
   }
@@ -105,19 +105,22 @@ export class AgentRegistry {
         performanceHistory: new AgentPerformanceHistory(),
         registeredAt: new Date(),
         lastActivity: new Date(),
-        metadata: profile.metadata || {}
+        metadata: profile.metadata || {},
       };
 
       this.activeAgents.set(agentId, registeredAgent);
       this.updateCapabilityIndex(agentId, registeredAgent.capabilities);
-      
-      this.logger.info(`Registered agent ${agentId} with capabilities: [${registeredAgent.capabilities.join(', ')}]`);
-      
+
+      this.logger.info(
+        `Registered agent ${agentId} with capabilities: [${registeredAgent.capabilities.join(', ')}]`
+      );
+
       await this.notifyStatusChange(agentId, 'available');
       this.updateRegistryHealth();
-
     } catch (error) {
-      this.logger.error(`Failed to register agent ${agentId}: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        `Failed to register agent ${agentId}: ${error instanceof Error ? error.message : String(error)}`
+      );
       throw error;
     }
   }
@@ -135,17 +138,18 @@ export class AgentRegistry {
 
       // Remove from capability index
       this.removeFromCapabilityIndex(agentId, agent.capabilities);
-      
+
       // Remove from active agents
       this.activeAgents.delete(agentId);
-      
+
       this.logger.info(`Unregistered agent: ${agentId}`);
-      
+
       await this.notifyStatusChange(agentId, 'offline');
       this.updateRegistryHealth();
-
     } catch (error) {
-      this.logger.error(`Failed to unregister agent ${agentId}: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        `Failed to unregister agent ${agentId}: ${error instanceof Error ? error.message : String(error)}`
+      );
       throw error;
     }
   }
@@ -160,30 +164,30 @@ export class AgentRegistry {
     }
 
     let candidateIds: Set<string> | null = null;
-    
+
     // Use capability index for efficient lookup
     for (const capability of requiredCapabilities) {
       const agentsWithCapability = this.capabilityIndex.get(capability);
-      
+
       if (!agentsWithCapability || agentsWithCapability.size === 0) {
         // If any required capability has no agents, return empty
         return [];
       }
-      
+
       if (candidateIds === null) {
         // First capability - initialize with all agents that have it
         candidateIds = new Set(agentsWithCapability);
       } else {
         // Subsequent capabilities - intersection with existing candidates
         const intersection = new Set<string>();
-        candidateIds.forEach(id => {
+        candidateIds.forEach((id) => {
           if (agentsWithCapability.has(id)) {
             intersection.add(id);
           }
         });
         candidateIds = intersection;
       }
-      
+
       // Early termination if no candidates remain
       if (candidateIds.size === 0) {
         return [];
@@ -192,11 +196,13 @@ export class AgentRegistry {
 
     // Convert IDs to registered agents and filter out any that no longer exist
     const capableAgents = Array.from(candidateIds || [])
-      .map(id => this.activeAgents.get(id))
-      .filter(agent => agent !== undefined) as RegisteredAgent[];
+      .map((id) => this.activeAgents.get(id))
+      .filter((agent) => agent !== undefined) as RegisteredAgent[];
 
-    this.logger.debug(`Found ${capableAgents.length} agents with capabilities: [${requiredCapabilities.join(', ')}]`);
-    
+    this.logger.debug(
+      `Found ${capableAgents.length} agents with capabilities: [${requiredCapabilities.join(', ')}]`
+    );
+
     return capableAgents;
   }
 
@@ -220,13 +226,13 @@ export class AgentRegistry {
     const previousStatus = agent.status;
     agent.status = status;
     agent.lastActivity = new Date();
-    
+
     if (metadata) {
       agent.metadata = { ...agent.metadata, ...metadata };
     }
 
     this.logger.debug(`Agent ${agentId} status changed: ${previousStatus} -> ${status}`);
-    
+
     await this.notifyStatusChange(agentId, status);
     this.updateRegistryHealth();
   }
@@ -239,7 +245,7 @@ export class AgentRegistry {
     if (agent) {
       agent.currentWorkload = workload;
       agent.lastActivity = new Date();
-      
+
       // Auto-update status based on workload
       if (workload > 0.8 && agent.status === 'available') {
         await this.updateAgentStatus(agentId, 'busy');
@@ -260,7 +266,7 @@ export class AgentRegistry {
    * Get agents by status
    */
   getAgentsByStatus(status: AgentStatus): RegisteredAgent[] {
-    return Array.from(this.activeAgents.values()).filter(agent => agent.status === status);
+    return Array.from(this.activeAgents.values()).filter((agent) => agent.status === status);
   }
 
   /**
@@ -269,7 +275,7 @@ export class AgentRegistry {
   getRegistryStats(): RegistryStatistics {
     const agents = Array.from(this.activeAgents.values());
     const totalAgents = agents.length;
-    
+
     if (totalAgents === 0) {
       return {
         totalAgents: 0,
@@ -277,12 +283,12 @@ export class AgentRegistry {
         busyAgents: 0,
         averageWorkload: 0,
         capabilityCoverage: 0,
-        registryHealth: 1.0
+        registryHealth: 1.0,
       };
     }
 
-    const availableAgents = agents.filter(a => a.status === 'available').length;
-    const busyAgents = agents.filter(a => a.status === 'busy').length;
+    const availableAgents = agents.filter((a) => a.status === 'available').length;
+    const busyAgents = agents.filter((a) => a.status === 'busy').length;
     const averageWorkload = agents.reduce((sum, a) => sum + a.currentWorkload, 0) / totalAgents;
     const capabilityCoverage = this.capabilityIndex.size;
 
@@ -292,7 +298,7 @@ export class AgentRegistry {
       busyAgents,
       averageWorkload,
       capabilityCoverage,
-      registryHealth: this.registryHealth
+      registryHealth: this.registryHealth,
     };
   }
 
@@ -330,7 +336,7 @@ export class AgentRegistry {
       const agentSet = this.capabilityIndex.get(capability);
       if (agentSet) {
         agentSet.delete(agentId);
-        
+
         // Clean up empty capability entries
         if (agentSet.size === 0) {
           this.capabilityIndex.delete(capability);
@@ -343,11 +349,13 @@ export class AgentRegistry {
    * Notify all subscribers of status changes
    */
   private async notifyStatusChange(agentId: string, status: AgentStatus): Promise<void> {
-    const notifications = Array.from(this.statusSubscribers).map(subscriber => {
+    const notifications = Array.from(this.statusSubscribers).map((subscriber) => {
       try {
         return subscriber.onAgentStatusChange(agentId, status);
       } catch (error) {
-        this.logger.warn(`Status change subscriber error: ${error instanceof Error ? error.message : String(error)}`);
+        this.logger.warn(
+          `Status change subscriber error: ${error instanceof Error ? error.message : String(error)}`
+        );
         return Promise.resolve();
       }
     });
@@ -360,7 +368,7 @@ export class AgentRegistry {
    */
   private updateRegistryHealth(): void {
     const stats = this.getRegistryStats();
-    
+
     if (stats.totalAgents === 0) {
       this.registryHealth = 1.0;
       return;
@@ -370,12 +378,12 @@ export class AgentRegistry {
     // - Availability ratio (available vs total)
     // - Workload distribution (avoid overload)
     // - Capability coverage
-    
+
     const availabilityRatio = stats.availableAgents / stats.totalAgents;
     const workloadHealth = Math.max(0, 1 - stats.averageWorkload);
     const coverageHealth = Math.min(1, stats.capabilityCoverage / 10); // Assume 10 capabilities is good
-    
-    this.registryHealth = (availabilityRatio * 0.4 + workloadHealth * 0.4 + coverageHealth * 0.2);
+
+    this.registryHealth = availabilityRatio * 0.4 + workloadHealth * 0.4 + coverageHealth * 0.2;
   }
 
   /**
@@ -384,10 +392,10 @@ export class AgentRegistry {
   async cleanupStaleAgents(maxInactiveTime: number = 3600000): Promise<string[]> {
     const now = new Date();
     const staleAgents: string[] = [];
-    
+
     for (const [agentId, agent] of this.activeAgents) {
       const inactiveTime = now.getTime() - agent.lastActivity.getTime();
-      
+
       if (inactiveTime > maxInactiveTime && agent.status !== 'busy') {
         staleAgents.push(agentId);
       }
@@ -415,15 +423,14 @@ export class AgentRegistry {
     rareCapabilities: string[];
   } {
     const capabilityDistribution: Record<string, number> = {};
-    
+
     // Count agents per capability
     for (const [capability, agentSet] of this.capabilityIndex) {
       capabilityDistribution[capability] = agentSet.size;
     }
 
     // Sort capabilities by frequency
-    const sortedCapabilities = Object.entries(capabilityDistribution)
-      .sort(([,a], [,b]) => b - a);
+    const sortedCapabilities = Object.entries(capabilityDistribution).sort(([, a], [, b]) => b - a);
 
     const mostCommon = sortedCapabilities.slice(0, 5).map(([cap]) => cap);
     const rare = sortedCapabilities.slice(-5).map(([cap]) => cap);
@@ -432,7 +439,7 @@ export class AgentRegistry {
       totalCapabilities: this.capabilityIndex.size,
       capabilityDistribution,
       mostCommonCapabilities: mostCommon,
-      rareCapabilities: rare
+      rareCapabilities: rare,
     };
   }
 
@@ -441,12 +448,12 @@ export class AgentRegistry {
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down Agent Registry');
-    
+
     // Clear all data structures
     this.activeAgents.clear();
     this.capabilityIndex.clear();
     this.statusSubscribers.clear();
-    
+
     this.logger.info('Agent Registry shutdown complete');
   }
 }

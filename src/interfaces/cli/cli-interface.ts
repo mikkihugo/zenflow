@@ -1,14 +1,14 @@
 /**
  * CLI Interface - Command Line Interface
- * 
+ *
  * Provides a command-line interface for Claude Code Zen
  * Integrates directly with all core systems without plugin architecture
  */
 
-import { EventEmitter } from 'events';
-import { createLogger } from '../../utils/logger.js';
-import { createInterface } from 'readline/promises';
 import chalk from 'chalk';
+import { EventEmitter } from 'events';
+import { createInterface } from 'readline/promises';
+import { createLogger } from '../../utils/logger.js';
 
 const logger = createLogger('CLIInterface');
 
@@ -50,7 +50,7 @@ export class CLIInterface extends EventEmitter {
     this.rl = createInterface({
       input: process.stdin,
       output: process.stdout,
-      prompt: this.getPrompt()
+      prompt: this.getPrompt(),
     });
 
     this.setupEventHandlers();
@@ -107,7 +107,7 @@ export class CLIInterface extends EventEmitter {
       aliases: ['s', 'stat'],
       handler: async (args, options) => {
         await this.showStatus();
-      }
+      },
     });
 
     // Help command
@@ -117,7 +117,7 @@ export class CLIInterface extends EventEmitter {
       aliases: ['h', '?'],
       handler: async (args, options) => {
         this.displayHelp();
-      }
+      },
     });
 
     // Process document command
@@ -133,7 +133,7 @@ export class CLIInterface extends EventEmitter {
           return;
         }
         await this.processDocument(documentPath);
-      }
+      },
     });
 
     // Export command
@@ -144,7 +144,7 @@ export class CLIInterface extends EventEmitter {
       handler: async (args, options) => {
         const format = args[0] || 'json';
         await this.exportSystemData(format);
-      }
+      },
     });
 
     // Report command
@@ -154,7 +154,7 @@ export class CLIInterface extends EventEmitter {
       aliases: ['rep', 'r'],
       handler: async (args, options) => {
         await this.generateReport();
-      }
+      },
     });
 
     // Launch TUI command
@@ -165,7 +165,7 @@ export class CLIInterface extends EventEmitter {
         console.log(chalk.blue('🔄 Switching to TUI interface...'));
         console.log(chalk.gray('Restart with --tui flag or use: claude-zen --tui'));
         process.exit(0);
-      }
+      },
     });
 
     // Launch Web command
@@ -176,7 +176,7 @@ export class CLIInterface extends EventEmitter {
         console.log(chalk.blue('🔄 Switching to Web interface...'));
         console.log(chalk.gray('Restart with --web flag or use: claude-zen --web'));
         process.exit(0);
-      }
+      },
     });
 
     // Exit command
@@ -188,7 +188,7 @@ export class CLIInterface extends EventEmitter {
         console.log(chalk.blue('👋 Goodbye!'));
         this.stop();
         process.exit(0);
-      }
+      },
     });
   }
 
@@ -225,7 +225,7 @@ export class CLIInterface extends EventEmitter {
    */
   private startInteractiveLoop(): void {
     if (!this.rl) return;
-    
+
     this.rl.prompt();
   }
 
@@ -258,7 +258,9 @@ export class CLIInterface extends EventEmitter {
     try {
       await command.handler(args, {});
     } catch (error) {
-      console.log(chalk.red(`❌ Error executing command: ${error instanceof Error ? error.message : error}`));
+      console.log(
+        chalk.red(`❌ Error executing command: ${error instanceof Error ? error.message : error}`)
+      );
       if (this.config.verbose) {
         console.error(error);
       }
@@ -271,7 +273,7 @@ export class CLIInterface extends EventEmitter {
   private displayWelcome(): void {
     const theme = this.config.theme || 'dark';
     const titleColor = theme === 'dark' ? chalk.cyan : chalk.blue;
-    
+
     console.log('');
     console.log(titleColor('🧠 Claude Code Zen - CLI Interface'));
     console.log(chalk.gray(`Version 2.0.0-alpha.73`));
@@ -324,15 +326,19 @@ export class CLIInterface extends EventEmitter {
       for (const [name, info] of Object.entries(status.components)) {
         const icon = this.getStatusIcon(info.status);
         console.log(`   ${icon} ${name}: ${info.status}`);
-        
+
         if ('sessions' in info) console.log(`      Sessions: ${info.sessions}`);
-        if ('activeWorkflows' in info) console.log(`      Active Workflows: ${info.activeWorkflows}`);
-        if ('documentsIndexed' in info) console.log(`      Documents Indexed: ${info.documentsIndexed}`);
+        if ('activeWorkflows' in info)
+          console.log(`      Active Workflows: ${info.activeWorkflows}`);
+        if ('documentsIndexed' in info)
+          console.log(`      Documents Indexed: ${info.documentsIndexed}`);
       }
       console.log('');
-
     } catch (error) {
-      console.log(chalk.red('❌ Failed to get system status:'), error instanceof Error ? error.message : error);
+      console.log(
+        chalk.red('❌ Failed to get system status:'),
+        error instanceof Error ? error.message : error
+      );
     }
   }
 
@@ -347,9 +353,9 @@ export class CLIInterface extends EventEmitter {
 
     try {
       console.log(chalk.blue(`📄 Processing document: ${documentPath}`));
-      
+
       const result = await this.config.coreSystem.processDocument(documentPath);
-      
+
       if (result.success) {
         console.log(chalk.green('✅ Document processed successfully'));
         if (result.workflowIds.length > 0) {
@@ -358,9 +364,11 @@ export class CLIInterface extends EventEmitter {
       } else {
         console.log(chalk.red('❌ Failed to process document:'), result.error);
       }
-
     } catch (error) {
-      console.log(chalk.red('❌ Error processing document:'), error instanceof Error ? error.message : error);
+      console.log(
+        chalk.red('❌ Error processing document:'),
+        error instanceof Error ? error.message : error
+      );
     }
   }
 
@@ -375,9 +383,9 @@ export class CLIInterface extends EventEmitter {
 
     try {
       console.log(chalk.blue(`📦 Exporting system data as ${format}...`));
-      
+
       const result = await this.config.coreSystem.exportSystemData(format);
-      
+
       if (result.success) {
         console.log(chalk.green('✅ Export completed successfully'));
         if (result.filename) {
@@ -386,9 +394,11 @@ export class CLIInterface extends EventEmitter {
       } else {
         console.log(chalk.red('❌ Export failed:'), result.error);
       }
-
     } catch (error) {
-      console.log(chalk.red('❌ Error during export:'), error instanceof Error ? error.message : error);
+      console.log(
+        chalk.red('❌ Error during export:'),
+        error instanceof Error ? error.message : error
+      );
     }
   }
 
@@ -403,15 +413,17 @@ export class CLIInterface extends EventEmitter {
 
     try {
       console.log(chalk.blue('📋 Generating system report...'));
-      
+
       const report = await this.config.coreSystem.generateSystemReport();
-      
+
       console.log('');
       console.log(report);
       console.log('');
-
     } catch (error) {
-      console.log(chalk.red('❌ Error generating report:'), error instanceof Error ? error.message : error);
+      console.log(
+        chalk.red('❌ Error generating report:'),
+        error instanceof Error ? error.message : error
+      );
     }
   }
 

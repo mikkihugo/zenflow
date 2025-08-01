@@ -1,10 +1,10 @@
 /**
  * Neural Hooks - Agentic Zen Hook System
- * 
+ *
  * Handles hooks related to neural network operations and training.
  */
 
-import type { NeuralHookPayload, AgenticHookContext, HookHandlerResult } from './types';
+import type { AgenticHookContext, HookHandlerResult, NeuralHookPayload } from './types';
 
 export class NeuralHooks {
   private logger: any;
@@ -20,15 +20,15 @@ export class NeuralHooks {
   async onNeuralOperation(context: AgenticHookContext): Promise<HookHandlerResult> {
     const payload = context.payload as NeuralHookPayload;
     this.logger.debug(`Neural operation: ${payload.operation} on model: ${payload.model}`);
-    
+
     return {
       success: true,
       modified: false,
       metadata: {
         operation: payload.operation,
         model: payload.model,
-        timestamp: Date.now()
-      }
+        timestamp: Date.now(),
+      },
     };
   }
 }

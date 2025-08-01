@@ -1,15 +1,15 @@
 /**
  * Import Worker Agent - Level 3 Worker in Hierarchical Lint Fixing Swarm
- * 
+ *
  * Specialized agent for fixing import/export issues in TypeScript projects.
  * Reports to Level 2 specialists and coordinates with other Level 3 workers.
  */
 
 import { EventEmitter } from 'node:events';
-import { dirname, resolve, relative, extname, join } from 'node:path';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import type { ILogger } from '../utils/logger';
+import { dirname, extname, join, relative, resolve } from 'node:path';
 import type { AgentConfig } from '../../ruv-FANN-zen/ruv-swarm-zen/npm/src/types';
+import type { ILogger } from '../utils/logger';
 
 export interface ImportIssue {
   type: ImportIssueType;
@@ -60,23 +60,23 @@ export interface ImportWorkerConfig {
   baseDir: string;
   extensions: string[];
   indexFiles: string[];
-  
+
   // Resolution configuration
   resolveExtensions: string[];
   moduleResolution: 'node' | 'bundler' | 'classic';
   allowImplicitExtensions: boolean;
   enforceExtensions: boolean;
-  
+
   // Fixing preferences
   preferredExtension: string;
   addMissingExtensions: boolean;
   removeUnusedImports: boolean;
   fixCircularDependencies: boolean;
-  
+
   // Quality thresholds
   minConfidence: number;
   maxFixAttempts: number;
-  
+
   // Coordination settings
   reportToLevel2: boolean;
   shareMemory: boolean;
@@ -90,20 +90,20 @@ export class ImportWorkerAgent extends EventEmitter {
   private logger: ILogger;
   private config: ImportWorkerConfig;
   private agentState: AgentState;
-  
+
   // Analysis state
   private projectStructure = new Map<string, ImportResolution>();
   private dependencyGraph = new Map<string, Set<string>>();
   private circularDependencies = new Set<string>();
-  
+
   // Fix strategies
   private strategies = new Map<ImportIssueType, FixStrategy[]>();
-  
+
   // Coordination state
   private memoryKey: string;
   private level2Coordinator?: string;
   private workerPeers: string[] = [];
-  
+
   // Performance tracking
   private metrics = {
     issuesDetected: 0,
@@ -114,17 +114,13 @@ export class ImportWorkerAgent extends EventEmitter {
     totalExecutionTime: 0,
   };
 
-  constructor(
-    config: Partial<ImportWorkerConfig>,
-    logger: ILogger,
-    agentState: AgentState,
-  ) {
+  constructor(config: Partial<ImportWorkerConfig>, logger: ILogger, agentState: AgentState) {
     super();
-    
+
     this.logger = logger;
     this.agentState = agentState;
     this.memoryKey = `swarm-lint-fix/hierarchy/level3/workers/imports/${agentState.id.id}`;
-    
+
     this.config = {
       baseDir: process.cwd(),
       extensions: ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs'],
@@ -154,113 +150,129 @@ export class ImportWorkerAgent extends EventEmitter {
    */
   private initializeFixStrategies(): void {
     // Missing Extension Strategy
-    this.strategies.set('missing-extension', [{
-      name: 'add-js-extension',
-      description: 'Add .js extension for ESM compatibility',
-      confidence: 0.9,
-      apply: (issue: ImportIssue, content: string) => {
-        const lines = content.split('\n');
-        const line = lines[issue.line - 1];
-        
-        // Match import/export statements
-        const importRegex = /(\bimport\s+.+?\s+from\s+['"`])([^'"`]+)(['"`])/;
-        const exportRegex = /(\bexport\s+.+?\s+from\s+['"`])([^'"`]+)(['"`])/;
-        
-        const match = line.match(importRegex) || line.match(exportRegex);
-        if (match) {
-          const [, prefix, path, suffix] = match;
-          const newPath = this.addExtensionIfNeeded(path, issue.suggestedFix || this.config.preferredExtension);
-          lines[issue.line - 1] = line.replace(match[0], `${prefix}${newPath}${suffix}`);
-        }
-        
-        return lines.join('\n');
+    this.strategies.set('missing-extension', [
+      {
+        name: 'add-js-extension',
+        description: 'Add .js extension for ESM compatibility',
+        confidence: 0.9,
+        apply: (issue: ImportIssue, content: string) => {
+          const lines = content.split('\n');
+          const line = lines[issue.line - 1];
+
+          // Match import/export statements
+          const importRegex = /(\bimport\s+.+?\s+from\s+['"`])([^'"`]+)(['"`])/;
+          const exportRegex = /(\bexport\s+.+?\s+from\s+['"`])([^'"`]+)(['"`])/;
+
+          const match = line.match(importRegex) || line.match(exportRegex);
+          if (match) {
+            const [, prefix, path, suffix] = match;
+            const newPath = this.addExtensionIfNeeded(
+              path,
+              issue.suggestedFix || this.config.preferredExtension
+            );
+            lines[issue.line - 1] = line.replace(match[0], `${prefix}${newPath}${suffix}`);
+          }
+
+          return lines.join('\n');
+        },
+        validate: (original: string, fixed: string) => {
+          return fixed !== original && fixed.includes('.js');
+        },
       },
-      validate: (original: string, fixed: string) => {
-        return fixed !== original && fixed.includes('.js');
-      },
-    }]);
+    ]);
 
     // Wrong Extension Strategy
-    this.strategies.set('wrong-extension', [{
-      name: 'correct-extension',
-      description: 'Correct file extension based on actual file',
-      confidence: 0.95,
-      apply: (issue: ImportIssue, content: string) => {
-        const lines = content.split('\n');
-        const line = lines[issue.line - 1];
-        
-        if (issue.suggestedFix) {
-          lines[issue.line - 1] = line.replace(issue.importPath, issue.suggestedFix);
-        }
-        
-        return lines.join('\n');
+    this.strategies.set('wrong-extension', [
+      {
+        name: 'correct-extension',
+        description: 'Correct file extension based on actual file',
+        confidence: 0.95,
+        apply: (issue: ImportIssue, content: string) => {
+          const lines = content.split('\n');
+          const line = lines[issue.line - 1];
+
+          if (issue.suggestedFix) {
+            lines[issue.line - 1] = line.replace(issue.importPath, issue.suggestedFix);
+          }
+
+          return lines.join('\n');
+        },
+        validate: (original: string, fixed: string) => {
+          return fixed !== original;
+        },
       },
-      validate: (original: string, fixed: string) => {
-        return fixed !== original;
-      },
-    }]);
+    ]);
 
     // Relative Path Error Strategy
-    this.strategies.set('relative-path-error', [{
-      name: 'fix-relative-path',
-      description: 'Correct relative import path',
-      confidence: 0.85,
-      apply: (issue: ImportIssue, content: string) => {
-        const lines = content.split('\n');
-        const line = lines[issue.line - 1];
-        
-        if (issue.suggestedFix) {
-          lines[issue.line - 1] = line.replace(issue.importPath, issue.suggestedFix);
-        }
-        
-        return lines.join('\n');
+    this.strategies.set('relative-path-error', [
+      {
+        name: 'fix-relative-path',
+        description: 'Correct relative import path',
+        confidence: 0.85,
+        apply: (issue: ImportIssue, content: string) => {
+          const lines = content.split('\n');
+          const line = lines[issue.line - 1];
+
+          if (issue.suggestedFix) {
+            lines[issue.line - 1] = line.replace(issue.importPath, issue.suggestedFix);
+          }
+
+          return lines.join('\n');
+        },
+        validate: (original: string, fixed: string) => {
+          return fixed !== original;
+        },
       },
-      validate: (original: string, fixed: string) => {
-        return fixed !== original;
-      },
-    }]);
+    ]);
 
     // Unused Import Strategy
-    this.strategies.set('unused-import', [{
-      name: 'remove-unused-import',
-      description: 'Remove unused import statements',
-      confidence: 0.8,
-      apply: (issue: ImportIssue, content: string) => {
-        const lines = content.split('\n');
-        
-        // Remove the entire import line
-        lines.splice(issue.line - 1, 1);
-        
-        return lines.join('\n');
+    this.strategies.set('unused-import', [
+      {
+        name: 'remove-unused-import',
+        description: 'Remove unused import statements',
+        confidence: 0.8,
+        apply: (issue: ImportIssue, content: string) => {
+          const lines = content.split('\n');
+
+          // Remove the entire import line
+          lines.splice(issue.line - 1, 1);
+
+          return lines.join('\n');
+        },
+        validate: (original: string, fixed: string) => {
+          return fixed.length < original.length;
+        },
       },
-      validate: (original: string, fixed: string) => {
-        return fixed.length < original.length;
-      },
-    }]);
+    ]);
 
     // Type-only Import Strategy
-    this.strategies.set('type-only-import', [{
-      name: 'add-type-modifier',
-      description: 'Add type modifier to import',
-      confidence: 0.9,
-      apply: (issue: ImportIssue, content: string) => {
-        const lines = content.split('\n');
-        const line = lines[issue.line - 1];
-        
-        // Add type modifier
-        const typeImportRegex = /(\bimport\s+)(\{[^}]+\}|\w+)(\s+from)/;
-        const match = line.match(typeImportRegex);
-        
-        if (match) {
-          lines[issue.line - 1] = line.replace(match[0], `${match[1]}type ${match[2]}${match[3]}`);
-        }
-        
-        return lines.join('\n');
+    this.strategies.set('type-only-import', [
+      {
+        name: 'add-type-modifier',
+        description: 'Add type modifier to import',
+        confidence: 0.9,
+        apply: (issue: ImportIssue, content: string) => {
+          const lines = content.split('\n');
+          const line = lines[issue.line - 1];
+
+          // Add type modifier
+          const typeImportRegex = /(\bimport\s+)(\{[^}]+\}|\w+)(\s+from)/;
+          const match = line.match(typeImportRegex);
+
+          if (match) {
+            lines[issue.line - 1] = line.replace(
+              match[0],
+              `${match[1]}type ${match[2]}${match[3]}`
+            );
+          }
+
+          return lines.join('\n');
+        },
+        validate: (original: string, fixed: string) => {
+          return fixed.includes('import type');
+        },
       },
-      validate: (original: string, fixed: string) => {
-        return fixed.includes('import type');
-      },
-    }]);
+    ]);
   }
 
   /**
@@ -277,7 +289,7 @@ export class ImportWorkerAgent extends EventEmitter {
    */
   async executeTask(task: TaskDefinition): Promise<TaskResult> {
     const startTime = Date.now();
-    
+
     try {
       this.logger.info('Import Worker executing task', {
         taskId: task.id.id,
@@ -313,7 +325,7 @@ export class ImportWorkerAgent extends EventEmitter {
 
       // Update metrics
       this.metrics.filesProcessed++;
-      
+
       // Update coordination memory
       await this.updateMemory('task-completed', {
         taskId: task.id.id,
@@ -334,11 +346,10 @@ export class ImportWorkerAgent extends EventEmitter {
 
       this.emit('task:completed', { task, result });
       return result;
-
     } catch (error) {
       const executionTime = Date.now() - startTime;
       const errorMessage = error instanceof Error ? error.message : String(error);
-      
+
       this.logger.error('Import Worker task failed', {
         taskId: task.id.id,
         error: errorMessage,
@@ -379,9 +390,9 @@ export class ImportWorkerAgent extends EventEmitter {
       try {
         const content = readFileSync(filePath, 'utf-8');
         const issues = await this.detectImportIssues(filePath, content);
-        
+
         this.metrics.issuesDetected += issues.length;
-        
+
         if (issues.length === 0) {
           fixResults.set(filePath, { issues: 0, fixed: 0, skipped: 0 });
           continue;
@@ -393,7 +404,7 @@ export class ImportWorkerAgent extends EventEmitter {
 
         // Apply fixes in order of confidence
         const sortedIssues = issues.sort((a, b) => b.confidence - a.confidence);
-        
+
         for (const issue of sortedIssues) {
           if (issue.confidence < this.config.minConfidence) {
             skipped++;
@@ -406,24 +417,24 @@ export class ImportWorkerAgent extends EventEmitter {
           for (const strategy of strategies) {
             try {
               const newContent = strategy.apply(issue, fixedContent);
-              
+
               if (strategy.validate(fixedContent, newContent)) {
                 fixedContent = newContent;
                 fixesApplied++;
                 totalIssuesFixed++;
                 fixed = true;
-                
+
                 // Update strategy metrics
                 const currentCount = this.metrics.fixesApplied.get(issue.type) || 0;
                 this.metrics.fixesApplied.set(issue.type, currentCount + 1);
-                
+
                 this.logger.debug('Applied import fix', {
                   file: filePath,
                   issue: issue.type,
                   strategy: strategy.name,
                   confidence: issue.confidence,
                 });
-                
+
                 break;
               }
             } catch (error) {
@@ -451,13 +462,12 @@ export class ImportWorkerAgent extends EventEmitter {
           fixed: fixesApplied,
           skipped,
         });
-
       } catch (error) {
         this.logger.error('Failed to fix imports in file', {
           file: filePath,
           error: error instanceof Error ? error.message : String(error),
         });
-        
+
         fixResults.set(filePath, {
           issues: 0,
           fixed: 0,
@@ -507,12 +517,12 @@ export class ImportWorkerAgent extends EventEmitter {
         const content = readFileSync(filePath, 'utf-8');
         const issues = await this.detectImportIssues(filePath, content);
         const imports = this.extractImports(content);
-        
+
         analysisResults.set(filePath, {
           totalImports: imports.length,
           issues: issues.length,
           issueTypes: this.categorizeIssues(issues),
-          imports: imports.map(imp => ({
+          imports: imports.map((imp) => ({
             type: imp.type,
             source: imp.source,
             specifiers: imp.specifiers,
@@ -520,7 +530,6 @@ export class ImportWorkerAgent extends EventEmitter {
           })),
           recommendations: this.generateFileRecommendations(issues),
         });
-
       } catch (error) {
         analysisResults.set(filePath, {
           error: error instanceof Error ? error.message : String(error),
@@ -566,18 +575,18 @@ export class ImportWorkerAgent extends EventEmitter {
       try {
         const content = readFileSync(filePath, 'utf-8');
         const issues = await this.detectImportIssues(filePath, content);
-        
-        const errors = issues.filter(i => i.severity === 'error');
-        const warnings = issues.filter(i => i.severity === 'warning');
-        
+
+        const errors = issues.filter((i) => i.severity === 'error');
+        const warnings = issues.filter((i) => i.severity === 'warning');
+
         totalErrors += errors.length;
         totalWarnings += warnings.length;
-        
+
         validationResults.set(filePath, {
           valid: errors.length === 0,
           errors: errors.length,
           warnings: warnings.length,
-          issues: issues.map(issue => ({
+          issues: issues.map((issue) => ({
             type: issue.type,
             severity: issue.severity,
             message: issue.message,
@@ -585,7 +594,6 @@ export class ImportWorkerAgent extends EventEmitter {
             column: issue.column,
           })),
         });
-
       } catch (error) {
         totalErrors++;
         validationResults.set(filePath, {
@@ -630,7 +638,7 @@ export class ImportWorkerAgent extends EventEmitter {
 
     for (const importStatement of imports) {
       const resolution = await this.resolveImport(filePath, importStatement.source);
-      
+
       // Check for missing extensions
       if (this.config.enforceExtensions && !this.hasExtension(importStatement.source)) {
         if (resolution.exists && this.isRelativeImport(importStatement.source)) {
@@ -642,7 +650,10 @@ export class ImportWorkerAgent extends EventEmitter {
             column: importStatement.column,
             message: `Missing file extension for ESM import: ${importStatement.source}`,
             importPath: importStatement.source,
-            suggestedFix: this.addExtensionIfNeeded(importStatement.source, this.config.preferredExtension),
+            suggestedFix: this.addExtensionIfNeeded(
+              importStatement.source,
+              this.config.preferredExtension
+            ),
             confidence: 0.9,
           });
         }
@@ -651,7 +662,7 @@ export class ImportWorkerAgent extends EventEmitter {
       // Check if module exists
       if (!resolution.exists && this.isRelativeImport(importStatement.source)) {
         const suggestedFix = await this.findBestMatch(filePath, importStatement.source);
-        
+
         issues.push({
           type: 'non-existent-module',
           severity: 'error',
@@ -716,9 +727,9 @@ export class ImportWorkerAgent extends EventEmitter {
       line: number;
       column: number;
     }> = [];
-    
+
     const lines = content.split('\n');
-    
+
     lines.forEach((line, index) => {
       // Match import statements
       const importMatch = line.match(/import\s+(.+?)\s+from\s+['"`]([^'"`]+)['"`]/);
@@ -754,7 +765,7 @@ export class ImportWorkerAgent extends EventEmitter {
   private parseSpecifiers(specifierString: string): string[] {
     // Handle different import patterns
     const specifiers: string[] = [];
-    
+
     // Default import
     const defaultMatch = specifierString.match(/^\s*(\w+)/);
     if (defaultMatch) {
@@ -764,7 +775,7 @@ export class ImportWorkerAgent extends EventEmitter {
     // Named imports
     const namedMatch = specifierString.match(/\{([^}]+)\}/);
     if (namedMatch) {
-      const named = namedMatch[1].split(',').map(s => s.trim());
+      const named = namedMatch[1].split(',').map((s) => s.trim());
       specifiers.push(...named);
     }
 
@@ -782,7 +793,7 @@ export class ImportWorkerAgent extends EventEmitter {
    */
   private async resolveImport(fromFile: string, importPath: string): Promise<ImportResolution> {
     const cacheKey = `${fromFile}:${importPath}`;
-    
+
     if (this.projectStructure.has(cacheKey)) {
       return this.projectStructure.get(cacheKey)!;
     }
@@ -799,7 +810,7 @@ export class ImportWorkerAgent extends EventEmitter {
     if (this.isRelativeImport(importPath)) {
       const basePath = dirname(fromFile);
       const fullPath = resolve(basePath, importPath);
-      
+
       // Try exact path
       if (existsSync(fullPath)) {
         resolution.resolvedPath = fullPath;
@@ -849,7 +860,7 @@ export class ImportWorkerAgent extends EventEmitter {
   }
 
   private hasExtension(path: string): boolean {
-    return this.config.extensions.some(ext => path.endsWith(ext));
+    return this.config.extensions.some((ext) => path.endsWith(ext));
   }
 
   private getExtension(path: string): string {
@@ -880,7 +891,7 @@ export class ImportWorkerAgent extends EventEmitter {
     // This is a simplified version
     const basePath = dirname(fromFile);
     const targetPath = resolve(basePath, importPath);
-    
+
     // Try common variations
     const variations = [
       importPath + '.ts',
@@ -902,18 +913,18 @@ export class ImportWorkerAgent extends EventEmitter {
   private isCircularDependency(fromFile: string, toFile: string): boolean {
     // Simplified circular dependency detection
     const visited = new Set<string>();
-    
+
     const checkCircular = (current: string, target: string): boolean => {
       if (current === target) return true;
       if (visited.has(current)) return false;
-      
+
       visited.add(current);
       const dependencies = this.dependencyGraph.get(current) || new Set();
-      
+
       for (const dep of dependencies) {
         if (checkCircular(dep, target)) return true;
       }
-      
+
       return false;
     };
 
@@ -978,20 +989,20 @@ export class ImportWorkerAgent extends EventEmitter {
    */
   private categorizeIssues(issues: ImportIssue[]): Record<string, number> {
     const categories: Record<string, number> = {};
-    
+
     for (const issue of issues) {
       categories[issue.type] = (categories[issue.type] || 0) + 1;
     }
-    
+
     return categories;
   }
 
   private generateFixReport(results: Map<string, any>): any {
     const totalFiles = results.size;
-    const processedFiles = Array.from(results.values()).filter(r => !r.error).length;
+    const processedFiles = Array.from(results.values()).filter((r) => !r.error).length;
     const totalIssues = Array.from(results.values()).reduce((sum, r) => sum + (r.issues || 0), 0);
     const totalFixed = Array.from(results.values()).reduce((sum, r) => sum + (r.fixed || 0), 0);
-    
+
     return {
       summary: {
         totalFiles,
@@ -1010,7 +1021,10 @@ export class ImportWorkerAgent extends EventEmitter {
     return {
       summary: {
         totalFiles: results.size,
-        totalImports: Array.from(results.values()).reduce((sum, r) => sum + (r.totalImports || 0), 0),
+        totalImports: Array.from(results.values()).reduce(
+          (sum, r) => sum + (r.totalImports || 0),
+          0
+        ),
         totalIssues: Array.from(results.values()).reduce((sum, r) => sum + (r.issues || 0), 0),
       },
       byFile: Object.fromEntries(results),
@@ -1018,8 +1032,8 @@ export class ImportWorkerAgent extends EventEmitter {
   }
 
   private generateValidationReport(results: Map<string, any>): any {
-    const validFiles = Array.from(results.values()).filter(r => r.valid).length;
-    
+    const validFiles = Array.from(results.values()).filter((r) => r.valid).length;
+
     return {
       summary: {
         totalFiles: results.size,
@@ -1033,39 +1047,44 @@ export class ImportWorkerAgent extends EventEmitter {
 
   private generateRecommendations(results: Map<string, any>): string[] {
     const recommendations: string[] = [];
-    
+
     const totalIssues = Array.from(results.values()).reduce((sum, r) => sum + (r.issues || 0), 0);
-    
+
     if (totalIssues > 0) {
-      recommendations.push('Consider running the import fixer regularly as part of your CI/CD pipeline');
+      recommendations.push(
+        'Consider running the import fixer regularly as part of your CI/CD pipeline'
+      );
     }
-    
+
     const hasCircularDeps = this.circularDependencies.size > 0;
     if (hasCircularDeps) {
       recommendations.push('Refactor circular dependencies to improve maintainability');
     }
-    
+
     return recommendations;
   }
 
   private generateFileRecommendations(issues: ImportIssue[]): string[] {
     const recommendations: string[] = [];
-    
+
     const issueTypes = this.categorizeIssues(issues);
-    
+
     if (issueTypes['missing-extension']) {
       recommendations.push('Add file extensions to imports for ESM compatibility');
     }
-    
+
     if (issueTypes['unused-import']) {
       recommendations.push('Remove unused imports to reduce bundle size');
     }
-    
+
     return recommendations;
   }
 
   private calculateAverageConfidence(): number {
-    const total = Array.from(this.metrics.fixesApplied.values()).reduce((sum, count) => sum + count, 0);
+    const total = Array.from(this.metrics.fixesApplied.values()).reduce(
+      (sum, count) => sum + count,
+      0
+    );
     return total > 0 ? 0.85 : 0; // Simplified calculation
   }
 
@@ -1107,7 +1126,7 @@ export class ImportWorkerAgent extends EventEmitter {
 export function createImportWorker(
   config: Partial<ImportWorkerConfig>,
   logger: ILogger,
-  agentState: AgentState,
+  agentState: AgentState
 ): ImportWorkerAgent {
   return new ImportWorkerAgent(config, logger, agentState);
 }

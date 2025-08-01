@@ -17,9 +17,21 @@ async function testGNNModel() {
       nodes: new Float32Array(10 * 128), // 10 nodes, 128 features each
       edges: new Float32Array(15 * 64), // 15 edges, 64 features each
       adjacency: [
-        [0, 1], [1, 2], [2, 3], [3, 4], [4, 0],
-        [0, 5], [1, 6], [2, 7], [3, 8], [4, 9],
-        [5, 6], [6, 7], [7, 8], [8, 9], [9, 5],
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 4],
+        [4, 0],
+        [0, 5],
+        [1, 6],
+        [2, 7],
+        [3, 8],
+        [4, 9],
+        [5, 6],
+        [6, 7],
+        [7, 8],
+        [8, 9],
+        [9, 5],
       ],
     };
 
@@ -37,14 +49,15 @@ async function testGNNModel() {
 
     // Training test
     console.log('  - Testing training...');
-    const trainingData = [{
-      graphs: graphData,
-      targets: { taskType: 'node_classification', labels: new Float32Array(10).fill(0) },
-    }];
+    const trainingData = [
+      {
+        graphs: graphData,
+        targets: { taskType: 'node_classification', labels: new Float32Array(10).fill(0) },
+      },
+    ];
 
     const result = await gnn.train(trainingData, { epochs: 2, batchSize: 1 });
     console.log('  ✅ GNN training completed:', result);
-
   } catch (error) {
     console.error('  ❌ GNN test failed:', error);
   }
@@ -83,14 +96,15 @@ async function testResNetModel() {
     }
     targets.shape = [batchSize, 10];
 
-    const trainingData = [{
-      inputs: inputData,
-      targets,
-    }];
+    const trainingData = [
+      {
+        inputs: inputData,
+        targets,
+      },
+    ];
 
     const result = await resnet.train(trainingData, { epochs: 2, batchSize: 2 });
     console.log('  ✅ ResNet training completed:', result);
-
   } catch (error) {
     console.error('  ❌ ResNet test failed:', error);
   }
@@ -135,13 +149,14 @@ async function testVAEModel() {
 
     // Training test
     console.log('  - Testing training...');
-    const trainingData = [{
-      inputs: inputData,
-    }];
+    const trainingData = [
+      {
+        inputs: inputData,
+      },
+    ];
 
     const result = await vae.train(trainingData, { epochs: 2, batchSize: 2 });
     console.log('  ✅ VAE training completed:', result);
-
   } catch (error) {
     console.error('  ❌ VAE test failed:', error);
   }

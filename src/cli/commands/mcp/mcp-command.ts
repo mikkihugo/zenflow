@@ -1,12 +1,12 @@
 /**
  * MCP Command - Start and manage Claude-Zen MCP server
- * 
+ *
  * Provides CLI interface for managing the MCP server integration
  */
 
+import { ClaudeZenMCPServer } from '../../../mcp/claude-zen-server';
 import { BaseCommand } from '../../core/base-command';
 import type { CommandContext, CommandResult } from '../../types/index';
-import { ClaudeZenMCPServer } from '../../../mcp/claude-zen-server';
 
 export class MCPCommand extends BaseCommand {
   private mcpServer?: ClaudeZenMCPServer;
@@ -22,14 +22,14 @@ export class MCPCommand extends BaseCommand {
         'claude-zen mcp start',
         'claude-zen mcp status',
         'claude-zen mcp stop',
-        'claude-zen mcp tools'
-      ]
+        'claude-zen mcp tools',
+      ],
     });
   }
 
   protected async run(context: CommandContext): Promise<CommandResult> {
     const subcommand = context.args[0];
-    
+
     switch (subcommand.toLowerCase()) {
       case 'start':
         return await this.handleStart(context);
@@ -45,7 +45,7 @@ export class MCPCommand extends BaseCommand {
         return {
           success: false,
           error: `Unknown subcommand: ${subcommand}. Use 'claude-zen mcp help' for available commands.`,
-          exitCode: 1
+          exitCode: 1,
         };
     }
   }
@@ -56,15 +56,15 @@ export class MCPCommand extends BaseCommand {
         return {
           success: false,
           error: 'MCP server is already running',
-          exitCode: 1
+          exitCode: 1,
         };
       }
 
       console.log('🚀 Starting Claude-Zen MCP Server...');
-      
+
       this.mcpServer = new ClaudeZenMCPServer();
       await this.mcpServer.start();
-      
+
       console.log('✅ Claude-Zen MCP Server started successfully!');
       console.log('');
       console.log('📋 Available tools:');
@@ -79,13 +79,13 @@ export class MCPCommand extends BaseCommand {
       return {
         success: true,
         exitCode: 0,
-        message: 'MCP server started successfully'
+        message: 'MCP server started successfully',
       };
     } catch (error) {
       return {
         success: false,
         error: `Failed to start MCP server: ${error instanceof Error ? error.message : String(error)}`,
-        exitCode: 1
+        exitCode: 1,
       };
     }
   }
@@ -96,38 +96,38 @@ export class MCPCommand extends BaseCommand {
         return {
           success: false,
           error: 'MCP server is not running',
-          exitCode: 1
+          exitCode: 1,
         };
       }
 
       console.log('⏹️ Stopping Claude-Zen MCP Server...');
-      
+
       await this.mcpServer.stop();
       this.mcpServer = undefined;
-      
+
       console.log('✅ Claude-Zen MCP Server stopped successfully!');
 
       return {
         success: true,
         exitCode: 0,
-        message: 'MCP server stopped successfully'
+        message: 'MCP server stopped successfully',
       };
     } catch (error) {
       return {
         success: false,
         error: `Failed to stop MCP server: ${error instanceof Error ? error.message : String(error)}`,
-        exitCode: 1
+        exitCode: 1,
       };
     }
   }
 
   private handleStatus(context: CommandContext): CommandResult {
     const isRunning = !!this.mcpServer;
-    
+
     console.log('📊 Claude-Zen MCP Server Status');
     console.log('');
     console.log(`Status: ${isRunning ? '🟢 Running' : '🔴 Stopped'}`);
-    
+
     if (isRunning && this.mcpServer) {
       const status = this.mcpServer.getStatus();
       console.log(`Host: ${status.host}`);
@@ -147,36 +147,36 @@ export class MCPCommand extends BaseCommand {
     return {
       success: true,
       exitCode: 0,
-      message: 'Status displayed'
+      message: 'Status displayed',
     };
   }
 
   private handleTools(context: CommandContext): CommandResult {
     console.log('🛠️ Claude-Zen MCP Tools');
     console.log('');
-    
+
     if (!this.mcpServer) {
       console.log('⚠️  MCP server is not running. Start it with: claude-zen mcp start');
       console.log('');
     }
-    
+
     console.log('Available Tools:');
     console.log('');
-    
+
     const toolDescriptions = {
-      'swarm_init': 'Initialize swarm coordination topology',
-      'agent_spawn': 'Spawn specialized agent for coordinated tasks',
-      'task_orchestrate': 'Orchestrate complex task execution across swarm',
-      'swarm_status': 'Get current swarm status and metrics',
-      'swarm_monitor': 'Monitor swarm performance in real-time'
+      swarm_init: 'Initialize swarm coordination topology',
+      agent_spawn: 'Spawn specialized agent for coordinated tasks',
+      task_orchestrate: 'Orchestrate complex task execution across swarm',
+      swarm_status: 'Get current swarm status and metrics',
+      swarm_monitor: 'Monitor swarm performance in real-time',
     };
-    
+
     Object.entries(toolDescriptions).forEach(([name, description]) => {
       console.log(`🔧 mcp__claude-zen__${name}`);
       console.log(`   ${description}`);
       console.log('');
     });
-    
+
     console.log('💡 Usage in Claude Code:');
     console.log('   1. Add MCP server: claude mcp add claude-zen npx claude-zen mcp start');
     console.log('   2. Use tools: mcp__claude-zen__swarm_init, mcp__claude-zen__agent_spawn, etc.');
@@ -184,7 +184,7 @@ export class MCPCommand extends BaseCommand {
     return {
       success: true,
       exitCode: 0,
-      message: 'Tools listed'
+      message: 'Tools listed',
     };
   }
 

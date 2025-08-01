@@ -3,7 +3,7 @@
  */
 
 import { readFile } from 'fs/promises';
-import { join, dirname } from 'path';
+import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import type { AgentTemplate } from '../agents/agent-manager.js';
 import type { AgentType } from '../types/agent-types.js';
@@ -37,7 +37,7 @@ export class TemplateLoader {
     try {
       const { readdir } = await import('fs/promises');
       const templateFiles = await readdir(this.templatesPath);
-      
+
       for (const file of templateFiles) {
         if (file.endsWith('.md') || file.endsWith('.yaml') || file.endsWith('.json')) {
           await this.loadTemplate(file);
@@ -58,7 +58,7 @@ export class TemplateLoader {
     try {
       const filePath = join(this.templatesPath, filename);
       const content = await readFile(filePath, 'utf-8');
-      
+
       // Parse based on file type
       if (filename.endsWith('.md')) {
         return this.parseMarkdownTemplate(filename, content);
@@ -81,11 +81,11 @@ export class TemplateLoader {
   private parseMarkdownTemplate(filename: string, content: string): AgentTemplate {
     // Extract agent type from filename
     const agentType = this.extractAgentTypeFromFilename(filename);
-    
+
     // Parse frontmatter if exists
     const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-    let metadata: any = {};
-    
+    const metadata: any = {};
+
     if (frontmatterMatch) {
       try {
         // Simple YAML parsing for basic metadata
@@ -157,7 +157,7 @@ export class TemplateLoader {
     try {
       const data = JSON.parse(content);
       const agentType = this.extractAgentTypeFromFilename(filename);
-      
+
       return {
         name: data.name || this.formatAgentName(agentType),
         type: agentType as AgentType,
@@ -210,10 +210,12 @@ export class TemplateLoader {
    * Format agent name from type
    */
   private formatAgentName(type: string): string {
-    return type
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ') + ' Agent';
+    return (
+      type
+        .split('-')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ') + ' Agent'
+    );
   }
 
   /**
@@ -304,7 +306,7 @@ export class TemplateLoader {
    */
   private parseExpertise(expertiseStr: string): Record<string, number> {
     if (!expertiseStr) return {};
-    
+
     try {
       // Handle formats like "coordination:0.9,management:0.8"
       const expertise: Record<string, number> = {};
@@ -326,7 +328,7 @@ export class TemplateLoader {
    */
   private parsePreferences(preferencesStr: string): Record<string, any> {
     if (!preferencesStr) return {};
-    
+
     try {
       // Handle simple key:value pairs
       const preferences: Record<string, any> = {};

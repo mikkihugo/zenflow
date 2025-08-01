@@ -709,25 +709,62 @@ export class DocumentDrivenSystem extends EventEmitter {
 }
 ```
 
-### 📂 **Workspace Structure**
+### 📂 **Document-Driven Workspace Structure**
+
+Claude-Zen creates a structured document hierarchy that guides development from vision to code:
 
 ```bash
 # Created by: claude-zen workspace init
 project-name/
 ├── docs/
-│   ├── vision/           # High-level vision documents
-│   ├── adrs/            # Architecture Decision Records
-│   ├── prds/            # Product Requirements Documents  
-│   ├── epics/           # Epic user stories
-│   ├── features/        # Feature specifications
-│   └── tasks/           # Development tasks
-├── src/                 # Implementation code
-├── tests/               # Test suites
+│   ├── 01-vision/           # Strategic vision documents
+│   ├── 02-adrs/            # Architecture Decision Records (cross-cutting)
+│   ├── 03-prds/            # Product Requirements Documents
+│   ├── 04-epics/           # Epic-level feature sets
+│   ├── 05-features/        # Individual feature specifications
+│   ├── 06-tasks/           # Implementation tasks
+│   ├── 07-specs/           # Technical specifications (Maestro integration)
+│   ├── reference/          # Reference documentation
+│   │   ├── api/           # API documentation
+│   │   ├── architecture/  # Architecture deep-dives
+│   │   ├── implementation/ # Implementation guides
+│   │   └── analysis/      # Analysis reports
+│   └── templates/          # Document templates
+│       ├── vision-template.md
+│       ├── adr-template.md
+│       ├── prd-template.md
+│       ├── epic-template.md
+│       ├── feature-template.md
+│       ├── task-template.md
+│       └── spec-template.md
+├── src/                    # Implementation code
+├── tests/                  # Test suites
 └── .claude/
-    ├── settings.json    # Claude Code integration
-    ├── commands/        # Custom development commands
-    └── cache/           # Session persistence
+    ├── settings.json       # Claude Code integration
+    ├── commands/           # Custom development commands
+    └── cache/              # Session persistence
 ```
+
+### **Document Workflow Integration**
+
+The numbered folders (01-07) enforce the document-driven development sequence:
+
+1. **Vision** → Strategic direction and goals
+2. **ADRs** → Cross-cutting technical decisions  
+3. **PRDs** → Detailed product requirements
+4. **Epics** → Feature groupings and user stories
+5. **Features** → Specific implementable capabilities
+6. **Tasks** → Granular development work
+7. **Specs** → Technical implementation details
+
+### **Template System Integration**
+
+Templates are provided for each document type and automatically used by:
+- `claude-zen create vision "Title"` → Uses `templates/vision-template.md`
+- `claude-zen create adr "Title"` → Uses `templates/adr-template.md`
+- `claude-zen create prd "Title"` → Uses `templates/prd-template.md`
+
+This ensures consistency and proper structure across all documents.
 
 ### 🛠️ **Workspace Commands**
 

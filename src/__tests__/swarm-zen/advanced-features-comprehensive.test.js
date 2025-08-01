@@ -4,7 +4,7 @@
  * neural-coordination-protocol.js, and wasm-memory-optimizer.js
  */
 
-import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -23,7 +23,7 @@ global.WebAssembly = {
 describe('Advanced Features - Complete Coverage', () => {
   let testTempDir;
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     testTempDir = path.join(__dirname, `test-temp-${Date.now()}`);
   });
 
@@ -34,7 +34,7 @@ describe('Advanced Features - Complete Coverage', () => {
   describe('Cognitive Pattern Evolution - Complete Coverage', () => {
     let CognitivePatternEvolution;
 
-    beforeEach(async() => {
+    beforeEach(async () => {
       try {
         const module = await import('../src/cognitive-pattern-evolution.js');
         CognitivePatternEvolution = module.default || module.CognitivePatternEvolution;
@@ -137,7 +137,11 @@ describe('Advanced Features - Complete Coverage', () => {
                 identifyFeedback: (context) => context.iterationCount > 5,
                 emergentProperties: (context) => context.componentInteractions > 0.6,
               },
-              evolutionTriggers: ['system_complexity', 'interconnected_failure', 'emergent_behavior'],
+              evolutionTriggers: [
+                'system_complexity',
+                'interconnected_failure',
+                'emergent_behavior',
+              ],
             });
 
             // Critical thinking patterns
@@ -206,8 +210,10 @@ describe('Advanced Features - Complete Coverage', () => {
                   ...pattern,
                   characteristics: {
                     ...pattern.characteristics,
-                    explorationRate: pattern.characteristics.explorationRate * (1 + adaptationFactor * 0.3),
-                    exploitationRate: pattern.characteristics.exploitationRate * (1 - adaptationFactor * 0.2),
+                    explorationRate:
+                      pattern.characteristics.explorationRate * (1 + adaptationFactor * 0.3),
+                    exploitationRate:
+                      pattern.characteristics.exploitationRate * (1 - adaptationFactor * 0.2),
                   },
                 };
               },
@@ -223,7 +229,9 @@ describe('Advanced Features - Complete Coverage', () => {
                   ...pattern,
                   characteristics: {
                     ...pattern.characteristics,
-                    decisionMaking: feedback.suggests_more_analysis ? 'analytical' : pattern.characteristics.decisionMaking,
+                    decisionMaking: feedback.suggests_more_analysis
+                      ? 'analytical'
+                      : pattern.characteristics.decisionMaking,
                     adaptability: pattern.characteristics.adaptability * adjustmentFactor,
                   },
                 };
@@ -232,7 +240,8 @@ describe('Advanced Features - Complete Coverage', () => {
           }
 
           async evolvePattern(agentId, context, feedback) {
-            const currentPattern = this.agentPatterns.get(agentId) || this.selectInitialPattern(context);
+            const currentPattern =
+              this.agentPatterns.get(agentId) || this.selectInitialPattern(context);
 
             // Analyze evolution need
             const evolutionNeed = this.analyzeEvolutionNeed(currentPattern, context, feedback);
@@ -247,7 +256,12 @@ describe('Advanced Features - Complete Coverage', () => {
             }
 
             // Apply evolution
-            const evolvedPattern = await this.applyEvolution(currentPattern, context, feedback, evolutionNeed);
+            const evolvedPattern = await this.applyEvolution(
+              currentPattern,
+              context,
+              feedback,
+              evolutionNeed
+            );
 
             // Update agent pattern
             this.agentPatterns.set(agentId, evolvedPattern);
@@ -328,30 +342,33 @@ describe('Advanced Features - Complete Coverage', () => {
               required: score > 0.3,
               score,
               triggers,
-              reason: triggers.length > 0 ? `Triggered by: ${triggers.join(', ')}` : 'No evolution needed',
+              reason:
+                triggers.length > 0
+                  ? `Triggered by: ${triggers.join(', ')}`
+                  : 'No evolution needed',
             };
           }
 
           checkTriggerCondition(trigger, context, feedback) {
             const conditions = {
-              'high_accuracy': () => feedback && feedback.accuracy > 0.9,
-              'low_variance': () => context.variance < 0.1,
-              'time_pressure': () => context.timeConstraint > 0.8,
-              'low_progress': () => context.progressRate < 0.3,
-              'need_innovation': () => context.stagnationTime > 5,
-              'creative_block': () => context.ideaGeneration < 0.2,
-              'traditional_failure': () => context.standardApproachFailed,
-              'paradigm_shift': () => context.paradigmChange,
-              'cross_domain': () => context.crossDomainRequired,
-              'system_complexity': () => context.systemComplexity > 0.8,
-              'interconnected_failure': () => context.cascadingFailures > 2,
-              'emergent_behavior': () => context.emergentProperties.length > 0,
-              'logical_inconsistency': () => context.logicalErrors > 0,
-              'evidence_conflict': () => context.conflictingEvidence,
-              'bias_detection': () => context.biasScore > 0.6,
-              'context_change': () => context.environmentChange > 0.5,
-              'performance_plateau': () => context.performanceStagnant,
-              'new_information': () => context.newInformation,
+              high_accuracy: () => feedback && feedback.accuracy > 0.9,
+              low_variance: () => context.variance < 0.1,
+              time_pressure: () => context.timeConstraint > 0.8,
+              low_progress: () => context.progressRate < 0.3,
+              need_innovation: () => context.stagnationTime > 5,
+              creative_block: () => context.ideaGeneration < 0.2,
+              traditional_failure: () => context.standardApproachFailed,
+              paradigm_shift: () => context.paradigmChange,
+              cross_domain: () => context.crossDomainRequired,
+              system_complexity: () => context.systemComplexity > 0.8,
+              interconnected_failure: () => context.cascadingFailures > 2,
+              emergent_behavior: () => context.emergentProperties.length > 0,
+              logical_inconsistency: () => context.logicalErrors > 0,
+              evidence_conflict: () => context.conflictingEvidence,
+              bias_detection: () => context.biasScore > 0.6,
+              context_change: () => context.environmentChange > 0.5,
+              performance_plateau: () => context.performanceStagnant,
+              new_information: () => context.newInformation,
             };
 
             return conditions[trigger] ? conditions[trigger]() : false;
@@ -371,7 +388,11 @@ describe('Advanced Features - Complete Coverage', () => {
             evolvedPattern = this.applyPatternSpecificEvolution(evolvedPattern, context, feedback);
 
             // Calculate confidence and improvements
-            evolvedPattern.confidence = this.calculateEvolutionConfidence(currentPattern, evolvedPattern, context);
+            evolvedPattern.confidence = this.calculateEvolutionConfidence(
+              currentPattern,
+              evolvedPattern,
+              context
+            );
             evolvedPattern.improvements = this.identifyImprovements(currentPattern, evolvedPattern);
 
             return evolvedPattern;
@@ -383,18 +404,33 @@ describe('Advanced Features - Complete Coverage', () => {
             // Adjust exploration/exploitation based on performance
             if (feedback && feedback.performance) {
               if (feedback.performance < 0.5) {
-                evolved.characteristics.explorationRate = Math.min(evolved.characteristics.explorationRate * 1.3, 1.0);
-                evolved.characteristics.exploitationRate = Math.max(evolved.characteristics.exploitationRate * 0.8, 0.1);
+                evolved.characteristics.explorationRate = Math.min(
+                  evolved.characteristics.explorationRate * 1.3,
+                  1.0
+                );
+                evolved.characteristics.exploitationRate = Math.max(
+                  evolved.characteristics.exploitationRate * 0.8,
+                  0.1
+                );
               } else if (feedback.performance > 0.8) {
-                evolved.characteristics.exploitationRate = Math.min(evolved.characteristics.exploitationRate * 1.2, 1.0);
+                evolved.characteristics.exploitationRate = Math.min(
+                  evolved.characteristics.exploitationRate * 1.2,
+                  1.0
+                );
               }
             }
 
             // Adjust cognitive load based on complexity
             if (context.taskComplexity) {
-              const complexityAdjustment = context.taskComplexity / (evolved.characteristics.cognitiveLoad === 'low' ? 1 :
-                evolved.characteristics.cognitiveLoad === 'medium' ? 2 :
-                  evolved.characteristics.cognitiveLoad === 'high' ? 3 : 4);
+              const complexityAdjustment =
+                context.taskComplexity /
+                (evolved.characteristics.cognitiveLoad === 'low'
+                  ? 1
+                  : evolved.characteristics.cognitiveLoad === 'medium'
+                    ? 2
+                    : evolved.characteristics.cognitiveLoad === 'high'
+                      ? 3
+                      : 4);
 
               if (complexityAdjustment > 1.5) {
                 evolved.characteristics.cognitiveLoad = 'high';
@@ -453,43 +489,46 @@ describe('Advanced Features - Complete Coverage', () => {
 
           matchComplexity(pattern, complexity) {
             const patternComplexity = {
-              'convergent': 0.3,
-              'divergent': 0.7,
-              'lateral': 0.6,
-              'systems': 0.9,
-              'critical': 0.5,
-              'adaptive': 0.5,
+              convergent: 0.3,
+              divergent: 0.7,
+              lateral: 0.6,
+              systems: 0.9,
+              critical: 0.5,
+              adaptive: 0.5,
             };
 
-            const patternScore = patternComplexity[pattern.name.toLowerCase().replace(' thinking', '')] || 0.5;
+            const patternScore =
+              patternComplexity[pattern.name.toLowerCase().replace(' thinking', '')] || 0.5;
             return 1 - Math.abs(patternScore - complexity);
           }
 
           matchTimeConstraint(pattern, timeConstraint) {
             const patternSpeed = {
-              'convergent': 0.9,
-              'divergent': 0.3,
-              'lateral': 0.6,
-              'systems': 0.2,
-              'critical': 0.7,
-              'adaptive': 0.6,
+              convergent: 0.9,
+              divergent: 0.3,
+              lateral: 0.6,
+              systems: 0.2,
+              critical: 0.7,
+              adaptive: 0.6,
             };
 
-            const patternScore = patternSpeed[pattern.name.toLowerCase().replace(' thinking', '')] || 0.5;
+            const patternScore =
+              patternSpeed[pattern.name.toLowerCase().replace(' thinking', '')] || 0.5;
             return timeConstraint > 0.7 ? patternScore : 1 - patternScore;
           }
 
           matchCreativity(pattern, creativity) {
             const patternCreativity = {
-              'convergent': 0.2,
-              'divergent': 0.9,
-              'lateral': 0.8,
-              'systems': 0.6,
-              'critical': 0.4,
-              'adaptive': 0.7,
+              convergent: 0.2,
+              divergent: 0.9,
+              lateral: 0.8,
+              systems: 0.6,
+              critical: 0.4,
+              adaptive: 0.7,
             };
 
-            const patternScore = patternCreativity[pattern.name.toLowerCase().replace(' thinking', '')] || 0.5;
+            const patternScore =
+              patternCreativity[pattern.name.toLowerCase().replace(' thinking', '')] || 0.5;
             return 1 - Math.abs(patternScore - creativity);
           }
 
@@ -501,10 +540,16 @@ describe('Advanced Features - Complete Coverage', () => {
           identifyImprovements(oldPattern, newPattern) {
             const improvements = [];
 
-            if (newPattern.characteristics.explorationRate > oldPattern.characteristics.explorationRate) {
+            if (
+              newPattern.characteristics.explorationRate >
+              oldPattern.characteristics.explorationRate
+            ) {
               improvements.push('increased_exploration');
             }
-            if (newPattern.characteristics.exploitationRate > oldPattern.characteristics.exploitationRate) {
+            if (
+              newPattern.characteristics.exploitationRate >
+              oldPattern.characteristics.exploitationRate
+            ) {
               improvements.push('increased_exploitation');
             }
             if (newPattern.characteristics.adaptability > oldPattern.characteristics.adaptability) {
@@ -525,10 +570,12 @@ describe('Advanced Features - Complete Coverage', () => {
                 timeConstraint: context.timeConstraint,
                 environmentChange: context.environmentChange,
               },
-              feedback: feedback ? {
-                performance: feedback.performance,
-                accuracy: feedback.accuracy,
-              } : null,
+              feedback: feedback
+                ? {
+                    performance: feedback.performance,
+                    accuracy: feedback.accuracy,
+                  }
+                : null,
               confidence: newPattern.confidence,
             };
 
@@ -546,8 +593,11 @@ describe('Advanced Features - Complete Coverage', () => {
             };
 
             metrics.totalEvolutions++;
-            metrics.averageConfidence = (metrics.averageConfidence * (metrics.totalEvolutions - 1) + pattern.confidence) / metrics.totalEvolutions;
-            metrics.patternDistribution[pattern.name] = (metrics.patternDistribution[pattern.name] || 0) + 1;
+            metrics.averageConfidence =
+              (metrics.averageConfidence * (metrics.totalEvolutions - 1) + pattern.confidence) /
+              metrics.totalEvolutions;
+            metrics.patternDistribution[pattern.name] =
+              (metrics.patternDistribution[pattern.name] || 0) + 1;
             metrics.adaptationScores.push(evolutionNeed.score);
 
             this.evolutionMetrics.set(agentId, metrics);
@@ -576,16 +626,21 @@ describe('Advanced Features - Complete Coverage', () => {
             const patternRelationships = this.analyzePatternRelationships(agentPatterns);
 
             // Identify successful patterns
-            const successfulPatterns = this.identifySuccessfulPatterns(agentPatterns, sharedContext);
+            const successfulPatterns = this.identifySuccessfulPatterns(
+              agentPatterns,
+              sharedContext
+            );
 
             // Transfer knowledge between agents
             for (const [sourceAgent, sourcePattern] of agentPatterns) {
               for (const [targetAgent, targetPattern] of agentPatterns) {
                 if (sourceAgent !== targetAgent) {
                   const transfer = await this.transferPattern(
-                    sourceAgent, sourcePattern,
-                    targetAgent, targetPattern,
-                    sharedContext,
+                    sourceAgent,
+                    sourcePattern,
+                    targetAgent,
+                    targetPattern,
+                    sharedContext
                   );
 
                   if (transfer.success) {
@@ -694,7 +749,7 @@ describe('Advanced Features - Complete Coverage', () => {
           }
 
           getCognitiveLoadValue(load) {
-            const values = { 'low': 1, 'medium': 2, 'high': 3, 'very_high': 4, 'variable': 2.5 };
+            const values = { low: 1, medium: 2, high: 3, very_high: 4, variable: 2.5 };
             return values[load] || 2;
           }
 
@@ -716,16 +771,30 @@ describe('Advanced Features - Complete Coverage', () => {
             return successful.sort((a, b) => b.confidence - a.confidence);
           }
 
-          async transferPattern(sourceAgent, sourcePattern, targetAgent, targetPattern, sharedContext) {
+          async transferPattern(
+            sourceAgent,
+            sourcePattern,
+            targetAgent,
+            targetPattern,
+            sharedContext
+          ) {
             // Determine if transfer is beneficial
-            const transferScore = this.calculateTransferScore(sourcePattern, targetPattern, sharedContext);
+            const transferScore = this.calculateTransferScore(
+              sourcePattern,
+              targetPattern,
+              sharedContext
+            );
 
             if (transferScore < 0.6) {
               return { success: false, reason: 'Transfer not beneficial' };
             }
 
             // Create hybrid pattern
-            const hybridPattern = this.createHybridPattern(sourcePattern, targetPattern, transferScore);
+            const hybridPattern = this.createHybridPattern(
+              sourcePattern,
+              targetPattern,
+              transferScore
+            );
 
             // Update target agent's pattern
             this.agentPatterns.set(targetAgent, hybridPattern);
@@ -761,7 +830,10 @@ describe('Advanced Features - Complete Coverage', () => {
             }
 
             // Factor in adaptability
-            if (sourcePattern.characteristics.adaptability > targetPattern.characteristics.adaptability) {
+            if (
+              sourcePattern.characteristics.adaptability >
+              targetPattern.characteristics.adaptability
+            ) {
               score += 0.3;
             }
 
@@ -773,7 +845,8 @@ describe('Advanced Features - Complete Coverage', () => {
               name: `Hybrid-${sourcePattern.name}-${targetPattern.name}`,
               description: `Hybrid pattern combining ${sourcePattern.name} and ${targetPattern.name}`,
               characteristics: {},
-              confidence: (sourcePattern.confidence + targetPattern.confidence) / 2 * transferScore,
+              confidence:
+                ((sourcePattern.confidence + targetPattern.confidence) / 2) * transferScore,
             };
 
             // Blend characteristics based on transfer score
@@ -784,13 +857,24 @@ describe('Advanced Features - Complete Coverage', () => {
             const targetChar = targetPattern.characteristics;
 
             hybrid.characteristics = {
-              explorationRate: sourceChar.explorationRate * sourceWeight + targetChar.explorationRate * targetWeight,
-              exploitationRate: sourceChar.exploitationRate * sourceWeight + targetChar.exploitationRate * targetWeight,
+              explorationRate:
+                sourceChar.explorationRate * sourceWeight +
+                targetChar.explorationRate * targetWeight,
+              exploitationRate:
+                sourceChar.exploitationRate * sourceWeight +
+                targetChar.exploitationRate * targetWeight,
               adaptability: Math.max(sourceChar.adaptability, targetChar.adaptability),
-              searchStrategy: sourceWeight > 0.7 ? sourceChar.searchStrategy : targetChar.searchStrategy,
-              decisionMaking: sourceWeight > 0.7 ? sourceChar.decisionMaking : targetChar.decisionMaking,
-              patternRecognition: sourceWeight > 0.7 ? sourceChar.patternRecognition : targetChar.patternRecognition,
-              cognitiveLoad: this.blendCognitiveLoad(sourceChar.cognitiveLoad, targetChar.cognitiveLoad, sourceWeight),
+              searchStrategy:
+                sourceWeight > 0.7 ? sourceChar.searchStrategy : targetChar.searchStrategy,
+              decisionMaking:
+                sourceWeight > 0.7 ? sourceChar.decisionMaking : targetChar.decisionMaking,
+              patternRecognition:
+                sourceWeight > 0.7 ? sourceChar.patternRecognition : targetChar.patternRecognition,
+              cognitiveLoad: this.blendCognitiveLoad(
+                sourceChar.cognitiveLoad,
+                targetChar.cognitiveLoad,
+                sourceWeight
+              ),
             };
 
             return hybrid;
@@ -867,7 +951,7 @@ describe('Advanced Features - Complete Coverage', () => {
             const synergy = pairCount > 0 ? totalSynergy / pairCount : 0;
 
             // Calculate diversity index
-            const patternTypes = new Set(patterns.map(p => p.name));
+            const patternTypes = new Set(patterns.map((p) => p.name));
             const diversityIndex = patternTypes.size / patterns.length;
 
             return { synergy, diversityIndex };
@@ -993,10 +1077,11 @@ describe('Advanced Features - Complete Coverage', () => {
       }
     });
 
-    test('should evolve patterns based on performance feedback', async() => {
+    test('should evolve patterns based on performance feedback', async () => {
       const evolution = new CognitivePatternEvolution();
 
-      const result = await evolution.evolvePattern('agent-1',
+      const result = await evolution.evolvePattern(
+        'agent-1',
         {
           taskComplexity: 0.8,
           timeConstraint: 0.3,
@@ -1005,7 +1090,7 @@ describe('Advanced Features - Complete Coverage', () => {
         {
           performance: 0.4,
           accuracy: 0.5,
-        },
+        }
       );
 
       expect(result.success).toBe(true);
@@ -1014,7 +1099,7 @@ describe('Advanced Features - Complete Coverage', () => {
       expect(result.adaptationScore).toBeGreaterThan(0);
     });
 
-    test('should handle cross-agent learning with multiple agents', async() => {
+    test('should handle cross-agent learning with multiple agents', async () => {
       const evolution = new CognitivePatternEvolution();
 
       // Set up multiple agents with patterns
@@ -1022,10 +1107,10 @@ describe('Advanced Features - Complete Coverage', () => {
       await evolution.evolvePattern('agent-2', { taskComplexity: 0.7 }, { performance: 0.8 });
       await evolution.evolvePattern('agent-3', { taskComplexity: 0.9 }, { performance: 0.7 });
 
-      const result = await evolution.crossAgentLearning(
-        ['agent-1', 'agent-2', 'agent-3'],
-        { domain: 'problem-solving', experience: 'collaborative-task' },
-      );
+      const result = await evolution.crossAgentLearning(['agent-1', 'agent-2', 'agent-3'], {
+        domain: 'problem-solving',
+        experience: 'collaborative-task',
+      });
 
       expect(result.success).toBe(true);
       expect(result.participatingAgents).toBe(3);
@@ -1034,7 +1119,7 @@ describe('Advanced Features - Complete Coverage', () => {
       expect(result.emergentPatterns).toBeInstanceOf(Array);
     });
 
-    test('should detect emergent patterns in agent collectives', async() => {
+    test('should detect emergent patterns in agent collectives', async () => {
       const evolution = new CognitivePatternEvolution();
 
       // Create diverse agent patterns
@@ -1050,7 +1135,9 @@ describe('Advanced Features - Complete Coverage', () => {
       expect(emergentPatterns.length).toBeGreaterThanOrEqual(0);
 
       // Check for expected emergent patterns
-      const cognitivediversityPattern = emergentPatterns.find(p => p.type === 'cognitive_diversity');
+      const cognitivediversityPattern = emergentPatterns.find(
+        (p) => p.type === 'cognitive_diversity'
+      );
       if (cognitivediversityPattern) {
         expect(cognitivediversityPattern.strength).toBeGreaterThan(0);
       }
@@ -1075,7 +1162,7 @@ describe('Advanced Features - Complete Coverage', () => {
       expect(compatibility).toBeGreaterThan(0);
     });
 
-    test('should handle pattern transfer between agents', async() => {
+    test('should handle pattern transfer between agents', async () => {
       const evolution = new CognitivePatternEvolution();
 
       const sourcePattern = evolution.getPatternTemplate('adaptive');
@@ -1083,9 +1170,11 @@ describe('Advanced Features - Complete Coverage', () => {
       const context = { taskComplexity: 0.8, creativityRequired: 0.7 };
 
       const transfer = await evolution.transferPattern(
-        'source-agent', sourcePattern,
-        'target-agent', targetPattern,
-        context,
+        'source-agent',
+        sourcePattern,
+        'target-agent',
+        targetPattern,
+        context
       );
 
       expect(transfer.success).toBeDefined();
@@ -1116,7 +1205,7 @@ describe('Advanced Features - Complete Coverage', () => {
       expect(newEvolution.evolutionHistory.has('test-agent')).toBe(true);
     });
 
-    test('should handle edge cases and error conditions', async() => {
+    test('should handle edge cases and error conditions', async () => {
       const evolution = new CognitivePatternEvolution();
 
       // Test with non-existent agent
@@ -1138,21 +1227,21 @@ describe('Advanced Features - Complete Coverage', () => {
   // This demonstrates the pattern for complete coverage
 
   describe('Integration Testing - Advanced Features', () => {
-    test('should integrate cognitive patterns with meta-learning', async() => {
+    test('should integrate cognitive patterns with meta-learning', async () => {
       const evolution = new CognitivePatternEvolution();
 
       // Simulate pattern evolution
       const evolutionResult = await evolution.evolvePattern(
         'agent-1',
         { taskComplexity: 0.7, domain: 'analysis' },
-        { performance: 0.8, accuracy: 0.9 },
+        { performance: 0.8, accuracy: 0.9 }
       );
 
       expect(evolutionResult.success).toBe(true);
       expect(evolutionResult.confidence).toBeGreaterThan(0.5);
     });
 
-    test('should handle concurrent pattern evolution', async() => {
+    test('should handle concurrent pattern evolution', async () => {
       const evolution = new CognitivePatternEvolution();
 
       const promises = [
@@ -1164,7 +1253,7 @@ describe('Advanced Features - Complete Coverage', () => {
       const results = await Promise.all(promises);
 
       expect(results).toHaveLength(3);
-      expect(results.every(r => r.success)).toBe(true);
+      expect(results.every((r) => r.success)).toBe(true);
     });
   });
 });

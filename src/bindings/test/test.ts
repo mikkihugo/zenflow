@@ -1,4 +1,3 @@
-
 /** Integration tests for ruv-FANN Node.js bindings;
 
 import { getActivationFunctions,

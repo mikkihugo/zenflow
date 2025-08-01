@@ -48,7 +48,7 @@ export class MCPServer extends EventEmitter {
       port: config.port,
       host: config.host,
       timeout: config.timeout,
-      enabled: config.enabled !== false
+      enabled: config.enabled !== false,
     };
 
     this.setupDefaultHandlers();
@@ -64,7 +64,7 @@ export class MCPServer extends EventEmitter {
     }
 
     this.logger?.info(`Starting MCP server on ${this.config.host}:${this.config.port}`);
-    
+
     // In a real implementation, this would start an HTTP/WebSocket server
     // For now, it's just a placeholder
 
@@ -99,25 +99,24 @@ export class MCPServer extends EventEmitter {
           id: request.id,
           error: {
             code: -32601,
-            message: `Method not found: ${request.method}`
-          }
+            message: `Method not found: ${request.method}`,
+          },
         };
       }
 
       const result = await handler(request.params || {});
       return {
         id: request.id,
-        result
+        result,
       };
-
     } catch (error) {
       this.logger?.error(`MCP request failed: ${request.method}`, { error });
       return {
         id: request.id,
         error: {
           code: -32603,
-          message: error instanceof Error ? error.message : 'Internal error'
-        }
+          message: error instanceof Error ? error.message : 'Internal error',
+        },
       };
     }
   }
@@ -145,7 +144,7 @@ export class MCPServer extends EventEmitter {
       enabled: this.config.enabled,
       host: this.config.host,
       port: this.config.port,
-      handlers: Array.from(this.requestHandlers.keys())
+      handlers: Array.from(this.requestHandlers.keys()),
     };
   }
 
@@ -153,7 +152,7 @@ export class MCPServer extends EventEmitter {
     // Ping handler
     this.registerHandler('ping', async () => ({
       message: 'pong',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }));
 
     // Status handler
@@ -163,7 +162,7 @@ export class MCPServer extends EventEmitter {
     this.registerHandler('info', async () => ({
       name: 'claude-flow-mcp',
       version: '1.0.0',
-      capabilities: ['tools', 'resources']
+      capabilities: ['tools', 'resources'],
     }));
   }
 }

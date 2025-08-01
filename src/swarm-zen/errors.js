@@ -13,7 +13,7 @@ class RuvSwarmError extends Error {
     this.code = code;
     this.details = details;
     this.timestamp = new Date().toISOString();
-    this.stack = this.stack || (new Error()).stack;
+    this.stack = this.stack || new Error().stack;
   }
 
   toJSON() {
@@ -442,7 +442,12 @@ class ErrorFactory {
       case 'persistence':
         return new PersistenceError(message, details.operation, details.table);
       case 'resource':
-        return new ResourceError(message, details.resourceType, details.currentUsage, details.limit);
+        return new ResourceError(
+          message,
+          details.resourceType,
+          details.currentUsage,
+          details.limit
+        );
       case 'concurrency':
         return new ConcurrencyError(message, details.operation, details.conflictType);
       default:
@@ -464,7 +469,7 @@ class ErrorFactory {
       },
     };
 
-    return this.createError(type, message, details);
+    return ErrorFactory.createError(type, message, details);
   }
 }
 

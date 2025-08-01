@@ -7,18 +7,18 @@
 
 import { EventEmitter } from 'events';
 import { v4 as uuidv4 } from 'uuid';
-import { Agent } from './Agent.js';
-import { DatabaseManager } from './DatabaseManager.js';
 import { MCPToolWrapper } from '../integration/MCPToolWrapper.js';
-import {
+import type {
+  AgentType,
+  ConsensusProposal,
+  CoordinationStrategy,
+  QueenDecision,
+  QueenMode,
   SwarmTopology,
   Task,
-  AgentType,
-  QueenMode,
-  ConsensusProposal,
-  QueenDecision,
-  CoordinationStrategy,
 } from '../types.js';
+import type { Agent } from './Agent.js';
+import { DatabaseManager } from './DatabaseManager.js';
 
 interface QueenConfig {
   swarmId: string;
@@ -164,7 +164,7 @@ export class Queen extends EventEmitter {
   private selectOptimalStrategy(
     task: Task,
     analysis: any,
-    neuralAnalysis: any,
+    neuralAnalysis: any
   ): CoordinationStrategy {
     // Strategy selection based on multiple factors
     const factors = {
@@ -204,7 +204,7 @@ export class Queen extends EventEmitter {
       availableAgents.map(async (agent) => {
         const score = await this.scoreAgentForTask(agent, task, requiredCapabilities);
         return { agent, score };
-      }),
+      })
     );
 
     // Sort by score and select top agents
@@ -220,13 +220,13 @@ export class Queen extends EventEmitter {
   private async scoreAgentForTask(
     agent: Agent,
     task: Task,
-    requiredCapabilities: string[],
+    requiredCapabilities: string[]
   ): Promise<number> {
     let score = 0;
 
     // Capability match
     const capabilityMatches = requiredCapabilities.filter((cap) =>
-      agent.capabilities.includes(cap),
+      agent.capabilities.includes(cap)
     ).length;
     score += capabilityMatches * 10;
 
@@ -523,7 +523,7 @@ export class Queen extends EventEmitter {
 
   private getAvailableAgents(): Agent[] {
     return Array.from(this.agents.values()).filter(
-      (agent) => agent.status === 'idle' || agent.status === 'active',
+      (agent) => agent.status === 'idle' || agent.status === 'active'
     );
   }
 

@@ -8,22 +8,22 @@ import assert from 'assert';
 // In a real test, this would import the actual module after building
 const mockRuvSwarm = {
   RuvSwarm: {
-    initialize: async(options) => {
+    initialize: async (options) => {
       console.log('Initializing RuvSwarm with options:', options);
       return {
-        createSwarm: async(config) => {
+        createSwarm: async (config) => {
           return {
             name: config.name,
             agentCount: 0,
             maxAgents: config.maxAgents || 5,
-            spawn: async() => ({
+            spawn: async () => ({
               id: 'test-agent',
               agentType: 'researcher',
               status: 'idle',
-              execute: async() => ({ status: 'completed' }),
+              execute: async () => ({ status: 'completed' }),
               getCapabilities: () => ['research', 'analysis'],
             }),
-            orchestrate: async() => ({
+            orchestrate: async () => ({
               taskId: 'test-task',
               status: 'completed',
             }),
@@ -60,7 +60,7 @@ async function runTests() {
   }
 
   // Test initialization
-  await test('RuvSwarm.initialize() should return a RuvSwarm instance', async() => {
+  await test('RuvSwarm.initialize() should return a RuvSwarm instance', async () => {
     const ruvSwarm = await mockRuvSwarm.RuvSwarm.initialize();
     assert(ruvSwarm !== null);
     assert(typeof ruvSwarm.createSwarm === 'function');
@@ -80,7 +80,7 @@ async function runTests() {
   });
 
   // Test swarm creation
-  await test('createSwarm() should create a swarm with correct properties', async() => {
+  await test('createSwarm() should create a swarm with correct properties', async () => {
     const ruvSwarm = await mockRuvSwarm.RuvSwarm.initialize();
     const swarm = await ruvSwarm.createSwarm({
       name: 'test-swarm',
@@ -96,7 +96,7 @@ async function runTests() {
   });
 
   // Test agent spawning
-  await test('spawn() should create an agent', async() => {
+  await test('spawn() should create an agent', async () => {
     const ruvSwarm = await mockRuvSwarm.RuvSwarm.initialize();
     const swarm = await ruvSwarm.createSwarm({
       name: 'test-swarm',
@@ -116,7 +116,7 @@ async function runTests() {
   });
 
   // Test task execution
-  await test('agent.execute() should execute a task', async() => {
+  await test('agent.execute() should execute a task', async () => {
     const ruvSwarm = await mockRuvSwarm.RuvSwarm.initialize();
     const swarm = await ruvSwarm.createSwarm({
       name: 'test-swarm',
@@ -138,7 +138,7 @@ async function runTests() {
   });
 
   // Test orchestration
-  await test('orchestrate() should orchestrate a task', async() => {
+  await test('orchestrate() should orchestrate a task', async () => {
     const ruvSwarm = await mockRuvSwarm.RuvSwarm.initialize();
     const swarm = await ruvSwarm.createSwarm({
       name: 'test-swarm',
@@ -158,7 +158,7 @@ async function runTests() {
   });
 
   // Test status
-  await test('getStatus() should return swarm status', async() => {
+  await test('getStatus() should return swarm status', async () => {
     const ruvSwarm = await mockRuvSwarm.RuvSwarm.initialize();
     const swarm = await ruvSwarm.createSwarm({
       name: 'test-swarm',
@@ -183,7 +183,7 @@ async function runTests() {
 }
 
 // Run tests
-runTests().catch(error => {
+runTests().catch((error) => {
   console.error('Test runner error:', error);
   process.exit(1);
 });

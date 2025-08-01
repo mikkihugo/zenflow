@@ -40,15 +40,24 @@ class GNNModel extends NeuralModel {
       // Message passing weights
       this.messageWeights.push({
         nodeToMessage: this.createWeight([inputDim, this.config.hiddenDimensions]),
-        edgeToMessage: this.createWeight([this.config.edgeDimensions, this.config.hiddenDimensions]),
+        edgeToMessage: this.createWeight([
+          this.config.edgeDimensions,
+          this.config.hiddenDimensions,
+        ]),
         messageBias: new Float32Array(this.config.hiddenDimensions).fill(0.0),
       });
 
       // Node update weights
       this.updateWeights.push({
-        updateTransform: this.createWeight([this.config.hiddenDimensions * 2, this.config.hiddenDimensions]),
+        updateTransform: this.createWeight([
+          this.config.hiddenDimensions * 2,
+          this.config.hiddenDimensions,
+        ]),
         updateBias: new Float32Array(this.config.hiddenDimensions).fill(0.0),
-        gateTransform: this.createWeight([this.config.hiddenDimensions * 2, this.config.hiddenDimensions]),
+        gateTransform: this.createWeight([
+          this.config.hiddenDimensions * 2,
+          this.config.hiddenDimensions,
+        ]),
         gateBias: new Float32Array(this.config.hiddenDimensions).fill(0.0),
       });
 
@@ -90,26 +99,13 @@ class GNNModel extends NeuralModel {
     // Message passing layers
     for (let layer = 0; layer < this.config.numLayers; layer++) {
       // Compute messages
-      const messages = await this.computeMessages(
-        nodeRepresentations,
-        edges,
-        adjacency,
-        layer,
-      );
+      const messages = await this.computeMessages(nodeRepresentations, edges, adjacency, layer);
 
       // Aggregate messages
-      const aggregatedMessages = this.aggregateMessages(
-        messages,
-        adjacency,
-        layer,
-      );
+      const aggregatedMessages = this.aggregateMessages(messages, adjacency, layer);
 
       // Update node representations
-      nodeRepresentations = this.updateNodes(
-        nodeRepresentations,
-        aggregatedMessages,
-        layer,
-      );
+      nodeRepresentations = this.updateNodes(nodeRepresentations, aggregatedMessages, layer);
 
       // Apply activation
       nodeRepresentations = this.applyActivation(nodeRepresentations);
@@ -144,7 +140,7 @@ class GNNModel extends NeuralModel {
       const nodeMessage = this.transform(
         sourceFeatures,
         weights.nodeToMessage,
-        weights.messageBias,
+        weights.messageBias
       );
 
       // If edge features exist, incorporate them
@@ -156,13 +152,12 @@ class GNNModel extends NeuralModel {
         const edgeMessage = this.transform(
           edgeFeatures,
           weights.edgeToMessage,
-          new Float32Array(this.config.hiddenDimensions),
+          new Float32Array(this.config.hiddenDimensions)
         );
 
         // Combine node and edge messages
         for (let i = 0; i < this.config.hiddenDimensions; i++) {
-          messages[edgeIdx * this.config.hiddenDimensions + i] =
-            nodeMessage[i] + edgeMessage[i];
+          messages[edgeIdx * this.config.hiddenDimensions + i] = nodeMessage[i] + edgeMessage[i];
         }
       } else {
         // Just use node message
@@ -241,11 +236,11 @@ class GNNModel extends NeuralModel {
 
       // GRU-style update
       const updateGate = this.sigmoid(
-        this.transform(concatenated, weights.gateTransform, weights.gateBias),
+        this.transform(concatenated, weights.gateTransform, weights.gateBias)
       );
 
       const candidate = this.tanh(
-        this.transform(concatenated, weights.updateTransform, weights.updateBias),
+        this.transform(concatenated, weights.updateTransform, weights.updateBias)
       );
 
       // Apply gated update
@@ -265,7 +260,7 @@ class GNNModel extends NeuralModel {
     const output = this.transform(
       nodeRepresentations,
       this.outputWeights.transform,
-      this.outputWeights.bias,
+      this.outputWeights.bias
     );
 
     output.shape = [nodeRepresentations.shape[0], this.config.outputDimensions];
@@ -306,12 +301,7 @@ class GNNModel extends NeuralModel {
   }
 
   async train(trainingData, options = {}) {
-    const {
-      epochs = 10,
-      batchSize = 32,
-      learningRate = 0.001,
-      validationSplit = 0.1,
-    } = options;
+    const { epochs = 10, batchSize = 32, learningRate = 0.001, validationSplit = 0.1 } = options;
 
     const trainingHistory = [];
 
@@ -354,7 +344,9 @@ class GNNModel extends NeuralModel {
         valLoss,
       });
 
-      console.log(`Epoch ${epoch + 1}/${epochs} - Train Loss: ${avgTrainLoss.toFixed(4)}, Val Loss: ${valLoss.toFixed(4)}`);
+      console.log(
+        `Epoch ${epoch + 1}/${epochs} - Train Loss: ${avgTrainLoss.toFixed(4)}, Val Loss: ${valLoss.toFixed(4)}`
+      );
     }
 
     return {
@@ -376,7 +368,6 @@ class GNNModel extends NeuralModel {
     }
     // Link prediction or other tasks
     return this.meanSquaredError(predictions, targets.values);
-
   }
 
   globalPooling(nodeRepresentations) {

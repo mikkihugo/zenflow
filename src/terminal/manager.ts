@@ -3,7 +3,7 @@
  * Handles terminal sessions, command execution, and process lifecycle
  */
 
-import { spawn, ChildProcess } from 'node:child_process';
+import { type ChildProcess, spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import type { IEventBus } from '../core/event-bus';
 import type { ILogger } from '../core/logger';
@@ -54,9 +54,14 @@ export class TerminalManager extends EventEmitter {
     this.config = {
       shell: config.shell || (process.platform === 'win32' ? 'cmd.exe' : '/bin/bash'),
       cwd: config.cwd || process.cwd(),
-      env: { ...Object.fromEntries(Object.entries(process.env).filter(([_, value]) => value !== undefined)) as Record<string, string>, ...config.env },
+      env: {
+        ...(Object.fromEntries(
+          Object.entries(process.env).filter(([_, value]) => value !== undefined)
+        ) as Record<string, string>),
+        ...config.env,
+      },
       timeout: config.timeout || 30000,
-      maxConcurrentProcesses: config.maxConcurrentProcesses || 10
+      maxConcurrentProcesses: config.maxConcurrentProcesses || 10,
     };
 
     this.setupEventHandlers();
@@ -86,7 +91,7 @@ export class TerminalManager extends EventEmitter {
       cwd: options.cwd || this.config.cwd,
       env: { ...this.config.env, ...options.env },
       shell: options.shell !== false,
-      timeout: options.timeout || this.config.timeout
+      timeout: options.timeout || this.config.timeout,
     };
 
     this.logger?.info(`Executing command: ${command}`, { processId, options: execOptions });
@@ -98,7 +103,7 @@ export class TerminalManager extends EventEmitter {
 
       const childProcess = spawn(command, [], {
         ...execOptions,
-        stdio: ['pipe', 'pipe', 'pipe']
+        stdio: ['pipe', 'pipe', 'pipe'],
       });
 
       this.activeProcesses.set(processId, childProcess);
@@ -110,14 +115,14 @@ export class TerminalManager extends EventEmitter {
           completed = true;
           childProcess.kill('SIGTERM');
           this.cleanupProcess(processId);
-          
+
           resolve({
             success: false,
             stdout,
             stderr: stderr + '\nProcess killed due to timeout',
             exitCode: -1,
             duration: Date.now() - startTime,
-            error: new Error(`Command timeout after ${execOptions.timeout}ms`)
+            error: new Error(`Command timeout after ${execOptions.timeout}ms`),
           });
         }
       }, execOptions.timeout);
@@ -147,13 +152,13 @@ export class TerminalManager extends EventEmitter {
             stdout,
             stderr,
             exitCode: code || 0,
-            duration
+            duration,
           };
 
-          this.logger?.info(`Command completed: ${command}`, { 
-            processId, 
-            exitCode: code, 
-            duration 
+          this.logger?.info(`Command completed: ${command}`, {
+            processId,
+            exitCode: code,
+            duration,
           });
 
           this.emit('processCompleted', { processId, command, result });
@@ -178,7 +183,7 @@ export class TerminalManager extends EventEmitter {
             stderr: stderr + `\nProcess error: ${error.message}`,
             exitCode: -1,
             duration,
-            error
+            error,
           });
         }
       });
@@ -202,7 +207,7 @@ export class TerminalManager extends EventEmitter {
       env: this.config.env,
       active: true,
       created: new Date(),
-      lastActivity: new Date()
+      lastActivity: new Date(),
     };
 
     this.sessions.set(id, session);
@@ -222,10 +227,10 @@ export class TerminalManager extends EventEmitter {
     }
 
     session.lastActivity = new Date();
-    
+
     return this.executeCommand(command, {
       cwd: session.cwd,
-      env: session.env
+      env: session.env,
     });
   }
 
@@ -302,7 +307,7 @@ export class TerminalManager extends EventEmitter {
   private setupEventHandlers(): void {
     if (this.eventBus) {
       this.eventBus.on('system:shutdown', () => {
-        this.cleanup().catch(error => 
+        this.cleanup().catch((error) =>
           this.logger?.error('Error during TerminalManager cleanup', { error })
         );
       });

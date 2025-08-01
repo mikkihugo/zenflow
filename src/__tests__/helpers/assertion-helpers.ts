@@ -1,6 +1,6 @@
 /**
  * Assertion Helpers - Enhanced Testing Assertions
- * 
+ *
  * Custom assertions for both London and Classical TDD approaches
  */
 
@@ -18,9 +18,9 @@ export class AssertionHelpers {
       retry: {
         attempts: 3,
         delay: 100,
-        backoff: 'linear'
+        backoff: 'linear',
       },
-      ...options
+      ...options,
     };
   }
 
@@ -29,9 +29,10 @@ export class AssertionHelpers {
    */
   toBeApproximately(actual: number, expected: number, precision?: number): void {
     const actualPrecision = precision ?? this.options.precision!;
-    const message = this.options.messages?.approximately || 
+    const message =
+      this.options.messages?.approximately ||
       `Expected ${actual} to be approximately ${expected} within ${actualPrecision} decimal places`;
-    
+
     expect(actual).toBeCloseTo(expected, actualPrecision);
   }
 
@@ -39,7 +40,7 @@ export class AssertionHelpers {
    * Assert performance characteristics
    */
   toMeetPerformanceThreshold(
-    metrics: PerformanceMetrics, 
+    metrics: PerformanceMetrics,
     thresholds: Partial<PerformanceMetrics>
   ): void {
     if (thresholds.executionTime !== undefined) {
@@ -68,7 +69,10 @@ export class AssertionHelpers {
    */
   async toResolveWithin<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
     const timeout = new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error(`Promise did not resolve within ${timeoutMs}ms`)), timeoutMs);
+      setTimeout(
+        () => reject(new Error(`Promise did not resolve within ${timeoutMs}ms`)),
+        timeoutMs
+      );
     });
 
     return Promise.race([promise, timeout]);
@@ -94,7 +98,7 @@ export class AssertionHelpers {
       } catch (error) {
         // Continue trying
       }
-      
+
       await this.sleep(interval);
     }
 
@@ -106,7 +110,7 @@ export class AssertionHelpers {
    */
   toContainElementsInAnyOrder<T>(actual: T[], expected: T[]): void {
     expect(actual).toHaveLength(expected.length);
-    
+
     for (const element of expected) {
       expect(actual).toContain(element);
     }
@@ -116,8 +120,8 @@ export class AssertionHelpers {
    * Assert deep equality with custom comparison
    */
   toDeepEqualWith<T>(
-    actual: T, 
-    expected: T, 
+    actual: T,
+    expected: T,
     customComparator?: (a: any, b: any, path: string) => boolean
   ): void {
     if (customComparator) {
@@ -147,19 +151,19 @@ export class AssertionHelpers {
    * Assert that an error has specific properties
    */
   toBeErrorWithProperties(
-    actual: Error, 
+    actual: Error,
     expectedProperties: { message?: string; code?: string | number; type?: string }
   ): void {
     expect(actual).toBeInstanceOf(Error);
-    
+
     if (expectedProperties.message) {
       expect(actual.message).toBe(expectedProperties.message);
     }
-    
+
     if (expectedProperties.code) {
       expect((actual as any).code).toBe(expectedProperties.code);
     }
-    
+
     if (expectedProperties.type) {
       expect(actual.constructor.name).toBe(expectedProperties.type);
     }
@@ -197,7 +201,7 @@ export class AssertionHelpers {
     expectedHeaders?: Record<string, string>
   ): void {
     expect(response.status).toBe(expectedStatus);
-    
+
     if (expectedHeaders) {
       Object.entries(expectedHeaders).forEach(([header, value]) => {
         expect(response.headers[header.toLowerCase()]).toBe(value);
@@ -214,18 +218,18 @@ export class AssertionHelpers {
     maxEpochs?: number
   ): void {
     const finalResult = trainingResults[trainingResults.length - 1];
-    
+
     if (maxEpochs) {
       expect(finalResult.epoch).toBeLessThanOrEqual(maxEpochs);
     }
-    
+
     expect(finalResult.error).toBeLessThan(targetError);
-    
+
     // Check that error generally decreases over time
-    const errorReductions = trainingResults.slice(1).filter((result, index) => 
-      result.error < trainingResults[index].error
-    );
-    
+    const errorReductions = trainingResults
+      .slice(1)
+      .filter((result, index) => result.error < trainingResults[index].error);
+
     const reductionRatio = errorReductions.length / (trainingResults.length - 1);
     expect(reductionRatio).toBeGreaterThan(0.7); // 70% of epochs should show improvement
   }
@@ -245,15 +249,15 @@ export class AssertionHelpers {
     if (expectedPatterns.agentCount !== undefined) {
       expect(swarmMetrics.activeAgents).toBe(expectedPatterns.agentCount);
     }
-    
+
     if (expectedPatterns.topology) {
       expect(swarmMetrics.topology).toBe(expectedPatterns.topology);
     }
-    
+
     if (expectedPatterns.efficiency !== undefined) {
       expect(swarmMetrics.efficiency).toBeGreaterThanOrEqual(expectedPatterns.efficiency);
     }
-    
+
     if (expectedPatterns.completion !== undefined) {
       expect(swarmMetrics.completionRate).toBeGreaterThanOrEqual(expectedPatterns.completion);
     }
@@ -262,18 +266,15 @@ export class AssertionHelpers {
   /**
    * London School: Assert interaction sequence
    */
-  toHaveInteractionSequence(
-    mock: any,
-    expectedSequence: { method: string; args?: any[] }[]
-  ): void {
+  toHaveInteractionSequence(mock: any, expectedSequence: { method: string; args?: any[] }[]): void {
     const interactions = mock.__interactions || [];
-    
+
     expect(interactions).toHaveLength(expectedSequence.length);
-    
+
     expectedSequence.forEach((expected, index) => {
       const interaction = interactions[index];
       expect(interaction.method).toBe(expected.method);
-      
+
       if (expected.args) {
         expect(interaction.args).toEqual(expected.args);
       }
@@ -293,13 +294,13 @@ export class AssertionHelpers {
           expect(values[i]).toBeGreaterThanOrEqual(values[i - 1]);
         }
         break;
-      
+
       case 'monotonic-decreasing':
         for (let i = 1; i < values.length; i++) {
           expect(values[i]).toBeLessThanOrEqual(values[i - 1]);
         }
         break;
-      
+
       case 'convex':
         // Check second derivative > 0 (simplified)
         for (let i = 2; i < values.length; i++) {
@@ -307,7 +308,7 @@ export class AssertionHelpers {
           expect(secondDerivative).toBeGreaterThanOrEqual(0);
         }
         break;
-      
+
       case 'concave':
         // Check second derivative < 0 (simplified)
         for (let i = 2; i < values.length; i++) {
@@ -319,8 +320,8 @@ export class AssertionHelpers {
   }
 
   private deepEqualWithCustom(
-    a: any, 
-    b: any, 
+    a: any,
+    b: any,
     customComparator: (a: any, b: any, path: string) => boolean,
     path: string = ''
   ): boolean {
@@ -335,16 +336,16 @@ export class AssertionHelpers {
     if (typeof a === 'object') {
       const keysA = Object.keys(a);
       const keysB = Object.keys(b);
-      
+
       if (keysA.length !== keysB.length) return false;
-      
+
       for (const key of keysA) {
         if (!keysB.includes(key)) return false;
         if (!this.deepEqualWithCustom(a[key], b[key], customComparator, `${path}.${key}`)) {
           return false;
         }
       }
-      
+
       return true;
     }
 
@@ -352,7 +353,7 @@ export class AssertionHelpers {
   }
 
   private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 
@@ -365,7 +366,7 @@ export function expectApproximately(actual: number, expected: number, precision?
 }
 
 export function expectPerformance(
-  metrics: PerformanceMetrics, 
+  metrics: PerformanceMetrics,
   thresholds: Partial<PerformanceMetrics>
 ): void {
   assertionHelpers.toMeetPerformanceThreshold(metrics, thresholds);

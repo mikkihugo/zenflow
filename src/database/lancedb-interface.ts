@@ -2,8 +2,8 @@
 /** ADVANCED VECTOR OPERATIONS WITH PRODUCTION-GRADE CAPABILITIES */
 /** Supports embeddings, similarity search, clustering, and analytics */
 
-import { connect, Connection, Table } from '@lancedb/lancedb';
 import { EventEmitter } from 'node:events';
+import { type Connection, connect, type Table } from '@lancedb/lancedb';
 
 interface LanceDBConfig {
   dbPath?: string;
@@ -49,7 +49,7 @@ export class LanceDBInterface extends EventEmitter {
 
   constructor(config: LanceDBConfig = {}) {
     super();
-    
+
     this.config = {
       dbPath: config.dbPath ?? './data/lancedb',
       dbName: config.dbName ?? 'claude-flow-vectors',
@@ -58,9 +58,9 @@ export class LanceDBInterface extends EventEmitter {
       indexType: config.indexType ?? 'HNSW',
       batchSize: config.batchSize ?? 1000,
       cacheSize: config.cacheSize ?? 10000,
-      ...config
+      ...config,
     };
-    
+
     this.maxCacheSize = this.config.cacheSize;
   }
 
@@ -68,28 +68,27 @@ export class LanceDBInterface extends EventEmitter {
   async initialize(): Promise<{ status: string; tables: string[] }> {
     try {
       this.database = await connect(this.config.dbPath);
-      
+
       // Create core tables with optimized schemas
       await this.createCoreTables();
-      
+
       // Set up performance indices
       await this.setupIndices();
-      
+
       // Load existing statistics
       await this.loadStatistics();
-      
+
       this.isInitialized = true;
-      
+
       const tableNames = await this.database.tableNames();
-      
+
       console.log(`✅ LanceDB initialized: ${this.config.dbName}`);
       console.log(`📁 Database path: ${this.config.dbPath}`);
       console.log(`📊 Tables: ${tableNames.join(', ')}`);
-      
+
       this.emit('initialized', { tables: tableNames });
-      
+
       return { status: 'initialized', tables: tableNames };
-      
     } catch (error) {
       console.error('❌ LanceDB initialization failed:', error);
       throw error;
@@ -105,7 +104,7 @@ export class LanceDBInterface extends EventEmitter {
         metadata: 'map<string, string>',
         timestamp: 'int64',
         source: 'string',
-        type: 'string'
+        type: 'string',
       },
       documents: {
         id: 'string',
@@ -113,15 +112,15 @@ export class LanceDBInterface extends EventEmitter {
         vector: `array<float>(${this.config.vectorDim})`,
         metadata: 'map<string, string>',
         timestamp: 'int64',
-        size: 'int32'
+        size: 'int32',
       },
       sessions: {
         session_id: 'string',
         vectors: `array<array<float>(${this.config.vectorDim}))`,
         metadata: 'map<string, string>',
         created: 'int64',
-        updated: 'int64'
-      }
+        updated: 'int64',
+      },
     };
 
     for (const [tableName, schema] of Object.entries(coreSchemas)) {
@@ -132,28 +131,27 @@ export class LanceDBInterface extends EventEmitter {
   /** Create a table with specified schema */
   async createTable(tableName: string, schema: Record<string, any>): Promise<Table> {
     this.ensureInitialized();
-    
+
     try {
       const existingTables = await this.database!.tableNames();
-      
+
       if (!existingTables.includes(tableName)) {
         // Create sample data for schema inference
         const sampleData = this.generateSampleData(schema);
         const table = await this.database!.createTable(tableName, sampleData);
-        
+
         this.tables.set(tableName, table);
         this.emit('tableCreated', { tableName, schema });
-        
+
         console.log(`✅ Created table: ${tableName}`);
         return table;
       } else {
         const table = await this.database!.openTable(tableName);
         this.tables.set(tableName, table);
-        
+
         console.log(`📂 Opened existing table: ${tableName}`);
         return table;
       }
-      
     } catch (error) {
       console.error(`❌ Failed to create table ${tableName}:`, error);
       throw error;
@@ -162,21 +160,21 @@ export class LanceDBInterface extends EventEmitter {
 
   /** Insert vectors into a table */
   async insertVectors(
-    tableName: string, 
+    tableName: string,
     documents: VectorDocument[]
   ): Promise<{ inserted: number; errors: any[] }> {
     this.ensureInitialized();
-    
+
     const startTime = Date.now();
     const errors: any[] = [];
     let inserted = 0;
-    
+
     try {
-      const table = this.tables.get(tableName) || await this.database!.openTable(tableName);
-      
+      const table = this.tables.get(tableName) || (await this.database!.openTable(tableName));
+
       // Process in batches
       const batches = this.createBatches(documents, this.config.batchSize);
-      
+
       for (const batch of batches) {
         try {
           await table.add(batch);
@@ -185,14 +183,13 @@ export class LanceDBInterface extends EventEmitter {
           errors.push({ batch: batch.length, error });
         }
       }
-      
+
       const duration = Date.now() - startTime;
       this.updateStats('insertTime', duration);
-      
+
       this.emit('vectorsInserted', { tableName, inserted, errors: errors.length, duration });
-      
+
       return { inserted, errors };
-      
     } catch (error) {
       console.error(`❌ Failed to insert vectors into ${tableName}:`, error);
       throw error;
@@ -207,42 +204,41 @@ export class LanceDBInterface extends EventEmitter {
     filter?: Record<string, any>
   ): Promise<SearchResult[]> {
     this.ensureInitialized();
-    
+
     const startTime = Date.now();
-    
+
     try {
-      const table = this.tables.get(tableName) || await this.database!.openTable(tableName);
-      
+      const table = this.tables.get(tableName) || (await this.database!.openTable(tableName));
+
       let query = table.search(queryVector).limit(limit);
-      
+
       if (filter) {
         // Apply filters based on metadata
         for (const [key, value] of Object.entries(filter)) {
           query = query.where(`metadata['${key}'] = '${value}'`);
         }
       }
-      
+
       const results = await query.toArray();
-      
+
       const searchResults: SearchResult[] = results.map((result: any) => ({
         id: result.id,
         score: result._distance || 0,
         metadata: result.metadata,
-        document: result
+        document: result,
       }));
-      
+
       const duration = Date.now() - startTime;
       this.updateStats('searchTime', duration);
-      
-      this.emit('searchCompleted', { 
-        tableName, 
-        queryDim: queryVector.length, 
-        results: searchResults.length, 
-        duration 
+
+      this.emit('searchCompleted', {
+        tableName,
+        queryDim: queryVector.length,
+        results: searchResults.length,
+        duration,
       });
-      
+
       return searchResults;
-      
     } catch (error) {
       console.error(`❌ Search failed in table ${tableName}:`, error);
       throw error;
@@ -252,11 +248,11 @@ export class LanceDBInterface extends EventEmitter {
   /** Get database statistics */
   async getStats(): Promise<LanceDBStats> {
     this.ensureInitialized();
-    
+
     try {
       const tableNames = await this.database!.tableNames();
       let totalVectors = 0;
-      
+
       for (const tableName of tableNames) {
         try {
           const table = await this.database!.openTable(tableName);
@@ -266,15 +262,14 @@ export class LanceDBInterface extends EventEmitter {
           console.warn(`⚠️ Could not get count for table ${tableName}:`, error);
         }
       }
-      
+
       return {
         totalVectors,
         totalTables: tableNames.length,
         averageSearchTime: this.stats.get('averageSearchTime') || 0,
         indexedVectors: totalVectors, // Assume all vectors are indexed
-        cacheHitRate: this.stats.get('cacheHitRate') || 0
+        cacheHitRate: this.stats.get('cacheHitRate') || 0,
       };
-      
     } catch (error) {
       console.error('❌ Failed to get database stats:', error);
       throw error;
@@ -299,7 +294,7 @@ export class LanceDBInterface extends EventEmitter {
   /** Generate sample data for schema inference */
   private generateSampleData(schema: Record<string, any>): any[] {
     const sampleRow: any = {};
-    
+
     for (const [key, type] of Object.entries(schema)) {
       if (key === 'vector' || type.includes('array<float>')) {
         sampleRow[key] = new Array(this.config.vectorDim).fill(0);
@@ -313,18 +308,18 @@ export class LanceDBInterface extends EventEmitter {
         sampleRow[key] = null;
       }
     }
-    
+
     return [sampleRow];
   }
 
   /** Create batches from documents */
   private createBatches<T>(items: T[], batchSize: number): T[][] {
     const batches: T[][] = [];
-    
+
     for (let i = 0; i < items.length; i += batchSize) {
       batches.push(items.slice(i, i + batchSize));
     }
-    
+
     return batches;
   }
 
@@ -332,10 +327,10 @@ export class LanceDBInterface extends EventEmitter {
   private updateStats(metric: string, value: number): void {
     const current = this.stats.get(metric) || 0;
     const count = this.stats.get(`${metric}Count`) || 0;
-    
+
     // Calculate running average
     const newAverage = (current * count + value) / (count + 1);
-    
+
     this.stats.set(metric, newAverage);
     this.stats.set(`${metric}Count`, count + 1);
   }
@@ -354,10 +349,10 @@ export class LanceDBInterface extends EventEmitter {
       this.database = null;
       this.tables.clear();
       this.indices.clear();
-      
+
       this.isInitialized = false;
       this.emit('shutdown');
-      
+
       console.log('✅ LanceDB connection closed');
     }
   }

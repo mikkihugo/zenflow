@@ -1,15 +1,15 @@
 /**
  * Test Data Factory - Reproducible Test Data Generation
- * 
+ *
  * Creates realistic test data for both London and Classical TDD approaches
  */
 
-import type { 
-  TestDataOptions, 
-  UserTestData, 
-  ProjectTestData, 
-  SwarmTestData, 
-  AgentTestData 
+import type {
+  AgentTestData,
+  ProjectTestData,
+  SwarmTestData,
+  TestDataOptions,
+  UserTestData,
 } from './types';
 
 export class TestDataFactory {
@@ -37,14 +37,14 @@ export class TestDataFactory {
       preferences: {
         theme: this.randomChoice(['light', 'dark', 'auto']),
         language: this.randomChoice(['en', 'es', 'fr', 'de']),
-        notifications: this.randomBoolean()
+        notifications: this.randomBoolean(),
       },
       metadata: {
         createdAt: this.generateTimestamp(),
         lastLogin: this.generateTimestamp(),
-        loginCount: this.randomInt(1, 100)
+        loginCount: this.randomInt(1, 100),
       },
-      ...overrides
+      ...overrides,
     };
   }
 
@@ -52,7 +52,7 @@ export class TestDataFactory {
    * Create multiple users
    */
   createUsers(count: number, baseData: Partial<UserTestData> = {}): UserTestData[] {
-    return Array.from({ length: count }, (_, index) => 
+    return Array.from({ length: count }, (_, index) =>
       this.createUser({ ...baseData, id: `user-${index + 1}` })
     );
   }
@@ -63,14 +63,14 @@ export class TestDataFactory {
   createProject(overrides: Partial<ProjectTestData> = {}): ProjectTestData {
     const name = this.generateProjectName();
     const type = this.randomChoice(['typescript', 'javascript', 'python', 'rust'] as const);
-    
+
     return {
       name,
       path: `/projects/${name}`,
       type,
       structure: this.generateProjectStructure(type),
       dependencies: this.generateDependencies(type),
-      ...overrides
+      ...overrides,
     };
   }
 
@@ -81,7 +81,7 @@ export class TestDataFactory {
     const id = this.generateId();
     const topology = this.randomChoice(['mesh', 'hierarchical', 'ring', 'star'] as const);
     const agentCount = this.randomInt(3, 8);
-    
+
     return {
       id,
       topology,
@@ -89,9 +89,9 @@ export class TestDataFactory {
       configuration: {
         maxAgents: agentCount,
         strategy: this.randomChoice(['balanced', 'specialized', 'adaptive']),
-        timeout: this.randomInt(30000, 120000)
+        timeout: this.randomInt(30000, 120000),
       },
-      ...overrides
+      ...overrides,
     };
   }
 
@@ -99,14 +99,20 @@ export class TestDataFactory {
    * Create agent test data
    */
   createAgent(overrides: Partial<AgentTestData> = {}): AgentTestData {
-    const type = this.randomChoice(['researcher', 'coder', 'analyst', 'tester', 'coordinator'] as const);
-    
+    const type = this.randomChoice([
+      'researcher',
+      'coder',
+      'analyst',
+      'tester',
+      'coordinator',
+    ] as const);
+
     return {
       id: this.generateId(),
       type,
       capabilities: this.generateCapabilities(type),
       state: this.randomChoice(['idle', 'working', 'error', 'completed'] as const),
-      ...overrides
+      ...overrides,
     };
   }
 
@@ -114,7 +120,7 @@ export class TestDataFactory {
    * Create multiple agents
    */
   createAgents(count: number, baseData: Partial<AgentTestData> = {}): AgentTestData[] {
-    return Array.from({ length: count }, (_, index) => 
+    return Array.from({ length: count }, (_, index) =>
       this.createAgent({ ...baseData, id: `agent-${index + 1}` })
     );
   }
@@ -132,9 +138,9 @@ export class TestDataFactory {
         arguments: {
           input: this.generateText(),
           options: { verbose: this.randomBoolean() },
-          ...params
-        }
-      }
+          ...params,
+        },
+      },
     };
   }
 
@@ -144,7 +150,7 @@ export class TestDataFactory {
   createNeuralTrainingData(size: number = 100) {
     return Array.from({ length: size }, () => ({
       input: Array.from({ length: 3 }, () => this.randomFloat(-1, 1)),
-      output: Array.from({ length: 2 }, () => this.randomFloat(0, 1))
+      output: Array.from({ length: 2 }, () => this.randomFloat(0, 1)),
     }));
   }
 
@@ -158,8 +164,8 @@ export class TestDataFactory {
         id: i,
         payload: this.generateText(100),
         timestamp: Date.now() + i,
-        metadata: { index: i, type: 'test' }
-      }))
+        metadata: { index: i, type: 'test' },
+      })),
     };
   }
 
@@ -173,25 +179,29 @@ export class TestDataFactory {
         'lib/': {
           'core.ts': this.generateCode('typescript'),
           'utils.ts': this.generateCode('typescript'),
-          'types.ts': 'export interface TestInterface {}'
-        }
+          'types.ts': 'export interface TestInterface {}',
+        },
       },
       'tests/': {
         'unit/': {
-          'core.test.ts': this.generateTestCode('typescript')
+          'core.test.ts': this.generateTestCode('typescript'),
         },
         'integration/': {
-          'api.test.ts': this.generateTestCode('typescript')
-        }
+          'api.test.ts': this.generateTestCode('typescript'),
+        },
       },
-      'package.json': JSON.stringify({
-        name: 'test-project',
-        version: '1.0.0',
-        scripts: {
-          test: 'jest',
-          build: 'tsc'
-        }
-      }, null, 2)
+      'package.json': JSON.stringify(
+        {
+          name: 'test-project',
+          version: '1.0.0',
+          scripts: {
+            test: 'jest',
+            build: 'tsc',
+          },
+        },
+        null,
+        2
+      ),
     };
   }
 
@@ -202,7 +212,7 @@ export class TestDataFactory {
     return {
       users: this.createUsers(10),
       projects: Array.from({ length: 5 }, () => this.createProject()),
-      swarms: Array.from({ length: 3 }, () => this.createSwarm())
+      swarms: Array.from({ length: 3 }, () => this.createSwarm()),
     };
   }
 
@@ -229,8 +239,17 @@ export class TestDataFactory {
 
   private generateName(): string {
     const firstNames = ['Alice', 'Bob', 'Carol', 'David', 'Eve', 'Frank', 'Grace', 'Henry'];
-    const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis'];
-    
+    const lastNames = [
+      'Smith',
+      'Johnson',
+      'Williams',
+      'Brown',
+      'Jones',
+      'Garcia',
+      'Miller',
+      'Davis',
+    ];
+
     return `${this.randomChoice(firstNames)} ${this.randomChoice(lastNames)}`;
   }
 
@@ -243,7 +262,7 @@ export class TestDataFactory {
   private generateProjectName(): string {
     const adjectives = ['awesome', 'amazing', 'brilliant', 'creative', 'dynamic', 'elegant'];
     const nouns = ['project', 'app', 'service', 'tool', 'platform', 'system'];
-    
+
     return `${this.randomChoice(adjectives)}-${this.randomChoice(nouns)}`;
   }
 
@@ -253,26 +272,26 @@ export class TestDataFactory {
         'src/': { 'index.ts': '', 'types.ts': '', 'utils.ts': '' },
         'tests/': { 'index.test.ts': '' },
         'tsconfig.json': '',
-        'package.json': ''
+        'package.json': '',
       },
       javascript: {
         'src/': { 'index.js': '', 'utils.js': '' },
         'tests/': { 'index.test.js': '' },
-        'package.json': ''
+        'package.json': '',
       },
       python: {
         'src/': { '__init__.py': '', 'main.py': '', 'utils.py': '' },
         'tests/': { 'test_main.py': '' },
         'requirements.txt': '',
-        'setup.py': ''
+        'setup.py': '',
       },
       rust: {
         'src/': { 'main.rs': '', 'lib.rs': '' },
         'tests/': { 'integration_test.rs': '' },
-        'Cargo.toml': ''
-      }
+        'Cargo.toml': '',
+      },
     };
-    
+
     return structures[type];
   }
 
@@ -281,9 +300,9 @@ export class TestDataFactory {
       typescript: ['@types/node', 'typescript', 'jest', '@jest/types'],
       javascript: ['jest', 'lodash', 'axios'],
       python: ['pytest', 'numpy', 'requests'],
-      rust: ['serde', 'tokio', 'clap']
+      rust: ['serde', 'tokio', 'clap'],
     };
-    
+
     return dependencies[type];
   }
 
@@ -293,20 +312,20 @@ export class TestDataFactory {
       coder: ['code-generation', 'refactoring', 'testing'],
       analyst: ['data-analysis', 'pattern-recognition', 'reporting'],
       tester: ['test-generation', 'quality-assurance', 'bug-detection'],
-      coordinator: ['task-management', 'workflow-optimization', 'team-coordination']
+      coordinator: ['task-management', 'workflow-optimization', 'team-coordination'],
     };
-    
+
     return capabilities[type];
   }
 
   private generateText(length: number = 50): string {
     const words = ['lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit'];
     const result = [];
-    
+
     for (let i = 0; i < length; i++) {
       result.push(this.randomChoice(words));
     }
-    
+
     return result.join(' ');
   }
 
@@ -371,9 +390,9 @@ impl TestStruct {
     pub fn get_value(&self) -> i32 {
         self.value
     }
-}`
+}`,
     };
-    
+
     return templates[language];
   }
 
@@ -404,9 +423,9 @@ describe('Test Suite', () => {
     const instance = new TestClass(42);
     expect(instance.getValue()).toBe(42);
   });
-});`
+});`,
     };
-    
+
     return templates[language];
   }
 

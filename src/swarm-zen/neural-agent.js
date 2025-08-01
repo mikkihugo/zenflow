@@ -100,8 +100,16 @@ class NeuralNetwork {
         const weightSize = outputSize * inputSize * 4; // 4 bytes per float32
         const biasSize = outputSize * 4;
 
-        const weightAlloc = this.memoryOptimizer.allocateFromPool('weights', weightSize, this.config.cognitivePattern || 'default');
-        const biasAlloc = this.memoryOptimizer.allocateFromPool('weights', biasSize, this.config.cognitivePattern || 'default');
+        const weightAlloc = this.memoryOptimizer.allocateFromPool(
+          'weights',
+          weightSize,
+          this.config.cognitivePattern || 'default'
+        );
+        const biasAlloc = this.memoryOptimizer.allocateFromPool(
+          'weights',
+          biasSize,
+          this.config.cognitivePattern || 'default'
+        );
 
         if (weightAlloc && biasAlloc) {
           this.memoryAllocations.push(weightAlloc, biasAlloc);
@@ -382,7 +390,7 @@ class NeuralAgent extends EventEmitter {
       description.length / 1000, // Length normalized
       (description.match(/\b\w+\b/g) || []).length / 100, // Word count
       (description.match(/[A-Z]/g) || []).length / description.length, // Capitalization ratio
-      (description.match(/[0-9]/g) || []).length / description.length, // Numeric ratio
+      (description.match(/[0-9]/g) || []).length / description.length // Numeric ratio
     );
 
     // Task metadata
@@ -395,7 +403,8 @@ class NeuralAgent extends EventEmitter {
     // Historical performance on similar tasks
     const similarTasks = this._findSimilarTasks(task);
     if (similarTasks.length > 0) {
-      const avgPerformance = similarTasks.reduce((sum, t) => sum + t.performance.overall, 0) / similarTasks.length;
+      const avgPerformance =
+        similarTasks.reduce((sum, t) => sum + t.performance.overall, 0) / similarTasks.length;
       vector.push(avgPerformance);
     } else {
       vector.push(0.5); // Neutral if no history
@@ -406,7 +415,7 @@ class NeuralAgent extends EventEmitter {
       this.cognitiveState.attention,
       this.cognitiveState.fatigue,
       this.cognitiveState.confidence,
-      this.cognitiveState.exploration,
+      this.cognitiveState.exploration
     );
 
     // Pad or truncate to expected input size
@@ -467,19 +476,17 @@ class NeuralAgent extends EventEmitter {
     // Fatigue increases with complexity
     this.cognitiveState.fatigue = Math.min(
       this.cognitiveState.fatigue + analysis.complexity * 0.1,
-      1.0,
+      1.0
     );
 
     // Attention decreases with fatigue
-    this.cognitiveState.attention = Math.max(
-      1.0 - this.cognitiveState.fatigue * 0.5,
-      0.3,
-    );
+    this.cognitiveState.attention = Math.max(1.0 - this.cognitiveState.fatigue * 0.5, 0.3);
 
     // Confidence adjusts based on recent performance
     if (this.learningHistory.length > 0) {
-      const recentPerformance = this.learningHistory.slice(-5)
-        .reduce((sum, h) => sum + h.performance, 0) / Math.min(this.learningHistory.length, 5);
+      const recentPerformance =
+        this.learningHistory.slice(-5).reduce((sum, h) => sum + h.performance, 0) /
+        Math.min(this.learningHistory.length, 5);
       this.cognitiveState.confidence = 0.3 + recentPerformance * 0.7;
     }
 
@@ -492,7 +499,7 @@ class NeuralAgent extends EventEmitter {
    */
   _calculatePerformance(task, result, executionTime) {
     const performance = {
-      speed: Math.max(0, 1 - (executionTime / 60000)), // Normalize to 1 minute
+      speed: Math.max(0, 1 - executionTime / 60000), // Normalize to 1 minute
       accuracy: result.success ? 0.8 : 0.2,
       creativity: 0.5, // Default, should be evaluated based on result
       efficiency: 0.5,
@@ -510,12 +517,11 @@ class NeuralAgent extends EventEmitter {
     }
 
     // Calculate overall performance
-    performance.overall = (
+    performance.overall =
       performance.speed * 0.2 +
       performance.accuracy * 0.4 +
       performance.creativity * 0.2 +
-      performance.efficiency * 0.2
-    );
+      performance.efficiency * 0.2;
 
     return performance;
   }
@@ -582,7 +588,8 @@ class NeuralAgent extends EventEmitter {
     const memoryRatio = this.memoryUsage.baseline / this.getCurrentMemoryUsage();
     const taskEfficiency = performance.overall;
     this.performanceMetrics.memoryEfficiency =
-      (1 - alpha) * this.performanceMetrics.memoryEfficiency + alpha * (memoryRatio * taskEfficiency);
+      (1 - alpha) * this.performanceMetrics.memoryEfficiency +
+      alpha * (memoryRatio * taskEfficiency);
   }
 
   /**
@@ -594,7 +601,7 @@ class NeuralAgent extends EventEmitter {
     }
 
     // Simple similarity based on task properties
-    const similarities = this.taskHistory.map(historicalTask => {
+    const similarities = this.taskHistory.map((historicalTask) => {
       let similarity = 0;
 
       // Priority match
@@ -604,8 +611,10 @@ class NeuralAgent extends EventEmitter {
 
       // Description similarity (simple word overlap)
       const currentWords = new Set((task.description || '').toLowerCase().split(/\s+/));
-      const historicalWords = new Set((historicalTask.task.description || '').toLowerCase().split(/\s+/));
-      const intersection = new Set([...currentWords].filter(x => historicalWords.has(x)));
+      const historicalWords = new Set(
+        (historicalTask.task.description || '').toLowerCase().split(/\s+/)
+      );
+      const intersection = new Set([...currentWords].filter((x) => historicalWords.has(x)));
       const union = new Set([...currentWords, ...historicalWords]);
       if (union.size > 0) {
         similarity += 0.7 * (intersection.size / union.size);
@@ -621,8 +630,8 @@ class NeuralAgent extends EventEmitter {
     return similarities
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, limit)
-      .filter(s => s.similarity > 0.3)
-      .map(s => s.task);
+      .filter((s) => s.similarity > 0.3)
+      .map((s) => s.task);
   }
 
   /**
@@ -633,28 +642,28 @@ class NeuralAgent extends EventEmitter {
 
     switch (pattern) {
       case COGNITIVE_PATTERNS.CONVERGENT:
-        analysis.complexity *= (1 - influence * 0.1);
-        analysis.confidence *= (1 + influence * 0.1);
+        analysis.complexity *= 1 - influence * 0.1;
+        analysis.confidence *= 1 + influence * 0.1;
         break;
 
       case COGNITIVE_PATTERNS.DIVERGENT:
-        analysis.creativity *= (1 + influence * 0.2);
+        analysis.creativity *= 1 + influence * 0.2;
         break;
 
       case COGNITIVE_PATTERNS.LATERAL:
-        analysis.creativity *= (1 + influence * 0.15);
+        analysis.creativity *= 1 + influence * 0.15;
         break;
 
       case COGNITIVE_PATTERNS.SYSTEMS:
-        analysis.collaborationNeeded *= (1 + influence * 0.2);
+        analysis.collaborationNeeded *= 1 + influence * 0.2;
         break;
 
       case COGNITIVE_PATTERNS.CRITICAL:
-        analysis.confidence *= (1 - influence * 0.1);
+        analysis.confidence *= 1 - influence * 0.1;
         break;
 
       case COGNITIVE_PATTERNS.ABSTRACT:
-        analysis.complexity *= (1 - influence * 0.05);
+        analysis.complexity *= 1 - influence * 0.05;
         break;
     }
   }
@@ -664,7 +673,7 @@ class NeuralAgent extends EventEmitter {
    */
   rest(duration = 1000) {
     return new Promise((resolve) => {
-      setTimeout(async() => {
+      setTimeout(async () => {
         this.cognitiveState.fatigue = Math.max(0, this.cognitiveState.fatigue - 0.3);
         this.cognitiveState.attention = Math.min(1.0, this.cognitiveState.attention + 0.2);
 
@@ -674,7 +683,8 @@ class NeuralAgent extends EventEmitter {
           if (collected > 0) {
             // Recalculate memory usage after GC
             const patternConfig = PATTERN_MEMORY_CONFIG[this.cognitiveProfile.primary];
-            this.memoryUsage.current = patternConfig.baseMemory * (1 - patternConfig.poolSharing * 0.5);
+            this.memoryUsage.current =
+              patternConfig.baseMemory * (1 - patternConfig.poolSharing * 0.5);
           }
         }
 
@@ -687,7 +697,8 @@ class NeuralAgent extends EventEmitter {
    * Initialize memory tracking for the agent
    */
   _initializeMemoryTracking() {
-    const patternConfig = PATTERN_MEMORY_CONFIG[this.cognitiveProfile.primary] || PATTERN_MEMORY_CONFIG.convergent;
+    const patternConfig =
+      PATTERN_MEMORY_CONFIG[this.cognitiveProfile.primary] || PATTERN_MEMORY_CONFIG.convergent;
     this.memoryUsage.baseline = patternConfig.baseMemory;
     this.memoryUsage.current = patternConfig.baseMemory;
 
@@ -737,9 +748,9 @@ class NeuralAgent extends EventEmitter {
         learningHistory: this.learningHistory.length,
         taskHistory: this.taskHistory.length,
         memoryUsage: {
-          current: `${this.getCurrentMemoryUsage().toFixed(0) } MB`,
-          baseline: `${this.memoryUsage.baseline.toFixed(0) } MB`,
-          peak: `${this.memoryUsage.peak.toFixed(0) } MB`,
+          current: `${this.getCurrentMemoryUsage().toFixed(0)} MB`,
+          baseline: `${this.memoryUsage.baseline.toFixed(0)} MB`,
+          peak: `${this.memoryUsage.peak.toFixed(0)} MB`,
           efficiency: this.performanceMetrics.memoryEfficiency.toFixed(2),
         },
       },
@@ -789,9 +800,9 @@ class NeuralAgentFactory {
   static memoryOptimizer = null;
 
   static async initializeFactory() {
-    if (!this.memoryOptimizer) {
-      this.memoryOptimizer = new MemoryOptimizer();
-      await this.memoryOptimizer.initializePools();
+    if (!NeuralAgentFactory.memoryOptimizer) {
+      NeuralAgentFactory.memoryOptimizer = new MemoryOptimizer();
+      await NeuralAgentFactory.memoryOptimizer.initializePools();
     }
   }
 
@@ -801,7 +812,7 @@ class NeuralAgentFactory {
     }
 
     // Use shared memory optimizer for all agents
-    return new NeuralAgent(baseAgent, agentType, this.memoryOptimizer);
+    return new NeuralAgent(baseAgent, agentType, NeuralAgentFactory.memoryOptimizer);
   }
 
   static getCognitiveProfiles() {
@@ -815,7 +826,7 @@ class NeuralAgentFactory {
 
 // Lazy load to avoid circular dependency
 setImmediate(() => {
-  import('./neural.js').then(neural => {
+  import('./neural.js').then((neural) => {
     MemoryOptimizer = neural.MemoryOptimizer;
     PATTERN_MEMORY_CONFIG = neural.PATTERN_MEMORY_CONFIG;
   });

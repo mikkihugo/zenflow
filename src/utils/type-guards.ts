@@ -1,6 +1,6 @@
 /**
  * Type Guards and Utility Functions
- * 
+ *
  * Provides type checking and utility functions for the Claude-Zen system
  */
 
@@ -72,7 +72,10 @@ export function isDefined<T>(value: T | null | undefined): value is T {
 /**
  * Assert that a value is defined
  */
-export function assertDefined<T>(value: T | null | undefined, message?: string): asserts value is T {
+export function assertDefined<T>(
+  value: T | null | undefined,
+  message?: string
+): asserts value is T {
   if (!isDefined(value)) {
     throw new Error(message || 'Value is null or undefined');
   }
@@ -81,10 +84,7 @@ export function assertDefined<T>(value: T | null | undefined, message?: string):
 /**
  * Check if value has a specific property
  */
-export function hasProperty<K extends string>(
-  obj: unknown,
-  prop: K
-): obj is Record<K, unknown> {
+export function hasProperty<K extends string>(obj: unknown, prop: K): obj is Record<K, unknown> {
   return isObject(obj) && prop in obj;
 }
 

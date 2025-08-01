@@ -5,15 +5,15 @@
 
 // Re-export from CLI utils logger which is more comprehensive
 export {
-  LogLevel,
   createLogger,
-  logger,
   debug,
-  info,
-  warn,
   error,
+  info,
   type Logger,
-  type LoggerConfig
+  type LoggerConfig,
+  LogLevel,
+  logger,
+  warn,
 } from '../cli/utils/logger';
 
 // Create a compatible interface for existing code

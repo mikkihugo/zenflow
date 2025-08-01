@@ -12,12 +12,15 @@
  * - Proper resource lifecycle management
  */
 
-import { SQLiteConnectionPool } from './sqlite-pool.js';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
+import { SQLiteConnectionPool } from './sqlite-pool.js';
 
 class SwarmPersistencePooled {
-  constructor(dbPath = path.join(new URL('.', import.meta.url).pathname, '..', 'data', 'ruv-swarm.db'), options = {}) {
+  constructor(
+    dbPath = path.join(new URL('.', import.meta.url).pathname, '..', 'data', 'ruv-swarm.db'),
+    options = {}
+  ) {
     this.dbPath = dbPath;
     this.options = {
       // Pool configuration
@@ -88,7 +91,6 @@ class SwarmPersistencePooled {
 
       this.initialized = true;
       this.initializing = false;
-
     } catch (error) {
       this.initializing = false;
       throw error;
@@ -238,14 +240,16 @@ class SwarmPersistencePooled {
         lastError = error;
 
         // Don't retry on certain errors
-        if (error.message.includes('UNIQUE constraint failed') ||
-            error.message.includes('NOT NULL constraint failed')) {
+        if (
+          error.message.includes('UNIQUE constraint failed') ||
+          error.message.includes('NOT NULL constraint failed')
+        ) {
           throw error;
         }
 
         // Wait before retry
         if (attempt < maxRetries - 1) {
-          await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 100));
+          await new Promise((resolve) => setTimeout(resolve, 2 ** attempt * 100));
         }
       }
     }
@@ -262,8 +266,7 @@ class SwarmPersistencePooled {
       // Update statistics
       this.stats.totalOperations++;
       const duration = Date.now() - startTime;
-      this.stats.averageResponseTime =
-        (this.stats.averageResponseTime + duration) / 2;
+      this.stats.averageResponseTime = (this.stats.averageResponseTime + duration) / 2;
 
       return result;
     } catch (error) {
@@ -276,26 +279,31 @@ class SwarmPersistencePooled {
   async createSwarm(swarm) {
     await this.ensureInitialized();
 
-    return this.trackOperation(() => this.withRetry(async () => {
-      // Check if swarm already exists
-      const existing = await this.pool.read('SELECT id FROM swarms WHERE id = ?', [swarm.id]);
-      if (existing && existing.length > 0) {
-        // Return existing swarm info instead of failing
-        return { id: swarm.id, changes: 0, lastInsertRowid: null };
-      }
+    return this.trackOperation(() =>
+      this.withRetry(async () => {
+        // Check if swarm already exists
+        const existing = await this.pool.read('SELECT id FROM swarms WHERE id = ?', [swarm.id]);
+        if (existing && existing.length > 0) {
+          // Return existing swarm info instead of failing
+          return { id: swarm.id, changes: 0, lastInsertRowid: null };
+        }
 
-      return this.pool.write(`
+        return this.pool.write(
+          `
         INSERT INTO swarms (id, name, topology, max_agents, strategy, metadata)
         VALUES (?, ?, ?, ?, ?, ?)
-      `, [
-        swarm.id,
-        swarm.name,
-        swarm.topology,
-        swarm.maxAgents,
-        swarm.strategy,
-        JSON.stringify(swarm.metadata || {}),
-      ]);
-    }));
+      `,
+          [
+            swarm.id,
+            swarm.name,
+            swarm.topology,
+            swarm.maxAgents,
+            swarm.strategy,
+            JSON.stringify(swarm.metadata || {}),
+          ]
+        );
+      })
+    );
   }
 
   async getActiveSwarms() {
@@ -303,7 +311,7 @@ class SwarmPersistencePooled {
 
     return this.trackOperation(async () => {
       const swarms = await this.pool.read('SELECT * FROM swarms WHERE status = ?', ['active']);
-      return swarms.map(s => ({
+      return swarms.map((s) => ({
         ...s,
         metadata: JSON.parse(s.metadata || '{}'),
       }));
@@ -314,28 +322,35 @@ class SwarmPersistencePooled {
   async createAgent(agent) {
     await this.ensureInitialized();
 
-    return this.trackOperation(() => this.withRetry(() =>
-      this.pool.write(`
+    return this.trackOperation(() =>
+      this.withRetry(() =>
+        this.pool.write(
+          `
         INSERT INTO agents (id, swarm_id, name, type, capabilities, neural_config, metrics)
         VALUES (?, ?, ?, ?, ?, ?, ?)
-      `, [
-        agent.id,
-        agent.swarmId,
-        agent.name,
-        agent.type,
-        JSON.stringify(agent.capabilities || []),
-        JSON.stringify(agent.neuralConfig || {}),
-        JSON.stringify(agent.metrics || {}),
-      ]),
-    ));
+      `,
+          [
+            agent.id,
+            agent.swarmId,
+            agent.name,
+            agent.type,
+            JSON.stringify(agent.capabilities || []),
+            JSON.stringify(agent.neuralConfig || {}),
+            JSON.stringify(agent.metrics || {}),
+          ]
+        )
+      )
+    );
   }
 
   async updateAgentStatus(agentId, status) {
     await this.ensureInitialized();
 
-    return this.trackOperation(() => this.withRetry(() =>
-      this.pool.write('UPDATE agents SET status = ? WHERE id = ?', [status, agentId]),
-    ));
+    return this.trackOperation(() =>
+      this.withRetry(() =>
+        this.pool.write('UPDATE agents SET status = ? WHERE id = ?', [status, agentId])
+      )
+    );
   }
 
   async getAgent(id) {
@@ -368,7 +383,7 @@ class SwarmPersistencePooled {
       }
 
       const agents = await this.pool.read(sql, params);
-      return agents.map(a => ({
+      return agents.map((a) => ({
         ...a,
         capabilities: JSON.parse(a.capabilities || '[]'),
         neural_config: JSON.parse(a.neural_config || '{}'),
@@ -381,41 +396,48 @@ class SwarmPersistencePooled {
   async createTask(task) {
     await this.ensureInitialized();
 
-    return this.trackOperation(() => this.withRetry(() =>
-      this.pool.write(`
+    return this.trackOperation(() =>
+      this.withRetry(() =>
+        this.pool.write(
+          `
         INSERT INTO tasks (id, swarm_id, description, priority, status, assigned_agents)
         VALUES (?, ?, ?, ?, ?, ?)
-      `, [
-        task.id,
-        task.swarmId,
-        task.description,
-        task.priority || 'medium',
-        task.status || 'pending',
-        JSON.stringify(task.assignedAgents || []),
-      ]),
-    ));
+      `,
+          [
+            task.id,
+            task.swarmId,
+            task.description,
+            task.priority || 'medium',
+            task.status || 'pending',
+            JSON.stringify(task.assignedAgents || []),
+          ]
+        )
+      )
+    );
   }
 
   async updateTask(taskId, updates) {
     await this.ensureInitialized();
 
-    return this.trackOperation(() => this.withRetry(() => {
-      const fields = [];
-      const values = [];
+    return this.trackOperation(() =>
+      this.withRetry(() => {
+        const fields = [];
+        const values = [];
 
-      Object.entries(updates).forEach(([key, value]) => {
-        if (key === 'assignedAgents' || key === 'result') {
-          fields.push(`${key} = ?`);
-          values.push(JSON.stringify(value));
-        } else {
-          fields.push(`${key} = ?`);
-          values.push(value);
-        }
-      });
+        Object.entries(updates).forEach(([key, value]) => {
+          if (key === 'assignedAgents' || key === 'result') {
+            fields.push(`${key} = ?`);
+            values.push(JSON.stringify(value));
+          } else {
+            fields.push(`${key} = ?`);
+            values.push(value);
+          }
+        });
 
-      values.push(taskId);
-      return this.pool.write(`UPDATE tasks SET ${fields.join(', ')} WHERE id = ?`, values);
-    }));
+        values.push(taskId);
+        return this.pool.write(`UPDATE tasks SET ${fields.join(', ')} WHERE id = ?`, values);
+      })
+    );
   }
 
   async getTask(id) {
@@ -447,7 +469,7 @@ class SwarmPersistencePooled {
       }
 
       const tasks = await this.pool.read(sql, params);
-      return tasks.map(t => ({
+      return tasks.map((t) => ({
         ...t,
         assigned_agents: JSON.parse(t.assigned_agents || '[]'),
         result: t.result ? JSON.parse(t.result) : null,
@@ -459,15 +481,20 @@ class SwarmPersistencePooled {
   async storeMemory(agentId, key, value, ttlSecs = null) {
     await this.ensureInitialized();
 
-    return this.trackOperation(() => this.withRetry(() => {
-      const expiresAt = ttlSecs ? new Date(Date.now() + ttlSecs * 1000).toISOString() : null;
-      const id = `mem_${agentId}_${Date.now()}`;
+    return this.trackOperation(() =>
+      this.withRetry(() => {
+        const expiresAt = ttlSecs ? new Date(Date.now() + ttlSecs * 1000).toISOString() : null;
+        const id = `mem_${agentId}_${Date.now()}`;
 
-      return this.pool.write(`
+        return this.pool.write(
+          `
         INSERT OR REPLACE INTO agent_memory (id, agent_id, key, value, ttl_secs, expires_at, updated_at)
         VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-      `, [id, agentId, key, JSON.stringify(value), ttlSecs, expiresAt]);
-    }));
+      `,
+          [id, agentId, key, JSON.stringify(value), ttlSecs, expiresAt]
+        );
+      })
+    );
   }
 
   async getMemory(agentId, key) {
@@ -477,11 +504,14 @@ class SwarmPersistencePooled {
       // First cleanup expired entries
       await this.cleanupExpiredMemory();
 
-      const memories = await this.pool.read(`
+      const memories = await this.pool.read(
+        `
         SELECT * FROM agent_memory 
         WHERE agent_id = ? AND key = ? 
         AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)
-      `, [agentId, key]);
+      `,
+        [agentId, key]
+      );
 
       if (memories.length === 0) return null;
 
@@ -500,14 +530,17 @@ class SwarmPersistencePooled {
       // First cleanup expired entries
       await this.cleanupExpiredMemory();
 
-      const memories = await this.pool.read(`
+      const memories = await this.pool.read(
+        `
         SELECT * FROM agent_memory 
         WHERE agent_id = ? 
         AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)
         ORDER BY updated_at DESC
-      `, [agentId]);
+      `,
+        [agentId]
+      );
 
-      return memories.map(m => ({
+      return memories.map((m) => ({
         ...m,
         value: JSON.parse(m.value),
       }));
@@ -517,66 +550,84 @@ class SwarmPersistencePooled {
   async deleteMemory(agentId, key) {
     await this.ensureInitialized();
 
-    return this.trackOperation(() => this.withRetry(() =>
-      this.pool.write('DELETE FROM agent_memory WHERE agent_id = ? AND key = ?', [agentId, key]),
-    ));
+    return this.trackOperation(() =>
+      this.withRetry(() =>
+        this.pool.write('DELETE FROM agent_memory WHERE agent_id = ? AND key = ?', [agentId, key])
+      )
+    );
   }
 
   async cleanupExpiredMemory() {
     await this.ensureInitialized();
 
-    return this.trackOperation(() => this.withRetry(() =>
-      this.pool.write('DELETE FROM agent_memory WHERE expires_at IS NOT NULL AND expires_at <= CURRENT_TIMESTAMP'),
-    ));
+    return this.trackOperation(() =>
+      this.withRetry(() =>
+        this.pool.write(
+          'DELETE FROM agent_memory WHERE expires_at IS NOT NULL AND expires_at <= CURRENT_TIMESTAMP'
+        )
+      )
+    );
   }
 
   // Neural network operations
   async storeNeuralNetwork(network) {
     await this.ensureInitialized();
 
-    return this.trackOperation(() => this.withRetry(() => {
-      const id = `nn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return this.trackOperation(() =>
+      this.withRetry(() => {
+        const id = `nn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-      return this.pool.write(`
+        return this.pool.write(
+          `
         INSERT INTO neural_networks (id, agent_id, architecture, weights, training_data, performance_metrics)
         VALUES (?, ?, ?, ?, ?, ?)
-      `, [
-        id,
-        network.agentId,
-        JSON.stringify(network.architecture),
-        JSON.stringify(network.weights),
-        JSON.stringify(network.trainingData || {}),
-        JSON.stringify(network.performanceMetrics || {}),
-      ]);
-    }));
+      `,
+          [
+            id,
+            network.agentId,
+            JSON.stringify(network.architecture),
+            JSON.stringify(network.weights),
+            JSON.stringify(network.trainingData || {}),
+            JSON.stringify(network.performanceMetrics || {}),
+          ]
+        );
+      })
+    );
   }
 
   async updateNeuralNetwork(id, updates) {
     await this.ensureInitialized();
 
-    return this.trackOperation(() => this.withRetry(() => {
-      const fields = [];
-      const values = [];
+    return this.trackOperation(() =>
+      this.withRetry(() => {
+        const fields = [];
+        const values = [];
 
-      Object.entries(updates).forEach(([key, value]) => {
-        fields.push(`${key} = ?`);
-        values.push(JSON.stringify(value));
-      });
+        Object.entries(updates).forEach(([key, value]) => {
+          fields.push(`${key} = ?`);
+          values.push(JSON.stringify(value));
+        });
 
-      fields.push('updated_at = CURRENT_TIMESTAMP');
-      values.push(id);
+        fields.push('updated_at = CURRENT_TIMESTAMP');
+        values.push(id);
 
-      return this.pool.write(`UPDATE neural_networks SET ${fields.join(', ')} WHERE id = ?`, values);
-    }));
+        return this.pool.write(
+          `UPDATE neural_networks SET ${fields.join(', ')} WHERE id = ?`,
+          values
+        );
+      })
+    );
   }
 
   async getAgentNeuralNetworks(agentId) {
     await this.ensureInitialized();
 
     return this.trackOperation(async () => {
-      const networks = await this.pool.read('SELECT * FROM neural_networks WHERE agent_id = ?', [agentId]);
+      const networks = await this.pool.read('SELECT * FROM neural_networks WHERE agent_id = ?', [
+        agentId,
+      ]);
 
-      return networks.map(n => ({
+      return networks.map((n) => ({
         ...n,
         architecture: JSON.parse(n.architecture),
         weights: JSON.parse(n.weights),
@@ -590,14 +641,19 @@ class SwarmPersistencePooled {
   async recordMetric(entityType, entityId, metricName, metricValue) {
     await this.ensureInitialized();
 
-    return this.trackOperation(() => this.withRetry(() => {
-      const id = `metric_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return this.trackOperation(() =>
+      this.withRetry(() => {
+        const id = `metric_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-      return this.pool.write(`
+        return this.pool.write(
+          `
         INSERT INTO metrics (id, entity_type, entity_id, metric_name, metric_value)
         VALUES (?, ?, ?, ?, ?)
-      `, [id, entityType, entityId, metricName, metricValue]);
-    }));
+      `,
+          [id, entityType, entityId, metricName, metricValue]
+        );
+      })
+    );
   }
 
   async getMetrics(entityType, entityId, metricName = null) {
@@ -622,26 +678,34 @@ class SwarmPersistencePooled {
   async logEvent(swarmId, eventType, eventData) {
     await this.ensureInitialized();
 
-    return this.trackOperation(() => this.withRetry(() =>
-      this.pool.write(`
+    return this.trackOperation(() =>
+      this.withRetry(() =>
+        this.pool.write(
+          `
         INSERT INTO events (swarm_id, event_type, event_data)
         VALUES (?, ?, ?)
-      `, [swarmId, eventType, JSON.stringify(eventData)]),
-    ));
+      `,
+          [swarmId, eventType, JSON.stringify(eventData)]
+        )
+      )
+    );
   }
 
   async getSwarmEvents(swarmId, limit = 100) {
     await this.ensureInitialized();
 
     return this.trackOperation(async () => {
-      const events = await this.pool.read(`
+      const events = await this.pool.read(
+        `
         SELECT * FROM events 
         WHERE swarm_id = ? 
         ORDER BY timestamp DESC 
         LIMIT ?
-      `, [swarmId, limit]);
+      `,
+        [swarmId, limit]
+      );
 
-      return events.map(e => ({
+      return events.map((e) => ({
         ...e,
         event_data: JSON.parse(e.event_data || '{}'),
       }));

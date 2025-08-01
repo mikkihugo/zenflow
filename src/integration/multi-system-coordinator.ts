@@ -1,4 +1,3 @@
-
 /** Multi-System Coordinator - Advanced Integration Layer;
 /** ORCHESTRATES LANCEDB, KUZU, AND VISIONARY SOFTWARE INTELLIGENCE SYSTEMS;
 /** Provides unified interface and cross-system intelligence;

@@ -3,8 +3,8 @@
  * Runs all tests including edge cases and coverage tests
  */
 
-import { runAll as runCoverageTests } from './test-runner.js';
 import assert from 'assert';
+import { runAll as runCoverageTests } from './test-runner.js';
 
 // Import and run the basic tests first
 async function runBasicTests() {
@@ -47,14 +47,16 @@ async function runAllTests() {
     results.overall.failed = results.basic.failed + results.coverage.failed;
 
     // Print final summary
-    console.log(`\n${ '='.repeat(60)}`);
+    console.log(`\n${'='.repeat(60)}`);
     console.log('📊 FINAL TEST SUMMARY');
     console.log('='.repeat(60));
     console.log(`Basic Tests:    ${results.basic.passed}/${results.basic.total} passed`);
     console.log(`Coverage Tests: ${results.coverage.passed}/${results.coverage.total} passed`);
     console.log('-'.repeat(60));
     console.log(`TOTAL:          ${results.overall.passed}/${results.overall.total} passed`);
-    console.log(`Success Rate:   ${((results.overall.passed / results.overall.total) * 100).toFixed(2)}%`);
+    console.log(
+      `Success Rate:   ${((results.overall.passed / results.overall.total) * 100).toFixed(2)}%`
+    );
 
     // Generate coverage report
     console.log('\n📈 Coverage Report:');
@@ -63,7 +65,6 @@ async function runAllTests() {
     // The actual coverage will be shown by nyc
 
     return results.overall;
-
   } catch (error) {
     console.error('\n❌ Fatal error during test execution:', error);
     throw error;
@@ -76,12 +77,14 @@ export { runAllTests };
 // Run if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   runAllTests()
-    .then(results => {
+    .then((results) => {
       const exitCode = results.failed > 0 ? 1 : 0;
-      console.log(`\n${exitCode === 0 ? '✅' : '❌'} Tests ${exitCode === 0 ? 'passed' : 'failed'}`);
+      console.log(
+        `\n${exitCode === 0 ? '✅' : '❌'} Tests ${exitCode === 0 ? 'passed' : 'failed'}`
+      );
       process.exit(exitCode);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('Test suite failed:', error);
       process.exit(1);
     });

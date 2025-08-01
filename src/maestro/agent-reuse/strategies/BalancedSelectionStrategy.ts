@@ -3,8 +3,8 @@
  * Balances performance, availability, and resource utilization when selecting agents
  */
 
-import { PerformanceScore } from '../PerformanceScorer';
-import { WorkloadMetrics } from '../WorkloadMonitor';
+import type { PerformanceScore } from '../PerformanceScorer';
+import type { WorkloadMetrics } from '../WorkloadMonitor';
 
 export interface AgentCandidate {
   agentId: string;
@@ -37,26 +37,23 @@ export class BalancedSelectionStrategy {
   /**
    * Select optimal agents based on balanced criteria
    */
-  selectAgents(
-    candidates: AgentCandidate[],
-    criteria: SelectionCriteria
-  ): SelectionResult {
+  selectAgents(candidates: AgentCandidate[], criteria: SelectionCriteria): SelectionResult {
     // Filter candidates by availability and capabilities
     const availableCandidates = this.filterCandidates(candidates, criteria);
-    
+
     if (availableCandidates.length === 0) {
       return {
         selectedAgents: [],
         score: 0,
         reasoning: 'No available agents match the required capabilities',
-        alternatives: []
+        alternatives: [],
       };
     }
 
     // Score each candidate
-    const scoredCandidates = availableCandidates.map(candidate => ({
+    const scoredCandidates = availableCandidates.map((candidate) => ({
       candidate,
-      score: this.calculateSelectionScore(candidate, criteria)
+      score: this.calculateSelectionScore(candidate, criteria),
     }));
 
     // Sort by score (highest first)
@@ -68,12 +65,12 @@ export class BalancedSelectionStrategy {
     const alternatives = scoredCandidates.slice(selectedCount);
 
     const avgScore = selected.reduce((sum, s) => sum + s.score, 0) / selected.length;
-    
+
     return {
-      selectedAgents: selected.map(s => s.candidate),
+      selectedAgents: selected.map((s) => s.candidate),
       score: avgScore,
       reasoning: this.generateReasoning(selected, criteria),
-      alternatives: alternatives.map(a => a.candidate)
+      alternatives: alternatives.map((a) => a.candidate),
     };
   }
 
@@ -84,15 +81,15 @@ export class BalancedSelectionStrategy {
     candidates: AgentCandidate[],
     criteria: SelectionCriteria
   ): AgentCandidate[] {
-    return candidates.filter(candidate => {
+    return candidates.filter((candidate) => {
       // Must be available
       if (candidate.availability !== 'available') {
         return false;
       }
 
       // Must have required capabilities
-      const hasAllCapabilities = criteria.requiredCapabilities.every(
-        capability => candidate.capabilities.includes(capability)
+      const hasAllCapabilities = criteria.requiredCapabilities.every((capability) =>
+        candidate.capabilities.includes(capability)
       );
 
       return hasAllCapabilities;
@@ -102,10 +99,7 @@ export class BalancedSelectionStrategy {
   /**
    * Calculate selection score for a candidate
    */
-  private calculateSelectionScore(
-    candidate: AgentCandidate,
-    criteria: SelectionCriteria
-  ): number {
+  private calculateSelectionScore(candidate: AgentCandidate, criteria: SelectionCriteria): number {
     let score = 0;
 
     // Performance score (0-1)
@@ -147,7 +141,7 @@ export class BalancedSelectionStrategy {
     const memoryScore = Math.max(0, 1 - metrics.memoryUsage);
     const taskScore = Math.max(0, 1 - Math.min(1, metrics.activeTasks / 10)); // Assume 10 is max reasonable
 
-    return (cpuScore * 0.4 + memoryScore * 0.3 + taskScore * 0.3);
+    return cpuScore * 0.4 + memoryScore * 0.3 + taskScore * 0.3;
   }
 
   /**
@@ -155,7 +149,7 @@ export class BalancedSelectionStrategy {
    */
   private calculateReuseScore(candidate: AgentCandidate): number {
     const usageCount = candidate.usageCount;
-    
+
     if (usageCount === 0) return 0.3; // New agents get lower score
     if (usageCount <= 5) return 0.8; // Sweet spot
     if (usageCount <= 10) return 0.6; // Still good
@@ -165,21 +159,18 @@ export class BalancedSelectionStrategy {
   /**
    * Calculate capability match score
    */
-  private calculateCapabilityScore(
-    candidate: AgentCandidate,
-    criteria: SelectionCriteria
-  ): number {
+  private calculateCapabilityScore(candidate: AgentCandidate, criteria: SelectionCriteria): number {
     const requiredCount = criteria.requiredCapabilities.length;
-    const matchingCount = criteria.requiredCapabilities.filter(
-      cap => candidate.capabilities.includes(cap)
+    const matchingCount = criteria.requiredCapabilities.filter((cap) =>
+      candidate.capabilities.includes(cap)
     ).length;
 
     const baseScore = matchingCount / requiredCount;
-    
+
     // Bonus for having extra relevant capabilities
     const extraRelevant = candidate.capabilities.length - requiredCount;
     const bonusScore = Math.min(0.2, extraRelevant * 0.05);
-    
+
     return Math.min(1, baseScore + bonusScore);
   }
 
@@ -189,7 +180,7 @@ export class BalancedSelectionStrategy {
   private calculateFreshnessScore(candidate: AgentCandidate): number {
     const timeSinceLastUse = Date.now() - candidate.lastUsed.getTime();
     const hoursSinceLastUse = timeSinceLastUse / (1000 * 60 * 60);
-    
+
     if (hoursSinceLastUse < 1) return 0.7; // Recently used
     if (hoursSinceLastUse < 6) return 0.9; // Moderately fresh
     return 1.0; // Fresh
@@ -207,10 +198,11 @@ export class BalancedSelectionStrategy {
     }
 
     const reasons: string[] = [];
-    
+
     if (criteria.prioritizePerformance) {
-      const avgPerf = selected.reduce((sum, s) => 
-        sum + (s.candidate.performanceScore?.overall || 0.5), 0) / selected.length;
+      const avgPerf =
+        selected.reduce((sum, s) => sum + (s.candidate.performanceScore?.overall || 0.5), 0) /
+        selected.length;
       reasons.push(`High performance agents (avg: ${(avgPerf * 100).toFixed(1)}%)`);
     }
 
@@ -219,16 +211,15 @@ export class BalancedSelectionStrategy {
     }
 
     if (criteria.preferReused) {
-      const avgUsage = selected.reduce((sum, s) => sum + s.candidate.usageCount, 0) / selected.length;
+      const avgUsage =
+        selected.reduce((sum, s) => sum + s.candidate.usageCount, 0) / selected.length;
       reasons.push(`Experienced agents (avg usage: ${avgUsage.toFixed(1)})`);
     }
 
-    const capabilityMatch = selected.every(s => 
-      criteria.requiredCapabilities.every(cap => 
-        s.candidate.capabilities.includes(cap)
-      )
+    const capabilityMatch = selected.every((s) =>
+      criteria.requiredCapabilities.every((cap) => s.candidate.capabilities.includes(cap))
     );
-    
+
     if (capabilityMatch) {
       reasons.push('All required capabilities matched');
     }
@@ -248,9 +239,7 @@ export class BalancedSelectionStrategy {
     weaknesses: string[];
     recommendations: string[];
   } {
-    const scores = selectedAgents.map(agent => 
-      this.calculateSelectionScore(agent, criteria)
-    );
+    const scores = selectedAgents.map((agent) => this.calculateSelectionScore(agent, criteria));
     const avgScore = scores.reduce((sum, s) => sum + s, 0) / scores.length;
 
     const strengths: string[] = [];
@@ -258,9 +247,10 @@ export class BalancedSelectionStrategy {
     const recommendations: string[] = [];
 
     // Analyze performance
-    const avgPerformance = selectedAgents.reduce((sum, agent) => 
-      sum + (agent.performanceScore?.overall || 0.5), 0) / selectedAgents.length;
-    
+    const avgPerformance =
+      selectedAgents.reduce((sum, agent) => sum + (agent.performanceScore?.overall || 0.5), 0) /
+      selectedAgents.length;
+
     if (avgPerformance > 0.7) {
       strengths.push('High-performing agent selection');
     } else if (avgPerformance < 0.4) {
@@ -269,11 +259,10 @@ export class BalancedSelectionStrategy {
     }
 
     // Analyze workload distribution
-    const workloads = selectedAgents
-      .map(agent => agent.workloadMetrics?.activeTasks || 0);
+    const workloads = selectedAgents.map((agent) => agent.workloadMetrics?.activeTasks || 0);
     const maxWorkload = Math.max(...workloads);
     const minWorkload = Math.min(...workloads);
-    
+
     if (maxWorkload - minWorkload <= 2) {
       strengths.push('Well-balanced workload distribution');
     } else {
@@ -285,7 +274,7 @@ export class BalancedSelectionStrategy {
       score: avgScore,
       strengths,
       weaknesses,
-      recommendations
+      recommendations,
     };
   }
 }

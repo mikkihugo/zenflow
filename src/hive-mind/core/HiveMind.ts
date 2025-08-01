@@ -7,24 +7,24 @@
 
 import { EventEmitter } from 'events';
 import { v4 as uuidv4 } from 'uuid';
-import { Queen } from './Queen';
-import { Agent } from './Agent';
-import { Memory } from './Memory';
-import { Communication } from './Communication';
-import { DatabaseManager } from './DatabaseManager';
-import { SwarmOrchestrator } from '../integration/SwarmOrchestrator';
 import { ConsensusEngine } from '../integration/ConsensusEngine';
+import { SwarmOrchestrator } from '../integration/SwarmOrchestrator';
 import {
-  HiveMindConfig,
+  type AgentSpawnOptions,
+  type AgentType,
+  type HiveMindConfig,
+  type SwarmStatus,
   SwarmTopology,
-  AgentType,
-  Task,
+  type Task,
   TaskPriority,
   TaskStrategy,
-  SwarmStatus,
-  AgentSpawnOptions,
-  TaskSubmitOptions,
+  type TaskSubmitOptions,
 } from '../types.js';
+import { Agent } from './Agent';
+import { Communication } from './Communication';
+import { DatabaseManager } from './DatabaseManager';
+import { Memory } from './Memory';
+import { Queen } from './Queen';
 
 export class HiveMind extends EventEmitter {
   private id: string;
@@ -69,14 +69,19 @@ export class HiveMind extends EventEmitter {
       });
 
       // Initialize Multiple Queens for different visionary aspects
-      const queenTypes = this.config.queenTypes || ['strategic', 'technical', 'creative', 'analytical'];
+      const queenTypes = this.config.queenTypes || [
+        'strategic',
+        'technical',
+        'creative',
+        'analytical',
+      ];
       for (const queenType of queenTypes) {
         const queen = new Queen({
           swarmId: this.id,
           mode: this.config.queenMode,
           topology: this.config.topology,
           type: queenType,
-          visionaryFocus: queenType // Each queen has a different visionary focus
+          visionaryFocus: queenType, // Each queen has a different visionary focus
         });
         this.queens.set(queenType, queen);
       }
@@ -89,7 +94,7 @@ export class HiveMind extends EventEmitter {
 
       // Initialize all queens and subsystems
       const initPromises = [
-        ...Array.from(this.queens.values()).map(queen => queen.initialize()),
+        ...Array.from(this.queens.values()).map((queen) => queen.initialize()),
         this.memory.initialize(),
         this.communication.initialize(),
         this.orchestrator.initialize(),
@@ -309,7 +314,7 @@ export class HiveMind extends EventEmitter {
         acc[agent.type] = (acc[agent.type] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>,
+      {} as Record<string, number>
     );
 
     // Calculate task statistics
@@ -375,7 +380,7 @@ export class HiveMind extends EventEmitter {
       activeAgents: agents.filter((a) => a.status === 'busy').length,
       pendingTasks: tasks.filter((t) => t.status === 'pending').length,
       availableCapacity: Math.round(
-        (1 - agents.filter((a) => a.status === 'busy').length / agents.length) * 100,
+        (1 - agents.filter((a) => a.status === 'busy').length / agents.length) * 100
       ),
     };
   }
@@ -457,7 +462,7 @@ export class HiveMind extends EventEmitter {
 
     // Shutdown subsystems
     await Promise.all([
-      ...Array.from(this.queens.values()).map(queen => queen.shutdown()),
+      ...Array.from(this.queens.values()).map((queen) => queen.shutdown()),
       this.memory.shutdown(),
       this.communication.shutdown(),
       this.orchestrator.shutdown(),
@@ -483,7 +488,12 @@ export class HiveMind extends EventEmitter {
       specialist: ['domain_expertise', 'custom_capabilities', 'problem_solving'],
       // Maestro specs-driven agent capabilities
       requirements_analyst: ['requirements_analysis', 'user_story_creation', 'acceptance_criteria'],
-      design_architect: ['system_design', 'architecture', 'technical_writing', 'specs_driven_design'],
+      design_architect: [
+        'system_design',
+        'architecture',
+        'technical_writing',
+        'specs_driven_design',
+      ],
       task_planner: ['task_management', 'workflow_orchestration', 'project_management'],
       implementation_coder: ['code_generation', 'implementation', 'debugging', 'refactoring'],
       quality_reviewer: ['code_review', 'quality_assurance', 'testing', 'standards_enforcement'],

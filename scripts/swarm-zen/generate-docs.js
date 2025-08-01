@@ -102,7 +102,9 @@ function parseSourceFile(content, filePath) {
   const relativePath = path.relative(CONFIG.sourceDir, filePath);
 
   // Extract classes
-  const classMatches = content.matchAll(/export\s+class\s+(\w+)(?:\s+extends\s+(\w+))?\s*{([^}]+)}/g);
+  const classMatches = content.matchAll(
+    /export\s+class\s+(\w+)(?:\s+extends\s+(\w+))?\s*{([^}]+)}/g
+  );
   for (const match of classMatches) {
     const [, name, parent, body] = match;
     const methods = extractMethods(body);
@@ -119,7 +121,9 @@ function parseSourceFile(content, filePath) {
   }
 
   // Extract functions
-  const functionMatches = content.matchAll(/export\s+(?:async\s+)?function\s+(\w+)\s*\(([^)]*)\)(?:\s*:\s*([^{]+))?\s*{/g);
+  const functionMatches = content.matchAll(
+    /export\s+(?:async\s+)?function\s+(\w+)\s*\(([^)]*)\)(?:\s*:\s*([^{]+))?\s*{/g
+  );
   for (const match of functionMatches) {
     const [, name, params, returnType] = match;
 
@@ -133,7 +137,9 @@ function parseSourceFile(content, filePath) {
   }
 
   // Extract interfaces (TypeScript)
-  const interfaceMatches = content.matchAll(/export\s+interface\s+(\w+)(?:\s+extends\s+([^{]+))?\s*{([^}]+)}/g);
+  const interfaceMatches = content.matchAll(
+    /export\s+interface\s+(\w+)(?:\s+extends\s+([^{]+))?\s*{([^}]+)}/g
+  );
   for (const match of interfaceMatches) {
     const [, name, parent, body] = match;
     const properties = extractInterfaceProperties(body);
@@ -161,7 +167,9 @@ function parseSourceFile(content, filePath) {
   }
 
   // Extract constants
-  const constMatches = content.matchAll(/export\s+const\s+(\w+)(?:\s*:\s*([^=]+))?\s*=\s*([^;]+);/g);
+  const constMatches = content.matchAll(
+    /export\s+const\s+(\w+)(?:\s*:\s*([^=]+))?\s*=\s*([^;]+);/g
+  );
   for (const match of constMatches) {
     const [, name, type, value] = match;
 
@@ -199,7 +207,9 @@ function extractMethods(body) {
 // Extract properties from class body
 function extractProperties(body) {
   const properties = [];
-  const propertyMatches = body.matchAll(/(?:readonly\s+)?(\w+)(?:\s*:\s*([^;=]+))?(?:\s*=\s*([^;]+))?;/g);
+  const propertyMatches = body.matchAll(
+    /(?:readonly\s+)?(\w+)(?:\s*:\s*([^;=]+))?(?:\s*=\s*([^;]+))?;/g
+  );
 
   for (const match of propertyMatches) {
     const [, name, type, defaultValue] = match;
@@ -275,7 +285,7 @@ function extractJSDoc(content, position) {
 
   const jsdocLines = lines.slice(jsdocStart, lines.length);
   return jsdocLines
-    .map(line => line.replace(/^\s*\*\s?/, ''))
+    .map((line) => line.replace(/^\s*\*\s?/, ''))
     .join('\n')
     .trim();
 }
@@ -342,7 +352,9 @@ npm install ${packageInfo.name}
 
 ## Classes
 
-${apiInfo.classes.map(cls => `
+${apiInfo.classes
+  .map(
+    (cls) => `
 ### ${cls.name}
 
 ${cls.documentation || '*No description available*'}
@@ -352,47 +364,87 @@ ${cls.parent ? `**Extends**: \`${cls.parent}\`` : ''}
 
 #### Properties
 
-${cls.properties.length > 0 ? cls.properties.map(prop => `
+${
+  cls.properties.length > 0
+    ? cls.properties
+        .map(
+          (prop) => `
 - **${prop.name}**${prop.readonly ? ' *(readonly)*' : ''}: \`${prop.type || 'any'}\`${prop.defaultValue ? ` = \`${prop.defaultValue}\`` : ''}
-`).join('') : '*No public properties*'}
+`
+        )
+        .join('')
+    : '*No public properties*'
+}
 
 #### Methods
 
-${cls.methods.length > 0 ? cls.methods.map(method => `
-##### ${method.name}(${method.parameters.map(p => `${p.name}${p.optional ? '?' : ''}: ${p.type || 'any'}`).join(', ')})${method.returnType ? `: ${method.returnType}` : ''}
+${
+  cls.methods.length > 0
+    ? cls.methods
+        .map(
+          (method) => `
+##### ${method.name}(${method.parameters.map((p) => `${p.name}${p.optional ? '?' : ''}: ${p.type || 'any'}`).join(', ')})${method.returnType ? `: ${method.returnType}` : ''}
 
 ${method.isAsync ? '*Async method*' : ''}
 
 **Parameters:**
-${method.parameters.length > 0 ? method.parameters.map(p => `
+${
+  method.parameters.length > 0
+    ? method.parameters
+        .map(
+          (p) => `
 - **${p.name}**${p.optional ? ' *(optional)*' : ''}: \`${p.type || 'any'}\`${p.defaultValue ? ` = \`${p.defaultValue}\`` : ''}
-`).join('') : '*No parameters*'}
+`
+        )
+        .join('')
+    : '*No parameters*'
+}
 
-`).join('') : '*No public methods*'}
+`
+        )
+        .join('')
+    : '*No public methods*'
+}
 
 ---
-`).join('')}
+`
+  )
+  .join('')}
 
 ## Functions
 
-${apiInfo.functions.map(func => `
-### ${func.name}(${func.parameters.map(p => `${p.name}${p.optional ? '?' : ''}: ${p.type || 'any'}`).join(', ')})${func.returnType ? `: ${func.returnType}` : ''}
+${apiInfo.functions
+  .map(
+    (func) => `
+### ${func.name}(${func.parameters.map((p) => `${p.name}${p.optional ? '?' : ''}: ${p.type || 'any'}`).join(', ')})${func.returnType ? `: ${func.returnType}` : ''}
 
 ${func.documentation || '*No description available*'}
 
 **File**: \`${func.file}\`
 
 **Parameters:**
-${func.parameters.length > 0 ? func.parameters.map(p => `
+${
+  func.parameters.length > 0
+    ? func.parameters
+        .map(
+          (p) => `
 - **${p.name}**${p.optional ? ' *(optional)*' : ''}: \`${p.type || 'any'}\`${p.defaultValue ? ` = \`${p.defaultValue}\`` : ''}
-`).join('') : '*No parameters*'}
+`
+        )
+        .join('')
+    : '*No parameters*'
+}
 
 ---
-`).join('')}
+`
+  )
+  .join('')}
 
 ## Interfaces
 
-${apiInfo.interfaces.map(iface => `
+${apiInfo.interfaces
+  .map(
+    (iface) => `
 ### ${iface.name}
 
 ${iface.documentation || '*No description available*'}
@@ -402,21 +454,29 @@ ${iface.parent ? `**Extends**: \`${iface.parent}\`` : ''}
 
 \`\`\`typescript
 interface ${iface.name} {
-${iface.properties.map(prop => `  ${prop.name}${prop.optional ? '?' : ''}: ${prop.type};`).join('\n')}
+${iface.properties.map((prop) => `  ${prop.name}${prop.optional ? '?' : ''}: ${prop.type};`).join('\n')}
 }
 \`\`\`
 
 **Properties:**
-${iface.properties.map(prop => `
+${iface.properties
+  .map(
+    (prop) => `
 - **${prop.name}**${prop.optional ? ' *(optional)*' : ''}: \`${prop.type}\`
-`).join('')}
+`
+  )
+  .join('')}
 
 ---
-`).join('')}
+`
+  )
+  .join('')}
 
 ## Types
 
-${apiInfo.types.map(type => `
+${apiInfo.types
+  .map(
+    (type) => `
 ### ${type.name}
 
 ${type.documentation || '*No description available*'}
@@ -428,11 +488,15 @@ type ${type.name} = ${type.definition};
 \`\`\`
 
 ---
-`).join('')}
+`
+  )
+  .join('')}
 
 ## Constants
 
-${apiInfo.constants.map(constant => `
+${apiInfo.constants
+  .map(
+    (constant) => `
 ### ${constant.name}
 
 ${constant.documentation || '*No description available*'}
@@ -442,7 +506,9 @@ ${constant.documentation || '*No description available*'}
 **Value**: \`${constant.value}\`
 
 ---
-`).join('')}
+`
+  )
+  .join('')}
 
 ## Generated Information
 
@@ -465,11 +531,13 @@ async function generateExamplesDoc(examples) {
 
 ## Table of Contents
 
-${examples.map(example => `- [${example.name}](#${example.name.toLowerCase().replace(/\s+/g, '-')})`).join('\n')}
+${examples.map((example) => `- [${example.name}](#${example.name.toLowerCase().replace(/\s+/g, '-')})`).join('\n')}
 
 ---
 
-${examples.map(example => `
+${examples
+  .map(
+    (example) => `
 ## ${example.name}
 
 ${example.description}
@@ -481,7 +549,9 @@ ${example.content}
 \`\`\`
 
 ---
-`).join('')}
+`
+  )
+  .join('')}
 
 ## Running Examples
 
@@ -918,7 +988,7 @@ Package: ${packageInfo.name} v${packageInfo.version}
 
 ## Source Files Analyzed
 
-${(await findSourceFiles(CONFIG.sourceDir)).map(file => `- ${path.relative(CONFIG.sourceDir, file)}`).join('\n')}
+${(await findSourceFiles(CONFIG.sourceDir)).map((file) => `- ${path.relative(CONFIG.sourceDir, file)}`).join('\n')}
 
 ## Next Steps
 
@@ -936,10 +1006,11 @@ ${(await findSourceFiles(CONFIG.sourceDir)).map(file => `- ${path.relative(CONFI
 
     log('Documentation generation completed successfully!');
     log(`Files generated in: ${CONFIG.outputDir}`);
-    log(`- API Reference: ${apiInfo.classes.length} classes, ${apiInfo.functions.length} functions`);
+    log(
+      `- API Reference: ${apiInfo.classes.length} classes, ${apiInfo.functions.length} functions`
+    );
     log(`- Examples: ${examples.length} examples`);
     log(`- CLI Documentation: Complete command reference`);
-
   } catch (err) {
     error(`Documentation generation failed: ${err.message}`);
     process.exit(1);

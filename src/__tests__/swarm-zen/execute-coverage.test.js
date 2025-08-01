@@ -3,8 +3,8 @@
  */
 
 import { createRequire } from 'module';
-import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
@@ -14,7 +14,9 @@ console.log('🚀 Executing code paths for coverage...\n');
 
 // 1. Test RuvSwarm from index.js
 console.log('Testing index.js...');
+
 import { RuvSwarm } from '../src/index.js';
+
 try {
   // Test static methods
   const version = RuvSwarm.getVersion();
@@ -53,14 +55,15 @@ try {
   // Test status
   const status = await swarm.getStatus();
   console.log(`  ✓ Status: ${status.agentCount} agents`);
-
 } catch (error) {
   console.log(`  ⚠️  Mock mode: ${error.message}`);
 }
 
 // 2. Test BenchmarkCLI
 console.log('\nTesting benchmark.js...');
+
 import { BenchmarkCLI } from '../src/benchmark.js';
+
 const bench = new BenchmarkCLI();
 console.log('  ✓ BenchmarkCLI created');
 
@@ -70,14 +73,18 @@ console.log(`  ✓ getArg: ${arg}`);
 
 // 3. Test NeuralCLI
 console.log('\nTesting neural.js...');
+
 import { NeuralCLI, PATTERN_MEMORY_CONFIG } from '../src/neural.js';
+
 const neural = new NeuralCLI();
 console.log('  ✓ NeuralCLI created');
 console.log(`  ✓ Pattern configs: ${Object.keys(PATTERN_MEMORY_CONFIG).length}`);
 
 // 4. Test NeuralAgent
 console.log('\nTesting neural-agent.js...');
+
 import { NeuralAgent } from '../src/neural-agent.js';
+
 try {
   const neuralAgent = new NeuralAgent({
     id: 'test-agent',
@@ -89,14 +96,15 @@ try {
   // Test initialization
   await neuralAgent.initialize();
   console.log('  ✓ NeuralAgent initialized');
-
 } catch (error) {
   console.log(`  ⚠️  NeuralAgent: ${error.message}`);
 }
 
 // 5. Test SwarmPersistence
 console.log('\nTesting persistence.js...');
+
 import { SwarmPersistence } from '../src/persistence.js';
+
 try {
   const persistence = new SwarmPersistence(':memory:');
   await persistence.initialize();
@@ -147,14 +155,15 @@ try {
 
   await persistence.close();
   console.log('  ✓ Persistence closed');
-
 } catch (error) {
   console.log(`  ⚠️  Persistence: ${error.message}`);
 }
 
 // 6. Test NeuralNetworkManager
 console.log('\nTesting neural-network-manager.js...');
+
 import { NeuralNetworkManager } from '../src/neural-network-manager.js';
+
 try {
   const manager = new NeuralNetworkManager();
   await manager.initialize();
@@ -171,7 +180,6 @@ try {
   // List models
   const models = manager.listModels();
   console.log(`  ✓ Models: ${models.join(', ')}`);
-
 } catch (error) {
   console.log(`  ⚠️  NeuralNetworkManager: ${error.message}`);
 }
@@ -188,14 +196,15 @@ try {
 
   const simd = loader.hasSIMDSupport();
   console.log(`  ✓ SIMD supported: ${simd}`);
-
 } catch (error) {
   console.log(`  ⚠️  WasmLoader: ${error.message}`);
 }
 
 // 8. Test RuvSwarmEnhanced
 console.log('\nTesting index-enhanced.js...');
+
 import { RuvSwarm as RuvSwarmEnhanced } from '../src/index-enhanced.js';
+
 try {
   const enhanced = new RuvSwarmEnhanced();
   await enhanced.initialize({ enableNeuralAgents: true });
@@ -206,15 +215,16 @@ try {
     enableNeuralAgents: true,
   });
   console.log('  ✓ Enhanced swarm created');
-
 } catch (error) {
   console.log(`  ⚠️  RuvSwarmEnhanced: ${error.message}`);
 }
 
 // 9. Test Neural Models
 console.log('\nTesting neural-models...');
+
 import * as models from '../src/neural-models/index.js';
-console.log(`  ✓ Models loaded: ${Object.keys(models).filter(k => k.endsWith('Model')).length}`);
+
+console.log(`  ✓ Models loaded: ${Object.keys(models).filter((k) => k.endsWith('Model')).length}`);
 
 try {
   // Test base model
@@ -234,7 +244,6 @@ try {
     outputClasses: 10,
   });
   console.log('  ✓ CNNModel created');
-
 } catch (error) {
   console.log(`  ⚠️  Neural models: ${error.message}`);
 }
@@ -261,7 +270,6 @@ try {
 
   const duration = perf.formatDuration(1500);
   console.log(`  ✓ Format duration: ${duration}`);
-
 } catch (error) {
   console.log(`  ⚠️  Performance: ${error.message}`);
 }

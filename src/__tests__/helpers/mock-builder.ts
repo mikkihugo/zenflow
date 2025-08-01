@@ -1,6 +1,6 @@
 /**
  * Mock Builder - London School TDD Support
- * 
+ *
  * Creates sophisticated mocks for interaction-focused testing
  */
 
@@ -25,16 +25,13 @@ export class MockBuilder {
   /**
    * Create a mock object for a class/interface - London School approach
    */
-  create<T>(
-    type: new (...args: any[]) => T, 
-    config: MockConfiguration = this.globalConfig
-  ): T {
+  create<T>(type: new (...args: any[]) => T, config: MockConfiguration = this.globalConfig): T {
     const mockObj: MockObject = {};
     const prototype = type.prototype;
-    
+
     // Get all methods from the prototype
     const methods = this.extractMethods(prototype);
-    
+
     for (const method of methods) {
       mockObj[method] = this.createMethodMock(method, config);
     }
@@ -52,8 +49,8 @@ export class MockBuilder {
    */
   createPartial<T>(overrides: Partial<T>, config: MockConfiguration = this.globalConfig): T {
     const mockObj: MockObject = {};
-    
-    Object.keys(overrides).forEach(key => {
+
+    Object.keys(overrides).forEach((key) => {
       const value = overrides[key as keyof T];
       if (typeof value === 'function') {
         mockObj[key] = jest.fn(value as any);
@@ -75,8 +72,8 @@ export class MockBuilder {
   createSpy<T extends object>(obj: T, methods?: (keyof T)[]): T {
     const spy = { ...obj };
     const methodsToSpy = methods || Object.getOwnPropertyNames(Object.getPrototypeOf(obj));
-    
-    methodsToSpy.forEach(method => {
+
+    methodsToSpy.forEach((method) => {
       if (typeof obj[method] === 'function') {
         spy[method] = jest.spyOn(obj, method as any);
       }
@@ -91,58 +88,70 @@ export class MockBuilder {
   createCommonMocks() {
     return {
       // Memory Store mock
-      memoryStore: this.create(class MemoryStore {
-        initialize() {}
-        store() {}
-        retrieve() {}
-        delete() {}
-        query() {}
-        close() {}
-      }),
+      memoryStore: this.create(
+        class MemoryStore {
+          initialize() {}
+          store() {}
+          retrieve() {}
+          delete() {}
+          query() {}
+          close() {}
+        }
+      ),
 
       // Neural Engine mock
-      neuralEngine: this.create(class NeuralEngine {
-        initialize() {}
-        processInput() {}
-        trainModel() {}
-        predict() {}
-        optimize() {}
-      }),
+      neuralEngine: this.create(
+        class NeuralEngine {
+          initialize() {}
+          processInput() {}
+          trainModel() {}
+          predict() {}
+          optimize() {}
+        }
+      ),
 
       // Swarm Orchestrator mock
-      swarmOrchestrator: this.create(class SwarmOrchestrator {
-        initialize() {}
-        spawnAgent() {}
-        orchestrateTask() {}
-        getAgentStatus() {}
-        terminateAgent() {}
-        getSwarmStatus() {}
-      }),
+      swarmOrchestrator: this.create(
+        class SwarmOrchestrator {
+          initialize() {}
+          spawnAgent() {}
+          orchestrateTask() {}
+          getAgentStatus() {}
+          terminateAgent() {}
+          getSwarmStatus() {}
+        }
+      ),
 
       // MCP Server mock
-      mcpServer: this.create(class MCPServer {
-        initialize() {}
-        handleMessage() {}
-        registerTool() {}
-        shutdown() {}
-      }),
+      mcpServer: this.create(
+        class MCPServer {
+          initialize() {}
+          handleMessage() {}
+          registerTool() {}
+          shutdown() {}
+        }
+      ),
 
       // Database mock
-      database: this.create(class Database {
-        connect() {}
-        disconnect() {}
-        query() {}
-        transaction() {}
-      }),
+      database: this.create(
+        class Database {
+          connect() {}
+          disconnect() {}
+          query() {}
+          transaction() {}
+        }
+      ),
 
       // File System mock
-      fileSystem: this.create(class FileSystem {
-        readFile() {}
-        writeFile() {}
-        mkdir() {}
-        exists() {}
-        stat() {}
-      })
+      fileSystem: this.create(
+        class FileSystem {
+          readFile() {}
+          writeFile() {}
+          mkdir() {}
+          exists() {}
+          stat() {}
+        }
+      ),
     };
   }
 
@@ -160,7 +169,7 @@ export class MockBuilder {
 
       // Verify call order for interaction sequences
       toHaveBeenCalledInOrder: (methods: (keyof T)[]) => {
-        const calls = methods.map(method => {
+        const calls = methods.map((method) => {
           const mockMethod = (mock as any)[method];
           return mockMethod.mock.invocationCallOrder[0];
         });
@@ -186,7 +195,7 @@ export class MockBuilder {
         const unexpected = interactions.filter((i: any) => !expected.includes(i.method));
         expect(unexpected).toHaveLength(0);
         return expectations;
-      }
+      },
     };
 
     return expectations;
@@ -196,14 +205,14 @@ export class MockBuilder {
    * Reset all mocks - useful for test isolation
    */
   resetAllMocks(mocks: Record<string, any>) {
-    Object.values(mocks).forEach(mock => {
+    Object.values(mocks).forEach((mock) => {
       if (mock && typeof mock === 'object') {
-        Object.values(mock).forEach(method => {
+        Object.values(mock).forEach((method) => {
           if (jest.isMockFunction(method)) {
             (method as jest.Mock).mockReset();
           }
         });
-        
+
         // Clear interaction tracking
         if (mock.__interactions) {
           mock.__interactions = [];
@@ -215,9 +224,9 @@ export class MockBuilder {
   private extractMethods(prototype: any): string[] {
     const methods: string[] = [];
     let current = prototype;
-    
+
     while (current && current !== Object.prototype) {
-      Object.getOwnPropertyNames(current).forEach(name => {
+      Object.getOwnPropertyNames(current).forEach((name) => {
         if (name !== 'constructor' && typeof current[name] === 'function') {
           if (!methods.includes(name)) {
             methods.push(name);
@@ -226,13 +235,13 @@ export class MockBuilder {
       });
       current = Object.getPrototypeOf(current);
     }
-    
+
     return methods;
   }
 
   private createMethodMock(methodName: string, config: MockConfiguration): jest.Mock {
     const mock = jest.fn();
-    
+
     if (config.autoGenerate) {
       // Auto-generate reasonable return values based on method name
       if (methodName.startsWith('get') || methodName.startsWith('find')) {
@@ -252,14 +261,14 @@ export class MockBuilder {
     mockObj.__interactions = interactions;
 
     // Wrap all mock functions to track interactions
-    Object.keys(mockObj).forEach(key => {
+    Object.keys(mockObj).forEach((key) => {
       const originalMock = mockObj[key];
       if (jest.isMockFunction(originalMock)) {
         mockObj[key] = jest.fn((...args: any[]) => {
           interactions.push({
             method: key,
             args,
-            timestamp: Date.now()
+            timestamp: Date.now(),
           });
           return originalMock(...args);
         });
@@ -270,9 +279,9 @@ export class MockBuilder {
   private matchInteractionPattern(interactions: any[], pattern: string): boolean {
     // Simple pattern matching for interaction sequences
     // Pattern format: "method1 -> method2 -> method3"
-    const expectedSequence = pattern.split(' -> ').map(s => s.trim());
-    const actualSequence = interactions.map(i => i.method);
-    
+    const expectedSequence = pattern.split(' -> ').map((s) => s.trim());
+    const actualSequence = interactions.map((i) => i.method);
+
     // Check if expected sequence exists in actual sequence
     for (let i = 0; i <= actualSequence.length - expectedSequence.length; i++) {
       let matches = true;
@@ -284,7 +293,7 @@ export class MockBuilder {
       }
       if (matches) return true;
     }
-    
+
     return false;
   }
 }
@@ -298,9 +307,9 @@ export function createLondonMocks(config?: Partial<MockConfiguration>) {
     trackInteractions: true,
     autoGenerate: true,
     autoReset: true,
-    ...config
+    ...config,
   };
-  
+
   return new MockBuilder(londonConfig);
 }
 
@@ -310,8 +319,8 @@ export function createClassicalMocks(config?: Partial<MockConfiguration>) {
     trackInteractions: false,
     autoGenerate: false,
     autoReset: false,
-    ...config
+    ...config,
   };
-  
+
   return new MockBuilder(classicalConfig);
 }

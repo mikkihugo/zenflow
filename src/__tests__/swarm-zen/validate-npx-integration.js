@@ -6,8 +6,8 @@
 
 import { RuvSwarm } from '../src/index-enhanced';
 import { EnhancedMCPTools } from '../src/mcp-tools-enhanced';
-import { WasmModuleLoader } from '../src/wasm-loader';
 import { NeuralNetworkManager } from '../src/neural-network-manager';
+import { WasmModuleLoader } from '../src/wasm-loader';
 
 async function validateIntegration() {
   console.log('🔍 Validating NPX Integration...\n');
@@ -56,7 +56,11 @@ async function validateIntegration() {
 
     const features = await mcpTools.features_detect({ category: 'all' });
     console.log('✅ MCP Tools working');
-    console.log(`   Runtime features: ${Object.keys(features.runtime).filter(k => features.runtime[k]).join(', ')}`);
+    console.log(
+      `   Runtime features: ${Object.keys(features.runtime)
+        .filter((k) => features.runtime[k])
+        .join(', ')}`
+    );
 
     // Test 6: Neural Networks
     console.log('\n6️⃣ Testing Neural Networks...');
@@ -103,7 +107,7 @@ async function validateIntegration() {
     console.log('✅ Performance acceptable');
     console.log(`   Swarm creation: ${swarmTime.toFixed(1)}ms`);
 
-    console.log(`\n${ '='.repeat(50)}`);
+    console.log(`\n${'='.repeat(50)}`);
     console.log('✅ All validation tests passed!');
     console.log('🚀 NPX integration is working correctly');
     console.log('='.repeat(50));
@@ -114,8 +118,9 @@ async function validateIntegration() {
     console.log('   - Memory efficiency: < 100MB');
     console.log('   - Backward compatibility: Maintained');
     console.log('   - Feature detection: Complete');
-    console.log(`   - Neural networks: ${ruvSwarm.features.neural_networks ? 'Enabled' : 'Simulated'}`);
-
+    console.log(
+      `   - Neural networks: ${ruvSwarm.features.neural_networks ? 'Enabled' : 'Simulated'}`
+    );
   } catch (error) {
     console.error('\n❌ Validation failed:', error.message);
     console.error(error.stack);

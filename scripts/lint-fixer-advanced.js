@@ -10,8 +10,8 @@
  * Handles complex TypeScript parsing errors and automated refactoring
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { execSync } from 'child_process';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { glob } from 'glob';
 
 class AdvancedLintFixer {
@@ -42,7 +42,9 @@ class AdvancedLintFixer {
    */
   logMemory(message, data = {}) {
     const timestamp = new Date().toISOString();
-    console.log(`🧠 [${timestamp}] MEMORY: swarm-lint-fix/hierarchy/level2/specialists/fixer/advanced - ${message}`);
+    console.log(
+      `🧠 [${timestamp}] MEMORY: swarm-lint-fix/hierarchy/level2/specialists/fixer/advanced - ${message}`
+    );
     if (Object.keys(data).length > 0) {
       console.log('📊 Data:', JSON.stringify(data, null, 2));
     }
@@ -135,18 +137,20 @@ class AdvancedLintFixer {
 
     // Fix incomplete expressions at end of lines
     modified = modified.replace(/^(\s*)(.*[^;,{}()])\s*$/gm, (match, indent, statement) => {
-      if (statement.trim() &&
-          !statement.includes('//') &&
-          !statement.includes('/*') &&
-          !statement.includes('if') &&
-          !statement.includes('for') &&
-          !statement.includes('while') &&
-          !statement.includes('function') &&
-          !statement.includes('class') &&
-          !statement.includes('import') &&
-          !statement.includes('export') &&
-          !statement.includes('{') &&
-          !statement.includes('}')) {
+      if (
+        statement.trim() &&
+        !statement.includes('//') &&
+        !statement.includes('/*') &&
+        !statement.includes('if') &&
+        !statement.includes('for') &&
+        !statement.includes('while') &&
+        !statement.includes('function') &&
+        !statement.includes('class') &&
+        !statement.includes('import') &&
+        !statement.includes('export') &&
+        !statement.includes('{') &&
+        !statement.includes('}')
+      ) {
         fixes++;
         return `${indent}${statement};`;
       }
@@ -174,7 +178,10 @@ class AdvancedLintFixer {
 
     // Fix standalone expressions that should be statements
     modified = modified.replace(/^(\s*)(\w+)\s*$/gm, (match, indent, identifier) => {
-      if (identifier && !['if', 'for', 'while', 'const', 'let', 'var', 'function', 'class'].includes(identifier)) {
+      if (
+        identifier &&
+        !['if', 'for', 'while', 'const', 'let', 'var', 'function', 'class'].includes(identifier)
+      ) {
         fixes++;
         return `${indent}// ${identifier}; // Fixed: was standalone identifier`;
       }
@@ -199,17 +206,19 @@ class AdvancedLintFixer {
 
     // Add semicolons to statements that need them
     modified = modified.replace(/^(\s*)(.*[^;{}])\s*$/gm, (match, indent, statement) => {
-      if (statement.trim() &&
-          !statement.includes('//') &&
-          !statement.includes('/*') &&
-          !statement.includes('{') &&
-          !statement.includes('}') &&
-          (statement.includes('=') ||
-           statement.includes('return') ||
-           statement.includes('const') ||
-           statement.includes('let') ||
-           statement.includes('var') ||
-           statement.match(/^\s*\w+\s*\(/))) {
+      if (
+        statement.trim() &&
+        !statement.includes('//') &&
+        !statement.includes('/*') &&
+        !statement.includes('{') &&
+        !statement.includes('}') &&
+        (statement.includes('=') ||
+          statement.includes('return') ||
+          statement.includes('const') ||
+          statement.includes('let') ||
+          statement.includes('var') ||
+          statement.match(/^\s*\w+\s*\(/))
+      ) {
         fixes++;
         return `${indent}${statement};`;
       }
@@ -230,19 +239,30 @@ class AdvancedLintFixer {
     let modified = content;
 
     // Fix missing commas in object literals
-    modified = modified.replace(/(\w+:\s*[^,}\n]+)\s*\n(\s*)(\w+:)/g, (match, prop1, indent, prop2) => {
-      fixes++;
-      return `${prop1},\n${indent}${prop2}`;
-    });
+    modified = modified.replace(
+      /(\w+:\s*[^,}\n]+)\s*\n(\s*)(\w+:)/g,
+      (match, prop1, indent, prop2) => {
+        fixes++;
+        return `${prop1},\n${indent}${prop2}`;
+      }
+    );
 
     // Fix missing commas in array literals
-    modified = modified.replace(/([^,\[\n]+)\s*\n(\s*)([^,\]\n]+)/g, (match, item1, indent, item2) => {
-      if (!item1.includes('{') && !item1.includes('}') && !item2.includes('{') && !item2.includes('}')) {
-        fixes++;
-        return `${item1},\n${indent}${item2}`;
+    modified = modified.replace(
+      /([^,[\n]+)\s*\n(\s*)([^,\]\n]+)/g,
+      (match, item1, indent, item2) => {
+        if (
+          !item1.includes('{') &&
+          !item1.includes('}') &&
+          !item2.includes('{') &&
+          !item2.includes('}')
+        ) {
+          fixes++;
+          return `${item1},\n${indent}${item2}`;
+        }
+        return match;
       }
-      return match;
-    });
+    );
 
     this.updateStats('comma-expected', fixes);
     return modified;
@@ -294,10 +314,13 @@ class AdvancedLintFixer {
     // Fix mixed module syntax in ES modules
     if (filePath.endsWith('.mjs') || modified.includes('import ') || modified.includes('export ')) {
       // Convert require to import
-      modified = modified.replace(/const\s+(\w+)\s*=\s*require\(['"`]([^'"`]+)['"`]\)/g, (match, varName, moduleName) => {
-        fixes++;
-        return `import ${varName} from '${moduleName}';`;
-      });
+      modified = modified.replace(
+        /const\s+(\w+)\s*=\s*require\(['"`]([^'"`]+)['"`]\)/g,
+        (match, varName, moduleName) => {
+          fixes++;
+          return `import ${varName} from '${moduleName}';`;
+        }
+      );
 
       // Convert module.exports to export
       modified = modified.replace(/module\.exports\s*=\s*(.*)/g, (match, exportValue) => {
@@ -455,13 +478,16 @@ class AdvancedLintFixer {
 // Execute if run directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   const fixer = new AdvancedLintFixer();
-  fixer.run().then(stats => {
-    console.log('\n✅ Advanced Lint Fixing completed successfully');
-    process.exit(0);
-  }).catch(error => {
-    console.error('❌ Advanced Lint Fixer failed:', error);
-    process.exit(1);
-  });
+  fixer
+    .run()
+    .then((stats) => {
+      console.log('\n✅ Advanced Lint Fixing completed successfully');
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error('❌ Advanced Lint Fixer failed:', error);
+      process.exit(1);
+    });
 }
 
 export default AdvancedLintFixer;

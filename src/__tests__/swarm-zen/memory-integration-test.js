@@ -9,11 +9,11 @@
  * Addresses Issue #69: "ruv-swarm Memory System Analysis Report"
  */
 
-import hooksInstance, { handleHook } from '../src/hooks/index.js';
-import { SwarmPersistence } from '../src/persistence.js';
-import { EnhancedMCPTools } from '../src/mcp-tools-enhanced.js';
 import fs from 'fs/promises';
 import path from 'path';
+import hooksInstance, { handleHook } from '../src/hooks/index.js';
+import { EnhancedMCPTools } from '../src/mcp-tools-enhanced.js';
+import { SwarmPersistence } from '../src/persistence.js';
 
 class MemoryIntegrationTest {
   constructor() {
@@ -152,8 +152,8 @@ class MemoryIntegrationTest {
 
     // Verify it's in runtime memory
     const runtimeNotifications = this.hooks.sessionData.notifications;
-    const foundInRuntime = runtimeNotifications.some(n =>
-      n.type === notification.type && n.message === notification.message,
+    const foundInRuntime = runtimeNotifications.some(
+      (n) => n.type === notification.type && n.message === notification.message
     );
 
     if (!foundInRuntime) {
@@ -162,8 +162,8 @@ class MemoryIntegrationTest {
 
     // Verify it's in persistent database
     const dbNotifications = await this.hooks.getNotificationsFromDatabase('test-agent');
-    const foundInDb = dbNotifications.some(n =>
-      n.type === notification.type && n.message === notification.message,
+    const foundInDb = dbNotifications.some(
+      (n) => n.type === notification.type && n.message === notification.message
     );
 
     if (!foundInDb) {
@@ -183,11 +183,15 @@ class MemoryIntegrationTest {
     const agent2Id = 'agent-2';
 
     // Agent 1 stores some shared memory
-    await this.hooks.setSharedMemory('shared-task-status', {
-      currentTask: 'building-api',
-      progress: 0.75,
-      dependencies: ['database-setup', 'auth-implementation'],
-    }, agent1Id);
+    await this.hooks.setSharedMemory(
+      'shared-task-status',
+      {
+        currentTask: 'building-api',
+        progress: 0.75,
+        dependencies: ['database-setup', 'auth-implementation'],
+      },
+      agent1Id
+    );
 
     // Agent 2 retrieves the shared memory
     const sharedMemory = await this.hooks.getSharedMemory('shared-task-status', agent1Id);
@@ -240,14 +244,16 @@ class MemoryIntegrationTest {
       // Let's debug what's in the database
       const allMemories = await this.persistence.getAllMemory('coder-1');
       console.log(`🔍 Debug: Agent coder-1 has ${allMemories.length} memories`);
-      allMemories.forEach(m => console.log(`  - ${m.key}: ${JSON.stringify(m.value).substring(0, 100)}`));
+      allMemories.forEach((m) =>
+        console.log(`  - ${m.key}: ${JSON.stringify(m.value).substring(0, 100)}`)
+      );
 
       throw new Error('No cross-agent notifications found after integration');
     }
 
     // Verify we can filter by type
     const errorNotifications = await this.mcpTools.getCrossAgentNotifications(null, 'error');
-    const errorFound = errorNotifications.some(n => n.type === 'error');
+    const errorFound = errorNotifications.some((n) => n.type === 'error');
 
     if (!errorFound) {
       throw new Error('Filtering by notification type failed');
@@ -309,7 +315,7 @@ class MemoryIntegrationTest {
     // Verify completion is in database
     const dbCompletion = await this.persistence.getAgentMemory(
       completionData.agentId,
-      `completion/${completionData.taskId}`,
+      `completion/${completionData.taskId}`
     );
 
     if (!dbCompletion || dbCompletion.value.taskId !== completionData.taskId) {
@@ -349,7 +355,7 @@ class MemoryIntegrationTest {
 
     // Verify it's still in runtime memory
     const runtimeNotifications = this.hooks.sessionData.notifications;
-    const found = runtimeNotifications.some(n => n.type === 'resilience-test');
+    const found = runtimeNotifications.some((n) => n.type === 'resilience-test');
 
     if (!found) {
       throw new Error('System failed when database unavailable');
@@ -382,9 +388,10 @@ class MemoryIntegrationTest {
     const report = {
       ...this.testResults,
       passingRate: `${((this.testResults.summary.passed / this.testResults.summary.total) * 100).toFixed(1)}%`,
-      conclusion: this.testResults.summary.failed === 0 ?
-        '🎉 ALL TESTS PASSED - Memory system integration is working correctly' :
-        `⚠️ ${this.testResults.summary.failed} tests failed - Memory system needs attention`,
+      conclusion:
+        this.testResults.summary.failed === 0
+          ? '🎉 ALL TESTS PASSED - Memory system integration is working correctly'
+          : `⚠️ ${this.testResults.summary.failed} tests failed - Memory system needs attention`,
     };
 
     // Write detailed report
@@ -410,14 +417,14 @@ class MemoryIntegrationTest {
 
     const report = await this.generateReport();
 
-    console.log(`\n${ '='.repeat(60)}`);
+    console.log(`\n${'='.repeat(60)}`);
     console.log('📊 FINAL RESULTS');
     console.log('='.repeat(60));
     console.log(`Total Tests: ${report.summary.total}`);
     console.log(`Passed: ${report.summary.passed}`);
     console.log(`Failed: ${report.summary.failed}`);
     console.log(`Pass Rate: ${report.passingRate}`);
-    console.log(`\n${ report.conclusion}`);
+    console.log(`\n${report.conclusion}`);
 
     await this.cleanup();
 
@@ -429,7 +436,7 @@ class MemoryIntegrationTest {
 // Run test if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   const test = new MemoryIntegrationTest();
-  test.run().catch(error => {
+  test.run().catch((error) => {
     console.error('❌ Test execution failed:', error);
     process.exit(1);
   });

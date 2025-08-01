@@ -305,7 +305,7 @@ export interface VotingStrategy {
   threshold: number;
   recommend: (
     proposal: ConsensusProposal,
-    analysis: any,
+    analysis: any
   ) => {
     vote: boolean;
     confidence: number;

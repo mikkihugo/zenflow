@@ -14,8 +14,8 @@
  */
 
 import { EventEmitter } from 'events';
-import { Logger } from './logger.js';
 import { ErrorFactory } from './errors.js';
+import { Logger } from './logger.js';
 import { generateId } from './utils.js';
 
 export class RecoveryWorkflows extends EventEmitter {
@@ -71,13 +71,15 @@ export class RecoveryWorkflows extends EventEmitter {
 
       this.logger.info('Recovery Workflows initialized successfully');
       this.emit('workflows:initialized');
-
     } catch (error) {
-      const recoveryError = ErrorFactory.createError('resource',
-        'Failed to initialize recovery workflows', {
+      const recoveryError = ErrorFactory.createError(
+        'resource',
+        'Failed to initialize recovery workflows',
+        {
           error: error.message,
           component: 'recovery-workflows',
-        });
+        }
+      );
       this.logger.error('Recovery Workflows initialization failed', recoveryError);
       throw recoveryError;
     }
@@ -122,8 +124,10 @@ export class RecoveryWorkflows extends EventEmitter {
     try {
       // Check if we're already at max concurrent recoveries
       if (this.activeRecoveries.size >= this.options.maxConcurrentRecoveries) {
-        throw ErrorFactory.createError('concurrency',
-          `Maximum concurrent recoveries reached (${this.options.maxConcurrentRecoveries})`);
+        throw ErrorFactory.createError(
+          'concurrency',
+          `Maximum concurrent recoveries reached (${this.options.maxConcurrentRecoveries})`
+        );
       }
 
       // Find matching workflows
@@ -152,7 +156,6 @@ export class RecoveryWorkflows extends EventEmitter {
       });
 
       return recoveryExecution;
-
     } catch (error) {
       this.logger.error('Failed to trigger recovery workflow', {
         triggerSource,
@@ -241,7 +244,6 @@ export class RecoveryWorkflows extends EventEmitter {
       });
 
       this.emit('recovery:completed', { executionId, execution });
-
     } catch (error) {
       execution.status = 'failed';
       execution.endTime = new Date();
@@ -305,7 +307,8 @@ export class RecoveryWorkflows extends EventEmitter {
       const stepTimeout = step.timeout || 30000; // 30 seconds default
       const stepPromise = this.runStepFunction(step, context, execution);
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Step timeout')), stepTimeout));
+        setTimeout(() => reject(new Error('Step timeout')), stepTimeout)
+      );
 
       const result = await Promise.race([stepPromise, timeoutPromise]);
 
@@ -318,7 +321,6 @@ export class RecoveryWorkflows extends EventEmitter {
         executionId: execution.id,
         duration: stepResult.duration,
       });
-
     } catch (error) {
       stepResult.status = 'failed';
       stepResult.error = error.message;
@@ -406,7 +408,7 @@ export class RecoveryWorkflows extends EventEmitter {
         return await this.resetNeuralNetwork(parameters.networkId, context);
 
       case 'wait':
-        await new Promise(resolve => setTimeout(resolve, parameters.duration || 1000));
+        await new Promise((resolve) => setTimeout(resolve, parameters.duration || 1000));
         return { action: 'wait', duration: parameters.duration || 1000 };
 
       case 'log_message':
@@ -428,7 +430,7 @@ export class RecoveryWorkflows extends EventEmitter {
       if (!workflow.enabled) continue;
 
       // Check if workflow matches the trigger
-      const matches = workflow.triggers.some(trigger => {
+      const matches = workflow.triggers.some((trigger) => {
         if (typeof trigger === 'string') {
           return trigger === triggerSource || triggerSource.includes(trigger);
         } else if (typeof trigger === 'object') {
@@ -468,8 +470,7 @@ export class RecoveryWorkflows extends EventEmitter {
   async cancelRecovery(executionId, reason = 'Manual cancellation') {
     const execution = this.activeRecoveries.get(executionId);
     if (!execution) {
-      throw ErrorFactory.createError('validation',
-        `Recovery execution ${executionId} not found`);
+      throw ErrorFactory.createError('validation', `Recovery execution ${executionId} not found`);
     }
 
     execution.status = 'cancelled';
@@ -493,7 +494,7 @@ export class RecoveryWorkflows extends EventEmitter {
       if (!execution) {
         // Check history
         for (const history of this.recoveryHistory.values()) {
-          const historicalExecution = history.find(e => e.id === executionId);
+          const historicalExecution = history.find((e) => e.id === executionId);
           if (historicalExecution) return historicalExecution;
         }
         return null;
@@ -513,7 +514,7 @@ export class RecoveryWorkflows extends EventEmitter {
       ...this.stats,
       activeRecoveries: this.activeRecoveries.size,
       registeredWorkflows: this.workflows.size,
-      enabledWorkflows: Array.from(this.workflows.values()).filter(w => w.enabled).length,
+      enabledWorkflows: Array.from(this.workflows.values()).filter((w) => w.enabled).length,
     };
   }
 
@@ -600,7 +601,7 @@ export class RecoveryWorkflows extends EventEmitter {
           name: 'verify_agent_health',
           action: async (context) => {
             // Verify agent is healthy after restart
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise((resolve) => setTimeout(resolve, 2000));
             return { agentId: context.agentId, healthy: true };
           },
         },
@@ -662,7 +663,7 @@ export class RecoveryWorkflows extends EventEmitter {
           name: 'verify_connection',
           action: async (context) => {
             // Wait and verify connection is restored
-            await new Promise(resolve => setTimeout(resolve, 3000));
+            await new Promise((resolve) => setTimeout(resolve, 3000));
             return { connectionVerified: true };
           },
         },
@@ -739,7 +740,7 @@ export class RecoveryWorkflows extends EventEmitter {
       await this.mcpTools.swarm_monitor({ action: 'stop', swarmId });
 
       // Wait for cleanup
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // Restart with previous configuration
       const restartResult = await this.mcpTools.swarm_init({
@@ -748,7 +749,6 @@ export class RecoveryWorkflows extends EventEmitter {
       });
 
       return { swarmId, restarted: true, result: restartResult };
-
     } catch (error) {
       throw new Error(`Failed to restart swarm ${swarmId}: ${error.message}`);
     }
@@ -764,7 +764,7 @@ export class RecoveryWorkflows extends EventEmitter {
     try {
       // Get agent info
       const agents = await this.mcpTools.agent_list({});
-      const agent = agents.agents.find(a => a.id === agentId);
+      const agent = agents.agents.find((a) => a.id === agentId);
 
       if (!agent) {
         throw new Error(`Agent ${agentId} not found`);
@@ -778,7 +778,6 @@ export class RecoveryWorkflows extends EventEmitter {
       });
 
       return { oldAgentId: agentId, newAgentId: newAgent.id, restarted: true };
-
     } catch (error) {
       throw new Error(`Failed to restart agent ${agentId}: ${error.message}`);
     }
@@ -814,7 +813,6 @@ export class RecoveryWorkflows extends EventEmitter {
       // Restart connection logic would go here
       // This is a placeholder for the actual implementation
       return { connectionId, restarted: true, timestamp: Date.now() };
-
     } catch (error) {
       throw new Error(`Failed to restart MCP connection ${connectionId}: ${error.message}`);
     }
@@ -845,7 +843,6 @@ export class RecoveryWorkflows extends EventEmitter {
         }
 
         return { swarmId, scaledUp: toAdd, newAgents };
-
       } else if (targetCount < currentCount) {
         // Scale down (remove excess agents)
         const toRemove = currentCount - targetCount;
@@ -853,7 +850,6 @@ export class RecoveryWorkflows extends EventEmitter {
       }
 
       return { swarmId, noScalingNeeded: true, currentCount };
-
     } catch (error) {
       throw new Error(`Failed to scale agents for swarm ${swarmId}: ${error.message}`);
     }
@@ -900,7 +896,6 @@ export class RecoveryWorkflows extends EventEmitter {
       });
 
       return { networkId, reset: true, result: resetResult };
-
     } catch (error) {
       throw new Error(`Failed to reset neural network ${networkId}: ${error.message}`);
     }
@@ -934,15 +929,15 @@ export class RecoveryWorkflows extends EventEmitter {
 
     switch (failureType) {
       case 'memory_pressure':
-      // Simulate memory pressure
+        // Simulate memory pressure
         return await this.simulateMemoryPressure(parameters);
 
       case 'agent_failure':
-      // Simulate agent failure
+        // Simulate agent failure
         return await this.simulateAgentFailure(parameters);
 
       case 'connection_failure':
-      // Simulate connection failure
+        // Simulate connection failure
         return await this.simulateConnectionFailure(parameters);
 
       default:

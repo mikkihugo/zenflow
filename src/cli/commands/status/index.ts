@@ -1,6 +1,6 @@
 /**
  * Status Command Module
- * 
+ *
  * Exports the status command implementation
  */
 

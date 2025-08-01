@@ -14,7 +14,7 @@ async function main() {
     console.log('📂 Loading CUDA kernels...');
     const vectorAddCode = await fs.readFile(
       path.join(__dirname, '../kernels/vector_add.cu'),
-      'utf8',
+      'utf8'
     );
 
     console.log('🔄 Transpiling CUDA to WebAssembly...');
@@ -121,7 +121,7 @@ async function main() {
     const throughput = totalElements / totalTime / 1e9; // GOPS
 
     console.log(`   Throughput: ${throughput.toFixed(2)} GFLOPS`);
-    console.log(`   Effective bandwidth: ${(3 * size / totalTime / 1e9).toFixed(2)} GB/s`);
+    console.log(`   Effective bandwidth: ${((3 * size) / totalTime / 1e9).toFixed(2)} GB/s`);
 
     // Show profiling data if available
     if (transpiled.profile) {
@@ -137,7 +137,6 @@ async function main() {
     await runtime.synchronize();
 
     console.log('✅ Example completed successfully!');
-
   } catch (error) {
     console.error('❌ Error:', error.message);
     if (error.stack) {

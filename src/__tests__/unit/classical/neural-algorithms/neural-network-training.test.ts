@@ -1,17 +1,17 @@
 /**
  * Classical TDD (Detroit School) - Neural Network Training Tests
- * 
+ *
  * Focus: Test actual results and mathematical correctness
  * No mocks - verify real computations
  */
 
-import { describe, it, expect, beforeEach } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 
 // Example neural network implementation (would be imported from actual code)
 class NeuralNetwork {
   private weights: number[][][];
   private biases: number[][];
-  
+
   constructor(private layers: number[]) {
     this.initializeWeights();
   }
@@ -19,11 +19,11 @@ class NeuralNetwork {
   private initializeWeights() {
     this.weights = [];
     this.biases = [];
-    
+
     for (let i = 1; i < this.layers.length; i++) {
       const layerWeights: number[][] = [];
       const layerBiases: number[] = [];
-      
+
       for (let j = 0; j < this.layers[i]; j++) {
         const neuronWeights: number[] = [];
         for (let k = 0; k < this.layers[i - 1]; k++) {
@@ -34,7 +34,7 @@ class NeuralNetwork {
         layerWeights.push(neuronWeights);
         layerBiases.push(0);
       }
-      
+
       this.weights.push(layerWeights);
       this.biases.push(layerBiases);
     }
@@ -50,10 +50,10 @@ class NeuralNetwork {
 
   predict(inputs: number[]): number[] {
     let activation = inputs;
-    
+
     for (let i = 0; i < this.weights.length; i++) {
       const newActivation: number[] = [];
-      
+
       for (let j = 0; j < this.weights[i].length; j++) {
         let sum = this.biases[i][j];
         for (let k = 0; k < activation.length; k++) {
@@ -61,28 +61,31 @@ class NeuralNetwork {
         }
         newActivation.push(this.sigmoid(sum));
       }
-      
+
       activation = newActivation;
     }
-    
+
     return activation;
   }
 
-  train(data: Array<{input: number[], output: number[]}>, options: {epochs: number, learningRate?: number}) {
+  train(
+    data: Array<{ input: number[]; output: number[] }>,
+    options: { epochs: number; learningRate?: number }
+  ) {
     const learningRate = options.learningRate || 0.5;
     let finalError = 0;
-    
+
     for (let epoch = 0; epoch < options.epochs; epoch++) {
       let epochError = 0;
-      
+
       for (const sample of data) {
         // Forward pass
         const activations: number[][] = [sample.input];
         let activation = sample.input;
-        
+
         for (let i = 0; i < this.weights.length; i++) {
           const newActivation: number[] = [];
-          
+
           for (let j = 0; j < this.weights[i].length; j++) {
             let sum = this.biases[i][j];
             for (let k = 0; k < activation.length; k++) {
@@ -90,23 +93,23 @@ class NeuralNetwork {
             }
             newActivation.push(this.sigmoid(sum));
           }
-          
+
           activation = newActivation;
           activations.push(activation);
         }
-        
+
         // Calculate error
         const output = activations[activations.length - 1];
         const errors: number[][] = [];
         let error = output.map((o, i) => sample.output[i] - o);
         errors.unshift(error);
-        
+
         epochError += error.reduce((sum, e) => sum + Math.abs(e), 0) / error.length;
-        
+
         // Backpropagation
         for (let i = this.weights.length - 1; i > 0; i--) {
           const newError: number[] = [];
-          
+
           for (let j = 0; j < this.weights[i - 1].length; j++) {
             let sum = 0;
             for (let k = 0; k < this.weights[i].length; k++) {
@@ -114,28 +117,28 @@ class NeuralNetwork {
             }
             newError.push(sum);
           }
-          
+
           error = newError;
           errors.unshift(error);
         }
-        
+
         // Update weights and biases
         for (let i = 0; i < this.weights.length; i++) {
           for (let j = 0; j < this.weights[i].length; j++) {
             const delta = errors[i + 1][j] * this.sigmoidDerivative(activations[i + 1][j]);
-            
+
             for (let k = 0; k < this.weights[i][j].length; k++) {
               this.weights[i][j][k] += learningRate * delta * activations[i][k];
             }
-            
+
             this.biases[i][j] += learningRate * delta;
           }
         }
       }
-      
+
       finalError = epochError / data.length;
     }
-    
+
     return { finalError };
   }
 }
@@ -149,7 +152,7 @@ describe('Neural Network Training - Classical TDD', () => {
         { input: [0, 0], output: [0] },
         { input: [0, 1], output: [1] },
         { input: [1, 0], output: [1] },
-        { input: [1, 1], output: [0] }
+        { input: [1, 1], output: [0] },
       ];
 
       // Act
@@ -171,7 +174,7 @@ describe('Neural Network Training - Classical TDD', () => {
         { input: [0, 0], output: [0] },
         { input: [0, 1], output: [1] },
         { input: [1, 0], output: [1] },
-        { input: [1, 1], output: [0] }
+        { input: [1, 1], output: [0] },
       ];
 
       const result1 = network1.train(xorData, { epochs: 1000, learningRate: 0.1 });
@@ -189,7 +192,7 @@ describe('Neural Network Training - Classical TDD', () => {
         { input: [0, 0], output: [0] },
         { input: [0, 1], output: [0] },
         { input: [1, 0], output: [0] },
-        { input: [1, 1], output: [1] }
+        { input: [1, 1], output: [1] },
       ];
 
       const result = network.train(andData, { epochs: 1000 });
@@ -237,11 +240,11 @@ describe('Neural Network Training - Classical TDD', () => {
       const data = [
         { input: [0.2, 0.3], output: [0.5] },
         { input: [0.4, 0.6], output: [0.8] },
-        { input: [0.7, 0.2], output: [0.3] }
+        { input: [0.7, 0.2], output: [0.3] },
       ];
 
       const errors: number[] = [];
-      
+
       // Track error over epochs
       for (let i = 0; i < 10; i++) {
         const result = network.train(data, { epochs: 100, learningRate: 0.1 });
@@ -253,7 +256,7 @@ describe('Neural Network Training - Classical TDD', () => {
       for (let i = 1; i < errors.length; i++) {
         if (errors[i] <= errors[i - 1]) decreasing++;
       }
-      
+
       expect(decreasing).toBeGreaterThan(errors.length * 0.7); // 70% should be decreasing
     });
   });
@@ -261,13 +264,13 @@ describe('Neural Network Training - Classical TDD', () => {
 
 /**
  * Classical TDD Principles Demonstrated:
- * 
+ *
  * 1. No mocks - testing actual neural network behavior
  * 2. Focus on mathematical correctness and convergence
  * 3. Test algorithm properties (gradient descent, separability)
  * 4. Verify computation results, not interactions
  * 5. Performance and accuracy are the key metrics
- * 
+ *
  * This is ideal for:
  * - Neural network algorithms
  * - Mathematical computations

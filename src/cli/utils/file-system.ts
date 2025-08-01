@@ -1,25 +1,25 @@
 /**
  * File System Utilities
- * 
+ *
  * Provides file and directory operations with proper error handling and TypeScript types.
  * All functions are async and return promises with proper error handling.
  */
 
+import type { Stats } from 'fs';
+import { constants, existsSync, statSync } from 'fs';
 import {
+  access,
+  copyFile as fsCopyFile,
   readFile as fsReadFile,
   writeFile as fsWriteFile,
   mkdir,
-  stat,
-  access,
   readdir,
-  copyFile as fsCopyFile,
   rename,
-  unlink,
   rm,
+  stat,
+  unlink,
 } from 'fs/promises';
-import { constants, existsSync, statSync } from 'fs';
-import { dirname, basename, extname, join, resolve, relative } from 'path';
-import type { Stats } from 'fs';
+import { basename, dirname, extname, join, relative, resolve } from 'path';
 
 /**
  * File statistics with additional helpers
@@ -27,19 +27,19 @@ import type { Stats } from 'fs';
 export interface FileStats extends Stats {
   /** File name */
   name: string;
-  
+
   /** File extension */
   extension: string;
-  
+
   /** File path */
   path: string;
-  
+
   /** Is file readable */
   readable: boolean;
-  
+
   /** Is file writable */
   writable: boolean;
-  
+
   /** Is file executable */
   executable: boolean;
 }
@@ -50,16 +50,16 @@ export interface FileStats extends Stats {
 export interface DirectoryListing {
   /** Directory path */
   path: string;
-  
+
   /** Files in directory */
   files: FileStats[];
-  
+
   /** Subdirectories */
   directories: FileStats[];
-  
+
   /** Total number of items */
   totalItems: number;
-  
+
   /** Total size of all files */
   totalSize: number;
 }
@@ -70,13 +70,13 @@ export interface DirectoryListing {
 export interface FileOptions {
   /** File encoding (default: 'utf8') */
   encoding?: BufferEncoding;
-  
+
   /** File mode/permissions */
   mode?: number;
-  
+
   /** Create parent directories if they don't exist */
   recursive?: boolean;
-  
+
   /** Overwrite existing files */
   overwrite?: boolean;
 }
@@ -108,12 +108,12 @@ export async function writeFile(
     if (options.recursive) {
       await ensureDirectory(dirname(filePath));
     }
-    
+
     // Check if file exists and overwrite is not allowed
-    if (!options.overwrite && await fileExists(filePath)) {
+    if (!options.overwrite && (await fileExists(filePath))) {
       throw new Error(`File "${filePath}" already exists and overwrite is disabled`);
     }
-    
+
     await fsWriteFile(filePath, content, {
       encoding: options.encoding || 'utf8',
       mode: options.mode,
@@ -186,15 +186,19 @@ export async function copyFile(
     if (options.recursive) {
       await ensureDirectory(dirname(destinationPath));
     }
-    
+
     // Check if destination exists and overwrite is not allowed
-    if (!options.overwrite && await fileExists(destinationPath)) {
-      throw new Error(`Destination file "${destinationPath}" already exists and overwrite is disabled`);
+    if (!options.overwrite && (await fileExists(destinationPath))) {
+      throw new Error(
+        `Destination file "${destinationPath}" already exists and overwrite is disabled`
+      );
     }
-    
+
     await fsCopyFile(sourcePath, destinationPath);
   } catch (error) {
-    throw new Error(`Failed to copy file from "${sourcePath}" to "${destinationPath}": ${(error as Error).message}`);
+    throw new Error(
+      `Failed to copy file from "${sourcePath}" to "${destinationPath}": ${(error as Error).message}`
+    );
   }
 }
 
@@ -211,15 +215,19 @@ export async function moveFile(
     if (options.recursive) {
       await ensureDirectory(dirname(destinationPath));
     }
-    
+
     // Check if destination exists and overwrite is not allowed
-    if (!options.overwrite && await fileExists(destinationPath)) {
-      throw new Error(`Destination file "${destinationPath}" already exists and overwrite is disabled`);
+    if (!options.overwrite && (await fileExists(destinationPath))) {
+      throw new Error(
+        `Destination file "${destinationPath}" already exists and overwrite is disabled`
+      );
     }
-    
+
     await rename(sourcePath, destinationPath);
   } catch (error) {
-    throw new Error(`Failed to move file from "${sourcePath}" to "${destinationPath}": ${(error as Error).message}`);
+    throw new Error(
+      `Failed to move file from "${sourcePath}" to "${destinationPath}": ${(error as Error).message}`
+    );
   }
 }
 
@@ -262,27 +270,27 @@ export async function getFileStats(filePath: string): Promise<FileStats> {
     const stats = await stat(filePath);
     const name = basename(filePath);
     const extension = extname(filePath);
-    
+
     // Check permissions
     let readable = false;
     let writable = false;
     let executable = false;
-    
+
     try {
       await access(filePath, constants.R_OK);
       readable = true;
     } catch {}
-    
+
     try {
       await access(filePath, constants.W_OK);
       writable = true;
     } catch {}
-    
+
     try {
       await access(filePath, constants.X_OK);
       executable = true;
     } catch {}
-    
+
     return {
       ...stats,
       name,
@@ -308,23 +316,23 @@ export async function listFiles(
     const entries = await readdir(dirPath);
     const files: string[] = [];
     const fileStats: FileStats[] = [];
-    
+
     for (const entry of entries) {
       const fullPath = join(dirPath, entry);
       const stats = await stat(fullPath);
-      
+
       if (stats.isFile()) {
         files.push(options.recursive ? fullPath : entry);
-        
+
         if (options.includeStats) {
           fileStats.push(await getFileStats(fullPath));
         }
       } else if (stats.isDirectory() && options.recursive) {
-        const subFiles = await listFiles(fullPath, options) as string[];
+        const subFiles = (await listFiles(fullPath, options)) as string[];
         files.push(...subFiles);
       }
     }
-    
+
     return options.includeStats ? fileStats : files;
   } catch (error) {
     throw new Error(`Failed to list files in "${dirPath}": ${(error as Error).message}`);
@@ -342,25 +350,25 @@ export async function listDirectories(
     const entries = await readdir(dirPath);
     const directories: string[] = [];
     const dirStats: FileStats[] = [];
-    
+
     for (const entry of entries) {
       const fullPath = join(dirPath, entry);
       const stats = await stat(fullPath);
-      
+
       if (stats.isDirectory()) {
         directories.push(options.recursive ? fullPath : entry);
-        
+
         if (options.includeStats) {
           dirStats.push(await getFileStats(fullPath));
         }
-        
+
         if (options.recursive) {
-          const subDirs = await listDirectories(fullPath, options) as string[];
+          const subDirs = (await listDirectories(fullPath, options)) as string[];
           directories.push(...subDirs);
         }
       }
     }
-    
+
     return options.includeStats ? dirStats : directories;
   } catch (error) {
     throw new Error(`Failed to list directories in "${dirPath}": ${(error as Error).message}`);
@@ -376,11 +384,11 @@ export async function getDirectoryListing(dirPath: string): Promise<DirectoryLis
     const files: FileStats[] = [];
     const directories: FileStats[] = [];
     let totalSize = 0;
-    
+
     for (const entry of entries) {
       const fullPath = join(dirPath, entry);
       const fileStats = await getFileStats(fullPath);
-      
+
       if (fileStats.isFile()) {
         files.push(fileStats);
         totalSize += fileStats.size;
@@ -388,7 +396,7 @@ export async function getDirectoryListing(dirPath: string): Promise<DirectoryLis
         directories.push(fileStats);
       }
     }
-    
+
     return {
       path: dirPath,
       files,
@@ -397,7 +405,9 @@ export async function getDirectoryListing(dirPath: string): Promise<DirectoryLis
       totalSize,
     };
   } catch (error) {
-    throw new Error(`Failed to get directory listing for "${dirPath}": ${(error as Error).message}`);
+    throw new Error(
+      `Failed to get directory listing for "${dirPath}": ${(error as Error).message}`
+    );
   }
 }
 
@@ -495,19 +505,18 @@ export async function findFiles(
   options: { recursive?: boolean; caseSensitive?: boolean } = {}
 ): Promise<string[]> {
   const matchedFiles: string[] = [];
-  const regex = typeof pattern === 'string' 
-    ? new RegExp(pattern, options.caseSensitive ? 'g' : 'gi')
-    : pattern;
-  
-  const files = await listFiles(dirPath, { recursive: options.recursive }) as string[];
-  
+  const regex =
+    typeof pattern === 'string' ? new RegExp(pattern, options.caseSensitive ? 'g' : 'gi') : pattern;
+
+  const files = (await listFiles(dirPath, { recursive: options.recursive })) as string[];
+
   for (const file of files) {
     const fileName = basename(file);
     if (regex.test(fileName)) {
       matchedFiles.push(file);
     }
   }
-  
+
   return matchedFiles;
 }
 
@@ -556,7 +565,7 @@ export function watchPath(
 ): () => void {
   const { watch } = require('fs');
   const watcher = watch(path, callback);
-  
+
   return () => {
     watcher.close();
   };

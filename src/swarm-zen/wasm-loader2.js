@@ -4,8 +4,8 @@
  * for optimal performance and memory usage
  */
 
-import path from 'path';
 import { promises as fs } from 'fs';
+import path from 'path';
 
 class WasmModuleLoader {
   constructor() {
@@ -100,7 +100,9 @@ class WasmModuleLoader {
         }
       } else {
         // Only warn for other optional modules
-        console.warn(`⚠️ Optional module ${moduleName} is not available, functionality will be provided by core module`);
+        console.warn(
+          `⚠️ Optional module ${moduleName} is not available, functionality will be provided by core module`
+        );
       }
 
       // Return a reference to the core module instead of a placeholder
@@ -132,7 +134,9 @@ class WasmModuleLoader {
 
       // If it's an optional module, provide fallback to core functionality
       if (moduleInfo.optional && this.modules.has('core')) {
-        console.warn(`⚠️ Optional module ${moduleName} failed to load, using core module functionality`);
+        console.warn(
+          `⚠️ Optional module ${moduleName} failed to load, using core module functionality`
+        );
         const coreModule = this.modules.get('core');
         this.modules.set(moduleName, coreModule);
         return coreModule;
@@ -330,12 +334,15 @@ class WasmModuleLoader {
 
   async loadAllModules() {
     // Only load modules that actually exist
-    const existingModules = Object.keys(this.moduleManifest)
-      .filter(name => this.moduleManifest[name].exists);
+    const existingModules = Object.keys(this.moduleManifest).filter(
+      (name) => this.moduleManifest[name].exists
+    );
 
-    await Promise.all(existingModules.map(name => this.loadModule(name)));
+    await Promise.all(existingModules.map((name) => this.loadModule(name)));
 
-    console.error(`🎯 All available WASM modules loaded successfully (${existingModules.length} modules`);
+    console.error(
+      `🎯 All available WASM modules loaded successfully (${existingModules.length} modules`
+    );
     return true;
   }
 
@@ -344,18 +351,23 @@ class WasmModuleLoader {
     const moduleProxies = {};
 
     for (const moduleName of Object.keys(this.moduleManifest)) {
-      moduleProxies[moduleName] = new Proxy({}, {
-        get: (target, prop) => {
-          if (!this.modules.has(moduleName)) {
-            // Trigger module loading
-            this.loadModule(moduleName);
-            throw new Error(`Module ${moduleName} is loading. Please await loadModule('${moduleName}') first.`);
-          }
+      moduleProxies[moduleName] = new Proxy(
+        {},
+        {
+          get: (target, prop) => {
+            if (!this.modules.has(moduleName)) {
+              // Trigger module loading
+              this.loadModule(moduleName);
+              throw new Error(
+                `Module ${moduleName} is loading. Please await loadModule('${moduleName}') first.`
+              );
+            }
 
-          const module = this.modules.get(moduleName);
-          return module.exports[prop];
-        },
-      });
+            const module = this.modules.get(moduleName);
+            return module.exports[prop];
+          },
+        }
+      );
     }
 
     return moduleProxies;
@@ -397,7 +409,7 @@ class WasmModuleLoader {
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2)) } ${ sizes[i]}`;
+    return `${parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
   }
 }
 

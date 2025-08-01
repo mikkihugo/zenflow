@@ -13,12 +13,11 @@ async function testWithLoader() {
 
     // Test exports
     console.log('\nAvailable exports:');
-    const exports = Object.keys(loader).filter(key => typeof loader[key] === 'function');
-    exports.forEach(exp => console.log(`  - ${exp}`));
+    const exports = Object.keys(loader).filter((key) => typeof loader[key] === 'function');
+    exports.forEach((exp) => console.log(`  - ${exp}`));
 
     // Test memory
     console.log('\nMemory usage:', loader.getTotalMemoryUsage(), 'bytes');
-
   } catch (error) {
     console.error('❌ Loader initialization failed:', error.message);
     console.error('Stack:', error.stack);

@@ -1,11 +1,11 @@
 /**
  * Classical TDD (Detroit School) - SIMD Optimization Verification Tests
- * 
+ *
  * Focus: Test actual SIMD performance and correctness
  * No mocks - verify real SIMD acceleration and mathematical accuracy
  */
 
-import { describe, it, expect, beforeEach } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { performance } from 'perf_hooks';
 
 // Mock SIMD operations interface to match Rust implementation structure
@@ -22,7 +22,7 @@ enum ActivationFunction {
   Relu = 'relu',
   LeakyRelu = 'leaky_relu',
   Gelu = 'gelu',
-  Swish = 'swish'
+  Swish = 'swish',
 }
 
 class SimdMatrixOps {
@@ -77,7 +77,14 @@ class SimdMatrixOps {
     return typeof process !== 'undefined' && process.arch === 'x64';
   }
 
-  private matmulScalar(a: Float32Array, b: Float32Array, c: Float32Array, m: number, n: number, k: number): void {
+  private matmulScalar(
+    a: Float32Array,
+    b: Float32Array,
+    c: Float32Array,
+    m: number,
+    n: number,
+    k: number
+  ): void {
     const blockSize = this.config.blockSize;
 
     for (let iBlock = 0; iBlock < m; iBlock += blockSize) {
@@ -101,7 +108,14 @@ class SimdMatrixOps {
     }
   }
 
-  private matmulSimd(a: Float32Array, b: Float32Array, c: Float32Array, m: number, n: number, k: number): void {
+  private matmulSimd(
+    a: Float32Array,
+    b: Float32Array,
+    c: Float32Array,
+    m: number,
+    n: number,
+    k: number
+  ): void {
     // Simulate SIMD performance with optimized scalar implementation
     // In practice, this would use actual SIMD intrinsics
     const SIMD_WIDTH = 8;
@@ -117,7 +131,7 @@ class SimdMatrixOps {
           for (let i = iBlock; i < iEnd; i++) {
             for (let j = jBlock; j < jEnd; j += SIMD_WIDTH) {
               const remaining = Math.min(jEnd - j, SIMD_WIDTH);
-              
+
               // Simulate vectorized computation
               for (let idx = 0; idx < remaining; idx++) {
                 let sum = 0;
@@ -133,7 +147,13 @@ class SimdMatrixOps {
     }
   }
 
-  private matvecScalar(a: Float32Array, x: Float32Array, y: Float32Array, m: number, n: number): void {
+  private matvecScalar(
+    a: Float32Array,
+    x: Float32Array,
+    y: Float32Array,
+    m: number,
+    n: number
+  ): void {
     for (let i = 0; i < m; i++) {
       let sum = 0;
       for (let j = 0; j < n; j++) {
@@ -143,12 +163,18 @@ class SimdMatrixOps {
     }
   }
 
-  private matvecSimd(a: Float32Array, x: Float32Array, y: Float32Array, m: number, n: number): void {
+  private matvecSimd(
+    a: Float32Array,
+    x: Float32Array,
+    y: Float32Array,
+    m: number,
+    n: number
+  ): void {
     const SIMD_WIDTH = 8;
 
     for (let i = 0; i < m; i++) {
       let sum = 0;
-      
+
       // Process in chunks (simulated SIMD)
       const chunks = Math.floor(n / SIMD_WIDTH);
       for (let chunk = 0; chunk < chunks; chunk++) {
@@ -167,7 +193,12 @@ class SimdMatrixOps {
     }
   }
 
-  private addBiasScalar(matrix: Float32Array, bias: Float32Array, rows: number, cols: number): void {
+  private addBiasScalar(
+    matrix: Float32Array,
+    bias: Float32Array,
+    rows: number,
+    cols: number
+  ): void {
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
         matrix[i * cols + j] += bias[j];
@@ -214,12 +245,13 @@ class SimdMatrixOps {
           data[i] = Math.max(0, data[i]);
         }
         break;
-      case ActivationFunction.LeakyRelu:
+      case ActivationFunction.LeakyRelu: {
         const alpha = 0.01;
         for (let i = 0; i < data.length; i++) {
           data[i] = data[i] > 0 ? data[i] : alpha * data[i];
         }
         break;
+      }
       case ActivationFunction.Gelu:
         for (let i = 0; i < data.length; i++) {
           const x = data[i];
@@ -269,32 +301,24 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
       useAvx2: true,
       useAvx512: false,
       blockSize: 64,
-      numThreads: 4
+      numThreads: 4,
     });
 
     scalarOps = new SimdMatrixOps({
       useAvx2: false,
       useAvx512: false,
       blockSize: 64,
-      numThreads: 1
+      numThreads: 1,
     });
   });
 
   describe('SIMD Matrix Operations Correctness', () => {
     it('should produce identical results for matrix multiplication', () => {
-      const m = 4, n = 4, k = 4;
-      const a = new Float32Array([
-        1, 2, 3, 4,
-        5, 6, 7, 8,
-        9, 10, 11, 12,
-        13, 14, 15, 16
-      ]);
-      const b = new Float32Array([
-        1, 0, 0, 1,
-        0, 1, 1, 0,
-        1, 1, 0, 0,
-        0, 0, 1, 1
-      ]);
+      const m = 4,
+        n = 4,
+        k = 4;
+      const a = new Float32Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+      const b = new Float32Array([1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1]);
 
       const cSimd = new Float32Array(16);
       const cScalar = new Float32Array(16);
@@ -315,12 +339,9 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
     });
 
     it('should produce identical results for matrix-vector multiplication', () => {
-      const m = 3, n = 4;
-      const a = new Float32Array([
-        1, 2, 3, 4,
-        5, 6, 7, 8,
-        9, 10, 11, 12
-      ]);
+      const m = 3,
+        n = 4;
+      const a = new Float32Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
       const x = new Float32Array([1, 2, 3, 4]);
 
       const ySimd = new Float32Array(3);
@@ -341,12 +362,9 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
     });
 
     it('should produce identical results for bias addition', () => {
-      const rows = 3, cols = 4;
-      const matrixSimd = new Float32Array([
-        1, 2, 3, 4,
-        5, 6, 7, 8,
-        9, 10, 11, 12
-      ]);
+      const rows = 3,
+        cols = 4;
+      const matrixSimd = new Float32Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
       const matrixScalar = new Float32Array(matrixSimd);
       const bias = new Float32Array([0.1, 0.2, 0.3, 0.4]);
 
@@ -388,7 +406,7 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
 
     it('should produce correct sigmoid results', () => {
       const data = new Float32Array([-2, -1, 0, 1, 2]);
-      const expected = data.map(x => 1 / (1 + Math.exp(-x)));
+      const expected = data.map((x) => 1 / (1 + Math.exp(-x)));
 
       simdOps.applyActivation(data, ActivationFunction.Sigmoid);
 
@@ -403,7 +421,7 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
 
     it('should produce correct tanh results', () => {
       const data = new Float32Array([-1, 0, 1]);
-      const expected = data.map(x => Math.tanh(x));
+      const expected = data.map((x) => Math.tanh(x));
 
       simdOps.applyActivation(data, ActivationFunction.Tanh);
 
@@ -418,10 +436,12 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
 
   describe('SIMD Performance Verification', () => {
     it('should demonstrate performance improvements for large matrices', () => {
-      const m = 100, n = 100, k = 100;
+      const m = 100,
+        n = 100,
+        k = 100;
       const a = new Float32Array(m * k);
       const b = new Float32Array(k * n);
-      
+
       // Initialize with random values
       for (let i = 0; i < a.length; i++) {
         a[i] = Math.random();
@@ -501,8 +521,10 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
   describe('Memory Access Pattern Optimization', () => {
     it('should handle different block sizes efficiently', () => {
       const blockSizes = [16, 32, 64, 128];
-      const m = 64, n = 64, k = 64;
-      
+      const m = 64,
+        n = 64,
+        k = 64;
+
       const a = new Float32Array(m * k);
       const b = new Float32Array(k * n);
       for (let i = 0; i < a.length; i++) a[i] = Math.random();
@@ -515,11 +537,11 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
           useAvx2: true,
           useAvx512: false,
           blockSize,
-          numThreads: 4
+          numThreads: 4,
         });
 
         const c = new Float32Array(m * n);
-        
+
         const start = performance.now();
         ops.matmul(a, b, c, m, n, k);
         const time = performance.now() - start;
@@ -534,9 +556,7 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
       }
 
       console.log('Block size performance:');
-      results.forEach(r => 
-        console.log(`  Block size ${r.blockSize}: ${r.time.toFixed(2)}ms`)
-      );
+      results.forEach((r) => console.log(`  Block size ${r.blockSize}: ${r.time.toFixed(2)}ms`));
     });
 
     it('should handle non-aligned array sizes correctly', () => {
@@ -544,13 +564,13 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
       const sizes = [
         { m: 7, n: 9, k: 11 },
         { m: 15, n: 17, k: 13 },
-        { m: 33, n: 31, k: 29 }
+        { m: 33, n: 31, k: 29 },
       ];
 
       for (const { m, n, k } of sizes) {
         const a = new Float32Array(m * k);
         const b = new Float32Array(k * n);
-        
+
         for (let i = 0; i < a.length; i++) a[i] = Math.random();
         for (let i = 0; i < b.length; i++) b[i] = Math.random();
 
@@ -574,7 +594,7 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
         useAvx2: false, // Force scalar fallback
         useAvx512: false,
         blockSize: 32,
-        numThreads: 1
+        numThreads: 1,
       });
 
       const a = new Float32Array([1, 2, 3, 4]);
@@ -635,14 +655,14 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
 
 /**
  * Classical TDD Principles Demonstrated:
- * 
+ *
  * 1. No mocks - testing actual SIMD implementations and performance
  * 2. Mathematical correctness verification through comparison
  * 3. Performance measurement and benchmarking
  * 4. Edge case handling and error conditions
  * 5. Memory access pattern optimization testing
  * 6. CPU feature detection and fallback verification
- * 
+ *
  * This is ideal for:
  * - SIMD optimization validation
  * - Performance regression testing

@@ -65,7 +65,9 @@ class CommandSanitizer {
     // GitHub username/org name rules: alphanumeric, hyphens, max 39 chars
     const repoRegex = /^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$/;
     if (!repoRegex.test(identifier) || identifier.length > 39) {
-      throw new Error('Invalid repository identifier: must be alphanumeric with hyphens, max 39 chars');
+      throw new Error(
+        'Invalid repository identifier: must be alphanumeric with hyphens, max 39 chars'
+      );
     }
     return identifier;
   }
@@ -77,7 +79,9 @@ class CommandSanitizer {
     // Allow only alphanumeric, hyphens, underscores, max 50 chars
     const sanitized = swarmId.replace(/[^a-zA-Z0-9_-]/g, '');
     if (sanitized.length === 0 || sanitized.length > 50) {
-      throw new Error('Invalid swarm ID: must be alphanumeric with underscores/hyphens, max 50 chars');
+      throw new Error(
+        'Invalid swarm ID: must be alphanumeric with underscores/hyphens, max 50 chars'
+      );
     }
     return sanitized;
   }
@@ -89,7 +93,9 @@ class CommandSanitizer {
     // GitHub label rules: no spaces, special chars limited
     const sanitized = label.replace(/[^a-zA-Z0-9._-]/g, '');
     if (sanitized.length === 0 || sanitized.length > 50) {
-      throw new Error('Invalid label: must be alphanumeric with dots/underscores/hyphens, max 50 chars');
+      throw new Error(
+        'Invalid label: must be alphanumeric with dots/underscores/hyphens, max 50 chars'
+      );
     }
     return sanitized;
   }
@@ -140,9 +146,13 @@ class CommandSanitizer {
   static sanitizeBranchName(branchName) {
     // Git branch name rules: no spaces, special chars, slashes at start/end
     const sanitized = branchName.replace(/[^a-zA-Z0-9._/-]/g, '');
-    if (sanitized.length === 0 || sanitized.length > 100 ||
-        sanitized.startsWith('/') || sanitized.endsWith('/') ||
-        sanitized.includes('..')) {
+    if (
+      sanitized.length === 0 ||
+      sanitized.length > 100 ||
+      sanitized.startsWith('/') ||
+      sanitized.endsWith('/') ||
+      sanitized.includes('..')
+    ) {
       throw new Error('Invalid branch name');
     }
     return sanitized;
@@ -153,7 +163,7 @@ class CommandSanitizer {
    */
   static validateEnvironment() {
     const required = ['GITHUB_OWNER', 'GITHUB_REPO'];
-    const missing = required.filter(env => !process.env[env]);
+    const missing = required.filter((env) => !process.env[env]);
 
     if (missing.length > 0) {
       throw new Error(`Missing required environment variables: ${missing.join(', ')}`);
@@ -161,8 +171,8 @@ class CommandSanitizer {
 
     // Validate the environment values
     try {
-      this.validateRepoIdentifier(process.env.GITHUB_OWNER);
-      this.validateRepoIdentifier(process.env.GITHUB_REPO);
+      CommandSanitizer.validateRepoIdentifier(process.env.GITHUB_OWNER);
+      CommandSanitizer.validateRepoIdentifier(process.env.GITHUB_REPO);
     } catch (error) {
       throw new Error(`Invalid environment variable: ${error.message}`);
     }
@@ -189,8 +199,8 @@ class CommandSanitizer {
     // Add repository parameter safely
     if (params.repo) {
       const [owner, repo] = params.repo.split('/');
-      this.validateRepoIdentifier(owner);
-      this.validateRepoIdentifier(repo);
+      CommandSanitizer.validateRepoIdentifier(owner);
+      CommandSanitizer.validateRepoIdentifier(repo);
       args.push('--repo', `${owner}/${repo}`);
     }
 
@@ -204,7 +214,7 @@ class CommandSanitizer {
           }
         }
         if (params.label) {
-          args.push('--label', this.sanitizeLabel(params.label));
+          args.push('--label', CommandSanitizer.sanitizeLabel(params.label));
         }
         if (params.limit) {
           const limit = parseInt(params.limit, 10);
@@ -217,37 +227,37 @@ class CommandSanitizer {
 
       case 'issue-edit':
         if (params.issueNumber) {
-          args.push(this.validateIssueNumber(params.issueNumber).toString());
+          args.push(CommandSanitizer.validateIssueNumber(params.issueNumber).toString());
         }
         if (params.addLabel) {
-          args.push('--add-label', this.sanitizeLabel(params.addLabel));
+          args.push('--add-label', CommandSanitizer.sanitizeLabel(params.addLabel));
         }
         if (params.removeLabel) {
-          args.push('--remove-label', this.sanitizeLabel(params.removeLabel));
+          args.push('--remove-label', CommandSanitizer.sanitizeLabel(params.removeLabel));
         }
         break;
 
       case 'issue-comment':
         if (params.issueNumber) {
-          args.push(this.validateIssueNumber(params.issueNumber).toString());
+          args.push(CommandSanitizer.validateIssueNumber(params.issueNumber).toString());
         }
         if (params.body) {
-          args.push('--body', this.sanitizeMessage(params.body));
+          args.push('--body', CommandSanitizer.sanitizeMessage(params.body));
         }
         break;
 
       case 'pr-create':
         if (params.title) {
-          args.push('--title', this.sanitizeMessage(params.title));
+          args.push('--title', CommandSanitizer.sanitizeMessage(params.title));
         }
         if (params.body) {
-          args.push('--body', this.sanitizeMessage(params.body));
+          args.push('--body', CommandSanitizer.sanitizeMessage(params.body));
         }
         if (params.base) {
-          args.push('--base', this.sanitizeBranchName(params.base));
+          args.push('--base', CommandSanitizer.sanitizeBranchName(params.base));
         }
         if (params.head) {
-          args.push('--head', this.sanitizeBranchName(params.head));
+          args.push('--head', CommandSanitizer.sanitizeBranchName(params.head));
         }
         break;
     }
@@ -260,10 +270,10 @@ class CommandSanitizer {
    */
   static createGitArgs(operation, params) {
     const validOperations = {
-      'checkout': ['checkout'],
-      'add': ['add'],
-      'commit': ['commit'],
-      'push': ['push'],
+      checkout: ['checkout'],
+      add: ['add'],
+      commit: ['commit'],
+      push: ['push'],
     };
 
     if (!validOperations[operation]) {
@@ -278,28 +288,28 @@ class CommandSanitizer {
           args.push('-b');
         }
         if (params.branch) {
-          args.push(this.sanitizeBranchName(params.branch));
+          args.push(CommandSanitizer.sanitizeBranchName(params.branch));
         }
         break;
 
       case 'add':
         if (params.file) {
-          args.push(this.validateFilePath(params.file));
+          args.push(CommandSanitizer.validateFilePath(params.file));
         }
         break;
 
       case 'commit':
         if (params.message) {
-          args.push('-m', this.sanitizeMessage(params.message));
+          args.push('-m', CommandSanitizer.sanitizeMessage(params.message));
         }
         break;
 
       case 'push':
         if (params.remote) {
-          args.push(this.validateRepoIdentifier(params.remote));
+          args.push(CommandSanitizer.validateRepoIdentifier(params.remote));
         }
         if (params.branch) {
-          args.push(this.sanitizeBranchName(params.branch));
+          args.push(CommandSanitizer.sanitizeBranchName(params.branch));
         }
         break;
     }

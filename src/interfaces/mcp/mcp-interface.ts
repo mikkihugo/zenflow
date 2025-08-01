@@ -1,6 +1,6 @@
 /**
  * MCP Interface
- * 
+ *
  * Claude Desktop remote interface for coordinating with MCP tools.
  * Handles communication with Claude Code via MCP protocol.
  */
@@ -38,7 +38,7 @@ export class MCPInterface extends EventEmitter {
       toolPrefix: 'mcp__claude-zen__',
       reconnectInterval: 5000,
       maxRetries: 3,
-      ...config
+      ...config,
     };
   }
 
@@ -47,7 +47,7 @@ export class MCPInterface extends EventEmitter {
    */
   async start(): Promise<void> {
     logger.info('Starting MCP interface...');
-    
+
     try {
       await this.connect();
       this.setupEventHandlers();
@@ -63,12 +63,12 @@ export class MCPInterface extends EventEmitter {
    */
   async stop(): Promise<void> {
     logger.info('Stopping MCP interface...');
-    
+
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = undefined;
     }
-    
+
     await this.disconnect();
     logger.info('MCP interface stopped');
   }
@@ -78,18 +78,18 @@ export class MCPInterface extends EventEmitter {
    */
   async callTool(name: string, args: any): Promise<any> {
     const toolName = `${this.config.toolPrefix}${name}`;
-    
+
     logger.debug(`Calling MCP tool: ${toolName}`, args);
-    
+
     const message: MCPMessage = {
       id: `mcp_${Date.now()}`,
       method: 'tools/call',
       params: {
         name: toolName,
-        arguments: args
-      }
+        arguments: args,
+      },
     };
-    
+
     return await this.sendMessage(message);
   }
 
@@ -99,9 +99,9 @@ export class MCPInterface extends EventEmitter {
   async listTools(): Promise<string[]> {
     const message: MCPMessage = {
       id: `mcp_list_${Date.now()}`,
-      method: 'tools/list'
+      method: 'tools/list',
     };
-    
+
     const response = await this.sendMessage(message);
     return response?.tools?.map((tool: any) => tool.name) || [];
   }
@@ -122,14 +122,14 @@ export class MCPInterface extends EventEmitter {
     if (!this.isConnected) {
       throw new Error('MCP interface not connected');
     }
-    
+
     // Send message via MCP protocol
     logger.debug('Sending MCP message:', message);
-    
+
     // Simulate response for now
     return {
       id: message.id,
-      result: { success: true }
+      result: { success: true },
     };
   }
 
@@ -145,7 +145,7 @@ export class MCPInterface extends EventEmitter {
       logger.error('Max reconnection attempts reached');
       return;
     }
-    
+
     this.retryCount++;
     this.reconnectTimer = setTimeout(() => {
       logger.info(`Attempting to reconnect (${this.retryCount}/${this.config.maxRetries})...`);

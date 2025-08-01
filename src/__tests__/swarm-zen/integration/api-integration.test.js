@@ -2,13 +2,13 @@
  * Integration tests for ruv-swarm API
  */
 
-import { RuvSwarm } from '../../src/index-enhanced.js';
-import { SwarmPersistence } from '../../src/persistence.js';
-import { NeuralAgentFactory } from '../../src/neural-agent.js';
 import assert from 'assert';
-import path, { dirname } from 'path';
 import fs from 'fs';
+import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { RuvSwarm } from '../../src/index-enhanced.js';
+import { NeuralAgentFactory } from '../../src/neural-agent.js';
+import { SwarmPersistence } from '../../src/persistence.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -17,7 +17,7 @@ describe('API Integration Tests', () => {
   let ruvSwarm;
   const testDbPath = path.join(__dirname, 'test-integration.db');
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     // Clean up test database if exists
     if (fs.existsSync(testDbPath)) {
       fs.unlinkSync(testDbPath);
@@ -52,7 +52,7 @@ describe('API Integration Tests', () => {
   });
 
   describe('End-to-End Swarm Workflow', () => {
-    it('should complete full swarm lifecycle with persistence', async() => {
+    it('should complete full swarm lifecycle with persistence', async () => {
       // 1. Create swarm
       const swarm = await ruvSwarm.createSwarm({
         name: 'integration-test-swarm',
@@ -107,7 +107,7 @@ describe('API Integration Tests', () => {
       assert.strictEqual(persistedTasks[0].description, task.description);
 
       // 7. Wait for task completion
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
       // 8. Verify task results
       const taskResults = await task.getResults();
@@ -131,7 +131,7 @@ describe('API Integration Tests', () => {
   });
 
   describe('Neural Agent Integration', () => {
-    it('should create and use neural agents', async() => {
+    it('should create and use neural agents', async () => {
       const swarm = await ruvSwarm.createSwarm({
         name: 'neural-test-swarm',
         enableNeuralAgents: true,
@@ -165,7 +165,7 @@ describe('API Integration Tests', () => {
   });
 
   describe('Memory Persistence Integration', () => {
-    it('should persist agent memory across operations', async() => {
+    it('should persist agent memory across operations', async () => {
       const swarm = await ruvSwarm.createSwarm({
         name: 'memory-test-swarm',
       });
@@ -182,40 +182,26 @@ describe('API Integration Tests', () => {
         context: { domain: 'testing', version: 1 },
       };
 
-      ruvSwarm.persistence.storeAgentMemory(
-        agent.id,
-        'analysis_memory',
-        memoryData,
-      );
+      ruvSwarm.persistence.storeAgentMemory(agent.id, 'analysis_memory', memoryData);
 
       // Retrieve memory
-      const retrieved = ruvSwarm.persistence.getAgentMemory(
-        agent.id,
-        'analysis_memory',
-      );
+      const retrieved = ruvSwarm.persistence.getAgentMemory(agent.id, 'analysis_memory');
 
       assert(retrieved);
       assert.deepStrictEqual(retrieved.value, memoryData);
 
       // Update memory
       memoryData.performance_history.push(0.9);
-      ruvSwarm.persistence.storeAgentMemory(
-        agent.id,
-        'analysis_memory',
-        memoryData,
-      );
+      ruvSwarm.persistence.storeAgentMemory(agent.id, 'analysis_memory', memoryData);
 
-      const updated = ruvSwarm.persistence.getAgentMemory(
-        agent.id,
-        'analysis_memory',
-      );
+      const updated = ruvSwarm.persistence.getAgentMemory(agent.id, 'analysis_memory');
 
       assert.strictEqual(updated.value.performance_history.length, 4);
     });
   });
 
   describe('Multi-Swarm Coordination', () => {
-    it('should coordinate multiple swarms', async() => {
+    it('should coordinate multiple swarms', async () => {
       // Create multiple swarms
       const swarms = [];
       for (let i = 0; i < 3; i++) {
@@ -238,12 +224,12 @@ describe('API Integration Tests', () => {
 
       // Orchestrate tasks in parallel
       const tasks = await Promise.all(
-        swarms.map(swarm =>
+        swarms.map((swarm) =>
           swarm.orchestrate({
             description: `Task for ${swarm.id}`,
             priority: 'medium',
-          }),
-        ),
+          })
+        )
       );
 
       assert.strictEqual(tasks.length, 3);
@@ -261,7 +247,7 @@ describe('API Integration Tests', () => {
   });
 
   describe('Event Logging Integration', () => {
-    it('should log and retrieve events', async() => {
+    it('should log and retrieve events', async () => {
       const swarm = await ruvSwarm.createSwarm({
         name: 'event-test-swarm',
       });
@@ -289,7 +275,7 @@ describe('API Integration Tests', () => {
   });
 
   describe('Performance Metrics Integration', () => {
-    it('should track and aggregate performance metrics', async() => {
+    it('should track and aggregate performance metrics', async () => {
       const swarm = await ruvSwarm.createSwarm({
         name: 'metrics-test-swarm',
       });
@@ -308,12 +294,7 @@ describe('API Integration Tests', () => {
       ];
 
       for (const metric of metricsToRecord) {
-        ruvSwarm.persistence.recordMetric(
-          'agent',
-          agent.id,
-          metric.name,
-          metric.value,
-        );
+        ruvSwarm.persistence.recordMetric('agent', agent.id, metric.name, metric.value);
       }
 
       // Retrieve all metrics
@@ -321,18 +302,14 @@ describe('API Integration Tests', () => {
       assert.strictEqual(allMetrics.length, 4);
 
       // Retrieve specific metric
-      const memoryMetrics = ruvSwarm.persistence.getMetrics(
-        'agent',
-        agent.id,
-        'memory_usage',
-      );
+      const memoryMetrics = ruvSwarm.persistence.getMetrics('agent', agent.id, 'memory_usage');
       assert.strictEqual(memoryMetrics.length, 1);
       assert.strictEqual(memoryMetrics[0].metric_value, 45.5);
     });
   });
 
   describe('Error Recovery Integration', () => {
-    it('should handle and recover from errors gracefully', async() => {
+    it('should handle and recover from errors gracefully', async () => {
       const swarm = await ruvSwarm.createSwarm({
         name: 'error-test-swarm',
       });
@@ -359,7 +336,7 @@ describe('API Integration Tests', () => {
   });
 
   describe('Complex Task Orchestration', () => {
-    it('should handle complex task dependencies', async() => {
+    it('should handle complex task dependencies', async () => {
       const swarm = await ruvSwarm.createSwarm({
         name: 'complex-task-swarm',
         topology: 'hierarchical',
@@ -404,7 +381,7 @@ describe('API Integration Tests', () => {
       });
 
       // Wait for tasks to progress
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // Verify task assignments
       assert(researchTask.assignedAgents.includes(researcher.id));
@@ -414,7 +391,7 @@ describe('API Integration Tests', () => {
   });
 
   describe('WASM Module Loading Integration', () => {
-    it('should detect and report WASM module status', async() => {
+    it('should detect and report WASM module status', async () => {
       const metrics = await ruvSwarm.getGlobalMetrics();
 
       assert(metrics.features);
@@ -429,7 +406,7 @@ describe('API Integration Tests', () => {
   });
 
   describe('Swarm Monitoring Integration', () => {
-    it('should monitor swarm activity', async() => {
+    it('should monitor swarm activity', async () => {
       const swarm = await ruvSwarm.createSwarm({
         name: 'monitor-test-swarm',
       });
@@ -457,7 +434,7 @@ describe('API Integration Tests', () => {
   });
 
   describe('Cleanup and Resource Management', () => {
-    it('should properly clean up resources', async() => {
+    it('should properly clean up resources', async () => {
       const swarm = await ruvSwarm.createSwarm({
         name: 'cleanup-test-swarm',
       });

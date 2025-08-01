@@ -1,6 +1,6 @@
 /**
  * Unified Core System - Main Integration Hub
- * 
+ *
  * Brings together all core systems without plugin architecture:
  * - Unified Interface (CLI/TUI/Web)
  * - Memory System (existing)
@@ -8,19 +8,19 @@
  * - Export System
  * - Documentation Linker
  * - Document-Driven System
- * 
+ *
  * Supports the hive document workflow: Vision → ADRs → PRDs → Epics → Features → Tasks → Code
  */
 
 import { EventEmitter } from 'events';
-import { createLogger } from '../utils/logger.js';
-import { UnifiedInterfaceLauncher } from './unified-interface-launcher.js';
-import { DocumentDrivenSystem } from './document-driven-system.js';
-import { UnifiedWorkflowEngine } from './unified-workflow-engine.js';
-import { UnifiedExportSystem } from './unified-export-system.js';
-import { UnifiedDocumentationLinker } from './unified-documentation-linker.js';
 import { MemoryManager } from '../memory/manager.js';
 import { EnhancedMemory } from '../memory/memory.js';
+import { createLogger } from '../utils/logger.js';
+import { DocumentDrivenSystem } from './document-driven-system.js';
+import { UnifiedDocumentationLinker } from './unified-documentation-linker.js';
+import { UnifiedExportSystem } from './unified-export-system.js';
+import { UnifiedInterfaceLauncher } from './unified-interface-launcher.js';
+import { UnifiedWorkflowEngine } from './unified-workflow-engine.js';
 
 const logger = createLogger('UnifiedCore');
 
@@ -32,7 +32,7 @@ export interface UnifiedCoreConfig {
     enableRealTime?: boolean;
     theme?: 'dark' | 'light';
   };
-  
+
   // Memory configuration
   memory?: {
     directory?: string;
@@ -40,28 +40,28 @@ export interface UnifiedCoreConfig {
     enableCache?: boolean;
     enableVectorStorage?: boolean;
   };
-  
+
   // Workflow configuration
   workflow?: {
     maxConcurrentWorkflows?: number;
     persistWorkflows?: boolean;
     enableVisualization?: boolean;
   };
-  
+
   // Export configuration
   export?: {
     defaultFormat?: string;
     outputPath?: string;
     enableCompression?: boolean;
   };
-  
+
   // Documentation configuration
   documentation?: {
     documentationPaths?: string[];
     codePaths?: string[];
     enableAutoLinking?: boolean;
   };
-  
+
   // Document workspace configuration
   workspace?: {
     root?: string;
@@ -89,7 +89,7 @@ export class UnifiedCoreSystem extends EventEmitter {
   private config: UnifiedCoreConfig;
   private status: SystemStatus['status'] = 'initializing';
   private startTime: number;
-  
+
   // Core components
   private interfaceLauncher: UnifiedInterfaceLauncher;
   private documentSystem: DocumentDrivenSystem;
@@ -98,7 +98,7 @@ export class UnifiedCoreSystem extends EventEmitter {
   private documentationLinker: UnifiedDocumentationLinker;
   private memorySystem: EnhancedMemory;
   private memoryManager: MemoryManager;
-  
+
   // State
   private activeWorkspaceId?: string;
   private initialized = false;
@@ -107,10 +107,10 @@ export class UnifiedCoreSystem extends EventEmitter {
     super();
     this.config = config;
     this.startTime = Date.now();
-    
+
     // Initialize core components
     this.initializeComponents();
-    
+
     // Setup event handlers
     this.setupEventHandlers();
   }
@@ -125,16 +125,16 @@ export class UnifiedCoreSystem extends EventEmitter {
       namespace: this.config.memory?.namespace || 'claude-zen-unified',
       enableCache: this.config.memory?.enableCache !== false,
       enableVectorStorage: this.config.memory?.enableVectorStorage !== false,
-      autoSave: true
+      autoSave: true,
     });
-    
+
     this.memoryManager = new MemoryManager();
 
     // Workflow engine
     this.workflowEngine = new UnifiedWorkflowEngine(this.memorySystem, {
       maxConcurrentWorkflows: this.config.workflow?.maxConcurrentWorkflows || 10,
       persistWorkflows: this.config.workflow?.persistWorkflows !== false,
-      enableVisualization: this.config.workflow?.enableVisualization || false
+      enableVisualization: this.config.workflow?.enableVisualization || false,
     });
 
     // Export system
@@ -144,7 +144,7 @@ export class UnifiedCoreSystem extends EventEmitter {
     this.documentationLinker = new UnifiedDocumentationLinker({
       documentationPaths: this.config.documentation?.documentationPaths,
       codePaths: this.config.documentation?.codePaths,
-      enableAutoLinking: this.config.documentation?.enableAutoLinking !== false
+      enableAutoLinking: this.config.documentation?.enableAutoLinking !== false,
     });
 
     // Document-driven system
@@ -163,7 +163,7 @@ export class UnifiedCoreSystem extends EventEmitter {
     // Document system events
     this.documentSystem.on('document:created', async (event) => {
       logger.info(`Document created: ${event.type} - ${event.path}`);
-      
+
       // Trigger workflows for new documents
       try {
         const workflowIds = await this.workflowEngine.processDocumentEvent(
@@ -172,7 +172,7 @@ export class UnifiedCoreSystem extends EventEmitter {
           event.document,
           { workspace: this.activeWorkspaceId }
         );
-        
+
         if (workflowIds.length > 0) {
           logger.info(`Started ${workflowIds.length} workflows for new document`);
         }
@@ -189,20 +189,19 @@ export class UnifiedCoreSystem extends EventEmitter {
     // Workflow engine events
     this.workflowEngine.on('workflow:completed', async (event) => {
       logger.info(`Workflow completed: ${event.workflowId}`);
-      
+
       // Auto-export workflow results if configured
       if (this.config.export?.defaultFormat) {
         try {
-          const workflowData = await this.memorySystem.retrieve(`workflow:${event.workflowId}`, 'workflows');
+          const workflowData = await this.memorySystem.retrieve(
+            `workflow:${event.workflowId}`,
+            'workflows'
+          );
           if (workflowData) {
-            await this.exportSystem.exportData(
-              workflowData,
-              this.config.export.defaultFormat,
-              {
-                outputPath: this.config.export.outputPath,
-                filename: `workflow_${event.workflowId}_result`
-              }
-            );
+            await this.exportSystem.exportData(workflowData, this.config.export.defaultFormat, {
+              outputPath: this.config.export.outputPath,
+              filename: `workflow_${event.workflowId}_result`,
+            });
           }
         } catch (error) {
           logger.warn('Failed to auto-export workflow result:', error);
@@ -233,9 +232,9 @@ export class UnifiedCoreSystem extends EventEmitter {
    */
   async initialize(): Promise<void> {
     if (this.initialized) return;
-    
+
     logger.info('🚀 Initializing Unified Core System');
-    
+
     try {
       this.status = 'initializing';
       this.emit('status:changed', this.status);
@@ -257,7 +256,9 @@ export class UnifiedCoreSystem extends EventEmitter {
       // Load workspace if configured
       if (this.config.workspace?.root) {
         logger.info(`Loading workspace: ${this.config.workspace.root}`);
-        this.activeWorkspaceId = await this.documentSystem.loadWorkspace(this.config.workspace.root);
+        this.activeWorkspaceId = await this.documentSystem.loadWorkspace(
+          this.config.workspace.root
+        );
       } else if (this.config.workspace?.autoDetect) {
         // Try to auto-detect workspace
         const workspaceRoot = this.detectWorkspaceRoot();
@@ -269,10 +270,9 @@ export class UnifiedCoreSystem extends EventEmitter {
 
       this.status = 'ready';
       this.initialized = true;
-      
+
       this.emit('initialized');
       logger.info('✅ Unified Core System ready');
-
     } catch (error) {
       this.status = 'error';
       this.emit('status:changed', this.status);
@@ -286,19 +286,22 @@ export class UnifiedCoreSystem extends EventEmitter {
    */
   async launch(): Promise<void> {
     await this.ensureInitialized();
-    
+
     logger.info('Launching unified interface...');
-    
+
     const launchOptions = {
-      forceMode: this.config.interface?.defaultMode !== 'auto' ? this.config.interface?.defaultMode : undefined,
+      forceMode:
+        this.config.interface?.defaultMode !== 'auto'
+          ? this.config.interface?.defaultMode
+          : undefined,
       webPort: this.config.interface?.webPort,
       verbose: false,
       silent: false,
       config: {
         theme: this.config.interface?.theme,
         realTime: this.config.interface?.enableRealTime,
-        coreSystem: this // Pass reference to access all systems
-      }
+        coreSystem: this, // Pass reference to access all systems
+      },
     };
 
     try {
@@ -316,40 +319,40 @@ export class UnifiedCoreSystem extends EventEmitter {
     const memoryStats = this.memorySystem.getStats();
     const workflowMetrics = await this.workflowEngine.getWorkflowMetrics();
     const exportStats = this.exportSystem.getExportStats();
-    
+
     return {
       status: this.status,
       version: '2.0.0-alpha.73',
       components: {
         interface: {
           status: 'ready',
-          mode: 'auto' // Would be determined by actual interface
+          mode: 'auto', // Would be determined by actual interface
         },
         memory: {
           status: 'ready',
           sessions: memoryStats.totalSessions,
-          size: memoryStats.totalSize
+          size: memoryStats.totalSize,
         },
         workflow: {
           status: 'ready',
-          activeWorkflows: workflowMetrics.running || 0
+          activeWorkflows: workflowMetrics.running || 0,
         },
         export: {
           status: 'ready',
-          availableFormats: this.exportSystem.getAvailableFormats().length
+          availableFormats: this.exportSystem.getAvailableFormats().length,
         },
         documentation: {
           status: 'ready',
-          documentsIndexed: this.documentationLinker.getDocumentationIndex().size
+          documentsIndexed: this.documentationLinker.getDocumentationIndex().size,
         },
         workspace: {
           status: this.activeWorkspaceId ? 'ready' : 'none',
           workspaceId: this.activeWorkspaceId,
-          documentsLoaded: 0 // Would be calculated from document system
-        }
+          documentsLoaded: 0, // Would be calculated from document system
+        },
       },
       uptime: Date.now() - this.startTime,
-      lastUpdate: new Date().toISOString()
+      lastUpdate: new Date().toISOString(),
     };
   }
 
@@ -362,27 +365,26 @@ export class UnifiedCoreSystem extends EventEmitter {
     error?: string;
   }> {
     await this.ensureInitialized();
-    
+
     try {
       logger.info(`Processing document: ${documentPath}`);
-      
+
       // Process through document system
       await this.documentSystem.processVisionaryDocument(
-        this.activeWorkspaceId || 'default', 
+        this.activeWorkspaceId || 'default',
         documentPath
       );
-      
+
       return {
         success: true,
-        workflowIds: [] // Would be populated by workflow engine
+        workflowIds: [], // Would be populated by workflow engine
       };
-      
     } catch (error) {
       logger.error(`Failed to process document ${documentPath}:`, error);
       return {
         success: false,
         workflowIds: [],
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
@@ -390,37 +392,39 @@ export class UnifiedCoreSystem extends EventEmitter {
   /**
    * Export system data in specified format
    */
-  async exportSystemData(format: string, options: any = {}): Promise<{
+  async exportSystemData(
+    format: string,
+    options: any = {}
+  ): Promise<{
     success: boolean;
     filename?: string;
     error?: string;
   }> {
     await this.ensureInitialized();
-    
+
     try {
       const systemStatus = await this.getSystemStatus();
       const workflowHistory = await this.workflowEngine.getWorkflowHistory();
       const documentationReport = await this.documentationLinker.generateDocumentationReport();
-      
+
       const systemData = {
         system: systemStatus,
         workflows: workflowHistory,
         documentation: documentationReport,
-        exportedAt: new Date().toISOString()
+        exportedAt: new Date().toISOString(),
       };
-      
+
       const result = await this.exportSystem.exportSystemStatus(systemData, format, options);
-      
+
       return {
         success: result.success,
-        filename: result.filename
+        filename: result.filename,
       };
-      
     } catch (error) {
       logger.error('Failed to export system data:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
@@ -430,42 +434,43 @@ export class UnifiedCoreSystem extends EventEmitter {
    */
   async generateSystemReport(): Promise<string> {
     await this.ensureInitialized();
-    
+
     const status = await this.getSystemStatus();
     const docReport = await this.documentationLinker.generateDocumentationReport();
     const exportStats = this.exportSystem.getExportStats();
-    
+
     const report = [];
-    
+
     report.push('# Claude Code Zen - System Report');
     report.push(`Generated: ${new Date().toISOString()}`);
     report.push(`Version: ${status.version}`);
     report.push(`Uptime: ${Math.round(status.uptime / 1000)}s`);
     report.push('');
-    
+
     report.push('## System Status');
     report.push(`Overall Status: ${status.status}`);
     report.push('');
-    
+
     report.push('### Components');
     for (const [component, info] of Object.entries(status.components)) {
       report.push(`- **${component}**: ${info.status}`);
       if ('sessions' in info) report.push(`  - Sessions: ${info.sessions}`);
       if ('activeWorkflows' in info) report.push(`  - Active Workflows: ${info.activeWorkflows}`);
-      if ('documentsIndexed' in info) report.push(`  - Documents Indexed: ${info.documentsIndexed}`);
+      if ('documentsIndexed' in info)
+        report.push(`  - Documents Indexed: ${info.documentsIndexed}`);
     }
     report.push('');
-    
+
     report.push('## Export Statistics');
     report.push(`- Total Exports: ${exportStats.totalExports}`);
     report.push(`- Successful: ${exportStats.successfulExports}`);
     report.push(`- Failed: ${exportStats.failedExports}`);
     report.push(`- Total Size: ${Math.round(exportStats.totalSize / 1024)}KB`);
     report.push('');
-    
+
     report.push('## Documentation Analysis');
     report.push(docReport);
-    
+
     return report.join('\n');
   }
 
@@ -474,22 +479,21 @@ export class UnifiedCoreSystem extends EventEmitter {
    */
   async shutdown(): Promise<void> {
     logger.info('Shutting down Unified Core System...');
-    
+
     this.status = 'shutdown';
     this.emit('status:changed', this.status);
-    
+
     try {
       // Shutdown components in reverse order
       if (this.memorySystem) {
         await this.memorySystem.shutdown();
       }
-      
+
       // Clear event listeners
       this.removeAllListeners();
-      
+
       this.emit('shutdown');
       logger.info('Unified Core System shutdown complete');
-      
     } catch (error) {
       logger.error('Error during shutdown:', error);
       throw error;
@@ -506,7 +510,7 @@ export class UnifiedCoreSystem extends EventEmitter {
       workflow: this.workflowEngine,
       export: this.exportSystem,
       documentation: this.documentationLinker,
-      documentSystem: this.documentSystem
+      documentSystem: this.documentSystem,
     };
   }
 
@@ -516,18 +520,16 @@ export class UnifiedCoreSystem extends EventEmitter {
   private detectWorkspaceRoot(): string | null {
     // Simple workspace detection logic
     const candidates = ['./docs', './adrs', './prds', '.'];
-    
+
     for (const candidate of candidates) {
       try {
         const fs = require('fs');
         if (fs.existsSync(candidate)) {
           return candidate;
         }
-      } catch {
-        continue;
-      }
+      } catch {}
     }
-    
+
     return null;
   }
 

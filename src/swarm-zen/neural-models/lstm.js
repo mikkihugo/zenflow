@@ -34,9 +34,7 @@ class LSTMModel extends NeuralModel {
 
     // Initialize LSTM cells for each layer
     for (let layer = 0; layer < this.config.numLayers; layer++) {
-      const inputDim = layer === 0 ?
-        this.config.inputSize :
-        this.config.hiddenSize * numDirections;
+      const inputDim = layer === 0 ? this.config.inputSize : this.config.hiddenSize * numDirections;
 
       const layerCells = [];
 
@@ -69,9 +67,9 @@ class LSTMModel extends NeuralModel {
     }
 
     // Output layer
-    const outputInputDim = this.config.returnSequence ?
-      this.config.hiddenSize * numDirections :
-      this.config.hiddenSize * numDirections;
+    const outputInputDim = this.config.returnSequence
+      ? this.config.hiddenSize * numDirections
+      : this.config.hiddenSize * numDirections;
 
     this.outputLayer = {
       weight: this.createWeight([outputInputDim, this.config.outputSize]),
@@ -103,11 +101,7 @@ class LSTMModel extends NeuralModel {
 
     // Process through LSTM layers
     for (let layer = 0; layer < this.config.numLayers; layer++) {
-      const { hiddenStates, finalHidden } = await this.forwardLayer(
-        layerInput,
-        layer,
-        training,
-      );
+      const { hiddenStates, finalHidden } = await this.forwardLayer(layerInput, layer, training);
 
       // Use hidden states as input to next layer
       layerInput = hiddenStates;
@@ -122,11 +116,7 @@ class LSTMModel extends NeuralModel {
     } else {
       // Return only last hidden state
       const lastHidden = this.getLastHiddenState(layerInput);
-      output = this.linearTransform(
-        lastHidden,
-        this.outputLayer.weight,
-        this.outputLayer.bias,
-      );
+      output = this.linearTransform(lastHidden, this.outputLayer.weight, this.outputLayer.bias);
     }
 
     return output;
@@ -139,17 +129,13 @@ class LSTMModel extends NeuralModel {
 
     if (this.config.bidirectional) {
       // Bidirectional LSTM
-      const forwardStates = await this.forwardDirection(
-        input, cells[0], false, training,
-      );
-      const backwardStates = await this.forwardDirection(
-        input, cells[1], true, training,
-      );
+      const forwardStates = await this.forwardDirection(input, cells[0], false, training);
+      const backwardStates = await this.forwardDirection(input, cells[1], true, training);
 
       // Concatenate forward and backward states
       const concatenated = this.concatenateBidirectional(
         forwardStates.states,
-        backwardStates.states,
+        backwardStates.states
       );
 
       return {
@@ -162,7 +148,6 @@ class LSTMModel extends NeuralModel {
     }
     // Unidirectional LSTM
     return await this.forwardDirection(input, cells[0], false, training);
-
   }
 
   async forwardDirection(input, cell, reverse = false, training = false) {
@@ -179,9 +164,9 @@ class LSTMModel extends NeuralModel {
     const hiddenStates = [];
 
     // Process sequence
-    const steps = reverse ?
-      Array.from({ length: sequenceLength }, (_, i) => sequenceLength - 1 - i) :
-      Array.from({ length: sequenceLength }, (_, i) => i);
+    const steps = reverse
+      ? Array.from({ length: sequenceLength }, (_, i) => sequenceLength - 1 - i)
+      : Array.from({ length: sequenceLength }, (_, i) => i);
 
     for (const t of steps) {
       // Get input at timestep t
@@ -227,52 +212,25 @@ class LSTMModel extends NeuralModel {
 
     // Input gate
     const i = this.sigmoid(
-      this.add(
-        this.add(
-          this.matmulBatch(x, cell.Wi),
-          this.matmulBatch(hPrev, cell.Ui),
-        ),
-        cell.bi,
-      ),
+      this.add(this.add(this.matmulBatch(x, cell.Wi), this.matmulBatch(hPrev, cell.Ui)), cell.bi)
     );
 
     // Forget gate
     const f = this.sigmoid(
-      this.add(
-        this.add(
-          this.matmulBatch(x, cell.Wf),
-          this.matmulBatch(hPrev, cell.Uf),
-        ),
-        cell.bf,
-      ),
+      this.add(this.add(this.matmulBatch(x, cell.Wf), this.matmulBatch(hPrev, cell.Uf)), cell.bf)
     );
 
     // Cell candidate
     const cTilde = this.tanh(
-      this.add(
-        this.add(
-          this.matmulBatch(x, cell.Wc),
-          this.matmulBatch(hPrev, cell.Uc),
-        ),
-        cell.bc,
-      ),
+      this.add(this.add(this.matmulBatch(x, cell.Wc), this.matmulBatch(hPrev, cell.Uc)), cell.bc)
     );
 
     // New cell state
-    const c = this.add(
-      this.elementwiseMultiply(f, cPrev),
-      this.elementwiseMultiply(i, cTilde),
-    );
+    const c = this.add(this.elementwiseMultiply(f, cPrev), this.elementwiseMultiply(i, cTilde));
 
     // Output gate
     const o = this.sigmoid(
-      this.add(
-        this.add(
-          this.matmulBatch(x, cell.Wo),
-          this.matmulBatch(hPrev, cell.Uo),
-        ),
-        cell.bo,
-      ),
+      this.add(this.add(this.matmulBatch(x, cell.Wo), this.matmulBatch(hPrev, cell.Uo)), cell.bo)
     );
 
     // New hidden state
@@ -320,8 +278,7 @@ class LSTMModel extends NeuralModel {
       const state = states[t];
       for (let b = 0; b < batchSize; b++) {
         for (let h = 0; h < hiddenSize; h++) {
-          stacked[b * sequenceLength * hiddenSize + t * hiddenSize + h] =
-            state[b * hiddenSize + h];
+          stacked[b * sequenceLength * hiddenSize + t * hiddenSize + h] = state[b * hiddenSize + h];
         }
       }
     }
@@ -398,7 +355,8 @@ class LSTMModel extends NeuralModel {
 
         // Store in output
         for (let i = 0; i < this.config.outputSize; i++) {
-          output[b * sequenceLength * this.config.outputSize + t * this.config.outputSize + i] = out[i];
+          output[b * sequenceLength * this.config.outputSize + t * this.config.outputSize + i] =
+            out[i];
         }
       }
     }
@@ -479,7 +437,9 @@ class LSTMModel extends NeuralModel {
         learningRate,
       });
 
-      console.log(`Epoch ${epoch + 1}/${epochs} - Train Loss: ${avgTrainLoss.toFixed(4)}, Val Loss: ${valLoss.toFixed(4)}`);
+      console.log(
+        `Epoch ${epoch + 1}/${epochs} - Train Loss: ${avgTrainLoss.toFixed(4)}, Val Loss: ${valLoss.toFixed(4)}`
+      );
     }
 
     return {
@@ -497,7 +457,6 @@ class LSTMModel extends NeuralModel {
     }
     // Sequence-to-one loss
     return this.crossEntropyLoss(predictions, targets);
-
   }
 
   async validateSequences(validationData) {
@@ -528,15 +487,14 @@ class LSTMModel extends NeuralModel {
 
     // LSTM cell parameters
     for (let layer = 0; layer < this.config.numLayers; layer++) {
-      const inputDim = layer === 0 ?
-        this.config.inputSize :
-        this.config.hiddenSize * numDirections;
+      const inputDim = layer === 0 ? this.config.inputSize : this.config.hiddenSize * numDirections;
 
       // Parameters per direction
       const paramsPerDirection =
-        4 * (inputDim * this.config.hiddenSize + // W matrices
-             this.config.hiddenSize * this.config.hiddenSize + // U matrices
-             this.config.hiddenSize); // biases
+        4 *
+        (inputDim * this.config.hiddenSize + // W matrices
+          this.config.hiddenSize * this.config.hiddenSize + // U matrices
+          this.config.hiddenSize); // biases
 
       count += paramsPerDirection * numDirections;
     }

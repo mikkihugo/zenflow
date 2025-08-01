@@ -19,7 +19,7 @@ const noTimeoutCode = fs.readFileSync(noTimeoutPath, 'utf8');
 const originalCode = fs.readFileSync(originalPath, 'utf8');
 
 console.log('🔥 TIMEOUT ELIMINATION VALIDATION SUITE');
-console.log('=' .repeat(50));
+console.log('='.repeat(50));
 
 // Test 1: Timeout mechanism removal
 console.log('\n📊 1. TIMEOUT MECHANISM REMOVAL:');
@@ -83,7 +83,9 @@ for (const { name, pattern } of securityPatterns) {
   }
 }
 
-console.log(`\n   🎯 RESULT: ${preservedCount}/${securityPatterns.length} security features preserved`);
+console.log(
+  `\n   🎯 RESULT: ${preservedCount}/${securityPatterns.length} security features preserved`
+);
 
 // Test 3: Core functionality preservation
 console.log('\n⚡ 3. CORE FUNCTIONALITY PRESERVATION:');
@@ -114,7 +116,9 @@ for (const { name, pattern } of corePatterns) {
   }
 }
 
-console.log(`\n   🎯 RESULT: ${corePreservedCount}/${corePatterns.length} core functions preserved`);
+console.log(
+  `\n   🎯 RESULT: ${corePreservedCount}/${corePatterns.length} core functions preserved`
+);
 
 // Test 4: Version identification
 console.log('\n🏷️  4. VERSION IDENTIFICATION:');
@@ -124,7 +128,10 @@ const versionPatterns = [
   { name: 'ruv-swarm-no-timeout', pattern: /ruv-swarm-no-timeout/g },
   { name: 'INFINITE RUNTIME', pattern: /INFINITE RUNTIME/g },
   { name: 'BULLETPROOF OPERATION', pattern: /BULLETPROOF OPERATION/g },
-  { name: 'TIMEOUT MECHANISMS: COMPLETELY REMOVED', pattern: /TIMEOUT MECHANISMS: COMPLETELY REMOVED/g },
+  {
+    name: 'TIMEOUT MECHANISMS: COMPLETELY REMOVED',
+    pattern: /TIMEOUT MECHANISMS: COMPLETELY REMOVED/g,
+  },
 ];
 
 let versionCount = 0;
@@ -139,7 +146,9 @@ for (const { name, pattern } of versionPatterns) {
   }
 }
 
-console.log(`\n   🎯 RESULT: ${versionCount}/${versionPatterns.length} version identifiers present`);
+console.log(
+  `\n   🎯 RESULT: ${versionCount}/${versionPatterns.length} version identifiers present`
+);
 
 // Test 5: Functional testing
 console.log('\n🧪 5. FUNCTIONAL TESTING:');
@@ -183,10 +192,22 @@ console.log('\n📝 6. CODE QUALITY VALIDATION:');
 
 const qualityChecks = [
   { name: 'Proper shebang', test: () => noTimeoutCode.startsWith('#!/usr/bin/env node') },
-  { name: 'ES modules syntax', test: () => /import.*from/.test(noTimeoutCode) && /export.*{/.test(noTimeoutCode) },
-  { name: 'Error handling', test: () => /try.*catch/.test(noTimeoutCode) && /process\.exit/.test(noTimeoutCode) },
-  { name: 'Async/await usage', test: () => /async.*function/.test(noTimeoutCode) && /await/.test(noTimeoutCode) },
-  { name: 'Proper logging', test: () => /console\.log/.test(noTimeoutCode) && /logger\./.test(noTimeoutCode) },
+  {
+    name: 'ES modules syntax',
+    test: () => /import.*from/.test(noTimeoutCode) && /export.*{/.test(noTimeoutCode),
+  },
+  {
+    name: 'Error handling',
+    test: () => /try.*catch/.test(noTimeoutCode) && /process\.exit/.test(noTimeoutCode),
+  },
+  {
+    name: 'Async/await usage',
+    test: () => /async.*function/.test(noTimeoutCode) && /await/.test(noTimeoutCode),
+  },
+  {
+    name: 'Proper logging',
+    test: () => /console\.log/.test(noTimeoutCode) && /logger\./.test(noTimeoutCode),
+  },
 ];
 
 let qualityScore = 0;
@@ -203,9 +224,9 @@ for (const { name, test } of qualityChecks) {
 console.log(`\n   🎯 RESULT: ${qualityScore}/${qualityChecks.length} quality checks passed`);
 
 // Final summary
-console.log('\n' + '=' .repeat(50));
+console.log('\n' + '='.repeat(50));
 console.log('🎯 FINAL VALIDATION SUMMARY:');
-console.log('=' .repeat(50));
+console.log('='.repeat(50));
 
 const overallScore = {
   timeoutRemoval: removedCount / timeoutPatterns.length,
@@ -217,19 +238,26 @@ const overallScore = {
 
 console.log(`\n📊 DETAILED SCORES:`);
 console.log(`   🔥 Timeout Removal: ${(overallScore.timeoutRemoval * 100).toFixed(1)}%`);
-console.log(`   🔒 Security Preservation: ${(overallScore.securityPreservation * 100).toFixed(1)}%`);
+console.log(
+  `   🔒 Security Preservation: ${(overallScore.securityPreservation * 100).toFixed(1)}%`
+);
 console.log(`   ⚡ Core Functionality: ${(overallScore.corePreservation * 100).toFixed(1)}%`);
-console.log(`   🏷️  Version Identification: ${(overallScore.versionIdentification * 100).toFixed(1)}%`);
+console.log(
+  `   🏷️  Version Identification: ${(overallScore.versionIdentification * 100).toFixed(1)}%`
+);
 console.log(`   📝 Code Quality: ${(overallScore.codeQuality * 100).toFixed(1)}%`);
 
-const averageScore = Object.values(overallScore).reduce((a, b) => a + b, 0) / Object.keys(overallScore).length;
+const averageScore =
+  Object.values(overallScore).reduce((a, b) => a + b, 0) / Object.keys(overallScore).length;
 console.log(`\n🎯 OVERALL SCORE: ${(averageScore * 100).toFixed(1)}%`);
 
 if (averageScore >= 0.95) {
-  console.log(`\n🎉 EXCELLENT! All timeout mechanisms successfully eliminated while preserving functionality.`);
+  console.log(
+    `\n🎉 EXCELLENT! All timeout mechanisms successfully eliminated while preserving functionality.`
+  );
 } else if (averageScore >= 0.85) {
   console.log(`\n✅ GOOD! Most timeout mechanisms eliminated with minor issues.`);
-} else if (averageScore >= 0.70) {
+} else if (averageScore >= 0.7) {
   console.log(`\n⚠️  FAIR! Some timeout mechanisms eliminated but significant issues remain.`);
 } else {
   console.log(`\n❌ POOR! Major issues with timeout elimination or functionality preservation.`);
@@ -237,23 +265,25 @@ if (averageScore >= 0.95) {
 
 // Run functional tests
 console.log('\n🧪 RUNNING FUNCTIONAL TESTS...');
-runFunctionalTests().then((allPassed) => {
-  console.log('\n' + '=' .repeat(50));
-  console.log('✅ VALIDATION COMPLETE!');
-  console.log('=' .repeat(50));
+runFunctionalTests()
+  .then((allPassed) => {
+    console.log('\n' + '='.repeat(50));
+    console.log('✅ VALIDATION COMPLETE!');
+    console.log('='.repeat(50));
 
-  if (allPassed && averageScore >= 0.95) {
-    console.log('🔥 RESULT: BULLETPROOF NO-TIMEOUT VERSION SUCCESSFULLY CREATED!');
-    console.log('🛡️  SECURITY: ALL FEATURES PRESERVED');
-    console.log('⚡ FUNCTIONALITY: ALL CORE FEATURES WORKING');
-    console.log('🚀 RUNTIME: INFINITE (NO TIMEOUT MECHANISMS)');
-    console.log('\n✅ Ready for production use with Claude Code MCP integration!');
-  } else {
-    console.log('⚠️  RESULT: Some issues detected. Review above output for details.');
-  }
+    if (allPassed && averageScore >= 0.95) {
+      console.log('🔥 RESULT: BULLETPROOF NO-TIMEOUT VERSION SUCCESSFULLY CREATED!');
+      console.log('🛡️  SECURITY: ALL FEATURES PRESERVED');
+      console.log('⚡ FUNCTIONALITY: ALL CORE FEATURES WORKING');
+      console.log('🚀 RUNTIME: INFINITE (NO TIMEOUT MECHANISMS)');
+      console.log('\n✅ Ready for production use with Claude Code MCP integration!');
+    } else {
+      console.log('⚠️  RESULT: Some issues detected. Review above output for details.');
+    }
 
-  process.exit(allPassed && averageScore >= 0.95 ? 0 : 1);
-}).catch(error => {
-  console.error('\n❌ Functional tests failed:', error.message);
-  process.exit(1);
-});
+    process.exit(allPassed && averageScore >= 0.95 ? 0 : 1);
+  })
+  .catch((error) => {
+    console.error('\n❌ Functional tests failed:', error.message);
+    process.exit(1);
+  });

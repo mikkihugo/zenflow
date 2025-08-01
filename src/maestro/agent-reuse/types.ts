@@ -107,7 +107,7 @@ export interface PerformanceHistory {
   successRate: number;
   qualityScores: number[];
   lastUpdated: Date;
-  
+
   addCompletion(duration: number, estimatedDuration: number): void;
   addFailure(reason: string): void;
   getRecentSuccessRate(window?: number): number;
@@ -149,9 +149,9 @@ export interface WorkloadStatistics {
 }
 
 export interface LoadDistribution {
-  low: number;    // 0-0.3 load
+  low: number; // 0-0.3 load
   medium: number; // 0.3-0.7 load
-  high: number;   // 0.7-1.0 load
+  high: number; // 0.7-1.0 load
   overload: number; // >1.0 load
 }
 
@@ -193,13 +193,13 @@ export interface OptimizationResult {
   error?: string;
 }
 
-export type AgentStatus = 
-  | 'available'    // Ready for new tasks
-  | 'busy'         // Currently executing tasks
-  | 'overloaded'   // Above capacity threshold
-  | 'maintenance'  // Undergoing maintenance
-  | 'error'        // In error state
-  | 'offline';     // Not responding
+export type AgentStatus =
+  | 'available' // Ready for new tasks
+  | 'busy' // Currently executing tasks
+  | 'overloaded' // Above capacity threshold
+  | 'maintenance' // Undergoing maintenance
+  | 'error' // In error state
+  | 'offline'; // Not responding
 
 export interface AgentProfile {
   id: string;
@@ -259,15 +259,15 @@ export interface AgentReuseConfig {
   reuseThreshold: number;
   maxPoolSize: number;
   cleanupThreshold: number;
-  
+
   // Performance tuning
   selectionTimeout: number;
   monitoringInterval: number;
   optimizationFrequency: number;
-  
+
   // Scoring weights
   scoringWeights: ScoringWeights;
-  
+
   // Strategy selection
   selectionStrategy: 'balanced' | 'performance' | 'efficiency' | 'custom';
   reuseStrategy: 'greedy' | 'conservative' | 'adaptive';
@@ -318,11 +318,11 @@ export const DEFAULT_AGENT_REUSE_CONFIG: AgentReuseConfig = {
     performance: 0.3,
     availability: 0.2,
     success: 0.08,
-    priority: 0.02
+    priority: 0.02,
   },
   selectionStrategy: 'balanced',
   reuseStrategy: 'greedy',
-  poolStrategy: 'dynamic'
+  poolStrategy: 'dynamic',
 };
 
 export const DEFAULT_POOL_MANAGER_CONFIG: PoolManagerConfig = {
@@ -330,14 +330,14 @@ export const DEFAULT_POOL_MANAGER_CONFIG: PoolManagerConfig = {
   cleanupThreshold: 0.1,
   maintenanceInterval: 60000,
   spawningStrategy: 'adaptive',
-  reusePreference: 0.8
+  reusePreference: 0.8,
 };
 
 export const DEFAULT_WORKLOAD_MONITOR_CONFIG: WorkloadMonitorConfig = {
   updateInterval: 5000,
   overloadThreshold: 0.8,
   idleThreshold: 0.1,
-  historyWindow: 3600000 // 1 hour
+  historyWindow: 3600000, // 1 hour
 };
 
 export const DEFAULT_PERFORMANCE_SCORER_CONFIG: PerformanceScorerConfig = {
@@ -346,9 +346,9 @@ export const DEFAULT_PERFORMANCE_SCORER_CONFIG: PerformanceScorerConfig = {
     performance: 0.3,
     availability: 0.2,
     success: 0.08,
-    priority: 0.02
+    priority: 0.02,
   },
   performanceWindow: 1800000, // 30 minutes
   minimumSampleSize: 3,
-  confidenceThreshold: 0.6
+  confidenceThreshold: 0.6,
 };

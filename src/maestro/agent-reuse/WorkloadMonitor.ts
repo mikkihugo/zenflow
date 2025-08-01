@@ -29,7 +29,7 @@ export class WorkloadMonitor {
       maxCpuUsage: thresholds.maxCpuUsage || 0.8,
       maxMemoryUsage: thresholds.maxMemoryUsage || 0.9,
       maxConcurrentTasks: thresholds.maxConcurrentTasks || 10,
-      maxErrorRate: thresholds.maxErrorRate || 0.1
+      maxErrorRate: thresholds.maxErrorRate || 0.1,
     };
   }
 
@@ -40,10 +40,10 @@ export class WorkloadMonitor {
     if (!this.metrics.has(agentId)) {
       this.metrics.set(agentId, []);
     }
-    
+
     const agentMetrics = this.metrics.get(agentId)!;
     agentMetrics.push(metrics);
-    
+
     // Keep only last 100 metrics entries
     if (agentMetrics.length > 100) {
       agentMetrics.shift();
@@ -86,25 +86,28 @@ export class WorkloadMonitor {
     }
 
     const cutoff = new Date(Date.now() - minutes * 60 * 1000);
-    const recentMetrics = agentMetrics.filter(m => m.timestamp >= cutoff);
-    
+    const recentMetrics = agentMetrics.filter((m) => m.timestamp >= cutoff);
+
     if (recentMetrics.length === 0) return null;
 
-    const sum = recentMetrics.reduce((acc, m) => ({
-      cpuUsage: acc.cpuUsage + m.cpuUsage,
-      memoryUsage: acc.memoryUsage + m.memoryUsage,
-      activeTasks: acc.activeTasks + m.activeTasks,
-      completedTasks: acc.completedTasks + m.completedTasks,
-      averageTaskDuration: acc.averageTaskDuration + m.averageTaskDuration,
-      errorRate: acc.errorRate + m.errorRate
-    }), {
-      cpuUsage: 0,
-      memoryUsage: 0,
-      activeTasks: 0,
-      completedTasks: 0,
-      averageTaskDuration: 0,
-      errorRate: 0
-    });
+    const sum = recentMetrics.reduce(
+      (acc, m) => ({
+        cpuUsage: acc.cpuUsage + m.cpuUsage,
+        memoryUsage: acc.memoryUsage + m.memoryUsage,
+        activeTasks: acc.activeTasks + m.activeTasks,
+        completedTasks: acc.completedTasks + m.completedTasks,
+        averageTaskDuration: acc.averageTaskDuration + m.averageTaskDuration,
+        errorRate: acc.errorRate + m.errorRate,
+      }),
+      {
+        cpuUsage: 0,
+        memoryUsage: 0,
+        activeTasks: 0,
+        completedTasks: 0,
+        averageTaskDuration: 0,
+        errorRate: 0,
+      }
+    );
 
     const count = recentMetrics.length;
     return {
@@ -114,7 +117,7 @@ export class WorkloadMonitor {
       completedTasks: Math.round(sum.completedTasks / count),
       averageTaskDuration: sum.averageTaskDuration / count,
       errorRate: sum.errorRate / count,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 
@@ -139,7 +142,7 @@ export class WorkloadMonitor {
     candidates: any[],
     options: { capabilities: string[] }
   ): Promise<any[]> {
-    return candidates.filter(candidate => {
+    return candidates.filter((candidate) => {
       const workload = this.getCurrentWorkload(candidate.id || candidate.agentId);
       return !this.isOverloaded(candidate.id || candidate.agentId);
     });
@@ -155,7 +158,7 @@ export class WorkloadMonitor {
       this.recordMetrics(agentId, {
         ...current,
         activeTasks: current.activeTasks + 1,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
   }
@@ -171,7 +174,7 @@ export class WorkloadMonitor {
         activeTasks: Math.max(0, current.activeTasks - 1),
         completedTasks: current.completedTasks + 1,
         errorRate: success ? current.errorRate : current.errorRate + 0.1,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
   }
@@ -187,7 +190,7 @@ export class WorkloadMonitor {
   } {
     const agents = Array.from(this.metrics.keys());
     const totalAgents = agents.length;
-    
+
     if (totalAgents === 0) {
       return { totalAgents: 0, averageLoad: 0, overloadedAgents: 0, idleAgents: 0 };
     }
@@ -196,7 +199,7 @@ export class WorkloadMonitor {
     let overloadedCount = 0;
     let idleCount = 0;
 
-    agents.forEach(agentId => {
+    agents.forEach((agentId) => {
       const current = this.getCurrentWorkload(agentId);
       if (current) {
         totalLoad += current.activeTasks;
@@ -212,7 +215,7 @@ export class WorkloadMonitor {
       totalAgents,
       averageLoad: totalLoad / totalAgents,
       overloadedAgents: overloadedCount,
-      idleAgents: idleCount
+      idleAgents: idleCount,
     };
   }
 }

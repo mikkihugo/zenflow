@@ -2,7 +2,7 @@
 
 /**
  * Direct Swarm Integration Test
- * 
+ *
  * Tests the SwarmOrchestrator direct integration functionality
  */
 
@@ -29,24 +29,24 @@ async function testDirectSwarmIntegration() {
     const swarmId = await orchestrator.initializeSwarm({
       topology: 'hierarchical',
       maxAgents: 5,
-      strategy: 'parallel'
+      strategy: 'parallel',
     });
     console.log(`✅ Swarm initialized with ID: ${swarmId}`);
 
     // Test 4: Spawn agents
     console.log('\n4. Testing agent spawning...');
     const agents = [];
-    
+
     const agentTypes = [
       { type: 'researcher', name: 'Research Agent', specialization: 'data_analysis' },
       { type: 'coder', name: 'Code Agent', specialization: 'implementation' },
-      { type: 'analyst', name: 'Analysis Agent', specialization: 'quality_assurance' }
+      { type: 'analyst', name: 'Analysis Agent', specialization: 'quality_assurance' },
     ];
 
     for (const agentConfig of agentTypes) {
       const agentId = await orchestrator.spawnAgent({
         ...agentConfig,
-        capabilities: [agentConfig.specialization, 'general']
+        capabilities: [agentConfig.specialization, 'general'],
       });
       agents.push(agentId);
       console.log(`✅ Agent spawned: ${agentId} (${agentConfig.type})`);
@@ -55,11 +55,11 @@ async function testDirectSwarmIntegration() {
     // Test 5: Orchestrate tasks
     console.log('\n5. Testing task orchestration...');
     const tasks = [];
-    
+
     const taskConfigs = [
       { description: 'Analyze system architecture', strategy: 'sequential', priority: 'high' },
       { description: 'Implement new features', strategy: 'parallel', priority: 'medium' },
-      { description: 'Validate implementation', strategy: 'sequential', priority: 'low' }
+      { description: 'Validate implementation', strategy: 'sequential', priority: 'low' },
     ];
 
     for (const taskConfig of taskConfigs) {
@@ -85,7 +85,7 @@ async function testDirectSwarmIntegration() {
     console.log(`✅ Monitoring started: ${monitoring.id} for ${monitoring.duration}s`);
 
     // Wait a bit to see monitoring in action
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // Test 8: Final status check
     console.log('\n8. Final status check...');
@@ -100,7 +100,6 @@ async function testDirectSwarmIntegration() {
     console.log('✅ No submodule dependencies');
 
     return true;
-
   } catch (error) {
     console.error('\n❌ Direct swarm integration test FAILED:');
     console.error('Error:', error.message);
@@ -111,10 +110,10 @@ async function testDirectSwarmIntegration() {
 
 // Run the test
 testDirectSwarmIntegration()
-  .then(success => {
+  .then((success) => {
     process.exit(success ? 0 : 1);
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('Test runner error:', error);
     process.exit(1);
   });

@@ -2,16 +2,16 @@
  * Integration Tests for Coverage - Actually imports and tests real modules
  */
 
+import { createRequire } from 'module';
+import { BenchmarkCLI } from '../src/benchmark.js';
 import { RuvSwarm } from '../src/index.js';
 import { RuvSwarmEnhanced } from '../src/index-enhanced.js';
+import { getMemoryConfig } from '../src/memory-config.js';
+import { NeuralCLI } from '../src/neural.js';
 import { NeuralAgent } from '../src/neural-agent.js';
 import { NeuralNetworkManager } from '../src/neural-network-manager.js';
 import { SwarmPersistence } from '../src/persistence.js';
 import { WasmLoader } from '../src/wasm-loader.js';
-import { BenchmarkCLI } from '../src/benchmark.js';
-import { getMemoryConfig } from '../src/memory-config.js';
-import { NeuralCLI } from '../src/neural.js';
-import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
 const { PerformanceCLI } = require('../src/performance.js');
@@ -51,7 +51,6 @@ try {
 
   const orchestrated = await swarm.orchestrate({ task: 'complex-task' });
   console.log('✓ Task orchestrated:', orchestrated.id);
-
 } catch (error) {
   console.error('✗ RuvSwarm test failed:', error.message);
 }
@@ -74,7 +73,6 @@ try {
     modelType: 'gru',
   });
   console.log('✓ Neural agent created');
-
 } catch (error) {
   console.error('✗ RuvSwarmEnhanced test failed:', error.message);
 }
@@ -89,14 +87,11 @@ try {
   await neuralAgent.initialize();
   console.log('✓ NeuralAgent initialized');
 
-  await neuralAgent.train([
-    { input: [1, 2, 3], output: [0, 1] },
-  ]);
+  await neuralAgent.train([{ input: [1, 2, 3], output: [0, 1] }]);
   console.log('✓ NeuralAgent trained');
 
   const prediction = await neuralAgent.predict([1, 2, 3]);
   console.log('✓ Prediction made:', prediction);
-
 } catch (error) {
   console.error('✗ NeuralAgent test failed:', error.message);
 }
@@ -116,7 +111,6 @@ try {
 
   const models = manager.listModels();
   console.log('✓ Models listed:', models.length);
-
 } catch (error) {
   console.error('✗ NeuralNetworkManager test failed:', error.message);
 }
@@ -139,7 +133,6 @@ try {
 
   await persistence.close();
   console.log('✓ Persistence closed');
-
 } catch (error) {
   console.error('✗ SwarmPersistence test failed:', error.message);
 }
@@ -155,7 +148,6 @@ try {
 
   const simd = loader.hasSIMDSupport();
   console.log('✓ SIMD support checked:', simd);
-
 } catch (error) {
   console.error('✗ WasmLoader test failed:', error.message);
 }
@@ -169,7 +161,6 @@ try {
   // Test getArg method
   const arg = benchmark.getArg(['--type', 'wasm'], '--type');
   console.log('✓ Arg parsing works:', arg);
-
 } catch (error) {
   console.error('✗ Benchmark test failed:', error.message);
 }
@@ -183,7 +174,6 @@ try {
   // Test command parsing
   const command = perfCLI.parseCommand(['analyze', '--metric', 'cpu']);
   console.log('✓ Command parsed:', command);
-
 } catch (error) {
   console.error('✗ Performance test failed:', error.message);
 }
@@ -197,7 +187,6 @@ try {
   // Test pattern memory config
   const { PATTERN_MEMORY_CONFIG } = await import('../src/neural.js');
   console.log('✓ Pattern memory config loaded:', Object.keys(PATTERN_MEMORY_CONFIG));
-
 } catch (error) {
   console.error('✗ Neural test failed:', error.message);
 }

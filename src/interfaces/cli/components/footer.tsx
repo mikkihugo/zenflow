@@ -1,6 +1,6 @@
-import React from 'react';
 import { Box, Text } from 'ink';
-import { BaseComponentProps } from './index';
+import type React from 'react';
+import type { BaseComponentProps } from './index';
 
 export interface FooterProps extends BaseComponentProps {
   helpText?: string;
@@ -14,7 +14,7 @@ export interface FooterProps extends BaseComponentProps {
 
 /**
  * Footer Component
- * 
+ *
  * Displays help text and keyboard shortcuts at the bottom of the interface.
  * Provides contextual help and navigation guidance.
  */
@@ -48,11 +48,9 @@ export const Footer: React.FC<FooterProps> = ({
           ))}
         </Box>
       )}
-      
+
       <Box justifyContent={centerAlign ? 'center' : 'flex-start'}>
-        <Text dimColor>
-          {helpText}
-        </Text>
+        <Text dimColor>{helpText}</Text>
       </Box>
     </Box>
   );

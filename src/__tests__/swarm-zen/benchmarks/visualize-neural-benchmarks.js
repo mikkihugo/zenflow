@@ -13,13 +13,18 @@ class BenchmarkVisualizer {
   }
 
   async loadBenchmarkData() {
-    const benchmarkPath = path.join(process.cwd(), '.ruv-swarm', 'benchmarks', 'neural-benchmark-1751398753060.json');
+    const benchmarkPath = path.join(
+      process.cwd(),
+      '.ruv-swarm',
+      'benchmarks',
+      'neural-benchmark-1751398753060.json'
+    );
     this.benchmarkData = JSON.parse(await fs.readFile(benchmarkPath, 'utf8'));
   }
 
   generateASCIIChart(data, title, maxWidth = 60) {
     console.log(`\n${title}`);
-    console.log('=' .repeat(maxWidth));
+    console.log('='.repeat(maxWidth));
 
     const maxValue = Math.max(...Object.values(data));
 
@@ -33,7 +38,7 @@ class BenchmarkVisualizer {
 
   visualizeResults() {
     console.log('\n🧠 NEURAL MODEL BENCHMARK VISUALIZATION');
-    console.log('=' .repeat(70));
+    console.log('='.repeat(70));
     console.log(`📅 Benchmark Date: ${this.benchmarkData.timestamp}`);
     console.log(`⏱️  Total Duration: ${(this.benchmarkData.duration / 1000).toFixed(2)} seconds`);
 
@@ -84,7 +89,7 @@ class BenchmarkVisualizer {
 
   generatePerformanceMatrix() {
     console.log('\n📊 PERFORMANCE MATRIX');
-    console.log('=' .repeat(70));
+    console.log('='.repeat(70));
     console.log('Model        | Accuracy | Speed    | Memory  | Training | Parameters');
     console.log('-------------|----------|----------|---------|----------|------------');
 
@@ -103,7 +108,7 @@ class BenchmarkVisualizer {
 
   generateModelRankings() {
     console.log('\n🏆 MODEL RANKINGS BY METRIC');
-    console.log('=' .repeat(70));
+    console.log('='.repeat(70));
 
     // Rank by different metrics
     const metrics = [
@@ -114,27 +119,27 @@ class BenchmarkVisualizer {
       { name: 'Parameter Efficiency', key: 'architecture.parameters', higher: false, unit: '' },
     ];
 
-    metrics.forEach(metric => {
+    metrics.forEach((metric) => {
       console.log(`\n${metric.name}:`);
       const ranked = Object.entries(this.benchmarkData.results)
         .map(([model, data]) => {
           const value = metric.key.split('.').reduce((obj, key) => obj[key], data);
           return { model, value };
         })
-        .sort((a, b) => metric.higher ? b.value - a.value : a.value - b.value);
+        .sort((a, b) => (metric.higher ? b.value - a.value : a.value - b.value));
 
       ranked.forEach((item, index) => {
         const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '  ';
-        const value = metric.unit === '%' ? parseFloat(item.value).toFixed(1) :
-          Math.floor(item.value);
-        console.log(`  ${medal} ${(index + 1)}. ${item.model.toUpperCase()}: ${value}${metric.unit}`);
+        const value =
+          metric.unit === '%' ? parseFloat(item.value).toFixed(1) : Math.floor(item.value);
+        console.log(`  ${medal} ${index + 1}. ${item.model.toUpperCase()}: ${value}${metric.unit}`);
       });
     });
   }
 
   generateTradeoffAnalysis() {
     console.log('\n⚖️  TRADE-OFF ANALYSIS');
-    console.log('=' .repeat(70));
+    console.log('='.repeat(70));
 
     const models = Object.entries(this.benchmarkData.results).map(([name, data]) => ({
       name: name.toUpperCase(),
@@ -145,31 +150,36 @@ class BenchmarkVisualizer {
     }));
 
     console.log('\n📈 Accuracy vs Speed Trade-off:');
-    models.sort((a, b) => (b.accuracy * b.speed) - (a.accuracy * a.speed))
-      .forEach(model => {
-        const score = (model.accuracy * model.speed / 100).toFixed(1);
-        console.log(`  ${model.name}: ${score} (${model.accuracy}% × ${Math.floor(model.speed)} ops/s)`);
+    models
+      .sort((a, b) => b.accuracy * b.speed - a.accuracy * a.speed)
+      .forEach((model) => {
+        const score = ((model.accuracy * model.speed) / 100).toFixed(1);
+        console.log(
+          `  ${model.name}: ${score} (${model.accuracy}% × ${Math.floor(model.speed)} ops/s)`
+        );
       });
 
     console.log('\n💾 Memory vs Performance Trade-off:');
-    models.sort((a, b) => (b.accuracy / b.memory) - (a.accuracy / a.memory))
-      .forEach(model => {
-        const score = (model.accuracy / model.memory * 1000).toFixed(2);
+    models
+      .sort((a, b) => b.accuracy / b.memory - a.accuracy / a.memory)
+      .forEach((model) => {
+        const score = ((model.accuracy / model.memory) * 1000).toFixed(2);
         console.log(`  ${model.name}: ${score} (${model.accuracy}% / ${model.memory}MB)`);
       });
 
     console.log('\n⚡ Overall Efficiency Score:');
-    models.forEach(model => {
+    models.forEach((model) => {
       // Normalize values (0-1 scale)
       const normAccuracy = model.accuracy / 100;
       const normSpeed = model.speed / 350; // Max speed ~350
-      const normMemEff = 1 - (model.memory / 6000); // Inverse, lower is better
-      const overallScore = ((normAccuracy * 0.4) + (normSpeed * 0.3) + (normMemEff * 0.3)) * 100;
+      const normMemEff = 1 - model.memory / 6000; // Inverse, lower is better
+      const overallScore = (normAccuracy * 0.4 + normSpeed * 0.3 + normMemEff * 0.3) * 100;
 
       model.overallScore = overallScore;
     });
 
-    models.sort((a, b) => b.overallScore - a.overallScore)
+    models
+      .sort((a, b) => b.overallScore - a.overallScore)
       .forEach((model, index) => {
         const medal = index === 0 ? '🏆' : '';
         console.log(`  ${medal} ${model.name}: ${model.overallScore.toFixed(1)}/100`);
@@ -182,7 +192,7 @@ class BenchmarkVisualizer {
       this.visualizeResults();
 
       console.log('\n\n💡 KEY INSIGHTS:');
-      console.log('=' .repeat(70));
+      console.log('='.repeat(70));
       console.log('• Attention model achieves best accuracy (94.31%) with good memory efficiency');
       console.log('• Feedforward offers 3x faster inference than any other model');
       console.log('• Transformer provides best balance for parallel workloads');

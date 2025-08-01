@@ -13,8 +13,8 @@ export class MCPBenchmarks {
   }
 
   /**
-     * Run specialized benchmarks - only real tests, no fake/dummy ones
-     */
+   * Run specialized benchmarks - only real tests, no fake/dummy ones
+   */
   async runBenchmarks(type = 'all', iterations = 10) {
     console.log(`MCPBenchmarks.runBenchmarks called with type='${type}', iterations=${iterations}`);
     const benchmarks = {};
@@ -52,7 +52,9 @@ export class MCPBenchmarks {
       environment: {
         features: this.ruvSwarm?.features || {},
         memory_usage_mb: this.ruvSwarm?.wasmLoader?.getTotalMemoryUsage() / (1024 * 1024) || 0,
-        runtime_features: this.ruvSwarm?.getRuntimeFeatures ? this.ruvSwarm.getRuntimeFeatures() : {},
+        runtime_features: this.ruvSwarm?.getRuntimeFeatures
+          ? this.ruvSwarm.getRuntimeFeatures()
+          : {},
       },
       timestamp: new Date().toISOString(),
     };
@@ -61,8 +63,8 @@ export class MCPBenchmarks {
   }
 
   /**
-     * Enhanced Memory-specific benchmarks - REAL TESTS ONLY
-     */
+   * Enhanced Memory-specific benchmarks - REAL TESTS ONLY
+   */
   async runEnhancedMemoryBenchmarks(iterations) {
     console.log(`Starting runMemoryBenchmarks with ${iterations} iterations`);
     const benchmarks = {
@@ -113,11 +115,11 @@ export class MCPBenchmarks {
         start = performance.now();
         let tempArrays = [];
         for (let l = 0; l < 100; l++) {
-          tempArrays.push(new Array(1000).fill(0).map(x => Math.random()));
+          tempArrays.push(new Array(1000).fill(0).map((x) => Math.random()));
         }
         // Force some operations on the arrays
         let total = 0;
-        tempArrays.forEach(arr => {
+        tempArrays.forEach((arr) => {
           total += arr.length;
         });
         tempArrays = null; // Release for GC
@@ -127,7 +129,6 @@ export class MCPBenchmarks {
         start = performance.now();
         allocation.splice(0, allocation.length); // More thorough cleanup
         benchmarks.memory_cleanup.push(performance.now() - start);
-
       } catch (error) {
         console.warn('Memory benchmark iteration failed:', error.message);
         // Add default values on error to ensure we have data
@@ -143,8 +144,8 @@ export class MCPBenchmarks {
   }
 
   /**
-     * Performance profiling benchmarks - CPU intensive real tests
-     */
+   * Performance profiling benchmarks - CPU intensive real tests
+   */
   async runPerformanceProfilingBenchmarks(iterations) {
     console.log(`Starting performance profiling benchmarks with ${iterations} iterations`);
     const benchmarks = {
@@ -197,23 +198,24 @@ export class MCPBenchmarks {
         start = performance.now();
         const largeArray = Array.from({ length: 10000 }, () => Math.random());
         largeArray.sort();
-        const filtered = largeArray.filter(x => x > 0.5);
-        const mapped = filtered.map(x => x * 2);
+        const filtered = largeArray.filter((x) => x > 0.5);
+        const mapped = filtered.map((x) => x * 2);
         const reduced = mapped.reduce((sum, x) => sum + x, 0);
         benchmarks.array_operations.push(performance.now() - start);
 
         // Math operations benchmark
         start = performance.now();
-        const matrix1 = Array.from({ length: 100 }, () => Array.from({ length: 100 }, () => Math.random()));
-        const matrix2 = Array.from({ length: 100 }, () => Array.from({ length: 100 }, () => Math.random()));
+        const matrix1 = Array.from({ length: 100 }, () =>
+          Array.from({ length: 100 }, () => Math.random())
+        );
+        const matrix2 = Array.from({ length: 100 }, () =>
+          Array.from({ length: 100 }, () => Math.random())
+        );
         // Simple matrix multiplication
         const resultMatrix = matrix1.map((row, i) =>
-          row.map((_, j) =>
-            matrix1[i].reduce((sum, cell, k) => sum + cell * matrix2[k][j], 0),
-          ),
+          row.map((_, j) => matrix1[i].reduce((sum, cell, k) => sum + cell * matrix2[k][j], 0))
         );
         benchmarks.math_operations.push(performance.now() - start);
-
       } catch (error) {
         console.warn('Performance profiling benchmark iteration failed:', error.message);
         benchmarks.cpu_intensive_computation.push(0);
@@ -228,12 +230,12 @@ export class MCPBenchmarks {
   }
 
   /**
-     * Calculate statistics for benchmark results
-     */
+   * Calculate statistics for benchmark results
+   */
   calculateBenchmarkStats(benchmarks) {
     const results = {};
 
-    Object.keys(benchmarks).forEach(benchmarkType => {
+    Object.keys(benchmarks).forEach((benchmarkType) => {
       const times = benchmarks[benchmarkType];
       if (times.length > 0) {
         const sorted = times.sort((a, b) => a - b);
@@ -253,31 +255,31 @@ export class MCPBenchmarks {
   }
 
   /**
-     * Calculate standard deviation
-     */
+   * Calculate standard deviation
+   */
   calculateStandardDeviation(values) {
     const avg = values.reduce((sum, val) => sum + val, 0) / values.length;
-    const squaredDiffs = values.map(val => Math.pow(val - avg, 2));
+    const squaredDiffs = values.map((val) => (val - avg) ** 2);
     const avgSquaredDiff = squaredDiffs.reduce((sum, val) => sum + val, 0) / values.length;
     return Math.sqrt(avgSquaredDiff);
   }
 
   /**
-     * Format benchmark results for display
-     */
+   * Format benchmark results for display
+   */
   formatBenchmarkResults(benchmarks) {
     const summary = [];
 
     // Process WASM benchmarks
     if (benchmarks.wasm) {
-      Object.keys(benchmarks.wasm).forEach(benchmarkType => {
+      Object.keys(benchmarks.wasm).forEach((benchmarkType) => {
         const data = benchmarks.wasm[benchmarkType];
         summary.push({
           category: 'WASM',
-          name: benchmarkType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-          avgTime: `${data.avg_ms?.toFixed(2) }ms` || '0.00ms',
-          minTime: `${data.min_ms?.toFixed(2) }ms` || '0.00ms',
-          maxTime: `${data.max_ms?.toFixed(2) }ms` || '0.00ms',
+          name: benchmarkType.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
+          avgTime: `${data.avg_ms?.toFixed(2)}ms` || '0.00ms',
+          minTime: `${data.min_ms?.toFixed(2)}ms` || '0.00ms',
+          maxTime: `${data.max_ms?.toFixed(2)}ms` || '0.00ms',
           samples: data.samples || 0,
         });
       });
@@ -285,44 +287,48 @@ export class MCPBenchmarks {
 
     // Process Neural Network benchmarks
     if (benchmarks.neural) {
-      Object.keys(benchmarks.neural).forEach(benchmarkType => {
+      Object.keys(benchmarks.neural).forEach((benchmarkType) => {
         const data = benchmarks.neural[benchmarkType];
         summary.push({
           category: 'Neural Network',
-          name: benchmarkType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-          avgTime: `${data.avg_ms?.toFixed(2) }ms` || '0.00ms',
-          minTime: `${data.min_ms?.toFixed(2) }ms` || '0.00ms',
-          maxTime: `${data.max_ms?.toFixed(2) }ms` || '0.00ms',
-          medianTime: `${data.median_ms?.toFixed(2) }ms` || '0.00ms',
+          name: benchmarkType.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
+          avgTime: `${data.avg_ms?.toFixed(2)}ms` || '0.00ms',
+          minTime: `${data.min_ms?.toFixed(2)}ms` || '0.00ms',
+          maxTime: `${data.max_ms?.toFixed(2)}ms` || '0.00ms',
+          medianTime: `${data.median_ms?.toFixed(2)}ms` || '0.00ms',
           samples: data.samples || 0,
         });
       });
     }
 
     // Process other benchmark categories
-    ['swarm', 'agent', 'task', 'memory'].forEach(category => {
+    ['swarm', 'agent', 'task', 'memory'].forEach((category) => {
       if (benchmarks[category]) {
-        Object.keys(benchmarks[category]).forEach(benchmarkType => {
+        Object.keys(benchmarks[category]).forEach((benchmarkType) => {
           const data = benchmarks[category][benchmarkType];
           summary.push({
             category: category.charAt(0).toUpperCase() + category.slice(1),
-            name: benchmarkType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-            avgTime: `${data.avg_ms?.toFixed(2) }ms` || '0.00ms',
-            minTime: `${data.min_ms?.toFixed(2) }ms` || '0.00ms',
-            maxTime: `${data.max_ms?.toFixed(2) }ms` || '0.00ms',
+            name: benchmarkType.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
+            avgTime: `${data.avg_ms?.toFixed(2)}ms` || '0.00ms',
+            minTime: `${data.min_ms?.toFixed(2)}ms` || '0.00ms',
+            maxTime: `${data.max_ms?.toFixed(2)}ms` || '0.00ms',
             samples: data.samples || 0,
           });
         });
       }
     });
 
-    return summary.length > 0 ? summary : [{
-      category: 'System',
-      name: 'No Benchmarks Run',
-      avgTime: '0.00ms',
-      minTime: '0.00ms',
-      maxTime: '0.00ms',
-      samples: 0,
-    }];
+    return summary.length > 0
+      ? summary
+      : [
+          {
+            category: 'System',
+            name: 'No Benchmarks Run',
+            avgTime: '0.00ms',
+            minTime: '0.00ms',
+            maxTime: '0.00ms',
+            samples: 0,
+          },
+        ];
   }
 }

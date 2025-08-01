@@ -1,6 +1,6 @@
 /**
  * CLI Types Index
- * 
+ *
  * This module re-exports all CLI type definitions for convenient importing.
  * Follows Google's TypeScript style guide with clear barrel exports.
  */
@@ -8,71 +8,71 @@
 // Command-related types
 export type {
   CommandConfig,
-  CommandFlagConfig,
   CommandContext,
-  CommandResult,
-  CommandFlags,
-  CommandMetadata,
-  CommandHandler,
   CommandExecutionStats,
-  CommandValidationResult,
+  CommandFlagConfig,
+  CommandFlags,
+  CommandHandler,
+  CommandMetadata,
   CommandRegistry,
+  CommandResult,
+  CommandValidationResult,
 } from './command';
 
 // Configuration-related types
 export type {
+  AgentType,
   CliConfig,
-  PluginConfig,
-  SwarmConfig,
+  ConfigValidationError,
+  ConfigValidationResult,
+  ConfigValidationWarning,
   DatabaseConfig,
-  SSLConfig,
-  UIConfig,
   LoggingConfig,
   LogOutput,
-  SecurityConfig,
   PerformanceConfig,
-  AgentType,
-  ConfigValidationResult,
-  ConfigValidationError,
-  ConfigValidationWarning,
+  PluginConfig,
+  SecurityConfig,
+  SSLConfig,
+  SwarmConfig,
+  UIConfig,
 } from './config';
 
 // UI-related types
 export type {
-  UITheme,
-  UIColorPalette,
-  UITypography,
-  UISpacing,
-  UIBorders,
-  UIAnimations,
-  UIAnimationConfig,
-  UIComponentStyles,
-  UIButtonStyles,
-  UIInputStyles,
-  UITableStyles,
-  UIModalStyles,
-  UINavigationStyles,
-  UICardStyles,
-  UIProgressStyles,
-  UIComponentVariant,
-  UIComponentSize,
-  UIComponentState,
-  UIComponent,
-  ScreenState,
+  FilterOption,
+  FilterState,
   FormState,
   ModalState,
-  NotificationState,
   NotificationAction,
-  FilterState,
-  FilterOption,
+  NotificationState,
   PaginationState,
-  UIEventHandlers,
-  UIClickEvent,
-  UIChangeEvent,
-  UIFocusEvent,
+  ScreenState,
+  UIAnimationConfig,
+  UIAnimations,
   UIBlurEvent,
+  UIBorders,
+  UIButtonStyles,
+  UICardStyles,
+  UIChangeEvent,
+  UIClickEvent,
+  UIColorPalette,
+  UIComponent,
+  UIComponentSize,
+  UIComponentState,
+  UIComponentStyles,
+  UIComponentVariant,
+  UIEventHandlers,
+  UIFocusEvent,
+  UIInputStyles,
   UIKeyboardEvent,
+  UIModalStyles,
+  UINavigationStyles,
+  UIProgressStyles,
+  UISpacing,
   UISubmitEvent,
+  UITableStyles,
+  UITheme,
+  UITypography,
 } from './ui';
 
 /**
@@ -82,9 +82,7 @@ export type {
 /**
  * Generic result type for operations that can succeed or fail
  */
-export type Result<T, E = Error> = 
-  | { success: true; data: T }
-  | { success: false; error: E };
+export type Result<T, E = Error> = { success: true; data: T } | { success: false; error: E };
 
 /**
  * Generic async result type
@@ -133,16 +131,16 @@ export interface ProgressReporter {
 export interface ProgressInfo {
   /** Current progress (0-100) */
   percentage: number;
-  
+
   /** Progress message */
   message?: string;
-  
+
   /** Current step */
   step?: number;
-  
+
   /** Total steps */
   totalSteps?: number;
-  
+
   /** Additional data */
   data?: unknown;
 }
@@ -153,10 +151,10 @@ export interface ProgressInfo {
 export interface ValidationResult {
   /** Whether validation passed */
   valid: boolean;
-  
+
   /** Validation errors */
   errors: ValidationError[];
-  
+
   /** Validation warnings */
   warnings: ValidationWarning[];
 }
@@ -167,16 +165,16 @@ export interface ValidationResult {
 export interface ValidationError {
   /** Error message */
   message: string;
-  
+
   /** Error code */
   code: string;
-  
+
   /** Field path */
   path?: string;
-  
+
   /** Expected value */
   expected?: unknown;
-  
+
   /** Actual value */
   actual?: unknown;
 }
@@ -187,13 +185,13 @@ export interface ValidationError {
 export interface ValidationWarning {
   /** Warning message */
   message: string;
-  
+
   /** Warning code */
   code: string;
-  
+
   /** Field path */
   path?: string;
-  
+
   /** Suggested action */
   suggestion?: string;
 }
@@ -236,12 +234,12 @@ export type UUID = string;
 /**
  * JSON-serializable value type
  */
-export type JSONValue = 
-  | string 
-  | number 
-  | boolean 
-  | null 
-  | JSONValue[] 
+export type JSONValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JSONValue[]
   | { [key: string]: JSONValue };
 
 /**

@@ -7,12 +7,12 @@ class ClaudeZenDashboard {
 
     this.init();
 
-  init() {
+  init() 
     this.setupEventListeners();
     this.connectWebSocket();
     this.loadData();
 
-  setupEventListeners() {
+  setupEventListeners() 
     // Tab switching
     document.querySelectorAll('.menu-item').forEach((item) => {
       item.addEventListener('click', (e) => {
@@ -64,7 +64,7 @@ class ClaudeZenDashboard {
       this.updateStatus('Error', 'error');
     };
 
-  handleWebSocketMessage(message) {
+  handleWebSocketMessage(message) 
     switch (message.type) {
       case 'data_update':
         this.data = { ...this.data, ...message.data };
@@ -91,7 +91,7 @@ class ClaudeZenDashboard {
     } catch (error) {
       console.error('Failed to load data:', error);
 
-  updateUI() {
+  updateUI() 
     // Update stats
     document.getElementById('hive-count').textContent = Object.keys(this.data.hives || {}).length;
     document.getElementById('plugin-count').textContent = (this.data.plugins || []).length;
@@ -100,7 +100,7 @@ class ClaudeZenDashboard {
     // Update current tab content
     this.updateTabContent(this.currentTab);
 
-  switchTab(tabName) {
+  switchTab(tabName) 
     // Update menu
     document.querySelectorAll('.menu-item').forEach((item) => {
       item.classList.remove('active');
@@ -116,7 +116,7 @@ class ClaudeZenDashboard {
     this.currentTab = tabName;
     this.updateTabContent(tabName);
 
-  updateTabContent(tabName) {
+  updateTabContent(tabName) 
     switch (tabName) {
       case 'hives':
         this.updateHivesList();
@@ -166,7 +166,7 @@ class ClaudeZenDashboard {
       )
       .join('');
 
-  async updateQueenStatus() {
+  async updateQueenStatus() 
     try {
       const response = await fetch('/api/queens/status');
       const queensData = await response.json();
@@ -282,7 +282,7 @@ class ClaudeZenDashboard {
     statusText.textContent = text;
     statusDot.className = `status-dot status-${type}`;
 
-  showNotification(_message, _level = 'info') {}
+  showNotification(_message, _level = 'info') 
 
   showCommandResult(result) {
     const output = document.getElementById('command-output');

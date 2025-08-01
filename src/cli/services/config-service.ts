@@ -1,20 +1,20 @@
 /**
  * Configuration Service
- * 
+ *
  * Provides configuration management including loading, validation, migration, and backup.
  * Supports multiple configuration sources and formats with schema validation.
  */
 
-import { readFile, writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
-import { join, dirname } from 'path';
-import { homedir } from 'os';
 import { EventEmitter } from 'events';
-import { createLogger, type Logger } from '../utils/logger';
-import { ensureDirectory, fileExists, copyFile } from '../utils/file-system';
-import { validateObject, combineValidationResults } from '../utils/validation';
+import { existsSync } from 'fs';
+import { mkdir, readFile, writeFile } from 'fs/promises';
+import { homedir } from 'os';
+import { dirname, join } from 'path';
 import type { CliConfig } from '../types/config';
-import type { ValidationResult, Result } from '../types/index';
+import type { Result, ValidationResult } from '../types/index';
+import { copyFile, ensureDirectory, fileExists } from '../utils/file-system';
+import { createLogger, type Logger } from '../utils/logger';
+import { combineValidationResults, validateObject } from '../utils/validation';
 
 /**
  * Configuration manager interface
@@ -22,19 +22,19 @@ import type { ValidationResult, Result } from '../types/index';
 export interface ConfigManager {
   /** Load configuration */
   load(): Promise<CliConfig>;
-  
+
   /** Save configuration */
   save(config: CliConfig): Promise<void>;
-  
+
   /** Validate configuration */
   validate(config: CliConfig): Promise<ValidationResult>;
-  
+
   /** Get configuration value */
   get<T>(key: string): T | undefined;
-  
+
   /** Set configuration value */
   set(key: string, value: any): Promise<void>;
-  
+
   /** Reset to defaults */
   reset(): Promise<void>;
 }
@@ -45,13 +45,13 @@ export interface ConfigManager {
 export interface ConfigValidationOptions {
   /** Strict validation (fail on warnings) */
   strict?: boolean;
-  
+
   /** Schema version to validate against */
   schemaVersion?: string;
-  
+
   /** Allow unknown properties */
   allowUnknown?: boolean;
-  
+
   /** Custom validators */
   customValidators?: Record<string, (value: any) => ValidationResult>;
 }
@@ -62,16 +62,16 @@ export interface ConfigValidationOptions {
 export interface ConfigMigrationResult {
   /** Migration success */
   success: boolean;
-  
+
   /** Migration message */
   message: string;
-  
+
   /** Source version */
   fromVersion: string;
-  
+
   /** Target version */
   toVersion: string;
-  
+
   /** Changes made */
   changes: Array<{
     type: 'added' | 'removed' | 'modified';
@@ -79,7 +79,7 @@ export interface ConfigMigrationResult {
     oldValue?: any;
     newValue?: any;
   }>;
-  
+
   /** Backup file path */
   backupPath?: string;
 }
@@ -90,13 +90,13 @@ export interface ConfigMigrationResult {
 export interface ConfigBackupOptions {
   /** Backup directory */
   backupDir?: string;
-  
+
   /** Include timestamp in backup filename */
   includeTimestamp?: boolean;
-  
+
   /** Maximum number of backups to keep */
   maxBackups?: number;
-  
+
   /** Compress backup files */
   compress?: boolean;
 }
@@ -178,17 +178,17 @@ export class ConfigService extends EventEmitter implements ConfigManager {
   private configPath: string | null = null;
   private initialized = false;
   private watchers = new Map<string, any>();
-  
+
   constructor(config?: Record<string, any>) {
     super();
     this.logger = createLogger({ prefix: 'ConfigService' });
     this.config = { ...DEFAULT_CONFIG };
-    
+
     if (config?.configPath) {
       this.configPath = config.configPath;
     }
   }
-  
+
   /**
    * Initialize the configuration service
    */
@@ -196,7 +196,7 @@ export class ConfigService extends EventEmitter implements ConfigManager {
     if (this.initialized) {
       return;
     }
-    
+
     try {
       this.config = await this.load();
       this.initialized = true;
@@ -206,7 +206,7 @@ export class ConfigService extends EventEmitter implements ConfigManager {
       throw error;
     }
   }
-  
+
   /**
    * Dispose the configuration service
    */
@@ -214,7 +214,7 @@ export class ConfigService extends EventEmitter implements ConfigManager {
     if (!this.initialized) {
       return;
     }
-    
+
     try {
       // Stop all file watchers
       for (const [path, watcher] of this.watchers) {
@@ -223,14 +223,14 @@ export class ConfigService extends EventEmitter implements ConfigManager {
         }
       }
       this.watchers.clear();
-      
+
       this.initialized = false;
       this.logger.info('Configuration service disposed');
     } catch (error) {
       this.logger.error('Error disposing configuration service:', error);
     }
   }
-  
+
   /**
    * Health check for the service
    */
@@ -242,7 +242,7 @@ export class ConfigService extends EventEmitter implements ConfigManager {
           message: 'Service not initialized',
         };
       }
-      
+
       // Validate current configuration
       const validation = await this.validate(this.config);
       if (!validation.valid) {
@@ -251,7 +251,7 @@ export class ConfigService extends EventEmitter implements ConfigManager {
           message: `Configuration validation failed: ${validation.errors[0]?.message}`,
         };
       }
-      
+
       return {
         healthy: true,
         message: 'Configuration is valid',
@@ -263,7 +263,7 @@ export class ConfigService extends EventEmitter implements ConfigManager {
       };
     }
   }
-  
+
   /**
    * Load configuration from file system
    */
@@ -271,7 +271,7 @@ export class ConfigService extends EventEmitter implements ConfigManager {
     try {
       // Find configuration file
       let configData: CliConfig = { ...DEFAULT_CONFIG };
-      
+
       if (this.configPath) {
         // Use specified config path
         if (await fileExists(this.configPath)) {
@@ -295,7 +295,7 @@ export class ConfigService extends EventEmitter implements ConfigManager {
           }
         }
       }
-      
+
       // Validate configuration
       const validation = await this.validate(configData);
       if (!validation.valid) {
@@ -304,12 +304,12 @@ export class ConfigService extends EventEmitter implements ConfigManager {
           this.logger.warn('Configuration warnings:', validation.warnings);
         }
       }
-      
+
       // Set up file watching if config file exists
-      if (this.configPath && await fileExists(this.configPath)) {
+      if (this.configPath && (await fileExists(this.configPath))) {
         await this.watchConfigFile(this.configPath);
       }
-      
+
       return configData;
     } catch (error) {
       this.logger.error('Failed to load configuration:', error);
@@ -317,7 +317,7 @@ export class ConfigService extends EventEmitter implements ConfigManager {
       return { ...DEFAULT_CONFIG };
     }
   }
-  
+
   /**
    * Save configuration to file
    */
@@ -325,27 +325,27 @@ export class ConfigService extends EventEmitter implements ConfigManager {
     try {
       // Use existing config path or default
       const savePath = this.configPath || CONFIG_LOCATIONS[0];
-      
+
       // Ensure directory exists
       await ensureDirectory(dirname(savePath));
-      
+
       // Validate before saving
       const validation = await this.validate(config);
       if (!validation.valid) {
         throw new Error(`Configuration validation failed: ${validation.errors[0]?.message}`);
       }
-      
+
       // Create backup if file exists
       if (await fileExists(savePath)) {
         await this.createBackup(savePath);
       }
-      
+
       // Save configuration
       await writeFile(savePath, JSON.stringify(config, null, 2), 'utf8');
-      
+
       this.config = config;
       this.configPath = savePath;
-      
+
       this.logger.info(`Configuration saved to: ${savePath}`);
       this.emit('configSaved', { path: savePath, config });
     } catch (error) {
@@ -353,7 +353,7 @@ export class ConfigService extends EventEmitter implements ConfigManager {
       throw error;
     }
   }
-  
+
   /**
    * Validate configuration
    */
@@ -363,46 +363,54 @@ export class ConfigService extends EventEmitter implements ConfigManager {
   ): Promise<ValidationResult> {
     try {
       const results: ValidationResult[] = [];
-      
+
       // Basic structure validation
-      results.push(validateObject(config, {
-        fieldName: 'Configuration',
-        requiredKeys: ['version'],
-      }));
-      
+      results.push(
+        validateObject(config, {
+          fieldName: 'Configuration',
+          requiredKeys: ['version'],
+        })
+      );
+
       // Plugin configuration validation
       if (config.plugins) {
-        results.push(validateObject(config.plugins, {
-          fieldName: 'plugins',
-          schema: {
-            enabled: (value) => {
-              if (typeof value !== 'boolean') {
-                return {
-                  valid: false,
-                  errors: [{
-                    message: 'plugins.enabled must be a boolean',
-                    code: 'INVALID_TYPE',
-                    path: 'plugins.enabled',
-                    expected: 'boolean',
-                    actual: typeof value,
-                  }],
-                  warnings: [],
-                };
-              }
-              return { valid: true, errors: [], warnings: [] };
+        results.push(
+          validateObject(config.plugins, {
+            fieldName: 'plugins',
+            schema: {
+              enabled: (value) => {
+                if (typeof value !== 'boolean') {
+                  return {
+                    valid: false,
+                    errors: [
+                      {
+                        message: 'plugins.enabled must be a boolean',
+                        code: 'INVALID_TYPE',
+                        path: 'plugins.enabled',
+                        expected: 'boolean',
+                        actual: typeof value,
+                      },
+                    ],
+                    warnings: [],
+                  };
+                }
+                return { valid: true, errors: [], warnings: [] };
+              },
             },
-          },
-        }));
+          })
+        );
       }
-      
+
       // Database configuration validation
       if (config.database) {
-        results.push(validateObject(config.database, {
-          fieldName: 'database',
-          requiredKeys: ['type'],
-        }));
+        results.push(
+          validateObject(config.database, {
+            fieldName: 'database',
+            requiredKeys: ['type'],
+          })
+        );
       }
-      
+
       // Apply custom validators
       if (options.customValidators) {
         for (const [key, validator] of Object.entries(options.customValidators)) {
@@ -412,42 +420,46 @@ export class ConfigService extends EventEmitter implements ConfigManager {
           }
         }
       }
-      
+
       const combined = combineValidationResults(...results);
-      
+
       // Check strictness
       if (options.strict && combined.warnings.length > 0) {
         combined.valid = false;
-        combined.errors.push(...combined.warnings.map(warning => ({
-          message: warning.message,
-          code: warning.code,
-          path: warning.path,
-          expected: 'no warnings in strict mode',
-          actual: 'warning present',
-        })));
+        combined.errors.push(
+          ...combined.warnings.map((warning) => ({
+            message: warning.message,
+            code: warning.code,
+            path: warning.path,
+            expected: 'no warnings in strict mode',
+            actual: 'warning present',
+          }))
+        );
       }
-      
+
       return combined;
     } catch (error) {
       return {
         valid: false,
-        errors: [{
-          message: `Validation error: ${(error as Error).message}`,
-          code: 'VALIDATION_ERROR',
-          path: 'root',
-        }],
+        errors: [
+          {
+            message: `Validation error: ${(error as Error).message}`,
+            code: 'VALIDATION_ERROR',
+            path: 'root',
+          },
+        ],
         warnings: [],
       };
     }
   }
-  
+
   /**
    * Get configuration value by key path
    */
   get<T>(key: string): T | undefined {
     return this.getNestedValue(this.config, key) as T;
   }
-  
+
   /**
    * Set configuration value by key path
    */
@@ -455,38 +467,38 @@ export class ConfigService extends EventEmitter implements ConfigManager {
     try {
       const newConfig = { ...this.config };
       this.setNestedValue(newConfig, key, value);
-      
+
       // Validate the updated configuration
       const validation = await this.validate(newConfig);
       if (!validation.valid) {
         throw new Error(`Configuration validation failed: ${validation.errors[0]?.message}`);
       }
-      
+
       this.config = newConfig;
-      
+
       // Save if we have a config path
       if (this.configPath) {
         await this.save(this.config);
       }
-      
+
       this.emit('configChanged', { key, value, config: this.config });
     } catch (error) {
       this.logger.error(`Failed to set configuration value ${key}:`, error);
       throw error;
     }
   }
-  
+
   /**
    * Reset configuration to defaults
    */
   async reset(): Promise<void> {
     try {
       this.config = { ...DEFAULT_CONFIG };
-      
+
       if (this.configPath) {
         await this.save(this.config);
       }
-      
+
       this.logger.info('Configuration reset to defaults');
       this.emit('configReset', { config: this.config });
     } catch (error) {
@@ -494,35 +506,30 @@ export class ConfigService extends EventEmitter implements ConfigManager {
       throw error;
     }
   }
-  
+
   /**
    * Create configuration backup
    */
-  async createBackup(
-    configPath: string,
-    options: ConfigBackupOptions = {}
-  ): Promise<string> {
+  async createBackup(configPath: string, options: ConfigBackupOptions = {}): Promise<string> {
     try {
       const {
         backupDir = join(dirname(configPath), 'backups'),
         includeTimestamp = true,
         maxBackups = 10,
       } = options;
-      
+
       await ensureDirectory(backupDir);
-      
-      const timestamp = includeTimestamp 
-        ? new Date().toISOString().replace(/[:.]/g, '-')
-        : '';
-      
+
+      const timestamp = includeTimestamp ? new Date().toISOString().replace(/[:.]/g, '-') : '';
+
       const backupName = `config-backup${timestamp ? '-' + timestamp : ''}.json`;
       const backupPath = join(backupDir, backupName);
-      
+
       await copyFile(configPath, backupPath);
-      
+
       // Clean up old backups
       await this.cleanupOldBackups(backupDir, maxBackups);
-      
+
       this.logger.info(`Configuration backup created: ${backupPath}`);
       return backupPath;
     } catch (error) {
@@ -530,27 +537,24 @@ export class ConfigService extends EventEmitter implements ConfigManager {
       throw error;
     }
   }
-  
+
   /**
    * Migrate configuration to newer version
    */
-  async migrate(
-    fromVersion: string,
-    toVersion: string
-  ): Promise<ConfigMigrationResult> {
+  async migrate(fromVersion: string, toVersion: string): Promise<ConfigMigrationResult> {
     try {
       this.logger.info(`Migrating configuration from ${fromVersion} to ${toVersion}`);
-      
+
       const changes: ConfigMigrationResult['changes'] = [];
       let backupPath: string | undefined;
-      
+
       // Create backup before migration
-      if (this.configPath && await fileExists(this.configPath)) {
+      if (this.configPath && (await fileExists(this.configPath))) {
         backupPath = await this.createBackup(this.configPath, {
           includeTimestamp: true,
         });
       }
-      
+
       // Apply migrations based on version changes
       const migratedConfig = await this.applyMigrations(
         this.config,
@@ -558,7 +562,7 @@ export class ConfigService extends EventEmitter implements ConfigManager {
         toVersion,
         changes
       );
-      
+
       // Update version
       migratedConfig.version = toVersion;
       changes.push({
@@ -567,16 +571,16 @@ export class ConfigService extends EventEmitter implements ConfigManager {
         oldValue: fromVersion,
         newValue: toVersion,
       });
-      
+
       // Validate migrated configuration
       const validation = await this.validate(migratedConfig);
       if (!validation.valid) {
         throw new Error(`Migrated configuration is invalid: ${validation.errors[0]?.message}`);
       }
-      
+
       // Save migrated configuration
       await this.save(migratedConfig);
-      
+
       const result: ConfigMigrationResult = {
         success: true,
         message: `Successfully migrated configuration from ${fromVersion} to ${toVersion}`,
@@ -585,9 +589,9 @@ export class ConfigService extends EventEmitter implements ConfigManager {
         changes,
         backupPath,
       };
-      
+
       this.emit('configMigrated', result);
-      
+
       return result;
     } catch (error) {
       const result: ConfigMigrationResult = {
@@ -597,12 +601,12 @@ export class ConfigService extends EventEmitter implements ConfigManager {
         toVersion,
         changes: [],
       };
-      
+
       this.logger.error('Configuration migration failed:', error);
       return result;
     }
   }
-  
+
   /**
    * Watch configuration file for changes
    */
@@ -613,14 +617,14 @@ export class ConfigService extends EventEmitter implements ConfigManager {
       if (existingWatcher) {
         existingWatcher.close();
       }
-      
+
       const { watch } = await import('fs');
       const watcher = watch(configPath, async (eventType) => {
         if (eventType === 'change') {
           try {
             this.logger.info('Configuration file changed, reloading...');
             const newConfig = await this.load();
-            
+
             if (JSON.stringify(newConfig) !== JSON.stringify(this.config)) {
               this.config = newConfig;
               this.emit('configReloaded', { config: newConfig });
@@ -630,19 +634,19 @@ export class ConfigService extends EventEmitter implements ConfigManager {
           }
         }
       });
-      
+
       this.watchers.set(configPath, watcher);
     } catch (error) {
       this.logger.warn('Failed to set up config file watcher:', error);
     }
   }
-  
+
   /**
    * Merge configuration objects
    */
   private mergeConfigs(base: CliConfig, override: Partial<CliConfig>): CliConfig {
     const result = { ...base };
-    
+
     for (const [key, value] of Object.entries(override)) {
       if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
         result[key as keyof CliConfig] = {
@@ -653,10 +657,10 @@ export class ConfigService extends EventEmitter implements ConfigManager {
         result[key as keyof CliConfig] = value as any;
       }
     }
-    
+
     return result;
   }
-  
+
   /**
    * Get nested value from object using dot notation
    */
@@ -665,24 +669,24 @@ export class ConfigService extends EventEmitter implements ConfigManager {
       return current && typeof current === 'object' ? current[key] : undefined;
     }, obj);
   }
-  
+
   /**
    * Set nested value in object using dot notation
    */
   private setNestedValue(obj: any, path: string, value: any): void {
     const keys = path.split('.');
     const lastKey = keys.pop()!;
-    
+
     const target = keys.reduce((current, key) => {
       if (!current[key] || typeof current[key] !== 'object') {
         current[key] = {};
       }
       return current[key];
     }, obj);
-    
+
     target[lastKey] = value;
   }
-  
+
   /**
    * Apply configuration migrations
    */
@@ -693,7 +697,7 @@ export class ConfigService extends EventEmitter implements ConfigManager {
     changes: ConfigMigrationResult['changes']
   ): Promise<CliConfig> {
     const migratedConfig = { ...config };
-    
+
     // Example migration logic (would be expanded based on actual version changes)
     if (fromVersion === '0.9.0' && toVersion === '1.0.0') {
       // Migrate old plugin structure
@@ -703,14 +707,14 @@ export class ConfigService extends EventEmitter implements ConfigManager {
           enabled: (migratedConfig as any).enablePlugins,
         };
         delete (migratedConfig as any).enablePlugins;
-        
+
         changes.push({
           type: 'modified',
           path: 'plugins.enabled',
           oldValue: (migratedConfig as any).enablePlugins,
           newValue: migratedConfig.plugins.enabled,
         });
-        
+
         changes.push({
           type: 'removed',
           path: 'enablePlugins',
@@ -718,10 +722,10 @@ export class ConfigService extends EventEmitter implements ConfigManager {
         });
       }
     }
-    
+
     return migratedConfig;
   }
-  
+
   /**
    * Clean up old backup files
    */
@@ -730,9 +734,10 @@ export class ConfigService extends EventEmitter implements ConfigManager {
       if (!existsSync(backupDir)) {
         return;
       }
-      
+
       const fs = require('fs');
-      const files = fs.readdirSync(backupDir)
+      const files = fs
+        .readdirSync(backupDir)
         .filter((f: string) => f.startsWith('config-backup') && f.endsWith('.json'))
         .map((f: string) => ({
           name: f,
@@ -740,10 +745,10 @@ export class ConfigService extends EventEmitter implements ConfigManager {
           stats: fs.statSync(join(backupDir, f)),
         }))
         .sort((a: any, b: any) => b.stats.mtime.getTime() - a.stats.mtime.getTime());
-      
+
       if (files.length > maxBackups) {
         const filesToDelete = files.slice(maxBackups);
-        
+
         for (const file of filesToDelete) {
           fs.unlinkSync(file.path);
           this.logger.debug(`Deleted old backup: ${file.name}`);

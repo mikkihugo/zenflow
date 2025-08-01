@@ -1,39 +1,38 @@
 /**
  * CLI Services Index
- * 
+ *
  * This module re-exports all CLI services for convenient importing.
  * Provides business logic services for swarm operations, configuration, and templates.
  */
 
-// Swarm operations service
-export {
-  SwarmService,
-  type SwarmStatus,
-  type SwarmConfig,
-  type SwarmAgent,
-  type SwarmMetrics,
-  type SwarmTopology,
-  type SwarmOperationResult,
-} from './swarm-service';
-
 // Configuration management service
 export {
-  ConfigService,
-  type ConfigManager,
-  type ConfigValidationOptions,
-  type ConfigMigrationResult,
   type ConfigBackupOptions,
+  type ConfigManager,
+  type ConfigMigrationResult,
+  ConfigService,
+  type ConfigValidationOptions,
 } from './config-service';
+// Swarm operations service
+export {
+  type SwarmAgent,
+  type SwarmConfig,
+  type SwarmMetrics,
+  type SwarmOperationResult,
+  SwarmService,
+  type SwarmStatus,
+  type SwarmTopology,
+} from './swarm-service';
 
 // Template operations service
 export {
-  TemplateService,
+  type ProjectTemplate,
   type TemplateConfig,
-  type TemplateVariable,
   type TemplateContext,
   type TemplateEngine,
   type TemplateRenderResult,
-  type ProjectTemplate,
+  TemplateService,
+  type TemplateVariable,
 } from './template-service';
 
 /**
@@ -42,28 +41,28 @@ export {
 export class ServiceRegistry {
   private services = new Map<string, any>();
   private initialized = false;
-  
+
   /**
    * Register a service with the registry
    */
   register<T>(name: string, service: T): void {
     this.services.set(name, service);
   }
-  
+
   /**
    * Get a service from the registry
    */
   get<T>(name: string): T | undefined {
     return this.services.get(name) as T;
   }
-  
+
   /**
    * Check if a service is registered
    */
   has(name: string): boolean {
     return this.services.has(name);
   }
-  
+
   /**
    * Initialize all services
    */
@@ -71,42 +70,42 @@ export class ServiceRegistry {
     if (this.initialized) {
       return;
     }
-    
+
     // Initialize services in dependency order
     const services = Array.from(this.services.values());
-    
+
     for (const service of services) {
       if (service && typeof service.init === 'function') {
         await service.init();
       }
     }
-    
+
     this.initialized = true;
   }
-  
+
   /**
    * Dispose all services
    */
   async dispose(): Promise<void> {
     const services = Array.from(this.services.values()).reverse();
-    
+
     for (const service of services) {
       if (service && typeof service.dispose === 'function') {
         await service.dispose();
       }
     }
-    
+
     this.services.clear();
     this.initialized = false;
   }
-  
+
   /**
    * Get all registered service names
    */
   getServiceNames(): string[] {
     return Array.from(this.services.keys());
   }
-  
+
   /**
    * Check if services are initialized
    */
@@ -128,12 +127,12 @@ export async function initializeServices(): Promise<void> {
   const { SwarmService } = await import('./swarm-service.js');
   const { ConfigService } = await import('./config-service.js');
   const { TemplateService } = await import('./template-service.js');
-  
+
   // Register default services
   serviceRegistry.register('swarm', new SwarmService());
   serviceRegistry.register('config', new ConfigService());
   serviceRegistry.register('template', new TemplateService());
-  
+
   // Initialize all services
   await serviceRegistry.init();
 }
@@ -159,7 +158,7 @@ export const Services = {
     }
     return service;
   },
-  
+
   /**
    * Get the config service
    */
@@ -170,7 +169,7 @@ export const Services = {
     }
     return service;
   },
-  
+
   /**
    * Get the template service
    */
@@ -200,12 +199,12 @@ export interface ServiceHealthCheck {
 export async function checkServiceHealth(): Promise<ServiceHealthCheck[]> {
   const results: ServiceHealthCheck[] = [];
   const serviceNames = serviceRegistry.getServiceNames();
-  
+
   for (const name of serviceNames) {
     const service = serviceRegistry.get(name);
     let status: ServiceHealthCheck['status'] = 'unknown';
     let message: string | undefined;
-    
+
     try {
       if (service && typeof service.healthCheck === 'function') {
         const health = await service.healthCheck();
@@ -218,7 +217,7 @@ export async function checkServiceHealth(): Promise<ServiceHealthCheck[]> {
       status = 'unhealthy';
       message = (error as Error).message;
     }
-    
+
     results.push({
       name,
       status,
@@ -226,7 +225,7 @@ export async function checkServiceHealth(): Promise<ServiceHealthCheck[]> {
       lastCheck: new Date(),
     });
   }
-  
+
   return results;
 }
 
@@ -236,16 +235,16 @@ export async function checkServiceHealth(): Promise<ServiceHealthCheck[]> {
 export interface ServiceConfig {
   /** Service name */
   name: string;
-  
+
   /** Service configuration */
   config: Record<string, any>;
-  
+
   /** Dependencies */
   dependencies?: string[];
-  
+
   /** Auto-start service */
   autoStart?: boolean;
-  
+
   /** Service priority (higher numbers start first) */
   priority?: number;
 }
@@ -253,14 +252,10 @@ export interface ServiceConfig {
 /**
  * Load services from configuration
  */
-export async function loadServicesFromConfig(
-  configs: ServiceConfig[]
-): Promise<void> {
+export async function loadServicesFromConfig(configs: ServiceConfig[]): Promise<void> {
   // Sort by priority
-  const sortedConfigs = configs.sort((a, b) => 
-    (b.priority || 0) - (a.priority || 0)
-  );
-  
+  const sortedConfigs = configs.sort((a, b) => (b.priority || 0) - (a.priority || 0));
+
   for (const config of sortedConfigs) {
     try {
       // Dynamic service loading would go here
@@ -282,7 +277,7 @@ export async function loadServicesFromConfig(
       console.warn(`Failed to load service "${config.name}": ${(error as Error).message}`);
     }
   }
-  
+
   await serviceRegistry.init();
 }
 

@@ -1,19 +1,19 @@
 /**
  * Base Command Abstract Class
- * 
+ *
  * Provides common functionality for all CLI commands including validation,
  * error handling, hooks, and lifecycle management.
  */
 
 import { EventEmitter } from 'events';
 import type {
+  AsyncResult,
   CommandConfig,
   CommandContext,
-  CommandResult,
   CommandHandler,
   CommandMetadata,
+  CommandResult,
   CommandValidationResult,
-  AsyncResult
 } from '../types/index';
 
 /**
@@ -21,7 +21,10 @@ import type {
  */
 export interface CommandHooks {
   beforeValidation?: (context: CommandContext) => Promise<void> | void;
-  afterValidation?: (context: CommandContext, result: CommandValidationResult) => Promise<void> | void;
+  afterValidation?: (
+    context: CommandContext,
+    result: CommandValidationResult
+  ) => Promise<void> | void;
   beforeExecution?: (context: CommandContext) => Promise<void> | void;
   afterExecution?: (context: CommandContext, result: CommandResult) => Promise<void> | void;
   onError?: (context: CommandContext, error: Error) => Promise<void> | void;
@@ -48,7 +51,7 @@ export abstract class BaseCommand extends EventEmitter {
       config: this.config,
       handler: this.run.bind(this) as CommandHandler,
       registeredAt: new Date(),
-      available: true
+      available: true,
     };
   }
 
@@ -88,7 +91,7 @@ export abstract class BaseCommand extends EventEmitter {
           if (context.flags[flagName] !== undefined) {
             const value = context.flags[flagName];
             const expectedType = flagConfig.type || 'string';
-            
+
             if (!this.validateFlagType(value, expectedType)) {
               errors.push(`Flag --${flagName} expected ${expectedType} but got ${typeof value}`);
             }
@@ -99,11 +102,11 @@ export abstract class BaseCommand extends EventEmitter {
       // Validate arguments count
       const minArgs = this.config.minArgs || 0;
       const maxArgs = this.config.maxArgs;
-      
+
       if (context.args.length < minArgs) {
         errors.push(`Expected at least ${minArgs} arguments, got ${context.args.length}`);
       }
-      
+
       if (maxArgs !== undefined && context.args.length > maxArgs) {
         errors.push(`Expected at most ${maxArgs} arguments, got ${context.args.length}`);
       }
@@ -118,7 +121,7 @@ export abstract class BaseCommand extends EventEmitter {
       const result: CommandValidationResult = {
         valid: errors.length === 0,
         errors,
-        warnings
+        warnings,
       };
 
       // Run post-validation hook
@@ -131,7 +134,7 @@ export abstract class BaseCommand extends EventEmitter {
       return {
         valid: false,
         errors,
-        warnings
+        warnings,
       };
     }
   }
@@ -163,7 +166,7 @@ export abstract class BaseCommand extends EventEmitter {
         success: false,
         error: 'Command is already executing',
         exitCode: 1,
-        executionTime: 0
+        executionTime: 0,
       };
     }
 
@@ -172,7 +175,7 @@ export abstract class BaseCommand extends EventEmitter {
 
     try {
       this.emit('start', context);
-      
+
       // Validate context
       const validation = await this.validateContext(context);
       if (!validation.valid) {
@@ -182,7 +185,7 @@ export abstract class BaseCommand extends EventEmitter {
           success: false,
           error: errorMsg,
           exitCode: 1,
-          executionTime: Date.now() - startTime
+          executionTime: Date.now() - startTime,
         };
       }
 
@@ -196,11 +199,11 @@ export abstract class BaseCommand extends EventEmitter {
 
       // Execute the command
       const result = await this.run(context);
-      
+
       // Calculate duration and add metadata
       const finalResult: CommandResult = {
         ...result,
-        executionTime: Date.now() - startTime
+        executionTime: Date.now() - startTime,
       };
 
       // Run post-execution hook
@@ -211,7 +214,7 @@ export abstract class BaseCommand extends EventEmitter {
       return finalResult;
     } catch (error) {
       const commandError = error instanceof Error ? error : new Error(String(error));
-      
+
       // Run error hook
       await this.hooks.onError?.(context, commandError);
       this.emit('error', commandError);
@@ -220,7 +223,7 @@ export abstract class BaseCommand extends EventEmitter {
         success: false,
         error: commandError.message,
         exitCode: 1,
-        executionTime: Date.now() - startTime
+        executionTime: Date.now() - startTime,
       };
 
       this.emit('complete', result);
@@ -233,7 +236,7 @@ export abstract class BaseCommand extends EventEmitter {
   /**
    * Abstract methods to be implemented by concrete commands
    */
-  
+
   /**
    * Custom validation logic - override in subclasses
    */

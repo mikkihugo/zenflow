@@ -4,16 +4,24 @@
  */
 
 // Core swarm components
-export { SwarmHeader, type SwarmHeaderProps } from './swarm-header';
-export { SwarmSpinner, SwarmSpinnerPresets, type SwarmSpinnerProps } from './swarm-spinner';
-export { SwarmStatusBadge, type SwarmStatusBadgeProps } from './swarm-status-badge';
-export { SwarmProgressBar, type SwarmProgressBarProps } from './swarm-progress-bar';
-
 // Re-export from legacy components for backward compatibility
-export { default as Header } from './swarm-header';
-export { default as Spinner } from './swarm-spinner';
-export { default as StatusBadge } from './swarm-status-badge';
-export { default as ProgressBar } from './swarm-progress-bar';
+export { default as Header, SwarmHeader, type SwarmHeaderProps } from './swarm-header';
+export {
+  default as ProgressBar,
+  SwarmProgressBar,
+  type SwarmProgressBarProps,
+} from './swarm-progress-bar';
+export {
+  default as Spinner,
+  SwarmSpinner,
+  SwarmSpinnerPresets,
+  type SwarmSpinnerProps,
+} from './swarm-spinner';
+export {
+  default as StatusBadge,
+  SwarmStatusBadge,
+  type SwarmStatusBadgeProps,
+} from './swarm-status-badge';
 
 // Base component props interface
 export interface BaseSwarmComponentProps {

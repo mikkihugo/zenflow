@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { UseAsyncState } from './index';
+import { useCallback, useEffect, useState } from 'react';
+import type { UseAsyncState } from './index';
 
 // Configuration data types
 export interface SwarmConfig {
@@ -67,32 +67,27 @@ const DEFAULT_UI_CONFIG: UIConfig = {
 
 /**
  * Custom hook for managing application configuration
- * 
+ *
  * Provides configuration management with persistence,
  * validation, and real-time updates.
  */
 export const useConfig = (options: UseConfigOptions = {}): ConfigHook => {
-  const {
-    autoSave = true,
-    saveDelay = 1000,
-    onConfigChange,
-    onError,
-  } = options;
-  
+  const { autoSave = true, saveDelay = 1000, onConfigChange, onError } = options;
+
   const [data, setData] = useState<ConfigData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [isDirty, setIsDirty] = useState(false);
-  
+
   // Mock storage functions - replace with actual storage implementation
   const loadConfig = useCallback(async (): Promise<ConfigData> => {
     // Simulate loading delay
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
     try {
       // Try to load from localStorage (or other storage)
       const stored = localStorage.getItem('claude-flow-config');
-      
+
       if (stored) {
         const parsed = JSON.parse(stored);
         return {
@@ -105,7 +100,7 @@ export const useConfig = (options: UseConfigOptions = {}): ConfigHook => {
     } catch (err) {
       console.warn('Failed to load stored config, using defaults:', err);
     }
-    
+
     // Return default configuration
     return {
       swarm: DEFAULT_SWARM_CONFIG,
@@ -114,11 +109,11 @@ export const useConfig = (options: UseConfigOptions = {}): ConfigHook => {
       lastModified: new Date(),
     };
   }, []);
-  
+
   const saveConfig = useCallback(async (config: ConfigData): Promise<void> => {
     // Simulate save delay
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     try {
       const toStore = {
         swarm: config.swarm,
@@ -126,19 +121,21 @@ export const useConfig = (options: UseConfigOptions = {}): ConfigHook => {
         version: config.version,
         lastModified: config.lastModified.toISOString(),
       };
-      
+
       localStorage.setItem('claude-flow-config', JSON.stringify(toStore));
     } catch (err) {
-      throw new Error(`Failed to save configuration: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to save configuration: ${err instanceof Error ? err.message : 'Unknown error'}`
+      );
     }
   }, []);
-  
+
   const refetch = useCallback(async () => {
     if (loading) return;
-    
+
     setLoading(true);
     setError(null);
-    
+
     try {
       const configData = await loadConfig();
       setData(configData);
@@ -152,16 +149,16 @@ export const useConfig = (options: UseConfigOptions = {}): ConfigHook => {
       setLoading(false);
     }
   }, [loading, loadConfig, onConfigChange, onError]);
-  
+
   const save = useCallback(async () => {
     if (!data || !isDirty) return;
-    
+
     try {
       const updatedConfig = {
         ...data,
         lastModified: new Date(),
       };
-      
+
       await saveConfig(updatedConfig);
       setData(updatedConfig);
       setIsDirty(false);
@@ -172,49 +169,55 @@ export const useConfig = (options: UseConfigOptions = {}): ConfigHook => {
       onError?.(error);
     }
   }, [data, isDirty, saveConfig, onConfigChange, onError]);
-  
-  const updateSwarmConfig = useCallback(async (updates: Partial<SwarmConfig>) => {
-    if (!data) return;
-    
-    const newConfig = {
-      ...data,
-      swarm: { ...data.swarm, ...updates },
-    };
-    
-    setData(newConfig);
-    setIsDirty(true);
-    
-    if (autoSave) {
-      // Debounced save
-      setTimeout(() => {
-        if (isDirty) {
-          save();
-        }
-      }, saveDelay);
-    }
-  }, [data, autoSave, saveDelay, save, isDirty]);
-  
-  const updateUIConfig = useCallback(async (updates: Partial<UIConfig>) => {
-    if (!data) return;
-    
-    const newConfig = {
-      ...data,
-      ui: { ...data.ui, ...updates },
-    };
-    
-    setData(newConfig);
-    setIsDirty(true);
-    
-    if (autoSave) {
-      // Debounced save
-      setTimeout(() => {
-        if (isDirty) {
-          save();
-        }
-      }, saveDelay);
-    }
-  }, [data, autoSave, saveDelay, save, isDirty]);
-  
+
+  const updateSwarmConfig = useCallback(
+    async (updates: Partial<SwarmConfig>) => {
+      if (!data) return;
+
+      const newConfig = {
+        ...data,
+        swarm: { ...data.swarm, ...updates },
+      };
+
+      setData(newConfig);
+      setIsDirty(true);
+
+      if (autoSave) {
+        // Debounced save
+        setTimeout(() => {
+          if (isDirty) {
+            save();
+          }
+        }, saveDelay);
+      }
+    },
+    [data, autoSave, saveDelay, save, isDirty]
+  );
+
+  const updateUIConfig = useCallback(
+    async (updates: Partial<UIConfig>) => {
+      if (!data) return;
+
+      const newConfig = {
+        ...data,
+        ui: { ...data.ui, ...updates },
+      };
+
+      setData(newConfig);
+      setIsDirty(true);
+
+      if (autoSave) {
+        // Debounced save
+        setTimeout(() => {
+          if (isDirty) {
+            save();
+          }
+        }, saveDelay);
+      }
+    },
+    [data, autoSave, saveDelay, save, isDirty]
+  );
+
   const resetToDefaults = useCallback(async () => {
     const defaultConfig: ConfigData = {
       swarm: DEFAULT_SWARM_CONFIG,
@@ -222,20 +225,20 @@ export const useConfig = (options: UseConfigOptions = {}): ConfigHook => {
       version: '1.0.0',
       lastModified: new Date(),
     };
-    
+
     setData(defaultConfig);
     setIsDirty(true);
-    
+
     if (autoSave) {
       await save();
     }
   }, [autoSave, save]);
-  
+
   // Load configuration on mount
   useEffect(() => {
     refetch();
   }, [refetch]);
-  
+
   return {
     data,
     loading,
@@ -255,33 +258,39 @@ export const useConfig = (options: UseConfigOptions = {}): ConfigHook => {
 export const ConfigValidation = {
   validateSwarmConfig: (config: Partial<SwarmConfig>): string[] => {
     const errors: string[] = [];
-    
+
     if (config.maxAgents !== undefined && (config.maxAgents < 1 || config.maxAgents > 100)) {
       errors.push('maxAgents must be between 1 and 100');
     }
-    
+
     if (config.defaultTimeout !== undefined && config.defaultTimeout < 1000) {
       errors.push('defaultTimeout must be at least 1000ms');
     }
-    
-    if (config.retryAttempts !== undefined && (config.retryAttempts < 0 || config.retryAttempts > 10)) {
+
+    if (
+      config.retryAttempts !== undefined &&
+      (config.retryAttempts < 0 || config.retryAttempts > 10)
+    ) {
       errors.push('retryAttempts must be between 0 and 10');
     }
-    
+
     return errors;
   },
-  
+
   validateUIConfig: (config: Partial<UIConfig>): string[] => {
     const errors: string[] = [];
-    
+
     if (config.refreshInterval !== undefined && config.refreshInterval < 1000) {
       errors.push('refreshInterval must be at least 1000ms');
     }
-    
-    if (config.maxLogLines !== undefined && (config.maxLogLines < 100 || config.maxLogLines > 10000)) {
+
+    if (
+      config.maxLogLines !== undefined &&
+      (config.maxLogLines < 100 || config.maxLogLines > 10000)
+    ) {
       errors.push('maxLogLines must be between 100 and 10000');
     }
-    
+
     return errors;
   },
 };

@@ -3,12 +3,10 @@
  * All screens are optimized for swarm orchestration and coordination workflows
  */
 
+// Re-export from main TUI
+export { default as SwarmTUI, launchSwarmTUI } from '../swarm-tui';
 // Core swarm screens
 export { SwarmOverview, type SwarmOverviewProps } from './swarm-overview';
-
-// Re-export from main TUI
-export { default as SwarmTUI } from '../swarm-tui';
-export { launchSwarmTUI } from '../swarm-tui';
 
 // Base screen props interface for consistency
 export interface BaseSwarmScreenProps {
@@ -22,12 +20,12 @@ export interface BaseSwarmScreenProps {
 }
 
 // Screen navigation types
-export type SwarmScreen = 
-  | 'overview' 
-  | 'agents' 
-  | 'tasks' 
-  | 'create-agent' 
-  | 'create-task' 
+export type SwarmScreen =
+  | 'overview'
+  | 'agents'
+  | 'tasks'
+  | 'create-agent'
+  | 'create-task'
   | 'metrics'
   | 'coordination'
   | 'settings';

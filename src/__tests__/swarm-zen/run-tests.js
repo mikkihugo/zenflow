@@ -5,8 +5,8 @@
  */
 
 import { spawn } from 'child_process';
-import path, { dirname } from 'path';
 import fs from 'fs';
+import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -53,26 +53,34 @@ function log(message, color = 'reset') {
 }
 
 function logSection(title) {
-  console.log(`\n${ '='.repeat(80)}`);
+  console.log(`\n${'='.repeat(80)}`);
   log(title, 'bright');
-  console.log(`${'='.repeat(80) }\n`);
+  console.log(`${'='.repeat(80)}\n`);
 }
 
 async function runJest(suite, coverage = false) {
   return new Promise((resolve, reject) => {
     const args = [
-      '--testMatch', `**/${suite.pattern}`,
-      '--testTimeout', suite.timeout.toString(),
+      '--testMatch',
+      `**/${suite.pattern}`,
+      '--testTimeout',
+      suite.timeout.toString(),
       '--forceExit',
     ];
 
     if (coverage) {
       args.push(
         '--coverage',
-        '--coverageDirectory', 'coverage',
-        '--collectCoverageFrom', 'src/**/*.js',
-        '--coveragePathIgnorePatterns', '/node_modules/',
-        '--coverageReporters', 'text', 'lcov', 'html',
+        '--coverageDirectory',
+        'coverage',
+        '--collectCoverageFrom',
+        'src/**/*.js',
+        '--coveragePathIgnorePatterns',
+        '/node_modules/',
+        '--coverageReporters',
+        'text',
+        'lcov',
+        'html'
       );
     }
 
@@ -158,11 +166,15 @@ async function main() {
   }
 
   if (runIntegration) {
-    results.integration = await runTestSuite('integration', testSuites.integration, { coverage: runCoverage });
+    results.integration = await runTestSuite('integration', testSuites.integration, {
+      coverage: runCoverage,
+    });
   }
 
   if (runExisting) {
-    results.existing = await runTestSuite('existing', testSuites.existing, { coverage: runCoverage });
+    results.existing = await runTestSuite('existing', testSuites.existing, {
+      coverage: runCoverage,
+    });
   }
 
   if (runPerformance) {

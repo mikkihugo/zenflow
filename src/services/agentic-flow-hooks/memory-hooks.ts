@@ -1,10 +1,10 @@
 /**
  * Memory Hooks - Agentic Zen Hook System
- * 
+ *
  * Handles hooks related to memory operations, caching, and persistence.
  */
 
-import type { MemoryHookPayload, AgenticHookContext, HookHandlerResult } from './types';
+import type { AgenticHookContext, HookHandlerResult, MemoryHookPayload } from './types';
 
 export class MemoryHooks {
   private logger: any;
@@ -20,14 +20,14 @@ export class MemoryHooks {
   async onMemoryOperation(context: AgenticHookContext): Promise<HookHandlerResult> {
     const payload = context.payload as MemoryHookPayload;
     this.logger.debug(`Memory operation: ${payload.operation} on key: ${payload.key}`);
-    
+
     return {
       success: true,
       modified: false,
       metadata: {
         operation: payload.operation,
-        timestamp: Date.now()
-      }
+        timestamp: Date.now(),
+      },
     };
   }
 }

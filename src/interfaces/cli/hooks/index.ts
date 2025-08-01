@@ -1,17 +1,17 @@
 /**
  * UI Hooks - Hook Exports
- * 
+ *
  * This module exports custom React hooks for the Claude Flow CLI.
  * Hooks provide reusable state management and side effects.
  */
 
-// Custom hooks
-export { useSwarmStatus } from './use-swarm-status';
+export type { ConfigData, ConfigHook } from './use-config';
 export { useConfig } from './use-config';
 
 // Hook types
-export type { SwarmStatusHook, SwarmStatusData } from './use-swarm-status';
-export type { ConfigHook, ConfigData } from './use-config';
+export type { SwarmStatusData, SwarmStatusHook } from './use-swarm-status';
+// Custom hooks
+export { useSwarmStatus } from './use-swarm-status';
 
 // Common hook utilities
 export interface UseAsyncState<T> {
@@ -37,7 +37,7 @@ export const HookUtils = {
     error: null,
     refetch: async () => {},
   }),
-  
+
   debounce: <T extends (...args: any[]) => any>(
     func: T,
     wait: number
@@ -48,7 +48,7 @@ export const HookUtils = {
       timeout = setTimeout(() => func(...args), wait);
     };
   },
-  
+
   throttle: <T extends (...args: any[]) => any>(
     func: T,
     limit: number
@@ -58,7 +58,7 @@ export const HookUtils = {
       if (!inThrottle) {
         func(...args);
         inThrottle = true;
-        setTimeout(() => inThrottle = false, limit);
+        setTimeout(() => (inThrottle = false), limit);
       }
     };
   },

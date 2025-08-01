@@ -155,7 +155,9 @@ class CognitivePatternEvolution {
       emergentPatterns: 0,
     });
 
-    console.log(`Initialized cognitive patterns for agent ${agentId}: ${initialPatterns.join(', ')}`);
+    console.log(
+      `Initialized cognitive patterns for agent ${agentId}: ${initialPatterns.join(', ')}`
+    );
   }
 
   /**
@@ -312,13 +314,15 @@ class CognitivePatternEvolution {
     let totalVariance = 0;
 
     for (let f = 0; f < numFeatures; f++) {
-      const values = samples.map(s => Array.isArray(s) ? s[f] : s).filter(v => typeof v === 'number');
+      const values = samples
+        .map((s) => (Array.isArray(s) ? s[f] : s))
+        .filter((v) => typeof v === 'number');
       if (values.length < 2) {
         continue;
       }
 
       const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
-      const variance = values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / values.length;
+      const variance = values.reduce((sum, v) => sum + (v - mean) ** 2, 0) / values.length;
       totalVariance += variance;
     }
 
@@ -332,7 +336,7 @@ class CognitivePatternEvolution {
   calculateLabelDistribution(samples) {
     const labelCounts = new Map();
 
-    samples.forEach(sample => {
+    samples.forEach((sample) => {
       const label = sample.label || sample.target || 'unknown';
       labelCounts.set(label, (labelCounts.get(label) || 0) + 1);
     });
@@ -390,7 +394,7 @@ class CognitivePatternEvolution {
     }
 
     // Simple heuristic: calculate coefficient of variation
-    const values = trainingData.samples.map(s => {
+    const values = trainingData.samples.map((s) => {
       if (typeof s === 'number') {
         return s;
       }
@@ -401,7 +405,7 @@ class CognitivePatternEvolution {
     });
 
     const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
-    const variance = values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / values.length;
+    const variance = values.reduce((sum, v) => sum + (v - mean) ** 2, 0) / values.length;
     const stdDev = Math.sqrt(variance);
 
     return mean !== 0 ? Math.min(1, stdDev / Math.abs(mean)) : 0.5;
@@ -418,11 +422,11 @@ class CognitivePatternEvolution {
     }
 
     // Check for periodic patterns or consistent structures
-    const labelSequence = trainingData.samples.map(s => s.label || s.target || 0);
+    const labelSequence = trainingData.samples.map((s) => s.label || s.target || 0);
     const uniqueLabels = new Set(labelSequence);
 
     // More unique labels = less regular
-    const regularity = 1 - (uniqueLabels.size / labelSequence.length);
+    const regularity = 1 - uniqueLabels.size / labelSequence.length;
     return Math.max(0, Math.min(1, regularity));
   }
 
@@ -449,8 +453,8 @@ class CognitivePatternEvolution {
    */
   assessTemporalDependency(trainingData) {
     // Check if data has temporal structure
-    const hasTimestamps = trainingData.samples?.some(s => s.timestamp || s.time);
-    const hasSequence = trainingData.samples?.some(s => s.sequence || Array.isArray(s.input));
+    const hasTimestamps = trainingData.samples?.some((s) => s.timestamp || s.time);
+    const hasSequence = trainingData.samples?.some((s) => s.sequence || Array.isArray(s.input));
 
     if (hasTimestamps) {
       return 0.8;
@@ -549,7 +553,10 @@ class CognitivePatternEvolution {
     weightSum += 0.25;
 
     // Match pattern recognition approach
-    const abstractionMatch = this.matchPatternRecognition(characteristics.patternRecognition, context);
+    const abstractionMatch = this.matchPatternRecognition(
+      characteristics.patternRecognition,
+      context
+    );
     totalMatch += abstractionMatch * 0.25;
     weightSum += 0.25;
 
@@ -568,12 +575,12 @@ class CognitivePatternEvolution {
    */
   matchDecisionStyle(style, systematicNeed) {
     const styleScores = {
-      'decisive': 0.9,
-      'analytical': 0.8,
-      'systematic': 0.8,
-      'principled': 0.7,
-      'exploratory': 0.3,
-      'innovative': 0.2,
+      decisive: 0.9,
+      analytical: 0.8,
+      systematic: 0.8,
+      principled: 0.7,
+      exploratory: 0.3,
+      innovative: 0.2,
     };
 
     const styleScore = styleScores[style] || 0.5;
@@ -587,12 +594,12 @@ class CognitivePatternEvolution {
    */
   matchPatternRecognition(approach, context) {
     const approachScores = {
-      'exact_match': context.patternRegularity,
-      'flexible_match': 1 - context.patternRegularity,
-      'analogical': context.abstractionLevel,
-      'pattern_networks': context.dataComplexity,
-      'evidence_based': 1 - context.noiseLevel,
-      'abstraction_layers': context.abstractionLevel,
+      exact_match: context.patternRegularity,
+      flexible_match: 1 - context.patternRegularity,
+      analogical: context.abstractionLevel,
+      pattern_networks: context.dataComplexity,
+      evidence_based: 1 - context.noiseLevel,
+      abstraction_layers: context.abstractionLevel,
     };
 
     return approachScores[approach] || 0.5;
@@ -605,12 +612,12 @@ class CognitivePatternEvolution {
    */
   matchSearchStrategy(strategy, context) {
     const strategyScores = {
-      'directed': 1 - context.creativity_required,
-      'random': context.creativity_required,
-      'lateral': context.noiseLevel + context.creativity_required,
-      'holistic': context.dataComplexity,
-      'systematic': context.patternRegularity,
-      'conceptual': context.abstractionLevel,
+      directed: 1 - context.creativity_required,
+      random: context.creativity_required,
+      lateral: context.noiseLevel + context.creativity_required,
+      holistic: context.dataComplexity,
+      systematic: context.patternRegularity,
+      conceptual: context.abstractionLevel,
     };
 
     return Math.min(1, strategyScores[strategy] || 0.5);
@@ -623,7 +630,9 @@ class CognitivePatternEvolution {
    */
   getHistoricalPerformance(agentId, patternType) {
     const history = this.evolutionHistory.get(agentId) || [];
-    const patternHistory = history.filter(h => h.oldPatterns.includes(patternType) || h.newPatterns.includes(patternType));
+    const patternHistory = history.filter(
+      (h) => h.oldPatterns.includes(patternType) || h.newPatterns.includes(patternType)
+    );
 
     if (patternHistory.length === 0) {
       return 0.5;
@@ -649,12 +658,12 @@ class CognitivePatternEvolution {
       return 0.5;
     }
 
-    const adaptations = agentData.adaptationHistory.filter(a => a.patternType === patternType);
+    const adaptations = agentData.adaptationHistory.filter((a) => a.patternType === patternType);
     if (adaptations.length === 0) {
       return 0.5;
     }
 
-    const successfulAdaptations = adaptations.filter(a => a.success).length;
+    const successfulAdaptations = adaptations.filter((a) => a.success).length;
     return successfulAdaptations / adaptations.length;
   }
 
@@ -664,7 +673,9 @@ class CognitivePatternEvolution {
    * @param {Object} context - Current context
    */
   assessEvolutionNeed(effectiveness, context) {
-    const avgEffectiveness = Object.values(effectiveness).reduce((sum, e) => sum + e.overall, 0) / Object.keys(effectiveness).length;
+    const avgEffectiveness =
+      Object.values(effectiveness).reduce((sum, e) => sum + e.overall, 0) /
+      Object.keys(effectiveness).length;
 
     // Evolution needed if effectiveness is low
     if (avgEffectiveness < 0.4) {
@@ -691,27 +702,27 @@ class CognitivePatternEvolution {
    */
   selectEvolutionStrategy(evolutionNeed, context) {
     const strategies = {
-      'pattern_addition': {
+      pattern_addition: {
         type: 'pattern_addition',
         description: 'Add new cognitive patterns',
         priority: context.creativity_required > 0.6 ? 0.8 : 0.4,
       },
-      'pattern_removal': {
+      pattern_removal: {
         type: 'pattern_removal',
         description: 'Remove ineffective patterns',
         priority: evolutionNeed.urgency === 'high' ? 0.9 : 0.3,
       },
-      'pattern_modification': {
+      pattern_modification: {
         type: 'pattern_modification',
         description: 'Modify existing patterns',
         priority: 0.6,
       },
-      'pattern_rebalancing': {
+      pattern_rebalancing: {
         type: 'pattern_rebalancing',
         description: 'Rebalance pattern weights',
         priority: evolutionNeed.urgency === 'medium' ? 0.7 : 0.5,
       },
-      'pattern_hybridization': {
+      pattern_hybridization: {
         type: 'pattern_hybridization',
         description: 'Create hybrid patterns',
         priority: context.dataComplexity > 0.7 ? 0.8 : 0.3,
@@ -720,7 +731,7 @@ class CognitivePatternEvolution {
 
     // Select strategy with highest priority
     const selectedStrategy = Object.values(strategies).reduce((best, current) =>
-      current.priority > best.priority ? current : best,
+      current.priority > best.priority ? current : best
     );
 
     return selectedStrategy;
@@ -788,7 +799,7 @@ class CognitivePatternEvolution {
    */
   async addPatterns(agentId, currentPatterns, context) {
     const availablePatterns = Array.from(this.patternTemplates.keys());
-    const unusedPatterns = availablePatterns.filter(p => !currentPatterns.includes(p));
+    const unusedPatterns = availablePatterns.filter((p) => !currentPatterns.includes(p));
 
     if (unusedPatterns.length === 0) {
       return currentPatterns;
@@ -841,7 +852,7 @@ class CognitivePatternEvolution {
     }
 
     if (worstPattern && worstScore < 0.3) {
-      return currentPatterns.filter(p => p !== worstPattern);
+      return currentPatterns.filter((p) => p !== worstPattern);
     }
 
     return currentPatterns;
@@ -884,8 +895,14 @@ class CognitivePatternEvolution {
 
     // Adapt characteristics based on context
     if (context.creativity_required > 0.7) {
-      adaptiveTemplate.characteristics.explorationRate = Math.min(1, adaptiveTemplate.characteristics.explorationRate + 0.2);
-      adaptiveTemplate.characteristics.exploitationRate = Math.max(0, adaptiveTemplate.characteristics.exploitationRate - 0.2);
+      adaptiveTemplate.characteristics.explorationRate = Math.min(
+        1,
+        adaptiveTemplate.characteristics.explorationRate + 0.2
+      );
+      adaptiveTemplate.characteristics.exploitationRate = Math.max(
+        0,
+        adaptiveTemplate.characteristics.exploitationRate - 0.2
+      );
     }
 
     if (context.dataComplexity > 0.8) {
@@ -925,7 +942,7 @@ class CognitivePatternEvolution {
     // Sort by score (descending)
     patternScores.sort((a, b) => b.score - a.score);
 
-    return patternScores.map(ps => ps.pattern);
+    return patternScores.map((ps) => ps.pattern);
   }
 
   /**
@@ -973,7 +990,8 @@ class CognitivePatternEvolution {
     const chars2 = template2.characteristics;
 
     hybrid.characteristics = {
-      searchStrategy: context.creativity_required > 0.5 ? chars2.searchStrategy : chars1.searchStrategy,
+      searchStrategy:
+        context.creativity_required > 0.5 ? chars2.searchStrategy : chars1.searchStrategy,
       explorationRate: (chars1.explorationRate + chars2.explorationRate) / 2,
       exploitationRate: (chars1.exploitationRate + chars2.exploitationRate) / 2,
       decisionMaking: context.dataComplexity > 0.6 ? chars1.decisionMaking : chars2.decisionMaking,
@@ -1093,7 +1111,9 @@ class CognitivePatternEvolution {
 
     // Transfer compatible patterns
     if (compatiblePatterns.length > 0) {
-      targetData.activePatterns = [...new Set([...targetData.activePatterns, ...compatiblePatterns])];
+      targetData.activePatterns = [
+        ...new Set([...targetData.activePatterns, ...compatiblePatterns]),
+      ];
 
       // Update metrics
       const metrics = this.evolutionMetrics.get(targetAgentId);
@@ -1122,21 +1142,21 @@ class CognitivePatternEvolution {
     }
 
     // Evaluate based on agent's current pattern mix
-    const currentPatternTypes = agentData.activePatterns.map(p => p.split('_')[0]);
+    const currentPatternTypes = agentData.activePatterns.map((p) => p.split('_')[0]);
     const patternType = pattern.type?.split('_')[0] || 'unknown';
 
     // Check for complementary patterns
     const complementaryPatterns = {
-      'convergent': ['divergent', 'lateral'],
-      'divergent': ['convergent', 'critical'],
-      'lateral': ['systems', 'convergent'],
-      'systems': ['lateral', 'abstract'],
-      'critical': ['divergent', 'abstract'],
-      'abstract': ['critical', 'systems'],
+      convergent: ['divergent', 'lateral'],
+      divergent: ['convergent', 'critical'],
+      lateral: ['systems', 'convergent'],
+      systems: ['lateral', 'abstract'],
+      critical: ['divergent', 'abstract'],
+      abstract: ['critical', 'systems'],
     };
 
     const complements = complementaryPatterns[patternType] || [];
-    const hasComplement = currentPatternTypes.some(ct => complements.includes(ct));
+    const hasComplement = currentPatternTypes.some((ct) => complements.includes(ct));
 
     return hasComplement ? 0.8 : 0.5;
   }
@@ -1163,7 +1183,7 @@ class CognitivePatternEvolution {
         type: patternType,
         template,
         effectiveness: this.getHistoricalPerformance(agentId, patternType),
-        adaptationHistory: agentData.adaptationHistory.filter(a => a.patternType === patternType),
+        adaptationHistory: agentData.adaptationHistory.filter((a) => a.patternType === patternType),
         dominance: patternType === agentData.dominantPattern ? 1.0 : 0.5,
       });
     }
@@ -1188,7 +1208,7 @@ class CognitivePatternEvolution {
           agentData.activePatterns.push(update.pattern);
         }
       } else if (update.type === 'remove_pattern') {
-        agentData.activePatterns = agentData.activePatterns.filter(p => p !== update.pattern);
+        agentData.activePatterns = agentData.activePatterns.filter((p) => p !== update.pattern);
       } else if (update.type === 'modify_pattern') {
         // Apply modifications to pattern template
         const template = this.patternTemplates.get(update.pattern);
@@ -1234,20 +1254,21 @@ class CognitivePatternEvolution {
 
     const growth = {
       patternDiversity: agentData.activePatterns.length / 6, // Normalize by max patterns
-      evolutionFrequency: metrics.totalEvolutions / Math.max(1, (Date.now() - agentData.lastEvolution) / (24 * 60 * 60 * 1000)),
+      evolutionFrequency:
+        metrics.totalEvolutions /
+        Math.max(1, (Date.now() - agentData.lastEvolution) / (24 * 60 * 60 * 1000)),
       adaptationSuccess: metrics.successfulAdaptations / Math.max(1, metrics.totalEvolutions),
       crossAgentLearning: metrics.crossAgentTransfers / Math.max(1, metrics.totalEvolutions),
       emergentPatterns: metrics.emergentPatterns / Math.max(1, metrics.totalEvolutions),
     };
 
     // Calculate overall growth score
-    const overallGrowth = (
+    const overallGrowth =
       growth.patternDiversity * 0.2 +
       growth.evolutionFrequency * 0.2 +
       growth.adaptationSuccess * 0.3 +
       growth.crossAgentLearning * 0.15 +
-      growth.emergentPatterns * 0.15
-    );
+      growth.emergentPatterns * 0.15;
 
     return Math.min(1, overallGrowth);
   }

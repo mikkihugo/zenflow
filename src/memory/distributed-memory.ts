@@ -37,21 +37,21 @@ export class DistributedMemorySystem extends EventEmitter {
 
   constructor(config: Partial<DistributedMemoryConfig> = {}) {
     super();
-    
+
     this.config = {
       nodeId: config.nodeId || `node-${Date.now()}`,
       syncInterval: config.syncInterval || 30000, // 30 seconds
       ttl: config.ttl || 3600000, // 1 hour
       maxEntries: config.maxEntries || 10000,
       replicationFactor: config.replicationFactor || 2,
-      ...config
+      ...config,
     };
 
     this.localNode = {
       id: this.config.nodeId,
       priority: Math.random(),
       lastSync: Date.now(),
-      entries: new Map()
+      entries: new Map(),
     };
   }
 
@@ -66,7 +66,7 @@ export class DistributedMemorySystem extends EventEmitter {
       key,
       value,
       timestamp: Date.now(),
-      ttl: ttl || this.config.ttl
+      ttl: ttl || this.config.ttl,
     };
 
     this.localNode.entries.set(key, entry);
@@ -96,7 +96,7 @@ export class DistributedMemorySystem extends EventEmitter {
 
   async delete(key: string): Promise<boolean> {
     const deleted = this.localNode.entries.delete(key);
-    
+
     // Propagate deletion to remote nodes
     for (const [, node] of this.remoteNodes) {
       node.entries.delete(key);
@@ -117,10 +117,10 @@ export class DistributedMemorySystem extends EventEmitter {
   async sync(): Promise<void> {
     // Cleanup expired entries
     this.cleanupExpiredEntries();
-    
+
     // Update sync timestamp
     this.localNode.lastSync = Date.now();
-    
+
     this.emit('synced', this.localNode.id);
   }
 
@@ -139,7 +139,7 @@ export class DistributedMemorySystem extends EventEmitter {
       localEntries: this.localNode.entries.size,
       remoteNodes: this.remoteNodes.size,
       totalEntries,
-      lastSync: this.localNode.lastSync
+      lastSync: this.localNode.lastSync,
     };
   }
 
@@ -148,14 +148,14 @@ export class DistributedMemorySystem extends EventEmitter {
       clearInterval(this.syncTimer);
       this.syncTimer = undefined;
     }
-    
+
     await this.clear();
     this.emit('shutdown');
   }
 
   private startSyncTimer(): void {
     this.syncTimer = setInterval(() => {
-      this.sync().catch(error => {
+      this.sync().catch((error) => {
         this.emit('error', 'Sync failed', error);
       });
     }, this.config.syncInterval);
@@ -166,7 +166,7 @@ export class DistributedMemorySystem extends EventEmitter {
     let replicated = 0;
     for (const [, node] of this.remoteNodes) {
       if (replicated >= this.config.replicationFactor) break;
-      
+
       node.entries.set(entry.key, entry);
       replicated++;
     }
@@ -174,12 +174,12 @@ export class DistributedMemorySystem extends EventEmitter {
 
   private isEntryValid(entry: MemoryEntry): boolean {
     if (!entry.ttl) return true;
-    return (Date.now() - entry.timestamp) < entry.ttl;
+    return Date.now() - entry.timestamp < entry.ttl;
   }
 
   private cleanupExpiredEntries(): void {
     const now = Date.now();
-    
+
     // Cleanup local entries
     for (const [key, entry] of this.localNode.entries) {
       if (!this.isEntryValid(entry)) {

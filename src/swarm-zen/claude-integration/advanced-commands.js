@@ -11,8 +11,8 @@ class AdvancedCommandsGenerator {
   }
 
   /**
-     * Generate advanced optimization command documentation
-     */
+   * Generate advanced optimization command documentation
+   */
   async generateAdvancedCommands() {
     const commandsDir = path.join(this.workingDir, '.claude', 'commands');
 

@@ -15,7 +15,7 @@ const __dirname = dirname(__filename);
 process.chdir(path.join(__dirname, '..'));
 
 async function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function testAgentTaskBinding() {
@@ -32,10 +32,13 @@ async function testAgentTaskBinding() {
       strategy: 'balanced',
     });
     console.log('✅ Swarm initialized:', swarmResult.id);
-    console.log('   Features:', Object.entries(swarmResult.features)
-      .filter(([key, value]) => value)
-      .map(([key]) => key)
-      .join(', '));
+    console.log(
+      '   Features:',
+      Object.entries(swarmResult.features)
+        .filter(([key, value]) => value)
+        .map(([key]) => key)
+        .join(', ')
+    );
 
     // Step 2: Spawn multiple agents
     console.log('\n2️⃣ Spawning agents...');
@@ -49,7 +52,9 @@ async function testAgentTaskBinding() {
         capabilities: [agentTypes[i], 'general'],
       });
       agents.push(agentResult);
-      console.log(`✅ Spawned ${agentResult.agent.type} agent: ${agentResult.agent.name} (${agentResult.agent.id})`);
+      console.log(
+        `✅ Spawned ${agentResult.agent.type} agent: ${agentResult.agent.name} (${agentResult.agent.id})`
+      );
     }
 
     // Step 3: Check swarm status
@@ -59,7 +64,9 @@ async function testAgentTaskBinding() {
     console.log(`   Active swarms: ${statusResult.active_swarms}`);
     if (statusResult.swarms && statusResult.swarms.length > 0) {
       const swarm = statusResult.swarms[0];
-      console.log(`   Agents: ${swarm.status.agents.total} total, ${swarm.status.agents.idle} idle, ${swarm.status.agents.active} active`);
+      console.log(
+        `   Agents: ${swarm.status.agents.total} total, ${swarm.status.agents.idle} idle, ${swarm.status.agents.active} active`
+      );
     }
 
     // Step 4: Test task orchestration (this was failing before)
@@ -99,7 +106,6 @@ async function testAgentTaskBinding() {
         console.log(`   Task ID: ${taskResult.taskId}`);
         console.log(`   Assigned agents: ${taskResult.assigned_agents.length}`);
         console.log(`   Agent IDs: ${taskResult.assigned_agents.join(', ')}`);
-
       } catch (error) {
         console.error(`❌ Task orchestration failed: ${error.message}`);
         throw error;
@@ -124,7 +130,9 @@ async function testAgentTaskBinding() {
             taskId: taskResult.taskId,
             format: 'summary',
           });
-          console.log(`✅ Task completed in ${results.execution_summary?.execution_time_ms || 'N/A'}ms`);
+          console.log(
+            `✅ Task completed in ${results.execution_summary?.execution_time_ms || 'N/A'}ms`
+          );
         }
       } catch (error) {
         console.warn(`⚠️ Could not get task status: ${error.message}`);
@@ -136,7 +144,9 @@ async function testAgentTaskBinding() {
     const finalStatus = await mcpTools.swarm_status({ verbose: true });
     if (finalStatus.swarms && finalStatus.swarms.length > 0) {
       const swarm = finalStatus.swarms[0];
-      console.log(`📊 Final agent states: ${swarm.status.agents.idle} idle, ${swarm.status.agents.active} active`);
+      console.log(
+        `📊 Final agent states: ${swarm.status.agents.idle} idle, ${swarm.status.agents.active} active`
+      );
     }
 
     // Step 7: Test with multiple agents per task
@@ -151,7 +161,6 @@ async function testAgentTaskBinding() {
 
       console.log(`✅ Multi-agent task orchestrated: ${multiAgentTask.taskId}`);
       console.log(`   Assigned ${multiAgentTask.assigned_agents.length} agents`);
-
     } catch (error) {
       console.error(`❌ Multi-agent task failed: ${error.message}`);
       throw error;
@@ -165,7 +174,6 @@ async function testAgentTaskBinding() {
     console.log('   - No "No agents available" errors encountered');
 
     return true;
-
   } catch (error) {
     console.error('\n❌ Test failed:', error.message);
     console.error(error.stack);
@@ -176,10 +184,10 @@ async function testAgentTaskBinding() {
 // Run the test
 // Direct execution
 testAgentTaskBinding()
-  .then(success => {
+  .then((success) => {
     process.exit(success ? 0 : 1);
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('Unhandled error:', error);
     process.exit(1);
   });

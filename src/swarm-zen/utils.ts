@@ -2,7 +2,7 @@
  * Utility functions for RuvSwarm
  */
 
-import { CognitiveProfile, SwarmTopology, AgentType, TaskPriority } from './types.js';
+import type { AgentType, CognitiveProfile, SwarmTopology, TaskPriority } from './types.js';
 
 /**
  * Generate a unique ID for agents, tasks, and messages
@@ -108,7 +108,7 @@ export function getDefaultCognitiveProfile(type: AgentType): CognitiveProfile {
  */
 export function calculateCognitiveDiversity(
   profile1: CognitiveProfile,
-  profile2: CognitiveProfile,
+  profile2: CognitiveProfile
 ): number {
   const dimensions = Object.keys(profile1) as (keyof CognitiveProfile)[];
   let totalDifference = 0;
@@ -127,7 +127,7 @@ export function calculateCognitiveDiversity(
 export function recommendTopology(
   agentCount: number,
   taskComplexity: 'low' | 'medium' | 'high',
-  coordinationNeeds: 'minimal' | 'moderate' | 'extensive',
+  coordinationNeeds: 'minimal' | 'moderate' | 'extensive'
 ): SwarmTopology {
   if (agentCount <= 5) {
     return 'mesh';
@@ -171,9 +171,10 @@ export function formatMetrics(metrics: {
   averageCompletionTime: number;
   throughput: number;
 }): string {
-  const successRate = metrics.totalTasks > 0 
-    ? ((metrics.completedTasks / metrics.totalTasks) * 100).toFixed(1)
-    : '0.0';
+  const successRate =
+    metrics.totalTasks > 0
+      ? ((metrics.completedTasks / metrics.totalTasks) * 100).toFixed(1)
+      : '0.0';
 
   return `
 Swarm Metrics:
@@ -231,7 +232,7 @@ export function deepClone<T>(obj: T): T {
   }
 
   if (obj instanceof Array) {
-    return obj.map(item => deepClone(item)) as any;
+    return obj.map((item) => deepClone(item)) as any;
   }
 
   if (obj instanceof Map) {
@@ -244,7 +245,7 @@ export function deepClone<T>(obj: T): T {
 
   if (obj instanceof Set) {
     const cloned = new Set();
-    obj.forEach(value => {
+    obj.forEach((value) => {
       cloned.add(deepClone(value));
     });
     return cloned as any;
@@ -252,7 +253,7 @@ export function deepClone<T>(obj: T): T {
 
   const cloned = {} as T;
   for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
+    if (Object.hasOwn(obj, key)) {
       cloned[key] = deepClone(obj[key]);
     }
   }
@@ -266,18 +267,18 @@ export function deepClone<T>(obj: T): T {
 export async function retryWithBackoff<T>(
   fn: () => Promise<T>,
   maxRetries: number = 3,
-  initialDelay: number = 100,
+  initialDelay: number = 100
 ): Promise<T> {
   let lastError: Error;
-  
+
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await fn();
     } catch (error) {
       lastError = error as Error;
       if (i < maxRetries - 1) {
-        const delay = initialDelay * Math.pow(2, i);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        const delay = initialDelay * 2 ** i;
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
   }

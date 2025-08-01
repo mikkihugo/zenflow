@@ -28,7 +28,7 @@
       {
         "id": "missing-comment-closure",
         "name": "Missing Comment Closures",
-        "priority": "high", 
+        "priority": "high",
         "severity": "error",
         "autoFixable": true,
         "count": 120,
@@ -78,7 +78,7 @@
       },
       {
         "id": "expression-expected",
-        "name": "Expression Syntax Issues", 
+        "name": "Expression Syntax Issues",
         "priority": "medium",
         "severity": "error",
         "autoFixable": false,
@@ -97,14 +97,12 @@
         "id": "module-placement-error",
         "name": "Import/Export Placement Issues",
         "priority": "low",
-        "severity": "error", 
+        "severity": "error",
         "autoFixable": true,
         "count": 15,
         "regex": "/'import' and 'export' may only appear at the top level/",
         "description": "Import/export statements not at module top level",
-        "examples": [
-          "tests/test.config.js:8:1"
-        ],
+        "examples": ["tests/test.config.js:8:1"],
         "autoFixStrategy": "move_to_top_level",
         "estimatedFixTime": "2-3 minutes per file"
       },
@@ -117,10 +115,7 @@
         "count": 10,
         "regex": "/('}' expected|Missing catch or finally clause)/",
         "description": "Missing braces, catch clauses, or other structural elements",
-        "examples": [
-          "src/swarm/executor.ts:11:0",
-          "tests/test-simd-detection.mjs:36:1"
-        ],
+        "examples": ["src/swarm/executor.ts:11:0", "tests/test-simd-detection.mjs:36:1"],
         "autoFixStrategy": "add_missing_structure",
         "estimatedFixTime": "3-5 minutes per file"
       },
@@ -146,7 +141,7 @@
         "name": "Automated Fixes",
         "patterns": [
           "unterminated-comment",
-          "missing-comment-closure", 
+          "missing-comment-closure",
           "module-placement-error",
           "structural-syntax-error",
           "semicolon-expected"
@@ -158,13 +153,9 @@
       },
       "phase2_manual": {
         "name": "Manual Review Required",
-        "patterns": [
-          "unexpected-token",
-          "declaration-expected",
-          "expression-expected"
-        ],
+        "patterns": ["unexpected-token", "declaration-expected", "expression-expected"],
         "totalIssues": 110,
-        "estimatedTime": "4-6 hours", 
+        "estimatedTime": "4-6 hours",
         "successRate": "75%",
         "workerLevel": 2
       },
@@ -183,7 +174,7 @@
       "conflictResolution": "level_escalation",
       "qualityGates": [
         "syntax_validation",
-        "type_checking", 
+        "type_checking",
         "compilation_test",
         "runtime_verification"
       ]

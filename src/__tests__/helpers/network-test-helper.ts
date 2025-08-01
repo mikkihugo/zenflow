@@ -1,6 +1,6 @@
 /**
  * Network Test Helper - Network Testing Utilities
- * 
+ *
  * Comprehensive network testing support for HTTP, WebSocket, and other protocols
  */
 
@@ -118,11 +118,19 @@ export class MockNetworkTestHelper implements NetworkTestHelper {
         return self.makeRequest('GET', path, undefined, headers);
       },
 
-      async post(path: string, body?: any, headers: Record<string, string> = {}): Promise<HttpResponse> {
+      async post(
+        path: string,
+        body?: any,
+        headers: Record<string, string> = {}
+      ): Promise<HttpResponse> {
         return self.makeRequest('POST', path, body, headers);
       },
 
-      async put(path: string, body?: any, headers: Record<string, string> = {}): Promise<HttpResponse> {
+      async put(
+        path: string,
+        body?: any,
+        headers: Record<string, string> = {}
+      ): Promise<HttpResponse> {
         return self.makeRequest('PUT', path, body, headers);
       },
 
@@ -130,9 +138,13 @@ export class MockNetworkTestHelper implements NetworkTestHelper {
         return self.makeRequest('DELETE', path, undefined, headers);
       },
 
-      async patch(path: string, body?: any, headers: Record<string, string> = {}): Promise<HttpResponse> {
+      async patch(
+        path: string,
+        body?: any,
+        headers: Record<string, string> = {}
+      ): Promise<HttpResponse> {
         return self.makeRequest('PATCH', path, body, headers);
-      }
+      },
     };
   }
 
@@ -157,23 +169,23 @@ export class MockNetworkTestHelper implements NetworkTestHelper {
 
         isConnected = true;
         const handlers = self.webSocketHandlers.get(path);
-        
+
         if (handlers?.onConnect) {
           handlers.onConnect();
         }
 
-        connectCallbacks.forEach(callback => callback());
+        connectCallbacks.forEach((callback) => callback());
       },
 
       async disconnect(): Promise<void> {
         isConnected = false;
         const handlers = self.webSocketHandlers.get(path);
-        
+
         if (handlers?.onDisconnect) {
           handlers.onDisconnect();
         }
 
-        disconnectCallbacks.forEach(callback => callback());
+        disconnectCallbacks.forEach((callback) => callback());
       },
 
       async send(message: any): Promise<void> {
@@ -209,7 +221,7 @@ export class MockNetworkTestHelper implements NetworkTestHelper {
 
       onDisconnect(callback: () => void): void {
         disconnectCallbacks.push(callback);
-      }
+      },
     };
   }
 
@@ -237,7 +249,7 @@ export class MockNetworkTestHelper implements NetworkTestHelper {
       url: path,
       headers,
       body,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
     this.requests.push(request);
 
@@ -253,12 +265,12 @@ export class MockNetworkTestHelper implements NetworkTestHelper {
     return {
       status: 404,
       headers: { 'Content-Type': 'application/json' },
-      body: { error: 'Not Found', path }
+      body: { error: 'Not Found', path },
     };
   }
 
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   private getRandomPort(): number {
@@ -275,7 +287,7 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
   async startMockServer(port: number = 0): Promise<number> {
     try {
       const http = await import('http');
-      
+
       this.server = http.createServer((req, res) => {
         this.handleRequest(req, res);
       });
@@ -303,7 +315,7 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
       });
       this.server = null;
     }
-    
+
     this.routes.clear();
     this.requests = [];
   }
@@ -348,11 +360,19 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
         return this.makeRealRequest('GET', `${url}${path}`, undefined, headers);
       },
 
-      async post(path: string, body?: any, headers: Record<string, string> = {}): Promise<HttpResponse> {
+      async post(
+        path: string,
+        body?: any,
+        headers: Record<string, string> = {}
+      ): Promise<HttpResponse> {
         return this.makeRealRequest('POST', `${url}${path}`, body, headers);
       },
 
-      async put(path: string, body?: any, headers: Record<string, string> = {}): Promise<HttpResponse> {
+      async put(
+        path: string,
+        body?: any,
+        headers: Record<string, string> = {}
+      ): Promise<HttpResponse> {
         return this.makeRealRequest('PUT', `${url}${path}`, body, headers);
       },
 
@@ -360,9 +380,13 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
         return this.makeRealRequest('DELETE', `${url}${path}`, undefined, headers);
       },
 
-      async patch(path: string, body?: any, headers: Record<string, string> = {}): Promise<HttpResponse> {
+      async patch(
+        path: string,
+        body?: any,
+        headers: Record<string, string> = {}
+      ): Promise<HttpResponse> {
         return this.makeRealRequest('PATCH', `${url}${path}`, body, headers);
-      }
+      },
     };
   }
 
@@ -374,21 +398,21 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
   private async handleRequest(req: any, res: any): Promise<void> {
     // Collect request body
     const chunks: Buffer[] = [];
-    
+
     req.on('data', (chunk: Buffer) => {
       chunks.push(chunk);
     });
 
     req.on('end', () => {
       const body = chunks.length > 0 ? Buffer.concat(chunks).toString() : undefined;
-      
+
       // Record the request
       const request: HttpRequest = {
         method: req.method,
         url: req.url,
         headers: req.headers,
         body: body ? this.tryParseJson(body) : undefined,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
       this.requests.push(request);
 
@@ -433,7 +457,7 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
         return {
           status: response.status,
           headers: Object.fromEntries(response.headers.entries()),
-          body: this.tryParseJson(responseBody)
+          body: this.tryParseJson(responseBody),
         };
       } else {
         throw new Error('fetch not available');
@@ -474,9 +498,9 @@ export async function testHttpEndpoint(
   requestBody?: any
 ): Promise<HttpResponse> {
   const client = helper.createHttpClient();
-  
+
   let response: HttpResponse;
-  
+
   switch (method.toUpperCase()) {
     case 'GET':
       response = await client.get(path);
@@ -516,7 +540,7 @@ export async function setupRestApiMock(
   }>
 ): Promise<void> {
   await helper.startMockServer();
-  
+
   for (const endpoint of endpoints) {
     helper.mockRequest(endpoint.method, endpoint.path, endpoint.response);
   }

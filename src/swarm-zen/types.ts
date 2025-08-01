@@ -20,7 +20,7 @@ export interface AgentConfig {
   memory?: AgentMemory;
 }
 
-export type AgentType = 
+export type AgentType =
   | 'researcher'
   | 'coder'
   | 'analyst'
@@ -129,7 +129,7 @@ export interface Message {
   timestamp: number;
 }
 
-export type MessageType = 
+export type MessageType =
   | 'task_assignment'
   | 'task_result'
   | 'status_update'

@@ -69,7 +69,7 @@ program
 
       if (result.warnings && result.warnings.length > 0) {
         console.log(chalk.yellow('\nWarnings:'));
-        result.warnings.forEach(warning => console.log(`  - ${warning}`));
+        result.warnings.forEach((warning) => console.log(`  - ${warning}`));
       }
     } catch (error) {
       spinner.fail(chalk.red(`✗ Transpilation failed: ${error.message}`));
@@ -174,7 +174,7 @@ program
 
       await fs.writeFile(
         path.join(projectPath, 'package.json'),
-        JSON.stringify(packageJson, null, 2),
+        JSON.stringify(packageJson, null, 2)
       );
 
       // Create example kernel
@@ -186,10 +186,7 @@ __global__ void vectorAdd(float* a, float* b, float* c, int n) {
     }
 }`;
 
-      await fs.writeFile(
-        path.join(projectPath, 'kernels', 'vector_add.cu'),
-        exampleKernel,
-      );
+      await fs.writeFile(path.join(projectPath, 'kernels', 'vector_add.cu'), exampleKernel);
 
       // Create README
       const readme = `# ${options.name}

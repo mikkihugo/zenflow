@@ -1,0 +1,177 @@
+name: Document Quality Check
+
+on:
+  pull_request:
+    paths: ['docs/**/*.md', 'templates/**/*.md']
+  push:
+    branches: [main]
+    paths: ['docs/**/*.md', 'templates/**/*.md']
+
+jobs:
+  lint-documents:
+    name: Lint Markdown Documents
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm install --only=dev
+        
+      - name: Lint markdown files
+        run: npm run docs:lint
+        
+  validate-documents:
+    name: Validate Document Structure
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm install --only=dev
+        
+      - name: Validate document structure
+        run: npm run docs:validate
+        
+  check-versions:
+    name: Check Version Consistency
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for version checking
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm install --only=dev
+        
+      - name: Check version consistency
+        run: node scripts/check-versions.js
+        
+  generate-docs-report:
+    name: Generate Documentation Report
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm install --only=dev
+        
+      - name: Generate documentation report
+        run: |
+          echo "## 📋 Documentation Quality Report" > docs-report.md
+          echo "" >> docs-report.md
+          echo "### Markdown Linting Results" >> docs-report.md
+          npm run docs:lint 2>&1 | tee -a docs-report.md || true
+          echo "" >> docs-report.md
+          echo "### Document Validation Results" >> docs-report.md
+          npm run docs:validate 2>&1 | tee -a docs-report.md || true
+          
+      - name: Comment PR with results
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+            if (fs.existsSync('docs-report.md')) {
+              const report = fs.readFileSync('docs-report.md', 'utf8');
+              
+              // Find existing comment
+              const comments = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number
+              });
+              
+              const existingComment = comments.data.find(
+                comment => comment.body.includes('📋 Documentation Quality Report')
+              );
+              
+              if (existingComment) {
+                // Update existing comment
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: existingComment.id,
+                  body: report
+                });
+              } else {
+                // Create new comment
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: report
+                });
+              }
+            }
+
+  document-coverage:
+    name: Check Documentation Coverage
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Check document coverage
+        run: |
+          echo "## 📊 Documentation Coverage Report"
+          
+          # Count documents by type
+          echo "### Document Counts by Type"
+          echo "- Vision documents: $(find docs/01-vision -name '*.md' 2>/dev/null | wc -l)"
+          echo "- ADRs: $(find docs/02-adrs -name '*.md' 2>/dev/null | wc -l)"
+          echo "- PRDs: $(find docs/03-prds -name '*.md' 2>/dev/null | wc -l)"
+          echo "- Epics: $(find docs/04-epics -name '*.md' 2>/dev/null | wc -l)"
+          echo "- Features: $(find docs/05-features -name '*.md' 2>/dev/null | wc -l)"
+          echo "- Tasks: $(find docs/06-tasks -name '*.md' 2>/dev/null | wc -l)"
+          echo "- Specs: $(find docs/07-specs -name '*.md' 2>/dev/null | wc -l)"
+          
+          # Check for orphaned documents (no references)
+          echo ""
+          echo "### Reference Analysis"
+          total_docs=$(find docs -name '*.md' ! -name 'README.md' ! -path '*/templates/*' | wc -l)
+          echo "- Total documents: $total_docs"
+          
+          # Basic template placeholder check
+          echo ""
+          echo "### Template Placeholder Check"
+          placeholder_count=$(grep -r "\[.*\]" docs/ --include="*.md" | grep -v "Link to" | wc -l || echo "0")
+          echo "- Documents with placeholders: $placeholder_count"
+          
+          if [ "$placeholder_count" -gt 0 ]; then
+            echo "⚠️ Some documents may still contain template placeholders."
+            echo "Run 'grep -r \"\\[.*\\]\" docs/ --include=\"*.md\"' to find them."
+          fi

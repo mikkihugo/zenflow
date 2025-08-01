@@ -15,7 +15,12 @@
   "devDependencies": {
     "jest": "^29.0.0"
   },
-  "keywords": ["cuda", "webassembly", "gpu", "vector-operations"],
+  "keywords": [
+    "cuda",
+    "webassembly",
+    "gpu",
+    "vector-operations"
+  ],
   "author": "VibeCast Team",
   "license": "MIT"
 }

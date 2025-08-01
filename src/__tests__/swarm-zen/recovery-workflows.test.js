@@ -11,12 +11,12 @@
  */
 
 import { jest } from '@jest/globals';
-import HealthMonitor from '../src/health-monitor.js';
-import RecoveryWorkflows from '../src/recovery-workflows.js';
-import ConnectionStateManager from '../src/connection-state-manager.js';
-import MonitoringDashboard from '../src/monitoring-dashboard.js';
 import ChaosEngineering from '../src/chaos-engineering.js';
+import ConnectionStateManager from '../src/connection-state-manager.js';
+import HealthMonitor from '../src/health-monitor.js';
+import MonitoringDashboard from '../src/monitoring-dashboard.js';
 import RecoveryIntegration from '../src/recovery-integration.js';
+import RecoveryWorkflows from '../src/recovery-workflows.js';
 
 // Mock external dependencies
 jest.mock('../src/logger.js', () => ({
@@ -618,7 +618,7 @@ describe('End-to-End Recovery Scenarios', () => {
     await healthMonitor.runHealthCheck('test.failing');
 
     // Wait a bit for alert processing
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Check that alert was recorded
     const dashboardData = integration.monitoringDashboard.exportDashboardData();
@@ -638,7 +638,7 @@ describe('End-to-End Recovery Scenarios', () => {
     });
 
     // Wait for connection attempt to fail
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Check connection status
     const connectionStatus = connectionManager.getConnectionStatus(connectionId);
@@ -692,7 +692,7 @@ describe('Performance and Load Testing', () => {
     // Register multiple health checks
     for (let i = 0; i < 10; i++) {
       healthMonitor.registerHealthCheck(`test.check.${i}`, async () => {
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 10));
+        await new Promise((resolve) => setTimeout(resolve, Math.random() * 10));
         return { checkId: i };
       });
     }
@@ -717,7 +717,7 @@ describe('Performance and Load Testing', () => {
           {
             name: 'step1',
             action: async () => {
-              await new Promise(resolve => setTimeout(resolve, 50));
+              await new Promise((resolve) => setTimeout(resolve, 50));
               return { workflowId: i };
             },
           },
@@ -727,16 +727,15 @@ describe('Performance and Load Testing', () => {
 
     // Trigger multiple recoveries concurrently
     const recoveryPromises = [];
-    for (let i = 0; i < 3; i++) { // Within concurrent limit
-      recoveryPromises.push(
-        recoveryWorkflows.triggerRecovery(`test.trigger.${i}`),
-      );
+    for (let i = 0; i < 3; i++) {
+      // Within concurrent limit
+      recoveryPromises.push(recoveryWorkflows.triggerRecovery(`test.trigger.${i}`));
     }
 
     const results = await Promise.all(recoveryPromises);
 
     expect(results).toHaveLength(3);
-    results.forEach(result => {
+    results.forEach((result) => {
       expect(result.status).toBe('completed');
     });
   });
@@ -770,9 +769,9 @@ describe('Error Handling and Edge Cases', () => {
     });
 
     // Manually try to initialize a failing component
-    await expect(
-      integration.initializeComponent('failing', FailingComponent),
-    ).rejects.toThrow('Initialization failed');
+    await expect(integration.initializeComponent('failing', FailingComponent)).rejects.toThrow(
+      'Initialization failed'
+    );
 
     await integration.shutdown();
   });

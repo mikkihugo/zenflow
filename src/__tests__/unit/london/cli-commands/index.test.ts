@@ -1,6 +1,6 @@
 /**
  * CLI Commands Integration Tests - TDD London School
- * 
+ *
  * Tests the integration and interaction between different CLI command
  * components using mocks and focusing on behavior verification rather
  * than implementation details.
@@ -10,12 +10,12 @@ import { jest } from '@jest/globals';
 import { EventEmitter } from 'events';
 
 // Import the components we're testing
-import type { 
-  CommandRegistry,
-  CommandMetadata,
+import type {
+  CommandConfig,
   CommandContext,
+  CommandMetadata,
+  CommandRegistry,
   CommandResult,
-  CommandConfig
 } from '../../../../cli/types/index';
 
 // Mock the full CLI command system integration
@@ -66,7 +66,7 @@ class MockCLICommandSystem extends EventEmitter implements CLICommandSystem {
   public parser: ArgumentParser;
   public formatter: OutputFormatter;
   public errorHandler: ErrorHandler;
-  
+
   private mockExecute: jest.Mock;
   private initialized = false;
 
@@ -87,14 +87,14 @@ class MockCLICommandSystem extends EventEmitter implements CLICommandSystem {
 
   async initialize(): Promise<void> {
     if (this.initialized) return;
-    
+
     this.emit('initializing');
-    
+
     // Initialize all components
     if ('initialize' in this.registry) {
       await (this.registry as any).initialize();
     }
-    
+
     this.initialized = true;
     this.emit('initialized');
   }
@@ -105,7 +105,7 @@ class MockCLICommandSystem extends EventEmitter implements CLICommandSystem {
     }
 
     this.emit('execute-start', input);
-    
+
     try {
       const result = await this.mockExecute(input);
       this.emit('execute-complete', result);
@@ -118,11 +118,11 @@ class MockCLICommandSystem extends EventEmitter implements CLICommandSystem {
 
   async dispose(): Promise<void> {
     this.emit('disposing');
-    
+
     if ('dispose' in this.registry) {
       await (this.registry as any).dispose();
     }
-    
+
     this.removeAllListeners();
     this.initialized = false;
     this.emit('disposed');
@@ -157,19 +157,19 @@ describe('CLI Commands Integration - TDD London', () => {
       findByCategory: jest.fn(),
       execute: jest.fn(),
       initialize: jest.fn(),
-      dispose: jest.fn()
+      dispose: jest.fn(),
     } as any;
 
     mockParser = {
-      parse: jest.fn()
+      parse: jest.fn(),
     };
 
     mockFormatter = {
-      format: jest.fn()
+      format: jest.fn(),
     };
 
     mockErrorHandler = {
-      handle: jest.fn()
+      handle: jest.fn(),
     };
 
     mockExecute = jest.fn();
@@ -242,13 +242,13 @@ describe('CLI Commands Integration - TDD London', () => {
       const parseResult: ParseResult = {
         command: 'status',
         args: [],
-        flags: { format: 'json' }
+        flags: { format: 'json' },
       };
       const commandResult: CommandResult = {
         success: true,
         exitCode: 0,
         message: 'Status retrieved',
-        data: { active: true }
+        data: { active: true },
       };
       const formattedOutput = '{"active": true}';
 
@@ -259,7 +259,7 @@ describe('CLI Commands Integration - TDD London', () => {
       const expectedResult: ExecutionResult = {
         success: true,
         exitCode: 0,
-        output: formattedOutput
+        output: formattedOutput,
       };
 
       mockExecute.mockResolvedValue(expectedResult);
@@ -279,7 +279,7 @@ describe('CLI Commands Integration - TDD London', () => {
       const errorResult: ErrorResult = {
         handled: true,
         exitCode: 127,
-        message: 'Command not found'
+        message: 'Command not found',
       };
 
       mockExecute.mockRejectedValue(error);
@@ -298,7 +298,7 @@ describe('CLI Commands Integration - TDD London', () => {
       const input = ['test'];
       const expectedResult: ExecutionResult = {
         success: true,
-        exitCode: 0
+        exitCode: 0,
       };
 
       mockExecute.mockResolvedValue(expectedResult);
@@ -321,8 +321,9 @@ describe('CLI Commands Integration - TDD London', () => {
       );
 
       // Act & Assert
-      await expect(uninitializedSystem.execute(['test']))
-        .rejects.toThrow('CLI system not initialized');
+      await expect(uninitializedSystem.execute(['test'])).rejects.toThrow(
+        'CLI system not initialized'
+      );
     });
   });
 
@@ -337,7 +338,7 @@ describe('CLI Commands Integration - TDD London', () => {
       const parseResult: ParseResult = {
         command: 'deploy',
         args: ['app'],
-        flags: { env: 'prod' }
+        flags: { env: 'prod' },
       };
 
       const context: CommandContext = {
@@ -348,13 +349,13 @@ describe('CLI Commands Integration - TDD London', () => {
         cwd: '/test',
         env: {},
         debug: false,
-        verbose: false
+        verbose: false,
       };
 
       const commandResult: CommandResult = {
         success: true,
         exitCode: 0,
-        message: 'Deployed successfully'
+        message: 'Deployed successfully',
       };
 
       mockParser.parse.mockReturnValue(parseResult);
@@ -363,7 +364,7 @@ describe('CLI Commands Integration - TDD London', () => {
       const executionResult: ExecutionResult = {
         success: true,
         exitCode: 0,
-        output: 'Deployed successfully'
+        output: 'Deployed successfully',
       };
 
       mockExecute.mockImplementation(async (inputArgs) => {
@@ -374,7 +375,7 @@ describe('CLI Commands Integration - TDD London', () => {
           return {
             success: result.success,
             exitCode: result.exitCode,
-            output: result.message
+            output: result.message,
           };
         }
         return { success: false, exitCode: 1 };
@@ -400,7 +401,7 @@ describe('CLI Commands Integration - TDD London', () => {
         return {
           success: true,
           exitCode: 0,
-          output: formatted
+          output: formatted,
         };
       });
 
@@ -421,7 +422,7 @@ describe('CLI Commands Integration - TDD London', () => {
       const errorResult: ErrorResult = {
         handled: true,
         exitCode: 1,
-        message: 'Execution failed gracefully'
+        message: 'Execution failed gracefully',
       };
 
       mockExecute.mockImplementation(async () => {
@@ -450,7 +451,7 @@ describe('CLI Commands Integration - TDD London', () => {
       const commandConfig: CommandConfig = {
         name: 'test-command',
         description: 'Test command',
-        category: 'core'
+        category: 'core',
       };
 
       const commandMetadata: CommandMetadata = {
@@ -458,10 +459,10 @@ describe('CLI Commands Integration - TDD London', () => {
         handler: jest.fn().mockResolvedValue({
           success: true,
           exitCode: 0,
-          message: 'Test executed'
+          message: 'Test executed',
         }),
         registeredAt: new Date(),
-        available: true
+        available: true,
       };
 
       await cliSystem.initialize();
@@ -477,7 +478,7 @@ describe('CLI Commands Integration - TDD London', () => {
       // Arrange
       const coreCommands = [
         { config: { name: 'status', category: 'core' } },
-        { config: { name: 'init', category: 'core' } }
+        { config: { name: 'init', category: 'core' } },
       ];
 
       mockRegistry.findByCategory.mockReturnValue(coreCommands as CommandMetadata[]);
@@ -506,24 +507,24 @@ describe('CLI Commands Integration - TDD London', () => {
             name: 'status',
             description: 'Show system status',
             usage: 'cli status [options]',
-            examples: ['cli status', 'cli status --format json']
-          }
+            examples: ['cli status', 'cli status --format json'],
+          },
         },
         {
           config: {
             name: 'deploy',
             description: 'Deploy application',
             usage: 'cli deploy <target>',
-            examples: ['cli deploy app']
-          }
-        }
+            examples: ['cli deploy app'],
+          },
+        },
       ];
 
       mockRegistry.list.mockReturnValue(commands as CommandMetadata[]);
 
-      const helpOutput = commands.map(cmd => 
-        `${cmd.config.name}: ${cmd.config.description}`
-      ).join('\n');
+      const helpOutput = commands
+        .map((cmd) => `${cmd.config.name}: ${cmd.config.description}`)
+        .join('\n');
 
       mockFormatter.format.mockReturnValue(helpOutput);
 

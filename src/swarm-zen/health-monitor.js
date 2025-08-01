@@ -15,9 +15,9 @@
  * License: MIT
  */
 
+import { randomUUID } from 'crypto';
 import { EventEmitter } from 'events';
 import { performance } from 'perf_hooks';
-import { randomUUID } from 'crypto';
 
 /**
  * HealthMonitor provides comprehensive system health monitoring
@@ -139,8 +139,8 @@ export class HealthMonitor extends EventEmitter {
     console.error('🔍 Running health checks...');
 
     // Run all registered health checks
-    const checkPromises = Array.from(this.healthChecks.entries()).map(
-      ([name, check]) => this.runSingleHealthCheck(name, check),
+    const checkPromises = Array.from(this.healthChecks.entries()).map(([name, check]) =>
+      this.runSingleHealthCheck(name, check)
     );
 
     const checkResults = await Promise.allSettled(checkPromises);
@@ -250,16 +250,13 @@ export class HealthMonitor extends EventEmitter {
       });
 
       // Run the health check with timeout
-      const result = await Promise.race([
-        check.checkFunction(),
-        timeoutPromise,
-      ]);
+      const result = await Promise.race([check.checkFunction(), timeoutPromise]);
 
       const duration = performance.now() - startTime;
 
       // Normalize result format
       const normalizedResult = {
-        score: typeof result === 'number' ? result : (result.score || 100),
+        score: typeof result === 'number' ? result : result.score || 100,
         status: result.status || 'healthy',
         details: result.details || result.message || 'Health check passed',
         metrics: result.metrics || {},
@@ -312,7 +309,7 @@ export class HealthMonitor extends EventEmitter {
     }
 
     const recent = this.healthHistory.slice(-10);
-    const scores = recent.map(h => h.overallScore);
+    const scores = recent.map((h) => h.overallScore);
 
     // Calculate trend
     let trend = 'stable';
@@ -341,137 +338,153 @@ export class HealthMonitor extends EventEmitter {
 
   initializeSystemChecks() {
     // Memory usage check
-    this.registerHealthCheck('memory', () => {
-      const usage = process.memoryUsage();
-      const totalMB = usage.heapTotal / 1024 / 1024;
-      const usedMB = usage.heapUsed / 1024 / 1024;
-      const usagePercent = (usedMB / totalMB) * 100;
-
-      let score = 100;
-      if (usagePercent > 90) {
-        score = 10;
-      } else if (usagePercent > 80) {
-        score = 50;
-      } else if (usagePercent > 70) {
-        score = 75;
-      }
-
-      return {
-        score,
-        status: score > 70 ? 'healthy' : score > 50 ? 'warning' : 'critical',
-        details: `Memory usage: ${usedMB.toFixed(1)}MB / ${totalMB.toFixed(1)}MB (${usagePercent.toFixed(1)}%)`,
-        metrics: {
-          heapUsed: usedMB,
-          heapTotal: totalMB,
-          usagePercent,
-          external: usage.external / 1024 / 1024,
-        },
-      };
-    }, { weight: 2, critical: true, description: 'System memory usage monitoring' });
-
-    // Event loop lag check
-    this.registerHealthCheck('eventLoop', () => {
-      return new Promise((resolve) => {
-        const start = performance.now();
-        setImmediate(() => {
-          const lag = performance.now() - start;
-
-          let score = 100;
-          if (lag > 100) {
-            score = 10;
-          } else if (lag > 50) {
-            score = 50;
-          } else if (lag > 20) {
-            score = 75;
-          }
-
-          resolve({
-            score,
-            status: score > 70 ? 'healthy' : score > 50 ? 'warning' : 'critical',
-            details: `Event loop lag: ${lag.toFixed(2)}ms`,
-            metrics: {
-              lag,
-              threshold: 20,
-            },
-          });
-        });
-      });
-    }, { weight: 1, description: 'Event loop performance monitoring' });
-
-    // CPU usage check (simplified)
-    this.registerHealthCheck('cpu', () => {
-      const usage = process.cpuUsage();
-      const userTime = usage.user / 1000; // Convert to milliseconds
-      const systemTime = usage.system / 1000;
-      const totalTime = userTime + systemTime;
-
-      // Simple CPU load estimation
-      let score = 100;
-      if (totalTime > 1000) {
-        score = 30;
-      } else if (totalTime > 500) {
-        score = 60;
-      } else if (totalTime > 200) {
-        score = 80;
-      }
-
-      return {
-        score,
-        status: score > 70 ? 'healthy' : score > 50 ? 'warning' : 'critical',
-        details: `CPU usage: ${totalTime.toFixed(1)}ms (user: ${userTime.toFixed(1)}ms, system: ${systemTime.toFixed(1)}ms)`,
-        metrics: {
-          user: userTime,
-          system: systemTime,
-          total: totalTime,
-        },
-      };
-    }, { weight: 1, description: 'CPU usage monitoring' });
-
-    // Persistence connectivity check
-    this.registerHealthCheck('persistence', async () => {
-      // This would be injected by the session manager
-      if (!this.persistenceChecker) {
-        return {
-          score: 100,
-          status: 'disabled',
-          details: 'Persistence checker not configured',
-          metrics: {},
-        };
-      }
-
-      try {
-        const startTime = performance.now();
-        await this.persistenceChecker();
-        const duration = performance.now() - startTime;
+    this.registerHealthCheck(
+      'memory',
+      () => {
+        const usage = process.memoryUsage();
+        const totalMB = usage.heapTotal / 1024 / 1024;
+        const usedMB = usage.heapUsed / 1024 / 1024;
+        const usagePercent = (usedMB / totalMB) * 100;
 
         let score = 100;
-        if (duration > 1000) {
+        if (usagePercent > 90) {
+          score = 10;
+        } else if (usagePercent > 80) {
           score = 50;
-        } else if (duration > 500) {
+        } else if (usagePercent > 70) {
           score = 75;
         }
 
         return {
           score,
-          status: 'healthy',
-          details: `Persistence check passed in ${duration.toFixed(1)}ms`,
+          status: score > 70 ? 'healthy' : score > 50 ? 'warning' : 'critical',
+          details: `Memory usage: ${usedMB.toFixed(1)}MB / ${totalMB.toFixed(1)}MB (${usagePercent.toFixed(1)}%)`,
           metrics: {
-            responseTime: duration,
-            status: 'connected',
+            heapUsed: usedMB,
+            heapTotal: totalMB,
+            usagePercent,
+            external: usage.external / 1024 / 1024,
           },
         };
-      } catch (error) {
+      },
+      { weight: 2, critical: true, description: 'System memory usage monitoring' }
+    );
+
+    // Event loop lag check
+    this.registerHealthCheck(
+      'eventLoop',
+      () => {
+        return new Promise((resolve) => {
+          const start = performance.now();
+          setImmediate(() => {
+            const lag = performance.now() - start;
+
+            let score = 100;
+            if (lag > 100) {
+              score = 10;
+            } else if (lag > 50) {
+              score = 50;
+            } else if (lag > 20) {
+              score = 75;
+            }
+
+            resolve({
+              score,
+              status: score > 70 ? 'healthy' : score > 50 ? 'warning' : 'critical',
+              details: `Event loop lag: ${lag.toFixed(2)}ms`,
+              metrics: {
+                lag,
+                threshold: 20,
+              },
+            });
+          });
+        });
+      },
+      { weight: 1, description: 'Event loop performance monitoring' }
+    );
+
+    // CPU usage check (simplified)
+    this.registerHealthCheck(
+      'cpu',
+      () => {
+        const usage = process.cpuUsage();
+        const userTime = usage.user / 1000; // Convert to milliseconds
+        const systemTime = usage.system / 1000;
+        const totalTime = userTime + systemTime;
+
+        // Simple CPU load estimation
+        let score = 100;
+        if (totalTime > 1000) {
+          score = 30;
+        } else if (totalTime > 500) {
+          score = 60;
+        } else if (totalTime > 200) {
+          score = 80;
+        }
+
         return {
-          score: 0,
-          status: 'critical',
-          details: `Persistence check failed: ${error.message}`,
+          score,
+          status: score > 70 ? 'healthy' : score > 50 ? 'warning' : 'critical',
+          details: `CPU usage: ${totalTime.toFixed(1)}ms (user: ${userTime.toFixed(1)}ms, system: ${systemTime.toFixed(1)}ms)`,
           metrics: {
-            error: error.message,
-            status: 'disconnected',
+            user: userTime,
+            system: systemTime,
+            total: totalTime,
           },
         };
-      }
-    }, { weight: 3, critical: true, description: 'Database connectivity monitoring' });
+      },
+      { weight: 1, description: 'CPU usage monitoring' }
+    );
+
+    // Persistence connectivity check
+    this.registerHealthCheck(
+      'persistence',
+      async () => {
+        // This would be injected by the session manager
+        if (!this.persistenceChecker) {
+          return {
+            score: 100,
+            status: 'disabled',
+            details: 'Persistence checker not configured',
+            metrics: {},
+          };
+        }
+
+        try {
+          const startTime = performance.now();
+          await this.persistenceChecker();
+          const duration = performance.now() - startTime;
+
+          let score = 100;
+          if (duration > 1000) {
+            score = 50;
+          } else if (duration > 500) {
+            score = 75;
+          }
+
+          return {
+            score,
+            status: 'healthy',
+            details: `Persistence check passed in ${duration.toFixed(1)}ms`,
+            metrics: {
+              responseTime: duration,
+              status: 'connected',
+            },
+          };
+        } catch (error) {
+          return {
+            score: 0,
+            status: 'critical',
+            details: `Persistence check failed: ${error.message}`,
+            metrics: {
+              error: error.message,
+              status: 'disconnected',
+            },
+          };
+        }
+      },
+      { weight: 3, critical: true, description: 'Database connectivity monitoring' }
+    );
   }
 
   determineHealthStatus(score, criticalFailures) {

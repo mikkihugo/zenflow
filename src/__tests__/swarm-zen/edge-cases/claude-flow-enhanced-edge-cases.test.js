@@ -3,14 +3,14 @@
  * Comprehensive coverage for BatchTool enforcement, parallel execution, and workflow optimization
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  ClaudeFlowEnhanced,
   BatchToolEnforcer,
+  ClaudeFlowEnhanced,
   ClaudeFlowError,
-  getClaudeFlow,
   createOptimizedWorkflow,
   executeWorkflow,
+  getClaudeFlow,
   getPerformanceReport,
   validateWorkflow,
 } from '../../src/claude-flow-enhanced.js';
@@ -83,7 +83,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
   let claudeFlow;
   let batchEnforcer;
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
     claudeFlow = new ClaudeFlowEnhanced();
     batchEnforcer = new BatchToolEnforcer();
@@ -116,9 +116,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
         batchEnforcer.trackOperation('file_operation');
       }
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('BATCHING VIOLATION'),
-      );
+      expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('BATCHING VIOLATION'));
 
       const violations = batchEnforcer.violationWarnings;
       expect(violations.has('file_operation')).toBe(true);
@@ -134,9 +132,15 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       }
 
       const report = batchEnforcer.getBatchingReport();
-      expect(report.recommendations).toContain('🔧 CRITICAL: Use BatchTool for all parallel operations');
-      expect(report.recommendations).toContain('📁 File Operations: Use MultiEdit for multiple edits to same file');
-      expect(report.recommendations).toContain('🤖 MCP Tools: Combine swarm operations in parallel');
+      expect(report.recommendations).toContain(
+        '🔧 CRITICAL: Use BatchTool for all parallel operations'
+      );
+      expect(report.recommendations).toContain(
+        '📁 File Operations: Use MultiEdit for multiple edits to same file'
+      );
+      expect(report.recommendations).toContain(
+        '🤖 MCP Tools: Combine swarm operations in parallel'
+      );
     });
 
     it('should calculate compliance scores correctly', () => {
@@ -180,7 +184,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
   });
 
   describe('ClaudeFlowEnhanced Initialization Edge Cases', () => {
-    it('should initialize successfully with default options', async() => {
+    it('should initialize successfully with default options', async () => {
       const flow = await claudeFlow.initialize();
 
       expect(flow).toBe(claudeFlow);
@@ -192,7 +196,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       });
     });
 
-    it('should handle custom initialization options', async() => {
+    it('should handle custom initialization options', async () => {
       await claudeFlow.initialize({
         enforceBatching: false,
         enableSIMD: false,
@@ -208,26 +212,28 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       });
     });
 
-    it('should handle initialization failures gracefully', async() => {
+    it('should handle initialization failures gracefully', async () => {
       mockRuvSwarm.initialize.mockRejectedValueOnce(new Error('WASM load failed'));
 
       await expect(claudeFlow.initialize()).rejects.toThrow(ClaudeFlowError);
-      await expect(claudeFlow.initialize()).rejects.toThrow('Initialization failed: WASM load failed');
+      await expect(claudeFlow.initialize()).rejects.toThrow(
+        'Initialization failed: WASM load failed'
+      );
     });
 
-    it('should enable batch tool enforcement when requested', async() => {
+    it('should enable batch tool enforcement when requested', async () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
       await claudeFlow.initialize({ enforceBatching: true });
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('BatchTool enforcement enabled'),
+        expect.stringContaining('BatchTool enforcement enabled')
       );
 
       consoleSpy.mockRestore();
     });
 
-    it('should handle MCP tools initialization failure', async() => {
+    it('should handle MCP tools initialization failure', async () => {
       mockMcpTools.initialize.mockRejectedValueOnce(new Error('MCP init failed'));
 
       await expect(claudeFlow.initialize()).rejects.toThrow(ClaudeFlowError);
@@ -235,11 +241,11 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
   });
 
   describe('Workflow Creation Edge Cases', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await claudeFlow.initialize();
     });
 
-    it('should create optimized workflow with full configuration', async() => {
+    it('should create optimized workflow with full configuration', async () => {
       const workflowConfig = {
         id: 'complex-workflow',
         name: 'Complex Test Workflow',
@@ -278,7 +284,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(workflow.simdEnabled).toBe(true);
     });
 
-    it('should handle workflows with low parallelization potential', async() => {
+    it('should handle workflows with low parallelization potential', async () => {
       const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
       const workflowConfig = {
@@ -293,13 +299,13 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       await claudeFlow.createOptimizedWorkflow(workflowConfig);
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('low parallelization potential'),
+        expect.stringContaining('low parallelization potential')
       );
 
       consoleSpy.mockRestore();
     });
 
-    it('should generate workflow IDs when not provided', async() => {
+    it('should generate workflow IDs when not provided', async () => {
       const workflow = await claudeFlow.createOptimizedWorkflow({
         name: 'Auto ID Workflow',
         steps: [],
@@ -308,7 +314,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(workflow.id).toMatch(/^workflow_\d+$/);
     });
 
-    it('should analyze step dependencies correctly', async() => {
+    it('should analyze step dependencies correctly', async () => {
       const steps = [
         {
           id: 'producer',
@@ -335,14 +341,14 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
         steps,
       });
 
-      const processorStep = workflow.steps.find(s => s.id === 'processor');
+      const processorStep = workflow.steps.find((s) => s.id === 'processor');
       expect(processorStep.dependencies).toContain('producer');
 
-      const consumerStep = workflow.steps.find(s => s.id === 'consumer');
+      const consumerStep = workflow.steps.find((s) => s.id === 'consumer');
       expect(consumerStep.dependencies).toContain('processor');
     });
 
-    it('should handle empty or minimal workflows', async() => {
+    it('should handle empty or minimal workflows', async () => {
       const workflow = await claudeFlow.createOptimizedWorkflow({
         name: 'Empty Workflow',
         steps: [],
@@ -356,7 +362,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
   describe('Workflow Execution Edge Cases', () => {
     let workflow;
 
-    beforeEach(async() => {
+    beforeEach(async () => {
       await claudeFlow.initialize();
       workflow = await claudeFlow.createOptimizedWorkflow({
         id: 'test-execution',
@@ -369,7 +375,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       });
     });
 
-    it('should execute workflow successfully', async() => {
+    it('should execute workflow successfully', async () => {
       const result = await claudeFlow.executeWorkflow('test-execution');
 
       expect(result.executionId).toMatch(/^exec_test-execution_\d+$/);
@@ -380,12 +386,14 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(result.batchingReport).toBeDefined();
     });
 
-    it('should handle non-existent workflow', async() => {
+    it('should handle non-existent workflow', async () => {
       await expect(claudeFlow.executeWorkflow('non-existent')).rejects.toThrow(ClaudeFlowError);
-      await expect(claudeFlow.executeWorkflow('non-existent')).rejects.toThrow('Workflow not found');
+      await expect(claudeFlow.executeWorkflow('non-existent')).rejects.toThrow(
+        'Workflow not found'
+      );
     });
 
-    it('should create execution batches correctly', async() => {
+    it('should create execution batches correctly', async () => {
       const steps = [
         { id: 'a', dependencies: [] },
         { id: 'b', dependencies: [] },
@@ -402,20 +410,22 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(batches[2]).toHaveLength(1); // e
     });
 
-    it('should detect circular dependencies', async() => {
+    it('should detect circular dependencies', async () => {
       const stepsWithCircularDeps = [
         { id: 'a', dependencies: ['b'] },
         { id: 'b', dependencies: ['c'] },
         { id: 'c', dependencies: ['a'] },
       ];
 
-      expect(() => claudeFlow.createExecutionBatches(stepsWithCircularDeps))
-        .toThrow(ClaudeFlowError);
-      expect(() => claudeFlow.createExecutionBatches(stepsWithCircularDeps))
-        .toThrow('Circular dependency detected');
+      expect(() => claudeFlow.createExecutionBatches(stepsWithCircularDeps)).toThrow(
+        ClaudeFlowError
+      );
+      expect(() => claudeFlow.createExecutionBatches(stepsWithCircularDeps)).toThrow(
+        'Circular dependency detected'
+      );
     });
 
-    it('should handle step execution failures gracefully', async() => {
+    it('should handle step execution failures gracefully', async () => {
       // Mock a failing MCP tool call
       mockMcpTools.task_orchestrate.mockRejectedValueOnce(new Error('Task failed'));
 
@@ -428,7 +438,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       await expect(claudeFlow.executeWorkflow('fail-test')).rejects.toThrow(ClaudeFlowError);
     });
 
-    it('should execute parallel steps in batches', async() => {
+    it('should execute parallel steps in batches', async () => {
       const parallelWorkflow = await claudeFlow.createOptimizedWorkflow({
         id: 'parallel-test',
         name: 'Parallel Test',
@@ -445,7 +455,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(result.results).toHaveLength(3);
     });
 
-    it('should handle mixed success and failure in parallel batches', async() => {
+    it('should handle mixed success and failure in parallel batches', async () => {
       // Mock one success and one failure
       mockMcpTools.agent_spawn
         .mockResolvedValueOnce({ agentId: 'success-agent' })
@@ -463,8 +473,8 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       const result = await claudeFlow.executeWorkflow('mixed-test');
 
       expect(result.results).toHaveLength(2);
-      const successCount = result.results.filter(r => r.status === 'completed').length;
-      const failureCount = result.results.filter(r => r.status === 'failed').length;
+      const successCount = result.results.filter((r) => r.status === 'completed').length;
+      const failureCount = result.results.filter((r) => r.status === 'failed').length;
 
       expect(successCount).toBeGreaterThan(0);
       expect(failureCount).toBeGreaterThan(0);
@@ -472,11 +482,11 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
   });
 
   describe('Step Execution Edge Cases', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await claudeFlow.initialize();
     });
 
-    it('should execute MCP tool steps correctly', async() => {
+    it('should execute MCP tool steps correctly', async () => {
       const step = {
         type: 'mcp_tool_call',
         toolName: 'swarm_init',
@@ -489,7 +499,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(mockMcpTools.swarm_init).toHaveBeenCalledWith({ topology: 'mesh' });
     });
 
-    it('should handle unknown MCP tool gracefully', async() => {
+    it('should handle unknown MCP tool gracefully', async () => {
       const step = {
         type: 'mcp_tool_call',
         toolName: 'unknown_tool',
@@ -500,7 +510,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       await expect(claudeFlow.executeStep(step, {}, null)).rejects.toThrow('Unknown MCP tool');
     });
 
-    it('should execute file operation steps', async() => {
+    it('should execute file operation steps', async () => {
       const step = {
         type: 'file_operation',
         operation: 'read',
@@ -514,7 +524,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(result.success).toBe(true);
     });
 
-    it('should execute neural inference steps with SIMD', async() => {
+    it('should execute neural inference steps with SIMD', async () => {
       const step = {
         type: 'neural_inference',
         modelConfig: { type: 'transformer' },
@@ -529,7 +539,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(result.performance.simdSpeedup).toBe(3.2);
     });
 
-    it('should handle neural inference without neural networks enabled', async() => {
+    it('should handle neural inference without neural networks enabled', async () => {
       // Mock features to disable neural networks
       claudeFlow.ruvSwarm = { features: { neural_networks: false } };
 
@@ -539,10 +549,12 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       };
 
       await expect(claudeFlow.executeStep(step, {}, null)).rejects.toThrow(ClaudeFlowError);
-      await expect(claudeFlow.executeStep(step, {}, null)).rejects.toThrow('Neural networks not available');
+      await expect(claudeFlow.executeStep(step, {}, null)).rejects.toThrow(
+        'Neural networks not available'
+      );
     });
 
-    it('should execute data processing steps with SIMD optimization', async() => {
+    it('should execute data processing steps with SIMD optimization', async () => {
       const step = {
         type: 'data_processing',
         operation: 'matrix_multiply',
@@ -557,7 +569,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(result.performance.simdSpeedup).toBe(4.1);
     });
 
-    it('should execute generic steps', async() => {
+    it('should execute generic steps', async () => {
       const step = {
         id: 'generic-step',
         type: 'custom_operation',
@@ -570,7 +582,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(result.status).toBe('completed');
     });
 
-    it('should handle step execution timeouts', async() => {
+    it('should handle step execution timeouts', async () => {
       const step = {
         type: 'mcp_tool_call',
         toolName: 'slow_operation',
@@ -585,11 +597,11 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
   });
 
   describe('Performance Metrics Edge Cases', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await claudeFlow.initialize();
     });
 
-    it('should calculate execution metrics correctly', async() => {
+    it('should calculate execution metrics correctly', async () => {
       const workflow = {
         steps: [
           { parallelizable: true, enableSIMD: true },
@@ -615,7 +627,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(metrics.speedupFactor).toBeGreaterThan(1);
     });
 
-    it('should generate comprehensive performance report', async() => {
+    it('should generate comprehensive performance report', async () => {
       // Set up some test data
       claudeFlow.workflows.set('test-1', {
         id: 'test-1',
@@ -643,7 +655,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(report.recommendations).toBeInstanceOf(Array);
     });
 
-    it('should handle empty performance data', async() => {
+    it('should handle empty performance data', async () => {
       const report = claudeFlow.getPerformanceReport();
 
       expect(report.summary.totalWorkflows).toBe(0);
@@ -652,11 +664,11 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
   });
 
   describe('Workflow Validation Edge Cases', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await claudeFlow.initialize();
     });
 
-    it('should validate optimized workflows', async() => {
+    it('should validate optimized workflows', async () => {
       const optimizedWorkflow = {
         steps: [
           { type: 'file_read', parallelizable: true },
@@ -672,7 +684,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(validation.optimizationScore).toBe(100);
     });
 
-    it('should detect optimization issues', async() => {
+    it('should detect optimization issues', async () => {
       const unoptimizedWorkflow = {
         steps: [
           { type: 'custom', parallelizable: false },
@@ -690,7 +702,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(validation.recommendations.length).toBeGreaterThan(0);
     });
 
-    it('should calculate potential speedup correctly', async() => {
+    it('should calculate potential speedup correctly', async () => {
       const workflow = {
         steps: [
           { type: 'neural_inference', batchable: true },
@@ -709,7 +721,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(speedup.combined).toBeCloseTo(17.64, 1); // 2.8 * 3.5 * 1.8
     });
 
-    it('should handle workflows with no optimization potential', async() => {
+    it('should handle workflows with no optimization potential', async () => {
       const sequentialWorkflow = {
         steps: [
           { type: 'custom', batchable: false },
@@ -727,7 +739,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
   });
 
   describe('Global Functions Edge Cases', () => {
-    it('should create and reuse claude flow instance', async() => {
+    it('should create and reuse claude flow instance', async () => {
       const flow1 = await getClaudeFlow();
       const flow2 = await getClaudeFlow();
 
@@ -735,7 +747,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(flow1).toBeInstanceOf(ClaudeFlowEnhanced);
     });
 
-    it('should create optimized workflow through global function', async() => {
+    it('should create optimized workflow through global function', async () => {
       const workflow = await createOptimizedWorkflow({
         name: 'Global Test',
         steps: [{ id: 'test', type: 'file_read' }],
@@ -745,7 +757,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(workflow.id).toBeDefined();
     });
 
-    it('should execute workflow through global function', async() => {
+    it('should execute workflow through global function', async () => {
       // First create a workflow
       const workflow = await createOptimizedWorkflow({
         id: 'global-exec-test',
@@ -759,7 +771,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(result.status).toBe('completed');
     });
 
-    it('should get performance report through global function', async() => {
+    it('should get performance report through global function', async () => {
       const report = await getPerformanceReport();
 
       expect(report).toBeDefined();
@@ -767,7 +779,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(report.batching).toBeDefined();
     });
 
-    it('should validate workflow through global function', async() => {
+    it('should validate workflow through global function', async () => {
       const testWorkflow = {
         steps: [
           { type: 'file_read', parallelizable: true },
@@ -783,7 +795,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
   });
 
   describe('Error Handling Edge Cases', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await claudeFlow.initialize();
     });
 
@@ -802,7 +814,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(error.code).toBe('CLAUDE_FLOW_ERROR');
     });
 
-    it('should handle context updates correctly', async() => {
+    it('should handle context updates correctly', async () => {
       const context = {};
       const results = [
         { stepId: 'step1', result: { data: 'result1' } },
@@ -817,13 +829,11 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(Object.keys(context)).toHaveLength(2);
     });
 
-    it('should handle missing workflow dependencies gracefully', async() => {
+    it('should handle missing workflow dependencies gracefully', async () => {
       const workflow = await claudeFlow.createOptimizedWorkflow({
         id: 'missing-deps',
         name: 'Missing Dependencies Test',
-        steps: [
-          { id: 'step1', dependencies: ['non-existent'] },
-        ],
+        steps: [{ id: 'step1', dependencies: ['non-existent'] }],
       });
 
       await expect(claudeFlow.executeWorkflow('missing-deps')).rejects.toThrow(ClaudeFlowError);
@@ -831,7 +841,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
   });
 
   describe('End-to-End Claude Flow Tests', () => {
-    it('should complete full workflow lifecycle', async() => {
+    it('should complete full workflow lifecycle', async () => {
       // Step 1: Initialize Claude Flow
       await claudeFlow.initialize({
         enforceBatching: true,
@@ -904,7 +914,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(report.workflows[0].id).toBe('e2e-test');
     });
 
-    it('should handle complex parallel execution scenarios', async() => {
+    it('should handle complex parallel execution scenarios', async () => {
       await claudeFlow.initialize();
 
       // Create workflow with complex dependencies
@@ -945,7 +955,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(Object.keys(timing)).toHaveLength(8);
     });
 
-    it('should demonstrate batch tool enforcement benefits', async() => {
+    it('should demonstrate batch tool enforcement benefits', async () => {
       await claudeFlow.initialize({ enforceBatching: true });
 
       // Create workflow that would benefit from batching
@@ -973,7 +983,7 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
       expect(execution.metrics.speedupFactor).toBeGreaterThan(2);
     });
 
-    it('should handle error recovery and partial execution', async() => {
+    it('should handle error recovery and partial execution', async () => {
       await claudeFlow.initialize();
 
       // Mock some operations to fail
@@ -998,8 +1008,8 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
 
       expect(execution.results).toHaveLength(4);
 
-      const successful = execution.results.filter(r => r.status === 'completed');
-      const failed = execution.results.filter(r => r.status === 'failed');
+      const successful = execution.results.filter((r) => r.status === 'completed');
+      const failed = execution.results.filter((r) => r.status === 'failed');
 
       expect(successful).toHaveLength(2);
       expect(failed).toHaveLength(2);

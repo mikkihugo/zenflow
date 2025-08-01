@@ -1,11 +1,11 @@
 /**
  * CLI Command Processing Tests - TDD London School
- * 
+ *
  * Comprehensive tests for CLI command processing behavior using London TDD approach.
  * Tests focus on interactions and behavior verification rather than state testing.
  */
 
-import { jest, describe, it, expect, beforeEach, afterEach } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 // Mock types for testing CLI command processing
 interface MockCommandRegistry {
@@ -57,22 +57,22 @@ describe('CLI Command Processing - TDD London', () => {
       unregister: jest.fn(),
       execute: jest.fn(),
       has: jest.fn(),
-      list: jest.fn()
+      list: jest.fn(),
     };
 
     mockParser = {
       parse: jest.fn(),
-      validate: jest.fn()
+      validate: jest.fn(),
     };
 
     mockFormatter = {
       format: jest.fn(),
-      setDefaults: jest.fn()
+      setDefaults: jest.fn(),
     };
 
     mockErrorHandler = {
       handle: jest.fn(),
-      register: jest.fn()
+      register: jest.fn(),
     };
   });
 
@@ -82,7 +82,7 @@ describe('CLI Command Processing - TDD London', () => {
       const commandConfig = {
         name: 'test-command',
         description: 'Test command',
-        handler: jest.fn()
+        handler: jest.fn(),
       };
 
       // Act
@@ -110,7 +110,7 @@ describe('CLI Command Processing - TDD London', () => {
       // Arrange
       const expectedCommands = [
         { name: 'status', description: 'Show status' },
-        { name: 'init', description: 'Initialize project' }
+        { name: 'init', description: 'Initialize project' },
       ];
       mockRegistry.list.mockReturnValue(expectedCommands);
 
@@ -143,7 +143,7 @@ describe('CLI Command Processing - TDD London', () => {
       const expectedResult = {
         command: 'deploy',
         args: ['app'],
-        flags: { env: 'production', verbose: true }
+        flags: { env: 'production', verbose: true },
       };
       mockParser.parse.mockReturnValue(expectedResult);
 
@@ -160,12 +160,12 @@ describe('CLI Command Processing - TDD London', () => {
       const parseResult = {
         command: 'deploy',
         args: ['app'],
-        flags: { env: 'production' }
+        flags: { env: 'production' },
       };
       const validationResult = {
         valid: true,
         errors: [],
-        warnings: []
+        warnings: [],
       };
       mockParser.validate.mockReturnValue(validationResult);
 
@@ -184,7 +184,7 @@ describe('CLI Command Processing - TDD London', () => {
         command: null,
         args: [],
         flags: {},
-        errors: ['No command specified']
+        errors: ['No command specified'],
       };
       mockParser.parse.mockReturnValue(errorResult);
 
@@ -204,13 +204,13 @@ describe('CLI Command Processing - TDD London', () => {
       const context: MockCommandContext = {
         args: ['app'],
         flags: { env: 'production', verbose: true },
-        command: 'deploy'
+        command: 'deploy',
       };
       const expectedResult: MockCommandResult = {
         success: true,
         exitCode: 0,
         message: 'Deployment successful',
-        data: { deployed: true }
+        data: { deployed: true },
       };
       mockRegistry.execute.mockResolvedValue(expectedResult);
 
@@ -227,12 +227,12 @@ describe('CLI Command Processing - TDD London', () => {
       const context: MockCommandContext = {
         args: [],
         flags: {},
-        command: 'failing-command'
+        command: 'failing-command',
       };
       const errorResult: MockCommandResult = {
         success: false,
         exitCode: 1,
-        message: 'Command execution failed'
+        message: 'Command execution failed',
       };
       mockRegistry.execute.mockResolvedValue(errorResult);
 
@@ -250,12 +250,12 @@ describe('CLI Command Processing - TDD London', () => {
       const context: MockCommandContext = {
         args: [],
         flags: {},
-        command: 'unknown-command'
+        command: 'unknown-command',
       };
       const notFoundResult: MockCommandResult = {
         success: false,
         exitCode: 127,
-        message: 'Command not found'
+        message: 'Command not found',
       };
       mockRegistry.execute.mockResolvedValue(notFoundResult);
 
@@ -287,7 +287,7 @@ describe('CLI Command Processing - TDD London', () => {
     it('should apply default formatting options', () => {
       // Arrange
       const defaults = { format: 'table', colors: true };
-      
+
       // Act
       mockFormatter.setDefaults(defaults);
 
@@ -303,14 +303,14 @@ describe('CLI Command Processing - TDD London', () => {
         json: '{"message": "test output"}',
         yaml: 'message: test output',
         table: '| message      | \n| test output  |',
-        text: 'message: test output'
+        text: 'message: test output',
       };
 
       // Act & Assert for each format
-      formats.forEach(format => {
+      formats.forEach((format) => {
         mockFormatter.format.mockReturnValue(expectedOutputs[format]);
         const result = mockFormatter.format(testData, { format });
-        
+
         expect(mockFormatter.format).toHaveBeenCalledWith(testData, { format });
         expect(result).toBe(expectedOutputs[format]);
       });
@@ -326,7 +326,7 @@ describe('CLI Command Processing - TDD London', () => {
         handled: true,
         exitCode: 1,
         message: 'Test error handled',
-        recovered: false
+        recovered: false,
       };
       mockErrorHandler.handle.mockResolvedValue(errorResult);
 
@@ -355,19 +355,19 @@ describe('CLI Command Processing - TDD London', () => {
       // Arrange
       const criticalError = new Error('Critical system failure');
       const warningError = new Error('Non-critical warning');
-      
+
       const criticalResult = {
         handled: true,
         exitCode: 2,
         message: 'Critical error handled',
-        severity: 'critical'
+        severity: 'critical',
       };
-      
+
       const warningResult = {
         handled: true,
         exitCode: 0,
         message: 'Warning handled',
-        severity: 'warning'
+        severity: 'warning',
       };
 
       mockErrorHandler.handle
@@ -392,12 +392,12 @@ describe('CLI Command Processing - TDD London', () => {
       const parseResult = {
         command: 'status',
         args: [],
-        flags: { format: 'json' }
+        flags: { format: 'json' },
       };
       const executionResult: MockCommandResult = {
         success: true,
         exitCode: 0,
-        data: { active: true, agents: 2 }
+        data: { active: true, agents: 2 },
       };
       const formattedOutput = '{"active": true, "agents": 2}';
 
@@ -411,7 +411,7 @@ describe('CLI Command Processing - TDD London', () => {
       const executed = await mockRegistry.execute(parsed.command, {
         args: parsed.args,
         flags: parsed.flags,
-        command: parsed.command
+        command: parsed.command,
       });
       const formatted = mockFormatter.format(executed.data, parsed.flags);
 
@@ -428,13 +428,13 @@ describe('CLI Command Processing - TDD London', () => {
       const parseResult = {
         command: 'invalid-command',
         args: [],
-        flags: {}
+        flags: {},
       };
       const executionError = new Error('Command not found');
       const errorResult = {
         handled: true,
         exitCode: 127,
-        message: 'Command not found'
+        message: 'Command not found',
       };
 
       // Setup mock interactions
@@ -444,12 +444,12 @@ describe('CLI Command Processing - TDD London', () => {
 
       // Act - Simulate error flow
       const parsed = mockParser.parse(input);
-      
+
       try {
         await mockRegistry.execute(parsed.command, {
           args: parsed.args,
           flags: parsed.flags,
-          command: parsed.command
+          command: parsed.command,
         });
       } catch (error) {
         await mockErrorHandler.handle(error, { command: parsed.command });
@@ -466,12 +466,12 @@ describe('CLI Command Processing - TDD London', () => {
       const parseResult = {
         command: 'deploy',
         args: [],
-        flags: { env: 'production' }
+        flags: { env: 'production' },
       };
       const validationResult = {
         valid: false,
         errors: ['Missing required argument: target'],
-        warnings: []
+        warnings: [],
       };
 
       mockParser.validate.mockReturnValue(validationResult);
@@ -491,7 +491,7 @@ describe('CLI Command Processing - TDD London', () => {
       // Arrange
       const initFunction = jest.fn().mockResolvedValue(undefined);
       const cleanupFunction = jest.fn().mockResolvedValue(undefined);
-      
+
       // Act - Simulate lifecycle
       await initFunction();
       // ... command execution would happen here
@@ -507,20 +507,20 @@ describe('CLI Command Processing - TDD London', () => {
       const metricsTracker = {
         recordExecution: jest.fn(),
         recordSuccess: jest.fn(),
-        recordFailure: jest.fn()
+        recordFailure: jest.fn(),
       };
 
       const context: MockCommandContext = {
         args: [],
         flags: {},
-        command: 'status'
+        command: 'status',
       };
 
       // Act - Simulate execution with metrics
       metricsTracker.recordExecution('status');
-      
+
       const result = await mockRegistry.execute('status', context);
-      
+
       if (result && result.success) {
         metricsTracker.recordSuccess('status');
       } else {
