@@ -104,33 +104,202 @@ claude mcp add ruv-swarm-zen npx claude-zen swarm mcp start
 - `mcp__ruv-swarm-zen__swarm_status` - Monitor coordination status
 - `mcp__ruv-swarm-zen__memory_usage` - Manage persistent memory
 
-### 🔄 **MCP Integration Workflow**
+### 🔄 **Complete Interface Architecture**
 
-#### **Phase 1: Human Planning (HTTP MCP)**
+Claude-Zen provides **four integrated interfaces** for different usage patterns:
+
+#### **Interface Overview:**
 ```mermaid
-graph LR
-    A[Claude Desktop] --> B[HTTP MCP Server :3000]
-    B --> C[Project Init Tools]
-    B --> D[Status Monitoring]
-    B --> E[System Information]
+graph TB
+    A[Human Users] --> B[Claude Desktop + HTTP MCP :3000]
+    A --> C[Web Dashboard :3456]
+    A --> D[Terminal UI]
+    A --> E[CLI Commands]
+    
+    F[Claude Code] --> G[Stdio MCP Server]
+    G --> H[Swarm Coordination]
+    G --> I[Agent Management]
+    G --> J[Task Orchestration]
+    
+    B --> K[Project Management]
+    C --> L[Real-time Monitoring]
+    D --> M[Interactive Swarm Control]
+    E --> N[Direct Command Execution]
 ```
 
-1. **Project Planning**: Use Claude Desktop with HTTP MCP for high-level project planning
-2. **Template Selection**: Initialize projects with appropriate templates
-3. **Status Monitoring**: Track project health and metrics
+**Interface Types:**
+1. **CLI** (`src/interfaces/cli/`) - Direct command-line interface
+2. **TUI** (`src/interfaces/tui/`) - Terminal-based interactive interface
+3. **Web** (`src/interfaces/web/`) - Browser-based dashboard with real-time updates
+4. **MCP** (`src/interfaces/mcp/`) - Model Context Protocol for Claude integration
 
-#### **Phase 2: AI Execution (Stdio MCP)**
+### 🌐 **Web Dashboard Interface (Port 3456)**
+
+**Advanced browser-based dashboard with real-time monitoring:**
+
+```bash
+# Start web dashboard
+claude-zen web start
+
+# Start in daemon mode (background)
+claude-zen web start --daemon
+
+# Custom configuration  
+claude-zen web start --port 4000 --host 0.0.0.0 --theme light
+```
+
+**Web Dashboard Features:**
+- **Real-time Updates**: WebSocket-based live data streaming
+- **RESTful API**: Complete REST endpoints for all functionality
+- **Responsive Design**: Mobile-friendly adaptive layout
+- **Theme Support**: Dark/light mode with user preferences
+- **Session Management**: Persistent user sessions and preferences
+- **Command Execution**: Execute claude-zen commands via web interface
+
+**Web API Endpoints:**
+- `http://localhost:3456/api/health` - Health status
+- `http://localhost:3456/api/status` - System status and metrics
+- `http://localhost:3456/api/swarms` - Swarm management (GET/POST)
+- `http://localhost:3456/api/tasks` - Task management (GET/POST)
+- `http://localhost:3456/api/documents` - Document management
+- `http://localhost:3456/api/execute` - Command execution
+- `http://localhost:3456/api/settings` - User preferences
+
+**Real-time Features:**
+- **WebSocket Events**: Live system status, task updates, swarm notifications
+- **Performance Dashboard**: Real-time metrics and health monitoring
+- **Interactive Console**: Execute commands and view results instantly
+- **Progress Tracking**: Live progress bars for running tasks
+
+### 🖥️ **Terminal UI Interface (TUI)**
+
+**Interactive terminal-based interface using Ink React:**
+
+```bash
+# Start interactive TUI
+claude-zen tui
+
+# Start with specific mode
+claude-zen tui --mode swarm-overview
+```
+
+**TUI Features:**
+- **Swarm Dashboard**: Real-time swarm status and agent activity
+- **Task Manager**: Interactive task creation and monitoring  
+- **System Monitor**: Live system metrics and health status
+- **Command Palette**: Fuzzy search command execution
+
+### 🔧 **CLI Interface**
+
+**Direct command-line interface for scripting and automation:**
+
+```bash
+# Core commands
+claude-zen init <project> --template advanced
+claude-zen status --format json
+claude-zen swarm init --topology mesh --agents 5
+claude-zen workspace process docs/vision/product.md
+```
+
+### 📊 **Unified Performance Dashboard**
+
+**Comprehensive real-time monitoring across all interfaces:**
+
+**Performance Metrics:**
+- **MCP Performance**: Request latency, success rates, tool execution stats
+- **Memory Usage**: Session tracking, cache utilization, memory health
+- **Database Performance**: Vector search times, indexing status, query optimization
+- **Neural Network Stats**: Accuracy metrics, training progress, model performance
+
+**Health Assessment:**
+- **Component Health**: Individual health scores for MCP, memory, database, neural
+- **System Alerts**: Configurable thresholds with warning and critical alerts
+- **Performance Optimization**: Automated recommendations for system tuning
+
+**Integration with Web Dashboard:**
+```javascript
+// Real-time dashboard updates via WebSocket
+socket.on('system:status', (data) => {
+  // Live system health updates
+});
+
+socket.on('performance:update', (data) => {
+  // Performance metrics streaming
+});
+
+socket.on('alerts:new', (alert) => {
+  // Critical system alerts
+});
+```
+
+### 🔄 **Multi-Interface Workflow**
+
+#### **Phase 1: Human Planning**
 ```mermaid
 graph LR
-    A[Claude Code] --> B[Stdio MCP Server]
+    A[Claude Desktop] --> B[HTTP MCP :3000]
+    C[Web Dashboard] --> D[REST API :3456]
+    E[Terminal UI] --> F[Interactive Commands]
+    
+    B --> G[Project Planning]
+    D --> H[Visual Monitoring]
+    F --> I[Direct Control]
+```
+
+#### **Phase 2: AI Execution**
+```mermaid
+graph LR
+    A[Claude Code] --> B[Stdio MCP]
     B --> C[Swarm Coordination]
     B --> D[Agent Management]
     B --> E[Task Orchestration]
+    
+    F[All Interfaces] --> G[Real-time Updates]
+    G --> H[Web Dashboard]
+    G --> I[Terminal UI]
+    G --> J[CLI Status]
 ```
 
-1. **Swarm Initialization**: Claude Code uses stdio MCP for swarm setup
-2. **Agent Coordination**: Spawn and manage specialized AI agents
-3. **Task Execution**: Orchestrate complex multi-agent workflows
+### 🛠️ **Interface-Specific Commands**
+
+#### **Web Dashboard Operations:**
+```bash
+# Start web server
+claude-zen web start --port 3456
+
+# Check web status
+curl http://localhost:3456/api/health
+
+# Create swarm via web API
+curl -X POST http://localhost:3456/api/swarms \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Document Processing", "agents": 4}'
+
+# Execute command via web API
+curl -X POST http://localhost:3456/api/execute \
+  -H "Content-Type: application/json" \
+  -d '{"command": "status", "args": ["--format", "json"]}'
+```
+
+#### **Terminal UI Operations:**
+```bash
+# Interactive swarm management
+claude-zen tui --mode swarm-dashboard
+
+# Task management interface
+claude-zen tui --mode task-manager
+
+# System monitoring interface
+claude-zen tui --mode system-monitor
+```
+
+#### **CLI Operations:**
+```bash
+# Direct command execution
+claude-zen workspace init my-project
+claude-zen swarm status --detailed
+claude-zen task create "Process PRD document" --assignees agent1,agent2
+```
 
 ### 📋 **MCP Server Architecture**
 
@@ -679,16 +848,54 @@ claude-zen workspace report --format=markdown
 # 1. Initialize document-driven project
 claude-zen workspace init my-project --template=advanced
 
-# 2. Start HTTP MCP server for Claude Desktop
-claude-zen mcp start
+# 2. Start all interfaces
+claude-zen mcp start                    # HTTP MCP for Claude Desktop (port 3000)
+claude-zen web start --daemon           # Web dashboard (port 3456)
+claude mcp add claude-zen-swarm npx claude-zen swarm mcp start  # Stdio MCP for Claude Code
 
-# 3. Add stdio MCP for Claude Code
-claude mcp add claude-zen-swarm npx claude-zen swarm mcp start
+# 3. Access multiple interfaces
+# - Claude Desktop: Add MCP configuration for project management
+# - Web Dashboard: http://localhost:3456 for real-time monitoring
+# - Terminal UI: claude-zen tui for interactive control
+# - CLI: claude-zen commands for direct execution
 
-# 4. Create vision document and start development
+# 4. Complete workflow
 cd my-project
-# Use Claude Desktop to create docs/vision/product-vision.md
-# Use Claude Code to process and implement
+# Phase 1: Use Claude Desktop to create docs/vision/product-vision.md
+# Phase 2: Monitor progress via web dashboard
+# Phase 3: Use Claude Code to process and implement with swarm coordination
+# Phase 4: Use TUI for interactive debugging and control
 ```
+
+### 🚀 **Multi-Interface Usage Examples**
+
+#### **Scenario 1: Project Planning via Claude Desktop**
+1. Configure Claude Desktop with HTTP MCP server
+2. Use natural language to initialize projects and create templates
+3. Plan architecture through conversational interface
+
+#### **Scenario 2: Real-time Monitoring via Web Dashboard**
+1. Access http://localhost:3456 in browser
+2. Monitor swarm activity, task progress, system health
+3. Execute commands through web interface
+4. View real-time performance metrics and alerts
+
+#### **Scenario 3: Interactive Development via Terminal UI**
+1. Run `claude-zen tui` for interactive terminal interface
+2. Navigate swarm dashboards, task managers, system monitors
+3. Use command palette for fuzzy search and execution
+4. Real-time updates without leaving terminal
+
+#### **Scenario 4: Automated Execution via Claude Code**
+1. Use Claude Code with stdio MCP for AI-driven development  
+2. Swarm coordination for complex multi-agent workflows
+3. Automatic document processing and code generation
+4. Background execution with progress tracking
+
+#### **Scenario 5: Scripting and Automation via CLI**
+1. Direct command execution for CI/CD integration
+2. Batch operations and automated workflows
+3. JSON output for programmatic processing
+4. Integration with existing development tools
 
 This comprehensive system bridges the gap between high-level human planning and detailed AI-driven implementation, providing a structured path from vision to code.
