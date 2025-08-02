@@ -21,9 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     if: |
+      github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'issues' && (github.event.action == 'opened' || (github.event.action == 'labeled' && github.event.label.name == 'claude-code'))) ||
-      github.event_name == 'workflow_dispatch'
+      (github.event_name == 'issues' && (github.event.action == 'opened' || (github.event.action == 'labeled' && github.event.label.name == 'claude-code')))
 
     permissions:
       contents: write
@@ -80,17 +80,20 @@ jobs:
           echo "Task: $TASK"
           
           # Execute Claude Code task
-          claude task "$TASK
+          claude task "$(cat <<'EOF'
+$TASK
 
-          Follow these phases:
-          1. Analyze the issue requirements thoroughly
-          2. Create a comprehensive implementation plan  
-          3. Implement the solution with proper tests
-          4. Commit changes with clear messages
-          5. Create a pull request
+Follow these phases:
+1. Analyze the issue requirements thoroughly
+2. Create a comprehensive implementation plan  
+3. Implement the solution with proper tests
+4. Commit changes with clear messages
+5. Create a pull request
 
-          Use the CLAUDE_AGENT.md guidelines and follow the domain-driven architecture.
-          Focus on working, tested code that solves the actual problem."
+Use the CLAUDE_AGENT.md guidelines and follow the domain-driven architecture.
+Focus on working, tested code that solves the actual problem.
+EOF
+)"
 
       - name: Check for Changes and Create PR
         env:
