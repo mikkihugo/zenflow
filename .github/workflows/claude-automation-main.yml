@@ -1,6 +1,7 @@
 name: Claude Code Automation - Main
 
 on:
+  workflow_dispatch:  # Add manual trigger for testing
   issues:
     types: [opened, labeled]
 
