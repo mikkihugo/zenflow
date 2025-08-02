@@ -57,39 +57,10 @@ jobs:
             "github-actions[bot]@users.noreply.github.com"
           git config --global init.defaultBranch main
 
-      - name: Claude Agent
-        uses: anthropics/claude-code-action@beta
-        with:
-          label_trigger: "claude-code"
-          direct_prompt: |
-            Resolve GitHub issue #${{ github.event.issue.number || inputs.issue_number }}.
-            
-            Follow these phases:
-            1. Analyze requirements and create implementation plan
-            2. Implement solution with comprehensive tests  
-            3. Commit changes and create pull request
-            
-            Use CLAUDE_AGENT.md guidelines and domain-driven architecture.
-
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          timeout_minutes: 40
-        id: claude
-
-  auto-merge:
-    needs: claude-solver
-    runs-on: ubuntu-latest
-    if: needs.claude-solver.outputs.pull_request_number != ''
-
-    permissions:
-      pull-requests: write
-      contents: write
-
-    steps:
-      - name: Auto-merge PR
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ needs.claude-solver.outputs.pull_request_number }}
+      - name: Test Trigger
         run: |
-          echo "Auto-merging PR #$PR_NUMBER"
-          gh pr merge $PR_NUMBER --auto --squash
+          echo "Workflow triggered successfully!"
+          echo "Event: ${{ github.event_name }}"
+          echo "Issue number: ${{ github.event.issue.number || inputs.issue_number }}"
+          echo "Comment body: ${{ github.event.comment.body }}"
+
