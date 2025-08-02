@@ -38,6 +38,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          mode: agent
           custom_instructions: |
             You are Claude Code, an expert AI developer. Follow the project's CLAUDE.md file for guidelines.
             
