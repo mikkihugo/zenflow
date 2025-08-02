@@ -61,6 +61,7 @@ lcov-report/
 *.lcov
 test-results/
 .nyc_output/
+.jest-cache/
 
 # Lint and cache files
 .eslintcache
