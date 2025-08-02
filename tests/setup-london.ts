@@ -34,12 +34,12 @@ function setupDefaultMocks() {
 }
 
 // London TDD helper for creating interaction spies
-global.createInteractionSpy = (name: string) => {
+(global as any).createInteractionSpy = (name: string) => {
   return jest.fn().mockName(name);
 };
 
 // London TDD helper for verifying interaction patterns
-global.verifyInteractions = (spy: jest.Mock, expectedCalls: any[]) => {
+(global as any).verifyInteractions = (spy: jest.Mock, expectedCalls: any[]) => {
   expect(spy).toHaveBeenCalledTimes(expectedCalls.length);
   expectedCalls.forEach((call, index) => {
     expect(spy).toHaveBeenNthCalledWith(index + 1, ...call);
@@ -47,7 +47,7 @@ global.verifyInteractions = (spy: jest.Mock, expectedCalls: any[]) => {
 };
 
 // Mock factory for complex objects
-global.createMockFactory = <T>(defaults: Partial<T> = {}) => {
+(global as any).createMockFactory = <T>(defaults: Partial<T> = {}) => {
   return (overrides: Partial<T> = {}): T => ({
     ...defaults,
     ...overrides,
@@ -55,7 +55,7 @@ global.createMockFactory = <T>(defaults: Partial<T> = {}) => {
 };
 
 // Async interaction testing helpers
-global.waitForInteraction = async (spy: jest.Mock, timeout = 1000) => {
+(global as any).waitForInteraction = async (spy: jest.Mock, timeout = 1000) => {
   const start = Date.now();
   while (spy.mock.calls.length === 0 && Date.now() - start < timeout) {
     await new Promise(resolve => setTimeout(resolve, 10));
@@ -66,7 +66,7 @@ global.waitForInteraction = async (spy: jest.Mock, timeout = 1000) => {
 };
 
 // Protocol simulation helpers
-global.simulateProtocolHandshake = (mockProtocol: jest.Mock) => {
+(global as any).simulateProtocolHandshake = (mockProtocol: jest.Mock) => {
   mockProtocol.mockImplementation((message) => {
     if (message.type === 'handshake') {
       return Promise.resolve({ type: 'handshake_ack', success: true });
@@ -81,9 +81,13 @@ jest.setTimeout(30000);
 export {};
 
 declare global {
-  function createInteractionSpy(name: string): jest.Mock;
-  function verifyInteractions(spy: jest.Mock, expectedCalls: any[]): void;
-  function createMockFactory<T>(defaults?: Partial<T>): (overrides?: Partial<T>) => T;
-  function waitForInteraction(spy: jest.Mock, timeout?: number): Promise<void>;
-  function simulateProtocolHandshake(mockProtocol: jest.Mock): void;
+  namespace NodeJS {
+    interface Global {
+      createInteractionSpy(name: string): jest.Mock;
+      verifyInteractions(spy: jest.Mock, expectedCalls: any[]): void;
+      createMockFactory<T>(defaults?: Partial<T>): (overrides?: Partial<T>) => T;
+      waitForInteraction(spy: jest.Mock, timeout?: number): Promise<void>;
+      simulateProtocolHandshake(mockProtocol: jest.Mock): void;
+    }
+  }
 }

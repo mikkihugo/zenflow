@@ -81,7 +81,7 @@ function hashCode(str: string): number {
 }
 
 // Classical TDD helpers for algorithm testing
-global.generateTestMatrix = (rows: number, cols: number, fillFn?: (i: number, j: number) => number) => {
+(global as any).generateTestMatrix = (rows: number, cols: number, fillFn?: (i: number, j: number) => number) => {
   const matrix: number[][] = [];
   for (let i = 0; i < rows; i++) {
     matrix[i] = [];
@@ -92,7 +92,7 @@ global.generateTestMatrix = (rows: number, cols: number, fillFn?: (i: number, j:
   return matrix;
 };
 
-global.generateTestVector = (size: number, fillFn?: (i: number) => number) => {
+(global as any).generateTestVector = (size: number, fillFn?: (i: number) => number) => {
   const vector: number[] = [];
   for (let i = 0; i < size; i++) {
     vector[i] = fillFn ? fillFn(i) : Math.random();
@@ -101,14 +101,14 @@ global.generateTestVector = (size: number, fillFn?: (i: number) => number) => {
 };
 
 // Neural network test data generators
-global.generateXORData = () => [
+(global as any).generateXORData = () => [
   { input: [0, 0], output: [0] },
   { input: [0, 1], output: [1] },
   { input: [1, 0], output: [1] },
   { input: [1, 1], output: [0] },
 ];
 
-global.generateLinearData = (samples: number, noise: number = 0.1) => {
+(global as any).generateLinearData = (samples: number, noise: number = 0.1) => {
   const data = [];
   for (let i = 0; i < samples; i++) {
     const x = Math.random() * 10;
@@ -119,7 +119,7 @@ global.generateLinearData = (samples: number, noise: number = 0.1) => {
 };
 
 // Performance assertion helpers
-global.expectPerformance = (fn: () => void, maxTimeMs: number) => {
+(global as any).expectPerformance = (fn: () => void, maxTimeMs: number) => {
   const start = Date.now();
   fn();
   const duration = Date.now() - start;
@@ -127,13 +127,13 @@ global.expectPerformance = (fn: () => void, maxTimeMs: number) => {
   return duration;
 };
 
-global.expectMemoryUsage = (fn: () => void, maxMemoryMB: number) => {
-  if (!global.gc) return; // Skip if garbage collection not available
+(global as any).expectMemoryUsage = (fn: () => void, maxMemoryMB: number) => {
+  if (!(global as any).gc) return; // Skip if garbage collection not available
   
-  global.gc();
+  (global as any).gc();
   const startMemory = process.memoryUsage().heapUsed;
   fn();
-  global.gc();
+  (global as any).gc();
   const endMemory = process.memoryUsage().heapUsed;
   const memoryUsedMB = (endMemory - startMemory) / 1024 / 1024;
   
@@ -142,21 +142,21 @@ global.expectMemoryUsage = (fn: () => void, maxMemoryMB: number) => {
 };
 
 // Mathematical precision helpers
-global.expectNearlyEqual = (actual: number, expected: number, tolerance: number = 1e-10) => {
+(global as any).expectNearlyEqual = (actual: number, expected: number, tolerance: number = 1e-10) => {
   expect(Math.abs(actual - expected)).toBeLessThanOrEqual(tolerance);
 };
 
-global.expectArrayNearlyEqual = (actual: number[], expected: number[], tolerance: number = 1e-10) => {
+(global as any).expectArrayNearlyEqual = (actual: number[], expected: number[], tolerance: number = 1e-10) => {
   expect(actual).toHaveLength(expected.length);
   for (let i = 0; i < actual.length; i++) {
-    expectNearlyEqual(actual[i], expected[i], tolerance);
+    (global as any).expectNearlyEqual(actual[i], expected[i], tolerance);
   }
 };
 
-global.expectMatrixNearlyEqual = (actual: number[][], expected: number[][], tolerance: number = 1e-10) => {
+(global as any).expectMatrixNearlyEqual = (actual: number[][], expected: number[][], tolerance: number = 1e-10) => {
   expect(actual).toHaveLength(expected.length);
   for (let i = 0; i < actual.length; i++) {
-    expectArrayNearlyEqual(actual[i], expected[i], tolerance);
+    (global as any).expectArrayNearlyEqual(actual[i], expected[i], tolerance);
   }
 };
 
@@ -166,24 +166,29 @@ jest.setTimeout(60000);
 export {};
 
 declare global {
-  var testStartTime: number;
-  var testStartMemory: NodeJS.MemoryUsage;
-  var lastTestExecutionTime: number;
-  var lastTestMemoryDelta: {
-    rss: number;
-    heapUsed: number;
-    heapTotal: number;
-  };
-  
-  function generateTestMatrix(rows: number, cols: number, fillFn?: (i: number, j: number) => number): number[][];
-  function generateTestVector(size: number, fillFn?: (i: number) => number): number[];
-  function generateXORData(): Array<{ input: number[], output: number[] }>;
-  function generateLinearData(samples: number, noise?: number): Array<{ input: number[], output: number[] }>;
-  function expectPerformance(fn: () => void, maxTimeMs: number): number;
-  function expectMemoryUsage(fn: () => void, maxMemoryMB: number): number | undefined;
-  function expectNearlyEqual(actual: number, expected: number, tolerance?: number): void;
-  function expectArrayNearlyEqual(actual: number[], expected: number[], tolerance?: number): void;
-  function expectMatrixNearlyEqual(actual: number[][], expected: number[][], tolerance?: number): void;
+  namespace NodeJS {
+    interface Global {
+      testStartTime: number;
+      testStartMemory: NodeJS.MemoryUsage;
+      lastTestExecutionTime: number;
+      lastTestMemoryDelta: {
+        rss: number;
+        heapUsed: number;
+        heapTotal: number;
+      };
+      gc?: () => void;
+      
+      generateTestMatrix(rows: number, cols: number, fillFn?: (i: number, j: number) => number): number[][];
+      generateTestVector(size: number, fillFn?: (i: number) => number): number[];
+      generateXORData(): Array<{ input: number[], output: number[] }>;
+      generateLinearData(samples: number, noise?: number): Array<{ input: number[], output: number[] }>;
+      expectPerformance(fn: () => void, maxTimeMs: number): number;
+      expectMemoryUsage(fn: () => void, maxMemoryMB: number): number | undefined;
+      expectNearlyEqual(actual: number, expected: number, tolerance?: number): void;
+      expectArrayNearlyEqual(actual: number[], expected: number[], tolerance?: number): void;
+      expectMatrixNearlyEqual(actual: number[][], expected: number[][], tolerance?: number): void;
+    }
+  }
   
   namespace Math {
     var seedrandom: (seed: string) => () => number;

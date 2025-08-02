@@ -1,20 +1,10 @@
 {
-  // ⚠️  WARNING: DO NOT CREATE ADDITIONAL BUILD CONFIGS
-  // This is the ONE AND ONLY tsconfig.json for the entire project.
-  // No tsconfig.production.json, tsconfig.minimal.json, or other variants allowed.
-  
   "compilerOptions": {
-    // 🚨 GOOGLE-LEVEL STRICT TYPESCRIPT CONFIGURATION
-    // Zero tolerance for code quality issues
-
-    // === CORE LANGUAGE SETTINGS ===
     "target": "ES2023",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "lib": ["ES2023"],
     "moduleDetection": "force",
-
-    // === STRICT TYPE CHECKING (ALL ENABLED) ===
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -28,14 +18,10 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "exactOptionalPropertyTypes": true,
-
-    // === ADDITIONAL TYPE CHECKING ===
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-
-    // === MODULE RESOLUTION ===
     "baseUrl": "./src",
     "paths": {
       "@core/*": ["core/*"],
@@ -57,8 +43,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": false,
-
-    // === EMIT SETTINGS ===
     "outDir": "./dist",
     "declaration": true,
     "declarationMap": true,
@@ -68,25 +52,16 @@
     "downlevelIteration": true,
     "incremental": true,
     "tsBuildInfoFile": ".tsbuildinfo",
-
-    // === ADVANCED SETTINGS ===
     "skipLibCheck": true,
     "checkJs": false,
     "allowJs": true,
     "maxNodeModuleJsDepth": 0,
-
-    // === TYPE ROOTS ===
     "types": ["node", "jest", "react"],
     "typeRoots": ["./node_modules/@types", "./src/types"],
-
-    // === JSX SUPPORT ===
     "jsx": "react-jsx",
-
-    // === EXPERIMENTAL ===
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
@@ -97,7 +72,6 @@
     "examples/**/*.ts",
     "./*.ts"
   ],
-
   "exclude": [
     "node_modules",
     "dist",
@@ -114,7 +88,6 @@
     "ruv-FANN/**/*",
     "claude-zen-mcp/**/*"
   ],
-
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node",

@@ -4,9 +4,9 @@
  * neural networks, forecasting, and swarm orchestration
  */
 
-import { SwarmPersistencePooled } from './persistence-pooled.js';
+import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled.js';
 import { getContainer } from './singleton-container.js';
-import { WasmModuleLoader } from './wasm-loader.js';
+import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader.js';
 // import { NeuralAgentFactory } from './neural-agent.js';
 // import path from 'path';
 // import fs from 'fs';
@@ -806,6 +806,6 @@ class Task {
 }
 
 // Import DAA service for comprehensive agent management
-import { DAAService, daaService } from './daa-service.js';
+// import { DAAService, daaService } from './daa-service.js';
 
-export { RuvSwarm, Swarm, Task, DAAService, daaService };
+export { RuvSwarm, Swarm, Task };

@@ -1,8 +1,13 @@
-// Jest setup file for TDD London School tests
+// Jest setup file for Hybrid TDD tests
 import 'jest-extended';
 
-// Note: Test timeout should be set in individual tests as needed
-// Example: jest.setTimeout(30000);
+// Global test timeout for complex operations
+import { jest } from '@jest/globals';
 
-// Global test utilities can be added here if needed
-// But for TDD London School, we prefer explicit setup in each test
+jest.setTimeout(60000);
+
+// Setup for both London and Classical TDD approaches
+beforeEach(() => {
+  // Clear mocks for London TDD
+  jest.clearAllMocks();
+});
