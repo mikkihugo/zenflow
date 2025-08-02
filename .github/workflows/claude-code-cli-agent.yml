@@ -1,6 +1,6 @@
 ---
-# Claude Autonomous Agent v2 - Fresh workflow to bypass any GitHub suppression
-name: "Claude Autonomous v2"
+# Claude Code CLI Agent - Autonomous issue resolution and development
+name: "Claude Code CLI Agent"
 
 on:
   issues:
