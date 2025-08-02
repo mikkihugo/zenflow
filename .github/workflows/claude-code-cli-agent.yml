@@ -1,6 +1,5 @@
----
 # Claude Code CLI Agent - Autonomous issue resolution and development
-name: "Claude Code CLI Agent"
+name: Claude Code CLI Agent
 
 on:
   issues:
