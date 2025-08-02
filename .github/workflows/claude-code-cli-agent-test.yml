@@ -1,0 +1,18 @@
+name: Claude Code CLI Agent Test
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  claude-solver:
+    runs-on: ubuntu-latest
+    if: contains(github.event.comment.body, '@claude')
+    
+    steps:
+      - name: Log comment
+        run: |
+          echo "Claude Code CLI Agent triggered successfully!"
+          echo "Comment body: ${{ github.event.comment.body }}"
+          echo "Event name: ${{ github.event_name }}"
+          echo "Issue number: ${{ github.event.issue.number }}"
