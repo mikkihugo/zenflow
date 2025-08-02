@@ -22,6 +22,9 @@ members = [
     "neuro-divergent-training"
 ]
 
+# Note: Some vulnerable transitive dependencies remain in polars ecosystem
+# These are low/medium severity and require upstream fixes
+
 [lib]
 name = "neuro_divergent"
 path = "src/lib.rs"
