@@ -24,7 +24,7 @@ export const RestAPISchema = {
     description: 'Unified API for coordination, neural networks, memory, and database operations',
     contact: {
       name: 'Claude Code Flow Team',
-      url: 'https://github.com/claude-code-flow',
+      url: 'https://github.com/claude-zen-flow',
     },
     license: {
       name: 'MIT',
@@ -37,7 +37,7 @@ export const RestAPISchema = {
       description: 'Development server',
     },
     {
-      url: 'https://api.claude-code-flow.com',
+      url: 'https://api.claude-zen-flow.com',
       description: 'Production server',
     },
   ],

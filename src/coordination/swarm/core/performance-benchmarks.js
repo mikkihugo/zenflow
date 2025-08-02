@@ -80,7 +80,7 @@ class PerformanceBenchmarks {
       results.benchmarks.neuralNetworks = await this.benchmarkNeuralNetworks();
 
       // 5. Claude Code Flow Coordination
-      console.log('⚡ Benchmarking Claude Flow coordination...');
+      console.log('⚡ Benchmarking Claude Zen coordination...');
       results.benchmarks.claudeFlowCoordination = await this.benchmarkClaudeFlowCoordination();
 
       // 6. Parallel Execution
@@ -851,7 +851,7 @@ class PerformanceBenchmarks {
       });
     }
 
-    // Claude Flow recommendations
+    // Claude Zen recommendations
     if (benchmarks.claudeFlowCoordination?.batchingPerformance?.complianceScore < 80) {
       recommendations.push({
         category: 'Coordination',

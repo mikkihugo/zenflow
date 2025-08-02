@@ -1,5 +1,5 @@
 /** Unified Performance Dashboard */
-/** Real-time monitoring and analytics for Claude Flow systems */
+/** Real-time monitoring and analytics for Claude Zen systems */
 
 import { EventEmitter } from 'node:events';
 import type LanceDBInterface from '../database/lancedb-interface';
@@ -285,7 +285,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
 
   /** Display initial status */
   private displayInitialStatus(): void {
-    console.log('\\n📊 Claude Flow Performance Dashboard');
+    console.log('\\n📊 Claude Zen Performance Dashboard');
     console.log('=====================================');
     console.log(`🔄 Refresh interval: ${this.config.refreshInterval}ms`);
     console.log(`📈 Real-time monitoring: ${this.config.enableRealtime ? 'Enabled' : 'Disabled'}`);
@@ -301,7 +301,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   /** Display console status (fallback) */
   private displayConsoleStatus(status: any): void {
     console.clear();
-    console.log('\n📊 Claude Flow Performance Dashboard - Live Status');
+    console.log('\n📊 Claude Zen Performance Dashboard - Live Status');
     console.log('====================================================');
 
     // Overall health
@@ -370,7 +370,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
 
     const report = {
       timestamp: new Date().toISOString(),
-      dashboard: 'Claude Flow Performance Dashboard',
+      dashboard: 'Claude Zen Performance Dashboard',
       version: '2.0.0',
       status,
       recommendations,

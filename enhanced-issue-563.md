@@ -6,7 +6,7 @@ The current npm package is extremely large (100MB+) due to included development 
 ## 🎯 Comprehensive Expected Results
 
 ### Primary Outcome: Ultra-Lean Production Package
-The enhanced Claude Flow should implement a sophisticated package optimization system that:
+The enhanced Claude Zen should implement a sophisticated package optimization system that:
 
 1. **Reduces package size by 95%+ (target: <5MB)** through intelligent file exclusion and bundling
 2. **Maintains 100% functionality** while eliminating all non-essential files
@@ -441,7 +441,7 @@ class IntelligentNpmIgnoreGenerator implements NpmIgnoreOptimizer {
   }
 
   private generateComprehensiveIgnoreFile(): string {
-    return `# Claude Flow Production .npmignore
+    return `# Claude Zen Production .npmignore
 # Generated automatically - optimized for minimal package size
 
 # ===============================================
@@ -1015,4 +1015,4 @@ optimization/
 3. Performance monitoring setup
 4. Continuous improvement processes
 
-This comprehensive enhancement ensures Claude Flow delivers an ultra-lean, lightning-fast installation experience while maintaining 100% functionality and providing robust optimization infrastructure for future improvements.
+This comprehensive enhancement ensures Claude Zen delivers an ultra-lean, lightning-fast installation experience while maintaining 100% functionality and providing robust optimization infrastructure for future improvements.

@@ -6,7 +6,7 @@ When executing `npx claude-flow swarm` with version `2.0.0-alpha.83`, the system
 ## 🎯 Comprehensive Expected Results
 
 ### Primary Outcome: Bulletproof ES Module Compatibility System
-The enhanced Claude Flow should implement a comprehensive ES module compatibility layer that:
+The enhanced Claude Zen should implement a comprehensive ES module compatibility layer that:
 
 1. **Eliminates all "require is not defined" errors** through intelligent module resolution
 2. **Provides seamless Node.js version compatibility** across v16-v24+ environments
@@ -240,7 +240,7 @@ class CompatibilityShimGenerator {
     this.registerShim('util-promisify', new UtilPromisifyShim());
     this.registerShim('child-process-spawn', new ChildProcessShim());
     
-    // Claude Flow specific shims
+    // Claude Zen specific shims
     this.registerShim('claude-cli-interface', new ClaudeCliShim());
     this.registerShim('swarm-executor', new SwarmExecutorShim());
     this.registerShim('memory-storage', new MemoryStorageShim());
@@ -705,7 +705,7 @@ describe('Module Resolution System', () => {
 
 ### Integration Testing Scenarios
 ```typescript
-describe('Claude Flow Integration', () => {
+describe('Claude Zen Integration', () => {
   it('should successfully spawn Claude Code with fixed module resolution', async () => {
     // Setup test environment with known module issues
     await setupTestEnvironmentWithModuleIssues();
@@ -781,7 +781,7 @@ src/
 ### Must-Have Requirements (MVP)
 - [ ] **Eliminates "require is not defined" errors** with 99%+ success rate
 - [ ] **Supports Node.js v16-v24+** with consistent behavior
-- [ ] **Maintains backward compatibility** with existing Claude Flow configurations
+- [ ] **Maintains backward compatibility** with existing Claude Zen configurations
 - [ ] **Provides intelligent error recovery** with actionable guidance
 - [ ] **Delivers comprehensive diagnostic reporting** for troubleshooting
 - [ ] **Implements efficient module caching** for performance optimization
@@ -846,4 +846,4 @@ src/
 3. User feedback collection
 4. Production release with monitoring
 
-This comprehensive enhancement ensures Claude Flow provides bulletproof ES module compatibility, intelligent error recovery, and excellent performance across all supported Node.js versions and execution environments.
+This comprehensive enhancement ensures Claude Zen provides bulletproof ES module compatibility, intelligent error recovery, and excellent performance across all supported Node.js versions and execution environments.

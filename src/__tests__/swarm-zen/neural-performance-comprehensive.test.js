@@ -1121,7 +1121,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
       }
     });
 
-    test('should benchmark Claude Flow coordination', async () => {
+    test('should benchmark Claude Zen coordination', async () => {
       const results = await performanceBenchmarks.benchmarkClaudeFlowCoordination();
 
       expect(results.workflowExecution).toBeDefined();

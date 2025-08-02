@@ -8,7 +8,7 @@ class PerformanceMonitor {
   constructor() {
     this.screen = blessed.screen({
       smartCSR: true,
-      title: 'Claude Flow Performance Monitor',
+      title: 'Claude Zen Performance Monitor',
     });
 
     this.metrics = {
@@ -28,7 +28,7 @@ class PerformanceMonitor {
       left: 0,
       width: '100%',
       height: 3,
-      content: '{center}Claude Flow Performance Monitor{/center}',
+      content: '{center}Claude Zen Performance Monitor{/center}',
       tags: true,
       style: {
         fg: 'white',
@@ -129,7 +129,7 @@ class PerformanceMonitor {
       this.updateMetrics();
       this.render();
     }, 100);
-    // Monitor actual Claude Flow processes
+    // Monitor actual Claude Zen processes
     this.monitorClaudeFlow();
   }
   updateMetrics() {
@@ -195,8 +195,8 @@ class PerformanceMonitor {
     this.screen.render();
   }
   monitorClaudeFlow() {
-    // In real implementation, this would connect to Claude Flow metrics
-    this.logBox.log('{green-fg}🔗{/green-fg} Connected to Claude Flow metrics');
+    // In real implementation, this would connect to Claude Zen metrics
+    this.logBox.log('{green-fg}🔗{/green-fg} Connected to Claude Zen metrics');
     this.logBox.log('{blue-fg}📊{/blue-fg} Monitoring performance in real-time...');
   }
   resetMetrics() {
@@ -221,7 +221,7 @@ try {
 
   // Fallback text-based monitoring
   setInterval(() => {
-    console.log('\n📊 Claude Flow Performance Metrics\n');
+    console.log('\n📊 Claude Zen Performance Metrics\n');
     console.log('🔗 Hook Performance:');
     console.log(`  Calls: ${Math.floor(Math.random() * 1000)}`);
     console.log(`  Avg Time: ${Math.floor(Math.random() * 50) + 10}ms`);

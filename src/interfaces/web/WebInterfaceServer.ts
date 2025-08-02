@@ -178,7 +178,7 @@ export class WebInterfaceServer {
           },
         },
         serverInfo: {
-          name: 'claude-code-flow-mcp-server',
+          name: 'claude-zen-flow-mcp-server',
           version: '2.0.0-alpha.73',
         },
         endpoints: {
@@ -222,7 +222,7 @@ export class WebInterfaceServer {
         );
 
         console.log(`
-      🌐 Claude Flow Unified Interface Server`);
+      🌐 Claude Zen Unified Interface Server`);
         console.log(`=========================================`);
         console.log(`🚀 Base URL: ${address}`);
         console.log(`📊 Web Dashboard: ${address}/web`);
@@ -321,7 +321,7 @@ export class WebInterfaceServer {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Claude Flow Web Dashboard</title>
+    <title>Claude Zen Web Dashboard</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -347,7 +347,7 @@ export class WebInterfaceServer {
 <body>
     <div class="container">
         <div class="header">
-            <h1 class="title">🌐 Claude Flow Web Dashboard</h1>
+            <h1 class="title">🌐 Claude Zen Web Dashboard</h1>
             <p class="subtitle">Advanced AI-driven development coordination platform</p>
         </div>
 
@@ -408,7 +408,7 @@ export class WebInterfaceServer {
         </div>
 
         <div class="footer">
-            <p>🚀 <a href="https://github.com/ruvnet/claude-code-flow">Claude Code Flow</a> | 
+            <p>🚀 <a href="https://github.com/ruvnet/claude-zen-flow">Claude Code Flow</a> | 
                📖 <a href="${this.config.apiPrefix}/health">API Health</a> | 
                🔧 Built with ❤️ for AI-driven development</p>
         </div>

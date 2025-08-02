@@ -120,7 +120,7 @@ EXAMPLES:
 
 For interactive terminal interface, use: claude-zen --ui
 
-Documentation: https://github.com/ruvnet/claude-code-flow
+Documentation: https://github.com/ruvnet/claude-zen-flow
 `);
   };
 

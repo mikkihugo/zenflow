@@ -1,10 +1,10 @@
 # API Reference
 
-**Complete API documentation for Claude Code Flow - covering HTTP MCP, Stdio MCP, REST API, and WebSocket interfaces.**
+**Complete API documentation for Claude Zen Flow - covering HTTP MCP, Stdio MCP, REST API, and WebSocket interfaces.**
 
 ## 🏗️ **API Architecture Overview**
 
-Claude Code Flow provides multiple API interfaces designed for different use cases:
+Claude Zen Flow provides multiple API interfaces designed for different use cases:
 
 ### **1. HTTP MCP Server** (Port 3000)
 - **Purpose**: Claude Desktop integration
@@ -252,7 +252,7 @@ const response = await fetch('/api/login', {
 ### **CI/CD Integration**
 ```yaml
 # GitHub Actions example
-- name: Deploy with Claude Code Flow
+- name: Deploy with Claude Zen Flow
   run: |
     # Start swarm for deployment
     SWARM_ID=$(claude-zen swarm init --topology hierarchical --format json | jq -r '.data.id')
@@ -274,7 +274,7 @@ const metrics = await fetch('http://localhost:3456/api/metrics')
 
 // Send to monitoring system
 await prometheusGateway.pushAdd({
-  jobName: 'claude-code-flow',
+  jobName: 'claude-zen-flow',
   groupings: { instance: 'production' },
   metrics: formatPrometheusMetrics(metrics.data)
 });
@@ -302,7 +302,7 @@ const useClaudeCodeFlowAPI = () => {
 
 ## 📋 **API Versioning**
 
-Claude Code Flow APIs follow semantic versioning:
+Claude Zen Flow APIs follow semantic versioning:
 
 - **Current Version**: `v2.0.0-alpha.73`
 - **Version Header**: `X-API-Version: 2.0`
@@ -329,9 +329,9 @@ curl http://localhost:3000/mcp/v2/tools
 - **Mock Servers**: Available for development and testing
 
 ### **Community**
-- **GitHub Issues**: https://github.com/ruvnet/claude-code-flow/issues
-- **API Discussions**: https://github.com/ruvnet/claude-code-flow/discussions
-- **Examples**: https://github.com/ruvnet/claude-code-flow/tree/main/examples/api
+- **GitHub Issues**: https://github.com/ruvnet/claude-zen-flow/issues
+- **API Discussions**: https://github.com/ruvnet/claude-zen-flow/discussions
+- **Examples**: https://github.com/ruvnet/claude-zen-flow/tree/main/examples/api
 
 ---
 

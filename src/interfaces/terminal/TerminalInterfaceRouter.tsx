@@ -140,7 +140,7 @@ UNIFIED PORT STRUCTURE (Port 3000):
   🔗 API Endpoints: http://localhost:3000/api/*
   📡 MCP Protocol: http://localhost:3000/mcp
 
-For more information, visit: https://github.com/ruvnet/claude-code-flow
+For more information, visit: https://github.com/ruvnet/claude-zen-flow
 `);
   process.exit(0);
 }

@@ -1,4 +1,4 @@
-# Getting Started with Claude Code Flow
+# Getting Started with Claude Zen Flow
 
 **Quick start guide to get you up and running with the AI swarm orchestration platform.**
 
@@ -11,7 +11,7 @@
 
 ### **Global Installation**
 ```bash
-# Install Claude Code Flow globally
+# Install Claude Zen Flow globally
 npm install -g claude-code-zen
 
 # Verify installation
@@ -21,8 +21,8 @@ claude-zen --version
 ### **Local Development Setup**
 ```bash
 # Clone repository
-git clone https://github.com/ruvnet/claude-code-flow.git
-cd claude-code-flow
+git clone https://github.com/ruvnet/claude-zen-flow.git
+cd claude-zen-flow
 
 # Install dependencies
 npm install
@@ -250,8 +250,8 @@ claude-zen --debug status
 - **Troubleshooting**: [troubleshooting.md](troubleshooting.md)
 
 ### **Community & Support**
-- **GitHub Issues**: https://github.com/ruvnet/claude-code-flow/issues
-- **Discussions**: https://github.com/ruvnet/claude-code-flow/discussions
+- **GitHub Issues**: https://github.com/ruvnet/claude-zen-flow/issues
+- **Discussions**: https://github.com/ruvnet/claude-zen-flow/discussions
 - **Documentation**: https://docs.anthropic.com/en/docs/claude-code
 
 ### **Quick Commands Reference**
@@ -277,7 +277,7 @@ claude-zen tui                     # Start terminal UI
 
 ## 🎉 **Next Steps**
 
-Now that you have Claude Code Flow running:
+Now that you have Claude Zen Flow running:
 
 1. **Explore Examples**: Check out [examples/README.md](examples/README.md)
 2. **Read User Guide**: Comprehensive feature walkthrough in [user-guide.md](user-guide.md)

@@ -58,7 +58,7 @@ src/
 │   │   ├── chaos-engineering/     # Chaos engineering capabilities
 │   │   ├── cognitive-patterns/    # Cognitive pattern evolution
 │   │   ├── connection-management/ # Connection state management
-│   │   ├── claude-flow/          # Enhanced Claude Flow integration
+│   │   ├── claude-flow/          # Enhanced Claude Zen integration
 │   │   └── core/                 # Core swarm functionality & types
 │   └── mcp/                # 🎯 Swarm MCP (stdio) - Correct location!
 ├── core/                    # Core system functionality
@@ -123,7 +123,7 @@ src/
   - Chaos engineering → `coordination/swarm/chaos-engineering/`
   - Cognitive patterns → `coordination/swarm/cognitive-patterns/`
   - Connection management → `coordination/swarm/connection-management/`
-  - Claude Flow enhanced → `coordination/swarm/claude-flow/`
+  - Claude Zen enhanced → `coordination/swarm/claude-flow/`
 - ✅ Agent systems → `coordination/agents/`
 - ✅ Orchestration systems → `coordination/maestro/`, `coordination/orchestration/`
 - ✅ Hive mind → `coordination/hive-mind/`
@@ -1025,10 +1025,10 @@ claude-zen workspace report --format=markdown
 
 ## 📚 **Support and Documentation**
 
-- **Main Repository**: https://github.com/ruvnet/claude-code-flow
-- **Issue Tracking**: https://github.com/ruvnet/claude-code-flow/issues
-- **Documentation**: https://github.com/ruvnet/claude-code-flow/wiki
-- **Examples**: https://github.com/ruvnet/claude-code-flow/tree/main/examples
+- **Main Repository**: https://github.com/ruvnet/claude-zen-flow
+- **Issue Tracking**: https://github.com/ruvnet/claude-zen-flow/issues
+- **Documentation**: https://github.com/ruvnet/claude-zen-flow/wiki
+- **Examples**: https://github.com/ruvnet/claude-zen-flow/tree/main/examples
 
 ## 🎯 **Quick Start Guide**
 
@@ -1104,7 +1104,7 @@ This comprehensive system bridges the gap between high-level human planning and 
 - ✅ Proper Claude Code hook format (shell scripts with JSON input parsing via `jq`)
 - ✅ Official hook types implemented (PreToolUse, PostToolUse, Stop, Subagent Stop) 
 - ✅ Template-based distribution to user projects via `claude-zen init`
-- ✅ Integration with Claude Flow MCP tools for swarm coordination
+- ✅ Integration with Claude Zen MCP tools for swarm coordination
 
 ### 📁 **Final Hooks Structure**
 
@@ -1121,7 +1121,7 @@ templates/claude-zen/
     ├── subagent-coordination.sh       # ✅ Subagent Stop: Agent coordination
     ├── github-integration.sh          # ✅ Advanced: GitHub issue management
     ├── utils/
-    │   ├── claude-flow-integration.sh  # ✅ Claude Flow MCP helpers
+    │   ├── claude-flow-integration.sh  # ✅ Claude Zen MCP helpers
     │   └── logging.sh                  # ✅ Logging utilities
     └── config/
         └── hook-config.json            # ✅ Hook configuration
@@ -1130,7 +1130,7 @@ templates/claude-zen/
 ### 🚀 **Implemented Hook Types**
 
 1. **PreToolUse Hooks** - `pre-task-coordination.sh`
-   - Initializes Claude Flow swarm coordination before Task tool calls
+   - Initializes Claude Zen swarm coordination before Task tool calls
    - Loads session memory and context for continuity
    - Sets up logging and performance metrics
 
@@ -1189,9 +1189,9 @@ templates/claude-zen/
 }
 ```
 
-### 🧰 **Claude Flow MCP Integration**
+### 🧰 **Claude Zen MCP Integration**
 
-All hooks integrate seamlessly with Claude Flow MCP tools:
+All hooks integrate seamlessly with Claude Zen MCP tools:
 - **Swarm Coordination**: `npx claude-flow mcp swarm-init --topology=hierarchical`
 - **Memory Management**: `npx claude-flow mcp memory-usage --action=store`
 - **Neural Training**: `npx claude-flow mcp neural-train --operation=file-edit`
@@ -1242,7 +1242,7 @@ tail -f ~/.claude/hooks.log
 **Migration Summary**:
 - ✅ **Moved**: All scattered hooks → `templates/claude-zen/hooks/`
 - ✅ **Standardized**: Proper Claude Code hook format following official documentation
-- ✅ **Integrated**: Claude Flow MCP tools for enhanced coordination
+- ✅ **Integrated**: Claude Zen MCP tools for enhanced coordination
 - ✅ **Documented**: Comprehensive documentation and examples
 - ✅ **Distributed**: Template-based system for easy user adoption
 

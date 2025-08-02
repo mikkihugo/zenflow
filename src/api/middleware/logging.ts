@@ -222,7 +222,7 @@ const createLogEntry = (
     trace: requestMetadata.requestId,
     operation: {
       id: requestMetadata.requestId,
-      producer: 'claude-code-flow-api',
+      producer: 'claude-zen-flow-api',
       first: !res, // First log entry for request
       last: !!res, // Last log entry for response
     },

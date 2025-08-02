@@ -106,7 +106,7 @@ export class DatabaseManager extends EventEmitter {
     if (isWindows && isWindows()) {
       console.info(`
 Note: Hive Mind data will not persist between runs on Windows without SQLite.
-For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/docs/windows-installation.md
+For persistent storage options, see: https://github.com/ruvnet/claude-zen-flow/docs/windows-installation.md
 `);
     }
 

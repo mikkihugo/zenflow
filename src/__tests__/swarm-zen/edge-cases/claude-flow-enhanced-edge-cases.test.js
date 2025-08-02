@@ -79,7 +79,7 @@ vi.mock('../../src/mcp-tools-enhanced.js', () => ({
   },
 }));
 
-describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
+describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
   let claudeFlow;
   let batchEnforcer;
 
@@ -840,9 +840,9 @@ describe('Claude Flow Enhanced Edge Cases and E2E Tests', () => {
     });
   });
 
-  describe('End-to-End Claude Flow Tests', () => {
+  describe('End-to-End Claude Zen Tests', () => {
     it('should complete full workflow lifecycle', async () => {
-      // Step 1: Initialize Claude Flow
+      // Step 1: Initialize Claude Zen
       await claudeFlow.initialize({
         enforceBatching: true,
         enableSIMD: true,

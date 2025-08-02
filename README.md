@@ -1,9 +1,9 @@
-# Claude Code Flow
+# Claude Zen Flow
 
 [![Version](https://img.shields.io/npm/v/claude-code-zen)](https://www.npmjs.com/package/claude-code-zen)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**Claude Code Flow** is a unified AI swarm orchestration platform with neural networks and direct integration for Claude Code. It provides a comprehensive development environment with multi-interface support and document-driven development capabilities.
+**Claude Zen Flow** is a unified AI swarm orchestration platform with neural networks and direct integration for Claude Code. It provides a comprehensive development environment with multi-interface support and document-driven development capabilities.
 
 ## 🚀 Quick Start
 
@@ -22,7 +22,7 @@ claude mcp add claude-zen-swarm npx claude-zen swarm mcp start  # Stdio MCP for 
 
 ## 🏗️ Architecture
 
-Claude Code Flow implements a sophisticated dual MCP (Model Context Protocol) architecture:
+Claude Zen Flow implements a sophisticated dual MCP (Model Context Protocol) architecture:
 
 ### **HTTP MCP Server** (Port 3000)
 - **Purpose**: Claude Desktop integration via HTTP-based MCP protocol
@@ -106,10 +106,10 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🔗 Links
 
-- **Repository**: https://github.com/ruvnet/claude-code-flow
-- **Issues**: https://github.com/ruvnet/claude-code-flow/issues  
+- **Repository**: https://github.com/mikkihugo/claude-zen-flow
+- **Issues**: https://github.com/mikkihugo/claude-zen-flow/issues  
 - **NPM Package**: https://www.npmjs.com/package/claude-code-zen
 
 ---
 
-**Powered by Claude Code Flow - Unified AI swarm orchestration for the modern developer.**
+**Powered by Claude Zen Flow - Unified AI swarm orchestration for the modern developer.**

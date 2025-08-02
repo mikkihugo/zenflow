@@ -75,7 +75,7 @@ class ComprehensiveRepairValidator {
     for (const script of repairedScripts) {
       try {
         execSync(`node -c ${script}`, {
-          cwd: '/home/mhugo/code/claude-code-flow',
+          cwd: '/home/mhugo/code/claude-zen-flow',
           stdio: 'pipe',
         });
         this.recordResult(`Syntax check: ${script}`, true, 'Valid JavaScript syntax');
@@ -98,7 +98,7 @@ class ComprehensiveRepairValidator {
     for (const { script, timeout } of executableScripts) {
       try {
         execSync(`timeout ${timeout / 1000}s node ${script} || true`, {
-          cwd: '/home/mhugo/code/claude-code-flow',
+          cwd: '/home/mhugo/code/claude-zen-flow',
           stdio: 'pipe',
         });
         this.recordResult(`Execution: ${script}`, true, 'Script runs without fatal errors');
@@ -126,7 +126,7 @@ class ComprehensiveRepairValidator {
     for (const tsFile of tsFiles) {
       try {
         // Check if file exists
-        const fullPath = path.join('/home/mhugo/code/claude-code-flow', tsFile);
+        const fullPath = path.join('/home/mhugo/code/claude-zen-flow', tsFile);
         if (!existsSync(fullPath)) {
           this.recordResult(`TS Check: ${tsFile}`, false, 'File does not exist');
           continue;
@@ -135,7 +135,7 @@ class ComprehensiveRepairValidator {
         // Try TypeScript compilation check (if tsc is available)
         try {
           execSync(`npx tsc --noEmit --skipLibCheck ${tsFile}`, {
-            cwd: '/home/mhugo/code/claude-code-flow',
+            cwd: '/home/mhugo/code/claude-zen-flow',
             stdio: 'pipe',
           });
           this.recordResult(
@@ -146,7 +146,7 @@ class ComprehensiveRepairValidator {
         } catch (tscError) {
           // If tsc fails, at least check if it's valid JavaScript
           execSync(`node -c ${tsFile}`, {
-            cwd: '/home/mhugo/code/claude-code-flow',
+            cwd: '/home/mhugo/code/claude-zen-flow',
             stdio: 'pipe',
           });
           this.recordResult(`TS Check: ${tsFile}`, true, 'Valid syntax (tsc not available)');
@@ -166,7 +166,7 @@ class ComprehensiveRepairValidator {
     for (const dep of criticalDeps) {
       try {
         execSync(`npm list ${dep}`, {
-          cwd: '/home/mhugo/code/claude-code-flow',
+          cwd: '/home/mhugo/code/claude-zen-flow',
           stdio: 'pipe',
         });
         this.recordResult(`Dependency: ${dep}`, true, 'Package is installed');
@@ -186,7 +186,7 @@ class ComprehensiveRepairValidator {
     // Test better-sqlite3 specifically (the problematic one)
     try {
       execSync('node -e "require(\'better-sqlite3\')"', {
-        cwd: '/home/mhugo/code/claude-code-flow',
+        cwd: '/home/mhugo/code/claude-zen-flow',
         stdio: 'pipe',
       });
       this.recordResult('better-sqlite3 loading', true, 'Library loads successfully');
@@ -232,7 +232,7 @@ class ComprehensiveRepairValidator {
 
     for (const impl of implementations) {
       try {
-        if (!existsSync(path.join('/home/mhugo/code/claude-code-flow', impl.file))) {
+        if (!existsSync(path.join('/home/mhugo/code/claude-zen-flow', impl.file))) {
           this.recordResult(impl.name, false, 'Implementation file missing');
           continue;
         }
@@ -249,7 +249,7 @@ class ComprehensiveRepairValidator {
   testEnhancedMemory() {
     // Basic structure validation
     const content = require('fs').readFileSync(
-      '/home/mhugo/code/claude-code-flow/src/memory/enhanced-memory.ts',
+      '/home/mhugo/code/claude-zen-flow/src/memory/enhanced-memory.ts',
       'utf8'
     );
 
@@ -273,7 +273,7 @@ class ComprehensiveRepairValidator {
   /** Test LanceDB interface implementation */
   testLanceDBInterface() {
     const content = require('fs').readFileSync(
-      '/home/mhugo/code/claude-code-flow/src/database/lancedb-interface.ts',
+      '/home/mhugo/code/claude-zen-flow/src/database/lancedb-interface.ts',
       'utf8'
     );
 
@@ -298,7 +298,7 @@ class ComprehensiveRepairValidator {
   /** Test MCP metrics implementation */
   testMCPMetrics() {
     const content = require('fs').readFileSync(
-      '/home/mhugo/code/claude-code-flow/src/mcp/performance-metrics.ts',
+      '/home/mhugo/code/claude-zen-flow/src/mcp/performance-metrics.ts',
       'utf8'
     );
 
@@ -323,7 +323,7 @@ class ComprehensiveRepairValidator {
   /** Test unified dashboard implementation */
   testUnifiedDashboard() {
     const content = require('fs').readFileSync(
-      '/home/mhugo/code/claude-code-flow/src/dashboard/unified-performance-dashboard.ts',
+      '/home/mhugo/code/claude-zen-flow/src/dashboard/unified-performance-dashboard.ts',
       'utf8'
     );
 
@@ -350,7 +350,7 @@ class ComprehensiveRepairValidator {
     try {
       // Test performance monitor
       execSync('node -c scripts/performance-monitor.js', {
-        cwd: '/home/mhugo/code/claude-code-flow',
+        cwd: '/home/mhugo/code/claude-zen-flow',
         stdio: 'pipe',
       });
       this.recordResult('Performance Monitor', true, 'Script is syntactically valid');
@@ -361,7 +361,7 @@ class ComprehensiveRepairValidator {
     // Test if blessed is available for the performance monitor
     try {
       execSync('node -e "require(\'blessed\')"', {
-        cwd: '/home/mhugo/code/claude-code-flow',
+        cwd: '/home/mhugo/code/claude-zen-flow',
         stdio: 'pipe',
       });
       this.recordResult('Blessed UI Library', true, 'Available for interactive dashboard');
@@ -377,7 +377,7 @@ class ComprehensiveRepairValidator {
     // Test SQLite optimizations script
     try {
       execSync('timeout 5s node scripts/validate-sqlite-optimizations.js || true', {
-        cwd: '/home/mhugo/code/claude-code-flow',
+        cwd: '/home/mhugo/code/claude-zen-flow',
         stdio: 'pipe',
       });
       this.recordResult('SQLite Validation Script', true, 'Executes without fatal errors');
@@ -388,7 +388,7 @@ class ComprehensiveRepairValidator {
     // Check if LanceDB is accessible
     try {
       execSync('node -e "import(\\"@lancedb/lancedb\\").then(() => console.log(\\"OK\\"))"', {
-        cwd: '/home/mhugo/code/claude-code-flow',
+        cwd: '/home/mhugo/code/claude-zen-flow',
         stdio: 'pipe',
       });
       this.recordResult('LanceDB Library', true, 'Import successful');
@@ -407,7 +407,7 @@ class ComprehensiveRepairValidator {
         name: 'Performance Monitor Error Handling',
         test: () => {
           const content = require('fs').readFileSync(
-            '/home/mhugo/code/claude-code-flow/scripts/performance-monitor.js',
+            '/home/mhugo/code/claude-zen-flow/scripts/performance-monitor.js',
             'utf8'
           );
           return content.includes('try {') && content.includes('catch');
@@ -417,7 +417,7 @@ class ComprehensiveRepairValidator {
         name: 'Enhanced Memory Error Handling',
         test: () => {
           const content = require('fs').readFileSync(
-            '/home/mhugo/code/claude-code-flow/src/memory/enhanced-memory.ts',
+            '/home/mhugo/code/claude-zen-flow/src/memory/enhanced-memory.ts',
             'utf8'
           );
           return content.includes('try {') && content.includes('catch');
@@ -494,7 +494,7 @@ class ComprehensiveRepairValidator {
     };
 
     require('fs').writeFileSync(
-      '/home/mhugo/code/claude-code-flow/test-results.json',
+      '/home/mhugo/code/claude-zen-flow/test-results.json',
       JSON.stringify(report, null, 2)
     );
 

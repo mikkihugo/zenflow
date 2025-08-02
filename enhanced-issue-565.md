@@ -1,12 +1,12 @@
-# 🎯 Enhanced Issue #565: Claude Flow CLI Command Detection Enhancement
+# 🎯 Enhanced Issue #565: Claude Zen CLI Command Detection Enhancement
 
 ## 📋 Original Issue Summary
-Claude Flow v2.0.0-alpha fails when trying to use swarm mode because it looks for `claude-code` command, but Anthropic's official Claude Code installation uses `claude` as the command name.
+Claude Zen v2.0.0-alpha fails when trying to use swarm mode because it looks for `claude-code` command, but Anthropic's official Claude Code installation uses `claude` as the command name.
 
 ## 🎯 Comprehensive Expected Results
 
 ### Primary Outcome: Intelligent CLI Command Detection
-The enhanced Claude Flow should implement a sophisticated CLI command detection system that:
+The enhanced Claude Zen should implement a sophisticated CLI command detection system that:
 
 1. **Auto-detects available Claude CLI commands** using multiple strategies
 2. **Supports both `claude` and `claude-code` command patterns** for maximum compatibility
@@ -176,7 +176,7 @@ interface EnhancedErrorMessage {
 // Example error message
 const EXAMPLE_ERROR_MESSAGE: EnhancedErrorMessage = {
   title: "Claude CLI Not Found - Installation Required",
-  description: "Claude Flow cannot locate the Claude CLI command. This is required for swarm mode functionality.",
+  description: "Claude Zen cannot locate the Claude CLI command. This is required for swarm mode functionality.",
   detectedState: {
     searchedCommands: ["claude-code", "claude"],
     searchedPaths: ["/usr/local/bin", "/usr/bin", "~/.local/bin"],
@@ -201,9 +201,9 @@ const EXAMPLE_ERROR_MESSAGE: EnhancedErrorMessage = {
     },
     {
       step: 3,
-      title: "Test Claude Flow Integration",
+      title: "Test Claude Zen Integration",
       command: "npx claude-flow@alpha swarm 'test task'",
-      description: "Verify Claude Flow can now detect and use Claude CLI",
+      description: "Verify Claude Zen can now detect and use Claude CLI",
       estimatedTime: "1 minute"
     }
   ],
@@ -217,7 +217,7 @@ const EXAMPLE_ERROR_MESSAGE: EnhancedErrorMessage = {
       url: "https://docs.anthropic.com/en/docs/claude-code/setup"
     },
     {
-      title: "Claude Flow Configuration Options",
+      title: "Claude Zen Configuration Options",
       url: "https://github.com/ruvnet/claude-flow/docs/configuration"
     }
   ],
@@ -385,7 +385,7 @@ describe('ClaudeCliDetector', () => {
 
 ### Integration Test Scenarios
 ```typescript
-describe('Claude Flow CLI Integration', () => {
+describe('Claude Zen CLI Integration', () => {
   it('should successfully use detected claude command in swarm mode', async () => {
     // Ensure claude is available
     await ensureClaudeInstalled();
@@ -547,4 +547,4 @@ tests/
 3. Performance monitoring setup
 4. Full production release
 
-This comprehensive enhancement ensures Claude Flow provides a robust, user-friendly, and reliable CLI detection system that addresses the root cause while maintaining excellent user experience and extensive configurability.
+This comprehensive enhancement ensures Claude Zen provides a robust, user-friendly, and reliable CLI detection system that addresses the root cause while maintaining excellent user experience and extensive configurability.
