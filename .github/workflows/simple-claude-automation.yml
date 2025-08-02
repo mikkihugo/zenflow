@@ -41,6 +41,9 @@ jobs:
 
       - name: Create branch and commit
         run: |
+          # Pull latest changes to avoid conflicts
+          git pull origin main
+          
           BRANCH_NAME="claude-fix/issue-${{ github.event.issue.number }}"
           git checkout -b "$BRANCH_NAME"
           git add test-files/test-now.md
