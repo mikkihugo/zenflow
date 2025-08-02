@@ -7,6 +7,11 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
 
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
 jobs:
   auto-label-claude:
     name: Auto-Label All Issues and PRs for Claude Code

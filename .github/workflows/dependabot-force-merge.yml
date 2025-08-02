@@ -6,6 +6,11 @@ on:
     branches: [ main ]
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
 jobs:
   force-merge-dependabot:
     name: Force Merge All Dependabot PRs

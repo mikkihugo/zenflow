@@ -15,7 +15,7 @@ jobs:
   auto-merge-claude-code:
     name: Auto-Merge Claude Code PRs
     runs-on: ubuntu-latest
-    if: github.actor == 'app/github-actions' || contains(github.event.pull_request.title, '🤖') || contains(github.event.pull_request.body, 'Generated with [Claude Code]')
+    if: github.actor == 'app/github-actions' || github.actor == 'app/copilot-swe-agent' || contains(github.event.pull_request.title, '🤖') || contains(github.event.pull_request.body, 'Generated with [Claude Code]')
     
     steps:
       - name: Checkout code
