@@ -44,8 +44,10 @@ jobs:
       - name: Claude Agent
         uses: anthropics/claude-code-action@beta
         with:
-          label_trigger: "claude-code"
-          direct_prompt: |
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          trigger_phrase: "@claude"
+          custom_instructions: |
             Resolve GitHub issue #${{ github.event.issue.number }}.
             
             Follow these phases:
@@ -54,8 +56,5 @@ jobs:
             3. Commit changes and create pull request
             
             Use CLAUDE_AGENT.md guidelines and domain-driven architecture.
-
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          timeout_minutes: 40
+          max_turns: 10
         id: claude
