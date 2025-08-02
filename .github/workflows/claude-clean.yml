@@ -1,0 +1,49 @@
+name: Claude Clean
+
+on:
+  issues:
+    types: [labeled]
+
+concurrency:
+  group: claude-automation
+  cancel-in-progress: false
+
+permissions:
+  issues: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  implement:
+    runs-on: ubuntu-latest
+    if: contains(github.event.issue.labels.*.name, 'claude-code')
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "Claude Code Bot"
+          git config --global user.email "claude-code-bot@noreply.github.com"
+
+      - name: Generate Implementation
+        run: |
+          chmod +x .github/scripts/generate-implementation.sh
+          .github/scripts/generate-implementation.sh "${{ github.event.issue.title }}"
+
+      - name: Commit and PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git pull origin main
+          BRANCH="fix-${{ github.event.issue.number }}"
+          git checkout -b "$BRANCH"
+          git add .
+          git commit -m "🤖 Implementation for #${{ github.event.issue.number }}: ${{ github.event.issue.title }}"
+          git push origin "$BRANCH"
+          
+          gh pr create --title "🤖 Fix: ${{ github.event.issue.title }}" --body "Fixes #${{ github.event.issue.number }}" --label "auto-merge"
+          PR_NUMBER=$(gh pr view --json number --jq '.number')
+          gh pr merge $PR_NUMBER --squash --delete-branch
