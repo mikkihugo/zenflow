@@ -80,7 +80,8 @@ jobs:
           echo "Task: $TASK"
           
           # Execute Claude Code task
-          claude task "$TASK
+          claude task "$(cat <<'EOF'
+          $TASK
 
           Follow these phases:
           1. Analyze the issue requirements thoroughly
@@ -90,7 +91,9 @@ jobs:
           5. Create a pull request
 
           Use the CLAUDE_AGENT.md guidelines and follow the domain-driven architecture.
-          Focus on working, tested code that solves the actual problem."
+          Focus on working, tested code that solves the actual problem.
+          EOF
+          )"
 
       - name: Check for Changes and Create PR
         env:
