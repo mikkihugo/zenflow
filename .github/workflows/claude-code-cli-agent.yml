@@ -1,4 +1,3 @@
-# Claude Code CLI Agent - Autonomous issue resolution and development
 name: Claude Code CLI Agent
 
 on:
@@ -21,7 +20,6 @@ jobs:
   claude-solver:
     runs-on: ubuntu-latest
     timeout-minutes: 45
-
     if: github.event_name == 'issues' || (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) || github.event_name == 'workflow_dispatch'
 
     permissions:
@@ -52,8 +50,7 @@ jobs:
       - name: Configure Git
         run: |
           git config --global user.name "github-actions[bot]"
-          git config --global user.email \
-            "github-actions[bot]@users.noreply.github.com"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global init.defaultBranch main
 
       - name: Test Trigger
@@ -62,4 +59,3 @@ jobs:
           echo "Event: ${{ github.event_name }}"
           echo "Issue number: ${{ github.event.issue.number || inputs.issue_number }}"
           echo "Comment body: ${{ github.event.comment.body }}"
-
