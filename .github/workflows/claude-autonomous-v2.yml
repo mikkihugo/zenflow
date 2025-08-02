@@ -70,7 +70,7 @@ jobs:
         with:
           label_trigger: "claude-code"
           direct_prompt: |
-            Resolve GitHub issue #${{ github.event.issue.number || github.event.inputs.issue_number }}.
+            Resolve GitHub issue #139.
             
             Follow these phases:
             1. Analyze requirements and create implementation plan
