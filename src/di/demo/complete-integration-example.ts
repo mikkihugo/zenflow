@@ -35,7 +35,7 @@ interface ExistingTask {
 console.log('🚀 Claude Code Zen DI Integration Example');
 
 // 1. Simple token-based approach (no decorators needed initially)
-const createSimpleEnhancedSystem = () => {
+const createSimpleEnhancedSystem: () => any = () => {
   console.log('\n📦 1. Creating simple enhanced system...');
   
   // Define service contracts

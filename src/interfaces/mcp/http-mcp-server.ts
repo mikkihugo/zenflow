@@ -18,6 +18,7 @@ import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { createLogger } from './simple-logger.js';
+import { advancedMCPToolsManager } from './advanced-tools-registry.js';
 
 const logger = createLogger('SDK-HTTP-MCP-Server');
 
@@ -69,7 +70,7 @@ export class HTTPMCPServer {
     // Setup Express app for SDK transport
     this.expressApp = express();
     this.setupExpressMiddleware();
-    this.registerTools();
+    // registerTools() will be called in start() method due to async nature
     this.setupSDKRoutes();
   }
 
@@ -122,7 +123,7 @@ export class HTTPMCPServer {
   /**
    * Register Claude-Zen tools with the SDK
    */
-  private registerTools(): void {
+  private async registerTools(): Promise<void> {
     // System information tool
     this.server.tool(
       'system_info',
@@ -287,7 +288,220 @@ export class HTTPMCPServer {
       }
     );
 
+    // Register advanced tools from claude-zen
+    await this.registerAdvancedTools();
+    
+    // Integrate all advanced tools as native MCP tools
+    await this.integrateAdvancedToolsNatively();
+    
     logger.info('Registered Claude-Zen tools with official MCP SDK');
+  }
+
+  /**
+   * Register advanced tools from claude-zen (87 tools)
+   */
+  private async registerAdvancedTools(): Promise<void> {
+    logger.info('Registering 87 advanced tools from claude-zen...');
+    
+    // Advanced tool discovery endpoint
+    this.server.tool(
+      'advanced_tools_list',
+      'List all 87 advanced MCP tools with categories and metadata',
+      {
+        category: z.string().optional().describe('Filter by tool category'),
+        search: z.string().optional().describe('Search tools by name or tags'),
+      },
+      {
+        title: 'Advanced Tools Discovery',
+        description: 'Comprehensive listing of all advanced MCP tools available in the system',
+      },
+      async ({ category, search }) => {
+        try {
+          let tools;
+          
+          if (search) {
+            tools = advancedMCPToolsManager.searchTools(search);
+          } else if (category) {
+            tools = advancedMCPToolsManager.getToolsByCategory(category);
+          } else {
+            tools = advancedMCPToolsManager.listAllTools();
+          }
+
+          const overview = advancedMCPToolsManager.getRegistryOverview();
+          
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify({
+                  overview,
+                  tools: typeof tools === 'object' && 'tools' in tools ? tools.tools : tools,
+                  filter: { category, search },
+                  timestamp: new Date().toISOString()
+                }, null, 2),
+              },
+            ],
+          };
+        } catch (error) {
+          logger.error('Error listing advanced tools:', error);
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify({ error: error.message }, null, 2),
+              },
+            ],
+          };
+        }
+      }
+    );
+
+    // Advanced tool execution proxy
+    this.server.tool(
+      'advanced_tool_execute',
+      'Execute any of the 87 advanced MCP tools',
+      {
+        toolName: z.string().describe('Name of the advanced tool to execute'),
+        params: z.record(z.any()).optional().describe('Parameters for the tool'),
+      },
+      {
+        title: 'Advanced Tool Execution',
+        description: 'Execute advanced coordination, monitoring, neural, GitHub, system, and orchestration tools',
+      },
+      async ({ toolName, params = {} }) => {
+        try {
+          if (!advancedMCPToolsManager.hasTool(toolName)) {
+            throw new Error(`Advanced tool not found: ${toolName}`);
+          }
+
+          const result = await advancedMCPToolsManager.executeTool(toolName, params);
+          
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify({
+                  tool: toolName,
+                  params,
+                  result,
+                  executedAt: new Date().toISOString()
+                }, null, 2),
+              },
+            ],
+          };
+        } catch (error) {
+          logger.error(`Error executing advanced tool ${toolName}:`, error);
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify({
+                  tool: toolName,
+                  error: error.message,
+                  params,
+                  executedAt: new Date().toISOString()
+                }, null, 2),
+              },
+            ],
+          };
+        }
+      }
+    );
+
+    // Tool statistics endpoint
+    this.server.tool(
+      'advanced_tools_stats',
+      'Get execution statistics for advanced MCP tools',
+      {
+        detailed: z.boolean().default(false).describe('Include detailed per-tool statistics'),
+      },
+      {
+        title: 'Advanced Tools Statistics',
+        description: 'Performance metrics and usage statistics for advanced MCP tools',
+      },
+      async ({ detailed }) => {
+        const overview = advancedMCPToolsManager.getRegistryOverview();
+        const stats = detailed ? advancedMCPToolsManager.getToolStats() : {};
+        
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({
+                overview,
+                ...(detailed && { detailedStats: stats }),
+                generatedAt: new Date().toISOString()
+              }, null, 2),
+            },
+          ],
+        };
+      }
+    );
+
+    logger.info(`✅ Registered 3 proxy tools for ${advancedMCPToolsManager.getToolCount()} advanced tools`);
+  }
+
+  /**
+   * Integrate all advanced tools as native MCP tools (not proxy)
+   */
+  private async integrateAdvancedToolsNatively(): Promise<void> {
+    logger.info('Integrating advanced tools as native MCP tools...');
+    
+    const allTools = advancedMCPToolsManager.listAllTools();
+    const tools = allTools.tools || [];
+    
+    let registeredCount = 0;
+    
+    for (const tool of tools) {
+      try {
+        // Register each advanced tool as a native MCP tool using the SDK
+        this.server.tool(
+          tool.name,
+          tool.description,
+          tool.inputSchema,
+          {
+            title: tool.metadata?.title || tool.name,
+            description: tool.description,
+          },
+          async (params: any) => {
+            const result = await advancedMCPToolsManager.executeTool(tool.name, params);
+            
+            // Ensure result is in proper MCP format
+            if (result && typeof result === 'object' && !Array.isArray(result)) {
+              if ('content' in result) {
+                return result; // Already in MCP format
+              } else {
+                // Convert to MCP format
+                return {
+                  content: [
+                    {
+                      type: 'text',
+                      text: JSON.stringify(result, null, 2),
+                    },
+                  ],
+                };
+              }
+            } else {
+              // Handle primitive results
+              return {
+                content: [
+                  {
+                    type: 'text',
+                    text: typeof result === 'string' ? result : JSON.stringify(result, null, 2),
+                  },
+                ],
+              };
+            }
+          }
+        );
+        
+        registeredCount++;
+      } catch (error) {
+        logger.warn(`Failed to register tool ${tool.name}:`, error);
+      }
+    }
+    
+    logger.info(`✅ Integrated ${registeredCount}/${tools.length} advanced tools as native MCP tools`);
   }
 
   /**
@@ -465,6 +679,9 @@ export class HTTPMCPServer {
       logger.warn('Server already running');
       return;
     }
+
+    // Register tools before starting the server
+    await this.registerTools();
 
     return new Promise((resolve, reject) => {
       this.httpServer = this.expressApp.listen(this.config.port, this.config.host, () => {
