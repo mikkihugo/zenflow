@@ -1,0 +1,96 @@
+# Autonomous Claude Code CLI Agent Workflow
+# Automatically triggered when new issues are created
+# Implements fully autonomous development pipeline per architectural blueprint
+
+name: "Autonomous Claude Agent"
+
+on:
+  issues:
+    types: [opened]
+
+# Enforce serial execution - max 1 at a time to prevent resource conflicts and costs
+concurrency:
+  group: claude-issue-solver
+  cancel-in-progress: false
+
+jobs:
+  claude-issue-solver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    
+    # Only run for issues, not for pull requests or other events
+    if: github.event_name == 'issues'
+    
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      actions: read
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+          
+      - name: Install Dependencies
+        run: npm ci
+        
+      - name: Execute Claude Code CLI Agent
+        uses: anthropics/claude-code-action@v1
+        with:
+          # Agent mode - runs automatically without @claude mention requirement
+          mode: 'agent'
+          
+          # Comprehensive prompt following plan-then-execute strategy
+          direct_prompt: |
+            Your task is to resolve GitHub issue #${{ github.event.issue.number }}.
+
+            **Phase 1: Analysis and Planning**
+            Before writing any code, you must first analyze the problem and create a detailed implementation plan. Your plan should be formatted as a Markdown block and must include:
+            1. A summary of your understanding of the issue's requirements.
+            2. A list of all files you intend to create or modify.
+            3. For each file, a description of the specific changes you will make.
+            4. A description of the testing strategy you will use to verify your solution.
+
+            Use the 'think hard' directive to ensure you have sufficient time to formulate a robust plan.
+
+            **Phase 2: Implementation**
+            After formulating the plan, proceed with the implementation. Execute your plan step-by-step. You must adhere to all guidelines specified in the CLAUDE_AGENT.md file.
+
+            **Phase 3: Pull Request**
+            Once the implementation is complete and you have verified it against your testing strategy, commit the changes and create a pull request for review.
+
+            If you are unsure about the existing implementation of a related component or the purpose of a utility function, use a sub-agent to read the relevant files and provide you with a summary before you proceed with your plan. This will ensure your changes are compatible with the existing codebase.
+          
+          # Authentication with Claude Code OAuth Token
+          oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          
+          # Cost and execution controls
+          max_turns: 15
+          timeout_minutes: 40
+          
+        id: claude_step
+        
+  enable-auto-merge:
+    needs: claude-issue-solver
+    runs-on: ubuntu-latest
+    if: needs.claude-issue-solver.outputs.pull_request_number != ''
+    
+    permissions:
+      pull-requests: write
+      contents: write
+      
+    steps:
+      - name: Enable auto-merge for the PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ needs.claude-issue-solver.outputs.pull_request_number }}
+        run: |
+          echo "Enabling auto-merge for PR #$PR_NUMBER"
+          gh pr merge $PR_NUMBER --auto --squash
