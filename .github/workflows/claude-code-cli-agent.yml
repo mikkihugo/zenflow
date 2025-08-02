@@ -32,6 +32,19 @@ jobs:
       actions: read
 
     steps:
+      - name: Debug Workflow Trigger
+        run: |
+          echo "=== Workflow Debug Information ==="
+          echo "Event name: ${{ github.event_name }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Issue number: ${{ github.event.issue.number || 'N/A' }}"
+          echo "Issue title: ${{ github.event.issue.title || 'N/A' }}"
+          echo "Comment body: ${{ github.event.comment.body || 'N/A' }}"
+          echo "Issue action: ${{ github.event.action || 'N/A' }}"
+          echo "Label name: ${{ github.event.label.name || 'N/A' }}"
+          echo "=================================="
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -80,20 +93,17 @@ jobs:
           echo "Task: $TASK"
           
           # Execute Claude Code task
-          claude task "$(cat <<'EOF'
-$TASK
+          claude task "$TASK
 
-Follow these phases:
-1. Analyze the issue requirements thoroughly
-2. Create a comprehensive implementation plan  
-3. Implement the solution with proper tests
-4. Commit changes with clear messages
-5. Create a pull request
+          Follow these phases:
+          1. Analyze the issue requirements thoroughly
+          2. Create a comprehensive implementation plan  
+          3. Implement the solution with proper tests
+          4. Commit changes with clear messages
+          5. Create a pull request
 
-Use the CLAUDE_AGENT.md guidelines and follow the domain-driven architecture.
-Focus on working, tested code that solves the actual problem.
-EOF
-)"
+          Use the CLAUDE_AGENT.md guidelines and follow the domain-driven architecture.
+          Focus on working, tested code that solves the actual problem."
 
       - name: Check for Changes and Create PR
         env:
