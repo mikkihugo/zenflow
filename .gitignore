@@ -24,6 +24,10 @@ bin/claude-zen-node-pkg
 *.exe
 *.bin
 
+# Rust/Cargo artifacts
+Cargo.lock
+**/target/
+
 # Environment and config
 .env
 .env.*
@@ -68,6 +72,14 @@ test-results/
 lint-report.json
 .cache/
 
+# IDE and editor files
+*.swp
+*.swo
+*.swn
+*~
+.vscode/
+.idea/
+
 # Polyglot benchmark directories
 polyglot-benchmark/
 polyglot-benchmarks/
@@ -95,3 +107,8 @@ tasks.json
 claude-zen-memory.db
 memory_tasks.json
 .sync-status.json
+.sync-report.json
+
+# Development artifacts
+analyze-imports.js
+enhanced-issue-*.md
