@@ -53,7 +53,7 @@ polars = { version = "0.33", features = ["lazy", "temporal", "csv", "json", "par
 
 # Interpolation and numerical methods
 interpolate = "0.2"
-splines = "4.2"
+splines = "5.0"
 
 # FFT for Fourier features
 rustfft = "6.1"
