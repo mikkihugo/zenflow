@@ -1,0 +1,19 @@
+name: "Test Claude Trigger"
+
+on:
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  test-trigger:
+    runs-on: ubuntu-latest
+    if: contains(github.event.comment.body, '@claude')
+    
+    steps:
+      - name: Debug Event
+        run: |
+          echo "🎯 SUCCESS: @claude mention detected!"
+          echo "Event: ${{ github.event_name }}"
+          echo "Action: ${{ github.event.action }}"
+          echo "Comment: ${{ github.event.comment.body }}"
+          echo "Issue: #${{ github.event.issue.number }}"
