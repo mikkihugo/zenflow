@@ -30,9 +30,6 @@ jobs:
       issues: write
       pull-requests: write
       actions: read
-      metadata: read
-      statuses: write
-      checks: write
 
     steps:
       - name: Checkout
@@ -50,37 +47,81 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Install Claude Code CLI
+        run: |
+          npm install -g @anthropic/claude-code
+
       - name: Configure Git
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global init.defaultBranch main
 
-      - name: Claude Agent
-        uses: anthropics/claude-code-action@beta
-        with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          trigger_phrase: "@claude"
-          custom_instructions: |
-            You are an autonomous development agent. Resolve GitHub issue #${{ github.event.issue.number || inputs.issue_number }}.
-            
-            Follow these phases:
-            1. Analyze the issue requirements thoroughly
-            2. Create a comprehensive implementation plan
-            3. Implement the solution with proper tests
-            4. Commit changes with clear messages
-            5. Create a pull request if needed
-            
-            Use the CLAUDE_AGENT.md guidelines and follow the domain-driven architecture in the codebase.
-            Focus on working, tested code that solves the actual problem.
-        id: claude
-
-      - name: Auto-merge PR
-        if: steps.claude.outputs.pull_request_number != ''
+      - name: Execute Claude Task
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ steps.claude.outputs.pull_request_number }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue_number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
         run: |
-          echo "Auto-merging PR #$PR_NUMBER"
-          gh pr merge $PR_NUMBER --auto --squash --delete-branch
+          echo "Processing issue #$ISSUE_NUMBER"
+          
+          # Create task description
+          if [ "${{ github.event_name }}" = "issue_comment" ]; then
+            TASK="$COMMENT_BODY"
+          else
+            TASK="Resolve issue #$ISSUE_NUMBER: $ISSUE_TITLE
+            
+            $ISSUE_BODY"
+          fi
+          
+          echo "Task: $TASK"
+          
+          # Execute Claude Code task
+          claude task "$TASK
+
+          Follow these phases:
+          1. Analyze the issue requirements thoroughly
+          2. Create a comprehensive implementation plan  
+          3. Implement the solution with proper tests
+          4. Commit changes with clear messages
+          5. Create a pull request
+
+          Use the CLAUDE_AGENT.md guidelines and follow the domain-driven architecture.
+          Focus on working, tested code that solves the actual problem."
+
+      - name: Check for Changes and Create PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Check if there are any changes
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Changes detected, checking for commits"
+            
+            # Check if commits were made
+            COMMITS=$(git rev-list --count HEAD ^origin/main)
+            if [ "$COMMITS" -gt 0 ]; then
+              echo "Commits found, pushing changes"
+              git push origin HEAD
+              
+              # Create PR if not on main
+              CURRENT_BRANCH=$(git branch --show-current)
+              if [ "$CURRENT_BRANCH" != "main" ]; then
+                gh pr create --title "🤖 Autonomous fix for issue #${{ github.event.issue.number || inputs.issue_number }}" \
+                  --body "Automated implementation by Claude Code CLI Agent
+
+                Resolves: #${{ github.event.issue.number || inputs.issue_number }}
+                
+                This PR was automatically created by the Claude Code CLI Agent workflow." \
+                  --head "$CURRENT_BRANCH" \
+                  --base main
+
+                # Auto-merge if possible
+                gh pr merge --auto --squash --delete-branch
+              fi
+            fi
+          else
+            echo "No changes detected"
+          fi
