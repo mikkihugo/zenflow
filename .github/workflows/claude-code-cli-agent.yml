@@ -125,7 +125,7 @@ jobs:
             Issue Details:
             Title: ${{ steps.issue-context.outputs.issue_title }}
             Body: ${{ steps.issue-context.outputs.issue_body }}
-            ${{ steps.issue-context.outputs.comment_body && 
+            ${{ steps.issue-context.outputs.comment_body &&
                 format('Comment: {0}', steps.issue-context.outputs.comment_body) || '' }}
 
             Follow these phases:
