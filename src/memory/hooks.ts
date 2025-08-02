@@ -8,13 +8,13 @@
 /**
  * Memory operation types
  */
-export type MemoryOperation = 
-  | 'store' 
-  | 'retrieve' 
-  | 'delete' 
-  | 'clear' 
-  | 'compress' 
-  | 'backup' 
+export type MemoryOperation =
+  | 'store'
+  | 'retrieve'
+  | 'delete'
+  | 'clear'
+  | 'compress'
+  | 'backup'
   | 'restore'
   | 'optimize'
   | 'gc';
@@ -145,7 +145,7 @@ export class MemoryHooks {
    */
   async initialize(): Promise<void> {
     this.logger.debug('Initializing Memory hooks...');
-    
+
     // Start garbage collection timer if enabled
     if (this.config.gcInterval > 0) {
       this.startGarbageCollectionTimer();
@@ -168,7 +168,7 @@ export class MemoryHooks {
   async onMemoryOperation(context: AgenticHookContext): Promise<HookHandlerResult> {
     const payload = context.payload as MemoryHookPayload;
     const operationId = `${context.sessionId}-${Date.now()}`;
-    
+
     this.logger.debug(`Memory operation: ${payload.operation} on key: ${payload.key}`, {
       sessionId: context.sessionId,
       namespace: payload.namespace,
@@ -176,11 +176,11 @@ export class MemoryHooks {
     });
 
     const startTime = performance.now();
-    
+
     try {
       // Record operation start
       this.operationTimes.set(operationId, startTime);
-      
+
       // Pre-operation processing
       const preResult = await this.preOperation(payload, context);
       if (!preResult.success) {
@@ -236,7 +236,7 @@ export class MemoryHooks {
    * Pre-operation hook processing
    */
   private async preOperation(
-    payload: MemoryHookPayload, 
+    payload: MemoryHookPayload,
     context: AgenticHookContext
   ): Promise<HookHandlerResult> {
     let modified = false;
@@ -280,7 +280,7 @@ export class MemoryHooks {
   ): Promise<HookHandlerResult> {
     // This is a hook system - the actual operation would be performed
     // by the calling code. We just track and potentially modify the operation.
-    
+
     switch (payload.operation) {
       case 'store':
         return this.handleStoreOperation(payload, context);
@@ -530,9 +530,7 @@ export class MemoryHooks {
       return false;
     }
 
-    const size = typeof value === 'string' 
-      ? value.length 
-      : JSON.stringify(value).length;
+    const size = typeof value === 'string' ? value.length : JSON.stringify(value).length;
 
     return size > this.config.compressionThreshold;
   }
@@ -543,7 +541,7 @@ export class MemoryHooks {
   private async compressValue(value: any): Promise<string> {
     // In a real implementation, you would use a proper compression library
     const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
-    
+
     return JSON.stringify({
       _compressed: true,
       _originalType: typeof value,
@@ -576,14 +574,14 @@ export class MemoryHooks {
     }
 
     const duration = performance.now() - startTime;
-    
+
     this.metrics.operations[operation]++;
-    
+
     // Update average latency using exponential moving average
     const alpha = 0.1; // Smoothing factor
     const currentAvg = this.metrics.averageLatency[operation];
-    this.metrics.averageLatency[operation] = 
-      currentAvg === 0 ? duration : (alpha * duration) + ((1 - alpha) * currentAvg);
+    this.metrics.averageLatency[operation] =
+      currentAvg === 0 ? duration : alpha * duration + (1 - alpha) * currentAvg;
   }
 
   /**
@@ -593,8 +591,7 @@ export class MemoryHooks {
     // Simplified cache hit rate calculation using exponential moving average
     const alpha = 0.1;
     const hitValue = hit ? 1 : 0;
-    this.metrics.cacheHitRate = 
-      (alpha * hitValue) + ((1 - alpha) * this.metrics.cacheHitRate);
+    this.metrics.cacheHitRate = alpha * hitValue + (1 - alpha) * this.metrics.cacheHitRate;
   }
 
   /**
@@ -603,7 +600,7 @@ export class MemoryHooks {
   private startGarbageCollectionTimer(): void {
     this.gcTimer = setInterval(() => {
       this.logger.debug('Running scheduled garbage collection');
-      
+
       // Trigger GC operation
       this.onMemoryOperation({
         sessionId: 'system',
@@ -674,7 +671,7 @@ export class MemoryHooks {
    */
   async shutdown(): Promise<void> {
     this.logger.debug('Shutting down Memory hooks...');
-    
+
     if (this.gcTimer) {
       clearInterval(this.gcTimer);
       this.gcTimer = undefined;
@@ -692,10 +689,7 @@ export class MemoryHooks {
 /**
  * Factory function to create MemoryHooks instance
  */
-export function createMemoryHooks(
-  logger: Logger, 
-  config?: Partial<MemoryHookConfig>
-): MemoryHooks {
+export function createMemoryHooks(logger: Logger, config?: Partial<MemoryHookConfig>): MemoryHooks {
   return new MemoryHooks(logger, config);
 }
 

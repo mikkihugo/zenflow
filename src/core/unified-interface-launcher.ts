@@ -133,23 +133,23 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
   }
 
   /**
-   * Launch CLI interface (React/Ink CLI)
+   * Launch CLI interface (Unified Terminal Interface)
    */
   private async launchCLI(options: LaunchOptions): Promise<LaunchResult> {
-    logger.debug('Launching React CLI interface');
+    logger.debug('Launching Unified Terminal Interface in CLI mode');
 
     try {
-      // Use the React CLI by spawning the CLI main process
+      // Use the unified terminal interface
       const { spawn } = await import('child_process');
       const cliArgs = [];
-      
+
       if (options.verbose) cliArgs.push('--verbose');
       if (options.config?.theme) cliArgs.push('--theme', options.config.theme);
-      
-      // Force interactive mode for CLI interface launches
-      cliArgs.push('--interactive');
 
-      const cliProcess = spawn('npx', ['tsx', 'src/interfaces/cli/cli-main.tsx', ...cliArgs], {
+      // CLI mode will be detected automatically based on presence of commands
+      // Don't add interactive flag to keep CLI mode behavior
+
+      const cliProcess = spawn('npx', ['tsx', 'src/interfaces/terminal/main.tsx', ...cliArgs], {
         stdio: 'inherit',
         cwd: process.cwd(),
       });
@@ -164,41 +164,50 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
         });
 
         cliProcess.on('error', (error) => {
-          logger.error('React CLI launch error:', error);
+          logger.error('Unified Terminal Interface launch error:', error);
           reject(error);
         });
       });
     } catch (error) {
-      // Fallback to basic CLI if React CLI fails
-      logger.warn('React CLI launch failed, using basic CLI');
+      // Fallback to basic CLI if unified terminal fails
+      logger.warn('Unified Terminal Interface launch failed, using basic CLI');
       return this.launchBasicCLI(options);
     }
   }
 
   /**
-   * Launch TUI interface using React/Ink
+   * Launch TUI interface using Unified Terminal Interface
    */
   private async launchTUI(options: LaunchOptions): Promise<LaunchResult> {
-    logger.debug('Launching TUI interface');
+    logger.debug('Launching Unified Terminal Interface in TUI mode');
 
     try {
-      // Dynamic import of TUI interface
-      const { TUIInterface } = await import('../interfaces/tui/tui-interface.js');
+      // Use the unified terminal interface with TUI mode flag
+      const { spawn } = await import('child_process');
+      const tuiArgs = ['--ui']; // Force TUI mode
 
-      const tui = new TUIInterface({
-        theme: options.config?.theme || 'dark',
-        realTime: options.config?.realTime || true,
-        coreSystem: options.config?.coreSystem,
+      if (options.verbose) tuiArgs.push('--verbose');
+      if (options.config?.theme) tuiArgs.push('--theme', options.config.theme);
+
+      const tuiProcess = spawn('npx', ['tsx', 'src/interfaces/terminal/main.tsx', ...tuiArgs], {
+        stdio: 'inherit',
+        cwd: process.cwd(),
       });
 
-      await tui.initialize();
-      await tui.render();
+      return new Promise((resolve, reject) => {
+        tuiProcess.on('close', (code) => {
+          resolve({
+            mode: 'tui',
+            success: code === 0,
+            pid: tuiProcess.pid,
+          });
+        });
 
-      return {
-        mode: 'tui',
-        success: true,
-        pid: process.pid,
-      };
+        tuiProcess.on('error', (error) => {
+          logger.error('Unified Terminal Interface TUI launch error:', error);
+          reject(error);
+        });
+      });
     } catch (error) {
       logger.error('Failed to launch TUI interface:', error);
 

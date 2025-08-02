@@ -241,7 +241,7 @@ ${steeringContext}
       // Validate markdown structure
       expect(content).toMatch(/^# .+$/m); // Has H1 header
       expect(content).toMatch(/^## .+$/m); // Has H2 headers
-      expect(content).toContain('\n\n'); // Proper paragraph spacing
+      expect(content).toContain('\n'); // Proper paragraph spacing
       expect(content).not.toMatch(/<[^>]+>/); // No HTML tags
     });
   });

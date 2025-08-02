@@ -478,7 +478,8 @@ export class HTTPMCPServer {
         logger.info(`   Health: ${url}/health`);
         logger.info(`   Capabilities: ${url}/capabilities`);
 
-        console.log(`\n🧠 Claude-Zen HTTP MCP Server`);
+        console.log(`
+      🧠 Claude-Zen HTTP MCP Server`);
         console.log(`   Ready at: ${url}`);
         console.log(`   Add to Claude Desktop MCP config:`);
         console.log(`   {`);
@@ -487,7 +488,8 @@ export class HTTPMCPServer {
         console.log(`       "args": ["claude-zen", "mcp", "start"]`);
         console.log(`     }`);
         console.log(`   }`);
-        console.log(`\n   Press Ctrl+C to stop\n`);
+        console.log(`
+      Press Ctrl+C to stop\n`);
 
         resolve();
       });

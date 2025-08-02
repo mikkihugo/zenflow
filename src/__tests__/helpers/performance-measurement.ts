@@ -306,7 +306,7 @@ export class PerformanceMeasurement {
       return 'No performance measurements recorded';
     }
 
-    let report = '=== Performance Report ===\n\n';
+    let report = '=== Performance Report ===\n';
 
     for (const measurement of this.measurements) {
       report += `Test: ${measurement.name}\n`;

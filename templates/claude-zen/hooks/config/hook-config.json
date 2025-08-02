@@ -16,7 +16,7 @@
       "autoFormat": true,
       "formatters": {
         "typescript": "prettier",
-        "javascript": "prettier", 
+        "javascript": "prettier",
         "python": "black",
         "rust": "rustfmt",
         "go": "gofmt"
@@ -32,13 +32,7 @@
       "learnFromSuccess": true,
       "analyzeFailures": true,
       "detectDangerous": true,
-      "dangerousPatterns": [
-        "rm -rf",
-        "sudo rm",
-        "format",
-        "mkfs",
-        "dd if="
-      ]
+      "dangerousPatterns": ["rm -rf", "sudo rm", "format", "mkfs", "dd if="]
     },
     "sessionSummary": {
       "enabled": true,
@@ -46,13 +40,7 @@
       "createReport": true,
       "cleanupOldLogs": true,
       "retentionDays": 30,
-      "trackMetrics": [
-        "commands",
-        "edits", 
-        "tasks",
-        "success_rate",
-        "duration"
-      ]
+      "trackMetrics": ["commands", "edits", "tasks", "success_rate", "duration"]
     },
     "subagentCoordination": {
       "enabled": true,
@@ -78,7 +66,7 @@
     "backgroundOperations": true,
     "mcpTools": {
       "swarmInit": "swarm-init",
-      "agentSpawn": "agent-spawn", 
+      "agentSpawn": "agent-spawn",
       "agentUpdate": "agent-update",
       "memoryUsage": "memory-usage",
       "neuralTrain": "neural-train",
@@ -97,12 +85,7 @@
     "validatePaths": true,
     "blockDangerousCommands": false,
     "logSecurityWarnings": true,
-    "restrictedPatterns": [
-      "\\.\\.",
-      "^/",
-      "sudo rm",
-      "rm -rf /"
-    ]
+    "restrictedPatterns": ["\\.\\.", "^/", "sudo rm", "rm -rf /"]
   },
   "formatting": {
     "enableAutoFormat": true,

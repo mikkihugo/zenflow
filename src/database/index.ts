@@ -4,36 +4,33 @@
  * Provides unified access to vector, graph, and relational storage
  */
 
-// Database interfaces
-export { LanceDBInterface } from './lancedb-interface';
-export { KuzuAdvancedInterface } from './kuzu-advanced-interface';
-export { SwarmDatabase } from './swarm-database';
-
-// Re-export common database types
-export type {
-  // LanceDB types
-  LanceDBConfig,
-  VectorDocument,
-  SearchResult,
-  LanceDBStats,
-  ClusteringOptions,
-  ClusterResult
-} from './lancedb-interface';
-
 // Re-export Kuzu types (if available)
 export type {
-  KuzuConfig,
-  GraphNode,
   GraphEdge,
-  QueryResult
+  GraphNode,
+  KuzuConfig,
+  QueryResult,
 } from './kuzu-advanced-interface';
-
+export { KuzuAdvancedInterface } from './kuzu-advanced-interface';
+// Re-export common database types
+export type {
+  ClusteringOptions,
+  ClusterResult,
+  // LanceDB types
+  LanceDBConfig,
+  LanceDBStats,
+  SearchResult,
+  VectorDocument,
+} from './lancedb-interface';
+// Database interfaces
+export { LanceDBInterface } from './lancedb-interface';
 // Re-export Swarm database types
 export type {
   SwarmDatabaseConfig,
+  SwarmQuery,
   SwarmRecord,
-  SwarmQuery
 } from './swarm-database';
+export { SwarmDatabase } from './swarm-database';
 
 // Database utilities and helpers
 export const DatabaseUtils = {
@@ -58,7 +55,7 @@ export const DatabaseUtils = {
    */
   validateConfig: (type: string, config: any): boolean => {
     if (!type || !config) return false;
-    
+
     switch (type) {
       case 'lancedb':
         return Boolean(config.dbPath || config.dbName);
@@ -78,11 +75,11 @@ export const DatabaseUtils = {
     const capabilities = {
       lancedb: ['vector_search', 'similarity', 'clustering', 'indexing'],
       kuzu: ['graph_queries', 'relationships', 'traversal', 'analytics'],
-      swarm: ['distributed', 'coordination', 'consensus', 'replication']
+      swarm: ['distributed', 'coordination', 'consensus', 'replication'],
     };
-    
+
     return capabilities[type as keyof typeof capabilities] || [];
-  }
+  },
 };
 
 // Database factory for creating instances
@@ -98,27 +95,27 @@ export class DatabaseFactory {
     instanceKey = 'default'
   ): T {
     const key = `${type}:${instanceKey}`;
-    
-    if (!this.instances.has(key)) {
+
+    if (!DatabaseFactory.instances.has(key)) {
       const instance = DatabaseUtils.getDatabaseInterface(type, config);
-      this.instances.set(key, instance);
+      DatabaseFactory.instances.set(key, instance);
     }
-    
-    return this.instances.get(key);
+
+    return DatabaseFactory.instances.get(key);
   }
 
   /**
    * Clear all cached instances
    */
   static clearInstances(): void {
-    this.instances.clear();
+    DatabaseFactory.instances.clear();
   }
 
   /**
    * Get all active instances
    */
   static getActiveInstances(): string[] {
-    return Array.from(this.instances.keys());
+    return Array.from(DatabaseFactory.instances.keys());
   }
 }
 

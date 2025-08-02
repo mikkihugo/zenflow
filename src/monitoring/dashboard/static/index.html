@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude-Zen Performance Monitoring Dashboard</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0d1117;
+            color: #e6edf3;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .header .status {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .status-item {
+            background: #374151;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .status-healthy { background: #065f46; }
+        .status-warning { background: #92400e; }
+        .status-critical { background: #991b1b; }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: #1f2937;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            border: 1px solid #374151;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #374151;
+        }
+
+        .card-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #60a5fa;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 5px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+            transform: translateY(-1px);
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .metric-item {
+            text-align: center;
+            background: #374151;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .metric-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            color: #9ca3af;
+        }
+
+        .metric-healthy { color: #10b981; }
+        .metric-warning { color: #f59e0b; }
+        .metric-critical { color: #ef4444; }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 15px;
+        }
+
+        .alerts-container {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .alert-error {
+            background: #7f1d1d;
+            border-left: 4px solid #ef4444;
+        }
+
+        .alert-warning {
+            background: #78350f;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .alert-info {
+            background: #1e3a8a;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .alert-time {
+            margin-left: auto;
+            font-size: 0.8em;
+            color: #9ca3af;
+        }
+
+        .optimization-list {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .optimization-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 5px;
+            background: #374151;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .optimization-success {
+            border-left: 3px solid #10b981;
+        }
+
+        .optimization-failed {
+            border-left: 3px solid #ef4444;
+        }
+
+        .optimization-impact {
+            font-weight: bold;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #9ca3af;
+        }
+
+        .connection-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .connected {
+            background: #065f46;
+            color: #10b981;
+        }
+
+        .disconnected {
+            background: #991b1b;
+            color: #ef4444;
+        }
+
+        .export-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .export-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .status {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="connection-status" id="connectionStatus">
+        <span id="connectionText">Connecting...</span>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Claude-Zen Performance Dashboard</h1>
+            <div class="status">
+                <div class="status-item" id="systemStatus">System: Loading...</div>
+                <div class="status-item" id="healthStatus">Health: Loading...</div>
+                <div class="status-item" id="clientsStatus">Clients: Loading...</div>
+                <div class="status-item" id="uptimeStatus">Uptime: Loading...</div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- System Metrics -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">System Metrics</h3>
+                    <div class="card-actions">
+                        <button class="btn btn-secondary" onclick="refreshMetrics()">Refresh</button>
+                    </div>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-value metric-healthy" id="cpuUsage">--</div>
+                        <div class="metric-label">CPU Usage %</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value metric-healthy" id="memoryUsage">--</div>
+                        <div class="metric-label">Memory %</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value metric-healthy" id="ioRead">--</div>
+                        <div class="metric-label">I/O Read MB/s</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value metric-healthy" id="ioWrite">--</div>
+                        <div class="metric-label">I/O Write MB/s</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FACT System -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">FACT System</h3>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-value metric-healthy" id="cacheHitRate">--</div>
+                        <div class="metric-label">Cache Hit Rate</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value metric-healthy" id="queryTime">--</div>
+                        <div class="metric-label">Avg Query Time ms</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value metric-healthy" id="documentsStored">--</div>
+                        <div class="metric-label">Documents</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value metric-healthy" id="errorRate">--</div>
+                        <div class="metric-label">Error Rate %</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RAG System -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">RAG System</h3>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-value metric-healthy" id="vectorCount">--</div>
+                        <div class="metric-label">Vector Count</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value metric-healthy" id="queryLatency">--</div>
+                        <div class="metric-label">Query Latency ms</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value metric-healthy" id="retrievalAccuracy">--</div>
+                        <div class="metric-label">Accuracy %</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value metric-healthy" id="embeddingLatency">--</div>
+                        <div class="metric-label">Embedding ms</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Swarm Coordination -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">Swarm Coordination</h3>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-value metric-healthy" id="activeAgents">--</div>
+                        <div class="metric-label">Active Agents</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value metric-healthy" id="consensusTime">--</div>
+                        <div class="metric-label">Consensus ms</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value metric-healthy" id="taskCompletion">--</div>
+                        <div class="metric-label">Task Success %</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value metric-healthy" id="loadBalance">--</div>
+                        <div class="metric-label">Load Balance %</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Chart -->
+            <div class="dashboard-card" style="grid-column: span 2;">
+                <div class="card-header">
+                    <h3 class="card-title">Performance Trends</h3>
+                    <div class="card-actions">
+                        <button class="btn btn-secondary" onclick="toggleChart('cpu')">CPU</button>
+                        <button class="btn btn-secondary" onclick="toggleChart('memory')">Memory</button>
+                        <button class="btn btn-secondary" onclick="toggleChart('health')">Health</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Alerts -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">System Alerts</h3>
+                    <div class="card-actions">
+                        <button class="btn btn-secondary" onclick="clearAlerts()">Clear</button>
+                    </div>
+                </div>
+                <div class="alerts-container" id="alertsContainer">
+                    <div class="loading">No alerts</div>
+                </div>
+            </div>
+
+            <!-- Optimizations -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">Recent Optimizations</h3>
+                </div>
+                <div class="optimization-list" id="optimizationList">
+                    <div class="loading">No optimizations</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Section -->
+        <div class="export-section">
+            <h3>Export Dashboard Data</h3>
+            <div class="export-buttons">
+                <button class="btn btn-primary" onclick="exportData('json')">Export JSON</button>
+                <button class="btn btn-primary" onclick="exportData('csv')">Export CSV</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Socket.IO connection
+        const socket = io();
+        let performanceChart;
+        let chartData = {
+            labels: [],
+            datasets: [{
+                label: 'CPU Usage %',
+                data: [],
+                borderColor: '#60a5fa',
+                backgroundColor: 'rgba(96, 165, 250, 0.1)',
+                tension: 0.4
+            }]
+        };
+
+        // Connection status
+        socket.on('connect', () => {
+            updateConnectionStatus(true);
+        });
+
+        socket.on('disconnect', () => {
+            updateConnectionStatus(false);
+        });
+
+        function updateConnectionStatus(connected) {
+            const status = document.getElementById('connectionStatus');
+            const text = document.getElementById('connectionText');
+            
+            if (connected) {
+                status.className = 'connection-status connected';
+                text.textContent = 'Connected';
+            } else {
+                status.className = 'connection-status disconnected';
+                text.textContent = 'Disconnected';
+            }
+        }
+
+        // Initialize performance chart
+        function initChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            performanceChart = new Chart(ctx, {
+                type: 'line',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: '#374151' },
+                            ticks: { color: '#9ca3af' }
+                        },
+                        x: {
+                            grid: { color: '#374151' },
+                            ticks: { color: '#9ca3af' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#e6edf3' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update metrics display
+        function updateMetrics(metrics) {
+            if (!metrics.system) return;
+
+            // System metrics
+            updateMetricValue('cpuUsage', metrics.system.cpu.usage, '%');
+            updateMetricValue('memoryUsage', metrics.system.memory.percentage, '%');
+            updateMetricValue('ioRead', (metrics.system.io.readBytes / 1024 / 1024).toFixed(1), 'MB/s');
+            updateMetricValue('ioWrite', (metrics.system.io.writeBytes / 1024 / 1024).toFixed(1), 'MB/s');
+
+            // FACT metrics
+            if (metrics.fact) {
+                updateMetricValue('cacheHitRate', (metrics.fact.cache.hitRate * 100).toFixed(1), '%');
+                updateMetricValue('queryTime', metrics.fact.queries.averageQueryTime.toFixed(1), 'ms');
+                updateMetricValue('documentsStored', metrics.fact.storage.documentsStored.toLocaleString());
+                updateMetricValue('errorRate', (metrics.fact.queries.errorRate * 100).toFixed(2), '%');
+            }
+
+            // RAG metrics
+            if (metrics.rag) {
+                updateMetricValue('vectorCount', metrics.rag.vectors.totalVectors.toLocaleString());
+                updateMetricValue('queryLatency', metrics.rag.vectors.queryLatency.toFixed(1), 'ms');
+                updateMetricValue('retrievalAccuracy', (metrics.rag.retrieval.retrievalAccuracy * 100).toFixed(1), '%');
+                updateMetricValue('embeddingLatency', metrics.rag.embedding.embeddingLatency.toFixed(1), 'ms');
+            }
+
+            // Swarm metrics
+            if (metrics.swarm) {
+                updateMetricValue('activeAgents', metrics.swarm.agents.activeAgents);
+                updateMetricValue('consensusTime', metrics.swarm.coordination.consensusTime.toFixed(0), 'ms');
+                const successRate = ((metrics.swarm.tasks.completedTasks / metrics.swarm.tasks.totalTasks) * 100) || 0;
+                updateMetricValue('taskCompletion', successRate.toFixed(1), '%');
+                updateMetricValue('loadBalance', (metrics.swarm.load.balancingEfficiency * 100).toFixed(1), '%');
+            }
+
+            // Update chart
+            updateChart(metrics);
+        }
+
+        function updateMetricValue(id, value, suffix = '') {
+            const element = document.getElementById(id);
+            if (element) {
+                const displayValue = typeof value === 'number' ? value : parseFloat(value) || 0;
+                element.textContent = displayValue.toLocaleString() + suffix;
+                
+                // Update color based on value
+                element.className = 'metric-value ' + getMetricClass(id, displayValue);
+            }
+        }
+
+        function getMetricClass(metricId, value) {
+            const thresholds = {
+                cpuUsage: { warning: 70, critical: 85 },
+                memoryUsage: { warning: 70, critical: 85 },
+                cacheHitRate: { warning: 80, critical: 70 },
+                queryLatency: { warning: 50, critical: 100 },
+                errorRate: { warning: 2, critical: 5 }
+            };
+
+            const threshold = thresholds[metricId];
+            if (!threshold) return 'metric-healthy';
+
+            if (metricId === 'cacheHitRate') {
+                // Higher is better
+                if (value < threshold.critical) return 'metric-critical';
+                if (value < threshold.warning) return 'metric-warning';
+                return 'metric-healthy';
+            } else {
+                // Lower is better
+                if (value > threshold.critical) return 'metric-critical';
+                if (value > threshold.warning) return 'metric-warning';
+                return 'metric-healthy';
+            }
+        }
+
+        function updateChart(metrics) {
+            const now = new Date().toLocaleTimeString();
+            chartData.labels.push(now);
+            chartData.datasets[0].data.push(metrics.system.cpu.usage);
+
+            // Keep only last 20 data points
+            if (chartData.labels.length > 20) {
+                chartData.labels.shift();
+                chartData.datasets[0].data.shift();
+            }
+
+            performanceChart.update('none');
+        }
+
+        function toggleChart(type) {
+            const labels = {
+                cpu: 'CPU Usage %',
+                memory: 'Memory Usage %',
+                health: 'Health Score %'
+            };
+
+            chartData.datasets[0].label = labels[type];
+            chartData.datasets[0].data = []; // Clear existing data
+            performanceChart.update();
+        }
+
+        // Update insights display
+        function updateInsights(insights) {
+            if (insights.healthScore !== undefined) {
+                const healthElement = document.getElementById('healthStatus');
+                const healthValue = insights.healthScore.toFixed(1);
+                healthElement.textContent = `Health: ${healthValue}%`;
+                
+                if (insights.healthScore >= 80) {
+                    healthElement.className = 'status-item status-healthy';
+                } else if (insights.healthScore >= 60) {
+                    healthElement.className = 'status-item status-warning';
+                } else {
+                    healthElement.className = 'status-item status-critical';
+                }
+            }
+        }
+
+        // Update alerts display
+        function updateAlerts(alerts) {
+            const container = document.getElementById('alertsContainer');
+            
+            if (!alerts || alerts.length === 0) {
+                container.innerHTML = '<div class="loading">No alerts</div>';
+                return;
+            }
+
+            container.innerHTML = alerts.map(alert => `
+                <div class="alert-item alert-${alert.type}">
+                    <span>${alert.message}</span>
+                    <span class="alert-time">${new Date(alert.timestamp).toLocaleTimeString()}</span>
+                </div>
+            `).join('');
+        }
+
+        // Update optimizations display
+        function updateOptimizations(optimizations) {
+            const container = document.getElementById('optimizationList');
+            
+            if (!optimizations || optimizations.length === 0) {
+                container.innerHTML = '<div class="loading">No optimizations</div>';
+                return;
+            }
+
+            container.innerHTML = optimizations.slice(-10).reverse().map(opt => `
+                <div class="optimization-item ${opt.success ? 'optimization-success' : 'optimization-failed'}">
+                    <span>${opt.actionId.replace(/_\d+$/, '')}</span>
+                    <span class="optimization-impact">
+                        ${opt.success ? '+' + (opt.impact.performance * 100).toFixed(1) + '%' : 'Failed'}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        // Socket event handlers
+        socket.on('dashboard:initial', (data) => {
+            updateMetrics(data.metrics);
+            updateInsights(data.insights);
+            updateAlerts(data.alerts);
+            updateOptimizations(data.optimizations);
+        });
+
+        socket.on('dashboard:metrics', updateMetrics);
+        socket.on('dashboard:insights', updateInsights);
+        socket.on('dashboard:alerts', updateAlerts);
+        socket.on('dashboard:optimizations', updateOptimizations);
+
+        // UI functions
+        function refreshMetrics() {
+            socket.emit('dashboard:request-metrics');
+        }
+
+        function clearAlerts() {
+            socket.emit('dashboard:clear-alerts');
+        }
+
+        function exportData(format) {
+            socket.emit('dashboard:export-data', format);
+        }
+
+        socket.on('dashboard:export-ready', (data) => {
+            const blob = new Blob([data.data], { 
+                type: data.format === 'json' ? 'application/json' : 'text/csv' 
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dashboard-export-${new Date().toISOString().slice(0, 19)}.${data.format}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            
+            // Request initial data
+            setTimeout(() => {
+                socket.emit('dashboard:request-metrics');
+                socket.emit('dashboard:request-insights');
+                socket.emit('dashboard:request-optimizations');
+            }, 1000);
+
+            // Update status periodically
+            setInterval(() => {
+                fetch('/api/summary')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.system) {
+                            const uptime = Math.floor(data.system.uptime);
+                            const hours = Math.floor(uptime / 3600);
+                            const minutes = Math.floor((uptime % 3600) / 60);
+                            document.getElementById('uptimeStatus').textContent = 
+                                `Uptime: ${hours}h ${minutes}m`;
+                        }
+                        if (data.clients) {
+                            document.getElementById('clientsStatus').textContent = 
+                                `Clients: ${data.clients.connected}`;
+                        }
+                    })
+                    .catch(console.error);
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

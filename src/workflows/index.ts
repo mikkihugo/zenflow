@@ -4,17 +4,20 @@
  * Migrated from plugins to proper domain structure
  */
 
-// Core workflow engine
-export { WorkflowEngine, WorkflowEngine as default } from './engine';
-
 // Re-export workflow types
 export type {
-  WorkflowStep,
-  WorkflowDefinition,
   WorkflowContext,
+  WorkflowDefinition,
+  WorkflowEngineConfig,
   WorkflowState,
-  WorkflowEngineConfig
+  WorkflowStep,
 } from './engine';
+// Core workflow engine
+export { WorkflowEngine } from './engine';
+export { WorkflowEngine as default } from './engine';
+
+// Import for factory use
+import { WorkflowEngine } from './engine';
 
 // Workflow utilities
 export const WorkflowUtils = {
@@ -25,7 +28,7 @@ export const WorkflowUtils = {
     name,
     steps,
     version: '1.0.0',
-    description: `Auto-generated workflow: ${name}`
+    description: `Auto-generated workflow: ${name}`,
   }),
 
   /**
@@ -34,7 +37,7 @@ export const WorkflowUtils = {
   createDelayStep: (duration: number, name?: string) => ({
     type: 'delay',
     name: name || `Delay ${duration}ms`,
-    params: { duration }
+    params: { duration },
   }),
 
   /**
@@ -44,7 +47,7 @@ export const WorkflowUtils = {
     type: 'transform',
     name: name || 'Transform Data',
     params: { input, transformation },
-    output
+    output,
   }),
 
   /**
@@ -53,7 +56,7 @@ export const WorkflowUtils = {
   createConditionStep: (condition: string, thenStep: any, elseStep?: any, name?: string) => ({
     type: 'condition',
     name: name || 'Conditional Step',
-    params: { condition, thenStep, elseStep }
+    params: { condition, thenStep, elseStep },
   }),
 
   /**
@@ -62,7 +65,7 @@ export const WorkflowUtils = {
   createParallelStep: (tasks: any[], name?: string) => ({
     type: 'parallel',
     name: name || 'Parallel Execution',
-    params: { tasks }
+    params: { tasks },
   }),
 
   /**
@@ -71,7 +74,7 @@ export const WorkflowUtils = {
   createLoopStep: (items: string, step: any, name?: string) => ({
     type: 'loop',
     name: name || 'Loop',
-    params: { items, step }
+    params: { items, step },
   }),
 
   /**
@@ -81,10 +84,8 @@ export const WorkflowUtils = {
     if (!workflow.name || !workflow.steps || !Array.isArray(workflow.steps)) {
       return false;
     }
-    
-    return workflow.steps.every((step: any) => 
-      step.type && typeof step.type === 'string'
-    );
+
+    return workflow.steps.every((step: any) => step.type && typeof step.type === 'string');
   },
 
   /**
@@ -93,7 +94,7 @@ export const WorkflowUtils = {
   calculateProgress: (currentStep: number, totalSteps: number): number => {
     if (totalSteps === 0) return 0;
     return Math.round((currentStep / totalSteps) * 100);
-  }
+  },
 };
 
 // Workflow factory for creating engines
@@ -103,32 +104,29 @@ export class WorkflowFactory {
   /**
    * Create or get a workflow engine instance
    */
-  static getInstance(
-    config: any = {},
-    instanceKey = 'default'
-  ): WorkflowEngine {
-    if (!this.instances.has(instanceKey)) {
+  static getInstance(config: any = {}, instanceKey = 'default'): WorkflowEngine {
+    if (!WorkflowFactory.instances.has(instanceKey)) {
       const engine = new WorkflowEngine(config);
-      this.instances.set(instanceKey, engine);
+      WorkflowFactory.instances.set(instanceKey, engine);
     }
-    
-    return this.instances.get(instanceKey)!;
+
+    return WorkflowFactory.instances.get(instanceKey)!;
   }
 
   /**
    * Clear all cached instances
    */
   static clearInstances(): void {
-    for (const [, engine] of this.instances) {
+    for (const [, engine] of WorkflowFactory.instances) {
       engine.cleanup();
     }
-    this.instances.clear();
+    WorkflowFactory.instances.clear();
   }
 
   /**
    * Get all active engine instances
    */
   static getActiveInstances(): string[] {
-    return Array.from(this.instances.keys());
+    return Array.from(WorkflowFactory.instances.keys());
   }
 }

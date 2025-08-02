@@ -69,7 +69,7 @@ export class WorkflowEngine extends EventEmitter {
 
   constructor(config: WorkflowEngineConfig = {}) {
     super();
-    
+
     this.config = {
       maxConcurrentWorkflows: config.maxConcurrentWorkflows ?? 10,
       persistWorkflows: config.persistWorkflows ?? false,
@@ -174,7 +174,11 @@ export class WorkflowEngine extends EventEmitter {
       const contextVars = Object.keys(context)
         .map((key) => `const ${key} = context.${key};`)
         .join('\n');
-      const func = new Function('context', `${contextVars}\n return ${expression};`);
+      const func = new Function(
+        'context',
+        `${contextVars}
+      return ${expression};`
+      );
       return func(context);
     } catch (error) {
       console.error(`[WorkflowEngine] Failed to evaluate condition: ${expression}`, error);
@@ -265,7 +269,7 @@ export class WorkflowEngine extends EventEmitter {
     context: WorkflowContext = {}
   ): Promise<{ success: boolean; workflowId?: string; error?: string }> {
     await this.initialize();
-    
+
     let definition: WorkflowDefinition;
 
     if (typeof workflowDefinitionOrName === 'string') {
@@ -325,7 +329,9 @@ export class WorkflowEngine extends EventEmitter {
 
         const step = workflow.steps[i];
         workflow.currentStep = i;
-        await this.executeWorkflowStep(workflow, step, i);
+        if (step) {
+          await this.executeWorkflowStep(workflow, step, i);
+        }
       }
 
       if (workflow.status === 'running') {

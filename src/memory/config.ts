@@ -1,14 +1,14 @@
 /**
  * Memory Configuration for Cognitive Patterns
- * 
+ *
  * Centralized memory configuration to avoid circular dependencies
  * and provide optimized memory settings for different cognitive patterns.
  */
 
 export interface PatternMemoryConfig {
-  baseMemory: number;      // Base memory allocation in MB
-  poolSharing: number;     // Percentage of shared memory (0.0-1.0)
-  lazyLoading: boolean;    // Enable lazy loading for memory optimization
+  baseMemory: number; // Base memory allocation in MB
+  poolSharing: number; // Percentage of shared memory (0.0-1.0)
+  lazyLoading: boolean; // Enable lazy loading for memory optimization
 }
 
 export interface MemoryConfigOptions {
@@ -26,18 +26,18 @@ export interface MemoryConfigOptions {
  */
 export const PATTERN_MEMORY_CONFIG: MemoryConfigOptions = {
   convergent: {
-    baseMemory: 250,        // Reduced from 291 MB
-    poolSharing: 0.8,       // 80% shared memory
+    baseMemory: 250, // Reduced from 291 MB
+    poolSharing: 0.8, // 80% shared memory
     lazyLoading: true,
   },
   divergent: {
-    baseMemory: 280,        // Reduced from 473 MB
-    poolSharing: 0.7,       // 70% shared memory
+    baseMemory: 280, // Reduced from 473 MB
+    poolSharing: 0.7, // 70% shared memory
     lazyLoading: true,
   },
   lateral: {
-    baseMemory: 300,        // Reduced from 557 MB
-    poolSharing: 0.65,      // 65% shared memory
+    baseMemory: 300, // Reduced from 557 MB
+    poolSharing: 0.65, // 65% shared memory
     lazyLoading: true,
   },
   systems: {
@@ -96,22 +96,22 @@ export const MemoryConfigUtils = {
       if (!patternConfig || typeof patternConfig !== 'object') {
         return false;
       }
-      
+
       const { baseMemory, poolSharing, lazyLoading } = patternConfig;
-      
+
       if (typeof baseMemory !== 'number' || baseMemory <= 0) {
         return false;
       }
-      
+
       if (typeof poolSharing !== 'number' || poolSharing < 0 || poolSharing > 1) {
         return false;
       }
-      
+
       if (typeof lazyLoading !== 'boolean') {
         return false;
       }
     }
-    
+
     return true;
   },
 
@@ -130,17 +130,17 @@ export const MemoryConfigUtils = {
    */
   optimize(availableMemoryMB: number): MemoryConfigOptions {
     const totalRequired = calculateTotalMemoryUsage();
-    const scaleFactor = Math.min(1.0, availableMemoryMB * 0.8 / totalRequired);
-    
+    const scaleFactor = Math.min(1.0, (availableMemoryMB * 0.8) / totalRequired);
+
     const optimized: MemoryConfigOptions = {} as MemoryConfigOptions;
-    
+
     for (const [pattern, config] of Object.entries(PATTERN_MEMORY_CONFIG)) {
       optimized[pattern as keyof MemoryConfigOptions] = {
         ...config,
         baseMemory: Math.floor(config.baseMemory * scaleFactor),
       };
     }
-    
+
     return optimized;
   },
 };

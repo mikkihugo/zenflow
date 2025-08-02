@@ -1,6 +1,6 @@
 /**
  * Neural Network Core Implementation
- * 
+ *
  * TypeScript wrapper for WASM neural network functionality
  * Consolidated from swarm-zen/neural-network.ts with enhanced type safety
  */
@@ -481,7 +481,7 @@ export function validateNetworkConfig(config: NetworkConfig): boolean {
     config.inputSize > 0 &&
     config.outputSize > 0 &&
     config.hiddenLayers.length > 0 &&
-    config.hiddenLayers.every(layer => layer.size > 0)
+    config.hiddenLayers.every((layer) => layer.size > 0)
   );
 }
 
@@ -510,7 +510,7 @@ export function getRecommendedAgentConfig(
     outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
     hiddenLayers: [
       { size: Math.ceil(inputSize * 1.5), activation: ACTIVATION_FUNCTIONS.RELU },
-      { size: Math.ceil(inputSize * 0.75), activation: ACTIVATION_FUNCTIONS.TANH }
+      { size: Math.ceil(inputSize * 0.75), activation: ACTIVATION_FUNCTIONS.TANH },
     ],
     connectionRate: 1.0,
   };
@@ -518,38 +518,36 @@ export function getRecommendedAgentConfig(
   // Customize based on cognitive pattern
   switch (cognitivePattern) {
     case 'convergent':
-      baseConfig.hiddenLayers = [
-        { size: inputSize * 2, activation: ACTIVATION_FUNCTIONS.RELU }
-      ];
+      baseConfig.hiddenLayers = [{ size: inputSize * 2, activation: ACTIVATION_FUNCTIONS.RELU }];
       break;
     case 'divergent':
       baseConfig.hiddenLayers = [
         { size: Math.ceil(inputSize * 2.5), activation: ACTIVATION_FUNCTIONS.TANH },
-        { size: Math.ceil(inputSize * 1.5), activation: ACTIVATION_FUNCTIONS.SIGMOID }
+        { size: Math.ceil(inputSize * 1.5), activation: ACTIVATION_FUNCTIONS.SIGMOID },
       ];
       break;
     case 'lateral':
       baseConfig.hiddenLayers = [
         { size: inputSize * 3, activation: ACTIVATION_FUNCTIONS.ELLIOT },
-        { size: inputSize, activation: ACTIVATION_FUNCTIONS.GAUSSIAN }
+        { size: inputSize, activation: ACTIVATION_FUNCTIONS.GAUSSIAN },
       ];
       break;
     case 'systems':
       baseConfig.hiddenLayers = [
         { size: inputSize * 4, activation: ACTIVATION_FUNCTIONS.RELU },
         { size: inputSize * 2, activation: ACTIVATION_FUNCTIONS.TANH },
-        { size: inputSize, activation: ACTIVATION_FUNCTIONS.SIGMOID }
+        { size: inputSize, activation: ACTIVATION_FUNCTIONS.SIGMOID },
       ];
       break;
     case 'critical':
       baseConfig.hiddenLayers = [
-        { size: Math.ceil(inputSize * 1.2), activation: ACTIVATION_FUNCTIONS.RELU }
+        { size: Math.ceil(inputSize * 1.2), activation: ACTIVATION_FUNCTIONS.RELU },
       ];
       break;
     case 'abstract':
       baseConfig.hiddenLayers = [
         { size: inputSize * 5, activation: ACTIVATION_FUNCTIONS.TANH },
-        { size: inputSize * 2, activation: ACTIVATION_FUNCTIONS.SIGMOID }
+        { size: inputSize * 2, activation: ACTIVATION_FUNCTIONS.SIGMOID },
       ];
       break;
   }

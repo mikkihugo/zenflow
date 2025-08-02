@@ -1,11 +1,22 @@
 /**
  * Coordination Manager - Agent coordination and swarm management
  * Handles agent lifecycle, communication, and task distribution
+ * Following Google TypeScript standards with strict typing
  */
 
 import { EventEmitter } from 'node:events';
 import type { IEventBus } from '../core/event-bus';
-import type { ILogger } from '../core/logger';
+import type { ILogger, LogArgument } from '../core/logger';
+import type {
+  AgentCreatedPayload,
+  AgentDestroyedPayload,
+  AgentStatus,
+  AgentStatusChangedPayload,
+  AgentType,
+  TaskAssignedPayload,
+  TaskCompletedPayload,
+  TaskFailedPayload,
+} from '../types/event-types.js';
 
 export interface CoordinationConfig {
   maxAgents: number;
@@ -31,7 +42,7 @@ export interface Task {
   assignedAgent?: string;
   status: 'pending' | 'assigned' | 'running' | 'completed' | 'failed';
   created: Date;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**

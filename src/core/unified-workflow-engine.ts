@@ -8,62 +8,35 @@
 import { EventEmitter } from 'events';
 import { mkdir, readdir, readFile, unlink, writeFile } from 'fs/promises';
 import { join } from 'path';
+import type {
+  CompletedStepInfo,
+  DocumentContent,
+  StepExecutionResult,
+  WorkflowContext,
+  WorkflowData,
+  WorkflowDataValue,
+  WorkflowDefinition,
+  WorkflowEngineConfig,
+  WorkflowError,
+  WorkflowExecutionOptions,
+  WorkflowMetrics,
+  WorkflowProgress,
+  WorkflowState,
+  WorkflowStatus,
+  WorkflowStep,
+} from '../types/workflow-types.js';
 import { createLogger } from '../utils/logger.js';
 import type { UnifiedMemorySystem } from './unified-memory-system.js';
 
 const logger = createLogger('UnifiedWorkflow');
 
-export interface WorkflowStep {
-  type: string;
-  name?: string;
-  params?: Record<string, any>;
-  retries?: number;
-  timeout?: number;
-  output?: string;
-  onError?: 'stop' | 'continue' | 'skip';
-  dependencies?: string[];
-}
+// WorkflowStep is now imported from types/workflow-types.ts
 
-export interface WorkflowDefinition {
-  name: string;
-  description?: string;
-  version?: string;
-  steps: WorkflowStep[];
-  documentTypes?: string[];
-  triggers?: Array<{
-    event: string;
-    condition?: string;
-  }>;
-}
+// WorkflowDefinition is now imported from types/workflow-types.ts
 
-export interface WorkflowContext {
-  [key: string]: any;
-  workspace?: string;
-  documents?: Record<string, any>;
-  currentDocument?: any;
-}
+// WorkflowContext is now imported from types/workflow-types.ts
 
-export interface WorkflowState {
-  id: string;
-  definition: WorkflowDefinition;
-  status: 'pending' | 'running' | 'paused' | 'completed' | 'failed' | 'cancelled';
-  context: WorkflowContext;
-  currentStep: number;
-  steps: WorkflowStep[];
-  stepResults: Record<string, any>;
-  completedSteps: Array<{
-    index: number;
-    step: WorkflowStep;
-    result: any;
-    duration: number;
-    timestamp: string;
-  }>;
-  startTime: string;
-  endTime?: string;
-  pausedAt?: string;
-  error?: string;
-  progress: number;
-}
+// WorkflowState is now imported from types/workflow-types.ts
 
 // Document workflow definitions
 const DOCUMENT_WORKFLOWS: WorkflowDefinition[] = [
@@ -281,8 +254,11 @@ export class UnifiedWorkflowEngine extends EventEmitter {
   private memory: UnifiedMemorySystem;
   private activeWorkflows = new Map<string, WorkflowState>();
   private workflowDefinitions = new Map<string, WorkflowDefinition>();
-  private stepHandlers = new Map<string, (context: WorkflowContext, params: any) => Promise<any>>();
-  private config: {
+  private stepHandlers = new Map<
+    string,
+    (context: WorkflowContext, params: WorkflowData) => Promise<StepExecutionResult>
+  >();
+  private config: WorkflowEngineConfig & {
     maxConcurrentWorkflows: number;
     persistWorkflows: boolean;
     persistencePath: string;
@@ -291,7 +267,7 @@ export class UnifiedWorkflowEngine extends EventEmitter {
     enableVisualization: boolean;
   };
 
-  constructor(memory: UnifiedMemorySystem, config: any = {}) {
+  constructor(memory: UnifiedMemorySystem, config: Partial<WorkflowEngineConfig> = {}) {
     super();
     this.memory = memory;
     this.config = {
@@ -381,7 +357,7 @@ export class UnifiedWorkflowEngine extends EventEmitter {
    */
   registerStepHandler(
     type: string,
-    handler: (context: WorkflowContext, params: any) => Promise<any>
+    handler: (context: WorkflowContext, params: WorkflowData) => Promise<StepExecutionResult>
   ): void {
     this.stepHandlers.set(type, handler);
     logger.debug(`Registered step handler: ${type}`);
@@ -400,7 +376,7 @@ export class UnifiedWorkflowEngine extends EventEmitter {
    */
   async startWorkflow(
     workflowName: string,
-    context: WorkflowContext = {}
+    context: Partial<WorkflowContext> = {}
   ): Promise<{ success: boolean; workflowId?: string; error?: string }> {
     const definition = this.workflowDefinitions.get(workflowName);
     if (!definition) {
@@ -419,17 +395,68 @@ export class UnifiedWorkflowEngine extends EventEmitter {
     }
 
     const workflowId = `workflow-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    // Create properly typed context
+    const fullContext: WorkflowContext = {
+      workspaceId: context.workspaceId || 'default',
+      sessionId: workflowId,
+      documents: context.documents || {},
+      currentDocument: context.currentDocument,
+      variables: context.variables || {},
+      environment: {
+        type: 'development',
+        nodeVersion: process.version,
+        workflowVersion: '1.0.0',
+        features: [],
+        limits: {
+          maxSteps: 100,
+          maxDuration: 3600000, // 1 hour
+          maxMemory: 1024 * 1024 * 1024, // 1GB
+          maxFileSize: 10 * 1024 * 1024, // 10MB
+          maxConcurrency: 5,
+        },
+      },
+      permissions: {
+        canReadDocuments: true,
+        canWriteDocuments: true,
+        canDeleteDocuments: false,
+        canExecuteSteps: ['*'],
+        canAccessResources: ['*'],
+      },
+      ...context,
+    };
+
     const workflow: WorkflowState = {
       id: workflowId,
       definition,
       status: 'pending',
-      context,
-      currentStep: 0,
-      steps: definition.steps,
+      context: fullContext,
+      currentStepIndex: 0,
+      steps: definition.steps.map((step) => ({
+        step,
+        status: 'pending',
+        attempts: 0,
+      })),
       stepResults: {},
       completedSteps: [],
-      startTime: new Date().toISOString(),
-      progress: 0,
+      startTime: new Date(),
+      progress: {
+        percentage: 0,
+        completedSteps: 0,
+        totalSteps: definition.steps.length,
+      },
+      metrics: {
+        totalDuration: 0,
+        avgStepDuration: 0,
+        successRate: 0,
+        retryRate: 0,
+        resourceUsage: {
+          cpuTime: 0,
+          memoryPeak: 0,
+          diskIo: 0,
+          networkRequests: 0,
+        },
+        throughput: 0,
+      },
     };
 
     this.activeWorkflows.set(workflowId, workflow);
@@ -452,8 +479,8 @@ export class UnifiedWorkflowEngine extends EventEmitter {
   async processDocumentEvent(
     event: string,
     documentType: string,
-    document: any,
-    context: WorkflowContext = {}
+    document: DocumentContent,
+    context: Partial<WorkflowContext> = {}
   ): Promise<string[]> {
     const startedWorkflows: string[] = [];
 
@@ -693,7 +720,15 @@ export class UnifiedWorkflowEngine extends EventEmitter {
       title: `Architecture Decision: ${req}`,
       status: 'proposed',
       date: new Date().toISOString().split('T')[0],
-      content: `# ADR-${String(index + 1).padStart(3, '0')}: ${req}\n\n## Status\nProposed\n\n## Context\n${req}\n\n## Decision\nTo be determined through analysis and discussion.\n\n## Consequences\nTo be evaluated based on chosen solution.`,
+      content: `# ADR-${String(index + 1).padStart(3, '0')}: ${req}
+      \n## Status
+      Proposed
+      \n## Context
+      ${req}
+      \n## Decision
+      To be determined through analysis and discussion.
+      \n## Consequences
+      To be evaluated based on chosen solution.`,
     }));
 
     logger.info(`Generated ${adrs.length} ADR documents`);
@@ -808,7 +843,11 @@ export class UnifiedWorkflowEngine extends EventEmitter {
       const contextVars = Object.keys(context)
         .map((key) => `const ${key} = context.${key};`)
         .join('\n');
-      const func = new Function('context', `${contextVars}\n return ${expression};`);
+      const func = new Function(
+        'context',
+        `${contextVars}
+      return ${expression};`
+      );
       return func(context);
     } catch (error) {
       logger.error(`Failed to evaluate condition: ${expression}`, error);

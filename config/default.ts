@@ -6,14 +6,14 @@ const _config = {
   app: {
     name: 'Claude-Zen',
     version: '2.0.0-alpha.73',
-    environment: process.env.NODE_ENV ?? 'development',
-    debug: process.env.DEBUG === 'true',
+    environment: process.env['NODE_ENV'] ?? 'development',
+    debug: process.env['DEBUG'] === 'true',
   },
   server: {
-    port: parseInt(process.env.PORT ?? '3000', 10),
-    host: process.env.HOST ?? 'localhost',
+    port: parseInt(process.env['PORT'] ?? '3000', 10),
+    host: process.env['HOST'] ?? 'localhost',
     cors: {
-      origin: process.env.CORS_ORIGIN?.split(',') ?? '*',
+      origin: process.env['CORS_ORIGIN']?.split(',') ?? '*',
       credentials: true,
     },
     rateLimit: {
@@ -23,16 +23,16 @@ const _config = {
   },
   database: {
     sqlite: {
-      path: process.env.SQLITE_PATH ?? './databases/claude-zen.db',
+      path: process.env['SQLITE_PATH'] ?? './databases/claude-zen.db',
       timeout: 5000,
-      verbose: process.env.DEBUG === 'true',
+      verbose: process.env['DEBUG'] === 'true',
     },
     lancedb: {
-      path: process.env.LANCEDB_PATH ?? './databases/vectors',
+      path: process.env['LANCEDB_PATH'] ?? './databases/vectors',
       dimensions: 1536, // OpenAI embedding dimensions
     },
     kuzu: {
-      path: process.env.KUZU_PATH ?? './databases/graph',
+      path: process.env['KUZU_PATH'] ?? './databases/graph',
       readOnly: false,
     },
   },
@@ -51,23 +51,23 @@ const _config = {
       'WaveNet',
       'TCN',
     ],
-    gpuAcceleration: process.env.GPU_ACCELERATION !== 'false',
+    gpuAcceleration: process.env['GPU_ACCELERATION'] !== 'false',
   },
   hiveMind: {
-    maxQueens: parseInt(process.env.MAX_QUEENS ?? '10', 10),
+    maxQueens: parseInt(process.env['MAX_QUEENS'] ?? '10', 10),
     consensusThreshold: 0.66, // 66% consensus required
     memoryRetention: 30 * 24 * 60 * 60 * 1000, // 30 days in ms
     autoBackup: true,
   },
   logging: {
-    level: process.env.LOG_LEVEL ?? 'info',
+    level: process.env['LOG_LEVEL'] ?? 'info',
     format: 'json',
-    file: process.env.LOG_FILE ?? './logs/claude-zen.log',
+    file: process.env['LOG_FILE'] ?? './logs/claude-zen.log',
   },
   security: {
-    jwtSecret: process.env.JWT_SECRET ?? 'claude-zen-development-secret-change-in-production',
-    tokenExpiry: process.env.TOKEN_EXPIRY ?? '24h',
-    rateLimiting: process.env.RATE_LIMITING !== 'false',
+    jwtSecret: process.env['JWT_SECRET'] ?? 'claude-zen-development-secret-change-in-production',
+    tokenExpiry: process.env['TOKEN_EXPIRY'] ?? '24h',
+    rateLimiting: process.env['RATE_LIMITING'] !== 'false',
   },
 };
 

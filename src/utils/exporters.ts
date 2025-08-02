@@ -4,7 +4,7 @@
  * Migrated from plugins to utils domain
  */
 
-import { writeFile, mkdir } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import * as path from 'node:path';
 
 export interface ExportResult {
@@ -74,7 +74,7 @@ export class ExportSystem {
 
   async exportData(data: any, config: ExportConfig): Promise<ExportResult> {
     const timestamp = Date.now();
-    
+
     try {
       const exporter = this.exporters.get(config.format);
       if (!exporter) {
@@ -82,31 +82,31 @@ export class ExportSystem {
       }
 
       const exportedData = exporter.export(data);
-      
+
       if (config.outputPath && config.fileName) {
         const filePath = path.join(config.outputPath, config.fileName + exporter.extension);
-        
+
         // Ensure directory exists
         await mkdir(path.dirname(filePath), { recursive: true });
-        
+
         // Write file
         await writeFile(filePath, exportedData, 'utf8');
-        
+
         const result: ExportResult = {
           success: true,
           filePath,
-          timestamp
+          timestamp,
         };
-        
+
         this.exportHistory.push(result);
         return result;
       } else {
         const result: ExportResult = {
           success: true,
           data: exportedData,
-          timestamp
+          timestamp,
         };
-        
+
         this.exportHistory.push(result);
         return result;
       }
@@ -114,9 +114,9 @@ export class ExportSystem {
       const result: ExportResult = {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp
+        timestamp,
       };
-      
+
       this.exportHistory.push(result);
       return result;
     }
@@ -131,7 +131,7 @@ export class ExportSystem {
     const csvRows = [headers.join(',')];
 
     for (const row of data) {
-      const values = headers.map(header => {
+      const values = headers.map((header) => {
         const value = row[header];
         // Escape commas and quotes
         if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
@@ -149,29 +149,33 @@ export class ExportSystem {
     // Simple YAML conversion - in production, use a proper YAML library
     const yamlify = (obj: any, indent = 0): string => {
       const spaces = '  '.repeat(indent);
-      
+
       if (obj === null || obj === undefined) {
         return 'null';
       }
-      
+
       if (typeof obj === 'string') {
         return obj.includes('\n') ? `|\n${spaces}  ${obj.replace(/\n/g, `\n${spaces}  `)}` : obj;
       }
-      
+
       if (typeof obj === 'number' || typeof obj === 'boolean') {
         return obj.toString();
       }
-      
+
       if (Array.isArray(obj)) {
-        return obj.map(item => `${spaces}- ${yamlify(item, indent + 1).replace(/^\s+/, '')}`).join('\n');
-      }
-      
-      if (typeof obj === 'object') {
-        return Object.entries(obj)
-          .map(([key, value]) => `${spaces}${key}: ${yamlify(value, indent + 1).replace(/^\s+/, '')}`)
+        return obj
+          .map((item) => `${spaces}- ${yamlify(item, indent + 1).replace(/^\s+/, '')}`)
           .join('\n');
       }
-      
+
+      if (typeof obj === 'object') {
+        return Object.entries(obj)
+          .map(
+            ([key, value]) => `${spaces}${key}: ${yamlify(value, indent + 1).replace(/^\s+/, '')}`
+          )
+          .join('\n');
+      }
+
       return obj.toString();
     };
 
@@ -183,26 +187,27 @@ export class ExportSystem {
       if (obj === null || obj === undefined) {
         return `<${name}></${name}>`;
       }
-      
+
       if (typeof obj === 'string' || typeof obj === 'number' || typeof obj === 'boolean') {
         return `<${name}>${obj}</${name}>`;
       }
-      
+
       if (Array.isArray(obj)) {
-        return `<${name}>${obj.map(item => xmlify(item, 'item')).join('')}</${name}>`;
+        return `<${name}>${obj.map((item) => xmlify(item, 'item')).join('')}</${name}>`;
       }
-      
+
       if (typeof obj === 'object') {
         const content = Object.entries(obj)
           .map(([key, value]) => xmlify(value, key))
           .join('');
         return `<${name}>${content}</${name}>`;
       }
-      
+
       return `<${name}>${obj}</${name}>`;
     };
 
-    return `<?xml version="1.0" encoding="UTF-8"?>\n${xmlify(data)}`;
+    return `<?xml version="1.0" encoding="UTF-8"?>
+      ${xmlify(data)}`;
   }
 
   private convertToMarkdown(data: any): string {
@@ -210,40 +215,41 @@ export class ExportSystem {
       if (obj === null || obj === undefined) {
         return '';
       }
-      
+
       if (typeof obj === 'string') {
         return obj;
       }
-      
+
       if (typeof obj === 'number' || typeof obj === 'boolean') {
         return obj.toString();
       }
-      
+
       if (Array.isArray(obj)) {
         if (obj.length > 0 && typeof obj[0] === 'object' && !Array.isArray(obj[0])) {
           // Convert array of objects to table
           const headers = Object.keys(obj[0]);
           const headerRow = `| ${headers.join(' | ')} |`;
           const separatorRow = `| ${headers.map(() => '---').join(' | ')} |`;
-          const dataRows = obj.map(item => 
-            `| ${headers.map(header => item[header]?.toString() || '').join(' | ')} |`
+          const dataRows = obj.map(
+            (item) => `| ${headers.map((header) => item[header]?.toString() || '').join(' | ')} |`
           );
           return [headerRow, separatorRow, ...dataRows].join('\n');
         } else {
           // Convert to list
-          return obj.map(item => `- ${mdify(item, level + 1)}`).join('\n');
+          return obj.map((item) => `- ${mdify(item, level + 1)}`).join('\n');
         }
       }
-      
+
       if (typeof obj === 'object') {
         return Object.entries(obj)
           .map(([key, value]) => {
             const heading = '#'.repeat(level);
-            return `${heading} ${key}\n\n${mdify(value, level + 1)}`;
+            return `${heading} ${key}
+      \n${mdify(value, level + 1)}`;
           })
-          .join('\n\n');
+          .join('\n');
       }
-      
+
       return obj.toString();
     };
 
@@ -304,7 +310,7 @@ export const ExportUtils = {
   toMarkdown: (data: any): string => {
     const system = new ExportSystem();
     return system['convertToMarkdown'](data);
-  }
+  },
 };
 
 export default ExportSystem;

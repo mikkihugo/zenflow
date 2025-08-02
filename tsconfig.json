@@ -1,61 +1,117 @@
 {
   "compilerOptions": {
+    // 🚨 GOOGLE-LEVEL STRICT TYPESCRIPT CONFIGURATION
+    // Zero tolerance for code quality issues
+
+    // === CORE LANGUAGE SETTINGS ===
     "target": "ES2023",
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "lib": ["ES2023"],
+    "moduleDetection": "force",
+
+    // === STRICT TYPE CHECKING (ALL ENABLED) ===
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "exactOptionalPropertyTypes": true,
+
+    // === ADDITIONAL TYPE CHECKING ===
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+
+    // === MODULE RESOLUTION ===
+    "baseUrl": "./src",
+    "paths": {
+      "@core/*": ["core/*"],
+      "@coordination/*": ["coordination/*"],
+      "@neural/*": ["neural/*"],
+      "@memory/*": ["memory/*"],
+      "@utils/*": ["utils/*"],
+      "@types/*": ["types/*"],
+      "@interfaces/*": ["interfaces/*"],
+      "@swarm-zen/*": ["swarm-zen/*"],
+      "@api/*": ["api/*"],
+      "@mcp/*": ["mcp/*"],
+      "@config/*": ["config/*"],
+      "@terminal/*": ["terminal/*"]
+    },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "allowJs": true,
-    "checkJs": false,
-    "skipLibCheck": true,
-    "outDir": "./dist",
-    "strict": true,
-    "noImplicitAny": false,
-    "strictNullChecks": true,
-    "strictFunctionTypes": false,
-    "noImplicitReturns": false,
-    "noFallthroughCasesInSwitch": false,
-    "noImplicitOverride": false,
-    "exactOptionalPropertyTypes": false,
-    "noPropertyAccessFromIndexSignature": false,
-    "noUncheckedIndexedAccess": false,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": false,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "lib": ["ES2023"],
-    "moduleDetection": "force",
-    "types": ["node", "jest"],
+
+    // === EMIT SETTINGS ===
+    "outDir": "./dist",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "removeComments": false,
+    "importHelpers": true,
+    "downlevelIteration": true,
+
+    // === ADVANCED SETTINGS ===
+    "skipLibCheck": true,
+    "checkJs": false,
+    "allowJs": true,
+    "maxNodeModuleJsDepth": 0,
+
+    // === TYPE ROOTS ===
+    "types": ["node", "jest", "react"],
     "typeRoots": ["./node_modules/@types", "./src/types"],
-    "allowImportingTsExtensions": false
+
+    // === JSX SUPPORT ===
+    "jsx": "react-jsx",
+
+    // === EXPERIMENTAL ===
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
+
   "include": [
     "src/**/*.ts",
-    "bin/**/*.ts",
+    "src/**/*.tsx",
     "config/**/*.ts",
     "memory/**/*.ts",
+    "bin/**/*.ts",
     "tests/**/*.ts",
     "examples/**/*.ts",
     "./*.ts"
   ],
+
   "exclude": [
     "node_modules",
     "dist",
     "deno_modules",
-    "src/terminal/vscode-bridge.ts",
     "**/*.js",
     "**/*.test.js",
+    "**/*.spec.js",
     "scripts/**/*",
     "benchmark/**/*",
-    "tests/**/*.js"
+    "src/terminal/vscode-bridge.ts",
+    "ruv-FANN/**/*",
+    "claude-zen-mcp/**/*"
   ],
+
   "ts-node": {
     "esm": true,
-    "experimentalSpecifierResolution": "node"
+    "experimentalSpecifierResolution": "node",
+    "compilerOptions": {
+      "strict": true,
+      "noImplicitAny": true
+    }
   }
 }

@@ -106,7 +106,10 @@ export class UnifiedExportSystem extends EventEmitter {
       mimeType: 'application/xml',
       description: 'Export data as XML format',
       export: (data: any, options?: ExportOptions) => {
-        return `<?xml version="1.0" encoding="UTF-8"?>\n<root>\n${this.convertToXML(data, 1)}\n</root>`;
+        return `<?xml version="1.0" encoding="UTF-8"?>
+      <root>
+      ${this.convertToXML(data, 1)}
+      </root>`;
       },
       validate: (data: any) => data !== undefined && data !== null,
     });
@@ -387,7 +390,9 @@ export class UnifiedExportSystem extends EventEmitter {
       return obj
         .map(
           (item, index) =>
-            `${spaces}<item index="${index}">\n${this.convertToXML(item, indent + 1)}\n${spaces}</item>`
+            `${spaces}<item index="${index}">
+      ${this.convertToXML(item, indent + 1)}
+      ${spaces}</item>`
         )
         .join('\n');
     }
@@ -396,7 +401,9 @@ export class UnifiedExportSystem extends EventEmitter {
       return Object.entries(obj)
         .map(
           ([key, value]) =>
-            `${spaces}<${this.sanitizeXMLTag(key)}>\n${this.convertToXML(value, indent + 1)}\n${spaces}</${this.sanitizeXMLTag(key)}>`
+            `${spaces}<${this.sanitizeXMLTag(key)}>
+      ${this.convertToXML(value, indent + 1)}
+      ${spaces}</${this.sanitizeXMLTag(key)}>`
         )
         .join('\n');
     }
@@ -410,15 +417,17 @@ export class UnifiedExportSystem extends EventEmitter {
     if (typeof data === 'object' && data !== null) {
       // Handle document-like objects
       if (data.title) {
-        markdown += `# ${data.title}\n\n`;
+        markdown += `# ${data.title}
+      \n`;
       }
 
       if (data.description) {
-        markdown += `${data.description}\n\n`;
+        markdown += `${data.description}
+      \n`;
       }
 
       if (data.metadata) {
-        markdown += '## Metadata\n\n';
+        markdown += '## Metadata\n';
         for (const [key, value] of Object.entries(data.metadata)) {
           markdown += `- **${key}**: ${value}\n`;
         }
@@ -426,19 +435,25 @@ export class UnifiedExportSystem extends EventEmitter {
       }
 
       if (data.content) {
-        markdown += '## Content\n\n';
-        markdown += `${data.content}\n\n`;
+        markdown += '## Content\n';
+        markdown += `${data.content}\n`;
       }
 
       // Handle arrays of items
       for (const [key, value] of Object.entries(data)) {
         if (Array.isArray(value) && key !== 'metadata') {
-          markdown += `## ${key.charAt(0).toUpperCase() + key.slice(1)}\n\n`;
+          markdown += `## ${key.charAt(0).toUpperCase() + key.slice(1)}
+      \n`;
           for (const item of value) {
             if (typeof item === 'object' && item.title) {
-              markdown += `### ${item.title}\n\n`;
-              if (item.description) markdown += `${item.description}\n\n`;
-              if (item.content) markdown += `${item.content}\n\n`;
+              markdown += `### ${item.title}
+      \n`;
+              if (item.description)
+                markdown += `${item.description}
+      \n`;
+              if (item.content)
+                markdown += `${item.content}
+      \n`;
             } else {
               markdown += `- ${typeof item === 'string' ? item : JSON.stringify(item)}\n`;
             }

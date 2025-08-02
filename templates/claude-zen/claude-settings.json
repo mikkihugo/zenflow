@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "pre-task": "npx claude-zen hooks pre-task",
+    "post-edit": "npx claude-zen hooks post-edit",
+    "session-end": "npx claude-zen hooks session-end"
+  },
+  "subAgents": {
+    "autoLoad": true,
+    "directory": ".claude/agents"
+  },
+  "swarmIntegration": {
+    "enabled": true,
+    "mcpServer": "claude-zen",
+    "autoSpawn": true
+  }
+}

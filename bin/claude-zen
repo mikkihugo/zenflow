@@ -14,14 +14,14 @@ else
 fi
 
 # Handle global npm installation vs local execution
-if [ -f "$SCRIPT_DIR/../src/interfaces/cli/cli-main.js" ]; then
+if [ -f "$SCRIPT_DIR/../src/interfaces/terminal/main.tsx" ]; then
   # Local development or properly structured installation
   ROOT_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 else
   # Global npm installation - files might be in different location
   # Try to find the module root
   NODE_ROOT=$(npm root -g 2>/dev/null)
-  if [ -n "$NODE_ROOT" ] && [ -f "$NODE_ROOT/claude-zen/src/interfaces/cli/cli-main.js" ]; then
+  if [ -n "$NODE_ROOT" ] && [ -f "$NODE_ROOT/claude-zen/src/interfaces/terminal/main.tsx" ]; then
     ROOT_DIR="$NODE_ROOT/claude-zen"
   else
     # Fallback to relative path
@@ -49,12 +49,12 @@ for arg in "$@"; do
 done
 
 # Use Node.js directly (assuming Node 22 is default)
-if [ -f "$ROOT_DIR/dist/interfaces/cli/cli-main.js" ]; then
-  # Use built React CLI version (preferred)
-  cd "$ROOT_DIR" && exec node dist/interfaces/cli/cli-main.js "$@"
-elif [ -f "$ROOT_DIR/src/interfaces/cli/cli-main.tsx" ]; then
-  # Use source React CLI version with tsx
-  cd "$ROOT_DIR" && exec npx tsx src/interfaces/cli/cli-main.tsx "$@"
+if [ -f "$ROOT_DIR/dist/interfaces/terminal/main.js" ]; then
+  # Use built Unified Terminal Interface version (preferred)
+  cd "$ROOT_DIR" && exec node dist/interfaces/terminal/main.js "$@"
+elif [ -f "$ROOT_DIR/src/interfaces/terminal/main.tsx" ]; then
+  # Use source Unified Terminal Interface version with tsx
+  cd "$ROOT_DIR" && exec npx tsx src/interfaces/terminal/main.tsx "$@"
 else
   # No runtime available, show help
   echo "🧠 Claude-Flow v$VERSION - Advanced AI Agent Orchestration System"
@@ -66,7 +66,7 @@ else
   echo "  2. Run: claude-zen <command>"
   echo ""
   echo "Or use node directly:"
-  echo "  node src/interfaces/cli/cli-main.js <command>"
+  echo "  node src/interfaces/terminal/main.js <command>"
   echo ""
   echo "Documentation: https://github.com/ruvnet/claude-zen"
   exit 1

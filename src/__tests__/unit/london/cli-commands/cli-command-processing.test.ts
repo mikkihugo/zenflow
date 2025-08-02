@@ -302,7 +302,7 @@ describe('CLI Command Processing - TDD London', () => {
       const expectedOutputs = {
         json: '{"message": "test output"}',
         yaml: 'message: test output',
-        table: '| message      | \n| test output  |',
+        table: '| message      |\n      | test output  |',
         text: 'message: test output',
       };
 

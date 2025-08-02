@@ -4,7 +4,7 @@
  * Migrated from plugins to utils domain
  */
 
-import { readFile, writeFile, readdir, stat } from 'node:fs/promises';
+import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import * as path from 'node:path';
 
 export interface DocumentLink {
@@ -32,7 +32,7 @@ export class DocumentationLinker {
     documents: [],
     categories: {},
     tags: {},
-    graph: {}
+    graph: {},
   };
 
   constructor(private basePath: string = './docs') {}
@@ -53,11 +53,11 @@ export class DocumentationLinker {
   private async scanDirectory(dirPath: string): Promise<void> {
     try {
       const entries = await readdir(dirPath);
-      
+
       for (const entry of entries) {
         const fullPath = path.join(dirPath, entry);
         const stats = await stat(fullPath);
-        
+
         if (stats.isDirectory()) {
           await this.scanDirectory(fullPath);
         } else if (this.isDocumentFile(entry)) {
@@ -71,14 +71,14 @@ export class DocumentationLinker {
 
   private isDocumentFile(filename: string): boolean {
     const extensions = ['.md', '.txt', '.rst', '.adoc', '.html'];
-    return extensions.some(ext => filename.toLowerCase().endsWith(ext));
+    return extensions.some((ext) => filename.toLowerCase().endsWith(ext));
   }
 
   private async processDocument(filePath: string): Promise<void> {
     try {
       const content = await readFile(filePath, 'utf8');
       const stats = await stat(filePath);
-      
+
       const doc: DocumentLink = {
         id: this.generateDocumentId(filePath),
         title: this.extractTitle(content, filePath),
@@ -86,7 +86,7 @@ export class DocumentationLinker {
         type: this.determineDocumentType(filePath, content),
         lastModified: stats.mtime,
         dependencies: this.extractDependencies(content),
-        backlinks: []
+        backlinks: [],
       };
 
       // Extract metadata from frontmatter or comments
@@ -101,7 +101,10 @@ export class DocumentationLinker {
   }
 
   private generateDocumentId(filePath: string): string {
-    return path.relative(this.basePath, filePath).replace(/[/\\]/g, '-').replace(/\.[^.]+$/, '');
+    return path
+      .relative(this.basePath, filePath)
+      .replace(/[/\\]/g, '-')
+      .replace(/\.[^.]+$/, '');
   }
 
   private extractTitle(content: string, filePath: string): string {
@@ -123,7 +126,7 @@ export class DocumentationLinker {
 
   private determineDocumentType(filePath: string, content: string): DocumentLink['type'] {
     const ext = path.extname(filePath).toLowerCase();
-    
+
     if (ext === '.md') {
       if (content.includes('## API') || content.includes('### Endpoints')) {
         return 'api';
@@ -133,29 +136,30 @@ export class DocumentationLinker {
       }
       return 'markdown';
     }
-    
+
     if (['.js', '.ts', '.py', '.rs', '.go'].includes(ext)) {
       return 'code';
     }
-    
+
     return 'text';
   }
 
   private extractDependencies(content: string): string[] {
     const dependencies: string[] = [];
-    
+
     // Extract markdown links
     const markdownLinks = content.match(/\[([^\]]+)\]\(([^)]+)\)/g) || [];
-    markdownLinks.forEach(link => {
+    markdownLinks.forEach((link) => {
       const match = link.match(/\[([^\]]+)\]\(([^)]+)\)/);
-      if (match && match[2].startsWith('./') || match[2].startsWith('../')) {
+      if ((match && match[2].startsWith('./')) || match[2].startsWith('../')) {
         dependencies.push(match[2]);
       }
     });
 
     // Extract relative imports/requires
-    const importMatches = content.match(/(?:import|require|include)\s+['"](\.\.?\/[^'"]+)['"]/g) || [];
-    importMatches.forEach(imp => {
+    const importMatches =
+      content.match(/(?:import|require|include)\s+['"](\.\.?\/[^'"]+)['"]/g) || [];
+    importMatches.forEach((imp) => {
       const match = imp.match(/['"](\.\.?\/[^'"]+)['"]/);
       if (match) dependencies.push(match[1]);
     });
@@ -165,24 +169,27 @@ export class DocumentationLinker {
 
   private extractMetadata(content: string): any {
     const metadata: any = {};
-    
+
     // YAML frontmatter
-    const yamlMatch = content.match(/^---\n([\s\S]*?)\n---/);
+    const yamlMatch = content.match(/^---\\n([\\s\\S]*?)\\n---/);
     if (yamlMatch) {
       const yamlContent = yamlMatch[1];
       const lines = yamlContent.split('\n');
-      
+
       for (const line of lines) {
         const match = line.match(/^(\w+):\s*(.+)$/);
         if (match) {
           const key = match[1];
           let value: any = match[2].trim();
-          
+
           // Parse arrays
           if (value.startsWith('[') && value.endsWith(']')) {
-            value = value.slice(1, -1).split(',').map(s => s.trim().replace(/['"]/g, ''));
+            value = value
+              .slice(1, -1)
+              .split(',')
+              .map((s) => s.trim().replace(/['"]/g, ''));
           }
-          
+
           metadata[key] = value;
         }
       }
@@ -190,7 +197,7 @@ export class DocumentationLinker {
 
     // HTML meta tags
     const metaTags = content.match(/<meta\s+name="([^"]+)"\s+content="([^"]+)"/g) || [];
-    metaTags.forEach(tag => {
+    metaTags.forEach((tag) => {
       const match = tag.match(/<meta\s+name="([^"]+)"\s+content="([^"]+)"/);
       if (match) {
         metadata[match[1]] = match[2];
@@ -227,8 +234,8 @@ export class DocumentationLinker {
       // Build dependency graph
       if (doc.dependencies) {
         this.index.graph[doc.id] = doc.dependencies
-          .map(dep => this.resolveDocumentId(dep, doc.path))
-          .filter(id => id && this.documents.has(id));
+          .map((dep) => this.resolveDocumentId(dep, doc.path))
+          .filter((id) => id && this.documents.has(id));
       }
     }
 
@@ -268,11 +275,12 @@ export class DocumentationLinker {
    */
   searchDocuments(query: string): DocumentLink[] {
     const lowerQuery = query.toLowerCase();
-    return this.index.documents.filter(doc =>
-      doc.title.toLowerCase().includes(lowerQuery) ||
-      doc.id.toLowerCase().includes(lowerQuery) ||
-      doc.tags?.some(tag => tag.toLowerCase().includes(lowerQuery)) ||
-      doc.category?.toLowerCase().includes(lowerQuery)
+    return this.index.documents.filter(
+      (doc) =>
+        doc.title.toLowerCase().includes(lowerQuery) ||
+        doc.id.toLowerCase().includes(lowerQuery) ||
+        doc.tags?.some((tag) => tag.toLowerCase().includes(lowerQuery)) ||
+        doc.category?.toLowerCase().includes(lowerQuery)
     );
   }
 
@@ -281,7 +289,7 @@ export class DocumentationLinker {
    */
   getDocumentsByCategory(category: string): DocumentLink[] {
     const docIds = this.index.categories[category] || [];
-    return docIds.map(id => this.documents.get(id)!).filter(Boolean);
+    return docIds.map((id) => this.documents.get(id)!).filter(Boolean);
   }
 
   /**
@@ -289,7 +297,7 @@ export class DocumentationLinker {
    */
   getDocumentsByTag(tag: string): DocumentLink[] {
     const docIds = this.index.tags[tag] || [];
-    return docIds.map(id => this.documents.get(id)!).filter(Boolean);
+    return docIds.map((id) => this.documents.get(id)!).filter(Boolean);
   }
 
   /**
@@ -297,7 +305,7 @@ export class DocumentationLinker {
    */
   getDependencies(docId: string): DocumentLink[] {
     const dependencies = this.index.graph[docId] || [];
-    return dependencies.map(id => this.documents.get(id)!).filter(Boolean);
+    return dependencies.map((id) => this.documents.get(id)!).filter(Boolean);
   }
 
   /**
@@ -306,8 +314,8 @@ export class DocumentationLinker {
   getBacklinks(docId: string): DocumentLink[] {
     const doc = this.documents.get(docId);
     if (!doc || !doc.backlinks) return [];
-    
-    return doc.backlinks.map(id => this.documents.get(id)!).filter(Boolean);
+
+    return doc.backlinks.map((id) => this.documents.get(id)!).filter(Boolean);
   }
 
   /**
@@ -316,20 +324,20 @@ export class DocumentationLinker {
   generateSiteMap(): any {
     const siteMap = {
       totalDocuments: this.index.documents.length,
-      categories: Object.keys(this.index.categories).map(cat => ({
+      categories: Object.keys(this.index.categories).map((cat) => ({
         name: cat,
         count: this.index.categories[cat].length,
-        documents: this.index.categories[cat]
+        documents: this.index.categories[cat],
       })),
-      tags: Object.keys(this.index.tags).map(tag => ({
+      tags: Object.keys(this.index.tags).map((tag) => ({
         name: tag,
         count: this.index.tags[tag].length,
-        documents: this.index.tags[tag]
+        documents: this.index.tags[tag],
       })),
       orphanedDocuments: this.index.documents
-        .filter(doc => !doc.category && (!doc.tags || doc.tags.length === 0))
-        .map(doc => doc.id),
-      brokenLinks: this.findBrokenLinks()
+        .filter((doc) => !doc.category && (!doc.tags || doc.tags.length === 0))
+        .map((doc) => doc.id),
+      brokenLinks: this.findBrokenLinks(),
     };
 
     return siteMap;
@@ -337,7 +345,7 @@ export class DocumentationLinker {
 
   private findBrokenLinks(): Array<{ document: string; brokenLink: string }> {
     const broken: Array<{ document: string; brokenLink: string }> = [];
-    
+
     for (const [docId, dependencies] of Object.entries(this.index.graph)) {
       for (const dep of dependencies) {
         if (!this.documents.has(dep)) {
@@ -356,7 +364,7 @@ export class DocumentationLinker {
     const exportData = {
       ...this.index,
       generatedAt: new Date().toISOString(),
-      basePath: this.basePath
+      basePath: this.basePath,
     };
 
     await writeFile(outputPath, JSON.stringify(exportData, null, 2));

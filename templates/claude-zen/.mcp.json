@@ -1,0 +1,27 @@
+{
+  "mcpServers": {
+    "claude-zen": {
+      "command": "npx",
+      "args": ["claude-zen", "mcp", "start"],
+      "transport": "stdio",
+      "env": {
+        "SWARM_CONFIG": ".swarm/config.json",
+        "LOG_LEVEL": "info",
+        "ENABLE_LEARNING": "true",
+        "ENABLE_COORDINATION": "true"
+      },
+      "initializationOptions": {
+        "swarmDirectory": ".swarm",
+        "enablePersistence": true,
+        "enableMetrics": true
+      }
+    }
+  },
+  "clientCapabilities": {
+    "experimental": {
+      "swarmCoordination": true,
+      "persistentLearning": true,
+      "dynamicAgentSpawning": true
+    }
+  }
+}

@@ -3,7 +3,7 @@
  * Uses the existing CLI logger implementation
  */
 
-// Re-export from CLI utils logger which is more comprehensive
+// Re-export from utils logger
 export {
   createLogger,
   debug,
@@ -14,15 +14,30 @@ export {
   LogLevel,
   logger,
   warn,
-} from '../cli/utils/logger';
+} from '../utils/logger.js';
 
-// Create a compatible interface for existing code
+/**
+ * Supported log argument types
+ */
+export type LogArgument =
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | Error
+  | Record<string, unknown>
+  | readonly unknown[];
+
+/**
+ * Compatible interface for existing code with strict typing
+ */
 export interface ILogger {
-  debug(message: string, ...args: any[]): void;
-  info(message: string, ...args: any[]): void;
-  warn(message: string, ...args: any[]): void;
-  error(message: string, ...args: any[]): void;
-  log(level: any, message: string, ...args: any[]): void;
+  debug(message: string, ...args: readonly LogArgument[]): void;
+  info(message: string, ...args: readonly LogArgument[]): void;
+  warn(message: string, ...args: readonly LogArgument[]): void;
+  error(message: string, ...args: readonly LogArgument[]): void;
+  log(level: LogLevel, message: string, ...args: readonly LogArgument[]): void;
 }
 
 export default createLogger;

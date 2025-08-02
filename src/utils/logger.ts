@@ -4,7 +4,32 @@
  * @module Logger
  */
 
-import { createLogger, type LoggerConfig, type LogLevel } from '../core/logger.js';
+// Import logger utilities directly to avoid circular dependency
+export enum LogLevel {
+  DEBUG = 'debug',
+  INFO = 'info',
+  WARN = 'warn',
+  ERROR = 'error'
+}
+
+export interface LoggerConfig {
+  prefix?: string;
+  level?: LogLevel;
+}
+
+// Simple logger implementation to avoid circular imports
+function simpleCreateLogger(config: Partial<LoggerConfig> = {}) {
+  const prefix = config.prefix ? `[${config.prefix}]` : '';
+  
+  return {
+    info: (message: string, meta?: any) => console.log(`${prefix} ${message}`, meta || ''),
+    warn: (message: string, meta?: any) => console.warn(`${prefix} ${message}`, meta || ''),
+    error: (message: string, meta?: any, error?: any) => console.error(`${prefix} ${message}`, meta || '', error || ''),
+    debug: (message: string, meta?: any) => console.debug(`${prefix} ${message}`, meta || '')
+  };
+}
+
+const createLogger = simpleCreateLogger;
 
 export interface LogMeta {
   timestamp?: string;
@@ -49,5 +74,4 @@ export class Logger {
 // Export a default logger instance
 export const logger = new Logger();
 
-// Export types for convenience
-export type { LogLevel };
+// Export types for convenience (LogLevel already exported above)

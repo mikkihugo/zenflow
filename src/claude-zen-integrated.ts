@@ -3,13 +3,13 @@
  * Unified entry point for all claude-zen components
  */
 
-// CLI and UI
-export * from './cli/cli-main';
 export * from './hive-mind/core/Agent';
 // Hive Mind and Swarm Orchestration
 export * from './hive-mind/core/HiveMind';
 export * from './hive-mind/integration/ConsensusEngine';
 export * from './hive-mind/integration/SwarmOrchestrator';
+// Terminal Interface (CLI and TUI unified)
+export * from './interfaces/terminal';
 // Maestro coordination
 export * from './maestro/maestro-orchestrator';
 export * from './maestro/maestro-swarm-coordinator';

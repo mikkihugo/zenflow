@@ -1,13 +1,13 @@
 /**
  * Neural Core System
- * 
+ *
  * Central neural network functionality consolidated from swarm-zen/neural.js
  * Provides neural training, status, pattern analysis and CLI capabilities
  */
 
+import type { RuvSwarm } from '@types/shared-types';
 import { promises as fs } from 'fs';
 import path from 'path';
-import type { RuvSwarm } from '../../coordination/types.js';
 
 // Pattern memory configuration for different cognitive patterns
 // Optimized to use 250-300 MB range with minimal variance
@@ -76,16 +76,19 @@ export interface WeightsExport {
     model: string;
     format: string;
   };
-  models: Record<string, {
-    layers: number;
-    parameters: number;
-    weights: number[];
-    biases: number[];
-    performance: {
-      accuracy: string;
-      loss: string;
-    };
-  }>;
+  models: Record<
+    string,
+    {
+      layers: number;
+      parameters: number;
+      weights: number[];
+      biases: number[];
+      performance: {
+        accuracy: string;
+        loss: string;
+      };
+    }
+  >;
 }
 
 /**
@@ -129,7 +132,7 @@ export class NeuralCLI {
       // Load persistence information
       const persistenceInfo = await this.loadPersistenceInfo();
 
-      // Display training sessions and saved models  
+      // Display training sessions and saved models
       console.log(
         `Training Sessions: ${persistenceInfo.totalSessions} sessions | 📁 ${persistenceInfo.savedModels} saved models\n`
       );
@@ -145,10 +148,10 @@ export class NeuralCLI {
         `   SIMD Support: ${rs.features.simd_support ? '✅ Available' : '❌ Not available'}`
       );
 
-      console.log('\n🤖 Models:');
+      console.log('\\n🤖 Models:');
       const models = [
         'attention',
-        'lstm', 
+        'lstm',
         'transformer',
         'feedforward',
         'cnn',
@@ -200,7 +203,7 @@ export class NeuralCLI {
       );
 
       if (persistenceInfo.sessionContinuity) {
-        console.log('\n🔄 Session Continuity:');
+        console.log('\\n🔄 Session Continuity:');
         console.log(
           `   Models loaded from previous session: ${persistenceInfo.sessionContinuity.loadedModels}`
         );
@@ -278,7 +281,7 @@ export class NeuralCLI {
       console.log(`🎯 Final Accuracy: ${results.finalAccuracy}%`);
       console.log(`📉 Final Loss: ${results.finalLoss}`);
     } catch (error: any) {
-      console.error('\n❌ Training failed:', error.message);
+      console.error('\\n❌ Training failed:', error.message);
       process.exit(1);
     }
   }
@@ -331,7 +334,7 @@ export class NeuralCLI {
 
       // Use pattern-specific memory configuration
       const memoryUsage = await this.getPatternMemoryUsage(
-        patternType === 'all' ? 'convergent' : patternType as PatternType
+        patternType === 'all' ? 'convergent' : (patternType as PatternType)
       );
       console.log(`   Memory Usage: ${memoryUsage.toFixed(0)} MB`);
       console.log(`   Energy Efficiency: ${(85 + Math.random() * 10).toFixed(1)}%`);
@@ -369,9 +372,8 @@ export class NeuralCLI {
         models: {},
       };
 
-      const modelTypes = modelType === 'all' 
-        ? ['attention', 'lstm', 'transformer', 'feedforward'] 
-        : [modelType];
+      const modelTypes =
+        modelType === 'all' ? ['attention', 'lstm', 'transformer', 'feedforward'] : [modelType];
 
       for (const model of modelTypes) {
         weights.models[model] = {
@@ -633,7 +635,7 @@ export class NeuralCLI {
       lateral: {
         'Cognitive Patterns': [
           'Non-linear thinking',
-          'Cross-domain connections', 
+          'Cross-domain connections',
           'Indirect approaches',
         ],
         'Learned Behaviors': ['Problem reframing', 'Alternative paths', 'Unexpected insights'],
@@ -664,7 +666,7 @@ export class NeuralCLI {
     const cognitivePatterns = [
       'convergent',
       'divergent',
-      'lateral', 
+      'lateral',
       'systems',
       'critical',
       'abstract',

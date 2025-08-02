@@ -144,7 +144,8 @@ export class WasmMemoryPool {
   private readonly gcThreshold: number;
   private readonly compressionEnabled: boolean;
 
-  constructor(initialSize: number = 16 * 1024 * 1024) { // 16MB initial
+  constructor(initialSize: number = 16 * 1024 * 1024) {
+    // 16MB initial
     this.initialSize = initialSize;
     this.maxMemory = 512 * 1024 * 1024; // 512MB max
     this.gcThreshold = 0.8; // GC when 80% full
@@ -481,7 +482,9 @@ export class ProgressiveWasmLoader {
       this.queueLoad(config.id, 'critical');
     }
 
-    console.log(`📋 Registered WASM module: ${config.id} (${config.size / 1024}KB, ${config.priority} priority)`);
+    console.log(
+      `📋 Registered WASM module: ${config.id} (${config.size / 1024}KB, ${config.priority} priority)`
+    );
   }
 
   /**
@@ -504,7 +507,9 @@ export class ProgressiveWasmLoader {
    */
   private async processLoadingQueue(): Promise<void> {
     for (const priority of Object.keys(this.priorityLevels).sort(
-      (a, b) => this.priorityLevels[a as keyof typeof this.priorityLevels] - this.priorityLevels[b as keyof typeof this.priorityLevels]
+      (a, b) =>
+        this.priorityLevels[a as keyof typeof this.priorityLevels] -
+        this.priorityLevels[b as keyof typeof this.priorityLevels]
     )) {
       const queue = this.loadingQueues.get(priority);
       if (!queue || queue.length === 0) {
@@ -748,11 +753,34 @@ export class WasmCompatibilityManager {
     // Test SIMD support
     try {
       const simdTest = new Uint8Array([
-        0x00, 0x61, 0x73, 0x6d, // WASM magic
-        0x01, 0x00, 0x00, 0x00, // version
-        0x01, 0x05, 0x01, 0x60, 0x00, 0x01, 0x7b, // type section
-        0x03, 0x02, 0x01, 0x00, // function section
-        0x0a, 0x09, 0x01, 0x07, 0x00, 0xfd, 0x0c, 0x00, 0x0b, // code section with SIMD
+        0x00,
+        0x61,
+        0x73,
+        0x6d, // WASM magic
+        0x01,
+        0x00,
+        0x00,
+        0x00, // version
+        0x01,
+        0x05,
+        0x01,
+        0x60,
+        0x00,
+        0x01,
+        0x7b, // type section
+        0x03,
+        0x02,
+        0x01,
+        0x00, // function section
+        0x0a,
+        0x09,
+        0x01,
+        0x07,
+        0x00,
+        0xfd,
+        0x0c,
+        0x00,
+        0x0b, // code section with SIMD
       ]);
 
       await WebAssembly.compile(simdTest);
