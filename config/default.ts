@@ -38,7 +38,7 @@ const _config = {
   },
   ruvFANN: {
     integrated: true, // Fully integrated as workspace component
-    wasmPath: './ruv-FANN/ruv-swarm/npm/wasm',
+    wasmPath: './src/neural/wasm/binaries',
     neuralModels: [
       'LSTM',
       'N-BEATS',

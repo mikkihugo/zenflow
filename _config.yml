@@ -1,0 +1,75 @@
+# Jekyll configuration for Claude-Zen documentation
+title: Claude-Zen Documentation
+description: Unified AI swarm orchestration platform with neural networks and direct integration
+baseurl: "/claude-code-zen"
+url: "https://mikkihugo.github.io"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# Exclude directories and files from processing
+exclude:
+  - node_modules/
+  - .ruv-swarm/
+  - .hive-mind/
+  - .swarm/
+  - .claude/
+  - .git/
+  - .github/
+  - src/
+  - scripts/
+  - bin/
+  - dist/
+  - coverage/
+  - databases/
+  - logs/
+  - tmp/
+  - .jest-cache/
+  - "*.lock"
+  - "*.log"
+  - "*.tmp"
+  - Dockerfile*
+  - docker-compose*
+  - "*.toml"
+  - "*.json"
+  - "*.js"
+  - "*.ts"
+  - "*.rs"
+  - vendor/
+  - .bundle/
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+
+# Include only documentation files
+include:
+  - README.md
+  - CLAUDE.md
+  - LICENSE
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Collections for documentation
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:name/
+
+# Default layouts
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+  - scope:
+      path: ""
+      type: "docs"
+    values:
+      layout: "page"
