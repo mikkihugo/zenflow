@@ -57,6 +57,8 @@ jobs:
           git push origin "$BRANCH_NAME"
 
       - name: Create Pull Request and Auto-Approve
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Create PR using gh CLI (uses your personal authentication)
           gh pr create \
