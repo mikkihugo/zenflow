@@ -1,0 +1,90 @@
+---
+# Claude Autonomous Agent v2 - Fresh workflow to bypass any GitHub suppression
+name: "Claude Autonomous v2"
+
+on:
+  issues:
+    types: [opened, labeled]
+
+concurrency:
+  group: claude-autonomous-v2
+  cancel-in-progress: false
+
+jobs:
+  claude-solver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    if: |
+      (github.event_name == 'issues' && github.event.action == 'opened') ||
+      (github.event_name == 'issues' && github.event.action == 'labeled' && 
+       github.event.label.name == 'claude-code')
+
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      actions: read
+      metadata: read
+      statuses: write
+      checks: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email \
+            "github-actions[bot]@users.noreply.github.com"
+          git config --global init.defaultBranch main
+
+      - name: Claude Agent
+        uses: anthropics/claude-code-action@beta
+        with:
+          label_trigger: "claude-code"
+          direct_prompt: |
+            Resolve GitHub issue #${{ github.event.issue.number }}.
+            
+            Follow these phases:
+            1. Analyze requirements and create implementation plan
+            2. Implement solution with comprehensive tests  
+            3. Commit changes and create pull request
+            
+            Use CLAUDE_AGENT.md guidelines and domain-driven architecture.
+
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          timeout_minutes: 40
+        id: claude
+
+  auto-merge:
+    needs: claude-solver
+    runs-on: ubuntu-latest
+    if: needs.claude-solver.outputs.pull_request_number != ''
+
+    permissions:
+      pull-requests: write
+      contents: write
+
+    steps:
+      - name: Auto-merge PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ needs.claude-solver.outputs.pull_request_number }}
+        run: |
+          echo "Auto-merging PR #$PR_NUMBER"
+          gh pr merge $PR_NUMBER --auto --squash
