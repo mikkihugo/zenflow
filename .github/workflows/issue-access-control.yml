@@ -1,4 +1,5 @@
-name: Issue Access Control
+name: 🛡️ Issue Access Control
+# Security validation for issue access and permissions
 
 on:
   issues:

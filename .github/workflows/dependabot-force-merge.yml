@@ -1,4 +1,5 @@
-name: Dependabot Force Merge
+name: 🔒 Security Auto-Deploy
+# Force merges Dependabot security updates for immediate protection
 
 on:
   pull_request:

@@ -1,4 +1,5 @@
-name: Minimal CI
+name: ⚡ Quick Code Quality Checks
+# Fast validation of code quality and basic testing
 
 on:
   push:

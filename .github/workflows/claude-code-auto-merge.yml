@@ -1,4 +1,5 @@
-name: Claude Code Auto-Merge
+name: 🚀 AI Code Auto-Deploy
+# Automatically approves and merges Claude Code generated PRs
 
 on:
   pull_request:

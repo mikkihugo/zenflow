@@ -1,4 +1,5 @@
-name: Claude PR Assistant
+name: 🤖 Claude Code Assistant
+# Automated AI-powered code development triggered by @claude mentions
 
 on:
   issue_comment:
