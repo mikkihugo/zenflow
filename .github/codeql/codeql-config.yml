@@ -1,0 +1,29 @@
+name: "CodeQL Config"
+
+# Exclude problematic paths that cause JavaScript/TypeScript analysis failures
+paths-ignore:
+  - node_modules/**
+  - dist/**
+  - build/**
+  - coverage/**
+  - "**/*.min.js"
+  - "**/*.bundle.js"
+  - src/neural/wasm/**
+  - src/neural/rust/**
+  - src/__tests__/**
+  - "**/*.test.js"
+  - "**/*.test.ts"
+
+# Only analyze specific paths to reduce complexity
+paths:
+  - src/**
+  - "!src/neural/wasm/**"
+  - "!src/neural/rust/**"
+  - "!src/__tests__/**"
+
+# Disable problematic queries
+disable-default-queries: false
+
+# Only run essential queries
+queries:
+  - uses: security-and-quality
