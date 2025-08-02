@@ -22,6 +22,12 @@ jobs:
   eslint:
     name: Run eslint scanning
     runs-on: ubuntu-latest
+    # Skip ESLint for Rust-only Dependabot PRs
+    if: >-
+      !(
+        github.actor == 'dependabot[bot]' &&
+        contains(github.event.pull_request.title, 'cargo/')
+      )
     permissions:
       contents: read
       security-events: write
