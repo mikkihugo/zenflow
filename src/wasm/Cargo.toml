@@ -21,7 +21,7 @@ js-sys = "0.3"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 serde-wasm-bindgen = "0.6"
-wee_alloc = { version = "0.4", optional = true }
+# wee_alloc removed - use default Rust allocator (modern Rust has good WASM performance)
 
 # High-performance data structures (WASM-safe versions)
 smallvec = "1.13"
@@ -86,4 +86,4 @@ crypto = []
 optimizations = []
 cli = ["dep:clap", "dep:tokio", "dep:anyhow"]
 debug = ["console_error_panic_hook", "web-sys/console"]
-wee_alloc = ["dep:wee_alloc"]
+# wee_alloc feature removed - using default allocator

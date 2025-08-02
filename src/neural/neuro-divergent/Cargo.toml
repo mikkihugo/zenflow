@@ -67,8 +67,8 @@ neuro-divergent-core = "0.1.0"
 neuro-divergent-models = { version = "0.1.0", optional = true }
 neuro-divergent-registry = { version = "0.1.0", optional = true }
 
-# ruv-FANN dependency
-ruv-fann = { path = ".." }
+# ruv-FANN dependency - commented out as path doesn't exist
+# ruv-fann = { path = ".." }
 
 [dev-dependencies]
 approx = "0.5"
@@ -85,7 +85,7 @@ plotly = "0.8"
 csv = "1.3"
 
 # For benchmarking
-pprof = { version = "0.13", features = ["flamegraph"] }
+pprof = { version = "0.14", features = ["flamegraph"] }
 
 # For memory profiling
 stats_alloc = "0.1"
@@ -107,8 +107,8 @@ registry = ["dep:neuro-divergent-registry"]
 python-compat = []  # Enable Python-specific compatibility features
 # plotting = ["plotly"]  # Enable plotting support for examples (dev-dependency only)
 
-# WASM support
-wasm = ["ruv-fann/wasm"]
+# WASM support - removed ruv-fann dependency
+# wasm = ["ruv-fann/wasm"]
 no_std = []
 
 
