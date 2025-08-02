@@ -24,12 +24,10 @@ jobs:
     timeout-minutes: 45
 
     if: |
-      (github.event_name == 'issue_comment' && 
-       contains(github.event.comment.body, '@claude')) ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
       (github.event_name == 'issues' && github.event.action == 'opened') ||
-      (github.event_name == 'issues' && github.event.action == 'labeled' && 
-       github.event.label.name == 'claude-code') ||
-      (github.event_name == 'workflow_dispatch')
+      (github.event_name == 'issues' && github.event.action == 'labeled' && github.event.label.name == 'claude-code')
 
     permissions:
       contents: write
