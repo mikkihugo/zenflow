@@ -1,4 +1,4 @@
-name: 🔒 Security Auto-Deploy
+name: Security Auto-Deploy
 # Force merges Dependabot security updates for immediate protection
 
 on:

@@ -1,4 +1,4 @@
-name: 📚 Documentation Site Deploy
+name: Documentation Site Deploy
 # Builds and deploys project documentation to GitHub Pages
 
 on:
