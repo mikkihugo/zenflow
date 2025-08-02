@@ -3,7 +3,7 @@
 /** Simple startup script for Claude Code Web UI */
 /** Usage: node start-web-ui.js [port] */
 
-import { startWebServer } from './src/cli/simple-commands/web-server.js';
+import { startWebServer } from '../src/interfaces/web/web-interface.js';
 
 const port = process.argv[2] ? parseInt(process.argv[2]) : 3000;
 

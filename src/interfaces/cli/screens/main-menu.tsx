@@ -1,5 +1,5 @@
 import { Box, Text, useFocus, useInput } from 'ink';
-import type React from 'react';
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { Footer, Header, StatusBadge } from '../components';
 import { type BaseScreenProps, type NavigationItem, ScreenUtils } from './index';

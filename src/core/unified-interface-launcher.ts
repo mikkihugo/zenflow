@@ -133,32 +133,44 @@ export class UnifiedInterfaceLauncher extends EventEmitter {
   }
 
   /**
-   * Launch CLI interface
+   * Launch CLI interface (React/Ink CLI)
    */
   private async launchCLI(options: LaunchOptions): Promise<LaunchResult> {
-    logger.debug('Launching CLI interface');
+    logger.debug('Launching React CLI interface');
 
     try {
-      // Dynamic import of CLI interface
-      const { CLIInterface } = await import('../interfaces/cli/cli-interface.js');
+      // Use the React CLI by spawning the CLI main process
+      const { spawn } = await import('child_process');
+      const cliArgs = [];
+      
+      if (options.verbose) cliArgs.push('--verbose');
+      if (options.config?.theme) cliArgs.push('--theme', options.config.theme);
+      
+      // Force interactive mode for CLI interface launches
+      cliArgs.push('--interactive');
 
-      const cli = new CLIInterface({
-        theme: options.config?.theme || 'dark',
-        verbose: options.verbose || false,
-        coreSystem: options.config?.coreSystem,
+      const cliProcess = spawn('npx', ['tsx', 'src/interfaces/cli/cli-main.tsx', ...cliArgs], {
+        stdio: 'inherit',
+        cwd: process.cwd(),
       });
 
-      await cli.initialize();
-      await cli.start();
+      return new Promise((resolve, reject) => {
+        cliProcess.on('close', (code) => {
+          resolve({
+            mode: 'cli',
+            success: code === 0,
+            pid: cliProcess.pid,
+          });
+        });
 
-      return {
-        mode: 'cli',
-        success: true,
-        pid: process.pid,
-      };
+        cliProcess.on('error', (error) => {
+          logger.error('React CLI launch error:', error);
+          reject(error);
+        });
+      });
     } catch (error) {
-      // Fallback to basic CLI if the interface file doesn't exist
-      logger.warn('CLI interface file not found, using basic CLI');
+      // Fallback to basic CLI if React CLI fails
+      logger.warn('React CLI launch failed, using basic CLI');
       return this.launchBasicCLI(options);
     }
   }

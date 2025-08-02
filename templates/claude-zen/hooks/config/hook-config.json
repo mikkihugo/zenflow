@@ -1,0 +1,155 @@
+{
+  "version": "1.0.0",
+  "description": "Configuration for Claude Code Flow hooks",
+  "hooks": {
+    "preTask": {
+      "enabled": true,
+      "autoSpawnAgents": true,
+      "loadMemory": true,
+      "validateEnvironment": false,
+      "swarmTopology": "hierarchical",
+      "maxAgents": 6,
+      "timeout": 30000
+    },
+    "postEdit": {
+      "enabled": true,
+      "autoFormat": true,
+      "formatters": {
+        "typescript": "prettier",
+        "javascript": "prettier", 
+        "python": "black",
+        "rust": "rustfmt",
+        "go": "gofmt"
+      },
+      "updateNeuralPatterns": true,
+      "storeInMemory": true,
+      "logEdits": true
+    },
+    "postCommand": {
+      "enabled": true,
+      "logCommands": true,
+      "trackCategories": true,
+      "learnFromSuccess": true,
+      "analyzeFailures": true,
+      "detectDangerous": true,
+      "dangerousPatterns": [
+        "rm -rf",
+        "sudo rm",
+        "format",
+        "mkfs",
+        "dd if="
+      ]
+    },
+    "sessionSummary": {
+      "enabled": true,
+      "generateAnalytics": true,
+      "createReport": true,
+      "cleanupOldLogs": true,
+      "retentionDays": 30,
+      "trackMetrics": [
+        "commands",
+        "edits", 
+        "tasks",
+        "success_rate",
+        "duration"
+      ]
+    },
+    "subagentCoordination": {
+      "enabled": true,
+      "trackPerformance": true,
+      "updateSwarmStatus": true,
+      "triggerLearning": true,
+      "generateSummaries": true,
+      "summaryInterval": 10
+    }
+  },
+  "logging": {
+    "level": "info",
+    "enableDebug": false,
+    "logToFile": true,
+    "logToConsole": false,
+    "structuredLogging": true,
+    "performanceLogging": true
+  },
+  "claudeFlow": {
+    "enabled": true,
+    "timeout": 30000,
+    "retryAttempts": 2,
+    "backgroundOperations": true,
+    "mcpTools": {
+      "swarmInit": "swarm-init",
+      "agentSpawn": "agent-spawn", 
+      "agentUpdate": "agent-update",
+      "memoryUsage": "memory-usage",
+      "neuralTrain": "neural-train",
+      "swarmStatus": "swarm-status",
+      "agentList": "agent-list",
+      "benchmarkRun": "benchmark-run"
+    }
+  },
+  "performance": {
+    "trackExecutionTime": true,
+    "logSlowOperations": 5000,
+    "enableProfiling": false,
+    "memoryTracking": false
+  },
+  "security": {
+    "validatePaths": true,
+    "blockDangerousCommands": false,
+    "logSecurityWarnings": true,
+    "restrictedPatterns": [
+      "\\.\\.",
+      "^/",
+      "sudo rm",
+      "rm -rf /"
+    ]
+  },
+  "formatting": {
+    "enableAutoFormat": true,
+    "formatOnWrite": true,
+    "formatOnEdit": true,
+    "preserveOriginalOnError": true,
+    "formatterConfigs": {
+      "prettier": {
+        "args": ["--write"],
+        "extensions": [".ts", ".js", ".tsx", ".jsx", ".json", ".css", ".scss", ".md"]
+      },
+      "black": {
+        "args": ["--quiet"],
+        "extensions": [".py"]
+      },
+      "rustfmt": {
+        "args": [],
+        "extensions": [".rs"]
+      },
+      "gofmt": {
+        "args": ["-w"],
+        "extensions": [".go"]
+      }
+    }
+  },
+  "analytics": {
+    "enabled": true,
+    "trackUserPatterns": true,
+    "generateInsights": true,
+    "sessionAnalytics": true,
+    "performanceMetrics": true,
+    "exportFormat": "jsonl"
+  },
+  "neural": {
+    "enableLearning": true,
+    "learningRate": 0.001,
+    "updateFrequency": "task_completion",
+    "shareWithSwarm": true,
+    "patternRecognition": true,
+    "adaptiveBehavior": true
+  },
+  "memory": {
+    "persistAcrossSessions": true,
+    "compressionLevel": "balanced",
+    "retentionPolicy": "important",
+    "syncInterval": 30000,
+    "maxMemorySize": "100MB",
+    "enableCaching": true
+  }
+}

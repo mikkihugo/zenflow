@@ -5,10 +5,12 @@
  * Screens represent full-page UI layouts and interactive interfaces.
  */
 
+import type React from 'react';
+
 // Screen prop types
 export type { MainMenuProps } from './main-menu';
 // Screen components
-export { MainMenu } from './main-menu';
+export { MainMenu, createDefaultMenuItems } from './main-menu';
 export type { SwarmDashboardProps } from './swarm-dashboard';
 export { SwarmDashboard } from './swarm-dashboard';
 

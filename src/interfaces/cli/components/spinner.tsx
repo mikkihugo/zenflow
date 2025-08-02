@@ -1,6 +1,5 @@
 import { Box, Text } from 'ink';
-import type React from 'react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { defaultTheme } from '../index';
 import type { BaseComponentProps } from './index';
 

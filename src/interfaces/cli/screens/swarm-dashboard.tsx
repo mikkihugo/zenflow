@@ -1,5 +1,5 @@
 import { Box, Text, useFocus, useInput } from 'ink';
-import type React from 'react';
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { Footer, Header, ProgressBar, Spinner, StatusBadge } from '../components';
 import { UIUtils } from '../index';
