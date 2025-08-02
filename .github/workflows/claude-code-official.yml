@@ -32,7 +32,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
-          model: claude-3-5-sonnet-20241022
           system-prompt: |
             You are Claude Code, an expert AI developer. Follow the project's CLAUDE.md file for guidelines.
             
