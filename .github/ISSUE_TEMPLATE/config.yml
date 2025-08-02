@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 🔒 Repository Access Notice
+    url: https://github.com/mikkihugo/claude-code-zen
+    about: This repository is configured for restricted access. Only authorized users can create issues.
+  - name: 🤖 Claude Code Automation
+    url: https://github.com/mikkihugo/claude-code-zen/actions
+    about: All issues are automatically processed by Claude Code AI for instant resolution.
