@@ -6,6 +6,9 @@
  */
 
 import { EventEmitter } from 'events';
+import { injectable, inject } from '../../di/index.js';
+import { CORE_TOKENS } from '../../di/index.js';
+import type { ILogger } from '../../di/index.js';
 import type {
   AdaptiveLearningConfig,
   Agent,
@@ -24,6 +27,7 @@ import type {
   SystemContext,
 } from './types.js';
 
+@injectable
 export class LearningCoordinator extends EventEmitter implements ILearningCoordinator {
   private agents = new Map<string, Agent>();
   private knowledgeBase = new Map<string, any>();
@@ -34,7 +38,11 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
   private config: AdaptiveLearningConfig;
   private context: SystemContext;
 
-  constructor(config: AdaptiveLearningConfig, context: SystemContext) {
+  constructor(
+    config: AdaptiveLearningConfig,
+    context: SystemContext,
+    @inject(CORE_TOKENS.Logger) private logger: ILogger
+  ) {
     super();
     this.config = config;
     this.context = context;

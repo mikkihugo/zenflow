@@ -2,16 +2,23 @@
 /** ORCHESTRATES LANCEDB, KUZU, AND VISIONARY SOFTWARE INTELLIGENCE SYSTEMS;
 /** Provides unified interface and cross-system intelligence;
 
-import { EventEmitter  } from 'node:events';
-import { existsSync  } from 'node:fs';
-import { mkdir  } from 'node:fs';
+import { EventEmitter } from 'node:events';
+import { existsSync } from 'node:fs';
+import { mkdir } from 'node:fs';
 import path from 'node:path';
+import { injectable, inject } from '../di/index.js';
+import { CORE_TOKENS } from '../di/index.js';
+import type { ILogger } from '../di/index.js';
 import KuzuAdvancedInterface from '../database/kuzu-advanced-interface';
 import LanceDBInterface from '../database/lancedb-interface';
-import { VisionarySoftwareIntelligenceProcessor  } from '../visionary/software-intelligence-processor';
+import { VisionarySoftwareIntelligenceProcessor } from '../visionary/software-intelligence-processor';
 
+@injectable
 export class MultiSystemCoordinator extends EventEmitter {
-  constructor(_config = {}) {
+  constructor(
+    @inject(CORE_TOKENS.Logger) private logger: ILogger,
+    _config = {}
+  ) {
     super();
 ;
     this.config = {

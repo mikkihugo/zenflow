@@ -132,6 +132,7 @@
     "ora": "^8.2.0",
     "react": "^19.1.0",
     "read-pkg-up": "^10.1.0",
+    "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.1",
     "tree-sitter": "^0.25.0",

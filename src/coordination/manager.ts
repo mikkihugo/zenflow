@@ -5,6 +5,8 @@
  */
 
 import { EventEmitter } from 'node:events';
+import { injectable, inject } from '../di/index.js';
+import { CORE_TOKENS } from '../di/index.js';
 import type { IEventBus } from '../core/event-bus';
 import type { ILogger, LogArgument } from '../core/logger';
 import type {
@@ -48,6 +50,7 @@ export interface Task {
 /**
  * Coordination Manager for agent and task management
  */
+@injectable
 export class CoordinationManager extends EventEmitter {
   private config: Required<CoordinationConfig>;
   private agents = new Map<string, Agent>();
@@ -57,8 +60,8 @@ export class CoordinationManager extends EventEmitter {
 
   constructor(
     config: CoordinationConfig,
-    private logger?: ILogger,
-    private eventBus?: IEventBus
+    @inject(CORE_TOKENS.Logger) private logger: ILogger,
+    @inject(CORE_TOKENS.EventBus) private eventBus: IEventBus
   ) {
     super();
 
@@ -70,7 +73,7 @@ export class CoordinationManager extends EventEmitter {
     };
 
     this.setupEventHandlers();
-    this.logger?.info('CoordinationManager initialized');
+    this.logger.info('CoordinationManager initialized');
   }
 
   /**

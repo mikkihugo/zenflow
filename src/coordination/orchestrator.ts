@@ -3,23 +3,31 @@
  */
 
 import { EventEmitter } from 'events';
+import { injectable, inject } from '../di/index.js';
+import { CORE_TOKENS, SWARM_TOKENS } from '../di/index.js';
+import type { ILogger, IDatabase } from '../di/index.js';
 import { RuvSwarmStrategy } from './strategies/ruv-swarm.strategy';
 import { SwarmDatabase } from '../database/swarm-database';
 
 import { Agent, Task, ExecutionPlan, SwarmStrategy } from './types';
 
+@injectable
 export class Orchestrator extends EventEmitter {
   private strategy: SwarmStrategy;
-  private db: SwarmDatabase;
+  private db: IDatabase;
   private executionPlans = new Map<string, ExecutionPlan>();
   private activeExecutions = new Map<string, any>();
   private taskAssignments = new Map<string, any[]>();
   private isActive = false;
 
-  constructor(strategy?: SwarmStrategy) {
+  constructor(
+    @inject(CORE_TOKENS.Logger) private logger: ILogger,
+    @inject(CORE_TOKENS.Database) database: IDatabase,
+    strategy?: SwarmStrategy
+  ) {
     super();
     this.strategy = strategy || new RuvSwarmStrategy();
-    this.db = new SwarmDatabase();
+    this.db = database;
   }
 
   async initialize(): Promise<void> {
@@ -29,7 +37,7 @@ export class Orchestrator extends EventEmitter {
     this.startLoadBalancer();
     this.isActive = true;
     this.emit('initialized');
-    console.log('Orchestrator initialized with full strategic capabilities and persistent database.');
+    this.logger.log('Orchestrator initialized with full strategic capabilities and persistent database.');
   }
 
   async submitTask(task: Task): Promise<void> {
