@@ -43,8 +43,10 @@ jobs:
       - name: Execute Claude Code CLI Agent
         uses: anthropics/claude-code-action@beta
         with:
-          # Agent mode - runs automatically without @claude mention requirement
-          mode: 'agent'
+          # Use a minimal trigger phrase that appears in issue numbers
+          trigger_phrase: "Test"
+          # Disable label requirement
+          label_trigger: ""
           
           # Comprehensive prompt following plan-then-execute strategy
           direct_prompt: |
