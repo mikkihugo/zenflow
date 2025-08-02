@@ -69,7 +69,7 @@ jobs:
 
             If you are unsure about the existing implementation of a related component or the purpose of a utility function, use a sub-agent to read the relevant files and provide you with a summary before you proceed with your plan. This will ensure your changes are compatible with the existing codebase.
           
-          # Authentication with Claude Code OAuth Token
+          # Use Claude OAuth for API auth but GitHub token for git operations
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           
