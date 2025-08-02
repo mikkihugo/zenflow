@@ -57,7 +57,8 @@ module.exports = {
     /* Claude-Zen specific architectural rules */
     {
       name: 'no-cross-interface-deps',
-      comment: 'Interfaces should be independent - prevent cross-interface dependencies (but allow internal imports)',
+      comment:
+        'Interfaces should be independent - prevent cross-interface dependencies (but allow internal imports)',
       severity: 'error',
       from: {
         path: '^src/interfaces/(web)/',

@@ -4,7 +4,7 @@
  */
 
 import 'reflect-metadata';
-import type { Constructor, InjectionMetadata, DIToken } from '../types/di-types.js';
+import type { Constructor, DIToken, InjectionMetadata } from '../types/di-types.js';
 
 // Metadata keys
 const INJECTION_TOKENS_KEY = Symbol('injection_tokens');
@@ -16,11 +16,11 @@ const INJECTABLE_KEY = Symbol('injectable');
 export function injectable<T extends Constructor>(constructor: T): T {
   // Mark as injectable
   Reflect.defineMetadata(INJECTABLE_KEY, true, constructor);
-  
+
   // Get parameter types from TypeScript metadata
   const paramTypes = Reflect.getMetadata('design:paramtypes', constructor) || [];
   const injectionTokens = getInjectionTokens(constructor) || new Array(paramTypes.length);
-  
+
   // Store injection metadata
   setInjectionMetadata(constructor, {
     parameterTypes: paramTypes,
@@ -40,14 +40,19 @@ export function isInjectable(constructor: Constructor): boolean {
 /**
  * Get injection tokens for a constructor
  */
-export function getInjectionTokens(constructor: Constructor): (DIToken<any> | undefined)[] | undefined {
+export function getInjectionTokens(
+  constructor: Constructor
+): (DIToken<any> | undefined)[] | undefined {
   return Reflect.getMetadata(INJECTION_TOKENS_KEY, constructor);
 }
 
 /**
  * Set injection tokens for a constructor
  */
-export function setInjectionTokens(constructor: Constructor, tokens: (DIToken<any> | undefined)[]): void {
+export function setInjectionTokens(
+  constructor: Constructor,
+  tokens: (DIToken<any> | undefined)[]
+): void {
   Reflect.defineMetadata(INJECTION_TOKENS_KEY, tokens, constructor);
 }
 
@@ -57,11 +62,11 @@ export function setInjectionTokens(constructor: Constructor, tokens: (DIToken<an
 export function getInjectionMetadata(constructor: Constructor): InjectionMetadata | undefined {
   const parameterTypes = Reflect.getMetadata('design:paramtypes', constructor);
   const injectionTokens = getInjectionTokens(constructor);
-  
+
   if (!parameterTypes) {
     return undefined;
   }
-  
+
   return {
     parameterTypes,
     injectionTokens: injectionTokens || new Array(parameterTypes.length),

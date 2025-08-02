@@ -4,25 +4,24 @@
  */
 
 import {
-  DIContainer,
-  DIContainerBuilder,
-  createContainerBuilder,
-  getGlobalContainer,
-  setGlobalContainer,
-  clearGlobalContainer,
-  CORE_TOKENS,
-  SWARM_TOKENS,
-} from '../../../di/index.js';
-
-import {
-  EnhancedSwarmCoordinator,
-  MockLogger,
-  MockConfig,
-  MockAgentRegistry,
-  MockMessageBroker,
   createSwarmContainer,
   demonstrateSwarmDI,
+  EnhancedSwarmCoordinator,
+  MockAgentRegistry,
+  MockConfig,
+  MockLogger,
+  MockMessageBroker,
 } from '../../../di/examples/swarm-integration.js';
+import {
+  CORE_TOKENS,
+  clearGlobalContainer,
+  createContainerBuilder,
+  DIContainer,
+  DIContainerBuilder,
+  getGlobalContainer,
+  SWARM_TOKENS,
+  setGlobalContainer,
+} from '../../../di/index.js';
 
 describe('DI System Integration Tests', () => {
   beforeEach(() => {
@@ -68,7 +67,7 @@ describe('DI System Integration Tests', () => {
 
       // Clear global container
       clearGlobalContainer();
-      
+
       // Getting again should create new instance
       const newContainer = getGlobalContainer();
       expect(newContainer).not.toBe(customContainer);
@@ -92,7 +91,7 @@ describe('DI System Integration Tests', () => {
 
     it('should create a fully functional swarm system', async () => {
       const coordinator = container.resolve(SWARM_TOKENS.SwarmCoordinator);
-      
+
       expect(coordinator).toBeInstanceOf(EnhancedSwarmCoordinator);
 
       // Initialize swarm
@@ -179,18 +178,18 @@ describe('DI System Integration Tests', () => {
       // Spy on console.warn to capture overwrite warning
       const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
 
-      container.register(CORE_TOKENS.Logger, { 
-        type: 'singleton', 
-        create: () => originalLogger 
+      container.register(CORE_TOKENS.Logger, {
+        type: 'singleton',
+        create: () => originalLogger,
       });
 
-      container.register(CORE_TOKENS.Logger, { 
-        type: 'singleton', 
-        create: () => replacementLogger 
+      container.register(CORE_TOKENS.Logger, {
+        type: 'singleton',
+        create: () => replacementLogger,
       });
 
       const resolvedLogger = container.resolve(CORE_TOKENS.Logger);
-      
+
       expect(resolvedLogger).toBe(replacementLogger);
       expect(warnSpy).toHaveBeenCalledWith("Provider for token 'Logger' is being overwritten");
 
@@ -225,7 +224,7 @@ describe('DI System Integration Tests', () => {
   describe('Performance Tests', () => {
     it('should resolve services efficiently at scale', () => {
       const container = createSwarmContainer();
-      
+
       const iterations = 10000;
       const startTime = Date.now();
 
@@ -241,23 +240,25 @@ describe('DI System Integration Tests', () => {
 
       // Should complete 30k resolutions in less than 1 second
       expect(duration).toBeLessThan(1000);
-      
+
       // Log performance for reference
-      console.log(`Resolved ${iterations * 3} services in ${duration}ms (${((iterations * 3) / duration * 1000).toFixed(0)} resolutions/sec)`);
+      console.log(
+        `Resolved ${iterations * 3} services in ${duration}ms (${(((iterations * 3) / duration) * 1000).toFixed(0)} resolutions/sec)`
+      );
     });
 
     it('should handle concurrent resolutions safely', async () => {
       const container = createSwarmContainer();
-      
+
       // Create multiple concurrent resolution promises
-      const promises = Array.from({ length: 100 }, () => 
+      const promises = Array.from({ length: 100 }, () =>
         Promise.resolve().then(() => container.resolve(SWARM_TOKENS.SwarmCoordinator))
       );
 
       const coordinators = await Promise.all(promises);
-      
+
       // All should be the same instance (singleton)
-      coordinators.forEach(coordinator => {
+      coordinators.forEach((coordinator) => {
         expect(coordinator).toBe(coordinators[0]);
       });
     });
@@ -275,12 +276,11 @@ describe('DI System Integration Tests', () => {
 
       try {
         await demonstrateSwarmDI();
-        
+
         // Verify key log messages were output
-        expect(logs.some(log => log.includes('SwarmCoordinator DI Integration Demo'))).toBe(true);
-        expect(logs.some(log => log.includes('Demo completed successfully'))).toBe(true);
-        expect(logs.some(log => log.includes('Swarm metrics:'))).toBe(true);
-        
+        expect(logs.some((log) => log.includes('SwarmCoordinator DI Integration Demo'))).toBe(true);
+        expect(logs.some((log) => log.includes('Demo completed successfully'))).toBe(true);
+        expect(logs.some((log) => log.includes('Swarm metrics:'))).toBe(true);
       } finally {
         console.log = originalLog;
       }
@@ -289,18 +289,18 @@ describe('DI System Integration Tests', () => {
     it('should demonstrate proper resource cleanup', async () => {
       const container = createSwarmContainer();
       const coordinator = container.resolve(SWARM_TOKENS.SwarmCoordinator);
-      
+
       // Use the coordinator
       await coordinator.initializeSwarm({ name: 'cleanup-test' });
       const agentId = await coordinator.addAgent({ type: 'test' });
-      
+
       // Verify resources exist
       const beforeMetrics = coordinator.getMetrics();
       expect(beforeMetrics.totalAgents).toBe(1);
-      
+
       // Dispose container
       await container.dispose();
-      
+
       // Additional verification could go here if needed
       // The important thing is that no errors are thrown during disposal
     });

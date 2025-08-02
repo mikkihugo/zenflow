@@ -1,23 +1,27 @@
 /**
  * @fileoverview GitHub Integration MCP Tools (20 tools)
- * 
+ *
  * Advanced GitHub repository management, automated workflows,
  * security scanning, and team productivity optimization.
  */
 
-import { AdvancedMCPTool, AdvancedToolHandler, AdvancedMCPToolResult } from '../advanced-tools';
+import {
+  type AdvancedMCPTool,
+  type AdvancedMCPToolResult,
+  AdvancedToolHandler,
+} from '../advanced-tools';
 
 // GitHub tool handlers
 class GitHubSwarmHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
     const { repoUrl, swarmType = 'analysis', teamSize = 3 } = params;
-    
+
     this.validateParams(params, {
-      properties: { 
+      properties: {
         repoUrl: { type: 'string', format: 'uri' },
-        swarmType: { enum: ['analysis', 'workflow', 'security'] }
+        swarmType: { enum: ['analysis', 'workflow', 'security'] },
       },
-      required: ['repoUrl']
+      required: ['repoUrl'],
     });
 
     const swarmId = `github_swarm_${Date.now()}`;
@@ -31,9 +35,9 @@ class GitHubSwarmHandler extends AdvancedToolHandler {
         'repository analysis',
         'automated workflows',
         'team coordination',
-        'issue management'
+        'issue management',
       ],
-      agents: this.generateGitHubAgents(swarmType, teamSize)
+      agents: this.generateGitHubAgents(swarmType, teamSize),
     };
 
     return this.createResult(true, result);
@@ -45,7 +49,7 @@ class GitHubSwarmHandler extends AdvancedToolHandler {
       id: `github_agent_${i}`,
       type,
       specialization: swarmType,
-      status: 'active'
+      status: 'active',
     }));
   }
 }
@@ -53,43 +57,45 @@ class GitHubSwarmHandler extends AdvancedToolHandler {
 class RepoAnalyzeHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
     const { repoUrl, analysisDepth = 'standard', includeMetrics = true } = params;
-    
+
     this.validateParams(params, {
-      properties: { 
+      properties: {
         repoUrl: { type: 'string', format: 'uri' },
-        analysisDepth: { enum: ['basic', 'standard', 'comprehensive'] }
+        analysisDepth: { enum: ['basic', 'standard', 'comprehensive'] },
       },
-      required: ['repoUrl']
+      required: ['repoUrl'],
     });
 
     // Simulate repository analysis
     const analysis = {
       repository: repoUrl,
       analysisDepth,
-      metrics: includeMetrics ? {
-        codeQuality: Math.floor(Math.random() * 40) + 60, // 60-100
-        testCoverage: Math.floor(Math.random() * 30) + 70, // 70-100
-        dependencies: {
-          total: Math.floor(Math.random() * 100) + 50,
-          outdated: Math.floor(Math.random() * 20),
-          vulnerable: Math.floor(Math.random() * 5)
-        },
-        complexity: {
-          average: Math.floor(Math.random() * 5) + 3, // 3-8
-          hotspots: Math.floor(Math.random() * 10)
-        }
-      } : undefined,
+      metrics: includeMetrics
+        ? {
+            codeQuality: Math.floor(Math.random() * 40) + 60, // 60-100
+            testCoverage: Math.floor(Math.random() * 30) + 70, // 70-100
+            dependencies: {
+              total: Math.floor(Math.random() * 100) + 50,
+              outdated: Math.floor(Math.random() * 20),
+              vulnerable: Math.floor(Math.random() * 5),
+            },
+            complexity: {
+              average: Math.floor(Math.random() * 5) + 3, // 3-8
+              hotspots: Math.floor(Math.random() * 10),
+            },
+          }
+        : undefined,
       architecture: {
         pattern: 'microservices',
         language: 'typescript',
         framework: 'node.js',
-        buildSystem: 'npm'
+        buildSystem: 'npm',
       },
       recommendations: [
         'Increase test coverage',
         'Update dependencies',
-        'Reduce code complexity in core modules'
-      ]
+        'Reduce code complexity in core modules',
+      ],
     };
 
     return this.createResult(true, analysis);
@@ -99,13 +105,13 @@ class RepoAnalyzeHandler extends AdvancedToolHandler {
 class PREnhanceHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
     const { prUrl, enhancementType = 'comprehensive' } = params;
-    
+
     this.validateParams(params, {
-      properties: { 
+      properties: {
         prUrl: { type: 'string', format: 'uri' },
-        enhancementType: { enum: ['tests', 'docs', 'performance', 'comprehensive'] }
+        enhancementType: { enum: ['tests', 'docs', 'performance', 'comprehensive'] },
       },
-      required: ['prUrl']
+      required: ['prUrl'],
     });
 
     const enhancements = {
@@ -115,25 +121,25 @@ class PREnhanceHandler extends AdvancedToolHandler {
         tests: [
           'Add unit tests for new functions',
           'Include integration tests',
-          'Add edge case coverage'
+          'Add edge case coverage',
         ],
         documentation: [
           'Update API documentation',
           'Add inline comments',
-          'Update README examples'
+          'Update README examples',
         ],
         performance: [
           'Optimize database queries',
           'Cache expensive operations',
-          'Reduce memory allocations'
-        ]
+          'Reduce memory allocations',
+        ],
       },
       implementedChanges: {
         testsAdded: 15,
         docsUpdated: 8,
-        performanceImprovements: 3
+        performanceImprovements: 3,
       },
-      codeQualityScore: 95
+      codeQualityScore: 95,
     };
 
     return this.createResult(true, enhancements);
@@ -143,12 +149,12 @@ class PREnhanceHandler extends AdvancedToolHandler {
 class IssueTriageHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
     const { issueUrl, autoAssign = true } = params;
-    
+
     this.validateParams(params, {
-      properties: { 
-        issueUrl: { type: 'string', format: 'uri' }
+      properties: {
+        issueUrl: { type: 'string', format: 'uri' },
       },
-      required: ['issueUrl']
+      required: ['issueUrl'],
     });
 
     const triage = {
@@ -157,18 +163,17 @@ class IssueTriageHandler extends AdvancedToolHandler {
         type: 'bug',
         severity: 'medium',
         priority: 'P2',
-        labels: ['bug', 'backend', 'needs-investigation']
+        labels: ['bug', 'backend', 'needs-investigation'],
       },
-      assignmentRecommendation: autoAssign ? {
-        assignee: 'backend-team-lead',
-        reasoning: 'Issue involves backend database queries',
-        estimatedEffort: '4-6 hours'
-      } : null,
-      relatedIssues: [
-        '#123: Similar database issue',
-        '#456: Performance concern'
-      ],
-      suggestedMilestone: 'v2.1.0'
+      assignmentRecommendation: autoAssign
+        ? {
+            assignee: 'backend-team-lead',
+            reasoning: 'Issue involves backend database queries',
+            estimatedEffort: '4-6 hours',
+          }
+        : null,
+      relatedIssues: ['#123: Similar database issue', '#456: Performance concern'],
+      suggestedMilestone: 'v2.1.0',
     };
 
     return this.createResult(true, triage);
@@ -178,13 +183,13 @@ class IssueTriageHandler extends AdvancedToolHandler {
 class CodeReviewHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
     const { prUrl, reviewDepth = 'standard' } = params;
-    
+
     this.validateParams(params, {
-      properties: { 
+      properties: {
         prUrl: { type: 'string', format: 'uri' },
-        reviewDepth: { enum: ['basic', 'standard', 'comprehensive'] }
+        reviewDepth: { enum: ['basic', 'standard', 'comprehensive'] },
       },
-      required: ['prUrl']
+      required: ['prUrl'],
     });
 
     const review = {
@@ -193,20 +198,20 @@ class CodeReviewHandler extends AdvancedToolHandler {
       security: {
         vulnerabilities: [],
         securityScore: 98,
-        recommendations: ['Add input validation', 'Use parameterized queries']
+        recommendations: ['Add input validation', 'Use parameterized queries'],
       },
       performance: {
         issues: 2,
         recommendations: ['Cache database results', 'Optimize loop performance'],
-        performanceScore: 85
+        performanceScore: 85,
       },
       bestPractices: {
         adherence: 92,
         violations: ['Unused variable on line 45', 'Missing error handling'],
-        suggestions: ['Add JSDoc comments', 'Use consistent naming']
+        suggestions: ['Add JSDoc comments', 'Use consistent naming'],
       },
       overallScore: 88,
-      approval: 'approved_with_suggestions'
+      approval: 'approved_with_suggestions',
     };
 
     return this.createResult(true, review);
@@ -228,24 +233,24 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
       examples: [
         {
           description: 'Create repository analysis swarm',
-          input: { repoUrl: 'https://github.com/user/repo', swarmType: 'analysis' }
-        }
-      ]
+          input: { repoUrl: 'https://github.com/user/repo', swarmType: 'analysis' },
+        },
+      ],
     },
     schema: {
       type: 'object',
       properties: {
         repoUrl: { type: 'string', format: 'uri', description: 'GitHub repository URL' },
-        swarmType: { 
-          type: 'string', 
+        swarmType: {
+          type: 'string',
           enum: ['analysis', 'workflow', 'security'],
-          description: 'Type of GitHub swarm to create'
+          description: 'Type of GitHub swarm to create',
         },
-        teamSize: { type: 'number', minimum: 1, maximum: 10, description: 'Number of agents' }
+        teamSize: { type: 'number', minimum: 1, maximum: 10, description: 'Number of agents' },
       },
-      required: ['repoUrl']
+      required: ['repoUrl'],
     },
-    handler: new GitHubSwarmHandler().execute.bind(new GitHubSwarmHandler())
+    handler: new GitHubSwarmHandler().execute.bind(new GitHubSwarmHandler()),
   },
   {
     name: 'mcp__claude-zen__repo_analyze',
@@ -260,24 +265,24 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
       examples: [
         {
           description: 'Comprehensive repo analysis',
-          input: { repoUrl: 'https://github.com/user/repo', analysisDepth: 'comprehensive' }
-        }
-      ]
+          input: { repoUrl: 'https://github.com/user/repo', analysisDepth: 'comprehensive' },
+        },
+      ],
     },
     schema: {
       type: 'object',
       properties: {
         repoUrl: { type: 'string', format: 'uri', description: 'GitHub repository URL' },
-        analysisDepth: { 
-          type: 'string', 
+        analysisDepth: {
+          type: 'string',
           enum: ['basic', 'standard', 'comprehensive'],
-          description: 'Depth of analysis'
+          description: 'Depth of analysis',
         },
-        includeMetrics: { type: 'boolean', description: 'Include detailed metrics' }
+        includeMetrics: { type: 'boolean', description: 'Include detailed metrics' },
       },
-      required: ['repoUrl']
+      required: ['repoUrl'],
     },
-    handler: new RepoAnalyzeHandler().execute.bind(new RepoAnalyzeHandler())
+    handler: new RepoAnalyzeHandler().execute.bind(new RepoAnalyzeHandler()),
   },
   {
     name: 'mcp__claude-zen__pr_enhance',
@@ -292,23 +297,26 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
       examples: [
         {
           description: 'Enhance PR comprehensively',
-          input: { prUrl: 'https://github.com/user/repo/pull/123', enhancementType: 'comprehensive' }
-        }
-      ]
+          input: {
+            prUrl: 'https://github.com/user/repo/pull/123',
+            enhancementType: 'comprehensive',
+          },
+        },
+      ],
     },
     schema: {
       type: 'object',
       properties: {
         prUrl: { type: 'string', format: 'uri', description: 'GitHub PR URL' },
-        enhancementType: { 
-          type: 'string', 
+        enhancementType: {
+          type: 'string',
           enum: ['tests', 'docs', 'performance', 'comprehensive'],
-          description: 'Type of enhancement'
-        }
+          description: 'Type of enhancement',
+        },
       },
-      required: ['prUrl']
+      required: ['prUrl'],
     },
-    handler: new PREnhanceHandler().execute.bind(new PREnhanceHandler())
+    handler: new PREnhanceHandler().execute.bind(new PREnhanceHandler()),
   },
   {
     name: 'mcp__claude-zen__issue_triage',
@@ -323,19 +331,19 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
       examples: [
         {
           description: 'Triage GitHub issue',
-          input: { issueUrl: 'https://github.com/user/repo/issues/456', autoAssign: true }
-        }
-      ]
+          input: { issueUrl: 'https://github.com/user/repo/issues/456', autoAssign: true },
+        },
+      ],
     },
     schema: {
       type: 'object',
       properties: {
         issueUrl: { type: 'string', format: 'uri', description: 'GitHub issue URL' },
-        autoAssign: { type: 'boolean', description: 'Automatically assign to team member' }
+        autoAssign: { type: 'boolean', description: 'Automatically assign to team member' },
       },
-      required: ['issueUrl']
+      required: ['issueUrl'],
     },
-    handler: new IssueTriageHandler().execute.bind(new IssueTriageHandler())
+    handler: new IssueTriageHandler().execute.bind(new IssueTriageHandler()),
   },
   {
     name: 'mcp__claude-zen__code_review',
@@ -350,25 +358,25 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
       examples: [
         {
           description: 'Comprehensive code review',
-          input: { prUrl: 'https://github.com/user/repo/pull/789', reviewDepth: 'comprehensive' }
-        }
-      ]
+          input: { prUrl: 'https://github.com/user/repo/pull/789', reviewDepth: 'comprehensive' },
+        },
+      ],
     },
     schema: {
       type: 'object',
       properties: {
         prUrl: { type: 'string', format: 'uri', description: 'GitHub PR URL' },
-        reviewDepth: { 
-          type: 'string', 
+        reviewDepth: {
+          type: 'string',
           enum: ['basic', 'standard', 'comprehensive'],
-          description: 'Depth of code review'
-        }
+          description: 'Depth of code review',
+        },
       },
-      required: ['prUrl']
+      required: ['prUrl'],
     },
-    handler: new CodeReviewHandler().execute.bind(new CodeReviewHandler())
+    handler: new CodeReviewHandler().execute.bind(new CodeReviewHandler()),
   },
-  
+
   // Additional GitHub Integration Tools (6-20)
   {
     name: 'mcp__claude-zen__branch_manager',
@@ -379,17 +387,27 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
     priority: 'medium',
     metadata: {
       author: 'claude-zen',
-      tags: ['github', 'branches', 'strategy']
+      tags: ['github', 'branches', 'strategy'],
     },
     schema: {
       type: 'object',
       properties: {
         repoUrl: { type: 'string', format: 'uri', description: 'GitHub repository URL' },
-        strategy: { type: 'string', enum: ['gitflow', 'github-flow', 'gitlab-flow'], description: 'Branch strategy' }
+        strategy: {
+          type: 'string',
+          enum: ['gitflow', 'github-flow', 'gitlab-flow'],
+          description: 'Branch strategy',
+        },
       },
-      required: ['repoUrl']
+      required: ['repoUrl'],
     },
-    handler: async (params) => ({ success: true, data: { strategy: params.strategy || 'github-flow', optimizations: ['branch protection', 'auto-merge'] } })
+    handler: async (params) => ({
+      success: true,
+      data: {
+        strategy: params.strategy || 'github-flow',
+        optimizations: ['branch protection', 'auto-merge'],
+      },
+    }),
   },
   {
     name: 'mcp__claude-zen__release_coordinator',
@@ -400,18 +418,25 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
     priority: 'high',
     metadata: {
       author: 'claude-zen',
-      tags: ['github', 'release', 'deployment']
+      tags: ['github', 'release', 'deployment'],
     },
     schema: {
       type: 'object',
       properties: {
         repoUrl: { type: 'string', format: 'uri', description: 'GitHub repository URL' },
         version: { type: 'string', description: 'Release version' },
-        releaseType: { type: 'string', enum: ['major', 'minor', 'patch'], description: 'Type of release' }
+        releaseType: {
+          type: 'string',
+          enum: ['major', 'minor', 'patch'],
+          description: 'Type of release',
+        },
       },
-      required: ['repoUrl', 'version']
+      required: ['repoUrl', 'version'],
     },
-    handler: async (params) => ({ success: true, data: { version: params.version, changelog: 'Generated', deploymentStatus: 'ready' } })
+    handler: async (params) => ({
+      success: true,
+      data: { version: params.version, changelog: 'Generated', deploymentStatus: 'ready' },
+    }),
   },
   {
     name: 'mcp__claude-zen__dependency_manager',
@@ -422,17 +447,24 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
     priority: 'high',
     metadata: {
       author: 'claude-zen',
-      tags: ['github', 'dependencies', 'security']
+      tags: ['github', 'dependencies', 'security'],
     },
     schema: {
       type: 'object',
       properties: {
         repoUrl: { type: 'string', format: 'uri', description: 'GitHub repository URL' },
-        updateType: { type: 'string', enum: ['security', 'compatibility', 'optimization'], description: 'Update type' }
+        updateType: {
+          type: 'string',
+          enum: ['security', 'compatibility', 'optimization'],
+          description: 'Update type',
+        },
       },
-      required: ['repoUrl']
+      required: ['repoUrl'],
     },
-    handler: async (params) => ({ success: true, data: { updated: 15, vulnerable: 2, compatible: 98 } })
+    handler: async (params) => ({
+      success: true,
+      data: { updated: 15, vulnerable: 2, compatible: 98 },
+    }),
   },
   {
     name: 'mcp__claude-zen__security_scanner',
@@ -443,17 +475,24 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
     priority: 'critical',
     metadata: {
       author: 'claude-zen',
-      tags: ['github', 'security', 'vulnerabilities']
+      tags: ['github', 'security', 'vulnerabilities'],
     },
     schema: {
       type: 'object',
       properties: {
         repoUrl: { type: 'string', format: 'uri', description: 'GitHub repository URL' },
-        scanDepth: { type: 'string', enum: ['surface', 'deep', 'comprehensive'], description: 'Scan depth' }
+        scanDepth: {
+          type: 'string',
+          enum: ['surface', 'deep', 'comprehensive'],
+          description: 'Scan depth',
+        },
       },
-      required: ['repoUrl']
+      required: ['repoUrl'],
     },
-    handler: async (params) => ({ success: true, data: { vulnerabilities: 3, severity: 'medium', remediated: 2 } })
+    handler: async (params) => ({
+      success: true,
+      data: { vulnerabilities: 3, severity: 'medium', remediated: 2 },
+    }),
   },
   {
     name: 'mcp__claude-zen__workflow_optimizer',
@@ -464,17 +503,24 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
     priority: 'high',
     metadata: {
       author: 'claude-zen',
-      tags: ['github', 'actions', 'cicd']
+      tags: ['github', 'actions', 'cicd'],
     },
     schema: {
       type: 'object',
       properties: {
         repoUrl: { type: 'string', format: 'uri', description: 'GitHub repository URL' },
-        optimizationType: { type: 'string', enum: ['speed', 'cost', 'reliability'], description: 'Optimization focus' }
+        optimizationType: {
+          type: 'string',
+          enum: ['speed', 'cost', 'reliability'],
+          description: 'Optimization focus',
+        },
       },
-      required: ['repoUrl']
+      required: ['repoUrl'],
     },
-    handler: async (params) => ({ success: true, data: { optimized: true, improvement: '35% faster', cost_reduction: '20%' } })
+    handler: async (params) => ({
+      success: true,
+      data: { optimized: true, improvement: '35% faster', cost_reduction: '20%' },
+    }),
   },
   {
     name: 'mcp__claude-zen__commit_analyzer',
@@ -485,17 +531,24 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
     priority: 'medium',
     metadata: {
       author: 'claude-zen',
-      tags: ['github', 'commits', 'analysis']
+      tags: ['github', 'commits', 'analysis'],
     },
     schema: {
       type: 'object',
       properties: {
         repoUrl: { type: 'string', format: 'uri', description: 'GitHub repository URL' },
-        timeRange: { type: 'string', enum: ['week', 'month', 'quarter', 'year'], description: 'Analysis time range' }
+        timeRange: {
+          type: 'string',
+          enum: ['week', 'month', 'quarter', 'year'],
+          description: 'Analysis time range',
+        },
       },
-      required: ['repoUrl']
+      required: ['repoUrl'],
     },
-    handler: async (params) => ({ success: true, data: { patterns: ['feature-driven', 'regular-commits'], productivity: 85 } })
+    handler: async (params) => ({
+      success: true,
+      data: { patterns: ['feature-driven', 'regular-commits'], productivity: 85 },
+    }),
   },
   {
     name: 'mcp__claude-zen__contributor_insights',
@@ -506,17 +559,20 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
     priority: 'medium',
     metadata: {
       author: 'claude-zen',
-      tags: ['github', 'team', 'analytics']
+      tags: ['github', 'team', 'analytics'],
     },
     schema: {
       type: 'object',
       properties: {
         repoUrl: { type: 'string', format: 'uri', description: 'GitHub repository URL' },
-        includeMetrics: { type: 'boolean', description: 'Include detailed metrics' }
+        includeMetrics: { type: 'boolean', description: 'Include detailed metrics' },
       },
-      required: ['repoUrl']
+      required: ['repoUrl'],
     },
-    handler: async (params) => ({ success: true, data: { contributors: 12, collaboration_score: 92, recommendations: ['pair programming'] } })
+    handler: async (params) => ({
+      success: true,
+      data: { contributors: 12, collaboration_score: 92, recommendations: ['pair programming'] },
+    }),
   },
   {
     name: 'mcp__claude-zen__project_planner',
@@ -527,17 +583,24 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
     priority: 'high',
     metadata: {
       author: 'claude-zen',
-      tags: ['github', 'project', 'planning']
+      tags: ['github', 'project', 'planning'],
     },
     schema: {
       type: 'object',
       properties: {
         repoUrl: { type: 'string', format: 'uri', description: 'GitHub repository URL' },
-        projectScope: { type: 'string', enum: ['sprint', 'milestone', 'release'], description: 'Planning scope' }
+        projectScope: {
+          type: 'string',
+          enum: ['sprint', 'milestone', 'release'],
+          description: 'Planning scope',
+        },
       },
-      required: ['repoUrl']
+      required: ['repoUrl'],
     },
-    handler: async (params) => ({ success: true, data: { scope: params.projectScope, tasks: 25, estimated_completion: '2 weeks' } })
+    handler: async (params) => ({
+      success: true,
+      data: { scope: params.projectScope, tasks: 25, estimated_completion: '2 weeks' },
+    }),
   },
   {
     name: 'mcp__claude-zen__milestone_tracker',
@@ -548,17 +611,20 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
     priority: 'medium',
     metadata: {
       author: 'claude-zen',
-      tags: ['github', 'milestones', 'tracking']
+      tags: ['github', 'milestones', 'tracking'],
     },
     schema: {
       type: 'object',
       properties: {
         repoUrl: { type: 'string', format: 'uri', description: 'GitHub repository URL' },
-        milestoneId: { type: 'number', description: 'Milestone ID to track' }
+        milestoneId: { type: 'number', description: 'Milestone ID to track' },
       },
-      required: ['repoUrl']
+      required: ['repoUrl'],
     },
-    handler: async (params) => ({ success: true, data: { progress: 75, on_track: true, estimated_completion: '1 week' } })
+    handler: async (params) => ({
+      success: true,
+      data: { progress: 75, on_track: true, estimated_completion: '1 week' },
+    }),
   },
   {
     name: 'mcp__claude-zen__issue_predictor',
@@ -569,17 +635,24 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
     priority: 'medium',
     metadata: {
       author: 'claude-zen',
-      tags: ['github', 'prediction', 'issues']
+      tags: ['github', 'prediction', 'issues'],
     },
     schema: {
       type: 'object',
       properties: {
         repoUrl: { type: 'string', format: 'uri', description: 'GitHub repository URL' },
-        predictionRange: { type: 'string', enum: ['week', 'month', 'quarter'], description: 'Prediction time range' }
+        predictionRange: {
+          type: 'string',
+          enum: ['week', 'month', 'quarter'],
+          description: 'Prediction time range',
+        },
       },
-      required: ['repoUrl']
+      required: ['repoUrl'],
     },
-    handler: async (params) => ({ success: true, data: { predicted_issues: 8, risk_areas: ['auth module'], confidence: 85 } })
+    handler: async (params) => ({
+      success: true,
+      data: { predicted_issues: 8, risk_areas: ['auth module'], confidence: 85 },
+    }),
   },
   {
     name: 'mcp__claude-zen__pr_predictor',
@@ -590,17 +663,20 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
     priority: 'medium',
     metadata: {
       author: 'claude-zen',
-      tags: ['github', 'pr', 'prediction']
+      tags: ['github', 'pr', 'prediction'],
     },
     schema: {
       type: 'object',
       properties: {
         prUrl: { type: 'string', format: 'uri', description: 'GitHub PR URL' },
-        factors: { type: 'array', items: { type: 'string' }, description: 'Factors to consider' }
+        factors: { type: 'array', items: { type: 'string' }, description: 'Factors to consider' },
       },
-      required: ['prUrl']
+      required: ['prUrl'],
     },
-    handler: async (params) => ({ success: true, data: { success_probability: 92, merge_readiness: 'high', recommendations: ['add tests'] } })
+    handler: async (params) => ({
+      success: true,
+      data: { success_probability: 92, merge_readiness: 'high', recommendations: ['add tests'] },
+    }),
   },
   {
     name: 'mcp__claude-zen__team_optimizer',
@@ -611,17 +687,24 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
     priority: 'medium',
     metadata: {
       author: 'claude-zen',
-      tags: ['github', 'team', 'optimization']
+      tags: ['github', 'team', 'optimization'],
     },
     schema: {
       type: 'object',
       properties: {
         repoUrl: { type: 'string', format: 'uri', description: 'GitHub repository URL' },
-        focusArea: { type: 'string', enum: ['communication', 'productivity', 'quality'], description: 'Optimization focus' }
+        focusArea: {
+          type: 'string',
+          enum: ['communication', 'productivity', 'quality'],
+          description: 'Optimization focus',
+        },
       },
-      required: ['repoUrl']
+      required: ['repoUrl'],
     },
-    handler: async (params) => ({ success: true, data: { focus: params.focusArea, improvements: ['code reviews', 'pair programming'] } })
+    handler: async (params) => ({
+      success: true,
+      data: { focus: params.focusArea, improvements: ['code reviews', 'pair programming'] },
+    }),
   },
   {
     name: 'mcp__claude-zen__repository_health',
@@ -632,17 +715,24 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
     priority: 'high',
     metadata: {
       author: 'claude-zen',
-      tags: ['github', 'health', 'maintenance']
+      tags: ['github', 'health', 'maintenance'],
     },
     schema: {
       type: 'object',
       properties: {
         repoUrl: { type: 'string', format: 'uri', description: 'GitHub repository URL' },
-        assessmentType: { type: 'string', enum: ['quick', 'standard', 'comprehensive'], description: 'Assessment depth' }
+        assessmentType: {
+          type: 'string',
+          enum: ['quick', 'standard', 'comprehensive'],
+          description: 'Assessment depth',
+        },
       },
-      required: ['repoUrl']
+      required: ['repoUrl'],
     },
-    handler: async (params) => ({ success: true, data: { health_score: 88, issues: ['outdated deps'], recommendations: ['update docs'] } })
+    handler: async (params) => ({
+      success: true,
+      data: { health_score: 88, issues: ['outdated deps'], recommendations: ['update docs'] },
+    }),
   },
   {
     name: 'mcp__claude-zen__code_quality_tracker',
@@ -653,17 +743,24 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
     priority: 'medium',
     metadata: {
       author: 'claude-zen',
-      tags: ['github', 'quality', 'tracking']
+      tags: ['github', 'quality', 'tracking'],
     },
     schema: {
       type: 'object',
       properties: {
         repoUrl: { type: 'string', format: 'uri', description: 'GitHub repository URL' },
-        metrics: { type: 'array', items: { type: 'string' }, description: 'Quality metrics to track' }
+        metrics: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Quality metrics to track',
+        },
       },
-      required: ['repoUrl']
+      required: ['repoUrl'],
     },
-    handler: async (params) => ({ success: true, data: { quality_score: 85, trend: 'improving', metrics: ['coverage', 'complexity'] } })
+    handler: async (params) => ({
+      success: true,
+      data: { quality_score: 85, trend: 'improving', metrics: ['coverage', 'complexity'] },
+    }),
   },
   {
     name: 'mcp__claude-zen__technical_debt_analyzer',
@@ -674,18 +771,25 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
     priority: 'high',
     metadata: {
       author: 'claude-zen',
-      tags: ['github', 'debt', 'analysis']
+      tags: ['github', 'debt', 'analysis'],
     },
     schema: {
       type: 'object',
       properties: {
         repoUrl: { type: 'string', format: 'uri', description: 'GitHub repository URL' },
-        debtTypes: { type: 'array', items: { type: 'string' }, description: 'Types of debt to analyze' }
+        debtTypes: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Types of debt to analyze',
+        },
       },
-      required: ['repoUrl']
+      required: ['repoUrl'],
     },
-    handler: async (params) => ({ success: true, data: { debt_score: 15, priority_items: ['refactor auth'], estimated_hours: 40 } })
-  }
+    handler: async (params) => ({
+      success: true,
+      data: { debt_score: 15, priority_items: ['refactor auth'], estimated_hours: 40 },
+    }),
+  },
 ];
 
 export default githubIntegrationTools;

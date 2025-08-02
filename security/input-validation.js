@@ -16,7 +16,7 @@ export class InputValidator {
     return purify.sanitize(input, {
       ALLOWED_TAGS: [],
       ALLOWED_ATTR: [],
-      KEEP_CONTENT: true
+      KEEP_CONTENT: true,
     });
   }
 
@@ -29,7 +29,7 @@ export class InputValidator {
       protocols: ['http', 'https'],
       require_protocol: true,
       require_host: true,
-      require_valid_protocol: true
+      require_valid_protocol: true,
     });
   }
 
@@ -65,33 +65,33 @@ export class InputValidator {
       /<iframe[^>]*>.*?</iframe>/gi,
       /data:text/html/gi
     ];
-    
-    return xssPatterns.some(pattern => pattern.test(input));
+
+    return xssPatterns.some((pattern) => pattern.test(input));
   }
 
   static detectSQLInjection(input) {
     const sqlPatterns = [
-      /('|(\')|(;)|(\;))|(s)(union|select|insert|update|delete|drop|create|alter|exec|execute)(s)/gi,
+      /('|(')|(;)|(;))|(s)(union|select|insert|update|delete|drop|create|alter|exec|execute)(s)/gi,
       /(union|select|insert|update|delete|drop|create|alter|exec|execute)/gi,
       /--/gi,
       //*/gi
     ];
-    
-    return sqlPatterns.some(pattern => pattern.test(input));
+
+    return sqlPatterns.some((pattern) => pattern.test(input));
   }
 
   static rateLimit = new Map();
-  
+
   static checkRateLimit(identifier, maxRequests = 100, windowMs = 60000) {
     const now = Date.now();
     const key = `${identifier}:${Math.floor(now / windowMs)}`;
-    
-    const current = this.rateLimit.get(key) || 0;
+
+    const current = InputValidator.rateLimit.get(key) || 0;
     if (current >= maxRequests) {
       return { allowed: false, remaining: 0 };
     }
-    
-    this.rateLimit.set(key, current + 1);
+
+    InputValidator.rateLimit.set(key, current + 1);
     return { allowed: true, remaining: maxRequests - current - 1 };
   }
 }
@@ -100,23 +100,23 @@ export class SecurityMiddleware {
   static validateInput(req, res, next) {
     // Validate all input fields
     const sanitizedBody = {};
-    
+
     for (const [key, value] of Object.entries(req.body || {})) {
       if (typeof value === 'string') {
         if (InputValidator.detectXSS(value)) {
           return res.status(400).json({ error: 'XSS attempt detected' });
         }
-        
+
         if (InputValidator.detectSQLInjection(value)) {
           return res.status(400).json({ error: 'SQL injection attempt detected' });
         }
-        
+
         sanitizedBody[key] = InputValidator.sanitizeHtml(value);
       } else {
         sanitizedBody[key] = value;
       }
     }
-    
+
     req.sanitizedBody = sanitizedBody;
     next();
   }
@@ -125,14 +125,14 @@ export class SecurityMiddleware {
     return (req, res, next) => {
       const identifier = req.ip;
       const result = InputValidator.checkRateLimit(identifier, maxRequests, windowMs);
-      
+
       if (!result.allowed) {
-        return res.status(429).json({ 
+        return res.status(429).json({
           error: 'Rate limit exceeded',
-          retryAfter: Math.ceil(windowMs / 1000)
+          retryAfter: Math.ceil(windowMs / 1000),
         });
       }
-      
+
       res.set('X-RateLimit-Remaining', result.remaining);
       next();
     };

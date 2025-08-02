@@ -37,7 +37,7 @@ console.log('🚀 Claude Code Zen DI Integration Example');
 // 1. Simple token-based approach (no decorators needed initially)
 const createSimpleEnhancedSystem: () => any = () => {
   console.log('\n📦 1. Creating simple enhanced system...');
-  
+
   // Define service contracts
   interface Logger {
     info(message: string, meta?: any): void;
@@ -77,10 +77,10 @@ const createSimpleEnhancedSystem: () => any = () => {
 
     async initializeSwarm(options: Partial<ExistingSwarmOptions>): Promise<void> {
       this.logger.info('Initializing swarm with DI', options);
-      
+
       const defaultMaxAgents = this.config.get('swarm.maxAgents', 10);
       const topology = this.config.get('swarm.topology', 'mesh');
-      
+
       this.logger.debug('Using configuration', { defaultMaxAgents, topology });
       this.isInitialized = true;
     }
@@ -92,11 +92,11 @@ const createSimpleEnhancedSystem: () => any = () => {
 
       const agentId = await this.agentRegistry.register(config);
       this.agents.set(agentId, { ...config, id: agentId });
-      
+
       await this.messageBroker.broadcast({
         type: 'agent_added',
         agentId,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
 
       this.logger.info('Agent added successfully', { agentId });
@@ -106,7 +106,7 @@ const createSimpleEnhancedSystem: () => any = () => {
     async assignTask(task: ExistingTask): Promise<string> {
       const taskId = `task-${Date.now()}`;
       const availableAgents = await this.agentRegistry.findAvailable({
-        capabilities: task.requiredCapabilities || []
+        capabilities: task.requiredCapabilities || [],
       });
 
       if (availableAgents.length === 0) {
@@ -118,15 +118,15 @@ const createSimpleEnhancedSystem: () => any = () => {
         ...task,
         id: taskId,
         status: 'assigned',
-        assignedAgents: [selectedAgent.id!]
+        assignedAgents: [selectedAgent.id!],
       };
 
       this.tasks.set(taskId, fullTask);
-      
+
       await this.messageBroker.publish(`agent.${selectedAgent.id}`, {
         type: 'task_assignment',
         taskId,
-        task: fullTask
+        task: fullTask,
       });
 
       this.logger.info('Task assigned', { taskId, agentId: selectedAgent.id });
@@ -137,8 +137,9 @@ const createSimpleEnhancedSystem: () => any = () => {
       return {
         totalAgents: this.agents.size,
         totalTasks: this.tasks.size,
-        completedTasks: Array.from(this.tasks.values()).filter(t => t.status === 'completed').length,
-        timestamp: Date.now()
+        completedTasks: Array.from(this.tasks.values()).filter((t) => t.status === 'completed')
+          .length,
+        timestamp: Date.now(),
       };
     }
   }
@@ -160,7 +161,7 @@ const createSimpleEnhancedSystem: () => any = () => {
     private data = new Map([
       ['swarm.maxAgents', 15],
       ['swarm.topology', 'hierarchical'],
-      ['app.environment', 'development']
+      ['app.environment', 'development'],
     ]);
 
     get<T>(key: string, defaultValue?: T): T {
@@ -182,11 +183,9 @@ const createSimpleEnhancedSystem: () => any = () => {
     }
 
     async findAvailable(criteria: any): Promise<ExistingAgentConfig[]> {
-      return Array.from(this.agents.values()).filter(agent => {
+      return Array.from(this.agents.values()).filter((agent) => {
         if (criteria.capabilities) {
-          return criteria.capabilities.every((cap: string) => 
-            agent.capabilities.includes(cap)
-          );
+          return criteria.capabilities.every((cap: string) => agent.capabilities.includes(cap));
         }
         return true;
       });
@@ -208,7 +207,7 @@ const createSimpleEnhancedSystem: () => any = () => {
     logger: new SimpleLogger(),
     config: new SimpleConfig(),
     agentRegistry: new SimpleAgentRegistry(),
-    messageBroker: new SimpleMessageBroker()
+    messageBroker: new SimpleMessageBroker(),
   };
 
   const coordinator = new DIEnhancedSwarmCoordinator(
@@ -224,25 +223,25 @@ const createSimpleEnhancedSystem: () => any = () => {
 // 2. Demonstrate the enhanced system
 const demonstrateSimpleSystem = async () => {
   console.log('\n🎯 2. Demonstrating simple DI system...');
-  
+
   const { coordinator } = createSimpleEnhancedSystem();
 
   try {
     // Initialize swarm
     await coordinator.initializeSwarm({
       topology: 'hierarchical',
-      maxAgents: 20
+      maxAgents: 20,
     });
 
     // Add agents
     const agent1Id = await coordinator.addAgent({
       type: 'worker',
-      capabilities: ['data-processing', 'file-io']
+      capabilities: ['data-processing', 'file-io'],
     });
 
     const agent2Id = await coordinator.addAgent({
       type: 'coordinator',
-      capabilities: ['task-management', 'coordination']
+      capabilities: ['task-management', 'coordination'],
     });
 
     // Assign a task
@@ -250,7 +249,7 @@ const demonstrateSimpleSystem = async () => {
       type: 'data-processing',
       description: 'Process dataset',
       priority: 'high',
-      requiredCapabilities: ['data-processing']
+      requiredCapabilities: ['data-processing'],
     });
 
     // Get metrics
@@ -258,7 +257,6 @@ const demonstrateSimpleSystem = async () => {
     console.log('📊 System metrics:', metrics);
 
     console.log('✅ Simple DI system demonstration completed');
-
   } catch (error) {
     console.error('❌ Error in demonstration:', error);
   }
@@ -267,7 +265,7 @@ const demonstrateSimpleSystem = async () => {
 // 3. Show how this integrates with the full DI system
 const demonstrateFullDIIntegration = () => {
   console.log('\n🏗️ 3. Full DI system integration approach...');
-  
+
   console.log(`
 🔧 Integration Strategy:
 
@@ -326,13 +324,13 @@ class SwarmCoordinator {
 // 4. Performance demonstration
 const demonstratePerformance = () => {
   console.log('\n⚡ 4. Performance characteristics...');
-  
+
   const { coordinator, services } = createSimpleEnhancedSystem();
-  
+
   // Test resolution performance
   const iterations = 1000;
   const startTime = Date.now();
-  
+
   for (let i = 0; i < iterations; i++) {
     // Simulate service resolution
     const testCoordinator = new (coordinator.constructor as any)(
@@ -342,21 +340,21 @@ const demonstratePerformance = () => {
       services.messageBroker
     );
   }
-  
+
   const endTime = Date.now();
   const duration = endTime - startTime;
-  
+
   console.log(`📈 Performance results:
 - Created ${iterations} coordinators in ${duration}ms
 - Average: ${(duration / iterations).toFixed(2)}ms per instance
-- Rate: ${Math.round(iterations / duration * 1000)} instances/second
+- Rate: ${Math.round((iterations / duration) * 1000)} instances/second
 - Overhead: Minimal (direct constructor calls)`);
 };
 
 // 5. Testing strategy demonstration
 const demonstrateTestingStrategy = () => {
   console.log('\n🧪 5. Testing strategy with DI...');
-  
+
   console.log(`
 📋 Testing Approaches:
 
@@ -392,19 +390,18 @@ Benefits:
 async function runCompleteDemo() {
   try {
     console.log('🌟 Starting Complete DI Integration Demonstration\n');
-    
+
     await demonstrateSimpleSystem();
     demonstrateFullDIIntegration();
     demonstratePerformance();
     demonstrateTestingStrategy();
-    
+
     console.log('\n🎉 Complete DI integration demonstration finished successfully!');
     console.log('\n📚 Next steps:');
     console.log('1. Review the simple DI pattern shown above');
     console.log('2. Apply to existing SwarmCoordinator gradually');
     console.log('3. Add decorator support when ready');
     console.log('4. Implement full DI container for advanced features');
-    
   } catch (error) {
     console.error('💥 Demo failed:', error);
     process.exit(1);
@@ -412,11 +409,7 @@ async function runCompleteDemo() {
 }
 
 // Export for testing
-export { 
-  createSimpleEnhancedSystem,
-  demonstrateSimpleSystem,
-  runCompleteDemo 
-};
+export { createSimpleEnhancedSystem, demonstrateSimpleSystem, runCompleteDemo };
 
 // Run if called directly (ES module check)
 const isMainModule = import.meta.url === `file://${process.argv[1]}`;

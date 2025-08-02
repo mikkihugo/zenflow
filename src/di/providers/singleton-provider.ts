@@ -3,7 +3,7 @@
  * Ensures only one instance of a service exists throughout the application lifetime
  */
 
-import type { Provider, DIContainer } from '../types/di-types.js';
+import type { DIContainer, Provider } from '../types/di-types.js';
 
 export class SingletonProvider<T> implements Provider<T> {
   readonly type = 'singleton' as const;

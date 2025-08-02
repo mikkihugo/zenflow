@@ -25,7 +25,7 @@ describe('Orchestrator Integration Test', () => {
   beforeEach(() => {
     // Reset all mocks
     jest.clearAllMocks();
-    
+
     // Instantiate the mock database
     mockDb = new MockedSwarmDatabase() as jest.Mocked<SwarmDatabase>;
 
@@ -69,8 +69,14 @@ describe('Orchestrator Integration Test', () => {
       expect(mockDb.initialize).toHaveBeenCalled();
       expect(mockDb.createTask).toHaveBeenCalledWith(expect.objectContaining({ id: 'task-123' }));
       expect(mockRuvSwarmStrategy.getAgents).toHaveBeenCalled();
-      expect(mockRuvSwarmStrategy.assignTaskToAgent).toHaveBeenCalledWith('agent-456', expect.any(Object));
-      expect(mockDb.updateTask).toHaveBeenCalledWith('task-123', expect.objectContaining({ status: 'completed' }));
+      expect(mockRuvSwarmStrategy.assignTaskToAgent).toHaveBeenCalledWith(
+        'agent-456',
+        expect.any(Object)
+      );
+      expect(mockDb.updateTask).toHaveBeenCalledWith(
+        'task-123',
+        expect.objectContaining({ status: 'completed' })
+      );
     });
   });
 });

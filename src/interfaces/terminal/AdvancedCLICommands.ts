@@ -5,12 +5,12 @@
  * command execution system. Uses shared abstractions to avoid cross-interface dependencies.
  */
 
-import type { 
-  ComplexityLevel, 
-  ProjectConfig, 
-  ProjectType,
+import type {
   CommandContext,
-  CommandResult 
+  CommandResult,
+  ComplexityLevel,
+  ProjectConfig,
+  ProjectType,
 } from '../shared/index.js';
 import { CliCommandAdapter } from './adapters/CliCommandAdapter.js';
 

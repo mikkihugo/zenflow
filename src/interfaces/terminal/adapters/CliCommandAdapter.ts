@@ -7,8 +7,8 @@
  */
 
 import type {
-  CommandExecutorContract,
   CommandContext,
+  CommandExecutorContract,
   CommandResult,
   ProjectConfig,
 } from '../../shared/index.js';
@@ -139,10 +139,10 @@ export class CliCommandAdapter implements CommandExecutorContract {
     };
 
     const startTime = Date.now();
-    
+
     // Simulate project creation (in real implementation, would delegate to actual CLI engine)
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     const duration = Date.now() - startTime;
 
     return {
@@ -167,10 +167,10 @@ export class CliCommandAdapter implements CommandExecutorContract {
   private async handleOptimizeProject(args: string[], options: any): Promise<CommandResult> {
     const projectPath = args[0] || process.cwd();
     const startTime = Date.now();
-    
+
     // Simulate optimization
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
     const duration = Date.now() - startTime;
 
     return {

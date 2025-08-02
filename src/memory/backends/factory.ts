@@ -2,10 +2,10 @@
  * @fileoverview Factory for creating memory backends.
  */
 
-import { BackendInterface, BackendConfig } from './base.backend';
+import type { BackendConfig, BackendInterface } from './base.backend';
+import { JSONBackend } from './json.backend';
 import { LanceDBBackend } from './lancedb.backend';
 import { SQLiteBackend } from './sqlite.backend';
-import { JSONBackend } from './json.backend';
 
 export class BackendFactory {
   static create(config: BackendConfig): BackendInterface {

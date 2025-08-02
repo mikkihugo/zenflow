@@ -5,10 +5,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { injectable, inject } from '../di/index.js';
-import { CORE_TOKENS } from '../di/index.js';
 import type { IEventBus } from '../core/event-bus';
 import type { ILogger, LogArgument } from '../core/logger';
+import { CORE_TOKENS, inject, injectable } from '../di/index.js';
 import type {
   AgentCreatedPayload,
   AgentDestroyedPayload,

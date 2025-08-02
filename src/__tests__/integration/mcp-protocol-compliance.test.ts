@@ -3,9 +3,9 @@
  * Comprehensive testing of both HTTP and Stdio MCP implementations
  */
 
-import { HttpMcpServer } from '../../interfaces/mcp/http-mcp-server';
 import { StdioMcpServer } from '../../coordination/mcp/mcp-server';
-import { MCPRequest, MCPResponse, MCPError } from '../../interfaces/mcp/types';
+import { HttpMcpServer } from '../../interfaces/mcp/http-mcp-server';
+import { MCPError, type MCPRequest, MCPResponse } from '../../interfaces/mcp/types';
 import { WebSocketManager } from '../../interfaces/web/WebSocketManager';
 import { IntegrationTestSetup } from '../helpers/integration-test-setup';
 import { NetworkTestHelper } from '../helpers/network-test-helper';
@@ -15,14 +15,14 @@ describe('MCP Protocol Compliance Integration Tests', () => {
   let stdioMcpServer: StdioMcpServer;
   let testSetup: IntegrationTestSetup;
   let networkHelper: NetworkTestHelper;
-  
+
   const TEST_PORT = 3456;
   const TEST_TIMEOUT = 30000;
 
   beforeAll(async () => {
     testSetup = new IntegrationTestSetup();
     networkHelper = new NetworkTestHelper();
-    
+
     await testSetup.initializeTestEnvironment();
   }, TEST_TIMEOUT);
 
@@ -36,9 +36,9 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         port: TEST_PORT,
         host: 'localhost',
         cors: true,
-        timeout: 5000
+        timeout: 5000,
       });
-      
+
       await httpMcpServer.start();
     });
 
@@ -48,31 +48,31 @@ describe('MCP Protocol Compliance Integration Tests', () => {
 
     it('should respond to health check with correct format', async () => {
       const response = await networkHelper.httpGet(`http://localhost:${TEST_PORT}/health`);
-      
+
       expect(response.status).toBe(200);
       expect(response.data).toMatchObject({
         status: 'healthy',
         timestamp: expect.any(String),
         uptime: expect.any(Number),
-        version: expect.any(String)
+        version: expect.any(String),
       });
     });
 
     it('should return capabilities in MCP format', async () => {
       const response = await networkHelper.httpGet(`http://localhost:${TEST_PORT}/capabilities`);
-      
+
       expect(response.status).toBe(200);
       expect(response.data).toMatchObject({
         protocolVersion: expect.stringMatching(/^\d+\.\d+\.\d+$/),
         capabilities: {
           tools: expect.any(Object),
           resources: expect.any(Object),
-          prompts: expect.any(Object)
+          prompts: expect.any(Object),
         },
         serverInfo: {
           name: 'claude-zen-mcp',
-          version: expect.any(String)
-        }
+          version: expect.any(String),
+        },
       });
     });
 
@@ -81,7 +81,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         jsonrpc: '2.0',
         id: 1,
         method: 'tools/list',
-        params: {}
+        params: {},
       };
 
       const response = await networkHelper.httpPost(
@@ -94,8 +94,8 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         jsonrpc: '2.0',
         id: 1,
         result: {
-          tools: expect.any(Array)
-        }
+          tools: expect.any(Array),
+        },
       });
     });
 
@@ -105,8 +105,8 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         id: 2,
         method: 'tools/call',
         params: {
-          name: 'nonexistent_tool'
-        }
+          name: 'nonexistent_tool',
+        },
       };
 
       const response = await networkHelper.httpPost(
@@ -121,8 +121,8 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         error: {
           code: expect.any(Number),
           message: expect.stringContaining('Tool not found'),
-          data: expect.any(Object)
-        }
+          data: expect.any(Object),
+        },
       });
     });
 
@@ -134,9 +134,9 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         params: {
           name: 'system_info',
           arguments: {
-            detailed: true
-          }
-        }
+            detailed: true,
+          },
+        },
       };
 
       const response = await networkHelper.httpPost(
@@ -150,15 +150,15 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         id: 3,
         result: {
           content: expect.any(Array),
-          isError: false
-        }
+          isError: false,
+        },
       });
 
       // Verify content structure
       const content = response.data.result.content;
       expect(content[0]).toMatchObject({
         type: 'text',
-        text: expect.stringContaining('Claude-Zen System Information')
+        text: expect.stringContaining('Claude-Zen System Information'),
       });
     });
 
@@ -172,9 +172,9 @@ describe('MCP Protocol Compliance Integration Tests', () => {
           arguments: {
             topology: 'mesh',
             agents: 5,
-            streaming: true
-          }
-        }
+            streaming: true,
+          },
+        },
       };
 
       const responseStream = await networkHelper.httpPostStream(
@@ -183,21 +183,21 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       );
 
       const chunks: any[] = [];
-      
+
       for await (const chunk of responseStream) {
         chunks.push(JSON.parse(chunk));
       }
 
       expect(chunks.length).toBeGreaterThan(1);
-      
+
       // First chunk should be acknowledgment
       expect(chunks[0]).toMatchObject({
         jsonrpc: '2.0',
         id: 4,
         result: {
           streaming: true,
-          status: 'initiated'
-        }
+          status: 'initiated',
+        },
       });
 
       // Last chunk should be completion
@@ -208,8 +208,8 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         result: {
           streaming: true,
           status: 'completed',
-          final_result: expect.any(Object)
-        }
+          final_result: expect.any(Object),
+        },
       });
     });
 
@@ -220,18 +220,18 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         method: 'tools/call',
         params: {
           name: 'system_info',
-          arguments: { detailed: false }
-        }
+          arguments: { detailed: false },
+        },
       }));
 
       const startTime = Date.now();
-      
+
       const responses = await Promise.all(
-        concurrentRequests.map(req => 
+        concurrentRequests.map((req) =>
           networkHelper.httpPost(`http://localhost:${TEST_PORT}/mcp`, req)
         )
       );
-      
+
       const totalTime = Date.now() - startTime;
 
       // All requests should succeed
@@ -246,14 +246,11 @@ describe('MCP Protocol Compliance Integration Tests', () => {
     });
 
     it('should properly handle CORS for cross-origin requests', async () => {
-      const corsResponse = await networkHelper.httpOptions(
-        `http://localhost:${TEST_PORT}/mcp`,
-        {
-          'Origin': 'http://localhost:3000',
-          'Access-Control-Request-Method': 'POST',
-          'Access-Control-Request-Headers': 'Content-Type'
-        }
-      );
+      const corsResponse = await networkHelper.httpOptions(`http://localhost:${TEST_PORT}/mcp`, {
+        Origin: 'http://localhost:3000',
+        'Access-Control-Request-Method': 'POST',
+        'Access-Control-Request-Headers': 'Content-Type',
+      });
 
       expect(corsResponse.status).toBe(200);
       expect(corsResponse.headers['access-control-allow-origin']).toBe('*');
@@ -267,9 +264,9 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       stdioMcpServer = new StdioMcpServer({
         enableSwarmCoordination: true,
         memoryPersistence: true,
-        logLevel: 'debug'
+        logLevel: 'debug',
       });
-      
+
       await stdioMcpServer.initialize();
     });
 
@@ -282,7 +279,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         jsonrpc: '2.0',
         id: 'test-1',
         method: 'tools/list',
-        params: {}
+        params: {},
       };
 
       const response = await stdioMcpServer.processMessage(JSON.stringify(request));
@@ -296,10 +293,10 @@ describe('MCP Protocol Compliance Integration Tests', () => {
             expect.objectContaining({
               name: expect.stringMatching(/^mcp__ruv-swarm-zen__/),
               description: expect.any(String),
-              inputSchema: expect.any(Object)
-            })
-          ])
-        }
+              inputSchema: expect.any(Object),
+            }),
+          ]),
+        },
       });
     });
 
@@ -313,9 +310,9 @@ describe('MCP Protocol Compliance Integration Tests', () => {
           arguments: {
             topology: 'hierarchical',
             maxAgents: 5,
-            strategy: 'parallel'
-          }
-        }
+            strategy: 'parallel',
+          },
+        },
       };
 
       const response = await stdioMcpServer.processMessage(JSON.stringify(swarmInitRequest));
@@ -328,11 +325,11 @@ describe('MCP Protocol Compliance Integration Tests', () => {
           content: expect.arrayContaining([
             expect.objectContaining({
               type: 'text',
-              text: expect.stringContaining('Swarm initialized')
-            })
+              text: expect.stringContaining('Swarm initialized'),
+            }),
           ]),
-          isError: false
-        }
+          isError: false,
+        },
       });
     });
 
@@ -346,9 +343,9 @@ describe('MCP Protocol Compliance Integration Tests', () => {
           name: 'mcp__ruv-swarm-zen__swarm_init',
           arguments: {
             topology: 'mesh',
-            maxAgents: 3
-          }
-        }
+            maxAgents: 3,
+          },
+        },
       };
 
       await stdioMcpServer.processMessage(JSON.stringify(initRequest));
@@ -362,9 +359,9 @@ describe('MCP Protocol Compliance Integration Tests', () => {
           name: 'mcp__ruv-swarm-zen__agent_spawn',
           arguments: {
             type: 'coordinator',
-            name: 'test-coordinator'
-          }
-        }
+            name: 'test-coordinator',
+          },
+        },
       };
 
       const spawnResponse = await stdioMcpServer.processMessage(JSON.stringify(spawnRequest));
@@ -380,8 +377,8 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         method: 'tools/call',
         params: {
           name: 'mcp__ruv-swarm-zen__swarm_status',
-          arguments: {}
-        }
+          arguments: {},
+        },
       };
 
       const statusResponse = await stdioMcpServer.processMessage(JSON.stringify(statusRequest));
@@ -403,10 +400,10 @@ describe('MCP Protocol Compliance Integration Tests', () => {
             value: {
               timestamp: Date.now(),
               sessionId: 'test-session-123',
-              data: { important: true }
-            }
-          }
-        }
+              data: { important: true },
+            },
+          },
+        },
       };
 
       const storeResponse = await stdioMcpServer.processMessage(JSON.stringify(memoryStoreRequest));
@@ -423,55 +420,63 @@ describe('MCP Protocol Compliance Integration Tests', () => {
           name: 'mcp__ruv-swarm-zen__memory_usage',
           arguments: {
             action: 'retrieve',
-            key: 'test-session-data'
-          }
-        }
+            key: 'test-session-data',
+          },
+        },
       };
 
-      const retrieveResponse = await stdioMcpServer.processMessage(JSON.stringify(memoryRetrieveRequest));
+      const retrieveResponse = await stdioMcpServer.processMessage(
+        JSON.stringify(memoryRetrieveRequest)
+      );
       const parsedRetrieveResponse = JSON.parse(retrieveResponse);
 
       expect(parsedRetrieveResponse.result.isError).toBe(false);
-      
+
       const retrievedData = JSON.parse(parsedRetrieveResponse.result.content[0].text);
       expect(retrievedData).toMatchObject({
         sessionId: 'test-session-123',
-        data: { important: true }
+        data: { important: true },
       });
     });
 
     it('should handle task orchestration workflows', async () => {
       // Initialize swarm first
-      await stdioMcpServer.processMessage(JSON.stringify({
-        jsonrpc: '2.0',
-        id: 'orch-init',
-        method: 'tools/call',
-        params: {
-          name: 'mcp__ruv-swarm-zen__swarm_init',
-          arguments: { topology: 'hierarchical', maxAgents: 4 }
-        }
-      }));
+      await stdioMcpServer.processMessage(
+        JSON.stringify({
+          jsonrpc: '2.0',
+          id: 'orch-init',
+          method: 'tools/call',
+          params: {
+            name: 'mcp__ruv-swarm-zen__swarm_init',
+            arguments: { topology: 'hierarchical', maxAgents: 4 },
+          },
+        })
+      );
 
       // Spawn multiple agents
       await Promise.all([
-        stdioMcpServer.processMessage(JSON.stringify({
-          jsonrpc: '2.0',
-          id: 'orch-spawn-1',
-          method: 'tools/call',
-          params: {
-            name: 'mcp__ruv-swarm-zen__agent_spawn',
-            arguments: { type: 'coordinator', name: 'main-coord' }
-          }
-        })),
-        stdioMcpServer.processMessage(JSON.stringify({
-          jsonrpc: '2.0',
-          id: 'orch-spawn-2',
-          method: 'tools/call',
-          params: {
-            name: 'mcp__ruv-swarm-zen__agent_spawn',
-            arguments: { type: 'worker', name: 'worker-1' }
-          }
-        }))
+        stdioMcpServer.processMessage(
+          JSON.stringify({
+            jsonrpc: '2.0',
+            id: 'orch-spawn-1',
+            method: 'tools/call',
+            params: {
+              name: 'mcp__ruv-swarm-zen__agent_spawn',
+              arguments: { type: 'coordinator', name: 'main-coord' },
+            },
+          })
+        ),
+        stdioMcpServer.processMessage(
+          JSON.stringify({
+            jsonrpc: '2.0',
+            id: 'orch-spawn-2',
+            method: 'tools/call',
+            params: {
+              name: 'mcp__ruv-swarm-zen__agent_spawn',
+              arguments: { type: 'worker', name: 'worker-1' },
+            },
+          })
+        ),
       ]);
 
       // Orchestrate task
@@ -484,12 +489,14 @@ describe('MCP Protocol Compliance Integration Tests', () => {
           arguments: {
             task: 'Process complex data analysis',
             strategy: 'parallel',
-            assignees: ['main-coord', 'worker-1']
-          }
-        }
+            assignees: ['main-coord', 'worker-1'],
+          },
+        },
       };
 
-      const orchestrateResponse = await stdioMcpServer.processMessage(JSON.stringify(orchestrateRequest));
+      const orchestrateResponse = await stdioMcpServer.processMessage(
+        JSON.stringify(orchestrateRequest)
+      );
       const parsedOrchResponse = JSON.parse(orchestrateResponse);
 
       expect(parsedOrchResponse.result.isError).toBe(false);
@@ -505,9 +512,9 @@ describe('MCP Protocol Compliance Integration Tests', () => {
           name: 'mcp__ruv-swarm-zen__swarm_init',
           arguments: {
             topology: 'invalid_topology', // Invalid value
-            maxAgents: 'not_a_number' // Invalid type
-          }
-        }
+            maxAgents: 'not_a_number', // Invalid type
+          },
+        },
       };
 
       const response = await stdioMcpServer.processMessage(JSON.stringify(invalidRequest));
@@ -520,9 +527,9 @@ describe('MCP Protocol Compliance Integration Tests', () => {
           code: expect.any(Number),
           message: expect.stringContaining('Invalid parameters'),
           data: expect.objectContaining({
-            validationErrors: expect.any(Array)
-          })
-        }
+            validationErrors: expect.any(Array),
+          }),
+        },
       });
     });
   });
@@ -532,130 +539,116 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       // Start both servers
       httpMcpServer = new HttpMcpServer({ port: TEST_PORT });
       stdioMcpServer = new StdioMcpServer({ enableSwarmCoordination: true });
-      
-      await Promise.all([
-        httpMcpServer.start(),
-        stdioMcpServer.initialize()
-      ]);
+
+      await Promise.all([httpMcpServer.start(), stdioMcpServer.initialize()]);
 
       try {
         // Initialize swarm via HTTP MCP
-        const httpSwarmInit = await networkHelper.httpPost(
-          `http://localhost:${TEST_PORT}/mcp`,
-          {
-            jsonrpc: '2.0',
-            id: 'cross-1',
-            method: 'tools/call',
-            params: {
-              name: 'system_info',
-              arguments: { detailed: true }
-            }
-          }
-        );
+        const httpSwarmInit = await networkHelper.httpPost(`http://localhost:${TEST_PORT}/mcp`, {
+          jsonrpc: '2.0',
+          id: 'cross-1',
+          method: 'tools/call',
+          params: {
+            name: 'system_info',
+            arguments: { detailed: true },
+          },
+        });
 
         expect(httpSwarmInit.status).toBe(200);
 
         // Use same session context in Stdio MCP
-        const stdioResponse = await stdioMcpServer.processMessage(JSON.stringify({
-          jsonrpc: '2.0',
-          id: 'cross-2',
-          method: 'tools/call',
-          params: {
-            name: 'mcp__ruv-swarm-zen__swarm_init',
-            arguments: {
-              topology: 'mesh',
-              maxAgents: 3,
-              contextFromHttp: true
-            }
-          }
-        }));
+        const stdioResponse = await stdioMcpServer.processMessage(
+          JSON.stringify({
+            jsonrpc: '2.0',
+            id: 'cross-2',
+            method: 'tools/call',
+            params: {
+              name: 'mcp__ruv-swarm-zen__swarm_init',
+              arguments: {
+                topology: 'mesh',
+                maxAgents: 3,
+                contextFromHttp: true,
+              },
+            },
+          })
+        );
 
         const parsedStdioResponse = JSON.parse(stdioResponse);
         expect(parsedStdioResponse.result.isError).toBe(false);
 
         // Verify coordination between protocols
-        const statusCheck = await networkHelper.httpPost(
-          `http://localhost:${TEST_PORT}/mcp`,
-          {
-            jsonrpc: '2.0',
-            id: 'cross-3',
-            method: 'tools/call',
-            params: {
-              name: 'project_status',
-              arguments: {}
-            }
-          }
-        );
+        const statusCheck = await networkHelper.httpPost(`http://localhost:${TEST_PORT}/mcp`, {
+          jsonrpc: '2.0',
+          id: 'cross-3',
+          method: 'tools/call',
+          params: {
+            name: 'project_status',
+            arguments: {},
+          },
+        });
 
         expect(statusCheck.status).toBe(200);
         expect(statusCheck.data.result.content[0].text).toContain('Swarm coordination active');
       } finally {
-        await Promise.all([
-          httpMcpServer.stop(),
-          stdioMcpServer.shutdown()
-        ]);
+        await Promise.all([httpMcpServer.stop(), stdioMcpServer.shutdown()]);
       }
     });
 
     it('should share session state between protocol implementations', async () => {
       // This test verifies that session data can be accessed across different MCP implementations
       const sessionId = 'cross-protocol-session-123';
-      
-      stdioMcpServer = new StdioMcpServer({ 
+
+      stdioMcpServer = new StdioMcpServer({
         enableSwarmCoordination: true,
-        sessionId 
+        sessionId,
       });
-      
+
       await stdioMcpServer.initialize();
 
       // Store data via Stdio MCP
-      await stdioMcpServer.processMessage(JSON.stringify({
-        jsonrpc: '2.0',
-        id: 'share-1',
-        method: 'tools/call',
-        params: {
-          name: 'mcp__ruv-swarm-zen__memory_usage',
-          arguments: {
-            action: 'store',
-            key: `session:${sessionId}:data`,
-            value: { crossProtocolTest: true, timestamp: Date.now() }
-          }
-        }
-      }));
+      await stdioMcpServer.processMessage(
+        JSON.stringify({
+          jsonrpc: '2.0',
+          id: 'share-1',
+          method: 'tools/call',
+          params: {
+            name: 'mcp__ruv-swarm-zen__memory_usage',
+            arguments: {
+              action: 'store',
+              key: `session:${sessionId}:data`,
+              value: { crossProtocolTest: true, timestamp: Date.now() },
+            },
+          },
+        })
+      );
 
       // Start HTTP MCP with same session context
-      httpMcpServer = new HttpMcpServer({ 
+      httpMcpServer = new HttpMcpServer({
         port: TEST_PORT,
-        sessionId 
+        sessionId,
       });
-      
+
       await httpMcpServer.start();
 
       try {
         // Retrieve data via HTTP MCP
-        const httpResponse = await networkHelper.httpPost(
-          `http://localhost:${TEST_PORT}/mcp`,
-          {
-            jsonrpc: '2.0',
-            id: 'share-2',
-            method: 'tools/call',
-            params: {
-              name: 'project_status',
-              arguments: {
-                includeSessionData: true,
-                sessionKey: `session:${sessionId}:data`
-              }
-            }
-          }
-        );
+        const httpResponse = await networkHelper.httpPost(`http://localhost:${TEST_PORT}/mcp`, {
+          jsonrpc: '2.0',
+          id: 'share-2',
+          method: 'tools/call',
+          params: {
+            name: 'project_status',
+            arguments: {
+              includeSessionData: true,
+              sessionKey: `session:${sessionId}:data`,
+            },
+          },
+        });
 
         expect(httpResponse.status).toBe(200);
         expect(httpResponse.data.result.content[0].text).toContain('crossProtocolTest');
       } finally {
-        await Promise.all([
-          httpMcpServer.stop(),
-          stdioMcpServer.shutdown()
-        ]);
+        await Promise.all([httpMcpServer.stop(), stdioMcpServer.shutdown()]);
       }
     });
   });
@@ -669,34 +662,31 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         const requestCount = 100;
         const batchSize = 10;
         const totalBatches = requestCount / batchSize;
-        
+
         const results: number[] = [];
 
         for (let batch = 0; batch < totalBatches; batch++) {
           const batchStartTime = Date.now();
-          
-          const batchRequests = Array.from({ length: batchSize }, (_, i) => 
-            networkHelper.httpPost(
-              `http://localhost:${TEST_PORT}/mcp`,
-              {
-                jsonrpc: '2.0',
-                id: `load-${batch}-${i}`,
-                method: 'tools/call',
-                params: {
-                  name: 'system_info',
-                  arguments: { detailed: false }
-                }
-              }
-            )
+
+          const batchRequests = Array.from({ length: batchSize }, (_, i) =>
+            networkHelper.httpPost(`http://localhost:${TEST_PORT}/mcp`, {
+              jsonrpc: '2.0',
+              id: `load-${batch}-${i}`,
+              method: 'tools/call',
+              params: {
+                name: 'system_info',
+                arguments: { detailed: false },
+              },
+            })
           );
 
           const batchResponses = await Promise.all(batchRequests);
           const batchTime = Date.now() - batchStartTime;
-          
+
           results.push(batchTime);
 
           // All requests in batch should succeed
-          batchResponses.forEach(response => {
+          batchResponses.forEach((response) => {
             expect(response.status).toBe(200);
             expect(response.data.result).toBeDefined();
           });
@@ -706,62 +696,64 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         const avgBatchTime = results.reduce((a, b) => a + b, 0) / results.length;
         const maxBatchTime = Math.max(...results);
         const minBatchTime = Math.min(...results);
-        
+
         expect(avgBatchTime).toBeLessThan(2000); // Average batch should be under 2 seconds
         expect(maxBatchTime / minBatchTime).toBeLessThan(3); // Max shouldn't be more than 3x min
-        
       } finally {
         await httpMcpServer.stop();
       }
     });
 
     it('should maintain memory efficiency under sustained load', async () => {
-      stdioMcpServer = new StdioMcpServer({ 
+      stdioMcpServer = new StdioMcpServer({
         enableSwarmCoordination: true,
-        memoryPersistence: true 
+        memoryPersistence: true,
       });
-      
+
       await stdioMcpServer.initialize();
 
       try {
         const initialMemory = process.memoryUsage();
-        
+
         // Simulate sustained operation
         for (let i = 0; i < 50; i++) {
-          await stdioMcpServer.processMessage(JSON.stringify({
-            jsonrpc: '2.0',
-            id: `memory-test-${i}`,
-            method: 'tools/call',
-            params: {
-              name: 'mcp__ruv-swarm-zen__memory_usage',
-              arguments: {
-                action: 'store',
-                key: `test-data-${i}`,
-                value: { iteration: i, data: new Array(1000).fill('test') }
-              }
-            }
-          }));
+          await stdioMcpServer.processMessage(
+            JSON.stringify({
+              jsonrpc: '2.0',
+              id: `memory-test-${i}`,
+              method: 'tools/call',
+              params: {
+                name: 'mcp__ruv-swarm-zen__memory_usage',
+                arguments: {
+                  action: 'store',
+                  key: `test-data-${i}`,
+                  value: { iteration: i, data: new Array(1000).fill('test') },
+                },
+              },
+            })
+          );
 
           // Periodic cleanup simulation
           if (i % 10 === 0) {
-            await stdioMcpServer.processMessage(JSON.stringify({
-              jsonrpc: '2.0',
-              id: `cleanup-${i}`,
-              method: 'tools/call',
-              params: {
-                name: 'mcp__ruv-swarm-zen__swarm_status',
-                arguments: { cleanup: true }
-              }
-            }));
+            await stdioMcpServer.processMessage(
+              JSON.stringify({
+                jsonrpc: '2.0',
+                id: `cleanup-${i}`,
+                method: 'tools/call',
+                params: {
+                  name: 'mcp__ruv-swarm-zen__swarm_status',
+                  arguments: { cleanup: true },
+                },
+              })
+            );
           }
         }
 
         const finalMemory = process.memoryUsage();
         const memoryIncrease = finalMemory.heapUsed - initialMemory.heapUsed;
-        
+
         // Memory increase should be reasonable (less than 100MB)
         expect(memoryIncrease).toBeLessThan(100 * 1024 * 1024);
-        
       } finally {
         await stdioMcpServer.shutdown();
       }

@@ -25,10 +25,7 @@ const config: Config = {
   extensionsToTreatAsEsm: ['.ts'],
 
   roots: ['<rootDir>/src', '<rootDir>/tests'],
-  testMatch: [
-    '<rootDir>/tests/**/*.test.ts',
-    '<rootDir>/src/__tests__/**/*.test.ts',
-  ],
+  testMatch: ['<rootDir>/tests/**/*.test.ts', '<rootDir>/src/__tests__/**/*.test.ts'],
 
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
 };

@@ -47,33 +47,31 @@ ${this.config.project.description}
 - **Performance optimization**: ${this.config.copilot_context.neural_capabilities.performance_critical}
 
 ## Architecture Principles
-${this.config.architecture.principles.map(p => `- ${p}`).join('\n')}
+${this.config.architecture.principles.map((p) => `- ${p}`).join('\n')}
 
 ## Domain Structure
 \`\`\`
 src/
-${this.config.architecture.domains.map(domain => `├── ${domain}/`).join('\n')}
+${this.config.architecture.domains.map((domain) => `├── ${domain}/`).join('\n')}
 \`\`\`
 
 ## Performance Requirements
-${Object.entries(this.config.development.performance_requirements).map(([key, value]) => 
-  `- **${key.replace(/_/g, ' ')}**: ${value}`
-).join('\n')}
+${Object.entries(this.config.development.performance_requirements)
+  .map(([key, value]) => `- **${key.replace(/_/g, ' ')}**: ${value}`)
+  .join('\n')}
 
 ## Quality Gates
-${Object.entries(this.config.quality_gates).map(([key, value]) => 
-  `- **${key.replace(/_/g, ' ')}**: ${value}`
-).join('\n')}
+${Object.entries(this.config.quality_gates)
+  .map(([key, value]) => `- **${key.replace(/_/g, ' ')}**: ${value}`)
+  .join('\n')}
 
 ## Custom Instructions
-${this.config.custom_instructions.architectural_constraints.map(constraint => 
-  `- ${constraint}`
-).join('\n')}
+${this.config.custom_instructions.architectural_constraints
+  .map((constraint) => `- ${constraint}`)
+  .join('\n')}
 
 ## Integration Patterns
-${this.config.custom_instructions.integration_patterns.map(pattern => 
-  `- ${pattern}`
-).join('\n')}
+${this.config.custom_instructions.integration_patterns.map((pattern) => `- ${pattern}`).join('\n')}
 
 ## Build Commands
 \`\`\`bash
@@ -130,14 +128,14 @@ This is a sophisticated, production-grade AI platform. Maintain high standards a
 - **Classical TDD**: ${this.config.development.test_breakdown.classical_tdd}% (algorithms, computations)
 
 ## Performance Benchmarks
-${this.config.performance_benchmarks.map(benchmark => 
-  `- **${benchmark.name}**: ${benchmark.target} (${benchmark.measurement})`
-).join('\n')}
+${this.config.performance_benchmarks
+  .map((benchmark) => `- **${benchmark.name}**: ${benchmark.target} (${benchmark.measurement})`)
+  .join('\n')}
 
 ## Validation Rules
-${this.config.validation_rules.map(rule => 
-  `- **${rule.name}**: ${rule.description}`
-).join('\n')}`;
+${this.config.validation_rules
+  .map((rule) => `- **${rule.name}**: ${rule.description}`)
+  .join('\n')}`;
 
     await fs.writeFile('.github/copilot-context.md', context);
     console.log('✅ Generated Copilot context file');
@@ -213,7 +211,7 @@ jobs:
 ✅ MCP integration validated
 
 **Key Metrics Checked:**
-${this.config.performance_benchmarks.map(b => `- ${b.name}: ${b.target}`).join('\n')}
+${this.config.performance_benchmarks.map((b) => `- ${b.name}: ${b.target}`).join('\n')}
 
 Ready for human review! 🚀\`
             })`;
@@ -444,7 +442,7 @@ body:
       label: Primary Domain
       description: Which domain will this primarily affect?
       options:
-${this.config.architecture.domains.map(domain => `        - "${domain}"`).join('\n')}
+${this.config.architecture.domains.map((domain) => `        - "${domain}"`).join('\n')}
     validations:
       required: true
       
@@ -466,9 +464,9 @@ ${this.config.architecture.domains.map(domain => `        - "${domain}"`).join('
       label: Performance Requirements
       description: Specific performance constraints
       placeholder: |
-        ${Object.entries(this.config.development.performance_requirements).map(([key, value]) => 
-          `- ${key.replace(/_/g, ' ')}: ${value}`
-        ).join('\n')}
+        ${Object.entries(this.config.development.performance_requirements)
+          .map(([key, value]) => `- ${key.replace(/_/g, ' ')}: ${value}`)
+          .join('\n')}
         
   - type: textarea
     id: acceptance-criteria
@@ -488,21 +486,21 @@ ${this.config.architecture.domains.map(domain => `        - "${domain}"`).join('
 
   async generate() {
     await this.loadConfig();
-    
+
     // Ensure directories exist
     await fs.mkdir('.github/instructions', { recursive: true });
     await fs.mkdir('.github/scripts', { recursive: true });
     await fs.mkdir('.github/workflows', { recursive: true });
     await fs.mkdir('.github/ISSUE_TEMPLATE', { recursive: true });
-    
+
     console.log('🤖 Generating Copilot autonomous context files...');
-    
+
     await this.generateRepositoryInstructions();
     await this.generateCopilotContext();
     await this.generateValidationWorkflow();
     await this.generateArchitectureValidator();
     await this.generateIssueTemplate();
-    
+
     console.log('\n🚀 Copilot autonomous framework setup complete!');
     console.log('\nGenerated files:');
     console.log('- .github/instructions/.instructions.md');

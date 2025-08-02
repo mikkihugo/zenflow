@@ -74,9 +74,9 @@ class UserService {
 // Set up container and demonstrate DI
 function demonstrateDI(): void {
   console.log('📦 Setting up DI container...');
-  
+
   const container = new SimpleDIContainer();
-  
+
   // Register services
   container.register<Logger>('logger', () => new ConsoleLogger());
   container.register<Config>('config', () => new SimpleConfig());
@@ -95,9 +95,9 @@ function demonstrateDI(): void {
   // Test that singletons work
   const logger1 = container.resolve<Logger>('logger');
   const logger2 = container.resolve<Logger>('logger');
-  
+
   console.log('🔄 Singleton test:', logger1 === logger2 ? 'PASS' : 'FAIL');
-  
+
   console.log('✨ DI System demonstration completed successfully!');
 }
 

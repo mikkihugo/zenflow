@@ -84,8 +84,6 @@ export * from './coordination/hive-mind/core/Agent';
 export * from './coordination/hive-mind/core/HiveMind';
 export * from './coordination/hive-mind/integration/ConsensusEngine';
 export * from './coordination/hive-mind/integration/SwarmOrchestrator';
-// Terminal Interface (CLI and TUI unified)
-export * from './interfaces/terminal';
 // Maestro coordination
 export * from './coordination/maestro/maestro-orchestrator';
 export * from './coordination/maestro/maestro-swarm-coordinator';
@@ -93,14 +91,15 @@ export * from './coordination/maestro/maestro-swarm-coordinator';
 export * from './coordination/mcp/claude-zen-server';
 export * from './coordination/mcp/tools/swarm-tools';
 export * from './coordination/mcp/types/mcp-types';
-// Neural network integration
-export * from './neural/neural-bridge';
-
 // Swarm-zen integration
 export * from './coordination/swarm/core/index';
-export * from './neural/agents/neural-agent';
 // Utils and core services
 export * from './core/logger';
+// Terminal Interface (CLI and TUI unified)
+export * from './interfaces/terminal';
+export * from './neural/agents/neural-agent';
+// Neural network integration
+export * from './neural/neural-bridge';
 export * from './types/index';
 
 /**
@@ -190,7 +189,9 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
   }
 
   // Initialize SwarmOrchestrator
-  const { SwarmOrchestrator } = await import('./coordination/hive-mind/integration/SwarmOrchestrator');
+  const { SwarmOrchestrator } = await import(
+    './coordination/hive-mind/integration/SwarmOrchestrator'
+  );
   const orchestrator = SwarmOrchestrator.getInstance();
   await orchestrator.initialize();
   console.log('✅ Swarm Orchestrator initialized');
@@ -223,7 +224,9 @@ export async function shutdownClaudeZen(): Promise<void> {
   console.log('🛑 Shutting down Claude-Zen system...');
 
   // Shutdown orchestrator
-  const { SwarmOrchestrator } = await import('./coordination/hive-mind/integration/SwarmOrchestrator');
+  const { SwarmOrchestrator } = await import(
+    './coordination/hive-mind/integration/SwarmOrchestrator'
+  );
   const orchestrator = SwarmOrchestrator.getInstance();
   await orchestrator.shutdown();
 

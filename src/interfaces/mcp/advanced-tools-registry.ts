@@ -1,17 +1,17 @@
 /**
  * @fileoverview Advanced MCP Tools Registry
- * 
+ *
  * Central registry for all 87 advanced MCP tools from claude-zen.
  * Integrates with existing HTTP and Stdio MCP servers.
  */
 
-import { advancedToolRegistry, AdvancedMCPTool } from './advanced-tools';
+import { type AdvancedMCPTool, advancedToolRegistry } from './advanced-tools';
 import coordinationTools from './tools/coordination-tools';
-import monitoringTools from './tools/monitoring-tools';
-import memoryNeuralTools from './tools/memory-neural-tools';
 import githubIntegrationTools from './tools/github-integration-tools';
-import systemTools from './tools/system-tools';
+import memoryNeuralTools from './tools/memory-neural-tools';
+import monitoringTools from './tools/monitoring-tools';
 import orchestrationTools from './tools/orchestration-tools';
+import systemTools from './tools/system-tools';
 
 /**
  * Advanced MCP Tools Manager
@@ -32,37 +32,37 @@ export class AdvancedMCPToolsManager {
     if (this.initialized) return;
 
     // Register Coordination Tools (12 tools)
-    coordinationTools.forEach(tool => {
+    coordinationTools.forEach((tool) => {
       advancedToolRegistry.registerTool(tool);
       this.initializeToolStats(tool.name);
     });
 
     // Register Monitoring Tools (15 tools)
-    monitoringTools.forEach(tool => {
+    monitoringTools.forEach((tool) => {
       advancedToolRegistry.registerTool(tool);
       this.initializeToolStats(tool.name);
     });
 
     // Register Memory & Neural Tools (18 tools)
-    memoryNeuralTools.forEach(tool => {
+    memoryNeuralTools.forEach((tool) => {
       advancedToolRegistry.registerTool(tool);
       this.initializeToolStats(tool.name);
     });
 
     // Register GitHub Integration Tools (20 tools)
-    githubIntegrationTools.forEach(tool => {
+    githubIntegrationTools.forEach((tool) => {
       advancedToolRegistry.registerTool(tool);
       this.initializeToolStats(tool.name);
     });
 
     // Register System Tools (12 tools)
-    systemTools.forEach(tool => {
+    systemTools.forEach((tool) => {
       advancedToolRegistry.registerTool(tool);
       this.initializeToolStats(tool.name);
     });
 
     // Register Orchestration Tools (10 tools)
-    orchestrationTools.forEach(tool => {
+    orchestrationTools.forEach((tool) => {
       advancedToolRegistry.registerTool(tool);
       this.initializeToolStats(tool.name);
     });
@@ -84,17 +84,17 @@ export class AdvancedMCPToolsManager {
   async executeTool(name: string, params: any): Promise<any> {
     const startTime = Date.now();
     const tool = this.getTool(name);
-    
+
     if (!tool) {
       throw new Error(`Advanced tool not found: ${name}`);
     }
 
     try {
       const result = await tool.handler(params);
-      
+
       // Update success statistics
       this.updateToolStats(name, Date.now() - startTime, false);
-      
+
       return result;
     } catch (error) {
       // Update error statistics
@@ -109,19 +109,19 @@ export class AdvancedMCPToolsManager {
   listAllTools(): any {
     const tools = advancedToolRegistry.getAllTools();
     const categoryStats = advancedToolRegistry.getCategorySummary();
-    
+
     return {
       total: tools.length,
       categories: categoryStats,
-      tools: tools.map(tool => ({
+      tools: tools.map((tool) => ({
         name: tool.name,
         description: tool.description,
         category: tool.category,
         version: tool.version,
         priority: tool.priority,
         tags: tool.metadata.tags,
-        permissions: tool.permissions.map(p => `${p.type}:${p.resource}`)
-      }))
+        permissions: tool.permissions.map((p) => `${p.type}:${p.resource}`),
+      })),
     };
   }
 
@@ -140,8 +140,10 @@ export class AdvancedMCPToolsManager {
     for (const [toolName, toolStats] of this.toolStats.entries()) {
       stats[toolName] = {
         ...toolStats,
-        successRate: toolStats.calls > 0 ? 
-          ((toolStats.calls - toolStats.errors) / toolStats.calls * 100).toFixed(2) + '%' : '0%'
+        successRate:
+          toolStats.calls > 0
+            ? (((toolStats.calls - toolStats.errors) / toolStats.calls) * 100).toFixed(2) + '%'
+            : '0%',
       };
     }
     return stats;
@@ -152,9 +154,15 @@ export class AdvancedMCPToolsManager {
    */
   getRegistryOverview(): any {
     const categoryStats = advancedToolRegistry.getCategorySummary();
-    const totalCalls = Array.from(this.toolStats.values()).reduce((sum, stats) => sum + stats.calls, 0);
-    const totalErrors = Array.from(this.toolStats.values()).reduce((sum, stats) => sum + stats.errors, 0);
-    
+    const totalCalls = Array.from(this.toolStats.values()).reduce(
+      (sum, stats) => sum + stats.calls,
+      0
+    );
+    const totalErrors = Array.from(this.toolStats.values()).reduce(
+      (sum, stats) => sum + stats.errors,
+      0
+    );
+
     return {
       toolCount: this.getToolCount(),
       categories: categoryStats,
@@ -162,10 +170,10 @@ export class AdvancedMCPToolsManager {
         totalCalls,
         totalErrors,
         errorRate: totalCalls > 0 ? ((totalErrors / totalCalls) * 100).toFixed(2) + '%' : '0%',
-        avgResponseTime: this.calculateAvgResponseTime()
+        avgResponseTime: this.calculateAvgResponseTime(),
       },
       status: 'operational',
-      version: '2.0.0'
+      version: '2.0.0',
     };
   }
 
@@ -174,11 +182,14 @@ export class AdvancedMCPToolsManager {
    */
   searchTools(query: string): AdvancedMCPTool[] {
     const lowercaseQuery = query.toLowerCase();
-    return advancedToolRegistry.getAllTools().filter(tool => 
-      tool.name.toLowerCase().includes(lowercaseQuery) ||
-      tool.description.toLowerCase().includes(lowercaseQuery) ||
-      tool.metadata.tags.some(tag => tag.toLowerCase().includes(lowercaseQuery))
-    );
+    return advancedToolRegistry
+      .getAllTools()
+      .filter(
+        (tool) =>
+          tool.name.toLowerCase().includes(lowercaseQuery) ||
+          tool.description.toLowerCase().includes(lowercaseQuery) ||
+          tool.metadata.tags.some((tag) => tag.toLowerCase().includes(lowercaseQuery))
+      );
   }
 
   /**
@@ -199,11 +210,13 @@ export class AdvancedMCPToolsManager {
    * Get tools requiring specific permissions
    */
   getToolsByPermission(permissionType: string, resource?: string): AdvancedMCPTool[] {
-    return advancedToolRegistry.getAllTools().filter(tool =>
-      tool.permissions.some(perm => 
-        perm.type === permissionType && (!resource || perm.resource === resource)
-      )
-    );
+    return advancedToolRegistry
+      .getAllTools()
+      .filter((tool) =>
+        tool.permissions.some(
+          (perm) => perm.type === permissionType && (!resource || perm.resource === resource)
+        )
+      );
   }
 
   private initializeToolStats(toolName: string): void {
@@ -222,7 +235,7 @@ export class AdvancedMCPToolsManager {
   private calculateAvgResponseTime(): string {
     const allStats = Array.from(this.toolStats.values());
     if (allStats.length === 0) return '0ms';
-    
+
     const avgTime = allStats.reduce((sum, stats) => sum + stats.avgTime, 0) / allStats.length;
     return Math.round(avgTime) + 'ms';
   }
@@ -240,7 +253,7 @@ export class MCPServerIntegration {
    */
   static async integrateWithHTTPServer(mcpServer: any): Promise<void> {
     const tools = advancedToolRegistry.getAllTools();
-    
+
     for (const tool of tools) {
       // Convert advanced tool to standard MCP tool format
       const mcpTool = {
@@ -250,15 +263,15 @@ export class MCPServerIntegration {
         handler: async (params: any) => {
           const result = await advancedMCPToolsManager.executeTool(tool.name, params);
           return result;
-        }
+        },
       };
-      
+
       // Register with HTTP MCP server
       if (mcpServer.registerTool) {
         mcpServer.registerTool(mcpTool);
       }
     }
-    
+
     console.log(`🔗 Integrated ${tools.length} advanced tools with HTTP MCP server`);
   }
 
@@ -267,7 +280,7 @@ export class MCPServerIntegration {
    */
   static async integrateWithStdioServer(mcpServer: any): Promise<void> {
     const tools = advancedToolRegistry.getAllTools();
-    
+
     for (const tool of tools) {
       // Convert advanced tool to stdio MCP tool format
       const stdioTool = {
@@ -277,15 +290,15 @@ export class MCPServerIntegration {
         handler: async (params: any) => {
           const result = await advancedMCPToolsManager.executeTool(tool.name, params);
           return result;
-        }
+        },
       };
-      
+
       // Register with Stdio MCP server
       if (mcpServer.tools) {
         mcpServer.tools[tool.name] = stdioTool;
       }
     }
-    
+
     console.log(`🔗 Integrated ${tools.length} advanced tools with Stdio MCP server`);
   }
 
@@ -302,10 +315,17 @@ export class MCPServerIntegration {
           metadata: {
             version: '2.0.0',
             totalTools: advancedMCPToolsManager.getToolCount(),
-            categories: ['coordination', 'monitoring', 'memory-neural', 'github-integration', 'system', 'orchestration']
-          }
+            categories: [
+              'coordination',
+              'monitoring',
+              'memory-neural',
+              'github-integration',
+              'system',
+              'orchestration',
+            ],
+          },
         };
-      }
+      },
     };
   }
 
@@ -319,24 +339,24 @@ export class MCPServerIntegration {
       handler: async (req: any) => {
         const { toolName } = req.params;
         const params = req.body;
-        
+
         try {
           const result = await advancedMCPToolsManager.executeTool(toolName, params);
           return {
             success: true,
             tool: toolName,
             result,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           };
         } catch (error) {
           return {
             success: false,
             tool: toolName,
             error: error.message,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           };
         }
-      }
+      },
     };
   }
 }

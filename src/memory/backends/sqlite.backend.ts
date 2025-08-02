@@ -2,7 +2,13 @@
  * @fileoverview SQLite backend for memory storage.
  */
 
-import { BaseBackend, BackendConfig, BackendStats, JSONValue, StorageResult } from './base.backend';
+import {
+  type BackendConfig,
+  type BackendStats,
+  BaseBackend,
+  type JSONValue,
+  type StorageResult,
+} from './base.backend';
 
 export class SQLiteBackend extends BaseBackend {
   private db?: any;

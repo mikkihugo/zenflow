@@ -10,32 +10,29 @@
  * - Maintains interface isolation
  */
 
-// Export all shared types
-export * from './types.js';
-
+// Export configuration utilities
+export * from './config.js';
+export type {
+  CommandExecutorContract,
+  ConfigurationContract,
+  DataServiceContract,
+  ProjectManagerContract,
+  SwarmCoordinatorContract,
+  SystemMonitorContract,
+} from './contracts.js';
 // Export all contracts
 export * from './contracts.js';
 
-// Export configuration utilities
-export * from './config.js';
-
 // Re-export key types for convenience
 export type {
-  ProjectType,
-  ComplexityLevel,
-  ProjectConfig,
-  CommandResult,
   CommandContext,
-  InterfaceConfig,
-  SystemHealth,
+  CommandResult,
+  ComplexityLevel,
   ComponentStatus,
+  InterfaceConfig,
+  ProjectConfig,
+  ProjectType,
+  SystemHealth,
 } from './types.js';
-
-export type {
-  ProjectManagerContract,
-  CommandExecutorContract,
-  SwarmCoordinatorContract,
-  SystemMonitorContract,
-  DataServiceContract,
-  ConfigurationContract,
-} from './contracts.js';
+// Export all shared types
+export * from './types.js';

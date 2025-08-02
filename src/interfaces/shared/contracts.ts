@@ -5,17 +5,17 @@
  * without creating cross-interface dependencies.
  */
 
-import type { 
-  ProjectConfig, 
-  CommandResult, 
+import type {
   CommandContext,
+  CommandResult,
+  ComponentStatus,
+  ProjectConfig,
   SystemHealth,
-  ComponentStatus
 } from './types.js';
 
 /**
  * Project Management Contract
- * 
+ *
  * Abstract interface for project management operations that can be
  * implemented by different interface layers.
  */
@@ -36,7 +36,7 @@ export interface ProjectSummary {
 
 /**
  * Command Execution Contract
- * 
+ *
  * Abstract interface for command execution that can be implemented
  * by different command engines.
  */
@@ -49,7 +49,7 @@ export interface CommandExecutorContract {
 
 /**
  * Swarm Coordination Contract
- * 
+ *
  * Abstract interface for swarm operations that interfaces can use
  * without depending on specific swarm implementations.
  */
@@ -83,7 +83,7 @@ export interface SwarmTask {
 
 /**
  * System Monitoring Contract
- * 
+ *
  * Abstract interface for system monitoring and health checks.
  */
 export interface SystemMonitorContract {
@@ -111,7 +111,7 @@ export interface PerformanceMetrics {
 
 /**
  * Data Service Contract
- * 
+ *
  * Abstract interface for data operations that interfaces can use.
  */
 export interface DataServiceContract {
@@ -123,7 +123,7 @@ export interface DataServiceContract {
 
 /**
  * Configuration Contract
- * 
+ *
  * Abstract interface for configuration management.
  */
 export interface ConfigurationContract {

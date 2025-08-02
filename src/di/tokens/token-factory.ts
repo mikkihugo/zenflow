@@ -3,7 +3,7 @@
  * Provides type-safe token creation for dependency injection
  */
 
-import type { DIToken, Constructor } from '../types/di-types.js';
+import type { Constructor, DIToken } from '../types/di-types.js';
 
 /**
  * Creates a typed DI token for service registration

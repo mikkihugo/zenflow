@@ -5,10 +5,10 @@
  * Comprehensive build and runtime performance optimization system
  */
 
-import { performance } from 'node:perf_hooks';
 import { execSync, spawn } from 'node:child_process';
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { performance } from 'node:perf_hooks';
 
 interface PerformanceMetrics {
   buildTime: number;
@@ -37,7 +37,7 @@ class PerformanceOptimizer {
       wasmOptimization: true,
       bundleAnalysis: true,
       cacheOptimization: true,
-      ...config
+      ...config,
     };
   }
 
@@ -53,7 +53,7 @@ class PerformanceOptimizer {
       bundleSize: 0,
       memoryUsage: 0,
       testTime: 0,
-      errors: []
+      errors: [],
     };
 
     try {
@@ -88,7 +88,6 @@ class PerformanceOptimizer {
       await this.generatePerformanceReport(metrics);
 
       return metrics;
-
     } catch (error) {
       metrics.errors.push(error instanceof Error ? error.message : String(error));
       console.error('❌ Optimization failed:', error);
@@ -102,11 +101,7 @@ class PerformanceOptimizer {
   private async installDependencies(): Promise<void> {
     console.log('📦 Installing missing dependencies...');
 
-    const dependencies = [
-      'wasm-opt',
-      'binaryen',
-      'concurrently'
-    ];
+    const dependencies = ['wasm-opt', 'binaryen', 'concurrently'];
 
     for (const dep of dependencies) {
       try {
@@ -116,7 +111,9 @@ class PerformanceOptimizer {
         console.log(`📥 Installing ${dep}...`);
         try {
           if (dep === 'wasm-opt' || dep === 'binaryen') {
-            execSync(`sudo apt-get update && sudo apt-get install -y binaryen`, { stdio: 'inherit' });
+            execSync(`sudo apt-get update && sudo apt-get install -y binaryen`, {
+              stdio: 'inherit',
+            });
           } else {
             execSync(`npm install -g ${dep}`, { stdio: 'inherit' });
           }
@@ -184,7 +181,7 @@ class PerformanceOptimizer {
         'build:fast': 'npm run clean && tsc --incremental',
         'build:parallel': 'concurrently "npm run build:ts" "npm run build:wasm:dev"',
         'build:ts': 'tsc --incremental',
-        'build:production': 'npm run clean && npm run build:parallel && npm run optimize:bundle'
+        'build:production': 'npm run clean && npm run build:parallel && npm run optimize:bundle',
       };
       console.log('✅ Added parallel build scripts');
     }
@@ -194,7 +191,7 @@ class PerformanceOptimizer {
       packageJson.scripts = {
         ...packageJson.scripts,
         'clean:cache': 'rm -rf .tsbuildinfo node_modules/.cache dist/.cache',
-        'build:cached': 'npm run build:ts || npm run build:fast'
+        'build:cached': 'npm run build:ts || npm run build:fast',
       };
       console.log('✅ Added build caching');
     }
@@ -270,7 +267,7 @@ echo "✅ Production WASM build complete"
 
       const bundleAnalysis = execSync(`du -sh ${distPath}`, { encoding: 'utf8' });
       const sizeMatch = bundleAnalysis.match(/^([0-9.]+)([KMG])/);
-      
+
       if (sizeMatch) {
         const [, size, unit] = sizeMatch;
         const sizeInMB = this.convertToMB(parseFloat(size), unit);
@@ -359,7 +356,7 @@ echo "✅ Production WASM build complete"
 - ✅ Bundle analysis configured
 
 ### Issues Encountered
-${metrics.errors.length > 0 ? metrics.errors.map(error => `- ❌ ${error}`).join('\n') : '- ✅ No issues encountered'}
+${metrics.errors.length > 0 ? metrics.errors.map((error) => `- ❌ ${error}`).join('\n') : '- ✅ No issues encountered'}
 
 ### Recommendations
 1. **Build Time**: ${this.getBuildTimeRecommendation(metrics.buildTime)}
@@ -381,7 +378,7 @@ Generated: ${new Date().toISOString()}
     return new Promise((resolve, reject) => {
       const [cmd, ...args] = command.split(' ');
       const process = spawn(cmd, args, { stdio: 'inherit' });
-      
+
       process.on('close', (code) => {
         if (code === 0) {
           resolve();
@@ -389,17 +386,21 @@ Generated: ${new Date().toISOString()}
           reject(new Error(`Command failed with code ${code}`));
         }
       });
-      
+
       process.on('error', reject);
     });
   }
 
   private convertToMB(size: number, unit: string): number {
     switch (unit) {
-      case 'K': return size / 1024;
-      case 'M': return size;
-      case 'G': return size * 1024;
-      default: return size / (1024 * 1024); // Assume bytes
+      case 'K':
+        return size / 1024;
+      case 'M':
+        return size;
+      case 'G':
+        return size * 1024;
+      default:
+        return size / (1024 * 1024); // Assume bytes
     }
   }
 

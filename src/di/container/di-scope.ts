@@ -3,12 +3,7 @@
  * Provides hierarchical scoping for service lifetimes
  */
 
-import type { 
-  DIScope as IDIScope, 
-  DIContainer, 
-  DIToken, 
-  Provider 
-} from '../types/di-types.js';
+import type { DIContainer, DIToken, DIScope as IDIScope, Provider } from '../types/di-types.js';
 
 export class DIScope implements IDIScope {
   private readonly scopedProviders = new Map<symbol, Provider<any>>();
@@ -74,7 +69,7 @@ export class DIScope implements IDIScope {
     }
 
     await Promise.all(disposalPromises);
-    
+
     this.scopedInstances.clear();
     this.scopedProviders.clear();
     this.children.clear();

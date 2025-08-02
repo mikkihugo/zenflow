@@ -10,10 +10,10 @@ import 'jest-extended';
 beforeEach(() => {
   // Minimal mocking - use real implementations when possible
   jest.restoreAllMocks();
-  
+
   // Setup performance monitoring for algorithm testing
   setupPerformanceMonitoring();
-  
+
   // Initialize test data generators
   initializeTestDataGenerators();
 });
@@ -21,7 +21,7 @@ beforeEach(() => {
 afterEach(() => {
   // Clean up any test state
   cleanupTestState();
-  
+
   // Collect performance metrics
   collectPerformanceMetrics();
 });
@@ -29,7 +29,7 @@ afterEach(() => {
 function setupPerformanceMonitoring() {
   // Track execution time for algorithm tests
   global.testStartTime = Date.now();
-  
+
   // Setup memory usage monitoring
   if (global.gc) {
     global.gc();
@@ -74,14 +74,18 @@ function hashCode(str: string): number {
   if (str.length === 0) return hash;
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32bit integer
   }
   return hash;
 }
 
 // Classical TDD helpers for algorithm testing
-(global as any).generateTestMatrix = (rows: number, cols: number, fillFn?: (i: number, j: number) => number) => {
+(global as any).generateTestMatrix = (
+  rows: number,
+  cols: number,
+  fillFn?: (i: number, j: number) => number
+) => {
   const matrix: number[][] = [];
   for (let i = 0; i < rows; i++) {
     matrix[i] = [];
@@ -129,31 +133,43 @@ function hashCode(str: string): number {
 
 (global as any).expectMemoryUsage = (fn: () => void, maxMemoryMB: number) => {
   if (!(global as any).gc) return; // Skip if garbage collection not available
-  
+
   (global as any).gc();
   const startMemory = process.memoryUsage().heapUsed;
   fn();
   (global as any).gc();
   const endMemory = process.memoryUsage().heapUsed;
   const memoryUsedMB = (endMemory - startMemory) / 1024 / 1024;
-  
+
   expect(memoryUsedMB).toBeLessThanOrEqual(maxMemoryMB);
   return memoryUsedMB;
 };
 
 // Mathematical precision helpers
-(global as any).expectNearlyEqual = (actual: number, expected: number, tolerance: number = 1e-10) => {
+(global as any).expectNearlyEqual = (
+  actual: number,
+  expected: number,
+  tolerance: number = 1e-10
+) => {
   expect(Math.abs(actual - expected)).toBeLessThanOrEqual(tolerance);
 };
 
-(global as any).expectArrayNearlyEqual = (actual: number[], expected: number[], tolerance: number = 1e-10) => {
+(global as any).expectArrayNearlyEqual = (
+  actual: number[],
+  expected: number[],
+  tolerance: number = 1e-10
+) => {
   expect(actual).toHaveLength(expected.length);
   for (let i = 0; i < actual.length; i++) {
     (global as any).expectNearlyEqual(actual[i], expected[i], tolerance);
   }
 };
 
-(global as any).expectMatrixNearlyEqual = (actual: number[][], expected: number[][], tolerance: number = 1e-10) => {
+(global as any).expectMatrixNearlyEqual = (
+  actual: number[][],
+  expected: number[][],
+  tolerance: number = 1e-10
+) => {
   expect(actual).toHaveLength(expected.length);
   for (let i = 0; i < actual.length; i++) {
     (global as any).expectArrayNearlyEqual(actual[i], expected[i], tolerance);
@@ -162,8 +178,6 @@ function hashCode(str: string): number {
 
 // Extended timeout for computational tests
 jest.setTimeout(60000);
-
-export {};
 
 declare global {
   namespace NodeJS {
@@ -177,11 +191,18 @@ declare global {
         heapTotal: number;
       };
       gc?: () => void;
-      
-      generateTestMatrix(rows: number, cols: number, fillFn?: (i: number, j: number) => number): number[][];
+
+      generateTestMatrix(
+        rows: number,
+        cols: number,
+        fillFn?: (i: number, j: number) => number
+      ): number[][];
       generateTestVector(size: number, fillFn?: (i: number) => number): number[];
-      generateXORData(): Array<{ input: number[], output: number[] }>;
-      generateLinearData(samples: number, noise?: number): Array<{ input: number[], output: number[] }>;
+      generateXORData(): Array<{ input: number[]; output: number[] }>;
+      generateLinearData(
+        samples: number,
+        noise?: number
+      ): Array<{ input: number[]; output: number[] }>;
       expectPerformance(fn: () => void, maxTimeMs: number): number;
       expectMemoryUsage(fn: () => void, maxMemoryMB: number): number | undefined;
       expectNearlyEqual(actual: number, expected: number, tolerance?: number): void;
@@ -189,7 +210,7 @@ declare global {
       expectMatrixNearlyEqual(actual: number[][], expected: number[][], tolerance?: number): void;
     }
   }
-  
+
   namespace Math {
     var seedrandom: (seed: string) => () => number;
   }

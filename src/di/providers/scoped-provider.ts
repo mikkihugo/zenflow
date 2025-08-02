@@ -3,7 +3,7 @@
  * Creates one instance per scope lifetime
  */
 
-import type { Provider, DIContainer, DIScope } from '../types/di-types.js';
+import type { DIContainer, DIScope, Provider } from '../types/di-types.js';
 
 export class ScopedProvider<T> implements Provider<T> {
   readonly type = 'scoped' as const;
@@ -17,7 +17,7 @@ export class ScopedProvider<T> implements Provider<T> {
   create(container: DIContainer): T {
     // For scoped services, we need to find the current scope
     const scope = this.findScope(container);
-    
+
     if (this.scopedInstances.has(scope)) {
       return this.scopedInstances.get(scope)!;
     }
@@ -38,7 +38,7 @@ export class ScopedProvider<T> implements Provider<T> {
     if ('parent' in container) {
       return container as DIScope;
     }
-    
+
     // Otherwise, create a default scope
     return container.createScope();
   }

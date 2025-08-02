@@ -6,7 +6,7 @@
  */
 
 import { execSync } from 'node:child_process';
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { performance } from 'node:perf_hooks';
 
 class QuickBuildFixer {
@@ -27,7 +27,6 @@ class QuickBuildFixer {
       await this.testOptimizedBuild();
 
       console.log('\n✅ Quick build optimization completed successfully!');
-      
     } catch (error) {
       console.error('❌ Build fix failed:', error);
       throw error;
@@ -48,11 +47,12 @@ class QuickBuildFixer {
     packageJson.scripts = {
       ...packageJson.scripts,
       'build:fast': 'npm run clean && tsc --noEmit false --incremental --skipLibCheck',
-      'build:core': 'tsc src/core/*.ts src/interfaces/*.ts --outDir dist/core --module ESNext --target ES2022',
+      'build:core':
+        'tsc src/core/*.ts src/interfaces/*.ts --outDir dist/core --module ESNext --target ES2022',
       'build:check': 'tsc --noEmit --skipLibCheck',
       'test:quick': 'NODE_OPTIONS="--experimental-vm-modules" jest --passWithNoTests --bail',
-      'prestart': 'npm run build:check',
-      'start:dev': 'npx tsx src/claude-zen-integrated.ts --dev'
+      prestart: 'npm run build:check',
+      'start:dev': 'npx tsx src/claude-zen-integrated.ts --dev',
     };
 
     writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
@@ -68,7 +68,7 @@ class QuickBuildFixer {
       console.log('✅ wasm-opt installed successfully');
     } catch (error) {
       console.warn('⚠️  wasm-opt installation failed, using fallback');
-      
+
       // Create a simple fallback optimization script
       const fallbackScript = `#!/bin/bash
 echo "🔧 WASM optimization (fallback mode)"
@@ -93,7 +93,7 @@ echo "✅ WASM files processed (optimization skipped - install wasm-opt for full
         outDir: './dist',
         declaration: false,
         sourceMap: false,
-        removeComments: true
+        removeComments: true,
       },
       exclude: [
         'node_modules',
@@ -102,8 +102,8 @@ echo "✅ WASM files processed (optimization skipped - install wasm-opt for full
         '**/*.spec.ts',
         'src/__tests__/**/*',
         'scripts/**/*',
-        'benchmark/**/*'
-      ]
+        'benchmark/**/*',
+      ],
     };
 
     writeFileSync('tsconfig.build.json', JSON.stringify(fastTsConfig, null, 2));
@@ -168,7 +168,7 @@ echo "✅ WASM build complete"
       // Test TypeScript compilation only (fastest test)
       console.log('📋 Running TypeScript check...');
       execSync('npx tsc --noEmit --skipLibCheck', { stdio: 'inherit' });
-      
+
       const checkTime = (performance.now() - startTime) / 1000;
       console.log(`✅ TypeScript check completed in ${checkTime.toFixed(2)}s`);
 
@@ -180,7 +180,6 @@ echo "✅ WASM build complete"
         const buildTime = (performance.now() - buildStart) / 1000;
         console.log(`⚡ Fast build completed in ${buildTime.toFixed(2)}s`);
       }
-
     } catch (error) {
       console.warn('⚠️  Build test encountered issues, but basic optimization is configured');
       console.log('💡 Use npm run build:check to verify TypeScript without full build');
@@ -192,11 +191,12 @@ echo "✅ WASM build complete"
 const startTime = performance.now();
 const fixer = new QuickBuildFixer();
 
-fixer.fix()
+fixer
+  .fix()
   .then(() => {
     const totalTime = (performance.now() - startTime) / 1000;
     console.log(`\n🎯 Build optimization completed in ${totalTime.toFixed(2)}s`);
-    
+
     console.log(`
 📋 Performance Optimization Summary:
 ✅ Optimized build scripts created

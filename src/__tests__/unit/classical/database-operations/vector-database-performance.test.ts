@@ -5,15 +5,15 @@
 
 import { LanceDBInterface } from '../../../../database/lancedb-interface';
 import { VectorStore } from '../../../../memory/backends/lancedb.backend';
-import { PerformanceMeasurement } from '../../../helpers/performance-measurement';
 import { DatabaseTestHelper } from '../../../helpers/database-test-helper';
+import { PerformanceMeasurement } from '../../../helpers/performance-measurement';
 
 describe('Vector Database Performance (Classical TDD)', () => {
   let lancedb: LanceDBInterface;
   let vectorStore: VectorStore;
   let performance: PerformanceMeasurement;
   let testHelper: DatabaseTestHelper;
-  
+
   const TEST_DB_PATH = '/tmp/claude-zen-test-db';
   const VECTOR_DIMENSION = 384; // Standard embedding dimension
   const PERFORMANCE_THRESHOLD_MS = 100;
@@ -21,16 +21,16 @@ describe('Vector Database Performance (Classical TDD)', () => {
   beforeAll(async () => {
     testHelper = new DatabaseTestHelper();
     performance = new PerformanceMeasurement();
-    
+
     await testHelper.initializeTestDatabase(TEST_DB_PATH);
   });
 
   beforeEach(async () => {
     lancedb = new LanceDBInterface({
       path: TEST_DB_PATH,
-      vectorDimension: VECTOR_DIMENSION
+      vectorDimension: VECTOR_DIMENSION,
     });
-    
+
     vectorStore = new VectorStore(lancedb);
     await vectorStore.initialize();
   });
@@ -51,21 +51,21 @@ describe('Vector Database Performance (Classical TDD)', () => {
         id: 'test-vector-1',
         type: 'embedding',
         source: 'test',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       performance.start('single-vector-insert');
-      
+
       const result = await vectorStore.insert({
         vector: testVector,
-        metadata
+        metadata,
       });
-      
+
       performance.end('single-vector-insert');
 
       expect(result.success).toBe(true);
       expect(result.id).toBeDefined();
-      
+
       const insertTime = performance.getDuration('single-vector-insert');
       expect(insertTime).toBeLessThan(PERFORMANCE_THRESHOLD_MS);
     });
@@ -78,23 +78,23 @@ describe('Vector Database Performance (Classical TDD)', () => {
           id: `batch-vector-${i}`,
           type: 'embedding',
           source: 'batch-test',
-          batchIndex: i
-        }
+          batchIndex: i,
+        },
       }));
 
       performance.start('batch-vector-insert');
-      
+
       const result = await vectorStore.batchInsert(testVectors);
-      
+
       performance.end('batch-vector-insert');
 
       expect(result.success).toBe(true);
       expect(result.insertedCount).toBe(batchSize);
       expect(result.failedCount).toBe(0);
-      
+
       const batchTime = performance.getDuration('batch-vector-insert');
       const timePerVector = batchTime / batchSize;
-      
+
       // Batch insertion should be much faster per vector than individual inserts
       expect(timePerVector).toBeLessThan(PERFORMANCE_THRESHOLD_MS / 10);
       expect(batchTime).toBeLessThan(10000); // 10 seconds max for 1000 vectors
@@ -107,19 +107,19 @@ describe('Vector Database Performance (Classical TDD)', () => {
         metadata: {
           id: `high-dim-vector-${i}`,
           dimension: highDimension,
-          type: 'high-dimensional'
-        }
+          type: 'high-dimensional',
+        },
       }));
 
       performance.start('high-dimensional-insert');
-      
+
       const result = await vectorStore.batchInsert(testVectors);
-      
+
       performance.end('high-dimensional-insert');
 
       expect(result.success).toBe(true);
       expect(result.insertedCount).toBe(100);
-      
+
       const insertTime = performance.getDuration('high-dimensional-insert');
       expect(insertTime).toBeLessThan(5000); // 5 seconds max for 100 high-dim vectors
     });
@@ -134,8 +134,8 @@ describe('Vector Database Performance (Classical TDD)', () => {
           id: `seed-vector-${i}`,
           category: i % 10, // 10 categories
           value: Math.random() * 100,
-          type: 'seed-data'
-        }
+          type: 'seed-data',
+        },
       }));
 
       await vectorStore.batchInsert(seedVectors);
@@ -146,23 +146,23 @@ describe('Vector Database Performance (Classical TDD)', () => {
       const k = 10; // Top 10 similar vectors
 
       performance.start('similarity-search');
-      
+
       const results = await vectorStore.similaritySearch({
         vector: queryVector,
         k,
-        threshold: 0.7
+        threshold: 0.7,
       });
-      
+
       performance.end('similarity-search');
 
       expect(results.length).toBeLessThanOrEqual(k);
       expect(results.length).toBeGreaterThan(0);
-      
+
       // Verify results are sorted by similarity (descending)
       for (let i = 1; i < results.length; i++) {
         expect(results[i].similarity).toBeLessThanOrEqual(results[i - 1].similarity);
       }
-      
+
       const searchTime = performance.getDuration('similarity-search');
       expect(searchTime).toBeLessThan(500); // 500ms max for 10K vector search
     });
@@ -172,24 +172,24 @@ describe('Vector Database Performance (Classical TDD)', () => {
       const targetCategory = 5;
 
       performance.start('filtered-search');
-      
+
       const results = await vectorStore.similaritySearch({
         vector: queryVector,
         k: 20,
         filter: {
           category: targetCategory,
-          value: { $gte: 50 } // Value >= 50
-        }
+          value: { $gte: 50 }, // Value >= 50
+        },
       });
-      
+
       performance.end('filtered-search');
 
       // Verify all results match filter criteria
-      results.forEach(result => {
+      results.forEach((result) => {
         expect(result.metadata.category).toBe(targetCategory);
         expect(result.metadata.value).toBeGreaterThanOrEqual(50);
       });
-      
+
       const searchTime = performance.getDuration('filtered-search');
       expect(searchTime).toBeLessThan(1000); // 1 second max for filtered search
     });
@@ -199,35 +199,35 @@ describe('Vector Database Performance (Classical TDD)', () => {
       const radius = 0.8; // Similarity radius
 
       performance.start('range-query');
-      
+
       const results = await vectorStore.rangeSearch({
         vector: centerVector,
         radius,
-        maxResults: 100
+        maxResults: 100,
       });
-      
+
       performance.end('range-query');
 
       // Verify all results are within specified radius
-      results.forEach(result => {
+      results.forEach((result) => {
         expect(result.similarity).toBeGreaterThanOrEqual(radius);
       });
-      
+
       expect(results.length).toBeLessThanOrEqual(100);
-      
+
       const queryTime = performance.getDuration('range-query');
       expect(queryTime).toBeLessThan(800); // 800ms max for range query
     });
 
     it('should handle approximate nearest neighbor search efficiently', async () => {
       const queryVector = testHelper.generateRandomVector(VECTOR_DIMENSION);
-      
+
       // Exact search for comparison
       performance.start('exact-search');
       const exactResults = await vectorStore.similaritySearch({
         vector: queryVector,
         k: 10,
-        exact: true
+        exact: true,
       });
       performance.end('exact-search');
 
@@ -237,7 +237,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
         vector: queryVector,
         k: 10,
         exact: false,
-        approximationFactor: 0.95 // 95% accuracy
+        approximationFactor: 0.95, // 95% accuracy
       });
       performance.end('approximate-search');
 
@@ -246,12 +246,12 @@ describe('Vector Database Performance (Classical TDD)', () => {
 
       // Approximate search should be significantly faster
       expect(approxTime).toBeLessThan(exactTime * 0.5);
-      
+
       // Approximate results should be reasonably similar to exact
-      const topExact = exactResults.slice(0, 5).map(r => r.metadata.id);
-      const topApprox = approxResults.slice(0, 5).map(r => r.metadata.id);
-      const overlap = topExact.filter(id => topApprox.includes(id)).length;
-      
+      const topExact = exactResults.slice(0, 5).map((r) => r.metadata.id);
+      const topApprox = approxResults.slice(0, 5).map((r) => r.metadata.id);
+      const overlap = topExact.filter((id) => topApprox.includes(id)).length;
+
       expect(overlap).toBeGreaterThanOrEqual(3); // At least 60% overlap in top 5
     });
   });
@@ -264,27 +264,27 @@ describe('Vector Database Performance (Classical TDD)', () => {
         metadata: {
           id: `index-test-${i}`,
           timestamp: Date.now() + i,
-          category: `cat-${i % 20}`
-        }
+          category: `cat-${i % 20}`,
+        },
       }));
 
       await vectorStore.batchInsert(largeDataset);
 
       // Build indexes
       performance.start('index-build');
-      
+
       await vectorStore.buildIndexes({
         vectorIndex: {
           type: 'IVF_FLAT',
           nlist: 100, // Number of clusters
-          metric: 'L2'
+          metric: 'L2',
         },
         metadataIndexes: [
           { field: 'category', type: 'hash' },
-          { field: 'timestamp', type: 'btree' }
-        ]
+          { field: 'timestamp', type: 'btree' },
+        ],
       });
-      
+
       performance.end('index-build');
 
       const indexBuildTime = performance.getDuration('index-build');
@@ -292,11 +292,11 @@ describe('Vector Database Performance (Classical TDD)', () => {
 
       // Verify search performance improvement
       const queryVector = testHelper.generateRandomVector(VECTOR_DIMENSION);
-      
+
       performance.start('indexed-search');
       const indexedResults = await vectorStore.similaritySearch({
         vector: queryVector,
-        k: 10
+        k: 10,
       });
       performance.end('indexed-search');
 
@@ -309,12 +309,12 @@ describe('Vector Database Performance (Classical TDD)', () => {
       // Create clustered data
       const clusters = 5;
       const vectorsPerCluster = 1000;
-      
+
       const clusteredData: any[] = [];
-      
+
       for (let cluster = 0; cluster < clusters; cluster++) {
         const clusterCenter = testHelper.generateRandomVector(VECTOR_DIMENSION);
-        
+
         for (let i = 0; i < vectorsPerCluster; i++) {
           const noisyVector = testHelper.addNoiseToVector(clusterCenter, 0.1);
           clusteredData.push({
@@ -322,8 +322,8 @@ describe('Vector Database Performance (Classical TDD)', () => {
             metadata: {
               id: `cluster-${cluster}-vector-${i}`,
               cluster,
-              distanceFromCenter: testHelper.calculateDistance(noisyVector, clusterCenter)
-            }
+              distanceFromCenter: testHelper.calculateDistance(noisyVector, clusterCenter),
+            },
           });
         }
       }
@@ -344,7 +344,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
       const optimizedIndex = await vectorStore.optimizeIndex({
         dataDistribution: distribution,
         targetSearchTime: 50, // 50ms target
-        memoryBudget: 100 * 1024 * 1024 // 100MB
+        memoryBudget: 100 * 1024 * 1024, // 100MB
       });
       performance.end('index-optimization');
 
@@ -360,39 +360,39 @@ describe('Vector Database Performance (Classical TDD)', () => {
   describe('Memory Management and Compression', () => {
     it('should efficiently manage memory usage during large operations', async () => {
       const initialMemory = process.memoryUsage();
-      
+
       // Perform memory-intensive operations
       const largeDataset = Array.from({ length: 20000 }, (_, i) => ({
         vector: testHelper.generateRandomVector(VECTOR_DIMENSION),
         metadata: {
           id: `memory-test-${i}`,
           largeText: 'x'.repeat(1000), // 1KB of text per vector
-          timestamp: Date.now()
-        }
+          timestamp: Date.now(),
+        },
       }));
 
       performance.start('memory-intensive-operations');
-      
+
       // Insert in chunks to test memory management
       const chunkSize = 1000;
       for (let i = 0; i < largeDataset.length; i += chunkSize) {
         const chunk = largeDataset.slice(i, i + chunkSize);
         await vectorStore.batchInsert(chunk);
-        
+
         // Force garbage collection between chunks
         if (global.gc) {
           global.gc();
         }
       }
-      
+
       performance.end('memory-intensive-operations');
 
       const finalMemory = process.memoryUsage();
       const memoryIncrease = finalMemory.heapUsed - initialMemory.heapUsed;
-      
+
       // Memory increase should be reasonable (less than 500MB)
       expect(memoryIncrease).toBeLessThan(500 * 1024 * 1024);
-      
+
       const operationTime = performance.getDuration('memory-intensive-operations');
       expect(operationTime).toBeLessThan(60000); // 60 seconds max
     });
@@ -400,41 +400,41 @@ describe('Vector Database Performance (Classical TDD)', () => {
     it('should compress vector data without significant quality loss', async () => {
       const originalVectors = Array.from({ length: 1000 }, (_, i) => ({
         vector: testHelper.generateRandomVector(VECTOR_DIMENSION),
-        metadata: { id: `compression-test-${i}` }
+        metadata: { id: `compression-test-${i}` },
       }));
 
       await vectorStore.batchInsert(originalVectors);
 
       // Measure storage before compression
       const storageInfoBefore = await vectorStore.getStorageInfo();
-      
+
       performance.start('vector-compression');
-      
+
       const compressionResult = await vectorStore.compressVectors({
         compressionType: 'quantization',
         bits: 8, // 8-bit quantization
-        preserveAccuracy: 0.95 // 95% accuracy preservation
+        preserveAccuracy: 0.95, // 95% accuracy preservation
       });
-      
+
       performance.end('vector-compression');
 
       const storageInfoAfter = await vectorStore.getStorageInfo();
-      
+
       // Verify compression efficiency
       const compressionRatio = storageInfoBefore.size / storageInfoAfter.size;
       expect(compressionRatio).toBeGreaterThan(2); // At least 2x compression
-      
+
       // Verify search accuracy is preserved
       const queryVector = testHelper.generateRandomVector(VECTOR_DIMENSION);
-      
+
       const compressedResults = await vectorStore.similaritySearch({
         vector: queryVector,
-        k: 10
+        k: 10,
       });
-      
+
       expect(compressedResults.length).toBeGreaterThan(0);
       expect(compressionResult.accuracyRetention).toBeGreaterThanOrEqual(0.95);
-      
+
       const compressionTime = performance.getDuration('vector-compression');
       expect(compressionTime).toBeLessThan(30000); // 30 seconds max
     });
@@ -445,55 +445,55 @@ describe('Vector Database Performance (Classical TDD)', () => {
       // Pre-populate with test data
       const seedData = Array.from({ length: 5000 }, (_, i) => ({
         vector: testHelper.generateRandomVector(VECTOR_DIMENSION),
-        metadata: { id: `concurrent-read-${i}`, value: i }
+        metadata: { id: `concurrent-read-${i}`, value: i },
       }));
-      
+
       await vectorStore.batchInsert(seedData);
 
       const concurrentReads = 20;
-      const queryVectors = Array.from({ length: concurrentReads }, () => 
+      const queryVectors = Array.from({ length: concurrentReads }, () =>
         testHelper.generateRandomVector(VECTOR_DIMENSION)
       );
 
       performance.start('concurrent-reads');
-      
-      const readPromises = queryVectors.map(vector => 
+
+      const readPromises = queryVectors.map((vector) =>
         vectorStore.similaritySearch({
           vector,
-          k: 5
+          k: 5,
         })
       );
-      
+
       const results = await Promise.all(readPromises);
-      
+
       performance.end('concurrent-reads');
 
       // All reads should succeed
       expect(results.length).toBe(concurrentReads);
-      results.forEach(result => {
+      results.forEach((result) => {
         expect(result.length).toBeGreaterThan(0);
         expect(result.length).toBeLessThanOrEqual(5);
       });
-      
+
       const totalTime = performance.getDuration('concurrent-reads');
       const avgTimePerRead = totalTime / concurrentReads;
-      
+
       expect(avgTimePerRead).toBeLessThan(200); // 200ms average per concurrent read
     });
 
     it('should handle mixed read/write operations safely', async () => {
       const mixedOperations = 50;
       const operations: Promise<any>[] = [];
-      
+
       performance.start('mixed-operations');
-      
+
       for (let i = 0; i < mixedOperations; i++) {
         if (i % 3 === 0) {
           // Write operation
           operations.push(
             vectorStore.insert({
               vector: testHelper.generateRandomVector(VECTOR_DIMENSION),
-              metadata: { id: `mixed-write-${i}`, operation: 'write' }
+              metadata: { id: `mixed-write-${i}`, operation: 'write' },
             })
           );
         } else {
@@ -501,22 +501,22 @@ describe('Vector Database Performance (Classical TDD)', () => {
           operations.push(
             vectorStore.similaritySearch({
               vector: testHelper.generateRandomVector(VECTOR_DIMENSION),
-              k: 3
+              k: 3,
             })
           );
         }
       }
-      
+
       const results = await Promise.all(operations);
-      
+
       performance.end('mixed-operations');
 
       // All operations should complete successfully
       expect(results.length).toBe(mixedOperations);
-      
+
       let writeCount = 0;
       let readCount = 0;
-      
+
       results.forEach((result, index) => {
         if (index % 3 === 0) {
           // Write result
@@ -528,10 +528,10 @@ describe('Vector Database Performance (Classical TDD)', () => {
           readCount++;
         }
       });
-      
+
       expect(writeCount).toBe(Math.ceil(mixedOperations / 3));
       expect(readCount).toBe(mixedOperations - writeCount);
-      
+
       const totalTime = performance.getDuration('mixed-operations');
       expect(totalTime).toBeLessThan(10000); // 10 seconds max for mixed operations
     });
@@ -539,41 +539,41 @@ describe('Vector Database Performance (Classical TDD)', () => {
     it('should maintain consistency during concurrent updates', async () => {
       const testId = 'consistency-test-vector';
       const initialVector = testHelper.generateRandomVector(VECTOR_DIMENSION);
-      
+
       // Insert initial vector
       await vectorStore.insert({
         vector: initialVector,
-        metadata: { id: testId, version: 0 }
+        metadata: { id: testId, version: 0 },
       });
 
       const concurrentUpdates = 10;
       const updatePromises: Promise<any>[] = [];
-      
+
       performance.start('concurrent-updates');
-      
+
       for (let i = 1; i <= concurrentUpdates; i++) {
         updatePromises.push(
           vectorStore.update(testId, {
             vector: testHelper.generateRandomVector(VECTOR_DIMENSION),
-            metadata: { id: testId, version: i, updateTime: Date.now() }
+            metadata: { id: testId, version: i, updateTime: Date.now() },
           })
         );
       }
-      
+
       const updateResults = await Promise.all(updatePromises);
-      
+
       performance.end('concurrent-updates');
 
       // Exactly one update should succeed due to concurrency control
-      const successfulUpdates = updateResults.filter(result => result.success);
+      const successfulUpdates = updateResults.filter((result) => result.success);
       expect(successfulUpdates.length).toBe(1);
-      
+
       // Verify final state is consistent
       const finalVector = await vectorStore.getById(testId);
       expect(finalVector).toBeDefined();
       expect(finalVector!.metadata.version).toBeGreaterThan(0);
       expect(finalVector!.metadata.version).toBeLessThanOrEqual(concurrentUpdates);
-      
+
       const updateTime = performance.getDuration('concurrent-updates');
       expect(updateTime).toBeLessThan(5000); // 5 seconds max
     });

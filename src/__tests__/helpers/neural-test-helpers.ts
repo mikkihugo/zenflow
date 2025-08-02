@@ -54,18 +54,22 @@ export class NeuralTestDataGenerator {
   /**
    * Generate polynomial regression data
    */
-  static generatePolynomialData(samples: number, degree: number = 2, noise: number = 0.1): NeuralTestData[] {
+  static generatePolynomialData(
+    samples: number,
+    degree: number = 2,
+    noise: number = 0.1
+  ): NeuralTestData[] {
     const data: NeuralTestData[] = [];
     const coefficients = Array.from({ length: degree + 1 }, () => Math.random() * 2 - 1);
-    
+
     for (let i = 0; i < samples; i++) {
       const x = Math.random() * 4 - 2; // Range [-2, 2]
       let y = 0;
       for (let d = 0; d <= degree; d++) {
-        y += coefficients[d] * Math.pow(x, d);
+        y += coefficients[d] * x ** d;
       }
       y += (Math.random() - 0.5) * noise;
-      
+
       data.push({
         input: [x],
         output: [y],
@@ -80,19 +84,19 @@ export class NeuralTestDataGenerator {
    */
   static generateSpiralData(samplesPerClass: number = 50, classes: number = 2): NeuralTestData[] {
     const data: NeuralTestData[] = [];
-    
+
     for (let classIndex = 0; classIndex < classes; classIndex++) {
       for (let i = 0; i < samplesPerClass; i++) {
         const t = i / samplesPerClass;
         const r = t * 3 + Math.random() * 0.1;
         const angle = classIndex * Math.PI + t * Math.PI * 2 + Math.random() * 0.2;
-        
+
         const x = r * Math.cos(angle);
         const y = r * Math.sin(angle);
-        
+
         const output = Array(classes).fill(0);
         output[classIndex] = 1;
-        
+
         data.push({
           input: [x, y],
           output,
@@ -100,28 +104,33 @@ export class NeuralTestDataGenerator {
         });
       }
     }
-    
-    return this.shuffleArray(data);
+
+    return NeuralTestDataGenerator.shuffleArray(data);
   }
 
   /**
    * Generate time series data
    */
-  static generateTimeSeriesData(length: number, frequency: number = 1, noise: number = 0.1): NeuralTestData[] {
+  static generateTimeSeriesData(
+    length: number,
+    frequency: number = 1,
+    noise: number = 0.1
+  ): NeuralTestData[] {
     const data: NeuralTestData[] = [];
-    
+
     for (let i = 0; i < length; i++) {
       const t = i / length;
       const value = Math.sin(2 * Math.PI * frequency * t) + (Math.random() - 0.5) * noise;
-      const nextValue = Math.sin(2 * Math.PI * frequency * (t + 1/length)) + (Math.random() - 0.5) * noise;
-      
+      const nextValue =
+        Math.sin(2 * Math.PI * frequency * (t + 1 / length)) + (Math.random() - 0.5) * noise;
+
       data.push({
         input: [value],
         output: [nextValue],
         metadata: { label: `timeseries_${i}`, category: 'temporal' },
       });
     }
-    
+
     return data;
   }
 
@@ -141,7 +150,7 @@ export class NeuralNetworkValidator {
    */
   static validateTopology(topology: number[]): void {
     expect(topology).toHaveLength.greaterThan(1);
-    topology.forEach(layerSize => {
+    topology.forEach((layerSize) => {
       expect(layerSize).toBeGreaterThan(0);
       expect(Number.isInteger(layerSize)).toBe(true);
     });
@@ -156,15 +165,15 @@ export class NeuralNetworkValidator {
   ): { converged: boolean; finalError: number; epochs: number } {
     const finalError = errors[errors.length - 1];
     const converged = finalError < config.convergenceThreshold;
-    
+
     expect(errors).toHaveLength.greaterThan(0);
     expect(finalError).toBeFinite();
     expect(finalError).toBeGreaterThanOrEqual(0);
-    
+
     if (converged) {
       expect(finalError).toBeLessThan(config.convergenceThreshold);
     }
-    
+
     return {
       converged,
       finalError,
@@ -181,40 +190,43 @@ export class NeuralNetworkValidator {
     tolerance: number = 1e-6
   ): { accuracy: number; errors: number[] } {
     expect(predictions).toHaveLength(expected.length);
-    
+
     const errors: number[] = [];
     let correctPredictions = 0;
-    
+
     for (let i = 0; i < predictions.length; i++) {
       expect(predictions[i]).toHaveLength(expected[i].length);
-      
-      const error = this.calculateMSE(predictions[i], expected[i]);
+
+      const error = NeuralNetworkValidator.calculateMSE(predictions[i], expected[i]);
       errors.push(error);
-      
+
       if (error < tolerance) {
         correctPredictions++;
       }
     }
-    
+
     const accuracy = correctPredictions / predictions.length;
-    
+
     return { accuracy, errors };
   }
 
   /**
    * Validate weight initialization
    */
-  static validateWeightInitialization(weights: number[][], method: 'xavier' | 'he' | 'random'): void {
+  static validateWeightInitialization(
+    weights: number[][],
+    method: 'xavier' | 'he' | 'random'
+  ): void {
     const flatWeights = weights.flat();
     const mean = flatWeights.reduce((sum, w) => sum + w, 0) / flatWeights.length;
-    const variance = flatWeights.reduce((sum, w) => sum + Math.pow(w - mean, 2), 0) / flatWeights.length;
-    
+    const variance = flatWeights.reduce((sum, w) => sum + (w - mean) ** 2, 0) / flatWeights.length;
+
     // Weights should be finite
-    flatWeights.forEach(weight => {
+    flatWeights.forEach((weight) => {
       expect(weight).toBeFinite();
       expect(weight).not.toBeNaN();
     });
-    
+
     // Check initialization properties
     switch (method) {
       case 'xavier':
@@ -236,25 +248,27 @@ export class NeuralNetworkValidator {
    */
   static validateGradientFlow(gradients: number[][]): void {
     const flatGradients = gradients.flat();
-    
+
     // Gradients should be finite
-    flatGradients.forEach(gradient => {
+    flatGradients.forEach((gradient) => {
       expect(gradient).toBeFinite();
       expect(gradient).not.toBeNaN();
     });
-    
+
     // Check for vanishing gradients
-    const avgGradientMagnitude = flatGradients.reduce((sum, g) => sum + Math.abs(g), 0) / flatGradients.length;
+    const avgGradientMagnitude =
+      flatGradients.reduce((sum, g) => sum + Math.abs(g), 0) / flatGradients.length;
     expect(avgGradientMagnitude).toBeGreaterThan(1e-10);
-    
+
     // Check for exploding gradients
     expect(avgGradientMagnitude).toBeLessThan(100);
   }
 
   private static calculateMSE(predicted: number[], actual: number[]): number {
-    const mse = predicted.reduce((sum, pred, index) => {
-      return sum + Math.pow(pred - actual[index], 2);
-    }, 0) / predicted.length;
+    const mse =
+      predicted.reduce((sum, pred, index) => {
+        return sum + (pred - actual[index]) ** 2;
+      }, 0) / predicted.length;
     return mse;
   }
 }
@@ -270,10 +284,10 @@ export class NeuralPerformanceTester {
     const start = Date.now();
     await trainingFunction();
     const duration = Date.now() - start;
-    
+
     const withinExpected = duration <= expectedMaxTime;
     expect(duration).toBeLessThanOrEqual(expectedMaxTime);
-    
+
     return { duration, withinExpected };
   }
 
@@ -286,20 +300,20 @@ export class NeuralPerformanceTester {
     expectedMaxTimePerPrediction: number
   ): { avgTime: number; totalTime: number; withinExpected: boolean } {
     const times: number[] = [];
-    
+
     for (let i = 0; i < iterations; i++) {
       const start = performance.now();
       predictionFunction();
       const end = performance.now();
       times.push(end - start);
     }
-    
+
     const totalTime = times.reduce((sum, time) => sum + time, 0);
     const avgTime = totalTime / iterations;
-    
+
     const withinExpected = avgTime <= expectedMaxTimePerPrediction;
     expect(avgTime).toBeLessThanOrEqual(expectedMaxTimePerPrediction);
-    
+
     return { avgTime, totalTime, withinExpected };
   }
 
@@ -314,20 +328,20 @@ export class NeuralPerformanceTester {
       console.warn('Garbage collection not available, skipping memory test');
       return { memoryIncrease: 0, withinLimit: true };
     }
-    
+
     global.gc();
     const startMemory = process.memoryUsage().heapUsed;
-    
+
     networkFunction();
-    
+
     global.gc();
     const endMemory = process.memoryUsage().heapUsed;
-    
+
     const memoryIncrease = (endMemory - startMemory) / 1024 / 1024; // Convert to MB
     const withinLimit = memoryIncrease <= maxMemoryIncreaseMB;
-    
+
     expect(memoryIncrease).toBeLessThanOrEqual(maxMemoryIncreaseMB);
-    
+
     return { memoryIncrease, withinLimit };
   }
 }
@@ -336,9 +350,13 @@ export class NeuralMathHelpers {
   /**
    * Generate test matrices for linear algebra operations
    */
-  static generateMatrix(rows: number, cols: number, fillType: 'random' | 'zeros' | 'ones' | 'identity' = 'random'): number[][] {
+  static generateMatrix(
+    rows: number,
+    cols: number,
+    fillType: 'random' | 'zeros' | 'ones' | 'identity' = 'random'
+  ): number[][] {
     const matrix: number[][] = [];
-    
+
     for (let i = 0; i < rows; i++) {
       matrix[i] = [];
       for (let j = 0; j < cols; j++) {
@@ -358,7 +376,7 @@ export class NeuralMathHelpers {
         }
       }
     }
-    
+
     return matrix;
   }
 
@@ -367,7 +385,7 @@ export class NeuralMathHelpers {
    */
   static matrixMultiply(a: number[][], b: number[][]): number[][] {
     expect(a[0]).toHaveLength(b.length);
-    
+
     const result: number[][] = [];
     for (let i = 0; i < a.length; i++) {
       result[i] = [];
@@ -378,7 +396,7 @@ export class NeuralMathHelpers {
         }
       }
     }
-    
+
     return result;
   }
 
@@ -389,7 +407,7 @@ export class NeuralMathHelpers {
     sigmoid: (x: number) => 1 / (1 + Math.exp(-x)),
     relu: (x: number) => Math.max(0, x),
     tanh: (x: number) => Math.tanh(x),
-    leakyRelu: (x: number, alpha: number = 0.01) => x > 0 ? x : alpha * x,
+    leakyRelu: (x: number, alpha: number = 0.01) => (x > 0 ? x : alpha * x),
   };
 
   /**
@@ -400,9 +418,9 @@ export class NeuralMathHelpers {
       const s = NeuralMathHelpers.activationFunctions.sigmoid(x);
       return s * (1 - s);
     },
-    relu: (x: number) => x > 0 ? 1 : 0,
-    tanh: (x: number) => 1 - Math.pow(Math.tanh(x), 2),
-    leakyRelu: (x: number, alpha: number = 0.01) => x > 0 ? 1 : alpha,
+    relu: (x: number) => (x > 0 ? 1 : 0),
+    tanh: (x: number) => 1 - Math.tanh(x) ** 2,
+    leakyRelu: (x: number, alpha: number = 0.01) => (x > 0 ? 1 : alpha),
   };
 
   /**
@@ -417,14 +435,14 @@ export class NeuralMathHelpers {
    */
   static compareMatrices(a: number[][], b: number[][], tolerance: number = 1e-10): boolean {
     if (a.length !== b.length) return false;
-    
+
     for (let i = 0; i < a.length; i++) {
       if (a[i].length !== b[i].length) return false;
       for (let j = 0; j < a[i].length; j++) {
         if (Math.abs(a[i][j] - b[i][j]) > tolerance) return false;
       }
     }
-    
+
     return true;
   }
 }

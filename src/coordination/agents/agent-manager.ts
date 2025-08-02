@@ -4,6 +4,7 @@
 
 import { type ChildProcess, spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
+import { generateId } from '../../core/helpers.js';
 import type { IEventBus } from '../core/event-bus';
 import type { ILogger } from '../core/logger';
 import type { DistributedMemorySystem } from '../memory/distributed-memory.js';
@@ -18,7 +19,6 @@ import type {
   AgentStatus,
   AgentType,
 } from '../types/agent-types';
-import { generateId } from '../../core/helpers.js';
 
 export interface AgentManagerConfig {
   maxAgents: number;

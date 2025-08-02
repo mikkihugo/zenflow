@@ -15,8 +15,8 @@
 import { EventEmitter } from 'events';
 import { MemoryManager } from '../memory/manager.js';
 import { EnhancedMemory } from '../memory/memory.js';
-import { createLogger } from './logger.js';
 import { DocumentDrivenSystem } from './document-driven-system.js';
+import { createLogger } from './logger.js';
 import { UnifiedDocumentationLinker } from './unified-documentation-linker.js';
 import { UnifiedExportSystem } from './unified-export-system.js';
 import { UnifiedInterfaceLauncher } from './unified-interface-launcher.js';

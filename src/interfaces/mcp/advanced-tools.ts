@@ -1,11 +1,11 @@
 /**
  * @fileoverview Advanced MCP Tools Infrastructure
- * 
+ *
  * Provides the foundation for the 87 advanced MCP tools from claude-zen.
  * Extends the existing MCP infrastructure with enhanced capabilities.
  */
 
-import { MCPTool, MCPToolResult } from '../../coordination/mcp/types/mcp-types';
+import type { MCPTool, MCPToolResult } from '../../coordination/mcp/types/mcp-types';
 
 // Enhanced interfaces for advanced tools
 export interface AdvancedMCPTool extends MCPTool {
@@ -18,12 +18,12 @@ export interface AdvancedMCPTool extends MCPTool {
   readonly metadata: ToolMetadata;
 }
 
-export type MCPToolCategory = 
-  | 'coordination' 
-  | 'monitoring' 
-  | 'memory-neural' 
-  | 'github-integration' 
-  | 'system' 
+export type MCPToolCategory =
+  | 'coordination'
+  | 'monitoring'
+  | 'memory-neural'
+  | 'github-integration'
+  | 'system'
   | 'orchestration';
 
 export interface Permission {
@@ -72,7 +72,7 @@ export interface AdvancedMCPToolResult extends MCPToolResult {
 // Base class for advanced tool handlers
 export abstract class AdvancedToolHandler {
   abstract execute(params: any): Promise<AdvancedMCPToolResult>;
-  
+
   protected validateParams(params: any, schema: any): void {
     // Basic parameter validation
     if (schema.required) {
@@ -85,20 +85,22 @@ export abstract class AdvancedToolHandler {
   }
 
   protected createResult(
-    success: boolean, 
-    content: any, 
+    success: boolean,
+    content: any,
     error?: string,
     metadata?: any
   ): AdvancedMCPToolResult {
     return {
       success,
-      content: Array.isArray(content) ? content : [{ type: 'text', text: JSON.stringify(content, null, 2) }],
+      content: Array.isArray(content)
+        ? content
+        : [{ type: 'text', text: JSON.stringify(content, null, 2) }],
       error,
       metadata: {
         executionTime: Date.now(),
         version: '2.0.0',
-        ...metadata
-      }
+        ...metadata,
+      },
     };
   }
 }
@@ -112,13 +114,13 @@ export class AdvancedToolRegistry {
   registerTool(tool: AdvancedMCPTool): void {
     // Add to main registry
     this.tools.set(tool.name, tool);
-    
+
     // Update category index
     if (!this.categoryIndex.has(tool.category)) {
       this.categoryIndex.set(tool.category, []);
     }
     this.categoryIndex.get(tool.category)!.push(tool.name);
-    
+
     // Update tag index
     for (const tag of tool.metadata.tags) {
       if (!this.tagIndex.has(tag)) {
@@ -134,12 +136,12 @@ export class AdvancedToolRegistry {
 
   getToolsByCategory(category: MCPToolCategory): AdvancedMCPTool[] {
     const toolNames = this.categoryIndex.get(category) || [];
-    return toolNames.map(name => this.tools.get(name)!).filter(Boolean);
+    return toolNames.map((name) => this.tools.get(name)!).filter(Boolean);
   }
 
   getToolsByTag(tag: string): AdvancedMCPTool[] {
     const toolNames = this.tagIndex.get(tag) || [];
-    return toolNames.map(name => this.tools.get(name)!).filter(Boolean);
+    return toolNames.map((name) => this.tools.get(name)!).filter(Boolean);
   }
 
   getAllTools(): AdvancedMCPTool[] {

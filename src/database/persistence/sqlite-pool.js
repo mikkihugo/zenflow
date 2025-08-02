@@ -22,25 +22,29 @@ export class SQLiteConnectionPool {
   }
 
   async read(sql, params) {
-    const db = this.pool.find(p => p.readonly);
+    const db = this.pool.find((p) => p.readonly);
     return db.prepare(sql).all(params);
   }
 
   async write(sql, params) {
-    const db = this.pool.find(p => !p.readonly);
+    const db = this.pool.find((p) => !p.readonly);
     return db.prepare(sql).run(params);
   }
 
   getStats() {
-    return { total: this.pool.length, readonly: this.options.maxReaders, readwrite: this.options.maxWorkers };
+    return {
+      total: this.pool.length,
+      readonly: this.options.maxReaders,
+      readwrite: this.options.maxWorkers,
+    };
   }
 
   isHealthy() {
-    return this.pool.every(p => p.open);
+    return this.pool.every((p) => p.open);
   }
 
   close() {
-    this.pool.forEach(p => p.close());
+    this.pool.forEach((p) => p.close());
   }
 
   once(event, callback) {

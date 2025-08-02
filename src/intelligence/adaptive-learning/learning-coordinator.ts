@@ -6,9 +6,8 @@
  */
 
 import { EventEmitter } from 'events';
-import { injectable, inject } from '../../di/index.js';
-import { CORE_TOKENS } from '../../di/index.js';
 import type { ILogger } from '../../di/index.js';
+import { CORE_TOKENS, inject, injectable } from '../../di/index.js';
 import type {
   AdaptiveLearningConfig,
   Agent,

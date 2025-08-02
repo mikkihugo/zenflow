@@ -3,7 +3,13 @@
  */
 
 import { LanceDBInterface } from '../../database/lancedb-interface';
-import { BaseBackend, BackendConfig, BackendStats, JSONValue, StorageResult } from './base.backend';
+import {
+  type BackendConfig,
+  type BackendStats,
+  BaseBackend,
+  type JSONValue,
+  type StorageResult,
+} from './base.backend';
 
 export class LanceDBBackend extends BaseBackend {
   private lanceInterface: LanceDBInterface;

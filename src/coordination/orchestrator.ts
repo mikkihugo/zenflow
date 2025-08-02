@@ -3,13 +3,12 @@
  */
 
 import { EventEmitter } from 'events';
-import { injectable, inject } from '../di/index.js';
-import { CORE_TOKENS, SWARM_TOKENS } from '../di/index.js';
-import type { ILogger, IDatabase } from '../di/index.js';
-import { RuvSwarmStrategy } from './strategies/ruv-swarm.strategy';
 import { SwarmDatabase } from '../database/swarm-database';
+import type { IDatabase, ILogger } from '../di/index.js';
+import { CORE_TOKENS, inject, injectable, SWARM_TOKENS } from '../di/index.js';
+import { RuvSwarmStrategy } from './strategies/ruv-swarm.strategy';
 
-import { Agent, Task, ExecutionPlan, SwarmStrategy } from './types';
+import type { Agent, ExecutionPlan, SwarmStrategy, Task } from './types';
 
 @injectable
 export class Orchestrator extends EventEmitter {
@@ -37,19 +36,36 @@ export class Orchestrator extends EventEmitter {
     this.startLoadBalancer();
     this.isActive = true;
     this.emit('initialized');
-    this.logger.log('Orchestrator initialized with full strategic capabilities and persistent database.');
+    this.logger.log(
+      'Orchestrator initialized with full strategic capabilities and persistent database.'
+    );
   }
 
   async submitTask(task: Task): Promise<void> {
     const plan = await this.createExecutionPlan(task);
     this.executionPlans.set(task.id, plan);
-    await this.db.createTask({ ...task, swarm_id: 'default', status: 'queued', assigned_agents: [], progress: 0, requirements: {}, dependencies: [] });
+    await this.db.createTask({
+      ...task,
+      swarm_id: 'default',
+      status: 'queued',
+      assigned_agents: [],
+      progress: 0,
+      requirements: {},
+      dependencies: [],
+    });
     this.emit('taskSubmitted', { task, plan });
     await this.executeTask(task, plan);
   }
 
   private async executeTask(task: Task, plan: ExecutionPlan): Promise<void> {
-    const execution = { taskId: task.id, plan, startTime: Date.now(), currentPhase: 0, phaseResults: [], status: 'executing' };
+    const execution = {
+      taskId: task.id,
+      plan,
+      startTime: Date.now(),
+      currentPhase: 0,
+      phaseResults: [],
+      status: 'executing',
+    };
     this.activeExecutions.set(task.id, execution);
 
     try {
@@ -59,11 +75,18 @@ export class Orchestrator extends EventEmitter {
         await this.executeSequential(task, plan, execution);
       }
       execution.status = 'completed';
-      await this.db.updateTask(task.id, { status: 'completed', result: execution.phaseResults, progress: 100 });
+      await this.db.updateTask(task.id, {
+        status: 'completed',
+        result: execution.phaseResults,
+        progress: 100,
+      });
       this.emit('taskCompleted', { taskId: task.id });
     } catch (error) {
       execution.status = 'failed';
-      await this.db.updateTask(task.id, { status: 'failed', error_message: (error as Error).message });
+      await this.db.updateTask(task.id, {
+        status: 'failed',
+        error_message: (error as Error).message,
+      });
       this.emit('taskFailed', { taskId: task.id, error });
     } finally {
       this.activeExecutions.delete(task.id);
@@ -76,22 +99,34 @@ export class Orchestrator extends EventEmitter {
       execution.currentPhase = i;
       const result = await this.executePhase(task, phase, plan, execution);
       execution.phaseResults.push(result);
-      await this.db.updateTask(task.id, { progress: Math.round(((i + 1) / plan.phases.length) * 100) });
+      await this.db.updateTask(task.id, {
+        progress: Math.round(((i + 1) / plan.phases.length) * 100),
+      });
     }
   }
 
   private async executeParallel(task: Task, plan: ExecutionPlan, execution: any): Promise<void> {
-    const phasePromises = plan.phases.map(phase => this.executePhase(task, phase, plan, execution));
+    const phasePromises = plan.phases.map((phase) =>
+      this.executePhase(task, phase, plan, execution)
+    );
     execution.phaseResults = await Promise.all(phasePromises);
   }
 
-  private async executePhase(task: Task, phase: string, plan: ExecutionPlan, execution: any): Promise<any> {
+  private async executePhase(
+    task: Task,
+    phase: string,
+    plan: ExecutionPlan,
+    execution: any
+  ): Promise<any> {
     const phaseIndex = plan.phases.indexOf(phase);
     const assignments = plan.phaseAssignments[phaseIndex];
     const agentAssignments = await this.assignAgentsToPhase(task, assignments);
     const results = await Promise.all(
-      agentAssignments.map(agentAssignment => 
-        this.strategy.assignTaskToAgent(agentAssignment.agent.id, { phase, taskInfo: task.description })
+      agentAssignments.map((agentAssignment) =>
+        this.strategy.assignTaskToAgent(agentAssignment.agent.id, {
+          phase,
+          taskInfo: task.description,
+        })
       )
     );
     return { phase, results };
@@ -152,7 +187,9 @@ export class Orchestrator extends EventEmitter {
   private async createExecutionPlan(task: Task): Promise<ExecutionPlan> {
     const strategy = this.getStrategyImplementation(task.strategy);
     const phases = strategy.determinePhases(task);
-    const phaseAssignments = phases.map(() => [{ requiredCapabilities: task.requiredCapabilities }]);
+    const phaseAssignments = phases.map(() => [
+      { requiredCapabilities: task.requiredCapabilities },
+    ]);
     return {
       taskId: task.id,
       phases,
@@ -162,11 +199,16 @@ export class Orchestrator extends EventEmitter {
     };
   }
 
-  private getStrategyImplementation(strategy: 'parallel' | 'sequential' | 'adaptive' | 'consensus'): any {
+  private getStrategyImplementation(
+    strategy: 'parallel' | 'sequential' | 'adaptive' | 'consensus'
+  ): any {
     const strategies = {
       parallel: { determinePhases: () => ['exec'], isParallelizable: () => true },
       sequential: { determinePhases: () => ['phase1', 'phase2'], isParallelizable: () => false },
-      adaptive: { determinePhases: (t: Task) => t.description.length > 100 ? ['analyze', 'exec'] : ['exec'], isParallelizable: () => true },
+      adaptive: {
+        determinePhases: (t: Task) => (t.description.length > 100 ? ['analyze', 'exec'] : ['exec']),
+        isParallelizable: () => true,
+      },
       consensus: { determinePhases: () => ['propose', 'vote'], isParallelizable: () => false },
     };
     return strategies[strategy];
@@ -192,7 +234,9 @@ export class Orchestrator extends EventEmitter {
       for (const task of activeTasks) {
         const execution = this.activeExecutions.get(task.id);
         if (execution) {
-          const progress = Math.round((execution.currentPhase / execution.plan.phases.length) * 100);
+          const progress = Math.round(
+            (execution.currentPhase / execution.plan.phases.length) * 100
+          );
           if (task.progress !== progress) {
             await this.db.updateTask(task.id, { progress });
           }
@@ -205,8 +249,8 @@ export class Orchestrator extends EventEmitter {
     setInterval(async () => {
       if (!this.isActive) return;
       const agents = await this.strategy.getAgents();
-      const busyAgents = agents.filter(a => a.status === 'busy');
-      const idleAgents = agents.filter(a => a.status === 'idle');
+      const busyAgents = agents.filter((a) => a.status === 'busy');
+      const idleAgents = agents.filter((a) => a.status === 'idle');
 
       if (busyAgents.length / agents.length > 0.8 && idleAgents.length > 0) {
         const tasksToRebalance = await this.db.getSwarmTasks('default', 'executing');

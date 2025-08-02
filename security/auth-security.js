@@ -2,9 +2,9 @@
  * Authentication & Authorization Security Framework
  */
 
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
 
 export class AuthSecurity {
   static async hashPassword(password) {
@@ -21,11 +21,11 @@ export class AuthSecurity {
   }
 
   static createJWT(payload, secret, expiresIn = '15m') {
-    return jwt.sign(payload, secret, { 
+    return jwt.sign(payload, secret, {
       expiresIn,
       algorithm: 'HS256',
       issuer: 'claude-zen',
-      audience: 'claude-zen-users'
+      audience: 'claude-zen-users',
     });
   }
 
@@ -34,7 +34,7 @@ export class AuthSecurity {
       return jwt.verify(token, secret, {
         algorithms: ['HS256'],
         issuer: 'claude-zen',
-        audience: 'claude-zen-users'
+        audience: 'claude-zen-users',
       });
     } catch (error) {
       throw new Error('Invalid token');
@@ -43,13 +43,13 @@ export class AuthSecurity {
 
   static requireAuth(req, res, next) {
     const token = req.headers.authorization?.split(' ')[1];
-    
+
     if (!token) {
       return res.status(401).json({ error: 'Authentication required' });
     }
-    
+
     try {
-      const payload = this.verifyJWT(token, process.env.JWT_SECRET);
+      const payload = AuthSecurity.verifyJWT(token, process.env.JWT_SECRET);
       req.user = payload;
       next();
     } catch (error) {
@@ -69,7 +69,7 @@ export class AuthSecurity {
 
 export class SessionSecurity {
   static sessions = new Map();
-  
+
   static createSession(userId, data = {}) {
     const sessionId = crypto.randomUUID();
     const session = {
@@ -78,34 +78,34 @@ export class SessionSecurity {
       data,
       createdAt: new Date(),
       lastAccessed: new Date(),
-      expiresAt: new Date(Date.now() + 30 * 60 * 1000) // 30 minutes
+      expiresAt: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes
     };
-    
-    this.sessions.set(sessionId, session);
+
+    SessionSecurity.sessions.set(sessionId, session);
     return sessionId;
   }
-  
+
   static getSession(sessionId) {
-    const session = this.sessions.get(sessionId);
-    
+    const session = SessionSecurity.sessions.get(sessionId);
+
     if (!session || session.expiresAt < new Date()) {
-      this.sessions.delete(sessionId);
+      SessionSecurity.sessions.delete(sessionId);
       return null;
     }
-    
+
     session.lastAccessed = new Date();
     return session;
   }
-  
+
   static destroySession(sessionId) {
-    return this.sessions.delete(sessionId);
+    return SessionSecurity.sessions.delete(sessionId);
   }
-  
+
   static cleanupExpiredSessions() {
     const now = new Date();
-    for (const [id, session] of this.sessions) {
+    for (const [id, session] of SessionSecurity.sessions) {
       if (session.expiresAt < now) {
-        this.sessions.delete(id);
+        SessionSecurity.sessions.delete(id);
       }
     }
   }

@@ -34,17 +34,19 @@ export class RealTimePerformanceMonitor extends EventEmitter {
   private isMonitoring = false;
   private monitoringInterval?: NodeJS.Timeout;
 
-  constructor(private config: {
-    retentionPeriod?: number; // milliseconds
-    alertThresholds?: AlertConfig[];
-    samplingInterval?: number;
-  } = {}) {
+  constructor(
+    private config: {
+      retentionPeriod?: number; // milliseconds
+      alertThresholds?: AlertConfig[];
+      samplingInterval?: number;
+    } = {}
+  ) {
     super();
-    
+
     this.config = {
       retentionPeriod: 5 * 60 * 1000, // 5 minutes
       samplingInterval: 1000, // 1 second
-      ...config
+      ...config,
     };
 
     if (config.alertThresholds) {
@@ -96,7 +98,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
       name,
       value,
       timestamp: Date.now(),
-      tags
+      tags,
     };
 
     if (!this.metrics.has(name)) {
@@ -132,8 +134,8 @@ export class RealTimePerformanceMonitor extends EventEmitter {
    * Measure async function execution time
    */
   async measureAsync<T>(
-    name: string, 
-    fn: () => Promise<T>, 
+    name: string,
+    fn: () => Promise<T>,
     tags?: Record<string, string>
   ): Promise<T> {
     const start = performance.now();
@@ -166,14 +168,14 @@ export class RealTimePerformanceMonitor extends EventEmitter {
       return { count: 0 };
     }
 
-    const values = metrics.map(m => m.value).sort((a, b) => a - b);
-    
+    const values = metrics.map((m) => m.value).sort((a, b) => a - b);
+
     return {
       count: values.length,
       min: values[0],
       max: values[values.length - 1],
       p95: this.percentile(values, 0.95),
-      p99: this.percentile(values, 0.99)
+      p99: this.percentile(values, 0.99),
     };
   }
 
@@ -190,14 +192,14 @@ export class RealTimePerformanceMonitor extends EventEmitter {
         heapUsed: mem.heapUsed / 1024 / 1024, // MB
         heapTotal: mem.heapTotal / 1024 / 1024,
         external: mem.external / 1024 / 1024,
-        rss: mem.rss / 1024 / 1024
+        rss: mem.rss / 1024 / 1024,
       },
       cpu: {
         user: cpu.user / 1000, // microseconds to milliseconds
-        system: cpu.system / 1000
+        system: cpu.system / 1000,
       },
       uptime: process.uptime(),
-      nodeVersion: process.version
+      nodeVersion: process.version,
     };
   }
 
@@ -210,10 +212,10 @@ export class RealTimePerformanceMonitor extends EventEmitter {
       monitoring: {
         isActive: this.isMonitoring,
         metricsCount: Array.from(this.metrics.values()).reduce((sum, arr) => sum + arr.length, 0),
-        uniqueMetrics: this.metrics.size
+        uniqueMetrics: this.metrics.size,
       },
       system: this.getSystemSnapshot(),
-      metrics: {}
+      metrics: {},
     };
 
     // Add statistics for each metric
@@ -235,7 +237,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
    * Remove performance alert
    */
   removeAlert(metric: string): void {
-    this.alerts = this.alerts.filter(alert => alert.metric !== metric);
+    this.alerts = this.alerts.filter((alert) => alert.metric !== metric);
   }
 
   /**
@@ -243,7 +245,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
    */
   private collectSystemMetrics(): void {
     const snapshot = this.getSystemSnapshot();
-    
+
     this.record('system.memory.heap_used', snapshot.memory.heapUsed);
     this.record('system.memory.heap_total', snapshot.memory.heapTotal);
     this.record('system.memory.rss', snapshot.memory.rss);
@@ -254,9 +256,9 @@ export class RealTimePerformanceMonitor extends EventEmitter {
 
   private cleanupOldMetrics(): void {
     const cutoff = Date.now() - this.config.retentionPeriod!;
-    
+
     for (const [name, metrics] of this.metrics) {
-      const filtered = metrics.filter(metric => metric.timestamp > cutoff);
+      const filtered = metrics.filter((metric) => metric.timestamp > cutoff);
       if (filtered.length !== metrics.length) {
         this.metrics.set(name, filtered);
       }
@@ -266,7 +268,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
   private checkAlerts(): void {
     for (const alert of this.alerts) {
       if (!alert.enabled) continue;
-      
+
       const latestMetrics = this.getMetrics(alert.metric);
       if (latestMetrics.length === 0) continue;
 
@@ -277,15 +279,15 @@ export class RealTimePerformanceMonitor extends EventEmitter {
         this.emit('alert:triggered', {
           alert,
           value: latestValue,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
     }
   }
 
   private checkMetricAlerts(metric: PerformanceMetric): void {
-    const relevantAlerts = this.alerts.filter(alert => 
-      alert.enabled && alert.metric === metric.name
+    const relevantAlerts = this.alerts.filter(
+      (alert) => alert.enabled && alert.metric === metric.name
     );
 
     for (const alert of relevantAlerts) {
@@ -294,7 +296,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
         this.emit('alert:triggered', {
           alert,
           value: metric.value,
-          timestamp: metric.timestamp
+          timestamp: metric.timestamp,
         });
       }
     }
@@ -302,10 +304,14 @@ export class RealTimePerformanceMonitor extends EventEmitter {
 
   private evaluateAlert(value: number, alert: AlertConfig): boolean {
     switch (alert.comparison) {
-      case 'gt': return value > alert.threshold;
-      case 'lt': return value < alert.threshold;
-      case 'eq': return value === alert.threshold;
-      default: return false;
+      case 'gt':
+        return value > alert.threshold;
+      case 'lt':
+        return value < alert.threshold;
+      case 'eq':
+        return value === alert.threshold;
+      default:
+        return false;
     }
   }
 
@@ -320,19 +326,19 @@ export class RealTimePerformanceMonitor extends EventEmitter {
         metric: 'system.memory.heap_used',
         threshold: 200, // 200MB
         comparison: 'gt',
-        enabled: true
+        enabled: true,
       },
       {
         metric: 'build.duration',
         threshold: 30000, // 30 seconds
         comparison: 'gt',
-        enabled: true
+        enabled: true,
       },
       {
         metric: 'api.response.duration',
         threshold: 1000, // 1 second
         comparison: 'gt',
-        enabled: true
+        enabled: true,
       }
     );
   }
@@ -344,7 +350,7 @@ export const globalMonitor = new RealTimePerformanceMonitor();
 // Auto-start monitoring in production
 if (process.env.NODE_ENV === 'production') {
   globalMonitor.start();
-  
+
   // Handle graceful shutdown
   process.on('SIGTERM', () => globalMonitor.stop());
   process.on('SIGINT', () => globalMonitor.stop());
@@ -352,11 +358,11 @@ if (process.env.NODE_ENV === 'production') {
 
 // Performance monitoring decorators and utilities
 export function monitored(metricName?: string) {
-  return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
     const originalMethod = descriptor.value;
     const name = metricName || `${target.constructor.name}.${propertyKey}`;
 
-    descriptor.value = function(...args: any[]) {
+    descriptor.value = function (...args: any[]) {
       return globalMonitor.measure(name, () => originalMethod.apply(this, args));
     };
 
@@ -365,11 +371,11 @@ export function monitored(metricName?: string) {
 }
 
 export function monitoredAsync(metricName?: string) {
-  return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
     const originalMethod = descriptor.value;
     const name = metricName || `${target.constructor.name}.${propertyKey}`;
 
-    descriptor.value = function(...args: any[]) {
+    descriptor.value = function (...args: any[]) {
       return globalMonitor.measureAsync(name, () => originalMethod.apply(this, args));
     };
 

@@ -71,8 +71,10 @@ export const VALIDATION_PATTERNS = {
  * Common error messages
  */
 export const ERROR_MESSAGES = {
-  INVALID_PROJECT_NAME: 'Project name must start with a letter and contain only letters, numbers, hyphens, and underscores',
-  INVALID_COMMAND: 'Command must start with a letter and contain only letters, numbers, hyphens, underscores, and colons',
+  INVALID_PROJECT_NAME:
+    'Project name must start with a letter and contain only letters, numbers, hyphens, and underscores',
+  INVALID_COMMAND:
+    'Command must start with a letter and contain only letters, numbers, hyphens, underscores, and colons',
   INVALID_FILE_PATH: 'File path contains invalid characters',
   INVALID_SWARM_ID: 'Swarm ID must contain only letters, numbers, and hyphens',
   COMMAND_NOT_FOUND: 'Command not found',

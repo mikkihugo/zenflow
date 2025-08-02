@@ -1,19 +1,28 @@
 /**
  * @fileoverview Coordination MCP Tools (12 tools)
- * 
+ *
  * Advanced coordination tools for enhanced swarm management, topology optimization,
  * fault tolerance, and intelligent load balancing.
  */
 
-import { AdvancedMCPTool, AdvancedToolHandler, AdvancedMCPToolResult } from '../advanced-tools';
+import {
+  type AdvancedMCPTool,
+  type AdvancedMCPToolResult,
+  AdvancedToolHandler,
+} from '../advanced-tools';
 
 // Coordination tool handlers
 class SwarmInitHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
-    const { topology = 'hierarchical', maxAgents = 8, strategy = 'adaptive', memoryPersistence = true } = params;
-    
+    const {
+      topology = 'hierarchical',
+      maxAgents = 8,
+      strategy = 'adaptive',
+      memoryPersistence = true,
+    } = params;
+
     this.validateParams(params, {
-      properties: { topology: { enum: ['mesh', 'hierarchical', 'ring', 'star'] } }
+      properties: { topology: { enum: ['mesh', 'hierarchical', 'ring', 'star'] } },
     });
 
     const swarmId = `swarm_${Date.now()}`;
@@ -28,9 +37,9 @@ class SwarmInitHandler extends AdvancedToolHandler {
         'multi-agent coordination',
         'task distribution',
         'fault tolerance',
-        'adaptive learning'
+        'adaptive learning',
       ],
-      coordinationNodes: this.generateCoordinationNodes(topology, maxAgents)
+      coordinationNodes: this.generateCoordinationNodes(topology, maxAgents),
     };
 
     return this.createResult(true, result);
@@ -42,7 +51,7 @@ class SwarmInitHandler extends AdvancedToolHandler {
       nodes.push({
         id: `coordinator_${i}`,
         role: i === 0 ? 'primary' : 'secondary',
-        capacity: Math.floor(maxAgents / (i + 1))
+        capacity: Math.floor(maxAgents / (i + 1)),
       });
     }
     return nodes;
@@ -52,12 +61,12 @@ class SwarmInitHandler extends AdvancedToolHandler {
 class AgentSpawnHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
     const { type, name, specialization, capabilities = [], swarmId } = params;
-    
+
     this.validateParams(params, {
       required: ['type', 'name'],
       properties: {
-        type: { enum: ['architect', 'coder', 'analyst', 'tester', 'researcher', 'coordinator'] }
-      }
+        type: { enum: ['architect', 'coder', 'analyst', 'tester', 'researcher', 'coordinator'] },
+      },
     });
 
     const agentId = `agent_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -73,8 +82,8 @@ class AgentSpawnHandler extends AdvancedToolHandler {
       resourceAllocation: {
         memory: '256MB',
         cpu: '0.5 cores',
-        priority: 'normal'
-      }
+        priority: 'normal',
+      },
     };
 
     return this.createResult(true, result);
@@ -87,7 +96,7 @@ class AgentSpawnHandler extends AdvancedToolHandler {
       analyst: ['data analysis', 'requirement analysis', 'performance analysis'],
       tester: ['test generation', 'quality assurance', 'validation'],
       researcher: ['information gathering', 'trend analysis', 'documentation'],
-      coordinator: ['task coordination', 'resource management', 'communication']
+      coordinator: ['task coordination', 'resource management', 'communication'],
     };
     return capabilityMap[type] || ['general purpose'];
   }
@@ -96,13 +105,13 @@ class AgentSpawnHandler extends AdvancedToolHandler {
 class TaskOrchestrateHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
     const { task, strategy = 'adaptive', priority = 'medium', agents = [], timeline } = params;
-    
+
     this.validateParams(params, {
       required: ['task'],
       properties: {
         strategy: { enum: ['sequential', 'parallel', 'adaptive'] },
-        priority: { enum: ['low', 'medium', 'high', 'critical'] }
-      }
+        priority: { enum: ['low', 'medium', 'high', 'critical'] },
+      },
     });
 
     const orchestrationId = `orch_${Date.now()}`;
@@ -118,8 +127,8 @@ class TaskOrchestrateHandler extends AdvancedToolHandler {
       coordination: {
         communicationProtocol: 'event-driven',
         syncPoints: strategy === 'sequential' ? ['step-completion'] : ['milestone-completion'],
-        errorHandling: 'graceful-degradation'
-      }
+        errorHandling: 'graceful-degradation',
+      },
     };
 
     return this.createResult(true, result);
@@ -128,23 +137,24 @@ class TaskOrchestrateHandler extends AdvancedToolHandler {
   private generateExecutionPlan(task: string, strategy: string) {
     const baseSteps = [
       'task analysis',
-      'resource allocation', 
+      'resource allocation',
       'execution',
       'validation',
-      'completion'
+      'completion',
     ];
 
     return baseSteps.map((step, index) => ({
       step: index + 1,
       name: step,
       strategy: strategy === 'parallel' ? 'parallel' : 'sequential',
-      dependencies: strategy === 'sequential' ? (index > 0 ? [index] : []) : []
+      dependencies: strategy === 'sequential' ? (index > 0 ? [index] : []) : [],
     }));
   }
 
   private estimateDuration(task: string, strategy: string) {
     const baseTime = task.length * 10; // Simple heuristic
-    const strategyMultiplier = strategy === 'parallel' ? 0.6 : strategy === 'sequential' ? 1.2 : 1.0;
+    const strategyMultiplier =
+      strategy === 'parallel' ? 0.6 : strategy === 'sequential' ? 1.2 : 1.0;
     return Math.round(baseTime * strategyMultiplier) + 'ms';
   }
 }
@@ -152,7 +162,7 @@ class TaskOrchestrateHandler extends AdvancedToolHandler {
 class SwarmCoordinationHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
     const { operation = 'status', swarmIds = [], syncMode = 'async' } = params;
-    
+
     const result = {
       operation,
       timestamp: new Date().toISOString(),
@@ -161,14 +171,14 @@ class SwarmCoordinationHandler extends AdvancedToolHandler {
         mode: syncMode,
         protocol: 'distributed-consensus',
         messageExchange: 'pub-sub',
-        conflictResolution: 'priority-based'
+        conflictResolution: 'priority-based',
       },
       metrics: {
         totalSwarms: swarmIds.length || 1,
         activeAgents: Math.floor(Math.random() * 50) + 10,
         messageLatency: Math.floor(Math.random() * 50) + 10 + 'ms',
-        coordinationEfficiency: (0.85 + Math.random() * 0.1).toFixed(2)
-      }
+        coordinationEfficiency: (0.85 + Math.random() * 0.1).toFixed(2),
+      },
     };
 
     return this.createResult(true, result);
@@ -193,22 +203,30 @@ export const coordinationTools: AdvancedMCPTool[] = [
       examples: [
         {
           description: 'Initialize hierarchical swarm',
-          params: { topology: 'hierarchical', maxAgents: 10, strategy: 'adaptive' }
-        }
+          params: { topology: 'hierarchical', maxAgents: 10, strategy: 'adaptive' },
+        },
       ],
       related: ['agent_spawn', 'task_orchestrate'],
-      since: '2.0.0'
+      since: '2.0.0',
     },
     inputSchema: {
       type: 'object',
       properties: {
-        topology: { type: 'string', enum: ['mesh', 'hierarchical', 'ring', 'star'], default: 'hierarchical' },
+        topology: {
+          type: 'string',
+          enum: ['mesh', 'hierarchical', 'ring', 'star'],
+          default: 'hierarchical',
+        },
         maxAgents: { type: 'number', minimum: 1, maximum: 50, default: 8 },
-        strategy: { type: 'string', enum: ['balanced', 'specialized', 'adaptive', 'parallel'], default: 'adaptive' },
-        memoryPersistence: { type: 'boolean', default: true }
-      }
+        strategy: {
+          type: 'string',
+          enum: ['balanced', 'specialized', 'adaptive', 'parallel'],
+          default: 'adaptive',
+        },
+        memoryPersistence: { type: 'boolean', default: true },
+      },
     },
-    handler: new SwarmInitHandler().execute.bind(new SwarmInitHandler())
+    handler: new SwarmInitHandler().execute.bind(new SwarmInitHandler()),
   },
   {
     name: 'mcp__claude-zen__agent_spawn',
@@ -223,24 +241,27 @@ export const coordinationTools: AdvancedMCPTool[] = [
       examples: [
         {
           description: 'Spawn code architect agent',
-          params: { type: 'architect', name: 'CodeArchitect', specialization: 'microservices' }
-        }
+          params: { type: 'architect', name: 'CodeArchitect', specialization: 'microservices' },
+        },
       ],
       related: ['swarm_init', 'task_orchestrate'],
-      since: '2.0.0'
+      since: '2.0.0',
     },
     inputSchema: {
       type: 'object',
       properties: {
-        type: { type: 'string', enum: ['architect', 'coder', 'analyst', 'tester', 'researcher', 'coordinator'] },
+        type: {
+          type: 'string',
+          enum: ['architect', 'coder', 'analyst', 'tester', 'researcher', 'coordinator'],
+        },
         name: { type: 'string' },
         specialization: { type: 'string' },
         capabilities: { type: 'array', items: { type: 'string' } },
-        swarmId: { type: 'string' }
+        swarmId: { type: 'string' },
       },
-      required: ['type', 'name']
+      required: ['type', 'name'],
     },
-    handler: new AgentSpawnHandler().execute.bind(new AgentSpawnHandler())
+    handler: new AgentSpawnHandler().execute.bind(new AgentSpawnHandler()),
   },
   {
     name: 'mcp__claude-zen__task_orchestrate',
@@ -255,31 +276,42 @@ export const coordinationTools: AdvancedMCPTool[] = [
       examples: [
         {
           description: 'Orchestrate parallel code review',
-          params: { task: 'code-review', strategy: 'parallel', priority: 'high' }
-        }
+          params: { task: 'code-review', strategy: 'parallel', priority: 'high' },
+        },
       ],
       related: ['swarm_init', 'agent_spawn'],
-      since: '2.0.0'
+      since: '2.0.0',
     },
     inputSchema: {
       type: 'object',
       properties: {
         task: { type: 'string' },
-        strategy: { type: 'string', enum: ['sequential', 'parallel', 'adaptive'], default: 'adaptive' },
-        priority: { type: 'string', enum: ['low', 'medium', 'high', 'critical'], default: 'medium' },
+        strategy: {
+          type: 'string',
+          enum: ['sequential', 'parallel', 'adaptive'],
+          default: 'adaptive',
+        },
+        priority: {
+          type: 'string',
+          enum: ['low', 'medium', 'high', 'critical'],
+          default: 'medium',
+        },
         agents: { type: 'array', items: { type: 'string' } },
-        timeline: { type: 'string' }
+        timeline: { type: 'string' },
       },
-      required: ['task']
+      required: ['task'],
     },
-    handler: new TaskOrchestrateHandler().execute.bind(new TaskOrchestrateHandler())
+    handler: new TaskOrchestrateHandler().execute.bind(new TaskOrchestrateHandler()),
   },
   {
     name: 'mcp__claude-zen__swarm_coordination',
     description: 'Advanced multi-swarm coordination and synchronization',
     category: 'coordination',
     version: '2.0.0',
-    permissions: [{ type: 'read', resource: 'swarm' }, { type: 'write', resource: 'coordination' }],
+    permissions: [
+      { type: 'read', resource: 'swarm' },
+      { type: 'write', resource: 'coordination' },
+    ],
     priority: 'medium',
     metadata: {
       author: 'claude-zen',
@@ -287,23 +319,27 @@ export const coordinationTools: AdvancedMCPTool[] = [
       examples: [
         {
           description: 'Coordinate multiple swarms',
-          params: { operation: 'sync', swarmIds: ['swarm1', 'swarm2'], syncMode: 'async' }
-        }
+          params: { operation: 'sync', swarmIds: ['swarm1', 'swarm2'], syncMode: 'async' },
+        },
       ],
       related: ['swarm_init', 'hive_mind_init'],
-      since: '2.0.0'
+      since: '2.0.0',
     },
     inputSchema: {
       type: 'object',
       properties: {
-        operation: { type: 'string', enum: ['status', 'sync', 'merge', 'split'], default: 'status' },
+        operation: {
+          type: 'string',
+          enum: ['status', 'sync', 'merge', 'split'],
+          default: 'status',
+        },
         swarmIds: { type: 'array', items: { type: 'string' } },
-        syncMode: { type: 'string', enum: ['sync', 'async'], default: 'async' }
-      }
+        syncMode: { type: 'string', enum: ['sync', 'async'], default: 'async' },
+      },
     },
-    handler: new SwarmCoordinationHandler().execute.bind(new SwarmCoordinationHandler())
+    handler: new SwarmCoordinationHandler().execute.bind(new SwarmCoordinationHandler()),
   },
-  
+
   // Additional Coordination Tools (5-12)
   {
     name: 'mcp__claude-zen__load_balancer',
@@ -314,17 +350,24 @@ export const coordinationTools: AdvancedMCPTool[] = [
     priority: 'high',
     metadata: {
       author: 'claude-zen',
-      tags: ['coordination', 'load-balancing', 'performance']
+      tags: ['coordination', 'load-balancing', 'performance'],
     },
     inputSchema: {
       type: 'object',
       properties: {
-        algorithm: { type: 'string', enum: ['round-robin', 'least-connections', 'weighted', 'adaptive'], default: 'adaptive' },
+        algorithm: {
+          type: 'string',
+          enum: ['round-robin', 'least-connections', 'weighted', 'adaptive'],
+          default: 'adaptive',
+        },
         agents: { type: 'array', items: { type: 'string' } },
-        weights: { type: 'object', description: 'Agent weight configuration' }
-      }
+        weights: { type: 'object', description: 'Agent weight configuration' },
+      },
     },
-    handler: async (params) => ({ success: true, data: { algorithm: params.algorithm, balanced: true, efficiency: 94 } })
+    handler: async (params) => ({
+      success: true,
+      data: { algorithm: params.algorithm, balanced: true, efficiency: 94 },
+    }),
   },
   {
     name: 'mcp__claude-zen__fault_tolerance',
@@ -335,17 +378,24 @@ export const coordinationTools: AdvancedMCPTool[] = [
     priority: 'critical',
     metadata: {
       author: 'claude-zen',
-      tags: ['coordination', 'fault-tolerance', 'recovery']
+      tags: ['coordination', 'fault-tolerance', 'recovery'],
     },
     inputSchema: {
       type: 'object',
       properties: {
-        strategy: { type: 'string', enum: ['retry', 'failover', 'circuit-breaker', 'redundancy'], default: 'retry' },
+        strategy: {
+          type: 'string',
+          enum: ['retry', 'failover', 'circuit-breaker', 'redundancy'],
+          default: 'retry',
+        },
         threshold: { type: 'number', minimum: 1, maximum: 10, default: 3 },
-        timeout: { type: 'number', minimum: 1000, default: 5000 }
-      }
+        timeout: { type: 'number', minimum: 1000, default: 5000 },
+      },
     },
-    handler: async (params) => ({ success: true, data: { strategy: params.strategy, protection_enabled: true, reliability: 99.9 } })
+    handler: async (params) => ({
+      success: true,
+      data: { strategy: params.strategy, protection_enabled: true, reliability: 99.9 },
+    }),
   },
   {
     name: 'mcp__claude-zen__consensus_manager',
@@ -356,17 +406,24 @@ export const coordinationTools: AdvancedMCPTool[] = [
     priority: 'high',
     metadata: {
       author: 'claude-zen',
-      tags: ['coordination', 'consensus', 'decision-making']
+      tags: ['coordination', 'consensus', 'decision-making'],
     },
     inputSchema: {
       type: 'object',
       properties: {
-        algorithm: { type: 'string', enum: ['raft', 'paxos', 'pbft', 'simple-majority'], default: 'raft' },
+        algorithm: {
+          type: 'string',
+          enum: ['raft', 'paxos', 'pbft', 'simple-majority'],
+          default: 'raft',
+        },
         participants: { type: 'array', items: { type: 'string' } },
-        proposal: { type: 'object', description: 'Proposal to reach consensus on' }
-      }
+        proposal: { type: 'object', description: 'Proposal to reach consensus on' },
+      },
     },
-    handler: async (params) => ({ success: true, data: { algorithm: params.algorithm, consensus_reached: true, votes: { for: 8, against: 1 } } })
+    handler: async (params) => ({
+      success: true,
+      data: { algorithm: params.algorithm, consensus_reached: true, votes: { for: 8, against: 1 } },
+    }),
   },
   {
     name: 'mcp__claude-zen__resource_coordinator',
@@ -377,17 +434,24 @@ export const coordinationTools: AdvancedMCPTool[] = [
     priority: 'medium',
     metadata: {
       author: 'claude-zen',
-      tags: ['coordination', 'resources', 'allocation']
+      tags: ['coordination', 'resources', 'allocation'],
     },
     inputSchema: {
       type: 'object',
       properties: {
         resources: { type: 'array', items: { type: 'object' } },
-        allocation_strategy: { type: 'string', enum: ['fair-share', 'priority-based', 'demand-driven'], default: 'fair-share' },
-        constraints: { type: 'object', description: 'Resource constraints' }
-      }
+        allocation_strategy: {
+          type: 'string',
+          enum: ['fair-share', 'priority-based', 'demand-driven'],
+          default: 'fair-share',
+        },
+        constraints: { type: 'object', description: 'Resource constraints' },
+      },
     },
-    handler: async (params) => ({ success: true, data: { strategy: params.allocation_strategy, allocated: true, utilization: 87 } })
+    handler: async (params) => ({
+      success: true,
+      data: { strategy: params.allocation_strategy, allocated: true, utilization: 87 },
+    }),
   },
   {
     name: 'mcp__claude-zen__message_router',
@@ -398,17 +462,24 @@ export const coordinationTools: AdvancedMCPTool[] = [
     priority: 'high',
     metadata: {
       author: 'claude-zen',
-      tags: ['coordination', 'messaging', 'routing']
+      tags: ['coordination', 'messaging', 'routing'],
     },
     inputSchema: {
       type: 'object',
       properties: {
-        routing_strategy: { type: 'string', enum: ['direct', 'broadcast', 'multicast', 'smart-routing'], default: 'smart-routing' },
+        routing_strategy: {
+          type: 'string',
+          enum: ['direct', 'broadcast', 'multicast', 'smart-routing'],
+          default: 'smart-routing',
+        },
         message_type: { type: 'string', enum: ['command', 'query', 'event', 'response'] },
-        recipients: { type: 'array', items: { type: 'string' } }
-      }
+        recipients: { type: 'array', items: { type: 'string' } },
+      },
     },
-    handler: async (params) => ({ success: true, data: { strategy: params.routing_strategy, routed: true, latency: '15ms' } })
+    handler: async (params) => ({
+      success: true,
+      data: { strategy: params.routing_strategy, routed: true, latency: '15ms' },
+    }),
   },
   {
     name: 'mcp__claude-zen__topology_optimizer',
@@ -419,17 +490,24 @@ export const coordinationTools: AdvancedMCPTool[] = [
     priority: 'medium',
     metadata: {
       author: 'claude-zen',
-      tags: ['coordination', 'topology', 'optimization']
+      tags: ['coordination', 'topology', 'optimization'],
     },
     inputSchema: {
       type: 'object',
       properties: {
         current_topology: { type: 'string', enum: ['mesh', 'hierarchical', 'ring', 'star'] },
-        optimization_goal: { type: 'string', enum: ['performance', 'reliability', 'cost', 'latency'], default: 'performance' },
-        constraints: { type: 'object', description: 'Topology constraints' }
-      }
+        optimization_goal: {
+          type: 'string',
+          enum: ['performance', 'reliability', 'cost', 'latency'],
+          default: 'performance',
+        },
+        constraints: { type: 'object', description: 'Topology constraints' },
+      },
     },
-    handler: async (params) => ({ success: true, data: { optimized: true, improvement: '25% efficiency gain', new_topology: 'hierarchical' } })
+    handler: async (params) => ({
+      success: true,
+      data: { optimized: true, improvement: '25% efficiency gain', new_topology: 'hierarchical' },
+    }),
   },
   {
     name: 'mcp__claude-zen__conflict_resolver',
@@ -440,17 +518,24 @@ export const coordinationTools: AdvancedMCPTool[] = [
     priority: 'high',
     metadata: {
       author: 'claude-zen',
-      tags: ['coordination', 'conflict-resolution', 'mediation']
+      tags: ['coordination', 'conflict-resolution', 'mediation'],
     },
     inputSchema: {
       type: 'object',
       properties: {
         conflict_type: { type: 'string', enum: ['resource', 'priority', 'data', 'scheduling'] },
-        resolution_strategy: { type: 'string', enum: ['voting', 'priority-based', 'compromise', 'escalation'], default: 'voting' },
-        participants: { type: 'array', items: { type: 'string' } }
-      }
+        resolution_strategy: {
+          type: 'string',
+          enum: ['voting', 'priority-based', 'compromise', 'escalation'],
+          default: 'voting',
+        },
+        participants: { type: 'array', items: { type: 'string' } },
+      },
     },
-    handler: async (params) => ({ success: true, data: { resolved: true, strategy: params.resolution_strategy, satisfaction: 85 } })
+    handler: async (params) => ({
+      success: true,
+      data: { resolved: true, strategy: params.resolution_strategy, satisfaction: 85 },
+    }),
   },
   {
     name: 'mcp__claude-zen__coordination_metrics',
@@ -461,18 +546,24 @@ export const coordinationTools: AdvancedMCPTool[] = [
     priority: 'medium',
     metadata: {
       author: 'claude-zen',
-      tags: ['coordination', 'metrics', 'analytics']
+      tags: ['coordination', 'metrics', 'analytics'],
     },
     inputSchema: {
       type: 'object',
       properties: {
         metric_types: { type: 'array', items: { type: 'string' } },
         time_range: { type: 'string', enum: ['1h', '24h', '7d', '30d'], default: '24h' },
-        aggregation: { type: 'string', enum: ['avg', 'max', 'min', 'sum'], default: 'avg' }
-      }
+        aggregation: { type: 'string', enum: ['avg', 'max', 'min', 'sum'], default: 'avg' },
+      },
     },
-    handler: async (params) => ({ success: true, data: { metrics: { efficiency: 92, latency: '12ms', throughput: '1200 ops/s' }, trends: 'improving' } })
-  }
+    handler: async (params) => ({
+      success: true,
+      data: {
+        metrics: { efficiency: 92, latency: '12ms', throughput: '1200 ops/s' },
+        trends: 'improving',
+      },
+    }),
+  },
 ];
 
 export default coordinationTools;

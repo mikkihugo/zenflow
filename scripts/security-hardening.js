@@ -5,10 +5,10 @@
  * Production-ready security implementation for Claude-Zen
  */
 
-import fs from 'node:fs';
-import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
 
 class SecurityHardeningSystem {
   constructor() {
@@ -18,13 +18,13 @@ class SecurityHardeningSystem {
     this.policyDir = 'security/policies';
     this.auditDir = 'security/audits';
     this.monitoringDir = 'security/monitoring';
-    
+
     this.hardeningResults = {
       timestamp: new Date().toISOString(),
       implemented: [],
       failed: [],
       warnings: [],
-      score: 0
+      score: 0,
     };
   }
 
@@ -87,7 +87,7 @@ class SecurityHardeningSystem {
       this.monitoringDir,
       `${this.securityDir}/configs`,
       `${this.securityDir}/scripts`,
-      `${this.securityDir}/templates`
+      `${this.securityDir}/templates`,
     ];
 
     for (const dir of dirs) {
@@ -99,11 +99,11 @@ class SecurityHardeningSystem {
     try {
       // 1. Create npm audit configuration
       const npmAuditConfig = {
-        "auditLevel": "moderate",
-        "production": true,
-        "dev": false,
-        "packageLock": true,
-        "dryRun": false
+        auditLevel: 'moderate',
+        production: true,
+        dev: false,
+        packageLock: true,
+        dryRun: false,
       };
 
       await fs.promises.writeFile(
@@ -484,10 +484,7 @@ export class SessionSecurity {
 }
 `;
 
-      await fs.promises.writeFile(
-        `${this.securityDir}/auth-security.js`,
-        authFramework
-      );
+      await fs.promises.writeFile(`${this.securityDir}/auth-security.js`, authFramework);
 
       this.hardeningResults.implemented.push('Authentication & Authorization');
       console.log('   ✅ Authentication & authorization implemented');
@@ -572,10 +569,7 @@ export class SecureStorage {
 }
 `;
 
-      await fs.promises.writeFile(
-        `${this.securityDir}/data-protection.js`,
-        dataProtection
-      );
+      await fs.promises.writeFile(`${this.securityDir}/data-protection.js`, dataProtection);
 
       this.hardeningResults.implemented.push('Data Protection & Encryption');
       console.log('   ✅ Data protection implemented');
@@ -654,10 +648,7 @@ export class NetworkSecurity {
 }
 `;
 
-      await fs.promises.writeFile(
-        `${this.securityDir}/network-security.js`,
-        networkSecurity
-      );
+      await fs.promises.writeFile(`${this.securityDir}/network-security.js`, networkSecurity);
 
       this.hardeningResults.implemented.push('Network Security Headers');
       console.log('   ✅ Network security implemented');
@@ -713,10 +704,7 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \\
 CMD ["node", "dist/index.js"]
 `;
 
-      await fs.promises.writeFile(
-        `${this.securityDir}/Dockerfile.secure`,
-        dockerSecurity
-      );
+      await fs.promises.writeFile(`${this.securityDir}/Dockerfile.secure`, dockerSecurity);
 
       // Environment security template
       const envSecurity = `# Environment Security Configuration
@@ -751,10 +739,7 @@ MONITORING_ENABLED=true
 ALERT_WEBHOOK_URL=https://your-monitoring-webhook
 `;
 
-      await fs.promises.writeFile(
-        `${this.securityDir}/templates/env.secure.template`,
-        envSecurity
-      );
+      await fs.promises.writeFile(`${this.securityDir}/templates/env.secure.template`, envSecurity);
 
       this.hardeningResults.implemented.push('Infrastructure Security');
       console.log('   ✅ Infrastructure security implemented');
@@ -891,10 +876,7 @@ export const securityMonitor = new SecurityMonitor({
 });
 `;
 
-      await fs.promises.writeFile(
-        `${this.securityDir}/monitoring.js`,
-        securityMonitoring
-      );
+      await fs.promises.writeFile(`${this.securityDir}/monitoring.js`, securityMonitoring);
 
       this.hardeningResults.implemented.push('Security Monitoring & Alerting');
       console.log('   ✅ Security monitoring implemented');
@@ -974,10 +956,7 @@ This document outlines the security policies and procedures for Claude-Zen.
 - Emergency: +1-XXX-XXX-XXXX
 `;
 
-      await fs.promises.writeFile(
-        `${this.policyDir}/security-policy.md`,
-        securityPolicy
-      );
+      await fs.promises.writeFile(`${this.policyDir}/security-policy.md`, securityPolicy);
 
       // Security checklist
       const securityChecklist = `# Security Implementation Checklist
@@ -1017,10 +996,7 @@ This document outlines the security policies and procedures for Claude-Zen.
 - [ ] Security metrics
 `;
 
-      await fs.promises.writeFile(
-        `${this.policyDir}/security-checklist.md`,
-        securityChecklist
-      );
+      await fs.promises.writeFile(`${this.policyDir}/security-checklist.md`, securityChecklist);
 
       this.hardeningResults.implemented.push('Security Policies & Procedures');
       console.log('   ✅ Security policies implemented');
@@ -1031,11 +1007,12 @@ This document outlines the security policies and procedures for Claude-Zen.
   }
 
   async generateSecurityReport() {
-    const totalTasks = this.hardeningResults.implemented.length + this.hardeningResults.failed.length;
+    const totalTasks =
+      this.hardeningResults.implemented.length + this.hardeningResults.failed.length;
     const successRate = (this.hardeningResults.implemented.length / totalTasks) * 100;
-    
+
     this.hardeningResults.score = Math.round(successRate);
-    
+
     const report = `# Security Hardening Report
 
 *Generated: ${this.hardeningResults.timestamp}*
@@ -1049,11 +1026,11 @@ This document outlines the security policies and procedures for Claude-Zen.
 
 ## Implemented Security Measures
 
-${this.hardeningResults.implemented.map(item => `✅ ${item}`).join('\n')}
+${this.hardeningResults.implemented.map((item) => `✅ ${item}`).join('\n')}
 
 ## Failed Implementations
 
-${this.hardeningResults.failed.map(item => `❌ ${item}`).join('\n')}
+${this.hardeningResults.failed.map((item) => `❌ ${item}`).join('\n')}
 
 ## Security Recommendations
 
@@ -1075,10 +1052,7 @@ ${this.hardeningResults.failed.map(item => `❌ ${item}`).join('\n')}
 *For questions about this report, contact the security team.*
 `;
 
-    await fs.promises.writeFile(
-      `${this.securityDir}/hardening-report.md`,
-      report
-    );
+    await fs.promises.writeFile(`${this.securityDir}/hardening-report.md`, report);
 
     console.log(`\n📊 Security Hardening Score: ${this.hardeningResults.score}%`);
     console.log(`📄 Report saved to: ${this.securityDir}/hardening-report.md`);
@@ -1089,12 +1063,12 @@ ${this.hardeningResults.failed.map(item => `❌ ${item}`).join('\n')}
 async function main() {
   const hardening = new SecurityHardeningSystem();
   const results = await hardening.implementSecurityHardening();
-  
+
   if (results.score < 80) {
     console.log('\n⚠️  Security score below 80%. Please address failed implementations.');
     process.exit(1);
   }
-  
+
   console.log('\n✅ Security hardening completed successfully!');
 }
 
