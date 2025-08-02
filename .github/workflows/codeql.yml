@@ -26,6 +26,10 @@ jobs:
           build-mode: none
         - language: python
           build-mode: none
+        - language: c-cpp
+          build-mode: autobuild
+        - language: rust
+          build-mode: autobuild
     
     steps:
     - name: Checkout repository
