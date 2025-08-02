@@ -6,12 +6,12 @@
  */
 
 import { EventEmitter } from 'events';
-import { createLogger } from './logger.js';
 import {
   type InterfaceMode,
   InterfaceModeDetector,
   type ModeDetectionOptions,
 } from './interface-mode-detector.js';
+import { createLogger } from './logger.js';
 
 const logger = createLogger('InterfaceLauncher');
 

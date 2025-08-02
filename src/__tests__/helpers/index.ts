@@ -1,29 +1,28 @@
 /**
  * Enhanced Test Helper Utilities - Hybrid TDD Support
- * 
+ *
  * @fileoverview Comprehensive test utilities for Claude-Zen
  * Supports both London School (mock-heavy, interaction-focused)
  * and Classical School (real object, state-focused) testing approaches
  * Enhanced with domain-specific helpers for coordination, neural, and interface testing
  */
 
-// Enhanced Hybrid TDD Helpers
-export * from './hybrid-test-utilities';
-export * from './neural-test-helpers';
-export * from './coordination-test-helpers';
-export * from './performance-test-suite';
-
 // Legacy Test Helpers (backward compatibility)
 export { AssertionHelpers, AssertionHelpers as assertionHelpers } from './assertion-helpers';
+export * from './coordination-test-helpers';
+// Enhanced Hybrid TDD Helpers
+export * from './hybrid-test-utilities';
 export {
   IntegrationTestSetup,
   IntegrationTestSetup as integrationTestSetup,
 } from './integration-test-setup';
 export { MockBuilder } from './mock-builder';
+export * from './neural-test-helpers';
 export {
   PerformanceMeasurement,
   PerformanceMeasurement as performanceMeasurement,
 } from './performance-measurement';
+export * from './performance-test-suite';
 export { TestDataFactory, TestDataFactory as testDataFactory } from './test-data-factory';
 
 // Factory functions

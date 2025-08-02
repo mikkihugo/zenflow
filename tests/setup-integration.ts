@@ -10,10 +10,10 @@ import 'jest-extended';
 beforeEach(async () => {
   // Setup integration test environment
   await setupIntegrationEnvironment();
-  
+
   // Initialize test databases and storage
   await initializeTestStorage();
-  
+
   // Setup network mocking for external services
   setupNetworkMocking();
 });
@@ -21,7 +21,7 @@ beforeEach(async () => {
 afterEach(async () => {
   // Cleanup integration test state
   await cleanupIntegrationState();
-  
+
   // Reset network mocks
   resetNetworkMocks();
 });
@@ -31,7 +31,7 @@ async function setupIntegrationEnvironment() {
   process.env.NODE_ENV = 'test';
   process.env.CLAUDE_ZEN_TEST_MODE = 'integration';
   process.env.CLAUDE_ZEN_LOG_LEVEL = 'error'; // Reduce noise in tests
-  
+
   // Initialize test-specific configurations
   global.testConfig = {
     database: {
@@ -60,7 +60,7 @@ async function initializeTestStorage() {
     vector: null,
     cache: null,
   };
-  
+
   // Setup test data fixtures
   global.testFixtures = {
     users: [],
@@ -75,11 +75,11 @@ function setupNetworkMocking() {
   global.mockFetch = jest.fn();
   global.originalFetch = global.fetch;
   global.fetch = global.mockFetch;
-  
+
   // Setup WebSocket mocking
   global.mockWebSocket = jest.fn();
   global.originalWebSocket = global.WebSocket;
-  
+
   // Mock process spawning for subprocess testing
   global.mockSpawn = jest.fn();
 }
@@ -103,10 +103,10 @@ async function cleanupIntegrationState() {
       }
     }
   }
-  
+
   // Clear test fixtures
   global.testFixtures = {};
-  
+
   // Clean environment variables
   delete process.env.CLAUDE_ZEN_TEST_MODE;
 }
@@ -115,11 +115,11 @@ async function cleanupIntegrationState() {
 global.createTestServer = async (port: number, routes: any[] = []) => {
   const express = await import('express');
   const app = express.default();
-  
-  routes.forEach(route => {
+
+  routes.forEach((route) => {
     app[route.method](route.path, route.handler);
   });
-  
+
   return new Promise((resolve, reject) => {
     const server = app.listen(port, (err?: any) => {
       if (err) reject(err);
@@ -131,16 +131,18 @@ global.createTestServer = async (port: number, routes: any[] = []) => {
 global.createTestClient = (baseURL: string) => {
   return {
     get: (path: string) => fetch(`${baseURL}${path}`),
-    post: (path: string, data: any) => fetch(`${baseURL}${path}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    }),
-    put: (path: string, data: any) => fetch(`${baseURL}${path}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    }),
+    post: (path: string, data: any) =>
+      fetch(`${baseURL}${path}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      }),
+    put: (path: string, data: any) =>
+      fetch(`${baseURL}${path}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      }),
     delete: (path: string) => fetch(`${baseURL}${path}`, { method: 'DELETE' }),
   };
 };
@@ -148,7 +150,7 @@ global.createTestClient = (baseURL: string) => {
 global.waitForPort = async (port: number, timeout: number = 5000) => {
   const net = await import('net');
   const start = Date.now();
-  
+
   while (Date.now() - start < timeout) {
     try {
       await new Promise((resolve, reject) => {
@@ -162,7 +164,7 @@ global.waitForPort = async (port: number, timeout: number = 5000) => {
       });
       return true;
     } catch {
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
   }
   throw new Error(`Port ${port} not available within ${timeout}ms`);
@@ -182,7 +184,7 @@ global.createMockSwarm = (agentCount: number = 3) => {
     coordinator: null,
     status: 'active',
   };
-  
+
   for (let i = 0; i < agentCount; i++) {
     swarm.agents.push({
       id: `agent-${i}`,
@@ -191,7 +193,7 @@ global.createMockSwarm = (agentCount: number = 3) => {
       tasks: [],
     });
   }
-  
+
   return swarm;
 };
 
@@ -202,17 +204,17 @@ global.simulateSwarmWorkflow = async (swarm: any, tasks: any[]) => {
     if (agent) {
       agent.status = 'working';
       agent.tasks.push(task);
-      
+
       // Simulate work
-      await new Promise(resolve => setTimeout(resolve, 10));
-      
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
       results.push({
         taskId: task.id,
         agentId: agent.id,
         result: 'completed',
         timestamp: Date.now(),
       });
-      
+
       agent.status = 'idle';
       agent.tasks = agent.tasks.filter((t: any) => t.id !== task.id);
     }
@@ -243,8 +245,6 @@ global.validateMCPProtocol = (message: any) => {
 // Extended timeout for integration tests
 jest.setTimeout(120000);
 
-export {};
-
 declare global {
   var testConfig: {
     database: any;
@@ -264,7 +264,7 @@ declare global {
   var mockWebSocket: jest.Mock;
   var originalWebSocket: any;
   var mockSpawn: jest.Mock;
-  
+
   function createTestServer(port: number, routes?: any[]): Promise<any>;
   function createTestClient(baseURL: string): any;
   function waitForPort(port: number, timeout?: number): Promise<boolean>;

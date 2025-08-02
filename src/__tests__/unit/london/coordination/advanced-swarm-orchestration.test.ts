@@ -3,10 +3,10 @@
  * London TDD approach - testing complex multi-agent coordination patterns
  */
 
+import type { AgentManager } from '../../../../coordination/agents/agent-manager';
+import type { LoadBalancingManager } from '../../../../coordination/load-balancing/load-balancing-manager';
 import { SwarmOrchestrator } from '../../../../coordination/orchestrator';
-import { AgentManager } from '../../../../coordination/agents/agent-manager';
-import { TaskDistributionEngine } from '../../../../coordination/protocols/distribution/task-distribution-engine';
-import { LoadBalancingManager } from '../../../../coordination/load-balancing/load-balancing-manager';
+import type { TaskDistributionEngine } from '../../../../coordination/protocols/distribution/task-distribution-engine';
 import { CoordinationTestHelpers } from '../../../helpers/coordination-test-helpers';
 import { MockBuilder } from '../../../helpers/mock-builder';
 
@@ -25,19 +25,19 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
     mockAgentManager = mockBuilder.createMockAgentManager({
       poolSize: 20,
       enableAutoScaling: true,
-      performanceTracking: true
+      performanceTracking: true,
     });
 
     mockTaskDistributionEngine = mockBuilder.createMockTaskDistributionEngine({
       strategy: 'intelligent',
       enableLoadBalancing: true,
-      optimizeForLatency: true
+      optimizeForLatency: true,
     });
 
     mockLoadBalancingManager = mockBuilder.createMockLoadBalancingManager({
       algorithm: 'adaptive',
       enablePredictive: true,
-      rebalanceThreshold: 0.8
+      rebalanceThreshold: 0.8,
     });
 
     swarmOrchestrator = new SwarmOrchestrator(
@@ -47,7 +47,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
       {
         maxConcurrentWorkflows: 50,
         enableIntelligentRouting: true,
-        faultTolerance: true
+        faultTolerance: true,
       }
     );
   });
@@ -64,8 +64,8 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
             tasks: [
               { id: 'ingest-1', type: 'data_collection', dependencies: [] },
               { id: 'ingest-2', type: 'data_validation', dependencies: ['ingest-1'] },
-              { id: 'ingest-3', type: 'data_normalization', dependencies: ['ingest-2'] }
-            ]
+              { id: 'ingest-3', type: 'data_normalization', dependencies: ['ingest-2'] },
+            ],
           },
           {
             id: 'phase-2',
@@ -73,52 +73,70 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
             tasks: [
               { id: 'process-1', type: 'data_analysis', dependencies: ['ingest-3'] },
               { id: 'process-2', type: 'feature_extraction', dependencies: ['process-1'] },
-              { id: 'process-3', type: 'data_transformation', dependencies: ['process-1'] }
-            ]
+              { id: 'process-3', type: 'data_transformation', dependencies: ['process-1'] },
+            ],
           },
           {
             id: 'phase-3',
             name: 'Results Generation',
             tasks: [
-              { id: 'result-1', type: 'report_generation', dependencies: ['process-2', 'process-3'] },
-              { id: 'result-2', type: 'visualization', dependencies: ['result-1'] }
-            ]
-          }
+              {
+                id: 'result-1',
+                type: 'report_generation',
+                dependencies: ['process-2', 'process-3'],
+              },
+              { id: 'result-2', type: 'visualization', dependencies: ['result-1'] },
+            ],
+          },
         ],
         constraints: {
           maxParallelTasks: 5,
           timeoutPerPhase: 300000,
-          retryPolicy: { maxRetries: 3, backoffMultiplier: 2 }
-        }
+          retryPolicy: { maxRetries: 3, backoffMultiplier: 2 },
+        },
       };
 
       const availableAgents = testHelpers.generateMockAgents(15, {
-        capabilities: ['data_collection', 'data_validation', 'data_analysis', 'feature_extraction', 'report_generation']
+        capabilities: [
+          'data_collection',
+          'data_validation',
+          'data_analysis',
+          'feature_extraction',
+          'report_generation',
+        ],
       });
 
       mockAgentManager.getAllActiveAgents.mockResolvedValue(availableAgents);
       mockTaskDistributionEngine.analyzeWorkflow.mockResolvedValue({
         estimatedDuration: 900000, // 15 minutes
-        criticalPath: ['ingest-1', 'ingest-2', 'ingest-3', 'process-1', 'process-2', 'result-1', 'result-2'],
+        criticalPath: [
+          'ingest-1',
+          'ingest-2',
+          'ingest-3',
+          'process-1',
+          'process-2',
+          'result-1',
+          'result-2',
+        ],
         parallelizationOpportunities: [
           ['process-2', 'process-3'],
-          ['ingest-1'] // Can start immediately
+          ['ingest-1'], // Can start immediately
         ],
         resourceRequirements: {
           minAgents: 5,
           recommendedAgents: 8,
-          peakConcurrency: 3
-        }
+          peakConcurrency: 3,
+        },
       });
 
       mockTaskDistributionEngine.distributeTasks.mockImplementation(async (tasks, agents) => {
         const assignments = tasks.map((task, index) => ({
           taskId: task.id,
           agentId: agents[index % agents.length].id,
-          estimatedStartTime: Date.now() + (index * 1000),
-          estimatedDuration: 30000
+          estimatedStartTime: Date.now() + index * 1000,
+          estimatedDuration: 30000,
         }));
-        
+
         return {
           success: true,
           assignments,
@@ -130,21 +148,21 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
             [assignments[3]], // process-1 after ingest-3
             [assignments[4], assignments[5]], // process-2 and process-3 parallel
             [assignments[6]], // result-1 after both process tasks
-            [assignments[7]]  // result-2 after result-1
-          ]
+            [assignments[7]], // result-2 after result-1
+          ],
         };
       });
 
       mockLoadBalancingManager.optimizeDistribution.mockResolvedValue({
         optimizations: [
           { type: 'agent_rebalancing', from: 'agent-1', to: 'agent-5', taskCount: 1 },
-          { type: 'resource_allocation', agentId: 'agent-3', additionalMemory: '512MB' }
+          { type: 'resource_allocation', agentId: 'agent-3', additionalMemory: '512MB' },
         ],
         expectedImprovement: {
           latencyReduction: 0.15,
           throughputIncrease: 0.08,
-          resourceUtilization: 0.92
-        }
+          resourceUtilization: 0.92,
+        },
       });
 
       const orchestrationResult = await swarmOrchestrator.executeWorkflow(complexWorkflow);
@@ -153,7 +171,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
       expect(mockTaskDistributionEngine.analyzeWorkflow).toHaveBeenCalledWith(
         expect.objectContaining({
           id: 'complex-workflow-001',
-          phases: expect.any(Array)
+          phases: expect.any(Array),
         })
       );
 
@@ -161,12 +179,12 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
       expect(mockTaskDistributionEngine.distributeTasks).toHaveBeenCalledWith(
         expect.arrayContaining([
           expect.objectContaining({ id: 'ingest-1', dependencies: [] }),
-          expect.objectContaining({ id: 'ingest-2', dependencies: ['ingest-1'] })
+          expect.objectContaining({ id: 'ingest-2', dependencies: ['ingest-1'] }),
         ]),
         availableAgents,
         expect.objectContaining({
           respectDependencies: true,
-          enableParallelization: true
+          enableParallelization: true,
         })
       );
 
@@ -179,9 +197,9 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         executionPlan: expect.objectContaining({
           totalTasks: 8,
           estimatedDuration: expect.any(Number),
-          parallelExecutionGroups: expect.any(Array)
+          parallelExecutionGroups: expect.any(Array),
         }),
-        optimizations: expect.any(Array)
+        optimizations: expect.any(Array),
       });
     });
 
@@ -193,45 +211,43 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
           {
             id: 'initial-analysis',
             type: 'data_assessment',
-            conditions: []
+            conditions: [],
           },
           {
             id: 'simple-processing',
             type: 'basic_analysis',
             conditions: [
-              { dependsOn: 'initial-analysis', condition: 'result.complexity === "low"' }
-            ]
+              { dependsOn: 'initial-analysis', condition: 'result.complexity === "low"' },
+            ],
           },
           {
             id: 'complex-processing',
             type: 'advanced_analysis',
             conditions: [
-              { dependsOn: 'initial-analysis', condition: 'result.complexity === "high"' }
-            ]
+              { dependsOn: 'initial-analysis', condition: 'result.complexity === "high"' },
+            ],
           },
           {
             id: 'ml-processing',
             type: 'machine_learning',
-            conditions: [
-              { dependsOn: 'initial-analysis', condition: 'result.dataSize > 10000' }
-            ]
+            conditions: [{ dependsOn: 'initial-analysis', condition: 'result.dataSize > 10000' }],
           },
           {
             id: 'final-report',
             type: 'report_generation',
             conditions: [
-              { 
+              {
                 anyOf: ['simple-processing', 'complex-processing', 'ml-processing'],
-                condition: 'any_completed'
-              }
-            ]
-          }
+                condition: 'any_completed',
+              },
+            ],
+          },
         ],
         conditionalLogic: {
           enableDynamicBranching: true,
           evaluateConditionsAt: 'runtime',
-          allowMultipleBranches: true
-        }
+          allowMultipleBranches: true,
+        },
       };
 
       const agents = testHelpers.generateMockAgents(10);
@@ -257,14 +273,14 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
           { taskId: 'initial-analysis', agentId: 'agent-1' },
           { taskId: 'complex-processing', agentId: 'agent-2' },
           { taskId: 'ml-processing', agentId: 'agent-3' },
-          { taskId: 'final-report', agentId: 'agent-4' }
+          { taskId: 'final-report', agentId: 'agent-4' },
         ],
         skippedTasks: ['simple-processing'],
         branchingDecisions: [
           { taskId: 'simple-processing', skipped: true, reason: 'condition not met' },
           { taskId: 'complex-processing', executed: true, reason: 'complexity is high' },
-          { taskId: 'ml-processing', executed: true, reason: 'dataSize > 10000' }
-        ]
+          { taskId: 'ml-processing', executed: true, reason: 'dataSize > 10000' },
+        ],
       });
 
       const result = await swarmOrchestrator.executeWorkflow(conditionalWorkflow);
@@ -282,7 +298,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         expect.arrayContaining([
           expect.objectContaining({ taskId: 'simple-processing', skipped: true }),
           expect.objectContaining({ taskId: 'complex-processing', executed: true }),
-          expect.objectContaining({ taskId: 'ml-processing', executed: true })
+          expect.objectContaining({ taskId: 'ml-processing', executed: true }),
         ])
       );
 
@@ -295,30 +311,30 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
           id: 'workflow-a',
           priority: 'high',
           resourceRequirements: { minAgents: 5, memory: '2GB', cpu: 0.8 },
-          estimatedDuration: 600000
+          estimatedDuration: 600000,
         },
         {
           id: 'workflow-b',
           priority: 'medium',
           resourceRequirements: { minAgents: 3, memory: '1GB', cpu: 0.5 },
-          estimatedDuration: 300000
+          estimatedDuration: 300000,
         },
         {
           id: 'workflow-c',
           priority: 'high',
           resourceRequirements: { minAgents: 4, memory: '1.5GB', cpu: 0.7 },
-          estimatedDuration: 450000
+          estimatedDuration: 450000,
         },
         {
           id: 'workflow-d',
           priority: 'low',
           resourceRequirements: { minAgents: 2, memory: '512MB', cpu: 0.3 },
-          estimatedDuration: 900000
-        }
+          estimatedDuration: 900000,
+        },
       ];
 
       const availableAgents = testHelpers.generateMockAgents(20, {
-        resources: { memory: '4GB', cpu: 1.0 }
+        resources: { memory: '4GB', cpu: 1.0 },
       });
 
       mockAgentManager.getAllActiveAgents.mockResolvedValue(availableAgents);
@@ -328,7 +344,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         totalCpu: 20.0,
         usedCpu: 8.5,
         availableAgents: 20,
-        busyAgents: 5
+        busyAgents: 5,
       });
 
       mockLoadBalancingManager.allocateResources.mockResolvedValue({
@@ -337,32 +353,31 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
             workflowId: 'workflow-a',
             agentIds: ['agent-1', 'agent-2', 'agent-3', 'agent-4', 'agent-5'],
             resources: { memory: '2GB', cpu: 0.8 },
-            priority: 1
+            priority: 1,
           },
           {
             workflowId: 'workflow-c',
             agentIds: ['agent-6', 'agent-7', 'agent-8', 'agent-9'],
             resources: { memory: '1.5GB', cpu: 0.7 },
-            priority: 2
+            priority: 2,
           },
           {
             workflowId: 'workflow-b',
             agentIds: ['agent-10', 'agent-11', 'agent-12'],
             resources: { memory: '1GB', cpu: 0.5 },
-            priority: 3
-          }
+            priority: 3,
+          },
         ],
         queuedWorkflows: ['workflow-d'],
         resourceConstraints: {
           memoryUtilization: 0.75,
           cpuUtilization: 0.68,
-          agentUtilization: 0.60
-        }
+          agentUtilization: 0.6,
+        },
       });
 
-      const allocationResult = await swarmOrchestrator.allocateResourcesForConcurrentWorkflows(
-        concurrentWorkflows
-      );
+      const allocationResult =
+        await swarmOrchestrator.allocateResourcesForConcurrentWorkflows(concurrentWorkflows);
 
       // Verify resource analysis was performed
       expect(mockAgentManager.getResourceUtilization).toHaveBeenCalled();
@@ -373,7 +388,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         expect.objectContaining({
           availableResources: expect.any(Object),
           priorityWeighting: true,
-          optimizeForThroughput: true
+          optimizeForThroughput: true,
         })
       );
 
@@ -383,20 +398,20 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         resourceUtilization: expect.objectContaining({
           memory: expect.any(Number),
           cpu: expect.any(Number),
-          agents: expect.any(Number)
+          agents: expect.any(Number),
         }),
         allocations: expect.arrayContaining([
           expect.objectContaining({
             workflowId: 'workflow-a',
             priority: 1,
-            agentIds: expect.any(Array)
-          })
-        ])
+            agentIds: expect.any(Array),
+          }),
+        ]),
       });
 
       // High priority workflows should be allocated first
       const highPriorityAllocations = allocationResult.allocations.filter(
-        allocation => allocation.priority <= 2
+        (allocation) => allocation.priority <= 2
       );
       expect(highPriorityAllocations.length).toBe(2);
     });
@@ -409,14 +424,14 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         tasks: [
           { id: 'task-1', type: 'processing', criticalPath: true },
           { id: 'task-2', type: 'analysis', criticalPath: false },
-          { id: 'task-3', type: 'reporting', criticalPath: true, dependencies: ['task-1'] }
+          { id: 'task-3', type: 'reporting', criticalPath: true, dependencies: ['task-1'] },
         ],
         faultTolerance: {
           enableAutoRecovery: true,
           maxFailuresPerTask: 2,
           failoverStrategy: 'immediate',
-          checkpointInterval: 30000
-        }
+          checkpointInterval: 30000,
+        },
       };
 
       const agents = testHelpers.generateMockAgents(8);
@@ -428,8 +443,8 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         assignments: [
           { taskId: 'task-1', agentId: 'agent-1' },
           { taskId: 'task-2', agentId: 'agent-2' },
-          { taskId: 'task-3', agentId: 'agent-3' }
-        ]
+          { taskId: 'task-3', agentId: 'agent-3' },
+        ],
       });
 
       // Mock agent failure detection
@@ -439,8 +454,8 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
           failureType: 'crash',
           affectedTasks: ['task-1'],
           failureTime: Date.now(),
-          recoverable: true
-        }
+          recoverable: true,
+        },
       ]);
 
       // Mock failover redistribution
@@ -452,25 +467,25 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
             newAgentId: 'agent-4',
             taskId: 'task-1',
             restartFromCheckpoint: true,
-            checkpointData: { progress: 65, state: 'processing' }
-          }
+            checkpointData: { progress: 65, state: 'processing' },
+          },
         ],
         impactAssessment: {
           delayEstimate: 45000, // 45 seconds
           criticalPathAffected: true,
-          recoveryStrategy: 'checkpoint_restore'
-        }
+          recoveryStrategy: 'checkpoint_restore',
+        },
       });
 
       mockLoadBalancingManager.rebalanceAfterFailure.mockResolvedValue({
         rebalancing: [
-          { from: 'agent-2', to: 'agent-5', taskId: 'task-2', reason: 'load_distribution' }
+          { from: 'agent-2', to: 'agent-5', taskId: 'task-2', reason: 'load_distribution' },
         ],
         newDistribution: {
           'agent-4': ['task-1'],
           'agent-5': ['task-2'],
-          'agent-3': ['task-3']
-        }
+          'agent-3': ['task-3'],
+        },
       });
 
       const result = await swarmOrchestrator.executeWorkflowWithFaultTolerance(resilientWorkflow);
@@ -484,13 +499,13 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
           expect.objectContaining({
             agentId: 'agent-1',
             failureType: 'crash',
-            affectedTasks: ['task-1']
-          })
+            affectedTasks: ['task-1'],
+          }),
         ]),
         expect.any(Array), // available agents
         expect.objectContaining({
           enableCheckpointRestore: true,
-          prioritizeCriticalPath: true
+          prioritizeCriticalPath: true,
         })
       );
 
@@ -504,14 +519,14 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
           expect.objectContaining({
             type: 'agent_failure',
             agentId: 'agent-1',
-            recoveryAction: 'failover_to_agent-4'
-          })
+            recoveryAction: 'failover_to_agent-4',
+          }),
         ]),
         recovery: expect.objectContaining({
           totalFailures: 1,
           successfulRecoveries: 1,
-          impactOnCompletion: expect.any(Number)
-        })
+          impactOnCompletion: expect.any(Number),
+        }),
       });
     });
 
@@ -522,7 +537,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
           {
             id: 'reliable-task',
             type: 'data_processing',
-            serviceEndpoint: 'reliable-service'
+            serviceEndpoint: 'reliable-service',
           },
           {
             id: 'unstable-task',
@@ -531,16 +546,16 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
             circuitBreaker: {
               failureThreshold: 3,
               timeout: 5000,
-              resetTimeout: 30000
-            }
+              resetTimeout: 30000,
+            },
           },
           {
             id: 'backup-task',
             type: 'fallback_processing',
             serviceEndpoint: 'backup-service',
-            fallbackFor: 'unstable-task'
-          }
-        ]
+            fallbackFor: 'unstable-task',
+          },
+        ],
       };
 
       const agents = testHelpers.generateMockAgents(5);
@@ -552,8 +567,8 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
           state: 'half-open',
           failureCount: 2,
           lastFailureTime: Date.now() - 10000,
-          nextAttemptTime: Date.now() + 20000
-        }
+          nextAttemptTime: Date.now() + 20000,
+        },
       });
 
       // Mock task execution with circuit breaker logic
@@ -566,13 +581,13 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
               circuitBreakerTripped: true,
               fallbackTriggered: true,
               fallbackTaskId: 'backup-task',
-              error: 'Service unavailable - circuit breaker open'
+              error: 'Service unavailable - circuit breaker open',
             };
           }
           return {
             success: true,
             circuitBreakerTripped: false,
-            result: { processed: true }
+            result: { processed: true },
           };
         }
       );
@@ -582,15 +597,17 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         success: true,
         taskId: 'backup-task',
         fallbackReason: 'circuit_breaker_open',
-        result: { processed: true, method: 'fallback' }
+        result: { processed: true, method: 'fallback' },
       });
 
       const result = await swarmOrchestrator.executeWorkflowWithCircuitBreaker(unstableWorkflow);
 
       // Verify circuit breaker state was checked
-      expect(mockTaskDistributionEngine.getCircuitBreakerState).toHaveBeenCalledWith(
-        ['reliable-service', 'unstable-service', 'backup-service']
-      );
+      expect(mockTaskDistributionEngine.getCircuitBreakerState).toHaveBeenCalledWith([
+        'reliable-service',
+        'unstable-service',
+        'backup-service',
+      ]);
 
       // Verify circuit breaker execution was attempted
       expect(mockTaskDistributionEngine.executeWithCircuitBreaker).toHaveBeenCalledWith(
@@ -598,7 +615,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         expect.any(Object),
         expect.objectContaining({
           failureThreshold: 3,
-          timeout: 5000
+          timeout: 5000,
         })
       );
 
@@ -616,16 +633,16 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
           expect.objectContaining({
             service: 'unstable-service',
             state: 'open',
-            fallbackExecuted: true
-          })
+            fallbackExecuted: true,
+          }),
         ]),
         fallbackExecutions: expect.arrayContaining([
           expect.objectContaining({
             originalTask: 'unstable-task',
             fallbackTask: 'backup-task',
-            reason: 'circuit_breaker_open'
-          })
-        ])
+            reason: 'circuit_breaker_open',
+          }),
+        ]),
       });
     });
 
@@ -635,18 +652,38 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         tasks: [
           { id: 'upstream-1', type: 'data_source', criticality: 'high' },
           { id: 'upstream-2', type: 'data_source', criticality: 'medium' },
-          { id: 'processor-1', type: 'processing', dependencies: ['upstream-1'], criticality: 'high' },
-          { id: 'processor-2', type: 'processing', dependencies: ['upstream-2'], criticality: 'medium' },
-          { id: 'aggregator', type: 'aggregation', dependencies: ['processor-1', 'processor-2'], criticality: 'high' },
+          {
+            id: 'processor-1',
+            type: 'processing',
+            dependencies: ['upstream-1'],
+            criticality: 'high',
+          },
+          {
+            id: 'processor-2',
+            type: 'processing',
+            dependencies: ['upstream-2'],
+            criticality: 'medium',
+          },
+          {
+            id: 'aggregator',
+            type: 'aggregation',
+            dependencies: ['processor-1', 'processor-2'],
+            criticality: 'high',
+          },
           { id: 'downstream-1', type: 'output', dependencies: ['aggregator'], criticality: 'low' },
-          { id: 'downstream-2', type: 'notification', dependencies: ['aggregator'], criticality: 'low' }
+          {
+            id: 'downstream-2',
+            type: 'notification',
+            dependencies: ['aggregator'],
+            criticality: 'low',
+          },
         ],
         cascadePrevention: {
           enableIsolation: true,
           isolationStrategy: 'dependency_aware',
           maxCascadeDepth: 2,
-          criticalityThreshold: 'medium'
-        }
+          criticalityThreshold: 'medium',
+        },
       };
 
       const agents = testHelpers.generateMockAgents(10);
@@ -661,39 +698,44 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
           alternativeStrategies: ['graceful_degradation', 'partial_execution'],
           riskMitigation: {
             isolateUpstream: true,
-            enableDownstreamFallbacks: true
-          }
-        }
+            enableDownstreamFallbacks: true,
+          },
+        },
       });
 
       // Mock isolation execution
       mockTaskDistributionEngine.executeWithIsolation.mockResolvedValue({
         isolatedTasks: ['processor-1'],
-        continuedExecution: ['upstream-2', 'processor-2', 'aggregator', 'downstream-1', 'downstream-2'],
+        continuedExecution: [
+          'upstream-2',
+          'processor-2',
+          'aggregator',
+          'downstream-1',
+          'downstream-2',
+        ],
         partialResults: {
-          'aggregator': { result: 'partial', dataSource: 'upstream-2-only' },
+          aggregator: { result: 'partial', dataSource: 'upstream-2-only' },
           'downstream-1': { result: 'degraded', quality: 'partial' },
-          'downstream-2': { result: 'success', notification: 'partial_completion' }
+          'downstream-2': { result: 'success', notification: 'partial_completion' },
         },
-        cascadePrevented: true
+        cascadePrevented: true,
       });
 
       // Simulate initial failure
       mockAgentManager.simulateFailure.mockResolvedValue({
         failedAgent: 'agent-1',
         affectedTasks: ['upstream-1'],
-        cascadeRisk: 'high'
+        cascadeRisk: 'high',
       });
 
-      const result = await swarmOrchestrator.executeWorkflowWithCascadePrevention(
-        cascadeProneWorkflow
-      );
+      const result =
+        await swarmOrchestrator.executeWorkflowWithCascadePrevention(cascadeProneWorkflow);
 
       // Verify cascade detection was performed
       expect(mockTaskDistributionEngine.detectPotentialCascade).toHaveBeenCalledWith(
         expect.objectContaining({
           failedTasks: ['upstream-1'],
-          workflowStructure: expect.any(Object)
+          workflowStructure: expect.any(Object),
         })
       );
 
@@ -702,7 +744,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         expect.arrayContaining(['processor-1']),
         expect.objectContaining({
           strategy: 'dependency_aware',
-          enablePartialExecution: true
+          enablePartialExecution: true,
         })
       );
 
@@ -713,13 +755,13 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
           cascadeDetected: true,
           isolationApplied: true,
           isolatedTasks: ['processor-1'],
-          partialCompletion: true
+          partialCompletion: true,
         }),
         partialResults: expect.objectContaining({
           completedTasks: expect.any(Number),
           partialTasks: expect.any(Number),
-          isolatedTasks: expect.any(Number)
-        })
+          isolatedTasks: expect.any(Number),
+        }),
       });
     });
   });
@@ -729,16 +771,32 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
       const performanceWorkflow = {
         id: 'performance-optimized-workflow',
         tasks: [
-          { id: 'cpu-intensive', type: 'computation', requirements: { cpu: 'high', memory: 'medium' } },
-          { id: 'memory-intensive', type: 'data_processing', requirements: { cpu: 'low', memory: 'high' } },
-          { id: 'io-intensive', type: 'file_processing', requirements: { cpu: 'low', memory: 'low', io: 'high' } },
-          { id: 'balanced', type: 'analysis', requirements: { cpu: 'medium', memory: 'medium', io: 'medium' } }
+          {
+            id: 'cpu-intensive',
+            type: 'computation',
+            requirements: { cpu: 'high', memory: 'medium' },
+          },
+          {
+            id: 'memory-intensive',
+            type: 'data_processing',
+            requirements: { cpu: 'low', memory: 'high' },
+          },
+          {
+            id: 'io-intensive',
+            type: 'file_processing',
+            requirements: { cpu: 'low', memory: 'low', io: 'high' },
+          },
+          {
+            id: 'balanced',
+            type: 'analysis',
+            requirements: { cpu: 'medium', memory: 'medium', io: 'medium' },
+          },
         ],
         optimization: {
           enablePerformanceMatching: true,
           prioritizeEfficiency: true,
-          enablePredictiveScheduling: true
-        }
+          enablePredictiveScheduling: true,
+        },
       };
 
       const agentsWithProfiles = [
@@ -747,48 +805,53 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
           capabilities: ['computation', 'analysis'],
           performanceProfile: {
             cpuPerformance: 0.95,
-            memoryEfficiency: 0.70,
-            ioThroughput: 0.60,
-            averageTaskDuration: { computation: 30000, analysis: 45000 }
-          }
+            memoryEfficiency: 0.7,
+            ioThroughput: 0.6,
+            averageTaskDuration: { computation: 30000, analysis: 45000 },
+          },
         },
         {
           id: 'agent-memory-optimized',
           capabilities: ['data_processing', 'analysis'],
           performanceProfile: {
-            cpuPerformance: 0.60,
+            cpuPerformance: 0.6,
             memoryEfficiency: 0.95,
-            ioThroughput: 0.50,
-            averageTaskDuration: { data_processing: 25000, analysis: 50000 }
-          }
+            ioThroughput: 0.5,
+            averageTaskDuration: { data_processing: 25000, analysis: 50000 },
+          },
         },
         {
           id: 'agent-io-optimized',
           capabilities: ['file_processing', 'analysis'],
           performanceProfile: {
-            cpuPerformance: 0.50,
-            memoryEfficiency: 0.60,
+            cpuPerformance: 0.5,
+            memoryEfficiency: 0.6,
             ioThroughput: 0.95,
-            averageTaskDuration: { file_processing: 20000, analysis: 60000 }
-          }
+            averageTaskDuration: { file_processing: 20000, analysis: 60000 },
+          },
         },
         {
           id: 'agent-balanced',
           capabilities: ['computation', 'data_processing', 'file_processing', 'analysis'],
           performanceProfile: {
-            cpuPerformance: 0.80,
-            memoryEfficiency: 0.80,
-            ioThroughput: 0.80,
-            averageTaskDuration: { computation: 35000, data_processing: 30000, file_processing: 25000, analysis: 40000 }
-          }
-        }
+            cpuPerformance: 0.8,
+            memoryEfficiency: 0.8,
+            ioThroughput: 0.8,
+            averageTaskDuration: {
+              computation: 35000,
+              data_processing: 30000,
+              file_processing: 25000,
+              analysis: 40000,
+            },
+          },
+        },
       ];
 
       mockAgentManager.getAllActiveAgents.mockResolvedValue(agentsWithProfiles);
       mockAgentManager.getPerformanceProfiles.mockResolvedValue(
-        agentsWithProfiles.map(agent => ({
+        agentsWithProfiles.map((agent) => ({
           agentId: agent.id,
-          profile: agent.performanceProfile
+          profile: agent.performanceProfile,
         }))
       );
 
@@ -799,40 +862,39 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
             agentId: 'agent-cpu-optimized',
             matchScore: 0.95,
             estimatedDuration: 30000,
-            reasoning: 'High CPU performance match'
+            reasoning: 'High CPU performance match',
           },
           {
             taskId: 'memory-intensive',
             agentId: 'agent-memory-optimized',
             matchScore: 0.93,
             estimatedDuration: 25000,
-            reasoning: 'High memory efficiency match'
+            reasoning: 'High memory efficiency match',
           },
           {
             taskId: 'io-intensive',
             agentId: 'agent-io-optimized',
             matchScore: 0.97,
             estimatedDuration: 20000,
-            reasoning: 'High I/O throughput match'
+            reasoning: 'High I/O throughput match',
           },
           {
             taskId: 'balanced',
             agentId: 'agent-balanced',
             matchScore: 0.85,
             estimatedDuration: 40000,
-            reasoning: 'Balanced resource requirements match'
-          }
+            reasoning: 'Balanced resource requirements match',
+          },
         ],
         performanceGains: {
           expectedSpeedup: 1.35,
           resourceUtilizationImprovement: 0.28,
-          estimatedCompletionTime: 95000
-        }
+          estimatedCompletionTime: 95000,
+        },
       });
 
-      const result = await swarmOrchestrator.executePerformanceOptimizedWorkflow(
-        performanceWorkflow
-      );
+      const result =
+        await swarmOrchestrator.executePerformanceOptimizedWorkflow(performanceWorkflow);
 
       // Verify performance profiles were retrieved
       expect(mockAgentManager.getPerformanceProfiles).toHaveBeenCalled();
@@ -843,7 +905,11 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         agentsWithProfiles,
         expect.objectContaining({
           enablePerformanceMatching: true,
-          optimizationCriteria: expect.arrayContaining(['efficiency', 'speed', 'resource_utilization'])
+          optimizationCriteria: expect.arrayContaining([
+            'efficiency',
+            'speed',
+            'resource_utilization',
+          ]),
         })
       );
 
@@ -853,20 +919,20 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         optimizations: expect.objectContaining({
           performanceMatching: true,
           expectedSpeedup: 1.35,
-          resourceUtilizationImprovement: 0.28
+          resourceUtilizationImprovement: 0.28,
         }),
         assignments: expect.arrayContaining([
           expect.objectContaining({
             taskId: 'cpu-intensive',
             agentId: 'agent-cpu-optimized',
-            matchScore: 0.95
+            matchScore: 0.95,
           }),
           expect.objectContaining({
             taskId: 'memory-intensive',
             agentId: 'agent-memory-optimized',
-            matchScore: 0.93
-          })
-        ])
+            matchScore: 0.93,
+          }),
+        ]),
       });
     });
 
@@ -880,19 +946,19 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
           typicalScalingEvents: [
             { time: 300000, action: 'scale_up', agents: 5 },
             { time: 1200000, action: 'scale_down', agents: 3 },
-            { time: 1500000, action: 'scale_down', agents: 7 }
-          ]
+            { time: 1500000, action: 'scale_down', agents: 7 },
+          ],
         },
         tasks: Array.from({ length: 50 }, (_, i) => ({
           id: `batch-task-${i}`,
           type: 'batch_processing',
-          estimatedDuration: 120000
+          estimatedDuration: 120000,
         })),
         predictiveScaling: {
           enablePrediction: true,
           predictionHorizon: 900000, // 15 minutes
-          scalingStrategy: 'proactive'
-        }
+          scalingStrategy: 'proactive',
+        },
       };
 
       const currentAgents = testHelpers.generateMockAgents(10);
@@ -905,41 +971,41 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
             timeOffset: 0,
             requiredAgents: 10,
             confidence: 0.85,
-            reasoning: 'Initial task distribution'
+            reasoning: 'Initial task distribution',
           },
           {
             timeOffset: 300000,
             requiredAgents: 15,
-            confidence: 0.90,
-            reasoning: 'Historical pattern indicates scale-up at 5 minutes'
+            confidence: 0.9,
+            reasoning: 'Historical pattern indicates scale-up at 5 minutes',
           },
           {
             timeOffset: 1200000,
             requiredAgents: 12,
             confidence: 0.88,
-            reasoning: 'Partial scale-down as tasks complete'
+            reasoning: 'Partial scale-down as tasks complete',
           },
           {
             timeOffset: 1500000,
             requiredAgents: 5,
             confidence: 0.92,
-            reasoning: 'Final scale-down phase'
-          }
+            reasoning: 'Final scale-down phase',
+          },
         ],
         scalingRecommendations: [
           {
             scheduledTime: Date.now() + 250000, // Pre-emptive scaling
             action: 'scale_up',
             targetAgents: 15,
-            reason: 'Anticipated workload increase'
+            reason: 'Anticipated workload increase',
           },
           {
             scheduledTime: Date.now() + 1150000,
             action: 'scale_down',
             targetAgents: 12,
-            reason: 'Predicted workload decrease'
-          }
-        ]
+            reason: 'Predicted workload decrease',
+          },
+        ],
       });
 
       // Mock proactive scaling execution
@@ -950,28 +1016,27 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
             scheduledTime: Date.now() + 250000,
             action: 'spawn_agents',
             count: 5,
-            agentType: 'batch_processor'
+            agentType: 'batch_processor',
           },
           {
             actionId: 'scale-down-001',
             scheduledTime: Date.now() + 1150000,
             action: 'terminate_agents',
             count: 3,
-            criteria: 'least_utilized'
-          }
-        ]
+            criteria: 'least_utilized',
+          },
+        ],
       });
 
-      const result = await swarmOrchestrator.executeWorkflowWithPredictiveScaling(
-        predictiveWorkflow
-      );
+      const result =
+        await swarmOrchestrator.executeWorkflowWithPredictiveScaling(predictiveWorkflow);
 
       // Verify predictive analysis was performed
       expect(mockLoadBalancingManager.predictResourceRequirements).toHaveBeenCalledWith(
         expect.objectContaining({
           workflowPattern: 'recurring_batch_processing',
           historicalData: expect.any(Object),
-          predictionHorizon: 900000
+          predictionHorizon: 900000,
         })
       );
 
@@ -980,12 +1045,12 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         expect.arrayContaining([
           expect.objectContaining({
             action: 'scale_up',
-            targetAgents: 15
+            targetAgents: 15,
           }),
           expect.objectContaining({
             action: 'scale_down',
-            targetAgents: 12
-          })
+            targetAgents: 12,
+          }),
         ])
       );
 
@@ -995,13 +1060,13 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         predictiveScaling: expect.objectContaining({
           enabled: true,
           predictions: expect.any(Array),
-          scheduledScalingActions: expect.any(Array)
+          scheduledScalingActions: expect.any(Array),
         }),
         scalingOptimizations: expect.objectContaining({
           proactiveScaling: true,
           predictedResourceSavings: expect.any(Number),
-          anticipatedPerformanceGains: expect.any(Number)
-        })
+          anticipatedPerformanceGains: expect.any(Number),
+        }),
       });
     });
   });

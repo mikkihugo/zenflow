@@ -3,8 +3,8 @@
  */
 
 import { EventEmitter } from 'node:events';
+import type { BackendConfig, BackendInterface, JSONValue } from './backends/base.backend';
 import { BackendFactory } from './backends/factory';
-import { BackendInterface, BackendConfig, JSONValue } from './backends/base.backend';
 
 interface SessionMemoryStoreOptions {
   backendConfig: BackendConfig;
@@ -68,14 +68,26 @@ export class SessionMemoryStore extends EventEmitter {
       await this.loadFromBackend();
       this.initialized = true;
       this.emit('initialized');
-      console.log(`✅ Session memory store initialized with backend: ${this.options.backendConfig.type}`);
+      console.log(
+        `✅ Session memory store initialized with backend: ${this.options.backendConfig.type}`
+      );
     } catch (error) {
       console.error('❌ Session memory store initialization failed:', error);
       throw error;
     }
   }
 
-  async store(sessionId: string, key: string, data: any, options?: { tags?: string[]; priority?: 'low' | 'medium' | 'high'; ttl?: number; vector?: number[] }): Promise<void> {
+  async store(
+    sessionId: string,
+    key: string,
+    data: any,
+    options?: {
+      tags?: string[];
+      priority?: 'low' | 'medium' | 'high';
+      ttl?: number;
+      vector?: number[];
+    }
+  ): Promise<void> {
     this.ensureInitialized();
 
     let session = this.sessions.get(sessionId);

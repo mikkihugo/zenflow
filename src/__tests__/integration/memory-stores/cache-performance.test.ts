@@ -427,15 +427,15 @@ describe('Cache Performance Integration Tests', () => {
 
     it('should implement LRU eviction correctly', async () => {
       await cache.set('a', 'value-a');
-      await new Promise(resolve => setTimeout(resolve, 1)); // Ensure different timestamps
+      await new Promise((resolve) => setTimeout(resolve, 1)); // Ensure different timestamps
       await cache.set('b', 'value-b');
-      await new Promise(resolve => setTimeout(resolve, 1));
+      await new Promise((resolve) => setTimeout(resolve, 1));
       await cache.set('c', 'value-c');
-      await new Promise(resolve => setTimeout(resolve, 1));
+      await new Promise((resolve) => setTimeout(resolve, 1));
 
       // Access 'a' to make it most recently used
       await cache.get('a');
-      await new Promise(resolve => setTimeout(resolve, 1));
+      await new Promise((resolve) => setTimeout(resolve, 1));
 
       // Add 'd' which should evict 'b' (least recently used)
       await cache.set('d', 'value-d');

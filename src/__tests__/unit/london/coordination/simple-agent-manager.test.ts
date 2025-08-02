@@ -12,21 +12,21 @@ describe('Simple Agent Manager - London TDD', () => {
   beforeEach(() => {
     // Create interaction-focused mocks (London TDD)
     mockEventEmitter = jest.fn();
-    
+
     // Mock AgentManager with focus on interactions
     mockAgentManager = {
       agents: new Map(),
-      
+
       registerAgent: jest.fn().mockImplementation((agent) => {
         mockEventEmitter('emit', { type: 'agent_registered', agentId: agent.id });
         return { success: true, agentId: agent.id };
       }),
-      
+
       assignTask: jest.fn().mockImplementation((agentId, task) => {
         mockEventEmitter('emit', { type: 'task_assigned', agentId, taskId: task.id });
         return { success: true, taskId: task.id, assignedTo: agentId };
       }),
-      
+
       broadcastMessage: jest.fn().mockImplementation((message) => {
         mockEventEmitter('emit', { type: 'message_broadcast', message });
         return { success: true, recipients: ['agent-1', 'agent-2'] };
@@ -50,10 +50,13 @@ describe('Simple Agent Manager - London TDD', () => {
       expect(result.agentId).toBe(agent.id);
 
       // Verify event emission interaction
-      expect(mockEventEmitter).toHaveBeenCalledWith('emit', expect.objectContaining({
-        type: 'agent_registered',
-        agentId: agent.id,
-      }));
+      expect(mockEventEmitter).toHaveBeenCalledWith(
+        'emit',
+        expect.objectContaining({
+          type: 'agent_registered',
+          agentId: agent.id,
+        })
+      );
     });
 
     it('should handle batch agent registration', () => {
@@ -62,13 +65,13 @@ describe('Simple Agent Manager - London TDD', () => {
         { id: 'agent-2', type: 'coordinator' },
       ];
 
-      const results = agents.map(agent => mockAgentManager.registerAgent(agent));
+      const results = agents.map((agent) => mockAgentManager.registerAgent(agent));
 
       // Verify interaction pattern
       expect(mockAgentManager.registerAgent).toHaveBeenCalledTimes(2);
       expect(mockEventEmitter).toHaveBeenCalledTimes(2);
-      
-      results.forEach(result => {
+
+      results.forEach((result) => {
         expect(result.success).toBe(true);
       });
     });
@@ -85,11 +88,14 @@ describe('Simple Agent Manager - London TDD', () => {
       expect(result.taskId).toBe(task.id);
 
       // Verify coordination event emission
-      expect(mockEventEmitter).toHaveBeenCalledWith('emit', expect.objectContaining({
-        type: 'task_assigned',
-        agentId: 'worker-1',
-        taskId: task.id,
-      }));
+      expect(mockEventEmitter).toHaveBeenCalledWith(
+        'emit',
+        expect.objectContaining({
+          type: 'task_assigned',
+          agentId: 'worker-1',
+          taskId: task.id,
+        })
+      );
     });
   });
 
@@ -104,10 +110,13 @@ describe('Simple Agent Manager - London TDD', () => {
       expect(Array.isArray(result.recipients)).toBe(true);
 
       // Verify broadcast coordination event
-      expect(mockEventEmitter).toHaveBeenCalledWith('emit', expect.objectContaining({
-        type: 'message_broadcast',
-        message,
-      }));
+      expect(mockEventEmitter).toHaveBeenCalledWith(
+        'emit',
+        expect.objectContaining({
+          type: 'message_broadcast',
+          message,
+        })
+      );
     });
   });
 
@@ -120,7 +129,7 @@ describe('Simple Agent Manager - London TDD', () => {
       });
 
       const swarm = coordinationSuite.builder.createMockSwarm();
-      
+
       // Test swarm creation
       expect(swarm.agents.size).toBe(3);
       expect(swarm.coordinator).toBeDefined();

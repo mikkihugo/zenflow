@@ -2,7 +2,7 @@
  * @fileoverview A swarm strategy that uses the RuvSwarm implementation.
  */
 
-import { SwarmStrategy, Agent } from '../orchestrator';
+import type { Agent, SwarmStrategy } from '../orchestrator';
 import { RuvSwarm } from '../swarm/core';
 
 export class RuvSwarmStrategy implements SwarmStrategy {
@@ -34,7 +34,9 @@ export class RuvSwarmStrategy implements SwarmStrategy {
   }
 
   async getAgents(): Promise<Agent[]> {
-    const agents = this.swarm.getTasksByStatus('in_progress').map(t => t.assignedAgents || []).flat();
-    return agents.map(a => ({ id: a, capabilities: [], status: 'busy' }));
+    const agents = this.swarm
+      .getTasksByStatus('in_progress')
+      .flatMap((t) => t.assignedAgents || []);
+    return agents.map((a) => ({ id: a, capabilities: [], status: 'busy' }));
   }
 }

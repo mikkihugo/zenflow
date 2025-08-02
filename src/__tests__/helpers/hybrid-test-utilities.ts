@@ -26,13 +26,13 @@ export class HybridTestUtility {
   getRecommendedApproach(): 'london' | 'classical' {
     const londonDomains = ['coordination', 'interfaces'];
     const classicalDomains = ['neural', 'database'];
-    
+
     if (londonDomains.includes(this.config.domainContext)) {
       return 'london';
     } else if (classicalDomains.includes(this.config.domainContext)) {
       return 'classical';
     }
-    
+
     return this.config.approach === 'hybrid' ? 'london' : this.config.approach;
   }
 
@@ -55,16 +55,16 @@ export class HybridTestUtility {
   private shouldMock(dependency: string, approach: 'london' | 'classical'): boolean {
     const alwaysMock = ['http', 'file', 'network', 'external'];
     const neverMock = ['math', 'pure', 'algorithm'];
-    
-    if (alwaysMock.some(type => dependency.includes(type))) return true;
-    if (neverMock.some(type => dependency.includes(type))) return false;
-    
+
+    if (alwaysMock.some((type) => dependency.includes(type))) return true;
+    if (neverMock.some((type) => dependency.includes(type))) return false;
+
     return approach === 'london';
   }
 
   private createMockForDependency(dependency: string, approach: 'london' | 'classical'): jest.Mock {
     const mock = jest.fn();
-    
+
     if (approach === 'london') {
       // London: Focus on interaction verification
       mock.mockName(`mock_${dependency}`);
@@ -75,7 +75,7 @@ export class HybridTestUtility {
       // Classical: Provide realistic behavior
       mock.mockImplementation(this.getRealisticBehavior(dependency));
     }
-    
+
     return mock;
   }
 
@@ -88,7 +88,7 @@ export class HybridTestUtility {
       calculator: (a: number, b: number) => a + b,
     };
 
-    const key = Object.keys(behaviors).find(k => dependency.includes(k));
+    const key = Object.keys(behaviors).find((k) => dependency.includes(k));
     return key ? behaviors[key] : () => ({ result: 'mock' });
   }
 
@@ -97,7 +97,7 @@ export class HybridTestUtility {
    */
   createDomainAssertions() {
     const approach = this.getRecommendedApproach();
-    
+
     if (approach === 'london') {
       return new LondonAssertions();
     } else {
@@ -120,7 +120,11 @@ export class LondonAssertions {
   /**
    * Verify interaction patterns
    */
-  verifyInteractionPattern(mock: jest.Mock, pattern: 'called' | 'not-called' | 'called-with' | 'called-times', ...args: any[]) {
+  verifyInteractionPattern(
+    mock: jest.Mock,
+    pattern: 'called' | 'not-called' | 'called-with' | 'called-times',
+    ...args: any[]
+  ) {
     switch (pattern) {
       case 'called':
         expect(mock).toHaveBeenCalled();
@@ -143,14 +147,14 @@ export class LondonAssertions {
   verifyProtocolCompliance(interactions: any[], protocol: string) {
     switch (protocol) {
       case 'mcp':
-        interactions.forEach(interaction => {
+        interactions.forEach((interaction) => {
           expect(interaction).toHaveProperty('jsonrpc', '2.0');
           expect(interaction).toHaveProperty('id');
           expect(interaction).toHaveProperty('method');
         });
         break;
       case 'websocket':
-        interactions.forEach(interaction => {
+        interactions.forEach((interaction) => {
           expect(interaction).toHaveProperty('type');
           expect(interaction).toHaveProperty('data');
         });
@@ -161,18 +165,21 @@ export class LondonAssertions {
   /**
    * Verify coordination patterns
    */
-  verifyCoordinationPattern(mock: jest.Mock, expectedPattern: 'broadcast' | 'request-response' | 'publish-subscribe') {
+  verifyCoordinationPattern(
+    mock: jest.Mock,
+    expectedPattern: 'broadcast' | 'request-response' | 'publish-subscribe'
+  ) {
     const calls = mock.mock.calls;
-    
+
     switch (expectedPattern) {
       case 'broadcast':
-        expect(calls.some(call => call[0]?.type === 'broadcast')).toBe(true);
+        expect(calls.some((call) => call[0]?.type === 'broadcast')).toBe(true);
         break;
       case 'request-response':
-        expect(calls.some(call => call[0]?.type === 'request')).toBe(true);
+        expect(calls.some((call) => call[0]?.type === 'request')).toBe(true);
         break;
       case 'publish-subscribe':
-        expect(calls.some(call => call[0]?.type === 'publish')).toBe(true);
+        expect(calls.some((call) => call[0]?.type === 'publish')).toBe(true);
         break;
     }
   }
@@ -182,7 +189,11 @@ export class ClassicalAssertions {
   /**
    * Verify computational results
    */
-  verifyComputation(actual: number | number[], expected: number | number[], tolerance: number = 1e-10) {
+  verifyComputation(
+    actual: number | number[],
+    expected: number | number[],
+    tolerance: number = 1e-10
+  ) {
     if (Array.isArray(actual) && Array.isArray(expected)) {
       expect(actual).toHaveLength(expected.length);
       actual.forEach((val, index) => {
@@ -201,20 +212,24 @@ export class ClassicalAssertions {
   verifyConvergence(values: number[], targetValue: number, tolerance: number = 1e-6) {
     const lastValue = values[values.length - 1];
     expect(Math.abs(lastValue - targetValue)).toBeLessThanOrEqual(tolerance);
-    
+
     // Verify convergence trend
     const isConverging = values.slice(-5).every((val, index, arr) => {
       if (index === 0) return true;
       return Math.abs(val - targetValue) <= Math.abs(arr[index - 1] - targetValue);
     });
-    
+
     expect(isConverging).toBe(true);
   }
 
   /**
    * Verify data transformation correctness
    */
-  verifyTransformation(input: any, output: any, transformationRules: Record<string, (input: any) => any>) {
+  verifyTransformation(
+    input: any,
+    output: any,
+    transformationRules: Record<string, (input: any) => any>
+  ) {
     for (const [rule, transform] of Object.entries(transformationRules)) {
       const expected = transform(input);
       expect(output).toMatchObject(expected);
@@ -234,7 +249,10 @@ export class ClassicalAssertions {
 /**
  * Factory functions for hybrid testing
  */
-export function createHybridTestSetup(domain: string, config?: Partial<HybridTestConfig>): HybridTestUtility {
+export function createHybridTestSetup(
+  domain: string,
+  config?: Partial<HybridTestConfig>
+): HybridTestUtility {
   const defaultConfig: HybridTestConfig = {
     approach: 'hybrid',
     mockingStrategy: 'moderate',

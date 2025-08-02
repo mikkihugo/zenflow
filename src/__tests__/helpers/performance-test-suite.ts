@@ -56,7 +56,7 @@ export class PerformanceProfiler {
     if (global.gc) {
       global.gc();
     }
-    
+
     this.startTime = performance.now();
     this.startMemory = process.memoryUsage();
     this.startCpu = process.cpuUsage();
@@ -77,11 +77,11 @@ export class PerformanceProfiler {
    */
   stop(): PerformanceMetrics {
     this.endTime = performance.now();
-    
+
     if (global.gc) {
       global.gc();
     }
-    
+
     this.endMemory = process.memoryUsage();
     this.endCpu = process.cpuUsage(this.startCpu || undefined);
 
@@ -90,7 +90,7 @@ export class PerformanceProfiler {
 
   private calculateMetrics(): PerformanceMetrics {
     const executionTime = this.endTime - this.startTime;
-    const successful = this.operations.filter(op => op.success).length;
+    const successful = this.operations.filter((op) => op.success).length;
     const failed = this.operations.length - successful;
     const opsPerSecond = this.operations.length / (executionTime / 1000);
 
@@ -99,7 +99,10 @@ export class PerformanceProfiler {
     const latency = {
       min: sortedLatencies.length > 0 ? sortedLatencies[0] : 0,
       max: sortedLatencies.length > 0 ? sortedLatencies[sortedLatencies.length - 1] : 0,
-      avg: sortedLatencies.length > 0 ? sortedLatencies.reduce((sum, lat) => sum + lat, 0) / sortedLatencies.length : 0,
+      avg:
+        sortedLatencies.length > 0
+          ? sortedLatencies.reduce((sum, lat) => sum + lat, 0) / sortedLatencies.length
+          : 0,
       p50: this.percentile(sortedLatencies, 50),
       p95: this.percentile(sortedLatencies, 95),
       p99: this.percentile(sortedLatencies, 99),
@@ -129,15 +132,15 @@ export class PerformanceProfiler {
 
   private percentile(sortedArray: number[], percentile: number): number {
     if (sortedArray.length === 0) return 0;
-    
+
     const index = (percentile / 100) * (sortedArray.length - 1);
     const lower = Math.floor(index);
     const upper = Math.ceil(index);
-    
+
     if (lower === upper) {
       return sortedArray[lower];
     }
-    
+
     const weight = index - lower;
     return sortedArray[lower] * (1 - weight) + sortedArray[upper] * weight;
   }
@@ -165,15 +168,15 @@ export class LoadTestRunner {
 
     for (let i = 0; i < config.concurrency; i++) {
       const startDelay = i * rampUpDelay;
-      
-      const workerPromise = this.runWorker(
+
+      const workerPromise = LoadTestRunner.runWorker(
         testFunction,
         config.duration - startDelay,
         startDelay,
         config.targetRPS,
         profiler
       );
-      
+
       promises.push(workerPromise);
     }
 
@@ -189,7 +192,7 @@ export class LoadTestRunner {
     profiler?: PerformanceProfiler
   ): Promise<void> {
     if (startDelay > 0) {
-      await new Promise(resolve => setTimeout(resolve, startDelay));
+      await new Promise((resolve) => setTimeout(resolve, startDelay));
     }
 
     const startTime = Date.now();
@@ -198,18 +201,18 @@ export class LoadTestRunner {
 
     while (Date.now() < endTime) {
       const operationStart = performance.now();
-      
+
       try {
         await testFunction();
         const operationEnd = performance.now();
         const operationDuration = operationEnd - operationStart;
-        
+
         profiler?.recordOperation(true, operationDuration);
-        
+
         if (targetInterval > 0) {
           const sleepTime = Math.max(0, targetInterval - operationDuration);
           if (sleepTime > 0) {
-            await new Promise(resolve => setTimeout(resolve, sleepTime));
+            await new Promise((resolve) => setTimeout(resolve, sleepTime));
           }
         }
       } catch (error) {
@@ -232,25 +235,36 @@ export class PerformanceValidator {
     const violations: string[] = [];
 
     if (metrics.executionTime > thresholds.maxExecutionTime) {
-      violations.push(`Execution time ${metrics.executionTime}ms exceeds threshold ${thresholds.maxExecutionTime}ms`);
+      violations.push(
+        `Execution time ${metrics.executionTime}ms exceeds threshold ${thresholds.maxExecutionTime}ms`
+      );
     }
 
     const memoryUsageMB = metrics.memoryUsage.heapUsed / 1024 / 1024;
     if (memoryUsageMB > thresholds.maxMemoryUsage) {
-      violations.push(`Memory usage ${memoryUsageMB.toFixed(2)}MB exceeds threshold ${thresholds.maxMemoryUsage}MB`);
+      violations.push(
+        `Memory usage ${memoryUsageMB.toFixed(2)}MB exceeds threshold ${thresholds.maxMemoryUsage}MB`
+      );
     }
 
     if (metrics.operations.opsPerSecond < thresholds.minOpsPerSecond) {
-      violations.push(`Operations per second ${metrics.operations.opsPerSecond.toFixed(2)} below threshold ${thresholds.minOpsPerSecond}`);
+      violations.push(
+        `Operations per second ${metrics.operations.opsPerSecond.toFixed(2)} below threshold ${thresholds.minOpsPerSecond}`
+      );
     }
 
     if (metrics.latency.p99 > thresholds.maxLatencyP99) {
-      violations.push(`P99 latency ${metrics.latency.p99.toFixed(2)}ms exceeds threshold ${thresholds.maxLatencyP99}ms`);
+      violations.push(
+        `P99 latency ${metrics.latency.p99.toFixed(2)}ms exceeds threshold ${thresholds.maxLatencyP99}ms`
+      );
     }
 
-    const errorRate = metrics.operations.total > 0 ? metrics.operations.failed / metrics.operations.total : 0;
+    const errorRate =
+      metrics.operations.total > 0 ? metrics.operations.failed / metrics.operations.total : 0;
     if (errorRate > thresholds.maxErrorRate) {
-      violations.push(`Error rate ${(errorRate * 100).toFixed(2)}% exceeds threshold ${(thresholds.maxErrorRate * 100).toFixed(2)}%`);
+      violations.push(
+        `Error rate ${(errorRate * 100).toFixed(2)}% exceeds threshold ${(thresholds.maxErrorRate * 100).toFixed(2)}%`
+      );
     }
 
     return {
@@ -311,10 +325,10 @@ export class BenchmarkSuite {
   async runAll(): Promise<Map<string, PerformanceMetrics>> {
     for (const [name, testFunction] of this.benchmarks) {
       console.log(`Running benchmark: ${name}`);
-      
+
       const profiler = new PerformanceProfiler();
       profiler.start();
-      
+
       const operationStart = performance.now();
       try {
         await testFunction();
@@ -325,20 +339,23 @@ export class BenchmarkSuite {
         profiler.recordOperation(false, operationEnd - operationStart);
         console.error(`Benchmark ${name} failed:`, error);
       }
-      
+
       const metrics = profiler.stop();
       this.results.set(name, metrics);
-      
+
       console.log(`Completed benchmark: ${name} (${metrics.executionTime.toFixed(2)}ms)`);
     }
-    
+
     return new Map(this.results);
   }
 
   /**
    * Compare benchmark results
    */
-  compare(baselineName: string, testName: string): {
+  compare(
+    baselineName: string,
+    testName: string
+  ): {
     executionTimeDiff: number;
     memoryDiff: number;
     opsDiff: number;
@@ -346,15 +363,22 @@ export class BenchmarkSuite {
   } {
     const baseline = this.results.get(baselineName);
     const test = this.results.get(testName);
-    
+
     if (!baseline || !test) {
       throw new Error('Benchmark results not found for comparison');
     }
-    
-    const executionTimeDiff = ((test.executionTime - baseline.executionTime) / baseline.executionTime) * 100;
-    const memoryDiff = ((test.memoryUsage.heapUsed - baseline.memoryUsage.heapUsed) / baseline.memoryUsage.heapUsed) * 100;
-    const opsDiff = ((test.operations.opsPerSecond - baseline.operations.opsPerSecond) / baseline.operations.opsPerSecond) * 100;
-    
+
+    const executionTimeDiff =
+      ((test.executionTime - baseline.executionTime) / baseline.executionTime) * 100;
+    const memoryDiff =
+      ((test.memoryUsage.heapUsed - baseline.memoryUsage.heapUsed) /
+        baseline.memoryUsage.heapUsed) *
+      100;
+    const opsDiff =
+      ((test.operations.opsPerSecond - baseline.operations.opsPerSecond) /
+        baseline.operations.opsPerSecond) *
+      100;
+
     const report = `
 Benchmark Comparison: ${testName} vs ${baselineName}
 ================================================
@@ -365,7 +389,7 @@ Operations/sec: ${opsDiff > 0 ? '+' : ''}${opsDiff.toFixed(2)}% (${test.operatio
 
 ${executionTimeDiff < -5 ? '✅ Performance improved' : executionTimeDiff > 5 ? '❌ Performance degraded' : '➖ Performance unchanged'}
 `;
-    
+
     return {
       executionTimeDiff,
       memoryDiff,

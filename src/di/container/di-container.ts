@@ -3,14 +3,14 @@
  * Provides type-safe service registration and resolution
  */
 
-import type { 
-  DIContainer as IDIContainer, 
-  DIScope, 
-  DIToken, 
-  Provider, 
+import type {
   DIContainerOptions,
+  DIScope,
+  DIToken,
+  DIContainer as IDIContainer,
+  Provider,
 } from '../types/di-types.js';
-import { DIError, ServiceNotFoundError, CircularDependencyError } from '../types/di-types.js';
+import { CircularDependencyError, DIError, ServiceNotFoundError } from '../types/di-types.js';
 
 export class DIContainer implements IDIContainer {
   private readonly providers = new Map<symbol, Provider<any>>();
@@ -35,7 +35,7 @@ export class DIContainer implements IDIContainer {
     if (this.providers.has(token.symbol)) {
       console.warn(`Provider for token '${token.name}' is being overwritten`);
     }
-    
+
     this.providers.set(token.symbol, provider);
   }
 
@@ -44,15 +44,15 @@ export class DIContainer implements IDIContainer {
    */
   resolve<T>(token: DIToken<T>): T {
     const startTime = this.options.enablePerformanceMetrics ? Date.now() : 0;
-    
+
     try {
       const result = this.resolveInternal(token);
-      
+
       if (this.options.enablePerformanceMetrics) {
         const duration = Date.now() - startTime;
         console.debug(`Resolved '${token.name}' in ${duration}ms`);
       }
-      
+
       return result;
     } catch (error) {
       if (error instanceof DIError) {
@@ -89,7 +89,7 @@ export class DIContainer implements IDIContainer {
     }
 
     await Promise.all(disposalPromises);
-    
+
     this.singletonInstances.clear();
     this.providers.clear();
   }
@@ -123,12 +123,15 @@ export class DIContainer implements IDIContainer {
     // Check circular dependency
     if (this.options.enableCircularDependencyDetection) {
       if (this.resolutionStack.includes(token.symbol)) {
-        const chain = this.resolutionStack.map(s => s.toString()).concat(token.name);
+        const chain = this.resolutionStack.map((s) => s.toString()).concat(token.name);
         throw new CircularDependencyError(chain);
       }
 
       if (this.resolutionStack.length >= this.options.maxResolutionDepth) {
-        throw new DIError(`Maximum resolution depth exceeded (${this.options.maxResolutionDepth})`, 'MAX_DEPTH_EXCEEDED');
+        throw new DIError(
+          `Maximum resolution depth exceeded (${this.options.maxResolutionDepth})`,
+          'MAX_DEPTH_EXCEEDED'
+        );
       }
     }
 
@@ -138,7 +141,7 @@ export class DIContainer implements IDIContainer {
     }
 
     this.resolutionStack.push(token.symbol);
-    
+
     try {
       switch (provider.type) {
         case 'singleton':
@@ -148,7 +151,10 @@ export class DIContainer implements IDIContainer {
         case 'scoped':
           return provider.create(this);
         default:
-          throw new DIError(`Unknown provider type: ${(provider as any).type}`, 'UNKNOWN_PROVIDER_TYPE');
+          throw new DIError(
+            `Unknown provider type: ${(provider as any).type}`,
+            'UNKNOWN_PROVIDER_TYPE'
+          );
       }
     } finally {
       this.resolutionStack.pop();

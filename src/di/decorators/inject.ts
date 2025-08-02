@@ -14,15 +14,15 @@ export function inject<T>(token: DIToken<T>): ParameterDecorator {
   return (target: any, propertyKey: string | symbol | undefined, parameterIndex: number) => {
     // Get existing injection tokens
     const existingTokens = getInjectionTokens(target) || [];
-    
+
     // Ensure array is large enough
     while (existingTokens.length <= parameterIndex) {
       existingTokens.push(undefined);
     }
-    
+
     // Set the token for this parameter
     existingTokens[parameterIndex] = token;
-    
+
     // Update metadata
     setInjectionTokens(target, existingTokens);
   };
@@ -31,7 +31,10 @@ export function inject<T>(token: DIToken<T>): ParameterDecorator {
 /**
  * Get the injection token for a specific parameter
  */
-export function getInjectionToken(constructor: any, parameterIndex: number): DIToken<any> | undefined {
+export function getInjectionToken(
+  constructor: any,
+  parameterIndex: number
+): DIToken<any> | undefined {
   const tokens = getInjectionTokens(constructor);
   return tokens?.[parameterIndex];
 }

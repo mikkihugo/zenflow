@@ -6,24 +6,21 @@ class DependencyAnalyzer {
     const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
     const deps = Object.keys(packageJson.dependencies || {});
     const devDeps = Object.keys(packageJson.devDependencies || {});
-    
+
     const report = {
       timestamp: new Date().toISOString(),
       totalDependencies: deps.length + devDeps.length,
       productionDependencies: deps.length,
       developmentDependencies: devDeps.length,
       outdated: this.checkOutdated(),
-      audit: this.runAudit()
+      audit: this.runAudit(),
     };
-    
-    fs.writeFileSync(
-      'security/audits/dependency-report.json',
-      JSON.stringify(report, null, 2)
-    );
-    
+
+    fs.writeFileSync('security/audits/dependency-report.json', JSON.stringify(report, null, 2));
+
     console.log('📊 Dependency analysis complete');
   }
-  
+
   checkOutdated() {
     try {
       const result = execSync('npm outdated --json', { encoding: 'utf8' });
@@ -32,7 +29,7 @@ class DependencyAnalyzer {
       return {};
     }
   }
-  
+
   runAudit() {
     try {
       const result = execSync('npm audit --json', { encoding: 'utf8' });

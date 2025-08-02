@@ -12,13 +12,13 @@
  * @version 2.0.0
  */
 
-import express from 'express';
 import { randomUUID } from 'node:crypto';
-import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
-import { createLogger } from './simple-logger.js';
+import express from 'express';
+import { z } from 'zod';
 import { advancedMCPToolsManager } from './advanced-tools-registry.js';
+import { createLogger } from './simple-logger.js';
 
 const logger = createLogger('SDK-HTTP-MCP-Server');
 
@@ -63,7 +63,8 @@ export class HTTPMCPServer {
           },
           logging: {},
         },
-        instructions: 'Claude-Zen HTTP MCP Server for project management and system integration via Claude Desktop',
+        instructions:
+          'Claude-Zen HTTP MCP Server for project management and system integration via Claude Desktop',
       }
     );
 
@@ -187,7 +188,8 @@ export class HTTPMCPServer {
       },
       {
         title: 'Project Initialization',
-        description: 'Creates a new Claude-Zen project with the specified template and configuration',
+        description:
+          'Creates a new Claude-Zen project with the specified template and configuration',
       },
       async ({ name, template, directory }) => {
         logger.info(`Initializing project: ${name} with template: ${template}`);
@@ -227,7 +229,8 @@ export class HTTPMCPServer {
       },
       {
         title: 'Project Status',
-        description: 'Provides comprehensive project health, swarm status, and resource utilization',
+        description:
+          'Provides comprehensive project health, swarm status, and resource utilization',
       },
       async ({ format, includeMetrics }) => {
         const status = {
@@ -290,10 +293,10 @@ export class HTTPMCPServer {
 
     // Register advanced tools from claude-zen
     await this.registerAdvancedTools();
-    
+
     // Integrate all advanced tools as native MCP tools
     await this.integrateAdvancedToolsNatively();
-    
+
     logger.info('Registered Claude-Zen tools with official MCP SDK');
   }
 
@@ -302,7 +305,7 @@ export class HTTPMCPServer {
    */
   private async registerAdvancedTools(): Promise<void> {
     logger.info('Registering 87 advanced tools from claude-zen...');
-    
+
     // Advanced tool discovery endpoint
     this.server.tool(
       'advanced_tools_list',
@@ -318,7 +321,7 @@ export class HTTPMCPServer {
       async ({ category, search }) => {
         try {
           let tools;
-          
+
           if (search) {
             tools = advancedMCPToolsManager.searchTools(search);
           } else if (category) {
@@ -328,17 +331,21 @@ export class HTTPMCPServer {
           }
 
           const overview = advancedMCPToolsManager.getRegistryOverview();
-          
+
           return {
             content: [
               {
                 type: 'text',
-                text: JSON.stringify({
-                  overview,
-                  tools: typeof tools === 'object' && 'tools' in tools ? tools.tools : tools,
-                  filter: { category, search },
-                  timestamp: new Date().toISOString()
-                }, null, 2),
+                text: JSON.stringify(
+                  {
+                    overview,
+                    tools: typeof tools === 'object' && 'tools' in tools ? tools.tools : tools,
+                    filter: { category, search },
+                    timestamp: new Date().toISOString(),
+                  },
+                  null,
+                  2
+                ),
               },
             ],
           };
@@ -366,7 +373,8 @@ export class HTTPMCPServer {
       },
       {
         title: 'Advanced Tool Execution',
-        description: 'Execute advanced coordination, monitoring, neural, GitHub, system, and orchestration tools',
+        description:
+          'Execute advanced coordination, monitoring, neural, GitHub, system, and orchestration tools',
       },
       async ({ toolName, params = {} }) => {
         try {
@@ -375,17 +383,21 @@ export class HTTPMCPServer {
           }
 
           const result = await advancedMCPToolsManager.executeTool(toolName, params);
-          
+
           return {
             content: [
               {
                 type: 'text',
-                text: JSON.stringify({
-                  tool: toolName,
-                  params,
-                  result,
-                  executedAt: new Date().toISOString()
-                }, null, 2),
+                text: JSON.stringify(
+                  {
+                    tool: toolName,
+                    params,
+                    result,
+                    executedAt: new Date().toISOString(),
+                  },
+                  null,
+                  2
+                ),
               },
             ],
           };
@@ -395,12 +407,16 @@ export class HTTPMCPServer {
             content: [
               {
                 type: 'text',
-                text: JSON.stringify({
-                  tool: toolName,
-                  error: error.message,
-                  params,
-                  executedAt: new Date().toISOString()
-                }, null, 2),
+                text: JSON.stringify(
+                  {
+                    tool: toolName,
+                    error: error.message,
+                    params,
+                    executedAt: new Date().toISOString(),
+                  },
+                  null,
+                  2
+                ),
               },
             ],
           };
@@ -422,23 +438,29 @@ export class HTTPMCPServer {
       async ({ detailed }) => {
         const overview = advancedMCPToolsManager.getRegistryOverview();
         const stats = detailed ? advancedMCPToolsManager.getToolStats() : {};
-        
+
         return {
           content: [
             {
               type: 'text',
-              text: JSON.stringify({
-                overview,
-                ...(detailed && { detailedStats: stats }),
-                generatedAt: new Date().toISOString()
-              }, null, 2),
+              text: JSON.stringify(
+                {
+                  overview,
+                  ...(detailed && { detailedStats: stats }),
+                  generatedAt: new Date().toISOString(),
+                },
+                null,
+                2
+              ),
             },
           ],
         };
       }
     );
 
-    logger.info(`✅ Registered 3 proxy tools for ${advancedMCPToolsManager.getToolCount()} advanced tools`);
+    logger.info(
+      `✅ Registered 3 proxy tools for ${advancedMCPToolsManager.getToolCount()} advanced tools`
+    );
   }
 
   /**
@@ -446,12 +468,12 @@ export class HTTPMCPServer {
    */
   private async integrateAdvancedToolsNatively(): Promise<void> {
     logger.info('Integrating advanced tools as native MCP tools...');
-    
+
     const allTools = advancedMCPToolsManager.listAllTools();
     const tools = allTools.tools || [];
-    
+
     let registeredCount = 0;
-    
+
     for (const tool of tools) {
       try {
         // Register each advanced tool as a native MCP tool using the SDK
@@ -465,7 +487,7 @@ export class HTTPMCPServer {
           },
           async (params: any) => {
             const result = await advancedMCPToolsManager.executeTool(tool.name, params);
-            
+
             // Ensure result is in proper MCP format
             if (result && typeof result === 'object' && !Array.isArray(result)) {
               if ('content' in result) {
@@ -494,14 +516,16 @@ export class HTTPMCPServer {
             }
           }
         );
-        
+
         registeredCount++;
       } catch (error) {
         logger.warn(`Failed to register tool ${tool.name}:`, error);
       }
     }
-    
-    logger.info(`✅ Integrated ${registeredCount}/${tools.length} advanced tools as native MCP tools`);
+
+    logger.info(
+      `✅ Integrated ${registeredCount}/${tools.length} advanced tools as native MCP tools`
+    );
   }
 
   /**
@@ -519,7 +543,7 @@ export class HTTPMCPServer {
 
         // Check if this is an initialization request
         const isInitRequest = req.body && req.body.method === 'initialize';
-        
+
         if (!transport && isInitRequest) {
           // Create new session and transport for initialization
           sessionId = randomUUID();
@@ -586,7 +610,7 @@ export class HTTPMCPServer {
     const mcpGetHandler = async (req: any, res: any) => {
       try {
         const sessionId = req.headers['mcp-session-id'] as string;
-        let transport = sessionId ? transports[sessionId] : undefined;
+        const transport = sessionId ? transports[sessionId] : undefined;
 
         if (!transport) {
           res.status(400).send('Invalid or missing session ID for SSE stream');
@@ -614,7 +638,7 @@ export class HTTPMCPServer {
         }
 
         await transport.handleRequest(req, res);
-        
+
         // Clean up transport
         if (sessionId && transports[sessionId]) {
           await transports[sessionId].close();

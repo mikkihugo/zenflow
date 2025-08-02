@@ -3,7 +3,7 @@
  * Creates a new instance every time the service is resolved
  */
 
-import type { Provider, DIContainer } from '../types/di-types.js';
+import type { DIContainer, Provider } from '../types/di-types.js';
 
 export class TransientProvider<T> implements Provider<T> {
   readonly type = 'transient' as const;

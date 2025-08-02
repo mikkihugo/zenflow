@@ -10,10 +10,10 @@ import 'jest-extended';
 beforeEach(() => {
   // Clear all mocks before each test to ensure isolation
   jest.clearAllMocks();
-  
+
   // Reset module registry for clean imports
   jest.resetModules();
-  
+
   // Setup default mock behaviors for common interactions
   setupDefaultMocks();
 });
@@ -28,7 +28,7 @@ function setupDefaultMocks() {
   jest.spyOn(console, 'log').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
   jest.spyOn(console, 'error').mockImplementation(() => {});
-  
+
   // Mock timers for deterministic testing
   jest.useFakeTimers();
 }
@@ -48,17 +48,18 @@ function setupDefaultMocks() {
 
 // Mock factory for complex objects
 (global as any).createMockFactory = <T>(defaults: Partial<T> = {}) => {
-  return (overrides: Partial<T> = {}): T => ({
-    ...defaults,
-    ...overrides,
-  } as T);
+  return (overrides: Partial<T> = {}): T =>
+    ({
+      ...defaults,
+      ...overrides,
+    }) as T;
 };
 
 // Async interaction testing helpers
 (global as any).waitForInteraction = async (spy: jest.Mock, timeout = 1000) => {
   const start = Date.now();
   while (spy.mock.calls.length === 0 && Date.now() - start < timeout) {
-    await new Promise(resolve => setTimeout(resolve, 10));
+    await new Promise((resolve) => setTimeout(resolve, 10));
   }
   if (spy.mock.calls.length === 0) {
     throw new Error(`Expected interaction did not occur within ${timeout}ms`);
@@ -77,8 +78,6 @@ function setupDefaultMocks() {
 
 // Performance assertion timeout (London TDD focuses on interaction timing)
 jest.setTimeout(30000);
-
-export {};
 
 declare global {
   namespace NodeJS {

@@ -444,7 +444,10 @@ export class AgentRegistry extends EventEmitter {
     return Math.max(0, Math.min(1, health));
   }
 
-  private calculateSelectionScore(agent: RegisteredAgent, criteria?: AgentSelectionCriteria): number {
+  private calculateSelectionScore(
+    agent: RegisteredAgent,
+    criteria?: AgentSelectionCriteria
+  ): number {
     // Balanced scoring for agent selection
     const availabilityScore = (1 - agent.loadFactor) * 0.3;
     const performanceScore = agent.metrics.successRate * 0.4;
@@ -458,11 +461,14 @@ export class AgentRegistry extends EventEmitter {
     return availabilityScore + performanceScore + healthScore + contextScore;
   }
 
-  private filterByContext(candidates: RegisteredAgent[], criteria: AgentSelectionCriteria): RegisteredAgent[] {
+  private filterByContext(
+    candidates: RegisteredAgent[],
+    criteria: AgentSelectionCriteria
+  ): RegisteredAgent[] {
     const fileTypeToAgents = this.getFileTypeMapping();
     const taskTypeToAgents = this.getTaskTypeMapping();
 
-    return candidates.filter(agent => {
+    return candidates.filter((agent) => {
       // File type matching
       if (criteria.fileType && fileTypeToAgents[criteria.fileType]) {
         const relevantTypes = fileTypeToAgents[criteria.fileType];
@@ -511,68 +517,92 @@ export class AgentRegistry extends EventEmitter {
   private getFileTypeMapping(): Record<string, AgentType[]> {
     return {
       // Frontend files
-      'tsx': ['frontend-dev', 'ui-designer', 'ux-designer', 'accessibility-specialist'],
-      'jsx': ['frontend-dev', 'ui-designer', 'ux-designer'],
-      'css': ['ui-designer', 'frontend-dev'],
-      'scss': ['ui-designer', 'frontend-dev'],
-      'html': ['frontend-dev', 'ui-designer', 'accessibility-specialist'],
-      
+      tsx: ['frontend-dev', 'ui-designer', 'ux-designer', 'accessibility-specialist'],
+      jsx: ['frontend-dev', 'ui-designer', 'ux-designer'],
+      css: ['ui-designer', 'frontend-dev'],
+      scss: ['ui-designer', 'frontend-dev'],
+      html: ['frontend-dev', 'ui-designer', 'accessibility-specialist'],
+
       // Backend files
-      'js': ['fullstack-dev', 'dev-backend-api', 'frontend-dev'],
-      'ts': ['fullstack-dev', 'dev-backend-api', 'frontend-dev'],
-      'py': ['dev-backend-api', 'ai-ml-specialist', 'data-ml-model'],
-      'java': ['dev-backend-api', 'system-architect'],
-      'go': ['dev-backend-api', 'performance-analyzer'],
-      
+      js: ['fullstack-dev', 'dev-backend-api', 'frontend-dev'],
+      ts: ['fullstack-dev', 'dev-backend-api', 'frontend-dev'],
+      py: ['dev-backend-api', 'ai-ml-specialist', 'data-ml-model'],
+      java: ['dev-backend-api', 'system-architect'],
+      go: ['dev-backend-api', 'performance-analyzer'],
+
       // Database files
-      'sql': ['database-architect', 'data-ml-model', 'etl-specialist'],
-      'mongodb': ['database-architect', 'data-ml-model'],
-      
+      sql: ['database-architect', 'data-ml-model', 'etl-specialist'],
+      mongodb: ['database-architect', 'data-ml-model'],
+
       // DevOps files
-      'yaml': ['ops-cicd-github', 'infrastructure-ops'],
-      'yml': ['ops-cicd-github', 'infrastructure-ops'],
-      'dockerfile': ['infrastructure-ops', 'deployment-ops'],
-      'tf': ['infrastructure-ops', 'cloud-architect'],
-      
+      yaml: ['ops-cicd-github', 'infrastructure-ops'],
+      yml: ['ops-cicd-github', 'infrastructure-ops'],
+      dockerfile: ['infrastructure-ops', 'deployment-ops'],
+      tf: ['infrastructure-ops', 'cloud-architect'],
+
       // Documentation
-      'md': ['technical-writer', 'readme-writer', 'user-guide-writer'],
-      'rst': ['technical-writer', 'user-guide-writer'],
-      
+      md: ['technical-writer', 'readme-writer', 'user-guide-writer'],
+      rst: ['technical-writer', 'user-guide-writer'],
+
       // Performance files
-      'wasm': ['performance-analyzer', 'bottleneck-analyzer', 'latency-optimizer'],
-      'c': ['performance-analyzer', 'embedded-specialist', 'latency-optimizer'],
-      'cpp': ['performance-analyzer', 'embedded-specialist', 'latency-optimizer'],
-      'rs': ['performance-analyzer', 'memory-optimizer', 'latency-optimizer']
+      wasm: ['performance-analyzer', 'bottleneck-analyzer', 'latency-optimizer'],
+      c: ['performance-analyzer', 'embedded-specialist', 'latency-optimizer'],
+      cpp: ['performance-analyzer', 'embedded-specialist', 'latency-optimizer'],
+      rs: ['performance-analyzer', 'memory-optimizer', 'latency-optimizer'],
     };
   }
 
   private getTaskTypeMapping(): Record<string, AgentType[]> {
     return {
-      'performance': [
-        'performance-analyzer', 'cache-optimizer', 'memory-optimizer', 
-        'latency-optimizer', 'bottleneck-analyzer', 'performance-benchmarker',
-        'load-balancer', 'topology-optimizer'
+      performance: [
+        'performance-analyzer',
+        'cache-optimizer',
+        'memory-optimizer',
+        'latency-optimizer',
+        'bottleneck-analyzer',
+        'performance-benchmarker',
+        'load-balancer',
+        'topology-optimizer',
       ],
-      'migration': [
-        'legacy-analyzer', 'modernization-agent', 'migration-coordinator',
-        'migration-plan', 'system-architect', 'database-architect'
+      migration: [
+        'legacy-analyzer',
+        'modernization-agent',
+        'migration-coordinator',
+        'migration-plan',
+        'system-architect',
+        'database-architect',
       ],
-      'testing': [
-        'unit-tester', 'integration-tester', 'e2e-tester', 
-        'performance-tester', 'tdd-london-swarm', 'production-validator'
+      testing: [
+        'unit-tester',
+        'integration-tester',
+        'e2e-tester',
+        'performance-tester',
+        'tdd-london-swarm',
+        'production-validator',
       ],
       'ui-ux': [
-        'ux-designer', 'ui-designer', 'accessibility-specialist',
-        'frontend-dev', 'user-guide-writer'
+        'ux-designer',
+        'ui-designer',
+        'accessibility-specialist',
+        'frontend-dev',
+        'user-guide-writer',
       ],
-      'development': [
-        'coder', 'developer', 'fullstack-dev', 'frontend-dev', 
-        'dev-backend-api', 'api-dev'
+      development: [
+        'coder',
+        'developer',
+        'fullstack-dev',
+        'frontend-dev',
+        'dev-backend-api',
+        'api-dev',
       ],
-      'analysis': [
-        'analyst', 'analyze-code-quality', 'performance-analyzer',
-        'security-analyzer', 'refactoring-analyzer', 'data-ml-model'
-      ]
+      analysis: [
+        'analyst',
+        'analyze-code-quality',
+        'performance-analyzer',
+        'security-analyzer',
+        'refactoring-analyzer',
+        'data-ml-model',
+      ],
     };
   }
 }

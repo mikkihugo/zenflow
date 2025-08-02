@@ -4,18 +4,18 @@
  */
 
 import {
-  DIContainer,
-  SingletonProvider,
-  injectable,
-  inject,
-  createToken,
   CORE_TOKENS,
-  SWARM_TOKENS,
-  type ILogger,
-  type IConfig,
-  type ISwarmCoordinator,
+  createToken,
+  DIContainer,
   type IAgentRegistry,
+  type IConfig,
+  type ILogger,
   type IMessageBroker,
+  type ISwarmCoordinator,
+  inject,
+  injectable,
+  SingletonProvider,
+  SWARM_TOKENS,
 } from '../index.js';
 
 // Example integration with existing systems
@@ -41,12 +41,12 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
 
   async initializeSwarm(options: any): Promise<void> {
     this.logger.info('Initializing swarm', { options });
-    
+
     const maxAgents = this.config.get('swarm.maxAgents', 10);
     const topology = this.config.get('swarm.topology', 'mesh');
-    
+
     this.logger.debug('Swarm configuration', { maxAgents, topology });
-    
+
     this.isInitialized = true;
     this.logger.info('Swarm initialized successfully');
   }
@@ -57,15 +57,15 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
     }
 
     const agentId = `agent-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
+
     this.logger.info('Adding agent', { agentId, config });
-    
+
     // Register with agent registry
     await this.agentRegistry.registerAgent({ id: agentId, ...config });
-    
+
     // Store locally
     this.agents.set(agentId, { id: agentId, ...config, status: 'idle' });
-    
+
     // Announce to swarm
     await this.messageBroker.broadcast({
       type: 'agent_joined',
@@ -79,17 +79,17 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
 
   async removeAgent(agentId: string): Promise<void> {
     this.logger.info('Removing agent', { agentId });
-    
+
     if (!this.agents.has(agentId)) {
       throw new Error(`Agent ${agentId} not found`);
     }
 
     // Unregister from agent registry
     await this.agentRegistry.unregisterAgent(agentId);
-    
+
     // Remove locally
     this.agents.delete(agentId);
-    
+
     // Announce to swarm
     await this.messageBroker.broadcast({
       type: 'agent_left',
@@ -102,9 +102,9 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
 
   async assignTask(task: any): Promise<string> {
     const taskId = `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
+
     this.logger.info('Assigning task', { taskId, task });
-    
+
     // Find available agents
     const availableAgents = await this.agentRegistry.findAvailableAgents({
       status: 'idle',
@@ -117,7 +117,7 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
 
     // Select best agent (simplified logic)
     const selectedAgent = availableAgents[0];
-    
+
     // Store task
     this.tasks.set(taskId, {
       id: taskId,
@@ -142,9 +142,11 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
   getMetrics(): any {
     const totalAgents = this.agents.size;
     const totalTasks = this.tasks.size;
-    const completedTasks = Array.from(this.tasks.values()).filter(t => t.status === 'completed').length;
-    const failedTasks = Array.from(this.tasks.values()).filter(t => t.status === 'failed').length;
-    
+    const completedTasks = Array.from(this.tasks.values()).filter(
+      (t) => t.status === 'completed'
+    ).length;
+    const failedTasks = Array.from(this.tasks.values()).filter((t) => t.status === 'failed').length;
+
     const metrics = {
       totalAgents,
       totalTasks,
@@ -160,16 +162,16 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
 
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down swarm');
-    
+
     // Remove all agents
     const agentIds = Array.from(this.agents.keys());
     for (const agentId of agentIds) {
       await this.removeAgent(agentId);
     }
-    
+
     // Clear tasks
     this.tasks.clear();
-    
+
     this.isInitialized = false;
     this.logger.info('Swarm shutdown complete');
   }
@@ -182,15 +184,15 @@ export class MockLogger implements ILogger {
   debug(message: string, meta?: any): void {
     console.debug(`[DEBUG] ${message}`, meta || '');
   }
-  
+
   info(message: string, meta?: any): void {
     console.info(`[INFO] ${message}`, meta || '');
   }
-  
+
   warn(message: string, meta?: any): void {
     console.warn(`[WARN] ${message}`, meta || '');
   }
-  
+
   error(message: string, meta?: any): void {
     console.error(`[ERROR] ${message}`, meta || '');
   }
@@ -234,14 +236,17 @@ export class MockAgentRegistry implements IAgentRegistry {
   }
 
   async getActiveAgents(): Promise<any[]> {
-    return Array.from(this.agents.values()).filter(agent => agent.status !== 'offline');
+    return Array.from(this.agents.values()).filter((agent) => agent.status !== 'offline');
   }
 
   async findAvailableAgents(criteria: any): Promise<any[]> {
-    return Array.from(this.agents.values()).filter(agent => {
+    return Array.from(this.agents.values()).filter((agent) => {
       if (criteria.status && agent.status !== criteria.status) return false;
-      if (criteria.capabilities && !criteria.capabilities.every((cap: string) => 
-        agent.capabilities?.includes(cap))) return false;
+      if (
+        criteria.capabilities &&
+        !criteria.capabilities.every((cap: string) => agent.capabilities?.includes(cap))
+      )
+        return false;
       return true;
     });
   }
@@ -253,7 +258,7 @@ export class MockMessageBroker implements IMessageBroker {
   async publish(topic: string, message: any): Promise<void> {
     const handlers = this.subscribers.get(topic);
     if (handlers) {
-      handlers.forEach(handler => {
+      handlers.forEach((handler) => {
         try {
           handler(message);
         } catch (error) {
@@ -280,7 +285,7 @@ export class MockMessageBroker implements IMessageBroker {
   async broadcast(message: any): Promise<void> {
     // Broadcast to all subscribers
     for (const handlers of this.subscribers.values()) {
-      handlers.forEach(handler => {
+      handlers.forEach((handler) => {
         try {
           handler(message);
         } catch (error) {
@@ -302,18 +307,28 @@ export function createSwarmContainer(config: Record<string, any> = {}): DIContai
   container.register(CORE_TOKENS.Config, new SingletonProvider(() => new MockConfig(config)));
 
   // Register swarm services
-  container.register(SWARM_TOKENS.AgentRegistry, new SingletonProvider(() => new MockAgentRegistry()));
-  container.register(SWARM_TOKENS.MessageBroker, new SingletonProvider(() => new MockMessageBroker()));
-  
+  container.register(
+    SWARM_TOKENS.AgentRegistry,
+    new SingletonProvider(() => new MockAgentRegistry())
+  );
+  container.register(
+    SWARM_TOKENS.MessageBroker,
+    new SingletonProvider(() => new MockMessageBroker())
+  );
+
   // Register enhanced swarm coordinator
-  container.register(SWARM_TOKENS.SwarmCoordinator, new SingletonProvider(c => 
-    new EnhancedSwarmCoordinator(
-      c.resolve(CORE_TOKENS.Logger),
-      c.resolve(CORE_TOKENS.Config),
-      c.resolve(SWARM_TOKENS.AgentRegistry),
-      c.resolve(SWARM_TOKENS.MessageBroker)
+  container.register(
+    SWARM_TOKENS.SwarmCoordinator,
+    new SingletonProvider(
+      (c) =>
+        new EnhancedSwarmCoordinator(
+          c.resolve(CORE_TOKENS.Logger),
+          c.resolve(CORE_TOKENS.Config),
+          c.resolve(SWARM_TOKENS.AgentRegistry),
+          c.resolve(SWARM_TOKENS.MessageBroker)
+        )
     )
-  ));
+  );
 
   return container;
 }
@@ -323,7 +338,7 @@ export function createSwarmContainer(config: Record<string, any> = {}): DIContai
  */
 export async function demonstrateSwarmDI(): Promise<void> {
   console.log('=== SwarmCoordinator DI Integration Demo ===');
-  
+
   // Create container with configuration
   const container = createSwarmContainer({
     'swarm.maxAgents': 20,
@@ -333,7 +348,7 @@ export async function demonstrateSwarmDI(): Promise<void> {
   try {
     // Resolve the swarm coordinator
     const coordinator = container.resolve(SWARM_TOKENS.SwarmCoordinator);
-    
+
     // Initialize swarm
     await coordinator.initializeSwarm({
       name: 'demo-swarm',
@@ -367,12 +382,11 @@ export async function demonstrateSwarmDI(): Promise<void> {
     await coordinator.removeAgent(agent1Id);
     await coordinator.removeAgent(agent2Id);
     await coordinator.shutdown();
-
   } finally {
     // Dispose container
     await container.dispose();
   }
-  
+
   console.log('=== Demo completed successfully ===');
 }
 

@@ -3,55 +3,53 @@
  * Provides a comprehensive, type-safe DI container for Claude Code Zen
  */
 
-// Core types and interfaces
-export * from './types/di-types.js';
-
 // Container implementations
 export { DIContainer } from './container/di-container.js';
 export { DIScope } from './container/di-scope.js';
-
+export { getInjectionToken, hasInjectionToken, inject } from './decorators/inject.js';
+// Decorators
+export { getInjectionMetadata, injectable, isInjectable } from './decorators/injectable.js';
+export { FactoryProvider } from './providers/factory-provider.js';
+export { ScopedProvider } from './providers/scoped-provider.js';
 // Provider implementations
 export { SingletonProvider } from './providers/singleton-provider.js';
 export { TransientProvider } from './providers/transient-provider.js';
-export { ScopedProvider } from './providers/scoped-provider.js';
-export { FactoryProvider } from './providers/factory-provider.js';
-
-// Decorators
-export { injectable, isInjectable, getInjectionMetadata } from './decorators/injectable.js';
-export { inject, getInjectionToken, hasInjectionToken } from './decorators/inject.js';
-
-// Token utilities
-export { createToken, createTokenFromClass, isDIToken, getTokenName, tokensEqual } from './tokens/token-factory.js';
-
-// Core system tokens
-export { CORE_TOKENS } from './tokens/core-tokens.js';
-export { SWARM_TOKENS } from './tokens/swarm-tokens.js';
-export { NEURAL_TOKENS } from './tokens/neural-tokens.js';
-
 // Re-export interfaces for convenience
 export type {
-  ILogger,
   IConfig,
-  IEventBus,
   IDatabase,
+  IEventBus,
   IHttpClient,
+  ILogger,
 } from './tokens/core-tokens.js';
-
+// Core system tokens
+export { CORE_TOKENS } from './tokens/core-tokens.js';
 export type {
-  ISwarmCoordinator,
+  IDataLoader,
+  IMetricsCollector,
+  IModelStorage,
+  INeuralNetworkTrainer,
+  IOptimizationEngine,
+} from './tokens/neural-tokens.js';
+export { NEURAL_TOKENS } from './tokens/neural-tokens.js';
+export type {
   IAgentRegistry,
-  IMessageBroker,
   ILoadBalancer,
+  IMessageBroker,
+  ISwarmCoordinator,
   ITopologyManager,
 } from './tokens/swarm-tokens.js';
-
-export type {
-  INeuralNetworkTrainer,
-  IDataLoader,
-  IOptimizationEngine,
-  IModelStorage,
-  IMetricsCollector,
-} from './tokens/neural-tokens.js';
+export { SWARM_TOKENS } from './tokens/swarm-tokens.js';
+// Token utilities
+export {
+  createToken,
+  createTokenFromClass,
+  getTokenName,
+  isDIToken,
+  tokensEqual,
+} from './tokens/token-factory.js';
+// Core types and interfaces
+export * from './types/di-types.js';
 
 /**
  * Global DI container instance (singleton pattern for convenience)
@@ -91,7 +89,10 @@ export class DIContainerBuilder {
   /**
    * Register a singleton service
    */
-  singleton<T>(token: import('./types/di-types.js').DIToken<T>, factory: (container: DIContainer) => T): this {
+  singleton<T>(
+    token: import('./types/di-types.js').DIToken<T>,
+    factory: (container: DIContainer) => T
+  ): this {
     this.container.register(token, new SingletonProvider(factory));
     return this;
   }
@@ -99,7 +100,10 @@ export class DIContainerBuilder {
   /**
    * Register a transient service
    */
-  transient<T>(token: import('./types/di-types.js').DIToken<T>, factory: (container: DIContainer) => T): this {
+  transient<T>(
+    token: import('./types/di-types.js').DIToken<T>,
+    factory: (container: DIContainer) => T
+  ): this {
     this.container.register(token, new TransientProvider(factory));
     return this;
   }
@@ -107,7 +111,10 @@ export class DIContainerBuilder {
   /**
    * Register a scoped service
    */
-  scoped<T>(token: import('./types/di-types.js').DIToken<T>, factory: (container: DIContainer) => T): this {
+  scoped<T>(
+    token: import('./types/di-types.js').DIToken<T>,
+    factory: (container: DIContainer) => T
+  ): this {
     this.container.register(token, new ScopedProvider(factory));
     return this;
   }
@@ -128,4 +135,7 @@ export function createContainerBuilder(): DIContainerBuilder {
 }
 
 // Export integration examples
-export { CompleteSystemIntegration, runCompleteIntegration } from './examples/complete-system-integration.js';
+export {
+  CompleteSystemIntegration,
+  runCompleteIntegration,
+} from './examples/complete-system-integration.js';

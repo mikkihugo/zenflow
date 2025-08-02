@@ -6,11 +6,11 @@
  * Generates API docs, ADRs, performance reports, and security docs
  */
 
+import { spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { glob } from 'glob';
-import { spawn } from 'node:child_process';
-import { createHash } from 'node:crypto';
 
 class EnhancedDocumentationGenerator {
   constructor() {
@@ -88,7 +88,7 @@ class EnhancedDocumentationGenerator {
       `${this.docsDir}/guides`,
       `${this.docsDir}/tutorials`,
       `${this.docsDir}/examples`,
-      `${this.docsDir}/coverage`
+      `${this.docsDir}/coverage`,
     ];
 
     for (const dir of dirs) {
@@ -100,22 +100,19 @@ class EnhancedDocumentationGenerator {
     // Enhanced API documentation with TypeDoc integration
     const tsFiles = await glob('src/**/*.ts');
     const jsFiles = await glob('src/**/*.js');
-    
+
     const apiDocData = {
       timestamp: new Date().toISOString(),
       version: await this.getProjectVersion(),
       typescript: await this.processTypeScriptFiles(tsFiles),
       javascript: await this.processJavaScriptFiles(jsFiles),
       interfaces: await this.extractInterfacesFromFiles(tsFiles),
-      exports: await this.extractExportsFromFiles(tsFiles.concat(jsFiles))
+      exports: await this.extractExportsFromFiles(tsFiles.concat(jsFiles)),
     };
 
     // Generate comprehensive API documentation
     const apiMarkdown = this.generateAPIMarkdown(apiDocData);
-    await fs.promises.writeFile(
-      `${this.apiDir}/comprehensive-api.md`,
-      apiMarkdown
-    );
+    await fs.promises.writeFile(`${this.apiDir}/comprehensive-api.md`, apiMarkdown);
 
     // Generate JSON schema for API
     await fs.promises.writeFile(
@@ -123,7 +120,9 @@ class EnhancedDocumentationGenerator {
       JSON.stringify(apiDocData, null, 2)
     );
 
-    console.log(`   ✅ API documentation generated (${tsFiles.length + jsFiles.length} files processed)`);
+    console.log(
+      `   ✅ API documentation generated (${tsFiles.length + jsFiles.length} files processed)`
+    );
   }
 
   async generateTypeScriptDocumentation() {
@@ -133,16 +132,13 @@ class EnhancedDocumentationGenerator {
       console.log('   ✅ TypeDoc documentation generated');
     } catch (error) {
       console.log('   ⚠️ TypeDoc generation skipped (not installed or configured)');
-      
+
       // Fallback: Manual TypeScript interface extraction
       const interfaces = await this.extractTypeScriptInterfaces();
       const interfaceMarkdown = this.generateInterfaceMarkdown(interfaces);
-      
-      await fs.promises.writeFile(
-        `${this.apiDir}/typescript-interfaces.md`,
-        interfaceMarkdown
-      );
-      
+
+      await fs.promises.writeFile(`${this.apiDir}/typescript-interfaces.md`, interfaceMarkdown);
+
       console.log('   ✅ Manual TypeScript interface documentation generated');
     }
   }
@@ -154,7 +150,7 @@ class EnhancedDocumentationGenerator {
       dependencies: await this.analyzeDependencies(),
       interfaces: await this.analyzeInterfaceArchitecture(),
       coordination: await this.analyzeCoordinationLayer(),
-      neural: await this.analyzeNeuralArchitecture()
+      neural: await this.analyzeNeuralArchitecture(),
     };
 
     const architectureMarkdown = this.generateArchitectureMarkdown(architectureData);
@@ -165,7 +161,7 @@ class EnhancedDocumentationGenerator {
 
     // Generate domain maps
     await this.generateDomainMaps(architectureData.domains);
-    
+
     console.log('   ✅ Architecture documentation generated');
   }
 
@@ -175,7 +171,7 @@ class EnhancedDocumentationGenerator {
       benchmarks: await this.extractBenchmarkData(),
       optimization: await this.extractOptimizationGuides(),
       monitoring: await this.extractMonitoringData(),
-      bottlenecks: await this.analyzePerformanceBottlenecks()
+      bottlenecks: await this.analyzePerformanceBottlenecks(),
     };
 
     const performanceMarkdown = this.generatePerformanceMarkdown(performanceData);
@@ -194,35 +190,26 @@ class EnhancedDocumentationGenerator {
       vulnerabilities: await this.scanVulnerabilities(),
       hardening: await this.extractHardeningMeasures(),
       compliance: await this.checkComplianceStatus(),
-      recommendations: await this.generateSecurityRecommendations()
+      recommendations: await this.generateSecurityRecommendations(),
     };
 
     const securityMarkdown = this.generateSecurityMarkdown(securityData);
-    await fs.promises.writeFile(
-      `${this.securityDir}/security-analysis.md`,
-      securityMarkdown
-    );
+    await fs.promises.writeFile(`${this.securityDir}/security-analysis.md`, securityMarkdown);
 
     // Generate security checklist
     await this.generateSecurityChecklist(securityData);
-    
+
     console.log('   ✅ Security documentation generated');
   }
 
   async generateADRDocumentation() {
     const adrTemplate = this.generateADRTemplate();
-    await fs.promises.writeFile(
-      `${this.docsDir}/adrs/adr-template.md`,
-      adrTemplate
-    );
+    await fs.promises.writeFile(`${this.docsDir}/adrs/adr-template.md`, adrTemplate);
 
     // Generate automated ADRs from code analysis
     const autoADRs = await this.generateAutomatedADRs();
     for (const adr of autoADRs) {
-      await fs.promises.writeFile(
-        `${this.docsDir}/adrs/${adr.filename}`,
-        adr.content
-      );
+      await fs.promises.writeFile(`${this.docsDir}/adrs/${adr.filename}`, adr.content);
     }
 
     console.log(`   ✅ ADR documentation generated (${autoADRs.length} automated ADRs)`);
@@ -232,16 +219,16 @@ class EnhancedDocumentationGenerator {
     try {
       // Generate test coverage report
       await this.runCommand('npm', ['run', 'test:coverage']);
-      
+
       // Process coverage data
       const coverageData = await this.processCoverageData();
       const coverageMarkdown = this.generateCoverageMarkdown(coverageData);
-      
+
       await fs.promises.writeFile(
         `${this.docsDir}/coverage/coverage-analysis.md`,
         coverageMarkdown
       );
-      
+
       console.log('   ✅ Test coverage documentation generated');
     } catch (error) {
       console.log('   ⚠️ Test coverage generation skipped (tests not available)');
@@ -291,10 +278,7 @@ ${await this.generateDeploymentGuide()}
 ${await this.generateTroubleshootingGuide()}
 `;
 
-    await fs.promises.writeFile(
-      `${this.docsDir}/guides/developer-guide.md`,
-      developerGuide
-    );
+    await fs.promises.writeFile(`${this.docsDir}/guides/developer-guide.md`, developerGuide);
 
     console.log('   ✅ Developer guide generated');
   }
@@ -350,10 +334,7 @@ ${await this.generateTroubleshootingGuide()}
 - [Security Guidelines](security/security-analysis.md)
 `;
 
-    await fs.promises.writeFile(
-      `${this.docsDir}/INDEX.md`,
-      index
-    );
+    await fs.promises.writeFile(`${this.docsDir}/INDEX.md`, index);
 
     console.log('   ✅ Documentation index generated');
   }
@@ -361,18 +342,19 @@ ${await this.generateTroubleshootingGuide()}
   // Helper methods for data extraction and processing
   async processTypeScriptFiles(files) {
     const processed = [];
-    for (const file of files.slice(0, 20)) { // Limit for performance
+    for (const file of files.slice(0, 20)) {
+      // Limit for performance
       try {
         const content = await fs.promises.readFile(file, 'utf-8');
         const interfaces = this.extractTSInterfaces(content);
         const exports = this.extractTSExports(content);
-        
+
         if (interfaces.length > 0 || exports.length > 0) {
           processed.push({
             file,
             interfaces,
             exports,
-            lineCount: content.split('\n').length
+            lineCount: content.split('\n').length,
           });
         }
       } catch (error) {
@@ -384,18 +366,19 @@ ${await this.generateTroubleshootingGuide()}
 
   async processJavaScriptFiles(files) {
     const processed = [];
-    for (const file of files.slice(0, 20)) { // Limit for performance
+    for (const file of files.slice(0, 20)) {
+      // Limit for performance
       try {
         const content = await fs.promises.readFile(file, 'utf-8');
         const jsdoc = this.extractJSDoc(content);
         const exports = this.extractJSExports(content);
-        
+
         if (jsdoc.length > 0 || exports.length > 0) {
           processed.push({
             file,
             jsdoc,
             exports,
-            lineCount: content.split('\n').length
+            lineCount: content.split('\n').length,
           });
         }
       } catch (error) {
@@ -408,7 +391,7 @@ ${await this.generateTroubleshootingGuide()}
   extractTSInterfaces(content) {
     const interfaceRegex = /interface\s+(\w+)\s*{[^}]*}/g;
     const matches = content.match(interfaceRegex) || [];
-    return matches.map(match => {
+    return matches.map((match) => {
       const name = match.match(/interface\s+(\w+)/)?.[1];
       return { name, definition: match };
     });
@@ -417,13 +400,13 @@ ${await this.generateTroubleshootingGuide()}
   extractTSExports(content) {
     const exportRegex = /export\s+(?:interface|class|function|const|let|var)\s+(\w+)/g;
     const matches = [...content.matchAll(exportRegex)];
-    return matches.map(match => ({ name: match[1], type: 'export' }));
+    return matches.map((match) => ({ name: match[1], type: 'export' }));
   }
 
   extractJSDoc(content) {
     const jsdocRegex = /\/\*\*[\s\S]*?\*\//g;
     const matches = content.match(jsdocRegex) || [];
-    return matches.map(match => ({ content: match }));
+    return matches.map((match) => ({ content: match }));
   }
 
   extractJSExports(content) {
@@ -435,20 +418,20 @@ ${await this.generateTroubleshootingGuide()}
   async analyzeDomainStructure() {
     const domains = [];
     const srcDirs = await fs.promises.readdir('src', { withFileTypes: true });
-    
-    for (const dir of srcDirs.filter(d => d.isDirectory())) {
+
+    for (const dir of srcDirs.filter((d) => d.isDirectory())) {
       const domainPath = path.join('src', dir.name);
       const files = await glob(`${domainPath}/**/*.{ts,js}`);
-      
+
       domains.push({
         name: dir.name,
         path: domainPath,
         fileCount: files.length,
         lineCount: await this.countLinesInFiles(files),
-        subdirectories: await this.getSubdirectories(domainPath)
+        subdirectories: await this.getSubdirectories(domainPath),
       });
     }
-    
+
     return domains;
   }
 
@@ -458,7 +441,7 @@ ${await this.generateTroubleshootingGuide()}
       return {
         dependencies: Object.keys(packageJson.dependencies || {}),
         devDependencies: Object.keys(packageJson.devDependencies || {}),
-        peerDependencies: Object.keys(packageJson.peerDependencies || {})
+        peerDependencies: Object.keys(packageJson.peerDependencies || {}),
       };
     } catch (error) {
       return { dependencies: [], devDependencies: [], peerDependencies: [] };
@@ -481,7 +464,7 @@ ${await this.generateTroubleshootingGuide()}
   async getSubdirectories(dirPath) {
     try {
       const entries = await fs.promises.readdir(dirPath, { withFileTypes: true });
-      return entries.filter(entry => entry.isDirectory()).map(entry => entry.name);
+      return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
     } catch (error) {
       return [];
     }
@@ -499,28 +482,36 @@ This documentation covers all TypeScript interfaces and JavaScript exports in th
 
 ## TypeScript Files (${apiData.typescript.length})
 
-${apiData.typescript.map(file => `
+${apiData.typescript
+  .map(
+    (file) => `
 ### ${file.file}
 
 **Lines of Code:** ${file.lineCount}
 
 **Interfaces (${file.interfaces.length}):**
-${file.interfaces.map(iface => `- \`${iface.name}\``).join('\n')}
+${file.interfaces.map((iface) => `- \`${iface.name}\``).join('\n')}
 
 **Exports (${file.exports.length}):**
-${file.exports.map(exp => `- \`${exp.name}\``).join('\n')}
-`).join('\n')}
+${file.exports.map((exp) => `- \`${exp.name}\``).join('\n')}
+`
+  )
+  .join('\n')}
 
 ## JavaScript Files (${apiData.javascript.length})
 
-${apiData.javascript.map(file => `
+${apiData.javascript
+  .map(
+    (file) => `
 ### ${file.file}
 
 **Lines of Code:** ${file.lineCount}
 
 **JSDoc Comments:** ${file.jsdoc.length}
 **Exports:** ${file.exports.length}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ---
 
@@ -535,13 +526,17 @@ ${apiData.javascript.map(file => `
 
 ## Domain Structure
 
-${data.domains.map(domain => `
+${data.domains
+  .map(
+    (domain) => `
 ### ${domain.name}
 - **Path:** \`${domain.path}\`
 - **Files:** ${domain.fileCount}
 - **Lines of Code:** ${domain.lineCount}
 - **Subdirectories:** ${domain.subdirectories.join(', ')}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ## Dependencies
 
@@ -604,10 +599,10 @@ ${data.domains.map(domain => `
       const child = spawn(command, args, { stdio: ['pipe', 'pipe', 'pipe'] });
       let stdout = '';
       let stderr = '';
-      
-      child.stdout.on('data', (data) => stdout += data);
-      child.stderr.on('data', (data) => stderr += data);
-      
+
+      child.stdout.on('data', (data) => (stdout += data));
+      child.stderr.on('data', (data) => (stderr += data));
+
       child.on('close', (code) => {
         if (code === 0) {
           resolve({ stdout, stderr });
@@ -643,7 +638,7 @@ ${JSON.stringify(data.auditResults, null, 2)}
 
 ## Recommendations
 
-${data.recommendations?.map(rec => `- ${rec}`).join('\n') || 'No specific recommendations at this time.'}
+${data.recommendations?.map((rec) => `- ${rec}`).join('\n') || 'No specific recommendations at this time.'}
 
 ---
 
@@ -654,7 +649,7 @@ ${data.recommendations?.map(rec => `- ${rec}`).join('\n') || 'No specific recomm
   async getGeneratedDocuments() {
     const documents = [];
     const searchDirs = [this.apiDir, this.securityDir, this.performanceDir, this.architectureDir];
-    
+
     for (const dir of searchDirs) {
       try {
         const files = await glob(`${dir}/**/*.md`);
@@ -663,14 +658,15 @@ ${data.recommendations?.map(rec => `- ${rec}`).join('\n') || 'No specific recomm
         // Directory might not exist
       }
     }
-    
+
     return documents;
   }
 
   // Implementation methods for file processing
   async extractInterfacesFromFiles(files) {
     const interfaces = [];
-    for (const file of files.slice(0, 10)) { // Limit for performance
+    for (const file of files.slice(0, 10)) {
+      // Limit for performance
       try {
         const content = await fs.promises.readFile(file, 'utf-8');
         const fileInterfaces = this.extractTSInterfaces(content);
@@ -686,10 +682,13 @@ ${data.recommendations?.map(rec => `- ${rec}`).join('\n') || 'No specific recomm
 
   async extractExportsFromFiles(files) {
     const exports = [];
-    for (const file of files.slice(0, 10)) { // Limit for performance
+    for (const file of files.slice(0, 10)) {
+      // Limit for performance
       try {
         const content = await fs.promises.readFile(file, 'utf-8');
-        const fileExports = file.endsWith('.ts') ? this.extractTSExports(content) : this.extractJSExports(content);
+        const fileExports = file.endsWith('.ts')
+          ? this.extractTSExports(content)
+          : this.extractJSExports(content);
         if (fileExports.length > 0) {
           exports.push({ file, exports: fileExports });
         }
@@ -701,39 +700,87 @@ ${data.recommendations?.map(rec => `- ${rec}`).join('\n') || 'No specific recomm
   }
 
   // Stub methods for comprehensive functionality
-  async analyzeInterfaceArchitecture() { return { interfaces: [] }; }
-  async analyzeCoordinationLayer() { return { coordination: 'analyzed' }; }
-  async analyzeNeuralArchitecture() { return { neural: 'analyzed' }; }
-  async extractBenchmarkData() { return { benchmarks: [] }; }
-  async extractOptimizationGuides() { return { optimization: [] }; }
-  async extractMonitoringData() { return { monitoring: [] }; }
-  async analyzePerformanceBottlenecks() { return { bottlenecks: [] }; }
-  async extractHardeningMeasures() { return { hardening: [] }; }
-  async checkComplianceStatus() { return { compliance: 'checked' }; }
-  async generateSecurityRecommendations() { return ['Regular security audits', 'Dependency updates']; }
-  async generateDomainMaps() { return 'Generated domain maps'; }
-  async extractTypeScriptInterfaces() { return []; }
-  generateInterfaceMarkdown() { return '# TypeScript Interfaces\n\nTo be implemented.'; }
-  generatePerformanceMarkdown() { return '# Performance Analysis\n\nTo be implemented.'; }
-  async generateSecurityChecklist() { return 'Security checklist generated'; }
-  generateADRTemplate() { return '# ADR Template\n\n## Status\n\n## Context\n\n## Decision\n\n## Consequences'; }
-  async generateAutomatedADRs() { return []; }
-  async processCoverageData() { return { coverage: 0 }; }
-  generateCoverageMarkdown() { return '# Coverage Analysis\n\nTo be implemented.'; }
-  async generateArchitectureOverview() { return 'Architecture overview to be implemented.'; }
-  async generateDevelopmentWorkflow() { return 'Development workflow to be implemented.'; }
-  async generateTestingStrategy() { return 'Testing strategy to be implemented.'; }
-  async generateDeploymentGuide() { return 'Deployment guide to be implemented.'; }
-  async generateTroubleshootingGuide() { return 'Troubleshooting guide to be implemented.'; }
+  async analyzeInterfaceArchitecture() {
+    return { interfaces: [] };
+  }
+  async analyzeCoordinationLayer() {
+    return { coordination: 'analyzed' };
+  }
+  async analyzeNeuralArchitecture() {
+    return { neural: 'analyzed' };
+  }
+  async extractBenchmarkData() {
+    return { benchmarks: [] };
+  }
+  async extractOptimizationGuides() {
+    return { optimization: [] };
+  }
+  async extractMonitoringData() {
+    return { monitoring: [] };
+  }
+  async analyzePerformanceBottlenecks() {
+    return { bottlenecks: [] };
+  }
+  async extractHardeningMeasures() {
+    return { hardening: [] };
+  }
+  async checkComplianceStatus() {
+    return { compliance: 'checked' };
+  }
+  async generateSecurityRecommendations() {
+    return ['Regular security audits', 'Dependency updates'];
+  }
+  async generateDomainMaps() {
+    return 'Generated domain maps';
+  }
+  async extractTypeScriptInterfaces() {
+    return [];
+  }
+  generateInterfaceMarkdown() {
+    return '# TypeScript Interfaces\n\nTo be implemented.';
+  }
+  generatePerformanceMarkdown() {
+    return '# Performance Analysis\n\nTo be implemented.';
+  }
+  async generateSecurityChecklist() {
+    return 'Security checklist generated';
+  }
+  generateADRTemplate() {
+    return '# ADR Template\n\n## Status\n\n## Context\n\n## Decision\n\n## Consequences';
+  }
+  async generateAutomatedADRs() {
+    return [];
+  }
+  async processCoverageData() {
+    return { coverage: 0 };
+  }
+  generateCoverageMarkdown() {
+    return '# Coverage Analysis\n\nTo be implemented.';
+  }
+  async generateArchitectureOverview() {
+    return 'Architecture overview to be implemented.';
+  }
+  async generateDevelopmentWorkflow() {
+    return 'Development workflow to be implemented.';
+  }
+  async generateTestingStrategy() {
+    return 'Testing strategy to be implemented.';
+  }
+  async generateDeploymentGuide() {
+    return 'Deployment guide to be implemented.';
+  }
+  async generateTroubleshootingGuide() {
+    return 'Troubleshooting guide to be implemented.';
+  }
 }
 
 // CLI runner
 async function main() {
   const generator = new EnhancedDocumentationGenerator();
   const documents = await generator.generateComprehensiveDocumentation();
-  
+
   console.log('\n📄 Generated Documents:');
-  documents.forEach(doc => console.log(`   - ${doc}`));
+  documents.forEach((doc) => console.log(`   - ${doc}`));
 }
 
 // Run if called directly

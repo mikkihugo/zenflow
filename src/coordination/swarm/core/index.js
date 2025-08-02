@@ -5,8 +5,8 @@
  */
 
 import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled.js';
-import { getContainer } from './singleton-container.js';
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader.js';
+import { getContainer } from './singleton-container.js';
 // import { NeuralAgentFactory } from './neural-agent.js';
 // import path from 'path';
 // import fs from 'fs';

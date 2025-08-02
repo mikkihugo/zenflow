@@ -5,4 +5,8 @@ export * from './agent.js';
 export { default as Agent } from './agent.js';
 export { AgentManager } from './agent-manager';
 export { AgentRegistry } from './agent-registry';
-export { performGapAnalysis, generateComparisonReport, auditAutoAssignmentCapabilities } from './gap-analysis';
+export {
+  auditAutoAssignmentCapabilities,
+  generateComparisonReport,
+  performGapAnalysis,
+} from './gap-analysis';

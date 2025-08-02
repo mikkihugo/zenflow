@@ -18,7 +18,7 @@ export class SecurityMonitor {
       message: event.message,
       metadata: event.metadata || {},
       ip: event.ip,
-      userAgent: event.userAgent
+      userAgent: event.userAgent,
     };
 
     // Log to file
@@ -46,7 +46,7 @@ export class SecurityMonitor {
         severity: event.severity,
         timestamp: event.timestamp,
         source: event.source,
-        metadata: event.metadata
+        metadata: event.metadata,
       };
 
       // Send to webhook (implement based on your alerting system)
@@ -58,7 +58,7 @@ export class SecurityMonitor {
 
   monitorFailedLogins(req, res, next) {
     const originalSend = res.send;
-    res.send = function(data) {
+    res.send = function (data) {
       if (res.statusCode === 401) {
         this.logSecurityEvent({
           type: 'failed_login',
@@ -67,12 +67,12 @@ export class SecurityMonitor {
           message: 'Failed login attempt',
           ip: req.ip,
           userAgent: req.get('User-Agent'),
-          metadata: { path: req.path }
+          metadata: { path: req.path },
         });
       }
       originalSend.call(this, data);
     }.bind(this);
-    
+
     next();
   }
 
@@ -88,7 +88,7 @@ export class SecurityMonitor {
       url: req.url,
       body: req.body,
       query: req.query,
-      headers: req.headers
+      headers: req.headers,
     });
 
     for (const pattern of suspiciousPatterns) {
@@ -103,10 +103,10 @@ export class SecurityMonitor {
           metadata: {
             pattern: pattern.toString(),
             path: req.path,
-            method: req.method
-          }
+            method: req.method,
+          },
         });
-        
+
         return res.status(400).json({ error: 'Suspicious activity detected' });
       }
     }
@@ -118,5 +118,5 @@ export class SecurityMonitor {
 // Export singleton instance
 export const securityMonitor = new SecurityMonitor({
   alertWebhook: process.env.SECURITY_WEBHOOK_URL,
-  logFile: process.env.SECURITY_LOG_FILE
+  logFile: process.env.SECURITY_LOG_FILE,
 });

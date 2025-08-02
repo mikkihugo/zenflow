@@ -116,7 +116,10 @@ export interface DIContainerOptions {
  * DI error types
  */
 export class DIError extends Error {
-  constructor(message: string, public readonly code?: string) {
+  constructor(
+    message: string,
+    public readonly code?: string
+  ) {
     super(message);
     this.name = 'DIError';
   }
@@ -152,7 +155,11 @@ export type Constructor<T = {}> = new (...args: any[]) => T;
 /**
  * Parameter decorator type
  */
-export type ParameterDecorator = (target: any, propertyKey: string | symbol | undefined, parameterIndex: number) => void;
+export type ParameterDecorator = (
+  target: any,
+  propertyKey: string | symbol | undefined,
+  parameterIndex: number
+) => void;
 
 /**
  * Class decorator type for injectable

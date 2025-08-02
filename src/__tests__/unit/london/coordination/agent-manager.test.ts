@@ -4,7 +4,7 @@
  * Focus: Interaction verification, protocol compliance, coordination patterns
  */
 
-import { createCoordinationTestSuite, CoordinationProtocolValidator } from '../../../helpers';
+import { CoordinationProtocolValidator, createCoordinationTestSuite } from '../../../helpers';
 
 describe('Agent Manager - London TDD', () => {
   let coordinationSuite: ReturnType<typeof createCoordinationTestSuite>;
@@ -22,13 +22,13 @@ describe('Agent Manager - London TDD', () => {
     // Create interaction-focused mocks (London TDD)
     mockRegistry = jest.fn();
     mockEventEmitter = jest.fn();
-    
+
     // Mock AgentManager with focus on interactions
     mockAgentManager = {
       registry: mockRegistry,
       eventEmitter: mockEventEmitter,
       agents: new Map(),
-      
+
       registerAgent: jest.fn().mockImplementation((agent) => {
         const registrationEvent = {
           type: 'agent_registered',
@@ -38,7 +38,7 @@ describe('Agent Manager - London TDD', () => {
         mockEventEmitter('emit', registrationEvent);
         return { success: true, agentId: agent.id };
       }),
-      
+
       unregisterAgent: jest.fn().mockImplementation((agentId) => {
         const unregistrationEvent = {
           type: 'agent_unregistered',
@@ -48,7 +48,7 @@ describe('Agent Manager - London TDD', () => {
         mockEventEmitter('emit', unregistrationEvent);
         return { success: true, agentId };
       }),
-      
+
       assignTask: jest.fn().mockImplementation((agentId, task) => {
         const assignmentEvent = {
           type: 'task_assigned',
@@ -59,7 +59,7 @@ describe('Agent Manager - London TDD', () => {
         mockEventEmitter('emit', assignmentEvent);
         return { success: true, taskId: task.id, assignedTo: agentId };
       }),
-      
+
       broadcastMessage: jest.fn().mockImplementation((message) => {
         const broadcastEvent = {
           type: 'message_broadcast',
@@ -69,7 +69,7 @@ describe('Agent Manager - London TDD', () => {
         mockEventEmitter('emit', broadcastEvent);
         return { success: true, recipients: Array.from(mockAgentManager.agents.keys()) };
       }),
-      
+
       getAgentStatus: jest.fn().mockImplementation((agentId) => {
         return {
           id: agentId,
@@ -99,10 +99,13 @@ describe('Agent Manager - London TDD', () => {
       expect(result.agentId).toBe(agent.id);
 
       // Verify event emission interaction
-      expect(mockEventEmitter).toHaveBeenCalledWith('emit', expect.objectContaining({
-        type: 'agent_registered',
-        agentId: agent.id,
-      }));
+      expect(mockEventEmitter).toHaveBeenCalledWith(
+        'emit',
+        expect.objectContaining({
+          type: 'agent_registered',
+          agentId: agent.id,
+        })
+      );
     });
 
     it('should verify batch agent registration coordination', () => {
@@ -113,11 +116,11 @@ describe('Agent Manager - London TDD', () => {
       ];
 
       // Test batch registration interaction pattern
-      const results = agents.map(agent => mockAgentManager.registerAgent(agent));
+      const results = agents.map((agent) => mockAgentManager.registerAgent(agent));
 
       // Verify interaction pattern: one call per agent
       expect(mockAgentManager.registerAgent).toHaveBeenCalledTimes(3);
-      
+
       // Verify each registration was successful
       results.forEach((result, index) => {
         expect(result.success).toBe(true);
@@ -126,12 +129,15 @@ describe('Agent Manager - London TDD', () => {
 
       // Verify event emission pattern: one event per agent
       expect(mockEventEmitter).toHaveBeenCalledTimes(3);
-      
-      agents.forEach(agent => {
-        expect(mockEventEmitter).toHaveBeenCalledWith('emit', expect.objectContaining({
-          type: 'agent_registered',
-          agentId: agent.id,
-        }));
+
+      agents.forEach((agent) => {
+        expect(mockEventEmitter).toHaveBeenCalledWith(
+          'emit',
+          expect.objectContaining({
+            type: 'agent_registered',
+            agentId: agent.id,
+          })
+        );
       });
     });
 
@@ -148,7 +154,7 @@ describe('Agent Manager - London TDD', () => {
       // Verify failure interaction
       expect(result.success).toBe(false);
       expect(result.error).toBe('Agent already exists');
-      
+
       // Verify no event emitted on failure
       expect(mockEventEmitter).not.toHaveBeenCalled();
     });
@@ -162,8 +168,8 @@ describe('Agent Manager - London TDD', () => {
         { id: 'worker-2', type: 'worker' },
         { id: 'coordinator-1', type: 'coordinator' },
       ];
-      
-      agents.forEach(agent => {
+
+      agents.forEach((agent) => {
         mockAgentManager.agents.set(agent.id, agent);
       });
     });
@@ -185,11 +191,14 @@ describe('Agent Manager - London TDD', () => {
       expect(assignmentResult.assignedTo).toBe('worker-1');
 
       // Verify coordination event emission
-      expect(mockEventEmitter).toHaveBeenCalledWith('emit', expect.objectContaining({
-        type: 'task_assigned',
-        agentId: 'worker-1',
-        taskId: task.id,
-      }));
+      expect(mockEventEmitter).toHaveBeenCalledWith(
+        'emit',
+        expect.objectContaining({
+          type: 'task_assigned',
+          agentId: 'worker-1',
+          taskId: task.id,
+        })
+      );
     });
 
     it('should verify load balancing coordination pattern', () => {
@@ -211,37 +220,40 @@ describe('Agent Manager - London TDD', () => {
 
       // Verify assignment distribution pattern
       expect(mockAgentManager.assignTask).toHaveBeenCalledTimes(3);
-      
+
       // Verify coordination events for each assignment
       expect(mockEventEmitter).toHaveBeenCalledTimes(3);
-      
-      tasks.forEach(task => {
-        expect(mockEventEmitter).toHaveBeenCalledWith('emit', expect.objectContaining({
-          type: 'task_assigned',
-          taskId: task.id,
-        }));
+
+      tasks.forEach((task) => {
+        expect(mockEventEmitter).toHaveBeenCalledWith(
+          'emit',
+          expect.objectContaining({
+            type: 'task_assigned',
+            taskId: task.id,
+          })
+        );
       });
 
       // Verify successful assignments
-      assignments.forEach(assignment => {
+      assignments.forEach((assignment) => {
         expect(assignment.success).toBe(true);
       });
     });
 
     it('should verify task reassignment coordination on agent failure', () => {
       const task = { id: 'critical-task', type: 'urgent', priority: 'critical' };
-      
+
       // Initial assignment
       mockAgentManager.assignTask('worker-1', task);
-      
+
       // Simulate agent failure requiring reassignment
       const reassignmentResult = mockAgentManager.assignTask('worker-2', task);
-      
+
       // Verify reassignment interaction
       expect(mockAgentManager.assignTask).toHaveBeenCalledTimes(2);
       expect(mockAgentManager.assignTask).toHaveBeenNthCalledWith(1, 'worker-1', task);
       expect(mockAgentManager.assignTask).toHaveBeenNthCalledWith(2, 'worker-2', task);
-      
+
       // Verify coordination events for both assignments
       expect(mockEventEmitter).toHaveBeenCalledTimes(2);
     });
@@ -263,10 +275,13 @@ describe('Agent Manager - London TDD', () => {
       expect(Array.isArray(broadcastResult.recipients)).toBe(true);
 
       // Verify broadcast coordination event
-      expect(mockEventEmitter).toHaveBeenCalledWith('emit', expect.objectContaining({
-        type: 'message_broadcast',
-        message: broadcastMessage,
-      }));
+      expect(mockEventEmitter).toHaveBeenCalledWith(
+        'emit',
+        expect.objectContaining({
+          type: 'message_broadcast',
+          message: broadcastMessage,
+        })
+      );
     });
 
     it('should verify selective broadcast coordination', () => {
@@ -290,16 +305,22 @@ describe('Agent Manager - London TDD', () => {
       const result = mockAgentManager.broadcastToType('coordinator', coordinationMessage);
 
       // Verify selective broadcast interaction
-      expect(mockAgentManager.broadcastToType).toHaveBeenCalledWith('coordinator', coordinationMessage);
+      expect(mockAgentManager.broadcastToType).toHaveBeenCalledWith(
+        'coordinator',
+        coordinationMessage
+      );
       expect(result.success).toBe(true);
       expect(result.targetType).toBe('coordinator');
 
       // Verify selective broadcast event
-      expect(mockEventEmitter).toHaveBeenCalledWith('emit', expect.objectContaining({
-        type: 'selective_broadcast',
-        targetType: 'coordinator',
-        message: coordinationMessage,
-      }));
+      expect(mockEventEmitter).toHaveBeenCalledWith(
+        'emit',
+        expect.objectContaining({
+          type: 'selective_broadcast',
+          targetType: 'coordinator',
+          message: coordinationMessage,
+        })
+      );
     });
   });
 
@@ -337,17 +358,20 @@ describe('Agent Manager - London TDD', () => {
       expect(healthResults).toHaveProperty('total');
 
       // Verify health check coordination event
-      expect(mockEventEmitter).toHaveBeenCalledWith('emit', expect.objectContaining({
-        type: 'health_check_performed',
-        results: healthResults,
-      }));
+      expect(mockEventEmitter).toHaveBeenCalledWith(
+        'emit',
+        expect.objectContaining({
+          type: 'health_check_performed',
+          results: healthResults,
+        })
+      );
     });
   });
 
   describe('🔗 Protocol Compliance Verification', () => {
     it('should validate MCP protocol compliance in coordination', () => {
       const mcpMessages: any[] = [];
-      
+
       // Mock MCP protocol interactions
       mockAgentManager.sendMCPMessage = jest.fn().mockImplementation((message) => {
         const mcpMessage = {
@@ -367,16 +391,16 @@ describe('Agent Manager - London TDD', () => {
         { action: 'broadcast', data: { type: 'update' } },
       ];
 
-      coordinationMessages.forEach(message => {
+      coordinationMessages.forEach((message) => {
         mockAgentManager.sendMCPMessage(message);
       });
 
       // Verify MCP protocol compliance
       CoordinationProtocolValidator.validateMCPProtocol(mcpMessages);
-      
+
       // Verify interaction pattern
       expect(mockAgentManager.sendMCPMessage).toHaveBeenCalledTimes(3);
-      coordinationMessages.forEach(message => {
+      coordinationMessages.forEach((message) => {
         expect(mockAgentManager.sendMCPMessage).toHaveBeenCalledWith(message);
       });
     });
@@ -384,7 +408,7 @@ describe('Agent Manager - London TDD', () => {
     it('should verify coordination pattern compliance', () => {
       // Simulate coordination interactions
       const testSwarm = coordinationSuite.builder.createMockSwarm();
-      
+
       // Perform coordination operations
       testSwarm.coordinator('initialize', { topology: 'hierarchical' });
       testSwarm.coordinator('broadcast', { type: 'sync' });
@@ -394,7 +418,7 @@ describe('Agent Manager - London TDD', () => {
 
       // Verify hierarchical coordination pattern
       CoordinationProtocolValidator.validateCoordinationPattern(interactions, 'hierarchical');
-      
+
       // Verify broadcast pattern
       CoordinationProtocolValidator.validateCoordinationPattern(interactions, 'broadcast');
 
@@ -405,7 +429,7 @@ describe('Agent Manager - London TDD', () => {
   describe('⚡ Performance and Error Handling', () => {
     it('should verify coordination latency requirements', async () => {
       const latencies: number[] = [];
-      
+
       // Mock latency tracking
       const originalAssignTask = mockAgentManager.assignTask;
       mockAgentManager.assignTask = jest.fn().mockImplementation((...args) => {
@@ -428,7 +452,7 @@ describe('Agent Manager - London TDD', () => {
 
       // Verify performance requirements (London TDD focuses on interaction timing)
       expect(mockAgentManager.assignTask).toHaveBeenCalledTimes(10);
-      
+
       const avgLatency = latencies.reduce((sum, lat) => sum + lat, 0) / latencies.length;
       expect(avgLatency).toBeLessThan(10); // Should be very fast for mocked operations
     });
@@ -452,7 +476,9 @@ describe('Agent Manager - London TDD', () => {
       // Verify error handling interaction
       expect(errorCaught).toBe(true);
       expect(errorMessage).toBe('Agent unavailable');
-      expect(mockAgentManager.assignTask).toHaveBeenCalledWith('unavailable-agent', { id: 'error-task' });
+      expect(mockAgentManager.assignTask).toHaveBeenCalledWith('unavailable-agent', {
+        id: 'error-task',
+      });
     });
   });
 });

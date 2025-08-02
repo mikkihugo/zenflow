@@ -35,100 +35,94 @@ class CopilotConfigGenerator {
       PROJECT_NAME: this.config.project.name,
       PROJECT_DESCRIPTION: this.config.project.description,
       PROJECT_MISSION: this.config.project.mission,
-      
+
       // Documents
       PRD_REFERENCE: this.config.documents?.prd_reference || '',
       TECHNICAL_SPEC_REFERENCE: this.config.documents?.technical_spec_reference || '',
-      
+
       // Architecture
       ARCHITECTURE_PATTERN: this.config.architecture.pattern,
       PRINCIPLES: this.config.architecture.principles,
-      
+
       // Technology flags (following their pattern)
-      NODE_BACKEND: this.config.stack.backend.language === 'typescript' && this.config.stack.backend.framework === 'node',
+      NODE_BACKEND:
+        this.config.stack.backend.language === 'typescript' &&
+        this.config.stack.backend.framework === 'node',
       REACT_FRONTEND: this.config.stack.frontend?.framework === 'react',
       RUST_WASM: this.config.stack.specialized?.neural?.language === 'rust',
-      
+
       // Arrays for iteration
       DOMAINS: this.config.domains,
       FEATURES: this.config.features,
       PERFORMANCE_TARGETS: this.config.performance_targets,
       VALIDATION_RULES: this.config.validation_rules,
-      
+
       // Agent system
       AGENT_TOTAL_TYPES: this.config.agent_system.total_types,
       AGENT_CATEGORIES: this.config.agent_system.categories,
       AGENT_SPECIALIZATION: this.config.agent_system.specialization_level,
-      
+
       // Testing
       TESTING_STRATEGY: this.config.testing.strategy,
       LONDON_TDD_PERCENT: this.config.testing.breakdown.london_tdd,
       CLASSICAL_TDD_PERCENT: this.config.testing.breakdown.classical_tdd,
       COVERAGE_TARGET: this.config.testing.coverage_target,
-      
+
       // MCP
       MCP_HTTP_PORT: this.config.mcp_integration.servers.http.port,
       MCP_STDIO: this.config.mcp_integration.servers.stdio.protocol === 'stdio',
-      
+
       // Neural
       WASM_ACCELERATION: this.config.neural_capabilities.wasm_acceleration,
       RUST_CORE: this.config.neural_capabilities.rust_core,
       PERFORMANCE_RULE: this.config.neural_capabilities.performance_rule,
-      
+
       // Memory
       MEMORY_BACKENDS: this.config.memory_system.backends,
-      
+
       // Setup commands
       NODE_VERSION: this.config.environment_setup.node_version,
       PACKAGE_MANAGER: this.config.environment_setup.package_manager,
       ADDITIONAL_TOOLS: this.config.environment_setup.additional_tools,
-      
+
       // Build and test commands
-      BUILD_COMMANDS: [
-        'npm ci',
-        'npm run build'
-      ],
-      TEST_COMMANDS: [
-        'npm test',
-        'npm run lint'
-      ],
-      DEV_SETUP_COMMANDS: [
-        'npm run mcp:start'
-      ],
-      
+      BUILD_COMMANDS: ['npm ci', 'npm run build'],
+      TEST_COMMANDS: ['npm test', 'npm run lint'],
+      DEV_SETUP_COMMANDS: ['npm run mcp:start'],
+
       // Custom instructions
       ARCHITECTURAL_CONSTRAINTS: this.config.custom_instructions.architectural_constraints,
-      PERFORMANCE_REQUIREMENTS: this.config.custom_instructions.performance_requirements
+      PERFORMANCE_REQUIREMENTS: this.config.custom_instructions.performance_requirements,
     };
   }
 
   replaceTemplateVariables(template, context = this.templateContext) {
     let result = template;
-    
+
     // Simple variable replacement {{VARIABLE}}
-    Object.keys(context).forEach(key => {
+    Object.keys(context).forEach((key) => {
       const regex = new RegExp(`\\{\\{${key}\\}\\}`, 'g');
       const value = context[key];
-      
+
       if (Array.isArray(value)) {
         result = result.replace(regex, value.join(', '));
       } else {
         result = result.replace(regex, String(value));
       }
     });
-    
+
     // Handle conditional blocks {{#if CONDITION}}...{{/if}}
     result = this.handleConditionals(result, context);
-    
+
     // Handle each blocks {{#each ARRAY}}...{{/each}}
     result = this.handleEachBlocks(result, context);
-    
+
     return result;
   }
 
   handleConditionals(template, context) {
     const conditionalRegex = /\{\{#if (\w+)\}\}([\s\S]*?)\{\{\/if\}\}/g;
-    
+
     return template.replace(conditionalRegex, (match, condition, content) => {
       const value = context[condition];
       return value ? content : '';
@@ -137,27 +131,29 @@ class CopilotConfigGenerator {
 
   handleEachBlocks(template, context) {
     const eachRegex = /\{\{#each (\w+)\}\}([\s\S]*?)\{\{\/each\}\}/g;
-    
+
     return template.replace(eachRegex, (match, arrayName, itemTemplate) => {
       const array = context[arrayName];
       if (!Array.isArray(array)) return '';
-      
-      return array.map(item => {
-        let result = itemTemplate;
-        
-        if (typeof item === 'object' && item !== null) {
-          // Handle object properties like {{this.name}}, {{this.description}}
-          Object.keys(item).forEach(key => {
-            const regex = new RegExp(`\\{\\{this\\.${key}\\}\\}`, 'g');
-            result = result.replace(regex, String(item[key]));
-          });
-        } else {
-          // Handle simple values {{this}}
-          result = result.replace(/\{\{this\}\}/g, String(item));
-        }
-        
-        return result;
-      }).join('\n');
+
+      return array
+        .map((item) => {
+          let result = itemTemplate;
+
+          if (typeof item === 'object' && item !== null) {
+            // Handle object properties like {{this.name}}, {{this.description}}
+            Object.keys(item).forEach((key) => {
+              const regex = new RegExp(`\\{\\{this\\.${key}\\}\\}`, 'g');
+              result = result.replace(regex, String(item[key]));
+            });
+          } else {
+            // Handle simple values {{this}}
+            result = result.replace(/\{\{this\}\}/g, String(item));
+          }
+
+          return result;
+        })
+        .join('\n');
     });
   }
 
@@ -500,19 +496,19 @@ body:
 
   async generate() {
     await this.loadConfig();
-    
+
     // Ensure directories exist
     await fs.mkdir('.github', { recursive: true });
     await fs.mkdir('.github/workflows', { recursive: true });
     await fs.mkdir('.github/ISSUE_TEMPLATE', { recursive: true });
-    
+
     console.log(`🤖 Generating Copilot configuration for ${this.templateContext.PROJECT_NAME}...`);
-    
+
     await this.generateCopilotInstructions();
     await this.generateCopilotContext();
     await this.generateCopilotSetupSteps();
     await this.generateIssueTemplate();
-    
+
     console.log('\\n🚀 Copilot configuration generation complete!');
     console.log('\\nGenerated files:');
     console.log('- .github/copilot-instructions.md');

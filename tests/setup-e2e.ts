@@ -5,17 +5,17 @@
  */
 
 import 'jest-extended';
-import { spawn, ChildProcess } from 'child_process';
+import { type ChildProcess, spawn } from 'child_process';
 import * as path from 'path';
 
 // E2E test setup with real system components
 beforeAll(async () => {
   // Setup E2E test environment
   await setupE2EEnvironment();
-  
+
   // Start test services
   await startTestServices();
-  
+
   // Initialize test data
   await initializeE2EData();
 }, 180000); // Extended timeout for service startup
@@ -23,7 +23,7 @@ beforeAll(async () => {
 afterAll(async () => {
   // Cleanup E2E test state
   await cleanupE2EState();
-  
+
   // Stop test services
   await stopTestServices();
 }, 60000);
@@ -44,7 +44,7 @@ async function setupE2EEnvironment() {
   process.env.CLAUDE_ZEN_E2E_MODE = 'true';
   process.env.CLAUDE_ZEN_LOG_LEVEL = 'warn';
   process.env.CLAUDE_ZEN_TEST_TIMEOUT = '300000';
-  
+
   // E2E specific configuration
   global.e2eConfig = {
     services: {
@@ -64,7 +64,7 @@ async function setupE2EEnvironment() {
       dist: path.join(process.cwd(), 'dist'),
     },
   };
-  
+
   global.testProcesses = new Map<string, ChildProcess>();
   global.testMetrics = {
     startTime: Date.now(),
@@ -75,28 +75,32 @@ async function setupE2EEnvironment() {
 
 async function startTestServices() {
   const { services } = global.e2eConfig;
-  
+
   // Build the project first
   await buildProject();
-  
+
   // Start MCP server
   await startService('mcp', [
-    'npx', 'tsx', 'src/interfaces/mcp/start-server.ts',
-    '--port', services.mcp.port.toString(),
+    'npx',
+    'tsx',
+    'src/interfaces/mcp/start-server.ts',
+    '--port',
+    services.mcp.port.toString(),
   ]);
-  
+
   // Start Web server
   await startService('web', [
-    'npx', 'tsx', 'src/interfaces/web/web-interface.ts',
-    '--port', services.web.port.toString(),
+    'npx',
+    'tsx',
+    'src/interfaces/web/web-interface.ts',
+    '--port',
+    services.web.port.toString(),
     '--daemon',
   ]);
-  
+
   // Start Swarm coordination server
-  await startService('swarm', [
-    'npx', 'tsx', 'src/coordination/mcp/mcp-server.ts',
-  ]);
-  
+  await startService('swarm', ['npx', 'tsx', 'src/coordination/mcp/mcp-server.ts']);
+
   // Wait for all services to be ready
   await waitForServicesReady();
 }
@@ -107,12 +111,12 @@ async function buildProject() {
       cwd: global.e2eConfig.paths.root,
       stdio: 'pipe',
     });
-    
+
     buildProcess.on('close', (code) => {
       if (code === 0) resolve();
       else reject(new Error(`Build failed with code ${code}`));
     });
-    
+
     setTimeout(() => {
       buildProcess.kill();
       reject(new Error('Build timeout'));
@@ -128,9 +132,9 @@ async function startService(name: string, command: string[]) {
       stdio: 'pipe',
       env: { ...process.env, ...getServiceEnv(name) },
     });
-    
+
     global.testProcesses.set(name, process);
-    
+
     let output = '';
     process.stdout?.on('data', (data) => {
       output += data.toString();
@@ -138,18 +142,18 @@ async function startService(name: string, command: string[]) {
         resolve();
       }
     });
-    
+
     process.stderr?.on('data', (data) => {
       console.warn(`${name} stderr:`, data.toString());
     });
-    
+
     process.on('error', reject);
     process.on('exit', (code) => {
       if (code !== 0 && code !== null) {
         reject(new Error(`${name} exited with code ${code}`));
       }
     });
-    
+
     // Timeout for service startup
     setTimeout(() => {
       if (!isServiceReady(name, output)) {
@@ -175,14 +179,14 @@ function isServiceReady(serviceName: string, output: string): boolean {
     api: /API server ready/i,
     swarm: /Swarm coordination server ready/i,
   };
-  
+
   const pattern = readyPatterns[serviceName];
   return pattern ? pattern.test(output) : false;
 }
 
 async function waitForServicesReady() {
   const { services } = global.e2eConfig;
-  
+
   for (const [name, config] of Object.entries(services)) {
     await waitForPort(config.port, global.e2eConfig.timeout.startup);
   }
@@ -191,7 +195,7 @@ async function waitForServicesReady() {
 async function waitForPort(port: number, timeout: number = 30000) {
   const net = await import('net');
   const start = Date.now();
-  
+
   while (Date.now() - start < timeout) {
     try {
       await new Promise<void>((resolve, reject) => {
@@ -205,7 +209,7 @@ async function waitForPort(port: number, timeout: number = 30000) {
       });
       return;
     } catch {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
   }
   throw new Error(`Port ${port} not ready within ${timeout}ms`);
@@ -234,10 +238,10 @@ async function resetSystemState() {
   try {
     // Clear caches
     await clearSystemCaches();
-    
+
     // Reset database state
     await resetDatabaseState();
-    
+
     // Clear in-memory state
     await clearMemoryState();
   } catch (error) {
@@ -250,7 +254,7 @@ async function clearSystemCaches() {
     `http://localhost:${global.e2eConfig.services.api.port}/cache/clear`,
     `http://localhost:${global.e2eConfig.services.web.port}/api/cache/clear`,
   ];
-  
+
   for (const endpoint of cacheEndpoints) {
     try {
       await fetch(endpoint, { method: 'POST' });
@@ -262,10 +266,8 @@ async function clearSystemCaches() {
 
 async function resetDatabaseState() {
   // Reset test databases to clean state
-  const dbEndpoints = [
-    `http://localhost:${global.e2eConfig.services.api.port}/test/reset`,
-  ];
-  
+  const dbEndpoints = [`http://localhost:${global.e2eConfig.services.api.port}/test/reset`];
+
   for (const endpoint of dbEndpoints) {
     try {
       await fetch(endpoint, { method: 'POST' });
@@ -281,7 +283,7 @@ async function clearMemoryState() {
     `http://localhost:${global.e2eConfig.services.web.port}/api/memory/clear`,
     `http://localhost:${global.e2eConfig.services.swarm.port}/memory/clear`,
   ];
-  
+
   for (const endpoint of memoryEndpoints) {
     try {
       await fetch(endpoint, { method: 'POST' });
@@ -294,7 +296,7 @@ async function clearMemoryState() {
 async function collectTestMetrics() {
   const endTime = Date.now();
   const testDuration = endTime - global.testMetrics.startTime;
-  
+
   global.testMetrics.operations.push({
     timestamp: endTime,
     duration: testDuration,
@@ -313,7 +315,7 @@ async function stopTestServices() {
       process.kill('SIGKILL');
     }
   }
-  
+
   global.testProcesses.clear();
 }
 
@@ -322,7 +324,7 @@ async function waitForProcessExit(process: ChildProcess, timeout: number) {
     const timer = setTimeout(() => {
       reject(new Error('Process exit timeout'));
     }, timeout);
-    
+
     process.on('exit', () => {
       clearTimeout(timer);
       resolve();
@@ -334,7 +336,7 @@ async function cleanupE2EState() {
   // Final cleanup
   delete process.env.CLAUDE_ZEN_E2E_MODE;
   delete process.env.CLAUDE_ZEN_TEST_TIMEOUT;
-  
+
   // Generate E2E test report
   await generateE2EReport();
 }
@@ -346,10 +348,12 @@ async function generateE2EReport() {
     services: Object.keys(global.e2eConfig.services),
     summary: {
       totalOperations: global.testMetrics.operations.length,
-      avgDuration: global.testMetrics.operations.reduce((sum, op) => sum + op.duration, 0) / global.testMetrics.operations.length || 0,
+      avgDuration:
+        global.testMetrics.operations.reduce((sum, op) => sum + op.duration, 0) /
+          global.testMetrics.operations.length || 0,
     },
   };
-  
+
   console.log('E2E Test Report:', JSON.stringify(report, null, 2));
 }
 
@@ -357,19 +361,21 @@ async function generateE2EReport() {
 global.createE2EClient = (serviceName: string) => {
   const service = global.e2eConfig.services[serviceName];
   const baseURL = `http://localhost:${service.port}`;
-  
+
   return {
     get: (path: string) => fetch(`${baseURL}${path}`),
-    post: (path: string, data?: any) => fetch(`${baseURL}${path}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: data ? JSON.stringify(data) : undefined,
-    }),
-    put: (path: string, data?: any) => fetch(`${baseURL}${path}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: data ? JSON.stringify(data) : undefined,
-    }),
+    post: (path: string, data?: any) =>
+      fetch(`${baseURL}${path}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: data ? JSON.stringify(data) : undefined,
+      }),
+    put: (path: string, data?: any) =>
+      fetch(`${baseURL}${path}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: data ? JSON.stringify(data) : undefined,
+      }),
     delete: (path: string) => fetch(`${baseURL}${path}`, { method: 'DELETE' }),
   };
 };
@@ -401,11 +407,12 @@ global.runE2EWorkflow = async (workflow: any[]) => {
 
 async function executeWorkflowStep(step: any) {
   switch (step.type) {
-    case 'http':
+    case 'http': {
       const client = global.createE2EClient(step.service);
       return await client[step.method](step.path, step.data);
+    }
     case 'delay':
-      await new Promise(resolve => setTimeout(resolve, step.duration));
+      await new Promise((resolve) => setTimeout(resolve, step.duration));
       return { delayed: step.duration };
     case 'custom':
       return await step.execute();
@@ -418,9 +425,9 @@ global.measureE2EPerformance = async (operation: () => Promise<any>, expectedMax
   const start = Date.now();
   const result = await operation();
   const duration = Date.now() - start;
-  
+
   expect(duration).toBeLessThanOrEqual(expectedMaxTime);
-  
+
   return {
     result,
     duration,
@@ -433,8 +440,6 @@ global.measureE2EPerformance = async (operation: () => Promise<any>, expectedMax
 
 // Extended timeout for E2E tests
 jest.setTimeout(300000); // 5 minutes
-
-export {};
 
 declare global {
   var e2eConfig: {
@@ -463,8 +468,11 @@ declare global {
     swarms: any[];
     tasks: any[];
   };
-  
+
   function createE2EClient(serviceName: string): any;
   function runE2EWorkflow(workflow: any[]): Promise<any[]>;
-  function measureE2EPerformance(operation: () => Promise<any>, expectedMaxTime: number): Promise<any>;
+  function measureE2EPerformance(
+    operation: () => Promise<any>,
+    expectedMaxTime: number
+  ): Promise<any>;
 }

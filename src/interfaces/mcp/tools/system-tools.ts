@@ -1,22 +1,26 @@
 /**
  * @fileoverview System MCP Tools (12 tools)
- * 
+ *
  * Performance benchmarking, system diagnostics, configuration management,
  * and infrastructure optimization.
  */
 
-import { AdvancedMCPTool, AdvancedToolHandler, AdvancedMCPToolResult } from '../advanced-tools';
+import {
+  type AdvancedMCPTool,
+  type AdvancedMCPToolResult,
+  AdvancedToolHandler,
+} from '../advanced-tools';
 
 // System tool handlers
 class BenchmarkRunHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
     const { testSuite = 'comprehensive', duration = 60, includeLoad = true } = params;
-    
+
     this.validateParams(params, {
-      properties: { 
+      properties: {
         testSuite: { enum: ['basic', 'comprehensive', 'stress'] },
-        duration: { type: 'number', minimum: 10, maximum: 3600 }
-      }
+        duration: { type: 'number', minimum: 10, maximum: 3600 },
+      },
     });
 
     // Simulate benchmark run
@@ -28,30 +32,30 @@ class BenchmarkRunHandler extends AdvancedToolHandler {
         cpu: {
           averageUsage: Math.floor(Math.random() * 40) + 20, // 20-60%
           peakUsage: Math.floor(Math.random() * 30) + 70, // 70-100%
-          efficiency: Math.floor(Math.random() * 20) + 80 // 80-100%
+          efficiency: Math.floor(Math.random() * 20) + 80, // 80-100%
         },
         memory: {
           averageUsage: Math.floor(Math.random() * 50) + 30, // 30-80%
           peakUsage: Math.floor(Math.random() * 20) + 80, // 80-100%
-          leaks: Math.floor(Math.random() * 3) // 0-3 potential leaks
+          leaks: Math.floor(Math.random() * 3), // 0-3 potential leaks
         },
         network: {
           throughput: Math.floor(Math.random() * 500) + 100, // 100-600 Mbps
           latency: Math.floor(Math.random() * 50) + 10, // 10-60ms
-          packetLoss: Math.random() * 0.1 // 0-0.1%
+          packetLoss: Math.random() * 0.1, // 0-0.1%
         },
         storage: {
           readSpeed: Math.floor(Math.random() * 200) + 300, // 300-500 MB/s
           writeSpeed: Math.floor(Math.random() * 150) + 250, // 250-400 MB/s
-          iops: Math.floor(Math.random() * 5000) + 10000 // 10k-15k IOPS
-        }
+          iops: Math.floor(Math.random() * 5000) + 10000, // 10k-15k IOPS
+        },
       },
       score: Math.floor(Math.random() * 30) + 70, // 70-100
       recommendations: [
         'Optimize database queries for better performance',
         'Consider memory allocation optimizations',
-        'Monitor network latency during peak hours'
-      ]
+        'Monitor network latency during peak hours',
+      ],
     };
 
     return this.createResult(true, benchmarkResults);
@@ -61,53 +65,57 @@ class BenchmarkRunHandler extends AdvancedToolHandler {
 class FeaturesDetectHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
     const { includeHardware = true, includeRuntime = true } = params;
-    
+
     const features = {
-      hardware: includeHardware ? {
-        cpu: {
-          cores: 8,
-          threads: 16,
-          architecture: 'x64',
-          features: ['SSE4.2', 'AVX2', 'AES']
-        },
-        memory: {
-          total: '32GB',
-          type: 'DDR4',
-          speed: '3200MHz'
-        },
-        storage: {
-          type: 'NVMe SSD',
-          capacity: '1TB',
-          interface: 'PCIe 4.0'
-        }
-      } : undefined,
-      runtime: includeRuntime ? {
-        node: {
-          version: '18.17.0',
-          features: ['ES2022', 'WebAssembly', 'Worker Threads']
-        },
-        v8: {
-          version: '10.2.154.26',
-          features: ['JIT Compilation', 'Garbage Collection']
-        },
-        os: {
-          platform: 'linux',
-          version: '5.15.0',
-          architecture: 'x64'
-        }
-      } : undefined,
+      hardware: includeHardware
+        ? {
+            cpu: {
+              cores: 8,
+              threads: 16,
+              architecture: 'x64',
+              features: ['SSE4.2', 'AVX2', 'AES'],
+            },
+            memory: {
+              total: '32GB',
+              type: 'DDR4',
+              speed: '3200MHz',
+            },
+            storage: {
+              type: 'NVMe SSD',
+              capacity: '1TB',
+              interface: 'PCIe 4.0',
+            },
+          }
+        : undefined,
+      runtime: includeRuntime
+        ? {
+            node: {
+              version: '18.17.0',
+              features: ['ES2022', 'WebAssembly', 'Worker Threads'],
+            },
+            v8: {
+              version: '10.2.154.26',
+              features: ['JIT Compilation', 'Garbage Collection'],
+            },
+            os: {
+              platform: 'linux',
+              version: '5.15.0',
+              architecture: 'x64',
+            },
+          }
+        : undefined,
       capabilities: [
         'Multi-threading support',
         'SIMD operations',
         'Hardware acceleration',
-        'Real-time processing'
+        'Real-time processing',
       ],
       compatibility: {
         webAssembly: true,
         sharedArrayBuffer: true,
         workerThreads: true,
-        asyncHooks: true
-      }
+        asyncHooks: true,
+      },
     };
 
     return this.createResult(true, features);
@@ -117,12 +125,12 @@ class FeaturesDetectHandler extends AdvancedToolHandler {
 class SystemOptimizerHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
     const { optimizationLevel = 'balanced', targetMetric = 'performance' } = params;
-    
+
     this.validateParams(params, {
-      properties: { 
+      properties: {
         optimizationLevel: { enum: ['conservative', 'balanced', 'aggressive'] },
-        targetMetric: { enum: ['performance', 'memory', 'latency', 'throughput'] }
-      }
+        targetMetric: { enum: ['performance', 'memory', 'latency', 'throughput'] },
+      },
     });
 
     const optimization = {
@@ -132,30 +140,30 @@ class SystemOptimizerHandler extends AdvancedToolHandler {
         system: [
           'Increase heap size to 4GB',
           'Enable garbage collection tuning',
-          'Configure thread pool size'
+          'Configure thread pool size',
         ],
         application: [
           'Implement connection pooling',
           'Add result caching',
-          'Optimize database queries'
+          'Optimize database queries',
         ],
         infrastructure: [
           'Scale horizontally with 2 additional instances',
           'Configure load balancer',
-          'Set up CDN for static assets'
-        ]
+          'Set up CDN for static assets',
+        ],
       },
       expectedImprovements: {
         performance: '+25%',
         memory: '-15%',
         latency: '-30%',
-        throughput: '+40%'
+        throughput: '+40%',
       },
       implementationPlan: [
         'Phase 1: System configuration (2 hours)',
         'Phase 2: Application optimizations (4 hours)',
-        'Phase 3: Infrastructure scaling (1 day)'
-      ]
+        'Phase 3: Infrastructure scaling (1 day)',
+      ],
     };
 
     return this.createResult(true, optimization);
@@ -165,7 +173,7 @@ class SystemOptimizerHandler extends AdvancedToolHandler {
 class DiagnosticSuiteHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
     const { comprehensive = true, includeReports = true } = params;
-    
+
     const diagnostics = {
       comprehensive,
       timestamp: new Date().toISOString(),
@@ -174,26 +182,28 @@ class DiagnosticSuiteHandler extends AdvancedToolHandler {
         score: 92,
         issues: [
           { level: 'warning', component: 'database', message: 'Connection pool at 80% capacity' },
-          { level: 'info', component: 'memory', message: 'GC frequency slightly elevated' }
-        ]
+          { level: 'info', component: 'memory', message: 'GC frequency slightly elevated' },
+        ],
       },
       components: {
         cpu: { status: 'healthy', utilization: 45, temperature: 62 },
         memory: { status: 'healthy', utilization: 68, available: '10.2GB' },
         network: { status: 'healthy', latency: 23, throughput: 450 },
         storage: { status: 'healthy', usage: 72, freeSpace: '280GB' },
-        database: { status: 'warning', connections: 80, queryTime: 125 }
+        database: { status: 'warning', connections: 80, queryTime: 125 },
       },
-      reports: includeReports ? {
-        performanceReport: 'System performing within normal parameters',
-        securityReport: 'No security vulnerabilities detected',
-        capacityReport: 'Storage and memory within acceptable limits'
-      } : undefined,
+      reports: includeReports
+        ? {
+            performanceReport: 'System performing within normal parameters',
+            securityReport: 'No security vulnerabilities detected',
+            capacityReport: 'Storage and memory within acceptable limits',
+          }
+        : undefined,
       recommendations: [
         'Monitor database connection pool',
         'Consider memory optimization',
-        'Schedule maintenance window for updates'
-      ]
+        'Schedule maintenance window for updates',
+      ],
     };
 
     return this.createResult(true, diagnostics);
@@ -203,12 +213,12 @@ class DiagnosticSuiteHandler extends AdvancedToolHandler {
 class ConfigurationManagerHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
     const { action = 'get', configType = 'application', settings = {} } = params;
-    
+
     this.validateParams(params, {
-      properties: { 
+      properties: {
         action: { enum: ['get', 'set', 'update', 'validate'] },
-        configType: { enum: ['application', 'system', 'database', 'network'] }
-      }
+        configType: { enum: ['application', 'system', 'database', 'network'] },
+      },
     });
 
     const config = {
@@ -219,30 +229,30 @@ class ConfigurationManagerHandler extends AdvancedToolHandler {
           environment: 'production',
           logLevel: 'info',
           maxConnections: 100,
-          timeout: 30000
+          timeout: 30000,
         },
         system: {
           maxHeapSize: '4GB',
           gcAlgorithm: 'G1GC',
-          threadPoolSize: 16
+          threadPoolSize: 16,
         },
         database: {
           connectionPool: 20,
           queryTimeout: 10000,
-          retryAttempts: 3
+          retryAttempts: 3,
         },
         network: {
           port: 3000,
           keepAlive: true,
-          compression: 'gzip'
-        }
+          compression: 'gzip',
+        },
       }[configType],
       validation: {
         valid: true,
         warnings: [],
-        errors: []
+        errors: [],
       },
-      applied: action === 'set' || action === 'update' ? settings : undefined
+      applied: action === 'set' || action === 'update' ? settings : undefined,
     };
 
     return this.createResult(true, config);
@@ -264,28 +274,28 @@ export const systemTools: AdvancedMCPTool[] = [
       examples: [
         {
           description: 'Run comprehensive benchmark',
-          input: { testSuite: 'comprehensive', duration: 120 }
-        }
-      ]
+          input: { testSuite: 'comprehensive', duration: 120 },
+        },
+      ],
     },
     schema: {
       type: 'object',
       properties: {
-        testSuite: { 
-          type: 'string', 
+        testSuite: {
+          type: 'string',
           enum: ['basic', 'comprehensive', 'stress'],
-          description: 'Type of benchmark test suite'
+          description: 'Type of benchmark test suite',
         },
-        duration: { 
-          type: 'number', 
-          minimum: 10, 
+        duration: {
+          type: 'number',
+          minimum: 10,
           maximum: 3600,
-          description: 'Duration in seconds'
+          description: 'Duration in seconds',
         },
-        includeLoad: { type: 'boolean', description: 'Include load testing' }
-      }
+        includeLoad: { type: 'boolean', description: 'Include load testing' },
+      },
     },
-    handler: new BenchmarkRunHandler().execute.bind(new BenchmarkRunHandler())
+    handler: new BenchmarkRunHandler().execute.bind(new BenchmarkRunHandler()),
   },
   {
     name: 'mcp__claude-zen__features_detect',
@@ -300,18 +310,18 @@ export const systemTools: AdvancedMCPTool[] = [
       examples: [
         {
           description: 'Detect all system features',
-          input: { includeHardware: true, includeRuntime: true }
-        }
-      ]
+          input: { includeHardware: true, includeRuntime: true },
+        },
+      ],
     },
     schema: {
       type: 'object',
       properties: {
         includeHardware: { type: 'boolean', description: 'Include hardware features' },
-        includeRuntime: { type: 'boolean', description: 'Include runtime features' }
-      }
+        includeRuntime: { type: 'boolean', description: 'Include runtime features' },
+      },
     },
-    handler: new FeaturesDetectHandler().execute.bind(new FeaturesDetectHandler())
+    handler: new FeaturesDetectHandler().execute.bind(new FeaturesDetectHandler()),
   },
   {
     name: 'mcp__claude-zen__system_optimizer',
@@ -326,26 +336,26 @@ export const systemTools: AdvancedMCPTool[] = [
       examples: [
         {
           description: 'Optimize for performance',
-          input: { optimizationLevel: 'aggressive', targetMetric: 'performance' }
-        }
-      ]
+          input: { optimizationLevel: 'aggressive', targetMetric: 'performance' },
+        },
+      ],
     },
     schema: {
       type: 'object',
       properties: {
-        optimizationLevel: { 
-          type: 'string', 
+        optimizationLevel: {
+          type: 'string',
           enum: ['conservative', 'balanced', 'aggressive'],
-          description: 'Level of optimization'
+          description: 'Level of optimization',
         },
-        targetMetric: { 
-          type: 'string', 
+        targetMetric: {
+          type: 'string',
           enum: ['performance', 'memory', 'latency', 'throughput'],
-          description: 'Primary optimization target'
-        }
-      }
+          description: 'Primary optimization target',
+        },
+      },
     },
-    handler: new SystemOptimizerHandler().execute.bind(new SystemOptimizerHandler())
+    handler: new SystemOptimizerHandler().execute.bind(new SystemOptimizerHandler()),
   },
   {
     name: 'mcp__claude-zen__diagnostic_suite',
@@ -360,18 +370,18 @@ export const systemTools: AdvancedMCPTool[] = [
       examples: [
         {
           description: 'Run comprehensive diagnostics',
-          input: { comprehensive: true, includeReports: true }
-        }
-      ]
+          input: { comprehensive: true, includeReports: true },
+        },
+      ],
     },
     schema: {
       type: 'object',
       properties: {
         comprehensive: { type: 'boolean', description: 'Run comprehensive diagnostics' },
-        includeReports: { type: 'boolean', description: 'Include detailed reports' }
-      }
+        includeReports: { type: 'boolean', description: 'Include detailed reports' },
+      },
     },
-    handler: new DiagnosticSuiteHandler().execute.bind(new DiagnosticSuiteHandler())
+    handler: new DiagnosticSuiteHandler().execute.bind(new DiagnosticSuiteHandler()),
   },
   {
     name: 'mcp__claude-zen__configuration_manager',
@@ -386,29 +396,29 @@ export const systemTools: AdvancedMCPTool[] = [
       examples: [
         {
           description: 'Get application configuration',
-          input: { action: 'get', configType: 'application' }
-        }
-      ]
+          input: { action: 'get', configType: 'application' },
+        },
+      ],
     },
     schema: {
       type: 'object',
       properties: {
-        action: { 
-          type: 'string', 
+        action: {
+          type: 'string',
           enum: ['get', 'set', 'update', 'validate'],
-          description: 'Configuration action'
+          description: 'Configuration action',
         },
-        configType: { 
-          type: 'string', 
+        configType: {
+          type: 'string',
           enum: ['application', 'system', 'database', 'network'],
-          description: 'Type of configuration'
+          description: 'Type of configuration',
         },
-        settings: { type: 'object', description: 'Configuration settings' }
-      }
+        settings: { type: 'object', description: 'Configuration settings' },
+      },
     },
-    handler: new ConfigurationManagerHandler().execute.bind(new ConfigurationManagerHandler())
+    handler: new ConfigurationManagerHandler().execute.bind(new ConfigurationManagerHandler()),
   },
-  
+
   // Additional System Tools (6-12)
   {
     name: 'mcp__claude-zen__resource_monitor',
@@ -419,16 +429,28 @@ export const systemTools: AdvancedMCPTool[] = [
     priority: 'medium',
     metadata: {
       author: 'claude-zen',
-      tags: ['system', 'monitoring', 'resources']
+      tags: ['system', 'monitoring', 'resources'],
     },
     schema: {
       type: 'object',
       properties: {
-        resources: { type: 'array', items: { type: 'string' }, description: 'Resources to monitor' },
-        alertThreshold: { type: 'number', minimum: 0, maximum: 100, description: 'Alert threshold percentage' }
-      }
+        resources: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Resources to monitor',
+        },
+        alertThreshold: {
+          type: 'number',
+          minimum: 0,
+          maximum: 100,
+          description: 'Alert threshold percentage',
+        },
+      },
     },
-    handler: async (params) => ({ success: true, data: { cpu: 45, memory: 67, disk: 23, alerts: [] } })
+    handler: async (params) => ({
+      success: true,
+      data: { cpu: 45, memory: 67, disk: 23, alerts: [] },
+    }),
   },
   {
     name: 'mcp__claude-zen__performance_profiler',
@@ -439,16 +461,27 @@ export const systemTools: AdvancedMCPTool[] = [
     priority: 'high',
     metadata: {
       author: 'claude-zen',
-      tags: ['system', 'profiling', 'performance']
+      tags: ['system', 'profiling', 'performance'],
     },
     schema: {
       type: 'object',
       properties: {
-        profileType: { type: 'string', enum: ['cpu', 'memory', 'network', 'comprehensive'], description: 'Profiling type' },
-        duration: { type: 'number', minimum: 1, description: 'Profiling duration in seconds' }
-      }
+        profileType: {
+          type: 'string',
+          enum: ['cpu', 'memory', 'network', 'comprehensive'],
+          description: 'Profiling type',
+        },
+        duration: { type: 'number', minimum: 1, description: 'Profiling duration in seconds' },
+      },
     },
-    handler: async (params) => ({ success: true, data: { profile: params.profileType, bottlenecks: ['io wait'], recommendations: ['cache optimization'] } })
+    handler: async (params) => ({
+      success: true,
+      data: {
+        profile: params.profileType,
+        bottlenecks: ['io wait'],
+        recommendations: ['cache optimization'],
+      },
+    }),
   },
   {
     name: 'mcp__claude-zen__security_audit',
@@ -459,16 +492,28 @@ export const systemTools: AdvancedMCPTool[] = [
     priority: 'critical',
     metadata: {
       author: 'claude-zen',
-      tags: ['system', 'security', 'audit']
+      tags: ['system', 'security', 'audit'],
     },
     schema: {
       type: 'object',
       properties: {
-        auditLevel: { type: 'string', enum: ['basic', 'standard', 'comprehensive'], description: 'Audit depth' },
-        includeCompliance: { type: 'boolean', description: 'Include compliance checks' }
-      }
+        auditLevel: {
+          type: 'string',
+          enum: ['basic', 'standard', 'comprehensive'],
+          description: 'Audit depth',
+        },
+        includeCompliance: { type: 'boolean', description: 'Include compliance checks' },
+      },
     },
-    handler: async (params) => ({ success: true, data: { vulnerabilities: 2, severity: 'low', compliance: 95, recommendations: ['update packages'] } })
+    handler: async (params) => ({
+      success: true,
+      data: {
+        vulnerabilities: 2,
+        severity: 'low',
+        compliance: 95,
+        recommendations: ['update packages'],
+      },
+    }),
   },
   {
     name: 'mcp__claude-zen__backup_manager',
@@ -479,17 +524,28 @@ export const systemTools: AdvancedMCPTool[] = [
     priority: 'high',
     metadata: {
       author: 'claude-zen',
-      tags: ['system', 'backup', 'recovery']
+      tags: ['system', 'backup', 'recovery'],
     },
     schema: {
       type: 'object',
       properties: {
-        action: { type: 'string', enum: ['create', 'restore', 'schedule', 'verify'], description: 'Backup action' },
-        backupType: { type: 'string', enum: ['full', 'incremental', 'differential'], description: 'Backup type' }
+        action: {
+          type: 'string',
+          enum: ['create', 'restore', 'schedule', 'verify'],
+          description: 'Backup action',
+        },
+        backupType: {
+          type: 'string',
+          enum: ['full', 'incremental', 'differential'],
+          description: 'Backup type',
+        },
       },
-      required: ['action']
+      required: ['action'],
     },
-    handler: async (params) => ({ success: true, data: { action: params.action, status: 'completed', size: '2.5GB' } })
+    handler: async (params) => ({
+      success: true,
+      data: { action: params.action, status: 'completed', size: '2.5GB' },
+    }),
   },
   {
     name: 'mcp__claude-zen__capacity_planner',
@@ -500,16 +556,27 @@ export const systemTools: AdvancedMCPTool[] = [
     priority: 'medium',
     metadata: {
       author: 'claude-zen',
-      tags: ['system', 'capacity', 'planning']
+      tags: ['system', 'capacity', 'planning'],
     },
     schema: {
       type: 'object',
       properties: {
-        timeHorizon: { type: 'string', enum: ['month', 'quarter', 'year'], description: 'Planning time horizon' },
-        growthRate: { type: 'number', minimum: 0, description: 'Expected growth rate percentage' }
-      }
+        timeHorizon: {
+          type: 'string',
+          enum: ['month', 'quarter', 'year'],
+          description: 'Planning time horizon',
+        },
+        growthRate: { type: 'number', minimum: 0, description: 'Expected growth rate percentage' },
+      },
     },
-    handler: async (params) => ({ success: true, data: { horizon: params.timeHorizon, recommendations: ['add 2 cores'], cost_estimate: '$500/month' } })
+    handler: async (params) => ({
+      success: true,
+      data: {
+        horizon: params.timeHorizon,
+        recommendations: ['add 2 cores'],
+        cost_estimate: '$500/month',
+      },
+    }),
   },
   {
     name: 'mcp__claude-zen__network_analyzer',
@@ -520,16 +587,32 @@ export const systemTools: AdvancedMCPTool[] = [
     priority: 'medium',
     metadata: {
       author: 'claude-zen',
-      tags: ['system', 'network', 'analysis']
+      tags: ['system', 'network', 'analysis'],
     },
     schema: {
       type: 'object',
       properties: {
-        analysisType: { type: 'string', enum: ['latency', 'throughput', 'packet-loss', 'comprehensive'], description: 'Analysis type' },
-        targetHosts: { type: 'array', items: { type: 'string' }, description: 'Target hosts to analyze' }
-      }
+        analysisType: {
+          type: 'string',
+          enum: ['latency', 'throughput', 'packet-loss', 'comprehensive'],
+          description: 'Analysis type',
+        },
+        targetHosts: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Target hosts to analyze',
+        },
+      },
     },
-    handler: async (params) => ({ success: true, data: { analysis: params.analysisType, latency: '15ms', throughput: '100Mbps', recommendations: ['cdn optimization'] } })
+    handler: async (params) => ({
+      success: true,
+      data: {
+        analysis: params.analysisType,
+        latency: '15ms',
+        throughput: '100Mbps',
+        recommendations: ['cdn optimization'],
+      },
+    }),
   },
   {
     name: 'mcp__claude-zen__system_validator',
@@ -540,17 +623,28 @@ export const systemTools: AdvancedMCPTool[] = [
     priority: 'high',
     metadata: {
       author: 'claude-zen',
-      tags: ['system', 'validation', 'compliance']
+      tags: ['system', 'validation', 'compliance'],
     },
     schema: {
       type: 'object',
       properties: {
-        validationType: { type: 'string', enum: ['integrity', 'compliance', 'configuration'], description: 'Validation type' },
-        standards: { type: 'array', items: { type: 'string' }, description: 'Compliance standards to check' }
-      }
+        validationType: {
+          type: 'string',
+          enum: ['integrity', 'compliance', 'configuration'],
+          description: 'Validation type',
+        },
+        standards: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Compliance standards to check',
+        },
+      },
     },
-    handler: async (params) => ({ success: true, data: { validation: params.validationType, passed: 98, failed: 2, compliance_score: 95 } })
-  }
+    handler: async (params) => ({
+      success: true,
+      data: { validation: params.validationType, passed: 98, failed: 2, compliance_score: 95 },
+    }),
+  },
 ];
 
 export default systemTools;
