@@ -18,9 +18,7 @@ permissions:
 jobs:
   simple-automation:
     runs-on: ubuntu-latest
-    if: >
-      contains(github.event.issue.labels.*.name, 'claude-code') &&
-      github.event.issue.user.login == 'mikkihugo'
+    if: contains(github.event.issue.labels.*.name, 'claude-code')
     
     steps:
       - name: Checkout repository
