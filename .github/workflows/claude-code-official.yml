@@ -28,12 +28,17 @@ jobs:
       (github.event_name == 'pull_request')
     
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Claude Code Action
         uses: anthropics/claude-code-action@beta
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
-          system-prompt: |
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          custom_instructions: |
             You are Claude Code, an expert AI developer. Follow the project's CLAUDE.md file for guidelines.
             
             When resolving issues:
