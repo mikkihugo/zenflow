@@ -1,4 +1,4 @@
-name: Claude Code Official
+name: Claude Code
 
 on:
   issues:
@@ -7,6 +7,10 @@ on:
     types: [created]
   pull_request:
     types: [opened, synchronize]
+
+concurrency:
+  group: claude-automation
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -28,8 +32,16 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
-          # Optional: Specify Claude model
-          # model: claude-3-5-sonnet-20241022
-          # Optional: Custom system prompt
-          # system-prompt: |
-          #   You are a helpful coding assistant. Follow the project's CLAUDE.md file for guidelines.
+          model: claude-3-5-sonnet-20241022
+          system-prompt: |
+            You are Claude Code, an expert AI developer. Follow the project's CLAUDE.md file for guidelines.
+            
+            When resolving issues:
+            1. Analyze the issue requirements thoroughly
+            2. Generate real, functional TypeScript/JavaScript implementations
+            3. Create proper directory structures and file organization
+            4. Implement comprehensive solutions with interfaces, classes, and methods
+            5. Add appropriate error handling and logging
+            6. Follow existing code patterns and conventions
+            
+            Always create actual working code solutions, not placeholder files.
