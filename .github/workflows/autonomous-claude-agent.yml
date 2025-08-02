@@ -1,3 +1,4 @@
+---
 # Autonomous Claude Code CLI Agent Workflow
 # Automatically triggered when new issues are created
 # Implements fully autonomous development pipeline per architectural blueprint
@@ -8,7 +9,7 @@ on:
   issues:
     types: [opened, labeled]
 
-# Enforce serial execution - max 1 at a time to prevent resource conflicts and costs
+# Enforce serial execution - max 1 at a time to prevent resource conflicts
 concurrency:
   group: claude-issue-solver
   cancel-in-progress: false
@@ -21,7 +22,8 @@ jobs:
     # Run for new issues or when claude-code label is added
     if: |
       (github.event_name == 'issues' && github.event.action == 'opened') ||
-      (github.event_name == 'issues' && github.event.action == 'labeled' && github.event.label.name == 'claude-code')
+      (github.event_name == 'issues' && github.event.action == 'labeled' &&
+       github.event.label.name == 'claude-code')
 
     permissions:
       contents: write
@@ -51,7 +53,8 @@ jobs:
       - name: Configure Git for Claude
         run: |
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.email \
+            "github-actions[bot]@users.noreply.github.com"
           git config --global init.defaultBranch main
 
       - name: Execute Claude Code CLI Agent
@@ -65,21 +68,33 @@ jobs:
             Your task is to resolve GitHub issue #${{ github.event.issue.number }}.
 
             **Phase 1: Analysis and Planning**
-            Before writing any code, you must first analyze the problem and create a detailed implementation plan. Your plan should be formatted as a Markdown block and must include:
+            Before writing any code, you must first analyze the problem and
+            create a detailed implementation plan. Your plan should be
+            formatted as a Markdown block and must include:
             1. A summary of your understanding of the issue's requirements.
             2. A list of all files you intend to create or modify.
             3. For each file, a description of the specific changes you will make.
-            4. A description of the testing strategy you will use to verify your solution.
+            4. A description of the testing strategy you will use to verify
+               your solution.
 
-            Use the 'think hard' directive to ensure you have sufficient time to formulate a robust plan.
+            Use the 'think hard' directive to ensure you have sufficient time
+            to formulate a robust plan.
 
             **Phase 2: Implementation**
-            After formulating the plan, proceed with the implementation. Execute your plan step-by-step. You must adhere to all guidelines specified in the CLAUDE_AGENT.md file.
+            After formulating the plan, proceed with the implementation. Execute
+            your plan step-by-step. You must adhere to all guidelines specified
+            in the CLAUDE_AGENT.md file.
 
             **Phase 3: Pull Request**
-            Once the implementation is complete and you have verified it against your testing strategy, commit the changes and create a pull request for review.
+            Once the implementation is complete and you have verified it against
+            your testing strategy, commit the changes and create a pull request
+            for review.
 
-            If you are unsure about the existing implementation of a related component or the purpose of a utility function, use a sub-agent to read the relevant files and provide you with a summary before you proceed with your plan. This will ensure your changes are compatible with the existing codebase.
+            If you are unsure about the existing implementation of a related
+            component or the purpose of a utility function, use a sub-agent to
+            read the relevant files and provide you with a summary before you
+            proceed with your plan. This will ensure your changes are compatible
+            with the existing codebase.
 
           # Use Claude OAuth for API auth but GitHub token for git operations
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
