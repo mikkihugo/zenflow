@@ -44,6 +44,9 @@ export interface AgentSelectionCriteria {
   excludeAgents?: AgentId[];
   prioritizeBy?: 'load' | 'performance' | 'health' | 'availability';
   maxResults?: number;
+  fileType?: string;
+  projectContext?: string;
+  taskType?: 'performance' | 'migration' | 'testing' | 'ui-ux' | 'development' | 'analysis';
 }
 
 /**
@@ -219,8 +222,10 @@ export class AgentRegistry extends EventEmitter {
       if (query.capabilities && query.capabilities.length > 0) {
         const hasAllCapabilities = query.capabilities.every(
           (cap) =>
-            agent.capabilities.skills.includes(cap) ||
-            agent.capabilities.specializations.includes(cap)
+            agent.capabilities.languages?.includes(cap) ||
+            agent.capabilities.frameworks?.includes(cap) ||
+            agent.capabilities.domains?.includes(cap) ||
+            agent.capabilities.tools?.includes(cap)
         );
         if (!hasAllCapabilities) {
           return false;
@@ -256,6 +261,11 @@ export class AgentRegistry extends EventEmitter {
       candidates = candidates.filter((agent) => !criteria.excludeAgents!.includes(agent.id));
     }
 
+    // Enhanced selection based on file type and task context
+    if (criteria.fileType || criteria.taskType) {
+      candidates = this.filterByContext(candidates, criteria);
+    }
+
     // Sort by priority
     candidates.sort((a, b) => {
       switch (criteria.prioritizeBy) {
@@ -268,9 +278,9 @@ export class AgentRegistry extends EventEmitter {
         case 'availability':
           return a.metrics.tasksInProgress - b.metrics.tasksInProgress;
         default: {
-          // Default: balanced scoring
-          const scoreA = this.calculateSelectionScore(a);
-          const scoreB = this.calculateSelectionScore(b);
+          // Default: balanced scoring with context awareness
+          const scoreA = this.calculateSelectionScore(a, criteria);
+          const scoreB = this.calculateSelectionScore(b, criteria);
           return scoreB - scoreA;
         }
       }
@@ -434,12 +444,135 @@ export class AgentRegistry extends EventEmitter {
     return Math.max(0, Math.min(1, health));
   }
 
-  private calculateSelectionScore(agent: RegisteredAgent): number {
+  private calculateSelectionScore(agent: RegisteredAgent, criteria?: AgentSelectionCriteria): number {
     // Balanced scoring for agent selection
     const availabilityScore = (1 - agent.loadFactor) * 0.3;
     const performanceScore = agent.metrics.successRate * 0.4;
     const healthScore = agent.health * 0.3;
 
-    return availabilityScore + performanceScore + healthScore;
+    let contextScore = 0;
+    if (criteria) {
+      contextScore = this.calculateContextScore(agent, criteria) * 0.2;
+    }
+
+    return availabilityScore + performanceScore + healthScore + contextScore;
+  }
+
+  private filterByContext(candidates: RegisteredAgent[], criteria: AgentSelectionCriteria): RegisteredAgent[] {
+    const fileTypeToAgents = this.getFileTypeMapping();
+    const taskTypeToAgents = this.getTaskTypeMapping();
+
+    return candidates.filter(agent => {
+      // File type matching
+      if (criteria.fileType && fileTypeToAgents[criteria.fileType]) {
+        const relevantTypes = fileTypeToAgents[criteria.fileType];
+        if (!relevantTypes.includes(agent.type)) {
+          return false;
+        }
+      }
+
+      // Task type matching
+      if (criteria.taskType && taskTypeToAgents[criteria.taskType]) {
+        const relevantTypes = taskTypeToAgents[criteria.taskType];
+        if (!relevantTypes.includes(agent.type)) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }
+
+  private calculateContextScore(agent: RegisteredAgent, criteria: AgentSelectionCriteria): number {
+    const fileTypeToAgents = this.getFileTypeMapping();
+    const taskTypeToAgents = this.getTaskTypeMapping();
+
+    let score = 0;
+
+    // File type relevance
+    if (criteria.fileType && fileTypeToAgents[criteria.fileType]) {
+      const relevantTypes = fileTypeToAgents[criteria.fileType];
+      if (relevantTypes.includes(agent.type)) {
+        score += 0.5;
+      }
+    }
+
+    // Task type relevance
+    if (criteria.taskType && taskTypeToAgents[criteria.taskType]) {
+      const relevantTypes = taskTypeToAgents[criteria.taskType];
+      if (relevantTypes.includes(agent.type)) {
+        score += 0.5;
+      }
+    }
+
+    return Math.min(1, score);
+  }
+
+  private getFileTypeMapping(): Record<string, AgentType[]> {
+    return {
+      // Frontend files
+      'tsx': ['frontend-dev', 'ui-designer', 'ux-designer', 'accessibility-specialist'],
+      'jsx': ['frontend-dev', 'ui-designer', 'ux-designer'],
+      'css': ['ui-designer', 'frontend-dev'],
+      'scss': ['ui-designer', 'frontend-dev'],
+      'html': ['frontend-dev', 'ui-designer', 'accessibility-specialist'],
+      
+      // Backend files
+      'js': ['fullstack-dev', 'dev-backend-api', 'frontend-dev'],
+      'ts': ['fullstack-dev', 'dev-backend-api', 'frontend-dev'],
+      'py': ['dev-backend-api', 'ai-ml-specialist', 'data-ml-model'],
+      'java': ['dev-backend-api', 'system-architect'],
+      'go': ['dev-backend-api', 'performance-analyzer'],
+      
+      // Database files
+      'sql': ['database-architect', 'data-ml-model', 'etl-specialist'],
+      'mongodb': ['database-architect', 'data-ml-model'],
+      
+      // DevOps files
+      'yaml': ['ops-cicd-github', 'infrastructure-ops'],
+      'yml': ['ops-cicd-github', 'infrastructure-ops'],
+      'dockerfile': ['infrastructure-ops', 'deployment-ops'],
+      'tf': ['infrastructure-ops', 'cloud-architect'],
+      
+      // Documentation
+      'md': ['technical-writer', 'readme-writer', 'user-guide-writer'],
+      'rst': ['technical-writer', 'user-guide-writer'],
+      
+      // Performance files
+      'wasm': ['performance-analyzer', 'bottleneck-analyzer', 'latency-optimizer'],
+      'c': ['performance-analyzer', 'embedded-specialist', 'latency-optimizer'],
+      'cpp': ['performance-analyzer', 'embedded-specialist', 'latency-optimizer'],
+      'rs': ['performance-analyzer', 'memory-optimizer', 'latency-optimizer']
+    };
+  }
+
+  private getTaskTypeMapping(): Record<string, AgentType[]> {
+    return {
+      'performance': [
+        'performance-analyzer', 'cache-optimizer', 'memory-optimizer', 
+        'latency-optimizer', 'bottleneck-analyzer', 'performance-benchmarker',
+        'load-balancer', 'topology-optimizer'
+      ],
+      'migration': [
+        'legacy-analyzer', 'modernization-agent', 'migration-coordinator',
+        'migration-plan', 'system-architect', 'database-architect'
+      ],
+      'testing': [
+        'unit-tester', 'integration-tester', 'e2e-tester', 
+        'performance-tester', 'tdd-london-swarm', 'production-validator'
+      ],
+      'ui-ux': [
+        'ux-designer', 'ui-designer', 'accessibility-specialist',
+        'frontend-dev', 'user-guide-writer'
+      ],
+      'development': [
+        'coder', 'developer', 'fullstack-dev', 'frontend-dev', 
+        'dev-backend-api', 'api-dev'
+      ],
+      'analysis': [
+        'analyst', 'analyze-code-quality', 'performance-analyzer',
+        'security-analyzer', 'refactoring-analyzer', 'data-ml-model'
+      ]
+    };
   }
 }

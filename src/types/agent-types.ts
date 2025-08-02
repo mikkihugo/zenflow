@@ -82,6 +82,11 @@ export type AgentType =
   | 'blockchain-specialist'
   | 'ai-ml-specialist'
 
+  // UI/UX Enhancement Agents
+  | 'ux-designer'           // User experience design
+  | 'ui-designer'           // User interface design
+  | 'accessibility-specialist' // Accessibility compliance
+
   // GitHub Integration Agents
   | 'code-review-swarm'
   | 'github-modes'
@@ -124,6 +129,10 @@ export type AgentType =
   | 'performance-monitor'
   | 'resource-allocator'
   | 'topology-optimizer'
+  | 'cache-optimizer'        // Caching strategy optimization
+  | 'memory-optimizer'       // Memory usage optimization  
+  | 'latency-optimizer'      // Latency reduction specialist
+  | 'bottleneck-analyzer'    // Performance bottleneck detection
 
   // SPARC Methodology Agents
   | 'specification'
@@ -132,11 +141,18 @@ export type AgentType =
   | 'pseudocode'
   | 'sparc-coordinator'
   | 'implementer-sparc-coder'
+  | 'quality-gate-agent'     // Quality assurance checkpoints
+  | 'validation-specialist'  // Cross-phase validation
 
   // Smart Automation Agents
   | 'automation-smart-agent'
   | 'base-template-generator'
   | 'migration-plan'
+
+  // Migration & Planning Agents
+  | 'legacy-analyzer'        // Legacy system analysis
+  | 'modernization-agent'    // Technology modernization
+  | 'migration-coordinator'  // Migration strategy coordination
 
   // Maestro specs-driven agent types (legacy compatibility)
   | 'requirements_analyst'
