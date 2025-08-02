@@ -3,13 +3,37 @@
  * Provides safety validation, auto-assignment, performance tracking, and context loading
  */
 
-import { AgentType } from '../../types/agent-types.js';
+import type { AgentType } from '../../types/agent-types.js';
 
 // Hook Type Definitions
-export type HookType = 'command' | 'guidance' | 'validation' | 'assignment' | 'performance' | 'context';
-export type HookTrigger = 'PreToolUse' | 'PostToolUse' | 'PreCompact' | 'PostCompact' | 'OnError' | 'OnInit';
+export type HookType =
+  | 'command'
+  | 'guidance'
+  | 'validation'
+  | 'assignment'
+  | 'performance'
+  | 'context';
+export type HookTrigger =
+  | 'PreToolUse'
+  | 'PostToolUse'
+  | 'PreCompact'
+  | 'PostCompact'
+  | 'OnError'
+  | 'OnInit';
 export type RiskLevel = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-export type FileType = 'typescript' | 'javascript' | 'python' | 'rust' | 'golang' | 'java' | 'cpp' | 'markdown' | 'json' | 'yaml' | 'sql' | 'unknown';
+export type FileType =
+  | 'typescript'
+  | 'javascript'
+  | 'python'
+  | 'rust'
+  | 'golang'
+  | 'java'
+  | 'cpp'
+  | 'markdown'
+  | 'json'
+  | 'yaml'
+  | 'sql'
+  | 'unknown';
 
 // Core Hook Interface
 export interface EnhancedHook {
@@ -23,7 +47,7 @@ export interface EnhancedHook {
   readonly tracker?: MetricsTracker;
   readonly enabled: boolean;
   readonly priority: number;
-  
+
   execute(context: HookContext): Promise<HookResult>;
 }
 
