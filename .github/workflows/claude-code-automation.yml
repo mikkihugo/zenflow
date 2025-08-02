@@ -139,7 +139,7 @@ jobs:
             ENVIRONMENT: production
             AUTO_SOLVE: true
             AUTO_APPROVE: true
-          prompt: |
+          direct_prompt: |
             You are Claude Code, an AI assistant specialized in automated issue resolution and code generation.
             
             CRITICAL MISSION: Completely solve this GitHub issue and create a pull request that can be automatically approved.
