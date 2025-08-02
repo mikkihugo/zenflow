@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 /**
- * Start HTTP MCP Server - Official SDK Implementation
+ * Start HTTP MCP Server
  *
- * Startup script for the Claude-Zen HTTP MCP server using the official MCP SDK.
- * This replaces the custom Express.js implementation while maintaining all functionality.
+ * Startup script for the Claude-Zen HTTP MCP server.
+ * This is the main entry point for the port 3000 MCP server.
  */
 
 import { HTTPMCPServer } from './http-mcp-server.js';
@@ -86,7 +86,7 @@ function parseArgs(): StartupConfig {
  */
 function printUsage(): void {
   console.log(`
-Claude-Zen HTTP MCP Server (Official SDK)
+Claude-Zen HTTP MCP Server
 
 Usage: npx tsx src/interfaces/mcp/start-server.ts [options]
 
@@ -107,13 +107,6 @@ Examples:
   npx tsx src/interfaces/mcp/start-server.ts
   npx tsx src/interfaces/mcp/start-server.ts --port 3001 --host 0.0.0.0
   MCP_PORT=3000 npx tsx src/interfaces/mcp/start-server.ts
-
-SDK Features:
-  ✅ Official MCP SDK v1.17.1 compliance
-  ✅ Streamable HTTP transport with session management
-  ✅ Automatic JSON-RPC 2.0 handling
-  ✅ Built-in validation with Zod schemas
-  ✅ Enhanced TypeScript support
 `);
 }
 
@@ -134,7 +127,7 @@ function setupGracefulShutdown(server: HTTPMCPServer): void {
 
     try {
       await server.stop();
-      logger.info('SDK server shutdown complete');
+      logger.info('Server shutdown complete');
       process.exit(0);
     } catch (error) {
       logger.error('Error during shutdown:', error);
@@ -190,7 +183,7 @@ async function main(): Promise<void> {
     // Validate configuration
     validateConfig(config);
 
-    logger.info('Starting Claude-Zen SDK HTTP MCP Server...', { config });
+    logger.info('Starting Claude-Zen HTTP MCP Server...', { config });
 
     // Create and configure server
     const server = new HTTPMCPServer({
@@ -198,6 +191,8 @@ async function main(): Promise<void> {
       host: config.host || process.env.MCP_HOST || 'localhost',
       logLevel: config.logLevel || (process.env.MCP_LOG_LEVEL as any) || 'info',
       timeout: config.timeout || parseInt(process.env.MCP_TIMEOUT || '30000', 10),
+      cors: true,
+      maxRequestSize: '10mb',
     });
 
     // Setup graceful shutdown
@@ -208,18 +203,18 @@ async function main(): Promise<void> {
 
     // Log success information
     const status = server.getStatus();
-    logger.info('SDK server started successfully', {
+    logger.info('Server started successfully', {
       port: status.config.port,
       host: status.config.host,
+      tools: status.tools,
       pid: process.pid,
-      sdk: status.sdk,
     });
 
     // Keep process alive
     process.stdin.resume();
   } catch (error) {
     console.error('Raw startup error:', error);
-    logger.error('Failed to start SDK server:', {
+    logger.error('Failed to start server:', {
       message: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
       code: (error as any)?.code,
@@ -240,7 +235,7 @@ async function main(): Promise<void> {
 // Run if this file is executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch((error) => {
-    console.error('SDK startup failed:', error);
+    console.error('Startup failed:', error);
     process.exit(1);
   });
 }
