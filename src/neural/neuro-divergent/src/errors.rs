@@ -2,7 +2,7 @@
 
 use thiserror::Error;
 use polars::error::PolarsError;
-use ruv_fann::errors::RuvFannError;
+// use ruv_fann::errors::RuvFannError; // Commented out - path dependency removed
 
 /// Result type alias for neuro-divergent operations
 pub type NeuroDivergentResult<T> = Result<T, NeuroDivergentError>;
@@ -186,12 +186,12 @@ impl From<chrono::ParseError> for NeuroDivergentError {
     }
 }
 
-// Integration with ruv-FANN errors
-impl From<RuvFannError> for NeuroDivergentError {
-    fn from(err: RuvFannError) -> Self {
-        Self::FannError(format!("ruv-FANN error: {}", err))
-    }
-}
+// Integration with ruv-FANN errors - commented out due to path dependency removal
+// impl From<RuvFannError> for NeuroDivergentError {
+//     fn from(err: RuvFannError) -> Self {
+//         Self::FannError(format!("ruv-FANN error: {}", err))
+//     }
+// }
 
 // Integration with ndarray errors
 impl From<ndarray::ShapeError> for NeuroDivergentError {
