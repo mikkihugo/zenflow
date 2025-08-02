@@ -9,6 +9,17 @@ on:
     types: [opened, closed]
   check_suite:
     types: [completed]
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'process-all-prs'
+        type: choice
+        options:
+        - process-all-prs
+        - fix-failing-checks
+        - force-merge-ready
 
 permissions:
   issues: write
