@@ -109,7 +109,7 @@ cargo-tarpaulin = "0.27"
 
 [build-dependencies]
 lalrpop = "0.20"  # Parser generator for complex grammars
-bindgen = { version = "0.69", optional = true }  # For native bindings
+bindgen = { version = "0.72", optional = true }  # For native bindings
 cc = "1.0"  # C/C++ compilation
 pkg-config = "0.3"  # System dependency detection
 
