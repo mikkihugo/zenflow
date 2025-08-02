@@ -1,15 +1,20 @@
 /**
  * API Interface Module
  *
- * Exports API interface components for REST and WebSocket communications.
+ * Unified API interface providing multiple communication protocols:
+ * - HTTP API (REST/GraphQL server + client)
+ * - WebSocket API (real-time communication)
+ * - Unified configuration and utilities
  *
- * This module provides programmatic access to the system via WebSocket
- * and other API patterns, separate from HTTP REST endpoints.
+ * Architecture: Protocol-based organization, not implementation-based
  */
 
-// WebSocket client for real-time communication
-export * from './websocket-client.js';
-export { WebSocketClient as default } from './websocket-client.js';
+// HTTP API (REST/GraphQL - consolidated from src/api/)
+export * from './http/index.js';
+
+// WebSocket API (real-time communication)
+export * from './websocket/index.js';
+export { default as WebSocketClient } from './websocket/index.js';
 
 // API interface configuration
 export interface APIInterfaceConfig {

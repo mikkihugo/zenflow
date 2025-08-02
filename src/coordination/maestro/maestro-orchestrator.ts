@@ -29,7 +29,7 @@ import {
   agenticHookManager,
   initializeAgenticFlowHooks,
 } from '../services/agentic-flow-hooks/index';
-import type { Config } from '../utils/types';
+import type { Config } from '../../core/types';
 
 // Types for maestro system
 import {

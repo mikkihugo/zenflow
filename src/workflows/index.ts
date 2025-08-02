@@ -13,8 +13,7 @@ export type {
   WorkflowStep,
 } from './engine';
 // Core workflow engine
-export { WorkflowEngine } from './engine';
-export { WorkflowEngine as default } from './engine';
+export { WorkflowEngine, WorkflowEngine as default } from './engine';
 
 // Import for factory use
 import { WorkflowEngine } from './engine';

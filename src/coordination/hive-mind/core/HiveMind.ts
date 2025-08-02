@@ -46,6 +46,20 @@ export class HiveMind extends EventEmitter {
     this.queens = new Map();
     this.agents = new Map();
     this.startTime = Date.now();
+
+    // Initialize components after construction to avoid circular dependencies
+    this.initializeComponents();
+  }
+
+  /**
+   * Initialize components with dependency injection to break circular dependencies
+   */
+  private initializeComponents(): void {
+    // Create orchestrator without HiveMind reference initially
+    this.orchestrator = new SwarmOrchestrator();
+
+    // Inject HiveMind reference after construction
+    this.orchestrator.setHiveMind(this);
   }
 
   /**

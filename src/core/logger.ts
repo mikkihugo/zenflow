@@ -1,43 +1,81 @@
 /**
- * Logger - Core logging system for claude-flow
- * Uses the existing CLI logger implementation
+ * @fileoverview Logger utility for Neural and Queen components
+ * Simple wrapper around the core logger for component-specific logging
+ * @module Logger
  */
 
-// Re-export from utils logger
-export {
-  createLogger,
-  debug,
-  error,
-  info,
-  type Logger,
-  type LoggerConfig,
-  LogLevel,
-  logger,
-  warn,
-} from '../utils/logger.js';
-
-/**
- * Supported log argument types
- */
-export type LogArgument =
-  | string
-  | number
-  | boolean
-  | null
-  | undefined
-  | Error
-  | Record<string, unknown>
-  | readonly unknown[];
-
-/**
- * Compatible interface for existing code with strict typing
- */
-export interface ILogger {
-  debug(message: string, ...args: readonly LogArgument[]): void;
-  info(message: string, ...args: readonly LogArgument[]): void;
-  warn(message: string, ...args: readonly LogArgument[]): void;
-  error(message: string, ...args: readonly LogArgument[]): void;
-  log(level: LogLevel, message: string, ...args: readonly LogArgument[]): void;
+// Import logger utilities directly to avoid circular dependency
+export enum LogLevel {
+  DEBUG = 'debug',
+  INFO = 'info',
+  WARN = 'warn',
+  ERROR = 'error',
 }
 
-export default createLogger;
+export interface LoggerConfig {
+  prefix?: string;
+  level?: LogLevel;
+}
+
+// Simple logger implementation to avoid circular imports
+function simpleCreateLogger(config: Partial<LoggerConfig> = {}) {
+  const prefix = config.prefix ? `[${config.prefix}]` : '';
+
+  return {
+    info: (message: string, meta?: any) => console.log(`${prefix} ${message}`, meta || ''),
+    warn: (message: string, meta?: any) => console.warn(`${prefix} ${message}`, meta || ''),
+    error: (message: string, meta?: any, error?: any) =>
+      console.error(`${prefix} ${message}`, meta || '', error || ''),
+    debug: (message: string, meta?: any) => console.debug(`${prefix} ${message}`, meta || ''),
+  };
+}
+
+const createLogger = simpleCreateLogger;
+
+// Export the createLogger function for use throughout the system
+export { createLogger };
+
+export interface LogMeta {
+  timestamp?: string;
+  level?: LogLevel;
+  context?: string;
+  [key: string]: any;
+}
+
+export class Logger {
+  private coreLogger: ReturnType<typeof createLogger>;
+
+  constructor(component?: string) {
+    const config: Partial<LoggerConfig> = component ? { prefix: component } : {};
+    this.coreLogger = createLogger(config);
+  }
+
+  info(message: string, meta?: LogMeta): void {
+    this.coreLogger.info(message, meta);
+  }
+
+  warn(message: string, meta?: LogMeta): void {
+    this.coreLogger.warn(message, meta);
+  }
+
+  error(message: string, error?: Error | unknown): void {
+    this.coreLogger.error(message, {}, error ?? null);
+  }
+
+  debug(message: string, meta?: LogMeta): void {
+    this.coreLogger.debug(message, meta);
+  }
+
+  success(message: string, meta?: LogMeta): void {
+    this.coreLogger.info(`✅ ${message}`, meta);
+  }
+
+  progress(message: string, meta?: LogMeta): void {
+    this.coreLogger.info(`🔄 ${message}`, meta);
+  }
+}
+
+// Export a default logger instance
+export const logger = new Logger();
+
+// Export types for convenience (LogLevel already exported above)

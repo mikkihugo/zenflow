@@ -45,9 +45,12 @@ export const BindingsUtils = {
     switch (bindingType) {
       case 'native':
         return require('./build/Release/native');
-      case 'wasm':
-        // Load WASM bindings from neural/wasm
-        return await import('../neural/wasm/index.js');
+      case 'wasm': {
+        // Load WASM bindings through proper abstraction (fixed isolation violation)
+        // Instead of direct import, use dynamic loading with proper interface
+        const wasmModule = await import('./wasm-binding-interface.js');
+        return wasmModule.default;
+      }
       default:
         throw new Error('No bindings available');
     }

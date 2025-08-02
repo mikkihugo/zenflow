@@ -3,7 +3,7 @@
  * Integrates neural network components with Claude-Zen system
  */
 
-import { createLogger } from '../utils/logger';
+import { createLogger } from '../core/logger';
 
 const logger = createLogger({ prefix: 'Neural' });
 

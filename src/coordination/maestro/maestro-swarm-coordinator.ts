@@ -24,7 +24,7 @@ import {
   Task,
   type TaskSubmitOptions,
 } from '../hive-mind/types';
-import { SystemError } from '../utils/errors';
+import { SystemError } from '../../core/errors';
 
 // Maestro types
 import { MaestroSpec, type MaestroWorkflowState, type WorkflowPhase } from './maestro-types';

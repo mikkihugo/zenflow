@@ -11,12 +11,11 @@
 
 // All Interface Exports
 export * from './api';
+// Advanced CLI System (Revolutionary AI-powered capabilities)
+export * from './cli';
 export * from './mcp';
 export * from './terminal';
 export * from './web';
-
-// Advanced CLI System (Revolutionary AI-powered capabilities)
-export * from './cli';
 
 // Enhanced Interface types
 export interface InterfaceConfig {
@@ -38,33 +37,33 @@ export const InterfaceUtils = {
     if (process.env.CLAUDE_CODE_MCP) return 'mcp';
     if (process.env.CLAUDE_FLOW_WEB) return 'web';
     if (process.env.CLAUDE_FLOW_API) return 'api';
-    
+
     // Check for advanced CLI indicators
     const args = process.argv.slice(2);
     const advancedCommands = ['create', 'optimize', 'generate', 'swarm', 'neural'];
     const aiFlags = ['--ai-assist', '--real-time', '--optimize', '--neural', '--swarm'];
-    
-    const hasAdvancedCommand = args.some(arg => advancedCommands.includes(arg));
-    const hasAIFlag = args.some(arg => aiFlags.includes(arg));
-    
+
+    const hasAdvancedCommand = args.some((arg) => advancedCommands.includes(arg));
+    const hasAIFlag = args.some((arg) => aiFlags.includes(arg));
+
     if (hasAdvancedCommand || hasAIFlag) return 'advanced-cli';
-    
+
     return 'terminal'; // Default to unified terminal interface
   },
 
   detectTerminalMode(): 'cli' | 'tui' | 'advanced' {
     // Auto-detect terminal sub-mode with advanced CLI support
     const args = process.argv.slice(2);
-    
+
     // Check for advanced CLI indicators
     const advancedCommands = ['create', 'optimize', 'generate', 'swarm', 'neural'];
     const aiFlags = ['--ai-assist', '--real-time', '--optimize', '--neural', '--swarm'];
-    
-    const hasAdvancedCommand = args.some(arg => advancedCommands.includes(arg));
-    const hasAIFlag = args.some(arg => aiFlags.includes(arg));
-    
+
+    const hasAdvancedCommand = args.some((arg) => advancedCommands.includes(arg));
+    const hasAIFlag = args.some((arg) => aiFlags.includes(arg));
+
     if (hasAdvancedCommand || hasAIFlag) return 'advanced';
-    
+
     if (process.argv.includes('--ui') || process.argv.includes('--tui')) return 'tui';
     if (process.argv.includes('--interactive') || process.argv.includes('-i')) return 'tui';
     if (process.argv.length > 2 && !process.argv.slice(2).some((arg) => arg.startsWith('-')))
@@ -80,16 +79,16 @@ export const InterfaceUtils = {
   isAdvancedCLIEnabled(): boolean {
     const args = process.argv.slice(2);
     const flags = process.env;
-    
+
     // Check for advanced CLI indicators
     const advancedCommands = ['create', 'optimize', 'generate', 'swarm', 'neural'];
     const aiFlags = ['--ai-assist', '--real-time', '--optimize', '--neural', '--swarm'];
-    
-    const hasAdvancedCommand = args.some(arg => advancedCommands.includes(arg));
-    const hasAIFlag = args.some(arg => aiFlags.includes(arg));
-    
+
+    const hasAdvancedCommand = args.some((arg) => advancedCommands.includes(arg));
+    const hasAIFlag = args.some((arg) => aiFlags.includes(arg));
+
     return hasAdvancedCommand || hasAIFlag || flags.CLAUDE_ADVANCED_CLI === 'true';
-  }
+  },
 };
 
 // Enhanced capabilities
@@ -101,10 +100,10 @@ export const INTERFACE_CAPABILITIES = {
   swarmCoordination: true,
   neuralNetworkOptimization: true,
   quantumInspiredAlgorithms: true,
-  enterpriseIntegration: true
+  enterpriseIntegration: true,
 };
 
 export default {
   InterfaceUtils,
-  INTERFACE_CAPABILITIES
+  INTERFACE_CAPABILITIES,
 };

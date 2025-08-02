@@ -1,4 +1,8 @@
 {
+  // ⚠️  WARNING: DO NOT CREATE ADDITIONAL BUILD CONFIGS
+  // This is the ONE AND ONLY tsconfig.json for the entire project.
+  // No tsconfig.production.json, tsconfig.minimal.json, or other variants allowed.
+  
   "compilerOptions": {
     // 🚨 GOOGLE-LEVEL STRICT TYPESCRIPT CONFIGURATION
     // Zero tolerance for code quality issues
@@ -62,6 +66,8 @@
     "removeComments": false,
     "importHelpers": true,
     "downlevelIteration": true,
+    "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo",
 
     // === ADVANCED SETTINGS ===
     "skipLibCheck": true,
@@ -99,8 +105,11 @@
     "**/*.js",
     "**/*.test.js",
     "**/*.spec.js",
+    "src/__tests__/**/*",
+    "tests/**/*",
     "scripts/**/*",
     "benchmark/**/*",
+    "examples/**/*",
     "src/terminal/vscode-bridge.ts",
     "ruv-FANN/**/*",
     "claude-zen-mcp/**/*"

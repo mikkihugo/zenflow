@@ -8,7 +8,8 @@
 import { EventEmitter } from 'events';
 import type { Agent } from '../core/Agent.js';
 import { DatabaseManager } from '../core/DatabaseManager.js';
-import type { HiveMind } from '../core/HiveMind.js';
+// Removed direct HiveMind import to break circular dependency
+// HiveMind will be injected via setHiveMind() method after construction
 // Removed MCP dependency - using direct orchestration
 import {
   type ExecutionPlan,
@@ -20,7 +21,7 @@ import {
 
 export class SwarmOrchestrator extends EventEmitter {
   private static instance: SwarmOrchestrator;
-  private hiveMind: HiveMind;
+  private hiveMind: any; // Using any to avoid circular dependency - will be set via dependency injection
   private db: DatabaseManager;
   private executionPlans: Map<string, ExecutionPlan>;
   private taskAssignments: Map<string, TaskAssignment[]>;
@@ -29,14 +30,19 @@ export class SwarmOrchestrator extends EventEmitter {
   private agents: Map<string, any> = new Map();
   public isActive: boolean = false;
 
-  constructor(hiveMind?: HiveMind) {
+  constructor() {
     super();
-    if (hiveMind) {
-      this.hiveMind = hiveMind;
-    }
     this.executionPlans = new Map();
     this.taskAssignments = new Map();
     this.activeExecutions = new Map();
+  }
+
+  /**
+   * Set HiveMind instance via dependency injection
+   * Called after construction to break circular dependency
+   */
+  setHiveMind(hiveMind: any): void {
+    this.hiveMind = hiveMind;
   }
 
   /**

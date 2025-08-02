@@ -220,7 +220,13 @@ export interface PerformanceOptimizer {
 // Supporting Types
 // ============================================
 
-export type PatternType = 'task_completion' | 'communication' | 'resource_utilization' | 'failure' | 'coordination' | 'optimization';
+export type PatternType =
+  | 'task_completion'
+  | 'communication'
+  | 'resource_utilization'
+  | 'failure'
+  | 'coordination'
+  | 'optimization';
 export type AnomalyType = 'performance' | 'behavior' | 'resource' | 'failure' | 'coordination';
 export type LearningType = 'supervised' | 'unsupervised' | 'reinforcement' | 'online' | 'transfer';
 

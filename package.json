@@ -2,12 +2,12 @@
   "name": "claude-code-zen",
   "version": "2.0.0-alpha.73",
   "description": "Claude Code Zen: Unified AI swarm orchestration platform with neural networks and direct integration",
-  "main": "src/claude-zen-integrated.ts",
+  "main": "dist/claude-zen-core.js",
   "bin": {
     "claude-zen": "./bin/claude-zen"
   },
   "scripts": {
-    "start": "npx tsx src/claude-zen-integrated.ts",
+    "start": "npx tsx src/claude-zen-core.ts",
     "dev": "npx tsx src/claude-zen-integrated.ts --port 3000",
     "dev:tui": "npx tsx src/interfaces/terminal/InteractiveTerminalApplication.tsx",
     "dev:web": "CLAUDE_ZEN_DAEMON=true npx tsx src/interfaces/web/web-interface.ts --daemon",
@@ -44,7 +44,17 @@
     "preflight": "npm run build && npm run test && npm run lint",
     "publish:alpha": "npm publish --tag alpha",
     "publish:patch": "npm version patch && npm publish",
-    "sync:check": "node scripts/sync-check.js"
+    "sync:check": "node scripts/sync-check.js",
+    "deps:check": "npx depcruise src",
+    "deps:graph": "npx depcruise --output-to dependency-graph.svg src",
+    "deps:html": "npx depcruise --output-to dependency-report.html --output-type html src",
+    "deps:circular": "npx depcruise --output-type err-only --config .dependency-cruiser.cjs src",
+    "build:fast": "npm run clean && tsc --incremental --skipLibCheck",
+    "build:core": "tsc src/core/*.ts src/interfaces/*.ts --outDir dist/core --module ESNext --target ES2022",
+    "build:check": "tsc --noEmit --skipLibCheck",
+    "test:quick": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --passWithNoTests --bail",
+    "prestart": "npm run build:check",
+    "start:dev": "npx tsx src/claude-zen-integrated.ts --dev"
   },
   "keywords": [
     "claude",
@@ -99,7 +109,6 @@
     "acorn": "^8.10.0",
     "better-sqlite3": "^12.2.0",
     "chalk": "^5.4.1",
-    "dependency-cruiser": "^16.8.3",
     "escomplex": "^1.3.0",
     "esprima": "^4.0.1",
     "express": "^5.1.0",
@@ -152,6 +161,7 @@
     "@typescript-eslint/parser": "^8.38.0",
     "axios": "^1.10.0",
     "babel-jest": "^30.0.5",
+    "dependency-cruiser": "^17.0.0",
     "eslint": "^9.31.0",
     "eslint-formatter-compact": "^8.40.0",
     "eslint-formatter-unix": "^8.40.0",
@@ -160,7 +170,6 @@
     "jest": "^30.0.5",
     "jest-extended": "^6.0.0",
     "k6": "^0.0.0",
-    "madge": "^8.0.0",
     "playwright": "^1.54.1",
     "prettier": "^3.6.2",
     "puppeteer": "^24.14.0",

@@ -1,6 +1,6 @@
 /**
  * @fileoverview Advanced CLI Type Definitions
- * 
+ *
  * Comprehensive type system for the advanced CLI and project management system.
  * Defines interfaces for intelligent project scaffolding, swarm coordination,
  * and development workflow orchestration.
@@ -14,12 +14,12 @@ export interface AdvancedCLISystem {
   createIntelligentProject(config: ProjectConfig): Promise<ProjectCreationResult>;
   manageProjectLifecycle(project: Project): Promise<LifecycleResult>;
   optimizeProjectStructure(project: Project): Promise<OptimizationResult>;
-  
+
   // Real-time swarm coordination
   monitorSwarmExecution(swarmId: string): Promise<MonitoringDashboard>;
   controlSwarmOperations(commands: SwarmCommand[]): Promise<ControlResult>;
   visualizeSwarmTopology(topology: SwarmTopology): Promise<VisualizationResult>;
-  
+
   // Advanced development workflows
   orchestrateDevelopmentPipeline(pipeline: DevPipeline): Promise<PipelineResult>;
   automateCodeGeneration(specs: GenerationSpec[]): Promise<GenerationResult>;
@@ -29,9 +29,21 @@ export interface AdvancedCLISystem {
 /**
  * Project Configuration Types
  */
-export type ProjectType = 'neural-ai' | 'swarm-coordination' | 'wasm-performance' | 'full-stack' | 'quantum-coordination';
+export type ProjectType =
+  | 'neural-ai'
+  | 'swarm-coordination'
+  | 'wasm-performance'
+  | 'full-stack'
+  | 'quantum-coordination';
 export type ComplexityLevel = 'simple' | 'moderate' | 'complex' | 'enterprise';
-export type ProjectDomain = 'neural' | 'swarm' | 'wasm' | 'real-time' | 'quantum' | 'blockchain' | 'iot';
+export type ProjectDomain =
+  | 'neural'
+  | 'swarm'
+  | 'wasm'
+  | 'real-time'
+  | 'quantum'
+  | 'blockchain'
+  | 'iot';
 export type AutomationLevel = 'low' | 'medium' | 'high' | 'adaptive';
 export type CommandCategory = 'project' | 'swarm' | 'generate' | 'test' | 'optimize' | 'monitor';
 
@@ -176,7 +188,13 @@ export interface SwarmCommand {
   readonly priority: 'low' | 'medium' | 'high' | 'critical';
 }
 
-export type SwarmCommandType = 'spawn' | 'coordinate' | 'optimize' | 'terminate' | 'migrate' | 'scale';
+export type SwarmCommandType =
+  | 'spawn'
+  | 'coordinate'
+  | 'optimize'
+  | 'terminate'
+  | 'migrate'
+  | 'scale';
 
 export interface SwarmTopology {
   readonly type: 'mesh' | 'hierarchical' | 'ring' | 'star' | 'quantum';

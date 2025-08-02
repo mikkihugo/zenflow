@@ -9,6 +9,7 @@
 import { Box, Text, useApp } from 'ink';
 import type React from 'react';
 import { useEffect, useState } from 'react';
+import AdvancedCLICommands from './AdvancedCLICommands.js';
 import {
   ErrorMessage,
   Header,
@@ -17,7 +18,6 @@ import {
   type SwarmStatus,
 } from './components/index.js';
 import { type CommandResult, MockCommandHandler } from './utils/MockCommandHandler.js';
-import AdvancedCLICommands from './AdvancedCLICommands.js';
 
 export interface CommandExecutionProps {
   commands: string[];
@@ -71,13 +71,13 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
               success: advancedResult.success,
               message: advancedResult.message,
               data: advancedResult,
-              timestamp: new Date()
+              timestamp: new Date(),
             };
           } catch (advancedError) {
             result = {
               success: false,
               error: `Advanced CLI Error: ${advancedError instanceof Error ? advancedError.message : advancedError}`,
-              timestamp: new Date()
+              timestamp: new Date(),
             };
           }
         } else {
@@ -246,7 +246,11 @@ Documentation: https://github.com/ruvnet/claude-zen-flow
 
     return (
       <Box flexDirection="column" padding={1}>
-        <Header title="🧠 Advanced CLI Execution Result" subtitle={commands.join(' ')} showBorder={true} />
+        <Header
+          title="🧠 Advanced CLI Execution Result"
+          subtitle={commands.join(' ')}
+          showBorder={true}
+        />
 
         {result.success ? (
           <Box flexDirection="column">
@@ -262,9 +266,7 @@ Documentation: https://github.com/ruvnet/claude-zen-flow
 
             {result.data && (
               <Box marginTop={1}>
-                <Box flexDirection="column">
-                  {renderAdvancedResultData(result.data)}
-                </Box>
+                <Box flexDirection="column">{renderAdvancedResultData(result.data)}</Box>
               </Box>
             )}
           </Box>
@@ -298,7 +300,9 @@ Documentation: https://github.com/ruvnet/claude-zen-flow
       if (data.summary) {
         elements.push(
           <Box key="summary" marginBottom={1}>
-            <Text bold color="cyan">📊 Summary: </Text>
+            <Text bold color="cyan">
+              📊 Summary:{' '}
+            </Text>
             <Text>{data.summary}</Text>
           </Box>
         );
@@ -308,7 +312,9 @@ Documentation: https://github.com/ruvnet/claude-zen-flow
       if (data.metrics) {
         elements.push(
           <Box key="metrics" marginBottom={1} flexDirection="column">
-            <Text bold color="yellow">📈 Metrics:</Text>
+            <Text bold color="yellow">
+              📈 Metrics:
+            </Text>
             <Box marginLeft={2} flexDirection="column">
               {Object.entries(data.metrics).map(([key, value]) => (
                 <Text key={key}>
@@ -324,7 +330,9 @@ Documentation: https://github.com/ruvnet/claude-zen-flow
       if (data.duration) {
         elements.push(
           <Box key="duration" marginBottom={1}>
-            <Text bold color="blue">⏱️  Duration: </Text>
+            <Text bold color="blue">
+              ⏱️ Duration:{' '}
+            </Text>
             <Text color="cyan">{data.duration}ms</Text>
           </Box>
         );
@@ -334,7 +342,9 @@ Documentation: https://github.com/ruvnet/claude-zen-flow
       if (data.details) {
         elements.push(
           <Box key="details" marginBottom={1}>
-            <Text bold color="magenta">ℹ️  Details: </Text>
+            <Text bold color="magenta">
+              ℹ️ Details:{' '}
+            </Text>
             <Text>{data.details}</Text>
           </Box>
         );
@@ -345,7 +355,9 @@ Documentation: https://github.com/ruvnet/claude-zen-flow
         const fileCount = data.filesCreated || data.result?.generatedFiles?.length || 0;
         elements.push(
           <Box key="files" marginBottom={1}>
-            <Text bold color="green">📁 Files: </Text>
+            <Text bold color="green">
+              📁 Files:{' '}
+            </Text>
             <Text color="cyan">{fileCount} files generated</Text>
           </Box>
         );
@@ -356,7 +368,9 @@ Documentation: https://github.com/ruvnet/claude-zen-flow
         const score = data.qualityScore || data.result?.qualityScore;
         elements.push(
           <Box key="quality" marginBottom={1}>
-            <Text bold color="yellow">🎯 Quality Score: </Text>
+            <Text bold color="yellow">
+              🎯 Quality Score:{' '}
+            </Text>
             <Text color="green">{score}%</Text>
           </Box>
         );
@@ -366,11 +380,13 @@ Documentation: https://github.com/ruvnet/claude-zen-flow
       if (data.result?.aiEnhancements && typeof data.result.aiEnhancements === 'object') {
         elements.push(
           <Box key="ai-enhancements" marginBottom={1} flexDirection="column">
-            <Text bold color="blue">🤖 AI Enhancements:</Text>
+            <Text bold color="blue">
+              🤖 AI Enhancements:
+            </Text>
             <Box marginLeft={2} flexDirection="column">
               {Object.entries(data.result.aiEnhancements).map(([key, value]) => (
                 <Text key={key}>
-                  {key}: <Text color={value ? "green" : "red"}>{value ? "✅" : "❌"}</Text>
+                  {key}: <Text color={value ? 'green' : 'red'}>{value ? '✅' : '❌'}</Text>
                 </Text>
               ))}
             </Box>

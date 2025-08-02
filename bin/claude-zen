@@ -48,25 +48,19 @@ for arg in "$@"; do
   fi
 done
 
-# Use Node.js directly (assuming Node 22 is default)
+# Use Node.js - prefer built files over source
 if [ -f "$ROOT_DIR/dist/interfaces/terminal/main.js" ]; then
-  # Use built Unified Terminal Interface version (preferred)
+  # Use built distribution version (production)
   cd "$ROOT_DIR" && exec node dist/interfaces/terminal/main.js "$@"
-elif [ -f "$ROOT_DIR/src/interfaces/terminal/main.tsx" ]; then
-  # Use source Unified Terminal Interface version with tsx
-  cd "$ROOT_DIR" && exec npx tsx src/interfaces/terminal/main.tsx "$@"
 else
-  # No runtime available, show help
-  echo "🧠 Claude-Flow v$VERSION - Advanced AI Agent Orchestration System"
+  # Built files not found - this should trigger a build
+  echo "🧠 Claude-Zen v$VERSION - Distribution files not found"
   echo ""
-  echo "⚠️  No compatible runtime found."
+  echo "⚠️  Please build the project first:"
+  echo "  npm run build"
   echo ""
-  echo "To install and run:"
-  echo "  1. Build project: npm run build"
-  echo "  2. Run: claude-zen <command>"
-  echo ""
-  echo "Or use node directly:"
-  echo "  node src/interfaces/terminal/main.js <command>"
+  echo "For development mode only:"
+  echo "  npx tsx src/interfaces/terminal/main.tsx"
   echo ""
   echo "Documentation: https://github.com/ruvnet/claude-zen"
   exit 1

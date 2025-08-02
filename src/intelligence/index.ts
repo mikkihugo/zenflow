@@ -4,24 +4,22 @@
  * Central export point for AI intelligence and adaptive learning functionality
  */
 
-// Enhanced adaptive learning components
-export { PatternRecognitionEngine } from './adaptive-learning/pattern-recognition-engine.js';
-export { LearningCoordinator } from './adaptive-learning/learning-coordinator.js';
-export { PerformanceOptimizer } from './adaptive-learning/performance-optimizer.js';
-export { 
-  ReinforcementLearningEngine,
-  NeuralNetworkPredictor,
-  EnsembleModels,
-  OnlineLearningSystem,
-  MLModelRegistry
-} from './adaptive-learning/ml-integration.js';
-
-// Enhanced adaptive learning types
-export type * from './adaptive-learning/types.js';
-
 // Legacy exports for backward compatibility
 export * from './adaptive-learning/behavioral-optimization.js';
 export * from './adaptive-learning/knowledge-evolution.js';
+export { LearningCoordinator } from './adaptive-learning/learning-coordinator.js';
+export {
+  EnsembleModels,
+  MLModelRegistry,
+  NeuralNetworkPredictor,
+  OnlineLearningSystem,
+  ReinforcementLearningEngine,
+} from './adaptive-learning/ml-integration.js';
+// Enhanced adaptive learning components
+export { PatternRecognitionEngine } from './adaptive-learning/pattern-recognition-engine.js';
+export { PerformanceOptimizer } from './adaptive-learning/performance-optimizer.js';
+// Enhanced adaptive learning types
+export type * from './adaptive-learning/types.js';
 
 // Intelligence utilities
 export const IntelligenceUtils = {
@@ -40,7 +38,7 @@ export const IntelligenceUtils = {
       'behavioral-optimization',
       'knowledge-evolution',
       'failure-prediction',
-      'real-time-adaptation'
+      'real-time-adaptation',
     ];
   },
 
@@ -49,11 +47,11 @@ export const IntelligenceUtils = {
    */
   validateConfig: (config: any): boolean => {
     return Boolean(
-      config && 
-      (config.learningRate || config.adaptationRate) &&
-      config.patternRecognition &&
-      config.learning &&
-      config.optimization
+      config &&
+        (config.learningRate || config.adaptationRate) &&
+        config.patternRecognition &&
+        config.learning &&
+        config.optimization
     );
   },
 
@@ -69,7 +67,7 @@ export const IntelligenceUtils = {
       failurePredictionAccuracy: 0.89,
       realTimeAdaptationLatency: 150, // milliseconds
       knowledgeRetention: 0.94,
-      systemIntelligence: 0.91
+      systemIntelligence: 0.91,
     };
   },
 
@@ -82,34 +80,34 @@ export const IntelligenceUtils = {
         enabled: true,
         minPatternFrequency: 3,
         confidenceThreshold: 0.7,
-        analysisWindow: 3600000
+        analysisWindow: 3600000,
       },
       learning: {
         enabled: true,
         learningRate: 0.1,
         adaptationRate: 0.1,
-        knowledgeRetention: 0.9
+        knowledgeRetention: 0.9,
       },
       optimization: {
         enabled: true,
         optimizationThreshold: 0.8,
         maxOptimizations: 10,
-        validationRequired: true
+        validationRequired: true,
       },
       ml: {
         neuralNetwork: true,
         reinforcementLearning: true,
         ensemble: true,
-        onlineLearning: true
+        onlineLearning: true,
       },
-      ...config
+      ...config,
     };
 
     const systemContext = {
       environment: config.environment || 'production',
       resources: config.resources || [],
       constraints: config.constraints || [],
-      objectives: config.objectives || []
+      objectives: config.objectives || [],
     };
 
     const systems = await Promise.all([
@@ -129,7 +127,7 @@ export const IntelligenceUtils = {
       behavioralOptimization: systems[4],
       knowledgeEvolution: systems[5],
       config: defaultConfig,
-      context: systemContext
+      context: systemContext,
     };
   },
 
@@ -137,7 +135,9 @@ export const IntelligenceUtils = {
    * Create adaptive learning system factory
    */
   createAdaptiveLearningSystem: async (config?: any) => {
-    const { PatternRecognitionEngine } = await import('./adaptive-learning/pattern-recognition-engine.js');
+    const { PatternRecognitionEngine } = await import(
+      './adaptive-learning/pattern-recognition-engine.js'
+    );
     const { LearningCoordinator } = await import('./adaptive-learning/learning-coordinator.js');
     const { PerformanceOptimizer } = await import('./adaptive-learning/performance-optimizer.js');
     const { MLModelRegistry } = await import('./adaptive-learning/ml-integration.js');
@@ -147,43 +147,43 @@ export const IntelligenceUtils = {
         enabled: true,
         minPatternFrequency: 3,
         confidenceThreshold: 0.7,
-        analysisWindow: 3600000
+        analysisWindow: 3600000,
       },
       learning: {
         enabled: true,
         learningRate: 0.1,
         adaptationRate: 0.1,
-        knowledgeRetention: 0.9
+        knowledgeRetention: 0.9,
       },
       optimization: {
         enabled: true,
         optimizationThreshold: 0.8,
         maxOptimizations: 10,
-        validationRequired: true
+        validationRequired: true,
       },
       ml: {
         neuralNetwork: true,
         reinforcementLearning: true,
         ensemble: true,
-        onlineLearning: true
+        onlineLearning: true,
       },
-      ...config
+      ...config,
     };
 
     const systemContext = {
       environment: config?.environment || 'production',
       resources: config?.resources || [],
       constraints: config?.constraints || [],
-      objectives: config?.objectives || []
+      objectives: config?.objectives || [],
     };
 
     return {
       patternEngine: new PatternRecognitionEngine(defaultConfig, systemContext),
       coordinator: new LearningCoordinator(defaultConfig, systemContext),
       optimizer: new PerformanceOptimizer(defaultConfig, systemContext),
-      mlRegistry: new MLModelRegistry(defaultConfig)
+      mlRegistry: new MLModelRegistry(defaultConfig),
     };
-  }
+  },
 };
 
 // Intelligence factory
@@ -207,7 +207,7 @@ export class IntelligenceFactory {
    */
   static async getAdaptiveLearningSystem(config: any = {}): Promise<any> {
     const key = `adaptive_learning_${JSON.stringify(config)}`;
-    
+
     if (!IntelligenceFactory.systems.has(key)) {
       const system = await IntelligenceUtils.createAdaptiveLearningSystem(config);
       IntelligenceFactory.systems.set(key, system);

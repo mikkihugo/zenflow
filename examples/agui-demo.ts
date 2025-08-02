@@ -1,9 +1,9 @@
 /**
  * AG-UI Integration Demo for Claude Code Zen
- * 
+ *
  * Demonstrates the AG-UI protocol integration with the existing architecture
  * Shows how to use AG-UI for real-time agent-to-UI communication
- * 
+ *
  * @module AGUIDemoIntegration
  */
 
@@ -12,7 +12,7 @@
 /** Demo class showcasing AG-UI integration */
 export class AGUIDemoIntegration {
   // private adapter: any; // AGUIAdapter when available
-  
+
   constructor() {
     // This would initialize the AGUIAdapter when available
     console.log('AG-UI Demo Integration initialized');
@@ -23,16 +23,16 @@ export class AGUIDemoIntegration {
    */
   async demonstrateTextStreaming(): Promise<string> {
     console.log('Demo 1: Text streaming demonstration');
-    
+
     // Simulate text streaming
     const text = "Hello! I'm demonstrating the AG-UI protocol integration with Claude Code Zen.";
-    
+
     for (const char of text) {
       // Simulate streaming character by character
       process.stdout.write(char);
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await new Promise((resolve) => setTimeout(resolve, 50));
     }
-    
+
     return 'text-message-id';
   }
 
@@ -59,19 +59,19 @@ export const aguiDemo = new AGUIDemoIntegration();
 if (require.main === module) {
   async function runDemo() {
     console.log('Running AG-UI Integration Demo...');
-    
+
     const demo = new AGUIDemoIntegration();
-    
+
     await demo.demonstrateTextStreaming();
     console.log('\n');
-    
+
     await demo.demonstrateToolCall();
     console.log('\n');
-    
+
     await demo.demonstrateInteractiveMode();
-    
+
     console.log('Demo completed!');
   }
-  
+
   runDemo().catch(console.error);
 }

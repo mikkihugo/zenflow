@@ -1,10 +1,10 @@
 /**
  * Intelligent Load Balancing Manager
- * 
+ *
  * Central coordinator for all load balancing operations with ML-powered optimization,
  * real-time health monitoring, and adaptive resource management. Supports multiple
  * load balancing algorithms and automatic scaling strategies.
- * 
+ *
  * @example
  * ```typescript
  * const loadBalancer = new LoadBalancingManager({
@@ -18,9 +18,9 @@
  *     targetUtilization: 0.7
  *   }
  * });
- * 
+ *
  * await loadBalancer.start();
- * 
+ *
  * // Route tasks with intelligent assignment
  * const assignment = await loadBalancer.routeTask({
  *   type: 'neural-training',
@@ -28,10 +28,10 @@
  *   requirements: ['gpu', 'high-memory'],
  *   estimatedDuration: 300000
  * });
- * 
+ *
  * console.log(`Task assigned to agent: ${assignment.agent.id}`);
  * ```
- * 
+ *
  * @features
  * - **ML-Predictive Routing**: Uses machine learning to predict optimal agent assignments
  * - **Real-time Health Monitoring**: Continuous agent health checks with automatic failover
@@ -39,20 +39,20 @@
  * - **Auto-scaling**: Dynamic agent scaling based on demand and performance metrics
  * - **QoS Enforcement**: Guarantees quality of service through intelligent routing
  * - **Emergency Protocols**: Handles system failures and overload conditions
- * 
+ *
  * @performance
  * - **Routing Latency**: <5ms for standard assignments, <20ms for ML predictions
  * - **Throughput**: 10,000+ task assignments per second
  * - **Accuracy**: 95%+ optimal agent selection with ML algorithms
  * - **Availability**: 99.9% uptime with automatic failover
- * 
+ *
  * @algorithms
  * - **ML-Predictive**: Machine learning-based prediction using historical patterns
  * - **Weighted Round Robin**: Performance-weighted circular assignment
  * - **Least Connections**: Assigns to agents with fewest active connections
  * - **Resource Aware**: Considers CPU, memory, and specialization requirements
  * - **Adaptive Learning**: Learns from assignment outcomes and adjusts strategy
- * 
+ *
  * @since 2.0.0-alpha.73
  * @author Claude Zen Flow Team
  */

@@ -7,21 +7,21 @@
 
 import { EventEmitter } from 'events';
 import type {
-  LearningCoordinator as ILearningCoordinator,
+  AdaptiveLearningConfig,
   Agent,
-  LearningResult,
-  Pattern,
-  ExpertiseEvolution,
-  SuccessPattern,
-  BestPractice,
-  FailurePattern,
   AntiPattern,
+  BestPractice,
+  ExpertiseEvolution,
+  FailurePattern,
+  LearningCoordinator as ILearningCoordinator,
   KnowledgeUpdate,
   LearningMetadata,
-  PerformanceImprovement,
+  LearningResult,
   LearningType,
+  Pattern,
+  PerformanceImprovement,
+  SuccessPattern,
   SystemContext,
-  AdaptiveLearningConfig
 } from './types.js';
 
 export class LearningCoordinator extends EventEmitter implements ILearningCoordinator {
@@ -52,23 +52,23 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
     // Determine learning strategy based on agents and context
     const learningStrategy = this.determineLearningStrategy(agents);
-    
+
     // Execute coordinated learning
     const learningResults = await this.executeLearning(agents, learningStrategy);
-    
+
     // Aggregate and synthesize results
     const aggregatedResult = this.aggregateLearningResults(learningResults);
-    
+
     // Update knowledge base with new learnings
     await this.updateKnowledgeBase(aggregatedResult.patterns);
-    
+
     // Track learning progress
     this.trackLearningProgress(agents, aggregatedResult);
-    
+
     this.emit('learningCompleted', {
-      agents: agents.map(a => a.id),
+      agents: agents.map((a) => a.id),
       result: aggregatedResult,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     return aggregatedResult;
@@ -80,34 +80,34 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
   async updateKnowledgeBase(patterns: Pattern[]): Promise<void> {
     for (const pattern of patterns) {
       const existing = this.knowledgeBase.get(pattern.id);
-      
+
       if (existing) {
         // Update existing pattern with new insights
         const updated = this.mergePatterns(existing, pattern);
         this.knowledgeBase.set(pattern.id, updated);
-        
+
         this.emit('knowledgeUpdated', {
           patternId: pattern.id,
           type: 'updated',
           confidence: updated.confidence,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       } else {
         // Add new pattern
         this.knowledgeBase.set(pattern.id, pattern);
-        
+
         this.emit('knowledgeAdded', {
           patternId: pattern.id,
           type: pattern.type,
           confidence: pattern.confidence,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
     }
 
     // Prune outdated or low-confidence patterns
     this.pruneKnowledgeBase();
-    
+
     // Distribute knowledge updates to relevant agents
     await this.distributeKnowledgeUpdates(patterns);
   }
@@ -122,14 +122,14 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
     const expertise = this.expertiseTracking.get(agentId)!;
     const agent = this.agents.get(agentId);
-    
+
     if (agent) {
       // Update expertise based on recent performance
       this.updateExpertiseMetrics(expertise, agent);
-      
+
       // Identify growth areas and specializations
       this.identifyGrowthOpportunities(expertise, agent);
-      
+
       // Update learning recommendations
       this.updateLearningRecommendations(expertise, agent);
     }
@@ -142,27 +142,27 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
    */
   emergeBestPractices(successes: SuccessPattern[]): BestPractice[] {
     const practices: BestPractice[] = [];
-    
+
     // Group successes by category and context
     const groupedSuccesses = this.groupSuccessesByCategory(successes);
-    
+
     for (const [category, categorySuccesses] of groupedSuccesses) {
       // Analyze common patterns in successful executions
       const commonPatterns = this.findCommonPatterns(categorySuccesses);
-      
+
       // Extract actionable practices
       for (const pattern of commonPatterns) {
         const practice = this.extractBestPractice(category, pattern, categorySuccesses);
-        
+
         if (practice.confidence >= this.config.learning.adaptationRate) {
           practices.push(practice);
           this.bestPractices.set(practice.id, practice);
-          
+
           this.emit('bestPracticeIdentified', {
             practice: practice.id,
             category,
             confidence: practice.confidence,
-            timestamp: Date.now()
+            timestamp: Date.now(),
           });
         }
       }
@@ -177,15 +177,15 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
    */
   detectAntiPatterns(failures: FailurePattern[]): AntiPattern[] {
     const antiPatterns: AntiPattern[] = [];
-    
+
     // Group failures by type and frequency
     const groupedFailures = this.groupFailuresByType(failures);
-    
+
     for (const [type, typeFailures] of groupedFailures) {
       // Analyze common preconditions and triggers
       const commonTriggers = this.identifyCommonTriggers(typeFailures);
       const commonConsequences = this.identifyCommonConsequences(typeFailures);
-      
+
       // Create anti-pattern
       const antiPattern: AntiPattern = {
         id: `antipattern_${type}_${Date.now()}`,
@@ -194,18 +194,18 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
         triggers: commonTriggers,
         consequences: commonConsequences,
         avoidance: this.generateAvoidanceStrategies(commonTriggers, commonConsequences),
-        detectionConfidence: this.calculateDetectionConfidence(typeFailures)
+        detectionConfidence: this.calculateDetectionConfidence(typeFailures),
       };
-      
+
       if (antiPattern.detectionConfidence >= 0.7) {
         antiPatterns.push(antiPattern);
         this.antiPatterns.set(antiPattern.id, antiPattern);
-        
+
         this.emit('antiPatternDetected', {
           antiPattern: antiPattern.id,
           category: type,
           confidence: antiPattern.detectionConfidence,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
     }
@@ -231,16 +231,16 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
    * Get all identified best practices
    */
   getBestPractices(): BestPractice[] {
-    return Array.from(this.bestPractices.values())
-      .sort((a, b) => b.successRate - a.successRate);
+    return Array.from(this.bestPractices.values()).sort((a, b) => b.successRate - a.successRate);
   }
 
   /**
    * Get all detected anti-patterns
    */
   getAntiPatterns(): AntiPattern[] {
-    return Array.from(this.antiPatterns.values())
-      .sort((a, b) => b.detectionConfidence - a.detectionConfidence);
+    return Array.from(this.antiPatterns.values()).sort(
+      (a, b) => b.detectionConfidence - a.detectionConfidence
+    );
   }
 
   /**
@@ -259,7 +259,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
     this.bestPractices.clear();
     this.antiPatterns.clear();
     this.learningHistory.clear();
-    
+
     this.emit('learningDataCleared', { timestamp: Date.now() });
   }
 
@@ -267,12 +267,12 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   private determineLearningStrategy(agents: Agent[]): LearningType {
     // Analyze agent capabilities and current performance
-    const avgPerformance = agents.reduce((sum, agent) => 
-      sum + agent.performance.efficiency, 0) / agents.length;
-    
-    const hasSpecializations = agents.some(agent => agent.specializations.length > 0);
-    const learningProgress = agents.reduce((sum, agent) => 
-      sum + agent.learningProgress.adaptability, 0) / agents.length;
+    const avgPerformance =
+      agents.reduce((sum, agent) => sum + agent.performance.efficiency, 0) / agents.length;
+
+    const hasSpecializations = agents.some((agent) => agent.specializations.length > 0);
+    const learningProgress =
+      agents.reduce((sum, agent) => sum + agent.learningProgress.adaptability, 0) / agents.length;
 
     // Choose strategy based on swarm characteristics
     if (avgPerformance < 0.5) {
@@ -286,13 +286,16 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
     }
   }
 
-  private async executeLearning(agents: Agent[], strategy: LearningType): Promise<LearningResult[]> {
+  private async executeLearning(
+    agents: Agent[],
+    strategy: LearningType
+  ): Promise<LearningResult[]> {
     const results: LearningResult[] = [];
 
     for (const agent of agents) {
       const agentResult = await this.executeAgentLearning(agent, strategy);
       results.push(agentResult);
-      
+
       // Store in history
       if (!this.learningHistory.has(agent.id)) {
         this.learningHistory.set(agent.id, []);
@@ -303,7 +306,10 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
     return results;
   }
 
-  private async executeAgentLearning(agent: Agent, strategy: LearningType): Promise<LearningResult> {
+  private async executeAgentLearning(
+    agent: Agent,
+    strategy: LearningType
+  ): Promise<LearningResult> {
     // Simulate learning execution based on strategy
     const patterns = await this.generateLearningPatterns(agent, strategy);
     const improvements = this.calculateImprovements(agent, patterns);
@@ -315,7 +321,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
       dataQuality: 0.8 + Math.random() * 0.2,
       convergence: Math.random() > 0.2,
       iterations: Math.floor(Math.random() * 100) + 10,
-      validationScore: 0.7 + Math.random() * 0.3
+      validationScore: 0.7 + Math.random() * 0.3,
     };
 
     return {
@@ -324,7 +330,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
       patterns,
       improvements,
       knowledge,
-      metadata
+      metadata,
     };
   }
 
@@ -345,9 +351,10 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
       algorithmUsed: 'ensemble',
       trainingTime: results.reduce((sum, r) => sum + r.metadata.trainingTime, 0) / results.length,
       dataQuality: results.reduce((sum, r) => sum + r.metadata.dataQuality, 0) / results.length,
-      convergence: results.every(r => r.metadata.convergence),
-      iterations: Math.max(...results.map(r => r.metadata.iterations)),
-      validationScore: results.reduce((sum, r) => sum + r.metadata.validationScore, 0) / results.length
+      convergence: results.every((r) => r.metadata.convergence),
+      iterations: Math.max(...results.map((r) => r.metadata.iterations)),
+      validationScore:
+        results.reduce((sum, r) => sum + r.metadata.validationScore, 0) / results.length,
     };
 
     return {
@@ -356,14 +363,14 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
       patterns: allPatterns,
       improvements: allImprovements,
       knowledge: allKnowledge,
-      metadata: avgMetadata
+      metadata: avgMetadata,
     };
   }
 
   private async generateLearningPatterns(agent: Agent, strategy: LearningType): Promise<Pattern[]> {
     // Generate patterns based on agent capabilities and strategy
     const patterns: Pattern[] = [];
-    
+
     for (let i = 0; i < 3; i++) {
       const pattern: Pattern = {
         id: `pattern_${agent.id}_${Date.now()}_${i}`,
@@ -379,11 +386,11 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
           anomalyScore: Math.random() * 0.3,
           correlations: [],
           quality: 0.8 + Math.random() * 0.2,
-          relevance: Math.random()
+          relevance: Math.random(),
         },
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
-      
+
       patterns.push(pattern);
     }
 
@@ -392,20 +399,20 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   private calculateImprovements(agent: Agent, patterns: Pattern[]): PerformanceImprovement[] {
     const improvements: PerformanceImprovement[] = [];
-    
+
     const metrics = ['efficiency', 'quality', 'latency', 'throughput'];
-    
+
     for (const metric of metrics) {
       const baseline = agent.performance.efficiency; // Simplified
-      const improved = baseline + (Math.random() * 0.2); // Simulate improvement
-      
+      const improved = baseline + Math.random() * 0.2; // Simulate improvement
+
       improvements.push({
         metric,
         baseline,
         improved,
         improvement: ((improved - baseline) / baseline) * 100,
         confidence: 0.8 + Math.random() * 0.2,
-        sustainability: 0.7 + Math.random() * 0.3
+        sustainability: 0.7 + Math.random() * 0.3,
       });
     }
 
@@ -414,7 +421,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   private extractKnowledgeUpdates(agent: Agent, patterns: Pattern[]): KnowledgeUpdate[] {
     const updates: KnowledgeUpdate[] = [];
-    
+
     for (const pattern of patterns) {
       updates.push({
         domain: pattern.type,
@@ -422,7 +429,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
         knowledge: pattern.data,
         confidence: pattern.confidence,
         source: agent.id,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     }
 
@@ -431,13 +438,11 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   private trackLearningProgress(agents: Agent[], result: LearningResult): void {
     for (const agent of agents) {
-      const agentResult = result.patterns.filter(p => 
-        p.context.agentId === agent.id
-      );
-      
+      const agentResult = result.patterns.filter((p) => p.context.agentId === agent.id);
+
       // Update agent learning progress (simplified)
       agent.learningProgress.totalExperience += agentResult.length;
-      
+
       // Update expertise tracking
       this.trackExpertiseEvolution(agent.id);
     }
@@ -450,9 +455,9 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
       frequency: existing.frequency + newPattern.frequency,
       metadata: {
         ...existing.metadata,
-        quality: Math.max(existing.metadata.quality, newPattern.metadata.quality)
+        quality: Math.max(existing.metadata.quality, newPattern.metadata.quality),
       },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
   }
 
@@ -462,16 +467,13 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
     const minConfidence = 0.5;
 
     for (const [id, pattern] of this.knowledgeBase) {
-      if (
-        currentTime - pattern.timestamp > maxAge ||
-        pattern.confidence < minConfidence
-      ) {
+      if (currentTime - pattern.timestamp > maxAge || pattern.confidence < minConfidence) {
         this.knowledgeBase.delete(id);
-        
+
         this.emit('knowledgePruned', {
           patternId: id,
           reason: currentTime - pattern.timestamp > maxAge ? 'age' : 'confidence',
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
     }
@@ -480,16 +482,15 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
   private async distributeKnowledgeUpdates(patterns: Pattern[]): Promise<void> {
     // Distribute relevant knowledge to agents based on their specializations
     for (const [agentId, agent] of this.agents) {
-      const relevantPatterns = patterns.filter(pattern =>
-        agent.specializations.includes(pattern.type) ||
-        pattern.confidence > 0.9
+      const relevantPatterns = patterns.filter(
+        (pattern) => agent.specializations.includes(pattern.type) || pattern.confidence > 0.9
       );
 
       if (relevantPatterns.length > 0) {
         this.emit('knowledgeDistributed', {
           agentId,
-          patterns: relevantPatterns.map(p => p.id),
-          timestamp: Date.now()
+          patterns: relevantPatterns.map((p) => p.id),
+          timestamp: Date.now(),
         });
       }
     }
@@ -497,7 +498,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   private initializeExpertiseTracking(agentId: string): void {
     const agent = this.agents.get(agentId);
-    
+
     this.expertiseTracking.set(agentId, {
       agentId,
       domain: agent?.specializations[0] || 'general',
@@ -505,25 +506,27 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
       growthRate: 0.1,
       specializations: agent?.specializations || [],
       knowledgeGaps: [],
-      timeline: [{
-        timestamp: Date.now(),
-        level: agent?.learningProgress.adaptability || 0.5,
-        domain: agent?.specializations[0] || 'general'
-      }]
+      timeline: [
+        {
+          timestamp: Date.now(),
+          level: agent?.learningProgress.adaptability || 0.5,
+          domain: agent?.specializations[0] || 'general',
+        },
+      ],
     });
   }
 
   private updateExpertiseMetrics(expertise: ExpertiseEvolution, agent: Agent): void {
     const currentLevel = agent.performance.efficiency;
     const previousLevel = expertise.currentLevel;
-    
+
     expertise.currentLevel = currentLevel;
     expertise.growthRate = (currentLevel - previousLevel) / previousLevel;
-    
+
     expertise.timeline.push({
       timestamp: Date.now(),
       level: currentLevel,
-      domain: expertise.domain
+      domain: expertise.domain,
     });
 
     // Keep only recent timeline entries
@@ -536,7 +539,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
   private identifyGrowthOpportunities(expertise: ExpertiseEvolution, agent: Agent): void {
     // Identify areas where the agent could improve
     const knowledgeGaps: string[] = [];
-    
+
     // Compare with available knowledge base
     for (const [patternId, pattern] of this.knowledgeBase) {
       if (!agent.specializations.includes(pattern.type) && pattern.confidence > 0.8) {
@@ -554,13 +557,13 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
       agentId: agent.id,
       recommendations: expertise.knowledgeGaps.slice(0, 3),
       priority: expertise.growthRate < 0.05 ? 'high' : 'medium',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }
 
   private groupSuccessesByCategory(successes: SuccessPattern[]): Map<string, SuccessPattern[]> {
     const groups = new Map<string, SuccessPattern[]>();
-    
+
     for (const success of successes) {
       const category = success.context || 'general';
       if (!groups.has(category)) {
@@ -575,7 +578,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
   private findCommonPatterns(successes: SuccessPattern[]): any[] {
     // Simplified pattern extraction
     const actionCounts = new Map<string, number>();
-    
+
     for (const success of successes) {
       for (const action of success.actions) {
         actionCounts.set(action, (actionCounts.get(action) || 0) + 1);
@@ -587,10 +590,12 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
       .map(([action, count]) => ({ action, frequency: count }));
   }
 
-  private extractBestPractice(category: string, pattern: any, successes: SuccessPattern[]): BestPractice {
-    const relevantSuccesses = successes.filter(s =>
-      s.actions.includes(pattern.action)
-    );
+  private extractBestPractice(
+    category: string,
+    pattern: any,
+    successes: SuccessPattern[]
+  ): BestPractice {
+    const relevantSuccesses = successes.filter((s) => s.actions.includes(pattern.action));
 
     return {
       id: `bestpractice_${category}_${pattern.action}_${Date.now()}`,
@@ -600,19 +605,19 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
       outcomes: this.calculateAverageOutcomes(relevantSuccesses),
       confidence: pattern.frequency / successes.length,
       usageCount: pattern.frequency,
-      successRate: relevantSuccesses.length / successes.length
+      successRate: relevantSuccesses.length / successes.length,
     };
   }
 
   private validateAndRankPractices(practices: BestPractice[]): BestPractice[] {
     return practices
-      .filter(p => p.confidence >= 0.6 && p.successRate >= 0.7)
-      .sort((a, b) => (b.confidence * b.successRate) - (a.confidence * a.successRate));
+      .filter((p) => p.confidence >= 0.6 && p.successRate >= 0.7)
+      .sort((a, b) => b.confidence * b.successRate - a.confidence * a.successRate);
   }
 
   private groupFailuresByType(failures: FailurePattern[]): Map<string, FailurePattern[]> {
     const groups = new Map<string, FailurePattern[]>();
-    
+
     for (const failure of failures) {
       if (!groups.has(failure.type)) {
         groups.set(failure.type, []);
@@ -625,7 +630,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   private identifyCommonTriggers(failures: FailurePattern[]): string[] {
     const triggerCounts = new Map<string, number>();
-    
+
     for (const failure of failures) {
       for (const context of failure.context) {
         triggerCounts.set(context, (triggerCounts.get(context) || 0) + 1);
@@ -639,7 +644,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   private identifyCommonConsequences(failures: FailurePattern[]): string[] {
     const consequenceCounts = new Map<string, number>();
-    
+
     for (const failure of failures) {
       for (const impact of failure.impacts) {
         consequenceCounts.set(impact, (consequenceCounts.get(impact) || 0) + 1);
@@ -659,16 +664,16 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
     return [
       `Monitor for conditions: ${triggers.join(', ')}`,
       `Implement safeguards to prevent: ${consequences.join(', ')}`,
-      'Use alternative approaches when triggers are detected'
+      'Use alternative approaches when triggers are detected',
     ];
   }
 
   private calculateDetectionConfidence(failures: FailurePattern[]): number {
     if (failures.length === 0) return 0;
-    
+
     const avgFrequency = failures.reduce((sum, f) => sum + f.frequency, 0) / failures.length;
     const consistencyScore = failures.length >= 3 ? 0.8 : failures.length * 0.3;
-    
+
     return Math.min(0.95, (avgFrequency / 10) * consistencyScore);
   }
 
@@ -685,14 +690,14 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
       agentCapabilities: agent.capabilities,
       strategy,
       performance: agent.performance,
-      learningContext: agent.learningProgress
+      learningContext: agent.learningProgress,
     };
   }
 
   private extractConditions(successes: SuccessPattern[]): string[] {
-    const allConditions = successes.flatMap(s => s.conditions);
+    const allConditions = successes.flatMap((s) => s.conditions);
     const conditionCounts = new Map<string, number>();
-    
+
     for (const condition of allConditions) {
       conditionCounts.set(condition, (conditionCounts.get(condition) || 0) + 1);
     }
@@ -708,7 +713,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
       quality: 0,
       cost: 0,
       satisfaction: 0,
-      sustainability: 0
+      sustainability: 0,
     };
 
     for (const success of successes) {
@@ -725,19 +730,22 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
       quality: totals.quality / count,
       cost: totals.cost / count,
       satisfaction: totals.satisfaction / count,
-      sustainability: totals.sustainability / count
+      sustainability: totals.sustainability / count,
     };
   }
 
   private startLearningCoordination(): void {
     // Start periodic learning coordination
-    setInterval(() => {
-      if (this.agents.size > 0) {
-        const agents = Array.from(this.agents.values());
-        this.coordinateLearning(agents).catch(error => {
-          this.emit('learningError', { error: error.message, timestamp: Date.now() });
-        });
-      }
-    }, 5 * 60 * 1000); // Every 5 minutes
+    setInterval(
+      () => {
+        if (this.agents.size > 0) {
+          const agents = Array.from(this.agents.values());
+          this.coordinateLearning(agents).catch((error) => {
+            this.emit('learningError', { error: error.message, timestamp: Date.now() });
+          });
+        }
+      },
+      5 * 60 * 1000
+    ); // Every 5 minutes
   }
 }

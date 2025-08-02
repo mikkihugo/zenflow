@@ -45,8 +45,6 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExi
   }
 };
 
-
-
 /**
  * Parse command line arguments
  */

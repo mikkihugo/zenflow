@@ -18,7 +18,7 @@ import type {
   AgentStatus,
   AgentType,
 } from '../types/agent-types';
-import { generateId } from '../utils/helpers.js';
+import { generateId } from '../../core/helpers.js';
 
 export interface AgentManagerConfig {
   maxAgents: number;

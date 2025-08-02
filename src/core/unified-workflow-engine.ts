@@ -25,7 +25,7 @@ import type {
   WorkflowStatus,
   WorkflowStep,
 } from '../types/workflow-types.js';
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from './logger.js';
 import type { UnifiedMemorySystem } from './unified-memory-system.js';
 
 const logger = createLogger('UnifiedWorkflow');

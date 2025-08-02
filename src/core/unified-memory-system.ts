@@ -7,7 +7,7 @@
 
 import { EventEmitter } from 'events';
 import LanceDBInterface from '../database/lancedb-interface.js';
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from './logger.js';
 
 const logger = createLogger('UnifiedMemory');
 

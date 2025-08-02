@@ -6,7 +6,7 @@
  */
 
 import { EventEmitter } from 'events';
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from './logger.js';
 import {
   type InterfaceMode,
   InterfaceModeDetector,

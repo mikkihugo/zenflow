@@ -12,7 +12,7 @@ import { EventEmitter } from 'events';
 import { existsSync } from 'fs';
 import { mkdir, readdir, readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from './logger.js';
 
 const logger = createLogger('DocumentDriven');
 
