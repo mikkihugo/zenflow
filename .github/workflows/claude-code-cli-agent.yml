@@ -2,7 +2,7 @@
 # Claude Code CLI Agent - Autonomous issue resolution and development
 name: "Claude Code CLI Agent"
 
-on:
+"on":
   issues:
     types: [opened, labeled]
   issue_comment:
@@ -24,9 +24,11 @@ jobs:
     timeout-minutes: 45
 
     if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'issue_comment' && 
+       contains(github.event.comment.body, '@claude')) ||
       (github.event_name == 'issues' && github.event.action == 'opened') ||
-      (github.event_name == 'issues' && github.event.action == 'labeled' && github.event.label.name == 'claude-code') ||
+      (github.event_name == 'issues' && github.event.action == 'labeled' && 
+       github.event.label.name == 'claude-code') ||
       (github.event_name == 'workflow_dispatch')
 
     permissions:
@@ -69,7 +71,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             let issueNumber, issueTitle, issueBody, commentBody;
-            
+
             if (context.eventName === 'issue_comment') {
               // Comment on issue - get the issue details
               issueNumber = context.payload.issue.number;
@@ -104,7 +106,7 @@ jobs:
                 commentBody = '';
               }
             }
-            
+
             // Set outputs for the next step
             core.setOutput('issue_number', issueNumber);
             core.setOutput('issue_title', issueTitle);
@@ -119,19 +121,20 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           direct_prompt: |
             Resolve GitHub issue #${{ steps.issue-context.outputs.issue_number }}.
-            
+
             Event Type: ${{ steps.issue-context.outputs.trigger_type }}
-            
+
             Issue Details:
             Title: ${{ steps.issue-context.outputs.issue_title }}
             Body: ${{ steps.issue-context.outputs.issue_body }}
-            ${{ steps.issue-context.outputs.comment_body && format('Comment: {0}', steps.issue-context.outputs.comment_body) || '' }}
-            
+            ${{ steps.issue-context.outputs.comment_body && 
+                format('Comment: {0}', steps.issue-context.outputs.comment_body) || '' }}
+
             Follow these phases:
             1. Analyze requirements and create implementation plan
-            2. Implement solution with comprehensive tests  
+            2. Implement solution with comprehensive tests
             3. Commit changes and create pull request
-            
+
             Use CLAUDE_AGENT.md guidelines and domain-driven architecture.
             Focus on working, tested code that solves the actual problem.
 
