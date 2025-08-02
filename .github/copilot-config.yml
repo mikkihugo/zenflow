@@ -1,0 +1,156 @@
+# Claude-Code-Zen Copilot Autonomous Configuration
+# Based on copilot-autonomous-framework patterns
+
+project:
+  name: "claude-code-zen"
+  type: "ai-coordination-platform"
+  description: "Advanced AI development platform with 147+ agent types, neural networks, and MCP integration"
+  
+technology_stack:
+  primary_language: "typescript"
+  runtime: "node"
+  version: "20+"
+  frameworks:
+    - "jest"
+    - "express"
+    - "websockets"
+  specialized:
+    - "wasm"
+    - "rust"
+    - "mcp-protocol"
+  
+architecture:
+  pattern: "domain-driven"
+  principles:
+    - "SOLID"
+    - "Clean Architecture"
+    - "Domain Boundaries"
+    - "Performance Optimization"
+  domains:
+    - coordination
+    - neural
+    - interfaces
+    - memory
+    - database
+    - core
+    - intelligence
+    - workflows
+
+development:
+  testing_strategy: "hybrid-tdd"
+  test_breakdown:
+    london_tdd: 70  # For interactions, protocols, coordination
+    classical_tdd: 30  # For algorithms, neural networks, computations
+  performance_requirements:
+    coordination_latency: "<100ms"
+    neural_computation: "use_wasm"
+    concurrent_agents: "1000+"
+    api_response: "<50ms"
+
+quality_gates:
+  typescript_strict: true
+  test_coverage: 85
+  performance_benchmarks: true
+  security_validation: true
+  architecture_compliance: true
+  
+copilot_context:
+  agent_system:
+    total_types: 147
+    categories: 16
+    specialization: "fine-grained task assignment"
+  mcp_integration:
+    http_port: 3000
+    stdio_protocol: true
+    tool_count: "comprehensive"
+  neural_capabilities:
+    wasm_acceleration: true
+    rust_core: "fact-core"
+    performance_critical: "always_use_wasm"
+
+templates:
+  instructions:
+    - repository_wide
+    - domain_specific
+    - testing_guidelines
+    - performance_standards
+  workflows:
+    - copilot_setup_steps
+    - validation_pipeline
+    - performance_benchmarks
+  issue_templates:
+    - copilot_coding_task
+    - repository_task
+    - performance_issue
+
+validation_rules:
+  - name: "domain_boundaries"
+    description: "Ensure coordination code doesn't mix with neural code"
+    pattern: "src/{domain}/**/*"
+    
+  - name: "agent_type_usage"
+    description: "Use existing AgentType union, don't create generic types"
+    check: "import from src/types/agent-types.ts"
+    
+  - name: "wasm_performance"
+    description: "Use WASM for computational tasks in neural domain"
+    pattern: "src/neural/**/*"
+    requirement: "heavy_computation_uses_wasm"
+    
+  - name: "testing_strategy"
+    description: "Follow hybrid TDD approach"
+    coordination: "london_tdd"
+    neural: "classical_tdd"
+    
+  - name: "mcp_compliance"
+    description: "MCP tools follow established patterns"
+    pattern: "src/coordination/mcp/tools/**/*"
+    
+performance_benchmarks:
+  - name: "coordination_latency"
+    target: "<100ms"
+    measurement: "agent_selection_time"
+    
+  - name: "neural_computation"
+    target: "wasm_acceleration"
+    measurement: "computation_speed"
+    
+  - name: "api_response"
+    target: "<50ms"
+    measurement: "http_endpoint_latency"
+    
+  - name: "concurrent_agents"
+    target: "1000+"
+    measurement: "simultaneous_coordination"
+
+environment_variables:
+  development:
+    NODE_ENV: "development"
+    DEBUG: "claude-zen:*"
+    MCP_PORT: "3000"
+    LOG_LEVEL: "info"
+    TYPESCRIPT_STRICT: "true"
+  production:
+    NODE_ENV: "production"
+    LOG_LEVEL: "warn"
+    PERFORMANCE_MONITORING: "true"
+
+custom_instructions:
+  architectural_constraints:
+    - "Use our 147 agent types, don't create generic implementations"
+    - "Follow domain-driven structure in src/"
+    - "Use WASM for performance-critical neural computations"
+    - "Maintain hybrid TDD approach (70% London, 30% Classical)"
+    - "Respect MCP protocol patterns for tool integration"
+  
+  performance_requirements:
+    - "Sub-100ms coordination overhead"
+    - "WASM acceleration for neural operations"
+    - "Efficient resource utilization through pooling"
+    - "Real-time updates via WebSocket connections"
+  
+  integration_patterns:
+    - "Check existing abstractions before creating new ones"
+    - "Use established types from src/types/"
+    - "Follow async/await patterns for coordination"
+    - "Implement proper error handling and recovery"

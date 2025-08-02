@@ -1,0 +1,181 @@
+# Claude-Code-Zen Project Configuration
+# Following copilot-autonomous-framework patterns
+
+project:
+  name: "claude-code-zen"
+  description: "Advanced AI development platform with sophisticated agent coordination, neural networks, and MCP integration"
+  mission: "Enable autonomous AI-driven development through comprehensive agent coordination and intelligent tooling"
+
+documents:
+  prd_reference: "docs/prds/claude-code-zen-platform.md"
+  technical_spec_reference: "docs/architecture/system-architecture.md"
+
+stack:
+  backend:
+    language: "typescript"
+    framework: "node"
+    config_ref: "configs/typescript-backend.yml"
+  frontend:
+    language: "typescript"
+    framework: "react"
+    config_ref: "configs/react-frontend.yml"
+  specialized:
+    neural:
+      language: "rust"
+      framework: "wasm"
+      config_ref: "configs/rust-wasm.yml"
+    coordination:
+      protocol: "mcp"
+      ports: [3000]
+      config_ref: "configs/mcp-coordination.yml"
+
+architecture:
+  pattern: "domain-driven"
+  principles:
+    - "SOLID"
+    - "Clean Architecture"
+    - "Domain Boundaries"
+    - "Performance Optimization"
+
+features:
+  - agent_coordination_system
+  - neural_network_integration
+  - mcp_protocol_servers
+  - real_time_websockets
+  - hybrid_tdd_testing
+  - wasm_acceleration
+  - multi_backend_memory
+  - intelligent_load_balancing
+
+domains:
+  - coordination
+  - neural
+  - interfaces
+  - memory
+  - database
+  - core
+  - intelligence
+  - workflows
+
+agent_system:
+  total_types: 147
+  categories: 16
+  specialization_level: "fine-grained"
+  coordination_patterns:
+    - "hierarchical"
+    - "mesh"
+    - "ring"
+    - "star"
+
+performance_targets:
+  - "coordination_latency < 100ms"
+  - "neural_computation_uses_wasm"
+  - "api_response < 50ms"
+  - "concurrent_agents > 1000"
+  - "mcp_tool_execution < 10ms"
+
+testing:
+  strategy: "hybrid-tdd"
+  breakdown:
+    london_tdd: 70  # For interactions, protocols, coordination
+    classical_tdd: 30  # For algorithms, neural networks, computations
+  coverage_target: 85
+  frameworks:
+    - "jest"
+    - "custom-london-setup"
+    - "custom-classical-setup"
+
+mcp_integration:
+  servers:
+    http:
+      port: 3000
+      protocol: "http"
+      purpose: "external_tool_integration"
+    stdio:
+      protocol: "stdio"
+      purpose: "internal_swarm_coordination"
+  tool_categories:
+    - "coordination_tools"
+    - "monitoring_tools"
+    - "memory_neural_tools"
+    - "github_integration_tools"
+    - "system_tools"
+
+neural_capabilities:
+  wasm_acceleration: true
+  rust_core: "fact-core"
+  performance_rule: "always_use_wasm_for_heavy_computation"
+  bindings: "javascript_wasm_bridge"
+
+memory_system:
+  backends:
+    - "sqlite"
+    - "lancedb"
+    - "json"
+  features:
+    - "connection_pooling"
+    - "multi_backend_abstraction"
+    - "caching_layers"
+    - "transaction_support"
+
+quality_gates:
+  typescript_strict: true
+  eslint_compliance: true
+  architecture_validation: true
+  performance_benchmarks: true
+  security_validation: true
+
+environment_setup:
+  node_version: "20+"
+  package_manager: "npm"
+  build_system: "typescript_compiler"
+  additional_tools:
+    - "rust_toolchain"
+    - "wasm_pack"
+    - "jest"
+
+custom_instructions:
+  architectural_constraints:
+    - "Use existing 147 agent types, don't create generic implementations"
+    - "Follow domain-driven structure in src/"
+    - "Use WASM for performance-critical neural computations"
+    - "Maintain hybrid TDD approach (70% London, 30% Classical)"
+    - "Respect MCP protocol patterns for tool integration"
+  
+  performance_requirements:
+    - "Sub-100ms coordination overhead"
+    - "WASM acceleration for neural operations"
+    - "Efficient resource utilization through pooling"
+    - "Real-time updates via WebSocket connections"
+
+validation_rules:
+  - name: "domain_boundaries"
+    description: "Ensure coordination code doesn't mix with neural code"
+    pattern: "src/{domain}/**/*"
+    
+  - name: "agent_type_usage"
+    description: "Use existing AgentType union, don't create generic types"
+    check: "import from src/types/agent-types.ts"
+    
+  - name: "wasm_performance"
+    description: "Use WASM for computational tasks in neural domain"
+    pattern: "src/neural/**/*"
+    requirement: "heavy_computation_uses_wasm"
+    
+  - name: "testing_strategy"
+    description: "Follow hybrid TDD approach"
+    coordination: "london_tdd"
+    neural: "classical_tdd"
+
+deployment:
+  development:
+    commands:
+      - "npm ci"
+      - "npm run build"
+      - "npm test"
+      - "npm run mcp:start"
+  production:
+    commands:
+      - "npm ci --production"
+      - "npm run build:production"
+      - "npm run start"
