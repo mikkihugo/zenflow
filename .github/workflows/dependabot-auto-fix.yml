@@ -37,7 +37,13 @@ jobs:
         run: npm ci
 
       - name: Fix Rust API Breaking Changes
-        if: contains(github.event.pull_request.title, 'cargo/')
+        if: >-
+          contains(github.event.pull_request.title, 'Bump') &&
+          (
+            contains(github.event.pull_request.title, '/src/neural/') ||
+            contains(github.event.pull_request.title, 'in /') ||
+            contains(github.event.pull_request.title, 'cargo/')
+          )
         run: |
           echo "🔧 Fixing Rust API breaking changes..."
           
@@ -102,7 +108,13 @@ jobs:
           npm install || echo "Dependencies updated - some may need manual review"
 
       - name: Test Rust Changes
-        if: contains(github.event.pull_request.title, 'cargo/')
+        if: >-
+          contains(github.event.pull_request.title, 'Bump') &&
+          (
+            contains(github.event.pull_request.title, '/src/neural/') ||
+            contains(github.event.pull_request.title, 'in /') ||
+            contains(github.event.pull_request.title, 'cargo/')
+          )
         run: |
           echo "🧪 Testing Rust changes..."
           

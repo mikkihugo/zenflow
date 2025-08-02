@@ -21,7 +21,11 @@ jobs:
     if: >-
       !(
         github.actor == 'dependabot[bot]' &&
-        contains(github.event.pull_request.title, 'cargo/')
+        contains(github.event.pull_request.title, 'Bump') &&
+        (
+          contains(github.event.pull_request.title, '/src/neural/') ||
+          contains(github.event.pull_request.title, 'in /')
+        )
       )
     steps:
       - name: Checkout code
@@ -66,7 +70,11 @@ jobs:
     if: >-
       !(
         github.actor == 'dependabot[bot]' &&
-        contains(github.event.pull_request.title, 'cargo/')
+        contains(github.event.pull_request.title, 'Bump') &&
+        (
+          contains(github.event.pull_request.title, '/src/neural/') ||
+          contains(github.event.pull_request.title, 'in /')
+        )
       )
     
     steps:
@@ -127,7 +135,11 @@ jobs:
     if: >-
       !(
         github.actor == 'dependabot[bot]' &&
-        contains(github.event.pull_request.title, 'cargo/')
+        contains(github.event.pull_request.title, 'Bump') &&
+        (
+          contains(github.event.pull_request.title, '/src/neural/') ||
+          contains(github.event.pull_request.title, 'in /')
+        )
       )
     
     steps:
@@ -195,7 +207,11 @@ jobs:
     # Only run for Rust Dependabot PRs
     if: >-
       github.actor == 'dependabot[bot]' &&
-      contains(github.event.pull_request.title, 'cargo/')
+      contains(github.event.pull_request.title, 'Bump') &&
+      (
+        contains(github.event.pull_request.title, '/src/neural/') ||
+        contains(github.event.pull_request.title, 'in /')
+      )
     
     steps:
       - name: Checkout code
@@ -247,7 +263,9 @@ jobs:
           
           # For Dependabot Rust PRs, only check Rust tests
           if [[ "${{ github.actor }}" == "dependabot[bot]" ]] && 
-             [[ "${{ github.event.pull_request.title }}" == *"cargo/"* ]]; then
+             [[ "${{ github.event.pull_request.title }}" == *"Bump"* ]] &&
+             ([[ "${{ github.event.pull_request.title }}" == *"/src/neural/"* ]] ||
+              [[ "${{ github.event.pull_request.title }}" == *"in /"* ]]); then
             echo "Dependabot Rust PR - checking Rust tests only"
             if [[ "${{ needs.rust-tests.result }}" == "success" ]]; then
               echo "✅ Rust tests passed - Dependabot PR ready for merge"
