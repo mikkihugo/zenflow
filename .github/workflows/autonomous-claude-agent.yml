@@ -41,7 +41,7 @@ jobs:
         run: npm ci
         
       - name: Execute Claude Code CLI Agent
-        uses: anthropics/claude-code-action@v1
+        uses: anthropics/claude-code-action@beta
         with:
           # Agent mode - runs automatically without @claude mention requirement
           mode: 'agent'
@@ -68,7 +68,7 @@ jobs:
             If you are unsure about the existing implementation of a related component or the purpose of a utility function, use a sub-agent to read the relevant files and provide you with a summary before you proceed with your plan. This will ensure your changes are compatible with the existing codebase.
           
           # Authentication with Claude Code OAuth Token
-          oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           
           # Cost and execution controls
