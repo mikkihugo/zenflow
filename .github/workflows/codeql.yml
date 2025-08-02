@@ -37,6 +37,8 @@ jobs:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
         config-file: ./.github/codeql/codeql-config.yml
+        setup-python-dependencies: false
+        debug: true
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
