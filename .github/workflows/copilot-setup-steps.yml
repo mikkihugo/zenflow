@@ -72,9 +72,9 @@ jobs:
       - name: Setup Python 3.13
         uses: actions/setup-python@v5
         with:
-          # Specify '3.13' to use the latest stable patch release of Python 3.13. The action resolves this
+          # Specify '3.13' to use the latest stable patch release of Python 3.12. The action resolves this
           # to the most recent version available (e.g., 3.13.5). [13, 14]
-          python-version: '3.13'
+          python-version: '3.12'
           # Enable built-in caching for pip.
           cache: 'pip'
           # Specify the file(s) that determine the cache's validity. Hashing 'requirements.txt' ensures the cache
