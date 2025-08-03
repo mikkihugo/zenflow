@@ -5,6 +5,7 @@
 import type {
   Agent,
   AgentConfig,
+  AgentEnvironment,
   AgentState,
   AgentStatus,
   Message,
@@ -31,7 +32,77 @@ export class BaseAgent {
     };
 
     this.state = {
+    this.state = {
+      id: this.id,
+      name: config.name || `Agent-${this.id.id}`,
+      type: config.type,
       status: 'idle',
+      capabilities: {
+        codeGeneration: true,
+        codeReview: true,
+        testing: true,
+        documentation: true,
+        research: true,
+        analysis: true,
+        webSearch: false,
+        apiIntegration: true,
+        fileSystem: true,
+        terminalAccess: false,
+        debugging: true,
+        projectManagement: false,
+        collaboration: true,
+        learning: true,
+        teaching: false,
+        mentoring: false,
+        monitoring: true,
+        optimization: true,
+        security: false,
+        deployment: false,
+        ...config.capabilities,
+      },
+      metrics: {
+        tasksCompleted: 0,
+        tasksFailed: 0,
+        averageExecutionTime: 0,
+        successRate: 1.0,
+        cpuUsage: 0,
+        memoryUsage: 0,
+        diskUsage: 0,
+        networkUsage: 0,
+        codeQuality: 1.0,
+        testCoverage: 0,
+        bugRate: 0,
+        userSatisfaction: 1.0,
+        totalUptime: 0,
+        lastActivity: new Date(),
+        responseTime: 0,
+        tasksInProgress: 0,
+        resourceUsage: {
+          memory: 0,
+          cpu: 0,
+        },
+      },
+      workload: 0,
+      health: 1.0,
+      config: this.config,
+      environment: {
+        runtime: 'node',
+        version: process.version,
+        workingDirectory: process.cwd(),
+        tempDirectory: '/tmp',
+        logDirectory: './logs',
+        apiEndpoints: {},
+        credentials: {},
+        availableTools: [],
+        toolConfigs: {},
+      },
+      endpoints: [],
+      lastHeartbeat: new Date(),
+      taskHistory: [],
+      errorHistory: [],
+      childAgents: [],
+      collaborators: [],
+      currentTask: null,
       load: 0,
       performance: {
         tasksCompleted: 0,
@@ -64,12 +135,12 @@ export class BaseAgent {
       const executionTime = Date.now() - startTime;
       this.updatePerformanceMetrics(true, executionTime);
 
-      this.update({ status: 'idle', currentTask: undefined });
+      this.update({ status: 'idle', currentTask: null });
 
       return result;
     } catch (error) {
       this.updatePerformanceMetrics(false, Date.now() - startTime);
-      this.update({ status: 'error', currentTask: undefined });
+      this.update({ status: 'error', currentTask: null });
       throw error;
     }
   }

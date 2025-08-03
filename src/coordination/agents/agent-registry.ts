@@ -190,9 +190,8 @@ export class AgentRegistry extends EventEmitter {
 
     // Update in distributed memory
     await this.memory.store(`${this.namespace}/agents/${agentId}`, agent, {
-      type: 'agent-registration',
-      tags: [agent.type, agent.status],
-      partition: 'registry',
+      ttl: 3600, // 1 hour TTL for agent registrations
+      replicas: 2,
     });
 
     this.emit('agentUpdated', { agentId, agent, updates });
@@ -256,7 +255,7 @@ export class AgentRegistry extends EventEmitter {
    */
   async selectAgents(criteria: AgentSelectionCriteria): Promise<RegisteredAgent[]> {
     let candidates = await this.queryAgents({
-      type: criteria.type,
+      type: criteria.type || undefined,
       status: 'idle', // Only consider idle agents
       capabilities: criteria.requiredCapabilities,
     });
@@ -281,7 +280,7 @@ export class AgentRegistry extends EventEmitter {
         case 'health':
           return b.health - a.health;
         case 'availability':
-          return a.metrics.tasksInProgress - b.metrics.tasksInProgress;
+          return (a.metrics.tasksInProgress || 0) - (b.metrics.tasksInProgress || 0);
         default: {
           // Default: balanced scoring with context awareness
           const scoreA = this.calculateSelectionScore(a, criteria);
@@ -405,14 +404,25 @@ export class AgentRegistry extends EventEmitter {
   private createDefaultMetrics(): AgentMetrics {
     return {
       tasksCompleted: 0,
-      tasksInProgress: 0,
-      successRate: 1.0,
+      tasksFailed: 0,
       averageExecutionTime: 0,
+      successRate: 1.0,
+      cpuUsage: 0,
+      memoryUsage: 0,
+      diskUsage: 0,
+      networkUsage: 0,
+      codeQuality: 1.0,
+      testCoverage: 0,
+      bugRate: 0,
+      userSatisfaction: 1.0,
+      totalUptime: 0,
+      lastActivity: new Date(),
+      responseTime: 0,
+      tasksInProgress: 0,
       resourceUsage: {
         memory: 0,
         cpu: 0,
       },
-      lastHealthCheck: new Date(),
     };
   }
 
@@ -421,8 +431,8 @@ export class AgentRegistry extends EventEmitter {
 
     // Simple load factor calculation
     const taskLoad =
-      metrics.tasksInProgress / Math.max(1, metrics.tasksCompleted + metrics.tasksInProgress);
-    const resourceLoad = (metrics.resourceUsage.memory + metrics.resourceUsage.cpu) / 2;
+      (metrics.tasksInProgress || 0) / Math.max(1, metrics.tasksCompleted + (metrics.tasksInProgress || 0));
+    const resourceLoad = ((metrics.resourceUsage?.memory || 0) + (metrics.resourceUsage?.cpu || 0)) / 2;
 
     return Math.min(1, taskLoad * 0.6 + resourceLoad * 0.4);
   }
@@ -442,7 +452,7 @@ export class AgentRegistry extends EventEmitter {
     // Resource usage penalty
     const resourcePenalty = Math.max(
       0,
-      (metrics.resourceUsage.memory + metrics.resourceUsage.cpu) / 2 - 0.8
+      ((metrics.resourceUsage?.memory || 0) + (metrics.resourceUsage?.cpu || 0)) / 2 - 0.8
     );
     health -= resourcePenalty * 0.3;
 
@@ -477,7 +487,7 @@ export class AgentRegistry extends EventEmitter {
       // File type matching
       if (criteria.fileType && fileTypeToAgents[criteria.fileType]) {
         const relevantTypes = fileTypeToAgents[criteria.fileType];
-        if (!relevantTypes.includes(agent.type)) {
+        if (relevantTypes && !relevantTypes.includes(agent.type)) {
           return false;
         }
       }
@@ -485,7 +495,7 @@ export class AgentRegistry extends EventEmitter {
       // Task type matching
       if (criteria.taskType && taskTypeToAgents[criteria.taskType]) {
         const relevantTypes = taskTypeToAgents[criteria.taskType];
-        if (!relevantTypes.includes(agent.type)) {
+        if (relevantTypes && !relevantTypes.includes(agent.type)) {
           return false;
         }
       }
@@ -503,7 +513,7 @@ export class AgentRegistry extends EventEmitter {
     // File type relevance
     if (criteria.fileType && fileTypeToAgents[criteria.fileType]) {
       const relevantTypes = fileTypeToAgents[criteria.fileType];
-      if (relevantTypes.includes(agent.type)) {
+      if (relevantTypes && relevantTypes.includes(agent.type)) {
         score += 0.5;
       }
     }
@@ -511,7 +521,7 @@ export class AgentRegistry extends EventEmitter {
     // Task type relevance
     if (criteria.taskType && taskTypeToAgents[criteria.taskType]) {
       const relevantTypes = taskTypeToAgents[criteria.taskType];
-      if (relevantTypes.includes(agent.type)) {
+      if (relevantTypes && relevantTypes.includes(agent.type)) {
         score += 0.5;
       }
     }
