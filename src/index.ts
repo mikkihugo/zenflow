@@ -26,6 +26,8 @@ export * as Database from './database/index.js';
 export * as Memory from './memory/index.js';
 // Neural System - All neural network and AI functionality
 export * as Neural from './neural/index.js';
+// SPARC Methodology System - Systematic development workflow
+export * as SPARC from './sparc/index.js';
 
 // Workflow System - All workflow execution and management
 export * as Workflows from './workflows/index.js';
@@ -127,6 +129,13 @@ export interface ClaudeZenConfig {
     gpuAcceleration?: boolean;
   };
 
+  // SPARC methodology settings
+  sparc: {
+    enabled: boolean;
+    aiAssisted: boolean;
+    templateLibrary: string;
+  };
+
   // Database and persistence
   persistence: {
     provider: 'sqlite' | 'postgresql' | 'memory';
@@ -159,6 +168,11 @@ export const defaultConfig: ClaudeZenConfig = {
     wasmPath: './wasm',
     gpuAcceleration: false,
   },
+  sparc: {
+    enabled: true,
+    aiAssisted: true,
+    templateLibrary: './templates',
+  },
   persistence: {
     provider: 'sqlite',
   },
@@ -178,6 +192,7 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
   console.log(`   MCP Server: ${finalConfig.mcp.enabled ? 'Enabled' : 'Disabled'}`);
   console.log(`   Swarm Topology: ${finalConfig.swarm.topology}`);
   console.log(`   Neural Networks: ${finalConfig.neural.enabled ? 'Enabled' : 'Disabled'}`);
+  console.log(`   SPARC Methodology: ${finalConfig.sparc.enabled ? 'Enabled' : 'Disabled'}`);
   console.log(`   Persistence: ${finalConfig.persistence.provider}`);
 
   // Initialize components based on configuration
@@ -204,14 +219,21 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
     console.log('✅ Neural Bridge initialized');
   }
 
+  // Initialize SPARC methodology system if enabled
+  if (finalConfig.sparc.enabled) {
+    const { SPARC } = await import('./sparc/index');
+    const sparcEngine = SPARC.getEngine();
+    console.log('✅ SPARC Methodology System initialized');
+  }
+
   // Initialize plugin system
   if (finalConfig.plugins.autoLoad) {
     // Plugin system temporarily disabled for build optimization
     // const { PluginManager } = await import('./plugins/plugin-manager');
     console.log('⚠️  Plugin Manager temporarily disabled');
-    const pluginManager = PluginManager.getInstance();
-    await pluginManager.initialize();
-    console.log('✅ Plugin Manager initialized');
+    // const pluginManager = PluginManager.getInstance();
+    // await pluginManager.initialize();
+    // console.log('✅ Plugin Manager initialized');
   }
 
   console.log('🎯 Claude-Zen system ready for coordination!');
@@ -278,6 +300,7 @@ export default {
   Neural,
   Database,
   Coordination,
+  SPARC,
   Interfaces,
   Integration,
   Bindings,

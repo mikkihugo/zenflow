@@ -72,6 +72,10 @@ test-results/
 lint-report.json
 .cache/
 
+# TypeScript build artifacts
+.tsbuildinfo
+*.tsbuildinfo
+
 # IDE and editor files
 *.swp
 *.swo

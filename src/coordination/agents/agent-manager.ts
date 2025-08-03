@@ -4,10 +4,10 @@
 
 import { type ChildProcess, spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import { generateId } from '../../core/helpers.js';
-import type { IEventBus } from '../core/event-bus';
-import type { ILogger } from '../core/logger';
-import type { DistributedMemorySystem } from '../memory/distributed-memory.js';
+import { generateId } from '../swarm/core/utils';
+import type { IEventBus } from '../../core/event-bus';
+import type { Logger } from '../../core/logger';
+import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
 import type {
   AgentCapabilities,
   AgentConfig,
@@ -18,7 +18,7 @@ import type {
   AgentState,
   AgentStatus,
   AgentType,
-} from '../types/agent-types';
+} from '../../types/agent-types';
 
 export interface AgentManagerConfig {
   maxAgents: number;
@@ -123,9 +123,9 @@ export interface HealthIssue {
  * Comprehensive agent lifecycle and resource management
  */
 export class AgentManager extends EventEmitter {
-  private logger: ILogger;
+  private logger: Logger;
   private eventBus: IEventBus;
-  private memory: DistributedMemorySystem;
+  private memory: MemoryCoordinator;
   private config: AgentManagerConfig;
 
   // Agent tracking
@@ -142,7 +142,7 @@ export class AgentManager extends EventEmitter {
 
   // Scaling and policies
   private scalingPolicies = new Map<string, ScalingPolicy>();
-  private scalingOperations = new Map<string, { timestamp: Date; type: string }>();
+  // private scalingOperations = new Map<string, { timestamp: Date; type: string }>();
 
   // Resource tracking
   private resourceUsage = new Map<string, { cpu: number; memory: number; disk: number }>();
@@ -152,7 +152,7 @@ export class AgentManager extends EventEmitter {
     config: Partial<AgentManagerConfig>,
     logger: ILogger,
     eventBus: IEventBus,
-    memory: DistributedMemorySystem
+    memory: MemoryCoordinator
   ) {
     super();
     this.logger = logger;
@@ -189,12 +189,12 @@ export class AgentManager extends EventEmitter {
   }
 
   private setupEventHandlers(): void {
-    this.eventBus.on('agent:heartbeat', (data: unknown) => {
-      const heartbeatData = data as { agentId: string; timestamp: Date; metrics?: AgentMetrics };
-      this.handleHeartbeat(heartbeatData);
+    this.eventBus.on('agent:status:changed', (data: unknown) => {
+      const statusData = data as { agentId: string; timestamp: Date; metrics?: AgentMetrics };
+      this.handleHeartbeat(statusData);
     });
 
-    this.eventBus.on('agent:error', (data: unknown) => {
+    this.eventBus.on('system:error', (data: unknown) => {
       const errorData = data as { agentId: string; error: AgentError };
       this.handleAgentError(errorData);
     });
@@ -212,7 +212,7 @@ export class AgentManager extends EventEmitter {
       }
     });
 
-    this.eventBus.on('resource:usage', (data: unknown) => {
+    this.eventBus.on('system:health:changed', (data: unknown) => {
       const resourceData = data as {
         agentId: string;
         usage: { cpu: number; memory: number; disk: number };
@@ -889,6 +889,9 @@ export class AgentManager extends EventEmitter {
       workload: 0,
       health: 1.0,
       config: {
+        name: overrides.name || `${template.name}-${agentId.slice(-8)}`,
+        type: template.type,
+        swarmId,
         autonomyLevel: template.config.autonomyLevel ?? this.config.agentDefaults.autonomyLevel,
         learningEnabled:
           template.config.learningEnabled ?? this.config.agentDefaults.learningEnabled,
@@ -941,10 +944,16 @@ export class AgentManager extends EventEmitter {
     this.emit('agent:created', { agent });
 
     // Store in memory for persistence
-    await this.memory.store(`agent:${agentId}`, agent, {
-      type: 'agent-state',
-      tags: [agent.type, 'active'],
-      partition: 'state',
+    await this.memory.coordinate({
+      type: 'write',
+      sessionId: `agent-session-${agentId}`,
+      target: `agent:${agentId}`,
+      metadata: {
+        data: agent,
+        type: 'agent-state',
+        tags: [agent.type, 'active'],
+        partition: 'state',
+      },
     });
 
     return agentId;
@@ -1004,8 +1013,8 @@ export class AgentManager extends EventEmitter {
     }
 
     try {
-      agent.status = 'terminating';
-      this.updateAgentStatus(agentId, 'terminating');
+      agent.status = 'terminated';
+      this.updateAgentStatus(agentId, 'terminated');
 
       // Send graceful shutdown signal
       const process = this.processes.get(agentId);
@@ -1069,7 +1078,11 @@ export class AgentManager extends EventEmitter {
     this.removeAgentFromPoolsAndClusters(agentId);
 
     // Remove from memory
-    await this.memory.deleteEntry(`agent:${agentId}`);
+    await this.memory.coordinate({
+      type: 'delete',
+      sessionId: `agent-session-${agentId}`,
+      target: `agent:${agentId}`,
+    });
 
     this.logger.info('Removed agent', { agentId });
     this.emit('agent:removed', { agentId });
@@ -1312,7 +1325,7 @@ export class AgentManager extends EventEmitter {
     return Math.max(0, (memoryScore + cpuScore + diskScore) / 3);
   }
 
-  private detectHealthIssues(agentId: string, health: AgentHealth): void {
+  private detectHealthIssues(_agentId: string, health: AgentHealth): void {
     const issues: HealthIssue[] = [];
 
     if (health.components.responsiveness < 0.5) {
@@ -1435,12 +1448,12 @@ export class AgentManager extends EventEmitter {
         const readyData = data as { agentId: string };
         if (readyData.agentId === agentId) {
           clearTimeout(timer);
-          this.eventBus.off('agent:ready', handler);
+          this.eventBus.off('agent:status:changed', handler);
           resolve();
         }
       };
 
-      this.eventBus.on('agent:ready', handler);
+      this.eventBus.on('agent:status:changed', handler);
     });
   }
 

@@ -10,10 +10,10 @@ import type {
   Message,
   MessageType,
   Task,
-} from './types.js';
-import { generateId, getDefaultCognitiveProfile } from './utils.js';
+} from '../../types/agent-types';
+import { generateId, getDefaultCognitiveProfile } from '../swarm/core/utils';
 
-export class BaseAgent implements Agent {
+export class BaseAgent {
   id: string;
   config: AgentConfig;
   state: AgentState;

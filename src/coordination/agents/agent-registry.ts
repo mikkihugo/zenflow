@@ -6,15 +6,14 @@
  */
 
 import { EventEmitter } from 'events';
-import type { DistributedMemorySystem } from '../memory/distributed-memory';
+import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
 import type {
   AgentCapabilities,
   AgentId,
   AgentMetrics,
-  AgentState,
   AgentStatus,
   AgentType,
-} from '../types/agent-types';
+} from '../../types/agent-types';
 
 export interface AgentRegistryQuery {
   type?: AgentType;
@@ -53,14 +52,14 @@ export interface AgentSelectionCriteria {
  * Centralized agent registry for discovery and management
  */
 export class AgentRegistry extends EventEmitter {
-  private memory: DistributedMemorySystem;
+  private memory: MemoryCoordinator;
   private namespace: string;
   private agents = new Map<AgentId, RegisteredAgent>();
   private lastUpdate = new Map<AgentId, Date>();
   private healthCheckInterval?: NodeJS.Timeout;
   private initialized = false;
 
-  constructor(memory: DistributedMemorySystem, namespace: string = 'agent-registry') {
+  constructor(memory: MemoryCoordinator, namespace: string = 'agent-registry') {
     super();
     this.memory = memory;
     this.namespace = namespace;
@@ -124,10 +123,16 @@ export class AgentRegistry extends EventEmitter {
     this.lastUpdate.set(agent.id, now);
 
     // Store in distributed memory
-    await this.memory.store(`${this.namespace}/agents/${agent.id}`, registeredAgent, {
-      type: 'agent-registration',
-      tags: [agent.type, agent.status],
-      partition: 'registry',
+    await this.memory.coordinate({
+      type: 'write',
+      sessionId: `registry-session-${agent.id}`,
+      target: `${this.namespace}/agents/${agent.id}`,
+      metadata: {
+        data: registeredAgent,
+        type: 'agent-registration',
+        tags: [agent.type, agent.status],
+        partition: 'registry',
+      },
     });
 
     this.emit('agentRegistered', { agent: registeredAgent });
