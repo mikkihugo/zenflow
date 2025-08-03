@@ -1,0 +1,27 @@
+name: "Claude Test Minimal"
+
+on:
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      message:
+        description: 'Test message'
+        required: false
+        default: 'Hello Claude'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude'))
+    
+    steps:
+      - name: Test Event
+        run: |
+          echo "🧪 MINIMAL TEST"
+          echo "Event: ${{ github.event_name }}"
+          echo "Comment: ${{ github.event.comment.body || 'N/A' }}"
+          echo "Contains @claude: ${{ contains(github.event.comment.body, '@claude') }}"
+          echo "Message: ${{ github.event.inputs.message || 'N/A' }}"
