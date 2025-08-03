@@ -1,5 +1,5 @@
 /**
- * Orchestrator - Core orchestration system for claude-flow
+ * Orchestrator - Core orchestration system for claude-zen
  * Coordinates components and manages system lifecycle
  */
 
@@ -52,7 +52,7 @@ export class Orchestrator extends EventEmitter {
     super();
 
     this.config = {
-      name: config.name || 'claude-flow-orchestrator',
+      name: config.name || 'claude-zen-orchestrator',
       timeout: config.timeout || 30000,
       maxConcurrentTasks: config.maxConcurrentTasks || 10,
       enableHealthCheck: config.enableHealthCheck !== false,

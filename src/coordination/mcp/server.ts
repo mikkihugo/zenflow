@@ -1,6 +1,6 @@
 /**
  * MCP Server - Model Context Protocol server implementation
- * Provides a simple MCP server for claude-flow integration
+ * Provides a simple MCP server for claude-zen integration
  */
 
 import { EventEmitter } from 'node:events';
@@ -160,7 +160,7 @@ export class MCPServer extends EventEmitter {
 
     // Info handler
     this.registerHandler('info', async () => ({
-      name: 'claude-flow-mcp',
+      name: 'claude-zen-mcp',
       version: '1.0.0',
       capabilities: ['tools', 'resources'],
     }));

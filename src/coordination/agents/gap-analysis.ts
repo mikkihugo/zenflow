@@ -1,13 +1,13 @@
 /**
- * Agent System Gap Analysis - Compare our 147+ agents vs claude-flow's 54
+ * Agent System Gap Analysis - Compare our 147+ agents vs claude-zen's 54
  *
  * This utility provides comprehensive analysis of our agent system
- * capabilities compared to claude-flow and other systems.
+ * capabilities compared to claude-zen and other systems.
  */
 
 import type { AgentType } from '../../types/agent-types';
 
-// claude-flow's 54 agent types (from their documentation)
+// claude-zen's 54 agent types (from their documentation)
 export const CLAUDE_FLOW_AGENTS: Record<string, string[]> = {
   'Core Development': [
     'coder',
@@ -245,7 +245,7 @@ export interface GapAnalysisResult {
 }
 
 /**
- * Perform comprehensive gap analysis between our agent system and claude-flow
+ * Perform comprehensive gap analysis between our agent system and claude-zen
  */
 export function performGapAnalysis(): GapAnalysisResult {
   // Count our agents
@@ -253,7 +253,7 @@ export function performGapAnalysis(): GapAnalysisResult {
     .flat()
     .filter((agent, index, array) => array.indexOf(agent) === index).length; // Remove duplicates
 
-  // Count claude-flow agents
+  // Count claude-zen agents
   const claudeFlowAgentCount = Object.values(CLAUDE_FLOW_AGENTS)
     .flat()
     .filter((agent, index, array) => array.indexOf(agent) === index).length; // Remove duplicates
@@ -312,7 +312,7 @@ export function performGapAnalysis(): GapAnalysisResult {
     'Leverage our 2.7x agent advantage for fine-grained task specialization',
     'Implement intelligent auto-assignment based on file types and agent capabilities',
     'Create performance benchmarks to demonstrate efficiency gains',
-    'Document unique capabilities not available in claude-flow',
+    'Document unique capabilities not available in claude-zen',
     'Develop hybrid coordination strategies using our extensive agent ecosystem',
     'Optimize agent selection algorithms for 150+ agent environment',
     'Create agent specialization training programs',
@@ -341,7 +341,7 @@ export function generateComparisonReport(): string {
 
   report += `## 📊 Overall Comparison\n\n`;
   report += `- **Our System**: ${analysis.ourTotal} specialized agent types\n`;
-  report += `- **claude-flow**: ${analysis.clauseFlowTotal} agent types\n`;
+  report += `- **claude-zen**: ${analysis.clauseFlowTotal} agent types\n`;
   report += `- **Our Advantage**: ${analysis.ourAdvantage} additional agents (${analysis.advantageRatio}x more)\n\n`;
 
   report += `## 🎯 Category-by-Category Analysis\n\n`;
@@ -377,7 +377,7 @@ export function generateComparisonReport(): string {
   report += '\n';
 
   report += `## 🏆 Conclusion\n\n`;
-  report += `Our comprehensive ${analysis.ourTotal}-agent system provides ${analysis.advantageRatio}x more specialization than claude-flow's ${analysis.clauseFlowTotal} agents. `;
+  report += `Our comprehensive ${analysis.ourTotal}-agent system provides ${analysis.advantageRatio}x more specialization than claude-zen's ${analysis.clauseFlowTotal} agents. `;
   report += `We have significant advantages in DevOps, documentation, GitHub integration, and specialized development domains. `;
   report += `The focus should be on leveraging our extensive agent ecosystem rather than wholesale additions.\n`;
 

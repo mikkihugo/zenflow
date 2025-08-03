@@ -26,10 +26,10 @@ describe('Maestro Steering CLI End-to-End', () => {
     process.chdir(testDirectory);
 
     // Setup test project structure
-    await mkdir(join(testDirectory, '.claude', 'claude-flow', 'maestro', 'steering'), {
+    await mkdir(join(testDirectory, '.claude', 'claude-zen', 'maestro', 'steering'), {
       recursive: true,
     });
-    await mkdir(join(testDirectory, '.claude', 'claude-flow', 'maestro', 'specs'), {
+    await mkdir(join(testDirectory, '.claude', 'claude-zen', 'maestro', 'specs'), {
       recursive: true,
     });
   });
@@ -54,7 +54,7 @@ describe('Maestro Steering CLI End-to-End', () => {
 
       // Note: This would be the actual CLI command if the system was fully built
       // For testing purposes, we simulate the command execution
-      const command = `npx claude-flow maestro init-steering ${domain}`;
+      const command = `npx claude-zen maestro init-steering ${domain}`;
 
       try {
         // Simulate CLI command execution
@@ -64,7 +64,7 @@ describe('Maestro Steering CLI End-to-End', () => {
         const steeringPath = join(
           testDirectory,
           '.claude',
-          'claude-flow',
+          'claude-zen',
           'maestro',
           'steering',
           `${domain}.md`
@@ -93,7 +93,7 @@ describe('Maestro Steering CLI End-to-End', () => {
         const steeringPath = join(
           testDirectory,
           '.claude',
-          'claude-flow',
+          'claude-zen',
           'maestro',
           'steering',
           `${domain}.md`
@@ -105,7 +105,7 @@ describe('Maestro Steering CLI End-to-End', () => {
       } catch (error) {
         console.log(
           'CLI command would be:',
-          `npx claude-flow maestro init-steering ${domain} -c "${customContent}"`
+          `npx claude-zen maestro init-steering ${domain} -c "${customContent}"`
         );
       }
     });
@@ -120,14 +120,14 @@ describe('Maestro Steering CLI End-to-End', () => {
           const steeringPath = join(
             testDirectory,
             '.claude',
-            'claude-flow',
+            'claude-zen',
             'maestro',
             'steering',
             `${domain}.md`
           );
           expect(existsSync(steeringPath)).toBe(true);
         } catch (error) {
-          console.log('CLI command would be:', `npx claude-flow maestro init-steering ${domain}`);
+          console.log('CLI command would be:', `npx claude-zen maestro init-steering ${domain}`);
         }
       }
     });
@@ -151,7 +151,7 @@ describe('Maestro Steering CLI End-to-End', () => {
         const specPath = join(
           testDirectory,
           '.claude',
-          'claude-flow',
+          'claude-zen',
           'maestro',
           'specs',
           featureName,
@@ -168,7 +168,7 @@ describe('Maestro Steering CLI End-to-End', () => {
       } catch (error) {
         console.log(
           'CLI command would be:',
-          `npx claude-flow maestro create-spec ${featureName} -r "${request}"`
+          `npx claude-zen maestro create-spec ${featureName} -r "${request}"`
         );
       }
     });
@@ -193,7 +193,7 @@ describe('Maestro Steering CLI End-to-End', () => {
           const filePath = join(
             testDirectory,
             '.claude',
-            'claude-flow',
+            'claude-zen',
             'maestro',
             'specs',
             featureName,
@@ -203,9 +203,9 @@ describe('Maestro Steering CLI End-to-End', () => {
         }
       } catch (error) {
         console.log('Full workflow CLI commands would be:');
-        console.log(`1. npx claude-flow maestro create-spec ${featureName} -r "${request}"`);
-        console.log(`2. npx claude-flow maestro generate-design ${featureName}`);
-        console.log(`3. npx claude-flow maestro generate-tasks ${featureName}`);
+        console.log(`1. npx claude-zen maestro create-spec ${featureName} -r "${request}"`);
+        console.log(`2. npx claude-zen maestro generate-design ${featureName}`);
+        console.log(`3. npx claude-zen maestro generate-tasks ${featureName}`);
       }
     });
   });
@@ -253,7 +253,7 @@ describe('Maestro Steering CLI End-to-End', () => {
         const steeringPath = join(
           testDirectory,
           '.claude',
-          'claude-flow',
+          'claude-zen',
           'maestro',
           'steering',
           `${domain}.md`
@@ -318,7 +318,7 @@ describe('Maestro Steering CLI End-to-End', () => {
           const steeringPath = join(
             testDirectory,
             '.claude',
-            'claude-flow',
+            'claude-zen',
             'maestro',
             'steering',
             `${domain}.md`
@@ -336,7 +336,7 @@ describe('Maestro Steering CLI End-to-End', () => {
 
   async function simulateInitSteeringCommand(domain: string, content?: string): Promise<any> {
     // Simulate the maestro init-steering command
-    const steeringDir = join(testDirectory, '.claude', 'claude-flow', 'maestro', 'steering');
+    const steeringDir = join(testDirectory, '.claude', 'claude-zen', 'maestro', 'steering');
     await mkdir(steeringDir, { recursive: true });
 
     const steeringContent = content || `Guidelines and standards for ${domain} domain development.`;
@@ -357,7 +357,7 @@ ${steeringContent}
 
   async function simulateCreateSpecCommand(featureName: string, request: string): Promise<any> {
     // Simulate the maestro create-spec command
-    const specDir = join(testDirectory, '.claude', 'claude-flow', 'maestro', 'specs', featureName);
+    const specDir = join(testDirectory, '.claude', 'claude-zen', 'maestro', 'specs', featureName);
     await mkdir(specDir, { recursive: true });
 
     const requirementsContent = `# Requirements for ${featureName}
@@ -417,7 +417,7 @@ Performance benchmarks and optimization strategies.
     const designPath = join(
       testDirectory,
       '.claude',
-      'claude-flow',
+      'claude-zen',
       'maestro',
       'specs',
       featureName,
@@ -457,7 +457,7 @@ Performance benchmarks and optimization strategies.
     const tasksPath = join(
       testDirectory,
       '.claude',
-      'claude-flow',
+      'claude-zen',
       'maestro',
       'specs',
       featureName,

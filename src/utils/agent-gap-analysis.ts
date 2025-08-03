@@ -3,7 +3,7 @@
 /**
  * Agent Gap Analysis CLI Utility
  *
- * Generate comprehensive analysis comparing our agent system to claude-flow
+ * Generate comprehensive analysis comparing our agent system to claude-zen
  */
 
 import {
@@ -32,7 +32,7 @@ async function main() {
         const analysis = performGapAnalysis();
 
         console.log(`✅ Our Agent System: ${analysis.ourTotal} specialized agent types`);
-        console.log(`📋 claude-flow System: ${analysis.clauseFlowTotal} agent types`);
+        console.log(`📋 claude-zen System: ${analysis.clauseFlowTotal} agent types`);
         console.log(
           `🚀 Our Advantage: ${analysis.ourAdvantage} additional agents (${analysis.advantageRatio}x more)`
         );

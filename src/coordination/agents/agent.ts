@@ -32,7 +32,6 @@ export class BaseAgent {
     };
 
     this.state = {
-    this.state = {
       id: this.id,
       name: config.name || `Agent-${this.id.id}`,
       type: config.type,

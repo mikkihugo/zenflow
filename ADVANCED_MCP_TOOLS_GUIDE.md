@@ -1,6 +1,6 @@
 # 🧠 Advanced MCP Tools Guide
 
-This guide explains how to use the 45+ advanced MCP tools implemented in Phase 1 of the claude-flow expansion.
+This guide explains how to use the 45+ advanced MCP tools implemented in Phase 1 of the claude-zen expansion.
 
 ## 🚀 Quick Start
 

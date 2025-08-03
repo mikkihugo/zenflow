@@ -1,5 +1,5 @@
 /**
- * Event Bus - Core event system for claude-flow
+ * Event Bus - Core event system for claude-zen
  * Provides centralized event handling and communication
  * Following Google TypeScript standards with strict typing
  */

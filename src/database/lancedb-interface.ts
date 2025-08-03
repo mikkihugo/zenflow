@@ -52,7 +52,7 @@ export class LanceDBInterface extends EventEmitter {
 
     this.config = {
       dbPath: config.dbPath ?? './data/lancedb',
-      dbName: config.dbName ?? 'claude-flow-vectors',
+      dbName: config.dbName ?? 'claude-zen-vectors',
       vectorDim: config.vectorDim ?? 1536, // OpenAI embedding dimension
       similarity: config.similarity ?? 'cosine',
       indexType: config.indexType ?? 'HNSW',

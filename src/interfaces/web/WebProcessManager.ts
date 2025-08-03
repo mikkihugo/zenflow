@@ -27,7 +27,7 @@ export class WebProcessManager {
 
   constructor(config: WebConfig) {
     this.config = config;
-    this.pidFile = join(process.cwd(), '.hive-mind', 'claude-flow-web.pid');
+    this.pidFile = join(process.cwd(), '.hive-mind', 'claude-zen-web.pid');
   }
 
   /**

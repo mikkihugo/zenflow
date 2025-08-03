@@ -51,7 +51,7 @@
 - **Path:** `src/fact-core`
 - **Files:** 0
 - **Lines of Code:** 0
-- **Subdirectories:** .claude-flow, examples, src
+- **Subdirectories:** .claude-zen, examples, src
 
 
 ### integration

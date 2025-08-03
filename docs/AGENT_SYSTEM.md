@@ -6,7 +6,7 @@ Claude-Zen features a comprehensive **116-agent ecosystem** providing **2.15x mo
 
 ### Key Statistics
 - **116 specialized agent types** across 17 categories
-- **2.15x advantage** over claude-flow's 54 agents
+- **2.15x advantage** over claude-zen's 54 agents
 - **File-type aware selection** supporting 20+ file extensions
 - **Task-context optimization** with 6 specialized domains
 - **Sub-millisecond** agent selection performance
@@ -215,7 +215,7 @@ npx tsx src/utils/agent-gap-analysis.ts agents
 
 ## 🔍 Competitive Analysis
 
-### vs claude-flow (54 agents)
+### vs claude-zen (54 agents)
 
 **Our Advantages:**
 - **2.15x more agents** (116 vs 54)

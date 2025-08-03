@@ -15,6 +15,7 @@ export { MCPServer } from './mcp-server';
 // MCP tools
 export * from './tools/neural-tools';
 export * from './tools/swarm-tools';
+export * from './tools/batch-tools';
 
 // MCP types
 export type * from './types/mcp-types';

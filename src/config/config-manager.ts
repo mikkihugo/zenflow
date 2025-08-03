@@ -72,7 +72,7 @@ export class ConfigManager {
       },
       memory: {
         directory: './data/memory',
-        namespace: 'claude-flow',
+        namespace: 'claude-zen',
         enableCompression: false,
         maxMemorySize: 100 * 1024 * 1024, // 100MB
       },

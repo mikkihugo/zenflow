@@ -1,7 +1,7 @@
 # 🛠️ Enhanced Issue #564: "require is not defined" Error Resolution & ES Module Compatibility
 
 ## 📋 Original Issue Summary
-When executing `npx claude-flow swarm` with version `2.0.0-alpha.83`, the system fails to spawn Claude Code with the error `require is not defined` and falls back to the built-in executor. The compiled swarm module is also not found.
+When executing `npx claude-zen swarm` with version `2.0.0-alpha.83`, the system fails to spawn Claude Code with the error `require is not defined` and falls back to the built-in executor. The compiled swarm module is also not found.
 
 ## 🎯 Comprehensive Expected Results
 

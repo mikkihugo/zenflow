@@ -163,7 +163,7 @@ class IntelligentFileClassifier {
     });
 
     // Essential runtime files (cannot remove)
-    this.addRule(/(package\.json|bin\/claude-flow\.js)$/, {
+    this.addRule(/(package\.json|bin\/claude-zen\.js)$/, {
       classification: 'essential',
       safety: 'dangerous',
       impact: 'critical',
@@ -372,19 +372,19 @@ class IntelligentNpmIgnoreGenerator implements NpmIgnoreOptimizer {
   private generateBinaryFileRules(binaryFiles: FileCategory): IgnoreRule[] {
     return [
       {
-        pattern: 'bin/claude-flow-node-pkg',
+        pattern: 'bin/claude-zen-node-pkg',
         reason: 'Large pre-compiled binary (46.3MB) not needed in npm package',
         impact: 'high',
         safety: 'safe',
         category: 'binary'
       },
       {
-        pattern: 'bin/claude-flow-*',
+        pattern: 'bin/claude-zen-*',
         reason: 'Additional binary files not needed',
         impact: 'medium',
         safety: 'safe',
         category: 'binary',
-        exceptions: ['!bin/claude-flow.js', '!bin/claude-flow']
+        exceptions: ['!bin/claude-zen.js', '!bin/claude-zen']
       }
     ];
   }
@@ -449,10 +449,10 @@ class IntelligentNpmIgnoreGenerator implements NpmIgnoreOptimizer {
 # ===============================================
 
 # Large binary files (46.3MB saved)
-bin/claude-flow-node-pkg
-bin/claude-flow-*
-!bin/claude-flow.js
-!bin/claude-flow
+bin/claude-zen-node-pkg
+bin/claude-zen-*
+!bin/claude-zen.js
+!bin/claude-zen
 
 # All nested node_modules (1.8GB+ saved)
 **/node_modules/
@@ -524,7 +524,7 @@ coverage/
 # Session and checkpoint data
 .claude/checkpoints/
 .claude/sessions/
-.claude-flow/
+.claude-zen/
 .swarm/
 memory/
 .jest-cache/
@@ -583,7 +583,7 @@ pnpm-lock.yaml
 # ===============================================
 # The following patterns ensure essential files are kept:
 # - package.json (required)
-# - bin/claude-flow.js (main executable)
+# - bin/claude-zen.js (main executable)
 # - src/**/*.js (compiled JavaScript)
 # - LICENSE (legal requirement)
 # - README.md (user documentation)
@@ -745,13 +745,13 @@ class ComprehensivePackageValidator implements PackageValidator {
   private async testClaudeFlowHelp(): Promise<TestResult> {
     try {
       const { execSync } = require('child_process');
-      const output = execSync('npx claude-flow --help', { 
+      const output = execSync('npx claude-zen --help', { 
         encoding: 'utf8',
         timeout: 10000 
       });
       
       return {
-        testName: 'claude-flow --help',
+        testName: 'claude-zen --help',
         status: 'passed',
         duration: 0, // Will be measured by wrapper
         output,
@@ -763,7 +763,7 @@ class ComprehensivePackageValidator implements PackageValidator {
       };
     } catch (error) {
       return {
-        testName: 'claude-flow --help',
+        testName: 'claude-zen --help',
         status: 'failed',
         duration: 0,
         error: error.message,
@@ -809,7 +809,7 @@ describe('Package Size Optimization', () => {
       const packageContents = await getPackageContents();
       const essentialFiles = [
         'package.json',
-        'bin/claude-flow.js',
+        'bin/claude-zen.js',
         'README.md',
         'LICENSE'
       ];
@@ -856,8 +856,8 @@ describe('Package Size Optimization', () => {
     it('should improve installation time by >90%', async () => {
       const benchmarker = new InstallationBenchmarker();
       
-      const beforeTime = await benchmarker.measureInstallTime('claude-flow@current');
-      const afterTime = await benchmarker.measureInstallTime('claude-flow@optimized');
+      const beforeTime = await benchmarker.measureInstallTime('claude-zen@current');
+      const afterTime = await benchmarker.measureInstallTime('claude-zen@optimized');
       
       const improvement = (beforeTime - afterTime) / beforeTime;
       expect(improvement).toBeGreaterThan(0.9); // 90% improvement
@@ -895,7 +895,7 @@ describe('Cross-Platform Package Validation', () => {
 
       it(`should have correct binary permissions on ${platform}`, async () => {
         if (platform !== 'win32') {
-          const permissions = await checkFilePermissions('bin/claude-flow');
+          const permissions = await checkFilePermissions('bin/claude-zen');
           expect(permissions.executable).toBe(true);
         }
       });

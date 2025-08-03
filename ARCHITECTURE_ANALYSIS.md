@@ -55,7 +55,7 @@ coordination/
     ├── chaos-engineering/
     ├── cognitive-patterns/
     ├── connection-management/
-    ├── claude-flow/
+    ├── claude-zen/
     └── core/
 ```
 **Status**: ⚠️ **CRITICAL ISSUE** - Circular dependency in hive-mind  

@@ -92,7 +92,7 @@ describe('Agent System Gap Analysis', () => {
       expect(analysis).toHaveProperty('uniqueAdvantages');
       expect(analysis).toHaveProperty('recommendations');
 
-      // We should have more agents than claude-flow
+      // We should have more agents than claude-zen
       expect(analysis.ourTotal).toBeGreaterThan(analysis.clauseFlowTotal);
       expect(analysis.ourAdvantage).toBeGreaterThan(0);
       expect(analysis.advantageRatio).toBeGreaterThan(1);

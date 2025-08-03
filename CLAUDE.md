@@ -58,7 +58,7 @@ src/
 │   │   ├── chaos-engineering/     # Chaos engineering capabilities
 │   │   ├── cognitive-patterns/    # Cognitive pattern evolution
 │   │   ├── connection-management/ # Connection state management
-│   │   ├── claude-flow/          # Enhanced Claude Zen integration
+│   │   ├── claude-zen/          # Enhanced Claude Zen integration
 │   │   └── core/                 # Core swarm functionality & types
 │   └── mcp/                # 🎯 Swarm MCP (stdio) - Correct location!
 ├── core/                    # Core system functionality
@@ -123,7 +123,7 @@ src/
   - Chaos engineering → `coordination/swarm/chaos-engineering/`
   - Cognitive patterns → `coordination/swarm/cognitive-patterns/`
   - Connection management → `coordination/swarm/connection-management/`
-  - Claude Zen enhanced → `coordination/swarm/claude-flow/`
+  - Claude Zen enhanced → `coordination/swarm/claude-zen/`
 - ✅ Agent systems → `coordination/agents/`
 - ✅ Orchestration systems → `coordination/maestro/`, `coordination/orchestration/`
 - ✅ Hive mind → `coordination/hive-mind/`
@@ -1121,7 +1121,7 @@ templates/claude-zen/
     ├── subagent-coordination.sh       # ✅ Subagent Stop: Agent coordination
     ├── github-integration.sh          # ✅ Advanced: GitHub issue management
     ├── utils/
-    │   ├── claude-flow-integration.sh  # ✅ Claude Zen MCP helpers
+    │   ├── claude-zen-integration.sh  # ✅ Claude Zen MCP helpers
     │   └── logging.sh                  # ✅ Logging utilities
     └── config/
         └── hook-config.json            # ✅ Hook configuration
@@ -1192,10 +1192,10 @@ templates/claude-zen/
 ### 🧰 **Claude Zen MCP Integration**
 
 All hooks integrate seamlessly with Claude Zen MCP tools:
-- **Swarm Coordination**: `npx claude-flow mcp swarm-init --topology=hierarchical`
-- **Memory Management**: `npx claude-flow mcp memory-usage --action=store`
-- **Neural Training**: `npx claude-flow mcp neural-train --operation=file-edit`
-- **Agent Management**: `npx claude-flow mcp agent-spawn --type=coordinator`
+- **Swarm Coordination**: `npx claude-zen mcp swarm-init --topology=hierarchical`
+- **Memory Management**: `npx claude-zen mcp memory-usage --action=store`
+- **Neural Training**: `npx claude-zen mcp neural-train --operation=file-edit`
+- **Agent Management**: `npx claude-zen mcp agent-spawn --type=coordinator`
 
 ### 📊 **Features & Benefits**
 

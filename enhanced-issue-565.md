@@ -202,7 +202,7 @@ const EXAMPLE_ERROR_MESSAGE: EnhancedErrorMessage = {
     {
       step: 3,
       title: "Test Claude Zen Integration",
-      command: "npx claude-flow@alpha swarm 'test task'",
+      command: "npx claude-zen@alpha swarm 'test task'",
       description: "Verify Claude Zen can now detect and use Claude CLI",
       estimatedTime: "1 minute"
     }
@@ -218,7 +218,7 @@ const EXAMPLE_ERROR_MESSAGE: EnhancedErrorMessage = {
     },
     {
       title: "Claude Zen Configuration Options",
-      url: "https://github.com/ruvnet/claude-flow/docs/configuration"
+      url: "https://github.com/ruvnet/claude-zen/docs/configuration"
     }
   ],
   estimatedResolutionTime: "5-10 minutes"
