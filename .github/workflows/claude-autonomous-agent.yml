@@ -1,4 +1,4 @@
-name: "Claude Code CLI Agent"
+name: "Claude Autonomous Agent"
 
 on:
   issues:
