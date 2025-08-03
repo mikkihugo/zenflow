@@ -1,5 +1,5 @@
 ---
-name: "Claude Test Minimal v8"
+name: "Claude Test Manual v8"
 
 on:
   workflow_dispatch:
