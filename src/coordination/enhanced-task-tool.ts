@@ -3,8 +3,8 @@
  * Extends the existing Task tool to leverage Claude Code's sub-agent system
  */
 
-import type { AgentType } from '../types/agent-types.js';
-import { generateSubAgentConfig, mapToClaudeSubAgent } from './sub-agent-generator.js';
+import type { AgentType } from '../types/agent-types.ts';
+import { generateSubAgentConfig, mapToClaudeSubAgent } from './sub-agent-generator.ts';
 
 export interface EnhancedTaskConfig {
   description: string;

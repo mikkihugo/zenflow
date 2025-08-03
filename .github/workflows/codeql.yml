@@ -2,16 +2,31 @@ name: "CodeQL Analysis"
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "develop" ]
+    paths:
+      - 'src/**'
+      - 'config/**'
+      - 'bin/**'
+      - 'scripts/**'
+      - '.github/workflows/codeql.yml'
+      - '.github/codeql/**'
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "develop" ]
+    paths:
+      - 'src/**'
+      - 'config/**'
+      - 'bin/**'  
+      - 'scripts/**'
+      - '.github/workflows/codeql.yml'
+      - '.github/codeql/**'
   schedule:
-    - cron: '0 6 * * 1'  # Weekly on Mondays
+    - cron: '0 6 * * 1'  # Weekly on Mondays at 6 AM UTC
 
 permissions:
   actions: read
   contents: read
   security-events: write
+  pull-requests: read  # Allow CodeQL to comment on PRs
 
 jobs:
   analyze:
@@ -34,6 +49,19 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 2  # Fetch commits for better analysis
+        
+    - name: Setup Node.js (for JavaScript/TypeScript analysis)
+      if: matrix.language == 'javascript-typescript'
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies (for better analysis)
+      if: matrix.language == 'javascript-typescript'
+      run: npm ci
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
@@ -42,9 +70,21 @@ jobs:
         build-mode: ${{ matrix.build-mode }}
         config-file: ./.github/codeql/codeql-config.yml
         setup-python-dependencies: false
-        debug: true
+        debug: false  # Disable debug for cleaner output
+        
+    - name: Autobuild
+      if: matrix.build-mode == 'autobuild'
+      uses: github/codeql-action/autobuild@v3
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
+        upload: true
+        
+    - name: Upload results to security tab
+      if: always()
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif-file: ../results/
+      continue-on-error: true

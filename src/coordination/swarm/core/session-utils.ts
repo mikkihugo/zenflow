@@ -6,8 +6,8 @@
  */
 
 import crypto from 'crypto';
-import type { SessionCheckpoint, SessionState, SessionStatus } from './session-manager.js';
-import { AgentConfig, type SwarmOptions, type SwarmState, Task } from './types.js';
+import type { SessionCheckpoint, SessionState, SessionStatus } from './session-manager.ts';
+import { AgentConfig, type SwarmOptions, type SwarmState, Task } from './types.ts';
 
 /**
  * Session validation utilities

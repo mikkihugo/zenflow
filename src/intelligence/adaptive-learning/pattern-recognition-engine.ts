@@ -22,7 +22,7 @@ import type {
   SystemContext,
   TaskCompletionPattern,
   TaskResult,
-} from './types.js';
+} from './types.ts';
 
 export interface ExecutionPattern {
   id: string;

@@ -4,9 +4,9 @@
 
 import { EventEmitter } from 'events';
 import { SwarmDatabase } from '../database/swarm-database';
-import type { IDatabase, ILogger } from '../di/index.js';
-import { CORE_TOKENS, inject, injectable, SWARM_TOKENS } from '../di/index.js';
-import type { ISwarmCoordinator } from '../di/tokens/swarm-tokens.js';
+import type { IDatabase, ILogger } from '../di/index.ts';
+import { CORE_TOKENS, inject, injectable, SWARM_TOKENS } from '../di/index.ts';
+import type { ISwarmCoordinator } from '../di/tokens/swarm-tokens.ts';
 import { RuvSwarmStrategy } from './strategies/ruv-swarm.strategy';
 
 import type { Agent, ExecutionPlan, SwarmStrategy, Task } from './types';

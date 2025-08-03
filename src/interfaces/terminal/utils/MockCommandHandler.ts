@@ -5,8 +5,8 @@
  * Renamed to reflect its mock/testing nature per Google standards.
  */
 
-import { CommandExecutionEngine } from '../CommandExecutionEngine.js';
-import { createSimpleLogger } from './logger.js';
+import { CommandExecutionEngine } from '../CommandExecutionEngine.ts';
+import { createSimpleLogger } from './logger.ts';
 
 const logger = createSimpleLogger('MockCommandHandler');
 

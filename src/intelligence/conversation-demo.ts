@@ -4,8 +4,8 @@
  * Demonstrates ag2.ai-inspired conversation capabilities
  */
 
-import type { AgentId } from '../types/agent-types.js';
-import { ConversationFramework } from './conversation-framework/index.js';
+import type { AgentId } from '../types/agent-types.ts';
+import { ConversationFramework } from './conversation-framework/index.ts';
 
 /**
  * Demo script showing conversation framework capabilities

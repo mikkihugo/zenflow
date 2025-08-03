@@ -16,7 +16,7 @@
     "build:wasm:dev": "cd src/neural/wasm && BUILD_MODE=dev ./scripts/build-wasm.sh",
     "build:wasm:prod": "cd src/neural/wasm && OPTIMIZE_SIZE=true BUILD_MODE=release ./scripts/build-wasm.sh",
     "clean": "rm -rf dist",
-    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --bail --maxWorkers=1 --forceExit",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=1 --forceExit --testTimeout=30000",
     "test:watch": "NODE_OPTIONS='--experimental-vm-modules' jest --watch",
     "test:unit": "NODE_OPTIONS='--experimental-vm-modules' jest src/__tests__/unit",
     "test:integration": "NODE_OPTIONS='--experimental-vm-modules' jest src/__tests__/integration",

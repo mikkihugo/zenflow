@@ -39,32 +39,32 @@
  */
 
 // Agent management - Essential agent functionality
-export { Agent } from './agents/agent.js';
-export { AgentManager } from './agents/manager.js';
-export type { AgentCapability, AgentConfig, AgentStatus } from './agents/types.js';
+export { Agent } from './agents/agent.ts';
+export { AgentManager } from './agents/manager.ts';
+export type { AgentCapability, AgentConfig, AgentStatus } from './agents/types.ts';
 // Diagnostics and monitoring
-export { HealthMonitor } from './diagnostics/health-monitor.js';
-export { PerformanceTracker } from './diagnostics/performance.js';
-export type { HealthStatus, PerformanceMetrics } from './diagnostics/types.js';
+export { HealthMonitor } from './diagnostics/health-monitor.ts';
+export { PerformanceTracker } from './diagnostics/performance.ts';
+export type { HealthStatus, PerformanceMetrics } from './diagnostics/types.ts';
 // GitHub integration
-export { GitHubCoordinator } from './github/coordinator.js';
-export type { GitHubConfig, IssueMapping } from './github/types.js';
-export { HiveMindCoordinator } from './hive-mind/coordinator.js';
+export { GitHubCoordinator } from './github/coordinator.ts';
+export type { GitHubConfig, IssueMapping } from './github/types.ts';
+export { HiveMindCoordinator } from './hive-mind/coordinator.ts';
 // Orchestration systems
-export { MaestroOrchestrator } from './maestro/orchestrator.js';
-export type { CoordinationConfig, CoordinationEvent, CoordinationMetrics } from './manager.js';
+export { MaestroOrchestrator } from './maestro/orchestrator.ts';
+export type { CoordinationConfig, CoordinationEvent, CoordinationMetrics } from './manager.ts';
 // Core coordination manager - The main entry point
-export { CoordinationManager } from './manager.js';
+export { CoordinationManager } from './manager.ts';
 // MCP integration - Swarm coordination protocol
-export { SwarmMCPServer } from './mcp/server.js';
-export type { MCPConfig, MCPTool } from './mcp/types.js';
-export type { OrchestrationConfig, TaskDefinition } from './orchestration/types.js';
-export { ChaosEngineering } from './swarm/chaos-engineering/chaos-engineering.js';
-export { CognitivePatterns } from './swarm/cognitive-patterns/cognitive-pattern-evolution.js';
-export { ConnectionManager } from './swarm/connection-management/connection-state-manager.js';
+export { SwarmMCPServer } from './mcp/server.ts';
+export type { MCPConfig, MCPTool } from './mcp/types.ts';
+export type { OrchestrationConfig, TaskDefinition } from './orchestration/types.ts';
+export { ChaosEngineering } from './swarm/chaos-engineering/chaos-engineering.ts';
+export { CognitivePatterns } from './swarm/cognitive-patterns/cognitive-pattern-evolution.ts';
+export { ConnectionManager } from './swarm/connection-management/connection-state-manager.ts';
 // Swarm coordination - Core swarm functionality (NOT legacy!)
-export { SwarmCore } from './swarm/core/index.js';
-export type { SwarmConfig, SwarmMetrics, SwarmTopology } from './swarm/types.js';
+export { SwarmCore } from './swarm/core/index.ts';
+export type { SwarmConfig, SwarmMetrics, SwarmTopology } from './swarm/types.ts';
 
 /**
  * Coordination utilities - Helper functions for common operations

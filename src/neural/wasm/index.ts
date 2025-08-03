@@ -9,13 +9,13 @@
 
 // CUDA-Rust WASM (main neural WASM implementation)
 export * from './binaries/wasm-bindings-loader.mjs';
-export * from './wasm-loader.js';
-export { default as WasmLoader } from './wasm-loader.js';
-export * from './wasm-loader2.js';
-export { default as WasmLoader2 } from './wasm-loader2.js';
-export * from './wasm-memory-optimizer.js';
-export { default as WasmMemoryOptimizer } from './wasm-memory-optimizer.js';
-export * from './wasm-types.js';
+export * from './wasm-loader.ts';
+export { default as WasmLoader } from './wasm-loader.ts';
+export * from './wasm-loader2.ts';
+export { default as WasmLoader2 } from './wasm-loader2.ts';
+export * from './wasm-memory-optimizer.ts';
+export { default as WasmMemoryOptimizer } from './wasm-memory-optimizer.ts';
+export * from './wasm-types.ts';
 
 // FACT WASM Core (cognitive processing - consolidated from src/wasm/)
 // Located in fact-core/ subdirectory to avoid naming conflicts

@@ -9,49 +9,49 @@
 // CORE SYSTEMS
 // =============================================================================
 
-export * as Config from './config/config-manager.js';
-export * as Core from './core/index.js';
-export * as Types from './types/agent-types.js';
-export * as Utils from './utils/index.js';
+export * as Config from './config/config-manager.ts';
+export * as Core from './core/index.ts';
+export * as Types from './types/agent-types.ts';
+export * as Utils from './utils/index.ts';
 
 // =============================================================================
 // DOMAIN SYSTEMS (Consolidated)
 // =============================================================================
 
 // Coordination System - All swarm and orchestration functionality
-export * as Coordination from './coordination/index.js';
+export * as Coordination from './coordination/index.ts';
 // Database System - All persistence and database functionality
-export * as Database from './database/index.js';
+export * as Database from './database/index.ts';
 // Memory System - All memory-related functionality
-export * as Memory from './memory/index.js';
+export * as Memory from './memory/index.ts';
 // Neural System - All neural network and AI functionality
-export * as Neural from './neural/index.js';
+export * as Neural from './neural/index.ts';
 // SPARC Methodology System - Systematic development workflow
-export * as SPARC from './sparc/index.js';
+export * as SPARC from './sparc/index.ts';
 
 // Workflow System - All workflow execution and management
-export * as Workflows from './workflows/index.js';
+export * as Workflows from './workflows/index.ts';
 // Performance Optimization System - All performance optimization functionality
-export * as Optimization from './optimization/index.js';
+export * as Optimization from './optimization/index.ts';
 
 // =============================================================================
 // INTERFACE SYSTEMS
 // =============================================================================
 
 // REST API Layer - Clean separation following Google standards
-export * as API from './api/index.js';
+export * as API from './api/index.ts';
 
 // Interface Systems (includes CLI, Web, TUI, MCP)
-export * as Interfaces from './interfaces/index.js';
+export * as Interfaces from './interfaces/index.ts';
 
 // =============================================================================
 // SPECIALIZED SYSTEMS
 // =============================================================================
 
 // Bindings
-export * as Bindings from './bindings/index.js';
+export * as Bindings from './bindings/index.ts';
 // Integration System
-export * as Integration from './integration/index.js';
+export * as Integration from './integration/index.ts';
 
 // =============================================================================
 // SPECIALIZED COMPONENTS

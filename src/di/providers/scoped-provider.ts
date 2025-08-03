@@ -3,7 +3,7 @@
  * Creates one instance per scope lifetime
  */
 
-import type { DIContainer, DIScope, Provider } from '../types/di-types.js';
+import type { DIContainer, DIScope, Provider } from '../types/di-types.ts';
 
 export class ScopedProvider<T> implements Provider<T> {
   readonly type = 'scoped' as const;

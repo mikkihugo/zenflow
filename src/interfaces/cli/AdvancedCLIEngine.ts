@@ -21,7 +21,7 @@ import type {
   ProjectDomain,
   ProjectType,
   SwarmCommand,
-} from './types/AdvancedCLITypes.js';
+} from './types/AdvancedCLITypes.ts';
 
 /**
  * Advanced CLI System Implementation

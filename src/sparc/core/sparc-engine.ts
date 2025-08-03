@@ -12,18 +12,18 @@
  */
 
 import { nanoid } from 'nanoid';
-import { TaskAPI } from '../../coordination/api.js';
-import { EnhancedTaskTool } from '../../coordination/enhanced-task-tool.js';
-import { DocumentDrivenSystem } from '../../core/document-driven-system.js';
-import { UnifiedMemorySystem } from '../../core/unified-memory-system.js';
-import { UnifiedWorkflowEngine } from '../../core/unified-workflow-engine.js';
-import { ProjectManagementIntegration } from '../integrations/project-management-integration.js';
-import { SPARCSwarmCoordinator } from '../integrations/swarm-coordination-integration.js';
-import { ArchitecturePhaseEngine } from '../phases/architecture/architecture-engine.js';
-import { CompletionPhaseEngine } from '../phases/completion/completion-engine.js';
-import { PseudocodePhaseEngine } from '../phases/pseudocode/pseudocode-engine.js';
-import { RefinementPhaseEngine } from '../phases/refinement/refinement-engine.js';
-import { SpecificationPhaseEngine } from '../phases/specification/specification-engine.js';
+import { TaskAPI } from '../../coordination/api.ts';
+import { EnhancedTaskTool } from '../../coordination/enhanced-task-tool.ts';
+import { DocumentDrivenSystem } from '../../core/document-driven-system.ts';
+import { UnifiedMemorySystem } from '../../core/unified-memory-system.ts';
+import { UnifiedWorkflowEngine } from '../../core/unified-workflow-engine.ts';
+import { ProjectManagementIntegration } from '../integrations/project-management-integration.ts';
+import { SPARCSwarmCoordinator } from '../integrations/swarm-coordination-integration.ts';
+import { ArchitecturePhaseEngine } from '../phases/architecture/architecture-engine.ts';
+import { CompletionPhaseEngine } from '../phases/completion/completion-engine.ts';
+import { PseudocodePhaseEngine } from '../phases/pseudocode/pseudocode-engine.ts';
+import { RefinementPhaseEngine } from '../phases/refinement/refinement-engine.ts';
+import { SpecificationPhaseEngine } from '../phases/specification/specification-engine.ts';
 import type {
   ArchitectureDesign,
   ArtifactReference,
@@ -45,7 +45,7 @@ import type {
   SPARCEngine,
   SPARCPhase,
   SPARCProject,
-} from '../types/sparc-types.js';
+} from '../types/sparc-types.ts';
 
 export class SPARCEngineCore implements SPARCEngine {
   private readonly phaseDefinitions: Map<SPARCPhase, PhaseDefinition>;

@@ -3,7 +3,7 @@
  * Provides safety validation, auto-assignment, performance tracking, and context loading
  */
 
-import type { AgentType } from '../../types/agent-types.js';
+import type { AgentType } from '../../types/agent-types.ts';
 
 // Hook Type Definitions
 export type HookType =

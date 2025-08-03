@@ -14,9 +14,9 @@
 
 import crypto from 'crypto';
 import { EventEmitter } from 'events';
-import type { SwarmPersistencePooled } from './persistence-pooled.js';
-import { AgentConfig, SwarmEvent, type SwarmOptions, type SwarmState, Task } from './types.js';
-import { generateId } from './utils.js';
+import type { SwarmPersistencePooled } from './persistence-pooled.ts';
+import { AgentConfig, SwarmEvent, type SwarmOptions, type SwarmState, Task } from './types.ts';
+import { generateId } from './utils.ts';
 
 export interface SessionState {
   id: string;

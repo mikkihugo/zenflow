@@ -5,8 +5,8 @@
  */
 
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { ConversationFramework } from './conversation-framework/index.js';
-import { ConversationMCPToolsFactory } from './conversation-framework/mcp-tools.js';
+import { ConversationFramework } from './conversation-framework/index.ts';
+import { ConversationMCPToolsFactory } from './conversation-framework/mcp-tools.ts';
 
 /**
  * Enhanced Intelligence MCP Tools with ag2.ai integration

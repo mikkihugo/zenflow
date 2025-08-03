@@ -3,16 +3,16 @@
  * Classical TDD approach - testing actual computation results and performance
  */
 
-import { NeuralNetworkManager } from '../../../../neural/core/neural-network-manager';
+import { NeuralNetworkManager } from '../../../../neural/core/neural-network-manager.ts';
 import { WasmNeuralAccelerator } from '../../../../neural/wasm/wasm-neural-accelerator';
-import { NeuralTestHelpers } from '../../../helpers/neural-test-helpers';
+import { NeuralTestDataGenerator, NeuralNetworkValidator, NeuralPerformanceTester, NeuralMathHelpers } from '../../../helpers/neural-test-helpers';
 import { PerformanceMeasurement } from '../../../helpers/performance-measurement';
 
 describe('WASM Neural Acceleration (Classical TDD)', () => {
   let wasmAccelerator: WasmNeuralAccelerator;
   let neuralManager: NeuralNetworkManager;
   let performance: PerformanceMeasurement;
-  let testHelpers: NeuralTestHelpers;
+  let testHelpers: NeuralTestDataGenerator;
 
   const WASM_PERFORMANCE_TARGETS = {
     matrixMultiplication: 10, // 10ms for 1000x1000 matrix
@@ -24,7 +24,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
   beforeAll(async () => {
     performance = new PerformanceMeasurement();
-    testHelpers = new NeuralTestHelpers();
+    testHelpers = new NeuralTestDataGenerator();
 
     // Initialize WASM module
     wasmAccelerator = new WasmNeuralAccelerator();
@@ -45,12 +45,12 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
       const matrixSizes = [100, 500, 1000, 2000];
 
       for (const size of matrixSizes) {
-        const matrixA = testHelpers.generateRandomMatrix(size, size);
-        const matrixB = testHelpers.generateRandomMatrix(size, size);
+        const matrixA = NeuralMathHelpers.generateMatrix(size, size, 'random');
+        const matrixB = NeuralMathHelpers.generateMatrix(size, size, 'random');
 
         // Native JavaScript implementation
         performance.start(`js-matrix-mult-${size}`);
-        const jsResult = testHelpers.multiplyMatricesJS(matrixA, matrixB);
+        const jsResult = NeuralMathHelpers.matrixMultiply(matrixA, matrixB);
         performance.end(`js-matrix-mult-${size}`);
 
         // WASM accelerated implementation

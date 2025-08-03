@@ -3,6 +3,7 @@
  * London TDD approach - testing interactions and message patterns
  */
 
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import type { Agent } from '../../../../coordination/agents/agent';
 import { AgentCommunicationProtocol } from '../../../../coordination/protocols/communication/communication-protocols';
 import type { MessageBroker } from '../../../../coordination/swarm/core/message-broker';

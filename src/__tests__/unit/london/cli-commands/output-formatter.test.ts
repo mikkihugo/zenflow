@@ -497,7 +497,7 @@ describe('OutputFormatter - TDD London', () => {
 
       // Assert - verify width constraint behavior
       expect(result.length).toBeLessThanOrEqual(20);
-      expect(result).toEndWith('...');
+      expect(result).toMatch(/\.\.\.$/); // ends with ...
     });
   });
 });

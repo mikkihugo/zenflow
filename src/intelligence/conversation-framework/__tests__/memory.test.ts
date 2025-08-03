@@ -5,9 +5,9 @@
  * Focus on actual storage and retrieval behavior
  */
 
-import type { AgentId } from '../../../types/agent-types.js';
-import { ConversationMemoryImpl } from '../memory.js';
-import { ConversationQuery, type ConversationSession, type ConversationStatus } from '../types.js';
+import type { AgentId } from '../../../types/agent-types.ts';
+import { ConversationMemoryImpl } from '../memory.ts';
+import { ConversationQuery, type ConversationSession, type ConversationStatus } from '../types.ts';
 
 describe('ConversationMemoryImpl - Classical TDD', () => {
   let memory: ConversationMemoryImpl;

@@ -6,16 +6,16 @@
  */
 
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { SPARCEngineCore } from '../core/sparc-engine.js';
+import { SPARCEngineCore } from '../core/sparc-engine.ts';
 import type {
   ComplexityLevel,
   ProjectDomain,
   ProjectSpecification,
   SPARCPhase,
   SPARCProject,
-} from '../types/sparc-types.js';
-import { ProjectManagementIntegration } from './project-management-integration.js';
-import { SPARCRoadmapManager } from './roadmap-integration.js';
+} from '../types/sparc-types.ts';
+import { ProjectManagementIntegration } from './project-management-integration.ts';
+import { SPARCRoadmapManager } from './roadmap-integration.ts';
 
 export class SPARCMCPTools {
   private sparcEngine: SPARCEngineCore;

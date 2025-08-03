@@ -312,6 +312,110 @@ export class MemoryCoordinator extends EventEmitter {
   }
 
   /**
+   * Store data across distributed memory nodes
+   */
+  async store(key: string, data: any, options?: { ttl?: number; replicas?: number }): Promise<void> {
+    const decision = await this.coordinate({
+      type: 'write',
+      target: key,
+      metadata: { data, options },
+    });
+
+    if (decision.status === 'failed') {
+      throw new Error(`Failed to store data for key: ${key}`);
+    }
+  }
+
+  /**
+   * Retrieve data from distributed memory nodes
+   */
+  async get(key: string): Promise<any> {
+    const decision = await this.coordinate({
+      type: 'read',
+      target: key,
+    });
+
+    if (decision.status === 'failed') {
+      throw new Error(`Failed to retrieve data for key: ${key}`);
+    }
+
+    return await this.executeRead(decision);
+  }
+
+  /**
+   * Delete data from distributed memory nodes
+   */
+  async deleteEntry(key: string): Promise<void> {
+    const decision = await this.coordinate({
+      type: 'delete',
+      target: key,
+    });
+
+    if (decision.status === 'failed') {
+      throw new Error(`Failed to delete data for key: ${key}`);
+    }
+  }
+
+  /**
+   * List all keys matching a pattern across distributed nodes
+   */
+  async list(pattern: string): Promise<Array<{ key: string; value: any }>> {
+    const results: Array<{ key: string; value: any }> = [];
+    
+    // Get all active nodes
+    const activeNodes = Array.from(this.nodes.values()).filter(n => n.status === 'active');
+    
+    for (const node of activeNodes) {
+      try {
+        // Assuming backend implements a keys() method
+        if ('keys' in node.backend && typeof node.backend.keys === 'function') {
+          const keys = await node.backend.keys();
+          const matchingKeys = keys.filter(key => this.matchesPattern(key, pattern));
+          
+          for (const key of matchingKeys) {
+            try {
+              const value = await node.backend.get(key);
+              results.push({ key, value });
+            } catch (error) {
+              // Skip failed retrievals
+              continue;
+            }
+          }
+        }
+      } catch (error) {
+        // Skip failed nodes
+        continue;
+      }
+    }
+
+    // Remove duplicates (in case of replication)
+    const uniqueResults = new Map();
+    for (const result of results) {
+      if (!uniqueResults.has(result.key)) {
+        uniqueResults.set(result.key, result);
+      }
+    }
+
+    return Array.from(uniqueResults.values());
+  }
+
+  /**
+   * Simple pattern matching for key listing
+   */
+  private matchesPattern(key: string, pattern: string): boolean {
+    // Convert simple glob pattern to regex
+    const regexPattern = pattern
+      .replace(/\\/g, '\\\\')
+      .replace(/\*/g, '.*')
+      .replace(/\?/g, '.')
+      .replace(/\[/g, '\\[')
+      .replace(/\]/g, '\\]');
+    
+    const regex = new RegExp(`^${regexPattern}$`);
+    return regex.test(key);
+  }
+
+  /**
    * Health check for coordinator
    */
   async healthCheck(): Promise<{ status: string; details: any }> {

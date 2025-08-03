@@ -5,7 +5,7 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
-import { RuvSwarm } from './index-enhanced.js';
+import { RuvSwarm } from './index-enhanced.ts';
 
 // Pattern memory configuration for different cognitive patterns
 // Optimized to use 250-300 MB range with minimal variance

@@ -9,8 +9,8 @@ import type {
   DIToken,
   DIContainer as IDIContainer,
   Provider,
-} from '../types/di-types.js';
-import { CircularDependencyError, DIError, ServiceNotFoundError } from '../types/di-types.js';
+} from '../types/di-types.ts';
+import { CircularDependencyError, DIError, ServiceNotFoundError } from '../types/di-types.ts';
 
 export class DIContainer implements IDIContainer {
   private readonly providers = new Map<symbol, Provider<any>>();

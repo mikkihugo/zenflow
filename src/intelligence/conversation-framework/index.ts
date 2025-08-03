@@ -9,7 +9,7 @@ import type {
   ConversationMCPTools,
   ConversationMemory,
   ConversationOrchestrator,
-} from './types.js';
+} from './types.ts';
 
 /**
  * Configuration for conversation framework creation
@@ -33,13 +33,13 @@ export interface ConversationFrameworkSystem {
 }
 
 // MCP integration
-export { ConversationMCPTools, ConversationMCPToolsFactory } from './mcp-tools.js';
+export { ConversationMCPTools, ConversationMCPToolsFactory } from './mcp-tools.ts';
 // Memory and persistence
-export { ConversationMemoryFactory, ConversationMemoryImpl } from './memory.js';
+export { ConversationMemoryFactory, ConversationMemoryImpl } from './memory.ts';
 // Conversation orchestration
-export { ConversationOrchestratorImpl } from './orchestrator.js';
+export { ConversationOrchestratorImpl } from './orchestrator.ts';
 // Core types and interfaces
-export * from './types.js';
+export * from './types.ts';
 
 /**
  * Conversation Framework Factory

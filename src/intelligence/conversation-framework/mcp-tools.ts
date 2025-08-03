@@ -5,16 +5,16 @@
  */
 
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { AgentId } from '../../types/agent-types.js';
-import { ConversationMemoryFactory } from './memory.js';
-import { ConversationOrchestratorImpl } from './orchestrator.js';
+import { AgentId } from '../../types/agent-types.ts';
+import { ConversationMemoryFactory } from './memory.ts';
+import { ConversationOrchestratorImpl } from './orchestrator.ts';
 import type {
   ConversationConfig,
   ConversationMCPTools as ConversationMCPToolsInterface,
   ConversationMessage,
   ConversationQuery,
   MessageType,
-} from './types.js';
+} from './types.ts';
 
 /**
  * MCP tools for conversation management

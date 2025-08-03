@@ -2,7 +2,7 @@
  * Quick test to verify DI integration is working
  */
 
-import { runCompleteIntegration } from '../di/examples/complete-system-integration.js';
+import { runCompleteIntegration } from './src/di/examples/complete-system-integration.ts';
 
 console.log('🧪 Testing complete DI integration...');
 

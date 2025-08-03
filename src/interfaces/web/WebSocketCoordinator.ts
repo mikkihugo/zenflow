@@ -6,7 +6,7 @@
  */
 
 import type { Server as SocketIOServer } from 'socket.io';
-import { createLogger } from '../../utils/logger.js';
+import { createLogger } from '../../utils/logger.ts';
 
 export interface WebSession {
   id: string;

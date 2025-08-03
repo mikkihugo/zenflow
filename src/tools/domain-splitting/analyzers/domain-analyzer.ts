@@ -14,7 +14,7 @@ import type {
   DependencyAnalysisResult,
   FileAnalysis,
   SplittingScore,
-} from '../types/analysis-types.js';
+} from '../types/analysis-types.ts';
 import type {
   CouplingAnalysis,
   DependencyGraph,
@@ -23,7 +23,7 @@ import type {
   SplittingMetrics,
   SplittingRecommendation,
   SubDomainPlan,
-} from '../types/domain-types.js';
+} from '../types/domain-types.ts';
 
 export interface DomainAnalyzer {
   analyzeDomainComplexity(domainPath: string): Promise<DomainAnalysis>;

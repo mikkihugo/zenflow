@@ -5,7 +5,7 @@
  * from both command execution and interactive terminal interfaces.
  */
 
-export * from './error-message.js';
+export * from './error-message.ts';
 export {
   CommandError,
   CriticalError,
@@ -14,8 +14,8 @@ export {
   StandardError,
   SwarmError,
   WarningMessage,
-} from './error-message.js';
-export * from './footer.js';
+} from './error-message.ts';
+export * from './footer.ts';
 export {
   CommandExecutionFooter,
   Footer,
@@ -23,9 +23,9 @@ export {
   InteractiveFooter,
   InteractiveTerminalFooter,
   MenuFooter,
-} from './footer.js';
+} from './footer.ts';
 // Core components
-export * from './header.js';
+export * from './header.ts';
 // Re-export key components for convenience
 export {
   Header,
@@ -33,8 +33,8 @@ export {
   StandardHeader,
   SwarmHeader,
   type SwarmStatus,
-} from './header.js';
-export * from './progress-bar.js';
+} from './header.ts';
+export * from './progress-bar.ts';
 export {
   AgentProgress,
   NeuralProgressBar,
@@ -43,16 +43,16 @@ export {
   StandardProgressBar,
   SwarmProgressBar,
   TaskProgress,
-} from './progress-bar.js';
-export * from './spinner.js';
+} from './progress-bar.ts';
+export * from './spinner.ts';
 export {
   LoadingSpinner,
   Spinner,
   SpinnerPresets,
   type SpinnerProps,
   SwarmSpinner,
-} from './spinner.js';
-export * from './status-badge.js';
+} from './spinner.ts';
+export * from './status-badge.ts';
 export {
   ActiveBadge,
   BusyBadge,
@@ -66,7 +66,7 @@ export {
   type StatusType,
   SuccessBadge,
   WarningBadge,
-} from './status-badge.js';
+} from './status-badge.ts';
 
 // Common interfaces and types
 export interface BaseComponentProps {

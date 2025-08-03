@@ -11,7 +11,7 @@ import {
   MockConfig,
   MockLogger,
   MockMessageBroker,
-} from '../../../di/examples/swarm-integration.js';
+} from '../../../di/examples/swarm-integration.ts';
 import {
   CORE_TOKENS,
   clearGlobalContainer,
@@ -21,7 +21,7 @@ import {
   getGlobalContainer,
   SWARM_TOKENS,
   setGlobalContainer,
-} from '../../../di/index.js';
+} from '../../../di/index.ts';
 
 describe('DI System Integration Tests', () => {
   beforeEach(() => {

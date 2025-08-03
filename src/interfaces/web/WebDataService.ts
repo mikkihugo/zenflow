@@ -5,7 +5,7 @@
  * Provides data services for API endpoints with mock implementations.
  */
 
-import { createLogger } from '../../utils/logger.js';
+import { createLogger } from '../../utils/logger.ts';
 
 export interface SystemStatusData {
   system: string;

@@ -6,9 +6,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../core/event-bus.js';
-import type { ILogger } from '../core/logger.js';
-import type { AgentState, AgentType } from '../types/agent-types.js';
+import type { IEventBus } from '../core/event-bus.ts';
+import type { ILogger } from '../core/logger.ts';
+import type { AgentState, AgentType } from '../types/agent-types.ts';
 
 export interface HiveRegistry {
   // Global agent registry

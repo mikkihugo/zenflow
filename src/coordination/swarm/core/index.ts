@@ -2,7 +2,7 @@
  * RuvSwarm - WASM-based swarm orchestration with cognitive diversity
  */
 
-import { AgentPool, type BaseAgent, createAgent } from './agent.js';
+import { AgentPool, type BaseAgent, createAgent } from '../../agents/agent.ts';
 import {
   type AgentConfig,
   Connection,
@@ -17,22 +17,22 @@ import {
   type Task,
   type TaskStatus,
   type WasmModule,
-} from './types.js';
+} from './types.ts';
 import {
   formatMetrics,
   generateId,
   priorityToNumber,
   recommendTopology,
   validateSwarmOptions,
-} from './utils.js';
+} from './utils.ts';
 
-export * from './agent.js';
-export * from './neural-network.js';
-export * from './session-integration.js';
-export * from './session-manager.js';
-export * from './session-utils.js';
-export * from './types.js';
-export * from './utils.js';
+export * from '../../agents/agent.ts';
+export * from '../../../neural/core/neural-network.ts';
+export * from './session-integration.ts';
+export * from './session-manager.ts';
+export * from './session-utils.ts';
+export * from './types.ts';
+export * from './utils.ts';
 
 /**
  * Main RuvSwarm class for orchestrating swarm operations

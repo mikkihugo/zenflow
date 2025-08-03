@@ -5,7 +5,7 @@
  */
 
 import { nanoid } from 'nanoid';
-import type { AgentId } from '../../types/agent-types.js';
+import type { AgentId } from '../../types/agent-types.ts';
 import {
   type ConversationConfig,
   type ConversationMemory,
@@ -17,7 +17,7 @@ import {
   ConversationStatus,
   MessageType,
   type ModerationAction,
-} from './types.js';
+} from './types.ts';
 
 /**
  * Implementation of the conversation orchestrator

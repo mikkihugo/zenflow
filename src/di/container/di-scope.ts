@@ -3,7 +3,7 @@
  * Provides hierarchical scoping for service lifetimes
  */
 
-import type { DIContainer, DIToken, DIScope as IDIScope, Provider } from '../types/di-types.js';
+import type { DIContainer, DIToken, DIScope as IDIScope, Provider } from '../types/di-types.ts';
 
 export class DIScope implements IDIScope {
   private readonly scopedProviders = new Map<symbol, Provider<any>>();

@@ -16,7 +16,7 @@ import {
   injectable,
   isInjectable,
   SingletonProvider,
-} from '../../../di/index.js';
+} from '../../../di/index.ts';
 
 describe('DI Decorators', () => {
   let container: DIContainer;

@@ -575,3 +575,13 @@ export function createPerformanceSwarmTest() {
     },
   });
 }
+
+/**
+ * Main coordination test helpers class
+ * Alias for backward compatibility
+ */
+export class CoordinationTestHelpers extends CoordinationTestBuilder {
+  constructor(config?: SwarmTestConfig) {
+    super(config);
+  }
+}

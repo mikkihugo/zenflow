@@ -6,8 +6,8 @@
  * @description Enhanced database providers with DI integration for Issue #63
  */
 
-import { Inject, Injectable } from '../../di/decorators/injectable.js';
-import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens.js';
+import { Inject, Injectable } from '../../di/decorators/injectable.ts';
+import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens.ts';
 
 /**
  * Interface for database adapter implementations

@@ -3,7 +3,7 @@
  * Defines tokens for neural network and AI services
  */
 
-import { createToken } from './token-factory.js';
+import { createToken } from './token-factory.ts';
 
 // Neural network interfaces (to be implemented)
 export interface INeuralNetworkTrainer {

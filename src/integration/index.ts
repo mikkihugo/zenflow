@@ -5,8 +5,8 @@
  */
 
 // Core integration components
-export * from './multi-system-coordinator.js';
-export { MultiSystemCoordinator as default } from './multi-system-coordinator.js';
+export * from './multi-system-coordinator.ts';
+export { MultiSystemCoordinator as default } from './multi-system-coordinator.ts';
 
 // Integration utilities
 export const IntegrationUtils = {

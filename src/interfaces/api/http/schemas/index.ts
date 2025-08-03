@@ -8,9 +8,9 @@
  */
 
 // Import domain-specific schemas
-export * from '../../coordination/schemas.js';
-export * from './common.js';
-export * from './neural.js';
+export * from '../../coordination/schemas.ts';
+export * from './common.ts';
+export * from './neural.ts';
 
 /**
  * Complete OpenAPI 3.0 Schema Definition

@@ -6,7 +6,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { createSimpleLogger } from '../../../core/logger.js';
+import { createSimpleLogger } from '../../../core/logger.ts';
 
 const logger = createSimpleLogger('ConfigHook');
 

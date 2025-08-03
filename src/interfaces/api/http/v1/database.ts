@@ -8,8 +8,8 @@
  */
 
 import { NextFunction, type Request, type Response, Router } from 'express';
-import { asyncHandler } from '../middleware/errors.js';
-import { LogLevel, log, logPerformance } from '../middleware/logging.js';
+import { asyncHandler } from '../middleware/errors.ts';
+import { LogLevel, log, logPerformance } from '../middleware/logging.ts';
 
 /**
  * Create database management routes

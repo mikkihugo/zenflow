@@ -7,7 +7,7 @@
 import { EventEmitter } from 'node:events';
 import type { IEventBus } from '../core/event-bus';
 import type { ILogger, LogArgument } from '../core/logger';
-import { CORE_TOKENS, inject, injectable } from '../di/index.js';
+import { CORE_TOKENS, inject, injectable } from '../di/index.ts';
 import type {
   AgentCreatedPayload,
   AgentDestroyedPayload,
@@ -17,7 +17,7 @@ import type {
   TaskAssignedPayload,
   TaskCompletedPayload,
   TaskFailedPayload,
-} from '../types/event-types.js';
+} from '../types/event-types.ts';
 
 export interface CoordinationConfig {
   maxAgents: number;

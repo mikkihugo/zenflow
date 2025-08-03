@@ -6,42 +6,42 @@
  */
 
 // Business logic (separated from UI)
-export * from './CommandExecutionEngine.js';
-export { CommandExecutionEngine } from './CommandExecutionEngine.js';
-export * from './CommandExecutionRenderer.js';
+export * from './CommandExecutionEngine.ts';
+export { CommandExecutionEngine } from './CommandExecutionEngine.ts';
+export * from './CommandExecutionRenderer.ts';
 export {
   type CommandExecutionProps,
   CommandExecutionRenderer,
-} from './CommandExecutionRenderer.js';
+} from './CommandExecutionRenderer.ts';
 // Components
-export * from './components/index.js';
-export * from './InteractiveTerminalApplication.js';
+export * from './components/index.ts';
+export * from './InteractiveTerminalApplication.ts';
 export {
   InteractiveTerminalApplication,
   type TUIModeProps,
-} from './InteractiveTerminalApplication.js';
-export * from './ProcessOrchestrator.js';
-export { TerminalManager } from './ProcessOrchestrator.js';
+} from './InteractiveTerminalApplication.ts';
+export * from './ProcessOrchestrator.ts';
+export { TerminalManager } from './ProcessOrchestrator.ts';
 // Screens
-export * from './screens/index.js';
+export * from './screens/index.ts';
 // State Hooks (React hooks for component state management)
-export * from './state-hooks/index.js';
+export * from './state-hooks/index.ts';
 // Main components (updated for Google standards)
-export * from './TerminalInterfaceRouter.js';
+export * from './TerminalInterfaceRouter.ts';
 // Re-export key items for convenience (updated names)
 export {
   TerminalApp,
   type TerminalAppProps,
-} from './TerminalInterfaceRouter.js';
-export * from './utils/MockCommandHandler.js';
+} from './TerminalInterfaceRouter.ts';
+export * from './utils/MockCommandHandler.ts';
 
 export {
   type CommandContext,
   type CommandResult,
   MockCommandHandler,
-} from './utils/MockCommandHandler.js';
+} from './utils/MockCommandHandler.ts';
 // Utilities (updated for Google standards)
-export * from './utils/mode-detector.js';
+export * from './utils/mode-detector.ts';
 export {
   detectMode,
   detectModeWithReason,
@@ -50,7 +50,7 @@ export {
   isInteractiveSupported,
   type ModeDetectionResult,
   type TerminalMode,
-} from './utils/mode-detector.js';
+} from './utils/mode-detector.ts';
 
 // Terminal interface configuration
 export interface TerminalInterfaceConfig {

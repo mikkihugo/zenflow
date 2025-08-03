@@ -7,8 +7,8 @@
  * This replaces the custom Express.js implementation while maintaining all functionality.
  */
 
-import { HTTPMCPServer } from './http-mcp-server.js';
-import { createLogger } from './simple-logger.js';
+import { HTTPMCPServer } from './http-mcp-server.ts';
+import { createLogger } from './simple-logger.ts';
 
 const logger = createLogger('MCP-Starter');
 

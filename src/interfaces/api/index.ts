@@ -10,11 +10,11 @@
  */
 
 // HTTP API (REST/GraphQL - consolidated from src/api/)
-export * from './http/index.js';
+export * from './http/index.ts';
 
 // WebSocket API (real-time communication)
-export * from './websocket/index.js';
-export { default as WebSocketClient } from './websocket/index.js';
+export * from './websocket/index.ts';
+export { default as WebSocketClient } from './websocket/index.ts';
 
 // API interface configuration
 export interface APIInterfaceConfig {

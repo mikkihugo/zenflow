@@ -6,8 +6,8 @@
  */
 
 import type { Express, Request, Response } from 'express';
-import { createLogger } from '../../utils/logger.js';
-import type { WebSocketCoordinator } from './WebSocketCoordinator.js';
+import { createLogger } from '../../utils/logger.ts';
+import type { WebSocketCoordinator } from './WebSocketCoordinator.ts';
 
 export interface ApiConfig {
   prefix: string;

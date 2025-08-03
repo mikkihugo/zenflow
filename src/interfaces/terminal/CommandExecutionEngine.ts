@@ -5,7 +5,7 @@
  * Separates business logic from UI rendering concerns following Google standards.
  */
 
-import { createSimpleLogger } from './utils/logger.js';
+import { createSimpleLogger } from './utils/logger.ts';
 
 const logger = createSimpleLogger('CommandEngine');
 

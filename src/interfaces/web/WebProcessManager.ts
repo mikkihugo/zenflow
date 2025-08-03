@@ -8,8 +8,8 @@
 import { existsSync } from 'fs';
 import { mkdir, readFile, unlink, writeFile } from 'fs/promises';
 import { dirname, join } from 'path';
-import { createLogger } from '../../utils/logger.js';
-import type { WebConfig } from './WebConfig.js';
+import { createLogger } from '../../utils/logger.ts';
+import type { WebConfig } from './WebConfig.ts';
 
 export interface ProcessInfo {
   pid: number;

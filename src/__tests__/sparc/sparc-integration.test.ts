@@ -5,16 +5,16 @@
  * for testing interactions and protocols.
  */
 
-import { SPARCEngineCore } from '../sparc/core/sparc-engine.js';
-import { sparcMCPTools } from '../sparc/integrations/mcp-sparc-tools.js';
-import { SpecificationPhaseEngine } from '../sparc/phases/specification/specification-engine.js';
+import { SPARCEngineCore } from '../sparc/core/sparc-engine.ts';
+import { sparcMCPTools } from '../sparc/integrations/mcp-sparc-tools.ts';
+import { SpecificationPhaseEngine } from '../sparc/phases/specification/specification-engine.ts';
 import type {
   ComplexityLevel,
   ProjectDomain,
   ProjectSpecification,
   SPARCPhase,
   SPARCProject,
-} from '../sparc/types/sparc-types.js';
+} from '../sparc/types/sparc-types.ts';
 
 describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
   let sparcEngine: SPARCEngineCore;

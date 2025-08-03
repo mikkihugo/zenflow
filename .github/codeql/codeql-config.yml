@@ -1,12 +1,59 @@
 name: "CodeQL Config"
 
+# Enhanced security scanning configuration for claude-code-zen
+# Comprehensive analysis covering all security aspects
+
 # Note: paths-ignore is not supported in CodeQL config files for most languages
 # Use workflow-level path filtering instead
 
-# Disable problematic queries
+# Enable all default queries for comprehensive coverage
 disable-default-queries: false
 
-# Use security and quality queries
+# Use comprehensive security and quality queries
 queries:
   - uses: security-extended
   - uses: security-and-quality
+  
+# Additional query packs for comprehensive analysis
+packs:
+  # JavaScript/TypeScript security analysis
+  - codeql/javascript-queries
+  - codeql/javascript-security-extended-queries
+  
+  # Python security analysis  
+  - codeql/python-queries
+  - codeql/python-security-extended-queries
+  
+  # C/C++ security analysis
+  - codeql/cpp-queries
+  - codeql/cpp-security-extended-queries
+  
+  # Rust security analysis
+  - codeql/rust-queries
+
+# Query filters for specific security patterns
+query-filters:
+  - include:
+      # Security-critical patterns
+      - "javascript/security/**"
+      - "javascript/injection/**" 
+      - "javascript/authentication/**"
+      - "javascript/authorization/**"
+      - "javascript/cryptography/**"
+      - "javascript/unsafe-dynamic-method-access"
+      - "javascript/dangerous-html-assignment"
+      
+      # Memory and resource management
+      - "cpp/memory-safety/**"
+      - "cpp/buffer-overflow/**"
+      - "cpp/use-after-free"
+      - "cpp/double-free"
+      
+      # Rust security patterns
+      - "rust/security/**"
+      - "rust/memory-safety/**"
+      
+      # Python security patterns
+      - "python/security/**"
+      - "python/injection/**"
+      - "python/deserialization/**"

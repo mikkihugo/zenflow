@@ -4,7 +4,7 @@
  */
 
 import 'reflect-metadata';
-import type { Constructor, DIToken, InjectionMetadata } from '../types/di-types.js';
+import type { Constructor, DIToken, InjectionMetadata } from '../types/di-types.ts';
 
 // Metadata keys
 const INJECTION_TOKENS_KEY = Symbol('injection_tokens');

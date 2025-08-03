@@ -5,25 +5,25 @@
  */
 
 // Legacy exports for backward compatibility
-export * from './adaptive-learning/behavioral-optimization.js';
-export * from './adaptive-learning/knowledge-evolution.js';
-export { LearningCoordinator } from './adaptive-learning/learning-coordinator.js';
+export * from './adaptive-learning/behavioral-optimization.ts';
+export * from './adaptive-learning/knowledge-evolution.ts';
+export { LearningCoordinator } from './adaptive-learning/learning-coordinator.ts';
 export {
   EnsembleModels,
   MLModelRegistry,
   NeuralNetworkPredictor,
   OnlineLearningSystem,
   ReinforcementLearningEngine,
-} from './adaptive-learning/ml-integration.js';
+} from './adaptive-learning/ml-integration.ts';
 // Enhanced adaptive learning components
-export { PatternRecognitionEngine } from './adaptive-learning/pattern-recognition-engine.js';
-export { PerformanceOptimizer } from './adaptive-learning/performance-optimizer.js';
+export { PatternRecognitionEngine } from './adaptive-learning/pattern-recognition-engine.ts';
+export { PerformanceOptimizer } from './adaptive-learning/performance-optimizer.ts';
 // Enhanced adaptive learning types
-export type * from './adaptive-learning/types.js';
+export type * from './adaptive-learning/types.ts';
 
 // ag2.ai-inspired conversation framework
-export * from './conversation-framework/index.js';
-export { ConversationFramework } from './conversation-framework/index.js';
+export * from './conversation-framework/index.ts';
+export { ConversationFramework } from './conversation-framework/index.ts';
 
 // Intelligence utilities
 export const IntelligenceUtils = {

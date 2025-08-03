@@ -4,15 +4,15 @@
  * auto-assignment, performance tracking, and context loading
  */
 
-export * from './auto-agent-assignment.js';
-export * from './enhanced-hook-manager.js';
+export * from './auto-agent-assignment.ts';
+export * from './enhanced-hook-manager.ts';
 // Main Manager
-export { DefaultEnhancedHookManager } from './enhanced-hook-manager.js';
+export { DefaultEnhancedHookManager } from './enhanced-hook-manager.ts';
 // Core System
-export * from './enhanced-hook-system.js';
-export * from './performance-tracker.js';
+export * from './enhanced-hook-system.ts';
+export * from './performance-tracker.ts';
 // Specialized Components
-export * from './safety-validator.js';
+export * from './safety-validator.ts';
 
 // Convenience factory function
 export function createEnhancedHookManager() {

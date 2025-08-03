@@ -4,13 +4,13 @@
  * Central export point for core neural network functionality
  */
 
-export * from './network.js';
-export * from './neural.js';
+export * from './network.ts';
+export * from './neural.ts';
 // Core neural components
-export * from './neural-core.js';
-export * from './neural-network.js';
+export * from './neural-core.ts';
+export * from './neural-network.ts';
 // Neural network manager (JavaScript)
-export * from './neural-network-manager.js';
+export * from './neural-network-manager.ts';
 
 // Core utilities
 export const NeuralCoreUtils = {

@@ -23,7 +23,7 @@ import type {
   TestArtifact,
   TestGeneration,
   ValidationResult,
-} from '../../types/sparc-types.js';
+} from '../../types/sparc-types.ts';
 
 export class CompletionPhaseEngine implements CompletionEngine {
   /**

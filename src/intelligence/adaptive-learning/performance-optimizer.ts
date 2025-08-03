@@ -27,7 +27,7 @@ import type {
   SystemContext,
   Task,
   TaskAllocation,
-} from './types.js';
+} from './types.ts';
 
 export class PerformanceOptimizer extends EventEmitter implements IPerformanceOptimizer {
   private behaviorCache = new Map<string, BehaviorOptimization>();

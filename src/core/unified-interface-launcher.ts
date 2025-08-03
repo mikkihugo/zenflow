@@ -10,8 +10,8 @@ import {
   type InterfaceMode,
   InterfaceModeDetector,
   type ModeDetectionOptions,
-} from './interface-mode-detector.js';
-import { createLogger } from './logger.js';
+} from './interface-mode-detector.ts';
+import { createLogger } from './logger.ts';
 
 const logger = createLogger('InterfaceLauncher');
 

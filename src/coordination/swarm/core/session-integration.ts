@@ -6,11 +6,11 @@
  */
 
 import { EventEmitter } from 'events';
-import { RuvSwarm } from './index.js';
-import { SwarmPersistencePooled } from './persistence-pooled.js';
-import { type SessionConfig, SessionManager, type SessionState } from './session-manager.js';
-import { SessionRecovery, SessionSerializer, SessionValidator } from './session-utils.js';
-import type { AgentConfig, SwarmEvent, SwarmOptions, SwarmState, Task } from './types.js';
+import { RuvSwarm } from './index.ts';
+import { SwarmPersistencePooled } from './persistence-pooled.ts';
+import { type SessionConfig, SessionManager, type SessionState } from './session-manager.ts';
+import { SessionRecovery, SessionSerializer, SessionValidator } from './session-utils.ts';
+import type { AgentConfig, SwarmEvent, SwarmOptions, SwarmState, Task } from './types.ts';
 
 /**
  * Enhanced RuvSwarm with session management capabilities

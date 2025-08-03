@@ -8,7 +8,7 @@
 import { EventEmitter } from 'events';
 import { mkdir, writeFile } from 'fs/promises';
 import { dirname, join } from 'path';
-import { createLogger } from './logger.js';
+import { createLogger } from './logger.ts';
 
 const logger = createLogger('UnifiedExport');
 

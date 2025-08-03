@@ -1257,3 +1257,6 @@ class GossipEngine {
 }
 
 export default CommunicationProtocols;
+
+// Alias for backward compatibility
+export { CommunicationProtocols as AgentCommunicationProtocol };

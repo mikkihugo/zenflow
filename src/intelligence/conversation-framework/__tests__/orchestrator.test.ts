@@ -5,14 +5,14 @@
  * Focus on interactions between orchestrator and its dependencies
  */
 
-import type { AgentId } from '../../../types/agent-types.js';
-import { ConversationOrchestratorImpl } from '../orchestrator.js';
+import type { AgentId } from '../../../types/agent-types.ts';
+import { ConversationOrchestratorImpl } from '../orchestrator.ts';
 import type {
   ConversationConfig,
   ConversationMemory,
   ConversationMessage,
   ConversationSession,
-} from '../types.js';
+} from '../types.ts';
 
 describe('ConversationOrchestratorImpl - London TDD', () => {
   let orchestrator: ConversationOrchestratorImpl;

@@ -13,7 +13,7 @@ import type {
   PseudocodeStructure,
   SPARCTemplate,
   TemplateMetadata,
-} from '../types/sparc-types.js';
+} from '../types/sparc-types.ts';
 
 export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
   id: 'neural-networks-template',

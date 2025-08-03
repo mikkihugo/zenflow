@@ -6,10 +6,10 @@
  */
 
 import { EventEmitter } from 'events';
-import { CoordinationManager } from './coordination/manager.js';
+import { CoordinationManager } from './coordination/manager.ts';
 
 // Import DI-enhanced coordinators
-import { Orchestrator } from './coordination/orchestrator.js';
+import { Orchestrator } from './coordination/orchestrator.ts';
 import {
   CORE_TOKENS,
   createContainerBuilder,
@@ -20,9 +20,9 @@ import {
   type IEventBus,
   type ILogger,
   SWARM_TOKENS,
-} from './di/index.js';
-import { MultiSystemCoordinator } from './integration/multi-system-coordinator.js';
-import { LearningCoordinator } from './intelligence/adaptive-learning/learning-coordinator.js';
+} from './di/index.ts';
+import { MultiSystemCoordinator } from './integration/multi-system-coordinator.ts';
+import { LearningCoordinator } from './intelligence/adaptive-learning/learning-coordinator.ts';
 
 // Core service implementations
 class ConsoleLogger implements ILogger {

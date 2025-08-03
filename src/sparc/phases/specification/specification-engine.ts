@@ -28,7 +28,7 @@ import type {
   SystemConstraint,
   ValidationReport,
   ValidationResult,
-} from '../../types/sparc-types.js';
+} from '../../types/sparc-types.ts';
 
 export class SpecificationPhaseEngine implements SpecificationEngine {
   /**

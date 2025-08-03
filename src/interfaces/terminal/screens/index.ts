@@ -5,15 +5,15 @@
  */
 
 // Main screens
-export * from './main-menu.js';
+export * from './main-menu.ts';
 // Re-export key screens for convenience
 export {
   createDefaultMenuItems,
   MainMenu,
   type MainMenuProps,
   type MenuItem,
-} from './main-menu.js';
-export * from './swarm-dashboard.js';
+} from './main-menu.ts';
+export * from './swarm-dashboard.ts';
 
 export {
   type SwarmAgent,
@@ -21,7 +21,7 @@ export {
   type SwarmDashboardProps,
   type SwarmMetrics,
   type SwarmTask,
-} from './swarm-dashboard.js';
+} from './swarm-dashboard.ts';
 
 // Screen types for navigation
 export type ScreenType =

@@ -9,7 +9,7 @@
  */
 
 import type { NextFunction, Request, Response } from 'express';
-import { LogLevel, log } from './logging.js';
+import { LogLevel, log } from './logging.ts';
 
 /**
  * User information interface (for future use)

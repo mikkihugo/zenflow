@@ -9,9 +9,9 @@
  */
 
 import { NextFunction, type Request, type Response, Router } from 'express';
-import { CoordinationAPI } from '../../coordination/api.js';
-import { asyncHandler } from '../middleware/errors.js';
-import { LogLevel, log } from '../middleware/logging.js';
+import { CoordinationAPI } from '../../coordination/api.ts';
+import { asyncHandler } from '../middleware/errors.ts';
+import { LogLevel, log } from '../middleware/logging.ts';
 
 /**
  * Create coordination routes

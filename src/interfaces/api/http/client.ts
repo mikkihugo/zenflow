@@ -15,14 +15,14 @@ import type {
   PerformanceMetrics,
   SwarmConfig,
   Task,
-} from '../coordination/schemas.js';
-import type { APIError } from './schemas/common.js';
+} from '../coordination/schemas.ts';
+import type { APIError } from './schemas/common.ts';
 import type {
   NeuralNetwork,
   PredictionRequest,
   PredictionResponse,
   TrainingRequest,
-} from './schemas/neural.js';
+} from './schemas/neural.ts';
 
 /**
  * API Client Configuration

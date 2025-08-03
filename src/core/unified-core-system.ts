@@ -13,14 +13,14 @@
  */
 
 import { EventEmitter } from 'events';
-import { MemoryManager } from '../memory/manager.js';
-import { EnhancedMemory } from '../memory/memory.js';
-import { DocumentDrivenSystem } from './document-driven-system.js';
-import { createLogger } from './logger.js';
-import { UnifiedDocumentationLinker } from './unified-documentation-linker.js';
-import { UnifiedExportSystem } from './unified-export-system.js';
-import { UnifiedInterfaceLauncher } from './unified-interface-launcher.js';
-import { UnifiedWorkflowEngine } from './unified-workflow-engine.js';
+import { MemoryManager } from '../memory/manager.ts';
+import { EnhancedMemory } from '../memory/memory.ts';
+import { DocumentDrivenSystem } from './document-driven-system.ts';
+import { createLogger } from './logger.ts';
+import { UnifiedDocumentationLinker } from './unified-documentation-linker.ts';
+import { UnifiedExportSystem } from './unified-export-system.ts';
+import { UnifiedInterfaceLauncher } from './unified-interface-launcher.ts';
+import { UnifiedWorkflowEngine } from './unified-workflow-engine.ts';
 
 const logger = createLogger('UnifiedCore');
 

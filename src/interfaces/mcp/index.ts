@@ -8,11 +8,11 @@
  */
 
 // HTTP MCP Server (for Claude Desktop)
-export * from './http-mcp-server.js';
+export * from './http-mcp-server.ts';
 // Default export
-export { HTTPMCPServer as default } from './http-mcp-server.js';
+export { HTTPMCPServer as default } from './http-mcp-server.ts';
 // Legacy interface (deprecated)
-export * from './mcp-interface.js';
-export * from './request-handler.js';
-export * from './start-server.js';
-export * from './tool-registry.js';
+export * from './mcp-interface.ts';
+export * from './request-handler.ts';
+export * from './start-server.ts';
+export * from './tool-registry.ts';

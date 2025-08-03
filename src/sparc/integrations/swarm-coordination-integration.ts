@@ -5,13 +5,13 @@
  * Enables distributed SPARC development using existing agent types and coordination protocols.
  */
 
-import { TaskAPI } from '../../coordination/api.js';
+import { TaskAPI } from '../../coordination/api.ts';
 import {
   type EnhancedTaskConfig,
   EnhancedTaskTool,
-} from '../../coordination/enhanced-task-tool.js';
-import type { AgentType } from '../../types/agent-types.js';
-import type { SPARCPhase, SPARCProject } from '../types/sparc-types.js';
+} from '../../coordination/enhanced-task-tool.ts';
+import type { AgentType } from '../../types/agent-types.ts';
+import type { SPARCPhase, SPARCProject } from '../types/sparc-types.ts';
 
 // SPARC-specific agent types from existing 147+ agent types
 export const SPARC_AGENT_TYPES: AgentType[] = [

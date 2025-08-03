@@ -16,7 +16,7 @@ import {
   injectable,
   SingletonProvider,
   SWARM_TOKENS,
-} from '../index.js';
+} from '../index.ts';
 
 // Example integration with existing systems
 
