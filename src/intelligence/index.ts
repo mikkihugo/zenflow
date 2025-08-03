@@ -21,6 +21,10 @@ export { PerformanceOptimizer } from './adaptive-learning/performance-optimizer.
 // Enhanced adaptive learning types
 export type * from './adaptive-learning/types.js';
 
+// ag2.ai-inspired conversation framework
+export * from './conversation-framework/index.js';
+export { ConversationFramework } from './conversation-framework/index.js';
+
 // Intelligence utilities
 export const IntelligenceUtils = {
   /**
@@ -39,6 +43,12 @@ export const IntelligenceUtils = {
       'knowledge-evolution',
       'failure-prediction',
       'real-time-adaptation',
+      'multi-agent-conversations',
+      'conversation-orchestration',
+      'dialogue-patterns',
+      'conversation-memory',
+      'teachable-agents',
+      'group-chat-coordination',
     ];
   },
 
