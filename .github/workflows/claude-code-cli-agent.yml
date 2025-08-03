@@ -1,6 +1,6 @@
+---
 name: "Claude Code CLI Agent"
 
-# Use the same working pattern as the successful minimal test
 on:
   issues:
     types: [opened, labeled]
@@ -22,7 +22,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     
-    # Use the exact same conditional logic that worked in the minimal test
     if: |
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
@@ -71,7 +70,6 @@ jobs:
             }
             
             try {
-              // Always fetch fresh issue data
               const { data: issue } = await github.rest.issues.get({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -83,7 +81,6 @@ jobs:
               
               console.log(`✅ Successfully fetched issue data`);
               console.log(`Title: ${issueTitle}`);
-              console.log(`Body length: ${issueBody.length} characters`);
               if (commentBody) console.log(`Comment: ${commentBody}`);
               
             } catch (error) {
@@ -92,7 +89,6 @@ jobs:
               issueBody = 'Could not fetch issue details';
             }
 
-            // Set outputs for Claude Code Action
             core.setOutput('issue_number', issueNumber);
             core.setOutput('issue_title', issueTitle);
             core.setOutput('issue_body', issueBody);
@@ -117,24 +113,23 @@ jobs:
             ${{ steps.issue-context.outputs.comment_body && format('**Trigger Comment:** {0}', steps.issue-context.outputs.comment_body) || '' }}
             
             ## Mission
-            You are Claude Code CLI Agent - an autonomous development system. Your mission:
+            You are Claude Code CLI Agent - an autonomous development system.
             
             1. **ANALYZE** - Understand the requirements and technical context
             2. **PLAN** - Create a comprehensive implementation strategy  
-            3. **IMPLEMENT** - Write working, tested code that solves the problem
+            3. **IMPLEMENT** - Write working, tested code
             4. **VALIDATE** - Ensure solution meets requirements with tests
             5. **DELIVER** - Commit changes and create pull request
             
             ## Guidelines
             - Follow domain-driven architecture principles from CLAUDE.md
-            - Write comprehensive tests (hybrid TDD: 70% London + 30% Classical)
+            - Write comprehensive tests (hybrid TDD approach)
             - Focus on working, production-ready code
             - Use claude-zen project structure and conventions
             - Create meaningful commit messages and PR descriptions
-            - Include documentation updates when appropriate
             
             ## Context
-            This is the claude-code-zen project - a sophisticated document-driven development system with:
+            This is the claude-code-zen project with:
             - Dual MCP architecture (HTTP + stdio)
             - Swarm coordination capabilities  
             - Hybrid testing strategy
@@ -151,7 +146,6 @@ jobs:
     permissions:
       pull-requests: write
       contents: write
-      actions: read
 
     steps:
       - name: Checkout
@@ -165,11 +159,6 @@ jobs:
           PR_NUMBER: ${{ needs.claude-solver.outputs.pull_request_number }}
         run: |
           echo "🔀 Auto-merging PR #$PR_NUMBER"
-          
-          # Wait a moment for PR to be fully created
           sleep 10
-          
-          # Set auto-merge with squash
           gh pr merge $PR_NUMBER --auto --squash --delete-branch
-          
           echo "✅ Auto-merge configured for PR #$PR_NUMBER"
