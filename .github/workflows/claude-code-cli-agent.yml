@@ -1,8 +1,8 @@
 ---
-# Claude Code CLI Agent - Autonomous issue resolution and development
 name: "Claude Code CLI Agent"
 
-"on":
+# Explicitly define ONLY the events we want to trigger on
+on:
   issues:
     types: [opened, labeled]
   issue_comment:
@@ -15,19 +15,83 @@ name: "Claude Code CLI Agent"
         default: '139'
 
 concurrency:
-  group: claude-code-cli-agent
+  group: claude-code-cli-agent-${{ github.event_name }}-${{ github.event.issue.number || github.event.inputs.issue_number }}
   cancel-in-progress: false
 
 jobs:
+  # Pre-filter job to ensure we only run on valid events
+  check-trigger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      should-run: ${{ steps.filter.outputs.should-run }}
+      issue-number: ${{ steps.filter.outputs.issue-number }}
+      trigger-type: ${{ steps.filter.outputs.trigger-type }}
+    
+    steps:
+      - name: Filter Valid Triggers
+        id: filter
+        run: |
+          echo "🔍 Event Analysis:"
+          echo "Event Name: ${{ github.event_name }}"
+          echo "Action: ${{ github.event.action }}"
+          echo "Actor: ${{ github.actor }}"
+          
+          # Initialize variables
+          SHOULD_RUN="false"
+          ISSUE_NUMBER=""
+          TRIGGER_TYPE=""
+          
+          # Check workflow_dispatch
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            SHOULD_RUN="true"
+            ISSUE_NUMBER="${{ github.event.inputs.issue_number }}"
+            TRIGGER_TYPE="manual"
+            echo "✅ Manual workflow dispatch detected"
+            
+          # Check issue_comment with @claude mention
+          elif [[ "${{ github.event_name }}" == "issue_comment" ]] && [[ "${{ github.event.action }}" == "created" || "${{ github.event.action }}" == "edited" ]]; then
+            if [[ "${{ contains(github.event.comment.body, '@claude') }}" == "true" ]]; then
+              SHOULD_RUN="true"
+              ISSUE_NUMBER="${{ github.event.issue.number }}"
+              TRIGGER_TYPE="comment"
+              echo "✅ Valid @claude comment detected"
+            else
+              echo "❌ Comment does not contain @claude mention"
+            fi
+            
+          # Check issues opened
+          elif [[ "${{ github.event_name }}" == "issues" ]] && [[ "${{ github.event.action }}" == "opened" ]]; then
+            SHOULD_RUN="true"
+            ISSUE_NUMBER="${{ github.event.issue.number }}"
+            TRIGGER_TYPE="issue_opened"
+            echo "✅ New issue detected"
+            
+          # Check issues labeled with claude-code
+          elif [[ "${{ github.event_name }}" == "issues" ]] && [[ "${{ github.event.action }}" == "labeled" ]]; then
+            if [[ "${{ github.event.label.name }}" == "claude-code" ]]; then
+              SHOULD_RUN="true"
+              ISSUE_NUMBER="${{ github.event.issue.number }}"
+              TRIGGER_TYPE="labeled"
+              echo "✅ claude-code label detected"
+            else
+              echo "❌ Label '${{ github.event.label.name }}' is not 'claude-code'"
+            fi
+            
+          else
+            echo "❌ Event not supported: ${{ github.event_name }}/${{ github.event.action }}"
+          fi
+          
+          echo "Final Decision: SHOULD_RUN=$SHOULD_RUN"
+          echo "should-run=$SHOULD_RUN" >> $GITHUB_OUTPUT
+          echo "issue-number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
+          echo "trigger-type=$TRIGGER_TYPE" >> $GITHUB_OUTPUT
+
   claude-solver:
+    needs: check-trigger
+    if: needs.check-trigger.outputs.should-run == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 45
-
-    if: |
-      github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'issues' && github.event.action == 'opened') ||
-      (github.event_name == 'issues' && github.event.action == 'labeled' && github.event.label.name == 'claude-code')
 
     permissions:
       contents: write
@@ -41,26 +105,13 @@ jobs:
     steps:
       - name: Debug Event Information
         run: |
-          echo "🔍 DEBUG: Event Information"
+          echo "🚀 CLAUDE CODE CLI AGENT ACTIVATED"
+          echo "Trigger Type: ${{ needs.check-trigger.outputs.trigger-type }}"
+          echo "Issue Number: ${{ needs.check-trigger.outputs.issue-number }}"
           echo "Event Name: ${{ github.event_name }}"
           echo "Action: ${{ github.event.action }}"
-          echo "Issue Number: ${{ github.event.issue.number }}"
-          echo "Comment Body: ${{ github.event.comment.body }}"
-          echo "Contains @claude: ${{ contains(github.event.comment.body, '@claude') }}"
           echo "Actor: ${{ github.actor }}"
           echo "Repository: ${{ github.repository }}"
-
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.x'
-          cache: 'npm'
 
       - name: Get Issue Context
         id: issue-context
@@ -68,49 +119,46 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            let issueNumber, issueTitle, issueBody, commentBody;
-
-            if (context.eventName === 'issue_comment') {
-              // Comment on issue - get the issue details
-              issueNumber = context.payload.issue.number;
-              issueTitle = context.payload.issue.title;
-              issueBody = context.payload.issue.body;
-              commentBody = context.payload.comment.body;
-              console.log(`📝 Processing comment on issue #${issueNumber}`);
-            } else if (context.eventName === 'issues') {
-              // Direct issue event
-              issueNumber = context.payload.issue.number;
-              issueTitle = context.payload.issue.title;
-              issueBody = context.payload.issue.body;
-              commentBody = '';
-              console.log(`🎯 Processing issue #${issueNumber}`);
-            } else if (context.eventName === 'workflow_dispatch') {
-              // Manual dispatch
-              issueNumber = context.payload.inputs.issue_number;
-              try {
-                const { data: issue } = await github.rest.issues.get({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: issueNumber
-                });
-                issueTitle = issue.title;
-                issueBody = issue.body;
-                commentBody = '';
-                console.log(`🔧 Manual processing of issue #${issueNumber}`);
-              } catch (error) {
-                console.log(`❌ Could not fetch issue: ${error.message}`);
-                issueTitle = 'Unknown Issue';
-                issueBody = 'Could not fetch issue details';
-                commentBody = '';
+            const issueNumber = ${{ needs.check-trigger.outputs.issue-number }};
+            const triggerType = "${{ needs.check-trigger.outputs.trigger-type }}";
+            
+            console.log(`🎯 Processing issue #${issueNumber} (trigger: ${triggerType})`);
+            
+            let issueTitle, issueBody, commentBody = '';
+            
+            try {
+              // Always fetch fresh issue data
+              const { data: issue } = await github.rest.issues.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber
+              });
+              
+              issueTitle = issue.title;
+              issueBody = issue.body || '';
+              
+              // Get comment body if this was triggered by a comment
+              if (triggerType === 'comment' && context.payload.comment) {
+                commentBody = context.payload.comment.body;
               }
+              
+              console.log(`✅ Successfully fetched issue data`);
+              console.log(`Title: ${issueTitle}`);
+              console.log(`Body length: ${issueBody.length} characters`);
+              if (commentBody) console.log(`Comment length: ${commentBody.length} characters`);
+              
+            } catch (error) {
+              console.log(`❌ Error fetching issue: ${error.message}`);
+              issueTitle = 'Unknown Issue';
+              issueBody = 'Could not fetch issue details';
             }
 
-            // Set outputs for the next step
+            // Set outputs for Claude Code Action
             core.setOutput('issue_number', issueNumber);
             core.setOutput('issue_title', issueTitle);
             core.setOutput('issue_body', issueBody);
             core.setOutput('comment_body', commentBody);
-            core.setOutput('trigger_type', context.eventName);
+            core.setOutput('trigger_type', triggerType);
 
       - name: Claude Code Agent
         uses: anthropics/claude-code-action@beta
@@ -118,38 +166,82 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           direct_prompt: |
-            Resolve GitHub issue #${{ steps.issue-context.outputs.issue_number }}.
-
-            Event Type: ${{ steps.issue-context.outputs.trigger_type }}
-
-            Issue Details:
-            Title: ${{ steps.issue-context.outputs.issue_title }}
-            Body: ${{ steps.issue-context.outputs.issue_body }}
-            ${{ steps.issue-context.outputs.comment_body &&
-                format('Comment: {0}', steps.issue-context.outputs.comment_body) || '' }}
-
-            Follow these phases:
-            1. Analyze requirements and create implementation plan
-            2. Implement solution with comprehensive tests
-            3. Commit changes and create pull request
-
-            Use CLAUDE_AGENT.md guidelines and domain-driven architecture.
-            Focus on working, tested code that solves the actual problem.
+            🚀 CLAUDE CODE CLI AGENT - Autonomous Issue Resolution
+            
+            Issue #${{ steps.issue-context.outputs.issue_number }} | Trigger: ${{ steps.issue-context.outputs.trigger_type }}
+            
+            ## Issue Details
+            **Title:** ${{ steps.issue-context.outputs.issue_title }}
+            
+            **Description:**
+            ${{ steps.issue-context.outputs.issue_body }}
+            
+            ${{ steps.issue-context.outputs.comment_body && format('**Comment Trigger:** {0}', steps.issue-context.outputs.comment_body) || '' }}
+            
+            ## Mission
+            You are Claude Code CLI Agent - an autonomous development system. Your mission:
+            
+            1. **ANALYZE** - Understand the requirements and technical context
+            2. **PLAN** - Create a comprehensive implementation strategy  
+            3. **IMPLEMENT** - Write working, tested code that solves the problem
+            4. **VALIDATE** - Ensure solution meets requirements with tests
+            5. **DELIVER** - Commit changes and create pull request
+            
+            ## Guidelines
+            - Follow domain-driven architecture principles from CLAUDE.md
+            - Write comprehensive tests (hybrid TDD: 70% London + 30% Classical)
+            - Focus on working, production-ready code
+            - Use claude-zen project structure and conventions
+            - Create meaningful commit messages and PR descriptions
+            - Include documentation updates when appropriate
+            
+            ## Context
+            This is the claude-code-zen project - a sophisticated document-driven development system with:
+            - Dual MCP architecture (HTTP + stdio)
+            - Swarm coordination capabilities  
+            - Hybrid testing strategy
+            - Template-based project initialization
+            
+            Execute autonomously. Deliver excellence.
 
   auto-merge:
-    needs: claude-solver
+    needs: [check-trigger, claude-solver]
     runs-on: ubuntu-latest
-    if: needs.claude-solver.outputs.pull_request_number != ''
+    if: success() && needs.claude-solver.outputs.pull_request_number != ''
+    timeout-minutes: 10
 
     permissions:
       pull-requests: write
       contents: write
+      actions: read
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Auto-merge PR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ needs.claude-solver.outputs.pull_request_number }}
+          ISSUE_NUMBER: ${{ needs.check-trigger.outputs.issue-number }}
         run: |
-          echo "Auto-merging PR #$PR_NUMBER"
-          gh pr merge $PR_NUMBER --auto --squash
+          echo "🔀 Auto-merging PR #$PR_NUMBER for issue #$ISSUE_NUMBER"
+          
+          # Wait a moment for PR to be fully created
+          sleep 10
+          
+          # Set auto-merge with squash
+          gh pr merge $PR_NUMBER --auto --squash --delete-branch
+          
+          echo "✅ Auto-merge configured for PR #$PR_NUMBER"
+          
+          # Add comment to original issue
+          gh issue comment $ISSUE_NUMBER --body "🤖 **Claude Code CLI Agent completed!**
+
+          ✅ Solution implemented and PR #$PR_NUMBER created
+          🔀 Auto-merge enabled with squash strategy  
+          🚀 Changes will be automatically merged once all checks pass
+
+          The autonomous agent has successfully analyzed and resolved this issue."
