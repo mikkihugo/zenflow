@@ -1,3 +1,4 @@
+---
 name: "Claude Code CLI Agent"
 
 on:
@@ -16,7 +17,7 @@ jobs:
   claude-solver:
     runs-on: ubuntu-latest
     timeout-minutes: 45
-    
+
     if: |
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
@@ -51,7 +52,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             let issueNumber, issueTitle, issueBody, commentBody = '';
-            
+
             if (context.eventName === 'workflow_dispatch') {
               issueNumber = context.payload.inputs.issue_number;
               console.log(`🔧 Manual processing of issue #${issueNumber}`);
@@ -63,21 +64,21 @@ jobs:
               issueNumber = context.payload.issue.number;
               console.log(`🎯 Processing issue #${issueNumber}`);
             }
-            
+
             try {
               const { data: issue } = await github.rest.issues.get({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issueNumber
               });
-              
+
               issueTitle = issue.title;
               issueBody = issue.body || '';
-              
+
               console.log(`✅ Successfully fetched issue data`);
               console.log(`Title: ${issueTitle}`);
               if (commentBody) console.log(`Comment: ${commentBody}`);
-              
+
             } catch (error) {
               console.log(`❌ Error fetching issue: ${error.message}`);
               issueTitle = 'Unknown Issue';
@@ -96,40 +97,40 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           direct_prompt: |
             🚀 CLAUDE CODE CLI AGENT - Autonomous Issue Resolution
-            
+
             **Issue #${{ steps.issue-context.outputs.issue_number }}**
-            
+
             ## Issue Details
             **Title:** ${{ steps.issue-context.outputs.issue_title }}
-            
+
             **Description:**
             ${{ steps.issue-context.outputs.issue_body }}
-            
+
             ${{ steps.issue-context.outputs.comment_body && format('**Trigger Comment:** {0}', steps.issue-context.outputs.comment_body) || '' }}
-            
+
             ## Mission
             You are Claude Code CLI Agent - an autonomous development system.
-            
+
             1. **ANALYZE** - Understand the requirements and technical context
-            2. **PLAN** - Create a comprehensive implementation strategy  
+            2. **PLAN** - Create a comprehensive implementation strategy
             3. **IMPLEMENT** - Write working, tested code
             4. **VALIDATE** - Ensure solution meets requirements with tests
             5. **DELIVER** - Commit changes and create pull request
-            
+
             ## Guidelines
             - Follow domain-driven architecture principles from CLAUDE.md
             - Write comprehensive tests (hybrid TDD approach)
             - Focus on working, production-ready code
             - Use claude-zen project structure and conventions
             - Create meaningful commit messages and PR descriptions
-            
+
             ## Context
             This is the claude-code-zen project with:
             - Dual MCP architecture (HTTP + stdio)
-            - Swarm coordination capabilities  
+            - Swarm coordination capabilities
             - Hybrid testing strategy
             - Template-based project initialization
-            
+
             Execute autonomously. Deliver excellence.
 
   auto-merge:
