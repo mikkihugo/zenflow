@@ -1,4 +1,4 @@
-name: "Claude Autonomous Agent"
+name: "Claude Autonomous Agent v2"
 
 on:
   issues:
