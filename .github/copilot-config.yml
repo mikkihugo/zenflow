@@ -60,9 +60,8 @@ copilot_context:
     categories: 16
     specialization: "fine-grained task assignment"
   mcp_integration:
-    http_port: 3000
-    stdio_protocol: true
-    tool_count: "comprehensive"
+    external_tools: true
+    research_capabilities: "enhanced"
   neural_capabilities:
     wasm_acceleration: true
     rust_core: "fact-core"
@@ -127,7 +126,6 @@ environment_variables:
   development:
     NODE_ENV: "development"
     DEBUG: "claude-zen:*"
-    MCP_PORT: "3000"
     LOG_LEVEL: "info"
     TYPESCRIPT_STRICT: "true"
   production:
@@ -154,3 +152,36 @@ custom_instructions:
     - "Use established types from src/types/"
     - "Follow async/await patterns for coordination"
     - "Implement proper error handling and recovery"
+
+  research_tools:
+    - "Use Context7 MCP tools for research and analysis"
+    - "Leverage DeepWiki for knowledge base queries"
+    - "Utilize GitMCP for repository operations"
+    - "Apply Semgrep for security analysis"
+
+external_mcp_servers:
+  context7:
+    url: "https://mcp.context7.com/mcp"
+    type: "http"
+    purpose: "Research and analysis tools"
+  deepwiki:
+    url: "https://mcp.deepwiki.com/sse"
+    type: "sse"
+    purpose: "Knowledge base and research"
+  gitmcp:
+    url: "https://gitmcp.io/docs"
+    type: "http"
+    purpose: "Git operations and repository management"
+  semgrep:
+    url: "https://mcp.semgrep.ai/sse"
+    type: "sse"
+    purpose: "Code analysis and security scanning"
+
+copilot_optimization:
+  reference: "https://github.blog/ai-and-ml/github-copilot/onboarding-your-ai-peer-programmer-setting-up-github-copilot-coding-agent-for-success/"
+  features:
+    - "Comprehensive project context"
+    - "Domain-specific instructions"
+    - "Performance benchmarks and quality gates"
+    - "External MCP tool integration"
+    - "Clear architectural constraints"

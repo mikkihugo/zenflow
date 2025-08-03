@@ -60,9 +60,9 @@ src/
 - **Coverage Target**: 85%
 
 ## MCP Integration
-- **HTTP MCP**: Port 3000 for external tool integration
+- **External MCP Tools**: Integration with research and development tools
 
-- **Stdio MCP**: Internal swarm coordination protocol
+- **Protocol Support**: HTTP and SSE endpoints for external services
 
 
 ## Performance Requirements
@@ -157,3 +157,28 @@ json,
 
 
 This is a sophisticated, production-grade AI platform. Maintain high standards and leverage the comprehensive systems already in place.
+
+## MCP Integration for Research and Development
+
+### External MCP Servers for Research
+The project is configured with several external MCP servers for enhanced research capabilities:
+
+- **Context7** (`https://mcp.context7.com/mcp`): Research and analysis tools
+- **DeepWiki** (`https://mcp.deepwiki.com/sse`): Knowledge base and research tools  
+- **GitMCP** (`https://gitmcp.io/docs`): Git operations and repository management
+- **Semgrep** (`https://mcp.semgrep.ai/sse`): Code analysis and security scanning
+
+### Using MCP Tools for Research
+When working on code analysis, research, or development tasks:
+1. Use **Context7** tools for in-depth research and analysis
+2. Leverage **DeepWiki** for knowledge base queries and documentation research
+3. Utilize **GitMCP** for repository analysis and git-related operations
+4. Apply **Semgrep** tools for security analysis and code quality checks
+
+### GitHub Copilot Optimization
+This setup follows GitHub's recommendations for optimal copilot coding agent configuration:
+- Reference: https://github.blog/ai-and-ml/github-copilot/onboarding-your-ai-peer-programmer-setting-up-github-copilot-coding-agent-for-success/
+- Comprehensive project context through domain-specific instructions
+- Performance benchmarks and quality gates
+- Clear architectural constraints and patterns
+- Integrated MCP tools for enhanced capabilities

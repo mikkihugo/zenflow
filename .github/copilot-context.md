@@ -22,11 +22,11 @@
 - **Specialization**: fine-grained for optimal task assignment
 
 ## MCP Protocol Integration
-- **HTTP Server**: Port 3000 (external tools)
+- **External Tools**: Research and development servers
 
-- **Stdio Server**: Internal swarm coordination
+- **Protocol Support**: HTTP and SSE endpoints
 
-- **Tool Categories**: Coordination, monitoring, memory, GitHub integration
+- **Tool Categories**: Research, analysis, security, git operations
 
 ## Testing Philosophy
 - **Strategy**: hybrid-tdd
@@ -46,9 +46,6 @@
 
 
 - concurrent_agents > 1000
-
-
-- mcp_tool_execution < 10ms
 
 
 ## Domain Boundaries
@@ -123,3 +120,18 @@ json,
 3. Follow domain-driven boundaries
 4. Apply hybrid-tdd approach
 5. Maintain performance standards
+5. Leverage external MCP tools for research and analysis
+
+## MCP Research Tools
+- **Context7**: In-depth research and analysis
+- **DeepWiki**: Knowledge base and documentation queries
+- **GitMCP**: Repository operations and git management
+- **Semgrep**: Security analysis and code quality checks
+
+## Copilot Optimization
+This setup follows GitHub's copilot coding agent best practices:
+- Comprehensive project context via domain instructions
+- External research capabilities through MCP integration  
+- Performance benchmarks and quality gates
+- Clear architectural constraints and patterns
+- Multi-agent coordination with 147+ specialized types
