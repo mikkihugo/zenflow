@@ -2,6 +2,8 @@
  * Core types and interfaces for RuvSwarm
  */
 
+import type { AgentType, AgentConfig as BaseAgentConfig, CognitiveProfile as BaseCognitiveProfile } from '../../../types/agent-types';
+
 export interface SwarmOptions {
   topology?: SwarmTopology;
   maxAgents?: number;
@@ -12,25 +14,16 @@ export interface SwarmOptions {
 
 export type SwarmTopology = 'mesh' | 'hierarchical' | 'distributed' | 'centralized' | 'hybrid';
 
-export interface AgentConfig {
+// Re-export from main agent types for compatibility
+export type { AgentType } from '../../../types/agent-types';
+
+export interface AgentConfig extends Partial<BaseAgentConfig> {
   id: string;
   type: AgentType;
   cognitiveProfile?: CognitiveProfile;
   capabilities?: string[];
   memory?: AgentMemory;
 }
-
-export type AgentType =
-  | 'researcher'
-  | 'coder'
-  | 'analyst'
-  | 'architect'
-  | 'reviewer'
-  | 'debugger'
-  | 'tester'
-  | 'documenter'
-  | 'optimizer'
-  | 'custom';
 
 export interface CognitiveProfile {
   analytical: number;

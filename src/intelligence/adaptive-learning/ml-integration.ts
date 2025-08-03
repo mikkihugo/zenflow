@@ -20,7 +20,7 @@ import type {
   Pattern,
   SystemContext,
   TrainingResult,
-} from './types.ts';
+} from './types';
 
 // ============================================
 // Reinforcement Learning Engine

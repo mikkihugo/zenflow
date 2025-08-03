@@ -8,16 +8,16 @@
 import { existsSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { createLogger } from '../../utils/logger.ts';
-import { WebApiRoutes } from './WebApiRoutes.ts';
+import { createLogger } from '../../utils/logger';
+import { WebApiRoutes } from './WebApiRoutes';
 // Import modular components
-import { createWebConfig, type WebConfig } from './WebConfig.ts';
-import { WebDashboardServer } from './WebDashboardServer.ts';
-import { WebDataService } from './WebDataService.ts';
-import { WebHtmlGenerator } from './WebHtmlGenerator.ts';
-import { WebProcessManager } from './WebProcessManager.ts';
-import { WebSessionManager } from './WebSessionManager.ts';
-import { WebSocketManager } from './WebSocketManager.ts';
+import { createWebConfig, type WebConfig } from './WebConfig';
+import { WebDashboardServer } from './WebDashboardServer';
+import { WebDataService } from './WebDataService';
+import { WebHtmlGenerator } from './WebHtmlGenerator';
+import { WebProcessManager } from './WebProcessManager';
+import { WebSessionManager } from './WebSessionManager';
+import { WebSocketManager } from './WebSocketManager';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -250,5 +250,5 @@ export class WebInterface {
 }
 
 // Re-export types and configuration utilities
-export type { WebConfig } from './WebConfig.ts';
-export { createWebConfig } from './WebConfig.ts';
+export type { WebConfig } from './WebConfig';
+export { createWebConfig } from './WebConfig';

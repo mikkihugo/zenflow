@@ -17,7 +17,7 @@ import type {
   RefinementStrategy,
   SystemArchitecture,
   SystemConstraint,
-} from '../types/sparc-types.ts';
+} from '../types/sparc-types';
 
 export const SWARM_COORDINATION_TEMPLATE = {
   name: 'Swarm Coordination System',

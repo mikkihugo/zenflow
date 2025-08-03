@@ -9,9 +9,9 @@
  */
 
 import { NextFunction, type Request, type Response, Router } from 'express';
-import { NeuralDomainAPI } from '../../neural/api.ts';
-import { asyncHandler } from '../middleware/errors.ts';
-import { LogLevel, log, logPerformance } from '../middleware/logging.ts';
+import { NeuralDomainAPI } from '../../neural/api';
+import { asyncHandler } from '../middleware/errors';
+import { LogLevel, log, logPerformance } from '../middleware/logging';
 
 /**
  * Create neural network routes

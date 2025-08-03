@@ -5,7 +5,7 @@
  * Provides a centralized registry for all available tools and their schemas.
  */
 
-import { createLogger } from './simple-logger.ts';
+import { createLogger } from './simple-logger';
 
 const logger = createLogger('MCP-ToolRegistry');
 

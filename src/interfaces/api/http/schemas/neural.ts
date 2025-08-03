@@ -7,7 +7,7 @@
  * @fileoverview Neural network API schemas and types
  */
 
-import type { EntityFields, ResourceState, TimestampFields } from './common.ts';
+import type { EntityFields, ResourceState, TimestampFields } from './common';
 
 /**
  * Neural Network Layer Configuration

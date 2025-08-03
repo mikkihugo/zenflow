@@ -12,13 +12,13 @@ export type {
   APIClientConfig,
   PaginationOptions,
   RequestOptions,
-} from './client.ts';
+} from './client';
 // ===== API CLIENT SDK =====
-export { APIClient, apiClient, createAPIClient } from './client.ts';
+export { APIClient, apiClient, createAPIClient } from './client';
 export type {
   AuthContext,
   User,
-} from './middleware/auth.ts';
+} from './middleware/auth';
 export {
   authMiddleware,
   getCurrentUser,
@@ -26,7 +26,7 @@ export {
   hasRole,
   isAdmin,
   optionalAuthMiddleware,
-} from './middleware/auth.ts';
+} from './middleware/auth';
 // ===== MIDDLEWARE =====
 export {
   APIError as APIErrorClass,
@@ -38,14 +38,14 @@ export {
   createValidationError,
   errorHandler,
   notFoundHandler,
-} from './middleware/errors.ts';
+} from './middleware/errors';
 export {
   LogLevel,
   log,
   logError,
   logPerformance,
   requestLogger,
-} from './middleware/logging.ts';
+} from './middleware/logging';
 export type {
   // Coordination types (re-exported from domain)
   Agent,
@@ -71,18 +71,18 @@ export type {
   TrainingConfig,
   TrainingJob,
   TrainingRequest,
-} from './schemas/index.ts';
+} from './schemas/index';
 // ===== SCHEMAS AND TYPES =====
-export { RestAPISchema } from './schemas/index.ts';
-export type { APIServerConfig } from './server.ts';
+export { RestAPISchema } from './schemas/index';
+export type { APIServerConfig } from './server';
 // ===== API SERVER =====
-export { APIServer, createAPIServer, DEFAULT_API_CONFIG } from './server.ts';
+export { APIServer, createAPIServer, DEFAULT_API_CONFIG } from './server';
 
 // ===== ROUTE CREATORS =====
-export { createCoordinationRoutes } from './v1/coordination.ts';
-export { createDatabaseRoutes } from './v1/database.ts';
-export { createMemoryRoutes } from './v1/memory.ts';
-export { createNeuralRoutes } from './v1/neural.ts';
+export { createCoordinationRoutes } from './v1/coordination';
+export { createDatabaseRoutes } from './v1/database';
+export { createMemoryRoutes } from './v1/memory';
+export { createNeuralRoutes } from './v1/neural';
 
 // ===== VERSION INFORMATION =====
 export const REST_API_VERSION = '1.0.0' as const;

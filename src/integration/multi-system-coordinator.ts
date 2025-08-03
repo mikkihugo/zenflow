@@ -5,8 +5,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../di/index.ts';
-import { CORE_TOKENS, inject, injectable } from '../di/index.ts';
+import type { ILogger } from '../di/index';
+import { CORE_TOKENS, inject, injectable } from '../di/index';
 
 @injectable
 export class MultiSystemCoordinator extends EventEmitter {

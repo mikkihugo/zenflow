@@ -9,7 +9,7 @@ import {
   type ConversationQuery,
   type ConversationSession,
   ConversationStatus,
-} from './types.ts';
+} from './types';
 
 /**
  * Memory backend adapter interface

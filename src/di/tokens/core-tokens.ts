@@ -3,7 +3,7 @@
  * Defines tokens for fundamental system services
  */
 
-import { createToken } from './token-factory.ts';
+import { createToken } from './token-factory';
 
 // Core infrastructure interfaces (to be implemented)
 export interface ILogger {

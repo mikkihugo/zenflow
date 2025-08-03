@@ -3,7 +3,7 @@
  * Tracks operation performance, collects metrics, and provides optimization suggestions
  */
 
-import type { AgentType } from '../../types/agent-types.ts';
+import type { AgentType } from '../../types/agent-types';
 import {
   AgentPerformanceSnapshot,
   type AgentPerformanceSummary,
@@ -27,7 +27,7 @@ import {
   type TimeFrame,
   type TrendAnalysis,
   type TrendData,
-} from './enhanced-hook-system.ts';
+} from './enhanced-hook-system';
 
 export class HookPerformanceTracker implements MetricsTracker {
   private readonly metricsStore: Map<string, OperationMetrics>;

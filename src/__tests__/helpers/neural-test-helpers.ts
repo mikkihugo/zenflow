@@ -23,6 +23,31 @@ export interface TrainingTestConfig {
 
 export class NeuralTestDataGenerator {
   /**
+   * Generate random vector for testing
+   */
+  generateRandomVector(size: number, min: number = -1, max: number = 1): number[] {
+    return Array.from({ length: size }, () => Math.random() * (max - min) + min);
+  }
+
+  /**
+   * Generate random batch for testing
+   */
+  generateRandomBatch(batchSize: number, featureSize: number, min: number = -1, max: number = 1): number[][] {
+    return Array.from({ length: batchSize }, () => this.generateRandomVector(featureSize, min, max));
+  }
+
+  /**
+   * Check if two vectors are equal within tolerance
+   */
+  vectorsEqual(a: number[], b: number[], tolerance: number = 1e-6): boolean {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+      if (Math.abs(a[i] - b[i]) > tolerance) return false;
+    }
+    return true;
+  }
+
+  /**
    * Generate XOR training data
    */
   static generateXORData(): NeuralTestData[] {

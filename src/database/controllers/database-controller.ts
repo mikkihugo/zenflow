@@ -6,8 +6,8 @@
  * @description Enhanced database controller with DI integration for Issue #63
  */
 
-import { Inject, Injectable } from '../../di/decorators/injectable.ts';
-import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens.ts';
+import { Inject, Injectable } from '../../di/decorators/injectable';
+import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
 import {
   type ConnectionStats,
   type DatabaseAdapter,
@@ -16,7 +16,7 @@ import {
   ExecuteResult,
   QueryResult,
   SchemaInfo,
-} from '../providers/database-providers.ts';
+} from '../providers/database-providers';
 
 /**
  * Request interface for database query operations

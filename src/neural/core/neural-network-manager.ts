@@ -3,16 +3,16 @@
  * Manages per-agent neural networks with WASM integration
  */
 
-import { CognitivePatternEvolution } from './cognitive-pattern-evolution.ts';
-import { DAACognition } from './daa-cognition.ts';
-import { MetaLearningFramework } from './meta-learning-framework.ts';
-import { NeuralCoordinationProtocol } from './neural-coordination-protocol.ts';
-import { createNeuralModel, MODEL_PRESETS } from './neural-models/index.ts';
+import { CognitivePatternEvolution } from './cognitive-pattern-evolution';
+import { DAACognition } from './daa-cognition';
+import { MetaLearningFramework } from './meta-learning-framework';
+import { NeuralCoordinationProtocol } from './neural-coordination-protocol';
+import { createNeuralModel, MODEL_PRESETS } from './neural-models/index';
 import {
   COMPLETE_NEURAL_PRESETS,
   CognitivePatternSelector,
   NeuralAdaptationEngine,
-} from './neural-models/neural-presets-complete.ts';
+} from './neural-models/neural-presets-complete';
 import {
   getCategoryPresets,
   getPreset,
@@ -20,7 +20,7 @@ import {
   NEURAL_PRESETS,
   searchPresetsByUseCase,
   validatePresetConfig,
-} from './neural-models/presets/index.ts';
+} from './neural-models/presets/index';
 
 class NeuralNetworkManager {
   constructor(wasmLoader) {

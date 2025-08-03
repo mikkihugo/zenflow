@@ -1,5 +1,5 @@
 // Neural Models - Export Hub
-export * from './presets/neural-presets-complete.ts';
+export * from './presets/neural-presets-complete';
 
 // Model configuration exports
-export { NEURAL_PRESETS } from './presets/neural-presets-complete.ts';
+export { NEURAL_PRESETS } from './presets/neural-presets-complete';

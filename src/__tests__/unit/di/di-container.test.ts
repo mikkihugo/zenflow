@@ -17,7 +17,7 @@ import {
   SingletonProvider,
   SWARM_TOKENS,
   TransientProvider,
-} from '../../../di/index.ts';
+} from '../../../di/index';
 
 describe('DI Container - Core Functionality', () => {
   let container: DIContainer;

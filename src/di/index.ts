@@ -4,16 +4,16 @@
  */
 
 // Container implementations
-export { DIContainer } from './container/di-container.ts';
-export { DIScope } from './container/di-scope.ts';
-export { getInjectionToken, hasInjectionToken, inject } from './decorators/inject.ts';
+export { DIContainer } from './container/di-container';
+export { DIScope } from './container/di-scope';
+export { getInjectionToken, hasInjectionToken, inject } from './decorators/inject';
 // Decorators
-export { getInjectionMetadata, injectable, isInjectable } from './decorators/injectable.ts';
-export { FactoryProvider } from './providers/factory-provider.ts';
-export { ScopedProvider } from './providers/scoped-provider.ts';
+export { getInjectionMetadata, injectable, isInjectable } from './decorators/injectable';
+export { FactoryProvider } from './providers/factory-provider';
+export { ScopedProvider } from './providers/scoped-provider';
 // Provider implementations
-export { SingletonProvider } from './providers/singleton-provider.ts';
-export { TransientProvider } from './providers/transient-provider.ts';
+export { SingletonProvider } from './providers/singleton-provider';
+export { TransientProvider } from './providers/transient-provider';
 // Re-export interfaces for convenience
 export type {
   IConfig,
@@ -21,25 +21,25 @@ export type {
   IEventBus,
   IHttpClient,
   ILogger,
-} from './tokens/core-tokens.ts';
+} from './tokens/core-tokens';
 // Core system tokens
-export { CORE_TOKENS } from './tokens/core-tokens.ts';
+export { CORE_TOKENS } from './tokens/core-tokens';
 export type {
   IDataLoader,
   IMetricsCollector,
   IModelStorage,
   INeuralNetworkTrainer,
   IOptimizationEngine,
-} from './tokens/neural-tokens.ts';
-export { NEURAL_TOKENS } from './tokens/neural-tokens.ts';
+} from './tokens/neural-tokens';
+export { NEURAL_TOKENS } from './tokens/neural-tokens';
 export type {
   IAgentRegistry,
   ILoadBalancer,
   IMessageBroker,
   ISwarmCoordinator,
   ITopologyManager,
-} from './tokens/swarm-tokens.ts';
-export { SWARM_TOKENS } from './tokens/swarm-tokens.ts';
+} from './tokens/swarm-tokens';
+export { SWARM_TOKENS } from './tokens/swarm-tokens';
 // Token utilities
 export {
   createToken,
@@ -47,9 +47,9 @@ export {
   getTokenName,
   isDIToken,
   tokensEqual,
-} from './tokens/token-factory.ts';
+} from './tokens/token-factory';
 // Core types and interfaces
-export * from './types/di-types.ts';
+export * from './types/di-types';
 
 /**
  * Global DI container instance (singleton pattern for convenience)
@@ -138,4 +138,4 @@ export function createContainerBuilder(): DIContainerBuilder {
 export {
   CompleteSystemIntegration,
   runCompleteIntegration,
-} from './examples/complete-system-integration.ts';
+} from './examples/complete-system-integration';

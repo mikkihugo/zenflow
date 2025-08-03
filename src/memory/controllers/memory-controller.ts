@@ -6,13 +6,13 @@
  * @description Enhanced memory controller with DI integration for Issue #63
  */
 
-import { Inject, Injectable } from '../../di/decorators/injectable.ts';
-import { CORE_TOKENS, MEMORY_TOKENS } from '../../di/tokens/core-tokens.ts';
+import { Inject, Injectable } from '../../di/decorators/injectable';
+import { CORE_TOKENS, MEMORY_TOKENS } from '../../di/tokens/core-tokens';
 import type {
   MemoryBackend,
   MemoryConfig,
   MemoryProviderFactory,
-} from '../providers/memory-providers.ts';
+} from '../providers/memory-providers';
 
 /**
  * Request interface for memory operations

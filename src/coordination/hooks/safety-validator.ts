@@ -10,7 +10,7 @@ import type {
   SafetyValidator,
   SecurityRisk,
   ValidationResult,
-} from './enhanced-hook-system.ts';
+} from './enhanced-hook-system';
 
 export class BashSafetyValidator implements SafetyValidator {
   private readonly DANGEROUS_PATTERNS: Array<{

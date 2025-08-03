@@ -17,8 +17,8 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import express from 'express';
 import { z } from 'zod';
-import { advancedMCPToolsManager } from './advanced-tools-registry.ts';
-import { createLogger } from './simple-logger.ts';
+import { advancedMCPToolsManager } from './advanced-tools-registry';
+import { createLogger } from './simple-logger';
 
 const logger = createLogger('SDK-HTTP-MCP-Server');
 

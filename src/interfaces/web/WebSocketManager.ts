@@ -6,9 +6,9 @@
  */
 
 import type { Server as SocketIOServer } from 'socket.io';
-import { createLogger } from '../../utils/logger.ts';
-import type { WebConfig } from './WebConfig.ts';
-import type { WebDataService } from './WebDataService.ts';
+import { createLogger } from '../../utils/logger';
+import type { WebConfig } from './WebConfig';
+import type { WebDataService } from './WebDataService';
 
 export interface BroadcastData {
   event: string;

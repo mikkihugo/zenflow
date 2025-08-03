@@ -4,7 +4,7 @@
  * auto-assignment, performance tracking, and context loading
  */
 
-import { IntelligentAgentAssignor } from './auto-agent-assignment.ts';
+import { IntelligentAgentAssignor } from './auto-agent-assignment';
 import {
   type EnhancedHook,
   type EnhancedHookManager,
@@ -20,9 +20,9 @@ import {
   SessionInfo,
   ToolInfo,
   type Warning,
-} from './enhanced-hook-system.ts';
-import { HookPerformanceTracker, OperationPerformanceOptimizer } from './performance-tracker.ts';
-import { BashSafetyValidator, FileOperationValidator } from './safety-validator.ts';
+} from './enhanced-hook-system';
+import { HookPerformanceTracker, OperationPerformanceOptimizer } from './performance-tracker';
+import { BashSafetyValidator, FileOperationValidator } from './safety-validator';
 
 export class DefaultEnhancedHookManager implements EnhancedHookManager {
   private readonly hooks: Map<string, EnhancedHook>;

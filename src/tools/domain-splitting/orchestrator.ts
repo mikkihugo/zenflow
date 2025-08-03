@@ -2,16 +2,16 @@
  * Main orchestrator for domain splitting operations
  */
 
-import { DomainAnalysisEngine } from './analyzers/domain-analyzer.ts';
-import { SafeDomainSplitter } from './splitters/domain-splitter.ts';
-import type { AnalysisConfig, DEFAULT_ANALYSIS_CONFIG } from './types/analysis-types.ts';
+import { DomainAnalysisEngine } from './analyzers/domain-analyzer';
+import { SafeDomainSplitter } from './splitters/domain-splitter';
+import type { AnalysisConfig, DEFAULT_ANALYSIS_CONFIG } from './types/analysis-types';
 
 import type {
   NEURAL_SPLITTING_PLAN,
   SplittingResult,
   SubDomainPlan,
-} from './types/domain-types.ts';
-import { DependencyValidator } from './validators/dependency-validator.ts';
+} from './types/domain-types';
+import { DependencyValidator } from './validators/dependency-validator';
 
 export class DomainSplittingOrchestrator {
   private analyzer: DomainAnalysisEngine;

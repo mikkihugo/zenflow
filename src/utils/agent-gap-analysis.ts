@@ -10,7 +10,7 @@ import {
   auditAutoAssignmentCapabilities,
   generateComparisonReport,
   performGapAnalysis,
-} from '../coordination/agents/gap-analysis.ts';
+} from '../coordination/agents/gap-analysis';
 
 async function main() {
   const args = process.argv.slice(2);

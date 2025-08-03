@@ -11,8 +11,8 @@ import type {
   ComplexityLevel,
   ProjectConfig,
   ProjectType,
-} from '../shared/index.ts';
-import { CliCommandAdapter } from './adapters/CliCommandAdapter.ts';
+} from '../shared/index';
+import { CliCommandAdapter } from './adapters/CliCommandAdapter';
 
 /**
  * Advanced CLI Commands Handler

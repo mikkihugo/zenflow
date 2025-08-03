@@ -9,8 +9,8 @@ import express, { type Express } from 'express';
 import { existsSync } from 'fs';
 import { createServer, type Server as HTTPServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
-import { createLogger } from '../../utils/logger.ts';
-import type { WebConfig } from './WebConfig.ts';
+import { createLogger } from '../../utils/logger';
+import type { WebConfig } from './WebConfig';
 
 export class WebDashboardServer {
   private logger = createLogger('WebServer');

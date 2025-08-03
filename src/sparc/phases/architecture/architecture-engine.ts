@@ -23,7 +23,7 @@ import type {
   SecurityRequirement,
   SystemComponent,
   ValidationResult,
-} from '../../types/sparc-types.ts';
+} from '../../types/sparc-types';
 
 export class ArchitecturePhaseEngine implements ArchitectureEngine {
   /**

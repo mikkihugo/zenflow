@@ -16,16 +16,16 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import { authMiddleware } from './middleware/auth.ts';
+import { authMiddleware } from './middleware/auth';
 // Import middleware
-import { errorHandler } from './middleware/errors.ts';
-import { requestLogger } from './middleware/logging.ts';
+import { errorHandler } from './middleware/errors';
+import { requestLogger } from './middleware/logging';
 
 // Import modular route handlers
-import { createCoordinationRoutes } from './v1/coordination.ts';
-import { createDatabaseRoutes } from './v1/database.ts';
-import { createMemoryRoutes } from './v1/memory.ts';
-import { createNeuralRoutes } from './v1/neural.ts';
+import { createCoordinationRoutes } from './v1/coordination';
+import { createDatabaseRoutes } from './v1/database';
+import { createMemoryRoutes } from './v1/memory';
+import { createNeuralRoutes } from './v1/neural';
 
 /**
  * Main API Server Configuration

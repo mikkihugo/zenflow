@@ -11,7 +11,7 @@
  */
 
 // Export configuration utilities
-export * from './config.ts';
+export * from './config';
 export type {
   CommandExecutorContract,
   ConfigurationContract,
@@ -19,9 +19,9 @@ export type {
   ProjectManagerContract,
   SwarmCoordinatorContract,
   SystemMonitorContract,
-} from './contracts.ts';
+} from './contracts';
 // Export all contracts
-export * from './contracts.ts';
+export * from './contracts';
 
 // Re-export key types for convenience
 export type {
@@ -33,6 +33,6 @@ export type {
   ProjectConfig,
   ProjectType,
   SystemHealth,
-} from './types.ts';
+} from './types';
 // Export all shared types
-export * from './types.ts';
+export * from './types';

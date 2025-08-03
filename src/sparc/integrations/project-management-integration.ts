@@ -10,14 +10,14 @@
 
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { TaskAPI } from '../../coordination/api.ts';
+import { TaskAPI } from '../../coordination/api';
 import {
   type EnhancedTaskConfig,
   EnhancedTaskTool,
-} from '../../coordination/enhanced-task-tool.ts';
-import { DocumentDrivenSystem } from '../../core/document-driven-system.ts';
-import { UnifiedMemorySystem } from '../../core/unified-memory-system.ts';
-import { UnifiedWorkflowEngine } from '../../core/unified-workflow-engine.ts';
+} from '../../coordination/enhanced-task-tool';
+import { DocumentDrivenSystem } from '../../core/document-driven-system';
+import { UnifiedMemorySystem } from '../../core/unified-memory-system';
+import { UnifiedWorkflowEngine } from '../../core/unified-workflow-engine';
 import type { DetailedSpecification, SPARCProject } from '../types/sparc-types';
 
 // Task Management Integration Types

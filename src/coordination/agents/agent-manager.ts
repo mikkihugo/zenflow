@@ -6,7 +6,7 @@ import { type ChildProcess, spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { generateId } from '../swarm/core/utils';
 import type { IEventBus } from '../../core/event-bus';
-import type { Logger } from '../../core/logger';
+import type { ILogger } from '../../di/tokens/core-tokens';
 import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
 import type {
   AgentCapabilities,
@@ -123,7 +123,7 @@ export interface HealthIssue {
  * Comprehensive agent lifecycle and resource management
  */
 export class AgentManager extends EventEmitter {
-  private logger: Logger;
+  private logger: ILogger;
   private eventBus: IEventBus;
   private memory: MemoryCoordinator;
   private config: AgentManagerConfig;

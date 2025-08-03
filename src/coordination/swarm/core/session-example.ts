@@ -5,10 +5,10 @@
  * for persistent swarm orchestration across multiple executions.
  */
 
-import { SwarmPersistencePooled } from './persistence-pooled.ts';
-import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration.ts';
-import { SessionManager, SessionState } from './session-manager.ts';
-import { SessionStats, SessionValidator } from './session-utils.ts';
+import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
+import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration';
+import { SessionManager, SessionState } from './session-manager';
+import { SessionStats, SessionValidator } from './session-utils';
 
 /**
  * Example 1: Basic Session Usage

@@ -6,8 +6,8 @@
  */
 
 import { useEffect, useState } from 'react';
-import { createSimpleLogger } from '../../../core/logger.ts';
-import type { SwarmAgent, SwarmMetrics, SwarmStatus, SwarmTask } from '../screens/index.ts';
+import { createSimpleLogger } from '../../../core/logger';
+import type { SwarmAgent, SwarmMetrics, SwarmStatus, SwarmTask } from '../screens/index';
 
 const logger = createSimpleLogger('SwarmStatusHook');
 

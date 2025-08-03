@@ -11,10 +11,10 @@ import { createServer, type Server as HTTPServer } from 'http';
 import { dirname, join } from 'path';
 import { Server as SocketIOServer } from 'socket.io';
 import { fileURLToPath } from 'url';
-import { createLogger } from '../../utils/logger.ts';
-import { ApiRouteHandler } from './ApiRouteHandler.ts';
-import { DaemonProcessManager } from './DaemonProcessManager.ts';
-import { WebSocketCoordinator } from './WebSocketCoordinator.ts';
+import { createLogger } from '../../utils/logger';
+import { ApiRouteHandler } from './ApiRouteHandler';
+import { DaemonProcessManager } from './DaemonProcessManager';
+import { WebSocketCoordinator } from './WebSocketCoordinator';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

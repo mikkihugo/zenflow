@@ -3,16 +3,16 @@
  */
 
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { SwarmPersistencePooled } from './persistence-pooled.ts';
-import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration.ts';
-import { SessionConfig, SessionManager, type SessionState } from './session-manager.ts';
+import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
+import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration';
+import { SessionConfig, SessionManager, type SessionState } from './session-manager';
 import {
   SessionRecovery,
   SessionSerializer,
   SessionStats,
   SessionValidator,
-} from './session-utils.ts';
-import type { SwarmOptions, SwarmState } from './types.ts';
+} from './session-utils';
+import type { SwarmOptions, SwarmState } from './types';
 
 // Mock persistence layer
 class MockPersistence extends SwarmPersistencePooled {

@@ -9,7 +9,7 @@ import { type ChildProcess, spawn } from 'child_process';
 import { existsSync } from 'fs';
 import { mkdir, readFile, unlink, writeFile } from 'fs/promises';
 import { join } from 'path';
-import { createLogger } from '../../utils/logger.ts';
+import { createLogger } from '../../utils/logger';
 
 export interface DaemonConfig {
   pidFile?: string;

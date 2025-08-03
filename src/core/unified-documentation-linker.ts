@@ -9,7 +9,7 @@ import { EventEmitter } from 'events';
 import { existsSync } from 'fs';
 import { readdir, readFile, stat, writeFile } from 'fs/promises';
 import { extname, join, relative } from 'path';
-import { createLogger } from './logger.ts';
+import { createLogger } from './logger';
 
 const logger = createLogger('UnifiedDocLinker');
 

@@ -182,6 +182,8 @@ export interface AgentState {
   childAgents: AgentId[];
   collaborators: AgentId[];
   currentTask?: string | null;
+  load?: number;
+  performance?: any;
 }
 
 export interface AgentCapabilities {
@@ -225,6 +227,8 @@ export interface AgentConfig {
   trustedAgents: string[];
   expertise: Record<string, number>;
   preferences: Record<string, any>;
+  cognitiveProfile?: any;
+  memory?: any;
 }
 
 export interface AgentEnvironment {
@@ -317,4 +321,33 @@ export interface Message {
   content: any;
   timestamp: Date;
   requiresResponse: boolean;
+  from?: string;
+  payload?: any;
+}
+
+export type MessageType = 
+  | 'task_assignment'
+  | 'status_update'
+  | 'result'
+  | 'error'
+  | 'coordination'
+  | 'memory_store'
+  | 'memory_retrieve'
+  | 'ping'
+  | 'pong'
+  | 'knowledge_share';
+
+export interface Agent {
+  id: string;
+  type: AgentType;
+  state: AgentState;
+  config: AgentConfig;
+  metrics: AgentMetrics;
+  
+  initialize(): Promise<void>;
+  execute(task: Task): Promise<ExecutionResult>;
+  handleMessage(message: Message): Promise<void>;
+  updateState(updates: Partial<AgentState>): void;
+  getStatus(): AgentStatus;
+  shutdown(): Promise<void>;
 }

@@ -14,7 +14,7 @@ import type {
   PerformanceMetrics,
   SwarmConfig,
   Task,
-} from './schemas.ts';
+} from './schemas';
 
 /**
  * @swagger

@@ -4,7 +4,7 @@
  */
 
 import * as path from 'path';
-import type { AgentType } from '../../types/agent-types.ts';
+import type { AgentType } from '../../types/agent-types';
 import type {
   AgentAssignment,
   AgentContext,
@@ -21,7 +21,7 @@ import type {
   UrgencyLevel,
   WorkloadBalance,
   WorkloadRecommendation,
-} from './enhanced-hook-system.ts';
+} from './enhanced-hook-system';
 
 export class IntelligentAgentAssignor implements AgentCoordinator {
   private readonly agentCapabilityMap: Map<AgentType, AgentCapabilityProfile>;

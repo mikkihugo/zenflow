@@ -7,13 +7,13 @@
  */
 
 // Core CLI Engine
-export { AdvancedCLIEngine, AdvancedCommandRegistry } from './AdvancedCLIEngine.ts';
+export { AdvancedCLIEngine, AdvancedCommandRegistry } from './AdvancedCLIEngine';
 
 // Enhanced Terminal Router
-export { default as EnhancedTerminalRouter } from './EnhancedTerminalRouter.ts';
+export { default as EnhancedTerminalRouter } from './EnhancedTerminalRouter';
 
 // Type Definitions
-export * from './types/AdvancedCLITypes.ts';
+export * from './types/AdvancedCLITypes';
 
 // CLI Configuration and Utilities
 export interface CLIModuleConfig {

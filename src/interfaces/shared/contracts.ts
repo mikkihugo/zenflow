@@ -11,7 +11,7 @@ import type {
   ComponentStatus,
   ProjectConfig,
   SystemHealth,
-} from './types.ts';
+} from './types';
 
 /**
  * Project Management Contract

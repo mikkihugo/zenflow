@@ -5,8 +5,8 @@
  * Tests connectivity and tool discovery for external MCP servers
  */
 
-import { ExternalMCPClient } from './external-mcp-client.ts';
-import { createLogger } from './simple-logger.ts';
+import { ExternalMCPClient } from './external-mcp-client';
+import { createLogger } from './simple-logger';
 
 const logger = createLogger('MCP-Test');
 

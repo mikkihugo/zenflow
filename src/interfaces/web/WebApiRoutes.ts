@@ -6,10 +6,10 @@
  */
 
 import type { Express, Request, Response } from 'express';
-import { createLogger } from '../../utils/logger.ts';
-import type { WebConfig } from './WebConfig.ts';
-import type { WebDataService } from './WebDataService.ts';
-import type { WebSessionManager } from './WebSessionManager.ts';
+import { createLogger } from '../../utils/logger';
+import type { WebConfig } from './WebConfig';
+import type { WebDataService } from './WebDataService';
+import type { WebSessionManager } from './WebSessionManager';
 
 export class WebApiRoutes {
   private logger = createLogger('WebAPI');

@@ -4,13 +4,13 @@
  * Demonstrates ag2.ai-inspired conversation capabilities with minimal dependencies
  */
 
-import type { AgentId } from '../types/agent-types.ts';
+import type { AgentId } from '../types/agent-types';
 import {
   type ConversationConfig,
   type ConversationMessage,
   ConversationOrchestrator,
   type ConversationSession,
-} from './conversation-framework/types.ts';
+} from './conversation-framework/types';
 
 /**
  * Mock memory backend for demo purposes

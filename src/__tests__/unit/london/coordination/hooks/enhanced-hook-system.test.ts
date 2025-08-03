@@ -11,13 +11,13 @@ import {
   type Operation,
   SessionInfo,
   ToolInfo,
-} from '../../../../../coordination/hooks/enhanced-hook-system.ts';
+} from '../../../../../coordination/hooks/enhanced-hook-system';
 import {
   type BashSafetyValidator,
   DefaultEnhancedHookManager,
   type HookPerformanceTracker,
   type IntelligentAgentAssignor,
-} from '../../../../../coordination/hooks/index.ts';
+} from '../../../../../coordination/hooks/index';
 
 describe('Enhanced Hook System - London TDD', () => {
   let hookManager: DefaultEnhancedHookManager;

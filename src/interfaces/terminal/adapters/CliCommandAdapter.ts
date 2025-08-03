@@ -11,7 +11,7 @@ import type {
   CommandExecutorContract,
   CommandResult,
   ProjectConfig,
-} from '../../shared/index.ts';
+} from '../../shared/index';
 
 /**
  * CLI Command Adapter

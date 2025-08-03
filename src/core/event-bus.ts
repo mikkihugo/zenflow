@@ -13,7 +13,7 @@ import type {
   EventMap,
   EventMetrics,
   EventMiddleware,
-} from '../types/event-types.ts';
+} from '../types/event-types';
 
 export interface IEventBus<TEventMap = EventMap> {
   on<T extends keyof TEventMap>(event: T, listener: EventListener<T>): void;

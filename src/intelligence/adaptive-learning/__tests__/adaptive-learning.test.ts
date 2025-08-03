@@ -7,15 +7,15 @@
  */
 
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { LearningCoordinator } from '../learning-coordinator.ts';
+import { LearningCoordinator } from '../learning-coordinator';
 import {
   EnsembleModels,
   NeuralNetworkPredictor,
   OnlineLearningSystem,
   ReinforcementLearningEngine,
-} from '../ml-integration.ts';
-import { PatternRecognitionEngine } from '../pattern-recognition-engine.ts';
-import { PerformanceOptimizer } from '../performance-optimizer.ts';
+} from '../ml-integration';
+import { PatternRecognitionEngine } from '../pattern-recognition-engine';
+import { PerformanceOptimizer } from '../performance-optimizer';
 import type {
   AdaptiveLearningConfig,
   Agent,
@@ -27,7 +27,7 @@ import type {
   SuccessPattern,
   SystemContext,
   Task,
-} from '../types.ts';
+} from '../types';
 
 // ============================================
 // Test Helpers and Fixtures

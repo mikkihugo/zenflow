@@ -12,7 +12,7 @@ import type {
   SubDomainPlan,
   ValidationIssue,
   ValidationReport,
-} from '../types/domain-types.ts';
+} from '../types/domain-types';
 
 export interface DependencyMapper {
   mapInterDomainDependencies(domains: string[]): Promise<DependencyGraph>;

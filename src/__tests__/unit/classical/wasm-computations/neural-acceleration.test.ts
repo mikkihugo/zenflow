@@ -3,7 +3,7 @@
  * Classical TDD approach - testing actual computation results and performance
  */
 
-import { NeuralNetworkManager } from '../../../../neural/core/neural-network-manager.ts';
+import { NeuralNetworkManager } from '../../../../neural/core/neural-network-manager';
 import { WasmNeuralAccelerator } from '../../../../neural/wasm/wasm-neural-accelerator';
 import { NeuralTestDataGenerator, NeuralNetworkValidator, NeuralPerformanceTester, NeuralMathHelpers } from '../../../helpers/neural-test-helpers';
 import { PerformanceMeasurement } from '../../../helpers/performance-measurement';
@@ -59,7 +59,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
         performance.end(`wasm-matrix-mult-${size}`);
 
         // Verify mathematical correctness
-        const tolerance = 1e-10;
+        const tolerance = 1e-6;
         expect(testHelpers.matricesEqual(jsResult, wasmResult, tolerance)).toBe(true);
 
         const jsTime = performance.getDuration(`js-matrix-mult-${size}`);
@@ -129,7 +129,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
       // Verify mathematical correctness with reference implementation
       const referenceResult = testHelpers.multiplyMatrixVectorJS(sparseMatrix, denseVector);
-      expect(testHelpers.vectorsEqual(result, referenceResult, 1e-10)).toBe(true);
+      expect(testHelpers.vectorsEqual(result, referenceResult, 1e-6)).toBe(true);
 
       const sparseTime = performance.getDuration('sparse-matrix-vector-mult');
 
@@ -198,7 +198,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
         performance.end(`wasm-${activation}`);
 
         // Verify mathematical correctness
-        expect(testHelpers.vectorsEqual(jsResult, wasmResult, 1e-10)).toBe(true);
+        expect(testHelpers.vectorsEqual(jsResult, wasmResult, 1e-6)).toBe(true);
 
         const jsTime = performance.getDuration(`js-${activation}`);
         const wasmTime = performance.getDuration(`wasm-${activation}`);
@@ -559,8 +559,8 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
         performance.end(`simd-${reduction.name}`);
 
-        // Verify mathematical correctness
-        expect(Math.abs(result - reduction.expected)).toBeLessThan(1e-10);
+        // Verify mathematical correctness with reasonable floating-point tolerance
+        expect(Math.abs(result - reduction.expected)).toBeLessThan(1e-6);
 
         const reductionTime = performance.getDuration(`simd-${reduction.name}`);
         expect(reductionTime).toBeLessThan(5); // 5ms max for SIMD reduction

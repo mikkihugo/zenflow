@@ -10,17 +10,17 @@ export type {
   ModelStatus,
   NeuralModel,
   NeuralModelType,
-} from '../types/shared-types.ts';
+} from '../types/shared-types';
 // Neural agents
-export * from './agents/index.ts';
+export * from './agents/index';
 // Neural coordination
-export * from './coordination/index.ts';
+export * from './coordination/index';
 // Core neural components
-export * from './core/index.ts';
+export * from './core/index';
 // Neural models and presets
-export * from './models/index.ts';
+export * from './models/index';
 // Neural Bridge (main interface)
-export * from './neural-bridge.ts';
-export { NeuralBridge as default } from './neural-bridge.ts';
+export * from './neural-bridge';
+export { NeuralBridge as default } from './neural-bridge';
 // WASM integration
-export * from './wasm/index.ts';
+export * from './wasm/index';

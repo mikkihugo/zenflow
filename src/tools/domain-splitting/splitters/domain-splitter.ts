@@ -4,8 +4,8 @@
 
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import type { ProgressReport, RollbackPlan } from '../types/analysis-types.ts';
-import type { SplittingResult, SubDomainPlan, ValidationReport } from '../types/domain-types.ts';
+import type { ProgressReport, RollbackPlan } from '../types/analysis-types';
+import type { SplittingResult, SubDomainPlan, ValidationReport } from '../types/domain-types';
 
 export interface DomainSplitter {
   executeSplitting(plan: SubDomainPlan[]): Promise<SplittingResult>;

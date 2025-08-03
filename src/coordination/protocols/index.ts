@@ -15,7 +15,7 @@ export {
   type MessagePayload,
   type MessagePriority,
   type MessageType,
-} from './communication/communication-protocols.ts';
+} from './communication/communication-protocols';
 
 // Task Distribution
 export {
@@ -29,7 +29,7 @@ export {
   type TaskPriority,
   type TaskRequirements,
   type TaskStatus,
-} from './distribution/task-distribution-engine.ts';
+} from './distribution/task-distribution-engine';
 // Agent Lifecycle Management
 export {
   type AgentInstance,
@@ -45,7 +45,7 @@ export {
   type SpawnResult,
   type TerminationRequest,
   type TerminationResult,
-} from './lifecycle/agent-lifecycle-manager.ts';
+} from './lifecycle/agent-lifecycle-manager';
 // Performance Optimization
 export {
   type AdaptationConfig,
@@ -62,7 +62,7 @@ export {
   PerformanceOptimizer,
   type ResourceMetrics,
   type ThroughputMetrics,
-} from './optimization/performance-optimizer.ts';
+} from './optimization/performance-optimizer';
 
 // Coordination Patterns
 export {
@@ -81,7 +81,7 @@ export {
   type WorkItem,
   type WorkQueue,
   type WorkStealingConfig,
-} from './patterns/coordination-patterns.ts';
+} from './patterns/coordination-patterns';
 // Topology Management
 export {
   type Connection,
@@ -91,7 +91,7 @@ export {
   TopologyManager,
   type TopologyMetrics,
   type TopologyType,
-} from './topology/topology-manager.ts';
+} from './topology/topology-manager';
 
 import type { IEventBus } from '../../core/event-bus';
 /**
@@ -99,12 +99,12 @@ import type { IEventBus } from '../../core/event-bus';
  * Creates and configures integrated coordination systems
  */
 import type { ILogger } from '../../core/logger';
-import { CommunicationProtocols } from './communication/communication-protocols.ts';
-import { TaskDistributionEngine } from './distribution/task-distribution-engine.ts';
-import { AgentLifecycleManager } from './lifecycle/agent-lifecycle-manager.ts';
-import { PerformanceOptimizer } from './optimization/performance-optimizer.ts';
-import { CoordinationPatterns } from './patterns/coordination-patterns.ts';
-import { TopologyManager } from './topology/topology-manager.ts';
+import { CommunicationProtocols } from './communication/communication-protocols';
+import { TaskDistributionEngine } from './distribution/task-distribution-engine';
+import { AgentLifecycleManager } from './lifecycle/agent-lifecycle-manager';
+import { PerformanceOptimizer } from './optimization/performance-optimizer';
+import { CoordinationPatterns } from './patterns/coordination-patterns';
+import { TopologyManager } from './topology/topology-manager';
 
 export interface AdvancedCoordinationConfig {
   nodeId: string;

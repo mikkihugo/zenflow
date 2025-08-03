@@ -6,18 +6,18 @@
  */
 
 // Core Engine
-export { SPARCEngineCore } from './core/sparc-engine.ts';
+export { SPARCEngineCore } from './core/sparc-engine';
 // MCP Integration
-export { SPARCMCPTools, sparcMCPTools } from './integrations/mcp-sparc-tools.ts';
+export { SPARCMCPTools, sparcMCPTools } from './integrations/mcp-sparc-tools';
 // Project Management Integration
-export { ProjectManagementIntegration } from './integrations/project-management-integration.ts';
-export { SPARCRoadmapManager } from './integrations/roadmap-integration.ts';
+export { ProjectManagementIntegration } from './integrations/project-management-integration';
+export { SPARCRoadmapManager } from './integrations/roadmap-integration';
 // Phase Engines
-export { SpecificationPhaseEngine } from './phases/specification/specification-engine.ts';
+export { SpecificationPhaseEngine } from './phases/specification/specification-engine';
 // Templates
-export { SWARM_COORDINATION_TEMPLATE } from './templates/swarm-coordination-template.ts';
+export { SWARM_COORDINATION_TEMPLATE } from './templates/swarm-coordination-template';
 // Types
-export type * from './types/sparc-types.ts';
+export type * from './types/sparc-types';
 
 // Main SPARC facade for easy usage
 export class SPARC {

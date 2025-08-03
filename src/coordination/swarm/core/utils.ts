@@ -2,7 +2,7 @@
  * Utility functions for RuvSwarm
  */
 
-import type { AgentType, CognitiveProfile, SwarmTopology, TaskPriority } from './types.ts';
+import type { AgentType, CognitiveProfile, SwarmTopology, TaskPriority } from './types';
 
 /**
  * Generate a unique ID for agents, tasks, and messages
@@ -17,7 +17,8 @@ export function generateId(prefix: string = ''): string {
  * Create a default cognitive profile based on agent type
  */
 export function getDefaultCognitiveProfile(type: AgentType): CognitiveProfile {
-  const profiles: Record<AgentType, CognitiveProfile> = {
+  // Default profiles for known types - using Partial<Record> for flexibility
+  const knownProfiles: Partial<Record<AgentType, CognitiveProfile>> = {
     researcher: {
       analytical: 0.9,
       creative: 0.6,
@@ -58,7 +59,7 @@ export function getDefaultCognitiveProfile(type: AgentType): CognitiveProfile {
       collaborative: 0.7,
       independent: 0.7,
     },
-    debugger: {
+    debug: {
       analytical: 0.9,
       creative: 0.6,
       systematic: 0.85,
@@ -90,17 +91,25 @@ export function getDefaultCognitiveProfile(type: AgentType): CognitiveProfile {
       collaborative: 0.5,
       independent: 0.8,
     },
-    custom: {
-      analytical: 0.5,
-      creative: 0.5,
-      systematic: 0.5,
-      intuitive: 0.5,
-      collaborative: 0.5,
-      independent: 0.5,
+    coordinator: {
+      analytical: 0.7,
+      creative: 0.6,
+      systematic: 0.8,
+      intuitive: 0.7,
+      collaborative: 0.9,
+      independent: 0.4,
     },
   };
 
-  return profiles[type];
+  // Return known profile or default for unknown types
+  return knownProfiles[type] || {
+    analytical: 0.5,
+    creative: 0.5,
+    systematic: 0.5,
+    intuitive: 0.5,
+    collaborative: 0.5,
+    independent: 0.5,
+  };
 }
 
 /**

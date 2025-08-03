@@ -3,13 +3,13 @@
  */
 
 // Analyzers
-export * from './analyzers/domain-analyzer.ts';
+export * from './analyzers/domain-analyzer';
 // Main orchestrator
-export { DomainSplittingOrchestrator } from './orchestrator.ts';
+export { DomainSplittingOrchestrator } from './orchestrator';
 // Splitters
-export * from './splitters/domain-splitter.ts';
-export * from './types/analysis-types.ts';
+export * from './splitters/domain-splitter';
+export * from './types/analysis-types';
 // Types
-export * from './types/domain-types.ts';
+export * from './types/domain-types';
 // Validators
-export * from './validators/dependency-validator.ts';
+export * from './validators/dependency-validator';

@@ -4,7 +4,7 @@
  * Common configuration values and utilities used across interfaces.
  */
 
-import type { InterfaceConfig } from './types.ts';
+import type { InterfaceConfig } from './types';
 
 /**
  * Default configuration for all interfaces

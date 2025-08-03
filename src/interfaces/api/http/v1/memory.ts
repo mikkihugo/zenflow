@@ -8,8 +8,8 @@
  */
 
 import { NextFunction, type Request, type Response, Router } from 'express';
-import { asyncHandler } from '../middleware/errors.ts';
-import { LogLevel, log, logPerformance } from '../middleware/logging.ts';
+import { asyncHandler } from '../middleware/errors';
+import { LogLevel, log, logPerformance } from '../middleware/logging';
 
 /**
  * Create memory management routes

@@ -3,10 +3,10 @@
  * Tests interactions between components using mocks
  */
 
-import { DomainAnalysisEngine } from '../../../../tools/domain-splitting/analyzers/domain-analyzer.ts';
-import { DomainSplittingOrchestrator } from '../../../../tools/domain-splitting/orchestrator.ts';
-import { SafeDomainSplitter } from '../../../../tools/domain-splitting/splitters/domain-splitter.ts';
-import { DependencyValidator } from '../../../../tools/domain-splitting/validators/dependency-validator.ts';
+import { DomainAnalysisEngine } from '../../../../tools/domain-splitting/analyzers/domain-analyzer';
+import { DomainSplittingOrchestrator } from '../../../../tools/domain-splitting/orchestrator';
+import { SafeDomainSplitter } from '../../../../tools/domain-splitting/splitters/domain-splitter';
+import { DependencyValidator } from '../../../../tools/domain-splitting/validators/dependency-validator';
 
 // Mock implementations
 jest.mock('../../../../tools/domain-splitting/analyzers/domain-analyzer.js');

@@ -6,8 +6,8 @@
  */
 
 import { EventEmitter } from 'events';
-import type { ILogger } from '../../di/index.ts';
-import { CORE_TOKENS, inject, injectable } from '../../di/index.ts';
+import type { ILogger } from '../../di/index';
+import { CORE_TOKENS, inject, injectable } from '../../di/index';
 import type {
   AdaptiveLearningConfig,
   Agent,
@@ -24,7 +24,7 @@ import type {
   PerformanceImprovement,
   SuccessPattern,
   SystemContext,
-} from './types.ts';
+} from './types';
 
 @injectable
 export class LearningCoordinator extends EventEmitter implements ILearningCoordinator {
