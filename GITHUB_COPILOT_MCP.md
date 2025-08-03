@@ -35,9 +35,36 @@ These external servers provide GitHub Copilot with enhanced research and develop
 
 ## Configuration
 
-The GitHub Copilot configuration is defined in:
-- `.github/copilot-config.yml` - Main configuration
+The GitHub Copilot MCP configuration is defined in:
+- `.github/copilot-config.yml` - Main configuration with external MCP servers
 - `.github/copilot-instructions.md` - Detailed instructions
 - `.github/copilot-context.md` - Context overview
+- `.github/copilot_settings.yml` - External MCP server settings
+- `claude_desktop_config.json` - Claude Desktop MCP configuration
+- `.copilotrc.json` - Project-specific Copilot settings
+
+### External Server Configuration
+
+Each external MCP server is configured with:
+- **URL**: Server endpoint for tool access
+- **Transport**: HTTP or SSE protocol
+- **Timeout**: 30 second timeout for requests
+- **Retry**: 3 retry attempts for failed requests
+- **Capabilities**: Specific tool categories available
+
+### Claude Desktop Integration
+
+To use these external servers in Claude Desktop, copy the `claude_desktop_config.json` to your Claude Desktop settings directory:
+
+```bash
+# macOS
+cp claude_desktop_config.json ~/Library/Application\ Support/Claude/claude_desktop_config.json
+
+# Windows
+cp claude_desktop_config.json %APPDATA%\Claude\claude_desktop_config.json
+
+# Linux
+cp claude_desktop_config.json ~/.config/Claude/claude_desktop_config.json
+```
 
 This setup follows [GitHub's recommendations](https://github.blog/ai-and-ml/github-copilot/onboarding-your-ai-peer-programmer-setting-up-github-copilot-coding-agent-for-success/) for optimal copilot coding agent configuration.

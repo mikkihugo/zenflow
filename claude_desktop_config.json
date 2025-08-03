@@ -1,0 +1,51 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "node",
+      "args": ["-e", "console.log('External MCP server: Context7 at https://mcp.context7.com/mcp')"],
+      "env": {
+        "MCP_SERVER_URL": "https://mcp.context7.com/mcp",
+        "MCP_TRANSPORT": "http"
+      }
+    },
+    "deepwiki": {
+      "command": "node", 
+      "args": ["-e", "console.log('External MCP server: DeepWiki at https://mcp.deepwiki.com/sse')"],
+      "env": {
+        "MCP_SERVER_URL": "https://mcp.deepwiki.com/sse",
+        "MCP_TRANSPORT": "sse"
+      }
+    },
+    "gitmcp": {
+      "command": "node",
+      "args": ["-e", "console.log('External MCP server: GitMCP at https://gitmcp.io/docs')"],
+      "env": {
+        "MCP_SERVER_URL": "https://gitmcp.io/docs", 
+        "MCP_TRANSPORT": "http"
+      }
+    },
+    "semgrep": {
+      "command": "node",
+      "args": ["-e", "console.log('External MCP server: Semgrep at https://mcp.semgrep.ai/sse')"],
+      "env": {
+        "MCP_SERVER_URL": "https://mcp.semgrep.ai/sse",
+        "MCP_TRANSPORT": "sse"
+      }
+    },
+    "claude-zen-local": {
+      "command": "npx",
+      "args": ["tsx", "src/interfaces/mcp/start-server.ts", "--port", "3000", "--host", "localhost"],
+      "env": {
+        "MCP_PORT": "3000",
+        "MCP_HOST": "localhost",
+        "MCP_LOG_LEVEL": "info"
+      }
+    }
+  },
+  "global": {
+    "timeout": 30000,
+    "maxConcurrentConnections": 10,
+    "retryAttempts": 3,
+    "logLevel": "info"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "version": "1.0",
+  "name": "claude-code-zen",
+  "description": "Advanced AI development platform with MCP integration",
+  
+  "mcp": {
+    "enabled": true,
+    "external_servers": {
+      "context7": {
+        "url": "https://mcp.context7.com/mcp",
+        "type": "http",
+        "description": "Research and analysis tools",
+        "tags": ["research", "analysis", "documentation"]
+      },
+      "deepwiki": {
+        "url": "https://mcp.deepwiki.com/sse", 
+        "type": "sse",
+        "description": "Knowledge base and research tools",
+        "tags": ["knowledge", "documentation", "research"]
+      },
+      "gitmcp": {
+        "url": "https://gitmcp.io/docs",
+        "type": "http", 
+        "description": "Git operations and repository management",
+        "tags": ["git", "repository", "version-control"]
+      },
+      "semgrep": {
+        "url": "https://mcp.semgrep.ai/sse",
+        "type": "sse",
+        "description": "Code analysis and security scanning",
+        "tags": ["security", "analysis", "quality"]
+      }
+    },
+    "local_server": {
+      "enabled": true,
+      "port": 3000,
+      "command": "npx tsx src/interfaces/mcp/start-server.ts"
+    }
+  },
+  
+  "copilot": {
+    "enable_mcp_tools": true,
+    "prefer_external_tools": true,
+    "tool_discovery": {
+      "timeout": 10000,
+      "cache_duration": 3600
+    },
+    "capabilities": [
+      "swarm_coordination",
+      "research_analysis", 
+      "code_security",
+      "documentation",
+      "git_operations"
+    ]
+  },
+  
+  "project": {
+    "type": "ai-coordination-platform",
+    "domains": [
+      "coordination",
+      "neural", 
+      "interfaces",
+      "memory",
+      "database",
+      "core"
+    ],
+    "agent_types": 147,
+    "testing_strategy": "hybrid-tdd"
+  }
+}

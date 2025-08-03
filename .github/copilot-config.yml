@@ -164,18 +164,38 @@ external_mcp_servers:
     url: "https://mcp.context7.com/mcp"
     type: "http"
     purpose: "Research and analysis tools"
+    enabled: true
+    timeout: 30000
+    retry_attempts: 3
   deepwiki:
     url: "https://mcp.deepwiki.com/sse"
     type: "sse"
     purpose: "Knowledge base and research"
+    enabled: true
+    timeout: 30000
+    retry_attempts: 3
   gitmcp:
     url: "https://gitmcp.io/docs"
     type: "http"
     purpose: "Git operations and repository management"
+    enabled: true
+    timeout: 30000
+    retry_attempts: 3
   semgrep:
     url: "https://mcp.semgrep.ai/sse"
     type: "sse"
     purpose: "Code analysis and security scanning"
+    enabled: true
+    timeout: 30000
+    retry_attempts: 3
+
+# GitHub Copilot MCP Integration Settings
+copilot_mcp_integration:
+  enable_external_servers: true
+  prioritize_external_tools: true
+  fallback_to_local: true
+  tool_discovery_cache: 3600
+  max_concurrent_requests: 10
 
 copilot_optimization:
   reference: "https://github.blog/ai-and-ml/github-copilot/onboarding-your-ai-peer-programmer-setting-up-github-copilot-coding-agent-for-success/"
