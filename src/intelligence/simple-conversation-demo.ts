@@ -1,11 +1,16 @@
 /**
  * Simple Conversation Framework Demo
- * 
+ *
  * Demonstrates ag2.ai-inspired conversation capabilities with minimal dependencies
  */
 
-import { ConversationOrchestrator, ConversationConfig, ConversationMessage, ConversationSession } from './conversation-framework/types.js';
-import { AgentId } from '../types/agent-types.js';
+import type { AgentId } from '../types/agent-types.js';
+import {
+  type ConversationConfig,
+  type ConversationMessage,
+  ConversationOrchestrator,
+  type ConversationSession,
+} from './conversation-framework/types.js';
 
 /**
  * Mock memory backend for demo purposes
@@ -66,11 +71,11 @@ class DemoConversationOrchestrator {
         participationByAgent: {},
         averageResponseTime: 0,
         consensusScore: 0,
-        qualityRating: 0
-      }
+        qualityRating: 0,
+      },
     };
 
-    config.initialParticipants.forEach(agent => {
+    config.initialParticipants.forEach((agent) => {
       session.metrics.participationByAgent[agent.id] = 0;
     });
 
@@ -99,7 +104,7 @@ class DemoConversationOrchestrator {
 
     await this.memory.updateConversation(session.id, {
       messages: session.messages,
-      metrics: session.metrics
+      metrics: session.metrics,
     });
   }
 
@@ -119,20 +124,20 @@ class DemoConversationOrchestrator {
 
     // Generate simple outcomes
     const outcomes = session.messages
-      .filter(m => m.messageType === 'decision' || m.messageType === 'agreement')
-      .map(m => ({
+      .filter((m) => m.messageType === 'decision' || m.messageType === 'agreement')
+      .map((m) => ({
         type: m.messageType === 'decision' ? 'decision' : 'consensus',
         content: m.content,
         confidence: 0.8,
         contributors: [m.fromAgent],
-        timestamp: m.timestamp
+        timestamp: m.timestamp,
       }));
 
     session.outcomes = outcomes;
     await this.memory.updateConversation(conversationId, {
       status: session.status,
       endTime: session.endTime,
-      outcomes: session.outcomes
+      outcomes: session.outcomes,
     });
 
     this.activeSessions.delete(conversationId);
@@ -145,7 +150,7 @@ class DemoConversationOrchestrator {
  */
 export async function runSimpleConversationDemo(): Promise<void> {
   console.log('🤖 ag2.ai Integration Demo - Multi-Agent Conversations');
-  console.log('=' .repeat(60));
+  console.log('='.repeat(60));
 
   try {
     // Create conversation system
@@ -156,10 +161,10 @@ export async function runSimpleConversationDemo(): Promise<void> {
     const agents: AgentId[] = [
       { id: 'alice-coder', swarmId: 'demo-swarm', type: 'coder', instance: 0 },
       { id: 'bob-reviewer', swarmId: 'demo-swarm', type: 'reviewer', instance: 0 },
-      { id: 'charlie-architect', swarmId: 'demo-swarm', type: 'architect', instance: 0 }
+      { id: 'charlie-architect', swarmId: 'demo-swarm', type: 'architect', instance: 0 },
     ];
 
-    console.log(`👥 Demo agents: ${agents.map(a => a.id).join(', ')}`);
+    console.log(`👥 Demo agents: ${agents.map((a) => a.id).join(', ')}`);
 
     // Create a code review conversation
     console.log('\n🔍 Creating code review conversation...');
@@ -172,10 +177,10 @@ export async function runSimpleConversationDemo(): Promise<void> {
         domain: 'backend',
         constraints: ['security-focused', 'backwards-compatible'],
         resources: ['PR #142', 'Security guidelines'],
-        expertise: ['authentication', 'nodejs', 'security']
+        expertise: ['authentication', 'nodejs', 'security'],
       },
       initialParticipants: agents,
-      timeout: 3600000 // 1 hour
+      timeout: 3600000, // 1 hour
     });
 
     console.log(`✅ Created conversation: ${conversation.id}`);
@@ -185,55 +190,61 @@ export async function runSimpleConversationDemo(): Promise<void> {
 
     // Simulate conversation messages
     console.log('\n💬 Simulating conversation messages...');
-    
+
     const messages = [
       {
         fromAgent: agents[0], // alice-coder
-        content: { text: 'I\'ve implemented JWT tokens with refresh mechanism. The changes are in auth.ts and middleware.ts.' },
+        content: {
+          text: "I've implemented JWT tokens with refresh mechanism. The changes are in auth.ts and middleware.ts.",
+        },
         messageType: 'task_request' as const,
         metadata: {
           priority: 'high' as const,
           requiresResponse: true,
           context: conversation.context,
-          tags: ['code-review', 'authentication']
-        }
+          tags: ['code-review', 'authentication'],
+        },
       },
       {
         fromAgent: agents[1], // bob-reviewer
-        content: { 
+        content: {
           text: 'Code looks clean. I have concerns about token expiration handling. Can you add more error handling?',
-          code: 'if (!token.isValid()) { throw new AuthError("Token expired"); }'
+          code: 'if (!token.isValid()) { throw new AuthError("Token expired"); }',
         },
         messageType: 'critique' as const,
         metadata: {
           priority: 'medium' as const,
           requiresResponse: true,
           context: conversation.context,
-          tags: ['security', 'error-handling']
-        }
+          tags: ['security', 'error-handling'],
+        },
       },
       {
         fromAgent: agents[2], // charlie-architect
-        content: { text: 'From architecture perspective, consider adding rate limiting for token refresh endpoint.' },
+        content: {
+          text: 'From architecture perspective, consider adding rate limiting for token refresh endpoint.',
+        },
         messageType: 'suggestion' as const,
         metadata: {
           priority: 'medium' as const,
           requiresResponse: false,
           context: conversation.context,
-          tags: ['architecture', 'security', 'rate-limiting']
-        }
+          tags: ['architecture', 'security', 'rate-limiting'],
+        },
       },
       {
         fromAgent: agents[0], // alice-coder
-        content: { text: 'Good points! I\'ll add the error handling and rate limiting. Thanks for the review!' },
+        content: {
+          text: "Good points! I'll add the error handling and rate limiting. Thanks for the review!",
+        },
         messageType: 'agreement' as const,
         metadata: {
           priority: 'medium' as const,
           requiresResponse: false,
           context: conversation.context,
-          tags: ['agreement', 'follow-up']
-        }
-      }
+          tags: ['agreement', 'follow-up'],
+        },
+      },
     ];
 
     for (const [index, msgData] of messages.entries()) {
@@ -241,7 +252,7 @@ export async function runSimpleConversationDemo(): Promise<void> {
         id: `demo-msg-${index + 1}`,
         conversationId: conversation.id,
         timestamp: new Date(),
-        ...msgData
+        ...msgData,
       });
       console.log(`   📨 ${msgData.fromAgent.id}: ${msgData.content.text.substring(0, 50)}...`);
     }
@@ -250,10 +261,12 @@ export async function runSimpleConversationDemo(): Promise<void> {
     console.log('\n📋 Retrieving conversation history...');
     const history = await orchestrator.getConversationHistory(conversation.id);
     console.log(`   Found ${history.length} messages`);
-    
+
     // Show message details
     history.forEach((msg, index) => {
-      console.log(`   ${index + 1}. [${msg.messageType}] ${msg.fromAgent.id}: ${msg.content.text.substring(0, 80)}...`);
+      console.log(
+        `   ${index + 1}. [${msg.messageType}] ${msg.fromAgent.id}: ${msg.content.text.substring(0, 80)}...`
+      );
     });
 
     // Show conversation metrics
@@ -267,7 +280,7 @@ export async function runSimpleConversationDemo(): Promise<void> {
     // Terminate conversation and get outcomes
     console.log('\n🏁 Terminating conversation...');
     const outcomes = await orchestrator.terminateConversation(
-      conversation.id, 
+      conversation.id,
       'Code review completed successfully'
     );
 
@@ -281,7 +294,9 @@ export async function runSimpleConversationDemo(): Promise<void> {
     console.log('\n🎯 ag2.ai Integration Benefits Demonstrated:');
     console.log('   ✅ Multi-Agent Structured Conversations');
     console.log('   ✅ Role-Based Communication Patterns');
-    console.log('   ✅ Message Type Classification (task_request, critique, suggestion, agreement)');
+    console.log(
+      '   ✅ Message Type Classification (task_request, critique, suggestion, agreement)'
+    );
     console.log('   ✅ Conversation Context and Memory');
     console.log('   ✅ Participant Tracking and Metrics');
     console.log('   ✅ Outcome Generation and Analysis');
@@ -289,8 +304,15 @@ export async function runSimpleConversationDemo(): Promise<void> {
     console.log('   ✅ Priority-Based Message Handling');
 
     console.log('\n📋 Available Conversation Patterns:');
-    const patterns = ['code-review', 'problem-solving', 'brainstorming', 'planning', 'debugging', 'architecture-review'];
-    patterns.forEach(pattern => console.log(`   ✓ ${pattern}`));
+    const patterns = [
+      'code-review',
+      'problem-solving',
+      'brainstorming',
+      'planning',
+      'debugging',
+      'architecture-review',
+    ];
+    patterns.forEach((pattern) => console.log(`   ✓ ${pattern}`));
 
     console.log('\n🔧 MCP Integration Ready:');
     console.log('   📡 8 conversation management tools available');
@@ -302,7 +324,6 @@ export async function runSimpleConversationDemo(): Promise<void> {
     console.log('   ✨ Multi-agent conversations successfully implemented');
     console.log('   🤝 Enhanced collaboration capabilities added to claude-code-zen');
     console.log('   🚀 Ready for production use with existing 147+ agent types');
-
   } catch (error) {
     console.error('❌ Demo failed:', error);
     throw error;

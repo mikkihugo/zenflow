@@ -1,55 +1,77 @@
 /**
  * Conversation Framework - ag2.ai Integration
- * 
+ *
  * Multi-agent conversation capabilities inspired by ag2.ai (AutoGen)
  * for enhanced agent collaboration and structured dialogue
  */
 
-// Core types and interfaces
-export * from './types.js';
+import type {
+  ConversationMCPTools,
+  ConversationMemory,
+  ConversationOrchestrator,
+} from './types.js';
 
-// Conversation orchestration
-export { ConversationOrchestratorImpl } from './orchestrator.js';
+/**
+ * Configuration for conversation framework creation
+ */
+export interface ConversationFrameworkConfig {
+  memoryBackend?: 'sqlite' | 'json' | 'lancedb';
+  memoryConfig?: {
+    path?: string;
+    basePath?: string;
+    [key: string]: any;
+  };
+}
 
-// Memory and persistence
-export { ConversationMemoryImpl, ConversationMemoryFactory } from './memory.js';
+/**
+ * Complete conversation framework system
+ */
+export interface ConversationFrameworkSystem {
+  orchestrator: ConversationOrchestrator;
+  memory: ConversationMemory;
+  mcpTools: ConversationMCPTools;
+}
 
 // MCP integration
 export { ConversationMCPTools, ConversationMCPToolsFactory } from './mcp-tools.js';
+// Memory and persistence
+export { ConversationMemoryFactory, ConversationMemoryImpl } from './memory.js';
+// Conversation orchestration
+export { ConversationOrchestratorImpl } from './orchestrator.js';
+// Core types and interfaces
+export * from './types.js';
 
 /**
  * Conversation Framework Factory
- * 
+ *
  * Main entry point for creating conversation systems
  */
 export class ConversationFramework {
   /**
    * Create a complete conversation system with orchestrator and memory
    */
-  static async create(config: {
-    memoryBackend?: 'sqlite' | 'json' | 'lancedb';
-    memoryConfig?: any;
-  } = {}): Promise<{
-    orchestrator: any;
-    memory: any;
-    mcpTools: any;
-  }> {
+  static async create(
+    config: ConversationFrameworkConfig = {}
+  ): Promise<ConversationFrameworkSystem> {
     const { memoryBackend = 'json', memoryConfig = {} } = config;
 
     // Create memory backend
     let memory;
     switch (memoryBackend) {
-      case 'sqlite':
+      case 'sqlite': {
         const { ConversationMemoryFactory: SQLiteFactory } = await import('./memory.js');
         memory = await SQLiteFactory.createWithSQLite(memoryConfig);
         break;
-      case 'lancedb':
+      }
+      case 'lancedb': {
         const { ConversationMemoryFactory: LanceFactory } = await import('./memory.js');
         memory = await LanceFactory.createWithLanceDB(memoryConfig);
         break;
-      default:
+      }
+      default: {
         const { ConversationMemoryFactory: JSONFactory } = await import('./memory.js');
         memory = await JSONFactory.createWithJSON(memoryConfig);
+      }
     }
 
     // Create orchestrator
@@ -63,7 +85,7 @@ export class ConversationFramework {
     return {
       orchestrator,
       memory,
-      mcpTools
+      mcpTools,
     };
   }
 
@@ -79,7 +101,7 @@ export class ConversationFramework {
       'debugging',
       'architecture-review',
       'sprint-planning',
-      'retrospective'
+      'retrospective',
     ];
   }
 
@@ -97,7 +119,7 @@ export class ConversationFramework {
       'workflow-orchestration',
       'moderation-support',
       'learning-from-conversations',
-      'mcp-integration'
+      'mcp-integration',
     ];
   }
 
@@ -137,16 +159,16 @@ export class ConversationFramework {
 
     return {
       valid: errors.length === 0,
-      errors
+      errors,
     };
   }
 }
 
 /**
  * ag2.ai Integration Summary
- * 
+ *
  * This conversation framework brings ag2.ai's key concepts to claude-code-zen:
- * 
+ *
  * 1. **Multi-Agent Conversations**: Structured dialogue between specialized agents
  * 2. **Conversation Patterns**: Predefined workflows for common scenarios
  * 3. **Role-Based Participation**: Agents have specific roles and permissions
@@ -154,7 +176,7 @@ export class ConversationFramework {
  * 5. **Group Chat Coordination**: Support for multi-participant discussions
  * 6. **Conversation Memory**: Persistent context and history
  * 7. **MCP Integration**: Seamless tool integration for external access
- * 
+ *
  * Key differences from ag2.ai:
  * - Uses claude-code-zen's existing 147+ agent types
  * - Integrates with existing memory and coordination systems

@@ -1,10 +1,11 @@
 /**
  * Conversation Framework Types
- * 
+ *
  * ag2.ai-inspired conversation types for multi-agent communication
  */
 
-import { AgentType, AgentId } from '../../types/agent-types.js';
+import type { AgentId, AgentType } from '../../types/agent-types.js';
+import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 
 /**
  * Conversation message types for structured agent communication
@@ -20,7 +21,7 @@ export interface ConversationMessage {
   metadata: MessageMetadata;
 }
 
-export type MessageType = 
+export type MessageType =
   | 'task_request'
   | 'task_response'
   | 'question'
@@ -74,7 +75,7 @@ export interface ConversationSession {
   metrics: ConversationMetrics;
 }
 
-export type ConversationStatus = 
+export type ConversationStatus =
   | 'initializing'
   | 'active'
   | 'paused'
@@ -246,4 +247,11 @@ export interface ConversationQuery {
   outcome?: string;
   limit?: number;
   offset?: number;
+}
+
+/**
+ * Interface for MCP tools integration
+ */
+export interface ConversationMCPTools {
+  getTools(): Tool[];
 }

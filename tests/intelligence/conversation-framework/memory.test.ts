@@ -5,9 +5,14 @@
  * Focus on actual storage and retrieval behavior
  */
 
-import type { AgentId } from '../../../types/agent-types.js';
-import { ConversationMemoryImpl } from '../memory.js';
-import { ConversationQuery, type ConversationSession, type ConversationStatus } from '../types.js';
+import { jest } from '@jest/globals';
+import { ConversationMemoryImpl } from '../../../src/intelligence/conversation-framework/memory';
+import {
+  ConversationQuery,
+  type ConversationSession,
+  type ConversationStatus,
+} from '../../../src/intelligence/conversation-framework/types';
+import type { AgentId } from '../../../src/types/agent-types';
 
 describe('ConversationMemoryImpl - Classical TDD', () => {
   let memory: ConversationMemoryImpl;
@@ -19,19 +24,33 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
   ];
 
   beforeEach(() => {
-    // Create a mock backend that simulates actual storage
+    // Create a mock backend that simulates actual memory backend interface
     const storage = new Map<string, any>();
 
     mockBackend = {
-      save: jest.fn().mockImplementation(async (key: string, value: any) => {
-        storage.set(key, JSON.parse(JSON.stringify(value))); // Deep clone to simulate persistence
+      store: jest.fn().mockImplementation(async (key: string, value: any, namespace?: string) => {
+        const fullKey = namespace ? `${namespace}:${key}` : key;
+        storage.set(fullKey, JSON.parse(JSON.stringify(value))); // Deep clone to simulate persistence
+        return { id: fullKey, timestamp: Date.now(), status: 'success' };
       }),
-      get: jest.fn().mockImplementation(async (key: string) => {
-        const value = storage.get(key);
+      retrieve: jest.fn().mockImplementation(async (key: string, namespace?: string) => {
+        const fullKey = namespace ? `${namespace}:${key}` : key;
+        const value = storage.get(fullKey);
         return value ? JSON.parse(JSON.stringify(value)) : null; // Deep clone to simulate retrieval
       }),
-      delete: jest.fn().mockImplementation(async (key: string) => {
-        storage.delete(key);
+      delete: jest.fn().mockImplementation(async (key: string, namespace?: string) => {
+        const fullKey = namespace ? `${namespace}:${key}` : key;
+        return storage.delete(fullKey);
+      }),
+      search: jest.fn().mockImplementation(async (pattern: string, namespace?: string) => {
+        const results: Record<string, any> = {};
+        const prefix = namespace ? `${namespace}:` : '';
+        for (const [key, value] of storage.entries()) {
+          if (key.startsWith(prefix) && key.includes(pattern)) {
+            results[key] = JSON.parse(JSON.stringify(value));
+          }
+        }
+        return results;
       }),
     };
 

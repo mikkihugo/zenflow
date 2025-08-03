@@ -1,23 +1,23 @@
 /**
  * Conversation Orchestrator
- * 
+ *
  * Core orchestration engine for ag2.ai-inspired multi-agent conversations
  */
 
 import { nanoid } from 'nanoid';
+import type { AgentId } from '../../types/agent-types.js';
 import {
-  ConversationOrchestrator,
-  ConversationSession,
-  ConversationConfig,
-  ConversationMessage,
+  type ConversationConfig,
+  type ConversationMemory,
+  type ConversationMessage,
+  type ConversationOrchestrator,
+  type ConversationOutcome,
+  type ConversationPattern,
+  type ConversationSession,
   ConversationStatus,
-  ConversationOutcome,
-  ModerationAction,
-  ConversationPattern,
-  ConversationMemory,
-  MessageType
+  MessageType,
+  type ModerationAction,
 } from './types.js';
-import { AgentId } from '../../types/agent-types.js';
 
 /**
  * Implementation of the conversation orchestrator
@@ -61,12 +61,12 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
         participationByAgent: {},
         averageResponseTime: 0,
         consensusScore: 0,
-        qualityRating: 0
-      }
+        qualityRating: 0,
+      },
     };
 
     // Initialize participation tracking
-    config.initialParticipants.forEach(agent => {
+    config.initialParticipants.forEach((agent) => {
       session.metrics.participationByAgent[agent.id] = 0;
     });
 
@@ -92,7 +92,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       throw new Error(`Cannot join conversation in status: ${session.status}`);
     }
 
-    if (!session.participants.find(p => p.id === agent.id)) {
+    if (!session.participants.find((p) => p.id === agent.id)) {
       session.participants.push(agent);
       session.metrics.participationByAgent[agent.id] = 0;
       await this.memory.updateConversation(conversationId, { participants: session.participants });
@@ -111,7 +111,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       throw new Error(`Conversation ${conversationId} not found`);
     }
 
-    session.participants = session.participants.filter(p => p.id !== agent.id);
+    session.participants = session.participants.filter((p) => p.id !== agent.id);
     await this.memory.updateConversation(conversationId, { participants: session.participants });
 
     // Send leave notification
@@ -132,7 +132,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     }
 
     // Validate sender is participant
-    if (!session.participants.find(p => p.id === message.fromAgent.id)) {
+    if (!session.participants.find((p) => p.id === message.fromAgent.id)) {
       throw new Error(`Agent ${message.fromAgent.id} is not a participant in this conversation`);
     }
 
@@ -152,7 +152,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     // Update session in memory
     await this.memory.updateConversation(session.id, {
       messages: session.messages,
-      metrics: session.metrics
+      metrics: session.metrics,
     });
 
     // Emit message event
@@ -195,9 +195,10 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * Get conversation message history
    */
   async getConversationHistory(conversationId: string): Promise<ConversationMessage[]> {
-    const session = this.activeSessions.get(conversationId) || 
-                   await this.memory.getConversation(conversationId);
-    
+    const session =
+      this.activeSessions.get(conversationId) ||
+      (await this.memory.getConversation(conversationId));
+
     if (!session) {
       throw new Error(`Conversation ${conversationId} not found`);
     }
@@ -208,7 +209,10 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   /**
    * Terminate a conversation and return outcomes
    */
-  async terminateConversation(conversationId: string, reason?: string): Promise<ConversationOutcome[]> {
+  async terminateConversation(
+    conversationId: string,
+    reason?: string
+  ): Promise<ConversationOutcome[]> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
       throw new Error(`Conversation ${conversationId} not found`);
@@ -229,7 +233,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       status: session.status,
       endTime: session.endTime,
       outcomes: session.outcomes,
-      metrics: session.metrics
+      metrics: session.metrics,
     });
 
     // Remove from active sessions
@@ -256,22 +260,22 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
           agentTypes: ['coder', 'developer', 'frontend-dev', 'api-dev'],
           responsibilities: ['Present code', 'Answer questions', 'Address feedback'],
           permissions: [{ action: 'write', scope: 'own' }],
-          required: true
+          required: true,
         },
         {
           name: 'reviewer',
           agentTypes: ['reviewer', 'architect'],
           responsibilities: ['Review code', 'Provide feedback', 'Approve/reject'],
           permissions: [{ action: 'write', scope: 'group' }],
-          required: true
+          required: true,
         },
         {
           name: 'moderator',
           agentTypes: ['coordinator'],
           responsibilities: ['Facilitate discussion', 'Resolve conflicts'],
           permissions: [{ action: 'moderate', scope: 'all' }],
-          required: false
-        }
+          required: false,
+        },
       ],
       workflow: [
         {
@@ -279,25 +283,31 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
           name: 'Present Code',
           description: 'Author presents code for review',
           trigger: { type: 'manual', condition: null },
-          actions: [{ type: 'send_message', params: { messageType: 'task_request' }, agent: 'author' }],
-          participants: ['author']
+          actions: [
+            { type: 'send_message', params: { messageType: 'task_request' }, agent: 'author' },
+          ],
+          participants: ['author'],
         },
         {
           id: 'review-code',
           name: 'Review Code',
           description: 'Reviewers analyze and provide feedback',
           trigger: { type: 'message', condition: { messageType: 'task_request' } },
-          actions: [{ type: 'send_message', params: { messageType: 'critique' }, agent: 'reviewer' }],
+          actions: [
+            { type: 'send_message', params: { messageType: 'critique' }, agent: 'reviewer' },
+          ],
           participants: ['reviewer'],
-          timeout: 300000 // 5 minutes
+          timeout: 300000, // 5 minutes
         },
         {
           id: 'address-feedback',
           name: 'Address Feedback',
           description: 'Author responds to feedback',
           trigger: { type: 'message', condition: { messageType: 'critique' } },
-          actions: [{ type: 'send_message', params: { messageType: 'task_response' }, agent: 'author' }],
-          participants: ['author']
+          actions: [
+            { type: 'send_message', params: { messageType: 'task_response' }, agent: 'author' },
+          ],
+          participants: ['author'],
         },
         {
           id: 'finalize',
@@ -305,14 +315,14 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
           description: 'Make final decision',
           trigger: { type: 'consensus', condition: { threshold: 0.7 } },
           actions: [{ type: 'make_decision', params: {}, agent: 'moderator' }],
-          participants: ['moderator', 'reviewer']
-        }
+          participants: ['moderator', 'reviewer'],
+        },
       ],
       constraints: [
         { type: 'time_limit', value: 3600000 }, // 1 hour
         { type: 'message_limit', value: 50 },
-        { type: 'quality_threshold', value: 0.8 }
-      ]
+        { type: 'quality_threshold', value: 0.8 },
+      ],
     });
 
     // Problem Solving Pattern
@@ -325,22 +335,22 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
           agentTypes: ['analyst', 'researcher'],
           responsibilities: ['Analyze problem', 'Gather requirements'],
           permissions: [{ action: 'write', scope: 'group' }],
-          required: true
+          required: true,
         },
         {
           name: 'solver',
           agentTypes: ['coder', 'architect', 'specialist'],
           responsibilities: ['Propose solutions', 'Implement fixes'],
           permissions: [{ action: 'write', scope: 'group' }],
-          required: true
+          required: true,
         },
         {
           name: 'validator',
           agentTypes: ['tester', 'quality_reviewer'],
           responsibilities: ['Validate solutions', 'Test implementations'],
           permissions: [{ action: 'write', scope: 'group' }],
-          required: true
-        }
+          required: true,
+        },
       ],
       workflow: [
         {
@@ -348,24 +358,30 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
           name: 'Analyze Problem',
           description: 'Understand and define the problem',
           trigger: { type: 'manual', condition: null },
-          actions: [{ type: 'send_message', params: { messageType: 'question' }, agent: 'analyst' }],
-          participants: ['analyst']
+          actions: [
+            { type: 'send_message', params: { messageType: 'question' }, agent: 'analyst' },
+          ],
+          participants: ['analyst'],
         },
         {
           id: 'propose-solutions',
           name: 'Propose Solutions',
           description: 'Generate potential solutions',
           trigger: { type: 'message', condition: { messageType: 'question' } },
-          actions: [{ type: 'send_message', params: { messageType: 'suggestion' }, agent: 'solver' }],
-          participants: ['solver']
+          actions: [
+            { type: 'send_message', params: { messageType: 'suggestion' }, agent: 'solver' },
+          ],
+          participants: ['solver'],
         },
         {
           id: 'validate-solutions',
           name: 'Validate Solutions',
           description: 'Test and validate proposed solutions',
           trigger: { type: 'message', condition: { messageType: 'suggestion' } },
-          actions: [{ type: 'send_message', params: { messageType: 'answer' }, agent: 'validator' }],
-          participants: ['validator']
+          actions: [
+            { type: 'send_message', params: { messageType: 'answer' }, agent: 'validator' },
+          ],
+          participants: ['validator'],
         },
         {
           id: 'select-solution',
@@ -373,25 +389,29 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
           description: 'Choose the best solution',
           trigger: { type: 'consensus', condition: { threshold: 0.6 } },
           actions: [{ type: 'make_decision', params: {}, agent: 'analyst' }],
-          participants: ['analyst', 'solver', 'validator']
-        }
+          participants: ['analyst', 'solver', 'validator'],
+        },
       ],
       constraints: [
         { type: 'time_limit', value: 7200000 }, // 2 hours
-        { type: 'message_limit', value: 100 }
-      ]
+        { type: 'message_limit', value: 100 },
+      ],
     });
   }
 
   /**
    * Start pattern workflow for a session
    */
-  private async startPatternWorkflow(session: ConversationSession, pattern: ConversationPattern): Promise<void> {
+  private async startPatternWorkflow(
+    session: ConversationSession,
+    pattern: ConversationPattern
+  ): Promise<void> {
     session.status = 'active';
     await this.memory.updateConversation(session.id, { status: session.status });
 
     // Send welcome message
-    await this.sendSystemMessage(session, 
+    await this.sendSystemMessage(
+      session,
       `Starting ${pattern.name} conversation: ${session.title}`
     );
 
@@ -405,7 +425,10 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   /**
    * Process message for workflow progression
    */
-  private async processMessageForWorkflow(session: ConversationSession, message: ConversationMessage): Promise<void> {
+  private async processMessageForWorkflow(
+    session: ConversationSession,
+    message: ConversationMessage
+  ): Promise<void> {
     const pattern = this.patterns.get(session.context.domain);
     if (!pattern) return;
 
@@ -420,7 +443,11 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   /**
    * Check if a workflow step should be triggered
    */
-  private shouldTriggerStep(step: any, message: ConversationMessage, session: ConversationSession): boolean {
+  private shouldTriggerStep(
+    step: any,
+    message: ConversationMessage,
+    session: ConversationSession
+  ): boolean {
     if (step.trigger.type === 'message') {
       return step.trigger.condition.messageType === message.messageType;
     }
@@ -433,7 +460,11 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   /**
    * Execute a workflow step
    */
-  private async executeWorkflowStep(session: ConversationSession, pattern: ConversationPattern, step: any): Promise<void> {
+  private async executeWorkflowStep(
+    session: ConversationSession,
+    pattern: ConversationPattern,
+    step: any
+  ): Promise<void> {
     // Implementation would depend on step actions
     // For now, just send a system message
     await this.sendSystemMessage(session, `Executing workflow step: ${step.name}`);
@@ -444,9 +475,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   private checkConsensus(session: ConversationSession, threshold: number): boolean {
     // Simple consensus check based on agreement messages
-    const agreementMessages = session.messages.filter(m => m.messageType === 'agreement');
+    const agreementMessages = session.messages.filter((m) => m.messageType === 'agreement');
     const participantCount = session.participants.length;
-    
+
     return agreementMessages.length / participantCount >= threshold;
   }
 
@@ -465,8 +496,8 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
         priority: 'medium',
         requiresResponse: false,
         context: session.context,
-        tags: ['system']
-      }
+        tags: ['system'],
+      },
     };
 
     session.messages.push(systemMessage);
@@ -476,30 +507,32 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   /**
    * Generate conversation outcomes
    */
-  private async generateConversationOutcomes(session: ConversationSession): Promise<ConversationOutcome[]> {
+  private async generateConversationOutcomes(
+    session: ConversationSession
+  ): Promise<ConversationOutcome[]> {
     const outcomes: ConversationOutcome[] = [];
 
     // Analyze messages for decisions and solutions
-    const decisionMessages = session.messages.filter(m => m.messageType === 'decision');
-    const solutionMessages = session.messages.filter(m => m.messageType === 'answer');
+    const decisionMessages = session.messages.filter((m) => m.messageType === 'decision');
+    const solutionMessages = session.messages.filter((m) => m.messageType === 'answer');
 
-    decisionMessages.forEach(msg => {
+    decisionMessages.forEach((msg) => {
       outcomes.push({
         type: 'decision',
         content: msg.content,
         confidence: 0.8, // Could be calculated based on consensus
         contributors: [msg.fromAgent],
-        timestamp: msg.timestamp
+        timestamp: msg.timestamp,
       });
     });
 
-    solutionMessages.forEach(msg => {
+    solutionMessages.forEach((msg) => {
       outcomes.push({
         type: 'solution',
         content: msg.content,
         confidence: 0.7,
         contributors: [msg.fromAgent],
-        timestamp: msg.timestamp
+        timestamp: msg.timestamp,
       });
     });
 
@@ -527,10 +560,10 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * Calculate consensus score
    */
   private calculateConsensusScore(session: ConversationSession): number {
-    const agreements = session.messages.filter(m => m.messageType === 'agreement').length;
-    const disagreements = session.messages.filter(m => m.messageType === 'disagreement').length;
+    const agreements = session.messages.filter((m) => m.messageType === 'agreement').length;
+    const disagreements = session.messages.filter((m) => m.messageType === 'disagreement').length;
     const total = agreements + disagreements;
-    
+
     return total > 0 ? agreements / total : 0.5;
   }
 
@@ -539,9 +572,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   private calculateQualityRating(session: ConversationSession): number {
     // Simple quality rating based on message diversity and participation
-    const messageTypes = new Set(session.messages.map(m => m.messageType));
+    const messageTypes = new Set(session.messages.map((m) => m.messageType));
     const participationBalance = this.calculateParticipationBalance(session);
-    
+
     return (messageTypes.size / 10 + participationBalance) / 2;
   }
 
@@ -550,22 +583,25 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   private calculateParticipationBalance(session: ConversationSession): number {
     const participationCounts = Object.values(session.metrics.participationByAgent);
-    const avgParticipation = participationCounts.reduce((a, b) => a + b, 0) / participationCounts.length;
-    const variance = participationCounts.reduce((acc, val) => acc + Math.pow(val - avgParticipation, 2), 0) / participationCounts.length;
-    
-    return Math.max(0, 1 - (variance / (avgParticipation + 1)));
+    const avgParticipation =
+      participationCounts.reduce((a, b) => a + b, 0) / participationCounts.length;
+    const variance =
+      participationCounts.reduce((acc, val) => acc + (val - avgParticipation) ** 2, 0) /
+      participationCounts.length;
+
+    return Math.max(0, 1 - variance / (avgParticipation + 1));
   }
 
   /**
    * Calculate average response time
    */
   private calculateAverageResponseTime(session: ConversationSession): number {
-    const messages = session.messages.filter(m => m.messageType !== 'system_notification');
+    const messages = session.messages.filter((m) => m.messageType !== 'system_notification');
     if (messages.length < 2) return 0;
 
     let totalTime = 0;
     for (let i = 1; i < messages.length; i++) {
-      totalTime += messages[i].timestamp.getTime() - messages[i-1].timestamp.getTime();
+      totalTime += messages[i].timestamp.getTime() - messages[i - 1].timestamp.getTime();
     }
 
     return totalTime / (messages.length - 1);
@@ -576,7 +612,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   private async emit(event: string, data: any): Promise<void> {
     const handlers = this.eventHandlers.get(event) || [];
-    await Promise.all(handlers.map(handler => handler(data)));
+    await Promise.all(handlers.map((handler) => handler(data)));
   }
 
   /**

@@ -1,24 +1,83 @@
 /**
  * Conversation Memory Backend
- * 
+ *
  * Memory management for conversation persistence using existing memory backends
  */
 
 import {
-  ConversationMemory,
-  ConversationSession,
-  ConversationQuery,
-  ConversationStatus
+  type ConversationMemory,
+  type ConversationQuery,
+  type ConversationSession,
+  ConversationStatus,
 } from './types.js';
 
 /**
- * Conversation memory implementation using SQLite backend
+ * Memory backend adapter interface
+ * Adapts claude-code-zen memory backends to conversation framework interface
+ */
+interface BackendAdapter {
+  save(key: string, data: any): Promise<void>;
+  get(key: string): Promise<any>;
+  delete(key: string): Promise<void>;
+  search(pattern: string): Promise<Record<string, any>>;
+}
+
+/**
+ * Adapter for claude-code-zen memory backends
+ * Converts store/retrieve interface to save/get interface
+ */
+class MemoryBackendAdapter implements BackendAdapter {
+  constructor(private backend: any) {}
+
+  async save(key: string, data: any): Promise<void> {
+    try {
+      await this.backend.store(key, data, 'conversations');
+    } catch (error) {
+      console.error(`Failed to save conversation data for key ${key}:`, error);
+      throw new Error(
+        `Memory save operation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
+    }
+  }
+
+  async get(key: string): Promise<any> {
+    try {
+      return await this.backend.retrieve(key, 'conversations');
+    } catch (error) {
+      console.error(`Failed to retrieve conversation data for key ${key}:`, error);
+      return null;
+    }
+  }
+
+  async delete(key: string): Promise<void> {
+    try {
+      await this.backend.delete(key, 'conversations');
+    } catch (error) {
+      console.error(`Failed to delete conversation data for key ${key}:`, error);
+      throw new Error(
+        `Memory delete operation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
+    }
+  }
+
+  async search(pattern: string): Promise<Record<string, any>> {
+    try {
+      return await this.backend.search(pattern, 'conversations');
+    } catch (error) {
+      console.error(`Failed to search conversation data for pattern ${pattern}:`, error);
+      return {};
+    }
+  }
+}
+
+/**
+ * Conversation memory implementation using backend storage
  */
 export class ConversationMemoryImpl implements ConversationMemory {
-  private backend: any;
+  private adapter: BackendAdapter;
 
   constructor(backend: any) {
-    this.backend = backend;
+    this.adapter = new MemoryBackendAdapter(backend);
     this.initializeSchema();
   }
 
@@ -42,27 +101,27 @@ export class ConversationMemoryImpl implements ConversationMemory {
       participants: JSON.stringify(session.participants),
       outcomes: JSON.stringify(session.outcomes),
       metrics: JSON.stringify(session.metrics),
-      context: JSON.stringify(session.context)
+      context: JSON.stringify(session.context),
     };
 
-    await this.backend.save(key, data);
+    await this.adapter.save(key, data);
 
     // Index by agent for quick agent history lookups
     for (const participant of session.participants) {
       const agentKey = `agent_conversations:${participant.id}`;
-      const agentConversations = await this.backend.get(agentKey) || [];
+      const agentConversations = (await this.adapter.get(agentKey)) || [];
       if (!agentConversations.includes(session.id)) {
         agentConversations.push(session.id);
-        await this.backend.save(agentKey, agentConversations);
+        await this.adapter.save(agentKey, agentConversations);
       }
     }
 
     // Index by pattern for pattern analysis
     const patternKey = `pattern_conversations:${session.context.domain}`;
-    const patternConversations = await this.backend.get(patternKey) || [];
+    const patternConversations = (await this.adapter.get(patternKey)) || [];
     if (!patternConversations.includes(session.id)) {
       patternConversations.push(session.id);
-      await this.backend.save(patternKey, patternConversations);
+      await this.adapter.save(patternKey, patternConversations);
     }
   }
 
@@ -71,8 +130,8 @@ export class ConversationMemoryImpl implements ConversationMemory {
    */
   async getConversation(id: string): Promise<ConversationSession | null> {
     const key = `conversation:${id}`;
-    const data = await this.backend.get(key);
-    
+    const data = await this.adapter.get(key);
+
     if (!data) {
       return null;
     }
@@ -86,7 +145,7 @@ export class ConversationMemoryImpl implements ConversationMemory {
       metrics: JSON.parse(data.metrics || '{}'),
       context: JSON.parse(data.context || '{}'),
       startTime: new Date(data.startTime),
-      endTime: data.endTime ? new Date(data.endTime) : undefined
+      endTime: data.endTime ? new Date(data.endTime) : undefined,
     };
   }
 
@@ -101,8 +160,8 @@ export class ConversationMemoryImpl implements ConversationMemory {
     // If searching by agent ID, use agent index
     if (query.agentId) {
       const agentKey = `agent_conversations:${query.agentId}`;
-      const conversationIds = await this.backend.get(agentKey) || [];
-      
+      const conversationIds = (await this.adapter.get(agentKey)) || [];
+
       for (const id of conversationIds.slice(offset, offset + limit)) {
         const conversation = await this.getConversation(id);
         if (conversation && this.matchesQuery(conversation, query)) {
@@ -115,8 +174,8 @@ export class ConversationMemoryImpl implements ConversationMemory {
     // If searching by pattern, use pattern index
     if (query.pattern) {
       const patternKey = `pattern_conversations:${query.pattern}`;
-      const conversationIds = await this.backend.get(patternKey) || [];
-      
+      const conversationIds = (await this.adapter.get(patternKey)) || [];
+
       for (const id of conversationIds.slice(offset, offset + limit)) {
         const conversation = await this.getConversation(id);
         if (conversation && this.matchesQuery(conversation, query)) {
@@ -155,21 +214,21 @@ export class ConversationMemoryImpl implements ConversationMemory {
 
     // Remove from main storage
     const key = `conversation:${id}`;
-    await this.backend.delete(key);
+    await this.adapter.delete(key);
 
     // Remove from agent indexes
     for (const participant of conversation.participants) {
       const agentKey = `agent_conversations:${participant.id}`;
-      const agentConversations = await this.backend.get(agentKey) || [];
+      const agentConversations = (await this.adapter.get(agentKey)) || [];
       const filtered = agentConversations.filter((cId: string) => cId !== id);
-      await this.backend.save(agentKey, filtered);
+      await this.adapter.save(agentKey, filtered);
     }
 
     // Remove from pattern index
     const patternKey = `pattern_conversations:${conversation.context.domain}`;
-    const patternConversations = await this.backend.get(patternKey) || [];
+    const patternConversations = (await this.adapter.get(patternKey)) || [];
     const filtered = patternConversations.filter((cId: string) => cId !== id);
-    await this.backend.save(patternKey, filtered);
+    await this.adapter.save(patternKey, filtered);
   }
 
   /**
@@ -199,7 +258,7 @@ export class ConversationMemoryImpl implements ConversationMemory {
     }
 
     if (query.outcome) {
-      const hasOutcome = conversation.outcomes.some(o => o.type === query.outcome);
+      const hasOutcome = conversation.outcomes.some((o) => o.type === query.outcome);
       if (!hasOutcome) {
         return false;
       }
@@ -218,7 +277,8 @@ export class ConversationMemoryFactory {
    */
   static async createWithSQLite(config: any = {}): Promise<ConversationMemory> {
     const { SQLiteBackend } = await import('../../memory/backends/sqlite.backend.js');
-    const backend = new SQLiteBackend(config);
+    const backend = new SQLiteBackend({ type: 'sqlite', path: config.path || './data', ...config });
+    await backend.initialize();
     return new ConversationMemoryImpl(backend);
   }
 
@@ -227,7 +287,12 @@ export class ConversationMemoryFactory {
    */
   static async createWithJSON(config: any = {}): Promise<ConversationMemory> {
     const { JSONBackend } = await import('../../memory/backends/json.backend.js');
-    const backend = new JSONBackend(config);
+    const backend = new JSONBackend({
+      type: 'json',
+      path: config.basePath || '/tmp/conversations',
+      ...config,
+    });
+    await backend.initialize();
     return new ConversationMemoryImpl(backend);
   }
 
@@ -236,7 +301,12 @@ export class ConversationMemoryFactory {
    */
   static async createWithLanceDB(config: any = {}): Promise<ConversationMemory> {
     const { LanceDBBackend } = await import('../../memory/backends/lancedb.backend.js');
-    const backend = new LanceDBBackend(config);
+    const backend = new LanceDBBackend({
+      type: 'lancedb',
+      path: config.path || './data',
+      ...config,
+    });
+    await backend.initialize();
     return new ConversationMemoryImpl(backend);
   }
 }

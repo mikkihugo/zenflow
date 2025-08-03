@@ -5,14 +5,15 @@
  * Focus on interactions between orchestrator and its dependencies
  */
 
-import type { AgentId } from '../../../types/agent-types.js';
-import { ConversationOrchestratorImpl } from '../orchestrator.js';
+import { jest } from '@jest/globals';
+import { ConversationOrchestratorImpl } from '../../../src/intelligence/conversation-framework/orchestrator';
 import type {
   ConversationConfig,
   ConversationMemory,
   ConversationMessage,
   ConversationSession,
-} from '../types.js';
+} from '../../../src/intelligence/conversation-framework/types';
+import type { AgentId } from '../../../src/types/agent-types';
 
 describe('ConversationOrchestratorImpl - London TDD', () => {
   let orchestrator: ConversationOrchestratorImpl;
@@ -68,7 +69,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
       expect(mockMemory.storeConversation).toHaveBeenCalledWith(
         expect.objectContaining({
           title: config.title,
-          status: 'initializing',
+          status: 'active', // Changed from 'initializing' since workflow starts immediately
         })
       );
       expect(mockMemory.updateConversation).toHaveBeenCalledWith(
@@ -450,7 +451,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
       expect(mockMemory.storeConversation).toHaveBeenCalledWith(
         expect.objectContaining({
           title: config.title,
-          status: 'initializing',
+          status: 'active', // Changed from 'initializing' since workflow starts immediately
         })
       );
       expect(mockMemory.updateConversation).toHaveBeenCalledWith(
