@@ -31,6 +31,8 @@ export * as SPARC from './sparc/index.js';
 
 // Workflow System - All workflow execution and management
 export * as Workflows from './workflows/index.js';
+// Performance Optimization System - All performance optimization functionality
+export * as Optimization from './optimization/index.js';
 
 // =============================================================================
 // INTERFACE SYSTEMS
@@ -305,6 +307,7 @@ export default {
   Integration,
   Bindings,
   Workflows,
+  Optimization,
   Utils,
   Types,
   Config,
