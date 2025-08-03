@@ -46,3 +46,21 @@ export const CORE_TOKENS = {
   Database: createToken<IDatabase>('Database'),
   HttpClient: createToken<IHttpClient>('HttpClient'),
 } as const;
+
+// Memory domain tokens
+export const MEMORY_TOKENS = {
+  Backend: Symbol('MemoryBackend'),
+  Provider: Symbol('MemoryProvider'),
+  ProviderFactory: Symbol('MemoryProviderFactory'),
+  Config: Symbol('MemoryConfig'),
+  Controller: Symbol('MemoryController')
+} as const;
+
+// Database domain tokens
+export const DATABASE_TOKENS = {
+  Adapter: Symbol('DatabaseAdapter'),
+  Provider: Symbol('DatabaseProvider'),
+  ProviderFactory: Symbol('DatabaseProviderFactory'),
+  Config: Symbol('DatabaseConfig'),
+  Controller: Symbol('DatabaseController')
+} as const;

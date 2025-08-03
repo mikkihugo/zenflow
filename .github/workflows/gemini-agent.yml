@@ -1,0 +1,19 @@
+name: Gemini Agent
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  gemini_agent:
+    if: github.event.comment.body.includes('@gemini')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Gemini CLI Action
+        uses: google-gemini/gemini-cli-action@v1
+        with:
+          api-key: ${{ secrets.GEMINI_API_KEY }}
+          prompt: ${{ github.event.comment.body }}
