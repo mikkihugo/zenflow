@@ -35,6 +35,11 @@ architecture:
     - core
     - intelligence
     - workflows
+  document_system:
+    type: "dynamic-database-driven"
+    processor: "src/core/document-driven-system.ts"
+    storage: "memory/database backends (Issue #63)"
+    workflow: "Vision → ADRs → PRDs → Epics → Features → Tasks → Code"
 
 development:
   testing_strategy: "hybrid-tdd"
@@ -105,6 +110,12 @@ validation_rules:
     description: "MCP tools follow established patterns"
     pattern: "src/coordination/mcp/tools/**/*"
     
+  - name: "document_system_usage"
+    description: "Use DocumentDrivenSystem class, not static files"
+    processor: "src/core/document-driven-system.ts"
+    storage: "database backends from Issue #63"
+    workflow: "Vision → ADRs → PRDs → Epics → Features → Tasks → Code"
+    
 performance_benchmarks:
   - name: "coordination_latency"
     target: "<100ms"
@@ -140,6 +151,9 @@ custom_instructions:
     - "Use WASM for performance-critical neural computations"
     - "Maintain hybrid TDD approach (70% London, 30% Classical)"
     - "Respect MCP protocol patterns for tool integration"
+    - "Use DocumentDrivenSystem class for document workflows"
+    - "Store documents in database/memory backends (Issue #63 implementation)"
+    - "NO static docs/ folder structure - use dynamic system"
   
   performance_requirements:
     - "Sub-100ms coordination overhead"

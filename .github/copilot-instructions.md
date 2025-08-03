@@ -5,6 +5,33 @@ Advanced AI development platform with sophisticated agent coordination, neural n
 
 **Mission**: Enable autonomous AI-driven development through comprehensive agent coordination and intelligent tooling
 
+## 📋 Document-Driven Development System
+**IMPORTANT**: This project uses a **dynamic document-driven system**, not static file structures.
+
+### Document Management
+- **System**: `src/core/document-driven-system.ts` - TypeScript-based document processor
+- **Storage**: Documents stored in memory/database backends (SQLite, LanceDB, JSON)
+- **Templates**: Dynamic template generation, not static template files
+- **Workflow**: Vision → ADRs → PRDs → Epics → Features → Tasks → Code
+
+### Document Types & Storage
+```
+DYNAMIC STRUCTURE (managed by TypeScript system):
+docs/01-vision/     ← Strategic vision documents (database-backed)
+docs/02-adrs/       ← Architecture Decision Records (database-backed)
+docs/03-prds/       ← Product Requirements Documents (database-backed)
+docs/04-epics/      ← Epic-level feature sets (database-backed)
+docs/05-features/   ← Individual features (database-backed)
+docs/06-tasks/      ← Implementation tasks (database-backed)
+docs/07-specs/      ← Technical specifications (database-backed)
+```
+
+### Document Processing
+- **Processor**: `DocumentDrivenSystem` class handles all document operations
+- **Metadata**: Extracted and stored in memory/database systems
+- **Workflow**: Automatic progression through document types
+- **Integration**: Seamless integration with agent coordination and swarm systems
+
 ## Architecture
 - **Pattern**: domain-driven
 - **Principles**: SOLID, 
@@ -88,17 +115,25 @@ src/
 
 - Use existing 147 agent types, don't create generic implementations
 
-
 - Follow domain-driven structure in src/
-
 
 - Use WASM for performance-critical neural computations
 
-
 - Maintain hybrid TDD approach (70% London, 30% Classical)
 
-
 - Respect MCP protocol patterns for tool integration
+
+### Document-Driven Development Rules
+
+- **NO static docs folders**: Documents are managed dynamically by `DocumentDrivenSystem`
+
+- **Database-first**: All documents stored in memory/database backends (Issue #63 implementation)
+
+- **Template system**: Use `src/core/document-driven-system.ts` for document generation
+
+- **Workflow automation**: Vision → ADRs → PRDs → Epics → Features → Tasks → Code progression
+
+- **Integration patterns**: Documents integrate with swarm coordination and agent systems
 
 
 ### Performance Requirements
@@ -118,15 +153,21 @@ src/
 ## Build Commands
 ```bash
 npm ci
-
 npm run build
-
 npm test
-
 npm run lint
-
 npm run mcp:start
+```
 
+## Document System Commands
+```bash
+# Document-driven development (dynamic system)
+claude-zen workspace init <project>           # Initialize document workspace
+claude-zen workspace process <doc.md>         # Process vision/ADR/PRD documents  
+claude-zen document create vision <title>     # Create vision document in database
+claude-zen document create adr <title>        # Create ADR in database
+claude-zen document create prd <title>        # Create PRD in database
+claude-zen workflow status                    # Check document workflow progress
 ```
 
 ## Memory System
@@ -146,14 +187,17 @@ json,
 
 - **domain_boundaries**: Ensure coordination code doesn't mix with neural code
 
-
 - **agent_type_usage**: Use existing AgentType union, don't create generic types
-
 
 - **wasm_performance**: Use WASM for computational tasks in neural domain
 
-
 - **testing_strategy**: Follow hybrid TDD approach
+
+- **document_system**: Use `DocumentDrivenSystem` class, not static file structure
+
+- **database_first**: Store documents in memory/database backends from Issue #63
+
+- **workflow_integration**: Documents must integrate with swarm coordination
 
 
 This is a sophisticated, production-grade AI platform. Maintain high standards and leverage the comprehensive systems already in place.
