@@ -26,9 +26,11 @@ export interface IEventBus {
 }
 
 export interface IDatabase {
+  initialize?(): Promise<void>;
   query<T>(sql: string, params?: any[]): Promise<T[]>;
   execute(sql: string, params?: any[]): Promise<void>;
   transaction<T>(fn: (db: IDatabase) => Promise<T>): Promise<T>;
+  shutdown?(): Promise<void>;
 }
 
 export interface IHttpClient {
@@ -53,7 +55,7 @@ export const MEMORY_TOKENS = {
   Provider: Symbol('MemoryProvider'),
   ProviderFactory: Symbol('MemoryProviderFactory'),
   Config: Symbol('MemoryConfig'),
-  Controller: Symbol('MemoryController')
+  Controller: Symbol('MemoryController'),
 } as const;
 
 // Database domain tokens
@@ -62,5 +64,5 @@ export const DATABASE_TOKENS = {
   Provider: Symbol('DatabaseProvider'),
   ProviderFactory: Symbol('DatabaseProviderFactory'),
   Config: Symbol('DatabaseConfig'),
-  Controller: Symbol('DatabaseController')
+  Controller: Symbol('DatabaseController'),
 } as const;

@@ -4,8 +4,7 @@
  * Central export point for Rust/WASM bindings and native integrations
  */
 
-// TypeScript definitions for Rust bindings
-export * from './index.d.ts';
+// TypeScript definitions for Rust bindings - types will be inferred from implementations
 
 // Bindings utilities
 export const BindingsUtils = {

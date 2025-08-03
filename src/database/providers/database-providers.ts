@@ -1,13 +1,13 @@
 /**
  * Database Domain Dependency Injection Providers
  * Implements comprehensive DI patterns for database management
- * 
+ *
  * @file database-providers.ts
  * @description Enhanced database providers with DI integration for Issue #63
  */
 
-import { Injectable, Inject } from '../../di/decorators/injectable.js';
-import { DATABASE_TOKENS, CORE_TOKENS } from '../../di/tokens/core-tokens.js';
+import { Inject, Injectable } from '../../di/decorators/injectable.js';
+import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens.js';
 
 /**
  * Interface for database adapter implementations
@@ -185,7 +185,7 @@ export class DatabaseProviderFactory {
    */
   createAdapter(config: DatabaseConfig): DatabaseAdapter {
     this.logger.info(`Creating database adapter: ${config.type}`);
-    
+
     try {
       switch (config.type) {
         case 'postgresql':
@@ -203,7 +203,9 @@ export class DatabaseProviderFactory {
       }
     } catch (error) {
       this.logger.error(`Failed to create database adapter: ${error}`);
-      throw new Error(`Database adapter creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Database adapter creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 }
@@ -219,7 +221,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
     active: 0,
     idle: 0,
     utilization: 0,
-    averageConnectionTime: 0
+    averageConnectionTime: 0,
   };
 
   constructor(
@@ -229,7 +231,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
 
   async connect(): Promise<void> {
     this.logger.info('Connecting to PostgreSQL database');
-    
+
     try {
       // PostgreSQL connection implementation would go here
       // For now, simulate connection
@@ -238,8 +240,9 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
       this.connectionStats.total = this.config.pool?.max || 10;
       this.connectionStats.active = 1;
       this.connectionStats.idle = this.connectionStats.total - 1;
-      this.connectionStats.utilization = (this.connectionStats.active / this.connectionStats.total) * 100;
-      
+      this.connectionStats.utilization =
+        (this.connectionStats.active / this.connectionStats.total) * 100;
+
       this.logger.info('Successfully connected to PostgreSQL database');
     } catch (error) {
       this.logger.error(`Failed to connect to PostgreSQL: ${error}`);
@@ -249,7 +252,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
 
   async disconnect(): Promise<void> {
     this.logger.info('Disconnecting from PostgreSQL database');
-    
+
     try {
       // PostgreSQL disconnection implementation would go here
       await this.simulateAsync(50);
@@ -257,7 +260,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
       this.connectionStats.active = 0;
       this.connectionStats.idle = 0;
       this.connectionStats.utilization = 0;
-      
+
       this.logger.info('Successfully disconnected from PostgreSQL database');
     } catch (error) {
       this.logger.error(`Failed to disconnect from PostgreSQL: ${error}`);
@@ -268,26 +271,26 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
   async query(sql: string, params?: any[]): Promise<QueryResult> {
     this.logger.debug(`Executing PostgreSQL query: ${sql}`);
     await this.ensureConnected();
-    
+
     const startTime = Date.now();
-    
+
     try {
       // PostgreSQL query implementation would go here
       await this.simulateAsync(10);
-      
+
       const executionTime = Date.now() - startTime;
-      
+
       // Mock result for demonstration
       const result: QueryResult = {
         rows: [{ id: 1, name: 'Sample Data' }],
         rowCount: 1,
         fields: [
           { name: 'id', type: 'integer', nullable: false },
-          { name: 'name', type: 'varchar', nullable: true }
+          { name: 'name', type: 'varchar', nullable: true },
         ],
-        executionTime
+        executionTime,
       };
-      
+
       this.logger.debug(`PostgreSQL query completed in ${executionTime}ms`);
       return result;
     } catch (error) {
@@ -299,22 +302,22 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
   async execute(sql: string, params?: any[]): Promise<ExecuteResult> {
     this.logger.debug(`Executing PostgreSQL command: ${sql}`);
     await this.ensureConnected();
-    
+
     const startTime = Date.now();
-    
+
     try {
       // PostgreSQL execute implementation would go here
       await this.simulateAsync(15);
-      
+
       const executionTime = Date.now() - startTime;
-      
+
       // Mock result for demonstration
       const result: ExecuteResult = {
         affectedRows: 1,
         insertId: sql.toLowerCase().includes('insert') ? 123 : undefined,
-        executionTime
+        executionTime,
       };
-      
+
       this.logger.debug(`PostgreSQL command completed in ${executionTime}ms`);
       return result;
     } catch (error) {
@@ -326,7 +329,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
   async transaction<T>(fn: (tx: TransactionContext) => Promise<T>): Promise<T> {
     this.logger.debug('Starting PostgreSQL transaction');
     await this.ensureConnected();
-    
+
     try {
       // PostgreSQL transaction implementation would go here
       const txContext: TransactionContext = {
@@ -339,12 +342,12 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
         rollback: async () => {
           this.logger.debug('Rolling back PostgreSQL transaction');
           await this.simulateAsync(5);
-        }
+        },
       };
-      
+
       const result = await fn(txContext);
       await txContext.commit();
-      
+
       this.logger.debug('PostgreSQL transaction completed successfully');
       return result;
     } catch (error) {
@@ -359,7 +362,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
       if (!this.connected) {
         return false;
       }
-      
+
       // PostgreSQL health check implementation would go here
       await this.query('SELECT 1 as health_check');
       return true;
@@ -372,7 +375,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
   async getSchema(): Promise<SchemaInfo> {
     this.logger.debug('Getting PostgreSQL schema information');
     await this.ensureConnected();
-    
+
     try {
       // PostgreSQL schema query implementation would go here
       const schemaInfo: SchemaInfo = {
@@ -380,20 +383,38 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
           {
             name: 'users',
             columns: [
-              { name: 'id', type: 'integer', nullable: false, isPrimaryKey: true, isForeignKey: false },
-              { name: 'name', type: 'varchar', nullable: true, isPrimaryKey: false, isForeignKey: false },
-              { name: 'email', type: 'varchar', nullable: false, isPrimaryKey: false, isForeignKey: false }
+              {
+                name: 'id',
+                type: 'integer',
+                nullable: false,
+                isPrimaryKey: true,
+                isForeignKey: false,
+              },
+              {
+                name: 'name',
+                type: 'varchar',
+                nullable: true,
+                isPrimaryKey: false,
+                isForeignKey: false,
+              },
+              {
+                name: 'email',
+                type: 'varchar',
+                nullable: false,
+                isPrimaryKey: false,
+                isForeignKey: false,
+              },
             ],
             indexes: [
               { name: 'users_pkey', columns: ['id'], unique: true },
-              { name: 'users_email_idx', columns: ['email'], unique: true }
-            ]
-          }
+              { name: 'users_email_idx', columns: ['email'], unique: true },
+            ],
+          },
         ],
         views: [],
-        version: '13.0'
+        version: '13.0',
       };
-      
+
       return schemaInfo;
     } catch (error) {
       this.logger.error(`Failed to get PostgreSQL schema: ${error}`);
@@ -412,7 +433,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
   }
 
   private async simulateAsync(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 
@@ -427,7 +448,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
     active: 0,
     idle: 1,
     utilization: 0,
-    averageConnectionTime: 0
+    averageConnectionTime: 0,
   };
 
   constructor(
@@ -437,7 +458,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
 
   async connect(): Promise<void> {
     this.logger.info(`Connecting to SQLite database: ${this.config.database || ':memory:'}`);
-    
+
     try {
       // SQLite connection implementation would go here
       await this.simulateAsync(50);
@@ -445,7 +466,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
       this.connectionStats.active = 1;
       this.connectionStats.idle = 0;
       this.connectionStats.utilization = 100;
-      
+
       this.logger.info('Successfully connected to SQLite database');
     } catch (error) {
       this.logger.error(`Failed to connect to SQLite: ${error}`);
@@ -455,7 +476,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
 
   async disconnect(): Promise<void> {
     this.logger.info('Disconnecting from SQLite database');
-    
+
     try {
       // SQLite disconnection implementation would go here
       await this.simulateAsync(25);
@@ -463,7 +484,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
       this.connectionStats.active = 0;
       this.connectionStats.idle = 1;
       this.connectionStats.utilization = 0;
-      
+
       this.logger.info('Successfully disconnected from SQLite database');
     } catch (error) {
       this.logger.error(`Failed to disconnect from SQLite: ${error}`);
@@ -474,25 +495,25 @@ export class SQLiteAdapter implements DatabaseAdapter {
   async query(sql: string, params?: any[]): Promise<QueryResult> {
     this.logger.debug(`Executing SQLite query: ${sql}`);
     await this.ensureConnected();
-    
+
     const startTime = Date.now();
-    
+
     try {
       // SQLite query implementation would go here
       await this.simulateAsync(5);
-      
+
       const executionTime = Date.now() - startTime;
-      
+
       const result: QueryResult = {
         rows: [{ id: 1, data: 'SQLite Sample' }],
         rowCount: 1,
         fields: [
           { name: 'id', type: 'INTEGER', nullable: false },
-          { name: 'data', type: 'TEXT', nullable: true }
+          { name: 'data', type: 'TEXT', nullable: true },
         ],
-        executionTime
+        executionTime,
       };
-      
+
       this.logger.debug(`SQLite query completed in ${executionTime}ms`);
       return result;
     } catch (error) {
@@ -504,21 +525,21 @@ export class SQLiteAdapter implements DatabaseAdapter {
   async execute(sql: string, params?: any[]): Promise<ExecuteResult> {
     this.logger.debug(`Executing SQLite command: ${sql}`);
     await this.ensureConnected();
-    
+
     const startTime = Date.now();
-    
+
     try {
       // SQLite execute implementation would go here
       await this.simulateAsync(8);
-      
+
       const executionTime = Date.now() - startTime;
-      
+
       const result: ExecuteResult = {
         affectedRows: 1,
         insertId: sql.toLowerCase().includes('insert') ? 456 : undefined,
-        executionTime
+        executionTime,
       };
-      
+
       this.logger.debug(`SQLite command completed in ${executionTime}ms`);
       return result;
     } catch (error) {
@@ -530,7 +551,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
   async transaction<T>(fn: (tx: TransactionContext) => Promise<T>): Promise<T> {
     this.logger.debug('Starting SQLite transaction');
     await this.ensureConnected();
-    
+
     try {
       const txContext: TransactionContext = {
         query: async (sql: string, params?: any[]) => this.query(sql, params),
@@ -542,12 +563,12 @@ export class SQLiteAdapter implements DatabaseAdapter {
         rollback: async () => {
           this.logger.debug('Rolling back SQLite transaction');
           await this.simulateAsync(3);
-        }
+        },
       };
-      
+
       const result = await fn(txContext);
       await txContext.commit();
-      
+
       this.logger.debug('SQLite transaction completed successfully');
       return result;
     } catch (error) {
@@ -561,7 +582,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
       if (!this.connected) {
         return false;
       }
-      
+
       await this.query('SELECT 1 as health_check');
       return true;
     } catch (error) {
@@ -573,25 +594,49 @@ export class SQLiteAdapter implements DatabaseAdapter {
   async getSchema(): Promise<SchemaInfo> {
     this.logger.debug('Getting SQLite schema information');
     await this.ensureConnected();
-    
+
     try {
       const schemaInfo: SchemaInfo = {
         tables: [
           {
             name: 'sqlite_master',
             columns: [
-              { name: 'type', type: 'text', nullable: true, isPrimaryKey: false, isForeignKey: false },
-              { name: 'name', type: 'text', nullable: true, isPrimaryKey: false, isForeignKey: false },
-              { name: 'tbl_name', type: 'text', nullable: true, isPrimaryKey: false, isForeignKey: false },
-              { name: 'sql', type: 'text', nullable: true, isPrimaryKey: false, isForeignKey: false }
+              {
+                name: 'type',
+                type: 'text',
+                nullable: true,
+                isPrimaryKey: false,
+                isForeignKey: false,
+              },
+              {
+                name: 'name',
+                type: 'text',
+                nullable: true,
+                isPrimaryKey: false,
+                isForeignKey: false,
+              },
+              {
+                name: 'tbl_name',
+                type: 'text',
+                nullable: true,
+                isPrimaryKey: false,
+                isForeignKey: false,
+              },
+              {
+                name: 'sql',
+                type: 'text',
+                nullable: true,
+                isPrimaryKey: false,
+                isForeignKey: false,
+              },
             ],
-            indexes: []
-          }
+            indexes: [],
+          },
         ],
         views: [],
-        version: '3.0'
+        version: '3.0',
       };
-      
+
       return schemaInfo;
     } catch (error) {
       this.logger.error(`Failed to get SQLite schema: ${error}`);
@@ -610,7 +655,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
   }
 
   private async simulateAsync(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 
@@ -625,7 +670,7 @@ export class KuzuAdapter implements DatabaseAdapter {
     active: 0,
     idle: 1,
     utilization: 0,
-    averageConnectionTime: 0
+    averageConnectionTime: 0,
   };
 
   constructor(
@@ -635,7 +680,7 @@ export class KuzuAdapter implements DatabaseAdapter {
 
   async connect(): Promise<void> {
     this.logger.info('Connecting to Kuzu graph database');
-    
+
     try {
       // Kuzu connection implementation would go here
       await this.simulateAsync(75);
@@ -643,7 +688,7 @@ export class KuzuAdapter implements DatabaseAdapter {
       this.connectionStats.active = 1;
       this.connectionStats.idle = 0;
       this.connectionStats.utilization = 100;
-      
+
       this.logger.info('Successfully connected to Kuzu database');
     } catch (error) {
       this.logger.error(`Failed to connect to Kuzu: ${error}`);
@@ -653,7 +698,7 @@ export class KuzuAdapter implements DatabaseAdapter {
 
   async disconnect(): Promise<void> {
     this.logger.info('Disconnecting from Kuzu database');
-    
+
     try {
       // Kuzu disconnection implementation would go here
       await this.simulateAsync(25);
@@ -661,7 +706,7 @@ export class KuzuAdapter implements DatabaseAdapter {
       this.connectionStats.active = 0;
       this.connectionStats.idle = 1;
       this.connectionStats.utilization = 0;
-      
+
       this.logger.info('Successfully disconnected from Kuzu database');
     } catch (error) {
       this.logger.error(`Failed to disconnect from Kuzu: ${error}`);
@@ -672,24 +717,22 @@ export class KuzuAdapter implements DatabaseAdapter {
   async query(sql: string, params?: any[]): Promise<QueryResult> {
     this.logger.debug(`Executing Kuzu query: ${sql}`);
     await this.ensureConnected();
-    
+
     const startTime = Date.now();
-    
+
     try {
       // Kuzu query implementation would go here
       await this.simulateAsync(20);
-      
+
       const executionTime = Date.now() - startTime;
-      
+
       const result: QueryResult = {
         rows: [{ node: { id: 1, properties: { name: 'Graph Node' } } }],
         rowCount: 1,
-        fields: [
-          { name: 'node', type: 'NODE', nullable: false }
-        ],
-        executionTime
+        fields: [{ name: 'node', type: 'NODE', nullable: false }],
+        executionTime,
       };
-      
+
       this.logger.debug(`Kuzu query completed in ${executionTime}ms`);
       return result;
     } catch (error) {
@@ -701,20 +744,20 @@ export class KuzuAdapter implements DatabaseAdapter {
   async execute(sql: string, params?: any[]): Promise<ExecuteResult> {
     this.logger.debug(`Executing Kuzu command: ${sql}`);
     await this.ensureConnected();
-    
+
     const startTime = Date.now();
-    
+
     try {
       // Kuzu execute implementation would go here
       await this.simulateAsync(25);
-      
+
       const executionTime = Date.now() - startTime;
-      
+
       const result: ExecuteResult = {
         affectedRows: 1,
-        executionTime
+        executionTime,
       };
-      
+
       this.logger.debug(`Kuzu command completed in ${executionTime}ms`);
       return result;
     } catch (error) {
@@ -726,7 +769,7 @@ export class KuzuAdapter implements DatabaseAdapter {
   async transaction<T>(fn: (tx: TransactionContext) => Promise<T>): Promise<T> {
     this.logger.debug('Starting Kuzu transaction');
     await this.ensureConnected();
-    
+
     try {
       const txContext: TransactionContext = {
         query: async (sql: string, params?: any[]) => this.query(sql, params),
@@ -738,12 +781,12 @@ export class KuzuAdapter implements DatabaseAdapter {
         rollback: async () => {
           this.logger.debug('Rolling back Kuzu transaction');
           await this.simulateAsync(10);
-        }
+        },
       };
-      
+
       const result = await fn(txContext);
       await txContext.commit();
-      
+
       this.logger.debug('Kuzu transaction completed successfully');
       return result;
     } catch (error) {
@@ -757,7 +800,7 @@ export class KuzuAdapter implements DatabaseAdapter {
       if (!this.connected) {
         return false;
       }
-      
+
       await this.query('MATCH (n) RETURN count(n) LIMIT 1');
       return true;
     } catch (error) {
@@ -769,23 +812,35 @@ export class KuzuAdapter implements DatabaseAdapter {
   async getSchema(): Promise<SchemaInfo> {
     this.logger.debug('Getting Kuzu schema information');
     await this.ensureConnected();
-    
+
     try {
       const schemaInfo: SchemaInfo = {
         tables: [
           {
             name: 'nodes',
             columns: [
-              { name: 'id', type: 'INT64', nullable: false, isPrimaryKey: true, isForeignKey: false },
-              { name: 'label', type: 'STRING', nullable: true, isPrimaryKey: false, isForeignKey: false }
+              {
+                name: 'id',
+                type: 'INT64',
+                nullable: false,
+                isPrimaryKey: true,
+                isForeignKey: false,
+              },
+              {
+                name: 'label',
+                type: 'STRING',
+                nullable: true,
+                isPrimaryKey: false,
+                isForeignKey: false,
+              },
             ],
-            indexes: []
-          }
+            indexes: [],
+          },
         ],
         views: [],
-        version: '0.4.0'
+        version: '0.4.0',
       };
-      
+
       return schemaInfo;
     } catch (error) {
       this.logger.error(`Failed to get Kuzu schema: ${error}`);
@@ -804,7 +859,7 @@ export class KuzuAdapter implements DatabaseAdapter {
   }
 
   private async simulateAsync(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 
@@ -819,7 +874,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
     active: 0,
     idle: 1,
     utilization: 0,
-    averageConnectionTime: 0
+    averageConnectionTime: 0,
   };
 
   constructor(
@@ -829,7 +884,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
 
   async connect(): Promise<void> {
     this.logger.info('Connecting to LanceDB vector database');
-    
+
     try {
       // LanceDB connection implementation would go here
       await this.simulateAsync(100);
@@ -837,7 +892,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
       this.connectionStats.active = 1;
       this.connectionStats.idle = 0;
       this.connectionStats.utilization = 100;
-      
+
       this.logger.info('Successfully connected to LanceDB database');
     } catch (error) {
       this.logger.error(`Failed to connect to LanceDB: ${error}`);
@@ -847,7 +902,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
 
   async disconnect(): Promise<void> {
     this.logger.info('Disconnecting from LanceDB database');
-    
+
     try {
       // LanceDB disconnection implementation would go here
       await this.simulateAsync(30);
@@ -855,7 +910,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
       this.connectionStats.active = 0;
       this.connectionStats.idle = 1;
       this.connectionStats.utilization = 0;
-      
+
       this.logger.info('Successfully disconnected from LanceDB database');
     } catch (error) {
       this.logger.error(`Failed to disconnect from LanceDB: ${error}`);
@@ -866,26 +921,26 @@ export class LanceDBAdapter implements DatabaseAdapter {
   async query(sql: string, params?: any[]): Promise<QueryResult> {
     this.logger.debug(`Executing LanceDB query: ${sql}`);
     await this.ensureConnected();
-    
+
     const startTime = Date.now();
-    
+
     try {
       // LanceDB query implementation would go here
       await this.simulateAsync(30);
-      
+
       const executionTime = Date.now() - startTime;
-      
+
       const result: QueryResult = {
         rows: [{ id: 1, vector: [0.1, 0.2, 0.3], metadata: { type: 'document' } }],
         rowCount: 1,
         fields: [
           { name: 'id', type: 'INT64', nullable: false },
           { name: 'vector', type: 'VECTOR', nullable: false },
-          { name: 'metadata', type: 'JSON', nullable: true }
+          { name: 'metadata', type: 'JSON', nullable: true },
         ],
-        executionTime
+        executionTime,
       };
-      
+
       this.logger.debug(`LanceDB query completed in ${executionTime}ms`);
       return result;
     } catch (error) {
@@ -897,20 +952,20 @@ export class LanceDBAdapter implements DatabaseAdapter {
   async execute(sql: string, params?: any[]): Promise<ExecuteResult> {
     this.logger.debug(`Executing LanceDB command: ${sql}`);
     await this.ensureConnected();
-    
+
     const startTime = Date.now();
-    
+
     try {
       // LanceDB execute implementation would go here
       await this.simulateAsync(40);
-      
+
       const executionTime = Date.now() - startTime;
-      
+
       const result: ExecuteResult = {
         affectedRows: 1,
-        executionTime
+        executionTime,
       };
-      
+
       this.logger.debug(`LanceDB command completed in ${executionTime}ms`);
       return result;
     } catch (error) {
@@ -922,7 +977,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
   async transaction<T>(fn: (tx: TransactionContext) => Promise<T>): Promise<T> {
     this.logger.debug('Starting LanceDB transaction');
     await this.ensureConnected();
-    
+
     try {
       const txContext: TransactionContext = {
         query: async (sql: string, params?: any[]) => this.query(sql, params),
@@ -934,12 +989,12 @@ export class LanceDBAdapter implements DatabaseAdapter {
         rollback: async () => {
           this.logger.debug('Rolling back LanceDB transaction');
           await this.simulateAsync(15);
-        }
+        },
       };
-      
+
       const result = await fn(txContext);
       await txContext.commit();
-      
+
       this.logger.debug('LanceDB transaction completed successfully');
       return result;
     } catch (error) {
@@ -953,7 +1008,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
       if (!this.connected) {
         return false;
       }
-      
+
       await this.query('SELECT count(*) FROM vectors LIMIT 1');
       return true;
     } catch (error) {
@@ -965,26 +1020,42 @@ export class LanceDBAdapter implements DatabaseAdapter {
   async getSchema(): Promise<SchemaInfo> {
     this.logger.debug('Getting LanceDB schema information');
     await this.ensureConnected();
-    
+
     try {
       const schemaInfo: SchemaInfo = {
         tables: [
           {
             name: 'vectors',
             columns: [
-              { name: 'id', type: 'INT64', nullable: false, isPrimaryKey: true, isForeignKey: false },
-              { name: 'vector', type: 'VECTOR(384)', nullable: false, isPrimaryKey: false, isForeignKey: false },
-              { name: 'metadata', type: 'JSON', nullable: true, isPrimaryKey: false, isForeignKey: false }
+              {
+                name: 'id',
+                type: 'INT64',
+                nullable: false,
+                isPrimaryKey: true,
+                isForeignKey: false,
+              },
+              {
+                name: 'vector',
+                type: 'VECTOR(384)',
+                nullable: false,
+                isPrimaryKey: false,
+                isForeignKey: false,
+              },
+              {
+                name: 'metadata',
+                type: 'JSON',
+                nullable: true,
+                isPrimaryKey: false,
+                isForeignKey: false,
+              },
             ],
-            indexes: [
-              { name: 'vector_index', columns: ['vector'], unique: false }
-            ]
-          }
+            indexes: [{ name: 'vector_index', columns: ['vector'], unique: false }],
+          },
         ],
         views: [],
-        version: '0.4.0'
+        version: '0.4.0',
       };
-      
+
       return schemaInfo;
     } catch (error) {
       this.logger.error(`Failed to get LanceDB schema: ${error}`);
@@ -1003,7 +1074,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
   }
 
   private async simulateAsync(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 
@@ -1018,7 +1089,7 @@ export class MySQLAdapter implements DatabaseAdapter {
     active: 0,
     idle: 0,
     utilization: 0,
-    averageConnectionTime: 0
+    averageConnectionTime: 0,
   };
 
   constructor(
@@ -1028,7 +1099,7 @@ export class MySQLAdapter implements DatabaseAdapter {
 
   async connect(): Promise<void> {
     this.logger.info('Connecting to MySQL database');
-    
+
     try {
       // MySQL connection implementation would go here
       await this.simulateAsync(80);
@@ -1036,8 +1107,9 @@ export class MySQLAdapter implements DatabaseAdapter {
       this.connectionStats.total = this.config.pool?.max || 5;
       this.connectionStats.active = 1;
       this.connectionStats.idle = this.connectionStats.total - 1;
-      this.connectionStats.utilization = (this.connectionStats.active / this.connectionStats.total) * 100;
-      
+      this.connectionStats.utilization =
+        (this.connectionStats.active / this.connectionStats.total) * 100;
+
       this.logger.info('Successfully connected to MySQL database');
     } catch (error) {
       this.logger.error(`Failed to connect to MySQL: ${error}`);
@@ -1047,7 +1119,7 @@ export class MySQLAdapter implements DatabaseAdapter {
 
   async disconnect(): Promise<void> {
     this.logger.info('Disconnecting from MySQL database');
-    
+
     try {
       // MySQL disconnection implementation would go here
       await this.simulateAsync(40);
@@ -1055,7 +1127,7 @@ export class MySQLAdapter implements DatabaseAdapter {
       this.connectionStats.active = 0;
       this.connectionStats.idle = 0;
       this.connectionStats.utilization = 0;
-      
+
       this.logger.info('Successfully disconnected from MySQL database');
     } catch (error) {
       this.logger.error(`Failed to disconnect from MySQL: ${error}`);
@@ -1066,26 +1138,26 @@ export class MySQLAdapter implements DatabaseAdapter {
   async query(sql: string, params?: any[]): Promise<QueryResult> {
     this.logger.debug(`Executing MySQL query: ${sql}`);
     await this.ensureConnected();
-    
+
     const startTime = Date.now();
-    
+
     try {
       // MySQL query implementation would go here
       await this.simulateAsync(12);
-      
+
       const executionTime = Date.now() - startTime;
-      
+
       const result: QueryResult = {
         rows: [{ id: 1, name: 'MySQL Sample', created_at: new Date() }],
         rowCount: 1,
         fields: [
           { name: 'id', type: 'int', nullable: false },
           { name: 'name', type: 'varchar', nullable: true },
-          { name: 'created_at', type: 'datetime', nullable: false }
+          { name: 'created_at', type: 'datetime', nullable: false },
         ],
-        executionTime
+        executionTime,
       };
-      
+
       this.logger.debug(`MySQL query completed in ${executionTime}ms`);
       return result;
     } catch (error) {
@@ -1097,21 +1169,21 @@ export class MySQLAdapter implements DatabaseAdapter {
   async execute(sql: string, params?: any[]): Promise<ExecuteResult> {
     this.logger.debug(`Executing MySQL command: ${sql}`);
     await this.ensureConnected();
-    
+
     const startTime = Date.now();
-    
+
     try {
       // MySQL execute implementation would go here
       await this.simulateAsync(18);
-      
+
       const executionTime = Date.now() - startTime;
-      
+
       const result: ExecuteResult = {
         affectedRows: 1,
         insertId: sql.toLowerCase().includes('insert') ? 789 : undefined,
-        executionTime
+        executionTime,
       };
-      
+
       this.logger.debug(`MySQL command completed in ${executionTime}ms`);
       return result;
     } catch (error) {
@@ -1123,7 +1195,7 @@ export class MySQLAdapter implements DatabaseAdapter {
   async transaction<T>(fn: (tx: TransactionContext) => Promise<T>): Promise<T> {
     this.logger.debug('Starting MySQL transaction');
     await this.ensureConnected();
-    
+
     try {
       const txContext: TransactionContext = {
         query: async (sql: string, params?: any[]) => this.query(sql, params),
@@ -1135,12 +1207,12 @@ export class MySQLAdapter implements DatabaseAdapter {
         rollback: async () => {
           this.logger.debug('Rolling back MySQL transaction');
           await this.simulateAsync(8);
-        }
+        },
       };
-      
+
       const result = await fn(txContext);
       await txContext.commit();
-      
+
       this.logger.debug('MySQL transaction completed successfully');
       return result;
     } catch (error) {
@@ -1154,7 +1226,7 @@ export class MySQLAdapter implements DatabaseAdapter {
       if (!this.connected) {
         return false;
       }
-      
+
       await this.query('SELECT 1 as health_check');
       return true;
     } catch (error) {
@@ -1166,7 +1238,7 @@ export class MySQLAdapter implements DatabaseAdapter {
   async getSchema(): Promise<SchemaInfo> {
     this.logger.debug('Getting MySQL schema information');
     await this.ensureConnected();
-    
+
     try {
       const schemaInfo: SchemaInfo = {
         tables: [
@@ -1174,21 +1246,39 @@ export class MySQLAdapter implements DatabaseAdapter {
             name: 'users',
             columns: [
               { name: 'id', type: 'int', nullable: false, isPrimaryKey: true, isForeignKey: false },
-              { name: 'username', type: 'varchar', nullable: false, isPrimaryKey: false, isForeignKey: false },
-              { name: 'email', type: 'varchar', nullable: false, isPrimaryKey: false, isForeignKey: false },
-              { name: 'created_at', type: 'datetime', nullable: false, isPrimaryKey: false, isForeignKey: false }
+              {
+                name: 'username',
+                type: 'varchar',
+                nullable: false,
+                isPrimaryKey: false,
+                isForeignKey: false,
+              },
+              {
+                name: 'email',
+                type: 'varchar',
+                nullable: false,
+                isPrimaryKey: false,
+                isForeignKey: false,
+              },
+              {
+                name: 'created_at',
+                type: 'datetime',
+                nullable: false,
+                isPrimaryKey: false,
+                isForeignKey: false,
+              },
             ],
             indexes: [
               { name: 'PRIMARY', columns: ['id'], unique: true },
               { name: 'users_email_unique', columns: ['email'], unique: true },
-              { name: 'users_username_idx', columns: ['username'], unique: false }
-            ]
-          }
+              { name: 'users_username_idx', columns: ['username'], unique: false },
+            ],
+          },
         ],
         views: [],
-        version: '8.0'
+        version: '8.0',
       };
-      
+
       return schemaInfo;
     } catch (error) {
       this.logger.error(`Failed to get MySQL schema: ${error}`);
@@ -1207,7 +1297,7 @@ export class MySQLAdapter implements DatabaseAdapter {
   }
 
   private async simulateAsync(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 

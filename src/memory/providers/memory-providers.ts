@@ -1,13 +1,13 @@
 /**
  * Memory Domain Dependency Injection Providers
  * Implements comprehensive DI patterns for memory management
- * 
+ *
  * @file memory-providers.ts
  * @description Enhanced memory providers with DI integration for Issue #63
  */
 
-import { Injectable, Inject } from '../../di/decorators/injectable.js';
-import { MEMORY_TOKENS, CORE_TOKENS } from '../../di/tokens/core-tokens.js';
+import { Inject, Injectable } from '../../di/decorators/injectable.js';
+import { CORE_TOKENS, MEMORY_TOKENS } from '../../di/tokens/core-tokens.js';
 
 /**
  * Interface for memory backend implementations
@@ -61,7 +61,7 @@ export class MemoryProviderFactory {
    */
   createProvider(config: MemoryConfig): MemoryBackend {
     this.logger.info(`Creating memory provider: ${config.type}`);
-    
+
     try {
       switch (config.type) {
         case 'sqlite':
@@ -76,7 +76,9 @@ export class MemoryProviderFactory {
       }
     } catch (error) {
       this.logger.error(`Failed to create memory provider: ${error}`);
-      throw new Error(`Memory provider creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Memory provider creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 }
@@ -96,7 +98,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
   async store(key: string, value: any): Promise<void> {
     this.logger.debug(`Storing key: ${key} in SQLite backend`);
     await this.ensureInitialized();
-    
+
     try {
       const serializedValue = JSON.stringify(value);
       // SQLite implementation would go here
@@ -110,7 +112,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
   async retrieve(key: string): Promise<any> {
     this.logger.debug(`Retrieving key: ${key} from SQLite backend`);
     await this.ensureInitialized();
-    
+
     try {
       // SQLite implementation would go here
       return null; // Placeholder
@@ -123,7 +125,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
   async delete(key: string): Promise<void> {
     this.logger.debug(`Deleting key: ${key} from SQLite backend`);
     await this.ensureInitialized();
-    
+
     try {
       // SQLite implementation would go here
       this.logger.debug(`Successfully deleted key: ${key}`);
@@ -136,7 +138,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
   async clear(): Promise<void> {
     this.logger.info('Clearing all data from SQLite backend');
     await this.ensureInitialized();
-    
+
     try {
       // SQLite implementation would go here
       this.logger.info('Successfully cleared all data');
@@ -148,7 +150,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
 
   async size(): Promise<number> {
     await this.ensureInitialized();
-    
+
     try {
       // SQLite implementation would go here
       return 0; // Placeholder
@@ -171,7 +173,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
 
   private async ensureInitialized(): Promise<void> {
     if (this.initialized) return;
-    
+
     try {
       // SQLite initialization would go here
       this.initialized = true;
@@ -198,7 +200,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
   async store(key: string, value: any): Promise<void> {
     this.logger.debug(`Storing key: ${key} in LanceDB backend`);
     await this.ensureInitialized();
-    
+
     try {
       // LanceDB implementation would go here
       this.logger.debug(`Successfully stored key: ${key}`);
@@ -211,7 +213,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
   async retrieve(key: string): Promise<any> {
     this.logger.debug(`Retrieving key: ${key} from LanceDB backend`);
     await this.ensureInitialized();
-    
+
     try {
       // LanceDB implementation would go here
       return null; // Placeholder
@@ -224,7 +226,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
   async delete(key: string): Promise<void> {
     this.logger.debug(`Deleting key: ${key} from LanceDB backend`);
     await this.ensureInitialized();
-    
+
     try {
       // LanceDB implementation would go here
       this.logger.debug(`Successfully deleted key: ${key}`);
@@ -237,7 +239,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
   async clear(): Promise<void> {
     this.logger.info('Clearing all data from LanceDB backend');
     await this.ensureInitialized();
-    
+
     try {
       // LanceDB implementation would go here
       this.logger.info('Successfully cleared all data');
@@ -249,7 +251,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
 
   async size(): Promise<number> {
     await this.ensureInitialized();
-    
+
     try {
       // LanceDB implementation would go here
       return 0; // Placeholder
@@ -272,7 +274,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
 
   private async ensureInitialized(): Promise<void> {
     if (this.initialized) return;
-    
+
     try {
       // LanceDB initialization would go here
       this.initialized = true;
@@ -300,7 +302,7 @@ export class JsonMemoryBackend implements MemoryBackend {
   async store(key: string, value: any): Promise<void> {
     this.logger.debug(`Storing key: ${key} in JSON backend`);
     await this.ensureInitialized();
-    
+
     try {
       this.data.set(key, value);
       await this.persistToFile();
@@ -314,7 +316,7 @@ export class JsonMemoryBackend implements MemoryBackend {
   async retrieve(key: string): Promise<any> {
     this.logger.debug(`Retrieving key: ${key} from JSON backend`);
     await this.ensureInitialized();
-    
+
     try {
       return this.data.get(key);
     } catch (error) {
@@ -326,7 +328,7 @@ export class JsonMemoryBackend implements MemoryBackend {
   async delete(key: string): Promise<void> {
     this.logger.debug(`Deleting key: ${key} from JSON backend`);
     await this.ensureInitialized();
-    
+
     try {
       this.data.delete(key);
       await this.persistToFile();
@@ -340,7 +342,7 @@ export class JsonMemoryBackend implements MemoryBackend {
   async clear(): Promise<void> {
     this.logger.info('Clearing all data from JSON backend');
     await this.ensureInitialized();
-    
+
     try {
       this.data.clear();
       await this.persistToFile();
@@ -368,7 +370,7 @@ export class JsonMemoryBackend implements MemoryBackend {
 
   private async ensureInitialized(): Promise<void> {
     if (this.initialized) return;
-    
+
     try {
       await this.loadFromFile();
       this.initialized = true;
@@ -410,13 +412,13 @@ export class InMemoryBackend implements MemoryBackend {
 
   async store(key: string, value: any): Promise<void> {
     this.logger.debug(`Storing key: ${key} in memory backend`);
-    
+
     try {
       // Check size limits
       if (this.data.size >= this.maxSize && !this.data.has(key)) {
         throw new Error(`Memory limit exceeded. Max size: ${this.maxSize}`);
       }
-      
+
       this.data.set(key, value);
       this.logger.debug(`Successfully stored key: ${key}`);
     } catch (error) {
@@ -427,7 +429,7 @@ export class InMemoryBackend implements MemoryBackend {
 
   async retrieve(key: string): Promise<any> {
     this.logger.debug(`Retrieving key: ${key} from memory backend`);
-    
+
     try {
       return this.data.get(key);
     } catch (error) {
@@ -438,7 +440,7 @@ export class InMemoryBackend implements MemoryBackend {
 
   async delete(key: string): Promise<void> {
     this.logger.debug(`Deleting key: ${key} from memory backend`);
-    
+
     try {
       const deleted = this.data.delete(key);
       if (deleted) {
@@ -454,7 +456,7 @@ export class InMemoryBackend implements MemoryBackend {
 
   async clear(): Promise<void> {
     this.logger.info('Clearing all data from memory backend');
-    
+
     try {
       this.data.clear();
       this.logger.info('Successfully cleared all data');

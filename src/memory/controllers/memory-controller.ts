@@ -1,14 +1,18 @@
 /**
  * Memory Domain REST API Controller
  * Provides comprehensive REST endpoints for memory management
- * 
+ *
  * @file memory-controller.ts
  * @description Enhanced memory controller with DI integration for Issue #63
  */
 
-import { Injectable, Inject } from '../../di/decorators/injectable.js';
-import { MEMORY_TOKENS, CORE_TOKENS } from '../../di/tokens/core-tokens.js';
-import { MemoryProviderFactory, MemoryBackend, MemoryConfig } from '../providers/memory-providers.js';
+import { Inject, Injectable } from '../../di/decorators/injectable.js';
+import { CORE_TOKENS, MEMORY_TOKENS } from '../../di/tokens/core-tokens.js';
+import type {
+  MemoryBackend,
+  MemoryConfig,
+  MemoryProviderFactory,
+} from '../providers/memory-providers.js';
 
 /**
  * Request interface for memory operations
@@ -121,7 +125,7 @@ export class MemoryController {
     operationCount: 0,
     totalResponseTime: 0,
     errorCount: 0,
-    startTime: Date.now()
+    startTime: Date.now(),
   };
 
   constructor(
@@ -138,18 +142,15 @@ export class MemoryController {
    */
   async getMemoryStatus(): Promise<MemoryResponse> {
     const startTime = Date.now();
-    
+
     try {
       this.logger.debug('Getting memory system status');
-      
-      const [size, isHealthy] = await Promise.all([
-        this.backend.size(),
-        this.backend.health()
-      ]);
-      
+
+      const [size, isHealthy] = await Promise.all([this.backend.size(), this.backend.health()]);
+
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
-      
+
       return {
         success: true,
         data: {
@@ -161,21 +162,21 @@ export class MemoryController {
             type: this.config.type,
             maxSize: this.config.maxSize || -1,
             ttl: this.config.ttl || 0,
-            compression: this.config.compression || false
-          }
+            compression: this.config.compression || false,
+          },
         },
         metadata: {
           size,
           timestamp: Date.now(),
           executionTime,
-          backend: this.config.type
-        }
+          backend: this.config.type,
+        },
       };
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
       this.logger.error(`Failed to get memory status: ${error}`);
-      
+
       return {
         success: false,
         error: `Failed to get memory status: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -183,8 +184,8 @@ export class MemoryController {
           size: 0,
           timestamp: Date.now(),
           executionTime,
-          backend: this.config.type
-        }
+          backend: this.config.type,
+        },
       };
     }
   }
@@ -195,49 +196,49 @@ export class MemoryController {
    */
   async storeMemory(request: MemoryRequest): Promise<MemoryResponse> {
     const startTime = Date.now();
-    
+
     try {
       this.logger.debug(`Storing memory key: ${request.key}`);
-      
+
       if (!request.key) {
         throw new Error('Key is required for store operation');
       }
-      
+
       if (request.value === undefined) {
         throw new Error('Value is required for store operation');
       }
-      
+
       // Process value with options (TTL, compression, etc.)
       const processedValue = this.processValueForStorage(request.value, request.options);
-      
+
       await this.backend.store(request.key, processedValue);
       const size = await this.backend.size();
-      
+
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
-      
+
       this.logger.debug(`Successfully stored key: ${request.key}`);
-      
+
       return {
         success: true,
         data: {
           key: request.key,
           stored: true,
           compressed: request.options?.compress || false,
-          ttl: request.options?.ttl || 0
+          ttl: request.options?.ttl || 0,
         },
         metadata: {
           size,
           timestamp: Date.now(),
           executionTime,
-          backend: this.config.type
-        }
+          backend: this.config.type,
+        },
       };
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
       this.logger.error(`Failed to store memory key ${request.key}: ${error}`);
-      
+
       return {
         success: false,
         error: `Failed to store memory: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -245,8 +246,8 @@ export class MemoryController {
           size: 0,
           timestamp: Date.now(),
           executionTime,
-          backend: this.config.type
-        }
+          backend: this.config.type,
+        },
       };
     }
   }
@@ -257,23 +258,23 @@ export class MemoryController {
    */
   async retrieveMemory(key: string): Promise<MemoryResponse> {
     const startTime = Date.now();
-    
+
     try {
       this.logger.debug(`Retrieving memory key: ${key}`);
-      
+
       if (!key) {
         throw new Error('Key is required for retrieve operation');
       }
-      
+
       const rawValue = await this.backend.retrieve(key);
       const processedValue = this.processValueFromStorage(rawValue);
       const size = await this.backend.size();
-      
+
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
-      
+
       this.logger.debug(`Successfully retrieved key: ${key}`);
-      
+
       return {
         success: true,
         data: {
@@ -281,20 +282,20 @@ export class MemoryController {
           value: processedValue?.value,
           exists: rawValue !== undefined,
           metadata: processedValue?.metadata || {},
-          retrieved: true
+          retrieved: true,
         },
         metadata: {
           size,
           timestamp: Date.now(),
           executionTime,
-          backend: this.config.type
-        }
+          backend: this.config.type,
+        },
       };
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
       this.logger.error(`Failed to retrieve memory key ${key}: ${error}`);
-      
+
       return {
         success: false,
         error: `Failed to retrieve memory: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -302,8 +303,8 @@ export class MemoryController {
           size: 0,
           timestamp: Date.now(),
           executionTime,
-          backend: this.config.type
-        }
+          backend: this.config.type,
+        },
       };
     }
   }
@@ -314,40 +315,40 @@ export class MemoryController {
    */
   async deleteMemory(key: string): Promise<MemoryResponse> {
     const startTime = Date.now();
-    
+
     try {
       this.logger.debug(`Deleting memory key: ${key}`);
-      
+
       if (!key) {
         throw new Error('Key is required for delete operation');
       }
-      
+
       await this.backend.delete(key);
       const size = await this.backend.size();
-      
+
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
-      
+
       this.logger.debug(`Successfully deleted key: ${key}`);
-      
+
       return {
         success: true,
         data: {
           key,
-          deleted: true
+          deleted: true,
         },
         metadata: {
           size,
           timestamp: Date.now(),
           executionTime,
-          backend: this.config.type
-        }
+          backend: this.config.type,
+        },
       };
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
       this.logger.error(`Failed to delete memory key ${key}: ${error}`);
-      
+
       return {
         success: false,
         error: `Failed to delete memory: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -355,8 +356,8 @@ export class MemoryController {
           size: 0,
           timestamp: Date.now(),
           executionTime,
-          backend: this.config.type
-        }
+          backend: this.config.type,
+        },
       };
     }
   }
@@ -367,35 +368,35 @@ export class MemoryController {
    */
   async clearMemory(): Promise<MemoryResponse> {
     const startTime = Date.now();
-    
+
     try {
       this.logger.info('Clearing all memory data');
-      
+
       await this.backend.clear();
-      
+
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
-      
+
       this.logger.info('Successfully cleared all memory data');
-      
+
       return {
         success: true,
         data: {
           cleared: true,
-          totalKeys: 0
+          totalKeys: 0,
         },
         metadata: {
           size: 0,
           timestamp: Date.now(),
           executionTime,
-          backend: this.config.type
-        }
+          backend: this.config.type,
+        },
       };
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
       this.logger.error(`Failed to clear memory: ${error}`);
-      
+
       return {
         success: false,
         error: `Failed to clear memory: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -403,8 +404,8 @@ export class MemoryController {
           size: 0,
           timestamp: Date.now(),
           executionTime,
-          backend: this.config.type
-        }
+          backend: this.config.type,
+        },
       };
     }
   }
@@ -415,23 +416,23 @@ export class MemoryController {
    */
   async batchOperations(request: MemoryBatchRequest): Promise<MemoryResponse> {
     const startTime = Date.now();
-    
+
     try {
       this.logger.debug(`Executing batch operations: ${request.operations.length} operations`);
-      
+
       const results = [];
       let errorCount = 0;
-      
+
       for (const operation of request.operations) {
         try {
           let result;
-          
+
           switch (operation.type) {
             case 'store':
               result = await this.storeMemory({
                 key: operation.key,
                 value: operation.value,
-                options: operation.options
+                options: operation.options,
               });
               break;
             case 'retrieve':
@@ -443,15 +444,15 @@ export class MemoryController {
             default:
               throw new Error(`Unsupported operation type: ${operation.type}`);
           }
-          
+
           results.push({
             operation: operation.type,
             key: operation.key,
             success: result.success,
             data: result.data,
-            error: result.error
+            error: result.error,
           });
-          
+
           if (!result.success) {
             errorCount++;
             if (!request.continueOnError) {
@@ -464,41 +465,43 @@ export class MemoryController {
             operation: operation.type,
             key: operation.key,
             success: false,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message : 'Unknown error',
           });
-          
+
           if (!request.continueOnError) {
             break;
           }
         }
       }
-      
+
       const size = await this.backend.size();
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, errorCount === 0);
-      
-      this.logger.debug(`Batch operations completed: ${results.length} operations, ${errorCount} errors`);
-      
+
+      this.logger.debug(
+        `Batch operations completed: ${results.length} operations, ${errorCount} errors`
+      );
+
       return {
         success: errorCount === 0,
         data: {
           results,
           totalOperations: request.operations.length,
           successfulOperations: results.length - errorCount,
-          failedOperations: errorCount
+          failedOperations: errorCount,
         },
         metadata: {
           size,
           timestamp: Date.now(),
           executionTime,
-          backend: this.config.type
-        }
+          backend: this.config.type,
+        },
       };
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
       this.logger.error(`Batch operations failed: ${error}`);
-      
+
       return {
         success: false,
         error: `Batch operations failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -506,8 +509,8 @@ export class MemoryController {
           size: 0,
           timestamp: Date.now(),
           executionTime,
-          backend: this.config.type
-        }
+          backend: this.config.type,
+        },
       };
     }
   }
@@ -518,45 +521,48 @@ export class MemoryController {
    */
   async getMemoryAnalytics(): Promise<MemoryResponse> {
     const startTime = Date.now();
-    
+
     try {
       this.logger.debug('Getting memory analytics');
-      
+
       const size = await this.backend.size();
       const isHealthy = await this.backend.health();
-      
+
       const analytics: MemoryAnalytics = {
         totalKeys: size,
         backend: this.config.type,
         performance: {
-          averageResponseTime: this.performanceMetrics.operationCount > 0 
-            ? this.performanceMetrics.totalResponseTime / this.performanceMetrics.operationCount 
-            : 0,
-          successRate: this.performanceMetrics.operationCount > 0 
-            ? ((this.performanceMetrics.operationCount - this.performanceMetrics.errorCount) / this.performanceMetrics.operationCount) * 100 
-            : 100,
-          errorRate: this.performanceMetrics.operationCount > 0 
-            ? (this.performanceMetrics.errorCount / this.performanceMetrics.operationCount) * 100 
-            : 0,
-          operationsPerSecond: this.calculateOperationsPerSecond()
+          averageResponseTime:
+            this.performanceMetrics.operationCount > 0
+              ? this.performanceMetrics.totalResponseTime / this.performanceMetrics.operationCount
+              : 0,
+          successRate:
+            this.performanceMetrics.operationCount > 0
+              ? ((this.performanceMetrics.operationCount - this.performanceMetrics.errorCount) /
+                  this.performanceMetrics.operationCount) *
+                100
+              : 100,
+          errorRate:
+            this.performanceMetrics.operationCount > 0
+              ? (this.performanceMetrics.errorCount / this.performanceMetrics.operationCount) * 100
+              : 0,
+          operationsPerSecond: this.calculateOperationsPerSecond(),
         },
         usage: {
           memoryUsed: process.memoryUsage().heapUsed,
           maxMemory: this.config.maxSize || -1,
-          utilizationPercent: this.config.maxSize 
-            ? (size / this.config.maxSize) * 100 
-            : 0
+          utilizationPercent: this.config.maxSize ? (size / this.config.maxSize) * 100 : 0,
         },
         health: {
           status: isHealthy ? 'healthy' : 'critical',
           uptime: Math.floor((Date.now() - this.performanceMetrics.startTime) / 1000),
-          lastHealthCheck: Date.now()
-        }
+          lastHealthCheck: Date.now(),
+        },
       };
-      
+
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
-      
+
       return {
         success: true,
         data: analytics,
@@ -564,14 +570,14 @@ export class MemoryController {
           size,
           timestamp: Date.now(),
           executionTime,
-          backend: this.config.type
-        }
+          backend: this.config.type,
+        },
       };
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
       this.logger.error(`Failed to get analytics: ${error}`);
-      
+
       return {
         success: false,
         error: `Failed to get analytics: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -579,8 +585,8 @@ export class MemoryController {
           size: 0,
           timestamp: Date.now(),
           executionTime,
-          backend: this.config.type
-        }
+          backend: this.config.type,
+        },
       };
     }
   }
@@ -608,16 +614,16 @@ export class MemoryController {
         storedAt: Date.now(),
         ttl: options?.ttl || 0,
         compressed: options?.compress || false,
-        ...options?.metadata
-      }
+        ...options?.metadata,
+      },
     };
-    
+
     // Add compression logic here if needed
     if (options?.compress) {
       // Compression implementation would go here
       processed.metadata.originalSize = JSON.stringify(value).length;
     }
-    
+
     return processed;
   }
 
@@ -628,7 +634,7 @@ export class MemoryController {
     if (!rawValue || typeof rawValue !== 'object') {
       return { value: rawValue, metadata: {} };
     }
-    
+
     // Check TTL expiration
     if (rawValue.metadata?.ttl && rawValue.metadata?.storedAt) {
       const now = Date.now();
@@ -637,12 +643,12 @@ export class MemoryController {
         return { value: undefined, metadata: { expired: true } };
       }
     }
-    
+
     // Add decompression logic here if needed
     if (rawValue.metadata?.compressed) {
       // Decompression implementation would go here
     }
-    
+
     return rawValue;
   }
 

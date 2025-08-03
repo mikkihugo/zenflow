@@ -6,12 +6,13 @@ import { EventEmitter } from 'events';
 import { SwarmDatabase } from '../database/swarm-database';
 import type { IDatabase, ILogger } from '../di/index.js';
 import { CORE_TOKENS, inject, injectable, SWARM_TOKENS } from '../di/index.js';
+import type { ISwarmCoordinator } from '../di/tokens/swarm-tokens.js';
 import { RuvSwarmStrategy } from './strategies/ruv-swarm.strategy';
 
 import type { Agent, ExecutionPlan, SwarmStrategy, Task } from './types';
 
 @injectable
-export class Orchestrator extends EventEmitter {
+export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
   private strategy: SwarmStrategy;
   private db: IDatabase;
   private executionPlans = new Map<string, ExecutionPlan>();
@@ -264,6 +265,56 @@ export class Orchestrator extends EventEmitter {
         }
       }
     }, 30000);
+  }
+
+  // ISwarmCoordinator interface implementation
+  async initializeSwarm(options: any): Promise<void> {
+    this.logger.info('Initializing swarm with options', options);
+    await this.initialize();
+  }
+
+  async addAgent(config: any): Promise<string> {
+    const agentId = `agent_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    this.logger.info(`Adding agent with config`, { agentId, config });
+
+    // Create agent record in database
+    await this.db.execute(
+      'INSERT INTO agents (id, config, status, created_at) VALUES (?, ?, ?, ?)',
+      [agentId, JSON.stringify(config), 'active', new Date().toISOString()]
+    );
+
+    return agentId;
+  }
+
+  async removeAgent(agentId: string): Promise<void> {
+    this.logger.info(`Removing agent`, { agentId });
+
+    // Update agent status in database
+    await this.db.execute('UPDATE agents SET status = ?, removed_at = ? WHERE id = ?', [
+      'removed',
+      new Date().toISOString(),
+      agentId,
+    ]);
+  }
+
+  async assignTask(task: any): Promise<string> {
+    const taskId = `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    this.logger.info(`Assigning task`, { taskId, task });
+
+    // Submit task through existing method
+    await this.submitTask({ ...task, id: taskId });
+
+    return taskId;
+  }
+
+  getMetrics(): any {
+    return {
+      activeExecutions: this.activeExecutions.size,
+      executionPlans: this.executionPlans.size,
+      taskAssignments: this.taskAssignments.size,
+      isActive: this.isActive,
+      timestamp: new Date().toISOString(),
+    };
   }
 
   async shutdown(): Promise<void> {

@@ -19,7 +19,6 @@ import {
   type IDatabase,
   type IEventBus,
   type ILogger,
-  SingletonProvider,
   SWARM_TOKENS,
 } from './di/index.js';
 import { MultiSystemCoordinator } from './integration/multi-system-coordinator.js';
@@ -31,16 +30,20 @@ class ConsoleLogger implements ILogger {
     console.log(`[${new Date().toISOString()}] ${message}`);
   }
 
-  info(message: string): void {
-    this.log(`INFO: ${message}`);
+  debug(message: string, meta?: any): void {
+    console.debug(`[${new Date().toISOString()}] DEBUG: ${message}`, meta || '');
   }
 
-  warn(message: string): void {
-    this.log(`WARN: ${message}`);
+  info(message: string, meta?: any): void {
+    console.info(`[${new Date().toISOString()}] INFO: ${message}`, meta || '');
   }
 
-  error(message: string): void {
-    this.log(`ERROR: ${message}`);
+  warn(message: string, meta?: any): void {
+    console.warn(`[${new Date().toISOString()}] WARN: ${message}`, meta || '');
+  }
+
+  error(message: string, meta?: any): void {
+    console.error(`[${new Date().toISOString()}] ERROR: ${message}`, meta || '');
   }
 }
 
@@ -55,8 +58,15 @@ class AppConfig implements IConfig {
     this.config.set('learning.adaptiveEnabled', true);
   }
 
-  get<T>(key: string): T | undefined {
-    return this.config.get(key);
+  get<T>(key: string, defaultValue?: T): T {
+    const value = this.config.get(key);
+    if (value !== undefined) {
+      return value as T;
+    }
+    if (defaultValue !== undefined) {
+      return defaultValue;
+    }
+    throw new Error(`Configuration key '${key}' not found and no default value provided`);
   }
 
   set<T>(key: string, value: T): void {
@@ -89,9 +99,29 @@ class MockDatabase implements IDatabase {
     console.log('Mock database initialized');
   }
 
-  async query(sql: string, params?: any[]): Promise<any[]> {
+  async query<T>(sql: string, params?: any[]): Promise<T[]> {
     console.log(`Mock query: ${sql}`, params);
     return [];
+  }
+
+  async execute(sql: string, params?: any[]): Promise<void> {
+    console.log(`Mock execute: ${sql}`, params);
+    // Mock execution - store some fake data
+    if (sql.includes('INSERT') || sql.includes('UPDATE')) {
+      this.data.set(`query_${Date.now()}`, { sql, params });
+    }
+  }
+
+  async transaction<T>(fn: (db: IDatabase) => Promise<T>): Promise<T> {
+    console.log('Mock transaction started');
+    try {
+      const result = await fn(this);
+      console.log('Mock transaction committed');
+      return result;
+    } catch (error) {
+      console.log('Mock transaction rolled back');
+      throw error;
+    }
   }
 
   async close(): Promise<void> {
@@ -152,8 +182,56 @@ export class ClaudeZenCore {
       .singleton(createToken<LearningCoordinator>('LearningCoordinator'), (c) => {
         const logger = c.resolve(CORE_TOKENS.Logger);
         return new LearningCoordinator(
-          { adaptiveEnabled: true, learningRate: 0.1 },
-          { environment: 'development' },
+          {
+            patternRecognition: {
+              enabled: true,
+              minPatternFrequency: 5,
+              confidenceThreshold: 0.8,
+              analysisWindow: 1000,
+            },
+            learning: {
+              enabled: true,
+              learningRate: 0.1,
+              adaptationRate: 0.05,
+              knowledgeRetention: 0.9,
+            },
+            optimization: {
+              enabled: true,
+              optimizationThreshold: 0.7,
+              maxOptimizations: 10,
+              validationRequired: true,
+            },
+            ml: {
+              neuralNetwork: true,
+              reinforcementLearning: false,
+              ensemble: false,
+              onlineLearning: true,
+            },
+          },
+          {
+            environment: 'development',
+            resources: [
+              { type: 'memory', limit: 1024, flexibility: 0.2, cost: 1.0 },
+              { type: 'cpu', limit: 4, flexibility: 0.1, cost: 2.0 },
+            ],
+            constraints: [
+              {
+                type: 'latency',
+                description: 'Max response time',
+                limit: 1000,
+                priority: 1,
+              },
+            ],
+            objectives: [
+              {
+                type: 'performance',
+                description: 'Maximize throughput',
+                target: 1000,
+                weight: 1.0,
+                measurement: 'requests/second',
+              },
+            ],
+          },
           logger
         );
       })
@@ -178,7 +256,9 @@ export class ClaudeZenCore {
     try {
       // Initialize core database
       const database = this.container.resolve(CORE_TOKENS.Database);
-      await database.initialize();
+      if (database.initialize) {
+        await database.initialize();
+      }
 
       // Resolve all coordinators through DI
       this.orchestrator = this.container.resolve(SWARM_TOKENS.SwarmCoordinator) as Orchestrator;
