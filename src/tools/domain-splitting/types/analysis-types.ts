@@ -260,6 +260,6 @@ export const DEFAULT_ANALYSIS_CONFIG: AnalysisConfig = {
   minFilesForSplit: 15,
   coupling: {
     threshold: 0.7,
-    algorithm: 'shared-dependencies'
-  }
+    algorithm: 'shared-dependencies',
+  },
 };

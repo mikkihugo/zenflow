@@ -3,9 +3,9 @@
  * Demonstrates how to use the advanced Memory and Database domain features together
  */
 
-import { MemorySystemFactory } from '../memory/index';
-import { DatabaseFactory } from '../database/index';
 import type { DatabaseQuery } from '../database/core/database-coordinator';
+import { DatabaseFactory } from '../database/index';
+import { MemorySystemFactory } from '../memory/index';
 
 /**
  * Example: Complete system integration with Memory and Database coordination
@@ -28,7 +28,12 @@ export async function createIntegratedSystem() {
         indexing: true,
         partitioning: true,
       },
-      thresholds: { latencyWarning: 100, errorRateWarning: 0.05, memoryUsageWarning: 200, cacheHitRateMin: 0.7 },
+      thresholds: {
+        latencyWarning: 100,
+        errorRateWarning: 0.05,
+        memoryUsageWarning: 200,
+        cacheHitRateMin: 0.7,
+      },
       adaptation: { enabled: true, learningRate: 0.1, adaptationInterval: 60000 },
     },
     monitoring: {
@@ -81,7 +86,7 @@ export async function createIntegratedSystem() {
   return {
     memory: memorySystem,
     database: databaseSystem,
-    
+
     // Integrated operations
     async storeWithCoordination(sessionId: string, key: string, data: any) {
       // Store in memory system with distributed coordination
@@ -91,7 +96,7 @@ export async function createIntegratedSystem() {
         target: key,
         metadata: { data },
       });
-      
+
       // Also store in database for persistence
       const query: DatabaseQuery = {
         id: `store_${Date.now()}`,
@@ -106,7 +111,7 @@ export async function createIntegratedSystem() {
         timestamp: Date.now(),
         sessionId,
       };
-      
+
       return await databaseSystem.query(query);
     },
 
@@ -117,11 +122,11 @@ export async function createIntegratedSystem() {
         sessionId,
         target: key,
       });
-      
+
       if (memoryResult?.status === 'completed') {
         return memoryResult;
       }
-      
+
       // Fallback to database with optimization
       const query: DatabaseQuery = {
         id: `retrieve_${Date.now()}`,
@@ -136,7 +141,7 @@ export async function createIntegratedSystem() {
         timestamp: Date.now(),
         sessionId,
       };
-      
+
       return await databaseSystem.query(query);
     },
 
@@ -154,20 +159,24 @@ export async function createIntegratedSystem() {
         timestamp: Date.now(),
         sessionId,
       };
-      
+
       return await databaseSystem.query(query);
     },
 
     async getSystemHealth() {
       const memoryHealth = memorySystem.getHealthReport();
       const databaseHealth = databaseSystem.getHealthReport();
-      
+
       return {
         memory: memoryHealth,
         database: databaseHealth,
         overall: {
-          status: memoryHealth.overall === 'healthy' && databaseHealth.overall === 'healthy' ? 'healthy' :
-                  memoryHealth.overall === 'critical' || databaseHealth.overall === 'critical' ? 'critical' : 'warning',
+          status:
+            memoryHealth.overall === 'healthy' && databaseHealth.overall === 'healthy'
+              ? 'healthy'
+              : memoryHealth.overall === 'critical' || databaseHealth.overall === 'critical'
+                ? 'critical'
+                : 'warning',
           score: Math.round((memoryHealth.score + databaseHealth.score) / 2),
           components: {
             memory: memoryHealth.score,
@@ -180,17 +189,18 @@ export async function createIntegratedSystem() {
     async getPerformanceMetrics() {
       const memoryStats = memorySystem.getStats();
       const databaseStats = databaseSystem.getStats();
-      
+
       return {
         timestamp: Date.now(),
         memory: memoryStats,
         database: databaseStats,
         integration: {
-          totalOperations: memoryStats.coordinator?.decisions.total + databaseStats.coordinator?.queries.total,
-          averageLatency: (
-            (memoryStats.monitor?.metrics?.averageLatency || 0) +
-            (databaseStats.coordinator?.queries.averageLatency || 0)
-          ) / 2,
+          totalOperations:
+            memoryStats.coordinator?.decisions.total + databaseStats.coordinator?.queries.total,
+          averageLatency:
+            ((memoryStats.monitor?.metrics?.averageLatency || 0) +
+              (databaseStats.coordinator?.queries.averageLatency || 0)) /
+            2,
           systemUtilization: {
             memory: memoryStats.backends || 0,
             database: databaseStats.engines || 0,
@@ -213,7 +223,7 @@ export async function demonstrateMCPIntegration() {
   // Import MCP tools
   const { memoryTools } = await import('../memory/mcp/memory-tools');
   const { databaseTools } = await import('../database/mcp/database-tools');
-  
+
   // Example: Initialize memory system via MCP
   const memoryInitResult = await memoryTools[0].handler({
     coordination: {
@@ -226,9 +236,7 @@ export async function demonstrateMCPIntegration() {
       strategies: { caching: true, compression: true, prefetching: true },
       adaptation: { enabled: true, learningRate: 0.1 },
     },
-    backends: [
-      { id: 'main', type: 'sqlite', config: { dbPath: ':memory:' } },
-    ],
+    backends: [{ id: 'main', type: 'sqlite', config: { dbPath: ':memory:' } }],
   });
 
   console.log('Memory system initialized:', memoryInitResult);
@@ -236,7 +244,12 @@ export async function demonstrateMCPIntegration() {
   // Example: Initialize database system via MCP
   const databaseInitResult = await databaseTools[0].handler({
     engines: [
-      { id: 'main-vector', type: 'vector', capabilities: ['vector_search', 'similarity'], config: {} },
+      {
+        id: 'main-vector',
+        type: 'vector',
+        capabilities: ['vector_search', 'similarity'],
+        config: {},
+      },
       { id: 'main-graph', type: 'graph', capabilities: ['graph_queries', 'traversal'], config: {} },
     ],
     optimization: { enabled: true, aggressiveness: 'medium' },
@@ -260,7 +273,10 @@ export async function demonstrateMCPIntegration() {
   // Example: Monitor system performance via MCP
   const monitoringResult = await Promise.all([
     memoryTools[2].handler({ duration: 30000, metrics: ['latency', 'memory', 'cache'] }),
-    databaseTools[3].handler({ duration: 30000, metrics: ['performance', 'utilization', 'queries'] }),
+    databaseTools[3].handler({
+      duration: 30000,
+      metrics: ['performance', 'utilization', 'queries'],
+    }),
   ]);
 
   console.log('System monitoring:', monitoringResult);
@@ -278,33 +294,36 @@ export async function demonstrateMCPIntegration() {
  */
 export async function demonstrateErrorHandling() {
   const system = await createIntegratedSystem();
-  
+
   try {
     // Simulate some operations that might fail
     await system.storeWithCoordination('test_session', 'test_key', { data: 'test' });
-    
+
     // This might trigger error handling
     await system.performVectorSearch(new Array(768).fill(0.1));
-    
   } catch (error) {
     // Import error handling classes
-    const { MemoryError, MemoryErrorClassifier } = await import('../memory/error-handling/memory-errors');
-    const { DatabaseError, DatabaseErrorClassifier } = await import('../database/error-handling/database-errors');
-    
+    const { MemoryError, MemoryErrorClassifier } = await import(
+      '../memory/error-handling/memory-errors'
+    );
+    const { DatabaseError, DatabaseErrorClassifier } = await import(
+      '../database/error-handling/database-errors'
+    );
+
     if (error instanceof MemoryError) {
       const classification = MemoryErrorClassifier.classify(error);
       console.log('Memory error classified:', classification);
-      
+
       // Handle based on classification
       if (classification.actionRequired) {
         console.log('Suggested actions:', classification.suggestedActions);
       }
     }
-    
+
     if (error instanceof DatabaseError) {
       const classification = DatabaseErrorClassifier.classify(error);
       console.log('Database error classified:', classification);
-      
+
       // Handle retry strategy
       if (error.retryable && classification.retryStrategy !== 'none') {
         console.log('Retry strategy:', classification.retryStrategy);
@@ -320,30 +339,30 @@ export async function demonstrateErrorHandling() {
  */
 export async function demonstrateOptimization() {
   const system = await createIntegratedSystem();
-  
+
   // Run some operations to generate data
   for (let i = 0; i < 100; i++) {
     await system.storeWithCoordination(`session_${i % 10}`, `key_${i}`, { value: i });
   }
-  
+
   // Get performance metrics
   const metrics = await system.getPerformanceMetrics();
   console.log('Initial metrics:', metrics);
-  
+
   // Optimize memory system
   if (system.memory.optimizer) {
     const memoryRecommendations = system.memory.optimizer.getRecommendations();
     console.log('Memory optimization recommendations:', memoryRecommendations);
   }
-  
+
   // Optimize database system
   const databaseRecommendations = system.database.optimizer?.getRecommendations();
   console.log('Database optimization recommendations:', databaseRecommendations);
-  
+
   // Get health report
   const health = await system.getSystemHealth();
   console.log('System health:', health);
-  
+
   await system.shutdown();
 }
 

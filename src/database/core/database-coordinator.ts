@@ -150,7 +150,7 @@ export class DatabaseCoordinator extends EventEmitter {
 
       // Execute the query on the selected engine
       const result = await this.executeOnEngine(query, optimalEngine);
-      
+
       execution.status = 'completed';
       execution.result = result;
       execution.endTime = Date.now();
@@ -160,13 +160,12 @@ export class DatabaseCoordinator extends EventEmitter {
 
       // Update engine performance metrics
       await this.updateEngineMetrics(optimalEngine, execution);
-
     } catch (error) {
       execution.status = 'failed';
       execution.error = error.message;
       execution.endTime = Date.now();
       execution.duration = execution.endTime ? execution.endTime - execution.startTime : 0;
-      
+
       this.emit('queryFailed', execution);
     } finally {
       this.activeQueries.delete(query.id);
@@ -197,7 +196,7 @@ export class DatabaseCoordinator extends EventEmitter {
     for (const strategy of this.strategies.values()) {
       if (strategy.applicable(query, this.engines)) {
         const routedEngines = strategy.route(query, this.engines);
-        const validEngine = routedEngines.find(engineId => 
+        const validEngine = routedEngines.find((engineId) =>
           availableEngines.some(([id]) => id === engineId)
         );
         if (validEngine) {
@@ -226,9 +225,7 @@ export class DatabaseCoordinator extends EventEmitter {
 
     // Check capability requirements
     if (query.requirements.capabilities?.length > 0) {
-      return query.requirements.capabilities.every(cap => 
-        engine.capabilities.includes(cap)
-      );
+      return query.requirements.capabilities.every((cap) => engine.capabilities.includes(cap));
     }
 
     return true;
@@ -237,17 +234,20 @@ export class DatabaseCoordinator extends EventEmitter {
   /**
    * Select engine by load balancing strategy
    */
-  private selectByLoadBalancing(query: DatabaseQuery, engines: Array<[string, DatabaseEngine]>): string {
+  private selectByLoadBalancing(
+    query: DatabaseQuery,
+    engines: Array<[string, DatabaseEngine]>
+  ): string {
     switch (query.routing.loadBalancing) {
       case 'round_robin':
         return this.selectRoundRobin(engines);
-      
+
       case 'least_loaded':
         return this.selectLeastLoaded(engines);
-      
+
       case 'performance_based':
         return this.selectByPerformance(engines);
-      
+
       case 'capability_based':
       default:
         return this.selectByCapability(query, engines);
@@ -260,8 +260,8 @@ export class DatabaseCoordinator extends EventEmitter {
   private selectRoundRobin(engines: Array<[string, DatabaseEngine]>): string {
     // Simple round robin based on query count
     const engineCounts = engines.map(([id]) => {
-      const recentQueries = this.queryHistory.filter(q => 
-        q.engineId === id && Date.now() - q.startTime < 60000
+      const recentQueries = this.queryHistory.filter(
+        (q) => q.engineId === id && Date.now() - q.startTime < 60000
       ).length;
       return { id, count: recentQueries };
     });
@@ -274,8 +274,9 @@ export class DatabaseCoordinator extends EventEmitter {
    * Select least loaded engine
    */
   private selectLeastLoaded(engines: Array<[string, DatabaseEngine]>): string {
-    return engines
-      .sort(([, a], [, b]) => a.performance.utilization - b.performance.utilization)[0][0];
+    return engines.sort(
+      ([, a], [, b]) => a.performance.utilization - b.performance.utilization
+    )[0][0];
   }
 
   /**
@@ -298,17 +299,21 @@ export class DatabaseCoordinator extends EventEmitter {
   /**
    * Select by capability match
    */
-  private selectByCapability(query: DatabaseQuery, engines: Array<[string, DatabaseEngine]>): string {
+  private selectByCapability(
+    query: DatabaseQuery,
+    engines: Array<[string, DatabaseEngine]>
+  ): string {
     // Score based on capability match
     const scored = engines.map(([id, engine]) => {
       let score = 0;
-      
+
       // Type-specific scoring
       if (query.operation.includes('vector') && engine.type === 'vector') score += 50;
       if (query.operation.includes('graph') && engine.type === 'graph') score += 50;
       if (query.operation.includes('search') && engine.capabilities.includes('search')) score += 30;
-      if (query.operation.includes('aggregate') && engine.capabilities.includes('analytics')) score += 30;
-      
+      if (query.operation.includes('aggregate') && engine.capabilities.includes('analytics'))
+        score += 30;
+
       return { id, score };
     });
 
@@ -325,7 +330,7 @@ export class DatabaseCoordinator extends EventEmitter {
       throw new Error(`Engine not found: ${engineId}`);
     }
 
-    const timeout = new Promise((_, reject) => 
+    const timeout = new Promise((_, reject) =>
       setTimeout(() => reject(new Error('Query timeout')), query.requirements.timeout)
     );
 
@@ -368,7 +373,11 @@ export class DatabaseCoordinator extends EventEmitter {
         case 'graph_create_node':
           return await engineInterface.createNode?.(parameters.labels, parameters.properties);
         case 'graph_create_edge':
-          return await engineInterface.createEdge?.(parameters.from, parameters.to, parameters.type);
+          return await engineInterface.createEdge?.(
+            parameters.from,
+            parameters.to,
+            parameters.type
+          );
         default:
           throw new Error(`Unsupported graph operation: ${operation}`);
       }
@@ -382,7 +391,11 @@ export class DatabaseCoordinator extends EventEmitter {
         case 'document_insert':
           return await engineInterface.insert?.(parameters.collection, parameters.document);
         case 'document_update':
-          return await engineInterface.update?.(parameters.collection, parameters.filter, parameters.update);
+          return await engineInterface.update?.(
+            parameters.collection,
+            parameters.filter,
+            parameters.update
+          );
         case 'document_delete':
           return await engineInterface.delete?.(parameters.collection, parameters.filter);
         default:
@@ -406,25 +419,27 @@ export class DatabaseCoordinator extends EventEmitter {
     if (!engine || !execution.duration) return;
 
     const performance = engine.performance;
-    
+
     // Update average latency (exponential moving average)
     const alpha = 0.1;
-    performance.averageLatency = performance.averageLatency * (1 - alpha) + execution.duration * alpha;
-    
+    performance.averageLatency =
+      performance.averageLatency * (1 - alpha) + execution.duration * alpha;
+
     // Update error rate
-    const recentQueries = this.queryHistory.filter(q => 
-      q.engineId === engineId && Date.now() - q.startTime < 300000 // Last 5 minutes
+    const recentQueries = this.queryHistory.filter(
+      (q) => q.engineId === engineId && Date.now() - q.startTime < 300000 // Last 5 minutes
     );
-    const errorCount = recentQueries.filter(q => q.status === 'failed').length;
+    const errorCount = recentQueries.filter((q) => q.status === 'failed').length;
     performance.errorRate = recentQueries.length > 0 ? errorCount / recentQueries.length : 0;
-    
+
     // Update throughput (queries per second)
     const queryCount = recentQueries.length;
     performance.throughput = queryCount / 300; // Queries per second over 5 minutes
-    
+
     // Update utilization
-    const activeQueries = Array.from(this.activeQueries.values())
-      .filter(q => q.engineId === engineId).length;
+    const activeQueries = Array.from(this.activeQueries.values()).filter(
+      (q) => q.engineId === engineId
+    ).length;
     performance.utilization = Math.min(1.0, activeQueries / 10); // Assume max 10 concurrent queries
 
     this.emit('engineMetricsUpdated', { engineId, performance });
@@ -450,12 +465,11 @@ export class DatabaseCoordinator extends EventEmitter {
       };
 
       await this.executeOnEngine(healthQuery, engineId);
-      
+
       if (engine.status !== 'active') {
         engine.status = 'active';
         this.emit('engineHealthy', { engineId });
       }
-      
     } catch (error) {
       engine.status = 'degraded';
       this.emit('engineUnhealthy', { engineId, error: error.message });
@@ -509,7 +523,8 @@ export class DatabaseCoordinator extends EventEmitter {
     this.strategies.set('high_priority', {
       name: 'high_priority',
       description: 'Route high priority queries to fastest engines',
-      applicable: (query) => query.requirements.priority === 'critical' || query.requirements.priority === 'high',
+      applicable: (query) =>
+        query.requirements.priority === 'critical' || query.requirements.priority === 'high',
       route: (query, engines) => {
         return Array.from(engines.entries())
           .filter(([, engine]) => engine.status === 'active')
@@ -526,27 +541,32 @@ export class DatabaseCoordinator extends EventEmitter {
    */
   getStats() {
     const engines = Array.from(this.engines.values());
-    const recentQueries = this.queryHistory.filter(q => Date.now() - q.startTime < 300000);
+    const recentQueries = this.queryHistory.filter((q) => Date.now() - q.startTime < 300000);
 
     return {
       engines: {
         total: engines.length,
-        active: engines.filter(e => e.status === 'active').length,
-        degraded: engines.filter(e => e.status === 'degraded').length,
-        failed: engines.filter(e => e.status === 'failed').length,
-        byType: engines.reduce((acc, e) => {
-          acc[e.type] = (acc[e.type] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>),
+        active: engines.filter((e) => e.status === 'active').length,
+        degraded: engines.filter((e) => e.status === 'degraded').length,
+        failed: engines.filter((e) => e.status === 'failed').length,
+        byType: engines.reduce(
+          (acc, e) => {
+            acc[e.type] = (acc[e.type] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>
+        ),
       },
       queries: {
         total: this.queryHistory.length,
         recent: recentQueries.length,
         active: this.activeQueries.size,
-        successful: recentQueries.filter(q => q.status === 'completed').length,
-        failed: recentQueries.filter(q => q.status === 'failed').length,
-        averageLatency: recentQueries.length > 0 ? 
-          recentQueries.reduce((sum, q) => sum + (q.duration || 0), 0) / recentQueries.length : 0,
+        successful: recentQueries.filter((q) => q.status === 'completed').length,
+        failed: recentQueries.filter((q) => q.status === 'failed').length,
+        averageLatency:
+          recentQueries.length > 0
+            ? recentQueries.reduce((sum, q) => sum + (q.duration || 0), 0) / recentQueries.length
+            : 0,
       },
       strategies: this.strategies.size,
     };

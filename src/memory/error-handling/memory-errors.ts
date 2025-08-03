@@ -9,25 +9,25 @@ export enum MemoryErrorCode {
   CONSENSUS_TIMEOUT = 'MEMORY_CONSENSUS_TIMEOUT',
   NODE_UNREACHABLE = 'MEMORY_NODE_UNREACHABLE',
   QUORUM_NOT_REACHED = 'MEMORY_QUORUM_NOT_REACHED',
-  
+
   // Backend Errors
   BACKEND_INITIALIZATION_FAILED = 'MEMORY_BACKEND_INIT_FAILED',
   BACKEND_CONNECTION_LOST = 'MEMORY_BACKEND_CONNECTION_LOST',
   BACKEND_CORRUPTED = 'MEMORY_BACKEND_CORRUPTED',
   BACKEND_CAPACITY_EXCEEDED = 'MEMORY_BACKEND_CAPACITY_EXCEEDED',
-  
+
   // Data Errors
   DATA_CORRUPTION = 'MEMORY_DATA_CORRUPTION',
   DATA_INCONSISTENCY = 'MEMORY_DATA_INCONSISTENCY',
   DATA_NOT_FOUND = 'MEMORY_DATA_NOT_FOUND',
   DATA_VERSION_CONFLICT = 'MEMORY_DATA_VERSION_CONFLICT',
-  
+
   // Performance Errors
   OPTIMIZATION_FAILED = 'MEMORY_OPTIMIZATION_FAILED',
   MEMORY_THRESHOLD_EXCEEDED = 'MEMORY_THRESHOLD_EXCEEDED',
   CACHE_MISS_RATE_HIGH = 'MEMORY_CACHE_MISS_RATE_HIGH',
   LATENCY_THRESHOLD_EXCEEDED = 'MEMORY_LATENCY_THRESHOLD_EXCEEDED',
-  
+
   // System Errors
   RESOURCE_EXHAUSTED = 'MEMORY_RESOURCE_EXHAUSTED',
   CONFIGURATION_INVALID = 'MEMORY_CONFIGURATION_INVALID',
@@ -55,7 +55,11 @@ export class MemoryError extends Error {
     code: MemoryErrorCode,
     message: string,
     context: MemoryErrorContext,
-    options: { recoverable?: boolean; severity?: 'low' | 'medium' | 'high' | 'critical'; cause?: Error } = {}
+    options: {
+      recoverable?: boolean;
+      severity?: 'low' | 'medium' | 'high' | 'critical';
+      cause?: Error;
+    } = {}
   ) {
     super(message);
     this.name = 'MemoryError';
@@ -215,31 +219,39 @@ export class MemoryErrorClassifier {
     suggestedActions: string[];
   } {
     if (error instanceof MemoryError) {
-      return this.classifyMemoryError(error);
+      return MemoryErrorClassifier.classifyMemoryError(error);
     }
 
     // Classify generic errors
-    const category = this.inferCategory(error);
-    const priority = this.inferPriority(error);
+    const category = MemoryErrorClassifier.inferCategory(error);
+    const priority = MemoryErrorClassifier.inferPriority(error);
 
     return {
       category,
       priority,
       actionRequired: priority === 'high' || priority === 'critical',
-      suggestedActions: this.getSuggestedActions(category, error.message),
+      suggestedActions: MemoryErrorClassifier.getSuggestedActions(category, error.message),
     };
   }
 
   private static classifyMemoryError(error: MemoryError) {
     let category: 'coordination' | 'backend' | 'data' | 'performance' | 'system';
 
-    if (error.code.includes('COORDINATION') || error.code.includes('CONSENSUS') || error.code.includes('QUORUM')) {
+    if (
+      error.code.includes('COORDINATION') ||
+      error.code.includes('CONSENSUS') ||
+      error.code.includes('QUORUM')
+    ) {
       category = 'coordination';
     } else if (error.code.includes('BACKEND')) {
       category = 'backend';
     } else if (error.code.includes('DATA')) {
       category = 'data';
-    } else if (error.code.includes('OPTIMIZATION') || error.code.includes('CACHE') || error.code.includes('LATENCY')) {
+    } else if (
+      error.code.includes('OPTIMIZATION') ||
+      error.code.includes('CACHE') ||
+      error.code.includes('LATENCY')
+    ) {
       category = 'performance';
     } else {
       category = 'system';
@@ -249,20 +261,34 @@ export class MemoryErrorClassifier {
       category,
       priority: error.severity,
       actionRequired: error.severity === 'high' || error.severity === 'critical',
-      suggestedActions: this.getSuggestedActions(category, error.message),
+      suggestedActions: MemoryErrorClassifier.getSuggestedActions(category, error.message),
     };
   }
 
-  private static inferCategory(error: Error): 'coordination' | 'backend' | 'data' | 'performance' | 'system' {
+  private static inferCategory(
+    error: Error
+  ): 'coordination' | 'backend' | 'data' | 'performance' | 'system' {
     const message = error.message.toLowerCase();
 
-    if (message.includes('coordination') || message.includes('consensus') || message.includes('node')) {
+    if (
+      message.includes('coordination') ||
+      message.includes('consensus') ||
+      message.includes('node')
+    ) {
       return 'coordination';
     }
-    if (message.includes('backend') || message.includes('connection') || message.includes('database')) {
+    if (
+      message.includes('backend') ||
+      message.includes('connection') ||
+      message.includes('database')
+    ) {
       return 'backend';
     }
-    if (message.includes('data') || message.includes('corruption') || message.includes('not found')) {
+    if (
+      message.includes('data') ||
+      message.includes('corruption') ||
+      message.includes('not found')
+    ) {
       return 'data';
     }
     if (message.includes('performance') || message.includes('slow') || message.includes('cache')) {
@@ -274,10 +300,18 @@ export class MemoryErrorClassifier {
   private static inferPriority(error: Error): 'low' | 'medium' | 'high' | 'critical' {
     const message = error.message.toLowerCase();
 
-    if (message.includes('corruption') || message.includes('critical') || message.includes('fatal')) {
+    if (
+      message.includes('corruption') ||
+      message.includes('critical') ||
+      message.includes('fatal')
+    ) {
       return 'critical';
     }
-    if (message.includes('failed') || message.includes('error') || message.includes('unreachable')) {
+    if (
+      message.includes('failed') ||
+      message.includes('error') ||
+      message.includes('unreachable')
+    ) {
       return 'high';
     }
     if (message.includes('warning') || message.includes('slow') || message.includes('timeout')) {

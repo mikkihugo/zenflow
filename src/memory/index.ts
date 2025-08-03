@@ -8,40 +8,54 @@
 // Core memory functionality
 export * from './backends/base.backend';
 export * from './backends/factory';
-export { MemoryManager, SessionMemoryStore } from './memory';
-
 // Advanced coordination and optimization
-export { MemoryCoordinator, type MemoryCoordinationConfig, type MemoryNode, type CoordinationDecision } from './core/memory-coordinator';
-export { PerformanceOptimizer, type OptimizationConfig, type OptimizationAction, type PerformanceMetrics } from './optimization/performance-optimizer';
-
-// MCP Tools
-export { memoryTools, memoryInitTool, memoryOptimizeTool, memoryMonitorTool, memoryDistributeTool, memoryHealthCheckTool } from './mcp/memory-tools';
-
+export {
+  type CoordinationDecision,
+  type MemoryCoordinationConfig,
+  MemoryCoordinator,
+  type MemoryNode,
+} from './core/memory-coordinator';
 // Error handling and recovery
 export {
-  MemoryError,
-  MemoryErrorCode,
-  MemoryCoordinationError,
   MemoryBackendError,
+  MemoryCoordinationError,
   MemoryDataError,
-  MemoryPerformanceError,
+  MemoryError,
   MemoryErrorClassifier,
+  MemoryErrorCode,
   type MemoryErrorContext,
+  MemoryPerformanceError,
 } from './error-handling/memory-errors';
 export {
-  RecoveryStrategyManager,
-  type RecoveryStrategy,
   type RecoveryContext,
   type RecoveryResult,
+  type RecoveryStrategy,
+  RecoveryStrategyManager,
 } from './error-handling/recovery-strategies';
 
+// MCP Tools
+export {
+  memoryDistributeTool,
+  memoryHealthCheckTool,
+  memoryInitTool,
+  memoryMonitorTool,
+  memoryOptimizeTool,
+  memoryTools,
+} from './mcp/memory-tools';
+export { MemoryManager, SessionMemoryStore } from './memory';
 // Monitoring and analytics
 export {
-  MemoryMonitor,
-  type MemoryMetrics,
   type MemoryAlert,
+  type MemoryMetrics,
+  MemoryMonitor,
   type MonitoringConfig,
 } from './monitoring/memory-monitor';
+export {
+  type OptimizationAction,
+  type OptimizationConfig,
+  type PerformanceMetrics,
+  PerformanceOptimizer,
+} from './optimization/performance-optimizer';
 
 // Memory system factory for easy initialization
 export class MemorySystemFactory {
@@ -54,17 +68,17 @@ export class MemorySystemFactory {
     monitoring?: MonitoringConfig;
     backends?: Array<{ id: string; type: string; config: any }>;
   }) {
-    const {
-      MemoryCoordinator,
-      PerformanceOptimizer,
-      MemoryMonitor,
-      RecoveryStrategyManager,
-    } = await import('./index.js');
+    const { MemoryCoordinator, PerformanceOptimizer, MemoryMonitor, RecoveryStrategyManager } =
+      await import('./index.js');
     const { BackendFactory } = await import('./backends/factory.js');
 
     // Initialize components
-    const coordinator = config.coordination ? new MemoryCoordinator(config.coordination) : undefined;
-    const optimizer = config.optimization ? new PerformanceOptimizer(config.optimization) : undefined;
+    const coordinator = config.coordination
+      ? new MemoryCoordinator(config.coordination)
+      : undefined;
+    const optimizer = config.optimization
+      ? new PerformanceOptimizer(config.optimization)
+      : undefined;
     const monitor = config.monitoring ? new MemoryMonitor(config.monitoring) : undefined;
     const recoveryManager = new RecoveryStrategyManager();
 
@@ -95,7 +109,7 @@ export class MemorySystemFactory {
       monitor,
       recoveryManager,
       backends,
-      
+
       // Convenience methods
       async shutdown() {
         if (monitor) monitor.stopCollection();
@@ -105,7 +119,14 @@ export class MemorySystemFactory {
       },
 
       getHealthReport() {
-        return monitor?.generateHealthReport() || { overall: 'unknown', score: 0, details: {}, recommendations: [] };
+        return (
+          monitor?.generateHealthReport() || {
+            overall: 'unknown',
+            score: 0,
+            details: {},
+            recommendations: [],
+          }
+        );
       },
 
       getStats() {
@@ -124,7 +145,7 @@ export class MemorySystemFactory {
    * Create a basic memory system with essential features
    */
   static async createBasicMemorySystem(backends: Array<{ id: string; type: string; config: any }>) {
-    return this.createAdvancedMemorySystem({
+    return MemorySystemFactory.createAdvancedMemorySystem({
       backends,
       coordination: {
         enabled: true,

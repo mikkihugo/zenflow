@@ -4,17 +4,8 @@
 
 import * as fs from 'fs-extra';
 import * as path from 'path';
-
-import type {
-  SubDomainPlan,
-  SplittingResult,
-  ValidationReport
-} from '../types/domain-types.js';
-
-import type {
-  RollbackPlan,
-  ProgressReport
-} from '../types/analysis-types.js';
+import type { ProgressReport, RollbackPlan } from '../types/analysis-types.js';
+import type { SplittingResult, SubDomainPlan, ValidationReport } from '../types/domain-types.js';
 
 export interface DomainSplitter {
   executeSplitting(plan: SubDomainPlan[]): Promise<SplittingResult>;
@@ -48,104 +39,109 @@ export class SafeDomainSplitter implements DomainSplitter {
 
   async executeSplitting(plans: SubDomainPlan[]): Promise<SplittingResult> {
     console.log(`🚀 Executing domain splitting for ${plans.length} plans`);
-    
+
     this.reportProgress('analyzing', 0, 'Preparing for domain split');
-    
+
     try {
       // Step 1: Create backup
       await this.createBackup();
       this.reportProgress('analyzing', 10, 'Backup created');
-      
+
       // Step 2: Validate plans
       await this.validatePlans(plans);
       this.reportProgress('planning', 20, 'Plans validated');
-      
+
       // Step 3: Plan all file moves
       const moveOperations = await this.planFileMoves(plans);
       this.reportProgress('planning', 30, `Planned ${moveOperations.length} file moves`);
-      
+
       // Step 4: Create new directory structure
       await this.createDirectoryStructure(plans);
       this.reportProgress('executing', 40, 'Directory structure created');
-      
+
       // Step 5: Execute file moves
       await this.executeFileMoves(moveOperations);
       this.reportProgress('executing', 60, 'Files moved successfully');
-      
+
       // Step 6: Update import paths
       const importUpdates = await this.updateImportPaths(moveOperations);
       this.reportProgress('executing', 80, `Updated ${importUpdates.length} import statements`);
-      
+
       // Step 7: Generate index files
       await this.generateIndexFiles(plans);
       this.reportProgress('executing', 90, 'Index files generated');
-      
+
       // Step 8: Validate integrity
       const validation = await this.validateSplitIntegrity({
         success: true,
         subDomainsCreated: plans.reduce((sum, p) => sum + p.targetSubDomains.length, 0),
         filesMoved: moveOperations.length,
         importsUpdated: importUpdates.length,
-        validation: { success: true, issues: [], metrics: {
-          buildSuccess: true,
-          testSuccess: true,
-          noCircularDependencies: true,
-          allImportsResolved: true
-        }}
+        validation: {
+          success: true,
+          issues: [],
+          metrics: {
+            buildSuccess: true,
+            testSuccess: true,
+            noCircularDependencies: true,
+            allImportsResolved: true,
+          },
+        },
       });
-      
+
       this.reportProgress('validating', 95, 'Split validation complete');
-      
+
       if (!validation.success) {
         console.log('❌ Split validation failed, rolling back');
         await this.rollbackSplit();
-        throw new Error(`Split validation failed: ${validation.issues.map(i => i.description).join(', ')}`);
+        throw new Error(
+          `Split validation failed: ${validation.issues.map((i) => i.description).join(', ')}`
+        );
       }
-      
+
       // Step 9: Cleanup backup if successful
       this.reportProgress('complete', 100, 'Domain split completed successfully');
-      
+
       const result: SplittingResult = {
         success: true,
         subDomainsCreated: plans.reduce((sum, p) => sum + p.targetSubDomains.length, 0),
         filesMoved: moveOperations.length,
         importsUpdated: importUpdates.length,
-        validation
+        validation,
       };
-      
+
       console.log(`✅ Domain split completed successfully`);
       console.log(`📊 Created ${result.subDomainsCreated} sub-domains`);
       console.log(`📁 Moved ${result.filesMoved} files`);
       console.log(`🔗 Updated ${result.importsUpdated} imports`);
-      
+
       return result;
-      
     } catch (error) {
       console.error(`❌ Domain split failed:`, error);
       this.reportProgress('validating', 100, `Split failed: ${error.message}`);
-      
+
       try {
         await this.rollbackSplit();
         console.log('🔄 Rollback completed successfully');
       } catch (rollbackError) {
         console.error('💥 Rollback failed:', rollbackError);
       }
-      
+
       throw error;
     }
   }
 
   async validateSplitIntegrity(result: SplittingResult): Promise<ValidationReport> {
     console.log(`🔍 Validating split integrity`);
-    
+
     const issues = [];
     const metrics = {
       buildSuccess: true,
       testSuccess: true,
       noCircularDependencies: true,
-      allImportsResolved: true
+      allImportsResolved: true,
     };
-    
+
     try {
       // Check TypeScript compilation
       const buildResult = await this.validateBuild();
@@ -154,100 +150,99 @@ export class SafeDomainSplitter implements DomainSplitter {
         issues.push({
           type: 'build-error' as const,
           description: `Build failed: ${buildResult.errors.join(', ')}`,
-          severity: 'error' as const
+          severity: 'error' as const,
         });
       }
-      
+
       // Check for circular dependencies
       const circularDeps = await this.checkCircularDependencies();
       metrics.noCircularDependencies = circularDeps.length === 0;
-      circularDeps.forEach(cycle => {
+      circularDeps.forEach((cycle) => {
         issues.push({
           type: 'circular-dependency' as const,
           description: `Circular dependency: ${cycle.join(' -> ')}`,
-          severity: 'error' as const
+          severity: 'error' as const,
         });
       });
-      
+
       // Check import resolution
       const unresolvedImports = await this.checkImportResolution();
       metrics.allImportsResolved = unresolvedImports.length === 0;
-      unresolvedImports.forEach(imp => {
+      unresolvedImports.forEach((imp) => {
         issues.push({
           type: 'missing-import' as const,
           description: `Unresolved import: ${imp.import} in ${imp.file}`,
           file: imp.file,
-          severity: 'error' as const
+          severity: 'error' as const,
         });
       });
-      
+
       // Test execution would go here in a real implementation
       // For now, assume tests pass if build passes
       metrics.testSuccess = metrics.buildSuccess;
-      
     } catch (error) {
       issues.push({
         type: 'build-error' as const,
         description: `Validation error: ${error.message}`,
-        severity: 'error' as const
+        severity: 'error' as const,
       });
     }
-    
-    const success = issues.filter(i => i.severity === 'error').length === 0;
-    
+
+    const success = issues.filter((i) => i.severity === 'error').length === 0;
+
     return {
       success,
       issues,
-      metrics
+      metrics,
     };
   }
 
   async generateMigrationGuide(plans: SubDomainPlan[]): Promise<any> {
     console.log(`📚 Generating migration guide for ${plans.length} plans`);
-    
+
     const breakingChanges = [];
     const migrationSteps = [];
-    
+
     for (const plan of plans) {
       for (const subdomain of plan.targetSubDomains) {
         if (subdomain.files) {
           for (const file of subdomain.files) {
             const oldPath = file;
             const newPath = this.getNewFilePath(file, subdomain.name);
-            
+
             breakingChanges.push({
               type: 'file-moved' as const,
               description: `File moved from ${oldPath} to ${newPath}`,
               before: oldPath,
               after: newPath,
-              affectedFiles: subdomain.files || []
+              affectedFiles: subdomain.files || [],
             });
           }
         }
       }
     }
-    
+
     migrationSteps.push(
       {
         step: 1,
         description: 'Update import paths in your code',
         commands: ['npm run build'],
-        validation: ['Check for TypeScript errors']
+        validation: ['Check for TypeScript errors'],
       },
       {
         step: 2,
         description: 'Run tests to ensure functionality',
         commands: ['npm test'],
-        validation: ['All tests should pass']
+        validation: ['All tests should pass'],
       },
       {
         step: 3,
         description: 'Update documentation and references',
         commands: ['Update README.md', 'Update API documentation'],
-        validation: ['Documentation is accurate']
+        validation: ['Documentation is accurate'],
       }
     );
-    
+
     return {
       summary: `Migration guide for splitting ${plans.length} domains into ${plans.reduce((sum, p) => sum + p.targetSubDomains.length, 0)} sub-domains`,
       breakingChanges,
@@ -255,35 +250,35 @@ export class SafeDomainSplitter implements DomainSplitter {
       rollbackInstructions: [
         'Run the rollback command if issues occur',
         'Restore from backup directory if needed',
-        'Contact support if manual intervention required'
-      ]
+        'Contact support if manual intervention required',
+      ],
     };
   }
 
   private async createBackup(): Promise<void> {
     console.log(`📦 Creating backup in ${this.backupDir}`);
-    
+
     await fs.ensureDir(this.backupDir);
-    
+
     // Create timestamped backup
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const backupPath = path.join(this.backupDir, `backup-${timestamp}`);
-    
+
     // Copy source files to backup
     const srcDir = path.join(process.cwd(), 'src');
     if (await fs.pathExists(srcDir)) {
       await fs.copy(srcDir, path.join(backupPath, 'src'));
     }
-    
+
     // Save backup metadata
     const metadata = {
       timestamp: new Date().toISOString(),
       originalPath: srcDir,
-      backupPath
+      backupPath,
     };
-    
+
     await fs.writeJson(path.join(backupPath, 'metadata.json'), metadata, { spaces: 2 });
-    
+
     console.log(`✅ Backup created at ${backupPath}`);
   }
 
@@ -292,12 +287,12 @@ export class SafeDomainSplitter implements DomainSplitter {
       if (!plan.targetSubDomains || plan.targetSubDomains.length === 0) {
         throw new Error(`Plan for ${plan.sourceDomain} has no target sub-domains`);
       }
-      
+
       for (const subdomain of plan.targetSubDomains) {
         if (!subdomain.name || !subdomain.description) {
           throw new Error(`Sub-domain ${subdomain.name} is missing required fields`);
         }
-        
+
         // Validate name format (kebab-case)
         if (!/^[a-z]+(-[a-z]+)*$/.test(subdomain.name)) {
           throw new Error(`Sub-domain name ${subdomain.name} must be kebab-case`);
@@ -308,7 +303,7 @@ export class SafeDomainSplitter implements DomainSplitter {
 
   private async planFileMoves(plans: SubDomainPlan[]): Promise<FileMoveOperation[]> {
     const operations: FileMoveOperation[] = [];
-    
+
     for (const plan of plans) {
       for (const subdomain of plan.targetSubDomains) {
         if (subdomain.files) {
@@ -317,32 +312,32 @@ export class SafeDomainSplitter implements DomainSplitter {
             operations.push({
               from: file,
               to: newPath,
-              subdomain: subdomain.name
+              subdomain: subdomain.name,
             });
           }
         }
       }
     }
-    
+
     return operations;
   }
 
   private getNewFilePath(originalPath: string, subdomainName: string): string {
     const relativePath = path.relative(process.cwd(), originalPath);
     const pathParts = relativePath.split(path.sep);
-    
+
     // Replace the domain directory with the subdomain directory
     if (pathParts[0] === 'src') {
       pathParts[1] = subdomainName; // Replace 'neural' with 'neural-core' etc.
       return path.join(process.cwd(), ...pathParts);
     }
-    
+
     return originalPath;
   }
 
   private async createDirectoryStructure(plans: SubDomainPlan[]): Promise<void> {
     const srcDir = path.join(process.cwd(), 'src');
-    
+
     for (const plan of plans) {
       for (const subdomain of plan.targetSubDomains) {
         const subdomainDir = path.join(srcDir, subdomain.name);
@@ -354,12 +349,12 @@ export class SafeDomainSplitter implements DomainSplitter {
 
   private async executeFileMoves(operations: FileMoveOperation[]): Promise<void> {
     console.log(`📁 Moving ${operations.length} files`);
-    
+
     for (const operation of operations) {
       try {
         // Ensure target directory exists
         await fs.ensureDir(path.dirname(operation.to));
-        
+
         // Move file
         await fs.move(operation.from, operation.to);
         console.log(`  ✓ ${path.basename(operation.from)} -> ${operation.subdomain}/`);
@@ -370,25 +365,27 @@ export class SafeDomainSplitter implements DomainSplitter {
     }
   }
 
-  private async updateImportPaths(moveOperations: FileMoveOperation[]): Promise<ImportUpdateOperation[]> {
+  private async updateImportPaths(
+    moveOperations: FileMoveOperation[]
+  ): Promise<ImportUpdateOperation[]> {
     console.log(`🔗 Updating import paths`);
-    
+
     const updates: ImportUpdateOperation[] = [];
     const pathMapping = new Map<string, string>();
-    
+
     // Build path mapping
     for (const op of moveOperations) {
       pathMapping.set(op.from, op.to);
     }
-    
+
     // Find all TypeScript files that might need updates
     const allFiles = await this.getAllTypeScriptFiles();
-    
+
     for (const file of allFiles) {
       const fileUpdates = await this.updateImportsInFile(file, pathMapping);
       updates.push(...fileUpdates);
     }
-    
+
     console.log(`🔗 Updated ${updates.length} import statements`);
     return updates;
   }
@@ -396,60 +393,60 @@ export class SafeDomainSplitter implements DomainSplitter {
   private async getAllTypeScriptFiles(): Promise<string[]> {
     const { glob } = await import('glob');
     return glob('src/**/*.{ts,tsx}', {
-      ignore: ['**/*.d.ts', '**/node_modules/**']
+      ignore: ['**/*.d.ts', '**/node_modules/**'],
     });
   }
 
   private async updateImportsInFile(
-    filePath: string, 
+    filePath: string,
     pathMapping: Map<string, string>
   ): Promise<ImportUpdateOperation[]> {
     const content = await fs.readFile(filePath, 'utf-8');
     const lines = content.split('\n');
     const updates: ImportUpdateOperation[] = [];
     let hasChanges = false;
-    
+
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       const importMatch = line.match(/from\s+['"`]([^'"`]+)['"`]/);
-      
+
       if (importMatch) {
         const importPath = importMatch[1];
-        
+
         if (importPath.startsWith('.')) {
           // Relative import - resolve and check if target moved
           const absoluteImportPath = this.resolveImportPath(filePath, importPath);
           const newTargetPath = pathMapping.get(absoluteImportPath);
-          
+
           if (newTargetPath) {
             // Calculate new relative path
             const newRelativePath = this.calculateRelativePath(filePath, newTargetPath);
             const newLine = line.replace(importPath, newRelativePath);
-            
+
             lines[i] = newLine;
             hasChanges = true;
-            
+
             updates.push({
               file: filePath,
               oldImport: importPath,
-              newImport: newRelativePath
+              newImport: newRelativePath,
             });
           }
         }
       }
     }
-    
+
     if (hasChanges) {
       await fs.writeFile(filePath, lines.join('\n'), 'utf-8');
     }
-    
+
     return updates;
   }
 
   private resolveImportPath(fromFile: string, importPath: string): string {
     const fromDir = path.dirname(fromFile);
-    let resolved = path.resolve(fromDir, importPath);
-    
+    const resolved = path.resolve(fromDir, importPath);
+
     // Try different extensions
     const extensions = ['.ts', '.tsx', '.js', '.jsx'];
     for (const ext of extensions) {
@@ -457,7 +454,7 @@ export class SafeDomainSplitter implements DomainSplitter {
         return resolved + ext;
       }
     }
-    
+
     // Try index files
     for (const ext of extensions) {
       const indexPath = path.join(resolved, `index${ext}`);
@@ -465,28 +462,28 @@ export class SafeDomainSplitter implements DomainSplitter {
         return indexPath;
       }
     }
-    
+
     return resolved;
   }
 
   private calculateRelativePath(fromFile: string, toFile: string): string {
     const fromDir = path.dirname(fromFile);
     let relativePath = path.relative(fromDir, toFile);
-    
+
     // Remove extension for import
     relativePath = relativePath.replace(/\.(ts|tsx|js|jsx)$/, '');
-    
+
     // Ensure relative path starts with ./ or ../
     if (!relativePath.startsWith('.')) {
       relativePath = './' + relativePath;
     }
-    
+
     return relativePath;
   }
 
   private async generateIndexFiles(plans: SubDomainPlan[]): Promise<void> {
     console.log(`📄 Generating index files`);
-    
+
     for (const plan of plans) {
       for (const subdomain of plan.targetSubDomains) {
         await this.generateSubdomainIndex(subdomain);
@@ -497,27 +494,27 @@ export class SafeDomainSplitter implements DomainSplitter {
   private async generateSubdomainIndex(subdomain: any): Promise<void> {
     const subdomainDir = path.join(process.cwd(), 'src', subdomain.name);
     const indexPath = path.join(subdomainDir, 'index.ts');
-    
+
     // Find all TypeScript files in subdomain
     const { glob } = await import('glob');
     const files = await glob('**/*.{ts,tsx}', {
       cwd: subdomainDir,
-      ignore: ['index.ts', '**/*.d.ts', '**/*.test.ts', '**/*.spec.ts']
+      ignore: ['index.ts', '**/*.d.ts', '**/*.test.ts', '**/*.spec.ts'],
     });
-    
+
     // Generate exports
     const exports = [];
-    
+
     for (const file of files) {
       const modulePath = './' + file.replace(/\.(ts|tsx)$/, '');
       const content = await fs.readFile(path.join(subdomainDir, file), 'utf-8');
-      
+
       // Extract named exports
       const namedExports = this.extractNamedExports(content);
       if (namedExports.length > 0) {
         exports.push(`export { ${namedExports.join(', ')} } from '${modulePath}';`);
       }
-      
+
       // Check for default export
       if (content.includes('export default')) {
         const baseName = path.basename(file, path.extname(file));
@@ -525,7 +522,7 @@ export class SafeDomainSplitter implements DomainSplitter {
         exports.push(`export { default as ${exportName} } from '${modulePath}';`);
       }
     }
-    
+
     // Generate index content
     const indexContent = [
       `/**`,
@@ -534,9 +531,9 @@ export class SafeDomainSplitter implements DomainSplitter {
       ` */`,
       '',
       ...exports,
-      ''
+      '',
     ].join('\n');
-    
+
     await fs.writeFile(indexPath, indexContent, 'utf-8');
     console.log(`  ✓ Generated index for ${subdomain.name}`);
   }
@@ -545,41 +542,39 @@ export class SafeDomainSplitter implements DomainSplitter {
     const exports = [];
     const exportRegex = /export\s+(?:const|let|var|function|class|interface|type)\s+(\w+)/g;
     const namedExportRegex = /export\s*{\s*([^}]+)\s*}/g;
-    
+
     let match;
     while ((match = exportRegex.exec(content)) !== null) {
       exports.push(match[1]);
     }
-    
+
     while ((match = namedExportRegex.exec(content)) !== null) {
-      const namedExports = match[1].split(',').map(e => e.trim().split(' as ')[0].trim());
+      const namedExports = match[1].split(',').map((e) => e.trim().split(' as ')[0].trim());
       exports.push(...namedExports);
     }
-    
+
     return [...new Set(exports)]; // Remove duplicates
   }
 
   private toPascalCase(str: string): string {
-    return str.replace(/(^\w|[-_]\w)/g, match => 
-      match.replace(/[-_]/, '').toUpperCase()
-    );
+    return str.replace(/(^\w|[-_]\w)/g, (match) => match.replace(/[-_]/, '').toUpperCase());
   }
 
   private async validateBuild(): Promise<{ success: boolean; errors: string[] }> {
     try {
       const { execSync } = await import('child_process');
-      
+
       // Run TypeScript compiler
       const result = execSync('npx tsc --noEmit --skipLibCheck', {
         encoding: 'utf-8',
-        stdio: 'pipe'
+        stdio: 'pipe',
       });
-      
+
       return { success: true, errors: [] };
     } catch (error) {
       const errorOutput = error.stdout || error.stderr || error.message;
-      const errors = errorOutput.split('\n').filter(line => line.trim());
-      
+      const errors = errorOutput.split('\n').filter((line) => line.trim());
+
       return { success: false, errors };
     }
   }
@@ -598,27 +593,27 @@ export class SafeDomainSplitter implements DomainSplitter {
 
   private async rollbackSplit(): Promise<void> {
     console.log(`🔄 Rolling back domain split`);
-    
+
     // Find latest backup
     const backupDirs = await fs.readdir(this.backupDir);
     const latestBackup = backupDirs
-      .filter(dir => dir.startsWith('backup-'))
+      .filter((dir) => dir.startsWith('backup-'))
       .sort()
       .pop();
-    
+
     if (!latestBackup) {
       throw new Error('No backup found for rollback');
     }
-    
+
     const backupPath = path.join(this.backupDir, latestBackup);
     const srcBackup = path.join(backupPath, 'src');
     const currentSrc = path.join(process.cwd(), 'src');
-    
+
     if (await fs.pathExists(srcBackup)) {
       // Remove current src and restore from backup
       await fs.remove(currentSrc);
       await fs.copy(srcBackup, currentSrc);
-      
+
       console.log(`✅ Rollback completed from ${latestBackup}`);
     } else {
       throw new Error(`Backup source not found: ${srcBackup}`);
@@ -638,7 +633,7 @@ export class SafeDomainSplitter implements DomainSplitter {
         estimatedTimeRemaining: 0, // Would calculate based on stage
         completedOperations: [],
         errors: [],
-        warnings: []
+        warnings: [],
       });
     }
   }

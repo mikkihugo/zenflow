@@ -5,13 +5,16 @@
 
 import type { BackendInterface } from '../backends/base.backend';
 import { BackendFactory } from '../backends/factory';
-import { MemoryCoordinator, type MemoryCoordinationConfig } from '../core/memory-coordinator';
-import { PerformanceOptimizer, type OptimizationConfig } from '../optimization/performance-optimizer';
+import { type MemoryCoordinationConfig, MemoryCoordinator } from '../core/memory-coordinator';
+import {
+  type OptimizationConfig,
+  PerformanceOptimizer,
+} from '../optimization/performance-optimizer';
 
 // Global memory system instances
 let memoryCoordinator: MemoryCoordinator | null = null;
 let performanceOptimizer: PerformanceOptimizer | null = null;
-let registeredBackends = new Map<string, BackendInterface>();
+const registeredBackends = new Map<string, BackendInterface>();
 
 export interface MCPTool {
   name: string;
@@ -47,15 +50,27 @@ export const memoryInitTool: MCPTool = {
             properties: {
               quorum: { type: 'number', minimum: 0.5, maximum: 1.0, default: 0.67 },
               timeout: { type: 'number', minimum: 1000, default: 5000 },
-              strategy: { type: 'string', enum: ['majority', 'unanimous', 'leader'], default: 'majority' },
+              strategy: {
+                type: 'string',
+                enum: ['majority', 'unanimous', 'leader'],
+                default: 'majority',
+              },
             },
           },
           distributed: {
             type: 'object',
             properties: {
               replication: { type: 'number', minimum: 1, maximum: 5, default: 2 },
-              consistency: { type: 'string', enum: ['eventual', 'strong', 'weak'], default: 'eventual' },
-              partitioning: { type: 'string', enum: ['hash', 'range', 'consistent'], default: 'hash' },
+              consistency: {
+                type: 'string',
+                enum: ['eventual', 'strong', 'weak'],
+                default: 'eventual',
+              },
+              partitioning: {
+                type: 'string',
+                enum: ['hash', 'range', 'consistent'],
+                default: 'hash',
+              },
             },
           },
         },
@@ -155,11 +170,11 @@ export const memoryInitTool: MCPTool = {
         try {
           const backend = BackendFactory.createBackend(backendConfig.type, backendConfig.config);
           await backend.initialize();
-          
+
           registeredBackends.set(backendConfig.id, backend);
           await memoryCoordinator.registerNode(backendConfig.id, backend);
           performanceOptimizer.registerBackend(backendConfig.id, backend);
-          
+
           initializedBackends.push({
             id: backendConfig.id,
             type: backendConfig.type,
@@ -210,9 +225,9 @@ export const memoryOptimizeTool: MCPTool = {
   inputSchema: {
     type: 'object',
     properties: {
-      target: { 
-        type: 'string', 
-        enum: ['latency', 'memory', 'cache', 'error_rate', 'all'], 
+      target: {
+        type: 'string',
+        enum: ['latency', 'memory', 'cache', 'error_rate', 'all'],
         default: 'all',
         description: 'Optimization target',
       },
@@ -327,7 +342,11 @@ export const memoryMonitorTool: MCPTool = {
   },
   handler: async (params): Promise<MCPToolResult> => {
     try {
-      const { duration = 30000, metrics = ['latency', 'throughput', 'memory', 'cache'], alertThresholds = {} } = params;
+      const {
+        duration = 30000,
+        metrics = ['latency', 'throughput', 'memory', 'cache'],
+        alertThresholds = {},
+      } = params;
 
       const monitoringData = {
         startTime: Date.now(),
@@ -350,8 +369,11 @@ export const memoryMonitorTool: MCPTool = {
 
         // Check alerts
         const currentMetrics = optimizerStats.metrics;
-        
-        if (metrics.includes('latency') && currentMetrics.averageLatency > (alertThresholds.latency || 100)) {
+
+        if (
+          metrics.includes('latency') &&
+          currentMetrics.averageLatency > (alertThresholds.latency || 100)
+        ) {
           monitoringData.alerts.push({
             type: 'latency',
             severity: 'warning',
@@ -361,7 +383,10 @@ export const memoryMonitorTool: MCPTool = {
           });
         }
 
-        if (metrics.includes('errors') && currentMetrics.errorRate > (alertThresholds.errorRate || 0.05)) {
+        if (
+          metrics.includes('errors') &&
+          currentMetrics.errorRate > (alertThresholds.errorRate || 0.05)
+        ) {
           monitoringData.alerts.push({
             type: 'error_rate',
             severity: 'warning',
@@ -371,7 +396,10 @@ export const memoryMonitorTool: MCPTool = {
           });
         }
 
-        if (metrics.includes('memory') && currentMetrics.memoryUsage > (alertThresholds.memoryUsage || 0.8)) {
+        if (
+          metrics.includes('memory') &&
+          currentMetrics.memoryUsage > (alertThresholds.memoryUsage || 0.8)
+        ) {
           monitoringData.alerts.push({
             type: 'memory_usage',
             severity: 'warning',
@@ -381,7 +409,10 @@ export const memoryMonitorTool: MCPTool = {
           });
         }
 
-        if (metrics.includes('cache') && currentMetrics.cacheHitRate < (alertThresholds.cacheHitRate || 0.7)) {
+        if (
+          metrics.includes('cache') &&
+          currentMetrics.cacheHitRate < (alertThresholds.cacheHitRate || 0.7)
+        ) {
           monitoringData.alerts.push({
             type: 'cache_hit_rate',
             severity: 'warning',
@@ -487,7 +518,10 @@ export const memoryDistributeTool: MCPTool = {
             timestamp: decision.timestamp,
           },
           consistency,
-          result: operation === 'read' ? await memoryCoordinator.coordinate({ type: 'read', sessionId, target: key }) : undefined,
+          result:
+            operation === 'read'
+              ? await memoryCoordinator.coordinate({ type: 'read', sessionId, target: key })
+              : undefined,
         },
         metadata: {
           timestamp: Date.now(),
@@ -565,7 +599,7 @@ export const memoryHealthCheckTool: MCPTool = {
         if (performanceOptimizer) {
           const optimizerStats = performanceOptimizer.getStats();
           const recommendations = performanceOptimizer.getRecommendations();
-          
+
           healthReport.components.optimizer = {
             status: 'healthy',
             metrics: optimizerStats.metrics,
@@ -590,8 +624,8 @@ export const memoryHealthCheckTool: MCPTool = {
             backendHealth[id] = { status: 'healthy', type: backend.constructor.name };
             healthyBackends++;
           } catch (error) {
-            backendHealth[id] = { 
-              status: 'unhealthy', 
+            backendHealth[id] = {
+              status: 'unhealthy',
               type: backend.constructor.name,
               error: error.message,
             };
@@ -612,9 +646,11 @@ export const memoryHealthCheckTool: MCPTool = {
 
       // Set overall status based on issues
       if (healthReport.issues.length > 0) {
-        healthReport.overall = healthReport.issues.some(issue => 
-          issue.includes('not_initialized') || issue.includes('unhealthy')
-        ) ? 'critical' : 'degraded';
+        healthReport.overall = healthReport.issues.some(
+          (issue) => issue.includes('not_initialized') || issue.includes('unhealthy')
+        )
+          ? 'critical'
+          : 'degraded';
       }
 
       return {

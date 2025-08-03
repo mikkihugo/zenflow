@@ -3,8 +3,8 @@
  * Tests interactions between components using mocks
  */
 
-import { DomainSplittingOrchestrator } from '../../../../tools/domain-splitting/orchestrator.js';
 import { DomainAnalysisEngine } from '../../../../tools/domain-splitting/analyzers/domain-analyzer.js';
+import { DomainSplittingOrchestrator } from '../../../../tools/domain-splitting/orchestrator.js';
 import { SafeDomainSplitter } from '../../../../tools/domain-splitting/splitters/domain-splitter.js';
 import { DependencyValidator } from '../../../../tools/domain-splitting/validators/dependency-validator.js';
 
@@ -41,44 +41,51 @@ describe('Domain Splitting Orchestration - London TDD', () => {
         totalFiles: 20,
         categories: {
           'core-algorithms': ['file1.ts'],
-          'models': ['file2.ts'],
-          'agents': ['file3.ts'],
-          'coordination': ['file4.ts'],
-          'wasm': ['file5.ts'],
-          'bridge': ['file6.ts'],
+          models: ['file2.ts'],
+          agents: ['file3.ts'],
+          coordination: ['file4.ts'],
+          wasm: ['file5.ts'],
+          bridge: ['file6.ts'],
           'training-systems': [],
           'network-architectures': [],
           'data-processing': [],
           'evaluation-metrics': [],
-          'visualization': [],
-          'integration': [],
-          'utilities': [],
-          'tests': [],
-          'configuration': []
+          visualization: [],
+          integration: [],
+          utilities: [],
+          tests: [],
+          configuration: [],
         },
         dependencies: { nodes: [], edges: [] },
-        coupling: { tightlyCoupledGroups: [], averageCoupling: 0.3, maxCoupling: 0.5, isolatedFiles: [] },
+        coupling: {
+          tightlyCoupledGroups: [],
+          averageCoupling: 0.3,
+          maxCoupling: 0.5,
+          isolatedFiles: [],
+        },
         complexityScore: 8.5,
-        splittingRecommendations: []
+        splittingRecommendations: [],
       };
 
-      const mockPlans = [{
-        sourceDomain: 'neural',
-        targetSubDomains: [
-          {
-            name: 'neural-core',
-            description: 'Core algorithms',
-            estimatedFiles: 5,
-            dependencies: ['utils']
-          },
-          {
-            name: 'neural-models',
-            description: 'Neural models',
-            estimatedFiles: 8,
-            dependencies: ['neural-core']
-          }
-        ]
-      }];
+      const mockPlans = [
+        {
+          sourceDomain: 'neural',
+          targetSubDomains: [
+            {
+              name: 'neural-core',
+              description: 'Core algorithms',
+              estimatedFiles: 5,
+              dependencies: ['utils'],
+            },
+            {
+              name: 'neural-models',
+              description: 'Neural models',
+              estimatedFiles: 8,
+              dependencies: ['neural-core'],
+            },
+          ],
+        },
+      ];
 
       const mockValidation = {
         success: true,
@@ -87,8 +94,8 @@ describe('Domain Splitting Orchestration - London TDD', () => {
           buildSuccess: true,
           testSuccess: true,
           noCircularDependencies: true,
-          allImportsResolved: true
-        }
+          allImportsResolved: true,
+        },
       };
 
       const mockResult = {
@@ -96,7 +103,7 @@ describe('Domain Splitting Orchestration - London TDD', () => {
         subDomainsCreated: 2,
         filesMoved: 13,
         importsUpdated: 8,
-        validation: mockValidation
+        validation: mockValidation,
       };
 
       // Setup mocks
@@ -115,15 +122,15 @@ describe('Domain Splitting Orchestration - London TDD', () => {
         expect.arrayContaining([
           expect.objectContaining({
             sourceDomain: 'neural',
-            targetSubDomains: expect.any(Array)
-          })
+            targetSubDomains: expect.any(Array),
+          }),
         ])
       );
       expect(mockSplitter.executeSplitting).toHaveBeenCalledWith(
         expect.arrayContaining([
           expect.objectContaining({
-            sourceDomain: 'neural'
-          })
+            sourceDomain: 'neural',
+          }),
         ])
       );
 
@@ -136,12 +143,11 @@ describe('Domain Splitting Orchestration - London TDD', () => {
       // Arrange
       const domainPath = 'src/invalid';
       const analysisError = new Error('Domain not found');
-      
+
       mockAnalyzer.analyzeDomainComplexity.mockRejectedValue(analysisError);
 
       // Act & Assert
-      await expect(orchestrator.executeDomainSplit(domainPath))
-        .rejects.toThrow('Domain not found');
+      await expect(orchestrator.executeDomainSplit(domainPath)).rejects.toThrow('Domain not found');
 
       expect(mockAnalyzer.analyzeDomainComplexity).toHaveBeenCalledWith(domainPath);
       expect(mockAnalyzer.identifySubDomains).not.toHaveBeenCalled();
@@ -156,34 +162,45 @@ describe('Domain Splitting Orchestration - London TDD', () => {
         totalFiles: 10,
         categories: {},
         dependencies: { nodes: [], edges: [] },
-        coupling: { tightlyCoupledGroups: [], averageCoupling: 0.3, maxCoupling: 0.5, isolatedFiles: [] },
+        coupling: {
+          tightlyCoupledGroups: [],
+          averageCoupling: 0.3,
+          maxCoupling: 0.5,
+          isolatedFiles: [],
+        },
         complexityScore: 5.0,
-        splittingRecommendations: []
+        splittingRecommendations: [],
       };
 
-      const mockPlans = [{
-        sourceDomain: 'neural',
-        targetSubDomains: [{
-          name: 'neural-core',
-          description: 'Core',
-          estimatedFiles: 5,
-          dependencies: []
-        }]
-      }];
+      const mockPlans = [
+        {
+          sourceDomain: 'neural',
+          targetSubDomains: [
+            {
+              name: 'neural-core',
+              description: 'Core',
+              estimatedFiles: 5,
+              dependencies: [],
+            },
+          ],
+        },
+      ];
 
       const mockValidation = {
         success: false,
-        issues: [{ 
-          type: 'circular-dependency' as const, 
-          description: 'Circular dependency detected', 
-          severity: 'error' as const 
-        }],
+        issues: [
+          {
+            type: 'circular-dependency' as const,
+            description: 'Circular dependency detected',
+            severity: 'error' as const,
+          },
+        ],
         metrics: {
           buildSuccess: false,
           testSuccess: true,
           noCircularDependencies: false,
-          allImportsResolved: true
-        }
+          allImportsResolved: true,
+        },
       };
 
       mockAnalyzer.analyzeDomainComplexity.mockResolvedValue(mockAnalysis);
@@ -191,8 +208,9 @@ describe('Domain Splitting Orchestration - London TDD', () => {
       mockValidator.validateNoCyclicDependencies.mockResolvedValue(mockValidation);
 
       // Act & Assert
-      await expect(orchestrator.executeDomainSplit(domainPath))
-        .rejects.toThrow('Plan validation failed');
+      await expect(orchestrator.executeDomainSplit(domainPath)).rejects.toThrow(
+        'Plan validation failed'
+      );
 
       expect(mockValidator.validateNoCyclicDependencies).toHaveBeenCalled();
       expect(mockSplitter.executeSplitting).not.toHaveBeenCalled();
@@ -203,12 +221,14 @@ describe('Domain Splitting Orchestration - London TDD', () => {
       const domainPath = 'src/neural';
       const providedPlan = {
         sourceDomain: 'neural',
-        targetSubDomains: [{
-          name: 'neural-custom',
-          description: 'Custom subdomain',
-          estimatedFiles: 10,
-          dependencies: ['utils']
-        }]
+        targetSubDomains: [
+          {
+            name: 'neural-custom',
+            description: 'Custom subdomain',
+            estimatedFiles: 10,
+            dependencies: ['utils'],
+          },
+        ],
       };
 
       const mockAnalysis = {
@@ -216,25 +236,30 @@ describe('Domain Splitting Orchestration - London TDD', () => {
         totalFiles: 10,
         categories: {
           'core-algorithms': ['file1.ts'],
-          'models': [],
-          'agents': [],
-          'coordination': [],
-          'wasm': [],
-          'bridge': [],
+          models: [],
+          agents: [],
+          coordination: [],
+          wasm: [],
+          bridge: [],
           'training-systems': [],
           'network-architectures': [],
           'data-processing': [],
           'evaluation-metrics': [],
-          'visualization': [],
-          'integration': [],
-          'utilities': [],
-          'tests': [],
-          'configuration': []
+          visualization: [],
+          integration: [],
+          utilities: [],
+          tests: [],
+          configuration: [],
         },
         dependencies: { nodes: [], edges: [] },
-        coupling: { tightlyCoupledGroups: [], averageCoupling: 0.2, maxCoupling: 0.4, isolatedFiles: [] },
+        coupling: {
+          tightlyCoupledGroups: [],
+          averageCoupling: 0.2,
+          maxCoupling: 0.4,
+          isolatedFiles: [],
+        },
         complexityScore: 4.0,
-        splittingRecommendations: []
+        splittingRecommendations: [],
       };
 
       const mockValidation = {
@@ -244,8 +269,8 @@ describe('Domain Splitting Orchestration - London TDD', () => {
           buildSuccess: true,
           testSuccess: true,
           noCircularDependencies: true,
-          allImportsResolved: true
-        }
+          allImportsResolved: true,
+        },
       };
 
       const mockResult = {
@@ -253,7 +278,7 @@ describe('Domain Splitting Orchestration - London TDD', () => {
         subDomainsCreated: 1,
         filesMoved: 10,
         importsUpdated: 5,
-        validation: mockValidation
+        validation: mockValidation,
       };
 
       mockAnalyzer.analyzeDomainComplexity.mockResolvedValue(mockAnalysis);
@@ -272,10 +297,10 @@ describe('Domain Splitting Orchestration - London TDD', () => {
             sourceDomain: 'neural',
             targetSubDomains: expect.arrayContaining([
               expect.objectContaining({
-                name: 'neural-custom'
-              })
-            ])
-          })
+                name: 'neural-custom',
+              }),
+            ]),
+          }),
         ])
       );
 
@@ -292,27 +317,36 @@ describe('Domain Splitting Orchestration - London TDD', () => {
         totalFiles: 15,
         categories: {},
         dependencies: { nodes: [], edges: [] },
-        coupling: { tightlyCoupledGroups: [], averageCoupling: 0.4, maxCoupling: 0.6, isolatedFiles: [] },
+        coupling: {
+          tightlyCoupledGroups: [],
+          averageCoupling: 0.4,
+          maxCoupling: 0.6,
+          isolatedFiles: [],
+        },
         complexityScore: 7.2,
-        splittingRecommendations: []
+        splittingRecommendations: [],
       };
 
-      const mockPlans = [{
-        sourceDomain: 'coordination',
-        targetSubDomains: [{
-          name: 'coordination-core',
-          description: 'Core coordination',
-          estimatedFiles: 8,
-          dependencies: ['utils']
-        }]
-      }];
+      const mockPlans = [
+        {
+          sourceDomain: 'coordination',
+          targetSubDomains: [
+            {
+              name: 'coordination-core',
+              description: 'Core coordination',
+              estimatedFiles: 8,
+              dependencies: ['utils'],
+            },
+          ],
+        },
+      ];
 
       const mockMetrics = {
         complexityReduction: 0.3,
         maintainabilityImprovement: 0.4,
         buildTimeImpact: -0.1,
         testTimeImpact: 0.2,
-        migrationEffort: 4
+        migrationEffort: 4,
       };
 
       mockAnalyzer.analyzeDomainComplexity.mockResolvedValue(mockAnalysis);
@@ -330,7 +364,7 @@ describe('Domain Splitting Orchestration - London TDD', () => {
       expect(result).toEqual({
         analysis: mockAnalysis,
         recommendedPlans: mockPlans,
-        benefits: mockMetrics
+        benefits: mockMetrics,
       });
     });
 
@@ -342,9 +376,14 @@ describe('Domain Splitting Orchestration - London TDD', () => {
         totalFiles: 3,
         categories: {},
         dependencies: { nodes: [], edges: [] },
-        coupling: { tightlyCoupledGroups: [], averageCoupling: 0.1, maxCoupling: 0.2, isolatedFiles: [] },
+        coupling: {
+          tightlyCoupledGroups: [],
+          averageCoupling: 0.1,
+          maxCoupling: 0.2,
+          isolatedFiles: [],
+        },
         complexityScore: 2.0,
-        splittingRecommendations: []
+        splittingRecommendations: [],
       };
 
       const mockPlans: any[] = []; // No plans generated
@@ -370,25 +409,30 @@ describe('Domain Splitting Orchestration - London TDD', () => {
         totalFiles: 25,
         categories: {
           'core-algorithms': ['neural-core.ts'],
-          'models': ['model1.ts', 'model2.ts'],
-          'agents': ['agent.ts'],
-          'coordination': ['coordinator.ts'],
-          'wasm': ['wasm-loader.ts'],
-          'bridge': ['bridge.ts'],
+          models: ['model1.ts', 'model2.ts'],
+          agents: ['agent.ts'],
+          coordination: ['coordinator.ts'],
+          wasm: ['wasm-loader.ts'],
+          bridge: ['bridge.ts'],
           'training-systems': [],
           'network-architectures': [],
           'data-processing': [],
           'evaluation-metrics': [],
-          'visualization': [],
-          'integration': [],
-          'utilities': [],
-          'tests': [],
-          'configuration': []
+          visualization: [],
+          integration: [],
+          utilities: [],
+          tests: [],
+          configuration: [],
         },
         dependencies: { nodes: [], edges: [] },
-        coupling: { tightlyCoupledGroups: [], averageCoupling: 0.3, maxCoupling: 0.5, isolatedFiles: [] },
+        coupling: {
+          tightlyCoupledGroups: [],
+          averageCoupling: 0.3,
+          maxCoupling: 0.5,
+          isolatedFiles: [],
+        },
         complexityScore: 9.1,
-        splittingRecommendations: []
+        splittingRecommendations: [],
       };
 
       const mockValidation = {
@@ -398,8 +442,8 @@ describe('Domain Splitting Orchestration - London TDD', () => {
           buildSuccess: true,
           testSuccess: true,
           noCircularDependencies: true,
-          allImportsResolved: true
-        }
+          allImportsResolved: true,
+        },
       };
 
       const mockResult = {
@@ -407,7 +451,7 @@ describe('Domain Splitting Orchestration - London TDD', () => {
         subDomainsCreated: 6,
         filesMoved: 25,
         importsUpdated: 15,
-        validation: mockValidation
+        validation: mockValidation,
       };
 
       mockAnalyzer.analyzeDomainComplexity.mockResolvedValue(mockAnalysis);
@@ -429,9 +473,9 @@ describe('Domain Splitting Orchestration - London TDD', () => {
               expect.objectContaining({ name: 'neural-agents' }),
               expect.objectContaining({ name: 'neural-coordination' }),
               expect.objectContaining({ name: 'neural-wasm' }),
-              expect.objectContaining({ name: 'neural-bridge' })
-            ])
-          })
+              expect.objectContaining({ name: 'neural-bridge' }),
+            ]),
+          }),
         ])
       );
 
@@ -443,15 +487,19 @@ describe('Domain Splitting Orchestration - London TDD', () => {
   describe('Split Validation', () => {
     it('should validate domain split comprehensively', async () => {
       // Arrange
-      const mockPlans = [{
-        sourceDomain: 'test',
-        targetSubDomains: [{
-          name: 'test-core',
-          description: 'Core functionality',
-          estimatedFiles: 5,
-          dependencies: []
-        }]
-      }];
+      const mockPlans = [
+        {
+          sourceDomain: 'test',
+          targetSubDomains: [
+            {
+              name: 'test-core',
+              description: 'Core functionality',
+              estimatedFiles: 5,
+              dependencies: [],
+            },
+          ],
+        },
+      ];
 
       const mockCyclicValidation = {
         success: true,
@@ -460,21 +508,21 @@ describe('Domain Splitting Orchestration - London TDD', () => {
           buildSuccess: true,
           testSuccess: true,
           noCircularDependencies: true,
-          allImportsResolved: true
-        }
+          allImportsResolved: true,
+        },
       };
 
       const mockApiValidation = {
         compatibleAPIs: ['api1', 'api2'],
         breakingChanges: [],
-        deprecations: []
+        deprecations: [],
       };
 
       const mockBuildValidation = {
         success: true,
         buildTime: 1500,
         errors: [],
-        warnings: []
+        warnings: [],
       };
 
       mockValidator.validateNoCyclicDependencies.mockResolvedValue(mockCyclicValidation);
@@ -493,31 +541,41 @@ describe('Domain Splitting Orchestration - London TDD', () => {
         cyclicDependencies: mockCyclicValidation,
         apiStability: mockApiValidation,
         buildIntegrity: mockBuildValidation,
-        overall: true
+        overall: true,
       });
     });
 
     it('should report overall failure when components fail', async () => {
       // Arrange
-      const mockPlans = [{
-        sourceDomain: 'test',
-        targetSubDomains: [{
-          name: 'test-core',
-          description: 'Core functionality',
-          estimatedFiles: 5,
-          dependencies: []
-        }]
-      }];
+      const mockPlans = [
+        {
+          sourceDomain: 'test',
+          targetSubDomains: [
+            {
+              name: 'test-core',
+              description: 'Core functionality',
+              estimatedFiles: 5,
+              dependencies: [],
+            },
+          ],
+        },
+      ];
 
       const mockCyclicValidation = {
         success: false,
-        issues: [{ type: 'circular-dependency' as const, description: 'Cycle found', severity: 'error' as const }],
+        issues: [
+          {
+            type: 'circular-dependency' as const,
+            description: 'Cycle found',
+            severity: 'error' as const,
+          },
+        ],
         metrics: {
           buildSuccess: false,
           testSuccess: true,
           noCircularDependencies: false,
-          allImportsResolved: true
-        }
+          allImportsResolved: true,
+        },
       };
 
       const mockApiValidation = { compatibleAPIs: [], breakingChanges: [], deprecations: [] };

@@ -4,10 +4,9 @@
  */
 
 import { program } from 'commander';
-import path from 'path';
-
 // Import the demo for now since full implementation has build dependencies
 import fs from 'fs-extra';
+import path from 'path';
 
 interface CliOptions {
   domain?: string;
@@ -29,21 +28,21 @@ program
   .option('-v, --verbose', 'Show detailed analysis')
   .action(async (domainPath: string, options: any) => {
     console.log(`🔍 Analyzing domain: ${domainPath}`);
-    
+
     try {
       // For now, run the demo analysis
       const demoModule = await import('./demo.js');
       const demo = new demoModule.default();
-      
+
       // Get full path
       const fullPath = path.resolve(domainPath);
       const analysis = await demo.analyzeDomain(fullPath);
-      
+
       console.log('\n📊 Analysis Results:');
       console.log(`  Total Files: ${analysis.totalFiles}`);
       console.log(`  Complexity Score: ${analysis.complexityScore}/10`);
       console.log(`  Recommendations: ${analysis.recommendations.length}`);
-      
+
       if (options.verbose) {
         console.log('\n📂 File Categories:');
         for (const [category, files] of Object.entries(analysis.filesByCategory)) {
@@ -51,11 +50,10 @@ program
             console.log(`  ${category}: ${files.length} files`);
           }
         }
-        
+
         console.log('\n💡 Recommendations:');
-        analysis.recommendations.forEach(rec => console.log(`  • ${rec}`));
+        analysis.recommendations.forEach((rec) => console.log(`  • ${rec}`));
       }
-      
     } catch (error) {
       console.error('❌ Analysis failed:', error.message);
       process.exit(1);
@@ -70,7 +68,7 @@ program
   .option('-v, --verbose', 'Show detailed progress')
   .action(async (domainPath: string, options: any) => {
     console.log(`🚀 ${options.dryRun ? 'Simulating' : 'Executing'} domain split: ${domainPath}`);
-    
+
     if (domainPath.includes('neural')) {
       // Run neural domain demonstration
       try {
@@ -84,7 +82,7 @@ program
     } else {
       console.log('🚧 Full splitting implementation available for neural domain');
       console.log('For other domains, use --dry-run for simulation');
-      
+
       if (options.dryRun) {
         console.log('📋 Dry run completed - no changes made');
       }
@@ -97,7 +95,7 @@ program
   .option('--dry-run', 'Simulate split without making changes')
   .action(async (options: any) => {
     console.log(`🧠 Neural domain splitting ${options.dryRun ? '(simulation)' : ''}`);
-    
+
     try {
       const demoModule = await import('./demo.js');
       const demo = new demoModule.default();
@@ -114,54 +112,54 @@ program
   .argument('<domain-path>', 'Path to domain directory')
   .action(async (domainPath: string) => {
     console.log(`✅ Validating domain: ${domainPath}`);
-    
+
     const fullPath = path.resolve(domainPath);
-    
-    if (!await fs.pathExists(fullPath)) {
+
+    if (!(await fs.pathExists(fullPath))) {
       console.error('❌ Domain path does not exist');
       process.exit(1);
     }
-    
+
     // Basic validation
     const files = await getTypeScriptFiles(fullPath);
     console.log(`📁 Found ${files.length} TypeScript files`);
-    
+
     // Check for common issues
     const issues = [];
     if (files.length > 50) {
       issues.push('Domain is very large (>50 files) - consider splitting');
     }
-    
-    const testFiles = files.filter(f => f.includes('.test.') || f.includes('.spec.'));
+
+    const testFiles = files.filter((f) => f.includes('.test.') || f.includes('.spec.'));
     if (testFiles.length === 0) {
       issues.push('No test files found');
     }
-    
-    const indexFiles = files.filter(f => path.basename(f) === 'index.ts');
+
+    const indexFiles = files.filter((f) => path.basename(f) === 'index.ts');
     if (indexFiles.length === 0) {
       issues.push('No index.ts file found');
     }
-    
+
     if (issues.length === 0) {
       console.log('✅ Domain structure looks good');
     } else {
       console.log('\n⚠️  Issues found:');
-      issues.forEach(issue => console.log(`  • ${issue}`));
+      issues.forEach((issue) => console.log(`  • ${issue}`));
     }
   });
 
 async function getTypeScriptFiles(dir: string): Promise<string[]> {
   const files: string[] = [];
-  
+
   const scanDirectory = async (currentDir: string): Promise<void> => {
-    if (!await fs.pathExists(currentDir)) return;
-    
+    if (!(await fs.pathExists(currentDir))) return;
+
     const items = await fs.readdir(currentDir);
-    
+
     for (const item of items) {
       const itemPath = path.join(currentDir, item);
       const stat = await fs.stat(itemPath);
-      
+
       if (stat.isDirectory()) {
         await scanDirectory(itemPath);
       } else if (item.endsWith('.ts') || item.endsWith('.tsx')) {
@@ -169,7 +167,7 @@ async function getTypeScriptFiles(dir: string): Promise<string[]> {
       }
     }
   };
-  
+
   await scanDirectory(dir);
   return files;
 }

@@ -10,7 +10,7 @@ import { QueryOptimizer } from '../optimization/query-optimizer';
 // Global database system instances
 let databaseCoordinator: DatabaseCoordinator | null = null;
 let queryOptimizer: QueryOptimizer | null = null;
-let registeredEngines = new Map<string, DatabaseEngine>();
+const registeredEngines = new Map<string, DatabaseEngine>();
 
 export interface MCPTool {
   name: string;
@@ -43,28 +43,28 @@ export const databaseInitTool: MCPTool = {
           type: 'object',
           properties: {
             id: { type: 'string' },
-            type: { 
-              type: 'string', 
+            type: {
+              type: 'string',
               enum: ['vector', 'graph', 'document', 'relational', 'timeseries'],
-              description: 'Database engine type'
+              description: 'Database engine type',
             },
             capabilities: {
               type: 'array',
               items: { type: 'string' },
-              description: 'Engine capabilities (search, analytics, indexing, etc.)'
+              description: 'Engine capabilities (search, analytics, indexing, etc.)',
             },
             config: {
               type: 'object',
-              description: 'Engine-specific configuration'
+              description: 'Engine-specific configuration',
             },
             interface: {
               type: 'object',
-              description: 'Database interface methods'
+              description: 'Database interface methods',
             },
           },
           required: ['id', 'type', 'capabilities', 'config'],
         },
-        description: 'Database engines to register'
+        description: 'Database engines to register',
       },
       optimization: {
         type: 'object',
@@ -83,7 +83,7 @@ export const databaseInitTool: MCPTool = {
             type: 'string',
             enum: ['low', 'medium', 'high'],
             default: 'medium',
-            description: 'Optimization aggressiveness level'
+            description: 'Optimization aggressiveness level',
           },
         },
       },
@@ -95,7 +95,7 @@ export const databaseInitTool: MCPTool = {
           loadBalancing: {
             type: 'string',
             enum: ['round_robin', 'least_loaded', 'performance_based', 'capability_based'],
-            default: 'performance_based'
+            default: 'performance_based',
           },
         },
       },
@@ -108,7 +108,7 @@ export const databaseInitTool: MCPTool = {
 
       // Initialize database coordinator
       databaseCoordinator = new DatabaseCoordinator();
-      
+
       // Initialize query optimizer
       queryOptimizer = new QueryOptimizer();
 
@@ -135,7 +135,7 @@ export const databaseInitTool: MCPTool = {
 
           await databaseCoordinator.registerEngine(engine);
           registeredEngines.set(engine.id, engine);
-          
+
           engineResults.push({
             id: engine.id,
             type: engine.type,
@@ -198,11 +198,11 @@ export const databaseQueryTool: MCPTool = {
     properties: {
       operation: {
         type: 'string',
-        description: 'Database operation (vector_search, graph_query, document_find, etc.)'
+        description: 'Database operation (vector_search, graph_query, document_find, etc.)',
       },
       parameters: {
         type: 'object',
-        description: 'Query parameters specific to the operation'
+        description: 'Query parameters specific to the operation',
       },
       requirements: {
         type: 'object',
@@ -210,18 +210,18 @@ export const databaseQueryTool: MCPTool = {
           consistency: {
             type: 'string',
             enum: ['eventual', 'strong', 'weak'],
-            default: 'eventual'
+            default: 'eventual',
           },
           timeout: { type: 'number', default: 30000 },
           priority: {
             type: 'string',
             enum: ['low', 'medium', 'high', 'critical'],
-            default: 'medium'
+            default: 'medium',
           },
           capabilities: {
             type: 'array',
             items: { type: 'string' },
-            description: 'Required engine capabilities'
+            description: 'Required engine capabilities',
           },
         },
       },
@@ -231,17 +231,17 @@ export const databaseQueryTool: MCPTool = {
           preferredEngines: {
             type: 'array',
             items: { type: 'string' },
-            description: 'Preferred engine IDs'
+            description: 'Preferred engine IDs',
           },
           excludeEngines: {
             type: 'array',
             items: { type: 'string' },
-            description: 'Engines to exclude'
+            description: 'Engines to exclude',
           },
           loadBalancing: {
             type: 'string',
             enum: ['round_robin', 'least_loaded', 'capability_based', 'performance_based'],
-            default: 'performance_based'
+            default: 'performance_based',
           },
         },
       },
@@ -275,10 +275,16 @@ export const databaseQueryTool: MCPTool = {
       // Create database query
       const query: DatabaseQuery = {
         id: `query_${Date.now()}_${Math.random().toString(36).slice(2)}`,
-        type: operation.includes('search') || operation.includes('find') || operation.includes('get') ? 'read' : 
-              operation.includes('insert') || operation.includes('create') ? 'write' :
-              operation.includes('update') || operation.includes('modify') ? 'update' :
-              operation.includes('delete') || operation.includes('remove') ? 'delete' : 'read',
+        type:
+          operation.includes('search') || operation.includes('find') || operation.includes('get')
+            ? 'read'
+            : operation.includes('insert') || operation.includes('create')
+              ? 'write'
+              : operation.includes('update') || operation.includes('modify')
+                ? 'update'
+                : operation.includes('delete') || operation.includes('remove')
+                  ? 'delete'
+                  : 'read',
         operation,
         parameters,
         requirements: {
@@ -300,7 +306,7 @@ export const databaseQueryTool: MCPTool = {
       let optimizedQuery = query;
       if (optimization.enabled !== false && queryOptimizer) {
         optimizedQuery = await queryOptimizer.optimizeQuery(query, registeredEngines);
-        
+
         // Handle cache hit
         if (optimizedQuery.operation === 'cache_hit') {
           return {
@@ -351,7 +357,6 @@ export const databaseQueryTool: MCPTool = {
       }
 
       return response;
-
     } catch (error) {
       return {
         success: false,
@@ -373,23 +378,23 @@ export const databaseOptimizeTool: MCPTool = {
         type: 'string',
         enum: ['query_performance', 'cache_efficiency', 'engine_utilization', 'all'],
         default: 'all',
-        description: 'Optimization target'
+        description: 'Optimization target',
       },
       strategy: {
         type: 'string',
         enum: ['conservative', 'balanced', 'aggressive'],
         default: 'balanced',
-        description: 'Optimization strategy'
+        description: 'Optimization strategy',
       },
       analyze: {
         type: 'boolean',
         default: true,
-        description: 'Perform query pattern analysis'
+        description: 'Perform query pattern analysis',
       },
       recommendations: {
         type: 'boolean',
         default: true,
-        description: 'Generate optimization recommendations'
+        description: 'Generate optimization recommendations',
       },
     },
   },
@@ -399,7 +404,12 @@ export const databaseOptimizeTool: MCPTool = {
         throw new Error('Database system not initialized. Run database_init first.');
       }
 
-      const { target = 'all', strategy = 'balanced', analyze = true, recommendations = true } = params;
+      const {
+        target = 'all',
+        strategy = 'balanced',
+        analyze = true,
+        recommendations = true,
+      } = params;
 
       const results = {
         target,
@@ -460,8 +470,8 @@ export const databaseOptimizeTool: MCPTool = {
       if (target === 'all' || target === 'engine_utilization') {
         // Engine utilization optimizations
         const engines = Array.from(registeredEngines.values());
-        const utilizationIssues = engines.filter(e => 
-          e.performance.utilization > 0.8 || e.performance.errorRate > 0.05
+        const utilizationIssues = engines.filter(
+          (e) => e.performance.utilization > 0.8 || e.performance.errorRate > 0.05
         );
 
         for (const engine of utilizationIssues) {
@@ -482,8 +492,8 @@ export const databaseOptimizeTool: MCPTool = {
         const patterns = queryOptimizer.getPatterns();
         results.analysis = {
           totalPatterns: patterns.length,
-          frequentPatterns: patterns.filter(p => p.frequency >= 5).length,
-          topPatterns: patterns.slice(0, 10).map(p => ({
+          frequentPatterns: patterns.filter((p) => p.frequency >= 5).length,
+          topPatterns: patterns.slice(0, 10).map((p) => ({
             signature: p.signature,
             frequency: p.frequency,
             averageLatency: p.averageLatency,
@@ -506,7 +516,6 @@ export const databaseOptimizeTool: MCPTool = {
           systemHealth: coordinatorStats.engines.active / coordinatorStats.engines.total,
         },
       };
-
     } catch (error) {
       return {
         success: false,
@@ -529,7 +538,7 @@ export const databaseMonitorTool: MCPTool = {
         minimum: 1000,
         maximum: 300000,
         default: 30000,
-        description: 'Monitoring duration in milliseconds'
+        description: 'Monitoring duration in milliseconds',
       },
       metrics: {
         type: 'array',
@@ -538,12 +547,12 @@ export const databaseMonitorTool: MCPTool = {
           enum: ['performance', 'utilization', 'errors', 'queries', 'cache', 'engines'],
         },
         default: ['performance', 'utilization', 'errors', 'queries'],
-        description: 'Metrics to monitor'
+        description: 'Metrics to monitor',
       },
       realtime: {
         type: 'boolean',
         default: false,
-        description: 'Enable real-time streaming updates'
+        description: 'Enable real-time streaming updates',
       },
       alerts: {
         type: 'object',
@@ -661,14 +670,17 @@ export const databaseMonitorTool: MCPTool = {
       // Calculate system health score
       const healthFactors = {
         engineHealth: coordinatorStats.engines.active / Math.max(coordinatorStats.engines.total, 1),
-        querySuccess: coordinatorStats.queries.recent > 0 ? 
-          coordinatorStats.queries.successful / coordinatorStats.queries.recent : 1,
+        querySuccess:
+          coordinatorStats.queries.recent > 0
+            ? coordinatorStats.queries.successful / coordinatorStats.queries.recent
+            : 1,
         cacheEfficiency: cacheStats.hitRate,
-        averageLatency: Math.max(0, 1 - (coordinatorStats.queries.averageLatency / 1000)),
+        averageLatency: Math.max(0, 1 - coordinatorStats.queries.averageLatency / 1000),
       };
 
-      const healthScore = Object.values(healthFactors).reduce((sum, factor) => sum + factor, 0) / 
-                         Object.keys(healthFactors).length;
+      const healthScore =
+        Object.values(healthFactors).reduce((sum, factor) => sum + factor, 0) /
+        Object.keys(healthFactors).length;
 
       monitoringData.system.health = {
         score: Math.round(healthScore * 100),
@@ -685,7 +697,6 @@ export const databaseMonitorTool: MCPTool = {
           realtime,
         },
       };
-
     } catch (error) {
       return {
         success: false,
@@ -710,24 +721,24 @@ export const databaseHealthCheckTool: MCPTool = {
           enum: ['coordinator', 'optimizer', 'engines', 'cache', 'all'],
         },
         default: ['all'],
-        description: 'Components to check'
+        description: 'Components to check',
       },
       detailed: {
         type: 'boolean',
         default: false,
-        description: 'Include detailed diagnostics'
+        description: 'Include detailed diagnostics',
       },
       repair: {
         type: 'boolean',
         default: false,
-        description: 'Attempt to repair issues automatically'
+        description: 'Attempt to repair issues automatically',
       },
     },
   },
   handler: async (params): Promise<MCPToolResult> => {
     try {
       const { components = ['all'], detailed = false, repair = false } = params;
-      
+
       const healthReport = {
         overall: 'healthy',
         timestamp: Date.now(),
@@ -745,7 +756,7 @@ export const databaseHealthCheckTool: MCPTool = {
         if (databaseCoordinator) {
           const stats = databaseCoordinator.getStats();
           const engineHealth = stats.engines.active / Math.max(stats.engines.total, 1);
-          
+
           healthReport.components.coordinator = {
             status: engineHealth > 0.8 ? 'healthy' : engineHealth > 0.5 ? 'degraded' : 'critical',
             engines: stats.engines,
@@ -755,7 +766,9 @@ export const databaseHealthCheckTool: MCPTool = {
 
           if (engineHealth < 0.8) {
             healthReport.overall = 'degraded';
-            healthReport.issues.push(`${stats.engines.total - stats.engines.active} engines are unhealthy`);
+            healthReport.issues.push(
+              `${stats.engines.total - stats.engines.active} engines are unhealthy`
+            );
           }
         } else {
           healthReport.components.coordinator = { status: 'not_initialized' };
@@ -768,8 +781,9 @@ export const databaseHealthCheckTool: MCPTool = {
       if (shouldCheck('optimizer')) {
         if (queryOptimizer) {
           const stats = queryOptimizer.getStats();
-          const optimizationRate = stats.totalQueries > 0 ? stats.optimizedQueries / stats.totalQueries : 0;
-          
+          const optimizationRate =
+            stats.totalQueries > 0 ? stats.optimizedQueries / stats.totalQueries : 0;
+
           healthReport.components.optimizer = {
             status: 'healthy',
             optimizationRate,
@@ -794,10 +808,14 @@ export const databaseHealthCheckTool: MCPTool = {
         for (const [id, engine] of registeredEngines) {
           const timeSinceLastCheck = Date.now() - engine.lastHealthCheck;
           const isStale = timeSinceLastCheck > 60000; // 1 minute
-          
-          const status = engine.status === 'active' && !isStale ? 'healthy' : 
-                        engine.status === 'active' && isStale ? 'stale' : 'unhealthy';
-          
+
+          const status =
+            engine.status === 'active' && !isStale
+              ? 'healthy'
+              : engine.status === 'active' && isStale
+                ? 'stale'
+                : 'unhealthy';
+
           engineHealth[id] = {
             status,
             type: engine.type,
@@ -808,7 +826,7 @@ export const databaseHealthCheckTool: MCPTool = {
           };
 
           if (status === 'healthy') healthyEngines++;
-          
+
           if (status !== 'healthy') {
             healthReport.issues.push(`Engine ${id} is ${status}`);
           }
@@ -829,7 +847,7 @@ export const databaseHealthCheckTool: MCPTool = {
       if (shouldCheck('cache')) {
         if (queryOptimizer) {
           const cacheStats = queryOptimizer.getCacheStats();
-          
+
           healthReport.components.cache = {
             status: cacheStats.hitRate > 0.6 ? 'healthy' : 'suboptimal',
             hitRate: cacheStats.hitRate,
@@ -859,7 +877,7 @@ export const databaseHealthCheckTool: MCPTool = {
               success: true,
             });
           }
-          
+
           if (issue.includes('Cache memory usage') && queryOptimizer) {
             // Clear cache to reduce memory usage
             queryOptimizer.clearCache();
@@ -875,9 +893,11 @@ export const databaseHealthCheckTool: MCPTool = {
       // Set overall status based on issues
       if (healthReport.issues.length === 0) {
         healthReport.overall = 'healthy';
-      } else if (healthReport.issues.some(issue => 
-        issue.includes('not_initialized') || issue.includes('critical')
-      )) {
+      } else if (
+        healthReport.issues.some(
+          (issue) => issue.includes('not_initialized') || issue.includes('critical')
+        )
+      ) {
         healthReport.overall = 'critical';
       } else {
         healthReport.overall = 'degraded';
@@ -891,7 +911,6 @@ export const databaseHealthCheckTool: MCPTool = {
           version: '1.0.0',
         },
       };
-
     } catch (error) {
       return {
         success: false,

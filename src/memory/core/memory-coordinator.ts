@@ -131,10 +131,7 @@ export class MemoryCoordinator extends EventEmitter {
 
     if (operationType === 'write') {
       // For writes, use replication factor
-      const replicationCount = Math.min(
-        this.config.distributed.replication,
-        activeNodes.length
-      );
+      const replicationCount = Math.min(this.config.distributed.replication, activeNodes.length);
       return activeNodes.slice(0, replicationCount).map(([id]) => id);
     }
 
@@ -257,7 +254,7 @@ export class MemoryCoordinator extends EventEmitter {
       decision.participants.map(async (nodeId) => {
         const node = this.nodes.get(nodeId);
         if (!node) return null;
-        
+
         try {
           return await node.backend.get(decision.target);
         } catch {
@@ -267,25 +264,24 @@ export class MemoryCoordinator extends EventEmitter {
     );
 
     // Find the most common value (simple consensus)
-    const validValues = values.filter(v => v !== null);
+    const validValues = values.filter((v) => v !== null);
     if (validValues.length === 0) return;
 
     const valueCount = new Map();
-    validValues.forEach(value => {
+    validValues.forEach((value) => {
       const key = JSON.stringify(value);
       valueCount.set(key, (valueCount.get(key) || 0) + 1);
     });
 
-    const [winningValue] = Array.from(valueCount.entries())
-      .sort(([, a], [, b]) => b - a)[0];
-    
+    const [winningValue] = Array.from(valueCount.entries()).sort(([, a], [, b]) => b - a)[0];
+
     const correctValue = JSON.parse(winningValue);
 
     // Repair all nodes with the correct value
     const repairPromises = decision.participants.map(async (nodeId) => {
       const node = this.nodes.get(nodeId);
       if (!node) return;
-      
+
       await node.backend.set(decision.target, correctValue);
     });
 
@@ -299,15 +295,17 @@ export class MemoryCoordinator extends EventEmitter {
     return {
       nodes: {
         total: this.nodes.size,
-        active: Array.from(this.nodes.values()).filter(n => n.status === 'active').length,
-        degraded: Array.from(this.nodes.values()).filter(n => n.status === 'degraded').length,
+        active: Array.from(this.nodes.values()).filter((n) => n.status === 'active').length,
+        degraded: Array.from(this.nodes.values()).filter((n) => n.status === 'degraded').length,
       },
       decisions: {
         total: this.decisions.size,
-        pending: Array.from(this.decisions.values()).filter(d => d.status === 'pending').length,
-        executing: Array.from(this.decisions.values()).filter(d => d.status === 'executing').length,
-        completed: Array.from(this.decisions.values()).filter(d => d.status === 'completed').length,
-        failed: Array.from(this.decisions.values()).filter(d => d.status === 'failed').length,
+        pending: Array.from(this.decisions.values()).filter((d) => d.status === 'pending').length,
+        executing: Array.from(this.decisions.values()).filter((d) => d.status === 'executing')
+          .length,
+        completed: Array.from(this.decisions.values()).filter((d) => d.status === 'completed')
+          .length,
+        failed: Array.from(this.decisions.values()).filter((d) => d.status === 'failed').length,
       },
       config: this.config,
     };
@@ -318,14 +316,13 @@ export class MemoryCoordinator extends EventEmitter {
    */
   async healthCheck(): Promise<{ status: string; details: any }> {
     const stats = this.getStats();
-    const unhealthyNodes = Array.from(this.nodes.values())
-      .filter(n => n.status !== 'active');
+    const unhealthyNodes = Array.from(this.nodes.values()).filter((n) => n.status !== 'active');
 
     return {
       status: unhealthyNodes.length === 0 ? 'healthy' : 'degraded',
       details: {
         ...stats,
-        unhealthyNodes: unhealthyNodes.map(n => ({ id: n.id, status: n.status })),
+        unhealthyNodes: unhealthyNodes.map((n) => ({ id: n.id, status: n.status })),
       },
     };
   }

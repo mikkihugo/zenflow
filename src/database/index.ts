@@ -4,6 +4,25 @@
  * Provides unified access to vector, graph, relational, and multi-engine coordination
  */
 
+// Advanced coordination and optimization
+export {
+  type CoordinationStrategy,
+  DatabaseCoordinator,
+  type DatabaseEngine,
+  type DatabaseQuery,
+  type QueryExecution,
+} from './core/database-coordinator';
+// Error handling
+export {
+  DatabaseCoordinationError,
+  DatabaseEngineError,
+  DatabaseError,
+  DatabaseErrorClassifier,
+  DatabaseErrorCode,
+  type DatabaseErrorContext,
+  DatabaseQueryError,
+  DatabaseTransactionError,
+} from './error-handling/database-errors';
 // Legacy database interfaces
 export type {
   GraphEdge,
@@ -12,7 +31,6 @@ export type {
   QueryResult,
 } from './kuzu-advanced-interface';
 export { KuzuAdvancedInterface } from './kuzu-advanced-interface';
-
 export type {
   ClusteringOptions,
   ClusterResult,
@@ -22,52 +40,29 @@ export type {
   VectorDocument,
 } from './lancedb-interface';
 export { LanceDBInterface } from './lancedb-interface';
+// MCP Tools
+export {
+  databaseHealthCheckTool,
+  databaseInitTool,
+  databaseMonitorTool,
+  databaseOptimizeTool,
+  databaseQueryTool,
+  databaseTools,
+} from './mcp/database-tools';
 
+export {
+  type OptimizationMetrics,
+  type OptimizationRule,
+  type QueryCache,
+  QueryOptimizer,
+  type QueryPattern,
+} from './optimization/query-optimizer';
 export type {
   SwarmDatabaseConfig,
   SwarmQuery,
   SwarmRecord,
 } from './swarm-database';
 export { SwarmDatabase } from './swarm-database';
-
-// Advanced coordination and optimization
-export {
-  DatabaseCoordinator,
-  type DatabaseEngine,
-  type DatabaseQuery,
-  type QueryExecution,
-  type CoordinationStrategy,
-} from './core/database-coordinator';
-
-export {
-  QueryOptimizer,
-  type QueryPattern,
-  type OptimizationRule,
-  type QueryCache,
-  type OptimizationMetrics,
-} from './optimization/query-optimizer';
-
-// MCP Tools
-export {
-  databaseTools,
-  databaseInitTool,
-  databaseQueryTool,
-  databaseOptimizeTool,
-  databaseMonitorTool,
-  databaseHealthCheckTool,
-} from './mcp/database-tools';
-
-// Error handling
-export {
-  DatabaseError,
-  DatabaseErrorCode,
-  DatabaseCoordinationError,
-  DatabaseEngineError,
-  DatabaseQueryError,
-  DatabaseTransactionError,
-  DatabaseErrorClassifier,
-  type DatabaseErrorContext,
-} from './error-handling/database-errors';
 
 // Enhanced Database utilities and helpers
 export const DatabaseUtils = {
@@ -121,7 +116,11 @@ export const DatabaseUtils = {
   /**
    * Create a database engine descriptor
    */
-  createEngine: (id: string, type: 'vector' | 'graph' | 'document' | 'relational' | 'timeseries', config: any): DatabaseEngine => {
+  createEngine: (
+    id: string,
+    type: 'vector' | 'graph' | 'document' | 'relational' | 'timeseries',
+    config: any
+  ): DatabaseEngine => {
     const interface_ = DatabaseUtils.getDatabaseInterface(type as any, config);
     const capabilities = DatabaseUtils.getCapabilities(type);
 
@@ -172,7 +171,11 @@ export class DatabaseFactory {
    * Create a complete database system with coordination and optimization
    */
   static async createAdvancedDatabaseSystem(config: {
-    engines: Array<{ id: string; type: 'vector' | 'graph' | 'document' | 'relational' | 'timeseries'; config: any }>;
+    engines: Array<{
+      id: string;
+      type: 'vector' | 'graph' | 'document' | 'relational' | 'timeseries';
+      config: any;
+    }>;
     optimization?: {
       enabled?: boolean;
       caching?: any;
@@ -193,7 +196,11 @@ export class DatabaseFactory {
     // Register engines
     for (const engineConfig of config.engines) {
       try {
-        const engine = DatabaseUtils.createEngine(engineConfig.id, engineConfig.type, engineConfig.config);
+        const engine = DatabaseUtils.createEngine(
+          engineConfig.id,
+          engineConfig.type,
+          engineConfig.config
+        );
         await DatabaseFactory.coordinator.registerEngine(engine);
         engines.set(engine.id, engine);
       } catch (error) {
@@ -237,13 +244,14 @@ export class DatabaseFactory {
       getHealthReport() {
         const stats = this.getStats();
         const coordinatorStats = stats.coordinator;
-        
+
         if (!coordinatorStats) {
           return { overall: 'critical', score: 0, details: {}, recommendations: [] };
         }
 
-        const healthScore = (coordinatorStats.engines.active / Math.max(coordinatorStats.engines.total, 1)) * 100;
-        
+        const healthScore =
+          (coordinatorStats.engines.active / Math.max(coordinatorStats.engines.total, 1)) * 100;
+
         return {
           overall: healthScore > 80 ? 'healthy' : healthScore > 50 ? 'warning' : 'critical',
           score: Math.round(healthScore),
@@ -262,13 +270,15 @@ export class DatabaseFactory {
     config: any,
     engineId = 'default'
   ) {
-    const engines = [{
-      id: engineId,
-      type: type as any,
-      config,
-    }];
+    const engines = [
+      {
+        id: engineId,
+        type: type as any,
+        config,
+      },
+    ];
 
-    return this.createAdvancedDatabaseSystem({
+    return DatabaseFactory.createAdvancedDatabaseSystem({
       engines,
       optimization: { enabled: true, aggressiveness: 'medium' },
       coordination: { healthCheckInterval: 30000, defaultTimeout: 30000 },

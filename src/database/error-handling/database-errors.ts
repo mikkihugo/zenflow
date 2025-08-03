@@ -9,40 +9,40 @@ export enum DatabaseErrorCode {
   ENGINE_SELECTION_FAILED = 'DATABASE_ENGINE_SELECTION_FAILED',
   ROUTING_FAILED = 'DATABASE_ROUTING_FAILED',
   LOAD_BALANCING_FAILED = 'DATABASE_LOAD_BALANCING_FAILED',
-  
+
   // Engine Errors
   ENGINE_UNAVAILABLE = 'DATABASE_ENGINE_UNAVAILABLE',
   ENGINE_OVERLOADED = 'DATABASE_ENGINE_OVERLOADED',
   ENGINE_TIMEOUT = 'DATABASE_ENGINE_TIMEOUT',
   ENGINE_CONNECTION_FAILED = 'DATABASE_ENGINE_CONNECTION_FAILED',
   ENGINE_INITIALIZATION_FAILED = 'DATABASE_ENGINE_INITIALIZATION_FAILED',
-  
+
   // Query Errors
   QUERY_INVALID = 'DATABASE_QUERY_INVALID',
   QUERY_TIMEOUT = 'DATABASE_QUERY_TIMEOUT',
   QUERY_OPTIMIZATION_FAILED = 'DATABASE_QUERY_OPTIMIZATION_FAILED',
   QUERY_EXECUTION_FAILED = 'DATABASE_QUERY_EXECUTION_FAILED',
   QUERY_RESULT_INVALID = 'DATABASE_QUERY_RESULT_INVALID',
-  
+
   // Performance Errors
   PERFORMANCE_DEGRADED = 'DATABASE_PERFORMANCE_DEGRADED',
   CACHE_MISS_RATE_HIGH = 'DATABASE_CACHE_MISS_RATE_HIGH',
   LATENCY_THRESHOLD_EXCEEDED = 'DATABASE_LATENCY_THRESHOLD_EXCEEDED',
   THROUGHPUT_LOW = 'DATABASE_THROUGHPUT_LOW',
-  
+
   // Transaction Errors
   TRANSACTION_FAILED = 'DATABASE_TRANSACTION_FAILED',
   TRANSACTION_TIMEOUT = 'DATABASE_TRANSACTION_TIMEOUT',
   TRANSACTION_ROLLBACK_FAILED = 'DATABASE_TRANSACTION_ROLLBACK_FAILED',
   DEADLOCK_DETECTED = 'DATABASE_DEADLOCK_DETECTED',
   CONSISTENCY_VIOLATION = 'DATABASE_CONSISTENCY_VIOLATION',
-  
+
   // Resource Errors
   RESOURCE_EXHAUSTED = 'DATABASE_RESOURCE_EXHAUSTED',
   CAPACITY_EXCEEDED = 'DATABASE_CAPACITY_EXCEEDED',
   CONNECTION_POOL_EXHAUSTED = 'DATABASE_CONNECTION_POOL_EXHAUSTED',
   MEMORY_LIMIT_EXCEEDED = 'DATABASE_MEMORY_LIMIT_EXCEEDED',
-  
+
   // System Errors
   CONFIGURATION_INVALID = 'DATABASE_CONFIGURATION_INVALID',
   SYSTEM_UNAVAILABLE = 'DATABASE_SYSTEM_UNAVAILABLE',
@@ -70,9 +70,9 @@ export class DatabaseError extends Error {
     code: DatabaseErrorCode,
     message: string,
     context: DatabaseErrorContext,
-    options: { 
-      recoverable?: boolean; 
-      severity?: 'low' | 'medium' | 'high' | 'critical'; 
+    options: {
+      recoverable?: boolean;
+      severity?: 'low' | 'medium' | 'high' | 'critical';
       retryable?: boolean;
       cause?: Error;
     } = {}
@@ -264,43 +264,75 @@ export class DatabaseErrorClassifier {
    * Classify an error by its characteristics
    */
   static classify(error: Error | DatabaseError): {
-    category: 'coordination' | 'engine' | 'query' | 'transaction' | 'performance' | 'resource' | 'system';
+    category:
+      | 'coordination'
+      | 'engine'
+      | 'query'
+      | 'transaction'
+      | 'performance'
+      | 'resource'
+      | 'system';
     priority: 'low' | 'medium' | 'high' | 'critical';
     actionRequired: boolean;
     suggestedActions: string[];
     retryStrategy?: 'immediate' | 'exponential_backoff' | 'circuit_breaker' | 'none';
   } {
     if (error instanceof DatabaseError) {
-      return this.classifyDatabaseError(error);
+      return DatabaseErrorClassifier.classifyDatabaseError(error);
     }
 
     // Classify generic errors
-    const category = this.inferCategory(error);
-    const priority = this.inferPriority(error);
+    const category = DatabaseErrorClassifier.inferCategory(error);
+    const priority = DatabaseErrorClassifier.inferPriority(error);
 
     return {
       category,
       priority,
       actionRequired: priority === 'high' || priority === 'critical',
-      suggestedActions: this.getSuggestedActions(category, error.message),
-      retryStrategy: this.inferRetryStrategy(error),
+      suggestedActions: DatabaseErrorClassifier.getSuggestedActions(category, error.message),
+      retryStrategy: DatabaseErrorClassifier.inferRetryStrategy(error),
     };
   }
 
   private static classifyDatabaseError(error: DatabaseError) {
-    let category: 'coordination' | 'engine' | 'query' | 'transaction' | 'performance' | 'resource' | 'system';
+    let category:
+      | 'coordination'
+      | 'engine'
+      | 'query'
+      | 'transaction'
+      | 'performance'
+      | 'resource'
+      | 'system';
 
-    if (error.code.includes('COORDINATION') || error.code.includes('ROUTING') || error.code.includes('BALANCING')) {
+    if (
+      error.code.includes('COORDINATION') ||
+      error.code.includes('ROUTING') ||
+      error.code.includes('BALANCING')
+    ) {
       category = 'coordination';
     } else if (error.code.includes('ENGINE')) {
       category = 'engine';
     } else if (error.code.includes('QUERY')) {
       category = 'query';
-    } else if (error.code.includes('TRANSACTION') || error.code.includes('DEADLOCK') || error.code.includes('CONSISTENCY')) {
+    } else if (
+      error.code.includes('TRANSACTION') ||
+      error.code.includes('DEADLOCK') ||
+      error.code.includes('CONSISTENCY')
+    ) {
       category = 'transaction';
-    } else if (error.code.includes('PERFORMANCE') || error.code.includes('CACHE') || error.code.includes('LATENCY') || error.code.includes('THROUGHPUT')) {
+    } else if (
+      error.code.includes('PERFORMANCE') ||
+      error.code.includes('CACHE') ||
+      error.code.includes('LATENCY') ||
+      error.code.includes('THROUGHPUT')
+    ) {
       category = 'performance';
-    } else if (error.code.includes('RESOURCE') || error.code.includes('CAPACITY') || error.code.includes('MEMORY') || error.code.includes('CONNECTION_POOL')) {
+    } else if (
+      error.code.includes('RESOURCE') ||
+      error.code.includes('CAPACITY') ||
+      error.code.includes('MEMORY') ||
+      error.code.includes('CONNECTION_POOL')
+    ) {
       category = 'resource';
     } else {
       category = 'system';
@@ -310,30 +342,48 @@ export class DatabaseErrorClassifier {
       category,
       priority: error.severity,
       actionRequired: error.severity === 'high' || error.severity === 'critical',
-      suggestedActions: this.getSuggestedActions(category, error.message),
-      retryStrategy: this.getRetryStrategy(error),
+      suggestedActions: DatabaseErrorClassifier.getSuggestedActions(category, error.message),
+      retryStrategy: DatabaseErrorClassifier.getRetryStrategy(error),
     };
   }
 
-  private static inferCategory(error: Error): 'coordination' | 'engine' | 'query' | 'transaction' | 'performance' | 'resource' | 'system' {
+  private static inferCategory(
+    error: Error
+  ): 'coordination' | 'engine' | 'query' | 'transaction' | 'performance' | 'resource' | 'system' {
     const message = error.message.toLowerCase();
 
-    if (message.includes('coordination') || message.includes('routing') || message.includes('balancing')) {
+    if (
+      message.includes('coordination') ||
+      message.includes('routing') ||
+      message.includes('balancing')
+    ) {
       return 'coordination';
     }
-    if (message.includes('engine') || message.includes('database') || message.includes('connection')) {
+    if (
+      message.includes('engine') ||
+      message.includes('database') ||
+      message.includes('connection')
+    ) {
       return 'engine';
     }
     if (message.includes('query') || message.includes('sql') || message.includes('syntax')) {
       return 'query';
     }
-    if (message.includes('transaction') || message.includes('deadlock') || message.includes('rollback')) {
+    if (
+      message.includes('transaction') ||
+      message.includes('deadlock') ||
+      message.includes('rollback')
+    ) {
       return 'transaction';
     }
     if (message.includes('performance') || message.includes('slow') || message.includes('cache')) {
       return 'performance';
     }
-    if (message.includes('resource') || message.includes('capacity') || message.includes('memory')) {
+    if (
+      message.includes('resource') ||
+      message.includes('capacity') ||
+      message.includes('memory')
+    ) {
       return 'resource';
     }
     return 'system';
@@ -342,10 +392,18 @@ export class DatabaseErrorClassifier {
   private static inferPriority(error: Error): 'low' | 'medium' | 'high' | 'critical' {
     const message = error.message.toLowerCase();
 
-    if (message.includes('critical') || message.includes('fatal') || message.includes('corruption')) {
+    if (
+      message.includes('critical') ||
+      message.includes('fatal') ||
+      message.includes('corruption')
+    ) {
       return 'critical';
     }
-    if (message.includes('failed') || message.includes('error') || message.includes('unavailable')) {
+    if (
+      message.includes('failed') ||
+      message.includes('error') ||
+      message.includes('unavailable')
+    ) {
       return 'high';
     }
     if (message.includes('warning') || message.includes('slow') || message.includes('timeout')) {
@@ -419,7 +477,9 @@ export class DatabaseErrorClassifier {
     return actions;
   }
 
-  private static inferRetryStrategy(error: Error): 'immediate' | 'exponential_backoff' | 'circuit_breaker' | 'none' {
+  private static inferRetryStrategy(
+    error: Error
+  ): 'immediate' | 'exponential_backoff' | 'circuit_breaker' | 'none' {
     const message = error.message.toLowerCase();
 
     if (message.includes('timeout') || message.includes('busy')) {
@@ -437,7 +497,9 @@ export class DatabaseErrorClassifier {
     return 'exponential_backoff';
   }
 
-  private static getRetryStrategy(error: DatabaseError): 'immediate' | 'exponential_backoff' | 'circuit_breaker' | 'none' {
+  private static getRetryStrategy(
+    error: DatabaseError
+  ): 'immediate' | 'exponential_backoff' | 'circuit_breaker' | 'none' {
     if (!error.retryable) {
       return 'none';
     }
@@ -445,17 +507,17 @@ export class DatabaseErrorClassifier {
     switch (error.code) {
       case DatabaseErrorCode.DEADLOCK_DETECTED:
         return 'immediate';
-      
+
       case DatabaseErrorCode.ENGINE_TIMEOUT:
       case DatabaseErrorCode.QUERY_TIMEOUT:
       case DatabaseErrorCode.TRANSACTION_TIMEOUT:
         return 'exponential_backoff';
-      
+
       case DatabaseErrorCode.ENGINE_UNAVAILABLE:
       case DatabaseErrorCode.ENGINE_CONNECTION_FAILED:
       case DatabaseErrorCode.SYSTEM_UNAVAILABLE:
         return 'circuit_breaker';
-      
+
       default:
         return 'exponential_backoff';
     }

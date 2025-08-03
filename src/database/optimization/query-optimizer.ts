@@ -60,7 +60,7 @@ export class QueryOptimizer extends EventEmitter {
   private cache = new Map<string, QueryCache>();
   private queryHistory: QueryExecution[] = [];
   private metrics: OptimizationMetrics;
-  
+
   // Configuration
   private config = {
     caching: {
@@ -105,7 +105,10 @@ export class QueryOptimizer extends EventEmitter {
   /**
    * Optimize a query before execution
    */
-  async optimizeQuery(query: DatabaseQuery, engines: Map<string, DatabaseEngine>): Promise<DatabaseQuery> {
+  async optimizeQuery(
+    query: DatabaseQuery,
+    engines: Map<string, DatabaseEngine>
+  ): Promise<DatabaseQuery> {
     this.metrics.totalQueries++;
     this.emit('queryOptimizing', { queryId: query.id, originalQuery: query });
 
@@ -162,7 +165,6 @@ export class QueryOptimizer extends EventEmitter {
       });
 
       return optimizedQuery;
-
     } catch (error) {
       this.emit('optimizationError', { queryId: query.id, error: error.message });
       return query; // Return original query if optimization fails
@@ -252,7 +254,7 @@ export class QueryOptimizer extends EventEmitter {
       parameters: this.normalizeParameters(query.parameters),
       requirements: query.requirements,
     };
-    
+
     return `cache_${JSON.stringify(signature)}`;
   }
 
@@ -261,18 +263,18 @@ export class QueryOptimizer extends EventEmitter {
    */
   private normalizeParameters(params: Record<string, any>): Record<string, any> {
     const normalized = { ...params };
-    
+
     // Remove optimization metadata
     delete normalized.__optimizations;
     delete normalized.__originalQuery;
-    
+
     // Sort arrays for consistent hashing
     for (const key in normalized) {
       if (Array.isArray(normalized[key])) {
         normalized[key] = [...normalized[key]].sort();
       }
     }
-    
+
     return normalized;
   }
 
@@ -282,22 +284,22 @@ export class QueryOptimizer extends EventEmitter {
   private calculateTTL(query: DatabaseQuery): number {
     // Adaptive TTL based on query characteristics
     let ttl = this.config.caching.defaultTTL;
-    
+
     // Shorter TTL for write operations
     if (query.type === 'write' || query.type === 'update' || query.type === 'delete') {
       ttl = Math.min(ttl, 60000); // 1 minute max for write operations
     }
-    
+
     // Longer TTL for read operations with low priority
     if (query.type === 'read' && query.requirements.priority === 'low') {
       ttl = ttl * 2;
     }
-    
+
     // Shorter TTL for real-time requirements
     if (query.requirements.consistency === 'strong') {
       ttl = Math.min(ttl, 30000); // 30 seconds max for strong consistency
     }
-    
+
     return ttl;
   }
 
@@ -305,9 +307,10 @@ export class QueryOptimizer extends EventEmitter {
    * Evict least recently used cache entries
    */
   private evictLeastRecentlyUsed(): void {
-    const entries = Array.from(this.cache.entries())
-      .sort(([, a], [, b]) => a.timestamp - b.timestamp);
-    
+    const entries = Array.from(this.cache.entries()).sort(
+      ([, a], [, b]) => a.timestamp - b.timestamp
+    );
+
     // Remove oldest 20% of entries
     const toRemove = Math.ceil(entries.length * 0.2);
     for (let i = 0; i < toRemove; i++) {
@@ -357,7 +360,7 @@ export class QueryOptimizer extends EventEmitter {
         priority: query.requirements.priority,
       },
     };
-    
+
     return JSON.stringify(signature);
   }
 
@@ -374,14 +377,14 @@ export class QueryOptimizer extends EventEmitter {
 
     // Update performance metrics using exponential moving average
     const alpha = this.config.patterns.adaptationRate;
-    
+
     if (execution.duration) {
       pattern.averageLatency = pattern.averageLatency * (1 - alpha) + execution.duration * alpha;
     }
-    
+
     const success = execution.status === 'completed' ? 1 : 0;
     pattern.successRate = pattern.successRate * (1 - alpha) + success * alpha;
-    
+
     if (execution.status === 'completed') {
       pattern.optimalEngine = execution.engineId;
     }
@@ -398,7 +401,7 @@ export class QueryOptimizer extends EventEmitter {
       condition: (query) => query.operation.includes('vector_search'),
       apply: (query, engines) => {
         const optimized = { ...query };
-        
+
         // Add vector search optimizations
         optimized.parameters = {
           ...optimized.parameters,
@@ -406,12 +409,12 @@ export class QueryOptimizer extends EventEmitter {
           // Use approximate search for better performance if not high priority
           approximate: query.requirements.priority !== 'critical',
         };
-        
+
         // Prefer vector engines
         optimized.routing.preferredEngines = Array.from(engines.entries())
           .filter(([, engine]) => engine.type === 'vector')
           .map(([id]) => id);
-        
+
         return optimized;
       },
       impact: 'high',
@@ -425,15 +428,15 @@ export class QueryOptimizer extends EventEmitter {
       condition: (query) => query.operation.includes('graph'),
       apply: (query, engines) => {
         const optimized = { ...query };
-        
+
         // Add graph-specific optimizations
         if (query.parameters.maxDepth === undefined) {
           optimized.parameters.maxDepth = 5; // Default traversal depth
         }
-        
+
         // Enable query planning for complex graph queries
         optimized.parameters.enableQueryPlanning = true;
-        
+
         return optimized;
       },
       impact: 'medium',
@@ -446,10 +449,12 @@ export class QueryOptimizer extends EventEmitter {
       description: 'Batch similar queries for better performance',
       condition: (query, history) => {
         // Check if there are recent similar queries
-        const recent = history.filter(h => Date.now() - h.startTime < 5000); // Last 5 seconds
-        const similar = recent.filter(h => h.queryId !== query.id && 
-          this.generateQuerySignature(this.findQueryById(h.queryId) || query) === 
-          this.generateQuerySignature(query)
+        const recent = history.filter((h) => Date.now() - h.startTime < 5000); // Last 5 seconds
+        const similar = recent.filter(
+          (h) =>
+            h.queryId !== query.id &&
+            this.generateQuerySignature(this.findQueryById(h.queryId) || query) ===
+              this.generateQuerySignature(query)
         );
         return similar.length > 2;
       },
@@ -470,13 +475,13 @@ export class QueryOptimizer extends EventEmitter {
       condition: (query) => query.type === 'read' && query.parameters.filter,
       apply: (query) => {
         const optimized = { ...query };
-        
+
         // Add index hints based on filter fields
         if (query.parameters.filter) {
           const filterFields = Object.keys(query.parameters.filter);
           optimized.parameters.indexHints = filterFields;
         }
-        
+
         return optimized;
       },
       impact: 'low',
@@ -487,20 +492,21 @@ export class QueryOptimizer extends EventEmitter {
     this.rules.set('priority_engine_selection', {
       name: 'priority_engine_selection',
       description: 'Select optimal engines based on query priority',
-      condition: (query) => query.requirements.priority === 'critical' || query.requirements.priority === 'high',
+      condition: (query) =>
+        query.requirements.priority === 'critical' || query.requirements.priority === 'high',
       apply: (query, engines) => {
         const optimized = { ...query };
-        
+
         // Sort engines by performance for high priority queries
         const sortedEngines = Array.from(engines.entries())
           .filter(([, engine]) => engine.status === 'active')
           .sort(([, a], [, b]) => a.performance.averageLatency - b.performance.averageLatency)
           .slice(0, 3) // Top 3 engines
           .map(([id]) => id);
-        
+
         optimized.routing.preferredEngines = sortedEngines;
         optimized.routing.loadBalancing = 'performance_based';
-        
+
         return optimized;
       },
       impact: 'high',
@@ -513,7 +519,7 @@ export class QueryOptimizer extends EventEmitter {
    */
   private findQueryById(queryId: string): DatabaseQuery | null {
     // This is a simplified lookup - in practice, you'd maintain a query registry
-    const execution = this.queryHistory.find(h => h.queryId === queryId);
+    const execution = this.queryHistory.find((h) => h.queryId === queryId);
     return execution ? null : null; // Would need actual query storage
   }
 
@@ -547,8 +553,8 @@ export class QueryOptimizer extends EventEmitter {
       }
     }
 
-    expired.forEach(key => this.cache.delete(key));
-    
+    expired.forEach((key) => this.cache.delete(key));
+
     if (expired.length > 0) {
       this.emit('cacheCleanup', { expiredEntries: expired.length });
     }
@@ -560,8 +566,9 @@ export class QueryOptimizer extends EventEmitter {
   getStats(): OptimizationMetrics {
     // Update pattern analysis stats
     this.metrics.patternAnalysis.uniquePatterns = this.patterns.size;
-    this.metrics.patternAnalysis.repeatedQueries = Array.from(this.patterns.values())
-      .filter(p => p.frequency >= this.config.patterns.minFrequency).length;
+    this.metrics.patternAnalysis.repeatedQueries = Array.from(this.patterns.values()).filter(
+      (p) => p.frequency >= this.config.patterns.minFrequency
+    ).length;
 
     return { ...this.metrics };
   }
@@ -570,19 +577,17 @@ export class QueryOptimizer extends EventEmitter {
    * Get query patterns
    */
   getPatterns(): QueryPattern[] {
-    return Array.from(this.patterns.values())
-      .sort((a, b) => b.frequency - a.frequency);
+    return Array.from(this.patterns.values()).sort((a, b) => b.frequency - a.frequency);
   }
 
   /**
    * Get cache statistics
    */
   getCacheStats() {
-    const totalSize = Array.from(this.cache.values())
-      .reduce((sum, entry) => sum + entry.size, 0);
-    
-    const hitRate = this.metrics.totalQueries > 0 ? 
-      this.metrics.cacheHits / this.metrics.totalQueries : 0;
+    const totalSize = Array.from(this.cache.values()).reduce((sum, entry) => sum + entry.size, 0);
+
+    const hitRate =
+      this.metrics.totalQueries > 0 ? this.metrics.cacheHits / this.metrics.totalQueries : 0;
 
     return {
       entries: this.cache.size,
@@ -606,7 +611,11 @@ export class QueryOptimizer extends EventEmitter {
   /**
    * Get optimization recommendations
    */
-  getRecommendations(): Array<{ type: string; description: string; priority: 'low' | 'medium' | 'high' }> {
+  getRecommendations(): Array<{
+    type: string;
+    description: string;
+    priority: 'low' | 'medium' | 'high';
+  }> {
     const recommendations = [];
     const stats = this.getStats();
     const cacheStats = this.getCacheStats();
@@ -642,7 +651,8 @@ export class QueryOptimizer extends EventEmitter {
     if (stats.patternAnalysis.repeatedQueries > 10) {
       recommendations.push({
         type: 'patterns',
-        description: 'Many repeated query patterns detected - consider additional optimization rules',
+        description:
+          'Many repeated query patterns detected - consider additional optimization rules',
         priority: 'low' as const,
       });
     }

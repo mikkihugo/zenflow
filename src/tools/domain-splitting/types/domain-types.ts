@@ -18,16 +18,16 @@ export interface FileCategoryMap {
   'network-architectures': string[];
   'data-processing': string[];
   'evaluation-metrics': string[];
-  'visualization': string[];
-  'integration': string[];
-  'agents': string[];
-  'coordination': string[];
-  'utilities': string[];
-  'tests': string[];
-  'configuration': string[];
-  'bridge': string[];
-  'wasm': string[];
-  'models': string[];
+  visualization: string[];
+  integration: string[];
+  agents: string[];
+  coordination: string[];
+  utilities: string[];
+  tests: string[];
+  configuration: string[];
+  bridge: string[];
+  wasm: string[];
+  models: string[];
 }
 
 export interface DependencyGraph {
@@ -219,8 +219,8 @@ export interface NeuralDomainStructure {
     'network-architectures': string[];
     'data-processing': string[];
     'evaluation-metrics': string[];
-    'visualization': string[];
-    'integration': string[];
+    visualization: string[];
+    integration: string[];
   };
 }
 
@@ -231,37 +231,37 @@ export const NEURAL_SPLITTING_PLAN: SubDomainPlan = {
       name: 'neural-core',
       description: 'Core neural network algorithms and primitives',
       estimatedFiles: 6,
-      dependencies: ['utils', 'core']
+      dependencies: ['utils', 'core'],
     },
     {
       name: 'neural-models',
       description: 'Neural network models, architectures, and presets',
       estimatedFiles: 19,
-      dependencies: ['neural-core', 'utils']
+      dependencies: ['neural-core', 'utils'],
     },
     {
       name: 'neural-agents',
       description: 'Neural-specific agent implementations',
       estimatedFiles: 2,
-      dependencies: ['neural-core', 'coordination']
+      dependencies: ['neural-core', 'coordination'],
     },
     {
       name: 'neural-coordination',
       description: 'Neural coordination protocols and systems',
       estimatedFiles: 2,
-      dependencies: ['neural-core', 'coordination']
+      dependencies: ['neural-core', 'coordination'],
     },
     {
       name: 'neural-wasm',
       description: 'WASM integration and Rust computational core',
       estimatedFiles: 5,
-      dependencies: ['neural-core']
+      dependencies: ['neural-core'],
     },
     {
       name: 'neural-bridge',
       description: 'Bridge functionality and integration layers',
       estimatedFiles: 1,
-      dependencies: ['neural-core', 'neural-models', 'neural-wasm']
-    }
-  ]
+      dependencies: ['neural-core', 'neural-models', 'neural-wasm'],
+    },
+  ],
 };

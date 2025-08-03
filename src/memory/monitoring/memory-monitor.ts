@@ -10,19 +10,19 @@ import type { PerformanceOptimizer } from '../optimization/performance-optimizer
 
 export interface MemoryMetrics {
   timestamp: number;
-  
+
   // Performance Metrics
   operationsPerSecond: number;
   averageLatency: number;
   p95Latency: number;
   p99Latency: number;
-  
+
   // Memory Usage
   totalMemoryUsage: number;
   cacheSize: number;
   cacheHitRate: number;
   cacheMissRate: number;
-  
+
   // Coordination Metrics
   activeNodes: number;
   healthyNodes: number;
@@ -32,7 +32,7 @@ export interface MemoryMetrics {
     failed: number;
     averageTime: number;
   };
-  
+
   // Backend Metrics
   backends: {
     [id: string]: {
@@ -42,7 +42,7 @@ export interface MemoryMetrics {
       latency: number;
     };
   };
-  
+
   // Error Metrics
   errorRate: number;
   errorsByType: Record<string, number>;
@@ -91,20 +91,25 @@ export class MemoryMonitor extends EventEmitter {
   private alerts: MemoryAlert[] = [];
   private collecting = false;
   private collectInterval: NodeJS.Timeout | null = null;
-  
+
   // Component references
   private backends = new Map<string, BackendInterface>();
   private coordinator?: MemoryCoordinator;
   private optimizer?: PerformanceOptimizer;
-  
+
   // Operational tracking
-  private operationHistory: Array<{ timestamp: number; operation: string; duration: number; success: boolean }> = [];
+  private operationHistory: Array<{
+    timestamp: number;
+    operation: string;
+    duration: number;
+    success: boolean;
+  }> = [];
   private latencyHistogram = new Map<number, number>();
 
   constructor(config: MonitoringConfig) {
     super();
     this.config = config;
-    
+
     if (config.enabled) {
       this.startCollection();
     }
@@ -133,12 +138,12 @@ export class MemoryMonitor extends EventEmitter {
    */
   startCollection(): void {
     if (this.collecting) return;
-    
+
     this.collecting = true;
     this.collectInterval = setInterval(() => {
       this.collectMetrics();
     }, this.config.collectInterval);
-    
+
     this.emit('collectionStarted');
   }
 
@@ -147,13 +152,13 @@ export class MemoryMonitor extends EventEmitter {
    */
   stopCollection(): void {
     if (!this.collecting) return;
-    
+
     this.collecting = false;
     if (this.collectInterval) {
       clearInterval(this.collectInterval);
       this.collectInterval = null;
     }
-    
+
     this.emit('collectionStopped');
   }
 
@@ -169,16 +174,16 @@ export class MemoryMonitor extends EventEmitter {
     };
 
     this.operationHistory.push(record);
-    
+
     // Update latency histogram
     const bucket = Math.floor(duration / 10) * 10; // 10ms buckets
     this.latencyHistogram.set(bucket, (this.latencyHistogram.get(bucket) || 0) + 1);
-    
+
     // Limit history size
     if (this.operationHistory.length > 10000) {
       this.operationHistory = this.operationHistory.slice(-8000);
     }
-    
+
     // Limit histogram size
     if (this.latencyHistogram.size > 1000) {
       const sortedBuckets = Array.from(this.latencyHistogram.entries())
@@ -186,7 +191,7 @@ export class MemoryMonitor extends EventEmitter {
         .slice(0, 800);
       this.latencyHistogram = new Map(sortedBuckets);
     }
-    
+
     this.emit('operationRecorded', record);
   }
 
@@ -197,21 +202,22 @@ export class MemoryMonitor extends EventEmitter {
     try {
       const now = Date.now();
       const windowMs = this.config.collectInterval * 5; // 5 collection periods
-      const recentOperations = this.operationHistory.filter(op => now - op.timestamp < windowMs);
-      
+      const recentOperations = this.operationHistory.filter((op) => now - op.timestamp < windowMs);
+
       // Calculate performance metrics
       const operationsPerSecond = (recentOperations.length / windowMs) * 1000;
-      const latencies = recentOperations.map(op => op.duration).sort((a, b) => a - b);
-      const averageLatency = latencies.length > 0 ? latencies.reduce((sum, l) => sum + l, 0) / latencies.length : 0;
+      const latencies = recentOperations.map((op) => op.duration).sort((a, b) => a - b);
+      const averageLatency =
+        latencies.length > 0 ? latencies.reduce((sum, l) => sum + l, 0) / latencies.length : 0;
       const p95Latency = latencies.length > 0 ? latencies[Math.floor(latencies.length * 0.95)] : 0;
       const p99Latency = latencies.length > 0 ? latencies[Math.floor(latencies.length * 0.99)] : 0;
-      
+
       // Calculate cache metrics (simulated)
       const totalOperations = recentOperations.length;
       const cacheHits = Math.floor(totalOperations * 0.8); // Simulated 80% hit rate
       const cacheHitRate = totalOperations > 0 ? cacheHits / totalOperations : 0;
       const cacheMissRate = 1 - cacheHitRate;
-      
+
       // Get coordinator metrics
       let consensusMetrics = {
         decisions: 0,
@@ -219,15 +225,15 @@ export class MemoryMonitor extends EventEmitter {
         failed: 0,
         averageTime: 0,
       };
-      
+
       let activeNodes = 0;
       let healthyNodes = 0;
-      
+
       if (this.coordinator) {
         const coordStats = this.coordinator.getStats();
         activeNodes = coordStats.nodes.total;
         healthyNodes = coordStats.nodes.active;
-        
+
         consensusMetrics = {
           decisions: coordStats.decisions.total,
           successful: coordStats.decisions.completed,
@@ -235,15 +241,17 @@ export class MemoryMonitor extends EventEmitter {
           averageTime: 50, // Simulated average consensus time
         };
       }
-      
+
       // Get backend metrics
       const backendMetrics: MemoryMetrics['backends'] = {};
       for (const [id, backend] of this.backends) {
-        const backendOps = recentOperations.filter(op => op.operation.includes(id));
-        const errors = backendOps.filter(op => !op.success).length;
-        const avgLatency = backendOps.length > 0 ? 
-          backendOps.reduce((sum, op) => sum + op.duration, 0) / backendOps.length : 0;
-        
+        const backendOps = recentOperations.filter((op) => op.operation.includes(id));
+        const errors = backendOps.filter((op) => !op.success).length;
+        const avgLatency =
+          backendOps.length > 0
+            ? backendOps.reduce((sum, op) => sum + op.duration, 0) / backendOps.length
+            : 0;
+
         backendMetrics[id] = {
           status: errors / Math.max(backendOps.length, 1) > 0.1 ? 'degraded' : 'healthy',
           operations: backendOps.length,
@@ -251,15 +259,18 @@ export class MemoryMonitor extends EventEmitter {
           latency: avgLatency,
         };
       }
-      
+
       // Calculate error metrics
-      const errorOperations = recentOperations.filter(op => !op.success);
+      const errorOperations = recentOperations.filter((op) => !op.success);
       const errorRate = totalOperations > 0 ? errorOperations.length / totalOperations : 0;
-      const errorsByType = errorOperations.reduce((acc, op) => {
-        acc[op.operation] = (acc[op.operation] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
-      
+      const errorsByType = errorOperations.reduce(
+        (acc, op) => {
+          acc[op.operation] = (acc[op.operation] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
+
       const metrics: MemoryMetrics = {
         timestamp: now,
         operationsPerSecond,
@@ -278,22 +289,21 @@ export class MemoryMonitor extends EventEmitter {
         errorsByType,
         recoveryRate: 0.95, // Simulated recovery rate
       };
-      
+
       this.metrics.push(metrics);
-      
+
       // Limit metrics history
       const maxMetrics = Math.floor(this.config.retentionPeriod / this.config.collectInterval);
       if (this.metrics.length > maxMetrics) {
         this.metrics = this.metrics.slice(-Math.floor(maxMetrics * 0.8));
       }
-      
+
       this.emit('metricsCollected', metrics);
-      
+
       // Check for alerts
       if (this.config.alerts.enabled) {
         this.checkAlerts(metrics);
       }
-      
     } catch (error) {
       this.emit('collectionError', { error: error.message });
     }
@@ -304,7 +314,7 @@ export class MemoryMonitor extends EventEmitter {
    */
   private checkAlerts(metrics: MemoryMetrics): void {
     const { thresholds } = this.config.alerts;
-    
+
     // Latency alert
     if (metrics.averageLatency > thresholds.latency) {
       this.createAlert({
@@ -312,7 +322,7 @@ export class MemoryMonitor extends EventEmitter {
         severity: metrics.averageLatency > thresholds.latency * 2 ? 'critical' : 'warning',
         message: `Average latency (${metrics.averageLatency.toFixed(2)}ms) exceeds threshold (${thresholds.latency}ms)`,
         source: 'latency_monitor',
-        metadata: { 
+        metadata: {
           currentLatency: metrics.averageLatency,
           threshold: thresholds.latency,
           p95Latency: metrics.p95Latency,
@@ -320,7 +330,7 @@ export class MemoryMonitor extends EventEmitter {
         },
       });
     }
-    
+
     // Error rate alert
     if (metrics.errorRate > thresholds.errorRate) {
       this.createAlert({
@@ -328,14 +338,14 @@ export class MemoryMonitor extends EventEmitter {
         severity: metrics.errorRate > thresholds.errorRate * 2 ? 'critical' : 'warning',
         message: `Error rate (${(metrics.errorRate * 100).toFixed(2)}%) exceeds threshold (${(thresholds.errorRate * 100).toFixed(2)}%)`,
         source: 'error_monitor',
-        metadata: { 
+        metadata: {
           currentErrorRate: metrics.errorRate,
           threshold: thresholds.errorRate,
           errorsByType: metrics.errorsByType,
         },
       });
     }
-    
+
     // Memory usage alert
     if (metrics.totalMemoryUsage > thresholds.memoryUsage) {
       this.createAlert({
@@ -343,14 +353,14 @@ export class MemoryMonitor extends EventEmitter {
         severity: metrics.totalMemoryUsage > thresholds.memoryUsage * 1.5 ? 'critical' : 'warning',
         message: `Memory usage (${metrics.totalMemoryUsage.toFixed(2)}MB) exceeds threshold (${thresholds.memoryUsage}MB)`,
         source: 'memory_monitor',
-        metadata: { 
+        metadata: {
           currentUsage: metrics.totalMemoryUsage,
           threshold: thresholds.memoryUsage,
           cacheSize: metrics.cacheSize,
         },
       });
     }
-    
+
     // Cache hit rate alert
     if (metrics.cacheHitRate < thresholds.cacheHitRate) {
       this.createAlert({
@@ -358,14 +368,14 @@ export class MemoryMonitor extends EventEmitter {
         severity: metrics.cacheHitRate < thresholds.cacheHitRate * 0.5 ? 'critical' : 'warning',
         message: `Cache hit rate (${(metrics.cacheHitRate * 100).toFixed(2)}%) below threshold (${(thresholds.cacheHitRate * 100).toFixed(2)}%)`,
         source: 'cache_monitor',
-        metadata: { 
+        metadata: {
           currentHitRate: metrics.cacheHitRate,
           threshold: thresholds.cacheHitRate,
           cacheMissRate: metrics.cacheMissRate,
         },
       });
     }
-    
+
     // Node health alert
     if (metrics.healthyNodes < metrics.activeNodes) {
       this.createAlert({
@@ -385,7 +395,9 @@ export class MemoryMonitor extends EventEmitter {
   /**
    * Create and emit an alert
    */
-  private createAlert(alertData: Omit<MemoryAlert, 'id' | 'timestamp' | 'acknowledged' | 'resolved'>): void {
+  private createAlert(
+    alertData: Omit<MemoryAlert, 'id' | 'timestamp' | 'acknowledged' | 'resolved'>
+  ): void {
     const alert: MemoryAlert = {
       id: `alert_${Date.now()}_${Math.random().toString(36).slice(2)}`,
       timestamp: Date.now(),
@@ -393,14 +405,14 @@ export class MemoryMonitor extends EventEmitter {
       resolved: false,
       ...alertData,
     };
-    
+
     this.alerts.push(alert);
-    
+
     // Limit alerts history
     if (this.alerts.length > 1000) {
       this.alerts = this.alerts.slice(-800);
     }
-    
+
     this.emit('alertCreated', alert);
   }
 
@@ -408,7 +420,7 @@ export class MemoryMonitor extends EventEmitter {
    * Acknowledge an alert
    */
   acknowledgeAlert(alertId: string): boolean {
-    const alert = this.alerts.find(a => a.id === alertId);
+    const alert = this.alerts.find((a) => a.id === alertId);
     if (alert) {
       alert.acknowledged = true;
       this.emit('alertAcknowledged', alert);
@@ -421,7 +433,7 @@ export class MemoryMonitor extends EventEmitter {
    * Resolve an alert
    */
   resolveAlert(alertId: string): boolean {
-    const alert = this.alerts.find(a => a.id === alertId);
+    const alert = this.alerts.find((a) => a.id === alertId);
     if (alert) {
       alert.resolved = true;
       this.emit('alertResolved', alert);
@@ -441,7 +453,7 @@ export class MemoryMonitor extends EventEmitter {
    * Get metrics for a time range
    */
   getMetricsRange(startTime: number, endTime: number): MemoryMetrics[] {
-    return this.metrics.filter(m => m.timestamp >= startTime && m.timestamp <= endTime);
+    return this.metrics.filter((m) => m.timestamp >= startTime && m.timestamp <= endTime);
   }
 
   /**
@@ -455,7 +467,7 @@ export class MemoryMonitor extends EventEmitter {
    * Get active alerts
    */
   getActiveAlerts(): MemoryAlert[] {
-    return this.alerts.filter(a => !a.resolved);
+    return this.alerts.filter((a) => !a.resolved);
   }
 
   /**
@@ -471,7 +483,7 @@ export class MemoryMonitor extends EventEmitter {
   getStats() {
     const currentMetrics = this.getCurrentMetrics();
     const activeAlerts = this.getActiveAlerts();
-    
+
     return {
       monitoring: {
         enabled: this.config.enabled,
@@ -483,10 +495,13 @@ export class MemoryMonitor extends EventEmitter {
       alerts: {
         total: this.alerts.length,
         active: activeAlerts.length,
-        bySeverity: activeAlerts.reduce((acc, alert) => {
-          acc[alert.severity] = (acc[alert.severity] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>),
+        bySeverity: activeAlerts.reduce(
+          (acc, alert) => {
+            acc[alert.severity] = (acc[alert.severity] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>
+        ),
       },
       components: {
         backends: this.backends.size,
@@ -507,7 +522,7 @@ export class MemoryMonitor extends EventEmitter {
   } {
     const currentMetrics = this.getCurrentMetrics();
     const activeAlerts = this.getActiveAlerts();
-    
+
     if (!currentMetrics) {
       return {
         overall: 'critical',
@@ -516,17 +531,21 @@ export class MemoryMonitor extends EventEmitter {
         recommendations: ['Start metric collection', 'Register system components'],
       };
     }
-    
+
     const scores = {
       latency: Math.max(0, 100 - currentMetrics.averageLatency),
       errorRate: Math.max(0, 100 - currentMetrics.errorRate * 1000),
       memory: Math.max(0, 100 - (currentMetrics.totalMemoryUsage / 1000) * 100),
       cache: currentMetrics.cacheHitRate * 100,
-      nodes: currentMetrics.activeNodes > 0 ? (currentMetrics.healthyNodes / currentMetrics.activeNodes) * 100 : 100,
+      nodes:
+        currentMetrics.activeNodes > 0
+          ? (currentMetrics.healthyNodes / currentMetrics.activeNodes) * 100
+          : 100,
     };
-    
-    const overallScore = Object.values(scores).reduce((sum, score) => sum + score, 0) / Object.keys(scores).length;
-    
+
+    const overallScore =
+      Object.values(scores).reduce((sum, score) => sum + score, 0) / Object.keys(scores).length;
+
     let overall: 'healthy' | 'warning' | 'critical';
     if (overallScore >= 80) {
       overall = 'healthy';
@@ -535,14 +554,14 @@ export class MemoryMonitor extends EventEmitter {
     } else {
       overall = 'critical';
     }
-    
+
     const recommendations = [];
     if (scores.latency < 70) recommendations.push('Optimize system latency');
     if (scores.errorRate < 70) recommendations.push('Investigate and fix error sources');
     if (scores.memory < 70) recommendations.push('Optimize memory usage');
     if (scores.cache < 70) recommendations.push('Improve cache configuration');
     if (scores.nodes < 90) recommendations.push('Check node health and connectivity');
-    
+
     return {
       overall,
       score: Math.round(overallScore),
@@ -550,7 +569,7 @@ export class MemoryMonitor extends EventEmitter {
         scores,
         metrics: currentMetrics,
         activeAlerts: activeAlerts.length,
-        criticalAlerts: activeAlerts.filter(a => a.severity === 'critical').length,
+        criticalAlerts: activeAlerts.filter((a) => a.severity === 'critical').length,
       },
       recommendations,
     };

@@ -39,7 +39,12 @@ export interface OptimizationConfig {
 
 export interface OptimizationAction {
   id: string;
-  type: 'cache_adjust' | 'index_rebuild' | 'partition_rebalance' | 'compression_toggle' | 'prefetch_adjust';
+  type:
+    | 'cache_adjust'
+    | 'index_rebuild'
+    | 'partition_rebalance'
+    | 'compression_toggle'
+    | 'prefetch_adjust';
   description: string;
   impact: 'low' | 'medium' | 'high';
   timestamp: number;
@@ -56,7 +61,11 @@ export class PerformanceOptimizer extends EventEmitter {
   private metrics: PerformanceMetrics;
   private actions = new Map<string, OptimizationAction>();
   private backends = new Map<string, BackendInterface>();
-  private optimizationHistory: Array<{ timestamp: number; metrics: PerformanceMetrics; actions: string[] }> = [];
+  private optimizationHistory: Array<{
+    timestamp: number;
+    metrics: PerformanceMetrics;
+    actions: string[];
+  }> = [];
 
   constructor(config: OptimizationConfig) {
     super();
@@ -299,7 +308,9 @@ export class PerformanceOptimizer extends EventEmitter {
     for (const [id, backend] of this.backends) {
       try {
         // Simulate prefetch adjustment
-        const newStrategy = ['aggressive', 'conservative', 'adaptive'][Math.floor(Math.random() * 3)];
+        const newStrategy = ['aggressive', 'conservative', 'adaptive'][
+          Math.floor(Math.random() * 3)
+        ];
         results.push({ backendId: id, strategy: newStrategy });
       } catch (error) {
         results.push({ backendId: id, error: error.message });
@@ -344,20 +355,23 @@ export class PerformanceOptimizer extends EventEmitter {
     if (history.length < 3) return; // Need minimum history
 
     // Analyze trends
-    const latencyTrend = this.calculateTrend(history.map(h => h.metrics.averageLatency));
-    const errorTrend = this.calculateTrend(history.map(h => h.metrics.errorRate));
-    const cacheTrend = this.calculateTrend(history.map(h => h.metrics.cacheHitRate));
+    const latencyTrend = this.calculateTrend(history.map((h) => h.metrics.averageLatency));
+    const errorTrend = this.calculateTrend(history.map((h) => h.metrics.errorRate));
+    const cacheTrend = this.calculateTrend(history.map((h) => h.metrics.cacheHitRate));
 
     // Suggest optimizations based on trends
-    if (latencyTrend > 0.1) { // Increasing latency
+    if (latencyTrend > 0.1) {
+      // Increasing latency
       this.suggestOptimization('latency');
     }
 
-    if (errorTrend > 0.05) { // Increasing error rate
+    if (errorTrend > 0.05) {
+      // Increasing error rate
       this.suggestOptimization('error_rate');
     }
 
-    if (cacheTrend < -0.1) { // Decreasing cache hit rate
+    if (cacheTrend < -0.1) {
+      // Decreasing cache hit rate
       this.suggestOptimization('cache');
     }
 
@@ -381,10 +395,10 @@ export class PerformanceOptimizer extends EventEmitter {
     if (values.length < 2) return 0;
 
     const n = values.length;
-    const xSum = n * (n - 1) / 2; // Sum of 0, 1, 2, ..., n-1
+    const xSum = (n * (n - 1)) / 2; // Sum of 0, 1, 2, ..., n-1
     const ySum = values.reduce((sum, val) => sum + val, 0);
     const xySum = values.reduce((sum, val, index) => sum + index * val, 0);
-    const xSquareSum = n * (n - 1) * (2 * n - 1) / 6; // Sum of squares
+    const xSquareSum = (n * (n - 1) * (2 * n - 1)) / 6; // Sum of squares
 
     const slope = (n * xySum - xSum * ySum) / (n * xSquareSum - xSum * xSum);
     return slope;
@@ -398,10 +412,10 @@ export class PerformanceOptimizer extends EventEmitter {
       metrics: this.metrics,
       actions: {
         total: this.actions.size,
-        pending: Array.from(this.actions.values()).filter(a => a.status === 'pending').length,
-        executing: Array.from(this.actions.values()).filter(a => a.status === 'executing').length,
-        completed: Array.from(this.actions.values()).filter(a => a.status === 'completed').length,
-        failed: Array.from(this.actions.values()).filter(a => a.status === 'failed').length,
+        pending: Array.from(this.actions.values()).filter((a) => a.status === 'pending').length,
+        executing: Array.from(this.actions.values()).filter((a) => a.status === 'executing').length,
+        completed: Array.from(this.actions.values()).filter((a) => a.status === 'completed').length,
+        failed: Array.from(this.actions.values()).filter((a) => a.status === 'failed').length,
       },
       backends: this.backends.size,
       historySize: this.optimizationHistory.length,
@@ -412,7 +426,11 @@ export class PerformanceOptimizer extends EventEmitter {
   /**
    * Get performance recommendations
    */
-  getRecommendations(): Array<{ type: string; description: string; priority: 'low' | 'medium' | 'high' }> {
+  getRecommendations(): Array<{
+    type: string;
+    description: string;
+    priority: 'low' | 'medium' | 'high';
+  }> {
     const recommendations = [];
 
     if (this.metrics.averageLatency > this.config.thresholds.latencyWarning) {
