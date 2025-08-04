@@ -52,7 +52,7 @@ arrow = { version = "56.0", features = ["csv", "json"] }
 polars = { version = "0.50", features = ["lazy", "temporal", "csv", "json", "parquet"] }
 
 # Interpolation and numerical methods
-# interpolate = "0.2"  # Requires nightly features - removed
+interpolation = "0.3"  # Stable interpolation library
 splines = "5.0"
 
 # FFT for Fourier features
