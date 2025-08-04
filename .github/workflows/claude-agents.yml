@@ -1,5 +1,5 @@
 ---
-name: "Claude Swarm Coordinator v16"
+name: "Claude Agents"
 
 on:
   workflow_dispatch:

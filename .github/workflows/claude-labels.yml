@@ -1,4 +1,4 @@
-name: Auto-Label Issues & PRs
+name: Claude Labels
 # Automatically labels new issues and PRs for Claude Code processing
 
 on:

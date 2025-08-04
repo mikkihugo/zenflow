@@ -1,5 +1,5 @@
 ---
-name: "Claude Autonomous Issue63 v15"
+name: "Claude Solver"
 
 on:
   workflow_dispatch:

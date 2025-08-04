@@ -1,92 +1,18 @@
+
 version: 2
 updates:
-  # Enable version updates for npm dependencies (root directory)
-  - package-ecosystem: "npm"
+  - package-ecosystem: "mix"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-    open-pull-requests-limit: 10
-    reviewers:
-      - "mikkihugo"
-    labels:
-      - "dependencies"
-      - "npm"
-      - "security"
+      interval: "daily"
     commit-message:
       prefix: "chore"
       include: "scope"
 
-  # Enable version updates for Rust/Cargo dependencies
-  - package-ecosystem: "cargo"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday" 
-      time: "09:00"
-    open-pull-requests-limit: 10
-    reviewers:
-      - "mikkihugo"
-    labels:
-      - "dependencies"
-      - "rust"
-      - "security"
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-
-  # Enable security updates for Rust neural network dependencies
-  - package-ecosystem: "cargo"
-    directory: "/src/neural/neuro-divergent"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-    open-pull-requests-limit: 10
-    reviewers:
-      - "mikkihugo"
-    labels:
-      - "dependencies"
-      - "rust"
-      - "neural"
-      - "security"
-    commit-message:
-      prefix: "security"
-      include: "scope"
-
-  # Enable security updates for WASM dependencies
-  - package-ecosystem: "cargo"
-    directory: "/src/neural/wasm"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "mikkihugo"
-    labels:
-      - "dependencies"
-      - "rust"
-      - "wasm"
-      - "security"
-    commit-message:
-      prefix: "security"
-      include: "scope"
-
-  # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "mikkihugo"
-    labels:
-      - "dependencies"
-      - "github-actions"
+      interval: "daily"
     commit-message:
       prefix: "chore"
       include: "scope"
