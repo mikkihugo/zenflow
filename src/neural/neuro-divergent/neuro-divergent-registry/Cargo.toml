@@ -34,7 +34,7 @@ tracing = "0.1"
 libloading = { version = "0.8", optional = true }
 
 # Configuration
-config = "0.14"
+config = "0.15"
 toml = "0.8"
 
 # Hashing
