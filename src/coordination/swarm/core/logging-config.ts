@@ -3,7 +3,7 @@
  * Provides centralized logging configuration and utilities
  */
 
-import { Logger } from './logger.js';
+import { Logger } from './logger';
 
 // Default log levels for different components
 const DEFAULT_LOG_LEVELS = {

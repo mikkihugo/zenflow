@@ -14,10 +14,10 @@
 
 import { EventEmitter } from 'node:events';
 import { MemoryManager } from '../memory/manager';
-import { EnhancedMemory } from '../memory/memory';
+import { MemoryManager as EnhancedMemory } from '../memory/memory';
 import { DocumentDrivenSystem } from './document-driven-system';
 import { DocumentationLinker } from './documentation-linker';
-import { ExportManager } from './export-manager';
+import { UnifiedExportSystem as ExportManager } from './export-manager';
 import { InterfaceLauncher } from './interface-launcher';
 import { createLogger } from './logger';
 import { WorkflowEngine } from './workflow-engine';

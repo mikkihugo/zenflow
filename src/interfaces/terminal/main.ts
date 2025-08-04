@@ -6,7 +6,7 @@
  * It gets called by the CLI binary and launches the appropriate terminal interface.
  */
 
-import { detectModeWithReason, launchTerminalInterface } from './index.js';
+import { detectModeWithReason, launchTerminalInterface } from './index';
 
 /**
  * Main entry point for terminal interface

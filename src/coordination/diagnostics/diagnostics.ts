@@ -6,7 +6,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { performance } from 'node:perf_hooks';
-import { type LoggerInterface, loggingConfig } from './logging-config.js';
+import { type LoggerInterface, loggingConfig } from './logging-config';
 
 export interface ConnectionEvent {
   connectionId: string;

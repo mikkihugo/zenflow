@@ -14,9 +14,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { ErrorFactory } from './errors.js';
-import { Logger } from './logger.js';
-import { generateId } from './utils.js';
+import { ErrorFactory } from './errors';
+import { Logger } from './logger';
+import { generateId } from './utils';
 
 export class RecoveryWorkflows extends EventEmitter {
   constructor(options = {}) {

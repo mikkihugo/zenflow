@@ -4,6 +4,12 @@
  */
 
 class CognitivePatternEvolution {
+  private agentPatterns: Map<string, any>;
+  private evolutionHistory: Map<string, any>;
+  private patternTemplates: Map<string, any>;
+  private crossAgentPatterns: Map<string, any>;
+  private evolutionMetrics: Map<string, any>;
+
   constructor() {
     this.agentPatterns = new Map();
     this.evolutionHistory = new Map();
@@ -666,10 +672,10 @@ class CognitivePatternEvolution {
    * @param {Object} effectiveness - Pattern effectiveness scores
    * @param {Object} context - Current context
    */
-  assessEvolutionNeed(effectiveness, context) {
-    const avgEffectiveness =
-      Object.values(effectiveness).reduce((sum, e) => sum + e.overall, 0) /
-      Object.keys(effectiveness).length;
+  assessEvolutionNeed(effectiveness: any, context: any) {
+    const effectivenessValues = Object.values(effectiveness) as any[];
+    const totalEffectiveness = effectivenessValues.reduce((sum: number, e: any) => sum + (e.overall || 0), 0);
+    const avgEffectiveness = totalEffectiveness / Object.keys(effectiveness).length;
 
     // Evolution needed if effectiveness is low
     if (avgEffectiveness < 0.4) {

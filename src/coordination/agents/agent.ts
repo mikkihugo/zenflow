@@ -482,4 +482,17 @@ export class AgentPool {
   getAgentsByStatus(status: AgentStatus): Agent[] {
     return this.getAllAgents().filter((agent) => agent.state.status === status);
   }
+
+  async shutdown(): Promise<void> {
+    // Shutdown all agents
+    for (const agent of this.agents.values()) {
+      if (typeof agent.shutdown === 'function') {
+        await agent.shutdown();
+      }
+    }
+    
+    // Clear the pools
+    this.agents.clear();
+    this.availableAgents.clear();
+  }
 }

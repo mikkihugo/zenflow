@@ -369,7 +369,7 @@ export class ZenSwarm implements SwarmEventEmitter {
   async detectFeatures(useSIMD = true): Promise<void> {
     try {
       // Load core module to detect basic features
-      const coreModule = await this.wasmLoader.loadModule('core');
+      await this.wasmLoader.loadModule();
 
       // Detect SIMD support
       if (useSIMD) {
@@ -400,7 +400,7 @@ export class ZenSwarm implements SwarmEventEmitter {
     } = config;
 
     // Ensure core module is loaded
-    const coreModule = await this.wasmLoader.loadModule('core');
+    await this.wasmLoader.loadModule();
 
     // Create swarm configuration
     const swarmConfig = {

@@ -221,6 +221,9 @@ export class ChaosEngineering extends EventEmitter {
       experimentId: experiment.id,
       status: 'running',
       startTime: new Date(startTime),
+      endTime: undefined as Date | undefined,
+      duration: undefined as number | undefined,
+      error: undefined as string | undefined,
       parameters: { ...experiment.parameters, ...overrideParams },
       phases: [],
       currentPhase: 'preparation',
@@ -349,6 +352,9 @@ export class ChaosEngineering extends EventEmitter {
       name: phaseName,
       status: 'running',
       startTime: new Date(phaseStartTime),
+      endTime: undefined as Date | undefined,
+      duration: undefined as number | undefined,
+      error: undefined as string | undefined,
     };
 
     try {
@@ -462,6 +468,7 @@ export class ChaosEngineering extends EventEmitter {
 
     const impactMetrics = {
       startTime: new Date(monitoringStartTime),
+      endTime: undefined as Date | undefined,
       metrics: [],
       alerts: [],
       recoveryAttempts: [],
@@ -519,7 +526,7 @@ export class ChaosEngineering extends EventEmitter {
     }, monitoringInterval);
 
     // Wait for monitoring duration to complete
-    await new Promise((resolve) => {
+    await new Promise<void>((resolve) => {
       setTimeout(() => {
         clearInterval(startInterval);
         resolve();
@@ -583,7 +590,7 @@ export class ChaosEngineering extends EventEmitter {
     const maxRecoveryTime = this.options.recoveryTimeout;
 
     // Monitor recovery with timeout
-    const recoveryPromise = new Promise((resolve, reject) => {
+    const recoveryPromise = new Promise<void>((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(new Error('Recovery timeout exceeded'));
       }, maxRecoveryTime);
@@ -681,7 +688,7 @@ export class ChaosEngineering extends EventEmitter {
     if (this.connectionManager) {
       const connectionStatus = this.connectionManager.getConnectionStatus();
       const failedConnections = Object.values(connectionStatus.connections).filter(
-        (conn) => conn.status === 'failed'
+        (conn: any) => conn.status === 'failed'
       ).length;
 
       if (failedConnections > 0) {

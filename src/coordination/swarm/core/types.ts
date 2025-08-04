@@ -10,6 +10,8 @@ export interface SwarmOptions {
   connectionDensity?: number;
   syncInterval?: number;
   wasmPath?: string;
+  persistence?: any;
+  pooling?: any;
 }
 
 // Define SwarmConfig locally to match ruv-swarm interface

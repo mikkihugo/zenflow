@@ -5,7 +5,7 @@
  * Usage: npx ruv-swarm hook <type> [options]
  */
 
-import { handleHook } from './index.js';
+import { handleHook } from './index';
 
 async function main() {
   const args = process.argv.slice(2);

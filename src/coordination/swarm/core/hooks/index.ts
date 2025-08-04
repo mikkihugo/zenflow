@@ -7,7 +7,7 @@ import { execSync } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SwarmPersistence } from '../persistence.js';
+import { SwarmPersistencePooled as SwarmPersistence } from '../../../database/persistence/persistence-pooled';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

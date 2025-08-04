@@ -3,7 +3,7 @@
  * Exposes DAA capabilities through the MCP interface
  */
 
-import { daaService } from './daa-service.js';
+import { daaService } from './daa-service';
 
 export class DAA_MCPTools {
   constructor(enhancedMcpTools) {

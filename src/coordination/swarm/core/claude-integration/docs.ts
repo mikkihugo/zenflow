@@ -5,10 +5,26 @@
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { AdvancedCommandsGenerator } from './advanced-commands.js';
+import { AdvancedCommandsGenerator } from './advanced-commands';
+
+interface DocsGeneratorOptions {
+  workingDir?: string;
+  [key: string]: any;
+}
+
+interface GenerateOptions {
+  force?: boolean;
+  merge?: boolean;
+  backup?: boolean;
+  noBackup?: boolean;
+  interactive?: boolean;
+}
 
 class ClaudeDocsGenerator {
-  constructor(options = {}) {
+  private workingDir: string;
+  private advancedGenerator: any;
+
+  constructor(options: DocsGeneratorOptions = {}) {
     this.workingDir = options.workingDir || process.cwd();
     this.advancedGenerator = new AdvancedCommandsGenerator(options);
   }
@@ -16,7 +32,7 @@ class ClaudeDocsGenerator {
   /**
    * Generate main claude.md configuration file with protection
    */
-  async generateClaudeMd(options = {}) {
+  async generateClaudeMd(options: GenerateOptions = {}) {
     const {
       force = false,
       merge = false,

@@ -21,9 +21,9 @@ export type {
 export { DocumentProcessor } from './document-processor';
 export type { DocumentationManagerConfig, DocumentationStats } from './documentation-manager';
 export { DocumentationManager } from './documentation-manager';
-export type { ExportManagerConfig, ExportResult, ExportStats } from './export-manager';
+export type { ExportResult, ExportOptions, ExporterDefinition } from './export-manager';
 // Management systems
-export { ExportManager } from './export-manager';
+export { UnifiedExportSystem as ExportManager } from './export-manager';
 export type { InterfaceManagerConfig, InterfaceMode, InterfaceStats } from './interface-manager';
 export { InterfaceManager } from './interface-manager';
 export type {
@@ -35,7 +35,6 @@ export type {
 } from './memory-system';
 export { MemorySystem } from './memory-system';
 export type {
-  DocumentType as WorkflowDocumentType,
   WorkflowDefinition,
   WorkflowEngineConfig,
   WorkflowState,
@@ -48,7 +47,7 @@ export { WorkflowEngine } from './workflow-engine';
 export { ApplicationCoordinator } from './application-coordinator'; // Legacy - use CoreSystem
 // Keep these for backward compatibility during transition
 export { DocumentDrivenSystem } from './document-driven-system'; // Legacy - use DocumentProcessor
-export { MemoryCoordinator } from './memory-coordinator'; // Legacy - use MemorySystem
+export { UnifiedMemorySystem as MemoryCoordinator } from './memory-coordinator'; // Legacy - use MemorySystem
 export { WorkflowEngine } from './workflow-engine'; // Legacy name kept
 
 // ==================== SHARED UTILITIES ====================
@@ -58,8 +57,8 @@ export { ProductWorkflowEngine } from '../coordination/orchestration/product-wor
 export type * from '../types/shared-types';
 // Documentation utilities (legacy)
 export type {
-  DocumentIndex,
-  DocumentLink,
+  DocumentationIndex as DocumentIndex,
+  CrossReference as DocumentLink,
 } from './documentation-linker';
 // Legacy unified systems (still exported but deprecated)
 export { DocumentationLinker, DocumentationLinker } from './documentation-linker';

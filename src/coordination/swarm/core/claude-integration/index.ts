@@ -3,9 +3,9 @@
  * Coordinates all integration modules for modular, remote-capable setup
  */
 
-import { ClaudeIntegrationCore } from './core.js';
-import { ClaudeDocsGenerator } from './docs.js';
-import { RemoteWrapperGenerator } from './remote.js';
+import { ClaudeIntegrationCore } from './core';
+import { ClaudeDocsGenerator } from './docs';
+import { RemoteWrapperGenerator } from './remote';
 
 class ClaudeIntegrationOrchestrator {
   constructor(options = {}) {

@@ -3,7 +3,7 @@
  * Provides comprehensive validation for all 25+ MCP tools
  */
 
-import { ValidationError } from './errors.js';
+import { ValidationError } from './errors';
 
 /**
  * Base validator class

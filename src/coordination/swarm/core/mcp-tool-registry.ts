@@ -15,19 +15,30 @@ import {
   ValidationError,
   WasmError,
   ZenSwarmError,
-} from './errors.js';
-import { ZenSwarm } from './index-enhanced.js';
-import { Logger } from './logger.js';
-import { DAA_MCPTools } from './mcp-daa-tools.js';
-import { SwarmPersistencePooled } from './persistence-pooled.js';
-import { ValidationUtils } from './schemas.js';
+} from './errors';
+import { ZenSwarm } from './index';
+import { Logger } from './logger';
+import { DAA_MCPTools } from './mcp-daa-tools';
+import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
+import { ValidationUtils } from './schemas';
 
 /**
  * Enhanced MCP Tools with comprehensive error handling and logging
  */
 
 class EnhancedMCPTools {
-  constructor(ruvSwarmInstance = null) {
+  private ruvSwarm: any;
+  private activeSwarms: Map<string, any>;
+  private toolMetrics: Map<string, any>;
+  private persistence: any;
+  private persistenceReady: boolean;
+  private errorContext: any;
+  private errorLog: any[];
+  private maxErrorLogSize: number;
+  private logger: any;
+  private daaTools: any;
+
+  constructor(ruvSwarmInstance: any = null) {
     this.ruvSwarm = ruvSwarmInstance;
     this.activeSwarms = new Map();
     this.toolMetrics = new Map();

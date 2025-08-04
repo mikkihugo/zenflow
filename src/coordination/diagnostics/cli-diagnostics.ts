@@ -7,8 +7,8 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { diagnostics } from './diagnostics.js';
-import type { LogConfiguration, LoggerInterface } from './logging-config.js';
+import { diagnostics } from './diagnostics';
+import type { LogConfiguration, LoggerInterface } from './logging-config';
 
 // Simple logger for CLI diagnostics
 const cliLoggingConfig = {

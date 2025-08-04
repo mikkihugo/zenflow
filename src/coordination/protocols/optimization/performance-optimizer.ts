@@ -1182,7 +1182,7 @@ class IntelligentCache extends EventEmitter {
 
   async resize(newSize: number): Promise<void> {
     // LRUCache doesn't have resize, so create new cache with new size
-    const oldEntries = Array.from(this.cache.entries());
+    const oldEntries: [string, unknown][] = Array.from(this.cache.entries());
     this.cache = new LRUCache({
       max: newSize,
       ttl: this.config.ttl,

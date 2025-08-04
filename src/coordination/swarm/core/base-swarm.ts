@@ -24,6 +24,9 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
   private agentPool?: AgentPool;
   private wasmLoader: WasmModuleLoader;
   private options: Required<SwarmOptions>;
+  private metrics: any;
+  private neuralProcessor: any;
+  private isRunning: boolean;
 
   constructor(options: SwarmOptions = {}) {
     super();
@@ -31,6 +34,7 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
     this.options = validateSwarmOptions(options);
     this.swarmId = generateId('swarm');
     this.wasmLoader = getContainer().get(WasmModuleLoader) || new WasmModuleLoader();
+    this.isRunning = false;
 
     this.metrics = {
       tasksCreated: 0,
@@ -65,19 +69,15 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
 
     // Initialize WASM neural processor
     try {
-      const wasmModule = await this.wasmLoader.loadModule('./neural_fann_bg.wasm');
-      this.neuralProcessor = wasmModule;
+      await this.wasmLoader.loadModule();
+      this.neuralProcessor = this.wasmLoader;
     } catch (error) {
       console.warn('Failed to load WASM module, falling back to JS implementation:', error);
     }
 
     // Initialize agent pool
     if (this.options.pooling?.enabled) {
-      this.agentPool = new AgentPool({
-        maxSize: this.options.pooling.maxPoolSize || 10,
-        minSize: this.options.pooling.minPoolSize || 2,
-        idleTimeout: this.options.pooling.idleTimeout || 300000,
-      });
+      this.agentPool = new AgentPool();
     }
 
     this.state = 'initialized';

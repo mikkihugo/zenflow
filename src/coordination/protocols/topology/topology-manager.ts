@@ -125,9 +125,9 @@ export class TopologyManager extends EventEmitter {
     super();
     this.currentConfig = initialConfig;
     this.metrics = this.initializeMetrics();
-    this.adaptationEngine = new TopologyAdaptationEngine(this.logger);
+    this.adaptationEngine = new TopologyAdaptationEngine();
     this.networkOptimizer = new NetworkOptimizer();
-    this.faultDetector = new FaultDetector(this.eventBus);
+    this.faultDetector = new FaultDetector();
     this.migrationController = new MigrationController(this.logger);
 
     this.setupEventHandlers();

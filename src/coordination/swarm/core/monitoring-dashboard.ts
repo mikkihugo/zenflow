@@ -14,8 +14,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { ErrorFactory } from './errors.js';
-import { Logger } from './logger.js';
+import { ErrorFactory } from './errors';
+import { Logger } from './logger';
 
 export class MonitoringDashboard extends EventEmitter {
   constructor(options = {}) {

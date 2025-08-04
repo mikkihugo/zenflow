@@ -4,6 +4,10 @@
  */
 
 export class CognitivePatternEvolution {
+  private patterns: Map<string, any>;
+  private evolutionHistory: any[];
+  private options: any;
+
   constructor(options = {}) {
     this.patterns = new Map();
     this.evolutionHistory = [];

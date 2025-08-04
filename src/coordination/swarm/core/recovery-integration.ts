@@ -14,14 +14,14 @@
  */
 
 import { EventEmitter } from 'node:events';
-import ChaosEngineering from './chaos-engineering.js';
-import ConnectionStateManager from './connection-state-manager.js';
-import { ErrorFactory } from './errors.js';
+import ChaosEngineering from './chaos-engineering';
+import ConnectionStateManager from './connection-state-manager';
+import { ErrorFactory } from './errors';
 
-import HealthMonitor from './health-monitor.js';
-import { Logger } from './logger.js';
-import MonitoringDashboard from './monitoring-dashboard.js';
-import RecoveryWorkflows from './recovery-workflows.js';
+import HealthMonitor from './health-monitor';
+import { Logger } from './logger';
+import MonitoringDashboard from './monitoring-dashboard';
+import RecoveryWorkflows from './recovery-workflows';
 
 export class RecoveryIntegration extends EventEmitter {
   constructor(options = {}) {

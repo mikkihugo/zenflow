@@ -558,6 +558,7 @@ export interface TaskAssignPayload extends BaseEventPayload {
     readonly cpu: number;
     readonly memory: number;
     readonly network: number;
+    readonly disk?: number;
   };
 }
 
@@ -807,6 +808,8 @@ export interface HeartbeatSentPayload extends BaseEventPayload {
   readonly heartbeatId: string;
   readonly fromNodeId: string;
   readonly from?: string; // Added missing 'from' property for compatibility
+  readonly to?: string; // Added missing 'to' property
+  readonly term?: number; // Added missing 'term' property for leadership coordination
   readonly toNodeId?: string; // undefined for broadcast heartbeats
   readonly heartbeatType: 'node' | 'agent' | 'swarm' | 'service' | 'cluster';
   readonly sequenceNumber: number;

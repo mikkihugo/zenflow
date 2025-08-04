@@ -70,7 +70,7 @@
 import { EventEmitter } from 'node:events';
 import { DocumentProcessor } from './document-processor';
 import { DocumentationManager } from './documentation-manager';
-import { ExportManager } from './export-manager';
+import { UnifiedExportSystem as ExportManager } from './export-manager';
 import { InterfaceManager } from './interface-manager';
 import { createLogger } from './logger';
 import { MemorySystem } from './memory-system';

@@ -939,9 +939,26 @@ class LeaderElection extends EventEmitter {
   private sendHeartbeat(nodeId: string): void {
     // Simulate sending heartbeat
     this.eventBus.emit('heartbeat:sent', {
+      id: `heartbeat-${this.nodeId}-${Date.now()}`,
+      version: '1.0.0',
+      timestamp: new Date(),
+      source: `node-${this.nodeId}`,
+      heartbeatId: `hb-${this.nodeId}-${Date.now()}`,
+      fromNodeId: this.nodeId,
       from: this.nodeId,
       to: nodeId,
       term: this.state.currentTerm,
+      toNodeId: nodeId,
+      heartbeatType: 'node',
+      sequenceNumber: 1,
+      interval: 5000,
+      expectedResponse: true,
+      payload: {
+        status: 'healthy',
+        load: 0.5,
+        responseTime: 100,
+        lastActivity: new Date(),
+      },
     });
   }
 

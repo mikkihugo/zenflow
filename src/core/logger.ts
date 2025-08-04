@@ -26,8 +26,9 @@ export interface ILogger {
 }
 
 // Simple logger implementation to avoid circular imports
-function simpleCreateLogger(config: Partial<LoggerConfig> = {}) {
-  const prefix = config.prefix ? `[${config.prefix}]` : '';
+function simpleCreateLogger(config: Partial<LoggerConfig> | string = {}) {
+  const configObj = typeof config === 'string' ? { prefix: config } : config;
+  const prefix = configObj.prefix ? `[${configObj.prefix}]` : '';
 
   return {
     info: (_message: string, _meta?: any) => {},
