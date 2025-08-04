@@ -5,6 +5,7 @@
 import { EventEmitter } from 'node:events';
 import type { BackendConfig, BackendInterface, JSONValue } from './backends/base.backend';
 import { BackendFactory } from './backends/factory';
+import { IMemoryStore, StoreOptions, MemoryStats } from '../core/interfaces/base-interfaces';
 
 interface SessionMemoryStoreOptions {
   backendConfig: BackendConfig;
@@ -36,7 +37,7 @@ export interface CacheEntry {
   timestamp: number;
 }
 
-export class SessionMemoryStore extends EventEmitter {
+export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
   private backend: BackendInterface;
   private initialized = false;
   private sessions = new Map<string, SessionState>();
@@ -86,13 +87,39 @@ export class SessionMemoryStore extends EventEmitter {
     sessionId: string,
     key: string,
     data: any,
-    options?: {
-      tags?: string[];
-      priority?: 'low' | 'medium' | 'high';
-      ttl?: number;
-      vector?: number[];
-    }
+    options?: StoreOptions
+  ): Promise<void>;
+  async store(
+    key: string,
+    data: any,
+    options?: StoreOptions
+  ): Promise<void>;
+  async store(
+    sessionIdOrKey: string,
+    keyOrData?: string | any,
+    dataOrOptions?: any | StoreOptions,
+    options?: StoreOptions
   ): Promise<void> {
+    // Handle both overloads: (sessionId, key, data, options) and (key, data, options)
+    let sessionId: string;
+    let key: string;
+    let data: any;
+    let storeOptions: StoreOptions | undefined;
+
+    if (typeof keyOrData === 'string') {
+      // (sessionId, key, data, options) overload
+      sessionId = sessionIdOrKey;
+      key = keyOrData;
+      data = dataOrOptions;
+      storeOptions = options;
+    } else {
+      // (key, data, options) overload - use default session
+      sessionId = 'default';
+      key = sessionIdOrKey;
+      data = keyOrData;
+      storeOptions = dataOrOptions;
+    }
+
     this.ensureInitialized();
 
     let session = this.sessions.get(sessionId);
@@ -105,9 +132,9 @@ export class SessionMemoryStore extends EventEmitter {
           updated: Date.now(),
           accessed: Date.now(),
           size: 0,
-          tags: options?.tags || [],
-          priority: options?.priority || 'medium',
-          ttl: options?.ttl,
+          tags: storeOptions?.tags || [],
+          priority: storeOptions?.priority || 'medium',
+          ttl: storeOptions?.ttl,
         },
         vectors: new Map(),
       };
@@ -118,8 +145,8 @@ export class SessionMemoryStore extends EventEmitter {
     session.metadata.updated = Date.now();
     session.metadata.accessed = Date.now();
 
-    if (options?.vector && this.options.enableVectorStorage) {
-      session.vectors?.set(key, options.vector);
+    if (storeOptions?.vector && this.options.enableVectorStorage) {
+      session.vectors?.set(key, storeOptions.vector);
     }
 
     await this.backend.store(sessionId, session as unknown as JSONValue, 'session');
@@ -129,18 +156,24 @@ export class SessionMemoryStore extends EventEmitter {
     }
   }
 
-  async retrieve(sessionId: string, key: string): Promise<any> {
+  async retrieve(sessionId: string, key: string): Promise<any>;
+  async retrieve(key: string): Promise<any>;
+  async retrieve(sessionIdOrKey: string, key?: string): Promise<any> {
+    // Handle both overloads
+    const actualSessionId = key ? sessionIdOrKey : 'default';
+    const actualKey = key || sessionIdOrKey;
+
     this.ensureInitialized();
 
     if (this.options.enableCache) {
-      const cached = this.getCachedData(sessionId, key);
+      const cached = this.getCachedData(actualSessionId, actualKey);
       if (cached !== null) {
         return cached;
       }
     }
 
-    const session = await this.retrieveSession(sessionId);
-    return session?.data[key] ?? null;
+    const session = await this.retrieveSession(actualSessionId);
+    return session?.data[actualKey] ?? null;
   }
 
   async retrieveSession(sessionId: string): Promise<SessionState | null> {
@@ -158,6 +191,55 @@ export class SessionMemoryStore extends EventEmitter {
     }
 
     return null;
+  }
+
+  async delete(sessionId: string, key: string): Promise<boolean>;
+  async delete(key: string): Promise<boolean>;
+  async delete(sessionIdOrKey: string, key?: string): Promise<boolean> {
+    // Handle both overloads
+    const actualSessionId = key ? sessionIdOrKey : 'default';
+    const actualKey = key || sessionIdOrKey;
+
+    this.ensureInitialized();
+
+    const session = this.sessions.get(actualSessionId);
+    if (!session || !(actualKey in session.data)) {
+      return false;
+    }
+
+    delete session.data[actualKey];
+    session.vectors?.delete(actualKey);
+    session.metadata.updated = Date.now();
+
+    // Update backend
+    await this.backend.store(actualSessionId, session as unknown as JSONValue, 'session');
+    
+    // Remove from cache
+    const cacheKey = `${actualSessionId}:${actualKey}`;
+    this.cache.delete(cacheKey);
+    
+    return true;
+  }
+
+  async getStats(): Promise<MemoryStats> {
+    this.ensureInitialized();
+    
+    let totalEntries = 0;
+    let totalSize = 0;
+    let lastModified = 0;
+
+    for (const session of this.sessions.values()) {
+      totalEntries += Object.keys(session.data).length;
+      totalSize += JSON.stringify(session.data).length;
+      lastModified = Math.max(lastModified, session.metadata.updated);
+    }
+
+    return {
+      entries: totalEntries,
+      size: totalSize,
+      lastModified,
+      namespaces: this.sessions.size
+    };
   }
 
   async shutdown(): Promise<void> {

@@ -43,9 +43,13 @@ class ZenSwarmHooks {
   async initializePersistence() {
     try {
       // Dynamic import to avoid module resolution issues
-      const { SwarmPersistencePooled } = await import('../../../database/persistence/persistence-pooled.js').catch(() => ({ SwarmPersistencePooled: null as any }));
-      if (SwarmPersistencePooled) {
+      try {
+        const { SwarmPersistencePooled } = await import('../../../database/persistence/persistence-pooled.js');
         this.persistence = new SwarmPersistencePooled();
+      } catch (error) {
+        // Fallback if module not available
+        console.warn('SwarmPersistencePooled not available:', error);
+        this.persistence = null;
       }
     } catch (error) {
       console.warn('⚠️ Failed to initialize persistence layer:', error.message);

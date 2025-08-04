@@ -23,6 +23,7 @@ import type {
   TaskStatus
 } from './types';
 import { AgentPool, createAgent, BaseAgent } from '../../agents/agent';
+import { adaptAgentForCoordination, createAgentPoolEntry, executeTaskWithAgent } from './agent-adapter';
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
 import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
 import { validateSwarmOptions, generateId, formatMetrics, priorityToNumber } from './utils';
@@ -727,7 +728,7 @@ export class ZenSwarm implements SwarmEventEmitter {
       task.status = 'in_progress';
       const startTime = Date.now();
 
-      const result = await agent.execute(task);
+      const result = await executeTaskWithAgent(agent, task);
 
       task.status = 'completed';
       task.result = result;
@@ -946,6 +947,7 @@ export class TaskWrapper {
   public status: string;
   public assignedAgents: string[];
   public result: any;
+  public swarm: SwarmWrapper;
   private startTime: number | null;
   private endTime: number | null;
   public progress: number;

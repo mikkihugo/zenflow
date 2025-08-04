@@ -15,6 +15,7 @@ import { SwarmPersistencePooled } from '../../../database/persistence/persistenc
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
 import { AgentPool, type BaseAgent, createAgent } from '../../agents/agent';
 import { getContainer } from './singleton-container';
+import { adaptAgentForCoordination, createAgentPoolEntry, executeTaskWithAgent } from './agent-adapter';
 import type {
   AgentConfig,
   Message,
@@ -534,8 +535,9 @@ export class ZenSwarm implements SwarmEventEmitter {
     }
 
     const agent = createAgent(config as any);
-    this.state.agents.set(agent.id, agent);
-    this.agentPool.addAgent(agent as any);
+    const adaptedAgent = adaptAgentForCoordination(agent);
+    this.state.agents.set(adaptedAgent.id, adaptedAgent);
+    this.agentPool.addAgent(createAgentPoolEntry(agent));
 
     // Add to WASM if available
     if (this.wasmModule && this.swarmId !== undefined) {
