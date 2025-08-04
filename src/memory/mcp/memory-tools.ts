@@ -647,7 +647,7 @@ export const memoryHealthCheckTool: MCPTool = {
       // Set overall status based on issues
       if (healthReport.issues.length > 0) {
         healthReport.overall = healthReport.issues.some(
-          (issue) => issue.includes('not_initialized') || issue.includes('unhealthy')
+          (issue) => issue.includes('not_initialized') || issue.includes('unhealthy'),
         )
           ? 'critical'
           : 'degraded';

@@ -464,35 +464,35 @@ class MasterTestCoverageRunner {
         
         <h2>Test Suites</h2>
         ${this.results.suites
-    .map(
-      (suite) => `
+          .map(
+            (suite) => `
             <div class="suite ${suite.status}">
                 <h3>${suite.name} <span class="timestamp">(${suite.duration}ms)</span></h3>
                 ${
-  suite.report
-    ? `
+                  suite.report
+                    ? `
                     <p><strong>Tests:</strong> ${suite.report.summary.totalTests} | 
                        <strong>Passed:</strong> ${suite.report.summary.passed} | 
                        <strong>Failed:</strong> ${suite.report.summary.failed} | 
                        <strong>Pass Rate:</strong> ${suite.report.summary.passRate || 'N/A'}</p>
                 `
-    : ''
-}
+                    : ''
+                }
                 ${suite.error ? `<p style="color: #dc3545;"><strong>Error:</strong> ${suite.error}</p>` : ''}
             </div>
         `,
-    )
-    .join('')}
+          )
+          .join('')}
         
         <div class="recommendations">
             <h2>💡 Recommendations</h2>
             ${this.results.recommendations
-    .map(
-      (rec) => `
+              .map(
+                (rec) => `
                 <div class="recommendation">• ${rec}</div>
             `,
-    )
-    .join('')}
+              )
+              .join('')}
         </div>
     </div>
 </body>

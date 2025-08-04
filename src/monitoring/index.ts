@@ -94,7 +94,7 @@ export class PerformanceMonitoringSystem {
  * Create and start a monitoring system with default configuration
  */
 export async function createMonitoringSystem(
-  config?: Partial<IntegrationConfig>
+  config?: Partial<IntegrationConfig>,
 ): Promise<PerformanceMonitoringSystem> {
   const system = new PerformanceMonitoringSystem(config);
   await system.start();
@@ -105,7 +105,7 @@ export async function createMonitoringSystem(
  * Quick setup function for Claude-Zen integration
  */
 export async function setupClaudeZenMonitoring(
-  options: { dashboardPort?: number; enableOptimization?: boolean; metricsInterval?: number } = {}
+  options: { dashboardPort?: number; enableOptimization?: boolean; metricsInterval?: number } = {},
 ): Promise<{
   system: PerformanceMonitoringSystem;
   hooks: import('./integrations/system-integration').SystemHooks;

@@ -15,13 +15,7 @@ export { ScopedProvider } from './providers/scoped-provider';
 export { SingletonProvider } from './providers/singleton-provider';
 export { TransientProvider } from './providers/transient-provider';
 // Re-export interfaces for convenience
-export type {
-  IConfig,
-  IDatabase,
-  IEventBus,
-  IHttpClient,
-  ILogger,
-} from './tokens/core-tokens';
+export type { IConfig, IDatabase, IEventBus, IHttpClient, ILogger } from './tokens/core-tokens';
 // Core system tokens
 export { CORE_TOKENS } from './tokens/core-tokens';
 export type {
@@ -91,7 +85,7 @@ export class DIContainerBuilder {
    */
   singleton<T>(
     token: import('./types/di-types').DIToken<T>,
-    factory: (container: DIContainer) => T
+    factory: (container: DIContainer) => T,
   ): this {
     this.container.register(token, new SingletonProvider(factory));
     return this;
@@ -102,7 +96,7 @@ export class DIContainerBuilder {
    */
   transient<T>(
     token: import('./types/di-types').DIToken<T>,
-    factory: (container: DIContainer) => T
+    factory: (container: DIContainer) => T,
   ): this {
     this.container.register(token, new TransientProvider(factory));
     return this;
@@ -113,7 +107,7 @@ export class DIContainerBuilder {
    */
   scoped<T>(
     token: import('./types/di-types').DIToken<T>,
-    factory: (container: DIContainer) => T
+    factory: (container: DIContainer) => T,
   ): this {
     this.container.register(token, new ScopedProvider(factory));
     return this;

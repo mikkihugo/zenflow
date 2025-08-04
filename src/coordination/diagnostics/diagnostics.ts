@@ -80,7 +80,7 @@ export class ConnectionDiagnostics {
   recordEvent(
     connectionId: string,
     event: string,
-    details: Record<string, any> = {}
+    details: Record<string, any> = {},
   ): ConnectionEvent {
     const timestamp = new Date().toISOString();
     const entry = {

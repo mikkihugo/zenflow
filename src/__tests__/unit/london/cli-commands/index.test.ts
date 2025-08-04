@@ -75,7 +75,7 @@ class MockCLICommandSystem extends EventEmitter implements CLICommandSystem {
     parser: ArgumentParser,
     formatter: OutputFormatter,
     errorHandler: ErrorHandler,
-    mockExecute?: jest.Mock
+    mockExecute?: jest.Mock,
   ) {
     super();
     this.registry = registry;
@@ -180,7 +180,7 @@ describe('CLI Commands Integration - TDD London', () => {
       mockParser,
       mockFormatter,
       mockErrorHandler,
-      mockExecute
+      mockExecute,
     );
   });
 
@@ -317,12 +317,12 @@ describe('CLI Commands Integration - TDD London', () => {
         mockRegistry,
         mockParser,
         mockFormatter,
-        mockErrorHandler
+        mockErrorHandler,
       );
 
       // Act & Assert
       await expect(uninitializedSystem.execute(['test'])).rejects.toThrow(
-        'CLI system not initialized'
+        'CLI system not initialized',
       );
     });
   });
@@ -605,7 +605,7 @@ describe('CLI Commands Integration - TDD London', () => {
         mockRegistry,
         mockParser,
         mockFormatter,
-        mockErrorHandler
+        mockErrorHandler,
       );
 
       // Act & Assert

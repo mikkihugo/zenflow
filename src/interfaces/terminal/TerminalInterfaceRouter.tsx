@@ -130,7 +130,7 @@ async function main() {
 
     // Render unified terminal app
     const { unmount } = render(
-      <TerminalApp commands={commands} flags={flags} onExit={(code) => process.exit(code)} />
+      <TerminalApp commands={commands} flags={flags} onExit={(code) => process.exit(code)} />,
     );
 
     // Handle graceful shutdown

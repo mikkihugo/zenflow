@@ -54,7 +54,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
 
   constructor(
     private eventBus: IEventBus,
-    private logger?: ILogger
+    private logger?: ILogger,
   ) {
     super();
 
@@ -85,7 +85,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
           knowledgeSources: ['context7', 'deepwiki', 'gitmcp', 'semgrep'],
           autoRefreshInterval: 3600000, // 1 hour
         },
-        this
+        this,
       );
 
       this.logger?.info('HiveFACT system initialized for universal knowledge');
@@ -203,7 +203,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
    */
   private async optimizeTaskDistribution(): Promise<void> {
     const pendingTasks = this.hiveRegistry.globalTaskQueue.filter(
-      (t) => t.assignedAgents.length === 0
+      (t) => t.assignedAgents.length === 0,
     );
     const availableAgents = Array.from(this.hiveRegistry.availableAgents.values())
       .filter((agent) => agent.availability.status === 'available')
@@ -240,7 +240,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
    */
   private findBestAgentForTask(
     task: HiveTask,
-    availableAgents: GlobalAgentInfo[]
+    availableAgents: GlobalAgentInfo[],
   ): GlobalAgentInfo | null {
     let bestAgent: GlobalAgentInfo | null = null;
     let bestScore = -1;
@@ -311,7 +311,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   private async updateSwarmMetrics(): Promise<void> {
     for (const [swarmId, swarmInfo] of this.hiveRegistry.activeSwarms) {
       const swarmAgents = Array.from(this.hiveRegistry.availableAgents.values()).filter(
-        (agent) => agent.swarmId === swarmId
+        (agent) => agent.swarmId === swarmId,
       );
 
       if (swarmAgents.length > 0) {
@@ -320,7 +320,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
             swarmAgents.reduce((sum, a) => sum + a.metrics.responseTime, 0) / swarmAgents.length,
           tasksCompletedPerMinute: swarmAgents.reduce(
             (sum, a) => sum + a.metrics.tasksCompleted,
-            0
+            0,
           ),
           successRate:
             swarmAgents.reduce((sum, a) => sum + a.metrics.successRate, 0) / swarmAgents.length,
@@ -622,10 +622,10 @@ export class HiveSwarmCoordinator extends EventEmitter {
       totalSwarms: this.hiveRegistry.activeSwarms.size,
       totalAgents: this.hiveRegistry.availableAgents.size,
       availableAgents: Array.from(this.hiveRegistry.availableAgents.values()).filter(
-        (a) => a.availability.status === 'available'
+        (a) => a.availability.status === 'available',
       ).length,
       busyAgents: Array.from(this.hiveRegistry.availableAgents.values()).filter(
-        (a) => a.availability.status === 'busy'
+        (a) => a.availability.status === 'busy',
       ).length,
       pendingTasks: this.hiveRegistry.globalTaskQueue.length,
       globalResources: this.hiveRegistry.globalResources,
@@ -648,7 +648,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   async requestUniversalFact(
     swarmId: string,
     factType: 'npm-package' | 'github-repo' | 'api-docs' | 'security-advisory' | 'general',
-    subject: string
+    subject: string,
   ): Promise<any> {
     if (!this.hiveFact) {
       throw new Error('HiveFACT not initialized');

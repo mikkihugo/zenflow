@@ -98,7 +98,7 @@ class MockMCPErrorHandler implements ErrorHandlerContract {
     private retryManager = mockRetryManager,
     private logger = mockLogger,
     private metrics = mockMetricsCollector,
-    private alertManager = mockAlertManager
+    private alertManager = mockAlertManager,
   ) {}
 
   async handleError(error: Error, context: ErrorContext): Promise<MCPResponse> {
@@ -201,7 +201,7 @@ class MockMCPErrorHandler implements ErrorHandlerContract {
   private async attemptRecovery(
     error: Error,
     context: ErrorContext,
-    plan: RecoveryPlan
+    plan: RecoveryPlan,
   ): Promise<MCPResponse> {
     this.logger.info('Attempting error recovery', {
       strategy: plan.strategy,
@@ -243,7 +243,7 @@ class MockMCPErrorHandler implements ErrorHandlerContract {
   private createFinalErrorResponse(
     error: Error,
     context: ErrorContext,
-    classification: ErrorClassification
+    classification: ErrorClassification,
   ): MCPResponse {
     return this.errorHandler.createErrorResponse(context.requestId, {
       code: classification.code,
@@ -384,7 +384,7 @@ describe('MCP Error Scenarios - London TDD', () => {
             strategy: 'retry',
             attempt: 1,
             requestId: 'retry-test-1',
-          })
+          }),
         );
         expect(mockRetryManager.shouldRetry).toHaveBeenCalled();
         expect(mockMetricsCollector.recordRetry).toHaveBeenCalledWith('tools/call', 1);
@@ -449,7 +449,7 @@ describe('MCP Error Scenarios - London TDD', () => {
             data: expect.objectContaining({
               attempts: 5,
             }),
-          })
+          }),
         );
         expect(response.error).toBeDefined();
         expect(response.error.data.attempts).toBe(5);
@@ -705,7 +705,7 @@ describe('MCP Error Scenarios - London TDD', () => {
             requestId: 'format-test-1',
             method: 'unknown/method',
             attempts: 1,
-          })
+          }),
         );
         expect(response.result).toBeUndefined(); // Error responses should not have result
       });
@@ -765,14 +765,14 @@ describe('MCP Error Scenarios - London TDD', () => {
           requestId: 'workflow-1',
           method: 'complex/operation',
           attempt: 2,
-        })
+        }),
       );
       expect(mockErrorHandler.classifyError).toHaveBeenCalledWith(workflowError);
       expect(mockMetricsCollector.recordError).toHaveBeenCalledWith('network', 'high');
       expect(mockCircuitBreaker.isOpen).toHaveBeenCalled();
       expect(mockLogger.info).toHaveBeenCalledWith(
         'Attempting error recovery',
-        expect.objectContaining({ strategy: 'retry' })
+        expect.objectContaining({ strategy: 'retry' }),
       );
       expect(mockRetryManager.shouldRetry).toHaveBeenCalled();
       expect(mockAlertManager.recordErrorOccurrence).toHaveBeenCalledWith('network');

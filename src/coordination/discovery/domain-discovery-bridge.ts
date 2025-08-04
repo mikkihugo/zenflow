@@ -176,7 +176,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     private domainAnalyzer: DomainAnalysisEngine,
     private projectAnalyzer: ProjectContextAnalyzer,
     private intelligenceCoordinator: IntelligenceCoordinationSystem,
-    config: DomainDiscoveryBridgeConfig = {}
+    config: DomainDiscoveryBridgeConfig = {},
   ) {
     super();
     this.config = {
@@ -256,7 +256,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     const domains = await this.generateEnrichedDomains(
       validatedMappings,
       domainAnalysis,
-      monorepoInfo
+      monorepoInfo,
     );
 
     // Store discovered domains
@@ -289,7 +289,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
     // Analyze each document for relevance suggestions
     const relevanceAnalysis = await Promise.all(
-      documents.map((doc) => this.analyzeDocumentRelevance(doc))
+      documents.map((doc) => this.analyzeDocumentRelevance(doc)),
     );
 
     // Create AGUI validation request
@@ -320,7 +320,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     // In a real implementation, this would call AGUI
     // For now, we'll simulate by selecting documents with high relevance
     const selected = documents.filter(
-      (_, index) => relevanceAnalysis[index].suggestedRelevance > 0.6
+      (_, index) => relevanceAnalysis[index].suggestedRelevance > 0.6,
     );
 
     logger.info(`Selected ${selected.length} relevant documents for domain discovery`);
@@ -334,7 +334,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
    * @returns Human-validated mappings
    */
   async validateMappingsWithHuman(
-    mappings: DocumentDomainMapping[]
+    mappings: DocumentDomainMapping[],
   ): Promise<DocumentDomainMapping[]> {
     if (mappings.length === 0) return [];
 
@@ -363,7 +363,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
     // Simulate human validation - in reality this would use AGUI
     const validated = mappings.filter(
-      (mapping) => Math.max(...mapping.confidenceScores) > this.config.confidenceThreshold
+      (mapping) => Math.max(...mapping.confidenceScores) > this.config.confidenceThreshold,
     );
 
     logger.info(`Human validated ${validated.length} of ${mappings.length} mappings`);
@@ -477,7 +477,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
       if (files.length > 0 && categoryKeywords[category]) {
         const keywords = categoryKeywords[category];
         const categoryMatches = concepts.filter((concept) =>
-          keywords.some((keyword) => concept.includes(keyword))
+          keywords.some((keyword) => concept.includes(keyword)),
         ).length;
 
         if (categoryMatches > 0) {
@@ -490,7 +490,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     // Check file name matches
     const allFiles = Object.values(domain.categories).flat();
     const fileNameMatches = concepts.filter((concept) =>
-      allFiles.some((file) => file.toLowerCase().includes(concept))
+      allFiles.some((file) => file.toLowerCase().includes(concept)),
     ).length;
 
     if (fileNameMatches > 0) {
@@ -584,7 +584,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
    */
   private async createDocumentDomainMappings(
     documents: Document[],
-    domainAnalysis: DomainAnalysis
+    domainAnalysis: DomainAnalysis,
   ): Promise<DocumentDomainMapping[]> {
     const mappings: DocumentDomainMapping[] = [];
 
@@ -619,8 +619,8 @@ export class DomainDiscoveryBridge extends EventEmitter {
             matchedConcepts: concepts.filter((concept) =>
               topCategories.some(
                 ([cat]) =>
-                  cat.toLowerCase().includes(concept) || concept.includes(cat.toLowerCase())
-              )
+                  cat.toLowerCase().includes(concept) || concept.includes(cat.toLowerCase()),
+              ),
             ),
             timestamp: Date.now(),
           };
@@ -645,7 +645,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   private async generateEnrichedDomains(
     mappings: DocumentDomainMapping[],
     domainAnalysis: DomainAnalysis,
-    monorepoInfo: MonorepoInfo | null
+    monorepoInfo: MonorepoInfo | null,
   ): Promise<DiscoveredDomain[]> {
     const domains: Map<string, DiscoveredDomain> = new Map();
 
@@ -699,7 +699,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   private async createDomain(
     domainId: string,
     domainAnalysis: DomainAnalysis,
-    monorepoInfo: MonorepoInfo | null
+    monorepoInfo: MonorepoInfo | null,
   ): Promise<DiscoveredDomain> {
     const category = domainAnalysis.categories[domainId] || [];
     const description = this.generateDomainDescription(domainId, category.length);
@@ -754,14 +754,14 @@ export class DomainDiscoveryBridge extends EventEmitter {
   private suggestTopology(
     domainId: string,
     fileCount: number,
-    analysis: DomainAnalysis
+    analysis: DomainAnalysis,
   ): 'mesh' | 'hierarchical' | 'ring' | 'star' {
     // Large domains with many files benefit from hierarchical
     if (fileCount > 50) return 'hierarchical';
 
     // Highly coupled domains benefit from mesh
     const domainCoupling = analysis.coupling.tightlyCoupledGroups.filter((group) =>
-      group.files.some((file) => analysis.categories[domainId]?.includes(file))
+      group.files.some((file) => analysis.categories[domainId]?.includes(file)),
     );
     if (domainCoupling.length > 0 && domainCoupling[0].couplingScore > 0.7) {
       return 'mesh';
@@ -828,7 +828,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   private calculateCategoryRelevance(
     concepts: string[],
     category: string,
-    files: string[]
+    files: string[],
   ): number {
     let score = 0;
 
@@ -839,7 +839,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
     // Check file name matches
     const fileMatches = files.filter((file) =>
-      concepts.some((concept) => file.toLowerCase().includes(concept))
+      concepts.some((concept) => file.toLowerCase().includes(concept)),
     ).length;
 
     score += Math.min(0.3, (fileMatches / files.length) * 0.3);
@@ -853,7 +853,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
     if (categoryBonuses[category]) {
       const bonusMatches = concepts.filter((c) =>
-        categoryBonuses[category].some((bonus) => c.includes(bonus))
+        categoryBonuses[category].some((bonus) => c.includes(bonus)),
       ).length;
       score += Math.min(0.3, (bonusMatches / categoryBonuses[category].length) * 0.3);
     }
@@ -931,7 +931,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
    * @returns Mappings grouped by domain
    */
   private groupMappingsByDomain(
-    mappings: DocumentDomainMapping[]
+    mappings: DocumentDomainMapping[],
   ): Record<string, DocumentDomainMapping[]> {
     const grouped: Record<string, DocumentDomainMapping[]> = {};
 
@@ -1017,8 +1017,8 @@ export class DomainDiscoveryBridge extends EventEmitter {
       // Trigger discovery in background
       setImmediate(() =>
         this.discoverDomains().catch((err) =>
-          logger.error('Background domain discovery failed:', err)
-        )
+          logger.error('Background domain discovery failed:', err),
+        ),
       );
     }
   }
@@ -1077,13 +1077,13 @@ export function createDomainDiscoveryBridge(
   domainAnalyzer: DomainAnalysisEngine,
   projectAnalyzer: ProjectContextAnalyzer,
   intelligenceCoordinator: IntelligenceCoordinationSystem,
-  config?: DomainDiscoveryBridgeConfig
+  config?: DomainDiscoveryBridgeConfig,
 ): DomainDiscoveryBridge {
   return new DomainDiscoveryBridge(
     docProcessor,
     domainAnalyzer,
     projectAnalyzer,
     intelligenceCoordinator,
-    config
+    config,
   );
 }

@@ -89,7 +89,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
           () => {
             onExit(result.success ? 0 : 1);
           },
-          flags.interactive ? 0 : 1000
+          flags.interactive ? 0 : 1000,
         );
       } catch (error) {
         setState({
@@ -101,7 +101,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
           () => {
             onExit(1);
           },
-          flags.interactive ? 0 : 1000
+          flags.interactive ? 0 : 1000,
         );
       }
     };
@@ -181,7 +181,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
               📊 Summary:{' '}
             </Text>
             <Text>{data.summary}</Text>
-          </Box>
+          </Box>,
         );
       }
 
@@ -199,7 +199,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
                 </Text>
               ))}
             </Box>
-          </Box>
+          </Box>,
         );
       }
 
@@ -211,7 +211,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
               ⏱️ Duration:{' '}
             </Text>
             <Text color="cyan">{data.duration}ms</Text>
-          </Box>
+          </Box>,
         );
       }
 
@@ -223,7 +223,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
               ℹ️ Details:{' '}
             </Text>
             <Text>{data.details}</Text>
-          </Box>
+          </Box>,
         );
       }
 
@@ -236,7 +236,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
               📁 Files:{' '}
             </Text>
             <Text color="cyan">{fileCount} files generated</Text>
-          </Box>
+          </Box>,
         );
       }
 
@@ -249,7 +249,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
               🎯 Quality Score:{' '}
             </Text>
             <Text color="green">{score}%</Text>
-          </Box>
+          </Box>,
         );
       }
 
@@ -267,7 +267,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
                 </Text>
               ))}
             </Box>
-          </Box>
+          </Box>,
         );
       }
 
@@ -279,7 +279,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
             <Box marginLeft={2}>
               <Text>{formatResultData(data)}</Text>
             </Box>
-          </Box>
+          </Box>,
         );
       }
 

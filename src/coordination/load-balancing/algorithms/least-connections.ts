@@ -37,7 +37,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   public async selectAgent(
     task: Task,
     availableAgents: Agent[],
-    metrics: Map<string, LoadMetrics>
+    metrics: Map<string, LoadMetrics>,
   ): Promise<RoutingResult> {
     if (availableAgents.length === 0) {
       throw new Error('No available agents');
@@ -115,7 +115,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
     agentId: string,
     _task: Task,
     duration: number,
-    _success: boolean
+    _success: boolean,
   ): Promise<void> {
     const state = this.getOrCreateConnectionState(agentId);
 
@@ -176,7 +176,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
    */
   private async updateConnectionStates(
     agents: Agent[],
-    metrics: Map<string, LoadMetrics>
+    metrics: Map<string, LoadMetrics>,
   ): Promise<void> {
     for (const agent of agents) {
       const state = this.getOrCreateConnectionState(agent.id);
@@ -206,7 +206,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   private async scoreAgents(
     agents: Agent[],
     task: Task,
-    metrics: Map<string, LoadMetrics>
+    metrics: Map<string, LoadMetrics>,
   ): Promise<Array<{ agent: Agent; score: number; connections: number; capacity: number }>> {
     const scored = [];
 
@@ -283,7 +283,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
     const newPrediction = Math.max(
       throughputBasedCapacity,
       historicalPeak * 0.8, // Conservative estimate
-      state.maxConnections * 0.5 // Minimum threshold
+      state.maxConnections * 0.5, // Minimum threshold
     );
 
     state.predictedCapacity =

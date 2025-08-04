@@ -156,7 +156,7 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
       // Total algorithm count should be substantial
       const totalAlgorithms = Object.values(algorithmsToTest).reduce(
         (sum, algorithms) => sum + algorithms.length,
-        0
+        0,
       );
       expect(totalAlgorithms).toBeGreaterThanOrEqual(18);
     });

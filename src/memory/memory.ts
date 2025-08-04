@@ -83,22 +83,13 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     }
   }
 
-  async store(
-    sessionId: string,
-    key: string,
-    data: any,
-    options?: StoreOptions
-  ): Promise<void>;
-  async store(
-    key: string,
-    data: any,
-    options?: StoreOptions
-  ): Promise<void>;
+  async store(sessionId: string, key: string, data: any, options?: StoreOptions): Promise<void>;
+  async store(key: string, data: any, options?: StoreOptions): Promise<void>;
   async store(
     sessionIdOrKey: string,
     keyOrData?: string | any,
     dataOrOptions?: any | StoreOptions,
-    options?: StoreOptions
+    options?: StoreOptions,
   ): Promise<void> {
     // Handle both overloads: (sessionId, key, data, options) and (key, data, options)
     let sessionId: string;
@@ -213,17 +204,17 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
 
     // Update backend
     await this.backend.store(actualSessionId, session as unknown as JSONValue, 'session');
-    
+
     // Remove from cache
     const cacheKey = `${actualSessionId}:${actualKey}`;
     this.cache.delete(cacheKey);
-    
+
     return true;
   }
 
   async getStats(): Promise<MemoryStats> {
     this.ensureInitialized();
-    
+
     let totalEntries = 0;
     let totalSize = 0;
     let lastModified = 0;
@@ -238,7 +229,7 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
       entries: totalEntries,
       size: totalSize,
       lastModified,
-      namespaces: this.sessions.size
+      namespaces: this.sessions.size,
     };
   }
 

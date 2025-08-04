@@ -70,7 +70,7 @@ export const createDatabaseRoutes = (): Router => {
       };
 
       res.json(result);
-    })
+    }),
   );
 
   /**
@@ -101,7 +101,7 @@ export const createDatabaseRoutes = (): Router => {
       });
 
       res.status(201).json(result);
-    })
+    }),
   );
 
   /**
@@ -133,7 +133,7 @@ export const createDatabaseRoutes = (): Router => {
       };
 
       res.json(result);
-    })
+    }),
   );
 
   // ===== VECTOR DATABASE OPERATIONS (LanceDB) =====
@@ -181,7 +181,7 @@ export const createDatabaseRoutes = (): Router => {
       };
 
       res.json(result);
-    })
+    }),
   );
 
   /**
@@ -211,7 +211,7 @@ export const createDatabaseRoutes = (): Router => {
       });
 
       res.status(201).json(result);
-    })
+    }),
   );
 
   /**
@@ -265,7 +265,7 @@ export const createDatabaseRoutes = (): Router => {
           totalTime: duration + 1.2,
         },
       });
-    })
+    }),
   );
 
   /**
@@ -309,7 +309,7 @@ export const createDatabaseRoutes = (): Router => {
           duration,
         },
       });
-    })
+    }),
   );
 
   // ===== GRAPH DATABASE OPERATIONS (Kuzu) =====
@@ -356,7 +356,7 @@ export const createDatabaseRoutes = (): Router => {
       });
 
       res.json(result);
-    })
+    }),
   );
 
   /**
@@ -412,7 +412,7 @@ export const createDatabaseRoutes = (): Router => {
       };
 
       res.json(result);
-    })
+    }),
   );
 
   // ===== RELATIONAL DATABASE OPERATIONS =====
@@ -458,7 +458,7 @@ export const createDatabaseRoutes = (): Router => {
       };
 
       res.json(result);
-    })
+    }),
   );
 
   /**
@@ -511,7 +511,7 @@ export const createDatabaseRoutes = (): Router => {
       });
 
       res.json(result);
-    })
+    }),
   );
 
   // ===== DATABASE HEALTH AND MONITORING =====
@@ -560,7 +560,7 @@ export const createDatabaseRoutes = (): Router => {
 
       const statusCode = result.status === 'healthy' ? 200 : 503;
       res.status(statusCode).json(result);
-    })
+    }),
   );
 
   /**
@@ -609,7 +609,7 @@ export const createDatabaseRoutes = (): Router => {
       };
 
       res.json(result);
-    })
+    }),
   );
 
   return router;

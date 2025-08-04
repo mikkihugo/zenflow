@@ -153,7 +153,7 @@ class PerformanceMonitor {
       `{bold}Total Calls:{/bold} ${this.metrics.hooks.calls}\n` +
         `{bold}Avg Time:{/bold} ${this.metrics.hooks.avgTime}ms\n` +
         `{bold}Error Rate:{/bold} ${((this.metrics.hooks.errors / Math.max(1, this.metrics.hooks.calls)) * 100).toFixed(1)}%\n` +
-        `{bold}Throughput:{/bold} ${(this.metrics.hooks.calls / 10).toFixed(1)}/s`,
+        `{bold}Throughput:{/bold} ${(this.metrics.hooks.calls / 10).toFixed(1)}/s`
     );
 
     // Update memory metrics
@@ -161,14 +161,14 @@ class PerformanceMonitor {
       `{bold}Reads:{/bold} ${this.metrics.memory.reads}\n` +
         `{bold}Writes:{/bold} ${this.metrics.memory.writes}\n` +
         `{bold}Cache Hits:{/bold} ${this.metrics.memory.cacheHits}\n` +
-        `{bold}Hit Rate:{/bold} ${((this.metrics.memory.cacheHits / Math.max(1, this.metrics.memory.reads)) * 100).toFixed(1)}%`,
+        `{bold}Hit Rate:{/bold} ${((this.metrics.memory.cacheHits / Math.max(1, this.metrics.memory.reads)) * 100).toFixed(1)}%`
     );
 
     // Update neural metrics
     this.neuralBox.setContent(
       `{bold}Predictions:{/bold} ${this.metrics.neural.predictions}\n` +
         `{bold}Trainings:{/bold} ${this.metrics.neural.trainings}\n` +
-        `{bold}Accuracy:{/bold} ${this.metrics.neural.accuracy}%`,
+        `{bold}Accuracy:{/bold} ${this.metrics.neural.accuracy}%`
     );
 
     // Update agent metrics
@@ -176,7 +176,7 @@ class PerformanceMonitor {
       `{bold}Active:{/bold} ${this.metrics.agents.active}\n` +
         `{bold}Pooled:{/bold} ${this.metrics.agents.pooled}\n` +
         `{bold}Total Spawns:{/bold} ${this.metrics.agents.spawns}\n` +
-        `{bold}Pool Efficiency:{/bold} ${((this.metrics.agents.pooled / 15) * 100).toFixed(1)}%`,
+        `{bold}Pool Efficiency:{/bold} ${((this.metrics.agents.pooled / 15) * 100).toFixed(1)}%`
     );
 
     // Add log entries

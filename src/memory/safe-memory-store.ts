@@ -1,6 +1,6 @@
 /**
  * Enhanced Memory Provider with Union Type Safety
- * 
+ *
  * Provides type-safe memory operations using discriminated unions
  * for proper error handling and result discrimination.
  */
@@ -13,7 +13,7 @@ import {
   MemoryError,
   isMemorySuccess,
   isMemoryNotFound,
-  isMemoryError
+  isMemoryError,
 } from '../../utils/type-guards';
 
 export interface SafeMemoryStoreOptions {
@@ -47,7 +47,7 @@ export class SafeMemoryStore extends EventEmitter {
 
   constructor(options: SafeMemoryStoreOptions = {}) {
     super();
-    
+
     this.options = {
       namespace: options.namespace ?? 'default',
       enableTTL: options.enableTTL ?? true,
@@ -59,7 +59,7 @@ export class SafeMemoryStore extends EventEmitter {
 
   async initialize(): Promise<void> {
     if (this.initialized) return;
-    
+
     try {
       // Initialize any required resources
       this.startCleanupInterval();
@@ -81,15 +81,19 @@ export class SafeMemoryStore extends EventEmitter {
       }
 
       if (this.store.size >= this.options.maxSize) {
-        return this.createMemoryError(key, 'STORE_FULL', 'Memory store has reached maximum capacity');
+        return this.createMemoryError(
+          key,
+          'STORE_FULL',
+          'Memory store has reached maximum capacity',
+        );
       }
 
       const fullKey = this.createKey(key);
       const now = new Date();
-      
+
       // Store the data
       this.store.set(fullKey, data);
-      
+
       // Create or update metadata
       const existingMetadata = this.metadata.get(fullKey);
       const newMetadata: MemoryMetadata = {
@@ -102,25 +106,24 @@ export class SafeMemoryStore extends EventEmitter {
         tags: existingMetadata?.tags,
         compressed: this.options.enableCompression,
       };
-      
+
       this.metadata.set(fullKey, newMetadata);
-      
+
       // Set up TTL if enabled
       if (this.options.enableTTL && newMetadata.ttl) {
         this.setTTL(fullKey, newMetadata.ttl);
       }
-      
+
       this.emit('stored', { key: fullKey, size: newMetadata.size });
-      
+
       return {
         found: true,
         data: undefined as void,
         key: fullKey,
         timestamp: now,
         ttl: newMetadata.ttl,
-        metadata: { operation: 'store', success: true }
+        metadata: { operation: 'store', success: true },
       } as MemorySuccess<void>;
-      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown storage error';
       return this.createMemoryError(key, 'STORE_FAILED', errorMessage);
@@ -137,18 +140,18 @@ export class SafeMemoryStore extends EventEmitter {
       }
 
       const fullKey = this.createKey(key);
-      
+
       if (!this.store.has(fullKey)) {
         return {
           found: false,
           key: fullKey,
-          reason: 'not_found'
+          reason: 'not_found',
         } as MemoryNotFound;
       }
 
       const data = this.store.get(fullKey) as T;
       const metadata = this.metadata.get(fullKey);
-      
+
       if (!metadata) {
         return this.createMemoryError(key, 'METADATA_MISSING', 'Metadata not found for key');
       }
@@ -158,9 +161,9 @@ export class SafeMemoryStore extends EventEmitter {
       metadata.accessed = now;
       metadata.accessCount++;
       this.metadata.set(fullKey, metadata);
-      
+
       this.emit('accessed', { key: fullKey, accessCount: metadata.accessCount });
-      
+
       return {
         found: true,
         data,
@@ -171,10 +174,9 @@ export class SafeMemoryStore extends EventEmitter {
           created: metadata.created,
           accessed: metadata.accessed,
           accessCount: metadata.accessCount,
-          size: metadata.size
-        }
+          size: metadata.size,
+        },
       } as MemorySuccess<T>;
-      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown retrieval error';
       return this.createMemoryError(key, 'RETRIEVE_FAILED', errorMessage);
@@ -191,12 +193,12 @@ export class SafeMemoryStore extends EventEmitter {
       }
 
       const fullKey = this.createKey(key);
-      
+
       if (!this.store.has(fullKey)) {
         return {
           found: false,
           key: fullKey,
-          reason: 'not_found'
+          reason: 'not_found',
         } as MemoryNotFound;
       }
 
@@ -210,17 +212,16 @@ export class SafeMemoryStore extends EventEmitter {
       // Remove data and metadata
       const deleted = this.store.delete(fullKey);
       this.metadata.delete(fullKey);
-      
+
       this.emit('deleted', { key: fullKey });
-      
+
       return {
         found: true,
         data: deleted,
         key: fullKey,
         timestamp: new Date(),
-        metadata: { operation: 'delete', success: true }
+        metadata: { operation: 'delete', success: true },
       } as MemorySuccess<boolean>;
-      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown deletion error';
       return this.createMemoryError(key, 'DELETE_FAILED', errorMessage);
@@ -234,20 +235,20 @@ export class SafeMemoryStore extends EventEmitter {
     try {
       const fullKey = this.createKey(key);
       const exists = this.store.has(fullKey);
-      
+
       if (exists) {
         return {
           found: true,
           data: true,
           key: fullKey,
           timestamp: new Date(),
-          metadata: { operation: 'exists', result: true }
+          metadata: { operation: 'exists', result: true },
         } as MemorySuccess<boolean>;
       } else {
         return {
           found: false,
           key: fullKey,
-          reason: 'not_found'
+          reason: 'not_found',
         } as MemoryNotFound;
       }
     } catch (error) {
@@ -259,13 +260,15 @@ export class SafeMemoryStore extends EventEmitter {
   /**
    * Get store statistics
    */
-  async getStats(): Promise<MemoryResult<{
-    entries: number;
-    totalSize: number;
-    averageSize: number;
-    oldestEntry: Date | null;
-    newestEntry: Date | null;
-  }>> {
+  async getStats(): Promise<
+    MemoryResult<{
+      entries: number;
+      totalSize: number;
+      averageSize: number;
+      oldestEntry: Date | null;
+      newestEntry: Date | null;
+    }>
+  > {
     try {
       const entries = this.store.size;
       let totalSize = 0;
@@ -274,11 +277,11 @@ export class SafeMemoryStore extends EventEmitter {
 
       for (const metadata of this.metadata.values()) {
         totalSize += metadata.size;
-        
+
         if (!oldestEntry || metadata.created < oldestEntry) {
           oldestEntry = metadata.created;
         }
-        
+
         if (!newestEntry || metadata.created > newestEntry) {
           newestEntry = metadata.created;
         }
@@ -297,9 +300,8 @@ export class SafeMemoryStore extends EventEmitter {
         data: stats,
         key: 'stats',
         timestamp: new Date(),
-        metadata: { operation: 'stats' }
+        metadata: { operation: 'stats' },
       } as MemorySuccess<typeof stats>;
-      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown stats error';
       return this.createMemoryError('stats', 'STATS_FAILED', errorMessage);
@@ -314,11 +316,11 @@ export class SafeMemoryStore extends EventEmitter {
     for (const timer of this.ttlTimers.values()) {
       clearTimeout(timer);
     }
-    
+
     this.store.clear();
     this.metadata.clear();
     this.ttlTimers.clear();
-    
+
     this.emit('cleared');
   }
 
@@ -345,8 +347,8 @@ export class SafeMemoryStore extends EventEmitter {
       error: {
         code,
         message,
-        key: this.createKey(key)
-      }
+        key: this.createKey(key),
+      },
     };
   }
 
@@ -385,18 +387,18 @@ export class SafeMemoryStore extends EventEmitter {
 
   private cleanupExpiredEntries(): void {
     const now = Date.now();
-    
+
     for (const [key, metadata] of this.metadata.entries()) {
-      if (metadata.ttl && (metadata.updated.getTime() + metadata.ttl) < now) {
+      if (metadata.ttl && metadata.updated.getTime() + metadata.ttl < now) {
         this.store.delete(key);
         this.metadata.delete(key);
-        
+
         const timer = this.ttlTimers.get(key);
         if (timer) {
           clearTimeout(timer);
           this.ttlTimers.delete(key);
         }
-        
+
         this.emit('expired', { key });
       }
     }
@@ -416,7 +418,7 @@ export async function safeMemoryUsageExample(): Promise<void> {
 
   // Store some data
   const storeResult = await store.store('user:123', { name: 'Alice', age: 30 });
-  
+
   // Safe property access using type guards
   if (isMemorySuccess(storeResult)) {
     console.log('✅ Data stored successfully');
@@ -426,7 +428,7 @@ export async function safeMemoryUsageExample(): Promise<void> {
 
   // Retrieve data with safe access
   const retrieveResult = await store.retrieve<{ name: string; age: number }>('user:123');
-  
+
   if (isMemorySuccess(retrieveResult)) {
     // TypeScript knows this is MemorySuccess<T> here
     console.log('User name:', retrieveResult.data.name);
@@ -440,7 +442,7 @@ export async function safeMemoryUsageExample(): Promise<void> {
 
   // Check existence safely
   const existsResult = await store.exists('user:456');
-  
+
   if (isMemorySuccess(existsResult)) {
     console.log('User 456 exists:', existsResult.data);
   } else if (isMemoryNotFound(existsResult)) {

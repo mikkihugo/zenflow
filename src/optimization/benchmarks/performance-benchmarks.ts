@@ -69,7 +69,7 @@ export class PerformanceBenchmarkSuite {
       swarm?: SwarmOptimizer;
       data?: DataOptimizer;
       wasm?: WasmOptimizer;
-    } = {}
+    } = {},
   ) {
     this.neuralOptimizer = optimizers.neural;
     this.swarmOptimizer = optimizers.swarm;
@@ -523,7 +523,7 @@ export class PerformanceBenchmarkSuite {
   private async runBenchmarkSuite(
     domain: string,
     benchmarks: BenchmarkTest[],
-    optimizer: any
+    optimizer: any,
   ): Promise<BenchmarkResult[]> {
     const results: BenchmarkResult[] = [];
 
@@ -578,11 +578,11 @@ export class PerformanceBenchmarkSuite {
     const latencyImprovement = Math.max(0, (before.latency - after.latency) / before.latency);
     const throughputImprovement = Math.max(
       0,
-      (after.throughput - before.throughput) / before.throughput
+      (after.throughput - before.throughput) / before.throughput,
     );
     const memoryImprovement = Math.max(
       0,
-      (before.memoryUsage - after.memoryUsage) / before.memoryUsage
+      (before.memoryUsage - after.memoryUsage) / before.memoryUsage,
     );
     const cpuImprovement = Math.max(0, (before.cpuUsage - after.cpuUsage) / before.cpuUsage);
 
@@ -601,7 +601,7 @@ export class PerformanceBenchmarkSuite {
         .map(() =>
           Array(100)
             .fill(0)
-            .map(() => Math.random())
+            .map(() => Math.random()),
         ),
       activationFunction: 'relu',
     };

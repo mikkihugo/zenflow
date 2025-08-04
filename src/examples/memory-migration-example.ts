@@ -1,6 +1,6 @@
 /**
  * Migration Example: Updating Memory Operations to Use Type Guards
- * 
+ *
  * This file demonstrates how to migrate existing memory operations
  * from unsafe union type access to type-safe patterns using type guards.
  */
@@ -15,7 +15,7 @@ import {
   isMemoryNotFound,
   isMemoryError,
   extractErrorMessage,
-  safePropertyAccess
+  safePropertyAccess,
 } from '../utils/type-guards';
 
 // ============================================
@@ -31,7 +31,7 @@ class UnsafeMemoryService {
   // ❌ Unsafe: Direct property access on potentially undefined results
   async getUserProfile(userId: string): Promise<any> {
     const result = await this.store.retrieve('user-profiles', userId);
-    
+
     // This could fail at runtime if result is null/undefined
     return result.profile || null; // ❌ Unsafe property access
   }
@@ -45,11 +45,11 @@ class UnsafeMemoryService {
   // ❌ Unsafe: Assumes success without checking
   async getUserPreferences(userId: string): Promise<any> {
     const result = await this.store.retrieve('user-preferences', userId);
-    
+
     // ❌ Direct property access without null/type checking
     const preferences = result.preferences;
     const settings = result.settings;
-    
+
     return { preferences, settings };
   }
 }
@@ -71,7 +71,7 @@ class SafeMemoryService {
     try {
       // Assume we have an enhanced store that returns MemoryResult
       const result = await this.retrieveWithResult<UserProfile>('user-profiles', userId);
-      
+
       // ✅ Type-safe access using type guards
       if (isMemorySuccess(result)) {
         return result; // Returns the full success result
@@ -80,10 +80,9 @@ class SafeMemoryService {
       } else if (isMemoryError(result)) {
         return result; // Returns the error result
       }
-      
+
       // This should never happen with proper typing
       throw new Error('Unexpected result type');
-      
     } catch (error) {
       // ✅ Safe error handling
       return {
@@ -91,8 +90,8 @@ class SafeMemoryService {
         error: {
           code: 'RETRIEVE_FAILED',
           message: error instanceof Error ? error.message : 'Unknown error',
-          key: `user-profiles:${userId}`
-        }
+          key: `user-profiles:${userId}`,
+        },
       } as MemoryError;
     }
   }
@@ -103,7 +102,7 @@ class SafeMemoryService {
   async cacheUserSession(userId: string, sessionData: UserSession): Promise<MemoryResult<void>> {
     try {
       const result = await this.storeWithResult('user-sessions', userId, sessionData);
-      
+
       if (isMemorySuccess(result)) {
         console.log(`✅ User session cached successfully for ${userId}`);
         return result;
@@ -111,19 +110,18 @@ class SafeMemoryService {
         console.error(`❌ Failed to cache session for ${userId}:`, result.error.message);
         return result;
       }
-      
+
       throw new Error('Unexpected result type');
-      
     } catch (error) {
       console.error(`❌ Unexpected error caching session for ${userId}:`, error);
-      
+
       return {
         found: false,
         error: {
           code: 'CACHE_FAILED',
           message: error instanceof Error ? error.message : 'Unknown caching error',
-          key: `user-sessions:${userId}`
-        }
+          key: `user-sessions:${userId}`,
+        },
       } as MemoryError;
     }
   }
@@ -145,20 +143,20 @@ class SafeMemoryService {
       // ✅ Type-safe access - TypeScript knows result.data exists
       return {
         preferences: result.data.preferences || null,
-        settings: result.data.settings || null
+        settings: result.data.settings || null,
       };
     } else if (isMemoryNotFound(result)) {
       // ✅ Handle not found case gracefully
       return {
         preferences: null,
-        settings: null
+        settings: null,
       };
     } else if (isMemoryError(result)) {
       // ✅ Handle errors with user-friendly messages
       return {
         preferences: null,
         settings: null,
-        error: result.error.message
+        error: result.error.message,
       };
     }
 
@@ -166,7 +164,7 @@ class SafeMemoryService {
     return {
       preferences: null,
       settings: null,
-      error: 'Unexpected result type'
+      error: 'Unexpected result type',
     };
   }
 
@@ -215,25 +213,30 @@ class SafeMemoryService {
   /**
    * ✅ Safe: Batch operations with individual error handling
    */
-  async getUsersData(userIds: string[]): Promise<Map<string, {
-    profile: UserProfile | null;
-    session: UserSession | null;
-    error?: string;
-  }>> {
+  async getUsersData(userIds: string[]): Promise<
+    Map<
+      string,
+      {
+        profile: UserProfile | null;
+        session: UserSession | null;
+        error?: string;
+      }
+    >
+  > {
     const results = new Map();
 
     // Process users concurrently with individual error handling
     const promises = userIds.map(async (userId) => {
       try {
         const userData = await this.getUserData(userId);
-        
+
         return {
           userId,
           data: {
             profile: userData.profile,
             session: userData.session,
-            error: userData.errors.length > 0 ? userData.errors.join('; ') : undefined
-          }
+            error: userData.errors.length > 0 ? userData.errors.join('; ') : undefined,
+          },
         };
       } catch (error) {
         return {
@@ -241,14 +244,14 @@ class SafeMemoryService {
           data: {
             profile: null,
             session: null,
-            error: error instanceof Error ? error.message : 'Unknown error'
-          }
+            error: error instanceof Error ? error.message : 'Unknown error',
+          },
         };
       }
     });
 
     const resolved = await Promise.all(promises);
-    
+
     resolved.forEach(({ userId, data }) => {
       results.set(userId, data);
     });
@@ -266,12 +269,12 @@ class SafeMemoryService {
   private async retrieveWithResult<T>(namespace: string, key: string): Promise<MemoryResult<T>> {
     try {
       const data = await this.store.retrieve(namespace, key);
-      
+
       if (data === null || data === undefined) {
         return {
           found: false,
           key: `${namespace}:${key}`,
-          reason: 'not_found'
+          reason: 'not_found',
         } as MemoryNotFound;
       }
 
@@ -280,17 +283,16 @@ class SafeMemoryService {
         data: data as T,
         key: `${namespace}:${key}`,
         timestamp: new Date(),
-        metadata: { source: 'memory_store' }
+        metadata: { source: 'memory_store' },
       } as MemorySuccess<T>;
-
     } catch (error) {
       return {
         found: false,
         error: {
           code: 'RETRIEVE_ERROR',
           message: error instanceof Error ? error.message : 'Unknown retrieval error',
-          key: `${namespace}:${key}`
-        }
+          key: `${namespace}:${key}`,
+        },
       } as MemoryError;
     }
   }
@@ -298,7 +300,11 @@ class SafeMemoryService {
   /**
    * Enhanced store method that returns MemoryResult
    */
-  private async storeWithResult<T>(namespace: string, key: string, data: T): Promise<MemoryResult<void>> {
+  private async storeWithResult<T>(
+    namespace: string,
+    key: string,
+    data: T,
+  ): Promise<MemoryResult<void>> {
     try {
       await this.store.store(namespace, key, data);
 
@@ -307,17 +313,16 @@ class SafeMemoryService {
         data: undefined as void,
         key: `${namespace}:${key}`,
         timestamp: new Date(),
-        metadata: { operation: 'store' }
+        metadata: { operation: 'store' },
       } as MemorySuccess<void>;
-
     } catch (error) {
       return {
         found: false,
         error: {
           code: 'STORE_ERROR',
           message: error instanceof Error ? error.message : 'Unknown storage error',
-          key: `${namespace}:${key}`
-        }
+          key: `${namespace}:${key}`,
+        },
       } as MemoryError;
     }
   }
@@ -369,7 +374,7 @@ interface UserSettings {
 export async function demonstrateMigration(): Promise<void> {
   // Mock store for demonstration
   const mockStore = {} as SessionMemoryStore;
-  
+
   const unsafeService = new UnsafeMemoryService(mockStore);
   const safeService = new SafeMemoryService(mockStore);
 
@@ -380,23 +385,22 @@ export async function demonstrateMigration(): Promise<void> {
     // ❌ This could fail at runtime with unclear errors
     const unsafeProfile = await unsafeService.getUserProfile(userId);
     console.log('Profile (unsafe):', unsafeProfile); // Could be undefined/null
-    
+
     // ❌ No indication if this succeeded or failed
     await unsafeService.cacheUserSession(userId, { id: 'session123', userId, token: 'abc' });
-    
+
     // ❌ Could throw runtime errors on property access
     const unsafePrefs = await unsafeService.getUserPreferences(userId);
     console.log('Preferences (unsafe):', unsafePrefs);
-    
   } catch (error) {
     console.error('❌ Unsafe service failed:', error);
   }
 
   console.log('\n=== SAFE SERVICE USAGE ===');
-  
+
   // ✅ Type-safe profile retrieval
   const profileResult = await safeService.getUserProfile(userId);
-  
+
   if (isMemorySuccess(profileResult)) {
     console.log('✅ Profile retrieved:', profileResult.data.name);
     console.log('Cache info:', profileResult.timestamp);
@@ -412,11 +416,11 @@ export async function demonstrateMigration(): Promise<void> {
     userId,
     token: 'abc123',
     expires_at: new Date(Date.now() + 3600000).toISOString(),
-    metadata: {}
+    metadata: {},
   };
-  
+
   const cacheResult = await safeService.cacheUserSession(userId, sessionData);
-  
+
   if (isMemorySuccess(cacheResult)) {
     console.log('✅ Session cached successfully');
   } else if (isMemoryError(cacheResult)) {
@@ -425,7 +429,7 @@ export async function demonstrateMigration(): Promise<void> {
 
   // ✅ Type-safe preferences with graceful error handling
   const preferencesData = await safeService.getUserPreferences(userId);
-  
+
   if (preferencesData.preferences) {
     console.log('✅ User theme:', preferencesData.preferences.theme);
   } else if (preferencesData.error) {
@@ -436,12 +440,12 @@ export async function demonstrateMigration(): Promise<void> {
 
   // ✅ Complex operation with comprehensive error handling
   const userData = await safeService.getUserData(userId);
-  
+
   console.log('User data summary:');
   console.log('- Profile:', userData.profile ? '✅ Found' : '❌ Missing');
   console.log('- Session:', userData.session ? '✅ Active' : '❌ None');
   console.log('- Preferences:', userData.preferences ? '✅ Set' : '❌ Default');
-  
+
   if (userData.errors.length > 0) {
     console.log('Errors encountered:', userData.errors);
   }
@@ -449,13 +453,15 @@ export async function demonstrateMigration(): Promise<void> {
   // ✅ Batch operations with individual error handling
   const batchUserIds = ['user1', 'user2', 'user3'];
   const batchResults = await safeService.getUsersData(batchUserIds);
-  
+
   console.log('\nBatch operation results:');
   batchResults.forEach((result, userId) => {
     if (result.error) {
       console.log(`❌ ${userId}: Error - ${result.error}`);
     } else {
-      console.log(`✅ ${userId}: Profile ${result.profile ? 'found' : 'missing'}, Session ${result.session ? 'active' : 'inactive'}`);
+      console.log(
+        `✅ ${userId}: Profile ${result.profile ? 'found' : 'missing'}, Session ${result.session ? 'active' : 'inactive'}`,
+      );
     }
   });
 }

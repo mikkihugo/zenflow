@@ -8,11 +8,7 @@
 // Core React state hooks
 export * from './use-config';
 // Re-export key hooks for convenience
-export {
-  type TerminalConfig,
-  type UseConfigReturn,
-  useConfig,
-} from './use-config';
+export { type TerminalConfig, type UseConfigReturn, useConfig } from './use-config';
 export * from './use-swarm-status';
 
 export {

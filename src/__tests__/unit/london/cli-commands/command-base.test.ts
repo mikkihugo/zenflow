@@ -135,7 +135,7 @@ describe('BaseCommand - TDD London', () => {
         expect.objectContaining({
           success: true,
           executionTime: expect.any(Number),
-        })
+        }),
       );
     });
 
@@ -143,7 +143,7 @@ describe('BaseCommand - TDD London', () => {
       // Arrange
       const slowCommand = new TestCommand(
         { name: 'slow', description: 'Slow command' },
-        jest.fn().mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)))
+        jest.fn().mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100))),
       );
 
       // Act
@@ -169,7 +169,7 @@ describe('BaseCommand - TDD London', () => {
         jest.fn().mockImplementation(() => {
           executingDuringRun = trackingCommand.executing;
           return Promise.resolve({ success: true, exitCode: 0 });
-        })
+        }),
       );
 
       // Act
@@ -200,7 +200,7 @@ describe('BaseCommand - TDD London', () => {
           errors: expect.arrayContaining([
             expect.stringContaining('Required flag --required is missing'),
           ]),
-        })
+        }),
       );
 
       expect(result).toEqual({
@@ -314,12 +314,12 @@ describe('BaseCommand - TDD London', () => {
       expect(mockHooks.beforeValidation).toHaveBeenCalledWith(mockContext);
       expect(mockHooks.afterValidation).toHaveBeenCalledWith(
         mockContext,
-        expect.objectContaining({ valid: true })
+        expect.objectContaining({ valid: true }),
       );
       expect(mockHooks.beforeExecution).toHaveBeenCalledWith(mockContext);
       expect(mockHooks.afterExecution).toHaveBeenCalledWith(
         mockContext,
-        expect.objectContaining({ success: true })
+        expect.objectContaining({ success: true }),
       );
       expect(mockHooks.onError).not.toHaveBeenCalled();
     });
@@ -329,7 +329,7 @@ describe('BaseCommand - TDD London', () => {
       const error = new Error('Command failed');
       const failingCommand = new TestCommand(
         { name: 'failing', description: 'Failing command' },
-        jest.fn().mockRejectedValue(error)
+        jest.fn().mockRejectedValue(error),
       );
       failingCommand.registerHooks(mockHooks);
 
@@ -380,7 +380,7 @@ describe('BaseCommand - TDD London', () => {
       const error = new Error('Run method failed');
       const errorCommand = new TestCommand(
         { name: 'error', description: 'Error command' },
-        jest.fn().mockRejectedValue(error)
+        jest.fn().mockRejectedValue(error),
       );
 
       const errorEventHandler = jest.fn();
@@ -404,7 +404,7 @@ describe('BaseCommand - TDD London', () => {
       const stringError = 'String error';
       const errorCommand = new TestCommand(
         { name: 'string-error', description: 'String error command' },
-        jest.fn().mockRejectedValue(stringError)
+        jest.fn().mockRejectedValue(stringError),
       );
 
       // Act

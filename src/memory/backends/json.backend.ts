@@ -33,7 +33,7 @@ export class JSONBackend extends MemoryBackend {
   async store(
     key: string,
     value: JSONValue,
-    namespace: string = 'default'
+    namespace: string = 'default',
   ): Promise<StorageResult> {
     const fullKey = `${namespace}:${key}`;
     const timestamp = Date.now();

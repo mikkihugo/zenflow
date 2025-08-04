@@ -35,7 +35,7 @@ interface ValidationResult {
 class DataIntegrityUtils {
   static calculateChecksum(
     data: any,
-    algorithm: 'sha256' | 'md5' | 'crc32' = 'sha256'
+    algorithm: 'sha256' | 'md5' | 'crc32' = 'sha256',
   ): DataChecksum {
     const serialized = typeof data === 'string' ? data : JSON.stringify(data);
 
@@ -98,7 +98,7 @@ class DataIntegrityUtils {
 
       if (originalKeys.length !== currentKeys.length) {
         issues.push(
-          `Object key count mismatch: expected ${originalKeys.length}, got ${currentKeys.length}`
+          `Object key count mismatch: expected ${originalKeys.length}, got ${currentKeys.length}`,
         );
       }
 
@@ -121,7 +121,7 @@ class DataIntegrityUtils {
       }
     } else if (original !== current) {
       issues.push(
-        `Value mismatch: expected ${JSON.stringify(original)}, got ${JSON.stringify(current)}`
+        `Value mismatch: expected ${JSON.stringify(original)}, got ${JSON.stringify(current)}`,
       );
     }
 
@@ -131,7 +131,7 @@ class DataIntegrityUtils {
   static attemptRepair<T>(
     corrupted: T,
     reference: T,
-    strategy: 'merge' | 'replace' | 'selective' = 'selective'
+    strategy: 'merge' | 'replace' | 'selective' = 'selective',
   ): T {
     if (strategy === 'replace') {
       return reference;
@@ -197,7 +197,7 @@ class IntegrityStorage extends EventEmitter {
       validationEnabled?: boolean;
       autoRepair?: boolean;
       redundancyLevel?: number;
-    } = {}
+    } = {},
   ) {
     super();
     this.validationEnabled = options.validationEnabled ?? true;
@@ -322,7 +322,7 @@ class IntegrityStorage extends EventEmitter {
 
   async attemptRepair(
     id: string,
-    corruptedRecord: IntegrityRecord
+    corruptedRecord: IntegrityRecord,
   ): Promise<IntegrityRecord | null> {
     // Try backup first
     const backup = this.backupRecords.get(id);
@@ -341,7 +341,7 @@ class IntegrityStorage extends EventEmitter {
         const repairedData = DataIntegrityUtils.attemptRepair(
           corruptedRecord.data,
           backup.data,
-          'selective'
+          'selective',
         );
 
         const repairedRecord: IntegrityRecord = {
@@ -365,7 +365,7 @@ class IntegrityStorage extends EventEmitter {
 
   async simulateCorruption(
     id: string,
-    corruptionType: 'checksum' | 'data' | 'structure'
+    corruptionType: 'checksum' | 'data' | 'structure',
   ): Promise<boolean> {
     const record = this.records.get(id);
     if (!record) {
@@ -596,7 +596,7 @@ describe('Data Integrity Integration Tests', () => {
 
       // Should throw error due to corruption (no auto-repair)
       await expect(noRepairStorage.retrieve('corruption-test')).rejects.toThrow(
-        /Data integrity violation|Checksum validation failed/
+        /Data integrity violation|Checksum validation failed/,
       );
 
       await noRepairStorage.clear();
@@ -883,10 +883,10 @@ describe('Data Integrity Integration Tests', () => {
     it('should maintain integrity with large datasets', async () => {
       const largeData = {
         matrix: Array.from({ length: 100 }, (_, i) =>
-          Array.from({ length: 100 }, (_, j) => i * 100 + j)
+          Array.from({ length: 100 }, (_, j) => i * 100 + j),
         ),
         lookup: Object.fromEntries(
-          Array.from({ length: 1000 }, (_, i) => [`key_${i}`, `value_${i}`])
+          Array.from({ length: 1000 }, (_, i) => [`key_${i}`, `value_${i}`]),
         ),
       };
 

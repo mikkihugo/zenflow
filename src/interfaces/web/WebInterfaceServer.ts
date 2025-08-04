@@ -124,7 +124,7 @@ export class WebInterfaceServer {
         res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
         res.header(
           'Access-Control-Allow-Headers',
-          'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Session-Id'
+          'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Session-Id',
         );
 
         if (req.method === 'OPTIONS') {
@@ -230,7 +230,7 @@ export class WebInterfaceServer {
         this.logger.info(`📊 Dashboard: ${address}`);
         this.logger.info(`🔗 API: ${address}${this.config.apiPrefix}`);
         this.logger.info(
-          `⚡ WebSocket: Real-time updates ${this.config.realTime ? 'enabled' : 'disabled'}`
+          `⚡ WebSocket: Real-time updates ${this.config.realTime ? 'enabled' : 'disabled'}`,
         );
 
         resolve();

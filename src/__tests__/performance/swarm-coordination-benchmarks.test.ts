@@ -180,7 +180,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
         agentManager.updateAgent(agent.id, {
           capabilities: [...agent.capabilities, 'monitoring'],
           priority: 'high',
-        })
+        }),
       );
 
       await Promise.all(updatePromises);
@@ -191,7 +191,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       performance.start('bulk-agent-terminate');
 
       const terminatePromises = agents.map((agent) =>
-        agentManager.terminateAgent(agent.id, { graceful: true })
+        agentManager.terminateAgent(agent.id, { graceful: true }),
       );
 
       await Promise.all(terminatePromises);
@@ -225,7 +225,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       // Wait for auto-scaling to kick in
       await testHelpers.waitForCondition(
         () => agentManager.getActiveAgentCount() > initialAgentCount,
-        5000
+        5000,
       );
 
       const scaledAgentCount = await agentManager.getActiveAgentCount();
@@ -236,7 +236,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
 
       await testHelpers.waitForCondition(
         () => agentManager.getActiveAgentCount() <= initialAgentCount + 5,
-        10000
+        10000,
       );
 
       performance.end('auto-scaling-test');
@@ -331,7 +331,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
           type: 'processing',
           priority,
           submissionTime: Date.now(),
-        }))
+        })),
       );
 
       // Shuffle tasks to test priority sorting
@@ -431,7 +431,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
 
         const result = await swarmCoordinator.broadcastMessage(
           targetAgents.map((a) => a.id),
-          broadcastMessage
+          broadcastMessage,
         );
 
         performance.end(`broadcast-${size}`);
@@ -465,7 +465,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
             id: `routing-test-${topology}`,
             type: 'test_message',
             content: { test: true },
-          })
+          }),
         );
 
         await Promise.all(routingPromises);

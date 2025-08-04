@@ -241,7 +241,7 @@ export class UnifiedExportSystem extends EventEmitter {
   async batchExport(
     data: any,
     formats: string[],
-    options: ExportOptions = {}
+    options: ExportOptions = {},
   ): Promise<ExportResult[]> {
     const results: ExportResult[] = [];
 
@@ -277,7 +277,7 @@ export class UnifiedExportSystem extends EventEmitter {
       tasks?: any[];
     },
     format: string,
-    options: ExportOptions = {}
+    options: ExportOptions = {},
   ): Promise<ExportResult> {
     const documentData = {
       metadata: {
@@ -285,7 +285,7 @@ export class UnifiedExportSystem extends EventEmitter {
         workflow: 'Vision → ADRs → PRDs → Epics → Features → Tasks → Code',
         totalDocuments: Object.values(workflowData).reduce(
           (sum, docs) => sum + (docs?.length || 0),
-          0
+          0,
         ),
       },
       ...workflowData,
@@ -307,7 +307,7 @@ export class UnifiedExportSystem extends EventEmitter {
   async exportSystemStatus(
     statusData: any,
     format: string,
-    options: ExportOptions = {}
+    options: ExportOptions = {},
   ): Promise<ExportResult> {
     const systemExport = {
       timestamp: new Date().toISOString(),
@@ -392,7 +392,7 @@ export class UnifiedExportSystem extends EventEmitter {
           (item, index) =>
             `${spaces}<item index="${index}">
       ${this.convertToXML(item, indent + 1)}
-      ${spaces}</item>`
+      ${spaces}</item>`,
         )
         .join('\n');
     }
@@ -403,7 +403,7 @@ export class UnifiedExportSystem extends EventEmitter {
           ([key, value]) =>
             `${spaces}<${this.sanitizeXMLTag(key)}>
       ${this.convertToXML(value, indent + 1)}
-      ${spaces}</${this.sanitizeXMLTag(key)}>`
+      ${spaces}</${this.sanitizeXMLTag(key)}>`,
         )
         .join('\n');
     }

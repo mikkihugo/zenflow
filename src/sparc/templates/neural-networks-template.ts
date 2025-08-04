@@ -1132,7 +1132,7 @@ END
       customized.deploymentStrategy.infrastructure.push(
         'Service Mesh',
         'Enterprise Security',
-        'Compliance Monitoring'
+        'Compliance Monitoring',
       );
     }
 

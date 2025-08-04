@@ -152,7 +152,7 @@ export class APIServer {
             imgSrc: ["'self'", 'data:', 'https:'],
           },
         },
-      })
+      }),
     );
 
     // CORS configuration
@@ -162,7 +162,7 @@ export class APIServer {
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
-      })
+      }),
     );
 
     // Performance middleware
@@ -237,7 +237,7 @@ export class APIServer {
           explorer: true,
           customCss: '.swagger-ui .topbar { display: none }',
           customSiteTitle: 'Claude Code Flow API Documentation',
-        })
+        }),
       );
 
       // Raw OpenAPI spec endpoint

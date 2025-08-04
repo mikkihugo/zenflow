@@ -152,7 +152,7 @@ export class LanceDBInterface extends EventEmitter {
   /** Insert vectors into a table */
   async insertVectors(
     tableName: string,
-    documents: VectorDocument[]
+    documents: VectorDocument[],
   ): Promise<{ inserted: number; errors: any[] }> {
     this.ensureInitialized();
 
@@ -192,7 +192,7 @@ export class LanceDBInterface extends EventEmitter {
     tableName: string,
     queryVector: number[],
     limit: number = 10,
-    filter?: Record<string, any>
+    filter?: Record<string, any>,
   ): Promise<SearchResult[]> {
     this.ensureInitialized();
 

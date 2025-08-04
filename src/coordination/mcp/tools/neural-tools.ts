@@ -63,7 +63,7 @@ export const neuralCreateTool: MCPTool = {
       const networkId = await neuralBridge.createNetwork(
         params.networkId,
         params.type,
-        params.layers
+        params.layers,
       );
 
       logger.info(`Neural network created: ${networkId}`);
@@ -153,7 +153,7 @@ export const neuralTrainTool: MCPTool = {
       const success = await neuralBridge.trainNetwork(
         params.networkId,
         params.trainingData,
-        params.epochs || 1000
+        params.epochs || 1000,
       );
 
       if (success) {
@@ -357,7 +357,7 @@ ${networks
    Type: ${net.type}
    Architecture: ${net.layers.join(' → ')} neurons
    Status: ${net.status}
-`
+`,
   )
   .join('\n')}
 

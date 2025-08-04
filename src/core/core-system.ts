@@ -374,7 +374,7 @@ export class CoreSystem extends EventEmitter {
    */
   async exportSystemData(
     format: string,
-    options: any = {}
+    options: any = {},
   ): Promise<{ success: boolean; filename?: string; error?: string }> {
     await this.ensureInitialized();
 

@@ -71,11 +71,11 @@ describe('Orchestrator Integration Test', () => {
       expect(mockZenSwarmStrategy.getAgents).toHaveBeenCalled();
       expect(mockZenSwarmStrategy.assignTaskToAgent).toHaveBeenCalledWith(
         'agent-456',
-        expect.any(Object)
+        expect.any(Object),
       );
       expect(mockDb.updateTask).toHaveBeenCalledWith(
         'task-123',
-        expect.objectContaining({ status: 'completed' })
+        expect.objectContaining({ status: 'completed' }),
       );
     });
   });

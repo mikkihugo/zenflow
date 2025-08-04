@@ -542,7 +542,7 @@ class MCPProtocolIntegrationTestSuite {
             topology: '<script>alert("XSS")</script>',
             config: {
               command: 'rm -rf /',
-              sql: '\'; DROP TABLE users; --',
+              sql: "'; DROP TABLE users; --",
             },
           },
         },

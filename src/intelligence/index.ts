@@ -61,7 +61,7 @@ export const IntelligenceUtils = {
         (config.learningRate || config.adaptationRate) &&
         config.patternRecognition &&
         config.learning &&
-        config.optimization
+        config.optimization,
     );
   },
 

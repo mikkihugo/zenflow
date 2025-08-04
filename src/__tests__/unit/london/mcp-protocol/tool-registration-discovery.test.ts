@@ -86,7 +86,7 @@ class MockMCPToolManager implements ToolRegistryContract, ToolDiscoveryContract 
     private validator = mockSchemaValidator,
     private logger = mockLogger,
     private metrics = mockMetricsCollector,
-    private eventBus = mockEventBus
+    private eventBus = mockEventBus,
   ) {}
 
   async registerTool(tool: MCPTool): Promise<RegistrationResult> {
@@ -199,8 +199,8 @@ class MockMCPToolManager implements ToolRegistryContract, ToolDiscoveryContract 
     return tools.filter((tool) =>
       capabilities.some(
         (cap) =>
-          tool.name.includes(cap) || tool.description.toLowerCase().includes(cap.toLowerCase())
-      )
+          tool.name.includes(cap) || tool.description.toLowerCase().includes(cap.toLowerCase()),
+      ),
     );
   }
 }
@@ -255,7 +255,7 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
         });
         expect(mockMetricsCollector.recordToolRegistration).toHaveBeenCalledWith(
           'code_analyzer',
-          'success'
+          'success',
         );
 
         expect(result.success).toBe(true);

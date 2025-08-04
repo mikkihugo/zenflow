@@ -670,18 +670,18 @@ class LoadTestingSuite extends EventEmitter {
     this.testResults.performance.avgResponseTime =
       this.metrics.responseTimes.length > 0
         ? Math.round(
-          this.metrics.responseTimes.reduce((a, b) => a + b, 0) /
+            this.metrics.responseTimes.reduce((a, b) => a + b, 0) /
               this.metrics.responseTimes.length,
-        )
+          )
         : 0;
 
     this.testResults.performance.errorRate =
       this.metrics.errors.length > 0
         ? (
-          (this.metrics.errors.length /
+            (this.metrics.errors.length /
               (this.metrics.responseTimes.length + this.metrics.errors.length)) *
             100
-        ).toFixed(2)
+          ).toFixed(2)
         : 0;
 
     this.testResults.performance.memoryPeak = this.testResults.performance.memoryPeak / 1024 / 1024; // Convert to MB

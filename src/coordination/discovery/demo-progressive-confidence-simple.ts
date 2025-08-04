@@ -75,7 +75,7 @@ async function runDemo() {
       targetConfidence: 0.8,
       maxIterations: 3,
       researchThreshold: 0.6,
-    }
+    },
   );
 
   // Listen to progress events
@@ -154,7 +154,7 @@ async function runDemo() {
       logger.info('\n🔗 Discovered Relationships:');
       for (const rel of result.relationships) {
         logger.info(
-          `  ${rel.sourceDomain} ${rel.type} ${rel.targetDomain} (${(rel.confidence * 100).toFixed(0)}%)`
+          `  ${rel.sourceDomain} ${rel.type} ${rel.targetDomain} (${(rel.confidence * 100).toFixed(0)}%)`,
         );
       }
     }

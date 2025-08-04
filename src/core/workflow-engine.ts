@@ -264,7 +264,7 @@ export class WorkflowEngine extends EventEmitter {
   constructor(
     memory: UnifiedMemorySystem,
     documentService: DocumentService,
-    config: Partial<WorkflowEngineConfig> = {}
+    config: Partial<WorkflowEngineConfig> = {},
   ) {
     super();
     this.memory = memory;
@@ -315,7 +315,7 @@ export class WorkflowEngine extends EventEmitter {
     this.registerStepHandler('extract-requirements', this.handleExtractRequirements.bind(this));
     this.registerStepHandler(
       'extract-product-requirements',
-      this.handleExtractProductRequirements.bind(this)
+      this.handleExtractProductRequirements.bind(this),
     );
     this.registerStepHandler('identify-decisions', this.handleIdentifyDecisions.bind(this));
     this.registerStepHandler('analyze-prd', this.handleAnalyzePRD.bind(this));
@@ -360,7 +360,7 @@ export class WorkflowEngine extends EventEmitter {
    */
   registerStepHandler(
     type: string,
-    handler: (context: WorkflowContext, params: WorkflowData) => Promise<StepExecutionResult>
+    handler: (context: WorkflowContext, params: WorkflowData) => Promise<StepExecutionResult>,
   ): void {
     this.stepHandlers.set(type, handler);
     logger.debug(`Registered step handler: ${type}`);
@@ -379,7 +379,7 @@ export class WorkflowEngine extends EventEmitter {
    */
   async startWorkflow(
     workflowName: string,
-    context: Partial<WorkflowContext> = {}
+    context: Partial<WorkflowContext> = {},
   ): Promise<{ success: boolean; workflowId?: string; error?: string }> {
     const definition = this.workflowDefinitions.get(workflowName);
     if (!definition) {
@@ -388,12 +388,12 @@ export class WorkflowEngine extends EventEmitter {
 
     // Check concurrent workflow limit
     const activeCount = Array.from(this.activeWorkflows.values()).filter(
-      (w) => w.status === 'running'
+      (w) => w.status === 'running',
     ).length;
 
     if (activeCount >= this.config.maxConcurrentWorkflows) {
       throw new Error(
-        `Maximum concurrent workflows (${this.config.maxConcurrentWorkflows}) reached`
+        `Maximum concurrent workflows (${this.config.maxConcurrentWorkflows}) reached`,
       );
     }
 
@@ -482,7 +482,7 @@ export class WorkflowEngine extends EventEmitter {
   async processDocumentEvent(
     event: string,
     document: BaseDocumentEntity,
-    context: Partial<WorkflowContext> = {}
+    context: Partial<WorkflowContext> = {},
   ): Promise<string[]> {
     const startedWorkflows: string[] = [];
 
@@ -501,7 +501,7 @@ export class WorkflowEngine extends EventEmitter {
             try {
               const conditionMet = this.evaluateCondition(
                 { documentType: document.type, document, ...context },
-                trigger.condition
+                trigger.condition,
               );
               if (!conditionMet) continue;
             } catch (error) {
@@ -601,7 +601,7 @@ export class WorkflowEngine extends EventEmitter {
   private async executeWorkflowStep(
     workflow: WorkflowState,
     step: WorkflowStep,
-    stepIndex: number
+    stepIndex: number,
   ): Promise<void> {
     const stepId = `step-${stepIndex}`;
     let retries = 0;
@@ -661,7 +661,7 @@ export class WorkflowEngine extends EventEmitter {
       } catch (error) {
         retries++;
         logger.warn(
-          `Step ${step.name || step.type} failed (attempt ${retries}/${maxRetries + 1}): ${(error as Error).message}`
+          `Step ${step.name || step.type} failed (attempt ${retries}/${maxRetries + 1}): ${(error as Error).message}`,
         );
 
         if (retries > maxRetries) {
@@ -709,7 +709,7 @@ export class WorkflowEngine extends EventEmitter {
 
   private async handleExtractProductRequirements(
     context: WorkflowContext,
-    params: any
+    params: any,
   ): Promise<any> {
     const document = context.currentDocument;
 
@@ -920,7 +920,7 @@ export class WorkflowEngine extends EventEmitter {
       const func = new Function(
         'context',
         `${contextVars}
-      return ${expression};`
+      return ${expression};`,
       );
       return func(context);
     } catch (error) {
@@ -958,7 +958,7 @@ export class WorkflowEngine extends EventEmitter {
           currentStep: workflow.currentStepIndex,
           lastUpdated: new Date().toISOString(),
         },
-        'workflow_states'
+        'workflow_states',
       );
     } catch (error) {
       logger.error(`Failed to save workflow ${workflow.id}:`, error);
@@ -1029,7 +1029,7 @@ export class WorkflowEngine extends EventEmitter {
    */
   async getActiveWorkflows(): Promise<WorkflowState[]> {
     return Array.from(this.activeWorkflows.values()).filter((w) =>
-      ['running', 'paused'].includes(w.status)
+      ['running', 'paused'].includes(w.status),
     );
   }
 

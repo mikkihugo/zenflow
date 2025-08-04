@@ -151,7 +151,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       expect(mockHiveFact.searchFacts).toHaveBeenCalledWith(
         expect.objectContaining({
           query: expect.stringContaining('payment'),
-        })
+        }),
       );
     });
 
@@ -173,7 +173,7 @@ describe('ProgressiveConfidenceBuilder', () => {
           iteration: expect.any(Number),
           confidence: expect.any(Number),
           metrics: expect.any(Object),
-        })
+        }),
       );
     });
 
@@ -400,7 +400,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       // Check that confidence improved over iterations
       if (progressEvents.length >= 2) {
         expect(progressEvents[progressEvents.length - 1].confidence).toBeGreaterThan(
-          progressEvents[0].confidence
+          progressEvents[0].confidence,
         );
       }
     });
@@ -456,7 +456,7 @@ describe('ProgressiveConfidenceBuilder', () => {
           maxIterations: 5,
           validationCheckpoints: [0.3, 0.5, 0.7],
           requireHumanApprovalAt: [0.5],
-        }
+        },
       );
 
       const context = {
@@ -515,7 +515,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       // Should have shown domain review
       expect(mockAgui.showMessage).toHaveBeenCalledWith(
         expect.stringContaining('Domain Review'),
-        'info'
+        'info',
       );
     });
   });
@@ -561,7 +561,7 @@ describe('ProgressiveConfidenceBuilder', () => {
         {
           targetConfidence: 0.8,
           enableDetailedAuditTrail: true,
-        }
+        },
       );
 
       const context = {
@@ -581,7 +581,7 @@ describe('ProgressiveConfidenceBuilder', () => {
         expect.objectContaining({
           sessionId: expect.any(String),
           auditTrail: expect.any(Array),
-        })
+        }),
       );
     });
   });
@@ -598,7 +598,7 @@ describe('ProgressiveConfidenceBuilder', () => {
           targetConfidence: 0.8,
           minimumValidationsPerDomain: 3,
           maxIterations: 2,
-        }
+        },
       );
 
       const context = {

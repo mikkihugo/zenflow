@@ -101,7 +101,7 @@ Build a modern task management system with real-time collaboration, AI-powered i
 
         const visionPath = await fsHelper.writeFile(
           `${TEST_PROJECT_PATH}/docs/01-vision/task-management-vision.md`,
-          visionContent
+          visionContent,
         );
 
         // Phase 3: Process vision through HTTP MCP (simulate Claude Desktop)
@@ -121,7 +121,7 @@ Build a modern task management system with real-time collaboration, AI-powered i
 
         const visionResponse = await networkHelper.httpPost(
           `http://localhost:${HTTP_MCP_PORT}/mcp`,
-          visionProcessRequest
+          visionProcessRequest,
         );
 
         expect(visionResponse.status).toBe(200);
@@ -204,7 +204,7 @@ Build a modern task management system with real-time collaboration, AI-powered i
 
         // Phase 7: Monitor workflow via web interface
         const webStatusResponse = await networkHelper.httpGet(
-          `http://localhost:${WEB_SERVER_PORT}/api/status`
+          `http://localhost:${WEB_SERVER_PORT}/api/status`,
         );
 
         expect(webStatusResponse.status).toBe(200);
@@ -232,7 +232,7 @@ Build a modern task management system with real-time collaboration, AI-powered i
           swarmCoordinator.shutdown(),
         ]);
       },
-      E2E_TIMEOUT
+      E2E_TIMEOUT,
     );
 
     it('should handle workflow failures and recovery gracefully', async () => {
@@ -263,7 +263,7 @@ This vision document is intentionally malformed to test error handling.
 
       const invalidVisionPath = await fsHelper.writeFile(
         `${TEST_PROJECT_PATH}/docs/01-vision/invalid-vision.md`,
-        invalidVisionContent
+        invalidVisionContent,
       );
 
       // Attempt to process invalid document
@@ -306,7 +306,7 @@ A simple task tracker application.
 
       const validVisionPath = await fsHelper.writeFile(
         `${TEST_PROJECT_PATH}/docs/01-vision/corrected-vision.md`,
-        validVisionContent
+        validVisionContent,
       );
 
       const recoveryResult = await swarmCoordinator.orchestrateTask({
@@ -354,7 +354,7 @@ A simple task tracker application.
 
       const httpResponse = await networkHelper.httpPost(
         `http://localhost:${HTTP_MCP_PORT}/mcp`,
-        httpInitRequest
+        httpInitRequest,
       );
 
       expect(httpResponse.status).toBe(200);
@@ -382,7 +382,7 @@ A simple task tracker application.
 
       // Phase 3: Monitor via Web interface
       const webStatusResponse = await networkHelper.httpGet(
-        `http://localhost:${WEB_SERVER_PORT}/api/status?sessionId=${sessionId}`
+        `http://localhost:${WEB_SERVER_PORT}/api/status?sessionId=${sessionId}`,
       );
 
       expect(webStatusResponse.status).toBe(200);
@@ -404,7 +404,7 @@ A simple task tracker application.
 
       const webTaskResponse = await networkHelper.httpPost(
         `http://localhost:${WEB_SERVER_PORT}/api/execute`,
-        webTaskRequest
+        webTaskRequest,
       );
 
       expect(webTaskResponse.status).toBe(200);
@@ -412,7 +412,7 @@ A simple task tracker application.
 
       // Phase 5: Verify coordination across interfaces
       const coordinationStatus = await networkHelper.httpGet(
-        `http://localhost:${WEB_SERVER_PORT}/api/coordination/${sessionId}`
+        `http://localhost:${WEB_SERVER_PORT}/api/coordination/${sessionId}`,
       );
 
       expect(coordinationStatus.status).toBe(200);
@@ -454,7 +454,7 @@ A simple task tracker application.
 
       const createResponse = await networkHelper.httpPost(
         `http://localhost:${HTTP_MCP_PORT}/mcp`,
-        stateCreateRequest
+        stateCreateRequest,
       );
 
       expect(createResponse.status).toBe(200);
@@ -519,7 +519,7 @@ A simple task tracker application.
 
       const verifyResponse = await networkHelper.httpPost(
         `http://localhost:${HTTP_MCP_PORT}/mcp`,
-        verifyRequest
+        verifyRequest,
       );
 
       expect(verifyResponse.status).toBe(200);
@@ -569,7 +569,7 @@ Test workflow ${i} for concurrent execution testing.
 
         const visionPath = await fsHelper.writeFile(
           `${workflowPath}/docs/01-vision/vision.md`,
-          visionContent
+          visionContent,
         );
 
         const workflowPromise = swarmCoordinator.orchestrateTask({
@@ -601,7 +601,7 @@ Test workflow ${i} for concurrent execution testing.
       // Verify all projects were created
       for (let i = 0; i < concurrentWorkflows; i++) {
         const projectStructure = await fsHelper.getDirectoryStructure(
-          `${TEST_PROJECT_PATH}/concurrent-${i}`
+          `${TEST_PROJECT_PATH}/concurrent-${i}`,
         );
         expect(projectStructure.docs).toBeDefined();
         expect(projectStructure.src).toBeDefined();
@@ -643,7 +643,7 @@ Test workflow ${i} for concurrent execution testing.
                 name: 'system_info',
                 arguments: { detailed: false },
               },
-            }
+            },
           );
 
           if (httpResponse.status === 200) {
@@ -668,7 +668,7 @@ Test workflow ${i} for concurrent execution testing.
                 name: 'mcp__zen-swarm__swarm_status',
                 arguments: {},
               },
-            })
+            }),
           );
 
           const parsed = JSON.parse(stdioResponse);
@@ -779,7 +779,7 @@ Test workflow ${i} for concurrent execution testing.
           type: 'concurrent_workflow',
           input: { workflowId: i },
           strategy: 'fault_tolerant',
-        })
+        }),
       );
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -801,7 +801,7 @@ Test workflow ${i} for concurrent execution testing.
       // At least some workflows should complete
       const results = await Promise.allSettled(workflowPromises);
       const successfulWorkflows = results.filter(
-        (r) => r.status === 'fulfilled' && r.value.success
+        (r) => r.status === 'fulfilled' && r.value.success,
       ).length;
 
       expect(successfulWorkflows).toBeGreaterThan(0);

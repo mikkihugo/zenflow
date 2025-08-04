@@ -35,7 +35,7 @@ export async function exampleBasicClaudeZenPattern() {
             },
           },
           null,
-          2
+          2,
         ),
       },
       {

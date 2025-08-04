@@ -138,7 +138,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           anomalies: expect.any(Number),
           confidence: expect.any(Number),
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
 
@@ -169,7 +169,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           taskId: 'task_1',
           pattern: 'data_processing',
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
 
@@ -208,7 +208,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           patterns: expect.any(Number),
           messages: 2,
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
   });
@@ -268,7 +268,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           agents: ['agent_1'],
           result: expect.any(Object),
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
 
@@ -304,7 +304,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           type: 'optimization',
           confidence: 0.8,
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
 
@@ -336,7 +336,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           category: 'data_processing',
           confidence: expect.any(Number),
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
   });
@@ -387,7 +387,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           expectedImprovement: expect.any(Number),
           confidence: expect.any(Number),
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
 
@@ -448,7 +448,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           efficiency: expect.any(Number),
           utilization: expect.any(Number),
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
   });
@@ -470,7 +470,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           newValue: expect.any(Number),
           reward: 1.0,
           timestamp: expect.any(Number),
-        })
+        }),
       );
 
       mockEmit.mockRestore();
@@ -494,7 +494,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           epochs: expect.any(Number),
           trainingTime: expect.any(Number),
           timestamp: expect.any(Number),
-        })
+        }),
       );
 
       mockEmit.mockRestore();
@@ -516,7 +516,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           totalModels: 1,
           totalWeight: 1.0,
           timestamp: expect.any(Number),
-        })
+        }),
       );
 
       mockEmit.mockRestore();

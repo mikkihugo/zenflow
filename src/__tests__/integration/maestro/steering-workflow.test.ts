@@ -74,7 +74,7 @@ describe('Maestro Steering Workflow Integration', () => {
       {
         enableHiveMind: false,
         steeringDirectory: join(testDirectory, 'steering'),
-      }
+      },
     );
   });
 
@@ -100,7 +100,7 @@ describe('Maestro Steering Workflow Integration', () => {
 
         const content = await readFile(filePath, 'utf8');
         expect(content).toContain(
-          `# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document`
+          `# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document`,
         );
         expect(content).toContain('## Guidelines');
       }
@@ -110,7 +110,7 @@ describe('Maestro Steering Workflow Integration', () => {
       // First create steering documents
       await maestroOrchestrator.createSteeringDocument(
         'product',
-        'User-centered design principles'
+        'User-centered design principles',
       );
       await maestroOrchestrator.createSteeringDocument('tech', 'Clean architecture standards');
 
@@ -223,7 +223,7 @@ ${steeringContext}
         // Check for domain-specific keywords in generated content
         const contentLower = content.toLowerCase();
         const domainKeywordsFound = test.expectedKeywords.some((keyword) =>
-          contentLower.includes(keyword.toLowerCase())
+          contentLower.includes(keyword.toLowerCase()),
         );
         expect(domainKeywordsFound).toBe(true);
       }
@@ -232,7 +232,7 @@ ${steeringContext}
     it('should maintain proper markdown formatting', async () => {
       await maestroOrchestrator.createSteeringDocument(
         'markdown-test',
-        'Testing markdown formatting'
+        'Testing markdown formatting',
       );
 
       const filePath = join(testDirectory, 'steering', 'markdown-test.md');
@@ -276,7 +276,7 @@ ${steeringContext}
 
       // Create all documents concurrently
       const promises = concurrentDomains.map((domain) =>
-        maestroOrchestrator.createSteeringDocument(domain, `Content for ${domain}`)
+        maestroOrchestrator.createSteeringDocument(domain, `Content for ${domain}`),
       );
 
       await Promise.all(promises);
@@ -313,7 +313,7 @@ ${steeringContext}
       for (const domain of domains) {
         await maestroOrchestrator.createSteeringDocument(
           domain,
-          `Performance test content for ${domain}`
+          `Performance test content for ${domain}`,
         );
       }
 
@@ -339,7 +339,7 @@ ${steeringContext}
         const startTime = Date.now();
         await maestroOrchestrator.createSteeringDocument(
           `${domain}-${i}`,
-          `Iteration ${i} content`
+          `Iteration ${i} content`,
         );
         const endTime = Date.now();
         durations.push(endTime - startTime);

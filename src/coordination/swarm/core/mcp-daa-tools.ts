@@ -259,7 +259,7 @@ export class DAA_MCPTools {
       const id = workflow_id || workflowId;
       if (!id) {
         throw new Error(
-          'Workflow ID is required. Provide either workflow_id or workflowId parameter.'
+          'Workflow ID is required. Provide either workflow_id or workflowId parameter.',
         );
       }
 
@@ -314,12 +314,12 @@ export class DAA_MCPTools {
 
       if (!sourceId) {
         throw new Error(
-          'Source agent ID is required. Provide either source_agent or sourceAgentId parameter.'
+          'Source agent ID is required. Provide either source_agent or sourceAgentId parameter.',
         );
       }
       if (!targetIds || targetIds.length === 0) {
         throw new Error(
-          'Target agent IDs are required. Provide either target_agents or targetAgentIds parameter with at least one agent ID.'
+          'Target agent IDs are required. Provide either target_agents or targetAgentIds parameter with at least one agent ID.',
         );
       }
 
@@ -556,7 +556,7 @@ export class DAA_MCPTools {
           'daa_performance_metrics',
           startTime,
           'error',
-          error.message
+          error.message,
         );
       }
       throw error;

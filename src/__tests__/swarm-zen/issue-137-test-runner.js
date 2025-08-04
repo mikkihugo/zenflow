@@ -431,8 +431,8 @@ class TestRunner {
     <div class="test-results">
         <h3 style="margin: 0; padding: 15px; background: #f8f9fa; border-bottom: 1px solid #dee2e6;">Test Results</h3>
         ${summary.results
-    .map(
-      (result) => `
+          .map(
+            (result) => `
             <div class="test-result">
                 <div>
                     <div class="test-name">${result.name}</div>
@@ -443,8 +443,8 @@ class TestRunner {
                 </div>
             </div>
         `,
-    )
-    .join('')}
+          )
+          .join('')}
     </div>
 
     <div class="recommendations">

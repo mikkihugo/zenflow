@@ -172,7 +172,7 @@ class ClaudeIntegrationOrchestrator {
 
 // Convenience function for simple setup
 async function setupClaudeIntegration(
-  options: ClaudeIntegrationOptions = {}
+  options: ClaudeIntegrationOptions = {},
 ): Promise<SetupResults> {
   const orchestrator = new ClaudeIntegrationOrchestrator(options);
   return await orchestrator.setupIntegration();
@@ -181,7 +181,7 @@ async function setupClaudeIntegration(
 // Convenience function for Claude invocation
 async function invokeClaudeWithSwarm(
   prompt: string,
-  options: ClaudeIntegrationOptions = {}
+  options: ClaudeIntegrationOptions = {},
 ): Promise<any> {
   const orchestrator = new ClaudeIntegrationOrchestrator(options);
   return await orchestrator.invokeClaudeWithPrompt(prompt);

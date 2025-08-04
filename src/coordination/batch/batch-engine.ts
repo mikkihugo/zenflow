@@ -127,7 +127,7 @@ export class BatchEngine {
       // Start operations up to max concurrency limit
       const operationsToStart = Math.min(
         readyOperations.length,
-        this.config.maxConcurrency - this.activeOperations.size
+        this.config.maxConcurrency - this.activeOperations.size,
       );
 
       const promises: Promise<void>[] = [];
@@ -329,7 +329,7 @@ export class BatchEngine {
    */
   private calculatePerformanceSummary(
     totalExecutionTime: number,
-    totalOperations: number
+    totalOperations: number,
   ): BatchExecutionSummary {
     const results = Array.from(this.results.values());
     const successfulOperations = results.filter((r) => r.success).length;
@@ -410,7 +410,7 @@ export function createBatchOperation(
   type: BatchOperation['type'],
   operation: string,
   params: Record<string, unknown>,
-  options?: Partial<Pick<BatchOperation, 'priority' | 'dependencies' | 'timeout'>>
+  options?: Partial<Pick<BatchOperation, 'priority' | 'dependencies' | 'timeout'>>,
 ): BatchOperation {
   const batchOp: BatchOperation = {
     id,
@@ -439,7 +439,7 @@ export function createToolBatch(
     name: string;
     params: Record<string, unknown>;
     dependencies?: string[];
-  }>
+  }>,
 ): BatchOperation[] {
   return tools.map((tool, index) => {
     const options: Partial<Pick<BatchOperation, 'priority' | 'dependencies' | 'timeout'>> = {};
@@ -453,7 +453,7 @@ export function createToolBatch(
       'tool',
       tool.name,
       tool.params,
-      options
+      options,
     );
   });
 }

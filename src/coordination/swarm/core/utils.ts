@@ -119,7 +119,7 @@ export function getDefaultCognitiveProfile(type: AgentType): CognitiveProfile {
  */
 export function calculateCognitiveDiversity(
   profile1: CognitiveProfile,
-  profile2: CognitiveProfile
+  profile2: CognitiveProfile,
 ): number {
   const dimensions = Object.keys(profile1) as (keyof CognitiveProfile)[];
   let totalDifference = 0;
@@ -138,7 +138,7 @@ export function calculateCognitiveDiversity(
 export function recommendTopology(
   agentCount: number,
   taskComplexity: 'low' | 'medium' | 'high',
-  coordinationNeeds: 'minimal' | 'moderate' | 'extensive'
+  coordinationNeeds: 'minimal' | 'moderate' | 'extensive',
 ): SwarmTopology {
   if (agentCount <= 5) {
     return 'mesh';
@@ -278,7 +278,7 @@ export function deepClone<T>(obj: T): T {
 export async function retryWithBackoff<T>(
   fn: () => Promise<T>,
   maxRetries: number = 3,
-  initialDelay: number = 100
+  initialDelay: number = 100,
 ): Promise<T> {
   let lastError: Error;
 

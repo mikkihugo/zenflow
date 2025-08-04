@@ -52,7 +52,7 @@ export class CircuitBreaker {
 
   constructor(
     private readonly name: string,
-    private readonly config: CircuitBreakerConfig
+    private readonly config: CircuitBreakerConfig,
   ) {}
 
   public async execute<T>(operation: () => Promise<T>, fallback?: () => Promise<T>): Promise<T> {
@@ -74,7 +74,7 @@ export class CircuitBreaker {
           'CircuitBreaker',
           'high',
           { metadata: { circuitBreakerName: this.name, state: this.state } },
-          false
+          false,
         );
       } else {
         // Transition to half-open for testing
@@ -137,7 +137,7 @@ export class CircuitBreaker {
         this.state = CircuitBreakerState.OPEN;
         this.nextAttemptTime = Date.now() + this.config.recoveryTimeout;
         logger.warn(
-          `Circuit breaker [${this.name}] opened due to failures - next attempt: ${new Date(this.nextAttemptTime).toISOString()}`
+          `Circuit breaker [${this.name}] opened due to failures - next attempt: ${new Date(this.nextAttemptTime).toISOString()}`,
         );
       }
     }
@@ -154,7 +154,7 @@ export class CircuitBreaker {
 
     // Filter failures and calls within the monitoring window
     const recentFailures = this.failureHistory.filter(
-      (timestamp) => timestamp >= windowStart
+      (timestamp) => timestamp >= windowStart,
     ).length;
     const recentCalls = this.callHistory.filter((timestamp) => timestamp >= windowStart).length;
 
@@ -222,7 +222,7 @@ export class RetryStrategy {
 
   public async execute<T>(
     operation: () => Promise<T>,
-    operationName: string = 'unknown'
+    operationName: string = 'unknown',
   ): Promise<T> {
     let lastError: Error;
 
@@ -240,7 +240,7 @@ export class RetryStrategy {
 
         logger.warn(
           `Retry strategy attempt ${attempt}/${this.config.maxAttempts} failed for ${operationName}:`,
-          error
+          error,
         );
 
         // Check if we should retry
@@ -251,7 +251,7 @@ export class RetryStrategy {
         // Calculate delay with exponential backoff and jitter
         const delay = this.calculateDelay(attempt);
         logger.info(
-          `Retry strategy waiting ${delay}ms before attempt ${attempt + 1} for ${operationName}`
+          `Retry strategy waiting ${delay}ms before attempt ${attempt + 1} for ${operationName}`,
         );
 
         await this.sleep(delay);
@@ -259,7 +259,7 @@ export class RetryStrategy {
     }
 
     logger.error(
-      `Retry strategy exhausted all ${this.config.maxAttempts} attempts for ${operationName}`
+      `Retry strategy exhausted all ${this.config.maxAttempts} attempts for ${operationName}`,
     );
     throw lastError;
   }
@@ -271,7 +271,7 @@ export class RetryStrategy {
 
     // Check if error type is in retryable list
     return this.config.retryableErrors.some(
-      (errorType) => error.constructor.name === errorType || error.name === errorType
+      (errorType) => error.constructor.name === errorType || error.name === errorType,
     );
   }
 
@@ -331,7 +331,7 @@ export class FallbackManager<T> {
       } catch (fallbackError) {
         logger.warn(
           `Fallback strategy '${strategy.name}' failed for ${this.operationName}:`,
-          fallbackError
+          fallbackError,
         );
       }
     }
@@ -464,7 +464,7 @@ export class GracefulDegradationManager {
     this.currentLevel = level;
 
     logger.warn(
-      `Graceful degradation: ${degradationLevel.name} (level ${level}) - ${degradationLevel.description}`
+      `Graceful degradation: ${degradationLevel.name} (level ${level}) - ${degradationLevel.description}`,
     );
     logger.info(`Enabled features: ${degradationLevel.enabledFeatures.join(', ')}`);
     logger.info(`Disabled features: ${degradationLevel.disabledFeatures.join(', ')}`);
@@ -559,7 +559,7 @@ export class ErrorRecoveryOrchestrator {
   public async executeWithRecovery<T>(
     operationName: string,
     operation: () => Promise<T>,
-    options: ErrorRecoveryOptions = {}
+    options: ErrorRecoveryOptions = {},
   ): Promise<T> {
     const circuitBreaker = this.circuitBreakerRegistry.getOrCreate(operationName, {
       failureThreshold: options.circuitBreakerThreshold || 5,
@@ -590,7 +590,7 @@ export class ErrorRecoveryOrchestrator {
 
   private getOrCreateRetryStrategy(
     operationName: string,
-    options: ErrorRecoveryOptions
+    options: ErrorRecoveryOptions,
   ): RetryStrategy {
     if (!this.retryStrategies.has(operationName)) {
       this.retryStrategies.set(
@@ -599,7 +599,7 @@ export class ErrorRecoveryOrchestrator {
           maxAttempts: options.maxRetries || 3,
           initialDelayMs: options.retryDelayMs || 1000,
           exponentialBase: options.exponentialBackoff ? 2 : 1,
-        })
+        }),
       );
     }
 

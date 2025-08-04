@@ -136,7 +136,7 @@ export class RecoveryIntegration extends EventEmitter {
         {
           error: error.message,
           component: 'recovery-integration',
-        }
+        },
       );
       this.logger.error('Recovery Integration initialization failed', integrationError);
       throw integrationError;
@@ -346,7 +346,7 @@ export class RecoveryIntegration extends EventEmitter {
     this.logger.info('Component integrations completed', {
       totalIntegrations: integrations.length,
       successfulIntegrations: Array.from(this.integrationStatus.values()).filter(
-        (status) => status.status === 'success'
+        (status) => status.status === 'success',
       ).length,
     });
   }
@@ -437,7 +437,7 @@ export class RecoveryIntegration extends EventEmitter {
         'Failed to start recovery integration system',
         {
           error: error.message,
-        }
+        },
       );
       this.logger.error('Recovery Integration start failed', startError);
       throw startError;
@@ -733,7 +733,7 @@ export class RecoveryIntegration extends EventEmitter {
     if (validationErrors.length > 0) {
       throw ErrorFactory.createError(
         'configuration',
-        `Configuration validation failed: ${validationErrors.join(', ')}`
+        `Configuration validation failed: ${validationErrors.join(', ')}`,
       );
     }
 

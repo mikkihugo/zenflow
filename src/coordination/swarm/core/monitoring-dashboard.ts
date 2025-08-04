@@ -82,7 +82,7 @@ export class MonitoringDashboard extends EventEmitter {
         {
           error: error.message,
           component: 'monitoring-dashboard',
-        }
+        },
       );
       this.logger.error('Monitoring Dashboard initialization failed', dashboardError);
       throw dashboardError;
@@ -538,7 +538,7 @@ export class MonitoringDashboard extends EventEmitter {
       const cutoffTime = Date.now() - this.options.metricsRetentionPeriod;
       this.trends.set(
         category,
-        trend.filter((t) => t.timestamp.getTime() > cutoffTime)
+        trend.filter((t) => t.timestamp.getTime() > cutoffTime),
       );
     }
   }
@@ -656,7 +656,7 @@ export class MonitoringDashboard extends EventEmitter {
           type: 'initial',
           timestamp: new Date(),
           data: initialData,
-        })
+        }),
       );
     } catch (error) {
       this.logger.warn('Error sending initial data to streaming client', {
@@ -1047,7 +1047,7 @@ export class MonitoringDashboard extends EventEmitter {
       metricsCount: this.metrics.size,
       totalDataPoints: Array.from(this.metrics.values()).reduce(
         (sum, metrics) => sum + metrics.length,
-        0
+        0,
       ),
       aggregationsCount: this.aggregatedMetrics.size,
       activeAlerts: this.alerts.size,

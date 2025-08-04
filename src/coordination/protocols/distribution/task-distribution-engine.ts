@@ -309,7 +309,7 @@ export class TaskDistributionEngine extends EventEmitter {
       enableDynamicRebalancing: boolean;
     },
     private logger: ILogger,
-    private eventBus: IEventBus
+    private eventBus: IEventBus,
   ) {
     super();
 
@@ -560,7 +560,7 @@ export class TaskDistributionEngine extends EventEmitter {
   private async processQueue(): Promise<void> {
     const availableAgents = Array.from(this.agentCapabilities.values()).filter(
       (agent) =>
-        agent.availability.currentStatus === 'available' && agent.currentLoad < agent.maxLoad
+        agent.availability.currentStatus === 'available' && agent.currentLoad < agent.maxLoad,
     );
 
     if (availableAgents.length === 0) return;
@@ -585,7 +585,7 @@ export class TaskDistributionEngine extends EventEmitter {
 
   private async findOptimalAssignment(
     task: TaskDefinition,
-    availableAgents: AgentCapability[]
+    availableAgents: AgentCapability[],
   ): Promise<AgentCapability | null> {
     // Filter agents by capabilities
     const suitableAgents = availableAgents.filter((agent) => this.isAgentSuitable(agent, task));
@@ -597,7 +597,7 @@ export class TaskDistributionEngine extends EventEmitter {
       task,
       suitableAgents,
       this.assignments,
-      this.metrics
+      this.metrics,
     );
 
     return optimizedAssignment;
@@ -606,7 +606,7 @@ export class TaskDistributionEngine extends EventEmitter {
   private isAgentSuitable(agent: AgentCapability, task: TaskDefinition): boolean {
     // Check capabilities
     const hasRequiredCapabilities = task.requirements.capabilities.every((capability) =>
-      agent.capabilities.includes(capability)
+      agent.capabilities.includes(capability),
     );
 
     if (!hasRequiredCapabilities) return false;
@@ -685,7 +685,7 @@ export class TaskDistributionEngine extends EventEmitter {
 
   private async calculateAssignmentConfidence(
     task: TaskDefinition,
-    agent: AgentCapability
+    agent: AgentCapability,
   ): Promise<number> {
     // Use performance predictor to estimate success probability
     return await this.performancePredictor.predictSuccess(task, agent);
@@ -693,7 +693,7 @@ export class TaskDistributionEngine extends EventEmitter {
 
   private async generateAssignmentReasoning(
     task: TaskDefinition,
-    agent: AgentCapability
+    agent: AgentCapability,
   ): Promise<string[]> {
     const reasons: string[] = [];
 
@@ -714,11 +714,11 @@ export class TaskDistributionEngine extends EventEmitter {
 
   private async findAlternativeAgents(
     task: TaskDefinition,
-    primaryAgent: AgentCapability
+    primaryAgent: AgentCapability,
   ): Promise<string[]> {
     const alternatives = Array.from(this.agentCapabilities.values())
       .filter(
-        (agent) => agent.agentId !== primaryAgent.agentId && this.isAgentSuitable(agent, task)
+        (agent) => agent.agentId !== primaryAgent.agentId && this.isAgentSuitable(agent, task),
       )
       .sort((a, b) => {
         const scoreA = this.calculateAgentScore(task, a);
@@ -759,7 +759,7 @@ export class TaskDistributionEngine extends EventEmitter {
 
   private calculateResourceAllocation(
     task: TaskDefinition,
-    agent: AgentCapability
+    agent: AgentCapability,
   ): ResourceAllocation {
     return {
       cpu: Math.min(task.requirements.resourceRequirements.cpu, 1.0),
@@ -773,7 +773,7 @@ export class TaskDistributionEngine extends EventEmitter {
 
   private calculateQualityExpectation(
     task: TaskDefinition,
-    agent: AgentCapability
+    agent: AgentCapability,
   ): QualityExpectation {
     const baseQuality = agent.performance.overall.qualityScore;
     const taskTypeQuality = agent.performance.taskTypes[task.type]?.qualityScore || baseQuality;
@@ -896,7 +896,7 @@ export class TaskDistributionEngine extends EventEmitter {
 
   private calculateLoadBalance(): number {
     const utilizations = Array.from(this.agentCapabilities.values()).map(
-      (agent) => agent.currentLoad / agent.maxLoad
+      (agent) => agent.currentLoad / agent.maxLoad,
     );
 
     if (utilizations.length === 0) return 1;
@@ -912,12 +912,12 @@ export class TaskDistributionEngine extends EventEmitter {
     // Simplified efficiency calculation
     const totalCapacity = Array.from(this.agentCapabilities.values()).reduce(
       (sum, agent) => sum + agent.maxLoad,
-      0
+      0,
     );
 
     const usedCapacity = Array.from(this.agentCapabilities.values()).reduce(
       (sum, agent) => sum + agent.currentLoad,
-      0
+      0,
     );
 
     return totalCapacity > 0 ? usedCapacity / totalCapacity : 0;
@@ -1042,7 +1042,7 @@ export class TaskDistributionEngine extends EventEmitter {
 
       // Reassign tasks from unavailable agent
       const affectedAssignments = Array.from(this.assignments.entries()).filter(
-        ([_, assignment]) => assignment.agentId === data.agentId
+        ([_, assignment]) => assignment.agentId === data.agentId,
       );
 
       for (const [taskId] of affectedAssignments) {
@@ -1124,7 +1124,7 @@ class TaskQueue {
 class TaskScheduler {
   constructor(
     private config: any,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   // Scheduling algorithms would be implemented here
@@ -1158,14 +1158,14 @@ class TaskDecomposer {
 class AssignmentOptimizer {
   constructor(
     private config: any,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   async findOptimalAssignment(
     task: TaskDefinition,
     agents: AgentCapability[],
     assignments: Map<string, TaskAssignment>,
-    metrics: DistributionMetrics
+    metrics: DistributionMetrics,
   ): Promise<AgentCapability | null> {
     // ML-based assignment optimization
     if (agents.length === 0) return null;
@@ -1183,11 +1183,11 @@ class AssignmentOptimizer {
   private calculateAssignmentScore(
     task: TaskDefinition,
     agent: AgentCapability,
-    assignments: Map<string, TaskAssignment>
+    assignments: Map<string, TaskAssignment>,
   ): number {
     // Simplified scoring
     const capabilityMatch = task.requirements.capabilities.every((cap) =>
-      agent.capabilities.includes(cap)
+      agent.capabilities.includes(cap),
     )
       ? 1
       : 0;
@@ -1202,13 +1202,13 @@ class AssignmentOptimizer {
 class WorkloadBalancer {
   constructor(
     private config: any,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   async rebalance(
     agents: Map<string, AgentCapability>,
     assignments: Map<string, TaskAssignment>,
-    imbalance: { severity: number; overloaded: string[]; underloaded: string[] }
+    imbalance: { severity: number; overloaded: string[]; underloaded: string[] },
   ): Promise<void> {
     // Workload rebalancing logic
     this.logger.info('Rebalancing workload', { imbalance });
@@ -1234,7 +1234,7 @@ class FailureHandler {
     taskId: string,
     error: Error,
     tasks: Map<string, TaskDefinition>,
-    queue: TaskQueue
+    queue: TaskQueue,
   ): Promise<void> {
     const task = tasks.get(taskId);
     if (!task) return;

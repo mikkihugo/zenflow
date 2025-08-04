@@ -77,7 +77,7 @@ export class HiveFACTSystem extends EventEmitter {
   async getFact(
     type: UniversalFact['type'],
     subject: string,
-    swarmId?: string
+    swarmId?: string,
   ): Promise<UniversalFact | null> {
     const factKey = `${type}:${subject}`;
 
@@ -207,7 +207,7 @@ export class HiveFACTSystem extends EventEmitter {
    */
   private async gatherFact(
     type: UniversalFact['type'],
-    subject: string
+    subject: string,
   ): Promise<UniversalFact | null> {
     try {
       // Determine query based on fact type
@@ -462,10 +462,14 @@ export class HiveFACTSystem extends EventEmitter {
       totalMemorySize: JSON.stringify(Array.from(this.universalFacts.values())).length,
       cacheHitRate: cacheStats.hitRate || 0,
       oldestEntry: Math.min(
-        ...Array.from(this.universalFacts.values()).map((f) => f.metadata?.timestamp || f.timestamp)
+        ...Array.from(this.universalFacts.values()).map(
+          (f) => f.metadata?.timestamp || f.timestamp,
+        ),
       ),
       newestEntry: Math.max(
-        ...Array.from(this.universalFacts.values()).map((f) => f.metadata?.timestamp || f.timestamp)
+        ...Array.from(this.universalFacts.values()).map(
+          (f) => f.metadata?.timestamp || f.timestamp,
+        ),
       ),
       topDomains: this.config.knowledgeSources || [],
       storageHealth: 'excellent',
@@ -498,7 +502,7 @@ let globalHiveFACT: HiveFACTSystem | null = null;
  */
 export async function initializeHiveFACT(
   config?: HiveFACTConfig,
-  hiveCoordinator?: HiveSwarmCoordinator
+  hiveCoordinator?: HiveSwarmCoordinator,
 ): Promise<HiveFACTSystem> {
   if (globalHiveFACT) {
     return globalHiveFACT;

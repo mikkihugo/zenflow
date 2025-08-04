@@ -36,7 +36,7 @@ export interface SPARCEngine {
   executePhase(project: SPARCProject, phase: SPARCPhase): Promise<PhaseResult>;
   refineImplementation(
     project: SPARCProject,
-    feedback: RefinementFeedback
+    feedback: RefinementFeedback,
   ): Promise<RefinementResult>;
   generateArtifacts(project: SPARCProject): Promise<ArtifactSet>;
   validateCompletion(project: SPARCProject): Promise<CompletionValidation>;
@@ -371,13 +371,13 @@ export interface FlowEdge {
 export interface ArchitectureEngine {
   designSystemArchitecture(
     spec: DetailedSpecification,
-    pseudocode: AlgorithmPseudocode[]
+    pseudocode: AlgorithmPseudocode[],
   ): Promise<SystemArchitecture>;
   generateComponentDiagrams(architecture: SystemArchitecture): Promise<ComponentDiagram[]>;
   designDataFlow(components: Component[]): Promise<DataFlowDiagram>;
   planDeploymentArchitecture(system: SystemArchitecture): Promise<DeploymentPlan>;
   validateArchitecturalConsistency(
-    architecture: SystemArchitecture
+    architecture: SystemArchitecture,
   ): Promise<ArchitecturalValidation>;
 }
 
@@ -507,7 +507,7 @@ export interface TechnologyChoice {
 export interface RefinementEngine {
   analyzeImplementationGaps(
     architecture: SystemArchitecture,
-    currentImpl: Implementation
+    currentImpl: Implementation,
   ): Promise<GapAnalysis>;
   generateOptimizationSuggestions(performance: PerformanceMetrics): Promise<OptimizationPlan>;
   refineAlgorithms(feedback: PerformanceFeedback): Promise<AlgorithmRefinement[]>;
@@ -517,7 +517,7 @@ export interface RefinementEngine {
   // Additional methods used by RefinementPhaseEngine
   applyRefinements(
     architecture: ArchitectureDesign,
-    feedback: RefinementFeedback
+    feedback: RefinementFeedback,
   ): Promise<RefinementResult>;
   validateRefinement(refinement: RefinementResult): Promise<RefinementValidation>;
 }
@@ -567,7 +567,7 @@ export interface ImplementationStep {
 export interface CompletionEngine {
   generateProductionCode(
     architecture: SystemArchitecture,
-    refinements: RefinementStrategy[]
+    refinements: RefinementStrategy[],
   ): Promise<CodeArtifacts>;
   createTestSuites(requirements: DetailedSpecification): Promise<TestSuite[]>;
   generateDocumentation(project: SPARCProject): Promise<DocumentationSet>;
@@ -733,7 +733,7 @@ export interface AISPARCAssistant {
   suggestArchitecturalPatterns(requirements: RequirementSet): Promise<PatternRecommendation[]>;
   optimizeRefinementStrategy(
     current: Implementation,
-    targets: PerformanceTarget[]
+    targets: PerformanceTarget[],
   ): Promise<RefinementPlan>;
   validateCompletionReadiness(artifacts: ArtifactReference[]): Promise<ReadinessAssessment>;
 }

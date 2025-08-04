@@ -253,7 +253,7 @@ Test content with metadata in the header.
 
       // Process all documents concurrently
       const processingPromises = concurrentDocs.map((doc) =>
-        documentSystem.processVisionaryDocument(workspaceId, doc.path)
+        documentSystem.processVisionaryDocument(workspaceId, doc.path),
       );
 
       await Promise.all(processingPromises);
@@ -264,7 +264,7 @@ Test content with metadata in the header.
       // Verify workspace state is consistent
       const workspaceDocuments = documentSystem.getWorkspaceDocuments(workspaceId);
       const taskDocs = Array.from(workspaceDocuments.values()).filter((doc) =>
-        doc.path.includes('concurrent-task')
+        doc.path.includes('concurrent-task'),
       );
 
       expect(taskDocs.length).toBe(5);

@@ -125,7 +125,7 @@ class ErrorHandlingTestSuite {
   // Test Input Sanitization
   async testInputSanitization() {
     await this.runTest('Sanitization - SQL injection prevention', async () => {
-      const maliciousInput = '\'; DROP TABLE users; --';
+      const maliciousInput = "'; DROP TABLE users; --";
       const sanitized = this.errorHandler.sanitizeInput(maliciousInput);
       assert(typeof sanitized === 'string', 'Should return sanitized string');
       this.results.coverage.sanitization++;

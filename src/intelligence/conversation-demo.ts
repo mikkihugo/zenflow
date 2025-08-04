@@ -243,7 +243,7 @@ export async function runSimpleConversationDemo(): Promise<void> {
     Object.entries(conversation.metrics.participationByAgent).forEach(([_agentId, _count]) => {});
     const outcomes = await orchestrator.terminateConversation(
       conversation.id,
-      'Code review completed successfully'
+      'Code review completed successfully',
     );
     outcomes.forEach((_outcome, _index) => {});
     const patterns = [

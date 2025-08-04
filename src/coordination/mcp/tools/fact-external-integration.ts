@@ -168,7 +168,7 @@ export class FACTExternalOrchestrator extends EventEmitter {
       priority?: 'low' | 'medium' | 'high' | 'critical';
       maxResults?: number;
       useCache?: boolean;
-    } = {}
+    } = {},
   ): Promise<FACTGatherResult> {
     if (!this.isInitialized) {
       await this.initialize();
@@ -212,7 +212,7 @@ export class FACTExternalOrchestrator extends EventEmitter {
             query,
             result: consolidatedResult,
           }),
-          false
+          false,
         ); // Store in cache
       }
 
@@ -237,7 +237,7 @@ export class FACTExternalOrchestrator extends EventEmitter {
   private async queryExternalSources(
     query: string,
     sources: string[],
-    _options: any
+    _options: any,
   ): Promise<Map<string, any>> {
     const results = new Map<string, any>();
 
@@ -261,7 +261,7 @@ export class FACTExternalOrchestrator extends EventEmitter {
    */
   private async processWithCognitiveTemplates(
     query: string,
-    results: Map<string, any>
+    results: Map<string, any>,
   ): Promise<any> {
     // Create cognitive template for knowledge consolidation
     const template = {
@@ -327,7 +327,7 @@ export class FACTExternalOrchestrator extends EventEmitter {
     // Process with WASM template engine
     const result = this.wasmModule?.process_template(
       JSON.stringify(template),
-      JSON.stringify(context)
+      JSON.stringify(context),
     );
 
     return JSON.parse(result);
@@ -558,7 +558,7 @@ export const FACTHelpers = {
         sources: ['gitmcp', 'context7'],
         priority: 'medium',
         useCache: true,
-      }
+      },
     );
     return typeof result.consolidatedKnowledge.content === 'string'
       ? result.consolidatedKnowledge.content
@@ -576,7 +576,7 @@ export const FACTHelpers = {
         sources: ['semgrep', 'deepwiki'],
         priority: 'critical',
         useCache: false,
-      }
+      },
     );
     return typeof result.consolidatedKnowledge.content === 'string'
       ? result.consolidatedKnowledge.content

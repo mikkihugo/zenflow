@@ -26,7 +26,7 @@ async function basicSessionExample() {
       autoCheckpoint: true,
       checkpointInterval: 60000, // 1 minute
       maxCheckpoints: 10,
-    }
+    },
   );
 
   try {
@@ -261,7 +261,7 @@ async function advancedSessionExample() {
       checkpointInterval: 45000,
       maxCheckpoints: 8,
       compressionEnabled: true,
-    }
+    },
   );
 
   try {

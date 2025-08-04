@@ -74,10 +74,7 @@ export {
 export { EventBus } from './event-bus';
 // ExportManager already exported above as UnifiedExportSystem
 // Export utilities (legacy)
-export type {
-  ExportConfig,
-  ExportResult as LegacyExportResult,
-} from './exporters';
+export type { ExportConfig, ExportResult as LegacyExportResult } from './exporters';
 export { ExportSystem, ExportUtils } from './exporters';
 export * from './helpers';
 export { InterfaceModeDetector } from './interface-mode-detector';

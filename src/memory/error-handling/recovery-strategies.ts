@@ -138,12 +138,12 @@ export class RecoveryStrategyManager extends EventEmitter {
   private async executeWithTimeout(
     strategy: RecoveryStrategy,
     error: MemoryError,
-    context: RecoveryContext
+    context: RecoveryContext,
   ): Promise<RecoveryResult> {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(
-          new Error(`Recovery strategy '${strategy.name}' timed out after ${strategy.timeoutMs}ms`)
+          new Error(`Recovery strategy '${strategy.name}' timed out after ${strategy.timeoutMs}ms`),
         );
       }, strategy.timeoutMs);
 
@@ -165,7 +165,7 @@ export class RecoveryStrategyManager extends EventEmitter {
    */
   private findApplicableStrategies(error: MemoryError): RecoveryStrategy[] {
     return Array.from(this.strategies.values()).filter((strategy) =>
-      strategy.applicableErrors.includes(error.code)
+      strategy.applicableErrors.includes(error.code),
     );
   }
 
@@ -309,7 +309,7 @@ export class RecoveryStrategyManager extends EventEmitter {
               } catch (repairError) {
                 return { id, status: 'failed', error: repairError.message };
               }
-            }
+            },
           );
 
           const repairResults = await Promise.all(repairPromises);

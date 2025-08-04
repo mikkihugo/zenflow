@@ -55,7 +55,7 @@ interface ErrorMetrics {
 
 type ErrorHandlerFunction = (
   error: Error,
-  context?: ErrorContext
+  context?: ErrorContext,
 ) => Promise<ErrorResult> | ErrorResult;
 
 interface RecoveryStrategy {
@@ -168,7 +168,7 @@ class MockErrorHandler implements ErrorHandler {
 class ValidationError extends Error {
   constructor(
     message: string,
-    public field?: string
+    public field?: string,
   ) {
     super(message);
     this.name = 'ValidationError';
@@ -178,7 +178,7 @@ class ValidationError extends Error {
 class NetworkError extends Error {
   constructor(
     message: string,
-    public statusCode?: number
+    public statusCode?: number,
   ) {
     super(message);
     this.name = 'NetworkError';

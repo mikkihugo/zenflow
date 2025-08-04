@@ -184,7 +184,7 @@ export class ProjectManagementIntegration {
    */
   async createAllProjectManagementArtifacts(
     project: SPARCProject,
-    artifactTypes: string[] = ['all']
+    artifactTypes: string[] = ['all'],
   ): Promise<{
     tasks: Task[];
     adrs: ADR[];
@@ -253,7 +253,7 @@ export class ProjectManagementIntegration {
    */
   private async createVisionDocumentFromSPARC(
     project: SPARCProject,
-    _workspaceId: string
+    _workspaceId: string,
   ): Promise<{
     path: string;
     content: string;
@@ -301,7 +301,7 @@ Related: SPARC-${project.id}
    */
   private async executeDocumentWorkflows(
     workspaceId: string,
-    visionDocument: { path: string; content: string }
+    visionDocument: { path: string; content: string },
   ): Promise<any> {
     const workflows = [
       'vision-to-adrs',
@@ -547,14 +547,14 @@ Related: SPARC-${project.id}
         `Product requirements for ${project.name} in the ${project.domain} domain.`,
       objectives: project.specification.functionalRequirements.map((req) => req.description),
       success_metrics: project.specification.acceptanceCriteria.map((criteria) =>
-        criteria.criteria.join(', ')
+        criteria.criteria.join(', '),
       ),
       user_stories: this.generateUserStoriesFromRequirements(project.specification),
       functional_requirements: project.specification.functionalRequirements.map(
-        (req) => req.description
+        (req) => req.description,
       ),
       non_functional_requirements: project.specification.nonFunctionalRequirements.map(
-        (req) => req.description
+        (req) => req.description,
       ),
       constraints: project.specification.constraints.map((constraint) => constraint.description),
       dependencies: project.specification.dependencies.map((dep) => dep.name),
@@ -753,7 +753,7 @@ Related: SPARC-${project.id}
 
   private getFeatureStatusFromProject(
     project: SPARCProject,
-    phase: string
+    phase: string,
   ): 'backlog' | 'planned' | 'in_progress' | 'completed' {
     if (project.progress?.completedPhases?.includes(phase as any)) {
       return 'completed';
@@ -1011,7 +1011,7 @@ ${project.architecture?.systemArchitecture?.technologyStack?.map((t) => t.techno
 
     if (project.architecture?.systemArchitecture?.architecturalPatterns) {
       consequences.push(
-        `Leverages proven architectural patterns: ${project.architecture.systemArchitecture.architecturalPatterns.map((p) => p.name).join(', ')}`
+        `Leverages proven architectural patterns: ${project.architecture.systemArchitecture.architecturalPatterns.map((p) => p.name).join(', ')}`,
       );
     }
 
@@ -1159,7 +1159,7 @@ ${prd.stakeholders.map((stakeholder) => `- ${stakeholder}`).join('\n')}
           /{CONSEQUENCES}/g,
           Array.isArray(adr.consequences)
             ? adr.consequences.map((c) => `- ${c}`).join('\n')
-            : adr.consequences
+            : adr.consequences,
         )
         .replace(/{DATE}/g, adr.date)
         .replace(/{SPARC_PROJECT_ID}/g, adr.sparc_project_id || 'N/A')

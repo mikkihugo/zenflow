@@ -119,7 +119,7 @@ class MockMCPRequestHandler
     private toolExecutor = mockToolExecutor,
     private logger = mockLogger,
     private metricsCollector = mockMetricsCollector,
-    private sessionManager = mockSessionManager
+    private sessionManager = mockSessionManager,
   ) {}
 
   async handleRequest(request: MCPRequest, context: MCPContext): Promise<MCPResponse> {
@@ -335,7 +335,7 @@ describe('MCP Request/Response Handling - London TDD', () => {
         expect(mockMetricsCollector.recordRequest).toHaveBeenCalledWith('tools/list');
         expect(mockResponseBuilder.buildSuccessResponse).toHaveBeenCalledWith(
           'tools-1',
-          expect.objectContaining({ tools: expect.any(Array) })
+          expect.objectContaining({ tools: expect.any(Array) }),
         );
 
         expect(response.jsonrpc).toBe('2.0');
@@ -490,7 +490,7 @@ describe('MCP Request/Response Handling - London TDD', () => {
           expect.objectContaining({
             id: 'not-found-1',
             error: expect.stringContaining('No handler found'),
-          })
+          }),
         );
         expect(response.error).toBeDefined();
         expect(response.error.code).toBe(-32603);
@@ -614,7 +614,7 @@ describe('MCP Request/Response Handling - London TDD', () => {
           expect.objectContaining({
             id: 'timeout-1',
             error: 'Request timeout',
-          })
+          }),
         );
         expect(response.error).toBeDefined();
         expect(response.error.data.error).toBe('Request timeout');
@@ -644,7 +644,7 @@ describe('MCP Request/Response Handling - London TDD', () => {
         // Assert - Verify success response construction
         expect(mockResponseBuilder.buildSuccessResponse).toHaveBeenCalledWith(
           'success-1',
-          expectedResult
+          expectedResult,
         );
         expect(response.jsonrpc).toBe('2.0');
         expect(response.id).toBe('success-1');
@@ -672,7 +672,7 @@ describe('MCP Request/Response Handling - London TDD', () => {
         // Assert - Verify error response construction
         expect(mockResponseBuilder.buildErrorResponse).toHaveBeenCalledWith(
           'error-1',
-          errorDetails
+          errorDetails,
         );
         expect(response.jsonrpc).toBe('2.0');
         expect(response.id).toBe('error-1');
@@ -715,7 +715,7 @@ describe('MCP Request/Response Handling - London TDD', () => {
       // Assert - Verify complete lifecycle conversation (London School focus)
       expect(mockLogger.info).toHaveBeenCalledWith(
         'Handling MCP request',
-        expect.objectContaining({ id: 'lifecycle-1', method: 'test/lifecycle' })
+        expect.objectContaining({ id: 'lifecycle-1', method: 'test/lifecycle' }),
       );
       expect(mockMetricsCollector.recordRequest).toHaveBeenCalledWith('test/lifecycle');
       expect(mockSessionManager.updateActivity).toHaveBeenCalledWith('session-lifecycle');
@@ -723,12 +723,12 @@ describe('MCP Request/Response Handling - London TDD', () => {
       expect(mockRequestRouter.getHandler).toHaveBeenCalledWith('test/lifecycle');
       expect(mockResponseBuilder.buildSuccessResponse).toHaveBeenCalledWith(
         'lifecycle-1',
-        expect.objectContaining({ processed: true })
+        expect.objectContaining({ processed: true }),
       );
       expect(mockMetricsCollector.recordLatency).toHaveBeenCalledWith(expect.any(Number));
       expect(mockLogger.info).toHaveBeenCalledWith(
         'Request completed successfully',
-        expect.objectContaining({ id: 'lifecycle-1' })
+        expect.objectContaining({ id: 'lifecycle-1' }),
       );
 
       expect(response.result.processed).toBe(true);

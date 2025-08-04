@@ -89,7 +89,7 @@ class LanceDBBackend implements BackendInterface {
   async store(
     key: string,
     value: JSONValue,
-    namespace: string = 'default'
+    namespace: string = 'default',
   ): Promise<StorageResult> {
     const fullKey = `${namespace}:${key}`;
     const timestamp = Date.now();
@@ -134,7 +134,7 @@ class LanceDBBackend implements BackendInterface {
         'unified_memory',
         new Array(this.config.lancedb?.vectorDimension || 384).fill(0),
         1,
-        { key, namespace }
+        { key, namespace },
       );
 
       if (!searchResult || searchResult.length === 0) return null;
@@ -159,7 +159,7 @@ class LanceDBBackend implements BackendInterface {
         'unified_memory',
         new Array(this.config.lancedb?.vectorDimension || 384).fill(0),
         100,
-        { namespace }
+        { namespace },
       );
 
       for (const result of searchResult || []) {
@@ -189,7 +189,7 @@ class LanceDBBackend implements BackendInterface {
       const searchResult = await this.lanceInterface.searchSimilar(
         'unified_memory',
         new Array(this.config.lancedb?.vectorDimension || 384).fill(0),
-        1000
+        1000,
       );
 
       const namespaces = new Set<string>();
@@ -282,7 +282,7 @@ class SQLiteBackend implements BackendInterface {
   async store(
     key: string,
     value: JSONValue,
-    namespace: string = 'default'
+    namespace: string = 'default',
   ): Promise<StorageResult> {
     const fullKey = `${namespace}:${key}`;
     const timestamp = Date.now();
@@ -391,10 +391,10 @@ class SQLiteBackend implements BackendInterface {
   async getStats(): Promise<BackendStats> {
     try {
       const countStmt = this.db.prepare(
-        'SELECT COUNT(*) as count, SUM(size) as totalSize FROM unified_memory'
+        'SELECT COUNT(*) as count, SUM(size) as totalSize FROM unified_memory',
       );
       const nsStmt = this.db.prepare(
-        'SELECT COUNT(DISTINCT namespace) as namespaces FROM unified_memory'
+        'SELECT COUNT(DISTINCT namespace) as namespaces FROM unified_memory',
       );
 
       const countResult = countStmt.get();
@@ -455,7 +455,7 @@ class JSONBackend implements BackendInterface {
   async store(
     key: string,
     value: JSONValue,
-    namespace: string = 'default'
+    namespace: string = 'default',
   ): Promise<StorageResult> {
     const fullKey = `${namespace}:${key}`;
     const timestamp = Date.now();
@@ -682,7 +682,7 @@ export class UnifiedMemorySystem extends EventEmitter {
     type: string,
     id: string,
     document: any,
-    namespace: string = 'documents'
+    namespace: string = 'documents',
   ): Promise<StorageResult> {
     const key = `${type}:${id}`;
     return this.store(
@@ -693,7 +693,7 @@ export class UnifiedMemorySystem extends EventEmitter {
         id,
         updatedAt: new Date().toISOString(),
       },
-      namespace
+      namespace,
     );
   }
 
@@ -704,7 +704,7 @@ export class UnifiedMemorySystem extends EventEmitter {
 
   async searchDocuments(
     type: string,
-    namespace: string = 'documents'
+    namespace: string = 'documents',
   ): Promise<Record<string, any>> {
     const pattern = `${type}:*`;
     return this.search(pattern, namespace);

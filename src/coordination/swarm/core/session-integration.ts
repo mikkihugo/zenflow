@@ -23,7 +23,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
   constructor(
     options: SwarmOptions = {},
     sessionConfig: SessionConfig = {},
-    persistence?: SwarmPersistencePooled
+    persistence?: SwarmPersistencePooled,
   ) {
     super(options);
 
@@ -61,7 +61,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
     const sessionId = await this.sessionManager.createSession(
       sessionName,
       this.options,
-      currentState
+      currentState,
     );
 
     this.currentSessionId = sessionId;
@@ -114,7 +114,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
 
     const checkpointId = await this.sessionManager.createCheckpoint(
       this.currentSessionId,
-      description || 'Manual checkpoint'
+      description || 'Manual checkpoint',
     );
 
     this.emit('session:checkpoint_created' as SwarmEvent, {
@@ -249,7 +249,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
             operation: 'addAgent',
             agentId,
           });
-        })
+        }),
       );
     }
 
@@ -271,7 +271,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
             operation: 'submitTask',
             taskId,
           });
-        })
+        }),
       );
     }
 
@@ -568,7 +568,7 @@ export class SessionRecoveryService extends EventEmitter {
 export function createSessionEnabledSwarm(
   swarmOptions?: SwarmOptions,
   sessionConfig?: SessionConfig,
-  persistence?: SwarmPersistencePooled
+  persistence?: SwarmPersistencePooled,
 ): SessionEnabledSwarm {
   return new SessionEnabledSwarm(swarmOptions, sessionConfig, persistence);
 }

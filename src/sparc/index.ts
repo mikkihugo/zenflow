@@ -50,7 +50,7 @@ export class SPARC {
       | 'interfaces'
       | 'general',
     requirements: string[],
-    complexity: 'simple' | 'moderate' | 'high' | 'complex' | 'enterprise' = 'moderate'
+    complexity: 'simple' | 'moderate' | 'high' | 'complex' | 'enterprise' = 'moderate',
   ) {
     const engine = SPARC.getEngine();
     return engine.initializeProject({

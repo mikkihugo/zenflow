@@ -27,13 +27,7 @@ export {
 // Core components
 export * from './header';
 // Re-export key components for convenience
-export {
-  Header,
-  type HeaderProps,
-  StandardHeader,
-  SwarmHeader,
-  type SwarmStatus,
-} from './header';
+export { Header, type HeaderProps, StandardHeader, SwarmHeader, type SwarmStatus } from './header';
 export * from './progress-bar';
 export {
   AgentProgress,

@@ -70,7 +70,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         expect.objectContaining({
           swarmId: 'swarm-1',
           interests: ['authentication', 'frontend'],
-        })
+        }),
       );
     });
 
@@ -235,7 +235,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
       expect(mockMemoryStore.store).toHaveBeenCalledWith(
         expect.stringContaining('hive-bridge/contributions/swarm-1/'),
         'contribution',
-        contribution
+        contribution,
       );
     });
 

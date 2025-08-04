@@ -52,7 +52,7 @@ export function isInjectable(constructor: Constructor): boolean {
  * Get injection tokens for a constructor
  */
 export function getInjectionTokens(
-  constructor: Constructor
+  constructor: Constructor,
 ): (DIToken<any> | undefined)[] | undefined {
   return Reflect.getMetadata(INJECTION_TOKENS_KEY, constructor);
 }
@@ -62,7 +62,7 @@ export function getInjectionTokens(
  */
 export function setInjectionTokens(
   constructor: Constructor,
-  tokens: (DIToken<any> | undefined)[]
+  tokens: (DIToken<any> | undefined)[],
 ): void {
   Reflect.defineMetadata(INJECTION_TOKENS_KEY, tokens, constructor);
 }

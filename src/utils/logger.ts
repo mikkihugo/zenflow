@@ -48,14 +48,14 @@ class SimpleLogger implements Logger {
   warn(message: string, meta?: any): void {
     console.warn(
       `[${new Date().toISOString()}] WARN ${this.prefix}: ${message}`,
-      sanitizeLogMeta(meta) || ''
+      sanitizeLogMeta(meta) || '',
     );
   }
 
   error(message: string, meta?: any): void {
     console.error(
       `[${new Date().toISOString()}] ERROR ${this.prefix}: ${message}`,
-      sanitizeLogMeta(meta) || ''
+      sanitizeLogMeta(meta) || '',
     );
   }
 }

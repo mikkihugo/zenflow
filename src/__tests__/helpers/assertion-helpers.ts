@@ -41,7 +41,7 @@ export class AssertionHelpers {
    */
   toMeetPerformanceThreshold(
     metrics: PerformanceMetrics,
-    thresholds: Partial<PerformanceMetrics>
+    thresholds: Partial<PerformanceMetrics>,
   ): void {
     if (thresholds.executionTime !== undefined) {
       const _message = `Execution time ${metrics.executionTime}ms exceeded threshold ${thresholds.executionTime}ms`;
@@ -71,7 +71,7 @@ export class AssertionHelpers {
     const timeout = new Promise<never>((_, reject) => {
       setTimeout(
         () => reject(new Error(`Promise did not resolve within ${timeoutMs}ms`)),
-        timeoutMs
+        timeoutMs,
       );
     });
 
@@ -83,7 +83,7 @@ export class AssertionHelpers {
    */
   async toEventuallyBeTrue(
     predicate: () => boolean | Promise<boolean>,
-    options: { timeout?: number; interval?: number } = {}
+    options: { timeout?: number; interval?: number } = {},
   ): Promise<void> {
     const timeout = options.timeout || 5000;
     const interval = options.interval || 100;
@@ -122,7 +122,7 @@ export class AssertionHelpers {
   toDeepEqualWith<T>(
     actual: T,
     expected: T,
-    customComparator?: (a: any, b: any, path: string) => boolean
+    customComparator?: (a: any, b: any, path: string) => boolean,
   ): void {
     if (customComparator) {
       const isEqual = this.deepEqualWithCustom(actual, expected, customComparator);
@@ -152,7 +152,7 @@ export class AssertionHelpers {
    */
   toBeErrorWithProperties(
     actual: Error,
-    expectedProperties: { message?: string; code?: string | number; type?: string }
+    expectedProperties: { message?: string; code?: string | number; type?: string },
   ): void {
     expect(actual).toBeInstanceOf(Error);
 
@@ -174,7 +174,7 @@ export class AssertionHelpers {
    */
   async toThrowAsyncError<T>(
     operation: () => Promise<T>,
-    expectedError?: string | RegExp | Error
+    expectedError?: string | RegExp | Error,
   ): Promise<void> {
     try {
       await operation();
@@ -198,7 +198,7 @@ export class AssertionHelpers {
   toBeHttpResponse(
     response: any,
     expectedStatus: number,
-    expectedHeaders?: Record<string, string>
+    expectedHeaders?: Record<string, string>,
   ): void {
     expect(response.status).toBe(expectedStatus);
 
@@ -215,7 +215,7 @@ export class AssertionHelpers {
   toConvergeToTarget(
     trainingResults: { epoch: number; error: number }[],
     targetError: number,
-    maxEpochs?: number
+    maxEpochs?: number,
   ): void {
     const finalResult = trainingResults[trainingResults.length - 1];
 
@@ -244,7 +244,7 @@ export class AssertionHelpers {
       topology?: string;
       efficiency?: number;
       completion?: number;
-    }
+    },
   ): void {
     if (expectedPatterns.agentCount !== undefined) {
       expect(swarmMetrics.activeAgents).toBe(expectedPatterns.agentCount);
@@ -286,7 +286,7 @@ export class AssertionHelpers {
    */
   toSatisfyMathematicalProperty(
     values: number[],
-    property: 'monotonic-increasing' | 'monotonic-decreasing' | 'convex' | 'concave'
+    property: 'monotonic-increasing' | 'monotonic-decreasing' | 'convex' | 'concave',
   ): void {
     switch (property) {
       case 'monotonic-increasing':
@@ -323,7 +323,7 @@ export class AssertionHelpers {
     a: any,
     b: any,
     customComparator: (a: any, b: any, path: string) => boolean,
-    path: string = ''
+    path: string = '',
   ): boolean {
     if (customComparator(a, b, path)) {
       return true;
@@ -367,21 +367,21 @@ export function expectApproximately(actual: number, expected: number, precision?
 
 export function expectPerformance(
   metrics: PerformanceMetrics,
-  thresholds: Partial<PerformanceMetrics>
+  thresholds: Partial<PerformanceMetrics>,
 ): void {
   assertionHelpers.toMeetPerformanceThreshold(metrics, thresholds);
 }
 
 export async function expectEventually(
   predicate: () => boolean | Promise<boolean>,
-  options?: { timeout?: number; interval?: number }
+  options?: { timeout?: number; interval?: number },
 ): Promise<void> {
   return assertionHelpers.toEventuallyBeTrue(predicate, options);
 }
 
 export function expectInteractionSequence(
   mock: any,
-  sequence: { method: string; args?: any[] }[]
+  sequence: { method: string; args?: any[] }[],
 ): void {
   assertionHelpers.toHaveInteractionSequence(mock, sequence);
 }

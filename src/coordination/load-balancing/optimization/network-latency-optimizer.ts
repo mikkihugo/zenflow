@@ -12,7 +12,7 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
 
   public async optimizeLatency(
     source: string,
-    destinations: string[]
+    destinations: string[],
   ): Promise<Map<string, number>> {
     const optimizedLatencies = new Map<string, number>();
 

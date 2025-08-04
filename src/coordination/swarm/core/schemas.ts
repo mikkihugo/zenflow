@@ -19,7 +19,7 @@ class BaseValidator {
       throw new ValidationError(
         `Validation failed for ${fieldName}: ${error.message}`,
         fieldName,
-        value
+        value,
       );
     }
   }
@@ -41,7 +41,7 @@ class BaseValidator {
         `${fieldName} must be of type ${schema.type}`,
         fieldName,
         value,
-        schema.type
+        schema.type,
       );
     }
 
@@ -52,7 +52,7 @@ class BaseValidator {
           `${fieldName} must be at least ${schema.min}`,
           fieldName,
           value,
-          schema.type
+          schema.type,
         );
       }
       if (schema.max !== undefined && value > schema.max) {
@@ -60,7 +60,7 @@ class BaseValidator {
           `${fieldName} must be at most ${schema.max}`,
           fieldName,
           value,
-          schema.type
+          schema.type,
         );
       }
       if (schema.integer && !Number.isInteger(value)) {
@@ -76,7 +76,7 @@ class BaseValidator {
           `${fieldName} must be at least ${schema.minLength} characters/items long`,
           fieldName,
           value,
-          schema.type
+          schema.type,
         );
       }
       if (schema.maxLength !== undefined && length > schema.maxLength) {
@@ -84,7 +84,7 @@ class BaseValidator {
           `${fieldName} must be at most ${schema.maxLength} characters/items long`,
           fieldName,
           value,
-          schema.type
+          schema.type,
         );
       }
     }
@@ -95,7 +95,7 @@ class BaseValidator {
         `${fieldName} must be one of: ${schema.enum.join(', ')}`,
         fieldName,
         value,
-        `enum(${schema.enum.join('|')})`
+        `enum(${schema.enum.join('|')})`,
       );
     }
 
@@ -107,7 +107,7 @@ class BaseValidator {
           `${fieldName} does not match the required pattern`,
           fieldName,
           value,
-          'string(pattern)'
+          'string(pattern)',
         );
       }
     }
@@ -119,14 +119,14 @@ class BaseValidator {
           value[propName] = BaseValidator.validateValue(
             value[propName],
             propSchema,
-            `${fieldName}.${propName}`
+            `${fieldName}.${propName}`,
           );
         } else if (propSchema.required) {
           throw new ValidationError(
             `${fieldName}.${propName} is required`,
             `${fieldName}.${propName}`,
             undefined,
-            propSchema.type
+            propSchema.type,
           );
         }
       }
@@ -750,7 +750,7 @@ class ValidationUtils {
         `No validation schema found for tool: ${toolName}`,
         'toolName',
         toolName,
-        'string'
+        'string',
       );
     }
 

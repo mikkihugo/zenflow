@@ -16,7 +16,7 @@ export interface SPARCRoadmapPlanning {
   addProjectToRoadmap(project: SPARCProject, targetQuarter: string): Promise<void>;
   generateDomainRoadmap(
     domain: ProjectDomain,
-    timeframe: { start: string; end: string }
+    timeframe: { start: string; end: string },
   ): Promise<Roadmap>;
 }
 
@@ -173,7 +173,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
    */
   async generateDomainRoadmap(
     domain: ProjectDomain,
-    timeframe: { start: string; end: string }
+    timeframe: { start: string; end: string },
   ): Promise<Roadmap> {
     const roadmap: Roadmap = {
       id: `${domain}-roadmap`,
@@ -287,7 +287,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
 
   private getFeatureStatus(
     project: SPARCProject,
-    phase: string
+    phase: string,
   ): 'backlog' | 'planned' | 'in_progress' | 'completed' {
     if (project.progress?.completedPhases?.includes(phase as any)) {
       return 'completed';
@@ -356,7 +356,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
 
   private generateDomainRoadmapItems(
     domain: ProjectDomain,
-    timeframe: { start: string; end: string }
+    timeframe: { start: string; end: string },
   ): RoadmapItem[] {
     // Generate domain-specific roadmap items based on strategic priorities
     const domainStrategies = {

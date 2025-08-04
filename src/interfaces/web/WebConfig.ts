@@ -51,7 +51,7 @@ export const DEFAULT_WEB_CONFIG: Required<Omit<WebConfig, 'auth'>> & { auth: Web
  * Create web configuration with defaults
  */
 export function createWebConfig(
-  config: WebConfig = {}
+  config: WebConfig = {},
 ): Required<Omit<WebConfig, 'auth'>> & { auth: WebConfig['auth'] } {
   return {
     ...DEFAULT_WEB_CONFIG,

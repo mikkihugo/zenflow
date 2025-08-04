@@ -452,7 +452,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
 
       const concurrentReads = 20;
       const queryVectors = Array.from({ length: concurrentReads }, () =>
-        testHelper.generateRandomVector(VECTOR_DIMENSION)
+        testHelper.generateRandomVector(VECTOR_DIMENSION),
       );
 
       performance.start('concurrent-reads');
@@ -461,7 +461,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
         vectorStore.similaritySearch({
           vector,
           k: 5,
-        })
+        }),
       );
 
       const results = await Promise.all(readPromises);
@@ -494,7 +494,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
             vectorStore.insert({
               vector: testHelper.generateRandomVector(VECTOR_DIMENSION),
               metadata: { id: `mixed-write-${i}`, operation: 'write' },
-            })
+            }),
           );
         } else {
           // Read operation
@@ -502,7 +502,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
             vectorStore.similaritySearch({
               vector: testHelper.generateRandomVector(VECTOR_DIMENSION),
               k: 3,
-            })
+            }),
           );
         }
       }
@@ -556,7 +556,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
           vectorStore.update(testId, {
             vector: testHelper.generateRandomVector(VECTOR_DIMENSION),
             metadata: { id: testId, version: i, updateTime: Date.now() },
-          })
+          }),
         );
       }
 

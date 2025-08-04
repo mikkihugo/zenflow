@@ -157,7 +157,7 @@ export class LoadTestRunner {
       concurrency: number;
       rampUpTime?: number;
       targetRPS?: number;
-    }
+    },
   ): Promise<PerformanceMetrics> {
     const profiler = new PerformanceProfiler();
     profiler.start();
@@ -174,7 +174,7 @@ export class LoadTestRunner {
         config.duration - startDelay,
         startDelay,
         config.targetRPS,
-        profiler
+        profiler,
       );
 
       promises.push(workerPromise);
@@ -189,7 +189,7 @@ export class LoadTestRunner {
     duration: number,
     startDelay: number,
     targetRPS?: number,
-    profiler?: PerformanceProfiler
+    profiler?: PerformanceProfiler,
   ): Promise<void> {
     if (startDelay > 0) {
       await new Promise((resolve) => setTimeout(resolve, startDelay));
@@ -230,32 +230,32 @@ export class PerformanceValidator {
    */
   static validateMetrics(
     metrics: PerformanceMetrics,
-    thresholds: PerformanceThresholds
+    thresholds: PerformanceThresholds,
   ): { passed: boolean; violations: string[] } {
     const violations: string[] = [];
 
     if (metrics.executionTime > thresholds.maxExecutionTime) {
       violations.push(
-        `Execution time ${metrics.executionTime}ms exceeds threshold ${thresholds.maxExecutionTime}ms`
+        `Execution time ${metrics.executionTime}ms exceeds threshold ${thresholds.maxExecutionTime}ms`,
       );
     }
 
     const memoryUsageMB = metrics.memoryUsage.heapUsed / 1024 / 1024;
     if (memoryUsageMB > thresholds.maxMemoryUsage) {
       violations.push(
-        `Memory usage ${memoryUsageMB.toFixed(2)}MB exceeds threshold ${thresholds.maxMemoryUsage}MB`
+        `Memory usage ${memoryUsageMB.toFixed(2)}MB exceeds threshold ${thresholds.maxMemoryUsage}MB`,
       );
     }
 
     if (metrics.operations.opsPerSecond < thresholds.minOpsPerSecond) {
       violations.push(
-        `Operations per second ${metrics.operations.opsPerSecond.toFixed(2)} below threshold ${thresholds.minOpsPerSecond}`
+        `Operations per second ${metrics.operations.opsPerSecond.toFixed(2)} below threshold ${thresholds.minOpsPerSecond}`,
       );
     }
 
     if (metrics.latency.p99 > thresholds.maxLatencyP99) {
       violations.push(
-        `P99 latency ${metrics.latency.p99.toFixed(2)}ms exceeds threshold ${thresholds.maxLatencyP99}ms`
+        `P99 latency ${metrics.latency.p99.toFixed(2)}ms exceeds threshold ${thresholds.maxLatencyP99}ms`,
       );
     }
 
@@ -263,7 +263,7 @@ export class PerformanceValidator {
       metrics.operations.total > 0 ? metrics.operations.failed / metrics.operations.total : 0;
     if (errorRate > thresholds.maxErrorRate) {
       violations.push(
-        `Error rate ${(errorRate * 100).toFixed(2)}% exceeds threshold ${(thresholds.maxErrorRate * 100).toFixed(2)}%`
+        `Error rate ${(errorRate * 100).toFixed(2)}% exceeds threshold ${(thresholds.maxErrorRate * 100).toFixed(2)}%`,
       );
     }
 
@@ -350,7 +350,7 @@ export class BenchmarkSuite {
    */
   compare(
     baselineName: string,
-    testName: string
+    testName: string,
   ): {
     executionTimeDiff: number;
     memoryDiff: number;

@@ -194,7 +194,7 @@ export class WebSocketManager {
     const sockets = this.io.sockets.sockets;
     const connectedClients = Array.from(sockets.keys());
     const rooms = Array.from(this.io.sockets.adapter.rooms.keys()).filter(
-      (room) => !connectedClients.includes(room)
+      (room) => !connectedClients.includes(room),
     ); // Filter out client IDs
 
     return {

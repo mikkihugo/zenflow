@@ -22,7 +22,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
   constructor(
     @inject(CORE_TOKENS.Logger) private _logger: ILogger,
     @inject(CORE_TOKENS.Database) database: IDatabase,
-    strategy?: SwarmStrategy
+    strategy?: SwarmStrategy,
   ) {
     super();
     this.strategy = strategy || new ZenSwarmStrategy();
@@ -37,7 +37,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     this.isActive = true;
     this.emit('initialized');
     this._logger.info(
-      'Orchestrator initialized with full strategic capabilities and persistent database.'
+      'Orchestrator initialized with full strategic capabilities and persistent database.',
     );
   }
 
@@ -107,7 +107,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
 
   private async executeParallel(task: Task, plan: ExecutionPlan, execution: any): Promise<void> {
     const phasePromises = plan.phases.map((phase) =>
-      this.executePhase(task, phase, plan, execution)
+      this.executePhase(task, phase, plan, execution),
     );
     execution.phaseResults = await Promise.all(phasePromises);
   }
@@ -116,7 +116,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     task: Task,
     phase: string,
     plan: ExecutionPlan,
-    _execution: any
+    _execution: any,
   ): Promise<any> {
     const phaseIndex = plan.phases.indexOf(phase);
     const assignments = plan.phaseAssignments[phaseIndex];
@@ -126,8 +126,8 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
         this.strategy.assignTaskToAgent(agentAssignment.agent.id, {
           phase,
           taskInfo: task.description,
-        })
-      )
+        }),
+      ),
     );
     return { phase, results };
   }
@@ -158,7 +158,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     const suitableAgents = agents.filter(
       (agent) =>
         agent.status === 'idle' &&
-        requiredCapabilities.every((cap) => agent.capabilities.includes(cap))
+        requiredCapabilities.every((cap) => agent.capabilities.includes(cap)),
     );
 
     if (suitableAgents.length === 0) {
@@ -176,7 +176,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
         // Use the most recent performance score, default to 0.5
         const score = perf.length > 0 ? perf[0].metric_value : 0.5;
         return { agent, score };
-      })
+      }),
     );
 
     // Return the agent with the highest score
@@ -200,7 +200,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
   }
 
   private getStrategyImplementation(
-    strategy: 'parallel' | 'sequential' | 'adaptive' | 'consensus'
+    strategy: 'parallel' | 'sequential' | 'adaptive' | 'consensus',
   ): any {
     const strategies = {
       parallel: { determinePhases: () => ['exec'], isParallelizable: () => true },
@@ -235,7 +235,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
         const execution = this.activeExecutions.get(task.id);
         if (execution) {
           const progress = Math.round(
-            (execution.currentPhase / execution.plan.phases.length) * 100
+            (execution.currentPhase / execution.plan.phases.length) * 100,
           );
           if (task.progress !== progress) {
             await this.db.updateTask(task.id, { progress });
@@ -278,7 +278,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     // Create agent record in database
     await this.db.execute(
       'INSERT INTO agents (id, config, status, created_at) VALUES (?, ?, ?, ?)',
-      [agentId, JSON.stringify(config), 'active', new Date().toISOString()]
+      [agentId, JSON.stringify(config), 'active', new Date().toISOString()],
     );
 
     return agentId;

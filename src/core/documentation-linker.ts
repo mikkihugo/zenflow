@@ -293,7 +293,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
   }
 
   private async addCodeReference(
-    reference: Omit<CodeReference, 'suggestedLinks' | 'confidence'>
+    reference: Omit<CodeReference, 'suggestedLinks' | 'confidence'>,
   ): Promise<void> {
     const suggestedLinks = this.findRelatedDocumentation(reference.text);
     const confidence = this.calculateLinkConfidence(reference.text, suggestedLinks);
@@ -352,7 +352,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
     // Enhancement suggestions for existing documentation
     for (const [docId, doc] of this.documentationIndex) {
       const relatedCode = this.codeReferences.filter((ref) =>
-        ref.suggestedLinks.some((link) => link.documentId === docId)
+        ref.suggestedLinks.some((link) => link.documentId === docId),
       );
 
       if (relatedCode.length > 0) {
@@ -550,7 +550,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
 
   private analyzeDocumentRelationship(
     doc1: DocumentationIndex,
-    doc2: DocumentationIndex
+    doc2: DocumentationIndex,
   ): CrossReference | null {
     // Simple relationship analysis
     const commonKeywords = doc1.keywords.filter((k) => doc2.keywords.includes(k));
@@ -657,7 +657,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
   }
 
   private extractSections(
-    content: string
+    content: string,
   ): Array<{ title: string; level: number; content: string }> {
     const sections: Array<{ title: string; level: number; content: string }> = [];
     const lines = content.split('\n');
@@ -693,7 +693,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
   }
 
   private extractLinks(
-    content: string
+    content: string,
   ): Array<{ type: 'internal' | 'external' | 'code'; target: string; text: string }> {
     const links: Array<{ type: 'internal' | 'external' | 'code'; target: string; text: string }> =
       [];

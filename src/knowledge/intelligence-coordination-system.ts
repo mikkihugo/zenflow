@@ -315,14 +315,39 @@ export interface EmergenceDetector {
 }
 
 // Additional type definitions
-export type CommunicationStyle = 'formal' | 'informal' | 'technical' | 'collaborative' | 'directive';
-export type LearningSource = 'experience' | 'training' | 'mentoring' | 'collaboration' | 'self-study';
-export type RelationshipType = 'foundational' | 'overlapping' | 'complementary' | 'derived' | 'analogous';
+export type CommunicationStyle =
+  | 'formal'
+  | 'informal'
+  | 'technical'
+  | 'collaborative'
+  | 'directive';
+export type LearningSource =
+  | 'experience'
+  | 'training'
+  | 'mentoring'
+  | 'collaboration'
+  | 'self-study';
+export type RelationshipType =
+  | 'foundational'
+  | 'overlapping'
+  | 'complementary'
+  | 'derived'
+  | 'analogous';
 export type CertificationLevel = 'basic' | 'intermediate' | 'advanced' | 'expert' | 'master';
 export type VerificationStatus = 'pending' | 'verified' | 'expired' | 'revoked';
 export type ComplexityLevel = 'low' | 'medium' | 'high' | 'very-high' | 'extreme';
-export type CollaborationRole = 'leader' | 'contributor' | 'specialist' | 'facilitator' | 'observer';
-export type AlgorithmType = 'statistical' | 'machine-learning' | 'heuristic' | 'hybrid' | 'rule-based';
+export type CollaborationRole =
+  | 'leader'
+  | 'contributor'
+  | 'specialist'
+  | 'facilitator'
+  | 'observer';
+export type AlgorithmType =
+  | 'statistical'
+  | 'machine-learning'
+  | 'heuristic'
+  | 'hybrid'
+  | 'rule-based';
 export type ChangeType = 'improvement' | 'decline' | 'shift' | 'emergence' | 'specialization';
 export type GrowthPatternType = 'linear' | 'exponential' | 'logistic' | 'oscillating' | 'plateau';
 export type TrendDirection = 'increasing' | 'decreasing' | 'stable' | 'oscillating' | 'emerging';
@@ -496,7 +521,12 @@ export interface CollaborationOutcome {
 
 // Additional supporting types
 export type ConstraintType = 'time' | 'resource' | 'capability' | 'priority' | 'dependency';
-export type EvidenceType = 'performance' | 'certification' | 'peer-review' | 'self-assessment' | 'project-outcome';
+export type EvidenceType =
+  | 'performance'
+  | 'certification'
+  | 'peer-review'
+  | 'self-assessment'
+  | 'project-outcome';
 export type InfluenceType = 'positive' | 'negative' | 'neutral' | 'variable';
 
 export interface CompetencyLevel {
@@ -1601,14 +1631,38 @@ export interface SpecializationRecord {
 }
 
 // Enum types for new interfaces
-export type ConflictStrategy = 'priority-based' | 'consensus' | 'escalation' | 'voting' | 'arbitration';
+export type ConflictStrategy =
+  | 'priority-based'
+  | 'consensus'
+  | 'escalation'
+  | 'voting'
+  | 'arbitration';
 export type PenaltyType = 'linear' | 'exponential' | 'stepped' | 'custom';
 export type AlertActionType = 'email' | 'sms' | 'webhook' | 'escalate' | 'log';
-export type LearningAlgorithmType = 'neural-network' | 'decision-tree' | 'svm' | 'ensemble' | 'deep-learning';
-export type AdaptationMechanismType = 'reactive' | 'proactive' | 'predictive' | 'learning' | 'hybrid';
+export type LearningAlgorithmType =
+  | 'neural-network'
+  | 'decision-tree'
+  | 'svm'
+  | 'ensemble'
+  | 'deep-learning';
+export type AdaptationMechanismType =
+  | 'reactive'
+  | 'proactive'
+  | 'predictive'
+  | 'learning'
+  | 'hybrid';
 export type EmergenceConditionType = 'threshold' | 'pattern' | 'correlation' | 'anomaly' | 'trend';
-export type EmergenceIndicatorType = 'quantitative' | 'qualitative' | 'behavioral' | 'structural' | 'performance';
-export type DetectionAlgorithmType = 'statistical' | 'machine-learning' | 'pattern-matching' | 'heuristic';
+export type EmergenceIndicatorType =
+  | 'quantitative'
+  | 'qualitative'
+  | 'behavioral'
+  | 'structural'
+  | 'performance';
+export type DetectionAlgorithmType =
+  | 'statistical'
+  | 'machine-learning'
+  | 'pattern-matching'
+  | 'heuristic';
 export type SpecializationLevel = 'emerging' | 'developing' | 'established' | 'advanced' | 'expert';
 
 // Supporting interfaces for detailed configurations
@@ -1936,10 +1990,19 @@ export type AlertSeverity = 'info' | 'warning' | 'error' | 'critical' | 'emergen
 export type AlertFrequency = 'immediate' | 'batched' | 'scheduled' | 'throttled';
 export type ViolationSeverity = 'minor' | 'major' | 'critical' | 'catastrophic';
 export type FeedbackSourceType = 'user' | 'system' | 'peer' | 'automated' | 'expert';
-export type AdaptationActionType = 'parameter-change' | 'algorithm-switch' | 'resource-allocation' | 'policy-update';
+export type AdaptationActionType =
+  | 'parameter-change'
+  | 'algorithm-switch'
+  | 'resource-allocation'
+  | 'policy-update';
 export type ScopeLevel = 'individual' | 'team' | 'department' | 'organization' | 'ecosystem';
 export type RiskType = 'operational' | 'strategic' | 'technical' | 'financial' | 'compliance';
-export type TuningMethod = 'grid-search' | 'random-search' | 'bayesian' | 'genetic' | 'gradient-based';
+export type TuningMethod =
+  | 'grid-search'
+  | 'random-search'
+  | 'bayesian'
+  | 'genetic'
+  | 'gradient-based';
 
 export interface ResolutionAction {
   actionType: string;
@@ -2945,31 +3008,31 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
     this.expertiseDiscovery = new ExpertiseDiscoverySystem(
       this.config.expertiseDiscovery,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.knowledgeRouting = new KnowledgeRoutingEngineSystem(
       this.config.knowledgeRouting,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.specializationDetector = new SpecializationDetectionSystem(
       this.config.specializationDetection,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.crossDomainTransfer = new CrossDomainTransferEngineSystem(
       this.config.crossDomainTransfer,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.collectiveMemory = new CollectiveMemorySystem(
       this.config.collectiveMemory,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.setupIntegrations();
@@ -3037,7 +3100,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
       // Generate specialization recommendations
       const specializationRecommendations = await this.generateSpecializationRecommendations(
         expertiseDistribution,
-        gapAnalysis
+        gapAnalysis,
       );
 
       const result: ExpertiseDiscoveryResult = {
@@ -3076,7 +3139,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
    */
   async routeKnowledgeQuery(
     query: KnowledgeQuery,
-    routingOptions?: RoutingOptions
+    routingOptions?: RoutingOptions,
   ): Promise<RoutingResult> {
     const startTime = Date.now();
 
@@ -3093,20 +3156,20 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
       // Identify candidate experts based on expertise profiles
       const candidateExperts = await this.identifyCandidateExperts(
         queryAnalysis,
-        this.expertiseProfiles
+        this.expertiseProfiles,
       );
 
       // Apply routing strategy to select optimal expert(s)
       const routingStrategy = await this.selectRoutingStrategy(
         queryAnalysis,
         candidateExperts,
-        routingOptions
+        routingOptions,
       );
 
       const selectedExperts = await this.applyRoutingStrategy(
         routingStrategy,
         candidateExperts,
-        queryAnalysis
+        queryAnalysis,
       );
 
       // Route query to selected expert(s)
@@ -3142,7 +3205,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
    * Detect and foster agent specialization emergence
    */
   async detectSpecializationEmergence(
-    observationPeriod: number = 3600000 // 1 hour default
+    observationPeriod: number = 3600000, // 1 hour default
   ): Promise<SpecializationEmergenceResult> {
     const startTime = Date.now();
 
@@ -3158,8 +3221,8 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
       // Apply emergence detection algorithms
       const detectionResults = await Promise.all(
         this.specializationDetector.detectionAlgorithms.map((algorithm) =>
-          this.applyEmergenceDetection(algorithm, behaviorData)
-        )
+          this.applyEmergenceDetection(algorithm, behaviorData),
+        ),
       );
 
       // Consolidate detection results
@@ -3206,7 +3269,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
   async facilitateCrossDomainTransfer(
     sourceDomain: string,
     targetDomain: string,
-    transferType: TransferType = 'analogy-based'
+    transferType: TransferType = 'analogy-based',
   ): Promise<CrossDomainTransferResult> {
     const startTime = Date.now();
 
@@ -3226,14 +3289,14 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
       // Extract transferable knowledge from source domain
       const extractedKnowledge = await this.extractTransferableKnowledge(
         sourceDomain,
-        transferMechanism
+        transferMechanism,
       );
 
       // Apply transfer mechanism to adapt knowledge
       const adaptedKnowledge = await this.adaptKnowledge(
         extractedKnowledge,
         targetDomain,
-        transferMechanism
+        transferMechanism,
       );
 
       // Validate transfer quality and applicability
@@ -3242,7 +3305,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
       // Apply validated knowledge to target domain
       const applicationResults = await this.applyTransferredKnowledge(
         validatedResults.validKnowledge,
-        targetDomain
+        targetDomain,
       );
 
       // Evaluate transfer effectiveness
@@ -3349,7 +3412,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
   }
 
   private async analyzeExpertiseDistribution(
-    _profiles: ExpertiseProfile[]
+    _profiles: ExpertiseProfile[],
   ): Promise<ExpertiseDistribution> {
     // Implementation placeholder
     return {} as ExpertiseDistribution;

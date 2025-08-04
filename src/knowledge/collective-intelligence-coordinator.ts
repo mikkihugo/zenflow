@@ -445,37 +445,37 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
     this.knowledgeExchange = new KnowledgeExchangeSystem(
       this.config.knowledgeExchange,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.distributedLearning = new DistributedLearningSystem(
       this.config.distributedLearning,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.collaborativeSolver = new CollaborativeProblemSolvingSystem(
       this.config.collaborativeSolving,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.intelligenceCoordination = new IntelligenceCoordinationSystem(
       this.config.intelligenceCoordination,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.qualityManagement = new KnowledgeQualityManagementSystem(
       this.config.qualityManagement,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.performanceOptimization = new PerformanceOptimizationSystem(
       this.config.performanceOptimization,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.setupIntegrations();
@@ -577,19 +577,19 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
       // Collect agent preferences and evaluations
       const agentPreferences = await this.collectPreferences(
         alternatives,
-        decisionContext.participants
+        decisionContext.participants,
       );
 
       // Apply consensus-building algorithms
       const consensusResult = await this.reachConsensus(
         agentPreferences,
-        decisionContext.consensusConfig
+        decisionContext.consensusConfig,
       );
 
       // Optimize decision through multi-criteria analysis
       const optimizedDecision = await this.optimizeDecision(
         consensusResult,
-        decisionContext.criteria
+        decisionContext.criteria,
       );
 
       // Validate decision quality and robustness
@@ -668,7 +668,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
    * Weight agent contributions based on expertise and reputation
    */
   private async weightContributions(
-    contributions: AgentContribution[]
+    contributions: AgentContribution[],
   ): Promise<WeightedContribution[]> {
     return Promise.all(
       contributions.map(async (contribution) => {
@@ -692,7 +692,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
             quality: qualityWeight,
           },
         };
-      })
+      }),
     );
   }
 
@@ -700,7 +700,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
    * Synthesize knowledge from weighted contributions
    */
   private async synthesizeKnowledge(
-    weightedContributions: WeightedContribution[]
+    weightedContributions: WeightedContribution[],
   ): Promise<SynthesizedKnowledge> {
     // Group contributions by knowledge type
     const groupedContributions = this.groupContributionsByType(weightedContributions);
@@ -715,7 +715,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
           confidence: await algorithm.calculateConfidence(contributions),
           sources: contributions.map((c) => c.agentId),
         };
-      })
+      }),
     );
 
     // Detect cross-type patterns and relationships
@@ -737,7 +737,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
    * Update knowledge graph with validated knowledge
    */
   private async updateKnowledgeGraph(
-    validatedKnowledge: ValidatedKnowledge
+    validatedKnowledge: ValidatedKnowledge,
   ): Promise<KnowledgeGraphUpdate> {
     // Extract entities, relationships, and concepts
     const entities = await this.extractEntities(validatedKnowledge);
@@ -821,7 +821,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
   // Additional utility methods would be implemented here...
   private async calculateExpertiseWeight(
     _agent: CollaborativeParticipant,
-    _domain: string
+    _domain: string,
   ): Promise<number> {
     // Implementation for expertise weight calculation
     return 0.8; // Placeholder
@@ -838,7 +838,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
   }
 
   private groupContributionsByType(
-    _contributions: WeightedContribution[]
+    _contributions: WeightedContribution[],
   ): Record<string, WeightedContribution[]> {
     // Group contributions by knowledge type
     return {}; // Placeholder

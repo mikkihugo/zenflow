@@ -213,14 +213,14 @@ ${generateProgressChart()}
 
 ## 🧬 Preset Validation
 ${Object.entries(presetResults)
-    .map(
-      ([preset, result]) =>
-        `### ${preset}
+  .map(
+    ([preset, result]) =>
+      `### ${preset}
 - Success: ${result.success ? '✅' : '❌'}
 - Tests: ${result.passed || 0} passed, ${result.failed || 0} failed
 - Coverage: ${result.coverage ? `${result.coverage.lines.pct}%` : 'N/A'}`,
-    )
-    .join('\n\n')}
+  )
+  .join('\n\n')}
 
 ## 🚀 Performance Impact
 - No regression detected

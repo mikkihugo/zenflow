@@ -33,7 +33,7 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
     @inject(CORE_TOKENS.Logger) private _logger: ILogger,
     @inject(CORE_TOKENS.Config) private _config: IConfig,
     @inject(SWARM_TOKENS.AgentRegistry) private _agentRegistry: IAgentRegistry,
-    @inject(SWARM_TOKENS.MessageBroker) private _messageBroker: IMessageBroker
+    @inject(SWARM_TOKENS.MessageBroker) private _messageBroker: IMessageBroker,
   ) {
     this.logger.info('SwarmCoordinator created with DI');
   }
@@ -142,7 +142,7 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
     const totalAgents = this.agents.size;
     const totalTasks = this.tasks.size;
     const completedTasks = Array.from(this.tasks.values()).filter(
-      (t) => t.status === 'completed'
+      (t) => t.status === 'completed',
     ).length;
     const failedTasks = Array.from(this.tasks.values()).filter((t) => t.status === 'failed').length;
 
@@ -304,11 +304,11 @@ export function createSwarmContainer(config: Record<string, any> = {}): DIContai
   // Register swarm services
   container.register(
     SWARM_TOKENS.AgentRegistry,
-    new SingletonProvider(() => new MockAgentRegistry())
+    new SingletonProvider(() => new MockAgentRegistry()),
   );
   container.register(
     SWARM_TOKENS.MessageBroker,
-    new SingletonProvider(() => new MockMessageBroker())
+    new SingletonProvider(() => new MockMessageBroker()),
   );
 
   // Register enhanced swarm coordinator
@@ -320,9 +320,9 @@ export function createSwarmContainer(config: Record<string, any> = {}): DIContai
           c.resolve(CORE_TOKENS.Logger),
           c.resolve(CORE_TOKENS.Config),
           c.resolve(SWARM_TOKENS.AgentRegistry),
-          c.resolve(SWARM_TOKENS.MessageBroker)
-        )
-    )
+          c.resolve(SWARM_TOKENS.MessageBroker),
+        ),
+    ),
   );
 
   return container;

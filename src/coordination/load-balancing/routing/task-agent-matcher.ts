@@ -21,7 +21,7 @@ export class TaskAgentMatcher {
   public async findCandidates(
     task: Task,
     availableAgents: Agent[],
-    capacityManager: CapacityManager
+    capacityManager: CapacityManager,
   ): Promise<Agent[]> {
     const matchingScores: MatchingScore[] = [];
 
@@ -45,7 +45,7 @@ export class TaskAgentMatcher {
   private async calculateMatchingScore(
     task: Task,
     agent: Agent,
-    capacityManager: CapacityManager
+    capacityManager: CapacityManager,
   ): Promise<MatchingScore> {
     // Calculate capability match
     const capabilityMatch = this.calculateCapabilityMatch(task, agent);
@@ -74,7 +74,7 @@ export class TaskAgentMatcher {
     if (task.requiredCapabilities.length === 0) return 1.0;
 
     const matchingCapabilities = task.requiredCapabilities.filter((capability) =>
-      agent.capabilities.includes(capability)
+      agent.capabilities.includes(capability),
     );
 
     return matchingCapabilities.length / task.requiredCapabilities.length;

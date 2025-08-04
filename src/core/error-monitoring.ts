@@ -124,7 +124,7 @@ export class ErrorStorage {
     // Clean old trends if necessary
     if (this.trends.size > this.maxTrends) {
       const oldestTrend = Array.from(this.trends.entries()).sort(
-        ([, a], [, b]) => a.lastSeen - b.lastSeen
+        ([, a], [, b]) => a.lastSeen - b.lastSeen,
       )[0];
       this.trends.delete(oldestTrend[0]);
     }
@@ -149,7 +149,7 @@ export class ErrorStorage {
       (r) =>
         r.timestamp >= recentStart &&
         r.category === trend.category &&
-        r.component === trend.component
+        r.component === trend.component,
     );
 
     const recentRate = recentReports.length / 5; // per minute
@@ -164,7 +164,7 @@ export class ErrorStorage {
     category?: string,
     component?: string,
     severity?: string,
-    limit: number = 100
+    limit: number = 100,
   ): ErrorReport[] {
     let reports = Array.from(this.reports.values());
 
@@ -260,7 +260,7 @@ export class HealthMonitor {
       const checkResult = await Promise.race([
         check.check(),
         new Promise<{ healthy: boolean; details?: any }>((_, reject) =>
-          setTimeout(() => reject(new Error('Health check timeout')), check.timeoutMs)
+          setTimeout(() => reject(new Error('Health check timeout')), check.timeoutMs),
         ),
       ]);
 
@@ -403,7 +403,7 @@ export class AlertSystem {
   private generateAlertMessage(
     config: AlertConfig,
     metrics: SystemHealthMetrics,
-    _trends: ErrorTrend[]
+    _trends: ErrorTrend[],
   ): string {
     return config.template
       .replace('{{timestamp}}', new Date(metrics.timestamp).toISOString())
@@ -579,7 +579,7 @@ export class ErrorMonitor {
     errorId: string,
     attempted: boolean,
     successful: boolean,
-    resolution?: string
+    resolution?: string,
   ): void {
     // In production, this would update the stored error report
     logger.info(`Error recovery update: ${errorId}`, { attempted, successful, resolution });

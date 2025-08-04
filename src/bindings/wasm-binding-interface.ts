@@ -8,10 +8,10 @@
  * bindings/ → wasm-binding-interface → neural/wasm (through abstract interface)
  */
 
-import { 
-  WasmNeuralBinding, 
-  NeuralNetworkInterface, 
-  NeuralConfig 
+import {
+  WasmNeuralBinding,
+  NeuralNetworkInterface,
+  NeuralConfig,
 } from '../core/interfaces/base-interfaces';
 
 /**
@@ -56,7 +56,7 @@ class WasmBindingProvider implements WasmBindingInterface {
 
   async createNeuralNetwork(config: NeuralConfig): Promise<NeuralNetworkInterface> {
     const wasmModule = await this.loadWasm();
-    
+
     // Create a wrapper that implements NeuralNetworkInterface
     return {
       async initialize(config: NeuralConfig): Promise<void> {
@@ -68,7 +68,7 @@ class WasmBindingProvider implements WasmBindingInterface {
           finalError: 0.01,
           epochsCompleted: options?.epochs || 100,
           duration: 1000,
-          converged: true
+          converged: true,
         };
       },
       async predict(input: number[]): Promise<number[]> {
@@ -80,7 +80,7 @@ class WasmBindingProvider implements WasmBindingInterface {
           weights: [[]],
           biases: [[]],
           config,
-          metadata: {}
+          metadata: {},
         };
       },
       async import(state) {
@@ -91,9 +91,9 @@ class WasmBindingProvider implements WasmBindingInterface {
           accuracy: 0.95,
           loss: 0.05,
           predictionTime: 10,
-          memoryUsage: 1024
+          memoryUsage: 1024,
         };
-      }
+      },
     };
   }
 }

@@ -143,7 +143,7 @@ class JSONBackend implements BackendInterface {
   async store(
     key: string,
     value: JSONValue,
-    namespace: string = 'default'
+    namespace: string = 'default',
   ): Promise<StorageResult> {
     const fullKey = `${namespace}:${key}`;
     const timestamp = Date.now();
@@ -306,7 +306,7 @@ class SQLiteBackend implements BackendInterface {
   async store(
     key: string,
     value: JSONValue,
-    namespace: string = 'default'
+    namespace: string = 'default',
   ): Promise<StorageResult> {
     const fullKey = `${namespace}:${key}`;
     const timestamp = Date.now();
@@ -414,7 +414,7 @@ class SQLiteBackend implements BackendInterface {
   async getStats(): Promise<BackendStats> {
     try {
       const countStmt = this.db.prepare(
-        'SELECT COUNT(*) as count, SUM(size) as totalSize FROM memory'
+        'SELECT COUNT(*) as count, SUM(size) as totalSize FROM memory',
       );
       const nsStmt = this.db.prepare('SELECT COUNT(DISTINCT namespace) as namespaces FROM memory');
 
@@ -689,7 +689,7 @@ export class MemorySystem extends EventEmitter {
         id,
         updatedAt: new Date().toISOString(),
       },
-      'documents'
+      'documents',
     );
   }
 

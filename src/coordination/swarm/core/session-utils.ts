@@ -288,7 +288,7 @@ export class SessionMigrator {
    */
   private static getMigrationPath(
     fromVersion: string,
-    toVersion: string
+    toVersion: string,
   ): Array<(session: any) => any> {
     const migrations: Array<(session: any) => any> = [];
 
@@ -344,7 +344,7 @@ export class SessionRecovery {
    */
   static async recoverSession(
     corruptedSession: any,
-    checkpoints: SessionCheckpoint[]
+    checkpoints: SessionCheckpoint[],
   ): Promise<SessionState | null> {
     // Try to recover from the most recent valid checkpoint
     const sortedCheckpoints = checkpoints
@@ -526,7 +526,7 @@ export class SessionStats {
       lastCheckpointAt: session.lastCheckpointAt,
       ageInDays: Math.floor((Date.now() - session.createdAt.getTime()) / (1000 * 60 * 60 * 24)),
       daysSinceAccess: Math.floor(
-        (Date.now() - session.lastAccessedAt.getTime()) / (1000 * 60 * 60 * 24)
+        (Date.now() - session.lastAccessedAt.getTime()) / (1000 * 60 * 60 * 24),
       ),
       agents: {
         total: session.swarmState.agents.size,
@@ -550,7 +550,7 @@ export class SessionStats {
             acc[id] = util;
             return acc;
           },
-          {} as Record<string, number>
+          {} as Record<string, number>,
         ),
       },
       version: session.version,

@@ -160,7 +160,7 @@ export class AgentManager extends EventEmitter {
     config: Partial<AgentManagerConfig>,
     logger: ILogger,
     eventBus: IEventBus,
-    memory: MemoryCoordinator
+    memory: MemoryCoordinator,
   ) {
     super();
     this.logger = logger;
@@ -857,7 +857,7 @@ export class AgentManager extends EventEmitter {
 
     // Gracefully shutdown all agents
     const shutdownPromises = Array.from(this.agents.keys()).map((agentId) =>
-      this.stopAgent(agentId, 'shutdown')
+      this.stopAgent(agentId, 'shutdown'),
     );
 
     await Promise.all(shutdownPromises);
@@ -873,7 +873,7 @@ export class AgentManager extends EventEmitter {
       name?: string;
       config?: Partial<AgentConfig>;
       environment?: Partial<AgentEnvironment>;
-    } = {}
+    } = {},
   ): Promise<string> {
     if (this.agents.size >= this.config.maxAgents) {
       throw new Error('Maximum agent limit reached');
@@ -1107,7 +1107,7 @@ export class AgentManager extends EventEmitter {
       autoScale?: boolean;
       scaleUpThreshold?: number;
       scaleDownThreshold?: number;
-    }
+    },
   ): Promise<string> {
     const template = this.templates.get(templateName);
     if (!template) {
@@ -1161,7 +1161,7 @@ export class AgentManager extends EventEmitter {
 
     if (targetSize < pool.minSize || targetSize > pool.maxSize) {
       throw new Error(
-        `Target size ${targetSize} outside pool limits [${pool.minSize}, ${pool.maxSize}]`
+        `Target size ${targetSize} outside pool limits [${pool.minSize}, ${pool.maxSize}]`,
       );
     }
 
@@ -1221,7 +1221,7 @@ export class AgentManager extends EventEmitter {
 
   private async performHealthChecks(): Promise<void> {
     const healthPromises = Array.from(this.agents.keys()).map((agentId) =>
-      this.checkAgentHealth(agentId)
+      this.checkAgentHealth(agentId),
     );
 
     await Promise.allSettled(healthPromises);
@@ -1588,7 +1588,7 @@ export class AgentManager extends EventEmitter {
 
   private updateResourceUsage(
     agentId: string,
-    usage: { cpu: number; memory: number; disk: number }
+    usage: { cpu: number; memory: number; disk: number },
   ): void {
     this.resourceUsage.set(agentId, usage);
   }

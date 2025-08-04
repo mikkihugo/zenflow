@@ -100,7 +100,7 @@ describe('Comprehensive Error Handling System Integration', () => {
             maxRetries: 3,
             fallbackEnabled: false,
           },
-        }
+        },
       );
 
       expect(result).toBe('Success on retry');
@@ -130,7 +130,7 @@ describe('Comprehensive Error Handling System Integration', () => {
             maxRetries: 1,
             fallbackEnabled: true,
           },
-        }
+        },
       );
 
       expect(result).toBe('Fallback result');
@@ -166,7 +166,7 @@ describe('Comprehensive Error Handling System Integration', () => {
             queueSize: 5,
             timeoutMs: 1000,
             priority: 5,
-          })
+          }),
         );
       }
 
@@ -177,7 +177,7 @@ describe('Comprehensive Error Handling System Integration', () => {
             return 'Task 1';
           },
           { component: 'Test', operation: 'bulkhead_test_1' },
-          { resilience: { bulkhead: 'test' } }
+          { resilience: { bulkhead: 'test' } },
         ),
         executeWithErrorHandling(
           async () => {
@@ -185,7 +185,7 @@ describe('Comprehensive Error Handling System Integration', () => {
             return 'Task 2';
           },
           { component: 'Test', operation: 'bulkhead_test_2' },
-          { resilience: { bulkhead: 'test' } }
+          { resilience: { bulkhead: 'test' } },
         ),
       ]);
 
@@ -202,7 +202,7 @@ describe('Comprehensive Error Handling System Integration', () => {
         1024,
         async () => {
           // Cleanup function
-        }
+        },
       );
 
       // Check resource stats
@@ -328,8 +328,8 @@ describe('Comprehensive Error Handling System Integration', () => {
             component: 'LoadTest',
             operation: 'concurrent_operation',
             correlationId: `load_${i}`,
-          }
-        ).catch(() => `Handled error ${i}`)
+          },
+        ).catch(() => `Handled error ${i}`),
       );
 
       const results = await Promise.all(operations);
@@ -380,7 +380,7 @@ describe('Comprehensive Error Handling System Integration', () => {
             maxRetries: 3,
             fallbackEnabled: false,
           },
-        }
+        },
       );
 
       // Should not attempt infinite recovery
@@ -396,16 +396,16 @@ describe('Comprehensive Error Handling System Integration', () => {
           .allocateResource(
             'memory',
             'exhaustion_test',
-            1024 * 1024 // 1MB each
+            1024 * 1024, // 1MB each
           )
-          .catch((error) => error)
+          .catch((error) => error),
       );
 
       const results = await Promise.allSettled(resourcePromises);
 
       // Should have some successful allocations and some failures due to limits
       const successes = results.filter(
-        (r) => r.status === 'fulfilled' && typeof r.value === 'string'
+        (r) => r.status === 'fulfilled' && typeof r.value === 'string',
       );
       const failures = results.filter((r) => r.status === 'fulfilled' && r.value instanceof Error);
 
@@ -475,7 +475,7 @@ describe('MCP Error Handling Integration', () => {
     const validResult = MCPParameterValidator.validateParameters(
       'test_tool',
       { required_param: 'test', optional_param: 50 },
-      schema
+      schema,
     );
     expect(validResult.valid).toBe(true);
     expect(validResult.errors).toHaveLength(0);
@@ -484,7 +484,7 @@ describe('MCP Error Handling Integration', () => {
     const missingResult = MCPParameterValidator.validateParameters(
       'test_tool',
       { optional_param: 50 },
-      schema
+      schema,
     );
     expect(missingResult.valid).toBe(false);
     expect(missingResult.errors).toContain('Missing required parameter: required_param');
@@ -493,7 +493,7 @@ describe('MCP Error Handling Integration', () => {
     const typeResult = MCPParameterValidator.validateParameters(
       'test_tool',
       { required_param: 123 }, // Should be string
-      schema
+      schema,
     );
     expect(typeResult.valid).toBe(false);
     expect(typeResult.errors.some((e) => e.includes('expected type string'))).toBe(true);
@@ -502,7 +502,7 @@ describe('MCP Error Handling Integration', () => {
     const constraintResult = MCPParameterValidator.validateParameters(
       'test_tool',
       { required_param: 'test', optional_param: 150 }, // Exceeds maximum
-      schema
+      schema,
     );
     expect(constraintResult.valid).toBe(false);
     expect(constraintResult.errors.some((e) => e.includes('must be at most 100'))).toBe(true);

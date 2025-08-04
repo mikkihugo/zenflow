@@ -165,7 +165,7 @@ export class AgentRegistry extends EventEmitter {
       status?: AgentStatus;
       metrics?: Partial<AgentMetrics>;
       capabilities?: AgentCapabilities;
-    }
+    },
   ): Promise<void> {
     const agent = this.agents.get(agentId);
     if (!agent) return;
@@ -231,7 +231,7 @@ export class AgentRegistry extends EventEmitter {
             agent.capabilities.languages?.includes(cap) ||
             agent.capabilities.frameworks?.includes(cap) ||
             agent.capabilities.domains?.includes(cap) ||
-            agent.capabilities.tools?.includes(cap)
+            agent.capabilities.tools?.includes(cap),
         );
         if (!hasAllCapabilities) {
           return false;
@@ -328,7 +328,7 @@ export class AgentRegistry extends EventEmitter {
         acc[agent.type] = (acc[agent.type] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     const byStatus = agents.reduce(
@@ -336,7 +336,7 @@ export class AgentRegistry extends EventEmitter {
         acc[agent.status] = (acc[agent.status] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     return {
@@ -373,7 +373,7 @@ export class AgentRegistry extends EventEmitter {
       this.memory.store(`${this.namespace}/agents/${id}`, agent, {
         ttl: 3600000, // 1 hour
         replicas: 2,
-      })
+      }),
     );
 
     await Promise.allSettled(promises);
@@ -455,7 +455,7 @@ export class AgentRegistry extends EventEmitter {
     // Resource usage penalty
     const resourcePenalty = Math.max(
       0,
-      ((metrics.resourceUsage?.memory || 0) + (metrics.resourceUsage?.cpu || 0)) / 2 - 0.8
+      ((metrics.resourceUsage?.memory || 0) + (metrics.resourceUsage?.cpu || 0)) / 2 - 0.8,
     );
     health -= resourcePenalty * 0.3;
 
@@ -464,7 +464,7 @@ export class AgentRegistry extends EventEmitter {
 
   private calculateSelectionScore(
     agent: RegisteredAgent,
-    criteria?: AgentSelectionCriteria
+    criteria?: AgentSelectionCriteria,
   ): number {
     // Balanced scoring for agent selection
     const availabilityScore = (1 - agent.loadFactor) * 0.3;
@@ -481,7 +481,7 @@ export class AgentRegistry extends EventEmitter {
 
   private filterByContext(
     candidates: RegisteredAgent[],
-    criteria: AgentSelectionCriteria
+    criteria: AgentSelectionCriteria,
   ): RegisteredAgent[] {
     const fileTypeToAgents = this.getFileTypeMapping();
     const taskTypeToAgents = this.getTaskTypeMapping();

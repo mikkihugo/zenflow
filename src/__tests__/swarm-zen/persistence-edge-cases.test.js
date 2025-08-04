@@ -124,7 +124,7 @@ describe('PersistenceManager Edge Cases', () => {
         'key/with/slashes',
         'key with spaces',
         'key"with"quotes',
-        'key\'with\'apostrophes',
+        "key'with'apostrophes",
         'key\\with\\backslashes',
         'key\nwith\nnewlines',
         'key\twith\ttabs',

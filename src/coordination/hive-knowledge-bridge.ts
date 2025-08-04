@@ -232,7 +232,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
     const enhancedResults = await this.enhanceResultsWithSwarmContext(
       searchResults,
       request.swarmId,
-      request.agentId
+      request.agentId,
     );
 
     return {
@@ -280,7 +280,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
       await this.memoryStore.store(
         `hive-bridge/contributions/${request.swarmId}/${Date.now()}`,
         'contribution',
-        contribution
+        contribution,
       );
     }
 
@@ -375,7 +375,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   private async enhanceResultsWithSwarmContext(
     results: UniversalFact[],
     swarmId: string,
-    agentId?: string
+    agentId?: string,
   ): Promise<any[]> {
     const enhancedResults = [];
 
@@ -393,7 +393,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
     }
 
     return enhancedResults.sort(
-      (a, b) => b.swarmContext.relevanceScore - a.swarmContext.relevanceScore
+      (a, b) => b.swarmContext.relevanceScore - a.swarmContext.relevanceScore,
     );
   }
 
@@ -518,7 +518,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
       // Remove processed contributions
       this.contributionQueue.set(
         swarmId,
-        contributions.filter((c) => !processedContributions.includes(c))
+        contributions.filter((c) => !processedContributions.includes(c)),
       );
     }
   }
@@ -561,7 +561,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
       await this.memoryStore.store(
         `hive-bridge/processed-contributions/${contribution.swarmId}/${contribution.timestamp}`,
         'processed-contribution',
-        fact
+        fact,
       );
     }
 
@@ -590,7 +590,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
     }
 
     logger.info(
-      `Distributing knowledge update ${update.updateId} to ${relevantSwarms.size} swarms`
+      `Distributing knowledge update ${update.updateId} to ${relevantSwarms.size} swarms`,
     );
 
     for (const swarmId of relevantSwarms) {
@@ -609,7 +609,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
           await this.memoryStore.store(
             `hive-bridge/updates/${swarmId}/${update.updateId}`,
             'knowledge-update',
-            update
+            update,
           );
         }
       } catch (error) {
@@ -647,7 +647,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   } {
     const queuedContributions = Array.from(this.contributionQueue.values()).reduce(
       (sum, queue) => sum + queue.length,
-      0
+      0,
     );
 
     return {

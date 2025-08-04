@@ -96,7 +96,7 @@ export class MockBuilder {
           delete() {}
           query() {}
           close() {}
-        }
+        },
       ),
 
       // Neural Engine mock
@@ -107,7 +107,7 @@ export class MockBuilder {
           trainModel() {}
           predict() {}
           optimize() {}
-        }
+        },
       ),
 
       // Swarm Orchestrator mock
@@ -119,7 +119,7 @@ export class MockBuilder {
           getAgentStatus() {}
           terminateAgent() {}
           getSwarmStatus() {}
-        }
+        },
       ),
 
       // MCP Server mock
@@ -129,7 +129,7 @@ export class MockBuilder {
           handleMessage() {}
           registerTool() {}
           shutdown() {}
-        }
+        },
       ),
 
       // Database mock
@@ -139,7 +139,7 @@ export class MockBuilder {
           disconnect() {}
           query() {}
           transaction() {}
-        }
+        },
       ),
 
       // File System mock
@@ -150,7 +150,7 @@ export class MockBuilder {
           mkdir() {}
           exists() {}
           stat() {}
-        }
+        },
       ),
     };
   }

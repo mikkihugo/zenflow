@@ -53,7 +53,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
    * Define comprehensive acceptance criteria for all requirements
    */
   async defineAcceptanceCriteria(
-    requirements: (FunctionalRequirement | NonFunctionalRequirement)[]
+    requirements: (FunctionalRequirement | NonFunctionalRequirement)[],
   ): Promise<AcceptanceCriterion[]> {
     const acceptanceCriteria: AcceptanceCriterion[] = [];
 
@@ -88,7 +88,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
    * Generate comprehensive specification document
    */
   async generateSpecificationDocument(
-    analysis: ConstraintAnalysis
+    analysis: ConstraintAnalysis,
   ): Promise<SpecificationDocument> {
     const functionalRequirements = this.extractFunctionalFromAnalysis(analysis);
     const nonFunctionalRequirements = this.extractNonFunctionalFromAnalysis(analysis);
@@ -103,7 +103,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     ]);
     const successMetrics = this.defineSuccessMetrics(
       functionalRequirements,
-      nonFunctionalRequirements
+      nonFunctionalRequirements,
     );
 
     const specification: DetailedSpecification = {
@@ -183,7 +183,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   // Private helper methods
 
   private async extractFunctionalRequirements(
-    context: ProjectContext
+    context: ProjectContext,
   ): Promise<FunctionalRequirement[]> {
     const domainRequirements = this.getDomainSpecificRequirements(context.domain);
 
@@ -231,7 +231,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   private async extractNonFunctionalRequirements(
-    context: ProjectContext
+    context: ProjectContext,
   ): Promise<NonFunctionalRequirement[]> {
     const baseRequirements: NonFunctionalRequirement[] = [
       {
@@ -339,8 +339,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
       (req) =>
         'metrics' in req &&
         Object.keys(req.metrics).some(
-          (key) => key.includes('performance') || key.includes('speed') || key.includes('latency')
-        )
+          (key) => key.includes('performance') || key.includes('speed') || key.includes('latency'),
+        ),
     );
 
     if (hasPerformanceReqs) {
@@ -379,7 +379,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   private determineTestMethod(
-    requirement: FunctionalRequirement
+    requirement: FunctionalRequirement,
   ): 'automated' | 'manual' | 'integration' {
     if (requirement.priority === 'HIGH') {
       return 'automated';
@@ -392,7 +392,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
 
   private async performRiskAnalysis(
     _requirements: FunctionalRequirement[],
-    _constraints: SystemConstraint[]
+    _constraints: SystemConstraint[],
   ): Promise<RiskAnalysis> {
     const risks: ProjectRisk[] = [
       {
@@ -452,7 +452,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   private identifyExternalDependencies(
-    _requirements: FunctionalRequirement[]
+    _requirements: FunctionalRequirement[],
   ): ExternalDependency[] {
     return [
       {
@@ -481,7 +481,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
 
   private defineSuccessMetrics(
     _functional: FunctionalRequirement[],
-    _nonFunctional: NonFunctionalRequirement[]
+    _nonFunctional: NonFunctionalRequirement[],
   ): SuccessMetric[] {
     return [
       {
@@ -562,7 +562,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   private extractNonFunctionalFromAnalysis(
-    _analysis: ConstraintAnalysis
+    _analysis: ConstraintAnalysis,
   ): NonFunctionalRequirement[] {
     // Extract non-functional requirements from constraint analysis
     return [];
@@ -571,7 +571,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   private extractConstraintsFromAnalysis(analysis: ConstraintAnalysis): SystemConstraint[] {
     return analysis.filter(
       (item): item is SystemConstraint =>
-        'type' in item && ['technical', 'business', 'regulatory', 'performance'].includes(item.type)
+        'type' in item &&
+        ['technical', 'business', 'regulatory', 'performance'].includes(item.type),
     );
   }
 
@@ -589,7 +590,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   private validateHighPriorityRequirements(spec: DetailedSpecification): boolean {
     const highPriorityReqs = spec.functionalRequirements.filter((req) => req.priority === 'HIGH');
     return highPriorityReqs.every((req) =>
-      spec.acceptanceCriteria.some((ac) => ac.requirement === req.id)
+      spec.acceptanceCriteria.some((ac) => ac.requirement === req.id),
     );
   }
 
@@ -598,7 +599,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     if (highPriorityReqs.length === 0) return 1.0;
 
     const completedHighPriority = highPriorityReqs.filter((req) =>
-      spec.acceptanceCriteria.some((ac) => ac.requirement === req.id)
+      spec.acceptanceCriteria.some((ac) => ac.requirement === req.id),
     );
 
     return completedHighPriority.length / highPriorityReqs.length;
@@ -618,12 +619,12 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
             break;
           case 'acceptance-criteria-defined':
             recommendations.push(
-              'Create specific acceptance criteria for each functional requirement'
+              'Create specific acceptance criteria for each functional requirement',
             );
             break;
           case 'risk-assessment-complete':
             recommendations.push(
-              'Perform comprehensive risk analysis and define mitigation strategies'
+              'Perform comprehensive risk analysis and define mitigation strategies',
             );
             break;
           case 'success-metrics-defined':
@@ -631,7 +632,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
             break;
           case 'high-priority-requirements-complete':
             recommendations.push(
-              'Ensure all high-priority requirements have detailed acceptance criteria'
+              'Ensure all high-priority requirements have detailed acceptance criteria',
             );
             break;
         }

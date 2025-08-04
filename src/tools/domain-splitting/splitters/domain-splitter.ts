@@ -92,7 +92,7 @@ export class SafeDomainSplitter implements DomainSplitter {
       if (!validation.success) {
         await this.rollbackSplit();
         throw new Error(
-          `Split validation failed: ${validation.issues.map((i) => i.description).join(', ')}`
+          `Split validation failed: ${validation.issues.map((i) => i.description).join(', ')}`,
         );
       }
 
@@ -227,7 +227,7 @@ export class SafeDomainSplitter implements DomainSplitter {
         description: 'Update documentation and references',
         commands: ['Update README.md', 'Update API documentation'],
         validation: ['Documentation is accurate'],
-      }
+      },
     );
 
     return {
@@ -345,7 +345,7 @@ export class SafeDomainSplitter implements DomainSplitter {
   }
 
   private async updateImportPaths(
-    moveOperations: FileMoveOperation[]
+    moveOperations: FileMoveOperation[],
   ): Promise<ImportUpdateOperation[]> {
     const updates: ImportUpdateOperation[] = [];
     const pathMapping = new Map<string, string>();
@@ -374,7 +374,7 @@ export class SafeDomainSplitter implements DomainSplitter {
 
   private async updateImportsInFile(
     filePath: string,
-    pathMapping: Map<string, string>
+    pathMapping: Map<string, string>,
   ): Promise<ImportUpdateOperation[]> {
     const content = await fs.readFile(filePath, 'utf-8');
     const lines = content.split('\n');
@@ -595,7 +595,7 @@ export class SafeDomainSplitter implements DomainSplitter {
   private reportProgress(
     stage: ProgressReport['stage'],
     progress: number,
-    operation: string
+    operation: string,
   ): void {
     if (this.progressCallback) {
       this.progressCallback({

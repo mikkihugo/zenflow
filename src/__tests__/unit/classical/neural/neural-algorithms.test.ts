@@ -173,7 +173,7 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
       const accuracy = calculateBinaryAccuracy(
         finalPredictions,
         trainingData.map((d) => d.output),
-        0.3
+        0.3,
       );
 
       expect(accuracy).toBeGreaterThan(0.7); // Should achieve 70%+ accuracy
@@ -240,7 +240,7 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
               gradients,
               previousGradients,
               previousWeightChanges,
-              quickpropConfig
+              quickpropConfig,
             );
 
             // Verify weight update magnitudes are reasonable
@@ -283,7 +283,7 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
         testGradient,
         previousGradient,
         previousWeightChange,
-        maxFactor
+        maxFactor,
       );
 
       // Verify quadratic approximation formula
@@ -291,7 +291,7 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
         (testGradient / (previousGradient - testGradient)) * previousWeightChange;
       const clampedExpected = Math.max(
         -maxFactor * Math.abs(previousWeightChange),
-        Math.min(maxFactor * Math.abs(previousWeightChange), expectedUpdate)
+        Math.min(maxFactor * Math.abs(previousWeightChange), expectedUpdate),
       );
 
       expect(Math.abs(quickpropUpdate - clampedExpected)).toBeLessThan(1e-10);
@@ -321,13 +321,13 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
 
       // Verify final network performance (more lenient)
       const finalPredictions = trainingData.map((sample) =>
-        forwardPassCascade(cascadeResult.network, sample.input)
+        forwardPassCascade(cascadeResult.network, sample.input),
       );
 
       const accuracy = calculateBinaryAccuracy(
         finalPredictions,
         trainingData.map((d) => d.output),
-        0.4 // More lenient threshold
+        0.4, // More lenient threshold
       );
 
       expect(accuracy).toBeGreaterThan(0.6); // Should achieve reasonable accuracy
@@ -358,7 +358,7 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
         (neuronsAdded) => {
           neuronAdditionHistory.push(neuronsAdded);
           currentNeurons = neuronsAdded;
-        }
+        },
       );
 
       // Verify neurons were added progressively
@@ -437,7 +437,7 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
       const accuracy = calculateBinaryAccuracy(
         predictions,
         xorData.map((d) => d.output),
-        0.5
+        0.5,
       );
 
       expect(accuracy).toBeLessThan(0.8); // Should not achieve high accuracy with linear model
@@ -496,7 +496,7 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
           // Check weight precision
           const flatWeights = network.weights.flat(2);
           const minPrecision = Math.min(
-            ...flatWeights.map((w) => (Math.abs(w) > 1e-15 ? Math.abs(w) : 1))
+            ...flatWeights.map((w) => (Math.abs(w) > 1e-15 ? Math.abs(w) : 1)),
           );
           weightPrecisionHistory.push(minPrecision);
 
@@ -522,7 +522,7 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
       const initialActivations = forwardPassWithActivations(network, sample.input);
       const initialError = calculateSampleError(
         initialActivations.outputs[initialActivations.outputs.length - 1],
-        sample.output
+        sample.output,
       );
       const gradients = backpropagateGradients(network, initialActivations, sample.output);
 
@@ -534,7 +534,7 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
       const newActivations = forwardPassWithActivations(network, sample.input);
       const newError = calculateSampleError(
         newActivations.outputs[newActivations.outputs.length - 1],
-        sample.output
+        sample.output,
       );
 
       // Error should decrease (or at least not increase significantly)
@@ -648,7 +648,7 @@ function forwardPass(network: any, input: number[]): number[] {
 
 function forwardPassWithActivations(
   network: any,
-  input: number[]
+  input: number[],
 ): { activations: number[][]; outputs: number[][] } {
   const activations: number[][] = [input];
   const outputs: number[][] = [];
@@ -758,7 +758,7 @@ function computeNumericalGradients(
   network: any,
   input: number[],
   target: number[],
-  epsilon: number = 1e-5
+  epsilon: number = 1e-5,
 ): any {
   const weightGradients: number[][][] = [];
   const biasGradients: number[][] = [];
@@ -854,7 +854,7 @@ function updateVelocitiesWithMomentum(
   velocities: any,
   gradients: any,
   momentum: number,
-  learningRate: number
+  learningRate: number,
 ): void {
   for (let i = 0; i < velocities.weights.length; i++) {
     for (let j = 0; j < velocities.weights[i].length; j++) {
@@ -869,7 +869,7 @@ function updateVelocitiesWithMomentum(
 function calculateBinaryAccuracy(
   predictions: number[][],
   targets: number[][],
-  threshold: number = 0.5
+  threshold: number = 0.5,
 ): number {
   let correct = 0;
 
@@ -911,7 +911,7 @@ function updateRPROPDeltas(
   rpropState: any,
   gradients: any,
   previousGradients: any,
-  config: any
+  config: any,
 ): void {
   for (let i = 0; i < gradients.weights.length; i++) {
     for (let j = 0; j < gradients.weights[i].length; j++) {
@@ -924,13 +924,13 @@ function updateRPROPDeltas(
           // Same sign: increase delta
           rpropState.deltas.weights[i][j][k] = Math.min(
             rpropState.deltas.weights[i][j][k] * config.etaPlus,
-            config.deltaMax
+            config.deltaMax,
           );
         } else if (gradientProduct < 0) {
           // Different sign: decrease delta
           rpropState.deltas.weights[i][j][k] = Math.max(
             rpropState.deltas.weights[i][j][k] * config.etaMinus,
-            config.deltaMin
+            config.deltaMin,
           );
         }
         // If gradient product is 0, keep delta unchanged
@@ -1095,7 +1095,7 @@ function computeQuickPropUpdates(
   gradients: any,
   previousGradients: any,
   previousWeightChanges: any,
-  config: any
+  config: any,
 ): any {
   const weightUpdates = {
     weights: [] as number[][][],
@@ -1113,7 +1113,7 @@ function computeQuickPropUpdates(
           gradients.weights[i][j][k],
           previousGradients.weights[i][j][k],
           previousWeightChanges.weights[i][j][k],
-          config.maxFactor
+          config.maxFactor,
         );
         weightUpdates.weights[i][j].push(update);
       }
@@ -1127,7 +1127,7 @@ function computeQuickPropStep(
   gradient: number,
   previousGradient: number,
   previousWeightChange: number,
-  maxFactor: number
+  maxFactor: number,
 ): number {
   if (Math.abs(previousGradient - gradient) < 1e-10) {
     // Avoid division by zero
@@ -1195,7 +1195,7 @@ function initializeCascadeNetwork(topology: number[]): any {
       .map(() =>
         Array(topology[0])
           .fill(0)
-          .map(() => Math.random() * 0.1)
+          .map(() => Math.random() * 0.1),
       ),
     outputBiases: Array(topology[topology.length - 1]).fill(0.1),
   };
@@ -1210,7 +1210,7 @@ function trainWithCascadeCorrelation(network: any, trainingData: any[], config: 
     network,
     trainingData,
     config.outputMaxEpochs,
-    config.outputTargetError
+    config.outputTargetError,
   );
 
   // Add hidden neurons until convergence or max reached
@@ -1226,7 +1226,7 @@ function trainWithCascadeCorrelation(network: any, trainingData: any[], config: 
         network,
         trainingData,
         config.outputMaxEpochs,
-        config.outputTargetError
+        config.outputTargetError,
       );
     } else {
       break; // No useful candidate found
@@ -1244,7 +1244,7 @@ function trainCascadeOutputLayer(
   network: any,
   trainingData: any[],
   maxEpochs: number,
-  targetError: number
+  targetError: number,
 ): number {
   let error = Infinity;
 
@@ -1299,7 +1299,7 @@ function trainCascadeCandidateNeurons(network: any, trainingData: any[], config:
         // Simple correlation calculation (would be more sophisticated in real implementation)
         const correlation = residualError.reduce(
           (sum, error) => sum + Math.abs(error * candidateOutput),
-          0
+          0,
         );
         totalCorrelation += correlation;
       });
@@ -1312,7 +1312,7 @@ function trainCascadeCandidateNeurons(network: any, trainingData: any[], config:
 
   // Return best candidate
   return candidates.reduce((best, current) =>
-    current.correlation > best.correlation ? current : best
+    current.correlation > best.correlation ? current : best,
   );
 }
 
@@ -1320,7 +1320,7 @@ function trainWithCascadeCorrelationTracked(
   network: any,
   trainingData: any[],
   config: any,
-  callback: (neurons: number) => void
+  callback: (neurons: number) => void,
 ): any {
   let hiddenNeuronsAdded = 0;
   let finalError = Infinity;
@@ -1331,7 +1331,7 @@ function trainWithCascadeCorrelationTracked(
     network,
     trainingData,
     config.outputMaxEpochs,
-    config.outputTargetError
+    config.outputTargetError,
   );
 
   while (hiddenNeuronsAdded < config.maxHiddenNeurons && finalError > config.outputTargetError) {
@@ -1346,7 +1346,7 @@ function trainWithCascadeCorrelationTracked(
         network,
         trainingData,
         config.outputMaxEpochs,
-        config.outputTargetError
+        config.outputTargetError,
       );
     } else {
       break;

@@ -583,11 +583,11 @@ class ComprehensiveTestOrchestrator {
 
 ## Test Suite Results
 ${this.orchestrationResults.testSuites
-    .map(
-      (suite) =>
-        `- ${suite.passed ? '✅' : '❌'} **${suite.name}**: ${suite.passed ? 'PASSED' : 'FAILED'} (${Math.round(suite.duration / 1000)}s)`,
-    )
-    .join('\n')}
+  .map(
+    (suite) =>
+      `- ${suite.passed ? '✅' : '❌'} **${suite.name}**: ${suite.passed ? 'PASSED' : 'FAILED'} (${Math.round(suite.duration / 1000)}s)`,
+  )
+  .join('\n')}
 
 ## Recommendations
 ${this.orchestrationResults.recommendations.map((rec, i) => `${i + 1}. ${rec}`).join('\n')}

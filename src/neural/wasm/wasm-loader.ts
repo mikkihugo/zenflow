@@ -47,7 +47,7 @@ export class WasmModuleLoader {
     return {
       loaded: this.loaded,
       memoryUsage: 0,
-      status: this.loaded ? 'ready' : 'unloaded'
+      status: this.loaded ? 'ready' : 'unloaded',
     };
   }
 }

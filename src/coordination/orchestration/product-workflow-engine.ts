@@ -137,7 +137,7 @@ export class ProductWorkflowEngine extends EventEmitter {
   constructor(
     memory: MemorySystem,
     documentService: DocumentService,
-    config: Partial<ProductWorkflowConfig> = {}
+    config: Partial<ProductWorkflowConfig> = {},
   ) {
     super();
     this.memory = memory;
@@ -191,7 +191,7 @@ export class ProductWorkflowEngine extends EventEmitter {
   async startProductWorkflow(
     workflowName: string,
     context: Partial<WorkflowContext> = {},
-    options: WorkflowExecutionOptions = {}
+    options: WorkflowExecutionOptions = {},
   ): Promise<{ success: boolean; workflowId?: string; error?: string }> {
     const definition = this.workflowDefinitions.get(workflowName);
     if (!definition) {
@@ -299,7 +299,7 @@ export class ProductWorkflowEngine extends EventEmitter {
    */
   private async executeProductWorkflow(
     workflow: ProductWorkflowState,
-    options: WorkflowExecutionOptions = {}
+    options: WorkflowExecutionOptions = {},
   ): Promise<void> {
     try {
       // Create a new workflow state with updated status
@@ -392,7 +392,7 @@ export class ProductWorkflowEngine extends EventEmitter {
    */
   private async executeProductFlowStep(
     workflow: ProductWorkflowState,
-    step: ProductFlowStep
+    step: ProductFlowStep,
   ): Promise<void> {
     const startTime = Date.now();
 
@@ -463,7 +463,7 @@ export class ProductWorkflowEngine extends EventEmitter {
    */
   private async createSPARCProjectForFeature(
     workflow: ProductWorkflowState,
-    feature: FeatureDocumentEntity
+    feature: FeatureDocumentEntity,
   ): Promise<void> {
     logger.info(`🎯 Creating SPARC project for feature: ${feature.title}`);
 
@@ -525,7 +525,7 @@ export class ProductWorkflowEngine extends EventEmitter {
     ];
 
     for (const [featureId, sparcProject] of Array.from(
-      workflow.sparcIntegration.sparcProjects.entries()
+      workflow.sparcIntegration.sparcProjects.entries(),
     )) {
       logger.info(`🚀 Executing SPARC phases for feature ${featureId}`);
 
@@ -567,7 +567,7 @@ export class ProductWorkflowEngine extends EventEmitter {
   private async updateFeatureSPARCProgress(
     featureId: string,
     completedPhase: SPARCPhase,
-    _result: any
+    _result: any,
   ): Promise<void> {
     // In a real implementation, this would update the database
     logger.info(`📊 Updated SPARC progress for feature ${featureId}: ${completedPhase} completed`);
@@ -674,49 +674,49 @@ export class ProductWorkflowEngine extends EventEmitter {
   // Handler implementations (simplified for demo)
   private async handleVisionAnalysis(
     _context: WorkflowContext,
-    _params: WorkflowData
+    _params: WorkflowData,
   ): Promise<StepExecutionResult> {
     return { success: true, data: { analyzed: true }, duration: 1000, timestamp: new Date() };
   }
 
   private async handleADRGeneration(
     _context: WorkflowContext,
-    _params: WorkflowData
+    _params: WorkflowData,
   ): Promise<StepExecutionResult> {
     return { success: true, data: { adrs_generated: 3 }, duration: 2000, timestamp: new Date() };
   }
 
   private async handlePRDCreation(
     _context: WorkflowContext,
-    _params: WorkflowData
+    _params: WorkflowData,
   ): Promise<StepExecutionResult> {
     return { success: true, data: { prds_created: 2 }, duration: 3000, timestamp: new Date() };
   }
 
   private async handleEpicBreakdown(
     _context: WorkflowContext,
-    _params: WorkflowData
+    _params: WorkflowData,
   ): Promise<StepExecutionResult> {
     return { success: true, data: { epics_created: 5 }, duration: 2500, timestamp: new Date() };
   }
 
   private async handleFeatureDefinition(
     _context: WorkflowContext,
-    _params: WorkflowData
+    _params: WorkflowData,
   ): Promise<StepExecutionResult> {
     return { success: true, data: { features_defined: 12 }, duration: 4000, timestamp: new Date() };
   }
 
   private async handleTaskCreation(
     _context: WorkflowContext,
-    _params: WorkflowData
+    _params: WorkflowData,
   ): Promise<StepExecutionResult> {
     return { success: true, data: { tasks_created: 24 }, duration: 3500, timestamp: new Date() };
   }
 
   private async handleSPARCIntegration(
     _context: WorkflowContext,
-    _params: WorkflowData
+    _params: WorkflowData,
   ): Promise<StepExecutionResult> {
     return {
       success: true,
@@ -728,7 +728,7 @@ export class ProductWorkflowEngine extends EventEmitter {
 
   private async handleSPARCSpecification(
     _context: WorkflowContext,
-    _params: WorkflowData
+    _params: WorkflowData,
   ): Promise<StepExecutionResult> {
     return {
       success: true,
@@ -740,7 +740,7 @@ export class ProductWorkflowEngine extends EventEmitter {
 
   private async handleSPARCPseudocode(
     _context: WorkflowContext,
-    _params: WorkflowData
+    _params: WorkflowData,
   ): Promise<StepExecutionResult> {
     return {
       success: true,
@@ -752,7 +752,7 @@ export class ProductWorkflowEngine extends EventEmitter {
 
   private async handleSPARCArchitecture(
     _context: WorkflowContext,
-    _params: WorkflowData
+    _params: WorkflowData,
   ): Promise<StepExecutionResult> {
     return {
       success: true,
@@ -764,7 +764,7 @@ export class ProductWorkflowEngine extends EventEmitter {
 
   private async handleSPARCRefinement(
     _context: WorkflowContext,
-    _params: WorkflowData
+    _params: WorkflowData,
   ): Promise<StepExecutionResult> {
     return {
       success: true,
@@ -776,7 +776,7 @@ export class ProductWorkflowEngine extends EventEmitter {
 
   private async handleSPARCCompletion(
     _context: WorkflowContext,
-    _params: WorkflowData
+    _params: WorkflowData,
   ): Promise<StepExecutionResult> {
     return {
       success: true,
@@ -825,7 +825,7 @@ export class ProductWorkflowEngine extends EventEmitter {
   // Public API methods
   async getActiveProductWorkflows(): Promise<ProductWorkflowState[]> {
     return Array.from(this.activeWorkflows.values()).filter((w) =>
-      ['running', 'paused'].includes(w.status)
+      ['running', 'paused'].includes(w.status),
     );
   }
 

@@ -22,7 +22,7 @@ class WASMMatrixOps {
     aCols: number,
     b: number[],
     bRows: number,
-    bCols: number
+    bCols: number,
   ): number[] {
     if (aCols !== bRows) {
       throw new Error('Invalid matrix dimensions for multiplication');
@@ -64,7 +64,7 @@ class WASMMatrixOps {
     inputHeight: number,
     kernel: number[],
     kernelSize: number,
-    stride: number = 1
+    stride: number = 1,
   ): number[] {
     const outputWidth = Math.floor((inputWidth - kernelSize) / stride) + 1;
     const outputHeight = Math.floor((inputHeight - kernelSize) / stride) + 1;
@@ -114,7 +114,7 @@ class WASMMatrixOps {
     batchSize: number,
     m: number,
     n: number,
-    k: number
+    k: number,
   ): number[] {
     const result = new Array(batchSize * m * k);
 

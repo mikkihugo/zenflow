@@ -65,7 +65,7 @@ export class HTTPMCPServer {
         },
         instructions:
           'Claude-Zen HTTP MCP Server for project management and system integration via Claude Desktop',
-      }
+      },
     );
 
     // Setup Express app for SDK transport
@@ -89,7 +89,7 @@ export class HTTPMCPServer {
       res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
       res.header(
         'Access-Control-Allow-Headers',
-        'Content-Type, Authorization, X-MCP-Client-Info, Last-Event-ID, MCP-Session-ID'
+        'Content-Type, Authorization, X-MCP-Client-Info, Last-Event-ID, MCP-Session-ID',
       );
       if (req.method === 'OPTIONS') {
         res.sendStatus(200);
@@ -171,7 +171,7 @@ export class HTTPMCPServer {
             },
           ],
         };
-      }
+      },
     );
 
     // Project initialization tool
@@ -216,7 +216,7 @@ export class HTTPMCPServer {
             },
           ],
         };
-      }
+      },
     );
 
     // Project status tool
@@ -288,7 +288,7 @@ export class HTTPMCPServer {
             },
           ],
         };
-      }
+      },
     );
 
     // Register advanced tools from claude-zen
@@ -344,7 +344,7 @@ export class HTTPMCPServer {
                     timestamp: new Date().toISOString(),
                   },
                   null,
-                  2
+                  2,
                 ),
               },
             ],
@@ -360,7 +360,7 @@ export class HTTPMCPServer {
             ],
           };
         }
-      }
+      },
     );
 
     // Advanced tool execution proxy
@@ -396,7 +396,7 @@ export class HTTPMCPServer {
                     executedAt: new Date().toISOString(),
                   },
                   null,
-                  2
+                  2,
                 ),
               },
             ],
@@ -415,13 +415,13 @@ export class HTTPMCPServer {
                     executedAt: new Date().toISOString(),
                   },
                   null,
-                  2
+                  2,
                 ),
               },
             ],
           };
         }
-      }
+      },
     );
 
     // Tool statistics endpoint
@@ -450,16 +450,16 @@ export class HTTPMCPServer {
                   generatedAt: new Date().toISOString(),
                 },
                 null,
-                2
+                2,
               ),
             },
           ],
         };
-      }
+      },
     );
 
     logger.info(
-      `✅ Registered 3 proxy tools for ${advancedMCPToolsManager.getToolCount()} advanced tools`
+      `✅ Registered 3 proxy tools for ${advancedMCPToolsManager.getToolCount()} advanced tools`,
     );
   }
 
@@ -514,7 +514,7 @@ export class HTTPMCPServer {
                 ],
               };
             }
-          }
+          },
         );
 
         registeredCount++;
@@ -524,7 +524,7 @@ export class HTTPMCPServer {
     }
 
     logger.info(
-      `✅ Integrated ${registeredCount}/${tools.length} advanced tools as native MCP tools`
+      `✅ Integrated ${registeredCount}/${tools.length} advanced tools as native MCP tools`,
     );
   }
 

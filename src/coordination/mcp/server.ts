@@ -38,7 +38,7 @@ export class MCPServer extends EventEmitter {
 
   constructor(
     config: MCPConfig,
-    private logger?: ILogger
+    private logger?: ILogger,
   ) {
     super();
 

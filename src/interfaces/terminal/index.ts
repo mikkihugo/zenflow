@@ -9,10 +9,7 @@
 export * from './CommandExecutionEngine';
 export { CommandExecutionEngine } from './CommandExecutionEngine';
 export * from './CommandExecutionRenderer';
-export {
-  type CommandExecutionProps,
-  CommandExecutionRenderer,
-} from './CommandExecutionRenderer';
+export { type CommandExecutionProps, CommandExecutionRenderer } from './CommandExecutionRenderer';
 // Components
 export * from './components/index';
 export * from './InteractiveTerminalApplication';
@@ -29,10 +26,7 @@ export * from './state-hooks/index';
 // Main components (updated for Google standards)
 export * from './TerminalInterfaceRouter';
 // Re-export key items for convenience (updated names)
-export {
-  TerminalApp,
-  type TerminalAppProps,
-} from './TerminalInterfaceRouter';
+export { TerminalApp, type TerminalAppProps } from './TerminalInterfaceRouter';
 export * from './utils/MockCommandHandler';
 
 export {
@@ -108,7 +102,7 @@ export class TerminalInterface {
         commands,
         flags: { ...flags, ...this.config },
         onExit: (code: number) => process.exit(code),
-      })
+      }),
     );
 
     // Setup graceful shutdown

@@ -132,7 +132,7 @@ describe('CommandRegistry - TDD London', () => {
 
       // Act & Assert - verify error behavior
       expect(() => registry.register(metadata2)).toThrow(
-        "Command 'duplicate' is already registered"
+        "Command 'duplicate' is already registered",
       );
     });
 
@@ -190,7 +190,7 @@ describe('CommandRegistry - TDD London', () => {
       // Assert - verify filtering behavior
       expect(coreCommands).toHaveLength(2);
       expect(coreCommands.map((cmd) => cmd.config.name)).toEqual(
-        expect.arrayContaining(['status', 'init'])
+        expect.arrayContaining(['status', 'init']),
       );
       expect(utilityCommands).toHaveLength(1);
       expect(utilityCommands[0].config.name).toBe('deploy');

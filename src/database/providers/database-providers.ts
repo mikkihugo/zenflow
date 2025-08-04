@@ -8,7 +8,7 @@
 
 import { Inject, Injectable } from '../../di/decorators/injectable';
 import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
-import { 
+import {
   DatabaseAdapter,
   QueryResult,
   ExecuteResult,
@@ -16,7 +16,7 @@ import {
   SchemaInfo,
   ConnectionStats,
   ILogger,
-  IConfig
+  IConfig,
 } from '../../core/interfaces/base-interfaces';
 
 import {
@@ -24,7 +24,7 @@ import {
   QuerySuccess,
   QueryError,
   isQuerySuccess,
-  isQueryError
+  isQueryError,
 } from '../../utils/type-guards';
 
 // Re-export DatabaseAdapter for external use
@@ -84,7 +84,7 @@ export interface DatabaseConfig {
 export class DatabaseProviderFactory {
   constructor(
     @Inject(CORE_TOKENS.Logger) private logger: ILogger,
-    @Inject(CORE_TOKENS.Config) private config: IConfig
+    @Inject(CORE_TOKENS.Config) private config: IConfig,
   ) {}
 
   /**
@@ -113,7 +113,7 @@ export class DatabaseProviderFactory {
     } catch (error) {
       this.logger.error(`Failed to create database adapter: ${error}`);
       throw new Error(
-        `Database adapter creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Database adapter creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -135,7 +135,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   async connect(): Promise<void> {
@@ -213,16 +213,16 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
    */
   async queryWithResult<T = any>(sql: string, params?: any[]): Promise<DatabaseResult<T>> {
     this.logger.debug(`Executing PostgreSQL query with result: ${sql}`);
-    
+
     try {
       await this.ensureConnected();
       const startTime = Date.now();
-      
+
       // PostgreSQL query implementation would go here
       await this.simulateAsync(10);
-      
+
       const executionTime = Date.now() - startTime;
-      
+
       // Mock successful result
       const successResult: QuerySuccess<T> = {
         success: true,
@@ -234,13 +234,13 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
           { name: 'name', type: 'varchar', nullable: true },
         ],
       };
-      
+
       this.logger.debug(`PostgreSQL query completed in ${executionTime}ms`);
       return successResult;
     } catch (error) {
       const executionTime = Date.now() - Date.now();
       this.logger.error(`PostgreSQL query failed: ${error}`);
-      
+
       const errorResult: QueryError = {
         success: false,
         error: {
@@ -251,7 +251,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
         },
         executionTime,
       };
-      
+
       return errorResult;
     }
   }
@@ -410,7 +410,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   async connect(): Promise<void> {
@@ -632,7 +632,7 @@ export class KuzuAdapter implements DatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   async connect(): Promise<void> {
@@ -836,7 +836,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   async connect(): Promise<void> {
@@ -1051,7 +1051,7 @@ export class MySQLAdapter implements DatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   async connect(): Promise<void> {

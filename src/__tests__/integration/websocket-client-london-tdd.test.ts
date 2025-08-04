@@ -365,7 +365,7 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
       // Assert - Verify event interaction conversation
       expect(mockEventBus.subscribe).toHaveBeenCalledWith(
         'connection-status',
-        expect.any(Function)
+        expect.any(Function),
       );
       expect(mockEventBus.subscribe).toHaveBeenCalledWith('message-received', expect.any(Function));
       expect(mockEventBus.publish).toHaveBeenCalledWith('ready-for-messages', true);

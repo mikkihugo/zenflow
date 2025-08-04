@@ -181,12 +181,12 @@ class NeuralNetwork {
         const weightAlloc = this.memoryOptimizer.allocateFromPool(
           'weights',
           weightSize,
-          this.config.cognitivePattern || 'default'
+          this.config.cognitivePattern || 'default',
         );
         const biasAlloc = this.memoryOptimizer.allocateFromPool(
           'weights',
           biasSize,
-          this.config.cognitivePattern || 'default'
+          this.config.cognitivePattern || 'default',
         );
 
         if (weightAlloc && biasAlloc) {
@@ -479,7 +479,7 @@ class NeuralAgent extends EventEmitter {
       description.length / 1000, // Length normalized
       (description.match(/\b\w+\b/g) || []).length / 100, // Word count
       (description.match(/[A-Z]/g) || []).length / description.length, // Capitalization ratio
-      (description.match(/[0-9]/g) || []).length / description.length // Numeric ratio
+      (description.match(/[0-9]/g) || []).length / description.length, // Numeric ratio
     );
 
     // Task metadata
@@ -504,7 +504,7 @@ class NeuralAgent extends EventEmitter {
       this.cognitiveState.attention,
       this.cognitiveState.fatigue,
       this.cognitiveState.confidence,
-      this.cognitiveState.exploration
+      this.cognitiveState.exploration,
     );
 
     // Pad or truncate to expected input size
@@ -565,7 +565,7 @@ class NeuralAgent extends EventEmitter {
     // Fatigue increases with complexity
     this.cognitiveState.fatigue = Math.min(
       this.cognitiveState.fatigue + analysis.complexity * 0.1,
-      1.0
+      1.0,
     );
 
     // Attention decreases with fatigue
@@ -621,7 +621,7 @@ class NeuralAgent extends EventEmitter {
   private async _learnFromExecution(
     task: Task,
     result: TaskResult,
-    performance: any
+    performance: any,
   ): Promise<void> {
     // Prepare training data
     const input = this._taskToVector(task);
@@ -705,7 +705,7 @@ class NeuralAgent extends EventEmitter {
       // Description similarity (simple word overlap)
       const currentWords = new Set((task.description || '').toLowerCase().split(/\s+/));
       const historicalWords = new Set(
-        (historicalTask.task.description || '').toLowerCase().split(/\s+/)
+        (historicalTask.task.description || '').toLowerCase().split(/\s+/),
       );
       const intersection = new Set([...currentWords].filter((x) => historicalWords.has(x)));
       const union = new Set([...currentWords, ...historicalWords]);
@@ -920,7 +920,9 @@ class NeuralAgentFactory {
 
 // Lazy load to avoid circular dependency
 setImmediate(() => {
-  import('../core/network').catch(() => import('./neural')).catch(() => null)
+  import('../core/network')
+    .catch(() => import('./neural'))
+    .catch(() => null)
     .then((neural) => {
       if (neural) {
         MemoryOptimizer = neural.MemoryOptimizer || MemoryOptimizer;

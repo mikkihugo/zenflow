@@ -134,7 +134,7 @@ export class ExternalMCPClient extends EventEmitter {
    */
   private async createHTTPConnection(
     _name: string,
-    config: MCPServerConfig
+    config: MCPServerConfig,
   ): Promise<MCPConnection> {
     // Simulate HTTP connection for external servers
     // In practice, this would use the actual MCP protocol over HTTP
@@ -155,7 +155,7 @@ export class ExternalMCPClient extends EventEmitter {
    */
   private async createSSEConnection(
     _name: string,
-    config: MCPServerConfig
+    config: MCPServerConfig,
   ): Promise<MCPConnection> {
     // Simulate SSE connection for external servers
     // In practice, this would use Server-Sent Events for real-time communication
@@ -221,7 +221,7 @@ export class ExternalMCPClient extends EventEmitter {
   async executeTool(
     serverName: string,
     toolName: string,
-    parameters: any
+    parameters: any,
   ): Promise<ToolExecutionResult> {
     const connection = this.connections.get(serverName);
     if (!connection) {
@@ -266,7 +266,7 @@ export class ExternalMCPClient extends EventEmitter {
   private async simulateToolExecution(
     serverName: string,
     toolName: string,
-    _parameters: any
+    _parameters: any,
   ): Promise<any> {
     // Simulate network delay
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000 + 500));

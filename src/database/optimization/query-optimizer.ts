@@ -107,7 +107,7 @@ export class QueryOptimizer extends EventEmitter {
    */
   async optimizeQuery(
     query: DatabaseQuery,
-    engines: Map<string, DatabaseEngine>
+    engines: Map<string, DatabaseEngine>,
   ): Promise<DatabaseQuery> {
     this.metrics.totalQueries++;
     this.emit('queryOptimizing', { queryId: query.id, originalQuery: query });
@@ -308,7 +308,7 @@ export class QueryOptimizer extends EventEmitter {
    */
   private evictLeastRecentlyUsed(): void {
     const entries = Array.from(this.cache.entries()).sort(
-      ([, a], [, b]) => a.timestamp - b.timestamp
+      ([, a], [, b]) => a.timestamp - b.timestamp,
     );
 
     // Remove oldest 20% of entries
@@ -454,7 +454,7 @@ export class QueryOptimizer extends EventEmitter {
           (h) =>
             h.queryId !== query.id &&
             this.generateQuerySignature(this.findQueryById(h.queryId) || query) ===
-              this.generateQuerySignature(query)
+              this.generateQuerySignature(query),
         );
         return similar.length > 2;
       },
@@ -567,7 +567,7 @@ export class QueryOptimizer extends EventEmitter {
     // Update pattern analysis stats
     this.metrics.patternAnalysis.uniquePatterns = this.patterns.size;
     this.metrics.patternAnalysis.repeatedQueries = Array.from(this.patterns.values()).filter(
-      (p) => p.frequency >= this.config.patterns.minFrequency
+      (p) => p.frequency >= this.config.patterns.minFrequency,
     ).length;
 
     return { ...this.metrics };

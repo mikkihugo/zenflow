@@ -17,11 +17,11 @@ export const StatusDashboard: React.FC<StatusDashboardProps> = ({
 }) => {
   const totalAgents = Array.from(state.deploymentStatus.values()).reduce(
     (sum, status) => sum + status.agents.created,
-    0
+    0,
   );
 
   const deployedSwarms = Array.from(state.deploymentStatus.values()).filter(
-    (status) => status.status === 'deployed'
+    (status) => status.status === 'deployed',
   ).length;
 
   const averageConfidence =
@@ -34,7 +34,7 @@ export const StatusDashboard: React.FC<StatusDashboardProps> = ({
       acc[config.topology] = (acc[config.topology] || 0) + 1;
       return acc;
     },
-    {} as Record<string, number>
+    {} as Record<string, number>,
   );
 
   return (

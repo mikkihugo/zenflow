@@ -41,7 +41,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
           unsubscribeFromChannel: jest.fn(),
           getMessageQueue: jest.fn(),
           processMessage: jest.fn(),
-        }) as jest.Mocked<Agent>
+        }) as jest.Mocked<Agent>,
     );
 
     _testHelpers = new CoordinationTestHelpers();
@@ -81,7 +81,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
           ...message,
           encrypted: true,
           compressed: false, // Below compression threshold
-        })
+        }),
       );
 
       // Verify routing optimization
@@ -90,7 +90,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
           from: sender.id,
           to: receiver.id,
           optimizeRoute: true,
-        })
+        }),
       );
     });
 
@@ -138,7 +138,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
           compressed: true,
           originalSize: expect.any(Number),
           compressedSize: expect.any(Number),
-        })
+        }),
       );
     });
   });
@@ -166,7 +166,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
           ...broadcastMessage,
           sender: broadcaster.id,
           broadcastType: 'topology_wide',
-        })
+        }),
       );
 
       expect(result.success).toBe(true);
@@ -196,7 +196,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
         expect.objectContaining({
           targetFilter: { type: 'coordinator' },
           broadcastType: 'filtered',
-        })
+        }),
       );
     });
 
@@ -261,7 +261,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
             encryption: true,
             maxMessages: expect.any(Number),
           }),
-        })
+        }),
       );
 
       expect(channel.channelId).toBe('ch-001');
@@ -287,7 +287,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
         expect.objectContaining({
           messageHandler: expect.any(Function),
           errorHandler: expect.any(Function),
-        })
+        }),
       );
 
       // Verify agent subscription
@@ -323,7 +323,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
         expect.objectContaining({
           threadId: 'thread-001',
           messageType: 'threaded',
-        })
+        }),
       );
     });
   });
@@ -362,7 +362,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
       await communicationProtocol.sendDirectMessage(sender.id, receiver.id, criticalMessage);
 
       const criticalCall = mockMessageBroker.sendDirectMessage.mock.calls.find(
-        (call) => call[2].priority === 'critical'
+        (call) => call[2].priority === 'critical',
       );
 
       expect(criticalCall[2]).toMatchObject({
@@ -429,14 +429,14 @@ describe('Agent Communication Protocols (London TDD)', () => {
       }));
 
       const sendPromises = rapidMessages.map((msg) =>
-        communicationProtocol.sendDirectMessage(sender.id, receiver.id, msg)
+        communicationProtocol.sendDirectMessage(sender.id, receiver.id, msg),
       );
 
       const results = await Promise.allSettled(sendPromises);
 
       const successful = results.filter((r) => r.status === 'fulfilled' && r.value.success).length;
       const rateLimited = results.filter(
-        (r) => r.status === 'rejected' || (r.status === 'fulfilled' && !r.value.success)
+        (r) => r.status === 'rejected' || (r.status === 'fulfilled' && !r.value.success),
       ).length;
 
       // Some messages should be rate limited
@@ -472,7 +472,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
           encryptionAlgorithm: expect.any(String),
           encryptedContent: expect.any(String),
           contentHash: expect.any(String),
-        })
+        }),
       );
     });
 
@@ -499,7 +499,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
       const result = await communicationProtocol.sendDirectMessage(
         sender.id,
         receiver.id,
-        signedMessage
+        signedMessage,
       );
 
       expect(result.success).toBe(true);
@@ -512,7 +512,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
           signature: expect.any(String),
           signatureTimestamp: expect.any(Number),
           signatureAlgorithm: expect.any(String),
-        })
+        }),
       );
     });
   });

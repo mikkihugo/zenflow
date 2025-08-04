@@ -40,7 +40,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
       codeGeneration,
       testGeneration,
       documentationGeneration,
-      deploymentArtifacts
+      deploymentArtifacts,
     );
 
     return {
@@ -78,7 +78,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
     // Generate data access layer
     const dataComponents = refinement.refinedArchitecture.components.filter(
-      (c) => c.type === 'data-manager'
+      (c) => c.type === 'data-manager',
     );
     for (const component of dataComponents) {
       artifacts.push(await this.generateRepositoryCode(component));
@@ -147,7 +147,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
    * Generate comprehensive documentation
    */
   private async generateDocumentation(
-    refinement: RefinementResult
+    refinement: RefinementResult,
   ): Promise<DocumentationGeneration> {
     const artifacts: DocumentationArtifact[] = [];
 
@@ -185,7 +185,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
    * Generate deployment artifacts
    */
   private async generateDeploymentArtifacts(
-    refinement: RefinementResult
+    refinement: RefinementResult,
   ): Promise<DeploymentArtifacts> {
     const artifacts: DeploymentArtifact[] = [];
 
@@ -291,7 +291,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     _codeGen: CodeGeneration,
     testGen: TestGeneration,
     _docGen: DocumentationGeneration,
-    _deployArtifacts: DeploymentArtifacts
+    _deployArtifacts: DeploymentArtifacts,
   ): Promise<ProductionReadinessCheck[]> {
     return [
       {
@@ -645,7 +645,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateArchitectureDocumentation(
-    architecture: any
+    architecture: any,
   ): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
@@ -1336,7 +1336,7 @@ groups:
 
   private async performComplianceChecks(
     _codeGen: CodeGeneration,
-    _testGen: TestGeneration
+    _testGen: TestGeneration,
   ): Promise<ComplianceCheck[]> {
     return [
       {
@@ -1372,7 +1372,7 @@ groups:
   }
 
   private async generateDeploymentInstructions(
-    _deploymentArtifacts: DeploymentArtifacts
+    _deploymentArtifacts: DeploymentArtifacts,
   ): Promise<string[]> {
     return [
       'Build and tag container images',

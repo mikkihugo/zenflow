@@ -11,19 +11,23 @@
  * - Chaos engineering and fault tolerance
  */
 
-import type { 
-  SwarmEventEmitter, 
-  SwarmOptions, 
-  SwarmState, 
+import type {
+  SwarmEventEmitter,
+  SwarmOptions,
+  SwarmState,
   SwarmEvent,
   SwarmMetrics,
   Message,
   AgentConfig,
   Task,
-  TaskStatus
+  TaskStatus,
 } from './types';
 import { AgentPool, createAgent, BaseAgent } from '../../agents/agent';
-import { adaptAgentForCoordination, createAgentPoolEntry, executeTaskWithAgent } from './agent-adapter';
+import {
+  adaptAgentForCoordination,
+  createAgentPoolEntry,
+  executeTaskWithAgent,
+} from './agent-adapter';
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
 import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
 import { validateSwarmOptions, generateId, formatMetrics, priorityToNumber } from './utils';
@@ -211,14 +215,14 @@ export class ZenSwarm implements SwarmEventEmitter {
         enabled: false,
         dbPath: '',
         checkpointInterval: 60000,
-        compressionEnabled: false
+        compressionEnabled: false,
       },
       pooling: {
         enabled: false,
         maxPoolSize: 10,
         minPoolSize: 1,
-        idleTimeout: 300000
-      }
+        idleTimeout: 300000,
+      },
     } as Required<SwarmOptions>;
 
     this.agentPool = new AgentPool();
@@ -580,7 +584,7 @@ export class ZenSwarm implements SwarmEventEmitter {
     this.agentPool.removeAgent(agentId);
 
     this.state.connections = this.state.connections.filter(
-      (conn) => conn.from !== agentId && conn.to !== agentId
+      (conn) => conn.from !== agentId && conn.to !== agentId,
     );
 
     this.emit('agent:removed', { agentId });
@@ -885,7 +889,7 @@ export class ZenSwarm implements SwarmEventEmitter {
  */
 export class SwarmWrapper {
   public id: string;
-  private wasmSwarm: any;  // Add missing property declaration
+  private wasmSwarm: any; // Add missing property declaration
   private ruvSwarm: ZenSwarm;
   public agents: Map<string, Agent>;
   private tasks: Map<string, TaskWrapper>;

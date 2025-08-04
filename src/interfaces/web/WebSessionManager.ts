@@ -59,7 +59,7 @@ export class WebSessionManager {
    */
   updateSessionPreferences(
     sessionId: string,
-    preferences: Partial<WebSession['preferences']>
+    preferences: Partial<WebSession['preferences']>,
   ): boolean {
     const session = this.sessions.get(sessionId);
     if (session) {

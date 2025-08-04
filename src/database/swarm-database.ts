@@ -304,7 +304,7 @@ export class SwarmDatabase extends EventEmitter {
    * Task CRUD operations
    */
   async createTask(
-    task: Omit<SwarmTask, 'created_at' | 'started_at' | 'completed_at'>
+    task: Omit<SwarmTask, 'created_at' | 'started_at' | 'completed_at'>,
   ): Promise<SwarmTask> {
     const query = `
       INSERT INTO swarm_tasks (
@@ -448,7 +448,7 @@ export class SwarmDatabase extends EventEmitter {
   async getMetrics(
     swarmId: string,
     metricName?: string,
-    agentId?: string
+    agentId?: string,
   ): Promise<SwarmMetrics[]> {
     let query = 'SELECT * FROM swarm_metrics WHERE swarm_id = $1';
     const values = [swarmId];

@@ -33,7 +33,7 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
   async createTempDir(prefix: string = 'test'): Promise<string> {
     const tempPath = join(
       tmpdir(),
-      `claude-test-${prefix}-${Date.now()}-${Math.random().toString(36).substring(2)}`
+      `claude-test-${prefix}-${Date.now()}-${Math.random().toString(36).substring(2)}`,
     );
 
     await fs.mkdir(tempPath, { recursive: true });
@@ -409,7 +409,7 @@ export function createMockFileSystemHelper(): FileSystemTestHelper {
 export async function createTestProject(
   helper: FileSystemTestHelper,
   projectName: string,
-  files: Record<string, string>
+  files: Record<string, string>,
 ): Promise<string> {
   const projectDir = await helper.createTempDir(projectName);
 
@@ -423,7 +423,7 @@ export async function createTestProject(
 
 export async function createTestWorkspace(
   helper: FileSystemTestHelper,
-  workspaceName: string
+  workspaceName: string,
 ): Promise<{
   workspaceDir: string;
   srcDir: string;

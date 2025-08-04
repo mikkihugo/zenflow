@@ -234,7 +234,7 @@ export class PerformanceOptimizer extends EventEmitter {
   constructor(
     private config: OptimizationConfig,
     private logger: ILogger,
-    private eventBus: IEventBus
+    private eventBus: IEventBus,
   ) {
     super();
 
@@ -311,7 +311,7 @@ export class PerformanceOptimizer extends EventEmitter {
   async cacheData<T>(
     key: string,
     value: T,
-    options?: { ttl?: number; compress?: boolean }
+    options?: { ttl?: number; compress?: boolean },
   ): Promise<void> {
     await this.cache.set(key, value, options);
   }
@@ -428,7 +428,7 @@ export class PerformanceOptimizer extends EventEmitter {
       // Apply top recommendations
       const toApply = applicableRecommendations.slice(
         0,
-        this.config.adaptation.maxChangesPerPeriod
+        this.config.adaptation.maxChangesPerPeriod,
       );
 
       for (const recommendation of toApply) {
@@ -597,7 +597,7 @@ export class PerformanceOptimizer extends EventEmitter {
         parameters: {
           size: Math.min(
             this.config.batchSizing.maxSize,
-            this.batchProcessor.getCurrentSize() * 1.5
+            this.batchProcessor.getCurrentSize() * 1.5,
           ),
         },
         timestamp: new Date(),
@@ -609,7 +609,7 @@ export class PerformanceOptimizer extends EventEmitter {
         parameters: {
           size: Math.min(
             this.config.connectionPooling.maxSize,
-            this.connectionPool.getStats().totalConnections * 1.2
+            this.connectionPool.getStats().totalConnections * 1.2,
           ),
         },
         timestamp: new Date(),
@@ -631,7 +631,7 @@ export class PerformanceOptimizer extends EventEmitter {
         parameters: {
           size: Math.max(
             this.config.batchSizing.minSize,
-            this.batchProcessor.getCurrentSize() * 0.8
+            this.batchProcessor.getCurrentSize() * 0.8,
           ),
         },
         timestamp: new Date(),
@@ -748,7 +748,7 @@ class AdaptiveBatchProcessor extends EventEmitter {
 
   constructor(
     private config: BatchSizingConfig,
-    private logger: ILogger
+    private logger: ILogger,
   ) {
     super();
     this.currentBatchSize = config.initialSize;
@@ -811,7 +811,7 @@ class AdaptiveBatchProcessor extends EventEmitter {
       // Reduce batch size to improve latency
       this.currentBatchSize = Math.max(
         this.config.minSize,
-        Math.floor(this.currentBatchSize * (1 - this.config.adaptationRate))
+        Math.floor(this.currentBatchSize * (1 - this.config.adaptationRate)),
       );
     } else if (
       avgProcessingTime < this.config.targetLatency * 0.8 &&
@@ -820,7 +820,7 @@ class AdaptiveBatchProcessor extends EventEmitter {
       // Increase batch size to improve throughput
       this.currentBatchSize = Math.min(
         this.config.maxSize,
-        Math.ceil(this.currentBatchSize * (1 + this.config.adaptationRate))
+        Math.ceil(this.currentBatchSize * (1 + this.config.adaptationRate)),
       );
     }
   }
@@ -853,7 +853,7 @@ class AdvancedConnectionPool extends EventEmitter implements ConnectionPool {
 
   constructor(
     private config: ConnectionPoolingConfig,
-    private logger: ILogger
+    private logger: ILogger,
   ) {
     super();
     this.stats = {
@@ -1082,7 +1082,7 @@ class IntelligentCache extends EventEmitter {
 
   constructor(
     private config: CachingConfig,
-    private logger: ILogger
+    private logger: ILogger,
   ) {
     super();
 
@@ -1107,7 +1107,7 @@ class IntelligentCache extends EventEmitter {
   async set<T>(
     key: string,
     value: T,
-    options?: { ttl?: number; compress?: boolean }
+    options?: { ttl?: number; compress?: boolean },
   ): Promise<void> {
     const entry: CacheEntry<T> = {
       key,
@@ -1310,7 +1310,7 @@ class RealTimeMonitor extends EventEmitter {
   constructor(
     private config: MonitoringConfig,
     private logger: ILogger,
-    private eventBus: IEventBus
+    private eventBus: IEventBus,
   ) {
     super();
   }
@@ -1501,7 +1501,7 @@ class RealTimeMonitor extends EventEmitter {
 
   private getAlertSeverity(
     alertName: string,
-    value: number
+    value: number,
   ): 'low' | 'medium' | 'high' | 'critical' {
     // Simplified severity calculation
     return value > 0.9 ? 'critical' : value > 0.7 ? 'high' : value > 0.5 ? 'medium' : 'low';
@@ -1669,12 +1669,12 @@ class AdaptationEngine {
 
   constructor(
     private config: AdaptationConfig,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   async getRecommendations(
     metrics: PerformanceMetrics,
-    history: OptimizationAction[]
+    history: OptimizationAction[],
   ): Promise<OptimizationRecommendation[]> {
     const recommendations: OptimizationRecommendation[] = [];
 

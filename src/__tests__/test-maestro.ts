@@ -161,7 +161,7 @@ ${initialRequest}
       const optimalAgentTypes = await this.getOptimalAgentTypes(
         ['design', 'architecture', 'analysis'],
         'design-generation',
-        2
+        2,
       );
 
       // Create agents with reuse logic
@@ -200,7 +200,7 @@ System designed using enhanced agent reuse functionality.
     private async getOptimalAgentTypes(
       _requiredCapabilities: string[],
       _taskType: string,
-      maxAgents: number
+      maxAgents: number,
     ): Promise<string[]> {
       // Enhanced agent selection logic
       const availableTypes = ['design-architect', 'system-architect', 'requirements-analyst'];
@@ -302,7 +302,7 @@ System designed using enhanced agent reuse functionality.
     console.error(
       `
       ❌ Test failed:`,
-      error
+      error,
     );
     process.exit(1);
   }

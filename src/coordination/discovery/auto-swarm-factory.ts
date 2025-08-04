@@ -146,7 +146,7 @@ export class AutoSwarmFactory extends EventEmitter {
     private hiveSync: HiveSwarmCoordinator,
     private memoryStore: SessionMemoryStore,
     private agui?: AGUIInterface,
-    config?: Partial<AutoSwarmFactoryConfig>
+    config?: Partial<AutoSwarmFactoryConfig>,
   ) {
     super();
 
@@ -170,7 +170,7 @@ export class AutoSwarmFactory extends EventEmitter {
    * Main entry point - Create swarms for all confident domains
    */
   async createSwarmsForDomains(
-    confidentDomains: Map<string, ConfidentDomain>
+    confidentDomains: Map<string, ConfidentDomain>,
   ): Promise<SwarmConfig[]> {
     logger.info(`🏭 Auto-Swarm Factory starting for ${confidentDomains.size} domains`);
 
@@ -212,7 +212,7 @@ export class AutoSwarmFactory extends EventEmitter {
       await this.initializeSwarms(successfulConfigs);
 
       logger.info(
-        `🎉 Auto-Swarm Factory completed: ${successfulConfigs.length}/${confidentDomains.size} swarms created`
+        `🎉 Auto-Swarm Factory completed: ${successfulConfigs.length}/${confidentDomains.size} swarms created`,
       );
 
       this.emit('factory:complete', {
@@ -292,7 +292,7 @@ export class AutoSwarmFactory extends EventEmitter {
    * Analyze domain characteristics for optimal swarm configuration
    */
   private async analyzeDomainCharacteristics(
-    domain: ConfidentDomain
+    domain: ConfidentDomain,
   ): Promise<DomainCharacteristics> {
     const fileCount = domain.files.length;
 
@@ -316,16 +316,16 @@ export class AutoSwarmFactory extends EventEmitter {
     const technologies = domain.technologies || [];
 
     const isPipeline = concepts.some(
-      (c) => c.includes('pipeline') || c.includes('workflow') || c.includes('queue')
+      (c) => c.includes('pipeline') || c.includes('workflow') || c.includes('queue'),
     );
 
     const isCentralized = concepts.some(
-      (c) => c.includes('server') || c.includes('api') || c.includes('service')
+      (c) => c.includes('server') || c.includes('api') || c.includes('service'),
     );
 
     const hasNestedStructure =
       concepts.some(
-        (c) => c.includes('nested') || c.includes('hierarchical') || c.includes('tree')
+        (c) => c.includes('nested') || c.includes('hierarchical') || c.includes('tree'),
       ) || fileCount > 50;
 
     const characteristics: DomainCharacteristics = {
@@ -426,7 +426,7 @@ export class AutoSwarmFactory extends EventEmitter {
    */
   private configureAgents(
     chars: DomainCharacteristics,
-    _topology: SwarmTopology
+    _topology: SwarmTopology,
   ): AgentConfiguration[] {
     const agents: AgentConfiguration[] = [];
 
@@ -503,7 +503,7 @@ export class AutoSwarmFactory extends EventEmitter {
 
     logger.debug(
       `Configured ${agents.length} agent types for ${chars.name}:`,
-      agents.map((a) => `${a.type}(${a.count})`).join(', ')
+      agents.map((a) => `${a.type}(${a.count})`).join(', '),
     );
 
     return agents;
@@ -542,7 +542,7 @@ export class AutoSwarmFactory extends EventEmitter {
    */
   private configureCoordination(
     chars: DomainCharacteristics,
-    topology: SwarmTopology
+    topology: SwarmTopology,
   ): SwarmConfig['coordination'] {
     let strategy: 'parallel' | 'sequential' | 'adaptive' = 'adaptive';
 
@@ -571,7 +571,7 @@ export class AutoSwarmFactory extends EventEmitter {
   private calculatePerformanceExpectations(
     chars: DomainCharacteristics,
     topology: SwarmTopology,
-    agents: AgentConfiguration[]
+    agents: AgentConfiguration[],
   ): SwarmConfig['performance'] {
     const totalAgents = agents.reduce((sum, agent) => sum + agent.count, 0);
 
@@ -615,19 +615,19 @@ export class AutoSwarmFactory extends EventEmitter {
   private async validateResourceConstraints(configs: SwarmConfig[]): Promise<void> {
     const totalAgents = configs.reduce(
       (sum, config) => sum + config.agents.reduce((agentSum, agent) => agentSum + agent.count, 0),
-      0
+      0,
     );
 
     if (totalAgents > this.config.resourceConstraints.maxTotalAgents) {
       const error = new Error(
-        `Total agents (${totalAgents}) exceeds limit (${this.config.resourceConstraints.maxTotalAgents})`
+        `Total agents (${totalAgents}) exceeds limit (${this.config.resourceConstraints.maxTotalAgents})`,
       );
       logger.warn('Resource constraint violation:', error.message);
       throw error;
     }
 
     logger.info(
-      `✅ Resource validation passed: ${totalAgents}/${this.config.resourceConstraints.maxTotalAgents} agents`
+      `✅ Resource validation passed: ${totalAgents}/${this.config.resourceConstraints.maxTotalAgents} agents`,
     );
   }
 
@@ -655,7 +655,7 @@ export class AutoSwarmFactory extends EventEmitter {
         summary
           .map(
             (s) =>
-              `• ${s.domain}: ${s.topology} topology, ${s.totalAgentCount} agents (${s.confidence} confidence)`
+              `• ${s.domain}: ${s.topology} topology, ${s.totalAgentCount} agents (${s.confidence} confidence)`,
           )
           .join('\n') +
         `\n\nTotal agents across all swarms: ${summary.reduce((sum, s) => sum + s.totalAgentCount, 0)}\n\n` +
@@ -735,12 +735,12 @@ export class AutoSwarmFactory extends EventEmitter {
         acc[swarm.topology.type] = (acc[swarm.topology.type] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     const totalAgents = swarms.reduce(
       (sum, swarm) => sum + swarm.agents.reduce((agentSum, agent) => agentSum + agent.count, 0),
-      0
+      0,
     );
 
     const averageConfidence =

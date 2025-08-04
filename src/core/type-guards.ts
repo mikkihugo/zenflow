@@ -74,7 +74,7 @@ export function isDefined<T>(value: T | null | undefined): value is T {
  */
 export function assertDefined<T>(
   value: T | null | undefined,
-  message?: string
+  message?: string,
 ): asserts value is T {
   if (!isDefined(value)) {
     throw new Error(message || 'Value is null or undefined');

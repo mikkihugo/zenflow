@@ -90,7 +90,7 @@ export class SPARCSwarmCoordinator {
    */
   async executeSPARCPhase(
     projectId: string,
-    phase: SPARCPhase
+    phase: SPARCPhase,
   ): Promise<{ success: boolean; results: Map<AgentType, any> }> {
     const swarmId = `sparc-${projectId}`;
     const results = new Map<AgentType, any>();
@@ -168,7 +168,7 @@ export class SPARCSwarmCoordinator {
   private generatePhasePrompt(
     project: SPARCProject,
     phase: SPARCPhase,
-    agentType: AgentType
+    agentType: AgentType,
   ): string {
     const basePrompt = `You are a ${agentType} working on SPARC methodology ${phase} phase for "${project.name}".`;
 
@@ -319,7 +319,7 @@ export class SPARCSwarmCoordinator {
    * Get status of a specific task
    */
   private async getTaskStatus(
-    _taskId: string
+    _taskId: string,
   ): Promise<'pending' | 'running' | 'completed' | 'failed'> {
     // In a real implementation, this would call the TaskAPI
     // For now, return a mock status based on task age or other criteria

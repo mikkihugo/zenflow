@@ -154,7 +154,7 @@ export class DatabaseController {
   constructor(
     @inject(DATABASE_TOKENS.ProviderFactory) private _factory: DatabaseProviderFactory,
     @inject(DATABASE_TOKENS.Config) private _config: DatabaseConfig,
-    @inject(CORE_TOKENS.Logger) private _logger: ILogger
+    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
   ) {
     this.initializeAdapter();
   }
@@ -242,7 +242,7 @@ export class DatabaseController {
       this.updateMetrics(executionTime, true);
 
       this._logger.debug(
-        `Query completed successfully in ${executionTime}ms, returned ${result.rowCount} rows`
+        `Query completed successfully in ${executionTime}ms, returned ${result.rowCount} rows`,
       );
 
       return {
@@ -303,7 +303,7 @@ export class DatabaseController {
       this.updateMetrics(executionTime, true);
 
       this._logger.debug(
-        `Command completed successfully in ${executionTime}ms, affected ${result.affectedRows} rows`
+        `Command completed successfully in ${executionTime}ms, affected ${result.affectedRows} rows`,
       );
 
       return {
@@ -421,7 +421,7 @@ export class DatabaseController {
       const successfulOps = results.filter((r) => r.success).length;
 
       this._logger.debug(
-        `Transaction completed successfully in ${executionTime}ms, ${successfulOps}/${results.length} operations successful`
+        `Transaction completed successfully in ${executionTime}ms, ${successfulOps}/${results.length} operations successful`,
       );
 
       return {
@@ -550,7 +550,7 @@ export class DatabaseController {
       this.updateMetrics(executionTime, errorCount === 0);
 
       this._logger.debug(
-        `Batch operations completed in ${executionTime}ms: ${results.length - errorCount}/${results.length} successful`
+        `Batch operations completed in ${executionTime}ms: ${results.length - errorCount}/${results.length} successful`,
       );
 
       return {
@@ -658,7 +658,7 @@ export class DatabaseController {
 
     try {
       this._logger.info(
-        `Executing migration: ${request.version} - ${request.description || 'No description'}`
+        `Executing migration: ${request.version} - ${request.description || 'No description'}`,
       );
 
       if (!request.statements || request.statements.length === 0) {
@@ -739,7 +739,7 @@ export class DatabaseController {
       this.updateMetrics(executionTime, true);
 
       this._logger.info(
-        `Migration ${request.version} completed successfully in ${executionTime}ms`
+        `Migration ${request.version} completed successfully in ${executionTime}ms`,
       );
 
       return {

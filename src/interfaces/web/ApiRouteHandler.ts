@@ -41,7 +41,7 @@ export class ApiRouteHandler {
   constructor(
     private app: Express,
     private webSocket: WebSocketCoordinator,
-    private config: ApiConfig
+    private config: ApiConfig,
   ) {
     this.setupRoutes();
   }

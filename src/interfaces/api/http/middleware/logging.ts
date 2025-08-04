@@ -198,7 +198,7 @@ const createLogEntry = (
   message: string,
   req: Request,
   res?: Response,
-  metadata?: Record<string, unknown>
+  metadata?: Record<string, unknown>,
 ): LogEntry => {
   const requestMetadata = req.metadata as RequestMetadata;
   const duration = res ? Date.now() - requestMetadata.startTime : undefined;
@@ -322,7 +322,7 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction): 
 export const logError = (
   error: Error,
   req: Request,
-  additionalContext?: Record<string, unknown>
+  additionalContext?: Record<string, unknown>,
 ): void => {
   const logEntry = createLogEntry(LogLevel.ERROR, `Error: ${error.message}`, req, undefined, {
     error: {
@@ -344,7 +344,7 @@ export const logPerformance = (
   operation: string,
   duration: number,
   req: Request,
-  metadata?: Record<string, unknown>
+  metadata?: Record<string, unknown>,
 ): void => {
   const level = duration > 5000 ? LogLevel.WARNING : LogLevel.INFO;
 
@@ -357,7 +357,7 @@ export const logPerformance = (
       operation,
       duration: `${duration}ms`,
       performanceMetrics: metadata,
-    }
+    },
   );
 
   outputLog(logEntry);
@@ -371,7 +371,7 @@ export const log = (
   level: LogLevel,
   message: string,
   req?: Request,
-  metadata?: Record<string, unknown>
+  metadata?: Record<string, unknown>,
 ): void => {
   if (req) {
     const logEntry = createLogEntry(level, message, req, undefined, metadata);

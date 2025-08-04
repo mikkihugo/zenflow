@@ -230,11 +230,11 @@ export class MCPToolsManager {
     const categoryStats = toolRegistry.getCategorySummary();
     const totalCalls = Array.from(this.toolStats.values()).reduce(
       (sum, stats) => sum + stats.calls,
-      0
+      0,
     );
     const totalErrors = Array.from(this.toolStats.values()).reduce(
       (sum, stats) => sum + stats.errors,
-      0
+      0,
     );
 
     return {
@@ -262,7 +262,7 @@ export class MCPToolsManager {
         (tool) =>
           tool.name.toLowerCase().includes(lowercaseQuery) ||
           tool.description.toLowerCase().includes(lowercaseQuery) ||
-          tool.metadata.tags.some((tag) => tag.toLowerCase().includes(lowercaseQuery))
+          tool.metadata.tags.some((tag) => tag.toLowerCase().includes(lowercaseQuery)),
       );
   }
 
@@ -288,8 +288,8 @@ export class MCPToolsManager {
       .getAllTools()
       .filter((tool) =>
         tool.permissions.some(
-          (perm) => perm.type === permissionType && (!resource || perm.resource === resource)
-        )
+          (perm) => perm.type === permissionType && (!resource || perm.resource === resource),
+        ),
       );
   }
 

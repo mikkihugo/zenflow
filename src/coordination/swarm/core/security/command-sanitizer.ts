@@ -66,7 +66,7 @@ class CommandSanitizer {
     const repoRegex = /^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$/;
     if (!repoRegex.test(identifier) || identifier.length > 39) {
       throw new Error(
-        'Invalid repository identifier: must be alphanumeric with hyphens, max 39 chars'
+        'Invalid repository identifier: must be alphanumeric with hyphens, max 39 chars',
       );
     }
     return identifier;
@@ -80,7 +80,7 @@ class CommandSanitizer {
     const sanitized = swarmId.replace(/[^a-zA-Z0-9_-]/g, '');
     if (sanitized.length === 0 || sanitized.length > 50) {
       throw new Error(
-        'Invalid swarm ID: must be alphanumeric with underscores/hyphens, max 50 chars'
+        'Invalid swarm ID: must be alphanumeric with underscores/hyphens, max 50 chars',
       );
     }
     return sanitized;
@@ -94,7 +94,7 @@ class CommandSanitizer {
     const sanitized = label.replace(/[^a-zA-Z0-9._-]/g, '');
     if (sanitized.length === 0 || sanitized.length > 50) {
       throw new Error(
-        'Invalid label: must be alphanumeric with dots/underscores/hyphens, max 50 chars'
+        'Invalid label: must be alphanumeric with dots/underscores/hyphens, max 50 chars',
       );
     }
     return sanitized;

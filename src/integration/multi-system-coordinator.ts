@@ -16,7 +16,7 @@ export class MultiSystemCoordinator extends EventEmitter {
 
   constructor(
     @inject(CORE_TOKENS.Logger) private _logger: ILogger,
-    private config: any = {}
+    private config: any = {},
   ) {
     super();
     this.logger.info('MultiSystemCoordinator created');

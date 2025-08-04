@@ -179,7 +179,7 @@ export class CommunicationProtocols extends EventEmitter {
       maxHops: number;
     },
     private logger: ILogger,
-    private eventBus: IEventBus
+    private eventBus: IEventBus,
   ) {
     super();
 
@@ -317,7 +317,7 @@ export class CommunicationProtocols extends EventEmitter {
   async multicast(
     recipients: string[],
     payload: MessagePayload,
-    priority: MessagePriority = 'normal'
+    priority: MessagePriority = 'normal',
   ): Promise<string> {
     return await this.sendMessage({
       type: 'multicast',
@@ -340,7 +340,7 @@ export class CommunicationProtocols extends EventEmitter {
   async unicast(
     recipient: string,
     payload: MessagePayload,
-    priority: MessagePriority = 'normal'
+    priority: MessagePriority = 'normal',
   ): Promise<string> {
     return await this.sendMessage({
       type: 'unicast',
@@ -381,7 +381,7 @@ export class CommunicationProtocols extends EventEmitter {
   async initiateConsensus(
     type: ConsensusProposal['type'],
     value: any,
-    participants?: string[]
+    participants?: string[],
   ): Promise<string> {
     const proposal: ConsensusProposal = {
       id: this.generateProposalId(),
@@ -411,7 +411,7 @@ export class CommunicationProtocols extends EventEmitter {
         encoding: 'utf8',
         version: '1.0',
       },
-      'high'
+      'high',
     );
 
     this.emit('consensus:initiated', { proposalId: proposal.id, type, participants: targetNodes });
@@ -424,7 +424,7 @@ export class CommunicationProtocols extends EventEmitter {
   async vote(
     proposalId: string,
     decision: ConsensusVote['decision'],
-    reasoning?: string
+    reasoning?: string,
   ): Promise<void> {
     const proposal = this.consensusProposals.get(proposalId);
     if (!proposal) {
@@ -454,7 +454,7 @@ export class CommunicationProtocols extends EventEmitter {
         encoding: 'utf8',
         version: '1.0',
       },
-      'high'
+      'high',
     );
 
     this.emit('vote:cast', { proposalId, decision, voter: this.nodeId });
@@ -482,7 +482,7 @@ export class CommunicationProtocols extends EventEmitter {
   } {
     const messagesInQueues = Array.from(this.messageQueue.values()).reduce(
       (sum, queue) => sum + queue.length,
-      0
+      0,
     );
 
     const networkHealth = this.calculateNetworkHealth();
@@ -651,7 +651,7 @@ export class CommunicationProtocols extends EventEmitter {
       if (message.compression.enabled) {
         message.payload = await this.compressionEngine.decompress(
           message.payload,
-          message.compression
+          message.compression,
         );
       }
 
@@ -817,7 +817,7 @@ export class CommunicationProtocols extends EventEmitter {
             encoding: 'utf8',
             version: '1.0',
           },
-          'background'
+          'background',
         );
       }
     }
@@ -857,12 +857,12 @@ export class CommunicationProtocols extends EventEmitter {
   private cleanupMessageHistory(): void {
     if (this.messageHistory.size > this.config.maxMessageHistory) {
       const sortedMessages = Array.from(this.messageHistory.entries()).sort(
-        ([, a], [, b]) => a.timestamp.getTime() - b.timestamp.getTime()
+        ([, a], [, b]) => a.timestamp.getTime() - b.timestamp.getTime(),
       );
 
       const toDelete = sortedMessages.slice(
         0,
-        sortedMessages.length - this.config.maxMessageHistory
+        sortedMessages.length - this.config.maxMessageHistory,
       );
       for (const [messageId] of toDelete) {
         this.messageHistory.delete(messageId);
@@ -892,7 +892,7 @@ export class CommunicationProtocols extends EventEmitter {
     if (totalNodes === 0) return 1;
 
     const onlineNodes = Array.from(this.nodes.values()).filter(
-      (node) => node.status === 'online'
+      (node) => node.status === 'online',
     ).length;
 
     return onlineNodes / totalNodes;
@@ -1096,7 +1096,7 @@ class CompressionEngine {
 class EncryptionEngine {
   constructor(
     private enabled: boolean,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   async encrypt(payload: MessagePayload, config: EncryptionConfig): Promise<MessagePayload> {
@@ -1127,7 +1127,7 @@ class RoutingEngine {
   async route(
     message: Message,
     routingTable: Map<string, string[]>,
-    nodes: Map<string, CommunicationNode>
+    nodes: Map<string, CommunicationNode>,
   ): Promise<void> {
     // Generic routing implementation
     for (const recipient of message.recipients) {
@@ -1141,7 +1141,7 @@ class RoutingEngine {
   async broadcast(
     message: Message,
     broadcastTrees: Map<string, BroadcastTree>,
-    nodes: Map<string, CommunicationNode>
+    nodes: Map<string, CommunicationNode>,
   ): Promise<void> {
     const tree = broadcastTrees.get('default');
     if (!tree) return;
@@ -1160,7 +1160,7 @@ class RoutingEngine {
   async unicast(
     message: Message,
     routingTable: Map<string, string[]>,
-    nodes: Map<string, CommunicationNode>
+    nodes: Map<string, CommunicationNode>,
   ): Promise<void> {
     if (message.recipients.length !== 1) {
       throw new Error('Unicast requires exactly one recipient');
@@ -1177,7 +1177,7 @@ class RoutingEngine {
   private async forwardMessage(
     message: Message,
     targetId: string,
-    nodes: Map<string, CommunicationNode>
+    nodes: Map<string, CommunicationNode>,
   ): Promise<void> {
     const targetNode = nodes.get(targetId);
     if (!targetNode || targetNode.status === 'offline') {
@@ -1195,7 +1195,7 @@ class RoutingEngine {
   private async broadcastViaTree(
     message: Message,
     tree: BroadcastTree,
-    nodes: Map<string, CommunicationNode>
+    nodes: Map<string, CommunicationNode>,
   ): Promise<void> {
     // Recursive tree traversal for broadcast
     const visited = new Set<string>();
@@ -1207,7 +1207,7 @@ class RoutingEngine {
     nodeId: string,
     tree: BroadcastTree,
     nodes: Map<string, CommunicationNode>,
-    visited: Set<string>
+    visited: Set<string>,
   ): Promise<void> {
     if (visited.has(nodeId)) return;
     visited.add(nodeId);
@@ -1227,7 +1227,7 @@ class ConsensusEngine {
 
   constructor(
     private nodeId: string,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   /**
@@ -1263,13 +1263,13 @@ class ConsensusEngine {
 class GossipEngine {
   constructor(
     private nodeId: string,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   async propagate(
     key: string,
     state: GossipState,
-    nodes: Map<string, CommunicationNode>
+    nodes: Map<string, CommunicationNode>,
   ): Promise<void> {
     // Gossip propagation logic
     this.logger.debug('Gossip state propagated', { key, version: state.version });

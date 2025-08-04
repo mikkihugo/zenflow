@@ -159,7 +159,7 @@ export class PersistentLearningSystem extends EventEmitter {
 
   constructor(
     private eventBus: IEventBus,
-    private logger?: ILogger
+    private logger?: ILogger,
   ) {
     super();
     this.setupEventHandlers();
@@ -270,7 +270,7 @@ export class PersistentLearningSystem extends EventEmitter {
    */
   private async processAgentLearnings(
     agentResult: AgentResult,
-    swarmMemory: SwarmMemory
+    swarmMemory: SwarmMemory,
   ): Promise<void> {
     let knowledge = this.agentKnowledge.get(agentResult.agentType);
 
@@ -330,7 +330,7 @@ export class PersistentLearningSystem extends EventEmitter {
    */
   private async extractAgentPatterns(
     knowledge: AgentKnowledge,
-    agentResult: AgentResult
+    agentResult: AgentResult,
   ): Promise<void> {
     // Analyze action sequences for patterns
     const actionSequence = agentResult.actions.map((a) => a.action).join(' -> ');
@@ -366,7 +366,7 @@ export class PersistentLearningSystem extends EventEmitter {
    */
   private async updateAgentCapabilities(
     knowledge: AgentKnowledge,
-    agentResult: AgentResult
+    agentResult: AgentResult,
   ): Promise<void> {
     // Check for new skills demonstrated
     for (const action of agentResult.actions) {
@@ -423,14 +423,14 @@ export class PersistentLearningSystem extends EventEmitter {
   private async updateAgentRelationships(
     knowledge: AgentKnowledge,
     agentResult: AgentResult,
-    swarmMemory: SwarmMemory
+    swarmMemory: SwarmMemory,
   ): Promise<void> {
     // Analyze collaborations with other agents in the swarm
     const otherAgentTypes = swarmMemory.agentTypes.filter((type) => type !== agentResult.agentType);
 
     for (const partnerType of otherAgentTypes) {
       let collaboration = knowledge.relationships.collaborations.find(
-        (c) => c.partnerAgentType === partnerType
+        (c) => c.partnerAgentType === partnerType,
       );
 
       if (collaboration) {
@@ -540,12 +540,12 @@ export class PersistentLearningSystem extends EventEmitter {
     // Analyze patterns that emerge across different swarms
     // This would be more sophisticated in practice
     const patterns = swarmResults.insights?.filter(
-      (insight) => insight.type === 'pattern' && insight.confidence > 0.8
+      (insight) => insight.type === 'pattern' && insight.confidence > 0.8,
     );
 
     for (const patternInsight of patterns || []) {
       const globalPattern = this.globalPatterns.find(
-        (gp) => gp.pattern === patternInsight.description
+        (gp) => gp.pattern === patternInsight.description,
       );
 
       if (globalPattern) {
@@ -577,7 +577,7 @@ export class PersistentLearningSystem extends EventEmitter {
       const learning = this.crossSwarmLearnings.find(
         (csl) =>
           csl.agentCombination.length === agentTypes.length &&
-          csl.agentCombination.every((type) => agentTypes.includes(type))
+          csl.agentCombination.every((type) => agentTypes.includes(type)),
       );
 
       if (learning) {
@@ -669,7 +669,7 @@ export class PersistentLearningSystem extends EventEmitter {
     // Clean up low-confidence patterns
     for (const knowledge of this.agentKnowledge.values()) {
       knowledge.patterns = knowledge.patterns.filter(
-        (pattern) => pattern.frequency > 1 || pattern.successRate > 0.6
+        (pattern) => pattern.frequency > 1 || pattern.successRate > 0.6,
       );
     }
 

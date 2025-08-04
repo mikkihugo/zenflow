@@ -66,7 +66,7 @@ class SessionManager extends EventEmitter {
   async createSession(
     sessionId?: string,
     initialData?: any,
-    userId?: string
+    userId?: string,
   ): Promise<SessionData> {
     sessionId = sessionId || this.generateSessionId();
 
@@ -241,7 +241,7 @@ class SessionManager extends EventEmitter {
           this.emit('error', error);
         }
       },
-      5 * 60 * 1000
+      5 * 60 * 1000,
     ); // Every 5 minutes
   }
 
@@ -376,7 +376,7 @@ describe('Session Management Integration Tests', () => {
       await failingManager.initialize();
 
       await expect(failingManager.createSession('failing-session', {})).rejects.toThrow(
-        'Storage error'
+        'Storage error',
       );
     });
   });
@@ -425,7 +425,7 @@ describe('Session Management Integration Tests', () => {
       const session2 = await sessionManager.getSession('access-test');
       expect(session2?.metadata.accessCount).toBe(3);
       expect(session2?.metadata.lastAccessed).toBeGreaterThanOrEqual(
-        session1?.metadata.lastAccessed
+        session1?.metadata.lastAccessed,
       );
     });
 
@@ -617,7 +617,7 @@ describe('Session Management Integration Tests', () => {
 
     it('should handle concurrent session creation', async () => {
       const createPromises = Array.from({ length: 10 }, (_, i) =>
-        sessionManager.createSession(`concurrent-${i}`, { index: i })
+        sessionManager.createSession(`concurrent-${i}`, { index: i }),
       );
 
       const sessions = await Promise.all(createPromises);
@@ -633,7 +633,7 @@ describe('Session Management Integration Tests', () => {
       await sessionManager.createSession('concurrent-access', { counter: 0 });
 
       const accessPromises = Array.from({ length: 5 }, () =>
-        sessionManager.getSession('concurrent-access')
+        sessionManager.getSession('concurrent-access'),
       );
 
       const results = await Promise.all(accessPromises);

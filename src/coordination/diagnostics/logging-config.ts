@@ -24,7 +24,7 @@ export interface LogConfiguration {
 class DiagnosticsLogger implements LoggerInterface {
   constructor(
     private name: string,
-    private options: { level: string }
+    private options: { level: string },
   ) {}
 
   private shouldLog(level: string): boolean {

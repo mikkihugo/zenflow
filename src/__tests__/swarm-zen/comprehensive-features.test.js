@@ -571,9 +571,9 @@ describe('Advanced Features - Complete Coverage', () => {
               },
               feedback: feedback
                 ? {
-                  performance: feedback.performance,
-                  accuracy: feedback.accuracy,
-                }
+                    performance: feedback.performance,
+                    accuracy: feedback.accuracy,
+                  }
                 : null,
               confidence: newPattern.confidence,
             };

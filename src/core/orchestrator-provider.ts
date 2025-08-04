@@ -23,7 +23,7 @@ export function setCoordinationProvider(provider: CoordinationProvider): void {
  * @param customCoordinationProvider Optional coordination provider override
  */
 export function createOrchestratorInstance(
-  customCoordinationProvider?: CoordinationProvider
+  customCoordinationProvider?: CoordinationProvider,
 ): Orchestrator {
   const logger = createLogger({ prefix: 'orchestrator' });
   const eventBus = new EventBus();
@@ -50,7 +50,7 @@ export function createOrchestratorInstance(
     coordinationManagerProvider as any, // Type assertion for now, will be properly typed later
     mcpServer,
     eventBus,
-    logger
+    logger,
   );
 
   return orchestrator;

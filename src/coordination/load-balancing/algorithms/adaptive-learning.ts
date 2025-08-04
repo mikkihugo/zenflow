@@ -84,7 +84,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   public async selectAgent(
     task: Task,
     availableAgents: Agent[],
-    metrics: Map<string, LoadMetrics>
+    metrics: Map<string, LoadMetrics>,
   ): Promise<RoutingResult> {
     if (availableAgents.length === 0) {
       throw new Error('No available agents');
@@ -105,7 +105,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       task,
       availableAgents,
       metrics,
-      context
+      context,
     );
 
     // Record decision for learning
@@ -124,7 +124,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     if (config.explorationRate !== undefined) {
       this.config.explorationRate = Math.max(
         this.config.minExplorationRate,
-        config.explorationRate
+        config.explorationRate,
       );
     }
   }
@@ -148,7 +148,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
     const mostUsedStrategy = strategies.reduce(
       (best, current) => (current.usageCount > best.usageCount ? current : best),
-      strategies[0] || { name: 'none', usageCount: 0 }
+      strategies[0] || { name: 'none', usageCount: 0 },
     );
 
     return {
@@ -170,7 +170,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     agentId: string,
     task: Task,
     duration: number,
-    success: boolean
+    success: boolean,
   ): Promise<void> {
     // Find the corresponding decision
     const decision = this.findRecentDecision(task.id, agentId);
@@ -197,7 +197,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     // Decay exploration rate
     this.config.explorationRate = Math.max(
       this.config.minExplorationRate,
-      this.config.explorationRate * this.config.explorationDecay
+      this.config.explorationRate * this.config.explorationDecay,
     );
   }
 
@@ -251,7 +251,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   private extractContext(
     task: Task,
     availableAgents: Agent[],
-    metrics: Map<string, LoadMetrics>
+    metrics: Map<string, LoadMetrics>,
   ): PatternContext {
     const now = new Date();
     const totalLoad = Array.from(metrics.values()).reduce((sum, m) => sum + m.activeTasks, 0);
@@ -288,7 +288,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
    */
   private async selectStrategy(
     _context: PatternContext,
-    detectedPattern?: LearningPattern | null
+    detectedPattern?: LearningPattern | null,
   ): Promise<string> {
     // If pattern detected, use its optimal strategy with high probability
     if (detectedPattern && Math.random() > this.config.explorationRate) {
@@ -339,7 +339,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   private upperConfidenceBoundSelection(): string {
     const totalUsage = Array.from(this.strategies.values()).reduce(
       (sum, s) => sum + s.usageCount,
-      0
+      0,
     );
 
     let bestStrategy = '';
@@ -396,7 +396,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     task: Task,
     availableAgents: Agent[],
     metrics: Map<string, LoadMetrics>,
-    _context: PatternContext
+    _context: PatternContext,
   ): Promise<RoutingResult> {
     // Apply the specific strategy logic
     let selectedAgent: Agent;
@@ -479,7 +479,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     strategyName: string,
     duration: number,
     success: boolean,
-    reward: number
+    reward: number,
   ): Promise<void> {
     const strategy = this.strategies.get(strategyName);
     if (!strategy) return;
@@ -512,7 +512,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     task: Task,
     result: RoutingResult,
     strategy: string,
-    context: PatternContext
+    context: PatternContext,
   ): void {
     const decision: DecisionHistory = {
       timestamp: new Date(),
@@ -583,7 +583,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   private selectByResourceAwareness(
     agents: Agent[],
     metrics: Map<string, LoadMetrics>,
-    _task: Task
+    _task: Task,
   ): Agent {
     let bestAgent = agents[0];
     let bestScore = -Infinity;
@@ -630,7 +630,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
     for (const agent of agents) {
       const matchCount = task.requiredCapabilities.filter((cap) =>
-        agent.capabilities.includes(cap)
+        agent.capabilities.includes(cap),
       ).length;
 
       const matchRatio =
@@ -648,7 +648,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   private selectByHybridHeuristic(
     agents: Agent[],
     metrics: Map<string, LoadMetrics>,
-    task: Task
+    task: Task,
   ): Agent {
     let bestAgent = agents[0];
     let bestScore = -Infinity;

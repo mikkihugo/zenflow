@@ -424,7 +424,7 @@ export class NeuralCoordinationProtocol {
    * Initialize coordination session
    */
   async initializeSession(
-    session: Partial<CoordinationSession> & { id: string; agentIds: string[] }
+    session: Partial<CoordinationSession> & { id: string; agentIds: string[] },
   ): Promise<CoordinationSession> {
     const sessionId = session.id;
 
@@ -460,7 +460,7 @@ export class NeuralCoordinationProtocol {
    * Select optimal coordination strategy for session
    */
   private selectCoordinationStrategy(
-    session: Partial<CoordinationSession> & { agentIds: string[] }
+    session: Partial<CoordinationSession> & { agentIds: string[] },
   ): CoordinationStrategy {
     const agentCount = session.agentIds.length;
     const trustLevel = this.calculateSessionTrustLevel(session);
@@ -475,7 +475,7 @@ export class NeuralCoordinationProtocol {
       // Score based on agent count and scalability
       const scalabilityScore = this.calculateScalabilityScore(
         agentCount,
-        strategy.characteristics.scalability
+        strategy.characteristics.scalability,
       );
       score += scalabilityScore * 0.3;
 
@@ -594,7 +594,7 @@ export class NeuralCoordinationProtocol {
    */
   private selectConsensusProtocol(
     session: { agentIds: string[] },
-    _strategy: CoordinationStrategy
+    _strategy: CoordinationStrategy,
   ): ConsensusProtocol {
     const trustLevel = this.calculateSessionTrustLevel(session);
     const agentCount = session.agentIds.length;
@@ -615,7 +615,7 @@ export class NeuralCoordinationProtocol {
    */
   private buildCommunicationGraph(
     agentIds: string[],
-    strategy: CoordinationStrategy
+    strategy: CoordinationStrategy,
   ): Map<string, Set<string>> {
     const graph = new Map<string, Set<string>>();
 
@@ -696,7 +696,7 @@ export class NeuralCoordinationProtocol {
   private buildNeighborhoodTopology(
     graph: Map<string, Set<string>>,
     agentIds: string[],
-    radius: number = 2
+    radius: number = 2,
   ): void {
     for (let i = 0; i < agentIds.length; i++) {
       const current = agentIds[i];
@@ -806,7 +806,7 @@ export class NeuralCoordinationProtocol {
       if (coordinationSession.consensusProtocol) {
         const consensusResult = await this.executeConsensusProtocol(
           coordinationSession,
-          coordinationResult
+          coordinationResult,
         );
         coordinationResult.consensus = consensusResult;
       }
@@ -924,7 +924,7 @@ export class NeuralCoordinationProtocol {
 
   private async executeConsensusProtocol(
     session: CoordinationSession,
-    _coordinationResult: any
+    _coordinationResult: any,
   ): Promise<any> {
     const { consensusProtocol } = session;
     if (!consensusProtocol) return null;

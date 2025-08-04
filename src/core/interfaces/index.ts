@@ -1,9 +1,9 @@
 /**
  * Unified Interface Exports - Central Interface Registry
- * 
+ *
  * This file provides a single point for importing all standardized interfaces,
  * ensuring consistency across the codebase and preventing interface conflicts.
- * 
+ *
  * @fileoverview Central interface export registry
  */
 
@@ -13,30 +13,36 @@ export * from './base-interfaces';
 // Database interfaces
 export { DatabaseConfig } from '../../database/providers/database-providers';
 
-// Memory interfaces  
+// Memory interfaces
 export { SessionState, CacheEntry } from '../../memory/memory';
-export { BackendConfig, BackendInterface, JSONValue, StorageResult, BackendStats } from '../../memory/backends/base.backend';
+export {
+  BackendConfig,
+  BackendInterface,
+  JSONValue,
+  StorageResult,
+  BackendStats,
+} from '../../memory/backends/base.backend';
 
 // Agent interfaces - unified types
-export { 
-  AgentType, 
-  AgentState, 
-  AgentConfig, 
-  AgentCapabilities, 
-  AgentMetrics, 
+export {
+  AgentType,
+  AgentState,
+  AgentConfig,
+  AgentCapabilities,
+  AgentMetrics,
   AgentError,
   Agent,
   Task,
-  ExecutionResult
+  ExecutionResult,
 } from '../../types/agent-types';
 
 // Coordination interfaces
-export { 
-  SwarmOptions, 
-  SwarmConfig, 
-  SwarmTopology, 
+export {
+  SwarmOptions,
+  SwarmConfig,
+  SwarmTopology,
   SwarmLifecycleState,
-  TaskPriority, 
+  TaskPriority,
   TaskStatus,
   Connection,
   ConnectionType,
@@ -47,7 +53,7 @@ export {
   MessageType,
   SwarmEvent,
   SwarmEventEmitter,
-  WasmModule
+  WasmModule,
 } from '../../coordination/swarm/core/types';
 
 // Neural interfaces

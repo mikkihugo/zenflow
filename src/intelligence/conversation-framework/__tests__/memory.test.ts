@@ -467,7 +467,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
     it('should throw error when updating non-existent conversation', async () => {
       // Act & Assert
       await expect(
-        memory.updateConversation('non-existent', { status: 'completed' })
+        memory.updateConversation('non-existent', { status: 'completed' }),
       ).rejects.toThrow('Conversation non-existent not found');
     });
   });

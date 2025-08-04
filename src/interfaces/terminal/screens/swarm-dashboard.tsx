@@ -87,7 +87,7 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
 }) => {
   const [_refreshKey, setRefreshKey] = useState(0);
   const [_selectedSection, setSelectedSection] = useState<'overview' | 'agents' | 'tasks'>(
-    'overview'
+    'overview',
   );
 
   // Auto-refresh every 2 seconds

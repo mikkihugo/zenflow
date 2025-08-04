@@ -331,7 +331,11 @@ class NeuralNetworkManager {
     }
 
     // Apply meta-learning if enabled
-    if (config.enableMetaLearning && this.metaLearning && typeof this.metaLearning.adaptConfiguration === 'function') {
+    if (
+      config.enableMetaLearning &&
+      this.metaLearning &&
+      typeof this.metaLearning.adaptConfiguration === 'function'
+    ) {
       config = await this.metaLearning.adaptConfiguration(agentId, config);
     }
 
@@ -352,12 +356,7 @@ class NeuralNetworkManager {
       return this.createSimulatedNetwork(agentId, config);
     }
 
-    const { 
-      layers = null, 
-      activation = 'relu', 
-      learningRate = 0.001, 
-      optimizer = 'adam' 
-    } = config;
+    const { layers = null, activation = 'relu', learningRate = 0.001, optimizer = 'adam' } = config;
 
     // Use template or custom layers
     const networkConfig = layers ? { layers, activation } : this.templates[template];
@@ -371,7 +370,7 @@ class NeuralNetworkManager {
           activation: networkConfig.activation,
           learning_rate: learningRate,
           optimizer,
-        })
+        }),
       );
 
       const network = new NeuralNetwork(networkId, agentId, networkConfig, neuralModule);
@@ -413,11 +412,14 @@ class NeuralNetworkManager {
 
     // Check if cognitivePatternSelector has the required method
     let cognitivePatterns: any = null;
-    if (this.cognitivePatternSelector && typeof this.cognitivePatternSelector.selectPatternsForPreset === 'function') {
+    if (
+      this.cognitivePatternSelector &&
+      typeof this.cognitivePatternSelector.selectPatternsForPreset === 'function'
+    ) {
       cognitivePatterns = this.cognitivePatternSelector.selectPatternsForPreset(
         config.modelType,
         template,
-        taskContext
+        taskContext,
       );
     }
 
@@ -441,12 +443,18 @@ class NeuralNetworkManager {
       this.neuralModels.set(agentId, model);
 
       // Register with coordination protocol
-      if (this.coordinationProtocol && typeof this.coordinationProtocol.registerAgent === 'function') {
+      if (
+        this.coordinationProtocol &&
+        typeof this.coordinationProtocol.registerAgent === 'function'
+      ) {
         await this.coordinationProtocol.registerAgent(agentId, wrappedModel);
       }
 
       // Initialize neural adaptation engine
-      if (this.neuralAdaptationEngine && typeof this.neuralAdaptationEngine.initializeAdaptation === 'function') {
+      if (
+        this.neuralAdaptationEngine &&
+        typeof this.neuralAdaptationEngine.initializeAdaptation === 'function'
+      ) {
         await this.neuralAdaptationEngine.initializeAdaptation(agentId, config.modelType, template);
       }
 
@@ -765,7 +773,7 @@ class NeuralNetworkManager {
     const cognitivePatterns = this.cognitivePatternSelector.selectPatternsForPreset(
       preset.model,
       presetName,
-      taskContext
+      taskContext,
     );
 
     // Merge preset config with custom overrides
@@ -845,7 +853,7 @@ class NeuralNetworkManager {
         agentId,
         bestMatch.category,
         bestMatch.presetName,
-        customConfig
+        customConfig,
       );
     }
 
@@ -853,7 +861,7 @@ class NeuralNetworkManager {
       agentId,
       recommendedPreset.category,
       recommendedPreset.presetName,
-      customConfig
+      customConfig,
     );
   }
 
@@ -937,7 +945,7 @@ class NeuralNetworkManager {
       agentId,
       category,
       presetName,
-      customConfig
+      customConfig,
     );
 
     // Restore cognitive evolution and meta-learning state
@@ -961,7 +969,7 @@ class NeuralNetworkManager {
           config.agentId,
           config.category,
           config.presetName,
-          config.customConfig || {}
+          config.customConfig || {},
         );
         results.push({ agentId: config.agentId, success: true, agent });
       } catch (error) {
@@ -1324,7 +1332,7 @@ class NeuralNetworkManager {
     } catch (error) {
       console.error(
         `Knowledge distillation failed between ${teacherAgentId} and ${studentAgentId}:`,
-        error
+        error,
       );
     }
   }
@@ -1669,7 +1677,7 @@ class NeuralNetwork {
             this.networkId,
             JSON.stringify(batch),
             learningRate,
-            JSON.stringify(freezeLayers)
+            JSON.stringify(freezeLayers),
           );
 
           epochLoss += loss;

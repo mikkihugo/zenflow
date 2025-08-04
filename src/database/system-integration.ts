@@ -134,7 +134,7 @@ export class DatabaseDrivenSystemFactory {
       // 5. Initialize database-driven system (replaces DocumentDrivenSystem)
       this.databaseDrivenSystem = new DatabaseDrivenSystem(
         this.documentService,
-        this.workflowEngine
+        this.workflowEngine,
       );
       await this.databaseDrivenSystem.initialize();
       logger.info('✅ Database-driven system initialized');
@@ -142,7 +142,7 @@ export class DatabaseDrivenSystemFactory {
       // 6. Initialize MCP tools with database services
       this.mcpToolsManager = initializeWithDatabaseServices(
         this.documentService,
-        this.workflowEngine
+        this.workflowEngine,
       );
       logger.info('✅ MCP tools manager initialized with database services');
 
@@ -319,7 +319,7 @@ export class DatabaseDrivenSystemFactory {
   async exportWorkspace(
     workspaceId: string,
     outputPath: string,
-    format: 'markdown' | 'json' = 'markdown'
+    format: 'markdown' | 'json' = 'markdown',
   ): Promise<string[]> {
     if (!this.databaseDrivenSystem) {
       throw new Error('System not initialized');
@@ -374,7 +374,7 @@ export const DEFAULT_DATABASE_DRIVEN_CONFIG: DatabaseDrivenSystemConfig = {
  * Initialize complete database-driven system with default configuration
  */
 export async function initializeDatabaseDrivenSystem(
-  config: Partial<DatabaseDrivenSystemConfig> = {}
+  config: Partial<DatabaseDrivenSystemConfig> = {},
 ): Promise<DatabaseDrivenSystemFactory> {
   const factory = DatabaseDrivenSystemFactory.getInstance();
   const fullConfig = { ...DEFAULT_DATABASE_DRIVEN_CONFIG, ...config };

@@ -65,7 +65,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         network,
         data,
         { epochs: 100, learningRate: 0.1 },
-        { maxTime: 1000, minOpsPerSec: 100 }
+        { maxTime: 1000, minOpsPerSec: 100 },
       );
 
       allBenchmarkResults.push(result);
@@ -82,7 +82,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         network,
         data,
         { epochs: 50, learningRate: 0.01 },
-        { maxTime: 5000, minOpsPerSec: 20 }
+        { maxTime: 5000, minOpsPerSec: 20 },
       );
 
       allBenchmarkResults.push(result);
@@ -99,7 +99,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         network,
         data,
         { epochs: 20, learningRate: 0.001 },
-        { maxTime: 10000, minOpsPerSec: 5 }
+        { maxTime: 10000, minOpsPerSec: 5 },
       );
 
       allBenchmarkResults.push(result);
@@ -116,7 +116,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         network,
         data,
         { epochs: 30, learningRate: 0.005 },
-        { maxTime: 8000, minOpsPerSec: 10 }
+        { maxTime: 8000, minOpsPerSec: 10 },
       );
 
       allBenchmarkResults.push(result);
@@ -133,7 +133,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         network,
         data,
         { batchSize: 32, epochs: 25 },
-        { maxTime: 6000, minThroughput: 50 }
+        { maxTime: 6000, minThroughput: 50 },
       );
 
       allBenchmarkResults.push(result);
@@ -150,7 +150,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         network,
         data,
         { epochs: 50, learningRate: 0.01 },
-        { maxTime: 4000, minUpdatesPerSec: 200 }
+        { maxTime: 4000, minUpdatesPerSec: 200 },
       );
 
       allBenchmarkResults.push(result);
@@ -167,7 +167,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         network,
         data,
         { epochs: 40, l2Lambda: 0.01 },
-        { maxTime: 7000, minAccuracy: 0.7 }
+        { maxTime: 7000, minAccuracy: 0.7 },
       );
 
       allBenchmarkResults.push(result);
@@ -188,7 +188,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
           network,
           data,
           { algorithm, targetError: 0.1 },
-          { maxTime: 3000, maxEpochs: 500 }
+          { maxTime: 3000, maxEpochs: 500 },
         );
 
         convergenceResults.push(result);
@@ -213,7 +213,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         network,
         [input],
         { iterations: 1000 },
-        { maxTimePerInference: 1, minInferencesPerSec: 1000 }
+        { maxTimePerInference: 1, minInferencesPerSec: 1000 },
       );
 
       allBenchmarkResults.push(result);
@@ -228,7 +228,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         .map(() =>
           Array(20)
             .fill(0)
-            .map(() => Math.random())
+            .map(() => Math.random()),
         );
 
       const result = await measureInferenceBenchmark(
@@ -236,7 +236,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         network,
         batch,
         { iterations: 50 },
-        { maxTime: 5000, minThroughput: 500 }
+        { maxTime: 5000, minThroughput: 500 },
       );
 
       allBenchmarkResults.push(result);
@@ -251,7 +251,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         .map(() =>
           Array(50)
             .fill(0)
-            .map(() => Math.random())
+            .map(() => Math.random()),
         );
 
       const result = await measureInferenceBenchmark(
@@ -259,7 +259,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         network,
         largeBatch,
         { iterations: 10 },
-        { maxTime: 8000, minThroughput: 200 }
+        { maxTime: 8000, minThroughput: 200 },
       );
 
       allBenchmarkResults.push(result);
@@ -274,7 +274,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         .map(() =>
           Array(15)
             .fill(0)
-            .map(() => Math.random())
+            .map(() => Math.random()),
         );
 
       const result = await measureInferenceBenchmark(
@@ -282,7 +282,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         network,
         inputs,
         { iterations: 25 },
-        { maxTime: 6000, minThroughput: 100 }
+        { maxTime: 6000, minThroughput: 100 },
       );
 
       allBenchmarkResults.push(result);
@@ -300,8 +300,8 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
             .map(() =>
               Array(8)
                 .fill(0)
-                .map(() => Math.random())
-            )
+                .map(() => Math.random()),
+            ),
         );
 
       const result = await measureConcurrentInferenceBenchmark(
@@ -309,7 +309,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         network,
         concurrentInputs,
         { concurrency: 10 },
-        { maxTime: 4000, minTotalThroughput: 300 }
+        { maxTime: 4000, minTotalThroughput: 300 },
       );
 
       allBenchmarkResults.push(result);
@@ -324,7 +324,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         .map(() =>
           Array(100)
             .fill(0)
-            .map(() => Math.random())
+            .map(() => Math.random()),
         );
 
       const result = await measureMemoryEfficientInferenceBenchmark(
@@ -332,7 +332,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         network,
         largeInputs,
         { chunkSize: 100 },
-        { maxMemoryMB: 50, maxTime: 10000 }
+        { maxMemoryMB: 50, maxTime: 10000 },
       );
 
       allBenchmarkResults.push(result);
@@ -347,7 +347,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         .map(() =>
           Array(5)
             .fill(0)
-            .map(() => Math.random())
+            .map(() => Math.random()),
         );
 
       const result = await measureRealtimeInferenceBenchmark(
@@ -355,7 +355,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
         network,
         realtimeInputs,
         { targetLatency: 5 },
-        { maxLatency: 5, minReliability: 0.95 }
+        { maxLatency: 5, minReliability: 0.95 },
       );
 
       allBenchmarkResults.push(result);
@@ -384,7 +384,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
           network,
           data,
           { epochs: 20 },
-          { maxTime: 5000 }
+          { maxTime: 5000 },
         );
 
         scalingResults.push(result);
@@ -413,7 +413,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
           network,
           data,
           { epochs: 15 },
-          { maxTime: 6000 }
+          { maxTime: 6000 },
         );
 
         scalingResults.push(result);
@@ -438,7 +438,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
           network,
           data,
           { batchSize, epochs: 20 },
-          { maxTime: 4000 }
+          { maxTime: 4000 },
         );
 
         batchResults.push(result);
@@ -447,7 +447,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
 
       // Find optimal batch size
       const bestBatch = batchResults.reduce((best, current) =>
-        current.operationsPerSecond > best.operationsPerSecond ? current : best
+        current.operationsPerSecond > best.operationsPerSecond ? current : best,
       );
 
       expect(bestBatch.operationsPerSecond).toBeGreaterThan(0);
@@ -471,7 +471,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
           network,
           data,
           { epochs: 10 },
-          { maxMemoryMB: 100 }
+          { maxMemoryMB: 100 },
         );
 
         memoryResults.push(result);
@@ -494,7 +494,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
           `Concurrent-${concurrency}`,
           concurrency,
           { epochs: 20, networkSize: [5, 10, 5] },
-          { maxTime: 8000 }
+          { maxTime: 8000 },
         );
 
         concurrentResults.push(result);
@@ -524,7 +524,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
           network,
           data,
           { optimizer, epochs: 50 },
-          { maxTime: 5000, targetAccuracy: 0.8 }
+          { maxTime: 5000, targetAccuracy: 0.8 },
         );
 
         optimizerResults.push(result);
@@ -551,7 +551,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
           network,
           data,
           { learningRate: lr, epochs: 100 },
-          { maxTime: 3000, targetError: 0.1 }
+          { maxTime: 3000, targetError: 0.1 },
         );
 
         lrResults.push(result);
@@ -560,7 +560,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
 
       // At least one learning rate should work well
       const bestLR = lrResults.reduce((best, current) =>
-        current.convergence && current.executionTime < best.executionTime ? current : best
+        current.convergence && current.executionTime < best.executionTime ? current : best,
       );
 
       expect(bestLR.convergence).toBe(true);
@@ -579,7 +579,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
           network,
           data,
           { l2Lambda: reg, epochs: 40 },
-          { maxTime: 6000, minAccuracy: 0.6 }
+          { maxTime: 6000, minAccuracy: 0.6 },
         );
 
         regResults.push(result);
@@ -608,7 +608,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
           trainingData,
           validationData,
           { patience, maxEpochs: 200 },
-          { maxTime: 7000 }
+          { maxTime: 7000 },
         );
 
         earlyStopResults.push(result);
@@ -633,7 +633,7 @@ describe('Comprehensive Neural Benchmarking Suite - Classical TDD', () => {
           `CV-${folds}fold`,
           dataset,
           { folds, networkSize: [2, 8, 2] },
-          { maxTime: 10000, minAccuracy: 0.7 }
+          { maxTime: 10000, minAccuracy: 0.7 },
         );
 
         cvResults.push(result);
@@ -689,7 +689,7 @@ async function measureTrainingBenchmark(
   network: any,
   data: any[],
   config: any,
-  _thresholds: any
+  _thresholds: any,
 ): Promise<BenchmarkResult> {
   const profiler = createPerformanceProfiler();
   profiler.start();
@@ -746,7 +746,7 @@ async function measureInferenceBenchmark(
   network: any,
   inputs: any[],
   config: any,
-  _thresholds: any
+  _thresholds: any,
 ): Promise<BenchmarkResult> {
   const startTime = performance.now();
   const startMemory = process.memoryUsage().heapUsed;
@@ -786,7 +786,7 @@ async function measureBatchTrainingBenchmark(
   network: any,
   data: any[],
   config: any,
-  _thresholds: any
+  _thresholds: any,
 ): Promise<BenchmarkResult> {
   const startTime = performance.now();
 
@@ -824,7 +824,7 @@ async function measureOnlineTrainingBenchmark(
   network: any,
   data: any[],
   config: any,
-  _thresholds: any
+  _thresholds: any,
 ): Promise<BenchmarkResult> {
   const startTime = performance.now();
 
@@ -856,7 +856,7 @@ async function measureRegularizedTrainingBenchmark(
   network: any,
   data: any[],
   config: any,
-  _thresholds: any
+  _thresholds: any,
 ): Promise<BenchmarkResult> {
   const startTime = performance.now();
 
@@ -900,7 +900,7 @@ async function measureConvergenceBenchmark(
   network: any,
   data: any[],
   config: any,
-  thresholds: any
+  thresholds: any,
 ): Promise<BenchmarkResult> {
   const startTime = performance.now();
 
@@ -950,7 +950,7 @@ async function measureConcurrentInferenceBenchmark(
   network: any,
   concurrentInputs: any[][],
   config: any,
-  _thresholds: any
+  _thresholds: any,
 ): Promise<BenchmarkResult> {
   const startTime = performance.now();
 
@@ -981,7 +981,7 @@ async function measureMemoryEfficientInferenceBenchmark(
   network: any,
   inputs: any[],
   config: any,
-  _thresholds: any
+  _thresholds: any,
 ): Promise<BenchmarkResult> {
   const startTime = performance.now();
   const startMemory = process.memoryUsage().heapUsed;
@@ -1021,7 +1021,7 @@ async function measureRealtimeInferenceBenchmark(
   network: any,
   inputs: any[],
   config: any,
-  _thresholds: any
+  _thresholds: any,
 ): Promise<BenchmarkResult> {
   const startTime = performance.now();
   const latencies: number[] = [];
@@ -1063,7 +1063,7 @@ async function measureMemoryUsageBenchmark(
   network: any,
   data: any[],
   config: any,
-  _thresholds: any
+  _thresholds: any,
 ): Promise<BenchmarkResult> {
   const startTime = performance.now();
   const startMemory = process.memoryUsage().heapUsed;
@@ -1093,7 +1093,7 @@ async function measureConcurrentTrainingBenchmark(
   name: string,
   concurrency: number,
   config: any,
-  _thresholds: any
+  _thresholds: any,
 ): Promise<BenchmarkResult> {
   const startTime = performance.now();
 
@@ -1133,7 +1133,7 @@ async function measureOptimizerBenchmark(
   network: any,
   data: any[],
   config: any,
-  _thresholds: any
+  _thresholds: any,
 ): Promise<BenchmarkResult> {
   const startTime = performance.now();
 
@@ -1180,7 +1180,7 @@ async function measureLearningRateBenchmark(
   network: any,
   data: any[],
   config: any,
-  _thresholds: any
+  _thresholds: any,
 ): Promise<BenchmarkResult> {
   const startTime = performance.now();
 
@@ -1226,7 +1226,7 @@ async function measureRegularizationBenchmark(
   network: any,
   data: any[],
   config: any,
-  thresholds: any
+  thresholds: any,
 ): Promise<BenchmarkResult> {
   const result = await measureRegularizedTrainingBenchmark(name, network, data, config, thresholds);
   return result;
@@ -1238,7 +1238,7 @@ async function measureEarlyStoppingBenchmark(
   trainingData: any[],
   validationData: any[],
   config: any,
-  _thresholds: any
+  _thresholds: any,
 ): Promise<BenchmarkResult> {
   const startTime = performance.now();
 
@@ -1297,7 +1297,7 @@ async function measureCrossValidationBenchmark(
   name: string,
   dataset: any[],
   config: any,
-  _thresholds: any
+  _thresholds: any,
 ): Promise<BenchmarkResult> {
   const startTime = performance.now();
 
@@ -1331,7 +1331,7 @@ async function measureCrossValidationBenchmark(
   const endTime = performance.now();
   const avgAccuracy = foldResults.reduce((a, b) => a + b, 0) / foldResults.length;
   const stdDev = Math.sqrt(
-    foldResults.reduce((sum, acc) => sum + (acc - avgAccuracy) ** 2, 0) / foldResults.length
+    foldResults.reduce((sum, acc) => sum + (acc - avgAccuracy) ** 2, 0) / foldResults.length,
   );
 
   return {
@@ -1433,11 +1433,11 @@ function generateBenchmarkSuiteReport(results: BenchmarkResult[]): BenchmarkSuit
   const failedBenchmarks = totalBenchmarks - passedBenchmarks;
 
   const fastestBenchmark = results.reduce((fastest, current) =>
-    current.executionTime < fastest.executionTime ? current : fastest
+    current.executionTime < fastest.executionTime ? current : fastest,
   );
 
   const slowestBenchmark = results.reduce((slowest, current) =>
-    current.executionTime > slowest.executionTime ? current : slowest
+    current.executionTime > slowest.executionTime ? current : slowest,
   );
 
   const totalTime = results.reduce((sum, r) => sum + r.executionTime, 0);

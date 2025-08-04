@@ -70,7 +70,7 @@ export class SwarmSynchronizer extends EventEmitter {
     swarmId: string,
     config: Partial<SwarmSyncConfig> = {},
     private eventBus?: IEventBus,
-    private logger?: ILogger
+    private logger?: ILogger,
   ) {
     super();
 
@@ -255,7 +255,7 @@ export class SwarmSynchronizer extends EventEmitter {
    */
   private async reachConsensus(
     localState: SwarmLocalState,
-    peerStates: SwarmLocalState[]
+    peerStates: SwarmLocalState[],
   ): Promise<SwarmConsensusState> {
     if (this.config.enableByzantineFaultTolerance) {
       return await this.consensusProtocol.byzantineConsensus(localState, peerStates);
@@ -463,7 +463,7 @@ export class SwarmSynchronizer extends EventEmitter {
 
   private calculateStateChecksum(
     agentStates: Map<string, AgentState>,
-    globalState: SwarmGlobalState
+    globalState: SwarmGlobalState,
   ): string {
     const crypto = require('node:crypto');
     const data = JSON.stringify({ agentStates: Array.from(agentStates.entries()), globalState });
@@ -532,12 +532,12 @@ interface Task {
 class ConsensusProtocol {
   constructor(
     private config: SwarmSyncConfig,
-    private logger?: ILogger
+    private logger?: ILogger,
   ) {}
 
   async byzantineConsensus(
     localState: SwarmLocalState,
-    peerStates: SwarmLocalState[]
+    peerStates: SwarmLocalState[],
   ): Promise<SwarmConsensusState> {
     // Implement Byzantine fault-tolerant consensus
     // This is a simplified version - production would use proper BFT algorithm
@@ -562,12 +562,12 @@ class ConsensusProtocol {
 
   async simpleConsensus(
     localState: SwarmLocalState,
-    peerStates: SwarmLocalState[]
+    peerStates: SwarmLocalState[],
   ): Promise<SwarmConsensusState> {
     // Simple last-writer-wins consensus
     const allStates = [localState, ...peerStates];
     const latestState = allStates.reduce((latest, current) =>
-      current.timestamp > latest.timestamp ? current : latest
+      current.timestamp > latest.timestamp ? current : latest,
     );
 
     return {
@@ -578,7 +578,7 @@ class ConsensusProtocol {
 
   private findAgentStateConsensus(
     states: SwarmLocalState[],
-    threshold: number
+    threshold: number,
   ): Map<string, AgentState> {
     const consensusStates = new Map<string, AgentState>();
     const allAgentIds = new Set<string>();
@@ -597,7 +597,7 @@ class ConsensusProtocol {
       if (agentStates.length >= threshold) {
         // Use most recent state as consensus
         const consensusState = agentStates.reduce((latest, current) =>
-          current.lastHeartbeat > latest.lastHeartbeat ? current : latest
+          current.lastHeartbeat > latest.lastHeartbeat ? current : latest,
         );
         consensusStates.set(agentId, consensusState);
       }
@@ -619,13 +619,13 @@ class ConsensusProtocol {
   }
 
   private async calculateConsensusGlobalState(
-    states: SwarmLocalState[]
+    states: SwarmLocalState[],
   ): Promise<SwarmGlobalState> {
     // Calculate consensus global state from all peer states
     // This is a simplified version - would implement proper consensus algorithm
 
     const latestState = states.reduce((latest, current) =>
-      current.timestamp > latest.timestamp ? current : latest
+      current.timestamp > latest.timestamp ? current : latest,
     );
 
     return latestState.globalState;
@@ -633,7 +633,7 @@ class ConsensusProtocol {
 
   private calculateStateChecksum(
     agentStates: Map<string, AgentState>,
-    globalState: SwarmGlobalState
+    globalState: SwarmGlobalState,
   ): string {
     const crypto = require('node:crypto');
     const data = JSON.stringify({

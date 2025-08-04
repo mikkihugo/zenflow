@@ -312,7 +312,7 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
 
   private determineExportType(
     content: string,
-    name: string
+    name: string,
   ): 'function' | 'class' | 'interface' | 'type' | 'constant' {
     if (content.includes(`function ${name}`)) return 'function';
     if (content.includes(`class ${name}`)) return 'class';
@@ -324,7 +324,7 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
   private isInterDomainImport(
     importPath: string,
     currentDomain: string,
-    allDomains: string[]
+    allDomains: string[],
   ): boolean {
     if (!importPath.startsWith('../')) return false;
 
@@ -351,7 +351,7 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
     graph: DependencyGraph,
     visited: Set<string>,
     recursionStack: Set<string>,
-    currentPath: string[]
+    currentPath: string[],
   ): string[] {
     visited.add(nodeId);
     recursionStack.add(nodeId);
@@ -386,7 +386,7 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
   }
 
   private findHeavilyDependentFiles(
-    graph: DependencyGraph
+    graph: DependencyGraph,
   ): Array<{ current: string; dependencies: number }> {
     const dependencyCounts = new Map<string, number>();
 
@@ -401,7 +401,7 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
 
   private suggestBetterLocation(
     _file: { current: string; dependencies: number },
-    _graph: DependencyGraph
+    _graph: DependencyGraph,
   ): string | null {
     // This would implement logic to suggest better file locations
     // For now, return null (no suggestions)
@@ -462,7 +462,7 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
 
   private findProblematicCrossDependencies(
     plan: SubDomainPlan,
-    graph: DependencyGraph
+    graph: DependencyGraph,
   ): Array<{
     from: string;
     to: string;

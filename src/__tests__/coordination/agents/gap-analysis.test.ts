@@ -229,7 +229,7 @@ describe('Agent System Gap Analysis', () => {
 
       // Should have advantages in most categories
       const advantageCount = Object.values(analysis.categoryComparison).filter(
-        (cat) => cat.advantage > 0
+        (cat) => cat.advantage > 0,
       ).length;
 
       expect(advantageCount).toBeGreaterThan(coverageCategories.length / 2);

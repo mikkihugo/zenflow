@@ -40,11 +40,13 @@ describe('SwarmPersistence Tests', () => {
 
     it('should create all required tables', () => {
       const tables = persistence.db
-        .prepare(`
+        .prepare(
+          `
         SELECT name FROM sqlite_master 
         WHERE type='table' 
         ORDER BY name
-      `)
+      `,
+        )
         .all();
 
       const expectedTables = [
@@ -66,11 +68,13 @@ describe('SwarmPersistence Tests', () => {
 
     it('should create indexes', () => {
       const indexes = persistence.db
-        .prepare(`
+        .prepare(
+          `
         SELECT name FROM sqlite_master 
         WHERE type='index' 
         ORDER BY name
-      `)
+      `,
+        )
         .all();
 
       assert(indexes.length > 0);
@@ -475,10 +479,12 @@ describe('SwarmPersistence Tests', () => {
       // Insert old event (manually with old timestamp)
       const oldTimestamp = new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString();
       persistence.db
-        .prepare(`
+        .prepare(
+          `
         INSERT INTO events (swarm_id, event_type, event_data, timestamp)
         VALUES (?, ?, ?, ?)
-      `)
+      `,
+        )
         .run(swarmId, 'old_event', '{}', oldTimestamp);
 
       // Insert recent event

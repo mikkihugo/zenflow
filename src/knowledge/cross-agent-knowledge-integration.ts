@@ -192,7 +192,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
    */
   async processKnowledgeCollectively(
     query: KnowledgeQuery,
-    options: CollectiveProcessingOptions = {}
+    options: CollectiveProcessingOptions = {},
   ): Promise<KnowledgeProcessingResult> {
     const startTime = Date.now();
     const processingId = `collective-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -218,7 +218,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
       const reasoningResults = await this.applyCollaborativeReasoning(
         query,
         { factResults, ragResults },
-        options
+        options,
       );
 
       // Phase 4: Quality validation
@@ -264,7 +264,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
    * Coordinate distributed learning across agents
    */
   async coordinateDistributedLearning(
-    learningRequest: DistributedLearningRequest
+    learningRequest: DistributedLearningRequest,
   ): Promise<DistributedLearningResult> {
     const startTime = Date.now();
 
@@ -277,18 +277,18 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
       // Coordinate federated learning
       const federatedResult = await this.distributedLearning.coordinateFederatedLearning(
         learningRequest.participants,
-        learningRequest.globalModel
+        learningRequest.globalModel,
       );
 
       // Aggregate collective experiences
       const experienceAggregation = await this.distributedLearning.aggregateCollectiveExperience(
-        learningRequest.experiences
+        learningRequest.experiences,
       );
 
       // Synchronize models across swarm
       const modelSync = await this.distributedLearning.synchronizeSwarmModels(
         learningRequest.models,
-        learningRequest.syncStrategy
+        learningRequest.syncStrategy,
       );
 
       // Coordinate intelligence evolution
@@ -303,7 +303,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
         intelligenceEvolution,
         overallImprovement: await this.calculateLearningImprovement(
           federatedResult,
-          experienceAggregation
+          experienceAggregation,
         ),
         learningTime: Date.now() - startTime,
         timestamp: Date.now(),
@@ -321,7 +321,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
    * Facilitate cross-domain knowledge transfer
    */
   async facilitateCrossDomainTransfer(
-    transferRequest: CrossDomainTransferRequest
+    transferRequest: CrossDomainTransferRequest,
   ): Promise<CrossDomainTransferResult> {
     const startTime = Date.now();
 
@@ -337,13 +337,13 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
         await this.intelligenceCoordination.facilitateCrossDomainTransfer(
           transferRequest.sourceDomain,
           transferRequest.targetDomain,
-          transferRequest.transferType
+          transferRequest.transferType,
         );
 
       // Apply collaborative reasoning for transfer validation
       const transferValidation = await this.collaborativeReasoning.validateTransferApplicability(
         intelligenceTransfer,
-        transferRequest
+        transferRequest,
       );
 
       // Ensure quality during transfer
@@ -465,37 +465,37 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
     this.performanceOptimization = new PerformanceOptimizationSystem(
       this.config.performanceOptimization,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.qualityManagement = new KnowledgeQualityManagementSystem(
       this.config.qualityManagement,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.intelligenceCoordination = new IntelligenceCoordinationSystem(
       this.config.intelligenceCoordination,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.collaborativeReasoning = new CollaborativeReasoningEngine(
       this.config.collaborativeReasoning,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.distributedLearning = new DistributedLearningSystem(
       this.config.distributedLearning,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.collectiveIntelligence = new CollectiveIntelligenceCoordinator(
       this.config.collectiveIntelligence,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     // Track component initialization
@@ -576,7 +576,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
   // Additional utility methods...
   private async gatherFactsCollectively(
     _query: KnowledgeQuery,
-    _options: CollectiveProcessingOptions
+    _options: CollectiveProcessingOptions,
   ): Promise<any> {
     return { count: 0, facts: [] };
   }
@@ -584,7 +584,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
   private async enhanceWithRAG(
     _query: KnowledgeQuery,
     _factResults: any,
-    _options: CollectiveProcessingOptions
+    _options: CollectiveProcessingOptions,
   ): Promise<any> {
     return { count: 0, results: [] };
   }
@@ -730,7 +730,7 @@ export interface OptimizationSummary {
 export async function createCrossAgentKnowledgeIntegration(
   config: CrossAgentKnowledgeConfig,
   logger: ILogger,
-  eventBus: IEventBus
+  eventBus: IEventBus,
 ): Promise<CrossAgentKnowledgeIntegration> {
   const integration = new CrossAgentKnowledgeIntegration(config, logger, eventBus);
   await integration.initialize();

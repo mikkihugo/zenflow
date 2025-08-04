@@ -424,9 +424,9 @@ class SwarmPersistence {
     const memory = stmt.get(agentId, key);
     return memory
       ? {
-        ...memory,
-        value: JSON.parse(memory.value),
-      }
+          ...memory,
+          value: JSON.parse(memory.value),
+        }
       : null;
   }
 

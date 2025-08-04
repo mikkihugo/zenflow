@@ -56,11 +56,26 @@ export type ReviewStandards = any;
 export type ReviewProcess = any;
 export type ReputationModelType = 'basic' | 'weighted' | 'hierarchical' | 'consensus' | 'adaptive';
 export type ScoringAlgorithmType = 'linear' | 'logarithmic' | 'exponential' | 'sigmoid' | 'custom';
-export type WeightingStrategy = 'equal' | 'reputation-based' | 'expertise-based' | 'adaptive' | 'consensus';
+export type WeightingStrategy =
+  | 'equal'
+  | 'reputation-based'
+  | 'expertise-based'
+  | 'adaptive'
+  | 'consensus';
 export type DecayFunctionType = 'exponential' | 'linear' | 'logarithmic' | 'step' | 'custom';
-export type QualityDimensionType = 'accuracy' | 'completeness' | 'relevance' | 'timeliness' | 'consistency';
+export type QualityDimensionType =
+  | 'accuracy'
+  | 'completeness'
+  | 'relevance'
+  | 'timeliness'
+  | 'consistency';
 export type AssuranceLevel = 'basic' | 'standard' | 'enhanced' | 'critical' | 'maximum';
-export type ConsensusType = 'simple-majority' | 'weighted-majority' | 'unanimous' | 'threshold' | 'adaptive';
+export type ConsensusType =
+  | 'simple-majority'
+  | 'weighted-majority'
+  | 'unanimous'
+  | 'threshold'
+  | 'adaptive';
 export type ReviewType = 'peer' | 'expert' | 'automated' | 'hybrid' | 'crowdsourced';
 
 /**
@@ -468,7 +483,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
     this.reputationSystem = new ReputationManagementSystem(
       this.config.reputation,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.validationProtocols = new Map();
@@ -479,19 +494,19 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
     this.qualityAssurance = new QualityAssuranceEngine(
       this.config.qualityAssurance,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.temporalManager = new TemporalKnowledgeSystem(
       this.config.temporalManagement,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.peerReviewSystem = new PeerReviewEngine(
       this.config.peerReview,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.setupIntegrations();
@@ -537,7 +552,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
    */
   async validateKnowledge(
     knowledgeItem: KnowledgeItem,
-    validationType: ValidationType = 'comprehensive'
+    validationType: ValidationType = 'comprehensive',
   ): Promise<ValidationResult> {
     const startTime = Date.now();
 
@@ -567,7 +582,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
       const evidence = await this.generateValidationEvidence(
         knowledgeItem,
         validationScores,
-        finalDecision
+        finalDecision,
       );
 
       const result: ValidationResult = {
@@ -614,7 +629,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
    */
   async updateReputationScore(
     agentId: string,
-    contribution: ContributionRecord
+    contribution: ContributionRecord,
   ): Promise<ReputationScore> {
     const startTime = Date.now();
 
@@ -632,26 +647,26 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
       // Apply scoring algorithms
       const algorithmResults = await Promise.all(
         this.reputationSystem.scoringAlgorithms.map((algorithm) =>
-          this.applyReputationAlgorithm(algorithm, currentScore, contribution)
-        )
+          this.applyReputationAlgorithm(algorithm, currentScore, contribution),
+        ),
       );
 
       // Aggregate algorithm results
       const aggregatedScore = await this.aggregateReputationScores(
         algorithmResults,
-        this.reputationSystem.reputationModel
+        this.reputationSystem.reputationModel,
       );
 
       // Apply decay functions if applicable
       const decayedScore = await this.applyDecayFunctions(
         aggregatedScore,
-        this.reputationSystem.decayFunctions
+        this.reputationSystem.decayFunctions,
       );
 
       // Normalize and bound the score
       const normalizedScore = await this.normalizeReputationScore(
         decayedScore,
-        this.reputationSystem.reputationModel
+        this.reputationSystem.reputationModel,
       );
 
       // Calculate trend and ranking
@@ -683,7 +698,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
    */
   async conductPeerReview(
     knowledgeItem: KnowledgeItem,
-    reviewType: ReviewType = 'double-blind'
+    reviewType: ReviewType = 'double-blind',
   ): Promise<ReviewResult> {
     const startTime = Date.now();
 
@@ -712,7 +727,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
       // Generate review recommendation
       const recommendation = await this.generateReviewRecommendation(
         aggregatedResult,
-        reviewProcess
+        reviewProcess,
       );
 
       // Collect review comments and feedback
@@ -722,7 +737,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
       const qualityAssessment = await this.assessReviewQuality(
         reviewScores,
         reviewers,
-        reviewProcess
+        reviewProcess,
       );
 
       const result: ReviewResult = {
@@ -785,7 +800,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
       // Generate improvement recommendations
       const improvementRecommendations = await this.generateImprovementRecommendations(
         qualityIssues,
-        qualityTrends
+        qualityTrends,
       );
 
       // Apply automatic improvements where configured
@@ -884,7 +899,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
   // Implementation of utility methods would continue here...
   private async selectValidationProtocol(
     _item: KnowledgeItem,
-    _type: ValidationType
+    _type: ValidationType,
   ): Promise<ValidationProtocol> {
     // Implementation placeholder
     return {} as ValidationProtocol;
@@ -892,7 +907,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
 
   private async selectValidators(
     _item: KnowledgeItem,
-    _protocol: ValidationProtocol
+    _protocol: ValidationProtocol,
   ): Promise<ValidatorConfig[]> {
     // Implementation placeholder
     return [];

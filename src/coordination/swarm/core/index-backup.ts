@@ -15,7 +15,11 @@ import { SwarmPersistencePooled } from '../../../database/persistence/persistenc
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
 import { AgentPool, type BaseAgent, createAgent } from '../../agents/agent';
 import { getContainer } from './singleton-container';
-import { adaptAgentForCoordination, createAgentPoolEntry, executeTaskWithAgent } from './agent-adapter';
+import {
+  adaptAgentForCoordination,
+  createAgentPoolEntry,
+  executeTaskWithAgent,
+} from './agent-adapter';
 import type {
   AgentConfig,
   Message,
@@ -143,14 +147,14 @@ export class ZenSwarm implements SwarmEventEmitter {
         enabled: false,
         dbPath: '',
         checkpointInterval: 60000,
-        compressionEnabled: false
+        compressionEnabled: false,
       },
       pooling: {
         enabled: false,
         maxPoolSize: 10,
         minPoolSize: 1,
-        idleTimeout: 300000
-      }
+        idleTimeout: 300000,
+      },
     };
 
     this.agentPool = new AgentPool();
@@ -387,7 +391,7 @@ export class ZenSwarm implements SwarmEventEmitter {
 
     // Remove connections
     this.state.connections = this.state.connections.filter(
-      (conn) => conn.from !== agentId && conn.to !== agentId
+      (conn) => conn.from !== agentId && conn.to !== agentId,
     );
 
     this.emit('agent:removed', { agentId });

@@ -75,7 +75,7 @@ export class DatabaseError extends Error {
       severity?: 'low' | 'medium' | 'high' | 'critical';
       retryable?: boolean;
       cause?: Error;
-    } = {}
+    } = {},
   ) {
     super(message);
     this.name = 'DatabaseError';
@@ -225,7 +225,7 @@ export class DatabaseEngineError extends DatabaseError {
     code: DatabaseErrorCode,
     message: string,
     context: DatabaseErrorContext,
-    options: { cause?: Error } = {}
+    options: { cause?: Error } = {},
   ) {
     super(code, message, context, options);
     this.name = 'DatabaseEngineError';
@@ -237,7 +237,7 @@ export class DatabaseQueryError extends DatabaseError {
     code: DatabaseErrorCode,
     message: string,
     context: DatabaseErrorContext,
-    options: { cause?: Error } = {}
+    options: { cause?: Error } = {},
   ) {
     super(code, message, context, options);
     this.name = 'DatabaseQueryError';
@@ -249,7 +249,7 @@ export class DatabaseTransactionError extends DatabaseError {
     code: DatabaseErrorCode,
     message: string,
     context: DatabaseErrorContext,
-    options: { cause?: Error } = {}
+    options: { cause?: Error } = {},
   ) {
     super(code, message, context, options);
     this.name = 'DatabaseTransactionError';
@@ -348,7 +348,7 @@ export class DatabaseErrorClassifier {
   }
 
   private static inferCategory(
-    error: Error
+    error: Error,
   ): 'coordination' | 'engine' | 'query' | 'transaction' | 'performance' | 'resource' | 'system' {
     const message = error.message.toLowerCase();
 
@@ -478,7 +478,7 @@ export class DatabaseErrorClassifier {
   }
 
   private static inferRetryStrategy(
-    error: Error
+    error: Error,
   ): 'immediate' | 'exponential_backoff' | 'circuit_breaker' | 'none' {
     const message = error.message.toLowerCase();
 
@@ -498,7 +498,7 @@ export class DatabaseErrorClassifier {
   }
 
   private static getRetryStrategy(
-    error: DatabaseError
+    error: DatabaseError,
   ): 'immediate' | 'exponential_backoff' | 'circuit_breaker' | 'none' {
     if (!error.retryable) {
       return 'none';

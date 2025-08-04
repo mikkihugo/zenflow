@@ -53,7 +53,7 @@ Steering document for ${domain} domain activities.
     console.error(
       `
       ❌ Steering test failed:`,
-      error
+      error,
     );
     process.exit(1);
   }

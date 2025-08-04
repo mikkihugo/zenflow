@@ -118,7 +118,7 @@ export interface DIContainerOptions {
 export class DIError extends Error {
   constructor(
     message: string,
-    public readonly code?: string
+    public readonly code?: string,
   ) {
     super(message);
     this.name = 'DIError';
@@ -158,7 +158,7 @@ export type Constructor<T = {}> = new (...args: any[]) => T;
 export type ParameterDecorator = (
   target: any,
   propertyKey: string | symbol | undefined,
-  parameterIndex: number
+  parameterIndex: number,
 ) => void;
 
 /**

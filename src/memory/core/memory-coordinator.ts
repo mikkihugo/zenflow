@@ -199,7 +199,7 @@ export class MemoryCoordinator extends EventEmitter {
       await Promise.race([
         Promise.all(writePromises.slice(0, quorum)),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Quorum timeout')), this.config.consensus.timeout)
+          setTimeout(() => reject(new Error('Quorum timeout')), this.config.consensus.timeout),
         ),
       ]);
     }
@@ -259,7 +259,7 @@ export class MemoryCoordinator extends EventEmitter {
         } catch {
           return null;
         }
-      })
+      }),
     );
 
     // Find the most common value (simple consensus)
@@ -316,7 +316,7 @@ export class MemoryCoordinator extends EventEmitter {
   async store(
     key: string,
     data: any,
-    options?: { ttl?: number; replicas?: number }
+    options?: { ttl?: number; replicas?: number },
   ): Promise<void> {
     const decision = await this.coordinate({
       type: 'write',

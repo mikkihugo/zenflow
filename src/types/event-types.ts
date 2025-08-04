@@ -1041,7 +1041,7 @@ export type EventMap = SystemEvents &
  * Event listener types
  */
 export type EventListener<T extends keyof EventMap> = (
-  payload: EventMap[T]
+  payload: EventMap[T],
 ) => void | Promise<void>;
 
 export type EventListenerAny = (payload: BaseEventPayload) => void | Promise<void>;
@@ -1052,7 +1052,7 @@ export type EventListenerAny = (payload: BaseEventPayload) => void | Promise<voi
 export type EventMiddleware<T extends keyof EventMap = keyof EventMap> = (
   event: T,
   payload: EventMap[T],
-  next: () => void | Promise<void>
+  next: () => void | Promise<void>,
 ) => void | Promise<void>;
 
 /**

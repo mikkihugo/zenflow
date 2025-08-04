@@ -197,7 +197,7 @@ export class DatabaseCoordinator extends EventEmitter {
       if (strategy.applicable(query, this.engines)) {
         const routedEngines = strategy.route(query, this.engines);
         const validEngine = routedEngines.find((engineId) =>
-          availableEngines.some(([id]) => id === engineId)
+          availableEngines.some(([id]) => id === engineId),
         );
         if (validEngine) {
           return validEngine;
@@ -236,7 +236,7 @@ export class DatabaseCoordinator extends EventEmitter {
    */
   private selectByLoadBalancing(
     query: DatabaseQuery,
-    engines: Array<[string, DatabaseEngine]>
+    engines: Array<[string, DatabaseEngine]>,
   ): string {
     switch (query.routing.loadBalancing) {
       case 'round_robin':
@@ -259,7 +259,7 @@ export class DatabaseCoordinator extends EventEmitter {
     // Simple round robin based on query count
     const engineCounts = engines.map(([id]) => {
       const recentQueries = this.queryHistory.filter(
-        (q) => q.engineId === id && Date.now() - q.startTime < 60000
+        (q) => q.engineId === id && Date.now() - q.startTime < 60000,
       ).length;
       return { id, count: recentQueries };
     });
@@ -273,7 +273,7 @@ export class DatabaseCoordinator extends EventEmitter {
    */
   private selectLeastLoaded(engines: Array<[string, DatabaseEngine]>): string {
     return engines.sort(
-      ([, a], [, b]) => a.performance.utilization - b.performance.utilization
+      ([, a], [, b]) => a.performance.utilization - b.performance.utilization,
     )[0][0];
   }
 
@@ -299,7 +299,7 @@ export class DatabaseCoordinator extends EventEmitter {
    */
   private selectByCapability(
     query: DatabaseQuery,
-    engines: Array<[string, DatabaseEngine]>
+    engines: Array<[string, DatabaseEngine]>,
   ): string {
     // Score based on capability match
     const scored = engines.map(([id, engine]) => {
@@ -329,7 +329,7 @@ export class DatabaseCoordinator extends EventEmitter {
     }
 
     const timeout = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('Query timeout')), query.requirements.timeout)
+      setTimeout(() => reject(new Error('Query timeout')), query.requirements.timeout),
     );
 
     // Execute based on engine type and operation
@@ -374,7 +374,7 @@ export class DatabaseCoordinator extends EventEmitter {
           return await engineInterface.createEdge?.(
             parameters.from,
             parameters.to,
-            parameters.type
+            parameters.type,
           );
         default:
           throw new Error(`Unsupported graph operation: ${operation}`);
@@ -392,7 +392,7 @@ export class DatabaseCoordinator extends EventEmitter {
           return await engineInterface.update?.(
             parameters.collection,
             parameters.filter,
-            parameters.update
+            parameters.update,
           );
         case 'document_delete':
           return await engineInterface.delete?.(parameters.collection, parameters.filter);
@@ -425,7 +425,7 @@ export class DatabaseCoordinator extends EventEmitter {
 
     // Update error rate
     const recentQueries = this.queryHistory.filter(
-      (q) => q.engineId === engineId && Date.now() - q.startTime < 300000 // Last 5 minutes
+      (q) => q.engineId === engineId && Date.now() - q.startTime < 300000, // Last 5 minutes
     );
     const errorCount = recentQueries.filter((q) => q.status === 'failed').length;
     performance.errorRate = recentQueries.length > 0 ? errorCount / recentQueries.length : 0;
@@ -436,7 +436,7 @@ export class DatabaseCoordinator extends EventEmitter {
 
     // Update utilization
     const activeQueries = Array.from(this.activeQueries.values()).filter(
-      (q) => q.engineId === engineId
+      (q) => q.engineId === engineId,
     ).length;
     performance.utilization = Math.min(1.0, activeQueries / 10); // Assume max 10 concurrent queries
 
@@ -552,7 +552,7 @@ export class DatabaseCoordinator extends EventEmitter {
             acc[e.type] = (acc[e.type] || 0) + 1;
             return acc;
           },
-          {} as Record<string, number>
+          {} as Record<string, number>,
         ),
       },
       queries: {

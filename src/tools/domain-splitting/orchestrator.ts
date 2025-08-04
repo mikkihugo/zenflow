@@ -46,7 +46,7 @@ export class DomainSplittingOrchestrator {
       const validation = await this.validator.validateNoCyclicDependencies([finalPlan]);
       if (!validation.success) {
         throw new Error(
-          `Plan validation failed: ${validation.issues.map((i) => i.description).join(', ')}`
+          `Plan validation failed: ${validation.issues.map((i) => i.description).join(', ')}`,
         );
       }
 

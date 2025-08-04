@@ -51,7 +51,7 @@ export interface MemoryConfig {
 export class MemoryProviderFactory {
   constructor(
     @Inject(CORE_TOKENS.Logger) private logger: ILogger,
-    @Inject(CORE_TOKENS.Config) private config: IConfig
+    @Inject(CORE_TOKENS.Config) private config: IConfig,
   ) {}
 
   /**
@@ -77,7 +77,7 @@ export class MemoryProviderFactory {
     } catch (error) {
       this.logger.error(`Failed to create memory provider: ${error}`);
       throw new Error(
-        `Memory provider creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Memory provider creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -92,7 +92,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
 
   constructor(
     private config: MemoryConfig,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   async store(key: string, value: any): Promise<void> {
@@ -194,7 +194,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
 
   constructor(
     private config: MemoryConfig,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   async store(key: string, value: any): Promise<void> {
@@ -296,7 +296,7 @@ export class JsonMemoryBackend implements MemoryBackend {
 
   constructor(
     private config: MemoryConfig,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   async store(key: string, value: any): Promise<void> {
@@ -404,7 +404,7 @@ export class InMemoryBackend implements MemoryBackend {
 
   constructor(
     private config: MemoryConfig,
-    private logger: ILogger
+    private logger: ILogger,
   ) {
     this.maxSize = config.maxSize || 10000;
     this.logger.info(`Initialized in-memory backend with max size: ${this.maxSize}`);

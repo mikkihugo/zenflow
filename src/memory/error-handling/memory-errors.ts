@@ -59,7 +59,7 @@ export class MemoryError extends Error {
       recoverable?: boolean;
       severity?: 'low' | 'medium' | 'high' | 'critical';
       cause?: Error;
-    } = {}
+    } = {},
   ) {
     super(message);
     this.name = 'MemoryError';
@@ -174,7 +174,7 @@ export class MemoryBackendError extends MemoryError {
     code: MemoryErrorCode,
     message: string,
     context: MemoryErrorContext,
-    options: { cause?: Error } = {}
+    options: { cause?: Error } = {},
   ) {
     super(code, message, context, options);
     this.name = 'MemoryBackendError';
@@ -186,7 +186,7 @@ export class MemoryDataError extends MemoryError {
     code: MemoryErrorCode,
     message: string,
     context: MemoryErrorContext,
-    options: { cause?: Error } = {}
+    options: { cause?: Error } = {},
   ) {
     super(code, message, context, options);
     this.name = 'MemoryDataError';
@@ -198,7 +198,7 @@ export class MemoryPerformanceError extends MemoryError {
     code: MemoryErrorCode,
     message: string,
     context: MemoryErrorContext,
-    options: { cause?: Error } = {}
+    options: { cause?: Error } = {},
   ) {
     super(code, message, context, options);
     this.name = 'MemoryPerformanceError';
@@ -266,7 +266,7 @@ export class MemoryErrorClassifier {
   }
 
   private static inferCategory(
-    error: Error
+    error: Error,
   ): 'coordination' | 'backend' | 'data' | 'performance' | 'system' {
     const message = error.message.toLowerCase();
 

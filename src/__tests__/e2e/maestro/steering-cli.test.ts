@@ -67,13 +67,13 @@ describe('Maestro Steering CLI End-to-End', () => {
           'claude-zen',
           'maestro',
           'steering',
-          `${domain}.md`
+          `${domain}.md`,
         );
         expect(existsSync(steeringPath)).toBe(true);
 
         const content = await readFile(steeringPath, 'utf8');
         expect(content).toContain(
-          `# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document`
+          `# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document`,
         );
         expect(content).toContain('## Guidelines');
       } catch (error) {
@@ -94,7 +94,7 @@ describe('Maestro Steering CLI End-to-End', () => {
           'claude-zen',
           'maestro',
           'steering',
-          `${domain}.md`
+          `${domain}.md`,
         );
         expect(existsSync(steeringPath)).toBe(true);
 
@@ -116,7 +116,7 @@ describe('Maestro Steering CLI End-to-End', () => {
             'claude-zen',
             'maestro',
             'steering',
-            `${domain}.md`
+            `${domain}.md`,
           );
           expect(existsSync(steeringPath)).toBe(true);
         } catch (_error) {}
@@ -146,7 +146,7 @@ describe('Maestro Steering CLI End-to-End', () => {
           'maestro',
           'specs',
           featureName,
-          'requirements.md'
+          'requirements.md',
         );
         expect(existsSync(specPath)).toBe(true);
 
@@ -183,7 +183,7 @@ describe('Maestro Steering CLI End-to-End', () => {
             'maestro',
             'specs',
             featureName,
-            file
+            file,
           );
           expect(existsSync(filePath)).toBe(true);
         }
@@ -236,7 +236,7 @@ describe('Maestro Steering CLI End-to-End', () => {
           'claude-zen',
           'maestro',
           'steering',
-          `${domain}.md`
+          `${domain}.md`,
         );
         const content = await readFile(steeringPath, 'utf8');
 
@@ -280,7 +280,7 @@ describe('Maestro Steering CLI End-to-End', () => {
 
       try {
         const promises = domains.map((domain) =>
-          simulateInitSteeringCommand(domain, `Concurrent content for ${domain}`)
+          simulateInitSteeringCommand(domain, `Concurrent content for ${domain}`),
         );
 
         await Promise.all(promises);
@@ -293,7 +293,7 @@ describe('Maestro Steering CLI End-to-End', () => {
             'claude-zen',
             'maestro',
             'steering',
-            `${domain}.md`
+            `${domain}.md`,
           );
           expect(existsSync(steeringPath)).toBe(true);
         }
@@ -391,7 +391,7 @@ Performance benchmarks and optimization strategies.
       'maestro',
       'specs',
       featureName,
-      'design.md'
+      'design.md',
     );
     await writeFile(designPath, designContent, 'utf8');
 
@@ -431,7 +431,7 @@ Performance benchmarks and optimization strategies.
       'maestro',
       'specs',
       featureName,
-      'tasks.md'
+      'tasks.md',
     );
     await writeFile(tasksPath, tasksContent, 'utf8');
 

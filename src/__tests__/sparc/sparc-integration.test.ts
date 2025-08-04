@@ -112,7 +112,7 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
         expect(result.deliverables).toHaveLength(1);
         expect(result.nextPhase).toBe('pseudocode');
         expect(result.recommendations).toContain(
-          'Ensure all stakeholder requirements are captured'
+          'Ensure all stakeholder requirements are captured',
         );
 
         // Verify project state updated
@@ -156,7 +156,7 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
           expect(result.recommendations).toEqual(
             expect.arrayContaining([
               expect.stringContaining(expectedRecommendations[phase][0].split(' ')[0]),
-            ])
+            ]),
           );
         }
       });
@@ -313,7 +313,7 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
           (req) =>
             req.id.includes('SWM') ||
             req.title.toLowerCase().includes('agent') ||
-            req.title.toLowerCase().includes('swarm')
+            req.title.toLowerCase().includes('swarm'),
         );
 
         expect(swarmSpecificReqs.length).toBeGreaterThan(0);
@@ -339,10 +339,10 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
 
         // Should identify technical and performance constraints
         const technicalConstraints = constraints.filter(
-          (c) => 'type' in c && c.type === 'technical'
+          (c) => 'type' in c && c.type === 'technical',
         );
         const performanceConstraints = constraints.filter(
-          (c) => 'type' in c && c.type === 'performance'
+          (c) => 'type' in c && c.type === 'performance',
         );
 
         expect(technicalConstraints.length).toBeGreaterThan(0);
@@ -448,7 +448,7 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
         expect(validation.score).toBeGreaterThan(0.8);
         expect(validation.results.every((r) => r.passed)).toBe(true);
         expect(validation.recommendations).toContain(
-          'Specification is complete - proceed to pseudocode phase'
+          'Specification is complete - proceed to pseudocode phase',
         );
       });
     });
@@ -512,7 +512,7 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
         };
         const executeResult = await sparcMCPTools.handleToolCall(
           'sparc_execute_phase',
-          executeArgs
+          executeArgs,
         );
 
         expect(executeResult.success).toBe(true);
@@ -538,7 +538,7 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
         };
         const statusResult = await sparcMCPTools.handleToolCall(
           'sparc_get_project_status',
-          statusArgs
+          statusArgs,
         );
 
         expect(statusResult.id).toBe(createResult.projectId);
@@ -581,7 +581,7 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
           domain: 'swarm-coordination',
         });
         expect(filteredResult.projects.every((p: any) => p.domain === 'swarm-coordination')).toBe(
-          true
+          true,
         );
       });
     });

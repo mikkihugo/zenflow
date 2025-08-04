@@ -123,7 +123,7 @@ export { StorageInterface } from './storage-interface';
 export async function createKnowledgeSharingSystem(
   config?: Partial<CrossAgentKnowledgeConfig>,
   logger?: any,
-  eventBus?: any
+  eventBus?: any,
 ): Promise<CrossAgentKnowledgeIntegration> {
   const { CrossAgentKnowledgeIntegration, getDefaultConfig } = await import(
     './cross-agent-knowledge-integration'

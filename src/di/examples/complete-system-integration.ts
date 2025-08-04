@@ -134,7 +134,7 @@ class AgentRegistry implements IAgentRegistry {
 
   constructor(
     @inject(CORE_TOKENS.Logger) private _logger: ILogger,
-    @inject(CORE_TOKENS.EventBus) private _eventBus: IEventBus
+    @inject(CORE_TOKENS.EventBus) private _eventBus: IEventBus,
   ) {}
 
   async registerAgent(id: string, agent: any): Promise<void> {
@@ -169,7 +169,7 @@ class SwarmCoordinatorImplementation implements ISwarmCoordinator {
     @inject(CORE_TOKENS.Logger) private _logger: ILogger,
     @inject(CORE_TOKENS.Config) private _config: IConfig,
     @inject(CORE_TOKENS.EventBus) private _eventBus: IEventBus,
-    @inject(SWARM_TOKENS.AgentRegistry) private _agentRegistry: IAgentRegistry
+    @inject(SWARM_TOKENS.AgentRegistry) private _agentRegistry: IAgentRegistry,
   ) {}
 
   async initializeSwarm(_options: any): Promise<void> {
@@ -214,7 +214,7 @@ class SwarmCoordinatorImplementation implements ISwarmCoordinator {
 class NeuralNetworkTrainer implements INeuralNetworkTrainer {
   constructor(
     @inject(CORE_TOKENS.Logger) private _logger: ILogger,
-    @inject(CORE_TOKENS.Config) private _config: IConfig
+    @inject(CORE_TOKENS.Config) private _config: IConfig,
   ) {}
 
   async trainModel(_data: any[], options: any): Promise<any> {
@@ -275,7 +275,7 @@ export class CompleteSystemIntegration {
         // Swarm services
         .singleton(
           SWARM_TOKENS.AgentRegistry,
-          (c) => new AgentRegistry(c.resolve(CORE_TOKENS.Logger), c.resolve(CORE_TOKENS.EventBus))
+          (c) => new AgentRegistry(c.resolve(CORE_TOKENS.Logger), c.resolve(CORE_TOKENS.EventBus)),
         )
         .singleton(
           SWARM_TOKENS.SwarmCoordinator,
@@ -284,15 +284,15 @@ export class CompleteSystemIntegration {
               c.resolve(CORE_TOKENS.Logger),
               c.resolve(CORE_TOKENS.Config),
               c.resolve(CORE_TOKENS.EventBus),
-              c.resolve(SWARM_TOKENS.AgentRegistry)
-            )
+              c.resolve(SWARM_TOKENS.AgentRegistry),
+            ),
         )
 
         // Neural services
         .singleton(
           NEURAL_TOKENS.NetworkTrainer,
           (c) =>
-            new NeuralNetworkTrainer(c.resolve(CORE_TOKENS.Logger), c.resolve(CORE_TOKENS.Config))
+            new NeuralNetworkTrainer(c.resolve(CORE_TOKENS.Logger), c.resolve(CORE_TOKENS.Config)),
         )
 
         .build()

@@ -140,7 +140,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
       useCache?: boolean;
       priority?: 'low' | 'medium' | 'high' | 'critical';
       filters?: Record<string, any>;
-    } = {}
+    } = {},
   ): Promise<any> {
     const cacheKey = `${query}:${domain || 'general'}`;
 
@@ -204,12 +204,12 @@ export class SwarmKnowledgeSync extends EventEmitter {
    */
   async contributeKnowledge(
     learning: Omit<SwarmLearning, 'id' | 'timestamp'>,
-    agentId: string
+    agentId: string,
   ): Promise<boolean> {
     // Check if contribution meets threshold
     if (learning.confidence < this.config.contributionThreshold!) {
       logger.debug(
-        `Skipping contribution below threshold (${learning.confidence} < ${this.config.contributionThreshold})`
+        `Skipping contribution below threshold (${learning.confidence} < ${this.config.contributionThreshold})`,
       );
       return false;
     }
@@ -264,7 +264,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
         this.emit('knowledge:contributed', { learning: learningEntry, response });
 
         logger.info(
-          `Successfully contributed knowledge to Hive: ${learning.type} in ${learning.domain}`
+          `Successfully contributed knowledge to Hive: ${learning.type} in ${learning.domain}`,
         );
         return true;
       } else {
@@ -348,7 +348,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
         await this.memoryStore.store(
           `swarm-knowledge/${this.config.swarmId}/updates/${update.updateId}`,
           'knowledge-update',
-          update
+          update,
         );
       }
 
@@ -497,7 +497,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
     // Try to find similar knowledge in learning history
     const relevantLearning = this.learningHistory.find(
       (learning) =>
-        learning.domain === domain && learning.outcome.success && learning.confidence > 0.8
+        learning.domain === domain && learning.outcome.success && learning.confidence > 0.8,
     );
 
     if (relevantLearning) {
@@ -537,7 +537,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
 
     try {
       const cached = await this.memoryStore.retrieve(
-        `swarm-knowledge/${this.config.swarmId}/cache`
+        `swarm-knowledge/${this.config.swarmId}/cache`,
       );
 
       if (cached) {
@@ -558,7 +558,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
 
     try {
       const history = await this.memoryStore.retrieve(
-        `swarm-knowledge/${this.config.swarmId}/learning-history`
+        `swarm-knowledge/${this.config.swarmId}/learning-history`,
       );
 
       if (history && Array.isArray(history)) {
@@ -578,7 +578,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
       await this.memoryStore.store(
         `swarm-knowledge/${this.config.swarmId}/cache`,
         'knowledge-cache',
-        cacheData
+        cacheData,
       );
 
       // Persist learning history
@@ -598,7 +598,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
       await this.memoryStore.store(
         `swarm-knowledge/${this.config.swarmId}/learning-history`,
         'learning-history',
-        this.learningHistory
+        this.learningHistory,
       );
     } catch (error) {
       logger.error('Failed to persist learning history:', error);
@@ -612,7 +612,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
       await this.memoryStore.store(
         `swarm-knowledge/${this.config.swarmId}/subscriptions`,
         'subscriptions',
-        Array.from(this.subscriptions)
+        Array.from(this.subscriptions),
       );
     } catch (error) {
       logger.error('Failed to persist subscriptions:', error);

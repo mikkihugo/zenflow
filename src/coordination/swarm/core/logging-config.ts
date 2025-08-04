@@ -70,13 +70,16 @@ export class LoggingConfig {
   /**
    * Get or create a logger for a component
    */
-  getLogger(component: string, options: {
-    enableStderr?: boolean;
-    enableFile?: boolean;
-    formatJson?: boolean;
-    logDir?: string;
-    [key: string]: any;
-  } = {}): Logger {
+  getLogger(
+    component: string,
+    options: {
+      enableStderr?: boolean;
+      enableFile?: boolean;
+      formatJson?: boolean;
+      logDir?: string;
+      [key: string]: any;
+    } = {},
+  ): Logger {
     if (this.loggers.has(component)) {
       return this.loggers.get(component)!;
     }

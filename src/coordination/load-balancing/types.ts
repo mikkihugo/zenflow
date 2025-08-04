@@ -158,7 +158,7 @@ export interface LoadBalancingStrategy {
   selectAgent(
     task: Task,
     availableAgents: Agent[],
-    metrics: Map<string, LoadMetrics>
+    metrics: Map<string, LoadMetrics>,
   ): Promise<RoutingResult>;
   updateWeights?(agents: Agent[], metrics: Map<string, LoadMetrics>): Promise<void>;
   onAgentFailure?(agentId: string, error: Error): Promise<void>;

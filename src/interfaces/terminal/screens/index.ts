@@ -9,12 +9,7 @@ export type { SwarmStatus } from '../components/index';
 // Main screens
 export * from './main-menu';
 // Re-export key screens for convenience
-export {
-  createDefaultMenuItems,
-  MainMenu,
-  type MainMenuProps,
-  type MenuItem,
-} from './main-menu';
+export { createDefaultMenuItems, MainMenu, type MainMenuProps, type MenuItem } from './main-menu';
 export * from './swarm-dashboard';
 export {
   type SwarmAgent,

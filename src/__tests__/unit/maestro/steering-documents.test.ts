@@ -66,7 +66,7 @@ describe('Maestro Steering Document Generation', () => {
       mockMemoryManager,
       mockAgentManager,
       mockMainOrchestrator,
-      { enableHiveMind: false }
+      { enableHiveMind: false },
     );
   });
 
@@ -83,12 +83,12 @@ describe('Maestro Steering Document Generation', () => {
       expect(mockWriteFile).toHaveBeenCalledWith(
         expect.stringContaining(`${domain}.md`),
         expect.stringContaining(
-          `# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document`
+          `# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document`,
         ),
-        'utf8'
+        'utf8',
       );
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining(`Created steering document for '${domain}'`)
+        expect.stringContaining(`Created steering document for '${domain}'`),
       );
     });
 
@@ -101,7 +101,7 @@ describe('Maestro Steering Document Generation', () => {
       expect(mockWriteFile).toHaveBeenCalledWith(
         expect.any(String),
         expect.stringContaining(content),
-        'utf8'
+        'utf8',
       );
     });
 
@@ -254,7 +254,7 @@ User personas and experience guidelines.
       mockMkdir.mockRejectedValue(new Error('Permission denied'));
 
       await expect(maestroOrchestrator.createSteeringDocument('test', 'content')).rejects.toThrow(
-        'Permission denied'
+        'Permission denied',
       );
     });
 
@@ -262,7 +262,7 @@ User personas and experience guidelines.
       mockWriteFile.mockRejectedValue(new Error('Disk full'));
 
       await expect(maestroOrchestrator.createSteeringDocument('test', 'content')).rejects.toThrow(
-        'Disk full'
+        'Disk full',
       );
     });
 
@@ -272,7 +272,7 @@ User personas and experience guidelines.
 
       // Test with invalid characters
       await expect(
-        maestroOrchestrator.createSteeringDocument('invalid/domain', 'content')
+        maestroOrchestrator.createSteeringDocument('invalid/domain', 'content'),
       ).rejects.toThrow(); // Should throw validation error
     });
   });
@@ -291,7 +291,7 @@ User personas and experience guidelines.
       const domains = ['concurrent-1', 'concurrent-2', 'concurrent-3'];
 
       const promises = domains.map((domain) =>
-        maestroOrchestrator.createSteeringDocument(domain, `Content for ${domain}`)
+        maestroOrchestrator.createSteeringDocument(domain, `Content for ${domain}`),
       );
 
       await Promise.all(promises);
@@ -308,17 +308,17 @@ function validateSteeringDocumentStructure(content: string, domain: string) {
   const optionalSections = ['Context for Agents', 'Standards', 'Best Practices'];
 
   const foundRequired = requiredSections.filter(
-    (section) => content.includes(`## ${section}`) || content.includes(`### ${section}`)
+    (section) => content.includes(`## ${section}`) || content.includes(`### ${section}`),
   );
 
   const foundOptional = optionalSections.filter(
-    (section) => content.includes(`## ${section}`) || content.includes(`### ${section}`)
+    (section) => content.includes(`## ${section}`) || content.includes(`### ${section}`),
   );
 
   const missingSections = requiredSections.filter((section) => !foundRequired.includes(section));
 
   const hasTitle = content.includes(
-    `# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document`
+    `# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document`,
   );
   const hasDomainContent = content.toLowerCase().includes(domain.toLowerCase());
   const hasMinimumLength = content.length > 200;

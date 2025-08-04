@@ -244,7 +244,7 @@ describe('Enhanced Hook System - London TDD', () => {
 
         // Assert
         const assignmentResult = results.find((r) =>
-          r.warnings.some((w) => w.type === 'ASSIGNMENT_WARNING')
+          r.warnings.some((w) => w.type === 'ASSIGNMENT_WARNING'),
         );
         expect(assignmentResult).toBeDefined();
         expect(assignmentResult?.success).toBe(false);
@@ -264,7 +264,7 @@ describe('Enhanced Hook System - London TDD', () => {
 
         // Assert
         const trackingResult = results.find((r) =>
-          r.suggestions.some((s) => s.type === 'PERFORMANCE_TRACKING')
+          r.suggestions.some((s) => s.type === 'PERFORMANCE_TRACKING'),
         );
         expect(trackingResult).toBeDefined();
         expect(trackingResult?.success).toBe(true);
@@ -330,7 +330,7 @@ describe('Enhanced Hook System - London TDD', () => {
 
         // Assert
         const formatResult = results.find((r) =>
-          r.suggestions.some((s) => s.type === 'AUTO_FORMAT')
+          r.suggestions.some((s) => s.type === 'AUTO_FORMAT'),
         );
         expect(formatResult).toBeDefined();
         expect(formatResult?.suggestions[0].message).toContain('prettier');
@@ -348,7 +348,7 @@ describe('Enhanced Hook System - London TDD', () => {
 
         // Assert
         const formatResult = results.find((r) =>
-          r.suggestions.some((s) => s.type === 'AUTO_FORMAT')
+          r.suggestions.some((s) => s.type === 'AUTO_FORMAT'),
         );
         expect(formatResult).toBeDefined();
         expect(formatResult?.suggestions[0].message).toContain('black');

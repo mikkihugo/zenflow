@@ -16,10 +16,7 @@ export type {
   BatchResult,
 } from './batch-engine';
 export { BatchEngine, createBatchOperation, createToolBatch } from './batch-engine';
-export type {
-  FileOperation,
-  FileOperationResult,
-} from './file-batch';
+export type { FileOperation, FileOperationResult } from './file-batch';
 export { FileBatchOperator } from './file-batch';
 export type {
   PerformanceComparison,
@@ -27,11 +24,7 @@ export type {
   PerformanceTrend,
 } from './performance-monitor';
 export { BatchPerformanceMonitor } from './performance-monitor';
-export type {
-  SwarmBatchConfig,
-  SwarmOperation,
-  SwarmOperationResult,
-} from './swarm-batch';
+export type { SwarmBatchConfig, SwarmOperation, SwarmOperationResult } from './swarm-batch';
 export { SwarmBatchCoordinator } from './swarm-batch';
 
 /**
@@ -66,7 +59,7 @@ export function createBatchSystem(options?: {
       const sequentialMetrics = performanceMonitor.recordSequentialExecution(
         summary.totalOperations,
         sequentialTime,
-        summary.successfulOperations
+        summary.successfulOperations,
       );
 
       // Compare performance

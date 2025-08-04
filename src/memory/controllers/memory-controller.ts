@@ -131,7 +131,7 @@ export class MemoryController {
   constructor(
     @inject(MEMORY_TOKENS.ProviderFactory) private _factory: MemoryProviderFactory,
     @inject(MEMORY_TOKENS.Config) private _config: MemoryConfig,
-    @inject(CORE_TOKENS.Logger) private _logger: any
+    @inject(CORE_TOKENS.Logger) private _logger: any,
   ) {
     this.initializeBackend();
   }
@@ -479,7 +479,7 @@ export class MemoryController {
       this.updateMetrics(executionTime, errorCount === 0);
 
       this._logger.debug(
-        `Batch operations completed: ${results.length} operations, ${errorCount} errors`
+        `Batch operations completed: ${results.length} operations, ${errorCount} errors`,
       );
 
       return {

@@ -192,7 +192,7 @@ describe('DI Container - Core Functionality', () => {
 
       container.register(
         token,
-        new SingletonProvider(() => new MockDisposableService(), disposeFn)
+        new SingletonProvider(() => new MockDisposableService(), disposeFn),
       );
 
       const service = container.resolve(token);
@@ -307,7 +307,7 @@ describe('DI Container - Integration with Core Tokens', () => {
 
     container.register(
       SWARM_TOKENS.SwarmCoordinator,
-      new SingletonProvider(() => new MockSwarmCoordinator())
+      new SingletonProvider(() => new MockSwarmCoordinator()),
     );
 
     const coordinator = container.resolve(SWARM_TOKENS.SwarmCoordinator);

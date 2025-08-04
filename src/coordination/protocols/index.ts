@@ -283,7 +283,7 @@ export interface CoordinationMetrics {
 export async function createAdvancedCoordinationSystem(
   config: AdvancedCoordinationConfig,
   logger: ILogger,
-  eventBus: IEventBus
+  eventBus: IEventBus,
 ): Promise<AdvancedCoordinationSystem> {
   // Create topology manager
   const topologyManager = new TopologyManager(
@@ -294,7 +294,7 @@ export async function createAdvancedCoordinationSystem(
       adaptation: config.topology.adaptation,
     },
     logger,
-    eventBus
+    eventBus,
   );
 
   // Create task distribution engine
@@ -305,7 +305,7 @@ export async function createAdvancedCoordinationSystem(
     config.nodeId,
     config.communication,
     logger,
-    eventBus
+    eventBus,
   );
 
   // Create agent lifecycle manager
@@ -323,7 +323,7 @@ export async function createAdvancedCoordinationSystem(
       qualityThresholds: config.lifecycle.qualityThresholds,
     },
     logger,
-    eventBus
+    eventBus,
   );
 
   // Create coordination patterns
@@ -331,7 +331,7 @@ export async function createAdvancedCoordinationSystem(
     config.nodeId,
     config.patterns,
     logger,
-    eventBus
+    eventBus,
   );
 
   // Create performance optimizer
@@ -347,7 +347,7 @@ export async function createAdvancedCoordinationSystem(
       coordinationPatterns,
       performanceOptimizer,
     },
-    logger
+    logger,
   );
 
   return {
@@ -365,7 +365,7 @@ export async function createAdvancedCoordinationSystem(
  */
 async function setupIntegrations(
   systems: AdvancedCoordinationSystem,
-  logger: ILogger
+  logger: ILogger,
 ): Promise<void> {
   // Topology -> Distribution: Optimal task routing based on network topology
   systems.topologyManager.on('topology:optimized', (data) => {
@@ -497,7 +497,7 @@ function calculateAdaptabilityScore(metrics: any): number {
  */
 export async function shutdownCoordinationSystem(
   systems: AdvancedCoordinationSystem,
-  logger: ILogger
+  logger: ILogger,
 ): Promise<void> {
   logger.info('Shutting down advanced coordination system...');
 

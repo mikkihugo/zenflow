@@ -101,7 +101,7 @@ export class MetaLearningFramework {
     const strategies = Array.from(this.learningStrategies.values());
     return strategies.reduce(
       (best, current) => (current.performance > best.performance ? current : best),
-      { performance: -1 }
+      { performance: -1 },
     );
   }
 }

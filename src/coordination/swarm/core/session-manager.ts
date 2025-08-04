@@ -123,7 +123,7 @@ export class SessionManager extends EventEmitter {
       this.emit('manager:initialized');
     } catch (error) {
       throw new Error(
-        `Failed to initialize SessionManager: ${error instanceof Error ? error.message : String(error)}`
+        `Failed to initialize SessionManager: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   }
@@ -134,7 +134,7 @@ export class SessionManager extends EventEmitter {
   async createSession(
     name: string,
     swarmOptions: SwarmOptions,
-    initialState?: Partial<SwarmState>
+    initialState?: Partial<SwarmState>,
   ): Promise<string> {
     await this.ensureInitialized();
 
@@ -186,7 +186,7 @@ export class SessionManager extends EventEmitter {
         now.toISOString(),
         now.toISOString(),
         sessionState.version,
-      ]
+      ],
     );
 
     // Add to active sessions
@@ -216,9 +216,9 @@ export class SessionManager extends EventEmitter {
     }
 
     // Load from database
-    const sessions = await (await this.getPool()).read('SELECT * FROM sessions WHERE id = ?', [
-      sessionId,
-    ]);
+    const sessions = await (
+      await this.getPool()
+    ).read('SELECT * FROM sessions WHERE id = ?', [sessionId]);
 
     if (sessions.length === 0) {
       throw new Error(`Session ${sessionId} not found`);
@@ -274,13 +274,15 @@ export class SessionManager extends EventEmitter {
     session.lastAccessedAt = new Date();
 
     // Update in database
-    await (await this.getPool()).write(
+    await (
+      await this.getPool()
+    ).write(
       `
       UPDATE sessions 
       SET swarm_state = ?, last_accessed_at = ?
       WHERE id = ?
     `,
-      [this.serializeData(session.swarmState), session.lastAccessedAt.toISOString(), sessionId]
+      [this.serializeData(session.swarmState), session.lastAccessedAt.toISOString(), sessionId],
     );
 
     this.emit('session:saved', { sessionId });
@@ -292,7 +294,7 @@ export class SessionManager extends EventEmitter {
   async createCheckpoint(
     sessionId: string,
     description: string = 'Auto checkpoint',
-    metadata: Record<string, any> = {}
+    metadata: Record<string, any> = {},
   ): Promise<string> {
     await this.ensureInitialized();
 
@@ -317,7 +319,9 @@ export class SessionManager extends EventEmitter {
     };
 
     // Store checkpoint in database
-    await (await this.getPool()).write(
+    await (
+      await this.getPool()
+    ).write(
       `
       INSERT INTO session_checkpoints (id, session_id, timestamp, checksum, state_data, description, metadata)
       VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -330,7 +334,7 @@ export class SessionManager extends EventEmitter {
         stateData,
         description,
         this.serializeData(metadata),
-      ]
+      ],
     );
 
     // Add to session checkpoints
@@ -344,11 +348,13 @@ export class SessionManager extends EventEmitter {
     }
 
     // Update session last checkpoint time
-    await (await this.getPool()).write(
+    await (
+      await this.getPool()
+    ).write(
       `
       UPDATE sessions SET last_checkpoint_at = ? WHERE id = ?
     `,
-      [now.toISOString(), sessionId]
+      [now.toISOString(), sessionId],
     );
 
     this.emit('checkpoint:created', { sessionId, checkpointId, description });
@@ -361,7 +367,7 @@ export class SessionManager extends EventEmitter {
   async restoreFromCheckpoint(
     sessionId: string,
     checkpointId: string,
-    options: SessionRecoveryOptions = {}
+    options: SessionRecoveryOptions = {},
   ): Promise<void> {
     await this.ensureInitialized();
 
@@ -371,10 +377,12 @@ export class SessionManager extends EventEmitter {
     }
 
     // Load checkpoint
-    const checkpoints = await (await this.getPool()).read(
-      'SELECT * FROM session_checkpoints WHERE id = ? AND session_id = ?',
-      [checkpointId, sessionId]
-    );
+    const checkpoints = await (
+      await this.getPool()
+    ).read('SELECT * FROM session_checkpoints WHERE id = ? AND session_id = ?', [
+      checkpointId,
+      sessionId,
+    ]);
 
     if (checkpoints.length === 0) {
       throw new Error(`Checkpoint ${checkpointId} not found`);
@@ -426,10 +434,13 @@ export class SessionManager extends EventEmitter {
     this.stopAutoCheckpoint(sessionId);
 
     // Update in database
-    await (await this.getPool()).write(
-      'UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?',
-      ['paused', session.lastAccessedAt.toISOString(), sessionId]
-    );
+    await (
+      await this.getPool()
+    ).write('UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?', [
+      'paused',
+      session.lastAccessedAt.toISOString(),
+      sessionId,
+    ]);
 
     this.emit('session:paused', { sessionId });
   }
@@ -454,10 +465,13 @@ export class SessionManager extends EventEmitter {
     }
 
     // Update in database
-    await (await this.getPool()).write(
-      'UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?',
-      ['active', session.lastAccessedAt.toISOString(), sessionId]
-    );
+    await (
+      await this.getPool()
+    ).write('UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?', [
+      'active',
+      session.lastAccessedAt.toISOString(),
+      sessionId,
+    ]);
 
     this.emit('session:resumed', { sessionId });
   }
@@ -483,10 +497,13 @@ export class SessionManager extends EventEmitter {
     this.stopAutoCheckpoint(sessionId);
 
     // Update in database
-    await (await this.getPool()).write(
-      'UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?',
-      ['hibernated', session.lastAccessedAt.toISOString(), sessionId]
-    );
+    await (
+      await this.getPool()
+    ).write('UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?', [
+      'hibernated',
+      session.lastAccessedAt.toISOString(),
+      sessionId,
+    ]);
 
     // Remove from active sessions
     this.activeSessions.delete(sessionId);
@@ -508,16 +525,19 @@ export class SessionManager extends EventEmitter {
     }
 
     // Update in database
-    await (await this.getPool()).write(
-      'UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?',
-      ['terminated', new Date().toISOString(), sessionId]
-    );
+    await (
+      await this.getPool()
+    ).write('UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?', [
+      'terminated',
+      new Date().toISOString(),
+      sessionId,
+    ]);
 
     if (cleanup) {
       // Delete all checkpoints
-      await (await this.getPool()).write('DELETE FROM session_checkpoints WHERE session_id = ?', [
-        sessionId,
-      ]);
+      await (
+        await this.getPool()
+      ).write('DELETE FROM session_checkpoints WHERE session_id = ?', [sessionId]);
 
       // Delete session record
       await (await this.getPool()).write('DELETE FROM sessions WHERE id = ?', [sessionId]);
@@ -613,7 +633,9 @@ export class SessionManager extends EventEmitter {
       };
     } else {
       // Global stats
-      const stats = await (await this.getPool()).read(`
+      const stats = await (
+        await this.getPool()
+      ).read(`
         SELECT 
           status,
           COUNT(*) as count,
@@ -622,12 +644,12 @@ export class SessionManager extends EventEmitter {
         GROUP BY status
       `);
 
-      const totalSessions = await (await this.getPool()).read(
-        'SELECT COUNT(*) as total FROM sessions'
-      );
-      const totalCheckpoints = await (await this.getPool()).read(
-        'SELECT COUNT(*) as total FROM session_checkpoints'
-      );
+      const totalSessions = await (
+        await this.getPool()
+      ).read('SELECT COUNT(*) as total FROM sessions');
+      const totalCheckpoints = await (
+        await this.getPool()
+      ).read('SELECT COUNT(*) as total FROM session_checkpoints');
 
       return {
         totalSessions: totalSessions[0].total,
@@ -650,7 +672,9 @@ export class SessionManager extends EventEmitter {
 
   private async initializeSessionTables(): Promise<void> {
     // Create sessions table
-    await (await this.getPool()).write(`
+    await (
+      await this.getPool()
+    ).write(`
       CREATE TABLE IF NOT EXISTS sessions (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
@@ -666,7 +690,9 @@ export class SessionManager extends EventEmitter {
     `);
 
     // Create checkpoints table
-    await (await this.getPool()).write(`
+    await (
+      await this.getPool()
+    ).write(`
       CREATE TABLE IF NOT EXISTS session_checkpoints (
         id TEXT PRIMARY KEY,
         session_id TEXT NOT NULL,
@@ -680,24 +706,28 @@ export class SessionManager extends EventEmitter {
     `);
 
     // Create indexes
-    await (await this.getPool()).write(
-      'CREATE INDEX IF NOT EXISTS idx_sessions_status ON sessions(status)'
+    await (
+      await this.getPool()
+    ).write('CREATE INDEX IF NOT EXISTS idx_sessions_status ON sessions(status)');
+    await (
+      await this.getPool()
+    ).write('CREATE INDEX IF NOT EXISTS idx_sessions_last_accessed ON sessions(last_accessed_at)');
+    await (
+      await this.getPool()
+    ).write(
+      'CREATE INDEX IF NOT EXISTS idx_checkpoints_session ON session_checkpoints(session_id)',
     );
-    await (await this.getPool()).write(
-      'CREATE INDEX IF NOT EXISTS idx_sessions_last_accessed ON sessions(last_accessed_at)'
-    );
-    await (await this.getPool()).write(
-      'CREATE INDEX IF NOT EXISTS idx_checkpoints_session ON session_checkpoints(session_id)'
-    );
-    await (await this.getPool()).write(
-      'CREATE INDEX IF NOT EXISTS idx_checkpoints_timestamp ON session_checkpoints(timestamp)'
+    await (
+      await this.getPool()
+    ).write(
+      'CREATE INDEX IF NOT EXISTS idx_checkpoints_timestamp ON session_checkpoints(timestamp)',
     );
   }
 
   private async restoreActiveSessions(): Promise<void> {
-    const activeSessions = await (await this.getPool()).read(
-      "SELECT * FROM sessions WHERE status IN ('active', 'paused')"
-    );
+    const activeSessions = await (
+      await this.getPool()
+    ).read("SELECT * FROM sessions WHERE status IN ('active', 'paused')");
 
     for (const sessionData of activeSessions) {
       const sessionState: SessionState = {
@@ -726,9 +756,11 @@ export class SessionManager extends EventEmitter {
   }
 
   private async loadSessionCheckpoints(sessionId: string): Promise<SessionCheckpoint[]> {
-    const checkpoints = await (await this.getPool()).read(
+    const checkpoints = await (
+      await this.getPool()
+    ).read(
       'SELECT * FROM session_checkpoints WHERE session_id = ? ORDER BY timestamp DESC LIMIT ?',
-      [sessionId, this.config.maxCheckpoints]
+      [sessionId, this.config.maxCheckpoints],
     );
 
     return checkpoints.map((cp: any) => ({
@@ -743,16 +775,18 @@ export class SessionManager extends EventEmitter {
   }
 
   private async updateSessionAccess(sessionId: string): Promise<void> {
-    await (await this.getPool()).write('UPDATE sessions SET last_accessed_at = ? WHERE id = ?', [
+    await (
+      await this.getPool()
+    ).write('UPDATE sessions SET last_accessed_at = ? WHERE id = ?', [
       new Date().toISOString(),
       sessionId,
     ]);
   }
 
   private async deleteCheckpoint(checkpointId: string): Promise<void> {
-    await (await this.getPool()).write('DELETE FROM session_checkpoints WHERE id = ?', [
-      checkpointId,
-    ]);
+    await (
+      await this.getPool()
+    ).write('DELETE FROM session_checkpoints WHERE id = ?', [checkpointId]);
   }
 
   private startAutoCheckpoint(sessionId: string): void {

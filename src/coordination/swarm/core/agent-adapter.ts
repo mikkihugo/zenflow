@@ -1,9 +1,9 @@
 /**
  * Agent Interface Adapter - Compatibility Layer
- * 
+ *
  * This module provides adapter functions to bridge the interface differences
  * between the base Agent interface and coordination-specific requirements.
- * 
+ *
  * @fileoverview Agent interface compatibility adapter
  */
 
@@ -17,7 +17,7 @@ export function adaptAgentForCoordination(baseAgent: BaseAgent): CoordinationAge
   return {
     ...baseAgent,
     connections: [], // Initialize empty connections
-    
+
     // Add coordination-specific methods
     async communicate(message: Message): Promise<void> {
       // Default communication implementation
@@ -26,14 +26,14 @@ export function adaptAgentForCoordination(baseAgent: BaseAgent): CoordinationAge
         await baseAgent.handleMessage(message as any);
       }
     },
-    
+
     update(state: Partial<any>): void {
       // Default update implementation
       // In practice, this would call the agent's updateState method
       if (baseAgent.updateState) {
         baseAgent.updateState(state as any);
       }
-    }
+    },
   };
 }
 
@@ -53,7 +53,7 @@ export function adaptTaskForExecution(coordinationTask: CoordinationTask): BaseT
     maxAgents: 1,
     requiredCapabilities: [],
     createdAt: new Date(),
-    metadata: {}
+    metadata: {},
   };
 }
 
@@ -61,12 +61,12 @@ export function adaptTaskForExecution(coordinationTask: CoordinationTask): BaseT
  * Type-safe agent execution with adaptation
  */
 export async function executeTaskWithAgent(
-  agent: BaseAgent | CoordinationAgent, 
-  task: CoordinationTask
+  agent: BaseAgent | CoordinationAgent,
+  task: CoordinationTask,
 ): Promise<any> {
   // Convert coordination task to base task format
   const baseTask = adaptTaskForExecution(task);
-  
+
   // Execute using the base agent's execute method
   return await agent.execute(baseTask);
 }
@@ -82,6 +82,6 @@ export function createAgentPoolEntry(agent: BaseAgent): any {
     type: agent.type,
     state: agent.state,
     config: agent.config,
-    metrics: agent.metrics
+    metrics: agent.metrics,
   };
 }

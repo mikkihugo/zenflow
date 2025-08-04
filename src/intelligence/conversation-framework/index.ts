@@ -47,7 +47,7 @@ export class ConversationFramework {
    * Create a complete conversation system with orchestrator and memory
    */
   static async create(
-    config: ConversationFrameworkConfig = {}
+    config: ConversationFrameworkConfig = {},
   ): Promise<ConversationFrameworkSystem> {
     const { memoryBackend = 'json', memoryConfig = {} } = config;
 

@@ -6,11 +6,7 @@
  */
 
 export { type ApiConfig, ApiRouteHandler, type SystemStatus } from './ApiRouteHandler';
-export {
-  type DaemonConfig,
-  DaemonProcessManager,
-  type ProcessInfo,
-} from './DaemonProcessManager';
+export { type DaemonConfig, DaemonProcessManager, type ProcessInfo } from './DaemonProcessManager';
 // Performance dashboard (renamed from unified-performance-dashboard.ts)
 export { UnifiedPerformanceDashboard as SystemMetricsDashboard } from './SystemMetricsDashboard';
 // Main web server (renamed from web-interface.ts)

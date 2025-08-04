@@ -171,7 +171,7 @@ export class ExportSystem {
       if (typeof obj === 'object') {
         return Object.entries(obj)
           .map(
-            ([key, value]) => `${spaces}${key}: ${yamlify(value, indent + 1).replace(/^\s+/, '')}`
+            ([key, value]) => `${spaces}${key}: ${yamlify(value, indent + 1).replace(/^\s+/, '')}`,
           )
           .join('\n');
       }
@@ -231,7 +231,7 @@ export class ExportSystem {
           const headerRow = `| ${headers.join(' | ')} |`;
           const separatorRow = `| ${headers.map(() => '---').join(' | ')} |`;
           const dataRows = obj.map(
-            (item) => `| ${headers.map((header) => item[header]?.toString() || '').join(' | ')} |`
+            (item) => `| ${headers.map((header) => item[header]?.toString() || '').join(' | ')} |`,
           );
           return [headerRow, separatorRow, ...dataRows].join('\n');
         } else {

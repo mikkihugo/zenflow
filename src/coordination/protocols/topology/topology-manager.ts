@@ -120,7 +120,7 @@ export class TopologyManager extends EventEmitter {
   constructor(
     initialConfig: TopologyConfig,
     private logger: ILogger,
-    private eventBus: IEventBus
+    private eventBus: IEventBus,
   ) {
     super();
     this.currentConfig = initialConfig;
@@ -221,7 +221,7 @@ export class TopologyManager extends EventEmitter {
       this.currentConfig,
       this.nodes,
       this.metrics,
-      this.topologyHistory
+      this.topologyHistory,
     );
   }
 
@@ -243,7 +243,7 @@ export class TopologyManager extends EventEmitter {
     const migrationPlan = await this.migrationController.createMigrationPlan(
       this.currentConfig,
       { ...this.currentConfig, type: targetTopology },
-      this.nodes
+      this.nodes,
     );
 
     return await this.executeMigration(migrationPlan);
@@ -806,14 +806,14 @@ export class TopologyManager extends EventEmitter {
 interface ConnectionStrategy {
   establishConnections(
     node: NetworkNode,
-    allNodes: Map<string, NetworkNode>
+    allNodes: Map<string, NetworkNode>,
   ): Promise<Connection[]>;
 }
 
 class MeshConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
     node: NetworkNode,
-    allNodes: Map<string, NetworkNode>
+    allNodes: Map<string, NetworkNode>,
   ): Promise<Connection[]> {
     // Full mesh - connect to all other nodes
     const connections: Connection[] = [];
@@ -836,7 +836,7 @@ class MeshConnectionStrategy implements ConnectionStrategy {
 
   private calculateInitialQuality(source: NetworkNode, target: NetworkNode): ConnectionQuality {
     const distance = Math.sqrt(
-      (source.location.x - target.location.x) ** 2 + (source.location.y - target.location.y) ** 2
+      (source.location.x - target.location.x) ** 2 + (source.location.y - target.location.y) ** 2,
     );
 
     return {
@@ -863,7 +863,7 @@ class MeshConnectionStrategy implements ConnectionStrategy {
 class HierarchicalConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
     _node: NetworkNode,
-    _allNodes: Map<string, NetworkNode>
+    _allNodes: Map<string, NetworkNode>,
   ): Promise<Connection[]> {
     // Connect based on hierarchical structure
     const connections: Connection[] = [];
@@ -875,7 +875,7 @@ class HierarchicalConnectionStrategy implements ConnectionStrategy {
 class RingConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
     _node: NetworkNode,
-    _allNodes: Map<string, NetworkNode>
+    _allNodes: Map<string, NetworkNode>,
   ): Promise<Connection[]> {
     // Connect to immediate neighbors in ring
     const connections: Connection[] = [];
@@ -887,7 +887,7 @@ class RingConnectionStrategy implements ConnectionStrategy {
 class StarConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
     _node: NetworkNode,
-    _allNodes: Map<string, NetworkNode>
+    _allNodes: Map<string, NetworkNode>,
   ): Promise<Connection[]> {
     // Connect based on star topology (hub and spokes)
     const connections: Connection[] = [];
@@ -899,7 +899,7 @@ class StarConnectionStrategy implements ConnectionStrategy {
 class HybridConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
     _node: NetworkNode,
-    _allNodes: Map<string, NetworkNode>
+    _allNodes: Map<string, NetworkNode>,
   ): Promise<Connection[]> {
     // Adaptive connection strategy
     const connections: Connection[] = [];
@@ -911,7 +911,7 @@ class HybridConnectionStrategy implements ConnectionStrategy {
 class SmallWorldConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
     _node: NetworkNode,
-    _allNodes: Map<string, NetworkNode>
+    _allNodes: Map<string, NetworkNode>,
   ): Promise<Connection[]> {
     // Small-world network (local clusters + long-range connections)
     const connections: Connection[] = [];
@@ -923,7 +923,7 @@ class SmallWorldConnectionStrategy implements ConnectionStrategy {
 class ScaleFreeConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
     _node: NetworkNode,
-    _allNodes: Map<string, NetworkNode>
+    _allNodes: Map<string, NetworkNode>,
   ): Promise<Connection[]> {
     // Scale-free network (preferential attachment)
     const connections: Connection[] = [];
@@ -937,7 +937,7 @@ class TopologyAdaptationEngine {
     currentConfig: TopologyConfig,
     nodes: Map<string, NetworkNode>,
     metrics: TopologyMetrics,
-    history: Array<{ topology: TopologyType; timestamp: Date; performance: number }>
+    history: Array<{ topology: TopologyType; timestamp: Date; performance: number }>,
   ): Promise<TopologyDecision> {
     // ML-based topology analysis
     const analysis = await this.performTopologyAnalysis(currentConfig, nodes, metrics, history);
@@ -957,7 +957,7 @@ class TopologyAdaptationEngine {
     config: TopologyConfig,
     _nodes: Map<string, NetworkNode>,
     _metrics: TopologyMetrics,
-    _history: Array<{ topology: TopologyType; timestamp: Date; performance: number }>
+    _history: Array<{ topology: TopologyType; timestamp: Date; performance: number }>,
   ): Promise<{
     recommendedTopology: TopologyType;
     confidence: number;
@@ -990,7 +990,7 @@ class NetworkOptimizer {
 
   async repairFragmentation(
     _nodes: Map<string, NetworkNode>,
-    _config: TopologyConfig
+    _config: TopologyConfig,
   ): Promise<void> {
     // Repair network fragmentation
     // Implementation would reconnect isolated components
@@ -1045,7 +1045,7 @@ class MigrationController {
   async createMigrationPlan(
     currentConfig: TopologyConfig,
     targetConfig: TopologyConfig,
-    _nodes: Map<string, NetworkNode>
+    _nodes: Map<string, NetworkNode>,
   ): Promise<MigrationPlan> {
     // Create step-by-step migration plan
     return {

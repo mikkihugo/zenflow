@@ -8,17 +8,10 @@
  * @fileoverview Main entry point for REST API layer
  */
 
-export type {
-  APIClientConfig,
-  PaginationOptions,
-  RequestOptions,
-} from './client';
+export type { APIClientConfig, PaginationOptions, RequestOptions } from './client';
 // ===== API CLIENT SDK =====
 export { APIClient, apiClient, createAPIClient } from './client';
-export type {
-  AuthContext,
-  User,
-} from './middleware/auth';
+export type { AuthContext, User } from './middleware/auth';
 export {
   authMiddleware,
   getCurrentUser,
@@ -39,13 +32,7 @@ export {
   errorHandler,
   notFoundHandler,
 } from './middleware/errors';
-export {
-  LogLevel,
-  log,
-  logError,
-  logPerformance,
-  requestLogger,
-} from './middleware/logging';
+export { LogLevel, log, logError, logPerformance, requestLogger } from './middleware/logging';
 export type {
   // Coordination types (re-exported from domain)
   Agent,
@@ -198,7 +185,7 @@ export const createAPILayer = (config?: Partial<APILayerConfig>): APILayer => {
  * Comprehensive health check for the entire API layer
  */
 export const checkAPILayerHealth = async (
-  layer: APILayer
+  layer: APILayer,
 ): Promise<{
   status: 'healthy' | 'unhealthy';
   checks: {

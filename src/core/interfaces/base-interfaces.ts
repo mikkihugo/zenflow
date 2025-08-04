@@ -1,9 +1,9 @@
 /**
  * Unified Base Interfaces for Interface Contract Standardization
- * 
- * This file provides standardized base interfaces that all domain-specific 
+ *
+ * This file provides standardized base interfaces that all domain-specific
  * implementations must conform to, eliminating interface contract mismatches.
- * 
+ *
  * @fileoverview Core base interfaces for cross-domain compatibility
  */
 

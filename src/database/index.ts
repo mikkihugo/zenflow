@@ -24,12 +24,7 @@ export {
   DatabaseTransactionError,
 } from './error-handling/database-errors';
 // Legacy database interfaces
-export type {
-  GraphEdge,
-  GraphNode,
-  KuzuConfig,
-  QueryResult,
-} from './kuzu-advanced-interface';
+export type { GraphEdge, GraphNode, KuzuConfig, QueryResult } from './kuzu-advanced-interface';
 export { KuzuAdvancedInterface } from './kuzu-advanced-interface';
 export type {
   ClusteringOptions,
@@ -57,11 +52,7 @@ export {
   QueryOptimizer,
   type QueryPattern,
 } from './optimization/query-optimizer';
-export type {
-  SwarmDatabaseConfig,
-  SwarmQuery,
-  SwarmRecord,
-} from './swarm-database';
+export type { SwarmDatabaseConfig, SwarmQuery, SwarmRecord } from './swarm-database';
 export { SwarmDatabase } from './swarm-database';
 
 // Enhanced Database utilities and helpers
@@ -119,7 +110,7 @@ export const DatabaseUtils = {
   createEngine: (
     id: string,
     type: 'vector' | 'graph' | 'document' | 'relational' | 'timeseries',
-    config: any
+    config: any,
   ): DatabaseEngine => {
     const interface_ = DatabaseUtils.getDatabaseInterface(type as any, config);
     const capabilities = DatabaseUtils.getCapabilities(type);
@@ -155,7 +146,7 @@ export class DatabaseFactory {
   static getInstance<T>(
     type: 'lancedb' | 'kuzu' | 'swarm',
     config: any,
-    instanceKey = 'default'
+    instanceKey = 'default',
   ): T {
     const key = `${type}:${instanceKey}`;
 
@@ -199,7 +190,7 @@ export class DatabaseFactory {
         const engine = DatabaseUtils.createEngine(
           engineConfig.id,
           engineConfig.type,
-          engineConfig.config
+          engineConfig.config,
         );
         await DatabaseFactory.coordinator.registerEngine(engine);
         engines.set(engine.id, engine);
@@ -268,7 +259,7 @@ export class DatabaseFactory {
   static async createBasicDatabaseSystem(
     type: 'lancedb' | 'kuzu' | 'swarm',
     config: any,
-    engineId = 'default'
+    engineId = 'default',
   ) {
     const engines = [
       {

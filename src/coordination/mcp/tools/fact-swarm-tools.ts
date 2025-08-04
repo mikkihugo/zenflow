@@ -316,7 +316,7 @@ export const factSwarmMonitorTool: MCPTool = {
       // Wait for monitoring duration or mission completion
       const results = await swarm.waitForMonitoringResults(
         monitoringSession.id,
-        monitoringConfig.duration * 1000
+        monitoringConfig.duration * 1000,
       );
 
       const performanceData = results.metrics.performance;
@@ -456,7 +456,7 @@ Use fact_swarm_monitor to check mission status.`,
    Quality Score: ${mission.qualityScore}/10
    Knowledge Entries: ${mission.knowledgeCount}
    Execution Time: ${mission.executionTime}ms
-   Agent Performance: ${mission.agentPerformance}`
+   Agent Performance: ${mission.agentPerformance}`,
         )
         .join('\n');
 

@@ -53,7 +53,7 @@ export class CommandExecutionEngine {
     command: string,
     args: string[],
     flags: Record<string, any>,
-    context?: Partial<ExecutionContext>
+    context?: Partial<ExecutionContext>,
   ): Promise<CommandResult> {
     const startTime = Date.now();
     const executionContext: ExecutionContext = {
@@ -74,7 +74,7 @@ export class CommandExecutionEngine {
           command,
           args,
           flags,
-          startTime
+          startTime,
         );
       }
 
@@ -108,7 +108,7 @@ export class CommandExecutionEngine {
             command,
             args,
             flags,
-            startTime
+            startTime,
           );
       }
 
@@ -134,7 +134,7 @@ export class CommandExecutionEngine {
         command,
         args,
         flags,
-        startTime
+        startTime,
       );
     }
   }
@@ -776,7 +776,7 @@ export class CommandExecutionEngine {
     command: string,
     args: string[],
     flags: Record<string, any>,
-    startTime: number
+    startTime: number,
   ): CommandResult {
     return {
       success: false,

@@ -168,7 +168,7 @@ export class DocumentProcessor extends EventEmitter {
   constructor(
     memory: MemorySystem,
     workflowEngine: WorkflowEngine,
-    config: DocumentProcessorConfig = {}
+    config: DocumentProcessorConfig = {},
   ) {
     super();
     this.memory = memory;
@@ -344,7 +344,7 @@ export class DocumentProcessor extends EventEmitter {
     type: DocumentType,
     title: string,
     content: string,
-    workspaceId?: string
+    workspaceId?: string,
   ): Promise<Document> {
     await this.ensureInitialized();
 

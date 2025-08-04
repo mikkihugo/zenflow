@@ -142,7 +142,7 @@ export default class DomainSplittingDemo {
 
   private calculateComplexity(
     files: string[],
-    categories: { [category: string]: string[] }
+    categories: { [category: string]: string[] },
   ): number {
     const fileCount = files.length;
     const categoryCount = Object.values(categories).filter((cat) => cat.length > 0).length;
@@ -168,7 +168,7 @@ export default class DomainSplittingDemo {
 
   private generateRecommendations(
     files: string[],
-    categories: { [category: string]: string[] }
+    categories: { [category: string]: string[] },
   ): string[] {
     const recommendations: string[] = [];
 
@@ -180,7 +180,7 @@ export default class DomainSplittingDemo {
     for (const [category, categoryFiles] of Object.entries(categories)) {
       if (categoryFiles.length > 8) {
         recommendations.push(
-          `${category} category has ${categoryFiles.length} files - consider sub-dividing`
+          `${category} category has ${categoryFiles.length} files - consider sub-dividing`,
         );
       }
     }

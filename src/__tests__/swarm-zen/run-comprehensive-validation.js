@@ -200,11 +200,11 @@ async function generateSummaryReport(finalReport) {
 
 ## Test Suite Results
 ${finalReport.testSuites
-    .map(
-      (suite) =>
-        `- ${suite.passed ? '✅' : '❌'} **${suite.name}**: ${suite.passed ? 'PASSED' : 'FAILED'} (${Math.round(suite.duration / 1000)}s)`,
-    )
-    .join('\n')}
+  .map(
+    (suite) =>
+      `- ${suite.passed ? '✅' : '❌'} **${suite.name}**: ${suite.passed ? 'PASSED' : 'FAILED'} (${Math.round(suite.duration / 1000)}s)`,
+  )
+  .join('\n')}
 
 ## Key Metrics Summary
 - **Max Concurrent Agents**: ${finalReport.metrics.reliability?.maxConcurrentAgents || 'N/A'}
@@ -243,9 +243,9 @@ ${
 - Document performance baselines`
     : `### 🔧 Additional Work Required
 - Address failing test suites: ${finalReport.testSuites
-    .filter((s) => !s.passed)
-    .map((s) => s.name)
-    .join(', ')}
+        .filter((s) => !s.passed)
+        .map((s) => s.name)
+        .join(', ')}
 - Fix performance regressions
 - Meet security requirements
 - Complete integration testing

@@ -1748,7 +1748,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
       // Test invalid preset name
       expect(() => {
         getModelPreset('transformer', 'invalid_preset');
-      }).toThrow('No preset named \'invalid_preset\' for model type: transformer');
+      }).toThrow("No preset named 'invalid_preset' for model type: transformer");
     });
 
     test('should test complete neural presets structure', () => {

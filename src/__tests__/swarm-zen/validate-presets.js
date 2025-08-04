@@ -91,26 +91,26 @@ async function generatePresetReport(results) {
 | Preset | Tests | Coverage | Performance | Status |
 |--------|-------|----------|-------------|---------|
 ${presets
-    .map((preset) => {
-      const data = results.presets[preset];
-      if (!data.success) {
-        return `| ${preset} | ❌ Error | - | - | Failed |`;
-      }
-      return `| ${preset} | ✅ ${data.tests.passed}/${data.tests.passed + data.tests.failed} | ${data.coverage.lines.toFixed(1)}% | ${data.performance.avgTime?.toFixed(2) || 'N/A'}ms | ${data.success ? 'Pass' : 'Fail'} |`;
-    })
-    .join('\n')}
+  .map((preset) => {
+    const data = results.presets[preset];
+    if (!data.success) {
+      return `| ${preset} | ❌ Error | - | - | Failed |`;
+    }
+    return `| ${preset} | ✅ ${data.tests.passed}/${data.tests.passed + data.tests.failed} | ${data.coverage.lines.toFixed(1)}% | ${data.performance.avgTime?.toFixed(2) || 'N/A'}ms | ${data.success ? 'Pass' : 'Fail'} |`;
+  })
+  .join('\n')}
 
 ## 📈 Detailed Results
 
 ${presets
-    .map((preset) => {
-      const data = results.presets[preset];
-      if (!data.success) {
-        return `### ❌ ${preset}
+  .map((preset) => {
+    const data = results.presets[preset];
+    if (!data.success) {
+      return `### ❌ ${preset}
 - Error: ${data.error}`;
-      }
+    }
 
-      return `### ${data.success ? '✅' : '❌'} ${preset}
+    return `### ${data.success ? '✅' : '❌'} ${preset}
 - **Tests**: ${data.tests.passed} passed, ${data.tests.failed} failed
 - **Coverage**:
   - Lines: ${data.coverage.lines.toFixed(2)}%
@@ -121,8 +121,8 @@ ${presets
   - Avg Time: ${data.performance.avgTime?.toFixed(2) || 'N/A'}ms
   - Memory: ${data.performance.memory || 'N/A'}
   - Status: ${data.performance.initialized ? 'Initialized' : 'Failed'}`;
-    })
-    .join('\n\n')}
+  })
+  .join('\n\n')}
 
 ## 🎯 Recommendations
 

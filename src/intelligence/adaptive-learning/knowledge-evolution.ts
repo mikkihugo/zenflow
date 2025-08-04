@@ -204,7 +204,7 @@ export class KnowledgeEvolution extends EventEmitter {
   async learnFromInteractions(
     patterns: ExecutionPattern[],
     behaviors: AgentBehavior[],
-    domain: string = 'general'
+    domain: string = 'general',
   ): Promise<KnowledgeLearningResult> {
     const learningResult: KnowledgeLearningResult = {
       domain,
@@ -249,7 +249,7 @@ export class KnowledgeEvolution extends EventEmitter {
    */
   async updateKnowledgeFromPatterns(
     patternClusters: PatternCluster[],
-    domain: string = 'general'
+    domain: string = 'general',
   ): Promise<void> {
     const knowledgeBase = this.getOrCreateKnowledgeBase(domain);
 
@@ -271,7 +271,7 @@ export class KnowledgeEvolution extends EventEmitter {
   async trackExpertiseEvolution(
     agentId: string,
     patterns: ExecutionPattern[],
-    domain: string = 'general'
+    domain: string = 'general',
   ): Promise<ExpertiseEvolution> {
     const profile = this.getOrCreateExpertiseProfile(agentId, domain);
     const previousLevel = profile.level;
@@ -318,13 +318,13 @@ export class KnowledgeEvolution extends EventEmitter {
   async identifyBestPractices(
     patterns: ExecutionPattern[],
     minEffectiveness: number = 0.8,
-    minOccurrences: number = 5
+    minOccurrences: number = 5,
   ): Promise<BestPractice[]> {
     const practices: BestPractice[] = [];
 
     // Group patterns by success criteria
     const successfulPatterns = patterns.filter(
-      (p) => p.metadata.success === true && p.confidence >= minEffectiveness
+      (p) => p.metadata.success === true && p.confidence >= minEffectiveness,
     );
 
     // Cluster successful patterns to identify practices
@@ -347,13 +347,13 @@ export class KnowledgeEvolution extends EventEmitter {
    */
   async detectAntiPatterns(
     patterns: ExecutionPattern[],
-    behaviors: AgentBehavior[]
+    behaviors: AgentBehavior[],
   ): Promise<AntiPattern[]> {
     const antiPatterns: AntiPattern[] = [];
 
     // Analyze failure patterns
     const failurePatterns = patterns.filter(
-      (p) => p.metadata.success === false || p.confidence < this.config.antiPatternThreshold
+      (p) => p.metadata.success === false || p.confidence < this.config.antiPatternThreshold,
     );
 
     // Group similar failure patterns
@@ -421,7 +421,7 @@ export class KnowledgeEvolution extends EventEmitter {
   async evolveKnowledgeBase(
     domain: string,
     trigger: EvolutionTrigger,
-    evidence: Evidence[]
+    evidence: Evidence[],
   ): Promise<Evolution> {
     const knowledgeBase = this.knowledgeBases.get(domain);
     if (!knowledgeBase) {
@@ -535,7 +535,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private async extractKnowledgeFromPatterns(
     patterns: ExecutionPattern[],
-    domain: string
+    domain: string,
   ): Promise<{ newItems: KnowledgeItem[]; updatedItems: KnowledgeItem[] }> {
     const newItems: KnowledgeItem[] = [];
     const updatedItems: KnowledgeItem[] = [];
@@ -607,13 +607,13 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private async detectBestPractices(
     patterns: ExecutionPattern[],
-    _behaviors: AgentBehavior[]
+    _behaviors: AgentBehavior[],
   ): Promise<BestPractice[]> {
     const practices: BestPractice[] = [];
 
     // Analyze highly successful patterns
     const highPerformancePatterns = patterns.filter(
-      (p) => p.confidence >= this.config.bestPracticeThreshold && p.metadata.success === true
+      (p) => p.confidence >= this.config.bestPracticeThreshold && p.metadata.success === true,
     );
 
     // Group by similar characteristics
@@ -745,7 +745,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
     // Detect common behavioral anti-patterns
     const lowPerformanceBehaviors = behaviors.filter(
-      (b) => this.calculateOverallPerformance(b) < this.config.antiPatternThreshold
+      (b) => this.calculateOverallPerformance(b) < this.config.antiPatternThreshold,
     );
 
     if (lowPerformanceBehaviors.length >= 3) {
@@ -914,7 +914,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private createTimeWindows(
     patterns: ExecutionPattern[],
-    windowSize: number
+    windowSize: number,
   ): ExecutionPattern[][] {
     const windows: ExecutionPattern[][] = [];
     const sortedPatterns = patterns.sort((a, b) => a.timestamp - b.timestamp);
@@ -967,7 +967,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private determineEvolutionType(
     trigger: EvolutionTrigger,
-    _evidence: Evidence[]
+    _evidence: Evidence[],
   ): Evolution['type'] {
     switch (trigger.type) {
       case 'pattern_discovery':
@@ -989,7 +989,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private calculateEvolutionImpact(
     knowledgeBase: KnowledgeBase,
-    evidence: Evidence[]
+    evidence: Evidence[],
   ): EvolutionImpact {
     return {
       itemsAffected: Math.min(evidence.length, knowledgeBase.knowledge.length / 10),
@@ -1003,7 +1003,7 @@ export class KnowledgeEvolution extends EventEmitter {
   private async createNewKnowledge(
     knowledgeBase: KnowledgeBase,
     evidence: Evidence[],
-    evolution: Evolution
+    evolution: Evolution,
   ): Promise<void> {
     // Create new knowledge items based on evidence
     const newItems = evidence.map((e) => this.evidenceToKnowledgeItem(e));
@@ -1016,14 +1016,14 @@ export class KnowledgeEvolution extends EventEmitter {
         oldValue: null,
         newValue: item,
         reason: 'New knowledge from evidence',
-      }))
+      })),
     );
   }
 
   private async updateExistingKnowledge(
     knowledgeBase: KnowledgeBase,
     evidence: Evidence[],
-    evolution: Evolution
+    evolution: Evolution,
   ): Promise<void> {
     // Update existing knowledge items with new evidence
     evidence.forEach((e) => {
@@ -1048,7 +1048,7 @@ export class KnowledgeEvolution extends EventEmitter {
   private async mergeKnowledgeItems(
     knowledgeBase: KnowledgeBase,
     _evidence: Evidence[],
-    evolution: Evolution
+    evolution: Evolution,
   ): Promise<void> {
     // Find similar knowledge items and merge them
     const items = knowledgeBase.knowledge;
@@ -1090,7 +1090,7 @@ export class KnowledgeEvolution extends EventEmitter {
   private async splitKnowledgeItems(
     _knowledgeBase: KnowledgeBase,
     _evidence: Evidence[],
-    _evolution: Evolution
+    _evolution: Evolution,
   ): Promise<void> {
     // Implementation for splitting complex knowledge items
     // This would involve analyzing items that cover too many contexts
@@ -1099,7 +1099,7 @@ export class KnowledgeEvolution extends EventEmitter {
   private async deprecateKnowledge(
     knowledgeBase: KnowledgeBase,
     evidence: Evidence[],
-    evolution: Evolution
+    evolution: Evolution,
   ): Promise<void> {
     // Mark knowledge items as deprecated based on evidence
     evidence.forEach((e) => {
@@ -1127,7 +1127,7 @@ export class KnowledgeEvolution extends EventEmitter {
   private async validateKnowledgeItems(
     knowledgeBase: KnowledgeBase,
     evidence: Evidence[],
-    evolution: Evolution
+    evolution: Evolution,
   ): Promise<void> {
     // Validate knowledge items against new evidence
     knowledgeBase.knowledge.forEach((item) => {
@@ -1278,7 +1278,7 @@ export class KnowledgeEvolution extends EventEmitter {
   private extractRuleFromPatterns(
     patterns: ExecutionPattern[],
     type: string,
-    domain: string
+    domain: string,
   ): KnowledgeItem | null {
     if (patterns.length < 3) return null;
 
@@ -1569,7 +1569,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private async applyAutomaticFixes(
     knowledgeBase: KnowledgeBase,
-    report: ConsistencyReport
+    report: ConsistencyReport,
   ): Promise<void> {
     // Apply automatic fixes for simple issues
     report.outdatedItems.forEach((outdated) => {
@@ -1589,7 +1589,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private updateSkillsFromPatterns(
     _profile: ExpertiseProfile,
-    _patterns: ExecutionPattern[]
+    _patterns: ExecutionPattern[],
   ): Promise<void> {
     // Update agent skills based on patterns
     return Promise.resolve();
@@ -1597,7 +1597,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private updateExperienceFromPatterns(
     _profile: ExpertiseProfile,
-    _patterns: ExecutionPattern[]
+    _patterns: ExecutionPattern[],
   ): Promise<void> {
     // Update agent experience based on patterns
     return Promise.resolve();
@@ -1605,7 +1605,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private updateExpertiseProfiles(
     _patterns: ExecutionPattern[],
-    _behaviors: AgentBehavior[]
+    _behaviors: AgentBehavior[],
   ): Promise<ExpertiseUpdate[]> {
     // Update expertise profiles
     return Promise.resolve([]);
@@ -1628,7 +1628,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private findApplicableKnowledge(
     kb: KnowledgeBase,
-    _context: RecommendationContext
+    _context: RecommendationContext,
   ): KnowledgeItem[] {
     // Find knowledge items applicable to the context
     return kb.knowledge.slice(0, 10); // Simplified
@@ -1641,7 +1641,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private determineRecommendationType(
     item: KnowledgeItem,
-    _context: RecommendationContext
+    _context: RecommendationContext,
   ): string {
     // Determine type of recommendation
     return item.type === 'best_practice' ? 'practice_suggestion' : 'knowledge_application';
@@ -1654,7 +1654,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private generateReasoningExplanation(
     item: KnowledgeItem,
-    _context: RecommendationContext
+    _context: RecommendationContext,
   ): string {
     // Generate explanation for why this knowledge is relevant
     return `Based on ${item.evidence.length} pieces of evidence with ${(item.confidence * 100).toFixed(1)}% confidence`;
@@ -1696,10 +1696,10 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private findRelevantKnowledgeItems(
     knowledgeBase: KnowledgeBase,
-    evidence: Evidence
+    evidence: Evidence,
   ): KnowledgeItem[] {
     return knowledgeBase.knowledge.filter((item) =>
-      item.tags.some((tag) => evidence.context.patternType?.includes(tag))
+      item.tags.some((tag) => evidence.context.patternType?.includes(tag)),
     );
   }
 
@@ -1738,7 +1738,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private validateItemWithEvidence(
     item: KnowledgeItem,
-    evidence: Evidence[]
+    evidence: Evidence[],
   ): { confidence: number } {
     const positiveEvidence = evidence.filter((e) => e.strength > 0.5);
     const negativeEvidence = evidence.filter((e) => e.strength <= 0.5);
@@ -1753,7 +1753,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private async addOrUpdateKnowledgeItem(
     knowledgeBase: KnowledgeBase,
-    item: KnowledgeItem
+    item: KnowledgeItem,
   ): Promise<void> {
     const existingIndex = knowledgeBase.knowledge.findIndex((k) => k.content === item.content);
 
