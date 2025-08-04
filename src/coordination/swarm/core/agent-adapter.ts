@@ -44,6 +44,8 @@ export function adaptTaskForExecution(coordinationTask: CoordinationTask): BaseT
   return {
     ...coordinationTask,
     // Add missing base task properties with defaults
+    dependencies: [], // Required by BaseTask interface
+    assignedAgents: [], // Required by BaseTask interface
     swarmId: 'default',
     strategy: 'direct',
     progress: 0,

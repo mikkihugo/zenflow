@@ -19,6 +19,14 @@ import {
   IConfig
 } from '../../core/interfaces/base-interfaces';
 
+import {
+  DatabaseResult,
+  QuerySuccess,
+  QueryError,
+  isQuerySuccess,
+  isQueryError
+} from '../../utils/type-guards';
+
 // Re-export DatabaseAdapter for external use
 export { DatabaseAdapter } from '../../core/interfaces/base-interfaces';
 
@@ -197,6 +205,54 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
     } catch (error) {
       this.logger.error(`PostgreSQL query failed: ${error}`);
       throw error;
+    }
+  }
+
+  /**
+   * Enhanced query method with union type return for safe property access
+   */
+  async queryWithResult<T = any>(sql: string, params?: any[]): Promise<DatabaseResult<T>> {
+    this.logger.debug(`Executing PostgreSQL query with result: ${sql}`);
+    
+    try {
+      await this.ensureConnected();
+      const startTime = Date.now();
+      
+      // PostgreSQL query implementation would go here
+      await this.simulateAsync(10);
+      
+      const executionTime = Date.now() - startTime;
+      
+      // Mock successful result
+      const successResult: QuerySuccess<T> = {
+        success: true,
+        data: [{ id: 1, name: 'Sample Data' }] as T,
+        rowCount: 1,
+        executionTime,
+        fields: [
+          { name: 'id', type: 'integer', nullable: false },
+          { name: 'name', type: 'varchar', nullable: true },
+        ],
+      };
+      
+      this.logger.debug(`PostgreSQL query completed in ${executionTime}ms`);
+      return successResult;
+    } catch (error) {
+      const executionTime = Date.now() - Date.now();
+      this.logger.error(`PostgreSQL query failed: ${error}`);
+      
+      const errorResult: QueryError = {
+        success: false,
+        error: {
+          code: 'POSTGRESQL_QUERY_ERROR',
+          message: error instanceof Error ? error.message : 'Unknown error',
+          details: { sql, params },
+          stack: error instanceof Error ? error.stack : undefined,
+        },
+        executionTime,
+      };
+      
+      return errorResult;
     }
   }
 
