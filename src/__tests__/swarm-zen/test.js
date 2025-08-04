@@ -1,15 +1,14 @@
 /**
- * Basic tests for RuvSwarm WASM module
+ * Basic tests for ZenSwarm WASM module
  */
 
-import assert from 'assert';
+import assert from 'node:assert';
 
-// Mock the RuvSwarm module for testing
+// Mock the ZenSwarm module for testing
 // In a real test, this would import the actual module after building
-const mockRuvSwarm = {
-  RuvSwarm: {
-    initialize: async (options) => {
-      console.log('Initializing RuvSwarm with options:', options);
+const mockZenSwarm = {
+  ZenSwarm: {
+    initialize: async (_options) => {
       return {
         createSwarm: async (config) => {
           return {
@@ -42,16 +41,13 @@ const mockRuvSwarm = {
 };
 
 async function runTests() {
-  console.log('Running RuvSwarm tests...\n');
-
-  let passed = 0;
+  let _passed = 0;
   let failed = 0;
 
   async function test(name, fn) {
     try {
       await fn();
-      console.log(`✓ ${name}`);
-      passed++;
+      _passed++;
     } catch (error) {
       console.error(`✗ ${name}`);
       console.error(`  ${error.message}`);
@@ -60,28 +56,28 @@ async function runTests() {
   }
 
   // Test initialization
-  await test('RuvSwarm.initialize() should return a RuvSwarm instance', async () => {
-    const ruvSwarm = await mockRuvSwarm.RuvSwarm.initialize();
+  await test('ZenSwarm.initialize() should return a ZenSwarm instance', async () => {
+    const ruvSwarm = await mockZenSwarm.ZenSwarm.initialize();
     assert(ruvSwarm !== null);
     assert(typeof ruvSwarm.createSwarm === 'function');
   });
 
   // Test SIMD detection
-  await test('RuvSwarm.detectSIMDSupport() should return a boolean', () => {
-    const result = mockRuvSwarm.RuvSwarm.detectSIMDSupport();
+  await test('ZenSwarm.detectSIMDSupport() should return a boolean', () => {
+    const result = mockZenSwarm.ZenSwarm.detectSIMDSupport();
     assert(typeof result === 'boolean');
   });
 
   // Test version
-  await test('RuvSwarm.getVersion() should return a version string', () => {
-    const version = mockRuvSwarm.RuvSwarm.getVersion();
+  await test('ZenSwarm.getVersion() should return a version string', () => {
+    const version = mockZenSwarm.ZenSwarm.getVersion();
     assert(typeof version === 'string');
     assert(version.match(/^\d+\.\d+\.\d+$/));
   });
 
   // Test swarm creation
   await test('createSwarm() should create a swarm with correct properties', async () => {
-    const ruvSwarm = await mockRuvSwarm.RuvSwarm.initialize();
+    const ruvSwarm = await mockZenSwarm.ZenSwarm.initialize();
     const swarm = await ruvSwarm.createSwarm({
       name: 'test-swarm',
       strategy: 'development',
@@ -97,7 +93,7 @@ async function runTests() {
 
   // Test agent spawning
   await test('spawn() should create an agent', async () => {
-    const ruvSwarm = await mockRuvSwarm.RuvSwarm.initialize();
+    const ruvSwarm = await mockZenSwarm.ZenSwarm.initialize();
     const swarm = await ruvSwarm.createSwarm({
       name: 'test-swarm',
       strategy: 'development',
@@ -117,7 +113,7 @@ async function runTests() {
 
   // Test task execution
   await test('agent.execute() should execute a task', async () => {
-    const ruvSwarm = await mockRuvSwarm.RuvSwarm.initialize();
+    const ruvSwarm = await mockZenSwarm.ZenSwarm.initialize();
     const swarm = await ruvSwarm.createSwarm({
       name: 'test-swarm',
       strategy: 'development',
@@ -139,7 +135,7 @@ async function runTests() {
 
   // Test orchestration
   await test('orchestrate() should orchestrate a task', async () => {
-    const ruvSwarm = await mockRuvSwarm.RuvSwarm.initialize();
+    const ruvSwarm = await mockZenSwarm.ZenSwarm.initialize();
     const swarm = await ruvSwarm.createSwarm({
       name: 'test-swarm',
       strategy: 'development',
@@ -159,7 +155,7 @@ async function runTests() {
 
   // Test status
   await test('getStatus() should return swarm status', async () => {
-    const ruvSwarm = await mockRuvSwarm.RuvSwarm.initialize();
+    const ruvSwarm = await mockZenSwarm.ZenSwarm.initialize();
     const swarm = await ruvSwarm.createSwarm({
       name: 'test-swarm',
       strategy: 'development',
@@ -173,9 +169,6 @@ async function runTests() {
     assert(status.maxAgents === 8);
     assert(typeof status.agentCount === 'number');
   });
-
-  // Summary
-  console.log(`\nTests completed: ${passed} passed, ${failed} failed`);
 
   if (failed > 0) {
     process.exit(1);

@@ -99,6 +99,16 @@ class TransformerModel extends NeuralModel {
     const batchSize = input.shape[0];
     const sequenceLength = input.shape[1];
 
+    // Validate input dimensions
+    if (batchSize <= 0 || sequenceLength <= 0) {
+      throw new Error(`Invalid input dimensions: batch=${batchSize}, sequence=${sequenceLength}`);
+    }
+    if (sequenceLength > this.config.maxSequenceLength) {
+      throw new Error(
+        `Sequence length ${sequenceLength} exceeds maximum ${this.config.maxSequenceLength}`
+      );
+    }
+
     // Token embedding (simplified - in practice would use embedding layer)
     let x = this.tokenEmbedding(input);
 
@@ -318,10 +328,6 @@ class TransformerModel extends NeuralModel {
         valLoss,
         learningRate: this.getAdaptiveLearningRate(learningRate, globalStep, warmupSteps),
       });
-
-      console.log(
-        `Epoch ${epoch + 1}/${epochs} - Train Loss: ${avgTrainLoss.toFixed(4)}, Val Loss: ${valLoss.toFixed(4)}`
-      );
     }
 
     return {

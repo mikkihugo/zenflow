@@ -3,11 +3,11 @@
  * Tests database persistence, state recovery, and data integrity
  */
 
-import assert from 'assert';
-import { promises as fs } from 'fs';
-import path, { dirname } from 'path';
+import assert from 'node:assert';
+import { promises as fs } from 'node:fs';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import sqlite3 from 'sqlite3';
-import { fileURLToPath } from 'url';
 import { v4 as uuidv4 } from 'uuid';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -337,8 +337,6 @@ class SwarmPersistence {
 
 // Test suites
 async function runPersistenceTests() {
-  console.log('🗄️  Starting Persistence Layer Tests\n');
-
   const results = {
     passed: 0,
     failed: 0,
@@ -350,7 +348,6 @@ async function runPersistenceTests() {
   async function test(name, fn) {
     try {
       await fn();
-      console.log(`✅ ${name}`);
       results.passed++;
     } catch (error) {
       console.error(`❌ ${name}`);
@@ -649,11 +646,8 @@ async function runPersistenceTests() {
 
       // Query performance
       const queryStart = Date.now();
-      const coders = await db.all('SELECT * FROM agents WHERE agent_type = ?', ['coder']);
+      const _coders = await db.all('SELECT * FROM agents WHERE agent_type = ?', ['coder']);
       const queryTime = Date.now() - queryStart;
-
-      console.log(`   Inserted ${count} agents in ${insertTime}ms`);
-      console.log(`   Queried ${coders.length} coders in ${queryTime}ms`);
 
       assert(insertTime < 5000); // Should complete within 5 seconds
       assert(queryTime < 100); // Query should be fast
@@ -666,23 +660,13 @@ async function runPersistenceTests() {
     // Clean up test database
     try {
       await fs.unlink(TEST_DB_PATH);
-    } catch (err) {
+    } catch (_err) {
       // Ignore cleanup errors
     }
   }
 
-  // Summary
-  console.log('\n📊 Persistence Test Results');
-  console.log('─'.repeat(50));
-  console.log(`Total Tests: ${results.passed + results.failed}`);
-  console.log(`✅ Passed: ${results.passed}`);
-  console.log(`❌ Failed: ${results.failed}`);
-
   if (results.errors.length > 0) {
-    console.log('\n❌ Failed Tests:');
-    results.errors.forEach((e) => {
-      console.log(`  - ${e.test}: ${e.error}`);
-    });
+    results.errors.forEach((_e) => {});
   }
 
   return results.failed === 0;

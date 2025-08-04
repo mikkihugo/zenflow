@@ -146,7 +146,7 @@ export class WebSocketClient extends EventEmitter {
       const message = this.messageQueue.shift();
       if (message) {
         try {
-          this.ws!.send(message);
+          this.ws?.send(message);
         } catch (error) {
           this.emit('error', error);
           this.messageQueue.unshift(message);

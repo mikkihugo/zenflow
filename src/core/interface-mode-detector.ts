@@ -46,7 +46,7 @@ export class InterfaceModeDetector {
       process.env.GITLAB_CI
     );
 
-    const hasTerminal = !!(process.stdin && process.stdin.isTTY);
+    const hasTerminal = !!process.stdin?.isTTY;
     const interactive = hasTerminal && !isCI;
 
     // Command line argument analysis
@@ -120,9 +120,9 @@ export class InterfaceModeDetector {
       platform: process.platform,
       nodeVersion: process.version,
       tty: {
-        stdin: !!(process.stdin && process.stdin.isTTY),
-        stdout: !!(process.stdout && process.stdout.isTTY),
-        stderr: !!(process.stderr && process.stderr.isTTY),
+        stdin: !!process.stdin?.isTTY,
+        stdout: !!process.stdout?.isTTY,
+        stderr: !!process.stderr?.isTTY,
       },
       environment: {
         ci: !!process.env.CI,

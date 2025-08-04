@@ -6,8 +6,6 @@
 import { createNeuralModel, MODEL_PRESETS } from '../src/neural-models/index.js';
 
 async function testGNNModel() {
-  console.log('\n🧠 Testing Graph Neural Network (GNN)...');
-
   try {
     // Create GNN with social network preset
     const gnn = await createNeuralModel('gnn', MODEL_PRESETS.gnn.social_network);
@@ -40,15 +38,7 @@ async function testGNNModel() {
       graphData.nodes[i] = Math.random();
     }
     graphData.nodes.shape = [10, 128];
-
-    // Forward pass
-    console.log('  - Running forward pass...');
-    const output = await gnn.forward(graphData, false);
-    console.log('  - Output shape:', output.shape);
-    console.log('  - Model config:', gnn.getConfig());
-
-    // Training test
-    console.log('  - Testing training...');
+    const _output = await gnn.forward(graphData, false);
     const trainingData = [
       {
         graphs: graphData,
@@ -56,16 +46,13 @@ async function testGNNModel() {
       },
     ];
 
-    const result = await gnn.train(trainingData, { epochs: 2, batchSize: 1 });
-    console.log('  ✅ GNN training completed:', result);
+    const _result = await gnn.train(trainingData, { epochs: 2, batchSize: 1 });
   } catch (error) {
     console.error('  ❌ GNN test failed:', error);
   }
 }
 
 async function testResNetModel() {
-  console.log('\n🏗️ Testing Residual Network (ResNet)...');
-
   try {
     // Create ResNet with resnet18 preset
     const resnet = await createNeuralModel('resnet', {
@@ -81,15 +68,7 @@ async function testResNetModel() {
       inputData[i] = Math.random();
     }
     inputData.shape = [batchSize, 784];
-
-    // Forward pass
-    console.log('  - Running forward pass...');
-    const output = await resnet.forward(inputData, false);
-    console.log('  - Output shape:', output.shape);
-    console.log('  - Model config:', resnet.getConfig());
-
-    // Training test
-    console.log('  - Testing training...');
+    const _output = await resnet.forward(inputData, false);
     const targets = new Float32Array(batchSize * 10);
     for (let i = 0; i < batchSize; i++) {
       targets[i * 10 + Math.floor(Math.random() * 10)] = 1; // One-hot encoding
@@ -103,16 +82,13 @@ async function testResNetModel() {
       },
     ];
 
-    const result = await resnet.train(trainingData, { epochs: 2, batchSize: 2 });
-    console.log('  ✅ ResNet training completed:', result);
+    const _result = await resnet.train(trainingData, { epochs: 2, batchSize: 2 });
   } catch (error) {
     console.error('  ❌ ResNet test failed:', error);
   }
 }
 
 async function testVAEModel() {
-  console.log('\n🎨 Testing Variational Autoencoder (VAE)...');
-
   try {
     // Create VAE with mnist preset
     const vae = await createNeuralModel('vae', MODEL_PRESETS.vae.mnist_vae);
@@ -124,52 +100,30 @@ async function testVAEModel() {
       inputData[i] = Math.random(); // Random pixel values
     }
     inputData.shape = [batchSize, 784];
-
-    // Forward pass
-    console.log('  - Running forward pass...');
-    const output = await vae.forward(inputData, false);
-    console.log('  - Reconstruction shape:', output.reconstruction.shape);
-    console.log('  - Latent dimensions:', output.latent.shape);
-    console.log('  - Model config:', vae.getConfig());
-
-    // Test generation
-    console.log('  - Testing generation from latent space...');
-    const generated = await vae.generate(2);
-    console.log('  - Generated samples shape:', generated.shape);
-
-    // Test interpolation
-    console.log('  - Testing interpolation...');
+    const _output = await vae.forward(inputData, false);
+    const _generated = await vae.generate(2);
     const sample1 = inputData.slice(0, 784);
     const sample2 = inputData.slice(784, 1568);
     sample1.shape = [1, 784];
     sample2.shape = [1, 784];
 
-    const interpolations = await vae.interpolate(sample1, sample2, 5);
-    console.log('  - Number of interpolations:', interpolations.length);
-
-    // Training test
-    console.log('  - Testing training...');
+    const _interpolations = await vae.interpolate(sample1, sample2, 5);
     const trainingData = [
       {
         inputs: inputData,
       },
     ];
 
-    const result = await vae.train(trainingData, { epochs: 2, batchSize: 2 });
-    console.log('  ✅ VAE training completed:', result);
+    const _result = await vae.train(trainingData, { epochs: 2, batchSize: 2 });
   } catch (error) {
     console.error('  ❌ VAE test failed:', error);
   }
 }
 
 async function runAllTests() {
-  console.log('🚀 Testing new neural models...\n');
-
   await testGNNModel();
   await testResNetModel();
   await testVAEModel();
-
-  console.log('\n✨ All neural model tests completed!');
 }
 
 // Run tests

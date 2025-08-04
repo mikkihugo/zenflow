@@ -317,7 +317,7 @@ export interface Message {
   fromAgentId: string;
   toAgentId: string | null;
   swarmId: string;
-  type: string;
+  type: MessageType;
   content: any;
   timestamp: Date;
   requiresResponse: boolean;
@@ -325,7 +325,7 @@ export interface Message {
   payload?: any;
 }
 
-export type MessageType = 
+export type MessageType =
   | 'task_assignment'
   | 'status_update'
   | 'result'
@@ -343,7 +343,7 @@ export interface Agent {
   state: AgentState;
   config: AgentConfig;
   metrics: AgentMetrics;
-  
+
   initialize(): Promise<void>;
   execute(task: Task): Promise<ExecutionResult>;
   handleMessage(message: Message): Promise<void>;

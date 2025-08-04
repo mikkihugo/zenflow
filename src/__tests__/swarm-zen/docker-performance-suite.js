@@ -5,23 +5,14 @@
  * Comprehensive performance benchmarks across all features
  */
 
-import { promises as fs } from 'fs';
-import path from 'path';
-import { performance } from 'perf_hooks';
-import { fileURLToPath } from 'url';
-import { NeuralAgent, RuvSwarm } from '../src/index.js';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import { performance } from 'node:perf_hooks';
+import { fileURLToPath } from 'node:url';
+import { NeuralAgent, ZenSwarm } from '../src/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-console.log('================================================');
-console.log('ruv-swarm v1.0.6 Performance Benchmark Suite');
-console.log('================================================');
-console.log(`Date: ${new Date().toISOString()}`);
-console.log(`Node Version: ${process.version}`);
-console.log(`Platform: ${process.platform}`);
-console.log(`Architecture: ${process.arch}`);
-console.log('');
 
 const results = {
   testSuite: 'performance-benchmarks',
@@ -31,8 +22,8 @@ const results = {
     nodeVersion: process.version,
     platform: process.platform,
     arch: process.arch,
-    cpus: require('os').cpus().length,
-    memory: require('os').totalmem(),
+    cpus: require('node:os').cpus().length,
+    memory: require('node:os').totalmem(),
   },
   benchmarks: [],
   summary: {},
@@ -41,7 +32,6 @@ const results = {
 // Benchmark utilities
 function benchmark(name, fn, iterations = 1000) {
   return new Promise(async (resolve) => {
-    console.log(`Running: ${name}`);
     const timings = [];
 
     // Warmup
@@ -60,7 +50,6 @@ function benchmark(name, fn, iterations = 1000) {
         process.stdout.write('.');
       }
     }
-    console.log(' Done!');
 
     // Calculate statistics
     timings.sort((a, b) => a - b);
@@ -76,30 +65,26 @@ function benchmark(name, fn, iterations = 1000) {
     };
 
     results.benchmarks.push(stats);
-    console.log(`  Mean: ${stats.mean.toFixed(3)}ms, P95: ${stats.p95.toFixed(3)}ms`);
     resolve(stats);
   });
 }
 
 // Benchmark tests
 async function benchmarkSwarmCreation() {
-  console.log('\n1. Swarm Creation Benchmarks');
-  console.log('============================');
-
   await benchmark('Swarm Creation (Small)', () => {
-    const swarm = new RuvSwarm({ maxAgents: 4 });
+    const swarm = new ZenSwarm({ maxAgents: 4 });
     return swarm;
   });
 
   await benchmark('Swarm Creation (Medium)', () => {
-    const swarm = new RuvSwarm({ maxAgents: 16 });
+    const swarm = new ZenSwarm({ maxAgents: 16 });
     return swarm;
   });
 
   await benchmark(
     'Swarm Creation (Large)',
     () => {
-      const swarm = new RuvSwarm({ maxAgents: 64 });
+      const swarm = new ZenSwarm({ maxAgents: 64 });
       return swarm;
     },
     100
@@ -107,10 +92,7 @@ async function benchmarkSwarmCreation() {
 }
 
 async function benchmarkAgentOperations() {
-  console.log('\n2. Agent Operation Benchmarks');
-  console.log('=============================');
-
-  const swarm = new RuvSwarm({ maxAgents: 32 });
+  const swarm = new ZenSwarm({ maxAgents: 32 });
 
   await benchmark('Agent Spawn', () => {
     swarm.spawnAgent(`agent-${Date.now()}`, 'researcher');
@@ -133,9 +115,6 @@ async function benchmarkAgentOperations() {
 }
 
 async function benchmarkNeuralOperations() {
-  console.log('\n3. Neural Network Benchmarks');
-  console.log('============================');
-
   const agent = new NeuralAgent('neural-bench', 'researcher');
   await agent.initialize();
 
@@ -161,10 +140,7 @@ async function benchmarkNeuralOperations() {
 }
 
 async function benchmarkMemoryOperations() {
-  console.log('\n4. Memory Operation Benchmarks');
-  console.log('==============================');
-
-  const swarm = new RuvSwarm({ maxAgents: 8 });
+  const swarm = new ZenSwarm({ maxAgents: 8 });
 
   await benchmark('Memory Store', () => {
     const key = `key-${Date.now()}`;
@@ -183,10 +159,7 @@ async function benchmarkMemoryOperations() {
 }
 
 async function benchmarkTaskOrchestration() {
-  console.log('\n5. Task Orchestration Benchmarks');
-  console.log('================================');
-
-  const swarm = new RuvSwarm({
+  const swarm = new ZenSwarm({
     topology: 'hierarchical',
     maxAgents: 16,
   });
@@ -223,22 +196,16 @@ async function benchmarkTaskOrchestration() {
 }
 
 async function benchmarkWASMSpecific() {
-  console.log('\n6. WASM-Specific Benchmarks');
-  console.log('===========================');
-
   // Direct WASM function calls if available
   try {
     const wasmModule = global._wasmModule || global.__ruv_swarm_wasm;
-    if (wasmModule && wasmModule.benchmark_operation) {
+    if (wasmModule?.benchmark_operation) {
       await benchmark('Direct WASM Call', () => {
         return wasmModule.benchmark_operation();
       });
     } else {
-      console.log('  ⚠️  Direct WASM benchmarks not available');
     }
-  } catch (error) {
-    console.log('  ⚠️  WASM benchmark error:', error.message);
-  }
+  } catch (_error) {}
 }
 
 async function generatePerformanceReport() {
@@ -274,22 +241,6 @@ async function generatePerformanceReport() {
   const resultsPath = path.join(__dirname, '..', 'test-results', 'performance-benchmarks.json');
   await fs.mkdir(path.dirname(resultsPath), { recursive: true });
   await fs.writeFile(resultsPath, JSON.stringify(results, null, 2));
-
-  console.log('\n================================================');
-  console.log('Performance Benchmark Summary');
-  console.log('================================================');
-  console.log(`Total Benchmarks: ${aggregateStats.totalBenchmarks}`);
-  console.log(`Average Mean Time: ${aggregateStats.avgMeanTime.toFixed(3)}ms`);
-  console.log(`Average P95 Time: ${aggregateStats.avgP95Time.toFixed(3)}ms`);
-  console.log(
-    `Fastest Operation: ${aggregateStats.fastestOperation.name} (${aggregateStats.fastestOperation.mean.toFixed(3)}ms)`
-  );
-  console.log(
-    `Slowest Operation: ${aggregateStats.slowestOperation.name} (${aggregateStats.slowestOperation.mean.toFixed(3)}ms)`
-  );
-  console.log(`Performance Grade: ${grade}`);
-  console.log('');
-  console.log(`Results saved to: ${resultsPath}`);
 }
 
 // Run all benchmarks

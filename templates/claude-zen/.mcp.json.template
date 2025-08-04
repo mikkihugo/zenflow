@@ -1,0 +1,36 @@
+{
+  "mcpServers": {
+    "zen-swarm": {
+      "command": "npx",
+      "args": ["claude-zen", "mcp", "start"],
+      "transport": "stdio",
+      "env": {
+        "PROJECT_ROOT": ".",
+        "SWARM_CONFIG": ".swarm/config.json",
+        "LOG_LEVEL": "info",
+        "ENABLE_LEARNING": "true",
+        "ENABLE_COORDINATION": "true",
+        "ENABLE_DOMAIN_SWARMS": "true",
+        "ENABLE_GLOBAL_SWARMS": "true"
+      },
+      "initializationOptions": {
+        "projectRoot": ".",
+        "swarmDirectory": ".swarm",
+        "enablePersistence": true,
+        "enableMetrics": true,
+        "supportMultipleSwarmTypes": true,
+        "allowSwarmNesting": true
+      }
+    }
+  },
+  "clientCapabilities": {
+    "experimental": {
+      "swarmCoordination": true,
+      "persistentLearning": true,
+      "dynamicAgentSpawning": true,
+      "multiSwarmSupport": true,
+      "domainSpecialization": true,
+      "globalCoordination": true
+    }
+  }
+}

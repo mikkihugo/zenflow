@@ -240,8 +240,6 @@ describe('Neural Agent Tests', () => {
 // Direct execution block
 {
   const runTests = async () => {
-    console.log('Running Neural Agent Tests...\n');
-
     const tests = [
       'Neural Network Initialization',
       'Neural Network Forward Pass',
@@ -254,22 +252,17 @@ describe('Neural Agent Tests', () => {
       'Learning History Management',
     ];
 
-    let passed = 0;
-    let failed = 0;
+    let _passed = 0;
+    let _failed = 0;
 
-    for (const testName of tests) {
+    for (const _testName of tests) {
       try {
-        console.log(`Running: ${testName}`);
         // Simple test runner - in real implementation, use Jest
-        passed++;
-        console.log(`✓ ${testName} passed\n`);
-      } catch (error) {
-        failed++;
-        console.log(`✗ ${testName} failed: ${error.message}\n`);
+        _passed++;
+      } catch (_error) {
+        _failed++;
       }
     }
-
-    console.log(`\nTests completed: ${passed} passed, ${failed} failed`);
   };
 
   runTests().catch(console.error);

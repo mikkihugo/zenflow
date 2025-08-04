@@ -90,8 +90,6 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
             <Text> {displayText}</Text>
           </Box>
         );
-
-      case 'full':
       default:
         return (
           <Box>

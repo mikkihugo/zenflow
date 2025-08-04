@@ -93,7 +93,7 @@ class WasmBindingsLoader {
 
       // Store reference to the wasm module
       this.wasm = wasmModule.wasm || wasmModule;
-      this.memory = wasmModule.memory || (wasmModule.wasm && wasmModule.wasm.memory);
+      this.memory = wasmModule.memory || wasmModule.wasm?.memory;
       globalWasm = this.wasm;
 
       this.initialized = true;
@@ -141,7 +141,7 @@ class WasmBindingsLoader {
     const getUint8Memory0 = () => {
       if (cachedUint8Memory0 === null || cachedUint8Memory0.byteLength === 0) {
         const wasm = globalWasm || this.wasm;
-        if (wasm && wasm.memory) {
+        if (wasm?.memory) {
           cachedUint8Memory0 = new Uint8Array(wasm.memory.buffer);
         } else {
           cachedUint8Memory0 = new Uint8Array(1024);
@@ -160,7 +160,7 @@ class WasmBindingsLoader {
       try {
         return f.apply(null, args);
       } catch (e) {
-        if (this.wasm && this.wasm.__wbindgen_export_0) {
+        if (this.wasm?.__wbindgen_export_0) {
           this.wasm.__wbindgen_export_0(addHeapObject(e));
         }
         throw e;
@@ -182,7 +182,7 @@ class WasmBindingsLoader {
 
     imports.wbg.__wbg_error_7534b8e9a36f1ab4 = function (arg0, arg1) {
       const v0 = getStringFromWasm0(arg0, arg1).slice();
-      if (this.wasm && this.wasm.__wbindgen_export_1) {
+      if (this.wasm?.__wbindgen_export_1) {
         this.wasm.__wbindgen_export_1(arg0, arg1 * 1, 1);
       }
       console.error(v0);
@@ -222,9 +222,7 @@ class WasmBindingsLoader {
 
     imports.wbg.__wbg_length_e2d2a49132c1b256 = (arg0) => getObject(arg0).length;
 
-    imports.wbg.__wbg_log_c222819a41e063d3 = (arg0) => {
-      console.log(getObject(arg0));
-    };
+    imports.wbg.__wbg_log_c222819a41e063d3 = (_arg0) => {};
 
     imports.wbg.__wbg_message_97a2af9b89d693a3 = (arg0) => addHeapObject(getObject(arg0).message);
 
@@ -271,10 +269,9 @@ class WasmBindingsLoader {
 
     imports.wbg.__wbg_stack_0ed75d68575b0f3c = function (arg0, arg1) {
       const ret = getObject(arg1).stack;
-      const ptr1 =
-        this.wasm && this.wasm.__wbindgen_malloc
-          ? this.wasm.__wbindgen_malloc(ret.length * 1, 1)
-          : 0;
+      const ptr1 = this.wasm?.__wbindgen_malloc
+        ? this.wasm.__wbindgen_malloc(ret.length * 1, 1)
+        : 0;
       const len1 = ret.length;
       if (ptr1 && getUint8Memory0()) {
         getUint8Memory0()
@@ -290,10 +287,9 @@ class WasmBindingsLoader {
     imports.wbg.__wbindgen_debug_string = function (arg0, arg1) {
       const obj = getObject(arg1);
       const debugStr = String(obj);
-      const ptr =
-        this.wasm && this.wasm.__wbindgen_malloc
-          ? this.wasm.__wbindgen_malloc(debugStr.length * 1, 1)
-          : 0;
+      const ptr = this.wasm?.__wbindgen_malloc
+        ? this.wasm.__wbindgen_malloc(debugStr.length * 1, 1)
+        : 0;
       const len = debugStr.length;
       if (ptr && getUint8Memory0()) {
         getUint8Memory0()
@@ -333,10 +329,9 @@ class WasmBindingsLoader {
       const obj = getObject(arg1);
       const val = typeof obj === 'string' ? obj : undefined;
       if (!isLikeNone(val)) {
-        const ptr =
-          this.wasm && this.wasm.__wbindgen_malloc
-            ? this.wasm.__wbindgen_malloc(val.length * 1, 1)
-            : 0;
+        const ptr = this.wasm?.__wbindgen_malloc
+          ? this.wasm.__wbindgen_malloc(val.length * 1, 1)
+          : 0;
         const len = val.length;
         if (ptr && getUint8Memory0()) {
           getUint8Memory0()
@@ -381,33 +376,26 @@ class WasmBindingsLoader {
 
   // Add neural network specific functions
   addNeuralNetworkFunctions() {
-    this.create_neural_network = (layers, neurons_per_layer) => {
-      console.log(
-        `Creating neural network with ${layers} layers and ${neurons_per_layer} neurons per layer`
-      );
+    this.create_neural_network = (_layers, _neurons_per_layer) => {
       return 1; // Network ID
     };
 
-    this.train_network = (network_id, data, epochs) => {
-      console.log(`Training network ${network_id} for ${epochs} epochs`);
+    this.train_network = (_network_id, _data, _epochs) => {
       return true;
     };
 
-    this.forward_pass = (network_id, input) => {
-      console.log(`Forward pass on network ${network_id}`);
+    this.forward_pass = (_network_id, _input) => {
       return new Float32Array([0.5, 0.5, 0.5]); // Placeholder output
     };
   }
 
   // Add forecasting specific functions
   addForecastingFunctions() {
-    this.create_forecasting_model = (type) => {
-      console.log(`Creating forecasting model of type ${type}`);
+    this.create_forecasting_model = (_type) => {
       return 1; // Model ID
     };
 
-    this.forecast = (model_id, data, horizon) => {
-      console.log(`Forecasting with model ${model_id} for horizon ${horizon}`);
+    this.forecast = (_model_id, _data, _horizon) => {
       return new Float32Array([0.1, 0.2, 0.3]); // Placeholder forecast
     };
   }

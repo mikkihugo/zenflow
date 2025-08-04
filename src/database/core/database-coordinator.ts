@@ -109,7 +109,7 @@ export class DatabaseCoordinator extends EventEmitter {
     if (!engine) return;
 
     // Cancel any active queries on this engine
-    for (const [queryId, execution] of this.activeQueries) {
+    for (const [_queryId, execution] of this.activeQueries) {
       if (execution.engineId === engineId && execution.status === 'executing') {
         execution.status = 'failed';
         execution.error = 'Engine unregistered during execution';
@@ -247,8 +247,6 @@ export class DatabaseCoordinator extends EventEmitter {
 
       case 'performance_based':
         return this.selectByPerformance(engines);
-
-      case 'capability_based':
       default:
         return this.selectByCapability(query, engines);
     }
@@ -498,7 +496,7 @@ export class DatabaseCoordinator extends EventEmitter {
       name: 'vector_search',
       description: 'Route vector operations to vector databases',
       applicable: (query) => query.operation.includes('vector'),
-      route: (query, engines) => {
+      route: (_query, engines) => {
         return Array.from(engines.entries())
           .filter(([, engine]) => engine.type === 'vector')
           .map(([id]) => id);
@@ -511,7 +509,7 @@ export class DatabaseCoordinator extends EventEmitter {
       name: 'graph_traversal',
       description: 'Route graph operations to graph databases',
       applicable: (query) => query.operation.includes('graph'),
-      route: (query, engines) => {
+      route: (_query, engines) => {
         return Array.from(engines.entries())
           .filter(([, engine]) => engine.type === 'graph')
           .map(([id]) => id);
@@ -525,7 +523,7 @@ export class DatabaseCoordinator extends EventEmitter {
       description: 'Route high priority queries to fastest engines',
       applicable: (query) =>
         query.requirements.priority === 'critical' || query.requirements.priority === 'high',
-      route: (query, engines) => {
+      route: (_query, engines) => {
         return Array.from(engines.entries())
           .filter(([, engine]) => engine.status === 'active')
           .sort(([, a], [, b]) => a.performance.averageLatency - b.performance.averageLatency)

@@ -11,8 +11,6 @@ interface AgentCapacityProfile {
 }
 
 export class CapacityPredictor {
-  private predictionModels: Map<string, any> = new Map();
-
   public async predict(profile: AgentCapacityProfile, timeHorizon: number): Promise<number> {
     // Simple linear prediction based on recent trends
     const history = profile.utilizationHistory.slice(-20);
@@ -31,7 +29,7 @@ export class CapacityPredictor {
     return Math.max(1, Math.round(predictedCapacity));
   }
 
-  public async predictDemand(profile: AgentCapacityProfile, timeHorizon: number): Promise<number> {
+  public async predictDemand(profile: AgentCapacityProfile, _timeHorizon: number): Promise<number> {
     // Predict future demand based on historical patterns
     const history = profile.utilizationHistory.slice(-30);
     if (history.length < 10) {
@@ -41,10 +39,23 @@ export class CapacityPredictor {
     const avgDemand = history.reduce((sum, val) => sum + val, 0) / history.length;
     const variance = this.calculateVariance(history);
 
-    // Add some randomness for demand prediction
-    const demandFactor = 1 + (Math.random() - 0.5) * 0.2; // ±10% variation
+    // Use variance to adjust prediction confidence and range
+    const volatilityFactor = Math.sqrt(variance) / avgDemand; // Coefficient of variation
+    const adjustedVariation = Math.max(0.1, Math.min(0.5, volatilityFactor)); // 10-50% based on volatility
+    const demandFactor = 1 + (Math.random() - 0.5) * adjustedVariation;
 
-    return Math.max(1, Math.round(avgDemand * demandFactor));
+    const prediction = Math.max(1, Math.round(avgDemand * demandFactor));
+
+    // Log prediction with confidence metrics
+    this.logger.debug('Capacity prediction', {
+      avgDemand,
+      variance,
+      volatilityFactor,
+      prediction,
+      confidence: 1 - Math.min(volatilityFactor, 1),
+    });
+
+    return prediction;
   }
 
   private calculateTrend(values: number[]): number {

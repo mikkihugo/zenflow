@@ -2,11 +2,9 @@
  * Test suite for ruv-swarm hooks implementation
  */
 
+import { execSync } from 'node:child_process';
+import { promises as fs } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { execSync } from 'child_process';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 // Mock modules
 jest.mock('fs', () => ({
@@ -24,15 +22,15 @@ jest.mock('child_process', () => ({
 }));
 
 // Import the module to test
-import RuvSwarmHooks from '../src/hooks/index.js';
+import ZenSwarmHooks from '../src/hooks/index.js';
 
-describe('RuvSwarmHooks', () => {
+describe('ZenSwarmHooks', () => {
   let hooks;
   let mockFs;
   let mockExecSync;
 
   beforeEach(() => {
-    hooks = new RuvSwarmHooks();
+    hooks = new ZenSwarmHooks();
     mockFs = fs;
     mockExecSync = execSync;
     jest.clearAllMocks();
@@ -44,7 +42,7 @@ describe('RuvSwarmHooks', () => {
 
   describe('constructor', () => {
     it('should initialize session data correctly', () => {
-      const newHooks = new RuvSwarmHooks();
+      const newHooks = new ZenSwarmHooks();
       expect(newHooks.sessionData).toBeDefined();
       expect(newHooks.sessionData.operations).toEqual([]);
       expect(newHooks.sessionData.agents).toBeInstanceOf(Map);

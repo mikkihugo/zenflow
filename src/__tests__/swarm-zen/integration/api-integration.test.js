@@ -2,11 +2,11 @@
  * Integration tests for ruv-swarm API
  */
 
-import assert from 'assert';
-import fs from 'fs';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { RuvSwarm } from '../../src/index-enhanced.js';
+import assert from 'node:assert';
+import fs from 'node:fs';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { ZenSwarm } from '../../src/index-enhanced.js';
 import { NeuralAgentFactory } from '../../src/neural-agent.js';
 import { SwarmPersistence } from '../../src/persistence.js';
 
@@ -28,7 +28,7 @@ describe('API Integration Tests', () => {
     global._ruvSwarmInitialized = 0;
 
     // Initialize with test database
-    ruvSwarm = await RuvSwarm.initialize({
+    ruvSwarm = await ZenSwarm.initialize({
       enablePersistence: true,
       enableNeuralNetworks: true,
       enableForecasting: false,
@@ -43,7 +43,7 @@ describe('API Integration Tests', () => {
   });
 
   afterEach(() => {
-    if (ruvSwarm && ruvSwarm.persistence) {
+    if (ruvSwarm?.persistence) {
       ruvSwarm.persistence.close();
     }
     if (fs.existsSync(testDbPath)) {
@@ -460,6 +460,5 @@ describe('API Integration Tests', () => {
 
 // Run tests
 if (require.main === module) {
-  console.log('Running API Integration Tests...');
   require('../../node_modules/.bin/jest');
 }

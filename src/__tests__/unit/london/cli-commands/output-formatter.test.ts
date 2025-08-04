@@ -134,7 +134,7 @@ class MockOutputWriter {
     }
   }
 
-  writeTable(data: Record<string, unknown>[], columns?: TableColumn[]): void {
+  writeTable(data: Record<string, unknown>[], _columns?: TableColumn[]): void {
     this.console.table(data);
   }
 
@@ -320,7 +320,7 @@ describe('OutputFormatter - TDD London', () => {
         render: jest.fn().mockImplementation((data) => {
           try {
             return JSON.stringify(data, null, 2);
-          } catch (error) {
+          } catch (_error) {
             return JSON.stringify({ error: 'Circular reference detected' }, null, 2);
           }
         }),
@@ -329,7 +329,7 @@ describe('OutputFormatter - TDD London', () => {
       formatter.addRenderer('safe-json', safeJsonRenderer);
 
       // Act
-      const result = formatter.getRenderer('safe-json')!.render(circularData, { format: 'json' });
+      const result = formatter.getRenderer('safe-json')?.render(circularData, { format: 'json' });
 
       // Assert - verify circular reference handling
       expect(result).toContain('Circular reference detected');
@@ -347,7 +347,7 @@ describe('OutputFormatter - TDD London', () => {
       const tableRenderer: FormatRenderer = {
         render: jest.fn().mockImplementation((data) => {
           if (Array.isArray(data)) {
-            return 'Mock table with ' + data.length + ' rows';
+            return `Mock table with ${data.length} rows`;
           }
           return 'Not table data';
         }),
@@ -356,7 +356,7 @@ describe('OutputFormatter - TDD London', () => {
       formatter.addRenderer('table', tableRenderer);
 
       // Act
-      const result = formatter.getRenderer('table')!.render(tableData, { format: 'table' });
+      const result = formatter.getRenderer('table')?.render(tableData, { format: 'table' });
 
       // Assert - verify table formatting behavior
       expect(result).toBe('Mock table with 2 rows');
@@ -389,11 +389,11 @@ describe('OutputFormatter - TDD London', () => {
       const data = { status: 'success' };
 
       // Act
-      const coloredResult = formatter.getRenderer('colored-json')!.render(data, {
+      const coloredResult = formatter.getRenderer('colored-json')?.render(data, {
         format: 'json',
         colors: true,
       });
-      const plainResult = formatter.getRenderer('colored-json')!.render(data, {
+      const plainResult = formatter.getRenderer('colored-json')?.render(data, {
         format: 'json',
         colors: false,
       });
@@ -416,11 +416,11 @@ describe('OutputFormatter - TDD London', () => {
       const data = { message: 'test' };
 
       // Act
-      const lightResult = formatter.getRenderer('themed')!.render(data, {
+      const lightResult = formatter.getRenderer('themed')?.render(data, {
         format: 'json',
         theme: 'light',
       });
-      const darkResult = formatter.getRenderer('themed')!.render(data, {
+      const darkResult = formatter.getRenderer('themed')?.render(data, {
         format: 'json',
         theme: 'dark',
       });
@@ -448,7 +448,7 @@ describe('OutputFormatter - TDD London', () => {
       formatter.addRenderer('robust', robustRenderer);
 
       // Act
-      const result = formatter.getRenderer('robust')!.render(invalidData, { format: 'json' });
+      const result = formatter.getRenderer('robust')?.render(invalidData, { format: 'json' });
 
       // Assert - verify error handling
       expect(result).toBe('No data available');
@@ -465,7 +465,7 @@ describe('OutputFormatter - TDD London', () => {
       const data = { invalid: 'data' };
 
       // Act
-      const isValid = formatter.getRenderer('validating')!.validate!(data);
+      const isValid = formatter.getRenderer('validating')?.validate?.(data);
 
       // Assert - verify validation behavior
       expect(validatingRenderer.validate).toHaveBeenCalledWith(data);
@@ -481,7 +481,7 @@ describe('OutputFormatter - TDD London', () => {
         render: jest.fn().mockImplementation((data, options) => {
           let output = JSON.stringify(data);
           if (options.maxWidth && output.length > options.maxWidth) {
-            output = output.substring(0, options.maxWidth - 3) + '...';
+            output = `${output.substring(0, options.maxWidth - 3)}...`;
           }
           return output;
         }),
@@ -490,7 +490,7 @@ describe('OutputFormatter - TDD London', () => {
       formatter.addRenderer('constrained', widthConstrainedRenderer);
 
       // Act
-      const result = formatter.getRenderer('constrained')!.render(longData, {
+      const result = formatter.getRenderer('constrained')?.render(longData, {
         format: 'json',
         maxWidth: 20,
       });

@@ -5,8 +5,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '@core/event-bus';
-import type { ILogger } from '@core/logger';
+import type { IEventBus } from '../../../core/event-bus';
+import type { ILogger } from '../../../core/logger';
 
 // Core types for topology management
 export type TopologyType =
@@ -125,9 +125,9 @@ export class TopologyManager extends EventEmitter {
     super();
     this.currentConfig = initialConfig;
     this.metrics = this.initializeMetrics();
-    this.adaptationEngine = new TopologyAdaptationEngine(this.logger);
+    this.adaptationEngine = new TopologyAdaptationEngine();
     this.networkOptimizer = new NetworkOptimizer();
-    this.faultDetector = new FaultDetector(this.eventBus);
+    this.faultDetector = new FaultDetector();
     this.migrationController = new MigrationController(this.logger);
 
     this.setupEventHandlers();
@@ -311,7 +311,7 @@ export class TopologyManager extends EventEmitter {
   }
 
   private async disconnectNodeConnections(node: NetworkNode): Promise<void> {
-    for (const [targetId, connection] of node.connections) {
+    for (const [targetId, _connection] of node.connections) {
       const targetNode = this.nodes.get(targetId);
       if (targetNode) {
         targetNode.connections.delete(node.id);
@@ -470,7 +470,7 @@ export class TopologyManager extends EventEmitter {
       for (let i = 0; i < neighbors.length; i++) {
         for (let j = i + 1; j < neighbors.length; j++) {
           const neighborNode = this.nodes.get(neighbors[i]);
-          if (neighborNode && neighborNode.connections.has(neighbors[j])) {
+          if (neighborNode?.connections.has(neighbors[j])) {
             actualEdges++;
           }
         }
@@ -600,7 +600,7 @@ export class TopologyManager extends EventEmitter {
       // 2-hop paths
       for (const [intermediateId] of sourceNode.connections) {
         const intermediate = this.nodes.get(intermediateId);
-        if (intermediate && intermediate.connections.has(targetId)) {
+        if (intermediate?.connections.has(targetId)) {
           pathCounts[targetId]++;
         }
       }
@@ -862,8 +862,8 @@ class MeshConnectionStrategy implements ConnectionStrategy {
 
 class HierarchicalConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
-    node: NetworkNode,
-    allNodes: Map<string, NetworkNode>
+    _node: NetworkNode,
+    _allNodes: Map<string, NetworkNode>
   ): Promise<Connection[]> {
     // Connect based on hierarchical structure
     const connections: Connection[] = [];
@@ -874,8 +874,8 @@ class HierarchicalConnectionStrategy implements ConnectionStrategy {
 
 class RingConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
-    node: NetworkNode,
-    allNodes: Map<string, NetworkNode>
+    _node: NetworkNode,
+    _allNodes: Map<string, NetworkNode>
   ): Promise<Connection[]> {
     // Connect to immediate neighbors in ring
     const connections: Connection[] = [];
@@ -886,8 +886,8 @@ class RingConnectionStrategy implements ConnectionStrategy {
 
 class StarConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
-    node: NetworkNode,
-    allNodes: Map<string, NetworkNode>
+    _node: NetworkNode,
+    _allNodes: Map<string, NetworkNode>
   ): Promise<Connection[]> {
     // Connect based on star topology (hub and spokes)
     const connections: Connection[] = [];
@@ -898,8 +898,8 @@ class StarConnectionStrategy implements ConnectionStrategy {
 
 class HybridConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
-    node: NetworkNode,
-    allNodes: Map<string, NetworkNode>
+    _node: NetworkNode,
+    _allNodes: Map<string, NetworkNode>
   ): Promise<Connection[]> {
     // Adaptive connection strategy
     const connections: Connection[] = [];
@@ -910,8 +910,8 @@ class HybridConnectionStrategy implements ConnectionStrategy {
 
 class SmallWorldConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
-    node: NetworkNode,
-    allNodes: Map<string, NetworkNode>
+    _node: NetworkNode,
+    _allNodes: Map<string, NetworkNode>
   ): Promise<Connection[]> {
     // Small-world network (local clusters + long-range connections)
     const connections: Connection[] = [];
@@ -922,8 +922,8 @@ class SmallWorldConnectionStrategy implements ConnectionStrategy {
 
 class ScaleFreeConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
-    node: NetworkNode,
-    allNodes: Map<string, NetworkNode>
+    _node: NetworkNode,
+    _allNodes: Map<string, NetworkNode>
   ): Promise<Connection[]> {
     // Scale-free network (preferential attachment)
     const connections: Connection[] = [];
@@ -933,8 +933,6 @@ class ScaleFreeConnectionStrategy implements ConnectionStrategy {
 }
 
 class TopologyAdaptationEngine {
-  constructor(private logger: ILogger) {}
-
   async analyzeTopology(
     currentConfig: TopologyConfig,
     nodes: Map<string, NetworkNode>,
@@ -957,9 +955,9 @@ class TopologyAdaptationEngine {
 
   private async performTopologyAnalysis(
     config: TopologyConfig,
-    nodes: Map<string, NetworkNode>,
-    metrics: TopologyMetrics,
-    history: Array<{ topology: TopologyType; timestamp: Date; performance: number }>
+    _nodes: Map<string, NetworkNode>,
+    _metrics: TopologyMetrics,
+    _history: Array<{ topology: TopologyType; timestamp: Date; performance: number }>
   ): Promise<{
     recommendedTopology: TopologyType;
     confidence: number;
@@ -983,7 +981,7 @@ class TopologyAdaptationEngine {
 }
 
 class NetworkOptimizer {
-  async optimize(nodes: Map<string, NetworkNode>, config: TopologyConfig): Promise<void> {
+  async optimize(nodes: Map<string, NetworkNode>, _config: TopologyConfig): Promise<void> {
     // Network optimization algorithms
     await this.optimizeConnections(nodes);
     await this.balanceLoad(nodes);
@@ -991,32 +989,32 @@ class NetworkOptimizer {
   }
 
   async repairFragmentation(
-    nodes: Map<string, NetworkNode>,
-    config: TopologyConfig
+    _nodes: Map<string, NetworkNode>,
+    _config: TopologyConfig
   ): Promise<void> {
     // Repair network fragmentation
     // Implementation would reconnect isolated components
   }
 
-  private async optimizeConnections(nodes: Map<string, NetworkNode>): Promise<void> {
+  private async optimizeConnections(_nodes: Map<string, NetworkNode>): Promise<void> {
     // Connection optimization logic
   }
 
-  private async balanceLoad(nodes: Map<string, NetworkNode>): Promise<void> {
+  private async balanceLoad(_nodes: Map<string, NetworkNode>): Promise<void> {
     // Load balancing optimization
   }
 
-  private async minimizeLatency(nodes: Map<string, NetworkNode>): Promise<void> {
+  private async minimizeLatency(_nodes: Map<string, NetworkNode>): Promise<void> {
     // Latency minimization algorithms
   }
 }
 
 class FaultDetector {
-  constructor(private eventBus: IEventBus) {
+  constructor() {
     this.setupFaultDetection();
   }
 
-  async handleFault(fault: any, nodes: Map<string, NetworkNode>): Promise<void> {
+  async handleFault(_fault: any, _nodes: Map<string, NetworkNode>): Promise<void> {
     // Fault handling and recovery
   }
 
@@ -1047,7 +1045,7 @@ class MigrationController {
   async createMigrationPlan(
     currentConfig: TopologyConfig,
     targetConfig: TopologyConfig,
-    nodes: Map<string, NetworkNode>
+    _nodes: Map<string, NetworkNode>
   ): Promise<MigrationPlan> {
     // Create step-by-step migration plan
     return {
@@ -1073,11 +1071,11 @@ class MigrationController {
     }
   }
 
-  private async executeStep(step: MigrationStep, nodes: Map<string, NetworkNode>): Promise<void> {
+  private async executeStep(_step: MigrationStep, _nodes: Map<string, NetworkNode>): Promise<void> {
     // Execute individual migration step
   }
 
-  private async rollback(plan: MigrationPlan, nodes: Map<string, NetworkNode>): Promise<void> {
+  private async rollback(_plan: MigrationPlan, _nodes: Map<string, NetworkNode>): Promise<void> {
     // Execute rollback plan
   }
 }

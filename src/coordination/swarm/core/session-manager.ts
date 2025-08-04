@@ -1,5 +1,5 @@
 /**
- * Session Management System for RuvSwarm
+ * Session Management System for ZenSwarm
  *
  * Provides comprehensive session management with persistence integration,
  * state serialization, checkpoint system, and recovery mechanisms.
@@ -12,10 +12,10 @@
  * - Integration with existing persistence layer
  */
 
-import crypto from 'crypto';
-import { EventEmitter } from 'events';
+import crypto from 'node:crypto';
+import { EventEmitter } from 'node:events';
 import type { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
-import { AgentConfig, SwarmEvent, type SwarmOptions, type SwarmState, Task } from './types';
+import type { SwarmOptions, SwarmState } from './types';
 import { generateId } from './utils';
 
 export interface SessionState {
@@ -171,7 +171,7 @@ export class SessionManager extends EventEmitter {
 
     // Store in database
     await this.ensureInitialized();
-    await this.persistence.pool!.write(
+    await this.persistence.pool?.write(
       `
       INSERT INTO sessions (id, name, status, swarm_options, swarm_state, metadata, created_at, last_accessed_at, version)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -564,7 +564,7 @@ export class SessionManager extends EventEmitter {
     }
 
     if (conditions.length > 0) {
-      sql += ' WHERE ' + conditions.join(' AND ');
+      sql += ` WHERE ${conditions.join(' AND ')}`;
     }
 
     sql += ' ORDER BY last_accessed_at DESC';
@@ -807,7 +807,7 @@ export class SessionManager extends EventEmitter {
    */
   async shutdown(): Promise<void> {
     // Stop all auto-checkpoint timers
-    for (const [sessionId, timer] of this.checkpointTimers) {
+    for (const [_sessionId, timer] of this.checkpointTimers) {
       clearInterval(timer);
     }
     this.checkpointTimers.clear();

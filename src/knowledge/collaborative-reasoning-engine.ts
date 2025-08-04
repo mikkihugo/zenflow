@@ -874,17 +874,17 @@ export class CollaborativeReasoningEngine extends EventEmitter {
 
   // Implementation of utility methods would continue here...
   private async initializeSharedContext(
-    problemId: string,
-    problem: Problem,
-    participants: CollaborativeParticipant[]
+    _problemId: string,
+    _problem: Problem,
+    _participants: CollaborativeParticipant[]
   ): Promise<SharedReasoningContext> {
     // Implementation placeholder
     return {} as SharedReasoningContext;
   }
 
   private async assignReasoningTasks(
-    subproblems: SubProblem[],
-    participants: CollaborativeParticipant[]
+    _subproblems: SubProblem[],
+    _participants: CollaborativeParticipant[]
   ): Promise<ReasoningTask[]> {
     // Implementation placeholder
     return [];

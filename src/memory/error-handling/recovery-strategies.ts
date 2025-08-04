@@ -5,7 +5,7 @@
 
 import { EventEmitter } from 'node:events';
 import type { BackendInterface } from '../backends/base.backend';
-import { type MemoryError, MemoryErrorClassifier, MemoryErrorCode } from './memory-errors';
+import { type MemoryError, MemoryErrorCode } from './memory-errors';
 
 export interface RecoveryStrategy {
   name: string;
@@ -80,7 +80,7 @@ export class RecoveryStrategyManager extends EventEmitter {
           strategy: 'none',
           action: 'no_applicable_strategy',
           duration: Date.now() - startTime,
-          error: 'No recovery strategy found for error code: ' + error.code,
+          error: `No recovery strategy found for error code: ${error.code}`,
         };
       }
 
@@ -351,7 +351,7 @@ export class RecoveryStrategyManager extends EventEmitter {
       priority: 5,
       timeoutMs: 5000,
       maxRetries: 1,
-      execute: async (error, context) => {
+      execute: async (_error, context) => {
         const startTime = Date.now();
 
         try {
@@ -485,7 +485,7 @@ export class RecoveryStrategyManager extends EventEmitter {
       priority: 2,
       timeoutMs: 3000,
       maxRetries: 1,
-      execute: async (error, context) => {
+      execute: async (error, _context) => {
         const startTime = Date.now();
 
         try {

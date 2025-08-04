@@ -6,7 +6,6 @@
 
 import { EventEmitter } from 'node:events';
 import type {
-  BaseEventPayload,
   EventBusConfig,
   EventListener,
   EventListenerAny,
@@ -15,21 +14,27 @@ import type {
   EventMiddleware,
 } from '../types/event-types';
 
-export interface IEventBus<TEventMap = EventMap> {
-  on<T extends keyof TEventMap>(event: T, listener: EventListener<T>): void;
-  off<T extends keyof TEventMap>(event: T, listener: EventListener<T>): void;
-  emit<T extends keyof TEventMap>(event: T, payload: TEventMap[T]): boolean;
-  once<T extends keyof TEventMap>(event: T, listener: EventListener<T>): void;
+export interface IEventBus {
+  on<T extends keyof EventMap>(event: T, listener: EventListener<T>): this;
+  off<T extends keyof EventMap>(event: T, listener: EventListener<T>): this;
+  emit<T extends keyof EventMap>(event: T, payload: EventMap[T]): boolean;
+  once<T extends keyof EventMap>(event: T, listener: EventListener<T>): this;
 }
 
 /**
  * Unified Event Bus implementation
  * Extends Node.js EventEmitter with additional features
  */
-export class EventBus extends EventEmitter implements IEventBus<EventMap> {
+export class EventBus extends EventEmitter implements IEventBus {
   private static instance: EventBus | null = null;
   private middleware: EventMiddleware[] = [];
-  private metrics: EventMetrics;
+  private metrics: {
+    eventCount: number;
+    eventTypes: Record<string, number>;
+    avgProcessingTime: number;
+    errorCount: number;
+    listenerCount: number;
+  };
   private config: EventBusConfig;
 
   constructor(config: Partial<EventBusConfig> = {}) {
@@ -81,7 +86,6 @@ export class EventBus extends EventEmitter implements IEventBus<EventMap> {
 
       // Log if enabled
       if (this.config.enableLogging) {
-        console.log(`[EventBus] Emitting ${String(event)}:`, payload);
       }
 
       const result = super.emit(event as string, payload);
@@ -101,25 +105,28 @@ export class EventBus extends EventEmitter implements IEventBus<EventMap> {
   /**
    * Type-safe event listener registration
    */
-  on<T extends keyof EventMap>(event: T, listener: EventListener<T>): void {
+  on<T extends keyof EventMap>(event: T, listener: EventListener<T>): this {
     super.on(event as string, listener as EventListenerAny);
     this.metrics.listenerCount++;
+    return this;
   }
 
   /**
    * Type-safe once listener registration
    */
-  once<T extends keyof EventMap>(event: T, listener: EventListener<T>): void {
+  once<T extends keyof EventMap>(event: T, listener: EventListener<T>): this {
     super.once(event as string, listener as EventListenerAny);
     this.metrics.listenerCount++;
+    return this;
   }
 
   /**
    * Type-safe event listener removal
    */
-  off<T extends keyof EventMap>(event: T, listener: EventListener<T>): void {
+  off<T extends keyof EventMap>(event: T, listener: EventListener<T>): this {
     super.off(event as string, listener as EventListenerAny);
     this.metrics.listenerCount = Math.max(0, this.metrics.listenerCount - 1);
+    return this;
   }
 
   /**
@@ -155,7 +162,7 @@ export class EventBus extends EventEmitter implements IEventBus<EventMap> {
       eventTypes: {},
       avgProcessingTime: 0,
       errorCount: 0,
-      listenerCount: this.listenerCount(),
+      listenerCount: 0,
     };
   }
 
@@ -182,13 +189,6 @@ export class EventBus extends EventEmitter implements IEventBus<EventMap> {
     const totalTime =
       this.metrics.avgProcessingTime * (this.metrics.eventCount - 1) + processingTime;
     this.metrics.avgProcessingTime = totalTime / this.metrics.eventCount;
-  }
-
-  /**
-   * Alias for removeListener
-   */
-  off(event: string, listener: (...args: any[]) => void): this {
-    return this.removeListener(event, listener);
   }
 
   /**

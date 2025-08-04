@@ -5,10 +5,10 @@
  * for the web interface server.
  */
 
-import { type ChildProcess, spawn } from 'child_process';
-import { existsSync } from 'fs';
-import { mkdir, readFile, unlink, writeFile } from 'fs/promises';
-import { join } from 'path';
+import { spawn } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { createLogger } from '../../utils/logger';
 
 export interface DaemonConfig {
@@ -33,7 +33,6 @@ export interface ProcessInfo {
 export class DaemonProcessManager {
   private logger = createLogger('Daemon');
   private config: Required<DaemonConfig>;
-  private currentProcess?: ChildProcess;
 
   constructor(config: DaemonConfig = {}) {
     this.config = {
@@ -167,7 +166,7 @@ export class DaemonProcessManager {
       const pidContent = await readFile(this.config.pidFile, 'utf-8');
       const pid = parseInt(pidContent.trim());
 
-      if (isNaN(pid)) {
+      if (Number.isNaN(pid)) {
         await this.cleanupPidFile();
         return null;
       }
@@ -265,7 +264,7 @@ export class DaemonProcessManager {
       // Sending signal 0 checks if process exists without actually sending a signal
       process.kill(pid, 0);
       return true;
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }
@@ -326,7 +325,7 @@ export class DaemonProcessManager {
     };
 
     try {
-      await writeFile(this.config.errorFile, JSON.stringify(errorLog, null, 2) + '\n', {
+      await writeFile(this.config.errorFile, `${JSON.stringify(errorLog, null, 2)}\n`, {
         flag: 'a',
       });
     } catch (writeError) {

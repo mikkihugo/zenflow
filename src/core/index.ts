@@ -1,18 +1,65 @@
 /**
- * Core Module - Barrel Export
+ * Core Module - Clean Architecture Exports
  *
- * Central export point for core system functionality and utilities.
+ * Central export point for core system functionality with clean, focused architecture.
+ * Replaces bloated "Unified" systems with single-responsibility components.
  */
 
-// Types (re-export for convenience)
-export type * from '../types/shared-types';
-export { DocumentDrivenSystem } from './document-driven-system';
-// Utilities
+// ==================== CLEAN ARCHITECTURE SYSTEMS ====================
+
+export type { CoreSystemConfig, SystemStatus } from './core-system';
+// Main system coordinator
+export { CoreSystem } from './core-system';
 export type {
-  DocumentIndex,
-  DocumentLink,
+  Document,
+  DocumentMetadata,
+  DocumentProcessorConfig,
+  DocumentStats,
+  DocumentType,
+  DocumentWorkspace,
+} from './document-processor';
+export { DocumentProcessor } from './document-processor';
+export type { DocumentationManagerConfig, DocumentationStats } from './documentation-manager';
+export { DocumentationManager } from './documentation-manager';
+export type { ExportResult, ExportOptions, ExporterDefinition } from './export-manager';
+// Management systems
+export { UnifiedExportSystem as ExportManager } from './export-manager';
+export type { InterfaceManagerConfig, InterfaceMode, InterfaceStats } from './interface-manager';
+export { InterfaceManager } from './interface-manager';
+export type {
+  BackendStats,
+  BackendType,
+  JSONValue,
+  MemoryConfig,
+  StorageResult,
+} from './memory-system';
+export { MemorySystem } from './memory-system';
+export type {
+  WorkflowDefinition,
+  WorkflowEngineConfig,
+  WorkflowState,
+} from '../types/workflow-types';
+// Core processing engines
+export { WorkflowEngine } from './workflow-engine';
+
+// ==================== LEGACY COMPATIBILITY ====================
+
+export { ApplicationCoordinator } from './application-coordinator'; // Legacy - use CoreSystem
+// Keep these for backward compatibility during transition
+export { DocumentDrivenSystem } from './document-driven-system'; // Legacy - use DocumentProcessor
+export { MemoryCoordinator } from './memory-coordinator'; // Legacy - use MemorySystem
+
+// ==================== SHARED UTILITIES ====================
+
+// Types (re-export for convenience) - removed wildcard export to avoid conflicts
+// Documentation utilities (legacy)
+export type {
+  DocumentationIndex as DocumentIndex,
+  CrossReference as DocumentLink,
 } from './documentation-linker';
+// Legacy unified systems (still exported but deprecated)
 export { DocumentationLinker } from './documentation-linker';
+// Error handling
 export {
   BaseClaudeZenError,
   type ErrorContext,
@@ -23,23 +70,23 @@ export {
   SystemError,
   WASMError,
 } from './errors';
-// Core components
+// Core utilities
 export { EventBus } from './event-bus';
+// ExportManager already exported above as UnifiedExportSystem
+// Export utilities (legacy)
 export type {
   ExportConfig,
-  ExportResult,
+  ExportResult as LegacyExportResult,
 } from './exporters';
 export { ExportSystem, ExportUtils } from './exporters';
 export * from './helpers';
 export { InterfaceModeDetector } from './interface-mode-detector';
-export { createLogger } from './logger';
+export type { ILogger, LoggerConfig, LogLevel, LogMeta } from './logger';
+// Logging system
+export { createLogger, Logger, logger } from './logger';
 export { Orchestrator } from './orchestrator';
 export * from './orchestrator-provider';
+// External systems
+export { ProductFlowSystem } from './product-flow-system';
 export * from './type-guards';
 export * from './types';
-// Unified systems
-export { UnifiedCoreSystem } from './unified-core-system';
-export { UnifiedDocumentationLinker } from './unified-documentation-linker';
-export { UnifiedExportSystem } from './unified-export-system';
-export { UnifiedMemorySystem } from './unified-memory-system';
-export { UnifiedWorkflowEngine } from './unified-workflow-engine';

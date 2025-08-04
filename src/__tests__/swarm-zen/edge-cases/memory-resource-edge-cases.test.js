@@ -3,10 +3,7 @@
  * Tests memory limits, resource cleanup, garbage collection scenarios
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { RuvSwarm } from '../../src/index-enhanced.js';
-import { NeuralAgent } from '../../src/neural-agent.js';
-import { SwarmPersistence } from '../../src/persistence.js';
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 
 describe('Memory and Resource Edge Cases', () => {
   let initialMemory;
@@ -132,7 +129,7 @@ describe('Memory and Resource Edge Cases', () => {
 
   describe('Resource Cleanup Edge Cases', () => {
     it('should cleanup file handles properly', async () => {
-      const fs = await import('fs/promises');
+      const fs = await import('node:fs/promises');
       const handles = [];
 
       try {
@@ -141,7 +138,7 @@ describe('Memory and Resource Edge Cases', () => {
           try {
             const handle = await fs.open('/tmp/test-file-${i}', 'w');
             handles.push(handle);
-          } catch (error) {
+          } catch (_error) {
             // Some might fail due to system limits
           }
         }
@@ -289,7 +286,7 @@ describe('Memory and Resource Edge Cases', () => {
 
   describe('Memory Monitoring Edge Cases', () => {
     it('should detect memory leaks in event listeners', async () => {
-      const { EventEmitter } = await import('events');
+      const { EventEmitter } = await import('node:events');
       const emitter = new EventEmitter();
       const initialListeners = emitter.listenerCount('test');
 
@@ -488,8 +485,6 @@ describe('Memory and Resource Edge Cases', () => {
 
 // Run tests when executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('Running memory and resource edge case tests...');
-
   // Run all tests
   const { run } = await import('../test-runner.js');
   await run(__filename);

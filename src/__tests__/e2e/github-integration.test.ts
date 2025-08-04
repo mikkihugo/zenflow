@@ -30,7 +30,7 @@ class MockGitHubAPI {
   }
 
   async updateIssue(issueNumber: number, data: any) {
-    const issue = this.issues.find(i => i.number === issueNumber);
+    const issue = this.issues.find((i) => i.number === issueNumber);
     if (issue) {
       Object.assign(issue, data);
     }
@@ -64,9 +64,15 @@ class MockGitHubAPI {
     return project;
   }
 
-  getIssues() { return this.issues; }
-  getPullRequests() { return this.pullRequests; }
-  getProjects() { return this.projects; }
+  getIssues() {
+    return this.issues;
+  }
+  getPullRequests() {
+    return this.pullRequests;
+  }
+  getProjects() {
+    return this.projects;
+  }
 
   reset() {
     this.issues = [];
@@ -79,7 +85,7 @@ describe('GitHub Integration Automation E2E Tests', () => {
   let documentSystem: DocumentDrivenSystem;
   let testSetup: IntegrationTestSetup;
   let fsHelper: RealFileSystemTestHelper;
-  let networkHelper: RealNetworkTestHelper;
+  let _networkHelper: RealNetworkTestHelper;
   let mockGitHub: MockGitHubAPI;
 
   const TEST_PROJECT_PATH = '/tmp/claude-zen-github-test';
@@ -88,7 +94,7 @@ describe('GitHub Integration Automation E2E Tests', () => {
   beforeAll(async () => {
     testSetup = new IntegrationTestSetup();
     fsHelper = new RealFileSystemTestHelper();
-    networkHelper = new RealNetworkTestHelper();
+    _networkHelper = new RealNetworkTestHelper();
     mockGitHub = new MockGitHubAPI();
 
     await testSetup.initializeFullEnvironment();
@@ -171,18 +177,18 @@ Build a modern e-commerce platform with AI-powered recommendations and real-time
             mockGitHub.createIssue({
               title: '🔐 Implement User Authentication System',
               body: 'Create secure user authentication with registration, login, and profile management.\n\n**Acceptance Criteria:**\n- User registration with email verification\n- Secure login with JWT tokens\n- Password reset functionality\n- Profile management interface',
-              labels: ['enhancement', 'authentication', 'high-priority']
+              labels: ['enhancement', 'authentication', 'high-priority'],
             }),
             mockGitHub.createIssue({
               title: '🛒 Build Product Catalog with Search',
               body: 'Implement product catalog with advanced search and filtering capabilities.\n\n**Acceptance Criteria:**\n- Product listing with pagination\n- Search functionality with filters\n- Category navigation\n- Product detail views',
-              labels: ['enhancement', 'catalog', 'medium-priority']
+              labels: ['enhancement', 'catalog', 'medium-priority'],
             }),
             mockGitHub.createIssue({
               title: '💳 Integrate Payment Processing',
               body: 'Integrate Stripe payment processing for secure transactions.\n\n**Acceptance Criteria:**\n- Stripe integration setup\n- Secure payment forms\n- Order confirmation flow\n- Payment status tracking',
-              labels: ['enhancement', 'payments', 'high-priority']
-            })
+              labels: ['enhancement', 'payments', 'high-priority'],
+            }),
           ]);
 
           expect(issues.length).toBe(3);
@@ -197,9 +203,9 @@ Build a modern e-commerce platform with AI-powered recommendations and real-time
       // Verify issues were created
       const createdIssues = mockGitHub.getIssues();
       expect(createdIssues.length).toBeGreaterThanOrEqual(3);
-      
+
       // Check issue structure
-      const authIssue = createdIssues.find(i => i.title.includes('Authentication'));
+      const authIssue = createdIssues.find((i) => i.title.includes('Authentication'));
       expect(authIssue).toBeDefined();
       expect(authIssue.labels).toContain('high-priority');
       expect(authIssue.body).toContain('Acceptance Criteria');
@@ -210,7 +216,7 @@ Build a modern e-commerce platform with AI-powered recommendations and real-time
       const authIssue = await mockGitHub.createIssue({
         title: 'User Authentication System',
         body: 'Initial implementation needed',
-        labels: ['enhancement']
+        labels: ['enhancement'],
       });
 
       const prdContent = `
@@ -254,7 +260,7 @@ Build a modern e-commerce platform with AI-powered recommendations and real-time
           // Simulate GitHub issue update
           await mockGitHub.updateIssue(authIssue.number, {
             body: `${authIssue.body}\n\n**Progress Update:**\n- ✅ Registration completed\n- ✅ Login implemented\n- 🔄 Password reset in progress\n- ⏳ Profile management pending`,
-            labels: [...authIssue.labels, 'in-progress']
+            labels: [...authIssue.labels, 'in-progress'],
           });
         }
       });
@@ -262,7 +268,7 @@ Build a modern e-commerce platform with AI-powered recommendations and real-time
       await documentSystem.processVisionaryDocument(workspaceId, prdPath);
 
       // Verify issue was updated
-      const updatedIssue = mockGitHub.getIssues().find(i => i.number === authIssue.number);
+      const updatedIssue = mockGitHub.getIssues().find((i) => i.number === authIssue.number);
       expect(updatedIssue.body).toContain('Progress Update');
       expect(updatedIssue.labels).toContain('in-progress');
     });
@@ -271,7 +277,7 @@ Build a modern e-commerce platform with AI-powered recommendations and real-time
       const completedIssue = await mockGitHub.createIssue({
         title: 'Shopping Cart Implementation',
         body: 'Implement shopping cart functionality',
-        labels: ['enhancement', 'in-progress']
+        labels: ['enhancement', 'in-progress'],
       });
 
       const completedTaskContent = `
@@ -314,7 +320,7 @@ Build a modern e-commerce platform with AI-powered recommendations and real-time
         if (event.document.type === 'task' && event.document.content.includes('COMPLETED')) {
           await mockGitHub.updateIssue(completedIssue.number, {
             state: 'closed',
-            labels: [...completedIssue.labels, 'completed']
+            labels: [...completedIssue.labels, 'completed'],
           });
         }
       });
@@ -322,7 +328,7 @@ Build a modern e-commerce platform with AI-powered recommendations and real-time
       await documentSystem.processVisionaryDocument(workspaceId, taskPath);
 
       // Verify issue was closed
-      const closedIssue = mockGitHub.getIssues().find(i => i.number === completedIssue.number);
+      const closedIssue = mockGitHub.getIssues().find((i) => i.number === completedIssue.number);
       expect(closedIssue.state).toBe('closed');
       expect(closedIssue.labels).toContain('completed');
     });
@@ -395,7 +401,7 @@ Implements product search with filtering and pagination.
 Closes #123
             `,
             head: 'feature/product-search',
-            base: 'main'
+            base: 'main',
           });
 
           expect(pr.title).toContain('product search');
@@ -408,8 +414,8 @@ Closes #123
       // Verify PR was created
       const createdPRs = mockGitHub.getPullRequests();
       expect(createdPRs.length).toBeGreaterThan(0);
-      
-      const searchPR = createdPRs.find(pr => pr.title.includes('product search'));
+
+      const searchPR = createdPRs.find((pr) => pr.title.includes('product search'));
       expect(searchPR).toBeDefined();
       expect(searchPR.head.ref).toBe('feature/product-search');
       expect(searchPR.base.ref).toBe('main');
@@ -468,29 +474,29 @@ src/
           'Token handling security reviewed',
           'Input validation implemented',
           'Error messages sanitized',
-          'Audit logging configured'
+          'Audit logging configured',
         ],
         performance: [
           'Payment processing under 3s verified',
           'Form validation under 100ms',
           'Error handling graceful',
           'Network timeouts handled',
-          'Load testing completed'
+          'Load testing completed',
         ],
         testing: [
           'Unit test coverage >95%',
           'Integration tests with sandbox',
           'E2E checkout flow verified',
           'Security tests passed',
-          'Performance benchmarks met'
+          'Performance benchmarks met',
         ],
         code: [
           'Code follows style guidelines',
           'TypeScript types properly defined',
           'Documentation updated',
           'No console.log statements',
-          'Error boundaries implemented'
-        ]
+          'Error boundaries implemented',
+        ],
       };
 
       documentSystem.on('document:processed', async (event) => {
@@ -565,7 +571,7 @@ src/
             trigger: 'documentation_update',
             pipeline: 'infrastructure_validation',
             timestamp: Date.now(),
-            status: 'triggered'
+            status: 'triggered',
           });
 
           // Simulate pipeline stages
@@ -575,7 +581,7 @@ src/
               stage,
               status: 'completed',
               duration: Math.random() * 1000 + 500, // 500ms - 1.5s
-              timestamp: Date.now()
+              timestamp: Date.now(),
             });
           }
         }
@@ -585,12 +591,12 @@ src/
 
       // Verify pipeline was triggered
       expect(pipelineEvents.length).toBeGreaterThan(0);
-      
-      const triggerEvent = pipelineEvents.find(e => e.trigger === 'documentation_update');
+
+      const triggerEvent = pipelineEvents.find((e) => e.trigger === 'documentation_update');
       expect(triggerEvent).toBeDefined();
       expect(triggerEvent.pipeline).toBe('infrastructure_validation');
 
-      const completedStages = pipelineEvents.filter(e => e.status === 'completed');
+      const completedStages = pipelineEvents.filter((e) => e.status === 'completed');
       expect(completedStages.length).toBe(5); // All stages completed
     });
 
@@ -662,7 +668,7 @@ src/
 
       // Verify readiness calculation
       expect(readinessScore).toBeGreaterThan(95); // Should be nearly 100%
-      
+
       // All categories should be complete (✅)
       expect(readinessChecklist).toContain('Code Quality ✅');
       expect(readinessChecklist).toContain('Infrastructure ✅');
@@ -742,16 +748,11 @@ Complete e-commerce platform with user management, product catalog, and order pr
           // Create GitHub project for epic
           const project = await mockGitHub.createProject({
             name: 'E-Commerce Platform Epic',
-            body: 'Complete e-commerce platform development project'
+            body: 'Complete e-commerce platform development project',
           });
 
           // Create columns for project board
-          const columns = [
-            'Backlog',
-            'In Progress', 
-            'Review',
-            'Done'
-          ];
+          const columns = ['Backlog', 'In Progress', 'Review', 'Done'];
 
           expect(project.name).toBe('E-Commerce Platform Epic');
           expect(columns.length).toBe(4);
@@ -764,17 +765,17 @@ Complete e-commerce platform with user management, product catalog, and order pr
       const projects = mockGitHub.getProjects();
       expect(projects.length).toBeGreaterThan(0);
 
-      const ecommerceProject = projects.find(p => p.name.includes('E-Commerce'));
+      const ecommerceProject = projects.find((p) => p.name.includes('E-Commerce'));
       expect(ecommerceProject).toBeDefined();
     });
 
     it('should update project board based on task progress', async () => {
       // Create project board state
-      let projectBoard = {
+      const projectBoard = {
         backlog: ['Shopping Cart Implementation', 'Payment Integration'],
         inProgress: ['Product Search Enhancement'],
         review: ['User Authentication Fixes'],
-        done: ['User Registration', 'Login System']
+        done: ['User Registration', 'Login System'],
       };
 
       const taskUpdate = `
@@ -810,10 +811,10 @@ Complete e-commerce platform with user management, product catalog, and order pr
         if (event.document.content.includes('Moving to Review')) {
           // Simulate moving card on project board
           const taskName = 'Product Search Enhancement';
-          
+
           // Remove from in progress
-          projectBoard.inProgress = projectBoard.inProgress.filter(task => task !== taskName);
-          
+          projectBoard.inProgress = projectBoard.inProgress.filter((task) => task !== taskName);
+
           // Add to review
           if (!projectBoard.review.includes(taskName)) {
             projectBoard.review.push(taskName);
@@ -838,12 +839,12 @@ Complete e-commerce platform with user management, product catalog, and order pr
         { type: 'task', status: 'completed', completion: 100 },
         { type: 'task', status: 'completed', completion: 100 },
         { type: 'task', status: 'in-progress', completion: 40 },
-        { type: 'task', status: 'planned', completion: 0 }
+        { type: 'task', status: 'planned', completion: 0 },
       ];
 
       let projectStatus: any = {};
 
-      documentSystem.on('document:processed', async (event) => {
+      documentSystem.on('document:processed', async (_event) => {
         // Simulate status report generation
         const byType = projectDocs.reduce((acc, doc) => {
           if (!acc[doc.type]) acc[doc.type] = [];
@@ -851,26 +852,42 @@ Complete e-commerce platform with user management, product catalog, and order pr
           return acc;
         }, {} as any);
 
-        const overallCompletion = projectDocs.reduce((sum, doc) => sum + doc.completion, 0) / projectDocs.length;
+        const overallCompletion =
+          projectDocs.reduce((sum, doc) => sum + doc.completion, 0) / projectDocs.length;
 
         projectStatus = {
           overview: {
             totalDocuments: projectDocs.length,
-            completed: projectDocs.filter(d => d.status === 'completed').length,
-            inProgress: projectDocs.filter(d => d.status === 'in-progress').length,
-            planned: projectDocs.filter(d => d.status === 'planned').length,
-            overallCompletion: Math.round(overallCompletion)
+            completed: projectDocs.filter((d) => d.status === 'completed').length,
+            inProgress: projectDocs.filter((d) => d.status === 'in-progress').length,
+            planned: projectDocs.filter((d) => d.status === 'planned').length,
+            overallCompletion: Math.round(overallCompletion),
           },
           byType: {
             epics: byType.epic?.length || 0,
             features: byType.feature?.length || 0,
-            tasks: byType.task?.length || 0
+            tasks: byType.task?.length || 0,
           },
           progress: {
-            epics: byType.epic ? Math.round(byType.epic.reduce((sum: number, d: any) => sum + d.completion, 0) / byType.epic.length) : 0,
-            features: byType.feature ? Math.round(byType.feature.reduce((sum: number, d: any) => sum + d.completion, 0) / byType.feature.length) : 0,
-            tasks: byType.task ? Math.round(byType.task.reduce((sum: number, d: any) => sum + d.completion, 0) / byType.task.length) : 0
-          }
+            epics: byType.epic
+              ? Math.round(
+                  byType.epic.reduce((sum: number, d: any) => sum + d.completion, 0) /
+                    byType.epic.length
+                )
+              : 0,
+            features: byType.feature
+              ? Math.round(
+                  byType.feature.reduce((sum: number, d: any) => sum + d.completion, 0) /
+                    byType.feature.length
+                )
+              : 0,
+            tasks: byType.task
+              ? Math.round(
+                  byType.task.reduce((sum: number, d: any) => sum + d.completion, 0) /
+                    byType.task.length
+                )
+              : 0,
+          },
         };
       });
 

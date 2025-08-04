@@ -48,7 +48,7 @@ rlErr.on('line', (line) => {
 });
 
 // Handle process exit
-ruvSwarmProcess.on('exit', (code, signal) => {
+ruvSwarmProcess.on('exit', (code, _signal) => {
   if (code !== null && code !== 0) {
     console.error(`\n❌ ruv-swarm exited with code ${code}`);
     console.error('💡 Try using: npx ruv-swarm mcp start');

@@ -12,15 +12,16 @@ export type {
   NeuralModelType,
 } from '../types/shared-types';
 // Neural agents
-export * from './agents/index';
-// Neural coordination
-export * from './coordination/index';
-// Core neural components
-export * from './core/index';
+export { NeuralAgent } from './agents/index';
+// Neural coordination (exclude to avoid conflicts)
+// export * from './coordination/index';
+// Core neural components (specific exports to avoid conflicts)
+export { NeuralCore, NeuralCoreCLI, Neural, NeuralNetworkManager } from './core/index';
+export { NeuralNetwork as CoreNeuralNetwork } from './core/index';
 // Neural models and presets
-export * from './models/index';
+export { NeuralPresets } from './models/index';
 // Neural Bridge (main interface)
-export * from './neural-bridge';
+export { NeuralBridge } from './neural-bridge';
 export { NeuralBridge as default } from './neural-bridge';
-// WASM integration
-export * from './wasm/index';
+// Public API for external access
+export { createNeuralNetwork, initializeWASM } from './public-api';

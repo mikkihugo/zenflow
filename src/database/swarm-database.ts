@@ -3,7 +3,7 @@
  * Handles agent state, task persistence, metrics, and coordination data
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import { Pool, type PoolClient, type PoolConfig } from 'pg';
 
 // Types for swarm database operations
@@ -111,21 +111,20 @@ export class SwarmDatabase extends EventEmitter {
     this.pool = new Pool(poolConfig);
 
     // Set up pool event listeners
-    this.pool.on('connect', (client) => {
-      console.log('🔗 New database client connected');
+    this.pool.on('connect', (_client) => {
       this.emit('clientConnected');
     });
 
-    this.pool.on('error', (err, client) => {
+    this.pool.on('error', (err, _client) => {
       console.error('💥 Database pool error:', err);
       this.emit('poolError', err);
     });
 
-    this.pool.on('acquire', (client) => {
+    this.pool.on('acquire', (_client) => {
       this.emit('clientAcquired');
     });
 
-    this.pool.on('release', (client) => {
+    this.pool.on('release', (_client) => {
       this.emit('clientReleased');
     });
   }
@@ -139,8 +138,6 @@ export class SwarmDatabase extends EventEmitter {
     }
 
     try {
-      console.log('🗄️ Initializing Swarm Database...');
-
       // Test connection
       await this.testConnection();
 
@@ -155,8 +152,6 @@ export class SwarmDatabase extends EventEmitter {
 
       this.isInitialized = true;
       this.emit('initialized');
-
-      console.log('✅ SwarmDatabase initialized successfully');
     } catch (error) {
       console.error('❌ Failed to initialize SwarmDatabase:', error);
       throw error;
@@ -169,10 +164,9 @@ export class SwarmDatabase extends EventEmitter {
   async testConnection(): Promise<boolean> {
     try {
       const client = await this.pool.connect();
-      const result = await client.query('SELECT NOW() as connected_at');
+      const _result = await client.query('SELECT NOW() as connected_at');
       client.release();
 
-      console.log('🔍 Database connection test successful:', result.rows[0].connected_at);
       return true;
     } catch (error) {
       console.error('❌ Database connection test failed:', error);
@@ -547,8 +541,6 @@ export class SwarmDatabase extends EventEmitter {
    * Cleanup and shutdown
    */
   async shutdown(): Promise<void> {
-    console.log('🛑 Shutting down SwarmDatabase...');
-
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
     }
@@ -557,7 +549,6 @@ export class SwarmDatabase extends EventEmitter {
       await this.pool.end();
       this.isInitialized = false;
       this.emit('shutdown');
-      console.log('✅ SwarmDatabase shutdown complete');
     } catch (error) {
       console.error('❌ Error during database shutdown:', error);
       throw error;
@@ -628,8 +619,6 @@ export class SwarmDatabase extends EventEmitter {
     for (const schema of schemas) {
       await this.pool.query(schema);
     }
-
-    console.log('📋 Database schema created');
   }
 
   private async createIndexes(): Promise<void> {
@@ -648,8 +637,6 @@ export class SwarmDatabase extends EventEmitter {
     for (const index of indexes) {
       await this.pool.query(index);
     }
-
-    console.log('🔍 Database indexes created');
   }
 
   private startHealthChecks(): void {

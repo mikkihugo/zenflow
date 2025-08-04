@@ -8,13 +8,10 @@
  * - Existing ADR templates and project management systems
  */
 
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import { TaskAPI } from '../../coordination/api';
-import {
-  type EnhancedTaskConfig,
-  EnhancedTaskTool,
-} from '../../coordination/enhanced-task-tool';
+import { type EnhancedTaskConfig, EnhancedTaskTool } from '../../coordination/enhanced-task-tool';
 import { DocumentDrivenSystem } from '../../core/document-driven-system';
 import { UnifiedMemorySystem } from '../../core/unified-memory-system';
 import { UnifiedWorkflowEngine } from '../../core/unified-workflow-engine';
@@ -146,9 +143,7 @@ export class ProjectManagementIntegration {
   private readonly prdDir: string;
   private readonly featuresFile: string;
   private readonly epicsFile: string;
-  private readonly roadmapFile: string;
   private readonly taskTool: EnhancedTaskTool;
-  private readonly taskDistributor: any;
 
   // Enhanced infrastructure integration
   private documentDrivenSystem: DocumentDrivenSystem;
@@ -258,7 +253,7 @@ export class ProjectManagementIntegration {
    */
   private async createVisionDocumentFromSPARC(
     project: SPARCProject,
-    workspaceId: string
+    _workspaceId: string
   ): Promise<{
     path: string;
     content: string;
@@ -464,6 +459,15 @@ Related: SPARC-${project.id}
           timeout_minutes: task.estimated_hours * 60,
         };
 
+        // Log enhanced task configuration for monitoring
+        this.logger?.debug('Enhanced SPARC task configuration created', {
+          taskId: task.id,
+          component: task.component,
+          priority: enhancedTaskConfig.priority,
+          agentType: enhancedTaskConfig.subagent_type,
+          estimatedHours: task.estimated_hours,
+        });
+
         // Use TaskAPI for simpler integration (TaskDistributionEngine requires complex setup)
         try {
           await TaskAPI.createTask({
@@ -472,7 +476,6 @@ Related: SPARC-${project.id}
             priority: task.priority * 20, // Convert to 0-100 scale
             deadline: task.completed_date ? new Date(task.completed_date) : undefined,
           });
-          console.log(`Task created via TaskAPI: ${task.title}`);
         } catch (error) {
           console.warn(`Task creation failed for ${task.id}:`, error);
         }
@@ -642,17 +645,6 @@ Related: SPARC-${project.id}
     return 'critical';
   }
 
-  private getTaskComplexity(project: SPARCProject): any {
-    const complexityMapping = {
-      simple: 'simple',
-      moderate: 'moderate',
-      high: 'complex',
-      complex: 'complex',
-      enterprise: 'expert',
-    };
-    return complexityMapping['moderate'] || 'moderate';
-  }
-
   private generateEpicDescription(project: SPARCProject): string {
     return `Epic for ${project.name} development in the ${project.domain} domain using SPARC methodology.
 
@@ -683,7 +675,7 @@ Related: SPARC-${project.id}
     return domainValues[project.domain] || 'Medium - Platform enhancement';
   }
 
-  private calculateEpicEndDate(project: SPARCProject): string {
+  private calculateEpicEndDate(_project: SPARCProject): string {
     const complexityWeeks = {
       simple: 4,
       moderate: 8,
@@ -692,7 +684,7 @@ Related: SPARC-${project.id}
       enterprise: 20,
     };
 
-    const weeks = complexityWeeks['moderate'];
+    const weeks = complexityWeeks.moderate;
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + weeks * 7);
 
@@ -786,8 +778,6 @@ Related: SPARC-${project.id}
         const adrFile = path.join(this.adrDir, `${adr.id.toLowerCase()}.md`);
         await fs.writeFile(adrFile, adrContent);
       }
-
-      console.log(`Generated ${adrs.length} ADR files for project ${project.name}`);
     } catch (error) {
       console.warn('Could not create ADR files:', error);
     }
@@ -805,7 +795,6 @@ Related: SPARC-${project.id}
       const prdFile = path.join(this.prdDir, `${prd.id.toLowerCase()}.md`);
 
       await fs.writeFile(prdFile, prdContent);
-      console.log(`Generated PRD file for project ${project.name}`);
     } catch (error) {
       console.warn('Could not create PRD file:', error);
     }
@@ -853,7 +842,6 @@ Related: SPARC-${project.id}
 
       // Save epics file
       await fs.writeFile(this.epicsFile, JSON.stringify(epics, null, 2));
-      console.log(`Generated epic for project ${project.name}`);
 
       return epics;
     } catch (error) {
@@ -895,7 +883,6 @@ Related: SPARC-${project.id}
 
       // Save features file
       await fs.writeFile(this.featuresFile, JSON.stringify(features, null, 2));
-      console.log(`Generated ${allProjectFeatures.length} features for project ${project.name}`);
 
       return allProjectFeatures;
     } catch (error) {
@@ -932,13 +919,6 @@ Related: SPARC-${project.id}
       const epics = await this.createEpicsFromSPARC(project);
       const features = await this.createFeaturesFromSPARC(project);
 
-      console.log(`Generated complete project management suite for ${project.name}:`);
-      console.log(`- ${tasks.length} tasks`);
-      console.log(`- ${adrs.length} ADRs`);
-      console.log(`- 1 PRD`);
-      console.log(`- ${epics.length} epics`);
-      console.log(`- ${features.length} features`);
-
       return { tasks, adrs, prd, epics, features };
     } catch (error) {
       console.error('Failed to create project management artifacts:', error);
@@ -970,7 +950,7 @@ Related: SPARC-${project.id}
     return estimates[phase] || 4;
   }
 
-  private getPhaseAcceptanceCriteria(phase: string, project: SPARCProject): string[] {
+  private getPhaseAcceptanceCriteria(phase: string, _project: SPARCProject): string[] {
     const baseCriteria = {
       specification: [
         'All functional requirements identified and documented',
@@ -1052,7 +1032,7 @@ ${project.architecture?.systemArchitecture?.technologyStack?.map((t) => t.techno
     }));
   }
 
-  private calculateProjectTimeline(project: SPARCProject): number {
+  private calculateProjectTimeline(_project: SPARCProject): number {
     const complexityWeeks = {
       simple: 2,
       moderate: 4,
@@ -1061,7 +1041,7 @@ ${project.architecture?.systemArchitecture?.technologyStack?.map((t) => t.techno
       enterprise: 16,
     };
 
-    return complexityWeeks['moderate'] || 4;
+    return complexityWeeks.moderate || 4;
   }
 
   private formatADRContent(adr: ADR): string {

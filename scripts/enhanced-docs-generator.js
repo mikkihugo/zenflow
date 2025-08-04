@@ -7,7 +7,6 @@
  */
 
 import { spawn } from 'node:child_process';
-import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { glob } from 'glob';
@@ -25,50 +24,18 @@ class EnhancedDocumentationGenerator {
   }
 
   async generateComprehensiveDocumentation() {
-    console.log('🚀 Starting Enhanced Documentation Generation');
-    console.log('=============================================\n');
-
     try {
       // Create documentation structure
       await this.createDocumentationStructure();
-
-      // 1. Generate API Documentation
-      console.log('📚 Generating API Documentation...');
       await this.generateAPIDocumentation();
-
-      // 2. Generate TypeScript Interface Documentation
-      console.log('🔧 Generating TypeScript Interface Documentation...');
       await this.generateTypeScriptDocumentation();
-
-      // 3. Generate Architecture Documentation
-      console.log('🏗️ Generating Architecture Documentation...');
       await this.generateArchitectureDocumentation();
-
-      // 4. Generate Performance Documentation
-      console.log('⚡ Generating Performance Documentation...');
       await this.generatePerformanceDocumentation();
-
-      // 5. Generate Security Documentation
-      console.log('🔒 Generating Security Documentation...');
       await this.generateSecurityDocumentation();
-
-      // 6. Generate ADR Documentation
-      console.log('📋 Generating ADR Documentation...');
       await this.generateADRDocumentation();
-
-      // 7. Generate Test Coverage Reports
-      console.log('🧪 Generating Test Coverage Documentation...');
       await this.generateTestCoverageDocumentation();
-
-      // 8. Generate Developer Guide
-      console.log('👨‍💻 Generating Developer Guide...');
       await this.generateDeveloperGuide();
-
-      // 9. Generate Index and Navigation
-      console.log('🗂️ Generating Documentation Index...');
       await this.generateDocumentationIndex();
-
-      console.log('\n✅ Enhanced Documentation Generation Complete!');
       return this.getGeneratedDocuments();
     } catch (error) {
       console.error('❌ Documentation generation failed:', error);
@@ -119,27 +86,18 @@ class EnhancedDocumentationGenerator {
       `${this.apiDir}/api-schema.json`,
       JSON.stringify(apiDocData, null, 2)
     );
-
-    console.log(
-      `   ✅ API documentation generated (${tsFiles.length + jsFiles.length} files processed)`
-    );
   }
 
   async generateTypeScriptDocumentation() {
     try {
       // Use TypeDoc for comprehensive TypeScript documentation
       await this.runCommand('npx', ['typedoc', '--out', 'docs/api/typedoc', 'src']);
-      console.log('   ✅ TypeDoc documentation generated');
-    } catch (error) {
-      console.log('   ⚠️ TypeDoc generation skipped (not installed or configured)');
-
+    } catch (_error) {
       // Fallback: Manual TypeScript interface extraction
       const interfaces = await this.extractTypeScriptInterfaces();
       const interfaceMarkdown = this.generateInterfaceMarkdown(interfaces);
 
       await fs.promises.writeFile(`${this.apiDir}/typescript-interfaces.md`, interfaceMarkdown);
-
-      console.log('   ✅ Manual TypeScript interface documentation generated');
     }
   }
 
@@ -161,8 +119,6 @@ class EnhancedDocumentationGenerator {
 
     // Generate domain maps
     await this.generateDomainMaps(architectureData.domains);
-
-    console.log('   ✅ Architecture documentation generated');
   }
 
   async generatePerformanceDocumentation() {
@@ -179,8 +135,6 @@ class EnhancedDocumentationGenerator {
       `${this.performanceDir}/performance-analysis.md`,
       performanceMarkdown
     );
-
-    console.log('   ✅ Performance documentation generated');
   }
 
   async generateSecurityDocumentation() {
@@ -198,8 +152,6 @@ class EnhancedDocumentationGenerator {
 
     // Generate security checklist
     await this.generateSecurityChecklist(securityData);
-
-    console.log('   ✅ Security documentation generated');
   }
 
   async generateADRDocumentation() {
@@ -211,8 +163,6 @@ class EnhancedDocumentationGenerator {
     for (const adr of autoADRs) {
       await fs.promises.writeFile(`${this.docsDir}/adrs/${adr.filename}`, adr.content);
     }
-
-    console.log(`   ✅ ADR documentation generated (${autoADRs.length} automated ADRs)`);
   }
 
   async generateTestCoverageDocumentation() {
@@ -228,11 +178,7 @@ class EnhancedDocumentationGenerator {
         `${this.docsDir}/coverage/coverage-analysis.md`,
         coverageMarkdown
       );
-
-      console.log('   ✅ Test coverage documentation generated');
-    } catch (error) {
-      console.log('   ⚠️ Test coverage generation skipped (tests not available)');
-    }
+    } catch (_error) {}
   }
 
   async generateDeveloperGuide() {
@@ -279,8 +225,6 @@ ${await this.generateTroubleshootingGuide()}
 `;
 
     await fs.promises.writeFile(`${this.docsDir}/guides/developer-guide.md`, developerGuide);
-
-    console.log('   ✅ Developer guide generated');
   }
 
   async generateDocumentationIndex() {
@@ -335,8 +279,6 @@ ${await this.generateTroubleshootingGuide()}
 `;
 
     await fs.promises.writeFile(`${this.docsDir}/INDEX.md`, index);
-
-    console.log('   ✅ Documentation index generated');
   }
 
   // Helper methods for data extraction and processing
@@ -443,7 +385,7 @@ ${await this.generateTroubleshootingGuide()}
         devDependencies: Object.keys(packageJson.devDependencies || {}),
         peerDependencies: Object.keys(packageJson.peerDependencies || {}),
       };
-    } catch (error) {
+    } catch (_error) {
       return { dependencies: [], devDependencies: [], peerDependencies: [] };
     }
   }
@@ -454,7 +396,7 @@ ${await this.generateTroubleshootingGuide()}
       try {
         const content = await fs.promises.readFile(file, 'utf-8');
         totalLines += content.split('\n').length;
-      } catch (error) {
+      } catch (_error) {
         // Skip files that can't be read
       }
     }
@@ -465,7 +407,7 @@ ${await this.generateTroubleshootingGuide()}
     try {
       const entries = await fs.promises.readdir(dirPath, { withFileTypes: true });
       return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
-    } catch (error) {
+    } catch (_error) {
       return [];
     }
   }
@@ -554,7 +496,7 @@ ${data.domains
     try {
       const packageJson = JSON.parse(await fs.promises.readFile('package.json', 'utf-8'));
       return packageJson.version || '0.0.0';
-    } catch (error) {
+    } catch (_error) {
       return '0.0.0';
     }
   }
@@ -578,7 +520,7 @@ ${data.domains
       if (await this.fileExists(auditFile)) {
         return { status: 'Available', file: auditFile };
       }
-    } catch (error) {
+    } catch (_error) {
       // Ignore
     }
     return { status: 'Not available' };
@@ -589,7 +531,7 @@ ${data.domains
       // Run npm audit and parse results
       const { stdout } = await this.runCommandWithOutput('npm', ['audit', '--json']);
       return JSON.parse(stdout);
-    } catch (error) {
+    } catch (_error) {
       return { vulnerabilities: {}, metadata: { totalDependencies: 0 } };
     }
   }
@@ -654,7 +596,7 @@ ${data.recommendations?.map((rec) => `- ${rec}`).join('\n') || 'No specific reco
       try {
         const files = await glob(`${dir}/**/*.md`);
         documents.push(...files);
-      } catch (error) {
+      } catch (_error) {
         // Directory might not exist
       }
     }
@@ -673,7 +615,7 @@ ${data.recommendations?.map((rec) => `- ${rec}`).join('\n') || 'No specific reco
         if (fileInterfaces.length > 0) {
           interfaces.push({ file, interfaces: fileInterfaces });
         }
-      } catch (error) {
+      } catch (_error) {
         // Skip files that can't be read
       }
     }
@@ -692,7 +634,7 @@ ${data.recommendations?.map((rec) => `- ${rec}`).join('\n') || 'No specific reco
         if (fileExports.length > 0) {
           exports.push({ file, exports: fileExports });
         }
-      } catch (error) {
+      } catch (_error) {
         // Skip files that can't be read
       }
     }
@@ -778,9 +720,7 @@ ${data.recommendations?.map((rec) => `- ${rec}`).join('\n') || 'No specific reco
 async function main() {
   const generator = new EnhancedDocumentationGenerator();
   const documents = await generator.generateComprehensiveDocumentation();
-
-  console.log('\n📄 Generated Documents:');
-  documents.forEach((doc) => console.log(`   - ${doc}`));
+  documents.forEach((_doc) => {});
 }
 
 // Run if called directly

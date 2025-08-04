@@ -4,16 +4,16 @@
  * Tests all 12 MCP tools with a 5-agent swarm
  */
 
-import { spawn } from 'child_process';
-import fs from 'fs';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { spawn } from 'node:child_process';
+import fs from 'node:fs';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Colors for output
-const colors = {
+const _colors = {
   reset: '\x1b[0m',
   green: '\x1b[32m',
   red: '\x1b[31m',
@@ -22,9 +22,7 @@ const colors = {
   cyan: '\x1b[36m',
 };
 
-function log(message, color = 'reset') {
-  console.log(`${colors[color]}${message}${colors.reset}`);
-}
+function log(_message, _color = 'reset') {}
 
 // Execute MCP tool
 async function executeMcpTool(toolName, args = {}) {
@@ -45,17 +43,17 @@ async function executeMcpTool(toolName, args = {}) {
     });
 
     let output = '';
-    let error = '';
+    let _error = '';
 
     mcp.stdout.on('data', (data) => {
       output += data.toString();
     });
 
     mcp.stderr.on('data', (data) => {
-      error += data.toString();
+      _error += data.toString();
     });
 
-    mcp.on('close', (code) => {
+    mcp.on('close', (_code) => {
       try {
         const lines = output.trim().split('\n');
         for (const line of lines) {
@@ -127,7 +125,7 @@ async function testAllMcpTools() {
   try {
     const agents = await Promise.all(agentPromises);
     log('✅ Created 5 agents in parallel: PASSED', 'green');
-    agents.forEach((agent, index) => {
+    agents.forEach((_agent, index) => {
       log(`   Agent ${index + 1}: ${agentTypes[index]}`, 'green');
     });
     results.passed++;

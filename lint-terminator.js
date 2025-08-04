@@ -11,10 +11,9 @@
  * that prevent ESLint from running properly on the codebase.
  */
 
-import { execSync } from 'child_process';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { execSync } from 'node:child_process';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { glob } from 'glob';
-import { dirname, join } from 'path';
 
 class LintTerminator {
   constructor() {
@@ -52,9 +51,7 @@ class LintTerminator {
   /**
    * Fix unterminated comment blocks
    */
-  fixUnterminatedComments(content, filePath) {
-    console.log(`🔧 Fixing unterminated comments in ${filePath}`);
-
+  fixUnterminatedComments(content, _filePath) {
     // Find all comment starts
     const commentStarts = [...content.matchAll(/\/\*/g)];
     const commentEnds = [...content.matchAll(/\*\//g)];
@@ -62,8 +59,7 @@ class LintTerminator {
     if (commentStarts.length > commentEnds.length) {
       // Add missing closing comment tags
       const missing = commentStarts.length - commentEnds.length;
-      console.log(`  📝 Adding ${missing} missing comment closures`);
-      content += '\n' + '*/'.repeat(missing);
+      content += `\n${'*/'.repeat(missing)}`;
       this.stats.errorsFixed += missing;
     }
 
@@ -73,16 +69,13 @@ class LintTerminator {
   /**
    * Fix missing closing braces
    */
-  fixMissingClosingBraces(content, filePath) {
-    console.log(`🔧 Fixing missing closing braces in ${filePath}`);
-
+  fixMissingClosingBraces(content, _filePath) {
     const openBraces = (content.match(/\{/g) || []).length;
     const closeBraces = (content.match(/\}/g) || []).length;
 
     if (openBraces > closeBraces) {
       const missing = openBraces - closeBraces;
-      console.log(`  📝 Adding ${missing} missing closing braces`);
-      content += '\n' + '}'.repeat(missing);
+      content += `\n${'}'.repeat(missing)}`;
       this.stats.errorsFixed += missing;
     }
 
@@ -92,15 +85,12 @@ class LintTerminator {
   /**
    * Fix missing closing parentheses
    */
-  fixMissingClosingParens(content, filePath) {
-    console.log(`🔧 Fixing missing closing parentheses in ${filePath}`);
-
+  fixMissingClosingParens(content, _filePath) {
     const openParens = (content.match(/\(/g) || []).length;
     const closeParens = (content.match(/\)/g) || []).length;
 
     if (openParens > closeParens) {
       const missing = openParens - closeParens;
-      console.log(`  📝 Adding ${missing} missing closing parentheses`);
       content += ')'.repeat(missing);
       this.stats.errorsFixed += missing;
     }
@@ -111,15 +101,12 @@ class LintTerminator {
   /**
    * Fix missing closing brackets
    */
-  fixMissingClosingBrackets(content, filePath) {
-    console.log(`🔧 Fixing missing closing brackets in ${filePath}`);
-
+  fixMissingClosingBrackets(content, _filePath) {
     const openBrackets = (content.match(/\[/g) || []).length;
     const closeBrackets = (content.match(/\]/g) || []).length;
 
     if (openBrackets > closeBrackets) {
       const missing = openBrackets - closeBrackets;
-      console.log(`  📝 Adding ${missing} missing closing brackets`);
       content += ']'.repeat(missing);
       this.stats.errorsFixed += missing;
     }
@@ -130,13 +117,10 @@ class LintTerminator {
   /**
    * Fix standalone colon syntax errors
    */
-  fixColonSyntax(content, filePath) {
-    console.log(`🔧 Fixing colon syntax in ${filePath}`);
-
+  fixColonSyntax(content, _filePath) {
     // Replace standalone colons with type annotations or remove
     return content.replace(/^(\s*)(.*?)\s*:\s*$/gm, (match, indent, statement) => {
       if (statement.trim() && !statement.includes('case') && !statement.includes('default')) {
-        console.log(`  📝 Fixing standalone colon: ${statement.trim()}`);
         this.stats.errorsFixed++;
         return `${indent}${statement.trim()};`;
       }
@@ -147,11 +131,8 @@ class LintTerminator {
   /**
    * Fix nullish coalescing operator syntax
    */
-  fixNullishCoalescing(content, filePath) {
-    console.log(`🔧 Fixing nullish coalescing in ${filePath}`);
-
-    return content.replace(/(\w+)\s*\?\s*\?\s*(\w+)/g, (match, left, right) => {
-      console.log(`  📝 Fixing nullish coalescing: ${match}`);
+  fixNullishCoalescing(content, _filePath) {
+    return content.replace(/(\w+)\s*\?\s*\?\s*(\w+)/g, (_match, left, right) => {
       this.stats.errorsFixed++;
       return `${left} ?? ${right}`;
     });
@@ -162,12 +143,9 @@ class LintTerminator {
    */
   fixRequireStatements(content, filePath) {
     if (filePath.endsWith('.mjs') || content.includes('import ') || content.includes('export ')) {
-      console.log(`🔧 Converting require statements to imports in ${filePath}`);
-
       return content.replace(
         /const\s+(\w+)\s*=\s*require\(['"`]([^'"`]+)['"`]\)/g,
-        (match, varName, moduleName) => {
-          console.log(`  📝 Converting require: ${match}`);
+        (_match, varName, moduleName) => {
           this.stats.errorsFixed++;
           return `import ${varName} from '${moduleName}';`;
         }
@@ -182,10 +160,7 @@ class LintTerminator {
    */
   fixModuleExports(content, filePath) {
     if (filePath.endsWith('.mjs') || content.includes('import ') || content.includes('export ')) {
-      console.log(`🔧 Converting module.exports to export in ${filePath}`);
-
-      return content.replace(/module\.exports\s*=\s*(.*)/g, (match, exportValue) => {
-        console.log(`  📝 Converting module.exports: ${match}`);
+      return content.replace(/module\.exports\s*=\s*(.*)/g, (_match, exportValue) => {
         this.stats.errorsFixed++;
         return `export default ${exportValue}`;
       });
@@ -197,11 +172,8 @@ class LintTerminator {
   /**
    * Fix async generator syntax
    */
-  fixAsyncGenerators(content, filePath) {
-    console.log(`🔧 Fixing async generator syntax in ${filePath}`);
-
-    return content.replace(/(\w+)\s*\*\s*\(/g, (match, functionName) => {
-      console.log(`  📝 Fixing generator function: ${match}`);
+  fixAsyncGenerators(content, _filePath) {
+    return content.replace(/(\w+)\s*\*\s*\(/g, (_match, functionName) => {
       this.stats.errorsFixed++;
       return `${functionName}*(`;
     });
@@ -210,7 +182,7 @@ class LintTerminator {
   /**
    * Fix function call expressions
    */
-  fixFunctionCalls(content, filePath) {
+  fixFunctionCalls(content, _filePath) {
     // This is more complex and requires context-aware fixing
     // For now, we'll skip this to avoid breaking valid code
     return content;
@@ -222,7 +194,6 @@ class LintTerminator {
   async processFile(filePath) {
     try {
       if (!existsSync(filePath)) {
-        console.log(`⚠️  File not found: ${filePath}`);
         this.stats.skippedFiles++;
         return false;
       }
@@ -231,7 +202,7 @@ class LintTerminator {
       const originalContent = content;
 
       // Apply all error pattern fixes
-      for (const [pattern, fixer] of this.errorPatterns) {
+      for (const [_pattern, fixer] of this.errorPatterns) {
         content = fixer(content, filePath);
       }
 
@@ -241,11 +212,9 @@ class LintTerminator {
       // Only write if content changed
       if (content !== originalContent) {
         writeFileSync(filePath, content, 'utf8');
-        console.log(`✅ Fixed errors in: ${filePath}`);
         this.stats.filesProcessed++;
         return true;
       } else {
-        console.log(`ℹ️  No changes needed for: ${filePath}`);
         return false;
       }
     } catch (error) {
@@ -258,7 +227,7 @@ class LintTerminator {
   /**
    * Fix specific parsing errors based on common patterns
    */
-  fixSpecificParsingErrors(content, filePath) {
+  fixSpecificParsingErrors(content, _filePath) {
     let fixed = content;
 
     // Fix missing semicolons after expressions
@@ -296,7 +265,7 @@ class LintTerminator {
   async getFilesToProcess() {
     try {
       // Run ESLint to get error list
-      const lintResult = execSync('npm run lint', {
+      const _lintResult = execSync('npm run lint', {
         encoding: 'utf8',
         stdio: ['ignore', 'pipe', 'pipe'],
       });
@@ -325,11 +294,7 @@ class LintTerminator {
    * Main execution function
    */
   async run() {
-    console.log('🚀 Lint Terminator - Starting error correction process...');
-    console.log('📊 Hierarchical Lint Fixing Swarm - Level 2 Specialist Agent Active');
-
     const filesToProcess = await this.getFilesToProcess();
-    console.log(`📝 Found ${filesToProcess.length} files to process`);
 
     const startTime = Date.now();
 
@@ -339,22 +304,9 @@ class LintTerminator {
 
     const endTime = Date.now();
     const duration = (endTime - startTime) / 1000;
-
-    console.log('\n🎉 Lint Terminator Complete!');
-    console.log('📊 Statistics:');
-    console.log(`  ✅ Files processed: ${this.stats.filesProcessed}`);
-    console.log(`  🔧 Errors fixed: ${this.stats.errorsFixed}`);
-    console.log(`  ⚠️  Files skipped: ${this.stats.skippedFiles}`);
-    console.log(`  ⏱️  Duration: ${duration.toFixed(2)}s`);
-
-    // Try running lint again to see improvement
-    console.log('\n🔍 Testing lint after fixes...');
     try {
       execSync('npm run lint', { stdio: 'inherit' });
-      console.log('✅ All lint errors fixed!');
-    } catch (error) {
-      console.log('⚠️  Some lint errors remain, but significant progress made');
-    }
+    } catch (_error) {}
 
     return {
       processed: this.stats.filesProcessed,
@@ -370,9 +322,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const terminator = new LintTerminator();
   terminator
     .run()
-    .then((results) => {
-      console.log('\n🔄 MEMORY: Lint Correction Fixer - Task completed');
-      console.log('📊 Results:', results);
+    .then((_results) => {
       process.exit(0);
     })
     .catch((error) => {

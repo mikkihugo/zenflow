@@ -59,7 +59,6 @@ export class FACTIntegration extends EventEmitter {
   private config: FACTConfig;
   private factProcess: ChildProcess | null = null;
   private isInitialized = false;
-  private queryCounter = 0;
   private pendingQueries = new Map<
     string,
     {
@@ -104,8 +103,6 @@ export class FACTIntegration extends EventEmitter {
 
       this.isInitialized = true;
       this.emit('initialized');
-
-      console.log('✅ FACT integration initialized successfully');
     } catch (error) {
       console.error('❌ FACT initialization failed:', error);
       throw error;
@@ -124,8 +121,6 @@ export class FACTIntegration extends EventEmitter {
     const startTime = Date.now();
 
     try {
-      console.log(`🔍 FACT Query [${queryId}]: ${factQuery.query.substring(0, 100)}...`);
-
       // Execute FACT query through Python interface
       const result = await this.executeFACTQuery(queryId, factQuery);
 
@@ -146,10 +141,6 @@ export class FACTIntegration extends EventEmitter {
       };
 
       this.emit('queryCompleted', factResult);
-
-      console.log(
-        `✅ FACT Query completed [${queryId}] in ${executionTime}ms (${result.cacheHit ? 'CACHE HIT' : 'CACHE MISS'})`
-      );
 
       return factResult;
     } catch (error) {
@@ -265,7 +256,7 @@ export class FACTIntegration extends EventEmitter {
     }
 
     // Reject any pending queries
-    for (const [queryId, pending] of this.pendingQueries) {
+    for (const [_queryId, pending] of this.pendingQueries) {
       clearTimeout(pending.timeout);
       pending.reject(new Error('FACT system shutting down'));
     }
@@ -273,7 +264,6 @@ export class FACTIntegration extends EventEmitter {
 
     this.isInitialized = false;
     this.emit('shutdown');
-    console.log('✅ FACT system shutdown complete');
   }
 
   /**
@@ -286,9 +276,7 @@ export class FACTIntegration extends EventEmitter {
 
       const srcPath = path.join(this.config.factRepoPath, 'src');
       await fs.access(srcPath);
-
-      console.log(`✅ FACT repository verified at: ${this.config.factRepoPath}`);
-    } catch (error) {
+    } catch (_error) {
       throw new Error(
         `FACT repository not found at ${this.config.factRepoPath}. Please clone it first: git clone https://github.com/ruvnet/FACT.git`
       );
@@ -314,7 +302,6 @@ export class FACTIntegration extends EventEmitter {
 
     try {
       await fs.writeFile(envPath, envContent);
-      console.log('✅ FACT environment configured');
     } catch (error) {
       console.error('Failed to create FACT .env file:', error);
       throw error;
@@ -331,8 +318,6 @@ export class FACTIntegration extends EventEmitter {
 
       // Initialize FACT driver
       await this.executePythonCommand('initialize');
-
-      console.log('✅ FACT system initialized');
     } catch (error) {
       console.error('FACT system initialization failed:', error);
       throw error;
@@ -388,7 +373,7 @@ export class FACTIntegration extends EventEmitter {
           try {
             const result = JSON.parse(stdout);
             resolve(result);
-          } catch (error) {
+          } catch (_error) {
             // If not JSON, return raw stdout
             resolve({ response: stdout.trim() });
           }

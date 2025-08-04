@@ -3,9 +3,7 @@
  * Tests individual components and functions for steering document creation
  */
 
-import { existsSync } from 'fs';
-import { access, mkdir, readFile, rm, unlink, writeFile } from 'fs/promises';
-import { join } from 'path';
+import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { MaestroOrchestrator } from '../../../maestro/maestro-orchestrator';
 
 // Mock dependencies
@@ -19,7 +17,7 @@ jest.mock('../../../core/orchestrator.js');
 const mockReadFile = readFile as jest.MockedFunction<typeof readFile>;
 const mockWriteFile = writeFile as jest.MockedFunction<typeof writeFile>;
 const mockMkdir = mkdir as jest.MockedFunction<typeof mkdir>;
-const mockAccess = access as jest.MockedFunction<typeof access>;
+const _mockAccess = access as jest.MockedFunction<typeof access>;
 
 describe('Maestro Steering Document Generation', () => {
   let maestroOrchestrator: MaestroOrchestrator;

@@ -11,11 +11,10 @@ export { MCPPerformanceMetrics } from './core/performance-metrics';
 export { MCPToolExecutor } from './core/tool-executor';
 // Core MCP components
 export { MCPServer } from './mcp-server';
-
+export * from './tools/batch-tools';
 // MCP tools
 export * from './tools/neural-tools';
 export * from './tools/swarm-tools';
-export * from './tools/batch-tools';
 
 // MCP types
 export type * from './types/mcp-types';

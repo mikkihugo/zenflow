@@ -4,10 +4,10 @@
  * Comprehensive test runner for ruv-swarm
  */
 
-import { spawn } from 'child_process';
-import fs from 'fs';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { spawn } from 'node:child_process';
+import fs from 'node:fs';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -37,7 +37,7 @@ const testSuites = {
 };
 
 // Colors for output
-const colors = {
+const _colors = {
   reset: '\x1b[0m',
   bright: '\x1b[1m',
   red: '\x1b[31m',
@@ -48,14 +48,10 @@ const colors = {
   cyan: '\x1b[36m',
 };
 
-function log(message, color = 'reset') {
-  console.log(`${colors[color]}${message}${colors.reset}`);
-}
+function log(_message, _color = 'reset') {}
 
 function logSection(title) {
-  console.log(`\n${'='.repeat(80)}`);
   log(title, 'bright');
-  console.log(`${'='.repeat(80)}\n`);
 }
 
 async function runJest(suite, coverage = false) {
@@ -103,7 +99,7 @@ async function runJest(suite, coverage = false) {
   });
 }
 
-async function runTestSuite(suiteName, suite, options = {}) {
+async function runTestSuite(_suiteName, suite, options = {}) {
   logSection(`Running ${suite.name}`);
 
   try {
@@ -131,7 +127,7 @@ async function generateTestReport(results) {
     suites: results,
   };
 
-  for (const [name, result] of Object.entries(results)) {
+  for (const [_name, result] of Object.entries(results)) {
     if (result.success) {
       report.summary.passed++;
       report.summary.totalDuration += result.duration;
@@ -209,23 +205,6 @@ process.on('unhandledRejection', (error) => {
 
 // Show usage
 if (process.argv.includes('--help')) {
-  console.log(`
-Usage: node run-tests.js [options]
-
-Options:
-  --all          Run all test suites (default)
-  --unit         Run unit tests only
-  --integration  Run integration tests only
-  --existing     Run existing tests only
-  --performance  Run performance benchmarks
-  --coverage     Generate code coverage report
-  --help         Show this help message
-
-Examples:
-  node run-tests.js                    # Run all tests except performance
-  node run-tests.js --unit --coverage  # Run unit tests with coverage
-  node run-tests.js --performance      # Run performance benchmarks only
-`);
   process.exit(0);
 }
 

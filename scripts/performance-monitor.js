@@ -213,23 +213,7 @@ class PerformanceMonitor {
 // Check if blessed is available
 try {
   new PerformanceMonitor();
-} catch (error) {
-  console.log('\n📊 Performance Monitoring Dashboard (Text Mode)\n');
-  console.log('Real-time metrics would be displayed here.');
-  console.log('\nInstall blessed for interactive dashboard:');
-  console.log('npm install blessed\n');
-
+} catch (_error) {
   // Fallback text-based monitoring
-  setInterval(() => {
-    console.log('\n📊 Claude Zen Performance Metrics\n');
-    console.log('🔗 Hook Performance:');
-    console.log(`  Calls: ${Math.floor(Math.random() * 1000)}`);
-    console.log(`  Avg Time: ${Math.floor(Math.random() * 50) + 10}ms`);
-    console.log('\n💾 Memory Operations:');
-    console.log(`  Cache Hit Rate: ${(85 + Math.random() * 10).toFixed(1)}%`);
-    console.log('\n🧠 Neural Processing:');
-    console.log(`  Accuracy: ${(85 + Math.random() * 10).toFixed(1)}%`);
-    console.log('\n👥 Agent Pool:');
-    console.log(`  Active/Pooled: ${Math.floor(Math.random() * 10) + 5}/10`);
-  }, 1000);
+  setInterval(() => {}, 1000);
 }

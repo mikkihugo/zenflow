@@ -147,6 +147,8 @@ export interface SpecificationEngine {
 }
 
 export interface DetailedSpecification {
+  id: string;
+  domain: string;
   functionalRequirements: FunctionalRequirement[];
   nonFunctionalRequirements: NonFunctionalRequirement[];
   constraints: SystemConstraint[];
@@ -161,6 +163,7 @@ export interface FunctionalRequirement {
   id: string;
   title: string;
   description: string;
+  type: string;
   priority: Priority;
   testCriteria: string[];
   dependencies?: string[];
@@ -242,6 +245,7 @@ export interface PseudocodeEngine {
 }
 
 export interface PseudocodeStructure {
+  id: string;
   algorithms: AlgorithmPseudocode[];
   dataStructures: DataStructureDesign[];
   controlFlows: ControlFlowDiagram[];
@@ -285,11 +289,12 @@ export interface ComplexityAnalysis {
   timeComplexity: string;
   spaceComplexity: string;
   scalability: string;
+  worstCase: string;
   bottlenecks?: string[];
 }
 
 export interface OptimizationOpportunity {
-  type: 'performance' | 'memory' | 'readability' | 'maintainability';
+  type: 'performance' | 'memory' | 'readability' | 'maintainability' | 'algorithmic' | 'caching' | 'parallelization';
   description: string;
   impact: 'low' | 'medium' | 'high';
   effort: 'low' | 'medium' | 'high';
@@ -363,11 +368,18 @@ export interface ArchitectureEngine {
 }
 
 export interface ArchitectureDesign {
+  id: string;
   systemArchitecture: SystemArchitecture;
   componentDiagrams: ComponentDiagram[];
   dataFlow: DataFlowDiagram;
   deploymentPlan: DeploymentPlan;
   validationResults: ArchitecturalValidation;
+  components: Component[];
+  securityRequirements: SecurityRequirement[];
+  scalabilityRequirements: ScalabilityRequirement[];
+  qualityAttributes: QualityAttribute[];
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface SystemArchitecture {
@@ -381,12 +393,17 @@ export interface SystemArchitecture {
 }
 
 export interface Component {
+  id?: string;
   name: string;
   type: 'service' | 'library' | 'database' | 'gateway' | 'ui' | 'worker';
   responsibilities: string[];
   interfaces: string[];
   dependencies: string[];
   qualityAttributes: Record<string, string | number>;
+  performance: {
+    expectedLatency: string;
+    optimizations?: string[];
+  };
 }
 
 export interface InterfaceDefinition {
@@ -435,6 +452,25 @@ export interface QualityAttribute {
   target: string | number;
   measurement: string;
   priority: Priority;
+  type?: string;
+  criteria: string[];
+}
+
+export interface SecurityRequirement {
+  id: string;
+  type: string;
+  description: string;
+  implementation: string;
+  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+}
+
+export interface ScalabilityRequirement {
+  id: string;
+  type: string;
+  description: string;
+  target: string;
+  implementation: string;
+  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 }
 
 export interface ArchitecturalPattern {
@@ -463,6 +499,13 @@ export interface RefinementEngine {
   refineAlgorithms(feedback: PerformanceFeedback): Promise<AlgorithmRefinement[]>;
   updateArchitecture(refinements: ArchitecturalRefinement[]): Promise<UpdatedArchitecture>;
   validateRefinementImpact(changes: RefinementChange[]): Promise<ImpactAssessment>;
+
+  // Additional methods used by RefinementPhaseEngine
+  applyRefinements(
+    architecture: ArchitectureDesign,
+    feedback: RefinementFeedback
+  ): Promise<RefinementResult>;
+  validateRefinement(refinement: RefinementResult): Promise<RefinementValidation>;
 }
 
 export interface RefinementHistory {
@@ -602,9 +645,10 @@ export interface ArtifactRelationship {
 export interface ValidationResult {
   criterion: string;
   passed: boolean;
-  score?: number;
-  details: string;
+  score: number;
+  details?: string;
   suggestions?: string[];
+  feedback?: string;
 }
 
 export interface ValidationReport {
@@ -647,10 +691,18 @@ export interface PerformanceMetrics {
 }
 
 export interface PerformanceFeedback {
+  id?: string;
   metrics: PerformanceMetrics;
   targets: PerformanceTarget[];
   bottlenecks: string[];
   recommendations: string[];
+
+  // Additional properties used by refinement engine
+  performanceIssues?: string[];
+  securityConcerns?: string[];
+  scalabilityRequirements?: string[];
+  codeQualityIssues?: string[];
+  priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 }
 
 // AI Integration Types
@@ -688,7 +740,7 @@ export interface ReadinessAssessment {
 }
 
 // Export commonly used type unions
-export type RequirementSet = FunctionalRequirement[] & NonFunctionalRequirement[];
+export type RequirementSet = (FunctionalRequirement | NonFunctionalRequirement)[];
 export type ConstraintAnalysis = SystemConstraint[] & ProjectAssumption[];
 export type SpecificationDocument = DetailedSpecification;
 export type LogicValidation = ValidationResult[];
@@ -702,7 +754,24 @@ export type OptimizationPlan = RefinementStrategy[];
 export type AlgorithmRefinement = RefinementChange;
 export type UpdatedArchitecture = SystemArchitecture;
 export type ImpactAssessment = ImpactPrediction;
-export type RefinementResult = ImpactAssessment;
+export interface RefinementResult {
+  id: string;
+  architectureId: string;
+  feedbackId: string;
+  optimizationStrategies: OptimizationStrategy[];
+  performanceOptimizations: PerformanceOptimization[];
+  securityOptimizations: SecurityOptimization[];
+  scalabilityOptimizations: ScalabilityOptimization[];
+  codeQualityOptimizations: CodeQualityOptimization[];
+  refinedArchitecture: ArchitectureDesign;
+  benchmarkResults: BenchmarkResult[];
+  improvementMetrics: ImprovementMetric[];
+  refactoringOpportunities: RefactoringOpportunity[];
+  technicalDebtAnalysis: TechnicalDebtAnalysis;
+  recommendedNextSteps: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
 export type CodeArtifacts = SourceCodeArtifact[];
 export type DocumentationSet = DocumentationArtifact[];
 export type ProductionReadinessReport = CompletionValidation;
@@ -717,3 +786,190 @@ export type MonitoringDashboard = ArtifactReference;
 export type SecurityConfiguration = ArtifactReference;
 export type OptimizationSuggestion = OptimizationOpportunity;
 export type ArchitecturalRefinement = RefinementChange;
+
+// Additional exports required by refinement-engine.ts
+export interface PerformanceOptimization {
+  id: string;
+  targetComponent: string;
+  type: 'algorithm' | 'database' | 'caching' | 'network';
+  description: string;
+  currentPerformance: string;
+  targetPerformance: string;
+  techniques: string[];
+  estimatedGain: string;
+  implementationCost: 'Low' | 'Medium' | 'High';
+}
+
+export interface RefactoringOpportunity {
+  id: string;
+  targetComponent: string;
+  type: 'extraction' | 'pattern-application' | 'simplification';
+  description: string;
+  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  effort: 'Low' | 'Medium' | 'High';
+  benefits: string[];
+  risks: string[];
+  estimatedImpact: 'Low' | 'Medium' | 'High';
+}
+
+export interface RefinementValidation {
+  overallScore: number;
+  validationResults: ValidationResult[];
+  recommendations: string[];
+  approved: boolean;
+}
+
+export interface ScalabilityOptimization {
+  id: string;
+  targetComponent: string;
+  type: 'horizontal' | 'vertical' | 'database' | 'caching';
+  description: string;
+  currentCapacity: string;
+  targetCapacity: string;
+  bottlenecks: string[];
+  solutions: string[];
+  scalingFactor: string;
+  implementationCost: 'Low' | 'Medium' | 'High';
+}
+
+export interface SecurityOptimization {
+  id: string;
+  targetComponent: string;
+  type: 'authentication' | 'encryption' | 'access-control';
+  description: string;
+  currentSecurity: string;
+  targetSecurity: string;
+  vulnerabilities: string[];
+  mitigations: string[];
+  complianceStandards: string[];
+  implementationCost: 'Low' | 'Medium' | 'High';
+}
+
+export interface TechnicalDebtAnalysis {
+  id: string;
+  architectureId: string;
+  totalDebtScore: number;
+  debtCategories: {
+    category: string;
+    score: number;
+    description: string;
+    items: string[];
+  }[];
+  remediationPlan: {
+    priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+    description: string;
+    estimatedEffort: string;
+    impact: 'Low' | 'Medium' | 'High';
+  }[];
+}
+
+// Additional supporting types for refinement engine
+export interface OptimizationStrategy {
+  id: string;
+  type: 'performance' | 'security' | 'scalability' | 'code-quality';
+  name: string;
+  description: string;
+  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  estimatedImpact: 'Low' | 'Medium' | 'High';
+  implementationEffort: 'Low' | 'Medium' | 'High';
+  targets: string[];
+  techniques: string[];
+  successCriteria: string[];
+}
+
+export interface CodeQualityOptimization {
+  id: string;
+  targetComponent: string;
+  type: 'structure' | 'documentation' | 'testing';
+  description: string;
+  currentQuality: string;
+  targetQuality: string;
+  issues: string[];
+  improvements: string[];
+  metrics: Record<string, string>;
+  implementationCost: 'Low' | 'Medium' | 'High';
+}
+
+export interface BenchmarkResult {
+  id: string;
+  metric: string;
+  category: string;
+  originalValue: string;
+  refinedValue: string;
+  improvement: string;
+  measurementMethod: string;
+}
+
+export interface ImprovementMetric {
+  id: string;
+  name: string;
+  category: string;
+  beforeValue: string;
+  afterValue: string;
+  improvementPercentage: number;
+  confidenceLevel: number;
+  measurementAccuracy: string;
+}
+
+// Missing exports required by pseudocode engine
+export interface ComplexityClass {
+  id: string;
+  name: string;
+  description: string;
+  notation: string;
+  examples: string[];
+}
+
+export interface CoreAlgorithm {
+  id: string;
+  name: string;
+  description: string;
+  inputs: ParameterDefinition[];
+  outputs: ReturnDefinition[];
+  steps: PseudocodeStep[];
+  complexity: ComplexityAnalysis;
+  optimizations: OptimizationOpportunity[];
+}
+
+export interface DataStructureSpec {
+  id: string;
+  name: string;
+  type: string;
+  properties: PropertyDefinition[];
+  methods: MethodDefinition[];
+  memoryComplexity: string;
+  accessPatterns: string[];
+}
+
+export interface ProcessFlow {
+  id: string;
+  name: string;
+  description: string;
+  steps: ProcessStep[];
+  conditions: FlowCondition[];
+  parallelExecution: boolean;
+}
+
+export interface ProcessStep {
+  id: string;
+  name: string;
+  description: string;
+  dependencies: string[];
+  duration?: number;
+}
+
+export interface FlowCondition {
+  id: string;
+  condition: string;
+  trueNext: string;
+  falseNext: string;
+}
+
+export interface PseudocodeValidation {
+  id: string;
+  algorithmId: string;
+  validationResults: ValidationResult[];
+  logicErrors: string[];
+  optimizationSuggestions: string[];
+  complexityVerification: boolean;
+}

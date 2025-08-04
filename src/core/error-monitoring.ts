@@ -5,14 +5,13 @@
  * for Claude-Zen distributed architecture
  */
 
-import { createLogger } from '../core/logger';
-import { CircuitBreakerMetrics } from './error-recovery';
 import {
   type BaseClaudeZenError,
   type ErrorContext,
   type ErrorMetrics,
   getErrorSeverity,
 } from './errors';
+import { createLogger } from './logger';
 
 const logger = createLogger({ prefix: 'ErrorMonitoring' });
 
@@ -342,6 +341,7 @@ export class HealthMonitor {
       performanceImpact: Math.max(0, 100 - uptime),
       userSatisfactionScore: uptime,
       uptime,
+      averageResponseTime,
       mttr: 0, // Will be calculated by ErrorMonitor
       mtbf: 0, // Will be calculated by ErrorMonitor
     };
@@ -403,7 +403,7 @@ export class AlertSystem {
   private generateAlertMessage(
     config: AlertConfig,
     metrics: SystemHealthMetrics,
-    trends: ErrorTrend[]
+    _trends: ErrorTrend[]
   ): string {
     return config.template
       .replace('{{timestamp}}', new Date(metrics.timestamp).toISOString())
@@ -523,7 +523,7 @@ export class ErrorMonitor {
     this.alertSystem.addAlertConfig({
       name: 'component_failure',
       condition: (metrics) => {
-        for (const [component, health] of metrics.componentHealth.entries()) {
+        for (const [_component, health] of metrics.componentHealth.entries()) {
           if (health === 'critical') return true;
         }
         return false;
@@ -537,7 +537,7 @@ export class ErrorMonitor {
     // Error Trend Alert
     this.alertSystem.addAlertConfig({
       name: 'error_trending_up',
-      condition: (metrics, trends) => {
+      condition: (_metrics, trends) => {
         return trends.some((trend) => trend.trending === 'up' && trend.errorRate > 5);
       },
       severity: 'warning',

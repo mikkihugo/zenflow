@@ -4,6 +4,12 @@
  * Central export point for swarm coordination functionality
  */
 
+// Export diagnostics
+export * from './diagnostics';
+
+// Export core coordination components
 export { Orchestrator } from './orchestrator';
-export { RuvSwarmStrategy } from './strategies/ruv-swarm.strategy';
+// Export public API for external access
+export * from './public-api';
+export { ZenSwarmStrategy } from './strategies/ruv-swarm.strategy';
 export * from './types';

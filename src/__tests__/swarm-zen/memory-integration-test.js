@@ -9,9 +9,9 @@
  * Addresses Issue #69: "ruv-swarm Memory System Analysis Report"
  */
 
-import fs from 'fs/promises';
-import path from 'path';
-import hooksInstance, { handleHook } from '../src/hooks/index.js';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import hooksInstance from '../src/hooks/index.js';
 import { EnhancedMCPTools } from '../src/mcp-tools-enhanced.js';
 import { SwarmPersistence } from '../src/persistence.js';
 
@@ -55,8 +55,6 @@ class MemoryIntegrationTest {
 
     // Create a test swarm and agents to satisfy foreign key constraints
     await this.setupTestEnvironment();
-
-    console.log('🧪 Memory Integration Test initialized with test database');
   }
 
   async setupTestEnvironment() {
@@ -95,17 +93,13 @@ class MemoryIntegrationTest {
         metrics: {},
       });
     }
-
-    console.log(`📦 Created test swarm with ${testAgents.length} agents`);
   }
 
   async runTest(name, testFunction) {
-    console.log(`\n🔬 Running: ${name}`);
     this.testResults.summary.total++;
 
     try {
       const result = await testFunction();
-      console.log(`✅ PASSED: ${name}`);
 
       this.testResults.tests.push({
         name,
@@ -180,7 +174,7 @@ class MemoryIntegrationTest {
   async testCrossAgentMemoryAccess() {
     // Test that agents can access each other's memory through database
     const agent1Id = 'agent-1';
-    const agent2Id = 'agent-2';
+    const _agent2Id = 'agent-2';
 
     // Agent 1 stores some shared memory
     await this.hooks.setSharedMemory(
@@ -238,15 +232,10 @@ class MemoryIntegrationTest {
     // Verify cross-agent notifications can be retrieved
     const crossAgentNotifications = await this.mcpTools.getCrossAgentNotifications();
 
-    console.log(`🔍 Debug: Found ${crossAgentNotifications.length} cross-agent notifications`);
-
     if (crossAgentNotifications.length === 0) {
       // Let's debug what's in the database
       const allMemories = await this.persistence.getAllMemory('coder-1');
-      console.log(`🔍 Debug: Agent coder-1 has ${allMemories.length} memories`);
-      allMemories.forEach((m) =>
-        console.log(`  - ${m.key}: ${JSON.stringify(m.value).substring(0, 100)}`)
-      );
+      allMemories.forEach((_m) => {});
 
       throw new Error('No cross-agent notifications found after integration');
     }
@@ -287,8 +276,6 @@ class MemoryIntegrationTest {
 
     // Verify completion is in runtime memory
     const agent = this.hooks.sessionData.agents.get(completionData.agentId);
-    console.log('🔍 Debug: Agent in runtime memory:', agent);
-    console.log('🔍 Debug: All runtime agents:', Array.from(this.hooks.sessionData.agents.keys()));
 
     if (!agent || !agent.lastCompletion || agent.lastCompletion.taskId !== completionData.taskId) {
       // Let's manually ensure the agent exists in runtime
@@ -397,15 +384,10 @@ class MemoryIntegrationTest {
     // Write detailed report
     const reportPath = path.join(process.cwd(), 'test', 'memory-integration-report.json');
     await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
-
-    console.log(`\n📊 Test Report written to: ${reportPath}`);
     return report;
   }
 
   async run() {
-    console.log('🚀 Starting Memory System Integration Test');
-    console.log('📝 This test validates Issue #69 fixes\n');
-
     await this.initialize();
 
     // Run all tests
@@ -416,15 +398,6 @@ class MemoryIntegrationTest {
     await this.runTest('Memory System Resilience', () => this.testMemorySystemResilience());
 
     const report = await this.generateReport();
-
-    console.log(`\n${'='.repeat(60)}`);
-    console.log('📊 FINAL RESULTS');
-    console.log('='.repeat(60));
-    console.log(`Total Tests: ${report.summary.total}`);
-    console.log(`Passed: ${report.summary.passed}`);
-    console.log(`Failed: ${report.summary.failed}`);
-    console.log(`Pass Rate: ${report.passingRate}`);
-    console.log(`\n${report.conclusion}`);
 
     await this.cleanup();
 

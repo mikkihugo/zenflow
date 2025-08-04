@@ -2,9 +2,9 @@
  * Safe domain splitter with rollback capability
  */
 
+import * as path from 'node:path';
 import * as fs from 'fs-extra';
-import * as path from 'path';
-import type { ProgressReport, RollbackPlan } from '../types/analysis-types';
+import type { ProgressReport } from '../types/analysis-types';
 import type { SplittingResult, SubDomainPlan, ValidationReport } from '../types/domain-types';
 
 export interface DomainSplitter {
@@ -38,8 +38,6 @@ export class SafeDomainSplitter implements DomainSplitter {
   }
 
   async executeSplitting(plans: SubDomainPlan[]): Promise<SplittingResult> {
-    console.log(`🚀 Executing domain splitting for ${plans.length} plans`);
-
     this.reportProgress('analyzing', 0, 'Preparing for domain split');
 
     try {
@@ -92,7 +90,6 @@ export class SafeDomainSplitter implements DomainSplitter {
       this.reportProgress('validating', 95, 'Split validation complete');
 
       if (!validation.success) {
-        console.log('❌ Split validation failed, rolling back');
         await this.rollbackSplit();
         throw new Error(
           `Split validation failed: ${validation.issues.map((i) => i.description).join(', ')}`
@@ -110,11 +107,6 @@ export class SafeDomainSplitter implements DomainSplitter {
         validation,
       };
 
-      console.log(`✅ Domain split completed successfully`);
-      console.log(`📊 Created ${result.subDomainsCreated} sub-domains`);
-      console.log(`📁 Moved ${result.filesMoved} files`);
-      console.log(`🔗 Updated ${result.importsUpdated} imports`);
-
       return result;
     } catch (error) {
       console.error(`❌ Domain split failed:`, error);
@@ -122,7 +114,6 @@ export class SafeDomainSplitter implements DomainSplitter {
 
       try {
         await this.rollbackSplit();
-        console.log('🔄 Rollback completed successfully');
       } catch (rollbackError) {
         console.error('💥 Rollback failed:', rollbackError);
       }
@@ -131,9 +122,7 @@ export class SafeDomainSplitter implements DomainSplitter {
     }
   }
 
-  async validateSplitIntegrity(result: SplittingResult): Promise<ValidationReport> {
-    console.log(`🔍 Validating split integrity`);
-
+  async validateSplitIntegrity(_result: SplittingResult): Promise<ValidationReport> {
     const issues = [];
     const metrics = {
       buildSuccess: true,
@@ -198,8 +187,6 @@ export class SafeDomainSplitter implements DomainSplitter {
   }
 
   async generateMigrationGuide(plans: SubDomainPlan[]): Promise<any> {
-    console.log(`📚 Generating migration guide for ${plans.length} plans`);
-
     const breakingChanges = [];
     const migrationSteps = [];
 
@@ -256,8 +243,6 @@ export class SafeDomainSplitter implements DomainSplitter {
   }
 
   private async createBackup(): Promise<void> {
-    console.log(`📦 Creating backup in ${this.backupDir}`);
-
     await fs.ensureDir(this.backupDir);
 
     // Create timestamped backup
@@ -278,8 +263,6 @@ export class SafeDomainSplitter implements DomainSplitter {
     };
 
     await fs.writeJson(path.join(backupPath, 'metadata.json'), metadata, { spaces: 2 });
-
-    console.log(`✅ Backup created at ${backupPath}`);
   }
 
   private async validatePlans(plans: SubDomainPlan[]): Promise<void> {
@@ -342,14 +325,11 @@ export class SafeDomainSplitter implements DomainSplitter {
       for (const subdomain of plan.targetSubDomains) {
         const subdomainDir = path.join(srcDir, subdomain.name);
         await fs.ensureDir(subdomainDir);
-        console.log(`📁 Created directory: ${subdomain.name}`);
       }
     }
   }
 
   private async executeFileMoves(operations: FileMoveOperation[]): Promise<void> {
-    console.log(`📁 Moving ${operations.length} files`);
-
     for (const operation of operations) {
       try {
         // Ensure target directory exists
@@ -357,7 +337,6 @@ export class SafeDomainSplitter implements DomainSplitter {
 
         // Move file
         await fs.move(operation.from, operation.to);
-        console.log(`  ✓ ${path.basename(operation.from)} -> ${operation.subdomain}/`);
       } catch (error) {
         console.error(`  ❌ Failed to move ${operation.from}: ${error.message}`);
         throw error;
@@ -368,8 +347,6 @@ export class SafeDomainSplitter implements DomainSplitter {
   private async updateImportPaths(
     moveOperations: FileMoveOperation[]
   ): Promise<ImportUpdateOperation[]> {
-    console.log(`🔗 Updating import paths`);
-
     const updates: ImportUpdateOperation[] = [];
     const pathMapping = new Map<string, string>();
 
@@ -385,8 +362,6 @@ export class SafeDomainSplitter implements DomainSplitter {
       const fileUpdates = await this.updateImportsInFile(file, pathMapping);
       updates.push(...fileUpdates);
     }
-
-    console.log(`🔗 Updated ${updates.length} import statements`);
     return updates;
   }
 
@@ -475,15 +450,13 @@ export class SafeDomainSplitter implements DomainSplitter {
 
     // Ensure relative path starts with ./ or ../
     if (!relativePath.startsWith('.')) {
-      relativePath = './' + relativePath;
+      relativePath = `./${relativePath}`;
     }
 
     return relativePath;
   }
 
   private async generateIndexFiles(plans: SubDomainPlan[]): Promise<void> {
-    console.log(`📄 Generating index files`);
-
     for (const plan of plans) {
       for (const subdomain of plan.targetSubDomains) {
         await this.generateSubdomainIndex(subdomain);
@@ -506,7 +479,7 @@ export class SafeDomainSplitter implements DomainSplitter {
     const exports = [];
 
     for (const file of files) {
-      const modulePath = './' + file.replace(/\.(ts|tsx)$/, '');
+      const modulePath = `./${file.replace(/\.(ts|tsx)$/, '')}`;
       const content = await fs.readFile(path.join(subdomainDir, file), 'utf-8');
 
       // Extract named exports
@@ -535,7 +508,6 @@ export class SafeDomainSplitter implements DomainSplitter {
     ].join('\n');
 
     await fs.writeFile(indexPath, indexContent, 'utf-8');
-    console.log(`  ✓ Generated index for ${subdomain.name}`);
   }
 
   private extractNamedExports(content: string): string[] {
@@ -562,13 +534,17 @@ export class SafeDomainSplitter implements DomainSplitter {
 
   private async validateBuild(): Promise<{ success: boolean; errors: string[] }> {
     try {
-      const { execSync } = await import('child_process');
+      const { execSync } = await import('node:child_process');
 
       // Run TypeScript compiler
       const result = execSync('npx tsc --noEmit --skipLibCheck', {
         encoding: 'utf-8',
         stdio: 'pipe',
       });
+
+      // Log successful compilation result
+      if (result && result.length > 0) {
+      }
 
       return { success: true, errors: [] };
     } catch (error) {
@@ -592,8 +568,6 @@ export class SafeDomainSplitter implements DomainSplitter {
   }
 
   private async rollbackSplit(): Promise<void> {
-    console.log(`🔄 Rolling back domain split`);
-
     // Find latest backup
     const backupDirs = await fs.readdir(this.backupDir);
     const latestBackup = backupDirs
@@ -613,8 +587,6 @@ export class SafeDomainSplitter implements DomainSplitter {
       // Remove current src and restore from backup
       await fs.remove(currentSrc);
       await fs.copy(srcBackup, currentSrc);
-
-      console.log(`✅ Rollback completed from ${latestBackup}`);
     } else {
       throw new Error(`Backup source not found: ${srcBackup}`);
     }

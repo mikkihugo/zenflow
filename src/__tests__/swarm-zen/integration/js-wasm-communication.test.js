@@ -4,10 +4,7 @@
  */
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { RuvSwarm } from '../../src/index-enhanced.js';
-import { NeuralNetworkManager } from '../../src/neural-network-manager.js';
-import { PersistenceManager } from '../../src/persistence.js';
-import { WasmModuleLoader } from '../../src/wasm-loader.js';
+import { ZenSwarm } from '../../src/index-enhanced.js';
 
 describe('JS-WASM Communication Integration Tests', () => {
   let ruvSwarm;
@@ -17,7 +14,7 @@ describe('JS-WASM Communication Integration Tests', () => {
 
   beforeAll(async () => {
     // Initialize all components
-    ruvSwarm = await RuvSwarm.initialize({
+    ruvSwarm = await ZenSwarm.initialize({
       loadingStrategy: 'progressive',
       enablePersistence: true,
       enableNeuralNetworks: true,
@@ -167,7 +164,7 @@ describe('JS-WASM Communication Integration Tests', () => {
         for (let i = 0; i < 20; i++) {
           await swarm.spawn({ type: 'researcher' });
         }
-      } catch (e) {
+      } catch (_e) {
         // Expected
       }
 
@@ -285,11 +282,12 @@ describe('JS-WASM Communication Integration Tests', () => {
         },
       });
 
-      // Write data faster than it can be processed
+      // Write data faster than it can be processed initially, then adapt to processingDelay
       const writePromises = [];
       for (let i = 0; i < 20; i++) {
         writePromises.push(stream.write(new Float32Array(1000)));
-        await new Promise((resolve) => setTimeout(resolve, 10));
+        // Use dynamic processing delay that adapts to backpressure
+        await new Promise((resolve) => setTimeout(resolve, Math.min(processingDelay, 10)));
       }
 
       await Promise.all(writePromises);
@@ -345,7 +343,7 @@ describe('JS-WASM Communication Integration Tests', () => {
       });
 
       // Spawn different types of agents
-      const agents = await Promise.all([
+      const _agents = await Promise.all([
         swarm.spawn({ type: 'coordinator', role: 'lead' }),
         swarm.spawn({ type: 'researcher', specialization: 'data' }),
         swarm.spawn({ type: 'coder', language: 'javascript' }),
@@ -443,7 +441,7 @@ describe('JS-WASM Communication Integration Tests', () => {
     });
 
     it('should recover from WASM panics', async () => {
-      const beforePanic = await wasmLoader.getState();
+      const _beforePanic = await wasmLoader.getState();
 
       try {
         await wasmLoader.triggerPanic('test panic');
@@ -481,7 +479,7 @@ describe('JS-WASM Communication Integration Tests', () => {
         const data = new Float32Array(size / 4).fill(1.0);
         const start = performance.now();
 
-        const result = await wasmLoader.processData(data);
+        const _result = await wasmLoader.processData(data);
 
         const time = performance.now() - start;
         const throughput = size / 1024 / (time / 1000); // KB/s

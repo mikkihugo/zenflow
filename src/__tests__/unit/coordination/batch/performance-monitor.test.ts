@@ -3,9 +3,9 @@
  * Validates performance monitoring and comparison capabilities
  */
 
-import { BatchPerformanceMonitor } from '../../../../coordination/batch/performance-monitor';
 import type { BatchExecutionSummary } from '../../../../coordination/batch/batch-engine';
-import type { PerformanceMetrics, PerformanceComparison } from '../../../../coordination/batch/performance-monitor';
+import type { PerformanceMetrics } from '../../../../coordination/batch/performance-monitor';
+import { BatchPerformanceMonitor } from '../../../../coordination/batch/performance-monitor';
 
 describe('BatchPerformanceMonitor - Claude-zen Performance Tracking', () => {
   let monitor: BatchPerformanceMonitor;
@@ -134,9 +134,11 @@ describe('BatchPerformanceMonitor - Claude-zen Performance Tracking', () => {
 
       // Should recommend improvements for poor performance
       expect(comparison.speedImprovement).toBeLessThan(2.0);
-      expect(comparison.recommendations.some(r => r.includes('Consider increasing batch size'))).toBe(true);
-      expect(comparison.recommendations.some(r => r.includes('Low success rate'))).toBe(true);
-      expect(comparison.recommendations.some(r => r.includes('Small batch size'))).toBe(true);
+      expect(
+        comparison.recommendations.some((r) => r.includes('Consider increasing batch size'))
+      ).toBe(true);
+      expect(comparison.recommendations.some((r) => r.includes('Low success rate'))).toBe(true);
+      expect(comparison.recommendations.some((r) => r.includes('Small batch size'))).toBe(true);
     });
 
     it('should handle optimal performance scenarios', () => {
@@ -167,7 +169,9 @@ describe('BatchPerformanceMonitor - Claude-zen Performance Tracking', () => {
       const comparison = monitor.comparePerformance(optimalBatch, baseline);
 
       expect(comparison.speedImprovement).toBe(4.5);
-      expect(comparison.recommendations.some(r => r.includes('Excellent speed improvement'))).toBe(true);
+      expect(
+        comparison.recommendations.some((r) => r.includes('Excellent speed improvement'))
+      ).toBe(true);
     });
   });
 
@@ -175,16 +179,19 @@ describe('BatchPerformanceMonitor - Claude-zen Performance Tracking', () => {
     it('should track performance trends over time', () => {
       // Add multiple metrics over time with significant degradation
       for (let i = 0; i < 10; i++) {
-        monitor.recordBatchExecution({
-          totalOperations: 5,
-          successfulOperations: 5,
-          failedOperations: 0,
-          totalExecutionTime: 1000 + (i * 200), // Significantly degrading
-          averageExecutionTime: 200 + (i * 40),
-          concurrencyAchieved: 3.0,
-          speedImprovement: 3.0 - (i * 0.2), // More noticeable decline
-          tokenReduction: 30,
-        }, { memory: 100 + (i * 20), cpu: 50 + (i * 5) });
+        monitor.recordBatchExecution(
+          {
+            totalOperations: 5,
+            successfulOperations: 5,
+            failedOperations: 0,
+            totalExecutionTime: 1000 + i * 200, // Significantly degrading
+            averageExecutionTime: 200 + i * 40,
+            concurrencyAchieved: 3.0,
+            speedImprovement: 3.0 - i * 0.2, // More noticeable decline
+            tokenReduction: 30,
+          },
+          { memory: 100 + i * 20, cpu: 50 + i * 5 }
+        );
       }
 
       const trends = monitor.getPerformanceTrends('throughput', 3); // Last 3 hours
@@ -203,11 +210,11 @@ describe('BatchPerformanceMonitor - Claude-zen Performance Tracking', () => {
           totalOperations: 8,
           successfulOperations: 8,
           failedOperations: 0,
-          totalExecutionTime: 2000 - (i * 300), // Significant improvement
-          averageExecutionTime: 250 - (i * 37.5),
-          concurrencyAchieved: 3.0 + (i * 0.5),
-          speedImprovement: 3.0 + (i * 0.6),
-          tokenReduction: 25 + (i * 2),
+          totalExecutionTime: 2000 - i * 300, // Significant improvement
+          averageExecutionTime: 250 - i * 37.5,
+          concurrencyAchieved: 3.0 + i * 0.5,
+          speedImprovement: 3.0 + i * 0.6,
+          tokenReduction: 25 + i * 2,
         });
       }
 
@@ -266,7 +273,9 @@ describe('BatchPerformanceMonitor - Claude-zen Performance Tracking', () => {
       const summary = monitor.getPerformanceSummary(1);
 
       expect(summary.batchExecutions).toBe(0);
-      expect(summary.recommendations.some(r => r.includes('No batch executions detected'))).toBe(true);
+      expect(summary.recommendations.some((r) => r.includes('No batch executions detected'))).toBe(
+        true
+      );
     });
   });
 
@@ -296,8 +305,8 @@ describe('BatchPerformanceMonitor - Claude-zen Performance Tracking', () => {
       const comparison = monitor.compareToBaseline(improvedMetrics);
 
       expect(comparison).toBeDefined();
-      expect(comparison!.improvement).toBeCloseTo(1.26, 2);
-      expect(comparison!.recommendation).toContain('improved significantly');
+      expect(comparison?.improvement).toBeCloseTo(1.26, 2);
+      expect(comparison?.recommendation).toContain('improved significantly');
     });
 
     it('should detect performance degradation from baseline', () => {
@@ -324,8 +333,8 @@ describe('BatchPerformanceMonitor - Claude-zen Performance Tracking', () => {
 
       const comparison = monitor.compareToBaseline(degradedMetrics);
 
-      expect(comparison!.improvement).toBe(0.75);
-      expect(comparison!.recommendation).toContain('degraded compared to baseline');
+      expect(comparison?.improvement).toBe(0.75);
+      expect(comparison?.recommendation).toContain('degraded compared to baseline');
     });
   });
 

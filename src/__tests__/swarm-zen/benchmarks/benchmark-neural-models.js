@@ -4,9 +4,9 @@
  * Tests all neural network architectures in ruv-swarm
  */
 
-import { spawn } from 'child_process';
-import fs from 'fs/promises';
-import path from 'path';
+import { spawn } from 'node:child_process';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 class NeuralBenchmark {
   constructor() {
@@ -42,10 +42,6 @@ class NeuralBenchmark {
   }
 
   async benchmarkModel(model, iterations = 20) {
-    console.log(`\n${'='.repeat(60)}`);
-    console.log(`🧠 Benchmarking ${model.toUpperCase()} Model`);
-    console.log(`${'='.repeat(60)}\n`);
-
     const modelResults = {
       model,
       iterations,
@@ -54,9 +50,6 @@ class NeuralBenchmark {
       memory: {},
       activations: {},
     };
-
-    // Phase 1: Training benchmark
-    console.log('📊 Phase 1: Training Performance\n');
     const trainStart = Date.now();
 
     try {
@@ -78,9 +71,6 @@ class NeuralBenchmark {
       modelResults.metrics.trainingSuccess = false;
       modelResults.metrics.trainingError = error.message;
     }
-
-    // Phase 2: Pattern analysis
-    console.log('\n📊 Phase 2: Pattern Analysis\n');
     const patternStart = Date.now();
 
     try {
@@ -97,9 +87,6 @@ class NeuralBenchmark {
     } catch (error) {
       modelResults.patterns = { error: error.message };
     }
-
-    // Phase 3: Export weights for analysis
-    console.log('\n📊 Phase 3: Weight Export & Analysis\n');
     const exportStart = Date.now();
     const exportPath = `./.ruv-swarm/neural/${model}-weights-${Date.now()}.json`;
 
@@ -127,13 +114,7 @@ class NeuralBenchmark {
     } catch (error) {
       modelResults.architecture = { error: error.message };
     }
-
-    // Phase 4: Memory profiling
-    console.log('\n📊 Phase 4: Memory Profiling\n');
     modelResults.memory = await this.profileMemory(model);
-
-    // Phase 5: Inference speed test
-    console.log('\n📊 Phase 5: Inference Speed Test\n');
     modelResults.inference = await this.testInferenceSpeed(model);
 
     return modelResults;
@@ -213,9 +194,6 @@ class NeuralBenchmark {
   }
 
   async runFullBenchmark() {
-    console.log('🚀 Starting Comprehensive Neural Model Benchmarking');
-    console.log(`📅 ${new Date().toISOString()}\n`);
-
     // Create output directory
     const outputDir = path.join(process.cwd(), '.ruv-swarm', 'benchmarks');
     await fs.mkdir(outputDir, { recursive: true });
@@ -246,8 +224,6 @@ class NeuralBenchmark {
 
     // Display summary
     this.displaySummary(analysis);
-
-    console.log(`\n✅ Benchmark complete! Results saved to: ${outputFile}`);
   }
 
   generateComparativeAnalysis() {
@@ -299,34 +275,10 @@ class NeuralBenchmark {
   }
 
   displaySummary(analysis) {
-    console.log('\n📊 COMPARATIVE ANALYSIS SUMMARY');
-    console.log('='.repeat(60));
-
-    console.log('\n🎯 Performance Metrics:');
-    Object.entries(analysis.performance).forEach(([model, metrics]) => {
-      console.log(`\n${model.toUpperCase()}:`);
-      console.log(`  Training Time: ${(metrics.trainingTime / 1000).toFixed(2)}s`);
-      console.log(`  Inference Speed: ${metrics.inferenceSpeed.toFixed(1)} ops/sec`);
-      console.log(`  Accuracy: ${metrics.accuracy}%`);
-      console.log(`  Loss: ${metrics.loss}`);
-    });
-
-    console.log('\n💾 Memory Usage:');
-    Object.entries(analysis.memory).forEach(([model, metrics]) => {
-      console.log(
-        `${model.toUpperCase()}: ${metrics.totalMemory}MB (${metrics.efficiency.toFixed(1)}% efficient)`
-      );
-    });
-
-    console.log('\n🏗️ Architecture Complexity:');
-    Object.entries(analysis.architecture).forEach(([model, arch]) => {
-      console.log(
-        `${model.toUpperCase()}: ${arch.layers} layers, ${arch.parameters.toLocaleString()} parameters`
-      );
-    });
-
-    console.log('\n🎯 Recommendations:');
-    analysis.recommendations.forEach((rec) => console.log(`  • ${rec}`));
+    Object.entries(analysis.performance).forEach(([_model, _metrics]) => {});
+    Object.entries(analysis.memory).forEach(([_model, _metrics]) => {});
+    Object.entries(analysis.architecture).forEach(([_model, _arch]) => {});
+    analysis.recommendations.forEach((_rec) => {});
   }
 }
 

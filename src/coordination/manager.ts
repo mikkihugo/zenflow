@@ -6,18 +6,8 @@
 
 import { EventEmitter } from 'node:events';
 import type { IEventBus } from '../core/event-bus';
-import type { ILogger, LogArgument } from '../core/logger';
+import type { ILogger } from '../core/logger';
 import { CORE_TOKENS, inject, injectable } from '../di/index';
-import type {
-  AgentCreatedPayload,
-  AgentDestroyedPayload,
-  AgentStatus,
-  AgentStatusChangedPayload,
-  AgentType,
-  TaskAssignedPayload,
-  TaskCompletedPayload,
-  TaskFailedPayload,
-} from '../types/event-types';
 
 export interface CoordinationConfig {
   maxAgents: number;
@@ -59,8 +49,8 @@ export class CoordinationManager extends EventEmitter {
 
   constructor(
     config: CoordinationConfig,
-    @inject(CORE_TOKENS.Logger) private logger: ILogger,
-    @inject(CORE_TOKENS.EventBus) private eventBus: IEventBus
+    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
+    @inject(CORE_TOKENS.EventBus) private _eventBus: IEventBus
   ) {
     super();
 
@@ -72,7 +62,7 @@ export class CoordinationManager extends EventEmitter {
     };
 
     this.setupEventHandlers();
-    this.logger.info('CoordinationManager initialized');
+    this._logger.info('CoordinationManager initialized');
   }
 
   /**
@@ -83,7 +73,7 @@ export class CoordinationManager extends EventEmitter {
       return;
     }
 
-    this.logger?.info('Starting CoordinationManager...');
+    this._logger?.info('Starting CoordinationManager...');
 
     if (this.config.enableHealthCheck) {
       this.startHeartbeatMonitoring();
@@ -91,7 +81,7 @@ export class CoordinationManager extends EventEmitter {
 
     this.isRunning = true;
     this.emit('started');
-    this.logger?.info('CoordinationManager started');
+    this._logger?.info('CoordinationManager started');
   }
 
   /**
@@ -102,7 +92,7 @@ export class CoordinationManager extends EventEmitter {
       return;
     }
 
-    this.logger?.info('Stopping CoordinationManager...');
+    this._logger?.info('Stopping CoordinationManager...');
 
     if (this.heartbeatTimer) {
       clearInterval(this.heartbeatTimer);
@@ -111,7 +101,7 @@ export class CoordinationManager extends EventEmitter {
 
     this.isRunning = false;
     this.emit('stopped');
-    this.logger?.info('CoordinationManager stopped');
+    this._logger?.info('CoordinationManager stopped');
   }
 
   /**
@@ -137,7 +127,7 @@ export class CoordinationManager extends EventEmitter {
     };
 
     this.agents.set(agent.id, agent);
-    this.logger?.info(`Agent registered: ${agent.id}`, { type: agent.type });
+    this._logger?.info(`Agent registered: ${agent.id}`, { type: agent.type });
     this.emit('agentRegistered', agent);
   }
 
@@ -151,7 +141,7 @@ export class CoordinationManager extends EventEmitter {
     }
 
     this.agents.delete(agentId);
-    this.logger?.info(`Agent unregistered: ${agentId}`);
+    this._logger?.info(`Agent unregistered: ${agentId}`);
     this.emit('agentUnregistered', { agentId });
   }
 
@@ -175,7 +165,7 @@ export class CoordinationManager extends EventEmitter {
     };
 
     this.tasks.set(task.id, task);
-    this.logger?.info(`Task submitted: ${task.id}`, { type: task.type });
+    this._logger?.info(`Task submitted: ${task.id}`, { type: task.type });
 
     // Try to assign task immediately
     await this.assignTask(task, taskConfig.requiredCapabilities || []);
@@ -271,16 +261,16 @@ export class CoordinationManager extends EventEmitter {
   }
 
   private setupEventHandlers(): void {
-    if (this.eventBus) {
-      this.eventBus.on('agent:heartbeat', (data: any) => {
+    if (this._eventBus) {
+      this._eventBus.on('agent:heartbeat', (data: any) => {
         this.updateAgentHeartbeat(data.agentId);
       });
 
-      this.eventBus.on('task:completed', (data: any) => {
+      this._eventBus.on('task:completed', (data: any) => {
         this.updateTaskStatus(data.taskId, 'completed');
       });
 
-      this.eventBus.on('task:failed', (data: any) => {
+      this._eventBus.on('task:failed', (data: any) => {
         this.updateTaskStatus(data.taskId, 'failed');
       });
     }
@@ -300,7 +290,7 @@ export class CoordinationManager extends EventEmitter {
       const lastHeartbeatTime = agent.lastHeartbeat.getTime();
       if (now - lastHeartbeatTime > timeoutMs && agent.status !== 'offline') {
         agent.status = 'offline';
-        this.logger?.warn(`Agent went offline: ${agent.id}`);
+        this._logger?.warn(`Agent went offline: ${agent.id}`);
         this.emit('agentOffline', { agentId: agent.id });
       }
     }
@@ -316,7 +306,7 @@ export class CoordinationManager extends EventEmitter {
     );
 
     if (suitableAgents.length === 0) {
-      this.logger?.warn(`No suitable agents found for task: ${task.id}`);
+      this._logger?.warn(`No suitable agents found for task: ${task.id}`);
       return;
     }
 
@@ -330,7 +320,7 @@ export class CoordinationManager extends EventEmitter {
     selectedAgent.status = 'busy';
     selectedAgent.taskCount++;
 
-    this.logger?.info(`Task assigned: ${task.id} -> ${selectedAgent.id}`);
+    this._logger?.info(`Task assigned: ${task.id} -> ${selectedAgent.id}`);
     this.emit('taskAssigned', { taskId: task.id, agentId: selectedAgent.id });
   }
 }

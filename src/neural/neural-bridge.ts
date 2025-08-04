@@ -5,6 +5,9 @@
 
 import { createLogger } from '../core/logger';
 
+// TODO: Use dependency injection for logger
+// Should inject ILogger from DI container instead of creating directly
+// Example: constructor(@inject(CORE_TOKENS.Logger) private logger: ILogger) {}
 const logger = createLogger({ prefix: 'Neural' });
 
 export interface NeuralConfig {
@@ -241,7 +244,7 @@ export class NeuralBridge {
   }
 
   private async simulateTraining(
-    network: NeuralNetwork,
+    _network: NeuralNetwork,
     trainingData: TrainingData,
     epochs: number
   ): Promise<void> {
@@ -259,7 +262,7 @@ export class NeuralBridge {
     }
   }
 
-  private async simulatePrediction(network: NeuralNetwork, inputs: number[]): Promise<number[]> {
+  private async simulatePrediction(network: NeuralNetwork, _inputs: number[]): Promise<number[]> {
     // Simulate prediction computation
     await new Promise((resolve) => setTimeout(resolve, 5));
 

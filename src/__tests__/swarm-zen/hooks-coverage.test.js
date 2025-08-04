@@ -3,7 +3,7 @@
  * Tests all hook implementations for 100% coverage
  */
 
-import assert from 'assert';
+import assert from 'node:assert';
 import {
   AdvancedCommands,
   ClaudeIntegration,
@@ -86,7 +86,7 @@ describe('Hooks System 100% Coverage', () => {
     });
 
     it('should handle hook middleware errors', async () => {
-      hooks.addMiddleware(async (hookName, context, next) => {
+      hooks.addMiddleware(async (hookName, _context, next) => {
         if (hookName === 'restricted') {
           throw new Error('Access denied');
         }
@@ -370,8 +370,6 @@ describe('Hooks System 100% Coverage', () => {
 
 // Run tests when executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('Running hooks coverage tests...');
-
   // Run all tests
   const { run } = await import('./test-runner.js');
   await run(__filename);

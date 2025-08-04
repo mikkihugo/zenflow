@@ -3,7 +3,7 @@
  * Real-time capacity monitoring and dynamic adjustment system
  */
 
-import type { ICapacityManager } from '../interfaces';
+import type { CapacityManager } from '../interfaces';
 import type { CapacityMetrics, LoadMetrics, ResourceConstraint } from '../types';
 import { CapacityPredictor } from './capacity-predictor';
 import { ResourceMonitor } from './resource-monitor';
@@ -48,7 +48,7 @@ interface CapacityAdjustment {
   timestamp: Date;
 }
 
-export class AgentCapacityManager implements ICapacityManager {
+export class AgentCapacityManager implements CapacityManager {
   private capacityProfiles: Map<string, AgentCapacityProfile> = new Map();
   private capacityPredictor: CapacityPredictor;
   private resourceMonitor: ResourceMonitor;

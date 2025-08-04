@@ -8,7 +8,7 @@
  * @fileoverview Neural network domain API routes
  */
 
-import { NextFunction, type Request, type Response, Router } from 'express';
+import { type Request, type Response, Router } from 'express';
 import { NeuralDomainAPI } from '../../neural/api';
 import { asyncHandler } from '../middleware/errors';
 import { LogLevel, log, logPerformance } from '../middleware/logging';

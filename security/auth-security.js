@@ -2,8 +2,8 @@
  * Authentication & Authorization Security Framework
  */
 
+import crypto from 'node:crypto';
 import bcrypt from 'bcrypt';
-import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 
 export class AuthSecurity {
@@ -36,7 +36,7 @@ export class AuthSecurity {
         issuer: 'claude-zen',
         audience: 'claude-zen-users',
       });
-    } catch (error) {
+    } catch (_error) {
       throw new Error('Invalid token');
     }
   }
@@ -52,7 +52,7 @@ export class AuthSecurity {
       const payload = AuthSecurity.verifyJWT(token, process.env.JWT_SECRET);
       req.user = payload;
       next();
-    } catch (error) {
+    } catch (_error) {
       return res.status(401).json({ error: 'Invalid authentication' });
     }
   }

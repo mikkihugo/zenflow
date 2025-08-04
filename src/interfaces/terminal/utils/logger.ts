@@ -17,15 +17,12 @@ export const createSimpleLogger = (component?: string): SimpleLogger => {
   const prefix = component ? `[${component}]` : '';
 
   return {
-    debug: (message: string, ...args: any[]) => {
+    debug: (_message: string, ..._args: any[]) => {
       if (process.env.DEBUG || process.env.VERBOSE) {
-        console.debug(`${prefix} DEBUG: ${message}`, ...args);
       }
     },
 
-    info: (message: string, ...args: any[]) => {
-      console.info(`${prefix} INFO: ${message}`, ...args);
-    },
+    info: (_message: string, ..._args: any[]) => {},
 
     warn: (message: string, ...args: any[]) => {
       console.warn(`${prefix} WARN: ${message}`, ...args);

@@ -8,7 +8,13 @@
 import { EventEmitter } from 'node:events';
 import type { IEventBus } from '../core/event-bus';
 import type { ILogger } from '../core/logger';
-import type { AgentState, AgentType } from '../types/agent-types';
+import type {
+  GlobalAgentInfo,
+  GlobalResourceMetrics,
+  HiveHealthMetrics,
+  Task as HiveTask,
+  SwarmInfo,
+} from './hive-types';
 
 export interface HiveRegistry {
   // Global agent registry
@@ -18,7 +24,7 @@ export interface HiveRegistry {
   activeSwarms: Map<string, SwarmInfo>;
 
   // Task distribution info
-  globalTaskQueue: Task[];
+  globalTaskQueue: HiveTask[];
   taskAssignments: Map<string, string>; // taskId -> agentId
 
   // Resource utilization
@@ -28,69 +34,10 @@ export interface HiveRegistry {
   hiveHealth: HiveHealthMetrics;
 }
 
-export interface GlobalAgentInfo extends AgentState {
-  swarmId: string;
-  hiveMindId: string;
-  capabilities: AgentCapability[];
-  currentWorkload: number;
-  availability: AgentAvailability;
-  lastSync: Date;
-  networkLatency: number;
-}
-
-export interface SwarmInfo {
-  id: string;
-  hiveMindId: string;
-  topology: 'mesh' | 'hierarchical' | 'ring' | 'star';
-  agentCount: number;
-  activeAgents: number;
-  taskQueue: number;
-  performance: SwarmPerformanceMetrics;
-  lastHeartbeat: Date;
-  location?: string; // Geographic or logical location
-}
-
-export interface AgentCapability {
-  type: string;
-  level: number; // 1-10 proficiency
-  resources: string[];
-  specializations: string[];
-}
-
-export interface AgentAvailability {
-  status: 'available' | 'busy' | 'reserved' | 'offline';
-  currentTasks: number;
-  maxConcurrentTasks: number;
-  estimatedFreeTime?: Date;
-  reservedFor?: string; // Specific swarm or task
-}
-
-export interface SwarmPerformanceMetrics {
-  averageResponseTime: number;
-  tasksCompletedPerMinute: number;
-  successRate: number;
-  resourceEfficiency: number;
-  qualityScore: number;
-}
-
-export interface GlobalResourceMetrics {
-  totalCPU: number;
-  usedCPU: number;
-  totalMemory: number;
-  usedMemory: number;
-  totalAgents: number;
-  availableAgents: number;
-  busyAgents: number;
-  networkBandwidth: number;
-}
-
-export interface HiveHealthMetrics {
-  overallHealth: number; // 0-100
-  consensus: number; // How well swarms agree
-  synchronization: number; // How up-to-date everything is
-  faultTolerance: number; // Resilience to failures
-  loadBalance: number; // Even distribution of work
-}
+// Import HiveFACT from integration module
+import { type HiveFACTSystem, initializeHiveFACT } from './hive-fact-integration';
+// Import common types from hive-types
+import type { SwarmPerformanceMetrics } from './hive-types';
 
 /**
  * Central hive mind synchronization coordinator
@@ -103,6 +50,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   private syncTimer?: NodeJS.Timeout;
   private heartbeatTimer?: NodeJS.Timeout;
   private connectionHealth = new Map<string, number>(); // swarmId -> health score
+  private hiveFact?: HiveFACTSystem;
 
   constructor(
     private eventBus: IEventBus,
@@ -127,6 +75,23 @@ export class HiveSwarmCoordinator extends EventEmitter {
    */
   async start(): Promise<void> {
     this.logger?.info('Starting hive-swarm coordination');
+
+    // Initialize HiveFACT system for universal knowledge
+    try {
+      this.hiveFact = await initializeHiveFACT(
+        {
+          enableCache: true,
+          cacheSize: 10000,
+          knowledgeSources: ['context7', 'deepwiki', 'gitmcp', 'semgrep'],
+          autoRefreshInterval: 3600000, // 1 hour
+        },
+        this
+      );
+
+      this.logger?.info('HiveFACT system initialized for universal knowledge');
+    } catch (error) {
+      this.logger?.error('Failed to initialize HiveFACT:', error);
+    }
 
     // Start periodic synchronization
     this.syncTimer = setInterval(() => {
@@ -158,6 +123,12 @@ export class HiveSwarmCoordinator extends EventEmitter {
     if (this.heartbeatTimer) {
       clearInterval(this.heartbeatTimer);
       this.heartbeatTimer = undefined;
+    }
+
+    // Shutdown HiveFACT
+    if (this.hiveFact) {
+      await this.hiveFact.shutdown();
+      this.hiveFact = undefined;
     }
 
     this.emit('hive:coordination:stopped');
@@ -201,7 +172,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
    */
   private async collectAgentStates(): Promise<void> {
     // Request agent states from all swarms
-    this.eventBus.emit('hive:request:agent_states', {
+    (this.eventBus as any).emit('hive:request:agent_states', {
       timestamp: Date.now(),
       requestId: this.generateRequestId(),
     });
@@ -216,9 +187,9 @@ export class HiveSwarmCoordinator extends EventEmitter {
     const agents = Array.from(this.hiveRegistry.availableAgents.values());
 
     this.hiveRegistry.globalResources = {
-      totalCPU: agents.reduce((sum, agent) => sum + 100, 0), // Assume 100% per agent
+      totalCPU: agents.reduce((sum, _agent) => sum + 100, 0), // Assume 100% per agent
       usedCPU: agents.reduce((sum, agent) => sum + agent.metrics.cpuUsage, 0),
-      totalMemory: agents.reduce((sum, agent) => sum + 1000, 0), // Assume 1GB per agent
+      totalMemory: agents.reduce((sum, _agent) => sum + 1000, 0), // Assume 1GB per agent
       usedMemory: agents.reduce((sum, agent) => sum + agent.metrics.memoryUsage, 0),
       totalAgents: agents.length,
       availableAgents: agents.filter((a) => a.availability.status === 'available').length,
@@ -231,7 +202,9 @@ export class HiveSwarmCoordinator extends EventEmitter {
    * Intelligent task distribution across swarms
    */
   private async optimizeTaskDistribution(): Promise<void> {
-    const pendingTasks = this.hiveRegistry.globalTaskQueue.filter((t) => !t.assignedAgent);
+    const pendingTasks = this.hiveRegistry.globalTaskQueue.filter(
+      (t) => t.assignedAgents.length === 0
+    );
     const availableAgents = Array.from(this.hiveRegistry.availableAgents.values())
       .filter((agent) => agent.availability.status === 'available')
       .sort((a, b) => a.currentWorkload - b.currentWorkload); // Least loaded first
@@ -241,12 +214,12 @@ export class HiveSwarmCoordinator extends EventEmitter {
 
       if (suitableAgent) {
         // Assign task to agent
-        this.hiveRegistry.taskAssignments.set(task.id, suitableAgent.id);
+        this.hiveRegistry.taskAssignments.set(task.id, suitableAgent.id.id);
         suitableAgent.availability.status = 'busy';
         suitableAgent.currentWorkload++;
 
         // Notify the swarm about task assignment
-        this.eventBus.emit('hive:task:assigned', {
+        (this.eventBus as any).emit('hive:task:assigned', {
           taskId: task.id,
           agentId: suitableAgent.id,
           swarmId: suitableAgent.swarmId,
@@ -266,7 +239,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
    * Find the best agent for a specific task
    */
   private findBestAgentForTask(
-    task: Task,
+    task: HiveTask,
     availableAgents: GlobalAgentInfo[]
   ): GlobalAgentInfo | null {
     let bestAgent: GlobalAgentInfo | null = null;
@@ -287,11 +260,11 @@ export class HiveSwarmCoordinator extends EventEmitter {
   /**
    * Calculate how well an agent matches a task
    */
-  private calculateAgentTaskScore(agent: GlobalAgentInfo, task: Task): number {
+  private calculateAgentTaskScore(agent: GlobalAgentInfo, task: HiveTask): number {
     let score = 0;
 
     // Capability matching (40% of score)
-    const requiredCapabilities = task.requiredCapabilities || [];
+    const requiredCapabilities = task.requirements.capabilities || [];
     const agentCapabilities = agent.capabilities.map((c) => c.type);
     const capabilityMatch =
       requiredCapabilities.filter((req) => agentCapabilities.includes(req)).length /
@@ -307,7 +280,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
     score += latencyScore * 0.2;
 
     // Agent performance history (10% of score)
-    const performanceScore = agent.metrics.successRate;
+    const performanceScore = agent.metrics?.successRate || 0;
     score += performanceScore * 0.1;
 
     return Math.min(score, 1.0);
@@ -323,7 +296,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
     for (const swarm of swarms) {
       if (swarm.taskQueue > averageWorkload * 1.5) {
         // Swarm is overloaded - suggest task redistribution
-        this.eventBus.emit('hive:load:rebalance', {
+        (this.eventBus as any).emit('hive:load:rebalance', {
           overloadedSwarmId: swarm.id,
           currentLoad: swarm.taskQueue,
           suggestedReduction: swarm.taskQueue - averageWorkload,
@@ -375,14 +348,14 @@ export class HiveSwarmCoordinator extends EventEmitter {
       taskDistribution: Array.from(this.hiveRegistry.taskAssignments.entries()),
     };
 
-    this.eventBus.emit('hive:global:state', globalState);
+    (this.eventBus as any).emit('hive:global:state', globalState);
   }
 
   /**
    * Send heartbeat to all swarms
    */
   private sendHeartbeats(): void {
-    this.eventBus.emit('hive:heartbeat', {
+    (this.eventBus as any).emit('hive:heartbeat', {
       timestamp: Date.now(),
       hiveHealth: this.hiveRegistry.hiveHealth.overallHealth,
       activeSwarms: this.hiveRegistry.activeSwarms.size,
@@ -404,7 +377,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
         this.connectionHealth.set(swarmId, 0);
         this.logger?.warn('Swarm health degraded - no recent heartbeat', { swarmId });
 
-        this.eventBus.emit('hive:swarm:unhealthy', {
+        (this.eventBus as any).emit('hive:swarm:unhealthy', {
           swarmId,
           lastHeartbeat: swarmInfo.lastHeartbeat,
           timeSinceHeartbeat,
@@ -465,22 +438,22 @@ export class HiveSwarmCoordinator extends EventEmitter {
    */
   private setupEventHandlers(): void {
     // Handle swarm registration
-    this.eventBus.on('swarm:register', (data) => {
+    (this.eventBus as any).on('swarm:register', (data: any) => {
       this.registerSwarm(data);
     });
 
     // Handle agent registration
-    this.eventBus.on('agent:register', (data) => {
+    (this.eventBus as any).on('agent:register', (data: any) => {
       this.registerAgent(data);
     });
 
     // Handle agent state updates
-    this.eventBus.on('agent:state:update', (data) => {
+    (this.eventBus as any).on('agent:state:update', (data: any) => {
       this.updateAgentState(data);
     });
 
     // Handle swarm heartbeats
-    this.eventBus.on('swarm:heartbeat', (data) => {
+    (this.eventBus as any).on('swarm:heartbeat', (data: any) => {
       this.handleSwarmHeartbeat(data);
     });
 
@@ -490,15 +463,51 @@ export class HiveSwarmCoordinator extends EventEmitter {
     });
 
     // Handle swarm disconnection
-    this.eventBus.on('swarm:disconnect', (data) => {
+    (this.eventBus as any).on('swarm:disconnect', (data: any) => {
       this.handleSwarmDisconnect(data);
     });
+
+    // Handle FACT requests from swarms
+    (this.eventBus as any).on('swarm:fact:request', async (data: any) => {
+      try {
+        const result = await this.requestUniversalFact(data.swarmId, data.factType, data.subject);
+
+        (this.eventBus as any).emit('swarm:fact:response', {
+          requestId: data.requestId,
+          swarmId: data.swarmId,
+          factType: data.factType,
+          subject: data.subject,
+          content: result,
+          success: true,
+        });
+      } catch (error) {
+        (this.eventBus as any).emit('swarm:fact:response', {
+          requestId: data.requestId,
+          swarmId: data.swarmId,
+          error: error instanceof Error ? error.message : 'Unknown error',
+          success: false,
+        });
+      }
+    });
+
+    // Handle FACT updates from HiveFACT
+    if (this.hiveFact) {
+      this.hiveFact.on('fact-updated', (data) => {
+        // Notify all swarms about updated facts
+        (this.eventBus as any).emit('hive:fact:updated', data);
+      });
+
+      this.hiveFact.on('fact-refreshed', (data) => {
+        // Notify interested swarms about refreshed facts
+        (this.eventBus as any).emit('hive:fact:refreshed', data);
+      });
+    }
   }
 
   /**
    * Register a new swarm with the hive
    */
-  private registerSwarm(data: any): void {
+  public registerSwarm(data: any): void {
     const swarmInfo: SwarmInfo = {
       id: data.swarmId,
       hiveMindId: data.hiveMindId || 'default',
@@ -625,6 +634,43 @@ export class HiveSwarmCoordinator extends EventEmitter {
     };
   }
 
+  /**
+   * Get HiveFACT system for universal knowledge access
+   */
+  getHiveFACT(): HiveFACTSystem | undefined {
+    return this.hiveFact;
+  }
+
+  /**
+   * Request universal fact from HiveFACT
+   * Used by swarms to access universal knowledge
+   */
+  async requestUniversalFact(
+    swarmId: string,
+    factType: 'npm-package' | 'github-repo' | 'api-docs' | 'security-advisory' | 'general',
+    subject: string
+  ): Promise<any> {
+    if (!this.hiveFact) {
+      throw new Error('HiveFACT not initialized');
+    }
+
+    const fact = await this.hiveFact.getFact(factType, subject, swarmId);
+
+    if (fact) {
+      this.logger?.debug('Universal fact requested', {
+        swarmId,
+        factType,
+        subject,
+        accessCount: fact.accessCount,
+        swarmsUsing: fact.swarmAccess.size,
+      });
+
+      return fact.content;
+    }
+
+    return null;
+  }
+
   // Utility methods
   private generateRequestId(): string {
     return `req_${Date.now()}_${Math.random().toString(36).slice(2)}`;
@@ -665,7 +711,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
 }
 
 // Supporting interfaces
-interface Task {
+interface LocalTask {
   id: string;
   type: string;
   priority: 'low' | 'medium' | 'high' | 'critical';

@@ -9,7 +9,6 @@ import { SPARCEngineCore } from '../sparc/core/sparc-engine';
 import { sparcMCPTools } from '../sparc/integrations/mcp-sparc-tools';
 import { SpecificationPhaseEngine } from '../sparc/phases/specification/specification-engine';
 import type {
-  ComplexityLevel,
   ProjectDomain,
   ProjectSpecification,
   SPARCPhase,
@@ -623,8 +622,6 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
       expect(project.progress.overallProgress).toBe(1.0);
       expect(artifacts.artifacts.length).toBeGreaterThan(0);
       expect(validation.score).toBeGreaterThan(0.5);
-
-      console.log(`🎯 Full SPARC cycle completed in ${totalTime}ms`);
     }, 15000);
 
     it('should maintain quality standards across different domains', async () => {
@@ -653,7 +650,6 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
       // All domains should maintain minimum quality
       qualityResults.forEach((result) => {
         expect(result.score).toBeGreaterThan(0.3); // Partial completion acceptable
-        console.log(`📊 ${result.domain}: ${(result.score * 100).toFixed(1)}% quality score`);
       });
     }, 20000);
   });

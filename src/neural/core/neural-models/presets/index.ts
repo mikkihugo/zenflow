@@ -59,7 +59,9 @@ export function getPreset(presetId) {
  */
 export function getRecommendedPreset(useCase) {
   const presets = Object.values(NEURAL_PRESETS);
-  return presets.find(preset => preset.useCase.includes(useCase)) || NEURAL_PRESETS.BASIC_CLASSIFIER;
+  return (
+    presets.find((preset) => preset.useCase.includes(useCase)) || NEURAL_PRESETS.BASIC_CLASSIFIER
+  );
 }
 
 /**
@@ -67,7 +69,7 @@ export function getRecommendedPreset(useCase) {
  */
 export function searchPresetsByUseCase(useCase) {
   const presets = Object.values(NEURAL_PRESETS);
-  return presets.filter(preset => preset.useCase.includes(useCase));
+  return presets.filter((preset) => preset.useCase.includes(useCase));
 }
 
 /**
@@ -75,7 +77,7 @@ export function searchPresetsByUseCase(useCase) {
  */
 export function getCategoryPresets(category) {
   const presets = Object.values(NEURAL_PRESETS);
-  return presets.filter(preset => preset.type === category);
+  return presets.filter((preset) => preset.type === category);
 }
 
 /**
@@ -83,8 +85,8 @@ export function getCategoryPresets(category) {
  */
 export function validatePresetConfig(config) {
   const required = ['id', 'architecture', 'layers'];
-  const missing = required.filter(field => !config[field]);
-  
+  const missing = required.filter((field) => !config[field]);
+
   if (missing.length > 0) {
     throw new Error(`Invalid preset configuration. Missing: ${missing.join(', ')}`);
   }

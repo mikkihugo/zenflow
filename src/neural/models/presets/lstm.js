@@ -96,6 +96,14 @@ class LSTMModel extends NeuralModel {
     const sequenceLength = input.shape[1];
     const inputSize = input.shape[2];
 
+    // Validate input dimensions
+    if (inputSize !== this.config.inputSize) {
+      throw new Error(`Input size mismatch: expected ${this.config.inputSize}, got ${inputSize}`);
+    }
+    if (batchSize <= 0 || sequenceLength <= 0) {
+      throw new Error(`Invalid input dimensions: batch=${batchSize}, sequence=${sequenceLength}`);
+    }
+
     let layerInput = input;
     const allHiddenStates = [];
 
@@ -125,6 +133,17 @@ class LSTMModel extends NeuralModel {
   async forwardLayer(input, layerIdx, training = false) {
     const batchSize = input.shape[0];
     const sequenceLength = input.shape[1];
+
+    // Validate layer parameters
+    if (layerIdx >= this.cells.length) {
+      throw new Error(`Layer index ${layerIdx} out of bounds (max: ${this.cells.length - 1})`);
+    }
+    if (batchSize <= 0 || sequenceLength <= 0) {
+      throw new Error(
+        `Invalid layer input dimensions: batch=${batchSize}, sequence=${sequenceLength}`
+      );
+    }
+
     const cells = this.cells[layerIdx];
 
     if (this.config.bidirectional) {
@@ -208,7 +227,7 @@ class LSTMModel extends NeuralModel {
   }
 
   lstmCell(x, hPrev, cPrev, cell) {
-    const batchSize = x.shape[0];
+    const _batchSize = x.shape[0];
 
     // Input gate
     const i = this.sigmoid(
@@ -436,10 +455,6 @@ class LSTMModel extends NeuralModel {
         valLoss,
         learningRate,
       });
-
-      console.log(
-        `Epoch ${epoch + 1}/${epochs} - Train Loss: ${avgTrainLoss.toFixed(4)}, Val Loss: ${valLoss.toFixed(4)}`
-      );
     }
 
     return {

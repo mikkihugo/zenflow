@@ -2,7 +2,7 @@
  * Data Protection & Encryption Framework
  */
 
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 
 export class DataProtection {
   static encrypt(text, key) {
@@ -54,13 +54,13 @@ export class SecureStorage {
     this.key = encryptionKey;
   }
 
-  store(key, data) {
+  store(_key, data) {
     const encrypted = DataProtection.encrypt(JSON.stringify(data), this.key);
     // Store encrypted data (implementation depends on storage backend)
     return encrypted;
   }
 
-  retrieve(key, encryptedData) {
+  retrieve(_key, encryptedData) {
     const decrypted = DataProtection.decrypt(encryptedData, this.key);
     return JSON.parse(decrypted);
   }

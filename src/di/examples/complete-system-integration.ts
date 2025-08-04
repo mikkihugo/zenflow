@@ -8,7 +8,6 @@
 import {
   CORE_TOKENS,
   createContainerBuilder,
-  createToken,
   type DIContainer,
   type IAgentRegistry,
   type IConfig,
@@ -25,9 +24,7 @@ import {
 
 // Real service implementations
 class ProductionLogger implements ILogger {
-  log(message: string): void {
-    console.log(`[${new Date().toISOString()}] ${message}`);
-  }
+  log(_message: string): void {}
 
   info(message: string): void {
     this.log(`INFO: ${message}`);
@@ -70,7 +67,7 @@ class ConfigurationManager implements IConfig {
 class EnhancedEventBus implements IEventBus {
   private handlers = new Map<string, Set<Function>>();
 
-  constructor(@inject(CORE_TOKENS.Logger) private logger: ILogger) {}
+  constructor(@inject(CORE_TOKENS.Logger) private _logger: ILogger) {}
 
   publish(event: string, data: any): void {
     this.logger.info(`Publishing event: ${event}`);
@@ -90,7 +87,7 @@ class EnhancedEventBus implements IEventBus {
     if (!this.handlers.has(event)) {
       this.handlers.set(event, new Set());
     }
-    this.handlers.get(event)!.add(handler);
+    this.handlers.get(event)?.add(handler);
     this.logger.info(`Subscribed to event: ${event}`);
   }
 
@@ -106,7 +103,7 @@ class EnhancedEventBus implements IEventBus {
 class SwarmDatabase implements IDatabase {
   private isInitialized = false;
 
-  constructor(@inject(CORE_TOKENS.Logger) private logger: ILogger) {}
+  constructor(@inject(CORE_TOKENS.Logger) private _logger: ILogger) {}
 
   async initialize(): Promise<void> {
     this.logger.info('Initializing swarm database...');
@@ -116,7 +113,7 @@ class SwarmDatabase implements IDatabase {
     this.logger.info('Swarm database initialized successfully');
   }
 
-  async query(sql: string, params?: any[]): Promise<any[]> {
+  async query(sql: string, _params?: any[]): Promise<any[]> {
     if (!this.isInitialized) {
       throw new Error('Database not initialized');
     }
@@ -136,8 +133,8 @@ class AgentRegistry implements IAgentRegistry {
   private agents = new Map<string, any>();
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private logger: ILogger,
-    @inject(CORE_TOKENS.EventBus) private eventBus: IEventBus
+    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
+    @inject(CORE_TOKENS.EventBus) private _eventBus: IEventBus
   ) {}
 
   async registerAgent(id: string, agent: any): Promise<void> {
@@ -169,13 +166,13 @@ class SwarmCoordinatorImplementation implements ISwarmCoordinator {
   private isRunning = false;
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private logger: ILogger,
-    @inject(CORE_TOKENS.Config) private config: IConfig,
-    @inject(CORE_TOKENS.EventBus) private eventBus: IEventBus,
-    @inject(SWARM_TOKENS.AgentRegistry) private agentRegistry: IAgentRegistry
+    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
+    @inject(CORE_TOKENS.Config) private _config: IConfig,
+    @inject(CORE_TOKENS.EventBus) private _eventBus: IEventBus,
+    @inject(SWARM_TOKENS.AgentRegistry) private _agentRegistry: IAgentRegistry
   ) {}
 
-  async initializeSwarm(options: any): Promise<void> {
+  async initializeSwarm(_options: any): Promise<void> {
     this.logger.info('Initializing swarm coordination...');
 
     const maxAgents = this.config.get<number>('swarm.maxAgents') || 10;
@@ -216,11 +213,11 @@ class SwarmCoordinatorImplementation implements ISwarmCoordinator {
 @injectable
 class NeuralNetworkTrainer implements INeuralNetworkTrainer {
   constructor(
-    @inject(CORE_TOKENS.Logger) private logger: ILogger,
-    @inject(CORE_TOKENS.Config) private config: IConfig
+    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
+    @inject(CORE_TOKENS.Config) private _config: IConfig
   ) {}
 
-  async trainModel(data: any[], options: any): Promise<any> {
+  async trainModel(_data: any[], options: any): Promise<any> {
     const learningRate = this.config.get<number>('neural.learningRate') || 0.001;
     this.logger.info(`Training neural network with learning rate: ${learningRate}`);
 
@@ -238,7 +235,7 @@ class NeuralNetworkTrainer implements INeuralNetworkTrainer {
     return model;
   }
 
-  async evaluateModel(model: any, testData: any[]): Promise<any> {
+  async evaluateModel(model: any, _testData: any[]): Promise<any> {
     this.logger.info(`Evaluating model: ${model.id}`);
 
     // Simulate evaluation
@@ -346,7 +343,7 @@ export class CompleteSystemIntegration {
       ];
 
       const model = await neuralTrainer.trainModel(trainingData, { epochs: 100 });
-      const evaluation = await neuralTrainer.evaluateModel(model, trainingData);
+      const _evaluation = await neuralTrainer.evaluateModel(model, trainingData);
 
       // Remove agents
       await swarmCoordinator.removeAgent(agent1Id);

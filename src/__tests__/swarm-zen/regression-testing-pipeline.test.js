@@ -5,10 +5,10 @@
  * Automated CI/CD integration with performance regression detection
  */
 
-const { RuvSwarm } = require('../src/index-enhanced');
-const fs = require('fs').promises;
-const path = require('path');
-const { spawn } = require('child_process');
+const { ZenSwarm } = require('../src/index-enhanced');
+const fs = require('node:fs').promises;
+const _path = require('node:path');
+const { spawn } = require('node:child_process');
 
 class RegressionTestingPipeline {
   constructor() {
@@ -37,9 +37,6 @@ class RegressionTestingPipeline {
   }
 
   async runRegressionPipeline() {
-    console.log('🔄 Starting Regression Testing Pipeline');
-    console.log('=======================================\n');
-
     this.logBuildInfo();
 
     try {
@@ -81,17 +78,9 @@ class RegressionTestingPipeline {
     return this.pipelineResults;
   }
 
-  logBuildInfo() {
-    console.log('🏗️  Build Information:');
-    console.log(`   Commit: ${this.pipelineResults.buildInfo.commit}`);
-    console.log(`   Branch: ${this.pipelineResults.buildInfo.branch}`);
-    console.log(`   Build: #${this.pipelineResults.buildInfo.buildNumber}`);
-    console.log(`   Environment: ${this.pipelineResults.buildInfo.environment}\n`);
-  }
+  logBuildInfo() {}
 
   async runStage(stageName, stageFunction) {
-    console.log(`📋 Stage: ${stageName}`);
-
     const stage = {
       name: stageName,
       startTime: Date.now(),
@@ -106,19 +95,13 @@ class RegressionTestingPipeline {
       stage.passed = result.passed !== false;
       stage.output = result.output || [];
       stage.data = result.data || {};
-
-      console.log(
-        `   ${stage.passed ? '✅' : '❌'} ${stageName} ${stage.passed ? 'passed' : 'failed'}`
-      );
     } catch (error) {
       stage.passed = false;
       stage.errors.push(error.message);
-      console.log(`   ❌ ${stageName} failed: ${error.message}`);
     }
 
     stage.duration = Date.now() - stage.startTime;
     this.pipelineResults.stages.push(stage);
-    console.log('');
 
     return stage;
   }
@@ -145,7 +128,7 @@ class RegressionTestingPipeline {
       const testDbPath = '/workspaces/ruv-FANN/ruv-swarm/npm/test/regression-test.db';
       try {
         await fs.unlink(testDbPath);
-      } catch (error) {
+      } catch (_error) {
         // File doesn't exist, that's fine
       }
 
@@ -284,7 +267,7 @@ class RegressionTestingPipeline {
         integrationResult.data.scenarios = results.suites || [];
         integrationResult.data.totalTime = results.duration || 0;
         integrationResult.data.errorRate = this.calculateErrorRate(results);
-      } catch (error) {
+      } catch (_error) {
         // Results file not found, use basic data
         integrationResult.output.push('Integration results file not found, using basic metrics');
       }
@@ -335,7 +318,7 @@ class RegressionTestingPipeline {
         perfResult.output.push(`SIMD Performance: ${perfResult.data.simdPerformance || 'N/A'}`);
         perfResult.output.push(`Speed Optimization: ${perfResult.data.speedOptimization || 'N/A'}`);
         perfResult.output.push(`Memory Usage: ${perfResult.data.memoryUsage || 'N/A'}`);
-      } catch (error) {
+      } catch (_error) {
         perfResult.output.push('Performance results file not found');
       }
     } catch (error) {
@@ -383,7 +366,7 @@ class RegressionTestingPipeline {
         loadResult.output.push(`Avg Response: ${loadResult.data.avgResponseTime}ms`);
         loadResult.output.push(`Memory Peak: ${loadResult.data.memoryPeak}MB`);
         loadResult.output.push(`Error Rate: ${loadResult.data.errorRate}%`);
-      } catch (error) {
+      } catch (_error) {
         loadResult.output.push('Load test results file not found');
       }
     } catch (error) {
@@ -408,7 +391,7 @@ class RegressionTestingPipeline {
 
     try {
       // Run security audit
-      const secTestResult = await this.runCommand('node test/security-audit.test.js', {
+      const _secTestResult = await this.runCommand('node test/security-audit.test.js', {
         cwd: '/workspaces/ruv-FANN/ruv-swarm/npm',
         timeout: 600000, // 10 minutes
       });
@@ -432,7 +415,7 @@ class RegressionTestingPipeline {
         securityResult.output.push(`Security Score: ${securityResult.data.securityScore}/100`);
         securityResult.output.push(`Security Level: ${securityResult.data.securityLevel}`);
         securityResult.output.push(`Vulnerabilities: ${securityResult.data.vulnerabilities}`);
-      } catch (error) {
+      } catch (_error) {
         securityResult.output.push('Security results file not found');
         securityResult.passed = false;
       }
@@ -459,7 +442,7 @@ class RegressionTestingPipeline {
 
     try {
       // Test WASM support
-      const ruvSwarm = await RuvSwarm.initialize();
+      const ruvSwarm = await ZenSwarm.initialize();
       platformResult.data.wasmSupport = (await ruvSwarm.detectSIMDSupport()) !== undefined;
 
       // Test SQLite support
@@ -470,7 +453,7 @@ class RegressionTestingPipeline {
         const pm = new PersistenceManager(':memory:');
         await pm.initialize();
         platformResult.data.sqliteSupport = true;
-      } catch (error) {
+      } catch (_error) {
         platformResult.data.sqliteSupport = false;
       }
 
@@ -906,14 +889,6 @@ async function runRegressionPipeline() {
   try {
     const pipeline = new RegressionTestingPipeline();
     const results = await pipeline.runRegressionPipeline();
-
-    console.log('\n🎯 REGRESSION PIPELINE SUMMARY');
-    console.log('===============================');
-    console.log(`Overall Status: ${results.overallStatus}`);
-    console.log(`Stages: ${results.summary?.passedStages}/${results.summary?.totalStages} passed`);
-    console.log(`Regressions: ${results.regressions.length}`);
-    console.log(`Improvements: ${results.improvements.length}`);
-    console.log(`Deployment Ready: ${results.cicdIntegration?.deploymentReady ? 'YES' : 'NO'}`);
 
     process.exit(results.overallStatus === 'PASSED' ? 0 : 1);
   } catch (error) {

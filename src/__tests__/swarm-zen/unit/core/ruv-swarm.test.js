@@ -1,11 +1,11 @@
 /**
- * Unit tests for RuvSwarm core class
+ * Unit tests for ZenSwarm core class
  */
 
-import assert from 'assert';
-import { Agent, RuvSwarm, Swarm, Task } from '../../../src/index-enhanced.js';
+import assert from 'node:assert';
+import { Agent, Swarm, Task, ZenSwarm } from '../../../src/index-enhanced.js';
 
-describe('RuvSwarm Core Tests', () => {
+describe('ZenSwarm Core Tests', () => {
   let ruvSwarm;
 
   beforeEach(async () => {
@@ -15,44 +15,44 @@ describe('RuvSwarm Core Tests', () => {
   });
 
   afterEach(() => {
-    if (ruvSwarm && ruvSwarm.persistence) {
+    if (ruvSwarm?.persistence) {
       ruvSwarm.persistence.close();
     }
   });
 
   describe('Initialization', () => {
     it('should initialize with default options', async () => {
-      ruvSwarm = await RuvSwarm.initialize();
-      assert(ruvSwarm instanceof RuvSwarm);
+      ruvSwarm = await ZenSwarm.initialize();
+      assert(ruvSwarm instanceof ZenSwarm);
       assert(ruvSwarm.wasmLoader);
       assert.strictEqual(typeof ruvSwarm.features, 'object');
     });
 
     it('should initialize with custom options', async () => {
-      ruvSwarm = await RuvSwarm.initialize({
+      ruvSwarm = await ZenSwarm.initialize({
         enablePersistence: false,
         enableNeuralNetworks: false,
         useSIMD: false,
         debug: false,
       });
-      assert(ruvSwarm instanceof RuvSwarm);
+      assert(ruvSwarm instanceof ZenSwarm);
       assert.strictEqual(ruvSwarm.persistence, null);
       assert.strictEqual(ruvSwarm.features.neural_networks, false);
     });
 
     it('should return same instance on multiple initializations', async () => {
-      const instance1 = await RuvSwarm.initialize();
-      const instance2 = await RuvSwarm.initialize();
+      const instance1 = await ZenSwarm.initialize();
+      const instance2 = await ZenSwarm.initialize();
       assert.strictEqual(instance1, instance2);
     });
 
     it('should detect SIMD support', () => {
-      const simdSupported = RuvSwarm.detectSIMDSupport();
+      const simdSupported = ZenSwarm.detectSIMDSupport();
       assert.strictEqual(typeof simdSupported, 'boolean');
     });
 
     it('should provide runtime features', () => {
-      const features = RuvSwarm.getRuntimeFeatures();
+      const features = ZenSwarm.getRuntimeFeatures();
       assert(features.webassembly);
       assert('simd' in features);
       assert('workers' in features);
@@ -61,12 +61,12 @@ describe('RuvSwarm Core Tests', () => {
     });
 
     it('should provide version', () => {
-      const version = RuvSwarm.getVersion();
+      const version = ZenSwarm.getVersion();
       assert.strictEqual(version, '0.2.0');
     });
 
     it('should get memory usage', () => {
-      const memoryUsage = RuvSwarm.getMemoryUsage();
+      const memoryUsage = ZenSwarm.getMemoryUsage();
       if (memoryUsage) {
         assert('used' in memoryUsage);
         assert('total' in memoryUsage);
@@ -77,7 +77,7 @@ describe('RuvSwarm Core Tests', () => {
 
   describe('Swarm Creation', () => {
     beforeEach(async () => {
-      ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
+      ruvSwarm = await ZenSwarm.initialize({ enablePersistence: false });
     });
 
     it('should create swarm with default config', async () => {
@@ -117,7 +117,7 @@ describe('RuvSwarm Core Tests', () => {
     let swarm;
 
     beforeEach(async () => {
-      ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
+      ruvSwarm = await ZenSwarm.initialize({ enablePersistence: false });
       swarm = await ruvSwarm.createSwarm({ name: 'status-test-swarm' });
     });
 
@@ -150,12 +150,12 @@ describe('RuvSwarm Core Tests', () => {
 
   describe('Global Metrics', () => {
     beforeEach(async () => {
-      ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
+      ruvSwarm = await ZenSwarm.initialize({ enablePersistence: false });
     });
 
     it('should provide global metrics', async () => {
       const swarm = await ruvSwarm.createSwarm({ name: 'metrics-swarm' });
-      const agent = await swarm.spawn({ type: 'researcher' });
+      const _agent = await swarm.spawn({ type: 'researcher' });
 
       const metrics = await ruvSwarm.getGlobalMetrics();
       assert(metrics);
@@ -182,7 +182,7 @@ describe('RuvSwarm Core Tests', () => {
 
   describe('Feature Detection', () => {
     beforeEach(async () => {
-      ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
+      ruvSwarm = await ZenSwarm.initialize({ enablePersistence: false });
     });
 
     it('should detect features', async () => {
@@ -199,7 +199,7 @@ describe('Swarm Class Tests', () => {
   let ruvSwarm, swarm;
 
   beforeEach(async () => {
-    ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
+    ruvSwarm = await ZenSwarm.initialize({ enablePersistence: false });
     swarm = await ruvSwarm.createSwarm({ name: 'test-swarm' });
   });
 
@@ -363,7 +363,7 @@ describe('Agent Class Tests', () => {
   let ruvSwarm, swarm, agent;
 
   beforeEach(async () => {
-    ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
+    ruvSwarm = await ZenSwarm.initialize({ enablePersistence: false });
     swarm = await ruvSwarm.createSwarm({ name: 'test-swarm' });
     agent = await swarm.spawn({ type: 'researcher', name: 'test-agent' });
   });
@@ -423,7 +423,7 @@ describe('Task Class Tests', () => {
   let ruvSwarm, swarm, task;
 
   beforeEach(async () => {
-    ruvSwarm = await RuvSwarm.initialize({ enablePersistence: false });
+    ruvSwarm = await ZenSwarm.initialize({ enablePersistence: false });
     swarm = await ruvSwarm.createSwarm({ name: 'test-swarm' });
 
     // Create agents and orchestrate task
@@ -492,7 +492,4 @@ describe('Task Class Tests', () => {
     });
   });
 });
-
-// Run tests
-console.log('Running RuvSwarm Core Unit Tests...');
 import('../../../node_modules/.bin/jest');

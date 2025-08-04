@@ -82,7 +82,7 @@ export class ApiRouteHandler {
   /**
    * Health check handler
    */
-  private handleHealth(req: Request, res: Response): void {
+  private handleHealth(_req: Request, res: Response): void {
     res.json({
       status: 'healthy',
       timestamp: new Date().toISOString(),
@@ -94,7 +94,7 @@ export class ApiRouteHandler {
   /**
    * System status handler
    */
-  private async handleSystemStatus(req: Request, res: Response): Promise<void> {
+  private async handleSystemStatus(_req: Request, res: Response): Promise<void> {
     try {
       const status = await this.getSystemStatus();
       res.json(status);
@@ -107,7 +107,7 @@ export class ApiRouteHandler {
   /**
    * Get swarms handler
    */
-  private async handleGetSwarms(req: Request, res: Response): Promise<void> {
+  private async handleGetSwarms(_req: Request, res: Response): Promise<void> {
     try {
       const swarms = await this.getSwarms();
       res.json(swarms);
@@ -134,7 +134,7 @@ export class ApiRouteHandler {
   /**
    * Get tasks handler
    */
-  private async handleGetTasks(req: Request, res: Response): Promise<void> {
+  private async handleGetTasks(_req: Request, res: Response): Promise<void> {
     try {
       const tasks = await this.getTasks();
       res.json(tasks);
@@ -161,7 +161,7 @@ export class ApiRouteHandler {
   /**
    * Get documents handler
    */
-  private async handleGetDocuments(req: Request, res: Response): Promise<void> {
+  private async handleGetDocuments(_req: Request, res: Response): Promise<void> {
     try {
       const documents = await this.getDocuments();
       res.json(documents);

@@ -63,7 +63,6 @@ interface BuildReport {
  */
 class BuildMonitor {
   private errorCount: number;
-  private lastCheck: number;
   private monitoringActive: boolean;
   private buildHistory: BuildResult[];
   private errorCategories: ErrorCategories;
@@ -90,7 +89,6 @@ class BuildMonitor {
    * @returns Promise resolving to build result
    */
   async runBuild(): Promise<BuildResult> {
-    console.log('🔨 Running build verification...');
     try {
       const { stdout, stderr } = await execAsync('npm run build');
       const buildOutput = stderr || stdout;
@@ -163,36 +161,28 @@ class BuildMonitor {
 
   /** Main monitoring loop - Continuously monitors build status and reports progress */
   async monitor(): Promise<void> {
-    console.log('🚀 Build-Verifier Agent - Continuous Monitoring Active');
-    console.log(`📊 Baseline: ${this.errorCount} errors`);
-    console.log('🎯 Target: 0 errors (Alpha Ready)');
-
     while (this.monitoringActive) {
       try {
         // Check for swarm activity
         const swarmActivity = await this.checkSwarmMemory();
         if (swarmActivity) {
-          console.log('🔄 Swarm activity detected - Running build verification...');
           const buildResult = await this.runBuild();
 
           if (buildResult.errorCount < this.errorCount) {
-            const reduction = this.errorCount - buildResult.errorCount;
-            console.log(`✅ Progress! Errors reduced by ${reduction}`);
+            const _reduction = this.errorCount - buildResult.errorCount;
             // Update baseline
             this.errorCount = buildResult.errorCount;
             // Store progress and alert swarm
             await this.storeProgress(buildResult);
             await this.alertSwarm(buildResult);
           } else if (buildResult.errorCount > this.errorCount) {
-            const increase = buildResult.errorCount - this.errorCount;
-            console.log(`⚠️ WARNING: ${increase} new errors introduced`);
+            const _increase = buildResult.errorCount - this.errorCount;
             // Alert swarm of regression
             await this.alertRegression(buildResult);
           }
 
           // Check for alpha readiness
           if (buildResult.errorCount === 0) {
-            console.log('🎉 ALPHA RELEASE READY!');
             await this.certifyAlphaReady();
             break;
           }
@@ -231,7 +221,6 @@ class BuildMonitor {
    */
   private async alertSwarm(buildResult: BuildResult): Promise<void> {
     const message = `🔧 BUILD UPDATE: ${buildResult.errorCount} errors remaining. Progress: ${this.errorCount - buildResult.errorCount} errors fixed.`;
-    console.log(message);
     try {
       await execAsync(`npx claude-zen hooks notification --message "${message}" --telemetry true`);
     } catch (error) {
@@ -247,7 +236,6 @@ class BuildMonitor {
    */
   private async alertRegression(buildResult: BuildResult): Promise<void> {
     const message = `🚨 REGRESSION ALERT: ${buildResult.errorCount - this.errorCount} new errors introduced. Review recent changes.`;
-    console.log(message);
     try {
       await execAsync(`npx claude-zen hooks notification --message "${message}" --telemetry true`);
     } catch (error) {
@@ -258,18 +246,13 @@ class BuildMonitor {
 
   /** Certifies alpha readiness when zero errors achieved */
   private async certifyAlphaReady(): Promise<void> {
-    const certification: AlphaCertification = {
+    const _certification: AlphaCertification = {
       timestamp: new Date().toISOString(),
       status: 'ALPHA_READY',
       errorCount: 0,
       buildSuccess: true,
       verifiedBy: 'Build-Verifier-Agent',
     };
-
-    console.log('🏆 ALPHA CERTIFICATION COMPLETE');
-    console.log('✅ Zero TypeScript compilation errors');
-    console.log('✅ Build successful');
-    console.log('🚀 Ready for alpha release');
 
     try {
       await execAsync(

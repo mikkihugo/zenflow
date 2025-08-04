@@ -31,6 +31,17 @@ export interface IDatabase {
   execute(sql: string, params?: any[]): Promise<void>;
   transaction<T>(fn: (db: IDatabase) => Promise<T>): Promise<T>;
   shutdown?(): Promise<void>;
+
+  // Task management methods
+  createTask(task: any): Promise<void>;
+  updateTask(taskId: string, updates: any): Promise<void>;
+  getSwarmTasks(swarmId: string, status?: string): Promise<any[]>;
+
+  // Agent management methods
+  updateAgent(agentId: string, updates: any): Promise<void>;
+
+  // Metrics methods
+  getMetrics(entityId: string, metricType: string): Promise<any[]>;
 }
 
 export interface IHttpClient {
@@ -51,18 +62,18 @@ export const CORE_TOKENS = {
 
 // Memory domain tokens
 export const MEMORY_TOKENS = {
-  Backend: Symbol('MemoryBackend'),
-  Provider: Symbol('MemoryProvider'),
-  ProviderFactory: Symbol('MemoryProviderFactory'),
-  Config: Symbol('MemoryConfig'),
-  Controller: Symbol('MemoryController'),
+  Backend: createToken('MemoryBackend'),
+  Provider: createToken('MemoryProvider'),
+  ProviderFactory: createToken('MemoryProviderFactory'),
+  Config: createToken('MemoryConfig'),
+  Controller: createToken('MemoryController'),
 } as const;
 
 // Database domain tokens
 export const DATABASE_TOKENS = {
-  Adapter: Symbol('DatabaseAdapter'),
-  Provider: Symbol('DatabaseProvider'),
-  ProviderFactory: Symbol('DatabaseProviderFactory'),
-  Config: Symbol('DatabaseConfig'),
-  Controller: Symbol('DatabaseController'),
+  Adapter: createToken('DatabaseAdapter'),
+  Provider: createToken('DatabaseProvider'),
+  ProviderFactory: createToken('DatabaseProviderFactory'),
+  Config: createToken('DatabaseConfig'),
+  Controller: createToken('DatabaseController'),
 } as const;

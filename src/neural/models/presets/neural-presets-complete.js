@@ -938,7 +938,7 @@ export class CognitivePatternSelector {
   /**
    * Select most diverse pattern combination
    */
-  selectMostDiverse(patterns, currentDiversity, targetCount) {
+  selectMostDiverse(patterns, _currentDiversity, targetCount) {
     if (patterns.length <= targetCount) {
       return patterns;
     }

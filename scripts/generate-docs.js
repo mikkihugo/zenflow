@@ -16,14 +16,12 @@ class DocumentationGenerator {
   }
 
   async generate() {
-    console.log('Generating API documentation...');
     try {
       // Ensure docs directory exists
       await fs.promises.mkdir(this.docsDir, { recursive: true });
 
       // Find all JavaScript files with JSDoc comments
       const jsFiles = await glob('src/**/*.js');
-      console.log(`Found ${jsFiles.length} JavaScript files`);
 
       // Extract JSDoc comments
       const apiDocs = await this.extractJSDocFromFiles(jsFiles);
@@ -33,7 +31,6 @@ class DocumentationGenerator {
 
       // Write to file
       await fs.promises.writeFile(this.outputFile, markdown);
-      console.log(`Documentation generated: ${this.outputFile}`);
 
       return this.outputFile;
     } catch (error) {

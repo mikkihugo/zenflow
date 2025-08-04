@@ -4,9 +4,9 @@
  */
 
 import { PerformanceOptimizer } from '../../../optimization/core/performance-optimizer';
+import { DataPerformanceOptimizer } from '../../../optimization/data/data-optimizer';
 import { NeuralNetworkOptimizer } from '../../../optimization/neural/neural-optimizer';
 import { SwarmCoordinationOptimizer } from '../../../optimization/swarm/swarm-optimizer';
-import { DataPerformanceOptimizer } from '../../../optimization/data/data-optimizer';
 import { WasmPerformanceOptimizer } from '../../../optimization/wasm/wasm-optimizer';
 
 describe('Performance Optimization System', () => {
@@ -48,7 +48,7 @@ describe('Performance Optimization System', () => {
 
     it('should start and stop optimization', async () => {
       const startSpy = jest.spyOn(performanceOptimizer, 'emit');
-      
+
       await performanceOptimizer.startOptimization();
       expect(startSpy).toHaveBeenCalledWith('optimization:started');
 
@@ -58,14 +58,14 @@ describe('Performance Optimization System', () => {
 
     it('should perform immediate optimization', async () => {
       const results = await performanceOptimizer.optimizeNow();
-      
+
       expect(results).toBeDefined();
       expect(Array.isArray(results)).toBe(true);
     }, 10000);
 
     it('should get performance state', async () => {
       const state = await performanceOptimizer.getPerformanceState();
-      
+
       expect(state).toBeDefined();
       expect(state.overall).toBeDefined();
       expect(state.neural).toBeDefined();
@@ -77,9 +77,9 @@ describe('Performance Optimization System', () => {
     it('should register domain optimizers', () => {
       const customOptimizer = new NeuralNetworkOptimizer();
       const spy = jest.spyOn(performanceOptimizer, 'emit');
-      
+
       performanceOptimizer.registerOptimizer('custom', customOptimizer);
-      
+
       expect(spy).toHaveBeenCalledWith('optimizer:registered', { domain: 'custom' });
     });
   });
@@ -89,12 +89,15 @@ describe('Performance Optimization System', () => {
       const mockNetwork = {
         id: 'test-network',
         layers: [784, 128, 64, 10],
-        weights: [[0.1, 0.2], [0.3, 0.4]],
+        weights: [
+          [0.1, 0.2],
+          [0.3, 0.4],
+        ],
         activationFunction: 'relu',
       };
 
       const result = await neuralOptimizer.optimizeTrainingSpeed(mockNetwork);
-      
+
       expect(result).toBeDefined();
       expect(result.success).toBe(true);
       expect(result.improvement).toBeGreaterThanOrEqual(0);
@@ -116,7 +119,7 @@ describe('Performance Optimization System', () => {
       };
 
       const result = await neuralOptimizer.implementBatchProcessing(mockTrainer);
-      
+
       expect(result).toBeDefined();
       expect(result.batchSize).toBeGreaterThan(0);
       expect(result.parallelism).toBeGreaterThan(0);
@@ -131,7 +134,7 @@ describe('Performance Optimization System', () => {
       ];
 
       const result = await neuralOptimizer.enableGPUAcceleration(mockComputeUnits);
-      
+
       expect(result).toBeDefined();
       expect(['GPU', 'WASM']).toContain(result.accelerationType);
       expect(result.speedImprovement).toBeGreaterThan(0);
@@ -155,7 +158,7 @@ describe('Performance Optimization System', () => {
       ];
 
       const result = await neuralOptimizer.optimizeMemoryUsage(mockNetworks);
-      
+
       expect(result).toBeDefined();
       expect(result.memoryReduction).toBeGreaterThanOrEqual(0);
       expect(result.compressionRatio).toBeGreaterThanOrEqual(0);
@@ -172,7 +175,7 @@ describe('Performance Optimization System', () => {
       };
 
       const result = await swarmOptimizer.optimizeMessageRouting(mockTopology);
-      
+
       expect(result).toBeDefined();
       expect(result.routingLatency).toBeGreaterThan(0);
       expect(result.messageCompression).toBeGreaterThanOrEqual(0);
@@ -188,7 +191,7 @@ describe('Performance Optimization System', () => {
       };
 
       const result = await swarmOptimizer.implementCaching(mockCoordinationLayer);
-      
+
       expect(result).toBeDefined();
       expect(result.hitRatio).toBeGreaterThanOrEqual(0);
       expect(result.hitRatio).toBeLessThanOrEqual(1);
@@ -204,7 +207,7 @@ describe('Performance Optimization System', () => {
       ];
 
       const result = await swarmOptimizer.reduceLatency(mockProtocols);
-      
+
       expect(result).toBeDefined();
       expect(result.reductionPercentage).toBeGreaterThanOrEqual(0);
       expect(result.averageLatency).toBeGreaterThan(0);
@@ -216,10 +219,12 @@ describe('Performance Optimization System', () => {
       const swarmSize = 5000;
 
       const result = await swarmOptimizer.scaleHorizontally(swarmSize);
-      
+
       expect(result).toBeDefined();
       expect(result.maxAgents).toBeGreaterThanOrEqual(swarmSize);
-      expect(['round_robin', 'least_connections', 'weighted', 'adaptive']).toContain(result.loadBalancing);
+      expect(['round_robin', 'least_connections', 'weighted', 'adaptive']).toContain(
+        result.loadBalancing
+      );
       expect(typeof result.autoScaling).toBe('boolean');
       expect(result.resourceAllocation).toBeDefined();
     });
@@ -233,7 +238,7 @@ describe('Performance Optimization System', () => {
       ];
 
       const result = await dataOptimizer.optimizeQueryPerformance(mockQueries);
-      
+
       expect(result).toBeDefined();
       expect(result.queryTime).toBeGreaterThan(0);
       expect(Array.isArray(result.indexOptimization)).toBe(true);
@@ -248,7 +253,7 @@ describe('Performance Optimization System', () => {
       ];
 
       const result = await dataOptimizer.implementConnectionPooling(mockConnections);
-      
+
       expect(result).toBeDefined();
       expect(result.minConnections).toBeGreaterThan(0);
       expect(result.maxConnections).toBeGreaterThan(result.minConnections);
@@ -265,7 +270,7 @@ describe('Performance Optimization System', () => {
       };
 
       const result = await dataOptimizer.addIntelligentCaching(mockCacheLayer);
-      
+
       expect(result).toBeDefined();
       expect(result.hitRatio).toBeGreaterThanOrEqual(0);
       expect(result.hitRatio).toBeLessThanOrEqual(1);
@@ -282,7 +287,7 @@ describe('Performance Optimization System', () => {
       };
 
       const result = await dataOptimizer.compressDataStorage(mockStorage);
-      
+
       expect(result).toBeDefined();
       expect(result.compressionRatio).toBeGreaterThanOrEqual(0);
       expect(result.compressionRatio).toBeLessThanOrEqual(1);
@@ -300,7 +305,7 @@ describe('Performance Optimization System', () => {
       ];
 
       const result = await wasmOptimizer.optimizeWasmModuleLoading(mockModules);
-      
+
       expect(result).toBeDefined();
       expect(result.loadTime).toBeGreaterThanOrEqual(0);
       expect(typeof result.cacheUtilization).toBe('boolean');
@@ -315,7 +320,7 @@ describe('Performance Optimization System', () => {
       ];
 
       const result = await wasmOptimizer.implementStreamingCompilation(mockWasmFiles);
-      
+
       expect(result).toBeDefined();
       expect(result.compilationTime).toBeGreaterThanOrEqual(0);
       expect(typeof result.streamingEnabled).toBe('boolean');
@@ -331,7 +336,7 @@ describe('Performance Optimization System', () => {
       };
 
       const result = await wasmOptimizer.optimizeMemorySharing(mockBridge);
-      
+
       expect(result).toBeDefined();
       expect(result.memoryReduction).toBeGreaterThanOrEqual(0);
       expect(result.compressionRatio).toBeGreaterThanOrEqual(0);
@@ -346,7 +351,7 @@ describe('Performance Optimization System', () => {
       ];
 
       const result = await wasmOptimizer.enableSIMDAcceleration(mockKernels);
-      
+
       expect(result).toBeDefined();
       expect(typeof result.simdSupport).toBe('boolean');
       expect(result.performanceGain).toBeGreaterThan(0);
@@ -358,20 +363,20 @@ describe('Performance Optimization System', () => {
   describe('Integration Tests', () => {
     it('should coordinate optimization across all domains', async () => {
       const results = await performanceOptimizer.optimizeNow();
-      
+
       expect(results).toBeDefined();
       expect(results.length).toBeGreaterThan(0);
-      
+
       // Check that we have results from multiple domains
-      const domains = new Set(results.map(r => r.beforeMetrics));
+      const domains = new Set(results.map((r) => r.beforeMetrics));
       expect(domains.size).toBeGreaterThan(0);
     });
 
     it('should emit optimization events', async () => {
       const eventSpy = jest.spyOn(performanceOptimizer, 'emit');
-      
+
       await performanceOptimizer.optimizeNow();
-      
+
       expect(eventSpy).toHaveBeenCalled();
     });
 
@@ -380,16 +385,16 @@ describe('Performance Optimization System', () => {
       const failingOptimizer = {
         optimizeTrainingSpeed: jest.fn().mockRejectedValue(new Error('Test failure')),
       };
-      
+
       const testOptimizer = new PerformanceOptimizer(
         { enabled: true },
         { neural: failingOptimizer as any }
       );
-      
+
       const results = await testOptimizer.optimizeNow();
-      
+
       expect(results).toBeDefined();
-      expect(results.some(r => !r.success)).toBe(true);
+      expect(results.some((r) => !r.success)).toBe(true);
     });
   });
 
@@ -398,12 +403,15 @@ describe('Performance Optimization System', () => {
       const mockNetwork = {
         id: 'test-network',
         layers: [784, 128, 64, 10],
-        weights: [[0.1, 0.2], [0.3, 0.4]],
+        weights: [
+          [0.1, 0.2],
+          [0.3, 0.4],
+        ],
         activationFunction: 'relu',
       };
 
       const result = await neuralOptimizer.optimizeTrainingSpeed(mockNetwork);
-      
+
       // Validate against target: 5x training speed improvement
       expect(result.success).toBe(true);
       // Note: In real implementation, we would check against actual targets
@@ -417,7 +425,7 @@ describe('Performance Optimization System', () => {
       };
 
       const result = await swarmOptimizer.optimizeMessageRouting(mockTopology);
-      
+
       // Validate against target: <5ms message routing
       expect(result.routingLatency).toBeDefined();
       // Note: In real implementation, we would check latency <= 5ms
@@ -429,7 +437,7 @@ describe('Performance Optimization System', () => {
       ];
 
       const result = await dataOptimizer.optimizeQueryPerformance(mockQueries);
-      
+
       // Validate against target: <50ms query response time
       expect(result.queryTime).toBeDefined();
       // Note: In real implementation, we would check queryTime <= 50ms
@@ -441,7 +449,7 @@ describe('Performance Optimization System', () => {
       ];
 
       const result = await wasmOptimizer.optimizeWasmModuleLoading(mockModules);
-      
+
       // Validate against target: <100ms module loading
       expect(result.loadTime).toBeDefined();
       // Note: In real implementation, we would check loadTime <= 100ms

@@ -10,14 +10,13 @@ async function checkSqliteBindings() {
     const db = new Database.default(':memory:');
     db.close();
     return true;
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 }
 
 // Attempt to rebuild better-sqlite3 for ARM64
 async function rebuildSqlite() {
-  console.log('Rebuilding better-sqlite3 for ARM64...');
   return new Promise((resolve) => {
     const rebuild = spawn('npm', ['rebuild', 'better-sqlite3'], {
       stdio: 'inherit',
@@ -25,7 +24,6 @@ async function rebuildSqlite() {
 
     rebuild.on('close', (code) => {
       if (code === 0) {
-        console.log('Successfully rebuilt better-sqlite3 for ARM64');
         resolve(true);
       } else {
         console.error('Failed to rebuild better-sqlite3');
@@ -47,26 +45,12 @@ async function main() {
 
   // Only run on ARM64 macOS
   if (platform === 'darwin' && arch === 'arm64') {
-    console.log('Detected Apple Silicon (ARM64) Mac');
-
     const bindingsWork = await checkSqliteBindings();
     if (!bindingsWork) {
-      console.log('SQLite bindings not working for ARM64');
-
       const rebuildSuccess = await rebuildSqlite();
       if (!rebuildSuccess) {
-        console.log('');
-        console.log('Unable to rebuild SQLite bindings for ARM64');
-        console.log('Claude-Flow will fall back to in-memory storage');
-        console.log('');
-        console.log('To fix this issue, you can try:');
-        console.log('1. Install Xcode Command Line Tools');
-        console.log('2. Manually rebuild: npm rebuild better-sqlite3');
-        console.log('3. Use Rosetta 2: arch -x86_64 npm install');
-        console.log('');
       }
     } else {
-      console.log('SQLite bindings are working correctly');
     }
   }
 }

@@ -43,10 +43,7 @@ describe('Real-Time Collaboration E2E Tests', () => {
       documentSystem = new DocumentDrivenSystem();
       webServer = new WebInterfaceServer({ port: WEB_SERVER_PORT });
 
-      await Promise.all([
-        documentSystem.initialize(),
-        webServer.start(),
-      ]);
+      await Promise.all([documentSystem.initialize(), webServer.start()]);
 
       // Create WebSocket clients
       wsClient1 = new WebSocket(`ws://localhost:${WEB_SERVER_PORT}/ws`);
@@ -88,19 +85,23 @@ describe('Real-Time Collaboration E2E Tests', () => {
       });
 
       // Subscribe both clients to workspace
-      wsClient1.send(JSON.stringify({
-        type: 'subscribe',
-        sessionId,
-        workspaceId,
-        events: ['document.updated', 'document.created']
-      }));
+      wsClient1.send(
+        JSON.stringify({
+          type: 'subscribe',
+          sessionId,
+          workspaceId,
+          events: ['document.updated', 'document.created'],
+        })
+      );
 
-      wsClient2.send(JSON.stringify({
-        type: 'subscribe',
-        sessionId,
-        workspaceId,
-        events: ['document.updated', 'document.created']
-      }));
+      wsClient2.send(
+        JSON.stringify({
+          type: 'subscribe',
+          sessionId,
+          workspaceId,
+          events: ['document.updated', 'document.created'],
+        })
+      );
 
       // Create a document via HTTP API (simulating external edit)
       const visionContent = `
@@ -123,7 +124,7 @@ Test document for real-time collaboration.
       await documentSystem.processVisionaryDocument(workspaceId, visionPath);
 
       // Wait for real-time updates
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Both clients should receive the update
       expect(client1Updates.length).toBeGreaterThan(0);
@@ -139,11 +140,11 @@ Test document for real-time collaboration.
     });
 
     it('should handle concurrent document edits with conflict resolution', async () => {
-      const sessionId = `concurrent-session-${Date.now()}`;
+      const _sessionId = `concurrent-session-${Date.now()}`;
       const workspaceId = await documentSystem.loadWorkspace(TEST_PROJECT_PATH);
 
       const conflictResults: any[] = [];
-      
+
       // Monitor conflict resolution events
       wsClient1.on('message', (data) => {
         const message = JSON.parse(data.toString());
@@ -154,7 +155,7 @@ Test document for real-time collaboration.
 
       // Simulate concurrent edits
       const docPath = `${TEST_PROJECT_PATH}/docs/03-prds/concurrent-prd.md`;
-      
+
       // First edit
       const content1 = `
 # Concurrent PRD Test
@@ -184,11 +185,11 @@ This is version 2 of the document.
       ]);
 
       // Wait for conflict resolution
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // Should have detected and resolved conflict
       expect(conflictResults.length).toBeGreaterThan(0);
-      
+
       const finalContent = await fsHelper.readFile(docPath);
       expect(finalContent).toBeDefined();
       expect(finalContent.length).toBeGreaterThan(0);
@@ -205,20 +206,22 @@ This is version 2 of the document.
       });
 
       // Subscribe to metrics
-      wsClient1.send(JSON.stringify({
-        type: 'subscribe',
-        events: ['metrics.update']
-      }));
+      wsClient1.send(
+        JSON.stringify({
+          type: 'subscribe',
+          events: ['metrics.update'],
+        })
+      );
 
       // Trigger some system activity
-      const workspaceId = await documentSystem.loadWorkspace(TEST_PROJECT_PATH);
-      
+      const _workspaceId = await documentSystem.loadWorkspace(TEST_PROJECT_PATH);
+
       // Wait for metrics updates
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
 
       // Should receive regular metrics updates
       expect(metricsUpdates.length).toBeGreaterThan(0);
-      
+
       const metricsUpdate = metricsUpdates[0];
       expect(metricsUpdate.metrics).toBeDefined();
       expect(metricsUpdate.metrics.memoryUsage).toBeDefined();
@@ -234,10 +237,7 @@ This is version 2 of the document.
       documentSystem = new DocumentDrivenSystem();
       webServer = new WebInterfaceServer({ port: WEB_SERVER_PORT });
 
-      await Promise.all([
-        documentSystem.initialize(),
-        webServer.start(),
-      ]);
+      await Promise.all([documentSystem.initialize(), webServer.start()]);
 
       workspaceId = await documentSystem.loadWorkspace(TEST_PROJECT_PATH);
     });
@@ -272,22 +272,22 @@ This is version 2 of the document.
           operation: 'insert',
           position: { line: 5, column: 0 },
           content: '- [ ] Story 3\n',
-          author: 'user1'
+          author: 'user1',
         },
         {
           sessionId,
-          operation: 'insert', 
+          operation: 'insert',
           position: { line: 9, column: 0 },
           content: '- [ ] Requirement 3\n',
-          author: 'user2'
+          author: 'user2',
         },
         {
           sessionId,
           operation: 'modify',
           position: { line: 4, column: 0 },
           content: '- [x] Story 1 (completed)\n',
-          author: 'user1'
-        }
+          author: 'user1',
+        },
       ];
 
       // Apply edits via API
@@ -297,7 +297,7 @@ This is version 2 of the document.
           {
             workspaceId,
             documentPath: prdPath,
-            edit
+            edit,
           }
         );
 
@@ -313,7 +313,7 @@ This is version 2 of the document.
 
     it('should track edit history and provide rollback capability', async () => {
       const docPath = `${TEST_PROJECT_PATH}/docs/04-epics/versioned-epic.md`;
-      
+
       const versions = [
         '# Epic v1\n\nInitial version',
         '# Epic v1\n\nInitial version\n\n## Features\n- Feature 1',
@@ -324,7 +324,7 @@ This is version 2 of the document.
       for (let i = 0; i < versions.length; i++) {
         await fsHelper.writeFile(docPath, versions[i]);
         await documentSystem.processVisionaryDocument(workspaceId, docPath);
-        await new Promise(resolve => setTimeout(resolve, 100)); // Small delay between versions
+        await new Promise((resolve) => setTimeout(resolve, 100)); // Small delay between versions
       }
 
       // Get version history
@@ -341,7 +341,7 @@ This is version 2 of the document.
         {
           workspaceId,
           documentPath: docPath,
-          version: historyResponse.data.versions[0].id
+          version: historyResponse.data.versions[0].id,
         }
       );
 
@@ -363,10 +363,7 @@ This is version 2 of the document.
       documentSystem = new DocumentDrivenSystem();
       webServer = new WebInterfaceServer({ port: WEB_SERVER_PORT });
 
-      await Promise.all([
-        documentSystem.initialize(),
-        webServer.start(),
-      ]);
+      await Promise.all([documentSystem.initialize(), webServer.start()]);
 
       workspaceId = await documentSystem.loadWorkspace(TEST_PROJECT_PATH);
 
@@ -400,45 +397,51 @@ This is version 2 of the document.
       });
 
       // User 1 joins document
-      wsClient1.send(JSON.stringify({
-        type: 'presence.join',
-        workspaceId,
-        documentPath: docPath,
-        user: {
-          id: 'user1',
-          name: 'User One',
-          color: '#ff0000'
-        }
-      }));
+      wsClient1.send(
+        JSON.stringify({
+          type: 'presence.join',
+          workspaceId,
+          documentPath: docPath,
+          user: {
+            id: 'user1',
+            name: 'User One',
+            color: '#ff0000',
+          },
+        })
+      );
 
       // User 1 moves cursor
-      wsClient1.send(JSON.stringify({
-        type: 'cursor.move',
-        workspaceId,
-        documentPath: docPath,
-        position: { line: 2, column: 5 },
-        user: 'user1'
-      }));
+      wsClient1.send(
+        JSON.stringify({
+          type: 'cursor.move',
+          workspaceId,
+          documentPath: docPath,
+          position: { line: 2, column: 5 },
+          user: 'user1',
+        })
+      );
 
       // User 2 subscribes to presence
-      wsClient2.send(JSON.stringify({
-        type: 'subscribe',
-        workspaceId,
-        documentPath: docPath,
-        events: ['presence.update', 'cursor.move']
-      }));
+      wsClient2.send(
+        JSON.stringify({
+          type: 'subscribe',
+          workspaceId,
+          documentPath: docPath,
+          events: ['presence.update', 'cursor.move'],
+        })
+      );
 
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       // User 2 should see User 1's presence and cursor
       expect(presenceUpdates.length).toBeGreaterThan(0);
-      
-      const presenceUpdate = presenceUpdates.find(u => u.type === 'presence.update');
+
+      const presenceUpdate = presenceUpdates.find((u) => u.type === 'presence.update');
       expect(presenceUpdate).toBeDefined();
       expect(presenceUpdate.users).toContain(
         expect.objectContaining({
           id: 'user1',
-          name: 'User One'
+          name: 'User One',
         })
       );
     });
@@ -457,27 +460,31 @@ This is version 2 of the document.
       });
 
       // User 1 joins
-      wsClient1.send(JSON.stringify({
-        type: 'presence.join',
-        workspaceId,
-        documentPath: docPath,
-        user: { id: 'user1', name: 'User One' }
-      }));
+      wsClient1.send(
+        JSON.stringify({
+          type: 'presence.join',
+          workspaceId,
+          documentPath: docPath,
+          user: { id: 'user1', name: 'User One' },
+        })
+      );
 
       // User 2 subscribes
-      wsClient2.send(JSON.stringify({
-        type: 'subscribe',
-        workspaceId,
-        documentPath: docPath,
-        events: ['presence.leave']
-      }));
+      wsClient2.send(
+        JSON.stringify({
+          type: 'subscribe',
+          workspaceId,
+          documentPath: docPath,
+          events: ['presence.leave'],
+        })
+      );
 
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise((resolve) => setTimeout(resolve, 200));
 
       // User 1 disconnects
       wsClient1.close();
 
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // User 2 should be notified of disconnection
       expect(disconnectUpdates.length).toBeGreaterThan(0);
@@ -490,10 +497,7 @@ This is version 2 of the document.
       documentSystem = new DocumentDrivenSystem();
       webServer = new WebInterfaceServer({ port: WEB_SERVER_PORT });
 
-      await Promise.all([
-        documentSystem.initialize(),
-        webServer.start(),
-      ]);
+      await Promise.all([documentSystem.initialize(), webServer.start()]);
     });
 
     afterEach(async () => {
@@ -511,17 +515,17 @@ This is version 2 of the document.
         system: expect.objectContaining({
           memoryUsage: expect.any(Number),
           cpuUsage: expect.any(Number),
-          uptime: expect.any(Number)
+          uptime: expect.any(Number),
         }),
         documents: expect.objectContaining({
           totalProcessed: expect.any(Number),
           activeWorkspaces: expect.any(Number),
-          recentActivity: expect.any(Array)
+          recentActivity: expect.any(Array),
         }),
         realtime: expect.objectContaining({
           connectedClients: expect.any(Number),
-          messagesPerSecond: expect.any(Number)
-        })
+          messagesPerSecond: expect.any(Number),
+        }),
       });
     });
 
@@ -550,8 +554,8 @@ This is version 2 of the document.
         workflowStages: expect.objectContaining({
           vision: expect.any(Number),
           adr: expect.any(Number),
-          prd: expect.any(Number)
-        })
+          prd: expect.any(Number),
+        }),
       });
 
       // Processing time should be reasonable

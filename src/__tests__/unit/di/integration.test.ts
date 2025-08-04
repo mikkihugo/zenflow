@@ -17,7 +17,6 @@ import {
   clearGlobalContainer,
   createContainerBuilder,
   DIContainer,
-  DIContainerBuilder,
   getGlobalContainer,
   SWARM_TOKENS,
   setGlobalContainer,
@@ -240,11 +239,6 @@ describe('DI System Integration Tests', () => {
 
       // Should complete 30k resolutions in less than 1 second
       expect(duration).toBeLessThan(1000);
-
-      // Log performance for reference
-      console.log(
-        `Resolved ${iterations * 3} services in ${duration}ms (${(((iterations * 3) / duration) * 1000).toFixed(0)} resolutions/sec)`
-      );
     });
 
     it('should handle concurrent resolutions safely', async () => {
@@ -292,7 +286,7 @@ describe('DI System Integration Tests', () => {
 
       // Use the coordinator
       await coordinator.initializeSwarm({ name: 'cleanup-test' });
-      const agentId = await coordinator.addAgent({ type: 'test' });
+      const _agentId = await coordinator.addAgent({ type: 'test' });
 
       // Verify resources exist
       const beforeMetrics = coordinator.getMetrics();

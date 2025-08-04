@@ -5,8 +5,8 @@
  * No mocks - verify real SIMD acceleration and mathematical accuracy
  */
 
+import { performance } from 'node:perf_hooks';
 import { beforeEach, describe, expect, it } from '@jest/globals';
-import { performance } from 'perf_hooks';
 
 // Mock SIMD operations interface to match Rust implementation structure
 interface SimdConfig {
@@ -471,12 +471,6 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
       }
       expect(maxDiff).toBeLessThan(1e-5);
 
-      // Log performance metrics
-      console.log(`Matrix multiplication performance:`);
-      console.log(`  SIMD time: ${simdTime.toFixed(2)}ms`);
-      console.log(`  Scalar time: ${scalarTime.toFixed(2)}ms`);
-      console.log(`  Speedup: ${(scalarTime / simdTime).toFixed(2)}x`);
-
       // SIMD should be competitive (in our simulation, may not be faster)
       // In a real implementation with actual SIMD intrinsics, we'd expect speedup
       expect(simdTime).toBeLessThanOrEqual(scalarTime * 2.0); // Allow generous margin for simulation
@@ -505,11 +499,6 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
       for (let i = 0; i < data.length; i++) {
         expect(dataSimd[i]).toBeCloseTo(dataScalar[i], 6);
       }
-
-      console.log(`ReLU activation performance:`);
-      console.log(`  SIMD time: ${simdTime.toFixed(2)}ms`);
-      console.log(`  Scalar time: ${scalarTime.toFixed(2)}ms`);
-      console.log(`  Speedup: ${(scalarTime / simdTime).toFixed(2)}x`);
 
       // SIMD should be reasonably competitive (may be slower on some systems for small datasets)
       // This test primarily verifies correctness, performance is secondary
@@ -554,9 +543,7 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
         expect(result.time).toBeGreaterThan(0);
         expect(result.time).toBeLessThan(1000); // Should complete within 1 second
       }
-
-      console.log('Block size performance:');
-      results.forEach((r) => console.log(`  Block size ${r.blockSize}: ${r.time.toFixed(2)}ms`));
+      results.forEach((_r) => {});
     });
 
     it('should handle non-aligned array sizes correctly', () => {

@@ -5,7 +5,7 @@
  * sharing, tracks expertise evolution, and identifies best practices and anti-patterns.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import type { ILogger } from '../../di/index';
 import { CORE_TOKENS, inject, injectable } from '../../di/index';
 import type {
@@ -40,7 +40,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
   constructor(
     config: AdaptiveLearningConfig,
     context: SystemContext,
-    @inject(CORE_TOKENS.Logger) private logger: ILogger
+    @inject(CORE_TOKENS.Logger) private _logger: ILogger
   ) {
     super();
     this.config = config;
@@ -307,7 +307,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
       if (!this.learningHistory.has(agent.id)) {
         this.learningHistory.set(agent.id, []);
       }
-      this.learningHistory.get(agent.id)!.push(agentResult);
+      this.learningHistory.get(agent.id)?.push(agentResult);
     }
 
     return results;
@@ -404,7 +404,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
     return patterns;
   }
 
-  private calculateImprovements(agent: Agent, patterns: Pattern[]): PerformanceImprovement[] {
+  private calculateImprovements(agent: Agent, _patterns: Pattern[]): PerformanceImprovement[] {
     const improvements: PerformanceImprovement[] = [];
 
     const metrics = ['efficiency', 'quality', 'latency', 'throughput'];
@@ -548,7 +548,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
     const knowledgeGaps: string[] = [];
 
     // Compare with available knowledge base
-    for (const [patternId, pattern] of this.knowledgeBase) {
+    for (const [_patternId, pattern] of this.knowledgeBase) {
       if (!agent.specializations.includes(pattern.type) && pattern.confidence > 0.8) {
         knowledgeGaps.push(pattern.type);
       }
@@ -576,7 +576,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
       if (!groups.has(category)) {
         groups.set(category, []);
       }
-      groups.get(category)!.push(success);
+      groups.get(category)?.push(success);
     }
 
     return groups;
@@ -629,7 +629,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
       if (!groups.has(failure.type)) {
         groups.set(failure.type, []);
       }
-      groups.get(failure.type)!.push(failure);
+      groups.get(failure.type)?.push(failure);
     }
 
     return groups;

@@ -6,11 +6,8 @@
  * - Classical School: Test actual session lifecycle and data integrity
  */
 
+import { EventEmitter } from 'node:events';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { EventEmitter } from 'events';
-import { rm } from 'fs/promises';
-import { tmpdir } from 'os';
-import { join } from 'path';
 
 // Session Management Interface
 interface SessionData {
@@ -361,7 +358,7 @@ describe('Session Management Integration Tests', () => {
     it('should delegate operations to storage', async () => {
       await sessionManager.initialize();
 
-      const session = await sessionManager.createSession('test-session', { test: 'data' });
+      const _session = await sessionManager.createSession('test-session', { test: 'data' });
       await sessionManager.getSession('test-session');
       await sessionManager.updateSession('test-session', { updated: true });
       await sessionManager.deleteSession('test-session');
@@ -428,7 +425,7 @@ describe('Session Management Integration Tests', () => {
       const session2 = await sessionManager.getSession('access-test');
       expect(session2?.metadata.accessCount).toBe(3);
       expect(session2?.metadata.lastAccessed).toBeGreaterThanOrEqual(
-        session1!.metadata.lastAccessed
+        session1?.metadata.lastAccessed
       );
     });
 
@@ -644,12 +641,12 @@ describe('Session Management Integration Tests', () => {
       expect(results).toHaveLength(5);
       results.forEach((result) => {
         expect(result).toBeDefined();
-        expect(result!.sessionId).toBe('concurrent-access');
+        expect(result?.sessionId).toBe('concurrent-access');
       });
 
       // Final access count should reflect all accesses
       const finalSession = await sessionManager.getSession('concurrent-access');
-      expect(finalSession!.metadata.accessCount).toBeGreaterThan(5);
+      expect(finalSession?.metadata.accessCount).toBeGreaterThan(5);
     });
 
     it('should handle mixed concurrent operations', async () => {
@@ -687,14 +684,14 @@ describe('Session Management Integration Tests', () => {
       expect(stats.totalSize).toBeGreaterThan(10000);
 
       const session = await sessionManager.getSession('memory-test');
-      expect(session!.metadata.size).toBeGreaterThan(10000);
+      expect(session?.metadata.size).toBeGreaterThan(10000);
     });
 
     it('should update size when session data changes', async () => {
       await sessionManager.createSession('size-test', { small: 'data' });
 
       const initialSession = await sessionManager.getSession('size-test');
-      const initialSize = initialSession!.metadata.size;
+      const initialSize = initialSession?.metadata.size;
 
       await sessionManager.updateSession('size-test', {
         large: 'x'.repeat(5000),
@@ -702,7 +699,7 @@ describe('Session Management Integration Tests', () => {
       });
 
       const updatedSession = await sessionManager.getSession('size-test');
-      expect(updatedSession!.metadata.size).toBeGreaterThan(initialSize);
+      expect(updatedSession?.metadata.size).toBeGreaterThan(initialSize);
     });
   });
 });

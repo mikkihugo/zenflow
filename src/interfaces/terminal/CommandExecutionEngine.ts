@@ -206,7 +206,7 @@ export class CommandExecutionEngine {
       },
       performance: {
         cpuUsage: process.cpuUsage(),
-        loadAverage: process.platform !== 'win32' ? require('os').loadavg() : [0, 0, 0],
+        loadAverage: process.platform !== 'win32' ? require('node:os').loadavg() : [0, 0, 0],
       },
     };
 
@@ -456,7 +456,7 @@ export class CommandExecutionEngine {
   /**
    * Handle help command
    */
-  private static async handleHelpCommand(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleHelpCommand(_context: ExecutionContext): Promise<CommandResult> {
     const helpContent = {
       title: 'Claude Code Flow - Command Reference',
       version: '2.0.0-alpha.73',
@@ -521,7 +521,7 @@ export class CommandExecutionEngine {
     };
   }
 
-  private static async handleSwarmStop(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleSwarmStop(_context: ExecutionContext): Promise<CommandResult> {
     return {
       success: true,
       message: 'All swarms stopped successfully',
@@ -529,7 +529,7 @@ export class CommandExecutionEngine {
     };
   }
 
-  private static async handleSwarmList(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleSwarmList(_context: ExecutionContext): Promise<CommandResult> {
     return {
       success: true,
       message: 'Available swarms retrieved',
@@ -562,7 +562,7 @@ export class CommandExecutionEngine {
     };
   }
 
-  private static async handleSwarmStatus(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleSwarmStatus(_context: ExecutionContext): Promise<CommandResult> {
     return {
       success: true,
       message: 'Swarm system status retrieved',

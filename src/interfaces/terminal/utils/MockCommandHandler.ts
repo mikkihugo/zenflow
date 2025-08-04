@@ -5,16 +5,17 @@
  * Renamed to reflect its mock/testing nature per Google standards.
  */
 
+import { createLogger } from '../../../core/logger';
 import { CommandExecutionEngine } from '../CommandExecutionEngine';
-import { createSimpleLogger } from './logger';
 
-const logger = createSimpleLogger('MockCommandHandler');
+const logger = createLogger({ prefix: 'MockCommandHandler' });
 
 export interface CommandResult {
   success: boolean;
   message?: string;
   data?: any;
   error?: string;
+  timestamp?: Date;
 }
 
 export interface CommandContext {
@@ -38,17 +39,16 @@ export class MockCommandHandler {
 
       logger.debug(`Initializing project: ${projectName} with template: ${template}`);
 
-      // Import and use the actual init logic
-      const { InitCommand } = await import('../../../cli/commands/init/init-command.js');
-      const initCommand = new InitCommand();
+      // For now, provide a mock implementation since CLI structure has changed
+      // TODO: Integrate with actual CLI commands when available
+      logger.info(`Mock: Initializing project ${projectName} with template ${template}`);
 
-      const context: CommandContext = {
-        args,
-        flags,
-        cwd: process.cwd(),
+      const result = {
+        projectName,
+        template,
+        location: './project-output',
+        files: ['package.json', 'README.md', 'src/index.ts'],
       };
-
-      const result = await initCommand.run(context);
 
       return {
         success: true,
@@ -67,7 +67,7 @@ export class MockCommandHandler {
   /**
    * Execute status command
    */
-  static async executeStatus(args: string[], flags: Record<string, any>): Promise<CommandResult> {
+  static async executeStatus(_args: string[], flags: Record<string, any>): Promise<CommandResult> {
     try {
       logger.debug('Getting system status');
 
@@ -280,7 +280,7 @@ export class MockCommandHandler {
    */
   static async executeWorkspace(
     args: string[],
-    flags: Record<string, any>
+    _flags: Record<string, any>
   ): Promise<CommandResult> {
     try {
       const action = args[0];

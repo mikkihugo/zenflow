@@ -3,8 +3,6 @@
  * High-performance neural network computations using WebAssembly
  */
 
-import type { NeuralNetwork } from '../core/neural-network';
-
 export interface WasmComputeOptions {
   threads?: number;
   precision?: 'f32' | 'f64';
@@ -29,7 +27,7 @@ export class WasmNeuralAccelerator {
     current: 0,
   };
 
-  constructor(private options: WasmComputeOptions = {}) {
+  constructor() {
     this.options = {
       threads: 1,
       precision: 'f32',
@@ -68,7 +66,13 @@ export class WasmNeuralAccelerator {
   /**
    * Perform matrix multiplication using WASM
    */
-  async matrixMultiply(a: Float32Array, b: Float32Array, rows: number, cols: number, inner: number): Promise<Float32Array> {
+  async matrixMultiply(
+    a: Float32Array,
+    b: Float32Array,
+    rows: number,
+    cols: number,
+    inner: number
+  ): Promise<Float32Array> {
     if (!this.isInitialized) {
       await this.initialize();
     }
@@ -79,7 +83,11 @@ export class WasmNeuralAccelerator {
   /**
    * Perform neural network forward pass
    */
-  async forwardPass(inputs: Float32Array, weights: Float32Array[], biases: Float32Array[]): Promise<Float32Array> {
+  async forwardPass(
+    inputs: Float32Array,
+    weights: Float32Array[],
+    biases: Float32Array[]
+  ): Promise<Float32Array> {
     if (!this.isInitialized) {
       await this.initialize();
     }
@@ -107,7 +115,10 @@ export class WasmNeuralAccelerator {
   /**
    * Apply activation function
    */
-  async activation(inputs: Float32Array, activationType: 'relu' | 'sigmoid' | 'tanh' | 'softmax'): Promise<Float32Array> {
+  async activation(
+    inputs: Float32Array,
+    activationType: 'relu' | 'sigmoid' | 'tanh' | 'softmax'
+  ): Promise<Float32Array> {
     if (!this.isInitialized) {
       await this.initialize();
     }
@@ -132,7 +143,7 @@ export class WasmNeuralAccelerator {
         return !!adapter;
       }
       return false;
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }
@@ -147,7 +158,7 @@ export class WasmNeuralAccelerator {
   }> {
     const a = new Float32Array(size * size);
     const b = new Float32Array(size * size);
-    
+
     // Fill with random data
     for (let i = 0; i < a.length; i++) {
       a[i] = Math.random();
@@ -177,7 +188,7 @@ export class WasmNeuralAccelerator {
    * Cleanup WASM resources
    */
   async dispose(): Promise<void> {
-    if (this.wasmModule && this.wasmModule.memory) {
+    if (this.wasmModule?.memory) {
       // Cleanup any allocated memory
       this.wasmModule.memory.deallocate();
     }
@@ -192,9 +203,15 @@ export class WasmNeuralAccelerator {
   }
 
   // Mock implementations (would be replaced with actual WASM calls)
-  private mockMatrixMultiply(a: Float32Array, b: Float32Array, rows: number, cols: number, inner: number): Float32Array {
+  private mockMatrixMultiply(
+    a: Float32Array,
+    b: Float32Array,
+    rows: number,
+    cols: number,
+    inner: number
+  ): Float32Array {
     const result = new Float32Array(rows * cols);
-    
+
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
         let sum = 0;
@@ -204,21 +221,25 @@ export class WasmNeuralAccelerator {
         result[i * cols + j] = sum;
       }
     }
-    
+
     return result;
   }
 
-  private mockForwardPass(inputs: Float32Array, weights: Float32Array[], biases: Float32Array[]): Float32Array {
+  private mockForwardPass(
+    inputs: Float32Array,
+    weights: Float32Array[],
+    biases: Float32Array[]
+  ): Float32Array {
     let activations = inputs;
-    
+
     for (let layer = 0; layer < weights.length; layer++) {
       const layerWeights = weights[layer];
       const layerBiases = biases[layer];
       const inputSize = Math.sqrt(layerWeights.length);
       const outputSize = layerBiases.length;
-      
+
       const newActivations = new Float32Array(outputSize);
-      
+
       for (let i = 0; i < outputSize; i++) {
         let sum = layerBiases[i];
         for (let j = 0; j < inputSize; j++) {
@@ -226,15 +247,15 @@ export class WasmNeuralAccelerator {
         }
         newActivations[i] = Math.max(0, sum); // ReLU activation
       }
-      
+
       activations = newActivations;
     }
-    
+
     return activations;
   }
 
   private mockBackpropagation(
-    inputs: Float32Array,
+    _inputs: Float32Array,
     outputs: Float32Array,
     targets: Float32Array,
     weights: Float32Array[],
@@ -246,16 +267,16 @@ export class WasmNeuralAccelerator {
       const error = targets[i] - outputs[i];
       totalError += error * error;
     }
-    
+
     // Mock weight updates (simplified)
-    const updatedWeights = weights.map(w => {
+    const updatedWeights = weights.map((w) => {
       const updated = new Float32Array(w.length);
       for (let i = 0; i < w.length; i++) {
         updated[i] = w[i] + (Math.random() - 0.5) * learningRate * 0.01;
       }
       return updated;
     });
-    
+
     return {
       weights: updatedWeights,
       error: totalError / outputs.length,
@@ -264,7 +285,7 @@ export class WasmNeuralAccelerator {
 
   private mockActivation(inputs: Float32Array, activationType: string): Float32Array {
     const result = new Float32Array(inputs.length);
-    
+
     switch (activationType) {
       case 'relu':
         for (let i = 0; i < inputs.length; i++) {
@@ -281,7 +302,7 @@ export class WasmNeuralAccelerator {
           result[i] = Math.tanh(inputs[i]);
         }
         break;
-      case 'softmax':
+      case 'softmax': {
         let sum = 0;
         for (let i = 0; i < inputs.length; i++) {
           result[i] = Math.exp(inputs[i]);
@@ -291,10 +312,11 @@ export class WasmNeuralAccelerator {
           result[i] /= sum;
         }
         break;
+      }
       default:
         result.set(inputs);
     }
-    
+
     return result;
   }
 
@@ -304,14 +326,14 @@ export class WasmNeuralAccelerator {
   async multiplyMatrices(
     a: number[][] | Float32Array,
     b: number[][] | Float32Array,
-    options: WasmComputeOptions = {}
+    _options: WasmComputeOptions = {}
   ): Promise<number[][]> {
     await this.initialize();
-    
+
     // Convert to 2D arrays if needed
     let matrixA: number[][];
     let matrixB: number[][];
-    
+
     if (a instanceof Float32Array) {
       // Assume square matrix for simplification
       const size = Math.sqrt(a.length);
@@ -322,7 +344,7 @@ export class WasmNeuralAccelerator {
     } else {
       matrixA = a;
     }
-    
+
     if (b instanceof Float32Array) {
       const size = Math.sqrt(b.length);
       matrixB = [];
@@ -332,12 +354,12 @@ export class WasmNeuralAccelerator {
     } else {
       matrixB = b;
     }
-    
+
     // Perform matrix multiplication
     const rows = matrixA.length;
     const cols = matrixB[0].length;
     const inner = matrixA[0].length;
-    
+
     const result: number[][] = [];
     for (let i = 0; i < rows; i++) {
       result[i] = [];
@@ -348,7 +370,7 @@ export class WasmNeuralAccelerator {
         }
       }
     }
-    
+
     return result;
   }
 
@@ -358,10 +380,10 @@ export class WasmNeuralAccelerator {
   async applyActivation(
     inputs: Float32Array | number[],
     activationType: string,
-    options: WasmComputeOptions = {}
+    _options: WasmComputeOptions = {}
   ): Promise<Float32Array> {
     await this.initialize();
-    
+
     const data = inputs instanceof Float32Array ? inputs : new Float32Array(inputs);
     return this.mockActivation(data, activationType);
   }
@@ -372,12 +394,12 @@ export class WasmNeuralAccelerator {
   async vectorReduction(
     vector: Float32Array | number[],
     operation: string,
-    options: WasmComputeOptions = {}
+    _options: WasmComputeOptions = {}
   ): Promise<number> {
     await this.initialize();
-    
+
     const data = vector instanceof Float32Array ? vector : new Float32Array(vector);
-    
+
     switch (operation) {
       case 'sum':
         return data.reduce((sum, val) => sum + val, 0);
@@ -400,16 +422,16 @@ export class WasmNeuralAccelerator {
     kernel: Float32Array,
     inputShape: [number, number],
     kernelShape: [number, number],
-    options: WasmComputeOptions = {}
+    _options: WasmComputeOptions = {}
   ): Promise<Float32Array> {
     await this.initialize();
-    
+
     const [inputHeight, inputWidth] = inputShape;
     const [kernelHeight, kernelWidth] = kernelShape;
     const outputHeight = inputHeight - kernelHeight + 1;
     const outputWidth = inputWidth - kernelWidth + 1;
     const output = new Float32Array(outputHeight * outputWidth);
-    
+
     for (let oh = 0; oh < outputHeight; oh++) {
       for (let ow = 0; ow < outputWidth; ow++) {
         let sum = 0;
@@ -423,7 +445,7 @@ export class WasmNeuralAccelerator {
         output[oh * outputWidth + ow] = sum;
       }
     }
-    
+
     return output;
   }
 
@@ -449,7 +471,13 @@ export class WasmNeuralAccelerator {
     };
   }
 
-  private jsMatrixMultiply(a: Float32Array, b: Float32Array, rows: number, cols: number, inner: number): Float32Array {
+  private jsMatrixMultiply(
+    a: Float32Array,
+    b: Float32Array,
+    rows: number,
+    cols: number,
+    inner: number
+  ): Float32Array {
     // Pure JavaScript implementation for benchmarking
     return this.mockMatrixMultiply(a, b, rows, cols, inner);
   }

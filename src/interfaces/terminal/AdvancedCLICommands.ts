@@ -5,13 +5,7 @@
  * command execution system. Uses shared abstractions to avoid cross-interface dependencies.
  */
 
-import type {
-  CommandContext,
-  CommandResult,
-  ComplexityLevel,
-  ProjectConfig,
-  ProjectType,
-} from '../shared/index';
+import type { CommandContext, CommandResult } from '../shared/index';
 import { CliCommandAdapter } from './adapters/CliCommandAdapter';
 
 /**

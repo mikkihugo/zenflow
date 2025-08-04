@@ -3,12 +3,11 @@
  * from ruv-swarm-no-timeout.js while maintaining security and functionality
  */
 
-import { jest } from '@jest/globals';
-import { exec } from 'child_process';
-import { readFileSync } from 'fs';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
-import { promisify } from 'util';
+import { exec } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { promisify } from 'node:util';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -35,8 +34,6 @@ describe('No Timeout Validation Suite', () => {
       const originalSetTimeoutMatches = originalCode.match(/setTimeout\s*\(/g);
       expect(originalSetTimeoutMatches).not.toBeNull();
       expect(originalSetTimeoutMatches.length).toBeGreaterThan(0);
-
-      console.log('✅ All setTimeout calls successfully removed');
     });
 
     test('ALL setInterval calls should be removed', () => {
@@ -47,22 +44,16 @@ describe('No Timeout Validation Suite', () => {
       const originalSetIntervalMatches = originalCode.match(/setInterval\s*\(/g);
       expect(originalSetIntervalMatches).not.toBeNull();
       expect(originalSetIntervalMatches.length).toBeGreaterThan(0);
-
-      console.log('✅ All setInterval calls successfully removed');
     });
 
     test('ALL clearTimeout calls should be removed', () => {
       const clearTimeoutMatches = noTimeoutCode.match(/clearTimeout\s*\(/g);
       expect(clearTimeoutMatches).toBeNull();
-
-      console.log('✅ All clearTimeout calls successfully removed');
     });
 
     test('ALL clearInterval calls should be removed', () => {
       const clearIntervalMatches = noTimeoutCode.match(/clearInterval\s*\(/g);
       expect(clearIntervalMatches).toBeNull();
-
-      console.log('✅ All clearInterval calls successfully removed');
     });
 
     test('Heartbeat-related code should be removed', () => {
@@ -75,8 +66,6 @@ describe('No Timeout Validation Suite', () => {
       expect(originalCode).toMatch(/heartbeat/i);
       expect(originalCode).toMatch(/lastActivity/);
       expect(originalCode).toMatch(/MCP_HEARTBEAT/);
-
-      console.log('✅ All heartbeat mechanisms successfully removed');
     });
 
     test('Timeout environment variables should be removed', () => {
@@ -86,16 +75,12 @@ describe('No Timeout Validation Suite', () => {
       // Verify original had these variables
       expect(originalCode).toMatch(/MCP_HEARTBEAT_INTERVAL/);
       expect(originalCode).toMatch(/MCP_HEARTBEAT_TIMEOUT/);
-
-      console.log('✅ All timeout environment variables successfully removed');
     });
 
     test('Activity monitoring should be removed', () => {
       expect(noTimeoutCode).not.toMatch(/timeSinceLastActivity/);
       expect(noTimeoutCode).not.toMatch(/heartbeatChecker/);
       expect(noTimeoutCode).not.toMatch(/heartbeatCheckInterval/);
-
-      console.log('✅ All activity monitoring successfully removed');
     });
   });
 
@@ -104,8 +89,6 @@ describe('No Timeout Validation Suite', () => {
       expect(noTimeoutCode).toMatch(/CommandSanitizer/);
       expect(noTimeoutCode).toMatch(/SecurityError/);
       expect(noTimeoutCode).toMatch(/validateArgument/);
-
-      console.log('✅ Security validation preserved');
     });
 
     test('Input validation should be preserved', () => {
@@ -113,24 +96,18 @@ describe('No Timeout Validation Suite', () => {
       expect(noTimeoutCode).toMatch(/validateMaxAgents/);
       expect(noTimeoutCode).toMatch(/validateAgentType/);
       expect(noTimeoutCode).toMatch(/validateTaskDescription/);
-
-      console.log('✅ Input validation preserved');
     });
 
     test('Error handling should be preserved', () => {
       expect(noTimeoutCode).toMatch(/ValidationError/);
       expect(noTimeoutCode).toMatch(/uncaughtException/);
       expect(noTimeoutCode).toMatch(/unhandledRejection/);
-
-      console.log('✅ Error handling preserved');
     });
 
     test('WASM integrity should be preserved', () => {
-      expect(noTimeoutCode).toMatch(/RuvSwarm/);
+      expect(noTimeoutCode).toMatch(/ZenSwarm/);
       expect(noTimeoutCode).toMatch(/detectSIMDSupport/);
       expect(noTimeoutCode).toMatch(/initializeSystem/);
-
-      console.log('✅ WASM integrity preserved');
     });
   });
 
@@ -139,24 +116,18 @@ describe('No Timeout Validation Suite', () => {
       expect(noTimeoutCode).toMatch(/isStabilityMode/);
       expect(noTimeoutCode).toMatch(/stabilityLog/);
       expect(noTimeoutCode).toMatch(/MAX_RESTARTS/);
-
-      console.log('✅ Stability mode preserved');
     });
 
     test('Process signal handling should be preserved', () => {
       expect(noTimeoutCode).toMatch(/SIGTERM/);
       expect(noTimeoutCode).toMatch(/SIGINT/);
       expect(noTimeoutCode).toMatch(/process\.on/);
-
-      console.log('✅ Process signal handling preserved');
     });
 
     test('Auto-restart functionality should be preserved', () => {
       expect(noTimeoutCode).toMatch(/startStableMcpServer/);
       expect(noTimeoutCode).toMatch(/childProcess/);
       expect(noTimeoutCode).toMatch(/spawn/);
-
-      console.log('✅ Auto-restart functionality preserved');
     });
   });
 
@@ -165,31 +136,23 @@ describe('No Timeout Validation Suite', () => {
       expect(noTimeoutCode).toMatch(/mcpTools/);
       expect(noTimeoutCode).toMatch(/EnhancedMCPTools/);
       expect(noTimeoutCode).toMatch(/daaMcpTools/);
-
-      console.log('✅ MCP tools preserved');
     });
 
     test('Agent spawning should be preserved', () => {
       expect(noTimeoutCode).toMatch(/agent_spawn/);
       expect(noTimeoutCode).toMatch(/handleSpawn/);
       expect(noTimeoutCode).toMatch(/VALID_AGENT_TYPES/);
-
-      console.log('✅ Agent spawning preserved');
     });
 
     test('Task orchestration should be preserved', () => {
       expect(noTimeoutCode).toMatch(/task_orchestrate/);
       expect(noTimeoutCode).toMatch(/handleOrchestrate/);
-
-      console.log('✅ Task orchestration preserved');
     });
 
     test('Swarm initialization should be preserved', () => {
       expect(noTimeoutCode).toMatch(/swarm_init/);
       expect(noTimeoutCode).toMatch(/handleInit/);
       expect(noTimeoutCode).toMatch(/VALID_TOPOLOGIES/);
-
-      console.log('✅ Swarm initialization preserved');
     });
   });
 
@@ -198,16 +161,12 @@ describe('No Timeout Validation Suite', () => {
       expect(noTimeoutCode).toMatch(/NO TIMEOUT VERSION/);
       expect(noTimeoutCode).toMatch(/ruv-swarm-no-timeout/);
       expect(noTimeoutCode).toMatch(/INFINITE RUNTIME/);
-
-      console.log('✅ Properly identified as no-timeout version');
     });
 
     test('Should have timeout removal documentation', () => {
       expect(noTimeoutCode).toMatch(/TIMEOUT MECHANISMS: COMPLETELY REMOVED/);
       expect(noTimeoutCode).toMatch(/BULLETPROOF OPERATION/);
       expect(noTimeoutCode).toMatch(/NO DISCONNECTIONS/);
-
-      console.log('✅ Timeout removal properly documented');
     });
   });
 
@@ -218,8 +177,6 @@ describe('No Timeout Validation Suite', () => {
         expect(stdout).toMatch(/NO TIMEOUT VERSION/);
         expect(stdout).toMatch(/INFINITE RUNTIME/);
         expect(stderr).toBe('');
-
-        console.log('✅ Help command works without timeouts');
       } catch (error) {
         console.error('❌ Help command failed:', error.message);
         throw error;
@@ -232,8 +189,6 @@ describe('No Timeout Validation Suite', () => {
         expect(stdout).toMatch(/NO TIMEOUT VERSION/);
         expect(stdout).toMatch(/TIMEOUT MECHANISMS COMPLETELY REMOVED/);
         expect(stderr).toBe('');
-
-        console.log('✅ Version command works without timeouts');
       } catch (error) {
         console.error('❌ Version command failed:', error.message);
         throw error;
@@ -246,8 +201,6 @@ describe('No Timeout Validation Suite', () => {
         expect(stdout).toMatch(/NO TIMEOUT VERSION/);
         expect(stdout).toMatch(/TIMEOUT MECHANISMS: COMPLETELY DISABLED/);
         expect(stderr).toBe('');
-
-        console.log('✅ MCP status works without timeouts');
       } catch (error) {
         console.error('❌ MCP status failed:', error.message);
         throw error;
@@ -260,8 +213,6 @@ describe('No Timeout Validation Suite', () => {
         expect(stdout).toMatch(/NO TIMEOUT VERSION/);
         expect(stdout).toMatch(/NO TIMEOUT MECHANISMS/);
         expect(stderr).toBe('');
-
-        console.log('✅ MCP tools list works without timeouts');
       } catch (error) {
         console.error('❌ MCP tools list failed:', error.message);
         throw error;
@@ -275,8 +226,6 @@ describe('No Timeout Validation Suite', () => {
         expect(stdout).toMatch(/TIMEOUT MECHANISMS: COMPLETELY REMOVED/);
         expect(stdout).toMatch(/REMOVED VARIABLES/);
         expect(stderr).toBe('');
-
-        console.log('✅ MCP help works without timeouts');
       } catch (error) {
         console.error('❌ MCP help failed:', error.message);
         throw error;
@@ -290,29 +239,21 @@ describe('No Timeout Validation Suite', () => {
         // Try to import the module to check syntax
         import(noTimeoutPath);
       }).not.toThrow();
-
-      console.log('✅ Code syntax is valid');
     });
 
     test('Should have proper imports', () => {
       expect(noTimeoutCode).toMatch(/import.*from/);
       expect(noTimeoutCode).toMatch(/export.*{/);
-
-      console.log('✅ ES module imports/exports are valid');
     });
 
     test('Should have proper shebang', () => {
       expect(noTimeoutCode).toMatch(/^#!/);
       expect(noTimeoutCode).toMatch(/node/);
-
-      console.log('✅ Shebang is properly configured');
     });
 
     test('Should have proper error handling', () => {
       expect(noTimeoutCode).toMatch(/try.*catch/);
       expect(noTimeoutCode).toMatch(/process\.exit/);
-
-      console.log('✅ Error handling is properly implemented');
     });
   });
 
@@ -321,16 +262,12 @@ describe('No Timeout Validation Suite', () => {
       // Check that monitoring loops don't use timeout mechanisms
       expect(noTimeoutCode).not.toMatch(/while.*timeout/i);
       expect(noTimeoutCode).not.toMatch(/check.*timeout/i);
-
-      console.log('✅ No performance-degrading timeout checks');
     });
 
     test('Should use efficient monitoring approach', () => {
       // Check that monitoring uses simple loops instead of intervals
       expect(noTimeoutCode).toMatch(/while.*elapsed/);
       expect(noTimeoutCode).toMatch(/await new Promise/);
-
-      console.log('✅ Efficient monitoring approach implemented');
     });
   });
 
@@ -339,21 +276,15 @@ describe('No Timeout Validation Suite', () => {
       expect(noTimeoutCode).toMatch(/NO TIMEOUT FEATURES/);
       expect(noTimeoutCode).toMatch(/INFINITE RUNTIME/);
       expect(noTimeoutCode).toMatch(/BULLETPROOF OPERATION/);
-
-      console.log('✅ Help messages updated for no-timeout version');
     });
 
     test('Should have updated resource content', () => {
       expect(noTimeoutCode).toMatch(/getResourceContent/);
       expect(noTimeoutCode).toMatch(/NO TIMEOUT VERSION/);
-
-      console.log('✅ Resource content updated for no-timeout version');
     });
 
     test('Should have updated tool descriptions', () => {
       expect(noTimeoutCode).toMatch(/NO TIMEOUT VERSION.*description/);
-
-      console.log('✅ Tool descriptions updated for no-timeout version');
     });
   });
 });
@@ -368,16 +299,12 @@ describe('Integration Testing', () => {
     expect(noTimeoutCode).toMatch(/tools\/call/);
     expect(noTimeoutCode).toMatch(/resources\/list/);
     expect(noTimeoutCode).toMatch(/resources\/read/);
-
-    console.log('✅ MCP protocol compliance maintained');
   });
 
   test('Should maintain all security features', () => {
     expect(noTimeoutCode).toMatch(/security/i);
     expect(noTimeoutCode).toMatch(/validation/i);
     expect(noTimeoutCode).toMatch(/sanitiz/i);
-
-    console.log('✅ All security features maintained');
   });
 });
 
@@ -435,13 +362,6 @@ describe('Overall Validation Summary', () => {
         console.warn(`⚠️  Essential pattern ${pattern} not found in no-timeout version`);
       }
     }
-
-    console.log(`\n🎯 TIMEOUT ELIMINATION SUMMARY:`);
-    console.log(`✅ Timeout mechanisms removed: ${removedCount}/10`);
-    console.log(`✅ Essential features preserved: ${preservedCount}/10`);
-    console.log(`🔥 RESULT: ALL TIMEOUT MECHANISMS SUCCESSFULLY ELIMINATED`);
-    console.log(`🛡️ RESULT: ALL SECURITY FEATURES PRESERVED`);
-    console.log(`⚡ RESULT: BULLETPROOF INFINITE RUNTIME ACHIEVED`);
 
     expect(removedCount).toBe(10);
     expect(preservedCount).toBe(10);

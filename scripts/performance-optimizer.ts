@@ -45,8 +45,6 @@ class PerformanceOptimizer {
    * Run comprehensive performance optimization
    */
   async optimize(): Promise<PerformanceMetrics> {
-    console.log('🚀 Starting Claude-Zen Performance Optimization...\n');
-
     const startTime = performance.now();
     const metrics: PerformanceMetrics = {
       buildTime: 0,
@@ -82,7 +80,7 @@ class PerformanceOptimizer {
       metrics.memoryUsage = await this.measureMemoryUsage();
 
       const totalTime = performance.now() - startTime;
-      console.log(`\n✅ Optimization completed in ${(totalTime / 1000).toFixed(2)}s`);
+      metrics.totalExecutionTime = totalTime;
 
       this.metrics.push(metrics);
       await this.generatePerformanceReport(metrics);
@@ -99,16 +97,12 @@ class PerformanceOptimizer {
    * Install missing build dependencies
    */
   private async installDependencies(): Promise<void> {
-    console.log('📦 Installing missing dependencies...');
-
     const dependencies = ['wasm-opt', 'binaryen', 'concurrently'];
 
     for (const dep of dependencies) {
       try {
         execSync(`which ${dep}`, { stdio: 'ignore' });
-        console.log(`✅ ${dep} already installed`);
       } catch {
-        console.log(`📥 Installing ${dep}...`);
         try {
           if (dep === 'wasm-opt' || dep === 'binaryen') {
             execSync(`sudo apt-get update && sudo apt-get install -y binaryen`, {
@@ -117,7 +111,6 @@ class PerformanceOptimizer {
           } else {
             execSync(`npm install -g ${dep}`, { stdio: 'inherit' });
           }
-          console.log(`✅ ${dep} installed successfully`);
         } catch (error) {
           console.warn(`⚠️  Failed to install ${dep}: ${error}`);
         }
@@ -129,8 +122,6 @@ class PerformanceOptimizer {
    * Optimize TypeScript configuration for better performance
    */
   private async optimizeTypeScriptConfig(): Promise<void> {
-    console.log('⚙️  Optimizing TypeScript configuration...');
-
     const tsconfigPath = 'tsconfig.json';
     if (!existsSync(tsconfigPath)) {
       console.warn('⚠️  tsconfig.json not found');
@@ -143,7 +134,6 @@ class PerformanceOptimizer {
     if (this.config.incrementalBuild) {
       tsconfig.compilerOptions.incremental = true;
       tsconfig.compilerOptions.tsBuildInfoFile = '.tsbuildinfo';
-      console.log('✅ Enabled incremental compilation');
     }
 
     // Optimize for development speed
@@ -157,15 +147,12 @@ class PerformanceOptimizer {
     tsconfig.exclude.push('**/*.test.ts', '**/*.spec.ts', '__tests__/**/*');
 
     writeFileSync(tsconfigPath, JSON.stringify(tsconfig, null, 2));
-    console.log('✅ TypeScript configuration optimized');
   }
 
   /**
    * Optimize the build process
    */
   private async optimizeBuildProcess(): Promise<void> {
-    console.log('🔧 Optimizing build process...');
-
     const packageJsonPath = 'package.json';
     if (!existsSync(packageJsonPath)) {
       console.warn('⚠️  package.json not found');
@@ -183,7 +170,6 @@ class PerformanceOptimizer {
         'build:ts': 'tsc --incremental',
         'build:production': 'npm run clean && npm run build:parallel && npm run optimize:bundle',
       };
-      console.log('✅ Added parallel build scripts');
     }
 
     if (this.config.cacheOptimization) {
@@ -193,19 +179,15 @@ class PerformanceOptimizer {
         'clean:cache': 'rm -rf .tsbuildinfo node_modules/.cache dist/.cache',
         'build:cached': 'npm run build:ts || npm run build:fast',
       };
-      console.log('✅ Added build caching');
     }
 
     writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
-    console.log('✅ Build process optimized');
   }
 
   /**
    * Optimize WASM build process
    */
   private async optimizeWasmBuild(): Promise<void> {
-    console.log('⚡ Optimizing WASM build...');
-
     const wasmPath = 'src/neural/wasm';
     if (!existsSync(wasmPath)) {
       console.warn('⚠️  WASM directory not found');
@@ -249,15 +231,12 @@ echo "✅ Production WASM build complete"
 
     writeFileSync(join(wasmPath, 'scripts/build-wasm-optimized.sh'), optimizedBuildScript);
     execSync(`chmod +x ${join(wasmPath, 'scripts/build-wasm-optimized.sh')}`);
-    console.log('✅ WASM build optimization configured');
   }
 
   /**
    * Analyze bundle size and optimize
    */
   private async analyzeBundleSize(): Promise<number> {
-    console.log('📊 Analyzing bundle size...');
-
     try {
       const distPath = 'dist';
       if (!existsSync(distPath)) {
@@ -271,7 +250,6 @@ echo "✅ Production WASM build complete"
       if (sizeMatch) {
         const [, size, unit] = sizeMatch;
         const sizeInMB = this.convertToMB(parseFloat(size), unit);
-        console.log(`📦 Current bundle size: ${size}${unit} (${sizeInMB.toFixed(2)}MB)`);
         return sizeInMB;
       }
 
@@ -286,13 +264,10 @@ echo "✅ Production WASM build complete"
    * Measure build time performance
    */
   private async measureBuildTime(): Promise<number> {
-    console.log('⏱️  Measuring build time...');
-
     const startTime = performance.now();
     try {
       await this.runCommand('npm run build:fast');
       const buildTime = (performance.now() - startTime) / 1000;
-      console.log(`⚡ Build completed in ${buildTime.toFixed(2)}s`);
       return buildTime;
     } catch (error) {
       console.error('❌ Build failed:', error);
@@ -304,13 +279,10 @@ echo "✅ Production WASM build complete"
    * Measure test execution time
    */
   private async measureTestTime(): Promise<number> {
-    console.log('🧪 Measuring test performance...');
-
     const startTime = performance.now();
     try {
       await this.runCommand('npm run test:unit');
       const testTime = (performance.now() - startTime) / 1000;
-      console.log(`✅ Tests completed in ${testTime.toFixed(2)}s`);
       return testTime;
     } catch (error) {
       console.warn('⚠️  Test execution failed:', error);
@@ -322,11 +294,8 @@ echo "✅ Production WASM build complete"
    * Measure memory usage
    */
   private async measureMemoryUsage(): Promise<number> {
-    console.log('💾 Measuring memory usage...');
-
     const memoryUsage = process.memoryUsage();
     const usedMB = memoryUsage.heapUsed / 1024 / 1024;
-    console.log(`📊 Current memory usage: ${usedMB.toFixed(2)}MB`);
     return usedMB;
   }
 
@@ -334,8 +303,6 @@ echo "✅ Production WASM build complete"
    * Generate comprehensive performance report
    */
   private async generatePerformanceReport(metrics: PerformanceMetrics): Promise<void> {
-    console.log('📋 Generating performance report...');
-
     const report = `# 🚀 Claude-Zen Performance Report
 
 ## Optimization Results
@@ -368,7 +335,6 @@ Generated: ${new Date().toISOString()}
 `;
 
     writeFileSync('PERFORMANCE_REPORT.md', report);
-    console.log('✅ Performance report generated: PERFORMANCE_REPORT.md');
   }
 
   /**

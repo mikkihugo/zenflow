@@ -3,11 +3,10 @@
  * Comprehensive system-wide performance monitoring
  */
 
-import { EventEmitter } from 'events';
-import * as fs from 'fs/promises';
-import * as os from 'os';
-import * as path from 'path';
-import * as process from 'process';
+import { EventEmitter } from 'node:events';
+import * as fs from 'node:fs/promises';
+import * as os from 'node:os';
+import * as process from 'node:process';
 
 export interface SystemMetrics {
   timestamp: number;
@@ -142,7 +141,6 @@ export class MetricsCollector extends EventEmitter {
   private metricsHistory: CompositeMetrics[] = [];
   private maxHistorySize = 3600; // 1 hour at 1s intervals
   private lastIoStats: any = null;
-  private lastNetworkStats: any = null;
 
   constructor(
     options: {

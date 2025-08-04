@@ -215,7 +215,7 @@ export class LoadTestRunner {
             await new Promise((resolve) => setTimeout(resolve, sleepTime));
           }
         }
-      } catch (error) {
+      } catch (_error) {
         const operationEnd = performance.now();
         const operationDuration = operationEnd - operationStart;
         profiler?.recordOperation(false, operationDuration);
@@ -324,8 +324,6 @@ export class BenchmarkSuite {
    */
   async runAll(): Promise<Map<string, PerformanceMetrics>> {
     for (const [name, testFunction] of this.benchmarks) {
-      console.log(`Running benchmark: ${name}`);
-
       const profiler = new PerformanceProfiler();
       profiler.start();
 
@@ -342,8 +340,6 @@ export class BenchmarkSuite {
 
       const metrics = profiler.stop();
       this.results.set(name, metrics);
-
-      console.log(`Completed benchmark: ${name} (${metrics.executionTime.toFixed(2)}ms)`);
     }
 
     return new Map(this.results);

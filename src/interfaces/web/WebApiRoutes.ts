@@ -59,7 +59,7 @@ export class WebApiRoutes {
   /**
    * Health check endpoint
    */
-  private handleHealthCheck(req: Request, res: Response): void {
+  private handleHealthCheck(_req: Request, res: Response): void {
     res.json({
       status: 'healthy',
       timestamp: new Date().toISOString(),
@@ -71,7 +71,7 @@ export class WebApiRoutes {
   /**
    * System status endpoint
    */
-  private async handleSystemStatus(req: Request, res: Response): Promise<void> {
+  private async handleSystemStatus(_req: Request, res: Response): Promise<void> {
     try {
       const status = await this.dataService.getSystemStatus();
       res.json(status);
@@ -84,7 +84,7 @@ export class WebApiRoutes {
   /**
    * Get swarms endpoint
    */
-  private async handleGetSwarms(req: Request, res: Response): Promise<void> {
+  private async handleGetSwarms(_req: Request, res: Response): Promise<void> {
     try {
       const swarms = await this.dataService.getSwarms();
       res.json(swarms);
@@ -111,7 +111,7 @@ export class WebApiRoutes {
   /**
    * Get tasks endpoint
    */
-  private async handleGetTasks(req: Request, res: Response): Promise<void> {
+  private async handleGetTasks(_req: Request, res: Response): Promise<void> {
     try {
       const tasks = await this.dataService.getTasks();
       res.json(tasks);
@@ -138,7 +138,7 @@ export class WebApiRoutes {
   /**
    * Get documents endpoint
    */
-  private async handleGetDocuments(req: Request, res: Response): Promise<void> {
+  private async handleGetDocuments(_req: Request, res: Response): Promise<void> {
     try {
       const documents = await this.dataService.getDocuments();
       res.json(documents);

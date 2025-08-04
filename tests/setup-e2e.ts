@@ -5,8 +5,8 @@
  */
 
 import 'jest-extended';
-import { type ChildProcess, spawn } from 'child_process';
-import * as path from 'path';
+import { type ChildProcess, spawn } from 'node:child_process';
+import * as path from 'node:path';
 
 // E2E test setup with real system components
 beforeAll(async () => {
@@ -187,13 +187,13 @@ function isServiceReady(serviceName: string, output: string): boolean {
 async function waitForServicesReady() {
   const { services } = global.e2eConfig;
 
-  for (const [name, config] of Object.entries(services)) {
+  for (const [_name, config] of Object.entries(services)) {
     await waitForPort(config.port, global.e2eConfig.timeout.startup);
   }
 }
 
 async function waitForPort(port: number, timeout: number = 30000) {
-  const net = await import('net');
+  const net = await import('node:net');
   const start = Date.now();
 
   while (Date.now() - start < timeout) {
@@ -258,7 +258,7 @@ async function clearSystemCaches() {
   for (const endpoint of cacheEndpoints) {
     try {
       await fetch(endpoint, { method: 'POST' });
-    } catch (error) {
+    } catch (_error) {
       // Ignore cache clear failures
     }
   }
@@ -271,7 +271,7 @@ async function resetDatabaseState() {
   for (const endpoint of dbEndpoints) {
     try {
       await fetch(endpoint, { method: 'POST' });
-    } catch (error) {
+    } catch (_error) {
       // Ignore database reset failures
     }
   }
@@ -287,7 +287,7 @@ async function clearMemoryState() {
   for (const endpoint of memoryEndpoints) {
     try {
       await fetch(endpoint, { method: 'POST' });
-    } catch (error) {
+    } catch (_error) {
       // Ignore memory clear failures
     }
   }
@@ -310,7 +310,7 @@ async function stopTestServices() {
     try {
       process.kill('SIGTERM');
       await waitForProcessExit(process, 10000);
-    } catch (error) {
+    } catch (_error) {
       console.warn(`Failed to stop ${name} gracefully, force killing`);
       process.kill('SIGKILL');
     }
@@ -342,7 +342,7 @@ async function cleanupE2EState() {
 }
 
 async function generateE2EReport() {
-  const report = {
+  const _report = {
     duration: Date.now() - global.testMetrics.startTime,
     operations: global.testMetrics.operations,
     services: Object.keys(global.e2eConfig.services),
@@ -353,8 +353,6 @@ async function generateE2EReport() {
           global.testMetrics.operations.length || 0,
     },
   };
-
-  console.log('E2E Test Report:', JSON.stringify(report, null, 2));
 }
 
 // E2E test helpers

@@ -7,6 +7,12 @@ test-analysis-integration.js
 test-simple-analysis.js
 test-bazel-kuzu-integration.js
 
+# Logs and runtime files
+logs/
+*.log
+*.pid
+.pm2/
+
 # Bazel cache and output directories
 .bazel-cache/
 .bazel-graph/

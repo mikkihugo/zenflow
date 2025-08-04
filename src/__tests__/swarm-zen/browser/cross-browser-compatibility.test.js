@@ -3,13 +3,12 @@
  * Tests WASM functionality across different browser environments
  */
 
+import { createServer } from 'node:http';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from '@playwright/test';
-import { readFile } from 'fs/promises';
-import { createServer } from 'http';
-import path from 'path';
 import { chromium, firefox, webkit } from 'playwright';
 import handler from 'serve-handler';
-import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -55,7 +54,6 @@ describe('Cross-Browser WASM Compatibility', () => {
       server.listen(0, '127.0.0.1', () => {
         const { port } = server.address();
         serverUrl = `http://127.0.0.1:${port}`;
-        console.log(`Test server running at ${serverUrl}`);
         resolve();
       });
     });
@@ -141,17 +139,15 @@ describe('Cross-Browser WASM Compatibility', () => {
         await page.goto(`${serverUrl}/test/browser/wasm-test.html`);
 
         const simdInfo = await page.evaluate(async () => {
-          // Load RuvSwarm module
-          const { RuvSwarm } = await import('/src/index-enhanced.js');
-          const swarm = await RuvSwarm.initialize({ debug: true });
+          // Load ZenSwarm module
+          const { ZenSwarm } = await import('/src/index-enhanced.js');
+          const swarm = await ZenSwarm.initialize({ debug: true });
 
           return {
             simdDetected: swarm.features.simd,
             simdInWasm: await swarm.wasmLoader.detectSIMDSupport(),
           };
         });
-
-        console.log(`${name} SIMD support:`, simdInfo);
 
         // SIMD is optional, so we just log the result
         if (simdInfo.simdDetected) {
@@ -203,8 +199,6 @@ describe('Cross-Browser WASM Compatibility', () => {
           }
         });
 
-        console.log(`${name} SharedArrayBuffer:`, sharedMemoryTest);
-
         // SharedArrayBuffer requires specific headers, may not be available
         if (sharedMemoryTest.available && sharedMemoryTest.atomicsSupported) {
           expect(sharedMemoryTest.testValue).toBe(123);
@@ -220,8 +214,8 @@ describe('Cross-Browser WASM Compatibility', () => {
         await page.goto(`${serverUrl}/test/browser/wasm-test.html`);
 
         const memoryTest = await page.evaluate(async () => {
-          const { RuvSwarm } = await import('/src/index-enhanced.js');
-          const swarm = await RuvSwarm.initialize({ debug: false });
+          const { ZenSwarm } = await import('/src/index-enhanced.js');
+          const swarm = await ZenSwarm.initialize({ debug: false });
 
           const initialMemory = swarm.wasmLoader.getMemorySize();
 
@@ -247,7 +241,6 @@ describe('Cross-Browser WASM Compatibility', () => {
         });
 
         expect(memoryTest.grew).toBe(true);
-        console.log(`${name} memory growth: ${memoryTest.initial} -> ${memoryTest.afterAlloc}`);
 
         await context.close();
       });
@@ -263,8 +256,8 @@ describe('Cross-Browser WASM Compatibility', () => {
         await page.goto(`${serverUrl}/test/browser/wasm-test.html`);
 
         const nnTest = await page.evaluate(async () => {
-          const { RuvSwarm } = await import('/src/index-enhanced.js');
-          const swarm = await RuvSwarm.initialize({
+          const { ZenSwarm } = await import('/src/index-enhanced.js');
+          const swarm = await ZenSwarm.initialize({
             enableNeuralNetworks: true,
             debug: false,
           });
@@ -295,7 +288,6 @@ describe('Cross-Browser WASM Compatibility', () => {
         expect(nnTest.success).toBe(true);
         expect(nnTest.outputLength).toBe(5);
         expect(nnTest.outputSum).toBeCloseTo(1.0, 1); // Softmax should sum to ~1
-        console.log(`${name} NN inference time: ${nnTest.inferenceTime.toFixed(2)}ms`);
 
         await context.close();
       });
@@ -311,8 +303,8 @@ describe('Cross-Browser WASM Compatibility', () => {
         await page.goto(`${serverUrl}/test/browser/wasm-test.html`);
 
         const swarmTest = await page.evaluate(async () => {
-          const { RuvSwarm } = await import('/src/index-enhanced.js');
-          const ruvSwarm = await RuvSwarm.initialize({ debug: false });
+          const { ZenSwarm } = await import('/src/index-enhanced.js');
+          const ruvSwarm = await ZenSwarm.initialize({ debug: false });
 
           // Create swarm
           const swarm = await ruvSwarm.createSwarm({
@@ -366,8 +358,8 @@ describe('Cross-Browser WASM Compatibility', () => {
         await page.goto(`${serverUrl}/test/browser/wasm-test.html`);
 
         const perfTest = await page.evaluate(async () => {
-          const { RuvSwarm } = await import('/src/index-enhanced.js');
-          const swarm = await RuvSwarm.initialize({
+          const { ZenSwarm } = await import('/src/index-enhanced.js');
+          const swarm = await ZenSwarm.initialize({
             useSIMD: true,
             debug: false,
           });
@@ -380,7 +372,7 @@ describe('Cross-Browser WASM Compatibility', () => {
           const b = new Float32Array(vectorSize).fill(2.0);
 
           const vectorStart = performance.now();
-          const vectorResult = await swarm.wasmLoader.vectorAdd(a, b);
+          const _vectorResult = await swarm.wasmLoader.vectorAdd(a, b);
           benchmarks.vectorOps = performance.now() - vectorStart;
 
           // Benchmark 2: Matrix multiplication
@@ -389,7 +381,7 @@ describe('Cross-Browser WASM Compatibility', () => {
           const matB = new Float32Array(matrixSize * matrixSize).fill(2.0);
 
           const matrixStart = performance.now();
-          const matrixResult = await swarm.wasmLoader.matrixMultiply(
+          const _matrixResult = await swarm.wasmLoader.matrixMultiply(
             matA,
             matB,
             matrixSize,
@@ -420,11 +412,6 @@ describe('Cross-Browser WASM Compatibility', () => {
           return benchmarks;
         });
 
-        console.log(`${name} Performance Benchmarks:`);
-        console.log(`  Vector ops (100k elements): ${perfTest.vectorOps.toFixed(2)}ms`);
-        console.log(`  Matrix mult (100x100): ${perfTest.matrixOps.toFixed(2)}ms`);
-        console.log(`  NN inference (avg): ${perfTest.nnInference.toFixed(2)}ms`);
-
         // Performance should be reasonable across browsers
         expect(perfTest.vectorOps).toBeLessThan(50);
         expect(perfTest.matrixOps).toBeLessThan(100);
@@ -444,8 +431,8 @@ describe('Cross-Browser WASM Compatibility', () => {
         await page.goto(`${serverUrl}/test/browser/wasm-test.html`);
 
         const errorTest = await page.evaluate(async () => {
-          const { RuvSwarm } = await import('/src/index-enhanced.js');
-          const swarm = await RuvSwarm.initialize({ debug: false });
+          const { ZenSwarm } = await import('/src/index-enhanced.js');
+          const swarm = await ZenSwarm.initialize({ debug: false });
 
           const errors = [];
 
@@ -515,8 +502,8 @@ describe('Cross-Browser WASM Compatibility', () => {
             importScripts('/src/index.js');
             
             self.onmessage = async (e) => {
-              const { RuvSwarm } = self;
-              const swarm = await RuvSwarm.initialize({ debug: false });
+              const { ZenSwarm } = self;
+              const swarm = await ZenSwarm.initialize({ debug: false });
               
               const result = await swarm.wasmLoader.vectorAdd(
                 e.data.a,
@@ -562,28 +549,28 @@ export async function createTestHTML() {
     <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
 </head>
 <body>
-    <h1>RuvSwarm WASM Browser Test</h1>
+    <h1>ZenSwarm WASM Browser Test</h1>
     <div id="status">Loading...</div>
     <div id="results"></div>
     
     <script type="module">
-        import { RuvSwarm } from '/src/index-enhanced.js';
+        import { ZenSwarm } from '/src/index-enhanced.js';
         
-        window.RuvSwarm = RuvSwarm;
+        window.ZenSwarm = ZenSwarm;
         
         async function runTests() {
             const status = document.getElementById('status');
             const results = document.getElementById('results');
             
             try {
-                status.textContent = 'Initializing RuvSwarm...';
-                const swarm = await RuvSwarm.initialize({
+                status.textContent = 'Initializing ZenSwarm...';
+                const swarm = await ZenSwarm.initialize({
                     debug: true,
                     enableNeuralNetworks: true,
                     useSIMD: true
                 });
                 
-                status.textContent = 'RuvSwarm initialized successfully!';
+                status.textContent = 'ZenSwarm initialized successfully!';
                 
                 // Display features
                 results.innerHTML = \`

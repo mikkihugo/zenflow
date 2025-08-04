@@ -88,10 +88,6 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
   // Mock WebSocket Client class (based on actual implementation structure)
   class MockWebSocketClient {
     private ws: any;
-    private eventEmitter: any;
-    private reconnectionManager: any;
-    private messageQueue: any;
-    private heartbeatManager: any;
     private url: string = '';
     private options: any = {};
 
@@ -220,7 +216,7 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
         mockMessageQueue.enqueue.mockImplementation(() => {});
 
         const client = new MockWebSocketClient();
-        client['ws'] = mockWebSocket; // Simulate connected state
+        client.ws = mockWebSocket; // Simulate connected state
 
         const connectedMessage = { type: 'task-update', data: { status: 'completed' } };
         const disconnectedMessage = { type: 'queen-status', data: { id: 'arch-001' } };

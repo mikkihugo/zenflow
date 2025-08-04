@@ -2,26 +2,19 @@
  * @fileoverview FACT System MCP Tools
  * Comprehensive MCP tools for coordinating the FACT (Fast Augmented Context Tools) swarm system
  *
- * FACT System handles external knowledge gathering via swarms and caches results
- * in SQLite/memory storage (completely independent from RAG/vector systems)
+ * FACT System handles external knowledge gathering via HiveFACT centralized system
+ * All facts are universal and accessible by all swarms - not swarm-specific
  */
 
-import { createLogger } from '@core/logger';
-import type {
-  FACTKnowledgeEntry,
-  FACTSearchQuery,
-  FACTStorageBackend,
-  FACTStorageConfig,
-  FACTStorageStats,
-} from '@knowledge/storage-interface';
+import { createLogger } from '../../../core/logger';
+import { getHiveFACT, type HiveFACTSystem } from '../../hive-fact-integration';
 import type { MCPTool, MCPToolResult } from '../types/mcp-types';
-import { FACTStorageSystem, KnowledgeSwarm, ProjectContextAnalyzer } from './fact-placeholders';
+import { ProjectContextAnalyzer } from './fact-placeholders';
 
 const logger = createLogger({ prefix: 'MCP-FACT' });
 
-// Global FACT system instances
-let factStorage: FACTStorageSystem | null = null;
-let knowledgeSwarm: KnowledgeSwarm | null = null;
+// Global instances
+let hiveFact: HiveFACTSystem | null = null;
 let contextAnalyzer: ProjectContextAnalyzer | null = null;
 
 export interface FACTInitParams {
@@ -110,18 +103,18 @@ export const factInitTool: MCPTool = {
     try {
       logger.info('Initializing FACT system:', params);
 
-      // Initialize storage system
-      factStorage = new FACTStorageSystem({
-        backend: params.backend || 'sqlite',
-        maxMemoryCacheSize: params.maxCacheSize || 1000,
-        defaultTTL: params.defaultTTL || 86400000,
-      });
-
-      await factStorage.initialize();
-
-      // Initialize knowledge swarm
-      knowledgeSwarm = new KnowledgeSwarm(factStorage);
-      await knowledgeSwarm.initialize();
+      // Get or initialize HiveFACT system
+      hiveFact = getHiveFACT();
+      if (!hiveFact) {
+        // Initialize through hive coordination (would normally be done by HiveSwarmCoordinator)
+        const { initializeHiveFACT } = await import('../../hive-fact-integration');
+        hiveFact = await initializeHiveFACT({
+          enableCache: true,
+          cacheSize: params.maxCacheSize || 1000,
+          autoRefreshInterval: params.defaultTTL || 3600000,
+          knowledgeSources: ['context7', 'deepwiki', 'gitmcp', 'semgrep'],
+        });
+      }
 
       // Initialize project context analyzer if project path provided
       if (params.projectPath) {
@@ -129,7 +122,7 @@ export const factInitTool: MCPTool = {
         await contextAnalyzer.initialize();
       }
 
-      const stats = await factStorage.getStorageStats();
+      const stats = hiveFact.getStats();
 
       logger.info('FACT system initialized successfully');
 
@@ -141,21 +134,27 @@ export const factInitTool: MCPTool = {
             text: `🧠 FACT System Initialized Successfully!
 
 🏗️ Configuration:
-  Backend: ${params.backend || 'sqlite'}
+  System: Hive-Level Centralized FACT
   Cache Size: ${params.maxCacheSize || 1000} entries
-  Default TTL: ${((params.defaultTTL || 86400000) / 1000 / 60).toFixed(0)} minutes
+  External Sources: Context7, DeepWiki, GitMCP, Semgrep
   Project Path: ${params.projectPath || 'Not specified'}
 
-📊 Storage Status:
-  Memory Entries: ${stats.memoryEntries}
-  Persistent Entries: ${stats.persistentEntries}
+📊 Hive FACT Status:
+  Universal Facts: ${stats.memoryEntries}
   Cache Hit Rate: ${(stats.cacheHitRate * 100).toFixed(1)}%
   Storage Health: ${stats.storageHealth}
+  Active Sources: ${stats.topDomains.join(', ')}
 
-🐝 Swarm Status: Initialized and ready
+🌍 Knowledge Sources:
+  • Context7: API documentation and best practices
+  • DeepWiki: Technical knowledge aggregation
+  • GitMCP: Repository pattern analysis
+  • Semgrep: Security and quality scanning
+
+🐝 System Architecture: All swarms access the same universal facts
 ${contextAnalyzer ? '🔍 Project Context: Analyzer ready' : '⚠️  Project Context: Not configured'}
 
-Ready for knowledge gathering missions!`,
+Ready for universal knowledge gathering!`,
           },
         ],
       };
@@ -324,27 +323,64 @@ export const factGatherTool: MCPTool = {
     try {
       logger.info('Executing knowledge gathering mission:', params);
 
-      if (!knowledgeSwarm) {
+      if (!hiveFact) {
         throw new Error('FACT system not initialized. Use fact_init first.');
       }
 
-      const missionConfig = {
-        query: params.query,
-        sources: params.sources || ['web', 'docs'],
-        priority: params.priority || 'medium',
-        maxResults: params.maxResults || 10,
-        freshness: params.freshness || 'recent',
-        timeLimit: 300, // 5 minutes default
-      };
+      const startTime = Date.now();
+      const results: any[] = [];
+      const errors: string[] = [];
 
-      const missionId = await knowledgeSwarm.startGatheringMission(missionConfig);
+      // Map source types to fact types and gather knowledge
+      if (params.sources?.includes('web') || params.sources?.includes('docs')) {
+        try {
+          // General knowledge gathering
+          const searchResult = await hiveFact.searchFacts({
+            query: params.query,
+            limit: params.maxResults || 10,
+          });
+          results.push(...searchResult);
+        } catch (error) {
+          errors.push(
+            `Web/Docs search: ${error instanceof Error ? error.message : 'Unknown error'}`
+          );
+        }
+      }
 
-      // Wait for mission completion or timeout
-      const result = await knowledgeSwarm.waitForMissionCompletion(missionId, 300000); // 5 minutes
+      if (params.sources?.includes('github')) {
+        try {
+          // Extract GitHub repo from query if possible
+          const repoMatch = params.query.match(/github\.com\/([^/]+)\/([^/\s]+)/);
+          if (repoMatch) {
+            const fact = await hiveFact.getGitHubRepoFacts(repoMatch[1], repoMatch[2]);
+            results.push(fact);
+          }
+        } catch (error) {
+          errors.push(`GitHub search: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+      }
 
-      const summary = result.knowledge
+      if (params.sources?.includes('api')) {
+        try {
+          // Try to get API documentation
+          const fact = await hiveFact.getAPIDocsFacts(params.query);
+          results.push(fact);
+        } catch (error) {
+          errors.push(`API search: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+      }
+
+      // Get current cache stats
+      const stats = hiveFact.getStats();
+      const executionTime = Date.now() - startTime;
+
+      const summary = results
         .slice(0, 3)
-        .map((k) => `• ${k.title} (${k.metadata.type}): ${k.content.substring(0, 100)}...`)
+        .map((fact) => {
+          const content =
+            typeof fact.content === 'string' ? fact.content : JSON.stringify(fact.content);
+          return `• ${fact.subject} (${fact.type}): ${content.substring(0, 100)}...`;
+        })
         .join('\n');
 
       return {
@@ -356,23 +392,20 @@ export const factGatherTool: MCPTool = {
 
 🔍 Query: "${params.query}"
 📊 Mission Results:
-  Mission ID: ${missionId}
-  Knowledge Entries: ${result.knowledge.length}
-  Sources Used: ${params.sources?.join(', ') || 'web, docs'}
-  Execution Time: ${result.executionTime}ms
-  Success Rate: ${result.successRate}%
+  Facts Gathered: ${results.length}
+  Sources Used: ${params.sources?.join(', ') || 'all available'}
+  Execution Time: ${executionTime}ms
+  Errors: ${errors.length > 0 ? errors.join('; ') : 'None'}
 
 📚 Knowledge Summary:
-${summary}
+${summary || 'No relevant facts found.'}
 
-🎯 Quality Metrics:
-  Relevance Score: ${result.relevanceScore}/10
-  Freshness Score: ${result.freshnessScore}/10
-  Completeness: ${result.completeness}%
+🌍 Universal Facts:
+  Total Facts: ${stats.memoryEntries}
+  Cache Hit Rate: ${(stats.cacheHitRate * 100).toFixed(1)}%
+  External Sources: ${stats.topDomains.join(', ')}
 
-💾 Storage Status:
-  Cached Entries: ${result.knowledge.length}
-  Cache Hit Rate: ${result.cacheHitRate}%
+💡 Note: All facts are universal and accessible by any swarm in the system.
 
 Use fact_query to search gathered knowledge or fact_status for system overview.`,
           },
@@ -437,7 +470,7 @@ export const factQueryTool: MCPTool = {
     try {
       logger.info('Querying FACT knowledge:', params);
 
-      if (!factStorage) {
+      if (!hiveFact) {
         throw new Error('FACT system not initialized. Use fact_init first.');
       }
 
@@ -449,7 +482,7 @@ export const factQueryTool: MCPTool = {
         sortBy: params.sortBy || 'relevance',
       };
 
-      const results = await factStorage.searchKnowledge(searchQuery);
+      const results = await hiveFact.searchFacts(searchQuery);
 
       if (results.length === 0) {
         return {
@@ -469,15 +502,17 @@ export const factQueryTool: MCPTool = {
       }
 
       const resultSummary = results
-        .map(
-          (result, index) =>
-            `${index + 1}. ${result.title} (${result.metadata.type})
+        .map((result, index) => {
+          const content =
+            typeof result.content === 'string' ? result.content : JSON.stringify(result.content);
+          return `${index + 1}. ${result.subject} (${result.type})
    Source: ${result.metadata.source}
-   Age: ${Math.floor((Date.now() - result.timestamp) / 1000 / 60)} minutes
+   Age: ${Math.floor((Date.now() - result.metadata.timestamp) / 1000 / 60)} minutes
    Access Count: ${result.accessCount}
-   Content: ${result.content.substring(0, 150)}...`
-        )
-        .join('\n');
+   Swarms Using: ${result.swarmAccess.size}
+   Content: ${content.substring(0, 150)}...`;
+        })
+        .join('\n\n');
 
       return {
         success: true,
@@ -487,15 +522,18 @@ export const factQueryTool: MCPTool = {
             text: `🔍 FACT Knowledge Query Results
 
 Query: "${params.query}"
-Found: ${results.length} results (sorted by ${params.sortBy || 'relevance'})
+Found: ${results.length} universal facts (sorted by ${params.sortBy || 'relevance'})
 
 📚 Results:
 ${resultSummary}
 
 🎯 Query Statistics:
-  Types: ${[...new Set(results.map((r) => r.metadata.type))].join(', ')}
+  Types: ${[...new Set(results.map((r) => r.type))].join(', ')}
   Sources: ${[...new Set(results.map((r) => r.metadata.source))].join(', ')}
-  Average Age: ${Math.floor(results.reduce((sum, r) => sum + (Date.now() - r.timestamp), 0) / results.length / 1000 / 60)} minutes`,
+  Average Age: ${Math.floor(results.reduce((sum, r) => sum + (Date.now() - r.metadata.timestamp), 0) / results.length / 1000 / 60)} minutes
+  Total Swarms Using: ${new Set(results.flatMap((r) => Array.from(r.swarmAccess))).size}
+
+🌍 Note: These are universal facts accessible by all swarms in the system.`,
           },
         ],
       };
@@ -526,7 +564,7 @@ export const factStatusTool: MCPTool = {
   },
   handler: async (): Promise<MCPToolResult> => {
     try {
-      if (!factStorage) {
+      if (!hiveFact) {
         return {
           success: true,
           content: [
@@ -540,15 +578,21 @@ Use fact_init to initialize the FACT knowledge system.`,
         };
       }
 
-      const storageStats = await factStorage.getStorageStats();
-      const swarmStatus = knowledgeSwarm ? await knowledgeSwarm.getStatus() : null;
+      const stats = hiveFact.getStats();
 
       const healthIcon = {
         excellent: '🟢',
         good: '🟡',
         fair: '🟠',
         poor: '🔴',
-      }[storageStats.storageHealth];
+      }[stats.storageHealth];
+
+      // Calculate swarm usage summary
+      const swarmUsageSummary = Object.entries(stats.swarmUsage || {})
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 5)
+        .map(([swarmId, count]) => `  ${swarmId}: ${count} facts`)
+        .join('\n');
 
       return {
         success: true,
@@ -557,36 +601,40 @@ Use fact_init to initialize the FACT knowledge system.`,
             type: 'text',
             text: `🧠 FACT System Status Report
 
-${healthIcon} Overall Health: ${storageStats.storageHealth.toUpperCase()}
+${healthIcon} Overall Health: ${stats.storageHealth.toUpperCase()}
 
-📊 Storage Statistics:
-  Memory Entries: ${storageStats.memoryEntries}
-  Persistent Entries: ${storageStats.persistentEntries}
-  Total Memory Size: ${(storageStats.totalMemorySize / 1024).toFixed(1)} KB
-  Cache Hit Rate: ${(storageStats.cacheHitRate * 100).toFixed(1)}%
+🌍 Centralized Universal Facts:
+  Total Facts: ${stats.memoryEntries}
+  Cache Hit Rate: ${(stats.cacheHitRate * 100).toFixed(1)}%
+  Total Memory Size: ${(stats.totalMemorySize / 1024).toFixed(1)} KB
+  External Sources: ${stats.topDomains.join(', ')}
 
 📈 Performance Metrics:
-  Oldest Entry: ${Math.floor((Date.now() - storageStats.oldestEntry) / 1000 / 60 / 60)} hours ago
-  Newest Entry: ${Math.floor((Date.now() - storageStats.newestEntry) / 1000 / 60)} minutes ago
-  Top Domains: ${storageStats.topDomains.slice(0, 5).join(', ')}
+  Oldest Entry: ${Math.floor((Date.now() - stats.oldestEntry) / 1000 / 60 / 60)} hours ago
+  Newest Entry: ${Math.floor((Date.now() - stats.newestEntry) / 1000 / 60)} minutes ago
 
-🐝 Swarm Status:
-${
-  swarmStatus
-    ? `  Active Missions: ${swarmStatus.activeMissions}
-  Total Agents: ${swarmStatus.totalAgents}
-  Success Rate: ${swarmStatus.successRate}%
-  Avg Mission Time: ${swarmStatus.avgMissionTime}ms`
-    : '  Status: Not active'
-}
+🐝 Swarm Usage (Top 5):
+${swarmUsageSummary || '  No swarms have accessed facts yet'}
+
+🔗 External MCP Integration:
+  • Context7: API documentation
+  • DeepWiki: Knowledge aggregation  
+  • GitMCP: Repository patterns
+  • Semgrep: Security scanning
 
 🔍 Context Analysis:
 ${contextAnalyzer ? '  Project Analyzer: Active' : '  Project Analyzer: Not configured'}
 
-💡 System Recommendations:
-${storageStats.cacheHitRate < 0.5 ? '  • Consider increasing cache size or freshness requirements' : ''}
-${storageStats.storageHealth === 'poor' ? '  • System performance is poor - consider cleanup or optimization' : ''}
-${!swarmStatus ? '  • Consider using fact_gather to start collecting knowledge' : ''}`,
+💡 System Architecture:
+  • All facts are universal (npm packages, repos, APIs)
+  • Centralized at Hive level for all swarms
+  • WASM-powered processing engine
+  • External MCP orchestration
+
+System Recommendations:
+${stats.cacheHitRate < 0.5 ? '  • Consider pre-loading common facts' : ''}
+${stats.storageHealth === 'poor' ? '  • System performance is poor - consider cleanup or optimization' : ''}
+${stats.memoryEntries === 0 ? '  • Use fact_gather to start collecting universal knowledge' : ''}`,
           },
         ],
       };

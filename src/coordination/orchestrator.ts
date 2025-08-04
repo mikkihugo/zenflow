@@ -2,12 +2,11 @@
  * @fileoverview The primary orchestrator for the AI swarm, with full strategic capabilities and persistence.
  */
 
-import { EventEmitter } from 'events';
-import { SwarmDatabase } from '../database/swarm-database';
+import { EventEmitter } from 'node:events';
 import type { IDatabase, ILogger } from '../di/index';
-import { CORE_TOKENS, inject, injectable, SWARM_TOKENS } from '../di/index';
+import { CORE_TOKENS, inject, injectable } from '../di/index';
 import type { ISwarmCoordinator } from '../di/tokens/swarm-tokens';
-import { RuvSwarmStrategy } from './strategies/ruv-swarm.strategy';
+import { ZenSwarmStrategy } from './strategies/ruv-swarm.strategy';
 
 import type { Agent, ExecutionPlan, SwarmStrategy, Task } from './types';
 
@@ -21,12 +20,12 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
   private isActive = false;
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private logger: ILogger,
+    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
     @inject(CORE_TOKENS.Database) database: IDatabase,
     strategy?: SwarmStrategy
   ) {
     super();
-    this.strategy = strategy || new RuvSwarmStrategy();
+    this.strategy = strategy || new ZenSwarmStrategy();
     this.db = database;
   }
 
@@ -37,7 +36,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     this.startLoadBalancer();
     this.isActive = true;
     this.emit('initialized');
-    this.logger.log(
+    this._logger.info(
       'Orchestrator initialized with full strategic capabilities and persistent database.'
     );
   }
@@ -117,7 +116,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     task: Task,
     phase: string,
     plan: ExecutionPlan,
-    execution: any
+    _execution: any
   ): Promise<any> {
     const phaseIndex = plan.phases.indexOf(phase);
     const assignments = plan.phaseAssignments[phaseIndex];
@@ -151,7 +150,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     if (!this.taskAssignments.has(taskId)) {
       this.taskAssignments.set(taskId, []);
     }
-    this.taskAssignments.get(taskId)!.push(assignment);
+    this.taskAssignments.get(taskId)?.push(assignment);
   }
 
   private async findSuitableAgent(requiredCapabilities: string[]): Promise<Agent | null> {
@@ -261,7 +260,6 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
           const agentToReassign = idleAgents[0];
           // This is a simplified reassignment. A real implementation would be more robust.
           await this.db.updateTask(taskToRebalance.id, { assigned_agents: [agentToReassign.id] });
-          console.log(`Rebalancing task ${taskToRebalance.id} to agent ${agentToReassign.id}`);
         }
       }
     }, 30000);
@@ -269,13 +267,13 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
 
   // ISwarmCoordinator interface implementation
   async initializeSwarm(options: any): Promise<void> {
-    this.logger.info('Initializing swarm with options', options);
+    this._logger.info('Initializing swarm with options', options);
     await this.initialize();
   }
 
   async addAgent(config: any): Promise<string> {
     const agentId = `agent_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    this.logger.info(`Adding agent with config`, { agentId, config });
+    this._logger.info(`Adding agent with config`, { agentId, config });
 
     // Create agent record in database
     await this.db.execute(
@@ -287,7 +285,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
   }
 
   async removeAgent(agentId: string): Promise<void> {
-    this.logger.info(`Removing agent`, { agentId });
+    this._logger.info(`Removing agent`, { agentId });
 
     // Update agent status in database
     await this.db.execute('UPDATE agents SET status = ?, removed_at = ? WHERE id = ?', [
@@ -299,7 +297,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
 
   async assignTask(task: any): Promise<string> {
     const taskId = `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    this.logger.info(`Assigning task`, { taskId, task });
+    this._logger.info(`Assigning task`, { taskId, task });
 
     // Submit task through existing method
     await this.submitTask({ ...task, id: taskId });

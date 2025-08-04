@@ -5,7 +5,7 @@
  * expertise evolution tracking, best practice emergence, and anti-pattern detection.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import type { AgentBehavior } from './behavioral-optimization';
 import type { ExecutionPattern, PatternCluster } from './pattern-recognition-engine';
 
@@ -607,7 +607,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private async detectBestPractices(
     patterns: ExecutionPattern[],
-    behaviors: AgentBehavior[]
+    _behaviors: AgentBehavior[]
   ): Promise<BestPractice[]> {
     const practices: BestPractice[] = [];
 
@@ -967,7 +967,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private determineEvolutionType(
     trigger: EvolutionTrigger,
-    evidence: Evidence[]
+    _evidence: Evidence[]
   ): Evolution['type'] {
     switch (trigger.type) {
       case 'pattern_discovery':
@@ -1047,7 +1047,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private async mergeKnowledgeItems(
     knowledgeBase: KnowledgeBase,
-    evidence: Evidence[],
+    _evidence: Evidence[],
     evolution: Evolution
   ): Promise<void> {
     // Find similar knowledge items and merge them
@@ -1088,9 +1088,9 @@ export class KnowledgeEvolution extends EventEmitter {
   }
 
   private async splitKnowledgeItems(
-    knowledgeBase: KnowledgeBase,
-    evidence: Evidence[],
-    evolution: Evolution
+    _knowledgeBase: KnowledgeBase,
+    _evidence: Evidence[],
+    _evolution: Evolution
   ): Promise<void> {
     // Implementation for splitting complex knowledge items
     // This would involve analyzing items that cover too many contexts
@@ -1466,7 +1466,7 @@ export class KnowledgeEvolution extends EventEmitter {
     return criteria;
   }
 
-  private suggestAlternatives(group: FailureGroup): string[] {
+  private suggestAlternatives(_group: FailureGroup): string[] {
     // This would use ML to suggest alternatives based on successful patterns
     return [
       'Use validated configuration parameters',
@@ -1476,7 +1476,7 @@ export class KnowledgeEvolution extends EventEmitter {
     ];
   }
 
-  private generatePreventionStrategies(group: FailureGroup): string[] {
+  private generatePreventionStrategies(_group: FailureGroup): string[] {
     return [
       'Pre-deployment validation',
       'Resource monitoring',
@@ -1505,7 +1505,7 @@ export class KnowledgeEvolution extends EventEmitter {
     return issues;
   }
 
-  private detectInconsistencies(knowledgeBase: KnowledgeBase): KnowledgeInconsistency[] {
+  private detectInconsistencies(_knowledgeBase: KnowledgeBase): KnowledgeInconsistency[] {
     // Detect logical inconsistencies in the knowledge base
     return []; // Stub implementation
   }
@@ -1582,30 +1582,30 @@ export class KnowledgeEvolution extends EventEmitter {
 
   // Additional stub implementations...
 
-  private updateKnowledgeBase(domain: string, result: KnowledgeLearningResult): Promise<void> {
+  private updateKnowledgeBase(_domain: string, _result: KnowledgeLearningResult): Promise<void> {
     // Update knowledge base with learning results
     return Promise.resolve();
   }
 
   private updateSkillsFromPatterns(
-    profile: ExpertiseProfile,
-    patterns: ExecutionPattern[]
+    _profile: ExpertiseProfile,
+    _patterns: ExecutionPattern[]
   ): Promise<void> {
     // Update agent skills based on patterns
     return Promise.resolve();
   }
 
   private updateExperienceFromPatterns(
-    profile: ExpertiseProfile,
-    patterns: ExecutionPattern[]
+    _profile: ExpertiseProfile,
+    _patterns: ExecutionPattern[]
   ): Promise<void> {
     // Update agent experience based on patterns
     return Promise.resolve();
   }
 
   private updateExpertiseProfiles(
-    patterns: ExecutionPattern[],
-    behaviors: AgentBehavior[]
+    _patterns: ExecutionPattern[],
+    _behaviors: AgentBehavior[]
   ): Promise<ExpertiseUpdate[]> {
     // Update expertise profiles
     return Promise.resolve([]);
@@ -1616,42 +1616,45 @@ export class KnowledgeEvolution extends EventEmitter {
     return Math.min(1, profile.level + 0.01);
   }
 
-  private identifyEvolutionFactors(patterns: ExecutionPattern[], change: number): string[] {
+  private identifyEvolutionFactors(_patterns: ExecutionPattern[], _change: number): string[] {
     // Identify factors contributing to expertise evolution
     return ['performance_improvement', 'task_complexity_handling'];
   }
 
-  private findRelevantKnowledgeBases(context: RecommendationContext): KnowledgeBase[] {
+  private findRelevantKnowledgeBases(_context: RecommendationContext): KnowledgeBase[] {
     // Find knowledge bases relevant to the context
     return Array.from(this.knowledgeBases.values());
   }
 
   private findApplicableKnowledge(
     kb: KnowledgeBase,
-    context: RecommendationContext
+    _context: RecommendationContext
   ): KnowledgeItem[] {
     // Find knowledge items applicable to the context
     return kb.knowledge.slice(0, 10); // Simplified
   }
 
-  private calculateRelevance(item: KnowledgeItem, context: RecommendationContext): number {
+  private calculateRelevance(_item: KnowledgeItem, _context: RecommendationContext): number {
     // Calculate relevance score
     return Math.random() * 0.5 + 0.5; // Simplified
   }
 
-  private determineRecommendationType(item: KnowledgeItem, context: RecommendationContext): string {
+  private determineRecommendationType(
+    item: KnowledgeItem,
+    _context: RecommendationContext
+  ): string {
     // Determine type of recommendation
     return item.type === 'best_practice' ? 'practice_suggestion' : 'knowledge_application';
   }
 
-  private assessApplicability(item: KnowledgeItem, context: RecommendationContext): number {
+  private assessApplicability(item: KnowledgeItem, _context: RecommendationContext): number {
     // Assess how applicable the knowledge is to the context
     return item.confidence * 0.8;
   }
 
   private generateReasoningExplanation(
     item: KnowledgeItem,
-    context: RecommendationContext
+    _context: RecommendationContext
   ): string {
     // Generate explanation for why this knowledge is relevant
     return `Based on ${item.evidence.length} pieces of evidence with ${(item.confidence * 100).toFixed(1)}% confidence`;

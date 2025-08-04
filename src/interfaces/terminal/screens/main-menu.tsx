@@ -9,7 +9,7 @@ import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import type React from 'react';
 import { useState } from 'react';
-import { Header, InteractiveFooter, StatusBadge, type SwarmStatus } from '../components/index.js';
+import { Header, InteractiveFooter, StatusBadge, type SwarmStatus } from '../components/index';
 
 export interface MenuItem {
   label: string;
@@ -148,7 +148,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           />
 
           {/* Description of selected item */}
-          {selectedItem && selectedItem.description && (
+          {selectedItem?.description && (
             <Box marginTop={1} borderStyle="single" borderColor="gray" padding={1}>
               <Text dimColor>{selectedItem.description}</Text>
             </Box>
@@ -178,7 +178,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
 /**
  * Create default menu items for common use cases
  */
-export const createDefaultMenuItems = (handlers: {
+export const createDefaultMenuItems = (_handlers: {
   onStartSwarm?: () => void;
   onViewStatus?: () => void;
   onViewLogs?: () => void;

@@ -3,14 +3,13 @@
  * Intelligently assigns optimal agents based on file types, operations, and agent capabilities
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import type { AgentType } from '../../types/agent-types';
 import type {
   AgentAssignment,
   AgentContext,
   AgentCoordinator,
   AgentInfo,
-  AgentPerformance,
   ComplexityLevel,
   FileType,
   LearningData,
@@ -21,12 +20,12 @@ import type {
   UrgencyLevel,
   WorkloadBalance,
   WorkloadRecommendation,
-} from './enhanced-hook-system';
+} from './hook-system-core';
 
 export class IntelligentAgentAssignor implements AgentCoordinator {
   private readonly agentCapabilityMap: Map<AgentType, AgentCapabilityProfile>;
   private readonly fileTypeAgentMap: Map<FileType, AgentType[]>;
-  private readonly agentPerformanceHistory: Map<string, AgentPerformance>;
+  private readonly agentPerformanceHistory: Map<string, any>;
   private readonly workloadTracker: Map<string, number>;
 
   constructor() {
@@ -299,8 +298,8 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
   private getAgentsByOperationType(operationType: OperationType): AgentType[] {
     const operationAgentMap: Record<OperationType, AgentType[]> = {
       testing: ['unit-tester', 'integration-tester', 'e2e-tester', 'tdd-london-swarm'],
-      debugging: ['debug', 'analyst', 'troubleshooter' as AgentType],
-      refactoring: ['refactoring-analyzer', 'code-quality-swarm' as AgentType],
+      debugging: ['debug', 'analyst', 'specialist'],
+      refactoring: ['refactoring-analyzer', 'reviewer'],
       'code-review': ['code-review-swarm', 'reviewer', 'quality-gate-agent'],
       documentation: ['documenter', 'technical-writer', 'readme-writer'],
       analysis: ['analyst', 'analyze-code-quality', 'performance-analyzer'],
@@ -503,28 +502,28 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
   }
 
   // Mock implementations for data persistence (would integrate with actual storage)
-  private async loadAgentMemory(agentId: string): Promise<Record<string, any>> {
+  private async loadAgentMemory(_agentId: string): Promise<Record<string, any>> {
     return {}; // Mock implementation
   }
 
-  private async loadAgentPreferences(agentId: string): Promise<Record<string, any>> {
+  private async loadAgentPreferences(_agentId: string): Promise<Record<string, any>> {
     return {}; // Mock implementation
   }
 
-  private async loadLearningData(agentId: string): Promise<LearningData[]> {
+  private async loadLearningData(_agentId: string): Promise<LearningData[]> {
     return []; // Mock implementation
   }
 
-  private async loadPerformanceHistory(agentId: string): Promise<PerformanceHistory[]> {
+  private async loadPerformanceHistory(_agentId: string): Promise<PerformanceHistory[]> {
     return []; // Mock implementation
   }
 
-  private async estimateOperationDuration(operation: Operation): Promise<number> {
+  private async estimateOperationDuration(_operation: Operation): Promise<number> {
     // Mock implementation - would use ML models for estimation
     return 300; // 5 minutes default
   }
 
-  private async persistWorkloadUpdate(agentId: string, newWorkload: number): Promise<void> {
+  private async persistWorkloadUpdate(_agentId: string, _newWorkload: number): Promise<void> {
     // Mock implementation
   }
 
@@ -535,7 +534,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     return {
       id: `${agentType}-${Date.now()}`,
       type: agentType,
-      name: `${agentType.charAt(0).toUpperCase() + agentType.slice(1)} Agent`,
+      name: `${agentType.charAt(0).toUpperCase() + agentType.slice(1).replace(/-/g, ' ')} Agent`,
       capabilities: capabilities?.skills || ['general'],
       currentWorkload: Math.random() * 50, // Mock workload
       maxWorkload: 100,
@@ -555,7 +554,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     // Initialize agent capability profiles
     const capabilityProfiles: Array<[AgentType, AgentCapabilityProfile]> = [
       [
-        'typescript',
+        'frontend-dev',
         {
           skills: ['typescript', 'javascript', 'nodejs'],
           specialties: ['web-development', 'frontend'],
@@ -563,7 +562,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
         },
       ],
       [
-        'python',
+        'ai-ml-specialist',
         {
           skills: ['python', 'data-science'],
           specialties: ['automation', 'ml'],
@@ -571,7 +570,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
         },
       ],
       [
-        'rust',
+        'specialist',
         {
           skills: ['rust', 'systems-programming'],
           specialties: ['performance', 'memory-safety'],
@@ -593,7 +592,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     this.fileTypeAgentMap.set('python', ['ai-ml-specialist', 'data-ml-model', 'developer']);
     this.fileTypeAgentMap.set('rust', ['specialist', 'performance-analyzer']);
     this.fileTypeAgentMap.set('golang', ['dev-backend-api', 'api-dev', 'developer']);
-    this.fileTypeAgentMap.set('java', ['developer', 'enterprise-dev' as AgentType]);
+    this.fileTypeAgentMap.set('java', ['developer', 'specialist']);
     this.fileTypeAgentMap.set('cpp', ['specialist', 'performance-analyzer']);
     this.fileTypeAgentMap.set('markdown', ['documenter', 'technical-writer']);
     this.fileTypeAgentMap.set('sql', ['database-architect', 'analytics-specialist']);

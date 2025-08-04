@@ -3,13 +3,13 @@
  * Automatic performance tuning and resource optimization
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import type {
   AnomalyDetection,
   BottleneckAnalysis,
   PerformanceInsights,
 } from '../analytics/performance-analyzer';
-import { type CompositeMetrics, SystemMetrics } from '../core/metrics-collector';
+import type { CompositeMetrics } from '../core/metrics-collector';
 
 export interface OptimizationAction {
   id: string;
@@ -50,7 +50,6 @@ export class OptimizationEngine extends EventEmitter {
   private executingActions: Set<string> = new Set();
   private actionHistory: OptimizationResult[] = [];
   private isOptimizing = false;
-  private lastOptimization: number = 0;
   private resourceLimits: Map<string, number> = new Map();
 
   constructor() {
@@ -183,7 +182,7 @@ export class OptimizationEngine extends EventEmitter {
    */
   private async handleAnomaly(
     anomaly: AnomalyDetection,
-    metrics: CompositeMetrics
+    _metrics: CompositeMetrics
   ): Promise<OptimizationAction[]> {
     const actions: OptimizationAction[] = [];
 
@@ -368,7 +367,7 @@ export class OptimizationEngine extends EventEmitter {
       timeToCapacity: number;
       resourceExhaustion: string[];
     },
-    metrics: CompositeMetrics
+    _metrics: CompositeMetrics
   ): Promise<OptimizationAction[]> {
     const actions: OptimizationAction[] = [];
 
@@ -416,7 +415,7 @@ export class OptimizationEngine extends EventEmitter {
    */
   private async handleLowHealth(
     healthScore: number,
-    metrics: CompositeMetrics
+    _metrics: CompositeMetrics
   ): Promise<OptimizationAction[]> {
     const actions: OptimizationAction[] = [];
 

@@ -3,8 +3,8 @@
  * Centralized configuration for all integration test scenarios
  */
 
-const path = require('path');
-const os = require('os');
+const path = require('node:path');
+const os = require('node:os');
 
 const config = {
   // Test Environment Configuration

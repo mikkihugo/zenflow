@@ -3,7 +3,7 @@
  * Comprehensive handlers for all FACT (Fast Augmented Context Tools) MCP operations
  */
 
-import { createLogger } from '@core/logger';
+import { createLogger } from '../../../core/logger';
 import type { MCPTool, MCPToolResult } from '../types/mcp-types';
 import { factStorageTools } from './fact-storage-tools';
 import { factSwarmTools } from './fact-swarm-tools';

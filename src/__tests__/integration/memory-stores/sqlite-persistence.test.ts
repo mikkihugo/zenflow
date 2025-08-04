@@ -6,12 +6,11 @@
  * - Classical School: Test actual data operations and persistence
  */
 
-import { constants } from 'fs';
-import { access, unlink } from 'fs/promises';
-import { tmpdir } from 'os';
-import { join } from 'path';
+import { constants } from 'node:fs';
+import { access, unlink } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { Database } from 'sqlite3';
-import { promisify } from 'util';
 
 // Mock SQLite connection interface
 interface MockSQLiteConnection {
@@ -111,7 +110,7 @@ class SQLiteMemoryStore {
 
   private run(query: string, params: any[] = []): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.db!.run(query, params, function (err) {
+      this.db?.run(query, params, function (err) {
         if (err) reject(err);
         else resolve({ changes: this.changes, lastID: this.lastID });
       });
@@ -120,7 +119,7 @@ class SQLiteMemoryStore {
 
   private get(query: string, params: any[] = []): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.db!.get(query, params, (err, row) => {
+      this.db?.get(query, params, (err, row) => {
         if (err) reject(err);
         else resolve(row);
       });
@@ -129,7 +128,7 @@ class SQLiteMemoryStore {
 
   private all(query: string, params: any[] = []): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      this.db!.all(query, params, (err, rows) => {
+      this.db?.all(query, params, (err, rows) => {
         if (err) reject(err);
         else resolve(rows);
       });
@@ -139,7 +138,7 @@ class SQLiteMemoryStore {
   async close(): Promise<void> {
     if (this.db) {
       return new Promise((resolve, reject) => {
-        this.db!.close((err) => {
+        this.db?.close((err) => {
           if (err) reject(err);
           else {
             this.isInitialized = false;
@@ -461,8 +460,6 @@ describe('SQLite Persistence Integration Tests', () => {
       const durationMs = Number(endTime - startTime) / 1_000_000;
       const operationsPerSecond = (iterations / durationMs) * 1000;
 
-      console.log(`Write performance: ${operationsPerSecond.toFixed(0)} ops/sec`);
-
       // Should handle at least 100 writes per second
       expect(operationsPerSecond).toBeGreaterThan(100);
     });
@@ -485,8 +482,6 @@ describe('SQLite Persistence Integration Tests', () => {
       const endTime = process.hrtime.bigint();
       const durationMs = Number(endTime - startTime) / 1_000_000;
       const operationsPerSecond = (iterations / durationMs) * 1000;
-
-      console.log(`Read performance: ${operationsPerSecond.toFixed(0)} ops/sec`);
 
       // Should handle at least 200 reads per second
       expect(operationsPerSecond).toBeGreaterThan(200);

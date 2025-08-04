@@ -71,8 +71,6 @@ export class SQLiteBackend implements FACTStorageBackend {
 
     // Prepare statements
     await this.prepareStatements();
-
-    console.log(`✅ SQLite FACT storage initialized: ${this.config.dbPath}`);
   }
 
   async store(entry: FACTKnowledgeEntry): Promise<void> {
@@ -95,16 +93,18 @@ export class SQLiteBackend implements FACTStorageBackend {
 
       // Insert into FTS table if enabled
       if (this.config.enableFullTextSearch) {
-        this.db!.prepare(`
+        this.db
+          ?.prepare(`
           INSERT OR REPLACE INTO ${this.config.tableName}_fts (id, query, response, domains, type)
           VALUES (?, ?, ?, ?, ?)
-        `).run(
-          entry.id,
-          entry.query,
-          entry.response,
-          entry.metadata.domains.join(' '),
-          entry.metadata.type
-        );
+        `)
+          .run(
+            entry.id,
+            entry.query,
+            entry.response,
+            entry.metadata.domains.join(' '),
+            entry.metadata.type
+          );
       }
     } catch (error) {
       console.error('Failed to store FACT entry:', error);
@@ -238,7 +238,7 @@ export class SQLiteBackend implements FACTStorageBackend {
 
       // Delete from FTS table if enabled
       if (this.config.enableFullTextSearch) {
-        this.db!.prepare(`DELETE FROM ${this.config.tableName}_fts WHERE id = ?`).run(id);
+        this.db?.prepare(`DELETE FROM ${this.config.tableName}_fts WHERE id = ?`).run(id);
       }
 
       return result.changes > 0;
@@ -259,10 +259,12 @@ export class SQLiteBackend implements FACTStorageBackend {
 
       // Clean up FTS table if enabled
       if (this.config.enableFullTextSearch) {
-        this.db!.prepare(`
+        this.db
+          ?.prepare(`
           DELETE FROM ${this.config.tableName}_fts 
           WHERE id NOT IN (SELECT id FROM ${this.config.tableName})
-        `).run();
+        `)
+          .run();
       }
 
       return result.changes;

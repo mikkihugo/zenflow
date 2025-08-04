@@ -5,30 +5,21 @@
  * and resilience systems in Claude-Zen
  */
 
-import { MCPToolRegistry, mcpErrorHandler } from '../coordination/mcp/core/error-handler';
-import { createLogger } from '../core/logger';
-import { AlertConfig, ErrorMonitor, errorMonitor } from './error-monitoring';
-import {
-  CircuitBreakerRegistry,
-  ErrorRecoveryOrchestrator,
-  errorRecoveryOrchestrator,
-} from './error-recovery';
+import { mcpErrorHandler } from '../coordination/mcp/core/error-handler';
+import { errorMonitor } from './error-monitoring';
+import { errorRecoveryOrchestrator } from './error-recovery';
 import {
   BaseClaudeZenError,
   type ErrorContext,
   FACTError,
-  MCPError,
   NetworkError,
   RAGError,
   SwarmError,
   SystemError,
   WASMError,
 } from './errors';
-import {
-  EmergencyProcedure,
-  SystemResilienceOrchestrator,
-  systemResilienceOrchestrator,
-} from './system-resilience';
+import { createLogger } from './logger';
+import { systemResilienceOrchestrator } from './system-resilience';
 
 const logger = createLogger({ prefix: 'ErrorSystemIntegration' });
 
@@ -152,7 +143,7 @@ export class IntegratedErrorHandler {
     // System-specific alerts for integrated error handling
 
     // FACT System Alert
-    errorMonitor.addAlertHandler(async (alert, message) => {
+    errorMonitor.addAlertHandler(async (_alert, message) => {
       if (message.includes('FACT') || message.includes('fact_')) {
         logger.error(`FACT System Alert: ${message}`);
 
@@ -165,7 +156,7 @@ export class IntegratedErrorHandler {
     });
 
     // Swarm Coordination Alert
-    errorMonitor.addAlertHandler(async (alert, message) => {
+    errorMonitor.addAlertHandler(async (_alert, message) => {
       if (message.includes('Swarm') || message.includes('swarm_') || message.includes('agent_')) {
         logger.error(`Swarm System Alert: ${message}`);
 
@@ -182,7 +173,7 @@ export class IntegratedErrorHandler {
 
   private setupEmergencyProcedures(): void {
     // Add integrated emergency shutdown procedures
-    const emergencySystem = systemResilienceOrchestrator['emergencyShutdown'];
+    const emergencySystem = systemResilienceOrchestrator.emergencyShutdown;
 
     // MCP tool shutdown
     emergencySystem.addProcedure({

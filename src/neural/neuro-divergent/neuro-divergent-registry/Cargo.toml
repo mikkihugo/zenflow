@@ -14,7 +14,7 @@ serde_json = "1.0"
 bincode = "2.0"
 
 # Error handling
-thiserror = "1.0"
+thiserror = "2.0"
 anyhow = "1.0"
 
 # Collections and utilities
@@ -34,7 +34,7 @@ tracing = "0.1"
 libloading = { version = "0.8", optional = true }
 
 # Configuration
-config = "0.14"
+config = "0.15"
 toml = "0.8"
 
 # Hashing
@@ -49,7 +49,7 @@ instant = "0.1"
 num-traits = "0.2"
 
 # Path handling
-dirs = "5.0"
+dirs = "6.0"
 walkdir = "2.4"
 
 # Compression for model storage
@@ -66,7 +66,7 @@ plugin-system = ["libloading"]
 [dev-dependencies]
 criterion = { version = "0.5", features = ["html_reports"] }
 tempfile = "3.8"
-env_logger = "0.10"
+env_logger = "0.11"
 
 
 [lib]

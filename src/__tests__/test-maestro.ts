@@ -5,8 +5,8 @@
  * Tests the enhanced maestro orchestrator functionality
  */
 
-import { mkdir, readFile, writeFile } from 'fs/promises';
-import { join } from 'path';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
 // Mock interfaces
 interface AgentProfile {
@@ -38,25 +38,15 @@ interface WorkflowState {
 
 // Mock implementations for testing
 class MockEventBus {
-  emit(event: string, data: any): void {
-    console.log(`📡 Event: ${event}`, data);
-  }
+  emit(_event: string, _data: any): void {}
   on(): void {}
 }
 
 class MockLogger {
-  info(msg: string): void {
-    console.log(`ℹ️  ${msg}`);
-  }
-  warn(msg: string): void {
-    console.log(`⚠️  ${msg}`);
-  }
-  error(msg: string): void {
-    console.log(`❌ ${msg}`);
-  }
-  debug(msg: string): void {
-    console.log(`🐛 ${msg}`);
-  }
+  info(_msg: string): void {}
+  warn(_msg: string): void {}
+  error(_msg: string): void {}
+  debug(_msg: string): void {}
 }
 
 class MockMemoryManager {
@@ -70,7 +60,6 @@ class MockAgentManager {
   async createAgent(type: string, profile: AgentProfile): Promise<string> {
     const agentId = `${type}-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
     this.agents.set(agentId, { type, profile, status: 'created' });
-    console.log(`🤖 Created agent: ${agentId} (${type})`);
     return agentId;
   }
 
@@ -78,7 +67,6 @@ class MockAgentManager {
     const agent = this.agents.get(agentId);
     if (agent) {
       agent.status = 'running';
-      console.log(`▶️  Started agent: ${agentId}`);
     }
   }
 
@@ -86,15 +74,13 @@ class MockAgentManager {
     const agent = this.agents.get(agentId);
     if (agent) {
       agent.status = 'stopped';
-      console.log(`⏹️  Stopped agent: ${agentId}`);
       this.agents.delete(agentId);
     }
   }
 }
 
 class MockOrchestrator {
-  async assignTask(task: Task): Promise<{ success: boolean; duration: number }> {
-    console.log(`📋 Task assigned to agent ${task.assignedAgent}: ${task.description}`);
+  async assignTask(_task: Task): Promise<{ success: boolean; duration: number }> {
     // Simulate task execution
     await new Promise((resolve) => setTimeout(resolve, 100));
     return { success: true, duration: 100 };
@@ -103,16 +89,13 @@ class MockOrchestrator {
 
 // Test the maestro orchestrator
 async function testMaestroWithAgentReuse(): Promise<void> {
-  console.log('🧪 Testing Maestro Specs-Driven Flow with Agent Reuse');
-  console.log('='.repeat(60));
-
   // Mock config
-  const config = { enableHiveMind: false };
+  const _config = { enableHiveMind: false };
 
   // Create mock dependencies
-  const eventBus = new MockEventBus();
+  const _eventBus = new MockEventBus();
   const logger = new MockLogger();
-  const memoryManager = new MockMemoryManager();
+  const _memoryManager = new MockMemoryManager();
   const agentManager = new MockAgentManager();
   const mainOrchestrator = new MockOrchestrator();
 
@@ -121,7 +104,6 @@ async function testMaestroWithAgentReuse(): Promise<void> {
     private maestroState = new Map<string, WorkflowState>();
     private agentPool = new Map<string, string>();
     private capabilityIndex = new Map<string, string[]>();
-    private logger: MockLogger;
     private agentManager: MockAgentManager;
     private mainOrchestrator: MockOrchestrator;
 
@@ -132,9 +114,6 @@ async function testMaestroWithAgentReuse(): Promise<void> {
     }
 
     async createSpec(featureName: string, initialRequest: string): Promise<void> {
-      console.log(`
-      📋 Creating spec for: ${featureName}`);
-
       const workflowState: WorkflowState = {
         featureName,
         currentPhase: 'Requirements Clarification',
@@ -167,13 +146,9 @@ ${initialRequest}
 `;
 
       await writeFile(join(specsDir, 'requirements.md'), requirementsContent);
-      console.log(`✅ Spec created at: docs/maestro/specs/${featureName}/requirements.md`);
     }
 
     async generateDesign(featureName: string): Promise<void> {
-      console.log(`
-      🎨 Generating design for: ${featureName}`);
-
       // Test the enhanced agent selection
       const designTask: Task = {
         id: `design-${featureName}`,
@@ -188,8 +163,6 @@ ${initialRequest}
         'design-generation',
         2
       );
-
-      console.log(`🎯 Selected optimal agents: ${optimalAgentTypes.join(', ')}`);
 
       // Create agents with reuse logic
       const selectedAgents: string[] = [];
@@ -222,21 +195,16 @@ System designed using enhanced agent reuse functionality.
 `;
 
       await writeFile(join(specsDir, 'design.md'), designContent);
-      console.log(`✅ Design created at: docs/maestro/specs/${featureName}/design.md`);
     }
 
     private async getOptimalAgentTypes(
-      requiredCapabilities: string[],
-      taskType: string,
+      _requiredCapabilities: string[],
+      _taskType: string,
       maxAgents: number
     ): Promise<string[]> {
       // Enhanced agent selection logic
       const availableTypes = ['design-architect', 'system-architect', 'requirements-analyst'];
       const selected = availableTypes.slice(0, maxAgents);
-
-      console.log(`🧠 Agent selection: Required capabilities: ${requiredCapabilities.join(', ')}`);
-      console.log(`🧠 Agent selection: Task type: ${taskType}`);
-      console.log(`🧠 Agent selection: Selected: ${selected.join(', ')}`);
 
       return selected;
     }
@@ -245,7 +213,6 @@ System designed using enhanced agent reuse functionality.
       // Check if we can reuse an existing agent
       const existingAgentId = this.findReusableAgent(agentType, profile);
       if (existingAgentId) {
-        console.log(`♻️  Reusing existing agent: ${existingAgentId} (${agentType})`);
         return existingAgentId;
       }
 
@@ -257,13 +224,11 @@ System designed using enhanced agent reuse functionality.
       if (!this.capabilityIndex.has(agentType)) {
         this.capabilityIndex.set(agentType, []);
       }
-      this.capabilityIndex.get(agentType)!.push(agentId);
-
-      console.log(`🆕 Created new agent: ${agentId} (${agentType})`);
+      this.capabilityIndex.get(agentType)?.push(agentId);
       return agentId;
     }
 
-    private findReusableAgent(agentType: string, profile: AgentProfile): string | null {
+    private findReusableAgent(agentType: string, _profile: AgentProfile): string | null {
       const agentsOfType = this.capabilityIndex.get(agentType);
       if (agentsOfType && agentsOfType.length > 0) {
         // Return the first available agent of this type
@@ -284,9 +249,6 @@ System designed using enhanced agent reuse functionality.
     }
 
     async generateTasks(featureName: string): Promise<void> {
-      console.log(`
-      📋 Generating tasks for: ${featureName}`);
-
       const tasksContent = `# Implementation Tasks for ${featureName}
 
 ## Task List
@@ -300,7 +262,6 @@ System designed using enhanced agent reuse functionality.
 
       const specsDir = join(process.cwd(), 'docs', 'maestro', 'specs', featureName);
       await writeFile(join(specsDir, 'tasks.md'), tasksContent);
-      console.log(`✅ Tasks created at: docs/maestro/specs/${featureName}/tasks.md`);
     }
 
     getStats(): { totalAgents: number; reuseRate: number; capabilityTypes: number } {
@@ -323,11 +284,6 @@ System designed using enhanced agent reuse functionality.
     ];
 
     for (const feature of testFeatures) {
-      console.log(`
-      ${'='.repeat(40)}`);
-      console.log(`🎯 Testing Feature: ${feature}`);
-      console.log(`${'='.repeat(40)}`);
-
       await maestro.createSpec(feature, `Enhanced agent reuse testing for ${feature}`);
       await maestro.generateDesign(feature);
       await maestro.generateTasks(feature);
@@ -338,22 +294,10 @@ System designed using enhanced agent reuse functionality.
 
     // Print final statistics
     const stats = maestro.getStats();
-    console.log(`
-      📊 Final Statistics:`);
-    console.log(`   Total Agents Created: ${stats.totalAgents}`);
-    console.log(`   Agent Reuse Rate: ${stats.reuseRate}%`);
-    console.log(`   Capability Types: ${stats.capabilityTypes}`);
 
     if (stats.reuseRate >= 50) {
-      console.log(`
-      ✅ SUCCESS: Agent reuse rate meets target (${stats.reuseRate}% >= 50%)`);
     } else {
-      console.log(`
-      ⚠️  WARNING: Agent reuse rate below target (${stats.reuseRate}% < 50%)`);
     }
-
-    console.log(`
-      🎉 Maestro test completed successfully!`);
   } catch (error) {
     console.error(
       `

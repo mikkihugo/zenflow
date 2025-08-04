@@ -3,7 +3,7 @@
  * Tests all exported WASM functions with comprehensive coverage
  */
 
-import { performance } from 'perf_hooks';
+import { performance } from 'node:perf_hooks';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { WasmModuleLoader } from '../../src/wasm-loader.js';
 
@@ -274,7 +274,6 @@ describe('WASM Functions Unit Tests', () => {
   describe('SIMD Operations', () => {
     it('should perform SIMD vector addition', () => {
       if (!wasmModule.exports.detectSIMDSupport()) {
-        console.log('SIMD not supported, skipping test');
         return;
       }
 
@@ -287,7 +286,6 @@ describe('WASM Functions Unit Tests', () => {
 
     it('should perform SIMD matrix multiplication', () => {
       if (!wasmModule.exports.detectSIMDSupport()) {
-        console.log('SIMD not supported, skipping test');
         return;
       }
 
@@ -305,18 +303,14 @@ describe('WASM Functions Unit Tests', () => {
 
       // Non-SIMD benchmark
       const nonSimdStart = performance.now();
-      const nonSimdResult = wasmModule.exports.vectorAddNonSIMD(a, b);
+      const _nonSimdResult = wasmModule.exports.vectorAddNonSIMD(a, b);
       const nonSimdTime = performance.now() - nonSimdStart;
 
       // SIMD benchmark (if supported)
       if (wasmModule.exports.detectSIMDSupport()) {
         const simdStart = performance.now();
-        const simdResult = wasmModule.exports.vectorAddSIMD(a, b);
+        const _simdResult = wasmModule.exports.vectorAddSIMD(a, b);
         const simdTime = performance.now() - simdStart;
-
-        console.log(`Non-SIMD time: ${nonSimdTime.toFixed(2)}ms`);
-        console.log(`SIMD time: ${simdTime.toFixed(2)}ms`);
-        console.log(`Speedup: ${(nonSimdTime / simdTime).toFixed(2)}x`);
 
         expect(simdTime).toBeLessThan(nonSimdTime);
       }
@@ -365,8 +359,6 @@ describe('WASM Functions Unit Tests', () => {
 
       const time = performance.now() - start;
       const avgTime = time / iterations;
-
-      console.log(`Agent creation average time: ${avgTime.toFixed(3)}ms`);
       expect(avgTime).toBeLessThan(1); // Should be less than 1ms per agent
     });
 
@@ -389,7 +381,6 @@ describe('WASM Functions Unit Tests', () => {
       const time = performance.now() - start;
 
       const avgTime = time / iterations;
-      console.log(`Neural network inference average time: ${avgTime.toFixed(3)}ms`);
       expect(avgTime).toBeLessThan(0.5); // Should be less than 0.5ms per inference
 
       wasmModule.exports.removeNeuralNetwork(network);
@@ -404,16 +395,13 @@ describe('WASM Functions Unit Tests', () => {
       for (let i = 0; i < iterations; i++) {
         const ptr = wasmModule.exports.allocateFloat32Array(data.length);
         wasmModule.exports.copyFloat32ArrayToWasm(data, ptr);
-        const result = wasmModule.exports.copyFloat32ArrayFromWasm(ptr, data.length);
+        const _result = wasmModule.exports.copyFloat32ArrayFromWasm(ptr, data.length);
         wasmModule.exports.deallocateFloat32Array(ptr);
       }
       const time = performance.now() - start;
 
-      const avgTime = time / iterations;
+      const _avgTime = time / iterations;
       const throughput = (size * iterations) / (time / 1000) / (1024 * 1024); // MB/s
-
-      console.log(`Memory operation average time: ${avgTime.toFixed(3)}ms`);
-      console.log(`Memory throughput: ${throughput.toFixed(2)} MB/s`);
       expect(throughput).toBeGreaterThan(100); // Should be at least 100 MB/s
     });
   });

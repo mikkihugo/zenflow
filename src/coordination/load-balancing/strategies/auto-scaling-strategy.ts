@@ -3,8 +3,8 @@
  * Intelligent auto-scaling based on load patterns and predictions
  */
 
-import { EventEmitter } from 'events';
-import type { IAutoScaler } from '../interfaces';
+import { EventEmitter } from 'node:events';
+import type { AutoScaler } from '../interfaces';
 import type { Agent, AutoScalingConfig, LoadMetrics } from '../types';
 
 interface ScalingDecision {
@@ -23,7 +23,7 @@ interface ScalingHistory {
   newCount: number;
 }
 
-export class AutoScalingStrategy extends EventEmitter implements IAutoScaler {
+export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
   private config: AutoScalingConfig;
   private scalingHistory: ScalingHistory[] = [];
   private lastScalingAction: Date = new Date(0);

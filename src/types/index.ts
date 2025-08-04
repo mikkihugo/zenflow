@@ -4,17 +4,37 @@
  * Central export point for all shared types across the system
  */
 
-// Legacy compatibility exports (to ease migration)
+// Export specific types from agent-types with unique names to avoid conflicts
 export type {
-  RuvSwarm as SwarmType,
+  Agent as AgentBase,
+  AgentCapabilities,
+  AgentCapability,
+  AgentConfig,
+  AgentEnvironment,
+  AgentError,
+  AgentId,
+  AgentMetrics,
+  AgentState,
+  AgentStatus as DetailedAgentStatus,
+  AgentType as DetailedAgentType,
+  ExecutionResult,
+  Message as DetailedMessage,
+  MessageType,
+  Task as DetailedTask,
+} from './agent-types';
+
+// Primary exports from shared-types (these are the main Agent interface)
+export type {
   SwarmAgent as Agent,
   SwarmConfig as SwarmConfiguration,
+  ZenSwarm as SwarmType,
 } from './shared-types';
-// Re-export all shared types
+
+// Re-export shared types (these will be the primary exports)
 export * from './shared-types';
 
 // Type guards and utilities
-export function isRuvSwarm(obj: any): obj is import('./shared-types').RuvSwarm {
+export function isZenSwarm(obj: any): obj is import('./shared-types').ZenSwarm {
   return (
     obj &&
     typeof obj.id === 'string' &&

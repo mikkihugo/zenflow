@@ -5,10 +5,7 @@
  * Production-ready security implementation for Claude-Zen
  */
 
-import { spawn } from 'node:child_process';
-import { createHash } from 'node:crypto';
 import fs from 'node:fs';
-import path from 'node:path';
 
 class SecurityHardeningSystem {
   constructor() {
@@ -29,49 +26,20 @@ class SecurityHardeningSystem {
   }
 
   async implementSecurityHardening() {
-    console.log('🔒 Starting Comprehensive Security Hardening');
-    console.log('============================================\n');
-
     try {
       // Create security structure
       await this.createSecurityStructure();
-
-      // 1. Dependency Security
-      console.log('📦 Implementing Dependency Security...');
       await this.implementDependencySecurity();
-
-      // 2. Input Validation Framework
-      console.log('✅ Implementing Input Validation Framework...');
       await this.implementInputValidation();
-
-      // 3. Authentication & Authorization
-      console.log('🔐 Implementing Authentication & Authorization...');
       await this.implementAuthSecurity();
-
-      // 4. Data Protection
-      console.log('🛡️ Implementing Data Protection...');
       await this.implementDataProtection();
-
-      // 5. Network Security
-      console.log('🌐 Implementing Network Security...');
       await this.implementNetworkSecurity();
-
-      // 6. Infrastructure Security
-      console.log('🏗️ Implementing Infrastructure Security...');
       await this.implementInfrastructureSecurity();
-
-      // 7. Monitoring & Alerting
-      console.log('📊 Implementing Security Monitoring...');
       await this.implementSecurityMonitoring();
-
-      // 8. Compliance & Policies
-      console.log('📋 Implementing Security Policies...');
       await this.implementSecurityPolicies();
 
       // Generate security report
       await this.generateSecurityReport();
-
-      console.log('\n✅ Security Hardening Complete!');
       return this.hardeningResults;
     } catch (error) {
       console.error('❌ Security hardening failed:', error);
@@ -202,10 +170,8 @@ new DependencyAnalyzer().analyze();
       );
 
       this.hardeningResults.implemented.push('Dependency Security Monitoring');
-      console.log('   ✅ Dependency security implemented');
     } catch (error) {
       this.hardeningResults.failed.push(`Dependency Security: ${error.message}`);
-      console.log('   ❌ Dependency security failed');
     }
   }
 
@@ -360,10 +326,8 @@ export class SecurityMiddleware {
       );
 
       this.hardeningResults.implemented.push('Input Validation Framework');
-      console.log('   ✅ Input validation framework implemented');
     } catch (error) {
       this.hardeningResults.failed.push(`Input Validation: ${error.message}`);
-      console.log('   ❌ Input validation failed');
     }
   }
 
@@ -487,10 +451,8 @@ export class SessionSecurity {
       await fs.promises.writeFile(`${this.securityDir}/auth-security.js`, authFramework);
 
       this.hardeningResults.implemented.push('Authentication & Authorization');
-      console.log('   ✅ Authentication & authorization implemented');
     } catch (error) {
       this.hardeningResults.failed.push(`Auth Security: ${error.message}`);
-      console.log('   ❌ Authentication security failed');
     }
   }
 
@@ -572,10 +534,8 @@ export class SecureStorage {
       await fs.promises.writeFile(`${this.securityDir}/data-protection.js`, dataProtection);
 
       this.hardeningResults.implemented.push('Data Protection & Encryption');
-      console.log('   ✅ Data protection implemented');
     } catch (error) {
       this.hardeningResults.failed.push(`Data Protection: ${error.message}`);
-      console.log('   ❌ Data protection failed');
     }
   }
 
@@ -651,10 +611,8 @@ export class NetworkSecurity {
       await fs.promises.writeFile(`${this.securityDir}/network-security.js`, networkSecurity);
 
       this.hardeningResults.implemented.push('Network Security Headers');
-      console.log('   ✅ Network security implemented');
     } catch (error) {
       this.hardeningResults.failed.push(`Network Security: ${error.message}`);
-      console.log('   ❌ Network security failed');
     }
   }
 
@@ -742,10 +700,8 @@ ALERT_WEBHOOK_URL=https://your-monitoring-webhook
       await fs.promises.writeFile(`${this.securityDir}/templates/env.secure.template`, envSecurity);
 
       this.hardeningResults.implemented.push('Infrastructure Security');
-      console.log('   ✅ Infrastructure security implemented');
     } catch (error) {
       this.hardeningResults.failed.push(`Infrastructure Security: ${error.message}`);
-      console.log('   ❌ Infrastructure security failed');
     }
   }
 
@@ -879,10 +835,8 @@ export const securityMonitor = new SecurityMonitor({
       await fs.promises.writeFile(`${this.securityDir}/monitoring.js`, securityMonitoring);
 
       this.hardeningResults.implemented.push('Security Monitoring & Alerting');
-      console.log('   ✅ Security monitoring implemented');
     } catch (error) {
       this.hardeningResults.failed.push(`Security Monitoring: ${error.message}`);
-      console.log('   ❌ Security monitoring failed');
     }
   }
 
@@ -999,10 +953,8 @@ This document outlines the security policies and procedures for Claude-Zen.
       await fs.promises.writeFile(`${this.policyDir}/security-checklist.md`, securityChecklist);
 
       this.hardeningResults.implemented.push('Security Policies & Procedures');
-      console.log('   ✅ Security policies implemented');
     } catch (error) {
       this.hardeningResults.failed.push(`Security Policies: ${error.message}`);
-      console.log('   ❌ Security policies failed');
     }
   }
 
@@ -1053,9 +1005,6 @@ ${this.hardeningResults.failed.map((item) => `❌ ${item}`).join('\n')}
 `;
 
     await fs.promises.writeFile(`${this.securityDir}/hardening-report.md`, report);
-
-    console.log(`\n📊 Security Hardening Score: ${this.hardeningResults.score}%`);
-    console.log(`📄 Report saved to: ${this.securityDir}/hardening-report.md`);
   }
 }
 
@@ -1065,11 +1014,8 @@ async function main() {
   const results = await hardening.implementSecurityHardening();
 
   if (results.score < 80) {
-    console.log('\n⚠️  Security score below 80%. Please address failed implementations.');
     process.exit(1);
   }
-
-  console.log('\n✅ Security hardening completed successfully!');
 }
 
 // Run if called directly

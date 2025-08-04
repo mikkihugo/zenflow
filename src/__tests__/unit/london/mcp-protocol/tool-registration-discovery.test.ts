@@ -9,14 +9,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import type {
-  MCPContext,
-  MCPRequest,
-  MCPResponse,
-  MCPTool,
-  MCPToolCall,
-  MCPToolResult,
-} from '../../../../utils/types';
+import type { MCPRequest, MCPResponse, MCPTool } from '../../../../utils/types';
 
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 

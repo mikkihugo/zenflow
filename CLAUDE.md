@@ -352,6 +352,14 @@ claude-zen swarm init --topology mesh --agents 5
 claude-zen workspace process docs/vision/product.md
 ```
 
+**CLI Architecture**: All CLI commands are built with **meow** (argument parsing) and **ink** (React for CLIs) for consistent, modern command-line experiences. We **do not use commander** - all CLIs follow the meow/ink pattern for better maintainability and user experience.
+
+**Key CLI Components:**
+- `src/interfaces/cli/` - Core CLI interface system
+- `src/interfaces/cli/commands/discover.ts` - Auto-discovery CLI (meow-based)
+- `src/tools/domain-splitting/cli.ts` - Domain splitting CLI (converted from commander to meow)
+- All future CLI tools should follow the meow/ink pattern
+
 ### 📊 **Unified Performance Dashboard**
 
 **Comprehensive real-time monitoring across all interfaces:**

@@ -814,13 +814,13 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
   }
 
   // Implementation of utility methods would continue here...
-  private async discoverAgentExpertise(agentId: string): Promise<ExpertiseProfile> {
+  private async discoverAgentExpertise(_agentId: string): Promise<ExpertiseProfile> {
     // Implementation placeholder
     return {} as ExpertiseProfile;
   }
 
   private async analyzeExpertiseDistribution(
-    profiles: ExpertiseProfile[]
+    _profiles: ExpertiseProfile[]
   ): Promise<ExpertiseDistribution> {
     // Implementation placeholder
     return {} as ExpertiseDistribution;

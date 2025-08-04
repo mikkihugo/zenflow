@@ -44,7 +44,7 @@ export const MODEL_PRESETS = {
  */
 export function createNeuralModel(config) {
   const preset = typeof config === 'string' ? MODEL_PRESETS[config.toUpperCase()] : null;
-  
+
   if (preset) {
     return {
       ...preset,
@@ -73,8 +73,8 @@ export function getAvailablePresets() {
  */
 export function validateModelConfig(config) {
   const required = ['architecture', 'layers'];
-  const missing = required.filter(field => !config[field]);
-  
+  const missing = required.filter((field) => !config[field]);
+
   if (missing.length > 0) {
     throw new Error(`Missing required fields: ${missing.join(', ')}`);
   }

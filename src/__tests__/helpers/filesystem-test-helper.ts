@@ -4,9 +4,9 @@
  * Comprehensive file system testing support for both mocked and real environments
  */
 
-import { promises as fs } from 'fs';
-import { tmpdir } from 'os';
-import { dirname, join, relative, resolve } from 'path';
+import { promises as fs } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, join, resolve } from 'node:path';
 
 export interface FileSystemTestHelper {
   createTempDir(prefix?: string): Promise<string>;
@@ -73,7 +73,7 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
       if (index > -1) {
         this.createdFiles.splice(index, 1);
       }
-    } catch (error) {
+    } catch (_error) {
       // File might not exist
     }
   }
@@ -85,7 +85,7 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
       if (index > -1) {
         this.tempDirs.splice(index, 1);
       }
-    } catch (error) {
+    } catch (_error) {
       // Directory might not exist
     }
   }
@@ -252,7 +252,7 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
     this.directories.delete(normalizedPath);
 
     // Remove all files and subdirectories under this path
-    const pathPrefix = normalizedPath + '/';
+    const pathPrefix = `${normalizedPath}/`;
 
     for (const filePath of this.files.keys()) {
       if (filePath.startsWith(pathPrefix)) {
@@ -269,7 +269,7 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
 
   async listFiles(path: string): Promise<string[]> {
     const normalizedPath = this.normalizePath(path);
-    const pathPrefix = normalizedPath === '/' ? '' : normalizedPath + '/';
+    const pathPrefix = normalizedPath === '/' ? '' : `${normalizedPath}/`;
     const files: string[] = [];
 
     for (const filePath of this.files.keys()) {
@@ -323,7 +323,7 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
       this.watchers.set(normalizedPath, []);
     }
 
-    this.watchers.get(normalizedPath)!.push(callback);
+    this.watchers.get(normalizedPath)?.push(callback);
 
     return () => {
       const callbacks = this.watchers.get(normalizedPath);
@@ -388,7 +388,7 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
       callbacks.forEach((callback) => {
         try {
           callback(event);
-        } catch (error) {
+        } catch (_error) {
           // Ignore callback errors
         }
       });

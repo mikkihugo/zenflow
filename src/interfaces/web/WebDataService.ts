@@ -71,11 +71,11 @@ export class WebDataService {
       swarms: { active: 2, total: 5 },
       tasks: { pending: 3, active: 1, completed: 12 },
       resources: {
-        cpu: Math.floor(Math.random() * 100) + '%',
-        memory: Math.floor(Math.random() * 100) + '%',
+        cpu: `${Math.floor(Math.random() * 100)}%`,
+        memory: `${Math.floor(Math.random() * 100)}%`,
         disk: '23%',
       },
-      uptime: Math.floor(process.uptime() / 60) + 'm',
+      uptime: `${Math.floor(process.uptime() / 60)}m`,
     };
   }
 

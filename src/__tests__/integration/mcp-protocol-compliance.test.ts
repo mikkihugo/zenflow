@@ -5,8 +5,7 @@
 
 import { StdioMcpServer } from '../../coordination/mcp/mcp-server';
 import { HttpMcpServer } from '../../interfaces/mcp/http-mcp-server';
-import { MCPError, type MCPRequest, MCPResponse } from '../../interfaces/mcp/types';
-import { WebSocketManager } from '../../interfaces/web/WebSocketManager';
+import type { MCPRequest } from '../../interfaces/mcp/types';
 import { IntegrationTestSetup } from '../helpers/integration-test-setup';
 import { NetworkTestHelper } from '../helpers/network-test-helper';
 
@@ -291,7 +290,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         result: {
           tools: expect.arrayContaining([
             expect.objectContaining({
-              name: expect.stringMatching(/^mcp__ruv-swarm-zen__/),
+              name: expect.stringMatching(/^mcp__zen-swarm__/),
               description: expect.any(String),
               inputSchema: expect.any(Object),
             }),
@@ -306,7 +305,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         id: 'swarm-1',
         method: 'tools/call',
         params: {
-          name: 'mcp__ruv-swarm-zen__swarm_init',
+          name: 'mcp__zen-swarm__swarm_init',
           arguments: {
             topology: 'hierarchical',
             maxAgents: 5,
@@ -340,7 +339,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         id: 'session-1',
         method: 'tools/call',
         params: {
-          name: 'mcp__ruv-swarm-zen__swarm_init',
+          name: 'mcp__zen-swarm__swarm_init',
           arguments: {
             topology: 'mesh',
             maxAgents: 3,
@@ -356,7 +355,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         id: 'session-2',
         method: 'tools/call',
         params: {
-          name: 'mcp__ruv-swarm-zen__agent_spawn',
+          name: 'mcp__zen-swarm__agent_spawn',
           arguments: {
             type: 'coordinator',
             name: 'test-coordinator',
@@ -376,7 +375,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         id: 'session-3',
         method: 'tools/call',
         params: {
-          name: 'mcp__ruv-swarm-zen__swarm_status',
+          name: 'mcp__zen-swarm__swarm_status',
           arguments: {},
         },
       };
@@ -393,7 +392,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         id: 'memory-1',
         method: 'tools/call',
         params: {
-          name: 'mcp__ruv-swarm-zen__memory_usage',
+          name: 'mcp__zen-swarm__memory_usage',
           arguments: {
             action: 'store',
             key: 'test-session-data',
@@ -417,7 +416,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         id: 'memory-2',
         method: 'tools/call',
         params: {
-          name: 'mcp__ruv-swarm-zen__memory_usage',
+          name: 'mcp__zen-swarm__memory_usage',
           arguments: {
             action: 'retrieve',
             key: 'test-session-data',
@@ -447,7 +446,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
           id: 'orch-init',
           method: 'tools/call',
           params: {
-            name: 'mcp__ruv-swarm-zen__swarm_init',
+            name: 'mcp__zen-swarm__swarm_init',
             arguments: { topology: 'hierarchical', maxAgents: 4 },
           },
         })
@@ -461,7 +460,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
             id: 'orch-spawn-1',
             method: 'tools/call',
             params: {
-              name: 'mcp__ruv-swarm-zen__agent_spawn',
+              name: 'mcp__zen-swarm__agent_spawn',
               arguments: { type: 'coordinator', name: 'main-coord' },
             },
           })
@@ -472,7 +471,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
             id: 'orch-spawn-2',
             method: 'tools/call',
             params: {
-              name: 'mcp__ruv-swarm-zen__agent_spawn',
+              name: 'mcp__zen-swarm__agent_spawn',
               arguments: { type: 'worker', name: 'worker-1' },
             },
           })
@@ -485,7 +484,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         id: 'orch-task',
         method: 'tools/call',
         params: {
-          name: 'mcp__ruv-swarm-zen__task_orchestrate',
+          name: 'mcp__zen-swarm__task_orchestrate',
           arguments: {
             task: 'Process complex data analysis',
             strategy: 'parallel',
@@ -509,7 +508,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         id: 'invalid-1',
         method: 'tools/call',
         params: {
-          name: 'mcp__ruv-swarm-zen__swarm_init',
+          name: 'mcp__zen-swarm__swarm_init',
           arguments: {
             topology: 'invalid_topology', // Invalid value
             maxAgents: 'not_a_number', // Invalid type
@@ -563,7 +562,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
             id: 'cross-2',
             method: 'tools/call',
             params: {
-              name: 'mcp__ruv-swarm-zen__swarm_init',
+              name: 'mcp__zen-swarm__swarm_init',
               arguments: {
                 topology: 'mesh',
                 maxAgents: 3,
@@ -612,7 +611,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
           id: 'share-1',
           method: 'tools/call',
           params: {
-            name: 'mcp__ruv-swarm-zen__memory_usage',
+            name: 'mcp__zen-swarm__memory_usage',
             arguments: {
               action: 'store',
               key: `session:${sessionId}:data`,
@@ -723,7 +722,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
               id: `memory-test-${i}`,
               method: 'tools/call',
               params: {
-                name: 'mcp__ruv-swarm-zen__memory_usage',
+                name: 'mcp__zen-swarm__memory_usage',
                 arguments: {
                   action: 'store',
                   key: `test-data-${i}`,
@@ -741,7 +740,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
                 id: `cleanup-${i}`,
                 method: 'tools/call',
                 params: {
-                  name: 'mcp__ruv-swarm-zen__swarm_status',
+                  name: 'mcp__zen-swarm__swarm_status',
                   arguments: { cleanup: true },
                 },
               })

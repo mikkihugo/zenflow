@@ -12,8 +12,8 @@
  * - Proper resource lifecycle management
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import { SQLiteConnectionPool } from './sqlite-pool.js';
 
 class SwarmPersistencePooled {

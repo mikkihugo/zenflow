@@ -3,10 +3,10 @@
  * Tests system performance under various load conditions and stress scenarios
  */
 
-import { DocumentDrivenSystem } from '../../core/document-driven-system';
+import type { StdioMcpServer } from '../../coordination/mcp/mcp-server';
 import { SwarmCoordinator } from '../../coordination/swarm/core/swarm-coordinator';
+import { DocumentDrivenSystem } from '../../core/document-driven-system';
 import { HttpMcpServer } from '../../interfaces/mcp/http-mcp-server';
-import { StdioMcpServer } from '../../coordination/mcp/mcp-server';
 import { WebInterfaceServer } from '../../interfaces/web/WebInterfaceServer';
 import { RealFileSystemTestHelper } from '../helpers/filesystem-test-helper';
 import { IntegrationTestSetup } from '../helpers/integration-test-setup';
@@ -33,12 +33,12 @@ describe('Performance and Load Testing E2E Tests', () => {
   let documentSystem: DocumentDrivenSystem;
   let swarmCoordinator: SwarmCoordinator;
   let httpMcpServer: HttpMcpServer;
-  let stdioMcpServer: StdioMcpServer;
+  let _stdioMcpServer: StdioMcpServer;
   let webServer: WebInterfaceServer;
   let testSetup: IntegrationTestSetup;
   let fsHelper: RealFileSystemTestHelper;
   let networkHelper: RealNetworkTestHelper;
-  let perfMeasurement: PerformanceMeasurement;
+  let _perfMeasurement: PerformanceMeasurement;
 
   const TEST_PROJECT_PATH = '/tmp/claude-zen-performance-test';
   const HTTP_MCP_PORT = 3460;
@@ -49,7 +49,7 @@ describe('Performance and Load Testing E2E Tests', () => {
     testSetup = new IntegrationTestSetup();
     fsHelper = new RealFileSystemTestHelper();
     networkHelper = new RealNetworkTestHelper();
-    perfMeasurement = new PerformanceMeasurement();
+    _perfMeasurement = new PerformanceMeasurement();
 
     await testSetup.initializeFullEnvironment();
     await fsHelper.createTestDirectory(TEST_PROJECT_PATH);
@@ -135,35 +135,37 @@ High-performance workflow ${i} for concurrent execution testing with realistic c
         );
 
         const workflowStartTime = Date.now();
-        const workflowPromise = swarmCoordinator.orchestrateTask({
-          type: 'complete_workflow',
-          input: {
-            visionDocument: visionPath,
-            outputPath: workflowPath,
-            performanceMode: true,
-          },
-          strategy: 'parallel_optimized',
-          workflowId: `concurrent-workflow-${i}`,
-          performance: {
-            targetTime: 30000, // 30 seconds
-            memoryLimit: 100 * 1024 * 1024, // 100MB
-            cpuLimit: 80, // 80%
-          }
-        }).then((result) => {
-          const workflowEndTime = Date.now();
-          const executionTime = workflowEndTime - workflowStartTime;
-          
-          performanceMetrics.push({
-            responseTime: executionTime,
-            throughput: result.tasksCompleted / (executionTime / 1000),
-            memoryUsage: result.metrics?.memoryUsage || 0,
-            cpuUsage: result.metrics?.cpuUsage || 0,
-            errorRate: result.errors?.length / result.totalOperations || 0,
-            successRate: result.successfulOperations / result.totalOperations || 1,
-          });
+        const workflowPromise = swarmCoordinator
+          .orchestrateTask({
+            type: 'complete_workflow',
+            input: {
+              visionDocument: visionPath,
+              outputPath: workflowPath,
+              performanceMode: true,
+            },
+            strategy: 'parallel_optimized',
+            workflowId: `concurrent-workflow-${i}`,
+            performance: {
+              targetTime: 30000, // 30 seconds
+              memoryLimit: 100 * 1024 * 1024, // 100MB
+              cpuLimit: 80, // 80%
+            },
+          })
+          .then((result) => {
+            const workflowEndTime = Date.now();
+            const executionTime = workflowEndTime - workflowStartTime;
 
-          return result;
-        });
+            performanceMetrics.push({
+              responseTime: executionTime,
+              throughput: result.tasksCompleted / (executionTime / 1000),
+              memoryUsage: result.metrics?.memoryUsage || 0,
+              cpuUsage: result.metrics?.cpuUsage || 0,
+              errorRate: result.errors?.length / result.totalOperations || 0,
+              successRate: result.successfulOperations / result.totalOperations || 1,
+            });
+
+            return result;
+          });
 
         workflowPromises.push(workflowPromise);
       }
@@ -182,11 +184,15 @@ High-performance workflow ${i} for concurrent execution testing with realistic c
       });
 
       // Analyze performance metrics
-      const avgResponseTime = performanceMetrics.reduce((sum, m) => sum + m.responseTime, 0) / performanceMetrics.length;
-      const avgThroughput = performanceMetrics.reduce((sum, m) => sum + m.throughput, 0) / performanceMetrics.length;
-      const maxMemoryUsage = Math.max(...performanceMetrics.map(m => m.memoryUsage));
-      const avgCpuUsage = performanceMetrics.reduce((sum, m) => sum + m.cpuUsage, 0) / performanceMetrics.length;
-      const avgErrorRate = performanceMetrics.reduce((sum, m) => sum + m.errorRate, 0) / performanceMetrics.length;
+      const avgResponseTime =
+        performanceMetrics.reduce((sum, m) => sum + m.responseTime, 0) / performanceMetrics.length;
+      const avgThroughput =
+        performanceMetrics.reduce((sum, m) => sum + m.throughput, 0) / performanceMetrics.length;
+      const maxMemoryUsage = Math.max(...performanceMetrics.map((m) => m.memoryUsage));
+      const avgCpuUsage =
+        performanceMetrics.reduce((sum, m) => sum + m.cpuUsage, 0) / performanceMetrics.length;
+      const avgErrorRate =
+        performanceMetrics.reduce((sum, m) => sum + m.errorRate, 0) / performanceMetrics.length;
 
       // Performance targets
       expect(avgResponseTime).toBeLessThan(45000); // Average under 45 seconds
@@ -194,14 +200,6 @@ High-performance workflow ${i} for concurrent execution testing with realistic c
       expect(maxMemoryUsage).toBeLessThan(150 * 1024 * 1024); // Under 150MB peak
       expect(avgCpuUsage).toBeLessThan(90); // Under 90% CPU average
       expect(avgErrorRate).toBeLessThan(0.05); // Less than 5% error rate
-
-      console.log('Performance Metrics:', {
-        avgResponseTime: `${avgResponseTime}ms`,
-        avgThroughput: `${avgThroughput} ops/sec`,
-        maxMemoryUsage: `${Math.round(maxMemoryUsage / 1024 / 1024)}MB`,
-        avgCpuUsage: `${avgCpuUsage}%`,
-        avgErrorRate: `${(avgErrorRate * 100).toFixed(2)}%`,
-      });
     });
 
     it('should scale efficiently with increasing concurrent workflows', async () => {
@@ -262,12 +260,12 @@ High-performance workflow ${i} for concurrent execution testing with realistic c
         scalabilityResults.push({
           workflows: test.workflows,
           executionTime,
-          successfulWorkflows: results.filter(r => r.success).length,
+          successfulWorkflows: results.filter((r) => r.success).length,
           avgWorkflowTime: executionTime / test.workflows,
         });
 
         expect(executionTime).toBeLessThan(test.expectedMaxTime);
-        expect(results.every(r => r.success)).toBe(true);
+        expect(results.every((r) => r.success)).toBe(true);
       }
 
       // Analyze scalability curve
@@ -279,12 +277,9 @@ High-performance workflow ${i} for concurrent execution testing with realistic c
       });
 
       // Scalability should be near-linear (factor close to 1)
-      scalabilityFactors.slice(1).forEach(factor => {
+      scalabilityFactors.slice(1).forEach((factor) => {
         expect(factor).toBeLessThan(2.0); // Less than 2x linear growth
       });
-
-      console.log('Scalability Results:', scalabilityResults);
-      console.log('Scalability Factors:', scalabilityFactors);
     });
   });
 
@@ -298,7 +293,7 @@ High-performance workflow ${i} for concurrent execution testing with realistic c
       const loadTestConfig: LoadTestConfig = {
         concurrentUsers: 10,
         duration: 30, // 30 seconds
-        rampUpTime: 5,  // 5 seconds ramp up
+        rampUpTime: 5, // 5 seconds ramp up
         targetThroughput: 20, // 20 requests per second
       };
 
@@ -312,7 +307,7 @@ High-performance workflow ${i} for concurrent execution testing with realistic c
       }, 1000);
 
       const startTime = Date.now();
-      const endTime = startTime + (loadTestConfig.duration * 1000);
+      const endTime = startTime + loadTestConfig.duration * 1000;
       const requests: Promise<any>[] = [];
 
       // Generate sustained load
@@ -342,22 +337,23 @@ This document is generated for memory usage testing under sustained load.
             docContent
           );
 
-          const request = documentSystem.processVisionaryDocument(workspaceId, docPath)
-            .catch(error => ({ error, user, timestamp: Date.now() }));
+          const request = documentSystem
+            .processVisionaryDocument(workspaceId, docPath)
+            .catch((error) => ({ error, user, timestamp: Date.now() }));
 
           requests.push(request);
         }
 
         // Throttle to target throughput
-        await new Promise(resolve => setTimeout(resolve, 1000 / loadTestConfig.targetThroughput));
+        await new Promise((resolve) => setTimeout(resolve, 1000 / loadTestConfig.targetThroughput));
       }
 
       clearInterval(memoryMonitor);
 
       // Wait for all requests to complete
       const results = await Promise.allSettled(requests);
-      const successfulRequests = results.filter(r => r.status === 'fulfilled').length;
-      const failedRequests = results.filter(r => r.status === 'rejected').length;
+      const successfulRequests = results.filter((r) => r.status === 'fulfilled').length;
+      const failedRequests = results.filter((r) => r.status === 'rejected').length;
 
       // Memory analysis
       const initialMemory = memoryMeasurements[0];
@@ -371,23 +367,12 @@ This document is generated for memory usage testing under sustained load.
       expect(failedRequests).toBeLessThan(requests.length * 0.05); // <5% failure rate
       expect(memoryGrowthPercent).toBeLessThan(50); // Memory growth <50%
       expect(peakMemory).toBeLessThan(500 * 1024 * 1024); // Peak memory <500MB
-
-      console.log('Memory Usage Analysis:', {
-        initialMemory: `${Math.round(initialMemory / 1024 / 1024)}MB`,
-        finalMemory: `${Math.round(finalMemory / 1024 / 1024)}MB`,
-        peakMemory: `${Math.round(peakMemory / 1024 / 1024)}MB`,
-        memoryGrowth: `${Math.round(memoryGrowth / 1024 / 1024)}MB`,
-        memoryGrowthPercent: `${memoryGrowthPercent.toFixed(2)}%`,
-        totalRequests: requests.length,
-        successfulRequests,
-        failedRequests,
-      });
     });
 
     it('should efficiently handle large document processing', async () => {
       const largeSizes = [
-        { name: 'Medium', size: 50 * 1024 },     // 50KB
-        { name: 'Large', size: 500 * 1024 },    // 500KB
+        { name: 'Medium', size: 50 * 1024 }, // 50KB
+        { name: 'Large', size: 500 * 1024 }, // 500KB
         { name: 'XLarge', size: 2 * 1024 * 1024 }, // 2MB
       ];
 
@@ -453,7 +438,7 @@ class DocumentProcessor {
 
         try {
           await documentSystem.processVisionaryDocument(workspaceId, docPath);
-          
+
           const endTime = Date.now();
           const endMemory = process.memoryUsage().heapUsed;
           const processingTime = endTime - startTime;
@@ -464,14 +449,13 @@ class DocumentProcessor {
             actualSizeKB: Math.round(actualSize / 1024),
             processingTimeMs: processingTime,
             memoryUsedMB: Math.round(memoryUsed / 1024 / 1024),
-            throughputKBps: Math.round((actualSize / 1024) / (processingTime / 1000)),
+            throughputKBps: Math.round(actualSize / 1024 / (processingTime / 1000)),
             success: true,
           });
 
           // Performance assertions per size
           expect(processingTime).toBeLessThan(10000); // <10 seconds
           expect(memoryUsed).toBeLessThan(100 * 1024 * 1024); // <100MB additional
-
         } catch (error) {
           processingResults.push({
             size: size.name,
@@ -483,17 +467,15 @@ class DocumentProcessor {
       }
 
       // All sizes should process successfully
-      expect(processingResults.every(r => r.success)).toBe(true);
+      expect(processingResults.every((r) => r.success)).toBe(true);
 
       // Performance should scale reasonably with size
-      const throughputs = processingResults.map(r => r.throughputKBps);
+      const throughputs = processingResults.map((r) => r.throughputKBps);
       const minThroughput = Math.min(...throughputs);
       const maxThroughput = Math.max(...throughputs);
-      
+
       // Throughput variance should be reasonable
       expect(maxThroughput / minThroughput).toBeLessThan(5); // <5x variation
-
-      console.log('Large Document Processing Results:', processingResults);
     });
   });
 
@@ -505,20 +487,13 @@ class DocumentProcessor {
       httpMcpServer = new HttpMcpServer({ port: HTTP_MCP_PORT });
       webServer = new WebInterfaceServer({ port: WEB_SERVER_PORT });
 
-      await Promise.all([
-        documentSystem.initialize(),
-        httpMcpServer.start(),
-        webServer.start(),
-      ]);
+      await Promise.all([documentSystem.initialize(), httpMcpServer.start(), webServer.start()]);
 
       workspaceId = await documentSystem.loadWorkspace(TEST_PROJECT_PATH);
     });
 
     afterEach(async () => {
-      await Promise.all([
-        httpMcpServer.stop(),
-        webServer.stop(),
-      ]);
+      await Promise.all([httpMcpServer.stop(), webServer.stop()]);
     });
 
     it('should maintain consistent response times under varying load', async () => {
@@ -535,15 +510,14 @@ class DocumentProcessor {
         const batchPromises: Promise<any>[] = [];
 
         for (let batch = 0; batch < pattern.requests / pattern.concurrency; batch++) {
-          const batchStartTime = Date.now();
+          const _batchStartTime = Date.now();
           const concurrentRequests: Promise<any>[] = [];
 
           for (let req = 0; req < pattern.concurrency; req++) {
             const requestStartTime = Date.now();
-            
-            const request = networkHelper.httpPost(
-              `http://localhost:${HTTP_MCP_PORT}/mcp`,
-              {
+
+            const request = networkHelper
+              .httpPost(`http://localhost:${HTTP_MCP_PORT}/mcp`, {
                 jsonrpc: '2.0',
                 id: `consistency-test-${pattern.name}-${batch}-${req}`,
                 method: 'tools/call',
@@ -554,33 +528,36 @@ class DocumentProcessor {
                     includeMetrics: true,
                   },
                 },
-              }
-            ).then(response => {
-              const responseTime = Date.now() - requestStartTime;
-              responseTimes.push(responseTime);
-              return { response, responseTime };
-            });
+              })
+              .then((response) => {
+                const responseTime = Date.now() - requestStartTime;
+                responseTimes.push(responseTime);
+                return { response, responseTime };
+              });
 
             concurrentRequests.push(request);
           }
 
           batchPromises.push(Promise.all(concurrentRequests));
-          
+
           // Small delay between batches to simulate realistic load
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 100));
         }
 
         await Promise.all(batchPromises);
 
         // Calculate consistency metrics
-        const avgResponseTime = responseTimes.reduce((sum, rt) => sum + rt, 0) / responseTimes.length;
+        const avgResponseTime =
+          responseTimes.reduce((sum, rt) => sum + rt, 0) / responseTimes.length;
         const sortedTimes = responseTimes.sort((a, b) => a - b);
         const p50 = sortedTimes[Math.floor(sortedTimes.length * 0.5)];
         const p95 = sortedTimes[Math.floor(sortedTimes.length * 0.95)];
         const p99 = sortedTimes[Math.floor(sortedTimes.length * 0.99)];
         const minTime = Math.min(...responseTimes);
         const maxTime = Math.max(...responseTimes);
-        const variance = responseTimes.reduce((sum, rt) => sum + Math.pow(rt - avgResponseTime, 2), 0) / responseTimes.length;
+        const variance =
+          responseTimes.reduce((sum, rt) => sum + (rt - avgResponseTime) ** 2, 0) /
+          responseTimes.length;
         const stdDev = Math.sqrt(variance);
         const coefficientOfVariation = stdDev / avgResponseTime;
 
@@ -609,8 +586,6 @@ class DocumentProcessor {
       const degradationFactor = highLoadAvg / lowLoadAvg;
 
       expect(degradationFactor).toBeLessThan(3.0); // <3x degradation under high load
-
-      console.log('Response Time Consistency Results:', consistencyResults);
     });
 
     it('should handle traffic spikes gracefully', async () => {
@@ -629,11 +604,11 @@ class DocumentProcessor {
           `http://localhost:${WEB_SERVER_PORT}/api/status?workspaceId=${workspaceId}`
         );
         baselinePromises.push(request);
-        
-        await new Promise(resolve => setTimeout(resolve, 100)); // Steady rate
+
+        await new Promise((resolve) => setTimeout(resolve, 100)); // Steady rate
       }
 
-      const baselineResults = await Promise.all(baselinePromises);
+      const _baselineResults = await Promise.all(baselinePromises);
       const baselineTime = Date.now() - baselineStartTime;
       const baselineAvgTime = baselineTime / spikeTest.baselineRequests;
 
@@ -642,14 +617,13 @@ class DocumentProcessor {
       const spikeStartTime = Date.now();
 
       for (let i = 0; i < spikeTest.spikeRequests; i++) {
-        const request = networkHelper.httpPost(
-          `http://localhost:${WEB_SERVER_PORT}/api/documents/process`,
-          {
+        const request = networkHelper
+          .httpPost(`http://localhost:${WEB_SERVER_PORT}/api/documents/process`, {
             workspaceId,
             documentContent: `# Spike Test Document ${i}\n\nGenerated for traffic spike testing.`,
             documentType: 'task',
-          }
-        ).catch(error => ({ error, timestamp: Date.now() }));
+          })
+          .catch((error) => ({ error, timestamp: Date.now() }));
 
         spikePromises.push(request);
       }
@@ -659,8 +633,8 @@ class DocumentProcessor {
       const spikeAvgTime = spikeTime / spikeTest.spikeRequests;
 
       // Analyze spike handling
-      const successfulSpike = spikeResults.filter(r => !r.error).length;
-      const failedSpike = spikeResults.filter(r => r.error).length;
+      const successfulSpike = spikeResults.filter((r) => !r.error).length;
+      const _failedSpike = spikeResults.filter((r) => r.error).length;
       const successRate = successfulSpike / spikeTest.spikeRequests;
 
       // Recovery test - return to baseline
@@ -672,11 +646,11 @@ class DocumentProcessor {
           `http://localhost:${WEB_SERVER_PORT}/api/status?workspaceId=${workspaceId}`
         );
         recoveryPromises.push(request);
-        
-        await new Promise(resolve => setTimeout(resolve, 100));
+
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
 
-      const recoveryResults = await Promise.all(recoveryPromises);
+      const _recoveryResults = await Promise.all(recoveryPromises);
       const recoveryTime = Date.now() - recoveryStartTime;
       const recoveryAvgTime = recoveryTime / spikeTest.baselineRequests;
 
@@ -684,25 +658,6 @@ class DocumentProcessor {
       expect(successRate).toBeGreaterThan(0.8); // >80% success during spike
       expect(spikeAvgTime).toBeLessThan(baselineAvgTime * 5); // <5x degradation
       expect(recoveryAvgTime).toBeLessThan(baselineAvgTime * 1.5); // Recovery to <1.5x baseline
-
-      console.log('Traffic Spike Test Results:', {
-        baseline: {
-          avgTime: `${baselineAvgTime}ms`,
-          successCount: baselineResults.length,
-        },
-        spike: {
-          avgTime: `${spikeAvgTime}ms`,
-          successCount: successfulSpike,
-          failedCount: failedSpike,
-          successRate: `${(successRate * 100).toFixed(2)}%`,
-        },
-        recovery: {
-          avgTime: `${recoveryAvgTime}ms`,
-          successCount: recoveryResults.length,
-        },
-        degradationFactor: (spikeAvgTime / baselineAvgTime).toFixed(2),
-        recoveryFactor: (recoveryAvgTime / baselineAvgTime).toFixed(2),
-      });
     });
   });
 
@@ -784,7 +739,7 @@ class DocumentProcessor {
 
         // Monitor resources during execution
         const resourceMonitoring = setInterval(async () => {
-          const currentResources = await swarmCoordinator.getResourceMetrics();
+          const _currentResources = await swarmCoordinator.getResourceMetrics();
           // Resources would be tracked here
         }, 1000);
 
@@ -803,22 +758,23 @@ class DocumentProcessor {
           resourceEfficiency,
           allocatedAgents,
           totalAvailableAgents,
-          successfulWorkflows: results.filter(r => r.success).length,
-          avgResourceUsage: results.reduce((sum, r) => sum + (r.resourceUsage || 0), 0) / results.length,
+          successfulWorkflows: results.filter((r) => r.success).length,
+          avgResourceUsage:
+            results.reduce((sum, r) => sum + (r.resourceUsage || 0), 0) / results.length,
         });
 
         // Resource efficiency assertions
         expect(resourceEfficiency).toBeGreaterThan(test.expectedResourceEfficiency);
-        expect(results.every(r => r.success)).toBe(true);
+        expect(results.every((r) => r.success)).toBe(true);
 
         // Cleanup verification
-        expect(finalResources.unusedResources).toBeGreaterThan(initialResources.unusedResources * 0.9);
+        expect(finalResources.unusedResources).toBeGreaterThan(
+          initialResources.unusedResources * 0.9
+        );
       }
 
-      console.log('Resource Allocation Results:', resourceResults);
-
       // Resource efficiency should remain reasonable as load increases
-      const efficiencies = resourceResults.map(r => r.resourceEfficiency);
+      const efficiencies = resourceResults.map((r) => r.resourceEfficiency);
       const efficiencyDrop = efficiencies[0] - efficiencies[efficiencies.length - 1];
       expect(efficiencyDrop).toBeLessThan(0.2); // <20% efficiency drop
     });
@@ -829,10 +785,7 @@ class DocumentProcessor {
       documentSystem = new DocumentDrivenSystem();
       webServer = new WebInterfaceServer({ port: WEB_SERVER_PORT });
 
-      await Promise.all([
-        documentSystem.initialize(),
-        webServer.start(),
-      ]);
+      await Promise.all([documentSystem.initialize(), webServer.start()]);
     });
 
     afterEach(async () => {
@@ -856,10 +809,10 @@ class DocumentProcessor {
         // Simulate concurrent users
         for (let user = 0; user < scenario.users; user++) {
           const userWorkspaceId = await documentSystem.loadWorkspace(TEST_PROJECT_PATH);
-          
+
           const userSimulation = async () => {
             const userStartTime = Date.now();
-            
+
             try {
               // User creates a document
               const response1 = await networkHelper.httpPost(
@@ -909,11 +862,12 @@ class DocumentProcessor {
         const totalTime = Date.now() - startTime;
 
         // Calculate metrics
-        const successfulUsers = userResults.filter(r => r.success).length;
-        const failedUsers = userResults.filter(r => !r.success).length;
-        const avgResponseTime = userResults.reduce((sum, r) => sum + r.responseTime, 0) / userResults.length;
-        const maxResponseTime = Math.max(...userResults.map(r => r.responseTime));
-        const minResponseTime = Math.min(...userResults.map(r => r.responseTime));
+        const successfulUsers = userResults.filter((r) => r.success).length;
+        const failedUsers = userResults.filter((r) => !r.success).length;
+        const avgResponseTime =
+          userResults.reduce((sum, r) => sum + r.responseTime, 0) / userResults.length;
+        const maxResponseTime = Math.max(...userResults.map((r) => r.responseTime));
+        const minResponseTime = Math.min(...userResults.map((r) => r.responseTime));
 
         scalabilityResults.push({
           users: scenario.users,
@@ -934,15 +888,12 @@ class DocumentProcessor {
       }
 
       // Overall scalability analysis
-      const throughputs = scalabilityResults.map(r => r.throughput);
-      const avgResponseTimes = scalabilityResults.map(r => r.avgResponseTime);
+      const throughputs = scalabilityResults.map((r) => r.throughput);
+      const _avgResponseTimes = scalabilityResults.map((r) => r.avgResponseTime);
 
       // Throughput should not degrade severely with more users
       const throughputDegradation = throughputs[0] / throughputs[throughputs.length - 1];
       expect(throughputDegradation).toBeLessThan(5); // <5x degradation
-
-      console.log('User Scalability Results:', scalabilityResults);
-      console.log('Throughput Degradation Factor:', throughputDegradation.toFixed(2));
     });
   });
 });

@@ -12,7 +12,6 @@ export class MCPMessageHandler {
 
   // Placeholder for message handling implementation
   handleMessage(message) {
-    console.log('Processing MCP message:', message);
     return { success: true, data: message };
   }
 }

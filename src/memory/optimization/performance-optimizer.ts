@@ -253,7 +253,7 @@ export class PerformanceOptimizer extends EventEmitter {
 
     // Apply to all backends that support caching
     const results = [];
-    for (const [id, backend] of this.backends) {
+    for (const [id, _backend] of this.backends) {
       try {
         // Most backends don't expose cache control, but we can simulate
         results.push({ backendId: id, oldSize: currentCacheSize, newSize: newCacheSize });
@@ -270,7 +270,7 @@ export class PerformanceOptimizer extends EventEmitter {
    */
   private async rebuildIndexes(): Promise<any> {
     const results = [];
-    for (const [id, backend] of this.backends) {
+    for (const [id, _backend] of this.backends) {
       try {
         // Simulate index rebuild
         results.push({ backendId: id, status: 'rebuilt', duration: Math.random() * 1000 });
@@ -287,7 +287,7 @@ export class PerformanceOptimizer extends EventEmitter {
    */
   private async toggleCompression(): Promise<any> {
     const results = [];
-    for (const [id, backend] of this.backends) {
+    for (const [id, _backend] of this.backends) {
       try {
         // Simulate compression toggle
         const savings = Math.random() * 0.3 + 0.1; // 10-40% savings
@@ -305,7 +305,7 @@ export class PerformanceOptimizer extends EventEmitter {
    */
   private async adjustPrefetch(): Promise<any> {
     const results = [];
-    for (const [id, backend] of this.backends) {
+    for (const [id, _backend] of this.backends) {
       try {
         // Simulate prefetch adjustment
         const newStrategy = ['aggressive', 'conservative', 'adaptive'][
@@ -325,7 +325,7 @@ export class PerformanceOptimizer extends EventEmitter {
    */
   private async rebalancePartitions(): Promise<any> {
     const results = [];
-    for (const [id, backend] of this.backends) {
+    for (const [id, _backend] of this.backends) {
       try {
         // Simulate partition rebalancing
         const partitionCount = Math.floor(Math.random() * 8) + 4; // 4-12 partitions

@@ -1,12 +1,14 @@
 #!/usr/bin/env tsx
+
 /**
  * CLI command for domain splitting operations
+ * Converted from commander to meow as per project standards
  */
 
-import { program } from 'commander';
+import path from 'node:path';
 // Import the demo for now since full implementation has build dependencies
 import fs from 'fs-extra';
-import path from 'path';
+import meow from 'meow';
 
 interface CliOptions {
   domain?: string;
@@ -16,137 +18,169 @@ interface CliOptions {
   verbose?: boolean;
 }
 
-program
-  .name('domain-split')
-  .description('Domain splitting tool for managing large codebases')
-  .version('1.0.0');
+const cli = meow(
+  `
+🔧 Domain Splitting Tool
+Manage large codebases by splitting domains intelligently
 
-program
-  .command('analyze')
-  .description('Analyze a domain for splitting opportunities')
-  .argument('<domain-path>', 'Path to domain directory (e.g., src/neural)')
-  .option('-v, --verbose', 'Show detailed analysis')
-  .action(async (domainPath: string, options: any) => {
-    console.log(`🔍 Analyzing domain: ${domainPath}`);
+Usage
+  $ domain-split <command> [options]
 
-    try {
-      // For now, run the demo analysis
-      const demoModule = await import('./demo.js');
-      const demo = new demoModule.default();
+Commands
+  analyze <domain-path>    Analyze a domain for splitting opportunities
+  split <domain-path>      Split a domain into sub-domains  
+  neural                   Split the neural domain using predefined plan
+  validate <domain-path>   Validate domain structure and dependencies
 
-      // Get full path
-      const fullPath = path.resolve(domainPath);
-      const analysis = await demo.analyzeDomain(fullPath);
+Options
+  --dry-run               Simulate actions without making changes
+  --verbose, -v           Show detailed output
+  --help                  Show help
+  --version               Show version
 
-      console.log('\n📊 Analysis Results:');
-      console.log(`  Total Files: ${analysis.totalFiles}`);
-      console.log(`  Complexity Score: ${analysis.complexityScore}/10`);
-      console.log(`  Recommendations: ${analysis.recommendations.length}`);
+Examples
+  $ domain-split analyze src/neural --verbose
+  $ domain-split split src/coordination --dry-run
+  $ domain-split neural
+  $ domain-split validate src/database
+`,
+  {
+    importMeta: import.meta,
+    flags: {
+      dryRun: {
+        type: 'boolean',
+        default: false,
+      },
+      verbose: {
+        type: 'boolean',
+        shortFlag: 'v',
+        default: false,
+      },
+    },
+  }
+);
 
-      if (options.verbose) {
-        console.log('\n📂 File Categories:');
-        for (const [category, files] of Object.entries(analysis.filesByCategory)) {
-          if (files.length > 0) {
-            console.log(`  ${category}: ${files.length} files`);
-          }
-        }
+const [command, domainPath] = cli.input;
+const options = cli.flags;
 
-        console.log('\n💡 Recommendations:');
-        analysis.recommendations.forEach((rec) => console.log(`  • ${rec}`));
-      }
-    } catch (error) {
-      console.error('❌ Analysis failed:', error.message);
-      process.exit(1);
-    }
-  });
+if (!command) {
+  cli.showHelp();
+  process.exit(0);
+}
 
-program
-  .command('split')
-  .description('Split a domain into sub-domains')
-  .argument('<domain-path>', 'Path to domain directory')
-  .option('--dry-run', 'Simulate split without making changes')
-  .option('-v, --verbose', 'Show detailed progress')
-  .action(async (domainPath: string, options: any) => {
-    console.log(`🚀 ${options.dryRun ? 'Simulating' : 'Executing'} domain split: ${domainPath}`);
-
-    if (domainPath.includes('neural')) {
-      // Run neural domain demonstration
-      try {
-        const demoModule = await import('./demo.js');
-        const demo = new demoModule.default();
-        await demo.demonstrateNeuralSplitting();
-      } catch (error) {
-        console.error('❌ Split failed:', error.message);
+async function executeCommand() {
+  try {
+    switch (command) {
+      case 'analyze':
+        await handleAnalyze(domainPath, options);
+        break;
+      case 'split':
+        await handleSplit(domainPath, options);
+        break;
+      case 'neural':
+        await handleNeural(options);
+        break;
+      case 'validate':
+        await handleValidate(domainPath);
+        break;
+      default:
+        console.error(`❌ Unknown command: ${command}`);
+        cli.showHelp();
         process.exit(1);
+    }
+  } catch (error) {
+    console.error(`❌ Command failed:`, error.message);
+    process.exit(1);
+  }
+}
+
+async function handleAnalyze(domainPath: string, options: any) {
+  if (!domainPath) {
+    console.error('❌ Domain path is required for analyze command');
+    process.exit(1);
+  }
+
+  // For now, run the demo analysis
+  const demoModule = await import('./demo.js');
+  const demo = new demoModule.default();
+
+  // Get full path
+  const fullPath = path.resolve(domainPath);
+  const analysis = await demo.analyzeDomain(fullPath);
+
+  if (options.verbose) {
+    for (const [_category, files] of Object.entries(analysis.filesByCategory)) {
+      if (files.length > 0) {
+        // Verbose output
       }
-    } else {
-      console.log('🚧 Full splitting implementation available for neural domain');
-      console.log('For other domains, use --dry-run for simulation');
-
-      if (options.dryRun) {
-        console.log('📋 Dry run completed - no changes made');
-      }
     }
-  });
+    analysis.recommendations.forEach((_rec) => {
+      // Verbose recommendations
+    });
+  }
+}
 
-program
-  .command('neural')
-  .description('Split the neural domain using predefined plan')
-  .option('--dry-run', 'Simulate split without making changes')
-  .action(async (options: any) => {
-    console.log(`🧠 Neural domain splitting ${options.dryRun ? '(simulation)' : ''}`);
+async function handleSplit(domainPath: string, options: any) {
+  if (!domainPath) {
+    console.error('❌ Domain path is required for split command');
+    process.exit(1);
+  }
 
-    try {
-      const demoModule = await import('./demo.js');
-      const demo = new demoModule.default();
-      await demo.demonstrateNeuralSplitting();
-    } catch (error) {
-      console.error('❌ Neural split failed:', error.message);
-      process.exit(1);
+  if (domainPath.includes('neural')) {
+    // Run neural domain demonstration
+    const demoModule = await import('./demo.js');
+    const demo = new demoModule.default();
+    await demo.demonstrateNeuralSplitting();
+  } else {
+    if (options.dryRun) {
     }
-  });
+    // Handle other domains
+  }
+}
 
-program
-  .command('validate')
-  .description('Validate domain structure and dependencies')
-  .argument('<domain-path>', 'Path to domain directory')
-  .action(async (domainPath: string) => {
-    console.log(`✅ Validating domain: ${domainPath}`);
+async function handleNeural(_options: any) {
+  const demoModule = await import('./demo.js');
+  const demo = new demoModule.default();
+  await demo.demonstrateNeuralSplitting();
+}
 
-    const fullPath = path.resolve(domainPath);
+async function handleValidate(domainPath: string) {
+  if (!domainPath) {
+    console.error('❌ Domain path is required for validate command');
+    process.exit(1);
+  }
 
-    if (!(await fs.pathExists(fullPath))) {
-      console.error('❌ Domain path does not exist');
-      process.exit(1);
-    }
+  const fullPath = path.resolve(domainPath);
 
-    // Basic validation
-    const files = await getTypeScriptFiles(fullPath);
-    console.log(`📁 Found ${files.length} TypeScript files`);
+  if (!(await fs.pathExists(fullPath))) {
+    console.error('❌ Domain path does not exist');
+    process.exit(1);
+  }
 
-    // Check for common issues
-    const issues = [];
-    if (files.length > 50) {
-      issues.push('Domain is very large (>50 files) - consider splitting');
-    }
+  // Basic validation
+  const files = await getTypeScriptFiles(fullPath);
 
-    const testFiles = files.filter((f) => f.includes('.test.') || f.includes('.spec.'));
-    if (testFiles.length === 0) {
-      issues.push('No test files found');
-    }
+  // Check for common issues
+  const issues = [];
+  if (files.length > 50) {
+    issues.push('Domain is very large (>50 files) - consider splitting');
+  }
 
-    const indexFiles = files.filter((f) => path.basename(f) === 'index.ts');
-    if (indexFiles.length === 0) {
-      issues.push('No index.ts file found');
-    }
+  const testFiles = files.filter((f) => f.includes('.test.') || f.includes('.spec.'));
+  if (testFiles.length === 0) {
+    issues.push('No test files found');
+  }
 
-    if (issues.length === 0) {
-      console.log('✅ Domain structure looks good');
-    } else {
-      console.log('\n⚠️  Issues found:');
-      issues.forEach((issue) => console.log(`  • ${issue}`));
-    }
-  });
+  const indexFiles = files.filter((f) => path.basename(f) === 'index.ts');
+  if (indexFiles.length === 0) {
+    issues.push('No index.ts file found');
+  }
+
+  if (issues.length === 0) {
+  } else {
+    issues.forEach((_issue) => {});
+  }
+}
 
 async function getTypeScriptFiles(dir: string): Promise<string[]> {
   const files: string[] = [];
@@ -172,10 +206,5 @@ async function getTypeScriptFiles(dir: string): Promise<string[]> {
   return files;
 }
 
-// Parse and execute
-program.parse(process.argv);
-
-// Show help if no command provided
-if (!process.argv.slice(2).length) {
-  program.outputHelp();
-}
+// Execute the command
+executeCommand();

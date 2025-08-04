@@ -121,9 +121,9 @@ describe('Claude-Zen TDD London School Architecture', () => {
           neuralFramework: true,
         });
 
-        const architectQueenId = await mockHiveMind.spawnQueen('architect', {});
-        const codeQueenId = await mockHiveMind.spawnQueen('code', {});
-        const debugQueenId = await mockHiveMind.spawnQueen('debug', {});
+        const _architectQueenId = await mockHiveMind.spawnQueen('architect', {});
+        const _codeQueenId = await mockHiveMind.spawnQueen('code', {});
+        const _debugQueenId = await mockHiveMind.spawnQueen('debug', {});
 
         const result = await mockHiveMind.coordinateQueens(complexTask);
 
@@ -218,7 +218,7 @@ describe('Claude-Zen TDD London School Architecture', () => {
         ]);
 
         // Act - Test Queen lifecycle
-        const queenId = await mockHiveMind.spawnQueen('architect', {
+        const _queenId = await mockHiveMind.spawnQueen('architect', {
           specialization: 'microservices',
           experience: 'senior',
         });

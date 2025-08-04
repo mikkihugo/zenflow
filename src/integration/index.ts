@@ -59,15 +59,15 @@ export const IntegrationUtils = {
     try {
       switch (system) {
         case 'neural': {
-          const neural = await import('../neural/index.js');
+          const neural = await import('../neural/index');
           return Boolean(neural);
         }
         case 'database': {
-          const database = await import('../database/index.js');
+          const database = await import('../database/index');
           return Boolean(database);
         }
         case 'coordination': {
-          const coordination = await import('../coordination/index.js');
+          const coordination = await import('../coordination/index');
           return Boolean(coordination);
         }
         default:
@@ -90,7 +90,7 @@ export class IntegrationFactory {
     const key = `${systems.sort().join('-')}:${instanceKey}`;
 
     if (!IntegrationFactory.coordinators.has(key)) {
-      const { MultiSystemCoordinator } = await import('./multi-system-coordinator.js');
+      const { MultiSystemCoordinator } = await import('./multi-system-coordinator');
       const coordinator = new MultiSystemCoordinator(systems);
       IntegrationFactory.coordinators.set(key, coordinator);
     }

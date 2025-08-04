@@ -17,16 +17,25 @@ export interface LoggerConfig {
   level?: LogLevel;
 }
 
+// Core logger interface for DI compatibility
+export interface ILogger {
+  debug(message: string, meta?: any): void;
+  info(message: string, meta?: any): void;
+  warn(message: string, meta?: any): void;
+  error(message: string, meta?: any): void;
+}
+
 // Simple logger implementation to avoid circular imports
-function simpleCreateLogger(config: Partial<LoggerConfig> = {}) {
-  const prefix = config.prefix ? `[${config.prefix}]` : '';
+function simpleCreateLogger(config: Partial<LoggerConfig> | string = {}) {
+  const configObj = typeof config === 'string' ? { prefix: config } : config;
+  const prefix = configObj.prefix ? `[${configObj.prefix}]` : '';
 
   return {
-    info: (message: string, meta?: any) => console.log(`${prefix} ${message}`, meta || ''),
+    info: (_message: string, _meta?: any) => {},
     warn: (message: string, meta?: any) => console.warn(`${prefix} ${message}`, meta || ''),
     error: (message: string, meta?: any, error?: any) =>
       console.error(`${prefix} ${message}`, meta || '', error || ''),
-    debug: (message: string, meta?: any) => console.debug(`${prefix} ${message}`, meta || ''),
+    debug: (_message: string, _meta?: any) => {},
   };
 }
 
@@ -42,7 +51,7 @@ export interface LogMeta {
   [key: string]: any;
 }
 
-export class Logger {
+export class Logger implements ILogger {
   private coreLogger: ReturnType<typeof createLogger>;
 
   constructor(component?: string) {
@@ -58,8 +67,8 @@ export class Logger {
     this.coreLogger.warn(message, meta);
   }
 
-  error(message: string, error?: Error | unknown): void {
-    this.coreLogger.error(message, {}, error ?? null);
+  error(message: string, meta?: any): void {
+    this.coreLogger.error(message, meta || {}, meta);
   }
 
   debug(message: string, meta?: LogMeta): void {

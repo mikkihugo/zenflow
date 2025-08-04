@@ -759,23 +759,23 @@ export class DistributedLearningSystem extends EventEmitter {
 
   // Implementation of utility methods would continue here...
   private async distributeGlobalModel(
-    participants: FederatedParticipant[],
-    model: ModelSnapshot
+    _participants: FederatedParticipant[],
+    _model: ModelSnapshot
   ): Promise<void> {
     // Implementation placeholder
   }
 
   private async collectLocalUpdates(
-    participants: FederatedParticipant[],
-    roundId: string
+    _participants: FederatedParticipant[],
+    _roundId: string
   ): Promise<LocalModelUpdate[]> {
     // Implementation placeholder
     return [];
   }
 
   private async aggregateModelUpdates(
-    updates: LocalModelUpdate[],
-    strategy: AggregationMethod
+    _updates: LocalModelUpdate[],
+    _strategy: AggregationMethod
   ): Promise<AggregationResult> {
     // Implementation placeholder
     return {} as AggregationResult;

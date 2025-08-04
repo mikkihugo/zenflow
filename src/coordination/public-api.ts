@@ -1,137 +1,90 @@
 /**
- * Coordination Domain - Public API (OpenAPI 3 Compatible)
+ * Public API for Coordination Layer
  *
- * This file defines the EXPLICIT public interface for the coordination domain.
- * Following Google standards: clear, curated exports with OpenAPI 3 Swagger autodoc.
- *
- * @fileoverview Public API for swarm coordination, agents, and orchestration
- * @openapi 3.0.0
+ * This file provides the public interface for external modules to interact
+ * with the coordination layer without directly accessing internal implementations
  */
+
+import type { SwarmConfig, SwarmLifecycleState } from './swarm/core/types';
 
 /**
- * @swagger
- * components:
- *   schemas:
- *     CoordinationConfig:
- *       type: object
- *       required:
- *         - maxAgents
- *         - heartbeatInterval
- *         - timeout
- *       properties:
- *         maxAgents:
- *           type: integer
- *           minimum: 1
- *           maximum: 100
- *           description: Maximum number of agents in the swarm
- *         heartbeatInterval:
- *           type: integer
- *           minimum: 1000
- *           description: Heartbeat interval in milliseconds
- *         timeout:
- *           type: integer
- *           minimum: 5000
- *           description: Operation timeout in milliseconds
- *         enableHealthCheck:
- *           type: boolean
- *           default: true
- *           description: Enable health monitoring
+ * Public interface for swarm coordination
  */
+export interface PublicSwarmCoordinator {
+  // Swarm lifecycle
+  initialize(config?: SwarmConfig): Promise<void>;
+  shutdown(): Promise<void>;
 
-// Agent management - Essential agent functionality
-export { Agent } from './agents/agent';
-export { AgentManager } from './agents/manager';
-export type { AgentCapability, AgentConfig, AgentStatus } from './agents/types';
-// Diagnostics and monitoring
-export { HealthMonitor } from './diagnostics/health-monitor';
-export { PerformanceTracker } from './diagnostics/performance';
-export type { HealthStatus, PerformanceMetrics } from './diagnostics/types';
-// GitHub integration
-export { GitHubCoordinator } from './github/coordinator';
-export type { GitHubConfig, IssueMapping } from './github/types';
-export { HiveMindCoordinator } from './hive-mind/coordinator';
-// Orchestration systems
-export { MaestroOrchestrator } from './maestro/orchestrator';
-export type { CoordinationConfig, CoordinationEvent, CoordinationMetrics } from './manager';
-// Core coordination manager - The main entry point
-export { CoordinationManager } from './manager';
-// MCP integration - Swarm coordination protocol
-export { SwarmMCPServer } from './mcp/server';
-export type { MCPConfig, MCPTool } from './mcp/types';
-export type { OrchestrationConfig, TaskDefinition } from './orchestration/types';
-export { ChaosEngineering } from './swarm/chaos-engineering/chaos-engineering';
-export { CognitivePatterns } from './swarm/cognitive-patterns/cognitive-pattern-evolution';
-export { ConnectionManager } from './swarm/connection-management/connection-state-manager';
-// Swarm coordination - Core swarm functionality (NOT legacy!)
-export { SwarmCore } from './swarm/core/index';
-export type { SwarmConfig, SwarmMetrics, SwarmTopology } from './swarm/types';
+  // State management
+  getState(): SwarmLifecycleState;
+  getSwarmId(): string;
 
-/**
- * Coordination utilities - Helper functions for common operations
- */
-export const CoordinationUtils = {
-  /**
-   * Create a default coordination configuration with safe defaults
-   */
-  createConfig: (overrides?: Partial<CoordinationConfig>): CoordinationConfig => ({
-    maxAgents: 10,
-    heartbeatInterval: 5000,
-    timeout: 30000,
-    enableHealthCheck: true,
-    ...overrides,
-  }),
+  // Agent management
+  getAgentCount(): number;
+  getActiveAgents(): string[];
 
-  /**
-   * Validate coordination configuration
-   */
-  validateConfig: (config: CoordinationConfig): boolean => {
-    return config.maxAgents > 0 && config.heartbeatInterval > 0 && config.timeout > 0;
-  },
-
-  /**
-   * Generate unique agent ID with type prefix
-   */
-  generateAgentId: (type: string): string => {
-    const timestamp = Date.now().toString(36);
-    const random = Math.random().toString(36).substring(2, 7);
-    return `${type}-${timestamp}-${random}`;
-  },
-} as const;
-
-/**
- * Factory for creating coordination instances with dependency injection
- */
-export class CoordinationFactory {
-  private static instances = new Map<string, CoordinationManager>();
-
-  /**
-   * Create or retrieve a coordination manager instance
-   * Following Google's dependency injection patterns
-   */
-  static getInstance(
-    config: CoordinationConfig,
-    dependencies: {
-      logger?: any; // TODO: Replace with proper Logger interface
-      eventBus?: any; // TODO: Replace with proper EventBus interface
-      healthCheck?: any; // TODO: Replace with proper HealthCheck interface
-    } = {},
-    instanceKey = 'default'
-  ): CoordinationManager {
-    if (!CoordinationFactory.instances.has(instanceKey)) {
-      const instance = new CoordinationManager(config, dependencies.logger, dependencies.eventBus);
-      CoordinationFactory.instances.set(instanceKey, instance);
-    }
-
-    return CoordinationFactory.instances.get(instanceKey)!;
-  }
-
-  /**
-   * Clear all instances (useful for testing)
-   */
-  static clearInstances(): void {
-    for (const [, manager] of CoordinationFactory.instances) {
-      manager.stop();
-    }
-    CoordinationFactory.instances.clear();
-  }
+  // Status and monitoring
+  getStatus(): {
+    id: string;
+    state: SwarmLifecycleState;
+    agentCount: number;
+    taskCount: number;
+    uptime: number;
+  };
 }
+
+/**
+ * Factory function to create a public swarm coordinator
+ * This wraps the internal SwarmCoordinator with a limited public interface
+ */
+export async function createPublicSwarmCoordinator(
+  config?: SwarmConfig
+): Promise<PublicSwarmCoordinator> {
+  // Dynamically import to avoid circular dependencies
+  const { SwarmCoordinator } = await import('./swarm/core/swarm-coordinator');
+
+  const coordinator = new SwarmCoordinator();
+  await coordinator.initialize(config);
+
+  // Return limited public interface
+  return {
+    async initialize(config?: SwarmConfig) {
+      return coordinator.initialize(config);
+    },
+
+    async shutdown() {
+      return coordinator.shutdown();
+    },
+
+    getState() {
+      return coordinator.getState();
+    },
+
+    getSwarmId() {
+      return coordinator.getSwarmId();
+    },
+
+    getAgentCount() {
+      return coordinator.getAgentCount();
+    },
+
+    getActiveAgents() {
+      return coordinator.getActiveAgents();
+    },
+
+    getStatus() {
+      return {
+        id: coordinator.getSwarmId(),
+        state: coordinator.getState(),
+        agentCount: coordinator.getAgentCount(),
+        taskCount: coordinator.getTaskCount(),
+        uptime: coordinator.getUptime(),
+      };
+    },
+  };
+}
+
+// Export types that external modules can use
+export type { SwarmConfig, SwarmLifecycleState } from './swarm/core/types';
+// Re-export SwarmLifecycleState as SwarmState for backward compatibility
+export type SwarmState = SwarmLifecycleState;

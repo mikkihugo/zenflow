@@ -95,8 +95,6 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
         const result2 = neuralSuite.math.matrixMultiply(matrix1, matrix2);
         expect(neuralSuite.math.compareMatrices(result, result2, 1e-10)).toBe(true);
       }, 1000); // Max 1 second for matrix multiplication
-
-      console.log(`Matrix multiplication took ${performanceResult}ms`);
       expect(performanceResult).toBeLessThan(1000);
     });
   });
@@ -223,11 +221,11 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
         'performance-monitor',
       ]);
 
-      const assertions = hybridSetup.createDomainAssertions();
+      const _assertions = hybridSetup.createDomainAssertions();
 
       // Classical part: Real neural computation
       const trainingData = generateXORData();
-      const networkTopology = [2, 4, 1];
+      const _networkTopology = [2, 4, 1];
 
       // London part: Mock coordination interactions
       mocks['coordination-protocol'].mockImplementation((action: string) => {
@@ -237,7 +235,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
         return { success: true };
       });
 
-      mocks['message-router'].mockImplementation((message: any) => {
+      mocks['message-router'].mockImplementation((_message: any) => {
         return { delivered: true, timestamp: Date.now() };
       });
 

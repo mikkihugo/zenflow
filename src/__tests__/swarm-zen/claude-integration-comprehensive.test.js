@@ -3,11 +3,11 @@
  * Achieves 80%+ coverage for all claude-integration/* files
  */
 
+import { execSync } from 'node:child_process';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { execSync } from 'child_process';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -261,9 +261,9 @@ claude mcp add ruv-swarm npx ruv-swarm mcp start
 \`\`\`
 
 ## Available Tools
-- \`mcp__ruv-swarm-zen__swarm_init\` - Initialize swarm
-- \`mcp__ruv-swarm-zen__agent_spawn\` - Spawn agents
-- \`mcp__ruv-swarm-zen__task_orchestrate\` - Orchestrate tasks
+- \`mcp__zen-swarm__swarm_init\` - Initialize swarm
+- \`mcp__zen-swarm__agent_spawn\` - Spawn agents
+- \`mcp__zen-swarm__task_orchestrate\` - Orchestrate tasks
 
 ## Best Practices
 1. Use parallel execution for multiple operations
@@ -309,13 +309,13 @@ claude mcp add ruv-swarm npx ruv-swarm mcp start
                     name: 'swarm_init',
                     description: 'Initialize a new swarm with specified topology',
                     parameters: ['topology', 'maxAgents', 'strategy'],
-                    examples: ['mcp__ruv-swarm-zen__swarm_init {"topology": "mesh"}'],
+                    examples: ['mcp__zen-swarm__swarm_init {"topology": "mesh"}'],
                   },
                   {
                     name: 'agent_spawn',
                     description: 'Spawn a new agent in the swarm',
                     parameters: ['type', 'capabilities'],
-                    examples: ['mcp__ruv-swarm-zen__agent_spawn {"type": "coder"}'],
+                    examples: ['mcp__zen-swarm__agent_spawn {"type": "coder"}'],
                   },
                 ];
 
@@ -654,9 +654,9 @@ if "%1"=="init" (
           AdvancedCommands: class {
             static validateMcpCommand(command) {
               const validCommands = [
-                'mcp__ruv-swarm-zen__swarm_init',
-                'mcp__ruv-swarm-zen__agent_spawn',
-                'mcp__ruv-swarm-zen__task_orchestrate',
+                'mcp__zen-swarm__swarm_init',
+                'mcp__zen-swarm__agent_spawn',
+                'mcp__zen-swarm__task_orchestrate',
               ];
 
               if (!validCommands.includes(command)) {
@@ -666,18 +666,18 @@ if "%1"=="init" (
               return {
                 valid: true,
                 command,
-                prefix: 'mcp__ruv-swarm-zen__',
-                action: command.replace('mcp__ruv-swarm-zen__', ''),
+                prefix: 'mcp__zen-swarm__',
+                action: command.replace('mcp__zen-swarm__', ''),
               };
             }
           },
         };
       });
 
-      const result = AdvancedCommands.validateMcpCommand('mcp__ruv-swarm-zen__swarm_init');
+      const result = AdvancedCommands.validateMcpCommand('mcp__zen-swarm__swarm_init');
 
       expect(result.valid).toBe(true);
-      expect(result.command).toBe('mcp__ruv-swarm-zen__swarm_init');
+      expect(result.command).toBe('mcp__zen-swarm__swarm_init');
       expect(result.action).toBe('swarm_init');
     });
 
@@ -688,7 +688,7 @@ if "%1"=="init" (
         return {
           AdvancedCommands: class {
             static validateMcpCommand(command) {
-              const validCommands = ['mcp__ruv-swarm-zen__swarm_init'];
+              const validCommands = ['mcp__zen-swarm__swarm_init'];
 
               if (!validCommands.includes(command)) {
                 throw new Error(`Invalid MCP command: ${command}`);
@@ -714,13 +714,13 @@ if "%1"=="init" (
             static generateCommandTemplate(action, parameters = {}) {
               const templates = {
                 swarm_init: {
-                  command: 'mcp__ruv-swarm-zen__swarm_init',
+                  command: 'mcp__zen-swarm__swarm_init',
                   parameters: {
                     topology: parameters.topology || 'mesh',
                     maxAgents: parameters.maxAgents || 5,
                     strategy: parameters.strategy || 'balanced',
                   },
-                  example: `mcp__ruv-swarm-zen__swarm_init ${JSON.stringify({
+                  example: `mcp__zen-swarm__swarm_init ${JSON.stringify({
                     topology: parameters.topology || 'mesh',
                     maxAgents: parameters.maxAgents || 5,
                   })}`,
@@ -742,7 +742,7 @@ if "%1"=="init" (
         maxAgents: 8,
       });
 
-      expect(template.command).toBe('mcp__ruv-swarm-zen__swarm_init');
+      expect(template.command).toBe('mcp__zen-swarm__swarm_init');
       expect(template.parameters.topology).toBe('hierarchical');
       expect(template.parameters.maxAgents).toBe(8);
       expect(template.example).toContain('hierarchical');

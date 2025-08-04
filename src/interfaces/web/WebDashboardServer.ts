@@ -5,9 +5,9 @@
  * Separated from business logic for better maintainability.
  */
 
+import { existsSync } from 'node:fs';
+import { createServer, type Server as HTTPServer } from 'node:http';
 import express, { type Express } from 'express';
-import { existsSync } from 'fs';
-import { createServer, type Server as HTTPServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import { createLogger } from '../../utils/logger';
 import type { WebConfig } from './WebConfig';
@@ -94,9 +94,6 @@ export class WebDashboardServer {
         this.logger.info(`🌐 Web dashboard server running at ${url}`);
 
         if (!this.config.daemon) {
-          console.log(`\n🚀 Claude Code Flow Web Dashboard`);
-          console.log(`   Access at: ${url}`);
-          console.log(`   Press Ctrl+C to stop\n`);
         }
 
         resolve();

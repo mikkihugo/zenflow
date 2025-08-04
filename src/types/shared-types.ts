@@ -9,7 +9,7 @@
 // Core Swarm Types (moved from coordination)
 // ============================================
 
-export interface RuvSwarm {
+export interface ZenSwarm {
   id: string;
   name?: string;
   topology: SwarmTopology;
@@ -214,8 +214,8 @@ export type OptionalFields<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, 
 
 export interface CoordinationProvider {
   createCoordinator(config: SwarmConfig): Promise<any>;
-  getSwarm(id: string): Promise<RuvSwarm | null>;
-  listSwarms(): Promise<RuvSwarm[]>;
+  getSwarm(id: string): Promise<ZenSwarm | null>;
+  listSwarms(): Promise<ZenSwarm[]>;
   terminateSwarm(id: string): Promise<void>;
 }
 

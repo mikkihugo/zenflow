@@ -6,25 +6,17 @@
  */
 
 const { ComprehensiveTestOrchestrator } = require('./comprehensive-test-orchestrator.js');
-const fs = require('fs').promises;
-const path = require('path');
+const fs = require('node:fs').promises;
+const path = require('node:path');
 
 async function main() {
-  console.log('🚀 ruv-swarm Comprehensive Validation');
-  console.log('=====================================\n');
-
   const startTime = Date.now();
 
   try {
-    // Run comprehensive test orchestration
-    console.log('Starting comprehensive test orchestration...\n');
     const orchestrator = new ComprehensiveTestOrchestrator();
     const results = await orchestrator.runComprehensiveTests();
 
     const totalDuration = Date.now() - startTime;
-
-    // Generate final validation report
-    console.log('\n📄 Generating Final Validation Report...');
 
     const finalReport = {
       timestamp: new Date().toISOString(),
@@ -111,44 +103,12 @@ async function main() {
 
     // Generate summary report
     await generateSummaryReport(finalReport);
-
-    // Console output
-    console.log('\n🎯 FINAL VALIDATION SUMMARY');
-    console.log('===========================');
-    console.log(`Overall Status: ${finalReport.status}`);
-    console.log(
-      `Validation Score: ${validationScore.toFixed(1)}% (${finalReport.validation.status})`
-    );
-    console.log(`Targets Met: ${targetsMet}/${totalTargets}`);
-    console.log(`Total Duration: ${Math.round(totalDuration / 1000)}s`);
-    console.log(`CI/CD Ready: ${finalReport.cicdReadiness ? 'YES' : 'NO'}`);
-
-    console.log('\n📊 Performance Target Validation:');
-    Object.entries(finalReport.validation.performanceTargets).forEach(([key, target]) => {
-      console.log(
-        `   ${target.met ? '✅' : '❌'} ${key}: ${target.actual} (Target: ${target.target})`
-      );
-    });
-
-    console.log('\n🔒 Security & Quality:');
-    console.log(
-      `   ${finalReport.validation.performanceTargets.security.met ? '✅' : '❌'} Security Score: ${finalReport.validation.performanceTargets.security.actual}/100`
-    );
-
-    console.log('\n🔗 Integration Validation:');
-    Object.entries(finalReport.validation.integrationTargets).forEach(([key, target]) => {
-      console.log(`   ${target.met ? '✅' : '❌'} ${key}: ${target.actual}`);
-    });
+    Object.entries(finalReport.validation.performanceTargets).forEach(([_key, _target]) => {});
+    Object.entries(finalReport.validation.integrationTargets).forEach(([_key, _target]) => {});
 
     if (finalReport.recommendations.length > 0) {
-      console.log('\n💡 Final Recommendations:');
-      finalReport.recommendations.forEach((rec, i) => {
-        console.log(`   ${i + 1}. ${rec}`);
-      });
+      finalReport.recommendations.forEach((_rec, _i) => {});
     }
-
-    console.log(`\n📄 Final report saved to: ${reportPath}`);
-    console.log(`📋 Summary report saved to: ${path.join(__dirname, 'VALIDATION_SUMMARY.md')}`);
 
     // Exit with appropriate code
     process.exit(finalReport.status === 'PASSED' && validationScore >= 90 ? 0 : 1);

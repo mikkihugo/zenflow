@@ -208,10 +208,16 @@ export class SwarmSynchronizer extends EventEmitter {
     if (!this.eventBus) return;
 
     this.eventBus.emit('swarm:sync:broadcast', {
-      syncId,
+      id: `swarm-sync-broadcast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      version: '1.0.0',
+      timestamp: new Date(),
+      source: this.swarmId,
+      swarmId: this.swarmId,
       sourceSwarmId: this.swarmId,
+      syncId,
+      syncType: 'state',
+      broadcastScope: 'all-agents',
       state: localState,
-      timestamp: Date.now(),
     });
   }
 
@@ -402,10 +408,16 @@ export class SwarmSynchronizer extends EventEmitter {
     // Respond with our current state
     if (this.eventBus) {
       this.eventBus.emit('swarm:sync:response', {
+        id: `swarm-sync-response-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        version: '1.0.0',
+        timestamp: new Date(),
+        source: this.swarmId,
+        swarmId: this.swarmId,
         syncId: data.syncId,
-        sourceSwarmId: this.swarmId,
-        state: this.gatherLocalState(),
-        timestamp: Date.now(),
+        respondingAgentId: this.swarmId,
+        responseType: 'ack',
+        responseData: this.gatherLocalState(),
+        processingTime: 10,
       });
     }
   }

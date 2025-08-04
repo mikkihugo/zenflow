@@ -3,10 +3,10 @@
  * Real-time resource monitoring and threshold management
  */
 
-import type { IResourceMonitor } from '../interfaces';
+import type { ResourceMonitor } from '../interfaces';
 import type { LoadMetrics } from '../types';
 
-export class ResourceMonitor implements IResourceMonitor {
+export class ResourceMonitor implements ResourceMonitor {
   private monitoringAgents: Set<string> = new Set();
   private metricsCache: Map<string, LoadMetrics> = new Map();
   private thresholds: Map<string, Record<string, number>> = new Map();
@@ -43,7 +43,7 @@ export class ResourceMonitor implements IResourceMonitor {
 
   public async getHistoricalMetrics(
     agentId: string,
-    timeRange: { start: Date; end: Date }
+    _timeRange: { start: Date; end: Date }
   ): Promise<LoadMetrics[]> {
     // In a real implementation, this would query a time-series database
     const current = this.metricsCache.get(agentId);

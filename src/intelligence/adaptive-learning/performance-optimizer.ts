@@ -5,7 +5,7 @@
  * learned patterns to improve overall swarm performance and efficiency.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import type {
   AdaptiveLearningConfig,
   AdaptiveThreshold,
@@ -35,7 +35,6 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
   private resourceHistory = new Map<string, ResourceStrategy[]>();
   private optimizationMetrics = new Map<string, PerformanceMetrics>();
   private adaptiveThresholds = new Map<string, AdaptiveThreshold>();
-  private config: AdaptiveLearningConfig;
   private context: SystemContext;
 
   constructor(config: AdaptiveLearningConfig, context: SystemContext) {
@@ -121,7 +120,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
     if (!this.allocationHistory.has(allocationId)) {
       this.allocationHistory.set(allocationId, []);
     }
-    this.allocationHistory.get(allocationId)!.push(strategy);
+    this.allocationHistory.get(allocationId)?.push(strategy);
 
     this.emit('allocationOptimized', {
       tasks: tasks.length,
@@ -166,7 +165,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
     if (!this.resourceHistory.has(resourceId)) {
       this.resourceHistory.set(resourceId, []);
     }
-    this.resourceHistory.get(resourceId)!.push(strategy);
+    this.resourceHistory.get(resourceId)?.push(strategy);
 
     this.emit('resourceOptimized', {
       resources: resources.length,
@@ -472,7 +471,12 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
     return allocations;
   }
 
-  private calculateAgentTaskScore(agent: Agent, task: Task, agentInfo: any, taskInfo: any): number {
+  private calculateAgentTaskScore(
+    agent: Agent,
+    task: Task,
+    _agentInfo: any,
+    _taskInfo: any
+  ): number {
     let score = 0;
 
     // Capability match
@@ -496,21 +500,21 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
     return score;
   }
 
-  private calculateAllocationEfficiency(allocations: TaskAllocation[], agents: Agent[]): number {
+  private calculateAllocationEfficiency(allocations: TaskAllocation[], _agents: Agent[]): number {
     if (allocations.length === 0) return 0;
 
     const totalConfidence = allocations.reduce((sum, alloc) => sum + alloc.confidence, 0);
     return totalConfidence / allocations.length;
   }
 
-  private calculateResourceUtilization(allocations: TaskAllocation[], agents: Agent[]): number {
+  private calculateResourceUtilization(_allocations: TaskAllocation[], agents: Agent[]): number {
     if (agents.length === 0) return 0;
 
     const totalLoad = agents.reduce((sum, agent) => sum + agent.currentLoad, 0);
     return totalLoad / agents.length;
   }
 
-  private calculateLoadBalance(allocations: TaskAllocation[], agents: Agent[]): number {
+  private calculateLoadBalance(_allocations: TaskAllocation[], agents: Agent[]): number {
     if (agents.length === 0) return 1;
 
     const loads = agents.map((agent) => agent.currentLoad);
@@ -599,7 +603,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
     return Math.min(1, avgEfficiency / 100); // Normalize to 0-1
   }
 
-  private calculateUtilizationTarget(resources: Resource[]): number {
+  private calculateUtilizationTarget(_resources: Resource[]): number {
     // Target 80% utilization as optimal
     return 0.8;
   }
@@ -624,7 +628,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
     const thresholds: AdaptiveThreshold[] = [];
 
     for (const resource of resources) {
-      const pattern = patterns.get(resource.id);
+      const _pattern = patterns.get(resource.id);
 
       thresholds.push({
         metric: `${resource.type}_utilization`,
@@ -653,7 +657,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
 
   private generateEfficiencyOptimizations(
     bottlenecks: string[],
-    metrics: PerformanceMetrics
+    _metrics: PerformanceMetrics
   ): OptimizationAction[] {
     const optimizations: OptimizationAction[] = [];
 
@@ -702,7 +706,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
 
   private calculateEfficiencyGain(
     optimizations: OptimizationAction[],
-    metrics: PerformanceMetrics
+    _metrics: PerformanceMetrics
   ): number {
     return optimizations.reduce((total, opt) => total + opt.expectedImpact, 0);
   }
@@ -802,7 +806,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
     }));
   }
 
-  private calculateLatencyReduction(optimizations: any[], bottlenecks: Bottleneck[]): number {
+  private calculateLatencyReduction(optimizations: any[], _bottlenecks: Bottleneck[]): number {
     return optimizations.reduce((total, opt) => total + opt.expectedReduction, 0);
   }
 
@@ -833,7 +837,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
   }
 
   private createLatencyMonitoringPlan(
-    bottlenecks: Bottleneck[],
+    _bottlenecks: Bottleneck[],
     optimizations: any[]
   ): MonitoringStrategy {
     const allMetrics = optimizations.flatMap((opt) => opt.monitoring);

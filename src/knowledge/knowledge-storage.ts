@@ -19,13 +19,6 @@
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import SQLiteBackend from './knowledge-cache-backends/sqlite-backend';
-import {
-  KnowledgeCacheBackend,
-  KnowledgeCacheConfig,
-  KnowledgeCacheStats,
-  KnowledgeEntry,
-  KnowledgeSearchQuery,
-} from './knowledge-cache-interface';
 
 /**
  * Independent FACT Storage System with pluggable backends
@@ -64,18 +57,12 @@ export class FACTStorageSystem extends EventEmitter {
    * Initialize the FACT storage system
    */
   async initialize(): Promise<void> {
-    console.log(`💾 Initializing FACT Storage System (${this.config.backend})...`);
-
     try {
       // Initialize backend
       await this.backend.initialize();
 
       // Start cleanup timer
       this.startCleanupTimer();
-
-      console.log(`✅ FACT Storage initialized with ${this.config.backend} backend`);
-      console.log(`📊 Memory cache limit: ${this.config.maxMemoryCacheSize} entries`);
-      console.log(`⏰ Default TTL: ${this.config.defaultTTL / 1000 / 60} minutes`);
 
       this.emit('storageInitialized', {
         backend: this.config.backend,
@@ -112,8 +99,6 @@ export class FACTStorageSystem extends EventEmitter {
       await this.backend.store(knowledgeEntry);
 
       this.stats.entriesCreated++;
-
-      console.log(`💾 Stored FACT knowledge: ${id} (${entry.metadata.type})`);
       this.emit('knowledgeStored', { id, type: entry.metadata.type });
 
       return id;
@@ -133,8 +118,6 @@ export class FACTStorageSystem extends EventEmitter {
       memoryEntry.accessCount++;
       memoryEntry.lastAccessed = Date.now();
       this.stats.hits++;
-
-      console.log(`⚡ FACT memory cache hit: ${id}`);
       return memoryEntry;
     }
 
@@ -152,7 +135,6 @@ export class FACTStorageSystem extends EventEmitter {
         await this.backend.store(backendEntry);
 
         this.stats.hits++;
-        console.log(`🗄️ FACT backend cache hit: ${id}`);
         return backendEntry;
       }
     } catch (error) {
@@ -167,8 +149,6 @@ export class FACTStorageSystem extends EventEmitter {
    * Search FACT knowledge entries
    */
   async searchKnowledge(query: FACTSearchQuery): Promise<FACTKnowledgeEntry[]> {
-    console.log(`🔍 Searching FACT knowledge:`, query);
-
     try {
       // Search backend (more comprehensive than memory-only search)
       const results = await this.backend.search(query);
@@ -180,8 +160,6 @@ export class FACTStorageSystem extends EventEmitter {
           await this.storeInMemory(result);
         }
       }
-
-      console.log(`✅ Found ${results.length} FACT knowledge entries`);
       return results;
     } catch (error) {
       console.error('FACT knowledge search failed:', error);
@@ -241,8 +219,6 @@ export class FACTStorageSystem extends EventEmitter {
    * Clean up expired entries from both memory and backend
    */
   async cleanup(): Promise<void> {
-    console.log('🧹 Starting FACT storage cleanup...');
-
     const now = Date.now();
     let memoryEvictions = 0;
 
@@ -259,10 +235,6 @@ export class FACTStorageSystem extends EventEmitter {
 
     this.stats.evictions += memoryEvictions;
     this.stats.entriesDeleted += backendDeletions;
-
-    console.log(
-      `✅ FACT cleanup complete: ${memoryEvictions} memory evictions, ${backendDeletions} backend deletions`
-    );
     this.emit('cleanupCompleted', { memoryEvictions, backendDeletions });
   }
 
@@ -270,8 +242,6 @@ export class FACTStorageSystem extends EventEmitter {
    * Clear all storage (memory and backend)
    */
   async clearAll(): Promise<void> {
-    console.log('🗑️ Clearing all FACT storage...');
-
     // Clear memory
     this.memoryCache.clear();
 
@@ -286,8 +256,6 @@ export class FACTStorageSystem extends EventEmitter {
       entriesCreated: 0,
       entriesDeleted: 0,
     };
-
-    console.log('✅ All FACT storage cleared');
     this.emit('storageCleared');
   }
 
@@ -384,8 +352,6 @@ export class FACTStorageSystem extends EventEmitter {
    * Shutdown storage system
    */
   async shutdown(): Promise<void> {
-    console.log('🔄 Shutting down FACT Storage System...');
-
     if (this.cleanupTimer) {
       clearInterval(this.cleanupTimer);
     }
@@ -399,7 +365,6 @@ export class FACTStorageSystem extends EventEmitter {
     this.memoryCache.clear();
 
     this.emit('storageShutdown');
-    console.log('✅ FACT Storage System shutdown complete');
   }
 }
 

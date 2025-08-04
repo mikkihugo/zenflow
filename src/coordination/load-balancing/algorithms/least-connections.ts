@@ -3,7 +3,7 @@
  * Predictive capacity modeling with connection tracking
  */
 
-import type { ILoadBalancingAlgorithm } from '../interfaces';
+import type { LoadBalancingAlgorithm } from '../interfaces';
 import type { Agent, LoadMetrics, RoutingResult, Task } from '../types';
 
 interface ConnectionState {
@@ -17,7 +17,7 @@ interface ConnectionState {
   lastCapacityUpdate: Date;
 }
 
-export class LeastConnectionsAlgorithm implements ILoadBalancingAlgorithm {
+export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   public readonly name = 'least_connections';
 
   private connectionStates: Map<string, ConnectionState> = new Map();
@@ -113,9 +113,9 @@ export class LeastConnectionsAlgorithm implements ILoadBalancingAlgorithm {
    */
   public async onTaskComplete(
     agentId: string,
-    task: Task,
+    _task: Task,
     duration: number,
-    success: boolean
+    _success: boolean
   ): Promise<void> {
     const state = this.getOrCreateConnectionState(agentId);
 
@@ -141,7 +141,7 @@ export class LeastConnectionsAlgorithm implements ILoadBalancingAlgorithm {
   /**
    * Handle agent failure
    */
-  public async onAgentFailure(agentId: string, error: Error): Promise<void> {
+  public async onAgentFailure(agentId: string, _error: Error): Promise<void> {
     const state = this.getOrCreateConnectionState(agentId);
 
     // Reset active connections on failure

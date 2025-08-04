@@ -4,7 +4,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { RuvSwarm } from '../../src/index-enhanced.js';
+import { ZenSwarm } from '../../src/index-enhanced.js';
 import { EnhancedMCPTools } from '../../src/mcp-tools-enhanced.js';
 
 // Mock dependencies
@@ -13,15 +13,15 @@ jest.mock('../../src/persistence.js');
 
 describe('MCP Validation Edge Cases', () => {
   let mcpTools;
-  let mockRuvSwarm;
+  let mockZenSwarm;
 
   beforeEach(() => {
-    mockRuvSwarm = {
+    mockZenSwarm = {
       createSwarm: jest.fn(),
       detectFeatures: jest.fn(),
       benchmark: jest.fn(),
     };
-    RuvSwarm.initialize = jest.fn().mockResolvedValue(mockRuvSwarm);
+    ZenSwarm.initialize = jest.fn().mockResolvedValue(mockZenSwarm);
     mcpTools = new EnhancedMCPTools();
   });
 
@@ -31,7 +31,7 @@ describe('MCP Validation Edge Cases', () => {
 
   describe('Iteration Validation Edge Cases', () => {
     it('should reject iterations at boundary values', async () => {
-      await mcpTools.initialize(mockRuvSwarm);
+      await mcpTools.initialize(mockZenSwarm);
 
       // Test boundary values
       const boundaryValues = [
@@ -59,15 +59,15 @@ describe('MCP Validation Edge Cases', () => {
           );
         } else {
           // Should not throw
-          mockRuvSwarm.benchmark.mockResolvedValue({ results: [] });
+          mockZenSwarm.benchmark.mockResolvedValue({ results: [] });
           await mcpTools.benchmark_run({ iterations: value });
         }
       }
     });
 
     it('should handle floating point precision issues', async () => {
-      await mcpTools.initialize(mockRuvSwarm);
-      mockRuvSwarm.benchmark.mockResolvedValue({ results: [] });
+      await mcpTools.initialize(mockZenSwarm);
+      mockZenSwarm.benchmark.mockResolvedValue({ results: [] });
 
       // Floating point edge cases
       const floatCases = [
@@ -89,7 +89,7 @@ describe('MCP Validation Edge Cases', () => {
 
   describe('Learning Rate Validation Edge Cases', () => {
     it('should validate learning rate boundaries', async () => {
-      await mcpTools.initialize(mockRuvSwarm);
+      await mcpTools.initialize(mockZenSwarm);
 
       const learningRateTests = [
         { value: 0, shouldFail: true },
@@ -130,7 +130,7 @@ describe('MCP Validation Edge Cases', () => {
 
   describe('Model Type Validation Edge Cases', () => {
     it('should handle case sensitivity and whitespace in model types', async () => {
-      await mcpTools.initialize(mockRuvSwarm);
+      await mcpTools.initialize(mockZenSwarm);
 
       const modelTypeTests = [
         { value: 'feedforward', shouldFail: false },
@@ -176,7 +176,7 @@ describe('MCP Validation Edge Cases', () => {
 
   describe('Swarm ID Edge Cases', () => {
     it('should handle special characters in swarm IDs', async () => {
-      await mcpTools.initialize(mockRuvSwarm);
+      await mcpTools.initialize(mockZenSwarm);
 
       const specialIds = [
         'swarm-with-dashes',
@@ -196,7 +196,7 @@ describe('MCP Validation Edge Cases', () => {
         'a'.repeat(1000), // Very long ID
       ];
 
-      mockRuvSwarm.createSwarm.mockResolvedValue({
+      mockZenSwarm.createSwarm.mockResolvedValue({
         id: 'created-swarm',
         topology: 'mesh',
         agents: [],
@@ -217,10 +217,10 @@ describe('MCP Validation Edge Cases', () => {
 
   describe('Concurrent Operation Edge Cases', () => {
     it('should handle race conditions in swarm initialization', async () => {
-      await mcpTools.initialize(mockRuvSwarm);
+      await mcpTools.initialize(mockZenSwarm);
 
       let callCount = 0;
-      mockRuvSwarm.createSwarm.mockImplementation(async () => {
+      mockZenSwarm.createSwarm.mockImplementation(async () => {
         callCount++;
         // Simulate varying processing times
         await new Promise((resolve) => setTimeout(resolve, Math.random() * 100));
@@ -250,7 +250,7 @@ describe('MCP Validation Edge Cases', () => {
     });
 
     it('should handle concurrent operations on the same swarm', async () => {
-      await mcpTools.initialize(mockRuvSwarm);
+      await mcpTools.initialize(mockZenSwarm);
 
       const mockSwarm = {
         id: 'test-swarm',
@@ -262,7 +262,7 @@ describe('MCP Validation Edge Cases', () => {
         agents: [],
       };
 
-      mockRuvSwarm.createSwarm.mockResolvedValue(mockSwarm);
+      mockZenSwarm.createSwarm.mockResolvedValue(mockSwarm);
       await mcpTools.swarm_init({ topology: 'mesh' });
 
       // Spawn many agents concurrently on the same swarm
@@ -286,9 +286,9 @@ describe('MCP Validation Edge Cases', () => {
 
   describe('Memory Pressure Edge Cases', () => {
     it('should handle memory limits when creating large swarms', async () => {
-      await mcpTools.initialize(mockRuvSwarm);
+      await mcpTools.initialize(mockZenSwarm);
 
-      mockRuvSwarm.createSwarm.mockImplementation(async (config) => {
+      mockZenSwarm.createSwarm.mockImplementation(async (config) => {
         if (config.maxAgents > 100) {
           throw new Error('Memory limit exceeded');
         }
@@ -314,10 +314,10 @@ describe('MCP Validation Edge Cases', () => {
     });
 
     it('should handle memory cleanup on failure', async () => {
-      await mcpTools.initialize(mockRuvSwarm);
+      await mcpTools.initialize(mockZenSwarm);
 
       let swarmCount = 0;
-      mockRuvSwarm.createSwarm.mockImplementation(async () => {
+      mockZenSwarm.createSwarm.mockImplementation(async () => {
         swarmCount++;
         if (swarmCount > 5) {
           throw new Error('Resource exhausted');
@@ -345,7 +345,7 @@ describe('MCP Validation Edge Cases', () => {
 
   describe('Input Sanitization Edge Cases', () => {
     it('should sanitize potentially malicious inputs', async () => {
-      await mcpTools.initialize(mockRuvSwarm);
+      await mcpTools.initialize(mockZenSwarm);
 
       const maliciousInputs = [
         { task: '<script>alert("xss")</script>' },
@@ -381,7 +381,7 @@ describe('MCP Validation Edge Cases', () => {
 
   describe('Network and Timeout Edge Cases', () => {
     it('should handle network timeouts gracefully', async () => {
-      await mcpTools.initialize(mockRuvSwarm);
+      await mcpTools.initialize(mockZenSwarm);
 
       const mockSwarm = {
         monitor: jest.fn().mockImplementation(async () => {
@@ -405,7 +405,7 @@ describe('MCP Validation Edge Cases', () => {
 
   describe('State Consistency Edge Cases', () => {
     it('should maintain consistency during rapid state changes', async () => {
-      await mcpTools.initialize(mockRuvSwarm);
+      await mcpTools.initialize(mockZenSwarm);
 
       const mockSwarm = {
         id: 'test-swarm',
@@ -413,7 +413,7 @@ describe('MCP Validation Edge Cases', () => {
         getStatus: jest.fn().mockReturnValue({ topology: 'mesh' }),
       };
 
-      mockRuvSwarm.createSwarm.mockResolvedValue(mockSwarm);
+      mockZenSwarm.createSwarm.mockResolvedValue(mockSwarm);
       await mcpTools.swarm_init({ topology: 'mesh' });
 
       // Rapid topology changes
@@ -444,8 +444,6 @@ describe('MCP Validation Edge Cases', () => {
 
 // Run tests when executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('Running MCP validation edge case tests...');
-
   // Run all tests
   const { run } = await import('../test-runner.js');
   await run(__filename);

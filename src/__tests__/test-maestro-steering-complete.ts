@@ -5,14 +5,11 @@
  * Tests comprehensive steering document workflow
  */
 
-import { mkdir, writeFile } from 'fs/promises';
-import { join } from 'path';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
 // Complete steering test
 async function testMaestroSteeringComplete(): Promise<void> {
-  console.log('🧪 Testing Complete Maestro Steering Workflow');
-  console.log('='.repeat(55));
-
   interface SteeringTemplate {
     name: string;
     focus: string;
@@ -34,9 +31,6 @@ async function testMaestroSteeringComplete(): Promise<void> {
     ];
 
     async createComprehensiveSteeringDocuments(feature: string): Promise<void> {
-      console.log(`
-      🎯 Creating comprehensive steering for: ${feature}`);
-
       for (const template of this.templates) {
         await this.createSteeringFromTemplate(feature, template);
       }
@@ -46,8 +40,6 @@ async function testMaestroSteeringComplete(): Promise<void> {
       feature: string,
       template: SteeringTemplate
     ): Promise<void> {
-      console.log(`📝 Creating ${template.name} steering for: ${feature}`);
-
       const steeringDir = join(process.cwd(), 'docs', 'maestro', 'steering', template.name);
       await mkdir(steeringDir, { recursive: true });
 
@@ -75,8 +67,6 @@ ${template.sections
       const fileName = `${feature.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${template.name}-steering.md`;
       const filePath = join(steeringDir, fileName);
       await writeFile(filePath, steeringContent);
-
-      console.log(`✅ ${template.name} steering created: ${filePath}`);
     }
 
     async runCompleteSteeringTest(): Promise<void> {
@@ -89,20 +79,13 @@ ${template.sections
         await new Promise((resolve) => setTimeout(resolve, 150));
       }
 
-      const totalDocs = testFeatures.length * this.templates.length;
-      console.log(
-        `
-      📊 Created ${totalDocs} steering documents across ${testFeatures.length} features`
-      );
+      const _totalDocs = testFeatures.length * this.templates.length;
     }
   }
 
   try {
     const steering = new TestSteeringComplete();
     await steering.runCompleteSteeringTest();
-
-    console.log(`
-      🎉 Complete steering test passed!`);
   } catch (error) {
     console.error(
       `

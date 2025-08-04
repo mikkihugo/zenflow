@@ -3,10 +3,9 @@
  * Tests error handling, edge cases, and uncovered branches
  */
 
-import assert from 'assert';
+import assert from 'node:assert';
 import { Benchmark } from '../src/benchmark.js';
-import { RuvSwarm } from '../src/index.js';
-import { NeuralAgent } from '../src/neural-agent.js';
+import { ZenSwarm } from '../src/index.js';
 import { NeuralNetworkManager } from '../src/neural-network-manager.js';
 import { PerformanceAnalyzer } from '../src/performance.js';
 import { SwarmPersistence } from '../src/persistence.js';
@@ -17,7 +16,7 @@ describe('Edge Cases for 100% Coverage', () => {
   let swarm;
 
   beforeEach(async () => {
-    ruv = await RuvSwarm.initialize();
+    ruv = await ZenSwarm.initialize();
     swarm = await ruv.createSwarm({
       topology: 'mesh',
       maxAgents: 3,
@@ -150,7 +149,7 @@ describe('Edge Cases for 100% Coverage', () => {
 
       try {
         await agent.executeWithCleanup(null);
-      } catch (error) {
+      } catch (_error) {
         // Expected error
       }
 
@@ -290,8 +289,6 @@ describe('Edge Cases for 100% Coverage', () => {
 
 // Run tests when executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('Running edge case tests for 100% coverage...');
-
   // Run all tests
   const { run } = await import('./test-runner.js');
   await run(__filename);

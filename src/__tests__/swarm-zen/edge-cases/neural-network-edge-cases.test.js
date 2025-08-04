@@ -3,8 +3,7 @@
  * Tests numerical stability, gradient issues, and model training edge cases
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { NeuralAgent } from '../../src/neural-agent.js';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { NeuralNetworkManager } from '../../src/neural-network-manager.js';
 
 describe('Neural Network Edge Cases', () => {
@@ -102,7 +101,7 @@ describe('Neural Network Edge Cases', () => {
 
         // Should handle underflow gracefully
         result.forEach((value) => {
-          expect(isFinite(value)).toBe(true);
+          expect(Number.isFinite(value)).toBe(true);
           expect(value).toBeGreaterThanOrEqual(0);
           expect(value).toBeLessThanOrEqual(1);
         });
@@ -133,7 +132,7 @@ describe('Neural Network Edge Cases', () => {
         // ReLU should pass through positive values or zero
         result.forEach((value) => {
           expect(value).toBeGreaterThanOrEqual(0);
-          expect(isFinite(value) || value === Infinity).toBe(true);
+          expect(Number.isFinite(value) || value === Infinity).toBe(true);
         });
       }
     });
@@ -164,14 +163,14 @@ describe('Neural Network Edge Cases', () => {
         let totalLoss = 0;
 
         for (const sample of trainingData) {
-          const output = await network.forward(sample.input);
+          const _output = await network.forward(sample.input);
           const loss = await network.backward(sample.target);
           totalLoss += loss;
         }
 
         const avgLoss = totalLoss / trainingData.length;
         expect(avgLoss).toBeGreaterThanOrEqual(0);
-        expect(isFinite(avgLoss)).toBe(true);
+        expect(Number.isFinite(avgLoss)).toBe(true);
       }
 
       const finalWeights = network.getWeights();
@@ -227,8 +226,8 @@ describe('Neural Network Edge Cases', () => {
           maxGradient = Math.max(maxGradient, gradientMagnitude);
 
           // Network should handle large gradients without crashing
-          expect(isFinite(loss)).toBe(true);
-          expect(isFinite(gradientMagnitude)).toBe(true);
+          expect(Number.isFinite(loss)).toBe(true);
+          expect(Number.isFinite(gradientMagnitude)).toBe(true);
         } catch (error) {
           // If training fails due to numerical issues, that's acceptable
           expect(error.message).toMatch(/numerical|overflow|gradient/i);
@@ -272,7 +271,7 @@ describe('Neural Network Edge Cases', () => {
 
       expect(result).toHaveLength(4);
       result.forEach((value) => {
-        expect(isFinite(value)).toBe(true);
+        expect(Number.isFinite(value)).toBe(true);
       });
     });
 
@@ -290,7 +289,7 @@ describe('Neural Network Edge Cases', () => {
 
       expect(result).toHaveLength(10);
       result.forEach((value) => {
-        expect(isFinite(value)).toBe(true);
+        expect(Number.isFinite(value)).toBe(true);
       });
     });
 
@@ -308,7 +307,7 @@ describe('Neural Network Edge Cases', () => {
 
       expect(result).toHaveLength(2);
       result.forEach((value) => {
-        expect(isFinite(value)).toBe(true);
+        expect(Number.isFinite(value)).toBe(true);
       });
     });
   });
@@ -444,7 +443,7 @@ describe('Neural Network Edge Cases', () => {
       const result = await network.trainBatch(singleBatch);
 
       expect(result.loss).toBeGreaterThanOrEqual(0);
-      expect(isFinite(result.loss)).toBe(true);
+      expect(Number.isFinite(result.loss)).toBe(true);
     });
 
     it('should handle very large batches', async () => {
@@ -467,7 +466,7 @@ describe('Neural Network Edge Cases', () => {
       const result = await network.trainBatch(largeBatch);
 
       expect(result.loss).toBeGreaterThanOrEqual(0);
-      expect(isFinite(result.loss)).toBe(true);
+      expect(Number.isFinite(result.loss)).toBe(true);
     });
 
     it('should handle batches with mixed sample qualities', async () => {
@@ -489,7 +488,7 @@ describe('Neural Network Edge Cases', () => {
       const result = await network.trainBatch(mixedBatch);
 
       expect(result.loss).toBeGreaterThanOrEqual(0);
-      expect(isFinite(result.loss)).toBe(true);
+      expect(Number.isFinite(result.loss)).toBe(true);
     });
   });
 
@@ -534,8 +533,6 @@ describe('Neural Network Edge Cases', () => {
 
 // Run tests when executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('Running neural network edge case tests...');
-
   // Run all tests
   const { run } = await import('../test-runner.js');
   await run(__filename);

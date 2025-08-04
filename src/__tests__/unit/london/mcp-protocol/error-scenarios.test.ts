@@ -9,7 +9,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import type { MCPContext, MCPError, MCPRequest, MCPResponse } from '../../../../utils/types';
+import type { MCPRequest, MCPResponse } from '../../../../utils/types';
 
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 
@@ -149,7 +149,7 @@ class MockMCPErrorHandler implements ErrorHandlerContract {
     return this.errorHandler.classifyError(error);
   }
 
-  createRecoveryPlan(error: Error, context: ErrorContext): RecoveryPlan {
+  createRecoveryPlan(error: Error, _context: ErrorContext): RecoveryPlan {
     const classification = this.classifyError(error);
 
     switch (classification.type) {

@@ -2,9 +2,9 @@
  * SQLite Persistence Layer for ruv-swarm MCP
  */
 
+import fs from 'node:fs';
+import path from 'node:path';
 import Database from 'better-sqlite3';
-import fs from 'fs';
-import path from 'path';
 
 class SwarmPersistence {
   constructor(

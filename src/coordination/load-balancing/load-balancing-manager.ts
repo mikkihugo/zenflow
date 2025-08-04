@@ -57,7 +57,7 @@
  * @author Claude Zen Flow Team
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import { AdaptiveLearningAlgorithm } from './algorithms/adaptive-learning';
 import { LeastConnectionsAlgorithm } from './algorithms/least-connections';
 import { MLPredictiveAlgorithm } from './algorithms/ml-predictive';
@@ -65,13 +65,13 @@ import { ResourceAwareAlgorithm } from './algorithms/resource-aware';
 import { WeightedRoundRobinAlgorithm } from './algorithms/weighted-round-robin';
 import { AgentCapacityManager } from './capacity/agent-capacity-manager';
 import type {
-  IAutoScaler,
-  ICapacityManager,
-  IEmergencyHandler,
-  IHealthChecker,
-  ILoadBalancingAlgorithm,
-  ILoadBalancingObserver,
-  IRoutingEngine,
+  AutoScaler,
+  CapacityManager,
+  EmergencyHandler,
+  HealthChecker,
+  LoadBalancingAlgorithm,
+  LoadBalancingObserver,
+  RoutingEngine,
 } from './interfaces';
 import { EmergencyProtocolHandler } from './optimization/emergency-protocol-handler';
 import { HealthChecker } from './routing/health-checker';
@@ -83,26 +83,37 @@ import {
   LoadBalancingAlgorithm,
   type LoadBalancingConfig,
   type LoadMetrics,
-  QoSRequirement,
   type RoutingResult,
   type Task,
 } from './types';
 
 export class LoadBalancingManager extends EventEmitter {
   private agents: Map<string, Agent> = new Map();
-  private algorithms: Map<LoadBalancingAlgorithm, ILoadBalancingAlgorithm> = new Map();
-  private currentAlgorithm: ILoadBalancingAlgorithm;
-  private capacityManager: ICapacityManager;
-  private routingEngine: IRoutingEngine;
-  private healthChecker: IHealthChecker;
-  private autoScaler: IAutoScaler;
-  private emergencyHandler: IEmergencyHandler;
-  private observers: ILoadBalancingObserver[] = [];
+  private algorithms: Map<string, LoadBalancingAlgorithm> = new Map();
+  private currentAlgorithm: LoadBalancingAlgorithm;
+  private capacityManager: CapacityManager;
+  private routingEngine: RoutingEngine;
+  private healthChecker: HealthChecker;
+  private autoScaler: AutoScaler;
+  private emergencyHandler: EmergencyHandler;
+  private observers: LoadBalancingObserver[] = [];
   private config: LoadBalancingConfig;
   private metricsHistory: Map<string, LoadMetrics[]> = new Map();
   private isRunning = false;
   private monitoringInterval: NodeJS.Timeout | null = null;
 
+  // TODO: Use dependency injection for better testability and loose coupling
+  // Should inject dependencies instead of creating them in initializeComponents()
+  // Example constructor with DI:
+  // constructor(
+  //   @inject(CORE_TOKENS.Logger) private logger: ILogger,
+  //   @inject(COORDINATION_TOKENS.CapacityManager) private capacityManager: CapacityManager,
+  //   @inject(COORDINATION_TOKENS.RoutingEngine) private routingEngine: RoutingEngine,
+  //   @inject(COORDINATION_TOKENS.HealthChecker) private healthChecker: HealthChecker,
+  //   @inject(COORDINATION_TOKENS.AutoScaler) private autoScaler: AutoScaler,
+  //   @inject(COORDINATION_TOKENS.EmergencyHandler) private emergencyHandler: EmergencyHandler,
+  //   config: Partial<LoadBalancingConfig> = {}
+  // ) {
   constructor(config: Partial<LoadBalancingConfig> = {}) {
     super();
     this.config = this.mergeConfig(config);
@@ -113,6 +124,9 @@ export class LoadBalancingManager extends EventEmitter {
    * Initialize all load balancing components
    */
   private initializeComponents(): void {
+    // TODO: Replace direct instantiation with factory pattern or DI container resolution
+    // This tight coupling makes testing difficult and violates SOLID principles
+
     // Initialize algorithms
     this.algorithms.set(
       LoadBalancingAlgorithm.WEIGHTED_ROUND_ROBIN,
@@ -127,6 +141,7 @@ export class LoadBalancingManager extends EventEmitter {
     this.currentAlgorithm = this.algorithms.get(this.config.algorithm)!;
 
     // Initialize core components
+    // TODO: These should be injected via constructor or resolved from DI container
     this.capacityManager = new AgentCapacityManager();
     this.routingEngine = new IntelligentRoutingEngine(this.capacityManager);
     this.healthChecker = new HealthChecker(this.config.healthCheckInterval);
@@ -401,14 +416,14 @@ export class LoadBalancingManager extends EventEmitter {
   /**
    * Register an observer for load balancing events
    */
-  public addObserver(observer: ILoadBalancingObserver): void {
+  public addObserver(observer: LoadBalancingObserver): void {
     this.observers.push(observer);
   }
 
   /**
    * Remove an observer
    */
-  public removeObserver(observer: ILoadBalancingObserver): void {
+  public removeObserver(observer: LoadBalancingObserver): void {
     const index = this.observers.indexOf(observer);
     if (index > -1) {
       this.observers.splice(index, 1);

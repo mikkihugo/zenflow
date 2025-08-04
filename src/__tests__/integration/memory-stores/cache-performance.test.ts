@@ -6,8 +6,8 @@
  * - Classical School: Test actual cache algorithms and performance characteristics
  */
 
+import { EventEmitter } from 'node:events';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { EventEmitter } from 'events';
 
 // Cache Interface and Implementations
 interface CacheEntry<T> {
@@ -591,8 +591,6 @@ describe('Cache Performance Integration Tests', () => {
       const durationMs = Number(endTime - startTime) / 1_000_000;
       const operationsPerSecond = (iterations / durationMs) * 1000;
 
-      console.log(`Cache write performance: ${operationsPerSecond.toFixed(0)} ops/sec`);
-
       expect(operationsPerSecond).toBeGreaterThan(10000); // Should be very fast for memory operations
       expect(cache.getSize()).toBe(iterations);
     });
@@ -615,8 +613,6 @@ describe('Cache Performance Integration Tests', () => {
       const endTime = process.hrtime.bigint();
       const durationMs = Number(endTime - startTime) / 1_000_000;
       const operationsPerSecond = (iterations / durationMs) * 1000;
-
-      console.log(`Cache read performance: ${operationsPerSecond.toFixed(0)} ops/sec`);
 
       expect(operationsPerSecond).toBeGreaterThan(50000); // Memory reads should be very fast
 
@@ -652,11 +648,7 @@ describe('Cache Performance Integration Tests', () => {
       const durationMs = Number(endTime - startTime) / 1_000_000;
       const operationsPerSecond = (operations / durationMs) * 1000;
 
-      console.log(`Mixed workload performance: ${operationsPerSecond.toFixed(0)} ops/sec`);
-
       const metrics = cache.getMetrics();
-      console.log(`Hit rate: ${(metrics.hitRate * 100).toFixed(1)}%`);
-      console.log(`Average access time: ${metrics.avgAccessTime.toFixed(3)}ms`);
 
       expect(operationsPerSecond).toBeGreaterThan(5000);
       expect(metrics.hitRate).toBeGreaterThan(0.1); // Some hits expected

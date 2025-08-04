@@ -7,7 +7,7 @@
  */
 
 const fs = require('node:fs').promises;
-const path = require('node:path');
+const _path = require('node:path');
 const yaml = require('js-yaml');
 
 class CopilotContextGenerator {
@@ -91,7 +91,6 @@ npm run mcp:start        # Start MCP servers
 This is a sophisticated, production-grade AI platform. Maintain high standards and leverage comprehensive systems already in place.`;
 
     await fs.writeFile('.github/instructions/.instructions.md', instructions);
-    console.log('✅ Generated repository-wide instructions');
   }
 
   async generateCopilotContext() {
@@ -138,7 +137,6 @@ ${this.config.validation_rules
   .join('\n')}`;
 
     await fs.writeFile('.github/copilot-context.md', context);
-    console.log('✅ Generated Copilot context file');
   }
 
   async generateValidationWorkflow() {
@@ -217,7 +215,6 @@ Ready for human review! 🚀\`
             })`;
 
     await fs.writeFile('.github/workflows/copilot-validation.yml', workflow);
-    console.log('✅ Generated validation workflow');
   }
 
   async generateArchitectureValidator() {
@@ -409,7 +406,6 @@ process.exit(exitCode);`;
 
     await fs.writeFile('.github/scripts/validate-architecture.js', validator);
     await fs.chmod('.github/scripts/validate-architecture.js', 0o755);
-    console.log('✅ Generated architecture validator');
   }
 
   async generateIssueTemplate() {
@@ -481,7 +477,6 @@ ${this.config.architecture.domains.map((domain) => `        - "${domain}"`).join
         - [ ] No breaking changes to existing systems`;
 
     await fs.writeFile('.github/ISSUE_TEMPLATE/copilot-autonomous.yml', template);
-    console.log('✅ Generated Copilot issue template');
   }
 
   async generate() {
@@ -493,25 +488,11 @@ ${this.config.architecture.domains.map((domain) => `        - "${domain}"`).join
     await fs.mkdir('.github/workflows', { recursive: true });
     await fs.mkdir('.github/ISSUE_TEMPLATE', { recursive: true });
 
-    console.log('🤖 Generating Copilot autonomous context files...');
-
     await this.generateRepositoryInstructions();
     await this.generateCopilotContext();
     await this.generateValidationWorkflow();
     await this.generateArchitectureValidator();
     await this.generateIssueTemplate();
-
-    console.log('\n🚀 Copilot autonomous framework setup complete!');
-    console.log('\nGenerated files:');
-    console.log('- .github/instructions/.instructions.md');
-    console.log('- .github/copilot-context.md');
-    console.log('- .github/workflows/copilot-validation.yml');
-    console.log('- .github/scripts/validate-architecture.js');
-    console.log('- .github/ISSUE_TEMPLATE/copilot-autonomous.yml');
-    console.log('\nNext steps:');
-    console.log('1. Commit these configuration files');
-    console.log('2. Create a test issue and assign to @copilot');
-    console.log('3. Watch autonomous development in action!');
   }
 }
 

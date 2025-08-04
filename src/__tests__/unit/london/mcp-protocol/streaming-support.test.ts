@@ -9,7 +9,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import type { MCPContext, MCPNotification, MCPRequest, MCPResponse } from '../../../../utils/types';
+import type { MCPContext, MCPRequest, MCPResponse } from '../../../../utils/types';
 
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 
@@ -360,7 +360,7 @@ class MockMCPStreamingHandler implements StreamingContract, StreamingProtocolCon
     };
   }
 
-  private async handleStreamEnd(request: MCPRequest, context: MCPContext): Promise<MCPResponse> {
+  private async handleStreamEnd(request: MCPRequest, _context: MCPContext): Promise<MCPResponse> {
     const { streamId } = request.params;
     await this.closeStreamingSession(streamId);
 

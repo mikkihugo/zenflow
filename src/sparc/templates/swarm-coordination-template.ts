@@ -8,14 +8,10 @@
 import type {
   AlgorithmPseudocode,
   Component,
-  DetailedSpecification,
   FunctionalRequirement,
-  ImplementationArtifacts,
   InterfaceDefinition,
   NonFunctionalRequirement,
-  ProjectRisk,
   RefinementStrategy,
-  SystemArchitecture,
   SystemConstraint,
 } from '../types/sparc-types';
 

@@ -3,7 +3,7 @@
  * Tests all neural model implementations for 100% coverage
  */
 
-import assert from 'assert';
+import assert from 'node:assert';
 import {
   AutoencoderModel,
   BaseNeuralModel,
@@ -427,8 +427,6 @@ async function ensemblePredict(ensemble, input) {
 
 // Run tests when executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('Running neural models coverage tests...');
-
   // Run all tests
   const { run } = await import('./test-runner.js');
   await run(__filename);
