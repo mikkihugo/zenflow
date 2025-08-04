@@ -17,6 +17,9 @@ use instant::Instant;
 /// Model creation function signature
 pub type ModelCreatorFn<T> = Box<dyn Fn(&ModelConfig) -> RegistryResult<Box<dyn BaseModel<T>>> + Send + Sync>;
 
+/// Type alias for model creator storage
+pub type ModelCreatorMap<T> = RwLock<HashMap<String, ModelCreatorFn<T>>>;
+
 /// Model template for creating models with common configurations
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ModelTemplate {
@@ -118,10 +121,10 @@ pub struct CreationContext {
 pub struct ModelFactory {
     /// Model creators by name (placeholder - not yet implemented)
     #[allow(dead_code)]
-    creators: RwLock<HashMap<String, Box<dyn Fn(&ModelConfig) -> RegistryResult<Box<dyn BaseModel<f32>>> + Send + Sync>>>,
+    creators: ModelCreatorMap<f32>,
     /// Model creators by name for f64 (placeholder - not yet implemented)
     #[allow(dead_code)]
-    creators_f64: RwLock<HashMap<String, Box<dyn Fn(&ModelConfig) -> RegistryResult<Box<dyn BaseModel<f64>>> + Send + Sync>>>,
+    creators_f64: ModelCreatorMap<f64>,
     /// Model templates
     templates: RwLock<HashMap<String, ModelTemplate>>,
     /// Model cache
@@ -163,7 +166,7 @@ impl ModelFactory {
     pub fn register_creator<T: Float>(
         &self,
         _name: &str,
-        _creator: Box<dyn Fn(&ModelConfig) -> RegistryResult<Box<dyn BaseModel<T>>> + Send + Sync>,
+        _creator: ModelCreatorFn<T>,
     ) -> RegistryResult<()> {
         // TODO: Implement safe type-erased creator registration
         // For now, we'll just return an error for unsupported operations
@@ -190,7 +193,7 @@ impl ModelFactory {
             let cache_key = format!("{}_{}", name, std::any::type_name::<T>());
             if let Some(cached) = self.get_from_cache::<T>(&cache_key) {
                 self.stats.write().cache_hits += 1;
-                log::debug!("Cache hit for model '{}'", name);
+                log::debug!("Cache hit for model '{name}'");
                 return Ok(cached);
             }
             self.stats.write().cache_misses += 1;
@@ -223,7 +226,7 @@ impl ModelFactory {
         
         if options.benchmark {
             // TODO: Add more detailed benchmarking
-            log::debug!("Model '{}' created in {:.2}ms", name, creation_time);
+            log::debug!("Model '{name}' created in {creation_time:.2}ms");
         }
         
         // Update statistics
@@ -240,7 +243,7 @@ impl ModelFactory {
         // Cache the model if enabled
         if options.cache {
             let cache_key = format!("{}_{}", name, std::any::type_name::<T>());
-            self.cache_model(&cache_key, &model);
+            self.cache_model(&cache_key, model.as_ref());
         }
         
         Ok(model)
@@ -308,7 +311,7 @@ impl ModelFactory {
         for name in names {
             match self.create_with_options::<T>(name, options.clone()) {
                 Ok(model) => results.push(model),
-                Err(e) => errors.push(format!("{}: {}", name, e)),
+                Err(e) => errors.push(format!("{name}: {e}")),
             }
         }
         
@@ -332,7 +335,7 @@ impl ModelFactory {
     pub fn register_template(&self, template: ModelTemplate) -> RegistryResult<()> {
         let name = template.name.clone();
         self.templates.write().insert(name.clone(), template);
-        log::debug!("Registered model template '{}'", name);
+        log::debug!("Registered model template '{name}'");
         Ok(())
     }
     
@@ -388,7 +391,7 @@ impl ModelFactory {
             if let Some(config_input_size) = config.input_size {
                 if config_input_size != input_size {
                     return Err(RegistryError::InvalidConfiguration(
-                        format!("Input size mismatch: expected {}, got {}", input_size, config_input_size)
+                        format!("Input size mismatch: expected {input_size}, got {config_input_size}")
                     ));
                 }
             }
@@ -398,7 +401,7 @@ impl ModelFactory {
             if let Some(config_output_size) = config.output_size {
                 if config_output_size != output_size {
                     return Err(RegistryError::InvalidConfiguration(
-                        format!("Output size mismatch: expected {}, got {}", output_size, config_output_size)
+                        format!("Output size mismatch: expected {output_size}, got {config_output_size}")
                     ));
                 }
             }
@@ -423,7 +426,7 @@ impl ModelFactory {
     }
     
     /// Cache a model
-    fn cache_model<T: Float>(&self, _key: &str, _model: &Box<dyn BaseModel<T>>) {
+    fn cache_model<T: Float>(&self, _key: &str, _model: &dyn BaseModel<T>) {
         // Placeholder for caching - would need Arc<Mutex<Model>> or similar
         // for thread-safe sharing of models
         log::debug!("Model caching not fully implemented - needs Arc<Mutex<Model>>");
@@ -451,7 +454,7 @@ impl Clone for CreationStats {
 
 /// Global model factory instance
 static GLOBAL_FACTORY: once_cell::sync::Lazy<ModelFactory> = 
-    once_cell::sync::Lazy::new(|| ModelFactory::new());
+    once_cell::sync::Lazy::new(ModelFactory::new);
 
 /// Get the global model factory
 pub fn global_factory() -> &'static ModelFactory {

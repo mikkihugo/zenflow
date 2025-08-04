@@ -8,18 +8,18 @@ use std::collections::HashMap;
 use std::marker::PhantomData;
 use std::sync::{Arc, Mutex};
 
-use ndarray::{Array1, Array2};
+use ndarray::Array2;
 use num_traits::Float;
 use serde::{Deserialize, Serialize};
 
 use ruv_fann::{
-    ActivationFunction, Network, NetworkBuilder, TrainingData,
+    ActivationFunction, Network, TrainingData,
 };
 use ruv_fann::training::TrainingAlgorithm;
 
 use crate::{
-    data::{SeriesData, TimeSeriesDataset, TimeSeriesDataFrame},
-    error::{ErrorBuilder, NetworkIntegrationError, NeuroDivergentError, NeuroDivergentResult},
+    data::TimeSeriesDataset,
+    error::{NetworkIntegrationError, NeuroDivergentResult},
     traits::{ForecastResult, TrainingStatistics},
 };
 
@@ -35,6 +35,7 @@ pub struct NetworkAdapter<T: Float + Send + Sync + 'static> {
     /// Output postprocessing pipeline
     output_postprocessor: Box<dyn OutputPostprocessor<T>>,
     /// Activation function mapper
+    #[allow(dead_code)]
     activation_mapper: ActivationMapper,
     /// Network configuration metadata
     config: NetworkAdapterConfig<T>,

@@ -3,7 +3,6 @@
 //! This module provides detailed error types that cover all aspects of neural forecasting
 //! operations, from data validation to model training and prediction errors.
 
-use std::fmt;
 use thiserror::Error;
 
 /// Result type alias for neuro-divergent operations
@@ -189,16 +188,21 @@ pub struct ErrorBuilder {
 }
 
 /// Internal error type enumeration for the builder
+#[allow(dead_code)]
 enum ErrorType {
     Config,
     Data,
     Training,
     Prediction,
     Memory,
+    #[allow(dead_code)]
     Compatibility,
+    #[allow(dead_code)]
     Math,
+    #[allow(dead_code)]
     Parallel,
     TimeSeries,
+    #[allow(dead_code)]
     Serialization,
 }
 

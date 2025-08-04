@@ -4,7 +4,6 @@
 //! including mathematical operations, data preprocessing, and validation helpers.
 
 use num_traits::Float;
-use std::collections::HashMap;
 use crate::errors::{NeuroDivergentError, NeuroDivergentResult};
 
 /// Mathematical utility functions
@@ -111,6 +110,12 @@ pub mod preprocessing {
         range: (T, T), // (min_range, max_range)
     }
     
+    impl<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + 'static> Default for MinMaxScaler<T> {
+        fn default() -> Self {
+            Self::new()
+        }
+    }
+
     impl<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + 'static> MinMaxScaler<T> {
         pub fn new() -> Self {
             Self {
@@ -185,6 +190,12 @@ pub mod preprocessing {
         std: Option<T>,
     }
     
+    impl<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + 'static> Default for StandardScaler<T> {
+        fn default() -> Self {
+            Self::new()
+        }
+    }
+
     impl<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + 'static> StandardScaler<T> {
         pub fn new() -> Self {
             Self {
@@ -264,7 +275,9 @@ pub mod validation {
         name: &str
     ) -> NeuroDivergentResult<()> {
         if input.len() != expected_size {
-            return Err(NeuroDivergentError::dimension_mismatch(expected_size, input.len()));
+            return Err(NeuroDivergentError::data(
+                format!("{name} dimension mismatch: expected {expected_size}, got {}", input.len())
+            ));
         }
         Ok(())
     }
@@ -277,7 +290,9 @@ pub mod validation {
         name_b: &str
     ) -> NeuroDivergentResult<()> {
         if a.len() != b.len() {
-            return Err(NeuroDivergentError::dimension_mismatch(a.len(), b.len()));
+            return Err(NeuroDivergentError::data(
+                format!("{name_a} and {name_b} must have same length: {} != {}", a.len(), b.len())
+            ));
         }
         Ok(())
     }
@@ -287,7 +302,7 @@ pub mod validation {
         for (i, &value) in data.iter().enumerate() {
             if !value.is_finite() {
                 return Err(NeuroDivergentError::data(
-                    format!("Non-finite value at index {} in {}: {:?}", i, name, value)
+                    format!("Non-finite value at index {i} in {name}: {value:?}")
                 ));
             }
         }
@@ -304,8 +319,7 @@ pub mod validation {
         for (i, &value) in data.iter().enumerate() {
             if value < min_val || value > max_val {
                 return Err(NeuroDivergentError::data(
-                    format!("Value at index {} in {} out of range [{:?}, {:?}]: {:?}", 
-                           i, name, min_val, max_val, value)
+                    format!("Value at index {i} in {name} out of range [{min_val:?}, {max_val:?}]: {value:?}")
                 ));
             }
         }
@@ -339,7 +353,7 @@ pub mod timeseries {
         data: &[T], 
         validation_split: f64
     ) -> NeuroDivergentResult<(Vec<T>, Vec<T>)> {
-        if validation_split < 0.0 || validation_split >= 1.0 {
+        if !(0.0..1.0).contains(&validation_split) {
             return Err(NeuroDivergentError::config(
                 "Validation split must be in range [0, 1)"
             ));
@@ -360,7 +374,7 @@ pub mod timeseries {
     ) -> NeuroDivergentResult<(Vec<T>, Vec<T>)> {
         if period == 0 || period > data.len() {
             return Err(NeuroDivergentError::config(
-                format!("Invalid period {} for data length {}", period, data.len())
+                format!("Invalid period {period} for data length {}", data.len())
             ));
         }
         

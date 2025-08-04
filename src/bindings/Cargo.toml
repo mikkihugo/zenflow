@@ -7,7 +7,7 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-ruv-fann = { path = "../../ruv-FANN" }
+ruv-fann = "0.1.6"
 napi = { version = "2.16", features = ["async"] }
 napi-derive = "2.16"
 tokio = { version = "1.0", features = ["rt", "rt-multi-thread"] }

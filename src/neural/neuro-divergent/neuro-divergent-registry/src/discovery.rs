@@ -69,7 +69,7 @@ impl Default for DiscoveryConfig {
 }
 
 /// Discovery filters to control what gets discovered
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct DiscoveryFilters {
     /// Categories to include
     pub include_categories: Option<Vec<ModelCategory>>,
@@ -89,22 +89,6 @@ pub struct DiscoveryFilters {
     pub excluded_capabilities: Vec<String>,
     /// Custom filter function name
     pub custom_filter: Option<String>,
-}
-
-impl Default for DiscoveryFilters {
-    fn default() -> Self {
-        Self {
-            include_categories: None,
-            exclude_categories: Vec::new(),
-            include_names: Vec::new(),
-            exclude_names: Vec::new(),
-            min_version: None,
-            max_version: None,
-            required_capabilities: Vec::new(),
-            excluded_capabilities: Vec::new(),
-            custom_filter: None,
-        }
-    }
 }
 
 /// Discovery result containing found model information
@@ -541,7 +525,7 @@ impl ModelDiscovery {
                         }
                     }
                     Err(e) => {
-                        log::warn!("Failed to load plugins from {:?}: {}", plugin_dir, e);
+                        log::warn!("Failed to load plugins from {plugin_dir:?}: {e}");
                     }
                 }
             }
@@ -630,12 +614,10 @@ impl ModelDiscovery {
                     name_pos += part.len();
                 } else if i == parts.len() - 1 {
                     return name[name_pos..].ends_with(part);
+                } else if let Some(pos) = name[name_pos..].find(part) {
+                    name_pos += pos + part.len();
                 } else {
-                    if let Some(pos) = name[name_pos..].find(part) {
-                        name_pos += pos + part.len();
-                    } else {
-                        return false;
-                    }
+                    return false;
                 }
             }
             

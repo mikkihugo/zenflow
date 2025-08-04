@@ -4,15 +4,14 @@
 //! providing a consistent and type-safe interface for neural forecasting operations.
 
 use std::collections::HashMap;
-use std::marker::PhantomData;
 
 use chrono::{DateTime, Utc};
 use num_traits::Float;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    data::{TimeSeriesDataFrame, TimeSeriesDataset},
-    error::{NeuroDivergentError, NeuroDivergentResult},
+    data::TimeSeriesDataset,
+    error::NeuroDivergentResult,
 };
 
 /// Core trait that all forecasting models must implement.

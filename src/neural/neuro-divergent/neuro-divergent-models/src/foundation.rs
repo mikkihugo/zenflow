@@ -417,6 +417,12 @@ pub struct TrainingHistory<T: Float + Send + Sync + std::fmt::Debug + std::iter:
     pub custom_metrics: HashMap<String, Vec<T>>,
 }
 
+impl<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + 'static> Default for TrainingHistory<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + 'static> TrainingHistory<T> {
     pub fn new() -> Self {
         Self {
@@ -438,7 +444,7 @@ impl<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + 'static> Traini
     }
     
     pub fn add_custom_metric(&mut self, name: String, value: T) {
-        self.custom_metrics.entry(name).or_insert_with(Vec::new).push(value);
+        self.custom_metrics.entry(name).or_default().push(value);
     }
     
     pub fn best_validation_loss(&self) -> Option<T> {

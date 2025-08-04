@@ -260,7 +260,7 @@ impl<T> ErrorContextExt<T> for NeuroDivergentResult<T> {
             
             match e {
                 NeuroDivergentError::Custom(msg) => {
-                    NeuroDivergentError::custom(format!("{} | Context: {}", msg, context_info))
+                    NeuroDivergentError::custom(format!("{msg} | Context: {context_info}"))
                 }
                 other => other,
             }

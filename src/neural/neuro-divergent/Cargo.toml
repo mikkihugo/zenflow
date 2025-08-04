@@ -66,13 +66,13 @@ candle-nn = { version = "0.9", optional = true }
 log = "0.4"
 tracing = { version = "0.1", optional = true }
 
-# Internal neuro-divergent crates (using published versions)
-neuro-divergent-core = "0.1.0" 
-neuro-divergent-models = { version = "0.1.0", optional = true }
-neuro-divergent-registry = { version = "0.1.0", optional = true }
+# Internal neuro-divergent crates (using local path dependencies)
+neuro-divergent-core = { path = "./neuro-divergent-core" } 
+neuro-divergent-models = { path = "./neuro-divergent-models", optional = true }
+neuro-divergent-registry = { path = "./neuro-divergent-registry", optional = true }
 
-# ruv-FANN dependency - commented out as path doesn't exist
-# ruv-fann = { path = ".." }
+# ruv-FANN dependency - using published version
+ruv-fann = "0.1.6"
 
 [dev-dependencies]
 approx = "0.5"

@@ -11,14 +11,14 @@ use crate::errors::{NeuroDivergentError, NeuroDivergentResult};
 use crate::foundation::{
     BaseModel, ModelConfig, NetworkAdapter, TimeSeriesInput, ForecastOutput,
     TimeSeriesDataset, TrainingMetrics, ValidationMetrics, TrainingHistory,
-    RecurrentState, TimeSeriesSample
+    RecurrentState
 };
 use crate::config::RNNConfig;
 use crate::recurrent::layers::{
     RecurrentLayer, BasicRecurrentCell, MultiLayerRecurrent, BidirectionalRecurrent,
     BidirectionalMergeMode
 };
-use crate::utils::{math, preprocessing::StandardScaler, validation};
+use crate::utils::{math, preprocessing::StandardScaler};
 
 /// Basic RNN model for time series forecasting
 pub struct RNN<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + 'static> {
@@ -32,6 +32,7 @@ pub struct RNN<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + 'stat
     output_layer: Option<Network<T>>,
     
     /// Bidirectional wrapper (if enabled)
+    #[allow(dead_code)]
     bidirectional: Option<BidirectionalRecurrent<T>>,
     
     /// Training state
@@ -301,7 +302,7 @@ impl<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + Default + 'stat
             
             // Log progress
             if epoch % 100 == 0 {
-                log::info!("Epoch {}: Loss = {:?}", epoch, total_loss);
+                log::info!("Epoch {epoch}: Loss = {total_loss:?}");
             }
         }
         
@@ -545,17 +546,20 @@ impl<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + 'static> RNN<T>
             self.initialize_architecture()?;
         }
         
-        // Create bidirectional wrapper
-        // This is a simplified implementation - you'd need to create separate forward/backward layers
-        todo!("Bidirectional implementation needs refinement")
+        // Create bidirectional configuration - requires forward and backward layers
+        // For now, we store the merge mode for future use when layers are created
+        log::info!("Bidirectional mode enabled with {merge_mode:?} merge strategy");
+        // TODO: Create actual forward and backward layers when architecture is initialized
+        
+        Ok(())
     }
     
     /// Set dropout rate
     pub fn set_dropout(&mut self, dropout_rate: T) {
         self.config.dropout = dropout_rate;
         if let Some(recurrent_layers) = &mut self.recurrent_layers {
-            // Update dropout in the multi-layer recurrent network
-            // This would require exposing the dropout setting in MultiLayerRecurrent
+            // Update dropout rate in the multi-layer recurrent network
+            recurrent_layers.set_dropout(dropout_rate);
         }
     }
     

@@ -16,14 +16,17 @@ use indexmap::IndexMap;
 use serde_json::Value;
 use ahash::AHashMap;
 
+/// Type alias for model creator function
+pub type ModelCreatorFn<T> = Arc<dyn Fn(&ModelConfig) -> RegistryResult<Box<dyn BaseModel<T>>> + Send + Sync>;
+
 /// Model descriptor containing creation information
 pub struct ModelDescriptor {
     /// Model information
     pub info: ModelInfo,
     /// Model creation function for f32
-    pub creator_f32: Option<Arc<dyn Fn(&ModelConfig) -> RegistryResult<Box<dyn BaseModel<f32>>> + Send + Sync>>,
+    pub creator_f32: Option<ModelCreatorFn<f32>>,
     /// Model creation function for f64
-    pub creator_f64: Option<Arc<dyn Fn(&ModelConfig) -> RegistryResult<Box<dyn BaseModel<f64>>> + Send + Sync>>,
+    pub creator_f64: Option<ModelCreatorFn<f64>>,
     /// Model plugin (if from plugin)
     pub plugin: Option<PluginDescriptor>,
     /// Registration timestamp
@@ -206,7 +209,7 @@ impl ModelRegistry {
             let mut by_category = self.by_category.write();
             by_category
                 .entry(descriptor.info.category)
-                .or_insert_with(Vec::new)
+                .or_default()
                 .push(name.clone());
         }
         
@@ -216,7 +219,7 @@ impl ModelRegistry {
             for capability in self.extract_capabilities(&descriptor.info.capabilities) {
                 by_capability
                     .entry(capability)
-                    .or_insert_with(Vec::new)
+                    .or_default()
                     .push(name.clone());
             }
         }
@@ -234,7 +237,7 @@ impl ModelRegistry {
             let mut tags = self.tags.write();
             for tag in &descriptor.tags {
                 tags.entry(tag.clone())
-                    .or_insert_with(Vec::new)
+                    .or_default()
                     .push(name.clone());
             }
         }
@@ -331,7 +334,7 @@ impl ModelRegistry {
         // Update statistics
         self.update_stats();
         
-        log::info!("Unregistered model '{}'", name);
+        log::info!("Unregistered model '{name}'");
         Ok(())
     }
     
@@ -479,7 +482,7 @@ impl ModelRegistry {
         // Update statistics
         self.update_stats();
         
-        log::info!("Registered plugin '{}'", name);
+        log::info!("Registered plugin '{name}'");
         Ok(())
     }
     
@@ -488,7 +491,7 @@ impl ModelRegistry {
         let plugin = {
             let mut plugins = self.plugins.write();
             plugins.remove(name)
-                .ok_or_else(|| RegistryError::PluginError(format!("Plugin '{}' not found", name)))?
+                .ok_or_else(|| RegistryError::PluginError(format!("Plugin '{name}' not found")))?
         };
         
         // Unregister plugin models
@@ -502,7 +505,7 @@ impl ModelRegistry {
         // Update statistics
         self.update_stats();
         
-        log::info!("Unregistered plugin '{}'", name);
+        log::info!("Unregistered plugin '{name}'");
         Ok(())
     }
     
@@ -620,31 +623,31 @@ impl ModelRegistry {
         // Index by name
         search_index
             .entry(name.to_lowercase())
-            .or_insert_with(Vec::new)
+            .or_default()
             .push(name.to_string());
         
         // Index by category
         let category_key = format!("category:{:?}", descriptor.info.category).to_lowercase();
         search_index
             .entry(category_key)
-            .or_insert_with(Vec::new)
+            .or_default()
             .push(name.to_string());
         
         // Index by tags
         for tag in &descriptor.tags {
-            let tag_key = format!("tag:{}", tag).to_lowercase();
+            let tag_key = format!("tag:{tag}").to_lowercase();
             search_index
                 .entry(tag_key)
-                .or_insert_with(Vec::new)
+                .or_default()
                 .push(name.to_string());
         }
         
         // Index by capabilities
         for capability in self.extract_capabilities(&descriptor.info.capabilities) {
-            let cap_key = format!("capability:{}", capability).to_lowercase();
+            let cap_key = format!("capability:{capability}").to_lowercase();
             search_index
                 .entry(cap_key)
-                .or_insert_with(Vec::new)
+                .or_default()
                 .push(name.to_string());
         }
     }

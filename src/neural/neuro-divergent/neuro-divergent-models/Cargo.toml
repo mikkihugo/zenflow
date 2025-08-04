@@ -11,7 +11,7 @@ categories = ["science", "algorithms", "mathematics"]
 
 [dependencies]
 # Core ruv-FANN dependency
-ruv-fann = "0.1"
+ruv-fann = "0.1.6"
 
 # Essential dependencies
 num-traits = "0.2"

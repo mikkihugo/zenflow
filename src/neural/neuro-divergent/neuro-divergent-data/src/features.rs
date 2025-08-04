@@ -7,7 +7,7 @@
 use crate::{DataPipelineError, Result, TimeSeriesData, DataPoint};
 use num_traits::Float;
 use chrono::{DateTime, Utc, Datelike, Timelike, Weekday};
-use ndarray::{Array1, Array2};
+use ndarray::{Array1, Array2, s};
 use rustfft::{FftPlanner, num_complex::Complex};
 use std::collections::HashMap;
 use std::marker::PhantomData;

@@ -3,12 +3,10 @@
 //! This module provides common building blocks for recurrent neural networks,
 //! including state management, gate mechanisms, and sequence processing utilities.
 
-use std::collections::HashMap;
 use num_traits::Float;
 use ruv_fann::{Network, NetworkBuilder, ActivationFunction};
 use crate::errors::{NeuroDivergentError, NeuroDivergentResult};
-use crate::foundation::{RecurrentState, SequenceProcessor};
-use crate::utils::math;
+// Removed unused import: use crate::foundation::RecurrentState;
 
 /// Generic recurrent layer trait that all recurrent layers must implement
 pub trait RecurrentLayer<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + 'static>: Send + Sync {
@@ -62,7 +60,7 @@ impl<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + 'static> BasicR
         hidden_size: usize, 
         activation: ActivationFunction
     ) -> Self {
-        let mut rng = rand::thread_rng();
+        let _rng = rand::rng();
         
         // Initialize weights with Xavier initialization
         let xavier_input = T::from(1.0 / (input_size as f64).sqrt()).unwrap();
@@ -260,8 +258,8 @@ impl<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + 'static> Recurr
         }
         
         // Update hidden state: h_t = o_t * tanh(C_t)
-        for i in 0..self.hidden_size {
-            self.hidden_state[i] = output_values[i] * self.cell_state[i].tanh();
+        for (i, &output_val) in output_values.iter().enumerate().take(self.hidden_size) {
+            self.hidden_state[i] = output_val * self.cell_state[i].tanh();
         }
         
         Ok(self.hidden_state.clone())
@@ -472,6 +470,11 @@ impl<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + 'static> MultiL
     /// Set training mode
     pub fn set_training(&mut self, training: bool) {
         self.training_mode = training;
+    }
+    
+    /// Set dropout rate
+    pub fn set_dropout(&mut self, rate: T) {
+        self.dropout_rate = rate;
     }
     
     /// Apply dropout to a vector (simple implementation)

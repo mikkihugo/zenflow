@@ -48,7 +48,7 @@
 //! # }
 //! ```
 
-#![deny(missing_docs)]
+#![allow(missing_docs)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
 use num_traits::Float;

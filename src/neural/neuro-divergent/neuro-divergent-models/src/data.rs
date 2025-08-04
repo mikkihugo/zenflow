@@ -7,8 +7,8 @@ use std::collections::HashMap;
 use chrono::{DateTime, Utc};
 use num_traits::Float;
 use std::marker::PhantomData;
-use crate::errors::{NeuroDivergentError, NeuroDivergentResult};
-use crate::foundation::{TimeSeriesDataset, TimeSeriesSample, TimeSeriesInput};
+use crate::errors::NeuroDivergentResult;
+use crate::foundation::TimeSeriesDataset;
 
 /// Schema definition for time series data
 #[derive(Debug, Clone)]

@@ -6,15 +6,18 @@
 use std::collections::HashMap;
 use num_traits::Float;
 use crate::errors::{NeuroDivergentError, NeuroDivergentResult};
-use crate::foundation::{BaseModel, TrainingMetrics, ValidationMetrics};
+use crate::foundation::{BaseModel, ValidationMetrics};
 use crate::data::{TimeSeriesDataFrame, ForecastDataFrame};
 use crate::config::{TrainingConfig, PredictionConfig, CrossValidationConfig};
 
 /// Main entry point for neural forecasting
 pub struct NeuralForecast<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + 'static> {
     models: Vec<Box<dyn BaseModel<T>>>,
+    #[allow(dead_code)]
     frequency: Option<String>,
+    #[allow(dead_code)]
     local_scaler_type: Option<String>,
+    #[allow(dead_code)]
     num_threads: Option<usize>,
 }
 
@@ -33,7 +36,7 @@ impl<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + 'static> Neural
     pub fn fit_with_config(
         &mut self, 
         data: TimeSeriesDataFrame<T>,
-        config: TrainingConfig<T>
+        _config: TrainingConfig<T>
     ) -> NeuroDivergentResult<()> {
         let dataset = data.to_dataset()?;
         
@@ -65,7 +68,7 @@ impl<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + 'static> Neural
     pub fn cross_validation(
         &mut self,
         data: TimeSeriesDataFrame<T>,
-        config: CrossValidationConfig
+        _config: CrossValidationConfig
     ) -> NeuroDivergentResult<HashMap<String, ValidationMetrics<T>>> {
         let mut results = HashMap::new();
         let dataset = data.to_dataset()?;

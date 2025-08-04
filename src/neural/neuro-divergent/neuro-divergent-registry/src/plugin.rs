@@ -325,7 +325,7 @@ impl Plugin {
         // Try to find descriptor file
         let descriptor_path = if path.is_dir() {
             path.join("plugin.toml")
-        } else if path.extension().map_or(false, |ext| ext == "toml") {
+        } else if path.extension().is_some_and(|ext| ext == "toml") {
             path.to_path_buf()
         } else {
             path.with_extension("toml")
@@ -333,15 +333,15 @@ impl Plugin {
         
         if !descriptor_path.exists() {
             return Err(RegistryError::PluginError(
-                format!("Plugin descriptor not found at {:?}", descriptor_path)
+                format!("Plugin descriptor not found at {descriptor_path:?}")
             ));
         }
         
         let content = std::fs::read_to_string(&descriptor_path)
-            .map_err(|e| RegistryError::IoError(e))?;
+            .map_err(RegistryError::IoError)?;
         
         let descriptor: PluginDescriptor = toml::from_str(&content)
-            .map_err(|e| RegistryError::PluginError(format!("Failed to parse descriptor: {}", e)))?;
+            .map_err(|e| RegistryError::PluginError(format!("Failed to parse descriptor: {e}")))?;
         
         Ok(descriptor)
     }
@@ -385,7 +385,7 @@ impl Plugin {
         let mut hasher = Sha256::new();
         hasher.update(&content);
         let result = hasher.finalize();
-        Ok(format!("{:x}", result))
+        Ok(format!("{result:x}"))
     }
     
     /// Get plugin interface from library
@@ -645,7 +645,7 @@ impl PluginManager {
             self.update_stats();
             Ok(())
         } else {
-            Err(RegistryError::PluginError(format!("Plugin '{}' not found", name)))
+            Err(RegistryError::PluginError(format!("Plugin '{name}' not found")))
         }
     }
     
@@ -728,7 +728,7 @@ pub fn load_plugins_from_directory<P: AsRef<Path>>(dir: P) -> RegistryResult<Vec
     let dir = dir.as_ref();
     if !dir.exists() || !dir.is_dir() {
         return Err(RegistryError::PluginError(
-            format!("Plugin directory {:?} does not exist or is not a directory", dir)
+            format!("Plugin directory {dir:?} does not exist or is not a directory")
         ));
     }
     
@@ -744,13 +744,13 @@ pub fn load_plugins_from_directory<P: AsRef<Path>>(dir: P) -> RegistryResult<Vec
         let path = entry.path();
         
         // Look for plugin descriptor files
-        if path.file_name().map_or(false, |name| name == "plugin.toml") {
+        if path.file_name().is_some_and(|name| name == "plugin.toml") {
             match Plugin::load_from_descriptor(path, config.clone()) {
                 Ok(plugin) => {
                     plugins.push(plugin);
                 }
                 Err(e) => {
-                    log::warn!("Failed to load plugin from {:?}: {}", path, e);
+                    log::warn!("Failed to load plugin from {path:?}: {e}");
                 }
             }
         }
@@ -766,7 +766,7 @@ pub fn load_plugins_from_directory<P: AsRef<Path>>(dir: P) -> RegistryResult<Vec
                         plugins.push(plugin);
                     }
                     Err(e) => {
-                        log::warn!("Failed to load plugin from {:?}: {}", path, e);
+                        log::warn!("Failed to load plugin from {path:?}: {e}");
                     }
                 }
             }

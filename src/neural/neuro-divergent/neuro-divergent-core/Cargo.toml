@@ -30,6 +30,7 @@ anyhow = "1.0"
 # Data structures and processing
 ndarray = "0.16"
 polars = { version = "0.50", features = ["lazy", "temporal", "csv", "parquet", "json"] }
+polars-utils = "0.50"
 
 # Parallel processing
 rayon = "1.10"
@@ -42,7 +43,7 @@ rand_distr = "0.4"
 nalgebra = "0.34"
 
 # ruv-FANN integration
-ruv-fann = "0.1"
+ruv-fann = "0.1.6"
 
 # Optional GPU acceleration
 candle-core = { version = "0.9", optional = true }

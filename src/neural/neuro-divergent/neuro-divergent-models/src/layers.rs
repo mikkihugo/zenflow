@@ -3,7 +3,7 @@
 //! This module provides various layer types used in neural forecasting models.
 
 use ndarray::{Array1, Array2, Axis};
-use num_traits::Float;
+// Removed unused import: use num_traits::Float;
 use rand::{Rng, SeedableRng};
 use rand_chacha::ChaCha8Rng;
 
@@ -30,7 +30,7 @@ impl Dense {
         let scale = (2.0 / input_size as f64).sqrt();
         
         let weights = Array2::from_shape_fn((input_size, output_size), |_| {
-            rng.gen_range(-scale..scale)
+            rng.random_range(-scale..scale)
         });
         let bias = Array1::zeros(output_size);
         
@@ -111,7 +111,9 @@ pub struct BatchNorm {
     running_var: Array1<f64>,
     momentum: f64,
     eps: f64,
+    #[allow(dead_code)]
     grad_gamma: Option<Array1<f64>>,
+    #[allow(dead_code)]
     grad_beta: Option<Array1<f64>>,
 }
 
@@ -172,7 +174,7 @@ impl Dropout {
         if training {
             let shape = (input.nrows(), input.ncols());
             let mask = Array2::from_shape_fn(shape, |_| {
-                if self.rng.gen::<f64>() > self.rate { 1.0 / (1.0 - self.rate) } else { 0.0 }
+                if self.rng.random::<f64>() > self.rate { 1.0 / (1.0 - self.rate) } else { 0.0 }
             });
             input * mask
         } else {

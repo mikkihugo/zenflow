@@ -2,8 +2,7 @@
 //!
 //! This module provides common activation functions used in neural forecasting models.
 
-use ndarray::{Array1, Array2};
-use num_traits::Float;
+use ndarray::Array1;
 
 /// Trait for activation functions
 pub trait ActivationFunction {
@@ -14,6 +13,12 @@ pub trait ActivationFunction {
 
 /// ReLU activation function
 pub struct ReLU;
+
+impl Default for ReLU {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl ReLU {
     pub fn new() -> Self {
@@ -41,6 +46,12 @@ impl ActivationFunction for ReLU {
 /// Sigmoid activation function
 pub struct Sigmoid;
 
+impl Default for Sigmoid {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Sigmoid {
     pub fn new() -> Self {
         Self
@@ -67,6 +78,12 @@ impl ActivationFunction for Sigmoid {
 
 /// Tanh activation function
 pub struct Tanh;
+
+impl Default for Tanh {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl Tanh {
     pub fn new() -> Self {
@@ -123,6 +140,12 @@ impl ActivationFunction for LeakyReLU {
 /// Softmax activation function
 pub struct Softmax;
 
+impl Default for Softmax {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Softmax {
     pub fn new() -> Self {
         Self
@@ -163,6 +186,12 @@ impl ActivationFunction for Softmax {
 
 /// LogSoftmax activation function
 pub struct LogSoftmax;
+
+impl Default for LogSoftmax {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl LogSoftmax {
     pub fn new() -> Self {

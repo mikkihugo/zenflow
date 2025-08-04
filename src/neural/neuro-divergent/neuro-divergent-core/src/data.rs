@@ -6,14 +6,15 @@
 use std::collections::HashMap;
 use std::marker::PhantomData;
 use std::path::Path;
+use std::sync::Arc;
 
 use chrono::{DateTime, TimeZone, Utc};
-use ndarray::{Array1, Array2};
+use ndarray::Array2;
 use num_traits::Float;
 use polars::prelude::*;
-use serde::{Deserialize, Serialize};
+// PlPath import removed - using Arc<Path> instead
 
-use crate::{data_error, error::{ErrorBuilder, NeuroDivergentError, NeuroDivergentResult}};
+use crate::{data_error, error::{ErrorBuilder, NeuroDivergentResult}};
 
 /// Main data structure for time series data, equivalent to pandas DataFrame
 #[derive(Debug, Clone)]
@@ -497,7 +498,8 @@ impl<T: Float> TimeSeriesDataFrame<T> {
         path: P,
         schema: TimeSeriesSchema,
     ) -> NeuroDivergentResult<Self> {
-        let df = LazyFrame::scan_parquet(path.as_ref().into(), ScanArgsParquet::default())
+        use polars_utils::plpath::PlPath;
+        let df = LazyFrame::scan_parquet(PlPath::Local(Arc::from(path.as_ref())), ScanArgsParquet::default())
             .map_err(|e| ErrorBuilder::data(format!("Failed to read Parquet: {}", e)).build())?
             .collect()
             .map_err(|e| ErrorBuilder::data(format!("Failed to collect DataFrame: {}", e)).build())?;

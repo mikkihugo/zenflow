@@ -59,9 +59,15 @@ pub mod registry;
 pub mod plugin;
 pub mod discovery;
 
-// Re-exports for public API
-pub use factory::*;
-pub use registry::*;
+// Re-exports for public API - specific exports to avoid ambiguity
+pub use factory::{
+    ModelFactory, ModelCreatorMap, CreationOptions, CreationStats,
+    ModelCreatorFn as FactoryCreatorFn,
+};
+pub use registry::{
+    ModelRegistry,
+    ModelCreatorFn as RegistryCreatorFn,
+};
 pub use plugin::*;
 pub use discovery::*;
 
@@ -509,7 +515,7 @@ pub fn initialize_registry_with_config(config: RegistryConfig) -> RegistryResult
                         }
                     }
                     Err(e) => {
-                        log::warn!("Failed to load plugins from {:?}: {}", plugin_dir, e);
+                        log::warn!("Failed to load plugins from {plugin_dir:?}: {e}");
                     }
                 }
             }

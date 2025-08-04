@@ -89,12 +89,30 @@ pub use ruv_fann::{
     ActivationFunction, Network, NetworkBuilder, TrainingAlgorithm, TrainingData,
 };
 
-// Public API re-exports
+// Public API re-exports - specific exports to avoid ambiguity
 pub use crate::{
-    config::*,
-    data::*,
+    config::{
+        SystemConfig, GenericModelConfig, LoggingConfig,
+        PerformanceConfig, ParallelConfig, DataFormat, DebugConfig, FeatureFlags, ConfigManager,
+        ModelConfigBuilder, ConfigMetadata, MemoryConfig, ThreadPoolConfig, IoConfig,
+        ValidationResult as ConfigValidationResult,
+        ValidationError as ConfigValidationError,
+        ValidationWarning as ConfigValidationWarning,
+    },
+    data::{
+        TimeSeriesDataset, DatasetMetadata, TimeSeriesDataFrame, TimeSeriesSchema, SeriesData,
+        PreprocessingConfig, MissingValueStats,
+        ValidationReport as DataValidationReport,
+        ValidationError as DataValidationError,
+        ValidationWarning as DataValidationWarning,
+        ScalingConfig, ScalingMethod as DataScalingMethod,
+        RollingStatistic as DataRollingStatistic,
+    },
     error::*,
-    integration::*,
+    integration::{
+        NetworkAdapter, ActivationMapper,
+        ScalingMethod as IntegrationScalingMethod, RollingStatistic as IntegrationRollingStatistic,
+    },
     traits::*,
 };
 
