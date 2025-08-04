@@ -107,8 +107,6 @@ export class WASMFactIntegration extends EventEmitter {
   private fastCache?: any;
   private queryProcessor?: any;
   private cognitiveEngine?: any;
-  private contextAnalyzer: ProjectContextAnalyzer;
-  private knowledgeCache: KnowledgeCacheSystem;
   private config: WASMFactConfig;
   private isInitialized = false;
   private templates = new Map<string, CognitiveTemplate>();
@@ -199,8 +197,6 @@ export class WASMFactIntegration extends EventEmitter {
       return;
     }
 
-    console.log('🦀 Initializing WASM-Powered FACT System...');
-
     try {
       // Load WASM module
       await this.loadWASMModule();
@@ -218,11 +214,6 @@ export class WASMFactIntegration extends EventEmitter {
       await this.hiveSystem.initialize();
 
       this.isInitialized = true;
-
-      console.log('✅ WASM FACT system initialized');
-      console.log(`📊 Cache size: ${this.config.cacheSize}`);
-      console.log(`🧠 Cognitive mode: ${this.config.cognitiveMode}`);
-      console.log(`🎯 Performance target: ${this.config.performanceTarget}`);
 
       this.emit('initialized', {
         wasmLoaded: true,
@@ -250,8 +241,6 @@ export class WASMFactIntegration extends EventEmitter {
     const startTime = performance.now();
 
     try {
-      console.log(`🧠 Processing with cognitive template: ${template}`);
-
       // Check WASM cache first (10x faster than JavaScript)
       const cacheKey = this.generateCacheKey(template, data);
       const cached = this.fastCache.get(cacheKey);
@@ -259,8 +248,6 @@ export class WASMFactIntegration extends EventEmitter {
       if (cached) {
         const latency = performance.now() - startTime;
         this.updateMetrics('cache_hit', latency);
-
-        console.log(`⚡ WASM Cache hit: ${latency.toFixed(2)}ms`);
         return JSON.parse(cached);
       }
 
@@ -282,8 +269,6 @@ export class WASMFactIntegration extends EventEmitter {
       const latency = performance.now() - startTime;
       this.updateMetrics('cache_miss', latency);
 
-      console.log(`✅ WASM Processing completed: ${latency.toFixed(2)}ms`);
-
       this.emit('templateProcessed', { template, latency, cached: false });
 
       return result;
@@ -302,8 +287,6 @@ export class WASMFactIntegration extends EventEmitter {
     }
 
     try {
-      console.log(`🔍 Gathering intelligent knowledge: ${query.substring(0, 100)}...`);
-
       // Use cognitive engine to analyze context and suggest optimal templates
       const analysis = this.cognitiveEngine.analyze_context({
         query,
@@ -311,8 +294,6 @@ export class WASMFactIntegration extends EventEmitter {
         availableTemplates: Array.from(this.templates.keys()),
         performanceTarget: this.config.performanceTarget,
       });
-
-      console.log(`🧠 Cognitive analysis suggests: ${analysis.suggestedTemplates?.join(', ')}`);
 
       // Execute hive-controlled knowledge gathering with suggested approach
       let result;
@@ -344,8 +325,6 @@ export class WASMFactIntegration extends EventEmitter {
    * Gather knowledge for specific dependencies detected by hive
    */
   async gatherDependencyKnowledge(dependencies: string[]): Promise<Map<string, any>> {
-    console.log(`📦 Gathering knowledge for ${dependencies.length} dependencies...`);
-
     const results = new Map<string, any>();
 
     // Process dependencies in parallel using WASM for optimal performance
@@ -360,7 +339,6 @@ export class WASMFactIntegration extends EventEmitter {
         });
 
         results.set(dep, result);
-        console.log(`✅ Knowledge gathered for: ${dep}`);
       } catch (error) {
         console.error(`❌ Failed to gather knowledge for ${dep}:`, error);
         results.set(dep, { error: error.message });
@@ -368,8 +346,6 @@ export class WASMFactIntegration extends EventEmitter {
     });
 
     await Promise.all(promises);
-
-    console.log(`📊 Dependency knowledge gathering complete: ${results.size} results`);
     return results;
   }
 
@@ -377,18 +353,12 @@ export class WASMFactIntegration extends EventEmitter {
    * Execute knowledge gathering missions from hive system
    */
   async executeMissions(missions: KnowledgeGatheringMission[]): Promise<Map<string, any>> {
-    console.log(
-      `🎯 Executing ${missions.length} knowledge gathering missions with WASM acceleration...`
-    );
-
     const results = new Map<string, any>();
 
     // Group missions by template type for optimal WASM processing
     const missionsByTemplate = this.groupMissionsByTemplate(missions);
 
     for (const [template, missionGroup] of missionsByTemplate) {
-      console.log(`🧠 Processing ${missionGroup.length} missions with template: ${template}`);
-
       // Process missions in batches using WASM
       const batchPromises = missionGroup.map(async (mission) => {
         try {
@@ -411,8 +381,6 @@ export class WASMFactIntegration extends EventEmitter {
 
       await Promise.all(batchPromises);
     }
-
-    console.log(`✅ Mission execution complete: ${results.size} results`);
     return results;
   }
 
@@ -502,7 +470,6 @@ export class WASMFactIntegration extends EventEmitter {
         };
 
         this.templates.set(name, template);
-        console.log(`✅ Created custom cognitive template: ${name}`);
 
         this.emit('templateCreated', template);
         return true;
@@ -520,11 +487,6 @@ export class WASMFactIntegration extends EventEmitter {
    */
   private async loadWASMModule(): Promise<void> {
     try {
-      // Dynamic import of WASM module
-      // In a real implementation, this would load the actual WASM binary
-
-      console.log('📦 Loading WASM module...');
-
       // Mock WASM module for demonstration
       // In reality, this would be: const wasmModule = await import(this.config.wasmPath);
       this.wasmModule = {
@@ -609,7 +571,7 @@ export class WASMFactIntegration extends EventEmitter {
             };
           }
 
-          suggest_templates(data: any): string[] {
+          suggest_templates(_data: any): string[] {
             return ['analysis-basic', 'quick-transform'];
           }
 
@@ -621,13 +583,11 @@ export class WASMFactIntegration extends EventEmitter {
             };
           }
 
-          create_template(name: string, pattern: any): boolean {
+          create_template(_name: string, _pattern: any): boolean {
             return true;
           }
         },
       } as WASMFact;
-
-      console.log('✅ WASM module loaded successfully');
     } catch (error) {
       console.error('❌ Failed to load WASM module:', error);
       throw error;
@@ -642,8 +602,6 @@ export class WASMFactIntegration extends EventEmitter {
       throw new Error('WASM module not loaded');
     }
 
-    console.log('🔧 Initializing WASM components...');
-
     // Initialize FastCache (10x performance improvement)
     this.fastCache = new this.wasmModule.FastCache(this.config.cacheSize);
 
@@ -654,16 +612,12 @@ export class WASMFactIntegration extends EventEmitter {
     if (this.config.enableTemplates) {
       this.cognitiveEngine = new this.wasmModule.CognitiveEngine();
     }
-
-    console.log('✅ WASM components initialized');
   }
 
   /**
    * Load cognitive templates
    */
   private async loadCognitiveTemplates(): Promise<void> {
-    console.log('🧠 Loading cognitive templates...');
-
     for (const [name, templateDef] of Object.entries(WASMFactIntegration.COGNITIVE_TEMPLATES)) {
       const template: CognitiveTemplate = {
         name,
@@ -679,8 +633,6 @@ export class WASMFactIntegration extends EventEmitter {
 
       this.templates.set(name, template);
     }
-
-    console.log(`✅ Loaded ${this.templates.size} cognitive templates`);
   }
 
   /**
@@ -700,7 +652,7 @@ export class WASMFactIntegration extends EventEmitter {
     };
   }
 
-  private calculateTTL(template: string, result: any): number {
+  private calculateTTL(template: string, _result: any): number {
     // Intelligent TTL based on template type and result characteristics
     const baseTTL = 60000; // 1 minute
 
@@ -767,7 +719,7 @@ export class WASMFactIntegration extends EventEmitter {
       if (!groups.has(template)) {
         groups.set(template, []);
       }
-      groups.get(template)!.push(mission);
+      groups.get(template)?.push(mission);
     }
 
     return groups;
@@ -792,8 +744,6 @@ export class WASMFactIntegration extends EventEmitter {
    * Shutdown WASM system
    */
   async shutdown(): Promise<void> {
-    console.log('🔄 Shutting down WASM FACT system...');
-
     if (this.fastCache) {
       this.fastCache.clear();
     }
@@ -802,8 +752,6 @@ export class WASMFactIntegration extends EventEmitter {
 
     this.isInitialized = false;
     this.emit('shutdown');
-
-    console.log('✅ WASM FACT system shutdown complete');
   }
 }
 

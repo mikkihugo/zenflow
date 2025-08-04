@@ -8,10 +8,10 @@
  * @version 1.0.0
  */
 
-import { strict as assert } from 'assert';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { strict as assert } from 'node:assert';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,13 +20,13 @@ const __dirname = path.dirname(__filename);
 let errorModule;
 try {
   errorModule = await import('../src/errors.js');
-} catch (error) {
+} catch (_error) {
   console.warn('Warning: Error module not found, using mock implementation');
   errorModule = {
-    RuvSwarmError: class extends Error {
+    ZenSwarmError: class extends Error {
       constructor(message, code) {
         super(message);
-        this.name = 'RuvSwarmError';
+        this.name = 'ZenSwarmError';
         this.code = code;
       }
     },
@@ -37,7 +37,7 @@ try {
       }
     },
     handleError: (error) => ({ handled: true, error: error.message }),
-    validateInput: (input, schema) => ({ valid: true, errors: [] }),
+    validateInput: (_input, _schema) => ({ valid: true, errors: [] }),
     sanitizeInput: (input) => input,
     createErrorResponse: (error) => ({ success: false, error: error.message }),
   };
@@ -69,58 +69,54 @@ class ErrorHandlingTestSuite {
     try {
       await testFn();
       this.results.passed++;
-      console.log(`✅ ${name}`);
       return true;
     } catch (error) {
       this.results.failed++;
       this.results.errors.push({ name, error: error.message });
-      console.log(`❌ ${name}: ${error.message}`);
       return false;
     }
   }
 
   // Test Input Validation
   async testInputValidation() {
-    console.log('\n🔍 Testing Input Validation...');
-
     await this.runTest('Validation - Valid input schema', async () => {
       const result = this.errorHandler.validateInput(
         { name: 'test', value: 42 },
-        { name: 'string', value: 'number' }
+        { name: 'string', value: 'number' },
       );
       assert(result.valid === true || result.valid === undefined, 'Should validate correct input');
       this.results.coverage.validation++;
     });
 
     await this.runTest('Validation - Invalid input type', async () => {
-      const result = this.errorHandler.validateInput(
+      const _result = this.errorHandler.validateInput(
         { name: 123, value: 'invalid' },
-        { name: 'string', value: 'number' }
+        { name: 'string', value: 'number' },
       );
       // Should either validate or return validation errors
       this.results.coverage.validation++;
     });
 
     await this.runTest('Validation - Missing required fields', async () => {
-      const result = this.errorHandler.validateInput(
+      const _result = this.errorHandler.validateInput(
         { name: 'test' },
-        { name: 'string', value: 'number', required: ['name', 'value'] }
+        { name: 'string', value: 'number', required: ['name', 'value'] },
       );
       this.results.coverage.validation++;
     });
 
     await this.runTest('Validation - Extra fields handling', async () => {
-      const result = this.errorHandler.validateInput(
+      const _result = this.errorHandler.validateInput(
         { name: 'test', value: 42, extra: 'field' },
-        { name: 'string', value: 'number' }
+        { name: 'string', value: 'number' },
       );
       this.results.coverage.validation++;
     });
 
     await this.runTest('Validation - Nested object validation', async () => {
-      const result = this.errorHandler.validateInput(
+      const _result = this.errorHandler.validateInput(
         { config: { timeout: 5000, retries: 3 } },
-        { config: { timeout: 'number', retries: 'number' } }
+        { config: { timeout: 'number', retries: 'number' } },
       );
       this.results.coverage.validation++;
     });
@@ -128,10 +124,8 @@ class ErrorHandlingTestSuite {
 
   // Test Input Sanitization
   async testInputSanitization() {
-    console.log('\n🔍 Testing Input Sanitization...');
-
     await this.runTest('Sanitization - SQL injection prevention', async () => {
-      const maliciousInput = "'; DROP TABLE users; --";
+      const maliciousInput = '\'; DROP TABLE users; --';
       const sanitized = this.errorHandler.sanitizeInput(maliciousInput);
       assert(typeof sanitized === 'string', 'Should return sanitized string');
       this.results.coverage.sanitization++;
@@ -168,12 +162,10 @@ class ErrorHandlingTestSuite {
 
   // Test Different Error Types
   async testErrorTypes() {
-    console.log('\n🔍 Testing Different Error Types...');
-
-    await this.runTest('Error Types - RuvSwarmError creation', async () => {
-      const error = new this.errorHandler.RuvSwarmError('Test error', 'TEST001');
-      assert(error instanceof Error, 'Should create RuvSwarmError');
-      assert(error.name === 'RuvSwarmError', 'Should have correct name');
+    await this.runTest('Error Types - ZenSwarmError creation', async () => {
+      const error = new this.errorHandler.ZenSwarmError('Test error', 'TEST001');
+      assert(error instanceof Error, 'Should create ZenSwarmError');
+      assert(error.name === 'ZenSwarmError', 'Should have correct name');
       assert(error.code === 'TEST001', 'Should have error code');
       this.results.coverage.errorTypes++;
     });
@@ -212,8 +204,6 @@ class ErrorHandlingTestSuite {
 
   // Test Error Handling Mechanisms
   async testErrorHandlingMechanisms() {
-    console.log('\n🔍 Testing Error Handling Mechanisms...');
-
     await this.runTest('Error Handling - Basic error handling', async () => {
       const testError = new Error('Test error');
       const result = this.errorHandler.handleError(testError);
@@ -251,8 +241,6 @@ class ErrorHandlingTestSuite {
 
   // Test Error Recovery Mechanisms
   async testErrorRecovery() {
-    console.log('\n🔍 Testing Error Recovery Mechanisms...');
-
     await this.runTest('Recovery - Retry mechanism', async () => {
       let attempts = 0;
       const retryFunction = async () => {
@@ -279,7 +267,7 @@ class ErrorHandlingTestSuite {
         }
         assert(result.success === true, 'Should succeed after retries');
         this.results.coverage.recovery++;
-      } catch (error) {
+      } catch (_error) {
         // Test still passes if retry mechanism exists
         this.results.coverage.recovery++;
       }
@@ -296,7 +284,7 @@ class ErrorHandlingTestSuite {
 
       try {
         serviceWithDegradation.primaryFeature();
-      } catch (error) {
+      } catch (_error) {
         const fallbackResult = serviceWithDegradation.fallbackFeature();
         assert(fallbackResult.success === true, 'Should provide fallback functionality');
       }
@@ -335,7 +323,7 @@ class ErrorHandlingTestSuite {
         try {
           await circuitBreakerService();
           successfulCall = true;
-        } catch (error) {
+        } catch (_error) {
           // Expected failures
         }
       }
@@ -347,8 +335,6 @@ class ErrorHandlingTestSuite {
 
   // Test Error Logging
   async testErrorLogging() {
-    console.log('\n🔍 Testing Error Logging...');
-
     await this.runTest('Logging - Error log creation', async () => {
       const testError = new Error('Logging test error');
       testError.timestamp = new Date().toISOString();
@@ -404,8 +390,6 @@ class ErrorHandlingTestSuite {
 
   // Test Error Boundaries
   async testErrorBoundaries() {
-    console.log('\n🔍 Testing Error Boundaries...');
-
     await this.runTest('Boundaries - Function error isolation', async () => {
       const isolatedFunction = async (input) => {
         try {
@@ -434,7 +418,7 @@ class ErrorHandlingTestSuite {
         safeWrapper() {
           try {
             return this.riskyOperation();
-          } catch (error) {
+          } catch (_error) {
             return { success: false, error: 'Operation failed safely' };
           }
         },
@@ -461,8 +445,6 @@ class ErrorHandlingTestSuite {
 
   // Test Async Error Handling
   async testAsyncErrorHandling() {
-    console.log('\n🔍 Testing Async Error Handling...');
-
     await this.runTest('Async - Promise rejection handling', async () => {
       const asyncFunction = async () => {
         throw new Error('Async operation failed');
@@ -480,11 +462,11 @@ class ErrorHandlingTestSuite {
 
     await this.runTest('Async - Unhandled promise rejection', async () => {
       // Test unhandled promise rejection handling
-      const originalHandler = process.listeners('unhandledRejection')[0];
-      let unhandledRejectionCaught = false;
+      const _originalHandler = process.listeners('unhandledRejection')[0];
+      let _unhandledRejectionCaught = false;
 
-      const testHandler = (reason, promise) => {
-        unhandledRejectionCaught = true;
+      const testHandler = (_reason, _promise) => {
+        _unhandledRejectionCaught = true;
       };
 
       process.once('unhandledRejection', testHandler);
@@ -614,7 +596,7 @@ class ErrorHandlingTestSuite {
 
     if (recommendations.length === 0) {
       recommendations.push(
-        'Excellent error handling coverage! Consider adding chaos engineering tests.'
+        'Excellent error handling coverage! Consider adding chaos engineering tests.',
       );
     }
 
@@ -622,9 +604,6 @@ class ErrorHandlingTestSuite {
   }
 
   async run() {
-    console.log('🛡️ Starting Comprehensive Error Handling Test Suite');
-    console.log('='.repeat(70));
-
     await this.testInputValidation();
     await this.testInputSanitization();
     await this.testErrorTypes();
@@ -635,39 +614,17 @@ class ErrorHandlingTestSuite {
     await this.testAsyncErrorHandling();
 
     const report = this.generateReport();
-
-    console.log('\n📊 Error Handling Test Results Summary');
-    console.log('='.repeat(70));
-    console.log(`Total Tests: ${report.summary.totalTests}`);
-    console.log(`Passed: ${report.summary.passed}`);
-    console.log(`Failed: ${report.summary.failed}`);
-    console.log(`Pass Rate: ${report.summary.passRate}`);
-    console.log(`Total Coverage Points: ${report.summary.totalCoveragePoints}`);
-
-    console.log('\n📊 Coverage Breakdown:');
-    Object.entries(report.coverage).forEach(([area, count]) => {
-      console.log(`  ${area}: ${count} tests`);
-    });
+    Object.entries(report.coverage).forEach(([_area, _count]) => {});
 
     if (report.errors.length > 0) {
-      console.log('\n❌ Errors:');
-      report.errors.forEach((error) => {
-        console.log(`  - ${error.name}: ${error.error}`);
-      });
+      report.errors.forEach((_error) => {});
     }
-
-    console.log('\n💡 Recommendations:');
-    report.recommendations.forEach((rec) => {
-      console.log(`  - ${rec}`);
-    });
+    report.recommendations.forEach((_rec) => {});
 
     // Save report to file
     const reportPath = path.join(__dirname, '../test-reports/error-handling-test-report.json');
     fs.mkdirSync(path.dirname(reportPath), { recursive: true });
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
-
-    console.log(`\n📄 Report saved to: ${reportPath}`);
-    console.log('\n✅ Error Handling Test Suite Complete!');
 
     return report;
   }

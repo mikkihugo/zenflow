@@ -834,16 +834,16 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
 
   // Implementation of utility methods would continue here...
   private async selectValidationProtocol(
-    item: KnowledgeItem,
-    type: ValidationType
+    _item: KnowledgeItem,
+    _type: ValidationType
   ): Promise<ValidationProtocol> {
     // Implementation placeholder
     return {} as ValidationProtocol;
   }
 
   private async selectValidators(
-    item: KnowledgeItem,
-    protocol: ValidationProtocol
+    _item: KnowledgeItem,
+    _protocol: ValidationProtocol
   ): Promise<ValidatorConfig[]> {
     // Implementation placeholder
     return [];

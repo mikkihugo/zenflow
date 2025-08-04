@@ -203,7 +203,7 @@ export class MLPredictiveAlgorithm implements ILoadBalancingAlgorithm {
   /**
    * Handle agent failure
    */
-  public async onAgentFailure(agentId: string, error: Error): Promise<void> {
+  public async onAgentFailure(agentId: string, _error: Error): Promise<void> {
     // Record failure data
     const failureData: HistoricalData = {
       timestamp: new Date(),
@@ -310,7 +310,7 @@ export class MLPredictiveAlgorithm implements ILoadBalancingAlgorithm {
     const weights = this.config.modelEnsembleWeights;
 
     // Get predictions from each model
-    for (const [modelType, model] of this.models) {
+    for (const [modelType, _model] of this.models) {
       try {
         const prediction = await this.predictionEngine.predict(this.normalizeFeatures(features));
         predictions.set(modelType, prediction);
@@ -429,7 +429,7 @@ export class MLPredictiveAlgorithm implements ILoadBalancingAlgorithm {
    * Fallback selection when ML predictions are not available
    */
   private fallbackSelection(
-    task: Task,
+    _task: Task,
     availableAgents: Agent[],
     metrics: Map<string, LoadMetrics>
   ): RoutingResult {
@@ -566,7 +566,7 @@ export class MLPredictiveAlgorithm implements ILoadBalancingAlgorithm {
     return variance;
   }
 
-  private calculateFeatureImportance(features: MLFeatures): Record<string, number> {
+  private calculateFeatureImportance(_features: MLFeatures): Record<string, number> {
     // Simplified feature importance calculation
     return {
       currentLoad: 0.25,
@@ -579,7 +579,7 @@ export class MLPredictiveAlgorithm implements ILoadBalancingAlgorithm {
     };
   }
 
-  private createResourceUsageSnapshot(agentId: string): LoadMetrics {
+  private createResourceUsageSnapshot(_agentId: string): LoadMetrics {
     // Create a snapshot of current resource usage
     return {
       timestamp: new Date(),
@@ -611,16 +611,16 @@ export class MLPredictiveAlgorithm implements ILoadBalancingAlgorithm {
   }
 
   private async updateModelPerformance(
-    agentId: string,
-    task: Task,
-    duration: number,
-    success: boolean
+    _agentId: string,
+    _task: Task,
+    _duration: number,
+    _success: boolean
   ): Promise<void> {
     // Update model performance metrics based on actual outcomes
     // This would involve comparing predictions with actual results
   }
 
-  private async updateAgentReliabilityModel(agentId: string, reliable: boolean): Promise<void> {
+  private async updateAgentReliabilityModel(_agentId: string, _reliable: boolean): Promise<void> {
     // Update agent reliability in the model
     // This would adjust the agent's reliability score in the training data
   }
@@ -639,7 +639,7 @@ export class MLPredictiveAlgorithm implements ILoadBalancingAlgorithm {
     };
   }
 
-  private async evaluateModel(modelType: string, trainingData: any[]): Promise<void> {
+  private async evaluateModel(_modelType: string, _trainingData: any[]): Promise<void> {
     // Evaluate model performance using cross-validation
     // This would implement proper ML evaluation metrics
   }
@@ -668,8 +668,6 @@ export class MLPredictiveAlgorithm implements ILoadBalancingAlgorithm {
  * Default prediction engine implementation
  */
 class DefaultPredictionEngine implements IPredictionEngine {
-  private model: any = null;
-
   async predict(features: Record<string, number>): Promise<number> {
     // Simple linear model for demonstration
     const weights = {

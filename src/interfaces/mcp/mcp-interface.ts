@@ -5,7 +5,7 @@
  * Handles communication with Claude Code via MCP protocol.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import { createLogger } from '../../utils/logger';
 
 const logger = createLogger('MCPInterface');

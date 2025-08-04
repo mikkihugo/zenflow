@@ -8,7 +8,7 @@
  * @fileoverview Coordination domain API routes
  */
 
-import { NextFunction, type Request, type Response, Router } from 'express';
+import { type Request, type Response, Router } from 'express';
 import { CoordinationAPI } from '../../coordination/api';
 import { asyncHandler } from '../middleware/errors';
 import { LogLevel, log } from '../middleware/logging';
@@ -197,7 +197,7 @@ export const createCoordinationRoutes = (): Router => {
    */
   router.get(
     '/health',
-    asyncHandler(async (req: Request, res: Response) => {
+    asyncHandler(async (_req: Request, res: Response) => {
       const result = await CoordinationAPI.health.getHealth();
 
       // Set appropriate HTTP status based on health

@@ -34,7 +34,7 @@ function parseArgs(): StartupConfig {
       case '--port':
       case '-p': {
         const port = parseInt(args[++i], 10);
-        if (isNaN(port) || port < 1 || port > 65535) {
+        if (Number.isNaN(port) || port < 1 || port > 65535) {
           throw new Error(`Invalid port: ${args[i]}`);
         }
         config.port = port;
@@ -59,7 +59,7 @@ function parseArgs(): StartupConfig {
       case '--timeout':
       case '-t': {
         const timeout = parseInt(args[++i], 10);
-        if (isNaN(timeout) || timeout < 1000) {
+        if (Number.isNaN(timeout) || timeout < 1000) {
           throw new Error(`Invalid timeout: ${args[i]} (minimum 1000ms)`);
         }
         config.timeout = timeout;
@@ -84,38 +84,7 @@ function parseArgs(): StartupConfig {
 /**
  * Print usage information
  */
-function printUsage(): void {
-  console.log(`
-Claude-Zen HTTP MCP Server (Official SDK)
-
-Usage: npx tsx src/interfaces/mcp/start-server.ts [options]
-
-Options:
-  -p, --port <number>     Server port (default: 3000)
-  -h, --host <string>     Server host (default: localhost)  
-  -l, --log-level <level> Log level: debug, info, warn, error (default: info)
-  -t, --timeout <ms>      Request timeout in milliseconds (default: 30000)
-  --help                  Show this help message
-
-Environment Variables:
-  MCP_PORT               Server port
-  MCP_HOST               Server host
-  MCP_LOG_LEVEL          Log level
-  MCP_TIMEOUT            Request timeout
-
-Examples:
-  npx tsx src/interfaces/mcp/start-server.ts
-  npx tsx src/interfaces/mcp/start-server.ts --port 3001 --host 0.0.0.0
-  MCP_PORT=3000 npx tsx src/interfaces/mcp/start-server.ts
-
-SDK Features:
-  ✅ Official MCP SDK v1.17.1 compliance
-  ✅ Streamable HTTP transport with session management
-  ✅ Automatic JSON-RPC 2.0 handling
-  ✅ Built-in validation with Zod schemas
-  ✅ Enhanced TypeScript support
-`);
-}
+function printUsage(): void {}
 
 /**
  * Setup graceful shutdown

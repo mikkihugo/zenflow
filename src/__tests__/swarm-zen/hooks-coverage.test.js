@@ -3,7 +3,7 @@
  * Tests all hook implementations for 100% coverage
  */
 
-import assert from 'assert';
+import assert from 'node:assert';
 import {
   AdvancedCommands,
   ClaudeIntegration,
@@ -28,7 +28,7 @@ describe('Hooks System 100% Coverage', () => {
       // Non-function handler
       assert.throws(
         () => hooks.register('test-hook', 'not-a-function'),
-        /Handler must be a function/
+        /Handler must be a function/,
       );
 
       // Duplicate registration
@@ -64,7 +64,7 @@ describe('Hooks System 100% Coverage', () => {
 
       await assert.rejects(
         hooks.execute('validated-hook', { optional: 'value' }),
-        /Missing required field/
+        /Missing required field/,
       );
     });
 
@@ -86,7 +86,7 @@ describe('Hooks System 100% Coverage', () => {
     });
 
     it('should handle hook middleware errors', async () => {
-      hooks.addMiddleware(async (hookName, context, next) => {
+      hooks.addMiddleware(async (hookName, _context, next) => {
         if (hookName === 'restricted') {
           throw new Error('Access denied');
         }
@@ -115,7 +115,7 @@ describe('Hooks System 100% Coverage', () => {
     it('should handle command execution with missing arguments', async () => {
       await assert.rejects(
         cliHooks.execute('swarm', []), // Missing required args
-        /Missing required arguments/
+        /Missing required arguments/,
       );
     });
 
@@ -194,7 +194,7 @@ describe('Hooks System 100% Coverage', () => {
 
       assert.throws(
         () => commands.register('test2', () => {}, { aliases: ['t'] }),
-        /Alias already in use/
+        /Alias already in use/,
       );
     });
 
@@ -205,7 +205,7 @@ describe('Hooks System 100% Coverage', () => {
 
       await assert.rejects(
         commands.execute('admin', {}, { isAdmin: false }),
-        /Insufficient permissions/
+        /Insufficient permissions/,
       );
     });
 
@@ -275,7 +275,7 @@ describe('Hooks System 100% Coverage', () => {
           title: '', // Empty title
           body: 'Test PR',
         }),
-        /PR title required/
+        /PR title required/,
       );
     });
 
@@ -286,7 +286,7 @@ describe('Hooks System 100% Coverage', () => {
           files: [{ path: 'test.js', content: 'test' }],
           force: true,
         }),
-        /Branch protection/
+        /Branch protection/,
       );
     });
 
@@ -307,7 +307,7 @@ describe('Hooks System 100% Coverage', () => {
 
       assert.throws(
         () => coordinator.validateWebhook(payload, invalidSignature),
-        /Invalid webhook signature/
+        /Invalid webhook signature/,
       );
     });
   });
@@ -341,7 +341,7 @@ describe('Hooks System 100% Coverage', () => {
           file: 'test.py',
           formatted: false,
         }),
-        /Python files must be formatted/
+        /Python files must be formatted/,
       );
     });
 
@@ -350,7 +350,7 @@ describe('Hooks System 100% Coverage', () => {
 
       await assert.rejects(
         claudeHooks.saveSession({ id: 'test', data: {} }),
-        /Failed to save session/
+        /Failed to save session/,
       );
     });
 
@@ -370,8 +370,6 @@ describe('Hooks System 100% Coverage', () => {
 
 // Run tests when executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('Running hooks coverage tests...');
-
   // Run all tests
   const { run } = await import('./test-runner.js');
   await run(__filename);

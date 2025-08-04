@@ -39,7 +39,7 @@ class MemoryUsageHandler extends AdvancedToolHandler {
     return this.createResult(true, {
       operation: 'store',
       key,
-      size: compressed + ' bytes',
+      size: `${compressed} bytes`,
       compressed: options.compress || false,
       ttl: options.ttl || 'indefinite',
       timestamp: new Date().toISOString(),
@@ -48,7 +48,7 @@ class MemoryUsageHandler extends AdvancedToolHandler {
     });
   }
 
-  private async handleRetrieve(key: string, options: any) {
+  private async handleRetrieve(key: string, _options: any) {
     return this.createResult(true, {
       operation: 'retrieve',
       key,
@@ -62,7 +62,7 @@ class MemoryUsageHandler extends AdvancedToolHandler {
     });
   }
 
-  private async handleQuery(query: string, options: any) {
+  private async handleQuery(query: string, _options: any) {
     const results = Array.from({ length: Math.floor(Math.random() * 10) + 1 }, (_, i) => ({
       key: `result_${i}`,
       relevance: (0.5 + Math.random() * 0.5).toFixed(2),
@@ -74,44 +74,44 @@ class MemoryUsageHandler extends AdvancedToolHandler {
       query,
       results,
       totalFound: results.length,
-      searchTime: Math.floor(Math.random() * 100) + 10 + 'ms',
+      searchTime: `${Math.floor(Math.random() * 100) + 10}ms`,
       algorithm: 'semantic-vector-search',
     });
   }
 
-  private async handleStatus(options: any) {
+  private async handleStatus(_options: any) {
     return this.createResult(true, {
       operation: 'status',
       memoryStats: {
         totalEntries: Math.floor(Math.random() * 10000) + 1000,
-        usedSpace: Math.floor(Math.random() * 1000) + 100 + ' MB',
-        availableSpace: Math.floor(Math.random() * 5000) + 1000 + ' MB',
+        usedSpace: `${Math.floor(Math.random() * 1000) + 100} MB`,
+        availableSpace: `${Math.floor(Math.random() * 5000) + 1000} MB`,
         compressionRatio: (0.4 + Math.random() * 0.4).toFixed(2),
         hitRate: (0.8 + Math.random() * 0.19).toFixed(2),
       },
       performance: {
-        avgReadTime: Math.floor(Math.random() * 50) + 5 + 'ms',
-        avgWriteTime: Math.floor(Math.random() * 100) + 10 + 'ms',
+        avgReadTime: `${Math.floor(Math.random() * 50) + 5}ms`,
+        avgWriteTime: `${Math.floor(Math.random() * 100) + 10}ms`,
         queriesPerSecond: Math.floor(Math.random() * 1000) + 100,
       },
       health: 'optimal',
     });
   }
 
-  private async handleOptimize(options: any) {
+  private async handleOptimize(_options: any) {
     return this.createResult(true, {
       operation: 'optimize',
       optimization: {
-        defragmented: Math.floor(Math.random() * 1000) + 100 + ' entries',
-        compressed: Math.floor(Math.random() * 500) + 50 + ' entries',
-        expired: Math.floor(Math.random() * 200) + 10 + ' entries',
-        spaceSaved: Math.floor(Math.random() * 500) + 50 + ' MB',
+        defragmented: `${Math.floor(Math.random() * 1000) + 100} entries`,
+        compressed: `${Math.floor(Math.random() * 500) + 50} entries`,
+        expired: `${Math.floor(Math.random() * 200) + 10} entries`,
+        spaceSaved: `${Math.floor(Math.random() * 500) + 50} MB`,
       },
       performance: {
-        speedImprovement: '+' + Math.floor(Math.random() * 30) + 10 + '%',
-        spaceReduction: '-' + Math.floor(Math.random() * 40) + 10 + '%',
+        speedImprovement: `+${Math.floor(Math.random() * 30)}${10}%`,
+        spaceReduction: `-${Math.floor(Math.random() * 40)}${10}%`,
       },
-      duration: Math.floor(Math.random() * 5000) + 1000 + 'ms',
+      duration: `${Math.floor(Math.random() * 5000) + 1000}ms`,
     });
   }
 }
@@ -131,13 +131,13 @@ class NeuralStatusHandler extends AdvancedToolHandler {
       performance: {
         avgAccuracy: (0.85 + Math.random() * 0.14).toFixed(3),
         avgLoss: (Math.random() * 0.1).toFixed(4),
-        throughput: Math.floor(Math.random() * 1000) + 100 + ' inferences/sec',
-        latency: Math.floor(Math.random() * 50) + 5 + 'ms',
+        throughput: `${Math.floor(Math.random() * 1000) + 100} inferences/sec`,
+        latency: `${Math.floor(Math.random() * 50) + 5}ms`,
       },
       training: {
         activeJobs: Math.floor(Math.random() * 5),
         queuedJobs: Math.floor(Math.random() * 10),
-        avgEpochTime: Math.floor(Math.random() * 1000) + 200 + 'ms',
+        avgEpochTime: `${Math.floor(Math.random() * 1000) + 200}ms`,
         convergenceRate: (0.9 + Math.random() * 0.09).toFixed(2),
       },
       resources: {
@@ -199,11 +199,11 @@ class NeuralTrainHandler extends AdvancedToolHandler {
         totalEpochs: config.epochs || 100,
         currentLoss: (Math.random() * 2).toFixed(4),
         currentAccuracy: (0.5 + Math.random() * 0.4).toFixed(3),
-        estimatedTimeRemaining: Math.floor(Math.random() * 3600) + 300 + 's',
+        estimatedTimeRemaining: `${Math.floor(Math.random() * 3600) + 300}s`,
       },
       performance: {
         samplesPerSecond: Math.floor(Math.random() * 1000) + 100,
-        memoryUsage: Math.floor(Math.random() * 2000) + 500 + ' MB',
+        memoryUsage: `${Math.floor(Math.random() * 2000) + 500} MB`,
         gpuUtilization: (0.7 + Math.random() * 0.25).toFixed(2),
       },
       patterns: {
@@ -309,25 +309,25 @@ class MemoryBankHandler extends AdvancedToolHandler {
           capacity: '1GB',
           used: (0.3 + Math.random() * 0.5).toFixed(2),
           entries: Math.floor(Math.random() * 10000) + 1000,
-          avgAccessTime: Math.floor(Math.random() * 10) + 1 + 'ms',
+          avgAccessTime: `${Math.floor(Math.random() * 10) + 1}ms`,
         },
         longTerm: {
           capacity: '100GB',
           used: (0.1 + Math.random() * 0.3).toFixed(2),
           entries: Math.floor(Math.random() * 100000) + 10000,
-          avgAccessTime: Math.floor(Math.random() * 100) + 10 + 'ms',
+          avgAccessTime: `${Math.floor(Math.random() * 100) + 10}ms`,
         },
         workingMemory: {
           capacity: '512MB',
           used: (0.5 + Math.random() * 0.4).toFixed(2),
           activeContexts: Math.floor(Math.random() * 50) + 10,
-          contextSwitchTime: Math.floor(Math.random() * 50) + 5 + 'ms',
+          contextSwitchTime: `${Math.floor(Math.random() * 50) + 5}ms`,
         },
       },
       performance: {
         hitRate: (0.85 + Math.random() * 0.14).toFixed(2),
         compressionRatio: (0.4 + Math.random() * 0.4).toFixed(2),
-        deduplificationSavings: Math.floor(Math.random() * 30) + 10 + '%',
+        deduplificationSavings: `${Math.floor(Math.random() * 30) + 10}%`,
         indexingEfficiency: (0.9 + Math.random() * 0.09).toFixed(2),
       },
       management: {
@@ -338,9 +338,9 @@ class MemoryBankHandler extends AdvancedToolHandler {
       },
       analytics: {
         accessPatterns: ['sequential', 'random', 'clustered'],
-        hotData: Math.floor(Math.random() * 20) + 5 + '% of total',
+        hotData: `${Math.floor(Math.random() * 20) + 5}% of total`,
         temporalDistribution: 'normal',
-        predictedGrowth: '+' + Math.floor(Math.random() * 20) + 10 + '% per month',
+        predictedGrowth: `+${Math.floor(Math.random() * 20)}${10}% per month`,
       },
     };
 
@@ -393,7 +393,7 @@ class PatternRecognitionHandler extends AdvancedToolHandler {
       timestamp: new Date().toISOString(),
       analysis: {
         dataPoints: data ? data.length : Math.floor(Math.random() * 10000) + 1000,
-        processingTime: Math.floor(Math.random() * 1000) + 100 + 'ms',
+        processingTime: `${Math.floor(Math.random() * 1000) + 100}ms`,
         accuracy: (0.8 + Math.random() * 0.19).toFixed(2),
         coverage: (0.9 + Math.random() * 0.09).toFixed(2),
       },
@@ -1013,7 +1013,7 @@ export const memoryNeuralTools: AdvancedMCPTool[] = [
         include_recommendations: { type: 'boolean', default: true },
       },
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: {
         profiled: true,

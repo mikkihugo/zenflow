@@ -5,9 +5,9 @@
  * Comprehensive end-to-end testing suite
  */
 
-const { spawn } = require('child_process');
-const path = require('path');
-const fs = require('fs');
+const { spawn } = require('node:child_process');
+const path = require('node:path');
+const fs = require('node:fs');
 const chalk = require('chalk');
 
 class IntegrationTestRunner {
@@ -62,9 +62,6 @@ class IntegrationTestRunner {
   }
 
   async run() {
-    console.log(chalk.blue.bold('\n🧪 ruv-swarm Integration Test Suite'));
-    console.log(chalk.gray('=====================================\n'));
-
     this.logConfig();
     await this.setupEnvironment();
 
@@ -87,25 +84,16 @@ class IntegrationTestRunner {
     process.exit(this.results.failed > 0 ? 1 : 0);
   }
 
-  logConfig() {
-    console.log(chalk.cyan('Configuration:'));
-    console.log(chalk.gray(`  Environment: ${this.config.environment}`));
-    console.log(chalk.gray(`  Parallel: ${this.config.parallel}`));
-    console.log(chalk.gray(`  Verbose: ${this.config.verbose}`));
-    console.log(chalk.gray(`  Coverage: ${this.config.coverage}`));
-    console.log(chalk.gray(`  Bail on failure: ${this.config.bail}\n`));
-  }
+  logConfig() {}
 
   async setupEnvironment() {
-    console.log(chalk.yellow('🔧 Setting up test environment...'));
-
     // Ensure test database is clean
     try {
       const dbPath = path.join(__dirname, '../../data/test-ruv-swarm.db');
       if (fs.existsSync(dbPath)) {
         fs.unlinkSync(dbPath);
       }
-    } catch (error) {
+    } catch (_error) {
       console.warn(chalk.yellow('Warning: Could not clean test database'));
     }
 
@@ -113,16 +101,11 @@ class IntegrationTestRunner {
     process.env.NODE_ENV = 'test';
     process.env.RUV_SWARM_TEST_MODE = 'true';
     process.env.RUV_SWARM_LOG_LEVEL = this.config.verbose ? 'debug' : 'error';
-
-    console.log(chalk.green('✅ Environment ready\n'));
   }
 
   async runSequential() {
-    console.log(chalk.blue('Running tests sequentially...\n'));
-
     for (const suite of this.testSuites) {
       if (this.config.bail && this.results.failed > 0) {
-        console.log(chalk.yellow('⏭️  Bailing out due to previous failures'));
         break;
       }
 
@@ -131,8 +114,6 @@ class IntegrationTestRunner {
   }
 
   async runParallel() {
-    console.log(chalk.blue('Running tests in parallel...\n'));
-
     const parallelSuites = this.testSuites.filter((s) => s.parallel);
     const sequentialSuites = this.testSuites.filter((s) => !s.parallel);
 
@@ -152,8 +133,6 @@ class IntegrationTestRunner {
   }
 
   async runSuite(suite) {
-    console.log(chalk.cyan(`📋 Running ${suite.name}...`));
-
     const startTime = Date.now();
     const suitePath = path.join(__dirname, suite.path);
 
@@ -162,20 +141,9 @@ class IntegrationTestRunner {
 
       const duration = Date.now() - startTime;
       const status = result.exitCode === 0 ? 'PASSED' : 'FAILED';
-      const statusColor = result.exitCode === 0 ? 'green' : 'red';
-
-      console.log(chalk[statusColor](`  ${status} in ${duration}ms`));
+      const _statusColor = result.exitCode === 0 ? 'green' : 'red';
 
       if (this.config.verbose && result.output) {
-        console.log(chalk.gray('  Output:'));
-        console.log(
-          chalk.gray(
-            result.output
-              .split('\n')
-              .map((line) => `    ${line}`)
-              .join('\n')
-          )
-        );
       }
 
       this.results.suites.push({
@@ -192,14 +160,11 @@ class IntegrationTestRunner {
       } else {
         this.results.failed++;
         if (suite.critical) {
-          console.log(chalk.red.bold('  ⚠️  Critical test suite failed!'));
         }
       }
 
       this.results.total++;
     } catch (error) {
-      console.log(chalk.red(`  ERROR: ${error.message}`));
-
       this.results.suites.push({
         name: suite.name,
         status: 'ERROR',
@@ -211,8 +176,6 @@ class IntegrationTestRunner {
       this.results.failed++;
       this.results.total++;
     }
-
-    console.log(''); // Empty line for readability
   }
 
   executeMocha(testPath, suite) {
@@ -264,48 +227,27 @@ class IntegrationTestRunner {
   }
 
   generateReport() {
-    console.log(chalk.blue.bold('\n📊 Integration Test Results'));
-    console.log(chalk.gray('============================\n'));
-
     // Summary
-    const successRate =
+    const _successRate =
       this.results.total > 0 ? ((this.results.passed / this.results.total) * 100).toFixed(1) : 0;
-    const durationSeconds = (this.results.duration / 1000).toFixed(2);
-
-    console.log(chalk.cyan('Summary:'));
-    console.log(chalk.gray(`  Total Suites: ${this.results.total}`));
-    console.log(chalk.green(`  Passed: ${this.results.passed}`));
-    console.log(chalk.red(`  Failed: ${this.results.failed}`));
-    console.log(chalk.yellow(`  Skipped: ${this.results.skipped}`));
-    console.log(chalk.blue(`  Success Rate: ${successRate}%`));
-    console.log(chalk.gray(`  Duration: ${durationSeconds}s\n`));
-
-    // Suite details
-    console.log(chalk.cyan('Suite Details:'));
+    const _durationSeconds = (this.results.duration / 1000).toFixed(2);
     this.results.suites.forEach((suite) => {
-      const icon = suite.status === 'PASSED' ? '✅' : suite.status === 'ERROR' ? '💥' : '❌';
-      const critical = suite.critical ? ' [CRITICAL]' : '';
-      const duration = `${suite.duration}ms`;
-
-      console.log(`  ${icon} ${suite.name}${critical} - ${duration}`);
+      const _icon = suite.status === 'PASSED' ? '✅' : suite.status === 'ERROR' ? '💥' : '❌';
+      const _critical = suite.critical ? ' [CRITICAL]' : '';
+      const _duration = `${suite.duration}ms`;
 
       if (suite.error && this.config.verbose) {
-        console.log(chalk.red(`    Error: ${suite.error}`));
       }
     });
 
     // Critical failures
     const criticalFailures = this.results.suites.filter((s) => s.critical && s.status !== 'PASSED');
     if (criticalFailures.length > 0) {
-      console.log(chalk.red.bold('\n⚠️  Critical Test Failures:'));
-      criticalFailures.forEach((suite) => {
-        console.log(chalk.red(`  • ${suite.name}`));
-      });
+      criticalFailures.forEach((_suite) => {});
     }
 
     // Coverage information
     if (this.config.coverage) {
-      console.log(chalk.cyan('\n📈 Coverage report will be generated in ./coverage/'));
     }
 
     // Recommendations
@@ -316,39 +258,30 @@ class IntegrationTestRunner {
   }
 
   generateRecommendations() {
-    console.log(chalk.cyan('\n💡 Recommendations:'));
-
     if (this.results.failed === 0) {
-      console.log(chalk.green('  🎉 All tests passed! System is ready for production.'));
       return;
     }
 
     const criticalFailures = this.results.suites.filter(
-      (s) => s.critical && s.status !== 'PASSED'
+      (s) => s.critical && s.status !== 'PASSED',
     ).length;
 
     if (criticalFailures > 0) {
-      console.log(chalk.red('  🚨 Critical failures detected - do not deploy to production'));
-      console.log(chalk.yellow('  📋 Review failed critical test suites immediately'));
     }
 
     const performanceFailures = this.results.suites.filter(
-      (s) => s.name.includes('Performance') && s.status !== 'PASSED'
+      (s) => s.name.includes('Performance') && s.status !== 'PASSED',
     ).length;
 
     if (performanceFailures > 0) {
-      console.log(chalk.yellow('  ⚡ Performance issues detected - review system capacity'));
     }
 
     const resilienceFailures = this.results.suites.filter(
-      (s) => s.name.includes('Resilience') && s.status !== 'PASSED'
+      (s) => s.name.includes('Resilience') && s.status !== 'PASSED',
     ).length;
 
     if (resilienceFailures > 0) {
-      console.log(chalk.yellow('  🛡️  Resilience issues detected - strengthen error handling'));
     }
-
-    console.log(chalk.gray('  📖 Check individual test logs for detailed failure information'));
   }
 
   saveResults() {
@@ -368,7 +301,6 @@ class IntegrationTestRunner {
       };
 
       fs.writeFileSync(resultsPath, JSON.stringify(fullResults, null, 2));
-      console.log(chalk.gray(`\n📄 Results saved to: ${resultsPath}`));
     } catch (error) {
       console.warn(chalk.yellow(`Warning: Could not save results - ${error.message}`));
     }

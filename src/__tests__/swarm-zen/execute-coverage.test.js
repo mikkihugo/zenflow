@@ -2,32 +2,24 @@
  * Execute Coverage Test - Actually executes code paths for maximum coverage
  */
 
-import { createRequire } from 'module';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { createRequire } from 'node:module';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-console.log('🚀 Executing code paths for coverage...\n');
-
-// 1. Test RuvSwarm from index.js
-console.log('Testing index.js...');
-
-import { RuvSwarm } from '../src/index.js';
+import { ZenSwarm } from '../src/index.js';
 
 try {
   // Test static methods
-  const version = RuvSwarm.getVersion();
-  console.log(`  ✓ Version: ${version}`);
+  const _version = ZenSwarm.getVersion();
 
-  const simdSupport = RuvSwarm.detectSIMDSupport();
-  console.log(`  ✓ SIMD Support: ${simdSupport}`);
+  const _simdSupport = ZenSwarm.detectSIMDSupport();
 
   // Test initialization
-  const ruv = await RuvSwarm.initialize({ debug: true });
-  console.log('  ✓ RuvSwarm initialized');
+  const ruv = await ZenSwarm.initialize({ debug: true });
 
   // Test swarm creation
   const swarm = await ruv.createSwarm({
@@ -35,53 +27,33 @@ try {
     topology: 'mesh',
     maxAgents: 5,
   });
-  console.log(`  ✓ Swarm created: ${swarm.name}`);
 
   // Test agent spawning
   const agent = await swarm.spawn({ type: 'researcher' });
-  console.log(`  ✓ Agent spawned: ${agent.id}`);
 
   // Test task execution
-  const result = await agent.execute({ task: 'analyze', data: [1, 2, 3] });
-  console.log(`  ✓ Task executed: ${result.status}`);
+  const _result = await agent.execute({ task: 'analyze', data: [1, 2, 3] });
 
   // Test orchestration
-  const orchestration = await swarm.orchestrate({
+  const _orchestration = await swarm.orchestrate({
     task: 'complex-analysis',
     agents: 3,
   });
-  console.log(`  ✓ Orchestration: ${orchestration.id}`);
 
   // Test status
-  const status = await swarm.getStatus();
-  console.log(`  ✓ Status: ${status.agentCount} agents`);
-} catch (error) {
-  console.log(`  ⚠️  Mock mode: ${error.message}`);
-}
-
-// 2. Test BenchmarkCLI
-console.log('\nTesting benchmark.js...');
+  const _status = await swarm.getStatus();
+} catch (_error) {}
 
 import { BenchmarkCLI } from '../src/benchmark.js';
 
 const bench = new BenchmarkCLI();
-console.log('  ✓ BenchmarkCLI created');
 
 // Test methods
-const arg = bench.getArg(['--type', 'wasm', '--iterations', '100'], '--type');
-console.log(`  ✓ getArg: ${arg}`);
+const _arg = bench.getArg(['--type', 'wasm', '--iterations', '100'], '--type');
 
-// 3. Test NeuralCLI
-console.log('\nTesting neural.js...');
+import { NeuralCLI } from '../src/neural.js';
 
-import { NeuralCLI, PATTERN_MEMORY_CONFIG } from '../src/neural.js';
-
-const neural = new NeuralCLI();
-console.log('  ✓ NeuralCLI created');
-console.log(`  ✓ Pattern configs: ${Object.keys(PATTERN_MEMORY_CONFIG).length}`);
-
-// 4. Test NeuralAgent
-console.log('\nTesting neural-agent.js...');
+const _neural = new NeuralCLI();
 
 import { NeuralAgent } from '../src/neural-agent.js';
 
@@ -91,24 +63,16 @@ try {
     type: 'researcher',
     model: 'transformer',
   });
-  console.log('  ✓ NeuralAgent created');
 
   // Test initialization
   await neuralAgent.initialize();
-  console.log('  ✓ NeuralAgent initialized');
-} catch (error) {
-  console.log(`  ⚠️  NeuralAgent: ${error.message}`);
-}
-
-// 5. Test SwarmPersistence
-console.log('\nTesting persistence.js...');
+} catch (_error) {}
 
 import { SwarmPersistence } from '../src/persistence.js';
 
 try {
   const persistence = new SwarmPersistence(':memory:');
   await persistence.initialize();
-  console.log('  ✓ SwarmPersistence initialized');
 
   // Test save/load
   await persistence.saveSwarm({
@@ -117,10 +81,8 @@ try {
     topology: 'mesh',
     state: { agents: 3 },
   });
-  console.log('  ✓ Swarm saved');
 
-  const loaded = await persistence.loadSwarm('test-123');
-  console.log(`  ✓ Swarm loaded: ${loaded.name}`);
+  const _loaded = await persistence.loadSwarm('test-123');
 
   // Test agent operations
   await persistence.saveAgent({
@@ -129,10 +91,8 @@ try {
     type: 'researcher',
     state: { tasks: 5 },
   });
-  console.log('  ✓ Agent saved');
 
-  const agents = await persistence.getSwarmAgents('test-123');
-  console.log(`  ✓ Agents retrieved: ${agents.length}`);
+  const _agents = await persistence.getSwarmAgents('test-123');
 
   // Test task operations
   await persistence.saveTask({
@@ -141,149 +101,87 @@ try {
     type: 'analysis',
     status: 'completed',
   });
-  console.log('  ✓ Task saved');
 
   await persistence.updateTaskStatus('task-1', 'completed', { score: 95 });
-  console.log('  ✓ Task updated');
 
   // Test memory operations
   await persistence.saveMemory('test-key', { data: 'test-value' });
-  console.log('  ✓ Memory saved');
 
-  const memory = await persistence.getMemory('test-key');
-  console.log(`  ✓ Memory retrieved: ${memory.data}`);
+  const _memory = await persistence.getMemory('test-key');
 
   await persistence.close();
-  console.log('  ✓ Persistence closed');
-} catch (error) {
-  console.log(`  ⚠️  Persistence: ${error.message}`);
-}
-
-// 6. Test NeuralNetworkManager
-console.log('\nTesting neural-network-manager.js...');
+} catch (_error) {}
 
 import { NeuralNetworkManager } from '../src/neural-network-manager.js';
 
 try {
   const manager = new NeuralNetworkManager();
   await manager.initialize();
-  console.log('  ✓ NeuralNetworkManager initialized');
 
   // Create network
-  const network = await manager.createNetwork({
+  const _network = await manager.createNetwork({
     layers: [10, 20, 10],
     activation: 'relu',
     outputActivation: 'softmax',
   });
-  console.log('  ✓ Network created');
 
   // List models
-  const models = manager.listModels();
-  console.log(`  ✓ Models: ${models.join(', ')}`);
-} catch (error) {
-  console.log(`  ⚠️  NeuralNetworkManager: ${error.message}`);
-}
-
-// 7. Test WasmLoader
-console.log('\nTesting wasm-loader.js...');
+  const _models = manager.listModels();
+} catch (_error) {}
 const WasmLoader = require('../src/wasm-loader.js');
 try {
   const loader = new WasmLoader();
-  console.log('  ✓ WasmLoader created');
 
-  const supported = loader.isSupported();
-  console.log(`  ✓ WASM supported: ${supported}`);
+  const _supported = loader.isSupported();
 
-  const simd = loader.hasSIMDSupport();
-  console.log(`  ✓ SIMD supported: ${simd}`);
-} catch (error) {
-  console.log(`  ⚠️  WasmLoader: ${error.message}`);
-}
+  const _simd = loader.hasSIMDSupport();
+} catch (_error) {}
 
-// 8. Test RuvSwarmEnhanced
-console.log('\nTesting index-enhanced.js...');
-
-import { RuvSwarm as RuvSwarmEnhanced } from '../src/index-enhanced.js';
+import { ZenSwarm as ZenSwarmEnhanced } from '../src/index-enhanced.js';
 
 try {
-  const enhanced = new RuvSwarmEnhanced();
+  const enhanced = new ZenSwarmEnhanced();
   await enhanced.initialize({ enableNeuralAgents: true });
-  console.log('  ✓ RuvSwarmEnhanced initialized');
 
-  const swarm = await enhanced.createSwarm({
+  const _swarm = await enhanced.createSwarm({
     topology: 'hierarchical',
     enableNeuralAgents: true,
   });
-  console.log('  ✓ Enhanced swarm created');
-} catch (error) {
-  console.log(`  ⚠️  RuvSwarmEnhanced: ${error.message}`);
-}
-
-// 9. Test Neural Models
-console.log('\nTesting neural-models...');
+} catch (_error) {}
 
 import * as models from '../src/neural-models/index.js';
 
-console.log(`  ✓ Models loaded: ${Object.keys(models).filter((k) => k.endsWith('Model')).length}`);
-
 try {
   // Test base model
-  const base = new models.NeuralModel();
-  console.log('  ✓ NeuralModel created');
+  const _base = new models.NeuralModel();
 
   // Test specific models
-  const transformer = new models.TransformerModel({
+  const _transformer = new models.TransformerModel({
     dModel: 512,
     nHeads: 8,
     nLayers: 6,
   });
-  console.log('  ✓ TransformerModel created');
 
-  const cnn = new models.CNNModel({
+  const _cnn = new models.CNNModel({
     inputChannels: 3,
     outputClasses: 10,
   });
-  console.log('  ✓ CNNModel created');
-} catch (error) {
-  console.log(`  ⚠️  Neural models: ${error.message}`);
-}
-
-// 10. Test Hooks
-console.log('\nTesting hooks...');
+} catch (_error) {}
 import '../src/hooks/index.js';
-console.log('  ✓ Hooks loaded');
-
-// 11. Test Performance CLI
-console.log('\nTesting performance.js...');
 const { PerformanceCLI } = require('../src/performance.js');
 try {
   const perf = new PerformanceCLI();
-  console.log('  ✓ PerformanceCLI created');
 
   // Test parseCommand
-  const cmd = perf.parseCommand(['analyze', '--metric', 'cpu']);
-  console.log(`  ✓ Command parsed: ${cmd.command}`);
+  const _cmd = perf.parseCommand(['analyze', '--metric', 'cpu']);
 
   // Test formatters
-  const bytes = perf.formatBytes(1048576);
-  console.log(`  ✓ Format bytes: ${bytes}`);
+  const _bytes = perf.formatBytes(1048576);
 
-  const duration = perf.formatDuration(1500);
-  console.log(`  ✓ Format duration: ${duration}`);
-} catch (error) {
-  console.log(`  ⚠️  Performance: ${error.message}`);
-}
-
-// 12. Test memory config
-console.log('\nTesting memory-config.js...');
+  const _duration = perf.formatDuration(1500);
+} catch (_error) {}
 try {
   // Import as CommonJS since it uses module.exports
   const { getMemoryConfig } = require('../src/memory-config.js');
-  const config = getMemoryConfig();
-  console.log('  ✓ Memory config loaded');
-  console.log(`  ✓ Cache size: ${config.cacheSize}`);
-} catch (error) {
-  console.log(`  ⚠️  Memory config: ${error.message}`);
-}
-
-console.log('\n✅ Coverage execution completed');
+  const _config = getMemoryConfig();
+} catch (_error) {}

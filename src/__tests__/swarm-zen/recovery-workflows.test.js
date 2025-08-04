@@ -494,7 +494,7 @@ describe('Recovery Integration', () => {
 
     // Check for successful integrations
     let successfulIntegrations = 0;
-    for (const [key, status] of integration.integrationStatus) {
+    for (const [_key, status] of integration.integrationStatus) {
       if (status.status === 'success') {
         successfulIntegrations++;
       }
@@ -754,7 +754,6 @@ describe('Error Handling and Edge Cases', () => {
   test('should handle component initialization failure gracefully', async () => {
     // Mock a component class that fails to initialize
     const FailingComponent = class {
-      constructor() {}
       async initialize() {
         throw new Error('Initialization failed');
       }
@@ -770,7 +769,7 @@ describe('Error Handling and Edge Cases', () => {
 
     // Manually try to initialize a failing component
     await expect(integration.initializeComponent('failing', FailingComponent)).rejects.toThrow(
-      'Initialization failed'
+      'Initialization failed',
     );
 
     await integration.shutdown();
@@ -790,7 +789,7 @@ describe('Error Handling and Edge Cases', () => {
 
     // Check that some integrations were skipped due to missing dependencies
     let skippedIntegrations = 0;
-    for (const [key, status] of integration.integrationStatus) {
+    for (const [_key, status] of integration.integrationStatus) {
       if (status.status === 'skipped') {
         skippedIntegrations++;
       }

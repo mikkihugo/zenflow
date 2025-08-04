@@ -5,7 +5,7 @@
 
 import { NeuralNetworkManager } from '../../../../neural/core/neural-network-manager';
 import { WasmNeuralAccelerator } from '../../../../neural/wasm/wasm-neural-accelerator';
-import { NeuralTestDataGenerator, NeuralNetworkValidator, NeuralPerformanceTester, NeuralMathHelpers } from '../../../helpers/neural-test-helpers';
+import { NeuralMathHelpers, NeuralTestDataGenerator } from '../../../helpers/neural-test-helpers';
 import { PerformanceMeasurement } from '../../../helpers/performance-measurement';
 
 describe('WASM Neural Acceleration (Classical TDD)', () => {
@@ -362,7 +362,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
         // Verify batch normalization properties
         const batchMean = testHelpers.calculateBatchMean(normalizedBatch);
-        const batchVariance = testHelpers.calculateBatchVariance(normalizedBatch, batchMean);
+        const _batchVariance = testHelpers.calculateBatchVariance(normalizedBatch, batchMean);
 
         // Mean should be close to beta, variance should be close to gamma^2
         expect(testHelpers.vectorsEqual(batchMean, beta, 1e-6)).toBe(true);
@@ -471,7 +471,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
       for (const buffer of allocations) {
         try {
           await wasmAccelerator.freeBuffer(buffer);
-        } catch (error) {
+        } catch (_error) {
           // Some buffers might be invalid due to memory pressure
         }
       }
@@ -573,7 +573,6 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
       const hasWebGPU = await wasmAccelerator.hasWebGPUSupport();
 
       if (!hasWebGPU) {
-        console.log('WebGPU not available, skipping GPU tests');
         return;
       }
 

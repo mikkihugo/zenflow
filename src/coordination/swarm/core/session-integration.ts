@@ -1,21 +1,21 @@
 /**
  * Session Integration Layer
  *
- * Integrates the SessionManager with the existing RuvSwarm system,
+ * Integrates the SessionManager with the existing ZenSwarm system,
  * providing seamless session persistence for swarm operations.
  */
 
-import { EventEmitter } from 'events';
-import { RuvSwarm } from './index';
+import { EventEmitter } from 'node:events';
 import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
+import { ZenSwarm } from './index';
 import { type SessionConfig, SessionManager, type SessionState } from './session-manager';
-import { SessionRecovery, SessionSerializer, SessionValidator } from './session-utils';
+import { SessionRecovery, SessionValidator } from './session-utils';
 import type { AgentConfig, SwarmEvent, SwarmOptions, SwarmState, Task } from './types';
 
 /**
- * Enhanced RuvSwarm with session management capabilities
+ * Enhanced ZenSwarm with session management capabilities
  */
-export class SessionEnabledSwarm extends RuvSwarm {
+export class SessionEnabledSwarm extends ZenSwarm {
   private sessionManager: SessionManager;
   private currentSessionId?: string;
   private sessionIntegrationEnabled: boolean = false;
@@ -307,7 +307,7 @@ export class SessionEnabledSwarm extends RuvSwarm {
 
   private async captureCurrentState(): Promise<SwarmState> {
     // Access the protected state from parent class
-    // Note: In a real implementation, you might need to add a getter method to RuvSwarm
+    // Note: In a real implementation, you might need to add a getter method to ZenSwarm
     return {
       agents: (this as any).state.agents,
       tasks: (this as any).state.tasks,

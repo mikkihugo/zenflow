@@ -54,7 +54,7 @@ describe('DI Decorators', () => {
 
       @injectable
       class TestService {
-        constructor(@inject(loggerToken) private logger: ILogger) {}
+        constructor(@inject(loggerToken) private _logger: ILogger) {}
       }
 
       const metadata = getInjectionMetadata(TestService);
@@ -65,7 +65,7 @@ describe('DI Decorators', () => {
     it('should work with TypeScript parameter types', () => {
       @injectable
       class TestService {
-        constructor(private value: string) {}
+        constructor() {}
       }
 
       const metadata = getInjectionMetadata(TestService);
@@ -80,7 +80,7 @@ describe('DI Decorators', () => {
 
       @injectable
       class TestService {
-        constructor(@inject(testToken) private value: string) {}
+        constructor(@inject(testToken) private _value: string) {}
       }
 
       const injectionToken = getInjectionToken(TestService, 0);
@@ -94,8 +94,8 @@ describe('DI Decorators', () => {
       @injectable
       class TestService {
         constructor(
-          @inject(stringToken) private str: string,
-          @inject(numberToken) private num: number
+          @inject(stringToken) private _str: string,
+          @inject(numberToken) private _num: number
         ) {}
       }
 
@@ -109,7 +109,7 @@ describe('DI Decorators', () => {
       @injectable
       class TestService {
         constructor(
-          @inject(loggerToken) private logger: ILogger,
+          @inject(loggerToken) private _logger: ILogger,
           private config: any // Not injected
         ) {}
       }
@@ -145,13 +145,13 @@ describe('DI Decorators', () => {
       @injectable
       class UserService {
         constructor(
-          @inject(CORE_TOKENS.Logger) private logger: ILogger,
-          @inject(CORE_TOKENS.Config) private config: IConfig
+          @inject(CORE_TOKENS.Logger) private _logger: ILogger,
+          @inject(CORE_TOKENS.Config) private _config: IConfig
         ) {}
 
         createUser(name: string): string {
           this.logger.info('Creating user', { name });
-          const userId = this.config.get('userIdPrefix', 'user') + '-' + name;
+          const userId = `${this.config.get('userIdPrefix', 'user')}-${name}`;
           return userId;
         }
       }
@@ -192,7 +192,7 @@ describe('DI Decorators', () => {
 
       @injectable
       class DatabaseService {
-        constructor(@inject(CORE_TOKENS.Logger) private logger: ILogger) {}
+        constructor(@inject(CORE_TOKENS.Logger) private _logger: ILogger) {}
 
         query(sql: string): any[] {
           this.logger.debug('Executing query', { sql });
@@ -203,7 +203,7 @@ describe('DI Decorators', () => {
       @injectable
       class UserRepository {
         constructor(
-          @inject(CORE_TOKENS.Logger) private logger: ILogger,
+          @inject(CORE_TOKENS.Logger) private _logger: ILogger,
           private db: DatabaseService // This would also be injected in real scenario
         ) {}
 
@@ -216,7 +216,7 @@ describe('DI Decorators', () => {
       @injectable
       class UserService {
         constructor(
-          @inject(CORE_TOKENS.Logger) private logger: ILogger,
+          @inject(CORE_TOKENS.Logger) private _logger: ILogger,
           private userRepo: UserRepository
         ) {}
 
@@ -268,7 +268,7 @@ describe('DI Decorators', () => {
 
       @injectable
       class ConfigurableService {
-        constructor(@inject(valueToken) private value: string) {}
+        constructor(@inject(valueToken) private _value: string) {}
 
         getValue(): string {
           return this.value;
@@ -295,7 +295,7 @@ describe('DI Decorators', () => {
     it('should provide meaningful error messages for decorator issues', () => {
       @injectable
       class TestService {
-        constructor(@inject(createToken<string>('NonExistentService')) private value: string) {}
+        constructor(@inject(createToken<string>('NonExistentService')) private _value: string) {}
       }
 
       const serviceToken = createToken<TestService>('TestService');

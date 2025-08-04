@@ -30,17 +30,10 @@ export class CompletionPhaseEngine implements CompletionEngine {
    * Generate complete implementation from refinement results
    */
   async generateImplementation(refinement: RefinementResult): Promise<ImplementationArtifacts> {
-    console.log(`🚀 Generating implementation artifacts for refinement ${refinement.id}`);
-
     const codeGeneration = await this.generateCode(refinement);
     const testGeneration = await this.generateTests(refinement);
     const documentationGeneration = await this.generateDocumentation(refinement);
     const deploymentArtifacts = await this.generateDeploymentArtifacts(refinement);
-
-    console.log(`   Generated ${codeGeneration.artifacts.length} code artifacts`);
-    console.log(`   Generated ${testGeneration.artifacts.length} test artifacts`);
-    console.log(`   Generated ${documentationGeneration.artifacts.length} documentation artifacts`);
-    console.log(`   Generated ${deploymentArtifacts.artifacts.length} deployment artifacts`);
 
     const qualityGates = await this.establishQualityGates(refinement);
     const productionChecks = await this.performProductionReadinessChecks(
@@ -230,7 +223,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   /**
    * Establish quality gates
    */
-  private async establishQualityGates(refinement: RefinementResult): Promise<QualityGate[]> {
+  private async establishQualityGates(_refinement: RefinementResult): Promise<QualityGate[]> {
     return [
       {
         id: nanoid(),
@@ -295,10 +288,10 @@ export class CompletionPhaseEngine implements CompletionEngine {
    * Perform production readiness checks
    */
   private async performProductionReadinessChecks(
-    codeGen: CodeGeneration,
+    _codeGen: CodeGeneration,
     testGen: TestGeneration,
-    docGen: DocumentationGeneration,
-    deployArtifacts: DeploymentArtifacts
+    _docGen: DocumentationGeneration,
+    _deployArtifacts: DeploymentArtifacts
   ): Promise<ProductionReadinessCheck[]> {
     return [
       {
@@ -991,7 +984,7 @@ export class ErrorHandler {
     `.trim();
   }
 
-  private generateSecurityCode(securityOpts: any[]): string {
+  private generateSecurityCode(_securityOpts: any[]): string {
     return `
 /**
  * Security Framework
@@ -1021,7 +1014,7 @@ describe('Integration Tests', () => {
     `.trim();
   }
 
-  private generateE2ETestContent(architecture: any): string {
+  private generateE2ETestContent(_architecture: any): string {
     return `
 describe('End-to-End Tests', () => {
   // E2E tests for complete user workflows
@@ -1098,7 +1091,7 @@ ${refinement.refinedArchitecture.patterns.map((p: any) => p.description).join('\
     `.trim();
   }
 
-  private generateDeploymentDoc(refinement: any): string {
+  private generateDeploymentDoc(_refinement: any): string {
     return `
 # Deployment Guide
 
@@ -1114,7 +1107,7 @@ ${refinement.refinedArchitecture.patterns.map((p: any) => p.description).join('\
     `.trim();
   }
 
-  private generateTroubleshootingDoc(refinement: any): string {
+  private generateTroubleshootingDoc(_refinement: any): string {
     return `
 # Troubleshooting Guide
 
@@ -1133,7 +1126,7 @@ ${securityOpts.map((opt) => `- ${opt.description}`).join('\n')}
   }
 
   // Deployment content generation methods
-  private generateDockerfileContent(architecture: any): string {
+  private generateDockerfileContent(_architecture: any): string {
     return `
 FROM node:18-alpine
 WORKDIR /app
@@ -1145,7 +1138,7 @@ CMD ["npm", "start"]
     `.trim();
   }
 
-  private generateDockerComposeContent(architecture: any): string {
+  private generateDockerComposeContent(_architecture: any): string {
     return `
 version: '3.8'
 services:
@@ -1193,7 +1186,7 @@ data:
     `.trim();
   }
 
-  private generateK8sSecrets(securityOpts: any[]): string {
+  private generateK8sSecrets(_securityOpts: any[]): string {
     return `
 apiVersion: v1
 kind: Secret
@@ -1205,7 +1198,7 @@ data:
     `.trim();
   }
 
-  private generateCIPipelineContent(refinement: any): string {
+  private generateCIPipelineContent(_refinement: any): string {
     return `
 name: CI Pipeline
 on: [push, pull_request]
@@ -1224,7 +1217,7 @@ jobs:
     `.trim();
   }
 
-  private generateCDPipelineContent(refinement: any): string {
+  private generateCDPipelineContent(_refinement: any): string {
     return `
 name: CD Pipeline
 on:
@@ -1327,7 +1320,7 @@ groups:
     return Array.from(technologies);
   }
 
-  private async defineTestStrategy(refinement: any): Promise<any> {
+  private async defineTestStrategy(_refinement: any): Promise<any> {
     return {
       approach: 'Hybrid TDD (70% London, 30% Classical)',
       coverage: 90,
@@ -1342,8 +1335,8 @@ groups:
   }
 
   private async performComplianceChecks(
-    codeGen: CodeGeneration,
-    testGen: TestGeneration
+    _codeGen: CodeGeneration,
+    _testGen: TestGeneration
   ): Promise<ComplianceCheck[]> {
     return [
       {
@@ -1370,7 +1363,7 @@ groups:
     ];
   }
 
-  private async generateMonitoringArtifacts(refinement: any): Promise<any> {
+  private async generateMonitoringArtifacts(_refinement: any): Promise<any> {
     return {
       metrics: ['response_time', 'throughput', 'error_rate', 'resource_usage'],
       alerts: ['high_response_time', 'service_down', 'high_error_rate'],
@@ -1379,7 +1372,7 @@ groups:
   }
 
   private async generateDeploymentInstructions(
-    deploymentArtifacts: DeploymentArtifacts
+    _deploymentArtifacts: DeploymentArtifacts
   ): Promise<string[]> {
     return [
       'Build and tag container images',
@@ -1391,7 +1384,7 @@ groups:
     ];
   }
 
-  private async generateMaintenanceGuide(refinement: any): Promise<any> {
+  private async generateMaintenanceGuide(_refinement: any): Promise<any> {
     return {
       updateProcedures: 'Rolling updates with zero downtime',
       backupStrategy: 'Automated daily backups with point-in-time recovery',

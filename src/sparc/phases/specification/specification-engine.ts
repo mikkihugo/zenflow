@@ -7,7 +7,6 @@
 
 import { nanoid } from 'nanoid';
 import type {
-  AcceptanceCriteria,
   AcceptanceCriterion,
   ConstraintAnalysis,
   DetailedSpecification,
@@ -15,7 +14,6 @@ import type {
   FunctionalRequirement,
   MitigationStrategy,
   NonFunctionalRequirement,
-  Priority,
   ProjectAssumption,
   ProjectContext,
   ProjectRisk,
@@ -35,13 +33,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
    * Gather comprehensive requirements from project context
    */
   async gatherRequirements(context: ProjectContext): Promise<RequirementSet> {
-    console.log(`📋 Gathering requirements for ${context.domain} domain`);
-
     const functionalRequirements = await this.extractFunctionalRequirements(context);
     const nonFunctionalRequirements = await this.extractNonFunctionalRequirements(context);
-
-    console.log(`   Found ${functionalRequirements.length} functional requirements`);
-    console.log(`   Found ${nonFunctionalRequirements.length} non-functional requirements`);
 
     return [...functionalRequirements, ...nonFunctionalRequirements] as RequirementSet;
   }
@@ -50,13 +43,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
    * Analyze system constraints and their implications
    */
   async analyzeConstraints(requirements: RequirementSet): Promise<ConstraintAnalysis> {
-    console.log(`🔍 Analyzing constraints for ${requirements.length} requirements`);
-
     const systemConstraints = this.deriveSystemConstraints(requirements);
     const assumptions = this.identifyAssumptions(requirements);
-
-    console.log(`   Identified ${systemConstraints.length} system constraints`);
-    console.log(`   Identified ${assumptions.length} project assumptions`);
 
     return [...systemConstraints, ...assumptions] as ConstraintAnalysis;
   }
@@ -65,8 +53,6 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
    * Define comprehensive acceptance criteria for all requirements
    */
   async defineAcceptanceCriteria(requirements: RequirementSet): Promise<AcceptanceCriterion[]> {
-    console.log(`✅ Defining acceptance criteria for requirements`);
-
     const acceptanceCriteria: AcceptanceCriterion[] = [];
 
     for (const requirement of requirements) {
@@ -91,8 +77,6 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
         });
       }
     }
-
-    console.log(`   Defined ${acceptanceCriteria.length} acceptance criteria`);
     return acceptanceCriteria;
   }
 
@@ -102,8 +86,6 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   async generateSpecificationDocument(
     analysis: ConstraintAnalysis
   ): Promise<SpecificationDocument> {
-    console.log(`📄 Generating specification document`);
-
     const functionalRequirements = this.extractFunctionalFromAnalysis(analysis);
     const nonFunctionalRequirements = this.extractNonFunctionalFromAnalysis(analysis);
     const constraints = this.extractConstraintsFromAnalysis(analysis);
@@ -131,12 +113,6 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
       successMetrics,
     };
 
-    console.log(`📋 Specification complete with:`);
-    console.log(`   - ${functionalRequirements.length} functional requirements`);
-    console.log(`   - ${nonFunctionalRequirements.length} non-functional requirements`);
-    console.log(`   - ${constraints.length} system constraints`);
-    console.log(`   - ${riskAnalysis.risks.length} identified risks`);
-
     return specification;
   }
 
@@ -144,8 +120,6 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
    * Validate specification completeness and quality
    */
   async validateSpecificationCompleteness(spec: SpecificationDocument): Promise<ValidationReport> {
-    console.log(`🔍 Validating specification completeness`);
-
     const validationResults: ValidationResult[] = [
       {
         criterion: 'functional-requirements-present',
@@ -197,8 +171,6 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
       results: validationResults,
       recommendations,
     };
-
-    console.log(`✅ Specification validation: ${(overallScore * 100).toFixed(1)}% complete`);
     return report;
   }
 
@@ -374,7 +346,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     return constraints;
   }
 
-  private identifyAssumptions(requirements: RequirementSet): ProjectAssumption[] {
+  private identifyAssumptions(_requirements: RequirementSet): ProjectAssumption[] {
     return [
       {
         id: 'PA-001',
@@ -410,8 +382,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   private async performRiskAnalysis(
-    requirements: FunctionalRequirement[],
-    constraints: SystemConstraint[]
+    _requirements: FunctionalRequirement[],
+    _constraints: SystemConstraint[]
   ): Promise<RiskAnalysis> {
     const risks: ProjectRisk[] = [
       {
@@ -471,7 +443,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   private identifyExternalDependencies(
-    requirements: FunctionalRequirement[]
+    _requirements: FunctionalRequirement[]
   ): ExternalDependency[] {
     return [
       {
@@ -499,8 +471,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   private defineSuccessMetrics(
-    functional: FunctionalRequirement[],
-    nonFunctional: NonFunctionalRequirement[]
+    _functional: FunctionalRequirement[],
+    _nonFunctional: NonFunctionalRequirement[]
   ): SuccessMetric[] {
     return [
       {
@@ -571,14 +543,14 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     return domainRequirements[domain] || [];
   }
 
-  private extractFunctionalFromAnalysis(analysis: ConstraintAnalysis): FunctionalRequirement[] {
+  private extractFunctionalFromAnalysis(_analysis: ConstraintAnalysis): FunctionalRequirement[] {
     // Extract functional requirements from constraint analysis
     // This is a simplified implementation
     return [];
   }
 
   private extractNonFunctionalFromAnalysis(
-    analysis: ConstraintAnalysis
+    _analysis: ConstraintAnalysis
   ): NonFunctionalRequirement[] {
     // Extract non-functional requirements from constraint analysis
     return [];

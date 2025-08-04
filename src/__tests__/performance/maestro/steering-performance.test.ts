@@ -3,11 +3,11 @@
  * Tests performance benchmarks and scalability for steering document generation
  */
 
-import { existsSync } from 'fs';
-import { access, mkdir, readFile, rm, unlink, writeFile } from 'fs/promises';
-import { tmpdir } from 'os';
-import { join } from 'path';
-import { performance } from 'perf_hooks';
+import { existsSync } from 'node:fs';
+import { mkdir, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { performance } from 'node:perf_hooks';
 import { MaestroOrchestrator } from '../../../maestro/maestro-orchestrator';
 
 describe('Maestro Steering Performance Benchmarks', () => {
@@ -85,8 +85,6 @@ describe('Maestro Steering Performance Benchmarks', () => {
 
       const endTime = performance.now();
       const duration = endTime - startTime;
-
-      console.log(`Single document creation took: ${duration.toFixed(2)}ms`);
       expect(duration).toBeLessThan(100); // Should complete within 100ms
     });
 
@@ -104,13 +102,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
 
       const averageDuration = durations.reduce((a, b) => a + b, 0) / durations.length;
       const maxDuration = Math.max(...durations);
-      const minDuration = Math.min(...durations);
-
-      console.log(`Performance consistency:
-        Average: ${averageDuration.toFixed(2)}ms
-        Min: ${minDuration.toFixed(2)}ms
-        Max: ${maxDuration.toFixed(2)}ms
-        Variance: ${(maxDuration - minDuration).toFixed(2)}ms`);
+      const _minDuration = Math.min(...durations);
 
       // Performance should be consistent (max shouldn't be more than 3x average)
       expect(maxDuration).toBeLessThan(averageDuration * 3);
@@ -136,9 +128,6 @@ describe('Maestro Steering Performance Benchmarks', () => {
         const endTime = performance.now();
 
         const duration = endTime - startTime;
-        console.log(
-          `${testCase.name} content (${testCase.content.length} chars): ${duration.toFixed(2)}ms`
-        );
 
         expect(duration).toBeLessThan(testCase.maxDuration);
       }
@@ -157,8 +146,6 @@ describe('Maestro Steering Performance Benchmarks', () => {
 
       const endTime = performance.now();
       const duration = endTime - startTime;
-
-      console.log(`10 documents created in: ${duration.toFixed(2)}ms`);
       expect(duration).toBeLessThan(1000); // Should complete within 1 second
     });
 
@@ -183,10 +170,6 @@ describe('Maestro Steering Performance Benchmarks', () => {
         const perDocument = duration / size;
 
         results.push({ count: size, duration, perDocument });
-
-        console.log(
-          `${size} documents: ${duration.toFixed(2)}ms total, ${perDocument.toFixed(2)}ms per document`
-        );
       }
 
       // Check that per-document time remains relatively consistent
@@ -215,8 +198,6 @@ describe('Maestro Steering Performance Benchmarks', () => {
 
       const endTime = performance.now();
       const duration = endTime - startTime;
-
-      console.log(`${updateCount} concurrent updates: ${duration.toFixed(2)}ms`);
       expect(duration).toBeLessThan(2000); // Should complete within 2 seconds
     });
   });
@@ -240,8 +221,6 @@ describe('Maestro Steering Performance Benchmarks', () => {
 
       const endTime = performance.now();
       const duration = endTime - startTime;
-
-      console.log(`Steering context retrieval: ${duration.toFixed(2)}ms`);
       expect(duration).toBeLessThan(50);
       expect(context).toBeDefined();
     });
@@ -251,17 +230,13 @@ describe('Maestro Steering Performance Benchmarks', () => {
       const startTime1 = performance.now();
       const context1 = await maestroOrchestrator.getSteeringContext('developer');
       const endTime1 = performance.now();
-      const coldDuration = endTime1 - startTime1;
+      const _coldDuration = endTime1 - startTime1;
 
       // Second request (should be faster if cached)
       const startTime2 = performance.now();
       const context2 = await maestroOrchestrator.getSteeringContext('developer');
       const endTime2 = performance.now();
-      const warmDuration = endTime2 - startTime2;
-
-      console.log(
-        `Context retrieval - Cold: ${coldDuration.toFixed(2)}ms, Warm: ${warmDuration.toFixed(2)}ms`
-      );
+      const _warmDuration = endTime2 - startTime2;
 
       expect(context1).toEqual(context2);
       // Note: Current implementation may not have caching, but this documents expected behavior
@@ -281,10 +256,6 @@ describe('Maestro Steering Performance Benchmarks', () => {
 
       const avgDuration = durations.reduce((a, b) => a + b, 0) / durations.length;
       const maxDuration = Math.max(...durations);
-
-      console.log(
-        `Context retrieval across agent types - Avg: ${avgDuration.toFixed(2)}ms, Max: ${maxDuration.toFixed(2)}ms`
-      );
 
       expect(avgDuration).toBeLessThan(100);
       expect(maxDuration).toBeLessThan(200);
@@ -308,14 +279,12 @@ describe('Maestro Steering Performance Benchmarks', () => {
       const finalMemory = process.memoryUsage();
       const memoryIncrease = finalMemory.heapUsed - initialMemory.heapUsed;
 
-      console.log(`Memory usage increase: ${(memoryIncrease / 1024 / 1024).toFixed(2)} MB`);
-
       // Memory increase should be reasonable (less than 50MB for 100 documents)
       expect(memoryIncrease).toBeLessThan(50 * 1024 * 1024);
     });
 
     it('should clean up resources after operations', async () => {
-      const initialStats = maestroOrchestrator.getAgentPoolStats();
+      const _initialStats = maestroOrchestrator.getAgentPoolStats();
 
       // Perform multiple operations
       await maestroOrchestrator.createSteeringDocument('cleanup-1', 'Content 1');
@@ -326,7 +295,6 @@ describe('Maestro Steering Performance Benchmarks', () => {
 
       // Verify resource management
       expect(afterStats).toBeDefined();
-      console.log(`Agent pool stats: ${JSON.stringify(afterStats)}`);
     });
   });
 
@@ -348,14 +316,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
 
       const duration = endTime - startTime;
       const successfulOperations = results.filter((r) => r.status === 'fulfilled').length;
-      const failedOperations = results.filter((r) => r.status === 'rejected').length;
-
-      console.log(`Stress test results:
-        Total operations: ${operationCount}
-        Successful: ${successfulOperations}
-        Failed: ${failedOperations}
-        Duration: ${duration.toFixed(2)}ms
-        Operations/sec: ${(operationCount / (duration / 1000)).toFixed(2)}`);
+      const _failedOperations = results.filter((r) => r.status === 'rejected').length;
 
       expect(successfulOperations).toBeGreaterThan(operationCount * 0.95); // 95% success rate
       expect(duration).toBeLessThan(10000); // Should complete within 10 seconds
@@ -391,11 +352,6 @@ describe('Maestro Steering Performance Benchmarks', () => {
 
       const duration = endTime - startTime;
       const successfulOperations = results.filter((r) => r.status === 'fulfilled').length;
-
-      console.log(`Mixed workload results:
-        Total operations: ${operations.length}
-        Successful: ${successfulOperations}
-        Duration: ${duration.toFixed(2)}ms`);
 
       expect(successfulOperations).toBeGreaterThan(operations.length * 0.9); // 90% success rate
       expect(duration).toBeLessThan(5000); // Should complete within 5 seconds
@@ -444,19 +400,11 @@ describe('Maestro Steering Performance Benchmarks', () => {
           duration,
           passedBaseline,
         });
-
-        console.log(
-          `${test.name}: ${duration.toFixed(2)}ms (${passedBaseline ? 'PASS' : 'FAIL'} - expected ≤${test.expectedMax}ms)`
-        );
       }
 
       // All baseline tests should pass
       const allPassed = baselineResults.every((result) => result.passedBaseline);
       expect(allPassed).toBe(true);
-
-      // Log results for CI/CD monitoring
-      console.log('\nBaseline Performance Results:');
-      console.log(JSON.stringify(baselineResults, null, 2));
     });
   });
 });

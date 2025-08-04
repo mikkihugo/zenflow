@@ -68,9 +68,6 @@ export class SessionMemoryStore extends EventEmitter {
       await this.loadFromBackend();
       this.initialized = true;
       this.emit('initialized');
-      console.log(
-        `✅ Session memory store initialized with backend: ${this.options.backendConfig.type}`
-      );
     } catch (error) {
       console.error('❌ Session memory store initialization failed:', error);
       throw error;

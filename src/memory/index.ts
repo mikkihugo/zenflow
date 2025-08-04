@@ -69,8 +69,8 @@ export class MemorySystemFactory {
     backends?: Array<{ id: string; type: string; config: any }>;
   }) {
     const { MemoryCoordinator, PerformanceOptimizer, MemoryMonitor, RecoveryStrategyManager } =
-      await import('./index.js');
-    const { BackendFactory } = await import('./backends/factory.js');
+      await import('./index');
+    const { BackendFactory } = await import('./backends/factory');
 
     // Initialize components
     const coordinator = config.coordination

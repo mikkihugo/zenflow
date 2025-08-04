@@ -3,7 +3,7 @@
  * Connects monitoring system with existing Claude-Zen components
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import { PerformanceAnalyzer, type PerformanceInsights } from '../analytics/performance-analyzer';
 import { type CompositeMetrics, MetricsCollector } from '../core/metrics-collector';
 import { DashboardServer } from '../dashboard/dashboard-server';
@@ -369,6 +369,12 @@ export class SystemIntegration extends EventEmitter {
 
     // Generate performance insights
     const insights = this.performanceAnalyzer.analyzeMetrics(enhancedMetrics);
+    
+    // Handle the generated insights
+    if (insights) {
+      this.handleInsightsGenerated(insights);
+    }
+    
     this.emit('metrics:enhanced', enhancedMetrics);
   }
 
@@ -429,14 +435,14 @@ export class SystemIntegration extends EventEmitter {
         ...metrics.fact,
         cache: {
           ...metrics.fact.cache,
-          hitRate: isNaN(hitRate) ? metrics.fact.cache.hitRate : hitRate,
+          hitRate: Number.isNaN(hitRate) ? metrics.fact.cache.hitRate : hitRate,
           totalRequests: this.factMetrics.cacheHits + this.factMetrics.cacheMisses,
         },
         queries: {
           ...metrics.fact.queries,
           averageQueryTime: avgQueryTime,
           totalQueries: this.factMetrics.totalQueries,
-          errorRate: isNaN(errorRate) ? metrics.fact.queries.errorRate : errorRate,
+          errorRate: Number.isNaN(errorRate) ? metrics.fact.queries.errorRate : errorRate,
         },
       };
     }
@@ -678,12 +684,11 @@ export class SystemIntegration extends EventEmitter {
   /**
    * Logging utility
    */
-  private log(level: 'error' | 'warn' | 'info' | 'debug', message: string, ...args: any[]): void {
+  private log(level: 'error' | 'warn' | 'info' | 'debug', _message: string, ..._args: any[]): void {
     const levels = { error: 0, warn: 1, info: 2, debug: 3 };
     const configLevels = { error: 0, warn: 1, info: 2, debug: 3 };
 
     if (levels[level] <= configLevels[this.config.logLevel]) {
-      console[level](`[SystemIntegration] ${message}`, ...args);
     }
   }
 }

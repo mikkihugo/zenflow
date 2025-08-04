@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
-const RuvSwarm = require('../../../../src/core/ruv-swarm');
-const Agent = require('../../../../src/agent');
+const ZenSwarm = require('../../../../src/core/ruv-swarm');
+const _Agent = require('../../../../src/agent');
 const AgentCommunicator = require('../../../../src/agent-communicator');
 const NeuralAgentManager = require('../../../../src/neural-agent');
 const { taskOrchestrationSimulator } = require('../../../../src/task-orchestrator');
@@ -26,7 +26,7 @@ describe('Complete Agent Workflow Integration', () => {
   describe('Full Lifecycle Tests', () => {
     it('should handle complete workflow from spawn to completion', async () => {
       // Initialize swarm with mesh topology
-      swarm = new RuvSwarm();
+      swarm = new ZenSwarm();
       await swarm.init({
         topology: 'mesh',
         maxAgents: 6,
@@ -109,7 +109,7 @@ describe('Complete Agent Workflow Integration', () => {
     });
 
     it('should handle agent communication throughout lifecycle', async () => {
-      swarm = new RuvSwarm();
+      swarm = new ZenSwarm();
       await swarm.init({ topology: 'star' });
 
       // Spawn coordinator and worker agents
@@ -129,7 +129,7 @@ describe('Complete Agent Workflow Integration', () => {
       communicator.on('message', (msg) => messages.push(msg));
 
       // Orchestrate collaborative task
-      const taskResult = await swarm.orchestrateTask({
+      const _taskResult = await swarm.orchestrateTask({
         task: 'Implement microservices architecture',
         strategy: 'sequential',
         coordinatorId: coordinator.id,
@@ -155,14 +155,14 @@ describe('Complete Agent Workflow Integration', () => {
 
     it('should persist and restore swarm state', async () => {
       // Create initial swarm
-      swarm = new RuvSwarm();
+      swarm = new ZenSwarm();
       await swarm.init({
         topology: 'hierarchical',
         persistState: true,
       });
 
       // Spawn agents and create state
-      const agents = await Promise.all([
+      const _agents = await Promise.all([
         swarm.spawnAgent({ type: 'architect' }),
         swarm.spawnAgent({ type: 'coder' }),
         swarm.spawnAgent({ type: 'analyst' }),
@@ -184,7 +184,7 @@ describe('Complete Agent Workflow Integration', () => {
       await swarm.shutdown();
 
       // Create new swarm and restore state
-      const newSwarm = new RuvSwarm();
+      const newSwarm = new ZenSwarm();
       await newSwarm.importState(savedState);
 
       // Verify restoration
@@ -202,7 +202,7 @@ describe('Complete Agent Workflow Integration', () => {
 
   describe('Neural Integration Lifecycle', () => {
     it('should integrate neural agents with standard workflow', async () => {
-      swarm = new RuvSwarm();
+      swarm = new ZenSwarm();
       await swarm.init({
         topology: 'mesh',
         enableNeural: true,
@@ -250,7 +250,7 @@ describe('Complete Agent Workflow Integration', () => {
     });
 
     it('should train neural patterns throughout lifecycle', async () => {
-      swarm = new RuvSwarm();
+      swarm = new ZenSwarm();
       await swarm.init({
         topology: 'mesh',
         enableNeural: true,
@@ -279,7 +279,7 @@ describe('Complete Agent Workflow Integration', () => {
             task: `Training task ${i}: Pattern recognition`,
             agentId: neuralAgent.id,
             training: true,
-          })
+          }),
         );
       }
 
@@ -297,7 +297,7 @@ describe('Complete Agent Workflow Integration', () => {
 
   describe('Memory and State Management', () => {
     it('should maintain memory across agent lifecycle', async () => {
-      swarm = new RuvSwarm();
+      swarm = new ZenSwarm();
       await swarm.init({
         topology: 'mesh',
         enableMemory: true,
@@ -338,7 +338,7 @@ describe('Complete Agent Workflow Integration', () => {
     });
 
     it('should share memory between agents effectively', async () => {
-      swarm = new RuvSwarm();
+      swarm = new ZenSwarm();
       await swarm.init({
         topology: 'mesh',
         enableMemory: true,
@@ -353,7 +353,7 @@ describe('Complete Agent Workflow Integration', () => {
       ]);
 
       // Execute collaborative task
-      const task = await swarm.orchestrateTask({
+      const _task = await swarm.orchestrateTask({
         task: 'Collaborative code review and optimization',
         strategy: 'parallel',
         shareFindings: true,

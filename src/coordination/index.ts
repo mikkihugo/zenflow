@@ -5,5 +5,5 @@
  */
 
 export { Orchestrator } from './orchestrator';
-export { RuvSwarmStrategy } from './strategies/ruv-swarm.strategy';
+export { ZenSwarmStrategy } from './strategies/ruv-swarm.strategy';
 export * from './types';

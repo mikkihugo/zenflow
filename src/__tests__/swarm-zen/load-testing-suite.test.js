@@ -5,10 +5,10 @@
  * Tests concurrent operation of 50+ agents with stress testing scenarios
  */
 
-const { RuvSwarm } = require('../src/index-enhanced');
-const { EventEmitter } = require('events');
-const fs = require('fs').promises;
-const os = require('os');
+const { ZenSwarm } = require('../src/index-enhanced');
+const { EventEmitter } = require('node:events');
+const fs = require('node:fs').promises;
+const os = require('node:os');
 
 class LoadTestingSuite extends EventEmitter {
   constructor() {
@@ -44,9 +44,6 @@ class LoadTestingSuite extends EventEmitter {
   }
 
   async runLoadTests() {
-    console.log('🔥 Starting Load Testing Suite');
-    console.log('==============================\n');
-
     this.logSystemInfo();
     this.startSystemMonitoring();
 
@@ -78,25 +75,12 @@ class LoadTestingSuite extends EventEmitter {
     return this.testResults;
   }
 
-  logSystemInfo() {
-    console.log('📊 System Information:');
-    console.log(
-      `   Platform: ${this.testResults.systemInfo.platform} ${this.testResults.systemInfo.arch}`
-    );
-    console.log(`   Node.js: ${this.testResults.systemInfo.nodeVersion}`);
-    console.log(`   CPUs: ${this.testResults.systemInfo.cpus}`);
-    console.log(
-      `   Memory: ${(this.testResults.systemInfo.totalMemory / 1024 / 1024 / 1024).toFixed(1)}GB total`
-    );
-    console.log(
-      `   Free: ${(this.testResults.systemInfo.freeMemory / 1024 / 1024 / 1024).toFixed(1)}GB\n`
-    );
-  }
+  logSystemInfo() {}
 
   startSystemMonitoring() {
     this.monitoringInterval = setInterval(() => {
       const memUsage = process.memoryUsage();
-      const cpuUsage = process.cpuUsage();
+      const _cpuUsage = process.cpuUsage();
 
       this.metrics.memorySnapshots.push({
         timestamp: Date.now(),
@@ -108,7 +92,7 @@ class LoadTestingSuite extends EventEmitter {
       // Update peak values
       this.testResults.performance.memoryPeak = Math.max(
         this.testResults.performance.memoryPeak,
-        memUsage.heapUsed
+        memUsage.heapUsed,
       );
     }, 1000);
   }
@@ -120,8 +104,6 @@ class LoadTestingSuite extends EventEmitter {
   }
 
   async runGradualLoadTest() {
-    console.log('📈 Scenario 1: Gradual Load Increase (10 → 60 agents)');
-
     const scenario = {
       name: 'Gradual Load Increase',
       startTime: Date.now(),
@@ -135,7 +117,7 @@ class LoadTestingSuite extends EventEmitter {
     };
 
     try {
-      const ruvSwarm = await RuvSwarm.initialize({
+      const ruvSwarm = await ZenSwarm.initialize({
         enableNeuralNetworks: true,
         enableForecasting: true,
         loadingStrategy: 'progressive',
@@ -149,8 +131,6 @@ class LoadTestingSuite extends EventEmitter {
 
       // Gradually increase load from 10 to 60 agents
       for (let batch = 10; batch <= 60; batch += 10) {
-        console.log(`   Spawning batch: ${batch} agents...`);
-
         const batchStartTime = Date.now();
         const batchPromises = [];
 
@@ -183,8 +163,6 @@ class LoadTestingSuite extends EventEmitter {
           time: batchSpawnTime,
           agentsSpawned: scenario.agents.length,
         });
-
-        console.log(`     Spawned ${scenario.agents.length} agents in ${batchSpawnTime}ms`);
 
         // Execute tasks for current batch
         const taskPromises = scenario.agents.map((agent, i) => {
@@ -219,25 +197,17 @@ class LoadTestingSuite extends EventEmitter {
       scenario.passed = scenario.agents.length >= 50 && scenario.metrics.errors.length < 5;
       this.testResults.performance.maxConcurrentAgents = Math.max(
         this.testResults.performance.maxConcurrentAgents,
-        scenario.agents.length
-      );
-
-      console.log(
-        `   ✅ Completed: ${scenario.agents.length} agents, ${scenario.metrics.errors.length} errors`
+        scenario.agents.length,
       );
     } catch (error) {
       scenario.error = error.message;
-      console.log(`   ❌ Failed: ${error.message}`);
     }
 
     scenario.duration = Date.now() - scenario.startTime;
     this.testResults.scenarios.push(scenario);
-    console.log('');
   }
 
   async runBurstLoadTest() {
-    console.log('💥 Scenario 2: Burst Load Test (0 → 50 agents instantly)');
-
     const scenario = {
       name: 'Burst Load Test',
       startTime: Date.now(),
@@ -252,7 +222,7 @@ class LoadTestingSuite extends EventEmitter {
     };
 
     try {
-      const ruvSwarm = await RuvSwarm.initialize({
+      const ruvSwarm = await ZenSwarm.initialize({
         enableNeuralNetworks: true,
         enableForecasting: false, // Reduce overhead for burst test
         loadingStrategy: 'immediate',
@@ -263,9 +233,6 @@ class LoadTestingSuite extends EventEmitter {
         maxAgents: 60,
         strategy: 'parallel',
       });
-
-      // Spawn all 50 agents simultaneously
-      console.log('   Spawning 50 agents simultaneously...');
       const spawnStartTime = Date.now();
 
       const spawnPromises = Array.from({ length: 50 }, (_, i) =>
@@ -281,19 +248,12 @@ class LoadTestingSuite extends EventEmitter {
               error: error.message,
             });
             return null;
-          })
+          }),
       );
 
       const spawnedAgents = await Promise.all(spawnPromises);
       scenario.agents = spawnedAgents.filter((agent) => agent !== null);
       scenario.metrics.spawnTime = Date.now() - spawnStartTime;
-
-      console.log(
-        `     Spawned ${scenario.agents.length}/50 agents in ${scenario.metrics.spawnTime}ms`
-      );
-
-      // Execute tasks simultaneously
-      console.log('   Executing tasks simultaneously...');
       const execStartTime = Date.now();
       let firstResponseReceived = false;
 
@@ -329,26 +289,15 @@ class LoadTestingSuite extends EventEmitter {
       this.metrics.responseTimes.push(...validResponses);
 
       scenario.passed = scenario.agents.length >= 45 && scenario.metrics.errors.length < 10;
-
-      console.log(`   First response: ${scenario.metrics.firstResponseTime}ms`);
-      console.log(`   All responses: ${scenario.metrics.allResponsesTime}ms`);
-      console.log(
-        `   Average response: ${validResponses.length > 0 ? Math.round(validResponses.reduce((a, b) => a + b, 0) / validResponses.length) : 'N/A'}ms`
-      );
-      console.log(`   Errors: ${scenario.metrics.errors.length}`);
     } catch (error) {
       scenario.error = error.message;
-      console.log(`   ❌ Failed: ${error.message}`);
     }
 
     scenario.duration = Date.now() - scenario.startTime;
     this.testResults.scenarios.push(scenario);
-    console.log('');
   }
 
   async runSustainedLoadTest() {
-    console.log('⏰ Scenario 3: Sustained Load Test (50 agents for 5 minutes)');
-
     const scenario = {
       name: 'Sustained Load Test',
       startTime: Date.now(),
@@ -363,7 +312,7 @@ class LoadTestingSuite extends EventEmitter {
     };
 
     try {
-      const ruvSwarm = await RuvSwarm.initialize({
+      const ruvSwarm = await ZenSwarm.initialize({
         enableNeuralNetworks: true,
         enableForecasting: true,
         memoryOptimization: true,
@@ -380,11 +329,10 @@ class LoadTestingSuite extends EventEmitter {
         swarm.spawn({
           type: ['coder', 'researcher', 'analyst'][i % 3],
           name: `sustained-agent-${i}`,
-        })
+        }),
       );
 
       scenario.agents = await Promise.all(spawnPromises);
-      console.log(`   Spawned ${scenario.agents.length} agents`);
 
       const initialMemory = process.memoryUsage().heapUsed;
       const testDuration = 5 * 60 * 1000; // 5 minutes
@@ -392,8 +340,6 @@ class LoadTestingSuite extends EventEmitter {
       const taskTimes = [];
 
       let taskCounter = 0;
-
-      console.log('   Running sustained load for 5 minutes...');
 
       while (Date.now() < endTime) {
         const batchPromises = scenario.agents.map(async (agent, i) => {
@@ -426,14 +372,8 @@ class LoadTestingSuite extends EventEmitter {
 
         // Log progress every minute
         if (taskCounter % 50 === 0) {
-          const elapsed = Date.now() - scenario.startTime;
-          const remaining = endTime - Date.now();
-          console.log(
-            `     Progress: ${Math.round(elapsed / 1000)}s elapsed, ${Math.round(remaining / 1000)}s remaining`
-          );
-          console.log(
-            `     Tasks completed: ${scenario.metrics.tasksCompleted}, Errors: ${scenario.metrics.errors.length}`
-          );
+          const _elapsed = Date.now() - scenario.startTime;
+          const _remaining = endTime - Date.now();
         }
       }
 
@@ -448,26 +388,15 @@ class LoadTestingSuite extends EventEmitter {
         scenario.metrics.tasksCompleted >= 1000 &&
         scenario.metrics.errors.length < 50 &&
         scenario.metrics.memoryGrowth < 200 * 1024 * 1024; // Less than 200MB growth
-
-      console.log(`   Tasks completed: ${scenario.metrics.tasksCompleted}`);
-      console.log(`   Average task time: ${scenario.metrics.avgTaskTime}ms`);
-      console.log(`   Memory growth: ${Math.round(scenario.metrics.memoryGrowth / 1024 / 1024)}MB`);
-      console.log(
-        `   Error rate: ${((scenario.metrics.errors.length / scenario.metrics.tasksCompleted) * 100).toFixed(2)}%`
-      );
     } catch (error) {
       scenario.error = error.message;
-      console.log(`   ❌ Failed: ${error.message}`);
     }
 
     scenario.duration = Date.now() - scenario.startTime;
     this.testResults.scenarios.push(scenario);
-    console.log('');
   }
 
   async runMixedWorkloadTest() {
-    console.log('🎭 Scenario 4: Mixed Workload Test (different agent types)');
-
     const scenario = {
       name: 'Mixed Workload Test',
       startTime: Date.now(),
@@ -487,7 +416,7 @@ class LoadTestingSuite extends EventEmitter {
     };
 
     try {
-      const ruvSwarm = await RuvSwarm.initialize({
+      const ruvSwarm = await ZenSwarm.initialize({
         enableNeuralNetworks: true,
         enableForecasting: true,
         loadingStrategy: 'progressive',
@@ -507,23 +436,16 @@ class LoadTestingSuite extends EventEmitter {
         { type: 'optimizer', count: 8 },
         { type: 'coordinator', count: 5 },
       ];
-
-      console.log('   Spawning mixed agent types...');
       for (const { type, count } of agentTypes) {
         const typePromises = Array.from({ length: count }, (_, i) =>
-          swarm.spawn({ type, name: `${type}-${i}` })
+          swarm.spawn({ type, name: `${type}-${i}` }),
         );
 
         const typeAgents = await Promise.all(typePromises);
         scenario.agents[`${type}s`] = typeAgents;
         scenario.metrics.tasksByType[type] = 0;
         scenario.metrics.avgTimesByType[type] = [];
-
-        console.log(`     ${type}: ${typeAgents.length} agents`);
       }
-
-      // Execute type-specific tasks
-      console.log('   Executing type-specific workloads...');
 
       const workloadPromises = Object.entries(scenario.agents).map(async ([agentType, agents]) => {
         const type = agentType.slice(0, -1); // Remove 's' suffix
@@ -553,7 +475,7 @@ class LoadTestingSuite extends EventEmitter {
                 });
               }
             }
-          })
+          }),
         );
       });
 
@@ -570,25 +492,15 @@ class LoadTestingSuite extends EventEmitter {
 
       scenario.passed =
         totalAgents >= 50 && totalTasks >= 150 && scenario.metrics.errors.length < 15;
-
-      console.log(`   Total agents: ${totalAgents}`);
-      console.log(`   Total tasks: ${totalTasks}`);
-      console.log('   Tasks by type:', scenario.metrics.tasksByType);
-      console.log('   Avg times by type:', scenario.metrics.avgTimesByType);
-      console.log(`   Errors: ${scenario.metrics.errors.length}`);
     } catch (error) {
       scenario.error = error.message;
-      console.log(`   ❌ Failed: ${error.message}`);
     }
 
     scenario.duration = Date.now() - scenario.startTime;
     this.testResults.scenarios.push(scenario);
-    console.log('');
   }
 
   async runStressTest() {
-    console.log('🔥 Scenario 5: Stress Test (pushing to failure point)');
-
     const scenario = {
       name: 'Stress Test',
       startTime: Date.now(),
@@ -604,7 +516,7 @@ class LoadTestingSuite extends EventEmitter {
     };
 
     try {
-      const ruvSwarm = await RuvSwarm.initialize({
+      const ruvSwarm = await ZenSwarm.initialize({
         enableNeuralNetworks: true,
         enableForecasting: false,
         loadingStrategy: 'immediate',
@@ -616,15 +528,11 @@ class LoadTestingSuite extends EventEmitter {
         strategy: 'parallel',
       });
 
-      console.log('   Progressively increasing load until failure...');
-
       const currentAgents = [];
       let batchSize = 10;
       const maxBatchSize = 50;
 
       for (let targetCount = 10; targetCount <= 150; targetCount += batchSize) {
-        console.log(`   Attempting to reach ${targetCount} agents...`);
-
         try {
           // Spawn additional agents
           const newAgents = [];
@@ -649,15 +557,13 @@ class LoadTestingSuite extends EventEmitter {
                     error: error.message,
                   });
                   return null;
-                })
+                }),
             );
           }
 
           const spawnedBatch = await Promise.all(spawnPromises);
           currentAgents.push(...spawnedBatch.filter((agent) => agent !== null));
           scenario.maxAgentsReached = currentAgents.length;
-
-          console.log(`     Successfully spawned ${currentAgents.length} agents`);
 
           // Test execution with current agent count
           const taskPromises = currentAgents.map((agent, i) => {
@@ -686,10 +592,6 @@ class LoadTestingSuite extends EventEmitter {
           const memUsage = process.memoryUsage();
           const memoryMB = memUsage.heapUsed / 1024 / 1024;
 
-          console.log(`     Memory usage: ${memoryMB.toFixed(1)}MB`);
-          console.log(`     Spawn failures: ${scenario.metrics.agentSpawnFailures}`);
-          console.log(`     Execution failures: ${scenario.metrics.taskExecutionFailures}`);
-
           // Check if we're approaching limits
           if (memoryMB > 1000 || scenario.metrics.agentSpawnFailures > 10) {
             scenario.failurePoint = {
@@ -697,7 +599,6 @@ class LoadTestingSuite extends EventEmitter {
               memory: memoryMB,
               reason: memoryMB > 1000 ? 'memory_limit' : 'spawn_failures',
             };
-            console.log(`   Failure point reached: ${scenario.failurePoint.reason}`);
             break;
           }
 
@@ -710,7 +611,6 @@ class LoadTestingSuite extends EventEmitter {
             reason: 'system_error',
             error: error.message,
           };
-          console.log(`   System error at ${currentAgents.length} agents: ${error.message}`);
           break;
         }
 
@@ -720,18 +620,12 @@ class LoadTestingSuite extends EventEmitter {
 
       scenario.metrics.memoryAtFailure = process.memoryUsage().heapUsed / 1024 / 1024;
       scenario.passed = scenario.maxAgentsReached >= 80; // Minimum threshold for stress test
-
-      console.log(`   Maximum agents reached: ${scenario.maxAgentsReached}`);
-      console.log('   Failure point:', scenario.failurePoint || 'No failure reached');
-      console.log(`   Memory at end: ${scenario.metrics.memoryAtFailure.toFixed(1)}MB`);
     } catch (error) {
       scenario.error = error.message;
-      console.log(`   ❌ Failed: ${error.message}`);
     }
 
     scenario.duration = Date.now() - scenario.startTime;
     this.testResults.scenarios.push(scenario);
-    console.log('');
   }
 
   getTasksForType(type, agentIndex) {
@@ -769,8 +663,6 @@ class LoadTestingSuite extends EventEmitter {
   }
 
   async generateLoadTestReport() {
-    console.log('📄 Generating Load Test Report...');
-
     // Calculate overall metrics
     const passedScenarios = this.testResults.scenarios.filter((s) => s.passed).length;
     const totalScenarios = this.testResults.scenarios.length;
@@ -778,18 +670,18 @@ class LoadTestingSuite extends EventEmitter {
     this.testResults.performance.avgResponseTime =
       this.metrics.responseTimes.length > 0
         ? Math.round(
-            this.metrics.responseTimes.reduce((a, b) => a + b, 0) /
-              this.metrics.responseTimes.length
-          )
+          this.metrics.responseTimes.reduce((a, b) => a + b, 0) /
+              this.metrics.responseTimes.length,
+        )
         : 0;
 
     this.testResults.performance.errorRate =
       this.metrics.errors.length > 0
         ? (
-            (this.metrics.errors.length /
+          (this.metrics.errors.length /
               (this.metrics.responseTimes.length + this.metrics.errors.length)) *
             100
-          ).toFixed(2)
+        ).toFixed(2)
         : 0;
 
     this.testResults.performance.memoryPeak = this.testResults.performance.memoryPeak / 1024 / 1024; // Convert to MB
@@ -810,25 +702,7 @@ class LoadTestingSuite extends EventEmitter {
     // Save detailed report
     const reportPath = '/workspaces/ruv-FANN/ruv-swarm/npm/test/load-test-report.json';
     await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
-
-    // Console summary
-    console.log('\n🎯 LOAD TEST SUMMARY');
-    console.log('====================');
-    console.log(
-      `Scenarios Passed: ${passedScenarios}/${totalScenarios} (${report.summary.successRate})`
-    );
-    console.log(`Max Concurrent Agents: ${this.testResults.performance.maxConcurrentAgents}`);
-    console.log(`Average Response Time: ${this.testResults.performance.avgResponseTime}ms`);
-    console.log(`Error Rate: ${this.testResults.performance.errorRate}%`);
-    console.log(`Peak Memory Usage: ${this.testResults.performance.memoryPeak.toFixed(1)}MB`);
-    console.log(`Overall Status: ${this.testResults.passed ? '✅ PASSED' : '❌ FAILED'}`);
-
-    console.log('\n📋 Scenario Results:');
-    this.testResults.scenarios.forEach((scenario) => {
-      console.log(`   ${scenario.passed ? '✅' : '❌'} ${scenario.name} (${scenario.duration}ms)`);
-    });
-
-    console.log(`\n📄 Detailed report saved to: ${reportPath}`);
+    this.testResults.scenarios.forEach((_scenario) => {});
 
     return report;
   }

@@ -5,15 +5,8 @@
  * Includes retry patterns, circuit breakers, fallback strategies, and graceful degradation
  */
 
-import { createLogger } from '../core/logger';
-import {
-  BaseClaudeZenError,
-  ErrorMetrics,
-  type ErrorRecoveryOptions,
-  getErrorSeverity,
-  isRecoverableError,
-  shouldRetry,
-} from './errors';
+import { BaseClaudeZenError, type ErrorRecoveryOptions, isRecoverableError } from './errors';
+import { createLogger } from './logger';
 
 const logger = createLogger({ prefix: 'ErrorRecovery' });
 
@@ -158,10 +151,14 @@ export class CircuitBreaker {
 
     // Open if failure rate is too high within monitoring window
     const windowStart = Date.now() - this.config.monitoringWindow;
-    const recentFailures = this.totalFailures; // Simplified - in production, track windowed failures
-    const failureRate = this.totalCalls > 0 ? recentFailures / this.totalCalls : 0;
+    
+    // Filter failures and calls within the monitoring window
+    const recentFailures = this.failureHistory.filter(timestamp => timestamp >= windowStart).length;
+    const recentCalls = this.callHistory.filter(timestamp => timestamp >= windowStart).length;
+    
+    const failureRate = recentCalls > 0 ? recentFailures / recentCalls : 0;
 
-    return failureRate > 0.5 && this.totalCalls >= 10; // 50% failure rate with minimum calls
+    return failureRate > 0.5 && recentCalls >= 10; // 50% failure rate with minimum calls in window
   }
 
   public getMetrics(): CircuitBreakerMetrics {
@@ -316,7 +313,7 @@ export class FallbackManager<T> {
     this.strategies.sort((a, b) => a.priority - b.priority);
   }
 
-  public async executeWithFallbacks(primaryOperation: () => Promise<T>, error: Error): Promise<T> {
+  public async executeWithFallbacks(_primaryOperation: () => Promise<T>, error: Error): Promise<T> {
     // Try each fallback strategy in priority order
     for (const strategy of this.strategies) {
       // Check if strategy applies to this error
@@ -612,7 +609,7 @@ export class ErrorRecoveryOrchestrator {
       this.fallbackManagers.set(operationName, new FallbackManager<T>(operationName));
     }
 
-    this.fallbackManagers.get(operationName)!.addStrategy(strategy);
+    this.fallbackManagers.get(operationName)?.addStrategy(strategy);
   }
 
   public getSystemHealth(): {

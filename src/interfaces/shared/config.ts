@@ -1,32 +1,43 @@
 /**
- * Shared Interface Configuration
+ * @fileoverview Shared Interface Configuration
  *
- * Common configuration values and utilities used across interfaces.
+ * Interface-specific configuration utilities that integrate with the unified config system
  */
 
-import type { InterfaceConfig } from './types';
+import { config, type InterfaceConfig } from '../../config';
 
 /**
- * Default configuration for all interfaces
+ * Get interface configuration with fallbacks
  */
-export const defaultInterfaceConfig: InterfaceConfig = {
-  theme: 'dark',
-  verbosity: 'normal',
-  autoCompletion: true,
-  realTimeUpdates: true,
-};
+export function getInterfaceConfig(): InterfaceConfig {
+  return config.getSection('interfaces').shared;
+}
 
 /**
- * Common interface constants
+ * Common interface constants derived from configuration
  */
 export const INTERFACE_CONSTANTS = {
-  DEFAULT_TIMEOUT: 30000,
-  DEFAULT_RETRY_ATTEMPTS: 3,
-  DEFAULT_RETRY_DELAY: 1000,
-  MAX_COMMAND_HISTORY: 100,
-  DEFAULT_PAGE_SIZE: 25,
-  MIN_REFRESH_INTERVAL: 1000,
-  MAX_REFRESH_INTERVAL: 60000,
+  get DEFAULT_TIMEOUT() {
+    return config.get('interfaces.mcp.http.timeout') || 30000;
+  },
+  get DEFAULT_RETRY_ATTEMPTS() {
+    return 3;
+  },
+  get DEFAULT_RETRY_DELAY() {
+    return 1000;
+  },
+  get MAX_COMMAND_HISTORY() {
+    return config.get('interfaces.shared.maxCommandHistory') || 100;
+  },
+  get DEFAULT_PAGE_SIZE() {
+    return config.get('interfaces.shared.pageSize') || 25;
+  },
+  get MIN_REFRESH_INTERVAL() {
+    return 1000;
+  },
+  get MAX_REFRESH_INTERVAL() {
+    return 60000;
+  },
 } as const;
 
 /**
@@ -84,44 +95,126 @@ export const ERROR_MESSAGES = {
 } as const;
 
 /**
- * Configuration utilities
+ * Configuration utilities integrated with unified config system
  */
 export class ConfigurationUtils {
   /**
-   * Merge configuration with defaults
+   * Merge configuration with current interface config
    */
-  static mergeWithDefaults<T extends Partial<InterfaceConfig>>(config: T): T & InterfaceConfig {
+  static mergeWithDefaults<T extends Partial<InterfaceConfig>>(overrides: T): T & InterfaceConfig {
+    const current = getInterfaceConfig();
     return {
-      ...defaultInterfaceConfig,
-      ...config,
+      ...current,
+      ...overrides,
     } as T & InterfaceConfig;
   }
 
   /**
-   * Validate configuration
+   * Validate interface configuration
    */
-  static validateConfig(config: Partial<InterfaceConfig>): string[] {
+  static validateConfig(configOverrides: Partial<InterfaceConfig>): string[] {
     const errors: string[] = [];
 
-    if (config.theme && !['dark', 'light', 'auto'].includes(config.theme)) {
+    if (configOverrides.theme && !['dark', 'light', 'auto'].includes(configOverrides.theme)) {
       errors.push('Invalid theme. Must be one of: dark, light, auto');
     }
 
-    if (config.verbosity && !['quiet', 'normal', 'verbose', 'debug'].includes(config.verbosity)) {
+    if (
+      configOverrides.verbosity &&
+      !['quiet', 'normal', 'verbose', 'debug'].includes(configOverrides.verbosity)
+    ) {
       errors.push('Invalid verbosity. Must be one of: quiet, normal, verbose, debug');
+    }
+
+    if (configOverrides.refreshInterval) {
+      const interval = configOverrides.refreshInterval;
+      if (interval < INTERFACE_CONSTANTS.MIN_REFRESH_INTERVAL) {
+        errors.push(`Refresh interval must be >= ${INTERFACE_CONSTANTS.MIN_REFRESH_INTERVAL}ms`);
+      }
+      if (interval > INTERFACE_CONSTANTS.MAX_REFRESH_INTERVAL) {
+        errors.push(`Refresh interval must be <= ${INTERFACE_CONSTANTS.MAX_REFRESH_INTERVAL}ms`);
+      }
+    }
+
+    if (
+      configOverrides.pageSize &&
+      (configOverrides.pageSize < 1 || configOverrides.pageSize > 1000)
+    ) {
+      errors.push('Page size must be between 1 and 1000');
+    }
+
+    if (
+      configOverrides.maxCommandHistory &&
+      (configOverrides.maxCommandHistory < 10 || configOverrides.maxCommandHistory > 10000)
+    ) {
+      errors.push('Max command history must be between 10 and 10000');
     }
 
     return errors;
   }
 
   /**
-   * Get color scheme for theme
+   * Get color scheme for theme from configuration
    */
-  static getColorScheme(theme: 'dark' | 'light' | 'auto'): typeof COLOR_SCHEMES.dark {
-    if (theme === 'auto') {
+  static getColorScheme(theme?: 'dark' | 'light' | 'auto'): typeof COLOR_SCHEMES.dark {
+    const currentTheme = theme || config.get('interfaces.shared.theme') || 'dark';
+
+    if (currentTheme === 'auto') {
       // In a real implementation, this would detect system theme
+      // For now, default to dark
       return COLOR_SCHEMES.dark;
     }
-    return COLOR_SCHEMES[theme];
+
+    return COLOR_SCHEMES[currentTheme as keyof typeof COLOR_SCHEMES] || COLOR_SCHEMES.dark;
+  }
+
+  /**
+   * Update interface configuration at runtime
+   */
+  static updateInterfaceConfig(updates: Partial<InterfaceConfig>): boolean {
+    const errors = ConfigurationUtils.validateConfig(updates);
+    if (errors.length > 0) {
+      console.error('Interface configuration validation errors:', errors);
+      return false;
+    }
+
+    // Update the unified configuration
+    for (const [key, value] of Object.entries(updates)) {
+      const result = config.set(`interfaces.shared.${key}`, value);
+      if (!result.valid) {
+        console.error(`Failed to update interfaces.shared.${key}:`, result.errors);
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Get current interface configuration with live updates
+   */
+  static getCurrentConfig(): InterfaceConfig {
+    return getInterfaceConfig();
+  }
+
+  /**
+   * Listen for interface configuration changes
+   */
+  static onConfigChange(callback: (config: InterfaceConfig) => void): () => void {
+    const handler = (event: any) => {
+      if (event.path.startsWith('interfaces.shared.')) {
+        callback(getInterfaceConfig());
+      }
+    };
+
+    config.onChange(handler);
+
+    // Return cleanup function
+    return () => config.removeListener(handler);
   }
 }
+
+/**
+ * Default export for backward compatibility
+ */
+export const defaultInterfaceConfig = getInterfaceConfig();

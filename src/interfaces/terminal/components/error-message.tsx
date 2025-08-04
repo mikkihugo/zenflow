@@ -51,7 +51,6 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
           icon: '⚠️',
           prefix: 'WARNING',
         };
-      case 'standard':
       default:
         return {
           color: 'red',

@@ -4,10 +4,10 @@
  * Generate comprehensive test report for ruv-swarm
  */
 
-import { execSync } from 'child_process';
-import fs from 'fs';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { execSync } from 'node:child_process';
+import fs from 'node:fs';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -37,8 +37,6 @@ class TestReportGenerator {
   }
 
   async generate() {
-    console.log('Generating comprehensive test report...\n');
-
     // Count test files
     this.countTestFiles();
 
@@ -52,12 +50,6 @@ class TestReportGenerator {
     this.generateMarkdownReport();
     this.generateJSONReport();
     this.generateHTMLReport();
-
-    console.log('\n✅ Test report generation complete!');
-    console.log('   - Markdown: test-report.md');
-    console.log('   - JSON: test-report.json');
-    console.log('   - HTML: test-report.html');
-    console.log('   - Coverage: coverage/lcov-report/index.html');
   }
 
   countTestFiles() {
@@ -96,10 +88,8 @@ class TestReportGenerator {
   }
 
   async runTestsWithCoverage() {
-    console.log('Running tests with coverage...');
-
     try {
-      const output = execSync('npm test -- --coverage --json --outputFile=test-results.json', {
+      const _output = execSync('npm test -- --coverage --json --outputFile=test-results.json', {
         cwd: path.join(__dirname, '..'),
         encoding: 'utf8',
         stdio: 'pipe',
@@ -108,7 +98,7 @@ class TestReportGenerator {
       // Parse test results
       if (fs.existsSync(path.join(__dirname, '..', 'test-results.json'))) {
         const results = JSON.parse(
-          fs.readFileSync(path.join(__dirname, '..', 'test-results.json'), 'utf8')
+          fs.readFileSync(path.join(__dirname, '..', 'test-results.json'), 'utf8'),
         );
         this.parseTestResults(results);
       }

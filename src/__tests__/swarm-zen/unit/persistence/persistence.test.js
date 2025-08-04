@@ -2,10 +2,10 @@
  * Unit tests for SwarmPersistence module
  */
 
-import assert from 'assert';
-import fs from 'fs';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import assert from 'node:assert';
+import fs from 'node:fs';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { SwarmPersistence } from '../../../src/persistence';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -372,7 +372,7 @@ describe('SwarmPersistence Tests', () => {
 
     it('should update neural network', () => {
       const result = persistence.storeNeuralNetwork(testNetwork);
-      const networkId = result.lastInsertRowid;
+      const _networkId = result.lastInsertRowid;
 
       const updates = {
         weights: [
@@ -538,7 +538,6 @@ describe('SwarmPersistence Tests', () => {
 
 // Run tests when this file is executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('Running SwarmPersistence Unit Tests...');
   // Use dynamic import for jest execution
   await import('../../../node_modules/.bin/jest');
 }

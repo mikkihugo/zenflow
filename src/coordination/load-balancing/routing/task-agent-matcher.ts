@@ -80,7 +80,7 @@ export class TaskAgentMatcher {
     return matchingCapabilities.length / task.requiredCapabilities.length;
   }
 
-  private calculatePerformanceMatch(task: Task, agent: Agent): number {
+  private calculatePerformanceMatch(_task: Task, agent: Agent): number {
     // In practice, this would use historical performance data
     // For now, return a score based on agent metadata
     const reliability = agent.metadata?.reliability || 0.8;

@@ -107,7 +107,7 @@ describe('DAA Service', () => {
       await newService.initialize();
 
       // Create agent and check if state is restored
-      const restoredAgent = await newService.createAgent('persistent-agent');
+      const _restoredAgent = await newService.createAgent('persistent-agent');
       const state = await newService.agentStates.loadFromStorage('persistent-agent');
 
       expect(state).toBeDefined();
@@ -118,7 +118,7 @@ describe('DAA Service', () => {
   });
 
   describe('Cross-Boundary Communication Performance', () => {
-    let agent;
+    let _agent;
     const testContext = {
       environment_state: {
         environment_type: 'Dynamic',
@@ -151,7 +151,7 @@ describe('DAA Service', () => {
 
     beforeEach(async () => {
       await service.initialize();
-      agent = await service.createAgent('perf-agent', ['decision_making']);
+      _agent = await service.createAgent('perf-agent', ['decision_making']);
     });
 
     test('should make decision within 1ms latency threshold', async () => {
@@ -169,7 +169,6 @@ describe('DAA Service', () => {
 
       // Check that average latency is under 1ms
       const avgLatency = latencies.reduce((a, b) => a + b, 0) / latencies.length;
-      console.log(`Average cross-boundary latency: ${avgLatency.toFixed(3)}ms`);
 
       // Allow some tolerance for test environment
       expect(avgLatency).toBeLessThan(5.0); // Relaxed for test environment
@@ -192,7 +191,6 @@ describe('DAA Service', () => {
 
       // Batch should be more efficient than sequential
       const perDecision = duration / 20;
-      console.log(`Batch decision average: ${perDecision.toFixed(3)}ms per decision`);
       expect(perDecision).toBeLessThan(10.0); // Should benefit from batching
     });
   });
@@ -222,7 +220,7 @@ describe('DAA Service', () => {
             task: async (agent) => ({ agent: agent.id, result: 'step2-complete' }),
           },
         ],
-        { step2: ['step1'] }
+        { step2: ['step1'] },
       );
 
       expect(workflow.id).toBe('simple-workflow');
@@ -252,12 +250,12 @@ describe('DAA Service', () => {
         {
           B: ['A'],
           C: ['A', 'B'],
-        }
+        },
       );
 
       // Try to execute C before dependencies
       await expect(
-        service.executeWorkflowStep('dependent-workflow', 'C', ['worker-1'])
+        service.executeWorkflowStep('dependent-workflow', 'C', ['worker-1']),
       ).rejects.toThrow('Dependency A not completed');
 
       // Execute in correct order
@@ -280,12 +278,12 @@ describe('DAA Service', () => {
         ],
         {
           final: ['parallel-1', 'parallel-2', 'parallel-3'],
-        }
+        },
       );
 
       // Execute parallel steps concurrently
       const start = performance.now();
-      const [r1, r2, r3] = await Promise.all([
+      const [_r1, _r2, _r3] = await Promise.all([
         service.executeWorkflowStep('parallel-workflow', 'parallel-1', ['worker-1']),
         service.executeWorkflowStep('parallel-workflow', 'parallel-2', ['worker-2']),
         service.executeWorkflowStep('parallel-workflow', 'parallel-3', ['coordinator']),
@@ -352,7 +350,7 @@ describe('DAA Service', () => {
         expect.objectContaining({
           agentIds: ['sync-agent-1', 'sync-agent-2'],
           duration: expect.any(Number),
-        })
+        }),
       );
     });
   });
@@ -461,13 +459,13 @@ describe('DAA Service', () => {
 
     test('should handle agent not found errors', async () => {
       await expect(service.makeDecision('non-existent', {})).rejects.toThrow(
-        'Agent non-existent not found'
+        'Agent non-existent not found',
       );
     });
 
     test('should handle workflow not found errors', async () => {
       await expect(
-        service.executeWorkflowStep('non-existent-workflow', 'step1', ['agent1'])
+        service.executeWorkflowStep('non-existent-workflow', 'step1', ['agent1']),
       ).rejects.toThrow('Workflow non-existent-workflow not found');
     });
 
@@ -477,7 +475,7 @@ describe('DAA Service', () => {
       // Force an error by passing invalid context
       try {
         await service.makeDecision('error-agent', null);
-      } catch (e) {
+      } catch (_e) {
         // Expected
       }
 
@@ -510,12 +508,9 @@ describe('DAA Service Performance Benchmarks', () => {
 
     const start = performance.now();
     const results = await service.batchCreateAgents(configs);
-    const duration = performance.now() - start;
+    const _duration = performance.now() - start;
 
     expect(results.every((r) => r.success)).toBe(true);
-    console.log(
-      `Created 100 agents in ${duration.toFixed(0)}ms (${(duration / 100).toFixed(2)}ms per agent)`
-    );
 
     // Cleanup bench agents
     for (const config of configs) {
@@ -565,17 +560,10 @@ describe('DAA Service Performance Benchmarks', () => {
 
     const start = performance.now();
     await service.batchMakeDecisions(decisions);
-    const totalDuration = performance.now() - start;
+    const _totalDuration = performance.now() - start;
 
-    const avgLatency = latencies.reduce((a, b) => a + b, 0) / latencies.length;
-    const maxLatency = Math.max(...latencies);
-
-    console.log(`1000 decisions in ${totalDuration.toFixed(0)}ms`);
-    console.log(`Average latency: ${avgLatency.toFixed(3)}ms`);
-    console.log(`Max latency: ${maxLatency.toFixed(3)}ms`);
-    console.log(
-      `95th percentile: ${latencies.sort((a, b) => a - b)[Math.floor(latencies.length * 0.95)].toFixed(3)}ms`
-    );
+    const _avgLatency = latencies.reduce((a, b) => a + b, 0) / latencies.length;
+    const _maxLatency = Math.max(...latencies);
 
     // Cleanup
     for (const agent of agents) {

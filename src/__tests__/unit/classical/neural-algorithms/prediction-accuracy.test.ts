@@ -12,8 +12,6 @@ import {
   createTrainer,
   initializeNeuralWasm,
   type NetworkConfig,
-  NeuralNetwork,
-  NeuralTrainer,
   TRAINING_ALGORITHMS,
   type TrainingConfig,
   type TrainingDataConfig,
@@ -25,7 +23,7 @@ describe('Prediction Accuracy - Classical TDD', () => {
   beforeEach(async () => {
     try {
       wasmModule = await initializeNeuralWasm();
-    } catch (error) {
+    } catch (_error) {
       console.warn('WASM module not available, skipping prediction accuracy tests');
     }
   });
@@ -608,7 +606,7 @@ describe('Prediction Accuracy - Classical TDD', () => {
       }
 
       // Verify predictions are valid
-      expect(predictions.every((p) => isFinite(p))).toBe(true);
+      expect(predictions.every((p) => Number.isFinite(p))).toBe(true);
       expect(predictions.every((p) => p >= 0 && p <= 1)).toBe(true);
     });
   });

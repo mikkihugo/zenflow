@@ -5,9 +5,8 @@
  * communication protocols, resource allocation, and coordination strategies.
  */
 
-import { EventEmitter } from 'events';
-import { MLModel, PredictionResult } from './ml-integration';
-import { type ExecutionPattern, PatternCluster } from './pattern-recognition-engine';
+import { EventEmitter } from 'node:events';
+import type { ExecutionPattern } from './pattern-recognition-engine';
 
 export interface AgentBehavior {
   agentId: string;
@@ -551,18 +550,24 @@ export class BehavioralOptimization extends EventEmitter {
 
     behavior.lastUpdated = Date.now();
 
-    // Record the adaptation
+    // Calculate performance change from baseline
+    const performanceChange = behavior.performance.efficiency - originalPerformance.efficiency;
+    const successRate = behavior.performance.success_rate - originalPerformance.success_rate;
+
+    // Record the adaptation with performance comparison
     this.recordAdaptation(agentId, {
       type: 'parameter_adjustment',
       description: `Applied ${adaptationType} adaptation`,
       parameters,
       impact: {
-        performanceChange: 0, // Would be calculated based on actual performance change
-        efficiencyGain: 0,
-        stabilityEffect: 0,
-        collaborationImprovement: 0,
+        performanceChange: performanceChange,
+        efficiencyGain: successRate,
+        stabilityEffect: behavior.performance.response_time - originalPerformance.response_time,
+        collaborationImprovement: behavior.performance.collaboration_score - originalPerformance.collaboration_score,
       },
-      success: true, // Would be determined by actual results
+      success: performanceChange >= 0, // Success if performance improved or stayed same
+      originalPerformance,
+      newPerformance: { ...behavior.performance },
     });
 
     this.emit('behavior_adapted', { agentId, adaptationType, parameters });
@@ -1044,7 +1049,7 @@ export class BehavioralOptimization extends EventEmitter {
     return Math.min(...distances);
   }
 
-  private calculateExpectedImprovement(candidate: AgentBehavior, evaluations: number[]): number {
+  private calculateExpectedImprovement(_candidate: AgentBehavior, evaluations: number[]): number {
     if (evaluations.length === 0) return 0.5;
 
     const maxEvaluation = Math.max(...evaluations);
@@ -1058,7 +1063,7 @@ export class BehavioralOptimization extends EventEmitter {
     return `${behavior.parameters.taskSelection.preferredComplexity.toFixed(2)}_${behavior.parameters.taskSelection.riskTolerance.toFixed(2)}_${behavior.parameters.communication.frequency.toFixed(2)}`;
   }
 
-  private generatePossibleActions(behavior: AgentBehavior): BehaviorAction[] {
+  private generatePossibleActions(_behavior: AgentBehavior): BehaviorAction[] {
     const actions: BehaviorAction[] = [];
 
     // Generate actions that modify behavior parameters

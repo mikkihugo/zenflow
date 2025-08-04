@@ -6,7 +6,7 @@
 
 // Legacy compatibility exports (to ease migration)
 export type {
-  RuvSwarm as SwarmType,
+  ZenSwarm as SwarmType,
   SwarmAgent as Agent,
   SwarmConfig as SwarmConfiguration,
 } from './shared-types';
@@ -14,7 +14,7 @@ export type {
 export * from './shared-types';
 
 // Type guards and utilities
-export function isRuvSwarm(obj: any): obj is import('./shared-types').RuvSwarm {
+export function isZenSwarm(obj: any): obj is import('./shared-types').ZenSwarm {
   return (
     obj &&
     typeof obj.id === 'string' &&

@@ -4,7 +4,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../core/event-bus';
 import type { ILogger } from '../core/logger';
 
 export interface MCPConfig {
@@ -39,8 +38,7 @@ export class MCPServer extends EventEmitter {
 
   constructor(
     config: MCPConfig,
-    private logger?: ILogger,
-    private eventBus?: IEventBus
+    private logger?: ILogger
   ) {
     super();
 

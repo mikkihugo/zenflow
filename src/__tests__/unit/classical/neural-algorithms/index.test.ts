@@ -50,7 +50,7 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
       expect(Object.keys(testSuiteComponents)).toHaveLength(5);
 
       // Ensure all components follow Classical TDD principles
-      for (const [name, component] of Object.entries(testSuiteComponents)) {
+      for (const [_name, component] of Object.entries(testSuiteComponents)) {
         expect(component.noMocks).toBe(true);
         expect(component.purpose).toBeDefined();
         expect(component.approach).toBeDefined();
@@ -85,7 +85,7 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
       // Verify comprehensive benefit coverage
       expect(Object.keys(benefits)).toHaveLength(7);
 
-      for (const [benefit, description] of Object.entries(benefits)) {
+      for (const [_benefit, description] of Object.entries(benefits)) {
         expect(description).toBeTruthy();
         expect(description.length).toBeGreaterThan(20);
       }
@@ -148,7 +148,7 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
       // Validate comprehensive algorithm coverage
       expect(Object.keys(algorithmsToTest)).toHaveLength(4);
 
-      for (const [category, algorithms] of Object.entries(algorithmsToTest)) {
+      for (const [_category, algorithms] of Object.entries(algorithmsToTest)) {
         expect(algorithms.length).toBeGreaterThan(0);
         expect(Array.isArray(algorithms)).toBe(true);
       }
@@ -177,8 +177,8 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
 
       // Validate environment meets requirements
       expect(environmentRequirements['Node.js Version']).toBeTruthy();
-      expect(environmentRequirements['Architecture']).toBeTruthy();
-      expect(environmentRequirements['Platform']).toBeTruthy();
+      expect(environmentRequirements.Architecture).toBeTruthy();
+      expect(environmentRequirements.Platform).toBeTruthy();
       expect(environmentRequirements['Memory Available']).toBe(true);
       expect(environmentRequirements['Performance Timing']).toBe(true);
       expect(environmentRequirements['TypeScript Support']).toBe(true);
@@ -196,14 +196,6 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
 
       // At least Node.js environment should be available for testing
       expect(wasmCompatibility['Node.js Environment']).toBe(true);
-
-      // Log environment information for debugging
-      console.log('Test Environment:', {
-        nodeVersion: process.version,
-        architecture: process.arch,
-        platform: process.platform,
-        wasmSupport: typeof WebAssembly !== 'undefined',
-      });
     });
   });
 
@@ -219,7 +211,7 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
       };
 
       // Validate baseline structure
-      for (const [operation, baseline] of Object.entries(performanceBaselines)) {
+      for (const [_operation, baseline] of Object.entries(performanceBaselines)) {
         expect(baseline).toBeDefined();
         expect(typeof baseline).toBe('object');
 
@@ -295,7 +287,7 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
       // Validate advantages are well-defined
       expect(Object.keys(classicalTddAdvantages)).toHaveLength(7);
 
-      for (const [advantage, description] of Object.entries(classicalTddAdvantages)) {
+      for (const [_advantage, description] of Object.entries(classicalTddAdvantages)) {
         expect(description).toBeTruthy();
         expect(description.length).toBeGreaterThan(30);
         expect(description).toMatch(/\w+/); // Contains meaningful words

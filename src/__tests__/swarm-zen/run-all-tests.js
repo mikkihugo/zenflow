@@ -5,10 +5,10 @@
  * Executes all test suites and generates a detailed report
  */
 
-import { spawn } from 'child_process';
-import fs from 'fs/promises';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { spawn } from 'node:child_process';
+import fs from 'node:fs/promises';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -97,48 +97,22 @@ class TestReport {
   }
 
   printSummary() {
-    console.log('\n📊 Test Summary');
-    console.log('═'.repeat(60));
-
-    console.log('\n📦 Test Suites:');
-    console.log(`  Total: ${this.summary.totalSuites}`);
-    console.log(`  ✅ Passed: ${this.summary.passedSuites}`);
-    console.log(`  ❌ Failed: ${this.summary.failedSuites}`);
-
-    console.log('\n🧪 Individual Tests:');
-    console.log(`  Total: ${this.summary.totalTests}`);
-    console.log(`  ✅ Passed: ${this.summary.passedTests}`);
-    console.log(`  ❌ Failed: ${this.summary.failedTests}`);
-
-    console.log(`\n⏱️  Total Duration: ${(this.summary.totalDuration / 1000).toFixed(2)}s`);
-
     if (this.summary.failedSuites > 0) {
-      console.log('\n❌ Failed Suites:');
       this.suites
         .filter((s) => !s.passed)
         .forEach((suite) => {
-          console.log(`  - ${suite.name}`);
           if (suite.errors && suite.errors.length > 0) {
-            suite.errors.slice(0, 3).forEach((error) => {
-              console.log(`    • ${error}`);
-            });
+            suite.errors.slice(0, 3).forEach((_error) => {});
             if (suite.errors.length > 3) {
-              console.log(`    ... and ${suite.errors.length - 3} more errors`);
             }
           }
         });
     }
-
-    console.log(`\n${'═'.repeat(60)}`);
-    console.log(this.summary.failedSuites === 0 ? '✅ All tests passed!' : '❌ Some tests failed');
   }
 }
 
 // Test execution utilities
 async function runTestSuite(suite, report) {
-  console.log(`\n🚀 Running ${suite.name}`);
-  console.log('─'.repeat(50));
-
   const suiteStartTime = Date.now();
   const suiteResult = {
     name: suite.name,
@@ -202,10 +176,6 @@ async function runTestSuite(suite, report) {
         suiteResult.errors.push(...errorOutput.split('\n').filter((line) => line.trim()));
       }
 
-      console.log(
-        `\n${suiteResult.passed ? '✅' : '❌'} ${suite.name} completed in ${(suiteResult.duration / 1000).toFixed(2)}s`
-      );
-
       report.addSuite(suiteResult);
       resolve(suiteResult);
     });
@@ -216,8 +186,6 @@ async function runTestSuite(suite, report) {
 let mcpServer = null;
 
 async function startMCPServer() {
-  console.log('🚀 Starting MCP Server...');
-
   return new Promise((resolve, reject) => {
     mcpServer = spawn('npm', ['run', 'mcp:server'], {
       cwd: path.join(__dirname, '..'),
@@ -228,7 +196,6 @@ async function startMCPServer() {
 
     mcpServer.stdout.on('data', (data) => {
       const output = data.toString();
-      console.log(`MCP Server: ${output.trim()}`);
 
       if (output.includes('Starting RUV-Swarm MCP server') || output.includes('listening')) {
         serverStarted = true;
@@ -253,8 +220,6 @@ async function startMCPServer() {
 
 async function stopMCPServer() {
   if (mcpServer) {
-    console.log('\n🛑 Stopping MCP Server...');
-
     // Try graceful shutdown first
     mcpServer.kill('SIGTERM');
 
@@ -324,12 +289,6 @@ class PerformanceMonitor {
 
 // Main test orchestration
 async function main() {
-  console.log('🧪 RUV-SWARM Comprehensive Test Suite');
-  console.log('═'.repeat(60));
-  console.log(`Started at: ${new Date().toISOString()}`);
-  console.log(`Node version: ${process.version}`);
-  console.log(`Platform: ${process.platform} ${process.arch}`);
-
   const report = new TestReport();
   const perfMonitor = new PerformanceMonitor();
 
@@ -343,17 +302,14 @@ async function main() {
     if (requiresServer) {
       try {
         await startMCPServer();
-        console.log('✅ MCP Server started successfully\n');
       } catch (error) {
         console.error('❌ Failed to start MCP Server:', error.message);
-        console.log('⚠️  Skipping tests that require MCP server\n');
       }
     }
 
     // Run each test suite
     for (const suite of TEST_SUITES) {
       if (suite.requiresServer && !mcpServer) {
-        console.log(`\n⚠️  Skipping ${suite.name} (requires MCP server)`);
         report.addSuite({
           name: suite.name,
           file: suite.file,
@@ -386,15 +342,11 @@ async function main() {
     report.finalize();
 
     // Add performance metrics to report
-    const perfReport = perfMonitor.getReport();
-    console.log('\n📈 Performance Metrics:');
-    console.log(`  Average CPU: ${perfReport.averageCpuSeconds}s`);
-    console.log(`  Max Memory: ${perfReport.maxMemoryMB}MB`);
+    const _perfReport = perfMonitor.getReport();
 
     // Save detailed report
     const reportPath = path.join(__dirname, `test-report-${Date.now()}.json`);
     await report.saveReport(reportPath);
-    console.log(`\n📄 Detailed report saved to: ${reportPath}`);
 
     // Print summary
     report.printSummary();
@@ -406,7 +358,6 @@ async function main() {
 
 // Handle interrupts
 process.on('SIGINT', async () => {
-  console.log('\n⚠️  Test run interrupted');
   await stopMCPServer();
   process.exit(1);
 });

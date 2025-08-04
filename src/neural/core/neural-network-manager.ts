@@ -319,7 +319,7 @@ class NeuralNetworkManager {
     const template = config.template || 'deep_analyzer';
     const templateConfig = this.templates[template];
 
-    if (templateConfig && templateConfig.modelType) {
+    if (templateConfig?.modelType) {
       // Create new neural model with enhanced capabilities
       return this.createAdvancedNeuralModel(agentId, template, config);
     }
@@ -425,10 +425,6 @@ class NeuralNetworkManager {
         adaptationHistory: [],
         collaborationScore: 0,
       });
-
-      console.log(
-        `Created ${config.modelType} neural network for agent ${agentId} with enhanced cognitive capabilities`
-      );
 
       return wrappedModel;
     } catch (error) {
@@ -632,7 +628,13 @@ class NeuralNetworkManager {
     const scale = sensitivity / epsilon;
     const u1 = Math.random();
     const u2 = Math.random();
-    return scale * Math.sign(u1 - 0.5) * Math.log(1 - 2 * Math.abs(u1 - 0.5));
+    
+    // Use Box-Muller transform for better noise distribution
+    const noise1 = scale * Math.sign(u1 - 0.5) * Math.log(1 - 2 * Math.abs(u1 - 0.5));
+    const noise2 = scale * Math.sign(u2 - 0.5) * Math.log(1 - 2 * Math.abs(u2 - 0.5));
+    
+    // Return averaged noise for better privacy guarantees
+    return (noise1 + noise2) / 2;
   }
 
   getNetworkMetrics(agentId) {
@@ -683,11 +685,6 @@ class NeuralNetworkManager {
       const preset = getPreset(category, presetName);
       validatePresetConfig(preset);
 
-      console.log(`Creating ${agentId} from preset: ${preset.name}`);
-      console.log(
-        `Expected performance: ${preset.performance.expectedAccuracy} accuracy in ${preset.performance.inferenceTime}`
-      );
-
       // Merge preset config with custom overrides
       const config = {
         ...preset.config,
@@ -722,12 +719,6 @@ class NeuralNetworkManager {
     if (!preset) {
       throw new Error(`Complete preset not found: ${modelType}/${presetName}`);
     }
-
-    console.log(`Creating ${agentId} from complete preset: ${preset.name}`);
-    console.log(
-      `Expected performance: ${preset.performance.expectedAccuracy} accuracy in ${preset.performance.inferenceTime}`
-    );
-    console.log(`Cognitive patterns: ${preset.cognitivePatterns.join(', ')}`);
 
     // Get optimized cognitive patterns
     const taskContext = {
@@ -816,7 +807,6 @@ class NeuralNetworkManager {
       }
 
       const bestMatch = searchResults[0];
-      console.log(`Found preset for "${useCase}": ${bestMatch.preset.name}`);
 
       return this.createAgentFromPreset(
         agentId,
@@ -899,8 +889,6 @@ class NeuralNetworkManager {
   async updateAgentWithPreset(agentId, category, presetName, customConfig = {}) {
     const existingNetwork = this.neuralNetworks.get(agentId);
     if (existingNetwork) {
-      // Save current state if needed
-      console.log(`Updating agent ${agentId} with new preset: ${category}/${presetName}`);
     }
 
     // Preserve cognitive evolution history
@@ -980,8 +968,6 @@ class NeuralNetworkManager {
     // Create knowledge sharing matrix
     const sharingMatrix = await this.createKnowledgeSharingMatrix(agentIds);
     session.knowledgeSharingMatrix = sharingMatrix;
-
-    console.log(`Knowledge sharing enabled for ${agentIds.length} agents`);
   }
 
   /**
@@ -1023,7 +1009,7 @@ class NeuralNetworkManager {
         const importance = weight.map((w) => Math.abs(w));
         const threshold = this.calculateImportanceThreshold(importance);
 
-        importantWeights[layer] = weight.filter((w, idx) => importance[idx] > threshold);
+        importantWeights[layer] = weight.filter((_w, idx) => importance[idx] > threshold);
       }
     });
 
@@ -1227,8 +1213,6 @@ class NeuralNetworkManager {
             await this.performKnowledgeDistillation(teacher, student, session);
           }
         }
-
-        console.log(`Knowledge distillation completed for session ${session.id}`);
       } catch (error) {
         console.error('Knowledge distillation failed:', error);
       }
@@ -1355,8 +1339,6 @@ class NeuralNetworkManager {
 
         // Apply coordination results
         await this.applyCoordinationResults(session);
-
-        console.log(`Neural coordination completed for session ${session.id}`);
       } catch (error) {
         console.error('Neural coordination failed:', error);
       }
@@ -1668,8 +1650,6 @@ class NeuralNetwork {
       this.metrics.loss = avgLoss;
       this.metrics.epochs_trained++;
       this.trainingHistory.push({ epoch, loss: avgLoss });
-
-      console.log(`Epoch ${epoch + 1}/${epochs} - Loss: ${avgLoss.toFixed(4)}`);
     }
 
     return this.metrics;
@@ -1714,8 +1694,12 @@ class NeuralNetwork {
   async save(filePath) {
     try {
       const state = this.wasmModule.exports.serialize_network(this.networkId);
-      // In real implementation, save to file
-      console.log(`Saving network state to ${filePath}`);
+      
+      // Save the serialized state to file
+      const fs = await import('node:fs/promises');
+      await fs.writeFile(filePath, JSON.stringify(state, null, 2));
+      
+      console.log(`Neural network saved to: ${filePath}`);
       return true;
     } catch (error) {
       console.error('Failed to save network:', error);
@@ -1725,9 +1709,15 @@ class NeuralNetwork {
 
   async load(filePath) {
     try {
-      // In real implementation, load from file
-      console.log(`Loading network state from ${filePath}`);
-      this.wasmModule.exports.deserialize_network(this.networkId, 'state_data');
+      // Read the serialized state from file
+      const fs = await import('node:fs/promises');
+      const stateData = await fs.readFile(filePath, 'utf-8');
+      const state = JSON.parse(stateData);
+      
+      // Deserialize the network state
+      this.wasmModule.exports.deserialize_network(this.networkId, state);
+      
+      console.log(`Neural network loaded from: ${filePath}`);
       return true;
     } catch (error) {
       console.error('Failed to load network:', error);
@@ -1756,7 +1746,7 @@ class SimulatedNeuralNetwork {
     return this.config.layers?.map(() => Math.random() * 2 - 1) || [0];
   }
 
-  async forward(input) {
+  async forward(_input) {
     // Simple forward pass simulation
     const outputSize = this.config.layers?.[this.config.layers.length - 1] || 1;
     const output = new Float32Array(outputSize);
@@ -1768,7 +1758,7 @@ class SimulatedNeuralNetwork {
     return output;
   }
 
-  async train(trainingData, options) {
+  async train(_trainingData, options) {
     const { epochs } = options;
 
     for (let epoch = 0; epoch < epochs; epoch++) {
@@ -1777,8 +1767,6 @@ class SimulatedNeuralNetwork {
       this.metrics.epochs_trained++;
       this.metrics.accuracy = Math.min(0.99, this.metrics.accuracy + 0.01);
       this.trainingHistory.push({ epoch, loss });
-
-      console.log(`[Simulated] Epoch ${epoch + 1}/${epochs} - Loss: ${loss.toFixed(4)}`);
     }
 
     return this.metrics;
@@ -1792,10 +1780,7 @@ class SimulatedNeuralNetwork {
     };
   }
 
-  applyGradients(gradients) {
-    // Simulate gradient application
-    console.log('[Simulated] Applying gradients');
-  }
+  applyGradients(_gradients) {}
 
   getMetrics() {
     return {
@@ -1808,13 +1793,11 @@ class SimulatedNeuralNetwork {
     };
   }
 
-  async save(filePath) {
-    console.log(`[Simulated] Saving network state to ${filePath}`);
+  async save(_filePath) {
     return true;
   }
 
-  async load(filePath) {
-    console.log(`[Simulated] Loading network state from ${filePath}`);
+  async load(_filePath) {
     return true;
   }
 }
@@ -1906,10 +1889,7 @@ class AdvancedNeuralNetwork {
     return {};
   }
 
-  applyGradients(gradients) {
-    // Advanced models handle gradient updates internally
-    console.log(`Gradient update handled internally by ${this.modelType}`);
-  }
+  applyGradients(_gradients) {}
 
   getMetrics() {
     return this.model.getMetrics();

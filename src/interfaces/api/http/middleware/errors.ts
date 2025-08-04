@@ -132,7 +132,7 @@ export const errorHandler: ErrorRequestHandler = (
   error: Error | APIError,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   const traceId = generateTraceId();
 

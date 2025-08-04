@@ -2,7 +2,7 @@
  * Comprehensive system configuration with TypeScript types
  */
 
-const _config = {
+const config = {
   app: {
     name: 'Claude-Zen',
     version: '2.0.0-alpha.73',
@@ -71,4 +71,4 @@ const _config = {
   },
 };
 
-export default _config;
+export default config;

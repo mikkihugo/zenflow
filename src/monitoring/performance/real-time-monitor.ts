@@ -63,7 +63,6 @@ export class RealTimePerformanceMonitor extends EventEmitter {
     if (this.isMonitoring) return;
 
     this.isMonitoring = true;
-    console.log('🚀 Starting real-time performance monitoring...');
 
     // Start periodic system metrics collection
     this.monitoringInterval = setInterval(() => {
@@ -85,8 +84,6 @@ export class RealTimePerformanceMonitor extends EventEmitter {
     if (this.monitoringInterval) {
       clearInterval(this.monitoringInterval);
     }
-
-    console.log('⏹️  Performance monitoring stopped');
     this.emit('monitoring:stopped');
   }
 
@@ -105,7 +102,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
       this.metrics.set(name, []);
     }
 
-    this.metrics.get(name)!.push(metric);
+    this.metrics.get(name)?.push(metric);
     this.emit('metric:recorded', metric);
 
     // Check if this metric triggers any alerts

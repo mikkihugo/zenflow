@@ -87,7 +87,7 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
       const interval = setInterval(refreshStatus, refreshInterval);
       return () => clearInterval(interval);
     }
-  }, [autoRefresh, refreshInterval]);
+  }, [autoRefresh, refreshInterval, refreshStatus]);
 
   const refreshStatus = async () => {
     try {
@@ -182,19 +182,38 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
   };
 
   const loadRealSwarmData = async () => {
-    // TODO: Implement real swarm data loading
-    // This would integrate with actual swarm service
-
+    // Attempt to load real swarm data with fallback to mock data
     try {
-      // Import swarm service when available
-      // const { SwarmService } = await import('../../../coordination/services/swarm-service.js');
-      // const swarmService = new SwarmService();
-      // const realData = await swarmService.getStatus();
-
-      // For now, fall back to mock data
-      await loadMockSwarmData();
+      // Try to import and use real swarm coordination
+      const { SwarmCoordinator } = await import('../../../coordination/swarm/core/swarm-coordinator.js');
+      const coordinator = SwarmCoordinator.getInstance();
+      
+      if (coordinator) {
+        const realSwarmData = await coordinator.getSwarmStatus();
+        
+        setSwarmData({
+          status: realSwarmData.status || 'unknown',
+          agents: realSwarmData.agents?.map((agent, index) => ({
+            id: agent.id || `agent-${index}`,
+            name: agent.name || `Agent ${index + 1}`,
+            type: agent.type || 'general',
+            status: agent.status || 'idle',
+            lastActivity: agent.lastActivity || new Date().toISOString(),
+            tasksCompleted: agent.metrics?.tasksCompleted || 0,
+          })) || [],
+          performance: {
+            responseTime: realSwarmData.performance?.averageResponseTime || 0,
+            successRate: realSwarmData.performance?.successRate || 100,
+            activeConnections: realSwarmData.performance?.activeConnections || 0,
+          },
+          lastUpdated: new Date(),
+        });
+        
+        logger.info('Real swarm data loaded successfully');
+        return;
+      }
     } catch (err) {
-      logger.warn('Real swarm service not available, using mock data');
+      logger.warn('Real swarm service not available, using mock data:', err);
       await loadMockSwarmData();
     }
   };
@@ -203,9 +222,28 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
     try {
       logger.debug('Starting agent:', agentConfig);
 
-      // TODO: Implement real agent starting
-      // For now, simulate by adding to mock data
+      // Attempt to start real agent with fallback to simulation
+      try {
+        // Try to use real swarm coordinator to start agent
+        const { SwarmCoordinator } = await import('../../../coordination/swarm/core/swarm-coordinator.js');
+        const coordinator = SwarmCoordinator.getInstance();
+        
+        if (coordinator && coordinator.spawnAgent) {
+          const realAgent = await coordinator.spawnAgent({
+            type: agentConfig.role || 'general',
+            name: agentConfig.id || `agent-${Date.now()}`,
+            capabilities: agentConfig.capabilities || ['general'],
+          });
+          
+          logger.info('Real agent started successfully:', realAgent.id);
+          await loadRealSwarmData(); // Refresh data with new agent
+          return;
+        }
+      } catch (err) {
+        logger.warn('Real agent starting not available, simulating:', err);
+      }
 
+      // Fallback: simulate by adding to mock data
       const newAgent: SwarmAgent = {
         id: agentConfig.id || `agent-${Date.now()}`,
         role: agentConfig.role || 'worker',

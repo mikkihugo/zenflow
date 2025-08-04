@@ -3,10 +3,10 @@
  * from ruv-swarm-no-timeout.js while maintaining security and functionality
  */
 
-const fs = require('fs');
-const path = require('path');
-const { exec } = require('child_process');
-const { promisify } = require('util');
+const fs = require('node:fs');
+const path = require('node:path');
+const { exec } = require('node:child_process');
+const { promisify } = require('node:util');
 
 const execAsync = promisify(exec);
 
@@ -17,12 +17,6 @@ const originalPath = path.join(__dirname, '..', 'bin', 'ruv-swarm-secure.js');
 // Read file contents
 const noTimeoutCode = fs.readFileSync(noTimeoutPath, 'utf8');
 const originalCode = fs.readFileSync(originalPath, 'utf8');
-
-console.log('🔥 TIMEOUT ELIMINATION VALIDATION SUITE');
-console.log('='.repeat(50));
-
-// Test 1: Timeout mechanism removal
-console.log('\n📊 1. TIMEOUT MECHANISM REMOVAL:');
 
 const timeoutPatterns = [
   { name: 'setTimeout', pattern: /setTimeout\s*\(/g },
@@ -43,19 +37,11 @@ for (const { name, pattern } of timeoutPatterns) {
   const originalMatches = originalCode.match(pattern);
 
   if (noTimeoutMatches === null && originalMatches !== null) {
-    console.log(`   ✅ ${name}: Successfully removed (${originalMatches.length} instances)`);
     removedCount++;
   } else if (noTimeoutMatches !== null) {
-    console.log(`   ❌ ${name}: Still found ${noTimeoutMatches.length} instances`);
   } else {
-    console.log(`   ⚠️  ${name}: Not found in either version`);
   }
 }
-
-console.log(`\n   🎯 RESULT: ${removedCount}/${timeoutPatterns.length} timeout mechanisms removed`);
-
-// Test 2: Security feature preservation
-console.log('\n🔒 2. SECURITY FEATURE PRESERVATION:');
 
 const securityPatterns = [
   { name: 'CommandSanitizer', pattern: /CommandSanitizer/g },
@@ -74,21 +60,11 @@ for (const { name, pattern } of securityPatterns) {
   const originalMatches = originalCode.match(pattern);
 
   if (noTimeoutMatches !== null && originalMatches !== null) {
-    console.log(`   ✅ ${name}: Preserved (${noTimeoutMatches.length} instances)`);
     preservedCount++;
   } else if (noTimeoutMatches === null) {
-    console.log(`   ❌ ${name}: Missing in no-timeout version`);
   } else {
-    console.log(`   ⚠️  ${name}: Found in no-timeout but not original`);
   }
 }
-
-console.log(
-  `\n   🎯 RESULT: ${preservedCount}/${securityPatterns.length} security features preserved`
-);
-
-// Test 3: Core functionality preservation
-console.log('\n⚡ 3. CORE FUNCTIONALITY PRESERVATION:');
 
 const corePatterns = [
   { name: 'mcpTools', pattern: /mcpTools/g },
@@ -107,21 +83,11 @@ for (const { name, pattern } of corePatterns) {
   const originalMatches = originalCode.match(pattern);
 
   if (noTimeoutMatches !== null && originalMatches !== null) {
-    console.log(`   ✅ ${name}: Preserved (${noTimeoutMatches.length} instances)`);
     corePreservedCount++;
   } else if (noTimeoutMatches === null) {
-    console.log(`   ❌ ${name}: Missing in no-timeout version`);
   } else {
-    console.log(`   ⚠️  ${name}: Found in no-timeout but not original`);
   }
 }
-
-console.log(
-  `\n   🎯 RESULT: ${corePreservedCount}/${corePatterns.length} core functions preserved`
-);
-
-// Test 4: Version identification
-console.log('\n🏷️  4. VERSION IDENTIFICATION:');
 
 const versionPatterns = [
   { name: 'NO TIMEOUT VERSION', pattern: /NO TIMEOUT VERSION/g },
@@ -139,31 +105,19 @@ for (const { name, pattern } of versionPatterns) {
   const matches = noTimeoutCode.match(pattern);
 
   if (matches !== null) {
-    console.log(`   ✅ ${name}: Found (${matches.length} instances)`);
     versionCount++;
   } else {
-    console.log(`   ❌ ${name}: Missing`);
   }
 }
 
-console.log(
-  `\n   🎯 RESULT: ${versionCount}/${versionPatterns.length} version identifiers present`
-);
-
-// Test 5: Functional testing
-console.log('\n🧪 5. FUNCTIONAL TESTING:');
-
-async function testCommand(command, description) {
+async function testCommand(command, _description) {
   try {
     const { stdout, stderr } = await execAsync(`node ${noTimeoutPath} ${command}`);
     if (stderr && stderr.trim() !== '') {
-      console.log(`   ❌ ${description}: Error - ${stderr.trim()}`);
       return false;
     }
-    console.log(`   ✅ ${description}: Success`);
     return true;
-  } catch (error) {
-    console.log(`   ❌ ${description}: Failed - ${error.message}`);
+  } catch (_error) {
     return false;
   }
 }
@@ -182,13 +136,8 @@ async function runFunctionalTests() {
     const passed = await testCommand(test.command, test.description);
     if (passed) passedTests++;
   }
-
-  console.log(`\n   🎯 RESULT: ${passedTests}/${tests.length} functional tests passed`);
   return passedTests === tests.length;
 }
-
-// Test 6: Code quality validation
-console.log('\n📝 6. CODE QUALITY VALIDATION:');
 
 const qualityChecks = [
   { name: 'Proper shebang', test: () => noTimeoutCode.startsWith('#!/usr/bin/env node') },
@@ -214,19 +163,10 @@ let qualityScore = 0;
 for (const { name, test } of qualityChecks) {
   const passed = test();
   if (passed) {
-    console.log(`   ✅ ${name}: Pass`);
     qualityScore++;
   } else {
-    console.log(`   ❌ ${name}: Fail`);
   }
 }
-
-console.log(`\n   🎯 RESULT: ${qualityScore}/${qualityChecks.length} quality checks passed`);
-
-// Final summary
-console.log('\n' + '='.repeat(50));
-console.log('🎯 FINAL VALIDATION SUMMARY:');
-console.log('='.repeat(50));
 
 const overallScore = {
   timeoutRemoval: removedCount / timeoutPatterns.length,
@@ -236,49 +176,18 @@ const overallScore = {
   codeQuality: qualityScore / qualityChecks.length,
 };
 
-console.log(`\n📊 DETAILED SCORES:`);
-console.log(`   🔥 Timeout Removal: ${(overallScore.timeoutRemoval * 100).toFixed(1)}%`);
-console.log(
-  `   🔒 Security Preservation: ${(overallScore.securityPreservation * 100).toFixed(1)}%`
-);
-console.log(`   ⚡ Core Functionality: ${(overallScore.corePreservation * 100).toFixed(1)}%`);
-console.log(
-  `   🏷️  Version Identification: ${(overallScore.versionIdentification * 100).toFixed(1)}%`
-);
-console.log(`   📝 Code Quality: ${(overallScore.codeQuality * 100).toFixed(1)}%`);
-
 const averageScore =
   Object.values(overallScore).reduce((a, b) => a + b, 0) / Object.keys(overallScore).length;
-console.log(`\n🎯 OVERALL SCORE: ${(averageScore * 100).toFixed(1)}%`);
 
 if (averageScore >= 0.95) {
-  console.log(
-    `\n🎉 EXCELLENT! All timeout mechanisms successfully eliminated while preserving functionality.`
-  );
 } else if (averageScore >= 0.85) {
-  console.log(`\n✅ GOOD! Most timeout mechanisms eliminated with minor issues.`);
 } else if (averageScore >= 0.7) {
-  console.log(`\n⚠️  FAIR! Some timeout mechanisms eliminated but significant issues remain.`);
 } else {
-  console.log(`\n❌ POOR! Major issues with timeout elimination or functionality preservation.`);
 }
-
-// Run functional tests
-console.log('\n🧪 RUNNING FUNCTIONAL TESTS...');
 runFunctionalTests()
   .then((allPassed) => {
-    console.log('\n' + '='.repeat(50));
-    console.log('✅ VALIDATION COMPLETE!');
-    console.log('='.repeat(50));
-
     if (allPassed && averageScore >= 0.95) {
-      console.log('🔥 RESULT: BULLETPROOF NO-TIMEOUT VERSION SUCCESSFULLY CREATED!');
-      console.log('🛡️  SECURITY: ALL FEATURES PRESERVED');
-      console.log('⚡ FUNCTIONALITY: ALL CORE FEATURES WORKING');
-      console.log('🚀 RUNTIME: INFINITE (NO TIMEOUT MECHANISMS)');
-      console.log('\n✅ Ready for production use with Claude Code MCP integration!');
     } else {
-      console.log('⚠️  RESULT: Some issues detected. Review above output for details.');
     }
 
     process.exit(allPassed && averageScore >= 0.95 ? 0 : 1);

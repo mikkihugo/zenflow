@@ -2,9 +2,9 @@
  * Template Loader - Dynamically load agent templates from src/templates
  */
 
-import { readFile } from 'fs/promises';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
+import { readFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { AgentTemplate } from '../agents/agent-manager.js';
 import type { AgentType } from '../types/agent-types.js';
 
@@ -35,7 +35,7 @@ export class TemplateLoader {
    */
   async loadAllTemplates(): Promise<Map<string, AgentTemplate>> {
     try {
-      const { readdir } = await import('fs/promises');
+      const { readdir } = await import('node:fs/promises');
       const templateFiles = await readdir(this.templatesPath);
 
       for (const file of templateFiles) {
@@ -144,7 +144,7 @@ export class TemplateLoader {
   /**
    * Parse YAML template files (future enhancement)
    */
-  private parseYamlTemplate(filename: string, content: string): AgentTemplate {
+  private parseYamlTemplate(filename: string, _content: string): AgentTemplate {
     // TODO: Implement YAML parsing when needed
     const agentType = this.extractAgentTypeFromFilename(filename);
     return this.createBasicTemplate(agentType);
@@ -210,12 +210,10 @@ export class TemplateLoader {
    * Format agent name from type
    */
   private formatAgentName(type: string): string {
-    return (
-      type
-        .split('-')
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ') + ' Agent'
-    );
+    return `${type
+      .split('-')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')} Agent`;
   }
 
   /**
@@ -318,7 +316,7 @@ export class TemplateLoader {
         }
       }
       return expertise;
-    } catch (error) {
+    } catch (_error) {
       return {};
     }
   }
@@ -340,7 +338,7 @@ export class TemplateLoader {
         }
       }
       return preferences;
-    } catch (error) {
+    } catch (_error) {
       return {};
     }
   }

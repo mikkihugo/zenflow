@@ -1,7 +1,7 @@
 /**
  * @fileoverview Advanced Orchestration MCP Tools (10 tools)
  *
- * Visual workflow design, deployment automation, microservice coordination,
+ * Workflow configuration generation, deployment automation, microservice coordination,
  * and event-driven orchestration.
  */
 
@@ -12,7 +12,7 @@ import {
 } from '../advanced-tools';
 
 // Orchestration tool handlers
-class WorkflowDesignerHandler extends AdvancedToolHandler {
+class WorkflowConfigGeneratorHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
     const { workflowType = 'ci-cd', complexity = 'standard', autoGenerate = true } = params;
 
@@ -34,9 +34,9 @@ class WorkflowDesignerHandler extends AdvancedToolHandler {
         parallelism: complexity === 'complex' ? 4 : 2,
         timeout: '30m',
       },
-      visualization: {
-        nodes: Math.floor(Math.random() * 10) + 5, // 5-15 nodes
-        connections: Math.floor(Math.random() * 15) + 8, // 8-23 connections
+      metadata: {
+        nodeCount: Math.floor(Math.random() * 10) + 5, // 5-15 nodes
+        connectionCount: Math.floor(Math.random() * 15) + 8, // 8-23 connections
         layout: 'directed-graph',
       },
       estimatedExecutionTime: this.calculateExecutionTime(complexity),
@@ -297,7 +297,7 @@ class ServiceMeshHandler extends AdvancedToolHandler {
 export const orchestrationTools: AdvancedMCPTool[] = [
   {
     name: 'mcp__claude-zen__workflow_designer',
-    description: 'Visual workflow creation and management with drag-and-drop interface',
+    description: 'Generate workflow configuration JSON for CI/CD and deployment pipelines',
     category: 'orchestration',
     version: '2.0.0',
     permissions: [{ type: 'write', resource: 'workflow' }],
@@ -328,7 +328,9 @@ export const orchestrationTools: AdvancedMCPTool[] = [
         autoGenerate: { type: 'boolean', description: 'Auto-generate workflow steps' },
       },
     },
-    handler: new WorkflowDesignerHandler().execute.bind(new WorkflowDesignerHandler()),
+    handler: new WorkflowConfigGeneratorHandler().execute.bind(
+      new WorkflowConfigGeneratorHandler()
+    ),
   },
   {
     name: 'mcp__claude-zen__pipeline_manager',

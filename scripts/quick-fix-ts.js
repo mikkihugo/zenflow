@@ -107,5 +107,3 @@ if (fs.existsSync(swarmPath)) {
 
   fs.writeFileSync(swarmPath, swarmContent);
 }
-
-console.log('✅ Quick TypeScript fixes applied');

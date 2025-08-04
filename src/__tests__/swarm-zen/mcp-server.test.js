@@ -31,7 +31,7 @@ jest.mock('../src/index.js', () => ({
   },
 }));
 
-import RuvSwarm from '../src/index.js';
+import ZenSwarm from '../src/index.js';
 // Import after mocking
 import { MCPServer } from '../src/mcp-server.js';
 
@@ -88,7 +88,7 @@ describe('MCPServer', () => {
       await server.start();
 
       const connectionHandler = mockWsServer.on.mock.calls.find(
-        (call) => call[0] === 'connection'
+        (call) => call[0] === 'connection',
       )[1];
 
       connectionHandler(mockClient);
@@ -104,7 +104,7 @@ describe('MCPServer', () => {
     beforeEach(async () => {
       await server.start();
       const connectionHandler = mockWsServer.on.mock.calls.find(
-        (call) => call[0] === 'connection'
+        (call) => call[0] === 'connection',
       )[1];
       connectionHandler(mockClient);
     });
@@ -124,13 +124,13 @@ describe('MCPServer', () => {
         },
       };
 
-      RuvSwarm.init.mockResolvedValue({ swarmId: 'test-123' });
+      ZenSwarm.init.mockResolvedValue({ swarmId: 'test-123' });
 
       await server.handleMessage(mockClient, JSON.stringify(message));
 
-      expect(RuvSwarm.init).toHaveBeenCalledWith('mesh', 10, 'adaptive');
+      expect(ZenSwarm.init).toHaveBeenCalledWith('mesh', 10, 'adaptive');
       expect(mockClient.send).toHaveBeenCalledWith(
-        expect.stringContaining('"result":{"swarmId":"test-123"}')
+        expect.stringContaining('"result":{"swarmId":"test-123"}'),
       );
     });
 
@@ -149,11 +149,11 @@ describe('MCPServer', () => {
         },
       };
 
-      RuvSwarm.spawnAgent.mockResolvedValue({ agentId: 'agent-123' });
+      ZenSwarm.spawnAgent.mockResolvedValue({ agentId: 'agent-123' });
 
       await server.handleMessage(mockClient, JSON.stringify(message));
 
-      expect(RuvSwarm.spawnAgent).toHaveBeenCalledWith('researcher', 'Agent 1', {
+      expect(ZenSwarm.spawnAgent).toHaveBeenCalledWith('researcher', 'Agent 1', {
         model: 'advanced',
       });
     });
@@ -173,11 +173,11 @@ describe('MCPServer', () => {
         },
       };
 
-      RuvSwarm.executeTask.mockResolvedValue({ taskId: 'task-123' });
+      ZenSwarm.executeTask.mockResolvedValue({ taskId: 'task-123' });
 
       await server.handleMessage(mockClient, JSON.stringify(message));
 
-      expect(RuvSwarm.executeTask).toHaveBeenCalledWith({
+      expect(ZenSwarm.executeTask).toHaveBeenCalledWith({
         task: 'Build REST API',
         agents: ['agent-1', 'agent-2'],
         strategy: 'parallel',
@@ -199,11 +199,11 @@ describe('MCPServer', () => {
         },
       };
 
-      RuvSwarm.storeMemory.mockResolvedValue({ stored: true });
+      ZenSwarm.storeMemory.mockResolvedValue({ stored: true });
 
       await server.handleMessage(mockClient, JSON.stringify(message));
 
-      expect(RuvSwarm.storeMemory).toHaveBeenCalledWith('test/key', { data: 'test' });
+      expect(ZenSwarm.storeMemory).toHaveBeenCalledWith('test/key', { data: 'test' });
     });
 
     it('should handle memory_usage tool with retrieve action', async () => {
@@ -220,11 +220,11 @@ describe('MCPServer', () => {
         },
       };
 
-      RuvSwarm.retrieveMemory.mockResolvedValue({ data: 'test' });
+      ZenSwarm.retrieveMemory.mockResolvedValue({ data: 'test' });
 
       await server.handleMessage(mockClient, JSON.stringify(message));
 
-      expect(RuvSwarm.retrieveMemory).toHaveBeenCalledWith('test/key');
+      expect(ZenSwarm.retrieveMemory).toHaveBeenCalledWith('test/key');
     });
 
     it('should handle memory_usage tool with list action', async () => {
@@ -241,11 +241,11 @@ describe('MCPServer', () => {
         },
       };
 
-      RuvSwarm.listMemoryKeys.mockResolvedValue(['test/key1', 'test/key2']);
+      ZenSwarm.listMemoryKeys.mockResolvedValue(['test/key1', 'test/key2']);
 
       await server.handleMessage(mockClient, JSON.stringify(message));
 
-      expect(RuvSwarm.listMemoryKeys).toHaveBeenCalledWith('test/*');
+      expect(ZenSwarm.listMemoryKeys).toHaveBeenCalledWith('test/*');
     });
 
     it('should handle neural_train tool', async () => {
@@ -263,11 +263,11 @@ describe('MCPServer', () => {
         },
       };
 
-      RuvSwarm.trainNeuralAgent.mockResolvedValue({ trained: true });
+      ZenSwarm.trainNeuralAgent.mockResolvedValue({ trained: true });
 
       await server.handleMessage(mockClient, JSON.stringify(message));
 
-      expect(RuvSwarm.trainNeuralAgent).toHaveBeenCalledWith('agent-123', [1, 2, 3], 100);
+      expect(ZenSwarm.trainNeuralAgent).toHaveBeenCalledWith('agent-123', [1, 2, 3], 100);
     });
 
     it('should handle benchmark_run tool', async () => {
@@ -284,13 +284,13 @@ describe('MCPServer', () => {
         },
       };
 
-      RuvSwarm.runBenchmark.mockResolvedValue({
+      ZenSwarm.runBenchmark.mockResolvedValue({
         results: { performance: 'excellent' },
       });
 
       await server.handleMessage(mockClient, JSON.stringify(message));
 
-      expect(RuvSwarm.runBenchmark).toHaveBeenCalledWith('full', 10);
+      expect(ZenSwarm.runBenchmark).toHaveBeenCalledWith('full', 10);
     });
 
     it('should handle invalid JSON', async () => {
@@ -313,7 +313,7 @@ describe('MCPServer', () => {
       await server.handleMessage(mockClient, JSON.stringify(message));
 
       expect(mockClient.send).toHaveBeenCalledWith(
-        expect.stringContaining('Unknown tool: unknown_tool')
+        expect.stringContaining('Unknown tool: unknown_tool'),
       );
     });
 
@@ -328,12 +328,12 @@ describe('MCPServer', () => {
         },
       };
 
-      RuvSwarm.init.mockRejectedValue(new Error('Initialization failed'));
+      ZenSwarm.init.mockRejectedValue(new Error('Initialization failed'));
 
       await server.handleMessage(mockClient, JSON.stringify(message));
 
       expect(mockClient.send).toHaveBeenCalledWith(
-        expect.stringContaining('Initialization failed')
+        expect.stringContaining('Initialization failed'),
       );
     });
   });
@@ -364,7 +364,7 @@ describe('MCPServer', () => {
       await server.start();
 
       const connectionHandler = mockWsServer.on.mock.calls.find(
-        (call) => call[0] === 'connection'
+        (call) => call[0] === 'connection',
       )[1];
 
       connectionHandler(mockClient);
@@ -380,7 +380,7 @@ describe('MCPServer', () => {
       await server.start();
 
       const connectionHandler = mockWsServer.on.mock.calls.find(
-        (call) => call[0] === 'connection'
+        (call) => call[0] === 'connection',
       )[1];
 
       connectionHandler(mockClient);
@@ -432,7 +432,7 @@ describe('MCPServer', () => {
     it('should handle missing arguments in tool calls', async () => {
       await server.start();
       const connectionHandler = mockWsServer.on.mock.calls.find(
-        (call) => call[0] === 'connection'
+        (call) => call[0] === 'connection',
       )[1];
       connectionHandler(mockClient);
 
@@ -456,12 +456,12 @@ describe('MCPServer', () => {
     it('should handle complete swarm workflow', async () => {
       await server.start();
       const connectionHandler = mockWsServer.on.mock.calls.find(
-        (call) => call[0] === 'connection'
+        (call) => call[0] === 'connection',
       )[1];
       connectionHandler(mockClient);
 
       // Initialize swarm
-      RuvSwarm.init.mockResolvedValue({ swarmId: 'swarm-123' });
+      ZenSwarm.init.mockResolvedValue({ swarmId: 'swarm-123' });
       await server.handleMessage(
         mockClient,
         JSON.stringify({
@@ -472,11 +472,11 @@ describe('MCPServer', () => {
             tool: 'swarm_init',
             arguments: { topology: 'mesh' },
           },
-        })
+        }),
       );
 
       // Spawn agents
-      RuvSwarm.spawnAgent.mockResolvedValue({ agentId: 'agent-1' });
+      ZenSwarm.spawnAgent.mockResolvedValue({ agentId: 'agent-1' });
       await server.handleMessage(
         mockClient,
         JSON.stringify({
@@ -487,11 +487,11 @@ describe('MCPServer', () => {
             tool: 'agent_spawn',
             arguments: { type: 'researcher' },
           },
-        })
+        }),
       );
 
       // Execute task
-      RuvSwarm.executeTask.mockResolvedValue({ taskId: 'task-1' });
+      ZenSwarm.executeTask.mockResolvedValue({ taskId: 'task-1' });
       await server.handleMessage(
         mockClient,
         JSON.stringify({
@@ -502,11 +502,11 @@ describe('MCPServer', () => {
             tool: 'task_orchestrate',
             arguments: { task: 'Research topic' },
           },
-        })
+        }),
       );
 
       // Check status
-      RuvSwarm.getSwarmStatus.mockResolvedValue({ status: 'active' });
+      ZenSwarm.getSwarmStatus.mockResolvedValue({ status: 'active' });
       await server.handleMessage(
         mockClient,
         JSON.stringify({
@@ -517,7 +517,7 @@ describe('MCPServer', () => {
             tool: 'swarm_status',
             arguments: {},
           },
-        })
+        }),
       );
 
       expect(mockClient.send).toHaveBeenCalledTimes(4);

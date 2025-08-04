@@ -444,7 +444,7 @@ export class PersistentLearningSystem extends EventEmitter {
   /**
    * Filter relevant knowledge for a new swarm
    */
-  private filterRelevantKnowledge(knowledge: AgentKnowledge, swarmMemory: SwarmMemory): any {
+  private filterRelevantKnowledge(knowledge: AgentKnowledge, _swarmMemory: SwarmMemory): any {
     // Get most relevant experiences (recent + successful)
     const relevantExperiences = knowledge.experiences
       .filter((exp) => exp.confidence > 0.7)

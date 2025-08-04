@@ -4,7 +4,7 @@
  * ag2.ai-inspired conversation types for multi-agent communication
  */
 
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import type { Tool } from '@modelcontextprotocol/sdk/types';
 import type { AgentId, AgentType } from '../../types/agent-types';
 
 /**

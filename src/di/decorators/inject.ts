@@ -11,7 +11,7 @@ import { getInjectionTokens, setInjectionTokens } from './injectable';
  * Inject decorator for marking constructor parameters for injection
  */
 export function inject<T>(token: DIToken<T>): ParameterDecorator {
-  return (target: any, propertyKey: string | symbol | undefined, parameterIndex: number) => {
+  return (target: any, _propertyKey: string | symbol | undefined, parameterIndex: number) => {
     // Get existing injection tokens
     const existingTokens = getInjectionTokens(target) || [];
 

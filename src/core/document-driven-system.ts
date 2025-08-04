@@ -8,10 +8,10 @@
  * - Respects existing document structure and process
  */
 
-import { EventEmitter } from 'events';
-import { existsSync } from 'fs';
-import { mkdir, readdir, readFile, writeFile } from 'fs/promises';
-import { join } from 'path';
+import { EventEmitter } from 'node:events';
+import { existsSync } from 'node:fs';
+import { readdir, readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { createLogger } from './logger';
 
 const logger = createLogger('DocumentDriven');
@@ -51,7 +51,6 @@ export interface WorkflowContext {
 
 export class DocumentDrivenSystem extends EventEmitter {
   private workspaces: Map<string, WorkflowContext> = new Map();
-  private documentWatchers: Map<string, any> = new Map();
 
   constructor() {
     super();
@@ -327,7 +326,7 @@ export class DocumentDrivenSystem extends EventEmitter {
   /**
    * Setup file watchers for document changes
    */
-  private setupDocumentWatchers(workspaceId: string): void {
+  private setupDocumentWatchers(_workspaceId: string): void {
     // Would implement file watching here
     logger.debug('Document watchers would be set up here');
   }

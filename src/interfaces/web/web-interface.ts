@@ -5,9 +5,9 @@
  * Orchestrates web server, API routes, WebSocket, sessions, and process management.
  */
 
-import { existsSync } from 'fs';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
+import { existsSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createLogger } from '../../utils/logger';
 import { WebApiRoutes } from './WebApiRoutes';
 // Import modular components
@@ -146,7 +146,7 @@ export class WebInterface {
    */
   private setupFallbackRoutes(app: any): void {
     // Serve inline HTML if no build exists
-    app.get('/', (req: any, res: any) => {
+    app.get('/', (_req: any, res: any) => {
       if (existsSync(this.config.staticDir!)) {
         res.sendFile(join(this.config.staticDir!, 'index.html'));
       } else {
@@ -155,7 +155,7 @@ export class WebInterface {
     });
 
     // Catch all for SPA
-    app.get('*', (req: any, res: any) => {
+    app.get('*', (_req: any, res: any) => {
       if (existsSync(join(this.config.staticDir!, 'index.html'))) {
         res.sendFile(join(this.config.staticDir!, 'index.html'));
       } else {

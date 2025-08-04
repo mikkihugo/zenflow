@@ -99,6 +99,14 @@ class TransformerModel extends NeuralModel {
     const batchSize = input.shape[0];
     const sequenceLength = input.shape[1];
 
+    // Validate input dimensions
+    if (batchSize <= 0 || sequenceLength <= 0) {
+      throw new Error(`Invalid input dimensions: batch=${batchSize}, sequence=${sequenceLength}`);
+    }
+    if (sequenceLength > this.config.maxSequenceLength) {
+      throw new Error(`Sequence length ${sequenceLength} exceeds maximum ${this.config.maxSequenceLength}`);
+    }
+
     // Token embedding (simplified - in practice would use embedding layer)
     let x = this.tokenEmbedding(input);
 
@@ -148,7 +156,7 @@ class TransformerModel extends NeuralModel {
 
     // Scaled dot-product attention for each head
     const attentionScores = new Float32Array(
-      batchSize * this.config.heads * sequenceLength * sequenceLength
+      batchSize * this.config.heads * sequenceLength * sequenceLength,
     );
 
     for (let b = 0; b < batchSize; b++) {
@@ -195,7 +203,7 @@ class TransformerModel extends NeuralModel {
       attentionWeights,
       VHeads,
       batchSize,
-      sequenceLength
+      sequenceLength,
     );
 
     // Concatenate heads and project
@@ -318,10 +326,6 @@ class TransformerModel extends NeuralModel {
         valLoss,
         learningRate: this.getAdaptiveLearningRate(learningRate, globalStep, warmupSteps),
       });
-
-      console.log(
-        `Epoch ${epoch + 1}/${epochs} - Train Loss: ${avgTrainLoss.toFixed(4)}, Val Loss: ${valLoss.toFixed(4)}`
-      );
     }
 
     return {
@@ -343,7 +347,7 @@ class TransformerModel extends NeuralModel {
   tokenEmbedding(tokenIndices) {
     // Simplified token embedding - in practice would use learned embeddings
     const embedded = new Float32Array(
-      tokenIndices.shape[0] * tokenIndices.shape[1] * this.config.dimensions
+      tokenIndices.shape[0] * tokenIndices.shape[1] * this.config.dimensions,
     );
 
     for (let b = 0; b < tokenIndices.shape[0]; b++) {
@@ -472,7 +476,7 @@ class TransformerModel extends NeuralModel {
 
   applyAttentionWeights(weights, values, batchSize, sequenceLength) {
     const output = new Float32Array(
-      batchSize * this.config.heads * sequenceLength * this.headDimension
+      batchSize * this.config.heads * sequenceLength * this.headDimension,
     );
 
     for (let b = 0; b < batchSize; b++) {

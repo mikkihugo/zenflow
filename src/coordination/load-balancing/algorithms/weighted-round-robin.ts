@@ -33,7 +33,7 @@ export class WeightedRoundRobinAlgorithm implements ILoadBalancingAlgorithm {
    * Select the best agent using weighted round robin
    */
   public async selectAgent(
-    task: Task,
+    _task: Task,
     availableAgents: Agent[],
     metrics: Map<string, LoadMetrics>
   ): Promise<RoutingResult> {
@@ -128,8 +128,8 @@ export class WeightedRoundRobinAlgorithm implements ILoadBalancingAlgorithm {
    */
   public async onTaskComplete(
     agentId: string,
-    task: Task,
-    duration: number,
+    _task: Task,
+    _duration: number,
     success: boolean
   ): Promise<void> {
     const weight = this.getOrCreateWeight(agentId);
@@ -157,7 +157,7 @@ export class WeightedRoundRobinAlgorithm implements ILoadBalancingAlgorithm {
   /**
    * Handle agent failure
    */
-  public async onAgentFailure(agentId: string, error: Error): Promise<void> {
+  public async onAgentFailure(agentId: string, _error: Error): Promise<void> {
     const weight = this.getOrCreateWeight(agentId);
     weight.failureCount++;
 
@@ -267,7 +267,7 @@ export class WeightedRoundRobinAlgorithm implements ILoadBalancingAlgorithm {
   private calculateConfidence(
     selectedAgent: Agent,
     availableAgents: Agent[],
-    metrics: Map<string, LoadMetrics>
+    _metrics: Map<string, LoadMetrics>
   ): number {
     const selectedWeight = this.weights.get(selectedAgent.id);
     if (!selectedWeight) return 0.5;

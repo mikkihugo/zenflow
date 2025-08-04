@@ -86,13 +86,6 @@ interface ErrorBridgingContract {
 describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
   // Mock Integration Layer class (based on architectural needs)
   class MockWebMcpIntegrationLayer {
-    private webServer: any;
-    private mcpServer: any;
-    private requestTransformer: any;
-    private responseFormatter: any;
-    private errorHandler: any;
-    private authHandler: any;
-
     constructor() {
       this.webServer = mockWebApiServer;
       this.mcpServer = mockMcpServer;
@@ -102,7 +95,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
       this.authHandler = mockAuthHandler;
     }
 
-    async initialize(webPort: number, mcpEndpoint: string) {
+    async initialize(webPort: number, _mcpEndpoint: string) {
       // Setup web server
       mockWebApiServer.listen.mockResolvedValue(undefined);
       await mockWebApiServer.listen(webPort);
@@ -130,10 +123,10 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
       });
     }
 
-    async handleToolsList(req: any, res: any) {
+    async handleToolsList(req: any, _res: any) {
       try {
         // Authenticate request
-        const authContext = await mockAuthHandler.validateApiKey(req.headers.authorization);
+        const _authContext = await mockAuthHandler.validateApiKey(req.headers.authorization);
 
         // Get tools from MCP server
         const mcpResponse = await mockMcpServer.listTools();
@@ -148,7 +141,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
       }
     }
 
-    async handleToolExecution(req: any, res: any) {
+    async handleToolExecution(req: any, _res: any) {
       try {
         // Validate and transform request
         const isValid = mockRequestTransformer.validateHttpRequest(req);
@@ -177,7 +170,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
       }
     }
 
-    async handleQueenTask(req: any, res: any) {
+    async handleQueenTask(req: any, _res: any) {
       try {
         const queenType = req.params.queenType;
         const task = req.body;
@@ -515,7 +508,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
       };
 
       const protocolIntegrator = {
-        bridge: (sourceRequest: any, sourceProtocol: string, targetProtocol: string) => {
+        bridge: (sourceRequest: any, _sourceProtocol: string, targetProtocol: string) => {
           const translated = mockProtocolBridge.translateRequest(sourceRequest, targetProtocol);
           const isValid = mockProtocolBridge.validateTranslation(sourceRequest, translated);
 

@@ -30,17 +30,11 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
    * Design system architecture from pseudocode structure
    */
   async designArchitecture(pseudocode: PseudocodeStructure): Promise<ArchitectureDesign> {
-    console.log(`🏗️ Designing architecture for pseudocode ${pseudocode.id}`);
-
     const components = await this.identifySystemComponents(pseudocode);
     const relationships = await this.defineComponentRelationships(components);
     const patterns = await this.selectArchitecturePatterns(pseudocode, components);
     const dataFlows = await this.defineDataFlows(components, relationships);
     const interfaces = await this.defineComponentInterfaces(components);
-
-    console.log(`   Identified ${components.length} system components`);
-    console.log(`   Defined ${relationships.length} component relationships`);
-    console.log(`   Applied ${patterns.length} architecture patterns`);
 
     return {
       id: nanoid(),
@@ -145,7 +139,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
    * Create infrastructure components
    */
   private async createInfrastructureComponents(
-    pseudocode: PseudocodeStructure
+    _pseudocode: PseudocodeStructure
   ): Promise<SystemComponent[]> {
     return [
       {
@@ -267,7 +261,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
    * Select appropriate architecture patterns
    */
   private async selectArchitecturePatterns(
-    pseudocode: PseudocodeStructure,
+    _pseudocode: PseudocodeStructure,
     components: SystemComponent[]
   ): Promise<ArchitecturePattern[]> {
     const patterns: ArchitecturePattern[] = [];
@@ -393,7 +387,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
    * Define quality attributes
    */
   private async defineQualityAttributes(
-    pseudocode: PseudocodeStructure
+    _pseudocode: PseudocodeStructure
   ): Promise<QualityAttribute[]> {
     return [
       {
@@ -468,7 +462,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
    * Create deployment strategy
    */
   private async createDeploymentStrategy(
-    components: SystemComponent[],
+    _components: SystemComponent[],
     patterns: ArchitecturePattern[]
   ): Promise<DeploymentStrategy> {
     const hasMicroservices = patterns.some((p) => p.name === 'Microservices');
@@ -524,7 +518,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
    * Identify integration points
    */
   private async identifyIntegrationPoints(
-    components: SystemComponent[]
+    _components: SystemComponent[]
   ): Promise<IntegrationPoint[]> {
     return [
       {
@@ -763,7 +757,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   private async defineSecurityRequirements(
-    components: SystemComponent[]
+    _components: SystemComponent[]
   ): Promise<SecurityRequirement[]> {
     return [
       {
@@ -791,7 +785,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   private async defineScalabilityRequirements(
-    pseudocode: PseudocodeStructure
+    _pseudocode: PseudocodeStructure
   ): Promise<ScalabilityRequirement[]> {
     return [
       {

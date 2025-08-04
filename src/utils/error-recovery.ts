@@ -121,11 +121,13 @@ export class ErrorRecoverySystem extends EventEmitter {
    * Get recovery strategies for a given error type
    */
   getStrategiesForError(errorType: string, component: string): RecoveryStrategy[] {
-    return Array.from(this.strategies.values()).filter(strategy =>
-      strategy.conditions.some(condition =>
-        this.matchesCondition(condition, errorType, component)
+    return Array.from(this.strategies.values())
+      .filter((strategy) =>
+        strategy.conditions.some((condition) =>
+          this.matchesCondition(condition, errorType, component)
+        )
       )
-    ).sort((a, b) => this.getSeverityWeight(a.severity) - this.getSeverityWeight(b.severity));
+      .sort((a, b) => this.getSeverityWeight(a.severity) - this.getSeverityWeight(b.severity));
   }
 
   /**
@@ -135,11 +137,11 @@ export class ErrorRecoverySystem extends EventEmitter {
     let history = this.recoveryHistory;
 
     if (component) {
-      history = history.filter(r => r.component === component);
+      history = history.filter((r) => r.component === component);
     }
 
     if (since) {
-      history = history.filter(r => r.timestamp >= since);
+      history = history.filter((r) => r.timestamp >= since);
     }
 
     return history.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
@@ -156,7 +158,7 @@ export class ErrorRecoverySystem extends EventEmitter {
     componentsAffected: Record<string, number>;
   } {
     const total = this.recoveryHistory.length;
-    const successful = this.recoveryHistory.filter(r => r.success).length;
+    const successful = this.recoveryHistory.filter((r) => r.success).length;
     const totalDuration = this.recoveryHistory.reduce((sum, r) => sum + r.duration, 0);
 
     const strategiesUsed: Record<string, number> = {};
@@ -178,10 +180,11 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private selectRecoveryStrategy(context: RecoveryContext): RecoveryStrategy | null {
     const candidates = this.getStrategiesForError(context.errorType, context.component);
-    
+
     // Filter by severity and retry count
-    const viable = candidates.filter(strategy => {
-      const severityMatch = this.getSeverityWeight(strategy.severity) >= this.getSeverityWeight(context.severity);
+    const viable = candidates.filter((strategy) => {
+      const severityMatch =
+        this.getSeverityWeight(strategy.severity) >= this.getSeverityWeight(context.severity);
       const retryLimit = context.retryCount < strategy.maxRetries;
       return severityMatch && retryLimit;
     });
@@ -207,7 +210,7 @@ export class ErrorRecoverySystem extends EventEmitter {
         actionsExecuted.push(`${action.type}:${action.target}`);
       } catch (error) {
         lastError = error instanceof Error ? error.message : String(error);
-        
+
         if (action.required) {
           // Required action failed, abort recovery
           return {
@@ -222,12 +225,16 @@ export class ErrorRecoverySystem extends EventEmitter {
     }
 
     // Determine if recovery was successful
-    const success = lastError === undefined || strategy.actions.every(a => !a.required);
+    const success = lastError === undefined || strategy.actions.every((a) => !a.required);
 
     // Calculate next retry time if recovery failed
     let nextRetryAt: Date | undefined;
     if (!success && context.retryCount < strategy.maxRetries) {
-      const delay = this.calculateBackoffDelay(strategy.backoffStrategy, context.retryCount, strategy.timeout);
+      const delay = this.calculateBackoffDelay(
+        strategy.backoffStrategy,
+        context.retryCount,
+        strategy.timeout
+      );
       nextRetryAt = new Date(Date.now() + delay);
     }
 
@@ -239,7 +246,10 @@ export class ErrorRecoverySystem extends EventEmitter {
     };
   }
 
-  private async executeRecoveryAction(action: RecoveryAction, context: RecoveryContext): Promise<void> {
+  private async executeRecoveryAction(
+    action: RecoveryAction,
+    context: RecoveryContext
+  ): Promise<void> {
     this.emit('action:starting', { action, context });
 
     switch (action.type) {
@@ -268,34 +278,52 @@ export class ErrorRecoverySystem extends EventEmitter {
     this.emit('action:completed', { action, context });
   }
 
-  private async executeRestartAction(action: RecoveryAction, context: RecoveryContext): Promise<void> {
+  private async executeRestartAction(
+    _action: RecoveryAction,
+    _context: RecoveryContext
+  ): Promise<void> {
     // Mock restart implementation
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 
-  private async executeRollbackAction(action: RecoveryAction, context: RecoveryContext): Promise<void> {
+  private async executeRollbackAction(
+    _action: RecoveryAction,
+    _context: RecoveryContext
+  ): Promise<void> {
     // Mock rollback implementation
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 200));
   }
 
-  private async executeFailoverAction(action: RecoveryAction, context: RecoveryContext): Promise<void> {
+  private async executeFailoverAction(
+    _action: RecoveryAction,
+    _context: RecoveryContext
+  ): Promise<void> {
     // Mock failover implementation
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
   }
 
-  private async executeScaleAction(action: RecoveryAction, context: RecoveryContext): Promise<void> {
+  private async executeScaleAction(
+    _action: RecoveryAction,
+    _context: RecoveryContext
+  ): Promise<void> {
     // Mock scaling implementation
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
 
-  private async executeNotifyAction(action: RecoveryAction, context: RecoveryContext): Promise<void> {
+  private async executeNotifyAction(
+    _action: RecoveryAction,
+    _context: RecoveryContext
+  ): Promise<void> {
     // Mock notification implementation
-    await new Promise(resolve => setTimeout(resolve, 50));
+    await new Promise((resolve) => setTimeout(resolve, 50));
   }
 
-  private async executeRepairAction(action: RecoveryAction, context: RecoveryContext): Promise<void> {
+  private async executeRepairAction(
+    _action: RecoveryAction,
+    _context: RecoveryContext
+  ): Promise<void> {
     // Mock repair implementation
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, 300));
   }
 
   private matchesCondition(condition: string, errorType: string, component: string): boolean {
@@ -305,11 +333,16 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private getSeverityWeight(severity: string): number {
     switch (severity) {
-      case 'low': return 1;
-      case 'medium': return 2;
-      case 'high': return 3;
-      case 'critical': return 4;
-      default: return 0;
+      case 'low':
+        return 1;
+      case 'medium':
+        return 2;
+      case 'high':
+        return 3;
+      case 'critical':
+        return 4;
+      default:
+        return 0;
     }
   }
 
@@ -318,8 +351,7 @@ export class ErrorRecoverySystem extends EventEmitter {
       case 'linear':
         return baseTimeout * (retryCount + 1);
       case 'exponential':
-        return baseTimeout * Math.pow(2, retryCount);
-      case 'fixed':
+        return baseTimeout * 2 ** retryCount;
       default:
         return baseTimeout;
     }

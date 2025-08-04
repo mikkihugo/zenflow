@@ -16,7 +16,7 @@ import {
   SwarmSpinner,
   type SwarmStatus,
   TaskProgress,
-} from '../components/index.js';
+} from '../components/index';
 
 export interface SwarmAgent {
   id: string;
@@ -85,8 +85,8 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
   onExit,
   showHeader = true,
 }) => {
-  const [refreshKey, setRefreshKey] = useState(0);
-  const [selectedSection, setSelectedSection] = useState<'overview' | 'agents' | 'tasks'>(
+  const [_refreshKey, setRefreshKey] = useState(0);
+  const [_selectedSection, setSelectedSection] = useState<'overview' | 'agents' | 'tasks'>(
     'overview'
   );
 

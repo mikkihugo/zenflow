@@ -5,7 +5,7 @@
  */
 
 import { createLogger } from '../../core/logger';
-import type { BatchExecutionSummary, BatchResult } from './batch-engine';
+import type { BatchExecutionSummary } from './batch-engine';
 
 const logger = createLogger({ prefix: 'BatchPerformanceMonitor' });
 
@@ -66,12 +66,12 @@ export class BatchPerformanceMonitor {
       operationCount: summary.totalOperations,
       totalExecutionTime: summary.totalExecutionTime,
       averageExecutionTime: summary.averageExecutionTime,
-      successRate: summary.totalOperations > 0 
-        ? summary.successfulOperations / summary.totalOperations 
-        : 0,
-      throughput: summary.totalExecutionTime > 0 
-        ? (summary.successfulOperations / summary.totalExecutionTime) * 1000 
-        : 0,
+      successRate:
+        summary.totalOperations > 0 ? summary.successfulOperations / summary.totalOperations : 0,
+      throughput:
+        summary.totalExecutionTime > 0
+          ? (summary.successfulOperations / summary.totalExecutionTime) * 1000
+          : 0,
       memoryUsage: resourceUsage?.memory ?? 0,
       cpuUsage: resourceUsage?.cpu ?? 0,
       timestamp: Date.now(),
@@ -83,7 +83,7 @@ export class BatchPerformanceMonitor {
       operationCount: metrics.operationCount,
       totalTime: metrics.totalExecutionTime,
       throughput: metrics.throughput.toFixed(2),
-      successRate: (metrics.successRate * 100).toFixed(1) + '%',
+      successRate: `${(metrics.successRate * 100).toFixed(1)}%`,
     });
 
     return metrics;
@@ -116,7 +116,7 @@ export class BatchPerformanceMonitor {
       operationCount: metrics.operationCount,
       totalTime: metrics.totalExecutionTime,
       throughput: metrics.throughput.toFixed(2),
-      successRate: (metrics.successRate * 100).toFixed(1) + '%',
+      successRate: `${(metrics.successRate * 100).toFixed(1)}%`,
     });
 
     return metrics;
@@ -129,22 +129,24 @@ export class BatchPerformanceMonitor {
     batchMetrics: PerformanceMetrics,
     sequentialMetrics: PerformanceMetrics
   ): PerformanceComparison {
-    const speedImprovement = sequentialMetrics.totalExecutionTime > 0
-      ? sequentialMetrics.totalExecutionTime / batchMetrics.totalExecutionTime
-      : 1;
+    const speedImprovement =
+      sequentialMetrics.totalExecutionTime > 0
+        ? sequentialMetrics.totalExecutionTime / batchMetrics.totalExecutionTime
+        : 1;
 
-    const throughputImprovement = sequentialMetrics.throughput > 0
-      ? batchMetrics.throughput / sequentialMetrics.throughput
-      : 1;
+    const throughputImprovement =
+      sequentialMetrics.throughput > 0 ? batchMetrics.throughput / sequentialMetrics.throughput : 1;
 
     // Calculate resource efficiency (less is better for resource usage)
-    const memoryEfficiency = sequentialMetrics.memoryUsage > 0
-      ? sequentialMetrics.memoryUsage / Math.max(batchMetrics.memoryUsage, 1)
-      : 1;
-    
-    const cpuEfficiency = sequentialMetrics.cpuUsage > 0
-      ? sequentialMetrics.cpuUsage / Math.max(batchMetrics.cpuUsage, 1)
-      : 1;
+    const memoryEfficiency =
+      sequentialMetrics.memoryUsage > 0
+        ? sequentialMetrics.memoryUsage / Math.max(batchMetrics.memoryUsage, 1)
+        : 1;
+
+    const cpuEfficiency =
+      sequentialMetrics.cpuUsage > 0
+        ? sequentialMetrics.cpuUsage / Math.max(batchMetrics.cpuUsage, 1)
+        : 1;
 
     const resourceEfficiency = (memoryEfficiency + cpuEfficiency) / 2;
 
@@ -178,15 +180,13 @@ export class BatchPerformanceMonitor {
     throughputImprovement: number,
     resourceEfficiency: number,
     batchMetrics: PerformanceMetrics,
-    sequentialMetrics: PerformanceMetrics
+    _sequentialMetrics: PerformanceMetrics
   ): string[] {
     const recommendations: string[] = [];
 
     // Speed improvement recommendations
     if (speedImprovement < 2.0) {
-      recommendations.push(
-        'Consider increasing batch size or optimizing operation concurrency'
-      );
+      recommendations.push('Consider increasing batch size or optimizing operation concurrency');
     } else if (speedImprovement > 4.0) {
       recommendations.push(
         'Excellent speed improvement achieved! Current configuration is optimal'
@@ -232,8 +232,8 @@ export class BatchPerformanceMonitor {
    * Get performance trends over time
    */
   getPerformanceTrends(metric: keyof PerformanceMetrics, hours = 24): PerformanceTrend {
-    const cutoffTime = Date.now() - (hours * 60 * 60 * 1000);
-    const recentMetrics = this.metricsHistory.filter(m => m.timestamp >= cutoffTime);
+    const cutoffTime = Date.now() - hours * 60 * 60 * 1000;
+    const recentMetrics = this.metricsHistory.filter((m) => m.timestamp >= cutoffTime);
 
     if (recentMetrics.length < 2) {
       return {
@@ -245,8 +245,8 @@ export class BatchPerformanceMonitor {
       };
     }
 
-    const values = recentMetrics.map(m => m[metric] as number);
-    const timestamps = recentMetrics.map(m => m.timestamp);
+    const values = recentMetrics.map((m) => m[metric] as number);
+    const timestamps = recentMetrics.map((m) => m.timestamp);
 
     // Calculate trend using linear regression
     const trend = this.calculateTrend(values, timestamps);
@@ -264,7 +264,10 @@ export class BatchPerformanceMonitor {
   /**
    * Calculate trend direction using simple linear regression
    */
-  private calculateTrend(values: number[], timestamps: number[]): 'improving' | 'declining' | 'stable' {
+  private calculateTrend(
+    values: number[],
+    timestamps: number[]
+  ): 'improving' | 'declining' | 'stable' {
     if (values.length < 2) return 'stable';
 
     const n = values.length;
@@ -305,11 +308,11 @@ export class BatchPerformanceMonitor {
     averageTokenReduction: number;
     recommendations: string[];
   } {
-    const cutoffTime = Date.now() - (hours * 60 * 60 * 1000);
-    const recentMetrics = this.metricsHistory.filter(m => m.timestamp >= cutoffTime);
+    const cutoffTime = Date.now() - hours * 60 * 60 * 1000;
+    const recentMetrics = this.metricsHistory.filter((m) => m.timestamp >= cutoffTime);
 
-    const batchMetrics = recentMetrics.filter(m => m.executionMode === 'batch');
-    const sequentialMetrics = recentMetrics.filter(m => m.executionMode === 'sequential');
+    const batchMetrics = recentMetrics.filter((m) => m.executionMode === 'batch');
+    const sequentialMetrics = recentMetrics.filter((m) => m.executionMode === 'sequential');
 
     let averageSpeedImprovement = 1;
     let averageTokenReduction = 0;
@@ -318,7 +321,7 @@ export class BatchPerformanceMonitor {
       const speedImprovements: number[] = [];
       const tokenReductions: number[] = [];
 
-      batchMetrics.forEach(batchMetric => {
+      batchMetrics.forEach((batchMetric) => {
         // Find closest sequential metric for comparison
         const closestSequential = sequentialMetrics.reduce((closest, current) => {
           const currentDiff = Math.abs(current.timestamp - batchMetric.timestamp);
@@ -331,8 +334,10 @@ export class BatchPerformanceMonitor {
         tokenReductions.push(comparison.tokenReduction);
       });
 
-      averageSpeedImprovement = speedImprovements.reduce((sum, val) => sum + val, 0) / speedImprovements.length;
-      averageTokenReduction = tokenReductions.reduce((sum, val) => sum + val, 0) / tokenReductions.length;
+      averageSpeedImprovement =
+        speedImprovements.reduce((sum, val) => sum + val, 0) / speedImprovements.length;
+      averageTokenReduction =
+        tokenReductions.reduce((sum, val) => sum + val, 0) / tokenReductions.length;
     }
 
     const recommendations = this.generateSummaryRecommendations(
@@ -364,13 +369,17 @@ export class BatchPerformanceMonitor {
     const recommendations: string[] = [];
 
     if (batchCount === 0) {
-      recommendations.push('No batch executions detected. Consider using batch operations for better performance');
+      recommendations.push(
+        'No batch executions detected. Consider using batch operations for better performance'
+      );
     } else if (batchCount / (batchCount + sequentialCount) < 0.5) {
       recommendations.push('Low batch execution ratio. Consider batching more operations together');
     }
 
     if (avgSpeedImprovement < 2.8) {
-      recommendations.push('Speed improvement below claude-zen target (2.8x). Optimize batch configuration');
+      recommendations.push(
+        'Speed improvement below claude-zen target (2.8x). Optimize batch configuration'
+      );
     }
 
     if (avgTokenReduction < 20) {
@@ -378,7 +387,9 @@ export class BatchPerformanceMonitor {
     }
 
     if (recommendations.length === 0) {
-      recommendations.push('Performance metrics are within expected ranges. Continue current batch strategy');
+      recommendations.push(
+        'Performance metrics are within expected ranges. Continue current batch strategy'
+      );
     }
 
     return recommendations;
@@ -392,7 +403,7 @@ export class BatchPerformanceMonitor {
     logger.info('Performance baseline set', {
       mode: metrics.executionMode,
       throughput: metrics.throughput.toFixed(2),
-      successRate: (metrics.successRate * 100).toFixed(1) + '%',
+      successRate: `${(metrics.successRate * 100).toFixed(1)}%`,
     });
   }
 
@@ -405,9 +416,10 @@ export class BatchPerformanceMonitor {
   } | null {
     if (!this.performanceBaseline) return null;
 
-    const improvement = this.performanceBaseline.throughput > 0
-      ? currentMetrics.throughput / this.performanceBaseline.throughput
-      : 1;
+    const improvement =
+      this.performanceBaseline.throughput > 0
+        ? currentMetrics.throughput / this.performanceBaseline.throughput
+        : 1;
 
     let recommendation: string;
     if (improvement > 1.1) {

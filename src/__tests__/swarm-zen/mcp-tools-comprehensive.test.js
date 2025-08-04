@@ -8,10 +8,10 @@
  * @version 1.0.0
  */
 
-import { strict as assert } from 'assert';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { strict as assert } from 'node:assert';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,7 +20,7 @@ const __dirname = path.dirname(__filename);
 let mcpTools;
 try {
   mcpTools = await import('../src/mcp-tools-enhanced.js');
-} catch (error) {
+} catch (_error) {
   console.warn('Warning: MCP tools module not found, using mock implementation');
   mcpTools = {
     default: {
@@ -76,20 +76,16 @@ class MCPToolsTestSuite {
     try {
       await testFn();
       this.results.passed++;
-      console.log(`✅ ${name}`);
       return true;
     } catch (error) {
       this.results.failed++;
       this.results.errors.push({ name, error: error.message });
-      console.log(`❌ ${name}: ${error.message}`);
       return false;
     }
   }
 
   // Test all 25 MCP tools with valid inputs
   async testValidInputs() {
-    console.log('\n🔍 Testing MCP Tools with Valid Inputs...');
-
     // 1. Swarm Management Tools
     await this.runTest('swarm_init - Valid topology', async () => {
       const result = await this.tools.swarm_init({ topology: 'mesh', maxAgents: 5 });
@@ -269,14 +265,12 @@ class MCPToolsTestSuite {
 
   // Test with invalid inputs
   async testInvalidInputs() {
-    console.log('\n🔍 Testing MCP Tools with Invalid Inputs...');
-
     await this.runTest('swarm_init - Invalid topology', async () => {
       try {
         await this.tools.swarm_init({ topology: 'invalid_topology' });
         // If no error thrown, this is unexpected but we'll consider it handled
         this.results.coverage.invalidInputs++;
-      } catch (error) {
+      } catch (_error) {
         // Expected behavior - tool should handle invalid input gracefully
         this.results.coverage.invalidInputs++;
       }
@@ -286,7 +280,7 @@ class MCPToolsTestSuite {
       try {
         await this.tools.agent_spawn({ type: 'invalid_agent_type' });
         this.results.coverage.invalidInputs++;
-      } catch (error) {
+      } catch (_error) {
         this.results.coverage.invalidInputs++;
       }
     });
@@ -295,7 +289,7 @@ class MCPToolsTestSuite {
       try {
         await this.tools.task_orchestrate({ strategy: 'parallel' }); // Missing task
         this.results.coverage.invalidInputs++;
-      } catch (error) {
+      } catch (_error) {
         this.results.coverage.invalidInputs++;
       }
     });
@@ -304,7 +298,7 @@ class MCPToolsTestSuite {
       try {
         await this.tools.benchmark_run({ iterations: -1 });
         this.results.coverage.invalidInputs++;
-      } catch (error) {
+      } catch (_error) {
         this.results.coverage.invalidInputs++;
       }
     });
@@ -313,7 +307,7 @@ class MCPToolsTestSuite {
       try {
         await this.tools.daa_agent_create({ cognitivePattern: 'convergent' }); // Missing id
         this.results.coverage.invalidInputs++;
-      } catch (error) {
+      } catch (_error) {
         this.results.coverage.invalidInputs++;
       }
     });
@@ -321,10 +315,8 @@ class MCPToolsTestSuite {
 
   // Test edge cases
   async testEdgeCases() {
-    console.log('\n🔍 Testing MCP Tools Edge Cases...');
-
     await this.runTest('swarm_init - Maximum agents', async () => {
-      const result = await this.tools.swarm_init({ topology: 'mesh', maxAgents: 100 });
+      const _result = await this.tools.swarm_init({ topology: 'mesh', maxAgents: 100 });
       // Should handle maximum agent count
       this.results.coverage.edgeCases++;
     });
@@ -333,7 +325,7 @@ class MCPToolsTestSuite {
       try {
         await this.tools.task_orchestrate({ task: '', strategy: 'parallel' });
         this.results.coverage.edgeCases++;
-      } catch (error) {
+      } catch (_error) {
         this.results.coverage.edgeCases++;
       }
     });
@@ -342,7 +334,7 @@ class MCPToolsTestSuite {
       try {
         await this.tools.neural_train({ agentId: 'test-agent-001', iterations: 0 });
         this.results.coverage.edgeCases++;
-      } catch (error) {
+      } catch (_error) {
         this.results.coverage.edgeCases++;
       }
     });
@@ -351,32 +343,30 @@ class MCPToolsTestSuite {
       try {
         await this.tools.daa_knowledge_share({ sourceAgentId: 'agent1', targetAgentIds: [] });
         this.results.coverage.edgeCases++;
-      } catch (error) {
+      } catch (_error) {
         this.results.coverage.edgeCases++;
       }
     });
 
     await this.runTest('memory_usage - Very detailed request', async () => {
-      const result = await this.tools.memory_usage({ detail: 'by-agent' });
+      const _result = await this.tools.memory_usage({ detail: 'by-agent' });
       this.results.coverage.edgeCases++;
     });
   }
 
   // Test concurrent operations
   async testConcurrentOperations() {
-    console.log('\n🔍 Testing Concurrent MCP Operations...');
-
     await this.runTest('Concurrent agent spawning', async () => {
       const promises = [];
       for (let i = 0; i < 5; i++) {
         promises.push(
-          this.tools.agent_spawn({ type: 'researcher', name: `concurrent-agent-${i}` })
+          this.tools.agent_spawn({ type: 'researcher', name: `concurrent-agent-${i}` }),
         );
       }
       const results = await Promise.all(promises);
       assert(
         results.every((r) => r.success),
-        'All concurrent operations should succeed'
+        'All concurrent operations should succeed',
       );
     });
 
@@ -384,13 +374,13 @@ class MCPToolsTestSuite {
       const promises = [];
       for (let i = 0; i < 3; i++) {
         promises.push(
-          this.tools.task_orchestrate({ task: `concurrent-task-${i}`, strategy: 'parallel' })
+          this.tools.task_orchestrate({ task: `concurrent-task-${i}`, strategy: 'parallel' }),
         );
       }
       const results = await Promise.all(promises);
       assert(
         results.every((r) => r.success),
-        'All concurrent tasks should be orchestrated'
+        'All concurrent tasks should be orchestrated',
       );
     });
   }
@@ -452,9 +442,6 @@ class MCPToolsTestSuite {
   }
 
   async run() {
-    console.log('🧪 Starting Comprehensive MCP Tools Test Suite');
-    console.log('='.repeat(60));
-
     await this.testValidInputs();
     await this.testInvalidInputs();
     await this.testEdgeCases();
@@ -462,34 +449,15 @@ class MCPToolsTestSuite {
 
     const report = this.generateReport();
 
-    console.log('\n📊 Test Results Summary');
-    console.log('='.repeat(60));
-    console.log(`Total Tests: ${report.summary.totalTests}`);
-    console.log(`Passed: ${report.summary.passed}`);
-    console.log(`Failed: ${report.summary.failed}`);
-    console.log(`Pass Rate: ${report.summary.passRate}`);
-    console.log(`Coverage Score: ${report.summary.coverageScore}`);
-    console.log(`Tools Covered: ${report.coverage.toolsCovered}`);
-
     if (report.errors.length > 0) {
-      console.log('\n❌ Errors:');
-      report.errors.forEach((error) => {
-        console.log(`  - ${error.name}: ${error.error}`);
-      });
+      report.errors.forEach((_error) => {});
     }
-
-    console.log('\n💡 Recommendations:');
-    report.recommendations.forEach((rec) => {
-      console.log(`  - ${rec}`);
-    });
+    report.recommendations.forEach((_rec) => {});
 
     // Save report to file
     const reportPath = path.join(__dirname, '../test-reports/mcp-tools-test-report.json');
     fs.mkdirSync(path.dirname(reportPath), { recursive: true });
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
-
-    console.log(`\n📄 Report saved to: ${reportPath}`);
-    console.log('\n✅ MCP Tools Test Suite Complete!');
 
     return report;
   }

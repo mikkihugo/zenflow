@@ -8,7 +8,7 @@
 import { jest } from '@jest/globals';
 
 // Test suite configuration
-const testConfig = {
+const _testConfig = {
   verbose: true,
   testTimeout: 30000,
   setupFilesAfterEnv: ['<rootDir>/test/setup.js'],
@@ -86,29 +86,15 @@ class TestResults {
 
 // Main test runner
 async function runErrorHandlingTests() {
-  console.log('🧪 Starting Comprehensive Error Handling Tests');
-  console.log('=' * 60);
-
   const results = new TestResults();
 
   // Replace console for testing
   Object.assign(console, mockConsole);
 
   try {
-    // Test 1: Error Class Functionality
-    console.log('\\n📋 Testing Error Classes...');
     await testErrorClasses(results);
-
-    // Test 2: Validation System
-    console.log('\\n🔍 Testing Validation System...');
     await testValidationSystem(results);
-
-    // Test 3: MCP Integration
-    console.log('\\n🔗 Testing MCP Integration...');
     await testMCPIntegration(results);
-
-    // Test 4: Performance and Edge Cases
-    console.log('\\n⚡ Testing Performance and Edge Cases...');
     await testPerformanceAndEdgeCases(results);
   } catch (error) {
     console.error('❌ Test runner error:', error);
@@ -322,7 +308,7 @@ async function testValidationSystem(results) {
 
 async function testMCPIntegration(results) {
   // Mock the dependencies
-  const mockRuvSwarm = {
+  const mockZenSwarm = {
     initialize: jest.fn(),
     createSwarm: jest.fn(),
     features: {
@@ -337,7 +323,7 @@ async function testMCPIntegration(results) {
     },
   };
 
-  const mockPersistence = {
+  const _mockPersistence = {
     createSwarm: jest.fn(),
     createAgent: jest.fn(),
     getActiveSwarms: jest.fn(() => []),
@@ -347,7 +333,7 @@ async function testMCPIntegration(results) {
   // Test MCP tools initialization
   await runTest(results, 'integration', 'MCP Tools initialization', async () => {
     const { EnhancedMCPTools } = await import('../src/mcp-tools-enhanced.js');
-    const tools = new EnhancedMCPTools(mockRuvSwarm);
+    const tools = new EnhancedMCPTools(mockZenSwarm);
 
     if (!tools.errorContext) {
       throw new Error('Error context not initialized');
@@ -517,14 +503,11 @@ async function testPerformanceAndEdgeCases(results) {
 async function runTest(results, category, testName, testFunction) {
   const startTime = Date.now();
   try {
-    console.log(`  ▶ ${testName}...`);
     await testFunction();
     const duration = Date.now() - startTime;
-    console.log(`  ✅ ${testName} (${duration}ms)`);
     results.addResult(category, testName, true, null, duration);
   } catch (error) {
     const duration = Date.now() - startTime;
-    console.log(`  ❌ ${testName} - ${error.message} (${duration}ms)`);
     results.addResult(category, testName, false, error, duration);
   }
 }
@@ -533,67 +516,31 @@ async function runTest(results, category, testName, testFunction) {
 function generateReport(results) {
   const summary = results.getSummary();
 
-  console.log(`\\n${'='.repeat(60)}`);
-  console.log('🧪 ERROR HANDLING TEST RESULTS');
-  console.log('='.repeat(60));
-
-  console.log('\\n📊 Summary:');
-  console.log(`   Total Tests: ${summary.totalTests}`);
-  console.log(`   Passed: ${summary.totalPassed} (${summary.passRate}%)`);
-  console.log(`   Failed: ${summary.totalFailed}`);
-  console.log(`   Total Time: ${summary.totalTime}ms`);
-
   // Category breakdown
-  Object.entries(summary.categories).forEach(([category, data]) => {
-    console.log(`\\n📋 ${category.toUpperCase()}:`);
-    console.log(`   Passed: ${data.passed}`);
-    console.log(`   Failed: ${data.failed}`);
-
+  Object.entries(summary.categories).forEach(([_category, data]) => {
     if (data.failed > 0) {
-      console.log('   Failed Tests:');
-      data.tests
-        .filter((t) => !t.passed)
-        .forEach((test) => {
-          console.log(`     ❌ ${test.name}: ${test.error}`);
-        });
+      data.tests.filter((t) => !t.passed).forEach((_test) => {});
     }
   });
 
   // Console capture analysis
   if (consoleCapture.length > 0) {
-    console.log('\\n📝 Console Output Analysis:');
-    const errorLogs = consoleCapture.filter((c) => c.level === 'error').length;
-    const warnLogs = consoleCapture.filter((c) => c.level === 'warn').length;
-    const infoLogs = consoleCapture.filter((c) => c.level === 'log').length;
-
-    console.log(`   Error logs: ${errorLogs}`);
-    console.log(`   Warning logs: ${warnLogs}`);
-    console.log(`   Info logs: ${infoLogs}`);
+    const _errorLogs = consoleCapture.filter((c) => c.level === 'error').length;
+    const _warnLogs = consoleCapture.filter((c) => c.level === 'warn').length;
+    const _infoLogs = consoleCapture.filter((c) => c.level === 'log').length;
   }
-
-  // Final assessment
-  console.log('\\n🎯 Assessment:');
   if (summary.totalFailed === 0) {
-    console.log('   ✅ All tests passed! Error handling system is working correctly.');
   } else if (summary.passRate >= 90) {
-    console.log('   ⚠️  Most tests passed, but some issues need attention.');
   } else {
-    console.log('   ❌ Multiple failures detected. Error handling system needs fixes.');
   }
 
   // Performance insights
   const avgDuration =
     summary.totalTests > 0 ? (summary.totalTime / summary.totalTests).toFixed(2) : 0;
-  console.log('\\n⚡ Performance:');
-  console.log(`   Average test duration: ${avgDuration}ms`);
 
   if (avgDuration > 50) {
-    console.log('   ⚠️  Tests are running slowly, consider optimization');
   } else {
-    console.log('   ✅ Test performance is good');
   }
-
-  console.log(`\\n${'='.repeat(60)}`);
 }
 
 // Run the tests

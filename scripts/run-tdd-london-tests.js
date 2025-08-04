@@ -10,11 +10,10 @@
  * - Component interaction validation
  */
 
-import { execSync } from 'child_process';
-import { existsSync } from 'fs';
-import path from 'path';
+import { execSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
 
-const colors = {
+const _colors = {
   green: '\x1b[32m',
   red: '\x1b[31m',
   yellow: '\x1b[33m',
@@ -25,12 +24,10 @@ const colors = {
   bold: '\x1b[1m',
 };
 
-function log(message, color = 'reset') {
-  console.log(`${colors[color]}${message}${colors.reset}`);
-}
+function log(_message, _color = 'reset') {}
 
 function header(message) {
-  log('\n' + '='.repeat(60), 'blue');
+  log(`\n${'='.repeat(60)}`, 'blue');
   log(`🧪 ${message}`, 'bold');
   log('='.repeat(60), 'blue');
 }
@@ -43,7 +40,7 @@ function error(message) {
   log(`❌ ${message}`, 'red');
 }
 
-function warning(message) {
+function _warning(message) {
   log(`⚠️ ${message}`, 'yellow');
 }
 
@@ -96,7 +93,7 @@ class TDDLondonTestRunner {
     try {
       execSync('npx jest --version', { stdio: 'pipe' });
       success('Jest is available');
-    } catch (error) {
+    } catch (_error) {
       console.error('Jest is not available');
       return false;
     }
@@ -128,7 +125,7 @@ class TDDLondonTestRunner {
       });
 
       // Parse Jest output for results
-      const lines = output.split('\n');
+      const _lines = output.split('\n');
       const passedMatch = output.match(/(\d+) passed/);
       const failedMatch = output.match(/(\d+) failed/);
       const skippedMatch = output.match(/(\d+) skipped/);
@@ -174,7 +171,7 @@ class TDDLondonTestRunner {
     const suiteResults = [];
 
     for (const suite of this.testSuites) {
-      log('\n' + '-'.repeat(50), 'blue');
+      log(`\n${'-'.repeat(50)}`, 'blue');
       const result = await this.runTestSuite(suite);
       suiteResults.push({ suite, result });
     }

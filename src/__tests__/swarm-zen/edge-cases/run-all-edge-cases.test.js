@@ -3,9 +3,9 @@
  * Runs all edge case tests and provides comprehensive coverage summary
  */
 
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from '@jest/globals';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,7 +20,7 @@ describe('Edge Case Test Suite - Complete Coverage', () => {
   ];
 
   it('should have all edge case test files present', () => {
-    const fs = require('fs');
+    const fs = require('node:fs');
 
     edgeCaseTests.forEach((testFile) => {
       const fullPath = path.join(__dirname, testFile);
@@ -150,14 +150,6 @@ describe('Edge Case Test Suite - Complete Coverage', () => {
 
       expect(totalCoverage).toBe(66);
       expect(totalCoverage).toBeGreaterThan(50); // Significant edge case coverage
-
-      console.log(`📊 Edge Case Coverage Summary:
-├── MCP Validation: ${totalEdgeCases.mcpValidation} edge cases
-├── Async Operations: ${totalEdgeCases.asyncOperations} edge cases
-├── Memory Management: ${totalEdgeCases.memoryManagement} edge cases
-├── Neural Networks: ${totalEdgeCases.neuralNetworks} edge cases
-├── Error Handling: ${totalEdgeCases.errorHandling} edge cases
-└── Total: ${totalCoverage} edge cases covered`);
     });
 
     it('should test boundary conditions comprehensively', () => {
@@ -228,8 +220,6 @@ describe('Edge Case Test Suite - Complete Coverage', () => {
 
 // Test runner function for CLI execution
 export async function runAllEdgeCaseTests() {
-  console.log('🔍 Running comprehensive edge case test suite...');
-
   const testResults = {
     total: 0,
     passed: 0,
@@ -244,10 +234,6 @@ export async function runAllEdgeCaseTests() {
   };
 
   try {
-    // This would typically run Jest programmatically
-    console.log('✅ All edge case tests completed successfully');
-    console.log(`📈 Coverage: ${Object.keys(testResults.coverage).length} modules tested`);
-
     return testResults;
   } catch (error) {
     console.error('❌ Edge case test execution failed:', error.message);
@@ -257,13 +243,8 @@ export async function runAllEdgeCaseTests() {
 
 // Run tests when executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('🚀 Starting edge case test suite...');
-
   runAllEdgeCaseTests()
-    .then((results) => {
-      console.log('🎉 Edge case test suite completed');
-      console.log('Results:', results);
-    })
+    .then((_results) => {})
     .catch((error) => {
       console.error('💥 Test suite failed:', error);
       process.exit(1);

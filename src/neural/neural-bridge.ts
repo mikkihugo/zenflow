@@ -241,7 +241,7 @@ export class NeuralBridge {
   }
 
   private async simulateTraining(
-    network: NeuralNetwork,
+    _network: NeuralNetwork,
     trainingData: TrainingData,
     epochs: number
   ): Promise<void> {
@@ -259,7 +259,7 @@ export class NeuralBridge {
     }
   }
 
-  private async simulatePrediction(network: NeuralNetwork, inputs: number[]): Promise<number[]> {
+  private async simulatePrediction(network: NeuralNetwork, _inputs: number[]): Promise<number[]> {
     // Simulate prediction computation
     await new Promise((resolve) => setTimeout(resolve, 5));
 

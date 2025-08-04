@@ -14,12 +14,6 @@
  */
 async function main(): Promise<void> {
   try {
-    console.log('🚀 Installing Claude-Zen...');
-    // Installation verification steps
-    console.log('✅ Claude-Zen installation completed!');
-    console.log('🧠 Neural CLI with ruv-FANN integration ready');
-    console.log('📖 Usage: npx claude-zen --help');
-    console.log('🔧 Full commands available via CLI');
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error('❌ Installation verification failed:', errorMessage);

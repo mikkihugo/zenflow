@@ -9,7 +9,7 @@
 // CORE SYSTEMS
 // =============================================================================
 
-export * as Config from './config/config-manager';
+export * as Config from './config';
 export * as Core from './core/index';
 export * as Types from './types/agent-types';
 export * as Utils from './utils/index';
@@ -26,13 +26,12 @@ export * as Database from './database/index';
 export * as Memory from './memory/index';
 // Neural System - All neural network and AI functionality
 export * as Neural from './neural/index';
-// SPARC Methodology System - Systematic development workflow
-export * as SPARC from './sparc/index';
-
-// Workflow System - All workflow execution and management
-export * as Workflows from './workflows/index';
 // Performance Optimization System - All performance optimization functionality
 export * as Optimization from './optimization/index';
+// SPARC Methodology System - Systematic development workflow
+export * as SPARC from './sparc/index';
+// Workflow System - All workflow execution and management
+export * as Workflows from './workflows/index';
 
 // =============================================================================
 // INTERFACE SYSTEMS
@@ -112,9 +111,14 @@ export * from './types/index';
 export interface ClaudeZenConfig {
   // MCP Server settings
   mcp: {
-    enabled: boolean;
-    port?: number;
-    host?: string;
+    http: {
+      enabled: boolean; // HTTP MCP for Claude Desktop (port 3000)
+      port?: number;
+      host?: string;
+    };
+    stdio: {
+      enabled: boolean; // stdio MCP for temporary Claude Code coordination (dormant by default)
+    };
   };
 
   // Swarm orchestration
@@ -153,12 +157,20 @@ export interface ClaudeZenConfig {
 
 /**
  * Default configuration for Claude-Zen
+ * HTTP MCP enabled for Claude Desktop integration  
+ * stdio MCP dormant - only for temporary Claude Code coordination when needed
+ * Project swarms use direct real agent protocols (Raft, message passing, etc.)
  */
 export const defaultConfig: ClaudeZenConfig = {
   mcp: {
-    enabled: true,
-    port: 3001,
-    host: 'localhost',
+    http: {
+      enabled: true, // HTTP MCP for Claude Desktop (port 3000)
+      port: 3000,
+      host: 'localhost',
+    },
+    stdio: {
+      enabled: false, // stdio MCP for swarm coordination (dormant, activate when needed)
+    },
   },
   swarm: {
     maxAgents: 8,
@@ -190,19 +202,23 @@ export const defaultConfig: ClaudeZenConfig = {
 export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {}): Promise<void> {
   const finalConfig = { ...defaultConfig, ...config };
 
-  console.log('🚀 Initializing Claude-Zen Integrated System');
-  console.log(`   MCP Server: ${finalConfig.mcp.enabled ? 'Enabled' : 'Disabled'}`);
-  console.log(`   Swarm Topology: ${finalConfig.swarm.topology}`);
-  console.log(`   Neural Networks: ${finalConfig.neural.enabled ? 'Enabled' : 'Disabled'}`);
-  console.log(`   SPARC Methodology: ${finalConfig.sparc.enabled ? 'Enabled' : 'Disabled'}`);
-  console.log(`   Persistence: ${finalConfig.persistence.provider}`);
+  // Initialize HTTP MCP for Claude Desktop (usually enabled)
+  if (finalConfig.mcp.http.enabled) {
+    const { HTTPMCPServer } = await import('./interfaces/mcp/http-mcp-server');
+    const httpMcpServer = new HTTPMCPServer({ 
+      port: finalConfig.mcp.http.port,
+      host: finalConfig.mcp.http.host 
+    });
+    await httpMcpServer.start();
+    console.log('✅ HTTP MCP Server started for Claude Desktop integration');
+  }
 
-  // Initialize components based on configuration
-  if (finalConfig.mcp.enabled) {
-    const { ClaudeZenMCPServer } = await import('./coordination/mcp/claude-zen-server');
-    const mcpServer = new ClaudeZenMCPServer();
-    await mcpServer.start();
-    console.log('✅ MCP Server initialized');
+  // Initialize stdio MCP only if explicitly enabled (for temporary Claude Code coordination)
+  if (finalConfig.mcp.stdio.enabled) {
+    const { StdioMcpServer } = await import('./coordination/mcp/mcp-server');
+    const stdioMcpServer = new StdioMcpServer();
+    await stdioMcpServer.start();
+    console.log('✅ stdio MCP Server started for temporary Claude Code coordination');
   }
 
   // Initialize SwarmOrchestrator
@@ -211,50 +227,38 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
   );
   const orchestrator = SwarmOrchestrator.getInstance();
   await orchestrator.initialize();
-  console.log('✅ Swarm Orchestrator initialized');
 
   // Initialize neural bridge if enabled
   if (finalConfig.neural.enabled) {
     const { NeuralBridge } = await import('./neural/neural-bridge');
     const neuralBridge = NeuralBridge.getInstance(finalConfig.neural);
     await neuralBridge.initialize();
-    console.log('✅ Neural Bridge initialized');
   }
 
   // Initialize SPARC methodology system if enabled
   if (finalConfig.sparc.enabled) {
     const { SPARC } = await import('./sparc/index');
-    const sparcEngine = SPARC.getEngine();
-    console.log('✅ SPARC Methodology System initialized');
+    const _sparcEngine = SPARC.getEngine();
   }
 
   // Initialize plugin system
   if (finalConfig.plugins.autoLoad) {
-    // Plugin system temporarily disabled for build optimization
-    // const { PluginManager } = await import('./plugins/plugin-manager');
-    console.log('⚠️  Plugin Manager temporarily disabled');
     // const pluginManager = PluginManager.getInstance();
     // await pluginManager.initialize();
     // console.log('✅ Plugin Manager initialized');
   }
-
-  console.log('🎯 Claude-Zen system ready for coordination!');
 }
 
 /**
  * Shutdown Claude-Zen system gracefully
  */
 export async function shutdownClaudeZen(): Promise<void> {
-  console.log('🛑 Shutting down Claude-Zen system...');
-
   // Shutdown orchestrator
   const { SwarmOrchestrator } = await import(
     './coordination/hive-mind/integration/SwarmOrchestrator'
   );
   const orchestrator = SwarmOrchestrator.getInstance();
   await orchestrator.shutdown();
-
-  console.log('✅ Claude-Zen system shutdown complete');
 }
 
 /**

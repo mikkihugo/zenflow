@@ -6,8 +6,8 @@
  * - Classical School: Test actual data validation and error recovery
  */
 
-import { createHash } from 'crypto';
-import { EventEmitter } from 'events';
+import { createHash } from 'node:crypto';
+import { EventEmitter } from 'node:events';
 
 // Data integrity interfaces and utilities
 interface DataChecksum {
@@ -311,7 +311,7 @@ class IntegrityStorage extends EventEmitter {
             }
           }
         }
-      } catch (error) {
+      } catch (_error) {
         corrupted++;
       }
     }
@@ -577,7 +577,7 @@ describe('Data Integrity Integration Tests', () => {
 
       const retrieved = await storage.retrieve('validate-test');
       expect(retrieved).toBeDefined();
-      expect(retrieved!.data).toEqual(testData);
+      expect(retrieved?.data).toEqual(testData);
     });
 
     it('should detect and handle corruption', async () => {
@@ -780,8 +780,6 @@ describe('Data Integrity Integration Tests', () => {
       const durationMs = Number(endTime - startTime) / 1_000_000;
       const validationsPerSecond = (iterations / durationMs) * 1000;
 
-      console.log(`Validation performance: ${validationsPerSecond.toFixed(0)} validations/sec`);
-
       expect(results.valid).toBe(iterations);
       expect(validationsPerSecond).toBeGreaterThan(100); // Should validate at least 100/sec
     });
@@ -814,10 +812,6 @@ describe('Data Integrity Integration Tests', () => {
 
       expect(results.valid + results.corrupted).toBe(recordCount);
       expect(results.corrupted).toBeGreaterThanOrEqual(0);
-
-      console.log(
-        `Mixed corruption test: ${results.valid} valid, ${results.corrupted} corrupted, ${results.repaired} repaired`
-      );
     });
   });
 
@@ -862,7 +856,7 @@ describe('Data Integrity Integration Tests', () => {
       expect(record.checksum).toBeDefined();
 
       const retrieved = await storage.retrieve('complex-data');
-      expect(retrieved!.data).toEqual(complexData);
+      expect(retrieved?.data).toEqual(complexData);
     });
 
     it('should detect subtle nested corruption', async () => {
@@ -897,7 +891,7 @@ describe('Data Integrity Integration Tests', () => {
       };
 
       const startTime = process.hrtime.bigint();
-      const record = await storage.store('large-dataset', largeData);
+      const _record = await storage.store('large-dataset', largeData);
       const storeTime = process.hrtime.bigint();
 
       const retrieved = await storage.retrieve('large-dataset');
@@ -906,11 +900,7 @@ describe('Data Integrity Integration Tests', () => {
       const storeDuration = Number(storeTime - startTime) / 1_000_000;
       const retrieveDuration = Number(retrieveTime - storeTime) / 1_000_000;
 
-      console.log(
-        `Large dataset - Store: ${storeDuration.toFixed(2)}ms, Retrieve: ${retrieveDuration.toFixed(2)}ms`
-      );
-
-      expect(retrieved!.data).toEqual(largeData);
+      expect(retrieved?.data).toEqual(largeData);
       expect(storeDuration).toBeLessThan(1000); // Should complete within 1 second
       expect(retrieveDuration).toBeLessThan(1000);
     });

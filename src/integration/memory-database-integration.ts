@@ -239,8 +239,6 @@ export async function demonstrateMCPIntegration() {
     backends: [{ id: 'main', type: 'sqlite', config: { dbPath: ':memory:' } }],
   });
 
-  console.log('Memory system initialized:', memoryInitResult);
-
   // Example: Initialize database system via MCP
   const databaseInitResult = await databaseTools[0].handler({
     engines: [
@@ -256,8 +254,6 @@ export async function demonstrateMCPIntegration() {
     coordination: { healthCheckInterval: 30000, loadBalancing: 'performance_based' },
   });
 
-  console.log('Database system initialized:', databaseInitResult);
-
   // Example: Execute optimized query via MCP
   const queryResult = await databaseTools[1].handler({
     operation: 'vector_search',
@@ -268,8 +264,6 @@ export async function demonstrateMCPIntegration() {
     sessionId: 'demo_session',
   });
 
-  console.log('Query executed:', queryResult);
-
   // Example: Monitor system performance via MCP
   const monitoringResult = await Promise.all([
     memoryTools[2].handler({ duration: 30000, metrics: ['latency', 'memory', 'cache'] }),
@@ -278,8 +272,6 @@ export async function demonstrateMCPIntegration() {
       metrics: ['performance', 'utilization', 'queries'],
     }),
   ]);
-
-  console.log('System monitoring:', monitoringResult);
 
   return {
     memoryInit: memoryInitResult,
@@ -312,21 +304,17 @@ export async function demonstrateErrorHandling() {
 
     if (error instanceof MemoryError) {
       const classification = MemoryErrorClassifier.classify(error);
-      console.log('Memory error classified:', classification);
 
       // Handle based on classification
       if (classification.actionRequired) {
-        console.log('Suggested actions:', classification.suggestedActions);
       }
     }
 
     if (error instanceof DatabaseError) {
       const classification = DatabaseErrorClassifier.classify(error);
-      console.log('Database error classified:', classification);
 
       // Handle retry strategy
       if (error.retryable && classification.retryStrategy !== 'none') {
-        console.log('Retry strategy:', classification.retryStrategy);
       }
     }
   } finally {
@@ -347,21 +335,40 @@ export async function demonstrateOptimization() {
 
   // Get performance metrics
   const metrics = await system.getPerformanceMetrics();
-  console.log('Initial metrics:', metrics);
+  console.log('📊 System Performance Metrics:', {
+    memory: metrics.memory,
+    database: metrics.database,
+    overall: metrics.overall,
+  });
 
   // Optimize memory system
   if (system.memory.optimizer) {
     const memoryRecommendations = system.memory.optimizer.getRecommendations();
-    console.log('Memory optimization recommendations:', memoryRecommendations);
+    if (memoryRecommendations.length > 0) {
+      console.log('🧠 Memory Optimization Recommendations:');
+      memoryRecommendations.forEach((rec, i) => {
+        console.log(`  ${i + 1}. ${rec.description} (Impact: ${rec.impact})`);
+      });
+    }
   }
 
   // Optimize database system
   const databaseRecommendations = system.database.optimizer?.getRecommendations();
-  console.log('Database optimization recommendations:', databaseRecommendations);
+  if (databaseRecommendations && databaseRecommendations.length > 0) {
+    console.log('🗄️ Database Optimization Recommendations:');
+    databaseRecommendations.forEach((rec, i) => {
+      console.log(`  ${i + 1}. ${rec.description} (Impact: ${rec.impact})`);
+    });
+  }
 
   // Get health report
   const health = await system.getSystemHealth();
-  console.log('System health:', health);
+  console.log('🏥 System Health Report:', {
+    status: health.status,
+    score: health.score,
+    issues: health.issues?.length || 0,
+    recommendations: health.recommendations?.length || 0,
+  });
 
   await system.shutdown();
 }

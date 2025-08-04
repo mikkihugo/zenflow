@@ -3,10 +3,9 @@
  * Tests error handling, edge cases, and uncovered branches
  */
 
-import assert from 'assert';
+import assert from 'node:assert';
 import { Benchmark } from '../src/benchmark.js';
-import { RuvSwarm } from '../src/index.js';
-import { NeuralAgent } from '../src/neural-agent.js';
+import { ZenSwarm } from '../src/index.js';
 import { NeuralNetworkManager } from '../src/neural-network-manager.js';
 import { PerformanceAnalyzer } from '../src/performance.js';
 import { SwarmPersistence } from '../src/persistence.js';
@@ -17,7 +16,7 @@ describe('Edge Cases for 100% Coverage', () => {
   let swarm;
 
   beforeEach(async () => {
-    ruv = await RuvSwarm.initialize();
+    ruv = await ZenSwarm.initialize();
     swarm = await ruv.createSwarm({
       topology: 'mesh',
       maxAgents: 3,
@@ -37,7 +36,7 @@ describe('Edge Cases for 100% Coverage', () => {
           type: 'invalid-type',
           dimensions: -1,
         }),
-        /Invalid configuration/
+        /Invalid configuration/,
       );
     });
 
@@ -104,7 +103,7 @@ describe('Edge Cases for 100% Coverage', () => {
           topology: 'invalid-topology',
           maxAgents: -5,
         }),
-        /Invalid configuration/
+        /Invalid configuration/,
       );
     });
   });
@@ -136,7 +135,7 @@ describe('Edge Cases for 100% Coverage', () => {
           promise,
           new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 100)),
         ]),
-        /Timeout/
+        /Timeout/,
       );
     });
 
@@ -150,7 +149,7 @@ describe('Edge Cases for 100% Coverage', () => {
 
       try {
         await agent.executeWithCleanup(null);
-      } catch (error) {
+      } catch (_error) {
         // Expected error
       }
 
@@ -216,7 +215,7 @@ describe('Edge Cases for 100% Coverage', () => {
           input: [[1, 2, 3]],
           attentionMask: null, // Invalid mask
         }),
-        /Invalid attention mask/
+        /Invalid attention mask/,
       );
     });
 
@@ -228,7 +227,7 @@ describe('Edge Cases for 100% Coverage', () => {
           type: 'cnn',
           kernelSize: -1,
         }),
-        /Invalid kernel size/
+        /Invalid kernel size/,
       );
     });
 
@@ -241,7 +240,7 @@ describe('Edge Cases for 100% Coverage', () => {
           input: [[1, 2, 3]],
           hiddenState: new Array(64).fill(0), // Wrong size
         }),
-        /Hidden state dimension mismatch/
+        /Hidden state dimension mismatch/,
       );
     });
 
@@ -290,8 +289,6 @@ describe('Edge Cases for 100% Coverage', () => {
 
 // Run tests when executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('Running edge case tests for 100% coverage...');
-
   // Run all tests
   const { run } = await import('./test-runner.js');
   await run(__filename);

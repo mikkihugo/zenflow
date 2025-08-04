@@ -3,16 +3,14 @@
  * Tests all 12 MCP tools and their integration
  */
 
-import assert from 'assert';
-import { spawn } from 'child_process';
-import { promises as fs } from 'fs';
-import { v4 as uuidv4 } from 'uuid';
+import assert from 'node:assert';
+import { promises as fs } from 'node:fs';
 import WebSocket from 'ws';
 
 // Test configuration
 const MCP_SERVER_URL = 'ws://localhost:3000/mcp';
 const HTTP_BASE_URL = 'http://localhost:3000';
-const TEST_TIMEOUT = 60000; // 60 seconds
+const _TEST_TIMEOUT = 60000; // 60 seconds
 
 // Test utilities
 class MCPTestClient {
@@ -30,7 +28,6 @@ class MCPTestClient {
       this.ws = new WebSocket(this.url);
 
       this.ws.on('open', () => {
-        console.log('Connected to MCP server');
         resolve();
       });
 
@@ -58,7 +55,6 @@ class MCPTestClient {
       });
 
       this.ws.on('close', () => {
-        console.log('Disconnected from MCP server');
         this.connected = false;
       });
 
@@ -116,8 +112,6 @@ class MCPTestClient {
 
 // Test suites
 async function runMCPIntegrationTests() {
-  console.log('🚀 Starting Comprehensive MCP Integration Tests\n');
-
   const results = {
     passed: 0,
     failed: 0,
@@ -129,7 +123,6 @@ async function runMCPIntegrationTests() {
   async function test(name, fn) {
     try {
       await fn();
-      console.log(`✅ ${name}`);
       results.passed++;
     } catch (error) {
       console.error(`❌ ${name}`);
@@ -140,22 +133,11 @@ async function runMCPIntegrationTests() {
   }
 
   try {
-    // Try to connect to MCP server with timeout
-    console.log('🔌 Attempting to connect to MCP server...');
     try {
       await client.connect();
-      console.log('✅ Connected to MCP server successfully');
-    } catch (connectError) {
-      console.log('⚠️  MCP server not available:', connectError.message);
-      console.log('ℹ️  Skipping MCP integration tests (server may not be running)');
+    } catch (_connectError) {
       results.errors.push({ test: 'MCP Connection', error: 'Server not available' });
       results.failed++;
-
-      // Return early with partial results
-      console.log('\n📊 MCP Test Results Summary (Skipped)');
-      console.log('─'.repeat(50));
-      console.log('MCP server not running - tests skipped');
-      console.log('To run MCP tests: npm run mcp:server (in separate terminal)');
       return results;
     }
 
@@ -177,13 +159,10 @@ async function runMCPIntegrationTests() {
       assert(result, 'Initialize should return a result');
       assert(
         result.protocolVersion || result.capabilities,
-        'Should have protocol version or capabilities'
+        'Should have protocol version or capabilities',
       );
 
       if (result.serverInfo) {
-        console.log(
-          `   Server: ${result.serverInfo.name} v${result.serverInfo.version || 'unknown'}`
-        );
       }
     });
 
@@ -195,10 +174,8 @@ async function runMCPIntegrationTests() {
       assert(result.tools || result.available_tools, 'Should have tools or available_tools');
 
       const tools = result.tools || result.available_tools || [];
-      console.log(`   Found ${tools.length} tools`);
 
       if (tools.length > 0) {
-        console.log(`   Example tool: ${tools[0].name || tools[0]}`);
       }
 
       const toolNames = result.tools.map((t) => t.name);
@@ -297,7 +274,7 @@ async function runMCPIntegrationTests() {
     });
 
     // 7. Test Task Create
-    let taskId;
+    let _taskId;
     await test('MCP Tool: ruv-swarm.task.create', async () => {
       const result = await client.sendRequest('tools/call', {
         name: 'ruv-swarm.task.create',
@@ -313,7 +290,7 @@ async function runMCPIntegrationTests() {
       assert(result.task_type === 'research');
       assert(result.priority === 'high');
       assert(result.status === 'pending');
-      taskId = result.task_id;
+      _taskId = result.task_id;
     });
 
     // 8. Test Query Swarm State
@@ -354,8 +331,7 @@ async function runMCPIntegrationTests() {
       // Wait a bit and check for notifications
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      const notifications = client.getNotifications('ruv-swarm/event');
-      console.log(`   Received ${notifications.length} notifications`);
+      const _notifications = client.getNotifications('ruv-swarm/event');
     });
 
     // 10. Test Orchestrate
@@ -447,7 +423,7 @@ async function runMCPIntegrationTests() {
               agent_type: ['researcher', 'coder', 'analyst', 'tester', 'reviewer'][i],
               name: `concurrent-agent-${i}`,
             },
-          })
+          }),
         );
       }
 
@@ -511,18 +487,12 @@ async function runMCPIntegrationTests() {
       });
 
       // Try to retrieve data
-      const result = await client.sendRequest('tools/call', {
+      const _result = await client.sendRequest('tools/call', {
         name: 'ruv-swarm.memory.get',
         arguments: {
           key: 'persistence_test',
         },
       });
-
-      // Note: This might fail if session-based storage is used
-      // In production, implement proper persistent storage
-      console.log(
-        `   Persistence test result: ${result.found ? 'Data persisted' : 'Data not persisted (session-based storage)'}`
-      );
     });
 
     // Performance Benchmarks
@@ -538,16 +508,12 @@ async function runMCPIntegrationTests() {
               agent_type: 'researcher',
               name: `perf-test-agent-${i}`,
             },
-          })
+          }),
         );
       }
 
       await Promise.all(promises);
       const duration = Date.now() - startTime;
-
-      console.log(
-        `   Spawned 10 agents in ${duration}ms (${(duration / 10).toFixed(1)}ms per agent)`
-      );
       assert(duration < 5000, 'Agent spawning too slow');
     });
 
@@ -555,13 +521,11 @@ async function runMCPIntegrationTests() {
     await test('Custom Method: ruv-swarm/status', async () => {
       const result = await client.sendRequest('ruv-swarm/status');
       assert(result);
-      console.log(`   Status: ${JSON.stringify(result, null, 2).substring(0, 100)}...`);
     });
 
     await test('Custom Method: ruv-swarm/metrics', async () => {
       const result = await client.sendRequest('ruv-swarm/metrics');
       assert(result);
-      console.log(`   Metrics: ${JSON.stringify(result, null, 2).substring(0, 100)}...`);
     });
   } catch (error) {
     console.error('Test suite error:', error);
@@ -570,18 +534,8 @@ async function runMCPIntegrationTests() {
     await client.disconnect();
   }
 
-  // Summary
-  console.log('\n📊 Test Results Summary');
-  console.log('─'.repeat(50));
-  console.log(`Total Tests: ${results.passed + results.failed}`);
-  console.log(`✅ Passed: ${results.passed}`);
-  console.log(`❌ Failed: ${results.failed}`);
-
   if (results.errors.length > 0) {
-    console.log('\n❌ Failed Tests:');
-    results.errors.forEach((e) => {
-      console.log(`  - ${e.test}: ${e.error}`);
-    });
+    results.errors.forEach((_e) => {});
   }
 
   return results.failed === 0;
@@ -589,8 +543,6 @@ async function runMCPIntegrationTests() {
 
 // Integration test scenarios
 async function runIntegrationScenarios() {
-  console.log('\n🔄 Running Integration Scenarios\n');
-
   const client = new MCPTestClient(MCP_SERVER_URL);
 
   try {
@@ -598,9 +550,6 @@ async function runIntegrationScenarios() {
     await client.sendRequest('initialize', {
       clientInfo: { name: 'integration-test', version: '1.0.0' },
     });
-
-    // Scenario 1: Complete Research Workflow
-    console.log('📚 Scenario 1: Complete Research Workflow');
 
     // 1. Spawn research team
     const researchers = [];
@@ -617,7 +566,6 @@ async function runIntegrationScenarios() {
       });
       researchers.push(result.agent_id);
     }
-    console.log(`  ✅ Spawned ${researchers.length} researchers`);
 
     // 2. Create research tasks
     const tasks = [];
@@ -639,7 +587,6 @@ async function runIntegrationScenarios() {
       });
       tasks.push(result.task_id);
     }
-    console.log(`  ✅ Created ${tasks.length} research tasks`);
 
     // 3. Store research findings
     await client.sendRequest('tools/call', {
@@ -656,22 +603,15 @@ async function runIntegrationScenarios() {
         },
       },
     });
-    console.log('  ✅ Stored research findings in memory');
 
     // 4. Query final state
-    const state = await client.sendRequest('tools/call', {
+    const _state = await client.sendRequest('tools/call', {
       name: 'ruv-swarm.query',
       arguments: { include_metrics: true },
     });
-    console.log(
-      `  ✅ Final state: ${state.total_agents} agents, ${state.active_tasks} active tasks`
-    );
-
-    // Scenario 2: Development Pipeline
-    console.log('\n🛠️  Scenario 2: Development Pipeline');
 
     // 1. Orchestrate development task
-    const devResult = await client.sendRequest('tools/call', {
+    const _devResult = await client.sendRequest('tools/call', {
       name: 'ruv-swarm.orchestrate',
       arguments: {
         objective: 'Implement user authentication system with JWT',
@@ -681,7 +621,6 @@ async function runIntegrationScenarios() {
         parallel: true,
       },
     });
-    console.log(`  ✅ Started development orchestration: ${devResult.task_id}`);
 
     // 2. Monitor progress
     client.clearNotifications();
@@ -694,11 +633,10 @@ async function runIntegrationScenarios() {
     });
 
     await new Promise((resolve) => setTimeout(resolve, 3500));
-    const events = client.getNotifications('ruv-swarm/event');
-    console.log(`  ✅ Captured ${events.length} events during monitoring`);
+    const _events = client.getNotifications('ruv-swarm/event');
 
     // 3. Optimize performance
-    const optResult = await client.sendRequest('tools/call', {
+    const _optResult = await client.sendRequest('tools/call', {
       name: 'ruv-swarm.optimize',
       arguments: {
         target_metric: 'latency',
@@ -709,10 +647,6 @@ async function runIntegrationScenarios() {
         auto_apply: true,
       },
     });
-    console.log(`  ✅ Applied ${optResult.recommendations.length} optimizations`);
-
-    // Scenario 3: Neural Network Learning
-    console.log('\n🧠 Scenario 3: Neural Network Learning Simulation');
 
     // 1. Create analyzer agents
     const analyzers = [];
@@ -730,7 +664,6 @@ async function runIntegrationScenarios() {
       });
       analyzers.push(result.agent_id);
     }
-    console.log(`  ✅ Spawned ${analyzers.length} neural-enabled analyzers`);
 
     // 2. Store training data
     const trainingData = {
@@ -750,10 +683,9 @@ async function runIntegrationScenarios() {
         value: trainingData,
       },
     });
-    console.log('  ✅ Stored neural network training data');
 
     // 3. Create learning task
-    const learningResult = await client.sendRequest('tools/call', {
+    const _learningResult = await client.sendRequest('tools/call', {
       name: 'ruv-swarm.task.create',
       arguments: {
         task_type: 'analysis',
@@ -762,7 +694,6 @@ async function runIntegrationScenarios() {
         assigned_agent: analyzers[0],
       },
     });
-    console.log(`  ✅ Created neural learning task: ${learningResult.task_id}`);
   } finally {
     await client.disconnect();
   }
@@ -770,17 +701,13 @@ async function runIntegrationScenarios() {
 
 // Main test runner
 async function main() {
-  console.log('🧪 RUV-SWARM MCP Integration Test Suite');
-  console.log('='.repeat(50));
-  console.log(`Started: ${new Date().toISOString()}\n`);
-
   // Check if MCP server is running
   try {
     const response = await fetch(`${HTTP_BASE_URL}/health`);
     if (!response.ok) {
       throw new Error('MCP server health check failed');
     }
-  } catch (error) {
+  } catch (_error) {
     console.error('❌ MCP server is not running!');
     console.error('   Please start the server with: npm run mcp:server');
     process.exit(1);
@@ -791,9 +718,6 @@ async function main() {
 
   // Run integration scenarios
   await runIntegrationScenarios();
-
-  console.log(`\n${'='.repeat(50)}`);
-  console.log(`Completed: ${new Date().toISOString()}`);
 
   process.exit(testsPassed ? 0 : 1);
 }

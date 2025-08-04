@@ -395,6 +395,9 @@ export class CommunicationProtocols extends EventEmitter {
 
     this.consensusProposals.set(proposal.id, proposal);
     this.consensusVotes.set(proposal.id, []);
+    
+    // Initialize consensus in the engine
+    await this.consensusEngine.initiateConsensus(proposal.id, proposal);
 
     const targetNodes =
       participants || Array.from(this.nodes.keys()).filter((id) => id !== this.nodeId);
@@ -716,6 +719,9 @@ export class CommunicationProtocols extends EventEmitter {
 
   private async handleConsensusProposal(proposal: ConsensusProposal): Promise<void> {
     this.consensusProposals.set(proposal.id, proposal);
+    
+    // Delegate to consensus engine for processing
+    await this.consensusEngine.processProposal(proposal);
 
     // Auto-vote based on some criteria (this would be more sophisticated)
     const decision = await this.evaluateProposal(proposal);
@@ -872,6 +878,7 @@ export class CommunicationProtocols extends EventEmitter {
 
       if (timeSinceLastSeen > this.config.heartbeatInterval * 3) {
         node.status = 'offline';
+        this.logger.warn(`Node ${nodeId} marked as offline due to heartbeat timeout`);
       } else if (timeSinceLastSeen > this.config.heartbeatInterval * 2) {
         node.status = 'degraded';
       } else {

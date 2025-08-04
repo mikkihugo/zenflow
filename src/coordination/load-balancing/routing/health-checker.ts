@@ -3,7 +3,7 @@
  * Comprehensive agent health monitoring and status management
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import type { IHealthChecker } from '../interfaces';
 import type { Agent } from '../types';
 

@@ -3,7 +3,7 @@
  * Intelligent auto-scaling based on load patterns and predictions
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import type { IAutoScaler } from '../interfaces';
 import type { Agent, AutoScalingConfig, LoadMetrics } from '../types';
 

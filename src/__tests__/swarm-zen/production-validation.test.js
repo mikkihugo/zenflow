@@ -4,7 +4,7 @@
  * Tests the recent global state management changes for production readiness
  */
 
-import { RuvSwarm } from '../src/index-enhanced.js';
+import { ZenSwarm } from '../src/index-enhanced.js';
 import { Logger } from '../src/logger.js';
 import { daaMcpTools } from '../src/mcp-daa-tools.js';
 import { EnhancedMCPTools } from '../src/mcp-tools-enhanced.js';
@@ -29,7 +29,6 @@ class ProductionValidationTest {
         error: null,
       });
       this.passed++;
-      console.log(`✅ ${testName} - ${duration}ms`);
     } catch (error) {
       const duration = Date.now() - startTime;
       this.testResults.push({
@@ -39,15 +38,14 @@ class ProductionValidationTest {
         error: error.message,
       });
       this.failed++;
-      console.log(`❌ ${testName} - ${duration}ms - ${error.message}`);
     }
   }
 
   async testGlobalStateManagement() {
     // Test 1: Verify singleton behavior
     await this.runTest('Global State Singleton Behavior', async () => {
-      const instance1 = await RuvSwarm.initialize();
-      const instance2 = await RuvSwarm.initialize();
+      const instance1 = await ZenSwarm.initialize();
+      const instance2 = await ZenSwarm.initialize();
 
       if (instance1 !== instance2) {
         throw new Error('Multiple instances created - singleton pattern broken');
@@ -64,7 +62,7 @@ class ProductionValidationTest {
     await this.runTest('Concurrent Access Safety', async () => {
       const promises = [];
       for (let i = 0; i < 10; i++) {
-        promises.push(RuvSwarm.initialize());
+        promises.push(ZenSwarm.initialize());
       }
 
       const instances = await Promise.all(promises);
@@ -102,7 +100,7 @@ class ProductionValidationTest {
       // Memory increase should be reasonable (less than 50MB)
       if (memoryIncrease > 50 * 1024 * 1024) {
         throw new Error(
-          `Excessive memory usage: ${Math.round(memoryIncrease / 1024 / 1024)}MB increase`
+          `Excessive memory usage: ${Math.round(memoryIncrease / 1024 / 1024)}MB increase`,
         );
       }
     });
@@ -259,30 +257,13 @@ class ProductionValidationTest {
   }
 
   async runAllTests() {
-    console.log('🧪 Starting Production Validation Tests\n');
-
     const startTime = Date.now();
     await this.testGlobalStateManagement();
     const totalTime = Date.now() - startTime;
 
-    console.log('\n📊 Test Results Summary:');
-    console.log(`✅ Passed: ${this.passed}`);
-    console.log(`❌ Failed: ${this.failed}`);
-    console.log(`⏱️  Total Time: ${totalTime}ms`);
-    console.log(
-      `📈 Success Rate: ${((this.passed / (this.passed + this.failed)) * 100).toFixed(1)}%`
-    );
-
     if (this.failed > 0) {
-      console.log('\n❌ Failed Tests:');
-      this.testResults
-        .filter((result) => result.status === 'FAILED')
-        .forEach((result) => {
-          console.log(`   • ${result.name}: ${result.error}`);
-        });
+      this.testResults.filter((result) => result.status === 'FAILED').forEach((_result) => {});
     }
-
-    console.log('\n🎯 Production Readiness:', this.failed === 0 ? '✅ READY' : '❌ NOT READY');
 
     return {
       passed: this.passed,

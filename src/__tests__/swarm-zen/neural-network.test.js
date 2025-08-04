@@ -1,6 +1,5 @@
 // neural-network.test.js - Tests for neural network WASM integration
 
-import { jest } from '@jest/globals';
 import {
   ACTIVATION_FUNCTIONS,
   ActivationFunctions,
@@ -347,8 +346,6 @@ describe('Neural Network WASM Integration', () => {
 
       const endTime = performance.now();
       const avgTime = (endTime - startTime) / iterations;
-
-      console.log(`Average inference time: ${avgTime.toFixed(3)}ms`);
       expect(avgTime).toBeLessThan(10); // Should be fast
     });
   });

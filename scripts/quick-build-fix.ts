@@ -11,8 +11,6 @@ import { performance } from 'node:perf_hooks';
 
 class QuickBuildFixer {
   async fix(): Promise<void> {
-    console.log('🚀 Quick Build Performance Fix for Claude-Zen\n');
-
     try {
       // Step 1: Fix package.json scripts for better build performance
       await this.optimizeBuildScripts();
@@ -25,8 +23,6 @@ class QuickBuildFixer {
 
       // Step 4: Test the optimized build
       await this.testOptimizedBuild();
-
-      console.log('\n✅ Quick build optimization completed successfully!');
     } catch (error) {
       console.error('❌ Build fix failed:', error);
       throw error;
@@ -34,8 +30,6 @@ class QuickBuildFixer {
   }
 
   private async optimizeBuildScripts(): Promise<void> {
-    console.log('📝 Optimizing build scripts...');
-
     const packageJsonPath = 'package.json';
     if (!existsSync(packageJsonPath)) {
       throw new Error('package.json not found');
@@ -56,17 +50,13 @@ class QuickBuildFixer {
     };
 
     writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
-    console.log('✅ Build scripts optimized');
   }
 
   private async installWasmOptimizer(): Promise<void> {
-    console.log('📦 Installing WASM optimization tools...');
-
     try {
       // Install wasm-opt via npm package
       execSync('npm install -g wasm-opt', { stdio: 'inherit' });
-      console.log('✅ wasm-opt installed successfully');
-    } catch (error) {
+    } catch (_error) {
       console.warn('⚠️  wasm-opt installation failed, using fallback');
 
       // Create a simple fallback optimization script
@@ -80,8 +70,6 @@ echo "✅ WASM files processed (optimization skipped - install wasm-opt for full
   }
 
   private async createOptimizedBuildConfig(): Promise<void> {
-    console.log('⚙️  Creating optimized build configuration...');
-
     // Create a TypeScript config specifically for fast builds
     const fastTsConfig = {
       extends: './tsconfig.json',
@@ -107,7 +95,6 @@ echo "✅ WASM files processed (optimization skipped - install wasm-opt for full
     };
 
     writeFileSync('tsconfig.build.json', JSON.stringify(fastTsConfig, null, 2));
-    console.log('✅ Fast build configuration created');
 
     // Create optimized WASM build script
     const wasmBuildScript = `#!/bin/bash
@@ -156,33 +143,25 @@ echo "✅ WASM build complete"
 
     writeFileSync('scripts/build-wasm-optimized.sh', wasmBuildScript);
     execSync('chmod +x scripts/build-wasm-optimized.sh');
-    console.log('✅ Optimized WASM build script created');
   }
 
   private async testOptimizedBuild(): Promise<void> {
-    console.log('🧪 Testing optimized build...');
-
     const startTime = performance.now();
 
     try {
-      // Test TypeScript compilation only (fastest test)
-      console.log('📋 Running TypeScript check...');
       execSync('npx tsc --noEmit --skipLibCheck', { stdio: 'inherit' });
 
       const checkTime = (performance.now() - startTime) / 1000;
-      console.log(`✅ TypeScript check completed in ${checkTime.toFixed(2)}s`);
 
       // Test fast build if TypeScript check passes
       if (checkTime < 30) {
-        console.log('🚀 Running fast build test...');
         const buildStart = performance.now();
         execSync('npx tsc --project tsconfig.build.json', { stdio: 'inherit' });
         const buildTime = (performance.now() - buildStart) / 1000;
-        console.log(`⚡ Fast build completed in ${buildTime.toFixed(2)}s`);
+        console.log(`✅ Fast build completed in ${buildTime.toFixed(2)}s`);
       }
-    } catch (error) {
+    } catch (_error) {
       console.warn('⚠️  Build test encountered issues, but basic optimization is configured');
-      console.log('💡 Use npm run build:check to verify TypeScript without full build');
     }
   }
 }
@@ -195,27 +174,7 @@ fixer
   .fix()
   .then(() => {
     const totalTime = (performance.now() - startTime) / 1000;
-    console.log(`\n🎯 Build optimization completed in ${totalTime.toFixed(2)}s`);
-
-    console.log(`
-📋 Performance Optimization Summary:
-✅ Optimized build scripts created
-✅ WASM optimization configured  
-✅ Fast build configuration added
-✅ TypeScript incremental builds enabled
-
-🚀 Quick Commands:
-• npm run build:check      - Type checking only (fastest)
-• npm run build:fast       - Fast incremental build
-• npm run start:dev        - Development server with quick build
-• npm run test:quick       - Quick test run
-
-💡 Next Steps:
-1. Run 'npm run build:check' to verify TypeScript
-2. Use 'npm run build:fast' for development builds
-3. Install wasm-opt globally for WASM optimization
-4. Monitor build performance with new scripts
-`);
+    console.log(`🎯 Quick build fix completed in ${totalTime.toFixed(2)}s`);
   })
   .catch((error) => {
     console.error('❌ Optimization failed:', error);

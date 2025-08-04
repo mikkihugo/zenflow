@@ -70,8 +70,6 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   async start(): Promise<void> {
     if (this.isRunning) return;
 
-    console.log('🚀 Starting Unified Performance Dashboard...');
-
     if (this.config.enableRealtime) {
       this.refreshTimer = setInterval(() => {
         this.updateDashboard();
@@ -80,8 +78,6 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
 
     this.isRunning = true;
     this.emit('started');
-
-    console.log('✅ Dashboard started successfully');
     this.displayInitialStatus();
   }
 
@@ -96,8 +92,6 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
 
     this.isRunning = false;
     this.emit('stopped');
-
-    console.log('⏹️ Dashboard stopped');
   }
 
   /** Get comprehensive system status */
@@ -284,82 +278,24 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   }
 
   /** Display initial status */
-  private displayInitialStatus(): void {
-    console.log('\\n📊 Claude Zen Performance Dashboard');
-    console.log('=====================================');
-    console.log(`🔄 Refresh interval: ${this.config.refreshInterval}ms`);
-    console.log(`📈 Real-time monitoring: ${this.config.enableRealtime ? 'Enabled' : 'Disabled'}`);
-    console.log(`⚠️ Alert thresholds:`);
-    console.log(`   Latency: ${this.config.alertThresholds.latency}ms`);
-    console.log(`   Error Rate: ${(this.config.alertThresholds.errorRate! * 100).toFixed(1)}%`);
-    console.log(
-      `   Memory: ${Math.round(this.config.alertThresholds.memoryUsage! / 1024 / 1024)}MB`
-    );
-    console.log('');
-  }
+  private displayInitialStatus(): void {}
 
   /** Display console status (fallback) */
   private displayConsoleStatus(status: any): void {
-    console.clear();
-    console.log('\n📊 Claude Zen Performance Dashboard - Live Status');
-    console.log('====================================================');
-
     // Overall health
     const healthEmoji =
       status.health.overall === 'healthy' ? '✅' : status.health.overall === 'warning' ? '⚠️' : '❌';
-    console.log(`${healthEmoji} Overall Health: ${status.health.overall.toUpperCase()}`);
-
-    // Component status
-    console.log('\n🔧 Component Status:');
-    console.log(
-      `   MCP: ${this.getHealthEmoji(status.health.components.mcp)} ${status.health.components.mcp}`
-    );
-    console.log(
-      `   Memory: ${this.getHealthEmoji(status.health.components.memory)} ${status.health.components.memory}`
-    );
-    console.log(
-      `   Database: ${this.getHealthEmoji(status.health.components.database)} ${status.health.components.database}`
-    );
-    console.log(
-      `   Neural: ${this.getHealthEmoji(status.health.components.neural)} ${status.health.components.neural}`
-    );
-
-    // Key metrics
-    console.log('\n📈 Key Metrics:');
-    console.log(
-      `   Requests: ${status.metrics.mcp.requests.total} (${status.metrics.mcp.requests.successful} successful)`
-    );
-    console.log(`   Avg Latency: ${status.metrics.mcp.requests.averageLatency.toFixed(1)}ms`);
-    console.log(`   Tool Executions: ${status.metrics.mcp.tools.executions}`);
-    console.log(`   Memory Sessions: ${status.metrics.memory.totalSessions}`);
-    console.log(`   DB Vectors: ${status.metrics.database.totalVectors}`);
-    console.log(`   Neural Accuracy: ${(status.metrics.neural.accuracy * 100).toFixed(1)}%`);
+    console.log(`System Health: ${healthEmoji} ${status.health.overall}`);
 
     // Alerts
     if (status.health.alerts.length > 0) {
       console.log('\n🚨 Active Alerts:');
       status.health.alerts.forEach((alert: any) => {
         const alertEmoji = alert.level === 'error' ? '❌' : alert.level === 'warning' ? '⚠️' : 'ℹ️';
-        console.log(`   ${alertEmoji} ${alert.component}: ${alert.message}`);
+        console.log(`  ${alertEmoji} ${alert.message} (${alert.level})`);
       });
-    }
-
-    console.log(`
-      ⏰ Last Updated: ${new Date().toLocaleTimeString()}`);
-    console.log('Press Ctrl+C to stop monitoring');
-  }
-
-  /** Get health status emoji */
-  private getHealthEmoji(health: string): string {
-    switch (health) {
-      case 'healthy':
-        return '✅';
-      case 'warning':
-        return '⚠️';
-      case 'critical':
-        return '❌';
-      default:
-        return '❓';
+    } else {
+      console.log('\n✅ No active alerts');
     }
   }
 

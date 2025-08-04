@@ -8,10 +8,10 @@
  * @version 1.0.0
  */
 
-import { strict as assert } from 'assert';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { strict as assert } from 'node:assert';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,7 +20,7 @@ const __dirname = path.dirname(__filename);
 let daaService;
 try {
   daaService = await import('../src/daa-service.js');
-} catch (error) {
+} catch (_error) {
   console.warn('Warning: DAA service module not found, using mock implementation');
   daaService = {
     default: {
@@ -64,20 +64,16 @@ class DAAFunctionalityTestSuite {
     try {
       await testFn();
       this.results.passed++;
-      console.log(`✅ ${name}`);
       return true;
     } catch (error) {
       this.results.failed++;
       this.results.errors.push({ name, error: error.message });
-      console.log(`❌ ${name}: ${error.message}`);
       return false;
     }
   }
 
   // Test DAA Service Initialization
   async testDAAInitialization() {
-    console.log('\n🔍 Testing DAA Service Initialization...');
-
     await this.runTest('DAA Service - Basic initialization', async () => {
       const result = await this.daa.initialize({
         enableLearning: true,
@@ -111,8 +107,6 @@ class DAAFunctionalityTestSuite {
 
   // Test DAA Agent Management
   async testDAAAgentManagement() {
-    console.log('\n🔍 Testing DAA Agent Management...');
-
     await this.runTest('Agent Creation - Basic agent', async () => {
       const result = await this.daa.createAgent({
         id: 'test-agent-001',
@@ -163,8 +157,6 @@ class DAAFunctionalityTestSuite {
 
   // Test DAA Workflow Management
   async testDAAWorkflowManagement() {
-    console.log('\n🔍 Testing DAA Workflow Management...');
-
     await this.runTest('Workflow Creation - Basic workflow', async () => {
       const result = await this.daa.createWorkflow({
         id: 'test-workflow-001',
@@ -221,8 +213,6 @@ class DAAFunctionalityTestSuite {
 
   // Test DAA Learning and Knowledge Sharing
   async testDAALearningAndKnowledge() {
-    console.log('\n🔍 Testing DAA Learning and Knowledge Sharing...');
-
     await this.runTest('Knowledge Sharing - Basic sharing', async () => {
       const result = await this.daa.shareKnowledge({
         sourceAgentId: 'test-agent-001',
@@ -270,8 +260,6 @@ class DAAFunctionalityTestSuite {
 
   // Test DAA Cognitive Pattern Analysis
   async testDAACognitivePatterns() {
-    console.log('\n🔍 Testing DAA Cognitive Pattern Analysis...');
-
     await this.runTest('Cognitive Pattern Analysis - Agent analysis', async () => {
       const result = await this.daa.analyzeCognitivePattern({
         agentId: 'test-agent-001',
@@ -308,8 +296,6 @@ class DAAFunctionalityTestSuite {
 
   // Test DAA Performance Metrics
   async testDAAPerformanceMetrics() {
-    console.log('\n🔍 Testing DAA Performance Metrics...');
-
     await this.runTest('Performance Metrics - All categories', async () => {
       const result = await this.daa.getPerformanceMetrics({
         category: 'all',
@@ -348,8 +334,6 @@ class DAAFunctionalityTestSuite {
 
   // Test DAA Error Handling
   async testDAAErrorHandling() {
-    console.log('\n🔍 Testing DAA Error Handling...');
-
     await this.runTest('Error Handling - Invalid agent ID', async () => {
       try {
         await this.daa.adaptAgent({
@@ -358,7 +342,7 @@ class DAAFunctionalityTestSuite {
         });
         // If no error, the function handled it gracefully
         this.results.coverage.errorHandling++;
-      } catch (error) {
+      } catch (_error) {
         // Expected error handling
         this.results.coverage.errorHandling++;
       }
@@ -370,7 +354,7 @@ class DAAFunctionalityTestSuite {
           workflowId: 'non-existent-workflow',
         });
         this.results.coverage.errorHandling++;
-      } catch (error) {
+      } catch (_error) {
         this.results.coverage.errorHandling++;
       }
     });
@@ -382,7 +366,7 @@ class DAAFunctionalityTestSuite {
           cognitivePattern: 'invalid-pattern',
         });
         this.results.coverage.errorHandling++;
-      } catch (error) {
+      } catch (_error) {
         this.results.coverage.errorHandling++;
       }
     });
@@ -394,7 +378,7 @@ class DAAFunctionalityTestSuite {
           targetAgentIds: [],
         });
         this.results.coverage.errorHandling++;
-      } catch (error) {
+      } catch (_error) {
         this.results.coverage.errorHandling++;
       }
     });
@@ -402,8 +386,6 @@ class DAAFunctionalityTestSuite {
 
   // Test DAA Integration Features
   async testDAAIntegration() {
-    console.log('\n🔍 Testing DAA Integration Features...');
-
     await this.runTest('Integration - Persistence consistency', async () => {
       // Test that agent data persists across operations
       const createResult = await this.daa.createAgent({
@@ -562,9 +544,6 @@ class DAAFunctionalityTestSuite {
   }
 
   async run() {
-    console.log('🧪 Starting Comprehensive DAA Functionality Test Suite');
-    console.log('='.repeat(70));
-
     await this.testDAAInitialization();
     await this.testDAAAgentManagement();
     await this.testDAAWorkflowManagement();
@@ -575,39 +554,17 @@ class DAAFunctionalityTestSuite {
     await this.testDAAIntegration();
 
     const report = this.generateReport();
-
-    console.log('\n📊 DAA Test Results Summary');
-    console.log('='.repeat(70));
-    console.log(`Total Tests: ${report.summary.totalTests}`);
-    console.log(`Passed: ${report.summary.passed}`);
-    console.log(`Failed: ${report.summary.failed}`);
-    console.log(`Pass Rate: ${report.summary.passRate}`);
-    console.log(`Total Coverage Points: ${report.summary.totalCoveragePoints}`);
-
-    console.log('\n📊 Coverage Breakdown:');
-    Object.entries(report.coverage).forEach(([area, count]) => {
-      console.log(`  ${area}: ${count} tests`);
-    });
+    Object.entries(report.coverage).forEach(([_area, _count]) => {});
 
     if (report.errors.length > 0) {
-      console.log('\n❌ Errors:');
-      report.errors.forEach((error) => {
-        console.log(`  - ${error.name}: ${error.error}`);
-      });
+      report.errors.forEach((_error) => {});
     }
-
-    console.log('\n💡 Recommendations:');
-    report.recommendations.forEach((rec) => {
-      console.log(`  - ${rec}`);
-    });
+    report.recommendations.forEach((_rec) => {});
 
     // Save report to file
     const reportPath = path.join(__dirname, '../test-reports/daa-functionality-test-report.json');
     fs.mkdirSync(path.dirname(reportPath), { recursive: true });
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
-
-    console.log(`\n📄 Report saved to: ${reportPath}`);
-    console.log('\n✅ DAA Functionality Test Suite Complete!');
 
     return report;
   }

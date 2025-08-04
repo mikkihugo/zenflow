@@ -7,7 +7,6 @@
 
 import { nanoid } from 'nanoid';
 import type {
-  AlgorithmDesign,
   ComplexityAnalysis,
   ComplexityClass,
   CoreAlgorithm,
@@ -16,7 +15,6 @@ import type {
   OptimizationOpportunity,
   PerformanceTarget,
   ProcessFlow,
-  PseudocodeDocument,
   PseudocodeEngine,
   PseudocodeStructure,
   PseudocodeValidation,
@@ -28,16 +26,10 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
    * Generate algorithmic pseudocode from detailed specifications
    */
   async generatePseudocode(specification: DetailedSpecification): Promise<PseudocodeStructure> {
-    console.log(`🔧 Generating pseudocode for ${specification.name}`);
-
     const coreAlgorithms = await this.designCoreAlgorithms(specification);
     const dataStructures = await this.specifyDataStructures(specification);
     const processFlows = await this.defineProcessFlows(specification);
     const complexityAnalysis = await this.analyzeComplexity(coreAlgorithms);
-
-    console.log(`   Designed ${coreAlgorithms.length} core algorithms`);
-    console.log(`   Specified ${dataStructures.length} data structures`);
-    console.log(`   Defined ${processFlows.length} process flows`);
 
     return {
       id: nanoid(),
@@ -114,7 +106,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
    * Generate pseudocode for swarm coordination algorithms
    */
   private async createSwarmCoordinationAlgorithms(
-    specification: DetailedSpecification
+    _specification: DetailedSpecification
   ): Promise<CoreAlgorithm[]> {
     return [
       {
@@ -204,7 +196,7 @@ END
    * Generate pseudocode for neural network algorithms
    */
   private async createNeuralNetworkAlgorithms(
-    specification: DetailedSpecification
+    _specification: DetailedSpecification
   ): Promise<CoreAlgorithm[]> {
     return [
       {
@@ -253,7 +245,7 @@ END
    * Generate pseudocode for memory system algorithms
    */
   private async createMemorySystemAlgorithms(
-    specification: DetailedSpecification
+    _specification: DetailedSpecification
   ): Promise<CoreAlgorithm[]> {
     return [
       {
@@ -320,7 +312,7 @@ END
    * Create general-purpose algorithms
    */
   private async createGeneralAlgorithms(
-    specification: DetailedSpecification
+    _specification: DetailedSpecification
   ): Promise<CoreAlgorithm[]> {
     return [
       {
@@ -431,7 +423,7 @@ END
   /**
    * Define process flows between algorithms
    */
-  private async defineProcessFlows(specification: DetailedSpecification): Promise<ProcessFlow[]> {
+  private async defineProcessFlows(_specification: DetailedSpecification): Promise<ProcessFlow[]> {
     return [
       {
         id: nanoid(),
@@ -487,12 +479,12 @@ END
     return this.maxComplexity(complexities);
   }
 
-  private calculateAverageCaseComplexity(algorithms: CoreAlgorithm[]): ComplexityClass {
+  private calculateAverageCaseComplexity(_algorithms: CoreAlgorithm[]): ComplexityClass {
     // Average complexity across all algorithms
     return 'O(n log n)' as ComplexityClass;
   }
 
-  private calculateBestCaseComplexity(algorithms: CoreAlgorithm[]): ComplexityClass {
+  private calculateBestCaseComplexity(_algorithms: CoreAlgorithm[]): ComplexityClass {
     // Best case when all optimizations apply
     return 'O(n)' as ComplexityClass;
   }
@@ -512,11 +504,11 @@ END
     return 'O(1)' as ComplexityClass;
   }
 
-  private analyzeScalability(algorithms: CoreAlgorithm[]): string {
+  private analyzeScalability(_algorithms: CoreAlgorithm[]): string {
     return 'System scales linearly with input size, with logarithmic overhead for coordination operations';
   }
 
-  private identifyBottlenecks(algorithms: CoreAlgorithm[]): string[] {
+  private identifyBottlenecks(_algorithms: CoreAlgorithm[]): string[] {
     return [
       'Matrix multiplication in neural network operations',
       'Network communication latency in distributed coordination',
@@ -528,7 +520,7 @@ END
    * Identify optimization opportunities
    */
   private async identifyOptimizations(
-    algorithms: CoreAlgorithm[]
+    _algorithms: CoreAlgorithm[]
   ): Promise<OptimizationOpportunity[]> {
     return [
       {
@@ -562,8 +554,8 @@ END
    * Estimate performance characteristics
    */
   private async estimatePerformance(
-    algorithms: CoreAlgorithm[],
-    complexity: ComplexityAnalysis
+    _algorithms: CoreAlgorithm[],
+    _complexity: ComplexityAnalysis
   ): Promise<PerformanceTarget[]> {
     return [
       {
@@ -587,7 +579,7 @@ END
   /**
    * Generate algorithm-specific pseudocode
    */
-  private async generateAlgorithmPseudocode(requirement: any, domain: string): Promise<string> {
+  private async generateAlgorithmPseudocode(requirement: any, _domain: string): Promise<string> {
     return `
 ALGORITHM ${requirement.title.replace(/\s+/g, '')}
 INPUT: ${requirement.inputs?.join(', ') || 'input_data'}
@@ -606,7 +598,7 @@ END
    * Estimate algorithm complexity
    */
   private async estimateAlgorithmComplexity(
-    requirement: any
+    _requirement: any
   ): Promise<{ time: ComplexityClass; space: ComplexityClass; explanation: string }> {
     return {
       time: 'O(n)' as ComplexityClass,

@@ -6,8 +6,8 @@
  * Converts project-config.yml into proper Copilot configuration files
  */
 
-const fs = require('fs').promises;
-const path = require('path');
+const fs = require('node:fs').promises;
+const _path = require('node:path');
 const yaml = require('js-yaml');
 
 class CopilotConfigGenerator {
@@ -123,7 +123,7 @@ class CopilotConfigGenerator {
   handleConditionals(template, context) {
     const conditionalRegex = /\{\{#if (\w+)\}\}([\s\S]*?)\{\{\/if\}\}/g;
 
-    return template.replace(conditionalRegex, (match, condition, content) => {
+    return template.replace(conditionalRegex, (_match, condition, content) => {
       const value = context[condition];
       return value ? content : '';
     });
@@ -132,7 +132,7 @@ class CopilotConfigGenerator {
   handleEachBlocks(template, context) {
     const eachRegex = /\{\{#each (\w+)\}\}([\s\S]*?)\{\{\/each\}\}/g;
 
-    return template.replace(eachRegex, (match, arrayName, itemTemplate) => {
+    return template.replace(eachRegex, (_match, arrayName, itemTemplate) => {
       const array = context[arrayName];
       if (!Array.isArray(array)) return '';
 
@@ -255,7 +255,6 @@ This is a sophisticated, production-grade AI platform. Maintain high standards a
 
     const rendered = this.replaceTemplateVariables(template);
     await fs.writeFile('.github/copilot-instructions.md', rendered);
-    console.log('✅ Generated .github/copilot-instructions.md');
   }
 
   async generateCopilotContext() {
@@ -331,7 +330,6 @@ This is a sophisticated, production-grade AI platform. Maintain high standards a
 
     const rendered = this.replaceTemplateVariables(template);
     await fs.writeFile('.github/copilot-context.md', rendered);
-    console.log('✅ Generated .github/copilot-context.md');
   }
 
   async generateCopilotSetupSteps() {
@@ -425,7 +423,6 @@ jobs:
 
     const rendered = this.replaceTemplateVariables(template);
     await fs.writeFile('.github/workflows/copilot-setup-steps.yml', rendered);
-    console.log('✅ Generated .github/workflows/copilot-setup-steps.yml');
   }
 
   async generateIssueTemplate() {
@@ -491,7 +488,6 @@ body:
 
     const rendered = this.replaceTemplateVariables(template);
     await fs.writeFile('.github/ISSUE_TEMPLATE/copilot-autonomous.yml', rendered);
-    console.log('✅ Generated .github/ISSUE_TEMPLATE/copilot-autonomous.yml');
   }
 
   async generate() {
@@ -502,30 +498,17 @@ body:
     await fs.mkdir('.github/workflows', { recursive: true });
     await fs.mkdir('.github/ISSUE_TEMPLATE', { recursive: true });
 
-    console.log(`🤖 Generating Copilot configuration for ${this.templateContext.PROJECT_NAME}...`);
-
     await this.generateCopilotInstructions();
     await this.generateCopilotContext();
     await this.generateCopilotSetupSteps();
     await this.generateIssueTemplate();
-
-    console.log('\\n🚀 Copilot configuration generation complete!');
-    console.log('\\nGenerated files:');
-    console.log('- .github/copilot-instructions.md');
-    console.log('- .github/copilot-context.md');
-    console.log('- .github/workflows/copilot-setup-steps.yml');
-    console.log('- .github/ISSUE_TEMPLATE/copilot-autonomous.yml');
-    console.log('\\nNext steps:');
-    console.log('1. Review and commit the generated files');
-    console.log('2. Create a test issue and assign to @copilot');
-    console.log('3. Watch autonomous development in action!');
   }
 }
 
 // Add js-yaml dependency check
 try {
   require('js-yaml');
-} catch (error) {
+} catch (_error) {
   console.error('Please install js-yaml: npm install js-yaml');
   process.exit(1);
 }

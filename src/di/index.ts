@@ -90,7 +90,7 @@ export class DIContainerBuilder {
    * Register a singleton service
    */
   singleton<T>(
-    token: import('./types/di-types.js').DIToken<T>,
+    token: import('./types/di-types').DIToken<T>,
     factory: (container: DIContainer) => T
   ): this {
     this.container.register(token, new SingletonProvider(factory));
@@ -101,7 +101,7 @@ export class DIContainerBuilder {
    * Register a transient service
    */
   transient<T>(
-    token: import('./types/di-types.js').DIToken<T>,
+    token: import('./types/di-types').DIToken<T>,
     factory: (container: DIContainer) => T
   ): this {
     this.container.register(token, new TransientProvider(factory));
@@ -112,7 +112,7 @@ export class DIContainerBuilder {
    * Register a scoped service
    */
   scoped<T>(
-    token: import('./types/di-types.js').DIToken<T>,
+    token: import('./types/di-types').DIToken<T>,
     factory: (container: DIContainer) => T
   ): this {
     this.container.register(token, new ScopedProvider(factory));

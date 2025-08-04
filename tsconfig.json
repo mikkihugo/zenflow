@@ -35,7 +35,10 @@
       "@api/*": ["api/*"],
       "@mcp/*": ["mcp/*"],
       "@config/*": ["config/*"],
-      "@terminal/*": ["terminal/*"]
+      "@terminal/*": ["terminal/*"],
+      "@tools/*": ["tools/*"],
+      "@knowledge/*": ["knowledge/*"],
+      "@database/*": ["database/*"]
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,

@@ -12,7 +12,6 @@ import type {
   ProjectSpecification,
   PseudocodeStructure,
   SPARCTemplate,
-  TemplateMetadata,
 } from '../types/sparc-types';
 
 export const REST_API_TEMPLATE: SPARCTemplate = {

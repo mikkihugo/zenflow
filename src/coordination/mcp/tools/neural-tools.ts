@@ -3,7 +3,7 @@
  * MCP tools for neural network operations
  */
 
-import { NeuralBridge, type NeuralConfig, type TrainingData } from '../../neural/neural-bridge';
+import { NeuralBridge } from '../../neural/neural-bridge';
 import { createLogger } from '../../utils/logger';
 import type { MCPTool, MCPToolResult } from '../types/mcp-types';
 

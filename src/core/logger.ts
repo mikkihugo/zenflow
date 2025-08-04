@@ -22,11 +22,11 @@ function simpleCreateLogger(config: Partial<LoggerConfig> = {}) {
   const prefix = config.prefix ? `[${config.prefix}]` : '';
 
   return {
-    info: (message: string, meta?: any) => console.log(`${prefix} ${message}`, meta || ''),
+    info: (_message: string, _meta?: any) => {},
     warn: (message: string, meta?: any) => console.warn(`${prefix} ${message}`, meta || ''),
     error: (message: string, meta?: any, error?: any) =>
       console.error(`${prefix} ${message}`, meta || '', error || ''),
-    debug: (message: string, meta?: any) => console.debug(`${prefix} ${message}`, meta || ''),
+    debug: (_message: string, _meta?: any) => {},
   };
 }
 

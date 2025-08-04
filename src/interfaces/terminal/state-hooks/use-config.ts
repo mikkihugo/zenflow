@@ -69,7 +69,7 @@ export const useConfig = (): UseConfigReturn => {
   // Load configuration on mount
   useEffect(() => {
     loadConfig();
-  }, []);
+  }, [loadConfig]);
 
   const loadConfig = async () => {
     try {
@@ -101,12 +101,12 @@ export const useConfig = (): UseConfigReturn => {
       const configPaths = [
         './.claude/terminal-config.json',
         './config/terminal.json',
-        process.env.HOME + '/.claude-zen/terminal-config.json',
+        `${process.env.HOME}/.claude-zen/terminal-config.json`,
       ];
 
       for (const configPath of configPaths) {
         try {
-          const fs = await import('fs/promises');
+          const fs = await import('node:fs/promises');
           const configData = await fs.readFile(configPath, 'utf-8');
           const parsedConfig = JSON.parse(configData);
 
@@ -115,7 +115,7 @@ export const useConfig = (): UseConfigReturn => {
           } else if (parsedConfig.theme || parsedConfig.swarmConfig) {
             return parsedConfig;
           }
-        } catch (err) {}
+        } catch (_err) {}
       }
 
       return null;
@@ -127,14 +127,14 @@ export const useConfig = (): UseConfigReturn => {
 
   const saveConfigToFile = async (newConfig: TerminalConfig) => {
     try {
-      const fs = await import('fs/promises');
-      const path = await import('path');
+      const fs = await import('node:fs/promises');
+      const path = await import('node:path');
 
       // Ensure .claude directory exists
       const configDir = './.claude';
       try {
         await fs.mkdir(configDir, { recursive: true });
-      } catch (err) {
+      } catch (_err) {
         // Directory might already exist
       }
 

@@ -447,7 +447,7 @@ export const systemTools: AdvancedMCPTool[] = [
         },
       },
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: { cpu: 45, memory: 67, disk: 23, alerts: [] },
     }),
@@ -505,7 +505,7 @@ export const systemTools: AdvancedMCPTool[] = [
         includeCompliance: { type: 'boolean', description: 'Include compliance checks' },
       },
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: {
         vulnerabilities: 2,

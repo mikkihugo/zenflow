@@ -15,7 +15,7 @@ export class MultiSystemCoordinator extends EventEmitter {
   private crossSystemCache = new Map();
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private logger: ILogger,
+    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
     private config: any = {}
   ) {
     super();

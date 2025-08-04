@@ -204,7 +204,7 @@ export class AdaptiveLearningAlgorithm implements ILoadBalancingAlgorithm {
   /**
    * Handle agent failure
    */
-  public async onAgentFailure(agentId: string, error: Error): Promise<void> {
+  public async onAgentFailure(agentId: string, _error: Error): Promise<void> {
     // Find recent decisions involving this agent
     const recentDecisions = this.decisionHistory.filter((d) => d.agentId === agentId).slice(-10); // Last 10 decisions
 
@@ -287,7 +287,7 @@ export class AdaptiveLearningAlgorithm implements ILoadBalancingAlgorithm {
    * Select strategy using epsilon-greedy or other methods
    */
   private async selectStrategy(
-    context: PatternContext,
+    _context: PatternContext,
     detectedPattern?: LearningPattern | null
   ): Promise<string> {
     // If pattern detected, use its optimal strategy with high probability
@@ -396,7 +396,7 @@ export class AdaptiveLearningAlgorithm implements ILoadBalancingAlgorithm {
     task: Task,
     availableAgents: Agent[],
     metrics: Map<string, LoadMetrics>,
-    context: PatternContext
+    _context: PatternContext
   ): Promise<RoutingResult> {
     // Apply the specific strategy logic
     let selectedAgent: Agent;
@@ -427,8 +427,6 @@ export class AdaptiveLearningAlgorithm implements ILoadBalancingAlgorithm {
         selectedAgent = this.selectByCapabilityMatch(availableAgents, task);
         reasoning = 'Selected agent with best capability match';
         break;
-
-      case 'hybrid_heuristic':
       default:
         selectedAgent = this.selectByHybridHeuristic(availableAgents, metrics, task);
         reasoning = 'Selected using hybrid heuristic combining multiple factors';
@@ -585,7 +583,7 @@ export class AdaptiveLearningAlgorithm implements ILoadBalancingAlgorithm {
   private selectByResourceAwareness(
     agents: Agent[],
     metrics: Map<string, LoadMetrics>,
-    task: Task
+    _task: Task
   ): Agent {
     let bestAgent = agents[0];
     let bestScore = -Infinity;
@@ -692,7 +690,7 @@ export class AdaptiveLearningAlgorithm implements ILoadBalancingAlgorithm {
     return strategy.successRate * 0.7 + latencyScore * 0.3;
   }
 
-  private sampleBeta(alpha: number, beta: number): number {
+  private sampleBeta(_alpha: number, _beta: number): number {
     // Simplified beta distribution sampling
     // In practice, you'd use a proper statistical library
     return Math.random(); // Placeholder
@@ -764,7 +762,7 @@ export class AdaptiveLearningAlgorithm implements ILoadBalancingAlgorithm {
       .join('|');
   }
 
-  private updatePatterns(decision: DecisionHistory, success: boolean, duration: number): void {
+  private updatePatterns(decision: DecisionHistory, success: boolean, _duration: number): void {
     const context = {
       timeOfDay: decision.features.timeOfDay,
       dayOfWeek: new Date(decision.timestamp).getDay(),

@@ -7,7 +7,7 @@
  * @fileoverview Memory management domain API routes
  */
 
-import { NextFunction, type Request, type Response, Router } from 'express';
+import { type Request, type Response, Router } from 'express';
 import { asyncHandler } from '../middleware/errors';
 import { LogLevel, log, logPerformance } from '../middleware/logging';
 
@@ -417,7 +417,7 @@ export const createMemoryRoutes = (): Router => {
    */
   router.get(
     '/health',
-    asyncHandler(async (req: Request, res: Response) => {
+    asyncHandler(async (_req: Request, res: Response) => {
       // Placeholder - would check actual memory system health
       const result = {
         status: 'healthy',

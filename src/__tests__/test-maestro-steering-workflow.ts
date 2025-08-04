@@ -5,19 +5,13 @@
  * Tests steering document creation and management
  */
 
-import { mkdir, writeFile } from 'fs/promises';
-import { join } from 'path';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
 // Test steering workflow
 async function testMaestroSteeringWorkflow(): Promise<void> {
-  console.log('🧪 Testing Maestro Steering Workflow');
-  console.log('='.repeat(50));
-
   class TestSteeringWorkflow {
     async createSteeringDocuments(domain: string): Promise<void> {
-      console.log(`
-      🎯 Creating steering documents for domain: ${domain}`);
-
       // Create steering directory
       const steeringDir = join(process.cwd(), 'docs', 'maestro', 'steering', domain);
       await mkdir(steeringDir, { recursive: true });
@@ -38,8 +32,6 @@ Steering document for ${domain} domain activities.
 
       const steeringFile = join(steeringDir, `${domain}-steering.md`);
       await writeFile(steeringFile, steeringContent);
-
-      console.log(`✅ Steering document created: ${steeringFile}`);
     }
 
     async testSteeringWorkflow(): Promise<void> {
@@ -51,18 +43,12 @@ Steering document for ${domain} domain activities.
         // Brief pause between domains
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
-
-      console.log(`
-      📊 Created steering documents for ${testDomains.length} domains`);
     }
   }
 
   try {
     const steering = new TestSteeringWorkflow();
     await steering.testSteeringWorkflow();
-
-    console.log(`
-      🎉 Steering workflow test completed successfully!`);
   } catch (error) {
     console.error(
       `

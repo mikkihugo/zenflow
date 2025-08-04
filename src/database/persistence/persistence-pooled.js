@@ -12,14 +12,14 @@
  * - Proper resource lifecycle management
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import { SQLiteConnectionPool } from './sqlite-pool.js';
 
 class SwarmPersistencePooled {
   constructor(
     dbPath = path.join(new URL('.', import.meta.url).pathname, '..', 'data', 'ruv-swarm.db'),
-    options = {}
+    options = {},
   ) {
     this.dbPath = dbPath;
     this.options = {
@@ -300,9 +300,9 @@ class SwarmPersistencePooled {
             swarm.maxAgents,
             swarm.strategy,
             JSON.stringify(swarm.metadata || {}),
-          ]
+          ],
         );
-      })
+      }),
     );
   }
 
@@ -337,9 +337,9 @@ class SwarmPersistencePooled {
             JSON.stringify(agent.capabilities || []),
             JSON.stringify(agent.neuralConfig || {}),
             JSON.stringify(agent.metrics || {}),
-          ]
-        )
-      )
+          ],
+        ),
+      ),
     );
   }
 
@@ -348,8 +348,8 @@ class SwarmPersistencePooled {
 
     return this.trackOperation(() =>
       this.withRetry(() =>
-        this.pool.write('UPDATE agents SET status = ? WHERE id = ?', [status, agentId])
-      )
+        this.pool.write('UPDATE agents SET status = ? WHERE id = ?', [status, agentId]),
+      ),
     );
   }
 
@@ -410,9 +410,9 @@ class SwarmPersistencePooled {
             task.priority || 'medium',
             task.status || 'pending',
             JSON.stringify(task.assignedAgents || []),
-          ]
-        )
-      )
+          ],
+        ),
+      ),
     );
   }
 
@@ -436,7 +436,7 @@ class SwarmPersistencePooled {
 
         values.push(taskId);
         return this.pool.write(`UPDATE tasks SET ${fields.join(', ')} WHERE id = ?`, values);
-      })
+      }),
     );
   }
 
@@ -491,9 +491,9 @@ class SwarmPersistencePooled {
         INSERT OR REPLACE INTO agent_memory (id, agent_id, key, value, ttl_secs, expires_at, updated_at)
         VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
       `,
-          [id, agentId, key, JSON.stringify(value), ttlSecs, expiresAt]
+          [id, agentId, key, JSON.stringify(value), ttlSecs, expiresAt],
         );
-      })
+      }),
     );
   }
 
@@ -510,7 +510,7 @@ class SwarmPersistencePooled {
         WHERE agent_id = ? AND key = ? 
         AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)
       `,
-        [agentId, key]
+        [agentId, key],
       );
 
       if (memories.length === 0) return null;
@@ -537,7 +537,7 @@ class SwarmPersistencePooled {
         AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)
         ORDER BY updated_at DESC
       `,
-        [agentId]
+        [agentId],
       );
 
       return memories.map((m) => ({
@@ -552,8 +552,8 @@ class SwarmPersistencePooled {
 
     return this.trackOperation(() =>
       this.withRetry(() =>
-        this.pool.write('DELETE FROM agent_memory WHERE agent_id = ? AND key = ?', [agentId, key])
-      )
+        this.pool.write('DELETE FROM agent_memory WHERE agent_id = ? AND key = ?', [agentId, key]),
+      ),
     );
   }
 
@@ -563,9 +563,9 @@ class SwarmPersistencePooled {
     return this.trackOperation(() =>
       this.withRetry(() =>
         this.pool.write(
-          'DELETE FROM agent_memory WHERE expires_at IS NOT NULL AND expires_at <= CURRENT_TIMESTAMP'
-        )
-      )
+          'DELETE FROM agent_memory WHERE expires_at IS NOT NULL AND expires_at <= CURRENT_TIMESTAMP',
+        ),
+      ),
     );
   }
 
@@ -589,9 +589,9 @@ class SwarmPersistencePooled {
             JSON.stringify(network.weights),
             JSON.stringify(network.trainingData || {}),
             JSON.stringify(network.performanceMetrics || {}),
-          ]
+          ],
         );
-      })
+      }),
     );
   }
 
@@ -613,9 +613,9 @@ class SwarmPersistencePooled {
 
         return this.pool.write(
           `UPDATE neural_networks SET ${fields.join(', ')} WHERE id = ?`,
-          values
+          values,
         );
-      })
+      }),
     );
   }
 
@@ -650,9 +650,9 @@ class SwarmPersistencePooled {
         INSERT INTO metrics (id, entity_type, entity_id, metric_name, metric_value)
         VALUES (?, ?, ?, ?, ?)
       `,
-          [id, entityType, entityId, metricName, metricValue]
+          [id, entityType, entityId, metricName, metricValue],
         );
-      })
+      }),
     );
   }
 
@@ -685,9 +685,9 @@ class SwarmPersistencePooled {
         INSERT INTO events (swarm_id, event_type, event_data)
         VALUES (?, ?, ?)
       `,
-          [swarmId, eventType, JSON.stringify(eventData)]
-        )
-      )
+          [swarmId, eventType, JSON.stringify(eventData)],
+        ),
+      ),
     );
   }
 
@@ -702,7 +702,7 @@ class SwarmPersistencePooled {
         ORDER BY timestamp DESC 
         LIMIT ?
       `,
-        [swarmId, limit]
+        [swarmId, limit],
       );
 
       return events.map((e) => ({

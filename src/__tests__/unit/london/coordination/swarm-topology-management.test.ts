@@ -483,8 +483,8 @@ describe('Swarm Topology Management (London TDD)', () => {
       // Test hierarchical load balancing
       await topologyManager.initializeTopology('hierarchical', mockAgents);
 
-      const coordinatorLoad = { 'agent-0': 0.95, 'agent-1': 0.4 };
-      const workerLoad = { 'agent-2': 0.3, 'agent-3': 0.8, 'agent-4': 0.7 };
+      const _coordinatorLoad = { 'agent-0': 0.95, 'agent-1': 0.4 };
+      const _workerLoad = { 'agent-2': 0.3, 'agent-3': 0.8, 'agent-4': 0.7 };
 
       mockTopologyOptimizer.recommendOptimizations.mockResolvedValue({
         actions: [

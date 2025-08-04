@@ -3,14 +3,13 @@
  * Intelligently assigns optimal agents based on file types, operations, and agent capabilities
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import type { AgentType } from '../../types/agent-types';
 import type {
   AgentAssignment,
   AgentContext,
   AgentCoordinator,
   AgentInfo,
-  AgentPerformance,
   ComplexityLevel,
   FileType,
   LearningData,
@@ -26,7 +25,6 @@ import type {
 export class IntelligentAgentAssignor implements AgentCoordinator {
   private readonly agentCapabilityMap: Map<AgentType, AgentCapabilityProfile>;
   private readonly fileTypeAgentMap: Map<FileType, AgentType[]>;
-  private readonly agentPerformanceHistory: Map<string, AgentPerformance>;
   private readonly workloadTracker: Map<string, number>;
 
   constructor() {
@@ -503,28 +501,28 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
   }
 
   // Mock implementations for data persistence (would integrate with actual storage)
-  private async loadAgentMemory(agentId: string): Promise<Record<string, any>> {
+  private async loadAgentMemory(_agentId: string): Promise<Record<string, any>> {
     return {}; // Mock implementation
   }
 
-  private async loadAgentPreferences(agentId: string): Promise<Record<string, any>> {
+  private async loadAgentPreferences(_agentId: string): Promise<Record<string, any>> {
     return {}; // Mock implementation
   }
 
-  private async loadLearningData(agentId: string): Promise<LearningData[]> {
+  private async loadLearningData(_agentId: string): Promise<LearningData[]> {
     return []; // Mock implementation
   }
 
-  private async loadPerformanceHistory(agentId: string): Promise<PerformanceHistory[]> {
+  private async loadPerformanceHistory(_agentId: string): Promise<PerformanceHistory[]> {
     return []; // Mock implementation
   }
 
-  private async estimateOperationDuration(operation: Operation): Promise<number> {
+  private async estimateOperationDuration(_operation: Operation): Promise<number> {
     // Mock implementation - would use ML models for estimation
     return 300; // 5 minutes default
   }
 
-  private async persistWorkloadUpdate(agentId: string, newWorkload: number): Promise<void> {
+  private async persistWorkloadUpdate(_agentId: string, _newWorkload: number): Promise<void> {
     // Mock implementation
   }
 

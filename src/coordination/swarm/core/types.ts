@@ -1,8 +1,8 @@
 /**
- * Core types and interfaces for RuvSwarm
+ * Core types and interfaces for ZenSwarm
  */
 
-import type { AgentType, AgentConfig as BaseAgentConfig, CognitiveProfile as BaseCognitiveProfile } from '../../../types/agent-types';
+import type { AgentType, AgentConfig as BaseAgentConfig } from '../../../types/agent-types';
 
 export interface SwarmOptions {
   topology?: SwarmTopology;

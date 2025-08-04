@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 
 /**
  * External MCP Server Client
@@ -10,7 +10,7 @@ export class ExternalMCPClient extends EventEmitter {
   private toolCache: Map<string, MCPTool[]> = new Map();
   private retryAttempts: Map<string, number> = new Map();
 
-  constructor(private config: ExternalMCPConfig) {
+  constructor() {
     super();
     this.loadServerConfigs();
   }
@@ -26,7 +26,7 @@ export class ExternalMCPClient extends EventEmitter {
         description: 'Research and analysis tools',
         timeout: 30000,
         retryAttempts: 3,
-        capabilities: ['research', 'analysis', 'documentation']
+        capabilities: ['research', 'analysis', 'documentation'],
       },
       deepwiki: {
         url: 'https://mcp.deepwiki.com/sse',
@@ -34,7 +34,7 @@ export class ExternalMCPClient extends EventEmitter {
         description: 'Knowledge base and research tools',
         timeout: 30000,
         retryAttempts: 3,
-        capabilities: ['knowledge', 'documentation', 'research']
+        capabilities: ['knowledge', 'documentation', 'research'],
       },
       gitmcp: {
         url: 'https://gitmcp.io/docs',
@@ -42,7 +42,7 @@ export class ExternalMCPClient extends EventEmitter {
         description: 'Git operations and repository management',
         timeout: 30000,
         retryAttempts: 3,
-        capabilities: ['git', 'repository', 'version-control']
+        capabilities: ['git', 'repository', 'version-control'],
       },
       semgrep: {
         url: 'https://mcp.semgrep.ai/sse',
@@ -50,8 +50,8 @@ export class ExternalMCPClient extends EventEmitter {
         description: 'Code analysis and security scanning',
         timeout: 30000,
         retryAttempts: 3,
-        capabilities: ['security', 'analysis', 'quality']
-      }
+        capabilities: ['security', 'analysis', 'quality'],
+      },
     };
 
     for (const [name, config] of Object.entries(externalServers)) {
@@ -73,7 +73,7 @@ export class ExternalMCPClient extends EventEmitter {
         results.push({
           server: name,
           success: false,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         });
       }
     }
@@ -86,8 +86,6 @@ export class ExternalMCPClient extends EventEmitter {
    */
   private async connectToServer(name: string, config: MCPServerConfig): Promise<ConnectionResult> {
     try {
-      console.log(`Connecting to external MCP server: ${name} at ${config.url}`);
-
       const connection = await this.createConnection(name, config);
       this.connections.set(name, connection);
 
@@ -102,7 +100,7 @@ export class ExternalMCPClient extends EventEmitter {
         success: true,
         url: config.url,
         toolCount: tools.length,
-        capabilities: config.capabilities
+        capabilities: config.capabilities,
       };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -113,7 +111,7 @@ export class ExternalMCPClient extends EventEmitter {
       return {
         server: name,
         success: false,
-        error: errorMessage
+        error: errorMessage,
       };
     }
   }
@@ -134,7 +132,10 @@ export class ExternalMCPClient extends EventEmitter {
   /**
    * Create HTTP connection to MCP server
    */
-  private async createHTTPConnection(name: string, config: MCPServerConfig): Promise<MCPConnection> {
+  private async createHTTPConnection(
+    _name: string,
+    config: MCPServerConfig
+  ): Promise<MCPConnection> {
     // Simulate HTTP connection for external servers
     // In practice, this would use the actual MCP protocol over HTTP
     return {
@@ -142,21 +143,20 @@ export class ExternalMCPClient extends EventEmitter {
       url: config.url,
       connected: true,
       lastPing: new Date(),
-      send: async (message: any) => {
-        // Simulate sending message to external server
-        console.log(`HTTP message to ${name}:`, message);
+      send: async (_message: any) => {
         return { success: true, data: {} };
       },
-      close: async () => {
-        console.log(`Closing HTTP connection to ${name}`);
-      }
+      close: async () => {},
     };
   }
 
   /**
    * Create SSE connection to MCP server
    */
-  private async createSSEConnection(name: string, config: MCPServerConfig): Promise<MCPConnection> {
+  private async createSSEConnection(
+    _name: string,
+    config: MCPServerConfig
+  ): Promise<MCPConnection> {
     // Simulate SSE connection for external servers
     // In practice, this would use Server-Sent Events for real-time communication
     return {
@@ -164,25 +164,20 @@ export class ExternalMCPClient extends EventEmitter {
       url: config.url,
       connected: true,
       lastPing: new Date(),
-      send: async (message: any) => {
-        // Simulate sending message to external server
-        console.log(`SSE message to ${name}:`, message);
+      send: async (_message: any) => {
         return { success: true, data: {} };
       },
-      close: async () => {
-        console.log(`Closing SSE connection to ${name}`);
-      }
+      close: async () => {},
     };
   }
 
   /**
    * Discover available tools from connected server
    */
-  private async discoverTools(name: string, connection: MCPConnection): Promise<MCPTool[]> {
+  private async discoverTools(name: string, _connection: MCPConnection): Promise<MCPTool[]> {
     try {
       // Simulate tool discovery
       const mockTools = this.getMockToolsForServer(name);
-      console.log(`Discovered ${mockTools.length} tools from ${name}`);
       return mockTools;
     } catch (error) {
       console.error(`Failed to discover tools from ${name}:`, error);
@@ -198,23 +193,23 @@ export class ExternalMCPClient extends EventEmitter {
       context7: [
         { name: 'research_analysis', description: 'Perform in-depth research analysis' },
         { name: 'code_review', description: 'AI-powered code review and suggestions' },
-        { name: 'documentation_generator', description: 'Generate comprehensive documentation' }
+        { name: 'documentation_generator', description: 'Generate comprehensive documentation' },
       ],
       deepwiki: [
         { name: 'knowledge_search', description: 'Search knowledge base for information' },
         { name: 'reference_lookup', description: 'Look up technical references' },
-        { name: 'concept_explanation', description: 'Explain complex technical concepts' }
+        { name: 'concept_explanation', description: 'Explain complex technical concepts' },
       ],
       gitmcp: [
         { name: 'repository_analysis', description: 'Analyze repository structure and health' },
         { name: 'branch_management', description: 'Manage git branches and merges' },
-        { name: 'commit_analysis', description: 'Analyze commit history and patterns' }
+        { name: 'commit_analysis', description: 'Analyze commit history and patterns' },
       ],
       semgrep: [
         { name: 'security_scan', description: 'Perform security vulnerability scanning' },
         { name: 'code_quality_check', description: 'Check code quality and best practices' },
-        { name: 'dependency_analysis', description: 'Analyze dependencies for vulnerabilities' }
-      ]
+        { name: 'dependency_analysis', description: 'Analyze dependencies for vulnerabilities' },
+      ],
     };
 
     return toolSets[serverName as keyof typeof toolSets] || [];
@@ -223,21 +218,23 @@ export class ExternalMCPClient extends EventEmitter {
   /**
    * Execute tool on external server
    */
-  async executeTool(serverName: string, toolName: string, parameters: any): Promise<ToolExecutionResult> {
+  async executeTool(
+    serverName: string,
+    toolName: string,
+    parameters: any
+  ): Promise<ToolExecutionResult> {
     const connection = this.connections.get(serverName);
     if (!connection) {
       throw new Error(`Not connected to server: ${serverName}`);
     }
 
     const tools = this.toolCache.get(serverName) || [];
-    const tool = tools.find(t => t.name === toolName);
+    const tool = tools.find((t) => t.name === toolName);
     if (!tool) {
       throw new Error(`Tool not found: ${toolName} on server ${serverName}`);
     }
 
     try {
-      console.log(`Executing ${toolName} on ${serverName} with parameters:`, parameters);
-
       // Simulate tool execution
       const result = await this.simulateToolExecution(serverName, toolName, parameters);
 
@@ -248,7 +245,7 @@ export class ExternalMCPClient extends EventEmitter {
         server: serverName,
         tool: toolName,
         result,
-        executionTime: Date.now()
+        executionTime: Date.now(),
       };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -258,7 +255,7 @@ export class ExternalMCPClient extends EventEmitter {
         success: false,
         server: serverName,
         tool: toolName,
-        error: errorMessage
+        error: errorMessage,
       };
     }
   }
@@ -266,36 +263,50 @@ export class ExternalMCPClient extends EventEmitter {
   /**
    * Simulate tool execution (replace with actual MCP protocol calls)
    */
-  private async simulateToolExecution(serverName: string, toolName: string, parameters: any): Promise<any> {
+  private async simulateToolExecution(
+    serverName: string,
+    toolName: string,
+    _parameters: any
+  ): Promise<any> {
     // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, Math.random() * 1000 + 500));
+    await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000 + 500));
 
     // Simulate different responses based on server and tool
     const responses = {
       context7: {
-        research_analysis: { analysis: 'Comprehensive research analysis completed', insights: ['key insight 1', 'key insight 2'] },
-        code_review: { review: 'Code review completed', suggestions: ['suggestion 1', 'suggestion 2'] },
-        documentation_generator: { documentation: 'Generated documentation', sections: 5 }
+        research_analysis: {
+          analysis: 'Comprehensive research analysis completed',
+          insights: ['key insight 1', 'key insight 2'],
+        },
+        code_review: {
+          review: 'Code review completed',
+          suggestions: ['suggestion 1', 'suggestion 2'],
+        },
+        documentation_generator: { documentation: 'Generated documentation', sections: 5 },
       },
       deepwiki: {
         knowledge_search: { results: ['result 1', 'result 2'], relevance: 0.95 },
         reference_lookup: { references: ['ref 1', 'ref 2'], found: true },
-        concept_explanation: { explanation: 'Detailed concept explanation', complexity: 'medium' }
+        concept_explanation: { explanation: 'Detailed concept explanation', complexity: 'medium' },
       },
       gitmcp: {
         repository_analysis: { health: 'good', issues: 2, recommendations: ['rec 1', 'rec 2'] },
         branch_management: { branches: ['main', 'develop'], status: 'clean' },
-        commit_analysis: { commits: 150, patterns: ['pattern 1', 'pattern 2'] }
+        commit_analysis: { commits: 150, patterns: ['pattern 1', 'pattern 2'] },
       },
       semgrep: {
         security_scan: { vulnerabilities: 0, severity: 'low', report: 'Security scan clean' },
         code_quality_check: { score: 85, issues: ['minor issue 1'], recommendations: ['rec 1'] },
-        dependency_analysis: { dependencies: 45, vulnerable: 0, outdated: 3 }
-      }
+        dependency_analysis: { dependencies: 45, vulnerable: 0, outdated: 3 },
+      },
     };
 
     const serverResponses = responses[serverName as keyof typeof responses];
-    return serverResponses?.[toolName as keyof typeof serverResponses] || { message: 'Tool executed successfully' };
+    return (
+      serverResponses?.[toolName as keyof typeof serverResponses] || {
+        message: 'Tool executed successfully',
+      }
+    );
   }
 
   /**
@@ -328,7 +339,7 @@ export class ExternalMCPClient extends EventEmitter {
         connected: !!connection?.connected,
         toolCount: tools.length,
         capabilities: config.capabilities,
-        lastPing: connection?.lastPing || null
+        lastPing: connection?.lastPing || null,
       };
     }
 
@@ -342,7 +353,6 @@ export class ExternalMCPClient extends EventEmitter {
     for (const [name, connection] of this.connections) {
       try {
         await connection.close();
-        console.log(`Disconnected from ${name}`);
       } catch (error) {
         console.error(`Error disconnecting from ${name}:`, error);
       }

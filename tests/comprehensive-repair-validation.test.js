@@ -7,7 +7,7 @@ import { execSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 
-const colors = {
+const _colors = {
   green: '\x1b[32m',
   red: '\x1b[31m',
   yellow: '\x1b[33m',
@@ -16,9 +16,7 @@ const colors = {
   reset: '\x1b[0m',
 };
 
-function log(message, color = 'reset') {
-  console.log(`${colors[color]}${message}${colors.reset}`);
-}
+function log(_message, _color = 'reset') {}
 
 class ComprehensiveRepairValidator {
   constructor() {
@@ -143,7 +141,7 @@ class ComprehensiveRepairValidator {
             true,
             'TypeScript compiles without errors'
           );
-        } catch (tscError) {
+        } catch (_tscError) {
           // If tsc fails, at least check if it's valid JavaScript
           execSync(`node -c ${tsFile}`, {
             cwd: '/home/mhugo/code/claude-zen-flow',
@@ -248,7 +246,7 @@ class ComprehensiveRepairValidator {
   /** Test enhanced memory implementation */
   testEnhancedMemory() {
     // Basic structure validation
-    const content = require('fs').readFileSync(
+    const content = require('node:fs').readFileSync(
       '/home/mhugo/code/claude-zen-flow/src/memory/enhanced-memory.ts',
       'utf8'
     );
@@ -272,7 +270,7 @@ class ComprehensiveRepairValidator {
 
   /** Test LanceDB interface implementation */
   testLanceDBInterface() {
-    const content = require('fs').readFileSync(
+    const content = require('node:fs').readFileSync(
       '/home/mhugo/code/claude-zen-flow/src/database/lancedb-interface.ts',
       'utf8'
     );
@@ -297,7 +295,7 @@ class ComprehensiveRepairValidator {
 
   /** Test MCP metrics implementation */
   testMCPMetrics() {
-    const content = require('fs').readFileSync(
+    const content = require('node:fs').readFileSync(
       '/home/mhugo/code/claude-zen-flow/src/mcp/performance-metrics.ts',
       'utf8'
     );
@@ -322,7 +320,7 @@ class ComprehensiveRepairValidator {
 
   /** Test unified dashboard implementation */
   testUnifiedDashboard() {
-    const content = require('fs').readFileSync(
+    const content = require('node:fs').readFileSync(
       '/home/mhugo/code/claude-zen-flow/src/dashboard/unified-performance-dashboard.ts',
       'utf8'
     );
@@ -365,7 +363,7 @@ class ComprehensiveRepairValidator {
         stdio: 'pipe',
       });
       this.recordResult('Blessed UI Library', true, 'Available for interactive dashboard');
-    } catch (error) {
+    } catch (_error) {
       this.recordResult('Blessed UI Library', false, 'Not available - will use text mode');
     }
   }
@@ -392,7 +390,7 @@ class ComprehensiveRepairValidator {
         stdio: 'pipe',
       });
       this.recordResult('LanceDB Library', true, 'Import successful');
-    } catch (error) {
+    } catch (_error) {
       this.recordResult('LanceDB Library', false, 'Import failed - may need installation');
     }
   }
@@ -406,7 +404,7 @@ class ComprehensiveRepairValidator {
       {
         name: 'Performance Monitor Error Handling',
         test: () => {
-          const content = require('fs').readFileSync(
+          const content = require('node:fs').readFileSync(
             '/home/mhugo/code/claude-zen-flow/scripts/performance-monitor.js',
             'utf8'
           );
@@ -416,7 +414,7 @@ class ComprehensiveRepairValidator {
       {
         name: 'Enhanced Memory Error Handling',
         test: () => {
-          const content = require('fs').readFileSync(
+          const content = require('node:fs').readFileSync(
             '/home/mhugo/code/claude-zen-flow/src/memory/enhanced-memory.ts',
             'utf8'
           );
@@ -493,7 +491,7 @@ class ComprehensiveRepairValidator {
       recommendations: this.generateRecommendations(),
     };
 
-    require('fs').writeFileSync(
+    require('node:fs').writeFileSync(
       '/home/mhugo/code/claude-zen-flow/test-results.json',
       JSON.stringify(report, null, 2)
     );

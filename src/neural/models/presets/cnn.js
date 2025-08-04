@@ -97,7 +97,7 @@ class CNNModel extends NeuralModel {
   }
 
   getConvOutputShape(inputShape, convLayer) {
-    const [height, width, channels] = inputShape;
+    const [height, width, _channels] = inputShape;
     const { filters, kernelSize, stride = 1, padding } = convLayer;
 
     let outputHeight, outputWidth;
@@ -388,14 +388,6 @@ class CNNModel extends NeuralModel {
         valLoss: valMetrics.loss,
         valAccuracy: valMetrics.accuracy,
       });
-
-      console.log(
-        `Epoch ${epoch + 1}/${epochs} - ` +
-          `Train Loss: ${avgTrainLoss.toFixed(4)}, ` +
-          `Train Acc: ${(avgTrainAccuracy * 100).toFixed(2)}%, ` +
-          `Val Loss: ${valMetrics.loss.toFixed(4)}, ` +
-          `Val Acc: ${(valMetrics.accuracy * 100).toFixed(2)}%`
-      );
 
       this.updateMetrics(avgTrainLoss, avgTrainAccuracy);
     }

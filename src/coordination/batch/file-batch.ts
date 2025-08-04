@@ -4,10 +4,10 @@
  * Achieves significant performance improvements for file-heavy workflows
  */
 
-import { promises as fs } from 'fs';
-import { join, dirname } from 'path';
+import { promises as fs } from 'node:fs';
+import { dirname, join } from 'node:path';
 import { createLogger } from '../../core/logger';
-import type { BatchOperation, BatchResult } from './batch-engine';
+import type { BatchOperation } from './batch-engine';
 
 const logger = createLogger({ prefix: 'FileBatch' });
 
@@ -51,10 +51,10 @@ export class FileBatchOperator {
 
     // Group operations by type for optimization
     const groupedOps = this.groupOperationsByType(operations);
-    
+
     // Execute operations with dependency awareness
     const results: FileOperationResult[] = [];
-    
+
     // Create directories first (dependencies for other operations)
     if (groupedOps.mkdir.length > 0) {
       const mkdirResults = await this.executeConcurrentOperations(
@@ -98,7 +98,9 @@ export class FileBatchOperator {
   /**
    * Group operations by type for intelligent execution order
    */
-  private groupOperationsByType(operations: FileOperation[]): Record<FileOperation['type'], FileOperation[]> {
+  private groupOperationsByType(
+    operations: FileOperation[]
+  ): Record<FileOperation['type'], FileOperation[]> {
     const groups: Record<FileOperation['type'], FileOperation[]> = {
       read: [],
       write: [],
@@ -125,14 +127,14 @@ export class FileBatchOperator {
     executor: (operation: T) => Promise<FileOperationResult>
   ): Promise<FileOperationResult[]> {
     const results: FileOperationResult[] = [];
-    
+
     // Process operations in chunks to control concurrency
     for (let i = 0; i < operations.length; i += this.maxConcurrentFiles) {
       const chunk = operations.slice(i, i + this.maxConcurrentFiles);
       const chunkPromises = chunk.map(executor);
-      
+
       const chunkResults = await Promise.allSettled(chunkPromises);
-      
+
       chunkResults.forEach((result, index) => {
         if (result.status === 'fulfilled') {
           results.push(result.value);
@@ -191,11 +193,14 @@ export class FileBatchOperator {
   /**
    * Execute read operation
    */
-  private async executeRead(operation: FileOperation, startTime: number): Promise<FileOperationResult> {
+  private async executeRead(
+    operation: FileOperation,
+    startTime: number
+  ): Promise<FileOperationResult> {
     const encoding = operation.encoding || this.defaultEncoding;
     const content = await fs.readFile(operation.path, encoding);
     const stats = await fs.stat(operation.path);
-    
+
     return {
       operation,
       success: true,
@@ -208,19 +213,22 @@ export class FileBatchOperator {
   /**
    * Execute write operation
    */
-  private async executeWrite(operation: FileOperation, startTime: number): Promise<FileOperationResult> {
+  private async executeWrite(
+    operation: FileOperation,
+    startTime: number
+  ): Promise<FileOperationResult> {
     if (!operation.content) {
       throw new Error('Write operation requires content');
     }
 
     // Ensure directory exists
     await this.ensureDirectoryExists(dirname(operation.path));
-    
+
     const encoding = operation.encoding || this.defaultEncoding;
     await fs.writeFile(operation.path, operation.content, encoding);
-    
+
     const stats = await fs.stat(operation.path);
-    
+
     return {
       operation,
       success: true,
@@ -233,19 +241,22 @@ export class FileBatchOperator {
   /**
    * Execute create operation (write with exclusive flag)
    */
-  private async executeCreate(operation: FileOperation, startTime: number): Promise<FileOperationResult> {
+  private async executeCreate(
+    operation: FileOperation,
+    startTime: number
+  ): Promise<FileOperationResult> {
     if (!operation.content) {
       throw new Error('Create operation requires content');
     }
 
     // Ensure directory exists
     await this.ensureDirectoryExists(dirname(operation.path));
-    
+
     const encoding = operation.encoding || this.defaultEncoding;
     await fs.writeFile(operation.path, operation.content, { encoding, flag: 'wx' });
-    
+
     const stats = await fs.stat(operation.path);
-    
+
     return {
       operation,
       success: true,
@@ -258,9 +269,12 @@ export class FileBatchOperator {
   /**
    * Execute delete operation
    */
-  private async executeDelete(operation: FileOperation, startTime: number): Promise<FileOperationResult> {
+  private async executeDelete(
+    operation: FileOperation,
+    startTime: number
+  ): Promise<FileOperationResult> {
     await fs.unlink(operation.path);
-    
+
     return {
       operation,
       success: true,
@@ -272,18 +286,21 @@ export class FileBatchOperator {
   /**
    * Execute copy operation
    */
-  private async executeCopy(operation: FileOperation, startTime: number): Promise<FileOperationResult> {
+  private async executeCopy(
+    operation: FileOperation,
+    startTime: number
+  ): Promise<FileOperationResult> {
     if (!operation.destination) {
       throw new Error('Copy operation requires destination');
     }
 
     // Ensure destination directory exists
     await this.ensureDirectoryExists(dirname(operation.destination));
-    
+
     await fs.copyFile(operation.path, operation.destination);
-    
+
     const stats = await fs.stat(operation.destination);
-    
+
     return {
       operation,
       success: true,
@@ -296,18 +313,21 @@ export class FileBatchOperator {
   /**
    * Execute move operation
    */
-  private async executeMove(operation: FileOperation, startTime: number): Promise<FileOperationResult> {
+  private async executeMove(
+    operation: FileOperation,
+    startTime: number
+  ): Promise<FileOperationResult> {
     if (!operation.destination) {
       throw new Error('Move operation requires destination');
     }
 
     // Ensure destination directory exists
     await this.ensureDirectoryExists(dirname(operation.destination));
-    
+
     await fs.rename(operation.path, operation.destination);
-    
+
     const stats = await fs.stat(operation.destination);
-    
+
     return {
       operation,
       success: true,
@@ -324,11 +344,11 @@ export class FileBatchOperator {
     const startTime = Date.now();
 
     try {
-      await fs.mkdir(operation.path, { 
-        recursive: true, 
-        mode: operation.mode || 0o755 
+      await fs.mkdir(operation.path, {
+        recursive: true,
+        mode: operation.mode || 0o755,
       });
-      
+
       return {
         operation,
         success: true,
@@ -352,9 +372,12 @@ export class FileBatchOperator {
   /**
    * Execute rmdir operation
    */
-  private async executeRmdir(operation: FileOperation, startTime: number): Promise<FileOperationResult> {
+  private async executeRmdir(
+    operation: FileOperation,
+    startTime: number
+  ): Promise<FileOperationResult> {
     await fs.rmdir(operation.path, { recursive: true });
-    
+
     return {
       operation,
       success: true,
@@ -396,12 +419,14 @@ export class FileBatchOperator {
    * Create multiple file write operations for batch execution
    * Implements claude-zen's "BatchWrite" pattern
    */
-  static createWriteBatch(files: Array<{
-    path: string;
-    content: string;
-    encoding?: BufferEncoding;
-  }>): FileOperation[] {
-    return files.map(file => ({
+  static createWriteBatch(
+    files: Array<{
+      path: string;
+      content: string;
+      encoding?: BufferEncoding;
+    }>
+  ): FileOperation[] {
+    return files.map((file) => ({
       type: 'write',
       path: file.path,
       content: file.content,
@@ -424,7 +449,7 @@ export class FileBatchOperator {
     for (const filePath of Object.keys(structure)) {
       const fullPath = join(basePath, filePath);
       let currentDir = dirname(fullPath);
-      
+
       while (currentDir !== basePath && currentDir !== '.') {
         directories.add(currentDir);
         currentDir = dirname(currentDir);
@@ -442,7 +467,7 @@ export class FileBatchOperator {
     // Add file operations
     for (const [filePath, content] of Object.entries(structure)) {
       const fullPath = join(basePath, filePath);
-      
+
       if (content !== null) {
         operations.push({
           type: 'write',
@@ -476,7 +501,7 @@ export class FileBatchOperator {
             errors.push(`${prefix} Missing required content`);
           }
           break;
-        
+
         case 'copy':
         case 'move':
           if (!operation.destination) {

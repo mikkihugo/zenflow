@@ -464,7 +464,9 @@ export class IntelligentRoutingEngine implements IRoutingEngine {
 
     // Recalculate routes for affected agents
     for (const agentId of affectedRoutes) {
-      // Would trigger route recalculation
+      // Trigger route recalculation for affected agent
+      await this.recalculateRouteForAgent(agentId);
+      this.emit('route:recalculated', { agentId, timestamp: Date.now() });
     }
   }
 
@@ -520,22 +522,22 @@ export class IntelligentRoutingEngine implements IRoutingEngine {
   }
 
   // Helper methods for measurements and calculations
-  private async measureLatency(endpoint: string): Promise<number> {
+  private async measureLatency(_endpoint: string): Promise<number> {
     // Mock latency measurement
     return 50 + Math.random() * 200;
   }
 
-  private async measureBandwidth(endpoint: string): Promise<number> {
+  private async measureBandwidth(_endpoint: string): Promise<number> {
     // Mock bandwidth measurement
     return 1000 + Math.random() * 5000;
   }
 
-  private async calculateAgentReliability(agent: Agent): Promise<number> {
+  private async calculateAgentReliability(_agent: Agent): Promise<number> {
     // Mock reliability calculation based on historical data
     return 0.85 + Math.random() * 0.15;
   }
 
-  private async calculateAverageLatency(agent: Agent): Promise<number> {
+  private async calculateAverageLatency(_agent: Agent): Promise<number> {
     // Mock average latency calculation
     return 100 + Math.random() * 500;
   }
@@ -549,13 +551,13 @@ export class IntelligentRoutingEngine implements IRoutingEngine {
     );
   }
 
-  private async calculateQoSScore(task: Task, routingEntry: RoutingTable): Promise<number> {
+  private async calculateQoSScore(_task: Task, _routingEntry: RoutingTable): Promise<number> {
     // Calculate QoS score based on task requirements
     // This would consider task priority, SLA requirements, etc.
     return 0.8 + Math.random() * 0.2;
   }
 
-  private calculateConfidence(routingEntry: RoutingTable, task: Task): number {
+  private calculateConfidence(routingEntry: RoutingTable, _task: Task): number {
     // Calculate confidence in routing decision
     const reliabilityFactor = routingEntry.reliability;
     const routeCountFactor = Math.min(1, routingEntry.routes.length / 3);

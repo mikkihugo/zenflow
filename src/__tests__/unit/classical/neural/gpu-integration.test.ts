@@ -7,13 +7,8 @@
 import {
   createNeuralTestSuite,
   NeuralTestDataGenerator,
-  NeuralPerformanceTester,
 } from '../../../helpers/neural-test-helpers';
-import {
-  createPerformanceProfiler,
-  createBenchmarkSuite,
-  PerformanceValidator,
-} from '../../../helpers/performance-test-suite';
+import { createBenchmarkSuite } from '../../../helpers/performance-test-suite';
 
 // Mock GPU/WebGL interfaces for testing
 const mockWebGLContext = {
@@ -68,21 +63,17 @@ class MockGPUComputeManager {
   private gpuMemoryUsed = 0;
   private maxGpuMemory = 1024 * 1024 * 1024; // 1GB
 
-  constructor() {
-    // Simulate detection of GPU capabilities
-  }
-
   async initializeWebGL(): Promise<boolean> {
     if (!this.webglAvailable) return false;
-    
+
     // Simulate WebGL initialization
-    await new Promise(resolve => setTimeout(resolve, 50));
+    await new Promise((resolve) => setTimeout(resolve, 50));
     return true;
   }
 
   async initializeCUDA(): Promise<boolean> {
     if (!this.cudaAvailable) return false;
-    
+
     await mockCUDAContext.initialize();
     return true;
   }
@@ -118,11 +109,15 @@ class MockGPUComputeManager {
     return Date.now(); // Mock handle
   }
 
-  freeGpuMemory(handle: number, size: number): void {
+  freeGpuMemory(_handle: number, size: number): void {
     this.gpuMemoryUsed = Math.max(0, this.gpuMemoryUsed - size);
   }
 
-  async computeMatrixMultiplyGPU(a: number[][], b: number[][], useWebGL: boolean = true): Promise<number[][]> {
+  async computeMatrixMultiplyGPU(
+    a: number[][],
+    b: number[][],
+    useWebGL: boolean = true
+  ): Promise<number[][]> {
     if (useWebGL && this.webglAvailable) {
       return this.webglMatrixMultiply(a, b);
     } else if (this.cudaAvailable) {
@@ -134,13 +129,13 @@ class MockGPUComputeManager {
 
   private async webglMatrixMultiply(a: number[][], b: number[][]): Promise<number[][]> {
     // Simulate WebGL matrix multiplication
-    await new Promise(resolve => setTimeout(resolve, 5)); // Faster than CPU
+    await new Promise((resolve) => setTimeout(resolve, 5)); // Faster than CPU
     return this.cpuMatrixMultiply(a, b);
   }
 
   private async cudaMatrixMultiply(a: number[][], b: number[][]): Promise<number[][]> {
     // Simulate CUDA matrix multiplication
-    await new Promise(resolve => setTimeout(resolve, 2)); // Even faster
+    await new Promise((resolve) => setTimeout(resolve, 2)); // Even faster
     return this.cpuMatrixMultiply(a, b);
   }
 
@@ -160,12 +155,12 @@ class MockGPUComputeManager {
 }
 
 describe('GPU Integration Testing Suite - Classical TDD', () => {
-  let neuralSuite: ReturnType<typeof createNeuralTestSuite>;
+  let _neuralSuite: ReturnType<typeof createNeuralTestSuite>;
   let benchmarkSuite: ReturnType<typeof createBenchmarkSuite>;
   let gpuManager: MockGPUComputeManager;
 
   beforeEach(async () => {
-    neuralSuite = createNeuralTestSuite({
+    _neuralSuite = createNeuralTestSuite({
       epochs: 500,
       learningRate: 0.1,
       tolerance: 1e-8,
@@ -175,7 +170,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
 
     benchmarkSuite = createBenchmarkSuite();
     gpuManager = new MockGPUComputeManager();
-    
+
     // Initialize GPU contexts
     await gpuManager.initializeWebGL();
   });
@@ -184,14 +179,14 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
     it('should detect WebGL availability correctly', async () => {
       // Classical TDD: Test actual WebGL detection
       expect(gpuManager.isWebGLAvailable()).toBe(true);
-      
+
       const webglInitialized = await gpuManager.initializeWebGL();
       expect(webglInitialized).toBe(true);
 
       // Test fallback when WebGL is unavailable
       gpuManager.setWebGLAvailable(false);
       expect(gpuManager.isWebGLAvailable()).toBe(false);
-      
+
       const failedInit = await gpuManager.initializeWebGL();
       expect(failedInit).toBe(false);
     });
@@ -203,7 +198,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
 
       // WebGL computation
       const webglResult = await gpuManager.computeMatrixMultiplyGPU(matrixA, matrixB, true);
-      
+
       // CPU computation for verification
       const cpuResult = computeCPUMatrixMultiply(matrixA, matrixB);
 
@@ -225,29 +220,34 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       const largeMatrixB = generateTestMatrix(150, 200);
 
       // Benchmark CPU computation
-      const cpuBenchmark = await benchmarkSuite.addBenchmark('cpu-matrix-multiply', async () => {
+      const _cpuBenchmark = await benchmarkSuite.addBenchmark('cpu-matrix-multiply', async () => {
         const result = computeCPUMatrixMultiply(largeMatrixA, largeMatrixB);
         expect(result).toHaveLength(200);
       });
 
       // Benchmark WebGL computation
-      const webglBenchmark = await benchmarkSuite.addBenchmark('webgl-matrix-multiply', async () => {
-        const result = await gpuManager.computeMatrixMultiplyGPU(largeMatrixA, largeMatrixB, true);
-        expect(result).toHaveLength(200);
-      });
+      const _webglBenchmark = await benchmarkSuite.addBenchmark(
+        'webgl-matrix-multiply',
+        async () => {
+          const result = await gpuManager.computeMatrixMultiplyGPU(
+            largeMatrixA,
+            largeMatrixB,
+            true
+          );
+          expect(result).toHaveLength(200);
+        }
+      );
 
       const results = await benchmarkSuite.runAll();
-      const comparison = benchmarkSuite.compare('cpu-matrix-multiply', 'webgl-matrix-multiply');
-
-      console.log(comparison.report);
+      const _comparison = benchmarkSuite.compare('cpu-matrix-multiply', 'webgl-matrix-multiply');
 
       // WebGL should show performance improvement
-      const cpuTime = results.get('cpu-matrix-multiply')!.executionTime;
-      const webglTime = results.get('webgl-matrix-multiply')!.executionTime;
+      const cpuTime = results.get('cpu-matrix-multiply')?.executionTime;
+      const webglTime = results.get('webgl-matrix-multiply')?.executionTime;
 
       expect(cpuTime).toBeGreaterThan(0);
       expect(webglTime).toBeGreaterThan(0);
-      
+
       // WebGL should be faster (simulated)
       expect(webglTime).toBeLessThanOrEqual(cpuTime);
     });
@@ -272,7 +272,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
 
       // Simulate context restoration
       mockWebGLContext.isContextLost.mockReturnValue(false);
-      
+
       // Reinitialize WebGL
       const restored = await gpuManager.initializeWebGL();
       expect(restored).toBe(true);
@@ -297,13 +297,13 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
 
       // Free first allocation
       gpuManager.freeGpuMemory(memoryHandle1, 100 * 1024 * 1024);
-      
+
       const afterFirstFree = gpuManager.getGpuMemoryUsage();
       expect(afterFirstFree.used).toBe(200 * 1024 * 1024);
 
       // Free second allocation
       gpuManager.freeGpuMemory(memoryHandle2, 200 * 1024 * 1024);
-      
+
       const afterAllFree = gpuManager.getGpuMemoryUsage();
       expect(afterAllFree.used).toBe(0);
     });
@@ -336,7 +336,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       // CUDA computation (falls back to CUDA when WebGL disabled)
       gpuManager.setWebGLAvailable(false);
       const cudaResult = await gpuManager.computeMatrixMultiplyGPU(matrixA, matrixB, false);
-      
+
       // CPU verification
       const cpuResult = computeCPUMatrixMultiply(matrixA, matrixB);
 
@@ -445,12 +445,12 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
           // Try WebGL first
           const webglResult = await gpuManager.computeMatrixMultiplyGPU(a, b, true);
           results.push({ webgl: true, success: true, result: webglResult });
-        } catch (webglError) {
+        } catch (_webglError) {
           try {
             // Fallback to CPU
             const cpuResult = computeCPUMatrixMultiply(a, b);
             results.push({ webgl: false, success: true, result: cpuResult });
-          } catch (cpuError) {
+          } catch (_cpuError) {
             results.push({ webgl: false, success: false });
           }
         }
@@ -460,11 +460,11 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       results.forEach((result, i) => {
         expect(result.success).toBe(true);
         expect(result.result).toHaveLength(testMatrices[i].a.length);
-        expect(result.result![0]).toHaveLength(testMatrices[i].b[0].length);
+        expect(result.result?.[0]).toHaveLength(testMatrices[i].b[0].length);
       });
 
       // Should prefer WebGL when available
-      const webglSuccesses = results.filter(r => r.webgl && r.success).length;
+      const webglSuccesses = results.filter((r) => r.webgl && r.success).length;
       expect(webglSuccesses).toBeGreaterThan(0);
     });
 
@@ -478,7 +478,11 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
 
       // Test WebGL result (when available)
       gpuManager.setWebGLAvailable(true);
-      const webglResult = await gpuManager.computeMatrixMultiplyGPU(referenceMatrix, multiplierMatrix, true);
+      const webglResult = await gpuManager.computeMatrixMultiplyGPU(
+        referenceMatrix,
+        multiplierMatrix,
+        true
+      );
 
       // Compare WebGL vs CPU accuracy
       for (let i = 0; i < cpuReference.length; i++) {
@@ -490,7 +494,11 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       // Test CUDA result (when available)
       gpuManager.setCUDAAvailable(true);
       gpuManager.setWebGLAvailable(false);
-      const cudaResult = await gpuManager.computeMatrixMultiplyGPU(referenceMatrix, multiplierMatrix, false);
+      const cudaResult = await gpuManager.computeMatrixMultiplyGPU(
+        referenceMatrix,
+        multiplierMatrix,
+        false
+      );
 
       // Compare CUDA vs CPU accuracy
       for (let i = 0; i < cpuReference.length; i++) {
@@ -503,7 +511,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
     it('should handle memory limitations gracefully', () => {
       // Classical TDD: Test memory limit handling
       const initialMemory = gpuManager.getGpuMemoryUsage();
-      
+
       // Attempt to allocate more memory than available
       const availableMemory = initialMemory.total - initialMemory.used;
       const excessiveSize = availableMemory + 100 * 1024 * 1024; // 100MB over limit
@@ -577,13 +585,11 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
           speedupWebGL,
           speedupCUDA,
         });
-
-        console.log(`${test.name}: CPU=${cpuTime.toFixed(2)}ms, WebGL=${webglTime.toFixed(2)}ms (${speedupWebGL.toFixed(1)}x), CUDA=${cudaTime.toFixed(2)}ms (${speedupCUDA.toFixed(1)}x)`);
       }
 
       // GPU should show significant speedups for larger matrices
       const largeMatrixResult = performanceResults[performanceResults.length - 1];
-      
+
       // In real implementation, these would show actual speedups
       // For testing, we verify the structure is correct
       expect(largeMatrixResult.speedupWebGL).toBeGreaterThan(0);
@@ -622,7 +628,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
         // Verify correctness
         expect(gpuResult).toHaveLength(cpuResult.length);
 
-        const efficiency = (cpuTime / gpuTime) / size; // Efficiency per matrix dimension
+        const efficiency = cpuTime / gpuTime / size; // Efficiency per matrix dimension
 
         scalingResults.push({
           size,
@@ -631,11 +637,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
           efficiency,
         });
       }
-
-      console.log('Performance Scaling Results:');
-      scalingResults.forEach(result => {
-        console.log(`  Size ${result.size}: CPU=${result.cpuTime.toFixed(2)}ms, GPU=${result.gpuTime.toFixed(2)}ms, Efficiency=${result.efficiency.toFixed(4)}`);
-      });
+      scalingResults.forEach((_result) => {});
 
       // GPU efficiency should improve with larger problems
       const smallEfficiency = scalingResults[0].efficiency;
@@ -651,25 +653,27 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
     it('should maintain performance under concurrent workloads', async () => {
       // Classical TDD: Test concurrent GPU operations
       gpuManager.setWebGLAvailable(true);
-      
+
       const concurrentOperations = 5;
       const matrixSize = 100;
 
-      const concurrentPromises = Array(concurrentOperations).fill(0).map(async (_, index) => {
-        const matrixA = generateTestMatrix(matrixSize, matrixSize);
-        const matrixB = generateTestMatrix(matrixSize, matrixSize);
+      const concurrentPromises = Array(concurrentOperations)
+        .fill(0)
+        .map(async (_, index) => {
+          const matrixA = generateTestMatrix(matrixSize, matrixSize);
+          const matrixB = generateTestMatrix(matrixSize, matrixSize);
 
-        const start = performance.now();
-        const result = await gpuManager.computeMatrixMultiplyGPU(matrixA, matrixB, true);
-        const duration = performance.now() - start;
+          const start = performance.now();
+          const result = await gpuManager.computeMatrixMultiplyGPU(matrixA, matrixB, true);
+          const duration = performance.now() - start;
 
-        return {
-          operationId: index,
-          result,
-          duration,
-          correctSize: result.length === matrixSize && result[0].length === matrixSize,
-        };
-      });
+          return {
+            operationId: index,
+            result,
+            duration,
+            correctSize: result.length === matrixSize && result[0].length === matrixSize,
+          };
+        });
 
       const results = await Promise.all(concurrentPromises);
 
@@ -685,10 +689,9 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
 
       // Performance shouldn't degrade severely under concurrent load
       const avgDuration = results.reduce((sum, r) => sum + r.duration, 0) / results.length;
-      const maxDuration = Math.max(...results.map(r => r.duration));
+      const maxDuration = Math.max(...results.map((r) => r.duration));
 
       expect(maxDuration).toBeLessThan(avgDuration * 2); // No operation should take 2x average
-      console.log(`Concurrent GPU operations: avg=${avgDuration.toFixed(2)}ms, max=${maxDuration.toFixed(2)}ms`);
     });
   });
 
@@ -723,8 +726,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       expect(Math.abs(cpuResult.finalError - gpuResult.finalError)).toBeLessThan(0.5);
 
       // GPU should be faster for large networks
-      const speedup = cpuTrainingTime / gpuTrainingTime;
-      console.log(`Neural Network Training: CPU=${cpuTrainingTime.toFixed(2)}ms, GPU=${gpuTrainingTime.toFixed(2)}ms, Speedup=${speedup.toFixed(2)}x`);
+      const _speedup = cpuTrainingTime / gpuTrainingTime;
 
       expect(gpuTrainingTime).toBeGreaterThan(0);
       expect(cpuTrainingTime).toBeGreaterThan(0);
@@ -746,13 +748,17 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       }> = [];
 
       for (const batchSize of batchSizes) {
-        const inputBatch = Array(batchSize).fill(0).map(() => 
-          Array(networkTopology[0]).fill(0).map(() => Math.random())
-        );
+        const inputBatch = Array(batchSize)
+          .fill(0)
+          .map(() =>
+            Array(networkTopology[0])
+              .fill(0)
+              .map(() => Math.random())
+          );
 
         // CPU batch inference
         const cpuStart = performance.now();
-        const cpuResults = inputBatch.map(input => neuralForwardPassCPU(network, input));
+        const cpuResults = inputBatch.map((input) => neuralForwardPassCPU(network, input));
         const cpuTime = performance.now() - cpuStart;
 
         // GPU batch inference
@@ -781,11 +787,8 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
 
         expect(accuracyMatch).toBe(true);
       }
-
-      console.log('Batch Inference Performance:');
-      batchResults.forEach(result => {
-        const speedup = result.cpuTime / result.gpuTime;
-        console.log(`  Batch ${result.batchSize}: CPU=${result.cpuTime.toFixed(2)}ms, GPU=${result.gpuTime.toFixed(2)}ms, Speedup=${speedup.toFixed(2)}x`);
+      batchResults.forEach((result) => {
+        const _speedup = result.cpuTime / result.gpuTime;
       });
 
       // GPU should show better speedup for larger batches
@@ -826,11 +829,11 @@ function computeCPUMatrixMultiply(a: number[][], b: number[][]): number[][] {
 function createTestNeuralNetwork(topology: number[]): any {
   const weights: number[][][] = [];
   const biases: number[][] = [];
-  
+
   for (let i = 0; i < topology.length - 1; i++) {
     const layerWeights: number[][] = [];
     const layerBiases: number[] = [];
-    
+
     for (let j = 0; j < topology[i + 1]; j++) {
       const neuronWeights: number[] = [];
       for (let k = 0; k < topology[i]; k++) {
@@ -839,20 +842,20 @@ function createTestNeuralNetwork(topology: number[]): any {
       layerWeights.push(neuronWeights);
       layerBiases.push(Math.random() * 0.1); // Small random bias
     }
-    
+
     weights.push(layerWeights);
     biases.push(layerBiases);
   }
-  
+
   return { topology, weights, biases };
 }
 
 function neuralForwardPassCPU(network: any, input: number[]): number[] {
   let activations = [...input];
-  
+
   for (let layer = 0; layer < network.weights.length; layer++) {
     const newActivations: number[] = [];
-    
+
     for (let neuron = 0; neuron < network.weights[layer].length; neuron++) {
       let sum = network.biases[layer][neuron];
       for (let i = 0; i < activations.length; i++) {
@@ -860,82 +863,95 @@ function neuralForwardPassCPU(network: any, input: number[]): number[] {
       }
       newActivations.push(1 / (1 + Math.exp(-sum))); // Sigmoid activation
     }
-    
+
     activations = newActivations;
   }
-  
+
   return activations;
 }
 
 function trainNeuralNetworkCPU(network: any, data: any[], config: any): any {
   let finalError = Infinity;
-  
+
   for (let epoch = 0; epoch < config.epochs; epoch++) {
     let epochError = 0;
-    
-    data.forEach(sample => {
+
+    data.forEach((sample) => {
       const output = neuralForwardPassCPU(network, sample.input);
-      const error = output.reduce((sum, pred, idx) => 
-        sum + (pred - sample.output[idx]) ** 2, 0) / output.length;
+      const error =
+        output.reduce((sum, pred, idx) => sum + (pred - sample.output[idx]) ** 2, 0) /
+        output.length;
       epochError += error;
-      
+
       // Simplified weight updates
       updateNetworkWeights(network, sample, output, config.learningRate);
     });
-    
+
     finalError = epochError / data.length;
   }
-  
+
   return { finalError };
 }
 
-async function trainNeuralNetworkGPU(network: any, data: any[], gpuManager: MockGPUComputeManager, config: any): Promise<any> {
+async function trainNeuralNetworkGPU(
+  network: any,
+  data: any[],
+  _gpuManager: MockGPUComputeManager,
+  config: any
+): Promise<any> {
   // Simulate GPU-accelerated training
   let finalError = Infinity;
-  
+
   for (let epoch = 0; epoch < config.epochs; epoch++) {
     let epochError = 0;
-    
+
     // Process data in batches on GPU
     const batchSize = 32;
     for (let i = 0; i < data.length; i += batchSize) {
       const batch = data.slice(i, i + batchSize);
-      
+
       // Simulate GPU forward pass for batch
       const batchOutputs = await Promise.all(
-        batch.map(sample => 
-          Promise.resolve(neuralForwardPassCPU(network, sample.input))
-        )
+        batch.map((sample) => Promise.resolve(neuralForwardPassCPU(network, sample.input)))
       );
-      
+
       batch.forEach((sample, idx) => {
         const output = batchOutputs[idx];
-        const error = output.reduce((sum, pred, j) => 
-          sum + (pred - sample.output[j]) ** 2, 0) / output.length;
+        const error =
+          output.reduce((sum, pred, j) => sum + (pred - sample.output[j]) ** 2, 0) / output.length;
         epochError += error;
-        
+
         // Simplified weight updates (would be GPU-accelerated)
         updateNetworkWeights(network, sample, output, config.learningRate);
       });
     }
-    
+
     finalError = epochError / data.length;
   }
-  
+
   return { finalError };
 }
 
-async function neuralBatchInferenceGPU(network: any, inputBatch: number[][], gpuManager: MockGPUComputeManager): Promise<number[][]> {
+async function neuralBatchInferenceGPU(
+  network: any,
+  inputBatch: number[][],
+  _gpuManager: MockGPUComputeManager
+): Promise<number[][]> {
   // Simulate GPU batch inference
   return Promise.all(
-    inputBatch.map(input => Promise.resolve(neuralForwardPassCPU(network, input)))
+    inputBatch.map((input) => Promise.resolve(neuralForwardPassCPU(network, input)))
   );
 }
 
-function updateNetworkWeights(network: any, sample: any, output: number[], learningRate: number): void {
+function updateNetworkWeights(
+  network: any,
+  sample: any,
+  output: number[],
+  learningRate: number
+): void {
   // Simplified gradient descent weight update
   const error = sample.output.map((target: number, idx: number) => target - output[idx]);
-  
+
   // Update output layer weights (simplified)
   const lastLayerIdx = network.weights.length - 1;
   for (let neuron = 0; neuron < network.weights[lastLayerIdx].length; neuron++) {

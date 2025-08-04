@@ -83,7 +83,7 @@ export class HybridTestUtility {
     const behaviors: Record<string, (...args: any[]) => any> = {
       database: () => ({ success: true, data: [] }),
       logger: () => undefined,
-      validator: (input: any) => ({ valid: true, errors: [] }),
+      validator: (_input: any) => ({ valid: true, errors: [] }),
       transformer: (data: any) => data,
       calculator: (a: number, b: number) => a + b,
     };
@@ -230,7 +230,7 @@ export class ClassicalAssertions {
     output: any,
     transformationRules: Record<string, (input: any) => any>
   ) {
-    for (const [rule, transform] of Object.entries(transformationRules)) {
+    for (const [_rule, transform] of Object.entries(transformationRules)) {
       const expected = transform(input);
       expect(output).toMatchObject(expected);
     }
@@ -240,7 +240,7 @@ export class ClassicalAssertions {
    * Verify state consistency
    */
   verifyStateConsistency(state: any, invariants: Array<(state: any) => boolean>) {
-    invariants.forEach((invariant, index) => {
+    invariants.forEach((invariant, _index) => {
       expect(invariant(state)).toBe(true);
     });
   }

@@ -10,9 +10,8 @@
  * Handles complex TypeScript parsing errors and automated refactoring
  */
 
-import { execSync } from 'child_process';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { glob } from 'glob';
+import { execSync } from 'node:child_process';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 
 class AdvancedLintFixer {
   constructor() {
@@ -42,11 +41,21 @@ class AdvancedLintFixer {
    */
   logMemory(message, data = {}) {
     const timestamp = new Date().toISOString();
-    console.log(
-      `🧠 [${timestamp}] MEMORY: swarm-lint-fix/hierarchy/level2/specialists/fixer/advanced - ${message}`
-    );
+    const logEntry = {
+      timestamp,
+      message,
+      ...data
+    };
+    
     if (Object.keys(data).length > 0) {
-      console.log('📊 Data:', JSON.stringify(data, null, 2));
+      console.log(`[${timestamp}] Memory: ${message}`, data);
+    } else {
+      console.log(`[${timestamp}] Memory: ${message}`);
+    }
+    
+    // Store in memory system if available
+    if (this.memorySystem) {
+      this.memorySystem.store('lint-fixer', logEntry);
     }
   }
 
@@ -100,7 +109,7 @@ class AdvancedLintFixer {
     const closeBraces = (modified.match(/\}/g) || []).length;
     if (openBraces > closeBraces) {
       const missing = openBraces - closeBraces;
-      modified += '\n' + '}'.repeat(missing);
+      modified += `\n${'}'.repeat(missing)}`;
       fixes += missing;
     }
 
@@ -241,7 +250,7 @@ class AdvancedLintFixer {
     // Fix missing commas in object literals
     modified = modified.replace(
       /(\w+:\s*[^,}\n]+)\s*\n(\s*)(\w+:)/g,
-      (match, prop1, indent, prop2) => {
+      (_match, prop1, indent, prop2) => {
         fixes++;
         return `${prop1},\n${indent}${prop2}`;
       }
@@ -284,7 +293,7 @@ class AdvancedLintFixer {
     modified = modified.replace(/\.+/g, '.');
 
     // Fix unexpected colons outside of object literals or type annotations
-    modified = modified.replace(/^(\s*)(\w+)\s*:\s*$/gm, (match, indent, identifier) => {
+    modified = modified.replace(/^(\s*)(\w+)\s*:\s*$/gm, (_match, indent, identifier) => {
       fixes++;
       return `${indent}// ${identifier}: // Fixed: unexpected colon`;
     });
@@ -316,14 +325,14 @@ class AdvancedLintFixer {
       // Convert require to import
       modified = modified.replace(
         /const\s+(\w+)\s*=\s*require\(['"`]([^'"`]+)['"`]\)/g,
-        (match, varName, moduleName) => {
+        (_match, varName, moduleName) => {
           fixes++;
           return `import ${varName} from '${moduleName}';`;
         }
       );
 
       // Convert module.exports to export
-      modified = modified.replace(/module\.exports\s*=\s*(.*)/g, (match, exportValue) => {
+      modified = modified.replace(/module\.exports\s*=\s*(.*)/g, (_match, exportValue) => {
         fixes++;
         return `export default ${exportValue};`;
       });
@@ -386,7 +395,6 @@ class AdvancedLintFixer {
   async processFile(filePath) {
     try {
       if (!existsSync(filePath)) {
-        console.log(`⚠️  File not found: ${filePath}`);
         return false;
       }
 
@@ -396,7 +404,7 @@ class AdvancedLintFixer {
       const originalContent = content;
 
       // Apply all fix rules
-      for (const [ruleName, fixer] of this.fixRules) {
+      for (const [_ruleName, fixer] of this.fixRules) {
         content = fixer(content, filePath);
       }
 
@@ -438,11 +446,7 @@ class AdvancedLintFixer {
   async run() {
     this.logMemory('Starting advanced lint fixing process');
 
-    console.log('🚀 Advanced Lint Fixer - Level 2 Specialist System');
-    console.log('🔧 Hierarchical Lint Fixing Swarm - Automated Refactoring Active');
-
     const errorFiles = await this.getErrorFiles();
-    console.log(`📂 Found ${errorFiles.length} files with parsing errors`);
 
     const startTime = Date.now();
 
@@ -452,17 +456,7 @@ class AdvancedLintFixer {
 
     const endTime = Date.now();
     const duration = (endTime - startTime) / 1000;
-
-    // Report results
-    console.log('\n🎉 Advanced Lint Fixer Complete!');
-    console.log('📊 Final Statistics:');
-    console.log(`  📁 Files processed: ${this.stats.filesProcessed}`);
-    console.log(`  🔧 Total fixes applied: ${this.stats.totalFixes}`);
-    console.log(`  ⏱️  Duration: ${duration.toFixed(2)}s`);
-
-    console.log('\n📋 Fixes by type:');
-    for (const [type, count] of this.stats.fixesByType) {
-      console.log(`  • ${type}: ${count} fixes`);
+    for (const [_type, _count] of this.stats.fixesByType) {
     }
 
     this.logMemory('Task completed', {
@@ -480,8 +474,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const fixer = new AdvancedLintFixer();
   fixer
     .run()
-    .then((stats) => {
-      console.log('\n✅ Advanced Lint Fixing completed successfully');
+    .then((_stats) => {
       process.exit(0);
     })
     .catch((error) => {

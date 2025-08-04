@@ -32,7 +32,7 @@
     "format": "npm run format:biome && prettier --write src",
     "format:biome": "biome format --write .",
     "mcp": "npx tsx src/interfaces/mcp/start-server.ts",
-    "mcp:swarm": "npx tsx src/coordination/swarm/core/mcp-server-enhanced.js",
+    "mcp:swarm": "npx tsx src/coordination/mcp/claude-zen-server.ts",
     "mcp:test": "npx tsx src/interfaces/mcp/test-external-servers.ts",
     "mcp:external": "npx tsx src/interfaces/mcp/test-external-servers.ts",
     "mcp:validate": "npx tsx src/interfaces/mcp/validate-external-config.ts",

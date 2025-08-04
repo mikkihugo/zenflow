@@ -10,7 +10,7 @@
 
 import compression from 'compression';
 import cors from 'cors';
-import express, { type Application, NextFunction, type Request, type Response } from 'express';
+import express, { type Application, type Request, type Response } from 'express';
 import { OpenApiValidator } from 'express-openapi-validator';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
@@ -201,7 +201,7 @@ export class APIServer {
    */
   private setupRoutes(): void {
     // Health check endpoint (no auth required)
-    this.app.get('/health', (req: Request, res: Response) => {
+    this.app.get('/health', (_req: Request, res: Response) => {
       res.json({
         status: 'healthy',
         timestamp: new Date().toISOString(),
@@ -212,7 +212,7 @@ export class APIServer {
     });
 
     // API info endpoint
-    this.app.get('/api', (req: Request, res: Response) => {
+    this.app.get('/api', (_req: Request, res: Response) => {
       res.json({
         name: 'Claude Code Flow API',
         version: '1.0.0',
@@ -241,7 +241,7 @@ export class APIServer {
       );
 
       // Raw OpenAPI spec endpoint
-      this.app.get('/openapi.json', (req: Request, res: Response) => {
+      this.app.get('/openapi.json', (_req: Request, res: Response) => {
         res.json(specs);
       });
     }
@@ -315,7 +315,7 @@ export class APIServer {
     const router = express.Router();
 
     // System health endpoint
-    router.get('/health', (req: Request, res: Response) => {
+    router.get('/health', (_req: Request, res: Response) => {
       res.json({
         status: 'healthy',
         timestamp: new Date().toISOString(),
@@ -332,7 +332,7 @@ export class APIServer {
     });
 
     // System metrics endpoint
-    router.get('/metrics', (req: Request, res: Response) => {
+    router.get('/metrics', (_req: Request, res: Response) => {
       res.json({
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
@@ -363,10 +363,6 @@ export class APIServer {
     return new Promise((resolve, reject) => {
       try {
         this.server = this.app.listen(this.config.port, this.config.host, () => {
-          console.log(`🚀 API Server running on http://${this.config.host}:${this.config.port}`);
-          console.log(`📚 API Documentation: http://${this.config.host}:${this.config.port}/docs`);
-          console.log(`🔍 Health Check: http://${this.config.host}:${this.config.port}/health`);
-          console.log(`📋 API Info: http://${this.config.host}:${this.config.port}/api`);
           resolve();
         });
 
@@ -394,7 +390,6 @@ export class APIServer {
         if (error) {
           reject(error);
         } else {
-          console.log('🛑 API Server stopped');
           resolve();
         }
       });
@@ -435,9 +430,7 @@ if (require.main === module) {
   const server = new APIServer();
 
   // Graceful shutdown handling
-  const shutdown = async (signal: string) => {
-    console.log(`
-      ${signal} received, shutting down gracefully...`);
+  const shutdown = async (_signal: string) => {
     try {
       await server.stop();
       process.exit(0);

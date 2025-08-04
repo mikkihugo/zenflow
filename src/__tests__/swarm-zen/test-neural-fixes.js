@@ -5,14 +5,13 @@
  * Tests: Pattern parsing, memory optimization, and persistence indicators
  */
 
-import { exec } from 'child_process';
-import util from 'util';
+import { exec } from 'node:child_process';
+import util from 'node:util';
 
 const execPromise = util.promisify(exec);
 
-import fs from 'fs/promises';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -73,13 +72,6 @@ function assertPattern(output, pattern, testName) {
 
 // Test 1: Pattern Parsing Fix Validation
 async function testPatternParsing() {
-  console.log(
-    `\n${colors.bold}${colors.blue}Test 1: Pattern Parsing Fix Validation${colors.reset}`
-  );
-  console.log('─'.repeat(50));
-
-  // Test 1.1: All patterns
-  console.log(`\n${colors.yellow}Test 1.1: Testing --pattern all${colors.reset}`);
   const result1 = await runCommand('npx ruv-swarm neural patterns --pattern all');
 
   if (result1.success) {
@@ -108,9 +100,6 @@ async function testPatternParsing() {
   } else {
     testResults.failed.push('All patterns command failed to execute');
   }
-
-  // Test 1.2: Specific pattern (convergent)
-  console.log(`\n${colors.yellow}Test 1.2: Testing --pattern convergent${colors.reset}`);
   const result2 = await runCommand('npx ruv-swarm neural patterns --pattern convergent');
 
   if (result2.success) {
@@ -127,9 +116,6 @@ async function testPatternParsing() {
   } else {
     testResults.failed.push('Convergent pattern command failed');
   }
-
-  // Test 1.3: Invalid pattern
-  console.log(`\n${colors.yellow}Test 1.3: Testing --pattern invalid${colors.reset}`);
   const result3 = await runCommand('npx ruv-swarm neural patterns --pattern invalid');
 
   if (result3.success) {
@@ -138,7 +124,7 @@ async function testPatternParsing() {
     assertContains(
       result3.stdout,
       'Cognitive: convergent, divergent, lateral, systems, critical, abstract',
-      'Cognitive patterns list'
+      'Cognitive patterns list',
     );
     assertContains(result3.stdout, 'Models: attention, lstm, transformer', 'Model patterns list');
   } else {
@@ -148,16 +134,10 @@ async function testPatternParsing() {
 
 // Test 2: Memory Optimization Validation
 async function testMemoryOptimization() {
-  console.log(
-    `\n${colors.bold}${colors.blue}Test 2: Memory Optimization Validation${colors.reset}`
-  );
-  console.log('─'.repeat(50));
-
   const patterns = ['convergent', 'divergent', 'lateral', 'systems', 'critical', 'abstract'];
   const memoryValues = [];
 
   for (const pattern of patterns) {
-    console.log(`\n${colors.yellow}Testing memory for ${pattern} pattern${colors.reset}`);
     const result = await runCommand(`npx ruv-swarm neural patterns --pattern ${pattern}`);
 
     if (result.success) {
@@ -172,7 +152,7 @@ async function testMemoryOptimization() {
           testResults.passed.push(`${pattern}: Memory optimized (${memoryUsage} MB)`);
         } else if (memoryUsage >= 200 && memoryUsage <= 350) {
           testResults.warnings.push(
-            `${pattern}: Memory slightly outside target (${memoryUsage} MB)`
+            `${pattern}: Memory slightly outside target (${memoryUsage} MB)`,
           );
         } else {
           testResults.failed.push(`${pattern}: Memory not optimized (${memoryUsage} MB)`);
@@ -192,9 +172,6 @@ async function testMemoryOptimization() {
     const maxMemory = Math.max(...memoryNumbers);
     const variance = maxMemory - minMemory;
 
-    console.log(`\n${colors.yellow}Memory Variance Analysis:${colors.reset}`);
-    console.log(`Min: ${minMemory} MB, Max: ${maxMemory} MB, Variance: ${variance} MB`);
-
     if (variance < 100) {
       testResults.passed.push(`Memory variance under 100 MB (${variance} MB)`);
     } else {
@@ -205,17 +182,7 @@ async function testMemoryOptimization() {
 
 // Test 3: Persistence Indicators Validation
 async function testPersistenceIndicators() {
-  console.log(
-    `\n${colors.bold}${colors.blue}Test 3: Persistence Indicators Validation${colors.reset}`
-  );
-  console.log('─'.repeat(50));
-
-  // First, create some training data to ensure we have persistence
-  console.log(`\n${colors.yellow}Creating training data...${colors.reset}`);
   await runCommand('npx ruv-swarm neural train --model attention --iterations 5');
-
-  // Now test neural status
-  console.log(`\n${colors.yellow}Testing neural status persistence indicators${colors.reset}`);
   const result = await runCommand('npx ruv-swarm neural status');
 
   if (result.success) {
@@ -223,7 +190,7 @@ async function testPersistenceIndicators() {
     assertPattern(
       result.stdout,
       /Training Sessions:\s*\d+\s*sessions/,
-      'Training sessions display'
+      'Training sessions display',
     );
 
     // Check for saved models count with 📁 indicator
@@ -266,15 +233,8 @@ async function testPersistenceIndicators() {
 
 // Additional test: Pattern switching memory efficiency
 async function testPatternSwitching() {
-  console.log(
-    `\n${colors.bold}${colors.blue}Additional Test: Pattern Switching Memory Efficiency${colors.reset}`
-  );
-  console.log('─'.repeat(50));
-
   const patterns = ['convergent', 'divergent', 'lateral'];
   const memorySamples = [];
-
-  console.log(`\n${colors.yellow}Testing rapid pattern switching...${colors.reset}`);
 
   // Switch between patterns multiple times
   for (let i = 0; i < 3; i++) {
@@ -307,7 +267,7 @@ async function testPatternSwitching() {
 
         if (variance < 50) {
           testResults.passed.push(
-            `${pattern}: Stable memory across switches (variance: ${variance} MB)`
+            `${pattern}: Stable memory across switches (variance: ${variance} MB)`,
           );
         } else {
           testResults.warnings.push(`${pattern}: Higher memory variance (${variance} MB)`);
@@ -319,54 +279,30 @@ async function testPatternSwitching() {
 
 // Main test runner
 async function runAllTests() {
-  console.log(
-    `${colors.bold}${colors.green}🧪 Neural Pattern Fixes Validation Test Suite${colors.reset}`
-  );
-  console.log(`${'='.repeat(60)}`);
-  console.log(`Started: ${new Date().toLocaleString()}`);
-
   try {
     // Run all tests
     await testPatternParsing();
     await testMemoryOptimization();
     await testPersistenceIndicators();
     await testPatternSwitching();
-
-    // Display results
-    console.log(`\n${colors.bold}${colors.blue}📊 Test Results Summary${colors.reset}`);
-    console.log('─'.repeat(50));
-
-    console.log(`\n${colors.green}✅ Passed Tests (${testResults.passed.length}):${colors.reset}`);
-    testResults.passed.forEach((test) => console.log(`   ✓ ${test}`));
+    testResults.passed.forEach((_test) => {});
 
     if (testResults.warnings.length > 0) {
-      console.log(`\n${colors.yellow}⚠️  Warnings (${testResults.warnings.length}):${colors.reset}`);
-      testResults.warnings.forEach((test) => console.log(`   ⚠ ${test}`));
+      testResults.warnings.forEach((_test) => {});
     }
 
     if (testResults.failed.length > 0) {
-      console.log(`\n${colors.red}❌ Failed Tests (${testResults.failed.length}):${colors.reset}`);
-      testResults.failed.forEach((test) => console.log(`   ✗ ${test}`));
+      testResults.failed.forEach((_test) => {});
     }
 
     // Overall status
     const totalTests = testResults.passed.length + testResults.failed.length;
-    const passRate =
+    const _passRate =
       totalTests > 0 ? ((testResults.passed.length / totalTests) * 100).toFixed(1) : 0;
 
-    console.log(`\n${colors.bold}Overall Status:${colors.reset}`);
-    console.log(`Total Tests: ${totalTests}`);
-    console.log(`Pass Rate: ${passRate}%`);
-
     if (testResults.failed.length === 0) {
-      console.log(
-        `\n${colors.green}${colors.bold}🎉 All tests passed! All fixes are working correctly.${colors.reset}`
-      );
       process.exit(0);
     } else {
-      console.log(
-        `\n${colors.red}${colors.bold}❌ Some tests failed. Please review the issues above.${colors.reset}`
-      );
       process.exit(1);
     }
   } catch (error) {

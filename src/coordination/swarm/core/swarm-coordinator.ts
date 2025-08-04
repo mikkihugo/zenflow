@@ -5,7 +5,7 @@
 
 import { EventEmitter } from 'node:events';
 import type { AgentType } from '../../../types/agent-types';
-import type { SwarmConfig, SwarmTopology } from '../../../types/shared-types';
+import type { SwarmTopology } from '../../../types/shared-types';
 
 export interface SwarmAgent {
   id: string;
@@ -53,10 +53,6 @@ export class SwarmCoordinator extends EventEmitter {
     uptime: 0,
   };
   private startTime = Date.now();
-
-  constructor(private config: SwarmConfig) {
-    super();
-  }
 
   /**
    * Add an agent to the swarm
@@ -108,7 +104,12 @@ export class SwarmCoordinator extends EventEmitter {
   /**
    * Assign a task to the best available agent
    */
-  async assignTask(task: { id: string; type: string; requirements: string[]; priority: number }): Promise<string | null> {
+  async assignTask(task: {
+    id: string;
+    type: string;
+    requirements: string[];
+    priority: number;
+  }): Promise<string | null> {
     const suitableAgents = this.findSuitableAgents(task.requirements);
     if (suitableAgents.length === 0) {
       return null;
@@ -141,10 +142,11 @@ export class SwarmCoordinator extends EventEmitter {
     if (agent) {
       agent.status = 'idle';
       agent.performance.tasksCompleted++;
-      
+
       const duration = Date.now() - task.startTime;
-      agent.performance.averageResponseTime = 
-        (agent.performance.averageResponseTime * (agent.performance.tasksCompleted - 1) + duration) / 
+      agent.performance.averageResponseTime =
+        (agent.performance.averageResponseTime * (agent.performance.tasksCompleted - 1) +
+          duration) /
         agent.performance.tasksCompleted;
     }
 
@@ -164,7 +166,10 @@ export class SwarmCoordinator extends EventEmitter {
   /**
    * Coordinate swarm operations
    */
-  async coordinateSwarm(agents: SwarmAgent[], topology?: SwarmTopology): Promise<{
+  async coordinateSwarm(
+    agents: SwarmAgent[],
+    topology?: SwarmTopology
+  ): Promise<{
     success: boolean;
     averageLatency: number;
     successRate: number;
@@ -179,7 +184,7 @@ export class SwarmCoordinator extends EventEmitter {
         const coordinationStart = Date.now();
         await this.coordinateAgent(agent, topology);
         const latency = Date.now() - coordinationStart;
-        
+
         latencies.push(latency);
         successfulCoordinations++;
       } catch (error) {
@@ -188,10 +193,21 @@ export class SwarmCoordinator extends EventEmitter {
       }
     }
 
-    const averageLatency = latencies.length > 0 ? 
-      latencies.reduce((sum, lat) => sum + lat, 0) / latencies.length : 0;
-    
+    const averageLatency =
+      latencies.length > 0 ? latencies.reduce((sum, lat) => sum + lat, 0) / latencies.length : 0;
+
     const successRate = agents.length > 0 ? successfulCoordinations / agents.length : 0;
+    
+    // Log coordination performance metrics
+    const totalCoordinationTime = Date.now() - startTime;
+    this.emit('coordination:performance', {
+      totalAgents: agents.length,
+      successfulCoordinations,
+      averageLatency,
+      successRate,
+      totalCoordinationTime,
+      timestamp: new Date()
+    });
 
     return {
       success: successRate > 0.8, // 80% success rate threshold
@@ -201,10 +217,10 @@ export class SwarmCoordinator extends EventEmitter {
     };
   }
 
-  private async coordinateAgent(agent: SwarmAgent, topology?: SwarmTopology): Promise<void> {
+  private async coordinateAgent(agent: SwarmAgent, _topology?: SwarmTopology): Promise<void> {
     // Mock coordination logic - in real implementation would handle actual coordination
-    await new Promise(resolve => setTimeout(resolve, Math.random() * 10 + 1)); // 1-11ms delay
-    
+    await new Promise((resolve) => setTimeout(resolve, Math.random() * 10 + 1)); // 1-11ms delay
+
     // Update agent status based on coordination
     if (!this.agents.has(agent.id)) {
       await this.addAgent(agent);
@@ -216,9 +232,10 @@ export class SwarmCoordinator extends EventEmitter {
   }
 
   private findSuitableAgents(requirements: string[]): SwarmAgent[] {
-    return Array.from(this.agents.values()).filter(agent => {
-      return agent.status === 'idle' && 
-             requirements.every(req => agent.capabilities.includes(req));
+    return Array.from(this.agents.values()).filter((agent) => {
+      return (
+        agent.status === 'idle' && requirements.every((req) => agent.capabilities.includes(req))
+      );
     });
   }
 
@@ -235,20 +252,23 @@ export class SwarmCoordinator extends EventEmitter {
     const completionRate = agent.performance.tasksCompleted;
     const errorPenalty = agent.performance.errorRate * 100;
     const responsePenalty = agent.performance.averageResponseTime / 1000;
-    
+
     return completionRate - errorPenalty - responsePenalty;
   }
 
   private updateMetrics(): void {
     const agents = Array.from(this.agents.values());
     this.metrics.agentCount = agents.length;
-    this.metrics.activeAgents = agents.filter(a => a.status !== 'offline').length;
-    
+    this.metrics.activeAgents = agents.filter((a) => a.status !== 'offline').length;
+
     if (agents.length > 0) {
       const totalTasks = agents.reduce((sum, a) => sum + a.performance.tasksCompleted, 0);
-      const totalResponseTime = agents.reduce((sum, a) => sum + a.performance.averageResponseTime, 0);
+      const totalResponseTime = agents.reduce(
+        (sum, a) => sum + a.performance.averageResponseTime,
+        0
+      );
       const totalErrors = agents.reduce((sum, a) => sum + a.performance.errorRate, 0);
-      
+
       this.metrics.completedTasks = totalTasks;
       this.metrics.averageResponseTime = totalResponseTime / agents.length;
       this.metrics.errorRate = totalErrors / agents.length;

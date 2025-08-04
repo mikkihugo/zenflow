@@ -27,15 +27,15 @@ class SwarmStatusHandler extends AdvancedToolHandler {
         busy: Math.floor(Math.random() * 8) + 2,
       },
       performance: {
-        avgResponseTime: Math.floor(Math.random() * 500) + 100 + 'ms',
-        throughput: Math.floor(Math.random() * 1000) + 200 + ' tasks/hour',
+        avgResponseTime: `${Math.floor(Math.random() * 500) + 100}ms`,
+        throughput: `${Math.floor(Math.random() * 1000) + 200} tasks/hour`,
         successRate: (0.85 + Math.random() * 0.14).toFixed(2),
         errorRate: (Math.random() * 0.05).toFixed(3),
       },
       resources: {
         cpuUtilization: (0.4 + Math.random() * 0.4).toFixed(2),
         memoryUsage: (0.3 + Math.random() * 0.5).toFixed(2),
-        networkLatency: Math.floor(Math.random() * 50) + 10 + 'ms',
+        networkLatency: `${Math.floor(Math.random() * 50) + 10}ms`,
       },
       coordination: {
         activeConnections: Math.floor(Math.random() * 50) + 10,
@@ -51,7 +51,7 @@ class SwarmStatusHandler extends AdvancedToolHandler {
           id: `agent_${i}`,
           type: ['architect', 'coder', 'analyst'][i],
           status: ['active', 'busy', 'idle'][i],
-          load: (Math.random() * 100).toFixed(0) + '%',
+          load: `${(Math.random() * 100).toFixed(0)}%`,
         })),
       };
     }
@@ -90,18 +90,18 @@ class AgentMetricsHandler extends AdvancedToolHandler {
         performance: {
           tasksCompleted: Math.floor(Math.random() * 50) + 10,
           successRate: (0.8 + Math.random() * 0.19).toFixed(2),
-          avgExecutionTime: Math.floor(Math.random() * 2000) + 500 + 'ms',
+          avgExecutionTime: `${Math.floor(Math.random() * 2000) + 500}ms`,
           errorCount: Math.floor(Math.random() * 5),
         },
         resource: {
           cpuUsage: (0.2 + Math.random() * 0.6).toFixed(2),
           memoryUsage: (0.1 + Math.random() * 0.7).toFixed(2),
-          diskIO: Math.floor(Math.random() * 100) + 50 + ' MB/s',
-          networkIO: Math.floor(Math.random() * 50) + 10 + ' MB/s',
+          diskIO: `${Math.floor(Math.random() * 100) + 50} MB/s`,
+          networkIO: `${Math.floor(Math.random() * 50) + 10} MB/s`,
         },
         task: {
           queueLength: Math.floor(Math.random() * 20),
-          processingTime: Math.floor(Math.random() * 1000) + 200 + 'ms',
+          processingTime: `${Math.floor(Math.random() * 1000) + 200}ms`,
           taskTypes: ['analysis', 'coding', 'testing'],
           priorityDistribution: {
             high: Math.floor(Math.random() * 10),
@@ -121,7 +121,7 @@ class AgentMetricsHandler extends AdvancedToolHandler {
   }
 }
 
-class PerformanceDashboardHandler extends AdvancedToolHandler {
+class PerformanceReportHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
     const { view = 'overview', refreshRate = 5000, alerts = true } = params;
 
@@ -132,7 +132,7 @@ class PerformanceDashboardHandler extends AdvancedToolHandler {
       timestamp: new Date().toISOString(),
       overview: {
         systemHealth: (0.85 + Math.random() * 0.14).toFixed(2),
-        totalThroughput: Math.floor(Math.random() * 5000) + 1000 + ' ops/min',
+        totalThroughput: `${Math.floor(Math.random() * 5000) + 1000} ops/min`,
         activeComponents: Math.floor(Math.random() * 50) + 20,
         errorRate: (Math.random() * 0.02).toFixed(3),
       },
@@ -157,9 +157,9 @@ class PerformanceDashboardHandler extends AdvancedToolHandler {
       realTimeMetrics: {
         requestsPerSecond: Math.floor(Math.random() * 1000) + 100,
         latency: {
-          p50: Math.floor(Math.random() * 100) + 50 + 'ms',
-          p95: Math.floor(Math.random() * 300) + 100 + 'ms',
-          p99: Math.floor(Math.random() * 500) + 200 + 'ms',
+          p50: `${Math.floor(Math.random() * 100) + 50}ms`,
+          p95: `${Math.floor(Math.random() * 300) + 100}ms`,
+          p99: `${Math.floor(Math.random() * 500) + 200}ms`,
         },
         activeConnections: Math.floor(Math.random() * 500) + 100,
       },
@@ -198,7 +198,7 @@ class HealthMonitorHandler extends AdvancedToolHandler {
       components: {
         swarmCoordination: {
           status: 'healthy',
-          latency: Math.floor(Math.random() * 50) + 10 + 'ms',
+          latency: `${Math.floor(Math.random() * 50) + 10}ms`,
           connectivity: (0.95 + Math.random() * 0.04).toFixed(2),
         },
         agentHealth: {
@@ -214,7 +214,7 @@ class HealthMonitorHandler extends AdvancedToolHandler {
         },
         networkHealth: {
           status: 'healthy',
-          bandwidth: Math.floor(Math.random() * 1000) + 100 + ' Mbps',
+          bandwidth: `${Math.floor(Math.random() * 1000) + 100} Mbps`,
           packetLoss: (Math.random() * 0.01).toFixed(3),
         },
       },
@@ -267,8 +267,8 @@ class BottleneckAnalyzerHandler extends AdvancedToolHandler {
           description: 'Task queue building up during peak hours',
           metrics: {
             queueLength: Math.floor(Math.random() * 1000) + 100,
-            avgWaitTime: Math.floor(Math.random() * 5000) + 1000 + 'ms',
-            processingRate: Math.floor(Math.random() * 100) + 50 + ' tasks/min',
+            avgWaitTime: `${Math.floor(Math.random() * 5000) + 1000}ms`,
+            processingRate: `${Math.floor(Math.random() * 100) + 50} tasks/min`,
           },
         },
         {
@@ -277,7 +277,7 @@ class BottleneckAnalyzerHandler extends AdvancedToolHandler {
           impact: 'coordination',
           description: 'Network latency affecting agent coordination',
           metrics: {
-            avgLatency: Math.floor(Math.random() * 200) + 50 + 'ms',
+            avgLatency: `${Math.floor(Math.random() * 200) + 50}ms`,
             packetLoss: (Math.random() * 0.02).toFixed(3),
             bandwidthUtilization: (0.7 + Math.random() * 0.25).toFixed(2),
           },
@@ -286,12 +286,12 @@ class BottleneckAnalyzerHandler extends AdvancedToolHandler {
       performance: {
         baseline: {
           throughput: Math.floor(Math.random() * 1000) + 500,
-          latency: Math.floor(Math.random() * 200) + 100 + 'ms',
+          latency: `${Math.floor(Math.random() * 200) + 100}ms`,
           errorRate: (Math.random() * 0.05).toFixed(3),
         },
         current: {
           throughput: Math.floor(Math.random() * 800) + 400,
-          latency: Math.floor(Math.random() * 400) + 150 + 'ms',
+          latency: `${Math.floor(Math.random() * 400) + 150}ms`,
           errorRate: (Math.random() * 0.08).toFixed(3),
         },
         degradation: {
@@ -394,12 +394,12 @@ export const monitoringTools: AdvancedMCPTool[] = [
         type: ['architect', 'coder', 'analyst', 'tester'][i % 4],
         status: ['active', 'idle', 'busy'][Math.floor(Math.random() * 3)],
         swarmId: swarmId || `swarm_${Math.floor(i / 5)}`,
-        uptime: Math.floor(Math.random() * 86400) + 3600 + 's',
+        uptime: `${Math.floor(Math.random() * 86400) + 3600}s`,
         ...(includeMetrics && {
           metrics: {
             tasksCompleted: Math.floor(Math.random() * 100),
             successRate: (0.8 + Math.random() * 0.19).toFixed(2),
-            avgResponseTime: Math.floor(Math.random() * 1000) + 100 + 'ms',
+            avgResponseTime: `${Math.floor(Math.random() * 1000) + 100}ms`,
           },
         }),
       }));
@@ -491,7 +491,7 @@ export const monitoringTools: AdvancedMCPTool[] = [
         alerts: { type: 'boolean', default: true },
       },
     },
-    handler: new PerformanceDashboardHandler().execute.bind(new PerformanceDashboardHandler()),
+    handler: new PerformanceReportHandler().execute.bind(new PerformanceReportHandler()),
   },
   {
     name: 'mcp__claude-zen__health_monitor',
@@ -639,7 +639,7 @@ export const monitoringTools: AdvancedMCPTool[] = [
         patterns: { type: 'array', items: { type: 'string' } },
       },
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: { analyzed: true, errors: 12, warnings: 45, patterns_found: 3 },
     }),
@@ -663,7 +663,7 @@ export const monitoringTools: AdvancedMCPTool[] = [
         optimize: { type: 'boolean', default: false },
       },
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: { tracked: true, utilization: { cpu: 65, memory: 78, disk: 45 }, optimizations: 2 },
     }),
@@ -687,7 +687,7 @@ export const monitoringTools: AdvancedMCPTool[] = [
         continuous: { type: 'boolean', default: false },
       },
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: { monitoring: true, latency: '15ms', packet_loss: 0.1, bandwidth: '100Mbps' },
     }),
@@ -715,7 +715,7 @@ export const monitoringTools: AdvancedMCPTool[] = [
         includeResolutions: { type: 'boolean', default: true },
       },
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: { errors: 8, critical: 1, resolved: 6, recommendations: ['update dependencies'] },
     }),
@@ -771,7 +771,7 @@ export const monitoringTools: AdvancedMCPTool[] = [
         detailed: { type: 'boolean', default: false },
       },
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: { compliance: 99.5, violations: 2, uptime: 99.9, response_time: '150ms' },
     }),

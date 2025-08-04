@@ -584,7 +584,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
     });
 
     it('should implement connection rate limiting', async () => {
-      const rapidConnections: WebSocket[] = [];
+      const _rapidConnections: WebSocket[] = [];
       const connectionAttempts = 15; // Attempt more than limit
       const successfulConnections: WebSocket[] = [];
       const failedConnections: number[] = [];
@@ -609,7 +609,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
           ]);
 
           successfulConnections.push(client);
-        } catch (error) {
+        } catch (_error) {
           failedConnections.push(i);
         }
 

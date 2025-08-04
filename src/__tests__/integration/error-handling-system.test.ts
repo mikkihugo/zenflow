@@ -14,15 +14,7 @@ import {
   initializeErrorHandling,
   shutdownErrorHandling,
 } from '../../utils/error-system-integration';
-import {
-  FACTError,
-  MCPError,
-  NetworkError,
-  RAGError,
-  SwarmError,
-  TimeoutError,
-  WASMError,
-} from '../../utils/errors';
+import { FACTError, NetworkError, RAGError, SwarmError, TimeoutError } from '../../utils/errors';
 import { systemResilienceOrchestrator } from '../../utils/system-resilience';
 
 describe('Comprehensive Error Handling System Integration', () => {
@@ -165,7 +157,7 @@ describe('Comprehensive Error Handling System Integration', () => {
 
       if (!bulkhead) {
         // Create test bulkhead if it doesn't exist
-        const testBulkhead = systemResilienceOrchestrator['bulkheads'];
+        const testBulkhead = systemResilienceOrchestrator.bulkheads;
         testBulkhead.set(
           'test',
           new (await import('../../utils/system-resilience')).Bulkhead({
@@ -373,7 +365,7 @@ describe('Comprehensive Error Handling System Integration', () => {
     it('should handle circular recovery attempts', async () => {
       let recoveryAttempts = 0;
 
-      const result = await executeWithErrorHandling(
+      const _result = await executeWithErrorHandling(
         async () => {
           recoveryAttempts++;
           throw new Error('Persistent failure');
@@ -399,7 +391,7 @@ describe('Comprehensive Error Handling System Integration', () => {
       const resourceManager = systemResilienceOrchestrator.getResourceManager();
 
       // Try to allocate many resources to test limits
-      const resourcePromises = Array.from({ length: 1000 }, (_, i) =>
+      const resourcePromises = Array.from({ length: 1000 }, (_, _i) =>
         resourceManager
           .allocateResource(
             'memory',

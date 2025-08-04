@@ -4,9 +4,9 @@
  * Tests unique capabilities of each architecture
  */
 
-import { spawn } from 'child_process';
-import fs from 'fs/promises';
-import path from 'path';
+import { spawn } from 'node:child_process';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 class ModelSpecificTests {
   constructor() {
@@ -43,8 +43,6 @@ class ModelSpecificTests {
   }
 
   async testLSTMSequentialMemory() {
-    console.log('\n🧠 Testing LSTM Sequential Memory Capabilities\n');
-
     const sequences = [
       { pattern: 'ABCDEFG', test: 'ABC', expected: 'D' },
       { pattern: '123456789', test: '456', expected: '7' },
@@ -54,7 +52,6 @@ class ModelSpecificTests {
     const results = [];
 
     for (const seq of sequences) {
-      console.log(`Testing pattern: ${seq.pattern}`);
       // Simulate LSTM memory test
       const accuracy = 85 + Math.random() * 10;
       results.push({
@@ -69,21 +66,13 @@ class ModelSpecificTests {
       averageAccuracy: results.reduce((a, b) => a + b.accuracy, 0) / results.length,
       memoryRetention: results.reduce((a, b) => a + b.memoryRetention, 0) / results.length,
     };
-
-    console.log(
-      `✅ Sequential memory test complete: ${this.results.lstm.sequentialMemory.averageAccuracy.toFixed(2)}% accuracy`
-    );
   }
 
   async testAttentionMultiHeadFocus() {
-    console.log('\n🎯 Testing Attention Multi-Head Focus Capabilities\n');
-
     const heads = [1, 4, 8, 16];
     const results = [];
 
     for (const headCount of heads) {
-      console.log(`Testing with ${headCount} attention heads...`);
-
       // Simulate multi-head attention test
       const performance = {
         heads: headCount,
@@ -98,25 +87,17 @@ class ModelSpecificTests {
     this.results.attention.multiHead = {
       configurations: results,
       optimalHeads: results.sort(
-        (a, b) => a.accuracy / a.computeTime - b.accuracy / b.computeTime
+        (a, b) => a.accuracy / a.computeTime - b.accuracy / b.computeTime,
       )[0].heads,
       scalability: 'linear',
     };
-
-    console.log(
-      `✅ Multi-head attention test complete: Optimal heads = ${this.results.attention.multiHead.optimalHeads}`
-    );
   }
 
   async testTransformerParallelization() {
-    console.log('\n⚡ Testing Transformer Parallelization Efficiency\n');
-
     const batchSizes = [1, 8, 32, 128];
     const results = [];
 
     for (const batch of batchSizes) {
-      console.log(`Testing batch size: ${batch}`);
-
       const singleTime = 100;
       const batchTime = singleTime + batch * 2; // Simulated parallel efficiency
       const efficiency = (singleTime * batch) / batchTime;
@@ -134,21 +115,13 @@ class ModelSpecificTests {
       maxEfficiency: Math.max(...results.map((r) => r.efficiency)),
       optimalBatch: results.sort((a, b) => b.throughput - a.throughput)[0].batchSize,
     };
-
-    console.log(
-      `✅ Parallelization test complete: Max efficiency = ${this.results.transformer.parallelization.maxEfficiency.toFixed(1)}%`
-    );
   }
 
   async testFeedforwardLatency() {
-    console.log('\n⚡ Testing Feedforward Inference Latency\n');
-
     const inputSizes = [10, 100, 1000, 10000];
     const results = [];
 
     for (const size of inputSizes) {
-      console.log(`Testing input size: ${size}`);
-
       const baseLatency = 0.5; // ms
       const latency = baseLatency + size * 0.001 + Math.random() * 0.1;
 
@@ -164,19 +137,12 @@ class ModelSpecificTests {
       avgLatency: results.reduce((a, b) => a + b.latency, 0) / results.length,
       p99Latency: Math.max(...results.map((r) => r.latency)),
     };
-
-    console.log(
-      `✅ Latency test complete: Avg = ${this.results.feedforward.latency.avgLatency.toFixed(2)}ms`
-    );
   }
 
   async testModelGeneralization() {
-    console.log('\n🎯 Testing Model Generalization Capabilities\n');
-
     const testSets = ['in-domain', 'near-domain', 'out-of-domain'];
 
     for (const model of ['lstm', 'attention', 'transformer', 'feedforward']) {
-      console.log(`\nTesting ${model} generalization...`);
       const results = [];
 
       for (const testSet of testSets) {
@@ -207,12 +173,9 @@ class ModelSpecificTests {
   }
 
   async testMemoryScaling() {
-    console.log('\n💾 Testing Memory Scaling Behavior\n');
-
     const sequenceLengths = [100, 500, 1000, 5000];
 
     for (const model of ['lstm', 'attention', 'transformer', 'feedforward']) {
-      console.log(`\nTesting ${model} memory scaling...`);
       const results = [];
 
       const baseMemory = {
@@ -252,8 +215,6 @@ class ModelSpecificTests {
   }
 
   async runAllTests() {
-    console.log('🚀 Starting Model-Specific Neural Tests\n');
-
     try {
       // Run model-specific tests
       await this.testLSTMSequentialMemory();
@@ -267,8 +228,6 @@ class ModelSpecificTests {
 
       // Generate report
       await this.generateReport();
-
-      console.log('\n✅ All tests completed successfully!');
     } catch (error) {
       console.error('❌ Test failed:', error);
       process.exit(1);
@@ -287,8 +246,6 @@ class ModelSpecificTests {
 
     const outputFile = path.join(outputDir, `model-specific-tests-${Date.now()}.json`);
     await fs.writeFile(outputFile, JSON.stringify(report, null, 2));
-
-    console.log(`\n📊 Test report saved to: ${outputFile}`);
     this.displaySummary();
   }
 
@@ -317,42 +274,7 @@ class ModelSpecificTests {
     };
   }
 
-  displaySummary() {
-    console.log('\n📊 MODEL-SPECIFIC TEST SUMMARY');
-    console.log('='.repeat(60));
-
-    console.log('\n🧠 LSTM:');
-    console.log(
-      `  Sequential Memory: ${this.results.lstm.sequentialMemory.averageAccuracy.toFixed(1)}% accuracy`
-    );
-    console.log(
-      `  Memory Retention: ${this.results.lstm.sequentialMemory.memoryRetention.toFixed(1)}%`
-    );
-    console.log(
-      `  Generalization Robustness: ${this.results.lstm.generalization.robustness.toFixed(1)}%`
-    );
-
-    console.log('\n🎯 Attention:');
-    console.log(`  Optimal Head Count: ${this.results.attention.multiHead.optimalHeads}`);
-    console.log(`  Scalability: ${this.results.attention.multiHead.scalability}`);
-    console.log(
-      `  Generalization Robustness: ${this.results.attention.generalization.robustness.toFixed(1)}%`
-    );
-
-    console.log('\n⚡ Transformer:');
-    console.log(
-      `  Max Parallel Efficiency: ${this.results.transformer.parallelization.maxEfficiency.toFixed(1)}%`
-    );
-    console.log(`  Optimal Batch Size: ${this.results.transformer.parallelization.optimalBatch}`);
-    console.log(
-      `  Generalization Robustness: ${this.results.transformer.generalization.robustness.toFixed(1)}%`
-    );
-
-    console.log('\n🚀 Feedforward:');
-    console.log(`  Average Latency: ${this.results.feedforward.latency.avgLatency.toFixed(2)}ms`);
-    console.log(`  P99 Latency: ${this.results.feedforward.latency.p99Latency.toFixed(2)}ms`);
-    console.log(`  Memory Scaling: ${this.results.feedforward.memoryScaling.scalingType}`);
-  }
+  displaySummary() {}
 }
 
 // Run tests

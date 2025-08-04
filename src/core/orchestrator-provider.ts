@@ -1,9 +1,11 @@
-import { ConfigManager } from '../config/config-manager';
-import { createLogger, EventBus, Orchestrator } from '../core';
+import { config } from '../config';
 import { HTTPMCPServer as MCPServer } from '../interfaces/mcp';
 import { TerminalManager } from '../interfaces/terminal';
 import { MemoryManager } from '../memory/manager';
 import type { CoordinationProvider } from '../types/shared-types';
+import { EventBus } from './event-bus';
+import { createLogger } from './logger';
+import { Orchestrator } from './orchestrator';
 
 let orchestratorInstance: Orchestrator | null = null;
 let coordinationProvider: CoordinationProvider | null = null;
@@ -23,23 +25,26 @@ export function setCoordinationProvider(provider: CoordinationProvider): void {
 export function createOrchestratorInstance(
   customCoordinationProvider?: CoordinationProvider
 ): Orchestrator {
-  const configManager = ConfigManager.getInstance();
-  const config = configManager.config;
   const logger = createLogger({ prefix: 'orchestrator' });
   const eventBus = new EventBus();
 
-  const terminalManager = new TerminalManager(config.terminal || {}, logger, eventBus);
-  const memoryManager = new MemoryManager(config.memory || {}, logger, eventBus);
+  // Get configuration sections from unified config
+  const terminalConfig = config.getSection('interfaces').terminal;
+  const memoryConfig = config.getSection('storage').memory;
+  const coordinationConfig = config.getSection('coordination');
+  const mcpConfig = config.getSection('interfaces').mcp.http;
+
+  const terminalManager = new TerminalManager(terminalConfig, logger, eventBus);
+  const memoryManager = new MemoryManager(memoryConfig, logger, eventBus);
 
   // Use injected coordination provider or fall back to lazy loading
   const coordinationManagerProvider = customCoordinationProvider || coordinationProvider;
 
-  const mcpServer = new MCPServer(config.mcp || { port: 3000, host: 'localhost', timeout: 30000 });
+  const mcpServer = new MCPServer(mcpConfig);
 
-  // Create orchestrator without direct coordination dependency
-  // The coordination manager will be injected at runtime
+  // Create orchestrator with proper coordination configuration
   const orchestrator = new Orchestrator(
-    config.orchestrator || {},
+    coordinationConfig, // Use coordination config instead of empty object
     terminalManager,
     memoryManager,
     coordinationManagerProvider as any, // Type assertion for now, will be properly typed later
@@ -62,16 +67,11 @@ export function getOrchestratorInstance(): Orchestrator {
       // Dynamic import to break circular dependency
       import('../coordination/manager')
         .then(({ CoordinationManager }) => {
-          const configManager = ConfigManager.getInstance();
-          const config = configManager.config;
+          const coordinationConfig = config.getSection('coordination');
           const logger = createLogger({ prefix: 'coordination' });
           const eventBus = new EventBus();
 
-          const coordinationManager = new CoordinationManager(
-            config.coordination || { maxAgents: 50, heartbeatInterval: 10000, timeout: 30000 },
-            logger,
-            eventBus
-          );
+          const coordinationManager = new CoordinationManager(coordinationConfig, logger, eventBus);
 
           setCoordinationProvider(coordinationManager as any);
         })

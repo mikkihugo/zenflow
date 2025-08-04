@@ -7,10 +7,10 @@
  * Validates that all components work with direct integration.
  */
 
-import { spawn } from 'child_process';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { spawn } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,15 +23,13 @@ class IntegrationTester {
 
   log(message, type = 'info') {
     const timestamp = new Date().toISOString();
-    const prefix =
+    const _prefix =
       {
         info: '✅',
         error: '❌',
         warn: '⚠️',
         test: '🧪',
       }[type] || 'ℹ️';
-
-    console.log(`${prefix} [${timestamp}] ${message}`);
 
     this.testResults.push({
       timestamp,
@@ -391,14 +389,14 @@ class IntegrationTester {
       { name: 'Neural Integration', method: () => this.testNeuralIntegration() },
     ];
 
-    let passedTests = 0;
+    let _passedTests = 0;
 
     for (const test of tests) {
       this.log(`\n--- Running ${test.name} ---`);
       try {
         const passed = await test.method();
         if (passed) {
-          passedTests++;
+          _passedTests++;
           this.log(`${test.name}: PASSED`, 'info');
         } else {
           this.log(`${test.name}: FAILED`, 'error');
@@ -408,7 +406,7 @@ class IntegrationTester {
       }
     }
 
-    this.log('\n' + '='.repeat(50));
+    this.log(`\n${'='.repeat(50)}`);
     const overallPassed = await this.generateReport();
 
     if (overallPassed) {

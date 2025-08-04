@@ -5,17 +5,21 @@
 import type {
   Agent,
   AgentConfig,
-  AgentEnvironment,
+  AgentMetrics,
   AgentState,
   AgentStatus,
+  AgentType,
+  ExecutionResult,
   Message,
   MessageType,
   Task,
 } from '../../types/agent-types';
 import { generateId, getDefaultCognitiveProfile } from '../swarm/core/utils';
 
-export class BaseAgent {
+export class BaseAgent implements Agent {
   id: string;
+  type: AgentType;
+  metrics: AgentMetrics;
   config: AgentConfig;
   state: AgentState;
   connections: string[] = [];
@@ -25,15 +29,35 @@ export class BaseAgent {
 
   constructor(config: AgentConfig) {
     this.id = config.id || generateId('agent');
+    this.type = config.type;
     this.config = {
       ...config,
       id: this.id,
       cognitiveProfile: config.cognitiveProfile || getDefaultCognitiveProfile(config.type),
     };
 
+    // Initialize metrics
+    this.metrics = {
+      tasksCompleted: 0,
+      tasksFailed: 0,
+      averageExecutionTime: 0,
+      successRate: 0,
+      cpuUsage: 0,
+      memoryUsage: 0,
+      diskUsage: 0,
+      networkUsage: 0,
+      codeQuality: 0,
+      testCoverage: 0,
+      bugRate: 0,
+      userSatisfaction: 0,
+      totalUptime: 0,
+      lastActivity: new Date(),
+      responseTime: 0,
+    };
+
     this.state = {
-      id: this.id,
-      name: config.name || `Agent-${this.id.id}`,
+      id: this.id as any, // Temporarily cast to any for AgentId compatibility
+      name: config.name || `Agent-${this.id}`,
       type: config.type,
       status: 'idle',
       capabilities: {
@@ -47,40 +71,19 @@ export class BaseAgent {
         apiIntegration: true,
         fileSystem: true,
         terminalAccess: false,
-        debugging: true,
-        projectManagement: false,
-        collaboration: true,
-        learning: true,
-        teaching: false,
-        mentoring: false,
-        monitoring: true,
-        optimization: true,
-        security: false,
-        deployment: false,
+        languages: ['javascript', 'typescript', 'python'],
+        frameworks: ['node.js', 'react', 'express'],
+        domains: ['web-development', 'api-development'],
+        tools: ['git', 'npm', 'docker'],
+        maxConcurrentTasks: 5,
+        maxMemoryUsage: 1024,
+        maxExecutionTime: 30000,
+        reliability: 0.95,
+        speed: 0.8,
+        quality: 0.9,
         ...config.capabilities,
       },
-      metrics: {
-        tasksCompleted: 0,
-        tasksFailed: 0,
-        averageExecutionTime: 0,
-        successRate: 1.0,
-        cpuUsage: 0,
-        memoryUsage: 0,
-        diskUsage: 0,
-        networkUsage: 0,
-        codeQuality: 1.0,
-        testCoverage: 0,
-        bugRate: 0,
-        userSatisfaction: 1.0,
-        totalUptime: 0,
-        lastActivity: new Date(),
-        responseTime: 0,
-        tasksInProgress: 0,
-        resourceUsage: {
-          memory: 0,
-          cpu: 0,
-        },
-      },
+      metrics: this.metrics,
       workload: 0,
       health: 1.0,
       config: this.config,
@@ -103,12 +106,6 @@ export class BaseAgent {
       collaborators: [],
       currentTask: null,
       load: 0,
-      performance: {
-        tasksCompleted: 0,
-        tasksFailed: 0,
-        averageExecutionTime: 0,
-        successRate: 0,
-      },
     };
 
     this.setupMessageHandlers();
@@ -121,33 +118,7 @@ export class BaseAgent {
     this.messageHandlers.set('status_update', this.handleStatusUpdate.bind(this));
   }
 
-  async execute(task: Task): Promise<any> {
-    const startTime = Date.now();
-
-    try {
-      this.update({ status: 'busy', currentTask: task.id });
-
-      // Execute task based on agent type
-      const result = await this.executeTaskByType(task);
-
-      // Update performance metrics
-      const executionTime = Date.now() - startTime;
-      this.updatePerformanceMetrics(true, executionTime);
-
-      this.update({ status: 'idle', currentTask: null });
-
-      return result;
-    } catch (error) {
-      this.updatePerformanceMetrics(false, Date.now() - startTime);
-      this.update({ status: 'error', currentTask: null });
-      throw error;
-    }
-  }
-
   protected async executeTaskByType(task: Task): Promise<any> {
-    // Base implementation - override in specialized agents
-    console.log(`Agent ${this.id} executing task ${task.id}: ${task.description}`);
-
     // Simulate work
     await new Promise((resolve) => setTimeout(resolve, 100 + Math.random() * 400));
 
@@ -191,25 +162,43 @@ export class BaseAgent {
 
   private async handleTaskAssignment(message: Message): Promise<void> {
     const task = message.payload as Task;
-    console.log(`Agent ${this.id} received task assignment: ${task.id}`);
-    // Task execution is handled by the swarm coordinator
+    
+    // Execute the assigned task
+    this.status = 'active';
+    try {
+      const result = await this.execute(task);
+      
+      // Send result back to the swarm coordinator
+      await this.communicate({
+        id: `result-${Date.now()}`,
+        fromAgentId: this.id,
+        toAgentId: message.fromAgentId,
+        swarmId: message.swarmId,
+        type: 'result',
+        content: result,
+        timestamp: new Date(),
+        requiresResponse: false
+      });
+      
+      this.status = 'idle';
+    } catch (error) {
+      this.status = 'error';
+      throw error;
+    }
   }
 
-  private async handleCoordination(message: Message): Promise<void> {
-    console.log(`Agent ${this.id} received coordination message from ${message.from}`);
+  private async handleCoordination(_message: Message): Promise<void> {
     // Handle coordination logic
   }
 
   private async handleKnowledgeShare(message: Message): Promise<void> {
-    console.log(`Agent ${this.id} received knowledge share from ${message.from}`);
     // Store shared knowledge in memory
     if (this.config.memory) {
       this.config.memory.shortTerm.set(`knowledge_${message.id}`, message.payload);
     }
   }
 
-  private async handleStatusUpdate(message: Message): Promise<void> {
-    console.log(`Agent ${this.id} received status update from ${message.from}`);
+  private async handleStatusUpdate(_message: Message): Promise<void> {
     // Process status update
   }
 
@@ -219,6 +208,74 @@ export class BaseAgent {
 
   getWasmAgentId(): number | undefined {
     return this.wasmAgentId;
+  }
+
+  // Required Agent interface methods
+  async initialize(): Promise<void> {
+    this.state.status = 'initializing';
+    // Initialize agent resources, connections, etc.
+    this.state.status = 'idle';
+    this.state.lastHeartbeat = new Date();
+  }
+
+  async execute(task: Task): Promise<ExecutionResult> {
+    const startTime = Date.now();
+    this.state.status = 'busy';
+    this.state.currentTask = task.id;
+
+    try {
+      // Basic task execution - can be overridden by specialized agents
+      const result = {
+        success: true,
+        data: { message: `Task ${task.id} completed by ${this.type} agent` },
+        executionTime: Date.now() - startTime,
+        agentId: this.id,
+        metadata: {
+          agentType: this.type,
+          taskId: task.id,
+        },
+      };
+
+      this.metrics.tasksCompleted++;
+      this.updatePerformanceMetrics(true, result.executionTime);
+      return result;
+    } catch (error) {
+      this.metrics.tasksFailed++;
+      this.updatePerformanceMetrics(false, Date.now() - startTime);
+
+      return {
+        success: false,
+        data: { error: error instanceof Error ? error.message : String(error) },
+        executionTime: Date.now() - startTime,
+        agentId: this.id,
+        metadata: {
+          agentType: this.type,
+          taskId: task.id,
+        },
+      };
+    } finally {
+      this.state.status = 'idle';
+      this.state.currentTask = null;
+      this.state.lastHeartbeat = new Date();
+    }
+  }
+
+  async handleMessage(message: Message): Promise<void> {
+    await this.communicate(message);
+  }
+
+  updateState(updates: Partial<AgentState>): void {
+    this.state = { ...this.state, ...updates };
+  }
+
+  getStatus(): AgentStatus {
+    return this.state.status;
+  }
+
+  async shutdown(): Promise<void> {
+    this.state.status = 'terminated';
+    // Clean up resources, close connections, etc.
+    this.state.status = 'offline';
   }
 }
 
@@ -231,8 +288,6 @@ export class ResearcherAgent extends BaseAgent {
   }
 
   protected override async executeTaskByType(task: Task): Promise<any> {
-    console.log(`Researcher ${this.id} analyzing: ${task.description}`);
-
     // Simulate research activities
     const phases = ['collecting_data', 'analyzing', 'synthesizing', 'reporting'];
     const results: any[] = [];
@@ -266,8 +321,6 @@ export class CoderAgent extends BaseAgent {
   }
 
   protected override async executeTaskByType(task: Task): Promise<any> {
-    console.log(`Coder ${this.id} implementing: ${task.description}`);
-
     // Simulate coding activities
     const steps = ['design', 'implement', 'test', 'refactor'];
     const codeArtifacts: any[] = [];
@@ -304,8 +357,6 @@ export class AnalystAgent extends BaseAgent {
   }
 
   protected override async executeTaskByType(task: Task): Promise<any> {
-    console.log(`Analyst ${this.id} analyzing: ${task.description}`);
-
     // Simulate analysis activities
     await new Promise((resolve) => setTimeout(resolve, 400));
 
@@ -381,10 +432,12 @@ export class AgentPool {
 
     if (!selectedAgent && this.availableAgents.size > 0) {
       const firstAvailable = Array.from(this.availableAgents)[0];
-      selectedAgent = this.agents.get(firstAvailable);
+      if (firstAvailable) {
+        selectedAgent = this.agents.get(firstAvailable);
+      }
     }
 
-    if (selectedAgent) {
+    if (selectedAgent?.id) {
       this.availableAgents.delete(selectedAgent.id);
     }
 

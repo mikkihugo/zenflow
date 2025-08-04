@@ -426,7 +426,7 @@ export class QueryOptimizer extends EventEmitter {
       name: 'graph_query_optimization',
       description: 'Optimize graph traversal queries',
       condition: (query) => query.operation.includes('graph'),
-      apply: (query, engines) => {
+      apply: (query, _engines) => {
         const optimized = { ...query };
 
         // Add graph-specific optimizations

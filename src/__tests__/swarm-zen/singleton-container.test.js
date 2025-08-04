@@ -30,8 +30,6 @@ class DependentService {
 }
 
 async function runTests() {
-  console.log('🧪 Running Singleton Container Tests...\n');
-
   let testsPassed = 0;
   let testsTotal = 0;
 
@@ -39,7 +37,6 @@ async function runTests() {
     testsTotal++;
     try {
       testFn();
-      console.log(`✅ ${name}`);
       testsPassed++;
     } catch (error) {
       console.error(`❌ ${name}: ${error.message}`);
@@ -50,7 +47,6 @@ async function runTests() {
     testsTotal++;
     return testFn()
       .then(() => {
-        console.log(`✅ ${name}`);
         testsPassed++;
       })
       .catch((error) => {
@@ -113,7 +109,7 @@ async function runTests() {
       throw new Error('Should have thrown error for missing factory');
     } catch (error) {
       if (!error.message.includes('No factory registered')) {
-        throw new Error('Wrong error message: ' + error.message);
+        throw new Error(`Wrong error message: ${error.message}`);
       }
     }
 
@@ -162,7 +158,7 @@ async function runTests() {
     const stats = container.getStats();
     if (stats.registeredServices !== 100 || stats.activeInstances !== 100) {
       throw new Error(
-        `Expected 100 services and instances, got ${stats.registeredServices}/${stats.activeInstances}`
+        `Expected 100 services and instances, got ${stats.registeredServices}/${stats.activeInstances}`,
       );
     }
 
@@ -207,7 +203,7 @@ async function runTests() {
       throw new Error('Should not allow instance creation during destruction');
     } catch (error) {
       if (!error.message.includes('during container destruction')) {
-        throw new Error('Wrong error for destruction state: ' + error.message);
+        throw new Error(`Wrong error for destruction state: ${error.message}`);
       }
     }
 
@@ -250,7 +246,7 @@ async function runTests() {
       throw new Error('Should have thrown factory error');
     } catch (error) {
       if (!error.message.includes('Failed to create instance')) {
-        throw new Error('Wrong error handling: ' + error.message);
+        throw new Error(`Wrong error handling: ${error.message}`);
       }
     }
 
@@ -285,34 +281,29 @@ async function runTests() {
     resetContainer();
 
     const container = getContainer();
-    container.register('RuvSwarm', () => ({
+    container.register('ZenSwarm', () => ({
       initialized: true,
       id: 'test-instance',
       destroy: () => {},
     }));
 
-    const instance1 = container.get('RuvSwarm');
-    const instance2 = container.get('RuvSwarm');
+    const instance1 = container.get('ZenSwarm');
+    const instance2 = container.get('ZenSwarm');
 
     if (instance1 !== instance2) {
-      throw new Error('RuvSwarm instances should be singleton');
+      throw new Error('ZenSwarm instances should be singleton');
     }
 
     if (!instance1.initialized) {
-      throw new Error('RuvSwarm instance not properly configured');
+      throw new Error('ZenSwarm instance not properly configured');
     }
 
     resetContainer();
   });
 
-  // Final Results
-  console.log(`\n📊 Test Results: ${testsPassed}/${testsTotal} passed`);
-
   if (testsPassed === testsTotal) {
-    console.log('🎉 All tests passed! Singleton Container is ready for production.');
     return true;
   } else {
-    console.log('❌ Some tests failed. Review implementation before deployment.');
     return false;
   }
 }

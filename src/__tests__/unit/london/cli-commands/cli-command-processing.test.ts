@@ -5,7 +5,7 @@
  * Tests focus on interactions and behavior verification rather than state testing.
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 // Mock types for testing CLI command processing
 interface MockCommandRegistry {
@@ -521,7 +521,7 @@ describe('CLI Command Processing - TDD London', () => {
 
       const result = await mockRegistry.execute('status', context);
 
-      if (result && result.success) {
+      if (result?.success) {
         metricsTracker.recordSuccess('status');
       } else {
         metricsTracker.recordFailure('status');

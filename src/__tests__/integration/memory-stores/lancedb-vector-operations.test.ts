@@ -6,10 +6,10 @@
  * - Classical School: Test actual vector similarity computations and data integrity
  */
 
+import { rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { rmSync } from 'fs';
-import { tmpdir } from 'os';
-import { join } from 'path';
 import LanceDBInterface from '../../../database/lancedb-interface';
 
 // Mock vector similarity functions for testing
@@ -380,7 +380,6 @@ describe('LanceDB Vector Operations Integration Tests', () => {
         const durationMs = Number(endTime - startTime) / 1_000_000;
 
         expect(result.inserted).toBe(batchSize);
-        console.log(`Batch insertion: ${batchSize} vectors in ${durationMs.toFixed(2)}ms`);
 
         // Should complete within reasonable time
         expect(durationMs).toBeLessThan(10000); // 10 seconds max
@@ -388,8 +387,6 @@ describe('LanceDB Vector Operations Integration Tests', () => {
         // Performance test of vector operations
         const endTime = process.hrtime.bigint();
         const durationMs = Number(endTime - startTime) / 1_000_000;
-
-        console.log(`Vector generation: ${batchSize} vectors in ${durationMs.toFixed(2)}ms`);
         expect(largeBatch).toHaveLength(batchSize);
         expect(durationMs).toBeLessThan(1000); // Should be fast
       }
@@ -423,8 +420,6 @@ describe('LanceDB Vector Operations Integration Tests', () => {
         const endTime = process.hrtime.bigint();
         const durationMs = Number(endTime - startTime) / 1_000_000;
         const queriesPerSecond = (numQueries / durationMs) * 1000;
-
-        console.log(`Search performance: ${queriesPerSecond.toFixed(0)} queries/sec`);
         expect(queriesPerSecond).toBeGreaterThan(10); // Minimum acceptable performance
       } catch {
         // Classical similarity search benchmark
@@ -444,8 +439,6 @@ describe('LanceDB Vector Operations Integration Tests', () => {
         const endTime = process.hrtime.bigint();
         const durationMs = Number(endTime - startTime) / 1_000_000;
         const queriesPerSecond = (numQueries / durationMs) * 1000;
-
-        console.log(`Classical search: ${queriesPerSecond.toFixed(0)} queries/sec`);
         expect(queriesPerSecond).toBeGreaterThan(1); // Should handle at least 1 query/sec
       }
     });
@@ -559,7 +552,6 @@ describe('LanceDB Vector Operations Integration Tests', () => {
       }
 
       const hitRate = hits / (hits + misses);
-      console.log(`Cache hit rate: ${(hitRate * 100).toFixed(1)}%`);
 
       expect(hitRate).toBeGreaterThan(0);
       expect(hitRate).toBeLessThan(1);

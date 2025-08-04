@@ -45,7 +45,7 @@ class SwarmInitHandler extends AdvancedToolHandler {
     return this.createResult(true, result);
   }
 
-  private generateCoordinationNodes(topology: string, maxAgents: number) {
+  private generateCoordinationNodes(_topology: string, maxAgents: number) {
     const nodes = [];
     for (let i = 0; i < Math.min(maxAgents, 3); i++) {
       nodes.push({
@@ -134,7 +134,7 @@ class TaskOrchestrateHandler extends AdvancedToolHandler {
     return this.createResult(true, result);
   }
 
-  private generateExecutionPlan(task: string, strategy: string) {
+  private generateExecutionPlan(_task: string, strategy: string) {
     const baseSteps = [
       'task analysis',
       'resource allocation',
@@ -155,7 +155,7 @@ class TaskOrchestrateHandler extends AdvancedToolHandler {
     const baseTime = task.length * 10; // Simple heuristic
     const strategyMultiplier =
       strategy === 'parallel' ? 0.6 : strategy === 'sequential' ? 1.2 : 1.0;
-    return Math.round(baseTime * strategyMultiplier) + 'ms';
+    return `${Math.round(baseTime * strategyMultiplier)}ms`;
   }
 }
 
@@ -176,7 +176,7 @@ class SwarmCoordinationHandler extends AdvancedToolHandler {
       metrics: {
         totalSwarms: swarmIds.length || 1,
         activeAgents: Math.floor(Math.random() * 50) + 10,
-        messageLatency: Math.floor(Math.random() * 50) + 10 + 'ms',
+        messageLatency: `${Math.floor(Math.random() * 50) + 10}ms`,
         coordinationEfficiency: (0.85 + Math.random() * 0.1).toFixed(2),
       },
     };
@@ -504,7 +504,7 @@ export const coordinationTools: AdvancedMCPTool[] = [
         constraints: { type: 'object', description: 'Topology constraints' },
       },
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: { optimized: true, improvement: '25% efficiency gain', new_topology: 'hierarchical' },
     }),
@@ -556,7 +556,7 @@ export const coordinationTools: AdvancedMCPTool[] = [
         aggregation: { type: 'string', enum: ['avg', 'max', 'min', 'sum'], default: 'avg' },
       },
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: {
         metrics: { efficiency: 92, latency: '12ms', throughput: '1200 ops/s' },

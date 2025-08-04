@@ -5,12 +5,12 @@
 import {
   type BackendConfig,
   type BackendStats,
-  BaseBackend,
   type JSONValue,
+  MemoryBackend,
   type StorageResult,
-} from './base.backend';
+} from './memory-backend';
 
-export class JSONBackend extends BaseBackend {
+export class JSONBackend extends MemoryBackend {
   private data = new Map<string, { value: JSONValue; timestamp: number }>();
   private filepath: string;
 

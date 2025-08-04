@@ -7,10 +7,9 @@
 
 import { jest } from '@jest/globals';
 import { ConversationMemoryImpl } from '../../../src/intelligence/conversation-framework/memory';
-import {
-  ConversationQuery,
-  type ConversationSession,
-  type ConversationStatus,
+import type {
+  ConversationSession,
+  ConversationStatus,
 } from '../../../src/intelligence/conversation-framework/types';
 import type { AgentId } from '../../../src/types/agent-types';
 
@@ -123,41 +122,41 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
 
       // Assert - Verify exact data integrity
       expect(retrieved).not.toBeNull();
-      expect(retrieved!.id).toBe(conversation.id);
-      expect(retrieved!.title).toBe(conversation.title);
-      expect(retrieved!.description).toBe(conversation.description);
-      expect(retrieved!.status).toBe(conversation.status);
+      expect(retrieved?.id).toBe(conversation.id);
+      expect(retrieved?.title).toBe(conversation.title);
+      expect(retrieved?.description).toBe(conversation.description);
+      expect(retrieved?.status).toBe(conversation.status);
 
       // Verify participants are preserved
-      expect(retrieved!.participants).toHaveLength(2);
-      expect(retrieved!.participants[0]).toEqual(sampleAgents[0]);
-      expect(retrieved!.participants[1]).toEqual(sampleAgents[1]);
+      expect(retrieved?.participants).toHaveLength(2);
+      expect(retrieved?.participants[0]).toEqual(sampleAgents[0]);
+      expect(retrieved?.participants[1]).toEqual(sampleAgents[1]);
 
       // Verify context is preserved
-      expect(retrieved!.context.goal).toBe(conversation.context.goal);
-      expect(retrieved!.context.domain).toBe(conversation.context.domain);
-      expect(retrieved!.context.constraints).toEqual(conversation.context.constraints);
+      expect(retrieved?.context.goal).toBe(conversation.context.goal);
+      expect(retrieved?.context.domain).toBe(conversation.context.domain);
+      expect(retrieved?.context.constraints).toEqual(conversation.context.constraints);
 
       // Verify messages are preserved with exact content
-      expect(retrieved!.messages).toHaveLength(1);
-      expect(retrieved!.messages[0].content.text).toBe('Test message');
-      expect(retrieved!.messages[0].content.code).toBe('console.log("test");');
-      expect(retrieved!.messages[0].metadata.tags).toEqual(['test', 'storage']);
+      expect(retrieved?.messages).toHaveLength(1);
+      expect(retrieved?.messages[0].content.text).toBe('Test message');
+      expect(retrieved?.messages[0].content.code).toBe('console.log("test");');
+      expect(retrieved?.messages[0].metadata.tags).toEqual(['test', 'storage']);
 
       // Verify outcomes are preserved
-      expect(retrieved!.outcomes).toHaveLength(1);
-      expect(retrieved!.outcomes[0].type).toBe('solution');
-      expect(retrieved!.outcomes[0].confidence).toBe(0.95);
+      expect(retrieved?.outcomes).toHaveLength(1);
+      expect(retrieved?.outcomes[0].type).toBe('solution');
+      expect(retrieved?.outcomes[0].confidence).toBe(0.95);
 
       // Verify metrics are preserved with exact values
-      expect(retrieved!.metrics.messageCount).toBe(1);
-      expect(retrieved!.metrics.averageResponseTime).toBe(15000);
-      expect(retrieved!.metrics.consensusScore).toBe(0.8);
-      expect(retrieved!.metrics.qualityRating).toBe(0.9);
+      expect(retrieved?.metrics.messageCount).toBe(1);
+      expect(retrieved?.metrics.averageResponseTime).toBe(15000);
+      expect(retrieved?.metrics.consensusScore).toBe(0.8);
+      expect(retrieved?.metrics.qualityRating).toBe(0.9);
 
       // Verify dates are properly restored
-      expect(retrieved!.startTime).toEqual(conversation.startTime);
-      expect(retrieved!.endTime).toEqual(conversation.endTime);
+      expect(retrieved?.startTime).toEqual(conversation.startTime);
+      expect(retrieved?.endTime).toEqual(conversation.endTime);
     });
 
     it('should return null for non-existent conversation', async () => {
@@ -264,8 +263,8 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       const conv1 = agent1Conversations.find((c) => c.id === 'conv-1');
       const conv2 = agent1Conversations.find((c) => c.id === 'conv-2');
 
-      expect(conv1!.title).toBe('Agent 1 Conversation');
-      expect(conv2!.title).toBe('Both Agents Conversation');
+      expect(conv1?.title).toBe('Agent 1 Conversation');
+      expect(conv2?.title).toBe('Both Agents Conversation');
     });
 
     it('should handle pagination in agent conversation search', async () => {
@@ -470,17 +469,17 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       const updatedConversation = await memory.getConversation('conv-update-test');
 
       expect(updatedConversation).not.toBeNull();
-      expect(updatedConversation!.status).toBe('completed');
-      expect(updatedConversation!.endTime).toEqual(new Date('2024-01-01T11:00:00Z'));
-      expect(updatedConversation!.messages).toHaveLength(2);
-      expect(updatedConversation!.metrics.messageCount).toBe(2);
-      expect(updatedConversation!.metrics.participationByAgent['agent-2']).toBe(1);
+      expect(updatedConversation?.status).toBe('completed');
+      expect(updatedConversation?.endTime).toEqual(new Date('2024-01-01T11:00:00Z'));
+      expect(updatedConversation?.messages).toHaveLength(2);
+      expect(updatedConversation?.metrics.messageCount).toBe(2);
+      expect(updatedConversation?.metrics.participationByAgent['agent-2']).toBe(1);
 
       // Verify original data is preserved
-      expect(updatedConversation!.title).toBe('Original Title');
-      expect(updatedConversation!.context.goal).toBe('Original goal');
-      expect(updatedConversation!.messages[0].content.text).toBe('Original message');
-      expect(updatedConversation!.messages[1].content.text).toBe('New message after update');
+      expect(updatedConversation?.title).toBe('Original Title');
+      expect(updatedConversation?.context.goal).toBe('Original goal');
+      expect(updatedConversation?.messages[0].content.text).toBe('Original message');
+      expect(updatedConversation?.messages[1].content.text).toBe('New message after update');
     });
 
     it('should throw error when updating non-existent conversation', async () => {
@@ -587,17 +586,17 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       const searchResults = await memory.searchConversations({ agentId: 'agent-1' });
 
       // Assert - Verify consistency throughout all operations
-      expect(retrieved1!.status).toBe('active');
-      expect(retrieved1!.metrics.messageCount).toBe(0);
+      expect(retrieved1?.status).toBe('active');
+      expect(retrieved1?.metrics.messageCount).toBe(0);
 
-      expect(retrieved2!.status).toBe('paused');
-      expect(retrieved2!.metrics.messageCount).toBe(5);
-      expect(retrieved2!.title).toBe(conversation.title); // Unchanged
+      expect(retrieved2?.status).toBe('paused');
+      expect(retrieved2?.metrics.messageCount).toBe(5);
+      expect(retrieved2?.title).toBe(conversation.title); // Unchanged
 
       expect(searchResults.some((c) => c.id === 'conv-consistency-test')).toBe(true);
       const foundConv = searchResults.find((c) => c.id === 'conv-consistency-test');
-      expect(foundConv!.status).toBe('paused');
-      expect(foundConv!.metrics.messageCount).toBe(5);
+      expect(foundConv?.status).toBe('paused');
+      expect(foundConv?.metrics.messageCount).toBe(5);
     });
   });
 });

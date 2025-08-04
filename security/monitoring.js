@@ -31,9 +31,11 @@ export class SecurityMonitor {
   }
 
   writeToLog(entry) {
-    const logLine = JSON.stringify(entry) + '\n';
-    // Implement file writing (async)
-    console.log('Security Event:', logLine);
+    const logLine = `${JSON.stringify(entry)}\n`;
+    
+    // Write to log file
+    const fs = require('node:fs');
+    fs.appendFileSync(this.logFile, logLine);
   }
 
   async sendAlert(event) {
@@ -48,9 +50,16 @@ export class SecurityMonitor {
         source: event.source,
         metadata: event.metadata,
       };
-
-      // Send to webhook (implement based on your alerting system)
-      console.log('🚨 SECURITY ALERT:', alert);
+      
+      // Send alert to webhook
+      const fetch = require('node-fetch');
+      await fetch(this.alertWebhook, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(alert)
+      });
+      
+      console.log(`Security alert sent: ${alert.title}`);
     } catch (error) {
       console.error('Failed to send security alert:', error);
     }

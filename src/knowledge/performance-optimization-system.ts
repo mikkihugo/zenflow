@@ -774,19 +774,19 @@ export class PerformanceOptimizationSystem extends EventEmitter {
   }
 
   // Implementation of utility methods would continue here...
-  private async checkIntelligentCache(request: KnowledgeRequest): Promise<CacheResult> {
+  private async checkIntelligentCache(_request: KnowledgeRequest): Promise<CacheResult> {
     // Implementation placeholder
     return { hit: false, data: null };
   }
 
-  private async calculateRequestPriority(request: KnowledgeRequest): Promise<RequestPriority> {
+  private async calculateRequestPriority(_request: KnowledgeRequest): Promise<RequestPriority> {
     // Implementation placeholder
     return { level: 'medium', score: 0.5 };
   }
 
   private async selectProcessingStrategy(
-    request: KnowledgeRequest,
-    priority: RequestPriority
+    _request: KnowledgeRequest,
+    _priority: RequestPriority
   ): Promise<ProcessingStrategy> {
     // Implementation placeholder
     return { name: 'default', config: {} };

@@ -1,5 +1,5 @@
 /**
- * Utility functions for RuvSwarm
+ * Utility functions for ZenSwarm
  */
 
 import type { AgentType, CognitiveProfile, SwarmTopology, TaskPriority } from './types';
@@ -102,14 +102,16 @@ export function getDefaultCognitiveProfile(type: AgentType): CognitiveProfile {
   };
 
   // Return known profile or default for unknown types
-  return knownProfiles[type] || {
-    analytical: 0.5,
-    creative: 0.5,
-    systematic: 0.5,
-    intuitive: 0.5,
-    collaborative: 0.5,
-    independent: 0.5,
-  };
+  return (
+    knownProfiles[type] || {
+      analytical: 0.5,
+      creative: 0.5,
+      systematic: 0.5,
+      intuitive: 0.5,
+      collaborative: 0.5,
+      independent: 0.5,
+    }
+  );
 }
 
 /**
@@ -240,7 +242,7 @@ export function deepClone<T>(obj: T): T {
     return new Date(obj.getTime()) as any;
   }
 
-  if (obj instanceof Array) {
+  if (Array.isArray(obj)) {
     return obj.map((item) => deepClone(item)) as any;
   }
 
@@ -262,7 +264,7 @@ export function deepClone<T>(obj: T): T {
 
   const cloned = {} as T;
   for (const key in obj) {
-    if (Object.hasOwn(obj, key)) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
       cloned[key] = deepClone(obj[key]);
     }
   }

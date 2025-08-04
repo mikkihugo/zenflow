@@ -4,8 +4,6 @@
 
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import Database from 'better-sqlite3';
-import { promises as fs } from 'fs';
-import path from 'path';
 
 // Mock modules
 jest.mock('better-sqlite3');
@@ -117,7 +115,7 @@ describe('PersistenceManager Edge Cases', () => {
       circularData.self = circularData;
 
       await expect(persistence.storeMemory('circular', circularData)).rejects.toThrow(
-        'Converting circular structure'
+        'Converting circular structure',
       );
     });
 
@@ -126,7 +124,7 @@ describe('PersistenceManager Edge Cases', () => {
         'key/with/slashes',
         'key with spaces',
         'key"with"quotes',
-        "key'with'apostrophes",
+        'key\'with\'apostrophes',
         'key\\with\\backslashes',
         'key\nwith\nnewlines',
         'key\twith\ttabs',
@@ -256,7 +254,7 @@ describe('PersistenceManager Edge Cases', () => {
       await expect(persistence.saveNeuralModel('agent1', 'model1', null)).rejects.toThrow();
 
       await expect(
-        persistence.saveNeuralModel('agent1', 'model1', 'not-an-object')
+        persistence.saveNeuralModel('agent1', 'model1', 'not-an-object'),
       ).rejects.toThrow();
     });
 
@@ -359,7 +357,7 @@ describe('PersistenceManager Edge Cases', () => {
             setTimeout(() => {
               persistence.storeMemory(`pending-${i}`, { data: i }).then(resolve);
             }, 100);
-          })
+          }),
         );
       }
 
@@ -402,7 +400,7 @@ describe('PersistenceManager Edge Cases', () => {
       });
 
       await expect(persistence.storeMemory('key', { data: 'test' })).rejects.toThrow(
-        'constraint violation'
+        'constraint violation',
       );
 
       expect(rollbackFn).toHaveBeenCalled();
@@ -468,7 +466,7 @@ describe('PersistenceManager Edge Cases', () => {
       for (let i = 0; i < hugeBatch.length; i += 100) {
         const chunk = hugeBatch.slice(i, i + 100);
         const chunkResults = await Promise.all(
-          chunk.map((item) => persistence.storeMemory(item.key, item.value))
+          chunk.map((item) => persistence.storeMemory(item.key, item.value)),
         );
         results.push(...chunkResults);
       }

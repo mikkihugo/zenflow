@@ -8,7 +8,8 @@
 import { EventEmitter } from 'node:events';
 import type { IEventBus } from '../core/event-bus';
 import type { ILogger } from '../core/logger';
-import type { AgentState, AgentType } from '../types/agent-types';
+import type { AgentState } from '../types/agent-types';
+import { initializeHiveFACT, type HiveFACTSystem } from './hive-fact-integration';
 
 export interface HiveRegistry {
   // Global agent registry
@@ -103,6 +104,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   private syncTimer?: NodeJS.Timeout;
   private heartbeatTimer?: NodeJS.Timeout;
   private connectionHealth = new Map<string, number>(); // swarmId -> health score
+  private hiveFact?: HiveFACTSystem;
 
   constructor(
     private eventBus: IEventBus,
@@ -127,6 +129,20 @@ export class HiveSwarmCoordinator extends EventEmitter {
    */
   async start(): Promise<void> {
     this.logger?.info('Starting hive-swarm coordination');
+
+    // Initialize HiveFACT system for universal knowledge
+    try {
+      this.hiveFact = await initializeHiveFACT({
+        enableCache: true,
+        cacheSize: 10000,
+        knowledgeSources: ['context7', 'deepwiki', 'gitmcp', 'semgrep'],
+        autoRefreshInterval: 3600000 // 1 hour
+      }, this);
+      
+      this.logger?.info('HiveFACT system initialized for universal knowledge');
+    } catch (error) {
+      this.logger?.error('Failed to initialize HiveFACT:', error);
+    }
 
     // Start periodic synchronization
     this.syncTimer = setInterval(() => {
@@ -158,6 +174,12 @@ export class HiveSwarmCoordinator extends EventEmitter {
     if (this.heartbeatTimer) {
       clearInterval(this.heartbeatTimer);
       this.heartbeatTimer = undefined;
+    }
+
+    // Shutdown HiveFACT
+    if (this.hiveFact) {
+      await this.hiveFact.shutdown();
+      this.hiveFact = undefined;
     }
 
     this.emit('hive:coordination:stopped');
@@ -216,9 +238,9 @@ export class HiveSwarmCoordinator extends EventEmitter {
     const agents = Array.from(this.hiveRegistry.availableAgents.values());
 
     this.hiveRegistry.globalResources = {
-      totalCPU: agents.reduce((sum, agent) => sum + 100, 0), // Assume 100% per agent
+      totalCPU: agents.reduce((sum, _agent) => sum + 100, 0), // Assume 100% per agent
       usedCPU: agents.reduce((sum, agent) => sum + agent.metrics.cpuUsage, 0),
-      totalMemory: agents.reduce((sum, agent) => sum + 1000, 0), // Assume 1GB per agent
+      totalMemory: agents.reduce((sum, _agent) => sum + 1000, 0), // Assume 1GB per agent
       usedMemory: agents.reduce((sum, agent) => sum + agent.metrics.memoryUsage, 0),
       totalAgents: agents.length,
       availableAgents: agents.filter((a) => a.availability.status === 'available').length,
@@ -493,6 +515,46 @@ export class HiveSwarmCoordinator extends EventEmitter {
     this.eventBus.on('swarm:disconnect', (data) => {
       this.handleSwarmDisconnect(data);
     });
+
+    // Handle FACT requests from swarms
+    this.eventBus.on('swarm:fact:request', async (data) => {
+      try {
+        const result = await this.requestUniversalFact(
+          data.swarmId,
+          data.factType,
+          data.subject
+        );
+        
+        this.eventBus.emit('swarm:fact:response', {
+          requestId: data.requestId,
+          swarmId: data.swarmId,
+          factType: data.factType,
+          subject: data.subject,
+          content: result,
+          success: true
+        });
+      } catch (error) {
+        this.eventBus.emit('swarm:fact:response', {
+          requestId: data.requestId,
+          swarmId: data.swarmId,
+          error: error instanceof Error ? error.message : 'Unknown error',
+          success: false
+        });
+      }
+    });
+
+    // Handle FACT updates from HiveFACT
+    if (this.hiveFact) {
+      this.hiveFact.on('fact-updated', (data) => {
+        // Notify all swarms about updated facts
+        this.eventBus.emit('hive:fact:updated', data);
+      });
+
+      this.hiveFact.on('fact-refreshed', (data) => {
+        // Notify interested swarms about refreshed facts
+        this.eventBus.emit('hive:fact:refreshed', data);
+      });
+    }
   }
 
   /**
@@ -623,6 +685,43 @@ export class HiveSwarmCoordinator extends EventEmitter {
       hiveHealth: this.hiveRegistry.hiveHealth,
       swarmHealthScores: Object.fromEntries(this.connectionHealth),
     };
+  }
+
+  /**
+   * Get HiveFACT system for universal knowledge access
+   */
+  getHiveFACT(): HiveFACTSystem | undefined {
+    return this.hiveFact;
+  }
+
+  /**
+   * Request universal fact from HiveFACT
+   * Used by swarms to access universal knowledge
+   */
+  async requestUniversalFact(
+    swarmId: string,
+    factType: 'npm-package' | 'github-repo' | 'api-docs' | 'security-advisory' | 'general',
+    subject: string
+  ): Promise<any> {
+    if (!this.hiveFact) {
+      throw new Error('HiveFACT not initialized');
+    }
+
+    const fact = await this.hiveFact.getFact(factType, subject, swarmId);
+    
+    if (fact) {
+      this.logger?.debug('Universal fact requested', {
+        swarmId,
+        factType,
+        subject,
+        accessCount: fact.accessCount,
+        swarmsUsing: fact.swarmAccess.size
+      });
+      
+      return fact.content;
+    }
+    
+    return null;
   }
 
   // Utility methods

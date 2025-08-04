@@ -4,7 +4,6 @@
 
 import { type ChildProcess, spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import { generateId } from '../swarm/core/utils';
 import type { IEventBus } from '../../core/event-bus';
 import type { ILogger } from '../../di/tokens/core-tokens';
 import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
@@ -19,6 +18,7 @@ import type {
   AgentStatus,
   AgentType,
 } from '../../types/agent-types';
+import { generateId } from '../swarm/core/utils';
 
 export interface AgentManagerConfig {
   maxAgents: number;
@@ -1284,7 +1284,7 @@ export class AgentManager extends EventEmitter {
       } else {
         return 1.0; // Responsive
       }
-    } catch (error) {
+    } catch (_error) {
       return 0; // Failed to respond
     }
   }

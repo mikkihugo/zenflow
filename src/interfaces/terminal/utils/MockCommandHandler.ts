@@ -67,7 +67,7 @@ export class MockCommandHandler {
   /**
    * Execute status command
    */
-  static async executeStatus(args: string[], flags: Record<string, any>): Promise<CommandResult> {
+  static async executeStatus(_args: string[], flags: Record<string, any>): Promise<CommandResult> {
     try {
       logger.debug('Getting system status');
 
@@ -280,7 +280,7 @@ export class MockCommandHandler {
    */
   static async executeWorkspace(
     args: string[],
-    flags: Record<string, any>
+    _flags: Record<string, any>
   ): Promise<CommandResult> {
     try {
       const action = args[0];

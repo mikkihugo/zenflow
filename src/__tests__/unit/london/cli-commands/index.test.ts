@@ -6,8 +6,8 @@
  * than implementation details.
  */
 
+import { EventEmitter } from 'node:events';
 import { jest } from '@jest/globals';
-import { EventEmitter } from 'events';
 
 // Import the components we're testing
 import type {
@@ -361,7 +361,7 @@ describe('CLI Commands Integration - TDD London', () => {
       mockParser.parse.mockReturnValue(parseResult);
       mockRegistry.execute.mockResolvedValue(commandResult);
 
-      const executionResult: ExecutionResult = {
+      const _executionResult: ExecutionResult = {
         success: true,
         exitCode: 0,
         output: 'Deployed successfully',
@@ -434,7 +434,7 @@ describe('CLI Commands Integration - TDD London', () => {
       // Act
       try {
         await cliSystem.execute(input);
-      } catch (thrownError) {
+      } catch (_thrownError) {
         // Expected to throw, but error handler should have been called
       }
 
@@ -588,7 +588,7 @@ describe('CLI Commands Integration - TDD London', () => {
       // Act
       try {
         await cliSystem.execute(input);
-      } catch (e) {
+      } catch (_e) {
         // Expected to throw
       }
 

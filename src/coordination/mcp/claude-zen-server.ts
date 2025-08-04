@@ -7,8 +7,7 @@
 
 import { createLogger } from '../../core/logger';
 import { MCPServer } from './server';
-import { allFACTTools, factHandlers } from './tools/fact-handlers';
-import { neuralTools } from './tools/neural-tools';
+import { allFACTTools } from './tools/fact-handlers';
 import { swarmTools } from './tools/swarm-tools';
 import type { MCPTool } from './types/mcp-types';
 
@@ -119,13 +118,11 @@ async function startServer(): Promise<void> {
 
     // Handle graceful shutdown
     process.on('SIGINT', async () => {
-      console.log('\nShutting down Claude-Zen MCP Server...');
       await server.stop();
       process.exit(0);
     });
 
     process.on('SIGTERM', async () => {
-      console.log('\nShutting down Claude-Zen MCP Server...');
       await server.stop();
       process.exit(0);
     });

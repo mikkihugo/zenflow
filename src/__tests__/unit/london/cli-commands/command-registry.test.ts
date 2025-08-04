@@ -7,23 +7,13 @@
  */
 
 import { jest } from '@jest/globals';
-import { EventEmitter } from 'events';
 import { BaseCommand } from '../../../../cli/core/base-command';
 import { CommandRegistry } from '../../../../cli/core/command-registry';
-import type {
-  CommandConfig,
-  CommandContext,
-  CommandMetadata,
-  CommandResult,
-} from '../../../../cli/types/index';
+import type { CommandContext, CommandMetadata, CommandResult } from '../../../../cli/types/index';
 
 // Mock BaseCommand for testing
 class MockCommand extends BaseCommand {
-  constructor(config: CommandConfig) {
-    super(config);
-  }
-
-  protected async run(context: CommandContext): Promise<CommandResult> {
+  protected async run(_context: CommandContext): Promise<CommandResult> {
     return {
       success: true,
       exitCode: 0,
@@ -460,8 +450,8 @@ describe('CommandRegistry - TDD London', () => {
       const cmdStats = stats.find((s) => s.name === 'tracked-cmd');
 
       expect(cmdStats).toBeDefined();
-      expect(cmdStats!.usageCount).toBe(2);
-      expect(cmdStats!.lastUsed).toBeGreaterThan(0);
+      expect(cmdStats?.usageCount).toBe(2);
+      expect(cmdStats?.lastUsed).toBeGreaterThan(0);
     });
   });
 

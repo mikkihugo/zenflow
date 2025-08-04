@@ -31,7 +31,7 @@ export const APIUtils = {
    * Create WebSocket URL from base URL
    */
   createWebSocketUrl: (baseUrl: string): string => {
-    return baseUrl.replace(/^http/, 'ws').replace(/\/$/, '') + '/ws';
+    return `${baseUrl.replace(/^http/, 'ws').replace(/\/$/, '')}/ws`;
   },
 
   /**

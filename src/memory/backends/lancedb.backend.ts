@@ -6,12 +6,12 @@ import { LanceDBInterface } from '../../database/lancedb-interface';
 import {
   type BackendConfig,
   type BackendStats,
-  BaseBackend,
   type JSONValue,
+  MemoryBackend,
   type StorageResult,
-} from './base.backend';
+} from './memory-backend';
 
-export class LanceDBBackend extends BaseBackend {
+export class LanceDBBackend extends MemoryBackend {
   private lanceInterface: LanceDBInterface;
 
   constructor(config: BackendConfig) {
@@ -85,7 +85,7 @@ export class LanceDBBackend extends BaseBackend {
       }
 
       return null;
-    } catch (error) {
+    } catch (_error) {
       return null;
     }
   }
@@ -112,18 +112,18 @@ export class LanceDBBackend extends BaseBackend {
               results[key] = JSON.parse(metadata.serialized_data);
             }
           }
-        } catch (error) {
+        } catch (_error) {
           // Skip invalid entries
         }
       }
-    } catch (error) {
+    } catch (_error) {
       // Return empty results on error
     }
 
     return results;
   }
 
-  async delete(key: string, namespace: string = 'default'): Promise<boolean> {
+  async delete(_key: string, _namespace: string = 'default'): Promise<boolean> {
     console.warn('Delete operation not implemented for LanceDB backend');
     return false;
   }
@@ -143,13 +143,13 @@ export class LanceDBBackend extends BaseBackend {
           if (metadata.namespace) {
             namespaces.add(metadata.namespace);
           }
-        } catch (error) {
+        } catch (_error) {
           // Skip invalid entries
         }
       }
 
       return Array.from(namespaces);
-    } catch (error) {
+    } catch (_error) {
       return [];
     }
   }

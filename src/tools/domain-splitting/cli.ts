@@ -1,12 +1,13 @@
 #!/usr/bin/env tsx
+
 /**
  * CLI command for domain splitting operations
  */
 
+import path from 'node:path';
 import { program } from 'commander';
 // Import the demo for now since full implementation has build dependencies
 import fs from 'fs-extra';
-import path from 'path';
 
 interface CliOptions {
   domain?: string;
@@ -27,8 +28,6 @@ program
   .argument('<domain-path>', 'Path to domain directory (e.g., src/neural)')
   .option('-v, --verbose', 'Show detailed analysis')
   .action(async (domainPath: string, options: any) => {
-    console.log(`🔍 Analyzing domain: ${domainPath}`);
-
     try {
       // For now, run the demo analysis
       const demoModule = await import('./demo.js');
@@ -38,21 +37,12 @@ program
       const fullPath = path.resolve(domainPath);
       const analysis = await demo.analyzeDomain(fullPath);
 
-      console.log('\n📊 Analysis Results:');
-      console.log(`  Total Files: ${analysis.totalFiles}`);
-      console.log(`  Complexity Score: ${analysis.complexityScore}/10`);
-      console.log(`  Recommendations: ${analysis.recommendations.length}`);
-
       if (options.verbose) {
-        console.log('\n📂 File Categories:');
-        for (const [category, files] of Object.entries(analysis.filesByCategory)) {
+        for (const [_category, files] of Object.entries(analysis.filesByCategory)) {
           if (files.length > 0) {
-            console.log(`  ${category}: ${files.length} files`);
           }
         }
-
-        console.log('\n💡 Recommendations:');
-        analysis.recommendations.forEach((rec) => console.log(`  • ${rec}`));
+        analysis.recommendations.forEach((_rec) => {});
       }
     } catch (error) {
       console.error('❌ Analysis failed:', error.message);
@@ -67,8 +57,6 @@ program
   .option('--dry-run', 'Simulate split without making changes')
   .option('-v, --verbose', 'Show detailed progress')
   .action(async (domainPath: string, options: any) => {
-    console.log(`🚀 ${options.dryRun ? 'Simulating' : 'Executing'} domain split: ${domainPath}`);
-
     if (domainPath.includes('neural')) {
       // Run neural domain demonstration
       try {
@@ -80,11 +68,7 @@ program
         process.exit(1);
       }
     } else {
-      console.log('🚧 Full splitting implementation available for neural domain');
-      console.log('For other domains, use --dry-run for simulation');
-
       if (options.dryRun) {
-        console.log('📋 Dry run completed - no changes made');
       }
     }
   });
@@ -93,9 +77,7 @@ program
   .command('neural')
   .description('Split the neural domain using predefined plan')
   .option('--dry-run', 'Simulate split without making changes')
-  .action(async (options: any) => {
-    console.log(`🧠 Neural domain splitting ${options.dryRun ? '(simulation)' : ''}`);
-
+  .action(async (_options: any) => {
     try {
       const demoModule = await import('./demo.js');
       const demo = new demoModule.default();
@@ -111,8 +93,6 @@ program
   .description('Validate domain structure and dependencies')
   .argument('<domain-path>', 'Path to domain directory')
   .action(async (domainPath: string) => {
-    console.log(`✅ Validating domain: ${domainPath}`);
-
     const fullPath = path.resolve(domainPath);
 
     if (!(await fs.pathExists(fullPath))) {
@@ -122,7 +102,6 @@ program
 
     // Basic validation
     const files = await getTypeScriptFiles(fullPath);
-    console.log(`📁 Found ${files.length} TypeScript files`);
 
     // Check for common issues
     const issues = [];
@@ -141,10 +120,8 @@ program
     }
 
     if (issues.length === 0) {
-      console.log('✅ Domain structure looks good');
     } else {
-      console.log('\n⚠️  Issues found:');
-      issues.forEach((issue) => console.log(`  • ${issue}`));
+      issues.forEach((_issue) => {});
     }
   });
 

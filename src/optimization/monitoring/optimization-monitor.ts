@@ -3,11 +3,8 @@
  * Real-time monitoring and alerting for optimization processes
  */
 
-import { EventEmitter } from 'events';
-import type {
-  PerformanceMetrics,
-  OptimizationResult,
-} from '../interfaces/optimization-interfaces';
+import { EventEmitter } from 'node:events';
+import type { OptimizationResult, PerformanceMetrics } from '../interfaces/optimization-interfaces';
 
 export interface OptimizationAlert {
   id: string;
@@ -114,7 +111,7 @@ export class OptimizationMonitor extends EventEmitter {
     if (!this.isMonitoring) return;
 
     this.isMonitoring = false;
-    
+
     if (this.monitoringInterval) {
       clearInterval(this.monitoringInterval);
       this.monitoringInterval = undefined;
@@ -132,7 +129,7 @@ export class OptimizationMonitor extends EventEmitter {
     // Cleanup old history
     const cutoff = Date.now() - this.config.retentionPeriod;
     this.optimizationHistory = this.optimizationHistory.filter(
-      r => r.afterMetrics.timestamp.getTime() > cutoff
+      (r) => r.afterMetrics.timestamp.getTime() > cutoff
     );
 
     this.emit('optimization:recorded', result);
@@ -150,9 +147,7 @@ export class OptimizationMonitor extends EventEmitter {
 
     // Keep only recent metrics
     const cutoff = Date.now() - this.config.retentionPeriod;
-    const filteredHistory = domainHistory.filter(
-      m => m.timestamp.getTime() > cutoff
-    );
+    const filteredHistory = domainHistory.filter((m) => m.timestamp.getTime() > cutoff);
 
     this.metricsHistory.set(domain, filteredHistory);
 
@@ -184,15 +179,17 @@ export class OptimizationMonitor extends EventEmitter {
   /**
    * Get alerts by severity
    */
-  public getAlertsBySeverity(severity: 'low' | 'medium' | 'high' | 'critical'): OptimizationAlert[] {
-    return this.alerts.filter(alert => alert.severity === severity && !alert.acknowledged);
+  public getAlertsBySeverity(
+    severity: 'low' | 'medium' | 'high' | 'critical'
+  ): OptimizationAlert[] {
+    return this.alerts.filter((alert) => alert.severity === severity && !alert.acknowledged);
   }
 
   /**
    * Acknowledge alert
    */
   public acknowledgeAlert(alertId: string): void {
-    const alert = this.alerts.find(a => a.id === alertId);
+    const alert = this.alerts.find((a) => a.id === alertId);
     if (alert) {
       alert.acknowledged = true;
       this.emit('alert:acknowledged', alert);
@@ -202,19 +199,22 @@ export class OptimizationMonitor extends EventEmitter {
   /**
    * Get optimization trends for domain
    */
-  public getOptimizationTrends(domain: string, period: number = 3600000): {
+  public getOptimizationTrends(
+    _domain: string,
+    period: number = 3600000
+  ): {
     improvements: number[];
     successes: number[];
     failures: number[];
   } {
     const cutoff = Date.now() - period;
     const recentOptimizations = this.optimizationHistory.filter(
-      r => r.afterMetrics.timestamp.getTime() > cutoff
+      (r) => r.afterMetrics.timestamp.getTime() > cutoff
     );
 
-    const improvements = recentOptimizations.map(r => r.improvement);
-    const successes = recentOptimizations.filter(r => r.success).length;
-    const failures = recentOptimizations.filter(r => !r.success).length;
+    const improvements = recentOptimizations.map((r) => r.improvement);
+    const successes = recentOptimizations.filter((r) => r.success).length;
+    const failures = recentOptimizations.filter((r) => !r.success).length;
 
     return {
       improvements,
@@ -230,7 +230,7 @@ export class OptimizationMonitor extends EventEmitter {
     try {
       // Collect current metrics from all domains
       const domains = ['neural', 'swarm', 'data', 'wasm'];
-      
+
       for (const domain of domains) {
         const metrics = await this.collectDomainMetrics(domain);
         this.recordMetrics(domain, metrics);
@@ -350,7 +350,7 @@ export class OptimizationMonitor extends EventEmitter {
 
     // Cleanup old alerts
     const cutoff = Date.now() - this.config.retentionPeriod;
-    this.alerts = this.alerts.filter(a => a.timestamp.getTime() > cutoff);
+    this.alerts = this.alerts.filter((a) => a.timestamp.getTime() > cutoff);
   }
 
   /**
@@ -358,7 +358,7 @@ export class OptimizationMonitor extends EventEmitter {
    */
   private getCurrentMetrics(): PerformanceMetrics {
     const allMetrics: PerformanceMetrics[] = [];
-    
+
     for (const domainMetrics of this.metricsHistory.values()) {
       if (domainMetrics.length > 0) {
         allMetrics.push(domainMetrics[domainMetrics.length - 1]);
@@ -409,10 +409,10 @@ export class OptimizationMonitor extends EventEmitter {
     // Take last 20 data points
     const recentMetrics = allMetrics.slice(-20);
 
-    trends.latency = recentMetrics.map(m => m.latency);
-    trends.throughput = recentMetrics.map(m => m.throughput);
-    trends.memoryUsage = recentMetrics.map(m => m.memoryUsage);
-    trends.cpuUsage = recentMetrics.map(m => m.cpuUsage);
+    trends.latency = recentMetrics.map((m) => m.latency);
+    trends.throughput = recentMetrics.map((m) => m.throughput);
+    trends.memoryUsage = recentMetrics.map((m) => m.memoryUsage);
+    trends.cpuUsage = recentMetrics.map((m) => m.cpuUsage);
 
     return trends;
   }
@@ -423,29 +423,27 @@ export class OptimizationMonitor extends EventEmitter {
   private assessSystemHealth(): OptimizationDashboard['systemHealth'] {
     const thresholds = this.config.alertThresholds;
     const currentMetrics = this.getCurrentMetrics();
-    
+
     const domains: Record<string, 'healthy' | 'warning' | 'critical'> = {};
     let overallHealth: 'healthy' | 'warning' | 'critical' = 'healthy';
 
-    // Assess each domain
+    // Assess each domain using current metrics for most up-to-date status
     for (const [domain, metrics] of this.metricsHistory.entries()) {
       if (metrics.length === 0) {
         domains[domain] = 'warning';
         continue;
       }
 
-      const latest = metrics[metrics.length - 1];
+      // Use current metrics if available, otherwise fall back to latest historical
+      const current = currentMetrics[domain] || metrics[metrics.length - 1];
       let domainHealth: 'healthy' | 'warning' | 'critical' = 'healthy';
 
-      if (
-        latest.memoryUsage > thresholds.memoryUsage ||
-        latest.errorRate > thresholds.errorRate
-      ) {
+      if (current.memoryUsage > thresholds.memoryUsage || current.errorRate > thresholds.errorRate) {
         domainHealth = 'critical';
       } else if (
-        latest.latency > thresholds.latency ||
-        latest.cpuUsage > thresholds.cpuUsage ||
-        latest.throughput < thresholds.throughput
+        current.latency > thresholds.latency ||
+        current.cpuUsage > thresholds.cpuUsage ||
+        current.throughput < thresholds.throughput
       ) {
         domainHealth = 'warning';
       }
@@ -520,7 +518,7 @@ export class OptimizationMonitor extends EventEmitter {
    * Get active alerts
    */
   private getActiveAlerts(): OptimizationAlert[] {
-    return this.alerts.filter(alert => !alert.acknowledged).slice(-10);
+    return this.alerts.filter((alert) => !alert.acknowledged).slice(-10);
   }
 
   /**
@@ -556,16 +554,16 @@ export class OptimizationMonitor extends EventEmitter {
 
     // Cleanup metrics history
     for (const [domain, metrics] of this.metricsHistory.entries()) {
-      const filteredMetrics = metrics.filter(m => m.timestamp.getTime() > cutoff);
+      const filteredMetrics = metrics.filter((m) => m.timestamp.getTime() > cutoff);
       this.metricsHistory.set(domain, filteredMetrics);
     }
 
     // Cleanup alerts
-    this.alerts = this.alerts.filter(a => a.timestamp.getTime() > cutoff);
+    this.alerts = this.alerts.filter((a) => a.timestamp.getTime() > cutoff);
 
     // Cleanup optimization history
     this.optimizationHistory = this.optimizationHistory.filter(
-      r => r.afterMetrics.timestamp.getTime() > cutoff
+      (r) => r.afterMetrics.timestamp.getTime() > cutoff
     );
   }
 }

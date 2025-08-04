@@ -113,9 +113,9 @@ export class LeastConnectionsAlgorithm implements ILoadBalancingAlgorithm {
    */
   public async onTaskComplete(
     agentId: string,
-    task: Task,
+    _task: Task,
     duration: number,
-    success: boolean
+    _success: boolean
   ): Promise<void> {
     const state = this.getOrCreateConnectionState(agentId);
 
@@ -141,7 +141,7 @@ export class LeastConnectionsAlgorithm implements ILoadBalancingAlgorithm {
   /**
    * Handle agent failure
    */
-  public async onAgentFailure(agentId: string, error: Error): Promise<void> {
+  public async onAgentFailure(agentId: string, _error: Error): Promise<void> {
     const state = this.getOrCreateConnectionState(agentId);
 
     // Reset active connections on failure

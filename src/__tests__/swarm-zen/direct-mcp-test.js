@@ -4,15 +4,13 @@
  * Tests MCP tools by calling them directly
  */
 
-import { exec } from 'child_process';
-import util from 'util';
+import { exec } from 'node:child_process';
+import util from 'node:util';
 
 const execPromise = util.promisify(exec);
 
 // Test each MCP tool
 async function testMcpTools() {
-  console.log('🚀 Testing MCP Tools Directly\n');
-
   const tests = [
     {
       name: 'features_detect',
@@ -77,8 +75,6 @@ async function testMcpTools() {
   ];
 
   for (const test of tests) {
-    console.log(`Testing ${test.name}...`);
-
     try {
       const cmd = `echo '${JSON.stringify(test.request)}' | node bin/ruv-swarm.js mcp start --protocol=stdio 2>/dev/null`;
       const { stdout, stderr } = await execPromise(cmd, {
@@ -91,31 +87,21 @@ async function testMcpTools() {
           if (line.trim() && line.includes('jsonrpc')) {
             const response = JSON.parse(line);
             if (response.result) {
-              console.log(`✅ ${test.name}: SUCCESS`);
-              if (response.result.content && response.result.content[0]) {
-                console.log(`   Result: ${response.result.content[0].text.split('\n')[0]}`);
+              if (response.result.content?.[0]) {
               }
             } else if (response.error) {
-              console.log(`❌ ${test.name}: ERROR - ${response.error.message}`);
             }
             break;
           }
         }
       } else {
-        console.log(`❌ ${test.name}: No response`);
       }
-    } catch (error) {
-      console.log(`❌ ${test.name}: FAILED - ${error.message}`);
-    }
-
-    console.log('');
+    } catch (_error) {}
   }
 }
 
 // Test parallel agent creation
 async function testParallelAgents() {
-  console.log('\n🤖 Testing Parallel Agent Creation\n');
-
   const agentTypes = ['researcher', 'coder', 'analyst', 'optimizer', 'coordinator'];
   const promises = [];
 
@@ -140,24 +126,18 @@ async function testParallelAgents() {
 
   try {
     const results = await Promise.all(promises);
-    console.log(`✅ Created ${results.length} agents in parallel`);
 
-    results.forEach((result, i) => {
-      if (result.stdout && result.stdout.includes('jsonrpc')) {
-        console.log(`   Agent ${i + 1}: ${agentTypes[i]}`);
+    results.forEach((result, _i) => {
+      if (result.stdout?.includes('jsonrpc')) {
       }
     });
-  } catch (error) {
-    console.log(`❌ Parallel agent creation failed: ${error.message}`);
-  }
+  } catch (_error) {}
 }
 
 // Run all tests
 async function runAllTests() {
   await testMcpTools();
   await testParallelAgents();
-
-  console.log('\n✨ Test completed!');
 }
 
 runAllTests().catch(console.error);

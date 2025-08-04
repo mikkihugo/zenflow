@@ -8,10 +8,10 @@
  * @version 1.0.0
  */
 
-import { strict as assert } from 'assert';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { strict as assert } from 'node:assert';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,21 +20,21 @@ const __dirname = path.dirname(__filename);
 let ruvSwarm;
 try {
   ruvSwarm = await import('../src/index.js');
-} catch (error) {
-  console.warn('Warning: RuvSwarm module not found');
+} catch (_error) {
+  console.warn('Warning: ZenSwarm module not found');
 }
 
 let errorModule;
 try {
   errorModule = await import('../src/errors.js');
-} catch (error) {
+} catch (_error) {
   console.warn('Warning: Error module not found');
 }
 
-let mcpTools;
+let _mcpTools;
 try {
-  mcpTools = await import('../src/mcp-tools-enhanced.js');
-} catch (error) {
+  _mcpTools = await import('../src/mcp-tools-enhanced.js');
+} catch (_error) {
   console.warn('Warning: MCP tools module not found');
 }
 
@@ -60,34 +60,30 @@ class EdgeCaseCoverageTestSuite {
     try {
       await testFn();
       this.results.passed++;
-      console.log(`✅ ${name}`);
       return true;
     } catch (error) {
       this.results.failed++;
       this.results.errors.push({ name, error: error.message });
-      console.log(`❌ ${name}: ${error.message}`);
       return false;
     }
   }
 
   // Test Edge Cases in Main Module
   async testMainModuleEdgeCases() {
-    console.log('\n🔍 Testing Main Module Edge Cases...');
-
     if (ruvSwarm) {
-      await this.runTest('RuvSwarm - Null initialization options', async () => {
+      await this.runTest('ZenSwarm - Null initialization options', async () => {
         const instance = new ruvSwarm.default();
         assert(instance !== null, 'Should handle null options');
         this.results.coverage.edgeCases++;
       });
 
-      await this.runTest('RuvSwarm - Empty object initialization', async () => {
+      await this.runTest('ZenSwarm - Empty object initialization', async () => {
         const instance = new ruvSwarm.default({});
         assert(instance !== null, 'Should handle empty options');
         this.results.coverage.edgeCases++;
       });
 
-      await this.runTest('RuvSwarm - Invalid configuration types', async () => {
+      await this.runTest('ZenSwarm - Invalid configuration types', async () => {
         try {
           const instance = new ruvSwarm.default({
             maxAgents: 'invalid',
@@ -95,13 +91,13 @@ class EdgeCaseCoverageTestSuite {
             retries: -1,
           });
           assert(instance !== null, 'Should handle invalid types gracefully');
-        } catch (error) {
+        } catch (_error) {
           // Expected behavior for invalid config
         }
         this.results.coverage.typeValidation++;
       });
 
-      await this.runTest('RuvSwarm - Boundary values', async () => {
+      await this.runTest('ZenSwarm - Boundary values', async () => {
         const instance = new ruvSwarm.default({
           maxAgents: 0,
           timeout: 0,
@@ -111,7 +107,7 @@ class EdgeCaseCoverageTestSuite {
         this.results.coverage.boundaries++;
       });
 
-      await this.runTest('RuvSwarm - Maximum values', async () => {
+      await this.runTest('ZenSwarm - Maximum values', async () => {
         const instance = new ruvSwarm.default({
           maxAgents: Number.MAX_SAFE_INTEGER,
           timeout: Number.MAX_SAFE_INTEGER,
@@ -124,14 +120,12 @@ class EdgeCaseCoverageTestSuite {
 
   // Test Error Module Edge Cases
   async testErrorModuleEdgeCases() {
-    console.log('\n🔍 Testing Error Module Edge Cases...');
-
     if (errorModule) {
       await this.runTest('Error - Null error message', async () => {
         try {
-          const error = new errorModule.RuvSwarmError(null, 'NULL001');
+          const error = new errorModule.ZenSwarmError(null, 'NULL001');
           assert(error instanceof Error, 'Should create error with null message');
-        } catch (e) {
+        } catch (_e) {
           // Expected behavior
         }
         this.results.coverage.nullChecks++;
@@ -139,30 +133,30 @@ class EdgeCaseCoverageTestSuite {
 
       await this.runTest('Error - Undefined error code', async () => {
         try {
-          const error = new errorModule.RuvSwarmError('Test error', undefined);
+          const error = new errorModule.ZenSwarmError('Test error', undefined);
           assert(error instanceof Error, 'Should create error with undefined code');
-        } catch (e) {
+        } catch (_e) {
           // Expected behavior
         }
         this.results.coverage.nullChecks++;
       });
 
       await this.runTest('Error - Empty string message', async () => {
-        const error = new errorModule.RuvSwarmError('', 'EMPTY001');
+        const error = new errorModule.ZenSwarmError('', 'EMPTY001');
         assert(error instanceof Error, 'Should create error with empty message');
         this.results.coverage.edgeCases++;
       });
 
       await this.runTest('Error - Very long message', async () => {
         const longMessage = 'x'.repeat(10000);
-        const error = new errorModule.RuvSwarmError(longMessage, 'LONG001');
+        const error = new errorModule.ZenSwarmError(longMessage, 'LONG001');
         assert(error instanceof Error, 'Should handle very long error messages');
         this.results.coverage.edgeCases++;
       });
 
       await this.runTest('Error - Special characters in message', async () => {
         const specialMessage = '🚀\n\t\r\0🎉\'"<>';
-        const error = new errorModule.RuvSwarmError(specialMessage, 'SPECIAL001');
+        const error = new errorModule.ZenSwarmError(specialMessage, 'SPECIAL001');
         assert(error instanceof Error, 'Should handle special characters');
         this.results.coverage.edgeCases++;
       });
@@ -171,15 +165,13 @@ class EdgeCaseCoverageTestSuite {
 
   // Test Type Validation Edge Cases
   async testTypeValidationEdgeCases() {
-    console.log('\n🔍 Testing Type Validation Edge Cases...');
-
     await this.runTest('Type Validation - Function as parameter', async () => {
       const func = () => 'test';
       try {
         // Test function validation in various contexts
         const result = typeof func === 'function' ? func() : null;
         assert(result !== null, 'Should handle function parameters');
-      } catch (error) {
+      } catch (_error) {
         // Expected behavior
       }
       this.results.coverage.typeValidation++;
@@ -190,7 +182,7 @@ class EdgeCaseCoverageTestSuite {
       try {
         const result = typeof sym === 'symbol' ? sym.toString() : null;
         assert(result !== null, 'Should handle symbol parameters');
-      } catch (error) {
+      } catch (_error) {
         // Expected behavior
       }
       this.results.coverage.typeValidation++;
@@ -201,7 +193,7 @@ class EdgeCaseCoverageTestSuite {
       try {
         const result = typeof bigInt === 'bigint' ? bigInt.toString() : null;
         assert(result !== null, 'Should handle BigInt parameters');
-      } catch (error) {
+      } catch (_error) {
         // Expected behavior
       }
       this.results.coverage.typeValidation++;
@@ -234,8 +226,6 @@ class EdgeCaseCoverageTestSuite {
 
   // Test Boundary Conditions
   async testBoundaryConditions() {
-    console.log('\n🔍 Testing Boundary Conditions...');
-
     await this.runTest('Boundary - Empty array processing', async () => {
       const emptyArray = [];
       const result = emptyArray.reduce((acc, val) => acc + val, 0);
@@ -282,13 +272,11 @@ class EdgeCaseCoverageTestSuite {
 
   // Test Error Path Coverage
   async testErrorPathCoverage() {
-    console.log('\n🔍 Testing Error Path Coverage...');
-
     await this.runTest('Error Path - Division by zero', async () => {
       try {
         const result = 42 / 0;
         assert(result === Infinity, 'Should handle division by zero');
-      } catch (error) {
+      } catch (_error) {
         // Some contexts might throw
       }
       this.results.coverage.errorPaths++;
@@ -306,7 +294,7 @@ class EdgeCaseCoverageTestSuite {
         const nullObj = null;
         const result = nullObj?.property;
         assert(result === undefined, 'Should handle null property access');
-      } catch (error) {
+      } catch (_error) {
         // Expected in non-optional chaining contexts
       }
       this.results.coverage.errorPaths++;
@@ -336,8 +324,6 @@ class EdgeCaseCoverageTestSuite {
 
   // Test Null and Undefined Checks
   async testNullUndefinedChecks() {
-    console.log('\n🔍 Testing Null and Undefined Checks...');
-
     await this.runTest('Null Check - Null parameter handling', async () => {
       const processValue = (value) => {
         if (value === null) {
@@ -453,9 +439,6 @@ class EdgeCaseCoverageTestSuite {
   }
 
   async run() {
-    console.log('⚔️ Starting Edge Case Coverage Test Suite');
-    console.log('='.repeat(60));
-
     await this.testMainModuleEdgeCases();
     await this.testErrorModuleEdgeCases();
     await this.testTypeValidationEdgeCases();
@@ -464,39 +447,17 @@ class EdgeCaseCoverageTestSuite {
     await this.testNullUndefinedChecks();
 
     const report = this.generateReport();
-
-    console.log('\n📊 Edge Case Test Results Summary');
-    console.log('='.repeat(60));
-    console.log(`Total Tests: ${report.summary.totalTests}`);
-    console.log(`Passed: ${report.summary.passed}`);
-    console.log(`Failed: ${report.summary.failed}`);
-    console.log(`Pass Rate: ${report.summary.passRate}`);
-    console.log(`Total Coverage Points: ${report.summary.totalCoveragePoints}`);
-
-    console.log('\n📊 Coverage Breakdown:');
-    Object.entries(report.coverage).forEach(([area, count]) => {
-      console.log(`  ${area}: ${count} tests`);
-    });
+    Object.entries(report.coverage).forEach(([_area, _count]) => {});
 
     if (report.errors.length > 0) {
-      console.log('\n❌ Errors:');
-      report.errors.forEach((error) => {
-        console.log(`  - ${error.name}: ${error.error}`);
-      });
+      report.errors.forEach((_error) => {});
     }
-
-    console.log('\n💡 Recommendations:');
-    report.recommendations.forEach((rec) => {
-      console.log(`  - ${rec}`);
-    });
+    report.recommendations.forEach((_rec) => {});
 
     // Save report to file
     const reportPath = path.join(__dirname, '../test-reports/edge-case-test-report.json');
     fs.mkdirSync(path.dirname(reportPath), { recursive: true });
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
-
-    console.log(`\n📄 Report saved to: ${reportPath}`);
-    console.log('\n✅ Edge Case Coverage Test Suite Complete!');
 
     return report;
   }

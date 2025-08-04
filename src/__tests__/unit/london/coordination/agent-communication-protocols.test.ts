@@ -13,7 +13,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
   let communicationProtocol: AgentCommunicationProtocol;
   let mockMessageBroker: jest.Mocked<MessageBroker>;
   let mockAgents: jest.Mocked<Agent>[];
-  let testHelpers: CoordinationTestHelpers;
+  let _testHelpers: CoordinationTestHelpers;
 
   beforeEach(() => {
     mockMessageBroker = {
@@ -44,7 +44,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
         }) as jest.Mocked<Agent>
     );
 
-    testHelpers = new CoordinationTestHelpers();
+    _testHelpers = new CoordinationTestHelpers();
 
     communicationProtocol = new AgentCommunicationProtocol(mockMessageBroker, {
       enableEncryption: true,
@@ -271,7 +271,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
     it('should handle channel subscription and message distribution', async () => {
       const channelId = 'ch-001';
       const subscriber = mockAgents[2];
-      const channelMessage = {
+      const _channelMessage = {
         id: 'ch-msg-001',
         type: 'channel_message',
         content: { discussion: 'task_progress', updates: ['step1_complete', 'step2_in_progress'] },
@@ -348,7 +348,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
         priority: 'normal',
       };
 
-      mockMessageBroker.sendDirectMessage.mockImplementation((from, to, msg) => {
+      mockMessageBroker.sendDirectMessage.mockImplementation((_from, _to, msg) => {
         return Promise.resolve({
           success: true,
           messageId: msg.id,
@@ -401,7 +401,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
 
       // Verify priority ordering
       const enqueueCalls = (agent.getMessageQueue().enqueue as jest.Mock).mock.calls;
-      enqueueCalls.forEach(([message], index) => {
+      enqueueCalls.forEach(([message], _index) => {
         expect(message).toMatchObject({
           priorityScore: expect.any(Number),
           queueTimestamp: expect.any(Number),
@@ -487,7 +487,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
         requireSignature: true,
       };
 
-      mockMessageBroker.sendDirectMessage.mockImplementation((from, to, msg) => {
+      mockMessageBroker.sendDirectMessage.mockImplementation((_from, _to, msg) => {
         // Simulate signature verification
         const hasValidSignature = msg.signature && msg.signatureTimestamp;
         return Promise.resolve({

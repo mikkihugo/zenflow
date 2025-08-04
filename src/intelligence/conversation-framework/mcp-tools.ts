@@ -4,8 +4,7 @@
  * MCP tools for managing ag2.ai-inspired multi-agent conversations
  */
 
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { AgentId } from '../../types/agent-types';
+import type { Tool } from '@modelcontextprotocol/sdk/types';
 import { ConversationMemoryFactory } from './memory';
 import { ConversationOrchestratorImpl } from './orchestrator';
 import type {

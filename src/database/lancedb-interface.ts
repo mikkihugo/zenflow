@@ -45,7 +45,6 @@ export class LanceDBInterface extends EventEmitter {
   private stats = new Map<string, number>();
   private config: Required<LanceDBConfig>;
   private isInitialized = false;
-  private maxCacheSize: number;
 
   constructor(config: LanceDBConfig = {}) {
     super();
@@ -81,10 +80,6 @@ export class LanceDBInterface extends EventEmitter {
       this.isInitialized = true;
 
       const tableNames = await this.database.tableNames();
-
-      console.log(`✅ LanceDB initialized: ${this.config.dbName}`);
-      console.log(`📁 Database path: ${this.config.dbPath}`);
-      console.log(`📊 Tables: ${tableNames.join(', ')}`);
 
       this.emit('initialized', { tables: tableNames });
 
@@ -133,23 +128,19 @@ export class LanceDBInterface extends EventEmitter {
     this.ensureInitialized();
 
     try {
-      const existingTables = await this.database!.tableNames();
+      const existingTables = await this.database?.tableNames();
 
       if (!existingTables.includes(tableName)) {
         // Create sample data for schema inference
         const sampleData = this.generateSampleData(schema);
-        const table = await this.database!.createTable(tableName, sampleData);
+        const table = await this.database?.createTable(tableName, sampleData);
 
         this.tables.set(tableName, table);
         this.emit('tableCreated', { tableName, schema });
-
-        console.log(`✅ Created table: ${tableName}`);
         return table;
       } else {
-        const table = await this.database!.openTable(tableName);
+        const table = await this.database?.openTable(tableName);
         this.tables.set(tableName, table);
-
-        console.log(`📂 Opened existing table: ${tableName}`);
         return table;
       }
     } catch (error) {
@@ -170,7 +161,7 @@ export class LanceDBInterface extends EventEmitter {
     let inserted = 0;
 
     try {
-      const table = this.tables.get(tableName) || (await this.database!.openTable(tableName));
+      const table = this.tables.get(tableName) || (await this.database?.openTable(tableName));
 
       // Process in batches
       const batches = this.createBatches(documents, this.config.batchSize);
@@ -208,7 +199,7 @@ export class LanceDBInterface extends EventEmitter {
     const startTime = Date.now();
 
     try {
-      const table = this.tables.get(tableName) || (await this.database!.openTable(tableName));
+      const table = this.tables.get(tableName) || (await this.database?.openTable(tableName));
 
       let query = table.search(queryVector).limit(limit);
 
@@ -250,12 +241,12 @@ export class LanceDBInterface extends EventEmitter {
     this.ensureInitialized();
 
     try {
-      const tableNames = await this.database!.tableNames();
+      const tableNames = await this.database?.tableNames();
       let totalVectors = 0;
 
       for (const tableName of tableNames) {
         try {
-          const table = await this.database!.openTable(tableName);
+          const table = await this.database?.openTable(tableName);
           const count = await table.countRows();
           totalVectors += count;
         } catch (error) {
@@ -277,11 +268,7 @@ export class LanceDBInterface extends EventEmitter {
   }
 
   /** Setup performance indices */
-  private async setupIndices(): Promise<void> {
-    // Index setup would depend on LanceDB's indexing capabilities
-    // This is a placeholder for future implementation
-    console.log('🔧 Setting up performance indices...');
-  }
+  private async setupIndices(): Promise<void> {}
 
   /** Load existing statistics */
   private async loadStatistics(): Promise<void> {
@@ -352,8 +339,6 @@ export class LanceDBInterface extends EventEmitter {
 
       this.isInitialized = false;
       this.emit('shutdown');
-
-      console.log('✅ LanceDB connection closed');
     }
   }
 }

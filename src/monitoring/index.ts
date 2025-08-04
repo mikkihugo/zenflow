@@ -122,11 +122,6 @@ export async function setupClaudeZenMonitoring(
   const hooks = system.getHooks();
   const dashboardUrl = `http://localhost:${config.dashboardPort}`;
 
-  console.log(`🚀 Claude-Zen Performance Monitoring System started`);
-  console.log(`📊 Dashboard available at: ${dashboardUrl}`);
-  console.log(`⚡ Real-time metrics collection: ${config.metricsInterval}ms intervals`);
-  console.log(`🔧 Automatic optimization: ${config.enableOptimization ? 'enabled' : 'disabled'}`);
-
   return { system, hooks, dashboardUrl };
 }
 
@@ -160,8 +155,6 @@ export const examples = {
       onConsensus: hooks.onSwarmConsensus,
       onTaskComplete: hooks.onSwarmTaskComplete,
     };
-
-    console.log('Monitoring system ready with all integrations');
     return { system, factSystem, ragSystem, swarmSystem, dashboardUrl };
   },
 
@@ -181,13 +174,10 @@ export const examples = {
 
     // Custom event handling
     const integration = system.getIntegration();
-    integration.on('metrics:enhanced', (metrics) => {
-      console.log('Custom metrics processing:', metrics.system.cpu.usage);
-    });
+    integration.on('metrics:enhanced', (_metrics) => {});
 
     integration.on('insights:processed', (insights) => {
       if (insights.healthScore < 80) {
-        console.log('Health score warning:', insights.healthScore);
       }
     });
 
@@ -220,7 +210,19 @@ export const examples = {
     integration.on('optimization:processed', (result) => {
       if (result.success) {
         const impact = (result.impact.performance * 100).toFixed(1);
-        console.log(`Performance optimization: +${impact}% improvement`);
+        
+        // Log optimization impact for monitoring
+        console.log(`🎯 Optimization completed: ${impact}% performance improvement`);
+        
+        // Track optimization metrics
+        if (result.metrics) {
+          console.log('📊 Performance metrics:', {
+            beforeLatency: result.metrics.before?.latency,
+            afterLatency: result.metrics.after?.latency,
+            improvement: `${impact}%`,
+            timestamp: new Date().toISOString(),
+          });
+        }
       }
     });
 

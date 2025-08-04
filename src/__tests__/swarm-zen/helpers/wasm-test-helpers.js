@@ -144,7 +144,7 @@ export function createWasmModuleSpy() {
  * @param {Object} imports - Import object (ignored in mock)
  * @returns {Promise<Object>} Mock WASM instance
  */
-export async function mockInstantiateWasm(wasmPath, imports) {
+export async function mockInstantiateWasm(_wasmPath, _imports) {
   return {
     instance: {
       exports: createMockWasmModule(),
@@ -195,7 +195,7 @@ export class WasmModuleTestDouble {
       return !this.actualCalls.some(
         (call) =>
           call.method === expectation.method &&
-          JSON.stringify(call.args) === JSON.stringify(expectation.args)
+          JSON.stringify(call.args) === JSON.stringify(expectation.args),
       );
     });
 
@@ -203,7 +203,7 @@ export class WasmModuleTestDouble {
       throw new Error(
         `Unmet expectations:\n${unmetExpectations
           .map((e) => `  - ${e.method}(${e.args.join(', ')})`)
-          .join('\n')}`
+          .join('\n')}`,
       );
     }
   }

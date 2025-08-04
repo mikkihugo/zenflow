@@ -8,11 +8,9 @@
  * Version: 1.0.0
  */
 
-import { strict as assert } from 'assert';
-import { spawn } from 'child_process';
-import { readFileSync, writeFileSync } from 'fs';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
+import { spawn } from 'node:child_process';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -29,17 +27,14 @@ class MCPServerTester {
 
   async runTest(name, testFn) {
     this.results.totalTests++;
-    console.log(`\n🧪 Running: ${name}`);
 
     try {
       await testFn();
       this.results.passed++;
-      console.log(`✅ PASSED: ${name}`);
       return true;
     } catch (error) {
       this.results.failed++;
       this.results.errors.push({ name, error: error.message });
-      console.log(`❌ FAILED: ${name}: ${error.message}`);
       return false;
     }
   }
@@ -85,6 +80,14 @@ class MCPServerTester {
           if (hasAnsiEscape) {
             reject(new Error('ANSI escape codes found in stdout - this breaks JSON-RPC'));
           } else {
+            // Log captured data for debugging
+            console.log('✅ MCP server started successfully');
+            if (stdoutData.trim()) {
+              console.log('📤 Stdout captured:', stdoutData.length, 'chars');
+            }
+            if (stderrData.trim()) {
+              console.log('📥 Stderr captured:', stderrData.length, 'chars');
+            }
             resolve();
           }
         }
@@ -92,6 +95,9 @@ class MCPServerTester {
 
       server.on('error', (error) => {
         clearTimeout(timeout);
+        console.error('❌ Server spawn error details:');
+        console.error('📤 Stdout:', stdoutData);
+        console.error('📥 Stderr:', stderrData);
         reject(new Error(`Server spawn error: ${error.message}`));
       });
     });
@@ -119,7 +125,7 @@ class MCPServerTester {
             try {
               const response = JSON.parse(line.trim());
               responses.push(response);
-            } catch (e) {
+            } catch (_e) {
               // Ignore JSON parse errors for this test
             }
           }
@@ -148,8 +154,8 @@ class MCPServerTester {
           };
 
           // Send requests
-          server.stdin.write(JSON.stringify(initRequest) + '\n');
-          server.stdin.write(JSON.stringify(notificationRequest) + '\n');
+          server.stdin.write(`${JSON.stringify(initRequest)}\n`);
+          server.stdin.write(`${JSON.stringify(notificationRequest)}\n`);
 
           // Wait for responses
           setTimeout(() => {
@@ -222,8 +228,8 @@ class MCPServerTester {
             } catch (parseError) {
               reject(
                 new Error(
-                  `JSON parse error: ${parseError.message}. Line: ${line.substring(0, 100)}`
-                )
+                  `JSON parse error: ${parseError.message}. Line: ${line.substring(0, 100)}`,
+                ),
               );
               return;
             }
@@ -243,7 +249,7 @@ class MCPServerTester {
             params: {},
           };
 
-          server.stdin.write(JSON.stringify(request) + '\n');
+          server.stdin.write(`${JSON.stringify(request)}\n`);
 
           setTimeout(() => {
             server.kill();
@@ -309,7 +315,7 @@ class MCPServerTester {
             try {
               JSON.parse(line.trim());
               responseCount++;
-            } catch (e) {
+            } catch (_e) {
               // Ignore parse errors for this test
             }
           }
@@ -330,7 +336,7 @@ class MCPServerTester {
                 params: { verbose: false },
               };
 
-              server.stdin.write(JSON.stringify(request) + '\n');
+              server.stdin.write(`${JSON.stringify(request)}\n`);
               requestId++;
 
               // Send next request after delay
@@ -343,8 +349,8 @@ class MCPServerTester {
                 if (responseCount < 5) {
                   reject(
                     new Error(
-                      `Expected 5 responses, got ${responseCount} - server may have timed out`
-                    )
+                      `Expected 5 responses, got ${responseCount} - server may have timed out`,
+                    ),
                   );
                 } else {
                   resolve();
@@ -392,7 +398,7 @@ class MCPServerTester {
               if (response.error) {
                 errorResponse = response;
               }
-            } catch (e) {
+            } catch (_e) {
               // Ignore parse errors
             }
           }
@@ -409,7 +415,7 @@ class MCPServerTester {
             params: {},
           };
 
-          server.stdin.write(JSON.stringify(request) + '\n');
+          server.stdin.write(`${JSON.stringify(request)}\n`);
 
           setTimeout(() => {
             server.kill();
@@ -432,8 +438,8 @@ class MCPServerTester {
             ) {
               reject(
                 new Error(
-                  'Error response should include helpful information about supported methods'
-                )
+                  'Error response should include helpful information about supported methods',
+                ),
               );
               return;
             }
@@ -475,10 +481,10 @@ class MCPServerTester {
           if (line.trim()) {
             try {
               const response = JSON.parse(line.trim());
-              if (response.result && response.result.resources) {
+              if (response.result?.resources) {
                 resourceResponse = response;
               }
-            } catch (e) {
+            } catch (_e) {
               // Ignore parse errors
             }
           }
@@ -495,7 +501,7 @@ class MCPServerTester {
             params: {},
           };
 
-          server.stdin.write(JSON.stringify(request) + '\n');
+          server.stdin.write(`${JSON.stringify(request)}\n`);
 
           setTimeout(() => {
             server.kill();
@@ -536,39 +542,24 @@ class MCPServerTester {
   }
 
   async runAllTests() {
-    console.log('🚀 Starting MCP Server Timeout & JSON Parsing Fixes Test Suite\n');
-    console.log('Testing fixes for Issue #91');
-
     await this.runTest('Server Startup Without ANSI Codes', () => this.testServerStartup());
     await this.runTest('notifications/initialized Handling', () =>
-      this.testNotificationsInitialized()
+      this.testNotificationsInitialized(),
     );
     await this.runTest('JSON Parsing with stderr Output', () => this.testJsonParsingWithStderr());
     await this.runTest('Connection Stability', () => this.testConnectionStability());
     await this.runTest('Enhanced Error Handling', () => this.testErrorHandling());
     await this.runTest('Resource Management', () => this.testResourceManagement());
 
-    // Report results
-    console.log('\n📊 Test Results Summary:');
-    console.log(`Total Tests: ${this.results.totalTests}`);
-    console.log(`Passed: ${this.results.passed} ✅`);
-    console.log(`Failed: ${this.results.failed} ❌`);
-
     if (this.results.failed > 0) {
-      console.log('\n❌ Failed Tests:');
-      this.results.errors.forEach((error) => {
-        console.log(`  - ${error.name}: ${error.error}`);
-      });
+      this.results.errors.forEach((_error) => {});
     }
 
     const successRate = (this.results.passed / this.results.totalTests) * 100;
-    console.log(`\nSuccess Rate: ${successRate.toFixed(1)}%`);
 
     if (successRate >= 90) {
-      console.log('\n🎉 All critical fixes verified! Issue #91 resolved.');
       return true;
     } else {
-      console.log('\n⚠️  Some tests failed. Additional fixes may be needed.');
       return false;
     }
   }

@@ -119,7 +119,7 @@ export class TerminalManager extends EventEmitter {
           resolve({
             success: false,
             stdout,
-            stderr: stderr + '\nProcess killed due to timeout',
+            stderr: `${stderr}\nProcess killed due to timeout`,
             exitCode: -1,
             duration: Date.now() - startTime,
             error: new Error(`Command timeout after ${execOptions.timeout}ms`),

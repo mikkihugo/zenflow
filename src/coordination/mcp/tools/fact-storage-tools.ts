@@ -473,7 +473,7 @@ ${optimizationResult.recommendations.map((rec) => `  • ${rec}`).join('\n')}`
 /**
  * Helper functions
  */
-function calculateAgeDistribution(stats: any, category: 'fresh' | 'recent' | 'old'): number {
+function calculateAgeDistribution(_stats: any, category: 'fresh' | 'recent' | 'old'): number {
   // This would need to be implemented based on the actual storage stats structure
   // For now, return placeholder values
   const distributions = {

@@ -51,18 +51,18 @@ export const CORE_TOKENS = {
 
 // Memory domain tokens
 export const MEMORY_TOKENS = {
-  Backend: Symbol('MemoryBackend'),
-  Provider: Symbol('MemoryProvider'),
-  ProviderFactory: Symbol('MemoryProviderFactory'),
-  Config: Symbol('MemoryConfig'),
-  Controller: Symbol('MemoryController'),
+  Backend: createToken('MemoryBackend'),
+  Provider: createToken('MemoryProvider'),
+  ProviderFactory: createToken('MemoryProviderFactory'),
+  Config: createToken('MemoryConfig'),
+  Controller: createToken('MemoryController'),
 } as const;
 
 // Database domain tokens
 export const DATABASE_TOKENS = {
-  Adapter: Symbol('DatabaseAdapter'),
-  Provider: Symbol('DatabaseProvider'),
-  ProviderFactory: Symbol('DatabaseProviderFactory'),
-  Config: Symbol('DatabaseConfig'),
-  Controller: Symbol('DatabaseController'),
+  Adapter: createToken('DatabaseAdapter'),
+  Provider: createToken('DatabaseProvider'),
+  ProviderFactory: createToken('DatabaseProviderFactory'),
+  Config: createToken('DatabaseConfig'),
+  Controller: createToken('DatabaseController'),
 } as const;

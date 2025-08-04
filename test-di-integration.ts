@@ -4,11 +4,8 @@
 
 import { runCompleteIntegration } from './src/di/examples/complete-system-integration.ts';
 
-console.log('🧪 Testing complete DI integration...');
-
 runCompleteIntegration()
   .then(() => {
-    console.log('🎉 DI integration test completed successfully!');
     process.exit(0);
   })
   .catch((error) => {

@@ -43,7 +43,7 @@ export class ResourceMonitor implements IResourceMonitor {
 
   public async getHistoricalMetrics(
     agentId: string,
-    timeRange: { start: Date; end: Date }
+    _timeRange: { start: Date; end: Date }
   ): Promise<LoadMetrics[]> {
     // In a real implementation, this would query a time-series database
     const current = this.metricsCache.get(agentId);

@@ -571,8 +571,8 @@ describe('Vector Database Performance (Classical TDD)', () => {
       // Verify final state is consistent
       const finalVector = await vectorStore.getById(testId);
       expect(finalVector).toBeDefined();
-      expect(finalVector!.metadata.version).toBeGreaterThan(0);
-      expect(finalVector!.metadata.version).toBeLessThanOrEqual(concurrentUpdates);
+      expect(finalVector?.metadata.version).toBeGreaterThan(0);
+      expect(finalVector?.metadata.version).toBeLessThanOrEqual(concurrentUpdates);
 
       const updateTime = performance.getDuration('concurrent-updates');
       expect(updateTime).toBeLessThan(5000); // 5 seconds max

@@ -148,7 +148,7 @@ global.createTestClient = (baseURL: string) => {
 };
 
 global.waitForPort = async (port: number, timeout: number = 5000) => {
-  const net = await import('net');
+  const net = await import('node:net');
   const start = Date.now();
 
   while (Date.now() - start < timeout) {

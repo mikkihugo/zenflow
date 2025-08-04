@@ -12,7 +12,6 @@ import type {
   ProjectSpecification,
   PseudocodeStructure,
   SPARCTemplate,
-  TemplateMetadata,
 } from '../types/sparc-types';
 
 export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
@@ -994,11 +993,11 @@ END
     return customized;
   },
 
-  customizePseudocode(projectSpec: ProjectSpecification): PseudocodeStructure {
+  customizePseudocode(_projectSpec: ProjectSpecification): PseudocodeStructure {
     return { ...this.pseudocode };
   },
 
-  customizeArchitecture(projectSpec: ProjectSpecification): ArchitectureDesign {
+  customizeArchitecture(_projectSpec: ProjectSpecification): ArchitectureDesign {
     return { ...this.architecture };
   },
 

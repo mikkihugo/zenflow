@@ -99,9 +99,17 @@ export class TerminalInterface {
     const commands = process.argv.slice(2).filter((arg) => !arg.startsWith('-'));
     const flags = this.parseFlags(process.argv.slice(2));
 
+    // Log terminal mode selection for debugging
+    console.log(`🖥️  Terminal mode: ${mode}`);
+    if (this.config.debug) {
+      console.log(`Commands: ${commands.join(' ')}`);
+      console.log(`Flags: ${JSON.stringify(flags)}`);
+    }
+
     // Render the appropriate interface
     const { unmount } = render(
       React.createElement(TerminalApp, {
+        mode,
         commands,
         flags: { ...flags, ...this.config },
         onExit: (code: number) => process.exit(code),

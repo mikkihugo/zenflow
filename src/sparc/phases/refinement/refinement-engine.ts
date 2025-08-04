@@ -12,12 +12,10 @@ import type {
   CodeQualityOptimization,
   ImprovementMetric,
   OptimizationStrategy,
-  OptimizationType,
   PerformanceOptimization,
   RefactoringOpportunity,
   RefinementEngine,
   RefinementFeedback,
-  RefinementPriority,
   RefinementResult,
   RefinementValidation,
   ScalabilityOptimization,
@@ -34,8 +32,6 @@ export class RefinementPhaseEngine implements RefinementEngine {
     architecture: ArchitectureDesign,
     feedback: RefinementFeedback
   ): Promise<RefinementResult> {
-    console.log(`🔧 Applying refinements to architecture ${architecture.id}`);
-
     const optimizationStrategies = await this.identifyOptimizationStrategies(
       architecture,
       feedback
@@ -53,10 +49,6 @@ export class RefinementPhaseEngine implements RefinementEngine {
       architecture,
       feedback
     );
-
-    console.log(`   Generated ${optimizationStrategies.length} optimization strategies`);
-    console.log(`   Created ${performanceOptimizations.length} performance optimizations`);
-    console.log(`   Created ${securityOptimizations.length} security optimizations`);
 
     const refinedArchitecture = await this.applyOptimizations(
       architecture,
@@ -94,7 +86,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
    * Identify optimization strategies based on feedback
    */
   private async identifyOptimizationStrategies(
-    architecture: ArchitectureDesign,
+    _architecture: ArchitectureDesign,
     feedback: RefinementFeedback
   ): Promise<OptimizationStrategy[]> {
     const strategies: OptimizationStrategy[] = [];
@@ -211,7 +203,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
    */
   private async generatePerformanceOptimizations(
     architecture: ArchitectureDesign,
-    feedback: RefinementFeedback
+    _feedback: RefinementFeedback
   ): Promise<PerformanceOptimization[]> {
     const optimizations: PerformanceOptimization[] = [];
 
@@ -299,8 +291,8 @@ export class RefinementPhaseEngine implements RefinementEngine {
    * Generate security optimizations
    */
   private async generateSecurityOptimizations(
-    architecture: ArchitectureDesign,
-    feedback: RefinementFeedback
+    _architecture: ArchitectureDesign,
+    _feedback: RefinementFeedback
   ): Promise<SecurityOptimization[]> {
     const optimizations: SecurityOptimization[] = [];
 
@@ -380,8 +372,8 @@ export class RefinementPhaseEngine implements RefinementEngine {
    * Generate scalability optimizations
    */
   private async generateScalabilityOptimizations(
-    architecture: ArchitectureDesign,
-    feedback: RefinementFeedback
+    _architecture: ArchitectureDesign,
+    _feedback: RefinementFeedback
   ): Promise<ScalabilityOptimization[]> {
     const optimizations: ScalabilityOptimization[] = [];
 
@@ -453,8 +445,8 @@ export class RefinementPhaseEngine implements RefinementEngine {
    * Generate code quality optimizations
    */
   private async generateCodeQualityOptimizations(
-    architecture: ArchitectureDesign,
-    feedback: RefinementFeedback
+    _architecture: ArchitectureDesign,
+    _feedback: RefinementFeedback
   ): Promise<CodeQualityOptimization[]> {
     const optimizations: CodeQualityOptimization[] = [];
 
@@ -547,7 +539,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
     performanceOpts: PerformanceOptimization[],
     securityOpts: SecurityOptimization[],
     scalabilityOpts: ScalabilityOptimization[],
-    codeQualityOpts: CodeQualityOptimization[]
+    _codeQualityOpts: CodeQualityOptimization[]
   ): Promise<ArchitectureDesign> {
     // Create a refined copy of the architecture
     const refinedArchitecture: ArchitectureDesign = {
@@ -610,8 +602,8 @@ export class RefinementPhaseEngine implements RefinementEngine {
    * Benchmark improvements between original and refined architecture
    */
   private async benchmarkImprovements(
-    original: ArchitectureDesign,
-    refined: ArchitectureDesign
+    _original: ArchitectureDesign,
+    _refined: ArchitectureDesign
   ): Promise<BenchmarkResult[]> {
     return [
       {
@@ -684,7 +676,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
    * Identify refactoring opportunities
    */
   private async identifyRefactoringOpportunities(
-    architecture: ArchitectureDesign
+    _architecture: ArchitectureDesign
   ): Promise<RefactoringOpportunity[]> {
     return [
       {

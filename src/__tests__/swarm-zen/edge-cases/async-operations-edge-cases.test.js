@@ -4,16 +4,13 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { RuvSwarm } from '../../src/index-enhanced.js';
-import { NeuralAgent } from '../../src/neural-agent.js';
-import { SwarmPersistence } from '../../src/persistence.js';
 
 // Mock timers for timeout testing
 jest.useFakeTimers();
 
 describe('Async Operations Edge Cases', () => {
   let ruv;
-  let swarm;
+  let _swarm;
 
   beforeEach(async () => {
     // Initialize with mocks
@@ -25,7 +22,7 @@ describe('Async Operations Edge Cases', () => {
         terminate: jest.fn(),
       }),
     };
-    swarm = await ruv.createSwarm({ topology: 'mesh' });
+    _swarm = await ruv.createSwarm({ topology: 'mesh' });
   });
 
   afterEach(() => {
@@ -122,7 +119,7 @@ describe('Async Operations Edge Cases', () => {
           try {
             // Cleanup that might fail
             await Promise.reject(new Error('Cleanup error'));
-          } catch (e) {
+          } catch (_e) {
             errorInFinally = true;
           }
         }
@@ -191,19 +188,19 @@ describe('Async Operations Edge Cases', () => {
           setTimeout(() => {
             results.push(1);
             resolve(1);
-          }, 100)
+          }, 100),
         ),
         new Promise((resolve) =>
           setTimeout(() => {
             results.push(2);
             resolve(2);
-          }, 50)
+          }, 50),
         ),
         new Promise((resolve) =>
           setTimeout(() => {
             results.push(3);
             resolve(3);
-          }, 75)
+          }, 75),
         ),
       ];
 
@@ -345,7 +342,7 @@ describe('Async Operations Edge Cases', () => {
             const task = this.queue.shift();
             try {
               await task();
-            } catch (error) {
+            } catch (_error) {
               // Task failed, continue processing
             }
           }
@@ -420,7 +417,7 @@ describe('Async Operations Edge Cases', () => {
 
   describe('Async Event Emitter Edge Cases', () => {
     it('should handle async event listeners with errors', async () => {
-      const { EventEmitter } = await import('events');
+      const { EventEmitter } = await import('node:events');
       const emitter = new EventEmitter();
       const results = [];
 
@@ -461,8 +458,6 @@ describe('Async Operations Edge Cases', () => {
 
 // Run tests when executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('Running async operations edge case tests...');
-
   // Run all tests
   const { run } = await import('../test-runner.js');
   await run(__filename);

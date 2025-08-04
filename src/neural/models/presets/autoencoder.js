@@ -380,14 +380,6 @@ class AutoencoderModel extends NeuralModel {
 
       trainingHistory.push(historyEntry);
 
-      console.log(
-        `Epoch ${epoch + 1}/${epochs} - ` +
-          `Loss: ${avgTrainLoss.toFixed(4)} ` +
-          `(Recon: ${avgReconLoss.toFixed(4)}, ` +
-          `KL: ${avgKLLoss.toFixed(4)}) - ` +
-          `Val Loss: ${valLosses.total.toFixed(4)}`
-      );
-
       this.updateMetrics(avgTrainLoss);
     }
 

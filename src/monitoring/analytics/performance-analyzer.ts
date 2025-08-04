@@ -3,15 +3,8 @@
  * Real-time trend analysis, anomaly detection, and predictive modeling
  */
 
-import { EventEmitter } from 'events';
-import {
-  type CompositeMetrics,
-  FactMetrics,
-  McpToolMetrics,
-  RagMetrics,
-  SwarmMetrics,
-  SystemMetrics,
-} from '../core/metrics-collector';
+import { EventEmitter } from 'node:events';
+import type { CompositeMetrics } from '../core/metrics-collector';
 
 export interface AnomalyDetection {
   timestamp: number;
@@ -59,7 +52,6 @@ export class PerformanceAnalyzer extends EventEmitter {
   private metricsHistory: CompositeMetrics[] = [];
   private baselineMetrics: Map<string, number> = new Map();
   private anomalyThresholds: Map<string, { min: number; max: number }> = new Map();
-  private trendWindows: Map<string, number[]> = new Map();
   private isAnalyzing = false;
 
   constructor() {

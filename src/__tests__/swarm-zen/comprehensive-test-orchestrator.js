@@ -9,8 +9,8 @@ const { PerformanceValidator } = require('./comprehensive-performance-validation
 const { LoadTestingSuite } = require('./load-testing-suite.test.js');
 const { SecurityAuditor } = require('./security-audit.test.js');
 const { RegressionTestingPipeline } = require('./regression-testing-pipeline.test.js');
-const fs = require('fs').promises;
-const path = require('path');
+const fs = require('node:fs').promises;
+const _path = require('node:path');
 
 class ComprehensiveTestOrchestrator {
   constructor() {
@@ -43,9 +43,6 @@ class ComprehensiveTestOrchestrator {
   }
 
   async runComprehensiveTests() {
-    console.log('🚀 Starting Comprehensive Test Orchestration');
-    console.log('==============================================\n');
-
     this.logEnvironment();
 
     try {
@@ -94,19 +91,9 @@ class ComprehensiveTestOrchestrator {
     return this.orchestrationResults;
   }
 
-  logEnvironment() {
-    console.log('🌍 Test Environment:');
-    console.log(
-      `   Platform: ${this.orchestrationResults.environment.platform} ${this.orchestrationResults.environment.arch}`
-    );
-    console.log(`   Node.js: ${this.orchestrationResults.environment.nodeVersion}`);
-    console.log(`   Test Mode: ${this.orchestrationResults.environment.testMode}`);
-    console.log(`   Start Time: ${new Date(this.startTime).toISOString()}\n`);
-  }
+  logEnvironment() {}
 
   async runTestSuite(suiteName, testFunction) {
-    console.log(`📋 Running ${suiteName}...`);
-
     const suite = {
       name: suiteName,
       startTime: Date.now(),
@@ -123,26 +110,17 @@ class ComprehensiveTestOrchestrator {
       suite.results = results;
       suite.passed = this.determineSuitePassed(suiteName, results);
       suite.metrics = this.extractMetrics(suiteName, results);
-
-      console.log(
-        `   ${suite.passed ? '✅' : '❌'} ${suiteName} ${suite.passed ? 'PASSED' : 'FAILED'}`
-      );
     } catch (error) {
       suite.error = error.message;
       suite.passed = false;
-      console.log(`   ❌ ${suiteName} ERROR: ${error.message}`);
     }
 
     suite.endTime = Date.now();
     suite.duration = suite.endTime - suite.startTime;
     this.orchestrationResults.testSuites.push(suite);
-
-    console.log(`   Duration: ${Math.round(suite.duration / 1000)}s\n`);
   }
 
   async runClaudeFlowTests() {
-    console.log('🧠 Testing Claude Code Flow Integration...');
-
     const claudeFlowTests = {
       timestamp: new Date().toISOString(),
       tests: [],
@@ -163,7 +141,7 @@ class ComprehensiveTestOrchestrator {
         await mcp.swarm_init({ topology: 'mesh', maxAgents: 3 });
 
         // Test agent spawning
-        const agentResult = await mcp.agent_spawn({ type: 'coder', name: 'claude-test-agent' });
+        const _agentResult = await mcp.agent_spawn({ type: 'coder', name: 'claude-test-agent' });
 
         // Test task orchestration
         await mcp.task_orchestrate({
@@ -180,9 +158,9 @@ class ComprehensiveTestOrchestrator {
     // Test 2: Neural Network Integration
     await this.runClaudeFlowTest(claudeFlowTests, 'Neural Network Integration', async () => {
       try {
-        const { RuvSwarm } = require('../src/index-enhanced');
+        const { ZenSwarm } = require('../src/index-enhanced');
 
-        const ruvSwarm = await RuvSwarm.initialize({
+        const ruvSwarm = await ZenSwarm.initialize({
           enableNeuralNetworks: true,
           enableForecasting: true,
         });
@@ -231,9 +209,9 @@ class ComprehensiveTestOrchestrator {
     // Test 4: WASM Module Integration
     await this.runClaudeFlowTest(claudeFlowTests, 'WASM Module Integration', async () => {
       try {
-        const { RuvSwarm } = require('../src/index-enhanced');
+        const { ZenSwarm } = require('../src/index-enhanced');
 
-        const ruvSwarm = await RuvSwarm.initialize({ enableSIMD: true });
+        const ruvSwarm = await ZenSwarm.initialize({ enableSIMD: true });
         const simdSupported = await ruvSwarm.detectSIMDSupport();
 
         // Test WASM-based operations
@@ -260,10 +238,10 @@ class ComprehensiveTestOrchestrator {
         const { hooks } = require('../src/hooks');
 
         // Test pre-operation hooks
-        const preResult = await hooks.preTask('claude-flow-test');
+        const _preResult = await hooks.preTask('claude-flow-test');
 
         // Test post-operation hooks
-        const postResult = await hooks.postEdit('/test/file.js', {
+        const _postResult = await hooks.postEdit('/test/file.js', {
           memoryKey: 'claude-flow-test',
         });
 
@@ -307,15 +285,9 @@ class ComprehensiveTestOrchestrator {
       testSuite.summary.failedTests++;
       testSuite.passed = false;
     }
-
-    console.log(
-      `     ${test.passed ? '✅' : '❌'} ${testName}: ${test.details} (${test.duration}ms)`
-    );
   }
 
   async runCrossPlatformTests() {
-    console.log('🌐 Testing Cross-Platform Compatibility...');
-
     const platformTests = {
       timestamp: new Date().toISOString(),
       platform: process.platform,
@@ -358,8 +330,8 @@ class ComprehensiveTestOrchestrator {
     };
 
     try {
-      const { RuvSwarm } = require('../src/index-enhanced');
-      const ruvSwarm = await RuvSwarm.initialize();
+      const { ZenSwarm } = require('../src/index-enhanced');
+      const ruvSwarm = await ZenSwarm.initialize();
       const simdSupport = await ruvSwarm.detectSIMDSupport();
 
       wasmTest.passed = simdSupport !== undefined;
@@ -423,12 +395,10 @@ class ComprehensiveTestOrchestrator {
 
     // Overall platform compatibility
     platformTests.passed = Object.values(platformTests.compatibility).every(
-      (supported) => supported
+      (supported) => supported,
     );
 
-    platformTests.tests.forEach((test) => {
-      console.log(`     ${test.passed ? '✅' : '❌'} ${test.name}: ${test.details}`);
-    });
+    platformTests.tests.forEach((_test) => {});
 
     return platformTests;
   }
@@ -504,12 +474,10 @@ class ComprehensiveTestOrchestrator {
   }
 
   async generateOrchestrationReport() {
-    console.log('📄 Generating Comprehensive Orchestration Report...');
-
     // Calculate summary statistics
     this.orchestrationResults.summary.totalSuites = this.orchestrationResults.testSuites.length;
     this.orchestrationResults.summary.passedSuites = this.orchestrationResults.testSuites.filter(
-      (s) => s.passed
+      (s) => s.passed,
     ).length;
     this.orchestrationResults.summary.failedSuites =
       this.orchestrationResults.summary.totalSuites -
@@ -529,7 +497,7 @@ class ComprehensiveTestOrchestrator {
       'Claude Code Flow Integration',
     ];
     const criticalPassed = criticalSuites.every(
-      (suiteName) => this.orchestrationResults.testSuites.find((s) => s.name === suiteName)?.passed
+      (suiteName) => this.orchestrationResults.testSuites.find((s) => s.name === suiteName)?.passed,
     );
     this.orchestrationResults.cicdReadiness =
       criticalPassed && this.orchestrationResults.summary.overallStatus === 'PASSED';
@@ -543,57 +511,19 @@ class ComprehensiveTestOrchestrator {
 
     // Generate executive summary
     await this.generateExecutiveSummary();
-
-    // Console output
-    console.log('\n🎯 COMPREHENSIVE TEST ORCHESTRATION SUMMARY');
-    console.log('============================================');
-    console.log(`Overall Status: ${this.orchestrationResults.summary.overallStatus}`);
-    console.log(
-      `Test Suites: ${this.orchestrationResults.summary.passedSuites}/${this.orchestrationResults.summary.totalSuites} passed`
-    );
-    console.log(`Success Rate: ${(successRate * 100).toFixed(1)}%`);
-    console.log(
-      `Total Duration: ${Math.round(this.orchestrationResults.summary.totalDuration / 1000)}s`
-    );
-    console.log(`CI/CD Ready: ${this.orchestrationResults.cicdReadiness ? 'YES' : 'NO'}`);
-
-    console.log('\n📊 Key Metrics:');
     if (this.orchestrationResults.metrics.performance.simdPerformance) {
-      console.log(
-        `   SIMD Performance: ${this.orchestrationResults.metrics.performance.simdPerformance}`
-      );
     }
     if (this.orchestrationResults.metrics.performance.speedOptimization) {
-      console.log(
-        `   Speed Optimization: ${this.orchestrationResults.metrics.performance.speedOptimization}`
-      );
     }
     if (this.orchestrationResults.metrics.reliability.maxConcurrentAgents) {
-      console.log(
-        `   Max Concurrent Agents: ${this.orchestrationResults.metrics.reliability.maxConcurrentAgents}`
-      );
     }
     if (this.orchestrationResults.metrics.security.securityScore) {
-      console.log(
-        `   Security Score: ${this.orchestrationResults.metrics.security.securityScore}/100`
-      );
     }
-
-    console.log('\n📋 Test Suite Results:');
-    this.orchestrationResults.testSuites.forEach((suite) => {
-      console.log(
-        `   ${suite.passed ? '✅' : '❌'} ${suite.name} (${Math.round(suite.duration / 1000)}s)`
-      );
-    });
+    this.orchestrationResults.testSuites.forEach((_suite) => {});
 
     if (this.orchestrationResults.recommendations.length > 0) {
-      console.log('\n💡 Recommendations:');
-      this.orchestrationResults.recommendations.forEach((rec, i) => {
-        console.log(`   ${i + 1}. ${rec}`);
-      });
+      this.orchestrationResults.recommendations.forEach((_rec, _i) => {});
     }
-
-    console.log(`\n📄 Detailed report saved to: ${reportPath}`);
 
     return this.orchestrationResults;
   }
@@ -629,7 +559,7 @@ class ComprehensiveTestOrchestrator {
 
     if (recommendations.length === 0) {
       recommendations.push(
-        'All tests passed successfully - system ready for production deployment'
+        'All tests passed successfully - system ready for production deployment',
       );
     }
 
@@ -653,11 +583,11 @@ class ComprehensiveTestOrchestrator {
 
 ## Test Suite Results
 ${this.orchestrationResults.testSuites
-  .map(
-    (suite) =>
-      `- ${suite.passed ? '✅' : '❌'} **${suite.name}**: ${suite.passed ? 'PASSED' : 'FAILED'} (${Math.round(suite.duration / 1000)}s)`
-  )
-  .join('\n')}
+    .map(
+      (suite) =>
+        `- ${suite.passed ? '✅' : '❌'} **${suite.name}**: ${suite.passed ? 'PASSED' : 'FAILED'} (${Math.round(suite.duration / 1000)}s)`,
+    )
+    .join('\n')}
 
 ## Recommendations
 ${this.orchestrationResults.recommendations.map((rec, i) => `${i + 1}. ${rec}`).join('\n')}

@@ -5,7 +5,7 @@
  * This is the complete "all done" implementation requested by @mikkihugo.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import { CoordinationManager } from './coordination/manager';
 
 // Import DI-enhanced coordinators
@@ -26,17 +26,11 @@ import { LearningCoordinator } from './intelligence/adaptive-learning/learning-c
 
 // Core service implementations
 class ConsoleLogger implements ILogger {
-  log(message: string): void {
-    console.log(`[${new Date().toISOString()}] ${message}`);
-  }
+  log(_message: string): void {}
 
-  debug(message: string, meta?: any): void {
-    console.debug(`[${new Date().toISOString()}] DEBUG: ${message}`, meta || '');
-  }
+  debug(_message: string, _meta?: any): void {}
 
-  info(message: string, meta?: any): void {
-    console.info(`[${new Date().toISOString()}] INFO: ${message}`, meta || '');
-  }
+  info(_message: string, _meta?: any): void {}
 
   warn(message: string, meta?: any): void {
     console.warn(`[${new Date().toISOString()}] WARN: ${message}`, meta || '');
@@ -95,17 +89,13 @@ class AppEventBus extends EventEmitter implements IEventBus {
 class MockDatabase implements IDatabase {
   private data = new Map<string, any>();
 
-  async initialize(): Promise<void> {
-    console.log('Mock database initialized');
-  }
+  async initialize(): Promise<void> {}
 
-  async query<T>(sql: string, params?: any[]): Promise<T[]> {
-    console.log(`Mock query: ${sql}`, params);
+  async query<T>(_sql: string, _params?: any[]): Promise<T[]> {
     return [];
   }
 
   async execute(sql: string, params?: any[]): Promise<void> {
-    console.log(`Mock execute: ${sql}`, params);
     // Mock execution - store some fake data
     if (sql.includes('INSERT') || sql.includes('UPDATE')) {
       this.data.set(`query_${Date.now()}`, { sql, params });
@@ -113,20 +103,11 @@ class MockDatabase implements IDatabase {
   }
 
   async transaction<T>(fn: (db: IDatabase) => Promise<T>): Promise<T> {
-    console.log('Mock transaction started');
-    try {
-      const result = await fn(this);
-      console.log('Mock transaction committed');
-      return result;
-    } catch (error) {
-      console.log('Mock transaction rolled back');
-      throw error;
-    }
+    const result = await fn(this);
+    return result;
   }
 
-  async close(): Promise<void> {
-    console.log('Mock database closed');
-  }
+  async close(): Promise<void> {}
 }
 
 /**
@@ -372,11 +353,6 @@ async function main() {
 
   try {
     await app.initialize();
-
-    // Keep the application running
-    console.log('\n🎯 Claude Code Zen is running with full DI integration!');
-    console.log('   All coordinators are using dependency injection');
-    console.log('   Press Ctrl+C to shutdown gracefully\n');
 
     // Keep process alive
     setInterval(() => {

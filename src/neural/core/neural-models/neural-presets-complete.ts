@@ -12,7 +12,7 @@ export const COMPLETE_NEURAL_PRESETS = {
     activation: 'relu',
     learningRate: 0.001,
   },
-  
+
   // Advanced presets
   DEEP_NETWORK: {
     id: 'deep_network',
@@ -60,7 +60,7 @@ export class CognitivePatternSelector {
   selectPattern(taskType, requirements = {}) {
     const candidates = this.getCandidatePatterns(taskType, requirements);
     const selected = this.scoreAndSelect(candidates, requirements);
-    
+
     this.selectionHistory.push({
       taskType,
       requirements,
@@ -78,11 +78,11 @@ export class CognitivePatternSelector {
     this.patterns.set(pattern.id, pattern);
   }
 
-  private getCandidatePatterns(taskType, requirements) {
+  private getCandidatePatterns(_taskType, requirements) {
     const presets = Object.values(COMPLETE_NEURAL_PRESETS);
     const custom = Array.from(this.patterns.values());
-    
-    return [...presets, ...custom].filter(pattern => {
+
+    return [...presets, ...custom].filter((pattern) => {
       // Basic filtering logic
       if (requirements.architecture && pattern.architecture !== requirements.architecture) {
         return false;
@@ -95,7 +95,7 @@ export class CognitivePatternSelector {
     if (candidates.length === 0) return null;
 
     // Simple scoring based on requirements match
-    const scored = candidates.map(pattern => ({
+    const scored = candidates.map((pattern) => ({
       pattern,
       score: this.calculateScore(pattern, requirements),
     }));
@@ -137,7 +137,7 @@ export class NeuralAdaptationEngine {
    */
   adapt(networkConfig, performanceData) {
     const adaptation = this.generateAdaptation(networkConfig, performanceData);
-    
+
     this.adaptations.push({
       ...adaptation,
       timestamp: new Date(),
@@ -155,24 +155,26 @@ export class NeuralAdaptationEngine {
   /**
    * Get adaptation recommendations
    */
-  getRecommendations(networkConfig) {
+  getRecommendations(_networkConfig) {
     const recentPerformance = this.performanceHistory.slice(-10);
-    
+
     if (recentPerformance.length === 0) {
       return { action: 'monitor', reason: 'Insufficient performance data' };
     }
 
-    const avgPerformance = recentPerformance.reduce((sum, p) => sum + p.performance.accuracy, 0) / recentPerformance.length;
+    const avgPerformance =
+      recentPerformance.reduce((sum, p) => sum + p.performance.accuracy, 0) /
+      recentPerformance.length;
 
     if (avgPerformance < 0.7) {
-      return { 
-        action: 'increase_complexity', 
+      return {
+        action: 'increase_complexity',
         reason: 'Low performance detected',
         suggestion: 'Add more layers or increase learning rate',
       };
     } else if (avgPerformance > 0.95) {
-      return { 
-        action: 'reduce_complexity', 
+      return {
+        action: 'reduce_complexity',
         reason: 'Possible overfitting',
         suggestion: 'Add dropout or reduce network size',
       };
@@ -181,7 +183,7 @@ export class NeuralAdaptationEngine {
     return { action: 'maintain', reason: 'Performance is adequate' };
   }
 
-  private generateAdaptation(config, performance) {
+  private generateAdaptation(_config, performance) {
     const adaptations = [];
 
     // Learning rate adaptation

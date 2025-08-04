@@ -222,10 +222,7 @@ export async function generateAllSubAgentTemplates(outputDir: string): Promise<v
     const filepath = join(outputDir, filename);
 
     await writeFile(filepath, JSON.stringify(config, null, 2), 'utf8');
-    console.log(`Generated sub-agent config: ${filename}`);
   }
-
-  console.log(`Generated ${agentTypes.length} sub-agent configurations in ${outputDir}`);
 }
 
 /**

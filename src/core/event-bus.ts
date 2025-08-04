@@ -6,7 +6,6 @@
 
 import { EventEmitter } from 'node:events';
 import type {
-  BaseEventPayload,
   EventBusConfig,
   EventListener,
   EventListenerAny,
@@ -81,7 +80,6 @@ export class EventBus extends EventEmitter implements IEventBus<EventMap> {
 
       // Log if enabled
       if (this.config.enableLogging) {
-        console.log(`[EventBus] Emitting ${String(event)}:`, payload);
       }
 
       const result = super.emit(event as string, payload);

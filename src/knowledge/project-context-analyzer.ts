@@ -17,15 +17,29 @@
 
 import { exec } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import { readFile } from 'node:fs/promises';
+import { readFile, access } from 'node:fs/promises';
+import { constants } from 'node:fs';
 import path from 'node:path';
 import { promisify } from 'node:util';
 import { KnowledgeSwarm, type KnowledgeSwarmConfig } from './knowledge-swarm';
 
 const execAsync = promisify(exec);
 
+interface MonorepoInfo {
+  type: 'lerna' | 'nx' | 'rush' | 'pnpm' | 'yarn' | 'npm' | 'turbo' | 'bazel' | 'custom' | 'none';
+  tool?: string;
+  version?: string;
+  workspaces?: string[];
+  packages?: string[];
+  confidence: number;
+  configFile?: string;
+  hasRootPackageJson: boolean;
+  packageManager?: 'npm' | 'yarn' | 'pnpm';
+}
+
 interface ProjectContext {
   rootPath: string;
+  monorepo: MonorepoInfo;
   dependencies: DependencyInfo[];
   devDependencies: DependencyInfo[];
   frameworks: DetectedFramework[];
@@ -125,8 +139,6 @@ export class ProjectContextAnalyzer extends EventEmitter {
    * Initialize the project context analyzer
    */
   async initialize(): Promise<void> {
-    console.log('🧠 Initializing Project Context Analyzer...');
-
     try {
       // Initialize the knowledge swarm
       await this.knowledgeSwarm.initialize();
@@ -141,10 +153,6 @@ export class ProjectContextAnalyzer extends EventEmitter {
       if (this.config.autoUpdate) {
         this.startContextMonitoring();
       }
-
-      console.log(
-        `✅ Project Context Analyzer initialized with ${this.knowledgeMissions.size} missions`
-      );
       this.emit('analyzerInitialized', {
         missions: this.knowledgeMissions.size,
         context: this.projectContext,
@@ -159,11 +167,10 @@ export class ProjectContextAnalyzer extends EventEmitter {
    * Analyze the current project to understand what knowledge is needed
    */
   async analyzeProjectContext(): Promise<ProjectContext> {
-    console.log('🔍 Analyzing project context...');
-
     try {
       const context: ProjectContext = {
         rootPath: this.config.projectRoot,
+        monorepo: { type: 'none', confidence: 0, hasRootPackageJson: false },
         dependencies: [],
         devDependencies: [],
         frameworks: [],
@@ -173,6 +180,9 @@ export class ProjectContextAnalyzer extends EventEmitter {
         errorPatterns: [],
         teamNeeds: [],
       };
+
+      // First detect if this is a monorepo
+      await this.detectMonorepo(context);
 
       // Analyze dependencies from various package managers
       await this.analyzeDependencies(context);
@@ -191,10 +201,6 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
       this.projectContext = context;
       this.lastAnalysis = new Date();
-
-      console.log(
-        `✅ Project analysis complete: ${context.dependencies.length} deps, ${context.frameworks.length} frameworks`
-      );
       this.emit('contextAnalyzed', context);
 
       return context;
@@ -205,14 +211,197 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
+   * Detect if the project is a monorepo and what type
+   */
+  private async detectMonorepo(context: ProjectContext): Promise<void> {
+    const monorepoIndicators = {
+      lerna: {
+        files: ['lerna.json'],
+        packageJsonFields: ['workspaces'],
+        confidence: 0.95
+      },
+      nx: {
+        files: ['nx.json', 'workspace.json'],
+        packageJsonFields: [],
+        confidence: 0.95
+      },
+      rush: {
+        files: ['rush.json'],
+        packageJsonFields: [],
+        confidence: 0.95
+      },
+      pnpm: {
+        files: ['pnpm-workspace.yaml', 'pnpm-workspace.yml'],
+        packageJsonFields: [],
+        confidence: 0.9
+      },
+      yarn: {
+        files: ['.yarnrc.yml', 'yarn.lock'],
+        packageJsonFields: ['workspaces'],
+        confidence: 0.8
+      },
+      turbo: {
+        files: ['turbo.json'],
+        packageJsonFields: [],
+        confidence: 0.9
+      },
+      bazel: {
+        files: ['WORKSPACE', 'WORKSPACE.bazel', 'BUILD', 'BUILD.bazel'],
+        packageJsonFields: [],
+        confidence: 0.85
+      }
+    };
+
+    // Check for monorepo indicator files
+    for (const [type, indicators] of Object.entries(monorepoIndicators)) {
+      for (const file of indicators.files) {
+        const filePath = path.join(context.rootPath, file);
+        try {
+          await readFile(filePath, 'utf-8');
+          context.monorepo = {
+            type: type as any,
+            tool: type,
+            confidence: indicators.confidence,
+            configFile: file,
+            hasRootPackageJson: false
+          };
+          
+          // If we found a monorepo config, analyze it further
+          await this.analyzeMonorepoStructure(context);
+          return;
+        } catch {
+          // File doesn't exist, continue checking
+        }
+      }
+    }
+
+    // Check package.json for workspace configuration
+    try {
+      const packageJsonPath = path.join(context.rootPath, 'package.json');
+      const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf-8'));
+      
+      context.monorepo.hasRootPackageJson = true;
+      
+      // Check for npm/yarn workspaces
+      if (packageJson.workspaces) {
+        context.monorepo = {
+          type: packageJson.packageManager?.includes('yarn') ? 'yarn' : 'npm',
+          tool: packageJson.packageManager?.includes('yarn') ? 'yarn' : 'npm',
+          workspaces: Array.isArray(packageJson.workspaces) 
+            ? packageJson.workspaces 
+            : packageJson.workspaces.packages || [],
+          confidence: 0.85,
+          hasRootPackageJson: true,
+          packageManager: packageJson.packageManager?.includes('yarn') ? 'yarn' : 'npm'
+        };
+        
+        await this.analyzeMonorepoStructure(context);
+        return;
+      }
+    } catch {
+      // No package.json or error reading it
+    }
+
+    // Check for common monorepo directory patterns
+    const commonPatterns = ['packages/', 'apps/', 'services/', 'libs/', 'modules/'];
+    let matchedPatterns = 0;
+    
+    for (const pattern of commonPatterns) {
+      try {
+        const dirPath = path.join(context.rootPath, pattern);
+        const { stdout } = await execAsync(`ls -d ${dirPath} 2>/dev/null || true`);
+        if (stdout.trim()) {
+          matchedPatterns++;
+        }
+      } catch {
+        // Directory doesn't exist
+      }
+    }
+
+    if (matchedPatterns >= 2) {
+      context.monorepo = {
+        type: 'custom',
+        confidence: 0.6 + (matchedPatterns * 0.1),
+        hasRootPackageJson: context.monorepo.hasRootPackageJson,
+        packages: commonPatterns.filter(async (pattern) => {
+          try {
+            const dirPath = path.join(context.rootPath, pattern);
+            const { stdout } = await execAsync(`ls -d ${dirPath} 2>/dev/null || true`);
+            return stdout.trim() !== '';
+          } catch {
+            return false;
+          }
+        })
+      };
+    }
+  }
+
+  /**
+   * Analyze monorepo structure in detail
+   */
+  private async analyzeMonorepoStructure(context: ProjectContext): Promise<void> {
+    if (context.monorepo.type === 'none') return;
+
+    try {
+      switch (context.monorepo.type) {
+        case 'lerna':
+          const lernaConfig = JSON.parse(
+            await readFile(path.join(context.rootPath, 'lerna.json'), 'utf-8')
+          );
+          context.monorepo.version = lernaConfig.version;
+          context.monorepo.packages = lernaConfig.packages || ['packages/*'];
+          break;
+
+        case 'nx':
+          const nxConfig = JSON.parse(
+            await readFile(path.join(context.rootPath, 'nx.json'), 'utf-8')
+          );
+          // NX has a more complex structure, we'd need to analyze workspace.json too
+          context.monorepo.version = nxConfig.version;
+          break;
+
+        case 'pnpm':
+          const pnpmWorkspace = await readFile(
+            path.join(context.rootPath, 'pnpm-workspace.yaml'),
+            'utf-8'
+          );
+          // Parse YAML to get packages - simplified for now
+          const packagesMatch = pnpmWorkspace.match(/packages:\s*\n((?:\s+-\s+.*\n?)*)/);
+          if (packagesMatch) {
+            context.monorepo.packages = packagesMatch[1]
+              .split('\n')
+              .map(line => line.trim().replace(/^-\s*/, ''))
+              .filter(Boolean);
+          }
+          break;
+
+        case 'rush':
+          const rushConfig = JSON.parse(
+            await readFile(path.join(context.rootPath, 'rush.json'), 'utf-8')
+          );
+          context.monorepo.version = rushConfig.rushVersion;
+          context.monorepo.packages = rushConfig.projects?.map((p: any) => p.projectFolder) || [];
+          break;
+      }
+
+      // Emit monorepo detection event
+      this.emit('monorepoDetected', {
+        type: context.monorepo.type,
+        confidence: context.monorepo.confidence,
+        packages: context.monorepo.packages
+      });
+    } catch (error) {
+      console.warn('Error analyzing monorepo structure:', error);
+    }
+  }
+
+  /**
    * Generate knowledge gathering missions based on project context
    */
   async generateKnowledgeMissions(): Promise<void> {
     if (!this.projectContext) {
       throw new Error('Project context not analyzed');
     }
-
-    console.log('🎯 Generating knowledge gathering missions...');
 
     this.knowledgeMissions.clear();
 
@@ -252,8 +441,6 @@ export class ProjectContextAnalyzer extends EventEmitter {
     // Mission 6: Best practices for current stack
     const bestPracticesMission = this.createBestPracticesMission();
     this.knowledgeMissions.set(bestPracticesMission.id, bestPracticesMission);
-
-    console.log(`✅ Generated ${this.knowledgeMissions.size} knowledge gathering missions`);
     this.emit('missionsGenerated', Array.from(this.knowledgeMissions.values()));
   }
 
@@ -261,10 +448,6 @@ export class ProjectContextAnalyzer extends EventEmitter {
    * Execute knowledge gathering missions through the swarm
    */
   async executeMissions(priority?: 'critical' | 'high' | 'medium' | 'low'): Promise<void> {
-    console.log(
-      `🚀 Executing knowledge gathering missions${priority ? ` (${priority} priority)` : ''}...`
-    );
-
     const missions = Array.from(this.knowledgeMissions.values())
       .filter((m) => m.status === 'pending')
       .filter((m) => !priority || m.priority === priority)
@@ -277,8 +460,6 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
       const completed = missions.filter((m) => m.status === 'completed').length;
       const failed = missions.filter((m) => m.status === 'failed').length;
-
-      console.log(`✅ Mission execution complete: ${completed} successful, ${failed} failed`);
       this.emit('missionsExecuted', { completed, failed, total: missions.length });
     } catch (error) {
       console.error('❌ Mission execution failed:', error);
@@ -293,8 +474,6 @@ export class ProjectContextAnalyzer extends EventEmitter {
     this.knowledgeMissions.set(mission.id, mission);
 
     try {
-      console.log(`🎯 Executing mission: ${mission.id} (${mission.type})`);
-
       let result;
 
       switch (mission.type) {
@@ -331,8 +510,6 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
       // Store knowledge in context cache for project analysis
       await this.storeKnowledgeInCache(mission, result);
-
-      console.log(`✅ Mission completed: ${mission.id}`);
       this.emit('missionCompleted', mission);
     } catch (error) {
       console.error(`❌ Mission failed: ${mission.id}`, error);
@@ -346,14 +523,11 @@ export class ProjectContextAnalyzer extends EventEmitter {
    * Query the knowledge base for specific information
    */
   async queryKnowledge(query: string, context?: string[]): Promise<string> {
-    console.log(`🔍 Querying knowledge base: ${query.substring(0, 100)}...`);
-
     try {
       // First, check if we have relevant cached knowledge
       const relevantKnowledge = await this.searchCachedKnowledge(query, context);
 
       if (relevantKnowledge.length > 0) {
-        console.log(`📚 Found ${relevantKnowledge.length} cached knowledge entries`);
         return this.formatCachedKnowledge(relevantKnowledge);
       }
 
@@ -400,15 +574,14 @@ export class ProjectContextAnalyzer extends EventEmitter {
           });
         }
       }
-
-      console.log(
-        `📦 Found ${context.dependencies.length} dependencies, ${context.devDependencies.length} dev dependencies`
-      );
     } catch (error) {
-      console.log('📦 No package.json found or invalid format');
+      // Log dependency analysis errors for debugging
+      console.warn('Error analyzing dependencies:', error instanceof Error ? error.message : error);
     }
 
-    // TODO: Add support for other package managers (Cargo.toml, requirements.txt, etc.)
+    // Add support for other package managers (Cargo.toml, requirements.txt, etc.)
+    await this.analyzeCargoToml(context);
+    await this.analyzeRequirementsTxt(context);
   }
 
   /**
@@ -446,8 +619,6 @@ export class ProjectContextAnalyzer extends EventEmitter {
         }
       }
     }
-
-    console.log(`🔧 Detected ${context.frameworks.length} frameworks`);
   }
 
   /**
@@ -469,10 +640,68 @@ export class ProjectContextAnalyzer extends EventEmitter {
           percentage: 1.0, // Simplified - assume it's the primary language
         });
       }
-
-      console.log(`💻 Detected languages: ${context.languages.map((l) => l.name).join(', ')}`);
     } catch (error) {
-      console.log('💻 Could not analyze languages');
+      console.warn('Error analyzing languages:', error instanceof Error ? error.message : error);
+    }
+  }
+
+  /**
+   * Analyze Cargo.toml for Rust dependencies
+   */
+  private async analyzeCargoToml(context: ProjectContext): Promise<void> {
+    try {
+      const cargoPath = path.join(context.rootPath, 'Cargo.toml');
+      try {
+        const cargoContent = await readFile(cargoPath, 'utf8');
+        
+        // Basic Cargo.toml parsing (simplified)
+        const dependencySection = cargoContent.match(/\[dependencies\]([\s\S]*?)(?=\[|$)/);
+        if (dependencySection) {
+          const deps = dependencySection[1].match(/^([a-zA-Z0-9_-]+)\s*=/gm) || [];
+          deps.forEach(dep => {
+            const name = dep.replace(/\s*=.*/, '').trim();
+            context.dependencies.push({
+              name,
+              version: 'unknown',
+              type: 'runtime',
+              ecosystem: 'cargo',
+            });
+          });
+        }
+      } catch {
+        // File doesn't exist, skip
+      }
+    } catch (error) {
+      console.warn('Error analyzing Cargo.toml:', error instanceof Error ? error.message : error);
+    }
+  }
+
+  /**
+   * Analyze requirements.txt for Python dependencies
+   */
+  private async analyzeRequirementsTxt(context: ProjectContext): Promise<void> {
+    try {
+      const requirementsPath = path.join(context.rootPath, 'requirements.txt');
+      try {
+        const requirementsContent = await readFile(requirementsPath, 'utf8');
+        
+        requirementsContent.split('\n').forEach(line => {
+          const trimmed = line.trim();
+          if (trimmed && !trimmed.startsWith('#')) {
+            const [name, version] = trimmed.split(/[>=<~!]/);
+            context.dependencies.push({
+              name: name.trim(),
+              version: version ? version.trim() : 'unknown',
+              type: 'runtime',
+              ecosystem: 'pip',
+            });
+          }
+        });
+      } catch {
+        // File doesn't exist, skip
+      }
+    } catch (error) {
+      console.warn('Error analyzing requirements.txt:', error instanceof Error ? error.message : error);
     }
   }
 
@@ -495,8 +724,6 @@ export class ProjectContextAnalyzer extends EventEmitter {
         needsAuth: true, // Safe assumption
       });
     }
-
-    console.log(`🌐 Detected ${context.apis.length} API dependencies`);
   }
 
   /**
@@ -512,10 +739,6 @@ export class ProjectContextAnalyzer extends EventEmitter {
     context.currentTasks = ['Performance optimization', 'Type safety improvements'];
     context.errorPatterns = ['TypeScript errors', 'Build failures'];
     context.teamNeeds = ['React best practices', 'Testing strategies'];
-
-    console.log(
-      `📋 Analyzed current context: ${context.currentTasks.length} tasks, ${context.teamNeeds.length} team needs`
-    );
   }
 
   /**
@@ -703,8 +926,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
       const queryLower = query.toLowerCase();
 
       // Search context cache for relevant knowledge
-      for (const [key, cached] of this.contextCache.entries()) {
-        if (cached.query && cached.query.toLowerCase().includes(queryLower)) {
+      for (const [_key, cached] of this.contextCache.entries()) {
+        if (cached.query?.toLowerCase().includes(queryLower)) {
           results.push(cached);
         }
 
@@ -789,7 +1012,6 @@ export class ProjectContextAnalyzer extends EventEmitter {
           const hoursSinceUpdate = (Date.now() - lastUpdate) / (1000 * 60 * 60);
 
           if (hoursSinceUpdate >= this.config.cacheDuration) {
-            console.log('🔄 Re-analyzing project context...');
             await this.analyzeProjectContext();
             await this.generateKnowledgeMissions();
           }
@@ -799,8 +1021,6 @@ export class ProjectContextAnalyzer extends EventEmitter {
       },
       60 * 60 * 1000
     ); // 1 hour
-
-    console.log('🔄 Started background context monitoring');
   }
 
   /**
@@ -821,18 +1041,33 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
+   * Get monorepo detection results
+   */
+  getMonorepoInfo(): MonorepoInfo | null {
+    return this.projectContext?.monorepo || null;
+  }
+
+  /**
+   * Check if project is a monorepo with high confidence
+   */
+  isMonorepo(confidenceThreshold: number = 0.7): boolean {
+    const monorepo = this.getMonorepoInfo();
+    return monorepo !== null && 
+           monorepo.type !== 'none' && 
+           monorepo.confidence >= confidenceThreshold;
+  }
+
+  /**
    * Shutdown the system
    */
   async shutdown(): Promise<void> {
-    console.log('🔄 Shutting down Project Context Analyzer...');
-
     await this.knowledgeSwarm.shutdown();
     this.knowledgeMissions.clear();
     this.contextCache.clear();
 
     this.emit('analyzerShutdown');
-    console.log('✅ Project Context Analyzer shutdown complete');
   }
 }
 
 export default ProjectContextAnalyzer;
+export type { MonorepoInfo, ProjectContext };

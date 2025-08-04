@@ -6,7 +6,6 @@
 import type {
   FACTKnowledgeEntry,
   FACTSearchQuery,
-  FACTStorageBackend,
   FACTStorageConfig,
   FACTStorageStats,
 } from '@knowledge/storage-interface';
@@ -16,7 +15,6 @@ import type {
  */
 export class FACTStorageSystem {
   private static instance: FACTStorageSystem | null = null;
-  private config: Partial<FACTStorageConfig>;
   private mockStats: FACTStorageStats = {
     memoryEntries: 0,
     persistentEntries: 0,
@@ -38,37 +36,30 @@ export class FACTStorageSystem {
 
   async initialize(): Promise<void> {
     FACTStorageSystem.instance = this;
-    console.log('🧠 FACT Storage System (placeholder) initialized');
   }
 
   async getStorageStats(): Promise<FACTStorageStats> {
     return { ...this.mockStats };
   }
 
-  async searchKnowledge(query: FACTSearchQuery): Promise<FACTKnowledgeEntry[]> {
-    console.log('🔍 FACT Knowledge search (placeholder):', query);
+  async searchKnowledge(_query: FACTSearchQuery): Promise<FACTKnowledgeEntry[]> {
     return [];
   }
 
   async storeKnowledge(
-    entry: Omit<FACTKnowledgeEntry, 'id' | 'timestamp' | 'accessCount' | 'lastAccessed'>
+    _entry: Omit<FACTKnowledgeEntry, 'id' | 'timestamp' | 'accessCount' | 'lastAccessed'>
   ): Promise<string> {
-    console.log('💾 FACT Knowledge store (placeholder)');
     return 'mock-entry-id';
   }
 
-  async cleanup(): Promise<void> {
-    console.log('🧹 FACT Storage cleanup (placeholder)');
-  }
+  async cleanup(): Promise<void> {}
 
   async clearAll(): Promise<void> {
-    console.log('🗑️ FACT Storage clear all (placeholder)');
     this.mockStats.memoryEntries = 0;
     this.mockStats.persistentEntries = 0;
   }
 
   async shutdown(): Promise<void> {
-    console.log('🔄 FACT Storage shutdown (placeholder)');
     FACTStorageSystem.instance = null;
   }
 }
@@ -79,31 +70,23 @@ export class FACTStorageSystem {
 export class KnowledgeSwarm {
   private static instance: KnowledgeSwarm | null = null;
 
-  constructor(storage: FACTStorageSystem) {
-    // Initialize with storage
-  }
-
   public static getInstance(): KnowledgeSwarm | null {
     return KnowledgeSwarm.instance;
   }
 
   async initialize(): Promise<void> {
     KnowledgeSwarm.instance = this;
-    console.log('🐝 Knowledge Swarm (placeholder) initialized');
   }
 
-  async spawnAgent(config: any): Promise<string> {
-    console.log('🤖 Spawning FACT agent (placeholder):', config);
+  async spawnAgent(_config: any): Promise<string> {
     return 'mock-agent-id';
   }
 
-  async createMission(config: any): Promise<string> {
-    console.log('🎯 Creating FACT mission (placeholder):', config);
+  async createMission(_config: any): Promise<string> {
     return 'mock-mission-id';
   }
 
-  async executeMission(missionId: string): Promise<any> {
-    console.log('🚀 Executing FACT mission (placeholder):', missionId);
+  async executeMission(_missionId: string): Promise<any> {
     return {
       status: 'completed',
       progress: 100,
@@ -111,13 +94,11 @@ export class KnowledgeSwarm {
     };
   }
 
-  async startGatheringMission(config: any): Promise<string> {
-    console.log('📚 Starting gathering mission (placeholder):', config);
+  async startGatheringMission(_config: any): Promise<string> {
     return 'mock-gathering-mission-id';
   }
 
-  async waitForMissionCompletion(missionId: string, timeout: number): Promise<any> {
-    console.log('⏳ Waiting for mission completion (placeholder):', missionId);
+  async waitForMissionCompletion(_missionId: string, _timeout: number): Promise<any> {
     return {
       knowledge: [],
       executionTime: 1000,
@@ -138,18 +119,15 @@ export class KnowledgeSwarm {
     };
   }
 
-  async selectOptimalAgents(config: any): Promise<string[]> {
-    console.log('🎯 Selecting optimal agents (placeholder):', config);
+  async selectOptimalAgents(_config: any): Promise<string[]> {
     return ['mock-agent-1', 'mock-agent-2'];
   }
 
-  async startMonitoring(config: any): Promise<any> {
-    console.log('📊 Starting monitoring (placeholder):', config);
+  async startMonitoring(_config: any): Promise<any> {
     return { id: 'mock-monitoring-session' };
   }
 
-  async waitForMonitoringResults(sessionId: string, timeout: number): Promise<any> {
-    console.log('📈 Getting monitoring results (placeholder):', sessionId);
+  async waitForMonitoringResults(_sessionId: string, _timeout: number): Promise<any> {
     return {
       activeMissions: 1,
       completedTasks: 5,
@@ -166,8 +144,7 @@ export class KnowledgeSwarm {
     };
   }
 
-  async getMissionResults(params: any): Promise<any> {
-    console.log('📋 Getting mission results (placeholder):', params);
+  async getMissionResults(_params: any): Promise<any> {
     return {
       missions: [],
       totalKnowledgeEntries: 0,
@@ -194,12 +171,9 @@ export class ProjectContextAnalyzer {
     this.projectPath = projectPath;
   }
 
-  async initialize(): Promise<void> {
-    console.log('🔍 Project Context Analyzer (placeholder) initialized for:', this.projectPath);
-  }
+  async initialize(): Promise<void> {}
 
-  async analyzeProject(options: any): Promise<any> {
-    console.log('📊 Analyzing project (placeholder):', options);
+  async analyzeProject(_options: any): Promise<any> {
     return {
       fileCount: 42,
       totalLines: 15000,

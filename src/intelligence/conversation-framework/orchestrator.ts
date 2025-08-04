@@ -6,17 +6,15 @@
 
 import { nanoid } from 'nanoid';
 import type { AgentId } from '../../types/agent-types';
-import {
-  type ConversationConfig,
-  type ConversationMemory,
-  type ConversationMessage,
-  type ConversationOrchestrator,
-  type ConversationOutcome,
-  type ConversationPattern,
-  type ConversationSession,
-  ConversationStatus,
-  MessageType,
-  type ModerationAction,
+import type {
+  ConversationConfig,
+  ConversationMemory,
+  ConversationMessage,
+  ConversationOrchestrator,
+  ConversationOutcome,
+  ConversationPattern,
+  ConversationSession,
+  ModerationAction,
 } from './types';
 
 /**
@@ -28,10 +26,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   private patterns = new Map<string, ConversationPattern>();
   private eventHandlers = new Map<string, Function[]>();
 
-  constructor(
-    private memory: ConversationMemory,
-    private patternRegistry: Map<string, ConversationPattern> = new Map()
-  ) {
+  constructor(private memory: ConversationMemory) {
     this.initializeDefaultPatterns();
   }
 
@@ -462,7 +457,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   private async executeWorkflowStep(
     session: ConversationSession,
-    pattern: ConversationPattern,
+    _pattern: ConversationPattern,
     step: any
   ): Promise<void> {
     // Implementation would depend on step actions
@@ -543,7 +538,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * Update final conversation metrics
    */
   private async updateFinalMetrics(session: ConversationSession): Promise<void> {
-    const duration = session.endTime!.getTime() - session.startTime.getTime();
+    const duration = session.endTime?.getTime() - session.startTime.getTime();
     session.metrics.resolutionTime = duration;
 
     // Calculate consensus score
@@ -622,6 +617,6 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     if (!this.eventHandlers.has(event)) {
       this.eventHandlers.set(event, []);
     }
-    this.eventHandlers.get(event)!.push(handler);
+    this.eventHandlers.get(event)?.push(handler);
   }
 }

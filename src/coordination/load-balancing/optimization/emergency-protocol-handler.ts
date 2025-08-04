@@ -3,7 +3,7 @@
  * Advanced emergency response and load shedding system
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import type { IEmergencyHandler } from '../interfaces';
 
 interface EmergencyProtocol {
@@ -37,8 +37,6 @@ export class EmergencyProtocolHandler extends EventEmitter implements IEmergency
     type: string,
     severity: 'low' | 'medium' | 'high' | 'critical'
   ): Promise<void> {
-    console.log(`Handling emergency: ${type} (severity: ${severity})`);
-
     const protocol = this.activeProtocols.get(type);
     if (protocol) {
       await this.executeProtocol(protocol);
@@ -51,8 +49,6 @@ export class EmergencyProtocolHandler extends EventEmitter implements IEmergency
   }
 
   public async shedLoad(percentage: number): Promise<void> {
-    console.log(`Shedding ${percentage}% of load`);
-
     // In practice, this would:
     // 1. Identify low-priority requests
     // 2. Reject or queue them
@@ -62,8 +58,6 @@ export class EmergencyProtocolHandler extends EventEmitter implements IEmergency
   }
 
   public async activateFailover(): Promise<void> {
-    console.log('Activating emergency failover procedures');
-
     // In practice, this would:
     // 1. Identify backup resources
     // 2. Redirect traffic to healthy agents
@@ -73,8 +67,6 @@ export class EmergencyProtocolHandler extends EventEmitter implements IEmergency
   }
 
   public async throttleRequests(rate: number): Promise<void> {
-    console.log(`Throttling requests to ${rate} requests/second`);
-
     // In practice, this would:
     // 1. Implement rate limiting
     // 2. Queue excess requests
@@ -83,9 +75,7 @@ export class EmergencyProtocolHandler extends EventEmitter implements IEmergency
     this.recordEmergency('throttle', 'medium', `throttle_${rate}rps`);
   }
 
-  public async sendAlert(message: string, recipients: string[]): Promise<void> {
-    console.log(`Sending alert to ${recipients.length} recipients: ${message}`);
-
+  public async sendAlert(_message: string, recipients: string[]): Promise<void> {
     // In practice, this would:
     // 1. Send notifications via multiple channels
     // 2. Escalate based on severity
@@ -175,8 +165,6 @@ export class EmergencyProtocolHandler extends EventEmitter implements IEmergency
   }
 
   private async executeProtocol(protocol: EmergencyProtocol): Promise<void> {
-    console.log(`Executing emergency protocol: ${protocol.name}`);
-
     const actionPromises = protocol.actions.map((action) =>
       this.executeAction(action).catch((error) => {
         console.error(`Failed to execute emergency action ${action.type}:`, error);
@@ -192,7 +180,6 @@ export class EmergencyProtocolHandler extends EventEmitter implements IEmergency
         await this.shedLoad(action.parameters.percentage);
         break;
       case 'scale_up':
-        console.log(`Emergency scale up: ${action.parameters.count} agents`);
         break;
       case 'failover':
         await this.activateFailover();
@@ -212,8 +199,6 @@ export class EmergencyProtocolHandler extends EventEmitter implements IEmergency
     type: string,
     severity: 'low' | 'medium' | 'high' | 'critical'
   ): Promise<void> {
-    console.log(`Executing default emergency response for ${type}`);
-
     switch (severity) {
       case 'critical':
         await this.shedLoad(30);
@@ -228,7 +213,6 @@ export class EmergencyProtocolHandler extends EventEmitter implements IEmergency
         await this.throttleRequests(80);
         break;
       case 'low':
-        console.log(`Low severity emergency logged: ${type}`);
         break;
     }
   }

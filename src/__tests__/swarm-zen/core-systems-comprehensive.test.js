@@ -4,31 +4,12 @@
  * Files: index-enhanced.js, daa-service.js, wasm-loader.js, schemas.js, persistence.js, errors.js, mcp-tools-enhanced.js
  */
 
-import assert from 'assert';
-import { EventEmitter } from 'events';
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import {
-  AgentError,
-  ConcurrencyError,
-  ConfigurationError,
-  ErrorContext,
-  ErrorFactory,
-  NetworkError,
-  NeuralError,
-  PersistenceError,
-  ResourceError,
-  RuvSwarmError,
-  SwarmError,
-  TaskError,
-  ValidationError,
-  WasmError,
-} from '../src/errors.js';
+import assert from 'node:assert';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 // Test imports
-import { Agent, DAAService, daaService, RuvSwarm, Swarm, Task } from '../src/index-enhanced.js';
-import { SwarmPersistence } from '../src/persistence.js';
-import { BaseValidator, MCPSchemas, ValidationUtils } from '../src/schemas.js';
+import { Agent, DAAService, ZenSwarm, Swarm, Task } from '../src/index-enhanced.js';
 import { WasmModuleLoader } from '../src/wasm-loader.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -63,11 +44,11 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
     testInstances = [];
   });
 
-  describe('RuvSwarm Enhanced Core (index-enhanced.js)', () => {
+  describe('ZenSwarm Enhanced Core (index-enhanced.js)', () => {
     describe('Initialization Edge Cases', () => {
       it('should handle duplicate initialization gracefully', async () => {
-        const instance1 = await RuvSwarm.initialize({ debug: true });
-        const instance2 = await RuvSwarm.initialize({ debug: true });
+        const instance1 = await ZenSwarm.initialize({ debug: true });
+        const instance2 = await ZenSwarm.initialize({ debug: true });
 
         assert.strictEqual(instance1, instance2, 'Should return same instance');
         assert.strictEqual(global._ruvSwarmInitialized, 2, 'Should track initialization calls');
@@ -76,9 +57,9 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
       });
 
       it('should handle initialization with minimal options', async () => {
-        const instance = await RuvSwarm.initialize({});
+        const instance = await ZenSwarm.initialize({});
 
-        assert(instance instanceof RuvSwarm, 'Should create RuvSwarm instance');
+        assert(instance instanceof ZenSwarm, 'Should create ZenSwarm instance');
         assert(instance.wasmLoader, 'Should have WASM loader');
         assert(instance.features, 'Should have features object');
 
@@ -94,8 +75,8 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         try {
           await assert.rejects(
-            () => RuvSwarm.initialize({ enableNeuralNetworks: true }),
-            /Failed to initialize ruv-swarm/
+            () => ZenSwarm.initialize({ enableNeuralNetworks: true }),
+            /Failed to initialize ruv-swarm/,
           );
         } finally {
           WasmModuleLoader.prototype.initialize = originalInit;
@@ -103,7 +84,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
       });
 
       it('should handle persistence initialization failures', async () => {
-        const instance = await RuvSwarm.initialize({ enablePersistence: true });
+        const instance = await ZenSwarm.initialize({ enablePersistence: true });
 
         // Should continue without persistence on error
         assert(instance.persistence !== undefined, 'Should handle persistence gracefully');
@@ -112,7 +93,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
       });
 
       it('should handle neural network loading failures', async () => {
-        const instance = await RuvSwarm.initialize({
+        const instance = await ZenSwarm.initialize({
           enableNeuralNetworks: true,
           enableForecasting: true,
         });
@@ -120,11 +101,11 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         // Should gracefully degrade features
         assert(
           typeof instance.features.neural_networks === 'boolean',
-          'Should set neural networks feature'
+          'Should set neural networks feature',
         );
         assert(
           typeof instance.features.forecasting === 'boolean',
-          'Should set forecasting feature'
+          'Should set forecasting feature',
         );
 
         testInstances.push(instance);
@@ -133,12 +114,12 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
     describe('Feature Detection', () => {
       it('should detect SIMD support correctly', () => {
-        const simdSupported = RuvSwarm.detectSIMDSupport();
+        const simdSupported = ZenSwarm.detectSIMDSupport();
         assert(typeof simdSupported === 'boolean', 'Should return boolean for SIMD support');
       });
 
       it('should handle feature detection failures', async () => {
-        const instance = new RuvSwarm();
+        const instance = new ZenSwarm();
 
         // Mock WASM loader to fail
         const originalLoadModule = instance.wasmLoader.loadModule;
@@ -156,7 +137,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
       });
 
       it('should set appropriate default features', async () => {
-        const instance = await RuvSwarm.initialize();
+        const instance = await ZenSwarm.initialize();
 
         assert(typeof instance.features.neural_networks === 'boolean');
         assert(typeof instance.features.forecasting === 'boolean');
@@ -169,7 +150,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
     describe('Swarm Creation and Management', () => {
       it('should create swarm with minimal configuration', async () => {
-        const instance = await RuvSwarm.initialize();
+        const instance = await ZenSwarm.initialize();
         const swarm = await instance.createSwarm({});
 
         assert(swarm instanceof Swarm, 'Should create Swarm instance');
@@ -180,7 +161,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
       });
 
       it('should create swarm with existing ID (persistence loading)', async () => {
-        const instance = await RuvSwarm.initialize();
+        const instance = await ZenSwarm.initialize();
         const existingId = 'swarm-12345';
 
         const swarm = await instance.createSwarm({
@@ -194,7 +175,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
       });
 
       it('should handle WASM swarm creation failures', async () => {
-        const instance = await RuvSwarm.initialize();
+        const instance = await ZenSwarm.initialize();
 
         // Should fallback to JavaScript implementation
         const swarm = await instance.createSwarm({
@@ -210,7 +191,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
       });
 
       it('should handle persistence errors during swarm creation', async () => {
-        const instance = await RuvSwarm.initialize({ enablePersistence: true });
+        const instance = await ZenSwarm.initialize({ enablePersistence: true });
 
         if (instance.persistence) {
           // Mock persistence to fail
@@ -233,7 +214,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
     describe('Agent Spawning and Task Orchestration', () => {
       it('should spawn agent with minimal configuration', async () => {
-        const instance = await RuvSwarm.initialize();
+        const instance = await ZenSwarm.initialize();
         const swarm = await instance.createSwarm({});
 
         const agent = await swarm.spawn({});
@@ -246,7 +227,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
       });
 
       it('should spawn agent with existing ID (persistence loading)', async () => {
-        const instance = await RuvSwarm.initialize();
+        const instance = await ZenSwarm.initialize();
         const swarm = await instance.createSwarm({});
         const existingId = 'agent-12345';
 
@@ -261,7 +242,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
       });
 
       it('should handle neural network loading for agents', async () => {
-        const instance = await RuvSwarm.initialize({ enableNeuralNetworks: true });
+        const instance = await ZenSwarm.initialize({ enableNeuralNetworks: true });
         const swarm = await instance.createSwarm({});
 
         const agent = await swarm.spawn({
@@ -275,7 +256,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
       });
 
       it('should orchestrate tasks with no available agents', async () => {
-        const instance = await RuvSwarm.initialize();
+        const instance = await ZenSwarm.initialize();
         const swarm = await instance.createSwarm({});
 
         await assert.rejects(
@@ -284,14 +265,14 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
               description: 'Test task',
               requiredCapabilities: ['testing'],
             }),
-          /No agents available/
+          /No agents available/,
         );
 
         testInstances.push(instance);
       });
 
       it('should orchestrate tasks with capability filtering', async () => {
-        const instance = await RuvSwarm.initialize();
+        const instance = await ZenSwarm.initialize();
         const swarm = await instance.createSwarm({});
 
         await swarm.spawn({ type: 'researcher', capabilities: ['research'] });
@@ -310,11 +291,11 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
       });
 
       it('should handle agent status updates during task execution', async () => {
-        const instance = await RuvSwarm.initialize();
+        const instance = await ZenSwarm.initialize();
         const swarm = await instance.createSwarm({});
 
         const agent = await swarm.spawn({ type: 'researcher' });
-        const task = await swarm.orchestrate({
+        const _task = await swarm.orchestrate({
           description: 'Test task',
         });
 
@@ -329,7 +310,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
     describe('Metrics and Monitoring', () => {
       it('should generate comprehensive global metrics', async () => {
-        const instance = await RuvSwarm.initialize();
+        const instance = await ZenSwarm.initialize();
         const swarm = await instance.createSwarm({});
         await swarm.spawn({ type: 'researcher' });
 
@@ -347,7 +328,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
       });
 
       it('should handle swarm status for non-existent swarm', async () => {
-        const instance = await RuvSwarm.initialize();
+        const instance = await ZenSwarm.initialize();
 
         await assert.rejects(() => instance.getSwarmStatus('non-existent'), /Swarm not found/);
 
@@ -355,7 +336,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
       });
 
       it('should get all swarms status', async () => {
-        const instance = await RuvSwarm.initialize();
+        const instance = await ZenSwarm.initialize();
         await instance.createSwarm({ name: 'swarm1' });
         await instance.createSwarm({ name: 'swarm2' });
 
@@ -371,12 +352,12 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
     describe('Static Utility Methods', () => {
       it('should return correct version', () => {
-        const version = RuvSwarm.getVersion();
+        const version = ZenSwarm.getVersion();
         assert.strictEqual(version, '0.2.0');
       });
 
       it('should get memory usage information', () => {
-        const memoryInfo = RuvSwarm.getMemoryUsage();
+        const memoryInfo = ZenSwarm.getMemoryUsage();
 
         if (memoryInfo) {
           assert(typeof memoryInfo.used === 'number');
@@ -386,7 +367,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
       });
 
       it('should get runtime features', () => {
-        const features = RuvSwarm.getRuntimeFeatures();
+        const features = ZenSwarm.getRuntimeFeatures();
 
         assert(typeof features.webassembly === 'boolean');
         assert(typeof features.simd === 'boolean');
@@ -541,7 +522,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         const service = new DAAService();
         await service.initialize();
 
-        const agent = await service.createAgent('adaptive-agent', []);
+        const _agent = await service.createAgent('adaptive-agent', []);
 
         const result = await service.adaptAgent('adaptive-agent', {
           performanceScore: 0.2,
@@ -562,7 +543,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         await assert.rejects(
           () => service.adaptAgent('non-existent', {}),
-          /Agent non-existent not found/
+          /Agent non-existent not found/,
         );
 
         testInstances.push(service);
@@ -616,7 +597,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
             { id: 'step1', task: async () => 'result1' },
             { id: 'step2', task: async () => 'result2' },
           ],
-          {}
+          {},
         );
 
         assert.strictEqual(workflow.id, 'test-workflow');
@@ -640,7 +621,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         await assert.rejects(
           () => service.executeWorkflow('non-existent'),
-          /Workflow non-existent not found/
+          /Workflow non-existent not found/,
         );
 
         testInstances.push(service);
@@ -674,7 +655,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         await assert.rejects(
           () => service.shareKnowledge('non-existent', ['target'], {}),
-          /Source agent non-existent not found/
+          /Source agent non-existent not found/,
         );
 
         testInstances.push(service);
@@ -775,7 +756,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         await assert.rejects(
           () => service.makeDecision('non-existent', {}),
-          /Agent non-existent not found/
+          /Agent non-existent not found/,
         );
 
         testInstances.push(service);
@@ -845,7 +826,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         assert.strictEqual(results.length, 3);
         assert(
           results.every((r) => r.success),
-          'All agents should be created successfully'
+          'All agents should be created successfully',
         );
 
         testInstances.push(service);
@@ -867,7 +848,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         assert.strictEqual(results.length, 2);
         assert(
           results.every((r) => r.success),
-          'All decisions should succeed'
+          'All decisions should succeed',
         );
 
         testInstances.push(service);
@@ -1144,7 +1125,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         const imports = loader._importsFor('core');
 
         const buffer = new ArrayBuffer(64);
-        const view = new Uint8Array(buffer);
+        const _view = new Uint8Array(buffer);
         const result = imports.wasi_snapshot_preview1.random_get(0, 64);
 
         assert.strictEqual(result, 0, 'Should return success code');

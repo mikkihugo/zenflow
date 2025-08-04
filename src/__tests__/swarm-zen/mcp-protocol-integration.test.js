@@ -8,11 +8,10 @@
  * @version 1.0.0
  */
 
-import { strict as assert } from 'assert';
-import { spawn } from 'child_process';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { strict as assert } from 'node:assert';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,20 +41,16 @@ class MCPProtocolIntegrationTestSuite {
     try {
       await testFn();
       this.results.passed++;
-      console.log(`✅ ${name}`);
       return true;
     } catch (error) {
       this.results.failed++;
       this.results.errors.push({ name, error: error.message });
-      console.log(`❌ ${name}: ${error.message}`);
       return false;
     }
   }
 
   // Test MCP Protocol Basics
   async testMCPProtocolBasics() {
-    console.log('\n🔍 Testing MCP Protocol Basics...');
-
     await this.runTest('Protocol - Message structure validation', async () => {
       const mcpMessage = {
         jsonrpc: '2.0',
@@ -112,7 +107,7 @@ class MCPProtocolIntegrationTestSuite {
 
       assert(
         mcpErrorResponse.jsonrpc === '2.0',
-        'Error response should have correct JSON-RPC version'
+        'Error response should have correct JSON-RPC version',
       );
       assert(typeof mcpErrorResponse.error === 'object', 'Should have error object');
       assert(typeof mcpErrorResponse.error.code === 'number', 'Error should have numeric code');
@@ -138,8 +133,6 @@ class MCPProtocolIntegrationTestSuite {
 
   // Test MCP Communication
   async testMCPCommunication() {
-    console.log('\n🔍 Testing MCP Communication...');
-
     await this.runTest('Communication - JSON-RPC request/response cycle', async () => {
       // Simulate a complete request/response cycle
       const request = {
@@ -205,7 +198,7 @@ class MCPProtocolIntegrationTestSuite {
       assert(Array.isArray(batchResponse), 'Should handle batch requests');
       assert(
         batchResponse.length === batchRequest.length,
-        'Should return same number of responses'
+        'Should return same number of responses',
       );
 
       this.results.coverage.communication++;
@@ -232,8 +225,6 @@ class MCPProtocolIntegrationTestSuite {
 
   // Test MCP Serialization
   async testMCPSerialization() {
-    console.log('\n🔍 Testing MCP Serialization...');
-
     await this.runTest('Serialization - JSON serialization/deserialization', async () => {
       const originalMessage = {
         jsonrpc: '2.0',
@@ -258,12 +249,12 @@ class MCPProtocolIntegrationTestSuite {
 
       assert(
         JSON.stringify(deserialized) === JSON.stringify(originalMessage),
-        'Should preserve message integrity'
+        'Should preserve message integrity',
       );
       assert(deserialized.params.arguments.capabilities.length === 3, 'Should preserve array data');
       assert(
         deserialized.params.arguments.config.timeout === 30000,
-        'Should preserve nested objects'
+        'Should preserve nested objects',
       );
 
       this.results.coverage.serialization++;
@@ -292,7 +283,7 @@ class MCPProtocolIntegrationTestSuite {
 
       assert(
         recoveredBinary.toString('utf8') === 'Hello, World!',
-        'Should handle binary data correctly'
+        'Should handle binary data correctly',
       );
 
       this.results.coverage.serialization++;
@@ -320,11 +311,11 @@ class MCPProtocolIntegrationTestSuite {
       assert(deserialized.params.arguments.text.includes('🌍'), 'Should preserve emoji');
       assert(
         deserialized.params.arguments.text.includes('中文'),
-        'Should preserve Chinese characters'
+        'Should preserve Chinese characters',
       );
       assert(
         deserialized.params.arguments.math.includes('π'),
-        'Should preserve mathematical symbols'
+        'Should preserve mathematical symbols',
       );
 
       this.results.coverage.serialization++;
@@ -333,10 +324,8 @@ class MCPProtocolIntegrationTestSuite {
 
   // Test MCP Error Handling
   async testMCPErrorHandling() {
-    console.log('\n🔍 Testing MCP Error Handling...');
-
     await this.runTest('Error Handling - Invalid JSON-RPC version', async () => {
-      const invalidRequest = {
+      const _invalidRequest = {
         jsonrpc: '1.0', // Invalid version
         method: 'tools/call',
         params: { name: 'test' },
@@ -358,7 +347,7 @@ class MCPProtocolIntegrationTestSuite {
     });
 
     await this.runTest('Error Handling - Method not found', async () => {
-      const unknownMethodRequest = {
+      const _unknownMethodRequest = {
         jsonrpc: '2.0',
         method: 'unknown/method',
         params: {},
@@ -380,7 +369,7 @@ class MCPProtocolIntegrationTestSuite {
     });
 
     await this.runTest('Error Handling - Invalid parameters', async () => {
-      const invalidParamsRequest = {
+      const _invalidParamsRequest = {
         jsonrpc: '2.0',
         method: 'tools/call',
         params: {
@@ -410,7 +399,7 @@ class MCPProtocolIntegrationTestSuite {
       try {
         JSON.parse(malformedJSON);
         assert.fail('Should have thrown parse error');
-      } catch (error) {
+      } catch (_error) {
         const parseErrorResponse = {
           jsonrpc: '2.0',
           error: {
@@ -430,8 +419,6 @@ class MCPProtocolIntegrationTestSuite {
 
   // Test MCP Performance
   async testMCPPerformance() {
-    console.log('\n🔍 Testing MCP Performance...');
-
     await this.runTest('Performance - Large payload handling', async () => {
       const largeArray = new Array(10000).fill(0).map((_, i) => `item-${i}`);
 
@@ -534,7 +521,7 @@ class MCPProtocolIntegrationTestSuite {
       const finalMemory = process.memoryUsage();
 
       const memoryIncrease = peakMemory.heapUsed - initialMemory.heapUsed;
-      const memoryRecovered = peakMemory.heapUsed - finalMemory.heapUsed;
+      const _memoryRecovered = peakMemory.heapUsed - finalMemory.heapUsed;
 
       assert(memoryIncrease > 0, 'Should show memory usage increase');
       // Memory recovery depends on GC, so we don't assert it
@@ -545,8 +532,6 @@ class MCPProtocolIntegrationTestSuite {
 
   // Test MCP Security
   async testMCPSecurity() {
-    console.log('\n🔍 Testing MCP Security...');
-
     await this.runTest('Security - Input sanitization', async () => {
       const maliciousRequest = {
         jsonrpc: '2.0',
@@ -557,7 +542,7 @@ class MCPProtocolIntegrationTestSuite {
             topology: '<script>alert("XSS")</script>',
             config: {
               command: 'rm -rf /',
-              sql: "'; DROP TABLE users; --",
+              sql: '\'; DROP TABLE users; --',
             },
           },
         },
@@ -568,7 +553,7 @@ class MCPProtocolIntegrationTestSuite {
       const sanitizedArgs = {
         topology: maliciousRequest.params.arguments.topology.replace(
           /<script[^>]*>.*?<\/script>/gi,
-          ''
+          '',
         ),
         config: {
           command: maliciousRequest.params.arguments.config.command.replace(/[;&|`$()]/g, ''),
@@ -656,8 +641,6 @@ class MCPProtocolIntegrationTestSuite {
 
   // Test MCP Compatibility
   async testMCPCompatibility() {
-    console.log('\n🔍 Testing MCP Compatibility...');
-
     await this.runTest('Compatibility - Different JSON-RPC clients', async () => {
       // Test compatibility with various client formats
       const clientFormats = [
@@ -747,7 +730,7 @@ class MCPProtocolIntegrationTestSuite {
 
         assert(
           response.result.content[0].type === content.type,
-          `Should handle ${content.type} content`
+          `Should handle ${content.type} content`,
         );
       }
 
@@ -820,9 +803,6 @@ class MCPProtocolIntegrationTestSuite {
   }
 
   async run() {
-    console.log('🔗 Starting Comprehensive MCP Protocol Integration Test Suite');
-    console.log('='.repeat(75));
-
     await this.testMCPProtocolBasics();
     await this.testMCPCommunication();
     await this.testMCPSerialization();
@@ -832,39 +812,17 @@ class MCPProtocolIntegrationTestSuite {
     await this.testMCPCompatibility();
 
     const report = this.generateReport();
-
-    console.log('\n📊 MCP Protocol Test Results Summary');
-    console.log('='.repeat(75));
-    console.log(`Total Tests: ${report.summary.totalTests}`);
-    console.log(`Passed: ${report.summary.passed}`);
-    console.log(`Failed: ${report.summary.failed}`);
-    console.log(`Pass Rate: ${report.summary.passRate}`);
-    console.log(`Total Coverage Points: ${report.summary.totalCoveragePoints}`);
-
-    console.log('\n📊 Coverage Breakdown:');
-    Object.entries(report.coverage).forEach(([area, count]) => {
-      console.log(`  ${area}: ${count} tests`);
-    });
+    Object.entries(report.coverage).forEach(([_area, _count]) => {});
 
     if (report.errors.length > 0) {
-      console.log('\n❌ Errors:');
-      report.errors.forEach((error) => {
-        console.log(`  - ${error.name}: ${error.error}`);
-      });
+      report.errors.forEach((_error) => {});
     }
-
-    console.log('\n💡 Recommendations:');
-    report.recommendations.forEach((rec) => {
-      console.log(`  - ${rec}`);
-    });
+    report.recommendations.forEach((_rec) => {});
 
     // Save report to file
     const reportPath = path.join(__dirname, '../test-reports/mcp-protocol-test-report.json');
     fs.mkdirSync(path.dirname(reportPath), { recursive: true });
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
-
-    console.log(`\n📄 Report saved to: ${reportPath}`);
-    console.log('\n✅ MCP Protocol Integration Test Suite Complete!');
 
     return report;
   }

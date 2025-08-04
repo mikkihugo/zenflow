@@ -9,7 +9,7 @@
 import { Box, useInput } from 'ink';
 import type React from 'react';
 import { useEffect, useState } from 'react';
-import { ErrorMessage, SwarmSpinner, type SwarmStatus } from './components/index.js';
+import { ErrorMessage, SwarmSpinner, type SwarmStatus } from './components/index';
 import {
   MainMenu,
   type ScreenType,
@@ -18,7 +18,7 @@ import {
   SwarmDashboard,
   type SwarmMetrics,
   type SwarmTask,
-} from './screens/index.js';
+} from './screens/index';
 
 export interface TUIModeProps {
   flags: Record<string, any>;
@@ -77,7 +77,7 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
     const refreshInterval = setInterval(updateState, 3000);
 
     return () => clearInterval(refreshInterval);
-  }, []);
+  }, [initializeTUI, updateState]);
 
   const initializeTUI = async () => {
     try {
@@ -227,7 +227,7 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
   };
 
   // Global keyboard shortcuts
-  useInput((input, key) => {
+  useInput((_input, key) => {
     if (key.escape && state.currentScreen !== 'main-menu') {
       navigateToScreen('main-menu');
     }
@@ -324,13 +324,55 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
           />
         );
 
-      // TODO: Implement other screens
+      // Other screens with placeholder implementations
       case 'agent-manager':
+        return (
+          <Box flexDirection="column">
+            <Text color="blue">🤖 Agent Manager</Text>
+            <Text>Agent management interface coming soon...</Text>
+            <Text color="gray">Press 'q' to return to main menu</Text>
+          </Box>
+        );
       case 'task-manager':
+        return (
+          <Box flexDirection="column">
+            <Text color="green">📋 Task Manager</Text>
+            <Text>Task management interface coming soon...</Text>
+            <Text color="gray">Press 'q' to return to main menu</Text>
+          </Box>
+        );
       case 'settings':
+        return (
+          <Box flexDirection="column">
+            <Text color="yellow">⚙️ Settings</Text>
+            <Text>System settings interface coming soon...</Text>
+            <Text color="gray">Press 'q' to return to main menu</Text>
+          </Box>
+        );
       case 'help':
+        return (
+          <Box flexDirection="column">
+            <Text color="cyan">❓ Help</Text>
+            <Text>Help documentation interface coming soon...</Text>
+            <Text color="gray">Press 'q' to return to main menu</Text>
+          </Box>
+        );
       case 'status':
+        return (
+          <Box flexDirection="column">
+            <Text color="magenta">📊 System Status</Text>
+            <Text>System status interface coming soon...</Text>
+            <Text color="gray">Press 'q' to return to main menu</Text>
+          </Box>
+        );
       case 'create-agent':
+        return (
+          <Box flexDirection="column">
+            <Text color="blue">➕ Create Agent</Text>
+            <Text>Agent creation interface coming soon...</Text>
+            <Text color="gray">Press 'q' to return to main menu</Text>
+          </Box>
+        );
       case 'create-task':
         return (
           <Box padding={2}>

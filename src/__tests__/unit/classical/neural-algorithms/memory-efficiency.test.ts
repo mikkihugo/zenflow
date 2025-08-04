@@ -13,7 +13,6 @@ import {
   initializeNeuralWasm,
   type NetworkConfig,
   type NeuralNetwork,
-  NeuralTrainer,
   TRAINING_ALGORITHMS,
   type TrainingConfig,
   type TrainingDataConfig,
@@ -21,7 +20,7 @@ import {
 
 describe('Memory Efficiency - Classical TDD', () => {
   let wasmModule: any;
-  let initialMemory: NodeJS.MemoryUsage;
+  let _initialMemory: NodeJS.MemoryUsage;
 
   beforeEach(async () => {
     try {
@@ -30,8 +29,8 @@ describe('Memory Efficiency - Classical TDD', () => {
       if (global.gc) {
         global.gc();
       }
-      initialMemory = process.memoryUsage();
-    } catch (error) {
+      _initialMemory = process.memoryUsage();
+    } catch (_error) {
       console.warn('WASM module not available, skipping memory efficiency tests');
     }
   });
@@ -423,7 +422,7 @@ describe('Memory Efficiency - Classical TDD', () => {
 
       // All weights should be finite numbers
       for (let i = 0; i < weights.length; i++) {
-        expect(isFinite(weights[i])).toBe(true);
+        expect(Number.isFinite(weights[i])).toBe(true);
       }
 
       // Memory usage metric should reflect actual storage
@@ -469,7 +468,7 @@ describe('Memory Efficiency - Classical TDD', () => {
       // Network should still function
       const result = await network.run([0.1, 0.2, 0.3, 0.4, 0.5]);
       expect(result).toHaveLength(3);
-      expect(result.every((v) => isFinite(v))).toBe(true);
+      expect(result.every((v) => Number.isFinite(v))).toBe(true);
     });
   });
 
@@ -511,7 +510,7 @@ describe('Memory Efficiency - Classical TDD', () => {
       for (const network of networks) {
         const result = await network.run([0.5, 0.5, 0.5]);
         expect(result).toHaveLength(2);
-        expect(result.every((v) => isFinite(v))).toBe(true);
+        expect(result.every((v) => Number.isFinite(v))).toBe(true);
       }
 
       // Average memory per network should be reasonable

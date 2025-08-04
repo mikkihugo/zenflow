@@ -5,9 +5,9 @@
  * enterprise roadmap planning systems.
  */
 
-import * as fs from 'fs/promises';
-import * as path from 'path';
-import { ComplexityLevel, type ProjectDomain, type SPARCProject } from '../types/sparc-types';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
+import type { ProjectDomain, SPARCProject } from '../types/sparc-types';
 import type { Epic, Feature, Roadmap, RoadmapItem } from './project-management-integration';
 
 export interface SPARCRoadmapPlanning {
@@ -21,7 +21,6 @@ export interface SPARCRoadmapPlanning {
 }
 
 export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
-  private readonly projectRoot: string;
   private readonly roadmapFile: string;
   private readonly epicsFile: string;
   private readonly featuresFile: string;
@@ -264,7 +263,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
     return domainValues[project.domain] || 'Medium - Platform enhancement';
   }
 
-  private calculateEpicEndDate(project: SPARCProject): string {
+  private calculateEpicEndDate(_project: SPARCProject): string {
     const complexityWeeks = {
       simple: 4,
       moderate: 8,
@@ -273,7 +272,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
       enterprise: 20,
     };
 
-    const weeks = complexityWeeks['moderate'];
+    const weeks = complexityWeeks.moderate;
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + weeks * 7);
 
@@ -314,7 +313,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
     }
   }
 
-  private calculateEffortEstimate(project: SPARCProject): number {
+  private calculateEffortEstimate(_project: SPARCProject): number {
     const complexityPoints = {
       simple: 5,
       moderate: 13,
@@ -323,7 +322,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
       enterprise: 55,
     };
 
-    return complexityPoints['moderate'];
+    return complexityPoints.moderate;
   }
 
   private mapBusinessValueToLevel(project: SPARCProject): 'high' | 'medium' | 'low' {

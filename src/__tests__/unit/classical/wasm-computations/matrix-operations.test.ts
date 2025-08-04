@@ -9,9 +9,6 @@ import { beforeAll, describe, expect, it } from '@jest/globals';
 
 // Simulated WASM matrix operations (would be actual WASM in production)
 class WASMMatrixOps {
-  private memory: Float32Array;
-  private memorySize: number;
-
   constructor(memorySize: number = 1024 * 1024) {
     // 1MB
     this.memorySize = memorySize;

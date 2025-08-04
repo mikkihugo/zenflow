@@ -10,8 +10,6 @@ import {
   DIContainer,
   type IConfig,
   type ILogger,
-  inject,
-  injectable,
   ScopedProvider,
   ServiceNotFoundError,
   SingletonProvider,
@@ -293,12 +291,12 @@ describe('DI Container - Integration with Core Tokens', () => {
 
   it('should work with swarm tokens', () => {
     class MockSwarmCoordinator {
-      async initializeSwarm(options: any): Promise<void> {}
-      async addAgent(config: any): Promise<string> {
+      async initializeSwarm(_options: any): Promise<void> {}
+      async addAgent(_config: any): Promise<string> {
         return 'agent-1';
       }
-      async removeAgent(agentId: string): Promise<void> {}
-      async assignTask(task: any): Promise<string> {
+      async removeAgent(_agentId: string): Promise<void> {}
+      async assignTask(_task: any): Promise<string> {
         return 'task-1';
       }
       getMetrics(): any {

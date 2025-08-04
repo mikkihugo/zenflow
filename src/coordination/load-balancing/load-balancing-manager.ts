@@ -57,7 +57,7 @@
  * @author Claude Zen Flow Team
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import { AdaptiveLearningAlgorithm } from './algorithms/adaptive-learning';
 import { LeastConnectionsAlgorithm } from './algorithms/least-connections';
 import { MLPredictiveAlgorithm } from './algorithms/ml-predictive';
@@ -83,7 +83,6 @@ import {
   LoadBalancingAlgorithm,
   type LoadBalancingConfig,
   type LoadMetrics,
-  QoSRequirement,
   type RoutingResult,
   type Task,
 } from './types';

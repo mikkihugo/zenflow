@@ -1,24 +1,20 @@
 #!/usr/bin/env node
 
-import { exec } from 'child_process';
-import fs from 'fs/promises';
-import { promisify } from 'util';
+import { exec } from 'node:child_process';
+import fs from 'node:fs/promises';
+import { promisify } from 'node:util';
 
 const execAsync = promisify(exec);
 
 const presets = ['default', 'minGPT', 'stateOfArt'];
 
 async function validateAllPresets() {
-  console.log('🧬 Validating All Neural Presets...\n');
-
   const results = {
     timestamp: new Date().toISOString(),
     presets: {},
   };
 
   for (const preset of presets) {
-    console.log(`\n📋 Testing ${preset} preset...`);
-
     try {
       // Test with the preset
       const { stdout: testOutput } = await execAsync(`npm test -- --preset=${preset}`);
@@ -29,7 +25,7 @@ async function validateAllPresets() {
 
       // Run coverage for this preset
       const { stdout: coverageOutput } = await execAsync(
-        `npx nyc --reporter=json-summary npm test -- --preset=${preset}`
+        `npx nyc --reporter=json-summary npm test -- --preset=${preset}`,
       );
 
       // Read coverage data
@@ -49,11 +45,7 @@ async function validateAllPresets() {
         },
         performance: await testPresetPerformance(preset),
       };
-
-      console.log(`  ✅ Tests: ${passed} passed, ${failed} failed`);
-      console.log(`  📊 Coverage: ${coverageData.total.lines.pct.toFixed(2)}% lines`);
     } catch (error) {
-      console.log(`  ❌ Error: ${error.message}`);
       results.presets[preset] = {
         success: false,
         error: error.message,
@@ -73,7 +65,7 @@ async function validateAllPresets() {
 async function testPresetPerformance(preset) {
   try {
     const { stdout } = await execAsync(
-      `node test/benchmarks/benchmark-neural-models.js --preset=${preset} --iterations=3`
+      `node test/benchmarks/benchmark-neural-models.js --preset=${preset} --iterations=3`,
     );
 
     // Extract performance metrics
@@ -99,26 +91,26 @@ async function generatePresetReport(results) {
 | Preset | Tests | Coverage | Performance | Status |
 |--------|-------|----------|-------------|---------|
 ${presets
-  .map((preset) => {
-    const data = results.presets[preset];
-    if (!data.success) {
-      return `| ${preset} | ❌ Error | - | - | Failed |`;
-    }
-    return `| ${preset} | ✅ ${data.tests.passed}/${data.tests.passed + data.tests.failed} | ${data.coverage.lines.toFixed(1)}% | ${data.performance.avgTime?.toFixed(2) || 'N/A'}ms | ${data.success ? 'Pass' : 'Fail'} |`;
-  })
-  .join('\n')}
+    .map((preset) => {
+      const data = results.presets[preset];
+      if (!data.success) {
+        return `| ${preset} | ❌ Error | - | - | Failed |`;
+      }
+      return `| ${preset} | ✅ ${data.tests.passed}/${data.tests.passed + data.tests.failed} | ${data.coverage.lines.toFixed(1)}% | ${data.performance.avgTime?.toFixed(2) || 'N/A'}ms | ${data.success ? 'Pass' : 'Fail'} |`;
+    })
+    .join('\n')}
 
 ## 📈 Detailed Results
 
 ${presets
-  .map((preset) => {
-    const data = results.presets[preset];
-    if (!data.success) {
-      return `### ❌ ${preset}
+    .map((preset) => {
+      const data = results.presets[preset];
+      if (!data.success) {
+        return `### ❌ ${preset}
 - Error: ${data.error}`;
-    }
+      }
 
-    return `### ${data.success ? '✅' : '❌'} ${preset}
+      return `### ${data.success ? '✅' : '❌'} ${preset}
 - **Tests**: ${data.tests.passed} passed, ${data.tests.failed} failed
 - **Coverage**:
   - Lines: ${data.coverage.lines.toFixed(2)}%
@@ -129,8 +121,8 @@ ${presets
   - Avg Time: ${data.performance.avgTime?.toFixed(2) || 'N/A'}ms
   - Memory: ${data.performance.memory || 'N/A'}
   - Status: ${data.performance.initialized ? 'Initialized' : 'Failed'}`;
-  })
-  .join('\n\n')}
+    })
+    .join('\n\n')}
 
 ## 🎯 Recommendations
 
@@ -141,7 +133,6 @@ ${presets
 `;
 
   await fs.writeFile('PRESET_VALIDATION_REPORT.md', report);
-  console.log('\n📄 Report saved to PRESET_VALIDATION_REPORT.md');
 }
 
 // Run validation

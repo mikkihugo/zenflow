@@ -2,19 +2,13 @@
  * Domain analyzer for complexity analysis and splitting recommendations
  */
 
+import * as path from 'node:path';
 import * as acorn from 'acorn';
 import * as escomplex from 'escomplex';
 import * as fs from 'fs-extra';
 import { glob } from 'glob';
-import * as path from 'path';
-import type {
-  AnalysisConfig,
-  ComplexityAnalysis,
-  DEFAULT_ANALYSIS_CONFIG,
-  DependencyAnalysisResult,
-  FileAnalysis,
-  SplittingScore,
-} from '../types/analysis-types';
+import type { AnalysisConfig, FileAnalysis } from '../types/analysis-types';
+import { DEFAULT_ANALYSIS_CONFIG } from '../types/analysis-types';
 import type {
   CouplingAnalysis,
   DependencyGraph,
@@ -39,34 +33,23 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
   }
 
   async analyzeDomainComplexity(domainPath: string): Promise<DomainAnalysis> {
-    console.log(`🔍 Analyzing domain complexity for: ${domainPath}`);
-
     // Scan domain files
     const files = await this.scanDomainFiles(domainPath);
-    console.log(`📁 Found ${files.length} files`);
 
     // Analyze individual files
     const fileAnalyses = await Promise.all(files.map((file) => this.analyzeFile(file)));
 
     // Categorize files by purpose
     const categories = await this.categorizeFiles(fileAnalyses);
-    console.log(
-      `📂 Categorized into ${Object.keys(categories).filter((k) => categories[k].length > 0).length} categories`
-    );
 
     // Build dependency graph
     const dependencies = await this.buildDependencyGraph(fileAnalyses);
-    console.log(
-      `🔗 Built dependency graph with ${dependencies.nodes.length} nodes, ${dependencies.edges.length} edges`
-    );
 
     // Analyze coupling
     const coupling = await this.analyzeCoupling(fileAnalyses, dependencies);
-    console.log(`🔄 Coupling analysis complete`);
 
     // Calculate complexity score
     const complexityScore = this.calculateComplexity(fileAnalyses, dependencies);
-    console.log(`📊 Overall complexity score: ${complexityScore.toFixed(2)}`);
 
     // Generate splitting recommendations
     const splittingRecommendations = await this.generateRecommendations(
@@ -75,7 +58,6 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
       coupling,
       dependencies
     );
-    console.log(`💡 Generated ${splittingRecommendations.length} recommendations`);
 
     return {
       domainPath,
@@ -89,8 +71,6 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
   }
 
   async identifySubDomains(analysis: DomainAnalysis): Promise<SubDomainPlan[]> {
-    console.log(`🎯 Identifying sub-domains for ${analysis.domainPath}`);
-
     const plans: SubDomainPlan[] = [];
 
     // Generate plans based on file categories
@@ -110,14 +90,10 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     if (dependencyBasedPlan) {
       plans.push(dependencyBasedPlan);
     }
-
-    console.log(`📋 Generated ${plans.length} potential splitting plans`);
     return plans;
   }
 
   async calculateSplittingBenefits(plans: SubDomainPlan[]): Promise<SplittingMetrics> {
-    console.log(`📈 Calculating splitting benefits for ${plans.length} plans`);
-
     // For now, return estimated metrics based on plan structure
     // In a real implementation, this would run more sophisticated analysis
 
@@ -184,11 +160,11 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
       try {
         const complexityResult = escomplex.analyse(content);
         complexity = complexityResult.aggregate?.complexity?.cyclomatic || 1;
-      } catch (e) {
+      } catch (_e) {
         // Fallback to simple complexity calculation
         complexity = this.calculateSimpleComplexity(content);
       }
-    } catch (e) {
+    } catch (_e) {
       // If parsing fails, do basic analysis
       imports = this.extractImportsBasic(content);
       exports = this.extractExportsBasic(content);
@@ -393,8 +369,8 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
   private categorizeFile(
     filePath: string,
     content: string,
-    imports: any[],
-    exports: any[]
+    _imports: any[],
+    _exports: any[]
   ): string {
     const filename = path.basename(filePath).toLowerCase();
     const directory = path.dirname(filePath).toLowerCase();
@@ -537,7 +513,7 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
   }
 
   private async analyzeCoupling(
-    fileAnalyses: FileAnalysis[],
+    _fileAnalyses: FileAnalysis[],
     dependencies: DependencyGraph
   ): Promise<CouplingAnalysis> {
     const tightlyCoupledGroups = this.findTightlyCoupledGroups(dependencies);
@@ -610,7 +586,7 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     }
 
     return Array.from(depCounts.entries())
-      .filter(([dep, count]) => count > 1)
+      .filter(([_dep, count]) => count > 1)
       .map(([dep]) => dep);
   }
 
@@ -665,10 +641,10 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
   }
 
   private async generateRecommendations(
-    fileAnalyses: FileAnalysis[],
+    _fileAnalyses: FileAnalysis[],
     categories: FileCategoryMap,
     coupling: CouplingAnalysis,
-    dependencies: DependencyGraph
+    _dependencies: DependencyGraph
   ): Promise<SplittingRecommendation[]> {
     const recommendations: SplittingRecommendation[] = [];
 
@@ -768,7 +744,7 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     };
   }
 
-  private generateDependencyBasedPlan(analysis: DomainAnalysis): SubDomainPlan | null {
+  private generateDependencyBasedPlan(_analysis: DomainAnalysis): SubDomainPlan | null {
     // This would implement dependency-based clustering
     // For now, return null as it's a complex algorithm
     return null;

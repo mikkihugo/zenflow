@@ -5,7 +5,7 @@
  * agents to be discovered, queried, and managed across the system.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
 import type {
   AgentCapabilities,
@@ -113,7 +113,9 @@ export class AgentRegistry extends EventEmitter {
       status: agent.status,
       capabilities: agent.capabilities,
       metrics: agent.metrics || this.createDefaultMetrics(),
-      registeredAt: this.agents.has(agent.id) ? this.agents.get(agent.id)!.registeredAt : now,
+      registeredAt: this.agents.has(agent.id)
+        ? (this.agents.get(agent.id)?.registeredAt ?? now)
+        : now,
       lastSeen: now,
       loadFactor: this.calculateLoadFactor(agent.metrics),
       health: this.calculateHealth(agent.metrics, agent.status),
@@ -255,14 +257,14 @@ export class AgentRegistry extends EventEmitter {
    */
   async selectAgents(criteria: AgentSelectionCriteria): Promise<RegisteredAgent[]> {
     let candidates = await this.queryAgents({
-      type: criteria.type || undefined,
+      ...(criteria.type && { type: criteria.type }),
       status: 'idle', // Only consider idle agents
-      capabilities: criteria.requiredCapabilities,
+      ...(criteria.requiredCapabilities && { capabilities: criteria.requiredCapabilities }),
     });
 
     // Exclude specific agents
     if (criteria.excludeAgents) {
-      candidates = candidates.filter((agent) => !criteria.excludeAgents!.includes(agent.id));
+      candidates = candidates.filter((agent) => !criteria.excludeAgents?.includes(agent.id));
     }
 
     // Enhanced selection based on file type and task context
@@ -361,7 +363,7 @@ export class AgentRegistry extends EventEmitter {
           this.lastUpdate.set(agent.id, new Date());
         }
       }
-    } catch (error) {
+    } catch (_error) {
       // Ignore errors during initial load
     }
   }
@@ -369,9 +371,8 @@ export class AgentRegistry extends EventEmitter {
   private async persistRegistrations(): Promise<void> {
     const promises = Array.from(this.agents.entries()).map(([id, agent]) =>
       this.memory.store(`${this.namespace}/agents/${id}`, agent, {
-        type: 'agent-registration',
-        tags: [agent.type, agent.status],
-        partition: 'registry',
+        ttl: 3600000, // 1 hour
+        replicas: 2,
       })
     );
 
@@ -431,8 +432,10 @@ export class AgentRegistry extends EventEmitter {
 
     // Simple load factor calculation
     const taskLoad =
-      (metrics.tasksInProgress || 0) / Math.max(1, metrics.tasksCompleted + (metrics.tasksInProgress || 0));
-    const resourceLoad = ((metrics.resourceUsage?.memory || 0) + (metrics.resourceUsage?.cpu || 0)) / 2;
+      (metrics.tasksInProgress || 0) /
+      Math.max(1, metrics.tasksCompleted + (metrics.tasksInProgress || 0));
+    const resourceLoad =
+      ((metrics.resourceUsage?.memory || 0) + (metrics.resourceUsage?.cpu || 0)) / 2;
 
     return Math.min(1, taskLoad * 0.6 + resourceLoad * 0.4);
   }
@@ -513,7 +516,7 @@ export class AgentRegistry extends EventEmitter {
     // File type relevance
     if (criteria.fileType && fileTypeToAgents[criteria.fileType]) {
       const relevantTypes = fileTypeToAgents[criteria.fileType];
-      if (relevantTypes && relevantTypes.includes(agent.type)) {
+      if (relevantTypes?.includes(agent.type)) {
         score += 0.5;
       }
     }
@@ -521,7 +524,7 @@ export class AgentRegistry extends EventEmitter {
     // Task type relevance
     if (criteria.taskType && taskTypeToAgents[criteria.taskType]) {
       const relevantTypes = taskTypeToAgents[criteria.taskType];
-      if (relevantTypes && relevantTypes.includes(agent.type)) {
+      if (relevantTypes?.includes(agent.type)) {
         score += 0.5;
       }
     }

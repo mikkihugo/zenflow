@@ -32,8 +32,15 @@ export class NeuralTestDataGenerator {
   /**
    * Generate random batch for testing
    */
-  generateRandomBatch(batchSize: number, featureSize: number, min: number = -1, max: number = 1): number[][] {
-    return Array.from({ length: batchSize }, () => this.generateRandomVector(featureSize, min, max));
+  generateRandomBatch(
+    batchSize: number,
+    featureSize: number,
+    min: number = -1,
+    max: number = 1
+  ): number[][] {
+    return Array.from({ length: batchSize }, () =>
+      this.generateRandomVector(featureSize, min, max)
+    );
   }
 
   /**

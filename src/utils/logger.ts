@@ -38,22 +38,25 @@ function sanitizeLogMeta(meta: any): any {
 class SimpleLogger implements Logger {
   constructor(private prefix: string = '') {}
 
-  debug(message: string, meta?: any): void {
-    if (process.env.NODE_ENV === 'development') {
-      console.debug(`[${new Date().toISOString()}] DEBUG ${this.prefix}: ${message}`, sanitizeLogMeta(meta) || '');
+  debug(_message: string, _meta?: any): void {
+    if (process.env['NODE_ENV'] === 'development') {
     }
   }
 
-  info(message: string, meta?: any): void {
-    console.info(`[${new Date().toISOString()}] INFO ${this.prefix}: ${message}`, sanitizeLogMeta(meta) || '');
-  }
+  info(_message: string, _meta?: any): void {}
 
   warn(message: string, meta?: any): void {
-    console.warn(`[${new Date().toISOString()}] WARN ${this.prefix}: ${message}`, sanitizeLogMeta(meta) || '');
+    console.warn(
+      `[${new Date().toISOString()}] WARN ${this.prefix}: ${message}`,
+      sanitizeLogMeta(meta) || ''
+    );
   }
 
   error(message: string, meta?: any): void {
-    console.error(`[${new Date().toISOString()}] ERROR ${this.prefix}: ${message}`, sanitizeLogMeta(meta) || '');
+    console.error(
+      `[${new Date().toISOString()}] ERROR ${this.prefix}: ${message}`,
+      sanitizeLogMeta(meta) || ''
+    );
   }
 }
 

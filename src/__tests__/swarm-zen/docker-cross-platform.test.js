@@ -5,25 +5,15 @@
  * Tests compatibility across different operating systems and architectures
  */
 
-import { execSync } from 'child_process';
-import { promises as fs } from 'fs';
-import os from 'os';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { RuvSwarm } from '../src/index.js';
+import { execSync } from 'node:child_process';
+import { promises as fs } from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { ZenSwarm } from '../src/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-console.log('================================================');
-console.log('ruv-swarm v1.0.6 Cross-Platform Validation');
-console.log('================================================');
-console.log(`Date: ${new Date().toISOString()}`);
-console.log(`Platform: ${process.platform}`);
-console.log(`Architecture: ${process.arch}`);
-console.log(`OS Release: ${os.release()}`);
-console.log(`Node Version: ${process.version}`);
-console.log('');
 
 const results = {
   testSuite: 'cross-platform-validation',
@@ -57,14 +47,10 @@ function addTestResult(name, status, message, details = {}) {
   if (status === 'failed') {
     results.summary.failed++;
   }
-  console.log(`${status === 'passed' ? '✅' : '❌'} ${name}: ${message}`);
 }
 
 // Test file system operations
 async function testFileSystemOps() {
-  console.log('1. Testing File System Operations');
-  console.log('================================');
-
   try {
     // Test path resolution
     const testPath = path.join(os.tmpdir(), 'ruv-swarm-test');
@@ -93,9 +79,6 @@ async function testFileSystemOps() {
 
 // Test WASM loading on different platforms
 async function testWASMCompatibility() {
-  console.log('\n2. Testing WASM Compatibility');
-  console.log('=============================');
-
   try {
     // Check WASM file exists
     const wasmPath = path.join(__dirname, '..', 'wasm', 'ruv_swarm_wasm_bg.wasm');
@@ -104,11 +87,11 @@ async function testWASMCompatibility() {
     addTestResult('WASM File Access', 'passed', `WASM file accessible: ${stats.size} bytes`);
 
     // Try to load WASM module
-    const swarm = new RuvSwarm({ maxAgents: 2 });
+    const swarm = new ZenSwarm({ maxAgents: 2 });
     addTestResult(
       'WASM Module Loading',
       'passed',
-      `WASM loaded successfully on ${process.platform}`
+      `WASM loaded successfully on ${process.platform}`,
     );
 
     // Test basic WASM operation
@@ -123,9 +106,6 @@ async function testWASMCompatibility() {
 
 // Test process spawning
 async function testProcessSpawning() {
-  console.log('\n3. Testing Process Spawning');
-  console.log('===========================');
-
   try {
     // Test basic command execution
     const nodeVersion = execSync('node --version', { encoding: 'utf8' }).trim();
@@ -135,7 +115,7 @@ async function testProcessSpawning() {
     try {
       const npxVersion = execSync('npx --version', { encoding: 'utf8' }).trim();
       addTestResult('NPX Availability', 'passed', `NPX available: v${npxVersion}`);
-    } catch (error) {
+    } catch (_error) {
       addTestResult('NPX Availability', 'warning', 'NPX not available in PATH');
     }
   } catch (error) {
@@ -145,11 +125,8 @@ async function testProcessSpawning() {
 
 // Test memory allocation
 async function testMemoryAllocation() {
-  console.log('\n4. Testing Memory Allocation');
-  console.log('============================');
-
   try {
-    const swarm = new RuvSwarm({ maxAgents: 32 });
+    const swarm = new ZenSwarm({ maxAgents: 32 });
 
     // Test large memory allocation
     const largeData = new Array(1000000).fill(0).map(() => Math.random());
@@ -170,7 +147,7 @@ async function testMemoryAllocation() {
       `Heap: ${(memUsage.heapUsed / 1024 / 1024).toFixed(2)}MB`,
       {
         memoryUsage: memUsage,
-      }
+      },
     );
   } catch (error) {
     addTestResult('Memory Allocation', 'failed', error.message);
@@ -179,9 +156,6 @@ async function testMemoryAllocation() {
 
 // Test native module compatibility
 async function testNativeModules() {
-  console.log('\n5. Testing Native Module Compatibility');
-  console.log('=====================================');
-
   try {
     // Check if better-sqlite3 loads correctly
     const Database = (await import('better-sqlite3')).default;
@@ -198,9 +172,6 @@ async function testNativeModules() {
 
 // Test platform-specific features
 async function testPlatformFeatures() {
-  console.log('\n6. Testing Platform-Specific Features');
-  console.log('====================================');
-
   // Test endianness handling
   const buffer = Buffer.alloc(4);
   buffer.writeInt32BE(0x12345678, 0);
@@ -225,11 +196,8 @@ async function testPlatformFeatures() {
 
 // Test concurrent operations
 async function testConcurrency() {
-  console.log('\n7. Testing Concurrent Operations');
-  console.log('================================');
-
   try {
-    const swarm = new RuvSwarm({ maxAgents: 16 });
+    const swarm = new ZenSwarm({ maxAgents: 16 });
 
     // Spawn multiple agents concurrently
     const promises = [];
@@ -245,13 +213,13 @@ async function testConcurrency() {
       addTestResult(
         'Concurrent Agent Creation',
         'failed',
-        `Expected 10 agents, got ${swarm.agents.length}`
+        `Expected 10 agents, got ${swarm.agents.length}`,
       );
     }
 
     // Test concurrent task execution
     const taskPromises = swarm.agents.map((agent) =>
-      agent.assignTask({ type: 'test', data: 'concurrent' })
+      agent.assignTask({ type: 'test', data: 'concurrent' }),
     );
 
     await Promise.all(taskPromises);
@@ -280,18 +248,6 @@ async function generateReport() {
   const resultsPath = path.join(__dirname, '..', 'test-results', 'cross-platform-validation.json');
   await fs.mkdir(path.dirname(resultsPath), { recursive: true });
   await fs.writeFile(resultsPath, JSON.stringify(results, null, 2));
-
-  console.log('\n================================================');
-  console.log('Cross-Platform Validation Summary');
-  console.log('================================================');
-  console.log(`Platform: ${process.platform} (${process.arch})`);
-  console.log(`Total Tests: ${results.summary.total}`);
-  console.log(`Passed: ${results.summary.passed}`);
-  console.log(`Failed: ${results.summary.failed}`);
-  console.log(`Pass Rate: ${results.summary.passRate}%`);
-  console.log(`Compatibility Score: ${results.summary.compatibilityScore}%`);
-  console.log('');
-  console.log(`Results saved to: ${resultsPath}`);
 }
 
 // Run all tests

@@ -44,7 +44,7 @@ export interface AuthContext {
  * @param res Express response object
  * @param next Next function to continue middleware chain
  */
-export const authMiddleware = (req: Request, res: Response, next: NextFunction): void => {
+export const authMiddleware = (req: Request, _res: Response, next: NextFunction): void => {
   // Create anonymous user context
   const authContext: AuthContext = {
     user: {
@@ -79,7 +79,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
  * For routes that might have authentication but don't require it.
  * Checks for auth tokens but doesn't reject if missing.
  */
-export const optionalAuthMiddleware = (req: Request, res: Response, next: NextFunction): void => {
+export const optionalAuthMiddleware = (req: Request, _res: Response, next: NextFunction): void => {
   // Check for auth headers (but don't enforce)
   const authHeader = req.headers.authorization;
   const apiKey = req.headers['x-api-key'] as string;
@@ -167,7 +167,7 @@ export const hasRole = (req: Request, role: string): boolean => {
  * Utility function to check if current user is admin.
  * Currently always returns true since no auth is required.
  */
-export const isAdmin = (req: Request): boolean => {
+export const isAdmin = (_req: Request): boolean => {
   return true; // Allow all admin operations since no auth required
 };
 

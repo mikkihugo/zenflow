@@ -329,7 +329,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   /**
    * Select best agent for a task step
    */
-  private selectAgentForStep(swarm: SwarmInstance, step: TaskStep): EphemeralAgent | null {
+  private selectAgentForStep(swarm: SwarmInstance, _step: TaskStep): EphemeralAgent | null {
     const availableAgents = swarm.agents.filter(
       (a) => a.status === 'active' || a.status === 'idle'
     );

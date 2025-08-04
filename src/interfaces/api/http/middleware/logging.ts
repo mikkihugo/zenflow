@@ -142,7 +142,7 @@ const getLogLevelFromStatus = (statusCode: number): LogLevel => {
  * Check if route should be logged
  * Excludes health checks and internal routes from verbose logging
  */
-const shouldLog = (path: string, method: string): boolean => {
+const shouldLog = (path: string, _method: string): boolean => {
   // Skip logging for health checks in production
   if (process.env.NODE_ENV === 'production' && path === '/health') {
     return false;
@@ -245,14 +245,16 @@ const outputLog = (logEntry: LogEntry): void => {
     const method = httpRequest?.requestMethod || '';
     const url = httpRequest?.requestUrl || '';
 
-    console.log(`[${timestamp}] ${level} ${method} ${url} ${status} ${duration} - ${message}`);
+    // Format development log with HTTP details
+    console.log(`[${timestamp}] ${level.toUpperCase()}: ${message}`);
+    if (httpRequest) {
+      console.log(`  → ${method} ${url} ${status} ${duration}ms`);
+    }
 
     if (logEntry.metadata) {
       console.log('  Metadata:', JSON.stringify(logEntry.metadata, null, 2));
     }
   } else {
-    // JSON format for production (structured logging)
-    console.log(JSON.stringify(logEntry));
   }
 };
 

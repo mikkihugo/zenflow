@@ -18,7 +18,6 @@ import {
   NetworkError,
   RAGError,
   SwarmError,
-  TimeoutError,
   WASMError,
 } from '@utils/errors';
 import type { MCPTool, MCPToolResult } from '../types/mcp-types';
@@ -261,8 +260,6 @@ export class MCPErrorClassifier {
 // ===============================
 
 export class MCPToolWrapper {
-  private static executionCounter = 0;
-
   public static wrapTool(tool: MCPTool): MCPTool {
     return {
       ...tool,
@@ -387,7 +384,7 @@ export class MCPToolWrapper {
 
   private static postProcessResult(
     result: MCPToolResult,
-    toolName: string,
+    _toolName: string,
     context: MCPExecutionContext
   ): MCPToolResult {
     // Add execution metadata to successful results
@@ -558,7 +555,7 @@ export class MCPToolWrapper {
     // Truncate large text fields
     for (const [key, value] of Object.entries(sanitized)) {
       if (typeof value === 'string' && value.length > 500) {
-        sanitized[key] = value.substring(0, 500) + '... [TRUNCATED]';
+        sanitized[key] = `${value.substring(0, 500)}... [TRUNCATED]`;
       }
     }
 

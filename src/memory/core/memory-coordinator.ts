@@ -5,7 +5,6 @@
 
 import { EventEmitter } from 'node:events';
 import type { BackendInterface } from '../backends/base.backend';
-import type { SessionState } from '../memory';
 
 export interface MemoryCoordinationConfig {
   enabled: boolean;
@@ -314,7 +313,11 @@ export class MemoryCoordinator extends EventEmitter {
   /**
    * Store data across distributed memory nodes
    */
-  async store(key: string, data: any, options?: { ttl?: number; replicas?: number }): Promise<void> {
+  async store(
+    key: string,
+    data: any,
+    options?: { ttl?: number; replicas?: number }
+  ): Promise<void> {
     const decision = await this.coordinate({
       type: 'write',
       target: key,
@@ -361,31 +364,25 @@ export class MemoryCoordinator extends EventEmitter {
    */
   async list(pattern: string): Promise<Array<{ key: string; value: any }>> {
     const results: Array<{ key: string; value: any }> = [];
-    
+
     // Get all active nodes
-    const activeNodes = Array.from(this.nodes.values()).filter(n => n.status === 'active');
-    
+    const activeNodes = Array.from(this.nodes.values()).filter((n) => n.status === 'active');
+
     for (const node of activeNodes) {
       try {
         // Assuming backend implements a keys() method
         if ('keys' in node.backend && typeof node.backend.keys === 'function') {
           const keys = await node.backend.keys();
-          const matchingKeys = keys.filter(key => this.matchesPattern(key, pattern));
-          
+          const matchingKeys = keys.filter((key) => this.matchesPattern(key, pattern));
+
           for (const key of matchingKeys) {
             try {
               const value = await node.backend.get(key);
               results.push({ key, value });
-            } catch (error) {
-              // Skip failed retrievals
-              continue;
-            }
+            } catch (_error) {}
           }
         }
-      } catch (error) {
-        // Skip failed nodes
-        continue;
-      }
+      } catch (_error) {}
     }
 
     // Remove duplicates (in case of replication)
@@ -410,7 +407,7 @@ export class MemoryCoordinator extends EventEmitter {
       .replace(/\?/g, '.')
       .replace(/\[/g, '\\[')
       .replace(/\]/g, '\\]');
-    
+
     const regex = new RegExp(`^${regexPattern}$`);
     return regex.test(key);
   }

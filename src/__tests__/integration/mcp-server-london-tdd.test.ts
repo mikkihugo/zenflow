@@ -22,8 +22,8 @@ const mockSqliteMemoryStore = {
   close: jest.fn(),
 };
 
-// Mock RuvSwarm (soon to be ruv-FANN-zen) - Neural intelligence contract
-const mockRuvSwarm = {
+// Mock ZenSwarm (soon to be ruv-FANN-zen) - Neural intelligence contract
+const mockZenSwarm = {
   initialize: jest.fn(),
   spawnAgent: jest.fn(),
   orchestrateTask: jest.fn(),
@@ -90,12 +90,12 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
     constructor() {
       this.memoryStore = mockSqliteMemoryStore;
       this.neuralEngine = mockNeuralEngine;
-      this.ruvSwarm = mockRuvSwarm;
+      this.ruvSwarm = mockZenSwarm;
       this.messageHandler = mockMCPMessageHandler;
       this.toolExecutor = mockMCPToolExecutor;
     }
 
-    async initialize(options: { stdio: boolean; port?: number }) {
+    async initialize(_options: { stdio: boolean; port?: number }) {
       await this.memoryStore.initialize(':memory:');
       await this.neuralEngine.initialize({ model: 'claude-zen-v1' });
       await this.ruvSwarm.initialize({ topology: 'hive-mind' });
@@ -126,7 +126,7 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
         // Arrange - Mock the initialization sequence
         mockSqliteMemoryStore.initialize.mockResolvedValue(undefined);
         mockNeuralEngine.initialize.mockResolvedValue(undefined);
-        mockRuvSwarm.initialize.mockResolvedValue(undefined);
+        mockZenSwarm.initialize.mockResolvedValue(undefined);
 
         const mcpServer = new MockMCPServer();
 
@@ -136,13 +136,13 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
         // Assert - Verify initialization contract (London School: test the conversation)
         expect(mockSqliteMemoryStore.initialize).toHaveBeenCalledWith(':memory:');
         expect(mockNeuralEngine.initialize).toHaveBeenCalledWith({ model: 'claude-zen-v1' });
-        expect(mockRuvSwarm.initialize).toHaveBeenCalledWith({ topology: 'hive-mind' });
+        expect(mockZenSwarm.initialize).toHaveBeenCalledWith({ topology: 'hive-mind' });
 
         // Verify initialization order (important for dependencies)
         const initCalls = [
           mockSqliteMemoryStore.initialize.mock.invocationCallOrder[0],
           mockNeuralEngine.initialize.mock.invocationCallOrder[0],
-          mockRuvSwarm.initialize.mock.invocationCallOrder[0],
+          mockZenSwarm.initialize.mock.invocationCallOrder[0],
         ];
 
         expect(initCalls[0]).toBeLessThan(initCalls[1]);

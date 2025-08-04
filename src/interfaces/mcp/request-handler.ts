@@ -346,8 +346,8 @@ export class MCPRequestHandler {
       initialized: this.initialized,
       uptime: Math.floor(process.uptime()),
       memory: {
-        used: Math.round(memUsage.heapUsed / 1024 / 1024) + 'MB',
-        total: Math.round(memUsage.heapTotal / 1024 / 1024) + 'MB',
+        used: `${Math.round(memUsage.heapUsed / 1024 / 1024)}MB`,
+        total: `${Math.round(memUsage.heapTotal / 1024 / 1024)}MB`,
       },
       tools: {
         registered: this.toolRegistry.getToolCount(),

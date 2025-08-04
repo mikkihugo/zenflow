@@ -6,7 +6,6 @@
  * @module MCPServerRefactored
  */
 
-import { fileURLToPath } from 'node:url';
 import { MCPErrorHandler } from './core/error-handler';
 
 // Placeholder implementation for MCP server
@@ -20,12 +19,10 @@ export class MCPServer {
   }
 
   async start() {
-    console.log('MCP Server starting...');
     return { success: true };
   }
 
   async stop() {
-    console.log('MCP Server stopping...');
     return { success: true };
   }
 }

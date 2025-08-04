@@ -5,8 +5,8 @@
  * Perfect for real-time distributed systems
  */
 
+import { EventEmitter } from 'node:events';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { EventEmitter } from 'events';
 
 // Mock WebSocket for protocol testing (London)
 class MockWebSocket extends EventEmitter {
@@ -73,9 +73,7 @@ class SwarmCoordinator {
   }
 
   private setupWebSocketHandlers() {
-    this.websocket.addEventListener('open', () => {
-      console.log('WebSocket connected');
-    });
+    this.websocket.addEventListener('open', () => {});
 
     this.websocket.addEventListener('message', (event: any) => {
       const message = this.protocol.decode(event.data);
@@ -347,12 +345,12 @@ describe('WebSocket Swarm Coordination - Hybrid Testing', () => {
       const syncTimes: number[] = [];
 
       // Set up sync handler
-      coordinator.onMessage('sync', (msg) => {
+      coordinator.onMessage('sync', (_msg) => {
         syncTimes.push(Date.now());
       });
 
       // Broadcast sync request
-      const startTime = Date.now();
+      const _startTime = Date.now();
       await coordinator.broadcastMessage({ type: 'sync' });
 
       // Simulate agents responding

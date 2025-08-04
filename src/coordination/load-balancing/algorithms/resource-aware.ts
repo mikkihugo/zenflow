@@ -198,7 +198,7 @@ export class ResourceAwareAlgorithm implements ILoadBalancingAlgorithm {
   /**
    * Handle agent failure
    */
-  public async onAgentFailure(agentId: string, error: Error): Promise<void> {
+  public async onAgentFailure(agentId: string, _error: Error): Promise<void> {
     const profile = this.getOrCreateResourceProfile(agentId);
 
     // Mark all resources as potentially compromised
@@ -672,20 +672,20 @@ export class ResourceAwareAlgorithm implements ILoadBalancingAlgorithm {
   }
 
   private updateResourceTrends(
-    profile: ResourceProfile,
-    requirements: TaskResourceRequirement,
-    duration: number,
-    success: boolean
+    _profile: ResourceProfile,
+    _requirements: TaskResourceRequirement,
+    _duration: number,
+    _success: boolean
   ): void {
     // Update prediction models based on actual vs estimated resource usage
     // This would involve comparing requirements with actual usage patterns
   }
 
   private updateResourcePredictionModels(
-    profile: ResourceProfile,
-    requirements: TaskResourceRequirement,
-    actualDuration: number,
-    success: boolean
+    _profile: ResourceProfile,
+    _requirements: TaskResourceRequirement,
+    _actualDuration: number,
+    _success: boolean
   ): void {
     // Learn from actual resource consumption to improve future predictions
     // This would update internal ML models or statistical models

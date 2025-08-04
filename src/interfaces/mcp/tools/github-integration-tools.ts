@@ -461,7 +461,7 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
       },
       required: ['repoUrl'],
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: { updated: 15, vulnerable: 2, compatible: 98 },
     }),
@@ -489,7 +489,7 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
       },
       required: ['repoUrl'],
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: { vulnerabilities: 3, severity: 'medium', remediated: 2 },
     }),
@@ -517,7 +517,7 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
       },
       required: ['repoUrl'],
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: { optimized: true, improvement: '35% faster', cost_reduction: '20%' },
     }),
@@ -545,7 +545,7 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
       },
       required: ['repoUrl'],
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: { patterns: ['feature-driven', 'regular-commits'], productivity: 85 },
     }),
@@ -569,7 +569,7 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
       },
       required: ['repoUrl'],
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: { contributors: 12, collaboration_score: 92, recommendations: ['pair programming'] },
     }),
@@ -621,7 +621,7 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
       },
       required: ['repoUrl'],
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: { progress: 75, on_track: true, estimated_completion: '1 week' },
     }),
@@ -649,7 +649,7 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
       },
       required: ['repoUrl'],
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: { predicted_issues: 8, risk_areas: ['auth module'], confidence: 85 },
     }),
@@ -673,7 +673,7 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
       },
       required: ['prUrl'],
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: { success_probability: 92, merge_readiness: 'high', recommendations: ['add tests'] },
     }),
@@ -729,7 +729,7 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
       },
       required: ['repoUrl'],
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: { health_score: 88, issues: ['outdated deps'], recommendations: ['update docs'] },
     }),
@@ -757,7 +757,7 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
       },
       required: ['repoUrl'],
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: { quality_score: 85, trend: 'improving', metrics: ['coverage', 'complexity'] },
     }),
@@ -785,7 +785,7 @@ export const githubIntegrationTools: AdvancedMCPTool[] = [
       },
       required: ['repoUrl'],
     },
-    handler: async (params) => ({
+    handler: async (_params) => ({
       success: true,
       data: { debt_score: 15, priority_items: ['refactor auth'], estimated_hours: 40 },
     }),

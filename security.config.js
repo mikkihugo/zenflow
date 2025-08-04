@@ -229,7 +229,7 @@ export const createSecurityMiddleware = (config = securityConfig) => {
       };
     },
 
-    inputValidator: (req, res, next) => {
+    inputValidator: (req, _res, next) => {
       // Validate and sanitize input
       if (req.body) {
         for (const [key, value] of Object.entries(req.body)) {

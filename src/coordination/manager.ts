@@ -6,18 +6,8 @@
 
 import { EventEmitter } from 'node:events';
 import type { IEventBus } from '../core/event-bus';
-import type { ILogger, LogArgument } from '../core/logger';
+import type { ILogger } from '../core/logger';
 import { CORE_TOKENS, inject, injectable } from '../di/index';
-import type {
-  AgentCreatedPayload,
-  AgentDestroyedPayload,
-  AgentStatus,
-  AgentStatusChangedPayload,
-  AgentType,
-  TaskAssignedPayload,
-  TaskCompletedPayload,
-  TaskFailedPayload,
-} from '../types/event-types';
 
 export interface CoordinationConfig {
   maxAgents: number;
@@ -59,8 +49,8 @@ export class CoordinationManager extends EventEmitter {
 
   constructor(
     config: CoordinationConfig,
-    @inject(CORE_TOKENS.Logger) private logger: ILogger,
-    @inject(CORE_TOKENS.EventBus) private eventBus: IEventBus
+    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
+    @inject(CORE_TOKENS.EventBus) private _eventBus: IEventBus
   ) {
     super();
 

@@ -5,7 +5,7 @@
  * ensemble models, and online learning for the adaptive learning system.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import type {
   AdaptiveLearningConfig,
   EnsemblePrediction,
@@ -15,10 +15,8 @@ import type {
   NeuralNetworkPredictor as INeuralNetworkPredictor,
   OnlineLearningSystem as IOnlineLearningSystem,
   ReinforcementLearningEngine as IReinforcementLearningEngine,
-  MLModelRegistry,
   ModelInfo,
   Pattern,
-  SystemContext,
   TrainingResult,
 } from './types';
 
@@ -232,7 +230,7 @@ export class ReinforcementLearningEngine
     if (!this.qTable.has(state)) {
       this.qTable.set(state, new Map());
     }
-    this.qTable.get(state)!.set(action, value);
+    this.qTable.get(state)?.set(action, value);
   }
 
   private getBestAction(state: string, availableActions: string[]): string {
@@ -479,8 +477,8 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
   }
 
   private async simulateTraining(
-    features: number[][],
-    labels: number[][]
+    _features: number[][],
+    _labels: number[][]
   ): Promise<TrainingResult> {
     const startTime = Date.now();
     const epochs = 50 + Math.floor(Math.random() * 50);
@@ -503,8 +501,8 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
   }
 
   private async simulateEvaluation(
-    features: number[][],
-    testData: ExecutionData[]
+    _features: number[][],
+    _testData: ExecutionData[]
   ): Promise<EvaluationMetrics> {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -539,10 +537,6 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
 export class EnsembleModels extends EventEmitter implements IEnsembleModels {
   private models = new Map<string, { model: any; weight: number }>();
   private totalWeight: number = 0;
-
-  constructor() {
-    super();
-  }
 
   /**
    * Add a model to the ensemble
@@ -697,7 +691,7 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
 
   private calculateEnsembleConfidence(
     predictions: Map<string, any>,
-    contributions: Map<string, number>
+    _contributions: Map<string, number>
   ): number {
     if (predictions.size === 0) return 0;
 

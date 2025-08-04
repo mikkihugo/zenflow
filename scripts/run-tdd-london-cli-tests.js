@@ -7,9 +7,9 @@
  * with proper setup and reporting.
  */
 
-import { spawn } from 'child_process';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
+import { spawn } from 'node:child_process';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(__dirname, '..');
@@ -18,8 +18,6 @@ const rootDir = join(__dirname, '..');
  * Run Jest tests for CLI commands with London TDD configuration
  */
 async function runCLITests() {
-  console.log('🧪 Running TDD London Tests for CLI Command Processing...\n');
-
   const testPattern = 'src/__tests__/unit/london/cli-commands/*.test.ts';
 
   const jestConfig = {
@@ -77,10 +75,8 @@ async function runCLITests() {
 
     jest.on('close', (code) => {
       if (code === 0) {
-        console.log('\n✅ All London TDD CLI tests passed!');
         resolve(code);
       } else {
-        console.log(`\n❌ Tests failed with exit code ${code}`);
         reject(new Error(`Tests failed with exit code ${code}`));
       }
     });
@@ -95,25 +91,7 @@ async function runCLITests() {
 /**
  * Display test information and patterns
  */
-function displayTestInfo() {
-  console.log('📋 Test Configuration:');
-  console.log('  - School: London TDD (Interaction-based testing)');
-  console.log('  - Focus: CLI command processing behavior');
-  console.log(
-    '  - Components: CommandRegistry, BaseCommand, ArgumentParser, OutputFormatter, ErrorHandler'
-  );
-  console.log('  - Approach: Mock external dependencies, test collaborations');
-  console.log('  - Pattern: Given-When-Then with behavior verification\n');
-
-  console.log('🧩 Test Structure:');
-  console.log('  src/__tests__/unit/london/cli-commands/');
-  console.log('  ├── command-registry.test.ts     - Command registration and discovery');
-  console.log('  ├── base-command.test.ts         - Command lifecycle and validation');
-  console.log('  ├── argument-parser.test.ts      - Command-line argument parsing');
-  console.log('  ├── output-formatter.test.ts     - Output formatting and rendering');
-  console.log('  ├── error-handler.test.ts        - Error handling and recovery');
-  console.log('  └── index.test.ts                - Integration between components\n');
-}
+function displayTestInfo() {}
 
 /**
  * Main execution
@@ -131,22 +109,6 @@ async function main() {
 
 // Handle command line arguments
 if (process.argv.includes('--help') || process.argv.includes('-h')) {
-  console.log(`
-TDD London CLI Tests Runner
-
-Usage: node scripts/run-tdd-london-cli-tests.js [options]
-
-Options:
-  --help, -h          Show this help message
-  --verbose          Enable verbose output
-  --coverage         Generate coverage report
-  --watch            Run in watch mode
-
-Examples:
-  node scripts/run-tdd-london-cli-tests.js
-  node scripts/run-tdd-london-cli-tests.js --coverage
-  node scripts/run-tdd-london-cli-tests.js --watch
-`);
   process.exit(0);
 }
 

@@ -3,13 +3,13 @@
  * Orchestrates optimization across all system domains
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import type {
+  DataOptimizer,
+  NeuralOptimizer,
   OptimizationResult,
   PerformanceMetrics,
-  NeuralOptimizer,
   SwarmOptimizer,
-  DataOptimizer,
   WasmOptimizer,
 } from '../interfaces/optimization-interfaces';
 
@@ -64,7 +64,6 @@ export class PerformanceOptimizer extends EventEmitter {
   private optimizers: Map<string, any> = new Map();
   private performanceHistory: PerformanceMetrics[] = [];
   private activeOptimizations: Set<string> = new Set();
-  private optimizationQueue: OptimizationPlan[] = [];
   private isOptimizing = false;
 
   constructor(
@@ -174,7 +173,7 @@ export class PerformanceOptimizer extends EventEmitter {
    */
   public async getPerformanceState(): Promise<SystemPerformanceState> {
     const overall = await this.getCurrentPerformanceMetrics();
-    
+
     return {
       overall,
       neural: await this.getDomainMetrics('neural'),
@@ -492,13 +491,16 @@ export class PerformanceOptimizer extends EventEmitter {
   /**
    * Calculate performance improvement
    */
-  private calculateImprovement(
-    before: PerformanceMetrics,
-    after: PerformanceMetrics
-  ): number {
+  private calculateImprovement(before: PerformanceMetrics, after: PerformanceMetrics): number {
     const latencyImprovement = Math.max(0, (before.latency - after.latency) / before.latency);
-    const throughputImprovement = Math.max(0, (after.throughput - before.throughput) / before.throughput);
-    const memoryImprovement = Math.max(0, (before.memoryUsage - after.memoryUsage) / before.memoryUsage);
+    const throughputImprovement = Math.max(
+      0,
+      (after.throughput - before.throughput) / before.throughput
+    );
+    const memoryImprovement = Math.max(
+      0,
+      (before.memoryUsage - after.memoryUsage) / before.memoryUsage
+    );
     const cpuImprovement = Math.max(0, (before.cpuUsage - after.cpuUsage) / before.cpuUsage);
 
     return (latencyImprovement + throughputImprovement + memoryImprovement + cpuImprovement) / 4;
@@ -522,7 +524,7 @@ export class PerformanceOptimizer extends EventEmitter {
   /**
    * Get domain-specific metrics
    */
-  private async getDomainMetrics(domain: string): Promise<PerformanceMetrics> {
+  private async getDomainMetrics(_domain: string): Promise<PerformanceMetrics> {
     // Mock implementation - replace with actual domain-specific metrics
     return this.getCurrentPerformanceMetrics();
   }

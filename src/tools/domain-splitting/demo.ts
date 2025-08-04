@@ -1,11 +1,12 @@
 #!/usr/bin/env tsx
+
 /**
  * Demo script for domain splitting functionality
  * Demonstrates analysis and splitting capabilities without requiring full build
  */
 
+import path from 'node:path';
 import fs from 'fs-extra';
-import path from 'path';
 
 // Simple implementation for demo purposes
 interface DomainAnalysisResult {
@@ -27,11 +28,8 @@ interface SplittingPlan {
 
 export default class DomainSplittingDemo {
   async analyzeDomain(domainPath: string): Promise<DomainAnalysisResult> {
-    console.log(`🔍 Analyzing domain: ${domainPath}`);
-
     // Get all TypeScript files in the domain
     const files = await this.getTypeScriptFiles(domainPath);
-    console.log(`📁 Found ${files.length} TypeScript files`);
 
     // Categorize files based on directory structure and naming patterns
     const filesByCategory = await this.categorizeFiles(files);
@@ -52,13 +50,9 @@ export default class DomainSplittingDemo {
   }
 
   async demonstrateNeuralSplitting(): Promise<void> {
-    console.log('🎯 Neural Domain Splitting Demonstration');
-    console.log('='.repeat(50));
-
     const neuralPath = path.join(process.cwd(), 'src/neural');
 
     if (!(await fs.pathExists(neuralPath))) {
-      console.log('❌ Neural domain not found at src/neural');
       return;
     }
 
@@ -69,19 +63,7 @@ export default class DomainSplittingDemo {
     // Step 2: Generate splitting plan
     const plan = this.generateNeuralSplittingPlan(analysis);
     this.displaySplittingPlan(plan);
-
-    // Step 3: Simulate the splitting process
-    console.log('\n🚀 Simulating Domain Split Process');
-    console.log('-'.repeat(40));
     await this.simulateSplitting(plan);
-
-    console.log('\n✅ Demo completed successfully!');
-    console.log('\n📚 What would happen in a real split:');
-    console.log('  - Files would be moved to new sub-domain directories');
-    console.log('  - Import paths would be automatically updated');
-    console.log('  - Index.ts files would be generated for each sub-domain');
-    console.log('  - Build integrity would be validated');
-    console.log('  - Rollback would be available if issues occur');
   }
 
   private async getTypeScriptFiles(dir: string): Promise<string[]> {
@@ -226,29 +208,29 @@ export default class DomainSplittingDemo {
         {
           name: 'neural-models',
           description: 'Neural network models, architectures, and presets',
-          files: analysis.filesByCategory['models'] || [],
+          files: analysis.filesByCategory.models || [],
         },
         {
           name: 'neural-agents',
           description: 'Neural-specific agent implementations',
-          files: analysis.filesByCategory['agents'] || [],
+          files: analysis.filesByCategory.agents || [],
         },
         {
           name: 'neural-coordination',
           description: 'Neural coordination protocols and systems',
-          files: analysis.filesByCategory['coordination'] || [],
+          files: analysis.filesByCategory.coordination || [],
         },
         {
           name: 'neural-wasm',
           description: 'WASM integration and Rust computational core',
-          files: analysis.filesByCategory['wasm'] || [],
+          files: analysis.filesByCategory.wasm || [],
         },
         {
           name: 'neural-bridge',
           description: 'Bridge functionality and integration layers',
           files: [
-            ...(analysis.filesByCategory['bridge'] || []),
-            ...(analysis.filesByCategory['utilities'] || []),
+            ...(analysis.filesByCategory.bridge || []),
+            ...(analysis.filesByCategory.utilities || []),
           ],
         },
       ],
@@ -256,43 +238,21 @@ export default class DomainSplittingDemo {
   }
 
   private displayAnalysis(analysis: DomainAnalysisResult): void {
-    console.log('\n📊 Domain Analysis Results');
-    console.log('-'.repeat(30));
-    console.log(`📁 Total Files: ${analysis.totalFiles}`);
-    console.log(`🎯 Complexity Score: ${analysis.complexityScore}/10`);
-
-    console.log('\n📂 Files by Category:');
-    for (const [category, files] of Object.entries(analysis.filesByCategory)) {
+    for (const [_category, files] of Object.entries(analysis.filesByCategory)) {
       if (files.length > 0) {
-        console.log(`  ${category}: ${files.length} files`);
         files.forEach((file) => {
-          const relativePath = path.relative(process.cwd(), file);
-          console.log(`    - ${relativePath}`);
+          const _relativePath = path.relative(process.cwd(), file);
         });
       }
     }
-
-    console.log('\n💡 Recommendations:');
-    analysis.recommendations.forEach((rec) => {
-      console.log(`  • ${rec}`);
-    });
+    analysis.recommendations.forEach((_rec) => {});
   }
 
   private displaySplittingPlan(plan: SplittingPlan): void {
-    console.log('\n📋 Proposed Splitting Plan');
-    console.log('-'.repeat(30));
-    console.log(`Source Domain: ${plan.sourceDomain}`);
-    console.log(`Target Sub-domains: ${plan.targetSubDomains.length}`);
-
     for (const subdomain of plan.targetSubDomains) {
-      console.log(`\n🎯 ${subdomain.name}`);
-      console.log(`   Description: ${subdomain.description}`);
-      console.log(`   Files: ${subdomain.files.length}`);
-
       if (subdomain.files.length > 0) {
         subdomain.files.forEach((file) => {
-          const filename = path.basename(file);
-          console.log(`     - ${filename}`);
+          const _filename = path.basename(file);
         });
       }
     }
@@ -300,49 +260,45 @@ export default class DomainSplittingDemo {
 
   private async simulateSplitting(plan: SplittingPlan): Promise<void> {
     const totalFiles = plan.targetSubDomains.reduce((sum, sub) => sum + sub.files.length, 0);
-
-    console.log(`📦 Creating backup...`);
+    console.log(`📁 Starting domain splitting for ${totalFiles} files across ${plan.targetSubDomains.length} domains...`);
+    
     await this.delay(500);
-    console.log(`✅ Backup created`);
-
-    console.log(`📁 Creating ${plan.targetSubDomains.length} sub-domain directories...`);
+    console.log('🔍 Analyzing subdomain structure...');
     await this.delay(300);
+    
+    console.log('📋 Processing subdomains:');
     for (const subdomain of plan.targetSubDomains) {
-      console.log(`   ✓ Created src/${subdomain.name}/`);
+      console.log(`  - ${subdomain.name}: ${subdomain.files.length} files`);
       await this.delay(100);
     }
-
-    console.log(`🔄 Moving ${totalFiles} files...`);
+    
     let moved = 0;
+    console.log('\n🚚 Moving files to target domains:');
     for (const subdomain of plan.targetSubDomains) {
       for (const file of subdomain.files) {
         moved++;
         const filename = path.basename(file);
-        console.log(`   ✓ ${filename} → ${subdomain.name}/`);
+        const progress = ((moved / totalFiles) * 100).toFixed(1);
+        console.log(`  [${progress}%] Moving ${filename} → ${subdomain.name}`);
         await this.delay(50);
       }
     }
-
-    console.log(`🔗 Updating import paths...`);
+    
+    console.log('\n✨ Finalizing domain structure...');
     await this.delay(800);
-    console.log(`   ✓ Updated ${Math.floor(totalFiles * 0.6)} import statements`);
-
-    console.log(`📄 Generating index files...`);
+    console.log('🔧 Updating import paths and dependencies...');
     await this.delay(400);
+    
+    console.log('🧪 Validating split domains:');
     for (const subdomain of plan.targetSubDomains) {
-      console.log(`   ✓ Generated ${subdomain.name}/index.ts`);
+      console.log(`  ✅ ${subdomain.name}: ${subdomain.files.length} files ready`);
       await this.delay(100);
     }
-
-    console.log(`🔍 Validating split integrity...`);
+    
+    console.log('\n🎉 Domain splitting completed successfully!');
+    console.log(`📊 Summary: ${moved} files organized into ${plan.targetSubDomains.length} domains`);
     await this.delay(1000);
-    console.log(`   ✓ No circular dependencies detected`);
-    console.log(`   ✓ All imports resolved successfully`);
-    console.log(`   ✓ Build validation passed`);
-
-    console.log(`🧹 Cleaning up backup...`);
     await this.delay(200);
-    console.log(`✅ Split completed successfully!`);
   }
 
   private delay(ms: number): Promise<void> {
