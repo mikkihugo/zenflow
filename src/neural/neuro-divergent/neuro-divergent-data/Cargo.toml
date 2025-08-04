@@ -29,7 +29,7 @@ chrono = { version = "0.4", features = ["std"] }
 
 # Statistical and mathematical operations
 statrs = "0.16"
-ndarray = { version = "0.15", features = ["rayon"] }
+ndarray = { version = "0.16", features = ["rayon"] }
 ndarray-stats = "0.5"
 
 # Serialization support

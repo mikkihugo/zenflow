@@ -2401,6 +2401,7 @@ dependencies = [
  "portable-atomic",
  "portable-atomic-util",
  "rawpointer",
+ "rayon",
 ]
 
 [[package]]
@@ -2468,7 +2469,7 @@ dependencies = [
  "chrono",
  "criterion",
  "nalgebra 0.34.0",
- "ndarray 0.15.6",
+ "ndarray 0.16.1",
  "num-complex",
  "num-traits",
  "polars 0.43.1",
@@ -2515,7 +2516,7 @@ dependencies = [
  "csv",
  "interpolate",
  "log",
- "ndarray 0.15.6",
+ "ndarray 0.16.1",
  "ndarray-stats",
  "neuro-divergent-core 0.1.0",
  "num-complex",
@@ -2545,7 +2546,7 @@ dependencies = [
  "criterion",
  "log",
  "nalgebra 0.34.0",
- "ndarray 0.15.6",
+ "ndarray 0.16.1",
  "num-traits",
  "polars 0.43.1",
  "pretty_assertions",

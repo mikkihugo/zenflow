@@ -24,7 +24,7 @@ chrono = { version = "0.4", features = ["serde"] }
 polars = { version = "0.43", features = ["lazy", "temporal", "csv", "parquet"], optional = true }
 
 # Mathematical operations
-ndarray = { version = "0.15", features = ["rayon"] }
+ndarray = { version = "0.16", features = ["rayon"] }
 nalgebra = { version = "0.34", optional = true }
 
 # Parallel processing
