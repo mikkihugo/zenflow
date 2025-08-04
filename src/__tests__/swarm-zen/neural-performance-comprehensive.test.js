@@ -15,7 +15,7 @@
 
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from '@jest/globals';
 import { BenchmarkCLI } from '../src/benchmark.js';
-import { RuvSwarm } from '../src/index-enhanced.js';
+import { ZenSwarm } from '../src/index-enhanced.js';
 import {
   AGENT_COGNITIVE_PROFILES,
   COGNITIVE_PATTERNS,
@@ -41,7 +41,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     wasmLoader = new WasmModuleLoader();
     await wasmLoader.initialize('progressive');
 
-    ruvSwarm = await RuvSwarm.initialize({
+    ruvSwarm = await ZenSwarm.initialize({
       enableNeuralNetworks: true,
       useSIMD: true,
       loadingStrategy: 'progressive',
@@ -169,10 +169,10 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     });
 
     test('should fine-tune network with comprehensive options', async () => {
-      const network = await neuralManager.createAgentNeuralNetwork('agent-finetune');
+      const _network = await neuralManager.createAgentNeuralNetwork('agent-finetune');
 
       const trainingData = {
-        samples: Array.from({ length: 100 }, (_, i) => ({
+        samples: Array.from({ length: 100 }, (_, _i) => ({
           input: Array.from({ length: 10 }, () => Math.random()),
           target: Array.from({ length: 5 }, () => Math.random()),
         })),
@@ -258,7 +258,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     });
 
     test('should save and load network state', async () => {
-      const network = await neuralManager.createAgentNeuralNetwork('save-load-test');
+      const _network = await neuralManager.createAgentNeuralNetwork('save-load-test');
 
       const saved = neuralManager.saveNetworkState('save-load-test', '/tmp/test-network.json');
       expect(saved).toBe(true);
@@ -461,7 +461,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
   describe('🤝 Neural Network Manager - Enhanced Capabilities', () => {
     test('should extract agent knowledge comprehensively', async () => {
       const agentId = 'knowledge-test';
-      const network = await neuralManager.createAgentNeuralNetwork(agentId);
+      const _network = await neuralManager.createAgentNeuralNetwork(agentId);
 
       // Simulate some training
       await neuralManager.fineTuneNetwork(agentId, {
@@ -1058,7 +1058,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
       // Check all strategies tested
       const strategies = ['eager', 'progressive', 'on-demand'];
       strategies.forEach((strategy) => {
-        if (results.strategies[strategy] && results.strategies[strategy].success) {
+        if (results.strategies[strategy]?.success) {
           expect(results.strategies[strategy].loadTime).toBeGreaterThan(0);
           expect(results.strategies[strategy].memoryUsage).toBeGreaterThan(0);
         }
@@ -1807,7 +1807,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
       expect(allPresets.length).toBeGreaterThanOrEqual(30);
 
       // Test each preset structure
-      allPresets.forEach((preset, index) => {
+      allPresets.forEach((preset, _index) => {
         expect(preset.modelType).toBeDefined();
         expect(preset.presetName).toBeDefined();
         expect(preset.config).toBeDefined();
@@ -1862,7 +1862,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
 
   afterAll(async () => {
     // Cleanup
-    if (performanceBenchmarks && performanceBenchmarks.ruvSwarm) {
+    if (performanceBenchmarks?.ruvSwarm) {
       // Cleanup performance benchmarks
     }
 

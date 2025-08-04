@@ -2,8 +2,8 @@
  * Dependency validation and cycle detection for domain splitting
  */
 
+import * as path from 'node:path';
 import * as fs from 'fs-extra';
-import * as path from 'path';
 
 import type {
   CircularDependency,
@@ -28,8 +28,6 @@ export interface SplitValidator {
 
 export class DependencyValidator implements DependencyMapper, SplitValidator {
   async mapInterDomainDependencies(domains: string[]): Promise<DependencyGraph> {
-    console.log(`🗺️ Mapping inter-domain dependencies for ${domains.length} domains`);
-
     const nodes = [];
     const edges = [];
 
@@ -66,14 +64,10 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
         }
       }
     }
-
-    console.log(`📊 Found ${nodes.length} nodes and ${edges.length} inter-domain dependencies`);
     return { nodes, edges };
   }
 
   async identifyCircularDependencies(graph: DependencyGraph): Promise<CircularDependency[]> {
-    console.log(`🔍 Checking for circular dependencies in graph with ${graph.nodes.length} nodes`);
-
     const cycles: CircularDependency[] = [];
     const visited = new Set<string>();
     const recursionStack = new Set<string>();
@@ -90,14 +84,10 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
         }
       }
     }
-
-    console.log(`🔄 Found ${cycles.length} circular dependencies`);
     return cycles;
   }
 
   async optimizeDependencyStructure(graph: DependencyGraph): Promise<OptimizedStructure> {
-    console.log(`⚡ Optimizing dependency structure`);
-
     const reorganizedFiles = [];
     const newUtilities = [];
     const removedDependencies = [];
@@ -131,8 +121,6 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
   }
 
   async validateNoCyclicDependencies(splits: SubDomainPlan[]): Promise<ValidationReport> {
-    console.log(`✅ Validating no cyclic dependencies in ${splits.length} plans`);
-
     const issues: ValidationIssue[] = [];
 
     for (const plan of splits) {
@@ -177,8 +165,6 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
   }
 
   async ensurePublicAPIStability(splits: SubDomainPlan[]): Promise<any> {
-    console.log(`🔒 Ensuring public API stability for ${splits.length} plans`);
-
     const compatibleAPIs = [];
     const breakingChanges = [];
     const deprecations = [];
@@ -209,9 +195,7 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
     };
   }
 
-  async verifyBuildIntegrity(splits: SubDomainPlan[]): Promise<any> {
-    console.log(`🔨 Verifying build integrity for ${splits.length} plans`);
-
+  async verifyBuildIntegrity(_splits: SubDomainPlan[]): Promise<any> {
     try {
       // Simulate build process
       const buildTime = Date.now();
@@ -416,15 +400,15 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
   }
 
   private suggestBetterLocation(
-    file: { current: string; dependencies: number },
-    graph: DependencyGraph
+    _file: { current: string; dependencies: number },
+    _graph: DependencyGraph
   ): string | null {
     // This would implement logic to suggest better file locations
     // For now, return null (no suggestions)
     return null;
   }
 
-  private identifySharedUtilities(graph: DependencyGraph): Array<{
+  private identifySharedUtilities(_graph: DependencyGraph): Array<{
     name: string;
     files: string[];
     description: string;
@@ -434,7 +418,7 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
     return [];
   }
 
-  private findRedundantDependencies(graph: DependencyGraph): string[] {
+  private findRedundantDependencies(_graph: DependencyGraph): string[] {
     // This would find dependencies that could be removed
     return [];
   }
@@ -515,7 +499,7 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
     return problematic;
   }
 
-  private async analyzePublicAPI(subdomain: any): Promise<any> {
+  private async analyzePublicAPI(_subdomain: any): Promise<any> {
     // This would analyze the public API of a subdomain
     return {
       functions: [],
@@ -525,17 +509,17 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
     };
   }
 
-  private identifyBreakingChanges(publicAPI: any): any[] {
+  private identifyBreakingChanges(_publicAPI: any): any[] {
     // This would identify potential breaking changes
     return [];
   }
 
-  private identifyStableAPIs(publicAPI: any): string[] {
+  private identifyStableAPIs(_publicAPI: any): string[] {
     // This would identify stable APIs
     return [];
   }
 
-  private suggestDeprecations(publicAPI: any): any[] {
+  private suggestDeprecations(_publicAPI: any): any[] {
     // This would suggest APIs for deprecation
     return [];
   }

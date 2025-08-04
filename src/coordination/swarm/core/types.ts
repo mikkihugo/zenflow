@@ -1,8 +1,8 @@
 /**
- * Core types and interfaces for RuvSwarm
+ * Core types and interfaces for ZenSwarm
  */
 
-import type { AgentType, AgentConfig as BaseAgentConfig, CognitiveProfile as BaseCognitiveProfile } from '../../../types/agent-types';
+import type { AgentType, AgentConfig as BaseAgentConfig } from '../../../types/agent-types';
 
 export interface SwarmOptions {
   topology?: SwarmTopology;
@@ -10,9 +10,22 @@ export interface SwarmOptions {
   connectionDensity?: number;
   syncInterval?: number;
   wasmPath?: string;
+  persistence?: any;
+  pooling?: any;
+}
+
+// Define SwarmConfig locally to match ruv-swarm interface
+export interface SwarmConfig {
+  name?: string;
+  topology?: 'mesh' | 'star' | 'hierarchical' | 'ring';
+  strategy?: 'balanced' | 'specialized' | 'adaptive';
+  maxAgents?: number;
+  enableCognitiveDiversity?: boolean;
+  enableNeuralAgents?: boolean;
 }
 
 export type SwarmTopology = 'mesh' | 'hierarchical' | 'distributed' | 'centralized' | 'hybrid';
+export type SwarmLifecycleState = 'initializing' | 'active' | 'terminated';
 
 // Re-export from main agent types for compatibility
 export type { AgentType } from '../../../types/agent-types';

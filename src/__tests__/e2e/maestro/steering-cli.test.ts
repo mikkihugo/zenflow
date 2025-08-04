@@ -3,14 +3,14 @@
  * Tests the complete CLI workflow for steering document generation
  */
 
-import { exec } from 'child_process';
-import { existsSync } from 'fs';
-import { access, mkdir, readFile, rm, unlink, writeFile } from 'fs/promises';
-import { tmpdir } from 'os';
-import { join } from 'path';
-import { promisify } from 'util';
+import { exec } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { promisify } from 'node:util';
 
-const execAsync = promisify(exec);
+const _execAsync = promisify(exec);
 
 describe('Maestro Steering CLI End-to-End', () => {
   let testDirectory: string;
@@ -54,7 +54,7 @@ describe('Maestro Steering CLI End-to-End', () => {
 
       // Note: This would be the actual CLI command if the system was fully built
       // For testing purposes, we simulate the command execution
-      const command = `npx claude-zen maestro init-steering ${domain}`;
+      const _command = `npx claude-zen maestro init-steering ${domain}`;
 
       try {
         // Simulate CLI command execution
@@ -77,8 +77,6 @@ describe('Maestro Steering CLI End-to-End', () => {
         );
         expect(content).toContain('## Guidelines');
       } catch (error) {
-        // If CLI is not available, document the expected behavior
-        console.log('CLI command simulation:', command);
         expect(error).toBeDefined();
       }
     });
@@ -102,12 +100,7 @@ describe('Maestro Steering CLI End-to-End', () => {
 
         const content = await readFile(steeringPath, 'utf8');
         expect(content).toContain(customContent);
-      } catch (error) {
-        console.log(
-          'CLI command would be:',
-          `npx claude-zen maestro init-steering ${domain} -c "${customContent}"`
-        );
-      }
+      } catch (_error) {}
     });
 
     it('should handle multiple steering document creation', async () => {
@@ -126,9 +119,7 @@ describe('Maestro Steering CLI End-to-End', () => {
             `${domain}.md`
           );
           expect(existsSync(steeringPath)).toBe(true);
-        } catch (error) {
-          console.log('CLI command would be:', `npx claude-zen maestro init-steering ${domain}`);
-        }
+        } catch (_error) {}
       }
     });
   });
@@ -165,12 +156,7 @@ describe('Maestro Steering CLI End-to-End', () => {
 
         // Should include steering context if properly integrated
         // expect(content).toContain('Steering Context Applied');
-      } catch (error) {
-        console.log(
-          'CLI command would be:',
-          `npx claude-zen maestro create-spec ${featureName} -r "${request}"`
-        );
-      }
+      } catch (_error) {}
     });
 
     it('should complete full workflow from steering to implementation', async () => {
@@ -201,12 +187,7 @@ describe('Maestro Steering CLI End-to-End', () => {
           );
           expect(existsSync(filePath)).toBe(true);
         }
-      } catch (error) {
-        console.log('Full workflow CLI commands would be:');
-        console.log(`1. npx claude-zen maestro create-spec ${featureName} -r "${request}"`);
-        console.log(`2. npx claude-zen maestro generate-design ${featureName}`);
-        console.log(`3. npx claude-zen maestro generate-tasks ${featureName}`);
-      }
+      } catch (_error) {}
     });
   });
 
@@ -220,7 +201,6 @@ describe('Maestro Steering CLI End-to-End', () => {
           // Should either sanitize or throw appropriate error
         } catch (error) {
           expect(error).toBeDefined();
-          console.log(`Expected error for invalid domain "${invalidDomain}":`, error.message);
         }
       }
     });
@@ -264,9 +244,7 @@ describe('Maestro Steering CLI End-to-End', () => {
         expect(content).toMatch(/^# .+ Steering Document$/m);
         expect(content).toContain('## Guidelines');
         expect(content.length).toBeGreaterThan(100);
-      } catch (error) {
-        console.log('Validation test would check steering document structure');
-      }
+      } catch (_error) {}
     });
   });
 
@@ -282,9 +260,7 @@ describe('Maestro Steering CLI End-to-End', () => {
 
         // Should complete within 5 seconds for single operation
         expect(duration).toBeLessThan(5000);
-      } catch (error) {
-        console.log('Performance test would measure CLI command execution time');
-      }
+      } catch (_error) {}
     });
 
     it('should provide clear progress feedback during operations', async () => {
@@ -296,11 +272,7 @@ describe('Maestro Steering CLI End-to-End', () => {
 
         // CLI should provide status updates
         expect(result).toBeDefined();
-      } catch (error) {
-        console.log('CLI should provide feedback like:');
-        console.log('📋 Creating steering document for feedback-test...');
-        console.log('✅ Steering document created successfully');
-      }
+      } catch (_error) {}
     });
 
     it('should handle concurrent CLI operations gracefully', async () => {
@@ -325,9 +297,7 @@ describe('Maestro Steering CLI End-to-End', () => {
           );
           expect(existsSync(steeringPath)).toBe(true);
         }
-      } catch (error) {
-        console.log('Concurrent CLI operations should be handled gracefully');
-      }
+      } catch (_error) {}
     });
   });
 

@@ -221,7 +221,7 @@ export class EphemeralSwarmManager extends EventEmitter {
    */
   private async spawnSingleAgent(agent: EphemeralAgent, swarmId: string): Promise<void> {
     // This integrates with our enhanced Task tool
-    this.eventBus.emit('agent:spawn:request', {
+    (this.eventBus as any).emit('agent:spawn:request', {
       swarmId,
       agentId: agent.id,
       agentType: agent.type,
@@ -241,7 +241,7 @@ export class EphemeralSwarmManager extends EventEmitter {
     swarm.lastActivity = new Date();
 
     // Set up agent coordination
-    this.eventBus.emit('swarm:initialize', {
+    (this.eventBus as any).emit('swarm:initialize', {
       swarmId: swarm.id,
       agents: swarm.agents.map((a) => ({ id: a.id, type: a.type })),
       task: swarm.task,
@@ -297,7 +297,7 @@ export class EphemeralSwarmManager extends EventEmitter {
       }
 
       // Execute the step (this would use the Task tool with the assigned agent)
-      this.eventBus.emit('task:execute', {
+      (this.eventBus as any).emit('task:execute', {
         swarmId: swarm.id,
         stepId: step.id,
         agentId: agent?.id,
@@ -329,7 +329,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   /**
    * Select best agent for a task step
    */
-  private selectAgentForStep(swarm: SwarmInstance, step: TaskStep): EphemeralAgent | null {
+  private selectAgentForStep(swarm: SwarmInstance, _step: TaskStep): EphemeralAgent | null {
     const availableAgents = swarm.agents.filter(
       (a) => a.status === 'active' || a.status === 'idle'
     );
@@ -406,14 +406,14 @@ export class EphemeralSwarmManager extends EventEmitter {
       // Terminate all agents
       for (const agent of swarm.agents) {
         agent.status = 'terminated';
-        this.eventBus.emit('agent:terminate', {
+        (this.eventBus as any).emit('agent:terminate', {
           swarmId,
           agentId: agent.id,
         });
       }
 
       // Clean up resources
-      this.eventBus.emit('swarm:cleanup', {
+      (this.eventBus as any).emit('swarm:cleanup', {
         swarmId,
         reason,
       });
@@ -478,7 +478,7 @@ export class EphemeralSwarmManager extends EventEmitter {
       this.handleTaskCompletion(data);
     });
 
-    this.eventBus.on('agent:idle', (data) => {
+    (this.eventBus as any).on('agent:idle', (data: any) => {
       this.handleAgentIdle(data);
     });
   }

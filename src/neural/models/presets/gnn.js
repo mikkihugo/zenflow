@@ -93,6 +93,21 @@ class GNNModel extends NeuralModel {
     const { nodes, edges, adjacency } = graphData;
     const numNodes = nodes.shape[0];
 
+    // Validate graph data
+    if (numNodes <= 0) {
+      throw new Error(`Invalid number of nodes: ${numNodes}`);
+    }
+    if (nodes.shape[1] !== this.config.nodeFeatureDim) {
+      throw new Error(
+        `Node feature dimension mismatch: expected ${this.config.nodeFeatureDim}, got ${nodes.shape[1]}`
+      );
+    }
+    if (adjacency && (adjacency.shape[0] !== numNodes || adjacency.shape[1] !== numNodes)) {
+      throw new Error(
+        `Adjacency matrix size mismatch: expected [${numNodes}, ${numNodes}], got [${adjacency.shape[0]}, ${adjacency.shape[1]}]`
+      );
+    }
+
     // Initialize node representations
     let nodeRepresentations = nodes;
 
@@ -129,7 +144,7 @@ class GNNModel extends NeuralModel {
 
     // For each edge, compute message
     for (let edgeIdx = 0; edgeIdx < numEdges; edgeIdx++) {
-      const [sourceIdx, targetIdx] = adjacency[edgeIdx];
+      const [sourceIdx, _targetIdx] = adjacency[edgeIdx];
 
       // Get source node features
       const sourceStart = sourceIdx * nodes.shape[1];
@@ -170,7 +185,7 @@ class GNNModel extends NeuralModel {
     return messages;
   }
 
-  aggregateMessages(messages, adjacency, layerIndex) {
+  aggregateMessages(messages, adjacency, _layerIndex) {
     const numNodes = Math.max(...adjacency.flat()) + 1;
     const aggregated = new Float32Array(numNodes * this.config.hiddenDimensions);
     const messageCounts = new Float32Array(numNodes);
@@ -191,7 +206,6 @@ class GNNModel extends NeuralModel {
           case 'max':
             aggregated[targetOffset] = Math.max(aggregated[targetOffset], messageValue);
             break;
-          case 'mean':
           default:
             aggregated[targetOffset] += messageValue;
         }
@@ -343,10 +357,6 @@ class GNNModel extends NeuralModel {
         trainLoss: avgTrainLoss,
         valLoss,
       });
-
-      console.log(
-        `Epoch ${epoch + 1}/${epochs} - Train Loss: ${avgTrainLoss.toFixed(4)}, Val Loss: ${valLoss.toFixed(4)}`
-      );
     }
 
     return {

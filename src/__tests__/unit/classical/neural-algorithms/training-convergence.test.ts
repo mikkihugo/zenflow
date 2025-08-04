@@ -12,8 +12,6 @@ import {
   createTrainer,
   initializeNeuralWasm,
   type NetworkConfig,
-  NeuralNetwork,
-  NeuralTrainer,
   TRAINING_ALGORITHMS,
   type TrainingConfig,
   type TrainingDataConfig,
@@ -25,7 +23,7 @@ describe('Training Convergence - Classical TDD', () => {
   beforeEach(async () => {
     try {
       wasmModule = await initializeNeuralWasm();
-    } catch (error) {
+    } catch (_error) {
       console.warn('WASM module not available, skipping convergence tests');
     }
   });
@@ -498,7 +496,7 @@ describe('Training Convergence - Classical TDD', () => {
       };
 
       const network = await createNeuralNetwork(networkConfig);
-      const trainer = await createTrainer(trainingConfig);
+      const _trainer = await createTrainer(trainingConfig);
 
       network.setTrainingData(noisyData);
 

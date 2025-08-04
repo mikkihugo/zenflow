@@ -35,9 +35,7 @@ import type {
   PhaseMetrics,
   PhaseProgress,
   PhaseResult,
-  PhaseStatus,
   ProjectDomain,
-  ProjectMetadata,
   ProjectSpecification,
   PseudocodeStructure,
   RefinementFeedback,
@@ -56,9 +54,9 @@ export class SPARCEngineCore implements SPARCEngine {
   // Deep infrastructure integration
   private readonly documentDrivenSystem: DocumentDrivenSystem;
   private readonly workflowEngine: UnifiedWorkflowEngine;
-  private readonly memorySystem: UnifiedMemorySystem;
+  private readonly memorySystem: any; // UnifiedMemorySystem
   private readonly swarmCoordinator: SPARCSwarmCoordinator;
-  private readonly taskTool: EnhancedTaskTool;
+  private readonly taskTool: any; // EnhancedTaskTool
   private readonly taskAPI: TaskAPI;
 
   constructor() {
@@ -131,24 +129,13 @@ export class SPARCEngineCore implements SPARCEngine {
       await this.executeDocumentWorkflows(workspaceId, project);
 
       // 4. Initialize swarm coordination for distributed development
-      const swarmId = await this.swarmCoordinator.initializeSPARCSwarm(project);
-      console.log(`🤖 Initialized SPARC swarm: ${swarmId}`);
+      const _swarmId = await this.swarmCoordinator.initializeSPARCSwarm(project);
 
       // 5. Generate comprehensive project management artifacts using existing infrastructure
       await this.createAllProjectManagementArtifacts(project);
-
-      console.log(
-        `📋 Integrated SPARC project "${project.name}" with existing Claude-Zen infrastructure`
-      );
     } catch (error) {
       console.warn('⚠️ Infrastructure integration partial:', error);
     }
-
-    // Log project initialization
-    console.log(`🚀 SPARC Project initialized: ${project.name} (${project.id})`);
-    console.log(`   Domain: ${project.domain}`);
-    console.log(`   Complexity: ${projectSpec.complexity}`);
-    console.log(`   Requirements: ${projectSpec.requirements.length}`);
 
     return project;
   }
@@ -158,7 +145,6 @@ export class SPARCEngineCore implements SPARCEngine {
    */
   async executePhase(project: SPARCProject, phase: SPARCPhase): Promise<PhaseResult> {
     const startTime = Date.now();
-    console.log(`📋 Executing SPARC Phase: ${phase} for project ${project.name}`);
 
     // Update project status
     project.currentPhase = phase;
@@ -197,7 +183,6 @@ export class SPARCEngineCore implements SPARCEngine {
       if (phase === 'architecture') {
         try {
           await this.projectManagement.createADRFiles(project);
-          console.log(`📝 Generated ADRs for ${project.name}`);
         } catch (error) {
           console.warn('⚠️ Could not generate ADRs:', error);
         }
@@ -218,10 +203,6 @@ export class SPARCEngineCore implements SPARCEngine {
         nextPhase: this.determineNextPhase(phase),
         recommendations: this.generatePhaseRecommendations(phase, project),
       };
-
-      console.log(
-        `✅ Phase ${phase} completed successfully in ${metrics.duration.toFixed(1)} minutes`
-      );
       return result;
     } catch (error) {
       // Handle phase execution failure
@@ -234,6 +215,7 @@ export class SPARCEngineCore implements SPARCEngine {
           {
             criterion: 'phase-execution',
             passed: false,
+            score: 0,
             details: error instanceof Error ? error.message : 'Unknown error',
             suggestions: ['Review phase requirements', 'Check input data quality'],
           },
@@ -252,8 +234,6 @@ export class SPARCEngineCore implements SPARCEngine {
     project: SPARCProject,
     feedback: RefinementFeedback
   ): Promise<RefinementResult> {
-    console.log(`🔧 Refining implementation for project ${project.name}`);
-
     // Analyze current implementation against targets
     const gapAnalysis = this.analyzePerformanceGaps(feedback);
 
@@ -262,10 +242,28 @@ export class SPARCEngineCore implements SPARCEngine {
 
     // Apply refinements
     const result: RefinementResult = {
-      performanceGain: 0.25, // 25% improvement
-      resourceReduction: 0.15, // 15% resource savings
-      scalabilityIncrease: 1.5, // 1.5x scalability improvement
-      maintainabilityImprovement: 0.3, // 30% maintainability improvement
+      id: nanoid(),
+      architectureId: project.architecture.id,
+      feedbackId: nanoid(),
+      optimizationStrategies: [],
+      performanceOptimizations: [],
+      securityOptimizations: [],
+      scalabilityOptimizations: [],
+      codeQualityOptimizations: [],
+      refinedArchitecture: project.architecture,
+      benchmarkResults: [],
+      improvementMetrics: [],
+      refactoringOpportunities: [],
+      technicalDebtAnalysis: {
+        id: nanoid(),
+        architectureId: project.architecture.id,
+        totalDebtScore: 0,
+        debtCategories: [],
+        remediationPlan: [],
+      },
+      recommendedNextSteps: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
 
     // Record refinement in history
@@ -276,10 +274,6 @@ export class SPARCEngineCore implements SPARCEngine {
       changes: refinementStrategies[0].changes,
       results: result,
     });
-
-    console.log(
-      `✨ Implementation refined with ${(result.performanceGain * 100).toFixed(1)}% performance gain`
-    );
     return result;
   }
 
@@ -287,8 +281,6 @@ export class SPARCEngineCore implements SPARCEngine {
    * Generate comprehensive artifact set for the project
    */
   async generateArtifacts(project: SPARCProject): Promise<ArtifactSet> {
-    console.log(`📦 Generating artifacts for project ${project.name}`);
-
     const artifacts: ArtifactReference[] = [
       // Specification artifacts
       {
@@ -354,8 +346,6 @@ export class SPARCEngineCore implements SPARCEngine {
         },
       ],
     };
-
-    console.log(`📦 Generated ${artifacts.length} artifacts for project ${project.name}`);
     return artifactSet;
   }
 
@@ -363,8 +353,6 @@ export class SPARCEngineCore implements SPARCEngine {
    * Validate project completion and production readiness
    */
   async validateCompletion(project: SPARCProject): Promise<CompletionValidation> {
-    console.log(`🔍 Validating completion for project ${project.name}`);
-
     const validations = [
       {
         criterion: 'all-phases-completed',
@@ -416,10 +404,6 @@ export class SPARCEngineCore implements SPARCEngine {
       blockers,
       warnings,
     };
-
-    console.log(
-      `🎯 Completion validation: ${(overallScore * 100).toFixed(1)}% ready for production`
-    );
     return result;
   }
 
@@ -827,6 +811,8 @@ export class SPARCEngineCore implements SPARCEngine {
 
   private createEmptySpecification(): DetailedSpecification {
     return {
+      id: nanoid(),
+      domain: 'general',
       functionalRequirements: [],
       nonFunctionalRequirements: [],
       constraints: [],
@@ -844,6 +830,7 @@ export class SPARCEngineCore implements SPARCEngine {
 
   private createEmptyPseudocode(): PseudocodeStructure {
     return {
+      id: nanoid(),
       algorithms: [],
       dataStructures: [],
       controlFlows: [],
@@ -914,7 +901,7 @@ export class SPARCEngineCore implements SPARCEngine {
     return currentIndex < phaseOrder.length - 1 ? phaseOrder[currentIndex + 1] : undefined;
   }
 
-  private generatePhaseRecommendations(phase: SPARCPhase, project: SPARCProject): string[] {
+  private generatePhaseRecommendations(phase: SPARCPhase, _project: SPARCProject): string[] {
     const recommendations: Record<SPARCPhase, string[]> = {
       specification: [
         'Ensure all stakeholder requirements are captured',
@@ -957,7 +944,7 @@ export class SPARCEngineCore implements SPARCEngine {
     }));
   }
 
-  private generateRefinementStrategies(gapAnalysis: any[], domain: ProjectDomain) {
+  private generateRefinementStrategies(_gapAnalysis: any[], _domain: ProjectDomain) {
     // Generate domain-specific refinement strategies
     return [
       {
@@ -1051,7 +1038,6 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
 
     for (const workflowName of workflows) {
       try {
-        console.log(`📋 Executing workflow: ${workflowName}`);
         await this.workflowEngine.runWorkflow(workflowName, {
           projectId: project.id,
           domain: project.domain,
@@ -1113,7 +1099,7 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
    * Execute task using swarm coordination
    */
   private async executeTaskWithSwarm(
-    taskId: string,
+    _taskId: string,
     project: SPARCProject,
     phase: SPARCPhase
   ): Promise<void> {
@@ -1121,11 +1107,6 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
       const result = await this.swarmCoordinator.executeSPARCPhase(project.id, phase);
 
       if (result.success) {
-        console.log(`✅ SPARC ${phase} executed successfully with swarm coordination`);
-
-        // Update task status
-        // Note: In production, TaskAPI would have an updateTask method
-        console.log(`📋 Task ${taskId} completed for ${phase} phase`);
       } else {
         console.warn(`⚠️ SPARC ${phase} had issues, but continuing...`);
       }
@@ -1139,7 +1120,7 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
    */
   private async createADRFilesWithWorkspace(project: SPARCProject): Promise<void> {
     // Use existing ADR template structure from the codebase
-    const adrTemplate = {
+    const _adrTemplate = {
       id: `adr-sparc-${project.id}`,
       title: `SPARC Architecture for ${project.name}`,
       status: 'proposed',
@@ -1154,29 +1135,20 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
       sparc_project_id: project.id,
       phase: 'architecture',
     };
-
-    // In production, this would save to docs/adrs/ using existing template
-    console.log(`📄 Created ADR for project ${project.name}`);
   }
 
   /**
    * Save epics to workspace using existing document structure
    */
   private async saveEpicsToWorkspace(project: SPARCProject): Promise<void> {
-    const epics = this.createEpicsFromSPARC(project);
-
-    // In production, save to docs/epics.json using existing structure
-    console.log(`📈 Created ${epics.length} epics for project ${project.name}`);
+    const _epics = this.createEpicsFromSPARC(project);
   }
 
   /**
    * Save features from workspace using existing document structure
    */
   private async saveFeaturesFromWorkspace(project: SPARCProject): Promise<void> {
-    const features = this.createFeaturesFromSPARC(project);
-
-    // In production, save to docs/features.json using existing structure
-    console.log(`🎯 Created ${features.length} features for project ${project.name}`);
+    const _features = this.createFeaturesFromSPARC(project);
   }
 
   /**

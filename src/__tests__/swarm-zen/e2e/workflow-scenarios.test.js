@@ -3,10 +3,10 @@
  * Tests complete user scenarios from initialization to results
  */
 
-import fs from 'fs/promises';
-import path from 'path';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { RuvSwarm } from '../../src/index-enhanced.js';
+import { ZenSwarm } from '../../src/index-enhanced.js';
 import { EnhancedMCPTools } from '../../src/mcp-tools-enhanced.js';
 
 describe('E2E Workflow Scenarios', () => {
@@ -20,7 +20,7 @@ describe('E2E Workflow Scenarios', () => {
     await fs.mkdir(testDir, { recursive: true });
 
     // Initialize system
-    ruvSwarm = await RuvSwarm.initialize({
+    ruvSwarm = await ZenSwarm.initialize({
       loadingStrategy: 'full',
       enablePersistence: true,
       enableNeuralNetworks: true,
@@ -43,8 +43,6 @@ describe('E2E Workflow Scenarios', () => {
 
   describe('Machine Learning Pipeline Workflow', () => {
     it('should complete full ML pipeline from data to predictions', async () => {
-      console.log('\n🔬 Starting ML Pipeline Workflow...');
-
       // Step 1: Create swarm for ML tasks
       const mlSwarm = await ruvSwarm.createSwarm({
         name: 'ml-pipeline-swarm',
@@ -71,9 +69,6 @@ describe('E2E Workflow Scenarios', () => {
           capabilities: ['model-evaluation', 'metrics-analysis'],
         }),
       };
-
-      // Step 3: Generate synthetic dataset
-      console.log('📊 Generating dataset...');
       const dataset = await agents.dataPrep.execute({
         task: 'generate-dataset',
         config: {
@@ -88,9 +83,6 @@ describe('E2E Workflow Scenarios', () => {
       expect(dataset.inputs).toHaveLength(1000);
       expect(dataset.targets).toHaveLength(1000);
       expect(dataset.inputs[0]).toHaveLength(20);
-
-      // Step 4: Build neural network
-      console.log('🏗️ Building neural network...');
       const modelConfig = await agents.modelBuilder.execute({
         task: 'design-network',
         requirements: {
@@ -103,9 +95,6 @@ describe('E2E Workflow Scenarios', () => {
 
       const network = await ruvSwarm.neuralManager.createNetwork(modelConfig);
       expect(network.id).toBeDefined();
-
-      // Step 5: Train the model
-      console.log('🎯 Training model...');
       const trainingResult = await agents.trainer.execute({
         task: 'train-model',
         networkId: network.id,
@@ -121,9 +110,6 @@ describe('E2E Workflow Scenarios', () => {
 
       expect(trainingResult.finalLoss).toBeLessThan(trainingResult.initialLoss);
       expect(trainingResult.validationAccuracy).toBeGreaterThan(0.7);
-
-      // Step 6: Evaluate model
-      console.log('📈 Evaluating model...');
       const evaluation = await agents.evaluator.execute({
         task: 'evaluate-model',
         networkId: network.id,
@@ -133,9 +119,6 @@ describe('E2E Workflow Scenarios', () => {
 
       expect(evaluation.accuracy).toBeGreaterThan(0.75);
       expect(evaluation.confusionMatrix).toHaveLength(5);
-
-      // Step 7: Make predictions
-      console.log('🔮 Making predictions...');
       const testSamples = Array(10)
         .fill(null)
         .map(() => new Float32Array(20).map(() => Math.random()));
@@ -150,15 +133,11 @@ describe('E2E Workflow Scenarios', () => {
 
       const stats = await fs.stat(modelPath);
       expect(stats.size).toBeGreaterThan(0);
-
-      console.log('✅ ML Pipeline completed successfully!');
     });
   });
 
   describe('Time Series Forecasting Workflow', () => {
     it('should forecast time series data using specialized models', async () => {
-      console.log('\n📈 Starting Time Series Forecasting Workflow...');
-
       // Step 1: Create forecasting swarm
       const forecastSwarm = await ruvSwarm.createSwarm({
         name: 'forecast-swarm',
@@ -192,23 +171,15 @@ describe('E2E Workflow Scenarios', () => {
           ensembleMethod: 'weighted-average',
         },
       });
-
-      // Step 4: Train models
-      console.log('🧠 Training forecasting models...');
       const trainingResults = await pipeline.train({
         epochs: 30,
         patience: 5,
-        onProgress: (model, epoch, metrics) => {
-          console.log(`  ${model}: Epoch ${epoch}, Loss: ${metrics.loss.toFixed(4)}`);
-        },
+        onProgress: (_model, _epoch, _metrics) => {},
       });
 
       expect(trainingResults.lstm.finalMetrics.mae).toBeLessThan(10);
       expect(trainingResults.transformer.finalMetrics.mae).toBeLessThan(10);
       expect(trainingResults.nbeats.finalMetrics.mae).toBeLessThan(10);
-
-      // Step 5: Generate forecasts
-      console.log('🔮 Generating forecasts...');
       const forecasts = await pipeline.forecast({
         steps: 24,
         returnConfidenceIntervals: true,
@@ -227,15 +198,11 @@ describe('E2E Workflow Scenarios', () => {
 
       expect(evaluation.mae).toBeLessThan(15);
       expect(evaluation.mape).toBeLessThan(0.15); // Less than 15% error
-
-      console.log('✅ Forecasting workflow completed!');
     });
   });
 
   describe('Distributed Task Processing Workflow', () => {
     it('should process complex tasks across multiple agents', async () => {
-      console.log('\n🚀 Starting Distributed Task Processing...');
-
       // Step 1: Create processing swarm
       const processingSwarm = await ruvSwarm.createSwarm({
         name: 'distributed-processing',
@@ -296,9 +263,6 @@ describe('E2E Workflow Scenarios', () => {
           },
         ],
       };
-
-      // Step 3: Spawn agents dynamically based on workload
-      console.log('🤖 Spawning agents...');
       const agentPool = [];
       for (let i = 0; i < 8; i++) {
         const agent = await processingSwarm.spawn({
@@ -307,9 +271,6 @@ describe('E2E Workflow Scenarios', () => {
         });
         agentPool.push(agent);
       }
-
-      // Step 4: Execute distributed processing
-      console.log('⚡ Processing tasks...');
       const startTime = performance.now();
 
       const orchestrationResult = await processingSwarm.orchestrate({
@@ -317,11 +278,7 @@ describe('E2E Workflow Scenarios', () => {
         strategy: 'parallel',
         monitoring: {
           interval: 100,
-          onProgress: (progress) => {
-            console.log(
-              `  Progress: ${progress.completed}/${progress.total} tasks (${progress.percentage.toFixed(1)}%)`
-            );
-          },
+          onProgress: (_progress) => {},
         },
       });
 
@@ -340,15 +297,11 @@ describe('E2E Workflow Scenarios', () => {
       const avgUtilization =
         utilization.reduce((sum, u) => sum + u.utilization, 0) / utilization.length;
       expect(avgUtilization).toBeGreaterThan(0.6); // At least 60% average utilization
-
-      console.log(`✅ Distributed processing completed in ${(duration / 1000).toFixed(2)}s`);
     });
   });
 
   describe('Real-time Collaboration Workflow', () => {
     it('should handle real-time collaborative editing scenario', async () => {
-      console.log('\n👥 Starting Real-time Collaboration Workflow...');
-
       // Step 1: Create collaboration swarm
       const collabSwarm = await ruvSwarm.createSwarm({
         name: 'collab-swarm',
@@ -371,10 +324,7 @@ describe('E2E Workflow Scenarios', () => {
         collabSwarm.spawn({ type: 'coder', role: 'editor-2' }),
         collabSwarm.spawn({ type: 'researcher', role: 'reviewer' }),
       ]);
-
-      // Step 4: Simulate concurrent edits
-      console.log('📝 Simulating concurrent edits...');
-      const edits = [];
+      const _edits = [];
       const editPromises = [];
 
       // Editor 1 adds content
@@ -427,15 +377,11 @@ describe('E2E Workflow Scenarios', () => {
       expect(finalDoc.content).toContain('Methods');
       expect(finalDoc.comments).toHaveLength(1);
       expect(finalDoc.version).toBeGreaterThan(0);
-
-      console.log('✅ Collaboration workflow completed!');
     });
   });
 
   describe('Adaptive Learning Workflow', () => {
     it('should adapt agent behavior based on performance', async () => {
-      console.log('\n🧬 Starting Adaptive Learning Workflow...');
-
       // Step 1: Create adaptive swarm
       const adaptiveSwarm = await ruvSwarm.createSwarm({
         name: 'adaptive-swarm',
@@ -449,9 +395,6 @@ describe('E2E Workflow Scenarios', () => {
         agents: new Map(),
         taskTypes: ['optimization', 'search', 'analysis', 'synthesis'],
       };
-
-      // Step 3: Run initial tasks and measure performance
-      console.log('📊 Running baseline tasks...');
       const baselineResults = [];
 
       for (const taskType of performanceTracker.taskTypes) {
@@ -478,13 +421,10 @@ describe('E2E Workflow Scenarios', () => {
           performances: [result.performance],
         });
       }
-
-      // Step 4: Train agents through repeated tasks
-      console.log('🎯 Training agents...');
       const trainingRounds = 10;
 
       for (let round = 0; round < trainingRounds; round++) {
-        for (const [agentId, data] of performanceTracker.agents) {
+        for (const [_agentId, data] of performanceTracker.agents) {
           const result = await data.agent.execute({
             task: data.taskType,
             complexity: 'medium',
@@ -498,20 +438,13 @@ describe('E2E Workflow Scenarios', () => {
           data.performances.push(result.performance);
         }
       }
-
-      // Step 5: Verify performance improvement
-      console.log('📈 Analyzing improvements...');
-      for (const [agentId, data] of performanceTracker.agents) {
+      for (const [_agentId, data] of performanceTracker.agents) {
         const initialPerf = data.performances[0];
         const finalPerf = data.performances[data.performances.length - 1];
         const improvement = (finalPerf.score - initialPerf.score) / initialPerf.score;
 
         expect(improvement).toBeGreaterThan(0.1); // At least 10% improvement
-        console.log(`  Agent ${agentId}: ${(improvement * 100).toFixed(1)}% improvement`);
       }
-
-      // Step 6: Test generalization
-      console.log('🔄 Testing generalization...');
       const newTaskResults = [];
 
       for (const [agentId, data] of performanceTracker.agents) {
@@ -534,15 +467,11 @@ describe('E2E Workflow Scenarios', () => {
       const avgNewTaskPerf =
         newTaskResults.reduce((sum, r) => sum + r.performance, 0) / newTaskResults.length;
       expect(avgNewTaskPerf).toBeGreaterThan(0.6); // Reasonable performance on new tasks
-
-      console.log('✅ Adaptive learning workflow completed!');
     });
   });
 
   describe('Fault Tolerance Workflow', () => {
     it('should handle agent failures and recover gracefully', async () => {
-      console.log('\n🛡️ Starting Fault Tolerance Workflow...');
-
       // Step 1: Create resilient swarm
       const resilientSwarm = await ruvSwarm.createSwarm({
         name: 'resilient-swarm',
@@ -566,32 +495,26 @@ describe('E2E Workflow Scenarios', () => {
             checkpointable: true,
           })),
       };
-
-      // Step 3: Start task execution
-      console.log('⚡ Starting critical task...');
       const agents = await Promise.all(
         Array(4)
           .fill(null)
           .map(() => resilientSwarm.spawn({ type: 'analyst' }))
       );
 
-      let completedSteps = 0;
+      let _completedSteps = 0;
       const taskPromise = resilientSwarm.orchestrate({
         task: criticalTask,
-        onStepComplete: (stepId) => {
-          completedSteps++;
-          console.log(`  Step ${stepId} completed (${completedSteps}/20)`);
+        onStepComplete: (_stepId) => {
+          _completedSteps++;
         },
       });
 
       // Step 4: Simulate agent failures
       setTimeout(async () => {
-        console.log('💥 Simulating agent failure...');
         await agents[0].simulateFailure();
       }, 2000);
 
       setTimeout(async () => {
-        console.log('💥 Simulating another agent failure...');
         await agents[1].simulateFailure();
       }, 4000);
 
@@ -608,8 +531,6 @@ describe('E2E Workflow Scenarios', () => {
       const checkpointStats = await resilientSwarm.getCheckpointStats();
       expect(checkpointStats.checkpointsSaved).toBeGreaterThan(0);
       expect(checkpointStats.checkpointsRestored).toBeGreaterThan(0);
-
-      console.log('✅ Fault tolerance workflow completed successfully!');
     });
   });
 });

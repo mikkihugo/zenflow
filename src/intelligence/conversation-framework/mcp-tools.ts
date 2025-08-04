@@ -5,7 +5,6 @@
  */
 
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { AgentId } from '../../types/agent-types';
 import { ConversationMemoryFactory } from './memory';
 import { ConversationOrchestratorImpl } from './orchestrator';
 import type {

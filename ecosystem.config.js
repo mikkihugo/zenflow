@@ -1,9 +1,9 @@
 export default {
   apps: [
     {
-      name: 'claude-zen-api',
-      script: 'src/api/start-server.js',
-      cwd: '/home/mhugo/code/claude-zen',
+      name: 'claude-zen-system',
+      script: 'start-claude-zen-system.js',
+      cwd: '/home/mhugo/code/claude-code-zen',
       instances: 1,
       autorestart: true,
       watch: false,
@@ -16,13 +16,18 @@ export default {
         NODE_ENV: 'development',
         PORT: 3000,
       },
-      log_file: '/tmp/claude-zen-api.log',
-      out_file: '/tmp/claude-zen-api-out.log',
-      error_file: '/tmp/claude-zen-api-error.log',
-      pid_file: '/tmp/claude-zen-api.pid',
+      log_type: 'json',
       merge_logs: true,
       time: true,
       log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+      // Integrated system includes:
+      // - Web Dashboard (port 3000)
+      // - REST API (/api)
+      // - HTTP MCP Protocol (/mcp) for Claude Desktop
+      // - WebSocket real-time updates
+      //
+      // Note: Stdio MCP for swarm coordination is started
+      // dynamically by Claude Code when swarms are initialized
     },
   ],
 };

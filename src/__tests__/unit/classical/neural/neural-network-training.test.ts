@@ -4,11 +4,7 @@
  * Focus: Result verification, computational correctness, algorithm validation
  */
 
-import {
-  createNeuralTestSuite,
-  NeuralNetworkValidator,
-  NeuralTestDataGenerator,
-} from '../../../helpers';
+import { createNeuralTestSuite, NeuralTestDataGenerator } from '../../../helpers';
 
 describe('Neural Network Training - Classical TDD', () => {
   let neuralSuite: ReturnType<typeof createNeuralTestSuite>;
@@ -227,7 +223,7 @@ describe('Neural Network Training - Classical TDD', () => {
       const target = [0.7];
 
       // Forward pass
-      const output = predict(network, input);
+      const _output = predict(network, input);
 
       // Compute gradients
       const gradients = computeGradients(network, input, target);
@@ -314,7 +310,6 @@ describe('Neural Network Training - Classical TDD', () => {
       );
 
       expect(memoryResult.withinLimit).toBe(true);
-      console.log(`Memory usage: ${memoryResult.memoryIncrease.toFixed(2)}MB`);
     });
 
     it('should predict efficiently', () => {
@@ -328,7 +323,6 @@ describe('Neural Network Training - Classical TDD', () => {
       );
 
       expect(predictionBenchmark.withinExpected).toBe(true);
-      console.log(`Average prediction time: ${predictionBenchmark.avgTime.toFixed(4)}ms`);
     });
   });
 
@@ -494,7 +488,7 @@ function trainNetwork(network: any, trainingData: any[], config: any) {
 
 function updateWeights(
   network: any,
-  input: number[],
+  _input: number[],
   target: number[],
   prediction: number[],
   learningRate: number
@@ -505,7 +499,7 @@ function updateWeights(
   // Update weights (simplified - real implementation would be more complex)
   network.weights.forEach((layer: number[][], layerIdx: number) => {
     layer.forEach((neuron: number[], neuronIdx: number) => {
-      neuron.forEach((weight: number, weightIdx: number) => {
+      neuron.forEach((_weight: number, weightIdx: number) => {
         const gradient = outputError[neuronIdx % outputError.length] * learningRate * 0.01;
         network.weights[layerIdx][neuronIdx][weightIdx] += gradient;
       });
@@ -518,8 +512,8 @@ function computeGradients(network: any, input: number[], target: number[]): numb
   const prediction = predict(network, input);
   const outputError = prediction.map((pred, idx) => target[idx] - pred);
 
-  return network.weights.map((layer: number[][], layerIdx: number) => {
-    return layer.map((neuron: number[], neuronIdx: number) => {
+  return network.weights.map((layer: number[][], _layerIdx: number) => {
+    return layer.map((_neuron: number[], neuronIdx: number) => {
       return outputError[neuronIdx % outputError.length] * 0.01;
     });
   });

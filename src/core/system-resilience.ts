@@ -5,16 +5,9 @@
  * including bulkheads, timeouts, resource cleanup, and emergency procedures
  */
 
-import { createLogger } from '../core/logger';
 import { errorMonitor } from './error-monitoring';
-import {
-  AgentError,
-  BaseClaudeZenError,
-  SwarmError,
-  SystemError,
-  TimeoutError,
-  WASMMemoryError,
-} from './errors';
+import { AgentError, SystemError, TimeoutError, WASMMemoryError } from './errors';
+import { createLogger } from './logger';
 
 const logger = createLogger({ prefix: 'SystemResilience' });
 
@@ -88,12 +81,12 @@ export class ResourceManager {
 
     // Register resource
     this.resources.set(resourceId, resource);
-    this.resourcesByType.get(type)!.add(resourceId);
+    this.resourcesByType.get(type)?.add(resourceId);
 
     if (!this.resourcesByOwner.has(owner)) {
       this.resourcesByOwner.set(owner, new Set());
     }
-    this.resourcesByOwner.get(owner)!.add(resourceId);
+    this.resourcesByOwner.get(owner)?.add(resourceId);
 
     logger.debug(`Resource allocated: ${resourceId} (${type}) for ${owner}`, { size });
 
@@ -113,7 +106,7 @@ export class ResourceManager {
 
       // Remove from tracking
       this.resources.delete(resourceId);
-      this.resourcesByType.get(resource.type)!.delete(resourceId);
+      this.resourcesByType.get(resource.type)?.delete(resourceId);
       this.resourcesByOwner.get(resource.owner)?.delete(resourceId);
 
       logger.debug(`Resource released: ${resourceId} (${resource.type})`);
@@ -122,7 +115,7 @@ export class ResourceManager {
 
       // Force remove from tracking even if cleanup failed
       this.resources.delete(resourceId);
-      this.resourcesByType.get(resource.type)!.delete(resourceId);
+      this.resourcesByType.get(resource.type)?.delete(resourceId);
       this.resourcesByOwner.get(resource.owner)?.delete(resourceId);
 
       throw new SystemError(
@@ -151,7 +144,7 @@ export class ResourceManager {
   }
 
   private async enforceResourceLimits(type: ResourceHandle['type'], size?: number): Promise<void> {
-    const currentCount = this.resourcesByType.get(type)!.size;
+    const currentCount = this.resourcesByType.get(type)?.size;
 
     // Check count limits
     switch (type) {
@@ -552,7 +545,7 @@ export class TimeoutManager {
   }
 
   public static clearAllTimeouts(): void {
-    for (const [id, timeout] of TimeoutManager.timeouts.entries()) {
+    for (const [_id, timeout] of TimeoutManager.timeouts.entries()) {
       clearTimeout(timeout);
     }
     TimeoutManager.timeouts.clear();

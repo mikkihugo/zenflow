@@ -4,12 +4,7 @@
  * Memory management for conversation persistence using existing memory backends
  */
 
-import {
-  type ConversationMemory,
-  type ConversationQuery,
-  type ConversationSession,
-  ConversationStatus,
-} from './types';
+import type { ConversationMemory, ConversationQuery, ConversationSession } from './types';
 
 /**
  * Memory backend adapter interface

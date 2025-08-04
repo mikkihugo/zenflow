@@ -1,33 +1,37 @@
 /**
- * @fileoverview A swarm strategy that uses the RuvSwarm implementation.
+ * @fileoverview A swarm strategy that uses the ZenSwarm implementation.
  */
 
-import type { Agent, SwarmStrategy } from '../orchestrator';
-import { RuvSwarm } from '../swarm/core';
+import { ZenSwarm } from '../swarm/core';
+import type { Agent, SwarmStrategy } from '../types';
 
-export class RuvSwarmStrategy implements SwarmStrategy {
-  private swarm: RuvSwarm;
+export class ZenSwarmStrategy implements SwarmStrategy {
+  private swarm: ZenSwarm;
 
   constructor() {
-    this.swarm = new RuvSwarm();
+    this.swarm = new ZenSwarm();
   }
 
   async createAgent(config: any): Promise<Agent> {
     const agentId = this.swarm.addAgent(config);
-    return { id: agentId };
+    return {
+      id: agentId,
+      capabilities: config.capabilities || [],
+      status: 'idle' as const,
+    };
   }
 
   async destroyAgent(agentId: string): Promise<void> {
     this.swarm.removeAgent(agentId);
   }
 
-  async sendMessage(agentId: string, message: any): Promise<void> {
-    // RuvSwarm does not have a direct sendMessage method.
+  async sendMessage(_agentId: string, _message: any): Promise<void> {
+    // ZenSwarm does not have a direct sendMessage method.
     // This would need to be implemented or mapped to an existing method.
-    console.warn('sendMessage is not implemented in RuvSwarmStrategy');
+    console.warn('sendMessage is not implemented in ZenSwarmStrategy');
   }
 
-  async assignTaskToAgent(agentId: string, task: any): Promise<void> {
+  async assignTaskToAgent(_agentId: string, task: any): Promise<void> {
     // This is a simplified mapping. A real implementation would be more robust.
     const swarmTask = { ...task, id: `task-${Date.now()}` };
     await this.swarm.submitTask(swarmTask);

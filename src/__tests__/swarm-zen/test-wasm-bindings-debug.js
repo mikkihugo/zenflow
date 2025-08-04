@@ -11,8 +11,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function testWasmDirectly() {
-  console.log('🔍 Testing WASM bindings directly...\n');
-
   try {
     // Path to WASM file
     const wasmPath = path.join(__dirname, '..', 'wasm', 'ruv_swarm_wasm_bg.wasm');
@@ -20,15 +18,13 @@ async function testWasmDirectly() {
     // Check if file exists
     try {
       await fs.access(wasmPath);
-      console.log('✅ WASM file exists at:', wasmPath);
-    } catch (e) {
+    } catch (_e) {
       console.error('❌ WASM file not found:', wasmPath);
       return;
     }
 
     // Read WASM file
     const wasmBuffer = await fs.readFile(wasmPath);
-    console.log('✅ WASM file loaded, size:', wasmBuffer.byteLength, 'bytes');
 
     // Create minimal imports to see what's missing
     const imports = {
@@ -38,36 +34,21 @@ async function testWasmDirectly() {
       },
     };
 
-    // Try to instantiate
-    console.log('\n🔧 Attempting WebAssembly.instantiate...\n');
-
     try {
       const { instance, module } = await WebAssembly.instantiate(wasmBuffer, imports);
-      console.log('✅ WASM instantiation successful!');
-      console.log('Exports:', Object.keys(instance.exports));
     } catch (instantiateError) {
       console.error('❌ WebAssembly.instantiate failed:', instantiateError.message);
 
       // Parse the error to find missing imports
       if (instantiateError.message.includes('Import #')) {
-        console.log('\n🔍 Missing imports detected:');
         const importMatch = instantiateError.message.match(
           /Import #(\d+) module="([^"]+)" function="([^"]+)"/
         );
         if (importMatch) {
-          console.log(`  - Module: ${importMatch[2]}`);
-          console.log(`  - Function: ${importMatch[3]}`);
-          console.log(`  - Import index: ${importMatch[1]}`);
         }
       }
-
-      // List all imports the WASM file expects
-      console.log('\n📋 Analyzing WASM imports...');
       const module = await WebAssembly.compile(wasmBuffer);
       const importsList = WebAssembly.Module.imports(module);
-
-      console.log(`\nTotal imports needed: ${importsList.length}`);
-      console.log('\nImports by module:');
 
       const importsByModule = {};
       importsList.forEach((imp) => {
@@ -80,13 +61,9 @@ async function testWasmDirectly() {
         });
       });
 
-      for (const [moduleName, moduleImports] of Object.entries(importsByModule)) {
-        console.log(`\n  ${moduleName}: (${moduleImports.length} imports)`);
-        moduleImports.slice(0, 10).forEach((imp) => {
-          console.log(`    - ${imp.name} (${imp.kind})`);
-        });
+      for (const [_moduleName, moduleImports] of Object.entries(importsByModule)) {
+        moduleImports.slice(0, 10).forEach((_imp) => {});
         if (moduleImports.length > 10) {
-          console.log(`    ... and ${moduleImports.length - 10} more`);
         }
       }
     }

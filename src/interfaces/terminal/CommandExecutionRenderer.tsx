@@ -9,15 +9,9 @@
 import { Box, Text, useApp } from 'ink';
 import type React from 'react';
 import { useEffect, useState } from 'react';
-import AdvancedCLICommands from './AdvancedCLICommands.js';
-import {
-  ErrorMessage,
-  Header,
-  LoadingSpinner,
-  StatusBadge,
-  type SwarmStatus,
-} from './components/index.js';
-import { type CommandResult, MockCommandHandler } from './utils/MockCommandHandler.js';
+import AdvancedCLICommands from './AdvancedCLICommands';
+import { ErrorMessage, Header, LoadingSpinner, StatusBadge } from './components/index';
+import { type CommandResult, MockCommandHandler } from './utils/MockCommandHandler';
 
 export interface CommandExecutionProps {
   commands: string[];
@@ -115,113 +109,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
     executeCommands();
   }, [commands, flags, onExit, advancedCLI]);
 
-  const displayHelp = () => {
-    console.log(`
-🧠 Claude Code Zen - Revolutionary AI Project Management Platform v2.0.0-alpha.73
-
-REVOLUTIONARY CAPABILITIES:
-  🤖 30-second project creation with AI scaffolding
-  📊 Real-time swarm monitoring with <50ms latency
-  🚀 10x development velocity with AI code generation
-  ⚡ 300% performance optimization gains
-
-USAGE:
-  claude-zen [command] [options]
-
-INTELLIGENT PROJECT COMMANDS:
-  create <name>                    Create AI-optimized projects with intelligent scaffolding
-    --type=<type>                  neural-ai | swarm-coordination | wasm-performance | full-stack
-    --complexity=<level>           simple | moderate | complex | enterprise
-    --ai-features=all              Enable all AI capabilities
-    --domains=<list>               neural,swarm,wasm,real-time,quantum
-
-  optimize [path]                  Optimize existing projects with AI analysis  
-    --analyze-architecture         Analyze and improve architecture
-    --apply-safe                   Apply safe automated improvements
-    
-  status [path]                    Comprehensive project health analysis
-    --detailed                     Detailed metrics and recommendations
-
-REAL-TIME SWARM COMMANDS:
-  swarm monitor [id]               Real-time monitoring with interactive dashboard
-    --real-time                    Enable real-time streaming updates
-    --interactive-dashboard        Launch interactive control dashboard
-    
-  swarm spawn                      Create optimal swarm topology
-    --topology=<type>              mesh | hierarchical | ring | star | quantum
-    --agents=<count>               Number of agents to spawn
-    --strategy=<strategy>          parallel | sequential | adaptive
-    
-  swarm coordinate <task>          Execute complex coordination tasks
-    --strategy=<strategy>          quantum-inspired | adaptive | parallel
-
-AI-POWERED GENERATION:
-  generate from-spec <file>        Generate optimized code from specifications
-    --optimize-performance         Optimize for speed and efficiency
-    --add-tests                    Generate comprehensive test suites
-    
-  generate neural-network          Generate neural network architectures
-    --architecture=<type>          transformer | cnn | rnn | custom
-    --optimization=<target>        speed | accuracy | memory | balanced
-
-ADVANCED TESTING & OPTIMIZATION:
-  test --comprehensive             Comprehensive testing with AI assistance
-    --performance-benchmarks       Performance and load testing
-    --security-analysis            Security vulnerability analysis
-    
-  performance analyze              Advanced performance analysis
-    --bottlenecks                  Identify performance bottlenecks
-    --optimization-opportunities   Find optimization opportunities
-
-STANDARD COMMANDS:
-  init [name]                      Initialize a new project (legacy)
-  status                           Show system status  
-  mcp <action>                     MCP server operations (start, stop, status)
-  workspace <action>               Document-driven development workflow
-  help                             Show this help message
-
-AI ASSISTANCE OPTIONS:
-  --ai-assist                      Enable AI assistance and suggestions
-  --real-time                      Enable real-time monitoring and updates
-  --optimize                       Enable performance optimizations
-  --neural                         Enable neural network capabilities
-  --swarm                          Enable swarm coordination features
-  --quantum                        Enable quantum-inspired algorithms
-
-STANDARD OPTIONS:
-  --interactive, -i                Keep terminal open after command execution
-  --json                           Output results in JSON format
-  --verbose                        Enable verbose logging
-  --theme <theme>                  Set UI theme (dark, light)
-
-REVOLUTIONARY EXAMPLES:
-  # Create enterprise neural AI project in 30 seconds
-  claude-zen create ai-project --type=neural-ai --complexity=enterprise --ai-features=all
-  
-  # Real-time swarm monitoring with performance heatmaps  
-  claude-zen swarm monitor --real-time --interactive-dashboard
-  
-  # AI-powered code generation from specification
-  claude-zen generate from-spec api-requirements.yaml --optimize-performance --add-tests
-  
-  # Quantum-inspired swarm coordination
-  claude-zen swarm coordinate "complex-analysis" --strategy=quantum-inspired
-  
-  # Comprehensive AI-assisted testing
-  claude-zen test --comprehensive --performance-benchmarks --security-analysis
-
-PERFORMANCE TARGETS:
-  🚀 30-second project creation (simple projects)
-  📊 <50ms latency (real-time monitoring)
-  🎯 10x development velocity improvement
-  🧠 95%+ AI-generated code quality scores
-  ⚡ 300% performance optimization gains
-
-For interactive terminal interface, use: claude-zen --ui
-
-Documentation: https://github.com/ruvnet/claude-zen-flow
-`);
-  };
+  const displayHelp = () => {};
 
   const renderResult = () => {
     if (!state.result) return null;
@@ -230,17 +118,6 @@ Documentation: https://github.com/ruvnet/claude-zen-flow
 
     // JSON output mode
     if (flags.json) {
-      console.log(
-        JSON.stringify(
-          result.data || {
-            success: result.success,
-            message: result.message,
-            error: result.error,
-          },
-          null,
-          2
-        )
-      );
       return null;
     }
 

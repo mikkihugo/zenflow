@@ -170,8 +170,7 @@ export class TestLogger {
     this.logs.push(entry);
 
     if (!this.silent && process.env.NODE_ENV === 'test') {
-      const prefix = this.testName ? `[${this.testName}] ` : '';
-      console.log(`${prefix}${level.toUpperCase()}: ${message}`, context || '');
+      const _prefix = this.testName ? `[${this.testName}] ` : '';
     }
   }
 }

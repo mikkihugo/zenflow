@@ -3,10 +3,10 @@
  * Web-based dashboard for performance monitoring and visualization
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
+import { createServer } from 'node:http';
+import * as path from 'node:path';
 import express from 'express';
-import { createServer } from 'http';
-import * as path from 'path';
 import { Server as SocketIOServer } from 'socket.io';
 import type { PerformanceInsights } from '../analytics/performance-analyzer';
 import type { CompositeMetrics } from '../core/metrics-collector';
@@ -74,7 +74,7 @@ export class DashboardServer extends EventEmitter {
     this.app.use(express.static(staticPath));
 
     // CORS middleware
-    this.app.use((req, res, next) => {
+    this.app.use((_req, res, next) => {
       res.header('Access-Control-Allow-Origin', this.config.corsOrigins?.join(',') || '*');
       res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
       res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -89,8 +89,6 @@ export class DashboardServer extends EventEmitter {
     this.io.on('connection', (socket) => {
       const clientId = socket.id;
       this.connectedClients.add(clientId);
-
-      console.log(`Dashboard client connected: ${clientId}`);
       this.emit('client:connected', clientId);
 
       // Send initial data to new client
@@ -120,7 +118,6 @@ export class DashboardServer extends EventEmitter {
 
       socket.on('disconnect', () => {
         this.connectedClients.delete(clientId);
-        console.log(`Dashboard client disconnected: ${clientId}`);
         this.emit('client:disconnected', clientId);
       });
     });
@@ -131,7 +128,7 @@ export class DashboardServer extends EventEmitter {
    */
   private setupRoutes(): void {
     // Health check
-    this.app.get('/health', (req, res) => {
+    this.app.get('/health', (_req, res) => {
       res.json({
         status: 'healthy',
         uptime: process.uptime(),
@@ -141,34 +138,34 @@ export class DashboardServer extends EventEmitter {
     });
 
     // Get current metrics
-    this.app.get('/api/metrics', (req, res) => {
+    this.app.get('/api/metrics', (_req, res) => {
       res.json(this.dashboardData.metrics);
     });
 
     // Get performance insights
-    this.app.get('/api/insights', (req, res) => {
+    this.app.get('/api/insights', (_req, res) => {
       res.json(this.dashboardData.insights);
     });
 
     // Get optimization results
-    this.app.get('/api/optimizations', (req, res) => {
+    this.app.get('/api/optimizations', (_req, res) => {
       res.json(this.dashboardData.optimizations);
     });
 
     // Get alerts
-    this.app.get('/api/alerts', (req, res) => {
+    this.app.get('/api/alerts', (_req, res) => {
       res.json(this.dashboardData.alerts);
     });
 
     // Clear alerts
-    this.app.delete('/api/alerts', (req, res) => {
+    this.app.delete('/api/alerts', (_req, res) => {
       this.dashboardData.alerts = [];
       this.io.emit('dashboard:alerts', this.dashboardData.alerts);
       res.json({ success: true });
     });
 
     // Get dashboard summary
-    this.app.get('/api/summary', (req, res) => {
+    this.app.get('/api/summary', (_req, res) => {
       const summary = this.generateDashboardSummary();
       res.json(summary);
     });
@@ -184,7 +181,7 @@ export class DashboardServer extends EventEmitter {
     });
 
     // Serve dashboard HTML
-    this.app.get('/', (req, res) => {
+    this.app.get('/', (_req, res) => {
       res.sendFile(path.join(__dirname, 'static', 'index.html'));
     });
   }
@@ -205,7 +202,6 @@ export class DashboardServer extends EventEmitter {
         }
 
         this.isRunning = true;
-        console.log(`Dashboard server running on port ${this.config.port}`);
         this.emit('server:started');
         resolve();
       });
@@ -223,7 +219,6 @@ export class DashboardServer extends EventEmitter {
     return new Promise((resolve) => {
       this.server.close(() => {
         this.isRunning = false;
-        console.log('Dashboard server stopped');
         this.emit('server:stopped');
         resolve();
       });

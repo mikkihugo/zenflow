@@ -164,7 +164,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
   /**
    * Handle project optimization
    */
-  private async handleOptimizeProject(args: string[], options: any): Promise<CommandResult> {
+  private async handleOptimizeProject(args: string[], _options: any): Promise<CommandResult> {
     const projectPath = args[0] || process.cwd();
     const startTime = Date.now();
 
@@ -192,7 +192,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
   /**
    * Handle project status
    */
-  private async handleProjectStatus(args: string[], options: any): Promise<CommandResult> {
+  private async handleProjectStatus(args: string[], _options: any): Promise<CommandResult> {
     const projectPath = args[0] || process.cwd();
 
     const analysis = {
@@ -291,7 +291,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
   /**
    * Handle test commands
    */
-  private async handleTestCommand(args: string[], options: any): Promise<CommandResult> {
+  private async handleTestCommand(_args: string[], _options: any): Promise<CommandResult> {
     return {
       success: true,
       message: '✅ Comprehensive testing completed',
@@ -307,7 +307,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
   /**
    * Handle performance commands
    */
-  private async handlePerformanceCommand(args: string[], options: any): Promise<CommandResult> {
+  private async handlePerformanceCommand(_args: string[], _options: any): Promise<CommandResult> {
     return {
       success: true,
       message: '⚡ Performance analysis completed',

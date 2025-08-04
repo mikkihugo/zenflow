@@ -4,13 +4,9 @@
 
 import { DomainAnalysisEngine } from './analyzers/domain-analyzer';
 import { SafeDomainSplitter } from './splitters/domain-splitter';
-import type { AnalysisConfig, DEFAULT_ANALYSIS_CONFIG } from './types/analysis-types';
+import type { AnalysisConfig } from './types/analysis-types';
 
-import type {
-  NEURAL_SPLITTING_PLAN,
-  SplittingResult,
-  SubDomainPlan,
-} from './types/domain-types';
+import type { SplittingResult, SubDomainPlan } from './types/domain-types';
 import { DependencyValidator } from './validators/dependency-validator';
 
 export class DomainSplittingOrchestrator {
@@ -28,14 +24,9 @@ export class DomainSplittingOrchestrator {
    * Execute complete domain splitting workflow
    */
   async executeDomainSplit(domainPath: string, plan?: SubDomainPlan): Promise<SplittingResult> {
-    console.log(`🎯 Starting domain splitting workflow for: ${domainPath}`);
-
     try {
       // Step 1: Analyze domain
       const analysis = await this.analyzer.analyzeDomainComplexity(domainPath);
-      console.log(
-        `📊 Analysis complete - complexity score: ${analysis.complexityScore.toFixed(2)}`
-      );
 
       // Step 2: Use provided plan or generate one
       let finalPlan = plan;
@@ -50,7 +41,6 @@ export class DomainSplittingOrchestrator {
 
       // Step 3: Add file assignments to plan based on analysis
       finalPlan = await this.enrichPlanWithFiles(finalPlan, analysis);
-      console.log(`📋 Using plan with ${finalPlan.targetSubDomains.length} sub-domains`);
 
       // Step 4: Validate plan
       const validation = await this.validator.validateNoCyclicDependencies([finalPlan]);
@@ -64,10 +54,6 @@ export class DomainSplittingOrchestrator {
       const result = await this.splitter.executeSplitting([finalPlan]);
 
       if (result.success) {
-        console.log(`✅ Domain splitting completed successfully!`);
-        console.log(`📁 Created ${result.subDomainsCreated} sub-domains`);
-        console.log(`🔄 Moved ${result.filesMoved} files`);
-        console.log(`🔗 Updated ${result.importsUpdated} import statements`);
       }
 
       return result;
@@ -81,8 +67,6 @@ export class DomainSplittingOrchestrator {
    * Analyze domain and provide recommendations
    */
   async analyzeDomain(domainPath: string) {
-    console.log(`🔍 Analyzing domain: ${domainPath}`);
-
     const analysis = await this.analyzer.analyzeDomainComplexity(domainPath);
     const plans = await this.analyzer.identifySubDomains(analysis);
 
@@ -111,8 +95,6 @@ export class DomainSplittingOrchestrator {
    * Validate an existing domain split
    */
   async validateSplit(plans: SubDomainPlan[]): Promise<any> {
-    console.log(`✅ Validating domain split`);
-
     const cyclicValidation = await this.validator.validateNoCyclicDependencies(plans);
     const apiValidation = await this.validator.ensurePublicAPIStability(plans);
     const buildValidation = await this.validator.verifyBuildIntegrity(plans);
@@ -151,21 +133,21 @@ export class DomainSplittingOrchestrator {
       files.push(...(categories['core-algorithms'] || []));
     }
     if (subdomainName.includes('models')) {
-      files.push(...(categories['models'] || []));
+      files.push(...(categories.models || []));
       files.push(...(categories['network-architectures'] || []));
     }
     if (subdomainName.includes('agents')) {
-      files.push(...(categories['agents'] || []));
+      files.push(...(categories.agents || []));
     }
     if (subdomainName.includes('coordination')) {
-      files.push(...(categories['coordination'] || []));
+      files.push(...(categories.coordination || []));
     }
     if (subdomainName.includes('wasm')) {
-      files.push(...(categories['wasm'] || []));
+      files.push(...(categories.wasm || []));
     }
     if (subdomainName.includes('bridge')) {
-      files.push(...(categories['bridge'] || []));
-      files.push(...(categories['integration'] || []));
+      files.push(...(categories.bridge || []));
+      files.push(...(categories.integration || []));
     }
 
     return files;

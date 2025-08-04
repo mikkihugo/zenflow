@@ -97,7 +97,7 @@ export class APIClient {
       client.defaults.headers.common['X-API-Key'] = this.config.apiKey;
     }
     if (this.config.bearerToken) {
-      client.defaults.headers.common['Authorization'] = `Bearer ${this.config.bearerToken}`;
+      client.defaults.headers.common.Authorization = `Bearer ${this.config.bearerToken}`;
     }
 
     // Add retry logic

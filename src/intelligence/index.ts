@@ -121,12 +121,12 @@ export const IntelligenceUtils = {
     };
 
     const systems = await Promise.all([
-      import('./adaptive-learning/pattern-recognition-engine.js'),
-      import('./adaptive-learning/learning-coordinator.js'),
-      import('./adaptive-learning/performance-optimizer.js'),
-      import('./adaptive-learning/ml-integration.js'),
-      import('./adaptive-learning/behavioral-optimization.js'),
-      import('./adaptive-learning/knowledge-evolution.js'),
+      import('./adaptive-learning/pattern-recognition-engine'),
+      import('./adaptive-learning/learning-coordinator'),
+      import('./adaptive-learning/performance-optimizer'),
+      import('./adaptive-learning/ml-integration'),
+      import('./adaptive-learning/behavioral-optimization'),
+      import('./adaptive-learning/knowledge-evolution'),
     ]);
 
     return {
@@ -146,11 +146,11 @@ export const IntelligenceUtils = {
    */
   createAdaptiveLearningSystem: async (config?: any) => {
     const { PatternRecognitionEngine } = await import(
-      './adaptive-learning/pattern-recognition-engine.js'
+      './adaptive-learning/pattern-recognition-engine'
     );
-    const { LearningCoordinator } = await import('./adaptive-learning/learning-coordinator.js');
-    const { PerformanceOptimizer } = await import('./adaptive-learning/performance-optimizer.js');
-    const { MLModelRegistry } = await import('./adaptive-learning/ml-integration.js');
+    const { LearningCoordinator } = await import('./adaptive-learning/learning-coordinator');
+    const { PerformanceOptimizer } = await import('./adaptive-learning/performance-optimizer');
+    const { MLModelRegistry } = await import('./adaptive-learning/ml-integration');
 
     const defaultConfig = {
       patternRecognition: {

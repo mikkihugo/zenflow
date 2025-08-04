@@ -10,9 +10,8 @@
  * Tests the entire lint correction system before deployment
  */
 
-import { execSync } from 'child_process';
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
-import { join } from 'path';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 class LintSystemTester {
   constructor() {
@@ -26,10 +25,10 @@ class LintSystemTester {
   /**
    * Log test memory
    */
-  logMemory(action, data) {
-    const timestamp = new Date().toISOString();
-    console.log(`🧠 [${timestamp}] MEMORY: ${this.memoryKey} - ${action}`);
-    if (data) console.log('📊 Data:', JSON.stringify(data, null, 2));
+  logMemory(_action, data) {
+    const _timestamp = new Date().toISOString();
+    if (data) {
+    }
   }
 
   /**
@@ -287,7 +286,7 @@ export class TestClass {
    * Create mock ESLint errors for testing
    */
   createMockLintErrors() {
-    const testFiles = this.createTestFiles();
+    const _testFiles = this.createTestFiles();
     const mockErrors = {
       files: new Map(),
       errorTypes: new Map(),
@@ -478,7 +477,7 @@ export class TestClass {
     };
 
     // Calculate summary
-    for (const [testName, result] of this.testResults) {
+    for (const [_testName, result] of this.testResults) {
       if (result.success) {
         report.summary.passed++;
       } else {
@@ -503,33 +502,15 @@ export class TestClass {
    * Main test execution
    */
   async run() {
-    console.log('🧪 Lint System Test Suite - Starting Comprehensive Testing');
-    console.log('🔧 Hierarchical Lint Fixing Swarm - Level 2 Specialist System Validation');
-
     this.logMemory('test-suite-start', { testDir: this.testDir });
 
     const startTime = Date.now();
 
     try {
-      // Test 1: Basic Lint Terminator
-      console.log('\n🔧 Testing Basic Lint Terminator...');
       await this.testLintTerminator();
-      console.log('✅ Basic Lint Terminator test completed');
-
-      // Test 2: Advanced Lint Fixer
-      console.log('\n🚀 Testing Advanced Lint Fixer...');
       await this.testAdvancedLintFixer();
-      console.log('✅ Advanced Lint Fixer test completed');
-
-      // Test 3: Coordination Protocol
-      console.log('\n🐝 Testing Coordination Protocol...');
       await this.testCoordinationProtocol();
-      console.log('✅ Coordination Protocol test completed');
-
-      // Test 4: Validation
-      console.log('\n🔍 Validating Fixed Files...');
       await this.validateFixedFiles();
-      console.log('✅ File validation completed');
 
       const endTime = Date.now();
       const duration = (endTime - startTime) / 1000;
@@ -542,17 +523,8 @@ export class TestClass {
       const reportFile = join(this.testDir, 'test-report.json');
       writeFileSync(reportFile, JSON.stringify(report, null, 2));
 
-      console.log('\n🎉 Lint System Test Suite Complete!');
-      console.log('📊 Test Results:');
-      console.log(`  ✅ Passed: ${report.summary.passed}`);
-      console.log(`  ❌ Failed: ${report.summary.failed}`);
-      console.log(`  ⏱️  Duration: ${duration.toFixed(2)}s`);
-      console.log(`  📄 Report: ${reportFile}`);
-
       if (report.recommendations.length > 0) {
-        console.log('\n💡 Recommendations:');
-        for (const rec of report.recommendations) {
-          console.log(`  • ${rec}`);
+        for (const _rec of report.recommendations) {
         }
       }
 
@@ -582,7 +554,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   tester
     .run()
     .then((report) => {
-      console.log('\\n✅ All tests completed successfully');
       process.exit(report.summary.failed > 0 ? 1 : 0);
     })
     .catch((error) => {

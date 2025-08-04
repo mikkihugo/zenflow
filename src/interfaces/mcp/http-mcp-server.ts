@@ -13,12 +13,12 @@
  */
 
 import { randomUUID } from 'node:crypto';
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp';
+import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp';
 import express from 'express';
 import { z } from 'zod';
-import { advancedMCPToolsManager } from './advanced-tools-registry';
-import { createLogger } from './simple-logger';
+import { createLogger } from './mcp-logger';
+import { mcpToolsManager } from './tool-registry';
 
 const logger = createLogger('SDK-HTTP-MCP-Server');
 
@@ -99,7 +99,7 @@ export class HTTPMCPServer {
     });
 
     // Request logging
-    this.expressApp.use((req, res, next) => {
+    this.expressApp.use((req, _res, next) => {
       logger.debug(`${req.method} ${req.path}`, {
         headers: req.headers,
         hasBody: !!req.body,
@@ -109,7 +109,7 @@ export class HTTPMCPServer {
     });
 
     // Health check endpoint
-    this.expressApp.get('/health', (req, res) => {
+    this.expressApp.get('/health', (_req, res) => {
       res.json({
         status: 'healthy',
         server: 'claude-zen-sdk-http-mcp',
@@ -154,9 +154,9 @@ export class HTTPMCPServer {
           const memUsage = process.memoryUsage();
           Object.assign(info, {
             memory: {
-              used: Math.round(memUsage.heapUsed / 1024 / 1024) + 'MB',
-              total: Math.round(memUsage.heapTotal / 1024 / 1024) + 'MB',
-              external: Math.round(memUsage.external / 1024 / 1024) + 'MB',
+              used: `${Math.round(memUsage.heapUsed / 1024 / 1024)}MB`,
+              total: `${Math.round(memUsage.heapTotal / 1024 / 1024)}MB`,
+              external: `${Math.round(memUsage.external / 1024 / 1024)}MB`,
             },
             cpuUsage: process.cpuUsage(),
             resourceUsage: process.resourceUsage?.() || {},
@@ -251,8 +251,8 @@ export class HTTPMCPServer {
             completed: 0,
           },
           resources: {
-            memory: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + 'MB',
-            uptime: Math.floor(process.uptime()) + 's',
+            memory: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`,
+            uptime: `${Math.floor(process.uptime())}s`,
           },
         };
 
@@ -658,7 +658,7 @@ export class HTTPMCPServer {
     this.expressApp.delete('/mcp', mcpDeleteHandler);
 
     // Capabilities endpoint for compatibility
-    this.expressApp.get('/capabilities', (req, res) => {
+    this.expressApp.get('/capabilities', (_req, res) => {
       res.json({
         protocolVersion: '2024-11-05',
         serverInfo: {
@@ -718,20 +718,6 @@ export class HTTPMCPServer {
         logger.info(`   Health: ${url}/health`);
         logger.info(`   Capabilities: ${url}/capabilities`);
         logger.info(`   MCP Endpoint: ${url}/mcp`);
-
-        console.log(`
-      🧠 Claude-Zen SDK HTTP MCP Server`);
-        console.log(`   Ready at: ${url}`);
-        console.log(`   Using: Official MCP SDK v1.17.1`);
-        console.log(`   Add to Claude Desktop MCP config:`);
-        console.log(`   {`);
-        console.log(`     "claude-zen": {`);
-        console.log(`       "command": "npx",`);
-        console.log(`       "args": ["claude-zen", "mcp", "start"]`);
-        console.log(`     }`);
-        console.log(`   }`);
-        console.log(`
-      Press Ctrl+C to stop\n`);
 
         resolve();
       });

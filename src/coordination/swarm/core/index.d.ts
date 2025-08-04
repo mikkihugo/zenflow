@@ -174,9 +174,9 @@ export declare class JsAgent {
 }
 
 /**
- * Main RuvSwarm class for neural network swarm orchestration
+ * Main ZenSwarm class for neural network swarm orchestration
  */
-export declare class RuvSwarm {
+export declare class ZenSwarm {
   /** Swarm name */
   readonly name: string;
   /** Number of active agents */
@@ -185,17 +185,17 @@ export declare class RuvSwarm {
   readonly maxAgents: number;
 
   /**
-   * Create a new RuvSwarm instance
+   * Create a new ZenSwarm instance
    * @param config Swarm configuration
    */
   constructor(config: SwarmConfig);
 
   /**
-   * Initialize RuvSwarm with WASM module
+   * Initialize ZenSwarm with WASM module
    * @param options Initialization options
-   * @returns Initialized RuvSwarm instance
+   * @returns Initialized ZenSwarm instance
    */
-  static initialize(options?: InitOptions): Promise<RuvSwarm>;
+  static initialize(options?: InitOptions): Promise<ZenSwarm>;
 
   /**
    * Detect SIMD support in the current environment

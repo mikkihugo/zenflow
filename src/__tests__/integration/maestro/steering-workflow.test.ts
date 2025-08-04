@@ -3,10 +3,10 @@
  * Tests the complete steering document workflow with real file system operations
  */
 
-import { existsSync } from 'fs';
-import { access, mkdir, readFile, rm, unlink, writeFile } from 'fs/promises';
-import { tmpdir } from 'os';
-import { join } from 'path';
+import { existsSync } from 'node:fs';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { MaestroOrchestrator } from '../../../maestro/maestro-orchestrator';
 
 describe('Maestro Steering Workflow Integration', () => {
@@ -261,7 +261,7 @@ ${steeringContext}
             .replace(/^-+|-+$/g, '');
           if (sanitizedDomain) {
             const filePath = join(testDirectory, 'steering', `${sanitizedDomain}.md`);
-            const exists = existsSync(filePath);
+            const _exists = existsSync(filePath);
             // This behavior would depend on implementation - either file exists or error was thrown
           }
         } catch (error) {
@@ -356,7 +356,7 @@ ${steeringContext}
 
   describe('agent integration workflow', () => {
     it('should track agent usage across steering document operations', async () => {
-      const initialStats = maestroOrchestrator.getAgentPoolStats();
+      const _initialStats = maestroOrchestrator.getAgentPoolStats();
 
       // Create multiple steering documents
       await maestroOrchestrator.createSteeringDocument('agent-test-1', 'Content 1');

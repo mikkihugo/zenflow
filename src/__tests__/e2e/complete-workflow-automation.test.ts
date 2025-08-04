@@ -152,7 +152,7 @@ Build a modern task management system with real-time collaboration, AI-powered i
           id: 'prd-gen-1',
           method: 'tools/call',
           params: {
-            name: 'mcp__ruv-swarm-zen__task_orchestrate',
+            name: 'mcp__zen-swarm__task_orchestrate',
             arguments: {
               task: 'Generate detailed PRDs from ADRs',
               strategy: 'sequential',
@@ -366,7 +366,7 @@ A simple task tracker application.
         id: 'stdio-workflow',
         method: 'tools/call',
         params: {
-          name: 'mcp__ruv-swarm-zen__swarm_init',
+          name: 'mcp__zen-swarm__swarm_init',
           arguments: {
             topology: 'star',
             maxAgents: 4,
@@ -465,7 +465,7 @@ A simple task tracker application.
         id: 'state-retrieve',
         method: 'tools/call',
         params: {
-          name: 'mcp__ruv-swarm-zen__memory_usage',
+          name: 'mcp__zen-swarm__memory_usage',
           arguments: {
             action: 'retrieve',
             key: `session:${sessionId}:project`,
@@ -488,7 +488,7 @@ A simple task tracker application.
         id: 'state-update',
         method: 'tools/call',
         params: {
-          name: 'mcp__ruv-swarm-zen__memory_usage',
+          name: 'mcp__zen-swarm__memory_usage',
           arguments: {
             action: 'store',
             key: `session:${sessionId}:project`,
@@ -652,7 +652,7 @@ Test workflow ${i} for concurrent execution testing.
           } else {
             performanceMetrics.httpErrors++;
           }
-        } catch (error) {
+        } catch (_error) {
           performanceMetrics.httpErrors++;
         }
 
@@ -665,7 +665,7 @@ Test workflow ${i} for concurrent execution testing.
               id: `load-test-stdio-${performanceMetrics.stdioRequests}`,
               method: 'tools/call',
               params: {
-                name: 'mcp__ruv-swarm-zen__swarm_status',
+                name: 'mcp__zen-swarm__swarm_status',
                 arguments: {},
               },
             })
@@ -678,7 +678,7 @@ Test workflow ${i} for concurrent execution testing.
           } else {
             performanceMetrics.stdioErrors++;
           }
-        } catch (error) {
+        } catch (_error) {
           performanceMetrics.stdioErrors++;
         }
 

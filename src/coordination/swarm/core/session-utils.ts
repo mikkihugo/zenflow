@@ -5,9 +5,9 @@
  * including serialization, validation, migration, and recovery.
  */
 
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import type { SessionCheckpoint, SessionState, SessionStatus } from './session-manager';
-import { AgentConfig, type SwarmOptions, type SwarmState, Task } from './types';
+import type { SwarmOptions, SwarmState } from './types';
 
 /**
  * Session validation utilities
@@ -403,7 +403,7 @@ export class SessionRecovery {
       }
 
       return true;
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }

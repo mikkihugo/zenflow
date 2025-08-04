@@ -5,23 +5,15 @@
  * Tests the full workflow: spec -> design -> tasks -> implement
  */
 
-import { mkdir, readFile, writeFile } from 'fs/promises';
-import { join } from 'path';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
 // Enhanced mock implementations
 class MockLogger {
-  info(msg: string): void {
-    console.log(`ℹ️  ${msg}`);
-  }
-  warn(msg: string): void {
-    console.log(`⚠️  ${msg}`);
-  }
-  error(msg: string): void {
-    console.log(`❌ ${msg}`);
-  }
-  debug(msg: string): void {
-    console.log(`🐛 ${msg}`);
-  }
+  info(_msg: string): void {}
+  warn(_msg: string): void {}
+  error(_msg: string): void {}
+  debug(_msg: string): void {}
 }
 
 interface AgentProfile {
@@ -36,7 +28,6 @@ class MockAgentManager {
   async createAgent(type: string, profile: AgentProfile): Promise<string> {
     const agentId = `${type}-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
     this.agents.set(agentId, { type, profile, status: 'created' });
-    console.log(`🤖 Agent created: ${agentId} (${type})`);
     return agentId;
   }
 
@@ -44,7 +35,6 @@ class MockAgentManager {
     const agent = this.agents.get(agentId);
     if (agent) {
       agent.status = 'running';
-      console.log(`▶️  Agent started: ${agentId}`);
     }
   }
 
@@ -52,7 +42,6 @@ class MockAgentManager {
     const agent = this.agents.get(agentId);
     if (agent) {
       agent.status = 'stopped';
-      console.log(`⏹️  Agent stopped: ${agentId}`);
       this.agents.delete(agentId);
     }
   }
@@ -60,25 +49,16 @@ class MockAgentManager {
 
 // Complete test workflow implementation
 async function testMaestroComplete(): Promise<void> {
-  console.log('🧪 Testing Complete Maestro Specs-Driven Workflow');
-  console.log('='.repeat(60));
-
   const logger = new MockLogger();
   const agentManager = new MockAgentManager();
 
   class TestMaestroComplete {
-    private logger: MockLogger;
-    private agentManager: MockAgentManager;
-
     constructor() {
       this.logger = logger;
       this.agentManager = agentManager;
     }
 
     async runCompleteWorkflow(featureName: string): Promise<void> {
-      console.log(`
-      🚀 Starting complete workflow for: ${featureName}`);
-
       // Step 1: Create spec
       await this.createSpec(featureName);
 
@@ -90,12 +70,9 @@ async function testMaestroComplete(): Promise<void> {
 
       // Step 4: Implement tasks
       await this.implementTasks(featureName);
-
-      console.log(`✅ Complete workflow finished for: ${featureName}`);
     }
 
     private async createSpec(featureName: string): Promise<void> {
-      console.log(`📋 Creating spec for: ${featureName}`);
       const specsDir = join(process.cwd(), 'docs', 'maestro', 'specs', featureName);
       await mkdir(specsDir, { recursive: true });
 
@@ -105,7 +82,6 @@ async function testMaestroComplete(): Promise<void> {
     }
 
     private async generateDesign(featureName: string): Promise<void> {
-      console.log(`🎨 Generating design for: ${featureName}`);
       const specsDir = join(process.cwd(), 'docs', 'maestro', 'specs', featureName);
 
       const content = `# Design for ${featureName}
@@ -114,7 +90,6 @@ async function testMaestroComplete(): Promise<void> {
     }
 
     private async generateTasks(featureName: string): Promise<void> {
-      console.log(`📋 Generating tasks for: ${featureName}`);
       const specsDir = join(process.cwd(), 'docs', 'maestro', 'specs', featureName);
 
       const content = `# Tasks for ${featureName}
@@ -125,7 +100,6 @@ async function testMaestroComplete(): Promise<void> {
     }
 
     private async implementTasks(featureName: string): Promise<void> {
-      console.log(`🔨 Implementing tasks for: ${featureName}`);
       const specsDir = join(process.cwd(), 'docs', 'maestro', 'specs', featureName);
 
       const content = `# Implementation for ${featureName}
@@ -137,9 +111,6 @@ async function testMaestroComplete(): Promise<void> {
   try {
     const maestro = new TestMaestroComplete();
     await maestro.runCompleteWorkflow('complete-test-feature');
-
-    console.log(`
-      🎉 Complete maestro test passed!`);
   } catch (error) {
     console.error(
       `

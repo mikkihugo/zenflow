@@ -21,7 +21,7 @@ describe('Simplified E2E Workflow Tests', () => {
   afterAll(async () => {
     try {
       await fsHelper.deleteDirectory(TEST_PROJECT_PATH);
-    } catch (error) {
+    } catch (_error) {
       // Ignore cleanup errors
     }
   });
@@ -140,10 +140,10 @@ Improved traceability and documentation.
 
       // Verify all documents were processed
       expect(processedDocuments.length).toBe(3);
-      
-      const visionEvent = processedDocuments.find(d => d.document.type === 'vision');
-      const adrEvent = processedDocuments.find(d => d.document.type === 'adr');
-      const prdEvent = processedDocuments.find(d => d.document.type === 'prd');
+
+      const visionEvent = processedDocuments.find((d) => d.document.type === 'vision');
+      const adrEvent = processedDocuments.find((d) => d.document.type === 'adr');
+      const prdEvent = processedDocuments.find((d) => d.document.type === 'prd');
 
       expect(visionEvent).toBeDefined();
       expect(adrEvent).toBeDefined();
@@ -197,9 +197,18 @@ Test content with metadata in the header.
 
       // Create multiple documents
       const docs = [
-        { path: `${TEST_PROJECT_PATH}/docs/01-vision/workspace-vision.md`, content: '# Workspace Vision\n\nTest workspace management.' },
-        { path: `${TEST_PROJECT_PATH}/docs/04-epics/workspace-epic.md`, content: '# Workspace Epic\n\nTest epic management.' },
-        { path: `${TEST_PROJECT_PATH}/docs/06-tasks/workspace-task.md`, content: '# Workspace Task\n\nTest task management.' },
+        {
+          path: `${TEST_PROJECT_PATH}/docs/01-vision/workspace-vision.md`,
+          content: '# Workspace Vision\n\nTest workspace management.',
+        },
+        {
+          path: `${TEST_PROJECT_PATH}/docs/04-epics/workspace-epic.md`,
+          content: '# Workspace Epic\n\nTest epic management.',
+        },
+        {
+          path: `${TEST_PROJECT_PATH}/docs/06-tasks/workspace-task.md`,
+          content: '# Workspace Task\n\nTest task management.',
+        },
       ];
 
       for (const doc of docs) {
@@ -211,7 +220,7 @@ Test content with metadata in the header.
       const workspaceDocuments = documentSystem.getWorkspaceDocuments(workspaceId);
 
       expect(workspaceDocuments.size).toBeGreaterThanOrEqual(3);
-      
+
       // Check that all documents are tracked
       const docPaths = Array.from(workspaceDocuments.keys());
       expect(docPaths).toContain(docs[0].path);
@@ -236,16 +245,14 @@ Test content with metadata in the header.
       // Create multiple documents concurrently
       const concurrentDocs = Array.from({ length: 5 }, (_, i) => ({
         path: `${TEST_PROJECT_PATH}/docs/06-tasks/concurrent-task-${i}.md`,
-        content: `# Concurrent Task ${i}\n\nTask ${i} for concurrent processing test.`
+        content: `# Concurrent Task ${i}\n\nTask ${i} for concurrent processing test.`,
       }));
 
       // Write all files
-      await Promise.all(concurrentDocs.map(doc => 
-        fsHelper.createFile(doc.path, doc.content)
-      ));
+      await Promise.all(concurrentDocs.map((doc) => fsHelper.createFile(doc.path, doc.content)));
 
       // Process all documents concurrently
-      const processingPromises = concurrentDocs.map(doc =>
+      const processingPromises = concurrentDocs.map((doc) =>
         documentSystem.processVisionaryDocument(workspaceId, doc.path)
       );
 
@@ -256,11 +263,12 @@ Test content with metadata in the header.
 
       // Verify workspace state is consistent
       const workspaceDocuments = documentSystem.getWorkspaceDocuments(workspaceId);
-      const taskDocs = Array.from(workspaceDocuments.values())
-        .filter(doc => doc.path.includes('concurrent-task'));
+      const taskDocs = Array.from(workspaceDocuments.values()).filter((doc) =>
+        doc.path.includes('concurrent-task')
+      );
 
       expect(taskDocs.length).toBe(5);
-      
+
       // Verify each document is correctly typed and contains expected content
       taskDocs.forEach((doc, index) => {
         expect(doc.type).toBe('task');
@@ -286,7 +294,7 @@ Demonstrate efficient end-to-end workflow processing.
 - Fast document processing
 - Minimal resource usage
 - Reliable workflow execution
-`
+`,
         },
         {
           path: `${TEST_PROJECT_PATH}/docs/02-adrs/efficient-adr.md`,
@@ -298,7 +306,7 @@ Implement streamlined document processing pipeline.
 
 ## Rationale
 Optimize for speed and reliability.
-`
+`,
         },
         {
           path: `${TEST_PROJECT_PATH}/docs/03-prds/efficient-prd.md`,
@@ -314,7 +322,7 @@ Optimize for speed and reliability.
 - Processing time < 1000ms
 - Memory usage < 50MB
 - Zero processing errors
-`
+`,
         },
         {
           path: `${TEST_PROJECT_PATH}/docs/04-epics/efficient-epic.md`,
@@ -328,7 +336,7 @@ Achieve optimal workflow processing performance.
 - Optimized parsing
 - Efficient memory usage
 - Fast metadata extraction
-`
+`,
         },
         {
           path: `${TEST_PROJECT_PATH}/docs/05-features/efficient-feature.md`,
@@ -342,7 +350,7 @@ Streamlined document processing with minimal overhead.
 - Parse time: <100ms
 - Memory: <10MB per document
 - Throughput: >50 docs/sec
-`
+`,
         },
         {
           path: `${TEST_PROJECT_PATH}/docs/06-tasks/efficient-task.md`,
@@ -356,14 +364,14 @@ Optimize document processing pipeline for maximum throughput.
 - Optimized parser
 - Memory management
 - Performance monitoring
-`
-        }
+`,
+        },
       ];
 
       let processedCount = 0;
       const processingTimes: number[] = [];
 
-      documentSystem.on('document:processed', (event) => {
+      documentSystem.on('document:processed', (_event) => {
         processedCount++;
         processingTimes.push(Date.now() - startTime);
       });
@@ -374,7 +382,7 @@ Optimize document processing pipeline for maximum throughput.
         const docStartTime = Date.now();
         await documentSystem.processVisionaryDocument(workspaceId, doc.path);
         const docProcessingTime = Date.now() - docStartTime;
-        
+
         // Each document should process quickly
         expect(docProcessingTime).toBeLessThan(1000); // Less than 1 second
       }
@@ -386,14 +394,13 @@ Optimize document processing pipeline for maximum throughput.
       expect(totalTime).toBeLessThan(10000); // Complete workflow under 10 seconds
 
       // Verify average processing time
-      const avgProcessingTime = processingTimes.reduce((sum, time) => sum + time, 0) / processingTimes.length;
+      const avgProcessingTime =
+        processingTimes.reduce((sum, time) => sum + time, 0) / processingTimes.length;
       expect(avgProcessingTime).toBeLessThan(5000); // Average under 5 seconds
 
       // Verify workspace final state
       const finalDocuments = documentSystem.getWorkspaceDocuments(workspaceId);
       expect(finalDocuments.size).toBeGreaterThanOrEqual(6);
-
-      console.log(`Workflow Performance: ${totalTime}ms total, ${avgProcessingTime.toFixed(2)}ms average, ${processedCount} documents`);
     });
   });
 });

@@ -144,7 +144,7 @@ export function createWasmModuleSpy() {
  * @param {Object} imports - Import object (ignored in mock)
  * @returns {Promise<Object>} Mock WASM instance
  */
-export async function mockInstantiateWasm(wasmPath, imports) {
+export async function mockInstantiateWasm(_wasmPath, _imports) {
   return {
     instance: {
       exports: createMockWasmModule(),

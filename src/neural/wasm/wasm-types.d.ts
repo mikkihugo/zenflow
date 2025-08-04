@@ -13,8 +13,8 @@ export interface WASMExports {
   };
 
   // Swarm class
-  RuvSwarm: {
-    new (config: any): RuvSwarm;
+  ZenSwarm: {
+    new (config: any): ZenSwarm;
   };
 
   // Agent class
@@ -41,7 +41,7 @@ export interface RuntimeFeatures {
   get_features_json(): string;
 }
 
-export interface RuvSwarm {
+export interface ZenSwarm {
   readonly name: string;
   readonly agent_count: number;
   readonly max_agents: number;

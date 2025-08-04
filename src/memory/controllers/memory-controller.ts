@@ -129,9 +129,9 @@ export class MemoryController {
   };
 
   constructor(
-    @Inject(MEMORY_TOKENS.ProviderFactory) private factory: MemoryProviderFactory,
-    @Inject(MEMORY_TOKENS.Config) private config: MemoryConfig,
-    @Inject(CORE_TOKENS.Logger) private logger: ILogger
+    @Inject(MEMORY_TOKENS.ProviderFactory) private _factory: MemoryProviderFactory,
+    @Inject(MEMORY_TOKENS.Config) private _config: MemoryConfig,
+    @Inject(CORE_TOKENS.Logger) private _logger: ILogger
   ) {
     this.initializeBackend();
   }

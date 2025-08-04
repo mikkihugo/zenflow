@@ -18,11 +18,11 @@
  *   --ci                Run in CI mode (faster, less detailed)
  */
 
-import { spawn } from 'child_process';
-import { promises as fs } from 'fs';
-import os from 'os';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
+import { spawn } from 'node:child_process';
+import { promises as fs } from 'node:fs';
+import os from 'node:os';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -109,11 +109,6 @@ class TestRunner {
   }
 
   async runTest(testSuite) {
-    console.log(`\n🚀 Running ${testSuite.name}...`);
-    console.log(`   File: ${testSuite.file}`);
-    console.log(`   Categories: ${testSuite.categories.join(', ')}`);
-    console.log(`   Timeout: ${testSuite.timeout / 1000}s`);
-
     const startTime = Date.now();
     const testPath = join(__dirname, testSuite.file);
 
@@ -179,11 +174,8 @@ class TestRunner {
         this.results.set(testSuite.id, result);
 
         if (result.success) {
-          console.log(`   ✅ Passed in ${duration}ms`);
         } else {
-          console.log(`   ❌ Failed with exit code ${code} in ${duration}ms`);
           if (!this.options.verbose && stderr) {
-            console.log('   Error output:', stderr.slice(-500)); // Last 500 chars
           }
         }
 
@@ -224,21 +216,8 @@ class TestRunner {
   }
 
   async runAllTests() {
-    console.log('🧪 Issue #137 Test Runner - Session Persistence and Recovery');
-    console.log('=============================================================');
-    console.log(`Start time: ${new Date().toISOString()}`);
-    console.log(`Node.js: ${process.version}`);
-    console.log(`Platform: ${os.platform()} ${os.arch()}`);
-    console.log(`CPUs: ${os.cpus().length}`);
-    console.log(`Memory: ${(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)}GB`);
-
     const suitesToRun = this.filterTestSuites();
-    console.log(`\nRunning ${suitesToRun.length} test suite(s):`);
-    suitesToRun.forEach((suite) => {
-      console.log(`  - ${suite.name} (${suite.categories.join(', ')})`);
-    });
-
-    console.log('\n' + '='.repeat(60));
+    suitesToRun.forEach((_suite) => {});
 
     // Run tests based on priority
     const sortedSuites = suitesToRun.sort((a, b) => a.priority - b.priority);
@@ -247,7 +226,6 @@ class TestRunner {
       const result = await this.runTest(suite);
 
       if (!result.success && !this.options.ci) {
-        console.log(`\n⚠️  ${suite.name} failed. Continue? (y/N)`);
         // In a real implementation, you might want to prompt user
         // For now, continue with all tests
       }
@@ -373,42 +351,17 @@ class TestRunner {
   }
 
   printSummary(summary) {
-    console.log('\n' + '='.repeat(60));
-    console.log('📊 TEST EXECUTION SUMMARY');
-    console.log('='.repeat(60));
-    console.log(`Total Duration: ${(summary.totalDuration / 1000).toFixed(2)}s`);
-    console.log(`Test Suites: ${summary.testSuitesRun} run`);
-    console.log(`Success Rate: ${summary.successRate.toFixed(2)}%`);
-    console.log(`Successful: ${summary.successful}`);
-    console.log(`Failed: ${summary.failed}`);
-
     if (summary.coverage.statements > 0) {
-      console.log('\n📈 COVERAGE SUMMARY:');
-      console.log(`Statements: ${summary.coverage.statements.toFixed(2)}%`);
-      console.log(`Branches: ${summary.coverage.branches.toFixed(2)}%`);
-      console.log(`Functions: ${summary.coverage.functions.toFixed(2)}%`);
-      console.log(`Lines: ${summary.coverage.lines.toFixed(2)}%`);
     }
-
-    console.log('\n📋 TEST RESULTS:');
     summary.results.forEach((result) => {
-      const status = result.success ? '✅' : '❌';
-      const duration = (result.duration / 1000).toFixed(2);
-      console.log(`  ${status} ${result.name} (${duration}s)`);
+      const _status = result.success ? '✅' : '❌';
+      const _duration = (result.duration / 1000).toFixed(2);
     });
-
-    console.log('\n💡 RECOMMENDATIONS:');
-    summary.recommendations.forEach((rec) => {
-      console.log(`  • ${rec}`);
-    });
+    summary.recommendations.forEach((_rec) => {});
 
     if (summary.failed === 0) {
-      console.log('\n🎉 ALL TESTS PASSED! Session persistence system is ready for production.');
     } else {
-      console.log('\n⚠️  Some tests failed. Please review the errors before deploying.');
     }
-
-    console.log('\n' + '='.repeat(60));
   }
 
   async generateHTMLReport(summary) {
@@ -517,7 +470,6 @@ class TestRunner {
     try {
       await fs.mkdir(join(__dirname, '..', 'test-reports'), { recursive: true });
       await fs.writeFile(reportPath, htmlReport);
-      console.log(`\n📄 HTML Report generated: ${reportPath}`);
     } catch (error) {
       console.error('Failed to generate HTML report:', error.message);
     }

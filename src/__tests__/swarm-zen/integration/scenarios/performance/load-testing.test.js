@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
-const os = require('os');
-const RuvSwarm = require('../../../../src/core/ruv-swarm');
+const _os = require('node:os');
+const ZenSwarm = require('../../../../src/core/ruv-swarm');
 const PerformanceMonitor = require('../../../../src/performance-monitor');
 
 describe('Performance Under Load Integration Tests', () => {
@@ -25,7 +25,7 @@ describe('Performance Under Load Integration Tests', () => {
     it('should handle 100+ agents efficiently', async function () {
       this.timeout(60000); // 60 second timeout
 
-      swarm = new RuvSwarm();
+      swarm = new ZenSwarm();
       await swarm.init({
         topology: 'hierarchical',
         maxAgents: 150,
@@ -107,7 +107,7 @@ describe('Performance Under Load Integration Tests', () => {
     it('should maintain response times under heavy load', async function () {
       this.timeout(30000);
 
-      swarm = new RuvSwarm();
+      swarm = new ZenSwarm();
       await swarm.init({
         topology: 'mesh',
         maxAgents: 50,
@@ -132,7 +132,7 @@ describe('Performance Under Load Integration Tests', () => {
         performanceMonitor.startTracking(`load-${load}`);
 
         const requests = [];
-        const startTime = Date.now();
+        const _startTime = Date.now();
 
         // Send concurrent requests
         for (let i = 0; i < load; i++) {
@@ -170,7 +170,7 @@ describe('Performance Under Load Integration Tests', () => {
     it('should scale dynamically based on load', async function () {
       this.timeout(30000);
 
-      swarm = new RuvSwarm();
+      swarm = new ZenSwarm();
       await swarm.init({
         topology: 'elastic',
         initialAgents: 5,
@@ -236,7 +236,7 @@ describe('Performance Under Load Integration Tests', () => {
     it('should maintain stable memory under sustained load', async function () {
       this.timeout(45000);
 
-      swarm = new RuvSwarm();
+      swarm = new ZenSwarm();
       await swarm.init({
         topology: 'mesh',
         maxAgents: 20,
@@ -259,7 +259,7 @@ describe('Performance Under Load Integration Tests', () => {
       }, 1000);
 
       // Create agents
-      const agents = await Promise.all(
+      const _agents = await Promise.all(
         Array(20)
           .fill()
           .map(() => swarm.spawnAgent({ type: 'coder' }))
@@ -319,7 +319,7 @@ describe('Performance Under Load Integration Tests', () => {
     it('should efficiently handle large data processing', async function () {
       this.timeout(30000);
 
-      swarm = new RuvSwarm();
+      swarm = new ZenSwarm();
       await swarm.init({
         topology: 'hierarchical',
         maxAgents: 10,
@@ -330,7 +330,7 @@ describe('Performance Under Load Integration Tests', () => {
       });
 
       // Create specialized agents
-      const agents = await Promise.all([
+      const _agents = await Promise.all([
         swarm.spawnAgent({ type: 'coder', specialization: 'data-processing' }),
         swarm.spawnAgent({ type: 'analyst', specialization: 'aggregation' }),
         swarm.spawnAgent({ type: 'optimizer', specialization: 'compression' }),
@@ -381,7 +381,7 @@ describe('Performance Under Load Integration Tests', () => {
     it('should handle mixed workload efficiently', async function () {
       this.timeout(30000);
 
-      swarm = new RuvSwarm();
+      swarm = new ZenSwarm();
       await swarm.init({
         topology: 'mesh',
         maxAgents: 30,
@@ -392,7 +392,7 @@ describe('Performance Under Load Integration Tests', () => {
       });
 
       // Create diverse agent pool
-      const agents = await Promise.all([
+      const _agents = await Promise.all([
         ...Array(10)
           .fill()
           .map(() => swarm.spawnAgent({ type: 'coder', weight: 3 })),
@@ -493,7 +493,7 @@ describe('Performance Under Load Integration Tests', () => {
     it('should optimize throughput with pipelining', async function () {
       this.timeout(30000);
 
-      swarm = new RuvSwarm();
+      swarm = new ZenSwarm();
       await swarm.init({
         topology: 'pipeline',
         stages: [
@@ -581,7 +581,7 @@ describe('Performance Under Load Integration Tests', () => {
       const initialHandles = process._getActiveHandles().length;
       const initialRequests = process._getActiveRequests().length;
 
-      swarm = new RuvSwarm();
+      swarm = new ZenSwarm();
       await swarm.init({
         topology: 'mesh',
         maxAgents: 50,
@@ -592,7 +592,7 @@ describe('Performance Under Load Integration Tests', () => {
       });
 
       // Stress test
-      const agents = await Promise.all(
+      const _agents = await Promise.all(
         Array(50)
           .fill()
           .map(() => swarm.spawnAgent({ type: 'coder' }))

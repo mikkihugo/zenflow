@@ -91,7 +91,7 @@ const generateTraceId = (): string => {
  * Determine error code from HTTP status code
  * Maps status codes to standardized error codes
  */
-const getErrorCodeFromStatus = (statusCode: number): string => {
+const _getErrorCodeFromStatus = (statusCode: number): string => {
   switch (statusCode) {
     case 400:
       return ErrorCodes.BAD_REQUEST;
@@ -132,7 +132,7 @@ export const errorHandler: ErrorRequestHandler = (
   error: Error | APIError,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   const traceId = generateTraceId();
 

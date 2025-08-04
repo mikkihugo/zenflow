@@ -18,11 +18,7 @@ import { CollaborativeReasoningEngine } from './collaborative-reasoning-engine';
 import { CollectiveIntelligenceCoordinator } from './collective-intelligence-coordinator';
 import { DistributedLearningSystem } from './distributed-learning-system';
 import { IntelligenceCoordinationSystem } from './intelligence-coordination-system';
-import type { KnowledgeProcessor } from './knowledge-processor';
 import { KnowledgeQualityManagementSystem } from './knowledge-quality-management';
-import type { KnowledgeStorage } from './knowledge-storage';
-// Import existing knowledge systems for integration
-import type { KnowledgeSwarm } from './knowledge-swarm';
 import { PerformanceOptimizationSystem } from './performance-optimization-system';
 
 /**
@@ -135,11 +131,6 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
   private qualityManagement: KnowledgeQualityManagementSystem;
   private performanceOptimization: PerformanceOptimizationSystem;
 
-  // Existing Knowledge Systems (for integration)
-  private knowledgeSwarm?: KnowledgeSwarm;
-  private knowledgeProcessor?: KnowledgeProcessor;
-  private knowledgeStorage?: KnowledgeStorage;
-
   // Integration State
   private isInitialized = false;
   private componentStatus = new Map<string, ComponentHealth>();
@@ -213,7 +204,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
     try {
       this.logger.info('Processing knowledge query collectively', {
         processingId,
-        query: query.content.substring(0, 100) + '...',
+        query: `${query.content.substring(0, 100)}...`,
         options,
       });
 
@@ -584,16 +575,16 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
 
   // Additional utility methods...
   private async gatherFactsCollectively(
-    query: KnowledgeQuery,
-    options: CollectiveProcessingOptions
+    _query: KnowledgeQuery,
+    _options: CollectiveProcessingOptions
   ): Promise<any> {
     return { count: 0, facts: [] };
   }
 
   private async enhanceWithRAG(
-    query: KnowledgeQuery,
-    factResults: any,
-    options: CollectiveProcessingOptions
+    _query: KnowledgeQuery,
+    _factResults: any,
+    _options: CollectiveProcessingOptions
   ): Promise<any> {
     return { count: 0, results: [] };
   }

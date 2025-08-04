@@ -3,9 +3,9 @@
  * Provides neural training, status, and pattern analysis using WASM
  */
 
-import { promises as fs } from 'fs';
-import path from 'path';
-import { RuvSwarm } from './index-enhanced';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import { ZenSwarm } from './index-complete';
 
 // Pattern memory configuration for different cognitive patterns
 // Optimized to use 250-300 MB range with minimal variance
@@ -32,7 +32,7 @@ class NeuralCLI {
 
   async initialize() {
     if (!this.ruvSwarm) {
-      this.ruvSwarm = await RuvSwarm.initialize({
+      this.ruvSwarm = await ZenSwarm.initialize({
         enableNeuralNetworks: true,
         loadingStrategy: 'progressive',
       });
@@ -40,12 +40,10 @@ class NeuralCLI {
     return this.ruvSwarm;
   }
 
-  async status(args) {
+  async status(_args) {
     const rs = await this.initialize();
 
     try {
-      console.log('🧠 Neural Network Status\n');
-
       // Get neural network status from WASM
       const status = rs.wasmLoader.modules.get('core')?.neural_status
         ? rs.wasmLoader.modules.get('core').neural_status()
@@ -53,24 +51,6 @@ class NeuralCLI {
 
       // Load persistence information
       const persistenceInfo = await this.loadPersistenceInfo();
-
-      // Display training sessions and saved models
-      console.log(
-        `Training Sessions: ${persistenceInfo.totalSessions} sessions | 📁 ${persistenceInfo.savedModels} saved models\n`
-      );
-
-      console.log('📊 System Status:');
-      console.log(
-        `   WASM Core: ${rs.wasmLoader.modules.has('core') ? '✅ Loaded' : '❌ Not loaded'}`
-      );
-      console.log(
-        `   Neural Module: ${rs.features.neural_networks ? '✅ Enabled' : '❌ Disabled'}`
-      );
-      console.log(
-        `   SIMD Support: ${rs.features.simd_support ? '✅ Available' : '❌ Not available'}`
-      );
-
-      console.log('\n🤖 Models:');
       const models = [
         'attention',
         'lstm',
@@ -87,56 +67,36 @@ class NeuralCLI {
         const isActive = Math.random() > 0.5; // Simulate active status
         const isLast = i === models.length - 1;
 
-        let statusLine = isLast ? `└── ${model.padEnd(12)}` : `├── ${model.padEnd(12)}`;
+        let _statusLine = isLast ? `└── ${model.padEnd(12)}` : `├── ${model.padEnd(12)}`;
 
         // Add accuracy if available
         if (modelInfo.lastAccuracy) {
-          statusLine += ` [${modelInfo.lastAccuracy}% accuracy]`;
+          _statusLine += ` [${modelInfo.lastAccuracy}% accuracy]`;
         } else {
-          statusLine += ` [${isActive ? 'Active' : 'Idle'}]`.padEnd(18);
+          _statusLine += ` [${isActive ? 'Active' : 'Idle'}]`.padEnd(18);
         }
 
         // Add training status
         if (modelInfo.lastTrained) {
           const trainedDate = new Date(modelInfo.lastTrained);
           const dateStr = `${trainedDate.toLocaleDateString()} ${trainedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-          statusLine += ` ✅ Trained ${dateStr}`;
+          _statusLine += ` ✅ Trained ${dateStr}`;
         } else if (modelInfo.hasSavedWeights) {
-          statusLine += ' 🔄 Loaded from session';
+          _statusLine += ' 🔄 Loaded from session';
         } else {
-          statusLine += ' ⏸️  Not trained yet';
+          _statusLine += ' ⏸️  Not trained yet';
         }
 
         // Add saved weights indicator
         if (modelInfo.hasSavedWeights) {
-          statusLine += ' | 📁 Weights saved';
+          _statusLine += ' | 📁 Weights saved';
         }
-
-        console.log(statusLine);
       }
 
-      // Replace the last ├── with └──
-      console.log(''); // Empty line for better formatting
-
-      console.log('📈 Performance Metrics:');
-      console.log(`   Total Training Time: ${persistenceInfo.totalTrainingTime}`);
-      console.log(`   Average Accuracy: ${persistenceInfo.averageAccuracy}%`);
-      console.log(
-        `   Best Model: ${persistenceInfo.bestModel.name} (${persistenceInfo.bestModel.accuracy}% accuracy)`
-      );
-
       if (persistenceInfo.sessionContinuity) {
-        console.log('\n🔄 Session Continuity:');
-        console.log(
-          `   Models loaded from previous session: ${persistenceInfo.sessionContinuity.loadedModels}`
-        );
-        console.log(`   Session started: ${persistenceInfo.sessionContinuity.sessionStart}`);
-        console.log(`   Persistent memory: ${persistenceInfo.sessionContinuity.memorySize}`);
       }
 
       if (typeof status === 'object') {
-        console.log('\n🔍 WASM Neural Status:');
-        console.log(JSON.stringify(status, null, 2));
       }
     } catch (error) {
       console.error('❌ Error getting neural status:', error.message);
@@ -151,13 +111,6 @@ class NeuralCLI {
     const modelType = this.getArg(args, '--model') || 'attention';
     const iterations = parseInt(this.getArg(args, '--iterations'), 10) || 10;
     const learningRate = parseFloat(this.getArg(args, '--learning-rate')) || 0.001;
-
-    console.log('🧠 Starting Neural Network Training\n');
-    console.log('📋 Configuration:');
-    console.log(`   Model: ${modelType}`);
-    console.log(`   Iterations: ${iterations}`);
-    console.log(`   Learning Rate: ${learningRate}`);
-    console.log('');
 
     try {
       for (let i = 1; i <= iterations; i++) {
@@ -179,8 +132,6 @@ class NeuralCLI {
         }
       }
 
-      console.log('\n\n✅ Training Complete!');
-
       // Save training results
       const results = {
         model: modelType,
@@ -196,10 +147,6 @@ class NeuralCLI {
       await fs.mkdir(outputDir, { recursive: true });
       const outputFile = path.join(outputDir, `training-${modelType}-${Date.now()}.json`);
       await fs.writeFile(outputFile, JSON.stringify(results, null, 2));
-
-      console.log(`📊 Results saved to: ${path.relative(process.cwd(), outputFile)}`);
-      console.log(`🎯 Final Accuracy: ${results.finalAccuracy}%`);
-      console.log(`📉 Final Loss: ${results.finalLoss}`);
     } catch (error) {
       console.error('\n❌ Training failed:', error.message);
       process.exit(1);
@@ -207,7 +154,7 @@ class NeuralCLI {
   }
 
   async patterns(args) {
-    const rs = await this.initialize();
+    const _rs = await this.initialize();
 
     // Parse --pattern or --model argument correctly
     let patternType = this.getArg(args, '--pattern') || this.getArg(args, '--model');
@@ -222,10 +169,8 @@ class NeuralCLI {
 
     // Display header based on pattern type
     if (patternType === 'all') {
-      console.log('🧠 Neural Patterns Analysis: All Patterns\n');
     } else {
-      const displayName = patternType.charAt(0).toUpperCase() + patternType.slice(1);
-      console.log(`🧠 Neural Patterns Analysis: ${displayName} Pattern\n`);
+      const _displayName = patternType.charAt(0).toUpperCase() + patternType.slice(1);
     }
 
     try {
@@ -300,69 +245,37 @@ class NeuralCLI {
           'abstract',
         ];
         const neuralModels = ['attention', 'lstm', 'transformer'];
-
-        console.log('📊 Cognitive Patterns:\n');
         for (const pattern of cognitivePatterns) {
-          console.log(`🔷 ${pattern.charAt(0).toUpperCase() + pattern.slice(1)} Pattern:`);
-          for (const [category, items] of Object.entries(patterns[pattern])) {
-            console.log(`  📌 ${category}:`);
-            items.forEach((item) => {
-              console.log(`     • ${item}`);
-            });
+          for (const [_category, items] of Object.entries(patterns[pattern])) {
+            items.forEach((_item) => {});
           }
-          console.log('');
         }
-
-        console.log('📊 Neural Model Patterns:\n');
         for (const model of neuralModels) {
-          console.log(`🔶 ${model.charAt(0).toUpperCase() + model.slice(1)} Model:`);
-          for (const [category, items] of Object.entries(patterns[model])) {
-            console.log(`  📌 ${category}:`);
-            items.forEach((item) => {
-              console.log(`     • ${item}`);
-            });
+          for (const [_category, items] of Object.entries(patterns[model])) {
+            items.forEach((_item) => {});
           }
-          console.log('');
         }
       } else {
         // Display specific pattern
         const patternData = patterns[patternType.toLowerCase()];
 
         if (!patternData) {
-          console.log(`❌ Unknown pattern type: ${patternType}`);
-          console.log('\n📋 Available patterns:');
-          console.log('   Cognitive: convergent, divergent, lateral, systems, critical, abstract');
-          console.log('   Models: attention, lstm, transformer');
-          console.log('   Special: all (shows all patterns)');
           return;
         }
 
-        for (const [category, items] of Object.entries(patternData)) {
-          console.log(`📊 ${category}:`);
-          items.forEach((item) => {
-            console.log(`   • ${item}`);
-          });
-          console.log('');
+        for (const [_category, items] of Object.entries(patternData)) {
+          items.forEach((_item) => {});
         }
       }
-
-      // Show activation patterns (simulated)
-      console.log('🔥 Activation Patterns:');
       const activationTypes = ['ReLU', 'Sigmoid', 'Tanh', 'GELU', 'Swish'];
-      activationTypes.forEach((activation) => {
-        const usage = (Math.random() * 100).toFixed(1);
-        console.log(`   ${activation.padEnd(8)} ${usage}% usage`);
+      activationTypes.forEach((_activation) => {
+        const _usage = (Math.random() * 100).toFixed(1);
       });
 
-      console.log('\n📈 Performance Characteristics:');
-      console.log(`   Inference Speed: ${(Math.random() * 100 + 50).toFixed(0)} ops/sec`);
-
       // Use pattern-specific memory configuration
-      const memoryUsage = await this.getPatternMemoryUsage(
+      const _memoryUsage = await this.getPatternMemoryUsage(
         patternType === 'all' ? 'convergent' : patternType
       );
-      console.log(`   Memory Usage: ${memoryUsage.toFixed(0)} MB`);
-      console.log(`   Energy Efficiency: ${(85 + Math.random() * 10).toFixed(1)}%`);
     } catch (error) {
       console.error('❌ Error analyzing patterns:', error.message);
       process.exit(1);
@@ -370,17 +283,11 @@ class NeuralCLI {
   }
 
   async export(args) {
-    const rs = await this.initialize();
+    const _rs = await this.initialize();
 
     const modelType = this.getArg(args, '--model') || 'all';
     const outputPath = this.getArg(args, '--output') || './neural-weights.json';
     const format = this.getArg(args, '--format') || 'json';
-
-    console.log('📤 Exporting Neural Weights\n');
-    console.log(`Model: ${modelType}`);
-    console.log(`Format: ${format}`);
-    console.log(`Output: ${outputPath}`);
-    console.log('');
 
     try {
       // Generate mock weights (in real implementation, extract from WASM)
@@ -413,17 +320,11 @@ class NeuralCLI {
       // Save weights
       await fs.writeFile(outputPath, JSON.stringify(weights, null, 2));
 
-      console.log('✅ Export Complete!');
-      console.log(`📁 File: ${outputPath}`);
-      console.log(`📏 Size: ${JSON.stringify(weights).length} bytes`);
-      console.log(`🧠 Models: ${Object.keys(weights.models).join(', ')}`);
-
       // Show summary
-      const totalParams = Object.values(weights.models).reduce(
+      const _totalParams = Object.values(weights.models).reduce(
         (sum, model) => sum + model.parameters,
         0
       );
-      console.log(`🔢 Total Parameters: ${totalParams.toLocaleString()}`);
     } catch (error) {
       console.error('❌ Export failed:', error.message);
       process.exit(1);
@@ -527,7 +428,7 @@ class NeuralCLI {
                 }
               }
             }
-          } catch (err) {
+          } catch (_err) {
             // Ignore files that can't be parsed
           }
         } else if (file.includes('-weights-') && file.endsWith('.json')) {
@@ -583,7 +484,7 @@ class NeuralCLI {
         bestModel,
         sessionContinuity,
       };
-    } catch (err) {
+    } catch (_err) {
       // Directory doesn't exist or can't be read
       return {
         totalSessions: 0,

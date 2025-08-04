@@ -5,10 +5,10 @@
  * Comprehensive metrics collection for post-fix evaluation
  */
 
-import { spawn } from 'child_process';
-import fs from 'fs/promises';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { spawn } from 'node:child_process';
+import fs from 'node:fs/promises';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -40,7 +40,6 @@ class PerformanceAnalyzer {
   }
 
   async testModuleWarnings() {
-    console.log('🔍 Testing Module Warning Fixes...');
     const result = await this.runCommand('npx', ['ruv-swarm', 'neural', 'status']);
 
     const hasModuleWarning = result.error.includes('MODULE_TYPELESS_PACKAGE_JSON');
@@ -59,8 +58,6 @@ class PerformanceAnalyzer {
   }
 
   async testNeuralPerformance() {
-    console.log('🧠 Testing Neural Performance...');
-
     // Test training performance
     const trainStart = Date.now();
     const trainResult = await this.runCommand('npx', [
@@ -103,8 +100,6 @@ class PerformanceAnalyzer {
   }
 
   async testBenchmarks() {
-    console.log('📊 Running Comprehensive Benchmarks...');
-
     const benchResult = await this.runCommand('npx', [
       'ruv-swarm',
       'benchmark',
@@ -134,8 +129,6 @@ class PerformanceAnalyzer {
   }
 
   async testPersistence() {
-    console.log('💾 Testing Persistence Functionality...');
-
     // Test session save
     const sessionId = `test-${Date.now()}`;
     const saveResult = await this.runCommand('npx', [
@@ -179,8 +172,6 @@ class PerformanceAnalyzer {
   }
 
   async testInputValidation() {
-    console.log('🛡️ Testing Input Validation...');
-
     // Test with invalid inputs
     const invalidTests = [
       { cmd: 'npx ruv-swarm neural train --iterations -5', expectError: true },
@@ -207,8 +198,6 @@ class PerformanceAnalyzer {
   }
 
   async analyzeImprovements() {
-    console.log('📈 Analyzing v0.2.1 Improvements...');
-
     // Compare with v0.2.0 baseline (simulated)
     const v020Baseline = {
       neuralAccuracy: 85.0,
@@ -252,8 +241,6 @@ class PerformanceAnalyzer {
   }
 
   async generateReport() {
-    console.log('📝 Generating Comprehensive Report...');
-
     const report = `# ruv-swarm v0.2.1 Performance Analysis Report
 
 Generated: ${this.results.timestamp}
@@ -358,15 +345,10 @@ The system is now more robust, with ${(this.results.metrics.inputValidation?.sco
       JSON.stringify(this.results, null, 2)
     );
 
-    console.log('✅ Report generated: v0.2.1-performance-report.md');
-    console.log('📊 Raw data saved: v0.2.1-performance-data.json');
-
     return report;
   }
 
   async run() {
-    console.log('🚀 Starting v0.2.1 Performance Analysis...\n');
-
     try {
       await this.testModuleWarnings();
       await this.testNeuralPerformance();
@@ -375,15 +357,7 @@ The system is now more robust, with ${(this.results.metrics.inputValidation?.sco
       await this.testInputValidation();
       await this.analyzeImprovements();
 
-      const report = await this.generateReport();
-
-      console.log('\n✅ Analysis Complete!');
-      console.log('\n📊 Summary:');
-      console.log(`- Neural Accuracy: ${this.results.metrics.neuralTraining?.accuracy}%`);
-      console.log(`- Benchmark Score: ${this.results.metrics.benchmarks?.overallScore}%`);
-      console.log(
-        `- Fixes Applied: ${this.results.fixes.filter((f) => f.fixed).length}/${this.results.fixes.length}`
-      );
+      const _report = await this.generateReport();
     } catch (error) {
       console.error('❌ Analysis failed:', error);
       process.exit(1);

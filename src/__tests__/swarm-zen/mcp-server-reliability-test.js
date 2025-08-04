@@ -5,20 +5,13 @@
  * Comprehensive testing for MCP server startup and operation
  */
 
-import { spawn } from 'child_process';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { spawn } from 'node:child_process';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-console.log('================================================');
-console.log('ruv-swarm MCP Server Reliability Test v1.0.13');
-console.log('================================================');
-console.log(`Date: ${new Date().toISOString()}`);
-console.log(`Node Version: ${process.version}`);
-console.log('');
 
 const results = {
   testSuite: 'mcp-server-reliability',
@@ -55,16 +48,10 @@ function addTestResult(name, status, message, error = null, duration = null) {
   if (status === 'failed') {
     results.summary.failed++;
   }
-  console.log(
-    `${status === 'passed' ? '✅' : '❌'} ${name}: ${message}${duration ? ` (${duration}ms)` : ''}`
-  );
 }
 
 // Enhanced server startup test with detailed diagnostics
 async function testServerStartup() {
-  console.log('1. Testing Server Startup Reliability');
-  console.log('====================================');
-
   const startTime = Date.now();
   let serverReady = false;
   const initializationLogs = [];
@@ -78,13 +65,11 @@ async function testServerStartup() {
     mcpProcess.stdout.on('data', (data) => {
       const output = data.toString();
       initializationLogs.push({ type: 'stdout', data: output.trim(), timestamp: Date.now() });
-      console.log('  📤 stdout:', output.trim());
     });
 
     mcpProcess.stderr.on('data', (data) => {
       const output = data.toString();
       initializationLogs.push({ type: 'stderr', data: output.trim(), timestamp: Date.now() });
-      console.log('  📥 stderr:', output.trim());
 
       // Enhanced readiness detection
       if (
@@ -136,10 +121,7 @@ async function testServerStartup() {
     setTimeout(() => {
       if (!serverReady) {
         const duration = Date.now() - startTime;
-        console.log('  📋 Initialization logs during timeout:');
-        initializationLogs.forEach((log, index) => {
-          console.log(`    ${index + 1}. [${log.type}] ${log.data}`);
-        });
+        initializationLogs.forEach((_log, _index) => {});
         addTestResult(
           'MCP Server Startup',
           'failed',
@@ -155,9 +137,6 @@ async function testServerStartup() {
 
 // Test stdio communication protocol
 async function testStdioCommunication() {
-  console.log('\n2. Testing Stdio Communication');
-  console.log('==============================');
-
   if (!mcpProcess || mcpProcess.killed) {
     addTestResult('Stdio Communication', 'failed', 'Server not running');
     return;
@@ -216,9 +195,6 @@ async function testStdioCommunication() {
 
 // Test multiple rapid requests for stability
 async function testServerStability() {
-  console.log('\n3. Testing Server Stability');
-  console.log('===========================');
-
   if (!mcpProcess || mcpProcess.killed) {
     addTestResult('Server Stability', 'failed', 'Server not running');
     return;
@@ -306,9 +282,6 @@ async function testServerStability() {
 
 // Test graceful shutdown
 async function testGracefulShutdown() {
-  console.log('\n4. Testing Graceful Shutdown');
-  console.log('============================');
-
   if (!mcpProcess || mcpProcess.killed) {
     addTestResult('Graceful Shutdown', 'failed', 'Server not running');
     return;
@@ -370,21 +343,9 @@ async function generateReport() {
   await fs.mkdir(resultsDir, { recursive: true });
   await fs.writeFile(resultsPath, JSON.stringify(results, null, 2));
 
-  console.log('\n================================================');
-  console.log('MCP Server Reliability Test Summary');
-  console.log('================================================');
-  console.log(`Total Tests: ${results.summary.total}`);
-  console.log(`Passed: ${results.summary.passed}`);
-  console.log(`Failed: ${results.summary.failed}`);
-  console.log(`Pass Rate: ${results.summary.passRate}%`);
-  console.log('');
-  console.log(`Results saved to: ${resultsPath}`);
-
   // Determine overall status
   if (results.summary.failed === 0) {
-    console.log('🎉 All tests passed! MCP server is reliable.');
   } else {
-    console.log('⚠️  Some tests failed. Server reliability needs improvement.');
   }
 }
 
@@ -408,10 +369,7 @@ async function runReliabilityTests() {
   } catch (error) {
     console.error('Test execution error:', error);
     if (error.logs) {
-      console.log('\n📋 Server initialization logs:');
-      error.logs.forEach((log, index) => {
-        console.log(`  ${index + 1}. [${log.type}] ${log.data}`);
-      });
+      error.logs.forEach((_log, _index) => {});
     }
   } finally {
     await cleanup();
@@ -422,7 +380,6 @@ async function runReliabilityTests() {
 
 // Handle interrupts
 process.on('SIGINT', async () => {
-  console.log('\nInterrupted, cleaning up...');
   await cleanup();
   process.exit(1);
 });

@@ -1,26 +1,155 @@
 /**
- * Conversation Framework Demo
+ * Simple Conversation Framework Demo
  *
- * Demonstrates ag2.ai-inspired conversation capabilities
+ * Demonstrates ag2.ai-inspired conversation capabilities with minimal dependencies
  */
 
 import type { AgentId } from '../types/agent-types';
-import { ConversationFramework } from './conversation-framework/index';
+import type {
+  ConversationConfig,
+  ConversationMessage,
+  ConversationSession,
+} from './conversation-framework/types';
+
+/**
+ * Mock memory backend for demo purposes
+ */
+class MockConversationMemory {
+  private conversations = new Map<string, any>();
+
+  async storeConversation(session: ConversationSession): Promise<void> {
+    this.conversations.set(session.id, JSON.parse(JSON.stringify(session)));
+  }
+
+  async getConversation(id: string): Promise<ConversationSession | null> {
+    const session = this.conversations.get(id);
+    return session ? JSON.parse(JSON.stringify(session)) : null;
+  }
+
+  async updateConversation(id: string, updates: Partial<ConversationSession>): Promise<void> {
+    const existing = this.conversations.get(id);
+    if (existing) {
+      this.conversations.set(id, { ...existing, ...updates });
+    }
+  }
+
+  async searchConversations(): Promise<ConversationSession[]> {
+    return Array.from(this.conversations.values());
+  }
+
+  async deleteConversation(id: string): Promise<void> {
+    this.conversations.delete(id);
+  }
+
+  async getAgentConversationHistory(): Promise<ConversationSession[]> {
+    return Array.from(this.conversations.values());
+  }
+}
+
+/**
+ * Simplified conversation orchestrator for demo
+ */
+class DemoConversationOrchestrator {
+  private memory = new MockConversationMemory();
+  private activeSessions = new Map<string, ConversationSession>();
+
+  async createConversation(config: ConversationConfig): Promise<ConversationSession> {
+    const session: ConversationSession = {
+      id: `demo-${Date.now()}`,
+      title: config.title,
+      description: config.description,
+      participants: [...config.initialParticipants],
+      initiator: config.initialParticipants[0],
+      startTime: new Date(),
+      status: 'active',
+      context: config.context,
+      messages: [],
+      outcomes: [],
+      metrics: {
+        messageCount: 0,
+        participationByAgent: {},
+        averageResponseTime: 0,
+        consensusScore: 0,
+        qualityRating: 0,
+      },
+    };
+
+    config.initialParticipants.forEach((agent) => {
+      session.metrics.participationByAgent[agent.id] = 0;
+    });
+
+    this.activeSessions.set(session.id, session);
+    await this.memory.storeConversation(session);
+
+    return session;
+  }
+
+  async sendMessage(message: ConversationMessage): Promise<void> {
+    const session = this.activeSessions.get(message.conversationId);
+    if (!session) {
+      throw new Error(`Conversation ${message.conversationId} not found`);
+    }
+
+    if (!message.id) {
+      message.id = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    }
+    if (!message.timestamp) {
+      message.timestamp = new Date();
+    }
+
+    session.messages.push(message);
+    session.metrics.messageCount++;
+    session.metrics.participationByAgent[message.fromAgent.id]++;
+
+    await this.memory.updateConversation(session.id, {
+      messages: session.messages,
+      metrics: session.metrics,
+    });
+  }
+
+  async getConversationHistory(conversationId: string): Promise<ConversationMessage[]> {
+    const session = this.activeSessions.get(conversationId);
+    return session ? session.messages : [];
+  }
+
+  async terminateConversation(conversationId: string, _reason?: string): Promise<any[]> {
+    const session = this.activeSessions.get(conversationId);
+    if (!session) {
+      throw new Error(`Conversation ${conversationId} not found`);
+    }
+
+    session.status = 'completed';
+    session.endTime = new Date();
+
+    // Generate simple outcomes
+    const outcomes = session.messages
+      .filter((m) => m.messageType === 'decision' || m.messageType === 'agreement')
+      .map((m) => ({
+        type: m.messageType === 'decision' ? 'decision' : 'consensus',
+        content: m.content,
+        confidence: 0.8,
+        contributors: [m.fromAgent],
+        timestamp: m.timestamp,
+      }));
+
+    session.outcomes = outcomes;
+    await this.memory.updateConversation(conversationId, {
+      status: session.status,
+      endTime: session.endTime,
+      outcomes: session.outcomes,
+    });
+
+    this.activeSessions.delete(conversationId);
+    return outcomes;
+  }
+}
 
 /**
  * Demo script showing conversation framework capabilities
  */
-export async function runConversationDemo(): Promise<void> {
-  console.log('🤖 ag2.ai Integration Demo - Multi-Agent Conversations');
-  console.log('='.repeat(60));
-
+export async function runSimpleConversationDemo(): Promise<void> {
   try {
-    // Create conversation system
-    console.log('📚 Creating conversation framework...');
-    const system = await ConversationFramework.create({
-      memoryBackend: 'json',
-      memoryConfig: { basePath: '/tmp/conversations' },
-    });
+    const orchestrator = new DemoConversationOrchestrator();
 
     // Sample agents for demonstration
     const agents: AgentId[] = [
@@ -28,12 +157,7 @@ export async function runConversationDemo(): Promise<void> {
       { id: 'bob-reviewer', swarmId: 'demo-swarm', type: 'reviewer', instance: 0 },
       { id: 'charlie-architect', swarmId: 'demo-swarm', type: 'architect', instance: 0 },
     ];
-
-    console.log(`👥 Demo agents: ${agents.map((a) => a.id).join(', ')}`);
-
-    // Create a code review conversation
-    console.log('\n🔍 Creating code review conversation...');
-    const conversation = await system.orchestrator.createConversation({
+    const conversation = await orchestrator.createConversation({
       title: 'Review Pull Request #142',
       description: 'Code review for new authentication system',
       pattern: 'code-review',
@@ -47,14 +171,6 @@ export async function runConversationDemo(): Promise<void> {
       initialParticipants: agents,
       timeout: 3600000, // 1 hour
     });
-
-    console.log(`✅ Created conversation: ${conversation.id}`);
-    console.log(`   Title: ${conversation.title}`);
-    console.log(`   Status: ${conversation.status}`);
-    console.log(`   Participants: ${conversation.participants.length}`);
-
-    // Simulate conversation messages
-    console.log('\n💬 Simulating conversation messages...');
 
     const messages = [
       {
@@ -113,101 +229,42 @@ export async function runConversationDemo(): Promise<void> {
     ];
 
     for (const [index, msgData] of messages.entries()) {
-      await system.orchestrator.sendMessage({
+      await orchestrator.sendMessage({
         id: `demo-msg-${index + 1}`,
         conversationId: conversation.id,
         timestamp: new Date(),
         ...msgData,
       });
-      console.log(`   📨 ${msgData.fromAgent.id}: ${msgData.content.text.substring(0, 50)}...`);
     }
+    const history = await orchestrator.getConversationHistory(conversation.id);
 
-    // Get conversation history
-    console.log('\n📋 Retrieving conversation history...');
-    const history = await system.orchestrator.getConversationHistory(conversation.id);
-    console.log(`   Found ${history.length} messages (including system messages)`);
-
-    // Terminate conversation and get outcomes
-    console.log('\n🏁 Terminating conversation...');
-    const outcomes = await system.orchestrator.terminateConversation(
+    // Show message details
+    history.forEach((_msg, _index) => {});
+    Object.entries(conversation.metrics.participationByAgent).forEach(([_agentId, _count]) => {});
+    const outcomes = await orchestrator.terminateConversation(
       conversation.id,
       'Code review completed successfully'
     );
-
-    console.log(`   Generated ${outcomes.length} outcomes:`);
-    outcomes.forEach((outcome, index) => {
-      console.log(`   ${index + 1}. ${outcome.type}: confidence ${outcome.confidence}`);
-    });
-
-    // Show conversation capabilities
-    console.log('\n🎯 Conversation Framework Capabilities:');
-    const capabilities = ConversationFramework.getCapabilities();
-    capabilities.forEach((cap) => console.log(`   ✓ ${cap}`));
-
-    console.log('\n📋 Available Conversation Patterns:');
-    const patterns = ConversationFramework.getAvailablePatterns();
-    patterns.forEach((pattern) => console.log(`   ✓ ${pattern}`));
-
-    // Demonstrate MCP integration
-    console.log('\n🔧 MCP Tools Integration:');
-    const mcpTools = system.mcpTools;
-    const toolsCount = (mcpTools.constructor as any).getTools?.()?.length || 'N/A';
-    console.log(`   Available MCP tools: ${toolsCount}`);
-    console.log(`   HTTP MCP Server: Port 3000`);
-    console.log(`   Stdio MCP: Supported`);
-
-    console.log('\n🎉 ag2.ai Integration Demo Complete!');
-    console.log('   Multi-agent conversations are now available in claude-code-zen');
-    console.log('   Use MCP tools to create and manage conversations externally');
+    outcomes.forEach((_outcome, _index) => {});
+    const patterns = [
+      'code-review',
+      'problem-solving',
+      'brainstorming',
+      'planning',
+      'debugging',
+      'architecture-review',
+    ];
+    patterns.forEach((_pattern) => {});
   } catch (error) {
     console.error('❌ Demo failed:', error);
     throw error;
   }
 }
 
-/**
- * Quick validation of conversation framework
- */
-export function validateConversationFramework(): { valid: boolean; errors: string[] } {
-  const errors: string[] = [];
-
-  try {
-    // Check if conversation framework is available
-    const capabilities = ConversationFramework.getCapabilities();
-    if (capabilities.length === 0) {
-      errors.push('No conversation capabilities found');
-    }
-
-    const patterns = ConversationFramework.getAvailablePatterns();
-    if (patterns.length === 0) {
-      errors.push('No conversation patterns available');
-    }
-
-    // Validate configuration
-    const testConfig = {
-      title: 'Test',
-      pattern: 'code-review',
-      goal: 'Test goal',
-      domain: 'testing',
-      participants: [{ id: 'test-agent', type: 'coder', swarmId: 'test', instance: 0 }],
-    };
-
-    const validation = ConversationFramework.validateConfig(testConfig);
-    if (!validation.valid) {
-      errors.push(...validation.errors);
-    }
-
-    return { valid: errors.length === 0, errors };
-  } catch (error) {
-    errors.push(`Framework validation error: ${error.message}`);
-    return { valid: false, errors };
-  }
-}
-
 // Export for use in other modules
-export { ConversationFramework };
+export { DemoConversationOrchestrator };
 
 // If run directly, execute demo
 if (import.meta.url === `file://${process.argv[1]}`) {
-  runConversationDemo().catch(console.error);
+  runSimpleConversationDemo().catch(console.error);
 }

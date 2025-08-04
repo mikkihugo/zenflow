@@ -13,6 +13,8 @@ export * from './http-mcp-server';
 export { HTTPMCPServer as default } from './http-mcp-server';
 // Legacy interface (deprecated)
 export * from './mcp-interface';
+export * from './mcp-logger';
 export * from './request-handler';
 export * from './start-server';
 export * from './tool-registry';
+export * from './validate-external-config';

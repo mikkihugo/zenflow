@@ -5,12 +5,12 @@
  */
 
 import { createLogger } from '../../../core/logger';
+import type { BatchOperation } from '../../batch/batch-engine';
 import { BatchEngine, createBatchOperation, createToolBatch } from '../../batch/batch-engine';
-import { BatchPerformanceMonitor } from '../../batch/performance-monitor';
 import { FileBatchOperator } from '../../batch/file-batch';
+import { BatchPerformanceMonitor } from '../../batch/performance-monitor';
 import { SwarmBatchCoordinator } from '../../batch/swarm-batch';
 import type { MCPTool, MCPToolResult } from '../types/mcp-types';
-import type { BatchOperation } from '../../batch/batch-engine';
 
 const logger = createLogger({ prefix: 'MCP-Batch' });
 
@@ -59,7 +59,8 @@ export interface ProjectInitParams {
  */
 export const batchExecuteTool: MCPTool = {
   name: 'batch_execute',
-  description: 'Execute multiple operations concurrently following claude-zen patterns (1 MESSAGE = ALL OPERATIONS)',
+  description:
+    'Execute multiple operations concurrently following claude-zen patterns (1 MESSAGE = ALL OPERATIONS)',
   inputSchema: {
     type: 'object',
     properties: {
@@ -134,7 +135,7 @@ export const batchExecuteTool: MCPTool = {
       logger.info(`Starting batch execution of ${params.operations.length} operations`);
 
       // Convert input operations to BatchOperation format
-      const batchOps: BatchOperation[] = params.operations.map((op, index) => 
+      const batchOps: BatchOperation[] = params.operations.map((op, index) =>
         createBatchOperation(
           op.id || `op-${index}-${Date.now()}`,
           op.type,
@@ -158,15 +159,53 @@ export const batchExecuteTool: MCPTool = {
         });
       }
 
+      // Pre-process operations by type
+      const fileOps = batchOps.filter((op) => op.type === 'file');
+      const swarmOps = batchOps.filter((op) => op.type === 'swarm');
+      const otherOps = batchOps.filter((op) => !['file', 'swarm'].includes(op.type));
+
       // Execute batch operations
       const startTime = Date.now();
-      const summary = await engineToUse.executeBatch(batchOps);
+
+      // Handle file operations with specialized operator
+      if (fileOps.length > 0) {
+        const fileOperations = fileOps.map((op) => ({
+          type: op.operation as any,
+          path: op.params.path as string,
+          content: op.params.content as string,
+          destination: op.params.destination as string,
+          encoding: op.params.encoding as BufferEncoding,
+          mode: op.params.mode as number,
+        }));
+        await fileBatchOperator.executeBatch(fileOperations);
+      }
+
+      // Handle swarm operations with specialized coordinator
+      if (swarmOps.length > 0) {
+        const swarmOperations = swarmOps.map((op) => ({
+          type: op.operation as any,
+          swarmId: op.params.swarmId as string,
+          agentType: op.params.agentType as any,
+          agentCount: op.params.agentCount as number,
+          topology: op.params.topology as any,
+          task: op.params.task as any,
+          coordination: op.params.coordination as any,
+        }));
+        await swarmBatchCoordinator.executeBatch(swarmOperations);
+      }
+
+      // Handle remaining operations with standard engine
+      const summary = await engineToUse.executeBatch(otherOps);
       const results = engineToUse.getResults();
+
+      // Calculate execution time
+      const executionTime = Date.now() - startTime;
+      summary.executionTime = executionTime;
 
       // Record performance metrics
       if (params.config?.trackPerformance !== false) {
         const batchMetrics = performanceMonitor.recordBatchExecution(summary);
-        
+
         // Estimate sequential execution time for comparison
         const sequentialTime = summary.totalExecutionTime * summary.speedImprovement;
         const sequentialMetrics = performanceMonitor.recordSequentialExecution(
@@ -176,7 +215,7 @@ export const batchExecuteTool: MCPTool = {
         );
 
         const comparison = performanceMonitor.comparePerformance(batchMetrics, sequentialMetrics);
-        
+
         logger.info('Batch execution performance', {
           speedImprovement: `${comparison.speedImprovement}x`,
           tokenReduction: `${comparison.tokenReduction}%`,
@@ -199,7 +238,7 @@ export const batchExecuteTool: MCPTool = {
 - Concurrency Achieved: ${summary.concurrencyAchieved.toFixed(1)}x
 
 **Individual Results:**
-${results.map(r => `- ${r.operationId}: ${r.success ? '✅' : '❌'} (${r.executionTime}ms)${r.error ? ` - ${r.error}` : ''}`).join('\n')}
+${results.map((r) => `- ${r.operationId}: ${r.success ? '✅' : '❌'} (${r.executionTime}ms)${r.error ? ` - ${r.error}` : ''}`).join('\n')}
 
 ${summary.speedImprovement >= 2.8 ? '🎯 **Claude-zen target achieved!**' : '⚠️ Performance below claude-zen target (2.8x)'}`,
           },
@@ -225,7 +264,8 @@ ${summary.speedImprovement >= 2.8 ? '🎯 **Claude-zen target achieved!**' : '�
  */
 export const projectInitBatchTool: MCPTool = {
   name: 'project_init_batch',
-  description: 'Initialize a complete project with swarm, agents, and files using claude-zen batch optimization',
+  description:
+    'Initialize a complete project with swarm, agents, and files using claude-zen batch optimization',
   inputSchema: {
     type: 'object',
     properties: {
@@ -282,28 +322,22 @@ export const projectInitBatchTool: MCPTool = {
       let opIndex = 0;
 
       // 1. Initialize swarm
-      operations.push(createBatchOperation(
-        `swarm-init-${opIndex++}`,
-        'swarm',
-        'init',
-        {
+      operations.push(
+        createBatchOperation(`swarm-init-${opIndex++}`, 'swarm', 'init', {
           topology: params.swarmConfig?.topology || 'hierarchical',
           maxAgents: params.swarmConfig?.maxAgents || 6,
-        }
-      ));
+        })
+      );
 
       // 2. Spawn agents
       const agentTypes = params.agentTypes || ['researcher', 'coder', 'analyst'];
       for (const agentType of agentTypes) {
-        operations.push(createBatchOperation(
-          `agent-spawn-${agentType}-${opIndex++}`,
-          'swarm',
-          'spawn',
-          {
+        operations.push(
+          createBatchOperation(`agent-spawn-${agentType}-${opIndex++}`, 'swarm', 'spawn', {
             type: agentType,
             name: `${params.projectName}-${agentType}`,
-          }
-        ));
+          })
+        );
       }
 
       // 3. Create directory structure
@@ -324,17 +358,11 @@ export const projectInitBatchTool: MCPTool = {
         .map(([path]) => path);
 
       for (const dir of directories) {
-        operations.push(createBatchOperation(
-          `mkdir-${opIndex++}`,
-          'file',
-          'mkdir',
-          { path: dir }
-        ));
+        operations.push(createBatchOperation(`mkdir-${opIndex++}`, 'file', 'mkdir', { path: dir }));
       }
 
       // 4. Create files
-      const files = Object.entries(fileStructure)
-        .filter(([_, content]) => content !== null);
+      const files = Object.entries(fileStructure).filter(([_, content]) => content !== null);
 
       // Create package.json first
       const defaultPackageJson = {
@@ -350,22 +378,16 @@ export const projectInitBatchTool: MCPTool = {
         license: 'MIT',
       };
 
-      operations.push(createBatchOperation(
-        `package-json-${opIndex++}`,
-        'file',
-        'write',
-        {
+      operations.push(
+        createBatchOperation(`package-json-${opIndex++}`, 'file', 'write', {
           path: `${basePath}/package.json`,
           content: JSON.stringify({ ...defaultPackageJson, ...params.packageJson }, null, 2),
-        }
-      ));
+        })
+      );
 
       // Create README.md
-      operations.push(createBatchOperation(
-        `readme-${opIndex++}`,
-        'file',
-        'write',
-        {
+      operations.push(
+        createBatchOperation(`readme-${opIndex++}`, 'file', 'write', {
           path: `${basePath}/README.md`,
           content: `# ${params.projectName}
 
@@ -398,20 +420,17 @@ ${params.projectName}/
 
 Generated with claude-zen batch optimization 🚀
 `,
-        }
-      ));
+        })
+      );
 
       // Add other files
       for (const [filePath, content] of files) {
-        operations.push(createBatchOperation(
-          `file-${opIndex++}`,
-          'file',
-          'write',
-          {
+        operations.push(
+          createBatchOperation(`file-${opIndex++}`, 'file', 'write', {
             path: filePath,
             content: content as string,
-          }
-        ));
+          })
+        );
       }
 
       // Execute all operations in batch
@@ -421,6 +440,7 @@ Generated with claude-zen batch optimization 🚀
       // Record performance
       const batchMetrics = performanceMonitor.recordBatchExecution(summary);
       logger.info('Project initialization complete', {
+        batchMetrics,
         project: params.projectName,
         operations: summary.totalOperations,
         speedImprovement: `${summary.speedImprovement}x`,
@@ -436,7 +456,7 @@ Generated with claude-zen batch optimization 🚀
 
 **Claude-zen Batch Optimization Results:**
 - **${summary.totalOperations} operations** executed concurrently
-- **${summary.speedImprovement}x speed improvement** (vs sequential: ${(summary.speedImprovement >= 2.8 ? '✅ Target achieved' : '⚠️ Below target')})
+- **${summary.speedImprovement}x speed improvement** (vs sequential: ${summary.speedImprovement >= 2.8 ? '✅ Target achieved' : '⚠️ Below target'})
 - **${summary.tokenReduction}% token reduction** through batch optimization
 - **Execution time**: ${summary.totalExecutionTime}ms (vs ~${(summary.totalExecutionTime * summary.speedImprovement).toFixed(0)}ms sequential)
 
@@ -444,7 +464,7 @@ Generated with claude-zen batch optimization 🚀
 - 🐝 Swarm initialized (${params.swarmConfig?.topology || 'hierarchical'} topology)
 - 🤖 Agents spawned: ${agentTypes.join(', ')}
 - 📁 Directory structure: ${directories.length} directories
-- 📄 Files created: ${results.filter(r => r.operationId.includes('file')).length} files
+- 📄 Files created: ${results.filter((r) => r.operationId.includes('file')).length} files
 - 📦 Package.json configured with project metadata
 
 **Next Steps:**
@@ -452,9 +472,10 @@ Generated with claude-zen batch optimization 🚀
 2. \`npm install\`
 3. Start developing with your swarm coordination system!
 
-${summary.speedImprovement >= 2.8 && summary.tokenReduction >= 20 
-  ? '🏆 **Excellent performance! Claude-zen targets exceeded.**' 
-  : '📈 **Good performance. Consider optimizing for better results.**'
+${
+  summary.speedImprovement >= 2.8 && summary.tokenReduction >= 20
+    ? '🏆 **Excellent performance! Claude-zen targets exceeded.**'
+    : '📈 **Good performance. Consider optimizing for better results.**'
 }`,
           },
         ],
@@ -523,7 +544,7 @@ export const batchPerformanceTool: MCPTool = {
 
 **Execution Statistics:**
 - Total Executions: ${summary.totalExecutions}
-- Batch Executions: ${summary.batchExecutions} (${(summary.batchExecutions / summary.totalExecutions * 100).toFixed(1)}%)
+- Batch Executions: ${summary.batchExecutions} (${((summary.batchExecutions / summary.totalExecutions) * 100).toFixed(1)}%)
 - Sequential Executions: ${summary.sequentialExecutions}
 
 **Performance Metrics:**
@@ -535,7 +556,7 @@ ${summary.averageSpeedImprovement >= 2.8 ? '✅' : '❌'} Speed target (2.8-4.4x
 ${summary.averageTokenReduction >= 20 ? '✅' : '❌'} Token reduction target (>20%): ${summary.averageTokenReduction.toFixed(1)}%
 
 **Recommendations:**
-${summary.recommendations.map(r => `- ${r}`).join('\n')}`,
+${summary.recommendations.map((r) => `- ${r}`).join('\n')}`,
               },
             ],
           };
@@ -544,7 +565,7 @@ ${summary.recommendations.map(r => `- ${r}`).join('\n')}`,
         case 'trends': {
           const metric = params.metric || 'throughput';
           const trends = performanceMonitor.getPerformanceTrends(metric, hours);
-          
+
           return {
             success: true,
             content: [
@@ -558,14 +579,21 @@ ${summary.recommendations.map(r => `- ${r}`).join('\n')}`,
 - Data Points: ${trends.values.length} measurements
 
 **Recent Values:**
-${trends.values.slice(-5).map((val, i) => `- ${val.toFixed(2)} (${new Date(trends.timestamps[trends.timestamps.length - 5 + i]).toLocaleTimeString()})`).join('\n')}
+${trends.values
+  .slice(-5)
+  .map(
+    (val, i) =>
+      `- ${val.toFixed(2)} (${new Date(trends.timestamps[trends.timestamps.length - 5 + i]).toLocaleTimeString()})`
+  )
+  .join('\n')}
 
 **Insight:**
-${trends.trend === 'improving' 
-  ? '🎯 Performance is improving over time. Continue current optimization strategies.' 
-  : trends.trend === 'declining' 
-  ? '⚠️ Performance degradation detected. Review recent changes and optimize batch configurations.'
-  : '📊 Performance is stable. Consider experimenting with different batch sizes for improvement.'
+${
+  trends.trend === 'improving'
+    ? '🎯 Performance is improving over time. Continue current optimization strategies.'
+    : trends.trend === 'declining'
+      ? '⚠️ Performance degradation detected. Review recent changes and optimize batch configurations.'
+      : '📊 Performance is stable. Consider experimenting with different batch sizes for improvement.'
 }`,
               },
             ],
@@ -614,25 +642,25 @@ ${trends.trend === 'improving'
 /**
  * Export all batch MCP tools
  */
-export const batchMCPTools = [
-  batchExecuteTool,
-  projectInitBatchTool,
-  batchPerformanceTool,
-];
+export const batchMCPTools = [batchExecuteTool, projectInitBatchTool, batchPerformanceTool];
 
 /**
  * Helper function to create claude-zen batch operations
  */
-export function createClaudeFlowBatch(operations: Array<{
-  tool: string;
-  params: Record<string, unknown>;
-  dependencies?: string[];
-}>): BatchOperation[] {
-  return createToolBatch(operations.map(op => ({
-    name: op.tool,
-    params: op.params,
-    dependencies: op.dependencies,
-  })));
+export function createClaudeFlowBatch(
+  operations: Array<{
+    tool: string;
+    params: Record<string, unknown>;
+    dependencies?: string[];
+  }>
+): BatchOperation[] {
+  return createToolBatch(
+    operations.map((op) => ({
+      name: op.tool,
+      params: op.params,
+      dependencies: op.dependencies,
+    }))
+  );
 }
 
 /**
@@ -649,52 +677,49 @@ export function createClaudeZenPattern(config: {
   let index = 0;
 
   // 1. Swarm initialization
-  operations.push(createBatchOperation(
-    `swarm-init-${index++}`,
-    'tool',
-    'swarm_init',
-    {
+  operations.push(
+    createBatchOperation(`swarm-init-${index++}`, 'tool', 'swarm_init', {
       topology: config.swarmTopology || 'mesh',
       maxAgents: config.maxAgents || 6,
-    }
-  ));
+    })
+  );
 
   // 2. Agent spawning
   const agentTypes = config.agentTypes || ['researcher', 'coder', 'analyst'];
   for (const agentType of agentTypes) {
-    operations.push(createBatchOperation(
-      `agent-spawn-${agentType}-${index++}`,
-      'tool',
-      'agent_spawn',
-      { type: agentType }
-    ));
+    operations.push(
+      createBatchOperation(`agent-spawn-${agentType}-${index++}`, 'tool', 'agent_spawn', {
+        type: agentType,
+      })
+    );
   }
 
   // 3. Directory structure
   const directories = config.projectStructure || ['app', 'app/src', 'app/tests', 'app/docs'];
   for (const dir of directories) {
-    operations.push(createBatchOperation(
-      `mkdir-${index++}`,
-      'file',
-      'mkdir',
-      { path: dir }
-    ));
+    operations.push(createBatchOperation(`mkdir-${index++}`, 'file', 'mkdir', { path: dir }));
   }
 
   // 4. File creation
   const defaultFiles = [
-    { path: 'app/package.json', content: JSON.stringify({ name: 'app', version: '1.0.0' }, null, 2) },
-    { path: 'app/README.md', content: '# Application\n\nGenerated by claude-zen batch operations.' },
+    {
+      path: 'app/package.json',
+      content: JSON.stringify({ name: 'app', version: '1.0.0' }, null, 2),
+    },
+    {
+      path: 'app/README.md',
+      content: '# Application\n\nGenerated by claude-zen batch operations.',
+    },
   ];
-  
+
   const files = config.files || defaultFiles;
   for (const file of files) {
-    operations.push(createBatchOperation(
-      `file-${index++}`,
-      'file',
-      'write',
-      { path: file.path, content: file.content }
-    ));
+    operations.push(
+      createBatchOperation(`file-${index++}`, 'file', 'write', {
+        path: file.path,
+        content: file.content,
+      })
+    );
   }
 
   return operations;

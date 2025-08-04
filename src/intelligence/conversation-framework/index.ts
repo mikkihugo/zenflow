@@ -5,11 +5,7 @@
  * for enhanced agent collaboration and structured dialogue
  */
 
-import type {
-  ConversationMCPTools,
-  ConversationMemory,
-  ConversationOrchestrator,
-} from './types';
+import type { ConversationMCPTools, ConversationMemory, ConversationOrchestrator } from './types';
 
 /**
  * Configuration for conversation framework creation

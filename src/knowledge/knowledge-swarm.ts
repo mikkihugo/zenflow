@@ -11,6 +11,7 @@
 
 import { EventEmitter } from 'node:events';
 import type { KnowledgeClient, KnowledgeClientConfig, KnowledgeResult } from './knowledge-client';
+import { FACTIntegration } from './knowledge-client';
 
 interface KnowledgeSwarmConfig extends KnowledgeClientConfig {
   swarmSize: number;
@@ -67,7 +68,6 @@ export class KnowledgeSwarm extends EventEmitter {
   private queryQueue: KnowledgeQuery[] = [];
   private isProcessing = false;
   private queryCounter = 0;
-  private knowledgeCache = new Map<string, any>(); // Shared knowledge cache (separate from RAG)
 
   // Pre-defined agent specializations
   private static readonly DEFAULT_SPECIALIZATIONS: KnowledgeAgentSpecialization[] = [
@@ -132,8 +132,6 @@ export class KnowledgeSwarm extends EventEmitter {
    * Initialize the FACT swarm system
    */
   async initialize(): Promise<void> {
-    console.log('🚀 Initializing FACT Swarm System...');
-
     try {
       // Initialize vector database for knowledge storage
       if (this.config.persistentStorage) {
@@ -146,8 +144,6 @@ export class KnowledgeSwarm extends EventEmitter {
 
       // Start processing queue
       this.startQueryProcessor();
-
-      console.log(`✅ FACT Swarm System initialized with ${this.agents.size} agents`);
       this.emit('swarmInitialized', { agentCount: this.agents.size });
     } catch (error) {
       console.error('❌ FACT Swarm initialization failed:', error);
@@ -162,8 +158,6 @@ export class KnowledgeSwarm extends EventEmitter {
     const startTime = Date.now();
 
     try {
-      console.log(`🔍 Swarm Query [${query.id}]: ${query.query.substring(0, 100)}...`);
-
       // Select optimal agents for this query
       const selectedAgents = await this.selectOptimalAgents(query);
 
@@ -196,9 +190,6 @@ export class KnowledgeSwarm extends EventEmitter {
       };
 
       this.emit('swarmQueryCompleted', swarmResult);
-      console.log(
-        `✅ Swarm Query completed [${query.id}] in ${totalTime}ms with ${results.length} results`
-      );
 
       return swarmResult;
     } catch (error) {
@@ -325,7 +316,6 @@ export class KnowledgeSwarm extends EventEmitter {
         };
 
         this.agents.set(agentId, agent);
-        console.log(`✅ Created FACT agent: ${agentId} (${spec.name})`);
       });
 
     await Promise.all(agentPromises);
@@ -344,7 +334,6 @@ export class KnowledgeSwarm extends EventEmitter {
         return this.selectLeastLoaded(candidates, query);
       case 'round-robin':
         return this.selectRoundRobin(candidates, query);
-      case 'intelligent':
       default:
         return this.selectIntelligent(candidates, query);
     }
@@ -404,7 +393,7 @@ export class KnowledgeSwarm extends EventEmitter {
     }
 
     const specialized = candidates.filter((agent) =>
-      query.domains!.some((domain) => agent.specialization.domains.includes(domain))
+      query.domains?.some((domain) => agent.specialization.domains.includes(domain))
     );
 
     return specialized.length > 0
@@ -423,7 +412,7 @@ export class KnowledgeSwarm extends EventEmitter {
   /**
    * Round-robin agent selection
    */
-  private selectRoundRobin(candidates: SwarmAgent[], query: SwarmQuery): SwarmAgent[] {
+  private selectRoundRobin(candidates: SwarmAgent[], _query: SwarmQuery): SwarmAgent[] {
     const index = this.queryCounter % candidates.length;
     return [candidates[index]];
   }
@@ -497,7 +486,7 @@ export class KnowledgeSwarm extends EventEmitter {
       consolidatedResponse += `**Tools Used:** ${result.toolsUsed.join(', ')}\n`;
       consolidatedResponse += `**Execution Time:** ${result.executionTimeMs}ms\n`;
       consolidatedResponse += `**Cache Hit:** ${result.cacheHit ? 'Yes' : 'No'}\n\n`;
-      consolidatedResponse += result.response + '\n\n';
+      consolidatedResponse += `${result.response}\n\n`;
       consolidatedResponse += '---\n\n';
     });
 
@@ -568,7 +557,7 @@ export class KnowledgeSwarm extends EventEmitter {
   /**
    * Share knowledge across agents
    */
-  private async shareKnowledge(agents: SwarmAgent[], results: FACTResult[]): Promise<void> {
+  private async shareKnowledge(_agents: SwarmAgent[], results: FACTResult[]): Promise<void> {
     // Update agent expertise based on successful results
     results.forEach((result) => {
       const agentId = result.metadata?.agentId;
@@ -645,7 +634,6 @@ export class KnowledgeSwarm extends EventEmitter {
       };
 
       await this.vectorDb.createTable('fact_knowledge', schema);
-      console.log('✅ FACT knowledge storage initialized');
     } catch (error) {
       console.error('Failed to setup knowledge storage:', error);
     }
@@ -654,11 +642,7 @@ export class KnowledgeSwarm extends EventEmitter {
   /**
    * Start the query processing system
    */
-  private startQueryProcessor(): void {
-    // For now, queries are processed immediately
-    // Could be extended to support queuing and batch processing
-    console.log('✅ FACT swarm query processor started');
-  }
+  private startQueryProcessor(): void {}
 
   /**
    * Get swarm performance metrics
@@ -692,8 +676,6 @@ export class KnowledgeSwarm extends EventEmitter {
    * Shutdown the swarm system
    */
   async shutdown(): Promise<void> {
-    console.log('🔄 Shutting down FACT Swarm System...');
-
     // Shutdown all agents
     const shutdownPromises = Array.from(this.agents.values()).map((agent) =>
       agent.factInstance.shutdown()
@@ -706,7 +688,6 @@ export class KnowledgeSwarm extends EventEmitter {
     this.isProcessing = false;
 
     this.emit('swarmShutdown');
-    console.log('✅ FACT Swarm System shutdown complete');
   }
 }
 
@@ -799,4 +780,4 @@ export const FACTSwarmHelpers = {
   },
 };
 
-export default FACTSwarmSystem;
+export default KnowledgeSwarm;

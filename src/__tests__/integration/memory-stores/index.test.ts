@@ -40,14 +40,6 @@ class MemoryStoreTestRunner {
 
   start(): void {
     this.startTime = Date.now();
-    console.log('🧪 Starting Memory Stores Integration Test Suite');
-    console.log('📋 Test Categories:');
-    console.log('  - SQLite Persistence (Hybrid: Mock connections + Real data operations)');
-    console.log('  - LanceDB Vector Operations (Hybrid: Mock DB + Real vector math)');
-    console.log('  - Session Management (Hybrid: Mock storage + Real lifecycle)');
-    console.log('  - Cache Performance (Hybrid: Mock cache + Real algorithms)');
-    console.log('  - Data Integrity (Hybrid: Mock corruption + Real validation)');
-    console.log('');
   }
 
   finish(): void {
@@ -55,23 +47,7 @@ class MemoryStoreTestRunner {
     this.generateReport();
   }
 
-  private generateReport(): void {
-    console.log('');
-    console.log('📊 Memory Stores Test Suite Report');
-    console.log('==================================');
-    console.log(`⏱️  Total Duration: ${this.metrics.duration}ms`);
-    console.log(`✅ Tests Focus Areas:`);
-    console.log(`   - SQLite: Connection mocking + Real persistence operations`);
-    console.log(`   - LanceDB: Database mocking + Real vector similarity`);
-    console.log(`   - Sessions: Storage mocking + Real session lifecycle`);
-    console.log(`   - Cache: Implementation mocking + Real performance algorithms`);
-    console.log(`   - Integrity: Corruption mocking + Real validation & repair`);
-    console.log('');
-    console.log('🎯 Hybrid Testing Benefits Demonstrated:');
-    console.log('   - London School: Fast, isolated unit tests with mocked dependencies');
-    console.log('   - Classical School: Real behavior testing with actual data operations');
-    console.log('   - Combined: Comprehensive coverage of both interfaces and implementations');
-  }
+  private generateReport(): void {}
 }
 
 describe('Memory Stores Integration Test Suite', () => {
@@ -170,7 +146,7 @@ describe('Memory Stores Integration Test Suite', () => {
       };
 
       // Verify comprehensive coverage
-      Object.entries(coverageAreas).forEach(([area, coverage]) => {
+      Object.entries(coverageAreas).forEach(([_area, coverage]) => {
         expect(coverage.london).toHaveLength(2);
         expect(coverage.classical).toHaveLength(2);
       });

@@ -61,7 +61,6 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
           empty: '⚪',
           prefix: '⚡',
         };
-      case 'standard':
       default:
         return {
           filled: '█',

@@ -5,12 +5,12 @@
 import {
   type BackendConfig,
   type BackendStats,
-  BaseBackend,
   type JSONValue,
+  MemoryBackend,
   type StorageResult,
-} from './base.backend';
+} from './memory-backend';
 
-export class SQLiteBackend extends BaseBackend {
+export class SQLiteBackend extends MemoryBackend {
   private db?: any;
   private dbPath: string;
 
@@ -80,7 +80,7 @@ export class SQLiteBackend extends BaseBackend {
 
     try {
       return JSON.parse(result.value);
-    } catch (error) {
+    } catch (_error) {
       return null;
     }
   }
@@ -99,7 +99,7 @@ export class SQLiteBackend extends BaseBackend {
     for (const row of rows) {
       try {
         results[row.key] = JSON.parse(row.value);
-      } catch (error) {
+      } catch (_error) {
         // Skip invalid entries
       }
     }

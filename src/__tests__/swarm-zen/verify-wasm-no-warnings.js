@@ -2,11 +2,9 @@
  * Verify WASM loads without warnings
  */
 
-import { RuvSwarm } from '../src/index-enhanced.js';
+import { ZenSwarm } from '../src/index-enhanced.js';
 
 async function verifyNoWarnings() {
-  console.log('🔍 Verifying WASM loads without warnings...\n');
-
   // Capture console warnings
   const originalWarn = console.warn;
   const warnings = [];
@@ -16,8 +14,8 @@ async function verifyNoWarnings() {
   };
 
   try {
-    // Initialize RuvSwarm
-    const swarm = await RuvSwarm.initialize({
+    // Initialize ZenSwarm
+    const swarm = await ZenSwarm.initialize({
       loadingStrategy: 'progressive',
       enableNeuralNetworks: true,
       enableForecasting: true,
@@ -38,22 +36,14 @@ async function verifyNoWarnings() {
     await testSwarm.spawn({ type: 'analyst' });
 
     // Check features
-    const features = swarm.features;
+    const _features = swarm.features;
 
     // Restore console.warn
     console.warn = originalWarn;
 
-    // Results
-    console.log('\n📊 Results:');
-    console.log('✅ WASM initialized successfully');
-    console.log('✅ Features detected:', features);
-    console.log(`✅ Swarm created with ${testSwarm.agents.size} agents`);
-
     if (warnings.length === 0) {
-      console.log('\n🎉 SUCCESS: No WASM warnings detected!');
     } else {
-      console.log(`\n⚠️  Found ${warnings.length} warnings:`);
-      warnings.forEach((w, i) => console.log(`  ${i + 1}. ${w}`));
+      warnings.forEach((_w, _i) => {});
       process.exit(1);
     }
   } catch (error) {

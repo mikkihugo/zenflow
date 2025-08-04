@@ -820,31 +820,31 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
 
   // Additional utility methods would be implemented here...
   private async calculateExpertiseWeight(
-    agent: CollaborativeParticipant,
-    domain: string
+    _agent: CollaborativeParticipant,
+    _domain: string
   ): Promise<number> {
     // Implementation for expertise weight calculation
     return 0.8; // Placeholder
   }
 
-  private async calculateReputationWeight(agent: CollaborativeParticipant): Promise<number> {
+  private async calculateReputationWeight(_agent: CollaborativeParticipant): Promise<number> {
     // Implementation for reputation weight calculation
     return 0.7; // Placeholder
   }
 
-  private async calculateQualityWeight(contribution: AgentContribution): Promise<number> {
+  private async calculateQualityWeight(_contribution: AgentContribution): Promise<number> {
     // Implementation for quality weight calculation
     return 0.9; // Placeholder
   }
 
   private groupContributionsByType(
-    contributions: WeightedContribution[]
+    _contributions: WeightedContribution[]
   ): Record<string, WeightedContribution[]> {
     // Group contributions by knowledge type
     return {}; // Placeholder
   }
 
-  private selectSynthesisAlgorithm(type: KnowledgeType): SynthesisAlgorithm {
+  private selectSynthesisAlgorithm(_type: KnowledgeType): SynthesisAlgorithm {
     // Select appropriate synthesis algorithm for knowledge type
     return {} as SynthesisAlgorithm; // Placeholder
   }

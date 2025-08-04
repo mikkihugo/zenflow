@@ -58,7 +58,7 @@ export async function initializeAdvancedCLI(
 /**
  * Create CLI instance with intelligent defaults
  */
-export function createAdvancedCLI(options: Partial<CLIModuleConfig> = {}): AdvancedCLIEngine {
+export function createAdvancedCLI(_options: Partial<CLIModuleConfig> = {}): AdvancedCLIEngine {
   return new AdvancedCLIEngine();
 }
 

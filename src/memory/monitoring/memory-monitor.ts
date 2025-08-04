@@ -244,7 +244,7 @@ export class MemoryMonitor extends EventEmitter {
 
       // Get backend metrics
       const backendMetrics: MemoryMetrics['backends'] = {};
-      for (const [id, backend] of this.backends) {
+      for (const [id, _backend] of this.backends) {
         const backendOps = recentOperations.filter((op) => op.operation.includes(id));
         const errors = backendOps.filter((op) => !op.success).length;
         const avgLatency =

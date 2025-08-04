@@ -134,7 +134,7 @@ export async function createKnowledgeSharingSystem(
 
   // Create logger and event bus if not provided
   const finalLogger = logger || console;
-  const finalEventBus = eventBus || new (await import('events')).EventEmitter();
+  const finalEventBus = eventBus || new (await import('node:events')).EventEmitter();
 
   const system = new CrossAgentKnowledgeIntegration(finalConfig, finalLogger, finalEventBus);
   await system.initialize();
@@ -190,7 +190,7 @@ export function validateKnowledgeConfig(config: CrossAgentKnowledgeConfig): {
   }
 
   // Validate distributed learning config
-  if (config.distributedLearning && config.distributedLearning.federatedConfig) {
+  if (config.distributedLearning?.federatedConfig) {
     const fedConfig = config.distributedLearning.federatedConfig;
     if (fedConfig.clientFraction > 1.0 || fedConfig.clientFraction <= 0) {
       errors.push('federatedConfig.clientFraction must be between 0 and 1');
@@ -264,8 +264,8 @@ export async function ensureStorageDirectory(basePath: string = process.cwd()): 
   knowledgeDir: string;
   cacheDir: string;
 }> {
-  const path = await import('path');
-  const fs = await import('fs/promises');
+  const path = await import('node:path');
+  const fs = await import('node:fs/promises');
 
   const swarmDir = path.join(basePath, '.swarm');
   const hiveMindDir = path.join(basePath, '.hive-mind');
@@ -297,7 +297,7 @@ export function getKnowledgeStoragePaths(basePath: string = process.cwd()): {
   quality: string;
   performance: string;
 } {
-  const path = require('path');
+  const path = require('node:path');
 
   return {
     collective: path.join(basePath, '.hive-mind', 'collective-intelligence'),

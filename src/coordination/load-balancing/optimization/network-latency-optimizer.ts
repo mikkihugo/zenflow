@@ -3,13 +3,12 @@
  * Advanced network path optimization and latency reduction
  */
 
-import type { INetworkOptimizer } from '../interfaces';
+import type { NetworkOptimizer } from '../interfaces';
 import type { QoSRequirement } from '../types';
 
-export class NetworkLatencyOptimizer implements INetworkOptimizer {
-  private latencyMeasurements: Map<string, number[]> = new Map();
-  private networkPaths: Map<string, string[]> = new Map();
+export class NetworkLatencyOptimizer implements NetworkOptimizer {
   private bandwidthMeasurements: Map<string, number> = new Map();
+  private connectionLatencies: Map<string, { latency: number; timestamp: number }> = new Map();
 
   public async optimizeLatency(
     source: string,
@@ -64,9 +63,7 @@ export class NetworkLatencyOptimizer implements INetworkOptimizer {
     return bandwidthMap;
   }
 
-  public async adjustQoS(requirements: QoSRequirement): Promise<void> {
-    console.log('Adjusting QoS based on requirements:', requirements);
-
+  public async adjustQoS(_requirements: QoSRequirement): Promise<void> {
     // In practice, this would configure network QoS policies
     // based on the requirements (latency, throughput, etc.)
   }
@@ -89,10 +86,26 @@ export class NetworkLatencyOptimizer implements INetworkOptimizer {
     // Mock hop latency based on connection type
     const connectionKey = `${from}-${to}`;
 
-    if (from.includes('gateway') || to.includes('gateway')) {
-      return 20 + Math.random() * 30; // Gateway connections
+    // Check if we have cached latency for this connection
+    const cachedLatency = this.connectionLatencies.get(connectionKey);
+    if (cachedLatency && Date.now() - cachedLatency.timestamp < 30000) {
+      // 30s cache
+      return cachedLatency.latency;
     }
 
-    return 10 + Math.random() * 20; // Direct connections
+    let latency: number;
+    if (from.includes('gateway') || to.includes('gateway')) {
+      latency = 20 + Math.random() * 30; // Gateway connections
+    } else {
+      latency = 10 + Math.random() * 20; // Direct connections
+    }
+
+    // Cache the latency measurement
+    this.connectionLatencies.set(connectionKey, {
+      latency,
+      timestamp: Date.now(),
+    });
+
+    return latency;
   }
 }

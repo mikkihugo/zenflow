@@ -4,30 +4,28 @@
  */
 
 import type { AgentType } from '../../types/agent-types';
-import {
-  AgentPerformanceSnapshot,
-  type AgentPerformanceSummary,
-  type Bottleneck,
-  type BottleneckAnalysis,
-  type Improvement,
-  type MetricsFilter,
-  type MetricsTracker,
-  type Operation,
-  type OperationContext,
-  type OperationMetrics,
-  type OperationResult,
-  type OptimizedOperation,
-  type PerformanceEstimate,
-  type PerformanceFactor,
-  type PerformanceOptimizer,
-  type PerformanceReport,
-  type Prediction,
-  type ResourceSavings,
-  ResourceUsage,
-  type TimeFrame,
-  type TrendAnalysis,
-  type TrendData,
-} from './enhanced-hook-system';
+import type {
+  AgentPerformanceSummary,
+  Bottleneck,
+  BottleneckAnalysis,
+  Improvement,
+  MetricsFilter,
+  MetricsTracker,
+  Operation,
+  OperationContext,
+  OperationMetrics,
+  OperationResult,
+  OptimizedOperation,
+  PerformanceEstimate,
+  PerformanceFactor,
+  PerformanceOptimizer,
+  PerformanceReport,
+  Prediction,
+  ResourceSavings,
+  TimeFrame,
+  TrendAnalysis,
+  TrendData,
+} from './hook-system-core';
 
 export class HookPerformanceTracker implements MetricsTracker {
   private readonly metricsStore: Map<string, OperationMetrics>;
@@ -118,14 +116,12 @@ export class HookPerformanceTracker implements MetricsTracker {
     }
 
     if (filter.agentType && filter.agentType) {
-      metrics = metrics.filter(
-        (m) => m.agentPerformance && m.agentPerformance.agentId.includes(filter.agentType!)
-      );
+      metrics = metrics.filter((m) => m.agentPerformance?.agentId.includes(filter.agentType!));
     }
 
     if (filter.timeframe) {
       metrics = metrics.filter(
-        (m) => m.startTime >= filter.timeframe!.start && m.endTime <= filter.timeframe!.end
+        (m) => m.startTime >= filter.timeframe?.start && m.endTime <= filter.timeframe?.end
       );
     }
 
@@ -177,7 +173,7 @@ export class HookPerformanceTracker implements MetricsTracker {
   }
 
   private async estimateUserSatisfaction(
-    operation: Operation,
+    _operation: Operation,
     result: OperationResult
   ): Promise<number> {
     // Mock implementation - would integrate with user feedback systems
@@ -232,14 +228,7 @@ export class HookPerformanceTracker implements MetricsTracker {
     // Would integrate with alerting system in real implementation
   }
 
-  private async updateAgentProfile(agentId: string, metrics: OperationMetrics): Promise<void> {
-    // Mock implementation - would update agent performance database
-    console.log(`Updating performance profile for agent ${agentId}`, {
-      duration: metrics.duration,
-      success: metrics.success,
-      qualityScore: metrics.qualityScore,
-    });
-  }
+  private async updateAgentProfile(_agentId: string, _metrics: OperationMetrics): Promise<void> {}
 
   private shouldOptimizeInRealTime(metrics: OperationMetrics): boolean {
     return (
@@ -264,9 +253,7 @@ export class HookPerformanceTracker implements MetricsTracker {
     return optimizations;
   }
 
-  private async notifyOptimizations(operationId: string, suggestions: string[]): Promise<void> {
-    console.log(`Optimization suggestions for operation ${operationId}:`, suggestions);
-  }
+  private async notifyOptimizations(_operationId: string, _suggestions: string[]): Promise<void> {}
 
   private getMetricsInTimeframe(timeframe: TimeFrame): OperationMetrics[] {
     return Array.from(this.metricsStore.values()).filter(
@@ -312,7 +299,7 @@ export class HookPerformanceTracker implements MetricsTracker {
 
   private async analyzeTrends(
     metrics: OperationMetrics[],
-    timeframe: TimeFrame
+    _timeframe: TimeFrame
   ): Promise<TrendData[]> {
     const trends: TrendData[] = [];
 
@@ -372,7 +359,7 @@ export class HookPerformanceTracker implements MetricsTracker {
         if (!agentMetrics.has(agentId)) {
           agentMetrics.set(agentId, []);
         }
-        agentMetrics.get(agentId)!.push(metric);
+        agentMetrics.get(agentId)?.push(metric);
       }
     });
 
@@ -433,7 +420,7 @@ export class HookPerformanceTracker implements MetricsTracker {
       if (!grouped.has(metric.type)) {
         grouped.set(metric.type, []);
       }
-      grouped.get(metric.type)!.push(metric);
+      grouped.get(metric.type)?.push(metric);
     });
 
     return grouped;
@@ -505,7 +492,7 @@ export class HookPerformanceTracker implements MetricsTracker {
 
   private async calculateTrends(
     metrics: OperationMetrics[],
-    timeframe: TimeFrame
+    _timeframe: TimeFrame
   ): Promise<TrendData[]> {
     return [
       this.calculateSuccessRateTrend(metrics),
@@ -579,7 +566,7 @@ export class HookPerformanceTracker implements MetricsTracker {
       default: 10000,
     };
 
-    return expectedDurations[operationType] || expectedDurations['default'];
+    return expectedDurations[operationType] || expectedDurations.default;
   }
 }
 
@@ -745,7 +732,7 @@ export class OperationPerformanceOptimizer implements PerformanceOptimizer {
   }
 
   private async calculateSavings(
-    operation: Operation,
+    _operation: Operation,
     optimizations: OptimizationOpportunity[]
   ): Promise<ResourceSavings> {
     const totalImpact = optimizations.reduce((sum, opt) => sum + opt.impact, 0);
@@ -758,7 +745,7 @@ export class OperationPerformanceOptimizer implements PerformanceOptimizer {
     };
   }
 
-  private async getBasePerformanceEstimate(operation: Operation): Promise<PerformanceEstimate> {
+  private async getBasePerformanceEstimate(_operation: Operation): Promise<PerformanceEstimate> {
     // Mock base estimates
     return {
       executionTime: 10000, // 10 seconds

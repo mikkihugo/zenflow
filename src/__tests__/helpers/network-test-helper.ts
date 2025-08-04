@@ -111,7 +111,7 @@ export class MockNetworkTestHelper implements NetworkTestHelper {
 
   createHttpClient(baseUrl?: string): HttpClient {
     const self = this;
-    const url = baseUrl || `http://localhost:${this.port}`;
+    const _url = baseUrl || `http://localhost:${this.port}`;
 
     return {
       async get(path: string, headers: Record<string, string> = {}): Promise<HttpResponse> {
@@ -286,7 +286,7 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
 
   async startMockServer(port: number = 0): Promise<number> {
     try {
-      const http = await import('http');
+      const http = await import('node:http');
 
       this.server = http.createServer((req, res) => {
         this.handleRequest(req, res);
@@ -325,7 +325,7 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
     this.routes.set(key, response);
   }
 
-  mockWebSocket(path: string, handlers: WebSocketHandlers): void {
+  mockWebSocket(_path: string, _handlers: WebSocketHandlers): void {
     // WebSocket support would require additional setup
     console.warn('WebSocket mocking not fully implemented for real server');
   }
@@ -338,12 +338,12 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
     this.requests = [];
   }
 
-  simulateNetworkDelay(delayMs: number): void {
+  simulateNetworkDelay(_delayMs: number): void {
     // Not applicable for real server
     console.warn('Network delay simulation not supported for real server');
   }
 
-  simulateNetworkError(errorType: 'timeout' | 'connection' | 'dns'): void {
+  simulateNetworkError(_errorType: 'timeout' | 'connection' | 'dns'): void {
     // Not applicable for real server
     console.warn('Network error simulation not supported for real server');
   }
@@ -390,7 +390,7 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
     };
   }
 
-  createWebSocketClient(url: string): WebSocketClient {
+  createWebSocketClient(_url: string): WebSocketClient {
     // Real WebSocket implementation would go here
     throw new Error('Real WebSocket client not implemented');
   }

@@ -9,7 +9,7 @@
 // CORE SYSTEMS
 // =============================================================================
 
-export * as Config from './config/config-manager';
+export * as Config from './config';
 export * as Core from './core/index';
 export * as Types from './types/agent-types';
 export * as Utils from './utils/index';
@@ -26,22 +26,18 @@ export * as Database from './database/index';
 export * as Memory from './memory/index';
 // Neural System - All neural network and AI functionality
 export * as Neural from './neural/index';
-// SPARC Methodology System - Systematic development workflow
-export * as SPARC from './sparc/index';
-
-// Workflow System - All workflow execution and management
-export * as Workflows from './workflows/index';
 // Performance Optimization System - All performance optimization functionality
 export * as Optimization from './optimization/index';
+// SPARC Methodology System - Systematic development workflow
+export * as SPARC from './sparc/index';
+// Workflow System - All workflow execution and management
+export * as Workflows from './workflows/index';
 
 // =============================================================================
 // INTERFACE SYSTEMS
 // =============================================================================
 
-// REST API Layer - Clean separation following Google standards
-export * as API from './api/index';
-
-// Interface Systems (includes CLI, Web, TUI, MCP)
+// Interface Systems (includes API, CLI, Web, TUI, MCP)
 export * as Interfaces from './interfaces/index';
 
 // =============================================================================
@@ -83,27 +79,48 @@ export * as Integration from './integration/index';
  * Unified entry point for all claude-zen components
  */
 
-// Hive Mind and Swarm Orchestration
-export * from './coordination/hive-mind/core/Agent';
-export * from './coordination/hive-mind/core/HiveMind';
-export * from './coordination/hive-mind/integration/ConsensusEngine';
-export * from './coordination/hive-mind/integration/SwarmOrchestrator';
-// Maestro coordination
-export * from './coordination/maestro/maestro-orchestrator';
-export * from './coordination/maestro/maestro-swarm-coordinator';
+// =============================================================================
+// SWARM AND COORDINATION SYSTEMS
+// =============================================================================
+
 // Core MCP integration
 export * from './coordination/mcp/claude-zen-server';
 export * from './coordination/mcp/tools/swarm-tools';
-export * from './coordination/mcp/types/mcp-types';
-// Swarm-zen integration
-export * from './coordination/swarm/core/index';
+// Export specific types from mcp-types to avoid conflicts
+export {
+  type MCPServer,
+  type MCPRequest,
+  type MCPResponse,
+  type MCPTool,
+  type MCPToolCall,
+  // SwarmAgent, SwarmStatus, SwarmTask will come from types/index
+} from './coordination/mcp/types/mcp-types';
+// Swarm-zen integration (use public API instead of direct core access)
+export {
+  // Export specific items to avoid conflicts
+  SwarmOrchestrator,
+  createSwarm,
+  // SwarmConfig and SwarmState will come from types/index
+} from './coordination/public-api';
+
 // Utils and core services
 export * from './core/logger';
+
 // Terminal Interface (CLI and TUI unified)
 export * from './interfaces/terminal';
-export * from './neural/agents/neural-agent';
+
+// Neural agent exports (avoid NeuralNetwork and Task conflicts)
+export {
+  NeuralAgent,
+  createNeuralAgent,
+  type NeuralAgentConfig,
+  type NeuralAgentState,
+} from './neural/agents/neural-agent';
+
 // Neural network integration
 export * from './neural/neural-bridge';
+
+// Types - main source of shared types
 export * from './types/index';
 
 /**
@@ -112,9 +129,14 @@ export * from './types/index';
 export interface ClaudeZenConfig {
   // MCP Server settings
   mcp: {
-    enabled: boolean;
-    port?: number;
-    host?: string;
+    http: {
+      enabled: boolean; // HTTP MCP for Claude Desktop (port 3000)
+      port?: number;
+      host?: string;
+    };
+    stdio: {
+      enabled: boolean; // stdio MCP for temporary Claude Code coordination (dormant by default)
+    };
   };
 
   // Swarm orchestration
@@ -153,12 +175,20 @@ export interface ClaudeZenConfig {
 
 /**
  * Default configuration for Claude-Zen
+ * HTTP MCP enabled for Claude Desktop integration
+ * stdio MCP dormant - only for temporary Claude Code coordination when needed
+ * Project swarms use direct real agent protocols (Raft, message passing, etc.)
  */
 export const defaultConfig: ClaudeZenConfig = {
   mcp: {
-    enabled: true,
-    port: 3001,
-    host: 'localhost',
+    http: {
+      enabled: true, // HTTP MCP for Claude Desktop (port 3000)
+      port: 3000,
+      host: 'localhost',
+    },
+    stdio: {
+      enabled: false, // stdio MCP for swarm coordination (dormant, activate when needed)
+    },
   },
   swarm: {
     maxAgents: 8,
@@ -190,71 +220,59 @@ export const defaultConfig: ClaudeZenConfig = {
 export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {}): Promise<void> {
   const finalConfig = { ...defaultConfig, ...config };
 
-  console.log('🚀 Initializing Claude-Zen Integrated System');
-  console.log(`   MCP Server: ${finalConfig.mcp.enabled ? 'Enabled' : 'Disabled'}`);
-  console.log(`   Swarm Topology: ${finalConfig.swarm.topology}`);
-  console.log(`   Neural Networks: ${finalConfig.neural.enabled ? 'Enabled' : 'Disabled'}`);
-  console.log(`   SPARC Methodology: ${finalConfig.sparc.enabled ? 'Enabled' : 'Disabled'}`);
-  console.log(`   Persistence: ${finalConfig.persistence.provider}`);
-
-  // Initialize components based on configuration
-  if (finalConfig.mcp.enabled) {
-    const { ClaudeZenMCPServer } = await import('./coordination/mcp/claude-zen-server');
-    const mcpServer = new ClaudeZenMCPServer();
-    await mcpServer.start();
-    console.log('✅ MCP Server initialized');
+  // Initialize HTTP MCP for Claude Desktop (usually enabled)
+  if (finalConfig.mcp.http.enabled) {
+    const { HTTPMCPServer } = await import('./interfaces/mcp/http-mcp-server');
+    const httpMcpServer = new HTTPMCPServer({
+      port: finalConfig.mcp.http.port,
+      host: finalConfig.mcp.http.host,
+    });
+    await httpMcpServer.start();
   }
 
-  // Initialize SwarmOrchestrator
-  const { SwarmOrchestrator } = await import(
-    './coordination/hive-mind/integration/SwarmOrchestrator'
-  );
-  const orchestrator = SwarmOrchestrator.getInstance();
+  // Initialize stdio MCP only if explicitly enabled (for temporary Claude Code coordination)
+  if (finalConfig.mcp.stdio.enabled) {
+    const { MCPServer } = await import('./coordination/mcp/mcp-server');
+    const stdioMcpServer = new MCPServer();
+    await stdioMcpServer.start();
+  }
+
+  // Initialize SwarmOrchestrator from public API
+  const { SwarmOrchestrator } = await import('./coordination/public-api');
+  const orchestrator = new SwarmOrchestrator({
+    topology: finalConfig.swarm.topology,
+    maxAgents: finalConfig.swarm.maxAgents,
+    strategy: finalConfig.swarm.strategy,
+  });
   await orchestrator.initialize();
-  console.log('✅ Swarm Orchestrator initialized');
 
   // Initialize neural bridge if enabled
   if (finalConfig.neural.enabled) {
     const { NeuralBridge } = await import('./neural/neural-bridge');
     const neuralBridge = NeuralBridge.getInstance(finalConfig.neural);
     await neuralBridge.initialize();
-    console.log('✅ Neural Bridge initialized');
   }
 
   // Initialize SPARC methodology system if enabled
   if (finalConfig.sparc.enabled) {
     const { SPARC } = await import('./sparc/index');
-    const sparcEngine = SPARC.getEngine();
-    console.log('✅ SPARC Methodology System initialized');
+    const _sparcEngine = SPARC.getEngine();
   }
 
   // Initialize plugin system
   if (finalConfig.plugins.autoLoad) {
-    // Plugin system temporarily disabled for build optimization
-    // const { PluginManager } = await import('./plugins/plugin-manager');
-    console.log('⚠️  Plugin Manager temporarily disabled');
     // const pluginManager = PluginManager.getInstance();
     // await pluginManager.initialize();
     // console.log('✅ Plugin Manager initialized');
   }
-
-  console.log('🎯 Claude-Zen system ready for coordination!');
 }
 
 /**
  * Shutdown Claude-Zen system gracefully
  */
 export async function shutdownClaudeZen(): Promise<void> {
-  console.log('🛑 Shutting down Claude-Zen system...');
-
-  // Shutdown orchestrator
-  const { SwarmOrchestrator } = await import(
-    './coordination/hive-mind/integration/SwarmOrchestrator'
-  );
-  const orchestrator = SwarmOrchestrator.getInstance();
-  await orchestrator.shutdown();
-
-  console.log('✅ Claude-Zen system shutdown complete');
+  // Shutdown functionality is handled per-component
+  // TODO: Implement proper shutdown orchestration
 }
 
 /**
@@ -294,7 +312,8 @@ export function getVersion() {
 // =============================================================================
 
 export default {
-  initialize,
+  initializeClaudeZen,
+  shutdownClaudeZen,
   healthCheck,
   getVersion,
   Core,

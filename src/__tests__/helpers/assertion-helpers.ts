@@ -29,7 +29,7 @@ export class AssertionHelpers {
    */
   toBeApproximately(actual: number, expected: number, precision?: number): void {
     const actualPrecision = precision ?? this.options.precision!;
-    const message =
+    const _message =
       this.options.messages?.approximately ||
       `Expected ${actual} to be approximately ${expected} within ${actualPrecision} decimal places`;
 
@@ -44,22 +44,22 @@ export class AssertionHelpers {
     thresholds: Partial<PerformanceMetrics>
   ): void {
     if (thresholds.executionTime !== undefined) {
-      const message = `Execution time ${metrics.executionTime}ms exceeded threshold ${thresholds.executionTime}ms`;
+      const _message = `Execution time ${metrics.executionTime}ms exceeded threshold ${thresholds.executionTime}ms`;
       expect(metrics.executionTime).toBeLessThanOrEqual(thresholds.executionTime);
     }
 
     if (thresholds.memoryUsage?.heap !== undefined) {
-      const message = `Heap usage ${metrics.memoryUsage.heap} exceeded threshold ${thresholds.memoryUsage.heap}`;
+      const _message = `Heap usage ${metrics.memoryUsage.heap} exceeded threshold ${thresholds.memoryUsage.heap}`;
       expect(metrics.memoryUsage.heap).toBeLessThanOrEqual(thresholds.memoryUsage.heap);
     }
 
     if (thresholds.memoryUsage?.total !== undefined) {
-      const message = `Total memory ${metrics.memoryUsage.total} exceeded threshold ${thresholds.memoryUsage.total}`;
+      const _message = `Total memory ${metrics.memoryUsage.total} exceeded threshold ${thresholds.memoryUsage.total}`;
       expect(metrics.memoryUsage.total).toBeLessThanOrEqual(thresholds.memoryUsage.total);
     }
 
     if (thresholds.throughput !== undefined) {
-      const message = `Throughput ${metrics.throughput} below threshold ${thresholds.throughput}`;
+      const _message = `Throughput ${metrics.throughput} below threshold ${thresholds.throughput}`;
       expect(metrics.throughput).toBeGreaterThanOrEqual(thresholds.throughput);
     }
   }
@@ -95,7 +95,7 @@ export class AssertionHelpers {
         if (result) {
           return;
         }
-      } catch (error) {
+      } catch (_error) {
         // Continue trying
       }
 
@@ -143,7 +143,7 @@ export class AssertionHelpers {
    * Assert that a string matches a pattern (with custom error message)
    */
   toMatchPattern(actual: string, pattern: RegExp, customMessage?: string): void {
-    const message = customMessage || `Expected "${actual}" to match pattern ${pattern}`;
+    const _message = customMessage || `Expected "${actual}" to match pattern ${pattern}`;
     expect(actual).toMatch(pattern);
   }
 

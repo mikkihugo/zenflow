@@ -359,8 +359,8 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       // Verify priority ordering
       const criticalTasks = executionOrder.filter((t) => t.priority === 'critical');
       const highTasks = executionOrder.filter((t) => t.priority === 'high');
-      const normalTasks = executionOrder.filter((t) => t.priority === 'normal');
-      const lowTasks = executionOrder.filter((t) => t.priority === 'low');
+      const _normalTasks = executionOrder.filter((t) => t.priority === 'normal');
+      const _lowTasks = executionOrder.filter((t) => t.priority === 'low');
 
       // Critical tasks should start before others
       if (criticalTasks.length > 0 && highTasks.length > 0) {
@@ -408,7 +408,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       }
 
       const avgLatency = latencies.reduce((a, b) => a + b, 0) / latencies.length;
-      const maxLatency = Math.max(...latencies);
+      const _maxLatency = Math.max(...latencies);
       const p95Latency = testHelpers.calculatePercentile(latencies, 95);
 
       expect(avgLatency).toBeLessThan(PERFORMANCE_TARGETS.messageLatency / 2);
@@ -546,7 +546,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       });
 
       // Perform intensive operations
-      const agents = await agentManager.getAllActiveAgents();
+      const _agents = await agentManager.getAllActiveAgents();
       const intensiveTasks = Array.from({ length: 100 }, (_, i) => ({
         id: `intensive-task-${i}`,
         type: 'memory_intensive',

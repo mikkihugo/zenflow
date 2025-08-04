@@ -37,8 +37,6 @@ class WasmMemoryPool {
         freeBlocks: [],
         allocations: new Map(),
       });
-
-      console.log(`🧠 Created memory pool for ${moduleId}: ${poolSize / 1024 / 1024}MB`);
     }
 
     return this.pools.get(moduleId);
@@ -82,7 +80,6 @@ class WasmMemoryPool {
       const requiredPages = Math.ceil((newOffset + alignedSize - currentSize) / (64 * 1024));
       try {
         pool.memory.grow(requiredPages);
-        console.log(`📈 Grew memory for ${moduleId} by ${requiredPages} pages`);
       } catch (error) {
         console.error(`❌ Failed to grow memory for ${moduleId}:`, error);
         // Try garbage collection
@@ -174,8 +171,6 @@ class WasmMemoryPool {
     pool.allocations.delete(allocationId);
     this.allocations.delete(allocationId);
     this.totalAllocated -= allocation.size;
-
-    console.log(`🗑️ Deallocated ${allocation.size} bytes for ${allocation.moduleId}`);
     return true;
   }
 
@@ -220,8 +215,6 @@ class WasmMemoryPool {
     for (const id of freedAllocations) {
       this.deallocate(id);
     }
-
-    console.log(`🧹 GC for ${moduleId}: freed ${freedAllocations.length} allocations`);
   }
 
   /**
@@ -305,10 +298,6 @@ class WasmMemoryPool {
       newOffset < pool.memory.buffer.byteLength
         ? [{ offset: newOffset, size: pool.memory.buffer.byteLength - newOffset }]
         : [];
-
-    console.log(
-      `🗜️ Compacted ${moduleId}: ${moves.length} moves, freed ${pool.memory.buffer.byteLength - newOffset} bytes`
-    );
   }
 }
 
@@ -366,8 +355,6 @@ class ProgressiveWasmLoader {
     if (preload) {
       this.queueLoad(id, 'critical');
     }
-
-    console.log(`📋 Registered WASM module: ${id} (${size / 1024}KB, ${priority} priority)`);
   }
 
   /**
@@ -426,8 +413,6 @@ class ProgressiveWasmLoader {
     module.loading = true;
 
     try {
-      console.log(`📦 Loading WASM module: ${moduleId}`);
-
       // Load dependencies first
       for (const depId of module.dependencies) {
         await this.loadModule(depId);
@@ -469,8 +454,6 @@ class ProgressiveWasmLoader {
       module.loaded = true;
       module.loading = false;
 
-      console.log(`✅ Loaded ${moduleId} in ${loadTime.toFixed(2)}ms`);
-
       // Optimize memory after loading
       this.optimizeModuleMemory(moduleId);
 
@@ -485,7 +468,7 @@ class ProgressiveWasmLoader {
   /**
    * Create optimized imports for module
    */
-  createModuleImports(moduleId, memoryAllocation) {
+  createModuleImports(moduleId, _memoryAllocation) {
     const pool = this.memoryPool.getPool(moduleId);
 
     return {
@@ -509,10 +492,7 @@ class ProgressiveWasmLoader {
         },
 
         // SIMD-optimized math functions
-        simd_add_f32x4: (a, b, result) => {
-          // This would call the SIMD implementation
-          console.log('SIMD add called');
-        },
+        simd_add_f32x4: (_a, _b, _result) => {},
 
         // Performance monitoring
         performance_mark: (name) => {
@@ -522,9 +502,7 @@ class ProgressiveWasmLoader {
 
       // WASI support for file operations
       wasi_snapshot_preview1: {
-        proc_exit: (code) => {
-          console.log(`Module ${moduleId} exited with code ${code}`);
-        },
+        proc_exit: (_code) => {},
         fd_write: () => 0,
       },
     };
@@ -608,8 +586,6 @@ class ProgressiveWasmLoader {
     module.memoryAllocations.clear();
     module.instance = null;
     module.loaded = false;
-
-    console.log(`🗑️ Unloaded module: ${moduleId}`);
     return true;
   }
 
@@ -646,8 +622,6 @@ class ProgressiveWasmLoader {
         this.memoryPool.compactMemory(moduleId);
       }
     }
-
-    console.log('🧹 Memory optimization completed');
   }
 }
 
@@ -713,7 +687,7 @@ class WasmCompatibilityManager {
 
       await WebAssembly.compile(simdTest);
       capabilities.simd = true;
-    } catch (e) {
+    } catch (_e) {
       capabilities.simd = false;
     }
 
@@ -724,7 +698,6 @@ class WasmCompatibilityManager {
     capabilities.threads = typeof SharedArrayBuffer !== 'undefined';
 
     this.capabilities = capabilities;
-    console.log('🔍 WASM capabilities detected:', capabilities);
 
     return capabilities;
   }
@@ -757,7 +730,6 @@ class WasmCompatibilityManager {
     }
 
     if (this.fallbacks.has(feature)) {
-      console.log(`⚠️ Using fallback for ${feature}`);
       return 'fallback';
     }
 

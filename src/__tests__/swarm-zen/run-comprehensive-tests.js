@@ -5,11 +5,11 @@
  * Executes all test suites with coverage and performance tracking
  */
 
+import { spawn } from 'node:child_process';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { performance } from 'node:perf_hooks';
 import chalk from 'chalk';
-import { spawn } from 'child_process';
-import fs from 'fs/promises';
-import path from 'path';
-import { performance } from 'perf_hooks';
 
 const TEST_SUITES = [
   {
@@ -53,10 +53,6 @@ class TestRunner {
   }
 
   async run() {
-    console.log(chalk.bold.blue('\n🚀 Starting Comprehensive Test Suite\n'));
-    console.log(chalk.gray(`Time: ${new Date().toISOString()}`));
-    console.log(chalk.gray('═'.repeat(80)));
-
     // Check prerequisites
     await this.checkPrerequisites();
 
@@ -77,8 +73,6 @@ class TestRunner {
   }
 
   async checkPrerequisites() {
-    console.log(chalk.yellow('\n🔍 Checking prerequisites...'));
-
     // Check WASM files
     const wasmExists = await fs
       .access(path.join(process.cwd(), 'wasm/ruv_swarm_wasm_bg.wasm'))
@@ -86,7 +80,6 @@ class TestRunner {
       .catch(() => false);
 
     if (!wasmExists) {
-      console.log(chalk.red('❌ WASM files not found. Building...'));
       await this.runCommand('npm run build:wasm');
     }
 
@@ -97,16 +90,10 @@ class TestRunner {
       console.error(chalk.red(`❌ Node.js ${nodeVersion} is too old. Required: >= 14.0.0`));
       process.exit(1);
     }
-
-    console.log(chalk.green('✅ Prerequisites satisfied\n'));
   }
 
   async runTestSuite(suite) {
-    console.log(chalk.bold.cyan(`\n📋 ${suite.name}`));
-    console.log(chalk.gray('─'.repeat(80)));
-
     if (suite.requiresBrowser && process.env.CI) {
-      console.log(chalk.yellow('⚠️  Skipping browser tests in CI environment'));
       this.results.push({
         ...suite,
         success: true,
@@ -138,9 +125,7 @@ class TestRunner {
       });
 
       if (result.code === 0) {
-        console.log(chalk.green(`✅ ${suite.name} passed (${(duration / 1000).toFixed(2)}s)`));
       } else {
-        console.log(chalk.red(`❌ ${suite.name} failed (${(duration / 1000).toFixed(2)}s)`));
       }
     } catch (error) {
       const duration = performance.now() - suiteStart;
@@ -182,8 +167,6 @@ class TestRunner {
   }
 
   async generateReports() {
-    console.log(chalk.yellow('\n📊 Generating reports...'));
-
     const reportDir = path.join(process.cwd(), 'test-reports');
     await fs.mkdir(reportDir, { recursive: true });
 
@@ -214,12 +197,9 @@ class TestRunner {
 
       // Generate coverage badge
       const coveragePercent = coverageData.total.lines.pct;
-      const badgeColor = coveragePercent >= 90 ? 'green' : coveragePercent >= 80 ? 'yellow' : 'red';
-
-      console.log(chalk.bold(`\n📈 Coverage: ${coveragePercent}% (${badgeColor})`));
-    } catch (error) {
-      console.log(chalk.yellow('⚠️  Coverage data not available'));
-    }
+      const _badgeColor =
+        coveragePercent >= 90 ? 'green' : coveragePercent >= 80 ? 'yellow' : 'red';
+    } catch (_error) {}
 
     // Performance summary
     const perfReport = await this.generatePerformanceReport();
@@ -227,8 +207,6 @@ class TestRunner {
       path.join(reportDir, 'performance-summary.json'),
       JSON.stringify(perfReport, null, 2)
     );
-
-    console.log(chalk.green('✅ Reports generated'));
   }
 
   async generatePerformanceReport() {
@@ -242,7 +220,7 @@ class TestRunner {
 
     // Parse performance test output
     const perfTest = this.results.find((r) => r.name.includes('Performance'));
-    if (perfTest && perfTest.output) {
+    if (perfTest?.output) {
       // Extract metrics from output (simplified)
       const lines = perfTest.output.split('\n');
       lines.forEach((line) => {
@@ -264,46 +242,23 @@ class TestRunner {
   }
 
   displaySummary() {
-    const totalDuration = (performance.now() - this.startTime) / 1000;
-
-    console.log(chalk.bold.blue('\n\n📊 Test Suite Summary'));
-    console.log(chalk.gray('═'.repeat(80)));
-
-    // Test results
-    console.log(chalk.bold('\nTest Results:'));
+    const _totalDuration = (performance.now() - this.startTime) / 1000;
     this.results.forEach((result) => {
-      const icon = result.skipped ? '⚪' : result.success ? '✅' : '❌';
-      const time = result.duration ? ` (${(result.duration / 1000).toFixed(2)}s)` : '';
-      console.log(`  ${icon} ${result.name}${time}`);
+      const _icon = result.skipped ? '⚪' : result.success ? '✅' : '❌';
+      const _time = result.duration ? ` (${(result.duration / 1000).toFixed(2)}s)` : '';
     });
 
     // Coverage summary
     if (this.coverageData.lines) {
-      console.log(chalk.bold('\nCoverage Summary:'));
-      console.log(`  Lines:      ${this.coverageData.lines.pct}%`);
-      console.log(`  Statements: ${this.coverageData.statements.pct}%`);
-      console.log(`  Branches:   ${this.coverageData.branches.pct}%`);
-      console.log(`  Functions:  ${this.coverageData.functions.pct}%`);
     }
 
     // Overall summary
-    const passed = this.results.filter((r) => r.success).length;
+    const _passed = this.results.filter((r) => r.success).length;
     const failed = this.results.filter((r) => !r.success && !r.skipped).length;
-    const skipped = this.results.filter((r) => r.skipped).length;
-
-    console.log(chalk.bold('\nOverall Summary:'));
-    console.log(`  Total:    ${this.results.length} suites`);
-    console.log(`  Passed:   ${chalk.green(passed)}`);
-    console.log(`  Failed:   ${failed > 0 ? chalk.red(failed) : failed}`);
-    console.log(`  Skipped:  ${chalk.yellow(skipped)}`);
-    console.log(`  Duration: ${totalDuration.toFixed(2)}s`);
-
-    console.log(chalk.gray('\n═'.repeat(80)));
+    const _skipped = this.results.filter((r) => r.skipped).length;
 
     if (failed === 0) {
-      console.log(chalk.bold.green('\n✅ All tests passed! 🎉'));
     } else {
-      console.log(chalk.bold.red(`\n❌ ${failed} test suite(s) failed`));
     }
   }
 }

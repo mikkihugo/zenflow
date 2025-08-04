@@ -20,3 +20,7 @@ export * from './wasm-types';
 // FACT WASM Core (cognitive processing - consolidated from src/wasm/)
 // Located in fact-core/ subdirectory to avoid naming conflicts
 // Note: FACT exports will be added when needed
+
+// Additional WASM components
+export * from './wasm-neural-accelerator';
+// JS loaders are imported dynamically when needed to avoid circular dependencies

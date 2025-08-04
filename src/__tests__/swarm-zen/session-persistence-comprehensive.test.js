@@ -11,18 +11,17 @@
  * - End-to-end user workflow testing
  */
 
+import crypto from 'node:crypto';
+import fs from 'node:fs/promises';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { jest } from '@jest/globals';
-import crypto from 'crypto';
-import fs from 'fs/promises';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
 
 // Test framework setup
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 import { HealthMonitor } from '../src/health-monitor.js';
-import { SwarmPersistencePooled } from '../src/persistence-pooled.js';
 import { RecoveryWorkflows } from '../src/recovery-workflows.js';
 // Import the components under test
 import { SessionManager } from '../src/session-manager.js';
@@ -113,14 +112,14 @@ class MockPersistence {
 
   get pool() {
     return {
-      read: async (query, params = []) => {
+      read: async (query, _params = []) => {
         // Simple query simulation
         if (query.includes('SELECT 1')) {
           return [{ test: 1 }];
         }
         return [];
       },
-      write: async (query, params = []) => {
+      write: async (_query, _params = []) => {
         // Simple write simulation
         return { changes: 1 };
       },
@@ -146,7 +145,7 @@ class TestUtils {
   static async cleanup(path) {
     try {
       await fs.rm(path, { recursive: true, force: true });
-    } catch (error) {
+    } catch (_error) {
       // Ignore cleanup errors
     }
   }
@@ -944,7 +943,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       await sessionManager.initialize();
       await recoveryWorkflows.initialize();
 
-      const sessionId = await sessionManager.createSession(
+      const _sessionId = await sessionManager.createSession(
         'agent-failure-test',
         TestDataFactory.createSwarmOptions(),
         TestDataFactory.createSwarmState()
@@ -1046,7 +1045,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
             TestDataFactory.createSwarmOptions()
           );
           sessions.push(sessionId);
-        } catch (error) {
+        } catch (_error) {
           // Expected when resources are exhausted
           break;
         }
@@ -1091,8 +1090,6 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
 
       // Should complete within reasonable time (less than 1 operation per ms)
       expect(duration).toBeLessThan(operationCount);
-
-      console.log(`Completed ${operationCount} operations in ${duration.toFixed(2)}ms`);
     });
 
     test('should handle large state serialization efficiently', async () => {
@@ -1145,12 +1142,12 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const loadedSession = await sessionManager.loadSession(sessionId);
       const loadDuration = performanceTracker.end('large-state-deserialization');
 
+      // Validate performance requirements
+      expect(saveDuration).toBeLessThan(5000); // Should save within 5 seconds
+      expect(loadDuration).toBeLessThan(3000); // Should load within 3 seconds
+
       expect(loadedSession.swarmState.agents.size).toBe(1000);
       expect(loadedSession.swarmState.tasks.size).toBe(1000);
-
-      console.log(
-        `Large state save: ${saveDuration.toFixed(2)}ms, load: ${loadDuration.toFixed(2)}ms`
-      );
     });
 
     test('should handle concurrent health checks efficiently', async () => {
@@ -1173,8 +1170,6 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
 
       // Should complete faster than sequential execution
       expect(duration).toBeLessThan(checkCount * 10); // Much faster than sequential
-
-      console.log(`Executed ${checkCount} health checks in ${duration.toFixed(2)}ms`);
     });
 
     test('should handle multiple concurrent recovery workflows', async () => {
@@ -1219,10 +1214,11 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
 
       const duration = performanceTracker.end('concurrent-recovery-workflows');
 
+      // Validate concurrent performance (should complete within 10 seconds)
+      expect(duration).toBeLessThan(10000);
+
       expect(executions).toHaveLength(workflowCount);
       expect(executions.every((e) => e.status === 'completed')).toBe(true);
-
-      console.log(`Executed ${workflowCount} recovery workflows in ${duration.toFixed(2)}ms`);
     });
 
     test('should maintain performance under stress', async () => {
@@ -1280,10 +1276,6 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       // Verify system is still responsive
       const finalStats = await sessionManager.getSessionStats();
       expect(finalStats).toBeDefined();
-
-      console.log(
-        `Stress test completed: ${operations.length} operations in ${stressTestDuration}ms`
-      );
     });
   });
 
@@ -1326,7 +1318,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       });
 
       // System creates automatic checkpoint
-      const checkpointId = await sessionManager.createCheckpoint(
+      const _checkpointId = await sessionManager.createCheckpoint(
         sessionId,
         'User workflow checkpoint'
       );
@@ -1441,7 +1433,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
         metadata: { migrationTest: true, workProgress: 75 },
       });
 
-      const migrationCheckpoint = await sessionManager.createCheckpoint(
+      const _migrationCheckpoint = await sessionManager.createCheckpoint(
         sourceSessionId,
         'Migration checkpoint'
       );
@@ -1578,7 +1570,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
         TestDataFactory.createSwarmState()
       );
 
-      const baselineCheckpoint = await sessionManager.createCheckpoint(
+      const _baselineCheckpoint = await sessionManager.createCheckpoint(
         sessionId,
         'Baseline before chaos'
       );
@@ -1595,10 +1587,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
           await recoveryWorkflows.injectChaosFailure(failure.type, failure.params);
           // Wait for recovery to complete
           await new Promise((resolve) => setTimeout(resolve, 1000));
-        } catch (error) {
-          // Some chaos failures are expected to throw errors
-          console.log(`Chaos failure ${failure.type} completed: ${error.message}`);
-        }
+        } catch (_error) {}
       }
 
       // Verify system is still functional
@@ -1759,14 +1748,6 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
           architecture: process.arch,
         },
       };
-
-      console.log('\n📊 COMPREHENSIVE TEST SUITE SUMMARY');
-      console.log('=====================================');
-      console.log(`Total Tests: ${coverageReport.totalTestCount}`);
-      console.log(`Components: ${coverageReport.componentsUnderTest.join(', ')}`);
-      console.log(`Performance Metrics: ${Object.keys(performanceMetrics).length} tracked`);
-      console.log(`Test Environment: Node ${process.version} on ${process.platform}`);
-      console.log('\n✅ All session persistence and recovery components tested comprehensively');
 
       expect(coverageReport.totalTestCount).toBeGreaterThan(50);
       expect(coverageReport.componentsUnderTest).toHaveLength(3);

@@ -3,8 +3,8 @@
  * Tests actual file operations and analysis results
  */
 
+import * as path from 'node:path';
 import * as fs from 'fs-extra';
-import * as path from 'path';
 import { DomainAnalysisEngine } from '../../../../tools/domain-splitting/analyzers/domain-analyzer';
 import { NEURAL_SPLITTING_PLAN } from '../../../../tools/domain-splitting/types/domain-types';
 
@@ -95,8 +95,8 @@ describe('Domain Splitting - Classical TDD', () => {
       expect(analysis.categories['training-systems']).toContain(
         expect.stringContaining('trainer.ts')
       );
-      expect(analysis.categories['utilities']).toContain(expect.stringContaining('utils.ts'));
-      expect(analysis.categories['configuration']).toContain(expect.stringContaining('config.ts'));
+      expect(analysis.categories.utilities).toContain(expect.stringContaining('utils.ts'));
+      expect(analysis.categories.configuration).toContain(expect.stringContaining('config.ts'));
     });
 
     it('should build dependency graph correctly', async () => {
@@ -138,7 +138,7 @@ describe('Domain Splitting - Classical TDD', () => {
       // Check specific dependencies
       const moduleANode = analysis.dependencies.nodes.find((n) => n.file.includes('moduleA.ts'));
       expect(moduleANode).toBeDefined();
-      expect(moduleANode!.imports).toContain(expect.stringContaining('moduleB'));
+      expect(moduleANode?.imports).toContain(expect.stringContaining('moduleB'));
     });
 
     it('should identify sub-domains from analysis', async () => {
@@ -158,7 +158,7 @@ describe('Domain Splitting - Classical TDD', () => {
         p.targetSubDomains.some((s) => s.name.includes('core'))
       );
       expect(categoryPlan).toBeDefined();
-      expect(categoryPlan!.targetSubDomains.length).toBeGreaterThan(1);
+      expect(categoryPlan?.targetSubDomains.length).toBeGreaterThan(1);
     });
 
     it('should calculate splitting benefits accurately', async () => {
@@ -210,9 +210,9 @@ describe('Domain Splitting - Classical TDD', () => {
 
       // Bridge should depend on core, models, and wasm
       const bridge = NEURAL_SPLITTING_PLAN.targetSubDomains.find((s) => s.name === 'neural-bridge');
-      expect(bridge!.dependencies).toContain('neural-core');
-      expect(bridge!.dependencies).toContain('neural-models');
-      expect(bridge!.dependencies).toContain('neural-wasm');
+      expect(bridge?.dependencies).toContain('neural-core');
+      expect(bridge?.dependencies).toContain('neural-models');
+      expect(bridge?.dependencies).toContain('neural-wasm');
     });
 
     it('should follow kebab-case naming convention', () => {

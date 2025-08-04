@@ -5,12 +5,12 @@
  * focused modules for WebSocket, API routes, and daemon management.
  */
 
+import { existsSync } from 'node:fs';
+import { createServer, type Server as HTTPServer } from 'node:http';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import express, { type Express } from 'express';
-import { existsSync } from 'fs';
-import { createServer, type Server as HTTPServer } from 'http';
-import { dirname, join } from 'path';
 import { Server as SocketIOServer } from 'socket.io';
-import { fileURLToPath } from 'url';
 import { createLogger } from '../../utils/logger';
 import { ApiRouteHandler } from './ApiRouteHandler';
 import { DaemonProcessManager } from './DaemonProcessManager';
@@ -38,15 +38,27 @@ export interface WebConfig {
  * Main web interface server coordinating all web functionality
  */
 export class WebInterfaceServer {
+  // TODO: Use dependency injection for logger
+  // Should inject ILogger from DI container instead of creating directly
+  // Example: constructor(@inject(CORE_TOKENS.Logger) private logger: ILogger) {}
   private logger = createLogger('WebServer');
   private config: Required<WebConfig>;
   private app: Express;
   private server: HTTPServer;
   private io: SocketIOServer;
   private webSocketCoordinator: WebSocketCoordinator;
-  private apiRouteHandler: ApiRouteHandler;
   private daemonManager: DaemonProcessManager;
 
+  // TODO: Use dependency injection for better testability and loose coupling
+  // Should inject dependencies instead of creating them directly
+  // Example:
+  // constructor(
+  //   @inject(CORE_TOKENS.Logger) private logger: ILogger,
+  //   @inject(WEB_TOKENS.SocketIO) private io: SocketIOServer,
+  //   @inject(WEB_TOKENS.WebSocketCoordinator) private webSocketCoordinator: WebSocketCoordinator,
+  //   @inject(WEB_TOKENS.DaemonManager) private daemonManager: DaemonProcessManager,
+  //   @inject(WEB_TOKENS.Config) config: WebConfig = {}
+  // ) {
   constructor(config: WebConfig = {}) {
     this.config = {
       port: 3000, // Changed from 3456 to 3000 as per requirement
@@ -128,7 +140,7 @@ export class WebInterfaceServer {
     this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
     // Session middleware (basic)
-    this.app.use((req, res, next) => {
+    this.app.use((req, _res, next) => {
       const sessionId = req.headers['x-session-id'] as string;
       if (sessionId) {
         (req as any).sessionId = sessionId;
@@ -149,14 +161,14 @@ export class WebInterfaceServer {
       this.app.use(express.static(this.config.staticDir));
     } else {
       // Serve inline HTML if no build exists
-      this.app.get('/', (req, res) => {
+      this.app.get('/', (_req, res) => {
         res.send(this.generateInlineHTML());
       });
       this.logger.warn('No static build found, serving inline HTML');
     }
 
     // Unified port structure - different endpoints on port 3000
-    this.app.get('/web', (req, res) => {
+    this.app.get('/web', (_req, res) => {
       if (existsSync(this.config.staticDir)) {
         res.sendFile('index.html', { root: this.config.staticDir });
       } else {
@@ -164,7 +176,7 @@ export class WebInterfaceServer {
       }
     });
 
-    this.app.get('/mcp', (req, res) => {
+    this.app.get('/mcp', (_req, res) => {
       res.json({
         protocol: 'http',
         version: '2024-11-05',
@@ -221,19 +233,6 @@ export class WebInterfaceServer {
           `⚡ WebSocket: Real-time updates ${this.config.realTime ? 'enabled' : 'disabled'}`
         );
 
-        console.log(`
-      🌐 Claude Zen Unified Interface Server`);
-        console.log(`=========================================`);
-        console.log(`🚀 Base URL: ${address}`);
-        console.log(`📊 Web Dashboard: ${address}/web`);
-        console.log(`🔗 API Endpoints: ${address}${this.config.apiPrefix}/*`);
-        console.log(`📡 MCP Protocol: ${address}/mcp`);
-        console.log(`⚡ WebSocket: ${this.config.realTime ? 'Enabled' : 'Disabled'}`);
-        console.log(`🎨 Theme: ${this.config.theme}`);
-        console.log(`
-      ✅ Unified server ready - All interfaces on port ${this.config.port}`);
-        console.log(`Press Ctrl+C to stop\n`);
-
         resolve();
       });
 
@@ -248,18 +247,10 @@ export class WebInterfaceServer {
    * Start server in daemon mode
    */
   private async startDaemon(): Promise<void> {
-    const processInfo = await this.daemonManager.startDaemon(process.execPath, [
+    const _processInfo = await this.daemonManager.startDaemon(process.execPath, [
       process.argv[1],
       ...process.argv.slice(2).filter((arg) => arg !== '--daemon'),
     ]);
-
-    console.log(`🚀 Unified Interface daemon started`);
-    console.log(`📊 PID: ${processInfo.pid}`);
-    console.log(`🌐 Base URL: http://${this.config.host}:${this.config.port}`);
-    console.log(`📊 Dashboard: http://${this.config.host}:${this.config.port}/web`);
-    console.log(`🔗 API: http://${this.config.host}:${this.config.port}/api`);
-    console.log(`📁 Logs: Run 'claude-zen web logs' to view logs`);
-    console.log(`⏹️  Stop: Run 'claude-zen web stop' to stop daemon`);
   }
 
   /**

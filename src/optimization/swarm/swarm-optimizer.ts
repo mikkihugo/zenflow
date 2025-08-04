@@ -4,15 +4,14 @@
  */
 
 import type {
-  SwarmOptimizer,
-  RoutingOptimization,
   CacheStrategy,
-  LatencyReduction,
-  ScalingStrategy,
-  SwarmTopology,
   CoordinationLayer,
+  LatencyReduction,
   Protocol,
-  SWARM_PERFORMANCE_TARGETS,
+  RoutingOptimization,
+  ScalingStrategy,
+  SwarmOptimizer,
+  SwarmTopology,
 } from '../interfaces/optimization-interfaces';
 
 export interface SwarmOptimizationConfig {
@@ -42,9 +41,6 @@ export interface CoordinationMetrics {
 
 export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   private config: SwarmOptimizationConfig;
-  private routingCache: Map<string, any> = new Map();
-  private topologyCache: Map<string, SwarmTopology> = new Map();
-  private performanceHistory: CoordinationMetrics[] = [];
 
   constructor(config: Partial<SwarmOptimizationConfig> = {}) {
     this.config = {
@@ -88,12 +84,32 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
       const afterStats = await this.measureRoutingPerformance(topology);
       const executionTime = Date.now() - startTime;
 
-      return {
+      // Record optimization performance metrics
+      const improvementRatio = beforeStats.messageLatency / afterStats.messageLatency;
+      const optimizationResult = {
         routingLatency: afterStats.messageLatency,
         messageCompression: compressionRatio,
         protocolEfficiency: protocolOptimization.efficiency,
         topologyOptimization: topologyAnalysis.optimization,
+        routingAlgorithmImprovement: routingOptimization.improvement,
+        executionTime,
+        performance: {
+          latencyImprovement: improvementRatio,
+          executionTime,
+          beforeLatency: beforeStats.messageLatency,
+          afterLatency: afterStats.messageLatency,
+        },
       };
+
+      // Log optimization results for analysis
+      this.logger.info('Swarm routing optimization completed', {
+        executionTime,
+        latencyImprovement: `${(improvementRatio * 100).toFixed(1)}%`,
+        finalLatency: afterStats.messageLatency,
+        compressionRatio,
+      });
+
+      return optimizationResult;
     } catch (error) {
       throw new Error(`Routing optimization failed: ${error}`);
     }
@@ -123,7 +139,10 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
       const evictionPolicy = this.selectEvictionPolicy(patterns);
 
       // 4. Implement multi-layer caching
-      const cacheHierarchy = await this.implementMultiLayerCaching(coordinationLayer, optimalCacheSize);
+      const cacheHierarchy = await this.implementMultiLayerCaching(
+        coordinationLayer,
+        optimalCacheSize
+      );
 
       // 5. Enable intelligent prefetching
       await this.enableIntelligentPrefetching(coordinationLayer, patterns);
@@ -219,11 +238,20 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
 
       const maxSupportedAgents = await this.calculateMaxSupportedAgents();
 
+      // Log scaling analysis for monitoring
+      this.logger.info('Horizontal scaling strategy determined', {
+        currentUtilization: resourceAnalysis.utilization,
+        recommendedAgents: maxSupportedAgents,
+        loadBalancingStrategy: loadBalancingStrategy.type,
+        autoScalingEnabled,
+      });
+
       return {
         maxAgents: maxSupportedAgents,
         loadBalancing: loadBalancingStrategy,
         autoScaling: autoScalingEnabled,
         resourceAllocation,
+        utilizationAnalysis: resourceAnalysis,
       };
     } catch (error) {
       throw new Error(`Horizontal scaling failed: ${error}`);
@@ -241,7 +269,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
     // Calculate topology metrics
     const efficiency = this.calculateTopologyEfficiency(topology);
     const bottlenecks = this.identifyTopologyBottlenecks(topology);
-    
+
     // Suggest optimization strategy
     let optimization = 'maintain_current';
     if (efficiency < 0.7) {
@@ -259,7 +287,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
     improvement: number;
   }> {
     const currentAlgorithm = this.config.routingAlgorithm;
-    
+
     // Test different routing algorithms
     const algorithms = ['shortest_path', 'load_balanced', 'adaptive'];
     const results = await Promise.all(
@@ -270,7 +298,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
     );
 
     // Select the best performing algorithm
-    const bestResult = results.reduce((best, current) => 
+    const bestResult = results.reduce((best, current) =>
       current.performance > best.performance ? current : best
     );
 
@@ -291,13 +319,13 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   private async implementMessageCompression(topology: SwarmTopology): Promise<number> {
     // Analyze message patterns to determine optimal compression
     const messageStats = await this.analyzeMessagePatterns(topology);
-    
+
     // Select compression algorithm based on message characteristics
     const compressionAlgorithm = this.selectCompressionAlgorithm(messageStats);
-    
+
     // Apply compression and measure ratio
     await this.applyMessageCompression(topology, compressionAlgorithm);
-    
+
     // Return compression ratio (0.0 to 1.0, where 0.8 means 80% compression)
     return 0.8; // Mock value - 80% compression
   }
@@ -311,7 +339,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   }> {
     // Analyze current protocol performance
     const currentEfficiency = await this.measureProtocolEfficiency(topology);
-    
+
     // Test protocol optimizations
     const optimizations = [
       'binary_protocol',
@@ -349,11 +377,11 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
     // Analyze access frequency and data size
     const averageDataSize = patterns.averageMessageSize || 1024; // 1KB default
     const accessFrequency = patterns.accessFrequency || 100; // 100 accesses/sec default
-    
+
     // Calculate cache size based on working set and memory constraints
     const workingSetSize = averageDataSize * accessFrequency * 60; // 1 minute worth
     const maxCacheSize = 100 * 1024 * 1024; // 100MB max
-    
+
     return Math.min(workingSetSize, maxCacheSize);
   }
 
@@ -373,7 +401,9 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   /**
    * Determine optimal load balancing strategy
    */
-  private determineOptimalLoadBalancing(swarmSize: number): 'round_robin' | 'least_connections' | 'weighted' | 'adaptive' {
+  private determineOptimalLoadBalancing(
+    swarmSize: number
+  ): 'round_robin' | 'least_connections' | 'weighted' | 'adaptive' {
     if (swarmSize < 100) return 'round_robin';
     if (swarmSize < 1000) return 'least_connections';
     if (swarmSize < 5000) return 'weighted';
@@ -383,7 +413,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   /**
    * Measure routing performance
    */
-  private async measureRoutingPerformance(topology: SwarmTopology): Promise<MessageRoutingStats> {
+  private async measureRoutingPerformance(_topology: SwarmTopology): Promise<MessageRoutingStats> {
     // Mock implementation - replace with actual measurement
     return {
       averageHops: Math.random() * 3 + 1,
@@ -398,16 +428,17 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
    */
   private calculateTopologyEfficiency(topology: SwarmTopology): number {
     // Simple efficiency calculation based on topology type and size
-    const baseEfficiency = {
-      mesh: 0.9,
-      hierarchical: 0.8,
-      ring: 0.6,
-      star: 0.7,
-    }[topology.type] || 0.5;
+    const baseEfficiency =
+      {
+        mesh: 0.9,
+        hierarchical: 0.8,
+        ring: 0.6,
+        star: 0.7,
+      }[topology.type] || 0.5;
 
     // Adjust for size - larger networks may be less efficient
-    const sizeAdjustment = Math.max(0.5, 1 - (topology.nodes / 10000));
-    
+    const sizeAdjustment = Math.max(0.5, 1 - topology.nodes / 10000);
+
     return baseEfficiency * sizeAdjustment;
   }
 
@@ -435,31 +466,76 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   /**
    * Helper methods with mock implementations
    */
-  private async implementAdaptiveRouting(topology: SwarmTopology): Promise<void> {}
-  private async analyzeCoordinationPatterns(layer: CoordinationLayer): Promise<any> { return {}; }
-  private async implementMultiLayerCaching(layer: CoordinationLayer, size: number): Promise<any> { return { layers: 3 }; }
-  private async enableIntelligentPrefetching(layer: CoordinationLayer, patterns: any): Promise<void> {}
-  private async implementCacheWarming(layer: CoordinationLayer): Promise<void> {}
-  private async measureCacheHitRatio(): Promise<number> { return 0.95; }
-  private async measureAverageLatency(protocols: Protocol[]): Promise<number> { return Math.random() * 10 + 5; }
-  private async measureP95Latency(protocols: Protocol[]): Promise<number> { return Math.random() * 20 + 15; }
-  private async optimizeProtocolStack(protocols: Protocol[]): Promise<any> { return { improvement: 0.3 }; }
-  private async implementConnectionPooling(protocols: Protocol[]): Promise<void> {}
-  private async enableMessageBatching(protocols: Protocol[]): Promise<void> {}
-  private async implementZeroCopyMessaging(protocols: Protocol[]): Promise<void> {}
-  private async optimizeSerializationDeserialization(protocols: Protocol[]): Promise<void> {}
-  private async implementPredictiveRouting(protocols: Protocol[]): Promise<void> {}
-  private async analyzeResourceUtilization(): Promise<any> { return {}; }
-  private async implementAutoScaling(swarmSize: number): Promise<boolean> { return true; }
-  private async optimizeResourceAllocation(swarmSize: number): Promise<string> { return 'dynamic_allocation'; }
-  private async implementDynamicTopologyAdjustment(swarmSize: number): Promise<void> {}
-  private async enableFaultToleranceMechanisms(swarmSize: number): Promise<void> {}
-  private async calculateMaxSupportedAgents(): Promise<number> { return this.config.maxAgents; }
-  private async benchmarkRoutingAlgorithm(topology: SwarmTopology, algorithm: string): Promise<number> { return Math.random(); }
-  private async analyzeMessagePatterns(topology: SwarmTopology): Promise<any> { return {}; }
-  private selectCompressionAlgorithm(stats: any): string { return 'lz4'; }
-  private async applyMessageCompression(topology: SwarmTopology, algorithm: string): Promise<void> {}
-  private async measureProtocolEfficiency(topology: SwarmTopology): Promise<number> { return 0.8; }
-  private async testProtocolOptimization(topology: SwarmTopology, optimization: string): Promise<number> { return Math.random(); }
-  private async applyProtocolOptimization(topology: SwarmTopology, optimization: string): Promise<void> {}
+  private async implementAdaptiveRouting(_topology: SwarmTopology): Promise<void> {}
+  private async analyzeCoordinationPatterns(_layer: CoordinationLayer): Promise<any> {
+    return {};
+  }
+  private async implementMultiLayerCaching(_layer: CoordinationLayer, _size: number): Promise<any> {
+    return { layers: 3 };
+  }
+  private async enableIntelligentPrefetching(
+    _layer: CoordinationLayer,
+    _patterns: any
+  ): Promise<void> {}
+  private async implementCacheWarming(_layer: CoordinationLayer): Promise<void> {}
+  private async measureCacheHitRatio(): Promise<number> {
+    return 0.95;
+  }
+  private async measureAverageLatency(_protocols: Protocol[]): Promise<number> {
+    return Math.random() * 10 + 5;
+  }
+  private async measureP95Latency(_protocols: Protocol[]): Promise<number> {
+    return Math.random() * 20 + 15;
+  }
+  private async optimizeProtocolStack(_protocols: Protocol[]): Promise<any> {
+    return { improvement: 0.3 };
+  }
+  private async implementConnectionPooling(_protocols: Protocol[]): Promise<void> {}
+  private async enableMessageBatching(_protocols: Protocol[]): Promise<void> {}
+  private async implementZeroCopyMessaging(_protocols: Protocol[]): Promise<void> {}
+  private async optimizeSerializationDeserialization(_protocols: Protocol[]): Promise<void> {}
+  private async implementPredictiveRouting(_protocols: Protocol[]): Promise<void> {}
+  private async analyzeResourceUtilization(): Promise<any> {
+    return {};
+  }
+  private async implementAutoScaling(_swarmSize: number): Promise<boolean> {
+    return true;
+  }
+  private async optimizeResourceAllocation(_swarmSize: number): Promise<string> {
+    return 'dynamic_allocation';
+  }
+  private async implementDynamicTopologyAdjustment(_swarmSize: number): Promise<void> {}
+  private async enableFaultToleranceMechanisms(_swarmSize: number): Promise<void> {}
+  private async calculateMaxSupportedAgents(): Promise<number> {
+    return this.config.maxAgents;
+  }
+  private async benchmarkRoutingAlgorithm(
+    _topology: SwarmTopology,
+    _algorithm: string
+  ): Promise<number> {
+    return Math.random();
+  }
+  private async analyzeMessagePatterns(_topology: SwarmTopology): Promise<any> {
+    return {};
+  }
+  private selectCompressionAlgorithm(_stats: any): string {
+    return 'lz4';
+  }
+  private async applyMessageCompression(
+    _topology: SwarmTopology,
+    _algorithm: string
+  ): Promise<void> {}
+  private async measureProtocolEfficiency(_topology: SwarmTopology): Promise<number> {
+    return 0.8;
+  }
+  private async testProtocolOptimization(
+    _topology: SwarmTopology,
+    _optimization: string
+  ): Promise<number> {
+    return Math.random();
+  }
+  private async applyProtocolOptimization(
+    _topology: SwarmTopology,
+    _optimization: string
+  ): Promise<void> {}
 }

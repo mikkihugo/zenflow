@@ -3,7 +3,7 @@
  * Shows how to use inline mocks instead of separate mock files
  */
 
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { describe, expect, it, jest } from '@jest/globals';
 import {
   createMockWasmLoader,
   createMockWasmModule,
@@ -60,7 +60,7 @@ describe('TDD London Style WASM Testing Examples', () => {
       const swarmId = module.createSwarm('hierarchical');
       module.addAgent(swarmId, 'researcher');
       module.assignTask(swarmId, 1, { type: 'analyze' });
-      const state = module.getState(swarmId);
+      const _state = module.getState(swarmId);
       module.destroy(swarmId);
 
       // Assert - Verify interaction sequence
@@ -162,7 +162,7 @@ describe('TDD London Style WASM Testing Examples', () => {
 
       // Act
       const swarmId = await manager.createSwarm('mesh', { maxAgents: 3 });
-      const agentId = manager.addAgentToSwarm(swarmId, 'analyst');
+      const _agentId = manager.addAgentToSwarm(swarmId, 'analyst');
       const info = manager.getSwarmInfo(swarmId);
 
       // Assert - Behavior verification

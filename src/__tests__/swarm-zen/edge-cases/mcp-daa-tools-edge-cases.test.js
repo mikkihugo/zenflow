@@ -16,7 +16,7 @@ const mockDaaService = {
     capabilities: new Set(config.capabilities || []),
     created: Date.now(),
   })),
-  adaptAgent: vi.fn().mockImplementation(async (agentId, feedback) => ({
+  adaptAgent: vi.fn().mockImplementation(async (_agentId, _feedback) => ({
     previousPattern: 'convergent',
     newPattern: 'adaptive',
     improvement: 0.15,
@@ -28,7 +28,7 @@ const mockDaaService = {
     dependencies: dependencies || {},
     status: 'created',
   })),
-  executeWorkflow: vi.fn().mockImplementation(async (workflowId, options) => ({
+  executeWorkflow: vi.fn().mockImplementation(async (_workflowId, options) => ({
     complete: true,
     stepsCompleted: 5,
     totalSteps: 5,
@@ -42,11 +42,11 @@ const mockDaaService = {
       { step: 5, result: 'success' },
     ],
   })),
-  shareKnowledge: vi.fn().mockImplementation(async (sourceId, targetIds, knowledge) => ({
+  shareKnowledge: vi.fn().mockImplementation(async (_sourceId, targetIds, _knowledge) => ({
     updatedAgents: targetIds.length,
     transferRate: 0.95,
   })),
-  getAgentLearningStatus: vi.fn().mockImplementation(async (agentId) => ({
+  getAgentLearningStatus: vi.fn().mockImplementation(async (_agentId) => ({
     totalCycles: 42,
     avgProficiency: 0.87,
     domains: ['language', 'vision', 'reasoning'],
@@ -69,7 +69,7 @@ const mockDaaService = {
     persistentMemorySize: 8 * 1024 * 1024,
     performanceTrend: 'stable',
   })),
-  analyzeCognitivePatterns: vi.fn().mockImplementation(async (agentId) => ({
+  analyzeCognitivePatterns: vi.fn().mockImplementation(async (_agentId) => ({
     patterns: ['convergent', 'systems', 'adaptive'],
     effectiveness: {
       convergent: 0.89,
@@ -79,18 +79,18 @@ const mockDaaService = {
     recommendations: ['Increase adaptive pattern usage', 'Optimize convergent thinking'],
     optimizationScore: 0.85,
   })),
-  setCognitivePattern: vi.fn().mockImplementation(async (agentId, pattern) => ({
+  setCognitivePattern: vi.fn().mockImplementation(async (_agentId, _pattern) => ({
     previousPattern: 'convergent',
     success: true,
     expectedImprovement: 0.12,
   })),
-  performMetaLearning: vi.fn().mockImplementation(async (config) => ({
+  performMetaLearning: vi.fn().mockImplementation(async (_config) => ({
     knowledgeItems: 47,
     updatedAgents: 8,
     proficiencyGain: 0.18,
     insights: ['Cross-domain transfer successful', 'New patterns emerged'],
   })),
-  getPerformanceMetrics: vi.fn().mockImplementation(async (config) => ({
+  getPerformanceMetrics: vi.fn().mockImplementation(async (_config) => ({
     totalAgents: 15,
     activeAgents: 12,
     tasksCompleted: 1847,

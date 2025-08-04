@@ -1,24 +1,20 @@
 #!/usr/bin/env node
 
-import { exec } from 'child_process';
-import fs from 'fs/promises';
-import { promisify } from 'util';
+import { exec } from 'node:child_process';
+import fs from 'node:fs/promises';
+import { promisify } from 'node:util';
 
 const execAsync = promisify(exec);
 
 const presets = ['default', 'minGPT', 'stateOfArt'];
 
 async function validateAllPresets() {
-  console.log('🧬 Validating All Neural Presets...\n');
-
   const results = {
     timestamp: new Date().toISOString(),
     presets: {},
   };
 
   for (const preset of presets) {
-    console.log(`\n📋 Testing ${preset} preset...`);
-
     try {
       // Test with the preset
       const { stdout: testOutput } = await execAsync(`npm test -- --preset=${preset}`);
@@ -49,11 +45,7 @@ async function validateAllPresets() {
         },
         performance: await testPresetPerformance(preset),
       };
-
-      console.log(`  ✅ Tests: ${passed} passed, ${failed} failed`);
-      console.log(`  📊 Coverage: ${coverageData.total.lines.pct.toFixed(2)}% lines`);
     } catch (error) {
-      console.log(`  ❌ Error: ${error.message}`);
       results.presets[preset] = {
         success: false,
         error: error.message,
@@ -141,7 +133,6 @@ ${presets
 `;
 
   await fs.writeFile('PRESET_VALIDATION_REPORT.md', report);
-  console.log('\n📄 Report saved to PRESET_VALIDATION_REPORT.md');
 }
 
 // Run validation

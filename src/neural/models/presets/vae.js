@@ -363,12 +363,6 @@ class VAEModel extends NeuralModel {
         valTotalLoss: valLosses.total,
         klWeight,
       });
-
-      console.log(
-        `Epoch ${epoch + 1}/${epochs} - ` +
-          `Recon Loss: ${avgReconLoss.toFixed(4)}, KL Loss: ${avgKLLoss.toFixed(4)} - ` +
-          `Val Recon: ${valLosses.reconstruction.toFixed(4)}, Val KL: ${valLosses.kl.toFixed(4)}`
-      );
     }
 
     return {

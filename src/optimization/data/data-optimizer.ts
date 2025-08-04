@@ -4,16 +4,15 @@
  */
 
 import type {
-  DataOptimizer,
-  QueryOptimization,
-  PoolConfig,
+  CacheLayer,
   CacheOptimization,
   CompressionResult,
-  DatabaseQuery,
   Connection,
-  CacheLayer,
+  DatabaseQuery,
+  DataOptimizer,
+  PoolConfig,
+  QueryOptimization,
   StorageLayer,
-  DATA_PERFORMANCE_TARGETS,
 } from '../interfaces/optimization-interfaces';
 
 export interface DataOptimizationConfig {
@@ -47,9 +46,6 @@ export interface DatabaseMetrics {
 export class DataPerformanceOptimizer implements DataOptimizer {
   private config: DataOptimizationConfig;
   private queryCache: Map<string, any> = new Map();
-  private connectionPool: Map<string, Connection[]> = new Map();
-  private performanceHistory: DatabaseMetrics[] = [];
-  private indexRecommendations: Map<string, string[]> = new Map();
 
   constructor(config: Partial<DataOptimizationConfig> = {}) {
     this.config = {
@@ -97,11 +93,30 @@ export class DataPerformanceOptimizer implements DataOptimizer {
       const afterStats = await this.measureQueryPerformance(queries);
       const executionTime = Date.now() - startTime;
 
+      // Calculate performance improvements
+      const performanceImprovement =
+        ((beforeStats.averageQueryTime - afterStats.averageQueryTime) /
+          beforeStats.averageQueryTime) *
+        100;
+
+      // Log optimization results
+      this.logger.info('Query performance optimization completed', {
+        executionTime,
+        beforeQueryTime: beforeStats.averageQueryTime,
+        afterQueryTime: afterStats.averageQueryTime,
+        improvementPercentage: `${performanceImprovement.toFixed(2)}%`,
+        slowQueriesIdentified: queryAnalysis.slowQueries.length,
+        queriesOptimized: queries.length,
+      });
+
       return {
         queryTime: afterStats.averageQueryTime,
         indexOptimization: indexOptimizations,
         queryPlanImprovement: queryPlanOptimization.improvement,
         cacheUtilization,
+        performanceImprovement: performanceImprovement,
+        slowQueriesAnalysis: queryAnalysis,
+        executionTime,
       };
     } catch (error) {
       throw new Error(`Query optimization failed: ${error}`);
@@ -194,11 +209,22 @@ export class DataPerformanceOptimizer implements DataOptimizer {
       // Measure cache performance
       const performance = await this.measureCachePerformance(cacheLayer);
 
+      // Log caching optimization results
+      this.logger.info('Intelligent caching optimization completed', {
+        hitRatio: performance.hitRatio,
+        responseTime: performance.responseTime,
+        memoryEfficiency: performance.memoryEfficiency,
+        cachingLevels: cachingStrategy.levels,
+        invalidationStrategy,
+      });
+
       return {
         hitRatio: performance.hitRatio,
         responseTime: performance.responseTime,
         memoryEfficiency: performance.memoryEfficiency,
         invalidationStrategy,
+        cachingStrategy,
+        accessPatterns: accessPatterns.summary,
       };
     } catch (error) {
       throw new Error(`Intelligent caching implementation failed: ${error}`);
@@ -260,21 +286,21 @@ export class DataPerformanceOptimizer implements DataOptimizer {
     inefficientQueries: DatabaseQuery[];
     patterns: string[];
   }> {
-    const slowQueries = queries.filter(q => q.estimatedCost > 1000);
+    const slowQueries = queries.filter((q) => q.estimatedCost > 1000);
     const queryFrequency = new Map<string, number>();
-    
+
     // Count query frequency (simplified by SQL similarity)
-    queries.forEach(query => {
+    queries.forEach((query) => {
       const normalizedSql = this.normalizeQuery(query.sql);
       queryFrequency.set(normalizedSql, (queryFrequency.get(normalizedSql) || 0) + 1);
     });
 
-    const frequentQueries = queries.filter(q => 
-      (queryFrequency.get(this.normalizeQuery(q.sql)) || 0) > 10
+    const frequentQueries = queries.filter(
+      (q) => (queryFrequency.get(this.normalizeQuery(q.sql)) || 0) > 10
     );
 
-    const inefficientQueries = queries.filter(q => 
-      q.estimatedCost > 500 && !q.sql.toLowerCase().includes('index')
+    const inefficientQueries = queries.filter(
+      (q) => q.estimatedCost > 500 && !q.sql.toLowerCase().includes('index')
     );
 
     const patterns = this.identifyQueryPatterns(queries);
@@ -296,7 +322,7 @@ export class DataPerformanceOptimizer implements DataOptimizer {
     // Analyze WHERE clauses to suggest indexes
     const whereColumns = this.extractWhereColumns(queries);
     for (const column of whereColumns) {
-      if (!await this.indexExists(column)) {
+      if (!(await this.indexExists(column))) {
         await this.createIndex(column);
         optimizations.push(`created_index_${column}`);
       }
@@ -305,7 +331,7 @@ export class DataPerformanceOptimizer implements DataOptimizer {
     // Analyze JOIN conditions
     const joinColumns = this.extractJoinColumns(queries);
     for (const column of joinColumns) {
-      if (!await this.indexExists(column)) {
+      if (!(await this.indexExists(column))) {
         await this.createIndex(column);
         optimizations.push(`created_join_index_${column}`);
       }
@@ -314,7 +340,7 @@ export class DataPerformanceOptimizer implements DataOptimizer {
     // Analyze ORDER BY clauses
     const orderByColumns = this.extractOrderByColumns(queries);
     for (const column of orderByColumns) {
-      if (!await this.indexExists(column)) {
+      if (!(await this.indexExists(column))) {
         await this.createIndex(column);
         optimizations.push(`created_sort_index_${column}`);
       }
@@ -361,8 +387,8 @@ export class DataPerformanceOptimizer implements DataOptimizer {
    */
   private async implementQueryCaching(queries: DatabaseQuery[]): Promise<number> {
     // Identify cacheable queries
-    const cacheableQueries = queries.filter(q => this.isQueryCacheable(q));
-    
+    const cacheableQueries = queries.filter((q) => this.isQueryCacheable(q));
+
     // Implement cache for frequent queries
     for (const query of cacheableQueries) {
       await this.cacheQuery(query);
@@ -371,7 +397,7 @@ export class DataPerformanceOptimizer implements DataOptimizer {
     // Calculate cache utilization
     const totalQueries = queries.length;
     const cachedQueries = cacheableQueries.length;
-    
+
     return totalQueries > 0 ? cachedQueries / totalQueries : 0;
   }
 
@@ -384,15 +410,17 @@ export class DataPerformanceOptimizer implements DataOptimizer {
     const cpuCores = 8; // Assume 8 cores, should be detected dynamically
 
     // Base calculation on CPU cores and connection patterns
+    // Consider both average and peak connections to handle load spikes
     const optimal = Math.max(
       cpuCores * 2, // At least 2 connections per core
-      Math.min(averageConnections * 1.5, this.config.maxConnections)
+      Math.min(averageConnections * 1.5, this.config.maxConnections),
+      Math.min(peakConnections * 0.8, this.config.maxConnections) // Handle 80% of peak load
     );
 
     return {
       optimal: Math.floor(optimal),
       min: Math.max(1, Math.floor(optimal * 0.2)),
-      max: Math.min(this.config.maxConnections, Math.floor(optimal * 1.5)),
+      max: Math.min(this.config.maxConnections, Math.floor(peakConnections * 1.2)), // Allow 20% buffer above peak
     };
   }
 
@@ -473,56 +501,57 @@ export class DataPerformanceOptimizer implements DataOptimizer {
 
   private identifyQueryPatterns(queries: DatabaseQuery[]): string[] {
     const patterns: string[] = [];
-    
-    if (queries.some(q => q.sql.includes('SELECT COUNT'))) {
+
+    if (queries.some((q) => q.sql.includes('SELECT COUNT'))) {
       patterns.push('aggregation_heavy');
     }
-    if (queries.some(q => q.sql.includes('JOIN'))) {
+    if (queries.some((q) => q.sql.includes('JOIN'))) {
       patterns.push('join_heavy');
     }
-    if (queries.some(q => q.sql.includes('ORDER BY'))) {
+    if (queries.some((q) => q.sql.includes('ORDER BY'))) {
       patterns.push('sort_heavy');
     }
-    
+
     return patterns;
   }
 
-  private extractWhereColumns(queries: DatabaseQuery[]): string[] {
+  private extractWhereColumns(_queries: DatabaseQuery[]): string[] {
     // Simplified extraction - in reality would parse SQL AST
     return ['user_id', 'created_at', 'status'];
   }
 
-  private extractJoinColumns(queries: DatabaseQuery[]): string[] {
+  private extractJoinColumns(_queries: DatabaseQuery[]): string[] {
     return ['foreign_key_id', 'relation_id'];
   }
 
-  private extractOrderByColumns(queries: DatabaseQuery[]): string[] {
+  private extractOrderByColumns(_queries: DatabaseQuery[]): string[] {
     return ['created_at', 'updated_at', 'priority'];
   }
 
-  private async indexExists(column: string): Promise<boolean> {
+  private async indexExists(_column: string): Promise<boolean> {
     return Math.random() > 0.5; // Mock - 50% chance index exists
   }
 
-  private async createIndex(column: string): Promise<void> {
+  private async createIndex(_column: string): Promise<void> {
     // Mock implementation
   }
 
-  private async dropIndex(index: string): Promise<void> {
+  private async dropIndex(_index: string): Promise<void> {
     // Mock implementation
   }
 
-  private async identifyUnusedIndexes(queries: DatabaseQuery[]): Promise<string[]> {
+  private async identifyUnusedIndexes(_queries: DatabaseQuery[]): Promise<string[]> {
     return ['old_index_1', 'unused_index_2'];
   }
 
-  private async optimizeQueryPlan(query: DatabaseQuery): Promise<{ improvement: number }> {
+  private async optimizeQueryPlan(_query: DatabaseQuery): Promise<{ improvement: number }> {
     return { improvement: Math.random() * 0.5 }; // 0-50% improvement
   }
 
   private isQueryCacheable(query: DatabaseQuery): boolean {
-    return !query.sql.toLowerCase().includes('now()') && 
-           !query.sql.toLowerCase().includes('random()');
+    return (
+      !query.sql.toLowerCase().includes('now()') && !query.sql.toLowerCase().includes('random()')
+    );
   }
 
   private async cacheQuery(query: DatabaseQuery): Promise<void> {
@@ -538,27 +567,47 @@ export class DataPerformanceOptimizer implements DataOptimizer {
     };
   }
 
-  private async implementConnectionLifecycleManagement(connections: Connection[]): Promise<void> {}
+  private async implementConnectionLifecycleManagement(_connections: Connection[]): Promise<void> {}
   private async enableConnectionHealthMonitoring(): Promise<void> {}
-  private async implementConnectionLoadBalancing(connections: Connection[]): Promise<void> {}
-  private async applyConnectionPoolConfig(config: PoolConfig): Promise<void> {}
-  private async analyzeDataAccessPatterns(cacheLayer: CacheLayer): Promise<any> { return {}; }
-  private async implementMultiLevelCaching(cacheLayer: CacheLayer, patterns: any): Promise<any> { return {}; }
-  private async enableIntelligentCacheWarming(cacheLayer: CacheLayer, patterns: any): Promise<void> {}
-  private async implementAdaptiveCacheSizing(cacheLayer: CacheLayer): Promise<void> {}
-  private async implementCacheInvalidation(cacheLayer: CacheLayer, strategy: string): Promise<void> {}
-  private async enableCachePerformanceMonitoring(cacheLayer: CacheLayer): Promise<void> {}
-  private async measureCachePerformance(cacheLayer: CacheLayer): Promise<any> {
+  private async implementConnectionLoadBalancing(_connections: Connection[]): Promise<void> {}
+  private async applyConnectionPoolConfig(_config: PoolConfig): Promise<void> {}
+  private async analyzeDataAccessPatterns(_cacheLayer: CacheLayer): Promise<any> {
+    return {};
+  }
+  private async implementMultiLevelCaching(_cacheLayer: CacheLayer, _patterns: any): Promise<any> {
+    return {};
+  }
+  private async enableIntelligentCacheWarming(
+    _cacheLayer: CacheLayer,
+    _patterns: any
+  ): Promise<void> {}
+  private async implementAdaptiveCacheSizing(_cacheLayer: CacheLayer): Promise<void> {}
+  private async implementCacheInvalidation(
+    _cacheLayer: CacheLayer,
+    _strategy: string
+  ): Promise<void> {}
+  private async enableCachePerformanceMonitoring(_cacheLayer: CacheLayer): Promise<void> {}
+  private async measureCachePerformance(_cacheLayer: CacheLayer): Promise<any> {
     return { hitRatio: 0.95, responseTime: 5, memoryEfficiency: 0.9 };
   }
-  private async analyzeDataCharacteristics(storage: StorageLayer): Promise<any> { return {}; }
-  private async implementProgressiveCompression(storage: StorageLayer, algorithm: string): Promise<void> {}
-  private async enableAdaptiveCompression(storage: StorageLayer): Promise<void> {}
-  private async implementCompressionMonitoring(storage: StorageLayer): Promise<void> {}
-  private async optimizeDecompressionPerformance(storage: StorageLayer, algorithm: string): Promise<number> { return 1000; }
-  private async measureCompressionMetrics(storage: StorageLayer): Promise<any> {
+  private async analyzeDataCharacteristics(_storage: StorageLayer): Promise<any> {
+    return {};
+  }
+  private async implementProgressiveCompression(
+    _storage: StorageLayer,
+    _algorithm: string
+  ): Promise<void> {}
+  private async enableAdaptiveCompression(_storage: StorageLayer): Promise<void> {}
+  private async implementCompressionMonitoring(_storage: StorageLayer): Promise<void> {}
+  private async optimizeDecompressionPerformance(
+    _storage: StorageLayer,
+    _algorithm: string
+  ): Promise<number> {
+    return 1000;
+  }
+  private async measureCompressionMetrics(_storage: StorageLayer): Promise<any> {
     return { ratio: 0.7, storageReduction: 0.7 };
   }
-  private async enableQueryBatching(queries: DatabaseQuery[]): Promise<void> {}
-  private async optimizePreparedStatements(queries: DatabaseQuery[]): Promise<void> {}
+  private async enableQueryBatching(_queries: DatabaseQuery[]): Promise<void> {}
+  private async optimizePreparedStatements(_queries: DatabaseQuery[]): Promise<void> {}
 }

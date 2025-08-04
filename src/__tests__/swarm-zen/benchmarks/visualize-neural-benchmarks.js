@@ -4,8 +4,8 @@
  * Creates visual representations of benchmark results
  */
 
-import { promises as fs } from 'fs';
-import path from 'path';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
 
 class BenchmarkVisualizer {
   constructor() {
@@ -22,26 +22,17 @@ class BenchmarkVisualizer {
     this.benchmarkData = JSON.parse(await fs.readFile(benchmarkPath, 'utf8'));
   }
 
-  generateASCIIChart(data, title, maxWidth = 60) {
-    console.log(`\n${title}`);
-    console.log('='.repeat(maxWidth));
-
+  generateASCIIChart(data, _title, maxWidth = 60) {
     const maxValue = Math.max(...Object.values(data));
 
-    Object.entries(data).forEach(([label, value]) => {
+    Object.entries(data).forEach(([_label, value]) => {
       const barLength = Math.floor((value / maxValue) * (maxWidth - 20));
-      const bar = '█'.repeat(barLength);
-      const percentage = ((value / maxValue) * 100).toFixed(1);
-      console.log(`${label.padEnd(12)} ${bar} ${value} (${percentage}%)`);
+      const _bar = '█'.repeat(barLength);
+      const _percentage = ((value / maxValue) * 100).toFixed(1);
     });
   }
 
   visualizeResults() {
-    console.log('\n🧠 NEURAL MODEL BENCHMARK VISUALIZATION');
-    console.log('='.repeat(70));
-    console.log(`📅 Benchmark Date: ${this.benchmarkData.timestamp}`);
-    console.log(`⏱️  Total Duration: ${(this.benchmarkData.duration / 1000).toFixed(2)} seconds`);
-
     // Accuracy Comparison
     const accuracyData = {};
     Object.entries(this.benchmarkData.results).forEach(([model, data]) => {
@@ -88,13 +79,8 @@ class BenchmarkVisualizer {
   }
 
   generatePerformanceMatrix() {
-    console.log('\n📊 PERFORMANCE MATRIX');
-    console.log('='.repeat(70));
-    console.log('Model        | Accuracy | Speed    | Memory  | Training | Parameters');
-    console.log('-------------|----------|----------|---------|----------|------------');
-
     Object.entries(this.benchmarkData.results).forEach(([model, data]) => {
-      const row = [
+      const _row = [
         model.toUpperCase().padEnd(12),
         `${data.architecture.accuracy}%`.padEnd(9),
         `${Math.floor(data.inference.mean)} ops/s`.padEnd(9),
@@ -102,14 +88,10 @@ class BenchmarkVisualizer {
         `${(data.timings.training / 1000).toFixed(2)}s`.padEnd(9),
         `${(data.architecture.parameters / 1000).toFixed(0)}K`,
       ];
-      console.log(row.join(' | '));
     });
   }
 
   generateModelRankings() {
-    console.log('\n🏆 MODEL RANKINGS BY METRIC');
-    console.log('='.repeat(70));
-
     // Rank by different metrics
     const metrics = [
       { name: 'Accuracy', key: 'architecture.accuracy', higher: true, unit: '%' },
@@ -120,7 +102,6 @@ class BenchmarkVisualizer {
     ];
 
     metrics.forEach((metric) => {
-      console.log(`\n${metric.name}:`);
       const ranked = Object.entries(this.benchmarkData.results)
         .map(([model, data]) => {
           const value = metric.key.split('.').reduce((obj, key) => obj[key], data);
@@ -129,18 +110,14 @@ class BenchmarkVisualizer {
         .sort((a, b) => (metric.higher ? b.value - a.value : a.value - b.value));
 
       ranked.forEach((item, index) => {
-        const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '  ';
-        const value =
+        const _medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '  ';
+        const _value =
           metric.unit === '%' ? parseFloat(item.value).toFixed(1) : Math.floor(item.value);
-        console.log(`  ${medal} ${index + 1}. ${item.model.toUpperCase()}: ${value}${metric.unit}`);
       });
     });
   }
 
   generateTradeoffAnalysis() {
-    console.log('\n⚖️  TRADE-OFF ANALYSIS');
-    console.log('='.repeat(70));
-
     const models = Object.entries(this.benchmarkData.results).map(([name, data]) => ({
       name: name.toUpperCase(),
       accuracy: parseFloat(data.architecture.accuracy),
@@ -148,26 +125,16 @@ class BenchmarkVisualizer {
       memory: data.memory.totalMemory,
       efficiency: data.memory.efficiency,
     }));
-
-    console.log('\n📈 Accuracy vs Speed Trade-off:');
     models
       .sort((a, b) => b.accuracy * b.speed - a.accuracy * a.speed)
       .forEach((model) => {
-        const score = ((model.accuracy * model.speed) / 100).toFixed(1);
-        console.log(
-          `  ${model.name}: ${score} (${model.accuracy}% × ${Math.floor(model.speed)} ops/s)`
-        );
+        const _score = ((model.accuracy * model.speed) / 100).toFixed(1);
       });
-
-    console.log('\n💾 Memory vs Performance Trade-off:');
     models
       .sort((a, b) => b.accuracy / b.memory - a.accuracy / a.memory)
       .forEach((model) => {
-        const score = ((model.accuracy / model.memory) * 1000).toFixed(2);
-        console.log(`  ${model.name}: ${score} (${model.accuracy}% / ${model.memory}MB)`);
+        const _score = ((model.accuracy / model.memory) * 1000).toFixed(2);
       });
-
-    console.log('\n⚡ Overall Efficiency Score:');
     models.forEach((model) => {
       // Normalize values (0-1 scale)
       const normAccuracy = model.accuracy / 100;
@@ -180,9 +147,8 @@ class BenchmarkVisualizer {
 
     models
       .sort((a, b) => b.overallScore - a.overallScore)
-      .forEach((model, index) => {
-        const medal = index === 0 ? '🏆' : '';
-        console.log(`  ${medal} ${model.name}: ${model.overallScore.toFixed(1)}/100`);
+      .forEach((_model, index) => {
+        const _medal = index === 0 ? '🏆' : '';
       });
   }
 
@@ -190,14 +156,6 @@ class BenchmarkVisualizer {
     try {
       await this.loadBenchmarkData();
       this.visualizeResults();
-
-      console.log('\n\n💡 KEY INSIGHTS:');
-      console.log('='.repeat(70));
-      console.log('• Attention model achieves best accuracy (94.31%) with good memory efficiency');
-      console.log('• Feedforward offers 3x faster inference than any other model');
-      console.log('• Transformer provides best balance for parallel workloads');
-      console.log('• LSTM remains optimal for sequential data despite lower overall scores');
-      console.log('\n✅ Visualization complete!');
     } catch (error) {
       console.error('❌ Error:', error.message);
     }

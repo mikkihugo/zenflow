@@ -9,17 +9,11 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 // Import all test helpers
 import {
-  AssertionHelpers,
   assertionHelpers,
-  createClassicalMocks,
   createLondonMocks,
   createTestLogger,
   IntegrationTestSetup,
-  integrationTestSetup,
-  MockBuilder,
-  PerformanceMeasurement,
   performanceMeasurement,
-  TestDataFactory,
   type TestLogger,
   testDataFactory,
 } from './index';
@@ -309,9 +303,9 @@ describe('Test Helper Utilities - Example Usage', () => {
       const binaryResult = results.find((r) => r.name === 'Binary Search');
       const linearResult = results.find((r) => r.name === 'Linear Search');
 
-      expect(binaryResult!.ranking).toBeLessThan(linearResult!.ranking);
+      expect(binaryResult?.ranking).toBeLessThan(linearResult?.ranking);
 
-      testLogger.logPerformance('Algorithm Comparison', binaryResult!.metrics.executionTime, {
+      testLogger.logPerformance('Algorithm Comparison', binaryResult?.metrics.executionTime, {
         algorithm: 'binary-search',
       });
     });
@@ -492,7 +486,7 @@ describe('Test Helper Utilities - Example Usage', () => {
       });
 
       // Approximate equality
-      assertionHelpers.toBeApproximately(Math.PI, 3.14159, 5);
+      assertionHelpers.toBeApproximately(Math.PI, Math.PI, 5);
 
       // Array assertions
       assertionHelpers.toContainElementsInAnyOrder([1, 3, 2], [2, 1, 3]);

@@ -29,9 +29,9 @@ export class MetaLearningFramework {
   /**
    * Select best strategy for given task
    */
-  selectStrategy(taskType, context = {}) {
+  selectStrategy(taskType, _context = {}) {
     const strategies = Array.from(this.learningStrategies.values())
-      .filter(s => s.applicableTasks?.includes(taskType) || !s.applicableTasks)
+      .filter((s) => s.applicableTasks?.includes(taskType) || !s.applicableTasks)
       .sort((a, b) => b.performance - a.performance);
 
     return strategies[0] || null;
@@ -43,9 +43,10 @@ export class MetaLearningFramework {
   updatePerformance(strategyId, performance) {
     const strategy = this.learningStrategies.get(strategyId);
     if (strategy) {
-      strategy.performance = (strategy.performance * strategy.usage + performance) / (strategy.usage + 1);
+      strategy.performance =
+        (strategy.performance * strategy.usage + performance) / (strategy.usage + 1);
       strategy.usage++;
-      
+
       this.performanceHistory.push({
         strategyId,
         performance,
@@ -74,15 +75,15 @@ export class MetaLearningFramework {
   private calculateAveragePerformance() {
     const strategies = Array.from(this.learningStrategies.values());
     if (strategies.length === 0) return 0;
-    
+
     const total = strategies.reduce((sum, s) => sum + s.performance, 0);
     return total / strategies.length;
   }
 
   private getBestStrategy() {
     const strategies = Array.from(this.learningStrategies.values());
-    return strategies.reduce((best, current) => 
-      current.performance > best.performance ? current : best, 
+    return strategies.reduce(
+      (best, current) => (current.performance > best.performance ? current : best),
       { performance: -1 }
     );
   }

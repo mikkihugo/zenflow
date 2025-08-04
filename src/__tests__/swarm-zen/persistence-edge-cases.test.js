@@ -4,8 +4,6 @@
 
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import Database from 'better-sqlite3';
-import { promises as fs } from 'fs';
-import path from 'path';
 
 // Mock modules
 jest.mock('better-sqlite3');

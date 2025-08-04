@@ -7,7 +7,7 @@
 import { EventEmitter } from 'node:events';
 import type { IEventBus } from '@core/event-bus';
 import type { ILogger } from '@core/logger';
-import { LRUCache } from 'lru-cache';
+import LRUCache from 'lru-cache';
 
 // Core optimization types
 export interface OptimizationConfig {
@@ -308,7 +308,7 @@ export class PerformanceOptimizer extends EventEmitter {
   /**
    * Cache data with intelligent policies
    */
-  async cache<T>(
+  async cacheData<T>(
     key: string,
     value: T,
     options?: { ttl?: number; compress?: boolean }
@@ -1181,13 +1181,37 @@ class IntelligentCache extends EventEmitter {
   }
 
   async resize(newSize: number): Promise<void> {
-    this.cache.resize(newSize);
+    // LRUCache doesn't have resize, so create new cache with new size
+    const oldEntries: [string, unknown][] = Array.from(this.cache.entries());
+    this.cache = new LRUCache({
+      max: newSize,
+      ttl: this.config.ttl,
+    });
+
+    // Restore entries up to new size limit
+    for (const [key, value] of oldEntries.slice(0, newSize)) {
+      this.cache.set(key, value);
+    }
+
     this.updateStats();
   }
 
   async setDefaultTTL(ttl: number): Promise<void> {
     this.config.ttl = ttl;
-    this.cache.ttl = ttl;
+    // Create new cache instance with new TTL since ttl is readonly
+    const oldCache = this.cache;
+    this.cache = new LRUCache({
+      max: this.config.maxSize,
+      ttl: ttl,
+      dispose: (value, key) => {
+        this.handleEviction(key, value);
+      },
+    });
+
+    // Migrate existing entries to new cache
+    for (const [key, entry] of oldCache.entries()) {
+      this.cache.set(key, entry);
+    }
   }
 
   async setPrefetchStrategy(strategy: 'none' | 'lru' | 'predictive'): Promise<void> {

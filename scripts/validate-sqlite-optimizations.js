@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-const colors = {
+const _colors = {
   green: '\x1b[32m',
   red: '\x1b[31m',
   yellow: '\x1b[33m',
@@ -16,16 +16,14 @@ const colors = {
   reset: '\x1b[0m',
 };
 
-function log(message, color = 'reset') {
-  console.log(`${colors[color]}${message}${colors.reset}`);
-}
+function log(_message, _color = 'reset') {}
 
 async function isSQLiteAvailable() {
   try {
     // Try to dynamically import better-sqlite3
     await import('better-sqlite3');
     return true;
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 }

@@ -5,9 +5,9 @@
  * and graceful shutdown procedures for the web interface.
  */
 
-import { existsSync } from 'fs';
-import { mkdir, readFile, unlink, writeFile } from 'fs/promises';
-import { dirname, join } from 'path';
+import { existsSync } from 'node:fs';
+import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
 import { createLogger } from '../../utils/logger';
 import type { WebConfig } from './WebConfig';
 
@@ -57,7 +57,7 @@ export class WebProcessManager {
   private async savePidFile(): Promise<void> {
     try {
       await mkdir(dirname(this.pidFile), { recursive: true });
-      await writeFile(this.pidFile, this.pid!.toString());
+      await writeFile(this.pidFile, this.pid?.toString());
       this.logger.debug(`PID file saved: ${this.pidFile}`);
     } catch (error) {
       this.logger.error('Failed to save PID file:', error);
@@ -100,7 +100,7 @@ export class WebProcessManager {
     });
 
     // Handle unhandled promise rejections
-    process.on('unhandledRejection', (reason, promise) => {
+    process.on('unhandledRejection', (reason, _promise) => {
       this.logger.error('Unhandled promise rejection:', reason);
       this.gracefulShutdown('unhandledRejection');
     });
@@ -144,7 +144,7 @@ export class WebProcessManager {
       const pidContent = await readFile(this.pidFile, 'utf-8');
       const pid = parseInt(pidContent.trim());
 
-      if (isNaN(pid)) {
+      if (Number.isNaN(pid)) {
         this.logger.warn('Invalid PID file content, removing');
         await this.removePidFile();
         return null;

@@ -4,15 +4,14 @@
  */
 
 import type {
+  AccelerationResult,
+  BatchConfig,
+  ComputeUnit,
+  MemoryOptimization,
+  NetworkTrainer,
+  NeuralNetwork,
   NeuralOptimizer,
   OptimizationResult,
-  BatchConfig,
-  AccelerationResult,
-  MemoryOptimization,
-  NeuralNetwork,
-  NetworkTrainer,
-  ComputeUnit,
-  NEURAL_PERFORMANCE_TARGETS,
 } from '../interfaces/optimization-interfaces';
 
 export interface NeuralOptimizationConfig {
@@ -180,8 +179,8 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
       };
     }
 
-    const gpuUnits = computeUnits.filter(unit => unit.type === 'GPU');
-    
+    const gpuUnits = computeUnits.filter((unit) => unit.type === 'GPU');
+
     if (gpuUnits.length === 0) {
       // Fallback to WASM acceleration
       return this.enableWASMAcceleration();
@@ -202,7 +201,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
         resourceUtilization,
         fallbackStrategy: 'WASM acceleration',
       };
-    } catch (error) {
+    } catch (_error) {
       // Fallback to WASM if GPU acceleration fails
       return this.enableWASMAcceleration();
     }
@@ -249,10 +248,10 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   private initializeAccelerationSupport(): void {
     // Detect WebGL support for GPU acceleration
     this.accelerationSupport.set('webgl', this.detectWebGLSupport());
-    
+
     // Detect WASM SIMD support
     this.accelerationSupport.set('wasm_simd', this.detectWASMSIMDSupport());
-    
+
     // Detect mixed precision support
     this.accelerationSupport.set('mixed_precision', this.detectMixedPrecisionSupport());
   }
@@ -260,10 +259,12 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   /**
    * Optimize network architecture for performance
    */
-  private async optimizeNetworkArchitecture(network: NeuralNetwork): Promise<{ improvement: number }> {
+  private async optimizeNetworkArchitecture(
+    network: NeuralNetwork
+  ): Promise<{ improvement: number }> {
     // Analyze layer efficiency
     const inefficientLayers = this.identifyInefficientLayers(network);
-    
+
     if (inefficientLayers.length === 0) {
       return { improvement: 0 };
     }
@@ -304,7 +305,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   /**
    * Optimize data loading pipeline
    */
-  private async optimizeDataPipeline(network: NeuralNetwork): Promise<void> {
+  private async optimizeDataPipeline(_network: NeuralNetwork): Promise<void> {
     // Enable data prefetching
     await this.enableDataPrefetching();
 
@@ -323,7 +324,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
    */
   private async enableGradientAccumulation(network: NeuralNetwork): Promise<void> {
     const complexityScore = this.calculateNetworkComplexity(network);
-    
+
     if (complexityScore > 1000) {
       // Large network - enable gradient accumulation
       const accumulationSteps = this.calculateOptimalAccumulationSteps(complexityScore);
@@ -364,7 +365,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
         resourceUtilization: 0.6,
         fallbackStrategy: 'CPU processing',
       };
-    } catch (error) {
+    } catch (_error) {
       return {
         accelerationType: 'WASM',
         speedImprovement: 1.0,
@@ -384,14 +385,16 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   ): number {
     // Estimate memory per sample
     const memoryPerSample = complexity * 4; // 4 bytes per float32
-    
+
     // Calculate maximum possible batch size
-    const maxBatchSize = Math.floor(availableMemory * this.config.memoryThreshold / memoryPerSample);
-    
+    const maxBatchSize = Math.floor(
+      (availableMemory * this.config.memoryThreshold) / memoryPerSample
+    );
+
     // Find optimal batch size (power of 2 for efficiency)
     let optimalBatchSize = Math.min(currentBatchSize * 2, maxBatchSize);
-    optimalBatchSize = Math.pow(2, Math.floor(Math.log2(optimalBatchSize)));
-    
+    optimalBatchSize = 2 ** Math.floor(Math.log2(optimalBatchSize));
+
     // Ensure minimum batch size
     return Math.max(optimalBatchSize, 8);
   }
@@ -424,13 +427,13 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
    * Measure network performance
    */
   private async measureNetworkPerformance(
-    network: NeuralNetwork,
+    _network: NeuralNetwork,
     mode: 'training' | 'inference'
   ): Promise<any> {
     // Mock implementation - replace with actual performance measurement
     const baseLatency = mode === 'training' ? 100 : 10;
     const baseThroughput = mode === 'training' ? 100 : 1000;
-    
+
     return {
       latency: baseLatency + Math.random() * 20,
       throughput: baseThroughput + Math.random() * 200,
@@ -446,7 +449,10 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
    */
   private calculateTrainingImprovement(before: any, after: any): number {
     const latencyImprovement = Math.max(0, (before.latency - after.latency) / before.latency);
-    const throughputImprovement = Math.max(0, (after.throughput - before.throughput) / before.throughput);
+    const throughputImprovement = Math.max(
+      0,
+      (after.throughput - before.throughput) / before.throughput
+    );
     return (latencyImprovement + throughputImprovement) / 2;
   }
 
@@ -488,37 +494,57 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
 
   private selectOptimalGPU(gpuUnits: ComputeUnit[]): ComputeUnit {
     // Select GPU with highest memory
-    return gpuUnits.reduce((optimal, current) => 
+    return gpuUnits.reduce((optimal, current) =>
       current.memory > optimal.memory ? current : optimal
     );
   }
 
   // Placeholder methods for actual implementation
-  private async applyBatchConfiguration(trainer: NetworkTrainer, config: BatchConfig): Promise<void> {}
-  private async initializeGPUAcceleration(gpu: ComputeUnit): Promise<void> {}
-  private async benchmarkGPUPerformance(gpu: ComputeUnit): Promise<number> { return 5.0; }
-  private async measureGPUUtilization(gpu: ComputeUnit): Promise<number> { return 0.8; }
+  private async applyBatchConfiguration(
+    _trainer: NetworkTrainer,
+    _config: BatchConfig
+  ): Promise<void> {}
+  private async initializeGPUAcceleration(_gpu: ComputeUnit): Promise<void> {}
+  private async benchmarkGPUPerformance(_gpu: ComputeUnit): Promise<number> {
+    return 5.0;
+  }
+  private async measureGPUUtilization(_gpu: ComputeUnit): Promise<number> {
+    return 0.8;
+  }
   private async initializeWASMAcceleration(): Promise<void> {}
   private async enableWASMSIMD(): Promise<void> {}
-  private async implementWeightSharing(networks: NeuralNetwork[]): Promise<void> {}
-  private async enableGradientCheckpointing(networks: NeuralNetwork[]): Promise<void> {}
-  private async optimizeTensorStorage(networks: NeuralNetwork[]): Promise<void> {}
-  private async compressNetworkWeights(networks: NeuralNetwork[]): Promise<number> { return 0.7; }
+  private async implementWeightSharing(_networks: NeuralNetwork[]): Promise<void> {}
+  private async enableGradientCheckpointing(_networks: NeuralNetwork[]): Promise<void> {}
+  private async optimizeTensorStorage(_networks: NeuralNetwork[]): Promise<void> {}
+  private async compressNetworkWeights(_networks: NeuralNetwork[]): Promise<number> {
+    return 0.7;
+  }
   private async enableMemoryPooling(): Promise<void> {}
-  private async measureGCImprovement(): Promise<number> { return 0.3; }
-  private identifyInefficientLayers(network: NeuralNetwork): number[] { return []; }
-  private async optimizeLayer(network: NeuralNetwork, layerIndex: number): Promise<void> {}
-  private async addSkipConnections(network: NeuralNetwork): Promise<void> {}
-  private async optimizeActivationFunctions(network: NeuralNetwork): Promise<void> {}
-  private layerSupportsMixedPrecision(layerIndex: number): boolean { return true; }
-  private async convertLayerToFP16(network: NeuralNetwork, layerIndex: number): Promise<void> {}
-  private async enableAutomaticLossScaling(network: NeuralNetwork): Promise<void> {}
+  private async measureGCImprovement(): Promise<number> {
+    return 0.3;
+  }
+  private identifyInefficientLayers(_network: NeuralNetwork): number[] {
+    return [];
+  }
+  private async optimizeLayer(_network: NeuralNetwork, _layerIndex: number): Promise<void> {}
+  private async addSkipConnections(_network: NeuralNetwork): Promise<void> {}
+  private async optimizeActivationFunctions(_network: NeuralNetwork): Promise<void> {}
+  private layerSupportsMixedPrecision(_layerIndex: number): boolean {
+    return true;
+  }
+  private async convertLayerToFP16(_network: NeuralNetwork, _layerIndex: number): Promise<void> {}
+  private async enableAutomaticLossScaling(_network: NeuralNetwork): Promise<void> {}
   private async enableDataPrefetching(): Promise<void> {}
   private async enableParallelDataLoading(): Promise<void> {}
   private async optimizeDataTransformations(): Promise<void> {}
   private async enableDataCaching(): Promise<void> {}
-  private calculateOptimalAccumulationSteps(complexity: number): number { return Math.ceil(complexity / 1000); }
-  private async setGradientAccumulationSteps(network: NeuralNetwork, steps: number): Promise<void> {}
-  private async implementCosineAnnealingSchedule(network: NeuralNetwork): Promise<void> {}
-  private async enableLearningRateWarmup(network: NeuralNetwork): Promise<void> {}
+  private calculateOptimalAccumulationSteps(complexity: number): number {
+    return Math.ceil(complexity / 1000);
+  }
+  private async setGradientAccumulationSteps(
+    _network: NeuralNetwork,
+    _steps: number
+  ): Promise<void> {}
+  private async implementCosineAnnealingSchedule(_network: NeuralNetwork): Promise<void> {}
+  private async enableLearningRateWarmup(_network: NeuralNetwork): Promise<void> {}
 }

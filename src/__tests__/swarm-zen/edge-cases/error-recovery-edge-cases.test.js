@@ -4,16 +4,14 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { RuvSwarm } from '../../src/index-enhanced.js';
 import { EnhancedMCPTools } from '../../src/mcp-tools-enhanced.js';
-import { SwarmPersistence } from '../../src/persistence.js';
 
 describe('Error Handling and Recovery Edge Cases', () => {
   let mcpTools;
-  let mockRuvSwarm;
+  let mockZenSwarm;
 
   beforeEach(() => {
-    mockRuvSwarm = {
+    mockZenSwarm = {
       createSwarm: jest.fn(),
       benchmark: jest.fn(),
     };
@@ -43,11 +41,11 @@ describe('Error Handling and Recovery Edge Cases', () => {
         }
       };
 
-      mockRuvSwarm.createSwarm.mockImplementation(() => {
+      mockZenSwarm.createSwarm.mockImplementation(() => {
         createNestedError();
       });
 
-      await mcpTools.initialize(mockRuvSwarm);
+      await mcpTools.initialize(mockZenSwarm);
 
       await expect(mcpTools.swarm_init({ topology: 'mesh' })).rejects.toThrow(
         /Level 4.*Level 3.*Level 2.*Level 1/
@@ -315,7 +313,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
 
           // Simulate operation failure
           throw new Error('Operation failed');
-        } catch (error) {
+        } catch (_error) {
           // Cleanup all resources, even if some cleanups fail
           const cleanupPromises = acquired.map((resource) =>
             resource.cleanup().catch((err) => ({ error: err.message }))
@@ -461,7 +459,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
       // Test safe serialization
       const safeSerialize = (obj) => {
         const seen = new WeakSet();
-        return JSON.stringify(obj, (key, value) => {
+        return JSON.stringify(obj, (_key, value) => {
           if (typeof value === 'object' && value !== null) {
             if (seen.has(value)) {
               return '[Circular]';
@@ -557,7 +555,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
   describe('Error Recovery Strategies', () => {
     it('should implement retry with different strategies', async () => {
       const strategies = {
-        immediate: (attempt) => 0,
+        immediate: (_attempt) => 0,
         linear: (attempt) => attempt * 100,
         exponential: (attempt) => 2 ** attempt * 100,
         fibonacci: (() => {
@@ -613,8 +611,6 @@ describe('Error Handling and Recovery Edge Cases', () => {
 
 // Run tests when executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('Running error handling and recovery edge case tests...');
-
   // Run all tests
   const { run } = await import('../test-runner.js');
   await run(__filename);

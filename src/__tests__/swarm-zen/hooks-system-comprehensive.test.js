@@ -3,11 +3,11 @@
  * Achieves 80%+ coverage for src/hooks/index.js (521+ lines)
  */
 
+import { execSync } from 'node:child_process';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { execSync } from 'child_process';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,7 +18,7 @@ jest.mock('child_process');
 jest.mock('url');
 
 describe('Hooks System - Complete Coverage', () => {
-  let RuvSwarmHooks;
+  let ZenSwarmHooks;
   let testTempDir;
   let originalEnv;
 
@@ -39,13 +39,13 @@ describe('Hooks System - Complete Coverage', () => {
     });
     execSync.mockReturnValue('mocked output');
 
-    // Import or create mock RuvSwarmHooks
+    // Import or create mock ZenSwarmHooks
     try {
       const module = await import('../src/hooks/index.js');
-      RuvSwarmHooks = module.default || module.RuvSwarmHooks;
-    } catch (error) {
+      ZenSwarmHooks = module.default || module.ZenSwarmHooks;
+    } catch (_error) {
       // Create comprehensive mock implementation
-      RuvSwarmHooks = class {
+      ZenSwarmHooks = class {
         constructor() {
           this.sessionData = {
             startTime: Date.now(),
@@ -290,9 +290,9 @@ describe('Hooks System - Complete Coverage', () => {
 
           // Validate MCP tool
           const validTools = [
-            'mcp__ruv-swarm-zen__swarm_init',
-            'mcp__ruv-swarm-zen__agent_spawn',
-            'mcp__ruv-swarm-zen__task_orchestrate',
+            'mcp__zen-swarm__swarm_init',
+            'mcp__zen-swarm__agent_spawn',
+            'mcp__zen-swarm__task_orchestrate',
           ];
 
           if (!validTools.includes(tool)) {
@@ -749,12 +749,12 @@ describe('Hooks System - Complete Coverage', () => {
 
         optimizeMcpParameters(tool, parameters) {
           const optimizations = {
-            'mcp__ruv-swarm-zen__swarm_init': (params) => ({
+            'mcp__zen-swarm__swarm_init': (params) => ({
               ...params,
               strategy: params.strategy || 'adaptive',
               maxAgents: Math.min(params.maxAgents || 5, 10),
             }),
-            'mcp__ruv-swarm-zen__agent_spawn': (params) => ({
+            'mcp__zen-swarm__agent_spawn': (params) => ({
               ...params,
               capabilities: params.capabilities || ['general'],
             }),
@@ -775,7 +775,7 @@ describe('Hooks System - Complete Coverage', () => {
           return formatters[ext] ? { formatted: true, formatter: formatters[ext] } : null;
         }
 
-        async trainNeuralPatterns(file, args) {
+        async trainNeuralPatterns(_file, _args) {
           // Simulate neural pattern training
           return {
             trained: true,
@@ -827,7 +827,7 @@ describe('Hooks System - Complete Coverage', () => {
           };
         }
 
-        extractWebInsights(query, results) {
+        extractWebInsights(query, _results) {
           return {
             query,
             insights: ['web-trend', 'technology-update'],
@@ -887,7 +887,7 @@ describe('Hooks System - Complete Coverage', () => {
 
   describe('Hooks System - Initialization', () => {
     test('should initialize with default configuration', () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       expect(hooks.sessionData).toBeDefined();
       expect(hooks.sessionData.startTime).toBeDefined();
@@ -900,7 +900,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('should handle all pre-operation hooks', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
       const preHooks = ['pre-edit', 'pre-bash', 'pre-task', 'pre-search', 'pre-mcp'];
 
       for (const hookType of preHooks) {
@@ -910,7 +910,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('should handle all post-operation hooks', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
       const postHooks = [
         'post-edit',
         'post-bash',
@@ -927,7 +927,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('should handle all MCP hooks', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
       const mcpHooks = [
         'mcp-swarm-initialized',
         'mcp-agent-spawned',
@@ -942,7 +942,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('should handle all system hooks', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
       const systemHooks = ['notification', 'session-end', 'session-restore', 'agent-complete'];
 
       for (const hookType of systemHooks) {
@@ -954,7 +954,7 @@ describe('Hooks System - Complete Coverage', () => {
 
   describe('Pre-Operation Hooks - Detailed Coverage', () => {
     test('pre-edit hook should auto-assign agents', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const result = await hooks.handleHook('pre-edit', {
         file: 'test.js',
@@ -968,7 +968,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('pre-bash hook should validate command safety', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       // Test dangerous command blocking
       const dangerousResult = await hooks.handleHook('pre-bash', {
@@ -988,7 +988,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('pre-task hook should analyze complexity and auto-spawn', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const result = await hooks.handleHook('pre-task', {
         description: 'implement neural network architecture',
@@ -1003,7 +1003,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('pre-search hook should handle caching', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       // First search - should continue
       const firstResult = await hooks.handleHook('pre-search', {
@@ -1016,7 +1016,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('pre-mcp hook should validate tools', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       // Test invalid tool
       const invalidResult = await hooks.handleHook('pre-mcp', {
@@ -1029,7 +1029,7 @@ describe('Hooks System - Complete Coverage', () => {
 
       // Test valid tool
       const validResult = await hooks.handleHook('pre-mcp', {
-        tool: 'mcp__ruv-swarm-zen__swarm_init',
+        tool: 'mcp__zen-swarm__swarm_init',
         parameters: { topology: 'mesh' },
       });
 
@@ -1040,7 +1040,7 @@ describe('Hooks System - Complete Coverage', () => {
 
   describe('Post-Operation Hooks - Detailed Coverage', () => {
     test('post-edit hook should format and train', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const result = await hooks.handleHook('post-edit', {
         file: 'test.js',
@@ -1055,7 +1055,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('post-bash hook should analyze performance', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const result = await hooks.handleHook('post-bash', {
         command: 'npm test',
@@ -1069,7 +1069,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('post-task hook should generate summary', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const result = await hooks.handleHook('post-task', {
         taskId: 'test-task',
@@ -1083,7 +1083,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('post-search hook should cache results', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const result = await hooks.handleHook('post-search', {
         pattern: 'test-pattern',
@@ -1097,7 +1097,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('post-web-search hook should extract insights', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const result = await hooks.handleHook('post-web-search', {
         query: 'latest AI trends',
@@ -1110,7 +1110,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('post-web-fetch hook should process content', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const result = await hooks.handleHook('post-web-fetch', {
         url: 'https://example.com',
@@ -1125,7 +1125,7 @@ describe('Hooks System - Complete Coverage', () => {
 
   describe('MCP Hooks - Detailed Coverage', () => {
     test('mcp-swarm-initialized hook should track swarm data', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const result = await hooks.handleHook('mcp-swarm-initialized', {
         topology: 'hierarchical',
@@ -1140,7 +1140,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('mcp-agent-spawned hook should track agents', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const result = await hooks.handleHook('mcp-agent-spawned', {
         type: 'coder',
@@ -1156,7 +1156,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('mcp-task-orchestrated hook should create plan', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const result = await hooks.handleHook('mcp-task-orchestrated', {
         task: 'build application',
@@ -1170,7 +1170,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('mcp-neural-trained hook should track training', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const result = await hooks.handleHook('mcp-neural-trained', {
         model: 'transformer',
@@ -1187,7 +1187,7 @@ describe('Hooks System - Complete Coverage', () => {
 
   describe('System Hooks - Detailed Coverage', () => {
     test('notification hook should store notifications', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const result = await hooks.handleHook('notification', {
         message: 'Test notification',
@@ -1202,7 +1202,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('session-end hook should export metrics', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const result = await hooks.handleHook('session-end', {
         exportMetrics: true,
@@ -1216,7 +1216,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('session-restore hook should load memory', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const result = await hooks.handleHook('session-restore', {
         sessionId: 'test-session',
@@ -1229,7 +1229,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('agent-complete hook should update performance', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       // First spawn an agent
       await hooks.handleHook('mcp-agent-spawned', {
@@ -1250,7 +1250,7 @@ describe('Hooks System - Complete Coverage', () => {
 
   describe('Error Handling and Edge Cases', () => {
     test('should handle hook execution errors', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       // Override a method to throw error
       hooks.preEditHook = jest.fn().mockRejectedValue(new Error('Test error'));
@@ -1263,7 +1263,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('should handle unknown hook types', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const result = await hooks.handleHook('unknown-hook-type', {});
 
@@ -1272,7 +1272,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('should track performance metrics', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       // Execute multiple hooks
       await hooks.handleHook('pre-edit', { file: 'test.js' });
@@ -1285,7 +1285,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('should handle cache size limits', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
       hooks.config.maxCacheSize = 2;
 
       // Add items to cache
@@ -1300,7 +1300,7 @@ describe('Hooks System - Complete Coverage', () => {
 
   describe('Advanced Features and Optimization', () => {
     test('should optimize search patterns', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const optimized = hooks.optimizeSearchPattern('camelCase pattern');
 
@@ -1309,7 +1309,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('should select appropriate agent types', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const testType = hooks.selectAgentType('implement unit tests', 0);
       const researchType = hooks.selectAgentType('research new algorithms', 0);
@@ -1321,7 +1321,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('should prepare resources based on complexity', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const simpleResources = await hooks.prepareResources({ level: 'simple', score: 0.25 });
       const complexResources = await hooks.prepareResources({ level: 'complex', score: 0.75 });
@@ -1331,7 +1331,7 @@ describe('Hooks System - Complete Coverage', () => {
     });
 
     test('should handle concurrent hook execution', async () => {
-      const hooks = new RuvSwarmHooks();
+      const hooks = new ZenSwarmHooks();
 
       const promises = [
         hooks.handleHook('pre-edit', { file: 'test1.js' }),

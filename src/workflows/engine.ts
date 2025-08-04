@@ -5,7 +5,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { mkdir, readdir, readFile, unlink, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import * as path from 'node:path';
 
 export interface WorkflowStep {
@@ -83,8 +83,6 @@ export class WorkflowEngine extends EventEmitter {
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
 
-    console.log('[WorkflowEngine] Initializing workflow engine');
-
     // Create persistence directory
     if (this.config.persistWorkflows) {
       await mkdir(this.config.persistencePath, { recursive: true });
@@ -100,12 +98,11 @@ export class WorkflowEngine extends EventEmitter {
 
     this.isInitialized = true;
     this.emit('initialized');
-    console.log('[WorkflowEngine] Workflow engine initialized');
   }
 
   private registerBuiltInHandlers(): void {
     // Delay step
-    this.registerStepHandler('delay', async (context: WorkflowContext, params: any) => {
+    this.registerStepHandler('delay', async (_context: WorkflowContext, params: any) => {
       const duration = params.duration || 1000;
       await new Promise((resolve) => setTimeout(resolve, duration));
       return { delayed: duration };
@@ -157,7 +154,6 @@ export class WorkflowEngine extends EventEmitter {
     handler: (context: WorkflowContext, params: any) => Promise<any>
   ): void {
     this.stepHandlers.set(type, handler);
-    console.log(`[WorkflowEngine] Registered step handler: ${type}`);
   }
 
   async executeStep(step: WorkflowStep, context: WorkflowContext): Promise<any> {
@@ -229,7 +225,6 @@ export class WorkflowEngine extends EventEmitter {
 
         if (data.status === 'running' || data.status === 'paused') {
           this.activeWorkflows.set(data.id, data);
-          console.log(`[WorkflowEngine] Loaded persisted workflow: ${data.id}`);
         }
       }
     } catch (error) {
@@ -248,20 +243,8 @@ export class WorkflowEngine extends EventEmitter {
     }
   }
 
-  private async deleteWorkflow(workflowId: string): Promise<void> {
-    if (!this.config.persistWorkflows) return;
-
-    try {
-      const filePath = path.join(this.config.persistencePath, `${workflowId}.workflow.json`);
-      await unlink(filePath);
-    } catch (error) {
-      // File might not exist - this is OK
-    }
-  }
-
   async registerWorkflowDefinition(name: string, definition: WorkflowDefinition): Promise<void> {
     this.workflowDefinitions.set(name, definition);
-    console.log(`[WorkflowEngine] Registered workflow definition: ${name}`);
   }
 
   async startWorkflow(

@@ -1,7 +1,7 @@
-import { exec } from 'child_process';
-import fs from 'fs/promises';
-import path from 'path';
-import { promisify } from 'util';
+import { exec } from 'node:child_process';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { promisify } from 'node:util';
 
 const execAsync = promisify(exec);
 
@@ -154,39 +154,20 @@ async function getPresetCoverage(preset) {
     const summaryPath = path.join(process.cwd(), 'coverage', 'coverage-summary.json');
     const data = JSON.parse(await fs.readFile(summaryPath, 'utf8'));
     return data.total;
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 }
 
 // Live monitoring function
 export async function startLiveMonitoring(intervalMs = 30000) {
-  console.log('📊 Starting live coverage monitoring...');
-
   // Initial tracking
-  const initial = await trackCoverage();
-  console.log('\n📈 Initial Coverage:', initial?.coverage);
+  const _initial = await trackCoverage();
 
   // Set up interval
   const monitoringInterval = setInterval(async () => {
     const current = await trackCoverage();
-    const progress = await generateProgressReport();
-
-    console.log('\n📊 Coverage Update:');
-    console.log(
-      `  Lines:      ${current.coverage.lines.toFixed(2)}% ${getProgressBar(current.coverage.lines)}`
-    );
-    console.log(
-      `  Branches:   ${current.coverage.branches.toFixed(2)}% ${getProgressBar(current.coverage.branches)}`
-    );
-    console.log(
-      `  Functions:  ${current.coverage.functions.toFixed(2)}% ${getProgressBar(current.coverage.functions)}`
-    );
-    console.log(
-      `  Statements: ${current.coverage.statements.toFixed(2)}% ${getProgressBar(current.coverage.statements)}`
-    );
-    console.log(`\n  ⏱️  Elapsed: ${Math.floor(current.elapsed / 1000)}s`);
-    console.log(`  📈 Improvement Rate: ${progress.rate.perMinute.toFixed(2)}% per minute`);
+    const _progress = await generateProgressReport();
 
     // Check if we've reached 100%
     if (
@@ -195,7 +176,6 @@ export async function startLiveMonitoring(intervalMs = 30000) {
       current.coverage.functions >= 100 &&
       current.coverage.statements >= 100
     ) {
-      console.log('\n🎉 100% COVERAGE ACHIEVED! 🎉');
       clearInterval(monitoringInterval);
       await generateFinalReport();
     }
@@ -204,7 +184,7 @@ export async function startLiveMonitoring(intervalMs = 30000) {
   return monitoringInterval;
 }
 
-function getProgressBar(percentage) {
+function _getProgressBar(percentage) {
   const filled = Math.floor(percentage / 5);
   const empty = 20 - filled;
   return `[${'█'.repeat(filled)}${'░'.repeat(empty)}]`;
@@ -213,7 +193,7 @@ function getProgressBar(percentage) {
 export async function generateFinalReport() {
   const finalMetrics = coverageHistory[coverageHistory.length - 1];
   const presetResults = await validatePresets();
-  const performanceData = await monitorPerformance();
+  const _performanceData = await monitorPerformance();
 
   const report = `# 🏆 100% Coverage Achievement Report
 
@@ -254,7 +234,6 @@ ${Object.entries(presetResults)
 `;
 
   await fs.writeFile('FINAL_COVERAGE_REPORT.md', report);
-  console.log('\n📄 Final report generated: FINAL_COVERAGE_REPORT.md');
 
   return report;
 }

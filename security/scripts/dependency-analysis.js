@@ -1,5 +1,5 @@
-const fs = require('fs');
-const { execSync } = require('child_process');
+const fs = require('node:fs');
+const { execSync } = require('node:child_process');
 
 class DependencyAnalyzer {
   async analyze() {
@@ -17,15 +17,13 @@ class DependencyAnalyzer {
     };
 
     fs.writeFileSync('security/audits/dependency-report.json', JSON.stringify(report, null, 2));
-
-    console.log('📊 Dependency analysis complete');
   }
 
   checkOutdated() {
     try {
       const result = execSync('npm outdated --json', { encoding: 'utf8' });
       return JSON.parse(result);
-    } catch (error) {
+    } catch (_error) {
       return {};
     }
   }
@@ -34,7 +32,7 @@ class DependencyAnalyzer {
     try {
       const result = execSync('npm audit --json', { encoding: 'utf8' });
       return JSON.parse(result);
-    } catch (error) {
+    } catch (_error) {
       return { vulnerabilities: {} };
     }
   }

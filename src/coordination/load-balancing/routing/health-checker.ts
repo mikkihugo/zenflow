@@ -3,8 +3,8 @@
  * Comprehensive agent health monitoring and status management
  */
 
-import { EventEmitter } from 'events';
-import type { IHealthChecker } from '../interfaces';
+import { EventEmitter } from 'node:events';
+import type { HealthChecker } from '../interfaces';
 import type { Agent } from '../types';
 
 interface HealthStatus {
@@ -15,7 +15,7 @@ interface HealthStatus {
   consecutiveFailures: number;
 }
 
-export class HealthChecker extends EventEmitter implements IHealthChecker {
+export class HealthChecker extends EventEmitter implements HealthChecker {
   private healthStatuses: Map<string, HealthStatus> = new Map();
   private checkInterval: number;
   private healthCheckTimer: NodeJS.Timeout | null = null;

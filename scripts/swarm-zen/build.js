@@ -4,17 +4,15 @@
  * Build script for ruv-swarm WASM module
  */
 
-import { execSync } from 'child_process';
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { execSync } from 'node:child_process';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function build() {
-  console.log('Building ruv-swarm WASM module...\n');
-
   const npmDir = path.join(__dirname, '..');
   const crateDir = path.join(npmDir, '..', 'crates', 'ruv-swarm-wasm');
   const wasmDir = path.join(npmDir, 'wasm');
@@ -24,7 +22,7 @@ async function build() {
     // Check if wasm-pack is installed
     try {
       execSync('wasm-pack --version', { stdio: 'ignore' });
-    } catch (error) {
+    } catch (_error) {
       console.error('Error: wasm-pack is not installed.');
       console.error(
         'Install it with: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh'
@@ -35,7 +33,7 @@ async function build() {
     // Check if Rust is installed
     try {
       execSync('rustc --version', { stdio: 'ignore' });
-    } catch (error) {
+    } catch (_error) {
       console.error('Error: Rust is not installed.');
       console.error('Install it from: https://rustup.rs/');
       process.exit(1);
@@ -44,16 +42,10 @@ async function build() {
     // Create output directories
     await fs.mkdir(wasmDir, { recursive: true });
     await fs.mkdir(wasmSIMDDir, { recursive: true });
-
-    // Build standard WASM module
-    console.log('Building standard WASM module...');
     execSync(`wasm-pack build --target web --out-dir ${wasmDir} --no-typescript`, {
       cwd: crateDir,
       stdio: 'inherit',
     });
-
-    // Build SIMD-optimized module
-    console.log('\nBuilding SIMD-optimized WASM module...');
     execSync(
       `RUSTFLAGS="-C target-feature=+simd128" wasm-pack build --target web --out-dir ${wasmSIMDDir} --no-typescript`,
       { cwd: crateDir, stdio: 'inherit' }
@@ -67,31 +59,20 @@ async function build() {
     // Optimize WASM modules with wasm-opt if available
     try {
       execSync('wasm-opt --version', { stdio: 'ignore' });
-      console.log('\nOptimizing WASM modules with wasm-opt...');
 
       const wasmFiles = await fs.readdir(wasmDir);
       for (const file of wasmFiles) {
         if (file.endsWith('.wasm')) {
           const filePath = path.join(wasmDir, file);
-          console.log(`  Optimizing ${file}...`);
           execSync(`wasm-opt -Oz ${filePath} -o ${filePath}`, { stdio: 'inherit' });
         }
       }
-    } catch (error) {
-      console.log('\nNote: wasm-opt not found. Skipping optimization step.');
-      console.log('Install it from: https://github.com/WebAssembly/binaryen');
-    }
-
-    // Generate combined TypeScript definitions
-    console.log('\nGenerating TypeScript definitions...');
+    } catch (_error) {}
     const dtsContent = await generateTypeScriptDefinitions();
     await fs.writeFile(path.join(npmDir, 'src', 'wasm-types.d.ts'), dtsContent);
 
     // Clean up temporary SIMD directory
     await fs.rm(wasmSIMDDir, { recursive: true, force: true });
-
-    console.log('\nBuild completed successfully!');
-    console.log(`WASM modules are in: ${wasmDir}`);
   } catch (error) {
     console.error('\nBuild failed:', error.message);
     process.exit(1);

@@ -7,8 +7,7 @@
 
 import { createLogger } from '../../core/logger';
 import { MCPServer } from './server';
-import { allFACTTools, factHandlers } from './tools/fact-handlers';
-import { neuralTools } from './tools/neural-tools';
+import { allFACTTools } from './tools/fact-handlers';
 import { swarmTools } from './tools/swarm-tools';
 import type { MCPTool } from './types/mcp-types';
 
@@ -17,9 +16,10 @@ import type { MCPTool } from './types/mcp-types';
  */
 export class ClaudeZenMCPServer extends MCPServer {
   private tools: Record<string, MCPTool>;
-  private logger = createLogger({ prefix: 'MCP-Claude-Zen' });
+  private zenLogger = createLogger({ prefix: 'MCP-Claude-Zen' });
 
   constructor() {
+    const logger = createLogger({ prefix: 'MCP-Base' });
     super(
       {
         port: 3001,
@@ -27,8 +27,7 @@ export class ClaudeZenMCPServer extends MCPServer {
         timeout: 30000,
         enabled: true,
       },
-      undefined,
-      undefined
+      logger
     );
 
     // Combine all tools: swarm tools + FACT tools
@@ -37,7 +36,7 @@ export class ClaudeZenMCPServer extends MCPServer {
       ...allFACTTools,
     };
     this.setupSwarmHandlers();
-    this.logger.info('Claude-Zen MCP Server initialized with swarm and FACT tools');
+    this.zenLogger.info('Claude-Zen MCP Server initialized with swarm and FACT tools');
   }
 
   private setupSwarmHandlers(): void {
@@ -78,7 +77,7 @@ export class ClaudeZenMCPServer extends MCPServer {
       });
     });
 
-    this.logger.info(`Registered ${Object.keys(this.tools).length} tools (swarm + FACT)`);
+    this.zenLogger.info(`Registered ${Object.keys(this.tools).length} tools (swarm + FACT)`);
   }
 
   /**
@@ -86,7 +85,7 @@ export class ClaudeZenMCPServer extends MCPServer {
    */
   async start(): Promise<void> {
     await super.start();
-    this.logger.info(
+    this.zenLogger.info(
       'Claude-Zen MCP Server ready for swarm coordination and FACT knowledge gathering'
     );
   }
@@ -108,6 +107,66 @@ export class ClaudeZenMCPServer extends MCPServer {
 
     return await this.tools[name].handler(params);
   }
+
+  /**
+   * Execute multiple file operations in batch
+   */
+  async executeFileBatch(operations: Array<{ type: string; params: any }>): Promise<any[]> {
+    const results = [];
+    for (const operation of operations) {
+      try {
+        // Simulate file operation execution
+        const result = await this.executeOperation(operation);
+        results.push({ success: true, result });
+      } catch (error) {
+        results.push({
+          success: false,
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }
+    return results;
+  }
+
+  /**
+   * Execute multiple swarm operations in batch
+   */
+  async executeSwarmBatch(operations: Array<{ toolName: string; params: any }>): Promise<any[]> {
+    const results = [];
+    for (const operation of operations) {
+      try {
+        const result = await this.executeTool(operation.toolName, operation.params);
+        results.push({ success: true, result });
+      } catch (error) {
+        results.push({
+          success: false,
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }
+    return results;
+  }
+
+  /**
+   * Call any registered tool by name
+   */
+  async callTool(name: string, params: any): Promise<any> {
+    return await this.executeTool(name, params);
+  }
+
+  /**
+   * Execute a generic operation (helper method)
+   */
+  private async executeOperation(operation: { type: string; params: any }): Promise<any> {
+    // This is a placeholder for actual file operations
+    // In a real implementation, this would dispatch to appropriate handlers
+    return {
+      type: operation.type,
+      params: operation.params,
+      timestamp: Date.now(),
+      executionTime: Math.random() * 100, // Simulated execution time
+    };
+  }
 }
 
 // CLI entry point
@@ -119,13 +178,11 @@ async function startServer(): Promise<void> {
 
     // Handle graceful shutdown
     process.on('SIGINT', async () => {
-      console.log('\nShutting down Claude-Zen MCP Server...');
       await server.stop();
       process.exit(0);
     });
 
     process.on('SIGTERM', async () => {
-      console.log('\nShutting down Claude-Zen MCP Server...');
       await server.stop();
       process.exit(0);
     });

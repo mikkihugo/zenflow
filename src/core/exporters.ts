@@ -285,7 +285,7 @@ export const ExportUtils = {
    */
   toCSV: (data: any[]): string => {
     const system = new ExportSystem();
-    return system['convertToCSV'](data);
+    return system.convertToCSV(data);
   },
 
   /**
@@ -293,7 +293,7 @@ export const ExportUtils = {
    */
   toYAML: (data: any): string => {
     const system = new ExportSystem();
-    return system['convertToYAML'](data);
+    return system.convertToYAML(data);
   },
 
   /**
@@ -301,7 +301,7 @@ export const ExportUtils = {
    */
   toXML: (data: any): string => {
     const system = new ExportSystem();
-    return system['convertToXML'](data);
+    return system.convertToXML(data);
   },
 
   /**
@@ -309,7 +309,7 @@ export const ExportUtils = {
    */
   toMarkdown: (data: any): string => {
     const system = new ExportSystem();
-    return system['convertToMarkdown'](data);
+    return system.convertToMarkdown(data);
   },
 };
 

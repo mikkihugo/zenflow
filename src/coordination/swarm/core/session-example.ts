@@ -7,15 +7,13 @@
 
 import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
 import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration';
-import { SessionManager, SessionState } from './session-manager';
+import { SessionManager } from './session-manager';
 import { SessionStats, SessionValidator } from './session-utils';
 
 /**
  * Example 1: Basic Session Usage
  */
 async function basicSessionExample() {
-  console.log('=== Basic Session Example ===');
-
   // Create a session-enabled swarm
   const swarm = new SessionEnabledSwarm(
     {
@@ -37,7 +35,6 @@ async function basicSessionExample() {
 
     // Create a new session
     const sessionId = await swarm.createSession('ML Training Pipeline');
-    console.log(`Created session: ${sessionId}`);
 
     // Add agents with different capabilities
     const dataAgent = swarm.addAgent({
@@ -58,8 +55,6 @@ async function basicSessionExample() {
       capabilities: ['validation', 'metrics-calculation'],
     });
 
-    console.log(`Added agents: ${dataAgent}, ${modelAgent}, ${evaluatorAgent}`);
-
     // Submit tasks
     const dataTask = await swarm.submitTask({
       description: 'Preprocess training dataset',
@@ -74,32 +69,21 @@ async function basicSessionExample() {
       assignedAgents: [modelAgent],
     });
 
-    const evaluationTask = await swarm.submitTask({
+    const _evaluationTask = await swarm.submitTask({
       description: 'Evaluate model performance',
       priority: 'medium',
       dependencies: [trainingTask],
       assignedAgents: [evaluatorAgent],
     });
 
-    console.log(`Submitted tasks: ${dataTask}, ${trainingTask}, ${evaluationTask}`);
-
     // Create a manual checkpoint
-    const checkpointId = await swarm.createCheckpoint('Initial pipeline setup');
-    console.log(`Created checkpoint: ${checkpointId}`);
+    const _checkpointId = await swarm.createCheckpoint('Initial pipeline setup');
 
     // Get session statistics
-    const stats = await swarm.getSessionStats();
-    console.log('Session Statistics:', {
-      sessionId: stats.sessionId,
-      name: stats.name,
-      totalAgents: stats.totalAgents,
-      totalTasks: stats.totalTasks,
-      checkpointCount: stats.checkpointCount,
-    });
+    const _stats = await swarm.getSessionStats();
 
     // Save the session
     await swarm.saveSession();
-    console.log('Session saved successfully');
 
     return sessionId;
   } finally {
@@ -111,8 +95,6 @@ async function basicSessionExample() {
  * Example 2: Session Recovery and Restoration
  */
 async function sessionRecoveryExample(existingSessionId: string) {
-  console.log('=== Session Recovery Example ===');
-
   const swarm = new SessionEnabledSwarm({
     topology: 'mesh',
     maxAgents: 10,
@@ -120,18 +102,10 @@ async function sessionRecoveryExample(existingSessionId: string) {
 
   try {
     await swarm.init();
-
-    // Load the existing session
-    console.log(`Loading session: ${existingSessionId}`);
     await swarm.loadSession(existingSessionId);
 
     const currentSession = await swarm.getCurrentSession();
     if (currentSession) {
-      console.log(`Loaded session: ${currentSession.name}`);
-      console.log(`Agents: ${currentSession.swarmState.agents.size}`);
-      console.log(`Tasks: ${currentSession.swarmState.tasks.size}`);
-      console.log(`Checkpoints: ${currentSession.checkpoints.length}`);
-
       // Add more work to the restored session
       const optimizerAgent = swarm.addAgent({
         id: 'hyperparameter-optimizer',
@@ -139,14 +113,11 @@ async function sessionRecoveryExample(existingSessionId: string) {
         capabilities: ['grid-search', 'bayesian-optimization'],
       });
 
-      const optimizationTask = await swarm.submitTask({
+      const _optimizationTask = await swarm.submitTask({
         description: 'Optimize hyperparameters',
         priority: 'medium',
         assignedAgents: [optimizerAgent],
       });
-
-      console.log(`Added optimizer agent: ${optimizerAgent}`);
-      console.log(`Added optimization task: ${optimizationTask}`);
 
       // Create another checkpoint
       await swarm.createCheckpoint('Added hyperparameter optimization');
@@ -154,10 +125,8 @@ async function sessionRecoveryExample(existingSessionId: string) {
       // Demonstrate checkpoint restoration
       if (currentSession.checkpoints.length > 0) {
         const firstCheckpoint = currentSession.checkpoints[0];
-        console.log(`Restoring from checkpoint: ${firstCheckpoint.id}`);
 
         await swarm.restoreFromCheckpoint(firstCheckpoint.id);
-        console.log('Successfully restored from checkpoint');
       }
     }
   } finally {
@@ -169,8 +138,6 @@ async function sessionRecoveryExample(existingSessionId: string) {
  * Example 3: Session Lifecycle Management
  */
 async function sessionLifecycleExample() {
-  console.log('=== Session Lifecycle Example ===');
-
   const persistence = new SwarmPersistencePooled();
   await persistence.initialize();
 
@@ -190,8 +157,6 @@ async function sessionLifecycleExample() {
       topology: 'distributed',
       maxAgents: 15,
     });
-
-    console.log(`Created session: ${sessionId}`);
 
     // Simulate some work
     await sessionManager.saveSession(sessionId, {
@@ -213,32 +178,25 @@ async function sessionLifecycleExample() {
     });
 
     // Create checkpoints
-    const checkpoint1 = await sessionManager.createCheckpoint(sessionId, 'Work started');
-    console.log(`Created checkpoint: ${checkpoint1}`);
+    const _checkpoint1 = await sessionManager.createCheckpoint(sessionId, 'Work started');
 
     // Pause the session
     await sessionManager.pauseSession(sessionId);
-    console.log('Session paused');
 
     // Resume the session
     await sessionManager.resumeSession(sessionId);
-    console.log('Session resumed');
 
     // Get session statistics
-    const stats = await sessionManager.getSessionStats(sessionId);
-    console.log('Detailed Statistics:', stats);
+    const _stats = await sessionManager.getSessionStats(sessionId);
 
     // List all sessions
-    const allSessions = await sessionManager.listSessions();
-    console.log(`Total sessions: ${allSessions.length}`);
+    const _allSessions = await sessionManager.listSessions();
 
     // Hibernate the session
     await sessionManager.hibernateSession(sessionId);
-    console.log('Session hibernated');
 
     // Load hibernated session
-    const hibernatedSession = await sessionManager.loadSession(sessionId);
-    console.log(`Hibernated session status: ${hibernatedSession.status}`);
+    const _hibernatedSession = await sessionManager.loadSession(sessionId);
 
     return sessionId;
   } finally {
@@ -251,8 +209,6 @@ async function sessionLifecycleExample() {
  * Example 4: Session Health Monitoring and Recovery
  */
 async function sessionHealthExample() {
-  console.log('=== Session Health and Recovery Example ===');
-
   const persistence = new SwarmPersistencePooled();
   await persistence.initialize();
 
@@ -271,34 +227,17 @@ async function sessionHealthExample() {
     // Add some checkpoints
     await sessionManager.createCheckpoint(session1, 'Healthy checkpoint');
     await sessionManager.createCheckpoint(session2, 'Test checkpoint');
-
-    // Run health check
-    console.log('Running health check...');
     const healthReport = await recoveryService.runHealthCheck();
-
-    console.log('Health Report:');
-    console.log(`- Total sessions: ${healthReport.total}`);
-    console.log(`- Healthy sessions: ${healthReport.healthy}`);
-    console.log(`- Corrupted sessions: ${healthReport.corrupted}`);
-    console.log(`- Sessions needing recovery: ${healthReport.needsRecovery.length}`);
 
     // Get detailed statistics for each session
     for (const sessionId of [session1, session2]) {
       const session = await sessionManager.loadSession(sessionId);
-      const healthScore = SessionStats.calculateHealthScore(session);
-      const summary = SessionStats.generateSummary(session);
-
-      console.log(`
-      Session ${sessionId}:`);
-      console.log(`- Health Score: ${healthScore}/100`);
-      console.log(`- Age: ${summary.ageInDays} days`);
-      console.log(`- Last Access: ${summary.daysSinceAccess} days ago`);
-      console.log(`- Status: ${summary.status}`);
+      const _healthScore = SessionStats.calculateHealthScore(session);
+      const _summary = SessionStats.generateSummary(session);
     }
 
     // Schedule automatic recovery if needed
     if (healthReport.needsRecovery.length > 0) {
-      console.log('\nScheduling automatic recovery...');
       await recoveryService.scheduleAutoRecovery();
     }
   } finally {
@@ -311,8 +250,6 @@ async function sessionHealthExample() {
  * Example 5: Advanced Session Operations
  */
 async function advancedSessionExample() {
-  console.log('=== Advanced Session Operations Example ===');
-
   const swarm = new SessionEnabledSwarm(
     {
       topology: 'hybrid',
@@ -331,19 +268,15 @@ async function advancedSessionExample() {
     await swarm.init();
 
     // Create session with event monitoring
-    swarm.on('session:created', (data: any) => {
-      console.log(`Session created event: ${data.sessionId}`);
-    });
+    swarm.on('session:created', (_data: any) => {});
 
-    swarm.on('session:checkpoint_created', (data: any) => {
-      console.log(`Checkpoint created: ${data.checkpointId} - ${data.description}`);
-    });
+    swarm.on('session:checkpoint_created', (_data: any) => {});
 
     swarm.on('session:error', (data: any) => {
       console.error(`Session error: ${data.error} during ${data.operation}`);
     });
 
-    const sessionId = await swarm.createSession('Advanced ML Pipeline');
+    const _sessionId = await swarm.createSession('Advanced ML Pipeline');
 
     // Create multiple specialized agents
     const agents = [
@@ -376,7 +309,6 @@ async function advancedSessionExample() {
     ];
 
     const agentIds = agents.map((agent) => swarm.addAgent(agent));
-    console.log(`Created ${agentIds.length} specialized agents`);
 
     // Create complex task dependencies
     const tasks = [
@@ -428,8 +360,6 @@ async function advancedSessionExample() {
       taskIds.push(taskId);
     }
 
-    console.log(`Created ${taskIds.length} interconnected tasks`);
-
     // Create milestone checkpoints
     await swarm.createCheckpoint('Pipeline setup complete');
 
@@ -441,37 +371,20 @@ async function advancedSessionExample() {
     // Get comprehensive session information
     const session = await swarm.getCurrentSession();
     if (session) {
-      console.log('\nSession Overview:');
-      console.log(`- ID: ${session.id}`);
-      console.log(`- Name: ${session.name}`);
-      console.log(`- Status: ${session.status}`);
-      console.log(`- Agents: ${session.swarmState.agents.size}`);
-      console.log(`- Tasks: ${session.swarmState.tasks.size}`);
-      console.log(`- Checkpoints: ${session.checkpoints.length}`);
-      console.log(`- Topology: ${session.swarmState.topology}`);
-      console.log(`- Version: ${session.version}`);
-
       // Validate session integrity
       const validation = SessionValidator.validateSessionState(session);
-      console.log(`- Integrity: ${validation.valid ? 'Valid' : 'Invalid'}`);
       if (!validation.valid) {
-        console.log(`- Errors: ${validation.errors.join(', ')}`);
       }
 
       // Calculate health metrics
-      const healthScore = SessionStats.calculateHealthScore(session);
-      console.log(`- Health Score: ${healthScore}/100`);
+      const _healthScore = SessionStats.calculateHealthScore(session);
 
-      const summary = SessionStats.generateSummary(session);
-      console.log(`- Success Rate: ${(summary.tasks.successRate * 100).toFixed(1)}%`);
-      console.log(`- Throughput: ${summary.performance.throughput} tasks/sec`);
+      const _summary = SessionStats.generateSummary(session);
     }
 
     // Demonstrate session export/import capability
     if (session) {
-      console.log('\nTesting session export/import...');
-      const exportedData = await swarm.exportSession();
-      console.log(`Exported session data: ${exportedData.length} characters`);
+      const _exportedData = await swarm.exportSession();
 
       // In a real scenario, you would save this to a file
       // and import it in another application instance
@@ -485,29 +398,21 @@ async function advancedSessionExample() {
  * Main execution function
  */
 async function runAllExamples() {
-  console.log('🚀 Starting Session Management System Examples\n');
-
   try {
     // Run basic session example
     const sessionId = await basicSessionExample();
-    console.log('\n' + '='.repeat(50) + '\n');
 
     // Run recovery example using the created session
     await sessionRecoveryExample(sessionId);
-    console.log('\n' + '='.repeat(50) + '\n');
 
     // Run lifecycle management example
-    const lifecycleSessionId = await sessionLifecycleExample();
-    console.log('\n' + '='.repeat(50) + '\n');
+    const _lifecycleSessionId = await sessionLifecycleExample();
 
     // Run health monitoring example
     await sessionHealthExample();
-    console.log('\n' + '='.repeat(50) + '\n');
 
     // Run advanced operations example
     await advancedSessionExample();
-
-    console.log('\\n✅ All examples completed successfully!');
   } catch (error) {
     console.error('❌ Error running examples:', error);
     process.exit(1);

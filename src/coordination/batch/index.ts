@@ -3,33 +3,36 @@
  * Exports all batch operation components following claude-zen patterns
  */
 
-export { BatchEngine, createBatchOperation, createToolBatch } from './batch-engine';
+// Import the actual classes for use in factory functions
+import { BatchEngine } from './batch-engine';
+import { FileBatchOperator } from './file-batch';
+import { BatchPerformanceMonitor } from './performance-monitor';
+import { SwarmBatchCoordinator } from './swarm-batch';
+
 export type {
-  BatchOperation,
   BatchExecutionConfig,
-  BatchResult,
   BatchExecutionSummary,
+  BatchOperation,
+  BatchResult,
 } from './batch-engine';
-
-export { BatchPerformanceMonitor } from './performance-monitor';
-export type {
-  PerformanceMetrics,
-  PerformanceComparison,
-  PerformanceTrend,
-} from './performance-monitor';
-
-export { FileBatchOperator } from './file-batch';
+export { BatchEngine, createBatchOperation, createToolBatch } from './batch-engine';
 export type {
   FileOperation,
   FileOperationResult,
 } from './file-batch';
-
-export { SwarmBatchCoordinator } from './swarm-batch';
+export { FileBatchOperator } from './file-batch';
 export type {
+  PerformanceComparison,
+  PerformanceMetrics,
+  PerformanceTrend,
+} from './performance-monitor';
+export { BatchPerformanceMonitor } from './performance-monitor';
+export type {
+  SwarmBatchConfig,
   SwarmOperation,
   SwarmOperationResult,
-  SwarmBatchConfig,
 } from './swarm-batch';
+export { SwarmBatchCoordinator } from './swarm-batch';
 
 /**
  * Factory function to create a complete batch system with all components
@@ -49,16 +52,14 @@ export function createBatchSystem(options?: {
     performanceMonitor,
     fileBatchOperator,
     swarmBatchCoordinator,
-    
+
     /**
      * Execute a complete batch workflow with performance monitoring
      */
     async executeBatchWorkflow(operations: import('./batch-engine').BatchOperation[]) {
-      const startTime = Date.now();
-      
       // Execute batch operations
       const summary = await batchEngine.executeBatch(operations);
-      
+
       // Record performance metrics
       const sequentialTime = summary.totalExecutionTime * summary.speedImprovement;
       const batchMetrics = performanceMonitor.recordBatchExecution(summary);
@@ -67,15 +68,15 @@ export function createBatchSystem(options?: {
         sequentialTime,
         summary.successfulOperations
       );
-      
+
       // Compare performance
       const comparison = performanceMonitor.comparePerformance(batchMetrics, sequentialMetrics);
-      
+
       return {
         summary,
         performance: comparison,
         results: batchEngine.getResults(),
       };
-    }
+    },
   };
 }

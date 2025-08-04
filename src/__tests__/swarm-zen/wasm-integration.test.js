@@ -3,10 +3,10 @@
  * Tests progressive loading, neural networks, and swarm orchestration
  */
 
-import assert from 'assert';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { RuvSwarm } from '../src/index-enhanced';
+import assert from 'node:assert';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { ZenSwarm } from '../src/index-enhanced';
 import { EnhancedMCPTools } from '../src/mcp-tools-enhanced';
 import { NeuralNetworkManager } from '../src/neural-network-manager';
 import { WasmModuleLoader } from '../src/wasm-loader';
@@ -15,7 +15,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Test utilities
-function assertApprox(actual, expected, tolerance = 0.01) {
+function _assertApprox(actual, expected, tolerance = 0.01) {
   assert(
     Math.abs(actual - expected) < tolerance,
     `Expected ${actual} to be approximately ${expected} (tolerance: ${tolerance})`
@@ -38,10 +38,8 @@ class WasmIntegrationTests {
   }
 
   async setup() {
-    console.log('🔧 Setting up test environment...');
-
-    // Initialize RuvSwarm with test configuration
-    this.ruvSwarm = await RuvSwarm.initialize({
+    // Initialize ZenSwarm with test configuration
+    this.ruvSwarm = await ZenSwarm.initialize({
       loadingStrategy: 'progressive',
       enablePersistence: false, // Disable for tests
       enableNeuralNetworks: true,
@@ -53,8 +51,6 @@ class WasmIntegrationTests {
     // Initialize MCP tools
     this.mcpTools = new EnhancedMCPTools();
     await this.mcpTools.initialize();
-
-    console.log('✅ Test environment ready\n');
   }
 
   async runAll() {
@@ -78,9 +74,7 @@ class WasmIntegrationTests {
 
     for (const test of tests) {
       try {
-        console.log(`\n🧪 Running: ${test.name}`);
         const { time } = await measureTime(() => test.call(this));
-        console.log(`✅ ${test.name} passed (${time.toFixed(1)}ms)`);
         passed++;
         this.testResults.push({ test: test.name, status: 'passed', time });
       } catch (error) {
@@ -232,7 +226,6 @@ class WasmIntegrationTests {
 
   async testNeuralNetworks() {
     if (!this.ruvSwarm.features.neural_networks) {
-      console.log('⚠️  Neural networks not available, skipping detailed tests');
       return;
     }
 
@@ -268,6 +261,8 @@ class WasmIntegrationTests {
 
     // Test 4: Collaborative learning setup
     const network2 = await nnManager.createAgentNeuralNetwork('test-agent-2');
+    assert(network2, 'Second neural network should be created successfully');
+
     const session = await nnManager.enableCollaborativeLearning(['test-agent-1', 'test-agent-2'], {
       strategy: 'federated',
     });
@@ -389,11 +384,11 @@ class WasmIntegrationTests {
 
   async testBackwardCompatibility() {
     // Test 1: Legacy API still works
-    const { RuvSwarm: LegacyRuvSwarm } = await import('../src/index.js');
-    assert(LegacyRuvSwarm, 'Legacy RuvSwarm should be available');
+    const { ZenSwarm: LegacyZenSwarm } = await import('../src/index.js');
+    assert(LegacyZenSwarm, 'Legacy ZenSwarm should be available');
 
     // Test 2: Old initialization pattern
-    const legacy = await LegacyRuvSwarm.initialize({
+    const legacy = await LegacyZenSwarm.initialize({
       wasmPath: path.join(__dirname, '..', 'wasm'),
       useSIMD: false,
       debug: false,
@@ -401,28 +396,16 @@ class WasmIntegrationTests {
     assert(legacy, 'Legacy initialization should work');
 
     // Test 3: Check version compatibility
-    const version = RuvSwarm.getVersion();
+    const version = ZenSwarm.getVersion();
     assert(version === '0.2.0', 'Version should be 0.2.0');
   }
 
-  printSummary(passed, failed) {
-    console.log(`\n${'='.repeat(60)}`);
-    console.log('📊 Test Summary');
-    console.log('='.repeat(60));
-    console.log(`✅ Passed: ${passed}`);
-    console.log(`❌ Failed: ${failed}`);
-    console.log(`📈 Success Rate: ${((passed / (passed + failed)) * 100).toFixed(1)}%`);
-
-    console.log('\n📋 Detailed Results:');
+  printSummary(_passed, failed) {
     this.testResults.forEach((result) => {
-      const icon = result.status === 'passed' ? '✅' : '❌';
-      const time = result.time ? ` (${result.time.toFixed(1)}ms)` : '';
-      const error = result.error ? ` - ${result.error}` : '';
-      console.log(`${icon} ${result.test}${time}${error}`);
+      const _icon = result.status === 'passed' ? '✅' : '❌';
+      const _time = result.time ? ` (${result.time.toFixed(1)}ms)` : '';
+      const _error = result.error ? ` - ${result.error}` : '';
     });
-
-    console.log('\n💾 Memory Usage:');
-    console.log(`Peak Memory: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB`);
 
     if (failed > 0) {
       process.exit(1);

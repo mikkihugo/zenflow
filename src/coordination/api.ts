@@ -94,7 +94,7 @@ export class AgentAPI {
    *             schema:
    *               $ref: '#/components/schemas/Error'
    */
-  static async listAgents(params: {
+  static async listAgents(_params: {
     status?: Agent['status'];
     type?: Agent['type'];
     limit?: number;
@@ -148,7 +148,7 @@ export class AgentAPI {
    *             schema:
    *               $ref: '#/components/schemas/Error'
    */
-  static async createAgent(request: {
+  static async createAgent(_request: {
     type: Agent['type'];
     capabilities: string[];
   }): Promise<Agent> {
@@ -184,7 +184,7 @@ export class AgentAPI {
    *             schema:
    *               $ref: '#/components/schemas/Error'
    */
-  static async getAgent(agentId: string): Promise<Agent> {
+  static async getAgent(_agentId: string): Promise<Agent> {
     throw new Error('Not implemented');
   }
 
@@ -212,7 +212,7 @@ export class AgentAPI {
    *             schema:
    *               $ref: '#/components/schemas/Error'
    */
-  static async removeAgent(agentId: string): Promise<void> {
+  static async removeAgent(_agentId: string): Promise<void> {
     throw new Error('Not implemented');
   }
 }
@@ -261,7 +261,7 @@ export class TaskAPI {
    *             schema:
    *               $ref: '#/components/schemas/Task'
    */
-  static async createTask(request: {
+  static async createTask(_request: {
     type: string;
     description: string;
     priority: number;
@@ -292,7 +292,7 @@ export class TaskAPI {
    *             schema:
    *               $ref: '#/components/schemas/Task'
    */
-  static async getTask(taskId: string): Promise<Task> {
+  static async getTask(_taskId: string): Promise<Task> {
     throw new Error('Not implemented');
   }
 }
@@ -348,7 +348,7 @@ export class SwarmAPI {
    *             schema:
    *               $ref: '#/components/schemas/Error'
    */
-  static async updateConfig(config: SwarmConfig): Promise<SwarmConfig> {
+  static async updateConfig(_config: SwarmConfig): Promise<SwarmConfig> {
     throw new Error('Not implemented');
   }
 }
@@ -406,7 +406,7 @@ export class HealthAPI {
    *             schema:
    *               $ref: '#/components/schemas/PerformanceMetrics'
    */
-  static async getMetrics(timeRange?: '1h' | '24h' | '7d' | '30d'): Promise<PerformanceMetrics> {
+  static async getMetrics(_timeRange?: '1h' | '24h' | '7d' | '30d'): Promise<PerformanceMetrics> {
     throw new Error('Not implemented');
   }
 }
@@ -422,13 +422,21 @@ export class APIErrorHandler {
     details?: Record<string, unknown>,
     traceId?: string
   ): CoordinationError {
-    return {
+    const error: CoordinationError = {
       code,
       message,
-      details,
       timestamp: new Date(),
-      traceId,
     };
+
+    if (details !== undefined) {
+      (error as any).details = details;
+    }
+
+    if (traceId !== undefined) {
+      (error as any).traceId = traceId;
+    }
+
+    return error;
   }
 
   static handleError(error: unknown, traceId?: string): CoordinationError {

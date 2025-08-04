@@ -89,6 +89,7 @@ export class TerminalInterface {
   async render(): Promise<void> {
     const { render } = await import('ink');
     const React = await import('react');
+    const { TerminalApp } = await import('./TerminalInterfaceRouter');
 
     // Determine mode
     const mode =
@@ -98,6 +99,8 @@ export class TerminalInterface {
 
     const commands = process.argv.slice(2).filter((arg) => !arg.startsWith('-'));
     const flags = this.parseFlags(process.argv.slice(2));
+    if (this.config.debug) {
+    }
 
     // Render the appropriate interface
     const { unmount } = render(

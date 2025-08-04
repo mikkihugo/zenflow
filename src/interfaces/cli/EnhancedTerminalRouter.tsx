@@ -8,11 +8,11 @@
 import { Box, Text, useInput } from 'ink';
 import type React from 'react';
 import { useEffect, useState } from 'react';
-import { AdvancedCLIEngine } from '../cli/AdvancedCLIEngine.js';
-import type { CLIConfig } from '../cli/types/AdvancedCLITypes.js';
-import { CommandExecutionRenderer } from './CommandExecutionRenderer.js';
-import { InteractiveTerminalApplication } from './InteractiveTerminalApplication.js';
-import { detectMode, type TerminalMode } from './utils/mode-detector.js';
+import { AdvancedCLIEngine } from '../cli/AdvancedCLIEngine';
+import type { CLIConfig } from '../cli/types/AdvancedCLITypes';
+import { CommandExecutionRenderer } from './CommandExecutionRenderer';
+import { InteractiveTerminalApplication } from './InteractiveTerminalApplication';
+import { detectMode, type TerminalMode } from './utils/mode-detector';
 
 export interface TerminalAppProps {
   commands: string[];
@@ -64,7 +64,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExi
   // Initialize CLI engine and detect capabilities
   useEffect(() => {
     initializeEnhancedCLI();
-  }, []);
+  }, [initializeEnhancedCLI]);
 
   const initializeEnhancedCLI = async () => {
     try {
@@ -134,7 +134,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExi
     }
   };
 
-  const handleTraditionalCommand = async (commandName: string, args: string[], options: any) => {
+  const handleTraditionalCommand = async (commandName: string, _args: string[], _options: any) => {
     switch (commandName) {
       case 'help':
       case '--help':
@@ -259,15 +259,13 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExi
   };
 
   // Event handlers
-  const handleCommandStart = (event: any) => {
+  const handleCommandStart = (_event: any) => {
     if (state.config.verbosity === 'verbose' || state.config.verbosity === 'debug') {
-      console.log(`🚀 Starting command: ${event.command}`);
     }
   };
 
-  const handleCommandComplete = (event: any) => {
+  const handleCommandComplete = (_event: any) => {
     if (state.config.verbosity === 'verbose' || state.config.verbosity === 'debug') {
-      console.log(`✅ Command completed: ${event.command}`);
     }
   };
 
@@ -275,15 +273,13 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExi
     console.error(`❌ Command failed: ${event.command}`, event.error);
   };
 
-  const handleProjectStart = (event: any) => {
+  const handleProjectStart = (_event: any) => {
     if (state.config.realTimeUpdates) {
-      console.log(`🏗️ Creating project: ${event.name}`);
     }
   };
 
-  const handleProjectComplete = (event: any) => {
+  const handleProjectComplete = (_event: any) => {
     if (state.config.realTimeUpdates) {
-      console.log(`🎯 Project created: ${event.projectName} (${event.filesGenerated} files)`);
     }
   };
 

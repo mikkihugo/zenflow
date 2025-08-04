@@ -5,21 +5,14 @@
  * Tests Model Context Protocol server functionality
  */
 
-import { spawn } from 'child_process';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { spawn } from 'node:child_process';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import WebSocket from 'ws';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-console.log('================================================');
-console.log('ruv-swarm v1.0.6 MCP Server Validation');
-console.log('================================================');
-console.log(`Date: ${new Date().toISOString()}`);
-console.log(`Node Version: ${process.version}`);
-console.log('');
 
 const results = {
   testSuite: 'mcp-server-validation',
@@ -54,14 +47,10 @@ function addTestResult(name, status, message, error = null) {
   if (status === 'failed') {
     results.summary.failed++;
   }
-  console.log(`${status === 'passed' ? '✅' : '❌'} ${name}: ${message}`);
 }
 
 // Start MCP server
 async function startMCPServer() {
-  console.log('1. Starting MCP Server');
-  console.log('=====================');
-
   return new Promise((resolve, reject) => {
     mcpProcess = spawn('node', ['bin/ruv-swarm-clean.js', 'mcp', 'start'], {
       env: { ...process.env, MCP_TEST_MODE: 'true' },
@@ -70,13 +59,11 @@ async function startMCPServer() {
     let serverReady = false;
 
     mcpProcess.stdout.on('data', (data) => {
-      const output = data.toString();
-      console.log('  Server stdout:', output.trim());
+      const _output = data.toString();
     });
 
     mcpProcess.stderr.on('data', (data) => {
       const output = data.toString();
-      console.log('  Server stderr:', output.trim());
 
       if (output.includes('MCP server ready') || output.includes('Listening on')) {
         serverReady = true;
@@ -102,9 +89,6 @@ async function startMCPServer() {
 
 // Test WebSocket connection
 async function testWebSocketConnection() {
-  console.log('\n2. Testing WebSocket Connection');
-  console.log('==============================');
-
   return new Promise((resolve, reject) => {
     ws = new WebSocket('ws://localhost:3000');
 
@@ -129,9 +113,6 @@ async function testWebSocketConnection() {
 
 // Test MCP protocol methods
 async function testMCPMethods() {
-  console.log('\n3. Testing MCP Protocol Methods');
-  console.log('===============================');
-
   const methods = [
     {
       name: 'swarm_init',
@@ -200,9 +181,6 @@ async function testMethod(method, params) {
 
 // Test task orchestration
 async function testTaskOrchestration() {
-  console.log('\n4. Testing Task Orchestration');
-  console.log('=============================');
-
   // First create a swarm
   await testMethod('swarm_init', { topology: 'hierarchical', maxAgents: 8 });
   await sleep(500);
@@ -225,9 +203,6 @@ async function testTaskOrchestration() {
 
 // Test memory persistence
 async function testMemoryPersistence() {
-  console.log('\n5. Testing Memory Persistence');
-  console.log('=============================');
-
   const testData = {
     key: 'test-memory-key',
     value: {
@@ -258,9 +233,6 @@ async function testMemoryPersistence() {
 
 // Test neural operations
 async function testNeuralOperations() {
-  console.log('\n6. Testing Neural Operations');
-  console.log('============================');
-
   await testMethod('neural_status', {});
   await testMethod('neural_train', { epochs: 10 });
   await testMethod('neural_patterns', {});
@@ -268,26 +240,18 @@ async function testNeuralOperations() {
 
 // Test performance monitoring
 async function testPerformanceMonitoring() {
-  console.log('\n7. Testing Performance Monitoring');
-  console.log('================================');
-
   await testMethod('benchmark_run', { type: 'quick' });
   await testMethod('swarm_monitor', { duration: 2000 });
 }
 
 // Cleanup
 async function cleanup() {
-  console.log('\n8. Cleanup');
-  console.log('==========');
-
   if (ws && ws.readyState === WebSocket.OPEN) {
     ws.close();
-    console.log('  WebSocket closed');
   }
 
   if (mcpProcess) {
     mcpProcess.kill();
-    console.log('  MCP server stopped');
   }
 }
 
@@ -298,16 +262,6 @@ async function generateReport() {
   const resultsPath = path.join(__dirname, '..', 'test-results', 'mcp-validation.json');
   await fs.mkdir(path.dirname(resultsPath), { recursive: true });
   await fs.writeFile(resultsPath, JSON.stringify(results, null, 2));
-
-  console.log('\n================================================');
-  console.log('MCP Validation Summary');
-  console.log('================================================');
-  console.log(`Total Tests: ${results.summary.total}`);
-  console.log(`Passed: ${results.summary.passed}`);
-  console.log(`Failed: ${results.summary.failed}`);
-  console.log(`Pass Rate: ${results.summary.passRate}%`);
-  console.log('');
-  console.log(`Results saved to: ${resultsPath}`);
 }
 
 // Run all tests
@@ -333,7 +287,6 @@ async function runTests() {
 
 // Handle interrupts
 process.on('SIGINT', async () => {
-  console.log('\nInterrupted, cleaning up...');
   await cleanup();
   process.exit(1);
 });

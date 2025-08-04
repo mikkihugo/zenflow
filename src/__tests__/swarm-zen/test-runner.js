@@ -5,11 +5,9 @@
  * Handles ES modules, CommonJS compatibility, and different test frameworks
  */
 
-import assert from 'assert';
-import { spawn } from 'child_process';
-import { readdir, stat } from 'fs/promises';
-import { dirname, join, resolve } from 'path';
-import { fileURLToPath } from 'url';
+import assert from 'node:assert';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -25,7 +23,7 @@ const results = {
 // Custom test runner for describe/it pattern
 const suites = [];
 let currentSuite = null;
-let currentTest = null;
+let _currentTest = null;
 
 global.describe = (name, fn) => {
   const suite = {
@@ -91,10 +89,8 @@ global.assert = new Proxy(assert, {
 // Run all suites
 async function runSuites() {
   for (const suite of suites) {
-    console.log(`\n  ${suite.name}`);
-
     for (const test of suite.tests) {
-      currentTest = test;
+      _currentTest = test;
       results.total++;
 
       try {
@@ -110,12 +106,8 @@ async function runSuites() {
         if (suite.afterEach) {
           await suite.afterEach();
         }
-
-        console.log(`    ✓ ${test.name}`);
         results.passed++;
       } catch (error) {
-        console.log(`    ✗ ${test.name}`);
-        console.log(`      ${error.message}`);
         results.failed++;
         results.errors.push({
           suite: suite.name,
@@ -140,19 +132,9 @@ export async function run(testFile) {
     // Run all suites
     await runSuites();
 
-    // Print summary
-    console.log(`\n${'='.repeat(50)}`);
-    console.log(`Total: ${results.total}`);
-    console.log(`Passed: ${results.passed}`);
-    console.log(`Failed: ${results.failed}`);
-
     if (results.failed > 0) {
-      console.log('\nFailed Tests:');
-      results.errors.forEach((error) => {
-        console.log(`\n${error.suite} > ${error.test}`);
-        console.log(error.error);
+      results.errors.forEach((_error) => {
         if (process.env.VERBOSE) {
-          console.log(error.stack);
         }
       });
     }
@@ -172,8 +154,6 @@ export async function runAll() {
     './hooks-coverage.test.js',
   ];
 
-  console.log('Running all coverage tests...\n');
-
   const allResults = {
     total: 0,
     passed: 0,
@@ -181,9 +161,6 @@ export async function runAll() {
   };
 
   for (const file of testFiles) {
-    console.log(`\nRunning ${file}...`);
-    console.log('='.repeat(50));
-
     const fileResults = await run(join(__dirname, file));
     allResults.total += fileResults.total;
     allResults.passed += fileResults.passed;
@@ -195,15 +172,6 @@ export async function runAll() {
     results.failed = 0;
     results.errors = [];
   }
-
-  // Print overall summary
-  console.log(`\n${'='.repeat(50)}`);
-  console.log('OVERALL SUMMARY');
-  console.log('='.repeat(50));
-  console.log(`Total Tests: ${allResults.total}`);
-  console.log(`Passed: ${allResults.passed}`);
-  console.log(`Failed: ${allResults.failed}`);
-  console.log(`Success Rate: ${((allResults.passed / allResults.total) * 100).toFixed(2)}%`);
 
   return allResults;
 }

@@ -3,7 +3,7 @@
  * Advanced swarm coordination tools for distributed knowledge gathering missions
  */
 
-import { createLogger } from '@core/logger';
+import { createLogger } from '../../../core/logger';
 import type { MCPTool, MCPToolResult } from '../types/mcp-types';
 import { KnowledgeSwarm } from './fact-placeholders';
 

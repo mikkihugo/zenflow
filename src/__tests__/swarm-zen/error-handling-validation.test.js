@@ -6,7 +6,7 @@
 const { jest } = require('@jest/globals');
 
 // Mock dependencies
-const mockRuvSwarm = {
+const mockZenSwarm = {
   initialize: jest.fn(),
   createSwarm: jest.fn(),
   features: {
@@ -30,8 +30,8 @@ const mockPersistence = {
 
 // Import the modules with mocking
 jest.unstable_mockModule('../src/index-enhanced.js', () => ({
-  RuvSwarm: {
-    initialize: jest.fn(() => mockRuvSwarm),
+  ZenSwarm: {
+    initialize: jest.fn(() => mockZenSwarm),
   },
 }));
 
@@ -55,10 +55,10 @@ const { ValidationUtils } = await import('../src/schemas.js');
 const { EnhancedMCPTools } = await import('../src/mcp-tools-enhanced.js');
 
 describe('Error Handling System', () => {
-  let mcpTools;
+  let _mcpTools;
 
   beforeEach(() => {
-    mcpTools = new EnhancedMCPTools();
+    _mcpTools = new EnhancedMCPTools();
     jest.clearAllMocks();
   });
 
@@ -390,7 +390,7 @@ describe('Enhanced MCP Tools Error Handling', () => {
   describe('Integration with MCP Tools', () => {
     test('swarm_init should use enhanced error handling', async () => {
       // Mock to throw an error
-      mockRuvSwarm.createSwarm = jest.fn().mockRejectedValue(new Error('WASM module not loaded'));
+      mockZenSwarm.createSwarm = jest.fn().mockRejectedValue(new Error('WASM module not loaded'));
 
       await expect(mcpTools.swarm_init({})).rejects.toThrow();
 
@@ -410,7 +410,7 @@ describe('Enhanced MCP Tools Error Handling', () => {
 
     test('agent_spawn should use enhanced error handling', async () => {
       // First initialize a swarm
-      mockRuvSwarm.createSwarm = jest.fn().mockResolvedValue({
+      mockZenSwarm.createSwarm = jest.fn().mockResolvedValue({
         id: 'test-swarm',
         agents: new Map(),
         maxAgents: 5,

@@ -50,7 +50,7 @@ export class DIContainer implements IDIContainer {
 
       if (this.options.enablePerformanceMetrics) {
         const duration = Date.now() - startTime;
-        console.debug(`Resolved '${token.name}' in ${duration}ms`);
+        this.recordResolutionMetric(token, duration);
       }
 
       return result;
@@ -107,7 +107,7 @@ export class DIContainer implements IDIContainer {
   getRegisteredTokens(): string[] {
     return Array.from(this.providers.entries()).map(([symbol, _]) => {
       // Find token name by symbol (reverse lookup)
-      for (const [tokenSymbol, provider] of this.providers) {
+      for (const [tokenSymbol, _provider] of this.providers) {
         if (tokenSymbol === symbol) {
           return symbol.toString();
         }

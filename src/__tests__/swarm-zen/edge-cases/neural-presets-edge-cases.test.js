@@ -708,7 +708,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
         { performance: { expectedAccuracy: null } },
       ];
 
-      malformedCases.forEach((malformed, index) => {
+      malformedCases.forEach((malformed, _index) => {
         try {
           validatePresetConfig(malformed);
           // If it doesn't throw, it means the preset is somehow valid

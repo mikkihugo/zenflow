@@ -5,6 +5,9 @@
  * swarm topology to ensure proper integration with native hive mind.
  */
 
+import { access, mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import {
   afterAll,
   afterEach,
@@ -15,12 +18,8 @@ import {
   it,
   jest,
 } from '@jest/globals';
-import { access, mkdtemp, rm } from 'fs/promises';
-import { tmpdir } from 'os';
-import { join } from 'path';
 import { EventBus } from '../../core/event-bus';
 import { Logger } from '../../core/logger';
-import { HiveMindConfig } from '../../hive-mind/types';
 import { type MaestroSwarmConfig, MaestroSwarmCoordinator } from '../maestro-swarm-coordinator';
 
 describe('Native Hive Mind Integration Tests', () => {
@@ -148,9 +147,9 @@ describe('Native Hive Mind Integration Tests', () => {
       // Verify workflow state
       const workflowState = swarmCoordinator.getWorkflowState(featureName);
       expect(workflowState).toBeDefined();
-      expect(workflowState!.featureName).toBe(featureName);
-      expect(workflowState!.currentPhase).toBe('Requirements Clarification');
-      expect(workflowState!.status).toBe('running');
+      expect(workflowState?.featureName).toBe(featureName);
+      expect(workflowState?.currentPhase).toBe('Requirements Clarification');
+      expect(workflowState?.status).toBe('running');
 
       // Verify requirements file was created
       const requirementsPath = join(config.specsDirectory, featureName, 'requirements.md');
@@ -168,10 +167,10 @@ describe('Native Hive Mind Integration Tests', () => {
 
       // Verify workflow progression
       const workflowState = swarmCoordinator.getWorkflowState(featureName);
-      expect(workflowState!.currentPhase).toBe('Research & Design');
-      expect(workflowState!.history).toHaveLength(2);
-      expect(workflowState!.history[1].phase).toBe('Research & Design');
-      expect(workflowState!.history[1].status).toBe('completed');
+      expect(workflowState?.currentPhase).toBe('Research & Design');
+      expect(workflowState?.history).toHaveLength(2);
+      expect(workflowState?.history[1].phase).toBe('Research & Design');
+      expect(workflowState?.history[1].status).toBe('completed');
 
       // Verify design file was created
       const designPath = join(config.specsDirectory, featureName, 'design.md');
@@ -190,7 +189,7 @@ describe('Native Hive Mind Integration Tests', () => {
 
       // Verify workflow progression
       const workflowState = swarmCoordinator.getWorkflowState(featureName);
-      expect(workflowState!.currentPhase).toBe('Implementation Planning');
+      expect(workflowState?.currentPhase).toBe('Implementation Planning');
 
       // Verify tasks file was created
       const tasksPath = join(config.specsDirectory, featureName, 'tasks.md');
@@ -210,8 +209,8 @@ describe('Native Hive Mind Integration Tests', () => {
 
       // Verify workflow state
       const workflowState = swarmCoordinator.getWorkflowState(featureName);
-      expect(workflowState!.currentPhase).toBe('Task Execution');
-      expect(workflowState!.currentTaskIndex).toBe(1);
+      expect(workflowState?.currentPhase).toBe('Task Execution');
+      expect(workflowState?.currentTaskIndex).toBe(1);
     }, 120000);
   });
 
@@ -333,7 +332,7 @@ describe('Native Hive Mind Integration Tests', () => {
     });
 
     it('should timeout on task completion properly', async () => {
-      const featureName = 'timeout-test';
+      const _featureName = 'timeout-test';
 
       // Mock task that never completes
       const hiveMind = (swarmCoordinator as any).hiveMind;

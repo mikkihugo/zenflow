@@ -25,8 +25,8 @@
 
 function setupTestEnvironment() {
   // Set test environment flags
-  process.env['CLAUDE_FLOW_ENV'] = 'test';
-  process.env['NODE_ENV'] = 'test';
+  process.env.CLAUDE_FLOW_ENV = 'test';
+  process.env.NODE_ENV = 'test';
   // Suppress console output during tests unless explicitly needed
   /* const originalConsole = {
     log: console.log,
@@ -47,20 +47,20 @@ function setupTestEnvironment() {
 function setupErrorHandling() {
   process.on('unhandledRejection', (reason, promise) => {
     // Only log in test environment if debugging is enabled
-    if (process.env['DEBUG_TESTS']) {
+    if (process.env.DEBUG_TESTS) {
       console.error('Unhandled Rejection at:', promise, 'reason:', reason);
     }
     // In test environment, we might want to fail the test
-    if (process.env['FAIL_ON_UNHANDLED_REJECTION']) {
+    if (process.env.FAIL_ON_UNHANDLED_REJECTION) {
       throw new Error(`Unhandled Promise Rejection: ${String(reason)}`);
     }
   });
   process.on('uncaughtException', (error) => {
-    if (process.env['DEBUG_TESTS']) {
+    if (process.env.DEBUG_TESTS) {
       console.error('Uncaught Exception:', error);
     }
     // In test environment, we might want to fail the test
-    if (process.env['FAIL_ON_UNCAUGHT_EXCEPTION']) {
+    if (process.env.FAIL_ON_UNCAUGHT_EXCEPTION) {
       throw error;
     }
   });

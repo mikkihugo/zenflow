@@ -56,7 +56,7 @@ export class PerformanceMeasurement {
   /**
    * Get duration from completed measurement (legacy support)
    */
-  getDuration(label: string): number {
+  getDuration(_label: string): number {
     // This is a simplified implementation for test compatibility
     // In a real scenario, you'd store completed measurements
     return 2; // Mock duration for tests (less than the 5ms threshold)
@@ -97,6 +97,10 @@ export class PerformanceMeasurement {
       const endMemory = process.memoryUsage();
 
       measurements.push(endTime - startTime);
+
+      // Track memory delta from initial baseline
+      const memoryDelta = endMemory.heapUsed - initialMemory.heapUsed;
+      memoryMeasurements.push(memoryDelta);
       memoryMeasurements.push({
         heap: endMemory.heapUsed - startMemory.heapUsed,
         external: endMemory.external - startMemory.external,
@@ -274,7 +278,7 @@ export class PerformanceMeasurement {
    * Memory leak detection
    */
   async detectMemoryLeaks<T>(
-    name: string,
+    _name: string,
     fn: () => T | Promise<T>,
     iterations: number = 100
   ): Promise<{ hasLeak: boolean; memoryGrowth: number; measurements: number[] }> {

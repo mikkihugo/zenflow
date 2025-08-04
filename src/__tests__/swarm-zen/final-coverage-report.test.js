@@ -8,10 +8,9 @@
  * @version 1.0.0
  */
 
-import { strict as assert } from 'assert';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,12 +39,9 @@ class FinalCoverageReport {
   }
 
   async analyzeTestReports() {
-    console.log('📊 Analyzing Test Report Data...');
-
     const reportDir = path.join(__dirname, '../test-reports');
 
     if (!fs.existsSync(reportDir)) {
-      console.log('   Creating test reports directory...');
       fs.mkdirSync(reportDir, { recursive: true });
     }
 
@@ -60,14 +56,10 @@ class FinalCoverageReport {
             const content = fs.readFileSync(path.join(reportDir, file), 'utf8');
             const report = JSON.parse(content);
             reports.push({ file, report });
-          } catch (error) {
-            console.log(`   Warning: Could not parse ${file}`);
-          }
+          } catch (_error) {}
         }
       }
-    } catch (error) {
-      console.log('   Warning: Could not read test reports directory');
-    }
+    } catch (_error) {}
 
     // Calculate metrics from reports
     let totalTests = 0;
@@ -86,15 +78,10 @@ class FinalCoverageReport {
     this.metrics.passedTests = totalPassed;
     this.metrics.failedTests = totalFailed;
 
-    console.log(`   Found ${reports.length} test report files`);
-    console.log(`   Total tests analyzed: ${totalTests}`);
-
     return reports;
   }
 
   async calculateAchievements() {
-    console.log('🏆 Calculating Test Coverage Achievements...');
-
     // Count test files created
     const testDir = path.join(__dirname);
     const testFiles = fs
@@ -116,10 +103,6 @@ class FinalCoverageReport {
       ((this.metrics.afterCoverage - this.metrics.beforeCoverage) / this.metrics.targetCoverage) *
       100
     ).toFixed(2);
-
-    console.log(`   Test suites created: ${this.achievements.testSuitesCreated}`);
-    console.log(`   Total tests created: ${this.achievements.testsCreated}`);
-    console.log(`   Coverage improvement: ${this.achievements.coverageImprovement}%`);
   }
 
   generateHTML() {
@@ -415,9 +398,6 @@ class FinalCoverageReport {
   }
 
   async generateReport() {
-    console.log('\n🏆 Generating Final Test Coverage Report');
-    console.log('='.repeat(60));
-
     await this.analyzeTestReports();
     await this.calculateAchievements();
 
@@ -496,40 +476,6 @@ class FinalCoverageReport {
     // Save HTML report
     const htmlPath = path.join(reportDir, 'final-coverage-report.html');
     fs.writeFileSync(htmlPath, this.generateHTML());
-
-    // Console summary
-    console.log('🏅 FINAL ACHIEVEMENTS:');
-    console.log(`   🛠️  Test Suites Created: ${this.achievements.testSuitesCreated}`);
-    console.log(`   🧪 Total Tests Created: ${this.achievements.testsCreated}`);
-    console.log(`   📊 Code Coverage: ${this.metrics.afterCoverage}%`);
-    console.log(`   ✅ Actual Tests Run: ${this.metrics.actualTests}`);
-    console.log(
-      `   🎆 Pass Rate: ${((this.metrics.passedTests / Math.max(this.metrics.actualTests, 1)) * 100).toFixed(1)}%`
-    );
-    console.log('');
-
-    console.log('📊 COVERAGE ANALYSIS:');
-    console.log(`   🎯 Target: ${this.metrics.targetCoverage}%`);
-    console.log(`   📈 Achieved: ${this.metrics.afterCoverage}%`);
-    console.log(
-      `   🚀 Progress: ${((this.metrics.afterCoverage / this.metrics.targetCoverage) * 100).toFixed(1)}% of target`
-    );
-    console.log('');
-
-    console.log('📄 REPORTS GENERATED:');
-    console.log(`   JSON: ${jsonPath}`);
-    console.log(`   HTML: ${htmlPath}`);
-    console.log('');
-
-    console.log('🎆 MISSION STATUS: COMPLETED!');
-    console.log('\nThe Test Coverage Champion has successfully:');
-    console.log('  ✅ Created comprehensive test infrastructure');
-    console.log('  ✅ Tested all 25 MCP tools');
-    console.log('  ✅ Validated DAA functionality');
-    console.log('  ✅ Implemented error handling tests');
-    console.log('  ✅ Covered protocol integration');
-    console.log('  ✅ Added edge case testing');
-    console.log('  ✅ Achieved functional test coverage');
 
     return report;
   }

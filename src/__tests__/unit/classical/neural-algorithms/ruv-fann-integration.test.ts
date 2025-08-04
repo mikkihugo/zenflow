@@ -9,13 +9,9 @@ import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 import {
   ACTIVATION_FUNCTIONS,
   createNeuralNetwork,
-  createTrainer,
   initializeNeuralWasm,
   type NetworkConfig,
   type NeuralNetwork,
-  NeuralTrainer,
-  TRAINING_ALGORITHMS,
-  TrainingConfig,
   type TrainingDataConfig,
 } from '../../../../../ruv-FANN-zen/ruv-swarm-zen/npm/src/neural-network';
 
@@ -26,7 +22,7 @@ describe('ruv-FANN Integration - Classical TDD', () => {
     // Initialize WASM module for each test
     try {
       wasmModule = await initializeNeuralWasm();
-    } catch (error) {
+    } catch (_error) {
       console.warn('WASM module not available, skipping integration tests');
     }
   });
@@ -114,7 +110,7 @@ describe('ruv-FANN Integration - Classical TDD', () => {
         const result = await network.run([0.5, 0.5]);
         expect(result).toHaveLength(1);
         expect(typeof result[0]).toBe('number');
-        expect(isFinite(result[0])).toBe(true);
+        expect(Number.isFinite(result[0])).toBe(true);
       }
     });
 
@@ -203,7 +199,7 @@ describe('ruv-FANN Integration - Classical TDD', () => {
       for (const input of extremeInputs) {
         const result = await network.run(input);
         expect(result).toHaveLength(1);
-        expect(isFinite(result[0])).toBe(true);
+        expect(Number.isFinite(result[0])).toBe(true);
         expect(result[0]).toBeGreaterThanOrEqual(0);
         expect(result[0]).toBeLessThanOrEqual(1);
       }
@@ -369,7 +365,7 @@ describe('ruv-FANN Integration - Classical TDD', () => {
       for (const network of networks) {
         const result = await network.run([0.1, 0.2, 0.3, 0.4, 0.5]);
         expect(result).toHaveLength(3);
-        expect(result.every((val) => isFinite(val))).toBe(true);
+        expect(result.every((val) => Number.isFinite(val))).toBe(true);
       }
     });
 
@@ -456,7 +452,7 @@ describe('ruv-FANN Integration - Classical TDD', () => {
       // Network should still produce finite outputs
       const result = await network.run([0.5, 0.5]);
       expect(result).toHaveLength(1);
-      expect(isFinite(result[0])).toBe(true);
+      expect(Number.isFinite(result[0])).toBe(true);
     });
   });
 });

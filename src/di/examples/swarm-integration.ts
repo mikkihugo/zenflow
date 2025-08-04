@@ -5,7 +5,6 @@
 
 import {
   CORE_TOKENS,
-  createToken,
   DIContainer,
   type IAgentRegistry,
   type IConfig,
@@ -31,10 +30,10 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
   private tasks = new Map<string, any>();
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private logger: ILogger,
-    @inject(CORE_TOKENS.Config) private config: IConfig,
-    @inject(SWARM_TOKENS.AgentRegistry) private agentRegistry: IAgentRegistry,
-    @inject(SWARM_TOKENS.MessageBroker) private messageBroker: IMessageBroker
+    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
+    @inject(CORE_TOKENS.Config) private _config: IConfig,
+    @inject(SWARM_TOKENS.AgentRegistry) private _agentRegistry: IAgentRegistry,
+    @inject(SWARM_TOKENS.MessageBroker) private _messageBroker: IMessageBroker
   ) {
     this.logger.info('SwarmCoordinator created with DI');
   }
@@ -181,13 +180,9 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
  * Mock implementations for testing and development
  */
 export class MockLogger implements ILogger {
-  debug(message: string, meta?: any): void {
-    console.debug(`[DEBUG] ${message}`, meta || '');
-  }
+  debug(_message: string, _meta?: any): void {}
 
-  info(message: string, meta?: any): void {
-    console.info(`[INFO] ${message}`, meta || '');
-  }
+  info(_message: string, _meta?: any): void {}
 
   warn(message: string, meta?: any): void {
     console.warn(`[WARN] ${message}`, meta || '');
@@ -272,7 +267,7 @@ export class MockMessageBroker implements IMessageBroker {
     if (!this.subscribers.has(topic)) {
       this.subscribers.set(topic, new Set());
     }
-    this.subscribers.get(topic)!.add(handler);
+    this.subscribers.get(topic)?.add(handler);
   }
 
   async unsubscribe(topic: string, handler: (message: any) => void): Promise<void> {
@@ -337,8 +332,6 @@ export function createSwarmContainer(config: Record<string, any> = {}): DIContai
  * Example usage demonstrating the complete workflow
  */
 export async function demonstrateSwarmDI(): Promise<void> {
-  console.log('=== SwarmCoordinator DI Integration Demo ===');
-
   // Create container with configuration
   const container = createSwarmContainer({
     'swarm.maxAgents': 20,
@@ -367,7 +360,7 @@ export async function demonstrateSwarmDI(): Promise<void> {
     });
 
     // Assign a task
-    const taskId = await coordinator.assignTask({
+    const _taskId = await coordinator.assignTask({
       type: 'data-processing',
       description: 'Process large dataset',
       requiredCapabilities: ['data-processing'],
@@ -375,8 +368,7 @@ export async function demonstrateSwarmDI(): Promise<void> {
     });
 
     // Get metrics
-    const metrics = coordinator.getMetrics();
-    console.log('Swarm metrics:', JSON.stringify(metrics, null, 2));
+    const _metrics = coordinator.getMetrics();
 
     // Cleanup
     await coordinator.removeAgent(agent1Id);
@@ -386,8 +378,6 @@ export async function demonstrateSwarmDI(): Promise<void> {
     // Dispose container
     await container.dispose();
   }
-
-  console.log('=== Demo completed successfully ===');
 }
 
 // Export for testing

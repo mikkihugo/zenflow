@@ -5,7 +5,7 @@
  * Includes error recovery strategies, monitoring, and resilience patterns
  */
 
-import { createLogger } from '../core/logger';
+import { createLogger } from './logger';
 
 const logger = createLogger({ prefix: 'ErrorSystem' });
 

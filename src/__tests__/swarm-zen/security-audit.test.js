@@ -5,12 +5,12 @@
  * Comprehensive security testing for ruv-swarm
  */
 
-const { RuvSwarm } = require('../src/index-enhanced');
+const { ZenSwarm } = require('../src/index-enhanced');
 const { PersistenceManager } = require('../src/persistence');
-const fs = require('fs').promises;
-const path = require('path');
-const crypto = require('crypto');
-const { spawn } = require('child_process');
+const fs = require('node:fs').promises;
+const _path = require('node:path');
+const crypto = require('node:crypto');
+const { spawn } = require('node:child_process');
 
 class SecurityAuditor {
   constructor() {
@@ -31,9 +31,6 @@ class SecurityAuditor {
   }
 
   async runSecurityAudit() {
-    console.log('🔒 Starting Security Audit and Memory Safety Validation');
-    console.log('========================================================\n');
-
     try {
       // 1. Input Validation Security
       await this.testInputValidation();
@@ -76,8 +73,6 @@ class SecurityAuditor {
   }
 
   async testInputValidation() {
-    console.log('🛡️  Testing Input Validation Security...');
-
     const test = {
       category: 'Input Validation',
       tests: [],
@@ -86,7 +81,7 @@ class SecurityAuditor {
     };
 
     try {
-      const ruvSwarm = await RuvSwarm.initialize();
+      const ruvSwarm = await ZenSwarm.initialize();
 
       // Test malicious inputs
       const maliciousInputs = [
@@ -126,14 +121,10 @@ class SecurityAuditor {
             task: maliciousInput, // Try to inject through task
             timeout: 5000,
           });
-
-          // If we get here without sanitization, it's a concern
-          console.log(`   ⚠️  Input not properly sanitized: ${inputTest.type}`);
           this.securityIssues++;
         } catch (error) {
           inputTest.blocked = true;
           inputTest.error = error.message;
-          console.log(`   ✅ Input properly blocked: ${inputTest.type}`);
         }
 
         test.tests.push(inputTest);
@@ -141,22 +132,16 @@ class SecurityAuditor {
 
       const blockedCount = test.tests.filter((t) => t.blocked).length;
       test.passed = blockedCount >= maliciousInputs.length * 0.8; // 80% should be blocked
-
-      console.log(`   Blocked: ${blockedCount}/${maliciousInputs.length} malicious inputs`);
     } catch (error) {
       test.error = error.message;
       test.passed = false;
-      console.log(`   ❌ Test failed: ${error.message}`);
     }
 
     test.duration = Date.now() - test.startTime;
     this.auditResults.securityTests.push(test);
-    console.log('');
   }
 
   async testSQLInjectionPrevention() {
-    console.log('💉 Testing SQL Injection Prevention...');
-
     const test = {
       category: 'SQL Injection Prevention',
       tests: [],
@@ -199,16 +184,10 @@ class SecurityAuditor {
             description: injection,
             status: 'pending',
           });
-
-          // If we get here, injection might have succeeded
-          console.log(
-            `   ⚠️  Possible SQL injection vulnerability: ${injection.substring(0, 30)}...`
-          );
           this.securityIssues++;
         } catch (error) {
           injectionTest.prevented = true;
           injectionTest.error = error.message;
-          console.log(`   ✅ SQL injection prevented: ${injection.substring(0, 30)}...`);
         }
 
         test.tests.push(injectionTest);
@@ -216,24 +195,16 @@ class SecurityAuditor {
 
       const preventedCount = test.tests.filter((t) => t.prevented).length;
       test.passed = preventedCount === sqlInjectionAttempts.length;
-
-      console.log(
-        `   Prevented: ${preventedCount}/${sqlInjectionAttempts.length} SQL injection attempts`
-      );
     } catch (error) {
       test.error = error.message;
       test.passed = false;
-      console.log(`   ❌ Test failed: ${error.message}`);
     }
 
     test.duration = Date.now() - test.startTime;
     this.auditResults.securityTests.push(test);
-    console.log('');
   }
 
   async testMemorySafety() {
-    console.log('🧠 Testing Memory Safety...');
-
     const test = {
       category: 'Memory Safety',
       tests: [],
@@ -264,22 +235,22 @@ class SecurityAuditor {
       test.tests = memoryTests;
       test.passed = memoryTests.every((t) => t.passed);
 
+      // Include memory baseline and test statistics in results
       const passedCount = memoryTests.filter((t) => t.passed).length;
-      console.log(`   Memory safety tests: ${passedCount}/${memoryTests.length} passed`);
+      test.memoryBaseline = initialMemory.heapUsed;
+      test.passedCount = passedCount;
+      test.totalTests = memoryTests.length;
+      test.successRate = passedCount / memoryTests.length;
     } catch (error) {
       test.error = error.message;
       test.passed = false;
-      console.log(`   ❌ Test failed: ${error.message}`);
     }
 
     test.duration = Date.now() - test.startTime;
     this.auditResults.memoryTests.push(test);
-    console.log('');
   }
 
   async testWASMSecurity() {
-    console.log('🔧 Testing WASM Security...');
-
     const test = {
       category: 'WASM Security',
       tests: [],
@@ -288,7 +259,7 @@ class SecurityAuditor {
     };
 
     try {
-      const ruvSwarm = await RuvSwarm.initialize({
+      const ruvSwarm = await ZenSwarm.initialize({
         enableNeuralNetworks: true,
         enableSIMD: true,
       });
@@ -302,7 +273,7 @@ class SecurityAuditor {
               // Attempt to access system resources from WASM
               const result = await ruvSwarm.detectSIMDSupport();
               return { passed: typeof result === 'boolean', details: 'WASM isolation verified' };
-            } catch (error) {
+            } catch (_error) {
               return { passed: true, details: 'WASM properly isolated' };
             }
           },
@@ -322,7 +293,7 @@ class SecurityAuditor {
               });
 
               return { passed: true, details: 'Memory bounds respected' };
-            } catch (error) {
+            } catch (_error) {
               // Error is expected for bounds violations
               return { passed: true, details: 'Memory bounds enforced' };
             }
@@ -336,25 +307,19 @@ class SecurityAuditor {
           name: wasmTest.name,
           ...result,
         });
-
-        console.log(`   ${result.passed ? '✅' : '❌'} ${wasmTest.name}: ${result.details}`);
       }
 
       test.passed = test.tests.every((t) => t.passed);
     } catch (error) {
       test.error = error.message;
       test.passed = false;
-      console.log(`   ❌ Test failed: ${error.message}`);
     }
 
     test.duration = Date.now() - test.startTime;
     this.auditResults.securityTests.push(test);
-    console.log('');
   }
 
   async testNetworkSecurity() {
-    console.log('🌐 Testing Network Security...');
-
     const test = {
       category: 'Network Security',
       tests: [],
@@ -390,8 +355,6 @@ class SecurityAuditor {
           wsSecurityTest.passed = false;
           this.securityIssues++;
         }
-
-        console.log(`   ${checkPassed ? '✅' : '❌'} ${wsTestName}`);
       }
 
       test.tests.push(wsSecurityTest);
@@ -399,17 +362,13 @@ class SecurityAuditor {
     } catch (error) {
       test.error = error.message;
       test.passed = false;
-      console.log(`   ❌ Test failed: ${error.message}`);
     }
 
     test.duration = Date.now() - test.startTime;
     this.auditResults.securityTests.push(test);
-    console.log('');
   }
 
   async testDataSanitization() {
-    console.log('🧹 Testing Data Sanitization...');
-
     const test = {
       category: 'Data Sanitization',
       tests: [],
@@ -418,7 +377,7 @@ class SecurityAuditor {
     };
 
     try {
-      const ruvSwarm = await RuvSwarm.initialize();
+      const ruvSwarm = await ZenSwarm.initialize();
       const swarm = await ruvSwarm.createSwarm({ topology: 'mesh', maxAgents: 1 });
       const agent = await swarm.spawn({ type: 'coder' });
 
@@ -467,12 +426,10 @@ class SecurityAuditor {
             passed: testPassed,
           });
 
-          console.log(`   ${testPassed ? '✅' : '❌'} ${sanitizationTest.type} sanitization`);
-
           if (!testPassed) {
             this.securityIssues++;
           }
-        } catch (error) {
+        } catch (_error) {
           // Error during execution can be a sign of proper sanitization
           test.tests.push({
             type: sanitizationTest.type,
@@ -481,8 +438,6 @@ class SecurityAuditor {
             passed: true,
             blocked: true,
           });
-
-          console.log(`   ✅ ${sanitizationTest.type} properly blocked`);
         }
       }
 
@@ -490,17 +445,13 @@ class SecurityAuditor {
     } catch (error) {
       test.error = error.message;
       test.passed = false;
-      console.log(`   ❌ Test failed: ${error.message}`);
     }
 
     test.duration = Date.now() - test.startTime;
     this.auditResults.securityTests.push(test);
-    console.log('');
   }
 
   async testAccessControl() {
-    console.log('🔐 Testing Access Control...');
-
     const test = {
       category: 'Access Control',
       tests: [],
@@ -514,7 +465,7 @@ class SecurityAuditor {
           name: 'Agent Isolation',
           description: "Agents cannot access each other's private data",
           test: async () => {
-            const ruvSwarm = await RuvSwarm.initialize();
+            const ruvSwarm = await ZenSwarm.initialize();
             const swarm = await ruvSwarm.createSwarm({ topology: 'mesh', maxAgents: 2 });
 
             const agent1 = await swarm.spawn({ type: 'coder', name: 'agent1' });
@@ -525,7 +476,7 @@ class SecurityAuditor {
               await agent1.execute({ task: 'Access data from agent2', timeout: 3000 });
               await agent2.execute({ task: 'Read agent1 memory', timeout: 3000 });
               return { passed: true, details: 'Agent isolation maintained' };
-            } catch (error) {
+            } catch (_error) {
               return { passed: true, details: 'Access properly restricted' };
             }
           },
@@ -534,7 +485,7 @@ class SecurityAuditor {
           name: 'File System Access',
           description: 'Restricted file system access',
           test: async () => {
-            const ruvSwarm = await RuvSwarm.initialize();
+            const ruvSwarm = await ZenSwarm.initialize();
             const swarm = await ruvSwarm.createSwarm({ topology: 'mesh', maxAgents: 1 });
             const agent = await swarm.spawn({ type: 'coder' });
 
@@ -544,7 +495,7 @@ class SecurityAuditor {
                 timeout: 3000,
               });
               return { passed: false, details: 'Unauthorized file access allowed' };
-            } catch (error) {
+            } catch (_error) {
               return { passed: true, details: 'File access properly restricted' };
             }
           },
@@ -559,8 +510,6 @@ class SecurityAuditor {
           ...result,
         });
 
-        console.log(`   ${result.passed ? '✅' : '❌'} ${accessTest.name}: ${result.details}`);
-
         if (!result.passed) {
           this.securityIssues++;
         }
@@ -570,17 +519,13 @@ class SecurityAuditor {
     } catch (error) {
       test.error = error.message;
       test.passed = false;
-      console.log(`   ❌ Test failed: ${error.message}`);
     }
 
     test.duration = Date.now() - test.startTime;
     this.auditResults.securityTests.push(test);
-    console.log('');
   }
 
   async testCryptographicSecurity() {
-    console.log('🔒 Testing Cryptographic Security...');
-
     const test = {
       category: 'Cryptographic Security',
       tests: [],
@@ -624,14 +569,14 @@ class SecurityAuditor {
         {
           name: 'Weak Cipher Detection',
           test: () => {
-            const weakCiphers = ['des', 'md5', 'sha1'];
+            const _weakCiphers = ['des', 'md5', 'sha1'];
             let weakCipherFound = false;
 
             try {
               // Test if weak ciphers are blocked
               crypto.createCipher('des', 'password');
               weakCipherFound = true;
-            } catch (error) {
+            } catch (_error) {
               // Good - weak cipher blocked
             }
 
@@ -650,8 +595,6 @@ class SecurityAuditor {
           ...result,
         });
 
-        console.log(`   ${result.passed ? '✅' : '❌'} ${cryptoTest.name}: ${result.details}`);
-
         if (!result.passed) {
           this.securityIssues++;
         }
@@ -661,17 +604,13 @@ class SecurityAuditor {
     } catch (error) {
       test.error = error.message;
       test.passed = false;
-      console.log(`   ❌ Test failed: ${error.message}`);
     }
 
     test.duration = Date.now() - test.startTime;
     this.auditResults.securityTests.push(test);
-    console.log('');
   }
 
   async testMemoryLeaks() {
-    console.log('🔍 Testing Memory Leak Detection...');
-
     const test = {
       category: 'Memory Leak Detection',
       iterations: 100,
@@ -682,7 +621,7 @@ class SecurityAuditor {
 
     try {
       const initialMemory = process.memoryUsage().heapUsed;
-      const ruvSwarm = await RuvSwarm.initialize();
+      const ruvSwarm = await ZenSwarm.initialize();
 
       // Run multiple iterations to detect memory leaks
       for (let i = 0; i < test.iterations; i++) {
@@ -715,7 +654,14 @@ class SecurityAuditor {
         if (i % 10 === 0) {
           const currentMemory = process.memoryUsage().heapUsed;
           const growth = currentMemory - initialMemory;
-          console.log(`   Iteration ${i}: Memory growth ${(growth / 1024 / 1024).toFixed(1)}MB`);
+
+          // Log significant memory growth
+          if (growth > 10 * 1024 * 1024) {
+            // More than 10MB growth
+            console.warn(
+              `Memory growth detected at iteration ${i}: ${Math.round(growth / 1024 / 1024)}MB`
+            );
+          }
         }
       }
 
@@ -725,28 +671,19 @@ class SecurityAuditor {
       // Memory growth should be less than 50MB for 100 iterations
       test.passed = test.memoryGrowth < 50 * 1024 * 1024;
 
-      console.log(`   Total memory growth: ${(test.memoryGrowth / 1024 / 1024).toFixed(1)}MB`);
-      console.log(
-        `   ${test.passed ? '✅' : '❌'} Memory leak test ${test.passed ? 'passed' : 'failed'}`
-      );
-
       if (!test.passed) {
         this.memoryLeaks++;
       }
     } catch (error) {
       test.error = error.message;
       test.passed = false;
-      console.log(`   ❌ Test failed: ${error.message}`);
     }
 
     test.duration = Date.now() - test.startTime;
     this.auditResults.memoryTests.push(test);
-    console.log('');
   }
 
   async testBufferOverflowProtection() {
-    console.log('🛡️  Testing Buffer Overflow Protection...');
-
     const test = {
       category: 'Buffer Overflow Protection',
       tests: [],
@@ -755,7 +692,7 @@ class SecurityAuditor {
     };
 
     try {
-      const ruvSwarm = await RuvSwarm.initialize();
+      const ruvSwarm = await ZenSwarm.initialize();
       const swarm = await ruvSwarm.createSwarm({ topology: 'mesh', maxAgents: 1 });
       const agent = await swarm.spawn({ type: 'coder' });
 
@@ -788,7 +725,7 @@ class SecurityAuditor {
           const executionTime = Date.now() - startTime;
 
           // If execution takes too long or uses too much memory, it might indicate a vulnerability
-          const memoryAfter = process.memoryUsage().heapUsed;
+          const _memoryAfter = process.memoryUsage().heapUsed;
 
           test.tests.push({
             name: overflowTest.name,
@@ -797,9 +734,7 @@ class SecurityAuditor {
             passed: executionTime < 10000, // Should complete or timeout quickly
             protected: true,
           });
-
-          console.log(`   ✅ ${overflowTest.name}: Protected (${executionTime}ms)`);
-        } catch (error) {
+        } catch (_error) {
           // Error is expected for overflow protection
           test.tests.push({
             name: overflowTest.name,
@@ -808,8 +743,6 @@ class SecurityAuditor {
             protected: true,
             blocked: true,
           });
-
-          console.log(`   ✅ ${overflowTest.name}: Blocked - ${error.message.substring(0, 50)}...`);
         }
       }
 
@@ -817,18 +750,16 @@ class SecurityAuditor {
     } catch (error) {
       test.error = error.message;
       test.passed = false;
-      console.log(`   ❌ Test failed: ${error.message}`);
     }
 
     test.duration = Date.now() - test.startTime;
     this.auditResults.securityTests.push(test);
-    console.log('');
   }
 
   // Helper methods for memory safety tests
   async testMemoryGrowth() {
     const initialMemory = process.memoryUsage().heapUsed;
-    const ruvSwarm = await RuvSwarm.initialize();
+    const ruvSwarm = await ZenSwarm.initialize();
 
     // Create multiple swarms and agents
     const swarms = [];
@@ -928,13 +859,13 @@ class SecurityAuditor {
       const largeArray = new Array(10000000); // 10 million elements
       largeArray.fill('test');
 
-      const largeObject = {
+      const _largeObject = {
         data: largeArray,
         metadata: 'large object test',
       };
 
       // Test JSON serialization limits
-      const jsonString = JSON.stringify({ small: 'test' }); // Don't serialize the large object
+      const _jsonString = JSON.stringify({ small: 'test' }); // Don't serialize the large object
 
       return {
         name: 'Large Object Handling',
@@ -988,8 +919,6 @@ class SecurityAuditor {
   }
 
   async generateSecurityReport() {
-    console.log('📄 Generating Security Audit Report...');
-
     // Calculate security score
     const totalTests =
       this.auditResults.securityTests.length + this.auditResults.memoryTests.length;
@@ -1028,23 +957,9 @@ class SecurityAuditor {
     const reportPath = '/workspaces/ruv-FANN/ruv-swarm/npm/test/security-audit-report.json';
     await fs.writeFile(reportPath, JSON.stringify(this.auditResults, null, 2));
 
-    // Console summary
-    console.log('\n🔒 SECURITY AUDIT SUMMARY');
-    console.log('==========================');
-    console.log(`Security Score: ${this.auditResults.overallSecurity.score.toFixed(1)}/100`);
-    console.log(`Security Level: ${this.auditResults.overallSecurity.level}`);
-    console.log(`Tests Passed: ${passedTests}/${totalTests}`);
-    console.log(`Security Issues: ${this.securityIssues}`);
-    console.log(`Memory Leaks: ${this.memoryLeaks}`);
-
     if (this.auditResults.recommendations.length > 0) {
-      console.log('\n💡 Security Recommendations:');
-      this.auditResults.recommendations.forEach((rec, i) => {
-        console.log(`   ${i + 1}. ${rec}`);
-      });
+      this.auditResults.recommendations.forEach((_rec, _i) => {});
     }
-
-    console.log(`\n📄 Detailed report saved to: ${reportPath}`);
 
     return this.auditResults;
   }

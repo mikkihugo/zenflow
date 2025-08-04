@@ -4,9 +4,8 @@
 
 import { type ChildProcess, spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import { generateId } from '../swarm/core/utils';
 import type { IEventBus } from '../../core/event-bus';
-import type { ILogger } from '../../di/tokens/core-tokens';
+import type { ILogger } from '../../core/logger';
 import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
 import type {
   AgentCapabilities,
@@ -19,6 +18,7 @@ import type {
   AgentStatus,
   AgentType,
 } from '../../types/agent-types';
+import { generateId } from '../swarm/core/utils';
 
 export interface AgentManagerConfig {
   maxAgents: number;
@@ -148,6 +148,14 @@ export class AgentManager extends EventEmitter {
   private resourceUsage = new Map<string, { cpu: number; memory: number; disk: number }>();
   private performanceHistory = new Map<string, Array<{ timestamp: Date; metrics: AgentMetrics }>>();
 
+  // TODO: Add @inject decorators for better DI integration
+  // Example:
+  // constructor(
+  //   @inject(AGENT_TOKENS.Config) config: Partial<AgentManagerConfig>,
+  //   @inject(CORE_TOKENS.Logger) logger: ILogger,
+  //   @inject(CORE_TOKENS.EventBus) eventBus: IEventBus,
+  //   @inject(MEMORY_TOKENS.Coordinator) memory: MemoryCoordinator
+  // ) {
   constructor(
     config: Partial<AgentManagerConfig>,
     logger: ILogger,
@@ -1284,7 +1292,7 @@ export class AgentManager extends EventEmitter {
       } else {
         return 1.0; // Responsive
       }
-    } catch (error) {
+    } catch (_error) {
       return 0; // Failed to respond
     }
   }

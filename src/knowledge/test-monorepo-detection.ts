@@ -1,0 +1,66 @@
+#!/usr/bin/env node
+
+/**
+ * Test script for monorepo detection in ProjectContextAnalyzer
+ */
+
+import ProjectContextAnalyzer from './project-context-analyzer';
+
+async function testMonorepoDetection(projectPath: string) {
+  const analyzer = new ProjectContextAnalyzer({
+    projectRoot: projectPath,
+    swarmConfig: {
+      // Minimal config for testing
+      name: 'test-analyzer',
+      type: 'knowledge',
+      maxAgents: 1,
+    },
+    analysisDepth: 'shallow',
+    autoUpdate: false,
+    cacheDuration: 1,
+  });
+
+  // Listen for monorepo detection events
+  analyzer.on('monorepoDetected', (_data) => {});
+
+  try {
+    // Initialize analyzer (which will run monorepo detection)
+    await analyzer.initialize();
+
+    // Get monorepo info
+    const monorepoInfo = analyzer.getMonorepoInfo();
+
+    if (monorepoInfo && monorepoInfo.type !== 'none') {
+      if (monorepoInfo.workspaces) {
+      }
+
+      if (monorepoInfo.packages) {
+      }
+    } else {
+    }
+
+    // Check with custom confidence threshold
+    const _isHighConfidenceMonorepo = analyzer.isMonorepo(0.8);
+
+    // Get full project context
+    const _status = analyzer.getStatus();
+  } catch (error) {
+    console.error('❌ Error during analysis:', error);
+  } finally {
+    await analyzer.shutdown();
+  }
+}
+
+// Main execution
+async function main() {
+  const projectPath = process.argv[2] || process.cwd();
+
+  await testMonorepoDetection(projectPath);
+}
+
+// Run if called directly
+if (require.main === module) {
+  main().catch(console.error);
+}
+
+export { testMonorepoDetection };

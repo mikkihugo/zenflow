@@ -8,14 +8,11 @@
 
 import { Inject, Injectable } from '../../di/decorators/injectable';
 import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
-import {
-  type ConnectionStats,
-  type DatabaseAdapter,
-  type DatabaseConfig,
-  type DatabaseProviderFactory,
-  ExecuteResult,
-  QueryResult,
-  SchemaInfo,
+import type {
+  ConnectionStats,
+  DatabaseAdapter,
+  DatabaseConfig,
+  DatabaseProviderFactory,
 } from '../providers/database-providers';
 
 /**
@@ -154,9 +151,9 @@ export class DatabaseController {
   };
 
   constructor(
-    @Inject(DATABASE_TOKENS.ProviderFactory) private factory: DatabaseProviderFactory,
-    @Inject(DATABASE_TOKENS.Config) private config: DatabaseConfig,
-    @Inject(CORE_TOKENS.Logger) private logger: ILogger
+    @Inject(DATABASE_TOKENS.ProviderFactory) private _factory: DatabaseProviderFactory,
+    @Inject(DATABASE_TOKENS.Config) private _config: DatabaseConfig,
+    @Inject(CORE_TOKENS.Logger) private _logger: ILogger
   ) {
     this.initializeAdapter();
   }
@@ -676,13 +673,13 @@ export class DatabaseController {
           try {
             // In a real implementation, this would validate syntax
             validationResults.push({
-              statement: statement.substring(0, 100) + '...',
+              statement: `${statement.substring(0, 100)}...`,
               valid: true,
               issues: [],
             });
           } catch (error) {
             validationResults.push({
-              statement: statement.substring(0, 100) + '...',
+              statement: `${statement.substring(0, 100)}...`,
               valid: false,
               issues: [error instanceof Error ? error.message : 'Validation error'],
             });
@@ -718,14 +715,14 @@ export class DatabaseController {
           try {
             const result = await tx.execute(statement);
             migrationResults.push({
-              statement: statement.substring(0, 100) + '...',
+              statement: `${statement.substring(0, 100)}...`,
               success: true,
               affectedRows: result.affectedRows,
               executionTime: result.executionTime,
             });
           } catch (error) {
             migrationResults.push({
-              statement: statement.substring(0, 100) + '...',
+              statement: `${statement.substring(0, 100)}...`,
               success: false,
               error: error instanceof Error ? error.message : 'Execution error',
             });

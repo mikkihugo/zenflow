@@ -4,9 +4,9 @@
  * Comprehensive setup and teardown for integration tests
  */
 
-import { promises as fs } from 'fs';
-import { tmpdir } from 'os';
-import { join } from 'path';
+import { promises as fs } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import type {
   DatabaseTestHelper,
   FileSystemTestHelper,
@@ -239,7 +239,7 @@ export class IntegrationTestSetup {
               }
             );
           });
-        } catch (error) {
+        } catch (_error) {
           console.warn('SQLite not available, falling back to memory database');
           return this.createMemoryDatabaseHelper().setup();
         }
@@ -253,7 +253,7 @@ export class IntegrationTestSetup {
         }
         try {
           await fs.unlink(dbPath);
-        } catch (error) {
+        } catch (_error) {
           // File might not exist
         }
       },
@@ -305,7 +305,7 @@ export class IntegrationTestSetup {
     return {
       async createTempDir(): Promise<string> {
         const tempPath = `/mock/temp/${Date.now()}`;
-        mockFs.set(tempPath + '/', '');
+        mockFs.set(`${tempPath}/`, '');
         return tempPath;
       },
 
@@ -385,7 +385,7 @@ export class IntegrationTestSetup {
     const mockResponses = new Map<string, any>();
 
     return {
-      async startMockServer(port?: number): Promise<void> {
+      async startMockServer(_port?: number): Promise<void> {
         // Mock server is always "running"
       },
 
@@ -416,7 +416,7 @@ export class IntegrationTestSetup {
     return {
       async startMockServer(port: number = this.getRandomPort()): Promise<void> {
         try {
-          const http = await import('http');
+          const http = await import('node:http');
 
           server = http.createServer((req, res) => {
             const requestData = {
@@ -444,7 +444,7 @@ export class IntegrationTestSetup {
               else resolve();
             });
           });
-        } catch (error) {
+        } catch (_error) {
           console.warn('HTTP server not available, using mock network');
         }
       },
@@ -489,7 +489,7 @@ export class IntegrationTestSetup {
   }
 
   private async stopProcess(process: any): Promise<void> {
-    if (process && process.kill) {
+    if (process?.kill) {
       process.kill('SIGTERM');
 
       // Wait for graceful shutdown

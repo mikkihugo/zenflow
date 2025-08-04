@@ -5,13 +5,8 @@
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
 import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration';
-import { SessionConfig, SessionManager, type SessionState } from './session-manager';
-import {
-  SessionRecovery,
-  SessionSerializer,
-  SessionStats,
-  SessionValidator,
-} from './session-utils';
+import { SessionManager, type SessionState } from './session-manager';
+import { SessionSerializer, SessionStats, SessionValidator } from './session-utils';
 import type { SwarmOptions, SwarmState } from './types';
 
 // Mock persistence layer
@@ -30,7 +25,7 @@ class MockPersistence extends SwarmPersistencePooled {
 
   // Mock pool with read/write methods
   override pool = {
-    read: jest.fn(async (sql: string, params?: any[]) => {
+    read: jest.fn(async (sql: string, _params?: any[]) => {
       if (sql.includes('sessions')) {
         return Array.from(this.mockData.values()).filter((item: any) => item.type === 'session');
       }
@@ -343,11 +338,11 @@ describe('SessionEnabledSwarm', () => {
 
     const currentSession = await swarm.getCurrentSession();
     expect(currentSession).not.toBeNull();
-    expect(currentSession!.name).toBe('Test Swarm Session');
+    expect(currentSession?.name).toBe('Test Swarm Session');
   });
 
   test('should auto-save on agent addition', async () => {
-    const sessionId = await swarm.createSession('Test Swarm Session');
+    const _sessionId = await swarm.createSession('Test Swarm Session');
 
     const agentId = swarm.addAgent({
       id: 'test-agent',
@@ -360,11 +355,11 @@ describe('SessionEnabledSwarm', () => {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     const session = await swarm.getCurrentSession();
-    expect(session!.swarmState.agents.size).toBeGreaterThan(0);
+    expect(session?.swarmState.agents.size).toBeGreaterThan(0);
   });
 
   test('should create and restore from checkpoint', async () => {
-    const sessionId = await swarm.createSession('Test Swarm Session');
+    const _sessionId = await swarm.createSession('Test Swarm Session');
 
     swarm.addAgent({
       id: 'test-agent',
@@ -384,7 +379,7 @@ describe('SessionEnabledSwarm', () => {
     await swarm.restoreFromCheckpoint(checkpointId);
 
     const session = await swarm.getCurrentSession();
-    expect(session!.swarmState.agents.size).toBe(1); // Should have only the first agent
+    expect(session?.swarmState.agents.size).toBe(1); // Should have only the first agent
   });
 });
 
@@ -613,12 +608,12 @@ describe('Session Management Integration', () => {
       expect(sessionId).toBeDefined();
 
       // Add agents and tasks
-      const agentId = swarm.addAgent({
+      const _agentId = swarm.addAgent({
         id: 'test-agent',
         type: 'researcher',
       });
 
-      const taskId = await swarm.submitTask({
+      const _taskId = await swarm.submitTask({
         description: 'Test task',
         priority: 'medium',
       });
@@ -630,9 +625,9 @@ describe('Session Management Integration', () => {
       // Verify session state
       const session = await swarm.getCurrentSession();
       expect(session).not.toBeNull();
-      expect(session!.swarmState.agents.size).toBeGreaterThan(0);
-      expect(session!.swarmState.tasks.size).toBeGreaterThan(0);
-      expect(session!.checkpoints.length).toBeGreaterThan(0);
+      expect(session?.swarmState.agents.size).toBeGreaterThan(0);
+      expect(session?.swarmState.tasks.size).toBeGreaterThan(0);
+      expect(session?.checkpoints.length).toBeGreaterThan(0);
 
       // Pause and resume
       await swarm.pauseSession();

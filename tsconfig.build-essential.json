@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/core/**/*.ts",
+    "src/utils/**/*.ts",
+    "src/types/**/*.ts",
+    "src/memory/**/*.ts",
+    "src/interfaces/cli/**/*.ts",
+    "src/interfaces/mcp/**/*.ts",
+    "src/interfaces/terminal/**/*.ts",
+    "src/config/**/*.ts",
+    "src/database/**/*.ts",
+    "src/index.ts"
+  ],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts", "src/__tests__/**/*"]
+}

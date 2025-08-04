@@ -1,27 +1,30 @@
 /**
- * Enhanced Hooks System - Index
- * Central exports for the enhanced hooks system with safety validation,
+ * Hooks System - Index
+ * Central exports for the hooks system with safety validation,
  * auto-assignment, performance tracking, and context loading
  */
 
 export * from './auto-agent-assignment';
-export * from './enhanced-hook-manager';
+export * from './hook-manager';
 // Main Manager
-export { DefaultEnhancedHookManager } from './enhanced-hook-manager';
+export { DefaultHookManager } from './hook-manager';
 // Core System
-export * from './enhanced-hook-system';
+export * from './hook-system-core';
 export * from './performance-tracker';
 // Specialized Components
 export * from './safety-validator';
 
+// Import for convenience function
+import { DefaultHookManager } from './hook-manager';
+
 // Convenience factory function
-export function createEnhancedHookManager() {
-  return new DefaultEnhancedHookManager();
+export function createHookManager() {
+  return new DefaultHookManager();
 }
 
 // Version and metadata
-export const ENHANCED_HOOKS_VERSION = '1.0.0';
-export const ENHANCED_HOOKS_FEATURES = [
+export const HOOKS_VERSION = '1.0.0';
+export const HOOKS_FEATURES = [
   'safety-validation',
   'auto-agent-assignment',
   'performance-tracking',

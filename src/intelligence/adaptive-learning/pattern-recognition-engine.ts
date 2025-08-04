@@ -4,7 +4,7 @@
  * Enhanced to implement the adaptive learning interface
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import type {
   AdaptiveLearningConfig,
   Anomaly,
@@ -244,7 +244,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
       if (!pairGroups.has(pairKey)) {
         pairGroups.set(pairKey, []);
       }
-      pairGroups.get(pairKey)!.push(message);
+      pairGroups.get(pairKey)?.push(message);
     }
 
     // Analyze each communication pair
@@ -502,7 +502,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
       if (!failureTypes.has(errorType)) {
         failureTypes.set(errorType, []);
       }
-      failureTypes.get(errorType)!.push(trace);
+      failureTypes.get(errorType)?.push(trace);
     }
 
     for (const [errorType, traces] of failureTypes) {
@@ -536,7 +536,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
       if (!topologies.has(topology)) {
         topologies.set(topology, []);
       }
-      topologies.get(topology)!.push(trace);
+      topologies.get(topology)?.push(trace);
     }
 
     for (const [topology, traces] of topologies) {
@@ -625,7 +625,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
       if (!groups.has(taskType)) {
         groups.set(taskType, []);
       }
-      groups.get(taskType)!.push(trace);
+      groups.get(taskType)?.push(trace);
     }
 
     return groups;
@@ -762,29 +762,29 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     return uniqueAgents.size / Math.max(traces.length, 1);
   }
 
-  private calculateComplexity(pattern: any, traces: ExecutionTrace[]): number {
+  private calculateComplexity(pattern: any, _traces: ExecutionTrace[]): number {
     // Simple complexity metric based on parameter count and variance
     const paramCount = Object.keys(pattern).length;
     const variance = pattern.durationVariance || 0;
     return paramCount / 10 + variance / 1000;
   }
 
-  private calculatePredictability(pattern: any, traces: ExecutionTrace[]): number {
+  private calculatePredictability(pattern: any, _traces: ExecutionTrace[]): number {
     // Higher predictability for lower variance
     return 1 - Math.min(pattern.durationVariance || 0, 1);
   }
 
-  private calculateStability(pattern: any, traces: ExecutionTrace[]): number {
+  private calculateStability(pattern: any, _traces: ExecutionTrace[]): number {
     // Simple stability metric
     return 1 - (pattern.durationVariance || 0) / (pattern.averageDuration || 1);
   }
 
-  private calculateAnomalyScore(pattern: any, traces: ExecutionTrace[]): number {
+  private calculateAnomalyScore(pattern: any, _traces: ExecutionTrace[]): number {
     // Simple anomaly detection
     return pattern.durationVariance || 0 > (pattern.averageDuration || 1) ? 0.8 : 0.2;
   }
 
-  private findCorrelations(pattern: any, traces: ExecutionTrace[]): PatternCorrelation[] {
+  private findCorrelations(_pattern: any, _traces: ExecutionTrace[]): PatternCorrelation[] {
     // Simplified correlation detection
     return [];
   }
@@ -878,7 +878,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     }));
   }
 
-  private assessFailureImpacts(traces: ExecutionTrace[]): string[] {
+  private assessFailureImpacts(_traces: ExecutionTrace[]): string[] {
     return ['performance_degradation', 'task_failure', 'resource_waste'];
   }
 
@@ -887,7 +887,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     return traces.reduce((sum, t) => sum + t.duration, 0) / traces.length;
   }
 
-  private extractResourceContext(usages: number[]): ExecutionContext {
+  private extractResourceContext(_usages: number[]): ExecutionContext {
     return {
       swarmId: 'unknown',
       agentIds: [],
@@ -903,7 +903,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     };
   }
 
-  private calculateResourceMetadata(pattern: any, usages: number[]): PatternMetadata {
+  private calculateResourceMetadata(pattern: any, _usages: number[]): PatternMetadata {
     return {
       complexity: pattern.variance / pattern.average,
       predictability: 1 - pattern.variance / pattern.average,
@@ -1019,7 +1019,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
       if (!groups.has(key)) {
         groups.set(key, []);
       }
-      groups.get(key)!.push(item);
+      groups.get(key)?.push(item);
     }
 
     for (const [key, members] of groups) {
@@ -1200,7 +1200,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     return sizes.length > 0 ? sizes.reduce((sum, s) => sum + s, 0) / sizes.length : 0;
   }
 
-  private calculateReliability(messages: Message[]): number {
+  private calculateReliability(_messages: Message[]): number {
     // Simplified: assume all delivered messages are reliable
     return 1.0;
   }

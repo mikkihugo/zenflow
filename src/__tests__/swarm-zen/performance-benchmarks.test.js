@@ -11,10 +11,8 @@
  * - Resource utilization benchmarking
  */
 
-import { jest } from '@jest/globals';
-import os from 'os';
-import { performance } from 'perf_hooks';
-import { isMainThread, parentPort, Worker, workerData } from 'worker_threads';
+import os from 'node:os';
+import { performance } from 'node:perf_hooks';
 import { HealthMonitor } from '../src/health-monitor.js';
 import { RecoveryWorkflows } from '../src/recovery-workflows.js';
 // Import components
@@ -220,7 +218,6 @@ class ScalabilityTester {
 
     for (const scale of scales) {
       const loadSize = baseLoad * scale;
-      console.log(`Testing scalability at ${scale}x scale (${loadSize} operations)`);
 
       const startTime = performance.now();
       const startMemory = process.memoryUsage();
@@ -342,13 +339,13 @@ describe('Performance Benchmarks - Session Persistence', () => {
     mockPersistence = {
       initialize: async () => {},
       pool: {
-        read: async (query, params = []) => {
+        read: async (query, _params = []) => {
           // Simulate database latency
           await new Promise((resolve) => setTimeout(resolve, 1 + Math.random() * 2));
           if (query.includes('SELECT 1')) return [{ test: 1 }];
           return [];
         },
-        write: async (query, params = []) => {
+        write: async (_query, _params = []) => {
           // Simulate write latency
           await new Promise((resolve) => setTimeout(resolve, 2 + Math.random() * 3));
           return { changes: 1 };
@@ -402,16 +399,12 @@ describe('Performance Benchmarks - Session Persistence', () => {
       benchmark.endMeasurement('session-creation-batch');
       benchmark.addMemorySnapshot('after-session-creation');
 
-      const batchStats = benchmark.calculateStatistics('session-creation-batch');
+      const _batchStats = benchmark.calculateStatistics('session-creation-batch');
       const singleStats = benchmark.calculateStatistics('single-session-creation');
 
       expect(sessionIds).toHaveLength(sessionCount);
       expect(singleStats.duration.mean).toBeLessThan(100); // Average < 100ms per session
       expect(singleStats.throughput).toBeGreaterThan(10); // > 10 sessions/sec
-
-      console.log(
-        `Session creation: ${singleStats.duration.mean.toFixed(2)}ms avg, ${singleStats.throughput.toFixed(2)} ops/sec`
-      );
     });
 
     test('should benchmark high-frequency state updates', async () => {
@@ -446,10 +439,6 @@ describe('Performance Benchmarks - Session Persistence', () => {
       const updateStats = benchmark.calculateStatistics('single-update');
       expect(updateStats.duration.mean).toBeLessThan(50); // Average < 50ms per update
       expect(updateStats.throughput).toBeGreaterThan(20); // > 20 updates/sec
-
-      console.log(
-        `State updates: ${updateStats.duration.mean.toFixed(2)}ms avg, ${updateStats.throughput.toFixed(2)} ops/sec`
-      );
     });
 
     test('should benchmark checkpoint operations', async () => {
@@ -518,10 +507,6 @@ describe('Performance Benchmarks - Session Persistence', () => {
       const checkpointStats = benchmark.calculateStatistics('single-checkpoint');
       expect(checkpointStats.duration.mean).toBeLessThan(200); // Average < 200ms per checkpoint
       expect(checkpointIds).toHaveLength(checkpointCount);
-
-      console.log(
-        `Checkpoints: ${checkpointStats.duration.mean.toFixed(2)}ms avg, ${checkpointStats.throughput.toFixed(2)} ops/sec`
-      );
     });
 
     test('should benchmark session loading with large state', async () => {
@@ -605,10 +590,6 @@ describe('Performance Benchmarks - Session Persistence', () => {
 
       const loadStats = benchmark.calculateStatistics('single-load');
       expect(loadStats.duration.mean).toBeLessThan(500); // Average < 500ms for large state
-
-      console.log(
-        `Large state loading: ${loadStats.duration.mean.toFixed(2)}ms avg, ${loadStats.throughput.toFixed(2)} ops/sec`
-      );
     });
 
     test('should benchmark concurrent session operations', async () => {
@@ -653,10 +634,6 @@ describe('Performance Benchmarks - Session Persistence', () => {
 
       expect(analysis.successRate).toBeGreaterThan(95); // > 95% success rate
       expect(analysis.successful).toBe(concurrency * operationsPerWorker);
-
-      console.log(
-        `Concurrent ops: ${analysis.successRate.toFixed(2)}% success, ${analysis.duration.mean.toFixed(2)}ms avg`
-      );
     });
   });
 
@@ -695,10 +672,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
       expect(results.length).toBe(checkCount + 3); // +3 for built-in checks
       expect(summary.healthy).toBeGreaterThan(checkCount * 0.8); // Most should be healthy
 
-      const parallelStats = benchmark.calculateStatistics('health-checks-parallel');
-      console.log(
-        `Health checks (parallel): ${parallelStats.duration.mean.toFixed(2)}ms for ${checkCount} checks`
-      );
+      const _parallelStats = benchmark.calculateStatistics('health-checks-parallel');
 
       // Compare with sequential execution
       benchmark.startMeasurement('health-checks-sequential');
@@ -708,10 +682,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
       }
       benchmark.endMeasurement('health-checks-sequential');
 
-      const sequentialStats = benchmark.calculateStatistics('health-checks-sequential');
-      console.log(
-        `Sequential execution would be much slower: ${sequentialStats.duration.mean}ms for 20 checks`
-      );
+      const _sequentialStats = benchmark.calculateStatistics('health-checks-sequential');
     });
 
     test('should benchmark monitoring overhead', async () => {
@@ -748,8 +719,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
       expect(monitoringStats.totalChecks).toBe(23); // 20 + 3 built-in
       expect(monitoringStats.isRunning).toBe(false);
 
-      const overheadStats = benchmark.calculateStatistics('monitoring-overhead');
-      console.log(`Monitoring overhead: ${overheadStats.memoryDelta.heapUsed} bytes heap increase`);
+      const _overheadStats = benchmark.calculateStatistics('monitoring-overhead');
     });
 
     test('should benchmark alert processing performance', async () => {
@@ -785,10 +755,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
 
       expect(alertsTriggered).toBeGreaterThan(0);
 
-      const alertStats = benchmark.calculateStatistics('alert-processing');
-      console.log(
-        `Alert processing: ${alertsTriggered} alerts generated in ${alertStats.duration.mean.toFixed(2)}ms`
-      );
+      const _alertStats = benchmark.calculateStatistics('alert-processing');
     });
   });
 
@@ -814,7 +781,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
             },
             {
               name: 'step2',
-              action: async (context) => {
+              action: async (_context) => {
                 // More complex step
                 const data = Array.from({ length: 100 }, () => Math.random());
                 return { step: 2, workflowId: i, dataLength: data.length };
@@ -843,10 +810,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
       const successfulExecutions = executions.filter((e) => e.status === 'completed');
       expect(successfulExecutions.length).toBeGreaterThan(workflowCount * 0.9); // > 90% success
 
-      const workflowStats = benchmark.calculateStatistics('single-workflow-execution');
-      console.log(
-        `Workflow execution: ${workflowStats.duration.mean.toFixed(2)}ms avg, ${workflowStats.throughput.toFixed(2)} workflows/sec`
-      );
+      const _workflowStats = benchmark.calculateStatistics('single-workflow-execution');
     });
 
     test('should benchmark recovery workflow scalability', async () => {
@@ -896,10 +860,6 @@ describe('Performance Benchmarks - Session Persistence', () => {
       );
 
       expect(scalabilityResults.overallEfficiency).toBeGreaterThan(0.5); // Reasonable scaling
-      console.log(
-        `Workflow scalability: ${scalabilityResults.overallEfficiency.toFixed(2)} efficiency`
-      );
-      console.log(`Recommendations: ${scalabilityResults.recommendations.join(', ')}`);
     });
 
     test('should benchmark recovery under load', async () => {
@@ -971,10 +931,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
       expect(successfulLoads).toBeGreaterThan(40); // Most should succeed
       expect(recoveryResult.status).toBe('completed');
 
-      const recoveryStats = benchmark.calculateStatistics('recovery-under-load');
-      console.log(
-        `Recovery under load: ${recoveryStats.duration.mean.toFixed(2)}ms, ${successfulLoads}/50 loads succeeded`
-      );
+      const _recoveryStats = benchmark.calculateStatistics('recovery-under-load');
     });
   });
 
@@ -1021,14 +978,10 @@ describe('Performance Benchmarks - Session Persistence', () => {
       const finalMemory = process.memoryUsage();
 
       const memoryGrowth = finalMemory.heapUsed - initialMemory.heapUsed;
-      const memoryGrowthPerOperation = memoryGrowth / iterations;
+      const _memoryGrowthPerOperation = memoryGrowth / iterations;
 
       // Memory growth should be reasonable (< 1MB per 100 operations)
       expect(memoryGrowth).toBeLessThan(1024 * 1024);
-
-      console.log(
-        `Memory growth: ${memoryGrowth} bytes total, ${memoryGrowthPerOperation.toFixed(2)} bytes per operation`
-      );
 
       // Analyze memory snapshots for leak patterns
       const snapshots = benchmark.memorySnapshots;
@@ -1040,10 +993,8 @@ describe('Performance Benchmarks - Session Persistence', () => {
 
       // Check if memory growth is linear (potential leak) vs stable
       const lastHalf = heapGrowthPattern.slice(Math.floor(heapGrowthPattern.length / 2));
-      const avgGrowthRate =
+      const _avgGrowthRate =
         lastHalf.reduce((sum, point) => sum + point.growth, 0) / lastHalf.length;
-
-      console.log(`Average memory growth rate in final phase: ${avgGrowthRate.toFixed(2)} bytes`);
     });
 
     test('should profile memory usage patterns', async () => {
@@ -1117,11 +1068,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
           rssDelta: afterMemory.rss - beforeMemory.rss,
         };
       }
-
-      console.log('Memory usage profiles:');
-      Object.entries(profiles).forEach(([name, profile]) => {
-        console.log(`  ${name}: ${profile.heapUsedDelta} bytes heap used`);
-      });
+      Object.entries(profiles).forEach(([_name, _profile]) => {});
 
       // Each operation should use reasonable memory
       Object.values(profiles).forEach((profile) => {
@@ -1167,27 +1114,11 @@ describe('Performance Benchmarks - Session Persistence', () => {
         ],
       };
 
-      console.log('\n📊 PERFORMANCE BENCHMARK REPORT');
-      console.log('=================================');
-      console.log(`System: ${report.systemInfo.platform} with ${report.systemInfo.cpus} CPUs`);
-      console.log(
-        `Memory: ${(report.systemInfo.totalMemory / 1024 / 1024 / 1024).toFixed(2)}GB total`
-      );
-      console.log(`Node.js: ${report.systemInfo.nodeVersion}`);
-      console.log('\nMeasurements:');
-
-      Object.entries(report.measurements).forEach(([name, stats]) => {
+      Object.entries(report.measurements).forEach(([_name, stats]) => {
         if (stats) {
-          console.log(`  ${name}:`);
-          console.log(`    Mean: ${stats.duration.mean.toFixed(2)}ms`);
-          console.log(`    P95: ${stats.duration.p95.toFixed(2)}ms`);
-          console.log(`    Throughput: ${stats.throughput.toFixed(2)} ops/sec`);
         }
       });
-
-      console.log('\nRecommendations:');
-      report.recommendations.forEach((rec) => console.log(`  • ${rec}`));
-      console.log('\n✅ Performance benchmarking completed successfully');
+      report.recommendations.forEach((_rec) => {});
 
       expect(report.systemInfo).toBeDefined();
       expect(Object.keys(report.measurements).length).toBeGreaterThan(0);

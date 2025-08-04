@@ -1,382 +1,742 @@
 /**
- * Documentation Linker
- * Links and manages documentation across the system
- * Migrated from plugins to utils domain
+ * Unified Documentation Linker - Direct Integration
+ *
+ * Links code references to documentation and generates cross-references
+ * Integrated directly into core without plugin architecture
  */
 
+import { EventEmitter } from 'node:events';
+import { existsSync } from 'node:fs';
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
-import * as path from 'node:path';
+import { extname, join, relative } from 'node:path';
+import { createLogger } from './logger';
 
-export interface DocumentLink {
+const logger = createLogger('UnifiedDocLinker');
+
+export interface DocumentationIndex {
   id: string;
   title: string;
   path: string;
-  type: 'markdown' | 'text' | 'code' | 'api' | 'spec';
-  category?: string;
-  tags?: string[];
-  lastModified: Date;
-  dependencies?: string[];
-  backlinks?: string[];
+  type:
+    | 'vision'
+    | 'adr'
+    | 'prd'
+    | 'epic'
+    | 'feature'
+    | 'task'
+    | 'spec'
+    | 'readme'
+    | 'api'
+    | 'guide';
+  keywords: string[];
+  sections: Array<{
+    title: string;
+    level: number;
+    content: string;
+  }>;
+  metadata: {
+    created: Date;
+    modified: Date;
+    size: number;
+    language?: string;
+  };
+  links: Array<{
+    type: 'internal' | 'external' | 'code';
+    target: string;
+    text: string;
+  }>;
 }
 
-export interface DocumentIndex {
-  documents: DocumentLink[];
-  categories: Record<string, string[]>;
-  tags: Record<string, string[]>;
-  graph: Record<string, string[]>;
+export interface CodeReference {
+  file: string;
+  line: number;
+  column?: number;
+  type: 'todo' | 'comment' | 'function' | 'class' | 'method' | 'import';
+  text: string;
+  context: string;
+  suggestedLinks: Array<{
+    documentId: string;
+    title: string;
+    relevance: number;
+    reason: string;
+  }>;
+  confidence: number;
 }
 
-export class DocumentationLinker {
-  private documents = new Map<string, DocumentLink>();
-  private index: DocumentIndex = {
-    documents: [],
-    categories: {},
-    tags: {},
-    graph: {},
+export interface CrossReference {
+  sourceDocument: string;
+  targetDocument: string;
+  linkType: 'references' | 'implements' | 'extends' | 'validates' | 'supersedes';
+  confidence: number;
+  context: string;
+}
+
+export interface LinkSuggestion {
+  type: 'missing_doc' | 'broken_link' | 'enhancement' | 'cross_reference';
+  source: string;
+  target?: string;
+  description: string;
+  priority: 'low' | 'medium' | 'high';
+  autoFixable: boolean;
+}
+
+export class UnifiedDocumentationLinker extends EventEmitter {
+  private documentationIndex = new Map<string, DocumentationIndex>();
+  private codeReferences: CodeReference[] = [];
+  private crossReferences: CrossReference[] = [];
+  private config: {
+    documentationPaths: string[];
+    codePaths: string[];
+    supportedExtensions: string[];
+    excludePatterns: string[];
+    keywordThreshold: number;
+    confidenceThreshold: number;
   };
 
-  constructor(private basePath: string = './docs') {}
+  constructor(config: any = {}) {
+    super();
+    this.config = {
+      documentationPaths: [
+        './docs',
+        './adrs',
+        './prds',
+        './epics',
+        './features',
+        './tasks',
+        './specs',
+      ],
+      codePaths: ['./src', './lib'],
+      supportedExtensions: ['.md', '.txt', '.rst', '.adoc'],
+      excludePatterns: ['node_modules', '.git', 'dist', 'build'],
+      keywordThreshold: 0.6,
+      confidenceThreshold: 0.7,
+      ...config,
+    };
+  }
 
-  /**
-   * Scan directory for documentation files
-   */
-  async scanDocuments(): Promise<void> {
+  async initialize(): Promise<void> {
+    logger.info('Initializing unified documentation linker');
+
     try {
-      await this.scanDirectory(this.basePath);
-      this.buildIndex();
-      console.log(`[DocumentationLinker] Scanned ${this.documents.size} documents`);
+      // Index all documentation
+      await this.indexDocumentation();
+
+      // Analyze code references
+      await this.analyzeCodeReferences();
+
+      // Generate cross-references
+      await this.generateCrossReferences();
+
+      this.emit('initialized', {
+        documentsIndexed: this.documentationIndex.size,
+        codeReferences: this.codeReferences.length,
+        crossReferences: this.crossReferences.length,
+      });
+
+      logger.info('Documentation linker ready');
     } catch (error) {
-      console.error('[DocumentationLinker] Failed to scan documents:', error);
+      logger.error('Failed to initialize documentation linker:', error);
+      throw error;
     }
   }
 
-  private async scanDirectory(dirPath: string): Promise<void> {
+  /**
+   * Index all documentation files
+   */
+  private async indexDocumentation(): Promise<void> {
+    for (const docPath of this.config.documentationPaths) {
+      if (existsSync(docPath)) {
+        await this.indexDirectory(docPath);
+      }
+    }
+
+    logger.info(`Indexed ${this.documentationIndex.size} documentation files`);
+  }
+
+  private async indexDirectory(directoryPath: string): Promise<void> {
     try {
-      const entries = await readdir(dirPath);
+      const entries = await readdir(directoryPath, { withFileTypes: true });
 
       for (const entry of entries) {
-        const fullPath = path.join(dirPath, entry);
-        const stats = await stat(fullPath);
+        const fullPath = join(directoryPath, entry.name);
 
-        if (stats.isDirectory()) {
-          await this.scanDirectory(fullPath);
-        } else if (this.isDocumentFile(entry)) {
-          await this.processDocument(fullPath);
+        // Skip excluded patterns
+        if (this.config.excludePatterns.some((pattern) => fullPath.includes(pattern))) {
+          continue;
+        }
+
+        if (entry.isDirectory()) {
+          await this.indexDirectory(fullPath);
+        } else if (entry.isFile() && this.isSupportedDocumentFile(entry.name)) {
+          await this.indexDocument(fullPath);
         }
       }
     } catch (error) {
-      // Directory might not exist or be accessible
+      logger.warn(`Failed to index directory ${directoryPath}:`, error);
     }
   }
 
-  private isDocumentFile(filename: string): boolean {
-    const extensions = ['.md', '.txt', '.rst', '.adoc', '.html'];
-    return extensions.some((ext) => filename.toLowerCase().endsWith(ext));
-  }
-
-  private async processDocument(filePath: string): Promise<void> {
+  private async indexDocument(filePath: string): Promise<void> {
     try {
       const content = await readFile(filePath, 'utf8');
       const stats = await stat(filePath);
 
-      const doc: DocumentLink = {
+      const documentIndex: DocumentationIndex = {
         id: this.generateDocumentId(filePath),
         title: this.extractTitle(content, filePath),
         path: filePath,
         type: this.determineDocumentType(filePath, content),
-        lastModified: stats.mtime,
-        dependencies: this.extractDependencies(content),
-        backlinks: [],
+        keywords: this.extractKeywords(content),
+        sections: this.extractSections(content),
+        metadata: {
+          created: stats.birthtime,
+          modified: stats.mtime,
+          size: stats.size,
+        },
+        links: this.extractLinks(content),
       };
 
-      // Extract metadata from frontmatter or comments
-      const metadata = this.extractMetadata(content);
-      if (metadata.category) doc.category = metadata.category;
-      if (metadata.tags) doc.tags = metadata.tags;
-
-      this.documents.set(doc.id, doc);
+      this.documentationIndex.set(documentIndex.id, documentIndex);
+      this.emit('document:indexed', documentIndex);
     } catch (error) {
-      console.error(`[DocumentationLinker] Failed to process ${filePath}:`, error);
+      logger.warn(`Failed to index document ${filePath}:`, error);
     }
   }
 
+  /**
+   * Analyze code files for documentation references
+   */
+  private async analyzeCodeReferences(): Promise<void> {
+    for (const codePath of this.config.codePaths) {
+      if (existsSync(codePath)) {
+        await this.analyzeCodeDirectory(codePath);
+      }
+    }
+
+    logger.info(`Found ${this.codeReferences.length} code references`);
+  }
+
+  private async analyzeCodeDirectory(directoryPath: string): Promise<void> {
+    try {
+      const entries = await readdir(directoryPath, { withFileTypes: true });
+
+      for (const entry of entries) {
+        const fullPath = join(directoryPath, entry.name);
+
+        // Skip excluded patterns
+        if (this.config.excludePatterns.some((pattern) => fullPath.includes(pattern))) {
+          continue;
+        }
+
+        if (entry.isDirectory()) {
+          await this.analyzeCodeDirectory(fullPath);
+        } else if (entry.isFile() && this.isCodeFile(entry.name)) {
+          await this.analyzeCodeFile(fullPath);
+        }
+      }
+    } catch (error) {
+      logger.warn(`Failed to analyze code directory ${directoryPath}:`, error);
+    }
+  }
+
+  private async analyzeCodeFile(filePath: string): Promise<void> {
+    try {
+      const content = await readFile(filePath, 'utf8');
+      const lines = content.split('\n');
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const lineNumber = i + 1;
+
+        // Find TODO comments
+        const todoMatch = line.match(/\/\/\s*TODO:?\s*(.+)/i) || line.match(/#\s*TODO:?\s*(.+)/i);
+        if (todoMatch) {
+          await this.addCodeReference({
+            file: filePath,
+            line: lineNumber,
+            type: 'todo',
+            text: todoMatch[1].trim(),
+            context: this.getContextLines(lines, i, 2),
+          });
+        }
+
+        // Find documentation comments
+        const docCommentMatch = line.match(/\/\*\*\s*(.+?)\s*\*\//s) || line.match(/\*\s*(.+)/);
+        if (docCommentMatch && !line.includes('TODO')) {
+          await this.addCodeReference({
+            file: filePath,
+            line: lineNumber,
+            type: 'comment',
+            text: docCommentMatch[1].trim(),
+            context: this.getContextLines(lines, i, 1),
+          });
+        }
+
+        // Find function/class definitions that might need documentation
+        const functionMatch = line.match(/(?:function|class|interface|type)\s+(\w+)/);
+        if (functionMatch) {
+          const precedingComment = i > 0 ? lines[i - 1].trim() : '';
+          if (!precedingComment.startsWith('//') && !precedingComment.startsWith('*')) {
+            await this.addCodeReference({
+              file: filePath,
+              line: lineNumber,
+              type: functionMatch[0].includes('class') ? 'class' : 'function',
+              text: `${functionMatch[0]} needs documentation`,
+              context: this.getContextLines(lines, i, 3),
+            });
+          }
+        }
+      }
+    } catch (error) {
+      logger.warn(`Failed to analyze code file ${filePath}:`, error);
+    }
+  }
+
+  private async addCodeReference(
+    reference: Omit<CodeReference, 'suggestedLinks' | 'confidence'>
+  ): Promise<void> {
+    const suggestedLinks = this.findRelatedDocumentation(reference.text);
+    const confidence = this.calculateLinkConfidence(reference.text, suggestedLinks);
+
+    if (confidence >= this.config.confidenceThreshold || suggestedLinks.length > 0) {
+      this.codeReferences.push({
+        ...reference,
+        suggestedLinks,
+        confidence,
+      });
+
+      this.emit('code:reference:found', { ...reference, suggestedLinks, confidence });
+    }
+  }
+
+  /**
+   * Generate cross-references between documents
+   */
+  private async generateCrossReferences(): Promise<void> {
+    const documents = Array.from(this.documentationIndex.values());
+
+    for (let i = 0; i < documents.length; i++) {
+      for (let j = i + 1; j < documents.length; j++) {
+        const doc1 = documents[i];
+        const doc2 = documents[j];
+
+        const relationship = this.analyzeDocumentRelationship(doc1, doc2);
+        if (relationship) {
+          this.crossReferences.push(relationship);
+        }
+      }
+    }
+
+    logger.info(`Generated ${this.crossReferences.length} cross-references`);
+  }
+
+  /**
+   * Generate documentation enhancement suggestions
+   */
+  async generateLinkSuggestions(): Promise<LinkSuggestion[]> {
+    const suggestions: LinkSuggestion[] = [];
+
+    // Missing documentation suggestions
+    for (const codeRef of this.codeReferences) {
+      if (codeRef.suggestedLinks.length === 0 && codeRef.type === 'todo') {
+        suggestions.push({
+          type: 'missing_doc',
+          source: `${codeRef.file}:${codeRef.line}`,
+          description: `Consider creating documentation for: ${codeRef.text}`,
+          priority: 'medium',
+          autoFixable: false,
+        });
+      }
+    }
+
+    // Enhancement suggestions for existing documentation
+    for (const [docId, doc] of this.documentationIndex) {
+      const relatedCode = this.codeReferences.filter((ref) =>
+        ref.suggestedLinks.some((link) => link.documentId === docId)
+      );
+
+      if (relatedCode.length > 0) {
+        suggestions.push({
+          type: 'enhancement',
+          source: doc.path,
+          description: `Add links to ${relatedCode.length} related code references`,
+          priority: 'low',
+          autoFixable: true,
+        });
+      }
+    }
+
+    // Cross-reference suggestions
+    for (const crossRef of this.crossReferences) {
+      if (crossRef.confidence > 0.8) {
+        suggestions.push({
+          type: 'cross_reference',
+          source: crossRef.sourceDocument,
+          target: crossRef.targetDocument,
+          description: `Strong relationship detected: ${crossRef.linkType}`,
+          priority: 'high',
+          autoFixable: true,
+        });
+      }
+    }
+
+    return suggestions.sort((a, b) => {
+      const priorityOrder = { high: 3, medium: 2, low: 1 };
+      return priorityOrder[b.priority] - priorityOrder[a.priority];
+    });
+  }
+
+  /**
+   * Generate comprehensive documentation report
+   */
+  async generateDocumentationReport(): Promise<string> {
+    const report = [];
+
+    report.push('# Documentation Linker Report');
+    report.push(`Generated: ${new Date().toISOString()}`);
+    report.push('');
+
+    // Summary
+    report.push('## Summary');
+    report.push(`- **Documents Indexed**: ${this.documentationIndex.size}`);
+    report.push(`- **Code References**: ${this.codeReferences.length}`);
+    report.push(`- **Cross References**: ${this.crossReferences.length}`);
+    report.push('');
+
+    // Document Types
+    const typeBreakdown = new Map<string, number>();
+    for (const doc of this.documentationIndex.values()) {
+      typeBreakdown.set(doc.type, (typeBreakdown.get(doc.type) || 0) + 1);
+    }
+
+    report.push('## Document Types');
+    for (const [type, count] of typeBreakdown) {
+      report.push(`- **${type}**: ${count}`);
+    }
+    report.push('');
+
+    // High-confidence code references
+    const highConfidenceRefs = this.codeReferences.filter((ref) => ref.confidence > 0.8);
+    if (highConfidenceRefs.length > 0) {
+      report.push('## High-Confidence Code References');
+      for (const ref of highConfidenceRefs.slice(0, 10)) {
+        report.push(`### ${relative(process.cwd(), ref.file)}:${ref.line}`);
+        report.push(`**Type**: ${ref.type}`);
+        report.push(`**Text**: ${ref.text}`);
+        report.push(`**Confidence**: ${Math.round(ref.confidence * 100)}%`);
+        if (ref.suggestedLinks.length > 0) {
+          report.push('**Suggested Links**:');
+          for (const link of ref.suggestedLinks.slice(0, 3)) {
+            report.push(`- ${link.title} (${Math.round(link.relevance * 100)}%)`);
+          }
+        }
+        report.push('');
+      }
+    }
+
+    // Cross-references
+    if (this.crossReferences.length > 0) {
+      report.push('## Document Cross-References');
+      const sortedCrossRefs = this.crossReferences
+        .sort((a, b) => b.confidence - a.confidence)
+        .slice(0, 10);
+
+      for (const crossRef of sortedCrossRefs) {
+        const sourceDoc = this.documentationIndex.get(crossRef.sourceDocument);
+        const targetDoc = this.documentationIndex.get(crossRef.targetDocument);
+
+        if (sourceDoc && targetDoc) {
+          report.push(`### ${sourceDoc.title} → ${targetDoc.title}`);
+          report.push(`**Relationship**: ${crossRef.linkType}`);
+          report.push(`**Confidence**: ${Math.round(crossRef.confidence * 100)}%`);
+          report.push(`**Context**: ${crossRef.context}`);
+          report.push('');
+        }
+      }
+    }
+
+    // Suggestions
+    const suggestions = await this.generateLinkSuggestions();
+    if (suggestions.length > 0) {
+      report.push('## Improvement Suggestions');
+      for (const suggestion of suggestions.slice(0, 15)) {
+        report.push(`### ${suggestion.type.replace('_', ' ').toUpperCase()}`);
+        report.push(`**Source**: ${suggestion.source}`);
+        if (suggestion.target) report.push(`**Target**: ${suggestion.target}`);
+        report.push(`**Description**: ${suggestion.description}`);
+        report.push(`**Priority**: ${suggestion.priority}`);
+        report.push(`**Auto-fixable**: ${suggestion.autoFixable ? 'Yes' : 'No'}`);
+        report.push('');
+      }
+    }
+
+    return report.join('\n');
+  }
+
+  /**
+   * Utility methods
+   */
+  private findRelatedDocumentation(text: string): Array<{
+    documentId: string;
+    title: string;
+    relevance: number;
+    reason: string;
+  }> {
+    const related: Array<{
+      documentId: string;
+      title: string;
+      relevance: number;
+      reason: string;
+    }> = [];
+
+    const lowerText = text.toLowerCase();
+    const words = lowerText.split(/\s+/).filter((word) => word.length > 3);
+
+    for (const [docId, doc] of this.documentationIndex) {
+      let score = 0;
+      const reasons: string[] = [];
+
+      // Check keywords
+      for (const keyword of doc.keywords) {
+        if (lowerText.includes(keyword.toLowerCase())) {
+          score += 3;
+          reasons.push(`keyword: ${keyword}`);
+        }
+      }
+
+      // Check title similarity
+      const titleWords = doc.title.toLowerCase().split(/\s+/);
+      for (const word of words) {
+        if (titleWords.some((titleWord) => titleWord.includes(word) || word.includes(titleWord))) {
+          score += 2;
+          reasons.push(`title similarity: ${word}`);
+        }
+      }
+
+      // Check section titles
+      for (const section of doc.sections) {
+        const sectionTitle = section.title.toLowerCase();
+        for (const word of words) {
+          if (sectionTitle.includes(word)) {
+            score += 1;
+            reasons.push(`section: ${section.title}`);
+          }
+        }
+      }
+
+      if (score > 0) {
+        const relevance = Math.min(score / 10, 1); // Normalize to 0-1
+        related.push({
+          documentId: docId,
+          title: doc.title,
+          relevance,
+          reason: reasons.slice(0, 3).join(', '),
+        });
+      }
+    }
+
+    return related.sort((a, b) => b.relevance - a.relevance).slice(0, 5);
+  }
+
+  private calculateLinkConfidence(text: string, suggestedLinks: any[]): number {
+    if (suggestedLinks.length === 0) return 0;
+
+    const maxRelevance = Math.max(...suggestedLinks.map((link) => link.relevance));
+    const textSpecificity = Math.min(text.length / 100, 1); // Longer text is more specific
+    const linkCount = Math.min(suggestedLinks.length / 3, 1); // More links indicate higher relevance
+
+    return maxRelevance * 0.6 + textSpecificity * 0.2 + linkCount * 0.2;
+  }
+
+  private analyzeDocumentRelationship(
+    doc1: DocumentationIndex,
+    doc2: DocumentationIndex
+  ): CrossReference | null {
+    // Simple relationship analysis
+    const commonKeywords = doc1.keywords.filter((k) => doc2.keywords.includes(k));
+
+    if (commonKeywords.length > 0) {
+      let linkType: CrossReference['linkType'] = 'references';
+      const confidence =
+        commonKeywords.length / Math.max(doc1.keywords.length, doc2.keywords.length);
+
+      // Determine relationship type based on document types
+      if (doc1.type === 'vision' && doc2.type === 'prd') linkType = 'implements';
+      else if (doc1.type === 'prd' && doc2.type === 'epic') linkType = 'extends';
+      else if (doc1.type === 'epic' && doc2.type === 'feature') linkType = 'extends';
+      else if (doc1.type === 'feature' && doc2.type === 'task') linkType = 'extends';
+
+      if (confidence > 0.3) {
+        return {
+          sourceDocument: doc1.id,
+          targetDocument: doc2.id,
+          linkType,
+          confidence,
+          context: `Common keywords: ${commonKeywords.join(', ')}`,
+        };
+      }
+    }
+
+    return null;
+  }
+
+  private isSupportedDocumentFile(filename: string): boolean {
+    return this.config.supportedExtensions.includes(extname(filename));
+  }
+
+  private isCodeFile(filename: string): boolean {
+    const codeExtensions = [
+      '.js',
+      '.ts',
+      '.jsx',
+      '.tsx',
+      '.py',
+      '.java',
+      '.go',
+      '.rs',
+      '.cpp',
+      '.c',
+      '.h',
+    ];
+    return codeExtensions.includes(extname(filename));
+  }
+
   private generateDocumentId(filePath: string): string {
-    return path
-      .relative(this.basePath, filePath)
-      .replace(/[/\\]/g, '-')
-      .replace(/\.[^.]+$/, '');
+    return Buffer.from(filePath).toString('base64').replace(/[+/=]/g, '').substring(0, 16);
   }
 
   private extractTitle(content: string, filePath: string): string {
     // Try to extract title from first heading
     const headingMatch = content.match(/^#\s+(.+)$/m);
-    if (headingMatch) {
-      return headingMatch[1].trim();
-    }
+    if (headingMatch) return headingMatch[1].trim();
 
-    // Try to extract from HTML title
-    const htmlTitleMatch = content.match(/<title>([^<]+)<\/title>/i);
-    if (htmlTitleMatch) {
-      return htmlTitleMatch[1].trim();
-    }
-
-    // Fall back to filename
-    return path.basename(filePath, path.extname(filePath));
+    // Try to extract from filename
+    const filename = relative(process.cwd(), filePath).replace(extname(filePath), '');
+    return filename.split('/').pop()?.replace(/[-_]/g, ' ') || 'Untitled';
   }
 
-  private determineDocumentType(filePath: string, content: string): DocumentLink['type'] {
-    const ext = path.extname(filePath).toLowerCase();
+  private determineDocumentType(filePath: string, content: string): DocumentationIndex['type'] {
+    const path = filePath.toLowerCase();
 
-    if (ext === '.md') {
-      if (content.includes('## API') || content.includes('### Endpoints')) {
-        return 'api';
-      }
-      if (content.includes('## Specification') || content.includes('### Requirements')) {
-        return 'spec';
-      }
-      return 'markdown';
-    }
+    if (path.includes('/vision/')) return 'vision';
+    if (path.includes('/adr')) return 'adr';
+    if (path.includes('/prd')) return 'prd';
+    if (path.includes('/epic')) return 'epic';
+    if (path.includes('/feature')) return 'feature';
+    if (path.includes('/task')) return 'task';
+    if (path.includes('/spec')) return 'spec';
+    if (path.includes('readme')) return 'readme';
+    if (content.includes('API') || content.includes('api')) return 'api';
 
-    if (['.js', '.ts', '.py', '.rs', '.go'].includes(ext)) {
-      return 'code';
-    }
-
-    return 'text';
+    return 'guide';
   }
 
-  private extractDependencies(content: string): string[] {
-    const dependencies: string[] = [];
+  private extractKeywords(content: string): string[] {
+    const keywords = new Set<string>();
 
-    // Extract markdown links
+    // Extract from headings
+    const headings = content.match(/^#+\s+(.+)$/gm) || [];
+    for (const heading of headings) {
+      const words = heading
+        .replace(/^#+\s+/, '')
+        .toLowerCase()
+        .split(/\s+/);
+      words.forEach((word) => {
+        if (word.length > 3) keywords.add(word);
+      });
+    }
+
+    // Extract important terms (simple approach)
+    const importantTerms = content.match(/\*\*([^*]+)\*\*/g) || [];
+    for (const term of importantTerms) {
+      const word = term.replace(/\*\*/g, '').toLowerCase();
+      if (word.length > 3) keywords.add(word);
+    }
+
+    return Array.from(keywords).slice(0, 20); // Limit to top 20
+  }
+
+  private extractSections(
+    content: string
+  ): Array<{ title: string; level: number; content: string }> {
+    const sections: Array<{ title: string; level: number; content: string }> = [];
+    const lines = content.split('\n');
+
+    let currentSection: { title: string; level: number; content: string } | null = null;
+
+    for (const line of lines) {
+      const headingMatch = line.match(/^(#+)\s+(.+)$/);
+
+      if (headingMatch) {
+        // Save previous section
+        if (currentSection) {
+          sections.push(currentSection);
+        }
+
+        // Start new section
+        currentSection = {
+          title: headingMatch[2].trim(),
+          level: headingMatch[1].length,
+          content: '',
+        };
+      } else if (currentSection) {
+        currentSection.content += `${line}\n`;
+      }
+    }
+
+    // Save last section
+    if (currentSection) {
+      sections.push(currentSection);
+    }
+
+    return sections;
+  }
+
+  private extractLinks(
+    content: string
+  ): Array<{ type: 'internal' | 'external' | 'code'; target: string; text: string }> {
+    const links: Array<{ type: 'internal' | 'external' | 'code'; target: string; text: string }> =
+      [];
+
+    // Markdown links
     const markdownLinks = content.match(/\[([^\]]+)\]\(([^)]+)\)/g) || [];
-    markdownLinks.forEach((link) => {
+    for (const link of markdownLinks) {
       const match = link.match(/\[([^\]]+)\]\(([^)]+)\)/);
-      if ((match && match[2].startsWith('./')) || match[2].startsWith('../')) {
-        dependencies.push(match[2]);
-      }
-    });
-
-    // Extract relative imports/requires
-    const importMatches =
-      content.match(/(?:import|require|include)\s+['"](\.\.?\/[^'"]+)['"]/g) || [];
-    importMatches.forEach((imp) => {
-      const match = imp.match(/['"](\.\.?\/[^'"]+)['"]/);
-      if (match) dependencies.push(match[1]);
-    });
-
-    return [...new Set(dependencies)];
-  }
-
-  private extractMetadata(content: string): any {
-    const metadata: any = {};
-
-    // YAML frontmatter
-    const yamlMatch = content.match(/^---\\n([\\s\\S]*?)\\n---/);
-    if (yamlMatch) {
-      const yamlContent = yamlMatch[1];
-      const lines = yamlContent.split('\n');
-
-      for (const line of lines) {
-        const match = line.match(/^(\w+):\s*(.+)$/);
-        if (match) {
-          const key = match[1];
-          let value: any = match[2].trim();
-
-          // Parse arrays
-          if (value.startsWith('[') && value.endsWith(']')) {
-            value = value
-              .slice(1, -1)
-              .split(',')
-              .map((s) => s.trim().replace(/['"]/g, ''));
-          }
-
-          metadata[key] = value;
-        }
-      }
-    }
-
-    // HTML meta tags
-    const metaTags = content.match(/<meta\s+name="([^"]+)"\s+content="([^"]+)"/g) || [];
-    metaTags.forEach((tag) => {
-      const match = tag.match(/<meta\s+name="([^"]+)"\s+content="([^"]+)"/);
       if (match) {
-        metadata[match[1]] = match[2];
-      }
-    });
-
-    return metadata;
-  }
-
-  private buildIndex(): void {
-    this.index.documents = Array.from(this.documents.values());
-    this.index.categories = {};
-    this.index.tags = {};
-    this.index.graph = {};
-
-    // Build categories and tags indices
-    for (const doc of this.index.documents) {
-      if (doc.category) {
-        if (!this.index.categories[doc.category]) {
-          this.index.categories[doc.category] = [];
-        }
-        this.index.categories[doc.category].push(doc.id);
-      }
-
-      if (doc.tags) {
-        for (const tag of doc.tags) {
-          if (!this.index.tags[tag]) {
-            this.index.tags[tag] = [];
-          }
-          this.index.tags[tag].push(doc.id);
-        }
-      }
-
-      // Build dependency graph
-      if (doc.dependencies) {
-        this.index.graph[doc.id] = doc.dependencies
-          .map((dep) => this.resolveDocumentId(dep, doc.path))
-          .filter((id) => id && this.documents.has(id));
+        const text = match[1];
+        const target = match[2];
+        const type = target.startsWith('http') ? 'external' : 'internal';
+        links.push({ type, target, text });
       }
     }
 
-    // Build backlinks
-    for (const [docId, dependencies] of Object.entries(this.index.graph)) {
-      for (const depId of dependencies) {
-        const depDoc = this.documents.get(depId);
-        if (depDoc) {
-          if (!depDoc.backlinks) depDoc.backlinks = [];
-          if (!depDoc.backlinks.includes(docId)) {
-            depDoc.backlinks.push(docId);
-          }
-        }
-      }
-    }
+    return links;
   }
 
-  private resolveDocumentId(relativePath: string, fromPath: string): string | null {
-    try {
-      const resolvedPath = path.resolve(path.dirname(fromPath), relativePath);
-      const relativeToBase = path.relative(this.basePath, resolvedPath);
-      return relativeToBase.replace(/[/\\]/g, '-').replace(/\.[^.]+$/, '');
-    } catch {
-      return null;
-    }
+  private getContextLines(lines: string[], lineIndex: number, contextSize: number): string {
+    const start = Math.max(0, lineIndex - contextSize);
+    const end = Math.min(lines.length, lineIndex + contextSize + 1);
+    return lines.slice(start, end).join('\n');
   }
 
   /**
-   * Get document by ID
+   * Public API methods
    */
-  getDocument(id: string): DocumentLink | undefined {
-    return this.documents.get(id);
+  getDocumentationIndex(): Map<string, DocumentationIndex> {
+    return new Map(this.documentationIndex);
   }
 
-  /**
-   * Search documents by text
-   */
-  searchDocuments(query: string): DocumentLink[] {
-    const lowerQuery = query.toLowerCase();
-    return this.index.documents.filter(
-      (doc) =>
-        doc.title.toLowerCase().includes(lowerQuery) ||
-        doc.id.toLowerCase().includes(lowerQuery) ||
-        doc.tags?.some((tag) => tag.toLowerCase().includes(lowerQuery)) ||
-        doc.category?.toLowerCase().includes(lowerQuery)
-    );
+  getCodeReferences(): CodeReference[] {
+    return [...this.codeReferences];
   }
 
-  /**
-   * Get documents by category
-   */
-  getDocumentsByCategory(category: string): DocumentLink[] {
-    const docIds = this.index.categories[category] || [];
-    return docIds.map((id) => this.documents.get(id)!).filter(Boolean);
+  getCrossReferences(): CrossReference[] {
+    return [...this.crossReferences];
   }
 
-  /**
-   * Get documents by tag
-   */
-  getDocumentsByTag(tag: string): DocumentLink[] {
-    const docIds = this.index.tags[tag] || [];
-    return docIds.map((id) => this.documents.get(id)!).filter(Boolean);
-  }
-
-  /**
-   * Get document dependencies
-   */
-  getDependencies(docId: string): DocumentLink[] {
-    const dependencies = this.index.graph[docId] || [];
-    return dependencies.map((id) => this.documents.get(id)!).filter(Boolean);
-  }
-
-  /**
-   * Get documents that depend on this one
-   */
-  getBacklinks(docId: string): DocumentLink[] {
-    const doc = this.documents.get(docId);
-    if (!doc || !doc.backlinks) return [];
-
-    return doc.backlinks.map((id) => this.documents.get(id)!).filter(Boolean);
-  }
-
-  /**
-   * Generate documentation site map
-   */
-  generateSiteMap(): any {
-    const siteMap = {
-      totalDocuments: this.index.documents.length,
-      categories: Object.keys(this.index.categories).map((cat) => ({
-        name: cat,
-        count: this.index.categories[cat].length,
-        documents: this.index.categories[cat],
-      })),
-      tags: Object.keys(this.index.tags).map((tag) => ({
-        name: tag,
-        count: this.index.tags[tag].length,
-        documents: this.index.tags[tag],
-      })),
-      orphanedDocuments: this.index.documents
-        .filter((doc) => !doc.category && (!doc.tags || doc.tags.length === 0))
-        .map((doc) => doc.id),
-      brokenLinks: this.findBrokenLinks(),
-    };
-
-    return siteMap;
-  }
-
-  private findBrokenLinks(): Array<{ document: string; brokenLink: string }> {
-    const broken: Array<{ document: string; brokenLink: string }> = [];
-
-    for (const [docId, dependencies] of Object.entries(this.index.graph)) {
-      for (const dep of dependencies) {
-        if (!this.documents.has(dep)) {
-          broken.push({ document: docId, brokenLink: dep });
-        }
-      }
-    }
-
-    return broken;
-  }
-
-  /**
-   * Export documentation index
-   */
-  async exportIndex(outputPath: string): Promise<void> {
-    const exportData = {
-      ...this.index,
-      generatedAt: new Date().toISOString(),
-      basePath: this.basePath,
-    };
-
-    await writeFile(outputPath, JSON.stringify(exportData, null, 2));
-    console.log(`[DocumentationLinker] Index exported to ${outputPath}`);
-  }
-
-  /**
-   * Get full index
-   */
-  getIndex(): DocumentIndex {
-    return { ...this.index };
+  async saveReportToFile(outputPath: string): Promise<void> {
+    const report = await this.generateDocumentationReport();
+    await writeFile(outputPath, report, 'utf8');
+    logger.info(`Documentation report saved to: ${outputPath}`);
   }
 }
-
-export default DocumentationLinker;

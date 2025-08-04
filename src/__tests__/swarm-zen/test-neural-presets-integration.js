@@ -8,24 +8,11 @@ import { NeuralNetworkManager } from '../src/neural-network-manager.js';
 import { WasmModuleLoader } from '../src/wasm-loader.js';
 
 async function testNeuralPresetsIntegration() {
-  console.log('🧠 Testing Neural Presets Integration (27+ Models)...\n');
-
   const wasmLoader = new WasmModuleLoader();
   const neuralManager = new NeuralNetworkManager(wasmLoader);
-
-  // Test 1: List all available neural model types
-  console.log('📊 Test 1: Available Neural Model Types');
   const modelTypes = neuralManager.getAllNeuralModelTypes();
-  console.log(`Total model types: ${Object.keys(modelTypes).length}`);
 
-  Object.entries(modelTypes).forEach(([type, info]) => {
-    console.log(`  ${type}: ${info.count} presets - ${info.description}`);
-  });
-
-  console.log('\n✅ Test 1 passed: Found all neural model types');
-
-  // Test 2: Create agents from different preset categories
-  console.log('\n🤖 Test 2: Creating Agents from Complete Presets');
+  Object.entries(modelTypes).forEach(([_type, _info]) => {});
 
   const testPresets = [
     { modelType: 'transformer', preset: 'bert_base', agentId: 'bert-agent' },
@@ -37,8 +24,6 @@ async function testNeuralPresetsIntegration() {
 
   for (const test of testPresets) {
     try {
-      console.log(`\n  Creating ${test.agentId} with ${test.modelType}/${test.preset}...`);
-
       const agent = await neuralManager.createAgentFromPreset(
         test.agentId,
         test.modelType,
@@ -53,19 +38,17 @@ async function testNeuralPresetsIntegration() {
       const presetInfo = neuralManager.getAgentPresetInfo(test.agentId);
 
       if (presetInfo) {
-        console.log(`  ✓ Created: ${presetInfo.name}`);
-        console.log(`    Performance: ${presetInfo.performance.expectedAccuracy}`);
-        console.log(`    Cognitive patterns: ${presetInfo.cognitivePatterns.join(', ')}`);
+        // Validate agent was created successfully
+        if (!agent) {
+          throw new Error(`Failed to create agent for preset ${test.preset}`);
+        }
+      } else {
+        console.warn(`⚠️  No preset info found for agent ${test.agentId}`);
       }
     } catch (error) {
-      console.log(`  ✗ Failed to create ${test.agentId}: ${error.message}`);
+      console.error(`❌ Failed to create agent for ${test.preset}:`, error.message);
     }
   }
-
-  console.log('\n✅ Test 2 completed: Agent creation from presets');
-
-  // Test 3: Get preset recommendations
-  console.log('\n🎯 Test 3: Preset Recommendations');
 
   const useCases = [
     { useCase: 'chatbot', requirements: { maxInferenceTime: 20, minAccuracy: 90 } },
@@ -74,21 +57,10 @@ async function testNeuralPresetsIntegration() {
   ];
 
   for (const { useCase, requirements } of useCases) {
-    console.log(`\n  Recommendations for "${useCase}":`);
     const recommendations = neuralManager.getPresetRecommendations(useCase, requirements);
 
-    recommendations.slice(0, 3).forEach((rec, idx) => {
-      console.log(`    ${idx + 1}. ${rec.preset.name} (${rec.modelType})`);
-      console.log(
-        `       Score: ${rec.score.toFixed(2)}, Patterns: ${rec.cognitivePatterns.join(', ')}`
-      );
-    });
+    recommendations.slice(0, 3).forEach((_rec, _idx) => {});
   }
-
-  console.log('\n✅ Test 3 passed: Preset recommendations working');
-
-  // Test 4: Cognitive pattern selection
-  console.log('\n🧩 Test 4: Cognitive Pattern Selection');
 
   const testScenarios = [
     {
@@ -106,35 +78,22 @@ async function testNeuralPresetsIntegration() {
   ];
 
   for (const scenario of testScenarios) {
-    console.log(`\n  Scenario: ${scenario.name}`);
-
     // Test with transformer model
     const patterns = neuralManager.cognitivePatternSelector.selectPatternsForPreset(
       'transformer',
       'bert_base',
       scenario.config
     );
-
-    console.log(`    Selected patterns: ${patterns.join(', ')}`);
+    patterns.forEach((_pattern, _index) => {});
   }
 
-  console.log('\n✅ Test 4 passed: Cognitive pattern selection working');
+  let _totalPresets = 0;
+  let _modelCategories = 0;
 
-  // Test 5: Count total presets
-  console.log('\n📈 Test 5: Neural Preset Statistics');
-
-  let totalPresets = 0;
-  let modelCategories = 0;
-
-  Object.entries(COMPLETE_NEURAL_PRESETS).forEach(([category, presets]) => {
-    const presetCount = Object.keys(presets).length;
-    totalPresets += presetCount;
-    modelCategories++;
+  Object.entries(COMPLETE_NEURAL_PRESETS).forEach(([_category, presets]) => {
+    _modelCategories++;
+    _totalPresets += Object.keys(presets).length;
   });
-
-  console.log(`  Total neural model categories: ${modelCategories}`);
-  console.log(`  Total production-ready presets: ${totalPresets}`);
-  console.log(`  Average presets per category: ${(totalPresets / modelCategories).toFixed(1)}`);
 
   // List all unique model types
   const uniqueModels = new Set();
@@ -144,16 +103,8 @@ async function testNeuralPresetsIntegration() {
     });
   });
 
-  console.log(`  Unique model architectures: ${uniqueModels.size}`);
-  console.log(`  Models: ${Array.from(uniqueModels).join(', ')}`);
-
-  console.log('\n✅ Test 5 passed: Statistics verified');
-
-  // Test 6: Neural adaptation engine
-  console.log('\n🔄 Test 6: Neural Adaptation Engine');
-
   // Simulate training and adaptation
-  const adaptationTest = await (async () => {
+  const _adaptationTest = await (async () => {
     const agentId = 'adaptive-agent';
 
     try {
@@ -163,7 +114,7 @@ async function testNeuralPresetsIntegration() {
       });
 
       // Simulate training results
-      const trainingResult = {
+      const _trainingResult = {
         accuracy: 0.85,
         loss: 0.15,
         epochs: 10,
@@ -182,32 +133,14 @@ async function testNeuralPresetsIntegration() {
 
       // Get adaptation recommendations
       const recommendations = await neuralManager.getAdaptationRecommendations(agentId);
-
-      console.log('  Adaptation test completed');
       if (recommendations) {
-        console.log('  Recommendations available:', Boolean(recommendations));
       }
 
       return true;
-    } catch (error) {
-      console.log('  Adaptation test skipped (requires full integration)');
+    } catch (_error) {
       return true; // Pass anyway as this is integration testing
     }
   })();
-
-  console.log('\n✅ Test 6 passed: Neural adaptation engine functional');
-
-  // Summary
-  console.log(`\n${'='.repeat(60)}`);
-  console.log('🎉 NEURAL PRESETS INTEGRATION TEST SUMMARY');
-  console.log('='.repeat(60));
-  console.log(`✅ Model Types Available: ${Object.keys(modelTypes).length}`);
-  console.log(`✅ Total Presets: ${totalPresets}`);
-  console.log('✅ Cognitive Pattern Selection: Working');
-  console.log('✅ Preset Recommendations: Working');
-  console.log('✅ Neural Adaptation Engine: Integrated');
-  console.log('✅ Cross-Session Learning: Enabled');
-  console.log('\n🚀 All 27+ neural model presets successfully integrated!');
 }
 
 // Run tests

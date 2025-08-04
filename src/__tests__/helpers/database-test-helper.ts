@@ -4,9 +4,9 @@
  * Comprehensive database testing support for integration tests
  */
 
-import { promises as fs } from 'fs';
-import { tmpdir } from 'os';
-import { join } from 'path';
+import { promises as fs } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 export interface DatabaseConnection {
   query(sql: string, params?: any[]): Promise<any>;
@@ -47,7 +47,7 @@ export class SQLiteDatabaseTestHelper implements DatabaseTestHelper {
 
       // Create basic test schema
       await this.createDefaultSchema();
-    } catch (error) {
+    } catch (_error) {
       console.warn('SQLite not available, using in-memory fallback');
       this.db = new MemoryDatabase();
     }
@@ -61,7 +61,7 @@ export class SQLiteDatabaseTestHelper implements DatabaseTestHelper {
 
     try {
       await fs.unlink(this.dbPath);
-    } catch (error) {
+    } catch (_error) {
       // File might not exist
     }
   }
@@ -305,7 +305,7 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
 
   async truncateTable(table: string): Promise<void> {
     if (this.storage.has(table)) {
-      this.storage.get(table)!.clear();
+      this.storage.get(table)?.clear();
       this.sequences.set(table, 0);
     }
   }
@@ -342,7 +342,7 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     }
   }
 
-  private handleSelect(sql: string, params: any[]): any[] {
+  private handleSelect(sql: string, _params: any[]): any[] {
     // Very basic SELECT implementation
     const tableMatch = sql.match(/FROM\s+(\w+)/i);
     if (!tableMatch) return [];
@@ -384,7 +384,7 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     }
   }
 
-  private handleUpdate(sql: string, params: any[]): void {
+  private handleUpdate(sql: string, _params: any[]): void {
     // Basic UPDATE implementation
     const tableMatch = sql.match(/UPDATE\s+(\w+)/i);
     if (!tableMatch) return;
@@ -400,7 +400,7 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     }
   }
 
-  private handleDelete(sql: string, params: any[]): void {
+  private handleDelete(sql: string, _params: any[]): void {
     const tableMatch = sql.match(/DELETE FROM\s+(\w+)/i);
     if (!tableMatch) return;
 

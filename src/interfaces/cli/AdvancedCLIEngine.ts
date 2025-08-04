@@ -6,20 +6,16 @@
  * optimization, and seamless development workflow integration.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import type {
   AdvancedCLISystem,
-  AutomationLevel,
   CommandCategory,
-  ComplexityLevel,
   ControlResult,
   DevPipeline,
   MonitoringDashboard,
   PipelineResult,
   ProjectConfig,
   ProjectCreationResult,
-  ProjectDomain,
-  ProjectType,
   SwarmCommand,
 } from './types/AdvancedCLITypes';
 
@@ -294,31 +290,31 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
     }
   }
 
-  private async initializeProjectStage(project: any): Promise<any> {
+  private async initializeProjectStage(_project: any): Promise<any> {
     return { stage: 'initialization', success: true, duration: 1000 };
   }
 
-  private async developmentStage(project: any): Promise<any> {
+  private async developmentStage(_project: any): Promise<any> {
     return { stage: 'development', success: true, duration: 5000 };
   }
 
-  private async testingStage(project: any): Promise<any> {
+  private async testingStage(_project: any): Promise<any> {
     return { stage: 'testing', success: true, duration: 3000 };
   }
 
-  private async optimizationStage(project: any): Promise<any> {
+  private async optimizationStage(_project: any): Promise<any> {
     return { stage: 'optimization', success: true, duration: 2000 };
   }
 
-  private async deploymentStage(project: any): Promise<any> {
+  private async deploymentStage(_project: any): Promise<any> {
     return { stage: 'deployment', success: true, duration: 1500 };
   }
 
-  private async maintenanceStage(project: any): Promise<any> {
+  private async maintenanceStage(_project: any): Promise<any> {
     return { stage: 'maintenance', success: true, duration: 500 };
   }
 
-  private generateLifecycleRecommendations(results: any[]): string[] {
+  private generateLifecycleRecommendations(_results: any[]): string[] {
     return [
       'Consider implementing automated testing in CI/CD pipeline',
       'Add performance monitoring for production environment',
@@ -429,12 +425,12 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
     return await this.createIntelligentProject(projectConfig);
   }
 
-  private async handleProjectOptimize(args: any[], options: any): Promise<any> {
+  private async handleProjectOptimize(args: any[], _options: any): Promise<any> {
     const projectPath = args[0] || process.cwd();
     return await this.optimizeProjectStructure({ path: projectPath });
   }
 
-  private async handleProjectStatus(args: any[], options: any): Promise<any> {
+  private async handleProjectStatus(args: any[], _options: any): Promise<any> {
     const projectPath = args[0] || process.cwd();
     return {
       path: projectPath,
@@ -452,12 +448,12 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
     };
   }
 
-  private async handleSwarmMonitor(args: any[], options: any): Promise<any> {
+  private async handleSwarmMonitor(args: any[], _options: any): Promise<any> {
     const swarmId = args[0] || 'default';
     return await this.monitorSwarmExecution(swarmId);
   }
 
-  private async handleSwarmSpawn(args: any[], options: any): Promise<any> {
+  private async handleSwarmSpawn(_args: any[], options: any): Promise<any> {
     const topology = options.topology || 'mesh';
     const agentCount = options.agents || 5;
 
@@ -483,7 +479,7 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
     };
   }
 
-  private async handleGenerateFromSpec(args: any[], options: any): Promise<any> {
+  private async handleGenerateFromSpec(args: any[], _options: any): Promise<any> {
     const specFile = args[0];
     if (!specFile) {
       throw new Error('Specification file required');
@@ -500,7 +496,7 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
     };
   }
 
-  private async handleGenerateNeuralNetwork(args: any[], options: any): Promise<any> {
+  private async handleGenerateNeuralNetwork(_args: any[], options: any): Promise<any> {
     const architecture = options.architecture || 'transformer';
     const optimization = options.optimization || 'balanced';
 
@@ -552,7 +548,7 @@ export class AdvancedCommandRegistry {
 
 // Placeholder implementations for core components
 class IntelligentProjectScaffolder {
-  async createOptimalProject(config: ProjectConfig): Promise<ProjectCreationResult> {
+  async createOptimalProject(_config: ProjectConfig): Promise<ProjectCreationResult> {
     // Implementation for intelligent project creation
     return {
       projectStructure: { directories: [], files: [] },
@@ -566,7 +562,7 @@ class IntelligentProjectScaffolder {
     };
   }
 
-  async optimizeExistingProject(projectPath: string): Promise<any> {
+  async optimizeExistingProject(_projectPath: string): Promise<any> {
     // Implementation for project optimization
     return {
       optimizations: [],
@@ -588,7 +584,7 @@ class RealTimeSwarmController {
     } as MonitoringDashboard;
   }
 
-  async controlSwarmOperations(swarmId: string, commands: SwarmCommand[]): Promise<ControlResult> {
+  async controlSwarmOperations(_swarmId: string, commands: SwarmCommand[]): Promise<ControlResult> {
     // Implementation for swarm control
     return {
       executedCommands: commands.length,

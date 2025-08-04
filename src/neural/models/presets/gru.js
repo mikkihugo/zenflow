@@ -90,6 +90,16 @@ class GRUModel extends NeuralModel {
     const batchSize = input.shape[0];
     const sequenceLength = input.shape[1];
 
+    // Validate input dimensions
+    if (batchSize <= 0 || sequenceLength <= 0) {
+      throw new Error(`Invalid input dimensions: batch=${batchSize}, sequence=${sequenceLength}`);
+    }
+    if (input.shape[2] !== this.config.inputSize) {
+      throw new Error(
+        `Input size mismatch: expected ${this.config.inputSize}, got ${input.shape[2]}`
+      );
+    }
+
     // Initialize hidden states for all layers
     const hiddenStates = this.initializeHiddenStates(batchSize);
 
@@ -401,17 +411,6 @@ class GRUModel extends NeuralModel {
       }
 
       trainingHistory.push(historyEntry);
-
-      console.log(
-        `Epoch ${epoch + 1}/${epochs} - ` +
-          `Train Loss: ${avgTrainLoss.toFixed(4)}, ${
-            this.config.outputSize > 1 ? `Train Acc: ${(avgTrainAccuracy * 100).toFixed(2)}%, ` : ''
-          }Val Loss: ${valMetrics.loss.toFixed(4)}${
-            this.config.outputSize > 1
-              ? `, Val Acc: ${(valMetrics.accuracy * 100).toFixed(2)}%`
-              : ''
-          }`
-      );
 
       this.updateMetrics(avgTrainLoss, avgTrainAccuracy);
     }

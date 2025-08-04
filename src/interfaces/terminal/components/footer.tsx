@@ -43,8 +43,6 @@ export const Footer: React.FC<FooterProps> = ({
           { key: 'Enter', action: 'Select' },
           { key: 'Q', action: 'Quit' },
         ];
-
-      case 'command':
       default:
         return [
           { key: 'Ctrl+C', action: 'Exit' },
