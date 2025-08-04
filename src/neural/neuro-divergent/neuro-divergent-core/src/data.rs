@@ -497,7 +497,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
         path: P,
         schema: TimeSeriesSchema,
     ) -> NeuroDivergentResult<Self> {
-        let df = LazyFrame::scan_parquet(path, ScanArgsParquet::default())
+        let df = LazyFrame::scan_parquet(path.as_ref().into(), ScanArgsParquet::default())
             .map_err(|e| ErrorBuilder::data(format!("Failed to read Parquet: {}", e)).build())?
             .collect()
             .map_err(|e| ErrorBuilder::data(format!("Failed to collect DataFrame: {}", e)).build())?;
@@ -512,7 +512,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
             .map_err(|e| ErrorBuilder::data(format!("Failed to get unique IDs: {}", e)).build())?
             .unique()
             .map_err(|e| ErrorBuilder::data(format!("Failed to get unique values: {}", e)).build())?
-            .utf8()
+            .str()
             .map_err(|e| ErrorBuilder::data(format!("Unique ID column is not string type: {}", e)).build())?
             .into_iter()
             .filter_map(|opt| opt.map(|s| s.to_string()))
@@ -598,7 +598,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
             .map_err(|e| ErrorBuilder::data(format!("Failed to get timestamp column: {}", e)).build())?
             .datetime()
             .map_err(|e| ErrorBuilder::data(format!("Timestamp column is not datetime type: {}", e)).build())?
-            .into_iter()
+            .phys.iter()
             .filter_map(|opt| opt.map(|ts| Utc.timestamp_nanos(ts * 1000)))
             .collect();
 
@@ -608,7 +608,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
             .map_err(|e| ErrorBuilder::data(format!("Failed to get target column: {}", e)).build())?
             .f64()
             .map_err(|e| ErrorBuilder::data(format!("Target column is not numeric: {}", e)).build())?
-            .into_iter()
+            .iter()
             .filter_map(|opt| opt.and_then(|val| T::from(val)))
             .collect();
 

@@ -13,8 +13,9 @@ use num_traits::Float;
 use serde::{Deserialize, Serialize};
 
 use ruv_fann::{
-    ActivationFunction, Network, NetworkBuilder, TrainingAlgorithm, TrainingData,
+    ActivationFunction, Network, NetworkBuilder, TrainingData,
 };
+use ruv_fann::training::TrainingAlgorithm;
 
 use crate::{
     data::{SeriesData, TimeSeriesDataset, TimeSeriesDataFrame},
