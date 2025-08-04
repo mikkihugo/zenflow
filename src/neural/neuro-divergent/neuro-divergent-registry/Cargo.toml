@@ -49,7 +49,7 @@ instant = "0.1"
 num-traits = "0.2"
 
 # Path handling
-dirs = "5.0"
+dirs = "6.0"
 walkdir = "2.4"
 
 # Compression for model storage
