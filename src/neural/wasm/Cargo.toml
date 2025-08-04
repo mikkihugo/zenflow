@@ -20,7 +20,7 @@ clap = { version = "4.4", features = ["derive"] }
 
 # Parser dependencies
 nom = "7.1"  # Parser combinator for CUDA parsing
-logos = "0.14"  # Lexer generator
+logos = "0.15"  # Lexer generator
 syn = "2.0"  # Rust code generation
 quote = "1.0"  # Rust code generation
 proc-macro2 = "1.0"
