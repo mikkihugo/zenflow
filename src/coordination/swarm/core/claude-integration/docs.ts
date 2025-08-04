@@ -20,6 +20,34 @@ interface GenerateOptions {
   interactive?: boolean;
 }
 
+interface ToolCommand {
+  title: string;
+  tool: string;
+  params: string;
+  description: string;
+  details: string;
+}
+
+interface ContentCommand {
+  title: string;
+  content: string;
+}
+
+type CommandConfig = ToolCommand | ContentCommand;
+
+interface CommandsMap {
+  [key: string]: CommandConfig;
+}
+
+// Type guard functions
+function hasContent(config: CommandConfig): config is ContentCommand {
+  return 'content' in config;
+}
+
+function hasTool(config: CommandConfig): config is ToolCommand {
+  return 'tool' in config;
+}
+
 class ClaudeDocsGenerator {
   private workingDir: string;
   private advancedGenerator: any;
@@ -671,7 +699,7 @@ Remember: **ruv-swarm coordinates, Claude Code creates!** Start with \`mcp__zen-
       await fs.mkdir(path.join(commandsDir, subdir), { recursive: true });
     }
 
-    const commands = {
+    const commands: CommandsMap = {
       // Coordination commands
       'coordination/init.md': {
         title: 'Initialize Coordination Framework',
@@ -1027,12 +1055,12 @@ Already configured by default for common file types.
 
     // Generate command files
     for (const [filepath, config] of Object.entries(commands)) {
-      let content;
+      let content: string;
 
-      if (config.content) {
+      if (hasContent(config)) {
         // Use provided content for workflow files
-        ({ content } = config);
-      } else {
+        content = config.content;
+      } else if (hasTool(config)) {
         // Generate content for tool documentation
         content = `# ${config.title}
 
@@ -1073,6 +1101,10 @@ ${config.details}
 - Other commands in this category
 - Workflow examples in /workflows/
 `;
+      } else {
+        // Fallback for unexpected config structure
+        const title = (config as any).title || 'Unknown Command';
+        content = `# ${title}\n\nConfiguration error: Unknown command structure.`;
       }
 
       const filePath = path.join(commandsDir, filepath);
@@ -1140,7 +1172,7 @@ ${config.details}
   /**
    * Check if file exists
    */
-  async fileExists(filePath) {
+  async fileExists(filePath: string): Promise<boolean> {
     try {
       await fs.access(filePath);
       return true;
@@ -1530,7 +1562,7 @@ Remember: **ruv-swarm coordinates, Claude Code creates!** Start with \`mcp__zen-
   /**
    * Generate all documentation files
    */
-  async generateAll(options = {}) {
+  async generateAll(options: GenerateOptions = {}): Promise<any> {
     try {
       const commandDocs = await this.generateCommandDocs();
       const advancedCommands = await this.advancedGenerator.generateAdvancedCommands();

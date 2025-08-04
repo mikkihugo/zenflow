@@ -242,7 +242,7 @@ class PerformanceValidator {
           swarm.spawn({
             type: i % 5 === 0 ? 'coordinator' : 'coder',
             name: `agent-${i}`,
-          })
+          }),
         );
       }
 
@@ -254,7 +254,7 @@ class PerformanceValidator {
         agent.execute({
           task: `Task ${i}: Calculate fibonacci(20)`,
           timeout: 15000,
-        })
+        }),
       );
 
       await Promise.all(taskPromises);
@@ -353,7 +353,7 @@ class PerformanceValidator {
 
       // Test Rust integration
       const cargoTest = await this.runCommand(
-        'cargo test --manifest-path /workspaces/ruv-FANN/daa-repository/Cargo.toml'
+        'cargo test --manifest-path /workspaces/ruv-FANN/daa-repository/Cargo.toml',
       );
 
       // Test MCP integration
@@ -467,7 +467,7 @@ class PerformanceValidator {
     }
 
     const tasks = agents.map((agent) =>
-      agent.execute({ task: 'Calculate: sum(1..1000)', timeout: 10000 })
+      agent.execute({ task: 'Calculate: sum(1..1000)', timeout: 10000 }),
     );
 
     if (config.strategy === 'parallel') {

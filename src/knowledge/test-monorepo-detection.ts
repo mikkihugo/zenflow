@@ -4,7 +4,7 @@
  * Test script for monorepo detection in ProjectContextAnalyzer
  */
 
-import ProjectContextAnalyzer from './project-context-analyzer';
+import { ProjectContextAnalyzer } from './project-context-analyzer';
 
 async function testMonorepoDetection(projectPath: string) {
   const analyzer = new ProjectContextAnalyzer({
@@ -14,10 +14,22 @@ async function testMonorepoDetection(projectPath: string) {
       name: 'test-analyzer',
       type: 'knowledge',
       maxAgents: 1,
+      swarmSize: 1,
+      specializations: [],
+      parallelQueries: 1,
+      loadBalancingStrategy: 'round-robin',
+      crossAgentSharing: false,
+      factRepoPath: '/tmp/fact',
+      anthropicApiKey: 'test',
     },
     analysisDepth: 'shallow',
     autoUpdate: false,
     cacheDuration: 1,
+    priorityThresholds: {
+      critical: 90,
+      high: 70,
+      medium: 50,
+    },
   });
 
   // Listen for monorepo detection events

@@ -422,7 +422,9 @@ export const SWARM_COORDINATION_TEMPLATE = {
         qualityAttributes: {
           availability: 0.999,
           scalability: 'horizontal',
-          performance: '<5ms coordination overhead',
+        },
+        performance: {
+          expectedLatency: '<5ms coordination overhead',
         },
       },
       {
@@ -438,8 +440,10 @@ export const SWARM_COORDINATION_TEMPLATE = {
         dependencies: ['MemoryStore', 'EventBus'],
         qualityAttributes: {
           consistency: 'eventual',
-          performance: '<10ms registry operations',
           capacity: '10,000+ registered agents',
+        },
+        performance: {
+          expectedLatency: '<10ms registry operations',
         },
       },
       {
@@ -454,9 +458,11 @@ export const SWARM_COORDINATION_TEMPLATE = {
         interfaces: ['ILoadBalancer', 'IPerformancePredictor'],
         dependencies: ['AgentRegistry', 'TaskQueue', 'PerformanceAnalyzer'],
         qualityAttributes: {
-          latency: '<100ms task assignment',
           accuracy: '>95% optimal assignments',
           throughput: '10,000+ assignments/second',
+        },
+        performance: {
+          expectedLatency: '<100ms task assignment',
         },
       },
       {
@@ -471,9 +477,11 @@ export const SWARM_COORDINATION_TEMPLATE = {
         interfaces: ['IConsensusEngine', 'IByzantineDetector'],
         dependencies: ['MessageBroker', 'CryptographicServices'],
         qualityAttributes: {
-          consensus_time: '<500ms',
           fault_tolerance: '33% Byzantine nodes',
           security: 'cryptographic proof validation',
+        },
+        performance: {
+          expectedLatency: '<500ms consensus time',
         },
       },
       {
@@ -488,9 +496,11 @@ export const SWARM_COORDINATION_TEMPLATE = {
         interfaces: ['IMessageBroker', 'IEventPublisher'],
         dependencies: ['NetworkLayer', 'PersistentStorage'],
         qualityAttributes: {
-          latency: '<2ms message delivery',
           throughput: '1M+ messages/second',
           reliability: 'guaranteed delivery',
+        },
+        performance: {
+          expectedLatency: '<2ms message delivery',
         },
       },
     ] as Component[],

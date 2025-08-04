@@ -8,7 +8,7 @@
  */
 
 // Import domain-specific schemas
-export * from '../../coordination/schemas';
+export * from '../../../coordination/schemas';
 export * from './common';
 export * from './neural';
 

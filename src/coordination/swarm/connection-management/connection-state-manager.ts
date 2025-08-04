@@ -13,11 +13,12 @@
  * - Real-time connection status monitoring
  */
 
-import { EventEmitter } from 'node:events';
 import { spawn } from 'node:child_process';
+import { EventEmitter } from 'node:events';
 
 // Helper functions and classes moved inline to avoid missing imports
-const generateId = (prefix: string) => `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+const generateId = (prefix: string) =>
+  `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 // Simple logger implementation
 class Logger {
@@ -25,10 +26,18 @@ class Logger {
     this.name = options.name;
   }
   name: string;
-  info(msg: string, ...args: any[]) { console.log(`[INFO] ${this.name}:`, msg, ...args); }
-  error(msg: string, ...args: any[]) { console.error(`[ERROR] ${this.name}:`, msg, ...args); }
-  warn(msg: string, ...args: any[]) { console.warn(`[WARN] ${this.name}:`, msg, ...args); }
-  debug(msg: string, ...args: any[]) { console.debug(`[DEBUG] ${this.name}:`, msg, ...args); }
+  info(msg: string, ...args: any[]) {
+    console.log(`[INFO] ${this.name}:`, msg, ...args);
+  }
+  error(msg: string, ...args: any[]) {
+    console.error(`[ERROR] ${this.name}:`, msg, ...args);
+  }
+  warn(msg: string, ...args: any[]) {
+    console.warn(`[WARN] ${this.name}:`, msg, ...args);
+  }
+  debug(msg: string, ...args: any[]) {
+    console.debug(`[DEBUG] ${this.name}:`, msg, ...args);
+  }
 }
 
 // Simple error factory
@@ -415,7 +424,7 @@ export class ConnectionStateManager extends EventEmitter {
     // Test connection with a simple request
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.options.connectionTimeout);
-    
+
     try {
       const response = await fetch(`${baseUrl}/health`, {
         method: 'GET',

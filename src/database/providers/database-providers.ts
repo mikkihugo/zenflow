@@ -8,28 +8,27 @@
 
 import { Inject, Injectable } from '../../di/decorators/injectable';
 import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
+import { 
+  DatabaseAdapter,
+  QueryResult,
+  ExecuteResult,
+  TransactionContext,
+  SchemaInfo,
+  ConnectionStats,
+  ILogger,
+  IConfig
+} from '../../core/interfaces/base-interfaces';
 
-/**
- * Interface for database adapter implementations
- */
-export interface DatabaseAdapter {
-  /** Establish database connection */
-  connect(): Promise<void>;
-  /** Close database connection */
-  disconnect(): Promise<void>;
-  /** Execute a SELECT query */
-  query(sql: string, params?: any[]): Promise<QueryResult>;
-  /** Execute an INSERT/UPDATE/DELETE command */
-  execute(sql: string, params?: any[]): Promise<ExecuteResult>;
-  /** Execute multiple commands in a transaction */
-  transaction<T>(fn: (tx: TransactionContext) => Promise<T>): Promise<T>;
-  /** Check database health status */
-  health(): Promise<boolean>;
-  /** Get database schema information */
-  getSchema(): Promise<SchemaInfo>;
-  /** Get connection pool statistics */
-  getConnectionStats(): Promise<ConnectionStats>;
-}
+import {
+  DatabaseResult,
+  QuerySuccess,
+  QueryError,
+  isQuerySuccess,
+  isQueryError
+} from '../../utils/type-guards';
+
+// Re-export DatabaseAdapter for external use
+export { DatabaseAdapter } from '../../core/interfaces/base-interfaces';
 
 /**
  * Configuration interface for database adapters
@@ -75,96 +74,6 @@ export interface DatabaseConfig {
   };
   /** Additional adapter-specific options */
   options?: Record<string, any>;
-}
-
-/**
- * Query result interface
- */
-export interface QueryResult {
-  /** Result rows */
-  rows: any[];
-  /** Number of rows returned */
-  rowCount: number;
-  /** Column metadata */
-  fields?: Array<{
-    name: string;
-    type: string;
-    nullable: boolean;
-  }>;
-  /** Execution time in milliseconds */
-  executionTime: number;
-}
-
-/**
- * Execute result interface
- */
-export interface ExecuteResult {
-  /** Number of affected rows */
-  affectedRows: number;
-  /** Last inserted ID (if applicable) */
-  insertId?: any;
-  /** Execution time in milliseconds */
-  executionTime: number;
-}
-
-/**
- * Transaction context interface
- */
-export interface TransactionContext {
-  /** Execute a query within the transaction */
-  query(sql: string, params?: any[]): Promise<QueryResult>;
-  /** Execute a command within the transaction */
-  execute(sql: string, params?: any[]): Promise<ExecuteResult>;
-  /** Commit the transaction */
-  commit(): Promise<void>;
-  /** Rollback the transaction */
-  rollback(): Promise<void>;
-}
-
-/**
- * Schema information interface
- */
-export interface SchemaInfo {
-  /** Database tables */
-  tables: Array<{
-    name: string;
-    columns: Array<{
-      name: string;
-      type: string;
-      nullable: boolean;
-      defaultValue?: any;
-      isPrimaryKey: boolean;
-      isForeignKey: boolean;
-    }>;
-    indexes: Array<{
-      name: string;
-      columns: string[];
-      unique: boolean;
-    }>;
-  }>;
-  /** Database views */
-  views: Array<{
-    name: string;
-    definition: string;
-  }>;
-  /** Database version */
-  version: string;
-}
-
-/**
- * Connection statistics interface
- */
-export interface ConnectionStats {
-  /** Total number of connections */
-  total: number;
-  /** Number of active connections */
-  active: number;
-  /** Number of idle connections */
-  idle: number;
-  /** Connection pool utilization percentage */
-  utilization: number;
-  /** Average connection time */
-  averageConnectionTime: number;
 }
 
 /**
@@ -296,6 +205,54 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
     } catch (error) {
       this.logger.error(`PostgreSQL query failed: ${error}`);
       throw error;
+    }
+  }
+
+  /**
+   * Enhanced query method with union type return for safe property access
+   */
+  async queryWithResult<T = any>(sql: string, params?: any[]): Promise<DatabaseResult<T>> {
+    this.logger.debug(`Executing PostgreSQL query with result: ${sql}`);
+    
+    try {
+      await this.ensureConnected();
+      const startTime = Date.now();
+      
+      // PostgreSQL query implementation would go here
+      await this.simulateAsync(10);
+      
+      const executionTime = Date.now() - startTime;
+      
+      // Mock successful result
+      const successResult: QuerySuccess<T> = {
+        success: true,
+        data: [{ id: 1, name: 'Sample Data' }] as T,
+        rowCount: 1,
+        executionTime,
+        fields: [
+          { name: 'id', type: 'integer', nullable: false },
+          { name: 'name', type: 'varchar', nullable: true },
+        ],
+      };
+      
+      this.logger.debug(`PostgreSQL query completed in ${executionTime}ms`);
+      return successResult;
+    } catch (error) {
+      const executionTime = Date.now() - Date.now();
+      this.logger.error(`PostgreSQL query failed: ${error}`);
+      
+      const errorResult: QueryError = {
+        success: false,
+        error: {
+          code: 'POSTGRESQL_QUERY_ERROR',
+          message: error instanceof Error ? error.message : 'Unknown error',
+          details: { sql, params },
+          stack: error instanceof Error ? error.stack : undefined,
+        },
+        executionTime,
+      };
+      
+      return errorResult;
     }
   }
 
@@ -1301,14 +1258,5 @@ export class MySQLAdapter implements DatabaseAdapter {
   }
 }
 
-// Type definitions for DI integration
-interface ILogger {
-  info(message: string): void;
-  error(message: string): void;
-  warn(message: string): void;
-  debug(message: string): void;
-}
-
-interface IConfig {
-  get<T>(key: string, defaultValue?: T): T;
-}
+// Type definitions for DI integration - removed duplicate interfaces
+// These are now imported from base-interfaces.ts

@@ -14,8 +14,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { ZenSwarm } from './base-swarm';
 import { LancePersistenceAdapter as UnifiedLancePersistence } from '../../../database/persistence/lance-persistence-adapter.js';
+import { ZenSwarm } from './base-swarm';
 
 export class NativeHiveMind extends EventEmitter {
   constructor(options = {}) {

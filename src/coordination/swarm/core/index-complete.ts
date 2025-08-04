@@ -15,6 +15,7 @@ import { SwarmPersistencePooled } from '../../../database/persistence/persistenc
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
 import { AgentPool, type BaseAgent, createAgent } from '../../agents/agent';
 import { getContainer } from './singleton-container';
+import { adaptAgentForCoordination, createAgentPoolEntry, executeTaskWithAgent } from './agent-adapter';
 import type {
   AgentConfig,
   Message,
@@ -88,7 +89,7 @@ export class Agent {
 
       // If neural network is available, enhance the execution
       if (this.neuralNetworkId) {
-        result = {
+        return {
           ...result,
           neuralProcessing: {
             networkId: this.neuralNetworkId,
@@ -96,7 +97,7 @@ export class Agent {
             patternMatching: this.cognitivePattern,
             executionStrategy: 'neural-enhanced',
           },
-        };
+        } as any;
       }
 
       return result;
@@ -190,6 +191,18 @@ export class ZenSwarm implements SwarmEventEmitter {
       connectionDensity: options.connectionDensity || 0.5,
       syncInterval: options.syncInterval || 1000,
       wasmPath: options.wasmPath || './wasm/ruv_swarm_wasm.js',
+      persistence: {
+        enabled: false,
+        dbPath: '',
+        checkpointInterval: 60000,
+        compressionEnabled: false
+      },
+      pooling: {
+        enabled: false,
+        maxPoolSize: 10,
+        minPoolSize: 1,
+        idleTimeout: 300000
+      }
     };
 
     this.agentPool = new AgentPool();
@@ -377,7 +390,8 @@ export class ZenSwarm implements SwarmEventEmitter {
       }
 
       // Check if core module has the expected exports
-      if (coreModule.exports) {
+      const coreModule = this.wasmLoader.getModule();
+      if (coreModule?.exports) {
         this.features.neural_networks = true;
         this.features.cognitive_diversity = true;
       }
@@ -412,7 +426,8 @@ export class ZenSwarm implements SwarmEventEmitter {
 
     // Use the core module exports to create swarm
     let wasmSwarm: any;
-    if (coreModule.exports?.ZenSwarm) {
+    const coreModule = this.wasmLoader.getModule();
+    if (coreModule?.exports?.ZenSwarm) {
       try {
         wasmSwarm = new coreModule.exports.ZenSwarm();
         wasmSwarm.id = id || `swarm-${Date.now()}`;
@@ -519,14 +534,15 @@ export class ZenSwarm implements SwarmEventEmitter {
       throw new Error(`Maximum agent limit (${this.options.maxAgents}) reached`);
     }
 
-    const agent = createAgent(config);
-    this.state.agents.set(agent.id, agent);
-    this.agentPool.addAgent(agent);
+    const agent = createAgent(config as any);
+    const adaptedAgent = adaptAgentForCoordination(agent);
+    this.state.agents.set(adaptedAgent.id, adaptedAgent);
+    this.agentPool.addAgent(createAgentPoolEntry(agent));
 
     // Add to WASM if available
     if (this.wasmModule && this.swarmId !== undefined) {
       const wasmAgentId = this.wasmModule.addAgent(this.swarmId, config);
-      (agent as BaseAgent).setWasmAgentId(wasmAgentId);
+      (agent as any).setWasmAgentId(wasmAgentId);
     }
 
     this.updateConnections(agent.id);
@@ -691,13 +707,13 @@ export class ZenSwarm implements SwarmEventEmitter {
       timestamp: Date.now(),
     };
 
-    await agent.communicate(message);
+    await (agent as any).communicate(message);
 
     try {
       task.status = 'in_progress';
       const startTime = Date.now();
 
-      const result = await agent.execute(task);
+      const result = await agent.execute(task as any);
 
       task.status = 'completed';
       task.result = result;
@@ -854,8 +870,9 @@ export class ZenSwarm implements SwarmEventEmitter {
  */
 export class SwarmWrapper {
   public id: string;
+  public wasmSwarm: any;
   private ruvSwarm: ZenSwarm;
-  public agents: Map<string, Agent>;
+  public agents: Map<string, any>;
   private tasks: Map<string, TaskWrapper>;
 
   constructor(id: string, wasmInstance: any, ruvSwarmInstance: ZenSwarm) {
@@ -918,6 +935,7 @@ export class TaskWrapper {
   private startTime: number | null;
   private endTime: number | null;
   public progress: number;
+  public swarm: SwarmWrapper;
 
   constructor(id: string, wasmResult: any, swarm: SwarmWrapper) {
     this.id = id;

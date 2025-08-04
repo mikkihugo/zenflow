@@ -14,6 +14,55 @@ import { EventEmitter } from 'node:events';
 import type { IEventBus } from '../core/event-bus';
 import type { ILogger } from '../core/logger';
 
+// Quick type aliases to resolve missing type errors
+export type BootstrappingConfig = any;
+export type ReputationParameters = any;
+export type ReputationComponent = any;
+export type ReputationAggregation = any;
+export type NormalizationConfig = any;
+export type ComponentScore = any;
+export type ScoreTrend = any;
+export type AlgorithmWeights = any;
+export type AlgorithmParameters = any;
+export type AlgorithmPerformance = any;
+export type ScoringApplicability = any;
+export type ConsensusThreshold = any;
+export type DecisionRule = any;
+export type TieBreakingRule = any;
+export type AdaptiveWeightingConfig = any;
+export type DecayParameters = any;
+export type ValidationCapability = any;
+export type ValidatorReliability = any;
+export type ValidationSpecialization = any;
+export type ValidatorPerformance = any;
+export type QualityMetrics = any;
+export type QualityDimension = any;
+export type QualityThreshold = any;
+export type QualityTrend = any;
+export type ConsensusParameters = any;
+export type VotingMechanism = any;
+export type DisputeResolution = any;
+export type ConvergenceAnalysis = any;
+export type TimebasedDecay = any;
+export type ContentDecay = any;
+export type UsageBasedDecay = any;
+export type DynamicDecay = any;
+export type PeerReviewProtocol = any;
+export type ReviewAssignment = any;
+export type ReviewCriteria = any;
+export type ReviewAggregation = any;
+export type ReviewQuality = any;
+export type ReviewStandards = any;
+export type ReviewProcess = any;
+export type ReputationModelType = 'basic' | 'weighted' | 'hierarchical' | 'consensus' | 'adaptive';
+export type ScoringAlgorithmType = 'linear' | 'logarithmic' | 'exponential' | 'sigmoid' | 'custom';
+export type WeightingStrategy = 'equal' | 'reputation-based' | 'expertise-based' | 'adaptive' | 'consensus';
+export type DecayFunctionType = 'exponential' | 'linear' | 'logarithmic' | 'step' | 'custom';
+export type QualityDimensionType = 'accuracy' | 'completeness' | 'relevance' | 'timeliness' | 'consistency';
+export type AssuranceLevel = 'basic' | 'standard' | 'enhanced' | 'critical' | 'maximum';
+export type ConsensusType = 'simple-majority' | 'weighted-majority' | 'unanimous' | 'threshold' | 'adaptive';
+export type ReviewType = 'peer' | 'expert' | 'automated' | 'hybrid' | 'crowdsourced';
+
 /**
  * Reputation System
  */

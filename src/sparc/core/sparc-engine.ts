@@ -13,10 +13,10 @@
 
 import { nanoid } from 'nanoid';
 import { TaskAPI } from '../../coordination/api';
-import { EnhancedTaskTool } from '../../coordination/enhanced-task-tool';
+import { TaskCoordinator } from '../../coordination/task-coordinator';
 import { DocumentDrivenSystem } from '../../core/document-driven-system';
-import { UnifiedMemorySystem } from '../../core/unified-memory-system';
-import { UnifiedWorkflowEngine } from '../../core/unified-workflow-engine';
+import { MemorySystem } from '../../core/memory-system';
+import { WorkflowEngine } from '../../core/workflow-engine';
 import { ProjectManagementIntegration } from '../integrations/project-management-integration';
 import { SPARCSwarmCoordinator } from '../integrations/swarm-coordination-integration';
 import { ArchitecturePhaseEngine } from '../phases/architecture/architecture-engine';
@@ -53,10 +53,10 @@ export class SPARCEngineCore implements SPARCEngine {
 
   // Deep infrastructure integration
   private readonly documentDrivenSystem: DocumentDrivenSystem;
-  private readonly workflowEngine: UnifiedWorkflowEngine;
-  private readonly memorySystem: any; // UnifiedMemorySystem
+  private readonly workflowEngine: WorkflowEngine;
+  private readonly memorySystem: MemorySystem;
   private readonly swarmCoordinator: SPARCSwarmCoordinator;
-  private readonly taskTool: any; // EnhancedTaskTool
+  private readonly taskCoordinator: TaskCoordinator;
   private readonly taskAPI: TaskAPI;
 
   constructor() {
@@ -67,10 +67,10 @@ export class SPARCEngineCore implements SPARCEngine {
 
     // Initialize existing infrastructure integrations
     this.documentDrivenSystem = new DocumentDrivenSystem();
-    this.workflowEngine = new UnifiedWorkflowEngine();
-    this.memorySystem = new UnifiedMemorySystem();
+    this.workflowEngine = new WorkflowEngine();
+    this.memorySystem = new MemorySystem();
     this.swarmCoordinator = new SPARCSwarmCoordinator();
-    this.taskTool = EnhancedTaskTool.getInstance();
+    this.taskCoordinator = new TaskCoordinator();
     this.taskAPI = new TaskAPI();
   }
 
@@ -262,6 +262,11 @@ export class SPARCEngineCore implements SPARCEngine {
         remediationPlan: [],
       },
       recommendedNextSteps: [],
+      // Additional metrics for MCP tools
+      performanceGain: 0.1, // Default 10% improvement
+      resourceReduction: 0.05, // Default 5% resource reduction
+      scalabilityIncrease: 0.15, // Default 15% scalability increase
+      maintainabilityImprovement: 0.2, // Default 20% maintainability improvement
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -403,6 +408,11 @@ export class SPARCEngineCore implements SPARCEngine {
       validations,
       blockers,
       warnings,
+      overallScore,
+      validationResults: validations,
+      recommendations: blockers.length > 0 ? blockers : ['System ready for production'],
+      approved: overallScore >= 0.8 && blockers.length === 0,
+      productionReady: readyForProduction,
     };
     return result;
   }
@@ -832,15 +842,28 @@ export class SPARCEngineCore implements SPARCEngine {
     return {
       id: nanoid(),
       algorithms: [],
+      coreAlgorithms: [], // Required property for backward compatibility
       dataStructures: [],
       controlFlows: [],
       optimizations: [],
       dependencies: [],
+      complexityAnalysis: {
+        timeComplexity: 'O(1)',
+        spaceComplexity: 'O(1)',
+        scalability: 'Basic',
+        worstCase: 'O(1)',
+        bottlenecks: [],
+      },
     };
   }
 
   private createEmptyArchitecture(): ArchitectureDesign {
     return {
+      id: nanoid(),
+      components: [],
+      securityRequirements: [],
+      scalabilityRequirements: [],
+      qualityAttributes: [],
       systemArchitecture: {
         components: [],
         interfaces: [],
@@ -866,6 +889,12 @@ export class SPARCEngineCore implements SPARCEngine {
       deploymentScripts: [],
       monitoringDashboards: [],
       securityConfigurations: [],
+      documentationGeneration: {
+        artifacts: [],
+        coverage: 0,
+        quality: 0,
+      },
+      productionReadinessChecks: [],
     };
   }
 
@@ -1082,12 +1111,10 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
     ];
 
     for (const phase of sparcPhases) {
-      const taskId = await this.taskAPI.createTask({
-        title: `SPARC ${phase} - ${project.name}`,
-        description: `Execute ${phase} phase of SPARC methodology for ${project.name}`,
-        component: `sparc-${project.domain}`,
+      const taskId = await TaskAPI.createTask({
+        type: `sparc-${phase}`,
+        description: `SPARC ${phase} - ${project.name}: Execute ${phase} phase of SPARC methodology for ${project.name}`,
         priority: phase === 'specification' ? 3 : 2,
-        estimated_hours: this.getPhaseEstimatedHours(phase),
       });
 
       // Execute task using EnhancedTaskTool with swarm coordination

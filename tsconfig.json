@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "ESNext", 
+    "module": "ESNext",
     "moduleResolution": "bundler",
     "lib": ["ES2022", "DOM"],
     "moduleDetection": "force",
@@ -95,8 +95,6 @@
     "src/coordination/orchestration/**/*",
     "src/coordination/discovery/demo-*.ts",
     "src/coordination/discovery/test-*.ts",
-    "src/coordination/discovery/progressive-confidence-builder.ts",
-    "src/coordination/hive-*.ts",
     "src/coordination/load-balancing/**/*",
     "src/coordination/hooks/auto-agent-assignment.ts",
     "src/coordination/manager.ts",

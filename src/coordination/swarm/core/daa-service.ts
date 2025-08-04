@@ -10,7 +10,7 @@ export class DaaService {
 
   async initialize(): Promise<void> {
     if (this.initialized) return;
-    
+
     // TODO: Implement actual DAA service initialization
     this.initialized = true;
   }

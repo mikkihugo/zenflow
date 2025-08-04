@@ -11,7 +11,7 @@
 
 import { EventEmitter } from 'node:events';
 import { createLogger } from '@core/logger';
-// import type { SessionMemoryStore } from '@memory/stores/session-memory-store'; // Module not found
+import { SessionMemoryStore } from '../../memory/memory';
 import type {
   KnowledgeDistributionUpdate,
   KnowledgeRequest,

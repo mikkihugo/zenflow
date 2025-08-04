@@ -87,19 +87,19 @@ export * as Integration from './integration/index';
 export * from './coordination/mcp/claude-zen-server';
 export * from './coordination/mcp/tools/swarm-tools';
 // Export specific types from mcp-types to avoid conflicts
-export {
-  type MCPServer,
-  type MCPRequest,
-  type MCPResponse,
-  type MCPTool,
-  type MCPToolCall,
+export type {
+  MCPRequest,
+  MCPResponse,
+  MCPServer,
+  MCPTool,
+  MCPToolCall,
   // SwarmAgent, SwarmStatus, SwarmTask will come from types/index
 } from './coordination/mcp/types/mcp-types';
 // Swarm-zen integration (use public API instead of direct core access)
 export {
+  createSwarm,
   // Export specific items to avoid conflicts
   SwarmOrchestrator,
-  createSwarm,
   // SwarmConfig and SwarmState will come from types/index
 } from './coordination/public-api';
 
@@ -111,8 +111,8 @@ export * from './interfaces/terminal';
 
 // Neural agent exports (avoid NeuralNetwork and Task conflicts)
 export {
-  NeuralAgent,
   createNeuralAgent,
+  NeuralAgent,
   type NeuralAgentConfig,
   type NeuralAgentState,
 } from './neural/agents/neural-agent';

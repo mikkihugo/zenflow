@@ -360,13 +360,13 @@ class MCPToolsTestSuite {
       const promises = [];
       for (let i = 0; i < 5; i++) {
         promises.push(
-          this.tools.agent_spawn({ type: 'researcher', name: `concurrent-agent-${i}` })
+          this.tools.agent_spawn({ type: 'researcher', name: `concurrent-agent-${i}` }),
         );
       }
       const results = await Promise.all(promises);
       assert(
         results.every((r) => r.success),
-        'All concurrent operations should succeed'
+        'All concurrent operations should succeed',
       );
     });
 
@@ -374,13 +374,13 @@ class MCPToolsTestSuite {
       const promises = [];
       for (let i = 0; i < 3; i++) {
         promises.push(
-          this.tools.task_orchestrate({ task: `concurrent-task-${i}`, strategy: 'parallel' })
+          this.tools.task_orchestrate({ task: `concurrent-task-${i}`, strategy: 'parallel' }),
         );
       }
       const results = await Promise.all(promises);
       assert(
         results.every((r) => r.success),
-        'All concurrent tasks should be orchestrated'
+        'All concurrent tasks should be orchestrated',
       );
     });
   }

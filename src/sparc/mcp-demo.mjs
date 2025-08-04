@@ -46,7 +46,7 @@ async function runMCPDemo() {
 
     const artifactResult = await sparcMCPTools.handleToolCall(
       'sparc_generate_artifacts',
-      artifactArgs
+      artifactArgs,
     );
     const _listResult = await sparcMCPTools.handleToolCall('sparc_list_projects', {});
     const validationArgs = {
@@ -59,7 +59,7 @@ async function runMCPDemo() {
 
     const validationResult = await sparcMCPTools.handleToolCall(
       'sparc_validate_completion',
-      validationArgs
+      validationArgs,
     );
 
     return {

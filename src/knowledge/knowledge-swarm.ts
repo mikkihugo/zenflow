@@ -13,15 +13,16 @@ import { EventEmitter } from 'node:events';
 import type { KnowledgeClient, KnowledgeClientConfig, KnowledgeResult } from './knowledge-client';
 import { FACTIntegration } from './knowledge-client';
 
-interface KnowledgeSwarmConfig extends KnowledgeClientConfig {
+export interface KnowledgeSwarmConfig extends KnowledgeClientConfig {
   swarmSize: number;
   specializations: KnowledgeAgentSpecialization[];
   parallelQueries: number;
   loadBalancingStrategy: 'round-robin' | 'least-loaded' | 'specialization' | 'intelligent';
   crossAgentSharing: boolean;
+  persistentStorage?: boolean;
 }
 
-interface KnowledgeAgentSpecialization {
+export interface KnowledgeAgentSpecialization {
   name: string;
   domains: string[];
   tools: string[];
@@ -29,7 +30,7 @@ interface KnowledgeAgentSpecialization {
   expertise: string[];
 }
 
-interface KnowledgeQuery {
+export interface KnowledgeQuery {
   id: string;
   query: string;
   domains?: string[];
@@ -38,7 +39,7 @@ interface KnowledgeQuery {
   metadata?: Record<string, any>;
 }
 
-interface KnowledgeSwarmResult {
+export interface KnowledgeSwarmResult {
   queryId: string;
   results: KnowledgeResult[];
   consolidatedResponse: string;
@@ -47,6 +48,12 @@ interface KnowledgeSwarmResult {
   knowledgeConfidence: number;
   sourcesDiversity: number;
 }
+
+// Aliases for index.ts compatibility
+export type SwarmAgent = SwarmKnowledgeAgent;
+export type SwarmQuery = KnowledgeQuery;
+export type SwarmResult = KnowledgeSwarmResult;
+export { FACTResult } from './knowledge-client';
 
 interface KnowledgeAgent {
   id: string;
@@ -68,6 +75,7 @@ export class KnowledgeSwarm extends EventEmitter {
   private queryQueue: KnowledgeQuery[] = [];
   private isProcessing = false;
   private queryCounter = 0;
+  private vectorDb?: any;
 
   // Pre-defined agent specializations
   private static readonly DEFAULT_SPECIALIZATIONS: KnowledgeAgentSpecialization[] = [
@@ -115,7 +123,7 @@ export class KnowledgeSwarm extends EventEmitter {
     },
   ];
 
-  constructor(config: KnowledgeSwarmConfig) {
+  constructor(config: KnowledgeSwarmConfig, vectorDb?: any) {
     super();
 
     this.config = {
@@ -126,6 +134,8 @@ export class KnowledgeSwarm extends EventEmitter {
       crossAgentSharing: true,
       ...config,
     };
+
+    this.vectorDb = vectorDb;
   }
 
   /**

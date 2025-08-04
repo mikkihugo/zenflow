@@ -4,8 +4,28 @@
 
 import { randomUUID } from 'node:crypto';
 
+interface LoggerOptions {
+  name?: string;
+  level?: string;
+  enableStderr?: boolean;
+  enableFile?: boolean;
+  formatJson?: boolean;
+  logDir?: string;
+  metadata?: Record<string, any>;
+}
+
 export class Logger {
-  constructor(options = {}) {
+  public name: string;
+  public level: string;
+  public enableStderr: boolean;
+  public enableFile: boolean;
+  public formatJson: boolean;
+  public logDir: string;
+  public metadata: Record<string, any>;
+  public correlationId: string | null;
+  public operations: Map<string, any>;
+
+  constructor(options: LoggerOptions = {}) {
     this.name = options.name || 'ruv-swarm';
     this.level = options.level || 'INFO';
     this.enableStderr = options.enableStderr !== false;
@@ -17,16 +37,16 @@ export class Logger {
     this.operations = new Map();
   }
 
-  setCorrelationId(id) {
+  setCorrelationId(id: string) {
     this.correlationId = id || randomUUID();
     return this.correlationId;
   }
 
-  getCorrelationId() {
+  getCorrelationId(): string | null {
     return this.correlationId;
   }
 
-  _log(level, message, data = {}) {
+  _log(level: string, message: string, data: Record<string, any> = {}) {
     const timestamp = new Date().toISOString();
     const prefix = this.correlationId ? `[${this.correlationId}] ` : '';
 
@@ -51,39 +71,39 @@ export class Logger {
     }
   }
 
-  info(message, data = {}) {
+  info(message: string, data: Record<string, any> = {}) {
     this._log('INFO', message, data);
   }
 
-  warn(message, data = {}) {
+  warn(message: string, data: Record<string, any> = {}) {
     this._log('WARN', message, data);
   }
 
-  error(message, data = {}) {
+  error(message: string, data: Record<string, any> = {}) {
     this._log('ERROR', message, data);
   }
 
-  debug(message, data = {}) {
+  debug(message: string, data: Record<string, any> = {}) {
     if (this.level === 'DEBUG' || process.env.DEBUG) {
       this._log('DEBUG', message, data);
     }
   }
 
-  trace(message, data = {}) {
+  trace(message: string, data: Record<string, any> = {}) {
     if (this.level === 'TRACE' || process.env.DEBUG) {
       this._log('TRACE', message, data);
     }
   }
 
-  success(message, data = {}) {
+  success(message: string, data: Record<string, any> = {}) {
     this._log('SUCCESS', message, data);
   }
 
-  fatal(message, data = {}) {
+  fatal(message: string, data: Record<string, any> = {}) {
     this._log('FATAL', message, data);
   }
 
-  startOperation(operationName) {
+  startOperation(operationName: string): string {
     const operationId = randomUUID();
     this.operations.set(operationId, {
       name: operationName,
@@ -93,7 +113,7 @@ export class Logger {
     return operationId;
   }
 
-  endOperation(operationId, success = true, data = {}) {
+  endOperation(operationId: string, success: boolean = true, data: Record<string, any> = {}) {
     const operation = this.operations.get(operationId);
     if (operation) {
       const duration = Date.now() - operation.startTime;
@@ -107,7 +127,7 @@ export class Logger {
     }
   }
 
-  logConnection(event, sessionId, data = {}) {
+  logConnection(event: string, sessionId: string, data: Record<string, any> = {}) {
     this.info(`Connection ${event}`, {
       sessionId,
       event,
@@ -115,7 +135,7 @@ export class Logger {
     });
   }
 
-  logMcp(direction, method, data = {}) {
+  logMcp(direction: string, method: string, data: Record<string, any> = {}) {
     this.debug(`MCP ${direction}: ${method}`, {
       direction,
       method,
@@ -123,7 +143,7 @@ export class Logger {
     });
   }
 
-  logMemoryUsage(context) {
+  logMemoryUsage(context: string) {
     const memUsage = process.memoryUsage();
     this.debug(`Memory usage - ${context}`, {
       rss: `${Math.round(memUsage.rss / 1024 / 1024)}MB`,

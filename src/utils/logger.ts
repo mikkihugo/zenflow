@@ -19,7 +19,7 @@ function sanitizeLogMeta(meta: any): any {
     // Recursively sanitize all string properties
     const sanitized: any = Array.isArray(meta) ? [] : {};
     for (const key in meta) {
-      if (Object.prototype.hasOwnProperty.call(meta, key)) {
+      if (Object.hasOwn(meta, key)) {
         const value = meta[key];
         if (typeof value === 'string') {
           sanitized[key] = value.replace(/[\n\r]/g, '');

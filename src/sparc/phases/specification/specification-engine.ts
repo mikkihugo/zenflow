@@ -107,6 +107,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     );
 
     const specification: DetailedSpecification = {
+      id: `spec-${Date.now()}`, // Generate unique specification ID
+      domain: 'general' as ProjectDomain, // Default domain since analysis doesn't have domain
       functionalRequirements,
       nonFunctionalRequirements,
       constraints,
@@ -190,6 +192,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
         id: 'FR-001',
         title: 'Core System Functionality',
         description: `Primary functionality for ${context.domain} system`,
+        type: 'functional',
         priority: 'HIGH',
         testCriteria: [
           'System provides core functionality',
@@ -201,6 +204,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
         id: 'FR-002',
         title: 'Error Handling',
         description: 'Comprehensive error handling and recovery',
+        type: 'functional',
         priority: 'HIGH',
         testCriteria: [
           'System handles invalid inputs gracefully',
@@ -212,6 +216,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
         id: 'FR-003',
         title: 'Data Management',
         description: 'Efficient data storage and retrieval',
+        type: 'functional',
         priority: 'MEDIUM',
         testCriteria: [
           'Data is stored securely and efficiently',
@@ -510,6 +515,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
           id: 'FR-SWM-001',
           title: 'Agent Registration',
           description: 'Dynamic agent registration and discovery',
+          type: 'functional',
           priority: 'HIGH',
           testCriteria: [
             'Agents can register with unique identifiers',
@@ -521,6 +527,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
           id: 'FR-SWM-002',
           title: 'Task Distribution',
           description: 'Intelligent task distribution to optimal agents',
+          type: 'functional',
           priority: 'HIGH',
           testCriteria: [
             'Tasks are routed to capable agents within 100ms',
@@ -534,6 +541,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
           id: 'FR-NN-001',
           title: 'Neural Network Training',
           description: 'Efficient neural network training with WASM acceleration',
+          type: 'functional',
           priority: 'HIGH',
           testCriteria: [
             'Training uses WASM for heavy computations',

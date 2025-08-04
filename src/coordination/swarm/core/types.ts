@@ -2,7 +2,12 @@
  * Core types and interfaces for ZenSwarm
  */
 
-import type { AgentType, AgentConfig as BaseAgentConfig } from '../../../types/agent-types';
+import type { 
+  AgentType, 
+  AgentConfig as BaseAgentConfig,
+  Agent as BaseAgent,
+  Task as BaseTask 
+} from '../../../types/agent-types';
 
 export interface SwarmOptions {
   topology?: SwarmTopology;
@@ -60,7 +65,7 @@ export interface EpisodicMemory {
   importance: number;
 }
 
-export interface Task {
+export interface Task extends Omit<BaseTask, 'dependencies' | 'assignedAgents'> {
   id: string;
   description: string;
   priority: TaskPriority;
@@ -100,12 +105,9 @@ export interface SwarmMetrics {
   throughput: number;
 }
 
-export interface Agent {
-  id: string;
-  config: AgentConfig;
-  state: AgentState;
+export interface Agent extends BaseAgent {
+  // Extend base agent with coordination-specific methods
   connections: string[];
-  execute(task: Task): Promise<any>;
   communicate(message: Message): Promise<void>;
   update(state: Partial<AgentState>): void;
 }

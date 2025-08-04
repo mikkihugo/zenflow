@@ -187,7 +187,7 @@ class SteeringTestRunner {
         line.includes('FAIL') ||
         line.includes('Error:') ||
         line.includes('Expected:') ||
-        line.includes('Received:')
+        line.includes('Received:'),
     );
 
     if (failureLines.length > 0) {

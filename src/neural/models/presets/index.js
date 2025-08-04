@@ -28,7 +28,7 @@ export const createNeuralModel = (type, config = {}) => {
 
   if (!models[type]) {
     throw new Error(
-      `Unknown neural model type: ${type}. Available types: ${Object.keys(models).join(', ')}`
+      `Unknown neural model type: ${type}. Available types: ${Object.keys(models).join(', ')}`,
     );
   }
 

@@ -20,6 +20,27 @@ import type {
   ValidationResult,
 } from '../../types/sparc-types';
 
+// Additional types needed for this module
+interface SystemComponent {
+  id: string;
+  name: string;
+  type: string;
+  description: string;
+  responsibilities: string[];
+  interfaces: any[];
+  dependencies: string[];
+  [key: string]: any;
+}
+
+interface ComponentRelationship {
+  id: string;
+  source: string;
+  target: string;
+  type: string;
+  description: string;
+  [key: string]: any;
+}
+
 export class ArchitecturePhaseEngine implements ArchitectureEngine {
   /**
    * Design system architecture from pseudocode structure
@@ -64,7 +85,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     const components: SystemComponent[] = [];
 
     // Create components from core algorithms
-    for (const algorithm of pseudocode.coreAlgorithms) {
+    for (const algorithm of pseudocode.algorithms) {
       const component = await this.createComponentFromAlgorithm(algorithm);
       components.push(component);
     }

@@ -3,8 +3,43 @@
  * Cognitive decision-making system with adaptive learning
  */
 
+interface DAACognitionOptions {
+  adaptationRate?: number;
+  decisionThreshold?: number;
+  maxHistory?: number;
+  [key: string]: any;
+}
+
+interface CognitionDecision {
+  id: string;
+  context: any;
+  confidence: number;
+  timestamp: Date;
+  outcome?: any;
+}
+
+interface CognitionAction {
+  id: string;
+  type: string;
+  parameters: any;
+  result?: any;
+}
+
+interface CognitionAdaptation {
+  id: string;
+  trigger: string;
+  change: any;
+  effectiveness?: number;
+}
+
 export class DAACognition {
-  constructor(options = {}) {
+  public decisions: Map<string, CognitionDecision>;
+  public actions: Map<string, CognitionAction>;
+  public adaptations: Map<string, CognitionAdaptation>;
+  public options: DAACognitionOptions;
+  public history: any[];
+
+  constructor(options: DAACognitionOptions = {}) {
     this.decisions = new Map();
     this.actions = new Map();
     this.adaptations = new Map();
@@ -20,7 +55,7 @@ export class DAACognition {
   /**
    * Make a cognitive decision based on input data
    */
-  async makeDecision(context, options = {}) {
+  async makeDecision(context: any, options: any = {}): Promise<CognitionDecision> {
     const decisionId = `decision_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 
     const decision = {

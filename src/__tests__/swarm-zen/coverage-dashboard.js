@@ -149,7 +149,7 @@ export async function validatePresets() {
 async function getPresetCoverage(preset) {
   try {
     const { stdout } = await execAsync(
-      `npm run test:coverage -- --preset=${preset} --reporter=json-summary`
+      `npm run test:coverage -- --preset=${preset} --reporter=json-summary`,
     );
     const summaryPath = path.join(process.cwd(), 'coverage', 'coverage-summary.json');
     const data = JSON.parse(await fs.readFile(summaryPath, 'utf8'));
@@ -213,14 +213,14 @@ ${generateProgressChart()}
 
 ## 🧬 Preset Validation
 ${Object.entries(presetResults)
-  .map(
-    ([preset, result]) =>
-      `### ${preset}
+    .map(
+      ([preset, result]) =>
+        `### ${preset}
 - Success: ${result.success ? '✅' : '❌'}
 - Tests: ${result.passed || 0} passed, ${result.failed || 0} failed
-- Coverage: ${result.coverage ? `${result.coverage.lines.pct}%` : 'N/A'}`
-  )
-  .join('\n\n')}
+- Coverage: ${result.coverage ? `${result.coverage.lines.pct}%` : 'N/A'}`,
+    )
+    .join('\n\n')}
 
 ## 🚀 Performance Impact
 - No regression detected

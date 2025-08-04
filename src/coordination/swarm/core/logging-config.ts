@@ -38,6 +38,10 @@ const ENV_LOG_MAPPING = {
  * Logging configuration manager
  */
 export class LoggingConfig {
+  private loggers: Map<string, Logger>;
+  private globalLevel: string | null;
+  private componentLevels: Record<string, string>;
+
   constructor() {
     this.loggers = new Map();
     this.globalLevel = null;
@@ -48,7 +52,7 @@ export class LoggingConfig {
   /**
    * Load log levels from environment variables
    */
-  loadFromEnvironment() {
+  private loadFromEnvironment(): void {
     for (const [envVar, component] of Object.entries(ENV_LOG_MAPPING)) {
       const value = process.env[envVar];
       if (value) {
@@ -66,9 +70,15 @@ export class LoggingConfig {
   /**
    * Get or create a logger for a component
    */
-  getLogger(component, options = {}) {
+  getLogger(component: string, options: {
+    enableStderr?: boolean;
+    enableFile?: boolean;
+    formatJson?: boolean;
+    logDir?: string;
+    [key: string]: any;
+  } = {}): Logger {
     if (this.loggers.has(component)) {
-      return this.loggers.get(component);
+      return this.loggers.get(component)!;
     }
 
     const level = this.globalLevel || this.componentLevels[component] || 'INFO';
@@ -90,13 +100,16 @@ export class LoggingConfig {
   /**
    * Set log level for a component
    */
-  setLogLevel(component, level) {
+  setLogLevel(component: string, level: string): void {
     this.componentLevels[component] = level.toUpperCase();
 
     // Update existing logger if present
     if (this.loggers.has(component)) {
-      const logger = this.loggers.get(component);
-      logger.level = logger.constructor.LOG_LEVELS[level.toUpperCase()];
+      const logger = this.loggers.get(component)!;
+      // Access LOG_LEVELS safely - assuming it exists on the logger instance or constructor
+      if ('level' in logger && typeof logger.level === 'string') {
+        (logger as any).level = level.toUpperCase();
+      }
     }
   }
 

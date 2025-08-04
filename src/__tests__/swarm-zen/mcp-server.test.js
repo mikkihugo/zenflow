@@ -88,7 +88,7 @@ describe('MCPServer', () => {
       await server.start();
 
       const connectionHandler = mockWsServer.on.mock.calls.find(
-        (call) => call[0] === 'connection'
+        (call) => call[0] === 'connection',
       )[1];
 
       connectionHandler(mockClient);
@@ -104,7 +104,7 @@ describe('MCPServer', () => {
     beforeEach(async () => {
       await server.start();
       const connectionHandler = mockWsServer.on.mock.calls.find(
-        (call) => call[0] === 'connection'
+        (call) => call[0] === 'connection',
       )[1];
       connectionHandler(mockClient);
     });
@@ -130,7 +130,7 @@ describe('MCPServer', () => {
 
       expect(ZenSwarm.init).toHaveBeenCalledWith('mesh', 10, 'adaptive');
       expect(mockClient.send).toHaveBeenCalledWith(
-        expect.stringContaining('"result":{"swarmId":"test-123"}')
+        expect.stringContaining('"result":{"swarmId":"test-123"}'),
       );
     });
 
@@ -313,7 +313,7 @@ describe('MCPServer', () => {
       await server.handleMessage(mockClient, JSON.stringify(message));
 
       expect(mockClient.send).toHaveBeenCalledWith(
-        expect.stringContaining('Unknown tool: unknown_tool')
+        expect.stringContaining('Unknown tool: unknown_tool'),
       );
     });
 
@@ -333,7 +333,7 @@ describe('MCPServer', () => {
       await server.handleMessage(mockClient, JSON.stringify(message));
 
       expect(mockClient.send).toHaveBeenCalledWith(
-        expect.stringContaining('Initialization failed')
+        expect.stringContaining('Initialization failed'),
       );
     });
   });
@@ -364,7 +364,7 @@ describe('MCPServer', () => {
       await server.start();
 
       const connectionHandler = mockWsServer.on.mock.calls.find(
-        (call) => call[0] === 'connection'
+        (call) => call[0] === 'connection',
       )[1];
 
       connectionHandler(mockClient);
@@ -380,7 +380,7 @@ describe('MCPServer', () => {
       await server.start();
 
       const connectionHandler = mockWsServer.on.mock.calls.find(
-        (call) => call[0] === 'connection'
+        (call) => call[0] === 'connection',
       )[1];
 
       connectionHandler(mockClient);
@@ -432,7 +432,7 @@ describe('MCPServer', () => {
     it('should handle missing arguments in tool calls', async () => {
       await server.start();
       const connectionHandler = mockWsServer.on.mock.calls.find(
-        (call) => call[0] === 'connection'
+        (call) => call[0] === 'connection',
       )[1];
       connectionHandler(mockClient);
 
@@ -456,7 +456,7 @@ describe('MCPServer', () => {
     it('should handle complete swarm workflow', async () => {
       await server.start();
       const connectionHandler = mockWsServer.on.mock.calls.find(
-        (call) => call[0] === 'connection'
+        (call) => call[0] === 'connection',
       )[1];
       connectionHandler(mockClient);
 
@@ -472,7 +472,7 @@ describe('MCPServer', () => {
             tool: 'swarm_init',
             arguments: { topology: 'mesh' },
           },
-        })
+        }),
       );
 
       // Spawn agents
@@ -487,7 +487,7 @@ describe('MCPServer', () => {
             tool: 'agent_spawn',
             arguments: { type: 'researcher' },
           },
-        })
+        }),
       );
 
       // Execute task
@@ -502,7 +502,7 @@ describe('MCPServer', () => {
             tool: 'task_orchestrate',
             arguments: { task: 'Research topic' },
           },
-        })
+        }),
       );
 
       // Check status
@@ -517,7 +517,7 @@ describe('MCPServer', () => {
             tool: 'swarm_status',
             arguments: {},
           },
-        })
+        }),
       );
 
       expect(mockClient.send).toHaveBeenCalledTimes(4);

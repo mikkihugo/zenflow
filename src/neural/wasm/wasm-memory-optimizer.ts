@@ -10,7 +10,7 @@ export class WasmMemoryOptimizer {
 
   async optimize(): Promise<void> {
     if (this.optimized) return;
-    
+
     // TODO: Implement actual memory optimization
     this.optimized = true;
   }

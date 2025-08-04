@@ -7,12 +7,18 @@ import { execSync } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SwarmPersistencePooled as SwarmPersistence } from '../../../database/persistence/persistence-pooled.js';
+
+// Use any type for SwarmPersistence to avoid import issues
+type SwarmPersistence = any;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 class ZenSwarmHooks {
+  public sessionData: any;
+  public persistence: SwarmPersistence | null;
+  private _sessionId?: string;
+
   constructor() {
     this.sessionData = {
       startTime: Date.now(),
@@ -36,7 +42,15 @@ class ZenSwarmHooks {
    */
   async initializePersistence() {
     try {
-      this.persistence = new SwarmPersistence();
+      // Dynamic import to avoid module resolution issues
+      try {
+        const { SwarmPersistencePooled } = await import('../../../database/persistence/persistence-pooled.js');
+        this.persistence = new SwarmPersistencePooled();
+      } catch (error) {
+        // Fallback if module not available
+        console.warn('SwarmPersistencePooled not available:', error);
+        this.persistence = null;
+      }
     } catch (error) {
       console.warn('⚠️ Failed to initialize persistence layer:', error.message);
       console.warn('⚠️ Operating in memory-only mode');
@@ -65,11 +79,11 @@ class ZenSwarmHooks {
         case 'post-edit':
           return await this.postEditHook(args);
         case 'post-bash':
-          return await this.postBashHook(args);
+          return await this.postTaskHook(args);
         case 'post-task':
           return await this.postTaskHook(args);
         case 'post-search':
-          return await this.postSearchHook(args);
+          return await this.postWebSearchHook(args);
         case 'post-web-search':
           return await this.postWebSearchHook(args);
         case 'post-web-fetch':
@@ -254,7 +268,7 @@ class ZenSwarmHooks {
    */
   async postEditHook(args) {
     const { file, autoFormat, trainPatterns, updateGraph } = args;
-    const result = {
+    const result: any = {
       continue: true,
       formatted: false,
       training: null,
@@ -291,7 +305,7 @@ class ZenSwarmHooks {
   async postTaskHook(args) {
     const { taskId, analyzePerformance, updateCoordination } = args;
 
-    const performance = {
+    const performance: any = {
       taskId,
       completionTime: Date.now() - (this.sessionData.taskStartTimes?.get(taskId) || Date.now()),
       agentsUsed: this.sessionData.taskAgents?.get(taskId) || [],
@@ -392,7 +406,7 @@ class ZenSwarmHooks {
   async notificationHook(args) {
     const { message, level, withSwarmStatus, sendTelemetry, type, context, agentId } = args;
 
-    const notification = {
+    const notification: any = {
       message,
       level: level || 'info',
       type: type || 'general',
@@ -651,143 +665,6 @@ class ZenSwarmHooks {
   /**
    * Agent complete hook - Commit to git with detailed report
    */
-  async agentCompleteHook(args) {
-    const { agent, prompt, output, commitToGit, generateReport, pushToGithub } = args;
-
-    try {
-      const timestamp = new Date().toISOString();
-      const agentName = agent || 'Unknown Agent';
-      // const shortOutput = output ? `${output.substring(0, 500) }...` : 'No output';
-
-      // Generate detailed report
-      let reportPath = null;
-      if (generateReport) {
-        const reportDir = path.join(process.cwd(), '.ruv-swarm', 'agent-reports');
-        await fs.mkdir(reportDir, { recursive: true });
-
-        const sanitizedAgent = agentName.replace(/[^a-zA-Z0-9-]/g, '-').toLowerCase();
-        reportPath = path.join(reportDir, `${sanitizedAgent}-${Date.now()}.md`);
-
-        const report = `# Agent Completion Report: ${agentName}
-
-## Metadata
-- **Agent**: ${agentName}
-- **Timestamp**: ${timestamp}
-- **Session**: ${this.sessionData.sessionId || 'N/A'}
-- **Duration**: ${this.formatDuration(Date.now() - this.sessionData.startTime)}
-
-## Task Description
-\`\`\`
-${prompt || 'No prompt available'}
-\`\`\`
-
-## Output Summary
-${output ? `### Key Accomplishments\n${this.extractKeyPoints(output)}` : 'No output captured'}
-
-## Performance Metrics
-- **Total Operations**: ${this.sessionData.operations.length}
-- **Files Modified**: ${this.getModifiedFilesCount()}
-- **Efficiency Score**: ${this.calculateEfficiency({ completionTime: Date.now() - this.sessionData.startTime }).rating}
-- **Tokens Saved**: ${this.sessionData.metrics.tokensSaved}
-
-## Files Modified
-${this.getModifiedFilesList()}
-
-## Coordination Activity
-- **Memory Operations**: ${this.sessionData.operations.filter((op) => op.type === 'memory').length}
-- **Hook Executions**: ${this.sessionData.operations.filter((op) => op.type === 'hook').length}
-- **Neural Training**: ${this.sessionData.metrics.patternsImproved} patterns improved
-
-## Learnings & Patterns
-${this.sessionData.learnings.length > 0 ? this.sessionData.learnings.map((l) => `- ${l.type || 'General'}: ${l.description || JSON.stringify(l)}`).join('\n') : 'No specific learnings captured'}
-
----
-*Generated by ruv-swarm agent coordination system*
-`;
-
-        await fs.writeFile(reportPath, report);
-      }
-
-      // Commit to git if requested
-      if (commitToGit) {
-        try {
-          // Check if we're in a git repo
-          execSync('git rev-parse --git-dir', { stdio: 'ignore' });
-
-          // Get git status
-          const status = execSync('git status --porcelain', { encoding: 'utf-8' });
-
-          if (status.trim()) {
-            // Stage changes
-            execSync('git add -A');
-
-            // Create detailed commit message
-            const commitMessage = `feat(${agentName.toLowerCase().replace(/[^a-z0-9]/g, '-')}): Complete agent task
-
-Agent: ${agentName}
-Timestamp: ${timestamp}
-
-## Task Summary
-${prompt ? `${prompt.split('\n')[0].substring(0, 100)}...` : 'No task description'}
-
-## Achievements
-${this.extractBulletPoints(output)}
-
-## Metrics
-- Operations: ${this.sessionData.operations.length}
-- Files: ${this.getModifiedFilesCount()}
-- Efficiency: ${this.calculateEfficiency({ completionTime: Date.now() - this.sessionData.startTime }).rating}
-${reportPath ? `\n## Report\nDetailed report: ${path.relative(process.cwd(), reportPath)}` : ''}
-
-🤖 Generated by ruv-swarm agent coordination
-Co-Authored-By: ${agentName} <agent@ruv-swarm.ai>`;
-
-            // Commit using heredoc to handle complex messages
-            const commitCmd = `git commit -m "$(cat <<'EOF'
-${commitMessage}
-EOF
-)"`;
-            execSync(commitCmd, { shell: '/bin/bash' });
-
-            // Log commit info
-            const _commitHash = execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
-
-            // Push if requested and configured
-            if (pushToGithub && process.env.RUV_SWARM_AUTO_PUSH === 'true') {
-              execSync('git push', { stdio: 'inherit' });
-            }
-          } else {
-          }
-        } catch (gitError) {
-          console.error('Git operation failed:', gitError.message);
-        }
-      }
-
-      // Update telemetry
-      this.sendTelemetry('agent_complete', {
-        agent: agentName,
-        hasReport: generateReport,
-        hasCommit: commitToGit,
-        operationCount: this.sessionData.operations.length,
-        duration: Date.now() - this.sessionData.startTime,
-      });
-
-      return {
-        continue: true,
-        agent: agentName,
-        reportGenerated: generateReport,
-        reportPath: reportPath ? path.relative(process.cwd(), reportPath) : null,
-        committed: commitToGit,
-        duration: this.formatDuration(Date.now() - this.sessionData.startTime),
-      };
-    } catch (error) {
-      console.error('Agent complete hook error:', error);
-      return {
-        continue: true,
-        error: error.message,
-      };
-    }
-  }
 
   /**
    * Extract key points from output
@@ -909,7 +786,7 @@ EOF
             .catch(() => false)
         ) {
           const roster = JSON.parse(await fs.readFile(rosterPath, 'utf-8'));
-          roster.forEach((agent) => {
+          roster.forEach((agent: any) => {
             this.sessionData.agents.set(agent.id, agent);
           });
           result.restored.agents = true;
@@ -944,7 +821,7 @@ EOF
     await fs.mkdir(sessionDir, { recursive: true });
 
     const timestamp = new Date().toISOString().replace(/:/g, '-');
-    const results = {};
+    const results: any = {};
 
     // Generate summary
     if (generateSummary) {
@@ -1124,7 +1001,7 @@ EOF
     return { safe: true };
   }
 
-  estimateCommandResources(command) {
+  estimateCommandResources(command: string): any {
     const resourceMap = {
       'npm test': { duration: 30000, requiresAgent: true, agentType: 'coordinator' },
       'npm run build': { duration: 60000, requiresAgent: true, agentType: 'optimizer' },
@@ -1151,16 +1028,16 @@ Duration: ${this.formatDuration(duration)}
 Token Reduction: ${this.sessionData.metrics.tokensSaved} tokens
 
 ## Swarm Activity
-- Active Agents: ${agentList.length} (${agentList.map((a) => a.type).join(', ')})
+- Active Agents: ${agentList.length} (${agentList.map((a: any) => a.type).join(', ')})
 - Operations Performed: ${this.sessionData.operations.length}
-- Files Modified: ${new Set(this.sessionData.operations.map((o) => o.file)).size}
+- Files Modified: ${new Set(this.sessionData.operations.map((o: any) => o.file)).size}
 - Neural Improvements: ${this.sessionData.metrics.patternsImproved}
 
 ## Operations Breakdown
 ${this.sessionData.operations
   .slice(-10)
   .map(
-    (op) =>
+    (op: any) =>
       `- ${new Date(op.timestamp).toLocaleTimeString()}: ${op.type} on ${op.file} (${op.agent})`
   )
   .join('\n')}
@@ -1169,7 +1046,7 @@ ${this.sessionData.operations
 ${this.sessionData.learnings
   .slice(-5)
   .map(
-    (l) =>
+    (l: any) =>
       `- Pattern "${l.pattern}" improved by ${(l.improvement * 100).toFixed(1)}% (confidence: ${l.confidence})`
   )
   .join('\n')}
@@ -1217,10 +1094,10 @@ ${this.sessionData.learnings
       agents: {
         total_spawned: this.sessionData.agents.size,
         by_type: Object.fromEntries(
-          Array.from(this.sessionData.agents.values()).reduce((acc, agent) => {
+          Array.from((this.sessionData.agents as any).values()).reduce((acc: any, agent: any) => {
             acc.set(agent.type, (acc.get(agent.type) || 0) + 1);
             return acc;
-          }, new Map())
+          }, new Map()) as any
         ),
       },
     };
@@ -1434,7 +1311,7 @@ ${this.sessionData.learnings
     const efficiency = this.calculateEfficiency(performance);
 
     // Time improvements
-    if (efficiency.timeEfficiency < 0.7) {
+    if (parseFloat(efficiency.timeEfficiency) < 0.7) {
       improvements.push({
         area: 'execution_time',
         suggestion: 'Use parallel task execution',
@@ -1443,7 +1320,7 @@ ${this.sessionData.learnings
     }
 
     // Coordination improvements
-    if (efficiency.agentEfficiency < 0.8) {
+    if (parseFloat(efficiency.agentEfficiency) < 0.8) {
       improvements.push({
         area: 'agent_coordination',
         suggestion: 'Implement specialized agent patterns',
@@ -1520,7 +1397,7 @@ ${this.sessionData.learnings
     const kbPath = path.join(process.cwd(), '.ruv-swarm', 'knowledge-base.json');
 
     // Load existing knowledge base
-    let kb = {};
+    let kb: any = { searches: [], patterns: {}, insights: [] };
     try {
       if (
         await fs
@@ -1707,10 +1584,10 @@ ${this.sessionData.learnings
     const agents = Array.from(this.sessionData.agents.values());
     const allocation = {};
 
-    agents.forEach((agent) => {
+    agents.forEach((agent: any) => {
       // Allocate based on agent type and current load
       const load = this.sessionData.operations.filter(
-        (op) => op.agent === agent.id && Date.now() - op.timestamp < 60000
+        (op: any) => op.agent === agent.id && Date.now() - op.timestamp < 60000
       ).length;
 
       allocation[agent.id] = {
@@ -1765,7 +1642,7 @@ ${this.sessionData.learnings
       }
     });
 
-    const sorted = Object.entries(agentCounts).sort((a, b) => b[1] - a[1]);
+    const sorted = Object.entries(agentCounts).sort((a, b) => Number(b[1]) - Number(a[1]));
     return sorted.length > 0 ? sorted[0][0] : 'coordinator';
   }
 

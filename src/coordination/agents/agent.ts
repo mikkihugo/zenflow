@@ -490,7 +490,7 @@ export class AgentPool {
         await agent.shutdown();
       }
     }
-    
+
     // Clear the pools
     this.agents.clear();
     this.availableAgents.clear();

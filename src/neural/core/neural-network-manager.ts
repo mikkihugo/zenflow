@@ -324,12 +324,14 @@ class NeuralNetworkManager {
     this.neuralModels = new Map();
   }
 
-  async createAgentNeuralNetwork(agentId, config = {}) {
+  async createAgentNeuralNetwork(agentId: string, config: any = {}) {
     // Initialize cognitive evolution for this agent
-    await this.cognitiveEvolution.initializeAgent(agentId, config);
+    if (this.cognitiveEvolution && typeof this.cognitiveEvolution.initializeAgent === 'function') {
+      await this.cognitiveEvolution.initializeAgent(agentId, config);
+    }
 
     // Apply meta-learning if enabled
-    if (config.enableMetaLearning) {
+    if (config.enableMetaLearning && this.metaLearning && typeof this.metaLearning.adaptConfiguration === 'function') {
       config = await this.metaLearning.adaptConfiguration(agentId, config);
     }
 
@@ -350,7 +352,12 @@ class NeuralNetworkManager {
       return this.createSimulatedNetwork(agentId, config);
     }
 
-    const { layers = null, activation = 'relu', learningRate = 0.001, optimizer = 'adam' } = config;
+    const { 
+      layers = null, 
+      activation = 'relu', 
+      learningRate = 0.001, 
+      optimizer = 'adam' 
+    } = config;
 
     // Use template or custom layers
     const networkConfig = layers ? { layers, activation } : this.templates[template];
@@ -383,7 +390,7 @@ class NeuralNetworkManager {
     return network;
   }
 
-  async createAdvancedNeuralModel(agentId, template, customConfig = {}) {
+  async createAdvancedNeuralModel(agentId: string, template: string, customConfig: any = {}) {
     const templateConfig = this.templates[template];
 
     if (!templateConfig || !templateConfig.modelType) {
@@ -404,36 +411,44 @@ class NeuralNetworkManager {
       complexity: customConfig.complexity || 'medium',
     };
 
-    const cognitivePatterns = this.cognitivePatternSelector.selectPatternsForPreset(
-      config.modelType,
-      template,
-      taskContext
-    );
+    // Check if cognitivePatternSelector has the required method
+    let cognitivePatterns: any = null;
+    if (this.cognitivePatternSelector && typeof this.cognitivePatternSelector.selectPatternsForPreset === 'function') {
+      cognitivePatterns = this.cognitivePatternSelector.selectPatternsForPreset(
+        config.modelType,
+        template,
+        taskContext
+      );
+    }
 
     config.cognitivePatterns = cognitivePatterns;
 
     // Use preset if specified
-    if (config.preset && MODEL_PRESETS[config.modelType]) {
-      const presetConfig = MODEL_PRESETS[config.modelType][config.preset];
+    if (config.preset && (MODEL_PRESETS as any)[config.modelType]) {
+      const presetConfig = (MODEL_PRESETS as any)[config.modelType][config.preset];
       Object.assign(config, presetConfig);
     }
 
     try {
       // Create the neural model
-      const model = await createNeuralModel(config.modelType, config);
+      const model = await (createNeuralModel as any)(config.modelType, config);
 
       // Wrap in a compatible interface
-      const wrappedModel = new AdvancedNeuralNetwork(agentId, model, config);
+      const wrappedModel = new (AdvancedNeuralNetwork as any)(agentId, model, config);
 
       // Enhanced registration with cognitive capabilities
       this.neuralNetworks.set(agentId, wrappedModel);
       this.neuralModels.set(agentId, model);
 
       // Register with coordination protocol
-      await this.coordinationProtocol.registerAgent(agentId, wrappedModel);
+      if (this.coordinationProtocol && typeof this.coordinationProtocol.registerAgent === 'function') {
+        await this.coordinationProtocol.registerAgent(agentId, wrappedModel);
+      }
 
       // Initialize neural adaptation engine
-      await this.neuralAdaptationEngine.initializeAdaptation(agentId, config.modelType, template);
+      if (this.neuralAdaptationEngine && typeof this.neuralAdaptationEngine.initializeAdaptation === 'function') {
+        await this.neuralAdaptationEngine.initializeAdaptation(agentId, config.modelType, template);
+      }
 
       // Initialize performance tracking
       this.performanceMetrics.set(agentId, {
@@ -451,7 +466,7 @@ class NeuralNetworkManager {
     }
   }
 
-  async fineTuneNetwork(agentId, trainingData, options = {}) {
+  async fineTuneNetwork(agentId: string, trainingData: any, options: any = {}) {
     const network = this.neuralNetworks.get(agentId);
     if (!network) {
       throw new Error(`No neural network found for agent ${agentId}`);

@@ -10,7 +10,7 @@ export class WasmLoader2 {
 
   async initialize(): Promise<void> {
     if (this.initialized) return;
-    
+
     // TODO: Implement actual WASM loading
     this.initialized = true;
   }
