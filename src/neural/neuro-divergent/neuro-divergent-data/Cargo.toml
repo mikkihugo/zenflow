@@ -40,7 +40,7 @@ serde_json = { version = "1.0", optional = true }
 rayon = { version = "1.7", optional = true }
 
 # Error handling
-thiserror = "1.0"
+thiserror = "2.0"
 
 # Random number generation
 rand = "0.8"

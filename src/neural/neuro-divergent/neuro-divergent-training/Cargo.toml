@@ -15,7 +15,7 @@ neuro-divergent-core = { version = "0.1.0", path = "../neuro-divergent-core" }
 # Core dependencies
 ruv-fann = "0.1"
 num-traits = "0.2"
-thiserror = "1.0"
+thiserror = "2.0"
 serde = { version = "1.0", features = ["derive"], optional = true }
 serde_json = { version = "1.0", optional = true }
 
