@@ -2,10 +2,24 @@
 name: "Claude Solver"
 
 on:
+  issues:
+    types: [opened, labeled]
+  issue_comment:
+    types: [created]
   workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Issue number to solve'
+        required: false
+        type: string
 
 jobs:
-  solve-issue-63:
+  auto-solve-issue:
+    # Auto-trigger on issues with 'claude-solve' label or '@claude solve' comment
+    if: |
+      (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'claude-solve')) ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude solve')) ||
+      (github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -16,85 +30,152 @@ jobs:
       id-token: write
 
     steps:
-      - name: Deploy Autonomous Swarm for Issue 63
-        run: |
-          echo "🐝 AUTONOMOUS SWARM ACTIVATED FOR ISSUE #63"
-          echo "Mission: Complete Dependency Injection Implementation"
-          echo "Target: Memory and Database Domain Enhancement"
-          echo "Repository: ${{ github.repository }}"
+      - name: Auto-assign Issue to Claude
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueNumber = context.issue?.number || 
+                               (context.payload.comment?.issue?.number) ||
+                               '${{ github.event.inputs.issue_number }}';
+            
+            if (!issueNumber) {
+              core.setFailed('No issue number found');
+              return;
+            }
+            
+            // Auto-assign to claude[bot] if not already assigned
+            const { data: issue } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: parseInt(issueNumber)
+            });
+            
+            if (issue.assignees.length === 0) {
+              await github.rest.issues.addAssignees({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: parseInt(issueNumber),
+                assignees: ['claude[bot]']
+              });
+            }
+            
+            // Comment that Claude is starting work
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: parseInt(issueNumber),
+              body: `🤖 **Claude Auto-Solver Activated**\n\nI've been assigned to automatically solve this issue. Starting analysis and resolution...`
+            });
+            
+            core.setOutput('issue_number', issueNumber);
+            core.setOutput('issue_title', issue.title);
+            core.setOutput('issue_body', issue.body);
 
-      - name: Claude Code Autonomous Swarm Agent
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN || secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Analyze Issue Context
+        id: analyze
+        run: |
+          ISSUE_NUMBER="${{ steps.auto-assign.outputs.issue_number }}"
+          ISSUE_TITLE="${{ steps.auto-assign.outputs.issue_title }}"
+          ISSUE_BODY="${{ steps.auto-assign.outputs.issue_body }}"
+          
+          echo "🔍 CLAUDE AUTO-SOLVER ACTIVATED"
+          echo "Issue #$ISSUE_NUMBER: $ISSUE_TITLE"
+          echo "Repository: ${{ github.repository }}"
+          echo ""
+          
+          # Determine solution strategy based on issue content
+          if echo "$ISSUE_TITLE $ISSUE_BODY" | grep -qi "typescript\|import\|build"; then
+            echo "STRATEGY=typescript-integration" >> $GITHUB_ENV
+          elif echo "$ISSUE_TITLE $ISSUE_BODY" | grep -qi "database\|sql\|adapter"; then
+            echo "STRATEGY=database-integration" >> $GITHUB_ENV
+          elif echo "$ISSUE_TITLE $ISSUE_BODY" | grep -qi "neural\|ai\|wasm"; then
+            echo "STRATEGY=neural-integration" >> $GITHUB_ENV
+          elif echo "$ISSUE_TITLE $ISSUE_BODY" | grep -qi "api\|rest\|endpoint"; then
+            echo "STRATEGY=api-development" >> $GITHUB_ENV
+          else
+            echo "STRATEGY=general-fix" >> $GITHUB_ENV
+          fi
+          
+          echo "Selected strategy: $STRATEGY"
+
+      - name: Claude Code Issue Resolution
         uses: anthropics/claude-code-action@beta
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           mode: "agent"
           direct_prompt: |
-            🐝 AUTONOMOUS SWARM COMMANDER - ISSUE #63 RESOLUTION
+            🤖 CLAUDE AUTO-SOLVER - DYNAMIC ISSUE RESOLUTION
             
-            MISSION CRITICAL: Implement complete dependency injection patterns for claude-zen
+            ## ISSUE CONTEXT
+            **Issue #${{ steps.auto-assign.outputs.issue_number }}**: ${{ steps.auto-assign.outputs.issue_title }}
+            **Strategy**: ${{ env.STRATEGY }}
+            **Repository**: ${{ github.repository }}
             
-            ## SWARM OBJECTIVES
-            You are leading an autonomous development swarm to completely resolve Issue #63.
-            This is a MAJOR architectural enhancement requiring systematic implementation.
+            ## ISSUE DESCRIPTION
+            ${{ steps.auto-assign.outputs.issue_body }}
             
-            ## ISSUE #63: Dependency Injection Implementation
-            **Target Domains**: Memory (src/memory/) and Database (src/database/)
-            **Requirements**:
-            1. Replace all 'any' types with strict TypeScript interfaces
-            2. Implement comprehensive dependency injection patterns
-            3. Create REST API layers for both domains
-            4. Apply Google TypeScript Style Guide compliance
-            5. Generate comprehensive documentation
-            6. Achieve 95%+ test coverage
-            7. Ensure cross-domain architectural consistency
+            ## MISSION
+            You are Claude Auto-Solver. Your mission is to automatically analyze and resolve this issue with minimal human intervention.
             
-            ## SWARM EXECUTION STRATEGY
+            ## RESOLUTION STRATEGY: ${{ env.STRATEGY }}
             
-            ### Phase 1: Domain Analysis & Architecture
-            1. Analyze current src/memory/ and src/database/ structure
-            2. Identify improvement opportunities and patterns
-            3. Design DI container and injection patterns
-            4. Plan REST API architecture
+            ### If TypeScript Integration:
+            - Fix import path issues and TypeScript compilation errors
+            - Update path mappings in tsconfig.json
+            - Resolve union type property access issues
+            - Fix interface contract mismatches
             
-            ### Phase 2: Memory Domain Implementation
-            1. Enhance memory management with DI patterns
-            2. Create MemoryController with REST endpoints
-            3. Implement strict TypeScript typing
-            4. Add comprehensive tests and documentation
+            ### If Database Integration:
+            - Standardize database adapter interfaces
+            - Fix connection and query issues
+            - Implement proper error handling
+            - Update database provider configurations
             
-            ### Phase 3: Database Domain Implementation
-            1. Enhance database connectivity with DI patterns
-            2. Create DatabaseController with REST endpoints
-            3. Implement migration management
-            4. Add comprehensive tests and documentation
+            ### If Neural Integration:
+            - Fix WASM binding issues
+            - Resolve neural network model problems
+            - Update training and inference pipelines
+            - Fix memory management issues
             
-            ### Phase 4: Integration & Quality
-            1. Ensure cross-domain consistency
-            2. Validate Google standards compliance
-            3. Complete comprehensive testing
-            4. Generate final documentation
+            ### If API Development:
+            - Implement missing REST endpoints
+            - Fix API controller issues
+            - Add proper request/response validation
+            - Update API documentation
             
-            ## SWARM COORDINATION
-            - Work systematically through each phase
-            - Ensure each domain follows consistent patterns
-            - Implement proper error handling and logging
-            - Create working, production-ready code
-            - Generate comprehensive pull request
+            ### If General Fix:
+            - Analyze the issue description for specific problems
+            - Apply appropriate code fixes
+            - Run tests to verify resolution
+            - Update documentation if needed
             
-            ## PROJECT CONTEXT
-            - Claude-zen: AI development coordination system
-            - Domain-driven architecture in src/
-            - Existing neural domain as reference pattern
-            - MCP integration and swarm coordination capabilities
+            ## EXECUTION REQUIREMENTS
+            1. **Analyze the codebase** to understand the specific problem
+            2. **Implement targeted fixes** based on the issue description
+            3. **Test your changes** to ensure they work
+            4. **Create a focused commit** that resolves the issue
+            5. **Comment on the issue** with what was fixed
             
             ## SUCCESS CRITERIA
-            - Complete DI implementation in memory and database domains
-            - REST APIs with full functionality
-            - 100% TypeScript strict mode compliance
-            - 95%+ test coverage with proper mocking
-            - Comprehensive domain documentation
-            - Working pull request ready for merge
+            - Issue is completely resolved with working code
+            - All related tests pass
+            - Code follows project conventions
+            - Changes are minimal and focused
+            - Issue can be automatically closed
             
-            Execute as autonomous swarm. Implement systematically. Deliver enterprise-grade results.
+            ## PROJECT CONTEXT
+            - Claude-zen: AI development coordination system  
+            - TypeScript codebase with domain-driven architecture
+            - Located in src/ with domains: core, database, memory, neural, etc.
+            - Uses modern tooling: ESLint, Prettier, Jest
+            - MCP integration and Claude Code coordination
             
-            BEGIN AUTONOMOUS EXECUTION NOW.
+            ANALYZE THE ISSUE. IMPLEMENT THE FIX. VERIFY IT WORKS. COMMIT AND RESOLVE.
+            
+            🎯 BEGIN AUTONOMOUS ISSUE RESOLUTION NOW.

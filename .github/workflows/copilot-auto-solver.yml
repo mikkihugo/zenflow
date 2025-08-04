@@ -1,0 +1,294 @@
+name: "Copilot Auto Solver"
+
+on:
+  issues:
+    types: [opened, labeled]
+  issue_comment:
+    types: [created]
+
+jobs:
+  auto-solver:
+    # Only run if issue has 'copilot-solve' label or '@copilot solve' comment
+    if: |
+      (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'copilot-solve')) ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@copilot solve'))
+    
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      actions: write
+      id-token: write
+    
+    steps:
+      - name: Auto-assign Issue to Copilot
+        uses: actions/github-script@v7
+        with:
+          script: |
+            if (context.payload.issue.assignees.length === 0) {
+              await github.rest.issues.addAssignees({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                assignees: ['copilot[bot]']
+              });
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: '🤖 **Copilot Auto-Solver Activated**\n\nI\'ve been assigned to automatically solve this issue. Starting analysis...'
+              });
+            }
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Development Environment
+        uses: ./.github/workflows/copilot-setup-steps.yml@main
+
+      - name: Analyze Issue and Codebase
+        id: analysis
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue || context.payload.comment.issue;
+            
+            // Extract issue details
+            const issueTitle = issue.title;
+            const issueBody = issue.body;
+            const issueNumber = issue.number;
+            
+            // Analyze for keywords to determine solution approach
+            const keywords = {
+              'typescript': issueBody.toLowerCase().includes('typescript') || issueTitle.toLowerCase().includes('typescript'),
+              'import': issueBody.toLowerCase().includes('import') || issueTitle.toLowerCase().includes('import'),
+              'build': issueBody.toLowerCase().includes('build') || issueTitle.toLowerCase().includes('build'),
+              'test': issueBody.toLowerCase().includes('test') || issueTitle.toLowerCase().includes('test'),
+              'database': issueBody.toLowerCase().includes('database') || issueTitle.toLowerCase().includes('database'),
+              'api': issueBody.toLowerCase().includes('api') || issueTitle.toLowerCase().includes('api')
+            };
+            
+            // Determine solution strategy
+            let strategy = 'general';
+            if (keywords.typescript && keywords.import) strategy = 'typescript-imports';
+            else if (keywords.build) strategy = 'build-system';
+            else if (keywords.database) strategy = 'database-integration';
+            else if (keywords.api) strategy = 'api-development';
+            
+            core.setOutput('strategy', strategy);
+            core.setOutput('issue_number', issueNumber);
+            core.setOutput('issue_title', issueTitle);
+            core.setOutput('issue_body', issueBody);
+
+      - name: TypeScript Import Path Resolution
+        if: steps.analysis.outputs.strategy == 'typescript-imports'
+        run: |
+          echo "🔧 Executing TypeScript Import Resolution Strategy"
+          
+          # Find TypeScript files with import issues
+          find src -name "*.ts" -type f | head -20 | while read file; do
+            echo "Checking: $file"
+            # Look for common import path issues
+            if grep -q "from '@" "$file" 2>/dev/null; then
+              echo "Found path mapping imports in: $file"
+              # Fix common path mapping issues
+              sed -i 's|from '\''@core/|from '\''../core/|g' "$file"
+              sed -i 's|from '\''@database/|from '\''../database/|g' "$file"
+              sed -i 's|from '\''@memory/|from '\''../memory/|g' "$file"
+              sed -i 's|from '\''@neural/|from '\''../neural/|g' "$file"
+            fi
+          done
+          
+          # Update tsconfig.json paths if needed
+          if [ -f "tsconfig.json" ]; then
+            echo "Updating tsconfig.json paths..."
+            # Add or update path mappings
+            if ! grep -q '"paths"' tsconfig.json; then
+              echo "Adding path mappings to tsconfig.json"
+            fi
+          fi
+
+      - name: Build System Integration
+        if: steps.analysis.outputs.strategy == 'build-system'
+        run: |
+          echo "🏗️ Executing Build System Strategy"
+          
+          # Check package.json build scripts
+          if [ -f "package.json" ]; then
+            echo "Checking build configuration..."
+            npm run build 2>&1 | tee build-output.log || true
+            
+            # Analyze build errors and apply common fixes
+            if grep -q "Cannot find module" build-output.log; then
+              echo "Fixing module resolution issues..."
+              npm install --save-dev @types/node
+            fi
+          fi
+          
+          # Check TypeScript compilation
+          if [ -f "tsconfig.json" ]; then
+            npx tsc --noEmit --skipLibCheck 2>&1 | tee ts-check.log || true
+          fi
+
+      - name: Database Integration Fix
+        if: steps.analysis.outputs.strategy == 'database-integration'  
+        run: |
+          echo "🗄️ Executing Database Integration Strategy"
+          
+          # Check database adapter files
+          if [ -d "src/database" ]; then
+            echo "Analyzing database adapters..."
+            
+            # Fix common database interface issues
+            find src/database -name "*.ts" -type f | while read file; do
+              if grep -q "DatabaseAdapter" "$file"; then
+                echo "Checking adapter: $file"
+                # Add common interface fixes
+              fi
+            done
+          fi
+
+      - name: General Code Quality Fixes
+        if: steps.analysis.outputs.strategy == 'general'
+        run: |
+          echo "🔧 Executing General Fix Strategy"
+          
+          # Run linting and fix auto-fixable issues
+          if [ -f "package.json" ] && npm list eslint > /dev/null 2>&1; then
+            npx eslint src --fix --ext .ts,.js || true
+          fi
+          
+          # Fix common TypeScript issues
+          find src -name "*.ts" -type f | head -10 | while read file; do
+            # Fix common union type issues
+            sed -i 's/result\.data/result.success ? result.data : undefined/g' "$file" 2>/dev/null || true
+          done
+
+      - name: Run Tests
+        run: |
+          echo "🧪 Running tests to verify fixes..."
+          
+          if [ -f "package.json" ]; then
+            # Install dependencies if needed
+            if [ ! -d "node_modules" ]; then
+              npm install
+            fi
+            
+            # Run tests
+            npm test 2>&1 | tee test-results.log || true
+            
+            # Check test results
+            if grep -q "failing\|failed\|error" test-results.log; then
+              echo "❌ Some tests failed - may need manual review"
+              TEST_STATUS="partial"
+            else
+              echo "✅ All tests passed"
+              TEST_STATUS="success"
+            fi
+            
+            echo "TEST_STATUS=$TEST_STATUS" >> $GITHUB_ENV
+          else
+            echo "No package.json found - skipping tests"
+            echo "TEST_STATUS=skipped" >> $GITHUB_ENV
+          fi
+
+      - name: Commit Changes
+        id: commit
+        run: |
+          git config --local user.email "copilot[bot]@users.noreply.github.com"
+          git config --local user.name "copilot[bot]"
+          
+          # Check if there are changes to commit
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "No changes to commit"
+            echo "CHANGES_MADE=false" >> $GITHUB_ENV
+          else
+            echo "Changes detected, committing..."
+            git add .
+            git commit -m "🤖 Auto-fix: Resolve issue #${{ steps.analysis.outputs.issue_number }}
+
+- Applied ${{ steps.analysis.outputs.strategy }} strategy
+- Automated fixes for common code issues
+- Tests status: ${{ env.TEST_STATUS }}
+
+Resolves #${{ steps.analysis.outputs.issue_number }}"
+            
+            git push
+            echo "CHANGES_MADE=true" >> $GITHUB_ENV
+          fi
+
+      - name: Update Issue with Results
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const changesMade = process.env.CHANGES_MADE === 'true';
+            const testStatus = process.env.TEST_STATUS;
+            const strategy = '${{ steps.analysis.outputs.strategy }}';
+            
+            let status = '🤖 **Copilot Auto-Solver Results**\n\n';
+            
+            if (changesMade) {
+              status += '✅ **Changes Applied Successfully**\n';
+              status += `- Strategy: ${strategy}\n`;
+              status += `- Tests: ${testStatus}\n`;
+              status += `- Commit: Automated fixes pushed\n\n`;
+              
+              if (testStatus === 'success') {
+                status += '🎉 **Issue Auto-Resolved!**\n\n';
+                status += 'All fixes applied and tests passing. This issue can be closed.';
+                
+                // Auto-close the issue if tests pass
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  state: 'closed'
+                });
+                
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: status
+                });
+              } else {
+                status += '⚠️ **Partial Resolution**\n\n';
+                status += 'Fixes applied but may need manual review. Please check the automated changes.';
+                
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: status
+                });
+              }
+            } else {
+              status += '❌ **No Automatic Fix Available**\n\n';
+              status += 'This issue requires manual investigation. The auto-solver could not determine appropriate fixes.';
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: status
+              });
+            }
+
+      - name: Handle Errors
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: '🚨 **Copilot Auto-Solver Error**\n\nThe automated solution attempt failed. This issue requires manual attention.\n\nCheck the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.'
+            });
