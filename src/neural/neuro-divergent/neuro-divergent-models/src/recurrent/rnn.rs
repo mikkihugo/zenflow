@@ -5,7 +5,8 @@
 
 use std::collections::HashMap;
 use num_traits::Float;
-use ruv_fann::{Network, NetworkBuilder, ActivationFunction, TrainingData, TrainingAlgorithm};
+use ruv_fann::{Network, NetworkBuilder, ActivationFunction, TrainingData};
+use ruv_fann::training::TrainingAlgorithm;
 use crate::errors::{NeuroDivergentError, NeuroDivergentResult};
 use crate::foundation::{
     BaseModel, ModelConfig, NetworkAdapter, TimeSeriesInput, ForecastOutput,
@@ -266,13 +267,14 @@ impl<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + Default + 'stat
             
             // Train output layer using ruv-FANN
             let output_loss = if let Some(output_layer) = &mut self.output_layer {
-                // Use a simple training algorithm (this is simplified)
-                // TODO: Fix ruv-fann training API - method signature changed
-                // let mut trainer = ruv_fann::training::IncrementalBackprop::new(
-                //     self.config.learning_rate
-                // );
-                // trainer.train(output_layer, &training_data)?
-                T::zero() // Placeholder for now
+                // Train using ruv-FANN incremental backpropagation
+                let mut trainer = ruv_fann::training::IncrementalBackprop::new(
+                    self.config.learning_rate
+                );
+                
+                // Train the network with the full training dataset
+                trainer.train_epoch(output_layer, &training_data)
+                    .unwrap_or(T::zero())
             } else {
                 T::zero()
             };
