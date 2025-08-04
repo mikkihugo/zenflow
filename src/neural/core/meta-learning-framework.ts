@@ -3,8 +3,25 @@
  * Learning to learn - adaptive learning strategies
  */
 
+interface MetaLearningOptions {
+  maxStrategies?: number;
+  evaluationWindow?: number;
+  [key: string]: any;
+}
+
+interface LearningStrategy {
+  performance: number;
+  usage: number;
+  created: Date;
+  [key: string]: any;
+}
+
 export class MetaLearningFramework {
-  constructor(options = {}) {
+  public learningStrategies: Map<string, LearningStrategy>;
+  public performanceHistory: any[];
+  public options: MetaLearningOptions;
+
+  constructor(options: MetaLearningOptions = {}) {
     this.learningStrategies = new Map();
     this.performanceHistory = [];
     this.options = {
@@ -17,7 +34,7 @@ export class MetaLearningFramework {
   /**
    * Register a learning strategy
    */
-  registerStrategy(id, strategy) {
+  registerStrategy(id: string, strategy: any): void {
     this.learningStrategies.set(id, {
       ...strategy,
       performance: 0,

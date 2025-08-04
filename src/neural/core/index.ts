@@ -4,59 +4,56 @@
  * Central export point for core neural network functionality
  */
 
-// Core neural components (explicit exports to avoid conflicts)
-export { NeuralNetwork } from './network';
-export { ActivationFunction, LayerType } from './network';
-export { NeuralCore } from './neural-core';
-export { neuralCLI as NeuralCoreCLI } from './neural-core'; // Renamed to avoid conflict
-export { Neural } from './neural';
-export { NeuralCLI as LegacyNeuralCLI } from './neural'; // Renamed to avoid conflict  
-export { NeuralNetworkJS } from './neural-network';
-// Neural network manager (JavaScript)
-export { NeuralNetworkManager } from './neural-network-manager';
-// Export from network module
-export {
-  ACTIVATION_FUNCTIONS,
-  ActivationFunctions,
+// Export types from network module
+export type {
+  ActivationFunctions as ActivationFunction,
   AgentNetworkConfig,
   AgentNeuralManager,
-  COGNITIVE_PATTERNS,
   CascadeConfig,
-  CascadeTrainer,
   CognitiveState,
   LayerConfig,
   NetworkConfig,
   NetworkInfo,
-  NeuralNetwork,
-  NeuralTrainer,
-  TRAINING_ALGORITHMS,
   TrainingConfig,
   TrainingDataConfig,
   TrainingResult,
+} from './network';
+// Core neural components (explicit exports to avoid conflicts)
+// Export from network module
+export {
+  ACTIVATION_FUNCTIONS,
+  ActivationFunctions,
+  CascadeTrainer,
+  COGNITIVE_PATTERNS,
   createAgentNeuralManager,
   createNeuralNetwork,
   createTrainer,
   initializeNeuralWasm,
+  NeuralNetwork,
+  NeuralTrainer,
+  TRAINING_ALGORITHMS,
 } from './network';
-
 // Export from neural module (avoid duplicates with neural-core)
-export { neuralCLI } from './neural';
-
+// export { Neural, NeuralCLI as LegacyNeuralCLI, neuralCLI } from './neural';
 // Export from neural-core module (primary source)
 export {
-  NeuralCLI,
-  PATTERN_MEMORY_CONFIG,
-  type PatternType,
-  type NeuralConfig,
   type ModelMetadata,
-  type TrainingResults,
-  type PersistenceInfo,
+  NeuralCLI,
+  type NeuralConfig,
+  // NeuralCore,
+  neuralCLI as NeuralCoreCLI,
+  PATTERN_MEMORY_CONFIG,
   type PatternData,
+  type PatternType,
+  type PersistenceInfo,
+  type TrainingResults,
   type WeightsExport,
 } from './neural-core';
-
 // Export from neural-network module
 export * from './neural-network';
+export { NeuralNetwork as NeuralNetworkJS } from './neural-network';
+// Neural network manager (JavaScript)
+export { NeuralNetworkManager } from './neural-network-manager';
 
 // Export from neural-network-manager module - already exported above
 

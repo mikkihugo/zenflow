@@ -11,10 +11,10 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { TaskAPI } from '../../coordination/api';
-import { type EnhancedTaskConfig, EnhancedTaskTool } from '../../coordination/enhanced-task-tool';
+import { TaskCoordinator } from '../../coordination/task-coordinator';
 import { DocumentDrivenSystem } from '../../core/document-driven-system';
-import { UnifiedMemorySystem } from '../../core/unified-memory-system';
-import { UnifiedWorkflowEngine } from '../../core/unified-workflow-engine';
+import { MemorySystem } from '../../core/memory-system';
+import { WorkflowEngine } from '../../core/workflow-engine';
 import type { DetailedSpecification, SPARCProject } from '../types/sparc-types';
 
 // Task Management Integration Types

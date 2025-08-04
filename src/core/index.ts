@@ -7,6 +7,11 @@
 
 // ==================== CLEAN ARCHITECTURE SYSTEMS ====================
 
+export type {
+  WorkflowDefinition,
+  WorkflowEngineConfig,
+  WorkflowState,
+} from '../types/workflow-types';
 export type { CoreSystemConfig, SystemStatus } from './core-system';
 // Main system coordinator
 export { CoreSystem } from './core-system';
@@ -21,7 +26,7 @@ export type {
 export { DocumentProcessor } from './document-processor';
 export type { DocumentationManagerConfig, DocumentationStats } from './documentation-manager';
 export { DocumentationManager } from './documentation-manager';
-export type { ExportResult, ExportOptions, ExporterDefinition } from './export-manager';
+export type { ExporterDefinition, ExportOptions, ExportResult } from './export-manager';
 // Management systems
 export { UnifiedExportSystem as ExportManager } from './export-manager';
 export type { InterfaceManagerConfig, InterfaceMode, InterfaceStats } from './interface-manager';
@@ -34,11 +39,6 @@ export type {
   StorageResult,
 } from './memory-system';
 export { MemorySystem } from './memory-system';
-export type {
-  WorkflowDefinition,
-  WorkflowEngineConfig,
-  WorkflowState,
-} from '../types/workflow-types';
 // Core processing engines
 export { WorkflowEngine } from './workflow-engine';
 
@@ -54,8 +54,8 @@ export { MemoryCoordinator } from './memory-coordinator'; // Legacy - use Memory
 // Types (re-export for convenience) - removed wildcard export to avoid conflicts
 // Documentation utilities (legacy)
 export type {
-  DocumentationIndex as DocumentIndex,
   CrossReference as DocumentLink,
+  DocumentationIndex as DocumentIndex,
 } from './documentation-linker';
 // Legacy unified systems (still exported but deprecated)
 export { DocumentationLinker } from './documentation-linker';

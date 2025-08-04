@@ -84,7 +84,7 @@ async function testMcpServerStartup() {
 
     const mcpServerDevScript = packageJson.scripts['mcp:server:dev'];
     const expectedDevScript =
-      "cd ../crates/ruv-swarm-mcp && cargo watch -x 'run --bin ruv-swarm-mcp-stdio'";
+      'cd ../crates/ruv-swarm-mcp && cargo watch -x \'run --bin ruv-swarm-mcp-stdio\'';
 
     if (mcpServerDevScript === expectedDevScript) {
     } else {

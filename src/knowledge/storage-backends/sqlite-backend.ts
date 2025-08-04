@@ -12,7 +12,7 @@ import type {
   FACTSearchQuery,
   FACTStorageBackend,
   FACTStorageStats,
-} from '../fact-storage-interface';
+} from '../storage-interface';
 
 interface SQLiteBackendConfig {
   dbPath: string;

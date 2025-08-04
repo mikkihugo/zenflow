@@ -15,7 +15,7 @@ if (fs.existsSync(swarmNewPath)) {
   // Fix exportPath issue - remove it's not in MonitoringConfig type
   swarmNewContent = swarmNewContent.replace(
     /exportPath: '\.\/metrics'/g,
-    "// exportPath: './metrics' // Commented out - not in type definition"
+    '// exportPath: \'./metrics\' // Commented out - not in type definition',
   );
 
   // Fix maxMemoryMB -> maxMemory
@@ -24,24 +24,24 @@ if (fs.existsSync(swarmNewPath)) {
   // Fix persistence issue - remove it
   swarmNewContent = swarmNewContent.replace(
     /persistence: [^}]+,?/g,
-    '// persistence removed - not in type definition'
+    '// persistence removed - not in type definition',
   );
 
   // Comment out getStats calls
   swarmNewContent = swarmNewContent.replace(
     /const _executorStats = await this\.executor\.getStats\(\)/g,
-    '// const executorStats = await this.executor.getStats();'
+    '// const executorStats = await this.executor.getStats();',
   );
 
   swarmNewContent = swarmNewContent.replace(
     /const _memoryStats = this\.memory\.getStats\(\)/g,
-    '// const memoryStats = this.memory.getStats();'
+    '// const memoryStats = this.memory.getStats();',
   );
 
   // Fix status comparison
   swarmNewContent = swarmNewContent.replace(
     /execution\.status === 'error'/g,
-    "execution.status === 'cancelled'"
+    'execution.status === \'cancelled\'',
   );
 
   fs.writeFileSync(swarmNewPath, swarmNewContent);
@@ -55,7 +55,7 @@ if (fs.existsSync(cliCorePath)) {
   // Add proper typing for the problematic line
   cliCoreContent = cliCoreContent.replace(
     /const commandModule = await commandModules\[commandName\]\(\);/g,
-    'const commandModule = await (commandModules[commandName] as any)();'
+    'const commandModule = await (commandModules[commandName] as any)();',
   );
 
   fs.writeFileSync(cliCorePath, cliCoreContent);
@@ -80,13 +80,13 @@ if (fs.existsSync(indexPath)) {
   // Comment out meta property
   indexContent = indexContent.replace(
     /\.meta\([^)]+\)/g,
-    '// .meta() commented out - not available'
+    '// .meta() commented out - not available',
   );
 
   // Fix import.meta.main
   indexContent = indexContent.replace(
     /import\.meta\.main/g,
-    'false // import.meta.main not available'
+    'false // import.meta.main not available',
   );
 
   // Fix colors issue
@@ -102,7 +102,7 @@ if (fs.existsSync(swarmPath)) {
 
   swarmContent = swarmContent.replace(
     /strategy: 'parallel' \| 'sequential'/g,
-    "strategy: 'parallel' | 'sequential' | 'adaptive'"
+    'strategy: \'parallel\' | \'sequential\' | \'adaptive\'',
   );
 
   fs.writeFileSync(swarmPath, swarmContent);

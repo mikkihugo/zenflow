@@ -10,7 +10,7 @@ import { SwarmPersistencePooled } from '../../../database/persistence/persistenc
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader.js';
 import { AgentPool, type BaseAgent } from '../../agents/agent';
 import { getContainer } from './singleton-container';
-import type { SwarmEventEmitter, SwarmOptions, SwarmLifecycleState } from './types';
+import type { SwarmEventEmitter, SwarmLifecycleState, SwarmOptions } from './types';
 import { generateId, validateSwarmOptions } from './utils';
 
 // Extended options for internal use
@@ -73,7 +73,7 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
         idleTimeout: 300000,
       },
     } as ExtendedSwarmOptions;
-    
+
     this.swarmId = generateId('swarm');
     this.wasmLoader = getContainer().get(WasmModuleLoader) || new WasmModuleLoader();
     this.isRunning = false;

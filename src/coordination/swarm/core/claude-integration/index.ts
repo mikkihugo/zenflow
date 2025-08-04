@@ -7,8 +7,36 @@ import { ClaudeIntegrationCore } from './core';
 import { ClaudeDocsGenerator } from './docs';
 import { RemoteWrapperGenerator } from './remote';
 
+interface ClaudeIntegrationOptions {
+  autoSetup?: boolean;
+  forceSetup?: boolean;
+  mergeSetup?: boolean;
+  backupSetup?: boolean;
+  noBackup?: boolean;
+  interactive?: boolean;
+  workingDir?: string;
+  packageName?: string;
+  [key: string]: any;
+}
+
+interface SetupResults {
+  timestamp: string;
+  workingDir: string;
+  success: boolean;
+  modules: {
+    docs?: any;
+    remote?: any;
+    core?: any;
+  };
+}
+
 class ClaudeIntegrationOrchestrator {
-  constructor(options = {}) {
+  public options: ClaudeIntegrationOptions;
+  public core: ClaudeIntegrationCore;
+  public docs: ClaudeDocsGenerator;
+  public remote: RemoteWrapperGenerator;
+
+  constructor(options: ClaudeIntegrationOptions = {}) {
     this.options = {
       autoSetup: options.autoSetup || false,
       forceSetup: options.forceSetup || false,
@@ -30,11 +58,11 @@ class ClaudeIntegrationOrchestrator {
   /**
    * Setup complete Claude Code integration
    */
-  async setupIntegration() {
+  async setupIntegration(): Promise<SetupResults> {
     try {
-      const results = {
+      const results: SetupResults = {
         timestamp: new Date().toISOString(),
-        workingDir: this.options.workingDir,
+        workingDir: this.options.workingDir || process.cwd(),
         success: true,
         modules: {},
       };
@@ -51,7 +79,7 @@ class ClaudeIntegrationOrchestrator {
       if (this.options.autoSetup) {
         try {
           results.modules.core = await this.core.initialize();
-        } catch (error) {
+        } catch (error: any) {
           results.modules.core = {
             success: false,
             error: error.message,
@@ -73,7 +101,7 @@ class ClaudeIntegrationOrchestrator {
       }
 
       return results;
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Integration setup failed:', error.message);
       throw error;
     }
@@ -82,14 +110,14 @@ class ClaudeIntegrationOrchestrator {
   /**
    * Invoke Claude with a prompt using the core module
    */
-  async invokeClaudeWithPrompt(prompt) {
+  async invokeClaudeWithPrompt(prompt: string): Promise<any> {
     return await this.core.invokeClaudeWithPrompt(prompt);
   }
 
   /**
    * Check integration status
    */
-  async checkStatus() {
+  async checkStatus(): Promise<any> {
     try {
       const status = {
         claudeAvailable: await this.core.isClaudeAvailable(),
@@ -99,7 +127,7 @@ class ClaudeIntegrationOrchestrator {
       };
 
       return status;
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Status check failed:', error.message);
       throw error;
     }
@@ -108,7 +136,7 @@ class ClaudeIntegrationOrchestrator {
   /**
    * Clean up integration files
    */
-  async cleanup() {
+  async cleanup(): Promise<{ success: boolean; removedFiles: string[] }> {
     const { promises: fs } = await import('node:fs');
     const path = await import('node:path');
 
@@ -135,7 +163,7 @@ class ClaudeIntegrationOrchestrator {
         }
       }
       return { success: true, removedFiles };
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Cleanup failed:', error.message);
       throw error;
     }
@@ -143,13 +171,18 @@ class ClaudeIntegrationOrchestrator {
 }
 
 // Convenience function for simple setup
-async function setupClaudeIntegration(options = {}) {
+async function setupClaudeIntegration(
+  options: ClaudeIntegrationOptions = {}
+): Promise<SetupResults> {
   const orchestrator = new ClaudeIntegrationOrchestrator(options);
   return await orchestrator.setupIntegration();
 }
 
 // Convenience function for Claude invocation
-async function invokeClaudeWithSwarm(prompt, options = {}) {
+async function invokeClaudeWithSwarm(
+  prompt: string,
+  options: ClaudeIntegrationOptions = {}
+): Promise<any> {
   const orchestrator = new ClaudeIntegrationOrchestrator(options);
   return await orchestrator.invokeClaudeWithPrompt(prompt);
 }

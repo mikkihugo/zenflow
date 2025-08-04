@@ -14,6 +14,160 @@ import { EventEmitter } from 'node:events';
 import type { IEventBus } from '../core/event-bus';
 import type { ILogger } from '../core/logger';
 
+// Basic types for performance optimization system
+export interface ConsistencyManager {
+  ensureConsistency(entries: CacheEntry[]): Promise<void>;
+}
+
+export interface CacheIndexing {
+  index: Map<string, string>;
+  searchIndex(query: string): string[];
+}
+
+export interface CacheMetrics {
+  hitRate: number;
+  missRate: number;
+  evictionRate: number;
+  size: number;
+}
+
+export interface CacheConfiguration {
+  maxSize: number;
+  ttl: number;
+  evictionPolicy: string;
+  replication: boolean;
+}
+
+export interface LocalCacheStorage {
+  store(key: string, value: any): Promise<void>;
+  retrieve(key: string): Promise<any>;
+}
+
+export interface DistributedCacheStorage {
+  nodes: string[];
+  store(key: string, value: any): Promise<void>;
+  retrieve(key: string): Promise<any>;
+}
+
+export interface PersistentCacheStorage {
+  persist(key: string, value: any): Promise<void>;
+  load(key: string): Promise<any>;
+}
+
+export interface HierarchicalCacheStorage {
+  levels: CacheLevel[];
+  store(key: string, value: any, level: number): Promise<void>;
+  retrieve(key: string): Promise<any>;
+}
+
+export interface CacheLevel {
+  name: string;
+  capacity: number;
+  speed: number;
+}
+
+export interface AccessPattern {
+  frequency: number;
+  recency: number;
+  locality: number;
+  temporality: string;
+}
+
+export interface CacheQuality {
+  freshness: number;
+  accuracy: number;
+  completeness: number;
+  reliability: number;
+}
+
+export interface CacheDependency {
+  type: string;
+  target: string;
+  strength: number;
+}
+
+export type CachePriority = 'low' | 'medium' | 'high' | 'critical';
+export type CacheType = 'local' | 'distributed' | 'persistent' | 'hierarchical';
+
+// Additional missing types for performance optimization
+export interface PolicySelector {
+  selectPolicy(context: string): EvictionPolicy;
+}
+
+export interface AdaptiveEvictionEngine {
+  adapt(metrics: CacheMetrics): void;
+}
+
+export interface EvictionPerformanceTracker {
+  trackPerformance(policy: EvictionPolicy): number;
+}
+
+export interface EvictionPolicy {
+  name: string;
+  algorithm: string;
+  parameters: Record<string, any>;
+}
+
+export interface ReplicationStrategy {
+  type: string;
+  replicas: number;
+  consistency: string;
+}
+
+export type ConsistencyLevel = 'eventual' | 'strong' | 'weak';
+
+export interface ConflictResolutionStrategy {
+  type: string;
+  resolution: string;
+  priority: number;
+}
+
+export interface SynchronizationProtocol {
+  name: string;
+  frequency: number;
+  method: string;
+}
+
+export interface ReplicationHealthMonitor {
+  checkHealth(replicas: string[]): boolean;
+}
+
+export interface PredictionModel {
+  name: string;
+  accuracy: number;
+  predict(pattern: AccessPattern): number;
+}
+
+export interface PrefetchingStrategy {
+  name: string;
+  trigger: string;
+  scope: string;
+}
+
+export interface WorkloadAnalyzer {
+  analyzeWorkload(requests: any[]): WorkloadProfile;
+}
+
+export interface WorkloadProfile {
+  patterns: AccessPattern[];
+  peak_times: number[];
+  resource_usage: Record<string, number>;
+}
+
+export interface PrefetchScheduler {
+  schedule(items: string[]): void;
+}
+
+export interface CostBenefitAnalyzer {
+  analyze(operation: string): CostBenefit;
+}
+
+export interface CostBenefit {
+  cost: number;
+  benefit: number;
+  ratio: number;
+}
+
 /**
  * Intelligent Caching System
  */
@@ -83,7 +237,7 @@ export interface PrefetchingEngine {
   costBenefitAnalyzer: CostBenefitAnalyzer;
 }
 
-export type CacheType =
+export type KnowledgeCacheType =
   | 'knowledge-facts'
   | 'pattern-cache'
   | 'model-cache'
@@ -907,6 +1061,209 @@ interface IntelligentCachingEngine {
   updateCacheStrategy(optimization: any): Promise<void>;
   shutdown(): Promise<void>;
   on(event: string, handler: Function): void;
+}
+
+// Missing configuration types
+export interface CachingConfig {
+  maxSize: number;
+  evictionPolicy: string;
+  replication: boolean;
+}
+
+export interface BandwidthConfig {
+  compressionEnabled: boolean;
+  maxBandwidth: number;
+  optimization: boolean;
+}
+
+export interface PriorityConfig {
+  levels: string[];
+  thresholds: number[];
+  qos: boolean;
+}
+
+export interface LoadBalancingConfig {
+  strategy: string;
+  nodes: string[];
+  healthCheck: boolean;
+}
+
+export interface MonitoringConfig {
+  metricsInterval: number;
+  alertThresholds: Record<string, number>;
+  anomalyDetection: boolean;
+}
+
+// Missing system types for performance optimization
+export interface AlgorithmSelector {
+  selectAlgorithm(context: string): string;
+}
+
+export interface CompressionEngine {
+  compress(data: any): Promise<any>;
+  decompress(data: any): Promise<any>;
+}
+
+export interface CompressionOptimizer {
+  optimize(config: CompressionConfig): Promise<CompressionConfig>;
+}
+
+export interface CompressionConfig {
+  algorithm: string;
+  level: number;
+  dictionary?: string;
+}
+
+export interface CompressionFormat {
+  name: string;
+  ratio: number;
+  speed: number;
+}
+
+export interface CompressionApplicability {
+  dataTypes: string[];
+  sizeThreshold: number;
+  conditions: string[];
+}
+
+export interface DeltaComputationEngine {
+  computeDelta(oldData: any, newData: any): any;
+}
+
+export interface ChangeDetectionSystem {
+  detectChanges(data: any): string[];
+}
+
+export interface ReconstructionEngine {
+  reconstruct(base: any, delta: any): any;
+}
+
+export interface DeltaVersionManager {
+  manageVersions(deltas: any[]): void;
+}
+
+export interface BatchingStrategy {
+  shouldBatch(requests: any[]): boolean;
+}
+
+export interface BatchOptimizer {
+  optimize(batch: any[]): any[];
+}
+
+export interface AggregationRule {
+  canAggregate(items: any[]): boolean;
+}
+
+export interface BatchScheduler {
+  schedule(batches: any[]): void;
+}
+
+export interface AdaptiveStreamingEngine {
+  adaptStream(conditions: any): void;
+}
+
+export interface FlowControlSystem {
+  controlFlow(stream: any): void;
+}
+
+export interface StreamingOptimizer {
+  optimize(stream: any): any;
+}
+
+export interface NetworkConditionMonitor {
+  monitor(): NetworkConditions;
+}
+
+export interface NetworkConditions {
+  bandwidth: number;
+  latency: number;
+  packetLoss: number;
+}
+
+export interface QueueManagementSystem {
+  manageQueue(queue: any[]): void;
+}
+
+export interface PriorityQueue {
+  enqueue(item: any, priority: number): void;
+  dequeue(): any;
+}
+
+export interface RequestScheduler {
+  schedule(requests: any[]): void;
+}
+
+export interface QualityOfServiceEngine {
+  enforceQoS(request: any): void;
+}
+
+export interface FairnessMechanism {
+  ensureFairness(requests: any[]): void;
+}
+
+export interface LoadBalancingStrategy {
+  balance(load: any[]): any[];
+}
+
+export interface HealthMonitor {
+  checkHealth(nodes: string[]): boolean[];
+}
+
+export interface FailoverMechanism {
+  failover(failedNode: string): void;
+}
+
+export interface ResourcePoolManager {
+  managePool(resources: any[]): void;
+}
+
+export interface AutoScalingEngine {
+  scale(metrics: any): void;
+}
+
+export interface RealTimeMonitoringSystem {
+  monitor(): void;
+  shutdown(): Promise<void>;
+}
+
+export interface MetricsCollector {
+  collect(): any;
+}
+
+export interface AnomalyDetector {
+  detect(metrics: any): string[];
+}
+
+export interface AlertManager {
+  alert(message: string): void;
+}
+
+export interface PerformanceProfiler {
+  profile(operation: string): any;
+}
+
+export interface AdaptiveOptimizationEngine {
+  adapt(feedback: any): void;
+}
+
+export interface LoadBalancingSystem {
+  balance(requests: any[]): void;
+  shutdown(): Promise<void>;
+}
+
+export interface PriorityManagementSystem {
+  manage(requests: any[]): void;
+  shutdown(): Promise<void>;
+}
+
+export interface BandwidthOptimizationSystem {
+  optimize(data: any): Promise<any>;
+  shutdown(): Promise<void>;
+}
+
+export interface IntelligentCachingSystem {
+  cache(key: string, value: any): void;
+  shutdown(): Promise<void>;
 }
 
 // Additional placeholder interfaces would be defined here...

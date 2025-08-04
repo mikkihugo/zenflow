@@ -7,6 +7,9 @@
 
 // Core Engine
 export { SPARCEngineCore } from './core/sparc-engine';
+
+import { SPARCEngineCore } from './core/sparc-engine';
+
 // MCP Integration
 export { SPARCMCPTools, sparcMCPTools } from './integrations/mcp-sparc-tools';
 // Project Management Integration

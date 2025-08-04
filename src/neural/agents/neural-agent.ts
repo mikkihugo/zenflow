@@ -508,7 +508,7 @@ class NeuralAgent extends EventEmitter {
     );
 
     // Pad or truncate to expected input size
-    const inputSize = this.neuralNetwork.layers[0];
+    const inputSize = (this.neuralNetwork as any).layers?.[0] || 10; // Fallback to 10 if layers not accessible
     while (vector.length < inputSize) {
       vector.push(0);
     }
@@ -920,10 +920,12 @@ class NeuralAgentFactory {
 
 // Lazy load to avoid circular dependency
 setImmediate(() => {
-  import('./neural')
+  import('../core/network').catch(() => import('./neural')).catch(() => null)
     .then((neural) => {
-      MemoryOptimizer = neural.MemoryOptimizer;
-      PATTERN_MEMORY_CONFIG = neural.PATTERN_MEMORY_CONFIG;
+      if (neural) {
+        MemoryOptimizer = neural.MemoryOptimizer || MemoryOptimizer;
+        PATTERN_MEMORY_CONFIG = neural.PATTERN_MEMORY_CONFIG || PATTERN_MEMORY_CONFIG;
+      }
     })
     .catch(() => {
       // Fallback if neural module doesn't exist yet

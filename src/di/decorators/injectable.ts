@@ -31,6 +31,17 @@ export function injectable<T extends Constructor>(constructor: T): T {
 }
 
 /**
+ * Inject decorator for parameter injection
+ */
+export function inject<T>(token: DIToken<T>) {
+  return function (target: any, propertyKey: string | symbol | undefined, parameterIndex: number) {
+    const existingTokens = Reflect.getMetadata(INJECTION_TOKENS_KEY, target) || [];
+    existingTokens[parameterIndex] = token;
+    Reflect.defineMetadata(INJECTION_TOKENS_KEY, existingTokens, target);
+  };
+}
+
+/**
  * Check if a class is marked as injectable
  */
 export function isInjectable(constructor: Constructor): boolean {

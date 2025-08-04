@@ -14,6 +14,125 @@ import { EventEmitter } from 'node:events';
 import type { IEventBus } from '../core/event-bus';
 import type { ILogger } from '../core/logger';
 
+// Basic utility types
+export interface DependencyMapper {
+  mapDependencies(problem: Problem): ProblemDependency[];
+}
+
+export interface ParallelizationEngine {
+  identifyParallelizable(subproblems: SubProblem[]): SubProblem[][];
+}
+
+export interface WorkloadBalancer {
+  balanceWorkload(agents: string[], subproblems: SubProblem[]): Map<string, SubProblem[]>;
+}
+
+export interface ApplicabilityCondition {
+  type: string;
+  condition: string;
+  threshold?: number;
+}
+
+export interface QualityMetric {
+  name: string;
+  weight: number;
+  threshold: number;
+}
+
+export interface PerformanceCharacteristics {
+  timeComplexity: string;
+  spaceComplexity: string;
+  parallelizability: number;
+}
+
+export interface ExecutionPlan {
+  steps: ExecutionStep[];
+  dependencies: string[];
+  estimatedTime: number;
+}
+
+export interface ExecutionStep {
+  id: string;
+  description: string;
+  agentId?: string;
+  dependencies: string[];
+  estimated_duration: number;
+}
+
+export interface ResourceRequirements {
+  computeUnits: number;
+  memoryMB: number;
+  agents: number;
+  timeMinutes: number;
+}
+
+export interface QualityAssuranceConfig {
+  validationRules: string[];
+  reviewRequired: boolean;
+  confidenceThreshold: number;
+}
+
+export interface ComplexityMetrics {
+  computational: number;
+  cognitive: number;
+  temporal: number;
+  uncertainty: number;
+}
+
+export interface ProblemRequirements {
+  skills: string[];
+  domain: string;
+  accuracy: number;
+  timeConstraint?: number;
+}
+
+export interface ProblemConstraint {
+  type: string;
+  description: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+}
+
+export interface OutputSpecification {
+  format: string;
+  schema?: string;
+  validation: string[];
+}
+
+export interface DependencyResolution {
+  strategy: string;
+  priority: number;
+  alternatives: string[];
+}
+
+export interface ComplexityMetric {
+  name: string;
+  calculator: string;
+  threshold: number;
+}
+
+export interface ComplexityAnalysisAlgorithm {
+  name: string;
+  type: string;
+  parameters: Record<string, any>;
+}
+
+export interface ScalabilityPredictor {
+  predictScalability(problem: Problem): number;
+}
+
+export interface ResourceEstimator {
+  estimateResources(problem: Problem): ResourceRequirements;
+}
+
+export interface Problem {
+  id: string;
+  description: string;
+  type: ProblemType;
+  complexity: ComplexityMetrics;
+  constraints: ProblemConstraint[];
+  requirements: ProblemRequirements;
+}
+
 /**
  * Problem Decomposition System
  */
@@ -91,6 +210,167 @@ export type ProblemType =
   | 'design'
   | 'planning';
 
+export type SubProblemStatus = 'pending' | 'assigned' | 'in-progress' | 'completed' | 'failed';
+
+// Additional missing interfaces
+export interface ReasoningContextManager {
+  createContext(taskId: string): ReasoningContext;
+  updateContext(taskId: string, updates: Partial<ReasoningContext>): void;
+}
+
+export interface ReasoningSpecialization {
+  domain: string;
+  methods: string[];
+  confidence: number;
+}
+
+export interface CoordinationProtocol {
+  name: string;
+  type: string;
+  rules: string[];
+}
+
+export interface ReasoningLoadBalancer {
+  balanceLoad(tasks: ReasoningTask[]): Map<string, ReasoningTask[]>;
+}
+
+export interface ReasoningQualityController {
+  assessQuality(reasoning: ReasoningTask): number;
+  validateConclusions(conclusions: Conclusion[]): boolean;
+}
+
+export interface ReasoningContext {
+  domain: string;
+  constraints: string[];
+  assumptions: string[];
+  knowledge: string[];
+}
+
+export interface Inference {
+  id: string;
+  rule: string;
+  premises: string[];
+  conclusion: string;
+  confidence: number;
+}
+
+export interface Conclusion {
+  id: string;
+  statement: string;
+  confidence: number;
+  evidence: string[];
+  reasoning: string;
+}
+
+export interface AttackRelation {
+  attacker: string;
+  target: string;
+  strength: number;
+}
+
+export interface SupportRelation {
+  supporter: string;
+  target: string;
+  strength: number;
+}
+
+export interface ArgumentExtension {
+  type: string;
+  arguments: string[];
+  confidence: number;
+}
+
+export interface EvaluationCriteria {
+  relevance: number;
+  credibility: number;
+  consistency: number;
+}
+
+export interface DialecticalTree {
+  root: string;
+  nodes: Map<string, TreeNode>;
+  relationships: string[];
+}
+
+export interface TreeNode {
+  id: string;
+  type: string;
+  content: string;
+  children: string[];
+}
+
+export interface Claim {
+  statement: string;
+  type: string;
+  confidence: number;
+}
+
+export interface Premise {
+  statement: string;
+  support: number;
+  source: string;
+}
+
+export interface Evidence {
+  type: string;
+  content: string;
+  credibility: number;
+  source: string;
+}
+
+export interface ReasoningChain {
+  steps: string[];
+  method: string;
+  validity: number;
+}
+
+export interface InferenceRule {
+  name: string;
+  pattern: string;
+  confidence: number;
+}
+
+export interface LogicalKnowledgeBase {
+  facts: string[];
+  rules: InferenceRule[];
+  axioms: string[];
+}
+
+export interface ProofSystem {
+  type: string;
+  rules: string[];
+  validators: string[];
+}
+
+export interface ConsistencyChecker {
+  checkConsistency(knowledge: LogicalKnowledgeBase): boolean;
+}
+
+export interface CompletenessVerifier {
+  verifyCompleteness(system: ProofSystem): boolean;
+}
+
+export interface BayesianNetwork {
+  nodes: string[];
+  edges: string[];
+  probabilities: Map<string, number>;
+}
+
+export interface MarkovModel {
+  states: string[];
+  transitions: Map<string, Map<string, number>>;
+}
+
+export interface UncertaintyQuantifier {
+  quantifyUncertainty(evidence: Evidence[]): number;
+}
+
+export interface ProbabilisticInferenceEngine {
+  network: BayesianNetwork;
+  models: MarkovModel[];
+  quantifier: UncertaintyQuantifier;
+}
+
 export type DependencyType =
   | 'data-dependency'
   | 'control-dependency'
@@ -98,13 +378,9 @@ export type DependencyType =
   | 'temporal-dependency'
   | 'logical-dependency';
 
-export type SubProblemStatus =
-  | 'pending'
-  | 'assigned'
-  | 'in-progress'
-  | 'completed'
-  | 'blocked'
-  | 'failed';
+export interface BeliefRevisionSystem {
+  reviseBeliefs(newEvidence: Evidence[]): void;
+}
 
 /**
  * Distributed Reasoning System
@@ -207,6 +483,142 @@ export interface ConsensusBuilder {
 }
 
 export interface ConsensusProtocol {
+  name: string;
+  applicability: ConsensusApplicability;
+  phases: ConsensusPhase[];
+  terminationCondition: TerminationCondition;
+  qualityAssurance: ConsensusQualityAssurance;
+}
+
+export interface ConsensusPhase {
+  name: string;
+  participantRoles: ParticipantRole[];
+  duration: PhaseDuration;
+  successCriteria: SuccessCriteria;
+  fallbackStrategy: FallbackStrategy;
+}
+
+export interface DialogueManager {
+  activeDialogues: Map<string, Dialogue>;
+  protocol: DialogueProtocol;
+  turnTaking: TurnTakingSystem;
+  messageValidation: MessageValidationSystem;
+  contextManager: DialogueContextManager;
+}
+
+export interface VotingMechanism {
+  eligibilityRules: EligibilityRule[];
+  ballotDesign: BallotDesign;
+  aggregationMethod: AggregationMethod;
+  transparencyLevel: TransparencyLevel;
+  auditMechanism: AuditMechanism;
+}
+
+// Missing type definitions for consensus system
+export interface AgreementTracker {
+  trackAgreement(dialogue: Dialogue): number;
+}
+
+export interface ConsensusApplicability {
+  conditions: string[];
+  threshold: number;
+}
+
+export interface TerminationCondition {
+  type: string;
+  threshold: number;
+  timeout: number;
+}
+
+export interface ConsensusQualityAssurance {
+  metrics: string[];
+  validators: string[];
+}
+
+export interface ParticipantRole {
+  name: string;
+  permissions: string[];
+  responsibilities: string[];
+}
+
+export interface PhaseDuration {
+  min: number;
+  max: number;
+  adaptive: boolean;
+}
+
+export interface SuccessCriteria {
+  agreement: number;
+  participation: number;
+  quality: number;
+}
+
+export interface FallbackStrategy {
+  triggers: string[];
+  actions: string[];
+}
+
+export interface Dialogue {
+  id: string;
+  participants: string[];
+  messages: Message[];
+  status: string;
+}
+
+export interface Message {
+  id: string;
+  author: string;
+  content: string;
+  timestamp: number;
+  type: string;
+}
+
+export interface DialogueProtocol {
+  rules: string[];
+  format: string;
+  constraints: string[];
+}
+
+export interface TurnTakingSystem {
+  strategy: string;
+  rules: string[];
+}
+
+export interface MessageValidationSystem {
+  validators: string[];
+  rules: string[];
+}
+
+export interface DialogueContextManager {
+  manageContext(dialogue: Dialogue): void;
+}
+
+export interface EligibilityRule {
+  type: string;
+  criteria: string[];
+}
+
+export interface BallotDesign {
+  type: string;
+  options: string[];
+}
+
+export interface AggregationMethod {
+  type: string;
+  parameters: Record<string, any>;
+}
+
+export interface TransparencyLevel {
+  level: string;
+  visibility: string[];
+}
+
+export interface AuditMechanism {
+  type: string;
+  frequency: string;
+}
+
+export interface ConsensusProtocol {
   protocolName: string;
   applicability: ConsensusApplicability;
   phases: ConsensusPhase[];
@@ -245,6 +657,46 @@ export interface ConflictResolver {
   arbitrationProcedures: ArbitrationProcedure[];
   compromiseGeneration: CompromiseGenerator;
   resolutionTracking: ResolutionTracker;
+}
+
+// Missing interfaces for voting and conflict resolution
+export interface WeightingScheme {
+  type: string;
+  weights: Map<string, number>;
+}
+
+export interface AggregationFunction {
+  method: string;
+  parameters: Record<string, any>;
+}
+
+export interface OutcomeInterpretation {
+  thresholds: Map<string, number>;
+  rules: string[];
+}
+
+export interface ConflictDetectionSystem {
+  detectConflicts(argumentList: Argument[]): string[];
+}
+
+export interface MediationStrategy {
+  name: string;
+  steps: string[];
+  success_criteria: string[];
+}
+
+export interface ArbitrationProcedure {
+  name: string;
+  rules: string[];
+  binding: boolean;
+}
+
+export interface CompromiseGenerator {
+  generateCompromise(conflicts: string[]): string;
+}
+
+export interface ResolutionTracker {
+  trackResolution(conflict: string, resolution: string): void;
 }
 
 export type VotingMethod =
@@ -972,5 +1424,332 @@ export interface CollaborativeReasoningMetrics {
 }
 
 // Additional placeholder interfaces and system implementations would be defined here...
+
+// Missing types for solution synthesis system
+export interface SolutionQualityAssurance {
+  qualityMetrics: string[];
+  validators: string[];
+  thresholds: Map<string, number>;
+}
+
+export interface SolutionOptimizationEngine {
+  optimize(solution: Solution): Promise<Solution>;
+}
+
+export interface SynthesisApplicability {
+  conditions: string[];
+  threshold: number;
+}
+
+export interface SynthesisConflictResolution {
+  strategy: string;
+  priority: number;
+}
+
+export interface SynthesisQualityMetric {
+  name: string;
+  weight: number;
+  threshold: number;
+}
+
+export interface IntegrationPattern {
+  name: string;
+  strategy: string;
+  compatibility: string[];
+}
+
+export interface IntegrationDependencyResolver {
+  resolveDependencies(dependencies: string[]): Promise<string[]>;
+}
+
+export interface ConsistencyMaintainer {
+  maintainConsistency(solutions: Solution[]): Promise<Solution[]>;
+}
+
+export interface EmergenceDetector {
+  detectEmergence(patterns: string[]): string[];
+}
+
+export interface Solution {
+  id: string;
+  content: string;
+  quality: number;
+  metadata: Record<string, any>;
+}
+
+export interface SolutionQuality {
+  accuracy: number;
+  completeness: number;
+  efficiency: number;
+  usability: number;
+}
+
+export interface SolutionDependency {
+  type: string;
+  target: string;
+  strength: number;
+}
+
+export interface SolutionConstraint {
+  type: string;
+  description: string;
+  enforcement: string;
+}
+
+export interface ValidationCriterion {
+  name: string;
+  type: string;
+  threshold: number;
+}
+
+export interface TestCase {
+  id: string;
+  description: string;
+  inputs: Record<string, any>;
+  expectedOutputs: Record<string, any>;
+}
+
+export interface PerformanceEvaluator {
+  evaluatePerformance(solution: Solution): Promise<number>;
+}
+
+export interface RobustnessAnalyzer {
+  analyzeRobustness(solution: Solution): Promise<number>;
+}
+
+export interface UsabilityAssessor {
+  assessUsability(solution: Solution): Promise<number>;
+}
+
+// Missing types for context sharing system
+export interface ContextEvolutionTracker {
+  trackEvolution(context: SharedReasoningContext): void;
+}
+
+export interface ContextAccessController {
+  controlAccess(participant: ContextParticipant, action: string): boolean;
+}
+
+export interface ContextPersistenceManager {
+  persist(context: SharedReasoningContext): Promise<void>;
+}
+
+export interface SharedAssumption {
+  id: string;
+  assumption: string;
+  confidence: number;
+  source: string;
+}
+
+export interface SharedConstraint {
+  id: string;
+  constraint: string;
+  type: string;
+  enforcement: string;
+}
+
+export interface SharedGoal {
+  id: string;
+  goal: string;
+  priority: number;
+  status: string;
+}
+
+export interface ContextProgress {
+  completion: number;
+  milestones: string[];
+  blockers: string[];
+}
+
+export interface SynchronizationProtocol {
+  name: string;
+  rules: string[];
+  frequency: number;
+}
+
+export interface ContextConflictDetector {
+  detectConflicts(contexts: SharedReasoningContext[]): string[];
+}
+
+export interface ContextMergeStrategy {
+  name: string;
+  algorithm: string;
+  precedence: string[];
+}
+
+export interface ContextVersionControl {
+  createVersion(context: SharedReasoningContext): string;
+  getVersion(versionId: string): SharedReasoningContext;
+}
+
+export interface ContextDistributionMechanism {
+  distribute(context: SharedReasoningContext, participants: ContextParticipant[]): Promise<void>;
+}
+
+export interface SharedFact {
+  id: string;
+  fact: string;
+  confidence: number;
+  source: string;
+}
+
+export interface SharedRule {
+  id: string;
+  rule: string;
+  applicability: string[];
+  confidence: number;
+}
+
+export interface SharedPattern {
+  id: string;
+  pattern: string;
+  frequency: number;
+  context: string[];
+}
+
+export interface SharedExperience {
+  id: string;
+  description: string;
+  outcome: string;
+  lessons: string[];
+}
+
+export interface SharedInsight {
+  id: string;
+  insight: string;
+  derivation: string;
+  implications: string[];
+}
+
+export interface ContextPermission {
+  type: string;
+  scope: string;
+  level: string;
+}
+
+export interface ContextContribution {
+  id: string;
+  type: string;
+  content: string;
+  timestamp: number;
+}
+
+export interface ContextAccessRecord {
+  timestamp: number;
+  action: string;
+  resource: string;
+}
+
+// Configuration interfaces
+export interface DecompositionConfig {
+  qualityAssurance: QualityAssuranceConfig;
+  strategies: string[];
+  maxDepth: number;
+}
+
+export interface ReasoningConfig {
+  methods: string[];
+  timeouts: Map<string, number>;
+  qualityThresholds: Map<string, number>;
+}
+
+export interface ConsensusConfig {
+  protocols: string[];
+  timeouts: Map<string, number>;
+  qualityThresholds: Map<string, number>;
+}
+
+export interface SynthesisConfig {
+  strategies: string[];
+  optimizations: string[];
+  qualityThresholds: Map<string, number>;
+}
+
+export interface ContextSharingConfig {
+  synchronization: boolean;
+  persistence: boolean;
+  accessControl: boolean;
+}
+
+export interface ProblemGoal {
+  id: string;
+  description: string;
+  priority: number;
+  measurable: boolean;
+}
+
+export interface ProblemContext {
+  domain: string;
+  stakeholders: string[];
+  constraints: string[];
+  assumptions: string[];
+}
+
+export interface CollaborativeParticipant {
+  id: string;
+  role: string;
+  expertise: string[];
+  availability: number;
+}
+
+export interface ConsensusProcess {
+  id: string;
+  participants: string[];
+  topic: string;
+  status: string;
+}
+
+// Placeholder system classes
+export class ProblemDecompositionSystem {
+  constructor(_config: any, _logger: ILogger, _eventBus: IEventBus) {}
+  on(_event: string, _handler: Function) {}
+  shutdown() {
+    return Promise.resolve();
+  }
+}
+
+export class DistributedReasoningSystem {
+  constructor(_config: any, _logger: ILogger, _eventBus: IEventBus) {}
+  on(_event: string, _handler: Function) {}
+  assignReasoningTasks(_subproblems: SubProblem[]) {
+    return Promise.resolve();
+  }
+  shutdown() {
+    return Promise.resolve();
+  }
+}
+
+export class ConsensusBuilderSystem {
+  constructor(_config: any, _logger: ILogger, _eventBus: IEventBus) {}
+  on(_event: string, _handler: Function) {}
+  initiateConsensus(_results: any) {
+    return Promise.resolve();
+  }
+  shutdown() {
+    return Promise.resolve();
+  }
+}
+
+export class SolutionSynthesisSystem {
+  constructor(_config: any, _logger: ILogger, _eventBus: IEventBus) {}
+  on(_event: string, _handler: Function) {}
+  synthesizeSolution(_consensus: any) {
+    return Promise.resolve();
+  }
+  shutdown() {
+    return Promise.resolve();
+  }
+}
+
+export class ContextSharingSystem {
+  constructor(_config: any, _logger: ILogger, _eventBus: IEventBus) {}
+  on(_event: string, _handler: Function) {}
+  updateSharedContext(_solution: any) {
+    return Promise.resolve();
+  }
+  shutdown() {
+    return Promise.resolve();
+  }
+}
 
 export default CollaborativeReasoningEngine;

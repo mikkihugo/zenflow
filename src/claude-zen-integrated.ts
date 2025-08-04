@@ -1,6 +1,6 @@
 /**
  * Claude Code Zen - Integrated Application Entry Point
- * 
+ *
  * This file provides the CLI-compatible entry point with command-line argument support
  * and integrates with HTTP server functionality for development and production use.
  */
@@ -25,7 +25,7 @@ export class ClaudeZenIntegrated {
       daemon: false,
       dev: false,
       verbose: false,
-      ...options
+      ...options,
     };
   }
 
@@ -34,10 +34,10 @@ export class ClaudeZenIntegrated {
    */
   static parseArgs(args: string[]): IntegratedOptions {
     const options: IntegratedOptions = {};
-    
+
     for (let i = 0; i < args.length; i++) {
       const arg = args[i];
-      
+
       if (arg === '--port' && i + 1 < args.length) {
         options.port = parseInt(args[i + 1], 10);
         i++; // Skip next argument
@@ -48,7 +48,8 @@ export class ClaudeZenIntegrated {
       } else if (arg === '--verbose' || arg === '-v') {
         options.verbose = true;
       } else if (arg === '--help' || arg === '-h') {
-        console.log(`
+        console.log(
+          `
 Claude Code Zen - Integrated AI Coordination Platform
 
 Usage: claude-zen-integrated [options]
@@ -63,11 +64,12 @@ Options:
 Examples:
   claude-zen-integrated --port 3000 --dev
   claude-zen-integrated --daemon --verbose
-        `.trim());
+        `.trim()
+        );
         process.exit(0);
       }
     }
-    
+
     return options;
   }
 
@@ -76,15 +78,15 @@ Examples:
    */
   async initialize(): Promise<void> {
     console.log('🚀 Starting Claude Code Zen Integrated...');
-    
+
     // Basic initialization without complex DI for now
     console.log('✅ Core system initialized');
-    
+
     // Start HTTP server if port is specified
     if (this.options.port) {
       await this.startServer();
     }
-    
+
     console.log(`✅ Claude Code Zen ready on port ${this.options.port || 'none'}`);
   }
 
@@ -96,31 +98,30 @@ Examples:
       // Import express dynamically to avoid loading it if not needed
       const express = await import('express');
       const app = express.default();
-      
+
       // Basic health check endpoint
       app.get('/health', (req: any, res: any) => {
-        res.json({ 
-          status: 'healthy', 
+        res.json({
+          status: 'healthy',
           timestamp: new Date().toISOString(),
-          version: '2.0.0-alpha.73'
+          version: '2.0.0-alpha.73',
         });
       });
-      
+
       // API status endpoint
       app.get('/api/status', (req: any, res: any) => {
         res.json({
           status: 'running',
           mode: this.options.dev ? 'development' : 'production',
           daemon: this.options.daemon,
-          uptime: process.uptime()
+          uptime: process.uptime(),
         });
       });
-      
+
       // Start server
       this.server = app.listen(this.options.port, () => {
         console.log(`🌐 HTTP server listening on port ${this.options.port}`);
       });
-      
     } catch (error) {
       console.error('❌ Failed to start HTTP server:', error);
       throw error;
@@ -132,7 +133,7 @@ Examples:
    */
   async shutdown(): Promise<void> {
     console.log('🛑 Shutting down Claude Code Zen Integrated...');
-    
+
     // Close HTTP server
     if (this.server) {
       await new Promise<void>((resolve, reject) => {
@@ -143,7 +144,7 @@ Examples:
       });
       console.log('🌐 HTTP server stopped');
     }
-    
+
     console.log('✅ Shutdown completed successfully');
   }
 }
@@ -155,32 +156,31 @@ async function main() {
   // Parse command line arguments
   const args = process.argv.slice(2);
   const options = ClaudeZenIntegrated.parseArgs(args);
-  
+
   // Create and start application
   const app = new ClaudeZenIntegrated(options);
-  
+
   // Handle graceful shutdown
   const shutdown = async () => {
     await app.shutdown();
     process.exit(0);
   };
-  
+
   process.on('SIGINT', shutdown);
   process.on('SIGTERM', shutdown);
-  
+
   try {
     await app.initialize();
-    
+
     // Keep process alive
     if (!options.daemon) {
       console.log('Press Ctrl+C to stop...');
     }
-    
+
     // Keep the process running
     setInterval(() => {
       // Application heartbeat - could add health checks here
     }, 10000);
-    
   } catch (error) {
     console.error('❌ Failed to start Claude Code Zen Integrated:', error);
     process.exit(1);

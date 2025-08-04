@@ -39,8 +39,8 @@ async function main() {
   }
 }
 
-function parseArgs(args) {
-  const options = {};
+function parseArgs(args: string[]): any {
+  const options: any = {};
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];

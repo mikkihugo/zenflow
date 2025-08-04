@@ -3,6 +3,7 @@
  * Provides complete WASM capabilities exposure through MCP interface
  */
 
+import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
 import {
   AgentError,
   ErrorContext,
@@ -19,7 +20,6 @@ import {
 import { ZenSwarm } from './index';
 import { Logger } from './logger';
 import { DAA_MCPTools } from './mcp-daa-tools';
-import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
 import { ValidationUtils } from './schemas';
 
 /**

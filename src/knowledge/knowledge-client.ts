@@ -11,7 +11,7 @@ import { EventEmitter } from 'node:events';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-interface FACTConfig {
+export interface FACTConfig {
   pythonPath?: string;
   factRepoPath: string;
   anthropicApiKey: string;
@@ -25,14 +25,14 @@ interface FACTConfig {
   enableCache?: boolean;
 }
 
-interface FACTQuery {
+export interface FACTQuery {
   query: string;
   tools?: string[];
   useCache?: boolean;
   metadata?: Record<string, any>;
 }
 
-interface FACTResult {
+export interface FACTResult {
   response: string;
   queryId: string;
   executionTimeMs: number;
@@ -41,6 +41,11 @@ interface FACTResult {
   cost?: number;
   metadata?: Record<string, any>;
 }
+
+// Aliases for knowledge client compatibility
+export type KnowledgeClientConfig = FACTConfig;
+export type KnowledgeResult = FACTResult;
+export type KnowledgeClient = FACTIntegration;
 
 interface FACTMetrics {
   totalQueries: number;

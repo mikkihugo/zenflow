@@ -84,7 +84,7 @@ class EnhancedDocumentationGenerator {
     // Generate JSON schema for API
     await fs.promises.writeFile(
       `${this.apiDir}/api-schema.json`,
-      JSON.stringify(apiDocData, null, 2)
+      JSON.stringify(apiDocData, null, 2),
     );
   }
 
@@ -114,7 +114,7 @@ class EnhancedDocumentationGenerator {
     const architectureMarkdown = this.generateArchitectureMarkdown(architectureData);
     await fs.promises.writeFile(
       `${this.architectureDir}/system-architecture.md`,
-      architectureMarkdown
+      architectureMarkdown,
     );
 
     // Generate domain maps
@@ -133,7 +133,7 @@ class EnhancedDocumentationGenerator {
     const performanceMarkdown = this.generatePerformanceMarkdown(performanceData);
     await fs.promises.writeFile(
       `${this.performanceDir}/performance-analysis.md`,
-      performanceMarkdown
+      performanceMarkdown,
     );
   }
 
@@ -176,7 +176,7 @@ class EnhancedDocumentationGenerator {
 
       await fs.promises.writeFile(
         `${this.docsDir}/coverage/coverage-analysis.md`,
-        coverageMarkdown
+        coverageMarkdown,
       );
     } catch (_error) {}
   }
@@ -425,8 +425,8 @@ This documentation covers all TypeScript interfaces and JavaScript exports in th
 ## TypeScript Files (${apiData.typescript.length})
 
 ${apiData.typescript
-  .map(
-    (file) => `
+    .map(
+      (file) => `
 ### ${file.file}
 
 **Lines of Code:** ${file.lineCount}
@@ -436,24 +436,24 @@ ${file.interfaces.map((iface) => `- \`${iface.name}\``).join('\n')}
 
 **Exports (${file.exports.length}):**
 ${file.exports.map((exp) => `- \`${exp.name}\``).join('\n')}
-`
-  )
-  .join('\n')}
+`,
+    )
+    .join('\n')}
 
 ## JavaScript Files (${apiData.javascript.length})
 
 ${apiData.javascript
-  .map(
-    (file) => `
+    .map(
+      (file) => `
 ### ${file.file}
 
 **Lines of Code:** ${file.lineCount}
 
 **JSDoc Comments:** ${file.jsdoc.length}
 **Exports:** ${file.exports.length}
-`
-  )
-  .join('\n')}
+`,
+    )
+    .join('\n')}
 
 ---
 
@@ -469,16 +469,16 @@ ${apiData.javascript
 ## Domain Structure
 
 ${data.domains
-  .map(
-    (domain) => `
+    .map(
+      (domain) => `
 ### ${domain.name}
 - **Path:** \`${domain.path}\`
 - **Files:** ${domain.fileCount}
 - **Lines of Code:** ${domain.lineCount}
 - **Subdirectories:** ${domain.subdirectories.join(', ')}
-`
-  )
-  .join('\n')}
+`,
+    )
+    .join('\n')}
 
 ## Dependencies
 

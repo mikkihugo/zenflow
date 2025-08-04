@@ -138,6 +138,18 @@ export class ZenSwarm implements SwarmEventEmitter {
       connectionDensity: options.connectionDensity || 0.5,
       syncInterval: options.syncInterval || 1000,
       wasmPath: options.wasmPath || './wasm/ruv_swarm_wasm.js',
+      persistence: {
+        enabled: false,
+        dbPath: '',
+        checkpointInterval: 60000,
+        compressionEnabled: false
+      },
+      pooling: {
+        enabled: false,
+        maxPoolSize: 10,
+        minPoolSize: 1,
+        idleTimeout: 300000
+      }
     };
 
     this.agentPool = new AgentPool();
@@ -337,14 +349,14 @@ export class ZenSwarm implements SwarmEventEmitter {
       throw new Error(`Maximum agent limit (${this.options.maxAgents}) reached`);
     }
 
-    const agent = createAgent(config);
+    const agent = createAgent(config as any);
     this.state.agents.set(agent.id, agent);
-    this.agentPool.addAgent(agent);
+    this.agentPool.addAgent(agent as any);
 
     // Add to WASM if available
     if (this.wasmModule && this.swarmId !== undefined) {
       const wasmAgentId = this.wasmModule.addAgent(this.swarmId, config);
-      (agent as BaseAgent).setWasmAgentId(wasmAgentId);
+      (agent as any).setWasmAgentId(wasmAgentId);
     }
 
     // Create connections based on topology
@@ -539,14 +551,14 @@ export class ZenSwarm implements SwarmEventEmitter {
       timestamp: Date.now(),
     };
 
-    await agent.communicate(message);
+    await (agent as any).communicate(message);
 
     // Execute task
     try {
       task.status = 'in_progress';
       const startTime = Date.now();
 
-      const result = await agent.execute(task);
+      const result = await agent.execute(task as any);
 
       task.status = 'completed';
       task.result = result;

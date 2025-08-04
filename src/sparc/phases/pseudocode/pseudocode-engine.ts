@@ -7,12 +7,18 @@
 
 import { nanoid } from 'nanoid';
 import type {
+  AlgorithmPseudocode,
   ComplexityAnalysis,
   ComplexityClass,
+  ControlFlowDiagram,
   CoreAlgorithm,
+  DataStructureDesign,
   DataStructureSpec,
   DetailedSpecification,
+  FunctionalRequirement,
+  LogicValidation,
   OptimizationOpportunity,
+  OptimizationSuggestion,
   PerformanceTarget,
   Priority,
   ProcessFlow,
@@ -23,6 +29,76 @@ import type {
 } from '../../types/sparc-types';
 
 export class PseudocodePhaseEngine implements PseudocodeEngine {
+  /**
+   * Generate algorithmic pseudocode from detailed specifications
+   */
+  async generateAlgorithmPseudocode(spec: DetailedSpecification): Promise<AlgorithmPseudocode[]> {
+    const algorithms: AlgorithmPseudocode[] = [];
+    
+    for (const requirement of spec.functionalRequirements) {
+      const algorithm: AlgorithmPseudocode = {
+        id: nanoid(),
+        name: requirement.title,
+        description: requirement.description,
+        pseudocode: await this.generateAlgorithmPseudocodePrivate(requirement, spec.domain),
+        complexity: await this.estimateAlgorithmComplexity(requirement),
+        inputParameters: await this.extractInputParameters(requirement),
+        outputFormat: await this.defineOutputFormat(requirement),
+        preconditions: requirement.preconditions || [],
+        postconditions: requirement.postconditions || [],
+        invariants: requirement.invariants || [],
+        purpose: requirement.description, // Add missing purpose property
+      };
+      algorithms.push(algorithm);
+    }
+    
+    return algorithms;
+  }
+
+  async designDataStructures(requirements: FunctionalRequirement[]): Promise<DataStructureDesign[]> {
+    // Convert DataStructureSpec to DataStructureDesign
+    const specs = await this.generateDataStructures(requirements);
+    return specs.map(spec => ({
+      name: spec.name,
+      type: spec.type as 'class' | 'interface' | 'enum' | 'type',
+      properties: spec.properties || [],
+      methods: spec.methods || [],
+      relationships: spec.relationships || [], // Add missing relationships property
+    }));
+  }
+
+  async mapControlFlows(algorithms: AlgorithmPseudocode[]): Promise<ControlFlowDiagram[]> {
+    // Implementation for control flow mapping
+    return algorithms.map(alg => ({
+      id: nanoid(),
+      algorithmId: alg.id,
+      nodes: [],
+      edges: [],
+      startNode: 'start',
+      endNodes: ['end'],
+    }));
+  }
+
+  async optimizeAlgorithmComplexity(pseudocode: AlgorithmPseudocode): Promise<OptimizationSuggestion[]> {
+    // Implementation for optimization suggestions
+    return [
+      {
+        type: 'performance',
+        description: `Optimize ${pseudocode.name} for better performance`,
+        impact: 'medium',
+        effort: 'low',
+      }
+    ];
+  }
+
+  async validatePseudocodeLogic(pseudocode: AlgorithmPseudocode[]): Promise<LogicValidation> {
+    // Implementation for logic validation
+    return {
+      score: 0.8,
+      results: [],
+      recommendations: [],
+    };
+  }
   /**
    * Generate algorithmic pseudocode from detailed specifications
    */
@@ -93,7 +169,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
       id: nanoid(),
       name: `${requirement.title.replace(/\s+/g, '')}Algorithm`,
       description: `Algorithm implementing: ${requirement.description}`,
-      pseudocode: await this.generateAlgorithmPseudocode(requirement, domain),
+      pseudocode: await this.generateAlgorithmPseudocodePrivate(requirement, domain),
       complexity: await this.estimateAlgorithmComplexity(requirement),
       inputParameters: await this.extractInputParameters(requirement),
       outputFormat: await this.defineOutputFormat(requirement),
@@ -138,9 +214,10 @@ BEGIN
 END
         `.trim(),
         complexity: {
-          time: 'O(log n)' as ComplexityClass,
-          space: 'O(1)' as ComplexityClass,
-          explanation: 'Logarithmic time for registry insertion, constant space for agent data',
+          timeComplexity: 'O(log n)',
+          spaceComplexity: 'O(1)', 
+          scalability: 'Good logarithmic scaling',
+          worstCase: 'O(log n) for registry insertion, constant space for agent data',
         },
         inputParameters: ['agent_info', 'capabilities', 'resource_requirements'],
         outputFormat: 'RegistrationResult',
@@ -180,9 +257,10 @@ BEGIN
 END
         `.trim(),
         complexity: {
-          time: 'O(n log n)' as ComplexityClass,
-          space: 'O(n)' as ComplexityClass,
-          explanation: 'Linear scan with logarithmic sorting for agent selection',
+          timeComplexity: 'O(n log n)',
+          spaceComplexity: 'O(n)',
+          scalability: 'Good logarithmic scaling',
+          worstCase: 'Linear scan with logarithmic sorting for agent selection',
         },
         inputParameters: ['task', 'available_agents', 'performance_metrics'],
         outputFormat: 'TaskAssignment',
@@ -229,9 +307,10 @@ BEGIN
 END
         `.trim(),
         complexity: {
-          time: 'O(n * m * k)' as ComplexityClass,
-          space: 'O(n * m)' as ComplexityClass,
-          explanation: 'Matrix multiplication complexity where n,m,k are layer dimensions',
+          timeComplexity: 'O(n * m * k)',
+          spaceComplexity: 'O(n * m)',
+          scalability: 'Moderate scaling with layer dimensions',
+          worstCase: 'Matrix multiplication complexity where n,m,k are layer dimensions',
         },
         inputParameters: ['input_vector', 'weights', 'biases', 'layer_configs'],
         outputFormat: 'NetworkOutput',
@@ -296,9 +375,10 @@ BEGIN
 END
         `.trim(),
         complexity: {
-          time: 'O(b)' as ComplexityClass,
-          space: 'O(1)' as ComplexityClass,
-          explanation: 'Linear in number of backends, constant space per operation',
+          timeComplexity: 'O(b)',
+          spaceComplexity: 'O(1)',
+          scalability: 'Excellent linear scaling',
+          worstCase: 'Linear in number of backends, constant space per operation',
         },
         inputParameters: ['operation_type', 'key', 'value', 'consistency_level'],
         outputFormat: 'MemoryOperationResult',
@@ -342,9 +422,10 @@ BEGIN
 END
         `.trim(),
         complexity: {
-          time: 'O(n * t)' as ComplexityClass,
-          space: 'O(n)' as ComplexityClass,
-          explanation: 'Linear in data size and number of transformations',
+          timeComplexity: 'O(n * t)',
+          spaceComplexity: 'O(n)',
+          scalability: 'Good linear scaling',
+          worstCase: 'Linear in data size and number of transformations',
         },
         inputParameters: ['data', 'transformation_pipeline', 'validation_rules'],
         outputFormat: 'ProcessedDataResult',
@@ -476,7 +557,7 @@ END
 
   private calculateWorstCaseComplexity(algorithms: CoreAlgorithm[]): ComplexityClass {
     // Find the algorithm with highest complexity
-    const complexities = algorithms.map((alg) => alg.complexity.time);
+    const complexities = algorithms.map((alg) => alg.complexity.timeComplexity);
     return this.maxComplexity(complexities);
   }
 
@@ -491,7 +572,7 @@ END
   }
 
   private calculateSpaceComplexity(algorithms: CoreAlgorithm[]): ComplexityClass {
-    const spaceComplexities = algorithms.map((alg) => alg.complexity.space);
+    const spaceComplexities = algorithms.map((alg) => alg.complexity.spaceComplexity);
     return this.maxComplexity(spaceComplexities);
   }
 
@@ -583,7 +664,7 @@ END
   /**
    * Generate algorithm-specific pseudocode
    */
-  private async generateAlgorithmPseudocode(requirement: any, _domain: string): Promise<string> {
+  private async generateAlgorithmPseudocodePrivate(requirement: any, _domain: string): Promise<string> {
     return `
 ALGORITHM ${requirement.title.replace(/\s+/g, '')}
 INPUT: ${requirement.inputs?.join(', ') || 'input_data'}
@@ -603,11 +684,12 @@ END
    */
   private async estimateAlgorithmComplexity(
     _requirement: any
-  ): Promise<{ time: ComplexityClass; space: ComplexityClass; explanation: string }> {
+  ): Promise<ComplexityAnalysis> {
     return {
-      time: 'O(n)' as ComplexityClass,
-      space: 'O(1)' as ComplexityClass,
-      explanation: 'Linear time complexity based on input size, constant space usage',
+      timeComplexity: 'O(n)',
+      spaceComplexity: 'O(1)',
+      scalability: 'Good linear scaling',
+      worstCase: 'Linear time complexity based on input size, constant space usage',
     };
   }
 

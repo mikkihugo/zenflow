@@ -6,7 +6,8 @@
  * @description Enhanced database controller with DI integration for Issue #63
  */
 
-import { Inject, Injectable } from '../../di/decorators/injectable';
+import { inject } from '../../di/decorators/inject';
+import { injectable } from '../../di/decorators/injectable';
 import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
 import type {
   ConnectionStats,
@@ -139,7 +140,7 @@ export interface MigrationRequest {
  * Database REST API Controller
  * Provides comprehensive database management through REST endpoints
  */
-@Injectable()
+@injectable()
 export class DatabaseController {
   private adapter: DatabaseAdapter;
   private performanceMetrics = {
@@ -151,9 +152,9 @@ export class DatabaseController {
   };
 
   constructor(
-    @Inject(DATABASE_TOKENS.ProviderFactory) private _factory: DatabaseProviderFactory,
-    @Inject(DATABASE_TOKENS.Config) private _config: DatabaseConfig,
-    @Inject(CORE_TOKENS.Logger) private _logger: ILogger
+    @inject(DATABASE_TOKENS.ProviderFactory) private _factory: DatabaseProviderFactory,
+    @inject(DATABASE_TOKENS.Config) private _config: DatabaseConfig,
+    @inject(CORE_TOKENS.Logger) private _logger: ILogger
   ) {
     this.initializeAdapter();
   }
@@ -166,7 +167,7 @@ export class DatabaseController {
     const startTime = Date.now();
 
     try {
-      this.logger.debug('Getting database status');
+      this._logger.debug('Getting database status');
 
       const [isHealthy, connectionStats] = await Promise.all([
         this.adapter.health(),
@@ -178,7 +179,7 @@ export class DatabaseController {
 
       const healthStatus: DatabaseHealthStatus = {
         status: isHealthy ? 'healthy' : 'critical',
-        adapter: this.config.type,
+        adapter: this._config.type,
         connected: isHealthy,
         responseTime: executionTime,
         connectionStats,
@@ -193,14 +194,14 @@ export class DatabaseController {
           rowCount: 0,
           executionTime,
           timestamp: Date.now(),
-          adapter: this.config.type,
+          adapter: this._config.type,
           connectionStats,
         },
       };
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
-      this.logger.error(`Failed to get database status: ${error}`);
+      this._logger.error(`Failed to get database status: ${error}`);
 
       return {
         success: false,
@@ -209,7 +210,7 @@ export class DatabaseController {
           rowCount: 0,
           executionTime,
           timestamp: Date.now(),
-          adapter: this.config.type,
+          adapter: this._config.type,
         },
       };
     }
@@ -223,7 +224,7 @@ export class DatabaseController {
     const startTime = Date.now();
 
     try {
-      this.logger.debug(`Executing database query: ${request.sql.substring(0, 100)}...`);
+      this._logger.debug(`Executing database query: ${request.sql.substring(0, 100)}...`);
 
       if (!request.sql) {
         throw new Error('SQL query is required');
@@ -240,7 +241,7 @@ export class DatabaseController {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
 
-      this.logger.debug(
+      this._logger.debug(
         `Query completed successfully in ${executionTime}ms, returned ${result.rowCount} rows`
       );
 
@@ -259,14 +260,14 @@ export class DatabaseController {
           rowCount: result.rowCount,
           executionTime,
           timestamp: Date.now(),
-          adapter: this.config.type,
+          adapter: this._config.type,
           connectionStats,
         },
       };
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
-      this.logger.error(`Query execution failed: ${error}`);
+      this._logger.error(`Query execution failed: ${error}`);
 
       return {
         success: false,
@@ -275,7 +276,7 @@ export class DatabaseController {
           rowCount: 0,
           executionTime,
           timestamp: Date.now(),
-          adapter: this.config.type,
+          adapter: this._config.type,
         },
       };
     }
@@ -289,7 +290,7 @@ export class DatabaseController {
     const startTime = Date.now();
 
     try {
-      this.logger.debug(`Executing database command: ${request.sql.substring(0, 100)}...`);
+      this._logger.debug(`Executing database command: ${request.sql.substring(0, 100)}...`);
 
       if (!request.sql) {
         throw new Error('SQL command is required');
@@ -301,7 +302,7 @@ export class DatabaseController {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
 
-      this.logger.debug(
+      this._logger.debug(
         `Command completed successfully in ${executionTime}ms, affected ${result.affectedRows} rows`
       );
 
@@ -326,14 +327,14 @@ export class DatabaseController {
           rowCount: result.affectedRows,
           executionTime,
           timestamp: Date.now(),
-          adapter: this.config.type,
+          adapter: this._config.type,
           connectionStats,
         },
       };
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
-      this.logger.error(`Command execution failed: ${error}`);
+      this._logger.error(`Command execution failed: ${error}`);
 
       return {
         success: false,
@@ -342,7 +343,7 @@ export class DatabaseController {
           rowCount: 0,
           executionTime,
           timestamp: Date.now(),
-          adapter: this.config.type,
+          adapter: this._config.type,
         },
       };
     }
@@ -356,7 +357,7 @@ export class DatabaseController {
     const startTime = Date.now();
 
     try {
-      this.logger.debug(`Executing transaction with ${request.operations.length} operations`);
+      this._logger.debug(`Executing transaction with ${request.operations.length} operations`);
 
       if (!request.operations || request.operations.length === 0) {
         throw new Error('At least one operation is required for transaction');
@@ -419,7 +420,7 @@ export class DatabaseController {
       const totalRows = results.reduce((sum, r) => sum + (r.rowCount || r.affectedRows || 0), 0);
       const successfulOps = results.filter((r) => r.success).length;
 
-      this.logger.debug(
+      this._logger.debug(
         `Transaction completed successfully in ${executionTime}ms, ${successfulOps}/${results.length} operations successful`
       );
 
@@ -438,14 +439,14 @@ export class DatabaseController {
           rowCount: totalRows,
           executionTime,
           timestamp: Date.now(),
-          adapter: this.config.type,
+          adapter: this._config.type,
           connectionStats,
         },
       };
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
-      this.logger.error(`Transaction failed: ${error}`);
+      this._logger.error(`Transaction failed: ${error}`);
 
       return {
         success: false,
@@ -454,7 +455,7 @@ export class DatabaseController {
           rowCount: 0,
           executionTime,
           timestamp: Date.now(),
-          adapter: this.config.type,
+          adapter: this._config.type,
         },
       };
     }
@@ -472,7 +473,7 @@ export class DatabaseController {
     const startTime = Date.now();
 
     try {
-      this.logger.debug(`Executing batch operations: ${request.operations.length} operations`);
+      this._logger.debug(`Executing batch operations: ${request.operations.length} operations`);
 
       const results = [];
       let errorCount = 0;
@@ -548,7 +549,7 @@ export class DatabaseController {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, errorCount === 0);
 
-      this.logger.debug(
+      this._logger.debug(
         `Batch operations completed in ${executionTime}ms: ${results.length - errorCount}/${results.length} successful`
       );
 
@@ -567,14 +568,14 @@ export class DatabaseController {
           rowCount: totalRows,
           executionTime,
           timestamp: Date.now(),
-          adapter: this.config.type,
+          adapter: this._config.type,
           connectionStats,
         },
       };
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
-      this.logger.error(`Batch operations failed: ${error}`);
+      this._logger.error(`Batch operations failed: ${error}`);
 
       return {
         success: false,
@@ -583,7 +584,7 @@ export class DatabaseController {
           rowCount: 0,
           executionTime,
           timestamp: Date.now(),
-          adapter: this.config.type,
+          adapter: this._config.type,
         },
       };
     }
@@ -597,7 +598,7 @@ export class DatabaseController {
     const startTime = Date.now();
 
     try {
-      this.logger.debug('Getting database schema information');
+      this._logger.debug('Getting database schema information');
 
       const schema = await this.adapter.getSchema();
       const connectionStats = await this.adapter.getConnectionStats();
@@ -612,7 +613,7 @@ export class DatabaseController {
         totalIndexes: schema.tables.reduce((sum, table) => sum + table.indexes.length, 0),
       };
 
-      this.logger.debug(`Schema retrieved successfully in ${executionTime}ms`);
+      this._logger.debug(`Schema retrieved successfully in ${executionTime}ms`);
 
       return {
         success: true,
@@ -620,20 +621,20 @@ export class DatabaseController {
           schema,
           statistics: schemaStats,
           version: schema.version,
-          adapter: this.config.type,
+          adapter: this._config.type,
         },
         metadata: {
           rowCount: schema.tables.length,
           executionTime,
           timestamp: Date.now(),
-          adapter: this.config.type,
+          adapter: this._config.type,
           connectionStats,
         },
       };
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
-      this.logger.error(`Failed to get schema: ${error}`);
+      this._logger.error(`Failed to get schema: ${error}`);
 
       return {
         success: false,
@@ -642,7 +643,7 @@ export class DatabaseController {
           rowCount: 0,
           executionTime,
           timestamp: Date.now(),
-          adapter: this.config.type,
+          adapter: this._config.type,
         },
       };
     }
@@ -656,7 +657,7 @@ export class DatabaseController {
     const startTime = Date.now();
 
     try {
-      this.logger.info(
+      this._logger.info(
         `Executing migration: ${request.version} - ${request.description || 'No description'}`
       );
 
@@ -665,7 +666,7 @@ export class DatabaseController {
       }
 
       if (request.dryRun) {
-        this.logger.info('Dry run mode: validating migration statements');
+        this._logger.info('Dry run mode: validating migration statements');
 
         // Validate statements without executing
         const validationResults = [];
@@ -702,7 +703,7 @@ export class DatabaseController {
             rowCount: 0,
             executionTime,
             timestamp: Date.now(),
-            adapter: this.config.type,
+            adapter: this._config.type,
           },
         };
       }
@@ -737,7 +738,9 @@ export class DatabaseController {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
 
-      this.logger.info(`Migration ${request.version} completed successfully in ${executionTime}ms`);
+      this._logger.info(
+        `Migration ${request.version} completed successfully in ${executionTime}ms`
+      );
 
       return {
         success: true,
@@ -752,14 +755,14 @@ export class DatabaseController {
           rowCount: results.reduce((sum, r) => sum + (r.affectedRows || 0), 0),
           executionTime,
           timestamp: Date.now(),
-          adapter: this.config.type,
+          adapter: this._config.type,
           connectionStats,
         },
       };
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
-      this.logger.error(`Migration failed: ${error}`);
+      this._logger.error(`Migration failed: ${error}`);
 
       return {
         success: false,
@@ -768,7 +771,7 @@ export class DatabaseController {
           rowCount: 0,
           executionTime,
           timestamp: Date.now(),
-          adapter: this.config.type,
+          adapter: this._config.type,
         },
       };
     }
@@ -782,7 +785,7 @@ export class DatabaseController {
     const startTime = Date.now();
 
     try {
-      this.logger.debug('Getting database analytics');
+      this._logger.debug('Getting database analytics');
 
       const [connectionStats, isHealthy] = await Promise.all([
         this.adapter.getConnectionStats(),
@@ -790,7 +793,7 @@ export class DatabaseController {
       ]);
 
       const analytics = {
-        adapter: this.config.type,
+        adapter: this._config.type,
         health: {
           status: isHealthy ? 'healthy' : 'unhealthy',
           uptime: Math.floor((Date.now() - this.performanceMetrics.startTime) / 1000),
@@ -816,12 +819,12 @@ export class DatabaseController {
         },
         connections: connectionStats,
         configuration: {
-          type: this.config.type,
-          host: this.config.host,
-          port: this.config.port,
-          database: this.config.database,
-          poolConfig: this.config.pool,
-          sslEnabled: this.config.ssl?.enabled || false,
+          type: this._config.type,
+          host: this._config.host,
+          port: this._config.port,
+          database: this._config.database,
+          poolConfig: this._config.pool,
+          sslEnabled: this._config.ssl?.enabled || false,
         },
       };
 
@@ -835,14 +838,14 @@ export class DatabaseController {
           rowCount: 0,
           executionTime,
           timestamp: Date.now(),
-          adapter: this.config.type,
+          adapter: this._config.type,
           connectionStats,
         },
       };
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
-      this.logger.error(`Failed to get analytics: ${error}`);
+      this._logger.error(`Failed to get analytics: ${error}`);
 
       return {
         success: false,
@@ -851,7 +854,7 @@ export class DatabaseController {
           rowCount: 0,
           executionTime,
           timestamp: Date.now(),
-          adapter: this.config.type,
+          adapter: this._config.type,
         },
       };
     }
@@ -862,11 +865,11 @@ export class DatabaseController {
    */
   private async initializeAdapter(): Promise<void> {
     try {
-      this.adapter = this.factory.createAdapter(this.config);
+      this.adapter = this._factory.createAdapter(this._config);
       await this.adapter.connect();
-      this.logger.info(`Database controller initialized with ${this.config.type} adapter`);
+      this._logger.info(`Database controller initialized with ${this._config.type} adapter`);
     } catch (error) {
-      this.logger.error(`Failed to initialize database adapter: ${error}`);
+      this._logger.error(`Failed to initialize database adapter: ${error}`);
       throw error;
     }
   }
@@ -906,7 +909,7 @@ export class DatabaseController {
   private async getExecutionPlan(sql: string): Promise<any> {
     try {
       // Implementation would vary by database type
-      switch (this.config.type) {
+      switch (this._config.type) {
         case 'postgresql':
           return await this.adapter.query(`EXPLAIN ANALYZE ${sql}`);
         case 'mysql':
@@ -917,7 +920,7 @@ export class DatabaseController {
           return { plan: 'Execution plans not supported for this adapter' };
       }
     } catch (error) {
-      this.logger.warn(`Failed to get execution plan: ${error}`);
+      this._logger.warn(`Failed to get execution plan: ${error}`);
       return { plan: 'Execution plan unavailable' };
     }
   }
@@ -930,7 +933,7 @@ export class DatabaseController {
       const schema = await this.adapter.getSchema();
       return schema.version;
     } catch (error) {
-      this.logger.warn(`Failed to get database version: ${error}`);
+      this._logger.warn(`Failed to get database version: ${error}`);
       return 'Unknown';
     }
   }

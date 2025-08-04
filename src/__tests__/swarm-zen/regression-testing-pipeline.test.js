@@ -120,7 +120,7 @@ class RegressionTestingPipeline {
 
       // Check dependencies
       const packageJson = JSON.parse(
-        await fs.readFile('/workspaces/ruv-FANN/ruv-swarm/npm/package.json', 'utf8')
+        await fs.readFile('/workspaces/ruv-FANN/ruv-swarm/npm/package.json', 'utf8'),
       );
       setupResult.output.push(`Package version: ${packageJson.version}`);
 
@@ -168,7 +168,7 @@ class RegressionTestingPipeline {
       qualityResult.data.linting.passed = lintResult.success;
       qualityResult.data.linting.issues = this.countLintIssues(lintResult.output);
       qualityResult.output.push(
-        `Linting: ${lintResult.success ? 'PASSED' : 'FAILED'} (${qualityResult.data.linting.issues} issues)`
+        `Linting: ${lintResult.success ? 'PASSED' : 'FAILED'} (${qualityResult.data.linting.issues} issues)`,
       );
 
       // Check if TypeScript definitions exist
@@ -222,10 +222,10 @@ class RegressionTestingPipeline {
 
       unitTestResult.passed = testResult.success && unitTestResult.data.testsFailed === 0;
       unitTestResult.output.push(
-        `Tests: ${unitTestResult.data.testsPassed}/${unitTestResult.data.testsRun} passed`
+        `Tests: ${unitTestResult.data.testsPassed}/${unitTestResult.data.testsRun} passed`,
       );
       unitTestResult.output.push(
-        `Coverage: ${coverageData.lines}% lines, ${coverageData.branches}% branches`
+        `Coverage: ${coverageData.lines}% lines, ${coverageData.branches}% branches`,
       );
     } catch (error) {
       unitTestResult.passed = false;
@@ -255,7 +255,7 @@ class RegressionTestingPipeline {
 
       integrationResult.passed = testResult.success;
       integrationResult.output.push(
-        `Integration tests: ${testResult.success ? 'PASSED' : 'FAILED'}`
+        `Integration tests: ${testResult.success ? 'PASSED' : 'FAILED'}`,
       );
 
       // Parse integration test results if available
@@ -298,7 +298,7 @@ class RegressionTestingPipeline {
         {
           cwd: '/workspaces/ruv-FANN/ruv-swarm/npm',
           timeout: 600000, // 10 minutes
-        }
+        },
       );
 
       perfResult.passed = perfTestResult.success;
@@ -460,11 +460,11 @@ class RegressionTestingPipeline {
       platformResult.passed = platformResult.data.wasmSupport && platformResult.data.sqliteSupport;
 
       platformResult.output.push(
-        `Platform: ${platformResult.data.platform} ${platformResult.data.arch}`
+        `Platform: ${platformResult.data.platform} ${platformResult.data.arch}`,
       );
       platformResult.output.push(`WASM Support: ${platformResult.data.wasmSupport ? 'YES' : 'NO'}`);
       platformResult.output.push(
-        `SQLite Support: ${platformResult.data.sqliteSupport ? 'YES' : 'NO'}`
+        `SQLite Support: ${platformResult.data.sqliteSupport ? 'YES' : 'NO'}`,
       );
     } catch (error) {
       platformResult.passed = false;
@@ -508,19 +508,19 @@ class RegressionTestingPipeline {
         regressionResult.passed = this.pipelineResults.regressions.length === 0;
 
         regressionResult.output.push(
-          `Regressions detected: ${regressionResult.data.regressionCount}`
+          `Regressions detected: ${regressionResult.data.regressionCount}`,
         );
         regressionResult.output.push(
-          `Improvements detected: ${regressionResult.data.improvementCount}`
+          `Improvements detected: ${regressionResult.data.improvementCount}`,
         );
 
         if (regressionResult.data.regressionCount > 0) {
           regressionResult.output.push(
-            '❌ Regression analysis FAILED - performance degradation detected'
+            '❌ Regression analysis FAILED - performance degradation detected',
           );
         } else {
           regressionResult.output.push(
-            '✅ Regression analysis PASSED - no performance degradation'
+            '✅ Regression analysis PASSED - no performance degradation',
           );
         }
       } else {
@@ -724,13 +724,13 @@ class RegressionTestingPipeline {
     this.checkPerformanceRegression(
       'SIMD Performance',
       baseline.performance?.simdPerformance,
-      current.performance?.simdPerformance
+      current.performance?.simdPerformance,
     );
 
     this.checkPerformanceRegression(
       'Speed Optimization',
       baseline.performance?.speedOptimization,
-      current.performance?.speedOptimization
+      current.performance?.speedOptimization,
     );
 
     // Memory regression checks
@@ -738,7 +738,7 @@ class RegressionTestingPipeline {
       'Memory Usage',
       this.parseMemoryValue(baseline.loadTesting?.memoryPeak),
       this.parseMemoryValue(current.loadTesting?.memoryPeak),
-      this.thresholds.memory
+      this.thresholds.memory,
     );
 
     // Response time regression checks
@@ -746,7 +746,7 @@ class RegressionTestingPipeline {
       'Response Time',
       baseline.loadTesting?.avgResponseTime,
       current.loadTesting?.avgResponseTime,
-      this.thresholds.performance
+      this.thresholds.performance,
     );
 
     // Coverage regression checks
@@ -755,7 +755,7 @@ class RegressionTestingPipeline {
       baseline.unitTests?.coverage?.lines,
       current.unitTests?.coverage?.lines,
       this.thresholds.coverage,
-      true
+      true,
     ); // Lower is worse for coverage
   }
 
@@ -826,7 +826,7 @@ class RegressionTestingPipeline {
   checkDeploymentReadiness() {
     const criticalStages = ['Unit Tests', 'Integration Tests', 'Security Scanning'];
     const criticalPassed = criticalStages.every(
-      (stageName) => this.pipelineResults.stages.find((s) => s.name === stageName)?.passed
+      (stageName) => this.pipelineResults.stages.find((s) => s.name === stageName)?.passed,
     );
 
     return criticalPassed && this.pipelineResults.regressions.length === 0;
@@ -873,7 +873,7 @@ success_rate=${report.summary.successRate}
         (stage) => `
     <testcase name="${stage.name}" time="${stage.duration / 1000}" classname="RegressionPipeline">
         ${stage.passed ? '' : `<failure message="${stage.errors.join('; ')}">${stage.errors.join('\n')}</failure>`}
-    </testcase>`
+    </testcase>`,
       )
       .join('');
 
