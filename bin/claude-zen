@@ -48,10 +48,29 @@ for arg in "$@"; do
   fi
 done
 
+# Check if we should use development mode fallback 
+should_use_dev_fallback() {
+  for arg in "$@"; do
+    case "$arg" in
+      "discover"|"discover-*"|"--help"|"-h")
+        return 0
+        ;;
+    esac
+  done
+  return 1
+}
+
 # Use Node.js - prefer built files over source
 if [ -f "$ROOT_DIR/dist/interfaces/terminal/main.js" ]; then
-  # Use built distribution version (production)
-  cd "$ROOT_DIR" && exec node dist/interfaces/terminal/main.js "$@"
+  # Try production mode first
+  if should_use_dev_fallback "$@"; then
+    # Use development mode for discover and help commands
+    echo "🧠 Claude-Zen: Using development mode"
+    cd "$ROOT_DIR" && exec npx tsx src/interfaces/terminal/main.ts "$@"
+  else
+    # Use production mode for other commands
+    cd "$ROOT_DIR" && exec node dist/interfaces/terminal/main.js "$@"
+  fi
 else
   # Built files not found - this should trigger a build
   echo "🧠 Claude-Zen v$VERSION - Distribution files not found"
