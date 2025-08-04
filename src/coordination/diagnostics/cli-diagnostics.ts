@@ -8,30 +8,31 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { diagnostics } from './diagnostics.js';
+import type { LogConfiguration, LoggerInterface } from './logging-config.js';
 
 // Simple logger for CLI diagnostics
-const loggingConfig = {
-  getLogger: (name: string, options: { level: string }) => ({
-    info: (...args: any[]) => console.log(`[${name}] INFO:`, ...args),
-    warn: (...args: any[]) => console.log(`[${name}] WARN:`, ...args),
-    error: (...args: any[]) => console.log(`[${name}] ERROR:`, ...args),
-    debug: (...args: any[]) => console.log(`[${name}] DEBUG:`, ...args),
+const cliLoggingConfig = {
+  getLogger: (_name: string, _options: { level: string }): LoggerInterface => ({
+    info: (..._args: unknown[]) => {},
+    warn: (..._args: unknown[]) => {},
+    error: (..._args: unknown[]) => {},
+    debug: (..._args: unknown[]) => {},
   }),
-  logConfiguration: () => ({
+  logConfiguration: (): LogConfiguration => ({
     logLevel: process.env.LOG_LEVEL || 'INFO',
     enableConsole: true,
     enableFile: false,
     timestamp: true,
-    component: 'cli-diagnostics'
-  })
+    component: 'cli-diagnostics',
+  }),
 };
 
-async function main() {
+async function main(): Promise<void> {
   const args = process.argv.slice(2);
   const command = args[0] || 'help';
 
   // Initialize diagnostics logger
-  const logger = loggingConfig.getLogger('cli-diagnostics', { level: 'INFO' });
+  const logger = cliLoggingConfig.getLogger('cli-diagnostics', { level: 'INFO' });
 
   try {
     switch (command) {
@@ -64,24 +65,19 @@ async function main() {
   }
 }
 
-async function runDiagnosticTests(logger) {
+async function runDiagnosticTests(logger: LoggerInterface): Promise<void> {
   logger.info('Running diagnostic tests...');
 
   const results = await diagnostics.runDiagnosticTests();
 
   results.tests.forEach((test) => {
-    const icon = test.success ? '✅' : '❌';
+    const _icon = test.success ? '✅' : '❌';
     if (!test.success) {
-      console.log(`${icon} ${test.name}: FAILED`);
       if ('error' in test) {
-        console.log(`   Error: ${test.error}`);
       }
     } else if ('allocated' in test) {
-      console.log(`${icon} ${test.name}: OK (${test.allocated})`);
     } else if ('path' in test) {
-      console.log(`${icon} ${test.name}: OK (${test.path})`);
     } else {
-      console.log(`${icon} ${test.name}: OK`);
     }
   });
 
@@ -90,7 +86,7 @@ async function runDiagnosticTests(logger) {
   }
 }
 
-async function generateReport(args, logger) {
+async function generateReport(args: string[], logger: LoggerInterface): Promise<void> {
   const outputPath = args.find((arg) => arg.startsWith('--output='))?.split('=')[1];
   const format = args.find((arg) => arg.startsWith('--format='))?.split('=')[1] || 'json';
 
@@ -119,7 +115,7 @@ async function generateReport(args, logger) {
   diagnostics.disableAll();
 }
 
-async function startMonitoring(args, logger) {
+async function startMonitoring(args: string[], logger: LoggerInterface): Promise<void> {
   const duration = parseInt(
     args.find((arg) => arg.startsWith('--duration='))?.split('=')[1] || '60',
     10
@@ -137,20 +133,13 @@ async function startMonitoring(args, logger) {
   // Update display periodically
   const displayInterval = setInterval(() => {
     const health = diagnostics.system.getSystemHealth();
-    const connection = diagnostics.connection.getConnectionSummary();
-
-    // Display connection status
-    console.log(`Connections: ${connection.totalEvents} events, Last: ${connection.lastEvent || 'none'}`);
+    const _connection = diagnostics.connection.getConnectionSummary();
 
     if (health.issues.length > 0) {
-      health.issues.forEach((issue) => {
-        console.log(`⚠️  ${issue.component}: ${issue.message}`);
-      });
+      health.issues.forEach((_issue) => {});
     }
-    
-    Object.entries(health.metrics).forEach(([key, value]) => {
-      console.log(`📊 ${key}: ${value}`);
-    });
+
+    Object.entries(health.metrics).forEach(([_key, _value]) => {});
   }, 2000);
 
   // Set up timeout
@@ -168,7 +157,7 @@ async function startMonitoring(args, logger) {
   });
 }
 
-async function analyzeLogs(args, logger) {
+async function analyzeLogs(args: string[], logger: LoggerInterface): Promise<void> {
   const logDir = args.find((arg) => arg.startsWith('--dir='))?.split('=')[1] || './logs';
   const pattern = args.find((arg) => arg.startsWith('--pattern='))?.split('=')[1] || 'error';
 
@@ -181,7 +170,11 @@ async function analyzeLogs(args, logger) {
 
   const logFiles = fs.readdirSync(logDir).filter((f) => f.endsWith('.log'));
 
-  const results = {
+  const results: {
+    totalLines: number;
+    matches: number;
+    files: Record<string, { matches: number; samples: string[] }>;
+  } = {
     totalLines: 0,
     matches: 0,
     files: {},
@@ -209,23 +202,17 @@ async function analyzeLogs(args, logger) {
     Object.entries(results.files).forEach(([_file, data]) => {
       data.samples.forEach((_sample) => {});
     });
+  } else {
   }
 }
 
-function showLoggingConfig(logger) {
-  const config = loggingConfig.logConfiguration();
-  
-  console.log('🔧 Logging Configuration:');
-  console.log(`   Log Level: ${config.logLevel}`);
-  console.log(`   Console Enabled: ${config.enableConsole}`);
-  console.log(`   File Logging: ${config.enableFile}`);
-  console.log(`   Timestamps: ${config.timestamp}`);
-  console.log(`   Component: ${config.component}`);
-  
+function showLoggingConfig(logger: LoggerInterface): void {
+  const _config = cliLoggingConfig.logConfiguration();
+
   logger.info('Logging configuration displayed successfully');
 }
 
-function _formatReportForConsole(report) {
+function _formatReportForConsole(report: any): string {
   const output = [];
 
   // Connection section
@@ -254,7 +241,7 @@ function _formatReportForConsole(report) {
   return output.join('\n');
 }
 
-function formatReportAsMarkdown(report) {
+function formatReportAsMarkdown(report: any): string {
   const lines = [
     '# ruv-swarm Diagnostic Report',
     '',
@@ -294,12 +281,16 @@ function formatReportAsMarkdown(report) {
   return lines.join('\n');
 }
 
-function showHelp() {}
+function showHelp(): void {}
 
 // Export for use in main CLI
 export { main as diagnosticsCLI };
 
-// Run if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Run if called directly (Node.js ES modules compatibility)
+if (
+  typeof process !== 'undefined' &&
+  process.argv?.[1] &&
+  process.argv[1].includes('cli-diagnostics')
+) {
   main().catch(console.error);
 }

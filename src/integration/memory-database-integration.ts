@@ -334,41 +334,24 @@ export async function demonstrateOptimization() {
   }
 
   // Get performance metrics
-  const metrics = await system.getPerformanceMetrics();
-  console.log('📊 System Performance Metrics:', {
-    memory: metrics.memory,
-    database: metrics.database,
-    overall: metrics.overall,
-  });
+  const _metrics = await system.getPerformanceMetrics();
 
   // Optimize memory system
   if (system.memory.optimizer) {
     const memoryRecommendations = system.memory.optimizer.getRecommendations();
     if (memoryRecommendations.length > 0) {
-      console.log('🧠 Memory Optimization Recommendations:');
-      memoryRecommendations.forEach((rec, i) => {
-        console.log(`  ${i + 1}. ${rec.description} (Impact: ${rec.impact})`);
-      });
+      memoryRecommendations.forEach((_rec, _i) => {});
     }
   }
 
   // Optimize database system
   const databaseRecommendations = system.database.optimizer?.getRecommendations();
   if (databaseRecommendations && databaseRecommendations.length > 0) {
-    console.log('🗄️ Database Optimization Recommendations:');
-    databaseRecommendations.forEach((rec, i) => {
-      console.log(`  ${i + 1}. ${rec.description} (Impact: ${rec.impact})`);
-    });
+    databaseRecommendations.forEach((_rec, _i) => {});
   }
 
   // Get health report
-  const health = await system.getSystemHealth();
-  console.log('🏥 System Health Report:', {
-    status: health.status,
-    score: health.score,
-    issues: health.issues?.length || 0,
-    recommendations: health.recommendations?.length || 0,
-  });
+  const _health = await system.getSystemHealth();
 
   await system.shutdown();
 }

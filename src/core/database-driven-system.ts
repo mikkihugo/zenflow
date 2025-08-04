@@ -21,7 +21,7 @@ import type {
 import type { DocumentService } from '../database/services/document-service';
 import type { DocumentType } from '../types/workflow-types';
 import { createLogger } from './logger';
-import type { UnifiedWorkflowEngine } from './unified-workflow-engine';
+import type { WorkflowEngine } from './workflow-engine';
 
 const logger = createLogger('DatabaseDriven');
 
@@ -29,7 +29,7 @@ export interface DatabaseWorkspaceContext {
   workspaceId: string;
   projectId: string;
   activeDocuments: Map<string, BaseDocumentEntity>;
-  workflowEngine: UnifiedWorkflowEngine;
+  workflowEngine: WorkflowEngine;
   documentService: DocumentService;
 }
 
@@ -49,9 +49,9 @@ export interface DocumentProcessingOptions {
 export class DatabaseDrivenSystem extends EventEmitter {
   private workspaces: Map<string, DatabaseWorkspaceContext> = new Map();
   private documentService: DocumentService;
-  private workflowEngine: UnifiedWorkflowEngine;
+  private workflowEngine: WorkflowEngine;
 
-  constructor(documentService: DocumentService, workflowEngine: UnifiedWorkflowEngine) {
+  constructor(documentService: DocumentService, workflowEngine: WorkflowEngine) {
     super();
     this.documentService = documentService;
     this.workflowEngine = workflowEngine;

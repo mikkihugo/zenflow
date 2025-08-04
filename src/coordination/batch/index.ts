@@ -3,6 +3,12 @@
  * Exports all batch operation components following claude-zen patterns
  */
 
+// Import the actual classes for use in factory functions
+import { BatchEngine } from './batch-engine';
+import { FileBatchOperator } from './file-batch';
+import { BatchPerformanceMonitor } from './performance-monitor';
+import { SwarmBatchCoordinator } from './swarm-batch';
+
 export type {
   BatchExecutionConfig,
   BatchExecutionSummary,
@@ -51,15 +57,8 @@ export function createBatchSystem(options?: {
      * Execute a complete batch workflow with performance monitoring
      */
     async executeBatchWorkflow(operations: import('./batch-engine').BatchOperation[]) {
-      const startTime = Date.now();
-
       // Execute batch operations
       const summary = await batchEngine.executeBatch(operations);
-      
-      // Calculate and record performance metrics
-      const executionTime = Date.now() - startTime;
-      await performanceMonitor.recordMetric('batch_workflow_duration', executionTime);
-      await performanceMonitor.recordMetric('batch_operations_count', operations.length);
 
       // Record performance metrics
       const sequentialTime = summary.totalExecutionTime * summary.speedImprovement;

@@ -44,15 +44,13 @@ class AdvancedLintFixer {
     const logEntry = {
       timestamp,
       message,
-      ...data
+      ...data,
     };
-    
+
     if (Object.keys(data).length > 0) {
-      console.log(`[${timestamp}] Memory: ${message}`, data);
     } else {
-      console.log(`[${timestamp}] Memory: ${message}`);
     }
-    
+
     // Store in memory system if available
     if (this.memorySystem) {
       this.memorySystem.store('lint-fixer', logEntry);

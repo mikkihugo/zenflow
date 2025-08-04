@@ -240,19 +240,14 @@ const outputLog = (logEntry: LogEntry): void => {
   if (process.env.NODE_ENV === 'development') {
     // Pretty print for development
     const { httpRequest, timestamp, level, message } = logEntry;
-    const duration = httpRequest?.latency || '';
-    const status = httpRequest?.status || '';
-    const method = httpRequest?.requestMethod || '';
-    const url = httpRequest?.requestUrl || '';
-
-    // Format development log with HTTP details
-    console.log(`[${timestamp}] ${level.toUpperCase()}: ${message}`);
+    const _duration = httpRequest?.latency || '';
+    const _status = httpRequest?.status || '';
+    const _method = httpRequest?.requestMethod || '';
+    const _url = httpRequest?.requestUrl || '';
     if (httpRequest) {
-      console.log(`  → ${method} ${url} ${status} ${duration}ms`);
     }
 
     if (logEntry.metadata) {
-      console.log('  Metadata:', JSON.stringify(logEntry.metadata, null, 2));
     }
   } else {
   }

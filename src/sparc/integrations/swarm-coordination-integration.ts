@@ -318,7 +318,9 @@ export class SPARCSwarmCoordinator {
   /**
    * Get status of a specific task
    */
-  private async getTaskStatus(taskId: string): Promise<'pending' | 'running' | 'completed' | 'failed'> {
+  private async getTaskStatus(
+    _taskId: string
+  ): Promise<'pending' | 'running' | 'completed' | 'failed'> {
     // In a real implementation, this would call the TaskAPI
     // For now, return a mock status based on task age or other criteria
     return 'completed'; // Simplified implementation

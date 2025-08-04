@@ -85,7 +85,9 @@ export type {
 export { ExportSystem, ExportUtils } from './exporters';
 export * from './helpers';
 export { InterfaceModeDetector } from './interface-mode-detector';
-export { createLogger } from './logger';
+export type { ILogger, LoggerConfig, LogLevel, LogMeta } from './logger';
+// Logging system
+export { createLogger, Logger, logger } from './logger';
 export { Orchestrator } from './orchestrator';
 export * from './orchestrator-provider';
 // External systems

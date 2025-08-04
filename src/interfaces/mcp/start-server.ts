@@ -8,7 +8,7 @@
  */
 
 import { HTTPMCPServer } from './http-mcp-server';
-import { createLogger } from './simple-logger';
+import { createLogger } from './mcp-logger';
 
 const logger = createLogger('MCP-Starter');
 

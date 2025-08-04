@@ -25,7 +25,7 @@ async function demonstrateEnhancedIntegration() {
         'Automatic failover and recovery',
         'Scalable architecture for 1000+ agents',
       ],
-      'moderate',
+      'moderate'
     );
 
     const pmArtifacts = await sparcMCPTools.handleGenerateProjectManagementArtifacts({
@@ -39,7 +39,6 @@ async function demonstrateEnhancedIntegration() {
         if (artifact.type === 'comprehensive') {
         } else {
           if (artifact.message) {
-            console.log('Artifact message:', artifact.message);
           }
         }
       });
@@ -49,22 +48,14 @@ async function demonstrateEnhancedIntegration() {
       includeFeatures: true,
     });
 
-    epicResult.features.forEach((feature) => {
-      console.log(`📋 Feature: ${feature.title}`);
-      console.log(`   Description: ${feature.description}`);
-      console.log(`   Priority: ${feature.priority}`);
-      console.log(`   Estimated effort: ${feature.estimatedHours}h`);
-    });
+    epicResult.features.forEach((_feature) => {});
 
     const roadmapResult = await sparcMCPTools.handleAddToRoadmap({
       projectId: project.id,
       targetQuarter: '2024-Q3',
       priority: 'high',
     });
-
-    console.log(`🗺️ Roadmap integration completed: ${roadmapResult.success ? 'Success' : 'Failed'}`);
     if (roadmapResult.milestones) {
-      console.log(`   Milestones created: ${roadmapResult.milestones.length}`);
     }
 
     const workflowResult = await sparcMCPTools.handleExecuteFullWorkflow({

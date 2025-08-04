@@ -157,8 +157,7 @@ echo "✅ WASM build complete"
       if (checkTime < 30) {
         const buildStart = performance.now();
         execSync('npx tsc --project tsconfig.build.json', { stdio: 'inherit' });
-        const buildTime = (performance.now() - buildStart) / 1000;
-        console.log(`✅ Fast build completed in ${buildTime.toFixed(2)}s`);
+        const _buildTime = (performance.now() - buildStart) / 1000;
       }
     } catch (_error) {
       console.warn('⚠️  Build test encountered issues, but basic optimization is configured');
@@ -173,8 +172,7 @@ const fixer = new QuickBuildFixer();
 fixer
   .fix()
   .then(() => {
-    const totalTime = (performance.now() - startTime) / 1000;
-    console.log(`🎯 Quick build fix completed in ${totalTime.toFixed(2)}s`);
+    const _totalTime = (performance.now() - startTime) / 1000;
   })
   .catch((error) => {
     console.error('❌ Optimization failed:', error);

@@ -279,7 +279,6 @@ describe('JS-WASM Communication Integration Tests', () => {
         onBackpressure: () => {
           bufferedCount = stream.getBufferedCount();
           processingDelay = 10; // Speed up processing
-          console.log(`🚰 Backpressure detected: ${bufferedCount} buffered, reducing delay to ${processingDelay}ms`);
         },
       });
 

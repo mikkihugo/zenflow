@@ -94,16 +94,19 @@ export class DataPerformanceOptimizer implements DataOptimizer {
       const executionTime = Date.now() - startTime;
 
       // Calculate performance improvements
-      const performanceImprovement = ((beforeStats.averageQueryTime - afterStats.averageQueryTime) / beforeStats.averageQueryTime) * 100;
+      const performanceImprovement =
+        ((beforeStats.averageQueryTime - afterStats.averageQueryTime) /
+          beforeStats.averageQueryTime) *
+        100;
 
       // Log optimization results
       this.logger.info('Query performance optimization completed', {
         executionTime,
         beforeQueryTime: beforeStats.averageQueryTime,
         afterQueryTime: afterStats.averageQueryTime,
-        improvementPercentage: performanceImprovement.toFixed(2) + '%',
+        improvementPercentage: `${performanceImprovement.toFixed(2)}%`,
         slowQueriesIdentified: queryAnalysis.slowQueries.length,
-        queriesOptimized: queries.length
+        queriesOptimized: queries.length,
       });
 
       return {
@@ -212,7 +215,7 @@ export class DataPerformanceOptimizer implements DataOptimizer {
         responseTime: performance.responseTime,
         memoryEfficiency: performance.memoryEfficiency,
         cachingLevels: cachingStrategy.levels,
-        invalidationStrategy
+        invalidationStrategy,
       });
 
       return {

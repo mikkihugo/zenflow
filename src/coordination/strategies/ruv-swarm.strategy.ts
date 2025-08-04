@@ -2,8 +2,8 @@
  * @fileoverview A swarm strategy that uses the ZenSwarm implementation.
  */
 
-import type { Agent, SwarmStrategy } from '../orchestrator';
 import { ZenSwarm } from '../swarm/core';
+import type { Agent, SwarmStrategy } from '../types';
 
 export class ZenSwarmStrategy implements SwarmStrategy {
   private swarm: ZenSwarm;
@@ -14,7 +14,11 @@ export class ZenSwarmStrategy implements SwarmStrategy {
 
   async createAgent(config: any): Promise<Agent> {
     const agentId = this.swarm.addAgent(config);
-    return { id: agentId };
+    return {
+      id: agentId,
+      capabilities: config.capabilities || [],
+      status: 'idle' as const,
+    };
   }
 
   async destroyAgent(agentId: string): Promise<void> {

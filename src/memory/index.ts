@@ -68,8 +68,11 @@ export class MemorySystemFactory {
     monitoring?: MonitoringConfig;
     backends?: Array<{ id: string; type: string; config: any }>;
   }) {
-    const { MemoryCoordinator, PerformanceOptimizer, MemoryMonitor, RecoveryStrategyManager } =
-      await import('./index');
+    // Import directly from source modules instead of circular self-import
+    const { MemoryCoordinator } = await import('./core/memory-coordinator');
+    const { PerformanceOptimizer } = await import('./optimization/performance-optimizer');
+    const { MemoryMonitor } = await import('./monitoring/memory-monitor');
+    const { RecoveryStrategyManager } = await import('./error-handling/recovery-strategies');
     const { BackendFactory } = await import('./backends/factory');
 
     // Initialize components

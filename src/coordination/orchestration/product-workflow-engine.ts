@@ -15,7 +15,7 @@
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
 import { createLogger } from '../../core/logger';
-import type { UnifiedMemorySystem } from '../../core/unified-memory-system';
+import type { MemorySystem } from '../../core/memory-system';
 import type {
   ADRDocumentEntity,
   EpicDocumentEntity,
@@ -28,16 +28,22 @@ import type { DocumentService } from '../../database/services/document-service';
 import { SPARCEngineCore } from '../../sparc/core/sparc-engine';
 import type { ProjectSpecification, SPARCPhase, SPARCProject } from '../../sparc/types/sparc-types';
 import type {
+  CompletedStepInfo,
   StepExecutionResult,
   WorkflowContext,
   WorkflowData,
   WorkflowDefinition,
   WorkflowEngineConfig,
+  WorkflowError,
   WorkflowExecutionOptions,
+  WorkflowMetrics,
   WorkflowState,
+  WorkflowStatus,
+  WorkflowStepResults,
+  WorkflowStepState,
 } from '../../types/workflow-types';
 
-const logger = createLogger('ProductWorkflow');
+const logger = createLogger({ prefix: 'ProductWorkflow' });
 
 /**
  * Product Flow Step Types (Business Flow)
@@ -52,9 +58,35 @@ export type ProductFlowStep =
   | 'sparc-integration';
 
 /**
+ * Mutable workflow state interface for runtime modifications
+ */
+export interface MutableWorkflowState {
+  id: string;
+  definition: WorkflowDefinition;
+  status: WorkflowStatus;
+  context: WorkflowContext;
+  currentStepIndex: number;
+  steps: readonly WorkflowStepState[];
+  stepResults: WorkflowStepResults;
+  completedSteps: readonly CompletedStepInfo[];
+  startTime: Date;
+  endTime?: Date;
+  pausedAt?: Date;
+  error?: WorkflowError;
+  progress: {
+    percentage: number;
+    completedSteps: number;
+    totalSteps: number;
+    estimatedTimeRemaining?: number;
+    currentStepName?: string;
+  };
+  metrics: WorkflowMetrics;
+}
+
+/**
  * Integrated Product Flow + SPARC Workflow State
  */
-export interface ProductWorkflowState extends WorkflowState {
+export interface ProductWorkflowState extends MutableWorkflowState {
   productFlow: {
     currentStep: ProductFlowStep;
     completedSteps: ProductFlowStep[];
@@ -91,7 +123,7 @@ export interface ProductWorkflowConfig extends WorkflowEngineConfig {
  * applied as the technical implementation tool WITHIN Features and Tasks.
  */
 export class ProductWorkflowEngine extends EventEmitter {
-  private memory: UnifiedMemorySystem;
+  private memory: MemorySystem;
   private documentService: DocumentService;
   private sparcEngine: SPARCEngineCore;
   private activeWorkflows = new Map<string, ProductWorkflowState>();
@@ -103,7 +135,7 @@ export class ProductWorkflowEngine extends EventEmitter {
   private config: ProductWorkflowConfig;
 
   constructor(
-    memory: UnifiedMemorySystem,
+    memory: MemorySystem,
     documentService: DocumentService,
     config: Partial<ProductWorkflowConfig> = {}
   ) {
@@ -251,7 +283,7 @@ export class ProductWorkflowEngine extends EventEmitter {
     this.activeWorkflows.set(workflowId, workflow);
 
     // Store in memory system
-    await this.memory.store(`product-workflow:${workflowId}`, workflow, 'workflows');
+    await this.memory.store(`product-workflow:${workflowId}`, workflow as any, 'workflows');
 
     // Start execution asynchronously
     this.executeProductWorkflow(workflow, options).catch((error) => {
@@ -270,7 +302,10 @@ export class ProductWorkflowEngine extends EventEmitter {
     options: WorkflowExecutionOptions = {}
   ): Promise<void> {
     try {
-      workflow.status = 'running';
+      // Create a new workflow state with updated status
+      const updatedWorkflow = { ...workflow, status: 'running' as WorkflowStatus };
+      this.activeWorkflows.set(workflow.id, updatedWorkflow);
+      workflow = updatedWorkflow;
       await this.saveWorkflow(workflow);
 
       // Apply execution options
@@ -317,21 +352,33 @@ export class ProductWorkflowEngine extends EventEmitter {
       // Final validation and completion
       if (workflow.status === 'running') {
         await this.validateProductWorkflowCompletion(workflow);
-        workflow.status = 'completed';
-        workflow.progress.percentage = 100;
-        workflow.endTime = new Date();
+        // Create updated workflow state
+        const completedWorkflow = {
+          ...workflow,
+          status: 'completed' as WorkflowStatus,
+          progress: { ...workflow.progress, percentage: 100 },
+          endTime: new Date(),
+        };
+        this.activeWorkflows.set(workflow.id, completedWorkflow);
+        workflow = completedWorkflow;
 
         this.emit('product-workflow:completed', { workflowId: workflow.id });
         logger.info(`✅ Product workflow ${workflow.id} completed successfully`);
       }
     } catch (error) {
-      workflow.status = 'failed';
-      workflow.error = {
-        code: 'PRODUCT_WORKFLOW_FAILED',
-        message: (error as Error).message,
-        recoverable: false,
+      // Create failed workflow state
+      const failedWorkflow = {
+        ...workflow,
+        status: 'failed' as WorkflowStatus,
+        error: {
+          code: 'PRODUCT_WORKFLOW_FAILED',
+          message: (error as Error).message,
+          recoverable: false,
+        },
+        endTime: new Date(),
       };
-      workflow.endTime = new Date();
+      this.activeWorkflows.set(workflow.id, failedWorkflow);
+      workflow = failedWorkflow;
 
       this.emit('product-workflow:failed', { workflowId: workflow.id, error });
       logger.error(`❌ Product workflow ${workflow.id} failed:`, error);
@@ -452,6 +499,13 @@ export class ProductWorkflowEngine extends EventEmitter {
         current_sparc_phase: 'specification',
         sparc_progress_percentage: 0,
         use_sparc_methodology: true,
+        sparc_domain: this.mapFeatureTypeToSPARCDomain(feature.feature_type),
+        sparc_complexity: this.assessFeatureComplexity(feature),
+        integration_health: {
+          sync_status: 'synced' as const,
+          last_sync_date: new Date(),
+          sync_errors: [],
+        },
       };
     }
 
@@ -470,7 +524,9 @@ export class ProductWorkflowEngine extends EventEmitter {
       'completion',
     ];
 
-    for (const [featureId, sparcProject] of workflow.sparcIntegration.sparcProjects) {
+    for (const [featureId, sparcProject] of Array.from(
+      workflow.sparcIntegration.sparcProjects.entries()
+    )) {
       logger.info(`🚀 Executing SPARC phases for feature ${featureId}`);
 
       for (const phase of sparcPhases) {
@@ -735,7 +791,7 @@ export class ProductWorkflowEngine extends EventEmitter {
     if (!this.config.enablePersistence) return;
 
     try {
-      await this.memory.store(`product-workflow:${workflow.id}`, workflow, 'workflows');
+      await this.memory.store(`product-workflow:${workflow.id}`, workflow as any, 'workflows');
     } catch (error) {
       logger.error(`Failed to save product workflow ${workflow.id}:`, error);
     }
@@ -748,7 +804,7 @@ export class ProductWorkflowEngine extends EventEmitter {
 
       for (const [key, workflow] of Object.entries(workflows)) {
         try {
-          const workflowState = workflow as ProductWorkflowState;
+          const workflowState = workflow as unknown as ProductWorkflowState;
 
           if (workflowState.status === 'running' || workflowState.status === 'paused') {
             this.activeWorkflows.set(workflowState.id, workflowState);
@@ -780,9 +836,14 @@ export class ProductWorkflowEngine extends EventEmitter {
   async pauseProductWorkflow(workflowId: string): Promise<{ success: boolean; error?: string }> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (workflow && workflow.status === 'running') {
-      workflow.status = 'paused';
-      workflow.pausedAt = new Date();
-      await this.saveWorkflow(workflow);
+      // Create paused workflow state
+      const pausedWorkflow = {
+        ...workflow,
+        status: 'paused' as WorkflowStatus,
+        pausedAt: new Date(),
+      };
+      this.activeWorkflows.set(workflowId, pausedWorkflow);
+      await this.saveWorkflow(pausedWorkflow);
       this.emit('product-workflow:paused', { workflowId });
       return { success: true };
     }
@@ -792,11 +853,16 @@ export class ProductWorkflowEngine extends EventEmitter {
   async resumeProductWorkflow(workflowId: string): Promise<{ success: boolean; error?: string }> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (workflow && workflow.status === 'paused') {
-      workflow.status = 'running';
-      delete workflow.pausedAt;
+      // Create resumed workflow state
+      const { pausedAt, ...resumedWorkflow } = workflow;
+      const runningWorkflow = {
+        ...resumedWorkflow,
+        status: 'running' as WorkflowStatus,
+      };
+      this.activeWorkflows.set(workflowId, runningWorkflow);
 
       // Resume execution
-      this.executeProductWorkflow(workflow).catch((error) => {
+      this.executeProductWorkflow(runningWorkflow).catch((error) => {
         logger.error(`Product workflow ${workflowId} failed after resume:`, error);
       });
 

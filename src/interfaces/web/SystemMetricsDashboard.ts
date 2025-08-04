@@ -283,19 +283,15 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   /** Display console status (fallback) */
   private displayConsoleStatus(status: any): void {
     // Overall health
-    const healthEmoji =
+    const _healthEmoji =
       status.health.overall === 'healthy' ? '✅' : status.health.overall === 'warning' ? '⚠️' : '❌';
-    console.log(`System Health: ${healthEmoji} ${status.health.overall}`);
 
     // Alerts
     if (status.health.alerts.length > 0) {
-      console.log('\n🚨 Active Alerts:');
       status.health.alerts.forEach((alert: any) => {
-        const alertEmoji = alert.level === 'error' ? '❌' : alert.level === 'warning' ? '⚠️' : 'ℹ️';
-        console.log(`  ${alertEmoji} ${alert.message} (${alert.level})`);
+        const _alertEmoji = alert.level === 'error' ? '❌' : alert.level === 'warning' ? '⚠️' : 'ℹ️';
       });
     } else {
-      console.log('\n✅ No active alerts');
     }
   }
 

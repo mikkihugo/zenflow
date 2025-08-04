@@ -5,6 +5,9 @@
 
 import { createLogger } from '../core/logger';
 
+// TODO: Use dependency injection for logger
+// Should inject ILogger from DI container instead of creating directly
+// Example: constructor(@inject(CORE_TOKENS.Logger) private logger: ILogger) {}
 const logger = createLogger({ prefix: 'Neural' });
 
 export interface NeuralConfig {

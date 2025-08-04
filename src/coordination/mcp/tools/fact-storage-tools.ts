@@ -3,7 +3,7 @@
  * Tools for managing FACT storage performance, cache optimization, and maintenance
  */
 
-import { createLogger } from '@core/logger';
+import { createLogger } from '../../../core/logger';
 import type { MCPTool, MCPToolResult } from '../types/mcp-types';
 import { FACTStorageSystem } from './fact-placeholders';
 

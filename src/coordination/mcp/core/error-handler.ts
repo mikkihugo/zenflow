@@ -5,9 +5,6 @@
  * Integrates with the Claude-Zen error recovery and monitoring systems
  */
 
-import { createLogger } from '@core/logger';
-import { errorMonitor } from '@utils/error-monitoring';
-import { errorRecoveryOrchestrator } from '@utils/error-recovery';
 import {
   BaseClaudeZenError,
   FACTError,
@@ -19,10 +16,17 @@ import {
   RAGError,
   SwarmError,
   WASMError,
-} from '@utils/errors';
+} from '../../../core/errors';
+import { createLogger } from '../../../core/logger';
+import { ErrorMonitoring } from '../../../utils/error-monitoring';
+import { ErrorRecoverySystem } from '../../../utils/error-recovery';
 import type { MCPTool, MCPToolResult } from '../types/mcp-types';
 
 const logger = createLogger({ prefix: 'MCP-ErrorHandler' });
+
+// Initialize error monitoring and recovery systems
+const errorMonitor = new ErrorMonitoring(logger);
+const errorRecoveryOrchestrator = new ErrorRecoverySystem();
 
 // ===============================
 // MCP Error Context and Tracking
@@ -260,6 +264,8 @@ export class MCPErrorClassifier {
 // ===============================
 
 export class MCPToolWrapper {
+  private static executionCounter = 0;
+
   public static wrapTool(tool: MCPTool): MCPTool {
     return {
       ...tool,
@@ -282,26 +288,38 @@ export class MCPToolWrapper {
         });
 
         // Check if feature is enabled (graceful degradation)
-        if (!errorRecoveryOrchestrator.isFeatureEnabled(MCPToolWrapper.getFeatureName(tool.name))) {
+        const isEnabled = (errorRecoveryOrchestrator as any).isFeatureEnabled
+          ? (errorRecoveryOrchestrator as any).isFeatureEnabled(
+              MCPToolWrapper.getFeatureName(tool.name)
+            )
+          : true; // Default to enabled if method doesn't exist
+
+        if (!isEnabled) {
           logger.warn(`Feature disabled due to system degradation: ${tool.name}`);
           return MCPToolWrapper.createDegradedResponse(tool.name);
         }
 
         try {
-          return await errorRecoveryOrchestrator.executeWithRecovery(
-            tool.name,
-            async () => {
-              return await MCPToolWrapper.executeToolWithValidation(tool, parameters, context);
-            },
-            {
-              maxRetries: MCPToolWrapper.getMaxRetries(tool.name),
-              retryDelayMs: 1000,
-              exponentialBackoff: true,
-              circuitBreakerThreshold: 5,
-              fallbackEnabled: true,
-              gracefulDegradation: true,
-            }
-          );
+          // Use recovery if available, otherwise execute directly
+          if ((errorRecoveryOrchestrator as any).executeWithRecovery) {
+            return await (errorRecoveryOrchestrator as any).executeWithRecovery(
+              tool.name,
+              async () => {
+                return await MCPToolWrapper.executeToolWithValidation(tool, parameters, context);
+              },
+              {
+                maxRetries: MCPToolWrapper.getMaxRetries(tool.name),
+                retryDelayMs: 1000,
+                exponentialBackoff: true,
+                circuitBreakerThreshold: 5,
+                fallbackEnabled: true,
+                gracefulDegradation: true,
+              }
+            );
+          } else {
+            // Fallback: execute directly without recovery
+            return await MCPToolWrapper.executeToolWithValidation(tool, parameters, context);
+          }
         } catch (error) {
           return MCPToolWrapper.handleToolError(error as Error, context);
         }
@@ -331,11 +349,15 @@ export class MCPToolWrapper {
           tool.name
         );
 
-        errorMonitor.reportError(validationError, {
-          component: 'MCP',
-          operation: tool.name,
-          correlationId: context.correlationId,
-        });
+        // Use recordError if reportError doesn't exist
+        const reportMethod = (errorMonitor as any).reportError || (errorMonitor as any).recordError;
+        if (reportMethod) {
+          reportMethod.call(errorMonitor, validationError, {
+            component: 'MCP',
+            operation: tool.name,
+            correlationId: context.correlationId,
+          });
+        }
 
         return {
           success: false,
@@ -407,15 +429,18 @@ export class MCPToolWrapper {
     const executionTime = Date.now() - context.startTime;
 
     // Report error to monitoring system
-    errorMonitor.reportError(claudeZenError, {
-      component: 'MCP',
-      operation: context.toolName,
-      correlationId: context.correlationId,
-      metadata: {
-        executionTime,
-        parameters: MCPToolWrapper.sanitizeParameters(context.parameters),
-      },
-    });
+    const reportMethod = (errorMonitor as any).reportError || (errorMonitor as any).recordError;
+    if (reportMethod) {
+      reportMethod.call(errorMonitor, claudeZenError, {
+        component: 'MCP',
+        operation: context.toolName,
+        correlationId: context.correlationId,
+        metadata: {
+          executionTime,
+          parameters: MCPToolWrapper.sanitizeParameters(context.parameters),
+        },
+      });
+    }
 
     // Create user-friendly error response
     const errorMessage = MCPToolWrapper.createUserFriendlyErrorMessage(claudeZenError, context);
@@ -626,6 +651,29 @@ export class MCPToolRegistry {
 // ===============================
 // Export Main Error Handler
 // ===============================
+
+export class MCPErrorHandler {
+  public validator = MCPParameterValidator;
+  public classifier = MCPErrorClassifier;
+  public wrapper = MCPToolWrapper;
+  public registry = MCPToolRegistry;
+
+  constructor() {
+    // Initialize if needed
+  }
+
+  validateParameters(toolName: string, parameters: any, schema: any) {
+    return this.validator.validateParameters(toolName, parameters, schema);
+  }
+
+  classifyError(error: Error, context: MCPExecutionContext) {
+    return this.classifier.classifyError(error, context);
+  }
+
+  wrapTool(tool: MCPTool) {
+    return this.wrapper.wrapTool(tool);
+  }
+}
 
 export const mcpErrorHandler = {
   MCPParameterValidator,

@@ -36,7 +36,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     this.startLoadBalancer();
     this.isActive = true;
     this.emit('initialized');
-    this.logger.log(
+    this._logger.info(
       'Orchestrator initialized with full strategic capabilities and persistent database.'
     );
   }
@@ -267,13 +267,13 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
 
   // ISwarmCoordinator interface implementation
   async initializeSwarm(options: any): Promise<void> {
-    this.logger.info('Initializing swarm with options', options);
+    this._logger.info('Initializing swarm with options', options);
     await this.initialize();
   }
 
   async addAgent(config: any): Promise<string> {
     const agentId = `agent_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    this.logger.info(`Adding agent with config`, { agentId, config });
+    this._logger.info(`Adding agent with config`, { agentId, config });
 
     // Create agent record in database
     await this.db.execute(
@@ -285,7 +285,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
   }
 
   async removeAgent(agentId: string): Promise<void> {
-    this.logger.info(`Removing agent`, { agentId });
+    this._logger.info(`Removing agent`, { agentId });
 
     // Update agent status in database
     await this.db.execute('UPDATE agents SET status = ?, removed_at = ? WHERE id = ?', [
@@ -297,7 +297,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
 
   async assignTask(task: any): Promise<string> {
     const taskId = `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    this.logger.info(`Assigning task`, { taskId, task });
+    this._logger.info(`Assigning task`, { taskId, task });
 
     // Submit task through existing method
     await this.submitTask({ ...task, id: taskId });

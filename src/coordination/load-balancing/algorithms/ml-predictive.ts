@@ -3,7 +3,7 @@
  * Uses ML models to predict optimal agent selection and performance
  */
 
-import type { ILoadBalancingAlgorithm, IPredictionEngine } from '../interfaces';
+import type { LoadBalancingAlgorithm, PredictionEngine } from '../interfaces';
 import type {
   Agent,
   HistoricalData,
@@ -47,13 +47,13 @@ interface ModelPerformance {
   sampleSize: number;
 }
 
-export class MLPredictiveAlgorithm implements ILoadBalancingAlgorithm {
+export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   public readonly name = 'ml_predictive';
 
   private models: Map<string, PredictionModel> = new Map();
   private historicalData: HistoricalData[] = [];
   private modelPerformance: Map<string, ModelPerformance> = new Map();
-  private predictionEngine: IPredictionEngine;
+  private predictionEngine: PredictionEngine;
   private config = {
     modelTypes: ['linear', 'neural', 'ensemble'] as const,
     maxHistorySize: 10000,
@@ -70,7 +70,7 @@ export class MLPredictiveAlgorithm implements ILoadBalancingAlgorithm {
     adaptiveLearningRate: 0.01,
   };
 
-  constructor(predictionEngine?: IPredictionEngine) {
+  constructor(predictionEngine?: PredictionEngine) {
     this.predictionEngine = predictionEngine || new DefaultPredictionEngine();
     this.initializeModels();
   }
@@ -667,7 +667,7 @@ export class MLPredictiveAlgorithm implements ILoadBalancingAlgorithm {
 /**
  * Default prediction engine implementation
  */
-class DefaultPredictionEngine implements IPredictionEngine {
+class DefaultPredictionEngine implements PredictionEngine {
   async predict(features: Record<string, number>): Promise<number> {
     // Simple linear model for demonstration
     const weights = {

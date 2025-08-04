@@ -11,14 +11,14 @@ async function startClaudeZenSystem() {
     cors: true,
     realTime: true,
   });
-  
+
   console.warn('🚀 Starting Claude Zen Complete System...');
   console.warn('🧠 Initializing AI-driven development platform...');
-  
+
   try {
     // Start web interface (includes API, MCP, WebSocket)
     await webInterface.start();
-    
+
     console.warn('✅ Claude Zen System started successfully!');
     console.warn('🌐 System available at: http://localhost:3000');
     console.warn('');

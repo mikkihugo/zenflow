@@ -160,27 +160,44 @@ export const batchExecuteTool: MCPTool = {
       }
 
       // Pre-process operations by type
-      const fileOps = batchOps.filter(op => op.type === 'file');
-      const swarmOps = batchOps.filter(op => op.type === 'swarm');
-      const otherOps = batchOps.filter(op => !['file', 'swarm'].includes(op.type));
+      const fileOps = batchOps.filter((op) => op.type === 'file');
+      const swarmOps = batchOps.filter((op) => op.type === 'swarm');
+      const otherOps = batchOps.filter((op) => !['file', 'swarm'].includes(op.type));
 
       // Execute batch operations
       const startTime = Date.now();
-      
+
       // Handle file operations with specialized operator
       if (fileOps.length > 0) {
-        await fileBatchOperator.executeFileBatch(fileOps);
+        const fileOperations = fileOps.map((op) => ({
+          type: op.operation as any,
+          path: op.params.path as string,
+          content: op.params.content as string,
+          destination: op.params.destination as string,
+          encoding: op.params.encoding as BufferEncoding,
+          mode: op.params.mode as number,
+        }));
+        await fileBatchOperator.executeBatch(fileOperations);
       }
-      
+
       // Handle swarm operations with specialized coordinator
       if (swarmOps.length > 0) {
-        await swarmBatchCoordinator.executeSwarmBatch(swarmOps);
+        const swarmOperations = swarmOps.map((op) => ({
+          type: op.operation as any,
+          swarmId: op.params.swarmId as string,
+          agentType: op.params.agentType as any,
+          agentCount: op.params.agentCount as number,
+          topology: op.params.topology as any,
+          task: op.params.task as any,
+          coordination: op.params.coordination as any,
+        }));
+        await swarmBatchCoordinator.executeBatch(swarmOperations);
       }
-      
+
       // Handle remaining operations with standard engine
       const summary = await engineToUse.executeBatch(otherOps);
       const results = engineToUse.getResults();
-      
+
       // Calculate execution time
       const executionTime = Date.now() - startTime;
       summary.executionTime = executionTime;

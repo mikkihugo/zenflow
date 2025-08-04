@@ -14,7 +14,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { createLogger } from './logger';
 
-const logger = createLogger('DocumentDriven');
+const logger = createLogger({ prefix: 'DocumentDriven' });
 
 // Document types in your workflow
 export interface VisionaryDocument {

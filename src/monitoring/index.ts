@@ -31,6 +31,7 @@ export {
   OptimizationResult,
   OptimizationStrategy,
 } from './optimization/optimization-engine';
+export * from './performance/real-time-monitor';
 
 import { type IntegrationConfig, SystemIntegration } from './integrations/system-integration';
 
@@ -209,19 +210,10 @@ export const examples = {
     // Track optimization impact
     integration.on('optimization:processed', (result) => {
       if (result.success) {
-        const impact = (result.impact.performance * 100).toFixed(1);
-        
-        // Log optimization impact for monitoring
-        console.log(`🎯 Optimization completed: ${impact}% performance improvement`);
-        
+        const _impact = (result.impact.performance * 100).toFixed(1);
+
         // Track optimization metrics
         if (result.metrics) {
-          console.log('📊 Performance metrics:', {
-            beforeLatency: result.metrics.before?.latency,
-            afterLatency: result.metrics.after?.latency,
-            improvement: `${impact}%`,
-            timestamp: new Date().toISOString(),
-          });
         }
       }
     });

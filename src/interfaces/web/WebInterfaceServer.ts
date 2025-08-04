@@ -38,6 +38,9 @@ export interface WebConfig {
  * Main web interface server coordinating all web functionality
  */
 export class WebInterfaceServer {
+  // TODO: Use dependency injection for logger
+  // Should inject ILogger from DI container instead of creating directly
+  // Example: constructor(@inject(CORE_TOKENS.Logger) private logger: ILogger) {}
   private logger = createLogger('WebServer');
   private config: Required<WebConfig>;
   private app: Express;
@@ -46,6 +49,16 @@ export class WebInterfaceServer {
   private webSocketCoordinator: WebSocketCoordinator;
   private daemonManager: DaemonProcessManager;
 
+  // TODO: Use dependency injection for better testability and loose coupling
+  // Should inject dependencies instead of creating them directly
+  // Example:
+  // constructor(
+  //   @inject(CORE_TOKENS.Logger) private logger: ILogger,
+  //   @inject(WEB_TOKENS.SocketIO) private io: SocketIOServer,
+  //   @inject(WEB_TOKENS.WebSocketCoordinator) private webSocketCoordinator: WebSocketCoordinator,
+  //   @inject(WEB_TOKENS.DaemonManager) private daemonManager: DaemonProcessManager,
+  //   @inject(WEB_TOKENS.Config) config: WebConfig = {}
+  // ) {
   constructor(config: WebConfig = {}) {
     this.config = {
       port: 3000, // Changed from 3456 to 3000 as per requirement
@@ -234,13 +247,10 @@ export class WebInterfaceServer {
    * Start server in daemon mode
    */
   private async startDaemon(): Promise<void> {
-    const processInfo = await this.daemonManager.startDaemon(process.execPath, [
+    const _processInfo = await this.daemonManager.startDaemon(process.execPath, [
       process.argv[1],
       ...process.argv.slice(2).filter((arg) => arg !== '--daemon'),
     ]);
-    
-    console.log(`🚀 Web interface daemon started with PID: ${processInfo.pid}`);
-    console.log(`📊 Dashboard: http://localhost:${this.config.port}`);
   }
 
   /**

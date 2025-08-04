@@ -65,7 +65,7 @@ describe('Neural Models 100% Coverage', () => {
 
       await assert.rejects(
         autoencoder.encode([[1, 2]]), // Wrong dimension
-        /Dimension mismatch/,
+        /Dimension mismatch/
       );
     });
 
@@ -74,7 +74,7 @@ describe('Neural Models 100% Coverage', () => {
 
       await assert.rejects(
         autoencoder.decode([[1, 2]]), // Wrong latent dimension
-        /Latent dimension mismatch/,
+        /Latent dimension mismatch/
       );
     });
 
@@ -115,7 +115,7 @@ describe('Neural Models 100% Coverage', () => {
         cnn.forward({
           image: new Array(3).fill(new Array(32).fill(0)), // Missing dimension
         }),
-        /Invalid image dimensions/,
+        /Invalid image dimensions/
       );
     });
 
@@ -124,7 +124,7 @@ describe('Neural Models 100% Coverage', () => {
 
       await assert.rejects(
         cnn.forward({ image: new Array(3).fill(new Array(32).fill(new Array(32).fill(0))) }),
-        /Invalid pooling size/,
+        /Invalid pooling size/
       );
     });
 
@@ -175,7 +175,7 @@ describe('Neural Models 100% Coverage', () => {
           nodes: [[1, 2, 3]],
           edges: null,
         }),
-        /Invalid edges/,
+        /Invalid edges/
       );
     });
 
@@ -219,7 +219,7 @@ describe('Neural Models 100% Coverage', () => {
           ],
           edges: [[0, 1]],
         }),
-        /Message passing disabled/,
+        /Message passing disabled/
       );
     });
   });
@@ -241,7 +241,7 @@ describe('Neural Models 100% Coverage', () => {
           sequence: [[1, 2, 3]], // Wrong input size
           lengths: [10], // Mismatched length
         }),
-        /Sequence length mismatch/,
+        /Sequence length mismatch/
       );
     });
 
@@ -325,7 +325,7 @@ describe('Neural Models 100% Coverage', () => {
         resnet.forward({
           image: new Array(2).fill(new Array(224).fill(new Array(224).fill(0))), // Wrong channels
         }),
-        /Channel dimension mismatch/,
+        /Channel dimension mismatch/
       );
     });
   });
@@ -357,7 +357,7 @@ describe('Neural Models 100% Coverage', () => {
           input: [[1, 2, 0, 0]], // Padded sequence
           paddingMask: [[1, 1, 1, 1]], // Wrong mask (no padding indicated)
         }),
-        /Padding mask mismatch/,
+        /Padding mask mismatch/
       );
     });
 
@@ -369,7 +369,7 @@ describe('Neural Models 100% Coverage', () => {
         transformer.forward({
           input: [longSequence],
         }),
-        /Sequence too long/,
+        /Sequence too long/
       );
     });
 
@@ -380,7 +380,7 @@ describe('Neural Models 100% Coverage', () => {
         transformer.forward({
           input: [[1, 2, 3, 4]],
         }),
-        /Attention head failure/,
+        /Attention head failure/
       );
     });
 
@@ -408,7 +408,7 @@ describe('Neural Models 100% Coverage', () => {
 
       await assert.rejects(
         ensemblePredict(ensemble, { data: [1, 2, 3] }),
-        /Incompatible model types/,
+        /Incompatible model types/
       );
     });
   });

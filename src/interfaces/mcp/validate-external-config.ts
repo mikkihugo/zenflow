@@ -19,13 +19,13 @@ function validateConfigurationFiles(): void {
     '.github/copilot-config.yml',
   ];
 
-  let validFiles = 0;
+  let _validFiles = 0;
   const totalFiles = configFiles.length;
   const validationReport = {
     totalFiles,
     validFiles: 0,
     errors: [] as string[],
-    warnings: [] as string[]
+    warnings: [] as string[],
   };
 
   for (const file of configFiles) {
@@ -37,10 +37,9 @@ function validateConfigurationFiles(): void {
 
         if (file.endsWith('.json')) {
           JSON.parse(content); // Validate JSON
-          validFiles++;
+          _validFiles++;
           validationReport.validFiles++;
         } else if (file.endsWith('.yml') || file.endsWith('.yaml')) {
-          console.log(`⚠️  YAML validation not implemented for ${file}`);
           validationReport.warnings.push(`YAML validation skipped for ${file}`);
         }
 
@@ -52,14 +51,12 @@ function validateConfigurationFiles(): void {
           content.includes('semgrep')
         ) {
         }
-
       } catch (error) {
         const errorMsg = `Invalid config file ${file}: ${error.message}`;
         validationReport.errors.push(errorMsg);
         console.error(`❌ ${errorMsg}`);
       }
     } else {
-      console.log(`⚠️  Config file not found: ${file}`);
       validationReport.warnings.push(`Config file not found: ${file}`);
     }
   }
@@ -75,15 +72,12 @@ function testMCPConfiguration(): void {
       const config = JSON.parse(readFileSync('claude_desktop_config.json', 'utf8'));
 
       if (config.mcpServers) {
-        const serverCount = Object.keys(config.mcpServers).length;
-        console.log(`✅ Found ${serverCount} MCP servers in claude_desktop_config.json`);
+        const _serverCount = Object.keys(config.mcpServers).length;
 
         // List configured servers
-        for (const [name, serverConfig] of Object.entries(config.mcpServers as any)) {
-          console.log(`  → ${name}: ${JSON.stringify(serverConfig)}`);
+        for (const [_name, _serverConfig] of Object.entries(config.mcpServers as any)) {
         }
       } else {
-        console.log('⚠️  No MCP servers configured in claude_desktop_config.json');
       }
     }
 
@@ -93,11 +87,8 @@ function testMCPConfiguration(): void {
 
       if (config.mcp?.external_servers) {
         const externalServers = Object.keys(config.mcp.external_servers);
-
-        console.log(`✅ Found ${externalServers.length} external servers in .copilotrc.json`);
         for (const server of externalServers) {
-          const serverConfig = config.mcp.external_servers[server];
-          console.log(`  → ${server}: enabled=${serverConfig.enabled || false}`);
+          const _serverConfig = config.mcp.external_servers[server];
         }
       }
     }

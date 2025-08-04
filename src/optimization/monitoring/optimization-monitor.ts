@@ -438,7 +438,10 @@ export class OptimizationMonitor extends EventEmitter {
       const current = currentMetrics[domain] || metrics[metrics.length - 1];
       let domainHealth: 'healthy' | 'warning' | 'critical' = 'healthy';
 
-      if (current.memoryUsage > thresholds.memoryUsage || current.errorRate > thresholds.errorRate) {
+      if (
+        current.memoryUsage > thresholds.memoryUsage ||
+        current.errorRate > thresholds.errorRate
+      ) {
         domainHealth = 'critical';
       } else if (
         current.latency > thresholds.latency ||

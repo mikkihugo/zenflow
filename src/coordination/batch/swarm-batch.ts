@@ -70,7 +70,6 @@ export class SwarmBatchCoordinator {
     };
 
     this.activeSwarms = new Map();
-    this.operationQueue = [];
   }
 
   /**
@@ -156,7 +155,10 @@ export class SwarmBatchCoordinator {
         if (result.status === 'fulfilled') {
           results.push(result.value);
         } else {
-          results.push(this.createErrorResult(chunk[index], result.reason));
+          const operation = chunk[index];
+          if (operation) {
+            results.push(this.createErrorResult(operation, result.reason));
+          }
         }
       });
     }
@@ -230,7 +232,10 @@ export class SwarmBatchCoordinator {
           if (result.status === 'fulfilled') {
             results.push(result.value);
           } else {
-            results.push(this.createErrorResult(chunk[index], result.reason));
+            const operation = chunk[index];
+            if (operation) {
+              results.push(this.createErrorResult(operation, result.reason));
+            }
           }
         });
       }
@@ -258,7 +263,10 @@ export class SwarmBatchCoordinator {
         if (result.status === 'fulfilled') {
           results.push(result.value);
         } else {
-          results.push(this.createErrorResult(chunk[index], result.reason));
+          const operation = chunk[index];
+          if (operation) {
+            results.push(this.createErrorResult(operation, result.reason));
+          }
         }
       });
     }
@@ -472,36 +480,41 @@ export class SwarmBatchCoordinator {
 
     // Execute task coordination based on strategy
     const taskResults: Array<{ agentId: string; result: unknown; status: string }> = [];
-    
+
     if (strategy === 'parallel') {
       // Execute all agent tasks in parallel with timeout
-      const promises = this.activeAgents.map(async (agentId) => {
-        const timeoutPromise = new Promise((_, reject) => 
+      const promises = swarmState.agents.map(async (agent) => {
+        const timeoutPromise = new Promise((_, reject) =>
           setTimeout(() => reject(new Error('Timeout')), timeout)
         );
-        
+
         try {
           const result = await Promise.race([
-            this.executeTaskOnAgent(agentId, operation),
-            timeoutPromise
+            this.executeTaskOnAgent(agent.id, operation),
+            timeoutPromise,
           ]);
-          return { agentId, result, status: 'completed' };
+          return { agentId: agent.id, result, status: 'completed' };
         } catch (error) {
-          return { agentId, result: error, status: 'failed' };
+          return { agentId: agent.id, result: error, status: 'failed' };
         }
       });
-      
+
       const results = await Promise.allSettled(promises);
-      taskResults.push(...results.map(r => r.status === 'fulfilled' ? r.value : 
-        { agentId: 'unknown', result: r.reason, status: 'failed' }));
+      taskResults.push(
+        ...results.map((r) =>
+          r.status === 'fulfilled'
+            ? r.value
+            : { agentId: 'unknown', result: r.reason, status: 'failed' }
+        )
+      );
     } else {
       // Sequential execution for other strategies
-      for (const agentId of this.activeAgents) {
+      for (const agent of swarmState.agents) {
         try {
-          const result = await this.executeTaskOnAgent(agentId, operation);
-          taskResults.push({ agentId, result, status: 'completed' });
+          const result = await this.executeTaskOnAgent(agent.id, operation);
+          taskResults.push({ agentId: agent.id, result, status: 'completed' });
         } catch (error) {
-          taskResults.push({ agentId, result: error, status: 'failed' });
+          taskResults.push({ agentId: agent.id, result: error, status: 'failed' });
         }
       }
     }
@@ -638,6 +651,21 @@ export class SwarmBatchCoordinator {
   }
 
   /**
+   * Execute task on a specific agent
+   */
+  private async executeTaskOnAgent(agentId: string, operation: SwarmOperation): Promise<unknown> {
+    // Simulate task execution on agent
+    await this.simulateOperation(Math.random() * 300 + 100);
+
+    return {
+      agentId,
+      taskId: operation.task?.id || 'unknown',
+      result: `Task completed by ${agentId}`,
+      timestamp: Date.now(),
+    };
+  }
+
+  /**
    * Convert SwarmOperation to BatchOperation for use with BatchEngine
    */
   static createBatchOperations(swarmOps: SwarmOperation[]): BatchOperation[] {
@@ -668,7 +696,7 @@ export class SwarmBatchCoordinator {
    */
   getTotalActiveAgents(): number {
     let total = 0;
-    for (const swarm of this.activeSwarms.values()) {
+    for (const swarm of Array.from(this.activeSwarms.values())) {
       total += swarm.agents.length;
     }
     return total;

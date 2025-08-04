@@ -36,7 +36,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     const functionalRequirements = await this.extractFunctionalRequirements(context);
     const nonFunctionalRequirements = await this.extractNonFunctionalRequirements(context);
 
-    return [...functionalRequirements, ...nonFunctionalRequirements] as RequirementSet;
+    return [...functionalRequirements, ...nonFunctionalRequirements];
   }
 
   /**
@@ -52,26 +52,30 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   /**
    * Define comprehensive acceptance criteria for all requirements
    */
-  async defineAcceptanceCriteria(requirements: RequirementSet): Promise<AcceptanceCriterion[]> {
+  async defineAcceptanceCriteria(
+    requirements: (FunctionalRequirement | NonFunctionalRequirement)[]
+  ): Promise<AcceptanceCriterion[]> {
     const acceptanceCriteria: AcceptanceCriterion[] = [];
 
     for (const requirement of requirements) {
       if ('testCriteria' in requirement) {
         // Functional requirement
+        const funcReq = requirement as FunctionalRequirement;
         acceptanceCriteria.push({
           id: nanoid(),
-          requirement: requirement.id,
-          criteria: requirement.testCriteria,
-          testMethod: this.determineTestMethod(requirement),
+          requirement: funcReq.id,
+          criteria: funcReq.testCriteria,
+          testMethod: this.determineTestMethod(funcReq),
         });
       } else {
         // Non-functional requirement
+        const nonFuncReq = requirement as NonFunctionalRequirement;
         acceptanceCriteria.push({
           id: nanoid(),
-          requirement: requirement.id,
+          requirement: nonFuncReq.id,
           criteria: [
-            `System meets ${requirement.title} requirements`,
-            ...Object.entries(requirement.metrics).map(([key, value]) => `${key}: ${value}`),
+            `System meets ${nonFuncReq.title} requirements`,
+            ...Object.entries(nonFuncReq.metrics).map(([key, value]) => `${key}: ${value}`),
           ],
           testMethod: 'automated',
         });
@@ -96,7 +100,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     const acceptanceCriteria = await this.defineAcceptanceCriteria([
       ...functionalRequirements,
       ...nonFunctionalRequirements,
-    ] as RequirementSet);
+    ]);
     const successMetrics = this.defineSuccessMetrics(
       functionalRequirements,
       nonFunctionalRequirements
@@ -564,7 +568,14 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   private extractAssumptionsFromAnalysis(analysis: ConstraintAnalysis): ProjectAssumption[] {
-    return analysis.filter((item): item is ProjectAssumption => 'confidence' in item);
+    // Filter out only ProjectAssumption items
+    const assumptions: ProjectAssumption[] = [];
+    for (const item of analysis) {
+      if ('confidence' in item && 'riskIfIncorrect' in item) {
+        assumptions.push(item as ProjectAssumption);
+      }
+    }
+    return assumptions;
   }
 
   private validateHighPriorityRequirements(spec: DetailedSpecification): boolean {

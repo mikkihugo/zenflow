@@ -31,6 +31,17 @@ export interface IDatabase {
   execute(sql: string, params?: any[]): Promise<void>;
   transaction<T>(fn: (db: IDatabase) => Promise<T>): Promise<T>;
   shutdown?(): Promise<void>;
+
+  // Task management methods
+  createTask(task: any): Promise<void>;
+  updateTask(taskId: string, updates: any): Promise<void>;
+  getSwarmTasks(swarmId: string, status?: string): Promise<any[]>;
+
+  // Agent management methods
+  updateAgent(agentId: string, updates: any): Promise<void>;
+
+  // Metrics methods
+  getMetrics(entityId: string, metricType: string): Promise<any[]>;
 }
 
 export interface IHttpClient {

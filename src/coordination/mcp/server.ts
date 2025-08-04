@@ -4,7 +4,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../core/logger';
+import type { ILogger } from '../../core/logger';
 
 export interface MCPConfig {
   port: number;

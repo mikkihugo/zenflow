@@ -1,25 +1,28 @@
 /**
  * AGUI Adapter - Bridges @ag-ui/core with Claude-Zen's human validation needs
- * 
+ *
  * The @ag-ui/core package provides the Agent-User Interaction Protocol.
  * This adapter wraps it to provide the interface expected by our discovery system.
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger } from '@core/logger';
 import * as readline from 'node:readline';
+import { createLogger } from '@core/logger';
 
 const logger = createLogger({ prefix: 'AGUIAdapter' });
 
 // Define our own interface since we're adapting @ag-ui/core
 export interface ValidationQuestion {
   id: string;
-  type: 'relevance' | 'boundary' | 'relationship' | 'naming' | 'priority' | 'confirmation';
+  type: 'relevance' | 'boundary' | 'relationship' | 'naming' | 'priority' | 'checkpoint' | 'review';
   question: string;
   context: any;
   options?: string[];
   allowCustom?: boolean;
-  confidence?: number;
+  confidence: number;
+  priority?: 'critical' | 'high' | 'medium' | 'low';
+  validationReason?: string;
+  expectedImpact?: number;
 }
 
 export interface AGUIInterface {
@@ -36,16 +39,12 @@ export interface AGUIInterface {
 export class TerminalAGUI extends EventEmitter implements AGUIInterface {
   private rl: readline.Interface | null = null;
 
-  constructor() {
-    super();
-  }
-
   private getReadline(): readline.Interface {
     if (!this.rl) {
       this.rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
-        terminal: true
+        terminal: true,
       });
     }
     return this.rl;
@@ -53,36 +52,21 @@ export class TerminalAGUI extends EventEmitter implements AGUIInterface {
 
   async askQuestion(question: ValidationQuestion): Promise<string> {
     const rl = this.getReadline();
-    
-    // Format the question
-    console.log('\n' + '='.repeat(80));
-    console.log(`📋 ${question.type.toUpperCase()} VALIDATION`);
     if (question.confidence !== undefined) {
-      console.log(`   Confidence: ${(question.confidence * 100).toFixed(1)}%`);
     }
-    console.log('='.repeat(80));
-    console.log();
-    console.log(question.question);
 
     // Show options if available
     if (question.options && question.options.length > 0) {
-      console.log('\nOptions:');
-      question.options.forEach((opt, idx) => {
-        console.log(`  ${idx + 1}. ${opt}`);
-      });
+      question.options.forEach((_opt, _idx) => {});
       if (question.allowCustom) {
-        console.log('  0. Enter custom response');
       }
     }
 
     // Show context if available
     if (question.context && Object.keys(question.context).length > 0) {
-      console.log('\nContext:');
-      Object.entries(question.context).forEach(([key, value]) => {
+      Object.entries(question.context).forEach(([_key, value]) => {
         if (typeof value === 'object') {
-          console.log(`  ${key}: ${JSON.stringify(value, null, 2)}`);
         } else {
-          console.log(`  ${key}: ${value}`);
         }
       });
     }
@@ -111,37 +95,33 @@ export class TerminalAGUI extends EventEmitter implements AGUIInterface {
   }
 
   async askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]> {
-    console.log(`\n🔄 Batch validation: ${questions.length} questions`);
     const answers: string[] = [];
-    
+
     for (let i = 0; i < questions.length; i++) {
-      console.log(`\n[${i + 1}/${questions.length}]`);
       const answer = await this.askQuestion(questions[i]);
       answers.push(answer);
     }
-    
+
     return answers;
   }
 
   async showProgress(progress: any): Promise<void> {
-    console.log('\n📊 Progress Update:');
     if (typeof progress === 'object') {
-      Object.entries(progress).forEach(([key, value]) => {
-        console.log(`  ${key}: ${value}`);
-      });
+      Object.entries(progress).forEach(([_key, _value]) => {});
     } else {
-      console.log(`  ${progress}`);
     }
   }
 
-  async showMessage(message: string, type: 'info' | 'warning' | 'error' | 'success' = 'info'): Promise<void> {
-    const icons = {
+  async showMessage(
+    _message: string,
+    _type: 'info' | 'warning' | 'error' | 'success' = 'info'
+  ): Promise<void> {
+    const _icons = {
       info: 'ℹ️ ',
       warning: '⚠️ ',
       error: '❌',
-      success: '✅'
+      success: '✅',
     };
-    console.log(`\n${icons[type]} ${message}`);
   }
 
   close(): void {
@@ -175,14 +155,17 @@ export class MockAGUI implements AGUIInterface {
 
   async askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]> {
     logger.debug(`Mock AGUI Batch: ${questions.length} questions`);
-    return questions.map(q => this.responses.get(q.id) || this.defaultResponse);
+    return questions.map((q) => this.responses.get(q.id) || this.defaultResponse);
   }
 
   async showProgress(progress: any): Promise<void> {
     logger.debug('Mock AGUI Progress:', progress);
   }
 
-  async showMessage(message: string, type?: 'info' | 'warning' | 'error' | 'success'): Promise<void> {
+  async showMessage(
+    message: string,
+    type?: 'info' | 'warning' | 'error' | 'success'
+  ): Promise<void> {
     logger.debug(`Mock AGUI Message [${type || 'info'}]:`, message);
   }
 }
@@ -194,7 +177,6 @@ export function createAGUI(type: 'terminal' | 'mock' = 'terminal'): AGUIInterfac
   switch (type) {
     case 'mock':
       return new MockAGUI();
-    case 'terminal':
     default:
       return new TerminalAGUI();
   }

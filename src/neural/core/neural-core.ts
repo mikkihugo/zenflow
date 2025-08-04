@@ -223,16 +223,14 @@ export class NeuralCLI {
         const isActive = Math.random() > 0.5; // Simulate active status
         const isLast = i === models.length - 1;
 
-        let statusLine = isLast ? `└── ${model.padEnd(12)}` : `├── ${model.padEnd(12)}`;
+        let _statusLine = isLast ? `└── ${model.padEnd(12)}` : `├── ${model.padEnd(12)}`;
 
         // Add accuracy if available
         if (modelInfo.lastAccuracy) {
-          statusLine += ` [${modelInfo.lastAccuracy}% accuracy]`;
+          _statusLine += ` [${modelInfo.lastAccuracy}% accuracy]`;
         } else {
-          statusLine += ` [${isActive ? 'Active' : 'Idle'}]`.padEnd(18);
+          _statusLine += ` [${isActive ? 'Active' : 'Idle'}]`.padEnd(18);
         }
-        
-        console.log(statusLine);
 
         // Add training status
         if (modelInfo.lastTrained) {
@@ -336,10 +334,8 @@ export class NeuralCLI {
 
     // Display header based on pattern type
     if (patternType === 'all') {
-      console.log('🧠 Analyzing All Cognitive Patterns');
     } else {
-      const displayName = patternType.charAt(0).toUpperCase() + patternType.slice(1);
-      console.log(`🧠 Analyzing ${displayName} Pattern`);
+      const _displayName = patternType.charAt(0).toUpperCase() + patternType.slice(1);
     }
 
     try {
@@ -352,17 +348,14 @@ export class NeuralCLI {
         this.displaySpecificPattern(patternType, patterns);
       }
       const activationTypes = ['ReLU', 'Sigmoid', 'Tanh', 'GELU', 'Swish'];
-      console.log('\n📊 Activation Function Usage:');
-      activationTypes.forEach((activation) => {
-        const usage = (Math.random() * 100).toFixed(1);
-        console.log(`  ${activation}: ${usage}% utilization`);
+      activationTypes.forEach((_activation) => {
+        const _usage = (Math.random() * 100).toFixed(1);
       });
 
       // Use pattern-specific memory configuration
-      const memoryUsage = await this.getPatternMemoryUsage(
+      const _memoryUsage = await this.getPatternMemoryUsage(
         patternType === 'all' ? 'convergent' : (patternType as PatternType)
       );
-      console.log(`\n💾 Memory Usage: ${(memoryUsage / 1024 / 1024).toFixed(2)} MB`);
     } catch (error: any) {
       console.error('❌ Error analyzing patterns:', error.message);
       process.exit(1);
@@ -414,17 +407,10 @@ export class NeuralCLI {
       await fs.writeFile(outputPath, JSON.stringify(weights, null, 2));
 
       // Show summary
-      const totalParams = Object.values(weights.models).reduce(
+      const _totalParams = Object.values(weights.models).reduce(
         (sum, model) => sum + model.parameters,
         0
       );
-
-      console.log('✅ Neural weights exported successfully');
-      console.log(`📊 Export summary:`);
-      console.log(`   - Output file: ${outputPath}`);
-      console.log(`   - Total models: ${Object.keys(weights.models).length}`);
-      console.log(`   - Total parameters: ${totalParams.toLocaleString()}`);
-      console.log(`   - File size: ${(JSON.stringify(weights).length / 1024).toFixed(2)} KB`);
     } catch (error: any) {
       console.error('❌ Export failed:', error.message);
       process.exit(1);

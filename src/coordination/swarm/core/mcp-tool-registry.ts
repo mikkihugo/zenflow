@@ -10,11 +10,11 @@ import {
   NeuralError,
   PersistenceError,
   ResourceError,
-  ZenSwarmError,
   SwarmError,
   TaskError,
   ValidationError,
   WasmError,
+  ZenSwarmError,
 } from './errors.js';
 import { ZenSwarm } from './index-enhanced.js';
 import { Logger } from './logger.js';

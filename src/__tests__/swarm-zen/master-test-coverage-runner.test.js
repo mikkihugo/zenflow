@@ -100,20 +100,17 @@ class MasterTestCoverageRunner {
 
       await new Promise((resolve, _reject) => {
         coverageProcess.on('close', (code) => {
-          console.log(`📊 Coverage collection completed with code: ${code}`);
           if (coverageOutput.trim()) {
-            console.log('📈 Coverage summary:');
             // Extract coverage percentage if available
             const coverageMatch = coverageOutput.match(/All files\s+\|\s+([\d.]+)/);
             if (coverageMatch) {
-              console.log(`   Overall coverage: ${coverageMatch[1]}%`);
             }
             // Show last few lines of coverage output
             const lines = coverageOutput.trim().split('\n');
             const lastLines = lines.slice(-5);
-            lastLines.forEach(line => console.log(`   ${line}`));
+            lastLines.forEach((_line) => {});
           }
-          
+
           if (code === 0) {
             resolve();
           } else {
@@ -255,17 +252,17 @@ class MasterTestCoverageRunner {
 
     const estimatedTotalStatements = 5500; // Approximate based on src folder
     const estimatedCoveredStatements = Math.round(
-      (estimatedTotalStatements * estimatedCoveragePercent) / 100,
+      (estimatedTotalStatements * estimatedCoveragePercent) / 100
     );
 
     const estimatedTotalFunctions = 800;
     const estimatedCoveredFunctions = Math.round(
-      (estimatedTotalFunctions * estimatedCoveragePercent) / 100,
+      (estimatedTotalFunctions * estimatedCoveragePercent) / 100
     );
 
     const estimatedTotalBranches = 2500;
     const estimatedCoveredBranches = Math.round(
-      (estimatedTotalBranches * (estimatedCoveragePercent * 0.8)) / 100,
+      (estimatedTotalBranches * (estimatedCoveragePercent * 0.8)) / 100
     ); // Branches typically lower
 
     return {
@@ -363,7 +360,7 @@ class MasterTestCoverageRunner {
 
     if (recommendations.length === 0) {
       recommendations.push(
-        'Outstanding test coverage! Consider adding performance benchmarks and stress tests.',
+        'Outstanding test coverage! Consider adding performance benchmarks and stress tests.'
       );
     }
 
@@ -467,35 +464,35 @@ class MasterTestCoverageRunner {
         
         <h2>Test Suites</h2>
         ${this.results.suites
-    .map(
-      (suite) => `
+          .map(
+            (suite) => `
             <div class="suite ${suite.status}">
                 <h3>${suite.name} <span class="timestamp">(${suite.duration}ms)</span></h3>
                 ${
-  suite.report
-    ? `
+                  suite.report
+                    ? `
                     <p><strong>Tests:</strong> ${suite.report.summary.totalTests} | 
                        <strong>Passed:</strong> ${suite.report.summary.passed} | 
                        <strong>Failed:</strong> ${suite.report.summary.failed} | 
                        <strong>Pass Rate:</strong> ${suite.report.summary.passRate || 'N/A'}</p>
                 `
-    : ''
-}
+                    : ''
+                }
                 ${suite.error ? `<p style="color: #dc3545;"><strong>Error:</strong> ${suite.error}</p>` : ''}
             </div>
-        `,
-    )
-    .join('')}
+        `
+          )
+          .join('')}
         
         <div class="recommendations">
             <h2>💡 Recommendations</h2>
             ${this.results.recommendations
-    .map(
-      (rec) => `
+              .map(
+                (rec) => `
                 <div class="recommendation">• ${rec}</div>
-            `,
-    )
-    .join('')}
+            `
+              )
+              .join('')}
         </div>
     </div>
 </body>

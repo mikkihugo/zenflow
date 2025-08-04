@@ -32,17 +32,12 @@ async function testNeuralPresetsIntegration() {
           requiresPrecision: test.modelType === 'cnn',
           requiresCreativity: test.modelType === 'diffusion',
           complexity: 'high',
-        },
+        }
       );
 
       const presetInfo = neuralManager.getAgentPresetInfo(test.agentId);
 
       if (presetInfo) {
-        console.log(`✅ Created agent ${test.agentId} with preset ${test.preset}`);
-        console.log(`   Model type: ${test.modelType}`);
-        console.log(`   Parameters: ${presetInfo.parameters || 'N/A'}`);
-        console.log(`   Architecture: ${presetInfo.architecture || 'N/A'}`);
-        
         // Validate agent was created successfully
         if (!agent) {
           throw new Error(`Failed to create agent for preset ${test.preset}`);
@@ -87,27 +82,18 @@ async function testNeuralPresetsIntegration() {
     const patterns = neuralManager.cognitivePatternSelector.selectPatternsForPreset(
       'transformer',
       'bert_base',
-      scenario.config,
+      scenario.config
     );
-    
-    console.log(`🧠 Selected ${patterns.length} cognitive patterns for scenario: ${scenario.config.useCase}`);
-    patterns.forEach((pattern, index) => {
-      console.log(`   ${index + 1}. ${pattern.name || pattern.type || 'Unknown pattern'}`);
-    });
+    patterns.forEach((_pattern, _index) => {});
   }
 
-  let totalPresets = 0;
-  let modelCategories = 0;
+  let _totalPresets = 0;
+  let _modelCategories = 0;
 
-  Object.entries(COMPLETE_NEURAL_PRESETS).forEach(([category, presets]) => {
-    modelCategories++;
-    totalPresets += Object.keys(presets).length;
-    console.log(`📊 Category: ${category} - ${Object.keys(presets).length} presets`);
+  Object.entries(COMPLETE_NEURAL_PRESETS).forEach(([_category, presets]) => {
+    _modelCategories++;
+    _totalPresets += Object.keys(presets).length;
   });
-
-  console.log(`\n📈 Neural Presets Summary:`);
-  console.log(`   Total categories: ${modelCategories}`);
-  console.log(`   Total presets: ${totalPresets}`);
 
   // List all unique model types
   const uniqueModels = new Set();
@@ -142,7 +128,7 @@ async function testNeuralPresetsIntegration() {
           epochs: 5,
           enableCognitiveEvolution: true,
           enableMetaLearning: true,
-        },
+        }
       );
 
       // Get adaptation recommendations

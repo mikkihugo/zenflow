@@ -455,8 +455,8 @@ describe('Advanced Neural Training Algorithms (Classical TDD)', () => {
     });
   });
 
-// Helper function for test error calculation
-function calculateTestError(network: NeuralNetwork, testData: any[]): number {
+  // Helper function for test error calculation
+  function _calculateTestError(network: NeuralNetwork, testData: any[]): number {
     let totalError = 0;
 
     for (const sample of testData) {

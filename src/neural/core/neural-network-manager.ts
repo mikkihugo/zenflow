@@ -628,11 +628,11 @@ class NeuralNetworkManager {
     const scale = sensitivity / epsilon;
     const u1 = Math.random();
     const u2 = Math.random();
-    
+
     // Use Box-Muller transform for better noise distribution
     const noise1 = scale * Math.sign(u1 - 0.5) * Math.log(1 - 2 * Math.abs(u1 - 0.5));
     const noise2 = scale * Math.sign(u2 - 0.5) * Math.log(1 - 2 * Math.abs(u2 - 0.5));
-    
+
     // Return averaged noise for better privacy guarantees
     return (noise1 + noise2) / 2;
   }
@@ -1694,12 +1694,10 @@ class NeuralNetwork {
   async save(filePath) {
     try {
       const state = this.wasmModule.exports.serialize_network(this.networkId);
-      
+
       // Save the serialized state to file
       const fs = await import('node:fs/promises');
       await fs.writeFile(filePath, JSON.stringify(state, null, 2));
-      
-      console.log(`Neural network saved to: ${filePath}`);
       return true;
     } catch (error) {
       console.error('Failed to save network:', error);
@@ -1713,11 +1711,9 @@ class NeuralNetwork {
       const fs = await import('node:fs/promises');
       const stateData = await fs.readFile(filePath, 'utf-8');
       const state = JSON.parse(stateData);
-      
+
       // Deserialize the network state
       this.wasmModule.exports.deserialize_network(this.networkId, state);
-      
-      console.log(`Neural network loaded from: ${filePath}`);
       return true;
     } catch (error) {
       console.error('Failed to load network:', error);

@@ -11,32 +11,33 @@
  * - Chaos engineering and fault tolerance
  */
 
-import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
-import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
-import { AgentPool, type BaseAgent, createAgent } from '../../agents/agent';
-import { getContainer } from './singleton-container';
-import type {
-  AgentConfig,
-  Message,
-  SwarmEvent,
-  SwarmEventEmitter,
-  SwarmMetrics,
-  SwarmOptions,
-  SwarmState,
-  Task,
-  TaskStatus,
-  WasmModule,
-} from './types';
-import { formatMetrics, generateId, priorityToNumber, validateSwarmOptions } from './utils';
-
 export * from '../../../neural/core/neural-network';
 export * from '../../../neural/wasm/wasm-loader';
 // Enhanced exports with neural capabilities
 export * from '../../agents/agent';
+// Export the base implementation
+export { ZenSwarm } from './base-swarm';
+export * from './errors';
+export * from './hooks';
+export * from './logger';
+export * from './logging-config';
+export * from './mcp-daa-tools';
+export * from './monitoring-dashboard';
+export * from './native-hive-mind';
+export * from './performance';
+export * from './performance-benchmarks';
+export * from './recovery-integration';
+export * from './recovery-workflows';
+export * from './schemas';
 export * from './session-integration';
 export * from './session-manager';
 export * from './session-utils';
+export * from './singleton-container';
+export * from './topology-manager';
+// Re-export all types and utilities
 export * from './types';
+export * from './types';
+export * from './utils';
 export * from './utils';
 
 /**

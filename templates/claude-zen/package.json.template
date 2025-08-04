@@ -15,7 +15,7 @@
     "markdownlint-cli": "^0.37.0",
     "js-yaml": "^4.1.0",
     "glob": "^10.3.0",
-    "commander": "^11.0.0"
+    "meow": "^13.2.0"
   },
   "keywords": [
     "documentation",

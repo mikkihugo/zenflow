@@ -79,7 +79,7 @@ export class ConfigurationLoader {
    */
   private async loadFromFile(filePath: string): Promise<void> {
     try {
-      const resolvedPath = path.resolve(filePath.replace('~', process.env['HOME'] || '~'));
+      const resolvedPath = path.resolve(filePath.replace('~', process.env.HOME || '~'));
 
       if (!fs.existsSync(resolvedPath)) {
         return;

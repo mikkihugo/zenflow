@@ -3,10 +3,10 @@
  * Advanced network path optimization and latency reduction
  */
 
-import type { INetworkOptimizer } from '../interfaces';
+import type { NetworkOptimizer } from '../interfaces';
 import type { QoSRequirement } from '../types';
 
-export class NetworkLatencyOptimizer implements INetworkOptimizer {
+export class NetworkLatencyOptimizer implements NetworkOptimizer {
   private bandwidthMeasurements: Map<string, number> = new Map();
   private connectionLatencies: Map<string, { latency: number; timestamp: number }> = new Map();
 
@@ -85,10 +85,11 @@ export class NetworkLatencyOptimizer implements INetworkOptimizer {
   private getHopLatency(from: string, to: string): number {
     // Mock hop latency based on connection type
     const connectionKey = `${from}-${to}`;
-    
+
     // Check if we have cached latency for this connection
     const cachedLatency = this.connectionLatencies.get(connectionKey);
-    if (cachedLatency && Date.now() - cachedLatency.timestamp < 30000) { // 30s cache
+    if (cachedLatency && Date.now() - cachedLatency.timestamp < 30000) {
+      // 30s cache
       return cachedLatency.latency;
     }
 
@@ -98,13 +99,13 @@ export class NetworkLatencyOptimizer implements INetworkOptimizer {
     } else {
       latency = 10 + Math.random() * 20; // Direct connections
     }
-    
+
     // Cache the latency measurement
     this.connectionLatencies.set(connectionKey, {
       latency,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
-    
+
     return latency;
   }
 }

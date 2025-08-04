@@ -1,5 +1,5 @@
 /**
- * Enhanced Hook System - Core Infrastructure
+ * Hook System - Core Infrastructure
  * Provides safety validation, auto-assignment, performance tracking, and context loading
  */
 
@@ -36,7 +36,7 @@ export type FileType =
   | 'unknown';
 
 // Core Hook Interface
-export interface EnhancedHook {
+export interface Hook {
   readonly id: string;
   readonly type: HookType;
   readonly trigger: HookTrigger;
@@ -252,7 +252,7 @@ export interface WorkloadRecommendation {
 export interface PerformanceOptimizer {
   optimizeOperation(operation: Operation): Promise<OptimizedOperation>;
   predictPerformance(operation: Operation): Promise<PerformanceEstimate>;
-  suggestImprovements(metrics: PerformanceMetrics): Promise<Improvement[]>;
+  suggestImprovements(metrics: OperationMetrics): Promise<Improvement[]>;
   analyzeBottlenecks(context: OperationContext): Promise<BottleneckAnalysis>;
 }
 
@@ -436,11 +436,11 @@ export interface PerformanceHistory {
 }
 
 // Hook System Manager Interface
-export interface EnhancedHookManager {
-  registerHook(hook: EnhancedHook): Promise<void>;
+export interface HookManager {
+  registerHook(hook: Hook): Promise<void>;
   unregisterHook(hookId: string): Promise<void>;
   executeHooks(trigger: HookTrigger, context: HookContext): Promise<HookResult[]>;
-  getHooks(trigger?: HookTrigger): Promise<EnhancedHook[]>;
+  getHooks(trigger?: HookTrigger): Promise<Hook[]>;
   enableHook(hookId: string): Promise<void>;
   disableHook(hookId: string): Promise<void>;
 }

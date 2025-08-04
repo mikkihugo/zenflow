@@ -322,12 +322,12 @@ export class MonitoringDashboard extends EventEmitter {
       if (ts < cutoffTime) {
         this.aggregatedMetrics.delete(ts);
         deletedCount++;
-        
+
         // Log aggregation cleanup for dashboard monitoring
         this.logger.debug('Cleaned up old aggregation', {
           timestamp: new Date(ts),
           dataKeys: Object.keys(aggregation),
-          totalDeleted: deletedCount
+          totalDeleted: deletedCount,
         });
       }
     }
@@ -719,13 +719,13 @@ export class MonitoringDashboard extends EventEmitter {
       if (status.status === 'healthy') {
         healthySystems++;
       }
-      
+
       // Log system health for monitoring dashboard visibility
       this.logger.debug(`System health check: ${name}`, {
         status: status.status,
         lastUpdate: status.lastUpdate,
         failureCount: status.failureCount,
-        recentWindow: now - status.lastUpdate.getTime() < recentWindow
+        recentWindow: now - status.lastUpdate.getTime() < recentWindow,
       });
     }
 

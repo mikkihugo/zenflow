@@ -4,15 +4,16 @@ class ClaudeZenDashboard {
     this.ws = null;
     this.currentTab = 'dashboard';
     this.data = {};
-
     this.init();
+  }
 
-  init() 
+  init() {
     this.setupEventListeners();
     this.connectWebSocket();
     this.loadData();
+  }
 
-  setupEventListeners() 
+  setupEventListeners() {
     // Tab switching
     document.querySelectorAll('.menu-item').forEach((item) => {
       item.addEventListener('click', (e) => {
@@ -22,21 +23,31 @@ class ClaudeZenDashboard {
     });
 
     // Theme toggle
-    document.getElementById('theme-toggle').addEventListener('click', () => {
-      this.toggleTheme();
-    });
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        this.toggleTheme();
+      });
+    }
 
     // Refresh button
-    document.getElementById('refresh-btn').addEventListener('click', () => {
-      this.loadData();
-    });
+    const refreshBtn = document.getElementById('refresh-btn');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', () => {
+        this.loadData();
+      });
+    }
 
     // Command execution
-    document.getElementById('command').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        this.executeCommand();
-
-    });
+    const commandInput = document.getElementById('command');
+    if (commandInput) {
+      commandInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          this.executeCommand();
+        }
+      });
+    }
+  }
 
   connectWebSocket() {
     // Use current page's host and port for WebSocket connection
@@ -63,8 +74,9 @@ class ClaudeZenDashboard {
       console.error('WebSocket error:', error);
       this.updateStatus('Error', 'error');
     };
+  }
 
-  handleWebSocketMessage(message) 
+  handleWebSocketMessage(message) {
     switch (message.type) {
       case 'data_update':
         this.data = { ...this.data, ...message.data };
@@ -76,6 +88,8 @@ class ClaudeZenDashboard {
       case 'command_result':
         this.showCommandResult(message.result);
         break;
+    }
+  }
 
   async loadData() {
     try {
@@ -90,142 +104,48 @@ class ClaudeZenDashboard {
       this.updateUI();
     } catch (error) {
       console.error('Failed to load data:', error);
+    }
+  }
 
-  updateUI() 
+  updateUI() {
     // Update stats
-    document.getElementById('hive-count').textContent = Object.keys(this.data.hives || {}).length;
-    document.getElementById('plugin-count').textContent = (this.data.plugins || []).length;
-    document.getElementById('session-count').textContent = this.data.stats?.sessions || 0;
+    const hiveCount = document.getElementById('hive-count');
+    const pluginCount = document.getElementById('plugin-count');
+    const sessionCount = document.getElementById('session-count');
+
+    if (hiveCount) hiveCount.textContent = Object.keys(this.data.hives || {}).length;
+    if (pluginCount) pluginCount.textContent = (this.data.plugins || []).length;
+    if (sessionCount) sessionCount.textContent = this.data.stats?.sessions || 0;
 
     // Update current tab content
     this.updateTabContent(this.currentTab);
+  }
 
-  switchTab(tabName) 
-    // Update menu
+  updateTabContent(tab) {
+    // Hide all tab content
+    document.querySelectorAll('.tab-content').forEach((content) => {
+      content.style.display = 'none';
+    });
+
+    // Show selected tab content
+    const selectedContent = document.getElementById(`${tab}-content`);
+    if (selectedContent) {
+      selectedContent.style.display = 'block';
+    }
+
+    // Update menu item active state
     document.querySelectorAll('.menu-item').forEach((item) => {
       item.classList.remove('active');
+      if (item.dataset.tab === tab) {
+        item.classList.add('active');
+      }
     });
-    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+  }
 
-    // Update content
-    document.querySelectorAll('.tab-content').forEach((content) => {
-      content.classList.remove('active');
-    });
-    document.getElementById(tabName).classList.add('active');
-
-    this.currentTab = tabName;
-    this.updateTabContent(tabName);
-
-  updateTabContent(tabName) 
-    switch (tabName) {
-      case 'hives':
-        this.updateHivesList();
-        break;
-      case 'plugins':
-        this.updatePluginsList();
-        break;
-      case 'queens':
-        this.updateQueenStatus();
-        break;
-
-  updateHivesList() {
-    const container = document.getElementById('hive-list');
-    const hives = this.data.hives || {};
-
-    if (Object.keys(hives).length === 0) {
-      container.innerHTML = '<div class="loading">No hives found<
-      return;
-
-    container.innerHTML = Object.entries(hives)
-      .map(
-        ([name, info]) => `
-            <div class="hive-item">
-                <h4>${name}<
-                <p>${info.path}<
-            <
-        `
-      )
-      .join('');
-
-  updatePluginsList() {
-    const container = document.getElementById('plugin-list');
-    const plugins = this.data.plugins || [];
-
-    if (plugins.length === 0) {
-      container.innerHTML = '<div class="loading">No plugins found<
-      return;
-
-    container.innerHTML = plugins
-      .map(
-        (plugin) => `
-            <div class="plugin-item">
-                <h4>${plugin.name}<
-                <p>Status: ${plugin.status}<
-            <
-        `
-      )
-      .join('');
-
-  async updateQueenStatus() 
-    try {
-      const response = await fetch('/api/queens/status');
-      const queensData = await response.json();
-
-      // Update queen overview statistics using the correct API structure
-      document.getElementById('total-queens').textContent = queensData.summary?.totalQueens || 0;
-      document.getElementById('active-queens').textContent = queensData.summary?.activeQueens || 0;
-      document.getElementById('queen-tasks').textContent = queensData.summary?.totalTasks || 0;
-      document.getElementById('queen-success-rate').textContent =
-        `${(queensData.summary?.averageSuccessRate || 0).toFixed(1)}%`;
-
-      // Update queens list
-      this.updateQueensList(queensData.queens || []);
-    } catch (error) {
-      console.error('Failed to update queen status:', error);
-      document.getElementById('total-queens').textContent = 'Error';
-      document.getElementById('active-queens').textContent = 'Error';
-      document.getElementById('queen-tasks').textContent = 'Error';
-      document.getElementById('queen-success-rate').textContent = 'Error';
-
-  updateQueensList(queens) {
-    const container = document.getElementById('queen-list');
-    if (!container) return;
-
-    container.innerHTML = queens
-      .map(
-        (queen) => `
-            <div class="queen-card ${queen.status}">
-                <div class="queen-header">
-                    <h4> ${queen.name}<
-                    <span class="queen-status ${queen.status}">${queen.status.toUpperCase()}<
-                <
-                <div class="queen-details">
-                    <div class="queen-info">
-                        <strong>Domain:</strong> ${queen.domain}<br>
-                        <strong>Confidence:</strong> ${(queen.confidence * 100).toFixed(1)}%<br>
-                        <strong>Tasks Completed:</strong> ${queen.tasksCompleted}<br>
-                        <strong>Success Rate:</strong> ${(queen.successRate * 100).toFixed(1)}%
-                    <
-                    <div class="queen-capabilities">
-                        <strong>Document Types:<
-                        <div class="capability-tags">
-                            ${queen.documentTypes.map((type) => `<span class="tag">${type}<
-                        <
-                    <
-                    ${
-                      queen.lastDecision
-                        ? `
-                        <div class="queen-last-decision">
-                            <strong>Last Decision:</strong> ${queen.lastDecision}
-                        <
-                    `
-                        : ''
-
-                <
-            <
-        `
-      )
-      .join('');
+  switchTab(tab) {
+    this.currentTab = tab;
+    this.updateTabContent(tab);
+  }
 
   toggleTheme() {
     const body = document.body;
@@ -245,72 +165,74 @@ class ClaudeZenDashboard {
           theme: newTheme,
         })
       );
+    }
+  }
 
   async executeCommand() {
     const input = document.getElementById('command');
-    const output = document.getElementById('command-output');
     const command = input.value.trim();
 
     if (!command) return;
 
-    output.classList.add('show');
-    output.textContent = 'Executing command...';
+    // Clear input
+    input.value = '';
+
+    // Show loading state
+    this.showNotification('Executing command...', 'info');
 
     try {
       const response = await fetch('/api/execute', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ command }),
       });
 
       const result = await response.json();
-
-      if (result.success) {
-        output.textContent = result.output || 'Command executed successfully';
-      } else {
-        output.textContent = `Error: ${result.error}`;
-
+      this.showCommandResult(result);
     } catch (error) {
-      output.textContent = `Failed to execute command: ${error.message}`;
+      console.error('Failed to execute command:', error);
+      this.showNotification('Failed to execute command', 'error');
+    }
+  }
 
-    input.value = '';
+  showNotification(message, level = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${level}`;
+    notification.textContent = message;
 
-  updateStatus(text, type) {
-    const statusText = document.querySelector('.status-text');
-    const statusDot = document.querySelector('.status-dot');
+    document.body.appendChild(notification);
 
-    statusText.textContent = text;
-    statusDot.className = `status-dot status-${type}`;
-
-  showNotification(_message, _level = 'info') 
+    setTimeout(() => {
+      notification.remove();
+    }, 5000);
+  }
 
   showCommandResult(result) {
     const output = document.getElementById('command-output');
-    output.classList.add('show');
-    output.textContent = JSON.stringify(result, null, 2);
+    if (output) {
+      output.innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+    }
+  }
+
+  updateStatus(status, level) {
+    const statusElement = document.getElementById('connection-status');
+    if (statusElement) {
+      statusElement.textContent = status;
+      statusElement.className = `status ${level}`;
+    }
+  }
+}
 
 // Initialize dashboard when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   window.dashboard = new ClaudeZenDashboard();
 });
 
-// Global functions for inline event handlers
+// Global command execution function
 function _executeCommand() {
-  window.dashboard.executeCommand();
-
-function _saveSettings() {
-  const theme = document.getElementById('theme-select').value;
-  const refreshInterval = parseInt(document.getElementById('refresh-interval').value);
-
-  // Update theme
-  document.body.setAttribute('data-theme', theme);
-  localStorage.setItem('claude-zen-theme', theme);
-
-  // Save settings via API
-  fetch('/api/settings', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ theme, refreshInterval }),
-  });
-
-  alert('Settings saved successfully!');
+  if (window.dashboard) {
+    window.dashboard.executeCommand();
+  }
+}

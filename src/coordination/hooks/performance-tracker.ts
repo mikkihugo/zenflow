@@ -25,7 +25,7 @@ import type {
   TimeFrame,
   TrendAnalysis,
   TrendData,
-} from './enhanced-hook-system';
+} from './hook-system-core';
 
 export class HookPerformanceTracker implements MetricsTracker {
   private readonly metricsStore: Map<string, OperationMetrics>;

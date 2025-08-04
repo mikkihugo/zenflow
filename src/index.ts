@@ -94,8 +94,8 @@ export * from './coordination/maestro/maestro-swarm-coordinator';
 export * from './coordination/mcp/claude-zen-server';
 export * from './coordination/mcp/tools/swarm-tools';
 export * from './coordination/mcp/types/mcp-types';
-// Swarm-zen integration
-export * from './coordination/swarm/core/index';
+// Swarm-zen integration (use public API instead of direct core access)
+export * from './coordination/public-api';
 // Utils and core services
 export * from './core/logger';
 // Terminal Interface (CLI and TUI unified)
@@ -157,7 +157,7 @@ export interface ClaudeZenConfig {
 
 /**
  * Default configuration for Claude-Zen
- * HTTP MCP enabled for Claude Desktop integration  
+ * HTTP MCP enabled for Claude Desktop integration
  * stdio MCP dormant - only for temporary Claude Code coordination when needed
  * Project swarms use direct real agent protocols (Raft, message passing, etc.)
  */
@@ -205,12 +205,11 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
   // Initialize HTTP MCP for Claude Desktop (usually enabled)
   if (finalConfig.mcp.http.enabled) {
     const { HTTPMCPServer } = await import('./interfaces/mcp/http-mcp-server');
-    const httpMcpServer = new HTTPMCPServer({ 
+    const httpMcpServer = new HTTPMCPServer({
       port: finalConfig.mcp.http.port,
-      host: finalConfig.mcp.http.host 
+      host: finalConfig.mcp.http.host,
     });
     await httpMcpServer.start();
-    console.log('✅ HTTP MCP Server started for Claude Desktop integration');
   }
 
   // Initialize stdio MCP only if explicitly enabled (for temporary Claude Code coordination)
@@ -218,7 +217,6 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
     const { StdioMcpServer } = await import('./coordination/mcp/mcp-server');
     const stdioMcpServer = new StdioMcpServer();
     await stdioMcpServer.start();
-    console.log('✅ stdio MCP Server started for temporary Claude Code coordination');
   }
 
   // Initialize SwarmOrchestrator

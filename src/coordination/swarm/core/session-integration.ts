@@ -7,7 +7,7 @@
 
 import { EventEmitter } from 'node:events';
 import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
-import { ZenSwarm } from './index';
+import { ZenSwarm } from './base-swarm';
 import { type SessionConfig, SessionManager, type SessionState } from './session-manager';
 import { SessionRecovery, SessionValidator } from './session-utils';
 import type { AgentConfig, SwarmEvent, SwarmOptions, SwarmState, Task } from './types';

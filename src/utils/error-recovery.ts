@@ -90,8 +90,8 @@ export class ErrorRecoverySystem extends EventEmitter {
         strategy: strategy.id,
         actionsExecuted: result.actionsExecuted,
         duration,
-        error: result.error,
-        nextRetryAt: result.nextRetryAt,
+        ...(result.error !== undefined && { error: result.error }),
+        ...(result.nextRetryAt !== undefined && { nextRetryAt: result.nextRetryAt }),
       };
 
       this.recordRecovery(context, recoveryResult);
@@ -241,8 +241,8 @@ export class ErrorRecoverySystem extends EventEmitter {
     return {
       success,
       actionsExecuted,
-      error: lastError,
-      nextRetryAt,
+      ...(lastError !== undefined && { error: lastError }),
+      ...(nextRetryAt !== undefined && { nextRetryAt }),
     };
   }
 

@@ -17,8 +17,7 @@
 
 import { exec } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import { readFile, access } from 'node:fs/promises';
-import { constants } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { promisify } from 'node:util';
 import { KnowledgeSwarm, type KnowledgeSwarmConfig } from './knowledge-swarm';
@@ -218,38 +217,38 @@ export class ProjectContextAnalyzer extends EventEmitter {
       lerna: {
         files: ['lerna.json'],
         packageJsonFields: ['workspaces'],
-        confidence: 0.95
+        confidence: 0.95,
       },
       nx: {
         files: ['nx.json', 'workspace.json'],
         packageJsonFields: [],
-        confidence: 0.95
+        confidence: 0.95,
       },
       rush: {
         files: ['rush.json'],
         packageJsonFields: [],
-        confidence: 0.95
+        confidence: 0.95,
       },
       pnpm: {
         files: ['pnpm-workspace.yaml', 'pnpm-workspace.yml'],
         packageJsonFields: [],
-        confidence: 0.9
+        confidence: 0.9,
       },
       yarn: {
         files: ['.yarnrc.yml', 'yarn.lock'],
         packageJsonFields: ['workspaces'],
-        confidence: 0.8
+        confidence: 0.8,
       },
       turbo: {
         files: ['turbo.json'],
         packageJsonFields: [],
-        confidence: 0.9
+        confidence: 0.9,
       },
       bazel: {
         files: ['WORKSPACE', 'WORKSPACE.bazel', 'BUILD', 'BUILD.bazel'],
         packageJsonFields: [],
-        confidence: 0.85
-      }
+        confidence: 0.85,
+      },
     };
 
     // Check for monorepo indicator files
@@ -263,9 +262,9 @@ export class ProjectContextAnalyzer extends EventEmitter {
             tool: type,
             confidence: indicators.confidence,
             configFile: file,
-            hasRootPackageJson: false
+            hasRootPackageJson: false,
           };
-          
+
           // If we found a monorepo config, analyze it further
           await this.analyzeMonorepoStructure(context);
           return;
@@ -279,22 +278,22 @@ export class ProjectContextAnalyzer extends EventEmitter {
     try {
       const packageJsonPath = path.join(context.rootPath, 'package.json');
       const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf-8'));
-      
+
       context.monorepo.hasRootPackageJson = true;
-      
+
       // Check for npm/yarn workspaces
       if (packageJson.workspaces) {
         context.monorepo = {
           type: packageJson.packageManager?.includes('yarn') ? 'yarn' : 'npm',
           tool: packageJson.packageManager?.includes('yarn') ? 'yarn' : 'npm',
-          workspaces: Array.isArray(packageJson.workspaces) 
-            ? packageJson.workspaces 
+          workspaces: Array.isArray(packageJson.workspaces)
+            ? packageJson.workspaces
             : packageJson.workspaces.packages || [],
           confidence: 0.85,
           hasRootPackageJson: true,
-          packageManager: packageJson.packageManager?.includes('yarn') ? 'yarn' : 'npm'
+          packageManager: packageJson.packageManager?.includes('yarn') ? 'yarn' : 'npm',
         };
-        
+
         await this.analyzeMonorepoStructure(context);
         return;
       }
@@ -305,7 +304,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
     // Check for common monorepo directory patterns
     const commonPatterns = ['packages/', 'apps/', 'services/', 'libs/', 'modules/'];
     let matchedPatterns = 0;
-    
+
     for (const pattern of commonPatterns) {
       try {
         const dirPath = path.join(context.rootPath, pattern);
@@ -321,7 +320,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
     if (matchedPatterns >= 2) {
       context.monorepo = {
         type: 'custom',
-        confidence: 0.6 + (matchedPatterns * 0.1),
+        confidence: 0.6 + matchedPatterns * 0.1,
         hasRootPackageJson: context.monorepo.hasRootPackageJson,
         packages: commonPatterns.filter(async (pattern) => {
           try {
@@ -331,7 +330,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
           } catch {
             return false;
           }
-        })
+        }),
       };
     }
   }
@@ -344,23 +343,25 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
     try {
       switch (context.monorepo.type) {
-        case 'lerna':
+        case 'lerna': {
           const lernaConfig = JSON.parse(
             await readFile(path.join(context.rootPath, 'lerna.json'), 'utf-8')
           );
           context.monorepo.version = lernaConfig.version;
           context.monorepo.packages = lernaConfig.packages || ['packages/*'];
           break;
+        }
 
-        case 'nx':
+        case 'nx': {
           const nxConfig = JSON.parse(
             await readFile(path.join(context.rootPath, 'nx.json'), 'utf-8')
           );
           // NX has a more complex structure, we'd need to analyze workspace.json too
           context.monorepo.version = nxConfig.version;
           break;
+        }
 
-        case 'pnpm':
+        case 'pnpm': {
           const pnpmWorkspace = await readFile(
             path.join(context.rootPath, 'pnpm-workspace.yaml'),
             'utf-8'
@@ -370,25 +371,27 @@ export class ProjectContextAnalyzer extends EventEmitter {
           if (packagesMatch) {
             context.monorepo.packages = packagesMatch[1]
               .split('\n')
-              .map(line => line.trim().replace(/^-\s*/, ''))
+              .map((line) => line.trim().replace(/^-\s*/, ''))
               .filter(Boolean);
           }
           break;
+        }
 
-        case 'rush':
+        case 'rush': {
           const rushConfig = JSON.parse(
             await readFile(path.join(context.rootPath, 'rush.json'), 'utf-8')
           );
           context.monorepo.version = rushConfig.rushVersion;
           context.monorepo.packages = rushConfig.projects?.map((p: any) => p.projectFolder) || [];
           break;
+        }
       }
 
       // Emit monorepo detection event
       this.emit('monorepoDetected', {
         type: context.monorepo.type,
         confidence: context.monorepo.confidence,
-        packages: context.monorepo.packages
+        packages: context.monorepo.packages,
       });
     } catch (error) {
       console.warn('Error analyzing monorepo structure:', error);
@@ -653,12 +656,12 @@ export class ProjectContextAnalyzer extends EventEmitter {
       const cargoPath = path.join(context.rootPath, 'Cargo.toml');
       try {
         const cargoContent = await readFile(cargoPath, 'utf8');
-        
+
         // Basic Cargo.toml parsing (simplified)
         const dependencySection = cargoContent.match(/\[dependencies\]([\s\S]*?)(?=\[|$)/);
         if (dependencySection) {
           const deps = dependencySection[1].match(/^([a-zA-Z0-9_-]+)\s*=/gm) || [];
-          deps.forEach(dep => {
+          deps.forEach((dep) => {
             const name = dep.replace(/\s*=.*/, '').trim();
             context.dependencies.push({
               name,
@@ -684,8 +687,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
       const requirementsPath = path.join(context.rootPath, 'requirements.txt');
       try {
         const requirementsContent = await readFile(requirementsPath, 'utf8');
-        
-        requirementsContent.split('\n').forEach(line => {
+
+        requirementsContent.split('\n').forEach((line) => {
           const trimmed = line.trim();
           if (trimmed && !trimmed.startsWith('#')) {
             const [name, version] = trimmed.split(/[>=<~!]/);
@@ -701,7 +704,10 @@ export class ProjectContextAnalyzer extends EventEmitter {
         // File doesn't exist, skip
       }
     } catch (error) {
-      console.warn('Error analyzing requirements.txt:', error instanceof Error ? error.message : error);
+      console.warn(
+        'Error analyzing requirements.txt:',
+        error instanceof Error ? error.message : error
+      );
     }
   }
 
@@ -1052,9 +1058,9 @@ export class ProjectContextAnalyzer extends EventEmitter {
    */
   isMonorepo(confidenceThreshold: number = 0.7): boolean {
     const monorepo = this.getMonorepoInfo();
-    return monorepo !== null && 
-           monorepo.type !== 'none' && 
-           monorepo.confidence >= confidenceThreshold;
+    return (
+      monorepo !== null && monorepo.type !== 'none' && monorepo.confidence >= confidenceThreshold
+    );
   }
 
   /**

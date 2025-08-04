@@ -151,11 +151,13 @@ export class CircuitBreaker {
 
     // Open if failure rate is too high within monitoring window
     const windowStart = Date.now() - this.config.monitoringWindow;
-    
+
     // Filter failures and calls within the monitoring window
-    const recentFailures = this.failureHistory.filter(timestamp => timestamp >= windowStart).length;
-    const recentCalls = this.callHistory.filter(timestamp => timestamp >= windowStart).length;
-    
+    const recentFailures = this.failureHistory.filter(
+      (timestamp) => timestamp >= windowStart
+    ).length;
+    const recentCalls = this.callHistory.filter((timestamp) => timestamp >= windowStart).length;
+
     const failureRate = recentCalls > 0 ? recentFailures / recentCalls : 0;
 
     return failureRate > 0.5 && recentCalls >= 10; // 50% failure rate with minimum calls in window

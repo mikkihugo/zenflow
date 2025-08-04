@@ -107,7 +107,46 @@ class MockDatabase implements IDatabase {
     return result;
   }
 
-  async close(): Promise<void> {}
+  async shutdown(): Promise<void> {}
+
+  // Task management methods
+  async createTask(task: any): Promise<void> {
+    this.data.set(`task_${task.id}`, task);
+  }
+
+  async updateTask(taskId: string, updates: any): Promise<void> {
+    const existing = this.data.get(`task_${taskId}`) || {};
+    this.data.set(`task_${taskId}`, { ...existing, ...updates });
+  }
+
+  async getSwarmTasks(swarmId: string, status?: string): Promise<any[]> {
+    const tasks = [];
+    for (const [key, value] of this.data.entries()) {
+      if (key.startsWith('task_') && value.swarm_id === swarmId) {
+        if (!status || value.status === status) {
+          tasks.push(value);
+        }
+      }
+    }
+    return tasks;
+  }
+
+  // Agent management methods
+  async updateAgent(agentId: string, updates: any): Promise<void> {
+    const existing = this.data.get(`agent_${agentId}`) || {};
+    this.data.set(`agent_${agentId}`, { ...existing, ...updates });
+  }
+
+  // Metrics methods
+  async getMetrics(entityId: string, metricType: string): Promise<any[]> {
+    const metrics = [];
+    for (const [key, value] of this.data.entries()) {
+      if (key.startsWith(`metrics_${entityId}_${metricType}`)) {
+        metrics.push(value);
+      }
+    }
+    return metrics.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+  }
 }
 
 /**

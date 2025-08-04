@@ -117,15 +117,8 @@ class PerformanceCLI {
 
       if (analysis.bottlenecks.length === 0) {
       } else {
-        analysis.bottlenecks.forEach((bottleneck, i) => {
-          console.log(`\n${i + 1}. ${bottleneck.type.toUpperCase()} Bottleneck:`);
-          console.log(`   Severity: ${bottleneck.severity}`);
-          console.log(`   Description: ${bottleneck.description}`);
-          console.log(`   Impact: ${bottleneck.impact}`);
-          console.log(`   Recommendation: ${bottleneck.recommendation}`);
+        analysis.bottlenecks.forEach((_bottleneck, _i) => {
           if (detailed) {
-            console.log(`   Analysis: Performance issue identified in ${bottleneck.type} subsystem`);
-            console.log(`   Metrics: Available for detailed investigation`);
           }
         });
       }
@@ -160,15 +153,8 @@ class PerformanceCLI {
 
       if (analysis.recommendations.length === 0) {
       } else {
-        console.log('\n📋 Performance Recommendations:');
-        analysis.recommendations.forEach((rec, i) => {
-          console.log(`\n${i + 1}. ${rec.category.toUpperCase()}:`);
-          console.log(`   Priority: ${rec.priority}`);
-          console.log(`   Suggestion: ${rec.suggestion}`);
-          console.log(`   Expected Improvement: ${rec.expectedImprovement}`);
+        analysis.recommendations.forEach((_rec, _i) => {
           if (detailed) {
-            console.log(`   Implementation: Can be applied via optimization commands`);
-            console.log(`   Impact Analysis: ${rec.expectedImprovement} performance gain expected`);
           }
         });
       }
@@ -182,17 +168,9 @@ class PerformanceCLI {
 
       analysis.overallScore = score;
       if (score >= 90) {
-        console.log('\n🏆 Performance Score: EXCELLENT (' + score + '/100)');
-        console.log('   System is performing optimally with minimal issues.');
       } else if (score >= 70) {
-        console.log('\n✅ Performance Score: GOOD (' + score + '/100)');
-        console.log('   System is performing well with minor optimization opportunities.');
       } else if (score >= 50) {
-        console.log('\n⚠️  Performance Score: FAIR (' + score + '/100)');
-        console.log('   System has moderate performance issues that should be addressed.');
       } else {
-        console.log('\n❌ Performance Score: POOR (' + score + '/100)');
-        console.log('   System has significant performance issues requiring immediate attention.');
       }
 
       // Save analysis
@@ -207,7 +185,7 @@ class PerformanceCLI {
 
   async optimize(args) {
     const rs = await this.initialize();
-    
+
     // Verify swarm is properly initialized for optimization
     if (!rs || !rs.isInitialized) {
       console.warn('⚠️ Warning: Swarm not fully initialized, optimization may be limited');
@@ -258,17 +236,13 @@ class PerformanceCLI {
     const selectedOpt = optimizations[target] || optimizations.balanced;
 
     try {
-      console.log(`\n🔧 Applying ${selectedOpt.name}...`);
       for (let i = 0; i < selectedOpt.changes.length; i++) {
-        const change = selectedOpt.changes[i];
-        console.log(`   ${i + 1}. ${change}`);
+        const _change = selectedOpt.changes[i];
 
         if (!dryRun) {
-          console.log('      ✓ Applied');
           // Simulate applying optimization
           await new Promise((resolve) => setTimeout(resolve, 500));
         } else {
-          console.log('      → Would apply (dry run)');
         }
       }
 
@@ -299,19 +273,10 @@ class PerformanceCLI {
         },
       };
 
-      const expected = improvements[target] || improvements.balanced;
-
-      console.log('\n📊 Expected Improvements:');
-      console.log(`   Execution Speed: ${expected.execution}`);
-      console.log(`   Initialization: ${expected.initialization}`);
-      console.log(`   Memory Efficiency: ${expected.memory}`);
-      console.log(`   Token Efficiency: ${expected.tokens}`);
+      const _expected = improvements[target] || improvements.balanced;
 
       if (dryRun) {
-        console.log('\n⚠️  This was a dry run. Use --apply to execute optimizations.');
       } else {
-        console.log('\n✅ Optimizations applied successfully!');
-        console.log('   System performance should improve within the expected ranges.');
       }
     } catch (error) {
       console.error('❌ Optimization failed:', error.message);
@@ -377,29 +342,18 @@ class PerformanceCLI {
       priorityOrder.forEach((priority) => {
         groupedSuggestions[priority] = suggestions.filter((s) => s.priority === priority);
       });
-
-      console.log('\n🎯 Performance Suggestions:');
       let totalShown = 0;
-      for (const [priority, items] of Object.entries(groupedSuggestions)) {
+      for (const [_priority, items] of Object.entries(groupedSuggestions)) {
         if (items.length === 0) {
           continue;
         }
-        console.log(`\n${priority} Priority:`);
-        for (const item of items) {
-          console.log(`\n📌 ${item.category}:`);
-          console.log(`   Issue: ${item.issue}`);
-          console.log(`   Suggestion: ${item.suggestion}`);
-          console.log(`   Command: ${item.command}`);
+        for (const _item of items) {
           totalShown++;
         }
       }
 
       if (totalShown === 0) {
-        console.log('\n✅ No performance suggestions at this time.');
-        console.log('   System appears to be running optimally.');
       } else {
-        console.log(`\n💡 Found ${totalShown} performance improvement opportunities.`);
-        console.log('   Execute the suggested commands to improve system performance.');
       }
     } catch (error) {
       console.error('❌ Failed to generate suggestions:', error.message);

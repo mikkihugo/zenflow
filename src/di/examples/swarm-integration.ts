@@ -360,20 +360,15 @@ export async function demonstrateSwarmDI(): Promise<void> {
     });
 
     // Assign a task
-    const taskId = await coordinator.assignTask({
+    const _taskId = await coordinator.assignTask({
       type: 'data-processing',
       description: 'Process large dataset',
       requiredCapabilities: ['data-processing'],
       priority: 'high',
     });
-    console.log(`✅ Task assigned: ${taskId}`);
 
     // Get metrics
-    const metrics = coordinator.getMetrics();
-    console.log('📊 Swarm Metrics:');
-    console.log(`  Active Agents: ${metrics.activeAgents}`);
-    console.log(`  Completed Tasks: ${metrics.completedTasks}`);
-    console.log(`  Average Response Time: ${metrics.averageResponseTime}ms`);
+    const _metrics = coordinator.getMetrics();
 
     // Cleanup
     await coordinator.removeAgent(agent1Id);

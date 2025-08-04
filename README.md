@@ -406,6 +406,8 @@ claude-zen sparc implement --feature="authentication" --phase="architecture"
 claude-zen swarm status --detailed
 ```
 
+**CLI Architecture**: Built with **meow** (argument parsing) and **ink** (React for CLIs) for consistent, modern command-line experiences. We **do not use commander** - all CLIs follow the meow/ink pattern for better maintainability and user experience.
+
 ### **Web Dashboard** (Port 3456)
 - Real-time project monitoring
 - Visual workflow progress tracking  

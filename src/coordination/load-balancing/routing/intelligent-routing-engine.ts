@@ -3,7 +3,7 @@
  * Advanced routing with task-agent matching and failover capabilities
  */
 
-import type { ICapacityManager, IRoutingEngine } from '../interfaces';
+import type { CapacityManager, RoutingEngine } from '../interfaces';
 import { NetworkLatencyOptimizer } from '../optimization/network-latency-optimizer';
 import type { Agent, NetworkTopology, QoSRequirement, RoutingResult, Task } from '../types';
 import { FailoverManager } from './failover-manager';
@@ -44,12 +44,12 @@ interface RoutingMetrics {
   qosViolations: number;
 }
 
-export class IntelligentRoutingEngine implements IRoutingEngine {
+export class IntelligentRoutingEngine implements RoutingEngine {
   private routingTable: Map<string, RoutingTable> = new Map();
   private taskAgentMatcher: TaskAgentMatcher;
   private failoverManager: FailoverManager;
   private networkOptimizer: NetworkLatencyOptimizer;
-  private capacityManager: ICapacityManager;
+  private capacityManager: CapacityManager;
   private routingMetrics: RoutingMetrics;
   private networkTopology: NetworkTopology | null = null;
 
@@ -69,7 +69,7 @@ export class IntelligentRoutingEngine implements IRoutingEngine {
     loadBalancingStrategy: 'intelligent' as 'round_robin' | 'least_connections' | 'intelligent',
   };
 
-  constructor(capacityManager: ICapacityManager) {
+  constructor(capacityManager: CapacityManager) {
     this.capacityManager = capacityManager;
     this.taskAgentMatcher = new TaskAgentMatcher();
     this.failoverManager = new FailoverManager();

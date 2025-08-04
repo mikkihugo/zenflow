@@ -80,6 +80,17 @@ export type TaskStatus =
   | 'failed'
   | 'cancelled';
 
+export type CancellationReason =
+  | 'user-request'
+  | 'timeout'
+  | 'resource-unavailable'
+  | 'dependency-failure'
+  | 'priority-override'
+  | 'system-shutdown'
+  | 'agent-failure'
+  | 'task_stuck'
+  | 'agent_unavailable';
+
 export interface DecomposedTask {
   id: string;
   parentId: string;
@@ -424,7 +435,7 @@ export class TaskDistributionEngine extends EventEmitter {
   /**
    * Cancel a task
    */
-  async cancelTask(taskId: string, reason: string): Promise<boolean> {
+  async cancelTask(taskId: string, reason: CancellationReason): Promise<boolean> {
     const task = this.tasks.get(taskId);
     if (!task) return false;
 
@@ -435,6 +446,13 @@ export class TaskDistributionEngine extends EventEmitter {
         taskId,
         agentId: assignment.agentId,
         reason,
+        cancelledBy: 'task-distribution-engine',
+        rollbackRequired: true,
+        affectedDependencies: [],
+        timestamp: new Date(),
+        source: 'task-distribution-engine',
+        id: `task-cancel-${taskId}-${Date.now()}`,
+        version: '1.0.0',
       });
     }
 
@@ -450,7 +468,7 @@ export class TaskDistributionEngine extends EventEmitter {
   /**
    * Reassign a task to a different agent
    */
-  async reassignTask(taskId: string, reason: string): Promise<boolean> {
+  async reassignTask(taskId: string, reason: CancellationReason): Promise<boolean> {
     const task = this.tasks.get(taskId);
     const currentAssignment = this.assignments.get(taskId);
 
@@ -639,8 +657,27 @@ export class TaskDistributionEngine extends EventEmitter {
     this.eventBus.emit('task:assign', {
       taskId: task.id,
       agentId: agent.agentId,
-      task,
-      assignment: assignment.assignment,
+      taskType: task.type,
+      task: {
+        id: task.id,
+        description: task.description,
+        requirements: task.requirements.capabilities, // Convert TaskRequirements to string array
+      },
+      priority:
+        task.priority === 'normal'
+          ? 'medium'
+          : (task.priority as 'low' | 'medium' | 'high' | 'critical'),
+      dependencies: [],
+      requiredCapabilities: task.requirements.capabilities || [],
+      resourceRequirements: {
+        cpu: 1,
+        memory: 512,
+        disk: 1024,
+      },
+      timestamp: new Date(),
+      source: 'task-distribution-engine',
+      id: `task-assign-${task.id}-${Date.now()}`,
+      version: '1.0.0',
     });
 
     this.emit('task:assigned', { taskId: task.id, agentId: agent.agentId, assignment });

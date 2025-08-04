@@ -25,7 +25,7 @@ export default {
       // - REST API (/api)
       // - HTTP MCP Protocol (/mcp) for Claude Desktop
       // - WebSocket real-time updates
-      // 
+      //
       // Note: Stdio MCP for swarm coordination is started
       // dynamically by Claude Code when swarms are initialized
     },

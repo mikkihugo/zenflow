@@ -20,9 +20,9 @@ import type {
   WorkflowStep,
 } from '../types/workflow-types';
 import { createLogger } from './logger';
-import type { UnifiedMemorySystem } from './unified-memory-system';
+import type { MemorySystem } from './memory-system';
 
-const logger = createLogger('UnifiedWorkflow');
+const logger = createLogger('WorkflowEngine');
 
 // WorkflowStep is now imported from types/workflow-types.ts
 
@@ -244,8 +244,8 @@ const DOCUMENT_WORKFLOWS: WorkflowDefinition[] = [
   },
 ];
 
-export class UnifiedWorkflowEngine extends EventEmitter {
-  private memory: UnifiedMemorySystem;
+export class WorkflowEngine extends EventEmitter {
+  private memory: MemorySystem;
   private documentService: DocumentService;
   private activeWorkflows = new Map<string, WorkflowState>();
   private workflowDefinitions = new Map<string, WorkflowDefinition>();
@@ -712,7 +712,7 @@ export class UnifiedWorkflowEngine extends EventEmitter {
     params: any
   ): Promise<any> {
     const document = context.currentDocument;
-    
+
     // Extract requirements based on document content and parameters
     const extractionStrategy = params?.strategy || 'comprehensive';
     const targetComplexity = params?.complexity || 'medium';
@@ -740,8 +740,8 @@ export class UnifiedWorkflowEngine extends EventEmitter {
         extractionStrategy,
         targetComplexity,
         timestamp: new Date().toISOString(),
-        confidence: 0.85
-      }
+        confidence: 0.85,
+      },
     };
 
     logger.info('Extracted product requirements from vision document');
@@ -751,16 +751,16 @@ export class UnifiedWorkflowEngine extends EventEmitter {
   private async handleGenerateADRs(context: WorkflowContext, params: any): Promise<any> {
     const requirements = context.architectural_requirements || [];
     const decisions = context.decision_points || [];
-    
+
     // Use decisions for contextual ADR generation
-    const decisionContext = decisions.map((decision: any) => ({
+    const _decisionContext = decisions.map((decision: any) => ({
       concern: decision.concern || 'Architecture',
       alternatives: decision.alternatives || [],
-      rationale: decision.rationale || 'Technical requirements'
+      rationale: decision.rationale || 'Technical requirements',
     }));
-    
-    const adrTemplate = params?.template || 'standard';
-    const includeRationale = params?.includeRationale !== false;
+
+    const _adrTemplate = params?.template || 'standard';
+    const _includeRationale = params?.includeRationale !== false;
 
     const adrs = requirements.map((req: string, index: number) => ({
       id: `adr-${String(index + 1).padStart(3, '0')}`,
@@ -1130,3 +1130,5 @@ export class UnifiedWorkflowEngine extends EventEmitter {
     return uniqueWords.slice(0, 20); // Limit to 20 keywords
   }
 }
+
+// No need for alias - using simple name directly

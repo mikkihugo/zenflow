@@ -5,8 +5,8 @@
  * Implements the Model Context Protocol specification for tool calls.
  */
 
-import { createLogger } from './simple-logger';
-import type { MCPToolRegistry } from './tool-registry';
+import { createLogger } from './mcp-logger';
+import type { SimpleToolRegistry } from './tool-registry';
 
 const logger = createLogger('MCP-RequestHandler');
 

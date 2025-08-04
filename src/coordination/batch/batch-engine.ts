@@ -6,6 +6,9 @@
 
 import { createLogger } from '../../core/logger';
 
+// TODO: Use dependency injection for logger
+// Should inject ILogger from DI container instead of creating directly
+// Example: constructor(@inject(CORE_TOKENS.Logger) private logger: ILogger) {}
 const logger = createLogger({ prefix: 'BatchEngine' });
 
 export interface BatchOperation {
@@ -45,6 +48,7 @@ export interface BatchExecutionSummary {
   concurrencyAchieved: number;
   speedImprovement: number; // Compared to sequential execution
   tokenReduction: number; // Percentage reduction in tokens used
+  executionTime: number; // Total execution time in milliseconds
 }
 
 /**
@@ -358,6 +362,7 @@ export class BatchEngine {
       concurrencyAchieved,
       speedImprovement: Math.round(speedImprovement * 100) / 100,
       tokenReduction: Math.round(tokenReduction * 10) / 10,
+      executionTime: totalExecutionTime,
     };
   }
 
@@ -416,11 +421,11 @@ export function createBatchOperation(
   };
 
   if (options?.dependencies !== undefined) {
-    (batchOp as any).dependencies = options.dependencies;
+    batchOp.dependencies = options.dependencies;
   }
 
   if (options?.timeout !== undefined) {
-    (batchOp as any).timeout = options.timeout;
+    batchOp.timeout = options.timeout;
   }
 
   return batchOp;
@@ -436,9 +441,19 @@ export function createToolBatch(
     dependencies?: string[];
   }>
 ): BatchOperation[] {
-  return tools.map((tool, index) =>
-    createBatchOperation(`tool-${index}-${tool.name}`, 'tool', tool.name, tool.params, {
-      dependencies: tool.dependencies,
-    })
-  );
+  return tools.map((tool, index) => {
+    const options: Partial<Pick<BatchOperation, 'priority' | 'dependencies' | 'timeout'>> = {};
+
+    if (tool.dependencies !== undefined) {
+      options.dependencies = tool.dependencies;
+    }
+
+    return createBatchOperation(
+      `tool-${index}-${tool.name}`,
+      'tool',
+      tool.name,
+      tool.params,
+      options
+    );
+  });
 }

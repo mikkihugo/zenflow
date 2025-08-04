@@ -3,7 +3,7 @@
  * Self-improving algorithm that learns from historical patterns and adapts strategies
  */
 
-import type { ILoadBalancingAlgorithm } from '../interfaces';
+import type { LoadBalancingAlgorithm } from '../interfaces';
 import type { Agent, LoadMetrics, RoutingResult, Task } from '../types';
 
 interface AdaptiveStrategy {
@@ -54,7 +54,7 @@ interface ReinforcementState {
   timestamp: Date;
 }
 
-export class AdaptiveLearningAlgorithm implements ILoadBalancingAlgorithm {
+export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   public readonly name = 'adaptive_learning';
 
   private strategies: Map<string, AdaptiveStrategy> = new Map();

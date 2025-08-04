@@ -89,31 +89,27 @@ async function runOptimizationDemo() {
       ),
     activationFunction: 'relu',
   };
-  const neuralResult = await neuralOptimizer.optimizeTrainingSpeed(mockNetwork);
-  console.log('Neural training optimization:', neuralResult);
-  
-  const batchResult = await neuralOptimizer.implementBatchProcessing({
+  const _neuralResult = await neuralOptimizer.optimizeTrainingSpeed(mockNetwork);
+
+  const _batchResult = await neuralOptimizer.implementBatchProcessing({
     network: mockNetwork,
     learningRate: 0.001,
     batchSize: 32,
     epochs: 100,
   });
-  console.log('Batch processing implementation:', batchResult);
 
   const mockTopology = {
     type: 'mesh' as const,
     nodes: 5000,
     connections: 25000,
   };
-  const routingResult = await swarmOptimizer.optimizeMessageRouting(mockTopology);
-  console.log('Message routing optimization:', routingResult);
-  
-  const cacheResult = await swarmOptimizer.implementCaching({
+  const _routingResult = await swarmOptimizer.optimizeMessageRouting(mockTopology);
+
+  const _cacheResult = await swarmOptimizer.implementCaching({
     protocol: 'websocket',
     messageFormat: 'json',
     compressionEnabled: true,
   });
-  console.log('Caching implementation:', cacheResult);
 
   const mockQueries = [
     {
@@ -132,35 +128,29 @@ async function runOptimizationDemo() {
       estimatedCost: 50,
     },
   ];
-  const queryResult = await dataOptimizer.optimizeQueryPerformance(mockQueries);
-  console.log('Query performance optimization:', queryResult);
-  const poolResult = await dataOptimizer.implementConnectionPooling([
+  const _queryResult = await dataOptimizer.optimizeQueryPerformance(mockQueries);
+  const _poolResult = await dataOptimizer.implementConnectionPooling([
     { id: 'conn1', type: 'database', isActive: true, lastUsed: new Date() },
     { id: 'conn2', type: 'database', isActive: false, lastUsed: new Date() },
   ]);
-  console.log('Connection pooling implementation:', poolResult);
 
   const mockModules = [
     { name: 'neural-compute', size: 2 * 1024 * 1024, compilationTime: 150, instantiated: false },
     { name: 'vector-ops', size: 1024 * 1024, compilationTime: 80, instantiated: false },
     { name: 'matrix-math', size: 3 * 1024 * 1024, compilationTime: 200, instantiated: true },
   ];
-  const loadingResult = await wasmOptimizer.optimizeWasmModuleLoading(mockModules);
-  console.log('WASM module loading optimization:', loadingResult);
-  const simdResult = await wasmOptimizer.enableSIMDAcceleration([
+  const _loadingResult = await wasmOptimizer.optimizeWasmModuleLoading(mockModules);
+  const _simdResult = await wasmOptimizer.enableSIMDAcceleration([
     { name: 'vector-add', operations: ['add', 'multiply'], simdOptimized: false },
     { name: 'matrix-mult', operations: ['dot_product', 'matrix_multiply'], simdOptimized: false },
   ]);
-  console.log('SIMD acceleration:', simdResult);
   const systemResults = await performanceOptimizer.optimizeNow();
   const successfulOptimizations = systemResults.filter((r) => r.success);
-  const averageImprovement =
+  const _averageImprovement =
     successfulOptimizations.reduce((sum, r) => sum + r.improvement, 0) /
     successfulOptimizations.length;
-  console.log(`Average performance improvement: ${averageImprovement.toFixed(2)}%`);
 
-  const systemState = await performanceOptimizer.getPerformanceState();
-  console.log('Current system performance state:', systemState);
+  const _systemState = await performanceOptimizer.getPerformanceState();
 
   const benchmarkSuite = new PerformanceBenchmarkSuite({
     neural: neuralOptimizer,
@@ -168,8 +158,7 @@ async function runOptimizationDemo() {
     data: dataOptimizer,
     wasm: wasmOptimizer,
   });
-  const benchmarkResults = await benchmarkSuite.runBenchmarks();
-  console.log('Performance benchmark results:', benchmarkResults);
+  const _benchmarkResults = await benchmarkSuite.runBenchmarks();
   monitor.startMonitoring();
 
   // Simulate some performance data

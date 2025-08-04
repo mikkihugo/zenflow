@@ -1529,7 +1529,7 @@ Remember: **ruv-swarm coordinates, Claude Code creates!** Start with \`mcp__zen-
         summary: {
           totalCommands,
           totalFiles: totalCommands + 2, // includes CLAUDE.md and settings.json
-        }
+        },
       };
 
       return results;

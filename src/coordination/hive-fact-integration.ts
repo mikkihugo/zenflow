@@ -2,43 +2,18 @@
  * @fileoverview Hive-Level FACT Integration
  * Centralized FACT (Fast Augmented Context Tools) system at the Hive level
  * Provides universal knowledge to all swarms - facts about npm packages, repos, etc.
- * 
+ *
  * FACT is CENTRAL - not swarm-specific. All swarms access the same FACT knowledge.
  */
 
 import { EventEmitter } from 'node:events';
-import { FACTExternalOrchestrator } from './mcp/tools/fact-external-integration';
 import { createLogger } from '@core/logger';
-import type { 
-  FACTKnowledgeEntry, 
-  FACTSearchQuery,
-  FACTStorageStats 
-} from '@knowledge/storage-interface';
+import type { FACTSearchQuery, FACTStorageStats } from '@knowledge/storage-interface';
 import type { HiveSwarmCoordinator } from './hive-swarm-sync';
+import type { HiveFACTConfig, UniversalFact } from './hive-types';
+import { FACTExternalOrchestrator } from './mcp/tools/fact-external-integration';
 
 const logger = createLogger({ prefix: 'Hive-FACT' });
-
-export interface HiveFACTConfig {
-  enableCache?: boolean;
-  cacheSize?: number;
-  knowledgeSources?: string[];
-  autoRefreshInterval?: number; // Auto-refresh common facts
-}
-
-export interface UniversalFact {
-  id: string;
-  type: 'npm-package' | 'github-repo' | 'api-docs' | 'security-advisory' | 'general';
-  subject: string; // e.g., "react@18.2.0", "github.com/facebook/react"
-  content: any;
-  metadata: {
-    source: string;
-    timestamp: number;
-    confidence: number;
-    ttl?: number; // Time to live
-  };
-  accessCount: number;
-  swarmAccess: Set<string>; // Which swarms have accessed this fact
-}
 
 /**
  * Centralized FACT system at Hive level
@@ -58,12 +33,12 @@ export class HiveFACTSystem extends EventEmitter {
       cacheSize: 10000, // Large cache for universal facts
       knowledgeSources: ['context7', 'deepwiki', 'gitmcp', 'semgrep'],
       autoRefreshInterval: 3600000, // 1 hour
-      ...config
+      ...config,
     };
 
     this.factOrchestrator = new FACTExternalOrchestrator({
       enableCache: this.config.enableCache,
-      cacheSize: this.config.cacheSize
+      cacheSize: this.config.cacheSize,
     });
   }
 
@@ -72,9 +47,9 @@ export class HiveFACTSystem extends EventEmitter {
    */
   async initialize(hiveCoordinator?: HiveSwarmCoordinator): Promise<void> {
     logger.info('Initializing Hive FACT System...');
-    
+
     this.hiveCoordinator = hiveCoordinator;
-    
+
     // Initialize FACT orchestrator
     await this.factOrchestrator.initialize();
 
@@ -88,7 +63,7 @@ export class HiveFACTSystem extends EventEmitter {
     if (this.hiveCoordinator) {
       this.hiveCoordinator.emit('fact-system-ready', {
         totalFacts: this.universalFacts.size,
-        sources: this.config.knowledgeSources
+        sources: this.config.knowledgeSources,
       });
     }
 
@@ -100,22 +75,24 @@ export class HiveFACTSystem extends EventEmitter {
    * Get universal fact - accessible by any swarm
    */
   async getFact(
-    type: UniversalFact['type'], 
+    type: UniversalFact['type'],
     subject: string,
     swarmId?: string
   ): Promise<UniversalFact | null> {
     const factKey = `${type}:${subject}`;
-    
+
     // Check if we already have this fact
-    let fact = this.universalFacts.get(factKey);
-    
+    const fact = this.universalFacts.get(factKey);
+
     if (fact) {
       // Update access tracking
-      fact.accessCount++;
-      if (swarmId) {
+      if (fact.accessCount !== undefined) {
+        fact.accessCount++;
+      }
+      if (swarmId && fact.swarmAccess) {
         fact.swarmAccess.add(swarmId);
       }
-      
+
       // Check if fact is still fresh
       if (this.isFactFresh(fact)) {
         logger.debug(`Returning cached fact: ${factKey}`);
@@ -126,19 +103,19 @@ export class HiveFACTSystem extends EventEmitter {
     // Gather fresh fact from external sources
     logger.info(`Gathering fresh fact: ${factKey}`);
     const freshFact = await this.gatherFact(type, subject);
-    
+
     if (freshFact) {
       // Store in universal facts
       this.universalFacts.set(factKey, freshFact);
-      
+
       // Track swarm access
-      if (swarmId) {
+      if (swarmId && freshFact.swarmAccess) {
         freshFact.swarmAccess.add(swarmId);
       }
-      
+
       // Emit event for swarms to know about new fact
       this.emit('fact-updated', { type, subject, fact: freshFact });
-      
+
       return freshFact;
     }
 
@@ -150,9 +127,9 @@ export class HiveFACTSystem extends EventEmitter {
    */
   async searchFacts(query: FACTSearchQuery): Promise<UniversalFact[]> {
     const results: UniversalFact[] = [];
-    
+
     // Search in cached facts first
-    for (const [key, fact] of this.universalFacts) {
+    for (const [_key, fact] of this.universalFacts) {
       if (this.matchesQuery(fact, query)) {
         results.push(fact);
       }
@@ -166,7 +143,7 @@ export class HiveFACTSystem extends EventEmitter {
 
     // Sort by relevance and limit
     return results
-      .sort((a, b) => b.metadata.confidence - a.metadata.confidence)
+      .sort((a, b) => (b.metadata?.confidence || 0) - (a.metadata?.confidence || 0))
       .slice(0, query.limit || 10);
   }
 
@@ -176,11 +153,11 @@ export class HiveFACTSystem extends EventEmitter {
   async getNPMPackageFacts(packageName: string, version?: string): Promise<UniversalFact> {
     const subject = version ? `${packageName}@${version}` : packageName;
     const fact = await this.getFact('npm-package', subject);
-    
+
     if (!fact) {
       throw new Error(`Could not gather facts for npm package: ${subject}`);
     }
-    
+
     return fact;
   }
 
@@ -190,11 +167,11 @@ export class HiveFACTSystem extends EventEmitter {
   async getGitHubRepoFacts(owner: string, repo: string): Promise<UniversalFact> {
     const subject = `github.com/${owner}/${repo}`;
     const fact = await this.getFact('github-repo', subject);
-    
+
     if (!fact) {
       throw new Error(`Could not gather facts for GitHub repo: ${subject}`);
     }
-    
+
     return fact;
   }
 
@@ -204,11 +181,11 @@ export class HiveFACTSystem extends EventEmitter {
   async getAPIDocsFacts(api: string, endpoint?: string): Promise<UniversalFact> {
     const subject = endpoint ? `${api}/${endpoint}` : api;
     const fact = await this.getFact('api-docs', subject);
-    
+
     if (!fact) {
       throw new Error(`Could not gather API documentation for: ${subject}`);
     }
-    
+
     return fact;
   }
 
@@ -217,43 +194,53 @@ export class HiveFACTSystem extends EventEmitter {
    */
   async getSecurityAdvisoryFacts(cve: string): Promise<UniversalFact> {
     const fact = await this.getFact('security-advisory', cve);
-    
+
     if (!fact) {
       throw new Error(`Could not gather security advisory for: ${cve}`);
     }
-    
+
     return fact;
   }
 
   /**
    * Gather fact from external sources
    */
-  private async gatherFact(type: UniversalFact['type'], subject: string): Promise<UniversalFact | null> {
+  private async gatherFact(
+    type: UniversalFact['type'],
+    subject: string
+  ): Promise<UniversalFact | null> {
     try {
       // Determine query based on fact type
       const query = this.buildQueryForFactType(type, subject);
-      
+
       // Use FACT orchestrator to gather from external MCPs
       const result = await this.factOrchestrator.gatherKnowledge(query, {
         sources: this.getSourcesForFactType(type),
         priority: 'high',
-        useCache: true
+        useCache: true,
       });
 
       // Convert to universal fact
       const fact: UniversalFact = {
         id: `${type}:${subject}:${Date.now()}`,
         type,
+        category: 'knowledge', // Add required category field
         subject,
-        content: JSON.parse(result.consolidatedKnowledge.content),
+        content:
+          typeof result.consolidatedKnowledge.content === 'string'
+            ? JSON.parse(result.consolidatedKnowledge.content)
+            : result.consolidatedKnowledge.content,
+        source: result.sources.size > 0 ? Array.from(result.sources.keys()).join(',') : 'unknown',
+        confidence: this.calculateConfidence(result),
+        timestamp: Date.now(),
         metadata: {
           source: result.sources.size > 0 ? Array.from(result.sources.keys()).join(',') : 'unknown',
           timestamp: Date.now(),
           confidence: this.calculateConfidence(result),
-          ttl: this.getTTLForFactType(type)
+          ttl: this.getTTLForFactType(type),
         },
         accessCount: 1,
-        swarmAccess: new Set()
+        swarmAccess: new Set(),
       };
 
       return fact;
@@ -321,8 +308,8 @@ export class HiveFACTSystem extends EventEmitter {
    * Check if fact is still fresh
    */
   private isFactFresh(fact: UniversalFact): boolean {
-    const ttl = fact.metadata.ttl || this.getTTLForFactType(fact.type);
-    return Date.now() - fact.metadata.timestamp < ttl;
+    const ttl = fact.metadata?.ttl || this.getTTLForFactType(fact.type);
+    return Date.now() - (fact.metadata?.timestamp || fact.timestamp) < ttl;
   }
 
   /**
@@ -331,11 +318,11 @@ export class HiveFACTSystem extends EventEmitter {
   private calculateConfidence(result: any): number {
     const sourceCount = result.sources.size;
     const hasErrors = Array.from(result.sources.values()).some((s: any) => s.error);
-    
+
     let confidence = 0.5; // Base confidence
     confidence += sourceCount * 0.1; // More sources = higher confidence
     confidence -= hasErrors ? 0.2 : 0; // Errors reduce confidence
-    
+
     return Math.min(1.0, Math.max(0.1, confidence));
   }
 
@@ -345,8 +332,9 @@ export class HiveFACTSystem extends EventEmitter {
   private matchesQuery(fact: UniversalFact, query: FACTSearchQuery): boolean {
     // Simple text matching for now
     const searchText = query.query.toLowerCase();
-    const factText = `${fact.type} ${fact.subject} ${JSON.stringify(fact.content)}`.toLowerCase();
-    
+    const factText =
+      `${fact.type} ${fact.subject || ''} ${JSON.stringify(fact.content)}`.toLowerCase();
+
     return factText.includes(searchText);
   }
 
@@ -356,31 +344,38 @@ export class HiveFACTSystem extends EventEmitter {
   private async searchExternalFacts(query: FACTSearchQuery): Promise<UniversalFact[]> {
     const result = await this.factOrchestrator.gatherKnowledge(query.query, {
       sources: this.config.knowledgeSources,
-      maxResults: query.limit
+      maxResults: query.limit,
     });
 
     // Convert to universal facts
     const facts: UniversalFact[] = [];
-    
+
     // Parse consolidated knowledge to extract individual facts
     try {
-      const knowledge = JSON.parse(result.consolidatedKnowledge.content);
-      
+      const knowledge =
+        typeof result.consolidatedKnowledge.content === 'string'
+          ? JSON.parse(result.consolidatedKnowledge.content)
+          : result.consolidatedKnowledge.content;
+
       if (knowledge.result?.insights) {
         for (const insight of knowledge.result.insights) {
           facts.push({
             id: `general:search:${Date.now()}_${Math.random()}`,
             type: 'general',
+            category: 'search', // Add required category field
             subject: query.query,
             content: { insight },
+            source: 'external_search',
+            confidence: 0.7,
+            timestamp: Date.now(),
             metadata: {
               source: 'external_search',
               timestamp: Date.now(),
               confidence: 0.7,
-              ttl: 3600000 // 1 hour for search results
+              ttl: 3600000, // 1 hour for search results
             },
             accessCount: 0,
-            swarmAccess: new Set()
+            swarmAccess: new Set(),
           });
         }
       }
@@ -396,8 +391,16 @@ export class HiveFACTSystem extends EventEmitter {
    */
   private async preloadCommonFacts(): Promise<void> {
     const commonPackages = [
-      'react', 'vue', 'angular', 'express', 'typescript',
-      'jest', 'webpack', 'vite', 'next', 'axios'
+      'react',
+      'vue',
+      'angular',
+      'express',
+      'typescript',
+      'jest',
+      'webpack',
+      'vite',
+      'next',
+      'axios',
     ];
 
     const preloadPromises = commonPackages.map(async (pkg) => {
@@ -418,13 +421,13 @@ export class HiveFACTSystem extends EventEmitter {
     // Refresh facts that are accessed frequently
     setInterval(() => {
       const frequentlyAccessedFacts = Array.from(this.universalFacts.entries())
-        .filter(([_, fact]) => fact.accessCount > 10)
-        .sort((a, b) => b[1].accessCount - a[1].accessCount)
+        .filter(([_, fact]) => (fact.accessCount || 0) > 10)
+        .sort((a, b) => (b[1].accessCount || 0) - (a[1].accessCount || 0))
         .slice(0, 20); // Top 20 most accessed
 
       for (const [key, fact] of frequentlyAccessedFacts) {
         if (!this.isFactFresh(fact)) {
-          this.gatherFact(fact.type, fact.subject).then((freshFact) => {
+          this.gatherFact(fact.type, fact.subject || '').then((freshFact) => {
             if (freshFact) {
               this.universalFacts.set(key, freshFact);
               this.emit('fact-refreshed', { key, fact: freshFact });
@@ -440,11 +443,13 @@ export class HiveFACTSystem extends EventEmitter {
    */
   getStats(): FACTStorageStats & { swarmUsage: Record<string, number> } {
     const swarmUsage: Record<string, number> = {};
-    
+
     // Calculate per-swarm usage
     for (const fact of this.universalFacts.values()) {
-      for (const swarmId of fact.swarmAccess) {
-        swarmUsage[swarmId] = (swarmUsage[swarmId] || 0) + 1;
+      if (fact.swarmAccess) {
+        for (const swarmId of fact.swarmAccess) {
+          swarmUsage[swarmId] = (swarmUsage[swarmId] || 0) + 1;
+        }
       }
     }
 
@@ -456,11 +461,15 @@ export class HiveFACTSystem extends EventEmitter {
       persistentEntries: 0, // Implement if needed
       totalMemorySize: JSON.stringify(Array.from(this.universalFacts.values())).length,
       cacheHitRate: cacheStats.hitRate || 0,
-      oldestEntry: Math.min(...Array.from(this.universalFacts.values()).map(f => f.metadata.timestamp)),
-      newestEntry: Math.max(...Array.from(this.universalFacts.values()).map(f => f.metadata.timestamp)),
+      oldestEntry: Math.min(
+        ...Array.from(this.universalFacts.values()).map((f) => f.metadata?.timestamp || f.timestamp)
+      ),
+      newestEntry: Math.max(
+        ...Array.from(this.universalFacts.values()).map((f) => f.metadata?.timestamp || f.timestamp)
+      ),
       topDomains: this.config.knowledgeSources || [],
       storageHealth: 'excellent',
-      swarmUsage
+      swarmUsage,
     };
   }
 
@@ -472,10 +481,10 @@ export class HiveFACTSystem extends EventEmitter {
     for (const timer of this.refreshTimers.values()) {
       clearTimeout(timer);
     }
-    
+
     // Shutdown orchestrator
     await this.factOrchestrator.shutdown();
-    
+
     this.emit('shutdown');
     logger.info('Hive FACT System shut down');
   }
@@ -518,7 +527,7 @@ export const HiveFACTHelpers = {
   async npmFacts(packageName: string, version?: string): Promise<any> {
     const fact = getHiveFACT();
     if (!fact) throw new Error('Hive FACT not initialized');
-    
+
     const result = await fact.getNPMPackageFacts(packageName, version);
     return result.content;
   },
@@ -529,7 +538,7 @@ export const HiveFACTHelpers = {
   async githubFacts(owner: string, repo: string): Promise<any> {
     const fact = getHiveFACT();
     if (!fact) throw new Error('Hive FACT not initialized');
-    
+
     const result = await fact.getGitHubRepoFacts(owner, repo);
     return result.content;
   },
@@ -540,7 +549,7 @@ export const HiveFACTHelpers = {
   async apiFacts(api: string, endpoint?: string): Promise<any> {
     const fact = getHiveFACT();
     if (!fact) throw new Error('Hive FACT not initialized');
-    
+
     const result = await fact.getAPIDocsFacts(api, endpoint);
     return result.content;
   },
@@ -551,10 +560,13 @@ export const HiveFACTHelpers = {
   async securityFacts(cve: string): Promise<any> {
     const fact = getHiveFACT();
     if (!fact) throw new Error('Hive FACT not initialized');
-    
+
     const result = await fact.getSecurityAdvisoryFacts(cve);
     return result.content;
-  }
+  },
 };
+
+// Export types from hive-types
+export type { UniversalFact } from './hive-types';
 
 export default HiveFACTSystem;

@@ -71,7 +71,7 @@ describe('Error Handling System', () => {
       expect(error.field).toBe('testField');
       expect(error.value).toBe('badValue');
       expect(error.expectedType).toBe('string');
-      expect(error.getSuggestions()).toContain('Check the \'testField\' parameter');
+      expect(error.getSuggestions()).toContain("Check the 'testField' parameter");
     });
 
     test('SwarmError should include swarm context', () => {

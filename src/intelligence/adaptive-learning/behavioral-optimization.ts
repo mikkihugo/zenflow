@@ -563,7 +563,8 @@ export class BehavioralOptimization extends EventEmitter {
         performanceChange: performanceChange,
         efficiencyGain: successRate,
         stabilityEffect: behavior.performance.response_time - originalPerformance.response_time,
-        collaborationImprovement: behavior.performance.collaboration_score - originalPerformance.collaboration_score,
+        collaborationImprovement:
+          behavior.performance.collaboration_score - originalPerformance.collaboration_score,
       },
       success: performanceChange >= 0, // Success if performance improved or stayed same
       originalPerformance,

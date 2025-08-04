@@ -3,7 +3,7 @@
  * Multi-dimensional resource monitoring and intelligent scheduling
  */
 
-import type { ILoadBalancingAlgorithm } from '../interfaces';
+import type { LoadBalancingAlgorithm } from '../interfaces';
 import type { Agent, LoadMetrics, ResourceConstraint, RoutingResult, Task } from '../types';
 
 interface ResourceProfile {
@@ -53,7 +53,7 @@ interface TaskResourceRequirement {
   duration: number;
 }
 
-export class ResourceAwareAlgorithm implements ILoadBalancingAlgorithm {
+export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   public readonly name = 'resource_aware';
 
   private resourceProfiles: Map<string, ResourceProfile> = new Map();

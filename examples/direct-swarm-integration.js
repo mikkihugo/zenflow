@@ -14,12 +14,11 @@ async function demonstrateDirectSwarmIntegration() {
     // Get orchestrator instance and initialize
     const orchestrator = SwarmOrchestrator.getInstance();
     await orchestrator.initialize();
-    const swarmId = await orchestrator.initializeSwarm({
+    const _swarmId = await orchestrator.initializeSwarm({
       topology: 'hierarchical',
       maxAgents: 5,
       strategy: 'parallel',
     });
-    console.log(`🐝 Swarm initialized with ID: ${swarmId}`);
     const agents = [];
 
     for (const agentType of ['coordinator', 'researcher', 'analyst']) {
@@ -30,25 +29,19 @@ async function demonstrateDirectSwarmIntegration() {
       });
       agents.push(agentId);
     }
-    const taskId = await orchestrator.orchestrateTask({
+    const _taskId = await orchestrator.orchestrateTask({
       description: 'Analyze system architecture and provide recommendations',
       strategy: 'parallel',
       priority: 'high',
     });
-    console.log(`📋 Task orchestrated with ID: ${taskId}`);
-    
+
     const status = await orchestrator.getSwarmStatus();
-    console.log(`📊 Swarm status: ${status.activeAgents} active agents`);
 
     if (status.agentsByType.length > 0) {
-      console.log('👥 Agents by type:');
-      status.agentsByType.forEach(({ type, count }) => {
-        console.log(`   ${type}: ${count} agents`);
-      });
+      status.agentsByType.forEach(({ type, count }) => {});
     }
-    
-    const monitorResult = await orchestrator.startMonitoring(5);
-    console.log(`📈 Monitoring started:`, monitorResult);
+
+    const _monitorResult = await orchestrator.startMonitoring(5);
 
     // Wait a bit to see the monitoring in action
     await new Promise((resolve) => setTimeout(resolve, 2000));

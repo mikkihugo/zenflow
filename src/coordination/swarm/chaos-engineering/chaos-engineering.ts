@@ -14,12 +14,32 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { ErrorFactory } from './errors.js';
-import { Logger } from './logger.js';
-import { generateId } from './utils.js';
+import {
+  BaseClaudeZenError,
+  ConfigurationError,
+  SystemError,
+  ValidationError,
+} from '../../../core/errors';
+import { createLogger } from '../../../core/logger';
+import { generateId } from '../core/utils';
 
 export class ChaosEngineering extends EventEmitter {
-  constructor(options = {}) {
+  private options: any;
+  private logger: any;
+  private experiments: Map<string, any>;
+  private activeExperiments: Map<string, any>;
+  private experimentHistory: Map<string, any>;
+  private failureInjectors: Map<string, any>;
+  private safetyChecks: Map<string, any>;
+  private emergencyStop: boolean;
+  private resourceUsage: any;
+  private stats: any;
+  private healthMonitor: any;
+  private recoveryWorkflows: any;
+  private connectionManager: any;
+  private mcpTools: any;
+
+  constructor(options: any = {}) {
     super();
 
     this.options = {
@@ -32,11 +52,7 @@ export class ChaosEngineering extends EventEmitter {
       ...options,
     };
 
-    this.logger = new Logger({
-      name: 'chaos-engineering',
-      level: process.env.LOG_LEVEL || 'INFO',
-      metadata: { component: 'chaos-engineering' },
-    });
+    this.logger = createLogger({ prefix: 'ChaosEngineering' });
 
     // Experiment state
     this.experiments = new Map();
@@ -95,12 +111,13 @@ export class ChaosEngineering extends EventEmitter {
       this.logger.info('Chaos Engineering Framework initialized successfully');
       this.emit('chaos:initialized');
     } catch (error) {
-      const chaosError = ErrorFactory.createError(
-        'resource',
-        'Failed to initialize chaos engineering',
+      const chaosError = new SystemError(
+        `Failed to initialize chaos engineering: ${error.message}`,
+        'CHAOS_INIT_FAILED',
+        'critical',
         {
-          error: error.message,
           component: 'chaos-engineering',
+          metadata: { originalError: error.message },
         }
       );
       this.logger.error('Chaos Engineering initialization failed', chaosError);
@@ -131,9 +148,11 @@ export class ChaosEngineering extends EventEmitter {
 
     // Validate blast radius
     if (experiment.blastRadius > this.options.blastRadiusLimit) {
-      throw ErrorFactory.createError(
-        'validation',
-        `Experiment blast radius (${experiment.blastRadius}) exceeds limit (${this.options.blastRadiusLimit})`
+      throw new ValidationError(
+        `Experiment blast radius (${experiment.blastRadius}) exceeds limit (${this.options.blastRadiusLimit})`,
+        'blastRadius',
+        this.options.blastRadiusLimit,
+        experiment.blastRadius
       );
     }
 
@@ -154,30 +173,42 @@ export class ChaosEngineering extends EventEmitter {
    */
   async runExperiment(experimentName, overrideParams = {}) {
     if (!this.options.enableChaos) {
-      throw ErrorFactory.createError('configuration', 'Chaos Engineering is disabled');
+      throw new ConfigurationError('Chaos Engineering is disabled', 'enableChaos', false);
     }
 
     if (this.emergencyStop) {
-      throw ErrorFactory.createError(
-        'concurrency',
-        'Emergency stop is active - chaos experiments blocked'
+      throw new SystemError(
+        'Emergency stop is active - chaos experiments blocked',
+        'EMERGENCY_STOP',
+        'critical'
       );
     }
 
     const experiment = this.experiments.get(experimentName);
     if (!experiment) {
-      throw ErrorFactory.createError('validation', `Experiment '${experimentName}' not found`);
+      throw new ValidationError(
+        `Experiment '${experimentName}' not found`,
+        'experimentName',
+        'valid experiment name',
+        experimentName
+      );
     }
 
     if (!experiment.enabled) {
-      throw ErrorFactory.createError('validation', `Experiment '${experimentName}' is disabled`);
+      throw new ValidationError(
+        `Experiment '${experimentName}' is disabled`,
+        'enabled',
+        true,
+        false
+      );
     }
 
     // Check concurrent experiment limit
     if (this.activeExperiments.size >= this.options.maxConcurrentExperiments) {
-      throw ErrorFactory.createError(
-        'concurrency',
-        `Maximum concurrent experiments reached (${this.options.maxConcurrentExperiments})`
+      throw new SystemError(
+        `Maximum concurrent experiments reached (${this.options.maxConcurrentExperiments})`,
+        'MAX_CONCURRENT_EXPERIMENTS',
+        'high'
       );
     }
 
@@ -929,9 +960,9 @@ export class ChaosEngineering extends EventEmitter {
 
       // Log periodic work progress for monitoring
       if (Date.now() - start > 5000 && (Date.now() - start) % 10000 < 100) {
-        this.logger.debug('CPU worker active', { 
+        this.logger.debug('CPU worker active', {
           workTime: Date.now() - start,
-          computationResult: result.toFixed(2)
+          computationResult: result.toFixed(2),
         });
       }
 
@@ -962,19 +993,19 @@ export class ChaosEngineering extends EventEmitter {
     // Log detailed memory breakdown for monitoring
     this.logger.debug('Resource usage check', {
       memoryBreakdown: {
-        heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024) + 'MB',
-        heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024) + 'MB',
-        external: Math.round(memUsage.external / 1024 / 1024) + 'MB',
-        rss: Math.round(memUsage.rss / 1024 / 1024) + 'MB',
+        heapUsed: `${Math.round(memUsage.heapUsed / 1024 / 1024)}MB`,
+        heapTotal: `${Math.round(memUsage.heapTotal / 1024 / 1024)}MB`,
+        external: `${Math.round(memUsage.external / 1024 / 1024)}MB`,
+        rss: `${Math.round(memUsage.rss / 1024 / 1024)}MB`,
       },
       systemMemory: {
-        total: Math.round(totalMem / 1024 / 1024 / 1024) + 'GB',
-        free: Math.round(freeMem / 1024 / 1024 / 1024) + 'GB',
-        usage: (((totalMem - freeMem) / totalMem) * 100).toFixed(1) + '%',
+        total: `${Math.round(totalMem / 1024 / 1024 / 1024)}GB`,
+        free: `${Math.round(freeMem / 1024 / 1024 / 1024)}GB`,
+        usage: `${(((totalMem - freeMem) / totalMem) * 100).toFixed(1)}%`,
       },
       cpu: {
         loadAverage: loadAvg[0].toFixed(2),
-        utilization: ((loadAvg[0] / cpuCount) * 100).toFixed(1) + '%',
+        utilization: `${((loadAvg[0] / cpuCount) * 100).toFixed(1)}%`,
         cores: cpuCount,
       },
     });
@@ -1005,7 +1036,7 @@ export class ChaosEngineering extends EventEmitter {
   /**
    * Emergency stop all experiments
    */
-  async emergencyStop(reason = 'Manual emergency stop') {
+  async emergencyStopExperiments(reason = 'Manual emergency stop') {
     this.logger.warn('EMERGENCY STOP ACTIVATED', { reason });
     this.emergencyStop = true;
 
@@ -1025,7 +1056,12 @@ export class ChaosEngineering extends EventEmitter {
   async cancelExperiment(executionId, reason = 'Manual cancellation') {
     const execution = this.activeExperiments.get(executionId);
     if (!execution) {
-      throw ErrorFactory.createError('validation', `Experiment execution ${executionId} not found`);
+      throw new ValidationError(
+        `Experiment execution ${executionId} not found`,
+        'executionId',
+        'valid execution ID',
+        executionId
+      );
     }
 
     execution.status = 'cancelled';

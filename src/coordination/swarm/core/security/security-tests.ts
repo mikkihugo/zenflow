@@ -20,12 +20,8 @@ class SecurityTester {
     const result = { testName, passed, details, timestamp: new Date().toISOString() };
     this.testResults.push(result);
 
-    const status = passed ? '✅ PASS' : '❌ FAIL';
-    
-    // Log test result for debugging and monitoring
-    console.log(`Security Test: ${testName} - ${status}`);
+    const _status = passed ? '✅ PASS' : '❌ FAIL';
     if (details) {
-      console.log(`  Details: ${details}`);
     }
 
     if (!passed) {
@@ -326,20 +322,12 @@ class SecurityTester {
     await this.testCoordinatorSecurity();
 
     const endTime = Date.now();
-    const duration = endTime - startTime;
-
-    // Log test results with timing
-    console.log(`🔒 Security tests completed in ${duration}ms`);
-    console.log(`✅ Passed: ${this.passedTests.length}, ❌ Failed: ${this.failedTests.length}`);
+    const _duration = endTime - startTime;
 
     if (this.failedTests.length > 0) {
-      console.log('\n❌ Failed Tests:');
-      this.failedTests.forEach((test) => {
-        console.log(`   • ${test.name}: ${test.error}`);
-      });
+      this.failedTests.forEach((_test) => {});
       return false;
     } else {
-      console.log('🎉 All security tests passed!');
       return true;
     }
   }

@@ -521,7 +521,7 @@ async function runPersistenceTests() {
 
       const allMetrics = await db.all(
         'SELECT DISTINCT metric_type FROM metrics WHERE agent_id = ?',
-        [agentId],
+        [agentId]
       );
       assert.strictEqual(allMetrics.length, 3);
     });
@@ -537,7 +537,7 @@ async function runPersistenceTests() {
             id: uuidv4(),
             name: `concurrent-agent-${i}`,
             agent_type: 'coder',
-          }),
+          })
         );
       }
 
@@ -637,7 +637,7 @@ async function runPersistenceTests() {
             name: `perf-agent-${i}`,
             agent_type: ['researcher', 'coder', 'analyst'][i % 3],
             capabilities: { index: i },
-          }),
+          })
         );
       }
 

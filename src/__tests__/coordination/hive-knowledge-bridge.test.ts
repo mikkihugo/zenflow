@@ -3,22 +3,25 @@
  * Focused testing of the bridge component between Hive FACT and swarm coordination
  */
 
-import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { EventEmitter } from 'node:events';
-import { HiveKnowledgeBridge, type KnowledgeRequest } from '../../coordination/hive-knowledge-bridge';
+import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
+import {
+  HiveKnowledgeBridge,
+  type KnowledgeRequest,
+} from '../../coordination/hive-knowledge-bridge';
 
 // Mock dependencies
 const mockHiveFACT = {
   searchFacts: jest.fn(),
   getFact: jest.fn(),
   on: jest.fn(),
-  emit: jest.fn()
+  emit: jest.fn(),
 };
 
 const mockHiveCoordinator = new EventEmitter();
 const mockMemoryStore = {
   store: jest.fn(),
-  retrieve: jest.fn()
+  retrieve: jest.fn(),
 };
 
 describe('HiveKnowledgeBridge Unit Tests', () => {
@@ -27,10 +30,10 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
   beforeEach(async () => {
     // Reset mocks
     jest.clearAllMocks();
-    
+
     bridge = new HiveKnowledgeBridge(mockHiveCoordinator as any, mockMemoryStore as any);
     (bridge as any).hiveFact = mockHiveFACT;
-    
+
     await bridge.initialize();
   });
 
@@ -42,7 +45,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
     test('should initialize successfully with valid dependencies', async () => {
       const newBridge = new HiveKnowledgeBridge(mockHiveCoordinator as any, mockMemoryStore as any);
       (newBridge as any).hiveFact = mockHiveFACT;
-      
+
       await expect(newBridge.initialize()).resolves.not.toThrow();
       await newBridge.shutdown();
     });
@@ -50,7 +53,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
     test('should throw error when HiveFACT is not available', async () => {
       const newBridge = new HiveKnowledgeBridge(mockHiveCoordinator as any, mockMemoryStore as any);
       // Don't set hiveFact
-      
+
       await expect(newBridge.initialize()).rejects.toThrow('HiveFACT system not available');
     });
   });
@@ -58,7 +61,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
   describe('Swarm Registration', () => {
     test('should register swarm with interests', async () => {
       await bridge.registerSwarm('swarm-1', ['authentication', 'frontend']);
-      
+
       const stats = bridge.getStats();
       expect(stats.registeredSwarms).toBe(1);
       expect(mockMemoryStore.store).toHaveBeenCalledWith(
@@ -66,7 +69,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         'registration',
         expect.objectContaining({
           swarmId: 'swarm-1',
-          interests: ['authentication', 'frontend']
+          interests: ['authentication', 'frontend'],
         })
       );
     });
@@ -74,10 +77,10 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
     test('should update interests for existing swarm', async () => {
       await bridge.registerSwarm('swarm-1', ['authentication']);
       await bridge.registerSwarm('swarm-1', ['frontend', 'backend']);
-      
+
       const stats = bridge.getStats();
       expect(stats.registeredSwarms).toBe(1); // Still just one swarm
-      
+
       // Should be called twice
       expect(mockMemoryStore.store).toHaveBeenCalledTimes(2);
     });
@@ -93,8 +96,8 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
           content: { patterns: ['JWT', 'OAuth'] },
           metadata: { source: 'hive-fact', timestamp: Date.now(), confidence: 0.9 },
           accessCount: 1,
-          swarmAccess: new Set(['swarm-1'])
-        }
+          swarmAccess: new Set(['swarm-1']),
+        },
       ];
 
       mockHiveFACT.searchFacts.mockResolvedValue(mockFacts);
@@ -105,7 +108,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         type: 'query',
         payload: { query: 'authentication patterns', domain: 'security' },
         priority: 'medium',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const response = await bridge.processKnowledgeRequest(request);
@@ -117,7 +120,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         query: 'authentication patterns',
         domains: ['security'],
         limit: 10,
-        sortBy: 'relevance'
+        sortBy: 'relevance',
       });
     });
 
@@ -130,7 +133,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         type: 'query',
         payload: { query: 'general patterns' },
         priority: 'low',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const response = await bridge.processKnowledgeRequest(request);
@@ -140,7 +143,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         query: 'general patterns',
         domains: undefined,
         limit: 10,
-        sortBy: 'relevance'
+        sortBy: 'relevance',
       });
     });
 
@@ -153,7 +156,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         type: 'query',
         payload: { query: 'failing query' },
         priority: 'high',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const response = await bridge.processKnowledgeRequest(request);
@@ -171,8 +174,8 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
           content: { data: 'test' },
           metadata: { source: 'hive-fact', timestamp: Date.now(), confidence: 0.8 },
           accessCount: 3,
-          swarmAccess: new Set(['swarm-1', 'swarm-2'])
-        }
+          swarmAccess: new Set(['swarm-1', 'swarm-2']),
+        },
       ];
 
       mockHiveFACT.searchFacts.mockResolvedValue(mockFacts);
@@ -184,7 +187,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         type: 'query',
         payload: { query: 'test patterns' },
         priority: 'medium',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const response = await bridge.processKnowledgeRequest(request);
@@ -209,10 +212,10 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
           description: 'Successful JWT implementation',
           implementation: '{"pattern": "jwt"}',
           metrics: { duration: 1000, quality: 0.9 },
-          context: { taskType: 'auth', complexity: 'medium' }
+          context: { taskType: 'auth', complexity: 'medium' },
         },
         confidence: 0.85,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const request: KnowledgeRequest = {
@@ -221,7 +224,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         type: 'contribution',
         payload: { knowledge: contribution },
         priority: 'medium',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const response = await bridge.processKnowledgeRequest(request);
@@ -243,7 +246,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         type: 'contribution',
         payload: {}, // Missing knowledge data
         priority: 'medium',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const response = await bridge.processKnowledgeRequest(request);
@@ -257,7 +260,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
     test('should process knowledge update request', async () => {
       const updateData = {
         factId: 'fact-1',
-        updates: { confidence: 0.95, newData: 'updated content' }
+        updates: { confidence: 0.95, newData: 'updated content' },
       };
 
       const request: KnowledgeRequest = {
@@ -266,7 +269,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         type: 'update',
         payload: { knowledge: updateData },
         priority: 'high',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const response = await bridge.processKnowledgeRequest(request);
@@ -283,7 +286,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         type: 'update',
         payload: { knowledge: {} }, // Missing factId
         priority: 'high',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const response = await bridge.processKnowledgeRequest(request);
@@ -301,7 +304,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         type: 'subscribe',
         payload: { domain: 'machine-learning' },
         priority: 'low',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const response = await bridge.processKnowledgeRequest(request);
@@ -318,7 +321,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         type: 'subscribe',
         payload: {}, // Missing domain
         priority: 'low',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const response = await bridge.processKnowledgeRequest(request);
@@ -342,7 +345,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         domain: 'test',
         content: { title: 'test', description: 'test', context: {} },
         confidence: 0.8,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       await bridge.processKnowledgeRequest({
@@ -351,7 +354,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         type: 'contribution',
         payload: { knowledge: contribution },
         priority: 'medium',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
 
       const stats = bridge.getStats();
@@ -372,7 +375,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         type: 'unsupported-type' as any,
         payload: {},
         priority: 'medium' as const,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const response = await bridge.processKnowledgeRequest(request);
@@ -390,13 +393,13 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         type: 'query',
         payload: { query: 'test' },
         priority: 'medium',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const response = await bridge.processKnowledgeRequest(request);
 
       expect(response.success).toBe(false);
-      
+
       // Pending request should be cleaned up
       const stats = bridge.getStats();
       expect(stats.pendingRequests).toBe(0);
@@ -406,14 +409,14 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
   describe('Event Handling', () => {
     test('should emit events for significant operations', async () => {
       const eventsEmitted: string[] = [];
-      
+
       bridge.on('swarm:registered', () => eventsEmitted.push('swarm:registered'));
       bridge.on('knowledge:contributed', () => eventsEmitted.push('knowledge:contributed'));
       bridge.on('knowledge:distributed', () => eventsEmitted.push('knowledge:distributed'));
 
       // Register swarm
       await bridge.registerSwarm('swarm-test', ['test-domain']);
-      
+
       // Make contribution
       const contribution = {
         swarmId: 'swarm-test',
@@ -422,7 +425,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         domain: 'test',
         content: { title: 'test', description: 'test', context: {} },
         confidence: 0.8,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       await bridge.processKnowledgeRequest({
@@ -431,7 +434,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
         type: 'contribution',
         payload: { knowledge: contribution },
         priority: 'medium',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
 
       expect(eventsEmitted).toContain('swarm:registered');

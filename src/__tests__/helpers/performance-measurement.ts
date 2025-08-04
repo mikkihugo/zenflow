@@ -97,7 +97,7 @@ export class PerformanceMeasurement {
       const endMemory = process.memoryUsage();
 
       measurements.push(endTime - startTime);
-      
+
       // Track memory delta from initial baseline
       const memoryDelta = endMemory.heapUsed - initialMemory.heapUsed;
       memoryMeasurements.push(memoryDelta);

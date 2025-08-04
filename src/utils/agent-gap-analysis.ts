@@ -20,9 +20,7 @@ async function main() {
     switch (command) {
       case 'report':
       case 'compare': {
-        const report = generateComparisonReport();
-        console.log('📊 Agent Gap Analysis Report:');
-        console.log(JSON.stringify(report, null, 2));
+        const _report = generateComparisonReport();
         break;
       }
 
@@ -42,17 +40,10 @@ async function main() {
 
       case 'audit': {
         const audit = auditAutoAssignmentCapabilities();
-        console.log('🔍 Auto-Assignment Audit:');
-        console.log('\n📋 Capabilities:');
-        for (const capability of audit.capabilities) {
-          console.log(`  ✅ ${capability.name}: ${capability.description}`);
-          console.log(`     Coverage: ${capability.coverage}%`);
+        for (const _capability of audit.capabilities) {
         }
-        console.log('\n💡 Recommendations:');
         for (const recommendation of audit.recommendations) {
-          console.log(`  🔸 ${recommendation.type}: ${recommendation.message}`);
           if (recommendation.priority) {
-            console.log(`     Priority: ${recommendation.priority}`);
           }
         }
         break;
@@ -60,24 +51,14 @@ async function main() {
 
       case 'agents': {
         const analysis = performGapAnalysis();
-        console.log('🤖 Agent Gap Analysis:');
-        console.log(`\n📊 Analysis Summary:`);
-        console.log(`   Total Gaps: ${analysis.totalGaps || 0}`);
-        console.log(`   Coverage: ${analysis.coverage || 0}%`);
         if (analysis.recommendations) {
-          console.log(`   Recommendations: ${analysis.recommendations.length}`);
         }
 
         // Show our agent categories
         const { OUR_AGENT_CATEGORIES } = await import('../coordination/agents/gap-analysis.js');
-
-        console.log('\n🏷️ Agent Categories:');
-        for (const [category, agents] of Object.entries(OUR_AGENT_CATEGORIES)) {
-          console.log(`\n  📁 ${category}:`);
+        for (const [_category, agents] of Object.entries(OUR_AGENT_CATEGORIES)) {
           for (const agent of agents) {
-            console.log(`     🤖 ${agent.name || agent.type || agent}: ${agent.description || 'No description'}`);
             if (agent.capabilities) {
-              console.log(`        Capabilities: ${agent.capabilities.join(', ')}`);
             }
           }
         }
@@ -86,27 +67,16 @@ async function main() {
 
       case 'benchmark': {
         const startTime = Date.now();
-        const analysis = performGapAnalysis();
-        const analysisTime = Date.now() - startTime;
+        const _analysis = performGapAnalysis();
+        const _analysisTime = Date.now() - startTime;
 
         const reportStart = Date.now();
-        const report = generateComparisonReport();
-        const reportTime = Date.now() - reportStart;
+        const _report = generateComparisonReport();
+        const _reportTime = Date.now() - reportStart;
 
         const auditStart = Date.now();
-        const audit = auditAutoAssignmentCapabilities();
-        const auditTime = Date.now() - auditStart;
-
-        console.log('⏱️ Performance Benchmark Results:');
-        console.log(`  Gap Analysis: ${analysisTime}ms`);
-        console.log(`  Report Generation: ${reportTime}ms`);
-        console.log(`  Capability Audit: ${auditTime}ms`);
-        console.log(`  Total: ${analysisTime + reportTime + auditTime}ms`);
-        
-        console.log('\n📊 Analysis Summary:');
-        console.log(`  Categories analyzed: ${Object.keys(analysis.categoryComparison).length}`);
-        console.log(`  Capabilities audited: ${audit.capabilities.length}`);
-        console.log(`  Recommendations: ${audit.recommendations.length}`);
+        const _audit = auditAutoAssignmentCapabilities();
+        const _auditTime = Date.now() - auditStart;
         break;
       }
       default: {

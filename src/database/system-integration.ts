@@ -14,6 +14,9 @@ import type { DatabaseCoordinator } from './core/database-coordinator';
 import { DatabaseFactory } from './index';
 import { DocumentService } from './services/document-service';
 
+// TODO: Use dependency injection for logger
+// Should inject ILogger from DI container instead of creating directly
+// Example: constructor(@inject(CORE_TOKENS.Logger) private logger: ILogger) {}
 const logger = createLogger('SystemIntegration');
 
 export interface DatabaseDrivenSystemConfig {

@@ -23,7 +23,7 @@ const results = {
 // Custom test runner for describe/it pattern
 const suites = [];
 let currentSuite = null;
-let currentTest = null;
+let _currentTest = null;
 
 global.describe = (name, fn) => {
   const suite = {
@@ -75,7 +75,7 @@ global.assert = new Proxy(assert, {
           } else if (typeof expectedError === 'string') {
             if (!error.message.includes(expectedError)) {
               throw new Error(
-                `Error message "${error.message}" does not include "${expectedError}"`,
+                `Error message "${error.message}" does not include "${expectedError}"`
               );
             }
           }
@@ -90,8 +90,7 @@ global.assert = new Proxy(assert, {
 async function runSuites() {
   for (const suite of suites) {
     for (const test of suite.tests) {
-      currentTest = test;
-      console.log(`🧪 Running: ${suite.name} > ${test.name}`);
+      _currentTest = test;
       results.total++;
 
       try {

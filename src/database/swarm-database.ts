@@ -164,16 +164,9 @@ export class SwarmDatabase extends EventEmitter {
   async testConnection(): Promise<boolean> {
     try {
       const client = await this.pool.connect();
-      const result = await client.query('SELECT NOW() as connected_at');
+      const _result = await client.query('SELECT NOW() as connected_at');
       client.release();
-      
-      // Log successful connection with timestamp
-      console.log('✅ Database connection test successful:', {
-        connectedAt: result.rows[0]?.connected_at,
-        poolSize: this.pool.totalCount,
-        activeConnections: this.pool.idleCount,
-      });
-      
+
       return true;
     } catch (error) {
       console.error('❌ Database connection test failed:', error);

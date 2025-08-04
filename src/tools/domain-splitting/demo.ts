@@ -260,43 +260,27 @@ export default class DomainSplittingDemo {
 
   private async simulateSplitting(plan: SplittingPlan): Promise<void> {
     const totalFiles = plan.targetSubDomains.reduce((sum, sub) => sum + sub.files.length, 0);
-    console.log(`📁 Starting domain splitting for ${totalFiles} files across ${plan.targetSubDomains.length} domains...`);
-    
+
     await this.delay(500);
-    console.log('🔍 Analyzing subdomain structure...');
     await this.delay(300);
-    
-    console.log('📋 Processing subdomains:');
-    for (const subdomain of plan.targetSubDomains) {
-      console.log(`  - ${subdomain.name}: ${subdomain.files.length} files`);
+    for (const _subdomain of plan.targetSubDomains) {
       await this.delay(100);
     }
-    
+
     let moved = 0;
-    console.log('\n🚚 Moving files to target domains:');
     for (const subdomain of plan.targetSubDomains) {
       for (const file of subdomain.files) {
         moved++;
-        const filename = path.basename(file);
-        const progress = ((moved / totalFiles) * 100).toFixed(1);
-        console.log(`  [${progress}%] Moving ${filename} → ${subdomain.name}`);
+        const _filename = path.basename(file);
+        const _progress = ((moved / totalFiles) * 100).toFixed(1);
         await this.delay(50);
       }
     }
-    
-    console.log('\n✨ Finalizing domain structure...');
     await this.delay(800);
-    console.log('🔧 Updating import paths and dependencies...');
     await this.delay(400);
-    
-    console.log('🧪 Validating split domains:');
-    for (const subdomain of plan.targetSubDomains) {
-      console.log(`  ✅ ${subdomain.name}: ${subdomain.files.length} files ready`);
+    for (const _subdomain of plan.targetSubDomains) {
       await this.delay(100);
     }
-    
-    console.log('\n🎉 Domain splitting completed successfully!');
-    console.log(`📊 Summary: ${moved} files organized into ${plan.targetSubDomains.length} domains`);
     await this.delay(1000);
     await this.delay(200);
   }

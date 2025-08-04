@@ -544,7 +544,6 @@ export class SafeDomainSplitter implements DomainSplitter {
 
       // Log successful compilation result
       if (result && result.length > 0) {
-        console.log('TypeScript compilation output:', result);
       }
 
       return { success: true, errors: [] };

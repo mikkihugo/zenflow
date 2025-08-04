@@ -91,19 +91,19 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
 
       const afterMetrics = await this.measureModuleLoadingPerformance(modules);
       const optimizationTime = Date.now() - startTime;
-      
+
       // Calculate performance improvements
       const loadTimeImprovement = beforeMetrics.averageLoadTime - afterMetrics.averageLoadTime;
       const improvementPercentage = (loadTimeImprovement / beforeMetrics.averageLoadTime) * 100;
-      
+
       // Log optimization results
       this.logger.info('WASM module loading optimization completed', {
         optimizationTime,
         beforeLoadTime: beforeMetrics.averageLoadTime,
         afterLoadTime: afterMetrics.averageLoadTime,
         improvement: loadTimeImprovement,
-        improvementPercentage: improvementPercentage.toFixed(2) + '%',
-        modulesOptimized: modules.length
+        improvementPercentage: `${improvementPercentage.toFixed(2)}%`,
+        modulesOptimized: modules.length,
       });
 
       return {

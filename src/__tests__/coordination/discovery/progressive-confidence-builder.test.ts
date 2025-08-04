@@ -2,19 +2,15 @@
  * @fileoverview Tests for Progressive Confidence Builder
  */
 
-import { EventEmitter } from 'node:events';
-import { jest } from '@jest/globals';
+import type { DomainDiscoveryBridge } from '@coordination/discovery/domain-discovery-bridge';
 import { ProgressiveConfidenceBuilder } from '@coordination/discovery/progressive-confidence-builder';
-import type { 
-  DomainDiscoveryBridge, 
-  DiscoveredDomain 
-} from '@coordination/discovery/domain-discovery-bridge';
-import type { SessionMemoryStore } from '@memory/memory';
 import type { AGUIInterface } from '@interfaces/agui/agui-adapter';
+import { jest } from '@jest/globals';
+import type { SessionMemoryStore } from '@memory/memory';
 
 // Mock HiveFACT
 jest.mock('@coordination/hive-fact-integration', () => ({
-  getHiveFACT: jest.fn()
+  getHiveFACT: jest.fn(),
 }));
 
 import { getHiveFACT } from '@coordination/hive-fact-integration';
@@ -31,7 +27,7 @@ describe('ProgressiveConfidenceBuilder', () => {
     mockDiscoveryBridge = {
       discoverDomains: jest.fn(),
       on: jest.fn(),
-      emit: jest.fn()
+      emit: jest.fn(),
     } as any;
 
     mockMemoryStore = {
@@ -39,33 +35,28 @@ describe('ProgressiveConfidenceBuilder', () => {
       retrieve: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
-      search: jest.fn()
+      search: jest.fn(),
     } as any;
 
     mockAgui = {
       askQuestion: jest.fn(),
       askBatchQuestions: jest.fn(),
       showProgress: jest.fn(),
-      showMessage: jest.fn()
+      showMessage: jest.fn(),
     } as any;
 
     mockHiveFact = {
-      searchFacts: jest.fn().mockResolvedValue([])
+      searchFacts: jest.fn().mockResolvedValue([]),
     };
 
     (getHiveFACT as jest.Mock).mockReturnValue(mockHiveFact);
 
     // Create builder instance
-    builder = new ProgressiveConfidenceBuilder(
-      mockDiscoveryBridge,
-      mockMemoryStore,
-      mockAgui,
-      {
-        targetConfidence: 0.8,
-        maxIterations: 3,
-        researchThreshold: 0.6
-      }
-    );
+    builder = new ProgressiveConfidenceBuilder(mockDiscoveryBridge, mockMemoryStore, mockAgui, {
+      targetConfidence: 0.8,
+      maxIterations: 3,
+      researchThreshold: 0.6,
+    });
   });
 
   afterEach(() => {
@@ -83,9 +74,9 @@ describe('ProgressiveConfidenceBuilder', () => {
             files: ['auth.ts', 'login.ts'],
             confidence: 0.5,
             suggestedConcepts: ['authentication', 'jwt'],
-            relatedDomains: []
-          }
-        ]
+            relatedDomains: [],
+          },
+        ],
       };
 
       // Mock user responses
@@ -105,8 +96,8 @@ describe('ProgressiveConfidenceBuilder', () => {
           content: { description: 'JSON Web Token implementation' },
           metadata: { source: 'npm', timestamp: Date.now(), confidence: 0.9 },
           accessCount: 10,
-          swarmAccess: new Set()
-        }
+          swarmAccess: new Set(),
+        },
       ]);
 
       const result = await builder.buildConfidence(context);
@@ -122,7 +113,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       builder.on('progress', (event) => progressEvents.push(event));
 
       const context = {
-        projectPath: '/test/project'
+        projectPath: '/test/project',
       };
 
       mockAgui.askQuestion.mockResolvedValue('skip');
@@ -146,9 +137,9 @@ describe('ProgressiveConfidenceBuilder', () => {
             files: ['payment.ts'],
             confidence: 0.3, // Low confidence
             suggestedConcepts: ['stripe', 'payment processing'],
-            relatedDomains: []
-          }
-        ]
+            relatedDomains: [],
+          },
+        ],
       };
 
       mockAgui.askQuestion.mockResolvedValue('skip');
@@ -159,14 +150,14 @@ describe('ProgressiveConfidenceBuilder', () => {
       expect(mockHiveFact.searchFacts).toHaveBeenCalled();
       expect(mockHiveFact.searchFacts).toHaveBeenCalledWith(
         expect.objectContaining({
-          query: expect.stringContaining('payment')
+          query: expect.stringContaining('payment'),
         })
       );
     });
 
     it('should persist learning to memory store', async () => {
       const context = {
-        projectPath: '/test/project'
+        projectPath: '/test/project',
       };
 
       mockAgui.askQuestion.mockResolvedValue('skip');
@@ -181,14 +172,14 @@ describe('ProgressiveConfidenceBuilder', () => {
           history: expect.any(Array),
           iteration: expect.any(Number),
           confidence: expect.any(Number),
-          metrics: expect.any(Object)
+          metrics: expect.any(Object),
         })
       );
     });
 
     it('should handle errors gracefully', async () => {
       const context = {
-        projectPath: '/test/project'
+        projectPath: '/test/project',
       };
 
       // Make askQuestion throw an error
@@ -214,13 +205,13 @@ describe('ProgressiveConfidenceBuilder', () => {
             files: ['file1.ts', 'file2.ts'],
             confidence: 0.4,
             suggestedConcepts: ['concept1', 'concept2'],
-            relatedDomains: []
-          }
-        ]
+            relatedDomains: [],
+          },
+        ],
       };
 
       mockAgui.askQuestion.mockResolvedValue('skip');
-      
+
       // Capture the questions asked
       const askedQuestions: any[] = [];
       mockAgui.askBatchQuestions.mockImplementation(async (questions) => {
@@ -246,13 +237,13 @@ describe('ProgressiveConfidenceBuilder', () => {
             files: ['test.ts'],
             confidence: 0.5,
             suggestedConcepts: ['testing'],
-            relatedDomains: []
-          }
-        ]
+            relatedDomains: [],
+          },
+        ],
       };
 
       mockAgui.askQuestion.mockResolvedValue('skip');
-      
+
       // First response negative, then positive
       mockAgui.askBatchQuestions
         .mockResolvedValueOnce(['No - needs adjustment'])
@@ -278,9 +269,9 @@ describe('ProgressiveConfidenceBuilder', () => {
             confidence: 0.4,
             suggestedConcepts: ['graphql', 'api', 'schema'],
             technologies: ['graphql', 'typescript'],
-            relatedDomains: []
-          }
-        ]
+            relatedDomains: [],
+          },
+        ],
       };
 
       mockAgui.askQuestion.mockResolvedValue('skip');
@@ -295,8 +286,8 @@ describe('ProgressiveConfidenceBuilder', () => {
       await builder.buildConfidence(context);
 
       expect(searchQueries.length).toBeGreaterThan(0);
-      expect(searchQueries.some(q => q.includes('graphql'))).toBe(true);
-      expect(searchQueries.some(q => q.includes('best practices'))).toBe(true);
+      expect(searchQueries.some((q) => q.includes('graphql'))).toBe(true);
+      expect(searchQueries.some((q) => q.includes('best practices'))).toBe(true);
     });
 
     it('should extract insights from research results', async () => {
@@ -309,9 +300,9 @@ describe('ProgressiveConfidenceBuilder', () => {
             files: ['auth.ts'],
             confidence: 0.3,
             suggestedConcepts: ['authentication', 'security'],
-            relatedDomains: []
-          }
-        ]
+            relatedDomains: [],
+          },
+        ],
       };
 
       mockAgui.askQuestion.mockResolvedValue('skip');
@@ -325,8 +316,8 @@ describe('ProgressiveConfidenceBuilder', () => {
           content: 'Always validate JWT signatures and check expiration',
           metadata: { source: 'security-db', timestamp: Date.now(), confidence: 0.95 },
           accessCount: 100,
-          swarmAccess: new Set()
-        }
+          swarmAccess: new Set(),
+        },
       ]);
 
       const result = await builder.buildConfidence(context);
@@ -348,9 +339,9 @@ describe('ProgressiveConfidenceBuilder', () => {
             files: ['file1.ts'],
             confidence: 0.6,
             suggestedConcepts: ['concept1'],
-            relatedDomains: []
-          }
-        ]
+            relatedDomains: [],
+          },
+        ],
       };
 
       mockAgui.askQuestion.mockResolvedValue('skip');
@@ -366,7 +357,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       expect(result.confidence).toHaveProperty('consistency');
 
       // All metrics should be between 0 and 1
-      Object.values(result.confidence).forEach(metric => {
+      Object.values(result.confidence).forEach((metric) => {
         expect(metric).toBeGreaterThanOrEqual(0);
         expect(metric).toBeLessThanOrEqual(1);
       });
@@ -382,12 +373,12 @@ describe('ProgressiveConfidenceBuilder', () => {
             files: ['file1.ts'],
             confidence: 0.2,
             suggestedConcepts: ['concept1'],
-            relatedDomains: []
-          }
-        ]
+            relatedDomains: [],
+          },
+        ],
       };
 
-      let progressEvents: any[] = [];
+      const progressEvents: any[] = [];
       builder.on('progress', (event) => progressEvents.push(event));
 
       mockAgui.askQuestion.mockResolvedValue('skip');
@@ -400,16 +391,17 @@ describe('ProgressiveConfidenceBuilder', () => {
           content: 'Useful information',
           metadata: { source: 'test', timestamp: Date.now(), confidence: 0.8 },
           accessCount: 5,
-          swarmAccess: new Set()
-        }
+          swarmAccess: new Set(),
+        },
       ]);
 
       await builder.buildConfidence(context);
 
       // Check that confidence improved over iterations
       if (progressEvents.length >= 2) {
-        expect(progressEvents[progressEvents.length - 1].confidence)
-          .toBeGreaterThan(progressEvents[0].confidence);
+        expect(progressEvents[progressEvents.length - 1].confidence).toBeGreaterThan(
+          progressEvents[0].confidence
+        );
       }
     });
   });
@@ -425,7 +417,7 @@ describe('ProgressiveConfidenceBuilder', () => {
             files: ['app.tsx'],
             confidence: 0.6,
             suggestedConcepts: ['react', 'ui', 'api-client'],
-            relatedDomains: []
+            relatedDomains: [],
           },
           {
             name: 'backend',
@@ -433,9 +425,9 @@ describe('ProgressiveConfidenceBuilder', () => {
             files: ['server.ts'],
             confidence: 0.6,
             suggestedConcepts: ['express', 'api', 'api-client'],
-            relatedDomains: []
-          }
-        ]
+            relatedDomains: [],
+          },
+        ],
       };
 
       mockAgui.askQuestion.mockResolvedValue('skip');
@@ -451,6 +443,234 @@ describe('ProgressiveConfidenceBuilder', () => {
     });
   });
 
+  describe('validation checkpoints', () => {
+    it('should trigger checkpoint validations at configured thresholds', async () => {
+      const checkpointQuestions: any[] = [];
+
+      const builder = new ProgressiveConfidenceBuilder(
+        mockDiscoveryBridge,
+        mockMemoryStore,
+        mockAgui,
+        {
+          targetConfidence: 0.8,
+          maxIterations: 5,
+          validationCheckpoints: [0.3, 0.5, 0.7],
+          requireHumanApprovalAt: [0.5],
+        }
+      );
+
+      const context = {
+        projectPath: '/test/project',
+        validatorId: 'test-validator',
+        sessionId: 'test-session',
+      };
+
+      mockAgui.askQuestion.mockImplementation(async (question) => {
+        if (question.type === 'checkpoint') {
+          checkpointQuestions.push(question);
+          return 'Continue';
+        }
+        return 'skip';
+      });
+
+      mockAgui.askBatchQuestions.mockResolvedValue(['Yes']);
+
+      await builder.buildConfidence(context);
+
+      // Should have triggered checkpoint questions
+      expect(checkpointQuestions.length).toBeGreaterThan(0);
+      expect(checkpointQuestions.some((q) => q.priority === 'critical')).toBe(true);
+    });
+
+    it('should allow domain review at checkpoints', async () => {
+      let reviewTriggered = false;
+
+      const context = {
+        projectPath: '/test/project',
+        existingDomains: [
+          {
+            name: 'test-domain',
+            path: '/test/project/test',
+            files: ['test.ts'],
+            confidence: 0.3,
+            suggestedConcepts: ['testing'],
+            relatedDomains: [],
+          },
+        ],
+      };
+
+      mockAgui.askQuestion.mockImplementation(async (question) => {
+        if (question.type === 'checkpoint' && !reviewTriggered) {
+          reviewTriggered = true;
+          return 'Review domains';
+        }
+        return 'Continue';
+      });
+
+      mockAgui.askBatchQuestions.mockResolvedValue([]);
+      mockAgui.showMessage.mockResolvedValue(undefined);
+
+      await builder.buildConfidence(context);
+
+      // Should have shown domain review
+      expect(mockAgui.showMessage).toHaveBeenCalledWith(
+        expect.stringContaining('Domain Review'),
+        'info'
+      );
+    });
+  });
+
+  describe('validation audit trail', () => {
+    it('should track validation history with detailed metadata', async () => {
+      const context = {
+        projectPath: '/test/project',
+        validatorId: 'test-validator-123',
+        sessionId: 'session-456',
+        existingDomains: [
+          {
+            name: 'audit-test',
+            path: '/test/project/audit',
+            files: ['audit.ts'],
+            confidence: 0.4,
+            suggestedConcepts: ['auditing'],
+            relatedDomains: [],
+          },
+        ],
+      };
+
+      mockAgui.askQuestion.mockResolvedValue('skip');
+      mockAgui.askBatchQuestions.mockResolvedValue(['Yes', 'Correct']);
+
+      const result = await builder.buildConfidence(context);
+
+      // Check that validations include new metadata
+      const domain = result.domains.get('audit-test');
+      expect(domain?.validations.length).toBeGreaterThan(0);
+
+      const validation = domain?.validations[0];
+      expect(validation).toHaveProperty('validationType');
+      expect(validation).toHaveProperty('confidenceBefore');
+      expect(validation).toHaveProperty('confidenceAfter');
+    });
+
+    it('should persist audit trail to memory store', async () => {
+      const builder = new ProgressiveConfidenceBuilder(
+        mockDiscoveryBridge,
+        mockMemoryStore,
+        mockAgui,
+        {
+          targetConfidence: 0.8,
+          enableDetailedAuditTrail: true,
+        }
+      );
+
+      const context = {
+        projectPath: '/test/project',
+        validatorId: 'auditor-1',
+      };
+
+      mockAgui.askQuestion.mockResolvedValue('skip');
+      mockAgui.askBatchQuestions.mockResolvedValue([]);
+
+      await builder.buildConfidence(context);
+
+      // Should have stored audit trail
+      expect(mockMemoryStore.store).toHaveBeenCalledWith(
+        expect.stringContaining('audit-trail'),
+        'validation-audit',
+        expect.objectContaining({
+          sessionId: expect.any(String),
+          auditTrail: expect.any(Array),
+        })
+      );
+    });
+  });
+
+  describe('minimum validation requirements', () => {
+    it('should ensure minimum validations per domain', async () => {
+      const additionalQuestions: any[] = [];
+
+      const builder = new ProgressiveConfidenceBuilder(
+        mockDiscoveryBridge,
+        mockMemoryStore,
+        mockAgui,
+        {
+          targetConfidence: 0.8,
+          minimumValidationsPerDomain: 3,
+          maxIterations: 2,
+        }
+      );
+
+      const context = {
+        projectPath: '/test/project',
+        existingDomains: [
+          {
+            name: 'under-validated',
+            path: '/test/project/under',
+            files: ['under.ts'],
+            confidence: 0.5,
+            suggestedConcepts: ['validation'],
+            relatedDomains: [],
+          },
+        ],
+      };
+
+      mockAgui.askQuestion.mockImplementation(async (question) => {
+        if (
+          question.type === 'review' &&
+          question.validationReason === 'Minimum validation requirement'
+        ) {
+          additionalQuestions.push(question);
+          return "Yes, it's correct";
+        }
+        return 'skip';
+      });
+
+      mockAgui.askBatchQuestions.mockResolvedValue(['Yes']);
+
+      await builder.buildConfidence(context);
+
+      // Should have asked additional questions for under-validated domains
+      expect(additionalQuestions.length).toBeGreaterThan(0);
+      expect(additionalQuestions[0].priority).toBe('high');
+    });
+  });
+
+  describe('confidence impact calculation', () => {
+    it('should calculate different impacts based on question type and response', async () => {
+      const context = {
+        projectPath: '/test/project',
+        existingDomains: [
+          {
+            name: 'impact-test',
+            path: '/test/project/impact',
+            files: ['impact.ts'],
+            confidence: 0.5,
+            suggestedConcepts: ['testing'],
+            relatedDomains: [],
+          },
+        ],
+      };
+
+      const progressEvents: any[] = [];
+      builder.on('progress', (event) => progressEvents.push(event));
+
+      mockAgui.askQuestion.mockResolvedValue('skip');
+
+      // Test different response types
+      mockAgui.askBatchQuestions
+        .mockResolvedValueOnce(['Yes']) // Positive response
+        .mockResolvedValueOnce(['No, incorrect']) // Negative response
+        .mockResolvedValueOnce(['Maybe']); // Neutral response
+
+      await builder.buildConfidence(context);
+
+      // Check that confidence changed based on responses
+      const confidenceChanges = progressEvents.map((e) => e.confidence);
+      expect(confidenceChanges.some((c, i) => i > 0 && c !== confidenceChanges[i - 1])).toBe(true);
+    });
+  });
+
   describe('final validation', () => {
     it('should perform final validation when target confidence is reached', async () => {
       const context = {
@@ -462,9 +682,9 @@ describe('ProgressiveConfidenceBuilder', () => {
             files: ['file1.ts'],
             confidence: 0.9,
             suggestedConcepts: ['concept1'],
-            relatedDomains: []
-          }
-        ]
+            relatedDomains: [],
+          },
+        ],
       };
 
       // Set initial confidence high to trigger final validation
@@ -488,14 +708,16 @@ describe('ProgressiveConfidenceBuilder', () => {
     it('should allow continuing iterations if requested', async () => {
       const context = {
         projectPath: '/test/project',
-        existingDomains: [{
-          name: 'test',
-          path: '/test/project/test',
-          files: ['test.ts'],
-          confidence: 0.8,
-          suggestedConcepts: ['testing'],
-          relatedDomains: []
-        }]
+        existingDomains: [
+          {
+            name: 'test',
+            path: '/test/project/test',
+            files: ['test.ts'],
+            confidence: 0.8,
+            suggestedConcepts: ['testing'],
+            relatedDomains: [],
+          },
+        ],
       };
 
       (builder as any).confidence = 0.81;

@@ -395,7 +395,7 @@ export class CommunicationProtocols extends EventEmitter {
 
     this.consensusProposals.set(proposal.id, proposal);
     this.consensusVotes.set(proposal.id, []);
-    
+
     // Initialize consensus in the engine
     await this.consensusEngine.initiateConsensus(proposal.id, proposal);
 
@@ -719,7 +719,7 @@ export class CommunicationProtocols extends EventEmitter {
 
   private async handleConsensusProposal(proposal: ConsensusProposal): Promise<void> {
     this.consensusProposals.set(proposal.id, proposal);
-    
+
     // Delegate to consensus engine for processing
     await this.consensusEngine.processProposal(proposal);
 
@@ -1223,13 +1223,41 @@ class RoutingEngine {
 }
 
 class ConsensusEngine {
+  private activeProposals = new Map<string, ConsensusProposal>();
+
   constructor(
     private nodeId: string,
     private logger: ILogger
   ) {}
 
-  // Consensus algorithm implementations would go here
-  // (Raft, PBFT, etc.)
+  /**
+   * Initiate consensus process for a proposal
+   */
+  async initiateConsensus(proposalId: string, proposal: ConsensusProposal): Promise<void> {
+    this.activeProposals.set(proposalId, proposal);
+    this.logger.debug('Consensus initiated', { proposalId, type: proposal.type });
+  }
+
+  /**
+   * Process an incoming consensus proposal
+   */
+  async processProposal(proposal: ConsensusProposal): Promise<void> {
+    this.activeProposals.set(proposal.id, proposal);
+    this.logger.debug('Processing consensus proposal', {
+      proposalId: proposal.id,
+      type: proposal.type,
+    });
+
+    // Consensus algorithm implementations would go here
+    // (Raft, PBFT, etc.)
+  }
+
+  /**
+   * Get active proposals for monitoring
+   */
+  getActiveProposals(): ConsensusProposal[] {
+    return Array.from(this.activeProposals.values());
+  }
 }
 
 class GossipEngine {

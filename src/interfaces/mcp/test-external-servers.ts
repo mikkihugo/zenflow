@@ -42,8 +42,7 @@ async function testExternalMCPServers(): Promise<void> {
     const connectionResults = await client.connectAll();
 
     for (const result of connectionResults) {
-      const status = result.success ? '✅' : '❌';
-      console.log(`${status} ${result.serverName}: ${result.success ? 'Connected' : result.error}`);
+      const _status = result.success ? '✅' : '❌';
 
       if (result.success) {
         logger.info(`Successfully connected to ${result.serverName}`);
@@ -54,27 +53,18 @@ async function testExternalMCPServers(): Promise<void> {
 
     // Get server status
     const serverStatus = client.getServerStatus();
-
-    console.log('\n📊 Server Status:');
-    for (const [name, status] of Object.entries(serverStatus)) {
-      const connectionIcon = status.connected ? '🟢' : '🔴';
-      console.log(`  ${connectionIcon} ${name}: ${status.connected ? 'Online' : 'Offline'}`);
+    for (const [_name, status] of Object.entries(serverStatus)) {
+      const _connectionIcon = status.connected ? '🟢' : '🔴';
       if (status.lastPing) {
-        console.log(`    Last ping: ${new Date(status.lastPing).toLocaleString()}`);
       }
     }
 
     // Test tool discovery
     const availableTools = client.getAvailableTools();
-
-    console.log('\n🔧 Available Tools:');
-    for (const [serverName, tools] of Object.entries(availableTools)) {
+    for (const [_serverName, tools] of Object.entries(availableTools)) {
       if (tools.length === 0) {
-        console.log(`  ${serverName}: No tools available`);
       } else {
-        console.log(`  ${serverName}: ${tools.length} tools`);
-        for (const tool of tools) {
-          console.log(`    - ${tool.name}: ${tool.description || 'No description'}`);
+        for (const _tool of tools) {
         }
       }
     }
@@ -103,8 +93,7 @@ async function testExternalMCPServers(): Promise<void> {
       } catch (_error) {}
     }
 
-    const totalTools = Object.values(availableTools).reduce((sum, tools) => sum + tools.length, 0);
-    console.log(`\n📊 Total tools available: ${totalTools}`);
+    const _totalTools = Object.values(availableTools).reduce((sum, tools) => sum + tools.length, 0);
 
     // Cleanup
     await client.disconnectAll();

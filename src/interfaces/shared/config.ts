@@ -165,7 +165,8 @@ export class ConfigurationUtils {
       return COLOR_SCHEMES.dark;
     }
 
-    return COLOR_SCHEMES[currentTheme as keyof typeof COLOR_SCHEMES] || COLOR_SCHEMES.dark;
+    const scheme = COLOR_SCHEMES[currentTheme as keyof typeof COLOR_SCHEMES];
+    return scheme ? { ...scheme } : { ...COLOR_SCHEMES.dark };
   }
 
   /**

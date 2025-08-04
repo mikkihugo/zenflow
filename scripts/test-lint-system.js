@@ -25,11 +25,9 @@ class LintSystemTester {
   /**
    * Log test memory
    */
-  logMemory(action, data) {
-    const timestamp = new Date().toISOString();
-    console.log(`[${timestamp}] Test Memory: ${action}`);
+  logMemory(_action, data) {
+    const _timestamp = new Date().toISOString();
     if (data) {
-      console.log('  Data:', data);
     }
   }
 

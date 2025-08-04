@@ -273,7 +273,7 @@ export class BatchPerformanceMonitor {
     const n = values.length;
     const sumX = timestamps.reduce((sum, t) => sum + t, 0);
     const sumY = values.reduce((sum, v) => sum + v, 0);
-    const sumXY = timestamps.reduce((sum, t, i) => sum + t * values[i], 0);
+    const sumXY = timestamps.reduce((sum, t, i) => sum + t * (values[i] ?? 0), 0);
     const sumXX = timestamps.reduce((sum, t) => sum + t * t, 0);
 
     const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
@@ -291,7 +291,8 @@ export class BatchPerformanceMonitor {
     const firstValue = values[0];
     const lastValue = values[values.length - 1];
 
-    if (firstValue === 0) return 0;
+    if (firstValue === undefined || firstValue === 0) return 0;
+    if (lastValue === undefined) return 0;
 
     const totalChange = ((lastValue - firstValue) / firstValue) * 100;
     return totalChange / hours;
@@ -470,7 +471,7 @@ export class BatchPerformanceMonitor {
   exportPerformanceData(): {
     metrics: PerformanceMetrics[];
     baseline: PerformanceMetrics | null;
-    summary: ReturnType<typeof this.getPerformanceSummary>;
+    summary: ReturnType<BatchPerformanceMonitor['getPerformanceSummary']>;
   } {
     return {
       metrics: [...this.metricsHistory],

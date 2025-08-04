@@ -78,7 +78,7 @@ describe('Cross-Feature Integration Tests', () => {
       const coordinationEvents = [];
       swarm.on('coordination', (event) => coordinationEvents.push(event));
       neuralManager.on('insight', (insight) =>
-        coordinationEvents.push({ type: 'neural-insight', ...insight }),
+        coordinationEvents.push({ type: 'neural-insight', ...insight })
       );
 
       // Wait for task completion
@@ -98,10 +98,10 @@ describe('Cross-Feature Integration Tests', () => {
 
       // Verify knowledge sharing
       expect(
-        coordinationEvents.filter((e) => e.type === 'knowledge-share'),
+        coordinationEvents.filter((e) => e.type === 'knowledge-share')
       ).to.have.length.at.least(3);
       expect(coordinationEvents.filter((e) => e.type === 'neural-insight')).to.have.length.at.least(
-        2,
+        2
       );
 
       // Check neural learning from swarm interactions
@@ -211,7 +211,7 @@ describe('Cross-Feature Integration Tests', () => {
             swarm.orchestrateTask({
               task: `Workload task ${cycle}-${i}`,
               complexity: Math.random() > 0.5 ? 'high' : 'low',
-            }),
+            })
           );
         }
 
@@ -674,7 +674,7 @@ describe('Cross-Feature Integration Tests', () => {
 
       // Verify cascade sequence
       const spawnCascade = cascadeEvents.filter(
-        (e) => e.event === 'spawn' || e.event === 'available' || e.event === 'initialize',
+        (e) => e.event === 'spawn' || e.event === 'available' || e.event === 'initialize'
       );
       expect(spawnCascade).to.have.lengthOf(3);
       expect(spawnCascade[0].component).to.equal('swarm');
@@ -682,7 +682,7 @@ describe('Cross-Feature Integration Tests', () => {
       expect(spawnCascade[2].component).to.equal('memory');
 
       const completeCascade = cascadeEvents.filter(
-        (e) => e.event === 'complete' || e.event === 'learn' || e.event === 'store',
+        (e) => e.event === 'complete' || e.event === 'learn' || e.event === 'store'
       );
       expect(completeCascade).to.have.lengthOf(3);
       expect(completeCascade[0].component).to.equal('swarm');

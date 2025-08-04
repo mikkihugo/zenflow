@@ -6,9 +6,9 @@
  * All facts are universal and accessible by all swarms - not swarm-specific
  */
 
-import { createLogger } from '@core/logger';
+import { createLogger } from '../../../core/logger';
+import { getHiveFACT, type HiveFACTSystem } from '../../hive-fact-integration';
 import type { MCPTool, MCPToolResult } from '../types/mcp-types';
-import { getHiveFACT, HiveFACTHelpers, type HiveFACTSystem } from '../../hive-fact-integration';
 import { ProjectContextAnalyzer } from './fact-placeholders';
 
 const logger = createLogger({ prefix: 'MCP-FACT' });
@@ -112,7 +112,7 @@ export const factInitTool: MCPTool = {
           enableCache: true,
           cacheSize: params.maxCacheSize || 1000,
           autoRefreshInterval: params.defaultTTL || 3600000,
-          knowledgeSources: ['context7', 'deepwiki', 'gitmcp', 'semgrep']
+          knowledgeSources: ['context7', 'deepwiki', 'gitmcp', 'semgrep'],
         });
       }
 
@@ -337,18 +337,20 @@ export const factGatherTool: MCPTool = {
           // General knowledge gathering
           const searchResult = await hiveFact.searchFacts({
             query: params.query,
-            limit: params.maxResults || 10
+            limit: params.maxResults || 10,
           });
           results.push(...searchResult);
         } catch (error) {
-          errors.push(`Web/Docs search: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          errors.push(
+            `Web/Docs search: ${error instanceof Error ? error.message : 'Unknown error'}`
+          );
         }
       }
 
       if (params.sources?.includes('github')) {
         try {
           // Extract GitHub repo from query if possible
-          const repoMatch = params.query.match(/github\.com\/([^\/]+)\/([^\/\s]+)/);
+          const repoMatch = params.query.match(/github\.com\/([^/]+)\/([^/\s]+)/);
           if (repoMatch) {
             const fact = await hiveFact.getGitHubRepoFacts(repoMatch[1], repoMatch[2]);
             results.push(fact);
@@ -375,7 +377,8 @@ export const factGatherTool: MCPTool = {
       const summary = results
         .slice(0, 3)
         .map((fact) => {
-          const content = typeof fact.content === 'string' ? fact.content : JSON.stringify(fact.content);
+          const content =
+            typeof fact.content === 'string' ? fact.content : JSON.stringify(fact.content);
           return `• ${fact.subject} (${fact.type}): ${content.substring(0, 100)}...`;
         })
         .join('\n');
@@ -499,17 +502,16 @@ export const factQueryTool: MCPTool = {
       }
 
       const resultSummary = results
-        .map(
-          (result, index) => {
-            const content = typeof result.content === 'string' ? result.content : JSON.stringify(result.content);
-            return `${index + 1}. ${result.subject} (${result.type})
+        .map((result, index) => {
+          const content =
+            typeof result.content === 'string' ? result.content : JSON.stringify(result.content);
+          return `${index + 1}. ${result.subject} (${result.type})
    Source: ${result.metadata.source}
    Age: ${Math.floor((Date.now() - result.metadata.timestamp) / 1000 / 60)} minutes
    Access Count: ${result.accessCount}
    Swarms Using: ${result.swarmAccess.size}
    Content: ${content.substring(0, 150)}...`;
-          }
-        )
+        })
         .join('\n\n');
 
       return {
@@ -529,7 +531,7 @@ ${resultSummary}
   Types: ${[...new Set(results.map((r) => r.type))].join(', ')}
   Sources: ${[...new Set(results.map((r) => r.metadata.source))].join(', ')}
   Average Age: ${Math.floor(results.reduce((sum, r) => sum + (Date.now() - r.metadata.timestamp), 0) / results.length / 1000 / 60)} minutes
-  Total Swarms Using: ${new Set(results.flatMap(r => Array.from(r.swarmAccess))).size}
+  Total Swarms Using: ${new Set(results.flatMap((r) => Array.from(r.swarmAccess))).size}
 
 🌍 Note: These are universal facts accessible by all swarms in the system.`,
           },

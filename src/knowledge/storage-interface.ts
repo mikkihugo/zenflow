@@ -35,6 +35,7 @@ export interface FACTSearchQuery {
   maxAge?: number; // milliseconds
   minConfidence?: number;
   limit?: number;
+  sortBy?: 'relevance' | 'timestamp' | 'access_count';
 }
 
 export interface FACTStorageStats {
@@ -96,6 +97,38 @@ export interface FACTStorageBackend {
    * Shutdown the storage backend
    */
   shutdown(): Promise<void>;
+
+  /**
+   * Clear entries by quality threshold
+   */
+  clearByQuality(minQuality: number): Promise<number>;
+
+  /**
+   * Clear entries older than specified age
+   */
+  clearByAge(maxAgeMs: number): Promise<number>;
+
+  /**
+   * Clear memory cache only
+   */
+  clearMemoryCache(): Promise<number>;
+
+  /**
+   * Clear all entries
+   */
+  clearAll(): Promise<number>;
+
+  /**
+   * Optimize storage performance
+   */
+  optimize(
+    strategy?: 'aggressive' | 'balanced' | 'conservative'
+  ): Promise<{ optimized: boolean; details: string }>;
+
+  /**
+   * Get storage statistics
+   */
+  getStorageStats(): Promise<FACTStorageStats>;
 }
 
 /**

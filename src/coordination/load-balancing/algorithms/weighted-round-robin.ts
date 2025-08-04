@@ -3,7 +3,7 @@
  * Performance-based weights with dynamic adjustment
  */
 
-import type { ILoadBalancingAlgorithm } from '../interfaces';
+import type { LoadBalancingAlgorithm } from '../interfaces';
 import type { Agent, LoadMetrics, RoutingResult, Task } from '../types';
 
 interface AgentWeight {
@@ -16,7 +16,7 @@ interface AgentWeight {
   lastUpdate: Date;
 }
 
-export class WeightedRoundRobinAlgorithm implements ILoadBalancingAlgorithm {
+export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
   public readonly name = 'weighted_round_robin';
 
   private weights: Map<string, AgentWeight> = new Map();

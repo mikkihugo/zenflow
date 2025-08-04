@@ -95,7 +95,9 @@ class GRUModel extends NeuralModel {
       throw new Error(`Invalid input dimensions: batch=${batchSize}, sequence=${sequenceLength}`);
     }
     if (input.shape[2] !== this.config.inputSize) {
-      throw new Error(`Input size mismatch: expected ${this.config.inputSize}, got ${input.shape[2]}`);
+      throw new Error(
+        `Input size mismatch: expected ${this.config.inputSize}, got ${input.shape[2]}`
+      );
     }
 
     // Initialize hidden states for all layers

@@ -14,14 +14,14 @@ else
 fi
 
 # Handle global npm installation vs local execution
-if [ -f "$SCRIPT_DIR/../src/interfaces/terminal/main.tsx" ]; then
+if [ -f "$SCRIPT_DIR/../src/interfaces/terminal/main.ts" ]; then
   # Local development or properly structured installation
   ROOT_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 else
   # Global npm installation - files might be in different location
   # Try to find the module root
   NODE_ROOT=$(npm root -g 2>/dev/null)
-  if [ -n "$NODE_ROOT" ] && [ -f "$NODE_ROOT/claude-zen/src/interfaces/terminal/main.tsx" ]; then
+  if [ -n "$NODE_ROOT" ] && [ -f "$NODE_ROOT/claude-zen/src/interfaces/terminal/main.ts" ]; then
     ROOT_DIR="$NODE_ROOT/claude-zen"
   else
     # Fallback to relative path
@@ -60,7 +60,7 @@ else
   echo "  npm run build"
   echo ""
   echo "For development mode only:"
-  echo "  npx tsx src/interfaces/terminal/main.tsx"
+  echo "  npx tsx src/interfaces/terminal/main.ts"
   echo ""
   echo "Documentation: https://github.com/ruvnet/claude-zen"
   exit 1

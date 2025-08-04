@@ -3,7 +3,7 @@
  */
 
 import assert from 'node:assert';
-import { Agent, ZenSwarm, Swarm, Task } from '../../../src/index-enhanced.js';
+import { Agent, Swarm, Task, ZenSwarm } from '../../../src/index-enhanced.js';
 
 describe('ZenSwarm Core Tests', () => {
   let ruvSwarm;

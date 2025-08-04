@@ -389,7 +389,7 @@ export const visionPresets = {
 export const getVisionPreset = (presetName) => {
   if (!visionPresets[presetName]) {
     throw new Error(
-      `Vision preset '${presetName}' not found. Available presets: ${Object.keys(visionPresets).join(', ')}`,
+      `Vision preset '${presetName}' not found. Available presets: ${Object.keys(visionPresets).join(', ')}`
     );
   }
   return visionPresets[presetName];

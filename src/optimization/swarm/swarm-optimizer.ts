@@ -243,7 +243,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
         currentUtilization: resourceAnalysis.utilization,
         recommendedAgents: maxSupportedAgents,
         loadBalancingStrategy: loadBalancingStrategy.type,
-        autoScalingEnabled
+        autoScalingEnabled,
       });
 
       return {

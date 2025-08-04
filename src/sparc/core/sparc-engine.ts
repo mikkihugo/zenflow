@@ -54,7 +54,9 @@ export class SPARCEngineCore implements SPARCEngine {
   // Deep infrastructure integration
   private readonly documentDrivenSystem: DocumentDrivenSystem;
   private readonly workflowEngine: UnifiedWorkflowEngine;
+  private readonly memorySystem: any; // UnifiedMemorySystem
   private readonly swarmCoordinator: SPARCSwarmCoordinator;
+  private readonly taskTool: any; // EnhancedTaskTool
   private readonly taskAPI: TaskAPI;
 
   constructor() {
@@ -213,6 +215,7 @@ export class SPARCEngineCore implements SPARCEngine {
           {
             criterion: 'phase-execution',
             passed: false,
+            score: 0,
             details: error instanceof Error ? error.message : 'Unknown error',
             suggestions: ['Review phase requirements', 'Check input data quality'],
           },
@@ -239,10 +242,28 @@ export class SPARCEngineCore implements SPARCEngine {
 
     // Apply refinements
     const result: RefinementResult = {
-      performanceGain: 0.25, // 25% improvement
-      resourceReduction: 0.15, // 15% resource savings
-      scalabilityIncrease: 1.5, // 1.5x scalability improvement
-      maintainabilityImprovement: 0.3, // 30% maintainability improvement
+      id: nanoid(),
+      architectureId: project.architecture.id,
+      feedbackId: nanoid(),
+      optimizationStrategies: [],
+      performanceOptimizations: [],
+      securityOptimizations: [],
+      scalabilityOptimizations: [],
+      codeQualityOptimizations: [],
+      refinedArchitecture: project.architecture,
+      benchmarkResults: [],
+      improvementMetrics: [],
+      refactoringOpportunities: [],
+      technicalDebtAnalysis: {
+        id: nanoid(),
+        architectureId: project.architecture.id,
+        totalDebtScore: 0,
+        debtCategories: [],
+        remediationPlan: [],
+      },
+      recommendedNextSteps: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
 
     // Record refinement in history
@@ -790,6 +811,8 @@ export class SPARCEngineCore implements SPARCEngine {
 
   private createEmptySpecification(): DetailedSpecification {
     return {
+      id: nanoid(),
+      domain: 'general',
       functionalRequirements: [],
       nonFunctionalRequirements: [],
       constraints: [],
@@ -807,6 +830,7 @@ export class SPARCEngineCore implements SPARCEngine {
 
   private createEmptyPseudocode(): PseudocodeStructure {
     return {
+      id: nanoid(),
       algorithms: [],
       dataStructures: [],
       controlFlows: [],

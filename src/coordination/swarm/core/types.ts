@@ -12,7 +12,18 @@ export interface SwarmOptions {
   wasmPath?: string;
 }
 
+// Define SwarmConfig locally to match ruv-swarm interface
+export interface SwarmConfig {
+  name?: string;
+  topology?: 'mesh' | 'star' | 'hierarchical' | 'ring';
+  strategy?: 'balanced' | 'specialized' | 'adaptive';
+  maxAgents?: number;
+  enableCognitiveDiversity?: boolean;
+  enableNeuralAgents?: boolean;
+}
+
 export type SwarmTopology = 'mesh' | 'hierarchical' | 'distributed' | 'centralized' | 'hybrid';
+export type SwarmLifecycleState = 'initializing' | 'active' | 'terminated';
 
 // Re-export from main agent types for compatibility
 export type { AgentType } from '../../../types/agent-types';

@@ -53,6 +53,70 @@ export class SwarmCoordinator extends EventEmitter {
     uptime: 0,
   };
   private startTime = Date.now();
+  private swarmId = `swarm-${Date.now()}`;
+  private state: 'initializing' | 'active' | 'terminated' = 'initializing';
+
+  /**
+   * Initialize the swarm coordinator
+   */
+  async initialize(config?: any): Promise<void> {
+    this.state = 'active';
+    this.emit('swarm:initialized', { swarmId: this.swarmId, config });
+  }
+
+  /**
+   * Shutdown the swarm coordinator
+   */
+  async shutdown(): Promise<void> {
+    this.state = 'terminated';
+    this.agents.clear();
+    this.tasks.clear();
+    this.emit('swarm:shutdown', { swarmId: this.swarmId });
+  }
+
+  /**
+   * Get the current state
+   */
+  getState(): 'initializing' | 'active' | 'terminated' {
+    return this.state;
+  }
+
+  /**
+   * Get the swarm ID
+   */
+  getSwarmId(): string {
+    return this.swarmId;
+  }
+
+  /**
+   * Get total agent count
+   */
+  getAgentCount(): number {
+    return this.agents.size;
+  }
+
+  /**
+   * Get list of active agent IDs
+   */
+  getActiveAgents(): string[] {
+    return Array.from(this.agents.values())
+      .filter((agent) => agent.status === 'idle' || agent.status === 'busy')
+      .map((agent) => agent.id);
+  }
+
+  /**
+   * Get task count
+   */
+  getTaskCount(): number {
+    return this.tasks.size;
+  }
+
+  /**
+   * Get uptime in milliseconds
+   */
+  getUptime(): number {
+    return Date.now() - this.startTime;
+  }
 
   /**
    * Add an agent to the swarm
@@ -197,7 +261,7 @@ export class SwarmCoordinator extends EventEmitter {
       latencies.length > 0 ? latencies.reduce((sum, lat) => sum + lat, 0) / latencies.length : 0;
 
     const successRate = agents.length > 0 ? successfulCoordinations / agents.length : 0;
-    
+
     // Log coordination performance metrics
     const totalCoordinationTime = Date.now() - startTime;
     this.emit('coordination:performance', {
@@ -206,7 +270,7 @@ export class SwarmCoordinator extends EventEmitter {
       averageLatency,
       successRate,
       totalCoordinationTime,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     return {

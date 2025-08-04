@@ -20,7 +20,7 @@
 import { EventEmitter } from 'node:events';
 import { createLogger } from './logger';
 
-const logger = createLogger('MemorySystem');
+const logger = createLogger({ prefix: 'MemorySystem' });
 
 /**
  * JSON-serializable value type
@@ -254,6 +254,7 @@ class JSONBackend implements BackendInterface {
 class SQLiteBackend implements BackendInterface {
   private db?: any;
   private dbPath: string;
+  private config: MemoryConfig;
 
   constructor(config: MemoryConfig) {
     this.config = config;
@@ -262,13 +263,13 @@ class SQLiteBackend implements BackendInterface {
 
   async initialize(): Promise<void> {
     try {
-      const { default: Database } = await import('better-sqlite3');
+      const Database = await import('better-sqlite3');
       const fs = await import('node:fs/promises');
       const path = await import('node:path');
 
       await fs.mkdir(path.dirname(this.dbPath), { recursive: true });
 
-      this.db = new (Database as any)(this.dbPath);
+      this.db = new (Database.default || Database)(this.dbPath);
 
       // Configure SQLite options
       this.db.pragma('journal_mode = WAL');
@@ -444,6 +445,8 @@ class SQLiteBackend implements BackendInterface {
  * LanceDB backend implementation (stub)
  */
 class LanceDBBackend implements BackendInterface {
+  private config: MemoryConfig;
+
   constructor(config: MemoryConfig) {
     this.config = config;
   }

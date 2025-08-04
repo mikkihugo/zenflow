@@ -27,6 +27,16 @@ export class BaseAgent implements Agent {
   private messageHandlers: Map<MessageType, (message: Message) => Promise<void>> = new Map();
   private wasmAgentId?: number;
 
+  // Convenience getter for status
+  get status(): AgentStatus {
+    return this.state.status;
+  }
+
+  // Convenience setter for status
+  set status(value: AgentStatus) {
+    this.state.status = value;
+  }
+
   constructor(config: AgentConfig) {
     this.id = config.id || generateId('agent');
     this.type = config.type;
@@ -144,6 +154,16 @@ export class BaseAgent implements Agent {
   }
 
   private updatePerformanceMetrics(success: boolean, executionTime: number): void {
+    // Initialize performance if it doesn't exist
+    if (!this.state.performance) {
+      this.state.performance = {
+        tasksCompleted: 0,
+        tasksFailed: 0,
+        averageExecutionTime: 0,
+        successRate: 0,
+      };
+    }
+
     const performance = this.state.performance;
 
     if (success) {
@@ -162,12 +182,12 @@ export class BaseAgent implements Agent {
 
   private async handleTaskAssignment(message: Message): Promise<void> {
     const task = message.payload as Task;
-    
+
     // Execute the assigned task
-    this.status = 'active';
+    this.state.status = 'busy';
     try {
       const result = await this.execute(task);
-      
+
       // Send result back to the swarm coordinator
       await this.communicate({
         id: `result-${Date.now()}`,
@@ -177,12 +197,12 @@ export class BaseAgent implements Agent {
         type: 'result',
         content: result,
         timestamp: new Date(),
-        requiresResponse: false
+        requiresResponse: false,
       });
-      
-      this.status = 'idle';
+
+      this.state.status = 'idle';
     } catch (error) {
-      this.status = 'error';
+      this.state.status = 'error';
       throw error;
     }
   }

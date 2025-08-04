@@ -98,7 +98,7 @@ class TestReportGenerator {
       // Parse test results
       if (fs.existsSync(path.join(__dirname, '..', 'test-results.json'))) {
         const results = JSON.parse(
-          fs.readFileSync(path.join(__dirname, '..', 'test-results.json'), 'utf8'),
+          fs.readFileSync(path.join(__dirname, '..', 'test-results.json'), 'utf8')
         );
         this.parseTestResults(results);
       }

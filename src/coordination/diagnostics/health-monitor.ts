@@ -19,12 +19,77 @@ import { randomUUID } from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import { performance } from 'node:perf_hooks';
 
+export interface HealthMonitorOptions {
+  checkInterval?: number;
+  alertThreshold?: number;
+  criticalThreshold?: number;
+  enableSystemChecks?: boolean;
+  enableCustomChecks?: boolean;
+  maxHistorySize?: number;
+  [key: string]: any;
+}
+
+export type HealthCheckFunction = () => Promise<any> | any;
+
+export interface HealthCheck {
+  name: string;
+  checkFunction: HealthCheckFunction;
+  weight: number;
+  timeout: number;
+  enabled: boolean;
+  critical: boolean;
+  description: string;
+  lastRun: string | null;
+  lastResult: any;
+  runCount: number;
+  errorCount: number;
+}
+
+export interface HealthCheckResult {
+  score: number;
+  status: string;
+  details: string;
+  metrics: Record<string, any>;
+  duration: number;
+}
+
+export interface HealthReport {
+  id: string;
+  timestamp: string;
+  overallScore: number;
+  status: 'healthy' | 'warning' | 'critical';
+  duration: number;
+  checkCount: number;
+  criticalFailures: number;
+  results: Record<string, HealthCheckResult>;
+}
+
+export interface HealthAlert {
+  id: string;
+  type: 'critical' | 'warning';
+  timestamp: string;
+  title: string;
+  message: string;
+  details: any;
+  resolved: boolean;
+}
+
 /**
  * HealthMonitor provides comprehensive system health monitoring
  * with configurable checks and automatic alerting
  */
 export class HealthMonitor extends EventEmitter {
-  constructor(options = {}) {
+  private options: HealthMonitorOptions;
+  private isRunning: boolean;
+  private checkTimer: NodeJS.Timeout | null;
+  private healthChecks: Map<string, HealthCheck>;
+  private healthHistory: HealthReport[];
+  private currentHealth: HealthReport | {};
+  private alerts: HealthAlert[];
+  private startTime?: number;
+  private persistenceChecker?: () => Promise<void>;
+
+  constructor(options: HealthMonitorOptions = {}) {
     super();
 
     this.options = {
@@ -53,7 +118,7 @@ export class HealthMonitor extends EventEmitter {
   /**
    * Start health monitoring
    */
-  async start() {
+  async start(): Promise<void> {
     if (this.isRunning) return;
 
     this.isRunning = true;
@@ -79,7 +144,7 @@ export class HealthMonitor extends EventEmitter {
   /**
    * Stop health monitoring
    */
-  async stop() {
+  async stop(): Promise<void> {
     if (!this.isRunning) return;
 
     this.isRunning = false;
@@ -96,7 +161,11 @@ export class HealthMonitor extends EventEmitter {
   /**
    * Register a custom health check
    */
-  registerHealthCheck(name, checkFunction, options = {}) {
+  registerHealthCheck(
+    name: string,
+    checkFunction: HealthCheckFunction,
+    options: Partial<HealthCheck> = {}
+  ): HealthCheck {
     const healthCheck = {
       name,
       checkFunction,
@@ -120,7 +189,7 @@ export class HealthMonitor extends EventEmitter {
   /**
    * Remove a health check
    */
-  unregisterHealthCheck(name) {
+  unregisterHealthCheck(name: string): boolean {
     const removed = this.healthChecks.delete(name);
     if (removed) {
       console.error(`🗑️ Removed health check: ${name}`);
@@ -131,7 +200,7 @@ export class HealthMonitor extends EventEmitter {
   /**
    * Run all health checks
    */
-  async runHealthChecks() {
+  async runHealthChecks(): Promise<HealthReport> {
     const startTime = performance.now();
     const checkId = randomUUID();
     const results = {};
@@ -230,7 +299,7 @@ export class HealthMonitor extends EventEmitter {
   /**
    * Run a single health check
    */
-  async runSingleHealthCheck(name, check) {
+  async runSingleHealthCheck(name: string, check: HealthCheck): Promise<HealthCheckResult> {
     if (!check.enabled) {
       return {
         score: 100,
@@ -280,27 +349,27 @@ export class HealthMonitor extends EventEmitter {
   /**
    * Get current system health status
    */
-  getCurrentHealth() {
+  getCurrentHealth(): any {
     return {
       ...this.currentHealth,
       isRunning: this.isRunning,
       checkCount: this.healthChecks.size,
       alerts: this.alerts.length,
-      uptime: this.isRunning ? Date.now() - this.startTime : 0,
+      uptime: this.isRunning && this.startTime ? Date.now() - this.startTime : 0,
     };
   }
 
   /**
    * Get health history
    */
-  getHealthHistory(limit = 100) {
+  getHealthHistory(limit = 100): HealthReport[] {
     return this.healthHistory.slice(-limit);
   }
 
   /**
    * Get health trends and analysis
    */
-  getHealthTrends() {
+  getHealthTrends(): any {
     if (this.healthHistory.length < 2) {
       return {
         trend: 'insufficient_data',
@@ -325,18 +394,18 @@ export class HealthMonitor extends EventEmitter {
 
     return {
       trend,
-      currentScore: this.currentHealth.overallScore,
+      currentScore: (this.currentHealth as HealthReport)?.overallScore || 0,
       averageScore: avgRecent,
       minScore: Math.min(...scores),
       maxScore: Math.max(...scores),
       dataPoints: scores.length,
-      analysis: `Health is ${trend} with current score of ${this.currentHealth.overallScore}%`,
+      analysis: `Health is ${trend} with current score of ${(this.currentHealth as HealthReport)?.overallScore || 0}%`,
     };
   }
 
   // Private helper methods
 
-  initializeSystemChecks() {
+  private initializeSystemChecks(): void {
     // Memory usage check
     this.registerHealthCheck(
       'memory',
@@ -487,7 +556,10 @@ export class HealthMonitor extends EventEmitter {
     );
   }
 
-  determineHealthStatus(score, criticalFailures) {
+  private determineHealthStatus(
+    score: number,
+    criticalFailures: number
+  ): 'healthy' | 'warning' | 'critical' {
     if (criticalFailures > 0 || score < this.options.criticalThreshold) {
       return 'critical';
     } else if (score < this.options.alertThreshold) {
@@ -497,12 +569,12 @@ export class HealthMonitor extends EventEmitter {
     }
   }
 
-  async processHealthAlerts(healthReport) {
+  private async processHealthAlerts(healthReport: HealthReport): Promise<void> {
     const { overallScore, status, criticalFailures, results } = healthReport;
 
     // Create alerts for low health scores
     if (status === 'critical') {
-      const alert = {
+      const alert: HealthAlert = {
         id: randomUUID(),
         type: 'critical',
         timestamp: new Date().toISOString(),
@@ -516,7 +588,7 @@ export class HealthMonitor extends EventEmitter {
       this.emit('criticalAlert', alert);
       console.error(`🚨 CRITICAL ALERT: System health at ${overallScore}%`);
     } else if (status === 'warning') {
-      const alert = {
+      const alert: HealthAlert = {
         id: randomUUID(),
         type: 'warning',
         timestamp: new Date().toISOString(),
@@ -540,14 +612,14 @@ export class HealthMonitor extends EventEmitter {
   /**
    * Set persistence checker function
    */
-  setPersistenceChecker(checkerFunction) {
+  setPersistenceChecker(checkerFunction: () => Promise<void>): void {
     this.persistenceChecker = checkerFunction;
   }
 
   /**
    * Cleanup resources
    */
-  async destroy() {
+  async destroy(): Promise<void> {
     await this.stop();
     this.healthChecks.clear();
     this.healthHistory = [];

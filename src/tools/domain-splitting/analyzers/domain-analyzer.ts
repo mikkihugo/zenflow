@@ -25,6 +25,9 @@ export interface DomainAnalyzer {
   calculateSplittingBenefits(plan: SubDomainPlan[]): Promise<SplittingMetrics>;
 }
 
+// Re-export DomainAnalysis for convenience
+export type { DomainAnalysis } from '../types/domain-types';
+
 export class DomainAnalysisEngine implements DomainAnalyzer {
   private config: AnalysisConfig;
 

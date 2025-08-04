@@ -369,12 +369,12 @@ export class SystemIntegration extends EventEmitter {
 
     // Generate performance insights
     const insights = this.performanceAnalyzer.analyzeMetrics(enhancedMetrics);
-    
+
     // Handle the generated insights
     if (insights) {
       this.handleInsightsGenerated(insights);
     }
-    
+
     this.emit('metrics:enhanced', enhancedMetrics);
   }
 

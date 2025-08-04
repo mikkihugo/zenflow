@@ -3,12 +3,16 @@
  * Tests all components of the Hive Knowledge System Integration using swarm coordination
  */
 
-import { describe, test, expect, beforeEach, afterEach, beforeAll, afterAll, jest } from '@jest/globals';
 import { EventEmitter } from 'node:events';
-import { HiveKnowledgeBridge, type KnowledgeRequest, type KnowledgeResponse } from '../../coordination/hive-knowledge-bridge';
-import { SwarmKnowledgeSync, type SwarmLearning } from '../../coordination/swarm/knowledge-sync';
-import { KnowledgeEnhancedDiscovery } from '../../coordination/discovery/knowledge-enhanced-discovery';
+import { afterEach, beforeAll, beforeEach, describe, expect, jest, test } from '@jest/globals';
+import { KnowledgeAwareDiscovery } from '../../coordination/discovery/knowledge-enhanced-discovery';
 import type { HiveFACTSystem, UniversalFact } from '../../coordination/hive-fact-integration';
+import {
+  HiveKnowledgeBridge,
+  type KnowledgeRequest,
+  type KnowledgeResponse,
+} from '../../coordination/hive-knowledge-bridge';
+import { SwarmKnowledgeSync, type SwarmLearning } from '../../coordination/swarm/knowledge-sync';
 import type { SessionMemoryStore } from '../../memory/stores/session-memory-store';
 
 // Mock implementations
@@ -29,11 +33,11 @@ class MockHiveFACT extends EventEmitter implements Partial<HiveFACTSystem> {
         content: {
           patterns: ['JWT tokens', 'OAuth 2.0', 'session management'],
           bestPractices: ['Use HTTPS', 'Implement rate limiting', 'Hash passwords'],
-          topology: 'hierarchical'
+          topology: 'hierarchical',
         },
         metadata: { source: 'hive-fact', timestamp: Date.now(), confidence: 0.9 },
         accessCount: 5,
-        swarmAccess: new Set(['swarm-1', 'swarm-2'])
+        swarmAccess: new Set(['swarm-1', 'swarm-2']),
       },
       {
         id: 'fact-2',
@@ -41,34 +45,34 @@ class MockHiveFACT extends EventEmitter implements Partial<HiveFACTSystem> {
         subject: 'react',
         content: {
           patterns: ['component architecture', 'state management', 'hooks pattern'],
-          bestPractices: ['Use functional components', 'Optimize re-renders', 'Use TypeScript']
+          bestPractices: ['Use functional components', 'Optimize re-renders', 'Use TypeScript'],
         },
         metadata: { source: 'external-mcp', timestamp: Date.now(), confidence: 0.95 },
         accessCount: 12,
-        swarmAccess: new Set(['swarm-1', 'swarm-3'])
-      }
+        swarmAccess: new Set(['swarm-1', 'swarm-3']),
+      },
     ];
 
-    mockFacts.forEach(fact => this.facts.set(fact.id, fact));
+    mockFacts.forEach((fact) => this.facts.set(fact.id, fact));
   }
 
   async searchFacts(query: any): Promise<UniversalFact[]> {
-    const results = Array.from(this.facts.values()).filter(fact => 
+    const results = Array.from(this.facts.values()).filter((fact) =>
       JSON.stringify(fact).toLowerCase().includes(query.query.toLowerCase())
     );
     return results.slice(0, query.limit || 10);
   }
 
   async getFact(type: string, subject: string, swarmId?: string): Promise<UniversalFact | null> {
-    const fact = Array.from(this.facts.values()).find(f => 
-      f.type === type && f.subject.includes(subject)
+    const fact = Array.from(this.facts.values()).find(
+      (f) => f.type === type && f.subject.includes(subject)
     );
-    
+
     if (fact && swarmId) {
       fact.accessCount++;
       fact.swarmAccess.add(swarmId);
     }
-    
+
     return fact || null;
   }
 
@@ -81,7 +85,7 @@ class MockHiveFACT extends EventEmitter implements Partial<HiveFACTSystem> {
       oldestEntry: Date.now() - 3600000,
       newestEntry: Date.now(),
       topDomains: ['hive-fact', 'external-mcp'],
-      storageHealth: 'excellent' as const
+      storageHealth: 'excellent' as const,
     };
   }
 }
@@ -104,7 +108,7 @@ class MockMemoryStore implements Partial<SessionMemoryStore> {
 }
 
 class MockHiveSwarmCoordinator extends EventEmitter {
-  async requestUniversalFact(swarmId: string, factType: string, subject: string): Promise<any> {
+  async requestUniversalFact(_swarmId: string, factType: string, subject: string): Promise<any> {
     return { content: `Mock fact for ${factType}:${subject}` };
   }
 }
@@ -116,7 +120,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
   let knowledgeBridge: HiveKnowledgeBridge;
   let swarmKnowledge1: SwarmKnowledgeSync;
   let swarmKnowledge2: SwarmKnowledgeSync;
-  let enhancedDiscovery: KnowledgeEnhancedDiscovery;
+  let knowledgeAwareDiscovery: KnowledgeAwareDiscovery;
 
   beforeAll(async () => {
     // Initialize all components
@@ -128,22 +132,22 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
   beforeEach(async () => {
     // Reset components for each test
     await memoryStore.clear();
-    
+
     knowledgeBridge = new HiveKnowledgeBridge(hiveCoordinator as any, memoryStore as any);
     // Mock the HiveFACT access
     (knowledgeBridge as any).hiveFact = hiveFact;
-    
+
     swarmKnowledge1 = new SwarmKnowledgeSync(
       { swarmId: 'test-swarm-1', cacheSize: 100 },
       memoryStore as any
     );
-    
+
     swarmKnowledge2 = new SwarmKnowledgeSync(
       { swarmId: 'test-swarm-2', cacheSize: 100 },
       memoryStore as any
     );
 
-    enhancedDiscovery = new KnowledgeEnhancedDiscovery(
+    knowledgeAwareDiscovery = new KnowledgeAwareDiscovery(
       { swarmId: 'discovery-swarm' },
       hiveFact as any,
       swarmKnowledge1,
@@ -165,7 +169,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
   describe('HiveKnowledgeBridge', () => {
     test('should initialize successfully', async () => {
       expect(knowledgeBridge).toBeDefined();
-      
+
       // Check that bridge is initialized
       const stats = knowledgeBridge.getStats();
       expect(stats.registeredSwarms).toBe(0);
@@ -188,14 +192,14 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
         type: 'query',
         payload: {
           query: 'authentication patterns',
-          domain: 'security'
+          domain: 'security',
         },
         priority: 'medium',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const response = await knowledgeBridge.processKnowledgeRequest(request);
-      
+
       expect(response.success).toBe(true);
       expect(response.data).toBeDefined();
       expect(response.data.results).toBeInstanceOf(Array);
@@ -212,22 +216,22 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
           taskType: 'user-login',
           agentTypes: ['auth-agent', 'security-agent'],
           inputSize: 100,
-          complexity: 'medium'
+          complexity: 'medium',
         },
         outcome: {
           success: true,
           duration: 5000,
           quality: 0.95,
-          efficiency: 0.88
+          efficiency: 0.88,
         },
         insights: {
           whatWorked: ['JWT tokens', 'Rate limiting'],
           whatFailed: ['Session cookies'],
           optimizations: ['Token caching', 'Lazy validation'],
-          bestPractices: ['Use HTTPS', 'Implement refresh tokens']
+          bestPractices: ['Use HTTPS', 'Implement refresh tokens'],
         },
         confidence: 0.9,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const request: KnowledgeRequest = {
@@ -248,20 +252,20 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
               metrics: {
                 duration: mockLearning.outcome.duration,
                 quality: mockLearning.outcome.quality,
-                efficiency: mockLearning.outcome.efficiency
+                efficiency: mockLearning.outcome.efficiency,
               },
-              context: mockLearning.context
+              context: mockLearning.context,
             },
             confidence: mockLearning.confidence,
-            timestamp: Date.now()
-          }
+            timestamp: Date.now(),
+          },
         },
         priority: 'medium',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const response = await knowledgeBridge.processKnowledgeRequest(request);
-      
+
       expect(response.success).toBe(true);
       expect(response.data.status).toBe('queued-for-processing');
       expect(response.metadata.source).toBe('swarm-contribution');
@@ -274,11 +278,11 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
         type: 'subscribe',
         payload: { domain: 'frontend' },
         priority: 'low',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const response = await knowledgeBridge.processKnowledgeRequest(request);
-      
+
       expect(response.success).toBe(true);
       expect(response.data.subscribed).toBe(true);
       expect(response.data.domain).toBe('frontend');
@@ -291,11 +295,11 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
         type: 'query',
         payload: {}, // Missing required query field
         priority: 'medium',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const response = await knowledgeBridge.processKnowledgeRequest(invalidRequest);
-      
+
       expect(response.success).toBe(false);
       expect(response.error).toBeDefined();
       expect(typeof response.error).toBe('string');
@@ -305,7 +309,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
   describe('SwarmKnowledgeSync', () => {
     test('should initialize with correct configuration', async () => {
       expect(swarmKnowledge1).toBeDefined();
-      
+
       const stats = swarmKnowledge1.getStats();
       expect(stats.cacheSize).toBe(0);
       expect(stats.subscriptions).toBeGreaterThanOrEqual(0);
@@ -317,7 +321,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
 
       const result1 = await swarmKnowledge1.queryKnowledge('authentication patterns', 'security');
       const result2 = await swarmKnowledge1.queryKnowledge('authentication patterns', 'security');
-      
+
       expect(result1).toBeDefined();
       expect(result2).toBeDefined();
       expect(result1).toEqual(result2); // Should return cached result
@@ -333,21 +337,21 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
           taskType: 'database-query',
           agentTypes: ['db-agent'],
           inputSize: 1000,
-          complexity: 'high'
+          complexity: 'high',
         },
         outcome: {
           success: true,
           duration: 2000,
           quality: 0.92,
-          efficiency: 0.85
+          efficiency: 0.85,
         },
         insights: {
           whatWorked: ['Connection pooling', 'Query caching'],
           whatFailed: ['N+1 queries'],
           optimizations: ['Batch queries', 'Index optimization'],
-          bestPractices: ['Use prepared statements', 'Monitor query performance']
+          bestPractices: ['Use prepared statements', 'Monitor query performance'],
         },
-        confidence: 0.88
+        confidence: 0.88,
       };
 
       const success = await swarmKnowledge1.contributeKnowledge(mockLearning, 'agent-1');
@@ -377,17 +381,17 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
         domain: 'security',
         priority: 'high' as const,
         content: { newSecurityPattern: 'Zero-trust architecture' },
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       await swarmKnowledge1.handleKnowledgeUpdate(mockUpdate);
-      
+
       expect(updateReceived).toHaveBeenCalledWith({ update: mockUpdate });
     });
 
     test('should fall back to local knowledge when queries fail', async () => {
       // Don't setup bridge handler to simulate failure
-      
+
       // First, add some learning history that could serve as fallback
       const mockLearning: Omit<SwarmLearning, 'id' | 'timestamp'> = {
         type: 'pattern',
@@ -396,32 +400,35 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
           taskType: 'user-auth',
           agentTypes: ['auth-agent'],
           inputSize: 50,
-          complexity: 'medium'
+          complexity: 'medium',
         },
         outcome: {
           success: true,
           duration: 3000,
           quality: 0.9,
-          efficiency: 0.8
+          efficiency: 0.8,
         },
         insights: {
           whatWorked: ['OAuth 2.0'],
           whatFailed: [],
           optimizations: ['Token refresh'],
-          bestPractices: ['Secure storage']
+          bestPractices: ['Secure storage'],
         },
-        confidence: 0.85
+        confidence: 0.85,
       };
 
       // Add learning directly to history
       (swarmKnowledge1 as any).learningHistory.push({
         ...mockLearning,
         id: 'learning-fallback',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
 
       try {
-        const result = await swarmKnowledge1.queryKnowledge('authentication patterns', 'authentication');
+        const result = await swarmKnowledge1.queryKnowledge(
+          'authentication patterns',
+          'authentication'
+        );
         expect(result).toBeDefined();
         expect(result.fallback).toBe(true);
       } catch (error) {
@@ -431,8 +438,8 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
     });
   });
 
-  describe('KnowledgeEnhancedDiscovery', () => {
-    test('should enhance domain discovery with knowledge', async () => {
+  describe('KnowledgeAwareDiscovery', () => {
+    test('should apply knowledge insights to domain discovery', async () => {
       const mockOriginalDomains = [
         {
           name: 'authentication',
@@ -440,7 +447,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
           files: ['auth.ts', 'login.ts', 'jwt.ts'],
           confidence: 0.7,
           suggestedTopology: 'mesh',
-          suggestedAgents: ['auth-agent']
+          suggestedAgents: ['auth-agent'],
         },
         {
           name: 'frontend',
@@ -448,8 +455,8 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
           files: ['App.tsx', 'components/', 'hooks/'],
           confidence: 0.8,
           suggestedTopology: 'hierarchical',
-          suggestedAgents: ['ui-agent']
-        }
+          suggestedAgents: ['ui-agent'],
+        },
       ];
 
       const mockContext = {
@@ -458,40 +465,40 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
         size: 'medium' as const,
         complexity: 'moderate' as const,
         domains: ['authentication', 'frontend'],
-        existingPatterns: ['component-pattern', 'auth-pattern']
+        existingPatterns: ['component-pattern', 'auth-pattern'],
       };
 
-      const enhancedDomains = await enhancedDiscovery.enhanceDiscovery(
+      const knowledgeAwareDomains = await knowledgeAwareDiscovery.applyKnowledgeInsights(
         mockOriginalDomains as any,
         mockContext
       );
 
-      expect(enhancedDomains).toHaveLength(2);
-      
-      enhancedDomains.forEach(domain => {
-        expect(domain.knowledgeEnhancements).toBeDefined();
-        expect(domain.knowledgeEnhancements.knowledgeScore).toBeGreaterThanOrEqual(0);
-        expect(domain.knowledgeEnhancements.appliedPatterns).toBeInstanceOf(Array);
-        expect(domain.knowledgeEnhancements.recommendedTopology).toBeDefined();
-        expect(domain.knowledgeEnhancements.recommendedAgents).toBeInstanceOf(Array);
+      expect(knowledgeAwareDomains).toHaveLength(2);
+
+      knowledgeAwareDomains.forEach((domain) => {
+        expect(domain.knowledgeInsights).toBeDefined();
+        expect(domain.knowledgeInsights.knowledgeScore).toBeGreaterThanOrEqual(0);
+        expect(domain.knowledgeInsights.appliedPatterns).toBeInstanceOf(Array);
+        expect(domain.knowledgeInsights.recommendedTopology).toBeDefined();
+        expect(domain.knowledgeInsights.recommendedAgents).toBeInstanceOf(Array);
       });
 
-      // Check if confidence was enhanced
-      const authDomain = enhancedDomains.find(d => d.name === 'authentication');
+      // Check if confidence was improved with knowledge
+      const authDomain = knowledgeAwareDomains.find((d) => d.name === 'authentication');
       expect(authDomain).toBeDefined();
-      // Confidence might be enhanced or remain the same depending on available knowledge
-      expect(authDomain!.confidence).toBeGreaterThanOrEqual(0.6);
+      // Confidence might be improved or remain the same depending on available knowledge
+      expect(authDomain?.confidence).toBeGreaterThanOrEqual(0.6);
     });
 
-    test('should handle discovery enhancement errors gracefully', async () => {
+    test('should handle knowledge application errors gracefully', async () => {
       // Test with invalid/empty data
-      const result = await enhancedDiscovery.enhanceDiscovery([], {
+      const result = await knowledgeAwareDiscovery.applyKnowledgeInsights([], {
         projectType: 'unknown',
         technologies: [],
         size: 'small',
         complexity: 'simple',
         domains: [],
-        existingPatterns: []
+        existingPatterns: [],
       });
 
       expect(result).toEqual([]);
@@ -499,7 +506,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
   });
 
   describe('Integration Tests - Complete Workflow', () => {
-    test('should complete full knowledge-enhanced discovery workflow', async () => {
+    test('should complete full knowledge-aware discovery workflow', async () => {
       // Setup complete workflow
       setupBridgeRequestHandler(knowledgeBridge, swarmKnowledge1);
       setupBridgeRequestHandler(knowledgeBridge, swarmKnowledge2);
@@ -516,28 +523,31 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
           taskType: 'user-login',
           agentTypes: ['auth-agent'],
           inputSize: 100,
-          complexity: 'medium'
+          complexity: 'medium',
         },
         outcome: {
           success: true,
           duration: 4000,
           quality: 0.93,
-          efficiency: 0.87
+          efficiency: 0.87,
         },
         insights: {
           whatWorked: ['JWT with refresh tokens', 'Rate limiting'],
           whatFailed: ['Simple session cookies'],
           optimizations: ['Token caching', 'Lazy validation'],
-          bestPractices: ['Use HTTPS always', 'Implement proper logout']
+          bestPractices: ['Use HTTPS always', 'Implement proper logout'],
         },
-        confidence: 0.91
+        confidence: 0.91,
       };
 
       const contribution1 = await swarmKnowledge1.contributeKnowledge(mockLearning1, 'agent-1');
       expect(contribution1).toBe(true);
 
       // Step 3: Query knowledge from another swarm
-      const knowledge = await swarmKnowledge2.queryKnowledge('authentication patterns', 'authentication');
+      const knowledge = await swarmKnowledge2.queryKnowledge(
+        'authentication patterns',
+        'authentication'
+      );
       expect(knowledge).toBeDefined();
 
       // Step 4: Use enhanced discovery
@@ -548,8 +558,8 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
           files: ['user.ts', 'profile.ts'],
           confidence: 0.75,
           suggestedTopology: 'mesh',
-          suggestedAgents: ['user-agent']
-        }
+          suggestedAgents: ['user-agent'],
+        },
       ];
 
       const mockContext = {
@@ -558,13 +568,16 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
         size: 'medium' as const,
         complexity: 'moderate' as const,
         domains: ['user-management'],
-        existingPatterns: ['auth-pattern']
+        existingPatterns: ['auth-pattern'],
       };
 
-      const enhancedDomains = await enhancedDiscovery.enhanceDiscovery(mockDomains as any, mockContext);
-      
-      expect(enhancedDomains).toHaveLength(1);
-      expect(enhancedDomains[0].knowledgeEnhancements).toBeDefined();
+      const knowledgeAwareDomains = await knowledgeAwareDiscovery.applyKnowledgeInsights(
+        mockDomains as any,
+        mockContext
+      );
+
+      expect(knowledgeAwareDomains).toHaveLength(1);
+      expect(knowledgeAwareDomains[0].knowledgeInsights).toBeDefined();
 
       // Step 5: Verify knowledge distribution
       const bridgeStats = knowledgeBridge.getStats();
@@ -587,16 +600,16 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
         swarmKnowledge1.queryKnowledge('react patterns', 'frontend'),
         swarmKnowledge2.queryKnowledge('database optimization', 'backend'),
         swarmKnowledge1.queryKnowledge('authentication best practices', 'security'),
-        swarmKnowledge2.queryKnowledge('API design patterns', 'backend')
+        swarmKnowledge2.queryKnowledge('API design patterns', 'backend'),
       ];
 
       const results = await Promise.allSettled(requests);
-      
+
       // All requests should complete (either fulfilled or rejected)
       expect(results).toHaveLength(4);
-      
+
       // At least some should succeed
-      const successful = results.filter(r => r.status === 'fulfilled');
+      const successful = results.filter((r) => r.status === 'fulfilled');
       expect(successful.length).toBeGreaterThan(0);
     });
 
@@ -605,19 +618,19 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
 
       const startTime = Date.now();
       const numberOfRequests = 50;
-      
+
       // Create multiple concurrent requests
-      const requests = Array.from({ length: numberOfRequests }, (_, i) => 
+      const requests = Array.from({ length: numberOfRequests }, (_, i) =>
         swarmKnowledge1.queryKnowledge(`test query ${i}`, 'performance-test')
       );
 
       await Promise.allSettled(requests);
-      
+
       const duration = Date.now() - startTime;
-      
+
       // Should complete within reasonable time (adjust threshold as needed)
       expect(duration).toBeLessThan(10000); // 10 seconds for 50 requests
-      
+
       // Cache should have entries
       const stats = swarmKnowledge1.getStats();
       expect(stats.cacheSize).toBeGreaterThan(0);
@@ -642,8 +655,8 @@ function setupBridgeRequestHandler(bridge: HiveKnowledgeBridge, swarm: SwarmKnow
           source: 'hive-fact',
           timestamp: Date.now(),
           confidence: 0,
-          cacheHit: false
-        }
+          cacheHit: false,
+        },
       };
       swarm.emit('knowledge:response', errorResponse);
     }

@@ -3,10 +3,10 @@
  * Shows how the system builds confidence through iterations without external dependencies
  */
 
-import { ProgressiveConfidenceBuilder } from './progressive-confidence-builder';
-import { SessionMemoryStore } from '@memory/memory';
-import { createAGUI } from '@interfaces/agui/agui-adapter';
 import { createLogger } from '@core/logger';
+import { createAGUI } from '@interfaces/agui/agui-adapter';
+import { SessionMemoryStore } from '@memory/memory';
+import { ProgressiveConfidenceBuilder } from './progressive-confidence-builder';
 
 const logger = createLogger({ prefix: 'ProgressiveConfidenceDemo' });
 
@@ -34,13 +34,13 @@ class MockHiveFACT {
         metadata: {
           source: 'mock-source',
           timestamp: Date.now(),
-          confidence: 0.8
+          confidence: 0.8,
         },
         accessCount: 1,
-        swarmAccess: new Set()
-      }
+        swarmAccess: new Set(),
+      },
     ];
-    
+
     logger.info(`Mock HiveFACT search for: ${query.query}`);
     return mockFacts;
   }
@@ -54,11 +54,11 @@ async function runDemo() {
 
   // Initialize components with mocks
   const mockDiscoveryBridge = new MockDomainDiscoveryBridge();
-  const memoryStore = new SessionMemoryStore({ 
-    backendConfig: { type: 'json', path: '/tmp/demo-memory.json' }
+  const memoryStore = new SessionMemoryStore({
+    backendConfig: { type: 'json', path: '/tmp/demo-memory.json' },
   });
   const agui = createAGUI('mock');
-  
+
   // Initialize memory store
   await memoryStore.initialize();
 
@@ -74,7 +74,7 @@ async function runDemo() {
     {
       targetConfidence: 0.8,
       maxIterations: 3,
-      researchThreshold: 0.6
+      researchThreshold: 0.6,
     }
   );
 
@@ -84,9 +84,9 @@ async function runDemo() {
       iteration: event.iteration,
       confidence: `${(event.confidence * 100).toFixed(1)}%`,
       domains: event.domainCount,
-      metrics: Object.entries(event.metrics).map(([key, value]) => 
-        `${key}: ${(value * 100).toFixed(1)}%`
-      ).join(', ')
+      metrics: Object.entries(event.metrics)
+        .map(([key, value]) => `${key}: ${(value * 100).toFixed(1)}%`)
+        .join(', '),
     });
   });
 
@@ -97,50 +97,38 @@ async function runDemo() {
       {
         name: 'coordination',
         path: `${process.cwd()}/src/coordination`,
-        files: [
-          'swarm-coordinator.ts',
-          'hive-swarm-sync.ts',
-          'agent-manager.ts'
-        ],
+        files: ['swarm-coordinator.ts', 'hive-swarm-sync.ts', 'agent-manager.ts'],
         confidence: 0.6,
         suggestedConcepts: ['swarm', 'coordination', 'agents', 'distributed'],
         technologies: ['typescript', 'nodejs'],
-        relatedDomains: ['neural', 'memory']
+        relatedDomains: ['neural', 'memory'],
       },
       {
         name: 'neural',
         path: `${process.cwd()}/src/neural`,
-        files: [
-          'neural-network-manager.ts',
-          'wasm-neural-accelerator.ts',
-          'neural-models.ts'
-        ],
+        files: ['neural-network-manager.ts', 'wasm-neural-accelerator.ts', 'neural-models.ts'],
         confidence: 0.5,
         suggestedConcepts: ['neural-network', 'ai', 'wasm', 'training'],
         technologies: ['typescript', 'wasm', 'rust'],
-        relatedDomains: ['coordination']
+        relatedDomains: ['coordination'],
       },
       {
         name: 'memory',
         path: `${process.cwd()}/src/memory`,
-        files: [
-          'memory.ts',
-          'sqlite.backend.ts',
-          'lancedb.backend.ts'
-        ],
+        files: ['memory.ts', 'sqlite.backend.ts', 'lancedb.backend.ts'],
         confidence: 0.4,
         suggestedConcepts: ['storage', 'persistence', 'database', 'vectors'],
         technologies: ['typescript', 'sqlite', 'lancedb'],
-        relatedDomains: ['neural', 'coordination']
-      }
-    ]
+        relatedDomains: ['neural', 'coordination'],
+      },
+    ],
   };
 
   try {
     logger.info('🔍 Building confidence in domain discovery...\n');
-    
+
     const result = await confidenceBuilder.buildConfidence(context);
-    
+
     logger.info('\n🎉 Confidence Building Complete!\n');
     logger.info('Final Results:', {
       domains: result.domains.size,
@@ -148,7 +136,7 @@ async function runDemo() {
       finalConfidence: `${(result.confidence.overall * 100).toFixed(1)}%`,
       validations: result.validationCount,
       research: result.researchCount,
-      learningEvents: result.learningHistory.length
+      learningEvents: result.learningHistory.length,
     });
 
     // Show domain details
@@ -157,7 +145,7 @@ async function runDemo() {
       logger.info(`  ${name}: ${(domain.confidence.overall * 100).toFixed(1)}%`, {
         validations: domain.validations.length,
         research: domain.research.length,
-        refinements: domain.refinementHistory.length
+        refinements: domain.refinementHistory.length,
       });
     }
 
@@ -165,7 +153,9 @@ async function runDemo() {
     if (result.relationships.length > 0) {
       logger.info('\n🔗 Discovered Relationships:');
       for (const rel of result.relationships) {
-        logger.info(`  ${rel.sourceDomain} ${rel.type} ${rel.targetDomain} (${(rel.confidence * 100).toFixed(0)}%)`);
+        logger.info(
+          `  ${rel.sourceDomain} ${rel.type} ${rel.targetDomain} (${(rel.confidence * 100).toFixed(0)}%)`
+        );
       }
     }
 
@@ -176,7 +166,6 @@ async function runDemo() {
     });
 
     logger.info('\n✅ Demo completed successfully!');
-
   } catch (error) {
     logger.error('Demo failed:', error);
   } finally {
@@ -189,7 +178,7 @@ async function runDemo() {
 
 // Run the demo if executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  runDemo().catch(error => {
+  runDemo().catch((error) => {
     logger.error('Demo error:', error);
     process.exit(1);
   });

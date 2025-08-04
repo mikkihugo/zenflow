@@ -45,14 +45,14 @@ export class CapacityPredictor {
     const demandFactor = 1 + (Math.random() - 0.5) * adjustedVariation;
 
     const prediction = Math.max(1, Math.round(avgDemand * demandFactor));
-    
+
     // Log prediction with confidence metrics
     this.logger.debug('Capacity prediction', {
       avgDemand,
       variance,
       volatilityFactor,
       prediction,
-      confidence: 1 - Math.min(volatilityFactor, 1)
+      confidence: 1 - Math.min(volatilityFactor, 1),
     });
 
     return prediction;

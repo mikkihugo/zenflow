@@ -1,13 +1,11 @@
 /**
- * @fileoverview Advanced MCP Tools Registry
+ * @fileoverview MCP Tools Registry
  *
- * Central registry for all 87 advanced MCP tools from claude-zen.
+ * Central registry for MCP tools from claude-zen.
  * Integrates with existing HTTP and Stdio MCP servers.
  */
 
-import type { UnifiedWorkflowEngine } from '../../core/unified-workflow-engine';
 import type { DocumentService } from '../../database/services/document-service';
-import { type AdvancedMCPTool, advancedToolRegistry } from './advanced-tools';
 import coordinationTools from './tools/coordination-tools';
 import githubIntegrationTools from './tools/github-integration-tools';
 import memoryNeuralTools from './tools/memory-neural-tools';
@@ -17,81 +15,141 @@ import { createSPARCIntegrationTools } from './tools/sparc-integration-tools';
 import systemTools from './tools/system-tools';
 
 /**
- * Advanced MCP Tools Manager
- * Provides centralized management for all advanced tools including SPARC integration
+ * MCP Tool interface
  */
-export class AdvancedMCPToolsManager {
+export interface MCPTool {
+  name: string;
+  description: string;
+  inputSchema: any;
+  handler: (params: any) => Promise<any>;
+  category: string;
+  version: string;
+  priority: number;
+  metadata: {
+    tags: string[];
+    examples: any[];
+  };
+  permissions: Array<{ type: string; resource: string }>;
+}
+
+/**
+ * Simple tool registry
+ */
+class SimpleToolRegistry {
+  private tools = new Map<string, MCPTool>();
+
+  registerTool(tool: MCPTool): void {
+    this.tools.set(tool.name, tool);
+  }
+
+  getTool(name: string): MCPTool | undefined {
+    return this.tools.get(name);
+  }
+
+  getAllTools(): MCPTool[] {
+    const tools: MCPTool[] = [];
+    for (const tool of this.tools.values()) {
+      tools.push(tool);
+    }
+    return tools;
+  }
+
+  getToolsByCategory(category: string): MCPTool[] {
+    return this.getAllTools().filter((tool) => tool.category === category);
+  }
+
+  getCategorySummary(): any {
+    const categories = new Map<string, number>();
+    for (const tool of this.tools.values()) {
+      categories.set(tool.category, (categories.get(tool.category) || 0) + 1);
+    }
+    return Object.fromEntries(categories);
+  }
+
+  getToolCount(): number {
+    return this.tools.size;
+  }
+}
+
+export const toolRegistry = new SimpleToolRegistry();
+
+/**
+ * MCP Tools Manager
+ * Provides centralized management for MCP tools
+ */
+export class MCPToolsManager {
   private initialized = false;
   private toolStats = new Map<string, { calls: number; errors: number; avgTime: number }>();
   private documentService?: DocumentService;
-  private workflowEngine?: UnifiedWorkflowEngine;
 
-  constructor(documentService?: DocumentService, workflowEngine?: UnifiedWorkflowEngine) {
+  constructor(documentService?: DocumentService) {
     this.documentService = documentService;
-    this.workflowEngine = workflowEngine;
     this.initializeTools();
   }
 
   /**
-   * Initialize all advanced tools in the registry
+   * Initialize all tools in the registry
    */
   private initializeTools(): void {
     if (this.initialized) return;
 
-    // Register Coordination Tools (12 tools)
-    coordinationTools.forEach((tool) => {
-      advancedToolRegistry.registerTool(tool);
-      this.initializeToolStats(tool.name);
-    });
-
-    // Register Monitoring Tools (15 tools)
-    monitoringTools.forEach((tool) => {
-      advancedToolRegistry.registerTool(tool);
-      this.initializeToolStats(tool.name);
-    });
-
-    // Register Memory & Neural Tools (18 tools)
-    memoryNeuralTools.forEach((tool) => {
-      advancedToolRegistry.registerTool(tool);
-      this.initializeToolStats(tool.name);
-    });
-
-    // Register GitHub Integration Tools (20 tools)
-    githubIntegrationTools.forEach((tool) => {
-      advancedToolRegistry.registerTool(tool);
-      this.initializeToolStats(tool.name);
-    });
-
-    // Register System Tools (12 tools)
-    systemTools.forEach((tool) => {
-      advancedToolRegistry.registerTool(tool);
-      this.initializeToolStats(tool.name);
-    });
-
-    // Register Orchestration Tools (10 tools)
-    orchestrationTools.forEach((tool) => {
-      advancedToolRegistry.registerTool(tool);
-      this.initializeToolStats(tool.name);
-    });
-
-    // Register SPARC Integration Tools (6 tools) - DATABASE-DRIVEN
-    if (this.documentService && this.workflowEngine) {
-      const sparcTools = createSPARCIntegrationTools(this.documentService, this.workflowEngine);
-      sparcTools.forEach((tool) => {
-        advancedToolRegistry.registerTool(tool);
+    try {
+      // Register Coordination Tools
+      coordinationTools.forEach((tool) => {
+        toolRegistry.registerTool(tool);
         this.initializeToolStats(tool.name);
       });
-    } else {
-    }
 
-    this.initialized = true;
+      // Register Monitoring Tools
+      monitoringTools.forEach((tool) => {
+        toolRegistry.registerTool(tool);
+        this.initializeToolStats(tool.name);
+      });
+
+      // Register Memory & Neural Tools
+      memoryNeuralTools.forEach((tool) => {
+        toolRegistry.registerTool(tool);
+        this.initializeToolStats(tool.name);
+      });
+
+      // Register GitHub Integration Tools
+      githubIntegrationTools.forEach((tool) => {
+        toolRegistry.registerTool(tool);
+        this.initializeToolStats(tool.name);
+      });
+
+      // Register System Tools
+      systemTools.forEach((tool) => {
+        toolRegistry.registerTool(tool);
+        this.initializeToolStats(tool.name);
+      });
+
+      // Register Orchestration Tools
+      orchestrationTools.forEach((tool) => {
+        toolRegistry.registerTool(tool);
+        this.initializeToolStats(tool.name);
+      });
+
+      // Register SPARC Integration Tools - DATABASE-DRIVEN
+      if (this.documentService) {
+        const sparcTools = createSPARCIntegrationTools(this.documentService);
+        sparcTools.forEach((tool) => {
+          toolRegistry.registerTool(tool);
+          this.initializeToolStats(tool.name);
+        });
+      }
+
+      this.initialized = true;
+    } catch (error) {
+      console.error('Failed to initialize MCP tools:', error);
+    }
   }
 
   /**
    * Get tool by name
    */
-  getTool(name: string): AdvancedMCPTool | undefined {
-    return advancedToolRegistry.getTool(name);
+  getTool(name: string): MCPTool | undefined {
+    return toolRegistry.getTool(name);
   }
 
   /**
@@ -102,7 +160,7 @@ export class AdvancedMCPToolsManager {
     const tool = this.getTool(name);
 
     if (!tool) {
-      throw new Error(`Advanced tool not found: ${name}`);
+      throw new Error(`Tool not found: ${name}`);
     }
 
     try {
@@ -123,8 +181,8 @@ export class AdvancedMCPToolsManager {
    * List all tools with metadata
    */
   listAllTools(): any {
-    const tools = advancedToolRegistry.getAllTools();
-    const categoryStats = advancedToolRegistry.getCategorySummary();
+    const tools = toolRegistry.getAllTools();
+    const categoryStats = toolRegistry.getCategorySummary();
 
     return {
       total: tools.length,
@@ -144,8 +202,8 @@ export class AdvancedMCPToolsManager {
   /**
    * Get tools by category
    */
-  getToolsByCategory(category: string): AdvancedMCPTool[] {
-    return advancedToolRegistry.getToolsByCategory(category as any);
+  getToolsByCategory(category: string): MCPTool[] {
+    return toolRegistry.getToolsByCategory(category);
   }
 
   /**
@@ -153,7 +211,7 @@ export class AdvancedMCPToolsManager {
    */
   getToolStats(): any {
     const stats: any = {};
-    for (const [toolName, toolStats] of this.toolStats.entries()) {
+    this.toolStats.forEach((toolStats, toolName) => {
       stats[toolName] = {
         ...toolStats,
         successRate:
@@ -161,7 +219,7 @@ export class AdvancedMCPToolsManager {
             ? `${(((toolStats.calls - toolStats.errors) / toolStats.calls) * 100).toFixed(2)}%`
             : '0%',
       };
-    }
+    });
     return stats;
   }
 
@@ -169,7 +227,7 @@ export class AdvancedMCPToolsManager {
    * Get registry overview
    */
   getRegistryOverview(): any {
-    const categoryStats = advancedToolRegistry.getCategorySummary();
+    const categoryStats = toolRegistry.getCategorySummary();
     const totalCalls = Array.from(this.toolStats.values()).reduce(
       (sum, stats) => sum + stats.calls,
       0
@@ -196,9 +254,9 @@ export class AdvancedMCPToolsManager {
   /**
    * Search tools by tags or keywords
    */
-  searchTools(query: string): AdvancedMCPTool[] {
+  searchTools(query: string): MCPTool[] {
     const lowercaseQuery = query.toLowerCase();
-    return advancedToolRegistry
+    return toolRegistry
       .getAllTools()
       .filter(
         (tool) =>
@@ -212,21 +270,21 @@ export class AdvancedMCPToolsManager {
    * Get tool count
    */
   getToolCount(): number {
-    return advancedToolRegistry.getToolCount();
+    return toolRegistry.getToolCount();
   }
 
   /**
    * Check if tool exists
    */
   hasTool(name: string): boolean {
-    return advancedToolRegistry.getTool(name) !== undefined;
+    return toolRegistry.getTool(name) !== undefined;
   }
 
   /**
    * Get tools requiring specific permissions
    */
-  getToolsByPermission(permissionType: string, resource?: string): AdvancedMCPTool[] {
-    return advancedToolRegistry
+  getToolsByPermission(permissionType: string, resource?: string): MCPTool[] {
+    return toolRegistry
       .getAllTools()
       .filter((tool) =>
         tool.permissions.some(
@@ -258,18 +316,15 @@ export class AdvancedMCPToolsManager {
 }
 
 // Global instance - initialize without services first
-export const advancedMCPToolsManager = new AdvancedMCPToolsManager();
+export const mcpToolsManager = new MCPToolsManager();
 
 /**
- * Initialize the advanced MCP tools manager with database services for SPARC integration
+ * Initialize the MCP tools manager with database services for SPARC integration
  */
-export function initializeWithDatabaseServices(
-  documentService: DocumentService,
-  workflowEngine: UnifiedWorkflowEngine
-): AdvancedMCPToolsManager {
+export function initializeWithDatabaseServices(documentService: DocumentService): MCPToolsManager {
   // Create new instance with database services for SPARC tools
-  const advancedManager = new AdvancedMCPToolsManager(documentService, workflowEngine);
-  return advancedManager;
+  const manager = new MCPToolsManager(documentService);
+  return manager;
 }
 
 /**
@@ -277,19 +332,19 @@ export function initializeWithDatabaseServices(
  */
 export class MCPServerIntegration {
   /**
-   * Register advanced tools with HTTP MCP server
+   * Register tools with HTTP MCP server
    */
   static async integrateWithHTTPServer(mcpServer: any): Promise<void> {
-    const tools = advancedToolRegistry.getAllTools();
+    const tools = toolRegistry.getAllTools();
 
     for (const tool of tools) {
-      // Convert advanced tool to standard MCP tool format
+      // Convert tool to standard MCP tool format
       const mcpTool = {
         name: tool.name,
         description: tool.description,
         inputSchema: tool.inputSchema,
         handler: async (params: any) => {
-          const result = await advancedMCPToolsManager.executeTool(tool.name, params);
+          const result = await mcpToolsManager.executeTool(tool.name, params);
           return result;
         },
       };
@@ -302,19 +357,19 @@ export class MCPServerIntegration {
   }
 
   /**
-   * Register advanced tools with Stdio MCP server
+   * Register tools with Stdio MCP server
    */
   static async integrateWithStdioServer(mcpServer: any): Promise<void> {
-    const tools = advancedToolRegistry.getAllTools();
+    const tools = toolRegistry.getAllTools();
 
     for (const tool of tools) {
-      // Convert advanced tool to stdio MCP tool format
+      // Convert tool to stdio MCP tool format
       const stdioTool = {
         name: tool.name,
         description: tool.description,
         inputSchema: tool.inputSchema,
         handler: async (params: any) => {
-          const result = await advancedMCPToolsManager.executeTool(tool.name, params);
+          const result = await mcpToolsManager.executeTool(tool.name, params);
           return result;
         },
       };
@@ -331,14 +386,14 @@ export class MCPServerIntegration {
    */
   static createDiscoveryEndpoint(): any {
     return {
-      path: '/advanced-tools',
+      path: '/tools',
       handler: async () => {
         return {
           success: true,
-          data: advancedMCPToolsManager.listAllTools(),
+          data: mcpToolsManager.listAllTools(),
           metadata: {
             version: '2.0.0',
-            totalTools: advancedMCPToolsManager.getToolCount(),
+            totalTools: mcpToolsManager.getToolCount(),
             categories: [
               'coordination',
               'monitoring',
@@ -358,14 +413,14 @@ export class MCPServerIntegration {
    */
   static createExecutionEndpoint(): any {
     return {
-      path: '/advanced-tools/:toolName',
+      path: '/tools/:toolName',
       method: 'POST',
       handler: async (req: any) => {
         const { toolName } = req.params;
         const params = req.body;
 
         try {
-          const result = await advancedMCPToolsManager.executeTool(toolName, params);
+          const result = await mcpToolsManager.executeTool(toolName, params);
           return {
             success: true,
             tool: toolName,
@@ -376,7 +431,7 @@ export class MCPServerIntegration {
           return {
             success: false,
             tool: toolName,
-            error: error.message,
+            error: (error as Error).message,
             timestamp: new Date().toISOString(),
           };
         }
@@ -385,4 +440,4 @@ export class MCPServerIntegration {
   }
 }
 
-export default advancedMCPToolsManager;
+export default mcpToolsManager;

@@ -176,6 +176,13 @@ export class PersistentLearningSystem extends EventEmitter {
     });
 
     const swarmMemory: SwarmMemory = {
+      content: { swarmId, agentTypes, injectedKnowledge: [] },
+      metadata: {
+        source: 'persistent-learning-system',
+        confidence: 0.8,
+        expiry: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+        tags: ['swarm-knowledge', 'injection'],
+      },
       swarmId,
       agentTypes,
       injectedKnowledge: [],
@@ -216,7 +223,15 @@ export class PersistentLearningSystem extends EventEmitter {
     // Broadcast knowledge to swarm
     this.eventBus.emit('swarm:knowledge:inject', {
       swarmId,
-      knowledge: swarmMemory,
+      knowledgeType: 'patterns',
+      knowledge: {
+        content: swarmMemory.content,
+        metadata: swarmMemory.metadata,
+      },
+      source: 'persistent-learning-system',
+      distributionScope: 'all-agents',
+      timestamp: new Date(),
+      persistenceRequested: true,
     });
 
     this.emit('knowledge:injected', { swarmId, agentTypes: agentTypes.length });
@@ -616,11 +631,22 @@ export class PersistentLearningSystem extends EventEmitter {
    */
   private setupEventHandlers(): void {
     this.eventBus.on('swarm:created', (data) => {
-      this.injectKnowledgeIntoSwarm(data.swarmId, data.agentTypes);
+      this.injectKnowledgeIntoSwarm(data.swarmId, [...(data.agentTypes || [])]);
     });
 
     this.eventBus.on('swarm:completed', (data) => {
-      this.collectSwarmLearnings(data.swarmId, data.results);
+      const results =
+        (data.results as unknown as SwarmResults) ||
+        ({
+          swarmId: data.swarmId,
+          context: 'completion',
+          overallSuccess: 1.0,
+          efficiency: 0.8,
+          quality: 0.8,
+          agentResults: [],
+          learnings: [],
+        } as SwarmResults);
+      this.collectSwarmLearnings(data.swarmId, results);
     });
   }
 
@@ -691,8 +717,15 @@ export class PersistentLearningSystem extends EventEmitter {
 
 // Supporting interfaces
 interface SwarmMemory {
+  readonly content: unknown;
+  readonly metadata: {
+    readonly source: string;
+    readonly confidence: number;
+    readonly expiry?: Date;
+    readonly tags: readonly string[];
+  };
   swarmId: string;
-  agentTypes: AgentType[];
+  agentTypes: readonly AgentType[];
   injectedKnowledge: any[];
   crossSwarmInsights?: CrossSwarmInsight[];
   createdAt: Date;
@@ -747,6 +780,7 @@ interface SwarmResults {
   efficiency: number;
   quality: number;
   agentResults: AgentResult[];
+  learnings: any[];
   insights?: Insight[];
 }
 

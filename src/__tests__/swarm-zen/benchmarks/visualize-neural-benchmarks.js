@@ -17,7 +17,7 @@ class BenchmarkVisualizer {
       process.cwd(),
       '.ruv-swarm',
       'benchmarks',
-      'neural-benchmark-1751398753060.json',
+      'neural-benchmark-1751398753060.json'
     );
     this.benchmarkData = JSON.parse(await fs.readFile(benchmarkPath, 'utf8'));
   }

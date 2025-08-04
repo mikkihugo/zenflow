@@ -426,12 +426,19 @@ export class FileBatchOperator {
       encoding?: BufferEncoding;
     }>
   ): FileOperation[] {
-    return files.map((file) => ({
-      type: 'write',
-      path: file.path,
-      content: file.content,
-      encoding: file.encoding,
-    }));
+    return files.map((file) => {
+      const operation: FileOperation = {
+        type: 'write',
+        path: file.path,
+        content: file.content,
+      };
+
+      if (file.encoding !== undefined) {
+        operation.encoding = file.encoding;
+      }
+
+      return operation;
+    });
   }
 
   /**

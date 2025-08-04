@@ -3,18 +3,59 @@
  * Placeholder classes for FACT system components until full implementation is available
  */
 
-import type {
-  FACTKnowledgeEntry,
-  FACTSearchQuery,
-  FACTStorageConfig,
-  FACTStorageStats,
-} from '@knowledge/storage-interface';
+// Placeholder types since the knowledge module may not exist yet
+interface FACTKnowledgeEntry {
+  id: string;
+  subject: string;
+  type: string;
+  content: string | object;
+  response?: string; // Add response property for lines 229, 352 in hive-fact-integration.ts
+  metadata: {
+    source: string;
+    timestamp: number;
+    [key: string]: any;
+  };
+  timestamp: number;
+  accessCount: number;
+  lastAccessed: number;
+  swarmAccess: Set<string>;
+}
+
+interface FACTSearchQuery {
+  query: string;
+  type?: string;
+  domains?: string[];
+  limit?: number;
+  sortBy?: 'relevance' | 'timestamp' | 'access_count';
+}
+
+interface FACTStorageConfig {
+  backend?: 'sqlite' | 'memory' | 'file';
+  maxCacheSize?: number;
+  defaultTTL?: number;
+  projectPath?: string;
+}
+
+interface FACTStorageStats {
+  memoryEntries: number;
+  persistentEntries: number;
+  totalMemorySize: number;
+  cacheHitRate: number;
+  oldestEntry: number;
+  newestEntry: number;
+  topDomains: string[];
+  storageHealth: 'excellent' | 'good' | 'fair' | 'poor';
+}
 
 /**
  * Placeholder FACT Storage System
  */
 export class FACTStorageSystem {
   private static instance: FACTStorageSystem | null = null;
+  private config: Partial<FACTStorageConfig>;
+  public executionTime: number = 0;
+  public template_id: string = 'fact-storage-template';
+  public content: string = 'FACT Storage System placeholder implementation';
   private mockStats: FACTStorageStats = {
     memoryEntries: 0,
     persistentEntries: 0,
@@ -28,6 +69,7 @@ export class FACTStorageSystem {
 
   constructor(config: Partial<FACTStorageConfig> = {}) {
     this.config = config;
+    this.executionTime = Date.now();
   }
 
   public static getInstance(): FACTStorageSystem | null {
@@ -54,9 +96,83 @@ export class FACTStorageSystem {
 
   async cleanup(): Promise<void> {}
 
-  async clearAll(): Promise<void> {
+  async clearAll(): Promise<{ executionTime: number; warnings?: string[] }> {
     this.mockStats.memoryEntries = 0;
     this.mockStats.persistentEntries = 0;
+    return {
+      executionTime: 50,
+      warnings: [],
+    };
+  }
+
+  // Add missing method: clearByQuality
+  async clearByQuality(
+    minQuality: number
+  ): Promise<{ executionTime: number; warnings?: string[] }> {
+    const entriesRemoved = Math.floor(this.mockStats.memoryEntries * (1 - minQuality));
+    this.mockStats.memoryEntries -= entriesRemoved;
+    return {
+      executionTime: 100,
+      warnings: entriesRemoved > 0 ? [] : ['No entries met quality threshold'],
+    };
+  }
+
+  // Add missing method: clearByAge
+  async clearByAge(maxAgeMs: number): Promise<{ executionTime: number; warnings?: string[] }> {
+    const cutoffTime = Date.now() - maxAgeMs;
+    const entriesRemoved = Math.floor(this.mockStats.memoryEntries * 0.3); // Mock 30% removal
+    this.mockStats.memoryEntries -= entriesRemoved;
+    return {
+      executionTime: 75,
+      warnings: entriesRemoved === 0 ? ['No entries older than specified age'] : [],
+    };
+  }
+
+  // Add missing method: clearMemoryCache
+  async clearMemoryCache(): Promise<{ executionTime: number; warnings?: string[] }> {
+    const memoryEntries = this.mockStats.memoryEntries;
+    this.mockStats.memoryEntries = 0;
+    this.mockStats.totalMemorySize = 0;
+    return {
+      executionTime: 25,
+      warnings: memoryEntries === 0 ? ['Memory cache was already empty'] : [],
+    };
+  }
+
+  // Add missing method: optimize
+  async optimize(config: {
+    strategy: string;
+    targetHitRate: number;
+    maxMemoryUsage: number;
+    autoTune: boolean;
+  }): Promise<{
+    executionTime: number;
+    optimizations: Array<{ description: string; impact: string }>;
+    recommendations: string[];
+  }> {
+    const optimizations = [
+      { description: 'Cache size optimization', impact: 'moderate' },
+      { description: 'Query index rebuild', impact: 'high' },
+      { description: 'Memory defragmentation', impact: 'low' },
+    ];
+
+    const recommendations = [];
+    if (this.mockStats.cacheHitRate < config.targetHitRate) {
+      recommendations.push('Consider increasing cache size');
+    }
+    if (config.autoTune) {
+      recommendations.push('Auto-tuning enabled - system will self-optimize');
+    }
+
+    // Simulate optimization improvements
+    this.mockStats.cacheHitRate = Math.min(0.95, this.mockStats.cacheHitRate + 0.1);
+    this.mockStats.storageHealth = 'excellent';
+
+    return {
+      executionTime: 200,
+      optimizations,
+      recommendations,
+    };
   }
 
   async shutdown(): Promise<void> {
@@ -166,9 +282,13 @@ export class KnowledgeSwarm {
  */
 export class ProjectContextAnalyzer {
   public projectPath: string;
+  public executionTime: number = 0;
+  public template_id: string = 'project-analyzer-template';
+  public content: string = 'Project Context Analyzer placeholder';
 
   constructor(projectPath: string) {
     this.projectPath = projectPath;
+    this.executionTime = Date.now();
   }
 
   async initialize(): Promise<void> {}
@@ -198,5 +318,34 @@ export class ProjectContextAnalyzer {
         'Implement better logging system',
       ],
     };
+  }
+}
+
+/**
+ * Placeholder FACT WASM Module
+ */
+export class FACTWasmModule {
+  public executionTime: number = 0;
+  public template_id: string = 'fact-wasm-template';
+  public content: string = 'FACT WASM Module placeholder';
+
+  constructor() {
+    this.executionTime = Date.now();
+  }
+
+  async initialize(): Promise<void> {
+    // Placeholder initialization
+  }
+
+  async processData(_data: any): Promise<any> {
+    return {
+      processed: true,
+      timestamp: Date.now(),
+      data: _data,
+    };
+  }
+
+  async shutdown(): Promise<void> {
+    // Placeholder shutdown
   }
 }

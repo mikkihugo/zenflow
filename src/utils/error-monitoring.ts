@@ -4,7 +4,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../di/tokens/core-tokens';
+import type { ILogger } from '../core/logger';
 
 export interface ErrorContext {
   component: string;
@@ -73,8 +73,8 @@ export class ErrorMonitoring extends EventEmitter {
     const errorContext: ErrorContext = {
       component: context.component || 'unknown',
       operation: context.operation || 'unknown',
-      userId: context.userId,
-      sessionId: context.sessionId,
+      ...(context.userId !== undefined && { userId: context.userId }),
+      ...(context.sessionId !== undefined && { sessionId: context.sessionId }),
       metadata: context.metadata || {},
       stackTrace: error.stack,
       timestamp: new Date(),
@@ -128,7 +128,7 @@ export class ErrorMonitoring extends EventEmitter {
     const allErrors: ErrorContext[] = [];
     const sinceTime = since?.getTime() || 0;
 
-    for (const [key, errors] of this.errors) {
+    for (const [key, errors] of Array.from(this.errors)) {
       if (key.startsWith(`${component}:`)) {
         const filteredErrors = errors.filter((e) => e.timestamp.getTime() >= sinceTime);
         allErrors.push(...filteredErrors);
@@ -154,11 +154,13 @@ export class ErrorMonitoring extends EventEmitter {
     const daily: number[] = Array(7).fill(0);
     const components: Record<string, number> = {};
 
-    for (const [key, errors] of this.errors) {
+    for (const [key, errors] of Array.from(this.errors)) {
       if (component && !key.startsWith(`${component}:`)) continue;
 
       const componentName = key.split(':')[0];
-      components[componentName] = (components[componentName] || 0) + errors.length;
+      if (componentName) {
+        components[componentName] = (components[componentName] || 0) + errors.length;
+      }
 
       for (const error of errors) {
         const errorTime = error.timestamp.getTime();
@@ -182,7 +184,7 @@ export class ErrorMonitoring extends EventEmitter {
     const cutoff = Date.now() - maxAge;
     let cleared = 0;
 
-    for (const [key, errors] of this.errors) {
+    for (const [key, errors] of Array.from(this.errors)) {
       const filtered = errors.filter((e) => e.timestamp.getTime() > cutoff);
       cleared += errors.length - filtered.length;
 
@@ -213,7 +215,7 @@ export class ErrorMonitoring extends EventEmitter {
 
     // Find top errors
     const errorCounts = new Map<string, { count: number; component: string }>();
-    for (const [key, errors] of this.errors) {
+    for (const [key, errors] of Array.from(this.errors)) {
       const [component, _errorType] = key.split(':');
       const recentErrors = errors.filter((e) => Date.now() - e.timestamp.getTime() <= timeWindow);
 
@@ -264,14 +266,14 @@ export class ErrorMonitoring extends EventEmitter {
     // Calculate error rate (errors per minute over last hour)
     const oneHourAgo = Date.now() - 60 * 60 * 1000;
     let recentErrors = 0;
-    for (const errors of this.errors.values()) {
+    for (const errors of Array.from(this.errors.values())) {
       recentErrors += errors.filter((e) => e.timestamp.getTime() > oneHourAgo).length;
     }
     this.metrics.errorRate = recentErrors / 60; // errors per minute
   }
 
   private checkPatterns(error: Error, context: ErrorContext): void {
-    for (const pattern of this.patterns.values()) {
+    for (const pattern of Array.from(this.patterns.values())) {
       if (this.matchesPattern(error, context, pattern)) {
         const recentMatches = this.countRecentMatches(pattern);
 
@@ -297,7 +299,7 @@ export class ErrorMonitoring extends EventEmitter {
     const cutoff = Date.now() - pattern.timeWindow;
     let count = 0;
 
-    for (const errors of this.errors.values()) {
+    for (const errors of Array.from(this.errors.values())) {
       for (const error of errors) {
         if (error.timestamp.getTime() > cutoff) {
           // Simulate pattern matching (would use actual error data)
@@ -402,11 +404,8 @@ export class ErrorMonitoring extends EventEmitter {
     this.monitoringInterval = setInterval(
       () => {
         this.clearOldErrors();
-        this.updateMetrics(new Error('periodic-update'), {
-          component: 'monitoring',
-          operation: 'periodic-update',
-          timestamp: new Date(),
-        });
+        // Just clear old errors during periodic monitoring
+        // Don't record artificial errors for metrics
       },
       5 * 60 * 1000
     ); // Every 5 minutes

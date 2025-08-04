@@ -12,12 +12,11 @@ async function testDirectSwarmIntegration() {
   try {
     const orchestrator = SwarmOrchestrator.getInstance();
     await orchestrator.initialize();
-    const swarmId = await orchestrator.initializeSwarm({
+    const _swarmId = await orchestrator.initializeSwarm({
       topology: 'hierarchical',
       maxAgents: 5,
       strategy: 'parallel',
     });
-    console.log(`🐝 Test swarm initialized with ID: ${swarmId}`);
     const agents = [];
 
     const agentTypes = [
@@ -45,16 +44,13 @@ async function testDirectSwarmIntegration() {
       const taskId = await orchestrator.orchestrateTask(taskConfig);
       tasks.push(taskId);
     }
-    const status = await orchestrator.getSwarmStatus();
-    console.log(`📊 Initial swarm status:`, status);
-    
-    const monitoring = await orchestrator.startMonitoring(5); // 5 seconds
-    console.log(`📈 Monitoring started:`, monitoring);
+    const _status = await orchestrator.getSwarmStatus();
+
+    const _monitoring = await orchestrator.startMonitoring(5); // 5 seconds
 
     // Wait a bit to see monitoring in action
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    const finalStatus = await orchestrator.getSwarmStatus();
-    console.log(`📊 Final swarm status:`, finalStatus);
+    const _finalStatus = await orchestrator.getSwarmStatus();
 
     return true;
   } catch (error) {

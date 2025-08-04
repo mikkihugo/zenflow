@@ -134,8 +134,5 @@ export function createContainerBuilder(): DIContainerBuilder {
   return new DIContainerBuilder();
 }
 
-// Export integration examples
-export {
-  CompleteSystemIntegration,
-  runCompleteIntegration,
-} from './examples/complete-system-integration';
+// Note: Integration examples are available in ./examples/ directory
+// Import them directly when needed to avoid circular dependencies

@@ -45,6 +45,13 @@ export class SessionMemoryStore extends EventEmitter {
   private cache = new Map<string, CacheEntry>();
   private cacheKeys: string[] = [];
 
+  // TODO: Use dependency injection for backend creation
+  // Instead of using BackendFactory.create(), inject the backend via constructor
+  // Example:
+  // constructor(
+  //   @inject(MEMORY_TOKENS.Backend) private backend: BackendInterface,
+  //   @inject(MEMORY_TOKENS.Config) options: SessionMemoryStoreOptions
+  // ) {
   constructor(options: SessionMemoryStoreOptions) {
     super();
 
@@ -57,6 +64,7 @@ export class SessionMemoryStore extends EventEmitter {
       vectorDimensions: options.vectorDimensions ?? 512,
     };
 
+    // TODO: Replace with injected backend instance
     this.backend = BackendFactory.create(this.options.backendConfig);
   }
 

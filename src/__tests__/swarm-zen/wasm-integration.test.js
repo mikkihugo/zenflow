@@ -18,7 +18,7 @@ const __dirname = dirname(__filename);
 function _assertApprox(actual, expected, tolerance = 0.01) {
   assert(
     Math.abs(actual - expected) < tolerance,
-    `Expected ${actual} to be approximately ${expected} (tolerance: ${tolerance})`,
+    `Expected ${actual} to be approximately ${expected} (tolerance: ${tolerance})`
   );
 }
 
@@ -102,7 +102,7 @@ class WasmIntegrationTests {
     assert(coreModule, 'Core module should load');
     assert(
       coreModule.exports || coreModule.isPlaceholder,
-      'Core module should have exports or be placeholder',
+      'Core module should have exports or be placeholder'
     );
 
     // Test 4: Module status
@@ -262,13 +262,11 @@ class WasmIntegrationTests {
     // Test 4: Collaborative learning setup
     const network2 = await nnManager.createAgentNeuralNetwork('test-agent-2');
     assert(network2, 'Second neural network should be created successfully');
-    console.log(`🧠 Second neural network created for agent: test-agent-2`);
-    
+
     const session = await nnManager.enableCollaborativeLearning(['test-agent-1', 'test-agent-2'], {
       strategy: 'federated',
     });
     assert(session.id, 'Collaborative session should have ID');
-    console.log(`🤝 Collaborative learning session started: ${session.id}`);
   }
 
   async testMCPTools() {
@@ -358,7 +356,7 @@ class WasmIntegrationTests {
         this.ruvSwarm.createSwarm({
           name: `perf-swarm-${i}`,
           maxAgents: 10,
-        }),
+        })
       );
       swarmTimes.push(time);
     }

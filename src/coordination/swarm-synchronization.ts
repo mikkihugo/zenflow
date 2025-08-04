@@ -211,7 +211,7 @@ export class SwarmSynchronizer extends EventEmitter {
       syncId,
       sourceSwarmId: this.swarmId,
       state: localState,
-      timestamp: Date.now(),
+      timestamp: new Date(),
     });
   }
 
@@ -405,7 +405,7 @@ export class SwarmSynchronizer extends EventEmitter {
         syncId: data.syncId,
         sourceSwarmId: this.swarmId,
         state: this.gatherLocalState(),
-        timestamp: Date.now(),
+        timestamp: new Date(),
       });
     }
   }

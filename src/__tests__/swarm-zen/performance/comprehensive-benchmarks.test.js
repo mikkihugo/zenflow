@@ -154,7 +154,7 @@ describe('Comprehensive Performance Benchmarks', () => {
         const agents = await Promise.all(
           Array(batchSize)
             .fill(null)
-            .map((_, i) => swarm.spawn({ type: ['researcher', 'coder', 'analyst'][i % 3] })),
+            .map((_, i) => swarm.spawn({ type: ['researcher', 'coder', 'analyst'][i % 3] }))
         );
         const time = performance.now() - start;
 
@@ -181,7 +181,7 @@ describe('Comprehensive Performance Benchmarks', () => {
       const agents = await Promise.all(
         Array(10)
           .fill(null)
-          .map(() => swarm.spawn({ type: 'researcher' })),
+          .map(() => swarm.spawn({ type: 'researcher' }))
       );
 
       const messageCount = 1000;
@@ -462,7 +462,7 @@ describe('Comprehensive Performance Benchmarks', () => {
               { units: 50, activation: 'relu' },
               { units: 10, activation: 'softmax' },
             ],
-          }),
+          })
         );
       }
 
@@ -491,7 +491,7 @@ describe('Comprehensive Performance Benchmarks', () => {
         await Promise.all(
           Array(size)
             .fill(null)
-            .map(() => swarm.spawn({ type: 'analyst' })),
+            .map(() => swarm.spawn({ type: 'analyst' }))
         );
 
         // Create tasks
@@ -539,7 +539,7 @@ describe('Comprehensive Performance Benchmarks', () => {
         const _agents = await Promise.all(
           Array(10)
             .fill(null)
-            .map(() => swarm.spawn({ type: 'researcher' })),
+            .map(() => swarm.spawn({ type: 'researcher' }))
         );
 
         // Measure broadcast performance

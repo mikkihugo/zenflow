@@ -7,21 +7,16 @@
 
 import { nanoid } from 'nanoid';
 import type {
+  ArchitecturalPattern,
+  ArchitecturalValidation,
   ArchitectureDesign,
   ArchitectureEngine,
-  ArchitecturePattern,
-  ArchitectureValidation,
-  ComponentInterface,
-  ComponentRelationship,
-  DataFlow,
-  DeploymentStrategy,
-  IntegrationPoint,
-  PerformanceRequirement,
+  Component,
+  DataFlowConnection,
   PseudocodeStructure,
   QualityAttribute,
   ScalabilityRequirement,
   SecurityRequirement,
-  SystemComponent,
   ValidationResult,
 } from '../../types/sparc-types';
 
@@ -38,18 +33,23 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
 
     return {
       id: nanoid(),
-      pseudocodeId: pseudocode.id,
+      systemArchitecture: {
+        components,
+        interfaces: [],
+        dataFlow: [],
+        deploymentUnits: [],
+        qualityAttributes: [],
+        architecturalPatterns: [],
+        technologyStack: [],
+      },
+      componentDiagrams: [],
+      dataFlow: [],
+      deploymentPlan: [],
+      validationResults: [],
       components,
-      relationships,
-      patterns,
-      interfaces,
-      dataFlows,
-      qualityAttributes: await this.defineQualityAttributes(pseudocode),
-      deploymentStrategy: await this.createDeploymentStrategy(components, patterns),
-      integrationPoints: await this.identifyIntegrationPoints(components),
-      performanceRequirements: await this.extractPerformanceRequirements(pseudocode),
       securityRequirements: await this.defineSecurityRequirements(components),
       scalabilityRequirements: await this.defineScalabilityRequirements(pseudocode),
+      qualityAttributes: await this.defineQualityAttributes(pseudocode),
       createdAt: new Date(),
       updatedAt: new Date(),
     };

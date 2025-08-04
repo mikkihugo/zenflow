@@ -169,16 +169,14 @@ class BuildMonitor {
           const buildResult = await this.runBuild();
 
           if (buildResult.errorCount < this.errorCount) {
-            const reduction = this.errorCount - buildResult.errorCount;
-            console.log(`✅ Build improved: ${reduction} fewer errors`);
+            const _reduction = this.errorCount - buildResult.errorCount;
             // Update baseline
             this.errorCount = buildResult.errorCount;
             // Store progress and alert swarm
             await this.storeProgress(buildResult);
             await this.alertSwarm(buildResult);
           } else if (buildResult.errorCount > this.errorCount) {
-            const increase = buildResult.errorCount - this.errorCount;
-            console.log(`❌ Build regressed: ${increase} more errors`);
+            const _increase = buildResult.errorCount - this.errorCount;
             // Alert swarm of regression
             await this.alertRegression(buildResult);
           }
@@ -248,15 +246,13 @@ class BuildMonitor {
 
   /** Certifies alpha readiness when zero errors achieved */
   private async certifyAlphaReady(): Promise<void> {
-    const certification: AlphaCertification = {
+    const _certification: AlphaCertification = {
       timestamp: new Date().toISOString(),
       status: 'ALPHA_READY',
       errorCount: 0,
       buildSuccess: true,
       verifiedBy: 'Build-Verifier-Agent',
     };
-
-    console.log('🎉 ALPHA CERTIFICATION ACHIEVED!');
 
     try {
       await execAsync(

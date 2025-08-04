@@ -3,7 +3,7 @@
  * Predictive capacity modeling with connection tracking
  */
 
-import type { ILoadBalancingAlgorithm } from '../interfaces';
+import type { LoadBalancingAlgorithm } from '../interfaces';
 import type { Agent, LoadMetrics, RoutingResult, Task } from '../types';
 
 interface ConnectionState {
@@ -17,7 +17,7 @@ interface ConnectionState {
   lastCapacityUpdate: Date;
 }
 
-export class LeastConnectionsAlgorithm implements ILoadBalancingAlgorithm {
+export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   public readonly name = 'least_connections';
 
   private connectionStates: Map<string, ConnectionState> = new Map();

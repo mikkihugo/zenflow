@@ -3,7 +3,7 @@
  * Intelligent matching of tasks to suitable agents based on capabilities and performance
  */
 
-import type { ICapacityManager } from '../interfaces';
+import type { CapacityManager } from '../interfaces';
 import type { Agent, Task } from '../types';
 
 interface MatchingScore {
@@ -21,7 +21,7 @@ export class TaskAgentMatcher {
   public async findCandidates(
     task: Task,
     availableAgents: Agent[],
-    capacityManager: ICapacityManager
+    capacityManager: CapacityManager
   ): Promise<Agent[]> {
     const matchingScores: MatchingScore[] = [];
 
@@ -45,7 +45,7 @@ export class TaskAgentMatcher {
   private async calculateMatchingScore(
     task: Task,
     agent: Agent,
-    capacityManager: ICapacityManager
+    capacityManager: CapacityManager
   ): Promise<MatchingScore> {
     // Calculate capability match
     const capabilityMatch = this.calculateCapabilityMatch(task, agent);

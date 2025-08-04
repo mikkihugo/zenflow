@@ -6,7 +6,7 @@
  * Renamed from TUIMode to reflect actual responsibility.
  */
 
-import { Box, useInput } from 'ink';
+import { Box, Text, useInput } from 'ink';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import { ErrorMessage, SwarmSpinner, type SwarmStatus } from './components/index';
@@ -68,16 +68,6 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
     agents: [],
     tasks: [],
   });
-
-  // Initialize TUI on mount
-  useEffect(() => {
-    initializeTUI();
-
-    // Set up auto-refresh for real-time updates
-    const refreshInterval = setInterval(updateState, 3000);
-
-    return () => clearInterval(refreshInterval);
-  }, [initializeTUI, updateState]);
 
   const initializeTUI = async () => {
     try {
@@ -225,6 +215,16 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
       },
     }));
   };
+
+  // Initialize TUI on mount
+  useEffect(() => {
+    initializeTUI();
+
+    // Set up auto-refresh for real-time updates
+    const refreshInterval = setInterval(updateState, 3000);
+
+    return () => clearInterval(refreshInterval);
+  }, []);
 
   // Global keyboard shortcuts
   useInput((_input, key) => {

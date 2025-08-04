@@ -40,6 +40,10 @@ export interface BackendInterface {
   listNamespaces(): Promise<string[]>;
   getStats(): Promise<BackendStats>;
   healthCheck?(): Promise<{ status: string; score: number; issues: string[]; lastCheck: Date }>;
+
+  // Aliases for compatibility
+  get(key: string, namespace?: string): Promise<JSONValue | null>;
+  set(key: string, value: JSONValue, namespace?: string): Promise<StorageResult>;
 }
 
 export abstract class MemoryBackend implements BackendInterface {
@@ -56,6 +60,15 @@ export abstract class MemoryBackend implements BackendInterface {
   abstract delete(key: string, namespace?: string): Promise<boolean>;
   abstract listNamespaces(): Promise<string[]>;
   abstract getStats(): Promise<BackendStats>;
+
+  // Alias implementations
+  async get(key: string, namespace?: string): Promise<JSONValue | null> {
+    return this.retrieve(key, namespace);
+  }
+
+  async set(key: string, value: JSONValue, namespace?: string): Promise<StorageResult> {
+    return this.store(key, value, namespace);
+  }
 
   async healthCheck() {
     return {

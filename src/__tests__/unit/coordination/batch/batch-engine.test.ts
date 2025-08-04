@@ -383,13 +383,6 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
       const batchSummary = await batchEngine.executeBatch(correctPatternOps);
       const totalBatchTime = Date.now() - batchStart;
 
-      // The batch approach should be significantly faster
-      // This demonstrates why claude-zen's rule is important
-      console.log(`⏱️ Performance comparison:
-        Sequential: ${totalSequentialTime}ms (${successCount} operations)
-        Batch: ${totalBatchTime}ms (${batchSummary.successfulOperations} operations)
-        Speed improvement: ${(totalSequentialTime / totalBatchTime).toFixed(2)}x`);
-      
       expect(batchSummary.speedImprovement).toBeGreaterThan(1.0);
       expect(batchSummary.totalOperations).toBe(3);
       expect(batchSummary.successfulOperations).toBe(3);

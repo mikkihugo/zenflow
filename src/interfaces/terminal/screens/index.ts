@@ -4,6 +4,8 @@
  * Exports all screen components for the unified terminal interface.
  */
 
+// Re-export SwarmStatus from components for convenience
+export type { SwarmStatus } from '../components/index';
 // Main screens
 export * from './main-menu';
 // Re-export key screens for convenience
@@ -14,7 +16,6 @@ export {
   type MenuItem,
 } from './main-menu';
 export * from './swarm-dashboard';
-
 export {
   type SwarmAgent,
   SwarmDashboard,

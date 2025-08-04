@@ -1278,12 +1278,12 @@ class CognitivePatternEvolution {
       const agentData = this.agentPatterns.get(agentId);
       if (agentData) {
         totalPatterns += agentData.activePatterns.length;
-        
+
         // Calculate growth score based on evolution success rate and pattern complexity
         const successRate = metrics.successfulEvolutions / Math.max(1, metrics.totalEvolutions);
         const complexityBonus = agentData.activePatterns.length * 0.1;
         const agentGrowthScore = successRate * (1 + complexityBonus);
-        
+
         totalGrowthScore += agentGrowthScore;
         agentsWithGrowth++;
       }

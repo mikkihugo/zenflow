@@ -6,9 +6,9 @@
  */
 
 import { useEffect, useState } from 'react';
-import { createSimpleLogger } from '../../../core/logger';
+import { createLogger } from '../../../core/logger';
 
-const logger = createSimpleLogger('ConfigHook');
+const logger = createLogger({ prefix: 'ConfigHook' });
 
 export interface TerminalConfig {
   theme: 'dark' | 'light';
@@ -69,7 +69,7 @@ export const useConfig = (): UseConfigReturn => {
   // Load configuration on mount
   useEffect(() => {
     loadConfig();
-  }, [loadConfig]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadConfig = async () => {
     try {

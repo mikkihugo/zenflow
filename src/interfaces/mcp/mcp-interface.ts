@@ -6,7 +6,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger } from '../../utils/logger';
+import { createLogger } from './mcp-logger';
 
 const logger = createLogger('MCPInterface');
 

@@ -22,5 +22,6 @@ export * from './models/index';
 // Neural Bridge (main interface)
 export * from './neural-bridge';
 export { NeuralBridge as default } from './neural-bridge';
-// WASM integration
-export * from './wasm/index';
+// Public API for external access
+export * from './public-api';
+// Note: WASM internals are not exported directly - use public-api instead

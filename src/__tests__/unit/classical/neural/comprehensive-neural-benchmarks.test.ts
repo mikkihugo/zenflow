@@ -730,7 +730,7 @@ async function measureTrainingBenchmark(
       totalOperations: metrics.totalOperations,
       averageOperationTime: metrics.averageOperationTime,
       peakMemoryUsage: metrics.peakMemoryUsage,
-      gcCollections: metrics.gcCollections
+      gcCollections: metrics.gcCollections,
     },
     metadata: {
       epochs: config.epochs,

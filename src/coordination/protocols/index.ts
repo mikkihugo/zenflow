@@ -39,7 +39,6 @@ export {
   type AgentTemplate,
   type HealthStatus,
   type LifecycleMetrics,
-  type PerformanceMetrics,
   type ScalingDecision,
   type SpawnRequest,
   type SpawnResult,
@@ -104,7 +103,7 @@ import { TaskDistributionEngine } from './distribution/task-distribution-engine'
 import { AgentLifecycleManager } from './lifecycle/agent-lifecycle-manager';
 import { PerformanceOptimizer } from './optimization/performance-optimizer';
 import { CoordinationPatterns } from './patterns/coordination-patterns';
-import { TopologyManager } from './topology/topology-manager';
+import { TopologyManager, type TopologyType } from './topology/topology-manager';
 
 export interface AdvancedCoordinationConfig {
   nodeId: string;

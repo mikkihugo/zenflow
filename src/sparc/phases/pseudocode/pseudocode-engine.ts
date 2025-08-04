@@ -14,6 +14,7 @@ import type {
   DetailedSpecification,
   OptimizationOpportunity,
   PerformanceTarget,
+  Priority,
   ProcessFlow,
   PseudocodeEngine,
   PseudocodeStructure,
@@ -560,18 +561,21 @@ END
     return [
       {
         metric: 'throughput',
-        target: '10000 operations/second',
-        measurement: 'ops/sec',
+        target: 10000,
+        unit: 'ops/sec',
+        priority: 'HIGH' as Priority,
       },
       {
         metric: 'latency',
-        target: '<100ms average response time',
-        measurement: 'milliseconds',
+        target: 100,
+        unit: 'milliseconds',
+        priority: 'HIGH' as Priority,
       },
       {
         metric: 'memory_usage',
-        target: '<1GB peak memory consumption',
-        measurement: 'bytes',
+        target: 1000000000,
+        unit: 'bytes',
+        priority: 'MEDIUM' as Priority,
       },
     ];
   }

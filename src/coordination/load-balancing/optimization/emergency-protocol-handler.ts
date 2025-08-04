@@ -4,7 +4,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEmergencyHandler } from '../interfaces';
+import type { EmergencyHandler } from '../interfaces';
 
 interface EmergencyProtocol {
   name: string;
@@ -19,7 +19,7 @@ interface EmergencyAction {
   timeout: number;
 }
 
-export class EmergencyProtocolHandler extends EventEmitter implements IEmergencyHandler {
+export class EmergencyProtocolHandler extends EventEmitter implements EmergencyHandler {
   private activeProtocols: Map<string, EmergencyProtocol> = new Map();
   private emergencyHistory: Array<{
     timestamp: Date;
