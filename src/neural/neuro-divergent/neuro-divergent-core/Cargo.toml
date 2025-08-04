@@ -29,7 +29,7 @@ anyhow = "1.0"
 
 # Data structures and processing
 ndarray = "0.15"
-polars = { version = "0.35", features = ["lazy", "temporal", "csv", "parquet", "json"] }
+polars = { version = "0.43", features = ["lazy", "temporal", "csv", "parquet", "json"] }
 
 # Parallel processing
 rayon = "1.8"
