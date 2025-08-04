@@ -47,7 +47,7 @@ export { WorkflowEngine } from './workflow-engine';
 export { ApplicationCoordinator } from './application-coordinator'; // Legacy - use CoreSystem
 // Keep these for backward compatibility during transition
 export { DocumentDrivenSystem } from './document-driven-system'; // Legacy - use DocumentProcessor
-export { UnifiedMemorySystem as MemoryCoordinator } from './memory-coordinator'; // Legacy - use MemorySystem
+export { MemoryCoordinator } from './memory-coordinator'; // Legacy - use MemorySystem
 
 // ==================== SHARED UTILITIES ====================
 
@@ -58,7 +58,7 @@ export type {
   CrossReference as DocumentLink,
 } from './documentation-linker';
 // Legacy unified systems (still exported but deprecated)
-export { UnifiedDocumentationLinker as DocumentationLinker } from './documentation-linker';
+export { DocumentationLinker } from './documentation-linker';
 // Error handling
 export {
   BaseClaudeZenError,
@@ -72,6 +72,7 @@ export {
 } from './errors';
 // Core utilities
 export { EventBus } from './event-bus';
+// ExportManager already exported above as UnifiedExportSystem
 // Export utilities (legacy)
 export type {
   ExportConfig,

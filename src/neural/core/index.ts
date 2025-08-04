@@ -14,6 +14,51 @@ export { NeuralCLI as LegacyNeuralCLI } from './neural'; // Renamed to avoid con
 export { NeuralNetworkJS } from './neural-network';
 // Neural network manager (JavaScript)
 export { NeuralNetworkManager } from './neural-network-manager';
+// Export from network module
+export {
+  ACTIVATION_FUNCTIONS,
+  ActivationFunctions,
+  AgentNetworkConfig,
+  AgentNeuralManager,
+  COGNITIVE_PATTERNS,
+  CascadeConfig,
+  CascadeTrainer,
+  CognitiveState,
+  LayerConfig,
+  NetworkConfig,
+  NetworkInfo,
+  NeuralNetwork,
+  NeuralTrainer,
+  TRAINING_ALGORITHMS,
+  TrainingConfig,
+  TrainingDataConfig,
+  TrainingResult,
+  createAgentNeuralManager,
+  createNeuralNetwork,
+  createTrainer,
+  initializeNeuralWasm,
+} from './network';
+
+// Export from neural module (avoid duplicates with neural-core)
+export { neuralCLI } from './neural';
+
+// Export from neural-core module (primary source)
+export {
+  NeuralCLI,
+  PATTERN_MEMORY_CONFIG,
+  type PatternType,
+  type NeuralConfig,
+  type ModelMetadata,
+  type TrainingResults,
+  type PersistenceInfo,
+  type PatternData,
+  type WeightsExport,
+} from './neural-core';
+
+// Export from neural-network module
+export * from './neural-network';
+
+// Export from neural-network-manager module - already exported above
 
 // Core utilities
 export const NeuralCoreUtils = {

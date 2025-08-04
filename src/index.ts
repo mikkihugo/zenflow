@@ -37,10 +37,7 @@ export * as Workflows from './workflows/index';
 // INTERFACE SYSTEMS
 // =============================================================================
 
-// REST API Layer - Clean separation following Google standards
-export * as API from './interfaces/api/index';
-
-// Interface Systems (includes CLI, Web, TUI, MCP)
+// Interface Systems (includes API, CLI, Web, TUI, MCP)
 export * as Interfaces from './interfaces/index';
 
 // =============================================================================
@@ -83,21 +80,47 @@ export * as Integration from './integration/index';
  */
 
 // =============================================================================
-// COORDINATION SYSTEMS (excluding excluded directories)
+// SWARM AND COORDINATION SYSTEMS
 // =============================================================================
 
-// Core coordination (excluding hive-mind, maestro, orchestration)
-export * as Coordination from './coordination/index';
-export * from './coordination/mcp/types/mcp-types';
+// Core MCP integration
+export * from './coordination/mcp/claude-zen-server';
+export * from './coordination/mcp/tools/swarm-tools';
+// Export specific types from mcp-types to avoid conflicts
+export {
+  type MCPServer,
+  type MCPRequest,
+  type MCPResponse,
+  type MCPTool,
+  type MCPToolCall,
+  // SwarmAgent, SwarmStatus, SwarmTask will come from types/index
+} from './coordination/mcp/types/mcp-types';
 // Swarm-zen integration (use public API instead of direct core access)
-export * from './coordination/public-api';
+export {
+  // Export specific items to avoid conflicts
+  SwarmOrchestrator,
+  createSwarm,
+  // SwarmConfig and SwarmState will come from types/index
+} from './coordination/public-api';
+
 // Utils and core services
 export * from './core/logger';
+
 // Terminal Interface (CLI and TUI unified)
 export * from './interfaces/terminal';
-export * from './neural/agents/neural-agent';
+
+// Neural agent exports (avoid NeuralNetwork and Task conflicts)
+export {
+  NeuralAgent,
+  createNeuralAgent,
+  type NeuralAgentConfig,
+  type NeuralAgentState,
+} from './neural/agents/neural-agent';
+
 // Neural network integration
 export * from './neural/neural-bridge';
+
+// Types - main source of shared types
 export * from './types/index';
 
 /**
@@ -209,16 +232,18 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
 
   // Initialize stdio MCP only if explicitly enabled (for temporary Claude Code coordination)
   if (finalConfig.mcp.stdio.enabled) {
-    const { StdioMcpServer } = await import('./coordination/mcp/mcp-server');
-    const stdioMcpServer = new StdioMcpServer();
+    const { MCPServer } = await import('./coordination/mcp/mcp-server');
+    const stdioMcpServer = new MCPServer();
     await stdioMcpServer.start();
   }
 
-  // Initialize SwarmOrchestrator
-  const { SwarmOrchestrator } = await import(
-    './coordination/hive-mind/integration/SwarmOrchestrator'
-  );
-  const orchestrator = SwarmOrchestrator.getInstance();
+  // Initialize SwarmOrchestrator from public API
+  const { SwarmOrchestrator } = await import('./coordination/public-api');
+  const orchestrator = new SwarmOrchestrator({
+    topology: finalConfig.swarm.topology,
+    maxAgents: finalConfig.swarm.maxAgents,
+    strategy: finalConfig.swarm.strategy,
+  });
   await orchestrator.initialize();
 
   // Initialize neural bridge if enabled
@@ -246,12 +271,8 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
  * Shutdown Claude-Zen system gracefully
  */
 export async function shutdownClaudeZen(): Promise<void> {
-  // Shutdown orchestrator
-  const { SwarmOrchestrator } = await import(
-    './coordination/hive-mind/integration/SwarmOrchestrator'
-  );
-  const orchestrator = SwarmOrchestrator.getInstance();
-  await orchestrator.shutdown();
+  // Shutdown functionality is handled per-component
+  // TODO: Implement proper shutdown orchestration
 }
 
 /**
@@ -291,7 +312,8 @@ export function getVersion() {
 // =============================================================================
 
 export default {
-  initialize,
+  initializeClaudeZen,
+  shutdownClaudeZen,
   healthCheck,
   getVersion,
   Core,

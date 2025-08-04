@@ -126,6 +126,10 @@ class SwarmError extends ZenSwarmError {
  * Agent-related errors
  */
 class AgentError extends ZenSwarmError {
+  agentId: string | null;
+  agentType: string | null;
+  operation: string | null;
+
   constructor(message, agentId = null, agentType = null, operation = null) {
     const details = { agentId, agentType, operation };
     super(message, 'AGENT_ERROR', details);
@@ -403,6 +407,9 @@ class ResourceError extends ZenSwarmError {
  * Concurrency/threading errors
  */
 class ConcurrencyError extends ZenSwarmError {
+  operation: string | null;
+  conflictType: string | null;
+
   constructor(message, operation = null, conflictType = null) {
     const details = { operation, conflictType };
     super(message, 'CONCURRENCY_ERROR', details);

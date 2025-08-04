@@ -222,7 +222,7 @@ export class PersistentLearningSystem extends EventEmitter {
 
     // Broadcast knowledge to swarm
     this.eventBus.emit('swarm:knowledge:inject', {
-      id: `knowledge-inject-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `swarm-knowledge-inject-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       version: '1.0.0',
       swarmId,
       knowledgeType: 'patterns',

@@ -7,11 +7,27 @@
 
 import { EventEmitter } from 'node:events';
 import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
-import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
+import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader.js';
 import { AgentPool, type BaseAgent } from '../../agents/agent';
 import { getContainer } from './singleton-container';
-import type { SwarmEventEmitter, SwarmOptions, SwarmState } from './types';
+import type { SwarmEventEmitter, SwarmOptions, SwarmLifecycleState } from './types';
 import { generateId, validateSwarmOptions } from './utils';
+
+// Extended options for internal use
+interface ExtendedSwarmOptions extends SwarmOptions {
+  persistence: {
+    enabled: boolean;
+    dbPath: string;
+    checkpointInterval: number;
+    compressionEnabled: boolean;
+  };
+  pooling: {
+    enabled: boolean;
+    maxPoolSize: number;
+    minPoolSize: number;
+    idleTimeout: number;
+  };
+}
 
 /**
  * Core ZenSwarm implementation with all base functionality
@@ -19,19 +35,45 @@ import { generateId, validateSwarmOptions } from './utils';
 export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
   private swarmId: string;
   private agents: Map<string, BaseAgent> = new Map();
-  private state: SwarmState = 'idle';
+  private state: SwarmLifecycleState = 'initializing';
   private persistence?: SwarmPersistencePooled;
   private agentPool?: AgentPool;
   private wasmLoader: WasmModuleLoader;
-  private options: Required<SwarmOptions>;
+  private options: ExtendedSwarmOptions;
   private metrics: any;
   private neuralProcessor: any;
-  private isRunning: boolean;
+  private isRunning: boolean = false;
 
   constructor(options: SwarmOptions = {}) {
     super();
 
-    this.options = validateSwarmOptions(options);
+    // Validate options and merge with defaults
+    const errors = validateSwarmOptions(options);
+    if (errors.length > 0) {
+      throw new Error(`Invalid swarm options: ${errors.join(', ')}`);
+    }
+
+    this.options = {
+      topology: 'mesh',
+      maxAgents: 10,
+      connectionDensity: 0.5,
+      syncInterval: 5000,
+      wasmPath: './neural_fann_bg.wasm',
+      ...options,
+      persistence: {
+        enabled: false,
+        dbPath: './swarm-state.db',
+        checkpointInterval: 30000,
+        compressionEnabled: true,
+      },
+      pooling: {
+        enabled: false,
+        maxPoolSize: 10,
+        minPoolSize: 2,
+        idleTimeout: 300000,
+      },
+    } as ExtendedSwarmOptions;
+    
     this.swarmId = generateId('swarm');
     this.wasmLoader = getContainer().get(WasmModuleLoader) || new WasmModuleLoader();
     this.isRunning = false;
@@ -57,13 +99,9 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
 
     // Initialize persistence if enabled
     if (this.options.persistence.enabled) {
-      this.persistence = new SwarmPersistencePooled({
-        dbPath: this.options.persistence.dbPath || './swarm-state.db',
-        checkpointInterval: this.options.persistence.checkpointInterval || 30000,
-        compressionEnabled: this.options.persistence.compressionEnabled ?? true,
-        usePooledConnections: true,
-        maxConnections: this.options.pooling?.maxPoolSize || 10,
-      });
+      this.persistence = new SwarmPersistencePooled(
+        this.options.persistence.dbPath || './swarm-state.db'
+      );
       await this.persistence.initialize();
     }
 
@@ -80,7 +118,7 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
       this.agentPool = new AgentPool();
     }
 
-    this.state = 'initialized';
+    this.state = 'active';
     this.emit('swarm:initialized', { swarmId: this.swarmId });
   }
 
@@ -88,7 +126,7 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
     return this.swarmId;
   }
 
-  getState(): SwarmState {
+  getState(): SwarmLifecycleState {
     return this.state;
   }
 
@@ -104,12 +142,13 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
 
     // Clean up persistence
     if (this.persistence) {
-      await this.persistence.shutdown();
+      await this.persistence.close();
     }
 
     // Clean up agent pool
     if (this.agentPool) {
-      await this.agentPool.shutdown();
+      // AgentPool doesn't have a shutdown method yet
+      this.agentPool = undefined;
     }
 
     this.emit('swarm:shutdown', { swarmId: this.swarmId });

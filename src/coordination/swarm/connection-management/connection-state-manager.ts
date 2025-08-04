@@ -14,50 +14,53 @@
  */
 
 import { EventEmitter } from 'node:events';
-// Note: These imports might need to be created or replaced with actual modules
-// import { ErrorFactory } from './errors';
-// import { Logger } from './logger';
-// import { generateId } from './utils';
+import { spawn } from 'node:child_process';
 
-// Temporary implementations for missing modules
-const ErrorFactory = {
-  createError: (type: string, message: string) => new Error(`${type}: ${message}`)
-};
+// Helper functions and classes moved inline to avoid missing imports
+const generateId = (prefix: string) => `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-const Logger = {
-  info: (message: string, data?: any) => console.log(message, data),
-  error: (message: string, data?: any) => console.error(message, data),
-  debug: (message: string, data?: any) => console.debug(message, data),
-  warn: (message: string, data?: any) => console.warn(message, data),
-};
+// Simple logger implementation
+class Logger {
+  constructor(options: any) {
+    this.name = options.name;
+  }
+  name: string;
+  info(msg: string, ...args: any[]) { console.log(`[INFO] ${this.name}:`, msg, ...args); }
+  error(msg: string, ...args: any[]) { console.error(`[ERROR] ${this.name}:`, msg, ...args); }
+  warn(msg: string, ...args: any[]) { console.warn(`[WARN] ${this.name}:`, msg, ...args); }
+  debug(msg: string, ...args: any[]) { console.debug(`[DEBUG] ${this.name}:`, msg, ...args); }
+}
 
-const generateId = (prefix: string = 'id') => `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+// Simple error factory
+class ErrorFactory {
+  static createError(type: string, message: string, context?: any): Error {
+    const error = new Error(message);
+    (error as any).type = type;
+    (error as any).context = context;
+    return error;
+  }
+}
 
 export class ConnectionStateManager extends EventEmitter {
-  private options: any;
-  private logger: any;
-  private connections: Map<string, any>;
-  private connectionStats: any;
-  private connectionPool: Map<string, any>;
-  private healthCheckers: Map<string, any>;
-  private retryHandlers: Map<string, any>;
-  private fallbackHandlers: Map<string, any>;
-  private persistenceBackend: any;
-  private connectionHealth: Map<string, any>;
-  private reconnectTimers: Map<string, any>;
-  private fallbackConnections: Map<string, any>;
-  private isInitialized: boolean;
-  private metadata: any;
-  private currentState: any;
-  private stateHistory: any[];
-  private metrics: any;
-  private isShuttingDown: boolean;
-  private activeConnections: number;
-  private stats: any;
-  private persistence: any;
-  private healthMonitor: any;
-  private recoveryWorkflows: any;
-  private healthMonitorInterval: any;
+  options: any;
+  connections: Map<string, any>;
+  connectionStats: Map<string, any>;
+  healthChecks: Map<string, any>;
+  persistenceManager: any;
+  fallbackManager: any;
+  logger: Logger;
+  connectionHealth: Map<string, any>;
+  reconnectTimers: Map<string, any>;
+  fallbackConnections: Map<string, any>;
+  isInitialized: boolean;
+  isShuttingDown: boolean;
+  connectionPool: any[];
+  activeConnections: number;
+  stats: any;
+  persistence: any;
+  healthMonitor: any;
+  recoveryWorkflows: any;
+  healthMonitorInterval: any;
 
   constructor(options: any = {}) {
     super();
@@ -74,7 +77,11 @@ export class ConnectionStateManager extends EventEmitter {
       ...options,
     };
 
-    this.logger = Logger;
+    this.logger = new Logger({
+      name: 'connection-state-manager',
+      level: process.env.LOG_LEVEL || 'INFO',
+      metadata: { component: 'connection-state-manager' },
+    });
 
     // Connection state
     this.connections = new Map();
@@ -85,7 +92,7 @@ export class ConnectionStateManager extends EventEmitter {
     // State tracking
     this.isInitialized = false;
     this.isShuttingDown = false;
-    this.connectionPool = new Map();
+    this.connectionPool = [];
     this.activeConnections = 0;
 
     // Statistics
@@ -127,12 +134,13 @@ export class ConnectionStateManager extends EventEmitter {
     } catch (error) {
       const managerError = ErrorFactory.createError(
         'resource',
-        `Failed to initialize connection state manager: ${error.message}`
+        'Failed to initialize connection state manager',
+        {
+          error: error.message,
+          component: 'connection-state-manager',
+        }
       );
-      this.logger.error('Connection State Manager initialization failed', {
-        error: error.message,
-        component: 'connection-state-manager',
-      });
+      this.logger.error('Connection State Manager initialization failed', managerError);
       throw managerError;
     }
   }
@@ -157,7 +165,7 @@ export class ConnectionStateManager extends EventEmitter {
       lastConnected: null,
       lastDisconnected: null,
       reconnectAttempts: 0,
-      error: null,
+      error: null as Error | null,
       health: {
         status: 'unknown',
         lastCheck: null,
@@ -297,7 +305,7 @@ export class ConnectionStateManager extends EventEmitter {
   /**
    * Establish stdio-based MCP connection
    */
-  async establishStdioConnection(connection): Promise<void> {
+  async establishStdioConnection(connection) {
     const { spawn } = await import('node:child_process');
 
     const config = connection.config;
@@ -308,23 +316,23 @@ export class ConnectionStateManager extends EventEmitter {
       throw new Error('Command is required for stdio connection');
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(new Error('Connection timeout'));
       }, this.options.connectionTimeout);
 
       try {
-        const process = spawn(command, args, {
+        const childProcess = spawn(command, args, {
           stdio: ['pipe', 'pipe', 'pipe'],
           env: { ...process.env, ...config.env },
         });
 
-        process.on('spawn', () => {
+        childProcess.on('spawn', () => {
           clearTimeout(timeout);
-          connection.process = process;
-          connection.stdin = process.stdin;
-          connection.stdout = process.stdout;
-          connection.stderr = process.stderr;
+          connection.process = childProcess;
+          connection.stdin = childProcess.stdin;
+          connection.stdout = childProcess.stdout;
+          connection.stderr = childProcess.stderr;
 
           // Set up message handling
           this.setupMessageHandling(connection);
@@ -332,12 +340,12 @@ export class ConnectionStateManager extends EventEmitter {
           resolve();
         });
 
-        process.on('error', (error) => {
+        childProcess.on('error', (error) => {
           clearTimeout(timeout);
           reject(new Error(`Failed to spawn process: ${error.message}`));
         });
 
-        process.on('exit', (code, signal) => {
+        childProcess.on('exit', (code, signal) => {
           this.handleConnectionClosed(connection.id, code, signal);
         });
       } catch (error) {
@@ -350,7 +358,7 @@ export class ConnectionStateManager extends EventEmitter {
   /**
    * Establish WebSocket-based MCP connection
    */
-  async establishWebSocketConnection(connection): Promise<void> {
+  async establishWebSocketConnection(connection) {
     const WebSocket = await import('ws').then((m) => m.default);
 
     const config = connection.config;
@@ -360,7 +368,7 @@ export class ConnectionStateManager extends EventEmitter {
       throw new Error('URL is required for WebSocket connection');
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(new Error('WebSocket connection timeout'));
       }, this.options.connectionTimeout);
@@ -405,20 +413,32 @@ export class ConnectionStateManager extends EventEmitter {
     }
 
     // Test connection with a simple request
-    const response = await fetch(`${baseUrl}/health`, {
-      method: 'GET',
-      timeout: this.options.connectionTimeout,
-      headers: config.headers || {},
-    });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.options.connectionTimeout);
+    
+    try {
+      const response = await fetch(`${baseUrl}/health`, {
+        method: 'GET',
+        signal: controller.signal,
+        headers: config.headers || {},
+      });
+      clearTimeout(timeoutId);
 
-    if (!response.ok) {
-      throw new Error(`HTTP connection test failed: ${response.status} ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`HTTP connection test failed: ${response.status} ${response.statusText}`);
+      }
+    } catch (error: any) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw new Error(`HTTP connection test timed out after ${this.options.connectionTimeout}ms`);
+      }
+      throw error;
     }
 
     connection.http = {
       baseUrl,
       headers: config.headers || {},
-      fetch: (endpoint, options: any = {}) => {
+      fetch: (endpoint: string, options: any = {}) => {
         return fetch(`${baseUrl}${endpoint}`, {
           ...options,
           headers: { ...connection.http.headers, ...(options.headers || {}) },
@@ -952,7 +972,6 @@ export class ConnectionStateManager extends EventEmitter {
           lastConnected: row.last_connected ? new Date(row.last_connected) : null,
           lastDisconnected: row.last_disconnected ? new Date(row.last_disconnected) : null,
           reconnectAttempts: row.reconnect_attempts,
-          error: null,
           health: {
             status: 'unknown',
             lastCheck: null,

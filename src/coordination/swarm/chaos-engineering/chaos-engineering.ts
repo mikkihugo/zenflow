@@ -221,9 +221,9 @@ export class ChaosEngineering extends EventEmitter {
       experimentId: experiment.id,
       status: 'running',
       startTime: new Date(startTime),
-      endTime: undefined as Date | undefined,
-      duration: undefined as number | undefined,
-      error: undefined as string | undefined,
+      endTime: null as Date | null,
+      duration: 0,
+      error: null as Error | null,
       parameters: { ...experiment.parameters, ...overrideParams },
       phases: [],
       currentPhase: 'preparation',
@@ -352,9 +352,9 @@ export class ChaosEngineering extends EventEmitter {
       name: phaseName,
       status: 'running',
       startTime: new Date(phaseStartTime),
-      endTime: undefined as Date | undefined,
-      duration: undefined as number | undefined,
-      error: undefined as string | undefined,
+      endTime: null as Date | null,
+      duration: 0,
+      error: null as Error | null,
     };
 
     try {
@@ -468,7 +468,7 @@ export class ChaosEngineering extends EventEmitter {
 
     const impactMetrics = {
       startTime: new Date(monitoringStartTime),
-      endTime: undefined as Date | undefined,
+      endTime: null as Date | null,
       metrics: [],
       alerts: [],
       recoveryAttempts: [],
@@ -688,7 +688,7 @@ export class ChaosEngineering extends EventEmitter {
     if (this.connectionManager) {
       const connectionStatus = this.connectionManager.getConnectionStatus();
       const failedConnections = Object.values(connectionStatus.connections).filter(
-        (conn: any) => conn.status === 'failed'
+        (conn: any) => conn && conn.status === 'failed'
       ).length;
 
       if (failedConnections > 0) {

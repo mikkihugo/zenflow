@@ -1138,7 +1138,7 @@ EOF
       }
     }
 
-    return { duration: 5000, requiresAgent: false };
+    return { duration: 5000, requiresAgent: false, agentType: null };
   }
 
   generateSessionSummary() {
