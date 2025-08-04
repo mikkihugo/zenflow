@@ -79,7 +79,7 @@ console_error_panic_hook = "0.1"
 # Override tokio for WASM to exclude net features
 tokio = { version = "1.35", features = ["rt", "sync", "time"], default-features = false }
 wgpu = { version = "0.19", features = ["webgl"] }
-getrandom = { version = "0.2", features = ["js"] }
+getrandom = { version = "0.3", features = ["js"] }
 
 # Native GPU support
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
