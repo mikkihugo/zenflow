@@ -25,7 +25,7 @@ polars = { version = "0.35", features = ["lazy", "temporal", "csv", "parquet"], 
 
 # Mathematical operations
 ndarray = { version = "0.15", features = ["rayon"] }
-nalgebra = { version = "0.32", optional = true }
+nalgebra = { version = "0.34", optional = true }
 
 # Parallel processing
 rayon = { version = "1.8", optional = true }
