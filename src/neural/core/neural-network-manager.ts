@@ -23,9 +23,27 @@ import {
 } from './neural-models/presets/index';
 
 class NeuralNetworkManager {
-  constructor(wasmLoader) {
+  private wasmLoader: any;
+  private neuralNetworks: Map<string, any>;
+  private neuralModels: Map<string, any>;
+  private cognitiveEvolution: CognitivePatternEvolution;
+  private metaLearning: MetaLearningFramework;
+  private coordinationProtocol: NeuralCoordinationProtocol;
+  private daaCognition: DAACognition;
+  private cognitivePatternSelector: CognitivePatternSelector;
+  private neuralAdaptationEngine: NeuralAdaptationEngine;
+  private sharedKnowledge: Map<string, any>;
+  private agentInteractions: Map<string, any>;
+  private collaborativeMemory: Map<string, any>;
+  private performanceMetrics: Map<string, any>;
+  private adaptiveOptimization: boolean;
+  private federatedLearningEnabled: boolean;
+  private templates: any;
+
+  constructor(wasmLoader: any) {
     this.wasmLoader = wasmLoader;
     this.neuralNetworks = new Map();
+    this.neuralModels = new Map(); // Add missing property
 
     // Enhanced capabilities
     this.cognitiveEvolution = new CognitivePatternEvolution();

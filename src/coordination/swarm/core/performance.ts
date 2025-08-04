@@ -4,7 +4,7 @@
  */
 
 import { promises as fs } from 'node:fs';
-import { ZenSwarm } from './index-enhanced';
+import { ZenSwarm } from './index-complete';
 
 class PerformanceCLI {
   constructor() {

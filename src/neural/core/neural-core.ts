@@ -183,12 +183,14 @@ export class NeuralCLI {
   async initialize(config: NeuralConfig = {}): Promise<any> {
     if (!this.ruvSwarm) {
       // TODO: Replace with proper ZenSwarm import after coordination restructure
-      const { ZenSwarm } = await import('../../swarm-zen/index-enhanced.js');
-      this.ruvSwarm = await ZenSwarm.initialize({
-        enableNeuralNetworks: true,
-        loadingStrategy: 'progressive',
-        ...config,
-      });
+      // const { ZenSwarm } = await import('../../coordination/swarm/core/index-complete.js');
+      // this.ruvSwarm = await ZenSwarm.initialize({
+      //   enableNeuralNetworks: true,
+      //   loadingStrategy: 'progressive',
+      //   ...config,
+      // });
+      // Temporarily disabled until swarm restructure is complete
+      this.ruvSwarm = null;
     }
     return this.ruvSwarm;
   }

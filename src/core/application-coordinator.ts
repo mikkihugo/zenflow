@@ -13,7 +13,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { MemoryManager } from '../memory/manager';
+import { MemoryManager } from '../memory/index';
 import { MemoryManager as EnhancedMemory } from '../memory/memory';
 import { DocumentDrivenSystem } from './document-driven-system';
 import { DocumentationLinker } from './documentation-linker';

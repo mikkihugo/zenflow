@@ -38,7 +38,7 @@ export * as Workflows from './workflows/index';
 // =============================================================================
 
 // REST API Layer - Clean separation following Google standards
-export * as API from './api/index';
+export * as API from './interfaces/api/index';
 
 // Interface Systems (includes CLI, Web, TUI, MCP)
 export * as Interfaces from './interfaces/index';
@@ -82,17 +82,12 @@ export * as Integration from './integration/index';
  * Unified entry point for all claude-zen components
  */
 
-// Hive Mind and Swarm Orchestration
-export * from './coordination/hive-mind/core/Agent';
-export * from './coordination/hive-mind/core/HiveMind';
-export * from './coordination/hive-mind/integration/ConsensusEngine';
-export * from './coordination/hive-mind/integration/SwarmOrchestrator';
-// Maestro coordination
-export * from './coordination/maestro/maestro-orchestrator';
-export * from './coordination/maestro/maestro-swarm-coordinator';
-// Core MCP integration
-export * from './coordination/mcp/claude-zen-server';
-export * from './coordination/mcp/tools/swarm-tools';
+// =============================================================================
+// COORDINATION SYSTEMS (excluding excluded directories)
+// =============================================================================
+
+// Core coordination (excluding hive-mind, maestro, orchestration)
+export * as Coordination from './coordination/index';
 export * from './coordination/mcp/types/mcp-types';
 // Swarm-zen integration (use public API instead of direct core access)
 export * from './coordination/public-api';

@@ -5,7 +5,7 @@
  * Enables AI assistants to coordinate SPARC projects and execute phases.
  */
 
-import type { Tool } from '@modelcontextprotocol/sdk/types';
+import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { SPARCEngineCore } from '../core/sparc-engine';
 import type {
   ComplexityLevel,

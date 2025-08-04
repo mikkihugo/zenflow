@@ -1,7 +1,7 @@
 import { config } from '../config';
 import { HTTPMCPServer as MCPServer } from '../interfaces/mcp';
 import { TerminalManager } from '../interfaces/terminal';
-import { MemoryManager } from '../memory/manager';
+import { MemoryManager } from '../memory/index';
 import type { CoordinationProvider } from '../types/shared-types';
 import { EventBus } from './event-bus';
 import { createLogger } from './logger';

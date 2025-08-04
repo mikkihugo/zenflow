@@ -38,7 +38,7 @@ export type {
   WorkflowDefinition,
   WorkflowEngineConfig,
   WorkflowState,
-} from './workflow-engine';
+} from '../types/workflow-types';
 // Core processing engines
 export { WorkflowEngine } from './workflow-engine';
 
@@ -48,20 +48,17 @@ export { ApplicationCoordinator } from './application-coordinator'; // Legacy - 
 // Keep these for backward compatibility during transition
 export { DocumentDrivenSystem } from './document-driven-system'; // Legacy - use DocumentProcessor
 export { UnifiedMemorySystem as MemoryCoordinator } from './memory-coordinator'; // Legacy - use MemorySystem
-export { WorkflowEngine } from './workflow-engine'; // Legacy name kept
 
 // ==================== SHARED UTILITIES ====================
 
-export { ProductWorkflowEngine } from '../coordination/orchestration/product-workflow-engine';
-// Types (re-export for convenience)
-export type * from '../types/shared-types';
+// Types (re-export for convenience) - removed wildcard export to avoid conflicts
 // Documentation utilities (legacy)
 export type {
   DocumentationIndex as DocumentIndex,
   CrossReference as DocumentLink,
 } from './documentation-linker';
 // Legacy unified systems (still exported but deprecated)
-export { DocumentationLinker, DocumentationLinker } from './documentation-linker';
+export { UnifiedDocumentationLinker as DocumentationLinker } from './documentation-linker';
 // Error handling
 export {
   BaseClaudeZenError,
@@ -75,11 +72,10 @@ export {
 } from './errors';
 // Core utilities
 export { EventBus } from './event-bus';
-export { ExportManager } from './export-manager'; // Use ExportManager
 // Export utilities (legacy)
 export type {
   ExportConfig,
-  ExportResult,
+  ExportResult as LegacyExportResult,
 } from './exporters';
 export { ExportSystem, ExportUtils } from './exporters';
 export * from './helpers';

@@ -7,7 +7,11 @@
  * Base error class for all ruv-swarm MCP errors
  */
 class ZenSwarmError extends Error {
-  constructor(message, code = 'GENERAL_ERROR', details = {}) {
+  public code: string;
+  public details: any;
+  public timestamp: string;
+
+  constructor(message: string, code = 'GENERAL_ERROR', details = {}) {
     super(message);
     this.name = this.constructor.name;
     this.code = code;
@@ -43,7 +47,11 @@ class ZenSwarmError extends Error {
  * Validation errors for input parameters
  */
 class ValidationError extends ZenSwarmError {
-  constructor(message, field = null, value = null, expectedType = null) {
+  public field: string | null;
+  public value: any;
+  public expectedType: string | null;
+
+  constructor(message: string, field: string | null = null, value: any = null, expectedType: string | null = null) {
     const details = {
       field,
       value: typeof value === 'object' ? JSON.stringify(value) : value,

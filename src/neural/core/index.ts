@@ -4,13 +4,16 @@
  * Central export point for core neural network functionality
  */
 
-export * from './network';
-export * from './neural';
-// Core neural components
-export * from './neural-core';
-export * from './neural-network';
+// Core neural components (explicit exports to avoid conflicts)
+export { NeuralNetwork } from './network';
+export { ActivationFunction, LayerType } from './network';
+export { NeuralCore } from './neural-core';
+export { neuralCLI as NeuralCoreCLI } from './neural-core'; // Renamed to avoid conflict
+export { Neural } from './neural';
+export { NeuralCLI as LegacyNeuralCLI } from './neural'; // Renamed to avoid conflict  
+export { NeuralNetworkJS } from './neural-network';
 // Neural network manager (JavaScript)
-export * from './neural-network-manager';
+export { NeuralNetworkManager } from './neural-network-manager';
 
 // Core utilities
 export const NeuralCoreUtils = {

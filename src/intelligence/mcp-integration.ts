@@ -4,7 +4,7 @@
  * MCP tools that integrate ag2.ai conversation framework with existing intelligence domain
  */
 
-import type { Tool } from '@modelcontextprotocol/sdk/types';
+import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { ConversationFramework } from './conversation-framework/index';
 import { ConversationMCPToolsFactory } from './conversation-framework/mcp-tools';
 
