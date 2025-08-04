@@ -89,7 +89,7 @@ vulkano = { version = "0.34", optional = true }
 
 [dev-dependencies]
 # Benchmarking
-criterion = { version = "0.5", features = ["html_reports"] }
+criterion = { version = "0.7", features = ["html_reports"] }
 
 # Property-based testing
 proptest = "1.4"
