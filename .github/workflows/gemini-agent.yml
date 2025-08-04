@@ -6,14 +6,94 @@ on:
 
 jobs:
   gemini_agent:
-    if: github.event.comment.body.includes('@gemini')
+    if: contains(github.event.comment.body, '@gemini')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Gemini CLI Action
-        uses: google-gemini/gemini-cli-action@v1
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          api-key: ${{ secrets.GEMINI_API_KEY }}
-          prompt: ${{ github.event.comment.body }}
+          python-version: '3.11'
+
+      - name: Install Google AI SDK
+        run: |
+          pip install google-generativeai
+
+      - name: Run Gemini Response
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python3 << 'EOF'
+          import os
+          import google.generativeai as genai
+          import json
+          
+          # Configure Gemini
+          api_key = os.environ.get('GEMINI_API_KEY')
+          if not api_key:
+              print("❌ GEMINI_API_KEY not configured")
+              exit(1)
+              
+          genai.configure(api_key=api_key)
+          model = genai.GenerativeModel('gemini-1.5-flash')
+          
+          # Get comment content
+          comment_body = """${{ github.event.comment.body }}"""
+          issue_title = """${{ github.event.issue.title }}"""
+          issue_body = """${{ github.event.issue.body }}"""
+          
+          # Create context-aware prompt
+          prompt = f"""
+          You are Gemini AI assisting with the claude-code-zen repository.
+          
+          Issue Context:
+          Title: {issue_title}
+          Description: {issue_body}
+          
+          User Comment: {comment_body}
+          
+          Please provide a helpful response regarding this GitHub issue. Focus on:
+          - Technical analysis of the problem
+          - Specific implementation suggestions
+          - Code examples if relevant
+          - Integration with existing codebase
+          
+          Keep responses concise but comprehensive.
+          """
+          
+          try:
+              response = model.generate_content(prompt)
+              print("## 🤖 Gemini AI Response")
+              print()
+              print(response.text)
+          except Exception as e:
+              print(f"❌ Error generating response: {e}")
+              exit(1)
+          EOF
+
+      - name: Comment on Issue
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            // Get the response from the previous step's output
+            // For now, we'll create a simple response
+            const response = `## 🤖 Gemini AI Response
+            
+            I've been triggered by the @gemini mention. Currently setting up the full response system.
+            
+            **Issue**: ${context.payload.issue.title}
+            **Comment**: ${context.payload.comment.body}
+            
+            This is a basic response while the full Gemini integration is being configured.`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: response
+            });
