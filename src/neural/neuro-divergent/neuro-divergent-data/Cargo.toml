@@ -43,7 +43,7 @@ rayon = { version = "1.7", optional = true }
 thiserror = "2.0"
 
 # Random number generation
-rand = "0.8"
+rand = "0.9"
 rand_distr = "0.4"
 
 # Data format support
