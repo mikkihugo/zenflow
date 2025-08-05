@@ -11,13 +11,13 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { DatabaseDrivenSystem } from '../../core/database-driven-system';
-import { createLogger } from '../../core/logger';
+import type { DatabaseDrivenSystem } from '../core/database-driven-system';
+import { createLogger } from '../core/logger';
 import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
-} from '../../database/entities/product-entities';
-import type { DocumentService } from '../../database/services/document-service';
+} from '../database/entities/product-entities';
+import type { DocumentService } from '../database/services/document-service';
 import type { SPARCSwarmCoordinator, SPARCTask } from './swarm/core/sparc-swarm-coordinator';
 
 const logger = createLogger('DatabaseSPARCBridge');
@@ -243,7 +243,7 @@ class DatabaseSPARCBridge extends EventEmitter {
     // Update document with SPARC implementation details
     const updatedDocument = {
       ...document,
-      status: result.status === 'completed' ? 'completed' : 'failed',
+      status: result.status === 'completed' ? 'approved' as const : 'draft' as const,
       completion_percentage:
         result.status === 'completed' ? 100 : result.status === 'partial' ? 75 : 0,
       workflow_stage: 'sparc-completed',

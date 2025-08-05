@@ -17,7 +17,7 @@ import type { AgentType } from '../../../types/agent-types';
 import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
-} from '../../database/entities/product-entities';
+} from '../database/entities/product-entities';
 import type { SPARCPhase } from '../sparc/types/sparc-types';
 import { type SwarmAgent, SwarmCoordinator, type SwarmMetrics } from './swarm-coordinator';
 
@@ -247,7 +247,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
     // Use specification agents to analyze requirements
     for (const agent of agents) {
-      if (agent.type === 'BusinessAnalyst' || agent.type === 'RequirementsAnalyst') {
+      if (agent.type === 'analyst' || agent.type === 'requirements_analyst') {
         await this.assignTaskToAgent(agent.id, {
           id: `spec-${sparcTask.id}-${agent.id}`,
           type: 'specification',
@@ -273,7 +273,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
     // Use algorithm and design agents
     for (const agent of agents) {
-      if (agent.type === 'AlgorithmDesigner' || agent.type === 'SoftwareArchitect') {
+      if (agent.type === 'design-architect' || agent.type === 'system-architect') {
         await this.assignTaskToAgent(agent.id, {
           id: `pseudo-${sparcTask.id}-${agent.id}`,
           type: 'pseudocode',
@@ -301,7 +301,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
     // Use architecture and system design agents
     for (const agent of agents) {
-      if (agent.type === 'SoftwareArchitect' || agent.type === 'SystemsArchitect') {
+      if (agent.type === 'system-architect' || agent.type === 'architect') {
         await this.assignTaskToAgent(agent.id, {
           id: `arch-${sparcTask.id}-${agent.id}`,
           type: 'architecture',
@@ -402,8 +402,8 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   private getPhaseSpecialists(phase: SPARCPhase): AgentType[] {
     const specialists: Record<SPARCPhase, AgentType[]> = {
       specification: ['BusinessAnalyst', 'RequirementsAnalyst', 'ProductManager'],
-      pseudocode: ['AlgorithmDesigner', 'SoftwareArchitect', 'LogicSpecialist'],
-      architecture: ['SoftwareArchitect', 'SystemsArchitect', 'DataArchitect'],
+      pseudocode: ['design-architect', 'system-architect', 'coder'],
+      architecture: ['system-architect', 'architect', 'database-architect'],
       refinement: ['CodeReviewer', 'QualityAssuranceSpecialist', 'PerformanceOptimizer'],
       completion: ['TestingSpecialist', 'DeploymentSpecialist', 'ValidationSpecialist'],
     };
@@ -621,5 +621,17 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
       errorRate: 0,
       uptime: 0,
     };
+  }
+
+  /**
+   * Assign a task to a specific agent
+   */
+  private async assignTaskToAgent(agentId: string, task: any): Promise<void> {
+    // This is a placeholder implementation
+    // In a real implementation, this would use the agent communication system
+    logger.debug(`Assigning task ${task.id} to agent ${agentId}`);
+    
+    // Mock successful task assignment
+    return Promise.resolve();
   }
 }

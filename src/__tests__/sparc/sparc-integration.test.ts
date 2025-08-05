@@ -661,7 +661,7 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
 
   describe('🚨 Error Handling and Edge Cases', () => {
     it('should handle invalid project specifications gracefully', async () => {
-      const invalidSpecs = [
+      const invalidSpecs: any[] = [
         { name: '', domain: 'swarm-coordination', complexity: 'simple', requirements: [] },
         {
           name: 'Test',
@@ -672,7 +672,7 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
         {
           name: 'Test',
           domain: 'swarm-coordination',
-          complexity: 'complex' as any,
+          complexity: 'invalid-complexity' as any,
           requirements: ['test'],
         },
       ];

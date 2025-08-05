@@ -35,9 +35,11 @@ export class SPARCSwarmIntegrationExample {
   private taskCoordinator: TaskCoordinator;
 
   constructor() {
-    // Initialize core systems
-    const documentService = new DocumentService();
-    const workflowEngine = new WorkflowEngine();
+    // Initialize core systems with required dependencies
+    const mockCoordinator = {} as any; // Mock for database coordinator
+    const documentService = new DocumentService(mockCoordinator);
+    const mockMemory = {} as any; // Mock for unified memory system
+    const workflowEngine = new WorkflowEngine(mockMemory, documentService);
 
     this.databaseSystem = new DatabaseDrivenSystem(documentService, workflowEngine);
     this.sparcSwarm = new SPARCSwarmCoordinator();
@@ -219,7 +221,7 @@ export class SPARCSwarmIntegrationExample {
         
         The system should be scalable, fault-tolerant, and provide comprehensive monitoring.
       `,
-      subagent_type: 'SystemsArchitect',
+      subagent_type: 'system-architect',
       use_sparc_methodology: true,
       priority: 'high',
       source_document: feature,
@@ -312,4 +314,4 @@ export async function runSPARCSwarmIntegrationExample(): Promise<void> {
 }
 
 // Export for CLI usage
-export { SPARCSwarmIntegrationExample };
+// SPARCSwarmIntegrationExample is already exported above at line 31

@@ -304,9 +304,9 @@ async function testEndToEndFlow() {
       constraints: [
         {
           id: 'const-e2e-001',
-          type: 'performance',
+          type: 'performance' as const,
           description: 'Must process within time limits',
-          impact: 'high'
+          impact: 'high' as const
         }
       ],
       assumptions: [],
