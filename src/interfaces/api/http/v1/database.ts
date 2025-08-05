@@ -1,614 +1,509 @@
 /**
- * Database API v1 Routes
+ * Database API v1 Routes - Enhanced with Full DI Integration
  *
- * REST API routes for database and persistence domain.
+ * REST API routes for database operations using full DI-enabled DatabaseController.
+ * Features authentication, rate limiting, and complete dependency injection.
  * Following Google API Design Guide standards.
  *
- * @fileoverview Database and persistence domain API routes
+ * @fileoverview Enhanced Database REST API routes with full DI integration
  */
 
 import { type Request, type Response, Router } from 'express';
-import { asyncHandler } from '../middleware/errors';
-import { LogLevel, log, logPerformance } from '../middleware/logging';
+import { asyncHandler, createValidationError, createInternalError } from '../middleware/errors';
+import { authMiddleware, optionalAuthMiddleware, hasPermission } from '../middleware/auth';
+import { 
+  lightOperationsLimiter, 
+  mediumOperationsLimiter, 
+  heavyOperationsLimiter, 
+  adminOperationsLimiter,
+  rateLimitInfoMiddleware 
+} from '../middleware/rate-limit';
+import { getDatabaseController, checkDatabaseContainerHealth } from '../di/database-container';
+import { log, LogLevel, logPerformance } from '../middleware/logging';
+
+// Import interfaces from the simplified database controller  
+import type {
+  QueryRequest,
+  CommandRequest,
+  BatchRequest,
+  MigrationRequest,
+  DatabaseResponse,
+  DatabaseHealthStatus
+} from '../di/database-container';
 
 /**
- * Create database management routes
- * All database endpoints under /api/v1/database
+ * Get DI-enabled database controller instance
+ */
+function getDatabaseControllerInstance() {
+  try {
+    return getDatabaseController();
+  } catch (error) {
+    throw createInternalError(`Failed to initialize database controller: ${error.message}`);
+  }
+}
+
+/**
+ * Input validation middleware
+ */
+function validateQueryRequest(req: Request): QueryRequest {
+  const { sql, params, options } = req.body;
+  
+  if (!sql || typeof sql !== 'string') {
+    throw createValidationError('sql', sql, 'SQL query is required and must be a string');
+  }
+  
+  return {
+    sql: sql.trim(),
+    params: Array.isArray(params) ? params : [],
+    options: options || {}
+  };
+}
+
+function validateCommandRequest(req: Request): CommandRequest {
+  const { sql, params, options } = req.body;
+  
+  if (!sql || typeof sql !== 'string') {
+    throw createValidationError('sql', sql, 'SQL command is required and must be a string');
+  }
+  
+  return {
+    sql: sql.trim(),
+    params: Array.isArray(params) ? params : [],
+    options: options || {}
+  };
+}
+
+function validateBatchRequest(req: Request): BatchRequest {
+  const { operations, useTransaction, continueOnError } = req.body;
+  
+  if (!Array.isArray(operations) || operations.length === 0) {
+    throw createValidationError('operations', operations, 'Operations array is required and must not be empty');
+  }
+  
+  // Validate each operation
+  for (let index = 0; index < operations.length; index++) {
+    const operation = operations[index];
+    if (!operation.type || !['query', 'execute'].includes(operation.type)) {
+      throw createValidationError(`operations[${index}].type`, operation.type, "Type must be 'query' or 'execute'");
+    }
+    if (!operation.sql || typeof operation.sql !== 'string') {
+      throw createValidationError(`operations[${index}].sql`, operation.sql, 'SQL is required and must be a string');
+    }
+  }
+  
+  return {
+    operations,
+    useTransaction: Boolean(useTransaction),
+    continueOnError: Boolean(continueOnError)
+  };
+}
+
+function validateMigrationRequest(req: Request): MigrationRequest {
+  const { statements, version, description, dryRun } = req.body;
+  
+  if (!Array.isArray(statements) || statements.length === 0) {
+    throw createValidationError('statements', statements, 'Statements array is required and must not be empty');
+  }
+  
+  if (!version || typeof version !== 'string') {
+    throw createValidationError('version', version, 'Version is required and must be a string');
+  }
+  
+  return {
+    statements,
+    version,
+    description,
+    dryRun: Boolean(dryRun)
+  };
+}
+
+/**
+ * Permission check for database operations
+ */
+function checkDatabasePermission(req: Request, operation: 'read' | 'write' | 'admin'): void {
+  const permissionMap = {
+    read: 'database:read',
+    write: 'database:write', 
+    admin: 'database:admin'
+  };
+  
+  const requiredPermission = permissionMap[operation];
+  if (!hasPermission(req, requiredPermission)) {
+    throw createValidationError('permission', operation, `Insufficient permissions for ${operation} operations`);
+  }
+}
+
+/**
+ * Create database management routes with enhanced features
+ * All database endpoints under /api/v1/database with authentication and rate limiting
  */
 export const createDatabaseRoutes = (): Router => {
   const router = Router();
 
-  // ===== DATABASE CONNECTION MANAGEMENT =====
+  // Add rate limit info to all responses
+  router.use(rateLimitInfoMiddleware);
+
+  // ===== ENHANCED DATABASE REST API ENDPOINTS =====
 
   /**
-   * GET /api/v1/database/connections
-   * List database connections
+   * GET /api/v1/database/status
+   * Get comprehensive database status and health information
+   * Rate limited as light operation, requires read permission
    */
   router.get(
-    '/connections',
+    '/status',
+    lightOperationsLimiter, // Light rate limiting
+    optionalAuthMiddleware, // Optional auth for monitoring
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.DEBUG, 'Listing database connections', req);
-
-      // Placeholder - would list actual database connections
-      const result = {
-        connections: [
-          {
-            id: 'lancedb-main',
-            type: 'vector',
-            engine: 'lancedb',
-            status: 'connected',
-            host: 'localhost',
-            database: 'claude_flow_vectors',
-            collections: 15,
-            documents: 125000,
-            created: new Date().toISOString(),
-          },
-          {
-            id: 'kuzu-graph',
-            type: 'graph',
-            engine: 'kuzu',
-            status: 'connected',
-            host: 'localhost',
-            database: 'claude_flow_graph',
-            nodes: 45000,
-            edges: 180000,
-            created: new Date().toISOString(),
-          },
-          {
-            id: 'postgres-main',
-            type: 'relational',
-            engine: 'postgresql',
-            status: 'connected',
-            host: 'localhost',
-            database: 'claude_flow',
-            tables: 25,
-            records: 500000,
-            created: new Date().toISOString(),
-          },
-        ],
-        total: 3,
-      };
-
-      res.json(result);
-    })
-  );
-
-  /**
-   * POST /api/v1/database/connections
-   * Create new database connection
-   */
-  router.post(
-    '/connections',
-    asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.INFO, 'Creating database connection', req, {
-        type: req.body.type,
-        engine: req.body.engine,
-        host: req.body.host,
-      });
-
-      const result = {
-        id: `${req.body.engine}-${Date.now()}`,
-        type: req.body.type,
-        engine: req.body.engine,
-        status: 'connecting',
-        config: req.body.config,
-        created: new Date().toISOString(),
-      };
-
-      log(LogLevel.INFO, 'Database connection created', req, {
-        connectionId: result.id,
-        type: result.type,
-      });
-
-      res.status(201).json(result);
-    })
-  );
-
-  /**
-   * GET /api/v1/database/connections/:connectionId/status
-   * Get database connection status
-   */
-  router.get(
-    '/connections/:connectionId/status',
-    asyncHandler(async (req: Request, res: Response) => {
-      const connectionId = req.params.connectionId;
-
-      log(LogLevel.DEBUG, 'Getting connection status', req, {
-        connectionId,
-      });
-
-      // Placeholder - would check actual connection
-      const result = {
-        connectionId,
-        status: 'connected',
-        health: 'healthy',
-        lastPing: new Date().toISOString(),
-        responseTime: 2.5, // ms
-        activeQueries: 3,
-        connectionPool: {
-          active: 5,
-          idle: 15,
-          max: 20,
-        },
-      };
-
-      res.json(result);
-    })
-  );
-
-  // ===== VECTOR DATABASE OPERATIONS (LanceDB) =====
-
-  /**
-   * GET /api/v1/database/vector/collections
-   * List vector collections
-   */
-  router.get(
-    '/vector/collections',
-    asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.DEBUG, 'Listing vector collections', req);
-
-      // Placeholder - would list actual collections
-      const result = {
-        collections: [
-          {
-            name: 'embeddings_coordination',
-            schema: {
-              id: 'string',
-              vector: 'vector(384)',
-              metadata: 'json',
-              timestamp: 'timestamp',
-            },
-            documents: 15000,
-            dimensions: 384,
-            indexType: 'ivf_pq',
-            created: new Date().toISOString(),
-          },
-          {
-            name: 'embeddings_neural',
-            schema: {
-              id: 'string',
-              vector: 'vector(768)',
-              metadata: 'json',
-              timestamp: 'timestamp',
-            },
-            documents: 8500,
-            dimensions: 768,
-            indexType: 'hnsw',
-            created: new Date().toISOString(),
-          },
-        ],
-        total: 2,
-      };
-
-      res.json(result);
-    })
-  );
-
-  /**
-   * POST /api/v1/database/vector/collections
-   * Create vector collection
-   */
-  router.post(
-    '/vector/collections',
-    asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.INFO, 'Creating vector collection', req, {
-        name: req.body.name,
-        dimensions: req.body.dimensions,
-      });
-
-      const result = {
-        name: req.body.name,
-        schema: req.body.schema,
-        dimensions: req.body.dimensions,
-        indexType: req.body.indexType || 'ivf_pq',
-        status: 'created',
-        created: new Date().toISOString(),
-      };
-
-      log(LogLevel.INFO, 'Vector collection created', req, {
-        collectionName: result.name,
-        dimensions: result.dimensions,
-      });
-
-      res.status(201).json(result);
-    })
-  );
-
-  /**
-   * POST /api/v1/database/vector/collections/:collection/search
-   * Vector similarity search
-   */
-  router.post(
-    '/vector/collections/:collection/search',
-    asyncHandler(async (req: Request, res: Response) => {
-      const collection = req.params.collection;
-      const { vector, limit, filter } = req.body;
-
-      log(LogLevel.DEBUG, 'Vector similarity search', req, {
-        collection,
-        vectorDim: vector?.length,
-        limit: limit || 10,
-        hasFilter: !!filter,
-      });
-
+      log(LogLevel.DEBUG, 'Getting database status', req);
       const startTime = Date.now();
 
-      // Placeholder - would perform actual vector search
-      const results = Array.from({ length: Math.min(limit || 10, 5) }, (_, i) => ({
-        id: `doc-${i + 1}`,
-        score: 0.95 - i * 0.1,
-        metadata: {
-          type: 'embedding',
-          source: `document_${i + 1}`,
-        },
-        vector: vector.map((v: number) => v + Math.random() * 0.1),
-      }));
+      try {
+        checkDatabasePermission(req, 'read');
+        const controller = getDatabaseControllerInstance();
+        const result = await controller.getDatabaseStatus();
+        
+        const duration = Date.now() - startTime;
+        logPerformance('database_status', duration, req, {
+          success: result.success,
+          adapter: result.metadata?.adapter,
+          userId: req.auth?.user?.id
+        });
 
-      const duration = Date.now() - startTime;
-      logPerformance('vector_search', duration, req, {
-        collection,
-        resultCount: results.length,
-        vectorDim: vector?.length,
-      });
-
-      res.json({
-        collection,
-        query: {
-          vector: vector.slice(0, 5), // Only show first 5 dimensions
-          limit: limit || 10,
-          filter,
-        },
-        results,
-        timing: {
-          searchTime: duration,
-          indexTime: 1.2,
-          totalTime: duration + 1.2,
-        },
-      });
+        res.json(result);
+      } catch (error) {
+        const duration = Date.now() - startTime;
+        logPerformance('database_status', duration, req, { 
+          success: false, 
+          error: error.message,
+          userId: req.auth?.user?.id
+        });
+        throw createInternalError(`Database status check failed: ${error.message}`);
+      }
     })
   );
 
   /**
-   * POST /api/v1/database/vector/collections/:collection/insert
-   * Insert vectors into collection
+   * POST /api/v1/database/query
+   * Execute database SELECT queries with parameters
+   * Rate limited as medium operation, requires read permission
    */
   router.post(
-    '/vector/collections/:collection/insert',
+    '/query',
+    mediumOperationsLimiter, // Medium rate limiting for queries
+    authMiddleware, // Require authentication for data access
     asyncHandler(async (req: Request, res: Response) => {
-      const collection = req.params.collection;
-      const documents = req.body.documents;
-
-      log(LogLevel.INFO, 'Inserting vectors', req, {
-        collection,
-        documentCount: documents?.length,
+      log(LogLevel.INFO, 'Executing database query', req, {
+        sqlLength: req.body.sql?.length,
+        hasParams: Array.isArray(req.body.params) && req.body.params.length > 0,
+        userId: req.auth?.user?.id
       });
-
       const startTime = Date.now();
 
-      // Placeholder - would insert into actual vector database
-      const results =
-        documents?.map((doc: any, index: number) => ({
-          id: doc.id || `generated-${Date.now()}-${index}`,
-          status: 'inserted',
-          vector_dim: doc.vector?.length,
-        })) || [];
+      try {
+        checkDatabasePermission(req, 'read');
+        const queryRequest = validateQueryRequest(req);
+        const controller = getDatabaseControllerInstance();
+        const result = await controller.executeQuery(queryRequest);
+        
+        const duration = Date.now() - startTime;
+        logPerformance('database_query', duration, req, {
+          success: result.success,
+          rowCount: result.metadata?.rowCount,
+          adapter: result.metadata?.adapter,
+          userId: req.auth?.user?.id
+        });
 
-      const duration = Date.now() - startTime;
-      logPerformance('vector_insert', duration, req, {
-        collection,
-        documentCount: results.length,
-      });
-
-      res.status(201).json({
-        collection,
-        inserted: results,
-        summary: {
-          total: documents?.length || 0,
-          successful: results.length,
-          failed: 0,
-          duration,
-        },
-      });
+        res.json(result);
+      } catch (error) {
+        const duration = Date.now() - startTime;
+        logPerformance('database_query', duration, req, { 
+          success: false, 
+          error: error.message,
+          userId: req.auth?.user?.id
+        });
+        throw createInternalError(`Query execution failed: ${error.message}`);
+      }
     })
   );
 
-  // ===== GRAPH DATABASE OPERATIONS (Kuzu) =====
-
   /**
-   * POST /api/v1/database/graph/query
-   * Execute Cypher query on graph database
+   * POST /api/v1/database/execute
+   * Execute database commands (INSERT, UPDATE, DELETE, DDL)
+   * Rate limited as medium operation, requires write permission
    */
   router.post(
-    '/graph/query',
+    '/execute',
+    mediumOperationsLimiter, // Medium rate limiting for commands
+    authMiddleware, // Require authentication for data modification
     asyncHandler(async (req: Request, res: Response) => {
-      const { query, parameters } = req.body;
-
-      log(LogLevel.INFO, 'Executing graph query', req, {
-        queryLength: query?.length,
-        hasParameters: !!parameters,
+      log(LogLevel.INFO, 'Executing database command', req, {
+        sqlLength: req.body.sql?.length,
+        hasParams: Array.isArray(req.body.params) && req.body.params.length > 0,
+        userId: req.auth?.user?.id
       });
-
       const startTime = Date.now();
 
-      // Placeholder - would execute actual Cypher query
-      const result = {
-        query,
-        parameters: parameters || {},
-        results: [
-          { agent: 'researcher-001', task: 'analyze-data', relationship: 'ASSIGNED_TO' },
-          { agent: 'coder-002', task: 'implement-api', relationship: 'WORKING_ON' },
-        ],
-        statistics: {
-          nodesCreated: 0,
-          nodesDeleted: 0,
-          relationshipsCreated: 0,
-          relationshipsDeleted: 0,
-          propertiesSet: 0,
-          labelsAdded: 0,
-          labelsRemoved: 0,
-        },
-        executionTime: Date.now() - startTime,
-      };
+      try {
+        checkDatabasePermission(req, 'write');
+        const commandRequest = validateCommandRequest(req);
+        const controller = getDatabaseControllerInstance();
+        const result = await controller.executeCommand(commandRequest);
+        
+        const duration = Date.now() - startTime;
+        logPerformance('database_execute', duration, req, {
+          success: result.success,
+          rowCount: result.metadata?.rowCount,
+          adapter: result.metadata?.adapter,
+          userId: req.auth?.user?.id
+        });
 
-      logPerformance('graph_query', result.executionTime, req, {
-        queryLength: query?.length,
-        resultCount: result.results.length,
-      });
-
-      res.json(result);
+        res.json(result);
+      } catch (error) {
+        const duration = Date.now() - startTime;
+        logPerformance('database_execute', duration, req, { 
+          success: false, 
+          error: error.message,
+          userId: req.auth?.user?.id
+        });
+        throw createInternalError(`Command execution failed: ${error.message}`);
+      }
     })
   );
 
   /**
-   * GET /api/v1/database/graph/schema
-   * Get graph database schema
+   * POST /api/v1/database/transaction
+   * Execute multiple commands within a transaction
+   * Rate limited as heavy operation, requires write permission
+   */
+  router.post(
+    '/transaction',
+    heavyOperationsLimiter, // Heavy rate limiting for transactions
+    authMiddleware, // Require authentication for transactions
+    asyncHandler(async (req: Request, res: Response) => {
+      log(LogLevel.INFO, 'Executing database transaction', req, {
+        operationCount: req.body.operations?.length,
+        useTransaction: req.body.useTransaction,
+        userId: req.auth?.user?.id
+      });
+      const startTime = Date.now();
+
+      try {
+        checkDatabasePermission(req, 'write');
+        const batchRequest = validateBatchRequest(req);
+        const controller = getDatabaseControllerInstance();
+        const result = await controller.executeTransaction(batchRequest);
+        
+        const duration = Date.now() - startTime;
+        logPerformance('database_transaction', duration, req, {
+          success: result.success,
+          operationCount: batchRequest.operations.length,
+          adapter: result.metadata?.adapter,
+          userId: req.auth?.user?.id
+        });
+
+        res.json(result);
+      } catch (error) {
+        const duration = Date.now() - startTime;
+        logPerformance('database_transaction', duration, req, { 
+          success: false, 
+          error: error.message,
+          userId: req.auth?.user?.id
+        });
+        throw createInternalError(`Transaction failed: ${error.message}`);
+      }
+    })
+  );
+
+  /**
+   * GET /api/v1/database/schema
+   * Get comprehensive database schema information
+   * Rate limited as light operation, requires read permission
    */
   router.get(
-    '/graph/schema',
+    '/schema',
+    lightOperationsLimiter, // Light rate limiting for schema access
+    authMiddleware, // Require authentication for schema access
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.DEBUG, 'Getting graph schema', req);
-
-      // Placeholder - would get actual schema
-      const result = {
-        nodeTypes: [
-          {
-            label: 'Agent',
-            properties: ['id', 'type', 'status', 'capabilities'],
-            count: 25,
-          },
-          {
-            label: 'Task',
-            properties: ['id', 'type', 'description', 'priority', 'status'],
-            count: 150,
-          },
-          {
-            label: 'SwarmNode',
-            properties: ['id', 'topology', 'status', 'performance'],
-            count: 12,
-          },
-        ],
-        relationshipTypes: [
-          {
-            type: 'ASSIGNED_TO',
-            properties: ['timestamp', 'priority'],
-            count: 75,
-          },
-          {
-            type: 'COORDINATES_WITH',
-            properties: ['strength', 'frequency'],
-            count: 200,
-          },
-          {
-            type: 'DEPENDS_ON',
-            properties: ['dependency_type'],
-            count: 50,
-          },
-        ],
-        indexes: [
-          { label: 'Agent', property: 'id', type: 'unique' },
-          { label: 'Task', property: 'id', type: 'unique' },
-          { label: 'Task', property: 'status', type: 'range' },
-        ],
-      };
-
-      res.json(result);
-    })
-  );
-
-  // ===== RELATIONAL DATABASE OPERATIONS =====
-
-  /**
-   * GET /api/v1/database/sql/tables
-   * List SQL tables
-   */
-  router.get(
-    '/sql/tables',
-    asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.DEBUG, 'Listing SQL tables', req);
-
-      // Placeholder - would list actual tables
-      const result = {
-        tables: [
-          {
-            name: 'coordination_config',
-            schema: 'public',
-            type: 'table',
-            rows: 1,
-            size: '8 kB',
-            columns: ['id', 'max_agents', 'heartbeat_interval', 'created_at'],
-          },
-          {
-            name: 'agent_logs',
-            schema: 'public',
-            type: 'table',
-            rows: 25000,
-            size: '15 MB',
-            columns: ['id', 'agent_id', 'event_type', 'data', 'timestamp'],
-          },
-          {
-            name: 'performance_metrics',
-            schema: 'public',
-            type: 'table',
-            rows: 150000,
-            size: '45 MB',
-            columns: ['id', 'metric_name', 'value', 'timestamp', 'tags'],
-          },
-        ],
-        total: 3,
-      };
-
-      res.json(result);
-    })
-  );
-
-  /**
-   * POST /api/v1/database/sql/query
-   * Execute SQL query
-   */
-  router.post(
-    '/sql/query',
-    asyncHandler(async (req: Request, res: Response) => {
-      const { query, parameters } = req.body;
-
-      log(LogLevel.INFO, 'Executing SQL query', req, {
-        queryLength: query?.length,
-        hasParameters: !!parameters,
+      log(LogLevel.DEBUG, 'Getting database schema', req, {
+        userId: req.auth?.user?.id
       });
-
       const startTime = Date.now();
 
-      // Placeholder - would execute actual SQL query
-      const result = {
-        query,
-        parameters: parameters || [],
-        rows: [
-          {
-            id: 1,
-            agent_id: 'researcher-001',
-            status: 'active',
-            last_heartbeat: new Date().toISOString(),
-          },
-          {
-            id: 2,
-            agent_id: 'coder-002',
-            status: 'busy',
-            last_heartbeat: new Date().toISOString(),
-          },
-        ],
-        rowCount: 2,
-        executionTime: Date.now() - startTime,
-        fields: [
-          { name: 'id', type: 'integer' },
-          { name: 'agent_id', type: 'varchar' },
-          { name: 'status', type: 'varchar' },
-          { name: 'last_heartbeat', type: 'timestamp' },
-        ],
-      };
+      try {
+        checkDatabasePermission(req, 'read');
+        const controller = getDatabaseControllerInstance();
+        const result = await controller.getDatabaseSchema();
+        
+        const duration = Date.now() - startTime;
+        logPerformance('database_schema', duration, req, {
+          success: result.success,
+          tableCount: result.metadata?.rowCount,
+          adapter: result.metadata?.adapter,
+          userId: req.auth?.user?.id
+        });
 
-      logPerformance('sql_query', result.executionTime, req, {
-        queryLength: query?.length,
-        rowCount: result.rowCount,
-      });
-
-      res.json(result);
+        res.json(result);
+      } catch (error) {
+        const duration = Date.now() - startTime;
+        logPerformance('database_schema', duration, req, { 
+          success: false, 
+          error: error.message,
+          userId: req.auth?.user?.id
+        });
+        throw createInternalError(`Schema retrieval failed: ${error.message}`);
+      }
     })
   );
 
-  // ===== DATABASE HEALTH AND MONITORING =====
+  /**
+   * POST /api/v1/database/migrate
+   * Execute database migration operations
+   * Rate limited as admin operation, requires admin permission
+   */
+  router.post(
+    '/migrate',
+    adminOperationsLimiter, // Admin rate limiting for migrations
+    authMiddleware, // Require authentication for migrations
+    asyncHandler(async (req: Request, res: Response) => {
+      log(LogLevel.INFO, 'Executing database migration', req, {
+        version: req.body.version,
+        statementCount: req.body.statements?.length,
+        dryRun: req.body.dryRun,
+        userId: req.auth?.user?.id
+      });
+      const startTime = Date.now();
+
+      try {
+        checkDatabasePermission(req, 'admin');
+        const migrationRequest = validateMigrationRequest(req);
+        const controller = getDatabaseControllerInstance();
+        const result = await controller.executeMigration(migrationRequest);
+        
+        const duration = Date.now() - startTime;
+        logPerformance('database_migration', duration, req, {
+          success: result.success,
+          version: migrationRequest.version,
+          statementCount: migrationRequest.statements.length,
+          adapter: result.metadata?.adapter,
+          userId: req.auth?.user?.id
+        });
+
+        res.json(result);
+      } catch (error) {
+        const duration = Date.now() - startTime;
+        logPerformance('database_migration', duration, req, { 
+          success: false, 
+          error: error.message,
+          userId: req.auth?.user?.id
+        });
+        throw createInternalError(`Migration failed: ${error.message}`);
+      }
+    })
+  );
+
+  /**
+   * GET /api/v1/database/analytics
+   * Get comprehensive database analytics and performance metrics
+   * Rate limited as light operation, requires read permission
+   */
+  router.get(
+    '/analytics',
+    lightOperationsLimiter, // Light rate limiting for analytics
+    authMiddleware, // Require authentication for analytics
+    asyncHandler(async (req: Request, res: Response) => {
+      log(LogLevel.DEBUG, 'Getting database analytics', req, {
+        userId: req.auth?.user?.id
+      });
+      const startTime = Date.now();
+
+      try {
+        checkDatabasePermission(req, 'read');
+        const controller = getDatabaseControllerInstance();
+        const result = await controller.getDatabaseAnalytics();
+        
+        const duration = Date.now() - startTime;
+        logPerformance('database_analytics', duration, req, {
+          success: result.success,
+          adapter: result.metadata?.adapter,
+          userId: req.auth?.user?.id
+        });
+
+        res.json(result);
+      } catch (error) {
+        const duration = Date.now() - startTime;
+        logPerformance('database_analytics', duration, req, { 
+          success: false, 
+          error: error.message,
+          userId: req.auth?.user?.id
+        });
+        throw createInternalError(`Analytics retrieval failed: ${error.message}`);
+      }
+    })
+  );
+
+  // ===== SYSTEM ENDPOINTS =====
 
   /**
    * GET /api/v1/database/health
-   * Get database system health
+   * Database health check for the DI container and controller
    */
   router.get(
     '/health',
-    asyncHandler(async (_req: Request, res: Response) => {
-      // Placeholder - would check actual database health
-      const result = {
-        status: 'healthy',
-        databases: {
-          'lancedb-main': {
-            status: 'healthy',
-            responseTime: 2.1,
-            collections: 15,
-            documents: 125000,
-          },
-          'kuzu-graph': {
-            status: 'healthy',
-            responseTime: 1.8,
-            nodes: 45000,
-            edges: 180000,
-          },
-          'postgres-main': {
-            status: 'healthy',
-            responseTime: 3.2,
-            connections: {
-              active: 5,
-              idle: 15,
-              max: 20,
-            },
-          },
-        },
-        performance: {
-          avgQueryTime: 2.4, // ms
-          slowQueries: 2,
-          connectionErrors: 0,
-          diskUsage: 0.45, // 45%
-        },
-        timestamp: new Date().toISOString(),
-      };
-
-      const statusCode = result.status === 'healthy' ? 200 : 503;
-      res.status(statusCode).json(result);
-    })
-  );
-
-  /**
-   * GET /api/v1/database/metrics
-   * Get database performance metrics
-   */
-  router.get(
-    '/metrics',
+    lightOperationsLimiter,
     asyncHandler(async (req: Request, res: Response) => {
-      const timeRange = (req.query.timeRange as string) || '1h';
+      log(LogLevel.DEBUG, 'Checking database health', req);
+      const startTime = Date.now();
 
-      log(LogLevel.DEBUG, 'Getting database metrics', req, {
-        timeRange,
-      });
+      try {
+        const containerHealth = await checkDatabaseContainerHealth();
+        const controller = getDatabaseControllerInstance();
+        const controllerHealth = await controller.getDatabaseStatus();
+        
+        const duration = Date.now() - startTime;
+        
+        const overallStatus = containerHealth.status === 'healthy' && controllerHealth.success ? 'healthy' : 'unhealthy';
+        const statusCode = overallStatus === 'healthy' ? 200 : 503;
 
-      // Placeholder - would get actual metrics
-      const result = {
-        timeRange,
-        metrics: {
-          queries: {
-            total: 15000,
-            successful: 14950,
-            failed: 50,
-            avgDuration: 2.8, // ms
-            slowQueries: 12,
-          },
-          connections: {
-            current: 20,
-            max: 100,
-            failed: 3,
-          },
-          storage: {
-            totalSize: 1024 * 1024 * 1024 * 2.5, // 2.5 GB
-            usedSpace: 1024 * 1024 * 1024 * 1.2, // 1.2 GB
-            freeSpace: 1024 * 1024 * 1024 * 1.3, // 1.3 GB
-            utilization: 0.48, // 48%
-          },
-          performance: {
-            cacheHitRate: 0.92, // 92%
-            indexUsage: 0.87, // 87%
-            tableScans: 150,
-            indexScans: 12000,
-          },
-        },
-        timestamp: new Date().toISOString(),
-      };
+        const healthResponse = {
+          status: overallStatus,
+          timestamp: new Date().toISOString(),
+          responseTime: duration,
+          container: containerHealth,
+          database: controllerHealth.data,
+          services: {
+            di_container: containerHealth.status,
+            database_controller: controllerHealth.success ? 'healthy' : 'unhealthy',
+            database_adapter: controllerHealth.data?.status || 'unknown'
+          }
+        };
 
-      res.json(result);
+        logPerformance('database_health', duration, req, {
+          status: overallStatus,
+          containerHealthy: containerHealth.status === 'healthy',
+          controllerHealthy: controllerHealth.success
+        });
+
+        res.status(statusCode).json(healthResponse);
+      } catch (error) {
+        const duration = Date.now() - startTime;
+        logPerformance('database_health', duration, req, { 
+          success: false, 
+          error: error.message
+        });
+        
+        res.status(503).json({
+          status: 'unhealthy',
+          timestamp: new Date().toISOString(),
+          responseTime: duration,
+          error: error.message,
+          services: {
+            di_container: 'unknown',
+            database_controller: 'unknown',
+            database_adapter: 'unknown'
+          }
+        });
+      }
     })
   );
 
