@@ -673,6 +673,7 @@ export class TaskDistributionEngine extends EventEmitter {
         cpu: 1,
         memory: 512,
         network: 100,
+        storage: 256,
       },
       timestamp: new Date(),
       source: 'task-distribution-engine',
