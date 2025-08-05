@@ -11,6 +11,7 @@ import { SPARCEngineCore } from '../../coordination/swarm/sparc/core/sparc-engin
 import { ProductFlowSystem } from '../../core/product-flow-system';
 import { UnifiedMemorySystem } from '../../core/unified-memory-system';
 import { DocumentService } from '../../database/services/document-service';
+import { DatabaseCoordinator } from '../../database/core/database-coordinator';
 
 describe('E2E: Complete Product Flow → SPARC Integration', () => {
   let productFlowSystem: ProductFlowSystem;
@@ -21,7 +22,8 @@ describe('E2E: Complete Product Flow → SPARC Integration', () => {
   beforeAll(async () => {
     // Initialize complete system stack
     const memorySystem = new UnifiedMemorySystem();
-    const documentService = new DocumentService();
+    const databaseCoordinator = new DatabaseCoordinator();
+    const documentService = new DocumentService(databaseCoordinator);
 
     await memorySystem.initialize();
     await documentService.initialize();

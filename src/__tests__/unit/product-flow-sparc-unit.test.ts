@@ -76,6 +76,12 @@ describe('Product Flow + SPARC Unit Tests', () => {
           current_sparc_phase: 'pseudocode',
           sparc_progress_percentage: 40.0, // 2/5 phases complete + 1 in progress
           use_sparc_methodology: true,
+          sparc_domain: 'rest-api',
+          sparc_complexity: 'moderate',
+          integration_health: {
+            sync_status: 'synced',
+            sync_errors: [],
+          },
         },
       };
 

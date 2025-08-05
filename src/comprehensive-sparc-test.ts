@@ -10,6 +10,7 @@
  */
 
 import { writeFile } from 'fs/promises';
+import type { Priority, RiskLevel } from './coordination/swarm/sparc/types/sparc-types';
 
 async function runComprehensiveTest() {
   console.log('🎯 SPARC Pseudocode Engine - Comprehensive End-to-End Test');
@@ -94,7 +95,7 @@ async function testCoreEngine() {
           title: 'Core Algorithm Test',
           description: 'Test core algorithm generation',
           type: 'algorithmic',
-          priority: 'HIGH',
+          priority: 'HIGH' as Priority,
           testCriteria: ['Algorithm generates correctly']
         }
       ],
@@ -103,7 +104,7 @@ async function testCoreEngine() {
       assumptions: [],
       dependencies: [],
       acceptanceCriteria: [],
-      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' },
+      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' as RiskLevel },
       successMetrics: []
     };
 
@@ -114,11 +115,11 @@ async function testCoreEngine() {
     const validation = await engine.validatePseudocodeLogic(algorithms);
     const pseudocodeStructure = await engine.generatePseudocode(testSpec);
 
-    const success = algorithms.length > 0 && 
+    const success: boolean = algorithms.length > 0 && 
                    dataStructures.length > 0 && 
                    controlFlows.length > 0 && 
                    validation.length > 0 &&
-                   pseudocodeStructure.id;
+                   !!pseudocodeStructure.id;
 
     return {
       success,
@@ -148,7 +149,7 @@ async function testCLIIntegration() {
           title: 'CLI Memory Algorithm',
           description: 'Test memory algorithm via CLI',
           type: 'algorithmic',
-          priority: 'HIGH',
+          priority: 'HIGH' as Priority,
           testCriteria: ['CLI generation works']
         }
       ],
@@ -157,7 +158,7 @@ async function testCLIIntegration() {
       assumptions: [],
       dependencies: [],
       acceptanceCriteria: [],
-      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' },
+      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' as RiskLevel },
       successMetrics: []
     };
 
@@ -175,7 +176,7 @@ async function testCLIIntegration() {
     const generateResult = await execAsync(generateCommand);
     const validateResult = await execAsync(validateCommand);
 
-    const success = generateResult.stdout.includes('✅ Pseudocode generation completed') &&
+    const success: boolean = generateResult.stdout.includes('✅ Pseudocode generation completed') &&
                    validateResult.stdout.includes('✅ APPROVED');
 
     return {
@@ -214,7 +215,7 @@ async function testMCPIntegration() {
           title: 'MCP Neural Algorithm',
           description: 'Test neural algorithm via MCP',
           type: 'algorithmic',
-          priority: 'HIGH',
+          priority: 'HIGH' as Priority,
           testCriteria: ['MCP generation works']
         }
       ],
@@ -223,7 +224,7 @@ async function testMCPIntegration() {
       assumptions: [],
       dependencies: [],
       acceptanceCriteria: [],
-      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' },
+      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' as RiskLevel },
       successMetrics: []
     };
 
@@ -244,7 +245,7 @@ async function testMCPIntegration() {
 
     const algorithmsResult = await algorithmsOnlyTool.handler({ specification: testSpec });
 
-    const success = generateResult.success && 
+    const success: boolean = generateResult.success && 
                    validateResult.success && 
                    algorithmsResult.success &&
                    validateResult.data.validation.approved;
@@ -279,7 +280,7 @@ async function testEndToEndFlow() {
           title: 'E2E Data Processing',
           description: 'End-to-end data processing algorithm',
           type: 'algorithmic',
-          priority: 'HIGH',
+          priority: 'HIGH' as Priority,
           testCriteria: ['Processes data correctly', 'Handles edge cases']
         },
         {
@@ -287,7 +288,7 @@ async function testEndToEndFlow() {
           title: 'E2E Validation',
           description: 'Data validation and error handling',
           type: 'algorithmic',
-          priority: 'MEDIUM',
+          priority: 'MEDIUM' as Priority,
           testCriteria: ['Validates input', 'Reports errors clearly']
         }
       ],
@@ -297,7 +298,7 @@ async function testEndToEndFlow() {
           title: 'Performance',
           description: 'System performance requirements',
           metrics: { latency: '<50ms', throughput: '>2000/sec' },
-          priority: 'HIGH'
+          priority: 'HIGH' as Priority
         }
       ],
       constraints: [
@@ -311,7 +312,7 @@ async function testEndToEndFlow() {
       assumptions: [],
       dependencies: [],
       acceptanceCriteria: [],
-      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' },
+      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' as RiskLevel },
       successMetrics: [
         {
           id: 'metric-e2e-001',
@@ -339,7 +340,7 @@ async function testEndToEndFlow() {
     const hasOptimizations = phase2Output.optimizations.length > 0;
     const validationPassed = validation.approved;
 
-    const success = hasRequiredAlgorithms && 
+    const success: boolean = hasRequiredAlgorithms && 
                    hasDataStructures && 
                    hasComplexityAnalysis && 
                    hasOptimizations && 

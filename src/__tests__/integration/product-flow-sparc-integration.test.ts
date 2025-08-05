@@ -19,6 +19,7 @@ import type {
   TaskDocumentEntity,
 } from '../../database/entities/product-entities';
 import { DocumentService } from '../../database/services/document-service';
+import { DatabaseCoordinator } from '../../database/core/database-coordinator';
 
 describe('Product Flow + SPARC Integration', () => {
   let productWorkflowEngine: ProductWorkflowEngine;
@@ -34,7 +35,8 @@ describe('Product Flow + SPARC Integration', () => {
       persistPath: './test-memory',
       maxMemoryMB: 512,
     });
-    documentService = new DocumentService();
+    const databaseCoordinator = new DatabaseCoordinator();
+    documentService = new DocumentService(databaseCoordinator);
 
     await memorySystem.initialize();
     await documentService.initialize();
@@ -108,6 +110,12 @@ describe('Product Flow + SPARC Integration', () => {
           current_sparc_phase: 'specification',
           sparc_progress_percentage: 0,
           use_sparc_methodology: true,
+          sparc_domain: 'general',
+          sparc_complexity: 'simple',
+          integration_health: {
+            sync_status: 'synced',
+            sync_errors: [],
+          },
         },
       };
 

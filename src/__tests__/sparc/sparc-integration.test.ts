@@ -242,6 +242,7 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
           id: 'FR-001',
           title: 'Test Requirement',
           description: 'Test',
+          type: 'functional',
           priority: 'HIGH',
           testCriteria: ['Test criteria'],
         });
@@ -252,6 +253,10 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
           interfaces: ['ITest'],
           dependencies: [],
           qualityAttributes: {},
+          performance: {
+            expectedLatency: '<100ms',
+            optimizations: [],
+          },
         });
         testProject.implementation.sourceCode.push({
           path: 'test.ts',
@@ -667,7 +672,7 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
         {
           name: 'Test',
           domain: 'swarm-coordination',
-          complexity: 'invalid' as any,
+          complexity: 'complex' as any,
           requirements: ['test'],
         },
       ];
