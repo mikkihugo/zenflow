@@ -281,7 +281,7 @@ export class NeuralCLI {
         const accuracy = Math.min(95, 60 + progress * 30 + Math.random() * 5);
 
         process.stdout.write(
-          `\r🔄 Training: [${'█'.repeat(Math.floor(progress * 20))}${' '.repeat(20 - Math.floor(progress * 20))}] ${(progress * 100).toFixed(0)}% | Loss: ${loss.toFixed(4)} | Accuracy: ${accuracy.toFixed(1)}%`,
+          `\r🔄 Training: [${'█'.repeat(Math.floor(progress * 20))}${' '.repeat(20 - Math.floor(progress * 20))}] ${(progress * 100).toFixed(0)}% | Loss: ${loss.toFixed(4)} | Accuracy: ${accuracy.toFixed(1)}%`
         );
 
         // Simulate training delay
@@ -356,7 +356,7 @@ export class NeuralCLI {
 
       // Use pattern-specific memory configuration
       const _memoryUsage = await this.getPatternMemoryUsage(
-        patternType === 'all' ? 'convergent' : (patternType as PatternType),
+        patternType === 'all' ? 'convergent' : (patternType as PatternType)
       );
     } catch (error: any) {
       console.error('❌ Error analyzing patterns:', error.message);
@@ -411,7 +411,7 @@ export class NeuralCLI {
       // Show summary
       const _totalParams = Object.values(weights.models).reduce(
         (sum, model) => sum + model.parameters,
-        0,
+        0
       );
     } catch (error: any) {
       console.error('❌ Export failed:', error.message);

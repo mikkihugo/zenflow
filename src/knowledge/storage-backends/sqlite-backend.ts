@@ -98,14 +98,14 @@ export class SQLiteBackend implements FACTStorageBackend {
             `
           INSERT OR REPLACE INTO ${this.config.tableName}_fts (id, query, response, domains, type)
           VALUES (?, ?, ?, ?, ?)
-        `,
+        `
           )
           .run(
             entry.id,
             entry.query,
             entry.response,
             entry.metadata.domains.join(' '),
-            entry.metadata.type,
+            entry.metadata.type
           );
       }
     } catch (error) {
@@ -186,7 +186,7 @@ export class SQLiteBackend implements FACTStorageBackend {
           const domainConditions = query.domains
             .map(
               () =>
-                `EXISTS (SELECT 1 FROM JSON_EACH(JSON_EXTRACT(metadata, '$.domains')) WHERE value = ?)`,
+                `EXISTS (SELECT 1 FROM JSON_EACH(JSON_EXTRACT(metadata, '$.domains')) WHERE value = ?)`
             )
             .join(' OR ');
           conditions.push(`(${domainConditions})`);
@@ -266,7 +266,7 @@ export class SQLiteBackend implements FACTStorageBackend {
             `
           DELETE FROM ${this.config.tableName}_fts 
           WHERE id NOT IN (SELECT id FROM ${this.config.tableName})
-        `,
+        `
           )
           .run();
       }

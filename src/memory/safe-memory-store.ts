@@ -7,13 +7,13 @@
 
 import { EventEmitter } from 'node:events';
 import {
-  MemoryResult,
-  MemorySuccess,
-  MemoryNotFound,
-  MemoryError,
-  isMemorySuccess,
-  isMemoryNotFound,
   isMemoryError,
+  isMemoryNotFound,
+  isMemorySuccess,
+  type MemoryError,
+  type MemoryNotFound,
+  type MemoryResult,
+  type MemorySuccess,
 } from '../../utils/type-guards';
 
 export interface SafeMemoryStoreOptions {
@@ -84,7 +84,7 @@ export class SafeMemoryStore extends EventEmitter {
         return this.createMemoryError(
           key,
           'STORE_FULL',
-          'Memory store has reached maximum capacity',
+          'Memory store has reached maximum capacity'
         );
       }
 

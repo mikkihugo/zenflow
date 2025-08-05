@@ -25,7 +25,7 @@ async function validateAllPresets() {
 
       // Run coverage for this preset
       const { stdout: coverageOutput } = await execAsync(
-        `npx nyc --reporter=json-summary npm test -- --preset=${preset}`,
+        `npx nyc --reporter=json-summary npm test -- --preset=${preset}`
       );
 
       // Read coverage data
@@ -65,7 +65,7 @@ async function validateAllPresets() {
 async function testPresetPerformance(preset) {
   try {
     const { stdout } = await execAsync(
-      `node test/benchmarks/benchmark-neural-models.js --preset=${preset} --iterations=3`,
+      `node test/benchmarks/benchmark-neural-models.js --preset=${preset} --iterations=3`
     );
 
     // Extract performance metrics

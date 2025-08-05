@@ -479,7 +479,7 @@ export class MemoryController {
       this.updateMetrics(executionTime, errorCount === 0);
 
       this._logger.debug(
-        `Batch operations completed: ${results.length} operations, ${errorCount} errors`,
+        `Batch operations completed: ${results.length} operations, ${errorCount} errors`
       );
 
       return {

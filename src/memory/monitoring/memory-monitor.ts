@@ -268,7 +268,7 @@ export class MemoryMonitor extends EventEmitter {
           acc[op.operation] = (acc[op.operation] || 0) + 1;
           return acc;
         },
-        {} as Record<string, number>,
+        {} as Record<string, number>
       );
 
       const metrics: MemoryMetrics = {
@@ -396,7 +396,7 @@ export class MemoryMonitor extends EventEmitter {
    * Create and emit an alert
    */
   private createAlert(
-    alertData: Omit<MemoryAlert, 'id' | 'timestamp' | 'acknowledged' | 'resolved'>,
+    alertData: Omit<MemoryAlert, 'id' | 'timestamp' | 'acknowledged' | 'resolved'>
   ): void {
     const alert: MemoryAlert = {
       id: `alert_${Date.now()}_${Math.random().toString(36).slice(2)}`,
@@ -500,7 +500,7 @@ export class MemoryMonitor extends EventEmitter {
             acc[alert.severity] = (acc[alert.severity] || 0) + 1;
             return acc;
           },
-          {} as Record<string, number>,
+          {} as Record<string, number>
         ),
       },
       components: {

@@ -170,7 +170,7 @@ export class ApplicationCoordinator extends EventEmitter {
           'document:created',
           event.type,
           event.document,
-          { workspace: this.activeWorkspaceId },
+          { workspace: this.activeWorkspaceId }
         );
 
         if (workflowIds.length > 0) {
@@ -195,7 +195,7 @@ export class ApplicationCoordinator extends EventEmitter {
         try {
           const workflowData = await this.memorySystem.retrieve(
             `workflow:${event.workflowId}`,
-            'workflows',
+            'workflows'
           );
           if (workflowData) {
             await this.exportSystem.exportData(workflowData, this.config.export.defaultFormat, {
@@ -257,7 +257,7 @@ export class ApplicationCoordinator extends EventEmitter {
       if (this.config.workspace?.root) {
         logger.info(`Loading workspace: ${this.config.workspace.root}`);
         this.activeWorkspaceId = await this.documentSystem.loadWorkspace(
-          this.config.workspace.root,
+          this.config.workspace.root
         );
       } else if (this.config.workspace?.autoDetect) {
         // Try to auto-detect workspace
@@ -375,7 +375,7 @@ export class ApplicationCoordinator extends EventEmitter {
       // Process through document system
       await this.documentSystem.processVisionaryDocument(
         this.activeWorkspaceId || 'default',
-        documentPath,
+        documentPath
       );
 
       return {
@@ -397,7 +397,7 @@ export class ApplicationCoordinator extends EventEmitter {
    */
   async exportSystemData(
     format: string,
-    options: any = {},
+    options: any = {}
   ): Promise<{
     success: boolean;
     filename?: string;

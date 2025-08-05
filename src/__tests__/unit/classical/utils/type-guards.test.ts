@@ -6,57 +6,57 @@
  */
 
 import {
-  // Database type guards
-  DatabaseResult,
-  QuerySuccess,
-  QueryError,
-  isQuerySuccess,
-  isQueryError,
-  // Memory type guards
-  MemoryResult,
-  MemorySuccess,
-  MemoryNotFound,
-  MemoryError,
-  isMemorySuccess,
-  isMemoryNotFound,
-  isMemoryError,
-  // Neural type guards
-  NeuralResult,
-  TrainingResult,
-  InferenceResult,
-  NeuralError,
-  isTrainingResult,
-  isInferenceResult,
-  isNeuralError,
+  APIError,
   // API type guards
   APIResult,
   APISuccess,
-  APIError,
-  isAPISuccess,
-  isAPIError,
-  // WASM type guards
-  WasmResult,
-  WasmSuccess,
-  WasmError,
-  isWasmSuccess,
-  isWasmError,
+  CoordinationError,
   // Coordination type guards
   CoordinationResult,
   CoordinationSuccess,
-  CoordinationError,
-  isCoordinationSuccess,
-  isCoordinationError,
-  // Generic type guards
-  Result,
-  Success,
-  Failure,
-  isSuccess,
-  isFailure,
+  // Database type guards
+  type DatabaseResult,
   // Utility functions
   extractData,
   extractErrorMessage,
+  Failure,
   hasProperty,
+  type InferenceResult,
+  isAPIError,
+  isAPISuccess,
+  isCoordinationError,
+  isCoordinationSuccess,
+  isFailure,
+  isInferenceResult,
+  isMemoryError,
+  isMemoryNotFound,
+  isMemorySuccess,
+  isNeuralError,
+  isQueryError,
+  isQuerySuccess,
+  isSuccess,
+  isTrainingResult,
+  isWasmError,
+  isWasmSuccess,
+  type MemoryError,
+  type MemoryNotFound,
+  // Memory type guards
+  MemoryResult,
+  type MemorySuccess,
+  type NeuralError,
+  // Neural type guards
+  NeuralResult,
+  type QueryError,
+  type QuerySuccess,
+  // Generic type guards
+  Result,
+  Success,
   safePropertyAccess,
+  type TrainingResult,
+  WasmError,
+  // WASM type guards
+  WasmResult,
+  WasmSuccess,
 } from '../../../../utils/type-guards';
 
 describe('Type Guards - Classical TDD', () => {

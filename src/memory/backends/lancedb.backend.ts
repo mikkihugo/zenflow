@@ -28,7 +28,7 @@ export class LanceDBBackend extends MemoryBackend {
   async store(
     key: string,
     value: JSONValue,
-    namespace: string = 'default',
+    namespace: string = 'default'
   ): Promise<StorageResult> {
     const fullKey = `${namespace}:${key}`;
     const timestamp = Date.now();
@@ -70,7 +70,7 @@ export class LanceDBBackend extends MemoryBackend {
         {
           key: key,
           namespace: namespace,
-        },
+        }
       );
 
       if (!searchResult || searchResult.length === 0) {
@@ -100,7 +100,7 @@ export class LanceDBBackend extends MemoryBackend {
         100,
         {
           namespace: namespace,
-        },
+        }
       );
 
       for (const result of searchResult || []) {
@@ -133,7 +133,7 @@ export class LanceDBBackend extends MemoryBackend {
       const searchResult = await this.lanceInterface.searchSimilar(
         'documents',
         new Array(384).fill(0),
-        1000,
+        1000
       );
 
       const namespaces = new Set<string>();

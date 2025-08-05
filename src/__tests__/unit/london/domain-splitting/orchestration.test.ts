@@ -124,14 +124,14 @@ describe('Domain Splitting Orchestration - London TDD', () => {
             sourceDomain: 'neural',
             targetSubDomains: expect.any(Array),
           }),
-        ]),
+        ])
       );
       expect(mockSplitter.executeSplitting).toHaveBeenCalledWith(
         expect.arrayContaining([
           expect.objectContaining({
             sourceDomain: 'neural',
           }),
-        ]),
+        ])
       );
 
       expect(result).toEqual(mockResult);
@@ -209,7 +209,7 @@ describe('Domain Splitting Orchestration - London TDD', () => {
 
       // Act & Assert
       await expect(orchestrator.executeDomainSplit(domainPath)).rejects.toThrow(
-        'Plan validation failed',
+        'Plan validation failed'
       );
 
       expect(mockValidator.validateNoCyclicDependencies).toHaveBeenCalled();
@@ -301,7 +301,7 @@ describe('Domain Splitting Orchestration - London TDD', () => {
               }),
             ]),
           }),
-        ]),
+        ])
       );
 
       expect(result.success).toBe(true);
@@ -476,7 +476,7 @@ describe('Domain Splitting Orchestration - London TDD', () => {
               expect.objectContaining({ name: 'neural-bridge' }),
             ]),
           }),
-        ]),
+        ])
       );
 
       expect(result.success).toBe(true);

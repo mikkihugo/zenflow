@@ -145,8 +145,8 @@ export const batchExecuteTool: MCPTool = {
             priority: op.priority,
             dependencies: op.dependencies,
             timeout: op.timeout,
-          },
-        ),
+          }
+        )
       );
 
       // Configure batch engine if config provided
@@ -211,7 +211,7 @@ export const batchExecuteTool: MCPTool = {
         const sequentialMetrics = performanceMonitor.recordSequentialExecution(
           summary.totalOperations,
           sequentialTime,
-          summary.successfulOperations,
+          summary.successfulOperations
         );
 
         const comparison = performanceMonitor.comparePerformance(batchMetrics, sequentialMetrics);
@@ -326,7 +326,7 @@ export const projectInitBatchTool: MCPTool = {
         createBatchOperation(`swarm-init-${opIndex++}`, 'swarm', 'init', {
           topology: params.swarmConfig?.topology || 'hierarchical',
           maxAgents: params.swarmConfig?.maxAgents || 6,
-        }),
+        })
       );
 
       // 2. Spawn agents
@@ -336,7 +336,7 @@ export const projectInitBatchTool: MCPTool = {
           createBatchOperation(`agent-spawn-${agentType}-${opIndex++}`, 'swarm', 'spawn', {
             type: agentType,
             name: `${params.projectName}-${agentType}`,
-          }),
+          })
         );
       }
 
@@ -382,7 +382,7 @@ export const projectInitBatchTool: MCPTool = {
         createBatchOperation(`package-json-${opIndex++}`, 'file', 'write', {
           path: `${basePath}/package.json`,
           content: JSON.stringify({ ...defaultPackageJson, ...params.packageJson }, null, 2),
-        }),
+        })
       );
 
       // Create README.md
@@ -420,7 +420,7 @@ ${params.projectName}/
 
 Generated with claude-zen batch optimization 🚀
 `,
-        }),
+        })
       );
 
       // Add other files
@@ -429,7 +429,7 @@ Generated with claude-zen batch optimization 🚀
           createBatchOperation(`file-${opIndex++}`, 'file', 'write', {
             path: filePath,
             content: content as string,
-          }),
+          })
         );
       }
 
@@ -583,7 +583,7 @@ ${trends.values
   .slice(-5)
   .map(
     (val, i) =>
-      `- ${val.toFixed(2)} (${new Date(trends.timestamps[trends.timestamps.length - 5 + i]).toLocaleTimeString()})`,
+      `- ${val.toFixed(2)} (${new Date(trends.timestamps[trends.timestamps.length - 5 + i]).toLocaleTimeString()})`
   )
   .join('\n')}
 
@@ -652,14 +652,14 @@ export function createClaudeFlowBatch(
     tool: string;
     params: Record<string, unknown>;
     dependencies?: string[];
-  }>,
+  }>
 ): BatchOperation[] {
   return createToolBatch(
     operations.map((op) => ({
       name: op.tool,
       params: op.params,
       dependencies: op.dependencies,
-    })),
+    }))
   );
 }
 
@@ -681,7 +681,7 @@ export function createClaudeZenPattern(config: {
     createBatchOperation(`swarm-init-${index++}`, 'tool', 'swarm_init', {
       topology: config.swarmTopology || 'mesh',
       maxAgents: config.maxAgents || 6,
-    }),
+    })
   );
 
   // 2. Agent spawning
@@ -690,7 +690,7 @@ export function createClaudeZenPattern(config: {
     operations.push(
       createBatchOperation(`agent-spawn-${agentType}-${index++}`, 'tool', 'agent_spawn', {
         type: agentType,
-      }),
+      })
     );
   }
 
@@ -718,7 +718,7 @@ export function createClaudeZenPattern(config: {
       createBatchOperation(`file-${index++}`, 'file', 'write', {
         path: file.path,
         content: file.content,
-      }),
+      })
     );
   }
 

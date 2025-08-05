@@ -135,7 +135,7 @@ export class OptimizationEngine extends EventEmitter {
    */
   public async optimizeFromInsights(
     insights: PerformanceInsights,
-    metrics: CompositeMetrics,
+    metrics: CompositeMetrics
   ): Promise<OptimizationAction[]> {
     if (!this.isOptimizing) {
       return [];
@@ -182,7 +182,7 @@ export class OptimizationEngine extends EventEmitter {
    */
   private async handleAnomaly(
     anomaly: AnomalyDetection,
-    _metrics: CompositeMetrics,
+    _metrics: CompositeMetrics
   ): Promise<OptimizationAction[]> {
     const actions: OptimizationAction[] = [];
 
@@ -271,7 +271,7 @@ export class OptimizationEngine extends EventEmitter {
    */
   private async handleBottleneck(
     bottleneck: BottleneckAnalysis,
-    metrics: CompositeMetrics,
+    metrics: CompositeMetrics
   ): Promise<OptimizationAction[]> {
     const actions: OptimizationAction[] = [];
 
@@ -367,7 +367,7 @@ export class OptimizationEngine extends EventEmitter {
       timeToCapacity: number;
       resourceExhaustion: string[];
     },
-    _metrics: CompositeMetrics,
+    _metrics: CompositeMetrics
   ): Promise<OptimizationAction[]> {
     const actions: OptimizationAction[] = [];
 
@@ -415,7 +415,7 @@ export class OptimizationEngine extends EventEmitter {
    */
   private async handleLowHealth(
     healthScore: number,
-    _metrics: CompositeMetrics,
+    _metrics: CompositeMetrics
   ): Promise<OptimizationAction[]> {
     const actions: OptimizationAction[] = [];
 
@@ -471,7 +471,7 @@ export class OptimizationEngine extends EventEmitter {
 
       // Check rate limiting
       const recentActions = this.actionHistory.filter(
-        (result) => result.actionId.includes(action.type) && now - result.executionTime < 60000,
+        (result) => result.actionId.includes(action.type) && now - result.executionTime < 60000
       );
 
       if (recentActions.length >= strategy.maxActionsPerMinute) {
@@ -547,7 +547,7 @@ export class OptimizationEngine extends EventEmitter {
 
     // Remove executed actions from pending
     this.pendingActions = this.pendingActions.filter(
-      (a) => a.priority !== 'critical' && a.priority !== 'high',
+      (a) => a.priority !== 'critical' && a.priority !== 'high'
     );
   }
 
@@ -599,7 +599,7 @@ export class OptimizationEngine extends EventEmitter {
    * Simulate action execution (replace with actual implementations)
    */
   private async simulateActionExecution(
-    action: OptimizationAction,
+    action: OptimizationAction
   ): Promise<Partial<OptimizationResult>> {
     // Simulate execution time
     await new Promise((resolve) => setTimeout(resolve, Math.min(action.executionTime, 1000)));

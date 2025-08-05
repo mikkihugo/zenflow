@@ -133,7 +133,7 @@ class TestRunner {
             NODE_OPTIONS:
               '--experimental-vm-modules --experimental-wasm-modules --max-old-space-size=4096',
           },
-        },
+        }
       );
 
       let stdout = '';
@@ -290,7 +290,7 @@ class TestRunner {
       if (result.stdout) {
         // Simple regex to extract coverage percentages
         const coverageMatch = result.stdout.match(
-          /All files.*?(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)/,
+          /All files.*?(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)/
         );
         if (coverageMatch) {
           coverageInfo.details.push({
@@ -442,7 +442,7 @@ class TestRunner {
                     ${result.success ? '✅ PASSED' : '❌ FAILED'}
                 </div>
             </div>
-        `,
+        `
           )
           .join('')}
     </div>

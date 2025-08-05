@@ -56,7 +56,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
   }
 
   async designDataStructures(
-    requirements: FunctionalRequirement[],
+    requirements: FunctionalRequirement[]
   ): Promise<DataStructureDesign[]> {
     // Convert DataStructureSpec to DataStructureDesign
     const specs = await this.generateDataStructures(requirements);
@@ -82,7 +82,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
   }
 
   async optimizeAlgorithmComplexity(
-    pseudocode: AlgorithmPseudocode,
+    pseudocode: AlgorithmPseudocode
   ): Promise<OptimizationSuggestion[]> {
     // Implementation for optimization suggestions
     return [
@@ -130,7 +130,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
    * Design core algorithms based on functional requirements
    */
   private async designCoreAlgorithms(
-    specification: DetailedSpecification,
+    specification: DetailedSpecification
   ): Promise<CoreAlgorithm[]> {
     const algorithms: CoreAlgorithm[] = [];
 
@@ -138,7 +138,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
       if (requirement.type === 'algorithmic') {
         const algorithm = await this.createAlgorithmForRequirement(
           requirement,
-          specification.domain,
+          specification.domain
         );
         algorithms.push(algorithm);
       }
@@ -167,7 +167,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
    */
   private async createAlgorithmForRequirement(
     requirement: any,
-    domain: string,
+    domain: string
   ): Promise<CoreAlgorithm> {
     return {
       id: nanoid(),
@@ -187,7 +187,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
    * Generate pseudocode for swarm coordination algorithms
    */
   private async createSwarmCoordinationAlgorithms(
-    _specification: DetailedSpecification,
+    _specification: DetailedSpecification
   ): Promise<CoreAlgorithm[]> {
     return [
       {
@@ -279,7 +279,7 @@ END
    * Generate pseudocode for neural network algorithms
    */
   private async createNeuralNetworkAlgorithms(
-    _specification: DetailedSpecification,
+    _specification: DetailedSpecification
   ): Promise<CoreAlgorithm[]> {
     return [
       {
@@ -329,7 +329,7 @@ END
    * Generate pseudocode for memory system algorithms
    */
   private async createMemorySystemAlgorithms(
-    _specification: DetailedSpecification,
+    _specification: DetailedSpecification
   ): Promise<CoreAlgorithm[]> {
     return [
       {
@@ -397,7 +397,7 @@ END
    * Create general-purpose algorithms
    */
   private async createGeneralAlgorithms(
-    _specification: DetailedSpecification,
+    _specification: DetailedSpecification
   ): Promise<CoreAlgorithm[]> {
     return [
       {
@@ -444,7 +444,7 @@ END
    * Specify data structures needed for the algorithms
    */
   private async specifyDataStructures(
-    specification: DetailedSpecification,
+    specification: DetailedSpecification
   ): Promise<DataStructureSpec[]> {
     const structures: DataStructureSpec[] = [];
 
@@ -481,7 +481,7 @@ END
               dequeue: 'O(log n)' as ComplexityClass,
               peek: 'O(1)' as ComplexityClass,
             },
-          },
+          }
         );
         break;
       case 'neural-networks':
@@ -606,7 +606,7 @@ END
    * Identify optimization opportunities
    */
   private async identifyOptimizations(
-    _algorithms: CoreAlgorithm[],
+    _algorithms: CoreAlgorithm[]
   ): Promise<OptimizationOpportunity[]> {
     return [
       {
@@ -641,7 +641,7 @@ END
    */
   private async estimatePerformance(
     _algorithms: CoreAlgorithm[],
-    _complexity: ComplexityAnalysis,
+    _complexity: ComplexityAnalysis
   ): Promise<PerformanceTarget[]> {
     return [
       {
@@ -670,7 +670,7 @@ END
    */
   private async generateAlgorithmPseudocodePrivate(
     requirement: any,
-    _domain: string,
+    _domain: string
   ): Promise<string> {
     return `
 ALGORITHM ${requirement.title.replace(/\s+/g, '')}
@@ -778,7 +778,7 @@ END
             break;
           case 'Data structure design':
             recommendations.push(
-              'Specify appropriate data structures for algorithm implementation',
+              'Specify appropriate data structures for algorithm implementation'
             );
             break;
         }

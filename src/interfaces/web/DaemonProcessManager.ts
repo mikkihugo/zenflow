@@ -304,7 +304,7 @@ export class DaemonProcessManager {
    */
   private async ensureDirectories(): Promise<void> {
     const dirs = [this.config.pidFile, this.config.logFile, this.config.errorFile].map((file) =>
-      file.substring(0, file.lastIndexOf('/')),
+      file.substring(0, file.lastIndexOf('/'))
     );
 
     for (const dir of [...new Set(dirs)]) {

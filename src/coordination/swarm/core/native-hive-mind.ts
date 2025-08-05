@@ -169,7 +169,7 @@ export class NativeHiveMind extends EventEmitter {
             strength: 1.0,
           },
         ],
-      },
+      }
     );
 
     // Emit native event (no MCP needed)
@@ -252,7 +252,7 @@ export class NativeHiveMind extends EventEmitter {
             strength: 0.8,
           })),
         ],
-      },
+      }
     );
 
     // Add to global agents
@@ -342,7 +342,7 @@ export class NativeHiveMind extends EventEmitter {
             strength: 0.9,
           })),
         ],
-      },
+      }
     );
 
     // Learn from orchestration pattern
@@ -436,7 +436,7 @@ export class NativeHiveMind extends EventEmitter {
           maxDepth: searchOptions.maxDepth,
         },
       },
-      searchOptions,
+      searchOptions
     );
 
     return {
@@ -470,14 +470,14 @@ export class NativeHiveMind extends EventEmitter {
         outcome,
         timestamp: Date.now(),
       },
-      success ? 1.0 : 0.0,
+      success ? 1.0 : 0.0
     );
 
     // Update pattern success rate
     await this.unifiedPersistence.updateNeuralPatternSuccess(
       'coordination',
       `${operation}_${context.agentType || 'general'}`,
-      success,
+      success
     );
 
     this.hiveMindState.neuralPatternsLearned++;
@@ -528,14 +528,14 @@ export class NativeHiveMind extends EventEmitter {
       const agents = Array.from(swarm.agents.values());
       const capabilityMatch = this.calculateCapabilityMatch(
         agents,
-        taskConfig.requiredCapabilities,
+        taskConfig.requiredCapabilities
       );
       score += capabilityMatch * 0.5;
 
       // Topology suitability
       const topologyScore = this.calculateTopologyScore(
         swarm.wasmSwarm.config?.topology_type,
-        taskConfig,
+        taskConfig
       );
       score += topologyScore * 0.2;
 
@@ -557,7 +557,7 @@ export class NativeHiveMind extends EventEmitter {
     for (const agent of agents) {
       if (agent.capabilities && agent.capabilities.length > 0) {
         const matches = requiredCapabilities.filter((cap) =>
-          agent.capabilities.includes(cap),
+          agent.capabilities.includes(cap)
         ).length;
         totalMatch += matches / requiredCapabilities.length;
         agentCount++;
@@ -634,7 +634,7 @@ export class NativeHiveMind extends EventEmitter {
       'orchestration',
       `${pattern.taskType}_${pattern.swarmTopology}`,
       pattern,
-      0.8, // Initial success rate assumption
+      0.8 // Initial success rate assumption
     );
   }
 
@@ -651,7 +651,7 @@ export class NativeHiveMind extends EventEmitter {
         { type: 'agent', id: agentData.agent.id },
         { type: 'capability', id: capability },
         'has_capability',
-        0.8,
+        0.8
       );
     }
   }
@@ -686,7 +686,7 @@ export class NativeHiveMind extends EventEmitter {
       {
         namespace: 'coordination',
         relationships: decisionData.relatedEntities || [],
-      },
+      }
     );
   }
 

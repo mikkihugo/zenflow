@@ -46,7 +46,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.json(result);
-    }),
+    })
   );
 
   /**
@@ -78,7 +78,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.status(201).json(result);
-    }),
+    })
   );
 
   /**
@@ -111,7 +111,7 @@ export const createNeuralRoutes = (): Router => {
       };
 
       res.json(result);
-    }),
+    })
   );
 
   /**
@@ -133,7 +133,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.status(204).send();
-    }),
+    })
   );
 
   // ===== TRAINING OPERATIONS =====
@@ -172,7 +172,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.status(202).json(result);
-    }),
+    })
   );
 
   /**
@@ -207,7 +207,7 @@ export const createNeuralRoutes = (): Router => {
       };
 
       res.json(result);
-    }),
+    })
   );
 
   /**
@@ -231,7 +231,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.status(204).send();
-    }),
+    })
   );
 
   // ===== PREDICTION OPERATIONS =====
@@ -269,7 +269,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.json(result);
-    }),
+    })
   );
 
   /**
@@ -320,7 +320,7 @@ export const createNeuralRoutes = (): Router => {
       };
 
       res.json(response);
-    }),
+    })
   );
 
   // ===== MODEL MANAGEMENT =====
@@ -362,7 +362,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.status(202).json(result);
-    }),
+    })
   );
 
   /**
@@ -394,7 +394,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.status(201).json(result);
-    }),
+    })
   );
 
   // ===== EVALUATION AND ANALYSIS =====
@@ -445,7 +445,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.json(result);
-    }),
+    })
   );
 
   return router;

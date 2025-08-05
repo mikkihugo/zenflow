@@ -232,7 +232,7 @@ export class SwarmCoordinator extends EventEmitter {
    */
   async coordinateSwarm(
     agents: SwarmAgent[],
-    topology?: SwarmTopology,
+    topology?: SwarmTopology
   ): Promise<{
     success: boolean;
     averageLatency: number;
@@ -329,7 +329,7 @@ export class SwarmCoordinator extends EventEmitter {
       const totalTasks = agents.reduce((sum, a) => sum + a.performance.tasksCompleted, 0);
       const totalResponseTime = agents.reduce(
         (sum, a) => sum + a.performance.averageResponseTime,
-        0,
+        0
       );
       const totalErrors = agents.reduce((sum, a) => sum + a.performance.errorRate, 0);
 

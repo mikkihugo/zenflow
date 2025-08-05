@@ -232,7 +232,7 @@ export class SPARCEngineCore implements SPARCEngine {
    */
   async refineImplementation(
     project: SPARCProject,
-    feedback: RefinementFeedback,
+    feedback: RefinementFeedback
   ): Promise<RefinementResult> {
     // Analyze current implementation against targets
     const gapAnalysis = this.analyzePerformanceGaps(feedback);
@@ -641,7 +641,7 @@ export class SPARCEngineCore implements SPARCEngine {
 
   private async executePhaseLogic(
     project: SPARCProject,
-    phase: SPARCPhase,
+    phase: SPARCPhase
   ): Promise<ArtifactReference[]> {
     const phaseEngine = this.phaseEngines.get(phase);
     if (!phaseEngine) {
@@ -751,7 +751,7 @@ export class SPARCEngineCore implements SPARCEngine {
 
         const refinementResult = await phaseEngine.applyRefinements(
           project.architecture,
-          mockFeedback,
+          mockFeedback
         );
         project.architecture = refinementResult.refinedArchitecture;
 
@@ -1021,7 +1021,7 @@ export class SPARCEngineCore implements SPARCEngine {
    */
   private async createVisionDocument(
     project: SPARCProject,
-    spec: ProjectSpecification,
+    spec: ProjectSpecification
   ): Promise<{ path: string; content: string }> {
     const visionContent = `# Vision: ${project.name}
 
@@ -1055,7 +1055,7 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
    */
   private async executeDocumentWorkflows(
     workspaceId: string,
-    project: SPARCProject,
+    project: SPARCProject
   ): Promise<void> {
     const workflows = [
       'vision-to-adrs', // Generate ADRs from vision documents
@@ -1128,7 +1128,7 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
   private async executeTaskWithSwarm(
     _taskId: string,
     project: SPARCProject,
-    phase: SPARCPhase,
+    phase: SPARCPhase
   ): Promise<void> {
     try {
       const result = await this.swarmCoordinator.executeSPARCPhase(project.id, phase);

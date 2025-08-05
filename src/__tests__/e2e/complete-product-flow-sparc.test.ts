@@ -99,7 +99,7 @@ describe('E2E: Complete Product Flow → SPARC Integration', () => {
             domain: 'e-commerce',
             complexity: 'complex',
           },
-        },
+        }
       );
 
       expect(workflowResult.success).toBe(true);
@@ -107,7 +107,7 @@ describe('E2E: Complete Product Flow → SPARC Integration', () => {
 
       // Step 2: Monitor workflow execution
       let workflow = await productWorkflowEngine.getProductWorkflowStatus(
-        workflowResult.workflowId!,
+        workflowResult.workflowId!
       );
       expect(workflow).toBeDefined();
       expect(workflow?.status).toMatch(/running|pending/);
@@ -227,7 +227,7 @@ describe('E2E: Complete Product Flow → SPARC Integration', () => {
       // Test 1: Invalid workflow name
       const invalidResult = await productWorkflowEngine.startProductWorkflow(
         'nonexistent-workflow',
-        { workspaceId: testWorkspaceId },
+        { workspaceId: testWorkspaceId }
       );
 
       expect(invalidResult.success).toBe(false);
@@ -236,7 +236,7 @@ describe('E2E: Complete Product Flow → SPARC Integration', () => {
       // Test 2: Workflow pause/resume
       const validResult = await productWorkflowEngine.startProductWorkflow(
         'complete-product-flow',
-        { workspaceId: testWorkspaceId },
+        { workspaceId: testWorkspaceId }
       );
 
       expect(validResult.success).toBe(true);
@@ -247,14 +247,14 @@ describe('E2E: Complete Product Flow → SPARC Integration', () => {
 
       // Verify paused state
       const pausedWorkflow = await productWorkflowEngine.getProductWorkflowStatus(
-        validResult.workflowId!,
+        validResult.workflowId!
       );
       expect(pausedWorkflow?.status).toBe('paused');
       expect(pausedWorkflow?.pausedAt).toBeDefined();
 
       // Resume the workflow
       const resumeResult = await productWorkflowEngine.resumeProductWorkflow(
-        validResult.workflowId!,
+        validResult.workflowId!
       );
       expect(resumeResult.success).toBe(true);
 

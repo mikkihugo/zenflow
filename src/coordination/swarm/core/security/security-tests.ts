@@ -74,7 +74,7 @@ class SecurityTester {
       this.logTest(
         'Message Command Injection',
         !containsInjection,
-        'Should remove command substitution',
+        'Should remove command substitution'
       );
     } catch (_error) {
       this.logTest('Message Command Injection', true, 'Correctly rejected malicious message');
@@ -150,13 +150,13 @@ class SecurityTester {
         this.logTest(
           `Prompt Injection: "${prompt.slice(0, 30)}..."`,
           !containsInjection,
-          containsInjection ? 'Contains injection patterns' : 'Successfully sanitized',
+          containsInjection ? 'Contains injection patterns' : 'Successfully sanitized'
         );
       } catch (_error) {
         this.logTest(
           `Prompt Injection: "${prompt.slice(0, 30)}..."`,
           true,
-          'Rejected malicious prompt',
+          'Rejected malicious prompt'
         );
       }
     }
@@ -175,12 +175,12 @@ class SecurityTester {
       });
 
       const hasInjection = args.some(
-        (arg) => arg.includes(';') || arg.includes('|') || arg.includes('&'),
+        (arg) => arg.includes(';') || arg.includes('|') || arg.includes('&')
       );
       this.logTest(
         'GitHub Args Construction',
         !hasInjection,
-        'Arguments should not contain injection chars',
+        'Arguments should not contain injection chars'
       );
     } catch (error) {
       this.logTest('GitHub Args Construction', false, `Failed to construct args: ${error.message}`);
@@ -198,7 +198,7 @@ class SecurityTester {
       this.logTest(
         'Git Args Construction',
         false,
-        `Failed to construct git args: ${error.message}`,
+        `Failed to construct git args: ${error.message}`
       );
     }
 
@@ -298,7 +298,7 @@ class SecurityTester {
         this.logTest(
           'Hooks Task Sanitization',
           !containsInjection,
-          'Task description should be sanitized',
+          'Task description should be sanitized'
         );
       } catch (_error) {
         this.logTest('Hooks Task Sanitization', true, 'Malicious task description rejected');

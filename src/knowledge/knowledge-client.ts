@@ -283,7 +283,7 @@ export class FACTIntegration extends EventEmitter {
       await fs.access(srcPath);
     } catch (_error) {
       throw new Error(
-        `FACT repository not found at ${this.config.factRepoPath}. Please clone it first: git clone https://github.com/ruvnet/FACT.git`,
+        `FACT repository not found at ${this.config.factRepoPath}. Please clone it first: git clone https://github.com/ruvnet/FACT.git`
       );
     }
   }

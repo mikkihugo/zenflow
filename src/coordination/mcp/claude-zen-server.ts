@@ -27,7 +27,7 @@ export class ClaudeZenMCPServer extends MCPServer {
         timeout: 30000,
         enabled: true,
       },
-      logger,
+      logger
     );
 
     // Combine all tools: swarm tools + FACT tools
@@ -65,7 +65,7 @@ export class ClaudeZenMCPServer extends MCPServer {
         return result;
       } catch (error) {
         throw new Error(
-          `Tool execution failed: ${error instanceof Error ? error.message : String(error)}`,
+          `Tool execution failed: ${error instanceof Error ? error.message : String(error)}`
         );
       }
     });
@@ -86,7 +86,7 @@ export class ClaudeZenMCPServer extends MCPServer {
   async start(): Promise<void> {
     await super.start();
     this.zenLogger.info(
-      'Claude-Zen MCP Server ready for swarm coordination and FACT knowledge gathering',
+      'Claude-Zen MCP Server ready for swarm coordination and FACT knowledge gathering'
     );
   }
 

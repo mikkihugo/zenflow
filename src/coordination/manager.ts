@@ -176,7 +176,7 @@ export class CoordinationManager extends EventEmitter {
    */
   getAvailableAgents(): Agent[] {
     return Array.from(this.agents.values()).filter(
-      (agent) => agent.status === 'idle' || agent.status === 'busy',
+      (agent) => agent.status === 'idle' || agent.status === 'busy'
     );
   }
 
@@ -185,7 +185,7 @@ export class CoordinationManager extends EventEmitter {
    */
   getAgentsByCapability(capability: string): Agent[] {
     return Array.from(this.agents.values()).filter((agent) =>
-      agent.capabilities.includes(capability),
+      agent.capabilities.includes(capability)
     );
   }
 
@@ -302,7 +302,7 @@ export class CoordinationManager extends EventEmitter {
       (agent) =>
         agent.status === 'idle' &&
         (requiredCapabilities.length === 0 ||
-          requiredCapabilities.some((cap) => agent.capabilities.includes(cap))),
+          requiredCapabilities.some((cap) => agent.capabilities.includes(cap)))
     );
 
     if (suitableAgents.length === 0) {

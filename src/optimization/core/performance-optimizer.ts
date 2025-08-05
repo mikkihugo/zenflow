@@ -73,7 +73,7 @@ export class PerformanceOptimizer extends EventEmitter {
       swarm?: SwarmOptimizer;
       data?: DataOptimizer;
       wasm?: WasmOptimizer;
-    } = {},
+    } = {}
   ) {
     super();
 
@@ -197,7 +197,7 @@ export class PerformanceOptimizer extends EventEmitter {
    * Generate optimization plan based on current performance
    */
   private async generateOptimizationPlan(
-    currentMetrics: PerformanceMetrics,
+    currentMetrics: PerformanceMetrics
   ): Promise<OptimizationPlan[]> {
     const plans: OptimizationPlan[] = [];
 
@@ -272,7 +272,7 @@ export class PerformanceOptimizer extends EventEmitter {
    */
   private async executeOptimizationAction(
     optimizer: any,
-    action: OptimizationAction,
+    action: OptimizationAction
   ): Promise<void> {
     this.emit('optimization:action:started', action);
 
@@ -495,11 +495,11 @@ export class PerformanceOptimizer extends EventEmitter {
     const latencyImprovement = Math.max(0, (before.latency - after.latency) / before.latency);
     const throughputImprovement = Math.max(
       0,
-      (after.throughput - before.throughput) / before.throughput,
+      (after.throughput - before.throughput) / before.throughput
     );
     const memoryImprovement = Math.max(
       0,
-      (before.memoryUsage - after.memoryUsage) / before.memoryUsage,
+      (before.memoryUsage - after.memoryUsage) / before.memoryUsage
     );
     const cpuImprovement = Math.max(0, (before.cpuUsage - after.cpuUsage) / before.cpuUsage);
 

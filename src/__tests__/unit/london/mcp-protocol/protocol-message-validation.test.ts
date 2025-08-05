@@ -63,7 +63,7 @@ class MockMCPMessageValidator implements MessageValidatorContract {
   constructor(
     private schemaValidator = mockSchemaValidator,
     private logger = mockLogger,
-    private metrics = mockMetricsCollector,
+    private metrics = mockMetricsCollector
   ) {}
 
   async validate(message: unknown): Promise<ValidationResult> {
@@ -349,7 +349,7 @@ describe('MCP Protocol Message Validation - London TDD', () => {
         expect(mockSchemaValidator.getSchemaForMethod).toHaveBeenCalledWith('tools/call');
         expect(mockSchemaValidator.validateParams).toHaveBeenCalledWith(
           toolCallRequest.params,
-          toolCallSchema,
+          toolCallSchema
         );
         expect(result.valid).toBe(true);
       });

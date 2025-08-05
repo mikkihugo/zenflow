@@ -3,9 +3,9 @@
  */
 
 import { EventEmitter } from 'node:events';
+import type { IMemoryStore, MemoryStats, StoreOptions } from '../core/interfaces/base-interfaces';
 import type { BackendConfig, BackendInterface, JSONValue } from './backends/base.backend';
 import { BackendFactory } from './backends/factory';
-import { IMemoryStore, StoreOptions, MemoryStats } from '../core/interfaces/base-interfaces';
 
 interface SessionMemoryStoreOptions {
   backendConfig: BackendConfig;
@@ -89,7 +89,7 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     sessionIdOrKey: string,
     keyOrData?: string | any,
     dataOrOptions?: any | StoreOptions,
-    options?: StoreOptions,
+    options?: StoreOptions
   ): Promise<void> {
     // Handle both overloads: (sessionId, key, data, options) and (key, data, options)
     let sessionId: string;

@@ -401,7 +401,7 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
   private async terminateConversation(args: any): Promise<any> {
     const outcomes = await this.orchestrator.terminateConversation(
       args.conversationId,
-      args.reason,
+      args.reason
     );
 
     return {

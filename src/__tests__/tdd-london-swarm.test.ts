@@ -92,7 +92,7 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
         expect(mockWebApiServer.registerRoute).toHaveBeenCalledWith(
           'POST',
           '/api/task',
-          expect.any(Function),
+          expect.any(Function)
         );
       });
     });
@@ -184,7 +184,7 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
 
         // Act & Assert - Verify error handling contract
         await expect(mockIntegrationLayer.bridgeWebToMcp({ invalid: 'data' })).rejects.toThrow(
-          'MCP processing failed',
+          'MCP processing failed'
         );
       });
     });

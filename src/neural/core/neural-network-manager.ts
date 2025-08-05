@@ -370,7 +370,7 @@ class NeuralNetworkManager {
           activation: networkConfig.activation,
           learning_rate: learningRate,
           optimizer,
-        }),
+        })
       );
 
       const network = new NeuralNetwork(networkId, agentId, networkConfig, neuralModule);
@@ -419,7 +419,7 @@ class NeuralNetworkManager {
       cognitivePatterns = this.cognitivePatternSelector.selectPatternsForPreset(
         config.modelType,
         template,
-        taskContext,
+        taskContext
       );
     }
 
@@ -773,7 +773,7 @@ class NeuralNetworkManager {
     const cognitivePatterns = this.cognitivePatternSelector.selectPatternsForPreset(
       preset.model,
       presetName,
-      taskContext,
+      taskContext
     );
 
     // Merge preset config with custom overrides
@@ -853,7 +853,7 @@ class NeuralNetworkManager {
         agentId,
         bestMatch.category,
         bestMatch.presetName,
-        customConfig,
+        customConfig
       );
     }
 
@@ -861,7 +861,7 @@ class NeuralNetworkManager {
       agentId,
       recommendedPreset.category,
       recommendedPreset.presetName,
-      customConfig,
+      customConfig
     );
   }
 
@@ -945,7 +945,7 @@ class NeuralNetworkManager {
       agentId,
       category,
       presetName,
-      customConfig,
+      customConfig
     );
 
     // Restore cognitive evolution and meta-learning state
@@ -969,7 +969,7 @@ class NeuralNetworkManager {
           config.agentId,
           config.category,
           config.presetName,
-          config.customConfig || {},
+          config.customConfig || {}
         );
         results.push({ agentId: config.agentId, success: true, agent });
       } catch (error) {
@@ -1332,7 +1332,7 @@ class NeuralNetworkManager {
     } catch (error) {
       console.error(
         `Knowledge distillation failed between ${teacherAgentId} and ${studentAgentId}:`,
-        error,
+        error
       );
     }
   }
@@ -1677,7 +1677,7 @@ class NeuralNetwork {
             this.networkId,
             JSON.stringify(batch),
             learningRate,
-            JSON.stringify(freezeLayers),
+            JSON.stringify(freezeLayers)
           );
 
           epochLoss += loss;

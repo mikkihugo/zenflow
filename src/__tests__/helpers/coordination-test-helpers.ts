@@ -298,7 +298,7 @@ export class CoordinationTestBuilder {
     const totalPossibleConnections = this.agents.size * (this.agents.size - 1);
     const actualConnections = Array.from(this.agents.values()).reduce(
       (sum, agent) => sum + agent.connections.length,
-      0,
+      0
     );
 
     return actualConnections / totalPossibleConnections;
@@ -371,7 +371,7 @@ export class CoordinationProtocolValidator {
    */
   static validateCoordinationPattern(
     interactions: any[],
-    expectedPattern: 'broadcast' | 'point-to-point' | 'hierarchical' | 'consensus',
+    expectedPattern: 'broadcast' | 'point-to-point' | 'hierarchical' | 'consensus'
   ): void {
     switch (expectedPattern) {
       case 'broadcast': {
@@ -393,7 +393,7 @@ export class CoordinationProtocolValidator {
 
       case 'hierarchical': {
         const hierarchicalInteractions = interactions.filter(
-          (i) => i.type === 'coordination' && (i.action === 'assign_task' || i.action === 'status'),
+          (i) => i.type === 'coordination' && (i.action === 'assign_task' || i.action === 'status')
         );
         expect(hierarchicalInteractions.length).toBeGreaterThan(0);
         break;
@@ -402,7 +402,7 @@ export class CoordinationProtocolValidator {
       case 'consensus': {
         // Look for consensus-related interactions
         const consensusInteractions = interactions.filter(
-          (i) => i.data?.type === 'consensus' || i.action === 'vote' || i.action === 'agreement',
+          (i) => i.data?.type === 'consensus' || i.action === 'vote' || i.action === 'agreement'
         );
         expect(consensusInteractions.length).toBeGreaterThan(0);
         break;
@@ -415,7 +415,7 @@ export class CoordinationProtocolValidator {
    */
   static validatePerformance(
     interactions: any[],
-    thresholds: SwarmTestConfig['performanceThresholds'],
+    thresholds: SwarmTestConfig['performanceThresholds']
   ): void {
     // Check coordination latency
     const coordinationInteractions = interactions.filter((i) => i.type === 'coordination');

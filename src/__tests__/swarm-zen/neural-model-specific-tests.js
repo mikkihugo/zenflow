@@ -87,7 +87,7 @@ class ModelSpecificTests {
     this.results.attention.multiHead = {
       configurations: results,
       optimalHeads: results.sort(
-        (a, b) => a.accuracy / a.computeTime - b.accuracy / b.computeTime,
+        (a, b) => a.accuracy / a.computeTime - b.accuracy / b.computeTime
       )[0].heads,
       scalability: 'linear',
     };

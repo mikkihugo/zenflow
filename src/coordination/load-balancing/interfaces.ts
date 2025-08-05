@@ -17,7 +17,7 @@ export interface LoadBalancingAlgorithm {
   selectAgent(
     task: Task,
     availableAgents: Agent[],
-    metrics: Map<string, LoadMetrics>,
+    metrics: Map<string, LoadMetrics>
   ): Promise<RoutingResult>;
   updateConfiguration(config: Record<string, any>): Promise<void>;
   getPerformanceMetrics(): Promise<Record<string, number>>;
@@ -36,7 +36,7 @@ export interface ResourceMonitor {
   getCurrentMetrics(agentId: string): Promise<LoadMetrics | null>;
   getHistoricalMetrics(
     agentId: string,
-    timeRange: { start: Date; end: Date },
+    timeRange: { start: Date; end: Date }
   ): Promise<LoadMetrics[]>;
   setThresholds(agentId: string, thresholds: Record<string, number>): Promise<void>;
 }
@@ -61,7 +61,7 @@ export interface HealthChecker {
   startHealthChecks(agents: Agent[]): Promise<void>;
   stopHealthChecks(): Promise<void>;
   getHealthStatus(
-    agentId: string,
+    agentId: string
   ): Promise<{ healthy: boolean; lastCheck: Date; details?: string }>;
 }
 
@@ -122,10 +122,10 @@ export interface MetricsAggregator {
   aggregate(metrics: LoadMetrics[]): Promise<LoadMetrics>;
   calculateTrends(
     metrics: LoadMetrics[],
-    timeWindow: number,
+    timeWindow: number
   ): Promise<Record<string, 'up' | 'down' | 'stable'>>;
   detectAnomalies(
-    metrics: LoadMetrics[],
+    metrics: LoadMetrics[]
   ): Promise<Array<{ timestamp: Date; metric: string; value: number; expected: number }>>;
   generateReport(timeRange: { start: Date; end: Date }): Promise<string>;
 }

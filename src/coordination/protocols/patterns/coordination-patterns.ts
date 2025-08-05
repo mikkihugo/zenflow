@@ -237,7 +237,7 @@ export class CoordinationPatterns extends EventEmitter {
       hierarchical: HierarchicalConfig;
     },
     private logger: ILogger,
-    private eventBus: IEventBus,
+    private eventBus: IEventBus
   ) {
     super();
 
@@ -248,7 +248,7 @@ export class CoordinationPatterns extends EventEmitter {
       nodeId,
       config.hierarchical,
       logger,
-      eventBus,
+      eventBus
     );
 
     this.patternMetrics = this.initializeMetrics();
@@ -410,7 +410,7 @@ export class CoordinationPatterns extends EventEmitter {
   }
 
   private async reconfigureForPattern(
-    pattern: CoordinationPatterns['currentPattern'],
+    pattern: CoordinationPatterns['currentPattern']
   ): Promise<void> {
     switch (pattern) {
       case 'leader-follower':
@@ -650,7 +650,7 @@ class LeaderElection extends EventEmitter {
     private nodeId: string,
     private config: LeaderElectionConfig,
     private logger: ILogger,
-    private eventBus: IEventBus,
+    private eventBus: IEventBus
   ) {
     super();
 
@@ -772,7 +772,7 @@ class LeaderElection extends EventEmitter {
       (node) =>
         node.id !== this.nodeId &&
         node.status === 'active' &&
-        this.getNodePriority(node.id) > myPriority,
+        this.getNodePriority(node.id) > myPriority
     );
 
     if (higherPriorityNodes.length === 0) {
@@ -1009,7 +1009,7 @@ class ConsensusEngine extends EventEmitter {
     private nodeId: string,
     private config: ConsensusConfig,
     private logger: ILogger,
-    private eventBus: IEventBus,
+    private eventBus: IEventBus
   ) {
     super();
 
@@ -1142,12 +1142,12 @@ class ConsensusEngine extends EventEmitter {
     }
 
     const replicationPromises = followers.map((followerId) =>
-      this.sendAppendEntries(followerId, [entry]),
+      this.sendAppendEntries(followerId, [entry])
     );
 
     const responses = await Promise.allSettled(replicationPromises);
     const successCount = responses.filter(
-      (result) => result.status === 'fulfilled' && result.value.success,
+      (result) => result.status === 'fulfilled' && result.value.success
     ).length;
 
     const majority = Math.floor(this.nodes.size / 2) + 1;
@@ -1156,7 +1156,7 @@ class ConsensusEngine extends EventEmitter {
 
   private async sendAppendEntries(
     followerId: string,
-    entries: LogEntry[],
+    entries: LogEntry[]
   ): Promise<AppendEntriesResponse> {
     const prevLogIndex = this.state.log.length - entries.length - 1;
     const prevLogTerm = prevLogIndex >= 0 ? this.state.log[prevLogIndex].term : 0;
@@ -1302,7 +1302,7 @@ class WorkStealingSystem extends EventEmitter {
     private nodeId: string,
     private config: WorkStealingConfig,
     private logger: ILogger,
-    private eventBus: IEventBus,
+    private eventBus: IEventBus
   ) {
     super();
 
@@ -1640,7 +1640,7 @@ class WorkStealingSystem extends EventEmitter {
 
     // Distribute items among remaining queues
     const availableQueues = Array.from(this.workQueues.values()).filter(
-      (queue) => queue.nodeId !== this.nodeId,
+      (queue) => queue.nodeId !== this.nodeId
     );
 
     if (availableQueues.length === 0) {
@@ -1689,7 +1689,7 @@ class HierarchicalCoordinator extends EventEmitter {
     private nodeId: string,
     private config: HierarchicalConfig,
     private logger: ILogger,
-    private eventBus: IEventBus,
+    private eventBus: IEventBus
   ) {
     super();
 

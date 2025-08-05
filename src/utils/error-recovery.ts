@@ -124,8 +124,8 @@ export class ErrorRecoverySystem extends EventEmitter {
     return Array.from(this.strategies.values())
       .filter((strategy) =>
         strategy.conditions.some((condition) =>
-          this.matchesCondition(condition, errorType, component),
-        ),
+          this.matchesCondition(condition, errorType, component)
+        )
       )
       .sort((a, b) => this.getSeverityWeight(a.severity) - this.getSeverityWeight(b.severity));
   }
@@ -194,7 +194,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private async executeRecoveryStrategy(
     strategy: RecoveryStrategy,
-    context: RecoveryContext,
+    context: RecoveryContext
   ): Promise<{
     success: boolean;
     actionsExecuted: string[];
@@ -233,7 +233,7 @@ export class ErrorRecoverySystem extends EventEmitter {
       const delay = this.calculateBackoffDelay(
         strategy.backoffStrategy,
         context.retryCount,
-        strategy.timeout,
+        strategy.timeout
       );
       nextRetryAt = new Date(Date.now() + delay);
     }
@@ -248,7 +248,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private async executeRecoveryAction(
     action: RecoveryAction,
-    context: RecoveryContext,
+    context: RecoveryContext
   ): Promise<void> {
     this.emit('action:starting', { action, context });
 
@@ -280,7 +280,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private async executeRestartAction(
     _action: RecoveryAction,
-    _context: RecoveryContext,
+    _context: RecoveryContext
   ): Promise<void> {
     // Mock restart implementation
     await new Promise((resolve) => setTimeout(resolve, 100));
@@ -288,7 +288,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private async executeRollbackAction(
     _action: RecoveryAction,
-    _context: RecoveryContext,
+    _context: RecoveryContext
   ): Promise<void> {
     // Mock rollback implementation
     await new Promise((resolve) => setTimeout(resolve, 200));
@@ -296,7 +296,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private async executeFailoverAction(
     _action: RecoveryAction,
-    _context: RecoveryContext,
+    _context: RecoveryContext
   ): Promise<void> {
     // Mock failover implementation
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -304,7 +304,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private async executeScaleAction(
     _action: RecoveryAction,
-    _context: RecoveryContext,
+    _context: RecoveryContext
   ): Promise<void> {
     // Mock scaling implementation
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -312,7 +312,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private async executeNotifyAction(
     _action: RecoveryAction,
-    _context: RecoveryContext,
+    _context: RecoveryContext
   ): Promise<void> {
     // Mock notification implementation
     await new Promise((resolve) => setTimeout(resolve, 50));
@@ -320,7 +320,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private async executeRepairAction(
     _action: RecoveryAction,
-    _context: RecoveryContext,
+    _context: RecoveryContext
   ): Promise<void> {
     // Mock repair implementation
     await new Promise((resolve) => setTimeout(resolve, 300));

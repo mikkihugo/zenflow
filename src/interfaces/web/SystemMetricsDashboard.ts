@@ -45,7 +45,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     mcpMetrics: MCPPerformanceMetrics,
     enhancedMemory: EnhancedMemory,
     lanceDB: LanceDBInterface,
-    config: DashboardConfig = {},
+    config: DashboardConfig = {}
   ) {
     super();
 
@@ -149,7 +149,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     const mcpHealth = this.assessComponentHealth(
       mcpMetrics.requests.averageLatency,
       mcpErrorRate,
-      'mcp',
+      'mcp'
     );
 
     if (mcpHealth !== 'healthy') {
@@ -166,7 +166,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       0, // No latency for memory
       0, // No error rate for memory
       'memory',
-      memoryStats.totalSize,
+      memoryStats.totalSize
     );
 
     if (memoryHealth !== 'healthy') {
@@ -182,7 +182,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     const dbHealth = this.assessComponentHealth(
       dbStats.averageSearchTime,
       0, // No error rate available
-      'database',
+      'database'
     );
 
     if (dbHealth !== 'healthy' && dbStats.totalVectors > 0) {
@@ -231,7 +231,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     latency: number,
     errorRate: number,
     component: string,
-    memoryUsage?: number,
+    memoryUsage?: number
   ): 'healthy' | 'warning' | 'critical' {
     if (component === 'memory' && memoryUsage) {
       if (memoryUsage > this.config.alertThresholds.memoryUsage! * 2) {
@@ -284,17 +284,12 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   private displayConsoleStatus(status: any): void {
     // Overall health
     const _healthEmoji =
-      status.health.overall === 'healthy'
-        ? '✅'
-        : status.health.overall === 'warning'
-          ? '⚠️'
-          : '❌';
+      status.health.overall === 'healthy' ? '✅' : status.health.overall === 'warning' ? '⚠️' : '❌';
 
     // Alerts
     if (status.health.alerts.length > 0) {
       status.health.alerts.forEach((alert: any) => {
-        const _alertEmoji =
-          alert.level === 'error' ? '❌' : alert.level === 'warning' ? '⚠️' : 'ℹ️';
+        const _alertEmoji = alert.level === 'error' ? '❌' : alert.level === 'warning' ? '⚠️' : 'ℹ️';
       });
     } else {
     }

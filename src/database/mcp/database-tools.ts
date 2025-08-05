@@ -471,7 +471,7 @@ export const databaseOptimizeTool: MCPTool = {
         // Engine utilization optimizations
         const engines = Array.from(registeredEngines.values());
         const utilizationIssues = engines.filter(
-          (e) => e.performance.utilization > 0.8 || e.performance.errorRate > 0.05,
+          (e) => e.performance.utilization > 0.8 || e.performance.errorRate > 0.05
         );
 
         for (const engine of utilizationIssues) {
@@ -767,7 +767,7 @@ export const databaseHealthCheckTool: MCPTool = {
           if (engineHealth < 0.8) {
             healthReport.overall = 'degraded';
             healthReport.issues.push(
-              `${stats.engines.total - stats.engines.active} engines are unhealthy`,
+              `${stats.engines.total - stats.engines.active} engines are unhealthy`
             );
           }
         } else {
@@ -895,7 +895,7 @@ export const databaseHealthCheckTool: MCPTool = {
         healthReport.overall = 'healthy';
       } else if (
         healthReport.issues.some(
-          (issue) => issue.includes('not_initialized') || issue.includes('critical'),
+          (issue) => issue.includes('not_initialized') || issue.includes('critical')
         )
       ) {
         healthReport.overall = 'critical';

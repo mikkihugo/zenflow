@@ -27,7 +27,9 @@ import type {
 // WASM module interface (will be loaded dynamically)
 interface WASMFact {
   FastCache: {
-    new (size: number): {
+    new (
+      size: number
+    ): {
       set(key: string, value: string, ttl: bigint): boolean;
       get(key: string): string | undefined;
       clear(): void;
@@ -230,7 +232,7 @@ export class WASMFactIntegration extends EventEmitter {
   async processKnowledgeWithTemplate(
     template: string,
     data: any,
-    context?: ProjectContext,
+    context?: ProjectContext
   ): Promise<any> {
     if (!this.isInitialized) {
       await this.initialize();
@@ -688,7 +690,7 @@ export class WASMFactIntegration extends EventEmitter {
   }
 
   private groupMissionsByTemplate(
-    missions: KnowledgeGatheringMission[],
+    missions: KnowledgeGatheringMission[]
   ): Map<string, KnowledgeGatheringMission[]> {
     const groups = new Map<string, KnowledgeGatheringMission[]>();
 

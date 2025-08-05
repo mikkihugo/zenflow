@@ -297,7 +297,7 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
           progress: 0,
           message: 'Initializing swarm infrastructure...',
           agents: { created: 0, total: config.maxAgents },
-        }),
+        })
       ),
     }));
 
@@ -323,7 +323,7 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
               created: Math.floor(((i + 1) / phases.length) * config.maxAgents),
               total: config.maxAgents,
             },
-          }),
+          })
         ),
       }));
 
@@ -339,7 +339,7 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
           progress: 100,
           message: 'Swarm operational',
           agents: { created: config.maxAgents, total: config.maxAgents },
-        }),
+        })
       ),
     }));
   };
@@ -561,7 +561,7 @@ const CompletionPhase: React.FC<{ state: DiscoveryState }> = ({ state }) => (
         Successfully deployed {state.selectedDomains.size} swarms with{' '}
         {Array.from(state.deploymentStatus.values()).reduce(
           (sum, status) => sum + status.agents.created,
-          0,
+          0
         )}{' '}
         total agents.
       </Text>

@@ -76,7 +76,7 @@ export class SQLiteDatabaseTestHelper implements DatabaseTestHelper {
 
     // Get all table names
     const tables = await this.query(
-      "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
+      "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
     );
 
     // Truncate all tables

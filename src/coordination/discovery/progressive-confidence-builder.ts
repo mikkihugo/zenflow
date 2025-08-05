@@ -194,7 +194,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
     private discoveryBridge: DomainDiscoveryBridge,
     private memoryStore: SessionMemoryStore,
     private agui: AGUIInterface,
-    private config: ProgressiveConfidenceConfig = {},
+    private config: ProgressiveConfidenceConfig = {}
   ) {
     super();
 
@@ -298,7 +298,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
             error: error instanceof Error ? error.message : 'Unknown error',
             iteration: this.iteration,
           },
-          -0.1,
+          -0.1
         ); // Reduce confidence on error
       }
     }
@@ -337,7 +337,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
    */
   private async performCheckpointValidation(
     checkpoint: number,
-    requireApproval: boolean,
+    requireApproval: boolean
   ): Promise<void> {
     logger.info(`Reached validation checkpoint: ${(checkpoint * 100).toFixed(0)}%`, {
       requireApproval,
@@ -384,7 +384,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
         response,
         requireApproval,
       },
-      0.0,
+      0.0
     );
   }
 
@@ -429,7 +429,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
               insights,
               extracted: insights.concepts.length,
             },
-            0.05,
+            0.05
           ); // Small confidence boost per document
         } catch (error) {
           logger.warn(`Failed to import document ${path}:`, error);
@@ -459,7 +459,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
       // Show batch context
       await this.agui.showMessage(
         `📋 Validation Batch ${batches.indexOf(batch) + 1}/${batches.length} (${batch.length} questions)`,
-        'info',
+        'info'
       );
 
       const responses = await this.agui.askBatchQuestions(batch);
@@ -524,7 +524,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
                   factsFound: facts.length,
                   sources: research.sources,
                 },
-                0.1 * research.confidence,
+                0.1 * research.confidence
               );
             }
           }
@@ -565,7 +565,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
             changes: refinement.changes,
             reason: refinement.reason,
           },
-          refinement.confidenceImpact,
+          refinement.confidenceImpact
         );
       }
     }
@@ -616,7 +616,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
           iteration: this.iteration,
           confidence: this.confidence,
           metrics: this.confidenceMetrics,
-        },
+        }
       );
 
       // Save domain state
@@ -784,7 +784,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   private recordLearningEvent(
     type: LearningEvent['type'],
     data: any,
-    confidenceImpact: number,
+    confidenceImpact: number
   ): void {
     const event: LearningEvent = {
       timestamp: Date.now(),
@@ -810,7 +810,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
 
   private batchQuestions(
     questions: ValidationQuestion[],
-    batchSize: number,
+    batchSize: number
   ): ValidationQuestion[][] {
     const batches: ValidationQuestion[][] = [];
     for (let i = 0; i < questions.length; i += batchSize) {
@@ -822,7 +822,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   private async processValidationResponse(
     question: ValidationQuestion,
     response: string,
-    responseTime?: number,
+    responseTime?: number
   ): Promise<void> {
     const confidenceBefore = this.confidence;
 
@@ -863,7 +863,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
             impactOnConfidence: validation.impactOnConfidence,
             responseTime,
           },
-          validation.impactOnConfidence,
+          validation.impactOnConfidence
         );
       }
     }
@@ -875,7 +875,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   private calculateConfidenceImpact(
     question: ValidationQuestion,
     response: string,
-    domain: ConfidentDomain,
+    domain: ConfidentDomain
   ): number {
     const positiveResponses = ['yes', 'correct', 'approve', 'continue'];
     const negativeResponses = ['no', 'incorrect', 'wrong', 'adjust'];
@@ -947,7 +947,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
       const negativeValidations = domain.validations.filter(
         (v) =>
           v.userResponse.toLowerCase().includes('no') ||
-          v.userResponse.toLowerCase().includes('incorrect'),
+          v.userResponse.toLowerCase().includes('incorrect')
       );
 
       if (negativeValidations.length > 1) {
@@ -987,11 +987,11 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
 
   private detectRelationship(
     domain1: ConfidentDomain,
-    domain2: ConfidentDomain,
+    domain2: ConfidentDomain
   ): DomainRelationship | null {
     // Detect relationships based on shared concepts, imports, etc.
     const sharedConcepts = domain1.suggestedConcepts.filter((c) =>
-      domain2.suggestedConcepts.includes(c),
+      domain2.suggestedConcepts.includes(c)
     );
 
     if (sharedConcepts.length > 0) {
@@ -1024,7 +1024,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
       positiveValidations += domain.validations.filter(
         (v) =>
           v.userResponse.toLowerCase().includes('yes') ||
-          v.userResponse.toLowerCase().includes('correct'),
+          v.userResponse.toLowerCase().includes('correct')
       ).length;
     }
 
@@ -1048,7 +1048,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
     // Calculate how clear the domain boundaries are
     const domainScores = Array.from(this.domains.values()).map((d) => {
       const hasGoodName = d.validations.some(
-        (v) => v.question.includes('correct name') && v.userResponse.toLowerCase().includes('yes'),
+        (v) => v.question.includes('correct name') && v.userResponse.toLowerCase().includes('yes')
       );
       const hasResearch = d.research.length > 0;
       const hasRefinements = d.refinementHistory.length > 0;
@@ -1065,7 +1065,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
     // Calculate consistency across iterations
     const recentEvents = this.learningHistory.slice(-20);
     const positiveEvents = recentEvents.filter(
-      (e) => e.confidenceAfter > e.confidenceBefore,
+      (e) => e.confidenceAfter > e.confidenceBefore
     ).length;
     return recentEvents.length > 0 ? positiveEvents / recentEvents.length : 0.5;
   }
@@ -1103,7 +1103,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
     const domainList = Array.from(this.domains.entries())
       .map(
         ([name, domain]) =>
-          `• ${name} (${(domain.detailedConfidence.overall * 100).toFixed(0)}% confidence)`,
+          `• ${name} (${(domain.detailedConfidence.overall * 100).toFixed(0)}% confidence)`
       )
       .join('\n');
 
@@ -1150,10 +1150,10 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
       `📊 Domain Review\n${domainList
         .map(
           (d) =>
-            `- ${d.name}: ${(d.confidence * 100).toFixed(0)}% confidence, ${d.validations} validations, ${d.files} files`,
+            `- ${d.name}: ${(d.confidence * 100).toFixed(0)}% confidence, ${d.validations} validations, ${d.files} files`
         )
         .join('\n')}`,
-      'info',
+      'info'
     );
   }
 
@@ -1233,7 +1233,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
    */
   private isQuestionRelevantToDomain(
     question: ValidationQuestion,
-    domain: ConfidentDomain,
+    domain: ConfidentDomain
   ): boolean {
     // Check if question context mentions this domain
     if (question.context?.domain === domain.name) {
@@ -1278,7 +1278,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
    */
   private async checkMinimumValidations(): Promise<void> {
     const underValidatedDomains = Array.from(this.domains.values()).filter(
-      (domain) => domain.validations.length < this.config.minimumValidationsPerDomain!,
+      (domain) => domain.validations.length < this.config.minimumValidationsPerDomain!
     );
 
     if (underValidatedDomains.length > 0) {
@@ -1318,7 +1318,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
     const lastAudit = this.validationAuditTrail[this.validationAuditTrail.length - 1];
     if (lastAudit && Math.abs(this.confidence - lastAudit.confidenceLevel) > 0.1) {
       significantChanges.push(
-        `Confidence changed from ${(lastAudit.confidenceLevel * 100).toFixed(0)}% to ${(this.confidence * 100).toFixed(0)}%`,
+        `Confidence changed from ${(lastAudit.confidenceLevel * 100).toFixed(0)}% to ${(this.confidence * 100).toFixed(0)}%`
       );
     }
 
@@ -1350,7 +1350,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
         {
           sessionId: this.currentSessionId,
           auditTrail: this.validationAuditTrail,
-        },
+        }
       );
     } catch (error) {
       logger.error('Failed to persist audit trail:', error);

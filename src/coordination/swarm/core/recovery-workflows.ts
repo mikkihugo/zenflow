@@ -78,7 +78,7 @@ export class RecoveryWorkflows extends EventEmitter {
         {
           error: error.message,
           component: 'recovery-workflows',
-        },
+        }
       );
       this.logger.error('Recovery Workflows initialization failed', recoveryError);
       throw recoveryError;
@@ -126,7 +126,7 @@ export class RecoveryWorkflows extends EventEmitter {
       if (this.activeRecoveries.size >= this.options.maxConcurrentRecoveries) {
         throw ErrorFactory.createError(
           'concurrency',
-          `Maximum concurrent recoveries reached (${this.options.maxConcurrentRecoveries})`,
+          `Maximum concurrent recoveries reached (${this.options.maxConcurrentRecoveries})`
         );
       }
 
@@ -307,7 +307,7 @@ export class RecoveryWorkflows extends EventEmitter {
       const stepTimeout = step.timeout || 30000; // 30 seconds default
       const stepPromise = this.runStepFunction(step, context, execution);
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Step timeout')), stepTimeout),
+        setTimeout(() => reject(new Error('Step timeout')), stepTimeout)
       );
 
       const result = await Promise.race([stepPromise, timeoutPromise]);

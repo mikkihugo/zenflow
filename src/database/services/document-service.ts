@@ -89,7 +89,7 @@ export class DocumentService {
    */
   async createDocument<T extends BaseDocumentEntity>(
     document: Omit<T, 'id' | 'created_at' | 'updated_at' | 'checksum'>,
-    options: DocumentCreateOptions = {},
+    options: DocumentCreateOptions = {}
   ): Promise<T> {
     const id = nanoid();
     const now = new Date();
@@ -148,7 +148,7 @@ export class DocumentService {
    */
   async getDocument<T extends BaseDocumentEntity>(
     id: string,
-    options: DocumentQueryOptions = {},
+    options: DocumentQueryOptions = {}
   ): Promise<T | null> {
     const query: DatabaseQuery = {
       id: `get_document_${id}`,
@@ -197,7 +197,7 @@ export class DocumentService {
   async updateDocument<T extends BaseDocumentEntity>(
     id: string,
     updates: Partial<Omit<T, 'id' | 'created_at' | 'updated_at' | 'checksum'>>,
-    options: DocumentCreateOptions = {},
+    options: DocumentCreateOptions = {}
   ): Promise<T> {
     const existing = await this.getDocument<T>(id);
     if (!existing) {
@@ -299,7 +299,7 @@ export class DocumentService {
       parentDocumentId?: string;
       workflowStage?: string;
     },
-    options: DocumentQueryOptions = {},
+    options: DocumentQueryOptions = {}
   ): Promise<{
     documents: T[];
     total: number;
@@ -347,7 +347,7 @@ export class DocumentService {
    * Advanced document search with full-text and semantic capabilities
    */
   async searchDocuments<T extends BaseDocumentEntity>(
-    searchOptions: DocumentSearchOptions,
+    searchOptions: DocumentSearchOptions
   ): Promise<{
     documents: T[];
     total: number;
@@ -402,7 +402,7 @@ export class DocumentService {
    * Create a new project with document structure
    */
   async createProject(
-    project: Omit<ProjectEntity, 'id' | 'created_at' | 'updated_at'>,
+    project: Omit<ProjectEntity, 'id' | 'created_at' | 'updated_at'>
   ): Promise<ProjectEntity> {
     const id = nanoid();
     const now = new Date();
@@ -482,7 +482,7 @@ export class DocumentService {
     // Get all project documents
     const { documents } = await this.queryDocuments(
       { projectId },
-      { includeContent: true, includeRelationships: true },
+      { includeContent: true, includeRelationships: true }
     );
 
     // Group documents by type
@@ -509,7 +509,7 @@ export class DocumentService {
   async startDocumentWorkflow(
     documentId: string,
     workflowName: string,
-    initialStage = 'started',
+    initialStage = 'started'
   ): Promise<DocumentWorkflowStateEntity> {
     const id = nanoid();
     const now = new Date();
@@ -557,7 +557,7 @@ export class DocumentService {
   async advanceDocumentWorkflow(
     documentId: string,
     nextStage: string,
-    results?: Record<string, any>,
+    results?: Record<string, any>
   ): Promise<DocumentWorkflowStateEntity> {
     const existing = await this.getDocumentWorkflowState(documentId);
     if (!existing) {
@@ -861,14 +861,14 @@ export class DocumentService {
   }
 
   private async getDocumentRelationships(
-    _documentId: string,
+    _documentId: string
   ): Promise<DocumentRelationshipEntity[]> {
     // Implementation would query relationships table
     return [];
   }
 
   private async getDocumentWorkflowState(
-    _documentId: string,
+    _documentId: string
   ): Promise<DocumentWorkflowStateEntity | null> {
     // Implementation would query workflow states table
     return null;

@@ -33,7 +33,7 @@ describe('Performance Optimization System', () => {
         swarm: swarmOptimizer,
         data: dataOptimizer,
         wasm: wasmOptimizer,
-      },
+      }
     );
   });
 
@@ -223,7 +223,7 @@ describe('Performance Optimization System', () => {
       expect(result).toBeDefined();
       expect(result.maxAgents).toBeGreaterThanOrEqual(swarmSize);
       expect(['round_robin', 'least_connections', 'weighted', 'adaptive']).toContain(
-        result.loadBalancing,
+        result.loadBalancing
       );
       expect(typeof result.autoScaling).toBe('boolean');
       expect(result.resourceAllocation).toBeDefined();
@@ -388,7 +388,7 @@ describe('Performance Optimization System', () => {
 
       const testOptimizer = new PerformanceOptimizer(
         { enabled: true },
-        { neural: failingOptimizer as any },
+        { neural: failingOptimizer as any }
       );
 
       const results = await testOptimizer.optimizeNow();

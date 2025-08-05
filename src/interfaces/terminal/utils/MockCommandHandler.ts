@@ -280,7 +280,7 @@ export class MockCommandHandler {
    */
   static async executeWorkspace(
     args: string[],
-    _flags: Record<string, any>,
+    _flags: Record<string, any>
   ): Promise<CommandResult> {
     try {
       const action = args[0];
@@ -371,7 +371,7 @@ export class MockCommandHandler {
   static async executeCommand(
     command: string,
     args: string[],
-    flags: Record<string, any>,
+    flags: Record<string, any>
   ): Promise<CommandResult> {
     logger.debug(`Delegating command execution to engine: ${command}`);
 

@@ -168,12 +168,12 @@ describe('DI Decorators', () => {
           const metadata = getInjectionMetadata(UserService);
           if (metadata) {
             const dependencies = metadata.injectionTokens.map((token) =>
-              token ? c.resolve(token) : undefined,
+              token ? c.resolve(token) : undefined
             );
             return new UserService(...dependencies);
           }
           return new UserService(c.resolve(CORE_TOKENS.Logger), c.resolve(CORE_TOKENS.Config));
-        }),
+        })
       );
 
       const userService = container.resolve(userServiceToken);
@@ -235,21 +235,21 @@ describe('DI Decorators', () => {
 
       container.register(
         dbToken,
-        new SingletonProvider((c) => new DatabaseService(c.resolve(CORE_TOKENS.Logger))),
+        new SingletonProvider((c) => new DatabaseService(c.resolve(CORE_TOKENS.Logger)))
       );
 
       container.register(
         repoToken,
         new SingletonProvider(
-          (c) => new UserRepository(c.resolve(CORE_TOKENS.Logger), c.resolve(dbToken)),
-        ),
+          (c) => new UserRepository(c.resolve(CORE_TOKENS.Logger), c.resolve(dbToken))
+        )
       );
 
       container.register(
         serviceToken,
         new SingletonProvider(
-          (c) => new UserService(c.resolve(CORE_TOKENS.Logger), c.resolve(repoToken)),
-        ),
+          (c) => new UserService(c.resolve(CORE_TOKENS.Logger), c.resolve(repoToken))
+        )
       );
 
       const userService = container.resolve(serviceToken);
@@ -283,7 +283,7 @@ describe('DI Decorators', () => {
         new SingletonProvider((c) => {
           // In a real implementation, this would use a factory that reads metadata
           return new ConfigurableService(c.resolve(valueToken));
-        }),
+        })
       );
 
       const service = container.resolve(serviceToken);
@@ -302,8 +302,8 @@ describe('DI Decorators', () => {
       container.register(
         serviceToken,
         new SingletonProvider(
-          (c) => new TestService(c.resolve(createToken<string>('NonExistentService'))),
-        ),
+          (c) => new TestService(c.resolve(createToken<string>('NonExistentService')))
+        )
       );
 
       expect(() => container.resolve(serviceToken)).toThrow();

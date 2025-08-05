@@ -158,7 +158,7 @@ async function runTests() {
     const stats = container.getStats();
     if (stats.registeredServices !== 100 || stats.activeInstances !== 100) {
       throw new Error(
-        `Expected 100 services and instances, got ${stats.registeredServices}/${stats.activeInstances}`,
+        `Expected 100 services and instances, got ${stats.registeredServices}/${stats.activeInstances}`
       );
     }
 

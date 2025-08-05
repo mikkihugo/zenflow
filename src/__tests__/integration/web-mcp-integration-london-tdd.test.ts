@@ -256,7 +256,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
             result: expect.objectContaining({
               tools: expect.any(Array),
             }),
-          }),
+          })
         );
         expect(mockResponseFormatter.formatSuccess).toHaveBeenCalled();
 
@@ -483,7 +483,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
             params: { toolName: 'invalid-tool' },
             body: {},
           },
-          {},
+          {}
         );
 
         // Assert - Verify error transformation chain

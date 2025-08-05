@@ -80,7 +80,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
    * Identify system components from algorithms and data structures
    */
   private async identifySystemComponents(
-    pseudocode: PseudocodeStructure,
+    pseudocode: PseudocodeStructure
   ): Promise<SystemComponent[]> {
     const components: SystemComponent[] = [];
 
@@ -160,7 +160,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
    * Create infrastructure components
    */
   private async createInfrastructureComponents(
-    _pseudocode: PseudocodeStructure,
+    _pseudocode: PseudocodeStructure
   ): Promise<SystemComponent[]> {
     return [
       {
@@ -233,7 +233,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
    * Define relationships between components
    */
   private async defineComponentRelationships(
-    components: SystemComponent[],
+    components: SystemComponent[]
   ): Promise<ComponentRelationship[]> {
     const relationships: ComponentRelationship[] = [];
 
@@ -241,7 +241,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
       // Create dependency relationships
       for (const dependency of component.dependencies) {
         const dependentComponent = components.find(
-          (c) => c.name === dependency || c.interfaces.includes(dependency),
+          (c) => c.name === dependency || c.interfaces.includes(dependency)
         );
         if (dependentComponent) {
           relationships.push({
@@ -283,7 +283,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
    */
   private async selectArchitecturePatterns(
     _pseudocode: PseudocodeStructure,
-    components: SystemComponent[],
+    components: SystemComponent[]
   ): Promise<ArchitecturePattern[]> {
     const patterns: ArchitecturePattern[] = [];
 
@@ -350,7 +350,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
    */
   private async defineDataFlows(
     components: SystemComponent[],
-    relationships: ComponentRelationship[],
+    relationships: ComponentRelationship[]
   ): Promise<DataFlow[]> {
     const dataFlows: DataFlow[] = [];
 
@@ -381,7 +381,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
    * Define component interfaces
    */
   private async defineComponentInterfaces(
-    components: SystemComponent[],
+    components: SystemComponent[]
   ): Promise<ComponentInterface[]> {
     const interfaces: ComponentInterface[] = [];
 
@@ -408,7 +408,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
    * Define quality attributes
    */
   private async defineQualityAttributes(
-    _pseudocode: PseudocodeStructure,
+    _pseudocode: PseudocodeStructure
   ): Promise<QualityAttribute[]> {
     return [
       {
@@ -484,7 +484,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
    */
   private async createDeploymentStrategy(
     _components: SystemComponent[],
-    patterns: ArchitecturePattern[],
+    patterns: ArchitecturePattern[]
   ): Promise<DeploymentStrategy> {
     const hasMicroservices = patterns.some((p) => p.name === 'Microservices');
 
@@ -539,7 +539,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
    * Identify integration points
    */
   private async identifyIntegrationPoints(
-    _components: SystemComponent[],
+    _components: SystemComponent[]
   ): Promise<IntegrationPoint[]> {
     return [
       {
@@ -681,7 +681,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
       (c) =>
         c.name.toLowerCase().includes('coordination') ||
         c.name.toLowerCase().includes('agent') ||
-        c.name.toLowerCase().includes('swarm'),
+        c.name.toLowerCase().includes('swarm')
     );
   }
 
@@ -733,14 +733,14 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
       methods.push(
         { name: 'execute', parameters: ['input'], returns: 'Promise<Result>' },
         { name: 'validate', parameters: ['input'], returns: 'ValidationResult' },
-        { name: 'getStatus', parameters: [], returns: 'ServiceStatus' },
+        { name: 'getStatus', parameters: [], returns: 'ServiceStatus' }
       );
     } else if (component.type === 'data-manager') {
       methods.push(
         { name: 'create', parameters: ['data'], returns: 'Promise<string>' },
         { name: 'read', parameters: ['id'], returns: 'Promise<Data>' },
         { name: 'update', parameters: ['id', 'data'], returns: 'Promise<void>' },
-        { name: 'delete', parameters: ['id'], returns: 'Promise<void>' },
+        { name: 'delete', parameters: ['id'], returns: 'Promise<void>' }
       );
     }
 
@@ -766,7 +766,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   private async extractPerformanceRequirements(
-    pseudocode: PseudocodeStructure,
+    pseudocode: PseudocodeStructure
   ): Promise<PerformanceRequirement[]> {
     return pseudocode.estimatedPerformance.map((target) => ({
       id: nanoid(),
@@ -778,7 +778,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   private async defineSecurityRequirements(
-    _components: SystemComponent[],
+    _components: SystemComponent[]
   ): Promise<SecurityRequirement[]> {
     return [
       {
@@ -806,7 +806,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   private async defineScalabilityRequirements(
-    _pseudocode: PseudocodeStructure,
+    _pseudocode: PseudocodeStructure
   ): Promise<ScalabilityRequirement[]> {
     return [
       {
@@ -909,7 +909,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
             break;
           case 'Quality attributes':
             recommendations.push(
-              'Define comprehensive quality attributes including performance, security, and scalability',
+              'Define comprehensive quality attributes including performance, security, and scalability'
             );
             break;
         }

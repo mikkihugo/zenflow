@@ -81,7 +81,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   public async selectAgent(
     task: Task,
     availableAgents: Agent[],
-    metrics: Map<string, LoadMetrics>,
+    metrics: Map<string, LoadMetrics>
   ): Promise<RoutingResult> {
     if (availableAgents.length === 0) {
       throw new Error('No available agents');
@@ -92,7 +92,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
     // Filter predictions with sufficient confidence
     const viablePredictions = predictions.filter(
-      (p) => p.confidenceScore >= this.config.predictionThreshold,
+      (p) => p.confidenceScore >= this.config.predictionThreshold
     );
 
     if (viablePredictions.length === 0) {
@@ -172,7 +172,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     agentId: string,
     task: Task,
     duration: number,
-    success: boolean,
+    success: boolean
   ): Promise<void> {
     // Record historical data for training
     const historicalEntry: HistoricalData = {
@@ -253,7 +253,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   private async generatePredictions(
     task: Task,
     availableAgents: Agent[],
-    metrics: Map<string, LoadMetrics>,
+    metrics: Map<string, LoadMetrics>
   ): Promise<PredictionResult[]> {
     const predictions: PredictionResult[] = [];
 
@@ -431,7 +431,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   private fallbackSelection(
     _task: Task,
     availableAgents: Agent[],
-    metrics: Map<string, LoadMetrics>,
+    metrics: Map<string, LoadMetrics>
   ): RoutingResult {
     // Simple heuristic: select agent with best recent performance
     let bestAgent = availableAgents[0];
@@ -482,7 +482,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
   private getHistoricalSuccessRate(agentId: string, taskType: string): number {
     const relevantData = this.historicalData.filter(
-      (entry) => entry.agentId === agentId && entry.taskType === taskType,
+      (entry) => entry.agentId === agentId && entry.taskType === taskType
     );
 
     if (relevantData.length === 0) return 0.8; // Default
@@ -494,7 +494,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   private calculateAgentCapability(agent: Agent, task: Task): number {
     // Calculate how well agent capabilities match task requirements
     const matchingCapabilities = task.requiredCapabilities.filter((cap) =>
-      agent.capabilities.includes(cap),
+      agent.capabilities.includes(cap)
     ).length;
 
     return task.requiredCapabilities.length > 0
@@ -614,7 +614,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     _agentId: string,
     _task: Task,
     _duration: number,
-    _success: boolean,
+    _success: boolean
   ): Promise<void> {
     // Update model performance metrics based on actual outcomes
     // This would involve comparing predictions with actual results

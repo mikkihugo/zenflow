@@ -34,7 +34,7 @@ export function injectable<T extends Constructor>(constructor: T): T {
  * Inject decorator for parameter injection
  */
 export function inject<T>(token: DIToken<T>) {
-  return function (target: any, propertyKey: string | symbol | undefined, parameterIndex: number) {
+  return (target: any, propertyKey: string | symbol | undefined, parameterIndex: number) => {
     const existingTokens = Reflect.getMetadata(INJECTION_TOKENS_KEY, target) || [];
     existingTokens[parameterIndex] = token;
     Reflect.defineMetadata(INJECTION_TOKENS_KEY, existingTokens, target);
@@ -52,7 +52,7 @@ export function isInjectable(constructor: Constructor): boolean {
  * Get injection tokens for a constructor
  */
 export function getInjectionTokens(
-  constructor: Constructor,
+  constructor: Constructor
 ): (DIToken<any> | undefined)[] | undefined {
   return Reflect.getMetadata(INJECTION_TOKENS_KEY, constructor);
 }
@@ -62,7 +62,7 @@ export function getInjectionTokens(
  */
 export function setInjectionTokens(
   constructor: Constructor,
-  tokens: (DIToken<any> | undefined)[],
+  tokens: (DIToken<any> | undefined)[]
 ): void {
   Reflect.defineMetadata(INJECTION_TOKENS_KEY, tokens, constructor);
 }

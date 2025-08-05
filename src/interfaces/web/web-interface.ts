@@ -72,7 +72,7 @@ export class WebInterface {
     this.webSocketManager = new WebSocketManager(
       this.server.getSocketIO(),
       this.config,
-      this.dataService,
+      this.dataService
     );
 
     // HTML generation for fallback UI

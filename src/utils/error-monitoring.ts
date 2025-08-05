@@ -143,7 +143,7 @@ export class ErrorMonitoring extends EventEmitter {
    */
   getErrorTrends(
     component?: string,
-    timeWindow: number = 3600000,
+    timeWindow: number = 3600000
   ): {
     hourly: number[];
     daily: number[];
@@ -348,7 +348,7 @@ export class ErrorMonitoring extends EventEmitter {
 
     return (
       criticalPatterns.some(
-        (pattern) => error.name.includes(pattern) || error.message.includes(pattern),
+        (pattern) => error.name.includes(pattern) || error.message.includes(pattern)
       ) ||
       context.component === 'security' ||
       context.component === 'database'
@@ -407,7 +407,7 @@ export class ErrorMonitoring extends EventEmitter {
         // Just clear old errors during periodic monitoring
         // Don't record artificial errors for metrics
       },
-      5 * 60 * 1000,
+      5 * 60 * 1000
     ); // Every 5 minutes
   }
 

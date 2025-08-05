@@ -342,7 +342,7 @@ export const factGatherTool: MCPTool = {
           results.push(...searchResult);
         } catch (error) {
           errors.push(
-            `Web/Docs search: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            `Web/Docs search: ${error instanceof Error ? error.message : 'Unknown error'}`
           );
         }
       }

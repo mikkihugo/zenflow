@@ -390,8 +390,8 @@ describe('Product Flow + SPARC Unit Tests', () => {
         sparcConcerns.some(
           (sparcConcern) =>
             concern.toLowerCase().includes(sparcConcern.toLowerCase()) ||
-            sparcConcern.toLowerCase().includes(concern.toLowerCase()),
-        ),
+            sparcConcern.toLowerCase().includes(concern.toLowerCase())
+        )
       );
 
       expect(overlap).toHaveLength(0); // No direct overlap

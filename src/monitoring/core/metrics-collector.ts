@@ -146,7 +146,7 @@ export class MetricsCollector extends EventEmitter {
     options: {
       collectionInterval?: number;
       maxHistorySize?: number;
-    } = {},
+    } = {}
   ) {
     super();
     this.collectionInterval = options.collectionInterval || 1000;
@@ -465,7 +465,7 @@ export class MetricsCollector extends EventEmitter {
 
     return this.metricsHistory.filter(
       (metrics) =>
-        metrics.system.timestamp >= timeRange.start && metrics.system.timestamp <= timeRange.end,
+        metrics.system.timestamp >= timeRange.start && metrics.system.timestamp <= timeRange.end
     );
   }
 

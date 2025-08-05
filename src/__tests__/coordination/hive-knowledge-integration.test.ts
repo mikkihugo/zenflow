@@ -58,14 +58,14 @@ class MockHiveFACT extends EventEmitter implements Partial<HiveFACTSystem> {
 
   async searchFacts(query: any): Promise<UniversalFact[]> {
     const results = Array.from(this.facts.values()).filter((fact) =>
-      JSON.stringify(fact).toLowerCase().includes(query.query.toLowerCase()),
+      JSON.stringify(fact).toLowerCase().includes(query.query.toLowerCase())
     );
     return results.slice(0, query.limit || 10);
   }
 
   async getFact(type: string, subject: string, swarmId?: string): Promise<UniversalFact | null> {
     const fact = Array.from(this.facts.values()).find(
-      (f) => f.type === type && f.subject.includes(subject),
+      (f) => f.type === type && f.subject.includes(subject)
     );
 
     if (fact && swarmId) {
@@ -139,19 +139,19 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
 
     swarmKnowledge1 = new SwarmKnowledgeSync(
       { swarmId: 'test-swarm-1', cacheSize: 100 },
-      memoryStore as any,
+      memoryStore as any
     );
 
     swarmKnowledge2 = new SwarmKnowledgeSync(
       { swarmId: 'test-swarm-2', cacheSize: 100 },
-      memoryStore as any,
+      memoryStore as any
     );
 
     knowledgeAwareDiscovery = new KnowledgeAwareDiscovery(
       { swarmId: 'discovery-swarm' },
       hiveFact as any,
       swarmKnowledge1,
-      memoryStore as any,
+      memoryStore as any
     );
 
     await knowledgeBridge.initialize();
@@ -427,7 +427,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
       try {
         const result = await swarmKnowledge1.queryKnowledge(
           'authentication patterns',
-          'authentication',
+          'authentication'
         );
         expect(result).toBeDefined();
         expect(result.fallback).toBe(true);
@@ -470,7 +470,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
 
       const knowledgeAwareDomains = await knowledgeAwareDiscovery.applyKnowledgeInsights(
         mockOriginalDomains as any,
-        mockContext,
+        mockContext
       );
 
       expect(knowledgeAwareDomains).toHaveLength(2);
@@ -546,7 +546,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
       // Step 3: Query knowledge from another swarm
       const knowledge = await swarmKnowledge2.queryKnowledge(
         'authentication patterns',
-        'authentication',
+        'authentication'
       );
       expect(knowledge).toBeDefined();
 
@@ -573,7 +573,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
 
       const knowledgeAwareDomains = await knowledgeAwareDiscovery.applyKnowledgeInsights(
         mockDomains as any,
-        mockContext,
+        mockContext
       );
 
       expect(knowledgeAwareDomains).toHaveLength(1);
@@ -621,7 +621,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
 
       // Create multiple concurrent requests
       const requests = Array.from({ length: numberOfRequests }, (_, i) =>
-        swarmKnowledge1.queryKnowledge(`test query ${i}`, 'performance-test'),
+        swarmKnowledge1.queryKnowledge(`test query ${i}`, 'performance-test')
       );
 
       await Promise.allSettled(requests);

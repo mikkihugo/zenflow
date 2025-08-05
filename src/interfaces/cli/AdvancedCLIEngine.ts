@@ -368,7 +368,7 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
   private async executeProjectCommand(
     commandName: string,
     args: any[],
-    options: any,
+    options: any
   ): Promise<any> {
     switch (commandName) {
       case 'create':
@@ -398,7 +398,7 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
   private async executeGenerateCommand(
     commandName: string,
     args: any[],
-    options: any,
+    options: any
   ): Promise<any> {
     switch (commandName) {
       case 'from-spec':

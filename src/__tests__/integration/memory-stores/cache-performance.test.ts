@@ -141,7 +141,7 @@ class PerformanceCache<T> extends EventEmitter {
   constructor(
     maxSize: number = 1000,
     strategy: CacheStrategy<T> = new LRUStrategy<T>(),
-    defaultTTL?: number,
+    defaultTTL?: number
   ) {
     super();
     this.maxSize = maxSize;

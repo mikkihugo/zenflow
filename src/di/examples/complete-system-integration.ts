@@ -275,7 +275,7 @@ export class CompleteSystemIntegration {
         // Swarm services
         .singleton(
           SWARM_TOKENS.AgentRegistry,
-          (c) => new AgentRegistry(c.resolve(CORE_TOKENS.Logger), c.resolve(CORE_TOKENS.EventBus)),
+          (c) => new AgentRegistry(c.resolve(CORE_TOKENS.Logger), c.resolve(CORE_TOKENS.EventBus))
         )
         .singleton(
           SWARM_TOKENS.SwarmCoordinator,
@@ -284,15 +284,15 @@ export class CompleteSystemIntegration {
               c.resolve(CORE_TOKENS.Logger),
               c.resolve(CORE_TOKENS.Config),
               c.resolve(CORE_TOKENS.EventBus),
-              c.resolve(SWARM_TOKENS.AgentRegistry),
-            ),
+              c.resolve(SWARM_TOKENS.AgentRegistry)
+            )
         )
 
         // Neural services
         .singleton(
           NEURAL_TOKENS.NetworkTrainer,
           (c) =>
-            new NeuralNetworkTrainer(c.resolve(CORE_TOKENS.Logger), c.resolve(CORE_TOKENS.Config)),
+            new NeuralNetworkTrainer(c.resolve(CORE_TOKENS.Logger), c.resolve(CORE_TOKENS.Config))
         )
 
         .build()

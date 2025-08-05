@@ -47,7 +47,7 @@ export class TerminalManager extends EventEmitter {
   constructor(
     config: TerminalConfig = {},
     private logger?: ILogger,
-    private eventBus?: IEventBus,
+    private eventBus?: IEventBus
   ) {
     super();
 
@@ -56,7 +56,7 @@ export class TerminalManager extends EventEmitter {
       cwd: config.cwd || process.cwd(),
       env: {
         ...(Object.fromEntries(
-          Object.entries(process.env).filter(([_, value]) => value !== undefined),
+          Object.entries(process.env).filter(([_, value]) => value !== undefined)
         ) as Record<string, string>),
         ...config.env,
       },
@@ -78,7 +78,7 @@ export class TerminalManager extends EventEmitter {
       env?: Record<string, string>;
       timeout?: number;
       shell?: boolean;
-    } = {},
+    } = {}
   ): Promise<ProcessResult> {
     const startTime = Date.now();
     const processId = `proc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -311,7 +311,7 @@ export class TerminalManager extends EventEmitter {
     if (this.eventBus) {
       this.eventBus.on('system:shutdown', () => {
         this.cleanup().catch((error) =>
-          this.logger?.error('Error during TerminalManager cleanup', { error }),
+          this.logger?.error('Error during TerminalManager cleanup', { error })
         );
       });
     }

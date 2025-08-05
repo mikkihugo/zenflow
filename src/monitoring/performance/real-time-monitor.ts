@@ -39,7 +39,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
       retentionPeriod?: number; // milliseconds
       alertThresholds?: AlertConfig[];
       samplingInterval?: number;
-    } = {},
+    } = {}
   ) {
     super();
 
@@ -133,7 +133,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
   async measureAsync<T>(
     name: string,
     fn: () => Promise<T>,
-    tags?: Record<string, string>,
+    tags?: Record<string, string>
   ): Promise<T> {
     const start = performance.now();
     try {
@@ -284,7 +284,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
 
   private checkMetricAlerts(metric: PerformanceMetric): void {
     const relevantAlerts = this.alerts.filter(
-      (alert) => alert.enabled && alert.metric === metric.name,
+      (alert) => alert.enabled && alert.metric === metric.name
     );
 
     for (const alert of relevantAlerts) {
@@ -336,7 +336,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
         threshold: 1000, // 1 second
         comparison: 'gt',
         enabled: true,
-      },
+      }
     );
   }
 }

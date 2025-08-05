@@ -292,13 +292,13 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
       (pattern) =>
         pattern.context.agentId === agentId ||
         pattern.confidence > 0.8 ||
-        pattern.metadata.relevance > 0.7,
+        pattern.metadata.relevance > 0.7
     );
   }
 
   private generateBehaviorOptimizations(
     agentId: string,
-    patterns: Pattern[],
+    patterns: Pattern[]
   ): OptimizationAction[] {
     const optimizations: OptimizationAction[] = [];
 
@@ -353,7 +353,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
 
   private calculateOptimizationConfidence(
     patterns: Pattern[],
-    optimizations: OptimizationAction[],
+    optimizations: OptimizationAction[]
   ): number {
     if (patterns.length === 0) return 0;
 
@@ -425,13 +425,13 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
     tasks: Task[],
     agents: Agent[],
     agentAnalysis: Map<string, any>,
-    taskAnalysis: Map<string, any>,
+    taskAnalysis: Map<string, any>
   ): TaskAllocation[] {
     const allocations: TaskAllocation[] = [];
 
     // Sort tasks by priority and complexity
     const sortedTasks = tasks.sort(
-      (a, b) => b.priority - a.priority || b.complexity - a.complexity,
+      (a, b) => b.priority - a.priority || b.complexity - a.complexity
     );
 
     for (const task of sortedTasks) {
@@ -475,14 +475,14 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
     agent: Agent,
     task: Task,
     _agentInfo: any,
-    _taskInfo: any,
+    _taskInfo: any
   ): number {
     let score = 0;
 
     // Capability match
     const capabilityMatch =
       task.requirements.filter(
-        (req) => agent.capabilities.includes(req) || agent.specializations.includes(req),
+        (req) => agent.capabilities.includes(req) || agent.specializations.includes(req)
       ).length / task.requirements.length;
     score += capabilityMatch * 0.4;
 
@@ -574,7 +574,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
 
   private generateResourceAllocations(
     resources: Resource[],
-    patterns: Map<string, any>,
+    patterns: Map<string, any>
   ): ResourceAllocation[] {
     const allocations: ResourceAllocation[] = [];
 
@@ -610,7 +610,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
 
   private calculateCostEfficiency(
     allocations: ResourceAllocation[],
-    resources: Resource[],
+    resources: Resource[]
   ): number {
     if (allocations.length === 0 || resources.length === 0) return 0;
 
@@ -623,7 +623,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
 
   private generateResourceThresholds(
     resources: Resource[],
-    patterns: Map<string, any>,
+    patterns: Map<string, any>
   ): AdaptiveThreshold[] {
     const thresholds: AdaptiveThreshold[] = [];
 
@@ -657,7 +657,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
 
   private generateEfficiencyOptimizations(
     bottlenecks: string[],
-    _metrics: PerformanceMetrics,
+    _metrics: PerformanceMetrics
   ): OptimizationAction[] {
     const optimizations: OptimizationAction[] = [];
 
@@ -706,7 +706,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
 
   private calculateEfficiencyGain(
     optimizations: OptimizationAction[],
-    _metrics: PerformanceMetrics,
+    _metrics: PerformanceMetrics
   ): number {
     return optimizations.reduce((total, opt) => total + opt.expectedImpact, 0);
   }
@@ -744,7 +744,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
 
   private calculateTargetMetrics(
     current: PerformanceMetrics,
-    optimizations: OptimizationAction[],
+    optimizations: OptimizationAction[]
   ): PerformanceMetrics {
     const totalImprovement = optimizations.reduce((sum, opt) => sum + opt.expectedImpact, 0);
 
@@ -766,7 +766,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
   }
 
   private determinePrimaryCategory(
-    bottlenecks: string[],
+    bottlenecks: string[]
   ): 'cpu' | 'memory' | 'network' | 'coordination' {
     if (bottlenecks.includes('cpu_bottleneck')) return 'cpu';
     if (bottlenecks.includes('memory_bottleneck')) return 'memory';
@@ -776,7 +776,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
 
   private prioritizeBottlenecks(bottlenecks: Bottleneck[]): Bottleneck[] {
     return bottlenecks.sort(
-      (a, b) => b.severity * b.impact * b.frequency - a.severity * a.impact * a.frequency,
+      (a, b) => b.severity * b.impact * b.frequency - a.severity * a.impact * a.frequency
     );
   }
 
@@ -838,7 +838,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
 
   private createLatencyMonitoringPlan(
     _bottlenecks: Bottleneck[],
-    optimizations: any[],
+    optimizations: any[]
   ): MonitoringStrategy {
     const allMetrics = optimizations.flatMap((opt) => opt.monitoring);
 
@@ -893,7 +893,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
       () => {
         this.performPeriodicOptimization();
       },
-      10 * 60 * 1000,
+      10 * 60 * 1000
     ); // Every 10 minutes
   }
 

@@ -71,7 +71,7 @@ class SQLiteMemoryStore {
     await this.run(
       `INSERT OR REPLACE INTO sessions (id, data, metadata, created_at, updated_at) 
        VALUES (?, ?, ?, ?, ?)`,
-      [sessionId, JSON.stringify(data), JSON.stringify(metadata || {}), now, now],
+      [sessionId, JSON.stringify(data), JSON.stringify(metadata || {}), now, now]
     );
   }
 
@@ -99,7 +99,7 @@ class SQLiteMemoryStore {
     if (!this.isInitialized) throw new Error('Database not initialized');
 
     const result = await this.get(
-      'SELECT COUNT(*) as count, SUM(LENGTH(data)) as size FROM sessions',
+      'SELECT COUNT(*) as count, SUM(LENGTH(data)) as size FROM sessions'
     );
 
     return {
@@ -415,7 +415,7 @@ describe('SQLite Persistence Integration Tests', () => {
       const uninitializedStore = new SQLiteMemoryStore(dbPath);
 
       await expect(uninitializedStore.store('test', {})).rejects.toThrow(
-        'Database not initialized',
+        'Database not initialized'
       );
       await expect(uninitializedStore.retrieve('test')).rejects.toThrow('Database not initialized');
       await expect(uninitializedStore.listSessions()).rejects.toThrow('Database not initialized');

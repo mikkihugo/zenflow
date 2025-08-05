@@ -116,7 +116,7 @@ export class NeuralNetwork {
 
   constructor(
     private wasm: any,
-    config: NetworkConfig,
+    config: NetworkConfig
   ) {
     this.network = new wasm.WasmNeuralNetwork(config);
   }
@@ -152,7 +152,7 @@ export class NeuralTrainer {
 
   constructor(
     private wasm: any,
-    config: TrainingConfig,
+    config: TrainingConfig
   ) {
     this.trainer = new wasm.WasmTrainer(config);
   }
@@ -165,13 +165,13 @@ export class NeuralTrainer {
     network: NeuralNetwork,
     data: TrainingDataConfig,
     targetError: number,
-    maxEpochs: number,
+    maxEpochs: number
   ): Promise<TrainingResult> {
     return this.trainer.train_until_target(
       network.getInternalNetwork(),
       data,
       targetError,
-      maxEpochs,
+      maxEpochs
     );
   }
 
@@ -221,7 +221,7 @@ export class ActivationFunctions {
     wasm: any,
     name: string,
     input: number,
-    steepness: number = 1.0,
+    steepness: number = 1.0
   ): Promise<number> {
     return wasm.ActivationFunctionManager.test_activation_function(name, input, steepness);
   }
@@ -242,12 +242,12 @@ export class CascadeTrainer {
     private wasm: any,
     config: CascadeConfig | null,
     network: NeuralNetwork,
-    data: TrainingDataConfig,
+    data: TrainingDataConfig
   ) {
     this.trainer = new wasm.WasmCascadeTrainer(
       config || this.getDefaultConfig(),
       network.getInternalNetwork(),
-      data,
+      data
     );
   }
 

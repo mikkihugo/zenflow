@@ -176,7 +176,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
   async processDocumentEntity(
     workspaceId: string,
     document: BaseDocumentEntity,
-    options: DocumentProcessingOptions = {},
+    options: DocumentProcessingOptions = {}
   ): Promise<void> {
     const context = this.workspaces.get(workspaceId);
     if (!context) {
@@ -193,7 +193,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
       const workflowIds = await this.workflowEngine.processDocumentEvent(
         'document:created',
         document,
-        { workspaceId, projectId: context.projectId },
+        { workspaceId, projectId: context.projectId }
       );
 
       if (workflowIds.length > 0) {
@@ -229,7 +229,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
         }>;
       };
     },
-    options: DocumentProcessingOptions = {},
+    options: DocumentProcessingOptions = {}
   ): Promise<VisionDocumentEntity> {
     const context = this.workspaces.get(workspaceId);
     if (!context) {
@@ -284,7 +284,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
     workspaceId: string,
     sourceDocumentId: string,
     targetType: DocumentType,
-    options: DocumentProcessingOptions = {},
+    options: DocumentProcessingOptions = {}
   ): Promise<BaseDocumentEntity[]> {
     const context = this.workspaces.get(workspaceId);
     if (!context) {
@@ -301,27 +301,27 @@ export class DatabaseDrivenSystem extends EventEmitter {
     switch (targetType) {
       case 'adr':
         generatedDocs.push(
-          ...(await this.generateADRsFromVision(sourceDoc as VisionDocumentEntity, context)),
+          ...(await this.generateADRsFromVision(sourceDoc as VisionDocumentEntity, context))
         );
         break;
       case 'prd':
         generatedDocs.push(
-          ...(await this.generatePRDsFromVision(sourceDoc as VisionDocumentEntity, context)),
+          ...(await this.generatePRDsFromVision(sourceDoc as VisionDocumentEntity, context))
         );
         break;
       case 'epic':
         generatedDocs.push(
-          ...(await this.generateEpicsFromPRD(sourceDoc as PRDDocumentEntity, context)),
+          ...(await this.generateEpicsFromPRD(sourceDoc as PRDDocumentEntity, context))
         );
         break;
       case 'feature':
         generatedDocs.push(
-          ...(await this.generateFeaturesFromEpic(sourceDoc as EpicDocumentEntity, context)),
+          ...(await this.generateFeaturesFromEpic(sourceDoc as EpicDocumentEntity, context))
         );
         break;
       case 'task':
         generatedDocs.push(
-          ...(await this.generateTasksFromFeature(sourceDoc as FeatureDocumentEntity, context)),
+          ...(await this.generateTasksFromFeature(sourceDoc as FeatureDocumentEntity, context))
         );
         break;
       default:
@@ -334,7 +334,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
     }
 
     logger.info(
-      `🔧 Generated ${generatedDocs.length} ${targetType} documents from ${sourceDoc.type}`,
+      `🔧 Generated ${generatedDocs.length} ${targetType} documents from ${sourceDoc.type}`
     );
     return generatedDocs;
   }
@@ -381,7 +381,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
         acc[doc.type] = (acc[doc.type] || 0) + 1;
         return acc;
       },
-      {} as Record<DocumentType, number>,
+      {} as Record<DocumentType, number>
     );
 
     const docsByStatus = allDocs.reduce(
@@ -389,11 +389,11 @@ export class DatabaseDrivenSystem extends EventEmitter {
         acc[doc.status] = (acc[doc.status] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>,
+      {} as Record<string, number>
     );
 
     const completedDocs = allDocs.filter(
-      (doc) => doc.status === 'approved' || doc.completion_percentage === 100,
+      (doc) => doc.status === 'approved' || doc.completion_percentage === 100
     ).length;
 
     const overallProgress =
@@ -426,7 +426,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
   async exportWorkspaceToFiles(
     workspaceId: string,
     outputPath: string,
-    _format: 'markdown' | 'json' = 'markdown',
+    _format: 'markdown' | 'json' = 'markdown'
   ): Promise<string[]> {
     const context = this.workspaces.get(workspaceId);
     if (!context) {
@@ -451,7 +451,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
         epics: documents.epics.length,
         features: documents.features.length,
         tasks: documents.tasks.length,
-      })}`,
+      })}`
     );
 
     return exportedFiles;
@@ -520,7 +520,7 @@ ${spec.timeline.milestones?.map((m: any) => `- **${m.name}** (${m.date.toISOStri
 
   private async generateADRsFromVision(
     vision: VisionDocumentEntity,
-    context: DatabaseWorkspaceContext,
+    context: DatabaseWorkspaceContext
   ): Promise<ADRDocumentEntity[]> {
     // Extract architectural decisions from vision
     const decisions = [
@@ -600,7 +600,7 @@ ${decision.decision}
 
   private async generatePRDsFromVision(
     vision: VisionDocumentEntity,
-    context: DatabaseWorkspaceContext,
+    context: DatabaseWorkspaceContext
   ): Promise<PRDDocumentEntity[]> {
     const prdDoc: Omit<PRDDocumentEntity, 'id' | 'created_at' | 'updated_at' | 'checksum'> = {
       type: 'prd',
@@ -681,7 +681,7 @@ ${vision.business_objectives.map((obj, _i) => `- As a user, I want ${obj.toLower
 
   private async generateEpicsFromPRD(
     prd: PRDDocumentEntity,
-    context: DatabaseWorkspaceContext,
+    context: DatabaseWorkspaceContext
   ): Promise<EpicDocumentEntity[]> {
     // Group functional requirements into epics
     const epics = [
@@ -689,14 +689,14 @@ ${vision.business_objectives.map((obj, _i) => `- As a user, I want ${obj.toLower
         title: 'User Management Epic',
         requirements: prd.functional_requirements.slice(
           0,
-          Math.ceil(prd.functional_requirements.length / 2),
+          Math.ceil(prd.functional_requirements.length / 2)
         ),
         businessValue: 'Enable user registration, authentication, and profile management',
       },
       {
         title: 'Core Functionality Epic',
         requirements: prd.functional_requirements.slice(
-          Math.ceil(prd.functional_requirements.length / 2),
+          Math.ceil(prd.functional_requirements.length / 2)
         ),
         businessValue: 'Deliver primary business functionality and user workflows',
       },
@@ -743,7 +743,7 @@ This epic will enable users to ${epicSpec.businessValue.toLowerCase()}.
         timeline: {
           start_date: new Date(),
           estimated_completion: new Date(
-            Date.now() + Math.ceil(epicSpec.requirements.length / 2) * 7 * 24 * 60 * 60 * 1000,
+            Date.now() + Math.ceil(epicSpec.requirements.length / 2) * 7 * 24 * 60 * 60 * 1000
           ),
         },
         source_prd_id: prd.id,
@@ -761,7 +761,7 @@ This epic will enable users to ${epicSpec.businessValue.toLowerCase()}.
 
   private async generateFeaturesFromEpic(
     epic: EpicDocumentEntity,
-    context: DatabaseWorkspaceContext,
+    context: DatabaseWorkspaceContext
   ): Promise<FeatureDocumentEntity[]> {
     // Create features based on epic scope
     const featureSpecs = [
@@ -833,7 +833,7 @@ Ready for development
 
   private async generateTasksFromFeature(
     feature: FeatureDocumentEntity,
-    context: DatabaseWorkspaceContext,
+    context: DatabaseWorkspaceContext
   ): Promise<TaskDocumentEntity[]> {
     const taskSpecs = [
       { title: 'Implement Core Logic', type: 'development', hours: 8 },
@@ -906,7 +906,7 @@ ${spec.title} for ${feature.title}
   private calculatePhaseProgress(documents: BaseDocumentEntity[]): number {
     if (documents.length === 0) return 0;
     const completed = documents.filter(
-      (doc) => doc.status === 'approved' || doc.completion_percentage === 100,
+      (doc) => doc.status === 'approved' || doc.completion_percentage === 100
     ).length;
     return Math.round((completed / documents.length) * 100);
   }
@@ -930,7 +930,7 @@ ${spec.title} for ${feature.title}
 // Export singleton instance factory
 export function createDatabaseDrivenSystem(
   documentService: DocumentService,
-  workflowEngine: UnifiedWorkflowEngine,
+  workflowEngine: UnifiedWorkflowEngine
 ): DatabaseDrivenSystem {
   return new DatabaseDrivenSystem(documentService, workflowEngine);
 }

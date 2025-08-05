@@ -78,7 +78,7 @@ export class LoggingConfig {
       formatJson?: boolean;
       logDir?: string;
       [key: string]: any;
-    } = {},
+    } = {}
   ): Logger {
     if (this.loggers.has(component)) {
       return this.loggers.get(component)!;

@@ -89,7 +89,7 @@ export class FACTStorageSystem {
   }
 
   async storeKnowledge(
-    _entry: Omit<FACTKnowledgeEntry, 'id' | 'timestamp' | 'accessCount' | 'lastAccessed'>,
+    _entry: Omit<FACTKnowledgeEntry, 'id' | 'timestamp' | 'accessCount' | 'lastAccessed'>
   ): Promise<string> {
     return 'mock-entry-id';
   }
@@ -107,7 +107,7 @@ export class FACTStorageSystem {
 
   // Add missing method: clearByQuality
   async clearByQuality(
-    minQuality: number,
+    minQuality: number
   ): Promise<{ executionTime: number; warnings?: string[] }> {
     const entriesRemoved = Math.floor(this.mockStats.memoryEntries * (1 - minQuality));
     this.mockStats.memoryEntries -= entriesRemoved;

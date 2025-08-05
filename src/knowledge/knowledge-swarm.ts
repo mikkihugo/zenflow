@@ -360,8 +360,8 @@ export class KnowledgeSwarm extends EventEmitter {
       const domainMatch =
         query.domains?.some((domain) =>
           agent.specialization.domains.some(
-            (agentDomain) => domain.includes(agentDomain) || agentDomain.includes(domain),
-          ),
+            (agentDomain) => domain.includes(agentDomain) || agentDomain.includes(domain)
+          )
         ) || false;
 
       if (domainMatch) score += 50;
@@ -388,7 +388,7 @@ export class KnowledgeSwarm extends EventEmitter {
 
     const selectedCount = Math.min(
       query.parallel ? this.config.parallelQueries : 1,
-      Math.max(1, Math.ceil(candidates.length / 2)),
+      Math.max(1, Math.ceil(candidates.length / 2))
     );
 
     return scores.slice(0, selectedCount).map((s) => s.agent);
@@ -403,7 +403,7 @@ export class KnowledgeSwarm extends EventEmitter {
     }
 
     const specialized = candidates.filter((agent) =>
-      query.domains?.some((domain) => agent.specialization.domains.includes(domain)),
+      query.domains?.some((domain) => agent.specialization.domains.includes(domain))
     );
 
     return specialized.length > 0
@@ -432,7 +432,7 @@ export class KnowledgeSwarm extends EventEmitter {
    */
   private async executeParallelQuery(
     query: SwarmQuery,
-    agents: SwarmAgent[],
+    agents: SwarmAgent[]
   ): Promise<FACTResult[]> {
     const promises = agents.map(async (agent) => {
       agent.currentLoad++;
@@ -468,7 +468,7 @@ export class KnowledgeSwarm extends EventEmitter {
     const results = await Promise.allSettled(promises);
     return results
       .filter(
-        (result): result is PromiseFulfilledResult<FACTResult> => result.status === 'fulfilled',
+        (result): result is PromiseFulfilledResult<FACTResult> => result.status === 'fulfilled'
       )
       .map((result) => result.value);
   }
@@ -688,7 +688,7 @@ export class KnowledgeSwarm extends EventEmitter {
   async shutdown(): Promise<void> {
     // Shutdown all agents
     const shutdownPromises = Array.from(this.agents.values()).map((agent) =>
-      agent.factInstance.shutdown(),
+      agent.factInstance.shutdown()
     );
 
     await Promise.all(shutdownPromises);
@@ -711,7 +711,7 @@ let globalFACTSwarm: FACTSwarmSystem | null = null;
  */
 export async function initializeFACTSwarm(
   config: FACTSwarmConfig,
-  vectorDb: LanceDBInterface,
+  vectorDb: LanceDBInterface
 ): Promise<FACTSwarmSystem> {
   if (globalFACTSwarm) {
     return globalFACTSwarm;

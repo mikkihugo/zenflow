@@ -72,7 +72,7 @@ export class FACTToolHandlers {
    */
   private wrapHandler(
     toolName: string,
-    originalHandler: (params: any) => Promise<MCPToolResult>,
+    originalHandler: (params: any) => Promise<MCPToolResult>
   ): (params: any) => Promise<MCPToolResult> {
     return async (params: any): Promise<MCPToolResult> => {
       const startTime = Date.now();

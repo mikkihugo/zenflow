@@ -86,7 +86,7 @@ describe('Advanced Neural Training Algorithms (Classical TDD)', () => {
 
       // RPROP should converge faster or achieve lower error
       expect(
-        resultRPROP.finalError < resultBP.finalError || resultRPROP.epochs < resultBP.epochs,
+        resultRPROP.finalError < resultBP.finalError || resultRPROP.epochs < resultBP.epochs
       ).toBe(true);
     });
 
@@ -463,7 +463,7 @@ describe('Advanced Neural Training Algorithms (Classical TDD)', () => {
       const prediction = network.predict(sample.input);
       const error = sample.output.reduce(
         (sum: number, target: number, i: number) => sum + (target - prediction[i]) ** 2,
-        0,
+        0
       );
       totalError += error;
     }

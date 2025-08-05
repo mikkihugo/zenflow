@@ -73,7 +73,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
       const accuracy = neuralSuite.validator.validatePredictionAccuracy(
         predictions,
         expectedOutputs,
-        0.2, // Allow higher tolerance for this demo
+        0.2 // Allow higher tolerance for this demo
       );
 
       expect(accuracy.accuracy).toBeGreaterThan(0.75); // 75% accuracy threshold
@@ -199,7 +199,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
       // Verify error handling interactions
       const interactions = coordinationSuite.builder.getInteractions();
       const errorInteractions = interactions.filter(
-        (i) => i.action === 'status' || i.data?.type === 'error',
+        (i) => i.action === 'status' || i.data?.type === 'error'
       );
 
       expect(errorInteractions.length).toBeGreaterThan(0);

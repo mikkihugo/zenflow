@@ -62,7 +62,7 @@ export function adaptTaskForExecution(coordinationTask: CoordinationTask): BaseT
  */
 export async function executeTaskWithAgent(
   agent: BaseAgent | CoordinationAgent,
-  task: CoordinationTask,
+  task: CoordinationTask
 ): Promise<any> {
   // Convert coordination task to base task format
   const baseTask = adaptTaskForExecution(task);

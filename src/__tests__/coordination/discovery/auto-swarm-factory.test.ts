@@ -479,7 +479,7 @@ describe('AutoSwarmFactory', () => {
             memoryLimit: '1GB',
             cpuLimit: 4,
           },
-        },
+        }
       );
 
       const confidentDomains = new Map([
@@ -516,7 +516,7 @@ describe('AutoSwarmFactory', () => {
       ]);
 
       await expect(restrictedFactory.createSwarmsForDomains(confidentDomains)).rejects.toThrow(
-        'exceeds limit',
+        'exceeds limit'
       );
     });
 
@@ -550,7 +550,7 @@ describe('AutoSwarmFactory', () => {
         mockHiveSync,
         mockMemoryStore,
         mockAgui,
-        { enableHumanValidation: true },
+        { enableHumanValidation: true }
       );
 
       const confidentDomains = new Map([
@@ -577,7 +577,7 @@ describe('AutoSwarmFactory', () => {
         expect.objectContaining({
           id: 'swarm_factory_validation',
           question: expect.stringContaining('Auto-Swarm Factory will create'),
-        }),
+        })
       );
     });
 
@@ -587,7 +587,7 @@ describe('AutoSwarmFactory', () => {
         mockHiveSync,
         mockMemoryStore,
         mockAgui,
-        { enableHumanValidation: true },
+        { enableHumanValidation: true }
       );
 
       mockAgui.askQuestion.mockResolvedValue('3'); // Cancel
@@ -611,7 +611,7 @@ describe('AutoSwarmFactory', () => {
       ]);
 
       await expect(validatingFactory.createSwarmsForDomains(confidentDomains)).rejects.toThrow(
-        'cancelled by user',
+        'cancelled by user'
       );
     });
   });
@@ -671,12 +671,12 @@ describe('AutoSwarmFactory', () => {
 
       // Complex domain should have higher latency expectations
       expect(complexConfig.performance.expectedLatency).toBeGreaterThan(
-        simpleConfig.performance.expectedLatency,
+        simpleConfig.performance.expectedLatency
       );
 
       // Complex domain should have more resource allocation
       expect(complexConfig.performance.resourceLimits.cpu).toBeGreaterThanOrEqual(
-        simpleConfig.performance.resourceLimits.cpu,
+        simpleConfig.performance.resourceLimits.cpu
       );
     });
   });

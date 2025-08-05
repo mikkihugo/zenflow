@@ -571,31 +571,31 @@ export class PerformanceOptimizationSystem extends EventEmitter {
     this.cachingSystem = new IntelligentCachingEngine(
       this.config.caching,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.bandwidthOptimization = new BandwidthOptimizationEngine(
       this.config.bandwidth,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.priorityManagement = new PriorityManagementEngine(
       this.config.priority,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.loadBalancing = new LoadBalancingEngine(
       this.config.loadBalancing,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.monitoring = new RealTimeMonitoringEngine(
       this.config.monitoring,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.setupIntegrations();
@@ -676,7 +676,7 @@ export class PerformanceOptimizationSystem extends EventEmitter {
       // Phase 8: Apply post-processing optimizations
       const optimizedResponse = await this.applyPostProcessingOptimizations(
         processedResponse,
-        request,
+        request
       );
 
       const response: OptimizedKnowledgeResponse = {
@@ -712,7 +712,7 @@ export class PerformanceOptimizationSystem extends EventEmitter {
    * Optimize knowledge sharing between agents
    */
   async optimizeKnowledgeSharing(
-    sharingRequest: KnowledgeSharingRequest,
+    sharingRequest: KnowledgeSharingRequest
   ): Promise<KnowledgeSharingOptimization> {
     const startTime = Date.now();
 
@@ -729,25 +729,25 @@ export class PerformanceOptimizationSystem extends EventEmitter {
       // Select optimal sharing strategy
       const sharingStrategy = await this.selectSharingStrategy(
         distributionAnalysis,
-        sharingRequest,
+        sharingRequest
       );
 
       // Apply compression and delta encoding
       const optimizedContent = await this.optimizeContentForSharing(
         sharingRequest.knowledge,
-        sharingStrategy,
+        sharingStrategy
       );
 
       // Determine optimal routing and batching
       const routingOptimization = await this.optimizeRoutingAndBatching(
         optimizedContent,
-        sharingRequest.targetAgents,
+        sharingRequest.targetAgents
       );
 
       // Apply adaptive streaming if needed
       const streamingOptimization = await this.applyAdaptiveStreaming(
         routingOptimization,
-        sharingStrategy,
+        sharingStrategy
       );
 
       // Execute optimized sharing
@@ -764,7 +764,7 @@ export class PerformanceOptimizationSystem extends EventEmitter {
           compressionAchieved: optimizedContent.compressionRatio,
           bandwidthReduction: await this.calculateBandwidthReduction(
             sharingRequest,
-            optimizedContent,
+            optimizedContent
           ),
           latencyImprovement: await this.calculateLatencyImprovement(sharingResults),
           throughputIncrease: await this.calculateThroughputIncrease(sharingResults),
@@ -801,13 +801,13 @@ export class PerformanceOptimizationSystem extends EventEmitter {
 
       // Apply cache optimizations
       const appliedOptimizations = await Promise.all(
-        optimizationOpportunities.map((opportunity) => this.applyCacheOptimization(opportunity)),
+        optimizationOpportunities.map((opportunity) => this.applyCacheOptimization(opportunity))
       );
 
       // Update eviction policies
       const evictionUpdates = await this.updateEvictionPolicies(
         cacheAnalysis,
-        appliedOptimizations,
+        appliedOptimizations
       );
 
       // Optimize prefetching strategies
@@ -826,19 +826,19 @@ export class PerformanceOptimizationSystem extends EventEmitter {
         performanceImprovement: {
           hitRateImprovement: await this.calculateHitRateImprovement(
             cacheAnalysis,
-            appliedOptimizations,
+            appliedOptimizations
           ),
           latencyReduction: await this.calculateLatencyReduction(
             cacheAnalysis,
-            appliedOptimizations,
+            appliedOptimizations
           ),
           memoryEfficiency: await this.calculateMemoryEfficiency(
             cacheAnalysis,
-            appliedOptimizations,
+            appliedOptimizations
           ),
           networkReduction: await this.calculateNetworkReduction(
             cacheAnalysis,
-            appliedOptimizations,
+            appliedOptimizations
           ),
         },
         optimizationTime: Date.now() - startTime,
@@ -940,7 +940,7 @@ export class PerformanceOptimizationSystem extends EventEmitter {
 
   private async selectProcessingStrategy(
     _request: KnowledgeRequest,
-    _priority: RequestPriority,
+    _priority: RequestPriority
   ): Promise<ProcessingStrategy> {
     // Implementation placeholder
     return { name: 'default', config: {} };

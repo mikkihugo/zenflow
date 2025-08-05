@@ -279,7 +279,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
           0x01,
           0x7b,
           0x00, // SIMD type signature
-        ]),
+        ])
       );
 
       // Check for threads support
@@ -303,7 +303,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
           0x00,
           0xfc,
           0x08, // memory.init instruction
-        ]),
+        ])
       );
 
       // Check for reference types
@@ -331,7 +331,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
           0x01,
           0x61,
           0x6f, // Import with externref
-        ]),
+        ])
       );
     } catch (_error) {
       // If detection fails, assume no advanced features
@@ -514,7 +514,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
         0x00,
         0x00,
         0x00, // Minimal WASM header
-      ]),
+      ])
     );
   }
 

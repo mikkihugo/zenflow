@@ -109,13 +109,13 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
       const _jsPerformance = await neuralSuite.performance.benchmarkPrediction(
         () => jsForwardPass(),
         10, // 10 iterations
-        100, // 100ms max per iteration
+        100 // 100ms max per iteration
       );
 
       const _wasmPerformance = await neuralSuite.performance.benchmarkPrediction(
         () => wasmForwardPass(),
         10,
-        50, // 50ms max per iteration (should be faster)
+        50 // 50ms max per iteration (should be faster)
       );
 
       // Verify both implementations produce valid results
@@ -145,7 +145,7 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
             learningRate: 0.01,
           });
         },
-        150, // 150MB max memory increase
+        150 // 150MB max memory increase
       );
 
       expect(memoryTest.withinLimit).toBe(true);
@@ -221,13 +221,13 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
       const _standardPerf = await neuralSuite.performance.benchmarkPrediction(
         standardOperation,
         1000,
-        10, // 10ms max
+        10 // 10ms max
       );
 
       const _simdPerf = await neuralSuite.performance.benchmarkPrediction(
         simdOperation,
         1000,
-        5, // 5ms max (should be faster)
+        5 // 5ms max (should be faster)
       );
 
       // Both should produce same results
@@ -444,7 +444,7 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
             return mockWasmModule.simdVectorMultiply(testData, [2.0, 3.0, 4.0]);
           },
           100, // 100 iterations
-          size * 0.01, // Performance should scale roughly linearly
+          size * 0.01 // Performance should scale roughly linearly
         );
 
         performanceBaseline.set(size, performanceResult.avgTime);

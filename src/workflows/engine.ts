@@ -118,7 +118,7 @@ export class WorkflowEngine extends EventEmitter {
     // Parallel execution step
     this.registerStepHandler('parallel', async (context: WorkflowContext, params: any) => {
       const results = await Promise.all(
-        params.tasks.map((task: WorkflowStep) => this.executeStep(task, context)),
+        params.tasks.map((task: WorkflowStep) => this.executeStep(task, context))
       );
       return { results };
     });
@@ -151,7 +151,7 @@ export class WorkflowEngine extends EventEmitter {
 
   registerStepHandler(
     type: string,
-    handler: (context: WorkflowContext, params: any) => Promise<any>,
+    handler: (context: WorkflowContext, params: any) => Promise<any>
   ): void {
     this.stepHandlers.set(type, handler);
   }
@@ -173,7 +173,7 @@ export class WorkflowEngine extends EventEmitter {
       const func = new Function(
         'context',
         `${contextVars}
-      return ${expression};`,
+      return ${expression};`
       );
       return func(context);
     } catch (error) {
@@ -249,7 +249,7 @@ export class WorkflowEngine extends EventEmitter {
 
   async startWorkflow(
     workflowDefinitionOrName: string | WorkflowDefinition,
-    context: WorkflowContext = {},
+    context: WorkflowContext = {}
   ): Promise<{ success: boolean; workflowId?: string; error?: string }> {
     await this.initialize();
 
@@ -267,12 +267,12 @@ export class WorkflowEngine extends EventEmitter {
 
     // Check concurrent workflow limit
     const activeCount = Array.from(this.activeWorkflows.values()).filter(
-      (w) => w.status === 'running',
+      (w) => w.status === 'running'
     ).length;
 
     if (activeCount >= this.config.maxConcurrentWorkflows) {
       throw new Error(
-        `Maximum concurrent workflows (${this.config.maxConcurrentWorkflows}) reached`,
+        `Maximum concurrent workflows (${this.config.maxConcurrentWorkflows}) reached`
       );
     }
 
@@ -335,7 +335,7 @@ export class WorkflowEngine extends EventEmitter {
   private async executeWorkflowStep(
     workflow: WorkflowState,
     step: WorkflowStep,
-    stepIndex: number,
+    stepIndex: number
   ): Promise<void> {
     const stepId = `step-${stepIndex}`;
     let retries = 0;
@@ -377,7 +377,7 @@ export class WorkflowEngine extends EventEmitter {
         retries++;
 
         console.warn(
-          `[WorkflowEngine] Step ${step.name} failed (attempt ${retries}/${maxRetries + 1}): ${(error as Error).message}`,
+          `[WorkflowEngine] Step ${step.name} failed (attempt ${retries}/${maxRetries + 1}): ${(error as Error).message}`
         );
 
         if (retries > maxRetries) {
@@ -500,7 +500,7 @@ export class WorkflowEngine extends EventEmitter {
       }
 
       return history.sort(
-        (a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime(),
+        (a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
       );
     } catch (error) {
       console.error('[WorkflowEngine] Failed to get workflow history:', error);

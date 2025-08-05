@@ -33,7 +33,7 @@ async function main() {
         continue: true,
         error: error.message,
         stack: process.env.DEBUG ? error.stack : undefined,
-      }),
+      })
     );
     process.exit(1); // Non-blocking error
   }

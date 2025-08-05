@@ -35,7 +35,7 @@ export class EmergencyProtocolHandler extends EventEmitter implements EmergencyH
 
   public async handleEmergency(
     type: string,
-    severity: 'low' | 'medium' | 'high' | 'critical',
+    severity: 'low' | 'medium' | 'high' | 'critical'
   ): Promise<void> {
     const protocol = this.activeProtocols.get(type);
     if (protocol) {
@@ -168,7 +168,7 @@ export class EmergencyProtocolHandler extends EventEmitter implements EmergencyH
     const actionPromises = protocol.actions.map((action) =>
       this.executeAction(action).catch((error) => {
         console.error(`Failed to execute emergency action ${action.type}:`, error);
-      }),
+      })
     );
 
     await Promise.allSettled(actionPromises);
@@ -197,7 +197,7 @@ export class EmergencyProtocolHandler extends EventEmitter implements EmergencyH
 
   private async executeDefaultEmergencyResponse(
     type: string,
-    severity: 'low' | 'medium' | 'high' | 'critical',
+    severity: 'low' | 'medium' | 'high' | 'critical'
   ): Promise<void> {
     switch (severity) {
       case 'critical':

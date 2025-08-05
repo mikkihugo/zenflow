@@ -53,7 +53,7 @@ export const createMemoryRoutes = (): Router => {
       };
 
       res.json(result);
-    }),
+    })
   );
 
   /**
@@ -82,7 +82,7 @@ export const createMemoryRoutes = (): Router => {
       });
 
       res.status(201).json(result);
-    }),
+    })
   );
 
   // ===== KEY-VALUE OPERATIONS =====
@@ -120,7 +120,7 @@ export const createMemoryRoutes = (): Router => {
       };
 
       res.json(result);
-    }),
+    })
   );
 
   /**
@@ -161,7 +161,7 @@ export const createMemoryRoutes = (): Router => {
       });
 
       res.json(result);
-    }),
+    })
   );
 
   /**
@@ -202,7 +202,7 @@ export const createMemoryRoutes = (): Router => {
       });
 
       res.json(result);
-    }),
+    })
   );
 
   /**
@@ -226,7 +226,7 @@ export const createMemoryRoutes = (): Router => {
       });
 
       res.status(204).send();
-    }),
+    })
   );
 
   // ===== BATCH OPERATIONS =====
@@ -273,7 +273,7 @@ export const createMemoryRoutes = (): Router => {
           missing: 0,
         },
       });
-    }),
+    })
   );
 
   /**
@@ -318,7 +318,7 @@ export const createMemoryRoutes = (): Router => {
           failed: 0,
         },
       });
-    }),
+    })
   );
 
   // ===== MEMORY STATISTICS =====
@@ -362,7 +362,7 @@ export const createMemoryRoutes = (): Router => {
       };
 
       res.json(result);
-    }),
+    })
   );
 
   // ===== DISTRIBUTED MEMORY OPERATIONS =====
@@ -406,7 +406,7 @@ export const createMemoryRoutes = (): Router => {
       });
 
       res.status(202).json(result);
-    }),
+    })
   );
 
   // ===== MEMORY HEALTH =====
@@ -441,7 +441,7 @@ export const createMemoryRoutes = (): Router => {
 
       const statusCode = result.status === 'healthy' ? 200 : 503;
       res.status(statusCode).json(result);
-    }),
+    })
   );
 
   return router;

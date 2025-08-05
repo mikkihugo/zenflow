@@ -115,7 +115,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
         validationData,
         { l1Lambda: 0, l2Lambda: 0, dropoutRate: 0, batchNormalization: false },
         { type: 'sgd', learningRate: 0.01 },
-        { epochs: 200, patience: 50 },
+        { epochs: 200, patience: 50 }
       );
 
       // Train with L2 regularization
@@ -126,7 +126,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
         validationData,
         { l1Lambda: 0, l2Lambda: 0.01, dropoutRate: 0, batchNormalization: false },
         { type: 'sgd', learningRate: 0.01 },
-        { epochs: 200, patience: 50 },
+        { epochs: 200, patience: 50 }
       );
 
       // Regularized model should have better generalization
@@ -135,7 +135,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
 
       expect(regularizedGap).toBeLessThan(unregularizedGap);
       expect(regularizedResult.validationLoss[regularizedResult.bestEpoch]).toBeLessThan(
-        unregularizedResult.validationLoss[unregularizedResult.bestEpoch] * 1.1,
+        unregularizedResult.validationLoss[unregularizedResult.bestEpoch] * 1.1
       );
     });
 
@@ -193,7 +193,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
         validationData,
         combinedConfig,
         { type: 'adam', learningRate: 0.001 },
-        { epochs: 100, patience: 20 },
+        { epochs: 100, patience: 20 }
       );
 
       // Combined regularization should prevent overfitting
@@ -360,7 +360,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
 
       // Learning rate should decrease over time
       expect(learningRateHistory[0]).toBeGreaterThan(
-        learningRateHistory[learningRateHistory.length - 1],
+        learningRateHistory[learningRateHistory.length - 1]
       );
 
       // Verify exponential decay formula
@@ -395,7 +395,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
         trainingData,
         validationData,
         earlyStoppingConfig,
-        { epochs: 200 },
+        { epochs: 200 }
       );
 
       // Early stopping should have triggered
@@ -408,7 +408,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
       const finalValidationLoss = result.validationLoss[result.validationLoss.length - 1];
 
       expect(bestValidationLoss).toBeLessThanOrEqual(
-        finalValidationLoss + earlyStoppingConfig.minDelta,
+        finalValidationLoss + earlyStoppingConfig.minDelta
       );
     });
 
@@ -472,7 +472,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
             if (epoch - lastImprovement >= plateauConfig.patience) {
               const newLearningRate = Math.max(
                 currentLearningRate * plateauConfig.factor,
-                plateauConfig.minLearningRate,
+                plateauConfig.minLearningRate
               );
 
               if (newLearningRate < currentLearningRate) {
@@ -613,7 +613,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
 
       // Best model should have lowest mean error
       const bestModel = cvResults.reduce((best, current) =>
-        current.meanError < best.meanError ? current : best,
+        current.meanError < best.meanError ? current : best
       );
 
       expect(bestModel.meanError).toBeLessThan(1.0);
@@ -648,7 +648,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
               validationData,
               { l1Lambda: 0, l2Lambda: reg, dropoutRate: 0, batchNormalization: false },
               { type: 'sgd', learningRate: lr },
-              { epochs: 200, patience: 30 },
+              { epochs: 200, patience: 30 }
             );
 
             gridSearchResults.push({
@@ -663,7 +663,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
 
       // Find best hyperparameters
       const bestResult = gridSearchResults.reduce((best, current) =>
-        current.validationError < best.validationError ? current : best,
+        current.validationError < best.validationError ? current : best
       );
 
       expect(bestResult.validationError).toBeLessThan(0.1);
@@ -724,7 +724,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
         modelConfigurations,
         outerK,
         innerK,
-        { epochs: 100, patience: 20 },
+        { epochs: 100, patience: 20 }
       );
 
       expect(nestedCVResults.outerFoldResults).toHaveLength(outerK);
@@ -816,7 +816,7 @@ function trainWithRegularization(
   validationData: any[],
   regularization: RegularizationConfig,
   optimizer: OptimizerConfig,
-  trainingConfig: any,
+  trainingConfig: any
 ): TrainingMetrics {
   const trainLoss: number[] = [];
   const validationLoss: number[] = [];
@@ -959,7 +959,7 @@ function trainWithOptimizer(
   network: any,
   trainingData: any[],
   optimizer: OptimizerConfig,
-  config: any,
+  config: any
 ): any {
   const opt = createOptimizer(optimizer);
   const weights = flattenNetworkWeights(network);
@@ -1030,7 +1030,7 @@ function updateWeightsWithRegularization(
   sample: any,
   prediction: number[],
   optimizer: OptimizerConfig,
-  regularization: RegularizationConfig,
+  regularization: RegularizationConfig
 ): void {
   // Simplified weight update with regularization
   const error = sample.output.map((target: number, i: number) => target - prediction[i]);
@@ -1088,7 +1088,7 @@ function trainWithEarlyStopping(
   trainingData: any[],
   validationData: any[],
   earlyStoppingConfig: any,
-  trainingConfig: any,
+  trainingConfig: any
 ): any {
   const trainLoss: number[] = [];
   const validationLoss: number[] = [];
@@ -1209,7 +1209,7 @@ function performKFoldCrossValidation(
   dataset: any[],
   topology: number[],
   k: number,
-  trainingConfig: any,
+  trainingConfig: any
 ): number[] {
   const folds = createKFolds(dataset, k);
   const results: number[] = [];
@@ -1223,7 +1223,7 @@ function performKFoldCrossValidation(
       network,
       trainFolds,
       { type: 'sgd', learningRate: trainingConfig.learningRate },
-      trainingConfig,
+      trainingConfig
     );
 
     // Evaluate on test fold
@@ -1279,7 +1279,7 @@ function performNestedCrossValidation(
   modelConfigs: any[],
   outerK: number,
   innerK: number,
-  trainingConfig: any,
+  trainingConfig: any
 ): any {
   const outerFolds = createKFolds(dataset, outerK);
   const outerFoldResults: number[] = [];
@@ -1298,7 +1298,7 @@ function performNestedCrossValidation(
         trainValidationSet,
         config.topology,
         innerK,
-        trainingConfig,
+        trainingConfig
       );
 
       const avgError = innerCVResults.reduce((a, b) => a + b) / innerCVResults.length;
@@ -1316,7 +1316,7 @@ function performNestedCrossValidation(
       network,
       trainValidationSet,
       { type: 'sgd', learningRate: trainingConfig.learningRate },
-      trainingConfig,
+      trainingConfig
     );
 
     // Evaluate on outer test set

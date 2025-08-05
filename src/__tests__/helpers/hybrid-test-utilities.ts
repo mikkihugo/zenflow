@@ -167,7 +167,7 @@ export class LondonAssertions {
    */
   verifyCoordinationPattern(
     mock: jest.Mock,
-    expectedPattern: 'broadcast' | 'request-response' | 'publish-subscribe',
+    expectedPattern: 'broadcast' | 'request-response' | 'publish-subscribe'
   ) {
     const calls = mock.mock.calls;
 
@@ -192,7 +192,7 @@ export class ClassicalAssertions {
   verifyComputation(
     actual: number | number[],
     expected: number | number[],
-    tolerance: number = 1e-10,
+    tolerance: number = 1e-10
   ) {
     if (Array.isArray(actual) && Array.isArray(expected)) {
       expect(actual).toHaveLength(expected.length);
@@ -228,7 +228,7 @@ export class ClassicalAssertions {
   verifyTransformation(
     input: any,
     output: any,
-    transformationRules: Record<string, (input: any) => any>,
+    transformationRules: Record<string, (input: any) => any>
   ) {
     for (const [_rule, transform] of Object.entries(transformationRules)) {
       const expected = transform(input);
@@ -251,7 +251,7 @@ export class ClassicalAssertions {
  */
 export function createHybridTestSetup(
   domain: string,
-  config?: Partial<HybridTestConfig>,
+  config?: Partial<HybridTestConfig>
 ): HybridTestUtility {
   const defaultConfig: HybridTestConfig = {
     approach: 'hybrid',

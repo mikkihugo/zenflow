@@ -136,7 +136,7 @@ export class PerformanceAnalyzer extends EventEmitter {
       anomalies,
       'memory_percentage',
       metrics.system.memory.percentage,
-      'System memory usage',
+      'System memory usage'
     );
 
     // FACT anomalies
@@ -144,13 +144,13 @@ export class PerformanceAnalyzer extends EventEmitter {
       anomalies,
       'fact_cache_hit_rate',
       metrics.fact.cache.hitRate,
-      'FACT cache hit rate',
+      'FACT cache hit rate'
     );
     this.checkAnomaly(
       anomalies,
       'fact_query_time',
       metrics.fact.queries.averageQueryTime,
-      'FACT query time',
+      'FACT query time'
     );
 
     // RAG anomalies
@@ -158,13 +158,13 @@ export class PerformanceAnalyzer extends EventEmitter {
       anomalies,
       'rag_query_latency',
       metrics.rag.vectors.queryLatency,
-      'RAG query latency',
+      'RAG query latency'
     );
     this.checkAnomaly(
       anomalies,
       'rag_retrieval_time',
       metrics.rag.retrieval.averageRetrievalTime,
-      'RAG retrieval time',
+      'RAG retrieval time'
     );
 
     // Swarm anomalies
@@ -172,13 +172,13 @@ export class PerformanceAnalyzer extends EventEmitter {
       anomalies,
       'swarm_consensus_time',
       metrics.swarm.coordination.consensusTime,
-      'Swarm consensus time',
+      'Swarm consensus time'
     );
     this.checkAnomaly(
       anomalies,
       'swarm_task_time',
       metrics.swarm.tasks.averageTaskTime,
-      'Swarm task time',
+      'Swarm task time'
     );
 
     // MCP anomalies
@@ -186,13 +186,13 @@ export class PerformanceAnalyzer extends EventEmitter {
       anomalies,
       'mcp_success_rate',
       metrics.mcp.performance.overallSuccessRate,
-      'MCP success rate',
+      'MCP success rate'
     );
     this.checkAnomaly(
       anomalies,
       'mcp_response_time',
       metrics.mcp.performance.averageResponseTime,
-      'MCP response time',
+      'MCP response time'
     );
 
     return anomalies;
@@ -205,7 +205,7 @@ export class PerformanceAnalyzer extends EventEmitter {
     anomalies: AnomalyDetection[],
     metricName: string,
     value: number,
-    description: string,
+    description: string
   ): void {
     const threshold = this.anomalyThresholds.get(metricName);
     if (!threshold) return;
@@ -258,40 +258,40 @@ export class PerformanceAnalyzer extends EventEmitter {
     trends.push(
       this.analyzeTrend(
         'cpu_usage',
-        recentMetrics.map((m) => m.system.cpu.usage),
-      ),
+        recentMetrics.map((m) => m.system.cpu.usage)
+      )
     );
 
     // Analyze memory usage trend
     trends.push(
       this.analyzeTrend(
         'memory_percentage',
-        recentMetrics.map((m) => m.system.memory.percentage),
-      ),
+        recentMetrics.map((m) => m.system.memory.percentage)
+      )
     );
 
     // Analyze FACT cache hit rate trend
     trends.push(
       this.analyzeTrend(
         'fact_cache_hit_rate',
-        recentMetrics.map((m) => m.fact.cache.hitRate),
-      ),
+        recentMetrics.map((m) => m.fact.cache.hitRate)
+      )
     );
 
     // Analyze RAG query latency trend
     trends.push(
       this.analyzeTrend(
         'rag_query_latency',
-        recentMetrics.map((m) => m.rag.vectors.queryLatency),
-      ),
+        recentMetrics.map((m) => m.rag.vectors.queryLatency)
+      )
     );
 
     // Analyze swarm performance trend
     trends.push(
       this.analyzeTrend(
         'swarm_active_agents',
-        recentMetrics.map((m) => m.swarm.agents.activeAgents),
-      ),
+        recentMetrics.map((m) => m.swarm.agents.activeAgents)
+      )
     );
 
     return trends;
@@ -511,7 +511,7 @@ export class PerformanceAnalyzer extends EventEmitter {
     // CPU capacity prediction
     const cpuTrend = this.analyzeTrend(
       'cpu_usage',
-      recentMetrics.map((m) => m.system.cpu.usage),
+      recentMetrics.map((m) => m.system.cpu.usage)
     );
     if (cpuTrend.direction === 'increasing' && cpuTrend.rate > 0) {
       const timeToCapacity =
@@ -525,7 +525,7 @@ export class PerformanceAnalyzer extends EventEmitter {
     // Memory capacity prediction
     const memoryTrend = this.analyzeTrend(
       'memory_percentage',
-      recentMetrics.map((m) => m.system.memory.percentage),
+      recentMetrics.map((m) => m.system.memory.percentage)
     );
     if (memoryTrend.direction === 'increasing' && memoryTrend.rate > 0) {
       const timeToCapacity =
@@ -539,7 +539,7 @@ export class PerformanceAnalyzer extends EventEmitter {
     const latestMetrics = recentMetrics[recentMetrics.length - 1];
     const capacityUtilization = Math.max(
       latestMetrics.system.cpu.usage,
-      latestMetrics.system.memory.percentage,
+      latestMetrics.system.memory.percentage
     );
 
     return {
@@ -564,7 +564,7 @@ export class PerformanceAnalyzer extends EventEmitter {
   public getHistoricalInsights(timeRange?: { start: number; end: number }): PerformanceInsights[] {
     const relevantMetrics = timeRange
       ? this.metricsHistory.filter(
-          (m) => m.system.timestamp >= timeRange.start && m.system.timestamp <= timeRange.end,
+          (m) => m.system.timestamp >= timeRange.start && m.system.timestamp <= timeRange.end
         )
       : this.metricsHistory;
 

@@ -420,7 +420,7 @@ export class APIErrorHandler {
     code: CoordinationError['code'],
     message: string,
     details?: Record<string, unknown>,
-    traceId?: string,
+    traceId?: string
   ): CoordinationError {
     const error: CoordinationError = {
       code,
@@ -445,14 +445,14 @@ export class APIErrorHandler {
         'INTERNAL_ERROR',
         error.message,
         { stack: error.stack },
-        traceId,
+        traceId
       );
     }
     return APIErrorHandler.createError(
       'INTERNAL_ERROR',
       'Unknown error occurred',
       { error },
-      traceId,
+      traceId
     );
   }
 }

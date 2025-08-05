@@ -246,7 +246,7 @@ describe('DI System Integration Tests', () => {
 
       // Create multiple concurrent resolution promises
       const promises = Array.from({ length: 100 }, () =>
-        Promise.resolve().then(() => container.resolve(SWARM_TOKENS.SwarmCoordinator)),
+        Promise.resolve().then(() => container.resolve(SWARM_TOKENS.SwarmCoordinator))
       );
 
       const coordinators = await Promise.all(promises);

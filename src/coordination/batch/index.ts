@@ -59,7 +59,7 @@ export function createBatchSystem(options?: {
       const sequentialMetrics = performanceMonitor.recordSequentialExecution(
         summary.totalOperations,
         sequentialTime,
-        summary.successfulOperations,
+        summary.successfulOperations
       );
 
       // Compare performance

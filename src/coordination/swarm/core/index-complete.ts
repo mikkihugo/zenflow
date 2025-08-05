@@ -14,12 +14,12 @@
 import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
 import { AgentPool, type BaseAgent, createAgent } from '../../agents/agent';
-import { getContainer } from './singleton-container';
 import {
   adaptAgentForCoordination,
   createAgentPoolEntry,
   executeTaskWithAgent,
 } from './agent-adapter';
+import { getContainer } from './singleton-container';
 import type {
   AgentConfig,
   Message,
@@ -83,7 +83,7 @@ export class Agent {
     this.status = 'busy';
 
     try {
-      let result = {
+      const result = {
         success: true,
         result: `Agent ${this.id} executed: ${task}`,
         agent: this.id,
@@ -569,7 +569,7 @@ export class ZenSwarm implements SwarmEventEmitter {
     this.agentPool.removeAgent(agentId);
 
     this.state.connections = this.state.connections.filter(
-      (conn) => conn.from !== agentId && conn.to !== agentId,
+      (conn) => conn.from !== agentId && conn.to !== agentId
     );
 
     this.emit('agent:removed', { agentId });

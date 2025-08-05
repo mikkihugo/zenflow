@@ -225,7 +225,7 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
         expect(mockMCPMessageHandler.validateMessage).toHaveBeenCalledWith(invalidMessage);
         expect(mockMCPMessageHandler.createError).toHaveBeenCalledWith(
           2,
-          'Unknown method: invalid/method',
+          'Unknown method: invalid/method'
         );
         expect(response.error.code).toBe(-32601);
       });
@@ -283,7 +283,7 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
           expect.objectContaining({
             tool: 'analyze-with-context',
             result: 'analysis-complete',
-          }),
+          })
         );
 
         expect(response.result.analysis).toBe('context-aware-result');

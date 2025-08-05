@@ -99,7 +99,7 @@ describe('ZenSwarmHooks', () => {
       expect(result.assignedAgent).toBeDefined();
       expect(mockExecSync).toHaveBeenCalledWith(
         expect.stringContaining('ruv-swarm agent spawn'),
-        expect.any(Object),
+        expect.any(Object)
       );
     });
 
@@ -144,7 +144,7 @@ describe('ZenSwarmHooks', () => {
       expect(result.formatted).toBe(true);
       expect(mockExecSync).toHaveBeenCalledWith(
         expect.stringContaining('prettier'),
-        expect.any(Object),
+        expect.any(Object)
       );
     });
 
@@ -171,7 +171,7 @@ describe('ZenSwarmHooks', () => {
       expect(result.memoryStored).toBe(true);
       expect(mockExecSync).toHaveBeenCalledWith(
         expect.stringContaining('memory store'),
-        expect.any(Object),
+        expect.any(Object)
       );
     });
   });
@@ -297,7 +297,7 @@ describe('ZenSwarmHooks', () => {
       expect(result.metricsExported).toBe(true);
       expect(mockFs.writeFile).toHaveBeenCalledWith(
         expect.stringContaining('metrics.json'),
-        expect.any(String),
+        expect.any(String)
       );
     });
 
@@ -325,7 +325,7 @@ describe('ZenSwarmHooks', () => {
       expect(result.statePersisted).toBe(true);
       expect(mockExecSync).toHaveBeenCalledWith(
         expect.stringContaining('memory store'),
-        expect.any(Object),
+        expect.any(Object)
       );
     });
   });

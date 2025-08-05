@@ -116,7 +116,7 @@ class MockGPUComputeManager {
   async computeMatrixMultiplyGPU(
     a: number[][],
     b: number[][],
-    useWebGL: boolean = true,
+    useWebGL: boolean = true
   ): Promise<number[][]> {
     if (useWebGL && this.webglAvailable) {
       return this.webglMatrixMultiply(a, b);
@@ -232,10 +232,10 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
           const result = await gpuManager.computeMatrixMultiplyGPU(
             largeMatrixA,
             largeMatrixB,
-            true,
+            true
           );
           expect(result).toHaveLength(200);
-        },
+        }
       );
 
       const results = await benchmarkSuite.runAll();
@@ -481,7 +481,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       const webglResult = await gpuManager.computeMatrixMultiplyGPU(
         referenceMatrix,
         multiplierMatrix,
-        true,
+        true
       );
 
       // Compare WebGL vs CPU accuracy
@@ -497,7 +497,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       const cudaResult = await gpuManager.computeMatrixMultiplyGPU(
         referenceMatrix,
         multiplierMatrix,
-        false,
+        false
       );
 
       // Compare CUDA vs CPU accuracy
@@ -753,7 +753,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
           .map(() =>
             Array(networkTopology[0])
               .fill(0)
-              .map(() => Math.random()),
+              .map(() => Math.random())
           );
 
         // CPU batch inference
@@ -897,7 +897,7 @@ async function trainNeuralNetworkGPU(
   network: any,
   data: any[],
   _gpuManager: MockGPUComputeManager,
-  config: any,
+  config: any
 ): Promise<any> {
   // Simulate GPU-accelerated training
   let finalError = Infinity;
@@ -912,7 +912,7 @@ async function trainNeuralNetworkGPU(
 
       // Simulate GPU forward pass for batch
       const batchOutputs = await Promise.all(
-        batch.map((sample) => Promise.resolve(neuralForwardPassCPU(network, sample.input))),
+        batch.map((sample) => Promise.resolve(neuralForwardPassCPU(network, sample.input)))
       );
 
       batch.forEach((sample, idx) => {
@@ -935,11 +935,11 @@ async function trainNeuralNetworkGPU(
 async function neuralBatchInferenceGPU(
   network: any,
   inputBatch: number[][],
-  _gpuManager: MockGPUComputeManager,
+  _gpuManager: MockGPUComputeManager
 ): Promise<number[][]> {
   // Simulate GPU batch inference
   return Promise.all(
-    inputBatch.map((input) => Promise.resolve(neuralForwardPassCPU(network, input))),
+    inputBatch.map((input) => Promise.resolve(neuralForwardPassCPU(network, input)))
   );
 }
 
@@ -947,7 +947,7 @@ function updateNetworkWeights(
   network: any,
   sample: any,
   output: number[],
-  learningRate: number,
+  learningRate: number
 ): void {
   // Simplified gradient descent weight update
   const error = sample.output.map((target: number, idx: number) => target - output[idx]);

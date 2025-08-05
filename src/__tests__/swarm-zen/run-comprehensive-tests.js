@@ -185,7 +185,7 @@ class TestRunner {
 
     await fs.writeFile(
       path.join(reportDir, `test-report-${Date.now()}.json`),
-      JSON.stringify(testReport, null, 2),
+      JSON.stringify(testReport, null, 2)
     );
 
     // Coverage report
@@ -205,7 +205,7 @@ class TestRunner {
     const perfReport = await this.generatePerformanceReport();
     await fs.writeFile(
       path.join(reportDir, 'performance-summary.json'),
-      JSON.stringify(perfReport, null, 2),
+      JSON.stringify(perfReport, null, 2)
     );
   }
 

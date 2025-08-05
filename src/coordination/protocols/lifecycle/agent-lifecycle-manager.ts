@@ -284,7 +284,7 @@ export class AgentLifecycleManager extends EventEmitter {
   constructor(
     private config: AgentLifecycleConfig,
     private logger: ILogger,
-    private eventBus: IEventBus,
+    private eventBus: IEventBus
   ) {
     super();
 
@@ -667,7 +667,7 @@ export class AgentLifecycleManager extends EventEmitter {
 
   private async createAgentProcess(
     agent: AgentInstance,
-    template: AgentTemplate,
+    template: AgentTemplate
   ): Promise<ChildProcess> {
     const env = {
       ...process.env,
@@ -847,7 +847,7 @@ export class AgentLifecycleManager extends EventEmitter {
 
   private async executeScalingDecision(
     templateId: string,
-    decision: ScalingDecision,
+    decision: ScalingDecision
   ): Promise<void> {
     try {
       if (decision.action === 'scale_up') {
@@ -963,7 +963,7 @@ export class AgentLifecycleManager extends EventEmitter {
     // Calculate spawns per hour over last hour
     const oneHourAgo = Date.now() - 3600000;
     const recentSpawns = Array.from(this.agents.values()).filter(
-      (agent) => agent.startTime.getTime() > oneHourAgo,
+      (agent) => agent.startTime.getTime() > oneHourAgo
     );
 
     return recentSpawns.length;
@@ -987,7 +987,7 @@ export class AgentLifecycleManager extends EventEmitter {
 
   private calculateResourceUtilization(): ResourceUsage {
     const agents = Array.from(this.agents.values()).filter(
-      (agent) => agent.status !== 'terminated',
+      (agent) => agent.status !== 'terminated'
     );
 
     if (agents.length === 0) {
@@ -1003,7 +1003,7 @@ export class AgentLifecycleManager extends EventEmitter {
         handles: sum.handles + agent.resources.handles,
         threads: sum.threads + agent.resources.threads,
       }),
-      { cpu: 0, memory: 0, network: 0, disk: 0, handles: 0, threads: 0 },
+      { cpu: 0, memory: 0, network: 0, disk: 0, handles: 0, threads: 0 }
     );
 
     return {
@@ -1109,7 +1109,7 @@ export class AgentLifecycleManager extends EventEmitter {
   private handleProcessExit(
     agent: AgentInstance,
     code: number | null,
-    signal: string | null,
+    signal: string | null
   ): void {
     this.logger.info('Agent process exited', {
       agentId: agent.id,
@@ -1154,7 +1154,7 @@ export class AgentLifecycleManager extends EventEmitter {
   private handleProcessOutput(
     agent: AgentInstance,
     data: string,
-    stream: 'stdout' | 'stderr',
+    stream: 'stdout' | 'stderr'
   ): void {
     // Log agent output
     this.logger.debug(`Agent ${stream}`, {
@@ -1295,7 +1295,7 @@ export class AgentLifecycleManager extends EventEmitter {
 class HealthMonitor {
   constructor(
     private config: AgentLifecycleConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {}
 
   async checkHealth(agent: AgentInstance): Promise<HealthStatus> {
@@ -1352,7 +1352,7 @@ class HealthMonitor {
 class PerformanceTracker {
   constructor(
     private config: AgentLifecycleConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {}
 
   updateMetrics(agent: AgentInstance, data: any): void {
@@ -1368,14 +1368,14 @@ class PerformanceTracker {
       metrics.averageResponseTime = this.updateMovingAverage(
         metrics.averageResponseTime,
         data.responseTime,
-        totalTasks,
+        totalTasks
       );
     }
 
     // Update efficiency and reliability
     metrics.efficiency = Math.min(
       1.0,
-      metrics.successRate * (1000 / Math.max(1, metrics.averageResponseTime)),
+      metrics.successRate * (1000 / Math.max(1, metrics.averageResponseTime))
     );
     metrics.reliability = metrics.successRate ** 2; // Penalize failures more
   }
@@ -1389,7 +1389,7 @@ class PerformanceTracker {
 class ResourceMonitor {
   constructor(
     private config: AgentLifecycleConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {}
 
   // Resource monitoring implementation
@@ -1407,13 +1407,13 @@ class CapabilityDiscovery {
 class ScalingEngine {
   constructor(
     private config: AgentLifecycleConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {}
 
   async analyze(
     agents: Map<string, AgentInstance>,
     templates: Map<string, AgentTemplate>,
-    metrics: LifecycleMetrics,
+    metrics: LifecycleMetrics
   ): Promise<ScalingDecision> {
     // Simplified scaling analysis
     const totalAgents = metrics.totalAgents;
@@ -1451,11 +1451,11 @@ class ScalingEngine {
 
   private calculateUtilization(agents: Map<string, AgentInstance>): number {
     const activeAgents = Array.from(agents.values()).filter(
-      (agent) => agent.status === 'busy' || agent.status === 'active',
+      (agent) => agent.status === 'busy' || agent.status === 'active'
     );
 
     const totalAgents = Array.from(agents.values()).filter(
-      (agent) => agent.status !== 'terminated' && agent.status !== 'failed',
+      (agent) => agent.status !== 'terminated' && agent.status !== 'failed'
     );
 
     return totalAgents.length > 0 ? activeAgents.length / totalAgents.length : 0;
@@ -1465,7 +1465,7 @@ class ScalingEngine {
 class RecoveryEngine {
   constructor(
     private config: AgentLifecycleConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {}
 
   async recoverAgent(agent: AgentInstance, template: AgentTemplate): Promise<void> {

@@ -69,11 +69,11 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         expect.objectContaining({
           title: config.title,
           status: 'initializing',
-        }),
+        })
       );
       expect(mockMemory.updateConversation).toHaveBeenCalledWith(
         session.id,
-        expect.objectContaining({ status: 'active' }),
+        expect.objectContaining({ status: 'active' })
       );
     });
 
@@ -94,7 +94,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
 
       // Act & Assert
       await expect(orchestrator.createConversation(config)).rejects.toThrow(
-        'Unknown conversation pattern: unknown-pattern',
+        'Unknown conversation pattern: unknown-pattern'
       );
       expect(mockMemory.storeConversation).not.toHaveBeenCalled();
     });
@@ -139,7 +139,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         conversationId,
         expect.objectContaining({
           participants: expect.arrayContaining([newAgent]),
-        }),
+        })
       );
     });
 
@@ -150,7 +150,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
 
       // Act & Assert
       await expect(orchestrator.joinConversation(conversationId, newAgent)).rejects.toThrow(
-        'Conversation non-existent not found',
+        'Conversation non-existent not found'
       );
       expect(mockMemory.updateConversation).not.toHaveBeenCalled();
     });
@@ -211,7 +211,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
             expect.objectContaining({ content: { text: 'Hello, world!' } }),
           ]),
           metrics: expect.objectContaining({ messageCount: 1 }),
-        }),
+        })
       );
     });
 
@@ -263,7 +263,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
 
       // Act & Assert
       await expect(orchestrator.sendMessage(message)).rejects.toThrow(
-        'Agent outsider is not a participant in this conversation',
+        'Agent outsider is not a participant in this conversation'
       );
       expect(mockMemory.updateConversation).not.toHaveBeenCalled();
     });
@@ -328,7 +328,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
           status: 'completed',
           endTime: expect.any(Date),
           outcomes: expect.arrayContaining([expect.objectContaining({ type: 'decision' })]),
-        }),
+        })
       );
     });
   });
@@ -451,11 +451,11 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         expect.objectContaining({
           title: config.title,
           status: 'initializing',
-        }),
+        })
       );
       expect(mockMemory.updateConversation).toHaveBeenCalledWith(
         session.id,
-        expect.objectContaining({ status: 'active' }),
+        expect.objectContaining({ status: 'active' })
       );
 
       // Verify orchestrator state

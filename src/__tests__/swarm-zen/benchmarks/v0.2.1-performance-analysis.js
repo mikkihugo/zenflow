@@ -342,7 +342,7 @@ The system is now more robust, with ${(this.results.metrics.inputValidation?.sco
     // Also save raw data
     await fs.writeFile(
       path.join(__dirname, 'v0.2.1-performance-data.json'),
-      JSON.stringify(this.results, null, 2),
+      JSON.stringify(this.results, null, 2)
     );
 
     return report;

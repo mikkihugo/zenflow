@@ -100,7 +100,7 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
     // Initialize persistence if enabled
     if (this.options.persistence.enabled) {
       this.persistence = new SwarmPersistencePooled(
-        this.options.persistence.dbPath || './swarm-state.db',
+        this.options.persistence.dbPath || './swarm-state.db'
       );
       await this.persistence.initialize();
     }

@@ -256,7 +256,7 @@ describe('Native Hive Mind Integration Tests', () => {
       });
 
       await expect(swarmCoordinator.approvePhase(featureName)).rejects.toThrow(
-        'Phase approval consensus failed',
+        'Phase approval consensus failed'
       );
     });
   });
@@ -343,7 +343,7 @@ describe('Native Hive Mind Integration Tests', () => {
       });
 
       await expect(
-        (swarmCoordinator as any).waitForTaskCompletion('test-task', 1000),
+        (swarmCoordinator as any).waitForTaskCompletion('test-task', 1000)
       ).rejects.toThrow('Task timeout');
     });
 
@@ -450,7 +450,7 @@ describe('Performance Benchmarks', () => {
     const testCoordinator = new MaestroSwarmCoordinator(
       (coordinator as any).config,
       eventBus,
-      logger,
+      logger
     );
 
     await testCoordinator.initialize();
@@ -475,7 +475,7 @@ describe('Performance Benchmarks', () => {
     const concurrentSpecs = 3;
 
     const promises = Array.from({ length: concurrentSpecs }, (_, i) =>
-      coordinator.createSpec(`concurrent-spec-${i}`, `Concurrent test spec ${i}`),
+      coordinator.createSpec(`concurrent-spec-${i}`, `Concurrent test spec ${i}`)
     );
 
     await Promise.all(promises);

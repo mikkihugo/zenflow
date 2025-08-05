@@ -74,7 +74,7 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
       const factory = container.resolve(MemoryProviderFactory);
       expect(factory).toBeInstanceOf(MemoryProviderFactory);
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining('Creating memory provider'),
+        expect.stringContaining('Creating memory provider')
       );
     });
 
@@ -172,7 +172,7 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
       const factory = container.resolve(DatabaseProviderFactory);
       expect(factory).toBeInstanceOf(DatabaseProviderFactory);
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining('Creating database adapter'),
+        expect.stringContaining('Creating database adapter')
       );
     });
 
@@ -307,10 +307,10 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
 
       // Verify shared dependencies (logger) are the same instance
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining('Memory controller initialized'),
+        expect.stringContaining('Memory controller initialized')
       );
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining('Database controller initialized'),
+        expect.stringContaining('Database controller initialized')
       );
     });
 
@@ -386,10 +386,10 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
 
       // Verify shared logger was used
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining('Creating memory provider'),
+        expect.stringContaining('Creating memory provider')
       );
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining('Creating database adapter'),
+        expect.stringContaining('Creating database adapter')
       );
     });
   });
@@ -440,7 +440,7 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
           controller.storeMemory({
             key: `test-key-${i}`,
             value: `test-value-${i}`,
-          }),
+          })
         );
       }
 

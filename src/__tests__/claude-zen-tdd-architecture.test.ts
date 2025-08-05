@@ -200,7 +200,7 @@ describe('Claude-Zen TDD London School Architecture', () => {
           'code',
         ]);
         expect(mockWebSocketManager.broadcastQueenStatus).toHaveBeenCalledWith(
-          taskProgress.progress,
+          taskProgress.progress
         );
         expect(mockWebSocketManager.streamTaskProgress).toHaveBeenCalledWith(taskProgress);
       });
@@ -310,11 +310,11 @@ describe('Claude-Zen TDD London School Architecture', () => {
       // Assert - Verify the orchestration conversation
       expect(mockTaskCoordinator.assignTask).toHaveBeenCalledWith(
         'architect',
-        complexTask.designPhase,
+        complexTask.designPhase
       );
       expect(mockTaskCoordinator.assignTask).toHaveBeenCalledWith(
         'code',
-        complexTask.implementationPhase,
+        complexTask.implementationPhase
       );
       expect(mockTaskCoordinator.trackProgress).toHaveBeenCalledWith('all');
       expect(mockTaskCoordinator.synthesizeResults).toHaveBeenCalled();

@@ -55,7 +55,7 @@ class ValidationError extends ZenSwarmError {
     message: string,
     field: string | null = null,
     value: any = null,
-    expectedType: string | null = null,
+    expectedType: string | null = null
   ) {
     const details = {
       field,
@@ -493,7 +493,7 @@ class ErrorFactory {
           message,
           details.resourceType,
           details.currentUsage,
-          details.limit,
+          details.limit
         );
       case 'concurrency':
         return new ConcurrencyError(message, details.operation, details.conflictType);

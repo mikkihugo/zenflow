@@ -345,7 +345,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       switch (context.monorepo.type) {
         case 'lerna': {
           const lernaConfig = JSON.parse(
-            await readFile(path.join(context.rootPath, 'lerna.json'), 'utf-8'),
+            await readFile(path.join(context.rootPath, 'lerna.json'), 'utf-8')
           );
           context.monorepo.version = lernaConfig.version;
           context.monorepo.packages = lernaConfig.packages || ['packages/*'];
@@ -354,7 +354,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
         case 'nx': {
           const nxConfig = JSON.parse(
-            await readFile(path.join(context.rootPath, 'nx.json'), 'utf-8'),
+            await readFile(path.join(context.rootPath, 'nx.json'), 'utf-8')
           );
           // NX has a more complex structure, we'd need to analyze workspace.json too
           context.monorepo.version = nxConfig.version;
@@ -364,7 +364,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
         case 'pnpm': {
           const pnpmWorkspace = await readFile(
             path.join(context.rootPath, 'pnpm-workspace.yaml'),
-            'utf-8',
+            'utf-8'
           );
           // Parse YAML to get packages - simplified for now
           const packagesMatch = pnpmWorkspace.match(/packages:\s*\n((?:\s+-\s+.*\n?)*)/);
@@ -379,7 +379,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
         case 'rush': {
           const rushConfig = JSON.parse(
-            await readFile(path.join(context.rootPath, 'rush.json'), 'utf-8'),
+            await readFile(path.join(context.rootPath, 'rush.json'), 'utf-8')
           );
           context.monorepo.version = rushConfig.rushVersion;
           context.monorepo.packages = rushConfig.projects?.map((p: any) => p.projectFolder) || [];
@@ -492,7 +492,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
         case 'security':
           result = await this.knowledgeSwarm.getSecurityGuidance(
             mission.target,
-            mission.context.join(', '),
+            mission.context.join(', ')
           );
           break;
         case 'performance':
@@ -501,7 +501,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
         case 'best-practices':
           result = await this.knowledgeSwarm.researchProblem(
             `Best practices for ${mission.target}`,
-            mission.context,
+            mission.context
           );
           break;
         default:
@@ -632,7 +632,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       // Use basic file counting - could be enhanced with more sophisticated analysis
       const { stdout } = await execAsync(
         `find "${context.rootPath}" -name "*.ts" -o -name "*.js" -o -name "*.tsx" -o -name "*.jsx" | wc -l`,
-        { cwd: context.rootPath },
+        { cwd: context.rootPath }
       );
       const jstsFiles = parseInt(stdout.trim());
 
@@ -706,7 +706,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
     } catch (error) {
       console.warn(
         'Error analyzing requirements.txt:',
-        error instanceof Error ? error.message : error,
+        error instanceof Error ? error.message : error
       );
     }
   }
@@ -719,7 +719,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
     // For now, make educated guesses based on dependencies
 
     const apiDeps = context.dependencies.filter(
-      (dep) => dep.name.includes('api') || dep.name.includes('client') || dep.name.includes('sdk'),
+      (dep) => dep.name.includes('api') || dep.name.includes('client') || dep.name.includes('sdk')
     );
 
     for (const dep of apiDeps) {
@@ -940,7 +940,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
         // Also search by context tags
         if (context && cached.context) {
           const hasMatchingContext = context.some((ctx) =>
-            cached.context.some((c: string) => c.toLowerCase().includes(ctx.toLowerCase())),
+            cached.context.some((c: string) => c.toLowerCase().includes(ctx.toLowerCase()))
           );
           if (hasMatchingContext) {
             results.push(cached);
@@ -978,7 +978,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
    */
   private async storeKnowledgeInCache(
     mission: KnowledgeGatheringMission,
-    result: any,
+    result: any
   ): Promise<void> {
     try {
       const cacheKey = `mission-${mission.id}`;
@@ -1025,7 +1025,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
           console.error('Context monitoring failed:', error);
         }
       },
-      60 * 60 * 1000,
+      60 * 60 * 1000
     ); // 1 hour
   }
 

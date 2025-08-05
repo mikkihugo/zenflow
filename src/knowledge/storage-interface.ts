@@ -122,7 +122,7 @@ export interface FACTStorageBackend {
    * Optimize storage performance
    */
   optimize(
-    strategy?: 'aggressive' | 'balanced' | 'conservative',
+    strategy?: 'aggressive' | 'balanced' | 'conservative'
   ): Promise<{ optimized: boolean; details: string }>;
 
   /**

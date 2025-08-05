@@ -6,18 +6,18 @@
  */
 
 import {
-  NeuralResult,
-  TrainingResult,
-  InferenceResult,
-  NeuralError,
-  WasmResult,
-  WasmSuccess,
-  WasmError,
-  isTrainingResult,
+  type InferenceResult,
   isInferenceResult,
   isNeuralError,
-  isWasmSuccess,
+  isTrainingResult,
   isWasmError,
+  isWasmSuccess,
+  type NeuralError,
+  type NeuralResult,
+  type TrainingResult,
+  type WasmError,
+  type WasmResult,
+  type WasmSuccess,
 } from '../../utils/type-guards';
 
 export interface NeuralNetworkConfig {
@@ -179,7 +179,7 @@ export class SafeNeuralNetwork {
       if (data.validationInputs && data.validationOutputs) {
         const validationResult = await this.validateNetwork(
           data.validationInputs,
-          data.validationOutputs,
+          data.validationOutputs
         );
         if (isInferenceResult(validationResult)) {
           accuracy = this.calculateAccuracy(validationResult.predictions, data.validationOutputs);
@@ -542,14 +542,14 @@ export async function safeNeuralUsageExample(): Promise<void> {
 
     if (isInferenceResult(predictionResult)) {
       console.log(
-        `Input: [${input.join(', ')}] => Output: ${predictionResult.predictions[0].toFixed(3)}`,
+        `Input: [${input.join(', ')}] => Output: ${predictionResult.predictions[0].toFixed(3)}`
       );
       console.log(`Confidence: ${(predictionResult.confidence?.[0] ?? 0).toFixed(3)}`);
       console.log(`Processing time: ${predictionResult.processingTime}ms`);
     } else if (isNeuralError(predictionResult)) {
       console.error(
         `❌ Prediction failed for input [${input.join(', ')}]:`,
-        predictionResult.error.message,
+        predictionResult.error.message
       );
     }
   }

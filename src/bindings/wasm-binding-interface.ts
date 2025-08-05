@@ -8,10 +8,10 @@
  * bindings/ → wasm-binding-interface → neural/wasm (through abstract interface)
  */
 
-import {
-  WasmNeuralBinding,
-  NeuralNetworkInterface,
+import type {
   NeuralConfig,
+  NeuralNetworkInterface,
+  WasmNeuralBinding,
 } from '../core/interfaces/base-interfaces';
 
 /**

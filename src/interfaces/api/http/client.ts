@@ -136,7 +136,7 @@ export class APIClient {
         }
 
         return Promise.reject(error);
-      },
+      }
     );
   }
 
@@ -159,7 +159,7 @@ export class APIClient {
           throw clientError;
         }
         throw error;
-      },
+      }
     );
   }
 
@@ -170,7 +170,7 @@ export class APIClient {
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     endpoint: string,
     data?: unknown,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<T> {
     const config: AxiosRequestConfig = {
       method,
@@ -200,7 +200,7 @@ export class APIClient {
         limit?: number;
         offset?: number;
       },
-      options?: RequestOptions,
+      options?: RequestOptions
     ) => {
       const queryParams = new URLSearchParams();
       if (params?.status) queryParams.set('status', params.status);
@@ -224,7 +224,7 @@ export class APIClient {
         type: Agent['type'];
         capabilities: string[];
       },
-      options?: RequestOptions,
+      options?: RequestOptions
     ) => {
       return this.request<Agent>('POST', '/api/v1/coordination/agents', data, options);
     },
@@ -237,7 +237,7 @@ export class APIClient {
         'GET',
         `/api/v1/coordination/agents/${agentId}`,
         undefined,
-        options,
+        options
       );
     },
 
@@ -249,7 +249,7 @@ export class APIClient {
         'DELETE',
         `/api/v1/coordination/agents/${agentId}`,
         undefined,
-        options,
+        options
       );
     },
 
@@ -263,7 +263,7 @@ export class APIClient {
         priority: number;
         deadline?: Date;
       },
-      options?: RequestOptions,
+      options?: RequestOptions
     ) => {
       return this.request<Task>('POST', '/api/v1/coordination/tasks', data, options);
     },
@@ -283,7 +283,7 @@ export class APIClient {
         'GET',
         '/api/v1/coordination/swarm/config',
         undefined,
-        options,
+        options
       );
     },
 
@@ -310,7 +310,7 @@ export class APIClient {
         'GET',
         `/api/v1/coordination/metrics${queryParams}`,
         undefined,
-        options,
+        options
       );
     },
   };
@@ -329,7 +329,7 @@ export class APIClient {
         type?: NeuralNetwork['type'];
         status?: NeuralNetwork['status'];
       },
-      options?: RequestOptions,
+      options?: RequestOptions
     ) => {
       const queryParams = new URLSearchParams();
       if (params?.type) queryParams.set('type', params.type);
@@ -348,7 +348,7 @@ export class APIClient {
         type: NeuralNetwork['type'];
         layers: NeuralNetwork['layers'];
       },
-      options?: RequestOptions,
+      options?: RequestOptions
     ) => {
       return this.request<NeuralNetwork>('POST', '/api/v1/neural/networks', data, options);
     },
@@ -361,7 +361,7 @@ export class APIClient {
         'GET',
         `/api/v1/neural/networks/${networkId}`,
         undefined,
-        options,
+        options
       );
     },
 
@@ -383,7 +383,7 @@ export class APIClient {
         'POST',
         `/api/v1/neural/networks/${networkId}/predict`,
         data,
-        options,
+        options
       );
     },
 
@@ -409,7 +409,7 @@ export class APIClient {
         'DELETE',
         `/api/v1/neural/networks/${networkId}/training/${trainingId}`,
         undefined,
-        options,
+        options
       );
     },
   };
@@ -462,7 +462,7 @@ export class APIClient {
         ttl?: number;
         metadata?: Record<string, unknown>;
       },
-      options?: RequestOptions,
+      options?: RequestOptions
     ) => {
       return this.request<{
         storeId: string;
@@ -481,7 +481,7 @@ export class APIClient {
         'DELETE',
         `/api/v1/memory/stores/${storeId}/keys/${key}`,
         undefined,
-        options,
+        options
       );
     },
 
@@ -534,7 +534,7 @@ export class APIClient {
         limit?: number;
         filter?: Record<string, unknown>;
       },
-      options?: RequestOptions,
+      options?: RequestOptions
     ) => {
       return this.request<{
         collection: string;
@@ -554,7 +554,7 @@ export class APIClient {
         query: string;
         parameters?: Record<string, unknown>;
       },
-      options?: RequestOptions,
+      options?: RequestOptions
     ) => {
       return this.request<{
         results: unknown[];
@@ -570,7 +570,7 @@ export class APIClient {
         query: string;
         parameters?: unknown[];
       },
-      options?: RequestOptions,
+      options?: RequestOptions
     ) => {
       return this.request<{
         rows: unknown[];

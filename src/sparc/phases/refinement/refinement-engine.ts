@@ -42,24 +42,24 @@ export class RefinementPhaseEngine implements RefinementEngine {
    */
   async applyRefinements(
     architecture: ArchitectureDesign,
-    feedback: RefinementFeedback,
+    feedback: RefinementFeedback
   ): Promise<RefinementResult> {
     const optimizationStrategies = await this.identifyOptimizationStrategies(
       architecture,
-      feedback,
+      feedback
     );
     const performanceOptimizations = await this.generatePerformanceOptimizations(
       architecture,
-      feedback,
+      feedback
     );
     const securityOptimizations = await this.generateSecurityOptimizations(architecture, feedback);
     const scalabilityOptimizations = await this.generateScalabilityOptimizations(
       architecture,
-      feedback,
+      feedback
     );
     const codeQualityOptimizations = await this.generateCodeQualityOptimizations(
       architecture,
-      feedback,
+      feedback
     );
 
     const refinedArchitecture = await this.applyOptimizations(
@@ -68,7 +68,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
       performanceOptimizations,
       securityOptimizations,
       scalabilityOptimizations,
-      codeQualityOptimizations,
+      codeQualityOptimizations
     );
 
     const benchmarkResults = await this.benchmarkImprovements(architecture, refinedArchitecture);
@@ -104,7 +104,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
    */
   private async identifyOptimizationStrategies(
     _architecture: ArchitectureDesign,
-    feedback: RefinementFeedback,
+    feedback: RefinementFeedback
   ): Promise<OptimizationStrategy[]> {
     const strategies: OptimizationStrategy[] = [];
 
@@ -220,7 +220,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
    */
   private async generatePerformanceOptimizations(
     architecture: ArchitectureDesign,
-    _feedback: RefinementFeedback,
+    _feedback: RefinementFeedback
   ): Promise<PerformanceOptimization[]> {
     const optimizations: PerformanceOptimization[] = [];
 
@@ -234,7 +234,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
           description: `Optimize algorithms in ${component.name}`,
           currentPerformance: component.performance.expectedLatency,
           targetPerformance: this.calculateImprovedPerformance(
-            component.performance.expectedLatency,
+            component.performance.expectedLatency
           ),
           techniques: [
             'Replace O(n²) algorithms with O(n log n) alternatives',
@@ -309,7 +309,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
    */
   private async generateSecurityOptimizations(
     _architecture: ArchitectureDesign,
-    _feedback: RefinementFeedback,
+    _feedback: RefinementFeedback
   ): Promise<SecurityOptimization[]> {
     const optimizations: SecurityOptimization[] = [];
 
@@ -390,7 +390,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
    */
   private async generateScalabilityOptimizations(
     _architecture: ArchitectureDesign,
-    _feedback: RefinementFeedback,
+    _feedback: RefinementFeedback
   ): Promise<ScalabilityOptimization[]> {
     const optimizations: ScalabilityOptimization[] = [];
 
@@ -463,7 +463,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
    */
   private async generateCodeQualityOptimizations(
     _architecture: ArchitectureDesign,
-    _feedback: RefinementFeedback,
+    _feedback: RefinementFeedback
   ): Promise<CodeQualityOptimization[]> {
     const optimizations: CodeQualityOptimization[] = [];
 
@@ -556,7 +556,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
     performanceOpts: PerformanceOptimization[],
     securityOpts: SecurityOptimization[],
     scalabilityOpts: ScalabilityOptimization[],
-    _codeQualityOpts: CodeQualityOptimization[],
+    _codeQualityOpts: CodeQualityOptimization[]
   ): Promise<ArchitectureDesign> {
     // Create a refined copy of the architecture
     const refinedArchitecture: ArchitectureDesign = {
@@ -620,7 +620,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
    */
   private async benchmarkImprovements(
     _original: ArchitectureDesign,
-    _refined: ArchitectureDesign,
+    _refined: ArchitectureDesign
   ): Promise<BenchmarkResult[]> {
     return [
       {
@@ -675,7 +675,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
    * Calculate improvement metrics
    */
   private async calculateImprovementMetrics(
-    benchmarks: BenchmarkResult[],
+    benchmarks: BenchmarkResult[]
   ): Promise<ImprovementMetric[]> {
     return benchmarks.map((benchmark) => ({
       id: nanoid(),
@@ -693,7 +693,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
    * Identify refactoring opportunities
    */
   private async identifyRefactoringOpportunities(
-    _architecture: ArchitectureDesign,
+    _architecture: ArchitectureDesign
   ): Promise<RefactoringOpportunity[]> {
     return [
       {
@@ -740,7 +740,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
    * Analyze technical debt
    */
   private async analyzeTechnicalDebt(
-    architecture: ArchitectureDesign,
+    architecture: ArchitectureDesign
   ): Promise<TechnicalDebtAnalysis> {
     return {
       id: nanoid(),
@@ -813,7 +813,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
     if (performanceMetrics.some((m) => m.improvementPercentage > 200)) {
       recommendations.push(
-        'Proceed with implementation of performance optimizations - high impact expected',
+        'Proceed with implementation of performance optimizations - high impact expected'
       );
     }
 
@@ -870,7 +870,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
     // Validate performance improvements
     const performanceImprovement = refinement.improvementMetrics.find(
-      (m) => m.category === 'performance',
+      (m) => m.category === 'performance'
     );
     validationResults.push({
       criterion: 'Performance improvements',
@@ -885,7 +885,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
     // Validate security enhancements
     const securityImprovement = refinement.improvementMetrics.find(
-      (m) => m.category === 'security',
+      (m) => m.category === 'security'
     );
     validationResults.push({
       criterion: 'Security enhancements',
@@ -934,7 +934,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
         switch (result.criterion) {
           case 'Optimization strategies':
             recommendations.push(
-              'Define comprehensive optimization strategies for all identified issues',
+              'Define comprehensive optimization strategies for all identified issues'
             );
             break;
           case 'Performance improvements':
@@ -942,12 +942,12 @@ export class RefinementPhaseEngine implements RefinementEngine {
             break;
           case 'Security enhancements':
             recommendations.push(
-              'Strengthen security improvements and address all vulnerabilities',
+              'Strengthen security improvements and address all vulnerabilities'
             );
             break;
           case 'Technical debt analysis':
             recommendations.push(
-              'Provide more detailed technical debt analysis and remediation plan',
+              'Provide more detailed technical debt analysis and remediation plan'
             );
             break;
         }
@@ -960,7 +960,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
   // Missing RefinementEngine interface methods
   async analyzeImplementationGaps(
     architecture: SystemArchitecture,
-    currentImpl: Implementation,
+    currentImpl: Implementation
   ): Promise<GapAnalysis> {
     // Implementation gap analysis
     const gaps: RefinementChange[] = [];
@@ -981,7 +981,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
   }
 
   async generateOptimizationSuggestions(
-    performance: PerformanceMetrics,
+    performance: PerformanceMetrics
   ): Promise<OptimizationPlan> {
     // Generate optimization strategies based on performance metrics
     const strategies: RefinementStrategy[] = [];

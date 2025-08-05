@@ -67,7 +67,7 @@ class SwarmCoordinator {
 
   constructor(
     private websocket: MockWebSocket | WebSocket,
-    private protocol: { encode: Function; decode: Function },
+    private protocol: { encode: Function; decode: Function }
   ) {
     this.setupWebSocketHandlers();
   }
@@ -131,7 +131,7 @@ class SwarmCoordinator {
         type: 'task',
         agentId,
         payload: task,
-      }),
+      })
     );
 
     await Promise.all(promises);
@@ -228,7 +228,7 @@ describe('WebSocket Swarm Coordination - Hybrid Testing', () => {
             type: 'task',
             agentId,
             payload: task,
-          }),
+          })
         );
       });
     });
@@ -276,7 +276,7 @@ describe('WebSocket Swarm Coordination - Hybrid Testing', () => {
             type: 'task',
             agentId: `agent-${i % 10}`,
             payload: { index: i },
-          }),
+          })
         );
       }
 
@@ -328,7 +328,7 @@ describe('WebSocket Swarm Coordination - Hybrid Testing', () => {
 
       // Try to send message
       await expect(coordinator.broadcastMessage({ type: 'test' })).rejects.toThrow(
-        'WebSocket is not open',
+        'WebSocket is not open'
       );
 
       // Verify protocol wasn't called for failed send

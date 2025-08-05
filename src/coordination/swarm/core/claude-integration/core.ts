@@ -46,7 +46,7 @@ class ClaudeIntegrationCore {
   async addMcpServer() {
     if (!(await this.isClaudeAvailable())) {
       throw new Error(
-        'Claude Code CLI not found. Install with: npm install -g @anthropic-ai/claude-code',
+        'Claude Code CLI not found. Install with: npm install -g @anthropic-ai/claude-code'
       );
     }
 

@@ -47,7 +47,7 @@ export class Orchestrator extends EventEmitter {
     private coordinationManager?: any,
     private mcpServer?: any,
     private eventBus?: IEventBus,
-    private logger?: ILogger,
+    private logger?: ILogger
   ) {
     super();
 

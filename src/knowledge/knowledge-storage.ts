@@ -78,7 +78,7 @@ export class FACTStorageSystem extends EventEmitter {
    * Store FACT knowledge entry
    */
   async storeKnowledge(
-    entry: Omit<FACTKnowledgeEntry, 'id' | 'timestamp' | 'accessCount' | 'lastAccessed'>,
+    entry: Omit<FACTKnowledgeEntry, 'id' | 'timestamp' | 'accessCount' | 'lastAccessed'>
   ): Promise<string> {
     const id = this.generateEntryId(entry.query, entry.metadata.type);
     const timestamp = Date.now();

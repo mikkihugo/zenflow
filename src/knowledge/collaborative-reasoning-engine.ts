@@ -862,31 +862,31 @@ export class CollaborativeReasoningEngine extends EventEmitter {
     this.problemDecomposer = new ProblemDecompositionSystem(
       this.config.decomposition,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.distributedReasoning = new DistributedReasoningSystem(
       this.config.reasoning,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.consensusBuilder = new ConsensusBuilderSystem(
       this.config.consensus,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.solutionSynthesizer = new SolutionSynthesisSystem(
       this.config.synthesis,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.contextManager = new ContextSharingSystem(
       this.config.contextSharing,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.setupIntegrations();
@@ -933,7 +933,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
    */
   async solveCollaboratively(
     problem: Problem,
-    participants: CollaborativeParticipant[],
+    participants: CollaborativeParticipant[]
   ): Promise<CollaborativeSolution> {
     const startTime = Date.now();
     const problemId = `prob-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -954,13 +954,13 @@ export class CollaborativeReasoningEngine extends EventEmitter {
       // Phase 3: Assign reasoning tasks to specialized agents
       const reasoningTasks = await this.assignReasoningTasks(
         decomposition.subproblems,
-        participants,
+        participants
       );
 
       // Phase 4: Coordinate distributed reasoning
       const reasoningResults = await this.coordinateDistributedReasoning(
         reasoningTasks,
-        sharedContext,
+        sharedContext
       );
 
       // Phase 5: Build consensus on contested results
@@ -969,13 +969,13 @@ export class CollaborativeReasoningEngine extends EventEmitter {
       // Phase 6: Synthesize partial solutions into comprehensive solution
       const synthesizedSolution = await this.synthesizeComprehensiveSolution(
         consensusResults,
-        decomposition,
+        decomposition
       );
 
       // Phase 7: Validate and optimize final solution
       const validatedSolution = await this.validateAndOptimizeSolution(
         synthesizedSolution,
-        problem,
+        problem
       );
 
       const solution: CollaborativeSolution = {
@@ -1014,7 +1014,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
    */
   async decomposeProblem(
     problem: Problem,
-    participants: CollaborativeParticipant[],
+    participants: CollaborativeParticipant[]
   ): Promise<ProblemDecomposition> {
     const startTime = Date.now();
 
@@ -1073,7 +1073,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
    */
   async coordinateDistributedReasoning(
     reasoningTasks: ReasoningTask[],
-    sharedContext: SharedReasoningContext,
+    sharedContext: SharedReasoningContext
   ): Promise<DistributedReasoningResult> {
     const startTime = Date.now();
 
@@ -1086,24 +1086,24 @@ export class CollaborativeReasoningEngine extends EventEmitter {
       // Initialize reasoning coordination
       const coordinationPlan = await this.createReasoningCoordinationPlan(
         reasoningTasks,
-        sharedContext,
+        sharedContext
       );
 
       // Execute reasoning tasks in parallel where possible
       const reasoningPromises = reasoningTasks.map((task) =>
-        this.executeReasoningTask(task, sharedContext),
+        this.executeReasoningTask(task, sharedContext)
       );
 
       // Monitor progress and handle dependencies
       const reasoningResults = await this.monitorReasoningProgress(
         reasoningPromises,
-        coordinationPlan,
+        coordinationPlan
       );
 
       // Aggregate individual reasoning results
       const aggregatedResults = await this.aggregateReasoningResults(
         reasoningResults,
-        sharedContext,
+        sharedContext
       );
 
       // Identify conflicts and areas requiring consensus
@@ -1134,7 +1134,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
    */
   async buildConsensusOnResults(
     reasoningResults: DistributedReasoningResult,
-    participants: CollaborativeParticipant[],
+    participants: CollaborativeParticipant[]
   ): Promise<ConsensusResult> {
     const startTime = Date.now();
 
@@ -1147,23 +1147,23 @@ export class CollaborativeReasoningEngine extends EventEmitter {
       // Initialize consensus process for each conflict
       const consensusProcesses = await Promise.all(
         reasoningResults.conflictAnalysis.conflicts.map((conflict) =>
-          this.initializeConsensusProcess(conflict, participants),
-        ),
+          this.initializeConsensusProcess(conflict, participants)
+        )
       );
 
       // Conduct structured dialogue for each consensus process
       const dialogueResults = await Promise.all(
-        consensusProcesses.map((process) => this.conductStructuredDialogue(process)),
+        consensusProcesses.map((process) => this.conductStructuredDialogue(process))
       );
 
       // Apply voting mechanisms where dialogue is insufficient
       const votingResults = await this.applyVotingMechanisms(
-        dialogueResults.filter((result) => !result.resolved),
+        dialogueResults.filter((result) => !result.resolved)
       );
 
       // Resolve remaining conflicts through mediation
       const mediationResults = await this.mediateRemainingConflicts(
-        votingResults.filter((result) => !result.resolved),
+        votingResults.filter((result) => !result.resolved)
       );
 
       // Combine all consensus results
@@ -1197,7 +1197,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
    */
   async synthesizeComprehensiveSolution(
     consensusResults: ConsensusResult,
-    decomposition: ProblemDecomposition,
+    decomposition: ProblemDecomposition
   ): Promise<ComprehensiveSolution> {
     const startTime = Date.now();
 
@@ -1210,31 +1210,31 @@ export class CollaborativeReasoningEngine extends EventEmitter {
       // Extract partial solutions from consensus results
       const partialSolutions = await this.extractPartialSolutions(
         consensusResults,
-        decomposition.subproblems,
+        decomposition.subproblems
       );
 
       // Select synthesis strategy based on problem characteristics
       const synthesisStrategy = await this.selectSynthesisStrategy(
         decomposition.originalProblem,
-        partialSolutions,
+        partialSolutions
       );
 
       // Apply integration method to combine partial solutions
       const integratedSolution = await this.integratePartialSolutions(
         partialSolutions,
-        synthesisStrategy,
+        synthesisStrategy
       );
 
       // Resolve integration conflicts and inconsistencies
       const resolvedSolution = await this.resolveIntegrationConflicts(
         integratedSolution,
-        synthesisStrategy,
+        synthesisStrategy
       );
 
       // Optimize synthesized solution
       const optimizedSolution = await this.optimizeSynthesizedSolution(
         resolvedSolution,
-        decomposition.originalProblem,
+        decomposition.originalProblem
       );
 
       const comprehensiveSolution: ComprehensiveSolution = {
@@ -1328,7 +1328,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
   private async initializeSharedContext(
     _problemId: string,
     _problem: Problem,
-    _participants: CollaborativeParticipant[],
+    _participants: CollaborativeParticipant[]
   ): Promise<SharedReasoningContext> {
     // Implementation placeholder
     return {} as SharedReasoningContext;
@@ -1336,7 +1336,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
 
   private async assignReasoningTasks(
     _subproblems: SubProblem[],
-    _participants: CollaborativeParticipant[],
+    _participants: CollaborativeParticipant[]
   ): Promise<ReasoningTask[]> {
     // Implementation placeholder
     return [];

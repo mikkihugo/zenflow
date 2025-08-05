@@ -100,7 +100,7 @@ export class OptimizationMonitor extends EventEmitter {
     // Start monitoring loop
     this.monitoringInterval = setInterval(
       () => this.performMonitoringCycle(),
-      this.config.monitoringInterval,
+      this.config.monitoringInterval
     );
   }
 
@@ -129,7 +129,7 @@ export class OptimizationMonitor extends EventEmitter {
     // Cleanup old history
     const cutoff = Date.now() - this.config.retentionPeriod;
     this.optimizationHistory = this.optimizationHistory.filter(
-      (r) => r.afterMetrics.timestamp.getTime() > cutoff,
+      (r) => r.afterMetrics.timestamp.getTime() > cutoff
     );
 
     this.emit('optimization:recorded', result);
@@ -180,7 +180,7 @@ export class OptimizationMonitor extends EventEmitter {
    * Get alerts by severity
    */
   public getAlertsBySeverity(
-    severity: 'low' | 'medium' | 'high' | 'critical',
+    severity: 'low' | 'medium' | 'high' | 'critical'
   ): OptimizationAlert[] {
     return this.alerts.filter((alert) => alert.severity === severity && !alert.acknowledged);
   }
@@ -201,7 +201,7 @@ export class OptimizationMonitor extends EventEmitter {
    */
   public getOptimizationTrends(
     _domain: string,
-    period: number = 3600000,
+    period: number = 3600000
   ): {
     improvements: number[];
     successes: number[];
@@ -209,7 +209,7 @@ export class OptimizationMonitor extends EventEmitter {
   } {
     const cutoff = Date.now() - period;
     const recentOptimizations = this.optimizationHistory.filter(
-      (r) => r.afterMetrics.timestamp.getTime() > cutoff,
+      (r) => r.afterMetrics.timestamp.getTime() > cutoff
     );
 
     const improvements = recentOptimizations.map((r) => r.improvement);
@@ -566,7 +566,7 @@ export class OptimizationMonitor extends EventEmitter {
 
     // Cleanup optimization history
     this.optimizationHistory = this.optimizationHistory.filter(
-      (r) => r.afterMetrics.timestamp.getTime() > cutoff,
+      (r) => r.afterMetrics.timestamp.getTime() > cutoff
     );
   }
 }

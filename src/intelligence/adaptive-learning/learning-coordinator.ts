@@ -246,7 +246,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
    */
   getAntiPatterns(): AntiPattern[] {
     return Array.from(this.antiPatterns.values()).sort(
-      (a, b) => b.detectionConfidence - a.detectionConfidence,
+      (a, b) => b.detectionConfidence - a.detectionConfidence
     );
   }
 
@@ -295,7 +295,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   private async executeLearning(
     agents: Agent[],
-    strategy: LearningType,
+    strategy: LearningType
   ): Promise<LearningResult[]> {
     const results: LearningResult[] = [];
 
@@ -315,7 +315,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   private async executeAgentLearning(
     agent: Agent,
-    strategy: LearningType,
+    strategy: LearningType
   ): Promise<LearningResult> {
     // Simulate learning execution based on strategy
     const patterns = await this.generateLearningPatterns(agent, strategy);
@@ -490,7 +490,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
     // Distribute relevant knowledge to agents based on their specializations
     for (const [agentId, agent] of this.agents) {
       const relevantPatterns = patterns.filter(
-        (pattern) => agent.specializations.includes(pattern.type) || pattern.confidence > 0.9,
+        (pattern) => agent.specializations.includes(pattern.type) || pattern.confidence > 0.9
       );
 
       if (relevantPatterns.length > 0) {
@@ -600,7 +600,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
   private extractBestPractice(
     category: string,
     pattern: any,
-    successes: SuccessPattern[],
+    successes: SuccessPattern[]
   ): BestPractice {
     const relevantSuccesses = successes.filter((s) => s.actions.includes(pattern.action));
 
@@ -752,7 +752,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
           });
         }
       },
-      5 * 60 * 1000,
+      5 * 60 * 1000
     ); // Every 5 minutes
   }
 }

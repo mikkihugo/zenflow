@@ -9,16 +9,16 @@
 import { existsSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { performance } from 'node:perf_hooks';
-import { ProgressiveConfidenceBuilder } from '../../../coordination/discovery/progressive-confidence-builder';
-import { DomainDiscoveryBridge } from '../../../coordination/discovery/domain-discovery-bridge';
-import { createLogger } from '../../../core/logger';
-import { createAGUI } from '../../agui/agui-adapter';
-import { ProjectContextAnalyzer } from '../../../knowledge/project-context-analyzer';
-import { SessionMemoryStore } from '../../../memory/memory';
-import { configManager } from '../../../config/config-manager';
 import { render } from 'ink';
 import meow from 'meow';
 import React from 'react';
+import { configManager } from '../../../config/config-manager';
+import { DomainDiscoveryBridge } from '../../../coordination/discovery/domain-discovery-bridge';
+import { ProgressiveConfidenceBuilder } from '../../../coordination/discovery/progressive-confidence-builder';
+import { createLogger } from '../../../core/logger';
+import { ProjectContextAnalyzer } from '../../../knowledge/project-context-analyzer';
+import { SessionMemoryStore } from '../../../memory/memory';
+import { createAGUI } from '../../agui/agui-adapter';
 
 const logger = createLogger({ prefix: 'DiscoverCommand' });
 
@@ -39,7 +39,7 @@ const getDiscoveryDefaults = () => {
     MEMORY_PATH_SUFFIX: '.claude-zen/memory.json',
     RESEARCH_THRESHOLD: config.discovery?.researchThreshold || 0.6,
     SKIP_VALIDATION: config.discovery?.skipValidation || false,
-    DEFAULT_TOPOLOGY: config.swarm?.defaultTopology || 'auto'
+    DEFAULT_TOPOLOGY: config.swarm?.defaultTopology || 'auto',
   };
 };
 
@@ -146,7 +146,7 @@ Examples
         default: false,
       },
     },
-  },
+  }
 );
 
 /**
@@ -181,7 +181,7 @@ export class DiscoverCommand {
       logger.error('Discovery operation timed out');
       throw new Error(`Discovery operation exceeded timeout of ${defaults.OPERATION_TIMEOUT}ms`);
     }, defaults.OPERATION_TIMEOUT);
-    
+
     try {
       const resolvedPath = resolve(projectPath);
 
@@ -201,16 +201,13 @@ export class DiscoverCommand {
 
       // Get configuration defaults
       const defaults = getDiscoveryDefaults();
-      
+
       // Validate and normalize options with production defaults
       const confidence = Math.max(
         defaults.MIN_CONFIDENCE,
-        Math.min(
-          defaults.MAX_CONFIDENCE,
-          Number(options.confidence) || defaults.DEFAULT_CONFIDENCE
-        )
+        Math.min(defaults.MAX_CONFIDENCE, Number(options.confidence) || defaults.DEFAULT_CONFIDENCE)
       );
-      
+
       const maxIterations = Math.max(
         defaults.MIN_ITERATIONS,
         Math.min(
@@ -218,15 +215,12 @@ export class DiscoverCommand {
           Number(options.maxIterations) || defaults.DEFAULT_ITERATIONS
         )
       );
-      
+
       const maxAgents = Math.max(
         defaults.MIN_AGENTS,
-        Math.min(
-          defaults.MAX_AGENTS,
-          Number(options.maxAgents) || defaults.DEFAULT_AGENTS
-        )
+        Math.min(defaults.MAX_AGENTS, Number(options.maxAgents) || defaults.DEFAULT_AGENTS)
       );
-      
+
       // Override defaults with options
       const topology = options.topology || defaults.DEFAULT_TOPOLOGY;
       const skipValidation = options.skipValidation ?? defaults.SKIP_VALIDATION;
@@ -234,7 +228,9 @@ export class DiscoverCommand {
 
       // Validate confidence range
       if (confidence < defaults.MIN_CONFIDENCE || confidence > defaults.MAX_CONFIDENCE) {
-        throw new Error(`Confidence must be between ${defaults.MIN_CONFIDENCE} and ${defaults.MAX_CONFIDENCE}`);
+        throw new Error(
+          `Confidence must be between ${defaults.MIN_CONFIDENCE} and ${defaults.MAX_CONFIDENCE}`
+        );
       }
 
       logger.info('🚀 Starting Auto-Discovery System');
@@ -251,13 +247,13 @@ export class DiscoverCommand {
 
       // Phase 1: Project Analysis & Memory Setup
       await this.showPhase('🔍 Phase 1: Project Analysis');
-      
+
       // Initialize memory store early since it's needed by DocumentProcessor
       const memoryStore = new SessionMemoryStore({
         backendConfig: { type: 'json', path: `${resolvedPath}/.claude-zen/memory.json` },
       });
       await memoryStore.initialize();
-      
+
       const projectAnalyzer = new ProjectContextAnalyzer(resolvedPath);
       const projectContext = await projectAnalyzer.analyzeProject();
 
@@ -266,33 +262,37 @@ export class DiscoverCommand {
 
       if ((projectContext as any).isMonorepo) {
         logger.info(
-          `📦 Detected monorepo with ${(projectContext as any).packages?.length || 0} packages`,
+          `📦 Detected monorepo with ${(projectContext as any).packages?.length || 0} packages`
         );
       }
 
       // Phase 2: Domain Discovery
       await this.showPhase('🧠 Phase 2: Domain Discovery');
-      
+
       let domainBridge: any;
       let discoveredDomains: any[] = [];
-      
+
       try {
         // Try to initialize full domain discovery system
-        const { DomainAnalysisEngine } = await import('../../../tools/domain-splitting/analyzers/domain-analyzer');
-        const { IntelligenceCoordinationSystem } = await import('../../../knowledge/intelligence-coordination-system');
+        const { DomainAnalysisEngine } = await import(
+          '../../../tools/domain-splitting/analyzers/domain-analyzer'
+        );
+        const { IntelligenceCoordinationSystem } = await import(
+          '../../../knowledge/intelligence-coordination-system'
+        );
         const { DocumentProcessor } = await import('../../../core/document-processor');
-        
+
         // Initialize components with proper error handling
         const documentProcessor = new DocumentProcessor(memoryStore as any, undefined, {
           workspaceRoot: resolvedPath,
           autoWatch: false,
-          enableWorkflows: false
+          enableWorkflows: false,
         });
         await documentProcessor.initialize();
-        
+
         const intelligenceCoordinator = new IntelligenceCoordinationSystem();
         await intelligenceCoordinator.initialize();
-        
+
         const domainAnalysisEngine = new DomainAnalysisEngine({
           includeTests: false,
           includeConfig: true,
@@ -300,24 +300,23 @@ export class DiscoverCommand {
           minFilesForSplit: 3,
           coupling: {
             threshold: 0.7,
-            algorithm: 'shared-dependencies'
-          }
+            algorithm: 'shared-dependencies',
+          },
         });
-        
+
         domainBridge = new DomainDiscoveryBridge(
           documentProcessor,
           domainAnalysisEngine,
           projectAnalyzer,
           intelligenceCoordinator
         );
-        
+
         discoveredDomains = await domainBridge.discoverDomains();
         logger.info(`✅ Discovered ${discoveredDomains.length} domains using full analysis`);
-        
       } catch (error) {
         // Fallback to simulated domain discovery if components fail
         logger.warn('⚠️  Full domain analysis failed, using simplified discovery:', error);
-        
+
         // Simulate basic domain discovery
         discoveredDomains = await this.simulateBasicDomainDiscovery(resolvedPath);
         logger.info(`✅ Discovered ${discoveredDomains.length} domains using fallback analysis`);
@@ -327,22 +326,22 @@ export class DiscoverCommand {
 
       if (discoveredDomains.length === 0) {
         logger.warn(
-          '⚠️  No domains discovered. Try analyzing a larger codebase or adjusting sensitivity.',
+          '⚠️  No domains discovered. Try analyzing a larger codebase or adjusting sensitivity.'
         );
         return;
       }
 
       // Phase 3: Confidence Building
       await this.showPhase('📈 Phase 3: Confidence Building');
-      
+
       const agui = createAGUI(options.skipValidation ? 'mock' : 'terminal');
       let confidenceResult: any;
-      
+
       try {
         const confidenceBuilder = new ProgressiveConfidenceBuilder(
-          domainBridge || null, 
-          memoryStore, 
-          agui, 
+          domainBridge || null,
+          memoryStore,
+          agui,
           {
             targetConfidence: confidence,
             maxIterations,
@@ -354,7 +353,7 @@ export class DiscoverCommand {
         confidenceBuilder.on('progress', (event) => {
           if (options.verbose) {
             logger.info(
-              `📊 Iteration ${event.iteration}: ${(event.confidence * 100).toFixed(1)}% confidence`,
+              `📊 Iteration ${event.iteration}: ${(event.confidence * 100).toFixed(1)}% confidence`
             );
           }
         });
@@ -374,12 +373,11 @@ export class DiscoverCommand {
             refinementHistory: d.refinementHistory || [],
           })),
         });
-        
+
         logger.info(`✅ Progressive confidence building completed successfully`);
-        
       } catch (error) {
         logger.warn('⚠️  Confidence building encountered issues, using fallback:', error);
-        
+
         // Fallback confidence result
         confidenceResult = {
           confidence: {
@@ -388,13 +386,13 @@ export class DiscoverCommand {
             humanValidations: options.skipValidation ? 0.5 : 0.7,
             researchDepth: 0.4,
             domainClarity: 0.7,
-            consistency: 0.6
+            consistency: 0.6,
           },
-          domains: new Map(discoveredDomains.map(d => [d.name, d])),
+          domains: new Map(discoveredDomains.map((d) => [d.name, d])),
           relationships: [],
           validationCount: options.skipValidation ? 0 : 2,
           researchCount: 0,
-          learningHistory: []
+          learningHistory: [],
         };
       }
 
@@ -403,13 +401,13 @@ export class DiscoverCommand {
       this.stats.researchQueries = confidenceResult.researchCount || 0;
 
       logger.info(
-        `✅ Built confidence: ${(confidenceResult.confidence.overall * 100).toFixed(1)}%`,
+        `✅ Built confidence: ${(confidenceResult.confidence.overall * 100).toFixed(1)}%`
       );
       logger.info(`📋 Validated domains: ${confidenceResult.domains.size}`);
 
       if (confidenceResult.domains.size === 0) {
         logger.warn(
-          '⚠️  No confident domains found. Consider lowering confidence threshold or adding more documentation.',
+          '⚠️  No confident domains found. Consider lowering confidence threshold or adding more documentation.'
         );
         return;
       }
@@ -420,7 +418,9 @@ export class DiscoverCommand {
 
         try {
           // Dynamic import for swarm components
-          const { AutoSwarmFactory } = await import('../../../coordination/discovery/auto-swarm-factory');
+          const { AutoSwarmFactory } = await import(
+            '../../../coordination/discovery/auto-swarm-factory'
+          );
           const { HiveSwarmCoordinator } = await import('../../../coordination/hive-swarm-sync');
           const { createPublicSwarmCoordinator } = await import('../../../coordination/public-api');
           const { EventBus } = await import('../../../core/event-bus');
@@ -566,15 +566,15 @@ export class DiscoverCommand {
 
       const duration = (performance.now() - this.startTime) / 1000;
       logger.info(`🎉 Auto-discovery completed in ${duration.toFixed(2)}s`);
-      
+
       // Clear timeout on success
       clearTimeout(operationTimeout);
     } catch (error) {
       // Clear timeout on error
       clearTimeout(operationTimeout);
-      
+
       logger.error('💥 Auto-discovery failed:', error);
-      
+
       // Production error recovery
       if (error instanceof Error) {
         // Log structured error for monitoring
@@ -585,7 +585,7 @@ export class DiscoverCommand {
           options,
           duration: (performance.now() - this.startTime) / 1000,
         });
-        
+
         // Suggest recovery actions
         if (error.message.includes('does not exist')) {
           logger.info('💡 Ensure the project path exists and you have read permissions');
@@ -595,7 +595,7 @@ export class DiscoverCommand {
           logger.info('💡 Consider running with fewer agents or on a machine with more memory');
         }
       }
-      
+
       process.exit(1);
     }
   }
@@ -608,7 +608,7 @@ export class DiscoverCommand {
       const { render } = await import('ink');
       const React = await import('react');
       const { InteractiveDiscoveryTUI } = await import('../../tui');
-      
+
       return new Promise((resolve, reject) => {
         const { waitUntilExit } = render(
           React.createElement(InteractiveDiscoveryTUI, {
@@ -629,7 +629,7 @@ export class DiscoverCommand {
               logger.info('❌ Interactive discovery cancelled by user');
               reject(new Error('Discovery cancelled by user'));
             },
-          }),
+          })
         );
 
         waitUntilExit()
@@ -641,7 +641,7 @@ export class DiscoverCommand {
     } catch (error) {
       logger.error('Interactive TUI failed to load:', error);
       logger.info('💡 Falling back to non-interactive mode...');
-      
+
       // Fallback to non-interactive mode
       const fallbackOptions = { ...options, interactive: false };
       return this.execute(projectPath, fallbackOptions);
@@ -665,7 +665,7 @@ export class DiscoverCommand {
             status: status.status,
             agents: status.agents.created,
             message: status.message,
-          }),
+          })
         ),
         configurations: Array.from(results.swarmConfigs?.entries() || []).map(
           ([domain, config]) => ({
@@ -674,7 +674,7 @@ export class DiscoverCommand {
             maxAgents: config.maxAgents,
             resources: config.resourceLimits,
             persistence: config.persistence,
-          }),
+          })
         ),
       };
 
@@ -716,7 +716,7 @@ ${results.deployedSwarms
 - **Status**: ${swarm.status}
 - **Agents**: ${swarm.agents}
 - **Message**: ${swarm.message}
-`,
+`
   )
   .join('\n')}
 
@@ -730,7 +730,7 @@ ${results.configurations
 - **Memory**: ${config.resources.memory}
 - **CPU**: ${config.resources.cpu}
 - **Persistence**: ${config.persistence}
-`,
+`
   )
   .join('\n')}
 
@@ -781,7 +781,7 @@ ${results.configurations
           technologies: domain.technologies || [],
           validations: domain.validations.length,
           research: domain.research.length,
-        }),
+        })
       ),
       relationships: confidenceResult.relationships.map((rel: any) => ({
         from: rel.sourceDomain,
@@ -864,28 +864,37 @@ ${results.configurations
   private async simulateBasicDomainDiscovery(projectPath: string): Promise<any[]> {
     const fs = await import('node:fs');
     const path = await import('node:path');
-    
+
     // Scan project structure to identify likely domains
     const domains: any[] = [];
-    
+
     try {
       const srcPath = path.join(projectPath, 'src');
       if (fs.existsSync(srcPath)) {
-        const subdirs = fs.readdirSync(srcPath, { withFileTypes: true })
-          .filter(dirent => dirent.isDirectory())
-          .map(dirent => dirent.name);
-        
+        const subdirs = fs
+          .readdirSync(srcPath, { withFileTypes: true })
+          .filter((dirent) => dirent.isDirectory())
+          .map((dirent) => dirent.name);
+
         // Common domain patterns
         const domainPatterns = [
-          'coordination', 'neural', 'interfaces', 'memory', 'agents', 
-          'core', 'utils', 'tools', 'workflows', 'monitoring'
+          'coordination',
+          'neural',
+          'interfaces',
+          'memory',
+          'agents',
+          'core',
+          'utils',
+          'tools',
+          'workflows',
+          'monitoring',
         ];
-        
+
         for (const dir of subdirs) {
           if (domainPatterns.includes(dir.toLowerCase())) {
             const dirPath = path.join(srcPath, dir);
             const files = this.getFilesRecursively(dirPath);
-            
+
             domains.push({
               id: `domain-${dir}-${Date.now()}`,
               name: dir,
@@ -904,12 +913,12 @@ ${results.configurations
               technologies: ['typescript', 'node.js'],
               validations: [],
               research: [],
-              refinementHistory: []
+              refinementHistory: [],
             });
           }
         }
       }
-      
+
       // Ensure at least some domains for testing
       if (domains.length === 0) {
         domains.push({
@@ -930,14 +939,13 @@ ${results.configurations
           technologies: ['typescript'],
           validations: [],
           research: [],
-          refinementHistory: []
+          refinementHistory: [],
         });
       }
-      
     } catch (error) {
       logger.warn('Error in basic domain discovery:', error);
     }
-    
+
     return domains;
   }
 
@@ -948,13 +956,13 @@ ${results.configurations
     const fs = require('node:fs');
     const path = require('node:path');
     const files: string[] = [];
-    
+
     try {
       const items = fs.readdirSync(dirPath, { withFileTypes: true });
-      
+
       for (const item of items) {
         const fullPath = path.join(dirPath, item.name);
-        
+
         if (item.isDirectory()) {
           // Skip node_modules, dist, build directories
           if (!['node_modules', 'dist', 'build', '.git'].includes(item.name)) {
@@ -970,7 +978,7 @@ ${results.configurations
     } catch (error) {
       // Ignore directory access errors
     }
-    
+
     return files;
   }
   private async generateMarkdownReport(results: any): Promise<string> {
@@ -1000,7 +1008,7 @@ ${results.domains
 - **Technologies**: ${domain.technologies.join(', ')}
 - **Validations**: ${domain.validations}
 - **Research**: ${domain.research}
-`,
+`
   )
   .join('\n')}
 
@@ -1009,7 +1017,7 @@ ${results.domains
 ${results.relationships
   .map(
     (rel: any) =>
-      `- **${rel.from}** ${rel.type} **${rel.to}** (${rel.confidence})\n  - Evidence: ${rel.evidence}`,
+      `- **${rel.from}** ${rel.type} **${rel.to}** (${rel.confidence})\n  - Evidence: ${rel.evidence}`
   )
   .join('\n')}
 

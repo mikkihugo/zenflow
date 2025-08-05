@@ -27,7 +27,7 @@ export interface CLIModuleConfig {
  * Initialize the Advanced CLI Module
  */
 export async function initializeAdvancedCLI(
-  config: Partial<CLIModuleConfig> = {},
+  config: Partial<CLIModuleConfig> = {}
 ): Promise<AdvancedCLIEngine> {
   const finalConfig: CLIModuleConfig = {
     engine: 'advanced',

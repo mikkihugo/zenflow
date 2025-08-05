@@ -102,7 +102,7 @@ export class TerminalInterface {
         commands,
         flags: { ...flags, ...this.config },
         onExit: (code: number) => process.exit(code),
-      }),
+      })
     );
 
     // Setup graceful shutdown

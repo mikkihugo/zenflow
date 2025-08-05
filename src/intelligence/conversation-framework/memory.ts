@@ -30,7 +30,7 @@ class MemoryBackendAdapter implements BackendAdapter {
     } catch (error) {
       console.error(`Failed to save conversation data for key ${key}:`, error);
       throw new Error(
-        `Memory save operation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Memory save operation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -50,7 +50,7 @@ class MemoryBackendAdapter implements BackendAdapter {
     } catch (error) {
       console.error(`Failed to delete conversation data for key ${key}:`, error);
       throw new Error(
-        `Memory delete operation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Memory delete operation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }

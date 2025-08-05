@@ -141,7 +141,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
       // 4. Implement multi-layer caching
       const cacheHierarchy = await this.implementMultiLayerCaching(
         coordinationLayer,
-        optimalCacheSize,
+        optimalCacheSize
       );
 
       // 5. Enable intelligent prefetching
@@ -294,12 +294,12 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
       algorithms.map(async (algorithm) => {
         const performance = await this.benchmarkRoutingAlgorithm(topology, algorithm);
         return { algorithm, performance };
-      }),
+      })
     );
 
     // Select the best performing algorithm
     const bestResult = results.reduce((best, current) =>
-      current.performance > best.performance ? current : best,
+      current.performance > best.performance ? current : best
     );
 
     // Update configuration if better algorithm found
@@ -402,7 +402,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
    * Determine optimal load balancing strategy
    */
   private determineOptimalLoadBalancing(
-    swarmSize: number,
+    swarmSize: number
   ): 'round_robin' | 'least_connections' | 'weighted' | 'adaptive' {
     if (swarmSize < 100) return 'round_robin';
     if (swarmSize < 1000) return 'least_connections';
@@ -475,7 +475,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   }
   private async enableIntelligentPrefetching(
     _layer: CoordinationLayer,
-    _patterns: any,
+    _patterns: any
   ): Promise<void> {}
   private async implementCacheWarming(_layer: CoordinationLayer): Promise<void> {}
   private async measureCacheHitRatio(): Promise<number> {
@@ -511,7 +511,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   }
   private async benchmarkRoutingAlgorithm(
     _topology: SwarmTopology,
-    _algorithm: string,
+    _algorithm: string
   ): Promise<number> {
     return Math.random();
   }
@@ -523,19 +523,19 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   }
   private async applyMessageCompression(
     _topology: SwarmTopology,
-    _algorithm: string,
+    _algorithm: string
   ): Promise<void> {}
   private async measureProtocolEfficiency(_topology: SwarmTopology): Promise<number> {
     return 0.8;
   }
   private async testProtocolOptimization(
     _topology: SwarmTopology,
-    _optimization: string,
+    _optimization: string
   ): Promise<number> {
     return Math.random();
   }
   private async applyProtocolOptimization(
     _topology: SwarmTopology,
-    _optimization: string,
+    _optimization: string
   ): Promise<void> {}
 }

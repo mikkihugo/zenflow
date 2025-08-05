@@ -5,16 +5,16 @@
  * from unsafe union type access to type-safe patterns using type guards.
  */
 
-import { SessionMemoryStore } from '../memory/memory';
+import type { SessionMemoryStore } from '../memory/memory';
 import {
-  MemoryResult,
-  MemorySuccess,
-  MemoryNotFound,
-  MemoryError,
-  isMemorySuccess,
-  isMemoryNotFound,
-  isMemoryError,
   extractErrorMessage,
+  isMemoryError,
+  isMemoryNotFound,
+  isMemorySuccess,
+  type MemoryError,
+  type MemoryNotFound,
+  type MemoryResult,
+  type MemorySuccess,
   safePropertyAccess,
 } from '../utils/type-guards';
 
@@ -303,7 +303,7 @@ class SafeMemoryService {
   private async storeWithResult<T>(
     namespace: string,
     key: string,
-    data: T,
+    data: T
   ): Promise<MemoryResult<void>> {
     try {
       await this.store.store(namespace, key, data);
@@ -460,7 +460,7 @@ export async function demonstrateMigration(): Promise<void> {
       console.log(`❌ ${userId}: Error - ${result.error}`);
     } else {
       console.log(
-        `✅ ${userId}: Profile ${result.profile ? 'found' : 'missing'}, Session ${result.session ? 'active' : 'inactive'}`,
+        `✅ ${userId}: Profile ${result.profile ? 'found' : 'missing'}, Session ${result.session ? 'active' : 'inactive'}`
       );
     }
   });

@@ -48,7 +48,7 @@ export class SQLiteBackend extends MemoryBackend {
   async store(
     key: string,
     value: JSONValue,
-    namespace: string = 'default',
+    namespace: string = 'default'
   ): Promise<StorageResult> {
     const fullKey = `${namespace}:${key}`;
     const timestamp = Date.now();
@@ -130,7 +130,7 @@ export class SQLiteBackend extends MemoryBackend {
   async getStats(): Promise<BackendStats> {
     const countStmt = this.db.prepare('SELECT COUNT(*) as count FROM storage');
     const sizeStmt = this.db.prepare(
-      'SELECT page_count * page_size as size FROM pragma_page_count(), pragma_page_size()',
+      'SELECT page_count * page_size as size FROM pragma_page_count(), pragma_page_size()'
     );
 
     const countResult = countStmt.get();

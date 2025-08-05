@@ -395,7 +395,7 @@ class ComprehensiveTestOrchestrator {
 
     // Overall platform compatibility
     platformTests.passed = Object.values(platformTests.compatibility).every(
-      (supported) => supported,
+      (supported) => supported
     );
 
     platformTests.tests.forEach((_test) => {});
@@ -477,7 +477,7 @@ class ComprehensiveTestOrchestrator {
     // Calculate summary statistics
     this.orchestrationResults.summary.totalSuites = this.orchestrationResults.testSuites.length;
     this.orchestrationResults.summary.passedSuites = this.orchestrationResults.testSuites.filter(
-      (s) => s.passed,
+      (s) => s.passed
     ).length;
     this.orchestrationResults.summary.failedSuites =
       this.orchestrationResults.summary.totalSuites -
@@ -497,7 +497,7 @@ class ComprehensiveTestOrchestrator {
       'Claude Code Flow Integration',
     ];
     const criticalPassed = criticalSuites.every(
-      (suiteName) => this.orchestrationResults.testSuites.find((s) => s.name === suiteName)?.passed,
+      (suiteName) => this.orchestrationResults.testSuites.find((s) => s.name === suiteName)?.passed
     );
     this.orchestrationResults.cicdReadiness =
       criticalPassed && this.orchestrationResults.summary.overallStatus === 'PASSED';
@@ -559,7 +559,7 @@ class ComprehensiveTestOrchestrator {
 
     if (recommendations.length === 0) {
       recommendations.push(
-        'All tests passed successfully - system ready for production deployment',
+        'All tests passed successfully - system ready for production deployment'
       );
     }
 
@@ -585,7 +585,7 @@ class ComprehensiveTestOrchestrator {
 ${this.orchestrationResults.testSuites
   .map(
     (suite) =>
-      `- ${suite.passed ? '✅' : '❌'} **${suite.name}**: ${suite.passed ? 'PASSED' : 'FAILED'} (${Math.round(suite.duration / 1000)}s)`,
+      `- ${suite.passed ? '✅' : '❌'} **${suite.name}**: ${suite.passed ? 'PASSED' : 'FAILED'} (${Math.round(suite.duration / 1000)}s)`
   )
   .join('\n')}
 

@@ -79,7 +79,7 @@ describe('Neural Network Training - Classical TDD', () => {
         const sigmoidDerivative = neuralSuite.math.activationDerivatives.sigmoid(x);
         const numericalDerivative = neuralSuite.math.numericalGradient(
           neuralSuite.math.activationFunctions.sigmoid,
-          x,
+          x
         );
 
         expectNearlyEqual(sigmoidDerivative, numericalDerivative, 1e-5);
@@ -88,7 +88,7 @@ describe('Neural Network Training - Classical TDD', () => {
         const tanhDerivative = neuralSuite.math.activationDerivatives.tanh(x);
         const numericalTanhDerivative = neuralSuite.math.numericalGradient(
           neuralSuite.math.activationFunctions.tanh,
-          x,
+          x
         );
 
         expectNearlyEqual(tanhDerivative, numericalTanhDerivative, 1e-5);
@@ -113,7 +113,7 @@ describe('Neural Network Training - Classical TDD', () => {
       // Verify training convergence (Classical approach - check actual results)
       const convergenceValidation = neuralSuite.validator.validateConvergence(
         trainingResult.errors,
-        neuralSuite.config,
+        neuralSuite.config
       );
 
       expect(convergenceValidation.converged).toBe(true);
@@ -124,7 +124,7 @@ describe('Neural Network Training - Classical TDD', () => {
       const accuracy = neuralSuite.validator.validatePredictionAccuracy(
         predictions,
         trainingData.map((d) => d.output),
-        0.3, // Allow reasonable tolerance for XOR
+        0.3 // Allow reasonable tolerance for XOR
       );
 
       expect(accuracy.accuracy).toBeGreaterThan(0.8); // 80% accuracy minimum
@@ -188,7 +188,7 @@ describe('Neural Network Training - Classical TDD', () => {
       const predictions = spiralData.map((sample) => predict(network, sample.input));
       const accuracy = calculateClassificationAccuracy(
         predictions,
-        spiralData.map((d) => d.output),
+        spiralData.map((d) => d.output)
       );
 
       expect(accuracy).toBeGreaterThan(0.7); // 70% accuracy for spiral classification
@@ -286,7 +286,7 @@ describe('Neural Network Training - Classical TDD', () => {
             convergenceThreshold: 0.1,
           });
         },
-        10000, // 10 seconds max
+        10000 // 10 seconds max
       );
 
       expect(performanceResult.withinExpected).toBe(true);
@@ -306,7 +306,7 @@ describe('Neural Network Training - Classical TDD', () => {
             convergenceThreshold: 0.5,
           });
         },
-        20, // 20MB max increase
+        20 // 20MB max increase
       );
 
       expect(memoryResult.withinLimit).toBe(true);
@@ -319,7 +319,7 @@ describe('Neural Network Training - Classical TDD', () => {
       const predictionBenchmark = neuralSuite.performance.benchmarkPrediction(
         () => predict(network, Array(10).fill(0.5)),
         1000, // 1000 predictions
-        1, // 1ms per prediction max
+        1 // 1ms per prediction max
       );
 
       expect(predictionBenchmark.withinExpected).toBe(true);
@@ -373,7 +373,7 @@ describe('Neural Network Training - Classical TDD', () => {
       const accuracy = calculateClassificationAccuracy(
         finalPredictions,
         trainingData.map((d) => d.output),
-        0.4, // Lower threshold for challenging initialization
+        0.4 // Lower threshold for challenging initialization
       );
 
       expect(accuracy).toBeGreaterThan(0.6); // 60% minimum even with bad init
@@ -491,7 +491,7 @@ function updateWeights(
   _input: number[],
   target: number[],
   prediction: number[],
-  learningRate: number,
+  learningRate: number
 ): void {
   // Simplified weight update for testing
   const outputError = prediction.map((pred, idx) => target[idx] - pred);
@@ -522,7 +522,7 @@ function computeGradients(network: any, input: number[], target: number[]): numb
 function calculateClassificationAccuracy(
   predictions: number[][],
   targets: number[][],
-  threshold: number = 0.5,
+  threshold: number = 0.5
 ): number {
   let correct = 0;
 
@@ -546,7 +546,7 @@ function expectNearlyEqual(actual: number, expected: number, tolerance: number =
 function expectMatrixNearlyEqual(
   actual: number[][],
   expected: number[][],
-  tolerance: number = 1e-10,
+  tolerance: number = 1e-10
 ) {
   expect(actual).toHaveLength(expected.length);
   for (let i = 0; i < actual.length; i++) {

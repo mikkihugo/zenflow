@@ -216,13 +216,13 @@ export class DAACognition {
         case 'adaptationRate':
           this.options.adaptationRate = Math.max(
             0.01,
-            Math.min(0.5, this.options.adaptationRate + change.delta),
+            Math.min(0.5, this.options.adaptationRate + change.delta)
           );
           break;
         case 'decisionThreshold':
           this.options.decisionThreshold = Math.max(
             0.1,
-            Math.min(0.9, this.options.decisionThreshold + change.delta),
+            Math.min(0.9, this.options.decisionThreshold + change.delta)
           );
           break;
       }

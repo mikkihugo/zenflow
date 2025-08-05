@@ -53,7 +53,7 @@ export class DefaultHookManager extends EventEmitter {
   async executeHook(
     hookName: string,
     context: any,
-    timeout?: number,
+    timeout?: number
   ): Promise<HookExecutionResult> {
     const startTime = Date.now();
     const hookId = `${hookName}-${startTime}`;
@@ -115,7 +115,7 @@ export class DefaultHookManager extends EventEmitter {
 
   async executeMultipleHooks(
     hooks: Array<{ name: string; context: any }>,
-    options?: { parallel?: boolean; failFast?: boolean },
+    options?: { parallel?: boolean; failFast?: boolean }
   ): Promise<HookExecutionResult[]> {
     const { parallel = false, failFast = false } = options || {};
 
@@ -133,8 +133,8 @@ export class DefaultHookManager extends EventEmitter {
                   success: false,
                   error: new Error('Hook execution failed'),
                   duration: 0,
-                },
-          ),
+                }
+          )
         );
       }
     } else {

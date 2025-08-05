@@ -38,7 +38,7 @@ export class WebSocketCoordinator {
 
   constructor(
     io: SocketIOServer,
-    private config: WebSocketConfig = {},
+    private config: WebSocketConfig = {}
   ) {
     this.io = io;
     this.setupWebSocket();
@@ -150,7 +150,7 @@ export class WebSocketCoordinator {
    */
   updateSessionPreferences(
     sessionId: string,
-    preferences: Partial<WebSession['preferences']>,
+    preferences: Partial<WebSession['preferences']>
   ): boolean {
     const session = this.sessions.get(sessionId);
     if (!session) {

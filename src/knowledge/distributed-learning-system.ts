@@ -378,31 +378,31 @@ export class DistributedLearningSystem extends EventEmitter {
     this.federatedLearning = new FederatedLearningCoordinator(
       this.config.federatedConfig,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.experienceAggregator = new ExperienceAggregationSystem(
       this.config.experienceSharing,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.modelSynchronizer = new ModelSynchronizationSystem(
       this.config.modelSync,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.transferLearning = new TransferLearningSystem(
       this.config.transferLearning,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.collectiveMemory = new CollectiveMemorySystem(
       this.config.collectiveMemory,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.setupIntegrations();
@@ -442,7 +442,7 @@ export class DistributedLearningSystem extends EventEmitter {
    */
   async coordinateFederatedLearning(
     participants: FederatedParticipant[],
-    globalModel: ModelSnapshot,
+    globalModel: ModelSnapshot
   ): Promise<FederatedLearningRound> {
     const roundId = `fed-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const startTime = Date.now();
@@ -463,7 +463,7 @@ export class DistributedLearningSystem extends EventEmitter {
       // Phase 3: Aggregate updates using selected strategy
       const aggregationResult = await this.aggregateModelUpdates(
         localUpdates,
-        this.config.aggregationStrategy,
+        this.config.aggregationStrategy
       );
 
       // Phase 4: Validate aggregated model
@@ -473,7 +473,7 @@ export class DistributedLearningSystem extends EventEmitter {
       const convergenceMetrics = await this.calculateConvergence(
         globalModel,
         validatedModel,
-        localUpdates,
+        localUpdates
       );
 
       const round: FederatedLearningRound = {
@@ -511,7 +511,7 @@ export class DistributedLearningSystem extends EventEmitter {
    * Aggregate collective experiences from agents
    */
   async aggregateCollectiveExperience(
-    experiences: AgentExperience[],
+    experiences: AgentExperience[]
   ): Promise<CollectiveExperienceAggregation> {
     const startTime = Date.now();
 
@@ -530,14 +530,14 @@ export class DistributedLearningSystem extends EventEmitter {
       // Extract insights and best practices
       const extractedInsights = await this.extractCollectiveInsights(
         detectedPatterns,
-        groupedExperiences,
+        groupedExperiences
       );
 
       // Consolidate experiences into collective memory
       const consolidatedMemories = await this.consolidateExperiences(
         experiences,
         detectedPatterns,
-        extractedInsights,
+        extractedInsights
       );
 
       // Update transfer learning knowledge base
@@ -567,7 +567,7 @@ export class DistributedLearningSystem extends EventEmitter {
    */
   async synchronizeSwarmModels(
     models: ModelSnapshot[],
-    synchronizationStrategy: SyncProtocol = 'consensus',
+    synchronizationStrategy: SyncProtocol = 'consensus'
   ): Promise<ModelSynchronizationResult> {
     const startTime = Date.now();
 
@@ -584,13 +584,13 @@ export class DistributedLearningSystem extends EventEmitter {
       const resolvedModels = await this.resolveModelConflicts(
         models,
         compatibilityAnalysis,
-        synchronizationStrategy,
+        synchronizationStrategy
       );
 
       // Create consensus model or maintain diversity
       const synchronizedModels = await this.createSynchronizedModels(
         resolvedModels,
-        synchronizationStrategy,
+        synchronizationStrategy
       );
 
       // Validate synchronized models
@@ -624,7 +624,7 @@ export class DistributedLearningSystem extends EventEmitter {
   async facilitateKnowledgeTransfer(
     sourceDomain: string,
     targetDomain: string,
-    transferMethod: TransferMethod = 'fine-tuning',
+    transferMethod: TransferMethod = 'fine-tuning'
   ): Promise<KnowledgeTransferResult> {
     const startTime = Date.now();
 
@@ -644,26 +644,26 @@ export class DistributedLearningSystem extends EventEmitter {
       // Extract transferable knowledge from source domain
       const transferableKnowledge = await this.extractTransferableKnowledge(
         sourceDomain,
-        transferStrategy,
+        transferStrategy
       );
 
       // Adapt knowledge for target domain
       const adaptedKnowledge = await this.adaptKnowledgeForDomain(
         transferableKnowledge,
         targetDomain,
-        transferStrategy,
+        transferStrategy
       );
 
       // Apply transferred knowledge to target domain agents
       const applicationResults = await this.applyTransferredKnowledge(
         adaptedKnowledge,
-        targetDomain,
+        targetDomain
       );
 
       // Evaluate transfer effectiveness
       const evaluationResults = await this.evaluateTransferEffectiveness(
         applicationResults,
-        domainAnalysis,
+        domainAnalysis
       );
 
       const result: KnowledgeTransferResult = {
@@ -760,14 +760,14 @@ export class DistributedLearningSystem extends EventEmitter {
   // Implementation of utility methods would continue here...
   private async distributeGlobalModel(
     _participants: FederatedParticipant[],
-    _model: ModelSnapshot,
+    _model: ModelSnapshot
   ): Promise<void> {
     // Implementation placeholder
   }
 
   private async collectLocalUpdates(
     _participants: FederatedParticipant[],
-    _roundId: string,
+    _roundId: string
   ): Promise<LocalModelUpdate[]> {
     // Implementation placeholder
     return [];
@@ -775,7 +775,7 @@ export class DistributedLearningSystem extends EventEmitter {
 
   private async aggregateModelUpdates(
     _updates: LocalModelUpdate[],
-    _strategy: AggregationMethod,
+    _strategy: AggregationMethod
   ): Promise<AggregationResult> {
     // Implementation placeholder
     return {} as AggregationResult;

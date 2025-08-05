@@ -206,7 +206,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   async terminateConversation(
     conversationId: string,
-    reason?: string,
+    reason?: string
   ): Promise<ConversationOutcome[]> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
@@ -399,7 +399,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   private async startPatternWorkflow(
     session: ConversationSession,
-    pattern: ConversationPattern,
+    pattern: ConversationPattern
   ): Promise<void> {
     session.status = 'active';
     await this.memory.updateConversation(session.id, { status: session.status });
@@ -407,7 +407,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     // Send welcome message
     await this.sendSystemMessage(
       session,
-      `Starting ${pattern.name} conversation: ${session.title}`,
+      `Starting ${pattern.name} conversation: ${session.title}`
     );
 
     // Trigger first workflow step
@@ -422,7 +422,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   private async processMessageForWorkflow(
     session: ConversationSession,
-    message: ConversationMessage,
+    message: ConversationMessage
   ): Promise<void> {
     const pattern = this.patterns.get(session.context.domain);
     if (!pattern) return;
@@ -441,7 +441,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   private shouldTriggerStep(
     step: any,
     message: ConversationMessage,
-    session: ConversationSession,
+    session: ConversationSession
   ): boolean {
     if (step.trigger.type === 'message') {
       return step.trigger.condition.messageType === message.messageType;
@@ -458,7 +458,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   private async executeWorkflowStep(
     session: ConversationSession,
     _pattern: ConversationPattern,
-    step: any,
+    step: any
   ): Promise<void> {
     // Implementation would depend on step actions
     // For now, just send a system message
@@ -503,7 +503,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * Generate conversation outcomes
    */
   private async generateConversationOutcomes(
-    session: ConversationSession,
+    session: ConversationSession
   ): Promise<ConversationOutcome[]> {
     const outcomes: ConversationOutcome[] = [];
 

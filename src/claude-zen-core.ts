@@ -195,7 +195,7 @@ export class ClaudeZenCore {
             enableHealthCheck: true,
           },
           logger,
-          eventBus,
+          eventBus
         );
       })
 
@@ -252,7 +252,7 @@ export class ClaudeZenCore {
               },
             ],
           },
-          logger,
+          logger
         );
       })
 
@@ -283,13 +283,13 @@ export class ClaudeZenCore {
       // Resolve all coordinators through DI
       this.orchestrator = this.container.resolve(SWARM_TOKENS.SwarmCoordinator) as Orchestrator;
       this.coordinationManager = this.container.resolve(
-        createToken<CoordinationManager>('CoordinationManager'),
+        createToken<CoordinationManager>('CoordinationManager')
       );
       this.learningCoordinator = this.container.resolve(
-        createToken<LearningCoordinator>('LearningCoordinator'),
+        createToken<LearningCoordinator>('LearningCoordinator')
       );
       this.multiSystemCoordinator = this.container.resolve(
-        createToken<MultiSystemCoordinator>('MultiSystemCoordinator'),
+        createToken<MultiSystemCoordinator>('MultiSystemCoordinator')
       );
 
       // Initialize all coordinators

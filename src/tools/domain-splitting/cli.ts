@@ -57,7 +57,7 @@ Examples
         default: false,
       },
     },
-  },
+  }
 );
 
 const [command, domainPath] = cli.input;

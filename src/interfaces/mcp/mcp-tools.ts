@@ -88,7 +88,7 @@ export abstract class AdvancedToolHandler {
     success: boolean,
     content: any,
     error?: string,
-    metadata?: any,
+    metadata?: any
   ): AdvancedMCPToolResult {
     return {
       success,

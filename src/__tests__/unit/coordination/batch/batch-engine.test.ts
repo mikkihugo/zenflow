@@ -61,7 +61,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
           'file',
           'mkdir',
           { path: 'app/src' },
-          { dependencies: ['mkdir'] },
+          { dependencies: ['mkdir'] }
         ),
         createBatchOperation(
           'write-file',
@@ -71,7 +71,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
             path: 'app/src/index.ts',
             content: 'export {};',
           },
-          { dependencies: ['src-mkdir'] },
+          { dependencies: ['src-mkdir'] }
         ),
       ];
 
@@ -97,7 +97,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
       const limitedEngine = new BatchEngine({ maxConcurrency: 2, trackPerformance: true });
 
       const operations = Array.from({ length: 10 }, (_, i) =>
-        createBatchOperation(`op${i}`, 'tool', 'test', { index: i }),
+        createBatchOperation(`op${i}`, 'tool', 'test', { index: i })
       );
 
       const summary = await limitedEngine.executeBatch(operations);
@@ -119,7 +119,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
           createBatchOperation(`swarm${i}`, 'swarm', 'init', {
             topology: 'hierarchical',
             maxAgents: 8,
-          }),
+          })
         );
       }
 
@@ -128,7 +128,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
         operations.push(
           createBatchOperation(`agent${i}`, 'swarm', 'spawn', {
             type: ['researcher', 'coder', 'analyst', 'tester'][i % 4],
-          }),
+          })
         );
       }
 
@@ -138,7 +138,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
           createBatchOperation(`file${i}`, 'file', 'write', {
             path: `output/file${i}.txt`,
             content: `Content for file ${i}`,
-          }),
+          })
         );
       }
 
@@ -181,7 +181,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
         createBatchOperation(`perf-test-${i}`, 'tool', 'performance_test', {
           duration: 100, // Simulate 100ms operations
           complexity: 'medium',
-        }),
+        })
       );
 
       // Measure batch execution
@@ -254,7 +254,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
   describe('📊 Performance Monitoring Integration', () => {
     it('should provide detailed execution metrics', async () => {
       const operations = Array.from({ length: 8 }, (_, i) =>
-        createBatchOperation(`metric-test-${i}`, 'tool', 'test', { index: i }),
+        createBatchOperation(`metric-test-${i}`, 'tool', 'test', { index: i })
       );
 
       const summary = await batchEngine.executeBatch(operations);

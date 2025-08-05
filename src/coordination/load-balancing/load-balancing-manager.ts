@@ -130,7 +130,7 @@ export class LoadBalancingManager extends EventEmitter {
     // Initialize algorithms
     this.algorithms.set(
       LoadBalancingAlgorithm.WEIGHTED_ROUND_ROBIN,
-      new WeightedRoundRobinAlgorithm(),
+      new WeightedRoundRobinAlgorithm()
     );
     this.algorithms.set(LoadBalancingAlgorithm.LEAST_CONNECTIONS, new LeastConnectionsAlgorithm());
     this.algorithms.set(LoadBalancingAlgorithm.RESOURCE_AWARE, new ResourceAwareAlgorithm());
@@ -272,7 +272,7 @@ export class LoadBalancingManager extends EventEmitter {
    */
   public async routeTask(task: Task): Promise<RoutingResult> {
     const availableAgents = Array.from(this.agents.values()).filter(
-      (agent) => agent.status === AgentStatus.HEALTHY,
+      (agent) => agent.status === AgentStatus.HEALTHY
     );
 
     if (availableAgents.length === 0) {
@@ -294,7 +294,7 @@ export class LoadBalancingManager extends EventEmitter {
     // Update capacity tracking
     await this.capacityManager.updateCapacity(
       result.selectedAgent.id,
-      this.createTaskMetrics(task),
+      this.createTaskMetrics(task)
     );
 
     // Notify observers
@@ -313,7 +313,7 @@ export class LoadBalancingManager extends EventEmitter {
     taskId: string,
     agentId: string,
     duration: number,
-    success: boolean,
+    success: boolean
   ): Promise<void> {
     const agent = this.agents.get(agentId);
     if (!agent) return;
@@ -373,7 +373,7 @@ export class LoadBalancingManager extends EventEmitter {
   public getStatistics(): Record<string, any> {
     const totalAgents = this.agents.size;
     const healthyAgents = Array.from(this.agents.values()).filter(
-      (agent) => agent.status === AgentStatus.HEALTHY,
+      (agent) => agent.status === AgentStatus.HEALTHY
     ).length;
 
     const avgLoad = this.calculateAverageLoad();
@@ -557,7 +557,7 @@ export class LoadBalancingManager extends EventEmitter {
    */
   private async checkEmergencyConditions(): Promise<void> {
     const healthyAgents = Array.from(this.agents.values()).filter(
-      (agent) => agent.status === AgentStatus.HEALTHY,
+      (agent) => agent.status === AgentStatus.HEALTHY
     ).length;
 
     const totalAgents = this.agents.size;

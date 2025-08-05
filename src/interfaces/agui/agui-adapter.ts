@@ -114,7 +114,7 @@ export class TerminalAGUI extends EventEmitter implements AGUIInterface {
 
   async showMessage(
     _message: string,
-    _type: 'info' | 'warning' | 'error' | 'success' = 'info',
+    _type: 'info' | 'warning' | 'error' | 'success' = 'info'
   ): Promise<void> {
     const _icons = {
       info: 'ℹ️ ',
@@ -164,7 +164,7 @@ export class MockAGUI implements AGUIInterface {
 
   async showMessage(
     message: string,
-    type?: 'info' | 'warning' | 'error' | 'success',
+    type?: 'info' | 'warning' | 'error' | 'success'
   ): Promise<void> {
     logger.debug(`Mock AGUI Message [${type || 'info'}]:`, message);
   }

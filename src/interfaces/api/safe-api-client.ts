@@ -6,12 +6,12 @@
  */
 
 import {
-  APIResult,
-  APISuccess,
-  APIError,
-  isAPISuccess,
-  isAPIError,
+  type APIError,
+  type APIResult,
+  type APISuccess,
   extractErrorMessage,
+  isAPIError,
+  isAPISuccess,
 } from '../../utils/type-guards';
 
 export interface APIRequestOptions {
@@ -41,7 +41,7 @@ export class SafeAPIClient {
   constructor(
     baseURL: string,
     defaultHeaders: Record<string, string> = {},
-    timeout: number = 30000,
+    timeout: number = 30000
   ) {
     this.baseURL = baseURL.replace(/\/$/, ''); // Remove trailing slash
     this.defaultHeaders = {
@@ -57,7 +57,7 @@ export class SafeAPIClient {
    */
   async get<T = any>(
     endpoint: string,
-    options: Partial<APIRequestOptions> = {},
+    options: Partial<APIRequestOptions> = {}
   ): Promise<APIResult<T>> {
     return this.request<T>(endpoint, { ...options, method: 'GET' });
   }
@@ -68,7 +68,7 @@ export class SafeAPIClient {
   async post<T = any>(
     endpoint: string,
     data?: any,
-    options: Partial<APIRequestOptions> = {},
+    options: Partial<APIRequestOptions> = {}
   ): Promise<APIResult<T>> {
     return this.request<T>(endpoint, { ...options, method: 'POST', body: data });
   }
@@ -79,7 +79,7 @@ export class SafeAPIClient {
   async put<T = any>(
     endpoint: string,
     data?: any,
-    options: Partial<APIRequestOptions> = {},
+    options: Partial<APIRequestOptions> = {}
   ): Promise<APIResult<T>> {
     return this.request<T>(endpoint, { ...options, method: 'PUT', body: data });
   }
@@ -89,7 +89,7 @@ export class SafeAPIClient {
    */
   async delete<T = any>(
     endpoint: string,
-    options: Partial<APIRequestOptions> = {},
+    options: Partial<APIRequestOptions> = {}
   ): Promise<APIResult<T>> {
     return this.request<T>(endpoint, { ...options, method: 'DELETE' });
   }
@@ -99,7 +99,7 @@ export class SafeAPIClient {
    */
   private async request<T = any>(
     endpoint: string,
-    options: APIRequestOptions,
+    options: APIRequestOptions
   ): Promise<APIResult<T>> {
     const requestId = this.generateRequestId();
     const startTime = Date.now();
@@ -183,7 +183,7 @@ export class SafeAPIClient {
 
           // Wait before retry (exponential backoff)
           if (attempt < maxRetries) {
-            await this.delay(Math.pow(2, attempt) * 1000);
+            await this.delay(2 ** attempt * 1000);
           }
         }
       }
@@ -297,7 +297,7 @@ export class SafeAPIService {
    */
   async createResource<TResource, TCreateData>(
     endpoint: string,
-    data: TCreateData,
+    data: TCreateData
   ): Promise<APIResult<TResource>> {
     return this.client.post<TResource>(endpoint, data);
   }
@@ -307,7 +307,7 @@ export class SafeAPIService {
    */
   async getResource<TResource>(
     endpoint: string,
-    id: string | number,
+    id: string | number
   ): Promise<APIResult<TResource>> {
     return this.client.get<TResource>(`${endpoint}/${id}`);
   }
@@ -317,7 +317,7 @@ export class SafeAPIService {
    */
   async listResources<TResource>(
     endpoint: string,
-    params?: Record<string, any>,
+    params?: Record<string, any>
   ): Promise<APIResult<{ items: TResource[]; pagination: any }>> {
     const queryString = params ? '?' + new URLSearchParams(params).toString() : '';
     return this.client.get<{ items: TResource[]; pagination: any }>(`${endpoint}${queryString}`);
@@ -329,7 +329,7 @@ export class SafeAPIService {
   async updateResource<TResource, TUpdateData>(
     endpoint: string,
     id: string | number,
-    data: TUpdateData,
+    data: TUpdateData
   ): Promise<APIResult<TResource>> {
     return this.client.put<TResource>(`${endpoint}/${id}`, data);
   }
@@ -339,7 +339,7 @@ export class SafeAPIService {
    */
   async deleteResource(
     endpoint: string,
-    id: string | number,
+    id: string | number
   ): Promise<APIResult<{ deleted: boolean }>> {
     return this.client.delete<{ deleted: boolean }>(`${endpoint}/${id}`);
   }

@@ -379,7 +379,7 @@ export const factStorageOptimizeTool: MCPTool = {
     },
   },
   handler: async (
-    params: FACTCacheOptimizeParams & { autoTune?: boolean },
+    params: FACTCacheOptimizeParams & { autoTune?: boolean }
   ): Promise<MCPToolResult> => {
     try {
       logger.info('Optimizing FACT storage performance:', params);

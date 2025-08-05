@@ -120,7 +120,7 @@ export class IntegratedErrorHandler {
       throw new SystemError(
         `Error system initialization failed: ${error instanceof Error ? error.message : String(error)}`,
         'ERROR_SYSTEM_INIT_FAILED',
-        'critical',
+        'critical'
       );
     }
   }
@@ -328,7 +328,7 @@ export class IntegratedErrorHandler {
       useRecovery?: boolean;
       useFallback?: boolean;
       reportToMonitoring?: boolean;
-    } = {},
+    } = {}
   ): Promise<{
     recovered: boolean;
     result?: any;
@@ -363,7 +363,7 @@ export class IntegratedErrorHandler {
         finalError: new SystemError(
           'System in emergency mode - functionality limited',
           'EMERGENCY_MODE_ACTIVE',
-          'critical',
+          'critical'
         ),
       };
     }
@@ -384,7 +384,7 @@ export class IntegratedErrorHandler {
             circuitBreakerThreshold: this.config.circuitBreakerThreshold,
             fallbackEnabled: finalOptions.useFallback,
             gracefulDegradation: true,
-          },
+          }
         );
         return {
           recovered: true,
@@ -453,7 +453,7 @@ export class IntegratedErrorHandler {
         maxRetries?: number;
         fallbackEnabled?: boolean;
       };
-    } = {},
+    } = {}
   ): Promise<T> {
     if (!this.initialized) {
       return await operation();
@@ -471,7 +471,7 @@ export class IntegratedErrorHandler {
 
         return await systemResilienceOrchestrator.executeWithResilience(
           operation,
-          resilienceOptions,
+          resilienceOptions
         );
       } else {
         return await operation();
@@ -559,21 +559,21 @@ export function getErrorHandler(): IntegratedErrorHandler {
     throw new SystemError(
       'Error handling system not initialized. Call initializeErrorHandling() first.',
       'ERROR_HANDLER_NOT_INITIALIZED',
-      'critical',
+      'critical'
     );
   }
   return globalErrorHandler;
 }
 export async function handleErrorGlobally(
   error: Error,
-  context?: Partial<ErrorContext>,
+  context?: Partial<ErrorContext>
 ): Promise<{ recovered: boolean; result?: any; finalError?: BaseClaudeZenError }> {
   return getErrorHandler().handleError(error, context);
 }
 export async function executeWithErrorHandling<T>(
   operation: () => Promise<T>,
   context: Partial<ErrorContext>,
-  options?: any,
+  options?: any
 ): Promise<T> {
   return getErrorHandler().executeWithErrorHandling(operation, context, options);
 }

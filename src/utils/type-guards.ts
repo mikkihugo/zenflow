@@ -330,7 +330,7 @@ export interface CoordinationError {
  * Type guard for successful coordination operations
  */
 export function isCoordinationSuccess<T = any>(
-  result: CoordinationResult<T>,
+  result: CoordinationResult<T>
 ): result is CoordinationSuccess<T> {
   return result.coordinated === true && 'result' in result;
 }
@@ -399,13 +399,7 @@ export function extractData<T>(result: DatabaseResult<T>): T | null {
  * Safely extract error message from any result type
  */
 export function extractErrorMessage(
-  result:
-    | DatabaseResult
-    | MemoryResult
-    | NeuralResult
-    | APIResult
-    | WasmResult
-    | CoordinationResult,
+  result: DatabaseResult | MemoryResult | NeuralResult | APIResult | WasmResult | CoordinationResult
 ): string | null {
   if ('success' in result && !result.success && 'error' in result) {
     return result.error.message;
@@ -430,7 +424,7 @@ export function extractErrorMessage(
  */
 export function hasProperty<T, K extends PropertyKey>(
   obj: T,
-  prop: K,
+  prop: K
 ): obj is T & Record<K, unknown> {
   return obj !== null && obj !== undefined && typeof obj === 'object' && prop in obj;
 }
@@ -440,7 +434,7 @@ export function hasProperty<T, K extends PropertyKey>(
  */
 export function safePropertyAccess<T, K extends keyof T>(
   obj: T | null | undefined,
-  prop: K,
+  prop: K
 ): T[K] | undefined {
   if (obj !== null && obj !== undefined && typeof obj === 'object' && prop in obj) {
     return obj[prop];

@@ -59,7 +59,7 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
       fileAnalyses,
       categories,
       coupling,
-      dependencies,
+      dependencies
     );
 
     return {
@@ -140,7 +140,7 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     const linesOfCode = content
       .split('\n')
       .filter(
-        (line) => line.trim() && !line.trim().startsWith('//') && !line.trim().startsWith('*'),
+        (line) => line.trim() && !line.trim().startsWith('//') && !line.trim().startsWith('*')
       ).length;
 
     let complexity = 1;
@@ -373,7 +373,7 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     filePath: string,
     content: string,
     _imports: any[],
-    _exports: any[],
+    _exports: any[]
   ): string {
     const filename = path.basename(filePath).toLowerCase();
     const directory = path.dirname(filePath).toLowerCase();
@@ -517,7 +517,7 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
 
   private async analyzeCoupling(
     _fileAnalyses: FileAnalysis[],
-    dependencies: DependencyGraph,
+    dependencies: DependencyGraph
   ): Promise<CouplingAnalysis> {
     const tightlyCoupledGroups = this.findTightlyCoupledGroups(dependencies);
     const couplingScores = this.calculateCouplingScores(dependencies);
@@ -647,7 +647,7 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     _fileAnalyses: FileAnalysis[],
     categories: FileCategoryMap,
     coupling: CouplingAnalysis,
-    _dependencies: DependencyGraph,
+    _dependencies: DependencyGraph
   ): Promise<SplittingRecommendation[]> {
     const recommendations: SplittingRecommendation[] = [];
 

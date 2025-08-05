@@ -131,7 +131,7 @@ High-performance workflow ${i} for concurrent execution testing with realistic c
 
         const visionPath = await fsHelper.writeFile(
           `${workflowPath}/docs/01-vision/vision.md`,
-          visionContent,
+          visionContent
         );
 
         const workflowStartTime = Date.now();
@@ -238,7 +238,7 @@ High-performance workflow ${i} for concurrent execution testing with realistic c
 
           const visionPath = await fsHelper.writeFile(
             `${workflowPath}/docs/01-vision/scalability-vision.md`,
-            visionContent,
+            visionContent
           );
 
           const workflowPromise = swarmCoordinator.orchestrateTask({
@@ -334,7 +334,7 @@ This document is generated for memory usage testing under sustained load.
 
           const docPath = await fsHelper.writeFile(
             `${TEST_PROJECT_PATH}/docs/load-test-${Date.now()}-${user}.md`,
-            docContent,
+            docContent
           );
 
           const request = documentSystem
@@ -429,7 +429,7 @@ class DocumentProcessor {
 
         const docPath = await fsHelper.writeFile(
           `${TEST_PROJECT_PATH}/docs/large-doc-${size.name.toLowerCase()}.md`,
-          largeContent,
+          largeContent
         );
 
         const actualSize = Buffer.from(largeContent, 'utf8').length;
@@ -601,7 +601,7 @@ class DocumentProcessor {
 
       for (let i = 0; i < spikeTest.baselineRequests; i++) {
         const request = networkHelper.httpGet(
-          `http://localhost:${WEB_SERVER_PORT}/api/status?workspaceId=${workspaceId}`,
+          `http://localhost:${WEB_SERVER_PORT}/api/status?workspaceId=${workspaceId}`
         );
         baselinePromises.push(request);
 
@@ -643,7 +643,7 @@ class DocumentProcessor {
 
       for (let i = 0; i < spikeTest.baselineRequests; i++) {
         const request = networkHelper.httpGet(
-          `http://localhost:${WEB_SERVER_PORT}/api/status?workspaceId=${workspaceId}`,
+          `http://localhost:${WEB_SERVER_PORT}/api/status?workspaceId=${workspaceId}`
         );
         recoveryPromises.push(request);
 
@@ -717,7 +717,7 @@ class DocumentProcessor {
 
           const visionPath = await fsHelper.writeFile(
             `${workflowPath}/docs/01-vision/resource-vision.md`,
-            visionContent,
+            visionContent
           );
 
           const workflowPromise = swarmCoordinator.orchestrateTask({
@@ -769,7 +769,7 @@ class DocumentProcessor {
 
         // Cleanup verification
         expect(finalResources.unusedResources).toBeGreaterThan(
-          initialResources.unusedResources * 0.9,
+          initialResources.unusedResources * 0.9
         );
       }
 
@@ -821,12 +821,12 @@ class DocumentProcessor {
                   workspaceId: userWorkspaceId,
                   documentType: 'feature',
                   content: `# User ${user} Feature\n\nFeature created by user ${user} in scalability test.`,
-                },
+                }
               );
 
               // User checks status
               const response2 = await networkHelper.httpGet(
-                `http://localhost:${WEB_SERVER_PORT}/api/status?workspaceId=${userWorkspaceId}&user=${user}`,
+                `http://localhost:${WEB_SERVER_PORT}/api/status?workspaceId=${userWorkspaceId}&user=${user}`
               );
 
               // User processes document
@@ -835,7 +835,7 @@ class DocumentProcessor {
                 {
                   workspaceId: userWorkspaceId,
                   documentPath: response1.data.path,
-                },
+                }
               );
 
               const userEndTime = Date.now();

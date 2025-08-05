@@ -118,11 +118,11 @@ async function generateReport(args: string[], logger: LoggerInterface): Promise<
 async function startMonitoring(args: string[], logger: LoggerInterface): Promise<void> {
   const duration = parseInt(
     args.find((arg) => arg.startsWith('--duration='))?.split('=')[1] || '60',
-    10,
+    10
   );
   const interval = parseInt(
     args.find((arg) => arg.startsWith('--interval='))?.split('=')[1] || '1000',
-    10,
+    10
   );
 
   logger.info('Starting system monitoring...', { duration, interval });

@@ -45,7 +45,7 @@ describe('BatchPerformanceMonitor - Claude-zen Performance Tracking', () => {
         5, // operationCount
         2000, // executionTime
         4, // successfulOperations
-        { memory: 128, cpu: 80 },
+        { memory: 128, cpu: 80 }
       );
 
       expect(metrics.executionMode).toBe('sequential');
@@ -135,7 +135,7 @@ describe('BatchPerformanceMonitor - Claude-zen Performance Tracking', () => {
       // Should recommend improvements for poor performance
       expect(comparison.speedImprovement).toBeLessThan(2.0);
       expect(
-        comparison.recommendations.some((r) => r.includes('Consider increasing batch size')),
+        comparison.recommendations.some((r) => r.includes('Consider increasing batch size'))
       ).toBe(true);
       expect(comparison.recommendations.some((r) => r.includes('Low success rate'))).toBe(true);
       expect(comparison.recommendations.some((r) => r.includes('Small batch size'))).toBe(true);
@@ -170,7 +170,7 @@ describe('BatchPerformanceMonitor - Claude-zen Performance Tracking', () => {
 
       expect(comparison.speedImprovement).toBe(4.5);
       expect(
-        comparison.recommendations.some((r) => r.includes('Excellent speed improvement')),
+        comparison.recommendations.some((r) => r.includes('Excellent speed improvement'))
       ).toBe(true);
     });
   });
@@ -190,7 +190,7 @@ describe('BatchPerformanceMonitor - Claude-zen Performance Tracking', () => {
             speedImprovement: 3.0 - i * 0.2, // More noticeable decline
             tokenReduction: 30,
           },
-          { memory: 100 + i * 20, cpu: 50 + i * 5 },
+          { memory: 100 + i * 20, cpu: 50 + i * 5 }
         );
       }
 
@@ -274,7 +274,7 @@ describe('BatchPerformanceMonitor - Claude-zen Performance Tracking', () => {
 
       expect(summary.batchExecutions).toBe(0);
       expect(summary.recommendations.some((r) => r.includes('No batch executions detected'))).toBe(
-        true,
+        true
       );
     });
   });

@@ -99,7 +99,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
             type: 'subscribe',
             channel: 'swarm_events',
             filter: { eventTypes: ['agent_spawned', 'topology_changed', 'task_assigned'] },
-          }),
+          })
         );
       }
 
@@ -117,7 +117,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
       // All clients should receive the agent_spawned event
       for (const clientMessages of receivedMessages) {
         const agentSpawnedEvents = clientMessages.filter(
-          (msg) => msg.type === 'swarm_event' && msg.event === 'agent_spawned',
+          (msg) => msg.type === 'swarm_event' && msg.event === 'agent_spawned'
         );
 
         expect(agentSpawnedEvents.length).toBeGreaterThan(0);
@@ -137,7 +137,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
       // All clients should receive the task_assigned event
       for (const clientMessages of receivedMessages) {
         const taskAssignedEvents = clientMessages.filter(
-          (msg) => msg.type === 'swarm_event' && msg.event === 'task_assigned',
+          (msg) => msg.type === 'swarm_event' && msg.event === 'task_assigned'
         );
 
         expect(taskAssignedEvents.length).toBeGreaterThan(0);
@@ -170,7 +170,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
           type: 'subscribe',
           channel: 'agent_status',
           filter: { includeMetrics: true },
-        }),
+        })
       );
 
       await networkHelper.wait(500);
@@ -231,7 +231,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
           type: 'subscribe',
           channel: 'task_progress',
           filter: { includeSteps: true, includeTimestamps: true },
-        }),
+        })
       );
 
       await networkHelper.wait(500);
@@ -312,7 +312,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
       // Should have completion event
       const completionEvent = progressUpdates.find(
-        (update) => update.data.taskStatus === 'completed',
+        (update) => update.data.taskStatus === 'completed'
       );
       expect(completionEvent).toBeDefined();
       expect(completionEvent.data.completedAt).toBeDefined();
@@ -344,7 +344,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
             metrics: ['cpu', 'memory', 'network', 'agents', 'tasks'],
             updateInterval: 1000,
           },
-        }),
+        })
       );
 
       // Wait for several metric updates
@@ -412,7 +412,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
               agentResponseTime: 5000,
             },
           },
-        }),
+        })
       );
 
       await networkHelper.wait(500);
@@ -428,7 +428,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
       // Should receive CPU usage alert
       const cpuAlert = alerts.find(
-        (alert) => alert.data.metric === 'cpu_usage' && alert.data.severity === 'warning',
+        (alert) => alert.data.metric === 'cpu_usage' && alert.data.severity === 'warning'
       );
       expect(cpuAlert).toBeDefined();
       expect(cpuAlert.data.value).toBeGreaterThan(80);
@@ -445,7 +445,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
       // Should receive memory alert
       const memoryAlert = alerts.find(
-        (alert) => alert.data.metric === 'memory_usage' && alert.data.severity === 'critical',
+        (alert) => alert.data.metric === 'memory_usage' && alert.data.severity === 'critical'
       );
       expect(memoryAlert).toBeDefined();
       expect(memoryAlert.data.value).toBeGreaterThan(85);
@@ -476,7 +476,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
             includeThroughput: true,
             updateInterval: 1000,
           },
-        }),
+        })
       );
 
       await networkHelper.wait(500);
@@ -526,10 +526,10 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
       expect(latestNetworkMetrics.data.latency.average).toBeGreaterThan(0);
       expect(latestNetworkMetrics.data.latency.average).toBeLessThan(1000); // < 1 second
       expect(latestNetworkMetrics.data.latency.min).toBeLessThanOrEqual(
-        latestNetworkMetrics.data.latency.average,
+        latestNetworkMetrics.data.latency.average
       );
       expect(latestNetworkMetrics.data.latency.max).toBeGreaterThanOrEqual(
-        latestNetworkMetrics.data.latency.average,
+        latestNetworkMetrics.data.latency.average
       );
 
       client.close();
@@ -604,7 +604,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
           await Promise.race([
             networkHelper.waitForWebSocketConnection(client),
             new Promise((_, reject) =>
-              setTimeout(() => reject(new Error('Connection timeout')), 2000),
+              setTimeout(() => reject(new Error('Connection timeout')), 2000)
             ),
           ]);
 
@@ -645,7 +645,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
               type: 'heartbeat_response',
               id: message.id,
               timestamp: Date.now(),
-            }),
+            })
           );
         }
       });
@@ -657,7 +657,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
         JSON.stringify({
           type: 'enable_heartbeat',
           interval: 2000, // 2 seconds
-        }),
+        })
       );
 
       // Wait for several heartbeats
@@ -720,7 +720,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
             type: 'join_document',
             documentId,
             userId: `user-${Date.now()}-${Math.random()}`,
-          }),
+          })
         );
       }
 
@@ -763,7 +763,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
             type: 'document_edit',
             documentId,
             operation: edit.operation,
-          }),
+          })
         );
 
         await networkHelper.wait(200);
@@ -777,7 +777,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
         // Should receive updates from other collaborators (not their own)
         const receivedEdits = otherCollaboratorUpdates.filter(
-          (update) => update.data.documentId === documentId,
+          (update) => update.data.documentId === documentId
         );
 
         expect(receivedEdits.length).toBe(2); // Updates from 2 other collaborators
@@ -831,7 +831,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
             userId: `user-${i}`,
             userName: `Collaborator ${i}`,
             enableCursorSharing: true,
-          }),
+          })
         );
       }
 
@@ -861,7 +861,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
             documentId,
             position: movement.position,
             selection: movement.selection,
-          }),
+          })
         );
 
         await networkHelper.wait(150);
@@ -875,7 +875,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
         // Should receive cursor updates from other users
         const receivedCursorUpdates = userCursorUpdates.filter(
-          (update) => update.data.documentId === documentId && update.data.userId !== `user-${i}`,
+          (update) => update.data.documentId === documentId && update.data.userId !== `user-${i}`
         );
 
         expect(receivedCursorUpdates.length).toBeGreaterThan(0);

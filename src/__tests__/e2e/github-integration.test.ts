@@ -166,7 +166,7 @@ Build a modern e-commerce platform with AI-powered recommendations and real-time
 
       const visionPath = await fsHelper.writeFile(
         `${TEST_PROJECT_PATH}/docs/01-vision/ecommerce-vision.md`,
-        visionContent,
+        visionContent
       );
 
       // Process vision document (should trigger GitHub integration)
@@ -251,7 +251,7 @@ Build a modern e-commerce platform with AI-powered recommendations and real-time
 
       const prdPath = await fsHelper.writeFile(
         `${TEST_PROJECT_PATH}/docs/03-prds/auth-prd.md`,
-        prdContent,
+        prdContent
       );
 
       // Process PRD (should update GitHub issue)
@@ -312,7 +312,7 @@ Build a modern e-commerce platform with AI-powered recommendations and real-time
 
       const taskPath = await fsHelper.writeFile(
         `${TEST_PROJECT_PATH}/docs/06-tasks/shopping-cart-task.md`,
-        completedTaskContent,
+        completedTaskContent
       );
 
       // Process completed task (should close GitHub issue)
@@ -370,7 +370,7 @@ Build a modern e-commerce platform with AI-powered recommendations and real-time
 
       const featurePath = await fsHelper.writeFile(
         `${TEST_PROJECT_PATH}/docs/05-features/product-search.md`,
-        featureContent,
+        featureContent
       );
 
       // Process feature (should create PR)
@@ -464,7 +464,7 @@ src/
 
       const implPath = await fsHelper.writeFile(
         `${TEST_PROJECT_PATH}/docs/06-tasks/payment-implementation.md`,
-        implementationContent,
+        implementationContent
       );
 
       // Process implementation (should generate review checklist)
@@ -559,7 +559,7 @@ src/
 
       const deployPath = await fsHelper.writeFile(
         `${TEST_PROJECT_PATH}/docs/07-specs/deployment-spec.md`,
-        deploymentDoc,
+        deploymentDoc
       );
 
       const pipelineEvents: any[] = [];
@@ -649,7 +649,7 @@ src/
 
       const checklistPath = await fsHelper.writeFile(
         `${TEST_PROJECT_PATH}/docs/07-specs/production-readiness.md`,
-        readinessChecklist,
+        readinessChecklist
       );
 
       let readinessScore = 0;
@@ -740,7 +740,7 @@ Complete e-commerce platform with user management, product catalog, and order pr
 
       const epicPath = await fsHelper.writeFile(
         `${TEST_PROJECT_PATH}/docs/04-epics/ecommerce-epic.md`,
-        epicContent,
+        epicContent
       );
 
       documentSystem.on('document:processed', async (event) => {
@@ -804,7 +804,7 @@ Complete e-commerce platform with user management, product catalog, and order pr
 
       const updatePath = await fsHelper.writeFile(
         `${TEST_PROJECT_PATH}/docs/06-tasks/search-update.md`,
-        taskUpdate,
+        taskUpdate
       );
 
       documentSystem.on('document:processed', async (event) => {
@@ -872,19 +872,19 @@ Complete e-commerce platform with user management, product catalog, and order pr
             epics: byType.epic
               ? Math.round(
                   byType.epic.reduce((sum: number, d: any) => sum + d.completion, 0) /
-                    byType.epic.length,
+                    byType.epic.length
                 )
               : 0,
             features: byType.feature
               ? Math.round(
                   byType.feature.reduce((sum: number, d: any) => sum + d.completion, 0) /
-                    byType.feature.length,
+                    byType.feature.length
                 )
               : 0,
             tasks: byType.task
               ? Math.round(
                   byType.task.reduce((sum: number, d: any) => sum + d.completion, 0) /
-                    byType.task.length,
+                    byType.task.length
                 )
               : 0,
           },
@@ -894,7 +894,7 @@ Complete e-commerce platform with user management, product catalog, and order pr
       // Trigger status calculation
       const statusDoc = await fsHelper.writeFile(
         `${TEST_PROJECT_PATH}/docs/project-status.md`,
-        '# Project Status Report\n\nGenerated automatically from documentation.',
+        '# Project Status Report\n\nGenerated automatically from documentation.'
       );
 
       await documentSystem.processVisionaryDocument(workspaceId, statusDoc);

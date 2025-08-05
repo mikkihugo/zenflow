@@ -110,7 +110,7 @@ export const DatabaseUtils = {
   createEngine: (
     id: string,
     type: 'vector' | 'graph' | 'document' | 'relational' | 'timeseries',
-    config: any,
+    config: any
   ): DatabaseEngine => {
     const interface_ = DatabaseUtils.getDatabaseInterface(type as any, config);
     const capabilities = DatabaseUtils.getCapabilities(type);
@@ -146,7 +146,7 @@ export class DatabaseFactory {
   static getInstance<T>(
     type: 'lancedb' | 'kuzu' | 'swarm',
     config: any,
-    instanceKey = 'default',
+    instanceKey = 'default'
   ): T {
     const key = `${type}:${instanceKey}`;
 
@@ -190,7 +190,7 @@ export class DatabaseFactory {
         const engine = DatabaseUtils.createEngine(
           engineConfig.id,
           engineConfig.type,
-          engineConfig.config,
+          engineConfig.config
         );
         await DatabaseFactory.coordinator.registerEngine(engine);
         engines.set(engine.id, engine);
@@ -259,7 +259,7 @@ export class DatabaseFactory {
   static async createBasicDatabaseSystem(
     type: 'lancedb' | 'kuzu' | 'swarm',
     config: any,
-    engineId = 'default',
+    engineId = 'default'
   ) {
     const engines = [
       {

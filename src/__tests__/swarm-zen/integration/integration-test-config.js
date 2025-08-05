@@ -256,7 +256,7 @@ if (platformConfig) {
   config.swarm.maxAgents.stress = Math.min(config.swarm.maxAgents.stress, platformConfig.maxAgents);
   config.swarm.performance.maxMemoryUsage = Math.min(
     config.swarm.performance.maxMemoryUsage,
-    platformConfig.maxMemory,
+    platformConfig.maxMemory
   );
 }
 

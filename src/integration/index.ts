@@ -23,8 +23,7 @@ export const IntegrationUtils = {
 
     return compatiblePairs.some(
       (pair) =>
-        (pair[0] === systemA && pair[1] === systemB) ||
-        (pair[1] === systemA && pair[0] === systemB),
+        (pair[0] === systemA && pair[1] === systemB) || (pair[1] === systemA && pair[0] === systemB)
     );
   },
 

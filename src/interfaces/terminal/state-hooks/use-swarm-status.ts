@@ -320,7 +320,7 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
       setSwarmState((prev) => ({
         ...prev,
         agents: prev.agents.map((agent) =>
-          agent.id === agentId ? { ...agent, status: 'idle' as const } : agent,
+          agent.id === agentId ? { ...agent, status: 'idle' as const } : agent
         ),
         status: {
           ...prev.status,
@@ -385,7 +385,7 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
       setSwarmState((prev) => {
         const oldTask = prev.tasks.find((t) => t.id === taskId);
         const newTasks = prev.tasks.map((task) =>
-          task.id === taskId ? { ...task, ...updates } : task,
+          task.id === taskId ? { ...task, ...updates } : task
         );
 
         // Recalculate metrics if status changed

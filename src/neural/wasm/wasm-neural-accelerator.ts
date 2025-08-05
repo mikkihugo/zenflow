@@ -71,7 +71,7 @@ export class WasmNeuralAccelerator {
     b: Float32Array,
     rows: number,
     cols: number,
-    inner: number,
+    inner: number
   ): Promise<Float32Array> {
     if (!this.isInitialized) {
       await this.initialize();
@@ -86,7 +86,7 @@ export class WasmNeuralAccelerator {
   async forwardPass(
     inputs: Float32Array,
     weights: Float32Array[],
-    biases: Float32Array[],
+    biases: Float32Array[]
   ): Promise<Float32Array> {
     if (!this.isInitialized) {
       await this.initialize();
@@ -103,7 +103,7 @@ export class WasmNeuralAccelerator {
     outputs: Float32Array,
     targets: Float32Array,
     weights: Float32Array[],
-    learningRate: number,
+    learningRate: number
   ): Promise<{ weights: Float32Array[]; error: number }> {
     if (!this.isInitialized) {
       await this.initialize();
@@ -117,7 +117,7 @@ export class WasmNeuralAccelerator {
    */
   async activation(
     inputs: Float32Array,
-    activationType: 'relu' | 'sigmoid' | 'tanh' | 'softmax',
+    activationType: 'relu' | 'sigmoid' | 'tanh' | 'softmax'
   ): Promise<Float32Array> {
     if (!this.isInitialized) {
       await this.initialize();
@@ -208,7 +208,7 @@ export class WasmNeuralAccelerator {
     b: Float32Array,
     rows: number,
     cols: number,
-    inner: number,
+    inner: number
   ): Float32Array {
     const result = new Float32Array(rows * cols);
 
@@ -228,7 +228,7 @@ export class WasmNeuralAccelerator {
   private mockForwardPass(
     inputs: Float32Array,
     weights: Float32Array[],
-    biases: Float32Array[],
+    biases: Float32Array[]
   ): Float32Array {
     let activations = inputs;
 
@@ -259,7 +259,7 @@ export class WasmNeuralAccelerator {
     outputs: Float32Array,
     targets: Float32Array,
     weights: Float32Array[],
-    learningRate: number,
+    learningRate: number
   ): { weights: Float32Array[]; error: number } {
     // Simplified backpropagation mock
     let totalError = 0;
@@ -326,7 +326,7 @@ export class WasmNeuralAccelerator {
   async multiplyMatrices(
     a: number[][] | Float32Array,
     b: number[][] | Float32Array,
-    _options: WasmComputeOptions = {},
+    _options: WasmComputeOptions = {}
   ): Promise<number[][]> {
     await this.initialize();
 
@@ -380,7 +380,7 @@ export class WasmNeuralAccelerator {
   async applyActivation(
     inputs: Float32Array | number[],
     activationType: string,
-    _options: WasmComputeOptions = {},
+    _options: WasmComputeOptions = {}
   ): Promise<Float32Array> {
     await this.initialize();
 
@@ -394,7 +394,7 @@ export class WasmNeuralAccelerator {
   async vectorReduction(
     vector: Float32Array | number[],
     operation: string,
-    _options: WasmComputeOptions = {},
+    _options: WasmComputeOptions = {}
   ): Promise<number> {
     await this.initialize();
 
@@ -422,7 +422,7 @@ export class WasmNeuralAccelerator {
     kernel: Float32Array,
     inputShape: [number, number],
     kernelShape: [number, number],
-    _options: WasmComputeOptions = {},
+    _options: WasmComputeOptions = {}
   ): Promise<Float32Array> {
     await this.initialize();
 
@@ -476,7 +476,7 @@ export class WasmNeuralAccelerator {
     b: Float32Array,
     rows: number,
     cols: number,
-    inner: number,
+    inner: number
   ): Float32Array {
     // Pure JavaScript implementation for benchmarking
     return this.mockMatrixMultiply(a, b, rows, cols, inner);

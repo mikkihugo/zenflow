@@ -91,7 +91,7 @@ describe('Real-Time Collaboration E2E Tests', () => {
           sessionId,
           workspaceId,
           events: ['document.updated', 'document.created'],
-        }),
+        })
       );
 
       wsClient2.send(
@@ -100,7 +100,7 @@ describe('Real-Time Collaboration E2E Tests', () => {
           sessionId,
           workspaceId,
           events: ['document.updated', 'document.created'],
-        }),
+        })
       );
 
       // Create a document via HTTP API (simulating external edit)
@@ -117,7 +117,7 @@ Test document for real-time collaboration.
 
       const visionPath = await fsHelper.writeFile(
         `${TEST_PROJECT_PATH}/docs/01-vision/realtime-vision.md`,
-        visionContent,
+        visionContent
       );
 
       // Process document (should trigger real-time updates)
@@ -210,7 +210,7 @@ This is version 2 of the document.
         JSON.stringify({
           type: 'subscribe',
           events: ['metrics.update'],
-        }),
+        })
       );
 
       // Trigger some system activity
@@ -298,7 +298,7 @@ This is version 2 of the document.
             workspaceId,
             documentPath: prdPath,
             edit,
-          },
+          }
         );
 
         expect(response.status).toBe(200);
@@ -329,7 +329,7 @@ This is version 2 of the document.
 
       // Get version history
       const historyResponse = await networkHelper.httpGet(
-        `http://localhost:${WEB_SERVER_PORT}/api/documents/history?workspaceId=${workspaceId}&path=${encodeURIComponent(docPath)}`,
+        `http://localhost:${WEB_SERVER_PORT}/api/documents/history?workspaceId=${workspaceId}&path=${encodeURIComponent(docPath)}`
       );
 
       expect(historyResponse.status).toBe(200);
@@ -342,7 +342,7 @@ This is version 2 of the document.
           workspaceId,
           documentPath: docPath,
           version: historyResponse.data.versions[0].id,
-        },
+        }
       );
 
       expect(rollbackResponse.status).toBe(200);
@@ -407,7 +407,7 @@ This is version 2 of the document.
             name: 'User One',
             color: '#ff0000',
           },
-        }),
+        })
       );
 
       // User 1 moves cursor
@@ -418,7 +418,7 @@ This is version 2 of the document.
           documentPath: docPath,
           position: { line: 2, column: 5 },
           user: 'user1',
-        }),
+        })
       );
 
       // User 2 subscribes to presence
@@ -428,7 +428,7 @@ This is version 2 of the document.
           workspaceId,
           documentPath: docPath,
           events: ['presence.update', 'cursor.move'],
-        }),
+        })
       );
 
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -442,7 +442,7 @@ This is version 2 of the document.
         expect.objectContaining({
           id: 'user1',
           name: 'User One',
-        }),
+        })
       );
     });
 
@@ -466,7 +466,7 @@ This is version 2 of the document.
           workspaceId,
           documentPath: docPath,
           user: { id: 'user1', name: 'User One' },
-        }),
+        })
       );
 
       // User 2 subscribes
@@ -476,7 +476,7 @@ This is version 2 of the document.
           workspaceId,
           documentPath: docPath,
           events: ['presence.leave'],
-        }),
+        })
       );
 
       await new Promise((resolve) => setTimeout(resolve, 200));
@@ -507,7 +507,7 @@ This is version 2 of the document.
     it('should provide real-time performance metrics dashboard', async () => {
       // Get initial dashboard data
       const dashboardResponse = await networkHelper.httpGet(
-        `http://localhost:${WEB_SERVER_PORT}/api/dashboard/metrics`,
+        `http://localhost:${WEB_SERVER_PORT}/api/dashboard/metrics`
       );
 
       expect(dashboardResponse.status).toBe(200);
@@ -535,7 +535,7 @@ This is version 2 of the document.
       // Create documents to generate metrics
       const visionPath = await fsHelper.writeFile(
         `${TEST_PROJECT_PATH}/docs/01-vision/metrics-vision.md`,
-        '# Metrics Test Vision\n\nTest content for metrics',
+        '# Metrics Test Vision\n\nTest content for metrics'
       );
 
       const startTime = Date.now();
@@ -544,7 +544,7 @@ This is version 2 of the document.
 
       // Get workflow metrics
       const metricsResponse = await networkHelper.httpGet(
-        `http://localhost:${WEB_SERVER_PORT}/api/metrics/workflow?workspaceId=${workspaceId}`,
+        `http://localhost:${WEB_SERVER_PORT}/api/metrics/workflow?workspaceId=${workspaceId}`
       );
 
       expect(metricsResponse.status).toBe(200);

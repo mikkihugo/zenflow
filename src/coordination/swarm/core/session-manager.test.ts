@@ -127,7 +127,7 @@ describe('SessionManager', () => {
       const sessionId = await sessionManager.createSession(
         'Test Session',
         mockSwarmOptions,
-        mockSwarmState,
+        mockSwarmState
       );
 
       expect(sessionId).toBeDefined();
@@ -138,7 +138,7 @@ describe('SessionManager', () => {
       const sessionId = await sessionManager.createSession(
         'Test Session',
         mockSwarmOptions,
-        mockSwarmState,
+        mockSwarmState
       );
 
       const loadedSession = await sessionManager.loadSession(sessionId);
@@ -152,7 +152,7 @@ describe('SessionManager', () => {
       const sessionId = await sessionManager.createSession(
         'Test Session',
         mockSwarmOptions,
-        mockSwarmState,
+        mockSwarmState
       );
 
       const updatedState = {
@@ -175,7 +175,7 @@ describe('SessionManager', () => {
       const sessionId = await sessionManager.createSession(
         'Test Session',
         mockSwarmOptions,
-        mockSwarmState,
+        mockSwarmState
       );
 
       await sessionManager.pauseSession(sessionId);
@@ -191,7 +191,7 @@ describe('SessionManager', () => {
       const sessionId = await sessionManager.createSession(
         'Test Session',
         mockSwarmOptions,
-        mockSwarmState,
+        mockSwarmState
       );
 
       await sessionManager.hibernateSession(sessionId);
@@ -205,7 +205,7 @@ describe('SessionManager', () => {
       const sessionId = await sessionManager.createSession(
         'Test Session',
         mockSwarmOptions,
-        mockSwarmState,
+        mockSwarmState
       );
 
       await sessionManager.terminateSession(sessionId);
@@ -220,7 +220,7 @@ describe('SessionManager', () => {
       const sessionId = await sessionManager.createSession(
         'Test Session',
         mockSwarmOptions,
-        mockSwarmState,
+        mockSwarmState
       );
 
       const checkpointId = await sessionManager.createCheckpoint(sessionId, 'Test checkpoint');
@@ -233,7 +233,7 @@ describe('SessionManager', () => {
       const sessionId = await sessionManager.createSession(
         'Test Session',
         mockSwarmOptions,
-        mockSwarmState,
+        mockSwarmState
       );
 
       // Create initial checkpoint
@@ -262,7 +262,7 @@ describe('SessionManager', () => {
       const sessionId = await sessionManager.createSession(
         'Test Session',
         mockSwarmOptions,
-        mockSwarmState,
+        mockSwarmState
       );
 
       const stats = await sessionManager.getSessionStats(sessionId);
@@ -289,7 +289,7 @@ describe('SessionManager', () => {
   describe('Error Handling', () => {
     test('should handle non-existent session', async () => {
       await expect(sessionManager.loadSession('non-existent-session')).rejects.toThrow(
-        'Session non-existent-session not found',
+        'Session non-existent-session not found'
       );
     });
 
@@ -297,11 +297,11 @@ describe('SessionManager', () => {
       const sessionId = await sessionManager.createSession(
         'Test Session',
         mockSwarmOptions,
-        mockSwarmState,
+        mockSwarmState
       );
 
       await expect(
-        sessionManager.restoreFromCheckpoint(sessionId, 'invalid-checkpoint'),
+        sessionManager.restoreFromCheckpoint(sessionId, 'invalid-checkpoint')
       ).rejects.toThrow('Checkpoint invalid-checkpoint not found');
     });
   });
@@ -321,7 +321,7 @@ describe('SessionEnabledSwarm', () => {
       {
         autoCheckpoint: false,
       },
-      persistence,
+      persistence
     );
 
     await swarm.init();
@@ -597,7 +597,7 @@ describe('Session Management Integration', () => {
     const swarm = new SessionEnabledSwarm(
       { topology: 'mesh', maxAgents: 10 },
       { autoCheckpoint: false },
-      persistence,
+      persistence
     );
 
     await swarm.init();

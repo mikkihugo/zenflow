@@ -792,7 +792,7 @@ export class SPARCMCPTools {
       // Use comprehensive artifact generation with enhanced infrastructure
       const results = await this.projectManagement.createAllProjectManagementArtifacts(
         project,
-        args.artifactTypes || ['all'],
+        args.artifactTypes || ['all']
       );
 
       return {
@@ -916,7 +916,7 @@ export class SPARCMCPTools {
       };
     } catch (error) {
       throw new Error(
-        `Failed to create epic: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Failed to create epic: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -943,7 +943,7 @@ export class SPARCMCPTools {
       };
     } catch (error) {
       throw new Error(
-        `Failed to add to roadmap: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Failed to add to roadmap: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -980,7 +980,7 @@ export class SPARCMCPTools {
       };
     } catch (error) {
       throw new Error(
-        `Failed to generate domain roadmap: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Failed to generate domain roadmap: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }

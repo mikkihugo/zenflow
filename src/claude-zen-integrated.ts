@@ -64,7 +64,7 @@ Options:
 Examples:
   claude-zen-integrated --port 3000 --dev
   claude-zen-integrated --daemon --verbose
-        `.trim(),
+        `.trim()
         );
         process.exit(0);
       }

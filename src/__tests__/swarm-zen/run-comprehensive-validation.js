@@ -202,7 +202,7 @@ async function generateSummaryReport(finalReport) {
 ${finalReport.testSuites
   .map(
     (suite) =>
-      `- ${suite.passed ? '✅' : '❌'} **${suite.name}**: ${suite.passed ? 'PASSED' : 'FAILED'} (${Math.round(suite.duration / 1000)}s)`,
+      `- ${suite.passed ? '✅' : '❌'} **${suite.name}**: ${suite.passed ? 'PASSED' : 'FAILED'} (${Math.round(suite.duration / 1000)}s)`
   )
   .join('\n')}
 

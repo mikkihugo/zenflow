@@ -60,7 +60,7 @@ export class NetworkTrainer {
   train(
     trainingInputs: number[][],
     trainingOutputs: number[][],
-    config?: TrainingConfig,
+    config?: TrainingConfig
   ): Promise<number>;
 }
 

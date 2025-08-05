@@ -225,7 +225,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExi
         (name) =>
           name.includes(invalidCommand) ||
           invalidCommand.includes(name) ||
-          levenshteinDistance(name, invalidCommand) <= 2,
+          levenshteinDistance(name, invalidCommand) <= 2
       )
       .slice(0, 5);
   };
@@ -249,7 +249,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExi
           matrix[i][j] = Math.min(
             matrix[i - 1][j - 1] + 1,
             matrix[i][j - 1] + 1,
-            matrix[i - 1][j] + 1,
+            matrix[i - 1][j] + 1
           );
         }
       }

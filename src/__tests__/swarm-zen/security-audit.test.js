@@ -638,8 +638,8 @@ class SecurityAuditor {
         await Promise.all(
           agents.map(
             (agent) =>
-              agent.execute({ task: `Memory test iteration ${i}`, timeout: 2000 }).catch(() => {}), // Ignore errors for this test
-          ),
+              agent.execute({ task: `Memory test iteration ${i}`, timeout: 2000 }).catch(() => {}) // Ignore errors for this test
+          )
         );
 
         // Clean up references
@@ -659,7 +659,7 @@ class SecurityAuditor {
           if (growth > 10 * 1024 * 1024) {
             // More than 10MB growth
             console.warn(
-              `Memory growth detected at iteration ${i}: ${Math.round(growth / 1024 / 1024)}MB`,
+              `Memory growth detected at iteration ${i}: ${Math.round(growth / 1024 / 1024)}MB`
             );
           }
         }
@@ -933,7 +933,7 @@ class SecurityAuditor {
 
     this.auditResults.overallSecurity.score = Math.max(
       0,
-      baseScore - securityPenalty - memoryPenalty,
+      baseScore - securityPenalty - memoryPenalty
     );
 
     // Determine security level

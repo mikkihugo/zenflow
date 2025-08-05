@@ -235,7 +235,7 @@ export class BashSafetyValidator implements SafetyValidator {
       alternatives.push(
         'Use rm with specific files instead of -rf',
         'Use trash command for recoverable deletion',
-        'Use find with -delete for controlled deletion',
+        'Use find with -delete for controlled deletion'
       );
     }
 
@@ -243,7 +243,7 @@ export class BashSafetyValidator implements SafetyValidator {
       alternatives.push(
         'Download script first: curl -O <url>',
         'Review downloaded script before execution',
-        'Use package manager instead if available',
+        'Use package manager instead if available'
       );
     }
 
@@ -251,7 +251,7 @@ export class BashSafetyValidator implements SafetyValidator {
       alternatives.push(
         'Use chmod 755 for executables',
         'Use chmod 644 for regular files',
-        'Set specific user/group permissions',
+        'Set specific user/group permissions'
       );
     }
 
@@ -259,7 +259,7 @@ export class BashSafetyValidator implements SafetyValidator {
       alternatives.push(
         'Use sudo with specific -E variables',
         'Use sudo without environment preservation',
-        'Configure sudoers file for specific permissions',
+        'Configure sudoers file for specific permissions'
       );
     }
 
@@ -407,7 +407,7 @@ export class FileOperationValidator {
 
   async validateFileAccess(
     path: string,
-    operation: 'read' | 'write' | 'execute',
+    operation: 'read' | 'write' | 'execute'
   ): Promise<ValidationResult> {
     const risks: SecurityRisk[] = [];
 

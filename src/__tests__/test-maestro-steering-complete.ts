@@ -38,7 +38,7 @@ async function testMaestroSteeringComplete(): Promise<void> {
 
     private async createSteeringFromTemplate(
       feature: string,
-      template: SteeringTemplate,
+      template: SteeringTemplate
     ): Promise<void> {
       const steeringDir = join(process.cwd(), 'docs', 'maestro', 'steering', template.name);
       await mkdir(steeringDir, { recursive: true });
@@ -52,7 +52,7 @@ This steering document focuses on ${template.focus} for **${feature}**.
 ${template.sections
   .map(
     (section) => `### ${section}
-      - Guidelines for ${section.toLowerCase()}`,
+      - Guidelines for ${section.toLowerCase()}`
   )
   .join('\n')}
 
@@ -90,7 +90,7 @@ ${template.sections
     console.error(
       `
       ❌ Complete steering test failed:`,
-      error,
+      error
     );
     process.exit(1);
   }

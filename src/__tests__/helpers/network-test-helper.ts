@@ -121,7 +121,7 @@ export class MockNetworkTestHelper implements NetworkTestHelper {
       async post(
         path: string,
         body?: any,
-        headers: Record<string, string> = {},
+        headers: Record<string, string> = {}
       ): Promise<HttpResponse> {
         return self.makeRequest('POST', path, body, headers);
       },
@@ -129,7 +129,7 @@ export class MockNetworkTestHelper implements NetworkTestHelper {
       async put(
         path: string,
         body?: any,
-        headers: Record<string, string> = {},
+        headers: Record<string, string> = {}
       ): Promise<HttpResponse> {
         return self.makeRequest('PUT', path, body, headers);
       },
@@ -141,7 +141,7 @@ export class MockNetworkTestHelper implements NetworkTestHelper {
       async patch(
         path: string,
         body?: any,
-        headers: Record<string, string> = {},
+        headers: Record<string, string> = {}
       ): Promise<HttpResponse> {
         return self.makeRequest('PATCH', path, body, headers);
       },
@@ -229,7 +229,7 @@ export class MockNetworkTestHelper implements NetworkTestHelper {
     method: string,
     path: string,
     body?: any,
-    headers: Record<string, string> = {},
+    headers: Record<string, string> = {}
   ): Promise<HttpResponse> {
     if (!this.isRunning) {
       throw new Error('Mock server not running');
@@ -363,7 +363,7 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
       async post(
         path: string,
         body?: any,
-        headers: Record<string, string> = {},
+        headers: Record<string, string> = {}
       ): Promise<HttpResponse> {
         return this.makeRealRequest('POST', `${url}${path}`, body, headers);
       },
@@ -371,7 +371,7 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
       async put(
         path: string,
         body?: any,
-        headers: Record<string, string> = {},
+        headers: Record<string, string> = {}
       ): Promise<HttpResponse> {
         return this.makeRealRequest('PUT', `${url}${path}`, body, headers);
       },
@@ -383,7 +383,7 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
       async patch(
         path: string,
         body?: any,
-        headers: Record<string, string> = {},
+        headers: Record<string, string> = {}
       ): Promise<HttpResponse> {
         return this.makeRealRequest('PATCH', `${url}${path}`, body, headers);
       },
@@ -434,7 +434,7 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
     method: string,
     url: string,
     body?: any,
-    headers: Record<string, string> = {},
+    headers: Record<string, string> = {}
   ): Promise<HttpResponse> {
     try {
       // Use fetch if available, otherwise use http module
@@ -495,7 +495,7 @@ export async function testHttpEndpoint(
   method: string,
   path: string,
   expectedResponse: Partial<HttpResponse>,
-  requestBody?: any,
+  requestBody?: any
 ): Promise<HttpResponse> {
   const client = helper.createHttpClient();
 
@@ -537,7 +537,7 @@ export async function setupRestApiMock(
     method: string;
     path: string;
     response: HttpResponse;
-  }>,
+  }>
 ): Promise<void> {
   await helper.startMockServer();
 

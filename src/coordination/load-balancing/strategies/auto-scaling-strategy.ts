@@ -115,7 +115,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
       if (agentCount < this.config.maxAgents) {
         const targetCount = Math.min(
           this.config.maxAgents,
-          Math.ceil(agentCount * 1.5), // Scale by 50%
+          Math.ceil(agentCount * 1.5) // Scale by 50%
         );
 
         return {
@@ -133,7 +133,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
       if (agentCount > this.config.minAgents) {
         const targetCount = Math.max(
           this.config.minAgents,
-          Math.floor(agentCount * 0.8), // Scale down by 20%
+          Math.floor(agentCount * 0.8) // Scale down by 20%
         );
 
         return {

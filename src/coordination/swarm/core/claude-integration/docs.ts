@@ -87,7 +87,7 @@ class ClaudeDocsGenerator {
       } else {
         // Non-interactive mode - fail safely
         throw new Error(
-          'CLAUDE.md already exists. Use --force to overwrite, --backup to backup existing, or --merge to combine.',
+          'CLAUDE.md already exists. Use --force to overwrite, --backup to backup existing, or --merge to combine.'
         );
       }
     } else if (fileExists && force) {

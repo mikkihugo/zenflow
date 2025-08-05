@@ -291,7 +291,7 @@ export function performGapAnalysis(): GapAnalysisResult {
   const allOurAgents = Object.values(OUR_AGENT_CATEGORIES).flat();
 
   const missingCapabilities = allTheirAgents.filter(
-    (agent) => !allOurAgents.includes(agent as AgentType),
+    (agent) => !allOurAgents.includes(agent as AgentType)
   );
 
   // Identify our unique advantages

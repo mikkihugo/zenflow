@@ -62,7 +62,7 @@ export class MCPParameterValidator {
   public static validateParameters(
     toolName: string,
     parameters: any,
-    schema: any,
+    schema: any
   ): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
 
@@ -85,7 +85,7 @@ export class MCPParameterValidator {
             const validation = MCPParameterValidator.validateParameter(
               paramName,
               value,
-              paramSchema,
+              paramSchema
             );
             if (!validation.valid) {
               errors.push(...validation.errors);
@@ -109,7 +109,7 @@ export class MCPParameterValidator {
   private static validateParameter(
     name: string,
     value: any,
-    schema: any,
+    schema: any
   ): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
 
@@ -196,7 +196,7 @@ export class MCPErrorClassifier {
         error.message,
         context.toolName,
         30000, // Default timeout
-        Date.now() - context.startTime,
+        Date.now() - context.startTime
       );
     }
 
@@ -247,14 +247,14 @@ export class MCPErrorClassifier {
     toolName: string,
     parameterName: string,
     expectedType: string,
-    actualValue: any,
+    actualValue: any
   ): MCPValidationError {
     return new MCPValidationError(
       `Invalid parameter '${parameterName}': expected ${expectedType}`,
       parameterName,
       expectedType,
       actualValue,
-      toolName,
+      toolName
     );
   }
 }
@@ -290,7 +290,7 @@ export class MCPToolWrapper {
         // Check if feature is enabled (graceful degradation)
         const isEnabled = (errorRecoveryOrchestrator as any).isFeatureEnabled
           ? (errorRecoveryOrchestrator as any).isFeatureEnabled(
-              MCPToolWrapper.getFeatureName(tool.name),
+              MCPToolWrapper.getFeatureName(tool.name)
             )
           : true; // Default to enabled if method doesn't exist
 
@@ -314,7 +314,7 @@ export class MCPToolWrapper {
                 circuitBreakerThreshold: 5,
                 fallbackEnabled: true,
                 gracefulDegradation: true,
-              },
+              }
             );
           } else {
             // Fallback: execute directly without recovery
@@ -330,14 +330,14 @@ export class MCPToolWrapper {
   private static async executeToolWithValidation(
     tool: MCPTool,
     parameters: any,
-    context: MCPExecutionContext,
+    context: MCPExecutionContext
   ): Promise<MCPToolResult> {
     // Phase 1: Parameter Validation
     try {
       const validation = MCPParameterValidator.validateParameters(
         tool.name,
         parameters,
-        tool.inputSchema,
+        tool.inputSchema
       );
 
       if (!validation.valid) {
@@ -346,7 +346,7 @@ export class MCPToolWrapper {
           'multiple',
           'valid',
           parameters,
-          tool.name,
+          tool.name
         );
 
         // Use recordError if reportError doesn't exist
@@ -407,7 +407,7 @@ export class MCPToolWrapper {
   private static postProcessResult(
     result: MCPToolResult,
     _toolName: string,
-    context: MCPExecutionContext,
+    context: MCPExecutionContext
   ): MCPToolResult {
     // Add execution metadata to successful results
     if (result.success && result.content) {
@@ -458,7 +458,7 @@ export class MCPToolWrapper {
 
   private static createUserFriendlyErrorMessage(
     error: BaseClaudeZenError,
-    context: MCPExecutionContext,
+    context: MCPExecutionContext
   ): string {
     const executionTime = Date.now() - context.startTime;
 
@@ -612,7 +612,7 @@ export class MCPToolRegistry {
       throw new MCPError(
         `Tool registration failed: ${error instanceof Error ? error.message : String(error)}`,
         tool.name,
-        'critical',
+        'critical'
       );
     }
   }

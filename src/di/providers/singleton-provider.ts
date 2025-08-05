@@ -12,7 +12,7 @@ export class SingletonProvider<T> implements Provider<T> {
 
   constructor(
     private readonly factory: (container: DIContainer) => T,
-    private readonly disposeFn?: (instance: T) => Promise<void>,
+    private readonly disposeFn?: (instance: T) => Promise<void>
   ) {}
 
   create(container: DIContainer): T {

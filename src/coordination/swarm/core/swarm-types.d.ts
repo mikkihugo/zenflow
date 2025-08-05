@@ -156,11 +156,11 @@ declare module 'ruv-swarm' {
     fineTuneNetwork(
       agentId: string,
       trainingData: TrainingData,
-      options?: TrainingOptions,
+      options?: TrainingOptions
     ): Promise<NeuralMetrics>;
     enableCollaborativeLearning(
       agentIds: string[],
-      options?: CollaborativeOptions,
+      options?: CollaborativeOptions
     ): Promise<CollaborativeSession>;
     getNetworkMetrics(agentId: string): NeuralMetrics | null;
     saveNetworkState(agentId: string, filePath: string): Promise<boolean>;

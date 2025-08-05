@@ -82,7 +82,7 @@ class ErrorHandlingTestSuite {
     await this.runTest('Validation - Valid input schema', async () => {
       const result = this.errorHandler.validateInput(
         { name: 'test', value: 42 },
-        { name: 'string', value: 'number' },
+        { name: 'string', value: 'number' }
       );
       assert(result.valid === true || result.valid === undefined, 'Should validate correct input');
       this.results.coverage.validation++;
@@ -91,7 +91,7 @@ class ErrorHandlingTestSuite {
     await this.runTest('Validation - Invalid input type', async () => {
       const _result = this.errorHandler.validateInput(
         { name: 123, value: 'invalid' },
-        { name: 'string', value: 'number' },
+        { name: 'string', value: 'number' }
       );
       // Should either validate or return validation errors
       this.results.coverage.validation++;
@@ -100,7 +100,7 @@ class ErrorHandlingTestSuite {
     await this.runTest('Validation - Missing required fields', async () => {
       const _result = this.errorHandler.validateInput(
         { name: 'test' },
-        { name: 'string', value: 'number', required: ['name', 'value'] },
+        { name: 'string', value: 'number', required: ['name', 'value'] }
       );
       this.results.coverage.validation++;
     });
@@ -108,7 +108,7 @@ class ErrorHandlingTestSuite {
     await this.runTest('Validation - Extra fields handling', async () => {
       const _result = this.errorHandler.validateInput(
         { name: 'test', value: 42, extra: 'field' },
-        { name: 'string', value: 'number' },
+        { name: 'string', value: 'number' }
       );
       this.results.coverage.validation++;
     });
@@ -116,7 +116,7 @@ class ErrorHandlingTestSuite {
     await this.runTest('Validation - Nested object validation', async () => {
       const _result = this.errorHandler.validateInput(
         { config: { timeout: 5000, retries: 3 } },
-        { config: { timeout: 'number', retries: 'number' } },
+        { config: { timeout: 'number', retries: 'number' } }
       );
       this.results.coverage.validation++;
     });
@@ -596,7 +596,7 @@ class ErrorHandlingTestSuite {
 
     if (recommendations.length === 0) {
       recommendations.push(
-        'Excellent error handling coverage! Consider adding chaos engineering tests.',
+        'Excellent error handling coverage! Consider adding chaos engineering tests.'
       );
     }
 

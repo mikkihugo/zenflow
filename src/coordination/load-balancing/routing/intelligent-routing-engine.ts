@@ -104,7 +104,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
       const candidates = await this.taskAgentMatcher.findCandidates(
         task,
         availableAgents,
-        this.capacityManager,
+        this.capacityManager
       );
 
       if (candidates.length === 0) {
@@ -286,7 +286,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
     // Find optimal paths using network topology
     const optimalPaths = await this.networkOptimizer.selectOptimalPath(
       'source', // Would be actual source location
-      agent.id,
+      agent.id
     );
 
     for (const path of optimalPaths) {
@@ -354,7 +354,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   private async calculateRoutingScore(
     task: Task,
     agent: Agent,
-    routingEntry: RoutingTable,
+    routingEntry: RoutingTable
   ): Promise<number> {
     const weights = this.config.qosWeights;
 
@@ -453,7 +453,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
     for (const [agentId, routingEntry] of this.routingTable) {
       const updatedRoutes = routingEntry.routes.filter(
-        (route) => !route.path.includes(failedAgentId),
+        (route) => !route.path.includes(failedAgentId)
       );
 
       if (updatedRoutes.length !== routingEntry.routes.length) {
@@ -489,7 +489,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
           reliability: this.calculatePathReliability(path),
           qosLevel: 1,
           path,
-        })),
+        }))
       );
 
       // Merge with existing routes

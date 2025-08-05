@@ -251,7 +251,7 @@ export class DashboardServer extends EventEmitter {
     if (insights.predictions.resourceExhaustion.length > 0) {
       this.addAlert(
         'warning',
-        `Resource exhaustion predicted: ${insights.predictions.resourceExhaustion.join(', ')}`,
+        `Resource exhaustion predicted: ${insights.predictions.resourceExhaustion.join(', ')}`
       );
     }
 
@@ -274,7 +274,7 @@ export class DashboardServer extends EventEmitter {
 
     // Create alerts for failed optimizations
     const recentFailures = optimizations.filter(
-      (o) => !o.success && Date.now() - o.executionTime < 60000,
+      (o) => !o.success && Date.now() - o.executionTime < 60000
     );
     for (const failure of recentFailures) {
       this.addAlert('warning', `Optimization failed: ${failure.error}`);
@@ -318,7 +318,7 @@ export class DashboardServer extends EventEmitter {
     }
 
     const recentOptimizations = optimizations.filter(
-      (o) => Date.now() - o.executionTime < 3600000, // Last hour
+      (o) => Date.now() - o.executionTime < 3600000 // Last hour
     );
 
     const successfulOptimizations = recentOptimizations.filter((o) => o.success);
@@ -432,7 +432,7 @@ export class DashboardServer extends EventEmitter {
         summary.system?.memoryUsage || 0,
         summary.alerts?.total || 0,
         summary.optimizations?.total || 0,
-      ].join(','),
+      ].join(',')
     );
 
     lines.push('');
@@ -447,7 +447,7 @@ export class DashboardServer extends EventEmitter {
           alert.type,
           `"${alert.message.replace(/"/g, '""')}"`,
           new Date(alert.timestamp).toISOString(),
-        ].join(','),
+        ].join(',')
       );
     });
 
@@ -464,7 +464,7 @@ export class DashboardServer extends EventEmitter {
           opt.impact?.performance || 0,
           opt.impact?.efficiency || 0,
           opt.executionTime,
-        ].join(','),
+        ].join(',')
       );
     });
 

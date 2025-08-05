@@ -42,7 +42,7 @@ export interface SystemHooks {
     toolName: string,
     duration: number,
     success: boolean,
-    error?: string,
+    error?: string
   ) => void;
   onMcpToolTimeout?: (toolName: string, duration: number) => void;
 }
@@ -194,7 +194,7 @@ export class SystemIntegration extends EventEmitter {
     this.hooks.onFactStorage = (
       operation: 'store' | 'retrieve',
       size: number,
-      duration: number,
+      duration: number
     ) => {
       this.factMetrics.storageOperations++;
       this.emit('fact:storage', { operation, size, duration });
@@ -281,7 +281,7 @@ export class SystemIntegration extends EventEmitter {
       toolName: string,
       duration: number,
       success: boolean,
-      error?: string,
+      error?: string
     ) => {
       if (success) {
         const count = this.mcpMetrics.toolSuccesses.get(toolName) || 0;
@@ -407,7 +407,7 @@ export class SystemIntegration extends EventEmitter {
   private handleOptimizationCompleted(result: OptimizationResult): void {
     this.log(
       'info',
-      `Optimization completed: ${result.actionId} (${result.success ? 'success' : 'failed'})`,
+      `Optimization completed: ${result.actionId} (${result.success ? 'success' : 'failed'})`
     );
 
     if (result.success) {
@@ -530,11 +530,11 @@ export class SystemIntegration extends EventEmitter {
 
     const totalInvocations = Array.from(this.mcpMetrics.toolInvocations.values()).reduce(
       (a, b) => a + b,
-      0,
+      0
     );
     const totalSuccesses = Array.from(this.mcpMetrics.toolSuccesses.values()).reduce(
       (a, b) => a + b,
-      0,
+      0
     );
     const overallSuccessRate = totalInvocations > 0 ? totalSuccesses / totalInvocations : 0;
     const allLatencies = Array.from(this.mcpMetrics.toolLatencies.values()).flat();
@@ -575,12 +575,12 @@ export class SystemIntegration extends EventEmitter {
     if (insights.healthScore < 50) {
       this.dashboardServer.addAlert(
         'error',
-        `System health critical: ${insights.healthScore.toFixed(1)}%`,
+        `System health critical: ${insights.healthScore.toFixed(1)}%`
       );
     } else if (insights.healthScore < 70) {
       this.dashboardServer.addAlert(
         'warning',
-        `System health low: ${insights.healthScore.toFixed(1)}%`,
+        `System health low: ${insights.healthScore.toFixed(1)}%`
       );
     }
 
@@ -589,7 +589,7 @@ export class SystemIntegration extends EventEmitter {
     for (const bottleneck of highImpactBottlenecks) {
       this.dashboardServer.addAlert(
         'warning',
-        `Performance bottleneck: ${bottleneck.component} ${bottleneck.metric}`,
+        `Performance bottleneck: ${bottleneck.component} ${bottleneck.metric}`
       );
     }
   }

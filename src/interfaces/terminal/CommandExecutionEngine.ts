@@ -53,7 +53,7 @@ export class CommandExecutionEngine {
     command: string,
     args: string[],
     flags: Record<string, any>,
-    context?: Partial<ExecutionContext>,
+    context?: Partial<ExecutionContext>
   ): Promise<CommandResult> {
     const startTime = Date.now();
     const executionContext: ExecutionContext = {
@@ -74,7 +74,7 @@ export class CommandExecutionEngine {
           command,
           args,
           flags,
-          startTime,
+          startTime
         );
       }
 
@@ -108,7 +108,7 @@ export class CommandExecutionEngine {
             command,
             args,
             flags,
-            startTime,
+            startTime
           );
       }
 
@@ -134,7 +134,7 @@ export class CommandExecutionEngine {
         command,
         args,
         flags,
-        startTime,
+        startTime
       );
     }
   }
@@ -463,16 +463,23 @@ export class CommandExecutionEngine {
   private static async handleDiscoverCommand(context: ExecutionContext): Promise<CommandResult> {
     try {
       const projectPath = context.args[0] || context.cwd;
-      
+
       // Parse discover options from flags
       const options = {
         project: projectPath,
         confidence: parseFloat(context.flags.confidence || context.flags.c) || 0.95,
-        maxIterations: parseInt(context.flags.maxIterations || context.flags['max-iterations'] || context.flags.i) || 5,
-        autoSwarms: context.flags.autoSwarms !== false && context.flags['auto-swarms'] !== false && context.flags.s !== false, // default true
+        maxIterations:
+          parseInt(
+            context.flags.maxIterations || context.flags['max-iterations'] || context.flags.i
+          ) || 5,
+        autoSwarms:
+          context.flags.autoSwarms !== false &&
+          context.flags['auto-swarms'] !== false &&
+          context.flags.s !== false, // default true
         skipValidation: context.flags.skipValidation || context.flags['skip-validation'] || false,
         topology: context.flags.topology || context.flags.t || 'auto',
-        maxAgents: parseInt(context.flags.maxAgents || context.flags['max-agents'] || context.flags.a) || 20,
+        maxAgents:
+          parseInt(context.flags.maxAgents || context.flags['max-agents'] || context.flags.a) || 20,
         output: context.flags.output || context.flags.o || 'console',
         saveResults: context.flags.saveResults || context.flags['save-results'],
         verbose: context.flags.verbose || context.flags.v || false,
@@ -497,16 +504,20 @@ export class CommandExecutionEngine {
         };
       }
 
-      logger.debug('Executing discover command', { projectPath, options, receivedFlags: context.flags });
+      logger.debug('Executing discover command', {
+        projectPath,
+        options,
+        receivedFlags: context.flags,
+      });
 
       // Try to use the enhanced DiscoverCommand class for full functionality
       try {
         const { DiscoverCommand } = await import('../cli/commands/discover');
         const discoverCommand = new DiscoverCommand();
-        
+
         logger.info('🚀 Using enhanced Progressive Confidence Building System');
         await discoverCommand.execute(projectPath, options);
-        
+
         return {
           success: true,
           message: 'Progressive confidence building completed successfully',
@@ -514,23 +525,21 @@ export class CommandExecutionEngine {
             enhanced: true,
             projectPath,
             options,
-            note: 'Used full DiscoverCommand implementation'
-          }
+            note: 'Used full DiscoverCommand implementation',
+          },
         };
-        
       } catch (enhancedError) {
         logger.warn('Enhanced discover failed, using fallback implementation:', enhancedError);
-        
+
         // Fallback to simplified implementation
         return CommandExecutionEngine.handleDiscoverFallback(projectPath, options);
       }
-      
     } catch (error) {
       logger.error('Discover command failed:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown discover error',
-        data: { command: 'discover', context }
+        data: { command: 'discover', context },
       };
     }
   }
@@ -538,21 +547,25 @@ export class CommandExecutionEngine {
   /**
    * Fallback discover implementation when enhanced version fails
    */
-  private static async handleDiscoverFallback(projectPath: string, options: any): Promise<CommandResult> {
+  private static async handleDiscoverFallback(
+    projectPath: string,
+    options: any
+  ): Promise<CommandResult> {
     try {
       logger.info('🔧 Using simplified discovery implementation');
-      
+
       if (options.interactive) {
         return {
           success: true,
-          message: `🧠 Interactive Discovery TUI Mode\n\n` +
-                  `Project: ${projectPath}\n` +
-                  `Confidence Target: ${options.confidence}\n` +
-                  `Max Iterations: ${options.maxIterations}\n` +
-                  `Auto-Swarms: ${options.autoSwarms ? 'Enabled' : 'Disabled'}\n` +
-                  `Topology: ${options.topology}\n\n` +
-                  `Note: TUI integration pending - full discovery system available\n` +
-                  `Run without --interactive for non-interactive mode`,
+          message:
+            `🧠 Interactive Discovery TUI Mode\n\n` +
+            `Project: ${projectPath}\n` +
+            `Confidence Target: ${options.confidence}\n` +
+            `Max Iterations: ${options.maxIterations}\n` +
+            `Auto-Swarms: ${options.autoSwarms ? 'Enabled' : 'Disabled'}\n` +
+            `Topology: ${options.topology}\n\n` +
+            `Note: TUI integration pending - full discovery system available\n` +
+            `Run without --interactive for non-interactive mode`,
           data: {
             mode: 'interactive',
             projectPath,
@@ -564,13 +577,13 @@ export class CommandExecutionEngine {
 
       // Simulate discovery phases
       await CommandExecutionEngine.simulateAsyncOperation(1000);
-      
+
       const phases = [
         '🔍 Phase 1: Project Analysis',
-        '🧠 Phase 2: Domain Discovery', 
+        '🧠 Phase 2: Domain Discovery',
         '📈 Phase 3: Confidence Building',
         '🤝 Phase 4: Swarm Creation',
-        '🚀 Phase 5: Agent Deployment'
+        '🚀 Phase 5: Agent Deployment',
       ];
 
       const discoveryResults = {
@@ -580,32 +593,31 @@ export class CommandExecutionEngine {
           codeFiles: Math.floor(Math.random() * 200) + 50,
           configFiles: Math.floor(Math.random() * 20) + 5,
         },
-        domainsDiscovered: [
-          'coordination',
-          'neural', 
-          'interfaces',
-          'memory'
-        ],
+        domainsDiscovered: ['coordination', 'neural', 'interfaces', 'memory'],
         confidenceMetrics: {
           overall: options.confidence,
           domainMapping: 0.92,
           agentSelection: 0.89,
           topology: 0.95,
-          resourceAllocation: 0.87
+          resourceAllocation: 0.87,
         },
         swarmsCreated: options.autoSwarms ? Math.floor(Math.random() * 3) + 1 : 0,
         agentsDeployed: options.autoSwarms ? Math.floor(Math.random() * options.maxAgents) + 4 : 0,
-        topology: options.topology === 'auto' ? ['mesh', 'hierarchical', 'star'][Math.floor(Math.random() * 3)] : options.topology
+        topology:
+          options.topology === 'auto'
+            ? ['mesh', 'hierarchical', 'star'][Math.floor(Math.random() * 3)]
+            : options.topology,
       };
 
       if (options.dryRun) {
         return {
           success: true,
-          message: `🧪 Dry Run Complete - No swarms created\n\n` +
-                  `Project: ${projectPath}\n` +
-                  `Confidence: ${options.confidence}\n` +
-                  `Would create ${discoveryResults.swarmsCreated} swarms with ${discoveryResults.agentsDeployed} agents\n` +
-                  `Topology: ${discoveryResults.topology}`,
+          message:
+            `🧪 Dry Run Complete - No swarms created\n\n` +
+            `Project: ${projectPath}\n` +
+            `Confidence: ${options.confidence}\n` +
+            `Would create ${discoveryResults.swarmsCreated} swarms with ${discoveryResults.agentsDeployed} agents\n` +
+            `Topology: ${discoveryResults.topology}`,
           data: {
             ...discoveryResults,
             dryRun: true,
@@ -617,14 +629,15 @@ export class CommandExecutionEngine {
 
       return {
         success: true,
-        message: `🚀 Auto-Discovery Completed Successfully!\n\n` +
-                `Project: ${projectPath}\n` +
-                `Confidence: ${options.confidence}\n` +
-                `Domains: ${discoveryResults.domainsDiscovered.join(', ')}\n` +
-                `Swarms Created: ${discoveryResults.swarmsCreated}\n` +
-                `Agents Deployed: ${discoveryResults.agentsDeployed}\n` +
-                `Topology: ${discoveryResults.topology}\n\n` +
-                `✨ Neural auto-discovery system ready for task execution`,
+        message:
+          `🚀 Auto-Discovery Completed Successfully!\n\n` +
+          `Project: ${projectPath}\n` +
+          `Confidence: ${options.confidence}\n` +
+          `Domains: ${discoveryResults.domainsDiscovered.join(', ')}\n` +
+          `Swarms Created: ${discoveryResults.swarmsCreated}\n` +
+          `Agents Deployed: ${discoveryResults.agentsDeployed}\n` +
+          `Topology: ${discoveryResults.topology}\n\n` +
+          `✨ Neural auto-discovery system ready for task execution`,
         data: {
           ...discoveryResults,
           projectPath,
@@ -634,8 +647,8 @@ export class CommandExecutionEngine {
           nextSteps: [
             'Use `claude-zen status` to monitor swarm activity',
             'Use `claude-zen swarm list` to see created swarms',
-            'Submit tasks to the auto-discovered system'
-          ]
+            'Submit tasks to the auto-discovered system',
+          ],
         },
       };
     } catch (error) {
@@ -696,7 +709,7 @@ export class CommandExecutionEngine {
             '--save-results <file>',
             '--verbose',
             '--dry-run',
-            '--interactive'
+            '--interactive',
           ],
         },
       ],
@@ -819,7 +832,7 @@ export class CommandExecutionEngine {
     command: string,
     args: string[],
     flags: Record<string, any>,
-    startTime: number,
+    startTime: number
   ): CommandResult {
     return {
       success: false,

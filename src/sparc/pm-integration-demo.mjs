@@ -25,7 +25,7 @@ async function demonstrateEnhancedIntegration() {
         'Automatic failover and recovery',
         'Scalable architecture for 1000+ agents',
       ],
-      'moderate',
+      'moderate'
     );
 
     const pmArtifacts = await sparcMCPTools.handleGenerateProjectManagementArtifacts({

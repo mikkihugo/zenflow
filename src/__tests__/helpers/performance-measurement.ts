@@ -68,7 +68,7 @@ export class PerformanceMeasurement {
   measureSync<T>(
     name: string,
     fn: () => T,
-    options: Partial<PerformanceTestOptions> = {},
+    options: Partial<PerformanceTestOptions> = {}
   ): PerformanceMetrics {
     const config = { ...this.options, ...options };
     const measurements: number[] = [];
@@ -121,7 +121,7 @@ export class PerformanceMeasurement {
   async measureAsync<T>(
     name: string,
     fn: () => Promise<T>,
-    options: Partial<PerformanceTestOptions> = {},
+    options: Partial<PerformanceTestOptions> = {}
   ): Promise<PerformanceMetrics> {
     const config = { ...this.options, ...options };
     const measurements: number[] = [];
@@ -168,7 +168,7 @@ export class PerformanceMeasurement {
   async measureThroughput<T>(
     name: string,
     fn: () => T | Promise<T>,
-    duration: number = 5000,
+    duration: number = 5000
   ): Promise<PerformanceMetrics> {
     const operations: number[] = [];
     const startTime = Date.now();
@@ -206,7 +206,7 @@ export class PerformanceMeasurement {
    */
   async benchmarkComparison<T>(
     benchmarks: Array<{ name: string; fn: () => T | Promise<T> }>,
-    options: Partial<PerformanceTestOptions> = {},
+    options: Partial<PerformanceTestOptions> = {}
   ): Promise<Array<{ name: string; metrics: PerformanceMetrics; ranking: number }>> {
     const results: Array<{ name: string; metrics: PerformanceMetrics }> = [];
 
@@ -224,7 +224,7 @@ export class PerformanceMeasurement {
       .sort(
         (a, b) =>
           (a.metrics.statistics?.mean || a.metrics.executionTime) -
-          (b.metrics.statistics?.mean || b.metrics.executionTime),
+          (b.metrics.statistics?.mean || b.metrics.executionTime)
       )
       .map((result, index) => ({ ...result, ranking: index + 1 }));
 
@@ -238,7 +238,7 @@ export class PerformanceMeasurement {
     name: string,
     fn: () => Promise<T>,
     concurrency: number = 10,
-    duration: number = 10000,
+    duration: number = 10000
   ): Promise<PerformanceMetrics> {
     const startTime = Date.now();
     const operations: Array<{ duration: number; success: boolean; error?: string }> = [];
@@ -280,7 +280,7 @@ export class PerformanceMeasurement {
   async detectMemoryLeaks<T>(
     _name: string,
     fn: () => T | Promise<T>,
-    iterations: number = 100,
+    iterations: number = 100
   ): Promise<{ hasLeak: boolean; memoryGrowth: number; measurements: number[] }> {
     const memoryMeasurements: number[] = [];
 
@@ -379,7 +379,7 @@ export class PerformanceMeasurement {
 
   private calculateMetrics(
     timeMeasurements: number[],
-    memoryMeasurements: Array<{ heap: number; external: number; total: number }>,
+    memoryMeasurements: Array<{ heap: number; external: number; total: number }>
   ): PerformanceMetrics {
     const executionTime = timeMeasurements.reduce((a, b) => a + b, 0) / timeMeasurements.length;
 
@@ -430,7 +430,7 @@ export class PerformanceMeasurement {
   private async runConcurrentTest<T>(
     fn: () => Promise<T>,
     operations: Array<{ duration: number; success: boolean; error?: string }>,
-    endTime: number,
+    endTime: number
   ): Promise<void> {
     while (Date.now() < endTime) {
       const start = performance.now();
@@ -458,7 +458,7 @@ export const performanceMeasurement = new PerformanceMeasurement();
 export function measurePerformance<T>(
   name: string,
   fn: () => T,
-  options?: Partial<PerformanceTestOptions>,
+  options?: Partial<PerformanceTestOptions>
 ): PerformanceMetrics {
   return performanceMeasurement.measureSync(name, fn, options);
 }
@@ -466,14 +466,14 @@ export function measurePerformance<T>(
 export async function measureAsyncPerformance<T>(
   name: string,
   fn: () => Promise<T>,
-  options?: Partial<PerformanceTestOptions>,
+  options?: Partial<PerformanceTestOptions>
 ): Promise<PerformanceMetrics> {
   return performanceMeasurement.measureAsync(name, fn, options);
 }
 
 export async function benchmarkFunctions<T>(
   benchmarks: Array<{ name: string; fn: () => T | Promise<T> }>,
-  options?: Partial<PerformanceTestOptions>,
+  options?: Partial<PerformanceTestOptions>
 ): Promise<Array<{ name: string; metrics: PerformanceMetrics; ranking: number }>> {
   return performanceMeasurement.benchmarkComparison(benchmarks, options);
 }

@@ -32,7 +32,7 @@ async function testNeuralPresetsIntegration() {
           requiresPrecision: test.modelType === 'cnn',
           requiresCreativity: test.modelType === 'diffusion',
           complexity: 'high',
-        },
+        }
       );
 
       const presetInfo = neuralManager.getAgentPresetInfo(test.agentId);
@@ -82,7 +82,7 @@ async function testNeuralPresetsIntegration() {
     const patterns = neuralManager.cognitivePatternSelector.selectPatternsForPreset(
       'transformer',
       'bert_base',
-      scenario.config,
+      scenario.config
     );
     patterns.forEach((_pattern, _index) => {});
   }
@@ -128,7 +128,7 @@ async function testNeuralPresetsIntegration() {
           epochs: 5,
           enableCognitiveEvolution: true,
           enableMetaLearning: true,
-        },
+        }
       );
 
       // Get adaptation recommendations

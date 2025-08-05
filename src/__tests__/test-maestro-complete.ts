@@ -115,7 +115,7 @@ async function testMaestroComplete(): Promise<void> {
     console.error(
       `
       ❌ Complete test failed:`,
-      error,
+      error
     );
     process.exit(1);
   }

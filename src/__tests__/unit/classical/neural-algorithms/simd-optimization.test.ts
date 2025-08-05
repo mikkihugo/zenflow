@@ -83,7 +83,7 @@ class SimdMatrixOps {
     c: Float32Array,
     m: number,
     n: number,
-    k: number,
+    k: number
   ): void {
     const blockSize = this.config.blockSize;
 
@@ -114,7 +114,7 @@ class SimdMatrixOps {
     c: Float32Array,
     m: number,
     n: number,
-    k: number,
+    k: number
   ): void {
     // Simulate SIMD performance with optimized scalar implementation
     // In practice, this would use actual SIMD intrinsics
@@ -152,7 +152,7 @@ class SimdMatrixOps {
     x: Float32Array,
     y: Float32Array,
     m: number,
-    n: number,
+    n: number
   ): void {
     for (let i = 0; i < m; i++) {
       let sum = 0;
@@ -168,7 +168,7 @@ class SimdMatrixOps {
     x: Float32Array,
     y: Float32Array,
     m: number,
-    n: number,
+    n: number
   ): void {
     const SIMD_WIDTH = 8;
 
@@ -197,7 +197,7 @@ class SimdMatrixOps {
     matrix: Float32Array,
     bias: Float32Array,
     rows: number,
-    cols: number,
+    cols: number
   ): void {
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {

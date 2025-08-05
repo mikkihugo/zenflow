@@ -262,7 +262,7 @@ describe('Product Flow + SPARC Integration', () => {
 
       // Check that API feature got SPARC project
       const apiFeature = workflow.productFlow.documents.features.find(
-        (f) => f.feature_type === 'api',
+        (f) => f.feature_type === 'api'
       );
       if (apiFeature) {
         expect(workflow.sparcIntegration.sparcProjects.has(apiFeature.id)).toBe(true);

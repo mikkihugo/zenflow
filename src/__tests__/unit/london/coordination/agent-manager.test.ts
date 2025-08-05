@@ -55,7 +55,7 @@ describe('Simple Agent Manager - London TDD', () => {
         expect.objectContaining({
           type: 'agent_registered',
           agentId: agent.id,
-        }),
+        })
       );
     });
 
@@ -94,7 +94,7 @@ describe('Simple Agent Manager - London TDD', () => {
           type: 'task_assigned',
           agentId: 'worker-1',
           taskId: task.id,
-        }),
+        })
       );
     });
   });
@@ -115,7 +115,7 @@ describe('Simple Agent Manager - London TDD', () => {
         expect.objectContaining({
           type: 'message_broadcast',
           message,
-        }),
+        })
       );
     });
   });

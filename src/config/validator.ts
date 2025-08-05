@@ -153,7 +153,7 @@ export class ConfigValidator {
   private validateDependencies(
     config: SystemConfiguration,
     errors: string[],
-    warnings: string[],
+    warnings: string[]
   ): void {
     // Web interface dependencies
     if (config.interfaces?.web?.enableHttps && !config.interfaces.web.corsOrigins) {
@@ -195,11 +195,11 @@ export class ConfigValidator {
   private validateConstraints(
     config: SystemConfiguration,
     errors: string[],
-    warnings: string[],
+    warnings: string[]
   ): void {
     // Port conflicts
     const ports = [config.interfaces?.web?.port, config.interfaces?.mcp?.http?.port].filter(
-      Boolean,
+      Boolean
     );
 
     const uniquePorts = new Set(ports);
@@ -267,7 +267,7 @@ export class ConfigValidator {
 
     // Get rules for this section
     const sectionRules = Object.entries(VALIDATION_RULES).filter(([path]) =>
-      path.startsWith(`${section}.`),
+      path.startsWith(`${section}.`)
     );
 
     for (const [_path, _rule] of sectionRules) {

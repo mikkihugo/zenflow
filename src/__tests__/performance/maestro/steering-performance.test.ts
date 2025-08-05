@@ -73,7 +73,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
       {
         enableHiveMind: false,
         steeringDirectory: join(testDirectory, 'steering'),
-      },
+      }
     );
   });
 
@@ -139,7 +139,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
       const startTime = performance.now();
 
       const promises = Array.from({ length: 10 }, (_, i) =>
-        maestroOrchestrator.createSteeringDocument(`bulk-${i}`, `Bulk content ${i}`),
+        maestroOrchestrator.createSteeringDocument(`bulk-${i}`, `Bulk content ${i}`)
       );
 
       await Promise.all(promises);
@@ -159,8 +159,8 @@ describe('Maestro Steering Performance Benchmarks', () => {
         const promises = Array.from({ length: size }, (_, i) =>
           maestroOrchestrator.createSteeringDocument(
             `scale-${size}-${i}`,
-            `Scale test content ${i}`,
-          ),
+            `Scale test content ${i}`
+          )
         );
 
         await Promise.all(promises);
@@ -191,7 +191,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
 
       // Perform concurrent updates
       const promises = Array.from({ length: updateCount }, (_, i) =>
-        maestroOrchestrator.createSteeringDocument(domain, `Updated content ${i}`),
+        maestroOrchestrator.createSteeringDocument(domain, `Updated content ${i}`)
       );
 
       await Promise.all(promises);
@@ -209,7 +209,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
       for (const domain of domains) {
         await maestroOrchestrator.createSteeringDocument(
           domain,
-          `${domain} guidelines`.repeat(100),
+          `${domain} guidelines`.repeat(100)
         );
       }
     });
@@ -270,8 +270,8 @@ describe('Maestro Steering Performance Benchmarks', () => {
       const promises = Array.from({ length: 100 }, (_, i) =>
         maestroOrchestrator.createSteeringDocument(
           `memory-${i}`,
-          `Memory test content ${i}`.repeat(50),
-        ),
+          `Memory test content ${i}`.repeat(50)
+        )
       );
 
       await Promise.all(promises);
@@ -307,7 +307,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
       const promises: Promise<void>[] = [];
       for (let i = 0; i < operationCount; i++) {
         promises.push(
-          maestroOrchestrator.createSteeringDocument(`stress-${i}`, `Stress test ${i}`),
+          maestroOrchestrator.createSteeringDocument(`stress-${i}`, `Stress test ${i}`)
         );
       }
 
@@ -331,7 +331,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
       // Create operations
       for (let i = 0; i < 50; i++) {
         operations.push(
-          maestroOrchestrator.createSteeringDocument(`mixed-create-${i}`, `Create content ${i}`),
+          maestroOrchestrator.createSteeringDocument(`mixed-create-${i}`, `Create content ${i}`)
         );
       }
 
@@ -343,7 +343,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
       // Update operations (overwrite existing documents)
       for (let i = 0; i < 20; i++) {
         operations.push(
-          maestroOrchestrator.createSteeringDocument(`mixed-update-${i}`, `Updated content ${i}`),
+          maestroOrchestrator.createSteeringDocument(`mixed-update-${i}`, `Updated content ${i}`)
         );
       }
 
@@ -376,7 +376,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
           name: 'bulk-creation-10',
           operation: async () => {
             const promises = Array.from({ length: 10 }, (_, i) =>
-              maestroOrchestrator.createSteeringDocument(`baseline-bulk-${i}`, `Bulk content ${i}`),
+              maestroOrchestrator.createSteeringDocument(`baseline-bulk-${i}`, `Bulk content ${i}`)
             );
             await Promise.all(promises);
           },

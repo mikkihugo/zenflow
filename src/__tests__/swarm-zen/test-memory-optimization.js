@@ -30,7 +30,7 @@ async function testMemoryOptimization() {
   for (const agentType of ['researcher', 'coder', 'analyst']) {
     const agent = NeuralAgentFactory.createNeuralAgent(
       { id: `test-${agentType}`, type: agentType },
-      agentType,
+      agentType
     );
     agents.push(agent);
 

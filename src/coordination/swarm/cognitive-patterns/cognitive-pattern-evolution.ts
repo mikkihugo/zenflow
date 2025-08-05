@@ -603,7 +603,7 @@ class CognitivePatternEvolution {
     // Match pattern recognition approach
     const abstractionMatch = this.matchPatternRecognition(
       characteristics.patternRecognition,
-      context,
+      context
     );
     totalMatch += abstractionMatch * 0.25;
     weightSum += 0.25;
@@ -679,7 +679,7 @@ class CognitivePatternEvolution {
   getHistoricalPerformance(agentId, patternType) {
     const history = this.evolutionHistory.get(agentId) || [];
     const patternHistory = history.filter(
-      (h) => h.oldPatterns.includes(patternType) || h.newPatterns.includes(patternType),
+      (h) => h.oldPatterns.includes(patternType) || h.newPatterns.includes(patternType)
     );
 
     if (patternHistory.length === 0) {
@@ -782,7 +782,7 @@ class CognitivePatternEvolution {
 
     // Select strategy with highest priority
     const selectedStrategy = Object.values(strategies).reduce((best, current) =>
-      current.priority > best.priority ? current : best,
+      current.priority > best.priority ? current : best
     );
 
     return selectedStrategy;
@@ -948,11 +948,11 @@ class CognitivePatternEvolution {
     if (context.creativity_required > 0.7) {
       adaptiveTemplate.characteristics.explorationRate = Math.min(
         1,
-        adaptiveTemplate.characteristics.explorationRate + 0.2,
+        adaptiveTemplate.characteristics.explorationRate + 0.2
       );
       adaptiveTemplate.characteristics.exploitationRate = Math.max(
         0,
-        adaptiveTemplate.characteristics.exploitationRate - 0.2,
+        adaptiveTemplate.characteristics.exploitationRate - 0.2
       );
     }
 

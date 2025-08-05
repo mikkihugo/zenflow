@@ -43,7 +43,7 @@ export class ReinforcementLearningEngine
       explorationRate?: number;
       minExplorationRate?: number;
       explorationDecay?: number;
-    } = {},
+    } = {}
   ) {
     super();
     this.learningRate = config.learningRate || 0.1;
@@ -104,7 +104,7 @@ export class ReinforcementLearningEngine
     // Decay exploration rate
     this.explorationRate = Math.max(
       this.minExplorationRate,
-      this.explorationRate * this.explorationDecay,
+      this.explorationRate * this.explorationDecay
     );
 
     this.emit('qValueUpdated', {
@@ -161,14 +161,14 @@ export class ReinforcementLearningEngine
       reward: number;
       nextState: string;
       done: boolean;
-    }>,
+    }>
   ): void {
     for (const experience of experiences) {
       this.updateQValue(
         experience.state,
         experience.action,
         experience.reward,
-        experience.nextState,
+        experience.nextState
       );
     }
 
@@ -441,7 +441,7 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
         const predictions = features.map(() =>
           Array(this.outputSize)
             .fill(0)
-            .map(() => Math.random()),
+            .map(() => Math.random())
         );
         resolve(predictions);
       }, 100); // Simulate computation time
@@ -474,7 +474,7 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
 
   private async simulateTraining(
     _features: number[][],
-    _labels: number[][],
+    _labels: number[][]
   ): Promise<TrainingResult> {
     const startTime = Date.now();
     const epochs = 50 + Math.floor(Math.random() * 50);
@@ -498,7 +498,7 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
 
   private async simulateEvaluation(
     _features: number[][],
-    _testData: ExecutionData[],
+    _testData: ExecutionData[]
   ): Promise<EvaluationMetrics> {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -687,7 +687,7 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
 
   private calculateEnsembleConfidence(
     predictions: Map<string, any>,
-    _contributions: Map<string, number>,
+    _contributions: Map<string, number>
   ): number {
     if (predictions.size === 0) return 0;
 
@@ -737,7 +737,7 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
     config: {
       adaptationThreshold?: number;
       windowSize?: number;
-    } = {},
+    } = {}
   ) {
     super();
     this.adaptationThreshold = config.adaptationThreshold || 0.1;

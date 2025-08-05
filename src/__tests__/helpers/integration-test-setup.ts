@@ -236,7 +236,7 @@ export class IntegrationTestSetup {
               (err: any) => {
                 if (err) reject(err);
                 else resolve();
-              },
+              }
             );
           });
         } catch (_error) {
@@ -512,7 +512,7 @@ export class IntegrationTestSetup {
   private async createTempDir(prefix: string = 'test'): Promise<string> {
     const tempPath = join(
       tmpdir(),
-      `claude-zen-flow-${prefix}-${Date.now()}-${Math.random().toString(36)}`,
+      `claude-zen-flow-${prefix}-${Date.now()}-${Math.random().toString(36)}`
     );
     await fs.mkdir(tempPath, { recursive: true });
     this.tempDirs.push(tempPath);

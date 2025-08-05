@@ -405,7 +405,7 @@ describe('LanceDB Vector Operations Integration Tests', () => {
       }));
 
       const queries = Array.from({ length: numQueries }, (_, i) =>
-        VectorMath.generateRandomVector(vectorDim, i + 10000),
+        VectorMath.generateRandomVector(vectorDim, i + 10000)
       );
 
       try {

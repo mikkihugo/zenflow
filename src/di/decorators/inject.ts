@@ -33,7 +33,7 @@ export function inject<T>(token: DIToken<T>): ParameterDecorator {
  */
 export function getInjectionToken(
   constructor: any,
-  parameterIndex: number,
+  parameterIndex: number
 ): DIToken<any> | undefined {
   const tokens = getInjectionTokens(constructor);
   return tokens?.[parameterIndex];

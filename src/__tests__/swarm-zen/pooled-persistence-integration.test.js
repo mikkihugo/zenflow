@@ -97,7 +97,7 @@ async function testZenSwarmCoreIntegration() {
     // Test that it's the pooled version
     if (ruvSwarm.persistence.constructor.name !== 'SwarmPersistencePooled') {
       throw new Error(
-        `Expected SwarmPersistencePooled, got ${ruvSwarm.persistence.constructor.name}`,
+        `Expected SwarmPersistencePooled, got ${ruvSwarm.persistence.constructor.name}`
       );
     }
 
@@ -134,7 +134,7 @@ async function testConcurrentOperations() {
           topology: 'mesh',
           maxAgents: 3,
           strategy: 'balanced',
-        }),
+        })
       );
     }
 
@@ -148,7 +148,7 @@ async function testConcurrentOperations() {
           type: 'researcher',
           name: `Concurrent Agent ${i}`,
           capabilities: ['analysis'],
-        }),
+        })
       );
     }
 

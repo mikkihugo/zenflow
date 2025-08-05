@@ -6,25 +6,25 @@
  * @description Enhanced database providers with DI integration for Issue #63
  */
 
+import type {
+  ConnectionStats,
+  DatabaseAdapter,
+  ExecuteResult,
+  IConfig,
+  ILogger,
+  QueryResult,
+  SchemaInfo,
+  TransactionContext,
+} from '../../core/interfaces/base-interfaces';
 import { Inject, Injectable } from '../../di/decorators/injectable';
 import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
-import {
-  DatabaseAdapter,
-  QueryResult,
-  ExecuteResult,
-  TransactionContext,
-  SchemaInfo,
-  ConnectionStats,
-  ILogger,
-  IConfig,
-} from '../../core/interfaces/base-interfaces';
 
 import {
-  DatabaseResult,
-  QuerySuccess,
-  QueryError,
-  isQuerySuccess,
+  type DatabaseResult,
   isQueryError,
+  isQuerySuccess,
+  type QueryError,
+  type QuerySuccess,
 } from '../../utils/type-guards';
 
 // Re-export DatabaseAdapter for external use
@@ -113,7 +113,7 @@ export class DatabaseProviderFactory {
     } catch (error) {
       this.logger.error(`Failed to create database adapter: ${error}`);
       throw new Error(
-        `Database adapter creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Database adapter creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -135,7 +135,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {}
 
   async connect(): Promise<void> {
@@ -410,7 +410,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {}
 
   async connect(): Promise<void> {
@@ -632,7 +632,7 @@ export class KuzuAdapter implements DatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {}
 
   async connect(): Promise<void> {
@@ -836,7 +836,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {}
 
   async connect(): Promise<void> {
@@ -1051,7 +1051,7 @@ export class MySQLAdapter implements DatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {}
 
   async connect(): Promise<void> {

@@ -46,7 +46,7 @@ describe('Test Helper Utilities - Example Usage', () => {
           constructor(
             private database: any,
             private emailService: any,
-            private logger: any,
+            private logger: any
           ) {}
 
           async createUser(userData: any) {
@@ -131,7 +131,7 @@ describe('Test Helper Utilities - Example Usage', () => {
         class UserService {
           constructor(
             private userRepo: UserRepository,
-            private emailService: EmailService,
+            private emailService: EmailService
           ) {}
 
           async registerUser(email: string, name: string) {
@@ -203,7 +203,7 @@ describe('Test Helper Utilities - Example Usage', () => {
           'Calculator',
           { operation: 'none' },
           { result: 'tested' },
-          'mathematical_operations',
+          'mathematical_operations'
         );
       });
 
@@ -330,13 +330,13 @@ describe('Test Helper Utilities - Example Usage', () => {
       const leakResult = await performanceMeasurement.detectMemoryLeaks(
         'Leaky Function',
         leakyFunction,
-        50,
+        50
       );
 
       const cleanResult = await performanceMeasurement.detectMemoryLeaks(
         'Clean Function',
         cleanFunction,
-        50,
+        50
       );
 
       // The leaky function should show memory growth
@@ -380,7 +380,7 @@ describe('Test Helper Utilities - Example Usage', () => {
         'TestDataFactory',
         { users: 0, projects: 0, swarms: 0 },
         { users: users.length, projects: projects.length, swarms: swarms.length },
-        'data_generation',
+        'data_generation'
       );
     });
 
@@ -462,7 +462,7 @@ describe('Test Helper Utilities - Example Usage', () => {
           'IntegrationTest',
           { environment: 'none' },
           { database: 'ready', filesystem: 'ready', network: 'ready' },
-          'environment_setup',
+          'environment_setup'
         );
       } finally {
         await testSetup.cleanup();
@@ -526,7 +526,7 @@ describe('Test Helper Utilities - Example Usage', () => {
         'UserValidator',
         { isValid: false },
         { isValid: true },
-        'email_validation',
+        'email_validation'
       );
       componentLogger.logPerformance('Database Insert', 25);
       componentLogger.logAssertion('User created successfully', true);

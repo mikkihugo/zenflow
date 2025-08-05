@@ -4,8 +4,8 @@
 
 import type {
   AgentType,
-  AgentConfig as BaseAgentConfig,
   Agent as BaseAgent,
+  AgentConfig as BaseAgentConfig,
   Task as BaseTask,
 } from '../../../types/agent-types';
 

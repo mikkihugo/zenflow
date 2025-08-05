@@ -11,27 +11,27 @@
  * - Chaos engineering and fault tolerance
  */
 
-import type {
-  SwarmEventEmitter,
-  SwarmOptions,
-  SwarmState,
-  SwarmEvent,
-  SwarmMetrics,
-  Message,
-  AgentConfig,
-  Task,
-  TaskStatus,
-} from './types';
-import { AgentPool, createAgent, BaseAgent } from '../../agents/agent';
+import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
+import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
+import { AgentPool, BaseAgent, createAgent } from '../../agents/agent';
 import {
   adaptAgentForCoordination,
   createAgentPoolEntry,
   executeTaskWithAgent,
 } from './agent-adapter';
-import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
-import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
-import { validateSwarmOptions, generateId, formatMetrics, priorityToNumber } from './utils';
 import { getContainer } from './singleton-container';
+import type {
+  AgentConfig,
+  Message,
+  SwarmEvent,
+  SwarmEventEmitter,
+  SwarmMetrics,
+  SwarmOptions,
+  SwarmState,
+  Task,
+  TaskStatus,
+} from './types';
+import { formatMetrics, generateId, priorityToNumber, validateSwarmOptions } from './utils';
 
 export * from '../../../neural/core/neural-network';
 export * from '../../../neural/wasm/wasm-loader';
@@ -99,7 +99,7 @@ export class Agent {
     this.status = 'busy';
 
     try {
-      let result = {
+      const result = {
         success: true,
         result: `Agent ${this.id} executed: ${task}`,
         agent: this.id,
@@ -584,7 +584,7 @@ export class ZenSwarm implements SwarmEventEmitter {
     this.agentPool.removeAgent(agentId);
 
     this.state.connections = this.state.connections.filter(
-      (conn) => conn.from !== agentId && conn.to !== agentId,
+      (conn) => conn.from !== agentId && conn.to !== agentId
     );
 
     this.emit('agent:removed', { agentId });
