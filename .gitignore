@@ -72,11 +72,15 @@ lcov-report/
 test-results/
 .nyc_output/
 .jest-cache/
+jest-cache/
+**/jest-cache/
 
 # Lint and cache files
 .eslintcache
 lint-report.json
 .cache/
+**/.cache/
+node_modules/.cache/
 
 # TypeScript build artifacts
 .tsbuildinfo
@@ -119,7 +123,38 @@ memory_tasks.json
 .sync-status.json
 .sync-report.json
 
-# Development artifacts
+# Development artifacts  
 analyze-imports.js
 enhanced-issue-*.md
 event-payload-demo.ts
+
+# Additional build artifacts and debug files
+build-*.txt
+build-*.log
+build-*.md
+*-errors.txt
+*-output.txt
+clippy_output.txt
+coordination-log.txt
+
+# Docker files (not used)
+Dockerfile*
+docker-compose*.yml
+nginx*.conf
+
+# Python files (not used in Node.js project)
+requirements.txt
+*.py
+
+# Config file variants/duplicates
+.eslintrc.*.json
+.prettierrc.json
+.copilotrc.json
+*-config.json.bak
+
+# Temporary status and report files
+.sync-*.json
+integration-test-report.json
+*-summary.md
+*-report.md
+*-completion*.md
