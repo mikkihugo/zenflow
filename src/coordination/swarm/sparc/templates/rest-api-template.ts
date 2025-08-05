@@ -12,6 +12,7 @@ import type {
   ProjectSpecification,
   PseudocodeStructure,
   SPARCTemplate,
+  TemplateMetadata,
 } from '../types/sparc-types';
 
 export const REST_API_TEMPLATE: SPARCTemplate = {
@@ -27,7 +28,7 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
     complexity: 'moderate',
     estimatedDevelopmentTime: '4-8 weeks',
     targetPerformance: 'Sub-50ms response time, 10k+ requests/second',
-  },
+  } as TemplateMetadata,
 
   specification: {
     id: nanoid(),

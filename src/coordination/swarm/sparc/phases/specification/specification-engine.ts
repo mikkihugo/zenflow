@@ -3,9 +3,13 @@
  *
  * Handles the first phase of SPARC methodology - gathering and analyzing
  * detailed requirements, constraints, and acceptance criteria.
+ * 
+ * TEMPLATE INTEGRATION: Now supports template-based specification generation
+ * using the TemplateEngine for domain-specific requirements and patterns.
  */
 
 import { nanoid } from 'nanoid';
+import { TemplateEngine } from '../../core/template-engine';
 import type {
   AcceptanceCriterion,
   ConstraintAnalysis,
@@ -17,6 +21,7 @@ import type {
   ProjectAssumption,
   ProjectContext,
   ProjectRisk,
+  ProjectSpecification,
   RequirementSet,
   RiskAnalysis,
   RiskLevel,
@@ -29,6 +34,116 @@ import type {
 } from '../../types/sparc-types';
 
 export class SpecificationPhaseEngine implements SpecificationEngine {
+  private readonly templateEngine: TemplateEngine;
+
+  constructor() {
+    this.templateEngine = new TemplateEngine();
+  }
+
+  /**
+   * Generate specification from project using template-based approach
+   */
+  async generateSpecificationFromTemplate(
+    projectSpec: ProjectSpecification,
+    templateId?: string
+  ): Promise<DetailedSpecification> {
+    console.log(`🔧 Generating specification for ${projectSpec.name} using template approach`);
+
+    let template;
+    if (templateId) {
+      template = this.templateEngine.getTemplate(templateId);
+      if (!template) {
+        throw new Error(`Template not found: ${templateId}`);
+      }
+    } else {
+      // Find best matching template
+      const bestMatch = this.templateEngine.findBestTemplate(projectSpec);
+      if (!bestMatch) {
+        throw new Error(`No suitable template found for domain: ${projectSpec.domain}`);
+      }
+      template = bestMatch.template;
+      console.log(`📋 Selected template: ${template.name} (compatibility: ${(bestMatch.compatibility.score * 100).toFixed(1)}%)`);
+    }
+
+    // Apply template to project
+    const result = await this.templateEngine.applyTemplate(template, projectSpec);
+    
+    // Generate additional specification details
+    const enhancedSpec = await this.enhanceTemplateSpecification(result.specification, projectSpec);
+
+    console.log(`✅ Template-based specification generated with ${result.customizations.length} customizations`);
+    
+    return enhancedSpec;
+  }
+
+  /**
+   * Enhance template-generated specification with additional analysis
+   */
+  private async enhanceTemplateSpecification(
+    templateSpec: DetailedSpecification,
+    projectSpec: ProjectSpecification
+  ): Promise<DetailedSpecification> {
+    // Add project-specific analysis
+    const additionalRisks = await this.analyzeProjectSpecificRisks(projectSpec);
+    const additionalDependencies = this.identifyAdditionalDependencies(projectSpec);
+    const enhancedAcceptance = await this.defineAdditionalAcceptanceCriteria(templateSpec.functionalRequirements);
+
+    return {
+      ...templateSpec,
+      riskAssessment: {
+        ...templateSpec.riskAssessment,
+        risks: [...(templateSpec.riskAssessment?.risks || []), ...additionalRisks],
+        mitigationStrategies: templateSpec.riskAssessment?.mitigationStrategies || [],
+        overallRisk: templateSpec.riskAssessment?.overallRisk || 'LOW',
+      },
+      dependencies: [...(templateSpec.dependencies || []), ...additionalDependencies],
+      acceptanceCriteria: [...(templateSpec.acceptanceCriteria || []), ...enhancedAcceptance],
+    };
+  }
+
+  /**
+   * List available templates for interactive selection
+   */
+  getAvailableTemplates(): Array<{
+    id: string;
+    name: string;
+    domain: string;
+    description: string;
+    complexity: string;
+  }> {
+    return this.templateEngine.getAllTemplates().map(template => ({
+      id: template.id,
+      name: template.name,
+      domain: template.domain,
+      description: template.description,
+      complexity: template.metadata.complexity,
+    }));
+  }
+
+  /**
+   * Validate template compatibility with project
+   */
+  validateTemplateCompatibility(
+    projectSpec: ProjectSpecification,
+    templateId: string
+  ): { 
+    compatible: boolean; 
+    warnings: string[]; 
+    recommendations: string[];
+    score: number;
+  } {
+    const template = this.templateEngine.getTemplate(templateId);
+    if (!template) {
+      return {
+        compatible: false,
+        warnings: ['Template not found'],
+        recommendations: ['Choose a different template'],
+        score: 0,
+      };
+    }
+
+    return this.templateEngine.validateTemplateCompatibility(template, projectSpec);
+  }
   /**
    * Gather comprehensive requirements from project context
    */
@@ -142,7 +257,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
       {
         criterion: 'acceptance-criteria-defined',
         passed: spec.acceptanceCriteria.length > 0,
-        score: spec.acceptanceCriteria.length / Math.max(1, spec.functionalRequirements.length),
+        score: spec.acceptanceCriteria?.length ? spec.acceptanceCriteria.length / Math.max(1, spec.functionalRequirements.length) : 0,
         details: `${spec.acceptanceCriteria.length} acceptance criteria defined`,
       },
       {
@@ -643,5 +758,96 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     }
 
     return recommendations;
+  }
+
+  // Template enhancement methods
+
+  private async analyzeProjectSpecificRisks(projectSpec: ProjectSpecification): Promise<ProjectRisk[]> {
+    const risks: ProjectRisk[] = [];
+
+    // Analyze complexity-based risks
+    if (projectSpec.complexity === 'enterprise' || projectSpec.complexity === 'complex') {
+      risks.push({
+        id: nanoid(),
+        description: 'High complexity may lead to integration challenges',
+        probability: 'medium',
+        impact: 'high',
+        category: 'technical',
+      });
+    }
+
+    // Analyze domain-specific risks
+    if (projectSpec.domain === 'neural-networks') {
+      risks.push({
+        id: nanoid(),
+        description: 'WASM performance may not meet expectations',
+        probability: 'low',
+        impact: 'medium',
+        category: 'technical',
+      });
+    }
+
+    // Analyze constraint-based risks
+    if (projectSpec.constraints && projectSpec.constraints.length > 3) {
+      risks.push({
+        id: nanoid(),
+        description: 'Multiple constraints may conflict with each other',
+        probability: 'medium',
+        impact: 'medium',
+        category: 'business',
+      });
+    }
+
+    return risks;
+  }
+
+  private identifyAdditionalDependencies(projectSpec: ProjectSpecification): ExternalDependency[] {
+    const dependencies: ExternalDependency[] = [];
+
+    // Add complexity-based dependencies
+    if (projectSpec.complexity === 'enterprise') {
+      dependencies.push({
+        id: nanoid(),
+        name: 'Enterprise Authentication',
+        type: 'service',
+        critical: true,
+      });
+    }
+
+    // Add domain-specific dependencies
+    if (projectSpec.domain === 'neural-networks') {
+      dependencies.push({
+        id: nanoid(),
+        name: 'WASM Runtime',
+        type: 'runtime',
+        version: 'Latest',
+        critical: true,
+      });
+    }
+
+    return dependencies;
+  }
+
+  private async defineAdditionalAcceptanceCriteria(
+    requirements: FunctionalRequirement[]
+  ): Promise<AcceptanceCriterion[]> {
+    const criteria: AcceptanceCriterion[] = [];
+
+    for (const req of requirements) {
+      if (req.priority === 'HIGH' && req.testCriteria && req.testCriteria.length > 0) {
+        criteria.push({
+          id: nanoid(),
+          requirement: req.id,
+          criteria: [
+            `${req.title} performance meets specification`,
+            `${req.title} error handling is comprehensive`,
+            `${req.title} integration testing passes`,
+          ],
+          testMethod: 'automated',
+        });
+      }
+    }
+
+    return criteria;
   }
 }

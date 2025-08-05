@@ -65,6 +65,43 @@ export interface ProjectSpecification {
   targetMetrics?: PerformanceTarget[];
 }
 
+export interface SPARCTemplate {
+  readonly id: string;
+  readonly name: string;
+  readonly domain: ProjectDomain;
+  readonly description: string;
+  readonly version: string;
+  readonly metadata: TemplateMetadata;
+  readonly specification: DetailedSpecification;
+  readonly pseudocode: PseudocodeStructure;
+  readonly architecture: ArchitectureDesign;
+  
+  applyTo(projectSpec: ProjectSpecification): Promise<{
+    specification: DetailedSpecification;
+    pseudocode: PseudocodeStructure;
+    architecture: ArchitectureDesign;
+  }>;
+  
+  customizeSpecification(projectSpec: ProjectSpecification): DetailedSpecification;
+  customizePseudocode(projectSpec: ProjectSpecification): PseudocodeStructure;
+  customizeArchitecture(projectSpec: ProjectSpecification): ArchitectureDesign;
+  
+  validateCompatibility(projectSpec: ProjectSpecification): {
+    compatible: boolean;
+    warnings: string[];
+    recommendations: string[];
+  };
+}
+
+export interface TemplateMetadata {
+  author: string;
+  createdAt: Date;
+  tags: string[];
+  complexity: ComplexityLevel;
+  estimatedDevelopmentTime: string;
+  targetPerformance: string;
+}
+
 export interface ProjectMetadata {
   createdAt: Date;
   updatedAt: Date;

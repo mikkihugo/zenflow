@@ -12,6 +12,7 @@ import type {
   ProjectSpecification,
   PseudocodeStructure,
   SPARCTemplate,
+  TemplateMetadata,
 } from '../types/sparc-types';
 
 export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
@@ -28,7 +29,7 @@ export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
     complexity: 'high',
     estimatedDevelopmentTime: '6-10 weeks',
     targetPerformance: 'Sub-10ms access time, 99.9% availability',
-  },
+  } as TemplateMetadata,
 
   specification: {
     id: nanoid(),

@@ -12,6 +12,7 @@ import type {
   ProjectSpecification,
   PseudocodeStructure,
   SPARCTemplate,
+  TemplateMetadata,
 } from '../types/sparc-types';
 
 export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
@@ -27,7 +28,7 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
     complexity: 'high',
     estimatedDevelopmentTime: '8-12 weeks',
     targetPerformance: 'Sub-millisecond inference, GPU-accelerated training',
-  },
+  } as TemplateMetadata,
 
   specification: {
     id: nanoid(),
