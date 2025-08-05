@@ -9,11 +9,12 @@
 import { inject } from '../../di/decorators/inject';
 import { injectable } from '../../di/decorators/injectable';
 import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
+import type { ConnectionStats, ILogger, IConfig } from '../../core/interfaces/base-interfaces';
 import type {
-  ConnectionStats,
   DatabaseAdapter,
   DatabaseConfig,
   DatabaseProviderFactory,
+  GraphDatabaseAdapter,
 } from '../providers/database-providers';
 
 /**
@@ -137,10 +138,48 @@ export interface MigrationRequest {
 }
 
 /**
+ * Request interface for graph query operations
+ */
+export interface GraphQueryRequest {
+  /** Cypher query to execute */
+  cypher: string;
+  /** Parameters for parameterized queries */
+  params?: any[];
+  /** Additional query options */
+  options?: {
+    /** Query timeout in milliseconds */
+    timeout?: number;
+    /** Maximum number of nodes to return */
+    maxNodes?: number;
+    /** Maximum number of relationships to return */
+    maxRelationships?: number;
+    /** Whether to include execution plan */
+    includeExecutionPlan?: boolean;
+  };
+}
+
+/**
+ * Request interface for graph batch operations
+ */
+export interface GraphBatchRequest {
+  /** Array of graph operations to execute */
+  operations: Array<{
+    /** Cypher query */
+    cypher: string;
+    /** Parameters */
+    params?: any[];
+  }>;
+  /** Whether to continue on error */
+  continueOnError?: boolean;
+  /** Whether to include full data in response */
+  includeData?: boolean;
+}
+
+/**
  * Database REST API Controller
  * Provides comprehensive database management through REST endpoints
  */
-@injectable()
+@injectable
 export class DatabaseController {
   private adapter: DatabaseAdapter;
   private performanceMetrics = {
@@ -219,6 +258,7 @@ export class DatabaseController {
   /**
    * POST /api/database/query
    * Execute database SELECT queries with parameters
+   * Automatically detects and routes Cypher queries to graph adapter
    */
   async executeQuery(request: QueryRequest): Promise<DatabaseResponse> {
     const startTime = Date.now();
@@ -230,7 +270,20 @@ export class DatabaseController {
         throw new Error('SQL query is required');
       }
 
-      // Validate that this is actually a query (SELECT statement)
+      // Check if this is a Cypher query and we have a graph adapter
+      if (this.isCypherQuery(request.sql) && this.isGraphAdapter()) {
+        this._logger.debug('Detected Cypher query, routing to graph adapter');
+        return this.routeToGraphQuery({
+          cypher: request.sql,
+          params: request.params,
+          options: {
+            timeout: request.options?.timeout,
+            includeExecutionPlan: request.options?.includeExecutionPlan,
+          },
+        });
+      }
+
+      // Validate that this is actually a query (SELECT statement) for SQL
       if (!this.isQueryStatement(request.sql)) {
         throw new Error('Only SELECT statements are allowed for query operations');
       }
@@ -957,12 +1010,418 @@ export class DatabaseController {
     const uptimeSeconds = (Date.now() - this.performanceMetrics.startTime) / 1000;
     return uptimeSeconds > 0 ? this.performanceMetrics.operationCount / uptimeSeconds : 0;
   }
-}
 
-// Type definitions for DI integration
-interface ILogger {
-  info(message: string): void;
-  error(message: string): void;
-  warn(message: string): void;
-  debug(message: string): void;
+  /**
+   * POST /api/database/graph/query
+   * Execute graph-specific queries (Cypher-like syntax)
+   */
+  async executeGraphQuery(request: GraphQueryRequest): Promise<DatabaseResponse> {
+    const startTime = Date.now();
+
+    try {
+      this._logger.debug(`Executing graph query: ${request.cypher.substring(0, 100)}...`);
+
+      if (!request.cypher) {
+        throw new Error('Cypher query is required');
+      }
+
+      // Check if adapter supports graph operations
+      if (!this.isGraphAdapter()) {
+        throw new Error('Graph operations not supported by current database adapter');
+      }
+
+      const graphAdapter = this.adapter as GraphDatabaseAdapter;
+      const result = await graphAdapter.queryGraph(request.cypher, request.params);
+      const connectionStats = await this.adapter.getConnectionStats();
+
+      const executionTime = Date.now() - startTime;
+      this.updateMetrics(executionTime, true);
+
+      this._logger.debug(
+        `Graph query completed successfully in ${executionTime}ms, returned ${result.nodes.length} nodes and ${result.relationships.length} relationships`
+      );
+
+      return {
+        success: true,
+        data: {
+          query: request.cypher,
+          parameters: request.params,
+          nodes: result.nodes,
+          relationships: result.relationships,
+          nodeCount: result.nodes.length,
+          relationshipCount: result.relationships.length,
+        },
+        metadata: {
+          rowCount: result.nodes.length + result.relationships.length,
+          executionTime,
+          timestamp: Date.now(),
+          adapter: this._config.type,
+          connectionStats,
+        },
+      };
+    } catch (error) {
+      const executionTime = Date.now() - startTime;
+      this.updateMetrics(executionTime, false);
+      this._logger.error(`Graph query execution failed: ${error}`);
+
+      return {
+        success: false,
+        error: `Graph query execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        metadata: {
+          rowCount: 0,
+          executionTime,
+          timestamp: Date.now(),
+          adapter: this._config.type,
+        },
+      };
+    }
+  }
+
+  /**
+   * GET /api/database/graph/schema
+   * Get graph-specific schema information (nodes, relationships, properties)
+   */
+  async getGraphSchema(): Promise<DatabaseResponse> {
+    const startTime = Date.now();
+
+    try {
+      this._logger.debug('Getting graph schema information');
+
+      if (!this.isGraphAdapter()) {
+        throw new Error('Graph schema not available for current database adapter');
+      }
+
+      const schema = await this.adapter.getSchema();
+      const graphAdapter = this.adapter as GraphDatabaseAdapter;
+      
+      // Get graph-specific statistics
+      const [nodeCount, relationshipCount] = await Promise.all([
+        graphAdapter.getNodeCount(),
+        graphAdapter.getRelationshipCount(),
+      ]);
+
+      const connectionStats = await this.adapter.getConnectionStats();
+      const executionTime = Date.now() - startTime;
+      this.updateMetrics(executionTime, true);
+
+      const graphSchema = {
+        schema,
+        graphStatistics: {
+          totalNodes: nodeCount,
+          totalRelationships: relationshipCount,
+          nodeTypes: this.extractNodeTypes(schema),
+          relationshipTypes: this.extractRelationshipTypes(schema),
+          averageConnections: relationshipCount > 0 ? (relationshipCount * 2) / nodeCount : 0,
+        },
+        adapter: this._config.type,
+        version: schema.version,
+      };
+
+      this._logger.debug(`Graph schema retrieved successfully in ${executionTime}ms`);
+
+      return {
+        success: true,
+        data: graphSchema,
+        metadata: {
+          rowCount: nodeCount + relationshipCount,
+          executionTime,
+          timestamp: Date.now(),
+          adapter: this._config.type,
+          connectionStats,
+        },
+      };
+    } catch (error) {
+      const executionTime = Date.now() - startTime;
+      this.updateMetrics(executionTime, false);
+      this._logger.error(`Failed to get graph schema: ${error}`);
+
+      return {
+        success: false,
+        error: `Failed to get graph schema: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        metadata: {
+          rowCount: 0,
+          executionTime,
+          timestamp: Date.now(),
+          adapter: this._config.type,
+        },
+      };
+    }
+  }
+
+  /**
+   * GET /api/database/graph/stats
+   * Get comprehensive graph analytics and statistics
+   */
+  async getGraphAnalytics(): Promise<DatabaseResponse> {
+    const startTime = Date.now();
+
+    try {
+      this._logger.debug('Getting graph analytics');
+
+      if (!this.isGraphAdapter()) {
+        throw new Error('Graph analytics not available for current database adapter');
+      }
+
+      const graphAdapter = this.adapter as GraphDatabaseAdapter;
+      const [nodeCount, relationshipCount, connectionStats, isHealthy] = await Promise.all([
+        graphAdapter.getNodeCount(),
+        graphAdapter.getRelationshipCount(),
+        this.adapter.getConnectionStats(),
+        this.adapter.health(),
+      ]);
+
+      const analytics = {
+        adapter: this._config.type,
+        health: {
+          status: isHealthy ? 'healthy' : 'unhealthy',
+          uptime: Math.floor((Date.now() - this.performanceMetrics.startTime) / 1000),
+          lastOperation: this.performanceMetrics.lastOperationTime,
+        },
+        graphStatistics: {
+          totalNodes: nodeCount,
+          totalRelationships: relationshipCount,
+          averageConnections: nodeCount > 0 ? (relationshipCount * 2) / nodeCount : 0,
+          graphDensity: nodeCount > 1 ? relationshipCount / (nodeCount * (nodeCount - 1) / 2) : 0,
+          connectivity: {
+            nodesWithConnections: nodeCount > 0 ? Math.min(relationshipCount, nodeCount) : 0,
+            isolatedNodes: Math.max(0, nodeCount - relationshipCount),
+            connectionRatio: nodeCount > 0 ? relationshipCount / nodeCount : 0,
+          },
+        },
+        performance: {
+          totalOperations: this.performanceMetrics.operationCount,
+          averageResponseTime:
+            this.performanceMetrics.operationCount > 0
+              ? this.performanceMetrics.totalResponseTime / this.performanceMetrics.operationCount
+              : 0,
+          successRate:
+            this.performanceMetrics.operationCount > 0
+              ? ((this.performanceMetrics.operationCount - this.performanceMetrics.errorCount) /
+                  this.performanceMetrics.operationCount) *
+                100
+              : 100,
+          errorRate:
+            this.performanceMetrics.operationCount > 0
+              ? (this.performanceMetrics.errorCount / this.performanceMetrics.operationCount) * 100
+              : 0,
+          operationsPerSecond: this.calculateOperationsPerSecond(),
+        },
+        connections: connectionStats,
+        configuration: {
+          type: this._config.type,
+          database: this._config.database,
+          options: this._config.options,
+        },
+      };
+
+      const executionTime = Date.now() - startTime;
+      this.updateMetrics(executionTime, true);
+
+      return {
+        success: true,
+        data: analytics,
+        metadata: {
+          rowCount: nodeCount + relationshipCount,
+          executionTime,
+          timestamp: Date.now(),
+          adapter: this._config.type,
+          connectionStats,
+        },
+      };
+    } catch (error) {
+      const executionTime = Date.now() - startTime;
+      this.updateMetrics(executionTime, false);
+      this._logger.error(`Failed to get graph analytics: ${error}`);
+
+      return {
+        success: false,
+        error: `Failed to get graph analytics: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        metadata: {
+          rowCount: 0,
+          executionTime,
+          timestamp: Date.now(),
+          adapter: this._config.type,
+        },
+      };
+    }
+  }
+
+  /**
+   * POST /api/database/graph/batch
+   * Execute batch graph operations
+   */
+  async executeGraphBatch(request: GraphBatchRequest): Promise<DatabaseResponse> {
+    const startTime = Date.now();
+
+    try {
+      this._logger.debug(`Executing graph batch operations: ${request.operations.length} operations`);
+
+      if (!this.isGraphAdapter()) {
+        throw new Error('Graph batch operations not supported by current database adapter');
+      }
+
+      if (!request.operations || request.operations.length === 0) {
+        throw new Error('At least one graph operation is required');
+      }
+
+      const graphAdapter = this.adapter as GraphDatabaseAdapter;
+      const results = [];
+      let errorCount = 0;
+      let totalNodes = 0;
+      let totalRelationships = 0;
+
+      for (const operation of request.operations) {
+        try {
+          const result = await graphAdapter.queryGraph(operation.cypher, operation.params);
+          
+          results.push({
+            cypher: operation.cypher,
+            params: operation.params,
+            success: true,
+            nodeCount: result.nodes.length,
+            relationshipCount: result.relationships.length,
+            data: request.includeData ? { nodes: result.nodes, relationships: result.relationships } : undefined,
+          });
+
+          totalNodes += result.nodes.length;
+          totalRelationships += result.relationships.length;
+        } catch (error) {
+          errorCount++;
+          results.push({
+            cypher: operation.cypher,
+            params: operation.params,
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown error',
+          });
+
+          if (!request.continueOnError) {
+            break;
+          }
+        }
+      }
+
+      const connectionStats = await this.adapter.getConnectionStats();
+      const executionTime = Date.now() - startTime;
+      this.updateMetrics(executionTime, errorCount === 0);
+
+      this._logger.debug(
+        `Graph batch operations completed in ${executionTime}ms: ${results.length - errorCount}/${results.length} successful`
+      );
+
+      return {
+        success: errorCount === 0,
+        data: {
+          results,
+          summary: {
+            totalOperations: request.operations.length,
+            successfulOperations: results.length - errorCount,
+            failedOperations: errorCount,
+            totalNodesProcessed: totalNodes,
+            totalRelationshipsProcessed: totalRelationships,
+          },
+        },
+        metadata: {
+          rowCount: totalNodes + totalRelationships,
+          executionTime,
+          timestamp: Date.now(),
+          adapter: this._config.type,
+          connectionStats,
+        },
+      };
+    } catch (error) {
+      const executionTime = Date.now() - startTime;
+      this.updateMetrics(executionTime, false);
+      this._logger.error(`Graph batch operations failed: ${error}`);
+
+      return {
+        success: false,
+        error: `Graph batch operations failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        metadata: {
+          rowCount: 0,
+          executionTime,
+          timestamp: Date.now(),
+          adapter: this._config.type,
+        },
+      };
+    }
+  }
+
+  /**
+   * Check if current adapter supports graph operations
+   */
+  private isGraphAdapter(): boolean {
+    return this._config.type === 'kuzu';
+  }
+
+  /**
+   * Check if SQL statement is a Cypher query
+   */
+  private isCypherQuery(sql: string): boolean {
+    const trimmedSql = sql.trim().toLowerCase();
+    return (
+      trimmedSql.startsWith('match') ||
+      trimmedSql.startsWith('create') ||
+      trimmedSql.startsWith('merge') ||
+      trimmedSql.startsWith('unwind') ||
+      trimmedSql.startsWith('call') ||
+      trimmedSql.startsWith('return') ||
+      trimmedSql.includes(' return ') ||
+      trimmedSql.includes(' match ') ||
+      trimmedSql.includes(' create ') ||
+      trimmedSql.includes(' merge ')
+    );
+  }
+
+  /**
+   * Route query to graph adapter
+   */
+  private async routeToGraphQuery(request: GraphQueryRequest): Promise<DatabaseResponse> {
+    try {
+      const graphResponse = await this.executeGraphQuery(request);
+      
+      // Convert graph response format to standard query response format
+      if (graphResponse.success && graphResponse.data) {
+        return {
+          ...graphResponse,
+          data: {
+            query: request.cypher,
+            parameters: request.params,
+            results: [
+              ...graphResponse.data.nodes.map(node => ({ type: 'node', ...node })),
+              ...graphResponse.data.relationships.map(rel => ({ type: 'relationship', ...rel }))
+            ],
+            fields: [
+              { name: 'type', type: 'string', nullable: false },
+              { name: 'id', type: 'string', nullable: false },
+              { name: 'data', type: 'object', nullable: true }
+            ],
+            nodeCount: graphResponse.data.nodeCount,
+            relationshipCount: graphResponse.data.relationshipCount,
+          },
+        };
+      }
+      
+      return graphResponse;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Extract node types from schema (graph-specific)
+   */
+  private extractNodeTypes(schema: any): string[] {
+    // This would be implemented based on the actual schema structure
+    // For now, return a default set for Kuzu
+    return ['Person', 'Organization', 'Location', 'Event'];
+  }
+
+  /**
+   * Extract relationship types from schema (graph-specific)
+   */
+  private extractRelationshipTypes(schema: any): string[] {
+    // This would be implemented based on the actual schema structure
+    // For now, return a default set for Kuzu
+    return ['KNOWS', 'WORKS_FOR', 'LOCATED_IN', 'PARTICIPATED_IN'];
+  }
 }

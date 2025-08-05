@@ -6,10 +6,9 @@
  * @description Enhanced database providers with DI integration for Issue #63
  */
 
-import { inject, injectable } from '../../di/decorators/injectable';
+import { injectable } from '../../di/decorators/injectable';
 import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
 import {
-
   DatabaseAdapter,
   ExecuteResult,
   IConfig,
@@ -17,9 +16,8 @@ import {
   QueryResult,
   SchemaInfo,
   TransactionContext,
+  ConnectionStats,
 } from '../../core/interfaces/base-interfaces';
-import { Inject, Injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
 
 import {
   type DatabaseResult,
