@@ -426,6 +426,8 @@ export interface ArchitectureDesign {
   deploymentPlan: DeploymentPlan;
   validationResults: ArchitecturalValidation;
   components: Component[];
+  relationships: ComponentRelationship[];
+  patterns: ArchitecturalPattern[];
   securityRequirements: SecurityRequirement[];
   scalabilityRequirements: ScalabilityRequirement[];
   qualityAttributes: QualityAttribute[];
@@ -455,6 +457,18 @@ export interface Component {
     expectedLatency: string;
     optimizations?: string[];
   };
+}
+
+export interface ComponentRelationship {
+  id: string;
+  source: string;
+  target: string;
+  type: string;
+  description: string;
+  sourceId?: string;
+  targetId?: string;
+  strength?: string;
+  protocol?: string;
 }
 
 export interface InterfaceDefinition {
@@ -1065,4 +1079,58 @@ export interface PseudocodeValidation {
   overallScore: number; // Overall validation score (0-1)
   recommendations: string[];
   approved: boolean;
+}
+
+// Implementation Plan Types
+export interface ImplementationPlan {
+  id: string;
+  phases: ImplementationPhase[];
+  timeline: ProjectTimeline;
+  resourceRequirements: ResourceRequirement[];
+  riskAssessment: RiskAssessment;
+  createdAt: Date;
+}
+
+export interface ImplementationTask {
+  id: string;
+  name: string;
+  description: string;
+  type: 'implementation' | 'infrastructure' | 'testing' | 'documentation';
+  priority: Priority;
+  estimatedEffort: string;
+  dependencies: string[];
+  acceptanceCriteria: string[];
+}
+
+export interface ImplementationPhase {
+  id: string;
+  name: string;
+  description: string;
+  tasks: ImplementationTask[];
+  duration: string;
+  prerequisites: string[];
+}
+
+export interface ProjectTimeline {
+  totalDuration: string;
+  phases: {
+    name: string;
+    startDate?: Date;
+    endDate?: Date;
+    duration: string;
+  }[];
+  criticalPath: string[];
+}
+
+export interface ResourceRequirement {
+  type: 'developer' | 'infrastructure' | 'tools' | 'budget';
+  description: string;
+  quantity: number;
+  duration: string;
+}
+
+export interface RiskAssessment {
+  risks: ProjectRisk[];
+  overallRisk: RiskLevel;
+  mitigationPlans: string[];
 }
