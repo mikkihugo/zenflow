@@ -45,7 +45,6 @@ export * from './hooks';
 export * from './logger';
 export * from './logging-config';
 export * from './monitoring-dashboard';
-export * from './native-hive-mind';
 export * from './performance';
 export * from './performance-benchmarks';
 export * from './recovery-integration';

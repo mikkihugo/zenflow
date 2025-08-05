@@ -17,6 +17,7 @@ export enum ServiceType {
   DOCUMENT = 'document',
   
   // Coordination Services  
+  COORDINATION = 'coordination',
   SWARM = 'swarm',
   ORCHESTRATION = 'orchestration',
   DAA = 'daa', // Data Accessibility and Analysis
@@ -47,6 +48,8 @@ export enum ServiceType {
   GRAPH = 'graph',
   
   // System Services
+  INFRASTRUCTURE = 'infrastructure',
+  SYSTEM = 'system',
   HEALTH = 'health',
   MONITORING = 'monitoring',
   LOGGING = 'logging',
@@ -160,7 +163,7 @@ export interface WebServiceConfig extends BaseServiceConfig {
  * Coordination service configuration for swarm and orchestration
  */
 export interface CoordinationServiceConfig extends BaseServiceConfig {
-  type: ServiceType.SWARM | ServiceType.ORCHESTRATION | ServiceType.DAA | ServiceType.SESSION_RECOVERY;
+  type: ServiceType.COORDINATION | ServiceType.SWARM | ServiceType.ORCHESTRATION | ServiceType.DAA | ServiceType.SESSION_RECOVERY;
   coordination?: {
     topology?: 'mesh' | 'hierarchical' | 'ring' | 'star';
     maxAgents?: number;
@@ -346,6 +349,104 @@ export interface WorkflowServiceConfig extends BaseServiceConfig {
 }
 
 /**
+ * Integration service configuration for integration services
+ */
+export interface IntegrationServiceConfig extends BaseServiceConfig {
+  type: ServiceType.API | ServiceType.SAFE_API | ServiceType.ARCHITECTURE_STORAGE;
+  integration?: {
+    architectureStorage?: boolean;
+    safeAPI?: boolean;
+    protocolManagement?: boolean;
+    multiProtocol?: boolean;
+  };
+  protocols?: {
+    supported?: string[];
+    default?: string;
+    failover?: boolean;
+    loadBalancing?: boolean;
+  };
+  performance?: {
+    caching?: boolean;
+    deduplication?: boolean;
+    connectionPooling?: boolean;
+    metricsCollection?: boolean;
+  };
+  security?: {
+    validation?: boolean;
+    sanitization?: boolean;
+    rateLimiting?: boolean;
+    auditLogging?: boolean;
+  };
+}
+
+/**
+ * Infrastructure service configuration for infrastructure and system services
+ */
+export interface InfrastructureServiceConfig extends BaseServiceConfig {
+  type: ServiceType.INFRASTRUCTURE | ServiceType.SYSTEM | ServiceType.MONITORING;
+  facade?: {
+    enabled: boolean;
+    autoInitialize?: boolean;
+    enableCaching?: boolean;
+    enableMetrics?: boolean;
+    enableHealthChecks?: boolean;
+    systemStatusInterval?: number;
+  };
+  patternIntegration?: {
+    enabled: boolean;
+    configProfile?: 'default' | 'production' | 'development';
+    enableEventSystem?: boolean;
+    enableCommandSystem?: boolean;
+    enableProtocolSystem?: boolean;
+    enableAgentSystem?: boolean;
+  };
+  orchestration?: {
+    enableServiceDiscovery?: boolean;
+    enableLoadBalancing?: boolean;
+    enableCircuitBreaker?: boolean;
+    maxConcurrentServices?: number;
+    serviceStartupTimeout?: number;
+    shutdownGracePeriod?: number;
+  };
+  resourceManagement?: {
+    enableResourceTracking?: boolean;
+    enableResourceOptimization?: boolean;
+    memoryThreshold?: number;
+    cpuThreshold?: number;
+    diskThreshold?: number;
+    networkThreshold?: number;
+    cleanupInterval?: number;
+  };
+  configManagement?: {
+    enableHotReload?: boolean;
+    enableValidation?: boolean;
+    enableVersioning?: boolean;
+    reloadCheckInterval?: number;
+    backupConfigs?: boolean;
+    maxConfigHistory?: number;
+  };
+  eventCoordination?: {
+    enableCentralizedEvents?: boolean;
+    enableEventPersistence?: boolean;
+    enableEventMetrics?: boolean;
+    maxEventQueueSize?: number;
+    eventRetentionPeriod?: number;
+    enableEventFiltering?: boolean;
+  };
+  healthMonitoring?: {
+    enableAdvancedChecks?: boolean;
+    enableServiceDependencyTracking?: boolean;
+    enablePerformanceAlerts?: boolean;
+    healthCheckTimeout?: number;
+    performanceThresholds?: {
+      responseTime?: number;
+      errorRate?: number;
+      resourceUsage?: number;
+    };
+  };
+}
+
+/**
  * Union type for all service configurations
  */
 export type AnyServiceConfig = 
@@ -356,6 +457,8 @@ export type AnyServiceConfig =
   | MemoryServiceConfig
   | DatabaseServiceConfig
   | InterfaceServiceConfig
+  | IntegrationServiceConfig
+  | InfrastructureServiceConfig
   | MonitoringServiceConfig
   | WorkflowServiceConfig
   | BaseServiceConfig;
@@ -454,7 +557,7 @@ export class ServiceConfigFactory {
   ): CoordinationServiceConfig {
     return {
       name,
-      type: ServiceType.SWARM,
+      type: ServiceType.COORDINATION,
       enabled: true,
       priority: ServicePriority.HIGH,
       environment: ServiceEnvironment.DEVELOPMENT,
@@ -700,6 +803,156 @@ export class ServiceConfigFactory {
   }
 
   /**
+   * Create an integration service configuration
+   */
+  static createIntegrationServiceConfig(
+    name: string,
+    options?: Partial<IntegrationServiceConfig>
+  ): IntegrationServiceConfig {
+    return {
+      name,
+      type: ServiceType.API,
+      enabled: true,
+      priority: ServicePriority.HIGH,
+      environment: ServiceEnvironment.DEVELOPMENT,
+      timeout: 30000,
+      integration: {
+        architectureStorage: true,
+        safeAPI: true,
+        protocolManagement: true,
+        multiProtocol: true
+      },
+      protocols: {
+        supported: ['http', 'websocket', 'mcp-http', 'mcp-stdio'],
+        default: 'http',
+        failover: true,
+        loadBalancing: true
+      },
+      performance: {
+        caching: true,
+        deduplication: true,
+        connectionPooling: true,
+        metricsCollection: true
+      },
+      security: {
+        validation: true,
+        sanitization: true,
+        rateLimiting: true,
+        auditLogging: true
+      },
+      health: {
+        enabled: true,
+        interval: 30000,
+        timeout: 5000,
+        failureThreshold: 3,
+        successThreshold: 1
+      },
+      monitoring: {
+        enabled: true,
+        metricsInterval: 10000,
+        trackLatency: true,
+        trackThroughput: true,
+        trackErrors: true,
+        trackMemoryUsage: true
+      },
+      ...options
+    };
+  }
+
+  /**
+   * Create an infrastructure service configuration
+   */
+  static createInfrastructureServiceConfig(
+    name: string,
+    options?: Partial<InfrastructureServiceConfig>
+  ): InfrastructureServiceConfig {
+    return {
+      name,
+      type: ServiceType.INFRASTRUCTURE,
+      enabled: true,
+      priority: ServicePriority.HIGH,
+      environment: ServiceEnvironment.DEVELOPMENT,
+      timeout: 30000,
+      facade: {
+        enabled: true,
+        autoInitialize: true,
+        enableCaching: true,
+        enableMetrics: true,
+        enableHealthChecks: true,
+        systemStatusInterval: 30000
+      },
+      patternIntegration: {
+        enabled: true,
+        configProfile: 'development',
+        enableEventSystem: true,
+        enableCommandSystem: true,
+        enableProtocolSystem: true,
+        enableAgentSystem: true
+      },
+      orchestration: {
+        enableServiceDiscovery: true,
+        enableLoadBalancing: true,
+        enableCircuitBreaker: true,
+        maxConcurrentServices: 20,
+        serviceStartupTimeout: 30000,
+        shutdownGracePeriod: 10000
+      },
+      resourceManagement: {
+        enableResourceTracking: true,
+        enableResourceOptimization: true,
+        memoryThreshold: 0.8,
+        cpuThreshold: 0.8,
+        diskThreshold: 0.9,
+        networkThreshold: 0.8,
+        cleanupInterval: 300000
+      },
+      configManagement: {
+        enableHotReload: true,
+        enableValidation: true,
+        enableVersioning: true,
+        reloadCheckInterval: 30000,
+        backupConfigs: true,
+        maxConfigHistory: 50
+      },
+      eventCoordination: {
+        enableCentralizedEvents: true,
+        enableEventPersistence: false,
+        enableEventMetrics: true,
+        maxEventQueueSize: 10000,
+        eventRetentionPeriod: 3600000,
+        enableEventFiltering: true
+      },
+      healthMonitoring: {
+        enableAdvancedChecks: true,
+        enableServiceDependencyTracking: true,
+        enablePerformanceAlerts: true,
+        healthCheckTimeout: 5000,
+        performanceThresholds: {
+          responseTime: 1000,
+          errorRate: 0.05,
+          resourceUsage: 0.8
+        }
+      },
+      health: {
+        enabled: true,
+        interval: 30000,
+        timeout: 5000,
+        failureThreshold: 3,
+        successThreshold: 1
+      },
+      monitoring: {
+        enabled: true,
+        metricsInterval: 10000,
+        trackLatency: true,
+        trackThroughput: true,
+        trackErrors: true,
+        trackMemoryUsage: true
+      },
+      ...options
+    };
+  }
+
+  /**
    * Create a workflow service configuration
    */
   static createWorkflowServiceConfig(
@@ -765,7 +1018,7 @@ export function isWebServiceConfig(config: AnyServiceConfig): config is WebServi
 }
 
 export function isCoordinationServiceConfig(config: AnyServiceConfig): config is CoordinationServiceConfig {
-  return [ServiceType.SWARM, ServiceType.ORCHESTRATION, ServiceType.DAA, ServiceType.SESSION_RECOVERY].includes(config.type as ServiceType);
+  return [ServiceType.COORDINATION, ServiceType.SWARM, ServiceType.ORCHESTRATION, ServiceType.DAA, ServiceType.SESSION_RECOVERY].includes(config.type as ServiceType);
 }
 
 export function isNeuralServiceConfig(config: AnyServiceConfig): config is NeuralServiceConfig {
@@ -778,6 +1031,14 @@ export function isMemoryServiceConfig(config: AnyServiceConfig): config is Memor
 
 export function isDatabaseServiceConfig(config: AnyServiceConfig): config is DatabaseServiceConfig {
   return [ServiceType.DATABASE, ServiceType.VECTOR, ServiceType.GRAPH].includes(config.type as ServiceType);
+}
+
+export function isIntegrationServiceConfig(config: AnyServiceConfig): config is IntegrationServiceConfig {
+  return [ServiceType.API, ServiceType.SAFE_API, ServiceType.ARCHITECTURE_STORAGE].includes(config.type as ServiceType);
+}
+
+export function isInfrastructureServiceConfig(config: AnyServiceConfig): config is InfrastructureServiceConfig {
+  return [ServiceType.INFRASTRUCTURE, ServiceType.SYSTEM, ServiceType.MONITORING].includes(config.type as ServiceType);
 }
 
 export function isMonitoringServiceConfig(config: AnyServiceConfig): config is MonitoringServiceConfig {

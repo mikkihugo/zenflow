@@ -61,6 +61,7 @@ export {
   type MemoryServiceConfig,
   type DatabaseServiceConfig,
   type InterfaceServiceConfig,
+  type IntegrationServiceConfig,
   type MonitoringServiceConfig,
   type WorkflowServiceConfig,
   type AnyServiceConfig,
@@ -75,6 +76,7 @@ export {
   isNeuralServiceConfig,
   isMemoryServiceConfig,
   isDatabaseServiceConfig,
+  isIntegrationServiceConfig,
   isMonitoringServiceConfig
 } from './types';
 
@@ -95,6 +97,43 @@ export {
   globalServiceConfigValidator,
   globalServiceCapabilityRegistry
 } from './factories';
+
+// Enhanced Service Management (USL Integration Layer)
+export {
+  // Enhanced Service Registry
+  EnhancedServiceRegistry,
+  type ServiceRegistryConfig,
+  type ServiceDiscoveryInfo,
+  type ServiceDependencyGraph
+} from './registry';
+
+export {
+  // Service Manager - Complete Lifecycle Management
+  ServiceManager,
+  type ServiceManagerConfig,
+  type ServiceManagerStatus,
+  type ServiceCreationRequest,
+  type BatchServiceCreationRequest
+} from './manager';
+
+export {
+  // Backward Compatibility Layer
+  USLCompatibilityLayer,
+  type CompatibilityConfig,
+  type LegacyServicePattern,
+  compat,
+  initializeCompatibility,
+  MigrationUtils
+} from './compatibility';
+
+export {
+  // Validation Framework
+  USLValidationFramework,
+  type ValidationConfig,
+  type ValidationResult,
+  type ValidationSectionResult,
+  type SystemHealthValidation
+} from './validation';
 
 // Service implementations (re-exported for convenience)
 export type { DataService } from './implementations/data-service';
@@ -120,6 +159,23 @@ export {
   type TransformationStep,
   createDataServiceAdapter,
   createDefaultDataServiceAdapterConfig
+} from './adapters';
+
+// Integration service adapters (enhanced implementations)
+export {
+  IntegrationServiceAdapter,
+  IntegrationServiceFactory,
+  integrationServiceFactory,
+  IntegrationServiceHelper,
+  IntegrationServiceUtils,
+  createIntegrationServiceAdapter,
+  createDefaultIntegrationServiceAdapterConfig,
+  type IntegrationServiceAdapterConfig,
+  type IntegrationOperationResult,
+  type BatchIntegrationConfig,
+  type ArchitectureOperationConfig,
+  type APIOperationConfig,
+  type ProtocolOperationConfig
 } from './adapters';
 
 /**
@@ -326,6 +382,203 @@ export class USL {
     });
     
     return await globalUSLFactory.create(config);
+  }
+
+  /**
+   * Create and register an integration service
+   */
+  async createIntegrationService(
+    name: string,
+    options: Partial<IntegrationServiceConfig> = {}
+  ): Promise<IService> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+    
+    const config = ServiceConfigFactory.createIntegrationServiceConfig(name, {
+      type: ServiceType.API,
+      ...options
+    });
+    
+    return await globalUSLFactory.create(config);
+  }
+
+  /**
+   * Create integration service adapter (optimized for integration operations)
+   */
+  async createIntegrationServiceAdapter(
+    name: string,
+    options: Partial<IntegrationServiceAdapterConfig> = {}
+  ): Promise<IntegrationServiceAdapter> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+    
+    const config = createDefaultIntegrationServiceAdapterConfig(name, options);
+    const adapter = createIntegrationServiceAdapter(config);
+    await adapter.initialize();
+    
+    return adapter;
+  }
+
+  /**
+   * Create architecture storage integration service
+   */
+  async createArchitectureStorageService(
+    name: string,
+    databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
+    options: Partial<IntegrationServiceAdapterConfig> = {}
+  ): Promise<IntegrationServiceAdapter> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+    
+    const adapter = await this.createIntegrationServiceAdapter(name, {
+      architectureStorage: {
+        enabled: true,
+        databaseType,
+        autoInitialize: true,
+        enableVersioning: true,
+        enableValidationTracking: true,
+        cachingEnabled: true
+      },
+      safeAPI: { enabled: false },
+      protocolManagement: { enabled: false },
+      ...options
+    });
+    
+    return adapter;
+  }
+
+  /**
+   * Create safe API integration service
+   */
+  async createSafeAPIService(
+    name: string,
+    baseURL: string,
+    options: Partial<IntegrationServiceAdapterConfig> = {}
+  ): Promise<IntegrationServiceAdapter> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+    
+    const adapter = await this.createIntegrationServiceAdapter(name, {
+      architectureStorage: { enabled: false },
+      safeAPI: {
+        enabled: true,
+        baseURL,
+        timeout: 30000,
+        retries: 3,
+        validation: {
+          enabled: true,
+          strictMode: false,
+          sanitization: true
+        }
+      },
+      protocolManagement: { enabled: false },
+      ...options
+    });
+    
+    return adapter;
+  }
+
+  /**
+   * Create protocol management integration service
+   */
+  async createProtocolManagementService(
+    name: string,
+    supportedProtocols: string[] = ['http', 'websocket', 'mcp-http'],
+    options: Partial<IntegrationServiceAdapterConfig> = {}
+  ): Promise<IntegrationServiceAdapter> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+    
+    const adapter = await this.createIntegrationServiceAdapter(name, {
+      architectureStorage: { enabled: false },
+      safeAPI: { enabled: false },
+      protocolManagement: {
+        enabled: true,
+        supportedProtocols,
+        defaultProtocol: supportedProtocols[0] || 'http',
+        connectionPooling: {
+          enabled: true,
+          maxConnections: 50,
+          idleTimeout: 300000
+        },
+        failover: {
+          enabled: true,
+          retryAttempts: 3,
+          backoffMultiplier: 2
+        }
+      },
+      ...options
+    });
+    
+    return adapter;
+  }
+
+  /**
+   * Create unified integration service (all integration features enabled)
+   */
+  async createUnifiedIntegrationService(
+    name: string,
+    options: {
+      baseURL?: string;
+      databaseType?: 'postgresql' | 'sqlite' | 'mysql';
+      supportedProtocols?: string[];
+    } & Partial<IntegrationServiceAdapterConfig> = {}
+  ): Promise<IntegrationServiceAdapter> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+    
+    const {
+      baseURL = 'http://localhost:3000',
+      databaseType = 'postgresql',
+      supportedProtocols = ['http', 'websocket', 'mcp-http', 'mcp-stdio'],
+      ...adapterOptions
+    } = options;
+    
+    const adapter = await this.createIntegrationServiceAdapter(name, {
+      architectureStorage: {
+        enabled: true,
+        databaseType,
+        autoInitialize: true,
+        enableVersioning: true,
+        enableValidationTracking: true,
+        cachingEnabled: true
+      },
+      safeAPI: {
+        enabled: true,
+        baseURL,
+        timeout: 30000,
+        retries: 3,
+        validation: {
+          enabled: true,
+          strictMode: false,
+          sanitization: true
+        }
+      },
+      protocolManagement: {
+        enabled: true,
+        supportedProtocols,
+        defaultProtocol: supportedProtocols[0] || 'http',
+        connectionPooling: {
+          enabled: true,
+          maxConnections: 50,
+          idleTimeout: 300000
+        },
+        failover: {
+          enabled: true,
+          retryAttempts: 3,
+          backoffMultiplier: 2
+        }
+      },
+      ...adapterOptions
+    });
+    
+    return adapter;
   }
 
   /**
@@ -815,6 +1068,219 @@ export const USLHelpers = {
     }
 
     return createdServices;
+  },
+
+  /**
+   * Initialize complete USL system with enhanced integration layer
+   */
+  async initializeCompleteUSL(config?: {
+    enableServiceManager?: boolean;
+    enableEnhancedRegistry?: boolean;
+    enableCompatibilityLayer?: boolean;
+    enableValidationFramework?: boolean;
+    serviceManagerConfig?: Partial<ServiceManagerConfig>;
+    registryConfig?: Partial<ServiceRegistryConfig>;
+    compatibilityConfig?: Partial<CompatibilityConfig>;
+    validationConfig?: Partial<ValidationConfig>;
+  }): Promise<{
+    usl: USL;
+    serviceManager?: ServiceManager;
+    registry?: EnhancedServiceRegistry;
+    compatibility?: USLCompatibilityLayer;
+    validation?: USLValidationFramework;
+  }> {
+    // Initialize core USL
+    await usl.initialize();
+
+    const result: {
+      usl: USL;
+      serviceManager?: ServiceManager;
+      registry?: EnhancedServiceRegistry;
+      compatibility?: USLCompatibilityLayer;
+      validation?: USLValidationFramework;
+    } = { usl };
+
+    try {
+      // Initialize Service Manager if enabled
+      if (config?.enableServiceManager ?? true) {
+        const { ServiceManager } = await import('./manager');
+        const serviceManager = new ServiceManager(config?.serviceManagerConfig);
+        await serviceManager.initialize();
+        result.serviceManager = serviceManager;
+      }
+
+      // Initialize Enhanced Registry if enabled
+      if (config?.enableEnhancedRegistry ?? true) {
+        const { EnhancedServiceRegistry } = await import('./registry');
+        const registry = new EnhancedServiceRegistry(config?.registryConfig);
+        result.registry = registry;
+      }
+
+      // Initialize Compatibility Layer if enabled
+      if (config?.enableCompatibilityLayer ?? true) {
+        const { USLCompatibilityLayer } = await import('./compatibility');
+        const compatibility = new USLCompatibilityLayer(config?.compatibilityConfig);
+        await compatibility.initialize();
+        result.compatibility = compatibility;
+      }
+
+      // Initialize Validation Framework if enabled
+      if (config?.enableValidationFramework ?? false) {
+        const { USLValidationFramework } = await import('./validation');
+        if (result.serviceManager && result.registry) {
+          const validation = new USLValidationFramework(
+            result.serviceManager,
+            result.registry,
+            config?.validationConfig
+          );
+          result.validation = validation;
+        }
+      }
+
+      return result;
+
+    } catch (error) {
+      console.error('❌ Failed to initialize complete USL system:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Migrate existing system to USL with full integration
+   */
+  async migrateToUSL(existingServices: Record<string, any>): Promise<{
+    success: boolean;
+    migrated: IService[];
+    failed: Array<{ name: string; error: string }>;
+    warnings: string[];
+    compatibilityReport: any;
+  }> {
+    try {
+      // Initialize compatibility layer
+      const { USLCompatibilityLayer } = await import('./compatibility');
+      const compatibility = new USLCompatibilityLayer();
+      await compatibility.initialize();
+
+      // Perform migration
+      const migrationResult = await compatibility.migrateExistingServices(existingServices);
+      
+      // Generate compatibility report
+      const { MigrationUtils } = await import('./compatibility');
+      const compatibilityReport = MigrationUtils.generateCompatibilityReport();
+
+      return {
+        success: migrationResult.failed.length === 0,
+        migrated: migrationResult.migrated,
+        failed: migrationResult.failed,
+        warnings: migrationResult.warnings,
+        compatibilityReport
+      };
+
+    } catch (error) {
+      console.error('❌ Migration to USL failed:', error);
+      return {
+        success: false,
+        migrated: [],
+        failed: [{ name: 'system', error: error instanceof Error ? error.message : String(error) }],
+        warnings: [],
+        compatibilityReport: null
+      };
+    }
+  },
+
+  /**
+   * Validate complete USL system integration
+   */
+  async validateSystemIntegration(config?: Partial<ValidationConfig>): Promise<{
+    success: boolean;
+    validationResult: ValidationResult;
+    healthValidation: SystemHealthValidation;
+    recommendations: string[];
+  }> {
+    try {
+      // Initialize complete USL system
+      const system = await USLHelpers.initializeCompleteUSL({
+        enableValidationFramework: true,
+        validationConfig: config
+      });
+
+      if (!system.validation || !system.serviceManager || !system.registry) {
+        throw new Error('Validation framework not properly initialized');
+      }
+
+      // Perform comprehensive validation
+      const validationResult = await system.validation.validateSystem();
+      const healthValidation = await system.validation.validateSystemHealth();
+
+      // Generate recommendations
+      const recommendations: string[] = [];
+      
+      if (validationResult.overall === 'fail') {
+        recommendations.push('Address critical validation failures before production deployment');
+      }
+      
+      if (healthValidation.overallHealth !== 'healthy') {
+        recommendations.push('Resolve system health issues to ensure optimal performance');
+      }
+      
+      recommendations.push(...validationResult.recommendations.map(rec => rec.action));
+
+      return {
+        success: validationResult.overall !== 'fail',
+        validationResult,
+        healthValidation,
+        recommendations
+      };
+
+    } catch (error) {
+      console.error('❌ System validation failed:', error);
+      
+      // Return minimal error result
+      return {
+        success: false,
+        validationResult: {
+          overall: 'fail',
+          score: 0,
+          timestamp: new Date(),
+          duration: 0,
+          results: {
+            configuration: { status: 'fail', score: 0, checks: [], warnings: [], errors: [] },
+            dependencies: { status: 'fail', score: 0, checks: [], warnings: [], errors: [] },
+            performance: { status: 'fail', score: 0, checks: [], warnings: [], errors: [] },
+            security: { status: 'fail', score: 0, checks: [], warnings: [], errors: [] },
+            compatibility: { status: 'fail', score: 0, checks: [], warnings: [], errors: [] },
+            integration: { status: 'fail', score: 0, checks: [], warnings: [], errors: [] }
+          },
+          summary: { totalChecks: 0, passed: 0, warnings: 0, failures: 1, criticalIssues: 1 },
+          recommendations: [{
+            type: 'critical',
+            category: 'system',
+            description: 'Validation system failure',
+            impact: 'high',
+            effort: 'high',
+            action: `Resolve validation error: ${error instanceof Error ? error.message : String(error)}`
+          }]
+        },
+        healthValidation: {
+          overallHealth: 'unhealthy',
+          serviceHealth: new Map(),
+          systemMetrics: {
+            totalServices: 0,
+            healthyServices: 0,
+            responseTimeP95: 0,
+            errorRate: 100,
+            memoryUsage: 0,
+            uptime: 0
+          },
+          alerts: [{
+            severity: 'critical',
+            message: `Validation failed: ${error instanceof Error ? error.message : String(error)}`,
+            timestamp: new Date()
+          }]
+        },
+        recommendations: ['Fix validation system errors before proceeding']
+      };
+    }
   }
 };
 
@@ -828,6 +1294,12 @@ export const createCoordinationService = usl.createCoordinationService.bind(usl)
 export const createNeuralService = usl.createNeuralService.bind(usl);
 export const createMemoryService = usl.createMemoryService.bind(usl);
 export const createDatabaseService = usl.createDatabaseService.bind(usl);
+export const createIntegrationService = usl.createIntegrationService.bind(usl);
+export const createIntegrationServiceAdapter = usl.createIntegrationServiceAdapter.bind(usl);
+export const createArchitectureStorageService = usl.createArchitectureStorageService.bind(usl);
+export const createSafeAPIService = usl.createSafeAPIService.bind(usl);
+export const createProtocolManagementService = usl.createProtocolManagementService.bind(usl);
+export const createUnifiedIntegrationService = usl.createUnifiedIntegrationService.bind(usl);
 export const createMonitoringService = usl.createMonitoringService.bind(usl);
 
 // Export service discovery functions

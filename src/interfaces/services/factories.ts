@@ -608,6 +608,13 @@ export class USLFactory implements IServiceFactory {
         const { WebService } = await import('./implementations/web-service');
         return new WebService(config as WebServiceConfig);
         
+      case ServiceType.COORDINATION:
+      case ServiceType.DAA:
+      case ServiceType.SESSION_RECOVERY:
+        // Use the enhanced CoordinationServiceAdapter for unified coordination operations
+        const { CoordinationServiceAdapter } = await import('./adapters/coordination-service-adapter');
+        return new CoordinationServiceAdapter(config as any);
+      
       case ServiceType.SWARM:
       case ServiceType.ORCHESTRATION:
         const { CoordinationService } = await import('./implementations/coordination-service');
