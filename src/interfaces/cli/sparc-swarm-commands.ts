@@ -253,6 +253,175 @@ export function createSPARCSwarmCommands(): Command {
       }
     });
 
+  // SPARC Pseudocode commands
+  const pseudocodeCmd = sparcSwarmCmd
+    .command('pseudocode')
+    .description('SPARC Phase 2: Pseudocode Generation commands');
+
+  // Generate pseudocode from specification
+  pseudocodeCmd
+    .command('generate')
+    .description('Generate pseudocode algorithms from specification')
+    .requiredOption('--spec-file <path>', 'Path to specification JSON file')
+    .option('--output <path>', 'Output file for generated pseudocode', 'pseudocode-output.json')
+    .option('--format <type>', 'Output format (json|markdown)', 'json')
+    .action(async (options) => {
+      try {
+        logger.info('🔧 Generating pseudocode from specification...');
+
+        // Import the pseudocode engine dynamically to avoid circular dependencies
+        const { PseudocodePhaseEngine } = await import('../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine');
+        const fs = await import('fs').then(m => m.promises);
+
+        const engine = new PseudocodePhaseEngine();
+
+        // Read specification file
+        const specContent = await fs.readFile(options.specFile, 'utf8');
+        const specification = JSON.parse(specContent);
+
+        console.log(`📖 Processing specification: ${specification.id || 'Unknown'}`);
+        console.log(`🏷️ Domain: ${specification.domain}`);
+
+        // Generate pseudocode structure
+        const pseudocodeStructure = await engine.generatePseudocode(specification);
+
+        console.log('✅ Pseudocode generation completed!');
+        console.log(`📊 Generated ${pseudocodeStructure.algorithms.length} algorithms`);
+        console.log(`🏗️ Generated ${pseudocodeStructure.dataStructures.length} data structures`);
+        console.log(`🔄 Generated ${pseudocodeStructure.controlFlows.length} control flows`);
+        console.log(`💡 Identified ${pseudocodeStructure.optimizations.length} optimization opportunities`);
+
+        // Format output
+        let output: string;
+        if (options.format === 'markdown') {
+          output = await formatPseudocodeAsMarkdown(pseudocodeStructure);
+        } else {
+          output = JSON.stringify(pseudocodeStructure, null, 2);
+        }
+
+        // Write output
+        await fs.writeFile(options.output, output, 'utf8');
+        console.log(`💾 Output saved to: ${options.output}`);
+
+        // Display summary
+        console.log('\n📋 Algorithm Summary:');
+        pseudocodeStructure.algorithms.forEach((alg, index) => {
+          console.log(`  ${index + 1}. ${alg.name}: ${alg.purpose}`);
+          console.log(`     Complexity: ${alg.complexity.timeComplexity} time, ${alg.complexity.spaceComplexity} space`);
+        });
+
+      } catch (error) {
+        console.error('❌ Failed to generate pseudocode:', error);
+        process.exit(1);
+      }
+    });
+
+  // Validate existing pseudocode
+  pseudocodeCmd
+    .command('validate')
+    .description('Validate pseudocode structure and algorithms')
+    .requiredOption('--pseudocode-file <path>', 'Path to pseudocode JSON file')
+    .action(async (options) => {
+      try {
+        logger.info('🔍 Validating pseudocode structure...');
+
+        const { PseudocodePhaseEngine } = await import('../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine');
+        const fs = await import('fs').then(m => m.promises);
+
+        const engine = new PseudocodePhaseEngine();
+
+        // Read pseudocode file
+        const pseudocodeContent = await fs.readFile(options.pseudocodeFile, 'utf8');
+        const pseudocodeStructure = JSON.parse(pseudocodeContent);
+
+        console.log(`📖 Validating pseudocode: ${pseudocodeStructure.id || 'Unknown'}`);
+
+        // Validate the pseudocode structure
+        const validation = await engine.validatePseudocode(pseudocodeStructure);
+
+        console.log('\n📊 Validation Results:');
+        console.log(`Overall Score: ${(validation.overallScore * 100).toFixed(1)}%`);
+        console.log(`Status: ${validation.approved ? '✅ APPROVED' : '❌ NEEDS IMPROVEMENT'}`);
+        console.log(`Complexity Verification: ${validation.complexityVerification ? '✅ PASSED' : '❌ FAILED'}`);
+
+        if (validation.logicErrors.length > 0) {
+          console.log('\n🚨 Logic Errors Found:');
+          validation.logicErrors.forEach((error, index) => {
+            console.log(`  ${index + 1}. ${error}`);
+          });
+        }
+
+        if (validation.optimizationSuggestions.length > 0) {
+          console.log('\n💡 Optimization Suggestions:');
+          validation.optimizationSuggestions.forEach((suggestion, index) => {
+            console.log(`  ${index + 1}. ${suggestion}`);
+          });
+        }
+
+        if (validation.recommendations.length > 0) {
+          console.log('\n📋 Recommendations:');
+          validation.recommendations.forEach((rec, index) => {
+            console.log(`  ${index + 1}. ${rec}`);
+          });
+        }
+
+        // Exit with appropriate code
+        process.exit(validation.approved ? 0 : 1);
+
+      } catch (error) {
+        console.error('❌ Failed to validate pseudocode:', error);
+        process.exit(1);
+      }
+    });
+
+  // Generate algorithms only (lightweight option)
+  pseudocodeCmd
+    .command('algorithms')
+    .description('Generate algorithms only from specification')
+    .requiredOption('--spec-file <path>', 'Path to specification JSON file')
+    .option('--domain <type>', 'Override domain (swarm-coordination|neural-networks|memory-systems|general)')
+    .action(async (options) => {
+      try {
+        logger.info('🧮 Generating algorithms from specification...');
+
+        const { PseudocodePhaseEngine } = await import('../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine');
+        const fs = await import('fs').then(m => m.promises);
+
+        const engine = new PseudocodePhaseEngine();
+
+        // Read specification file
+        const specContent = await fs.readFile(options.specFile, 'utf8');
+        const specification = JSON.parse(specContent);
+
+        // Override domain if specified
+        if (options.domain) {
+          specification.domain = options.domain;
+        }
+
+        console.log(`📖 Processing specification for: ${specification.domain}`);
+
+        // Generate algorithms only
+        const algorithms = await engine.generateAlgorithmPseudocode(specification);
+
+        console.log(`✅ Generated ${algorithms.length} algorithms`);
+
+        // Display algorithms
+        algorithms.forEach((alg, index) => {
+          console.log(`\n${index + 1}. 🔧 ${alg.name}`);
+          console.log(`   Purpose: ${alg.purpose}`);
+          console.log(`   Inputs: ${alg.inputs.map(i => i.name).join(', ')}`);
+          console.log(`   Outputs: ${alg.outputs.map(o => o.name).join(', ')}`);
+          console.log(`   Steps: ${alg.steps.length}`);
+          console.log(`   Complexity: ${alg.complexity.timeComplexity} time, ${alg.complexity.spaceComplexity} space`);
+          console.log(`   Optimizations: ${alg.optimizations.length}`);
+        });
+
+      } catch (error) {
+        console.error('❌ Failed to generate algorithms:', error);
+        process.exit(1);
+      }
+    });
+
   // Demonstrate SPARC with example
   sparcSwarmCmd
     .command('demo')
@@ -417,6 +586,112 @@ async function initializeSystems(): Promise<{
   await bridge.initialize();
 
   return { databaseSystem, sparcSwarm, bridge };
+}
+
+// Helper function to format pseudocode as markdown
+async function formatPseudocodeAsMarkdown(pseudocodeStructure: any): Promise<string> {
+  let markdown = `# SPARC Pseudocode Generation Results\n\n`;
+  markdown += `**Generated on:** ${new Date().toISOString()}\n`;
+  markdown += `**ID:** ${pseudocodeStructure.id}\n\n`;
+
+  // Algorithms section
+  markdown += `## 🔧 Algorithms (${pseudocodeStructure.algorithms.length})\n\n`;
+  pseudocodeStructure.algorithms.forEach((alg: any, index: number) => {
+    markdown += `### ${index + 1}. ${alg.name}\n\n`;
+    markdown += `**Purpose:** ${alg.purpose}\n\n`;
+    
+    markdown += `**Inputs:**\n`;
+    alg.inputs.forEach((input: any) => {
+      markdown += `- \`${input.name}\` (${input.type}): ${input.description}\n`;
+    });
+    markdown += `\n`;
+    
+    markdown += `**Outputs:**\n`;
+    alg.outputs.forEach((output: any) => {
+      markdown += `- \`${output.name}\` (${output.type}): ${output.description}\n`;
+    });
+    markdown += `\n`;
+    
+    markdown += `**Steps:**\n`;
+    alg.steps.forEach((step: any) => {
+      markdown += `${step.stepNumber}. ${step.description}\n`;
+      markdown += `   \`${step.pseudocode}\`\n`;
+    });
+    markdown += `\n`;
+    
+    markdown += `**Complexity:** ${alg.complexity.timeComplexity} time, ${alg.complexity.spaceComplexity} space\n\n`;
+    
+    if (alg.optimizations.length > 0) {
+      markdown += `**Optimizations:**\n`;
+      alg.optimizations.forEach((opt: any) => {
+        markdown += `- **${opt.type}**: ${opt.description} (Impact: ${opt.impact}, Effort: ${opt.effort})\n`;
+      });
+      markdown += `\n`;
+    }
+    
+    markdown += `---\n\n`;
+  });
+
+  // Data Structures section
+  if (pseudocodeStructure.dataStructures.length > 0) {
+    markdown += `## 🏗️ Data Structures (${pseudocodeStructure.dataStructures.length})\n\n`;
+    pseudocodeStructure.dataStructures.forEach((ds: any, index: number) => {
+      markdown += `### ${index + 1}. ${ds.name}\n\n`;
+      markdown += `**Type:** ${ds.type}\n\n`;
+      
+      if (ds.properties.length > 0) {
+        markdown += `**Properties:**\n`;
+        ds.properties.forEach((prop: any) => {
+          markdown += `- \`${prop.name}\` (${prop.type}, ${prop.visibility}): ${prop.description}\n`;
+        });
+        markdown += `\n`;
+      }
+      
+      if (ds.methods.length > 0) {
+        markdown += `**Methods:**\n`;
+        ds.methods.forEach((method: any) => {
+          markdown += `- \`${method.name}()\` → ${method.returnType} (${method.visibility}): ${method.description}\n`;
+        });
+        markdown += `\n`;
+      }
+      
+      markdown += `---\n\n`;
+    });
+  }
+
+  // Complexity Analysis section
+  if (pseudocodeStructure.complexityAnalysis) {
+    const ca = pseudocodeStructure.complexityAnalysis;
+    markdown += `## 📊 Complexity Analysis\n\n`;
+    markdown += `- **Time Complexity:** ${ca.timeComplexity}\n`;
+    markdown += `- **Space Complexity:** ${ca.spaceComplexity}\n`;
+    markdown += `- **Scalability:** ${ca.scalability}\n`;
+    markdown += `- **Worst Case:** ${ca.worstCase}\n\n`;
+    
+    if (ca.bottlenecks && ca.bottlenecks.length > 0) {
+      markdown += `**Identified Bottlenecks:**\n`;
+      ca.bottlenecks.forEach((bottleneck: string) => {
+        markdown += `- ${bottleneck}\n`;
+      });
+      markdown += `\n`;
+    }
+  }
+
+  // Optimizations section
+  if (pseudocodeStructure.optimizations.length > 0) {
+    markdown += `## 💡 Optimization Opportunities (${pseudocodeStructure.optimizations.length})\n\n`;
+    pseudocodeStructure.optimizations.forEach((opt: any, index: number) => {
+      markdown += `${index + 1}. **${opt.type.toUpperCase()}**: ${opt.description}\n`;
+      markdown += `   - Impact: ${opt.impact}\n`;
+      markdown += `   - Effort: ${opt.effort}\n`;
+      if (opt.estimatedImprovement) {
+        markdown += `   - Estimated Improvement: ${opt.estimatedImprovement}\n`;
+      }
+      markdown += `\n`;
+    });
+  }
+
+  return markdown;
 }
 
 export { createSPARCSwarmCommands };

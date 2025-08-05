@@ -35,9 +35,9 @@ const config: Config = {
 
   roots: ['<rootDir>/src', '<rootDir>/tests'],
   testMatch: [
-    '<rootDir>/tests/**/*.test.ts', 
+    '<rootDir>/tests/**/*.test.ts',
     '<rootDir>/src/__tests__/**/*.test.ts',
-    '<rootDir>/src/__tests__/**/*.test.js'
+    '<rootDir>/src/__tests__/**/*.test.js',
   ],
 
   // Configure jest-extended and all setup files
@@ -46,7 +46,7 @@ const config: Config = {
     '<rootDir>/tests/setup.ts',
     '<rootDir>/tests/setup-london.ts',
     '<rootDir>/tests/setup-classical.ts',
-    '<rootDir>/tests/setup-hybrid.ts'
+    '<rootDir>/tests/setup-hybrid.ts',
   ],
 };
 

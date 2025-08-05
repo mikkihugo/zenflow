@@ -279,7 +279,7 @@ describe('Complete Agent Workflow Integration', () => {
             task: `Training task ${i}: Pattern recognition`,
             agentId: neuralAgent.id,
             training: true,
-          }),
+          })
         );
       }
 

@@ -62,17 +62,17 @@ export const securityConfig = {
   headers: {
     contentSecurityPolicy: {
       directives: {
-        defaultSrc: ['\'self\''],
-        styleSrc: ['\'self\'', '\'unsafe-inline\''],
-        scriptSrc: ['\'self\''],
-        imgSrc: ['\'self\'', 'data:', 'https:'],
-        connectSrc: ['\'self\''],
-        fontSrc: ['\'self\''],
-        objectSrc: ['\'none\''],
-        mediaSrc: ['\'self\''],
-        frameSrc: ['\'none\''],
-        baseUri: ['\'self\''],
-        formAction: ['\'self\''],
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'https:'],
+        connectSrc: ["'self'"],
+        fontSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'"],
+        frameSrc: ["'none'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
       },
     },
     hsts: {
@@ -194,7 +194,7 @@ export const securityValidators = {
       validSize: file.size <= sizeLimit,
       validType: config.allowedMimeTypes.includes(file.mimetype),
       validExtension: !securityConfig.validation.blockedFileExtensions.some((ext) =>
-        file.originalname?.toLowerCase().endsWith(ext),
+        file.originalname?.toLowerCase().endsWith(ext)
       ),
     };
   },

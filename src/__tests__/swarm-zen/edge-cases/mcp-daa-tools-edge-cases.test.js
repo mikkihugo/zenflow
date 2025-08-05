@@ -196,7 +196,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
       expect(mockMcpTools.recordToolMetrics).toHaveBeenCalledWith(
         'daa_init',
         expect.any(Number),
-        'success',
+        'success'
       );
     });
 
@@ -227,7 +227,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
         'daa_init',
         expect.any(Number),
         'error',
-        'Service unavailable',
+        'Service unavailable'
       );
     });
 
@@ -291,7 +291,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
         'daa_agent_create',
         expect.any(Number),
         'error',
-        'Agent ID is required',
+        'Agent ID is required'
       );
     });
 
@@ -327,7 +327,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
       mockDaaService.createAgent.mockRejectedValueOnce(new Error('Agent creation failed'));
 
       await expect(daaTools.daa_agent_create({ id: 'fail-agent' })).rejects.toThrow(
-        'Agent creation failed',
+        'Agent creation failed'
       );
     });
   });
@@ -371,7 +371,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
       mockDaaService.adaptAgent.mockRejectedValueOnce(new Error('Adaptation failed'));
 
       await expect(daaTools.daa_agent_adapt({ agentId: 'fail-adapt' })).rejects.toThrow(
-        'Adaptation failed',
+        'Adaptation failed'
       );
     });
 
@@ -415,15 +415,15 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
 
     it('should handle missing required parameters', async () => {
       await expect(daaTools.daa_workflow_create({})).rejects.toThrow(
-        'Workflow ID and name are required',
+        'Workflow ID and name are required'
       );
 
       await expect(daaTools.daa_workflow_create({ id: 'test' })).rejects.toThrow(
-        'Workflow ID and name are required',
+        'Workflow ID and name are required'
       );
 
       await expect(daaTools.daa_workflow_create({ name: 'test' })).rejects.toThrow(
-        'Workflow ID and name are required',
+        'Workflow ID and name are required'
       );
     });
 
@@ -458,7 +458,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
         daaTools.daa_workflow_create({
           id: 'fail-workflow',
           name: 'Failing Workflow',
-        }),
+        })
       ).rejects.toThrow('Workflow creation failed');
     });
   });
@@ -504,7 +504,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
       await expect(
         daaTools.daa_workflow_execute({
           workflowId: 'fail-execute',
-        }),
+        })
       ).rejects.toThrow('Execution failed');
     });
 
@@ -548,19 +548,19 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
 
     it('should handle missing required parameters', async () => {
       await expect(daaTools.daa_knowledge_share({})).rejects.toThrow(
-        'Source and target agent IDs are required',
+        'Source and target agent IDs are required'
       );
 
       await expect(
         daaTools.daa_knowledge_share({
           sourceAgentId: 'teacher',
-        }),
+        })
       ).rejects.toThrow('Source and target agent IDs are required');
 
       await expect(
         daaTools.daa_knowledge_share({
           targetAgentIds: ['student'],
-        }),
+        })
       ).rejects.toThrow('Source and target agent IDs are required');
     });
 
@@ -571,7 +571,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
       };
 
       await expect(daaTools.daa_knowledge_share(params)).rejects.toThrow(
-        'Source and target agent IDs are required',
+        'Source and target agent IDs are required'
       );
     });
 
@@ -582,7 +582,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
         daaTools.daa_knowledge_share({
           sourceAgentId: 'fail-teacher',
           targetAgentIds: ['student'],
-        }),
+        })
       ).rejects.toThrow('Knowledge sharing failed');
     });
 
@@ -646,13 +646,13 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
       await expect(
         daaTools.daa_learning_status({
           agentId: 'fail-agent',
-        }),
+        })
       ).rejects.toThrow('Status unavailable');
     });
 
     it('should handle system learning status service failures', async () => {
       mockDaaService.getSystemLearningStatus.mockRejectedValueOnce(
-        new Error('System status unavailable'),
+        new Error('System status unavailable')
       );
 
       await expect(daaTools.daa_learning_status({})).rejects.toThrow('System status unavailable');
@@ -703,7 +703,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
       const params = { pattern: 'divergent', analyze: false };
 
       await expect(daaTools.daa_cognitive_pattern(params)).rejects.toThrow(
-        'Agent ID and pattern are required for pattern change',
+        'Agent ID and pattern are required for pattern change'
       );
     });
 
@@ -711,7 +711,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
       const params = { agentId: 'test-agent', analyze: false };
 
       await expect(daaTools.daa_cognitive_pattern(params)).rejects.toThrow(
-        'Agent ID and pattern are required for pattern change',
+        'Agent ID and pattern are required for pattern change'
       );
     });
 
@@ -722,7 +722,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
         daaTools.daa_cognitive_pattern({
           agentId: 'fail-agent',
           analyze: true,
-        }),
+        })
       ).rejects.toThrow('Analysis failed');
     });
 
@@ -733,7 +733,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
         daaTools.daa_cognitive_pattern({
           agentId: 'fail-agent',
           pattern: 'adaptive',
-        }),
+        })
       ).rejects.toThrow('Pattern change failed');
     });
   });
@@ -805,7 +805,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
         daaTools.daa_meta_learning({
           sourceDomain: 'fail-source',
           targetDomain: 'fail-target',
-        }),
+        })
       ).rejects.toThrow('Meta-learning failed');
     });
   });
@@ -868,7 +868,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
       await expect(
         daaTools.daa_performance_metrics({
           category: 'fail',
-        }),
+        })
       ).rejects.toThrow('Metrics unavailable');
     });
   });
@@ -1020,7 +1020,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
           id: `concurrent-agent-${i}`,
           capabilities: [`concurrent-${i}`],
           cognitivePattern: 'adaptive',
-        }),
+        })
       );
 
       const agents = await Promise.all(agentPromises);
@@ -1032,7 +1032,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
           agentId: agent.agent_id,
           feedback: 'Concurrent adaptation test',
           performanceScore: Math.random(),
-        }),
+        })
       );
 
       const adaptResults = await Promise.all(adaptPromises);

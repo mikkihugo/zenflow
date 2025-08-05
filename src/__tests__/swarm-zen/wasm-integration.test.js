@@ -18,7 +18,7 @@ const __dirname = dirname(__filename);
 function _assertApprox(actual, expected, tolerance = 0.01) {
   assert(
     Math.abs(actual - expected) < tolerance,
-    `Expected ${actual} to be approximately ${expected} (tolerance: ${tolerance})`,
+    `Expected ${actual} to be approximately ${expected} (tolerance: ${tolerance})`
   );
 }
 
@@ -102,7 +102,7 @@ class WasmIntegrationTests {
     assert(coreModule, 'Core module should load');
     assert(
       coreModule.exports || coreModule.isPlaceholder,
-      'Core module should have exports or be placeholder',
+      'Core module should have exports or be placeholder'
     );
 
     // Test 4: Module status
@@ -356,7 +356,7 @@ class WasmIntegrationTests {
         this.ruvSwarm.createSwarm({
           name: `perf-swarm-${i}`,
           maxAgents: 10,
-        }),
+        })
       );
       swarmTimes.push(time);
     }

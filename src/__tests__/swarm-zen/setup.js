@@ -63,7 +63,7 @@ if (typeof WebAssembly === 'undefined') {
         instance: {
           exports: {},
         },
-      }),
+      })
     ),
     Module: jest.fn(),
     Instance: jest.fn(),

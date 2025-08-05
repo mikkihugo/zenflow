@@ -99,12 +99,12 @@ class GNNModel extends NeuralModel {
     }
     if (nodes.shape[1] !== this.config.nodeFeatureDim) {
       throw new Error(
-        `Node feature dimension mismatch: expected ${this.config.nodeFeatureDim}, got ${nodes.shape[1]}`,
+        `Node feature dimension mismatch: expected ${this.config.nodeFeatureDim}, got ${nodes.shape[1]}`
       );
     }
     if (adjacency && (adjacency.shape[0] !== numNodes || adjacency.shape[1] !== numNodes)) {
       throw new Error(
-        `Adjacency matrix size mismatch: expected [${numNodes}, ${numNodes}], got [${adjacency.shape[0]}, ${adjacency.shape[1]}]`,
+        `Adjacency matrix size mismatch: expected [${numNodes}, ${numNodes}], got [${adjacency.shape[0]}, ${adjacency.shape[1]}]`
       );
     }
 
@@ -155,7 +155,7 @@ class GNNModel extends NeuralModel {
       const nodeMessage = this.transform(
         sourceFeatures,
         weights.nodeToMessage,
-        weights.messageBias,
+        weights.messageBias
       );
 
       // If edge features exist, incorporate them
@@ -167,7 +167,7 @@ class GNNModel extends NeuralModel {
         const edgeMessage = this.transform(
           edgeFeatures,
           weights.edgeToMessage,
-          new Float32Array(this.config.hiddenDimensions),
+          new Float32Array(this.config.hiddenDimensions)
         );
 
         // Combine node and edge messages
@@ -250,11 +250,11 @@ class GNNModel extends NeuralModel {
 
       // GRU-style update
       const updateGate = this.sigmoid(
-        this.transform(concatenated, weights.gateTransform, weights.gateBias),
+        this.transform(concatenated, weights.gateTransform, weights.gateBias)
       );
 
       const candidate = this.tanh(
-        this.transform(concatenated, weights.updateTransform, weights.updateBias),
+        this.transform(concatenated, weights.updateTransform, weights.updateBias)
       );
 
       // Apply gated update
@@ -274,7 +274,7 @@ class GNNModel extends NeuralModel {
     const output = this.transform(
       nodeRepresentations,
       this.outputWeights.transform,
-      this.outputWeights.bias,
+      this.outputWeights.bias
     );
 
     output.shape = [nodeRepresentations.shape[0], this.config.outputDimensions];

@@ -53,27 +53,31 @@ class TDDDIValidator {
       londonTDD: { passed: 0, failed: 0, total: 0 },
       classicalTDD: { passed: 0, failed: 0, total: 0 },
       hybridTDD: { passed: 0, failed: 0, total: 0 },
-      diImplementation: { passed: 0, failed: 0, total: 0 }
+      diImplementation: { passed: 0, failed: 0, total: 0 },
     };
   }
 
   async validateAll() {
     header('TDD Standards and DI Implementation Validation');
-    
+
     try {
       await this.validateTDDStandards();
       await this.validateLondonTDD();
       await this.validateClassicalTDD();
       await this.validateHybridTDD();
       await this.validateDIImplementation();
-      
+
       this.generateReport();
-      
-      const totalPassed = Object.values(this.validationResults)
-        .reduce((sum, result) => sum + result.passed, 0);
-      const totalFailed = Object.values(this.validationResults)
-        .reduce((sum, result) => sum + result.failed, 0);
-      
+
+      const totalPassed = Object.values(this.validationResults).reduce(
+        (sum, result) => sum + result.passed,
+        0
+      );
+      const totalFailed = Object.values(this.validationResults).reduce(
+        (sum, result) => sum + result.failed,
+        0
+      );
+
       return totalFailed === 0;
     } catch (error) {
       error(`Validation failed: ${error.message}`);
@@ -83,24 +87,24 @@ class TDDDIValidator {
 
   async validateTDDStandards() {
     header('TDD Standards Validation');
-    
+
     const checks = [
       {
         name: 'Jest Configuration',
-        check: () => this.validateJestConfig()
+        check: () => this.validateJestConfig(),
       },
       {
         name: 'Test Setup Files',
-        check: () => this.validateTestSetup()
+        check: () => this.validateTestSetup(),
       },
       {
         name: 'Domain-Specific Test Organization',
-        check: () => this.validateTestOrganization()
+        check: () => this.validateTestOrganization(),
       },
       {
         name: 'Test Helper Utilities',
-        check: () => this.validateTestHelpers()
-      }
+        check: () => this.validateTestHelpers(),
+      },
     ];
 
     await this.runValidationSuite('tddStandards', checks);
@@ -108,24 +112,24 @@ class TDDDIValidator {
 
   async validateLondonTDD() {
     header('London TDD (Mockist) Validation');
-    
+
     const checks = [
       {
         name: 'London TDD Setup Configuration',
-        check: () => this.validateLondonSetup()
+        check: () => this.validateLondonSetup(),
       },
       {
         name: 'Coordination Domain Tests',
-        check: () => this.validateCoordinationTests()
+        check: () => this.validateCoordinationTests(),
       },
       {
         name: 'Interface Domain Tests',
-        check: () => this.validateInterfaceTests()
+        check: () => this.validateInterfaceTests(),
       },
       {
         name: 'Mock Usage Patterns',
-        check: () => this.validateMockPatterns()
-      }
+        check: () => this.validateMockPatterns(),
+      },
     ];
 
     await this.runValidationSuite('londonTDD', checks);
@@ -133,24 +137,24 @@ class TDDDIValidator {
 
   async validateClassicalTDD() {
     header('Classical TDD (Detroit) Validation');
-    
+
     const checks = [
       {
         name: 'Classical TDD Setup Configuration',
-        check: () => this.validateClassicalSetup()
+        check: () => this.validateClassicalSetup(),
       },
       {
         name: 'Neural Domain Tests',
-        check: () => this.validateNeuralTests()
+        check: () => this.validateNeuralTests(),
       },
       {
         name: 'Algorithm Testing Patterns',
-        check: () => this.validateAlgorithmTests()
+        check: () => this.validateAlgorithmTests(),
       },
       {
         name: 'Performance Testing',
-        check: () => this.validatePerformanceTests()
-      }
+        check: () => this.validatePerformanceTests(),
+      },
     ];
 
     await this.runValidationSuite('classicalTDD', checks);
@@ -158,24 +162,24 @@ class TDDDIValidator {
 
   async validateHybridTDD() {
     header('Hybrid TDD Approach Validation');
-    
+
     const checks = [
       {
         name: 'Hybrid Setup Configuration',
-        check: () => this.validateHybridSetup()
+        check: () => this.validateHybridSetup(),
       },
       {
         name: '70% London / 30% Classical Distribution',
-        check: () => this.validateTDDDistribution()
+        check: () => this.validateTDDDistribution(),
       },
       {
         name: 'Memory Domain Hybrid Tests',
-        check: () => this.validateMemoryDomainTests()
+        check: () => this.validateMemoryDomainTests(),
       },
       {
         name: 'Cross-Domain Integration',
-        check: () => this.validateCrossDomainIntegration()
-      }
+        check: () => this.validateCrossDomainIntegration(),
+      },
     ];
 
     await this.runValidationSuite('hybridTDD', checks);
@@ -183,28 +187,28 @@ class TDDDIValidator {
 
   async validateDIImplementation() {
     header('Dependency Injection Implementation Validation');
-    
+
     const checks = [
       {
         name: 'DI Container Implementation',
-        check: () => this.validateDIContainer()
+        check: () => this.validateDIContainer(),
       },
       {
         name: 'DI Decorators and Tokens',
-        check: () => this.validateDIDecorators()
+        check: () => this.validateDIDecorators(),
       },
       {
         name: 'DI Provider Implementations',
-        check: () => this.validateDIProviders()
+        check: () => this.validateDIProviders(),
       },
       {
         name: 'Domain-Specific DI Integration',
-        check: () => this.validateDomainDIIntegration()
+        check: () => this.validateDomainDIIntegration(),
       },
       {
         name: 'DI Testing Infrastructure',
-        check: () => this.validateDITesting()
-      }
+        check: () => this.validateDITesting(),
+      },
     ];
 
     await this.runValidationSuite('diImplementation', checks);
@@ -234,23 +238,25 @@ class TDDDIValidator {
   validateJestConfig() {
     const jestConfigPath = join(process.cwd(), 'jest.config.ts');
     if (!existsSync(jestConfigPath)) return false;
-    
+
     const config = readFileSync(jestConfigPath, 'utf8');
-    return config.includes('setup-london.ts') && 
-           config.includes('setup-classical.ts') && 
-           config.includes('setup-hybrid.ts') &&
-           config.includes('jest-extended');
+    return (
+      config.includes('setup-london.ts') &&
+      config.includes('setup-classical.ts') &&
+      config.includes('setup-hybrid.ts') &&
+      config.includes('jest-extended')
+    );
   }
 
   validateTestSetup() {
     const setupFiles = [
       'tests/setup.ts',
-      'tests/setup-london.ts', 
+      'tests/setup-london.ts',
       'tests/setup-classical.ts',
-      'tests/setup-hybrid.ts'
+      'tests/setup-hybrid.ts',
     ];
-    
-    return setupFiles.every(file => {
+
+    return setupFiles.every((file) => {
       const path = join(process.cwd(), file);
       return existsSync(path);
     });
@@ -259,41 +265,40 @@ class TDDDIValidator {
   validateTestOrganization() {
     const testDirs = [
       'src/__tests__/coordination',
-      'src/__tests__/interfaces', 
+      'src/__tests__/interfaces',
       'src/__tests__/neural',
       'src/__tests__/memory',
-      'src/__tests__/di-integration'
+      'src/__tests__/di-integration',
     ];
-    
-    return testDirs.every(dir => {
+
+    return testDirs.every((dir) => {
       const path = join(process.cwd(), dir);
       return existsSync(path);
     });
   }
 
   validateTestHelpers() {
-    const helperFiles = [
-      'src/__tests__/helpers/neural-test-helpers.ts'
-    ];
-    
-    return helperFiles.every(file => {
+    const helperFiles = ['src/__tests__/helpers/neural-test-helpers.ts'];
+
+    return helperFiles.every((file) => {
       const path = join(process.cwd(), file);
       if (!existsSync(path)) return false;
-      
+
       const content = readFileSync(path, 'utf8');
-      return !content.includes('.toBeFinite()') && 
-             !content.includes('.greaterThan(');
+      return !content.includes('.toBeFinite()') && !content.includes('.greaterThan(');
     });
   }
 
   validateLondonSetup() {
     const setupPath = join(process.cwd(), 'tests/setup-london.ts');
     if (!existsSync(setupPath)) return false;
-    
+
     const content = readFileSync(setupPath, 'utf8');
-    return content.includes('createInteractionSpy') && 
-           content.includes('verifyInteractions') &&
-           content.includes('jest-extended');
+    return (
+      content.includes('createInteractionSpy') &&
+      content.includes('verifyInteractions') &&
+      content.includes('jest-extended')
+    );
   }
 
   validateCoordinationTests() {
@@ -305,17 +310,17 @@ class TDDDIValidator {
     const integrationFiles = [
       'src/__tests__/integration/mcp-server-london-tdd.test.ts',
       'src/__tests__/integration/websocket-client-london-tdd.test.ts',
-      'src/__tests__/integration/web-mcp-integration-london-tdd.test.ts'
+      'src/__tests__/integration/web-mcp-integration-london-tdd.test.ts',
     ];
-    
-    return integrationFiles.every(file => existsSync(join(process.cwd(), file)));
+
+    return integrationFiles.every((file) => existsSync(join(process.cwd(), file)));
   }
 
   validateMockPatterns() {
     // Check if coordination tests use mocks appropriately
     const coordTestDir = join(process.cwd(), 'src/__tests__/coordination');
     if (!existsSync(coordTestDir)) return false;
-    
+
     // Simplified check - look for mock usage in test files
     return true; // Placeholder for more detailed validation
   }
@@ -323,11 +328,13 @@ class TDDDIValidator {
   validateClassicalSetup() {
     const setupPath = join(process.cwd(), 'tests/setup-classical.ts');
     if (!existsSync(setupPath)) return false;
-    
+
     const content = readFileSync(setupPath, 'utf8');
-    return content.includes('generateTestMatrix') && 
-           content.includes('expectNearlyEqual') &&
-           content.includes('jest-extended');
+    return (
+      content.includes('generateTestMatrix') &&
+      content.includes('expectNearlyEqual') &&
+      content.includes('jest-extended')
+    );
   }
 
   validateNeuralTests() {
@@ -343,28 +350,29 @@ class TDDDIValidator {
   validatePerformanceTests() {
     const classicalSetup = join(process.cwd(), 'tests/setup-classical.ts');
     if (!existsSync(classicalSetup)) return false;
-    
+
     const content = readFileSync(classicalSetup, 'utf8');
-    return content.includes('expectPerformance') && 
-           content.includes('expectMemoryUsage');
+    return content.includes('expectPerformance') && content.includes('expectMemoryUsage');
   }
 
   validateHybridSetup() {
     const setupPath = join(process.cwd(), 'tests/setup-hybrid.ts');
     if (!existsSync(setupPath)) return false;
-    
+
     const content = readFileSync(setupPath, 'utf8');
-    return content.includes('setupLondonTDD') && 
-           content.includes('setupClassicalTDD') &&
-           content.includes('setupHybridTDD') &&
-           content.includes('testWithApproach');
+    return (
+      content.includes('setupLondonTDD') &&
+      content.includes('setupClassicalTDD') &&
+      content.includes('setupHybridTDD') &&
+      content.includes('testWithApproach')
+    );
   }
 
   validateTDDDistribution() {
     // Verify the 70% London / 30% Classical distribution in documentation
     const readmePath = join(process.cwd(), '.github/copilot-instructions.md');
     if (!existsSync(readmePath)) return false;
-    
+
     const content = readFileSync(readmePath, 'utf8');
     return content.includes('70% London') && content.includes('30% Classical');
   }
@@ -372,7 +380,7 @@ class TDDDIValidator {
   validateMemoryDomainTests() {
     const hybridSetup = join(process.cwd(), 'tests/setup-hybrid.ts');
     if (!existsSync(hybridSetup)) return false;
-    
+
     const content = readFileSync(hybridSetup, 'utf8');
     return content.includes('createMemoryTestScenario');
   }
@@ -380,7 +388,7 @@ class TDDDIValidator {
   validateCrossDomainIntegration() {
     const hybridSetup = join(process.cwd(), 'tests/setup-hybrid.ts');
     if (!existsSync(hybridSetup)) return false;
-    
+
     const content = readFileSync(hybridSetup, 'utf8');
     return content.includes('createSPARCTestScenario');
   }
@@ -404,11 +412,13 @@ class TDDDIValidator {
   validateDomainDIIntegration() {
     const diIndex = join(process.cwd(), 'src/di/index.ts');
     if (!existsSync(diIndex)) return false;
-    
+
     const content = readFileSync(diIndex, 'utf8');
-    return content.includes('CORE_TOKENS') && 
-           content.includes('SWARM_TOKENS') && 
-           content.includes('NEURAL_TOKENS');
+    return (
+      content.includes('CORE_TOKENS') &&
+      content.includes('SWARM_TOKENS') &&
+      content.includes('NEURAL_TOKENS')
+    );
   }
 
   validateDITesting() {
@@ -418,39 +428,46 @@ class TDDDIValidator {
 
   generateReport() {
     header('Validation Results Summary');
-    
+
     const categories = [
       { name: 'TDD Standards', key: 'tddStandards' },
       { name: 'London TDD Implementation', key: 'londonTDD' },
       { name: 'Classical TDD Implementation', key: 'classicalTDD' },
       { name: 'Hybrid TDD Implementation', key: 'hybridTDD' },
-      { name: 'DI Implementation', key: 'diImplementation' }
+      { name: 'DI Implementation', key: 'diImplementation' },
     ];
-    
-    categories.forEach(category => {
+
+    categories.forEach((category) => {
       const result = this.validationResults[category.key];
       const successRate = result.total > 0 ? Math.round((result.passed / result.total) * 100) : 0;
-      
+
       log(`\n📊 ${category.name}:`, 'bold');
       log(`   Total Tests: ${result.total}`, 'cyan');
       log(`   Passed: ${result.passed}`, 'green');
       log(`   Failed: ${result.failed}`, result.failed > 0 ? 'red' : 'green');
       log(`   Success Rate: ${successRate}%`, successRate >= 80 ? 'green' : 'red');
     });
-    
-    const totalPassed = Object.values(this.validationResults)
-      .reduce((sum, result) => sum + result.passed, 0);
-    const totalFailed = Object.values(this.validationResults)
-      .reduce((sum, result) => sum + result.failed, 0);
+
+    const totalPassed = Object.values(this.validationResults).reduce(
+      (sum, result) => sum + result.passed,
+      0
+    );
+    const totalFailed = Object.values(this.validationResults).reduce(
+      (sum, result) => sum + result.failed,
+      0
+    );
     const totalTests = totalPassed + totalFailed;
     const overallSuccessRate = totalTests > 0 ? Math.round((totalPassed / totalTests) * 100) : 0;
-    
+
     log(`\n🎯 Overall Results:`, 'bold');
     log(`   Total Validations: ${totalTests}`, 'cyan');
     log(`   Passed: ${totalPassed}`, 'green');
     log(`   Failed: ${totalFailed}`, totalFailed > 0 ? 'red' : 'green');
-    log(`   Overall Success Rate: ${overallSuccessRate}%`, overallSuccessRate >= 80 ? 'green' : 'red');
-    
+    log(
+      `   Overall Success Rate: ${overallSuccessRate}%`,
+      overallSuccessRate >= 80 ? 'green' : 'red'
+    );
+
     if (totalFailed === 0) {
       log('\n🎉 All TDD and DI validations passed!', 'green');
       log('✨ TDD Standards: Complete', 'green');
@@ -468,7 +485,7 @@ class TDDDIValidator {
 // CLI execution
 if (import.meta.url === `file://${process.argv[1]}`) {
   const validator = new TDDDIValidator();
-  
+
   validator
     .validateAll()
     .then((success) => {

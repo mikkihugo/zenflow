@@ -58,7 +58,7 @@ describe('Claude Integration - Complete Coverage', () => {
               }
             },
           };
-        },
+        }
       );
 
       const core = new ClaudeIntegrationCore();
@@ -85,7 +85,7 @@ describe('Claude Integration - Complete Coverage', () => {
               }
             },
           };
-        },
+        }
       );
 
       const core = new ClaudeIntegrationCore();
@@ -121,7 +121,7 @@ describe('Claude Integration - Complete Coverage', () => {
               }
             },
           };
-        },
+        }
       );
 
       const core = new ClaudeIntegrationCore({ workingDir: testTempDir });
@@ -162,7 +162,7 @@ describe('Claude Integration - Complete Coverage', () => {
               }
             },
           };
-        },
+        }
       );
 
       const core = new ClaudeIntegrationCore({ workingDir: testTempDir });
@@ -183,7 +183,7 @@ describe('Claude Integration - Complete Coverage', () => {
               }
             },
           };
-        },
+        }
       );
 
       const core = new ClaudeIntegrationCore();
@@ -204,7 +204,7 @@ describe('Claude Integration - Complete Coverage', () => {
               }
             },
           };
-        },
+        }
       );
 
       const core = new ClaudeIntegrationCore();
@@ -234,7 +234,7 @@ describe('Claude Integration - Complete Coverage', () => {
               }
             },
           };
-        },
+        }
       );
 
       const core = new ClaudeIntegrationCore();
@@ -277,7 +277,7 @@ claude mcp add ruv-swarm npx ruv-swarm mcp start
               }
             },
           };
-        },
+        }
       );
 
       const docs = new ClaudeDocsGenerator({
@@ -290,7 +290,7 @@ claude mcp add ruv-swarm npx ruv-swarm mcp start
       expect(result).toContain('claude.md');
       expect(fs.writeFile).toHaveBeenCalledWith(
         expect.stringContaining('claude.md'),
-        expect.stringContaining('Claude Code Configuration'),
+        expect.stringContaining('Claude Code Configuration')
       );
     });
 
@@ -345,7 +345,7 @@ ${cmd.examples.join('\n')}
               }
             },
           };
-        },
+        }
       );
 
       const docs = new ClaudeDocsGenerator({ workingDir: testTempDir });
@@ -392,7 +392,7 @@ ${cmd.examples.join('\n')}
               }
             },
           };
-        },
+        }
       );
 
       const docs = new ClaudeDocsGenerator({ workingDir: testTempDir });
@@ -417,7 +417,7 @@ ${cmd.examples.join('\n')}
               }
             },
           };
-        },
+        }
       );
 
       const docs = new ClaudeDocsGenerator();
@@ -477,7 +477,7 @@ npx ${this.options.packageName} @args
               }
             },
           };
-        },
+        }
       );
 
       const remote = new RemoteWrapperGenerator({
@@ -494,7 +494,7 @@ npx ${this.options.packageName} @args
 
       expect(fs.writeFile).toHaveBeenCalledWith(
         expect.stringContaining('test-swarm.sh'),
-        expect.stringContaining('#!/bin/bash'),
+        expect.stringContaining('#!/bin/bash')
       );
     });
 
@@ -567,7 +567,7 @@ if "%1"=="init" (
               }
             },
           };
-        },
+        }
       );
 
       const remote = new RemoteWrapperGenerator({ workingDir: testTempDir });
@@ -612,7 +612,7 @@ if "%1"=="init" (
               }
             },
           };
-        },
+        }
       );
 
       const remote = new RemoteWrapperGenerator({ workingDir: testTempDir });
@@ -637,7 +637,7 @@ if "%1"=="init" (
               }
             },
           };
-        },
+        }
       );
 
       const remote = new RemoteWrapperGenerator();
@@ -762,7 +762,7 @@ RUVSW_SWARM_ID=custom_swarm_id
 NODE_ENV=production
 `,
           };
-        },
+        }
       );
 
       expect(ENV_TEMPLATE).toContain('CLAUDE_API_KEY');
@@ -813,7 +813,7 @@ NODE_ENV=production
               }
             },
           };
-        },
+        }
       );
 
       const docs = new ClaudeDocsGenerator({ workingDir: '/readonly/path' });
@@ -835,7 +835,7 @@ NODE_ENV=production
               }
             },
           };
-        },
+        }
       );
 
       const core = new ClaudeIntegrationCore();
@@ -858,7 +858,7 @@ NODE_ENV=production
               }
             },
           };
-        },
+        }
       );
 
       const core = new ClaudeIntegrationCore();
@@ -892,7 +892,7 @@ NODE_ENV=production
               }
             },
           };
-        },
+        }
       );
 
       const docs = new ClaudeDocsGenerator({ workingDir: testTempDir });

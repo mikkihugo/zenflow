@@ -75,7 +75,7 @@ global.assert = new Proxy(assert, {
           } else if (typeof expectedError === 'string') {
             if (!error.message.includes(expectedError)) {
               throw new Error(
-                `Error message "${error.message}" does not include "${expectedError}"`,
+                `Error message "${error.message}" does not include "${expectedError}"`
               );
             }
           }

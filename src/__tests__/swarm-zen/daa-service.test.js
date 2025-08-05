@@ -220,7 +220,7 @@ describe('DAA Service', () => {
             task: async (agent) => ({ agent: agent.id, result: 'step2-complete' }),
           },
         ],
-        { step2: ['step1'] },
+        { step2: ['step1'] }
       );
 
       expect(workflow.id).toBe('simple-workflow');
@@ -250,12 +250,12 @@ describe('DAA Service', () => {
         {
           B: ['A'],
           C: ['A', 'B'],
-        },
+        }
       );
 
       // Try to execute C before dependencies
       await expect(
-        service.executeWorkflowStep('dependent-workflow', 'C', ['worker-1']),
+        service.executeWorkflowStep('dependent-workflow', 'C', ['worker-1'])
       ).rejects.toThrow('Dependency A not completed');
 
       // Execute in correct order
@@ -278,7 +278,7 @@ describe('DAA Service', () => {
         ],
         {
           final: ['parallel-1', 'parallel-2', 'parallel-3'],
-        },
+        }
       );
 
       // Execute parallel steps concurrently
@@ -350,7 +350,7 @@ describe('DAA Service', () => {
         expect.objectContaining({
           agentIds: ['sync-agent-1', 'sync-agent-2'],
           duration: expect.any(Number),
-        }),
+        })
       );
     });
   });
@@ -459,13 +459,13 @@ describe('DAA Service', () => {
 
     test('should handle agent not found errors', async () => {
       await expect(service.makeDecision('non-existent', {})).rejects.toThrow(
-        'Agent non-existent not found',
+        'Agent non-existent not found'
       );
     });
 
     test('should handle workflow not found errors', async () => {
       await expect(
-        service.executeWorkflowStep('non-existent-workflow', 'step1', ['agent1']),
+        service.executeWorkflowStep('non-existent-workflow', 'step1', ['agent1'])
       ).rejects.toThrow('Workflow non-existent-workflow not found');
     });
 

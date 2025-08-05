@@ -100,7 +100,7 @@ class ProductionValidationTest {
       // Memory increase should be reasonable (less than 50MB)
       if (memoryIncrease > 50 * 1024 * 1024) {
         throw new Error(
-          `Excessive memory usage: ${Math.round(memoryIncrease / 1024 / 1024)}MB increase`,
+          `Excessive memory usage: ${Math.round(memoryIncrease / 1024 / 1024)}MB increase`
         );
       }
     });

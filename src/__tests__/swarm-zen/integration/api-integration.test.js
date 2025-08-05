@@ -228,8 +228,8 @@ describe('API Integration Tests', () => {
           swarm.orchestrate({
             description: `Task for ${swarm.id}`,
             priority: 'medium',
-          }),
-        ),
+          })
+        )
       );
 
       assert.strictEqual(tasks.length, 3);

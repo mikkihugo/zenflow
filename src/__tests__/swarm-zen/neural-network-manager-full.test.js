@@ -313,7 +313,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
 
       // Velocities should be non-zero
       const hasNonZeroVelocity = network.velocities.some((v) =>
-        v?.weights?.some((row) => row.some((w) => w !== 0)),
+        v?.weights?.some((row) => row.some((w) => w !== 0))
       );
       expect(hasNonZeroVelocity).toBe(true);
     });
@@ -410,7 +410,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
           layers: expect.any(Array),
           config: expect.any(Object),
           stats: expect.any(Object),
-        }),
+        })
       );
     });
 

@@ -9,9 +9,7 @@ import { nanoid } from 'nanoid';
 import type {
   AlgorithmPseudocode,
   ComplexityAnalysis,
-  ComplexityClass,
   ControlFlowDiagram,
-  CoreAlgorithm,
   DataStructureDesign,
   DataStructureSpec,
   DetailedSpecification,
@@ -19,12 +17,16 @@ import type {
   LogicValidation,
   OptimizationOpportunity,
   OptimizationSuggestion,
+  ParameterDefinition,
   PerformanceTarget,
   Priority,
   ProcessFlow,
+  ProcessStep,
   PseudocodeEngine,
+  PseudocodeStep,
   PseudocodeStructure,
   PseudocodeValidation,
+  ReturnDefinition,
   ValidationResult,
 } from '../../types/sparc-types';
 
@@ -37,17 +39,13 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
 
     for (const requirement of spec.functionalRequirements) {
       const algorithm: AlgorithmPseudocode = {
-        id: nanoid(),
         name: requirement.title,
-        description: requirement.description,
-        pseudocode: await this.generateAlgorithmPseudocodePrivate(requirement, spec.domain),
+        purpose: requirement.description,
+        inputs: await this.extractInputParameterDefinitions(requirement),
+        outputs: await this.extractOutputDefinitions(requirement),
+        steps: await this.generatePseudocodeSteps(requirement, spec.domain),
         complexity: await this.estimateAlgorithmComplexity(requirement),
-        inputParameters: await this.extractInputParameters(requirement),
-        outputFormat: await this.defineOutputFormat(requirement),
-        preconditions: requirement.preconditions || [],
-        postconditions: requirement.postconditions || [],
-        invariants: requirement.invariants || [],
-        purpose: requirement.description, // Add missing purpose property
+        optimizations: await this.identifyAlgorithmOptimizations(requirement),
       };
       algorithms.push(algorithm);
     }
@@ -58,26 +56,51 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
   async designDataStructures(
     requirements: FunctionalRequirement[]
   ): Promise<DataStructureDesign[]> {
-    // Convert DataStructureSpec to DataStructureDesign
-    const specs = await this.generateDataStructures(requirements);
-    return specs.map((spec) => ({
-      name: spec.name,
-      type: spec.type as 'class' | 'interface' | 'enum' | 'type',
-      properties: spec.properties || [],
-      methods: spec.methods || [],
-      relationships: spec.relationships || [], // Add missing relationships property
-    }));
+    // Convert requirements to proper data structure specs
+    const dataStructures: DataStructureDesign[] = [];
+    
+    for (const requirement of requirements) {
+      dataStructures.push({
+        name: `${requirement.title}Data`,
+        type: 'class',
+        properties: [
+          {
+            name: 'id',
+            type: 'string',
+            visibility: 'public',
+            description: 'Unique identifier'
+          }
+        ],
+        methods: [
+          {
+            name: 'process',
+            parameters: [],
+            returnType: 'void',
+            visibility: 'public',
+            description: `Process ${requirement.title}`
+          }
+        ],
+        relationships: []
+      });
+    }
+
+    return dataStructures;
   }
 
   async mapControlFlows(algorithms: AlgorithmPseudocode[]): Promise<ControlFlowDiagram[]> {
-    // Implementation for control flow mapping
     return algorithms.map((alg) => ({
-      id: nanoid(),
-      algorithmId: alg.id,
-      nodes: [],
-      edges: [],
-      startNode: 'start',
-      endNodes: ['end'],
+      name: `${alg.name}Flow`,
+      nodes: [
+        { id: 'start', type: 'start', label: 'Start' },
+        { id: 'process', type: 'process', label: alg.purpose },
+        { id: 'end', type: 'end', label: 'End' }
+      ],
+      edges: [
+        { from: 'start', to: 'process' },
+        { from: 'process', to: 'end' }
+      ],
+      cycles: false,
+      complexity: alg.steps.length
     }));
   }
 
@@ -96,43 +119,57 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
   }
 
   async validatePseudocodeLogic(pseudocode: AlgorithmPseudocode[]): Promise<LogicValidation> {
-    // Implementation for logic validation
-    return {
-      score: 0.8,
-      results: [],
-      recommendations: [],
-    };
+    const validationResults: ValidationResult[] = [];
+    
+    for (const algorithm of pseudocode) {
+      // Validate algorithm structure
+      validationResults.push({
+        criterion: `${algorithm.name} completeness`,
+        passed: algorithm.steps.length > 0,
+        score: algorithm.steps.length > 0 ? 1.0 : 0.0,
+        details: algorithm.steps.length > 0 ? 'Algorithm has valid steps' : 'Algorithm missing steps'
+      });
+
+      // Validate input/output consistency
+      validationResults.push({
+        criterion: `${algorithm.name} I/O consistency`,
+        passed: algorithm.inputs.length > 0 && algorithm.outputs.length > 0,
+        score: algorithm.inputs.length > 0 && algorithm.outputs.length > 0 ? 1.0 : 0.5,
+        details: 'Input and output parameters defined'
+      });
+    }
+
+    return validationResults;
   }
   /**
    * Generate algorithmic pseudocode from detailed specifications
    */
   async generatePseudocode(specification: DetailedSpecification): Promise<PseudocodeStructure> {
-    const coreAlgorithms = await this.designCoreAlgorithms(specification);
-    const dataStructures = await this.specifyDataStructures(specification);
-    const processFlows = await this.defineProcessFlows(specification);
-    const complexityAnalysis = await this.analyzeComplexity(coreAlgorithms);
+    // Generate algorithms using the interface-compliant method
+    const algorithms = await this.generateAlgorithmPseudocode(specification);
+    const dataStructures = await this.designDataStructures(specification.functionalRequirements);
+    const controlFlows = await this.mapControlFlows(algorithms);
+    const complexityAnalysis = await this.analyzeComplexity(algorithms);
 
     return {
       id: nanoid(),
-      specificationId: specification.id,
-      coreAlgorithms,
+      algorithms,
+      coreAlgorithms: algorithms, // Legacy compatibility
       dataStructures,
-      processFlows,
+      controlFlows,
+      optimizations: await this.identifyOptimizations(algorithms),
+      dependencies: [], // Algorithm dependencies
       complexityAnalysis,
-      optimizationOpportunities: await this.identifyOptimizations(coreAlgorithms),
-      estimatedPerformance: await this.estimatePerformance(coreAlgorithms, complexityAnalysis),
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
   }
 
   /**
-   * Design core algorithms based on functional requirements
+   * Design core algorithms based on functional requirements (Legacy method for backward compatibility)
    */
   private async designCoreAlgorithms(
     specification: DetailedSpecification
-  ): Promise<CoreAlgorithm[]> {
-    const algorithms: CoreAlgorithm[] = [];
+  ): Promise<AlgorithmPseudocode[]> {
+    const algorithms: AlgorithmPseudocode[] = [];
 
     for (const requirement of specification.functionalRequirements) {
       if (requirement.type === 'algorithmic') {
@@ -163,23 +200,20 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
   }
 
   /**
-   * Create algorithm for specific requirement
+   * Create algorithm for specific requirement (Legacy method)
    */
   private async createAlgorithmForRequirement(
     requirement: any,
     domain: string
-  ): Promise<CoreAlgorithm> {
+  ): Promise<AlgorithmPseudocode> {
     return {
-      id: nanoid(),
       name: `${requirement.title.replace(/\s+/g, '')}Algorithm`,
-      description: `Algorithm implementing: ${requirement.description}`,
-      pseudocode: await this.generateAlgorithmPseudocodePrivate(requirement, domain),
+      purpose: `Algorithm implementing: ${requirement.description}`,
+      inputs: await this.extractInputParameterDefinitions(requirement),
+      outputs: await this.extractOutputDefinitions(requirement),
+      steps: await this.generatePseudocodeSteps(requirement, domain),
       complexity: await this.estimateAlgorithmComplexity(requirement),
-      inputParameters: await this.extractInputParameters(requirement),
-      outputFormat: await this.defineOutputFormat(requirement),
-      preconditions: requirement.preconditions || [],
-      postconditions: requirement.postconditions || [],
-      invariants: requirement.invariants || [],
+      optimizations: await this.identifyAlgorithmOptimizations(requirement),
     };
   }
 
@@ -188,89 +222,101 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
    */
   private async createSwarmCoordinationAlgorithms(
     _specification: DetailedSpecification
-  ): Promise<CoreAlgorithm[]> {
+  ): Promise<AlgorithmPseudocode[]> {
     return [
       {
-        id: nanoid(),
         name: 'AgentRegistrationAlgorithm',
-        description: 'Manages agent registration and capability discovery',
-        pseudocode: `
-ALGORITHM AgentRegistration
-INPUT: agent_info, capabilities[], resource_requirements
-OUTPUT: registration_result, agent_id
-
-BEGIN
-  VALIDATE agent_info
-  CHECK resource_availability(resource_requirements)
-  IF resources_available THEN
-    agent_id ← GENERATE_UNIQUE_ID()
-    registry[agent_id] ← {
-      info: agent_info,
-      capabilities: capabilities,
-      status: 'active',
-      last_heartbeat: CURRENT_TIME()
-    }
-    BROADCAST agent_joined_event(agent_id, capabilities)
-    RETURN success(agent_id)
-  ELSE
-    RETURN failure('insufficient_resources')
-  END IF
-END
-        `.trim(),
+        purpose: 'Manages agent registration and capability discovery',
+        inputs: [
+          { name: 'agent_info', type: 'AgentInfo', description: 'Agent information' },
+          { name: 'capabilities', type: 'Capability[]', description: 'Agent capabilities' },
+          { name: 'resource_requirements', type: 'ResourceRequirement[]', description: 'Required resources' }
+        ],
+        outputs: [
+          { name: 'registration_result', type: 'RegistrationResult', description: 'Registration outcome' },
+          { name: 'agent_id', type: 'string', description: 'Assigned agent ID' }
+        ],
+        steps: [
+          {
+            stepNumber: 1,
+            description: 'VALIDATE agent_info',
+            pseudocode: 'VALIDATE agent_info',
+            complexity: 'O(1)'
+          },
+          {
+            stepNumber: 2,
+            description: 'CHECK resource_availability(resource_requirements)',
+            pseudocode: 'CHECK resource_availability(resource_requirements)',
+            complexity: 'O(1)'
+          },
+          {
+            stepNumber: 3,
+            description: 'Generate unique ID and register agent',
+            pseudocode: 'agent_id ← GENERATE_UNIQUE_ID(); registry[agent_id] ← agent_data',
+            complexity: 'O(log n)'
+          }
+        ],
         complexity: {
           timeComplexity: 'O(log n)',
           spaceComplexity: 'O(1)',
           scalability: 'Good logarithmic scaling',
           worstCase: 'O(log n) for registry insertion, constant space for agent data',
         },
-        inputParameters: ['agent_info', 'capabilities', 'resource_requirements'],
-        outputFormat: 'RegistrationResult',
-        preconditions: ['Agent info is valid', 'Network is available'],
-        postconditions: ['Agent is registered or error is returned'],
-        invariants: ['Registry consistency maintained'],
+        optimizations: [
+          {
+            type: 'performance',
+            description: 'Use hash table for faster agent lookup',
+            impact: 'medium',
+            effort: 'low'
+          }
+        ]
       },
       {
-        id: nanoid(),
         name: 'LoadBalancingAlgorithm',
-        description: 'Distributes tasks across available agents optimally',
-        pseudocode: `
-ALGORITHM LoadBalancing
-INPUT: task, available_agents[], performance_metrics
-OUTPUT: selected_agent, task_assignment
-
-BEGIN
-  eligible_agents ← FILTER agents BY task.requirements
-  IF eligible_agents.IS_EMPTY() THEN
-    RETURN failure('no_eligible_agents')
-  END IF
-  
-  scored_agents ← []
-  FOR EACH agent IN eligible_agents DO
-    load_factor ← CALCULATE_LOAD(agent)
-    capability_score ← MATCH_CAPABILITIES(agent, task)
-    performance_score ← GET_PERFORMANCE_HISTORY(agent)
-    total_score ← WEIGHTED_SUM(load_factor, capability_score, performance_score)
-    scored_agents.ADD({agent, total_score})
-  END FOR
-  
-  best_agent ← MAX(scored_agents, BY total_score)
-  ASSIGN_TASK(best_agent, task)
-  UPDATE_METRICS(best_agent, task)
-  
-  RETURN success(best_agent, task_assignment)
-END
-        `.trim(),
+        purpose: 'Distributes tasks across available agents optimally',
+        inputs: [
+          { name: 'task', type: 'Task', description: 'Task to distribute' },
+          { name: 'available_agents', type: 'Agent[]', description: 'Available agents' },
+          { name: 'performance_metrics', type: 'PerformanceMetrics', description: 'Performance data' }
+        ],
+        outputs: [
+          { name: 'selected_agent', type: 'Agent', description: 'Selected agent' },
+          { name: 'task_assignment', type: 'TaskAssignment', description: 'Assignment details' }
+        ],
+        steps: [
+          {
+            stepNumber: 1,
+            description: 'Filter eligible agents',
+            pseudocode: 'eligible_agents ← FILTER agents BY task.requirements',
+            complexity: 'O(n)'
+          },
+          {
+            stepNumber: 2,
+            description: 'Score and rank agents',
+            pseudocode: 'FOR EACH agent: score ← CALCULATE_SCORE(agent, task)',
+            complexity: 'O(n)'
+          },
+          {
+            stepNumber: 3,
+            description: 'Select best agent',
+            pseudocode: 'best_agent ← MAX(scored_agents, BY total_score)',
+            complexity: 'O(n)'
+          }
+        ],
         complexity: {
           timeComplexity: 'O(n log n)',
           spaceComplexity: 'O(n)',
           scalability: 'Good logarithmic scaling',
           worstCase: 'Linear scan with logarithmic sorting for agent selection',
         },
-        inputParameters: ['task', 'available_agents', 'performance_metrics'],
-        outputFormat: 'TaskAssignment',
-        preconditions: ['Task is valid', 'Agents list is current'],
-        postconditions: ['Task assigned to optimal agent'],
-        invariants: ['Load balance maintained across swarm'],
+        optimizations: [
+          {
+            type: 'caching',
+            description: 'Cache agent performance scores',
+            impact: 'medium',
+            effort: 'low'
+          }
+        ]
       },
     ];
   }
@@ -280,47 +326,55 @@ END
    */
   private async createNeuralNetworkAlgorithms(
     _specification: DetailedSpecification
-  ): Promise<CoreAlgorithm[]> {
+  ): Promise<AlgorithmPseudocode[]> {
     return [
       {
-        id: nanoid(),
         name: 'ForwardPropagationAlgorithm',
-        description: 'WASM-accelerated forward propagation through neural network',
-        pseudocode: `
-ALGORITHM ForwardPropagation
-INPUT: input_vector[], weights[][], biases[][], layer_configs[]
-OUTPUT: output_vector[], activations[][]
-
-BEGIN
-  activations[0] ← input_vector
-  
-  FOR layer_index FROM 1 TO num_layers DO
-    layer_input ← activations[layer_index - 1]
-    weights_layer ← weights[layer_index]
-    bias_layer ← biases[layer_index]
-    activation_fn ← layer_configs[layer_index].activation
-    
-    // Use WASM for matrix multiplication
-    raw_output ← WASM_MATRIX_MULTIPLY(layer_input, weights_layer)
-    biased_output ← ADD_BIAS(raw_output, bias_layer)
-    activations[layer_index] ← APPLY_ACTIVATION(biased_output, activation_fn)
-  END FOR
-  
-  output_vector ← activations[num_layers]
-  RETURN output_vector, activations
-END
-        `.trim(),
+        purpose: 'WASM-accelerated forward propagation through neural network',
+        inputs: [
+          { name: 'input_vector', type: 'number[]', description: 'Input data vector' },
+          { name: 'weights', type: 'number[][]', description: 'Network weights' },
+          { name: 'biases', type: 'number[][]', description: 'Network biases' },
+          { name: 'layer_configs', type: 'LayerConfig[]', description: 'Layer configurations' }
+        ],
+        outputs: [
+          { name: 'output_vector', type: 'number[]', description: 'Network output' },
+          { name: 'activations', type: 'number[][]', description: 'Layer activations' }
+        ],
+        steps: [
+          {
+            stepNumber: 1,
+            description: 'Initialize with input',
+            pseudocode: 'activations[0] ← input_vector',
+            complexity: 'O(1)'
+          },
+          {
+            stepNumber: 2,
+            description: 'Forward propagate through layers',
+            pseudocode: 'FOR layer_index FROM 1 TO num_layers DO forward_pass(layer)',
+            complexity: 'O(n * m * k)'
+          },
+          {
+            stepNumber: 3,
+            description: 'Apply WASM matrix multiplication',
+            pseudocode: 'raw_output ← WASM_MATRIX_MULTIPLY(layer_input, weights_layer)',
+            complexity: 'O(n * m)'
+          }
+        ],
         complexity: {
           timeComplexity: 'O(n * m * k)',
           spaceComplexity: 'O(n * m)',
           scalability: 'Moderate scaling with layer dimensions',
           worstCase: 'Matrix multiplication complexity where n,m,k are layer dimensions',
         },
-        inputParameters: ['input_vector', 'weights', 'biases', 'layer_configs'],
-        outputFormat: 'NetworkOutput',
-        preconditions: ['Network is initialized', 'Input dimensions match'],
-        postconditions: ['Output computed correctly'],
-        invariants: ['Network weights unchanged during forward pass'],
+        optimizations: [
+          {
+            type: 'performance',
+            description: 'Use WASM for matrix operations',
+            impact: 'high',
+            effort: 'medium'
+          }
+        ]
       },
     ];
   }
@@ -330,65 +384,55 @@ END
    */
   private async createMemorySystemAlgorithms(
     _specification: DetailedSpecification
-  ): Promise<CoreAlgorithm[]> {
+  ): Promise<AlgorithmPseudocode[]> {
     return [
       {
-        id: nanoid(),
         name: 'MultiBackendMemoryAlgorithm',
-        description: 'Manages data across multiple storage backends with consistency',
-        pseudocode: `
-ALGORITHM MultiBackendMemory
-INPUT: operation_type, key, value, consistency_level
-OUTPUT: operation_result, affected_backends[]
-
-BEGIN
-  backends ← GET_AVAILABLE_BACKENDS()
-  primary_backend ← SELECT_PRIMARY(backends, key)
-  
-  CASE operation_type OF
-    'READ':
-      result ← TRY_READ(primary_backend, key)
-      IF result.IS_SUCCESS() THEN
-        RETURN result
-      ELSE
-        FOR EACH backup_backend IN backends DO
-          result ← TRY_READ(backup_backend, key)
-          IF result.IS_SUCCESS() THEN
-            ASYNC_REPAIR(primary_backend, key, result.value)
-            RETURN result
-          END IF
-        END FOR
-        RETURN failure('key_not_found')
-      END IF
-      
-    'write':
-      IF consistency_level = 'strong' THEN
-        results ← PARALLEL_WRITE_ALL(backends, key, value)
-        IF ALL_SUCCESSFUL(results) THEN
-          RETURN success(results)
-        ELSE
-          ROLLBACK_FAILED_WRITES(results)
-          RETURN failure('write_failed')
-        END IF
-      ELSE
-        ASYNC_WRITE(primary_backend, key, value)
-        ASYNC_REPLICATE(backup_backends, key, value)
-        RETURN success()
-      END IF
-  END CASE
-END
-        `.trim(),
+        purpose: 'Manages data across multiple storage backends with consistency',
+        inputs: [
+          { name: 'operation_type', type: 'string', description: 'Type of operation (read/write)' },
+          { name: 'key', type: 'string', description: 'Data key' },
+          { name: 'value', type: 'any', description: 'Data value' },
+          { name: 'consistency_level', type: 'string', description: 'Consistency requirement' }
+        ],
+        outputs: [
+          { name: 'operation_result', type: 'OperationResult', description: 'Operation outcome' },
+          { name: 'affected_backends', type: 'Backend[]', description: 'Backends affected' }
+        ],
+        steps: [
+          {
+            stepNumber: 1,
+            description: 'Get available backends',
+            pseudocode: 'backends ← GET_AVAILABLE_BACKENDS()',
+            complexity: 'O(1)'
+          },
+          {
+            stepNumber: 2,
+            description: 'Select primary backend',
+            pseudocode: 'primary_backend ← SELECT_PRIMARY(backends, key)',
+            complexity: 'O(1)'
+          },
+          {
+            stepNumber: 3,
+            description: 'Execute operation based on type',
+            pseudocode: 'CASE operation_type OF read/write operations',
+            complexity: 'O(b)'
+          }
+        ],
         complexity: {
           timeComplexity: 'O(b)',
           spaceComplexity: 'O(1)',
           scalability: 'Excellent linear scaling',
           worstCase: 'Linear in number of backends, constant space per operation',
         },
-        inputParameters: ['operation_type', 'key', 'value', 'consistency_level'],
-        outputFormat: 'MemoryOperationResult',
-        preconditions: ['Backends are initialized', 'Key is valid'],
-        postconditions: ['Data consistency maintained'],
-        invariants: ['At least one backend remains available'],
+        optimizations: [
+          {
+            type: 'caching',
+            description: 'Cache backend selection decisions',
+            impact: 'medium',
+            effort: 'low'
+          }
+        ]
       },
     ];
   }
@@ -398,44 +442,54 @@ END
    */
   private async createGeneralAlgorithms(
     _specification: DetailedSpecification
-  ): Promise<CoreAlgorithm[]> {
+  ): Promise<AlgorithmPseudocode[]> {
     return [
       {
-        id: nanoid(),
         name: 'GenericDataProcessingAlgorithm',
-        description: 'General data processing and transformation pipeline',
-        pseudocode: `
-ALGORITHM GenericDataProcessing
-INPUT: data[], transformation_pipeline[], validation_rules[]
-OUTPUT: processed_data[], validation_report
-
-BEGIN
-  processed_data ← data
-  validation_report ← EMPTY_REPORT()
-  
-  FOR EACH transformation IN transformation_pipeline DO
-    VALIDATE_INPUT(processed_data, transformation.input_schema)
-    processed_data ← APPLY_TRANSFORMATION(processed_data, transformation)
-    VALIDATE_OUTPUT(processed_data, transformation.output_schema)
-  END FOR
-  
-  final_validation ← VALIDATE_AGAINST_RULES(processed_data, validation_rules)
-  validation_report.ADD(final_validation)
-  
-  RETURN processed_data, validation_report
-END
-        `.trim(),
+        purpose: 'General data processing and transformation pipeline',
+        inputs: [
+          { name: 'data', type: 'any[]', description: 'Input data' },
+          { name: 'transformation_pipeline', type: 'Transformation[]', description: 'Processing steps' },
+          { name: 'validation_rules', type: 'ValidationRule[]', description: 'Validation rules' }
+        ],
+        outputs: [
+          { name: 'processed_data', type: 'any[]', description: 'Processed data' },
+          { name: 'validation_report', type: 'ValidationReport', description: 'Validation results' }
+        ],
+        steps: [
+          {
+            stepNumber: 1,
+            description: 'Initialize processing',
+            pseudocode: 'processed_data ← data; validation_report ← EMPTY_REPORT()',
+            complexity: 'O(1)'
+          },
+          {
+            stepNumber: 2,
+            description: 'Apply transformations',
+            pseudocode: 'FOR EACH transformation: processed_data ← APPLY(transformation)',
+            complexity: 'O(n * t)'
+          },
+          {
+            stepNumber: 3,
+            description: 'Validate results',
+            pseudocode: 'final_validation ← VALIDATE_AGAINST_RULES(processed_data, validation_rules)',
+            complexity: 'O(n)'
+          }
+        ],
         complexity: {
           timeComplexity: 'O(n * t)',
           spaceComplexity: 'O(n)',
           scalability: 'Good linear scaling',
           worstCase: 'Linear in data size and number of transformations',
         },
-        inputParameters: ['data', 'transformation_pipeline', 'validation_rules'],
-        outputFormat: 'ProcessedDataResult',
-        preconditions: ['Pipeline is valid', 'Data format is correct'],
-        postconditions: ['Data processed according to pipeline'],
-        invariants: ['Data integrity maintained throughout processing'],
+        optimizations: [
+          {
+            type: 'parallelization',
+            description: 'Parallelize transformation steps',
+            impact: 'high',
+            effort: 'medium'
+          }
+        ]
       },
     ];
   }
@@ -445,60 +499,50 @@ END
    */
   private async specifyDataStructures(
     specification: DetailedSpecification
-  ): Promise<DataStructureSpec[]> {
-    const structures: DataStructureSpec[] = [];
+  ): Promise<DataStructureDesign[]> {
+    const structures: DataStructureDesign[] = [];
 
     // Add domain-specific data structures
     switch (specification.domain) {
       case 'swarm-coordination':
         structures.push(
           {
-            id: nanoid(),
             name: 'AgentRegistry',
-            type: 'HashMap',
-            description: 'Fast lookup of agent information by ID',
-            keyType: 'string',
-            valueType: 'AgentInfo',
-            expectedSize: 10000,
-            accessPatterns: ['lookup', 'insert', 'delete', 'iterate'],
-            performance: {
-              lookup: 'O(1)' as ComplexityClass,
-              insert: 'O(1)' as ComplexityClass,
-              delete: 'O(1)' as ComplexityClass,
-            },
+            type: 'class',
+            properties: [
+              { name: 'agents', type: 'Map<string, AgentInfo>', visibility: 'private', description: 'Agent storage' }
+            ],
+            methods: [
+              { name: 'register', parameters: [], returnType: 'string', visibility: 'public', description: 'Register agent' },
+              { name: 'find', parameters: [], returnType: 'AgentInfo', visibility: 'public', description: 'Find agent' }
+            ],
+            relationships: []
           },
           {
-            id: nanoid(),
             name: 'TaskQueue',
-            type: 'PriorityQueue',
-            description: 'Priority-ordered task distribution queue',
-            keyType: 'number',
-            valueType: 'Task',
-            expectedSize: 1000,
-            accessPatterns: ['enqueue', 'dequeue', 'peek'],
-            performance: {
-              enqueue: 'O(log n)' as ComplexityClass,
-              dequeue: 'O(log n)' as ComplexityClass,
-              peek: 'O(1)' as ComplexityClass,
-            },
+            type: 'class',
+            properties: [
+              { name: 'tasks', type: 'PriorityQueue<Task>', visibility: 'private', description: 'Task storage' }
+            ],
+            methods: [
+              { name: 'enqueue', parameters: [], returnType: 'void', visibility: 'public', description: 'Add task' },
+              { name: 'dequeue', parameters: [], returnType: 'Task', visibility: 'public', description: 'Get task' }
+            ],
+            relationships: []
           }
         );
         break;
       case 'neural-networks':
         structures.push({
-          id: nanoid(),
           name: 'WeightMatrix',
-          type: 'Matrix',
-          description: 'WASM-backed matrix for neural network weights',
-          keyType: 'number',
-          valueType: 'float64',
-          expectedSize: 1000000,
-          accessPatterns: ['random_access', 'batch_update', 'matrix_multiply'],
-          performance: {
-            access: 'O(1)' as ComplexityClass,
-            multiply: 'O(n^3)' as ComplexityClass,
-            update: 'O(1)' as ComplexityClass,
-          },
+          type: 'class',
+          properties: [
+            { name: 'weights', type: 'Float64Array', visibility: 'private', description: 'Weight storage' }
+          ],
+          methods: [
+            { name: 'multiply', parameters: [], returnType: 'number[]', visibility: 'public', description: 'Matrix multiplication' }
+          ],
+          relationships: []
         });
         break;
     }
@@ -506,95 +550,62 @@ END
     return structures;
   }
 
-  /**
-   * Define process flows between algorithms
-   */
-  private async defineProcessFlows(_specification: DetailedSpecification): Promise<ProcessFlow[]> {
-    return [
-      {
-        id: nanoid(),
-        name: 'MainProcessFlow',
-        description: 'Primary execution flow for the system',
-        steps: [
-          {
-            id: nanoid(),
-            name: 'Initialization',
-            description: 'System startup and configuration',
-            algorithm: 'InitializationAlgorithm',
-            inputs: ['config', 'environment'],
-            outputs: ['system_state'],
-            duration: 5000,
-          },
-          {
-            id: nanoid(),
-            name: 'MainLoop',
-            description: 'Core processing loop',
-            algorithm: 'MainProcessingAlgorithm',
-            inputs: ['system_state', 'external_events'],
-            outputs: ['processed_results'],
-            duration: 100,
-          },
-        ],
-        parallelizable: true,
-        criticalPath: ['Initialization', 'MainLoop'],
-      },
-    ];
-  }
+
 
   /**
    * Analyze computational complexity of algorithms
    */
-  private async analyzeComplexity(algorithms: CoreAlgorithm[]): Promise<ComplexityAnalysis> {
+  private async analyzeComplexity(algorithms: AlgorithmPseudocode[]): Promise<ComplexityAnalysis> {
     const worstCase = this.calculateWorstCaseComplexity(algorithms);
     const averageCase = this.calculateAverageCaseComplexity(algorithms);
     const bestCase = this.calculateBestCaseComplexity(algorithms);
 
     return {
+      timeComplexity: worstCase,
+      spaceComplexity: this.calculateSpaceComplexity(algorithms),
+      scalability: this.analyzeScalability(algorithms),
       worstCase,
       averageCase,
       bestCase,
-      spaceComplexity: this.calculateSpaceComplexity(algorithms),
-      scalabilityAnalysis: this.analyzeScalability(algorithms),
       bottlenecks: this.identifyBottlenecks(algorithms),
     };
   }
 
-  private calculateWorstCaseComplexity(algorithms: CoreAlgorithm[]): ComplexityClass {
+  private calculateWorstCaseComplexity(algorithms: AlgorithmPseudocode[]): string {
     // Find the algorithm with highest complexity
     const complexities = algorithms.map((alg) => alg.complexity.timeComplexity);
     return this.maxComplexity(complexities);
   }
 
-  private calculateAverageCaseComplexity(_algorithms: CoreAlgorithm[]): ComplexityClass {
+  private calculateAverageCaseComplexity(_algorithms: AlgorithmPseudocode[]): string {
     // Average complexity across all algorithms
-    return 'O(n log n)' as ComplexityClass;
+    return 'O(n log n)';
   }
 
-  private calculateBestCaseComplexity(_algorithms: CoreAlgorithm[]): ComplexityClass {
+  private calculateBestCaseComplexity(_algorithms: AlgorithmPseudocode[]): string {
     // Best case when all optimizations apply
-    return 'O(n)' as ComplexityClass;
+    return 'O(n)';
   }
 
-  private calculateSpaceComplexity(algorithms: CoreAlgorithm[]): ComplexityClass {
+  private calculateSpaceComplexity(algorithms: AlgorithmPseudocode[]): string {
     const spaceComplexities = algorithms.map((alg) => alg.complexity.spaceComplexity);
     return this.maxComplexity(spaceComplexities);
   }
 
-  private maxComplexity(complexities: ComplexityClass[]): ComplexityClass {
+  private maxComplexity(complexities: string[]): string {
     // Simple complexity comparison - in real implementation would be more sophisticated
-    if (complexities.includes('O(n^3)' as ComplexityClass)) return 'O(n^3)' as ComplexityClass;
-    if (complexities.includes('O(n^2)' as ComplexityClass)) return 'O(n^2)' as ComplexityClass;
-    if (complexities.includes('O(n log n)' as ComplexityClass))
-      return 'O(n log n)' as ComplexityClass;
-    if (complexities.includes('O(n)' as ComplexityClass)) return 'O(n)' as ComplexityClass;
-    return 'O(1)' as ComplexityClass;
+    if (complexities.includes('O(n^3)')) return 'O(n^3)';
+    if (complexities.includes('O(n^2)')) return 'O(n^2)';
+    if (complexities.includes('O(n log n)')) return 'O(n log n)';
+    if (complexities.includes('O(n)')) return 'O(n)';
+    return 'O(1)';
   }
 
-  private analyzeScalability(_algorithms: CoreAlgorithm[]): string {
+  private analyzeScalability(_algorithms: AlgorithmPseudocode[]): string {
     return 'System scales linearly with input size, with logarithmic overhead for coordination operations';
   }
 
-  private identifyBottlenecks(_algorithms: CoreAlgorithm[]): string[] {
+  private identifyBottlenecks(_algorithms: AlgorithmPseudocode[]): string[] {
     return [
       'Matrix multiplication in neural network operations',
       'Network communication latency in distributed coordination',
@@ -606,11 +617,18 @@ END
    * Identify optimization opportunities
    */
   private async identifyOptimizations(
-    _algorithms: CoreAlgorithm[]
+    algorithms: AlgorithmPseudocode[]
   ): Promise<OptimizationOpportunity[]> {
-    return [
+    const optimizations: OptimizationOpportunity[] = [];
+    
+    for (const algorithm of algorithms) {
+      // Combine algorithm-specific optimizations
+      optimizations.push(...algorithm.optimizations);
+    }
+
+    // Add general system optimizations
+    optimizations.push(
       {
-        id: nanoid(),
         type: 'algorithmic',
         description: 'Use WASM for performance-critical mathematical operations',
         impact: 'high',
@@ -618,7 +636,6 @@ END
         estimatedImprovement: '300% performance increase for matrix operations',
       },
       {
-        id: nanoid(),
         type: 'caching',
         description: 'Implement intelligent caching for frequently accessed agent data',
         impact: 'medium',
@@ -626,44 +643,18 @@ END
         estimatedImprovement: '50% reduction in database queries',
       },
       {
-        id: nanoid(),
         type: 'parallelization',
         description: 'Parallelize independent algorithm execution across multiple threads',
         impact: 'high',
         effort: 'high',
         estimatedImprovement: '200% throughput increase on multi-core systems',
-      },
-    ];
+      }
+    );
+
+    return optimizations;
   }
 
-  /**
-   * Estimate performance characteristics
-   */
-  private async estimatePerformance(
-    _algorithms: CoreAlgorithm[],
-    _complexity: ComplexityAnalysis
-  ): Promise<PerformanceTarget[]> {
-    return [
-      {
-        metric: 'throughput',
-        target: 10000,
-        unit: 'ops/sec',
-        priority: 'HIGH' as Priority,
-      },
-      {
-        metric: 'latency',
-        target: 100,
-        unit: 'milliseconds',
-        priority: 'HIGH' as Priority,
-      },
-      {
-        metric: 'memory_usage',
-        target: 1000000000,
-        unit: 'bytes',
-        priority: 'MEDIUM' as Priority,
-      },
-    ];
-  }
+
 
   /**
    * Generate algorithm-specific pseudocode
@@ -699,17 +690,59 @@ END
   }
 
   /**
-   * Extract input parameters from requirement
+   * Extract input parameters from requirement as ParameterDefinition[]
    */
-  private async extractInputParameters(requirement: any): Promise<string[]> {
-    return requirement.inputs || ['input'];
+  private async extractInputParameterDefinitions(requirement: any): Promise<ParameterDefinition[]> {
+    const inputs = requirement.inputs || ['input'];
+    return inputs.map((input: string) => ({
+      name: input,
+      type: 'any',
+      description: `Input parameter: ${input}`,
+      optional: false
+    }));
   }
 
   /**
-   * Define output format for requirement
+   * Extract output definitions from requirement as ReturnDefinition[]
    */
-  private async defineOutputFormat(requirement: any): Promise<string> {
-    return requirement.outputs?.[0] || 'Result';
+  private async extractOutputDefinitions(requirement: any): Promise<ReturnDefinition[]> {
+    const outputs = requirement.outputs || ['result'];
+    return outputs.map((output: string) => ({
+      name: output,
+      type: 'any',
+      description: `Output result: ${output}`
+    }));
+  }
+
+  /**
+   * Generate pseudocode steps from requirement
+   */
+  private async generatePseudocodeSteps(requirement: any, domain: string): Promise<PseudocodeStep[]> {
+    const pseudocodeText = await this.generateAlgorithmPseudocodePrivate(requirement, domain);
+    const lines = pseudocodeText.split('\n').filter(line => line.trim());
+    
+    return lines.map((line, index) => ({
+      stepNumber: index + 1,
+      description: line.trim(),
+      pseudocode: line.trim(),
+      complexity: 'O(1)',
+      dependencies: []
+    }));
+  }
+
+  /**
+   * Identify optimization opportunities for specific algorithm
+   */
+  private async identifyAlgorithmOptimizations(requirement: any): Promise<OptimizationOpportunity[]> {
+    return [
+      {
+        type: 'performance',
+        description: `Optimize ${requirement.title} for better performance`,
+        impact: 'medium',
+        effort: 'low',
+        estimatedImprovement: '20% performance gain'
+      }
+    ];
   }
 
   /**
@@ -721,10 +754,10 @@ END
     // Validate algorithm completeness
     validationResults.push({
       criterion: 'Algorithm completeness',
-      passed: pseudocode.coreAlgorithms.length > 0,
-      score: pseudocode.coreAlgorithms.length > 0 ? 1.0 : 0.0,
-      feedback:
-        pseudocode.coreAlgorithms.length > 0
+      passed: pseudocode.algorithms.length > 0,
+      score: pseudocode.algorithms.length > 0 ? 1.0 : 0.0,
+      details:
+        pseudocode.algorithms.length > 0
           ? 'All required algorithms defined'
           : 'Missing core algorithm definitions',
     });
@@ -734,7 +767,7 @@ END
       criterion: 'Complexity analysis',
       passed: !!pseudocode.complexityAnalysis,
       score: pseudocode.complexityAnalysis ? 1.0 : 0.0,
-      feedback: pseudocode.complexityAnalysis
+      details: pseudocode.complexityAnalysis
         ? 'Comprehensive complexity analysis provided'
         : 'Missing complexity analysis',
     });
@@ -744,7 +777,7 @@ END
       criterion: 'Data structure design',
       passed: pseudocode.dataStructures.length > 0,
       score: pseudocode.dataStructures.length > 0 ? 1.0 : 0.0,
-      feedback:
+      details:
         pseudocode.dataStructures.length > 0
           ? 'Appropriate data structures specified'
           : 'Missing data structure specifications',
@@ -754,8 +787,15 @@ END
       validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
 
     return {
-      overallScore,
+      id: nanoid(),
+      algorithmId: pseudocode.id,
       validationResults,
+      logicErrors: validationResults
+        .filter(r => !r.passed)
+        .map(r => r.details || ''),
+      optimizationSuggestions: this.generateRecommendations(validationResults),
+      complexityVerification: !!pseudocode.complexityAnalysis,
+      overallScore,
       recommendations: this.generateRecommendations(validationResults),
       approved: overallScore >= 0.7,
     };

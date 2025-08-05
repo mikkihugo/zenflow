@@ -159,7 +159,7 @@ async function runMCPIntegrationTests() {
       assert(result, 'Initialize should return a result');
       assert(
         result.protocolVersion || result.capabilities,
-        'Should have protocol version or capabilities',
+        'Should have protocol version or capabilities'
       );
 
       if (result.serverInfo) {
@@ -423,7 +423,7 @@ async function runMCPIntegrationTests() {
               agent_type: ['researcher', 'coder', 'analyst', 'tester', 'reviewer'][i],
               name: `concurrent-agent-${i}`,
             },
-          }),
+          })
         );
       }
 
@@ -508,7 +508,7 @@ async function runMCPIntegrationTests() {
               agent_type: 'researcher',
               name: `perf-test-agent-${i}`,
             },
-          }),
+          })
         );
       }
 

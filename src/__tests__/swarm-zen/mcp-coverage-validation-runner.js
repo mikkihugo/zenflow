@@ -219,7 +219,7 @@ function generateFinalReport() {
     __dirname,
     '..',
     'test-reports',
-    `mcp-coverage-validation-${Date.now()}.json`,
+    `mcp-coverage-validation-${Date.now()}.json`
   );
   writeFileSync(
     reportPath,
@@ -241,8 +241,8 @@ function generateFinalReport() {
         ],
       },
       null,
-      2,
-    ),
+      2
+    )
   );
 
   if (missionSuccess) {

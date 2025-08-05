@@ -48,7 +48,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
       await mcpTools.initialize(mockZenSwarm);
 
       await expect(mcpTools.swarm_init({ topology: 'mesh' })).rejects.toThrow(
-        /Level 4.*Level 3.*Level 2.*Level 1/,
+        /Level 4.*Level 3.*Level 2.*Level 1/
       );
     });
 
@@ -265,7 +265,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
 
       // Next attempts should fail immediately due to circuit breaker
       await expect(circuitBreaker.execute(flakyOperation)).rejects.toThrow(
-        /Circuit breaker is OPEN/,
+        /Circuit breaker is OPEN/
       );
 
       // Wait for timeout and try again
@@ -316,18 +316,18 @@ describe('Error Handling and Recovery Edge Cases', () => {
         } catch (_error) {
           // Cleanup all resources, even if some cleanups fail
           const cleanupPromises = acquired.map((resource) =>
-            resource.cleanup().catch((err) => ({ error: err.message })),
+            resource.cleanup().catch((err) => ({ error: err.message }))
           );
 
           const cleanupResults = await Promise.allSettled(cleanupPromises);
 
           // Count successful cleanups
           const successfulCleanups = cleanupResults.filter(
-            (result) => result.status === 'fulfilled' && !result.value?.error,
+            (result) => result.status === 'fulfilled' && !result.value?.error
           ).length;
 
           throw new Error(
-            `Operation failed. Cleaned up ${successfulCleanups}/${acquired.length} resources`,
+            `Operation failed. Cleaned up ${successfulCleanups}/${acquired.length} resources`
           );
         }
       };
@@ -356,7 +356,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
             child.cleanup().catch((error) => {
               cleanupLog.push(`Child cleanup failed: ${error.message}`);
               return { error };
-            }),
+            })
           );
 
           await Promise.all(childCleanupPromises);

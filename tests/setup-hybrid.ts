@@ -1,10 +1,10 @@
 /**
  * Hybrid TDD Setup - Comprehensive Testing Configuration
  * @fileoverview Implements the 70% London TDD / 30% Classical TDD hybrid approach
- * 
+ *
  * Domain Distribution:
  * - Coordination: London TDD (mockist) - 70%
- * - Interfaces: London TDD (mockist) - 70%  
+ * - Interfaces: London TDD (mockist) - 70%
  * - Neural: Classical TDD (Detroit) - 30%
  * - Memory: Hybrid approach based on operation type
  */
@@ -33,17 +33,17 @@ const HYBRID_CONFIG: HybridTDDConfig = {
     coordinationLatency: 100, // ms
     neuralComputation: 1000, // ms for WASM operations
     memoryAccess: 50, // ms
-  }
+  },
 };
 
 // Domain-specific test setup
 beforeEach(() => {
   // Common setup for all domains
   jest.clearAllMocks();
-  
+
   // Setup based on test file path
   const testPath = expect.getState().testPath || '';
-  
+
   if (testPath.includes('/coordination/')) {
     setupLondonTDD();
   } else if (testPath.includes('/interfaces/')) {
@@ -60,11 +60,11 @@ beforeEach(() => {
 afterEach(() => {
   // Cleanup based on test type
   const testPath = expect.getState().testPath || '';
-  
+
   if (testPath.includes('/neural/')) {
     cleanupClassicalResources();
   }
-  
+
   jest.clearAllMocks();
 });
 
@@ -75,12 +75,12 @@ afterEach(() => {
 function setupLondonTDD() {
   // Mock timers for deterministic coordination testing
   jest.useFakeTimers();
-  
+
   // Setup interaction spies
   global.createInteractionSpy = (name: string) => {
     return jest.fn().mockName(name);
   };
-  
+
   // Mock factory for complex coordination objects
   global.createCoordinationMock = <T>(defaults: Partial<T> = {}) => {
     return (overrides: Partial<T> = {}): T =>
@@ -98,12 +98,12 @@ function setupLondonTDD() {
 function setupClassicalTDD() {
   // Performance monitoring for neural computations
   global.testStartTime = Date.now();
-  
+
   if (global.gc) {
     global.gc();
     global.testStartMemory = process.memoryUsage();
   }
-  
+
   // Neural-specific test data generators
   global.generateNeuralTestData = (config: any) => {
     switch (config.type) {
@@ -124,13 +124,9 @@ function setupClassicalTDD() {
         return [];
     }
   };
-  
+
   // Mathematical precision helpers
-  global.expectNearlyEqual = (
-    actual: number,
-    expected: number,
-    tolerance: number = 1e-10
-  ) => {
+  global.expectNearlyEqual = (actual: number, expected: number, tolerance: number = 1e-10) => {
     expect(Math.abs(actual - expected)).toBeLessThanOrEqual(tolerance);
   };
 }
@@ -143,9 +139,12 @@ function setupHybridTDD() {
   // Setup both London and Classical capabilities
   setupLondonTDD();
   setupClassicalTDD();
-  
+
   // Hybrid-specific utilities
-  global.testWithApproach = (approach: 'london' | 'classical', testFn: () => void | Promise<void>) => {
+  global.testWithApproach = (
+    approach: 'london' | 'classical',
+    testFn: () => void | Promise<void>
+  ) => {
     if (approach === 'london') {
       // Use mocks for external dependencies
       return testFn();
@@ -154,7 +153,7 @@ function setupHybridTDD() {
       return testFn();
     }
   };
-  
+
   // Memory-specific test utilities
   global.createMemoryTestScenario = (type: 'sqlite' | 'lancedb' | 'json') => {
     switch (type) {
@@ -162,19 +161,19 @@ function setupHybridTDD() {
         return {
           backend: 'sqlite',
           connection: ':memory:',
-          testData: { id: 1, data: 'test' }
+          testData: { id: 1, data: 'test' },
         };
       case 'lancedb':
         return {
           backend: 'lancedb',
           table: 'test_vectors',
-          testData: { id: 'vec-1', vector: [0.1, 0.2, 0.3] }
+          testData: { id: 'vec-1', vector: [0.1, 0.2, 0.3] },
         };
       case 'json':
         return {
           backend: 'json',
           file: '/tmp/test.json',
-          testData: { key: 'value' }
+          testData: { key: 'value' },
         };
       default:
         return {};
@@ -204,11 +203,15 @@ global.expectPerformanceWithinThreshold = (
   operation: 'coordination' | 'neural' | 'memory',
   actualTime: number
 ) => {
-  const threshold = HYBRID_CONFIG.performanceThresholds[
-    operation === 'coordination' ? 'coordinationLatency' :
-    operation === 'neural' ? 'neuralComputation' : 'memoryAccess'
-  ];
-  
+  const threshold =
+    HYBRID_CONFIG.performanceThresholds[
+      operation === 'coordination'
+        ? 'coordinationLatency'
+        : operation === 'neural'
+          ? 'neuralComputation'
+          : 'memoryAccess'
+    ];
+
   expect(actualTime).toBeLessThanOrEqual(threshold);
 };
 
@@ -220,21 +223,23 @@ global.createTestContainer = () => {
     register: jest.fn(),
     resolve: jest.fn(),
     createScope: jest.fn(),
-    dispose: jest.fn()
+    dispose: jest.fn(),
   };
-  
+
   return mockContainer;
 };
 
 /**
  * SPARC methodology test utilities
  */
-global.createSPARCTestScenario = (phase: 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion') => {
+global.createSPARCTestScenario = (
+  phase: 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion'
+) => {
   return {
     phase,
     input: `test-input-${phase}`,
     expectedOutput: `test-output-${phase}`,
-    context: { swarmId: 'test-swarm', agentCount: 5 }
+    context: { swarmId: 'test-swarm', agentCount: 5 },
   };
 };
 
@@ -245,7 +250,7 @@ declare global {
       // London TDD utilities
       createInteractionSpy(name: string): jest.Mock;
       createCoordinationMock<T>(defaults?: Partial<T>): (overrides?: Partial<T>) => T;
-      
+
       // Classical TDD utilities
       testStartTime: number;
       testStartMemory: NodeJS.MemoryUsage;
@@ -256,18 +261,26 @@ declare global {
       };
       generateNeuralTestData(config: any): Array<{ input: number[]; output: number[] }>;
       expectNearlyEqual(actual: number, expected: number, tolerance?: number): void;
-      
+
       // Hybrid utilities
-      testWithApproach(approach: 'london' | 'classical', testFn: () => void | Promise<void>): void | Promise<void>;
+      testWithApproach(
+        approach: 'london' | 'classical',
+        testFn: () => void | Promise<void>
+      ): void | Promise<void>;
       createMemoryTestScenario(type: 'sqlite' | 'lancedb' | 'json'): any;
-      expectPerformanceWithinThreshold(operation: 'coordination' | 'neural' | 'memory', actualTime: number): void;
-      
+      expectPerformanceWithinThreshold(
+        operation: 'coordination' | 'neural' | 'memory',
+        actualTime: number
+      ): void;
+
       // DI testing utilities
       createTestContainer(): any;
-      
+
       // SPARC testing utilities
-      createSPARCTestScenario(phase: 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion'): any;
-      
+      createSPARCTestScenario(
+        phase: 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion'
+      ): any;
+
       // Global GC
       gc?: () => void;
     }
