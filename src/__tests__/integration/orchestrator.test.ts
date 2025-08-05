@@ -4,35 +4,34 @@
  */
 
 import { describe, expect, it, jest } from '@jest/globals';
-import { Orchestrator } from '../../coordination/orchestrator';
-import { SwarmDatabase } from '../../database/swarm-database';
+import { Orchestrator } from 'coordination/orchestrator';
+import { SwarmDatabase } from '../../src/database/swarm-database';
+import { ZenSwarmStrategy } from 'coordination/strategies/ruv-swarm.strategy';
+import { ILogger } from 'core/interfaces/base-interfaces';
 
 // Mock dependencies
-jest.mock('../../coordination/strategies/ruv-swarm.strategy.js');
-
-// Create a mock strategy instead of importing non-existent one
-const mockZenSwarmStrategy = {
-  getAgents: jest.fn(),
-  assignTaskToAgent: jest.fn(),
-};
+jest.mock('../../src/database/swarm-database');
+jest.mock('coordination/strategies/ruv-swarm.strategy');
 
 const MockedSwarmDatabase = SwarmDatabase as jest.MockedClass<typeof SwarmDatabase>;
+const MockedZenSwarmStrategy = ZenSwarmStrategy as jest.MockedClass<typeof ZenSwarmStrategy>;
 
 describe('Orchestrator Integration Test', () => {
   let orchestrator: Orchestrator;
+  let mockStrategy: jest.Mocked<ZenSwarmStrategy>;
   let mockDb: jest.Mocked<SwarmDatabase>;
+  let mockLogger: jest.Mocked<ILogger>;
 
   beforeEach(() => {
-    // Reset all mocks
-    jest.clearAllMocks();
-
-    // Instantiate the mock database
+    // Instantiate the mocks
+    mockStrategy = new MockedZenSwarmStrategy() as jest.Mocked<ZenSwarmStrategy>;
     mockDb = new MockedSwarmDatabase() as jest.Mocked<SwarmDatabase>;
+    mockLogger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn() };
 
     // Mock the database constructor to return our mock instance
     (SwarmDatabase as jest.Mock).mockImplementation(() => mockDb);
 
-    orchestrator = new Orchestrator(mockZenSwarmStrategy as any);
+    orchestrator = new Orchestrator(mockStrategy, mockDb, mockLogger);
   });
 
   describe('User Story: Task Execution', () => {
@@ -41,7 +40,7 @@ describe('Orchestrator Integration Test', () => {
       const task = {
         id: 'task-123',
         description: 'Test task',
-        strategy: 'sequential',
+        strategy: 'sequential' as const,
         dependencies: [],
         requiredCapabilities: ['test-capability'],
         maxAgents: 1,
@@ -51,15 +50,15 @@ describe('Orchestrator Integration Test', () => {
       const agent = {
         id: 'agent-456',
         capabilities: ['test-capability'],
-        status: 'idle',
+        status: 'idle' as const,
       };
 
       // Mock the interactions
       mockDb.initialize.mockResolvedValue();
       mockDb.createTask.mockResolvedValue(task as any);
       mockDb.updateTask.mockResolvedValue(task as any);
-      mockZenSwarmStrategy.getAgents.mockResolvedValue([agent]);
-      mockZenSwarmStrategy.assignTaskToAgent.mockResolvedValue();
+      mockStrategy.getAgents.mockResolvedValue([agent]);
+      mockStrategy.assignTaskToAgent.mockResolvedValue(undefined);
 
       // Act
       await orchestrator.initialize();
@@ -68,15 +67,9 @@ describe('Orchestrator Integration Test', () => {
       // Assert
       expect(mockDb.initialize).toHaveBeenCalled();
       expect(mockDb.createTask).toHaveBeenCalledWith(expect.objectContaining({ id: 'task-123' }));
-      expect(mockZenSwarmStrategy.getAgents).toHaveBeenCalled();
-      expect(mockZenSwarmStrategy.assignTaskToAgent).toHaveBeenCalledWith(
-        'agent-456',
-        expect.any(Object)
-      );
-      expect(mockDb.updateTask).toHaveBeenCalledWith(
-        'task-123',
-        expect.objectContaining({ status: 'completed' })
-      );
+      expect(mockStrategy.getAgents).toHaveBeenCalled();
+      expect(mockStrategy.assignTaskToAgent).toHaveBeenCalledWith('agent-456', expect.any(Object));
+      expect(mockDb.updateTask).toHaveBeenCalledWith('task-123', expect.objectContaining({ status: 'completed' }));
     });
   });
 });

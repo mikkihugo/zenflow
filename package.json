@@ -47,6 +47,7 @@
     "security:full": "npm run security:audit && npm run security:harden",
     "diagnostics": "node -e \"import('./dist/monitoring/diagnostics.js').then(m => m.DiagnosticManager.quickDiagnostic().then(console.log))\"",
     "health-check": "node -e \"import('./dist/monitoring/health-check.js').then(m => new m.HealthCheckManager().performHealthCheck().then(console.log))\"",
+    "validate:uacl": "node scripts/validate-uacl.js",
     "update-version": "npx tsx scripts/update-bin-version.js",
     "postinstall": "npx tsx scripts/install.ts",
     "prepublishOnly": "npm run update-version",

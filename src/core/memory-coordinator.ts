@@ -1,12 +1,13 @@
 /**
- * Unified Memory System - Direct Integration
+ * Unified Memory System - DAL Integration
  *
- * Integrates memory backend functionality directly into core system
- * Supports LanceDB, SQLite, Kuzu, and JSON backends without plugin architecture
+ * Integrates memory backend functionality using unified DAL
+ * Supports all database types through consistent DAL interface
  */
 
 import { EventEmitter } from 'node:events';
-import LanceDBInterface from '../database/lancedb-interface';
+import { createRepository, createDAO, DatabaseTypes, EntityTypes } from '../database/index';
+import type { IRepository, IDataAccessObject } from '../database/interfaces';
 import { createLogger } from './logger';
 
 const logger = createLogger('UnifiedMemory');
@@ -68,22 +69,40 @@ interface BackendInterface {
 }
 
 /**
- * LanceDB Backend - Vector Database for Semantic Storage
+ * LanceDB Backend - Vector Database for Semantic Storage using DAL
  */
 class LanceDBBackend implements BackendInterface {
-  private lanceInterface: LanceDBInterface;
+  private vectorRepository: IRepository<any>;
+  private vectorDAO: IDataAccessObject<any>;
   private config: MemoryConfig;
 
   constructor(config: MemoryConfig) {
     this.config = config;
-    this.lanceInterface = new LanceDBInterface({
-      dbPath: `${config.path}/lancedb`,
-    });
   }
 
   async initialize(): Promise<void> {
-    await this.lanceInterface.initialize();
-    logger.info('LanceDB backend initialized');
+    this.vectorRepository = await createRepository(
+      EntityTypes.VectorDocument,
+      DatabaseTypes.LanceDB,
+      {
+        database: `${this.config.path}/lancedb`,
+        options: {
+          vectorSize: this.config.lancedb?.vectorDimension || 384,
+          metricType: 'cosine'
+        }
+      }
+    );
+    
+    this.vectorDAO = await createDAO(
+      EntityTypes.VectorDocument,
+      DatabaseTypes.LanceDB,
+      {
+        database: `${this.config.path}/lancedb`,
+        options: this.config.lancedb
+      }
+    );
+    
+    logger.info('LanceDB backend initialized with DAL');
   }
 
   async store(
@@ -111,7 +130,7 @@ class LanceDBBackend implements BackendInterface {
         },
       };
 
-      await this.lanceInterface.insertVectors('unified_memory', [vectorDoc]);
+      await this.vectorRepository.create(vectorDoc);
 
       return {
         id: fullKey,
@@ -130,11 +149,9 @@ class LanceDBBackend implements BackendInterface {
 
   async retrieve(key: string, namespace: string = 'default'): Promise<JSONValue | null> {
     try {
-      const searchResult = await this.lanceInterface.searchSimilar(
-        'unified_memory',
-        new Array(this.config.lancedb?.vectorDimension || 384).fill(0),
-        1,
-        { key, namespace }
+      const searchResult = await this.vectorDAO.bulkVectorOperations(
+        [{ id: `${namespace}:${key}`, vector: new Array(this.config.lancedb?.vectorDimension || 384).fill(0) }],
+        'upsert'
       );
 
       if (!searchResult || searchResult.length === 0) return null;
@@ -155,14 +172,9 @@ class LanceDBBackend implements BackendInterface {
     const results: Record<string, JSONValue> = {};
 
     try {
-      const searchResult = await this.lanceInterface.searchSimilar(
-        'unified_memory',
-        new Array(this.config.lancedb?.vectorDimension || 384).fill(0),
-        100,
-        { namespace }
-      );
+      const allResults = await this.vectorRepository.findAll({ limit: 100 });
 
-      for (const result of searchResult || []) {
+      for (const result of allResults || []) {
         const metadata = result.metadata || {};
         if (metadata.namespace === namespace && metadata.serialized_data) {
           const key = metadata.key;
@@ -186,11 +198,7 @@ class LanceDBBackend implements BackendInterface {
 
   async listNamespaces(): Promise<string[]> {
     try {
-      const searchResult = await this.lanceInterface.searchSimilar(
-        'unified_memory',
-        new Array(this.config.lancedb?.vectorDimension || 384).fill(0),
-        1000
-      );
+      const searchResult = await this.vectorRepository.findAll({ limit: 1000 });
 
       const namespaces = new Set<string>();
       for (const result of searchResult || []) {
@@ -206,7 +214,8 @@ class LanceDBBackend implements BackendInterface {
   }
 
   async getStats(): Promise<BackendStats> {
-    const stats = await this.lanceInterface.getStats();
+    const allEntries = await this.vectorRepository.findAll();
+    const stats = { totalVectors: allEntries.length, dimensions: this.config.lancedb?.vectorDimension || 384 };
     return {
       entries: stats.totalVectors || 0,
       size: stats.indexedVectors || 0,

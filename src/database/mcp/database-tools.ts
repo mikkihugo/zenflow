@@ -7,6 +7,9 @@ import type { DatabaseEngine, DatabaseQuery } from '../core/database-coordinator
 import { DatabaseCoordinator } from '../core/database-coordinator';
 import { QueryOptimizer } from '../optimization/query-optimizer';
 
+// Import UACL for unified client monitoring and MCP client management
+import { uacl, ClientType, UACLHelpers } from '../../interfaces/clients/index';
+
 // Global database system instances
 let databaseCoordinator: DatabaseCoordinator | null = null;
 let queryOptimizer: QueryOptimizer | null = null;
@@ -105,6 +108,38 @@ export const databaseInitTool: MCPTool = {
   handler: async (params): Promise<MCPToolResult> => {
     try {
       const { engines = [], optimization = {}, coordination = {} } = params;
+
+      // Initialize UACL for database client management
+      if (!uacl.isInitialized()) {
+        await uacl.initialize({
+          healthCheckInterval: coordination.healthCheckInterval || 30000,
+          autoReconnect: true,
+          enableLogging: true
+        });
+      }
+
+      // Create UACL-managed MCP client for database coordination
+      try {
+        const mcpServers = {
+          'database-coordinator': {
+            url: 'http://localhost:3000/mcp',
+            type: 'http' as const,
+            capabilities: ['database_management', 'query_optimization', 'performance_monitoring']
+          }
+        };
+        
+        const mcpClientInstance = await uacl.createMCPClient('database-mcp-client', mcpServers, {
+          enabled: true,
+          priority: 9, // High priority for database operations
+          timeout: coordination.defaultTimeout || 30000,
+          retryAttempts: 3
+        });
+        
+        console.log('✅ UACL MCP client initialized for database coordination');
+      } catch (error) {
+        console.warn('⚠️ Could not initialize UACL MCP client for database coordination:', error);
+        // Continue without UACL MCP client - database tools will still work
+      }
 
       // Initialize database coordinator
       databaseCoordinator = new DatabaseCoordinator();
@@ -400,7 +435,7 @@ export const databaseOptimizeTool: MCPTool = {
   },
   handler: async (params): Promise<MCPToolResult> => {
     try {
-      if (!databaseCoordinator || !queryOptimizer) {
+      if (registeredEngines.size === 0 || !queryOptimizer) {
         throw new Error('Database system not initialized. Run database_init first.');
       }
 
@@ -573,7 +608,7 @@ export const databaseMonitorTool: MCPTool = {
   },
   handler: async (params): Promise<MCPToolResult> => {
     try {
-      if (!databaseCoordinator || !queryOptimizer) {
+      if (registeredEngines.size === 0 || !queryOptimizer) {
         throw new Error('Database system not initialized. Run database_init first.');
       }
 
@@ -752,6 +787,7 @@ export const databaseHealthCheckTool: MCPTool = {
           optimizer: undefined as any,
           engines: undefined as any,
           cache: undefined as any,
+          clients: undefined as any, // Added UACL client health
         },
         issues: [],
         recommendations: [],
@@ -876,6 +912,62 @@ export const databaseHealthCheckTool: MCPTool = {
         }
       }
 
+      // Check UACL client health
+      if (shouldCheck('clients')) {
+        try {
+          if (uacl.isInitialized()) {
+            const clientMetrics = uacl.getMetrics();
+            const clientHealth = uacl.getHealthStatus();
+            const healthyPercentage = clientMetrics.total > 0 ? (clientMetrics.connected / clientMetrics.total) * 100 : 100;
+
+            // Get MCP clients specifically for database coordination
+            const mcpClients = uacl.getClientsByType(ClientType.MCP);
+            const databaseMCPClient = mcpClients.find(c => c.id === 'database-mcp-client');
+            
+            healthReport.components.clients = {
+              status: healthyPercentage >= 80 ? 'healthy' : healthyPercentage >= 50 ? 'degraded' : 'critical',
+              total: clientMetrics.total,
+              connected: clientMetrics.connected,
+              healthPercentage,
+              avgLatency: clientMetrics.avgLatency,
+              errors: clientMetrics.totalErrors,
+              mcpClientStatus: databaseMCPClient?.status || 'not_found',
+              details: detailed ? {
+                byType: clientMetrics.byType,
+                overallHealth: clientHealth,
+                databaseMCPClient: databaseMCPClient ? {
+                  status: databaseMCPClient.status,
+                  priority: databaseMCPClient.config.priority,
+                  enabled: databaseMCPClient.config.enabled
+                } : null
+              } : undefined,
+            };
+
+            if (healthyPercentage < 80) {
+              healthReport.overall = healthyPercentage < 50 ? 'critical' : 'degraded';
+              healthReport.issues.push(`Only ${healthyPercentage.toFixed(1)}% of clients are healthy`);
+            }
+
+            if (!databaseMCPClient || databaseMCPClient.status !== 'connected') {
+              healthReport.issues.push('Database MCP client is not connected');
+            }
+
+            if (clientMetrics.totalErrors > 10) {
+              healthReport.issues.push(`High error count: ${clientMetrics.totalErrors} client errors`);
+            }
+
+            if (clientMetrics.avgLatency > 5000) {
+              healthReport.recommendations.push('Consider optimizing client response times');
+            }
+          } else {
+            healthReport.components.clients = { status: 'not_initialized' };
+            healthReport.recommendations.push('Consider initializing UACL for enhanced client management');
+          }
+        } catch (error) {
+          healthReport.components.clients = { status: 'error', error: error instanceof Error ? error.message : String(error) };
+        }
+      }
+
       // Attempt repairs if requested
       if (repair && healthReport.issues.length > 0) {
         for (const issue of healthReport.issues) {
@@ -939,5 +1031,140 @@ export const databaseTools: MCPTool[] = [
   databaseMonitorTool,
   databaseHealthCheckTool,
 ];
+
+// Helper methods for DAL integration
+function mapEngineTypeToEntity(engineType: string): string {
+  switch (engineType) {
+    case 'vector': return EntityTypes.VectorDocument;
+    case 'graph': return EntityTypes.GraphNode;
+    case 'document': return EntityTypes.Document;
+    case 'relational': return EntityTypes.Document;
+    case 'timeseries': return EntityTypes.Document;
+    default: return EntityTypes.Document;
+  }
+}
+
+function mapEngineTypeToDB(engineType: string): string {
+  switch (engineType) {
+    case 'vector': return DatabaseTypes.LanceDB;
+    case 'graph': return DatabaseTypes.Kuzu;
+    case 'document': return DatabaseTypes.PostgreSQL;
+    case 'relational': return DatabaseTypes.PostgreSQL;
+    case 'timeseries': return DatabaseTypes.PostgreSQL;
+    default: return DatabaseTypes.PostgreSQL;
+  }
+}
+
+async function executeQueryWithDAL(
+  query: DatabaseQuery,
+  engines: Map<string, DatabaseEngine>,
+  repositories: Map<string, IRepository<any>>,
+  daos: Map<string, IDataAccessObject<any>>
+): Promise<{
+  queryId: string;
+  engineId: string;
+  status: 'completed' | 'failed';
+  result?: any;
+  error?: string;
+  duration: number;
+}> {
+  const startTime = Date.now();
+  
+  // Select best engine for this query
+  const availableEngines = Array.from(engines.values()).filter(e => 
+    e.status === 'active' && 
+    (query.requirements.capabilities.length === 0 || 
+     query.requirements.capabilities.some(cap => e.capabilities.includes(cap)))
+  );
+  
+  if (availableEngines.length === 0) {
+    return {
+      queryId: query.id,
+      engineId: 'none',
+      status: 'failed',
+      error: 'No suitable engines available',
+      duration: Date.now() - startTime
+    };
+  }
+  
+  // Use first available engine (can be enhanced with load balancing)
+  const selectedEngine = availableEngines[0];
+  const repository = repositories.get(selectedEngine.id);
+  const dao = daos.get(selectedEngine.id);
+  
+  if (!repository || !dao) {
+    return {
+      queryId: query.id,
+      engineId: selectedEngine.id,
+      status: 'failed',
+      error: 'Engine repository/DAO not found',
+      duration: Date.now() - startTime
+    };
+  }
+  
+  try {
+    let result;
+    
+    // Execute operation based on query type
+    switch (query.type) {
+      case 'read':
+        if (query.parameters.id) {
+          result = await repository.findById(query.parameters.id);
+        } else {
+          result = await repository.findAll(query.parameters);
+        }
+        break;
+        
+      case 'write':
+        result = await repository.create(query.parameters.data);
+        break;
+        
+      case 'update':
+        result = await repository.update(query.parameters.id, query.parameters.data);
+        break;
+        
+      case 'delete':
+        result = await repository.delete(query.parameters.id);
+        break;
+        
+      default:
+        // Use DAO for advanced operations
+        if (selectedEngine.type === 'vector' && dao.bulkVectorOperations) {
+          result = await dao.bulkVectorOperations(query.parameters.vectors || [], query.operation);
+        } else if (selectedEngine.type === 'graph' && dao.traverseGraph) {
+          result = await dao.traverseGraph(query.parameters.startNode, query.parameters.relationshipType, query.parameters.maxDepth);
+        } else {
+          result = await repository.findAll(query.parameters);
+        }
+    }
+    
+    // Update engine performance metrics
+    const duration = Date.now() - startTime;
+    selectedEngine.performance.averageLatency = 
+      (selectedEngine.performance.averageLatency + duration) / 2;
+    selectedEngine.lastHealthCheck = Date.now();
+    
+    return {
+      queryId: query.id,
+      engineId: selectedEngine.id,
+      status: 'completed',
+      result,
+      duration
+    };
+    
+  } catch (error) {
+    // Update error metrics
+    selectedEngine.performance.errorRate = 
+      Math.min(1, selectedEngine.performance.errorRate + 0.01);
+    
+    return {
+      queryId: query.id,
+      engineId: selectedEngine.id,
+      status: 'failed',
+      error: error instanceof Error ? error.message : 'Unknown error',
+      duration: Date.now() - startTime
+    };
+  }
+}
 
 export default databaseTools;

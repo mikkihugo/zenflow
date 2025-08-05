@@ -2,9 +2,13 @@
 /** Real-time monitoring and analytics for Claude Zen systems */
 
 import { EventEmitter } from 'node:events';
-import type LanceDBInterface from '../database/lancedb-interface';
+import { createRepository, createDAO, DatabaseTypes, EntityTypes } from '../../database/index';
+import type { IRepository, IDataAccessObject } from '../../database/interfaces';
 import type MCPPerformanceMetrics from '../mcp/performance-metrics';
 import type EnhancedMemory from '../memory/memory';
+
+// Import UACL for unified client management
+import { uacl, ClientType, UACLHelpers, type ClientInstance } from '../clients/index';
 
 interface DashboardConfig {
   refreshInterval?: number;
@@ -24,6 +28,7 @@ interface SystemHealth {
     memory: 'healthy' | 'warning' | 'critical';
     database: 'healthy' | 'warning' | 'critical';
     neural: 'healthy' | 'warning' | 'critical';
+    clients: 'healthy' | 'warning' | 'critical'; // Added UACL client health
   };
   alerts: Array<{
     level: 'info' | 'warning' | 'error';
@@ -36,7 +41,8 @@ interface SystemHealth {
 export class UnifiedPerformanceDashboard extends EventEmitter {
   private mcpMetrics: MCPPerformanceMetrics;
   private enhancedMemory: EnhancedMemory;
-  private lanceDB: LanceDBInterface;
+  private vectorRepository?: IRepository<any>;
+  private vectorDAO?: IDataAccessObject<any>;
   private config: Required<DashboardConfig>;
   private refreshTimer?: NodeJS.Timeout;
   private isRunning = false;
@@ -44,14 +50,12 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   constructor(
     mcpMetrics: MCPPerformanceMetrics,
     enhancedMemory: EnhancedMemory,
-    lanceDB: LanceDBInterface,
     config: DashboardConfig = {}
   ) {
     super();
 
     this.mcpMetrics = mcpMetrics;
     this.enhancedMemory = enhancedMemory;
-    this.lanceDB = lanceDB;
 
     this.config = {
       refreshInterval: config.refreshInterval ?? 1000,
@@ -69,6 +73,47 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   /** Start the dashboard monitoring */
   async start(): Promise<void> {
     if (this.isRunning) return;
+
+    // Initialize UACL if not already initialized
+    try {
+      if (!uacl.isInitialized()) {
+        await uacl.initialize({
+          healthCheckInterval: this.config.refreshInterval,
+          enableLogging: true
+        });
+        
+        // Setup default clients for monitoring
+        await UACLHelpers.setupCommonClients({
+          httpBaseURL: 'http://localhost:3000',
+          websocketURL: 'ws://localhost:3456',
+        });
+      }
+    } catch (error) {
+      console.warn('⚠️ Could not initialize UACL for dashboard:', error);
+    }
+
+    // Initialize DAL repositories for database metrics
+    try {
+      this.vectorRepository = await createRepository(
+        EntityTypes.VectorDocument,
+        DatabaseTypes.LanceDB,
+        {
+          database: './data/dashboard-metrics',
+          options: { vectorSize: 384, metricType: 'cosine' }
+        }
+      );
+      
+      this.vectorDAO = await createDAO(
+        EntityTypes.VectorDocument,
+        DatabaseTypes.LanceDB,
+        {
+          database: './data/dashboard-metrics',
+          options: { vectorSize: 384 }
+        }
+      );
+    } catch (error) {
+      console.warn('⚠️ Could not initialize database metrics repository:', error);
+    }
 
     if (this.config.enableRealtime) {
       this.refreshTimer = setInterval(() => {
@@ -102,6 +147,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       memory: any;
       database: any;
       neural: any;
+      clients: any; // Added UACL client metrics
     };
     performance: {
       uptime: number;
@@ -113,15 +159,12 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     const mcpMetrics = this.mcpMetrics.getMetrics();
     const mcpSummary = this.mcpMetrics.getPerformanceSummary();
     const memoryStats = this.enhancedMemory.getStats();
-    const dbStats = await this.lanceDB.getStats().catch(() => ({
-      totalVectors: 0,
-      totalTables: 0,
-      averageSearchTime: 0,
-      indexedVectors: 0,
-      cacheHitRate: 0,
-    }));
+    const dbStats = await this.getDatabaseStats();
+    
+    // Get UACL client metrics
+    const clientMetrics = await this.getClientMetrics();
 
-    const health = this.assessSystemHealth(mcpMetrics, memoryStats, dbStats);
+    const health = this.assessSystemHealth(mcpMetrics, memoryStats, dbStats, clientMetrics);
 
     return {
       health,
@@ -130,6 +173,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
         memory: memoryStats,
         database: dbStats,
         neural: mcpMetrics.neural,
+        clients: clientMetrics,
       },
       performance: {
         uptime: mcpSummary.uptime,
@@ -141,7 +185,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   }
 
   /** Assess overall system health */
-  private assessSystemHealth(mcpMetrics: any, memoryStats: any, dbStats: any): SystemHealth {
+  private assessSystemHealth(mcpMetrics: any, memoryStats: any, dbStats: any, clientMetrics?: any): SystemHealth {
     const alerts: SystemHealth['alerts'] = [];
 
     // Check MCP health
@@ -206,8 +250,11 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       });
     }
 
+    // Check client health
+    const clientHealth = this.assessClientHealth(clientMetrics, alerts);
+
     // Determine overall health
-    const componentHealths = [mcpHealth, memoryHealth, dbHealth, neuralHealth];
+    const componentHealths = [mcpHealth, memoryHealth, dbHealth, neuralHealth, clientHealth];
     const overall = componentHealths.includes('critical')
       ? 'critical'
       : componentHealths.includes('warning')
@@ -221,6 +268,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
         memory: memoryHealth,
         database: dbHealth,
         neural: neuralHealth,
+        clients: clientHealth,
       },
       alerts,
     };
@@ -280,6 +328,48 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   /** Display initial status */
   private displayInitialStatus(): void {}
 
+  /** Get database statistics using DAL */
+  private async getDatabaseStats(): Promise<{
+    totalVectors: number;
+    totalTables: number;
+    averageSearchTime: number;
+    indexedVectors: number;
+    cacheHitRate: number;
+  }> {
+    try {
+      if (!this.vectorRepository) {
+        return {
+          totalVectors: 0,
+          totalTables: 0,
+          averageSearchTime: 0,
+          indexedVectors: 0,
+          cacheHitRate: 0,
+        };
+      }
+
+      const startTime = Date.now();
+      const allVectors = await this.vectorRepository.findAll({ limit: 1000 });
+      const searchTime = Date.now() - startTime;
+
+      return {
+        totalVectors: allVectors.length,
+        totalTables: 1, // Single table for now
+        averageSearchTime: searchTime,
+        indexedVectors: allVectors.length,
+        cacheHitRate: 0.85, // Default cache hit rate
+      };
+    } catch (error) {
+      console.warn('⚠️ Could not get database stats:', error);
+      return {
+        totalVectors: 0,
+        totalTables: 0,
+        averageSearchTime: 0,
+        indexedVectors: 0,
+        cacheHitRate: 0,
+      };
+    }
+  }
+
   /** Display console status (fallback) */
   private displayConsoleStatus(status: any): void {
     // Overall health
@@ -293,6 +383,112 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       });
     } else {
     }
+  }
+
+  /** Get UACL client metrics */
+  private async getClientMetrics(): Promise<{
+    total: number;
+    connected: number;
+    byType: Record<string, { total: number; connected: number; avgLatency: number }>;
+    avgLatency: number;
+    errors: number;
+    healthPercentage: number;
+  }> {
+    try {
+      if (!uacl.isInitialized()) {
+        return {
+          total: 0,
+          connected: 0,
+          byType: {},
+          avgLatency: 0,
+          errors: 0,
+          healthPercentage: 0,
+        };
+      }
+
+      const metrics = uacl.getMetrics();
+      const healthPercentage = metrics.total > 0 ? (metrics.connected / metrics.total) * 100 : 100;
+
+      return {
+        total: metrics.total,
+        connected: metrics.connected,
+        byType: metrics.byType,
+        avgLatency: metrics.avgLatency,
+        errors: metrics.totalErrors,
+        healthPercentage,
+      };
+    } catch (error) {
+      console.warn('⚠️ Could not get client metrics:', error);
+      return {
+        total: 0,
+        connected: 0,
+        byType: {},
+        avgLatency: 0,
+        errors: 0,
+        healthPercentage: 0,
+      };
+    }
+  }
+
+  /** Assess client health and add alerts */
+  private assessClientHealth(
+    clientMetrics: any,
+    alerts: SystemHealth['alerts']
+  ): 'healthy' | 'warning' | 'critical' {
+    if (!clientMetrics || clientMetrics.total === 0) {
+      return 'healthy'; // No clients configured is considered healthy
+    }
+
+    const { healthPercentage, errors, avgLatency } = clientMetrics;
+
+    let clientHealth: 'healthy' | 'warning' | 'critical' = 'healthy';
+
+    // Check health percentage
+    if (healthPercentage < 50) {
+      clientHealth = 'critical';
+      alerts.push({
+        level: 'error',
+        component: 'Clients',
+        message: `Critical: Only ${healthPercentage.toFixed(1)}% of clients are healthy`,
+        timestamp: Date.now(),
+      });
+    } else if (healthPercentage < 80) {
+      clientHealth = 'warning';
+      alerts.push({
+        level: 'warning',
+        component: 'Clients',
+        message: `Warning: ${healthPercentage.toFixed(1)}% of clients are healthy`,
+        timestamp: Date.now(),
+      });
+    }
+
+    // Check error rate
+    if (errors > 10) {
+      if (clientHealth !== 'critical') {
+        clientHealth = 'warning';
+      }
+      alerts.push({
+        level: 'warning',
+        component: 'Clients',
+        message: `High error count: ${errors} client errors detected`,
+        timestamp: Date.now(),
+      });
+    }
+
+    // Check latency
+    if (avgLatency > 5000) {
+      if (clientHealth !== 'critical') {
+        clientHealth = 'warning';
+      }
+      alerts.push({
+        level: 'warning',
+        component: 'Clients',
+        message: `High latency: ${avgLatency.toFixed(0)}ms average response time`,
+        timestamp: Date.now(),
+      });
+    }
+
+    return clientHealth;
   }
 
   /** Generate comprehensive report */

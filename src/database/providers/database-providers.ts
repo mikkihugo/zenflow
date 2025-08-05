@@ -1012,7 +1012,8 @@ export class KuzuAdapter implements GraphDatabaseAdapter {
 @injectable
 export class LanceDBAdapter implements VectorDatabaseAdapter {
   private connected = false;
-  private lanceInterface: any = null; // LanceDBInterface instance
+  private vectorRepository?: any = null; // DAL repository instance
+  private vectorDAO?: any = null; // DAL DAO instance
   private connectionStats: ConnectionStats = {
     total: 1,
     active: 0,
@@ -1030,19 +1031,30 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
     this.logger.info('Connecting to LanceDB vector database');
 
     try {
-      // Import and initialize LanceDBInterface with config options
-      const { default: LanceDBInterface } = await import('../lancedb-interface');
+      // Initialize DAL repository and DAO for LanceDB
+      const { createRepository, createDAO, DatabaseTypes, EntityTypes } = await import('../index');
 
-      const lanceConfig = {
-        dbPath: this.config.database || './data/vectors.lance',
-        vectorDim: this.config.options?.vectorSize || 384,
-        similarity: this.config.options?.metricType || 'cosine',
-        indexType: this.config.options?.indexType || 'IVF_PQ',
-        batchSize: this.config.options?.batchSize || 1000,
+      const dalConfig = {
+        database: this.config.database || './data/vectors.lance',
+        options: {
+          vectorSize: this.config.options?.vectorSize || 384,
+          metricType: this.config.options?.metricType || 'cosine',
+          indexType: this.config.options?.indexType || 'IVF_PQ',
+          batchSize: this.config.options?.batchSize || 1000,
+        }
       };
 
-      this.lanceInterface = new LanceDBInterface(lanceConfig);
-      await this.lanceInterface.initialize();
+      this.vectorRepository = await createRepository(
+        EntityTypes.VectorDocument,
+        DatabaseTypes.LanceDB,
+        dalConfig
+      );
+      
+      this.vectorDAO = await createDAO(
+        EntityTypes.VectorDocument,
+        DatabaseTypes.LanceDB,
+        dalConfig
+      );
 
       this.connected = true;
       this.connectionStats.active = 1;
@@ -1060,9 +1072,10 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
     this.logger.info('Disconnecting from LanceDB database');
 
     try {
-      if (this.lanceInterface) {
-        await this.lanceInterface.shutdown();
-        this.lanceInterface = null;
+      if (this.vectorRepository) {
+        // DAL repositories don't need explicit shutdown
+        this.vectorRepository = null;
+        this.vectorDAO = null;
       }
 
       this.connected = false;
@@ -1163,11 +1176,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
         const tableMatch = sql.match(/CREATE TABLE\s+(\w+)/i);
         if (tableMatch) {
           const tableName = tableMatch[1];
-          await this.lanceInterface.createTable(tableName, {
-            id: 'string',
-            vector: `array<float>(${this.lanceInterface.config?.vectorDim || 384})`,
-            metadata: 'map<string, string>',
-          });
+          // Table creation is handled automatically by DAL
           affectedRows = 1;
         }
       }
@@ -1218,12 +1227,12 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
 
   async health(): Promise<boolean> {
     try {
-      if (!this.connected || !this.lanceInterface) {
+      if (!this.connected || !this.vectorRepository) {
         return false;
       }
 
-      // Check if we can get database stats
-      await this.lanceInterface.getStats();
+      // Check if we can query the repository
+      await this.vectorRepository.findAll({ limit: 1 });
       return true;
     } catch (error) {
       this.logger.error(`LanceDB health check failed: ${error}`);
@@ -1239,17 +1248,17 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
     const startTime = Date.now();
 
     try {
-      // Use the real LanceDB interface for vector search
-      const searchResults = await this.lanceInterface.searchSimilar('embeddings', query, limit);
+      // Use DAL vector DAO for similarity search
+      const searchResults = await this.vectorDAO.similaritySearch(query, { limit, threshold: 0.1 });
 
       const executionTime = Date.now() - startTime;
 
-      // Convert LanceDBInterface results to VectorResult format
+      // Convert DAL results to VectorResult format
       const result: VectorResult = {
         matches: searchResults.map((result: any) => ({
           id: result.id,
-          vector: result.document?.vector || query, // fallback to query vector if not available
-          score: result.score,
+          vector: result.vector || query, // fallback to query vector if not available
+          score: result.score || result.similarity || 1.0,
           metadata: result.metadata || {},
         })),
         executionTime,
@@ -1268,24 +1277,18 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
     await this.ensureConnected();
 
     try {
-      // Convert VectorData format to LanceDBInterface format
-      const documents = vectors.map((v) => ({
+      // Convert VectorData format to DAL format and batch insert
+      const vectorOperations = vectors.map((v) => ({
         id: v.id.toString(),
         vector: v.vector,
         metadata: v.metadata || {},
-        timestamp: Date.now(),
       }));
 
-      // Use the real LanceDB interface for adding vectors
-      const result = await this.lanceInterface.insertVectors('embeddings', documents);
+      // Use DAL vector DAO for batch operations
+      const result = await this.vectorDAO.bulkVectorOperations(vectorOperations, 'upsert');
 
-      if (result.errors.length > 0) {
-        this.logger.warn(
-          `Added ${result.inserted}/${vectors.length} vectors, ${result.errors.length} errors`
-        );
-      }
-
-      this.logger.debug(`Successfully added ${result.inserted} vectors to LanceDB`);
+      const inserted = Array.isArray(result) ? result.length : 1;
+      this.logger.debug(`Successfully added ${inserted} vectors to LanceDB via DAL`);
     } catch (error) {
       this.logger.error(`Failed to add vectors to LanceDB: ${error}`);
       throw error;
@@ -1297,12 +1300,15 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
     await this.ensureConnected();
 
     try {
-      // LanceDB handles indexing automatically, so we just ensure the table exists
-      await this.lanceInterface.createTable('embeddings', {
-        id: 'string',
-        vector: `array<float>(${config.dimension})`,
-        metadata: 'map<string, string>',
-      });
+      // DAL handles indexing automatically through repositories
+      // Create a sample document to ensure table exists
+      const sampleDoc = {
+        id: `index_${config.name}_${Date.now()}`,
+        vector: new Array(config.dimension).fill(0),
+        metadata: { index: config.name, type: 'sample' }
+      };
+      await this.vectorRepository.create(sampleDoc);
+      await this.vectorRepository.delete(sampleDoc.id); // Clean up sample
 
       this.logger.debug(`Successfully created LanceDB index: ${config.name}`);
     } catch (error) {
@@ -1316,9 +1322,9 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
     await this.ensureConnected();
 
     try {
-      // Get real schema info from LanceDB
-      const stats = await this.lanceInterface.getStats();
-      const vectorDim = this.lanceInterface.config?.vectorDim || 384;
+      // Get schema info from DAL repository
+      const allVectors = await this.vectorRepository.findAll({ limit: 1 });
+      const vectorDim = this.config.options?.vectorSize || 384;
 
       const schemaInfo: SchemaInfo = {
         tables: [

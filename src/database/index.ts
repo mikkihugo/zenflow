@@ -1,302 +1,370 @@
 /**
- * Database Domain - Enhanced Index
- * Exports for advanced database interfaces, coordination, and management systems
- * Provides unified access to vector, graph, relational, and multi-engine coordination
+ * Unified Data Access Layer (DAL) - Main Export
+ * 
+ * Central export point for the unified DAL providing standardized access
+ * to all database types through a consistent interface architecture.
  */
 
-// Import classes for internal use
-import { DatabaseCoordinator, type DatabaseEngine, type DatabaseQuery } from './core/database-coordinator';
-import { QueryOptimizer } from './optimization/query-optimizer';
-import { LanceDBInterface } from './lancedb-interface';
-import { KuzuAdvancedInterface } from './kuzu-advanced-interface';
-import { SwarmDatabase } from './swarm-database';
-
-// Advanced coordination and optimization
-export {
-  type CoordinationStrategy,
-  DatabaseCoordinator,
-  type DatabaseEngine,
-  type DatabaseQuery,
-  type QueryExecution,
-} from './core/database-coordinator';
-// Error handling
-export {
-  DatabaseCoordinationError,
-  DatabaseEngineError,
-  DatabaseError,
-  DatabaseErrorClassifier,
-  DatabaseErrorCode,
-  type DatabaseErrorContext,
-  DatabaseQueryError,
-  DatabaseTransactionError,
-} from './error-handling/database-errors';
-// Legacy database interfaces
-export type { GraphEdge, GraphNode, KuzuConfig, QueryResult } from './kuzu-advanced-interface';
-export { KuzuAdvancedInterface } from './kuzu-advanced-interface';
+// Core interfaces
 export type {
+  IDao,
+  IManager,
+  IGraphDao,
+  IVectorDao,
+  IMemoryDao,
+  ICoordinationDao,
+  QueryOptions,
+  CustomQuery,
+  TransactionOperation,
+  DatabaseMetadata,
+  HealthStatus,
+  PerformanceMetrics,
+  SortCriteria,
+  
+  // Graph database types
+  GraphNode,
+  GraphRelationship,
+  GraphTraversalResult,
+  GraphQueryResult,
+  GraphPath,
+  
+  // Vector database types
+  VectorDocument,
+  VectorSearchOptions,
+  VectorSearchResult,
+  VectorInsertResult,
+  VectorIndexConfig,
+  VectorStats,
   ClusteringOptions,
   ClusterResult,
-  LanceDBConfig,
-  LanceDBStats,
-  SearchResult,
-  VectorDocument,
-} from './lancedb-interface';
-export { LanceDBInterface } from './lancedb-interface';
-// MCP Tools
-export {
-  databaseHealthCheckTool,
-  databaseInitTool,
-  databaseMonitorTool,
-  databaseOptimizeTool,
-  databaseQueryTool,
-  databaseTools,
-} from './mcp/database-tools';
+  
+  // Memory store types
+  MemoryStats,
+  
+  // Coordination types
+  CoordinationLock,
+  CoordinationChange,
+  CoordinationEvent,
+  CoordinationStats
+} from './interfaces';
 
-export {
-  type OptimizationMetrics,
-  type OptimizationRule,
-  type QueryCache,
-  QueryOptimizer,
-  type QueryPattern,
-} from './optimization/query-optimizer';
-export type { SwarmDatabaseConfig, SwarmQuery, SwarmRecord } from './swarm-database';
-export { SwarmDatabase } from './swarm-database';
+// Base implementations
+export { BaseDao, BaseManager } from './base.dao';
 
-// Enhanced Database utilities and helpers
-export const DatabaseUtils = {
-  /**
-   * Get the appropriate database interface based on type
-   */
-  getDatabaseInterface: (type: 'lancedb' | 'kuzu' | 'swarm', config: any) => {
-    switch (type) {
-      case 'lancedb':
-        return new LanceDBInterface(config);
-      case 'kuzu':
-        return new KuzuAdvancedInterface(config);
-      case 'swarm':
-        return new SwarmDatabase(config);
-      default:
-        throw new Error(`Unknown database type: ${type}`);
-    }
+// DAO implementations
+export { RelationalDao } from './dao/relational.dao';
+export { GraphDao } from './dao/graph.dao';
+export { VectorDao } from './dao/vector.dao';
+export { MemoryDao } from './dao/memory.dao';
+export { CoordinationDao } from './dao/coordination.dao';
+
+// Manager implementations
+export { DocumentManager } from './managers/document-manager';
+
+// Factory and configuration
+export { 
+  DALFactory, 
+  MultiDatabaseDAO,
+  type DaoConfig,
+  type DaoType,
+  type EntityTypeRegistry
+} from './factory';
+
+// Re-export database provider types for convenience
+export type {
+  DatabaseAdapter,
+  GraphDatabaseAdapter,
+  VectorDatabaseAdapter,
+  DatabaseConfig,
+  GraphResult,
+  VectorResult,
+  VectorData,
+  IndexConfig
+} from './providers/database-providers';
+
+/**
+ * Convenience functions for quick DAL setup
+ */
+
+/**
+ * Create a simple DAO for a given entity type and database
+ */
+export async function createDao<T>(
+  entityType: string,
+  databaseType: 'postgresql' | 'sqlite' | 'kuzu' | 'lancedb' | 'mysql' | 'memory' | 'coordination',
+  config?: any
+): Promise<IDao<T>> {
+  const { DALFactory } = await import('./factory');
+  const { DIContainer } = await import('../../di/container/di-container');
+  const { CORE_TOKENS } = await import('../../di/tokens/core-tokens');
+  
+  // Create basic DI container for factory dependencies
+  const container = new DIContainer();
+  
+  // Register basic logger and config (would be properly configured in real app)
+  container.register(CORE_TOKENS.Logger, () => ({
+    debug: console.debug,
+    info: console.info,
+    warn: console.warn,
+    error: console.error
+  }));
+  
+  container.register(CORE_TOKENS.Config, () => ({}));
+  
+  const factory = container.resolve(DALFactory);
+  
+  return await factory.createDao<T>({
+    databaseType,
+    entityType,
+    databaseConfig: config || getDefaultConfig(databaseType)
+  });
+}
+
+/**
+ * Create a Manager for a given entity type and database
+ */
+export async function createManager<T>(
+  entityType: string,
+  databaseType: 'postgresql' | 'sqlite' | 'kuzu' | 'lancedb' | 'mysql' | 'memory' | 'coordination',
+  config?: any
+): Promise<IManager<T>> {
+  const { DALFactory } = await import('./factory');
+  const { DIContainer } = await import('../../di/container/di-container');
+  const { CORE_TOKENS } = await import('../../di/tokens/core-tokens');
+  
+  const container = new DIContainer();
+  
+  container.register(CORE_TOKENS.Logger, () => ({
+    debug: console.debug,
+    info: console.info,
+    warn: console.warn,
+    error: console.error
+  }));
+  
+  container.register(CORE_TOKENS.Config, () => ({}));
+  
+  const factory = container.resolve(DALFactory);
+  
+  return await factory.createManager<T>({
+    databaseType,
+    entityType,
+    databaseConfig: config || getDefaultConfig(databaseType)
+  });
+}
+
+/**
+ * Create a multi-database setup with primary and secondary databases
+ */
+export async function createMultiDatabaseSetup<T>(
+  entityType: string,
+  primaryConfig: {
+    databaseType: 'postgresql' | 'sqlite' | 'kuzu' | 'lancedb' | 'mysql' | 'memory' | 'coordination';
+    config?: any;
   },
+  secondaryConfigs?: Array<{
+    databaseType: 'postgresql' | 'sqlite' | 'kuzu' | 'lancedb' | 'mysql' | 'memory' | 'coordination';
+    config?: any;
+  }>
+): Promise<MultiDatabaseDAO<T>> {
+  const { DALFactory } = await import('./factory');
+  const { DIContainer } = await import('../../di/container/di-container');
+  const { CORE_TOKENS } = await import('../../di/tokens/core-tokens');
+  
+  const container = new DIContainer();
+  
+  container.register(CORE_TOKENS.Logger, () => ({
+    debug: console.debug,
+    info: console.info,
+    warn: console.warn,
+    error: console.error
+  }));
+  
+  container.register(CORE_TOKENS.Config, () => ({}));
+  
+  const factory = container.resolve(DALFactory);
+  
+  const primaryDaoConfig = {
+    databaseType: primaryConfig.databaseType,
+    entityType,
+    databaseConfig: primaryConfig.config || getDefaultConfig(primaryConfig.databaseType)
+  };
+  
+  const secondaryDaoConfigs = secondaryConfigs?.map(sc => ({
+    databaseType: sc.databaseType,
+    entityType,
+    databaseConfig: sc.config || getDefaultConfig(sc.databaseType)
+  }));
+  
+  return await factory.createMultiDatabaseDAO<T>(
+    entityType,
+    primaryDaoConfig,
+    secondaryDaoConfigs
+  );
+}
 
-  /**
-   * Validate database configuration
-   */
-  validateConfig: (type: string, config: any): boolean => {
-    if (!type || !config) return false;
-
-    switch (type) {
-      case 'lancedb':
-        return Boolean(config.dbPath || config.dbName);
-      case 'kuzu':
-        return Boolean(config.dbPath);
-      case 'swarm':
-        return Boolean(config.storage);
-      default:
-        return false;
-    }
-  },
-
-  /**
-   * Get database capabilities by type
-   */
-  getCapabilities: (type: string) => {
-    const capabilities = {
-      lancedb: ['vector_search', 'similarity', 'clustering', 'indexing'],
-      kuzu: ['graph_queries', 'relationships', 'traversal', 'analytics'],
-      swarm: ['distributed', 'coordination', 'consensus', 'replication'],
-    };
-
-    return capabilities[type as keyof typeof capabilities] || [];
-  },
-
-  /**
-   * Create a database engine descriptor
-   */
-  createEngine: (
-    id: string,
-    type: 'vector' | 'graph' | 'document' | 'relational' | 'timeseries',
-    config: any
-  ): DatabaseEngine => {
-    const interface_ = DatabaseUtils.getDatabaseInterface(type as any, config);
-    const capabilities = DatabaseUtils.getCapabilities(type);
-
-    return {
-      id,
-      type,
-      interface: interface_,
-      capabilities,
-      status: 'active',
-      lastHealthCheck: Date.now(),
-      performance: {
-        averageLatency: 0,
-        throughput: 0,
-        errorRate: 0,
-        capacity: 1000,
-        utilization: 0,
-      },
-      config,
-    };
-  },
-};
-
-// Enhanced Database factory for creating instances
-export class DatabaseFactory {
-  private static instances = new Map<string, any>();
-  private static coordinator: DatabaseCoordinator | null = null;
-  private static optimizer: QueryOptimizer | null = null;
-
-  /**
-   * Create or get a database instance
-   */
-  static getInstance<T>(
-    type: 'lancedb' | 'kuzu' | 'swarm',
-    config: any,
-    instanceKey = 'default'
-  ): T {
-    const key = `${type}:${instanceKey}`;
-
-    if (!DatabaseFactory.instances.has(key)) {
-      const instance = DatabaseUtils.getDatabaseInterface(type, config);
-      DatabaseFactory.instances.set(key, instance);
-    }
-
-    return DatabaseFactory.instances.get(key);
-  }
-
-  /**
-   * Create a complete database system with coordination and optimization
-   */
-  static async createAdvancedDatabaseSystem(config: {
-    engines: Array<{
-      id: string;
-      type: 'vector' | 'graph' | 'document' | 'relational' | 'timeseries';
-      config: any;
-    }>;
-    optimization?: {
-      enabled?: boolean;
-      caching?: any;
-      aggressiveness?: 'low' | 'medium' | 'high';
-    };
-    coordination?: {
-      healthCheckInterval?: number;
-      defaultTimeout?: number;
-      loadBalancing?: string;
-    };
-  }) {
-    // Initialize coordinator and optimizer
-    DatabaseFactory.coordinator = new DatabaseCoordinator();
-    DatabaseFactory.optimizer = new QueryOptimizer();
-
-    const engines = new Map<string, DatabaseEngine>();
-
-    // Register engines
-    for (const engineConfig of config.engines) {
-      try {
-        const engine = DatabaseUtils.createEngine(
-          engineConfig.id,
-          engineConfig.type,
-          engineConfig.config
-        );
-        await DatabaseFactory.coordinator.registerEngine(engine);
-        engines.set(engine.id, engine);
-      } catch (error) {
-        console.error(`Failed to register engine ${engineConfig.id}:`, error);
-      }
-    }
-
-    return {
-      coordinator: DatabaseFactory.coordinator,
-      optimizer: DatabaseFactory.optimizer,
-      engines,
-
-      // Convenience methods
-      async query(query: DatabaseQuery) {
-        if (!DatabaseFactory.coordinator || !DatabaseFactory.optimizer) {
-          throw new Error('Database system not initialized');
+/**
+ * Get default configuration for database types
+ */
+function getDefaultConfig(databaseType: string): any {
+  switch (databaseType) {
+    case 'postgresql':
+      return {
+        type: 'postgresql',
+        host: 'localhost',
+        port: 5432,
+        database: 'claudezen',
+        username: 'user',
+        password: 'password',
+        pool: { min: 2, max: 10 }
+      };
+      
+    case 'sqlite':
+      return {
+        type: 'sqlite',
+        database: './data/claudezen.db'
+      };
+      
+    case 'kuzu':
+      return {
+        type: 'kuzu',
+        database: './data/graph.kuzu',
+        options: {
+          bufferPoolSize: '1GB',
+          maxNumThreads: 4
         }
-
-        const optimizedQuery = await DatabaseFactory.optimizer.optimizeQuery(query, engines);
-        const execution = await DatabaseFactory.coordinator.executeQuery(optimizedQuery);
-        DatabaseFactory.optimizer.recordExecution(execution);
-        return execution;
-      },
-
-      async shutdown() {
-        if (DatabaseFactory.coordinator) {
-          await DatabaseFactory.coordinator.shutdown();
+      };
+      
+    case 'lancedb':
+      return {
+        type: 'lancedb',
+        database: './data/vectors.lance',
+        options: {
+          vectorSize: 384,
+          metricType: 'cosine',
+          indexType: 'IVF_PQ'
         }
-        DatabaseFactory.coordinator = null;
-        DatabaseFactory.optimizer = null;
-      },
-
-      getStats() {
-        return {
-          coordinator: DatabaseFactory.coordinator?.getStats(),
-          optimizer: DatabaseFactory.optimizer?.getStats(),
-          engines: engines.size,
-        };
-      },
-
-      getHealthReport() {
-        const stats = this.getStats();
-        const coordinatorStats = stats.coordinator;
-
-        if (!coordinatorStats) {
-          return { overall: 'critical', score: 0, details: {}, recommendations: [] };
-        }
-
-        const healthScore =
-          (coordinatorStats.engines.active / Math.max(coordinatorStats.engines.total, 1)) * 100;
-
-        return {
-          overall: healthScore > 80 ? 'healthy' : healthScore > 50 ? 'warning' : 'critical',
-          score: Math.round(healthScore),
-          details: stats,
-          recommendations: DatabaseFactory.optimizer?.getRecommendations() || [],
-        };
-      },
-    };
-  }
-
-  /**
-   * Create a basic database system with single engine
-   */
-  static async createBasicDatabaseSystem(
-    type: 'lancedb' | 'kuzu' | 'swarm',
-    config: any,
-    engineId = 'default'
-  ) {
-    const engines = [
-      {
-        id: engineId,
-        type: type as any,
-        config,
-      },
-    ];
-
-    return DatabaseFactory.createAdvancedDatabaseSystem({
-      engines,
-      optimization: { enabled: true, aggressiveness: 'medium' },
-      coordination: { healthCheckInterval: 30000, defaultTimeout: 30000 },
-    });
-  }
-
-  /**
-   * Clear all cached instances
-   */
-  static clearInstances(): void {
-    DatabaseFactory.instances.clear();
-  }
-
-  /**
-   * Get all active instances
-   */
-  static getActiveInstances(): string[] {
-    return Array.from(DatabaseFactory.instances.keys());
+      };
+      
+    case 'mysql':
+      return {
+        type: 'mysql',
+        host: 'localhost',
+        port: 3306,
+        database: 'claudezen',
+        username: 'user',
+        password: 'password',
+        pool: { min: 2, max: 10 }
+      };
+      
+    case 'memory':
+      return {
+        type: 'sqlite', // Use SQLite as backing store for memory repository
+        database: ':memory:'
+      };
+      
+    case 'coordination':
+      return {
+        type: 'sqlite', // Use SQLite for coordination by default
+        database: './data/coordination.db'
+      };
+      
+    default:
+      throw new Error(`Unknown database type: ${databaseType}`);
   }
 }
 
-// Default export is the enhanced factory
-export default DatabaseFactory;
+/**
+ * Entity type helpers for common use cases
+ */
+export const EntityTypes = {
+  // Swarm coordination entities
+  SwarmAgent: 'SwarmAgent',
+  SwarmTask: 'SwarmTask',
+  SwarmExecution: 'SwarmExecution',
+  
+  // Memory entities
+  MemoryEntry: 'MemoryEntry',
+  CacheItem: 'CacheItem',
+  SessionData: 'SessionData',
+  
+  // Vector entities
+  VectorDocument: 'VectorDocument',
+  Embedding: 'Embedding',
+  Similarity: 'Similarity',
+  
+  // Graph entities
+  GraphNode: 'GraphNode',
+  GraphRelationship: 'GraphRelationship',
+  GraphPath: 'GraphPath',
+  
+  // Coordination entities
+  DistributedLock: 'DistributedLock',
+  CoordinationEvent: 'CoordinationEvent',
+  WorkflowStep: 'WorkflowStep',
+  
+  // Generic entities
+  User: 'User',
+  Document: 'Document',
+  Configuration: 'Configuration'
+} as const;
+
+/**
+ * Database type helpers
+ */
+export const DatabaseTypes = {
+  PostgreSQL: 'postgresql',
+  SQLite: 'sqlite',
+  MySQL: 'mysql',
+  Kuzu: 'kuzu',
+  LanceDB: 'lancedb',
+  Memory: 'memory',
+  Coordination: 'coordination'
+} as const;
+
+/**
+ * Quick setup for common patterns
+ */
+export const QuickSetup = {
+  /**
+   * Create a typical swarm coordination setup
+   */
+  async swarmCoordination() {
+    return {
+      agents: await createDao('SwarmAgent', 'coordination'),
+      tasks: await createDao('SwarmTask', 'coordination'),
+      executions: await createDao('SwarmExecution', 'coordination'),
+      memory: await createDao('MemoryEntry', 'memory'),
+      vectors: await createDao('VectorDocument', 'lancedb')
+    };
+  },
+
+  /**
+   * Create a typical AI/ML data setup
+   */
+  async aimlData() {
+    return {
+      documents: await createDao('Document', 'postgresql'),
+      embeddings: await createDao('VectorDocument', 'lancedb'),
+      relationships: await createDao('GraphNode', 'kuzu'),
+      cache: await createDao('CacheItem', 'memory')
+    };
+  },
+
+  /**
+   * Create a distributed application setup
+   */
+  async distributedApp() {
+    const primaryDB = await createManager('User', 'postgresql');
+    const cacheDB = await createManager('User', 'memory');
+    const coordinationDB = await createManager('DistributedLock', 'coordination');
+    
+    return {
+      primary: primaryDB,
+      cache: cacheDB,
+      coordination: coordinationDB
+    };
+  }
+};
+
+// Default export is the factory
+export { DALFactory as default } from './factory';

@@ -2,7 +2,8 @@
  * @fileoverview LanceDB backend for memory storage.
  */
 
-import { LanceDBInterface } from '../../database/lancedb-interface';
+import { createRepository, createDAO, DatabaseTypes, EntityTypes } from '../../database/index';
+import type { IRepository, IDataAccessObject } from '../../database/interfaces';
 import {
   type BackendConfig,
   type BackendStats,
@@ -12,17 +13,34 @@ import {
 } from './memory-backend';
 
 export class LanceDBBackend extends MemoryBackend {
-  private lanceInterface: LanceDBInterface;
+  private vectorRepository: IRepository<any>;
+  private vectorDAO: IDataAccessObject<any>;
 
   constructor(config: BackendConfig) {
     super(config);
-    this.lanceInterface = new LanceDBInterface({
-      dbPath: `${config.path}/lancedb`,
-    });
   }
 
   async initialize(): Promise<void> {
-    await this.lanceInterface.initialize();
+    this.vectorRepository = await createRepository(
+      EntityTypes.VectorDocument,
+      DatabaseTypes.LanceDB,
+      {
+        database: `${this.config.path}/lancedb`,
+        options: {
+          vectorSize: this.config.vectorDimensions || 384,
+          metricType: 'cosine'
+        }
+      }
+    );
+    
+    this.vectorDAO = await createDAO(
+      EntityTypes.VectorDocument,
+      DatabaseTypes.LanceDB,
+      {
+        database: `${this.config.path}/lancedb`,
+        options: { vectorSize: this.config.vectorDimensions || 384 }
+      }
+    );
   }
 
   async store(
@@ -52,7 +70,7 @@ export class LanceDBBackend extends MemoryBackend {
       },
     };
 
-    await this.lanceInterface.insertVectors('documents', [vectorDoc]);
+    await this.vectorRepository.create(vectorDoc);
 
     return {
       id: fullKey,
@@ -63,23 +81,14 @@ export class LanceDBBackend extends MemoryBackend {
 
   async retrieve(key: string, namespace: string = 'default'): Promise<JSONValue | null> {
     try {
-      const searchResult = await this.lanceInterface.searchSimilar(
-        'documents',
-        new Array(384).fill(0),
-        1,
-        {
-          key: key,
-          namespace: namespace,
-        }
-      );
-
-      if (!searchResult || searchResult.length === 0) {
+      const fullKey = `${namespace}:${key}`;
+      const document = await this.vectorRepository.findById(fullKey);
+      
+      if (!document || !document.metadata) {
         return null;
       }
 
-      const result = searchResult[0];
-      const metadata = result.metadata || {};
-
+      const metadata = document.metadata;
       if (metadata.serialized_data) {
         return JSON.parse(metadata.serialized_data);
       }
@@ -94,18 +103,11 @@ export class LanceDBBackend extends MemoryBackend {
     const results: Record<string, JSONValue> = {};
 
     try {
-      const searchResult = await this.lanceInterface.searchSimilar(
-        'documents',
-        new Array(384).fill(0),
-        100,
-        {
-          namespace: namespace,
-        }
-      );
+      const allDocuments = await this.vectorRepository.findAll({ limit: 100 });
 
-      for (const result of searchResult || []) {
+      for (const document of allDocuments || []) {
         try {
-          const metadata = result.metadata || {};
+          const metadata = document.metadata || {};
           if (metadata.namespace === namespace && metadata.serialized_data) {
             const key = metadata.key;
             if (pattern === '*' || key.includes(pattern.replace('*', ''))) {
@@ -130,16 +132,12 @@ export class LanceDBBackend extends MemoryBackend {
 
   async listNamespaces(): Promise<string[]> {
     try {
-      const searchResult = await this.lanceInterface.searchSimilar(
-        'documents',
-        new Array(384).fill(0),
-        1000
-      );
+      const allDocuments = await this.vectorRepository.findAll({ limit: 1000 });
 
       const namespaces = new Set<string>();
-      for (const result of searchResult || []) {
+      for (const document of allDocuments || []) {
         try {
-          const metadata = result.metadata || {};
+          const metadata = document.metadata || {};
           if (metadata.namespace) {
             namespaces.add(metadata.namespace);
           }
@@ -155,11 +153,19 @@ export class LanceDBBackend extends MemoryBackend {
   }
 
   async getStats(): Promise<BackendStats> {
-    const stats = await this.lanceInterface.getStats();
-    return {
-      entries: stats.totalVectors || 0,
-      size: stats.indexedVectors || 0,
-      lastModified: Date.now(),
-    };
+    try {
+      const allDocuments = await this.vectorRepository.findAll();
+      return {
+        entries: allDocuments.length,
+        size: allDocuments.length * (this.config.vectorDimensions || 384),
+        lastModified: Date.now(),
+      };
+    } catch (_error) {
+      return {
+        entries: 0,
+        size: 0,
+        lastModified: Date.now(),
+      };
+    }
   }
 }
