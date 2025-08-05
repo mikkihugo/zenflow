@@ -112,6 +112,7 @@ merge_script.sh
 .swarm/
 .hive-mind/
 .ruv-swarm/
+.claude-zen/
 .nx/workspace-data/
 .genaiscript/
 coverage/

@@ -1,8 +1,0 @@
-{
-  "test-service": {
-    "path": "/home/mhugo/code/claude-zen-flow/services/test-service/.hive/test-service.db"
-  },
-  "test-hive": {
-    "path": "/home/mhugo/code/claude-zen-flow/services/test-hive/.hive/test-hive.db"
-  }
-}

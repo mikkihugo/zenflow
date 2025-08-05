@@ -1,8 +1,0 @@
-{
-  "providers": {
-    "google": {
-      "apiKey": null
-    }
-  },
-  "defaultProvider": "google"
-}

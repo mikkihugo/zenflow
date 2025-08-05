@@ -89,6 +89,28 @@ export {
   EventConstants
 } from './types';
 
+// UEL Event Adapters - System Event Integration
+export {
+  SystemEventAdapter,
+  SystemEventManagerFactory,
+  createSystemEventAdapter,
+  createDefaultSystemEventAdapterConfig,
+  createSystemEventManager,
+  createCoreSystemEventManager,
+  createApplicationCoordinatorEventManager,
+  createErrorRecoveryEventManager,
+  createComprehensiveSystemEventManager,
+  SystemEventHelpers,
+  EventAdapterTypes,
+  EventAdapterFactories,
+  EventAdapterUtils,
+  type SystemEventAdapterConfig,
+  type EventAdapterType
+} from './adapters';
+
+// Import types for internal use
+import type { SystemEventAdapter, SystemEventAdapterConfig } from './adapters';
+
 // Legacy compatibility - re-export from observer system
 export {
   SystemEventManager,
@@ -223,6 +245,18 @@ export class UEL {
       await this.initialize();
     }
     return this.getFactory().createSystemEventManager(name, config);
+  }
+
+  /**
+   * Create system event adapter with UEL integration
+   */
+  async createSystemEventAdapter(
+    name: string,
+    config?: Partial<SystemEventAdapterConfig>
+  ): Promise<SystemEventAdapter> {
+    const { createSystemEventAdapter, createDefaultSystemEventAdapterConfig } = await import('./adapters');
+    const adapterConfig = createDefaultSystemEventAdapterConfig(name, config);
+    return createSystemEventAdapter(adapterConfig);
   }
 
   /**
