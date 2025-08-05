@@ -3,12 +3,60 @@
  * Enables autonomous learning and adaptation of cognitive patterns
  */
 
+// Type definitions for cognitive patterns
+interface PatternCharacteristics {
+  searchStrategy: 'directed' | 'undirected' | 'systematic' | 'conceptual';
+  explorationRate: number;
+  exploitationRate: number;
+  decisionMaking: 'decisive' | 'exploratory' | 'analytical' | 'principled';
+  patternRecognition: 'exact_match' | 'fuzzy_match' | 'evidence_based' | 'abstraction_layers';
+}
+
+interface AdaptationRules {
+  [key: string]: (context: any) => boolean;
+}
+
+interface PatternTemplate {
+  name: string;
+  description: string;
+  characteristics: PatternCharacteristics;
+  adaptationRules: AdaptationRules;
+}
+
+interface AgentPattern {
+  activePatterns: string[];
+  dominantPattern: string;
+  adaptationHistory: any[];
+  evolutionScore: number;
+  lastEvolution: number;
+  crossAgentLearning: Map<string, any>;
+  specializations: Set<string>;
+}
+
+interface EvolutionMetric {
+  totalEvolutions: number;
+  successfulAdaptations: number;
+  patternSwitches: number;
+  crossAgentTransfers: number;
+  emergentPatterns: number;
+}
+
+interface EvolutionRecord {
+  timestamp: number;
+  trigger: string;
+  strategy: any;
+  oldPatterns: string[];
+  newPatterns: string[];
+  context: any;
+  effectiveness: any;
+}
+
 class CognitivePatternEvolution {
-  agentPatterns: Map<string, any>;
-  evolutionHistory: Map<string, any>;
-  patternTemplates: Map<string, any>;
+  agentPatterns: Map<string, AgentPattern>;
+  evolutionHistory: Map<string, EvolutionRecord[]>;
+  patternTemplates: Map<string, PatternTemplate>;
   crossAgentPatterns: Map<string, any>;
-  evolutionMetrics: Map<string, any>;
+  evolutionMetrics: Map<string, EvolutionMetric>;
 
   constructor() {
     this.agentPatterns = new Map();
