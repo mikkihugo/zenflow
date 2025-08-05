@@ -10,7 +10,7 @@ import { createServer, type Server as HTTPServer } from 'node:http';
 import express, { type Express } from 'express';
 import { Server as SocketIOServer } from 'socket.io';
 import { createLogger } from '../../utils/logger';
-import type { WebConfig } from './WebConfig';
+import type { WebConfig } from './web-config';
 
 export class WebDashboardServer {
   private logger = createLogger('WebServer');

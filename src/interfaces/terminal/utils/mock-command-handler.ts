@@ -6,9 +6,9 @@
  */
 
 import { createLogger } from '../../../core/logger';
-import { CommandExecutionEngine } from '../CommandExecutionEngine';
+import { CommandExecutionEngine } from '../command-execution-engine';
 
-const logger = createLogger({ prefix: 'MockCommandHandler' });
+const logger = createLogger({ prefix: 'mock-command-handler' });
 
 export interface CommandResult {
   success: boolean;

@@ -36,6 +36,7 @@
     "mcp:test": "npx tsx src/interfaces/mcp/test-external-servers.ts",
     "mcp:external": "npx tsx src/interfaces/mcp/test-external-servers.ts",
     "mcp:validate": "npx tsx src/interfaces/mcp/validate-external-config.ts",
+    "naming:check": "find src -name '*.ts' -o -name '*.tsx' | grep -E '[A-Z]' && echo 'Non-kebab-case files found!' && exit 1 || echo 'All files follow kebab-case naming ✅'",
     "server": "npx tsx src/claude-zen-integrated.ts",
     "benchmark": "node src/coordination/diagnostics/benchmark.js",
     "docs:build": "node scripts/generate-docs.js",

@@ -6,34 +6,34 @@
  */
 
 // Business logic (separated from UI)
-export * from './CommandExecutionEngine';
-export { CommandExecutionEngine } from './CommandExecutionEngine';
-export * from './CommandExecutionRenderer';
-export { type CommandExecutionProps, CommandExecutionRenderer } from './CommandExecutionRenderer';
+export * from './command-execution-engine';
+export { CommandExecutionEngine } from './command-execution-engine';
+export * from './command-execution-renderer';
+export { type CommandExecutionProps, CommandExecutionRenderer } from './command-execution-renderer';
 // Components
 export * from './components/index';
-export * from './InteractiveTerminalApplication';
+export * from './interactive-terminal-application';
 export {
   InteractiveTerminalApplication,
   type TUIModeProps,
-} from './InteractiveTerminalApplication';
-export * from './ProcessOrchestrator';
-export { TerminalManager } from './ProcessOrchestrator';
+} from './interactive-terminal-application';
+export * from './process-orchestrator';
+export { TerminalManager } from './process-orchestrator';
 // Screens
 export * from './screens/index';
 // State Hooks (React hooks for component state management)
 export * from './state-hooks/index';
 // Main components (updated for Google standards)
-export * from './TerminalInterfaceRouter';
+export * from './terminal-interface-router';
 // Re-export key items for convenience (updated names)
-export { TerminalApp, type TerminalAppProps } from './TerminalInterfaceRouter';
-export * from './utils/MockCommandHandler';
+export { TerminalApp, type TerminalAppProps } from './terminal-interface-router';
+export * from './utils/mock-command-handler';
 
 export {
   type CommandContext,
   type CommandResult,
   MockCommandHandler,
-} from './utils/MockCommandHandler';
+} from './utils/mock-command-handler';
 // Utilities (updated for Google standards)
 export * from './utils/mode-detector';
 export {
@@ -83,7 +83,7 @@ export class TerminalInterface {
   async render(): Promise<void> {
     const { render } = await import('ink');
     const React = await import('react');
-    const { TerminalApp } = await import('./TerminalInterfaceRouter');
+    const { TerminalApp } = await import('./terminal-interface-router');
 
     // Determine mode
     const mode =

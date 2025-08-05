@@ -7,9 +7,9 @@
 
 import type { Express, Request, Response } from 'express';
 import { createLogger } from '../../utils/logger';
-import type { WebConfig } from './WebConfig';
-import type { WebDataService } from './WebDataService';
-import type { WebSessionManager } from './WebSessionManager';
+import type { WebConfig } from './web-config';
+import type { WebDataService } from './web-data-service';
+import type { WebSessionManager } from './web-session-manager';
 
 export class WebApiRoutes {
   private logger = createLogger('WebAPI');

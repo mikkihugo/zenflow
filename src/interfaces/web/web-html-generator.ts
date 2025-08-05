@@ -5,7 +5,7 @@
  * Provides fallback UI with basic functionality and theming support.
  */
 
-import type { WebConfig } from './WebConfig';
+import type { WebConfig } from './web-config';
 
 export class WebHtmlGenerator {
   private config: WebConfig;

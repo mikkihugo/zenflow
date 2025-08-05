@@ -9,9 +9,9 @@
 import { Box, Text, useApp } from 'ink';
 import type React from 'react';
 import { useEffect, useState } from 'react';
-import AdvancedCLICommands from './AdvancedCLICommands';
+import AdvancedCLICommands from './advanced-cli-commands';
 import { ErrorMessage, Header, LoadingSpinner, StatusBadge } from './components/index';
-import { type CommandResult, MockCommandHandler } from './utils/MockCommandHandler';
+import { type CommandResult, MockCommandHandler } from './utils/mock-command-handler';
 
 export interface CommandExecutionProps {
   commands: string[];

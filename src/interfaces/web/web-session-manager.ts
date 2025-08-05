@@ -7,7 +7,7 @@
 
 import type { NextFunction, Request, Response } from 'express';
 import { createLogger } from '../../utils/logger';
-import type { WebConfig, WebSession } from './WebConfig';
+import type { WebConfig, WebSession } from './web-config';
 
 export class WebSessionManager {
   private logger = createLogger('WebSessions');

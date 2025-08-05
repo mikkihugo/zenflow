@@ -10,8 +10,8 @@
 
 import { render } from 'ink';
 import type React from 'react';
-import { CommandExecutionRenderer } from './CommandExecutionRenderer';
-import { InteractiveTerminalApplication } from './InteractiveTerminalApplication';
+import { CommandExecutionRenderer } from './command-execution-renderer';
+import { InteractiveTerminalApplication } from './interactive-terminal-application';
 import { createSimpleLogger } from './utils/logger';
 import { detectMode } from './utils/mode-detector';
 

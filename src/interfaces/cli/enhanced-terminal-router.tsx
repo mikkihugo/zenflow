@@ -8,10 +8,10 @@
 import { Box, Text, useInput } from 'ink';
 import type React from 'react';
 import { useEffect, useState } from 'react';
-import { AdvancedCLIEngine } from '../cli/AdvancedCLIEngine';
-import type { CLIConfig } from '../cli/types/AdvancedCLITypes';
-import { CommandExecutionRenderer } from './CommandExecutionRenderer';
-import { InteractiveTerminalApplication } from './InteractiveTerminalApplication';
+import { AdvancedCLIEngine } from '../cli/advanced-cli-engine';
+import type { CLIConfig } from '../cli/types/advanced-cli-types';
+import { CommandExecutionRenderer } from './command-execution-renderer';
+import { InteractiveTerminalApplication } from './interactive-terminal-application';
 import { detectMode, type TerminalMode } from './utils/mode-detector';
 
 export interface TerminalAppProps {

@@ -6,7 +6,7 @@
 import { WebSocket } from 'ws';
 import { AgentManager } from '../../coordination/agents/agent-manager';
 import { SwarmCoordinator } from '../../coordination/swarm/core/swarm-coordinator';
-import { WebSocketManager } from '../../interfaces/web/WebSocketManager';
+import { WebSocketManager } from '../../interfaces/web/web-socket-manager';
 import { RealTimeMonitor } from '../../monitoring/performance/real-time-monitor';
 import { IntegrationTestSetup } from '../helpers/integration-test-setup';
 import { NetworkTestHelper } from '../helpers/network-test-helper';

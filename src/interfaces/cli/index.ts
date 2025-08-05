@@ -7,16 +7,16 @@
  */
 
 // Core CLI Engine
-export { AdvancedCLIEngine, AdvancedCommandRegistry } from './AdvancedCLIEngine';
+export { AdvancedCLIEngine, AdvancedCommandRegistry } from './advanced-cli-engine';
 
 // Enhanced Terminal Router
-export { default as EnhancedTerminalRouter } from './EnhancedTerminalRouter';
+export { default as EnhancedTerminalRouter } from './enhanced-terminal-router';
 
 // SPARC Swarm Commands
 export { createSPARCSwarmCommands } from './sparc-swarm-commands';
 
 // Type Definitions
-export * from './types/AdvancedCLITypes';
+export * from './types/advanced-cli-types';
 
 // CLI Configuration and Utilities
 export interface CLIModuleConfig {

@@ -12,9 +12,9 @@ import { fileURLToPath } from 'node:url';
 import express, { type Express } from 'express';
 import { Server as SocketIOServer } from 'socket.io';
 import { createLogger } from '../../utils/logger';
-import { ApiRouteHandler } from './ApiRouteHandler';
-import { DaemonProcessManager } from './DaemonProcessManager';
-import { WebSocketCoordinator } from './WebSocketCoordinator';
+import { ApiRouteHandler } from './api-route-handler';
+import { DaemonProcessManager } from './daemon-process-manager';
+import { WebSocketCoordinator } from './web-socket-coordinator';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

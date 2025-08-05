@@ -7,7 +7,7 @@
 
 import type { Express, Request, Response } from 'express';
 import { createLogger } from '../../utils/logger';
-import type { WebSocketCoordinator } from './WebSocketCoordinator';
+import type { WebSocketCoordinator } from './web-socket-coordinator';
 
 export interface ApiConfig {
   prefix: string;

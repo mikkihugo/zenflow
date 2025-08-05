@@ -9,15 +9,15 @@ import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createLogger } from '../../utils/logger';
-import { WebApiRoutes } from './WebApiRoutes';
+import { WebApiRoutes } from './web-api-routes';
 // Import modular components
-import { createWebConfig, type WebConfig } from './WebConfig';
-import { WebDashboardServer } from './WebDashboardServer';
-import { WebDataService } from './WebDataService';
-import { WebHtmlGenerator } from './WebHtmlGenerator';
-import { WebProcessManager } from './WebProcessManager';
-import { WebSessionManager } from './WebSessionManager';
-import { WebSocketManager } from './WebSocketManager';
+import { createWebConfig, type WebConfig } from './web-config';
+import { WebDashboardServer } from './web-dashboard-server';
+import { WebDataService } from './web-data-service';
+import { WebHtmlGenerator } from './web-html-generator';
+import { WebProcessManager } from './web-process-manager';
+import { WebSessionManager } from './web-session-manager';
+import { WebSocketManager } from './web-socket-manager';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -250,5 +250,5 @@ export class WebInterface {
 }
 
 // Re-export types and configuration utilities
-export type { WebConfig } from './WebConfig';
-export { createWebConfig } from './WebConfig';
+export type { WebConfig } from './web-config';
+export { createWebConfig } from './web-config';

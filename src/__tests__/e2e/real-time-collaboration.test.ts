@@ -5,7 +5,7 @@
 
 import { WebSocket } from 'ws';
 import { DocumentDrivenSystem } from '../../core/document-driven-system';
-import { WebInterfaceServer } from '../../interfaces/web/WebInterfaceServer';
+import { WebInterfaceServer } from '../../interfaces/web/web-interface-server';
 import { RealFileSystemTestHelper } from '../helpers/filesystem-test-helper';
 import { IntegrationTestSetup } from '../helpers/integration-test-setup';
 import { RealNetworkTestHelper } from '../helpers/network-test-helper';

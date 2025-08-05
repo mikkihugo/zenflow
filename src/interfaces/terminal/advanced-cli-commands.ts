@@ -6,7 +6,7 @@
  */
 
 import type { CommandContext, CommandResult } from '../shared/index';
-import { CliCommandAdapter } from './adapters/CliCommandAdapter';
+import { CliCommandAdapter } from './adapters/cli-command-adapter';
 
 /**
  * Advanced CLI Commands Handler

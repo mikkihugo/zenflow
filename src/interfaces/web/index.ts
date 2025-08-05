@@ -5,18 +5,18 @@
  * Each module has a clear, descriptive name indicating its actual purpose.
  */
 
-export { type ApiConfig, ApiRouteHandler, type SystemStatus } from './ApiRouteHandler';
-export { type DaemonConfig, DaemonProcessManager, type ProcessInfo } from './DaemonProcessManager';
+export { type ApiConfig, ApiRouteHandler, type SystemStatus } from './api-route-handler';
+export { type DaemonConfig, DaemonProcessManager, type ProcessInfo } from './daemon-process-manager';
 // Performance dashboard (renamed from unified-performance-dashboard.ts)
-export { UnifiedPerformanceDashboard as SystemMetricsDashboard } from './SystemMetricsDashboard';
+export { UnifiedPerformanceDashboard as SystemMetricsDashboard } from './system-metrics-dashboard';
 // Main web server (renamed from web-interface.ts)
-export { type WebConfig, WebInterfaceServer } from './WebInterfaceServer';
+export { type WebConfig, WebInterfaceServer } from './web-interface-server';
 // Focused modules (newly created)
 export {
   type WebSession,
   type WebSocketConfig,
   WebSocketCoordinator,
-} from './WebSocketCoordinator';
+} from './web-socket-coordinator';
 
 // Re-export convenience functions
 export const createWebServer = (config?: WebConfig) => {
