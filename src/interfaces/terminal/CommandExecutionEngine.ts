@@ -499,6 +499,49 @@ export class CommandExecutionEngine {
 
       logger.debug('Executing discover command', { projectPath, options, receivedFlags: context.flags });
 
+      // Try to use the enhanced DiscoverCommand class for full functionality
+      try {
+        const { DiscoverCommand } = await import('../cli/commands/discover');
+        const discoverCommand = new DiscoverCommand();
+        
+        logger.info('🚀 Using enhanced Progressive Confidence Building System');
+        await discoverCommand.execute(projectPath, options);
+        
+        return {
+          success: true,
+          message: 'Progressive confidence building completed successfully',
+          data: {
+            enhanced: true,
+            projectPath,
+            options,
+            note: 'Used full DiscoverCommand implementation'
+          }
+        };
+        
+      } catch (enhancedError) {
+        logger.warn('Enhanced discover failed, using fallback implementation:', enhancedError);
+        
+        // Fallback to simplified implementation
+        return CommandExecutionEngine.handleDiscoverFallback(projectPath, options);
+      }
+      
+    } catch (error) {
+      logger.error('Discover command failed:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown discover error',
+        data: { command: 'discover', context }
+      };
+    }
+  }
+
+  /**
+   * Fallback discover implementation when enhanced version fails
+   */
+  private static async handleDiscoverFallback(projectPath: string, options: any): Promise<CommandResult> {
+    try {
+      logger.info('🔧 Using simplified discovery implementation');
+      
       if (options.interactive) {
         return {
           success: true,
@@ -596,7 +639,7 @@ export class CommandExecutionEngine {
         },
       };
     } catch (error) {
-      logger.error('Discover command failed', error);
+      logger.error('Fallback discover command failed', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown discovery error',
