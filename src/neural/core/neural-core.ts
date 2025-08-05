@@ -722,6 +722,5 @@ export class NeuralCLI {
 // Export singleton instance
 export const neuralCLI = new NeuralCLI();
 
-// Export class and constants
-export { NeuralCLI };
+// NeuralCLI is already exported above with export class
 export default NeuralCLI;

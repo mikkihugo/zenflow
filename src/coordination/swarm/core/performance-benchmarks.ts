@@ -6,10 +6,16 @@
  */
 
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
-import { getClaudeFlow } from './claude-flow-enhanced';
+// import { getClaudeFlow } from './claude-flow-enhanced';
 import { ZenSwarm } from './index-complete';
 
 class PerformanceBenchmarks {
+  public results: Map<string, any>;
+  public baselineResults: Map<string, any>;
+  public ruvSwarm: any;
+  public wasmLoader: any;
+  public claudeFlow: any;
+
   constructor() {
     this.results = new Map();
     this.baselineResults = new Map();
@@ -34,11 +40,11 @@ class PerformanceBenchmarks {
       this.wasmLoader = new WasmModuleLoader();
       await this.wasmLoader.initialize('progressive');
 
-      // Initialize Claude Code Flow
-      this.claudeFlow = await getClaudeFlow({
-        enforceBatching: true,
-        enableSIMD: true,
-      });
+      // TODO: Initialize Claude Code Flow (after unified MCP implementation)
+      // this.claudeFlow = await getClaudeFlow({
+      //   enforceBatching: true,
+      //   enableSIMD: true,
+      // });
     } catch (error) {
       console.error('❌ Failed to initialize benchmarking suite:', error);
       throw error;
@@ -50,7 +56,7 @@ class PerformanceBenchmarks {
    */
   async runFullBenchmarkSuite() {
     const suiteStartTime = performance.now();
-    const results = {
+    const results: any = {
       timestamp: new Date().toISOString(),
       environment: this.getEnvironmentInfo(),
       benchmarks: {},
@@ -96,7 +102,7 @@ class PerformanceBenchmarks {
     const iterations = [1000, 100, 10, 1];
     const operations = ['dot_product', 'vector_add', 'vector_scale', 'relu_activation'];
 
-    const results = {
+    const results: any = {
       supported: true,
       capabilities: JSON.parse(coreModule.exports.detect_simd_capabilities()),
       operations: {},
@@ -147,8 +153,8 @@ class PerformanceBenchmarks {
 
     // Calculate overall SIMD performance score
     const speedups = Object.values(results.operations)
-      .map((op) => op.averageSpeedup)
-      .filter((s) => s > 0);
+      .map((op: any) => op.averageSpeedup)
+      .filter((s: any) => s > 0);
 
     results.averageSpeedup = speedups.reduce((acc, s) => acc + s, 0) / speedups.length;
     results.performanceScore = Math.min(100, (results.averageSpeedup - 1.0) * 25); // Max score at 5x speedup
@@ -160,7 +166,7 @@ class PerformanceBenchmarks {
    * Benchmark WASM loading performance
    */
   async benchmarkWASMLoading() {
-    const results = {
+    const results: any = {
       strategies: {},
       moduleStats: {},
       recommendations: [],
@@ -220,7 +226,7 @@ class PerformanceBenchmarks {
    * Benchmark memory management performance
    */
   async benchmarkMemoryManagement() {
-    const results = {
+    const results: any = {
       allocation: {},
       garbageCollection: {},
       fragmentation: {},
@@ -288,7 +294,7 @@ class PerformanceBenchmarks {
 
       // Calculate performance score
       const avgAllocationTime =
-        Object.values(results.allocation).reduce((acc, a) => acc + a.avgTimePerAllocation, 0) /
+        (Object.values(results.allocation).reduce((acc: any, a: any) => acc + a.avgTimePerAllocation, 0) as number) /
         Object.keys(results.allocation).length;
 
       results.performanceScore = Math.max(0, 100 - avgAllocationTime); // Good if under 1ms average
@@ -304,7 +310,7 @@ class PerformanceBenchmarks {
    * Benchmark neural network performance
    */
   async benchmarkNeuralNetworks() {
-    const results = {
+    const results: any = {
       networkSizes: {},
       activationFunctions: {},
       simdComparison: {},
@@ -402,7 +408,7 @@ class PerformanceBenchmarks {
    * Benchmark Claude Code Flow coordination
    */
   async benchmarkClaudeFlowCoordination() {
-    const results = {
+    const results: any = {
       workflowExecution: {},
       batchingPerformance: {},
       parallelization: {},
@@ -482,7 +488,7 @@ class PerformanceBenchmarks {
    * Benchmark parallel execution patterns
    */
   async benchmarkParallelExecution() {
-    const results = {
+    const results: any = {
       batchSizes: {},
       taskTypes: {},
       scalability: {},
@@ -567,7 +573,7 @@ class PerformanceBenchmarks {
 
       // Calculate performance score
       const avgEfficiency =
-        Object.values(results.taskTypes).reduce((acc, t) => acc + t.efficiency, 0) /
+        (Object.values(results.taskTypes).reduce((acc: any, t: any) => acc + t.efficiency, 0) as number) /
         Object.keys(results.taskTypes).length;
 
       results.performanceScore = Math.min(100, avgEfficiency * 100);
@@ -583,7 +589,7 @@ class PerformanceBenchmarks {
    * Test cross-browser compatibility
    */
   async benchmarkBrowserCompatibility() {
-    const results = {
+    const results: any = {
       features: {},
       performance: {},
       compatibility: {},
@@ -605,7 +611,7 @@ class PerformanceBenchmarks {
       results.performance = {
         performanceNow: typeof performance?.now === 'function',
         highResolution: performance.now() % 1 !== 0,
-        memoryAPI: typeof performance?.memory !== 'undefined',
+        memoryAPI: typeof (performance as any)?.memory !== 'undefined',
         navigationTiming: typeof performance?.timing !== 'undefined',
       };
 
@@ -645,8 +651,8 @@ class PerformanceBenchmarks {
       platform: navigator.platform,
       language: navigator.language,
       hardwareConcurrency: navigator.hardwareConcurrency || 'unknown',
-      memory: navigator.deviceMemory || 'unknown',
-      connection: navigator.connection?.effectiveType || 'unknown',
+      memory: (navigator as any).deviceMemory || 'unknown',
+      connection: (navigator as any).connection?.effectiveType || 'unknown',
       timestamp: Date.now(),
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     };
@@ -847,12 +853,12 @@ class PerformanceBenchmarks {
   /**
    * Generate CSV data for export
    */
-  generateCSVData(results) {
+  generateCSVData(results: any) {
     const rows = [['Category', 'Metric', 'Value', 'Score']];
 
     for (const [category, data] of Object.entries(results.benchmarks)) {
-      if (data.performanceScore !== undefined) {
-        rows.push([category, 'Performance Score', data.performanceScore, data.performanceScore]);
+      if ((data as any).performanceScore !== undefined) {
+        rows.push([category, 'Performance Score', (data as any).performanceScore, (data as any).performanceScore]);
       }
     }
 

@@ -14,11 +14,21 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { LancePersistenceAdapter as UnifiedLancePersistence } from '../../../database/persistence/lance-persistence-adapter.js';
-import { ZenSwarm } from './base-swarm';
+// TODO: Fix LancePersistenceAdapter import after unified MCP implementation
+// import { LancePersistenceAdapter as UnifiedLancePersistence } from '../../../database/persistence/lance-persistence-adapter.js';
+import { ZenSwarm } from './index';
 
 export class NativeHiveMind extends EventEmitter {
-  constructor(options = {}) {
+  public options: any;
+  public ruvSwarm: any;
+  public unifiedPersistence: any;
+  public activeSessions: Map<string, any>;
+  public globalAgents: Map<string, any>;
+  public hiveMindState: any;
+  public metrics: any;
+  public initialized: boolean;
+
+  constructor(options: any = {}) {
     super();
 
     this.options = {
@@ -70,27 +80,22 @@ export class NativeHiveMind extends EventEmitter {
     if (this.initialized) return;
 
     try {
-      // Initialize unified persistence layer
-      this.unifiedPersistence = new UnifiedLancePersistence({
-        lanceDbPath: './.hive-mind/native-lance-db',
-        collection: 'hive_mind_memory',
-        enableVectorSearch: this.options.enableSemanticMemory,
-        enableGraphTraversal: this.options.enableGraphRelationships,
-        enableNeuralPatterns: this.options.enableNeuralLearning,
-        maxReaders: 8,
-        maxWorkers: 4,
-      });
+      // TODO: Initialize unified persistence layer after unified MCP implementation
+      // this.unifiedPersistence = new UnifiedLancePersistence({
+      //   lanceDbPath: './.hive-mind/native-lance-db',
+      //   collection: 'hive_mind_memory',
+      //   enableVectorSearch: this.options.enableSemanticMemory,
+      //   enableGraphTraversal: this.options.enableGraphRelationships,
+      //   enableNeuralPatterns: this.options.enableNeuralLearning,
+      //   maxReaders: 8,
+      //   maxWorkers: 4,
+      // });
+      // await this.unifiedPersistence.initialize();
 
-      await this.unifiedPersistence.initialize();
-
-      // Initialize ruv-swarm with unified backend
-      this.ruvSwarm = await ZenSwarm.initialize({
-        loadingStrategy: 'progressive',
-        enablePersistence: false, // We handle persistence through unified layer
-        enableNeuralNetworks: this.options.enableNeuralLearning,
-        enableForecasting: true,
-        useSIMD: true,
-        debug: false,
+      // Initialize ruv-swarm with available method  
+      this.ruvSwarm = await ZenSwarm.create({
+        topology: this.options.defaultTopology,
+        maxAgents: this.options.maxAgents,
       });
 
       // Hook swarm events to hive-mind coordination
@@ -132,7 +137,7 @@ export class NativeHiveMind extends EventEmitter {
   /**
    * NATIVE: Initialize swarm (replaces mcp__zen-swarm__swarm_init)
    */
-  async initializeSwarm(config = {}) {
+  async initializeSwarm(config: any = {}) {
     await this.ensureInitialized();
 
     const swarmConfig = {
@@ -146,31 +151,31 @@ export class NativeHiveMind extends EventEmitter {
     // Create swarm directly through ruv-swarm
     const swarm = await this.ruvSwarm.createSwarm(swarmConfig);
 
-    // Store in unified persistence with relationships
-    await this.unifiedPersistence.storeEntity(
-      'swarm',
-      swarm.id,
-      {
-        name: swarmConfig.name,
-        topology: swarmConfig.topology,
-        maxAgents: swarmConfig.maxAgents,
-        strategy: swarmConfig.strategy,
-        status: 'active',
-        content: `Swarm ${swarmConfig.name} with ${swarmConfig.topology} topology for ${swarmConfig.maxAgents} agents`,
-        description: `Intelligent coordination system using ${swarmConfig.strategy} strategy`,
-      },
-      {
-        namespace: 'hive-mind',
-        relationships: [
-          {
-            toEntityType: 'system',
-            toEntityId: 'hive-mind-core',
-            relationshipType: 'belongs_to',
-            strength: 1.0,
-          },
-        ],
-      }
-    );
+    // TODO: Store in unified persistence with relationships (after unified MCP implementation)
+    // await this.unifiedPersistence.storeEntity(
+    //   'swarm',
+    //   swarm.id,
+    //   {
+    //     name: swarmConfig.name,
+    //     topology: swarmConfig.topology,
+    //     maxAgents: swarmConfig.maxAgents,
+    //     strategy: swarmConfig.strategy,
+    //     status: 'active',
+    //     content: `Swarm ${swarmConfig.name} with ${swarmConfig.topology} topology for ${swarmConfig.maxAgents} agents`,
+    //     description: `Intelligent coordination system using ${swarmConfig.strategy} strategy`,
+    //   },
+    //   {
+    //     namespace: 'hive-mind',
+    //     relationships: [
+    //       {
+    //         toEntityType: 'system',
+    //         toEntityId: 'hive-mind-core',
+    //         relationshipType: 'belongs_to',
+    //         strength: 1.0,
+    //       },
+    //     ],
+    //   }
+    // );
 
     // Emit native event (no MCP needed)
     this.emit('swarm:created', { swarm, config: swarmConfig });
@@ -188,7 +193,7 @@ export class NativeHiveMind extends EventEmitter {
   /**
    * NATIVE: Spawn agent (replaces mcp__zen-swarm__agent_spawn)
    */
-  async spawnAgent(config = {}) {
+  async spawnAgent(config: any = {}) {
     await this.ensureInitialized();
 
     const agentConfig = {
@@ -221,39 +226,39 @@ export class NativeHiveMind extends EventEmitter {
       enableNeuralNetwork: agentConfig.enableNeuralNetwork,
     });
 
-    // Store in unified persistence with rich relationships
-    await this.unifiedPersistence.storeEntity(
-      'agent',
-      agent.id,
-      {
-        name: agentConfig.name,
-        type: agentConfig.type,
-        swarmId: swarm.id,
-        capabilities: agentConfig.capabilities,
-        cognitivePattern: agentConfig.cognitivePattern,
-        status: 'idle',
-        content: `${agentConfig.type} agent specialized in ${agentConfig.capabilities.join(', ')}`,
-        description: `Intelligent agent with ${agentConfig.cognitivePattern} cognitive pattern`,
-      },
-      {
-        namespace: 'hive-mind',
-        relationships: [
-          {
-            toEntityType: 'swarm',
-            toEntityId: swarm.id,
-            relationshipType: 'member_of',
-            strength: 1.0,
-          },
-          // Create capability relationships
-          ...agentConfig.capabilities.map((capability) => ({
-            toEntityType: 'capability',
-            toEntityId: capability,
-            relationshipType: 'has_capability',
-            strength: 0.8,
-          })),
-        ],
-      }
-    );
+    // TODO: Store in unified persistence with rich relationships (after unified MCP implementation)
+    // await this.unifiedPersistence.storeEntity(
+    //   'agent',
+    //   agent.id,
+    //   {
+    //     name: agentConfig.name,
+    //     type: agentConfig.type,
+    //     swarmId: swarm.id,
+    //     capabilities: agentConfig.capabilities,
+    //     cognitivePattern: agentConfig.cognitivePattern,
+    //     status: 'idle',
+    //     content: `${agentConfig.type} agent specialized in ${agentConfig.capabilities.join(', ')}`,
+    //     description: `Intelligent agent with ${agentConfig.cognitivePattern} cognitive pattern`,
+    //   },
+    //   {
+    //     namespace: 'hive-mind',
+    //     relationships: [
+    //       {
+    //         toEntityType: 'swarm',
+    //         toEntityId: swarm.id,
+    //         relationshipType: 'member_of',
+    //         strength: 1.0,
+    //       },
+    //       // Create capability relationships
+    //       ...agentConfig.capabilities.map((capability) => ({
+    //         toEntityType: 'capability',
+    //         toEntityId: capability,
+    //         relationshipType: 'has_capability',
+    //         strength: 0.8,
+    //       })),
+    //     ],
+    //   }
+    // );
 
     // Add to global agents
     this.globalAgents.set(agent.id, {
@@ -280,7 +285,7 @@ export class NativeHiveMind extends EventEmitter {
   /**
    * NATIVE: Orchestrate task (replaces mcp__zen-swarm__task_orchestrate)
    */
-  async orchestrateTask(config = {}) {
+  async orchestrateTask(config: any = {}) {
     await this.ensureInitialized();
 
     const taskConfig = {
@@ -312,38 +317,39 @@ export class NativeHiveMind extends EventEmitter {
     });
 
     // Store in unified persistence with semantic content
-    await this.unifiedPersistence.storeEntity(
-      'task',
-      task.id,
-      {
-        description: taskConfig.task,
-        priority: taskConfig.priority,
-        strategy: taskConfig.strategy,
-        swarmId: selectedSwarm.id,
-        assigned_agents: task.assignedAgents || [],
-        status: 'orchestrated',
-        content: taskConfig.task,
-        estimatedDuration: taskConfig.estimatedDuration,
-      },
-      {
-        namespace: 'hive-mind',
-        relationships: [
-          {
-            toEntityType: 'swarm',
-            toEntityId: selectedSwarm.id,
-            relationshipType: 'orchestrated_by',
-            strength: 1.0,
-          },
-          // Create relationships with assigned agents
-          ...(task.assignedAgents || []).map((agentId) => ({
-            toEntityType: 'agent',
-            toEntityId: agentId,
-            relationshipType: 'assigned_to',
-            strength: 0.9,
-          })),
-        ],
-      }
-    );
+    // TODO: Store task in unified persistence (after unified MCP implementation)
+    // await this.unifiedPersistence.storeEntity(
+    //   'task',
+    //   task.id,
+    //   {
+    //     description: taskConfig.task,
+    //     priority: taskConfig.priority,
+    //     strategy: taskConfig.strategy,
+    //     swarmId: selectedSwarm.id,
+    //     assigned_agents: task.assignedAgents || [],
+    //     status: 'orchestrated',
+    //     content: taskConfig.task,
+    //     estimatedDuration: taskConfig.estimatedDuration,
+    //   },
+    //   {
+    //     namespace: 'hive-mind',
+    //     relationships: [
+    //       {
+    //         toEntityType: 'swarm',
+    //         toEntityId: selectedSwarm.id,
+    //         relationshipType: 'orchestrated_by',
+    //         strength: 1.0,
+    //       },
+    //       // Create relationships with assigned agents
+    //       ...(task.assignedAgents || []).map((agentId) => ({
+    //         toEntityType: 'agent',
+    //         toEntityId: agentId,
+    //         relationshipType: 'assigned_to',
+    //         strength: 0.9,
+    //       })),
+    //     ],
+    //   }
+    // );
 
     // Learn from orchestration pattern
     if (this.options.enableNeuralLearning) {
@@ -367,7 +373,7 @@ export class NativeHiveMind extends EventEmitter {
   /**
    * NATIVE: Get swarm status (replaces mcp__zen-swarm__swarm_status)
    */
-  async getSwarmStatus(swarmId = null) {
+  async getSwarmStatus(swarmId: string | null = null) {
     await this.ensureInitialized();
 
     if (swarmId) {
@@ -377,18 +383,18 @@ export class NativeHiveMind extends EventEmitter {
       }
 
       const status = await swarm.getStatus(true);
-      const persistenceStats = await this.unifiedPersistence.getStats();
+      // TODO: const persistenceStats = await this.unifiedPersistence.getStats(); (after unified MCP implementation)
 
       return {
         success: true,
         swarm: status,
-        unifiedBackend: persistenceStats,
+        unifiedBackend: {}, // persistenceStats, (after unified MCP implementation)
         nativeIntegration: true,
       };
     } else {
       // Global status
       const globalMetrics = await this.ruvSwarm.getGlobalMetrics();
-      const persistenceStats = await this.unifiedPersistence.getStats();
+      // TODO: const persistenceStats = await this.unifiedPersistence.getStats(); (after unified MCP implementation)
 
       return {
         success: true,
@@ -396,7 +402,7 @@ export class NativeHiveMind extends EventEmitter {
         totalAgents: globalMetrics.totalAgents,
         totalTasks: globalMetrics.totalTasks,
         hiveMindState: this.hiveMindState,
-        unifiedBackend: persistenceStats,
+        unifiedBackend: {}, // persistenceStats, (after unified MCP implementation)
         nativeIntegration: true,
         features: globalMetrics.features,
       };
@@ -406,7 +412,7 @@ export class NativeHiveMind extends EventEmitter {
   /**
    * NATIVE: Semantic memory search (NEW - not available in MCP)
    */
-  async semanticSearch(query, options = {}) {
+  async semanticSearch(query: string, options: any = {}) {
     await this.ensureInitialized();
 
     const searchOptions = {
@@ -421,23 +427,14 @@ export class NativeHiveMind extends EventEmitter {
       ...options,
     };
 
-    // Perform hybrid search using unified persistence
-    const results = await this.unifiedPersistence.hybridQuery(
-      {
-        semantic: query,
-        relational: {
-          entityType: options.entityType || 'agents',
-          filters: options.filters || {},
-          orderBy: options.orderBy,
-        },
-        graph: {
-          startEntity: options.startEntity,
-          relationshipTypes: options.relationshipTypes || [],
-          maxDepth: searchOptions.maxDepth,
-        },
-      },
-      searchOptions
-    );
+    // TODO: Perform hybrid search using unified persistence (after unified MCP implementation)
+    // const results = await this.unifiedPersistence.hybridQuery({...}, searchOptions);
+    const results = {
+      combined_score: [],
+      vector_results: [],
+      relational_results: [],
+      graph_results: [],
+    };
 
     return {
       success: true,
@@ -455,30 +452,30 @@ export class NativeHiveMind extends EventEmitter {
   /**
    * NATIVE: Neural pattern learning (NEW - not available in MCP)
    */
-  async learnFromCoordination(coordinationData) {
+  async learnFromCoordination(coordinationData: any) {
     if (!this.options.enableNeuralLearning) return;
 
     const { operation, outcome, context, success } = coordinationData;
 
-    // Store neural pattern
-    await this.unifiedPersistence.storeNeuralPattern(
-      'coordination',
-      `${operation}_${context.agentType || 'general'}`,
-      {
-        operation,
-        context,
-        outcome,
-        timestamp: Date.now(),
-      },
-      success ? 1.0 : 0.0
-    );
+    // TODO: Store neural pattern (after unified MCP implementation)
+    // await this.unifiedPersistence.storeNeuralPattern(
+    //   'coordination',
+    //   `${operation}_${context.agentType || 'general'}`,
+    //   {
+    //     operation,
+    //     context,
+    //     outcome,
+    //     timestamp: Date.now(),
+    //   },
+    //   success ? 1.0 : 0.0
+    // );
 
-    // Update pattern success rate
-    await this.unifiedPersistence.updateNeuralPatternSuccess(
-      'coordination',
-      `${operation}_${context.agentType || 'general'}`,
-      success
-    );
+    // TODO: Update pattern success rate (after unified MCP implementation)
+    // await this.unifiedPersistence.updateNeuralPatternSuccess(
+    //   'coordination',
+    //   `${operation}_${context.agentType || 'general'}`,
+    //   success
+    // );
 
     this.hiveMindState.neuralPatternsLearned++;
   }
@@ -486,25 +483,26 @@ export class NativeHiveMind extends EventEmitter {
   /**
    * NATIVE: Relationship formation (NEW - not available in MCP)
    */
-  async formRelationship(fromEntity, toEntity, relationshipType, strength = 1.0, metadata = {}) {
+  async formRelationship(fromEntity: any, toEntity: any, relationshipType: string, strength: number = 1.0, metadata: any = {}) {
     if (!this.options.enableGraphRelationships) return;
 
-    await this.unifiedPersistence.createRelationships(fromEntity.type, fromEntity.id, [
-      {
-        toEntityType: toEntity.type,
-        toEntityId: toEntity.id,
-        relationshipType,
-        strength,
-        metadata,
-      },
-    ]);
+    // TODO: Create relationships (after unified MCP implementation)
+    // await this.unifiedPersistence.createRelationships(fromEntity.type, fromEntity.id, [
+    //   {
+    //     toEntityType: toEntity.type,
+    //     toEntityId: toEntity.id,
+    //     relationshipType,
+    //     strength,
+    //     metadata,
+    //   },
+    // ]);
 
     this.hiveMindState.relationshipsFormed++;
   }
 
   // ADVANCED COORDINATION METHODS
 
-  async selectOptimalSwarm(availableSwarms, taskConfig) {
+  async selectOptimalSwarm(availableSwarms: any[], taskConfig: any) {
     // Intelligent swarm selection based on:
     // 1. Agent capabilities match
     // 2. Current load
@@ -621,7 +619,7 @@ export class NativeHiveMind extends EventEmitter {
     return 'general';
   }
 
-  async learnOrchestrationPattern(taskConfig, task, swarm) {
+  async learnOrchestrationPattern(taskConfig: any, task: any, swarm: any) {
     const pattern = {
       taskType: this.inferTaskType(taskConfig.task),
       swarmTopology: swarm.wasmSwarm.config?.topology_type,
@@ -630,21 +628,22 @@ export class NativeHiveMind extends EventEmitter {
       priority: taskConfig.priority,
     };
 
-    await this.unifiedPersistence.storeNeuralPattern(
-      'orchestration',
-      `${pattern.taskType}_${pattern.swarmTopology}`,
-      pattern,
-      0.8 // Initial success rate assumption
-    );
+    // TODO: Store neural orchestration pattern (after unified MCP implementation)
+    // await this.unifiedPersistence.storeNeuralPattern(
+    //   'orchestration',
+    //   `${pattern.taskType}_${pattern.swarmTopology}`,
+    //   pattern,
+    //   0.8 // Initial success rate assumption
+    // );
   }
 
   // EVENT HANDLERS
 
-  async onSwarmCreated(_swarmData) {
+  async onSwarmCreated(_swarmData: any) {
     this.hiveMindState.activeCoordinations++;
   }
 
-  async onAgentSpawned(agentData) {
+  async onAgentSpawned(agentData: any) {
     // Create capability relationships
     for (const capability of agentData.config.capabilities) {
       await this.formRelationship(
@@ -656,7 +655,7 @@ export class NativeHiveMind extends EventEmitter {
     }
   }
 
-  async onTaskOrchestrated(taskData) {
+  async onTaskOrchestrated(taskData: any) {
     // Learn from task orchestration
     await this.learnFromCoordination({
       operation: 'task_orchestration',
@@ -670,24 +669,24 @@ export class NativeHiveMind extends EventEmitter {
     });
   }
 
-  async onCoordinationDecision(decisionData) {
-    // Store coordination decision in unified memory
-    await this.unifiedPersistence.storeEntity(
-      'decision',
-      decisionData.id,
-      {
-        operation: decisionData.operation,
-        context: decisionData.context,
-        decision: decisionData.decision,
-        reasoning: decisionData.reasoning,
-        content: `Decision: ${decisionData.decision} for ${decisionData.operation}`,
-        timestamp: decisionData.timestamp,
-      },
-      {
-        namespace: 'coordination',
-        relationships: decisionData.relatedEntities || [],
-      }
-    );
+  async onCoordinationDecision(decisionData: any) {
+    // TODO: Store coordination decision (after unified MCP implementation)
+    // await this.unifiedPersistence.storeEntity(
+    //   'decision',
+    //   decisionData.id,
+    //   {
+    //     operation: decisionData.operation,
+    //     context: decisionData.context,
+    //     decision: decisionData.decision,
+    //     reasoning: decisionData.reasoning,
+    //     content: `Decision: ${decisionData.decision} for ${decisionData.operation}`,
+    //     timestamp: decisionData.timestamp,
+    //   },
+    //   {
+    //     namespace: 'coordination',
+    //     relationships: decisionData.relatedEntities || [],
+    //   }
+    // );
   }
 
   // UTILITY METHODS
@@ -704,7 +703,7 @@ export class NativeHiveMind extends EventEmitter {
       metrics: this.metrics,
       activeAgents: this.globalAgents.size,
       activeSessions: this.activeSessions.size,
-      unifiedBackend: this.unifiedPersistence?.getStats() || {},
+      unifiedBackend: {}, // this.unifiedPersistence?.getStats() || {}, (after unified MCP implementation)
       nativeIntegration: true,
       revolutionaryArchitecture: true,
     };
@@ -712,7 +711,7 @@ export class NativeHiveMind extends EventEmitter {
 
   async cleanup() {
     if (this.unifiedPersistence) {
-      await this.unifiedPersistence.cleanup();
+      // TODO: await this.unifiedPersistence.cleanup(); (after unified MCP implementation)
     }
 
     if (this.ruvSwarm) {

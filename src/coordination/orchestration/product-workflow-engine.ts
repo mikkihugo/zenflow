@@ -25,8 +25,8 @@ import type {
   VisionDocumentEntity,
 } from '../../database/entities/product-entities';
 import type { DocumentService } from '../../database/services/document-service';
-import { SPARCEngineCore } from '../../sparc/core/sparc-engine';
-import type { ProjectSpecification, SPARCPhase, SPARCProject } from '../../sparc/types/sparc-types';
+import { SPARCEngineCore } from '../../workflows/sparc/core/sparc-engine';
+import type { ProjectSpecification, SPARCPhase, SPARCProject } from '../../workflows/sparc/types/sparc-types';
 import type {
   CompletedStepInfo,
   StepExecutionResult,

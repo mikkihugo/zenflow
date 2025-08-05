@@ -1033,10 +1033,10 @@ claude-zen workspace report --format=markdown
 
 ## 📚 **Support and Documentation**
 
-- **Main Repository**: https://github.com/ruvnet/claude-zen-flow
-- **Issue Tracking**: https://github.com/ruvnet/claude-zen-flow/issues
-- **Documentation**: https://github.com/ruvnet/claude-zen-flow/wiki
-- **Examples**: https://github.com/ruvnet/claude-zen-flow/tree/main/examples
+- **Main Repository**: https://github.com/mikkihugo/claude-code-zen
+- **Issue Tracking**: https://github.com/mikkihugo/claude-code-zen/issues
+- **Documentation**: https://github.com/mikkihugo/claude-code-zen/wiki
+- **Examples**: https://github.com/mikkihugo/claude-code-zen/tree/main/examples
 
 ## 🎯 **Quick Start Guide**
 

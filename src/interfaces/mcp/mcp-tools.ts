@@ -5,7 +5,7 @@
  * Extends the existing MCP infrastructure with enhanced capabilities.
  */
 
-import type { MCPTool, MCPToolResult } from '../../coordination/mcp/types/mcp-types';
+import type { MCPTool, MCPToolResult } from '../../coordination/swarm/mcp/types';
 
 // Enhanced interfaces for advanced tools
 export interface AdvancedMCPTool extends MCPTool {

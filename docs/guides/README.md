@@ -99,8 +99,8 @@ Based on community usage and feedback:
 
 ## 📞 **Support and Feedback**
 
-- **Questions**: Create [GitHub Discussions](https://github.com/ruvnet/claude-zen-flow/discussions)
-- **Issues**: Report documentation issues on [GitHub Issues](https://github.com/ruvnet/claude-zen-flow/issues)
+- **Questions**: Create [GitHub Discussions](https://github.com/mikkihugo/claude-code-zen/discussions)
+- **Issues**: Report documentation issues on [GitHub Issues](https://github.com/mikkihugo/claude-code-zen/issues)
 - **Improvements**: Submit pull requests with guide enhancements
 - **Community**: Join our community channels for real-time help
 

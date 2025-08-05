@@ -17,8 +17,8 @@ import type {
   TaskDocumentEntity,
 } from '../../database/entities/product-entities';
 import { DocumentService } from '../../database/services/document-service';
-import { SPARCEngineCore } from '../../sparc/core/sparc-engine';
-import type { SPARCPhase, SPARCProject } from '../../sparc/types/sparc-types';
+import { SPARCEngineCore } from '../../workflows/sparc/core/sparc-engine';
+import type { SPARCPhase, SPARCProject } from '../../workflows/sparc/types/sparc-types';
 
 describe('Product Flow + SPARC Integration', () => {
   let productWorkflowEngine: ProductWorkflowEngine;

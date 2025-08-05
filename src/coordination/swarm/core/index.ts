@@ -43,7 +43,7 @@ export * from './errors';
 export * from './hooks';
 export * from './logger';
 export * from './logging-config';
-export * from './mcp-daa-tools';
+export * from '../mcp/mcp-daa-tools';
 export * from './monitoring-dashboard';
 export * from './native-hive-mind';
 export * from './performance';

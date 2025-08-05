@@ -57,6 +57,7 @@
     "tsBuildInfoFile": ".tsbuildinfo",
     "skipLibCheck": true,
     "noEmitOnError": false,
+    "isolatedModules": false,
     "skipDefaultLibCheck": true,
     "checkJs": false,
     "allowJs": true,

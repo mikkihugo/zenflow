@@ -4,6 +4,10 @@
  */
 
 class SingletonContainer {
+  public instances: Map<string, any>;
+  public factories: Map<string, any>;
+  public isDestroying: boolean;
+
   constructor() {
     this.instances = new Map();
     this.factories = new Map();

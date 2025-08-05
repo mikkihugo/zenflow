@@ -121,12 +121,12 @@ class BaseValidator {
             propSchema,
             `${fieldName}.${propName}`
           );
-        } else if (propSchema.required) {
+        } else if ((propSchema as any).required) {
           throw new ValidationError(
             `${fieldName}.${propName} is required`,
             `${fieldName}.${propName}`,
             undefined,
-            propSchema.type
+            (propSchema as any).type
           );
         }
       }
@@ -804,26 +804,27 @@ class ValidationUtils {
     };
 
     for (const [fieldName, fieldSchema] of Object.entries(schema)) {
+      const field = fieldSchema as any;
       doc.parameters[fieldName] = {
-        type: fieldSchema.type,
-        required: fieldSchema.required || false,
-        default: fieldSchema.default,
-        description: ValidationUtils.generateFieldDescription(fieldName, fieldSchema),
+        type: field.type,
+        required: field.required || false,
+        default: field.default,
+        description: ValidationUtils.generateFieldDescription(fieldName, field),
       };
 
-      if (fieldSchema.enum) {
-        doc.parameters[fieldName].allowedValues = fieldSchema.enum;
+      if (field.enum) {
+        doc.parameters[fieldName].allowedValues = field.enum;
       }
-      if (fieldSchema.min !== undefined || fieldSchema.max !== undefined) {
+      if (field.min !== undefined || field.max !== undefined) {
         doc.parameters[fieldName].range = {
-          min: fieldSchema.min,
-          max: fieldSchema.max,
+          min: field.min,
+          max: field.max,
         };
       }
-      if (fieldSchema.minLength !== undefined || fieldSchema.maxLength !== undefined) {
+      if (field.minLength !== undefined || field.maxLength !== undefined) {
         doc.parameters[fieldName].length = {
-          min: fieldSchema.minLength,
-          max: fieldSchema.maxLength,
+          min: field.minLength,
+          max: field.maxLength,
         };
       }
     }

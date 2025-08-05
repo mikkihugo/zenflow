@@ -5,7 +5,7 @@
  * and resilience systems in Claude-Zen
  */
 
-import { mcpErrorHandler } from '../coordination/mcp/core/error-handler';
+import { mcpErrorHandler } from '../coordination/swarm/mcp/error-handler';
 import { errorMonitor } from './error-monitoring';
 import { errorRecoveryOrchestrator } from './error-recovery';
 import {

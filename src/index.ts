@@ -29,7 +29,7 @@ export * as Neural from './neural/index';
 // Performance Optimization System - All performance optimization functionality
 export * as Optimization from './optimization/index';
 // SPARC Methodology System - Systematic development workflow
-export * as SPARC from './sparc/index';
+export * as SPARC from './workflows/sparc/index';
 // Workflow System - All workflow execution and management
 export * as Workflows from './workflows/index';
 
@@ -84,8 +84,8 @@ export * as Integration from './integration/index';
 // =============================================================================
 
 // Core MCP integration
-export * from './coordination/mcp/claude-zen-server';
-export * from './coordination/mcp/tools/swarm-tools';
+export * from './coordination/swarm/mcp/mcp-server';
+export * from './coordination/swarm/mcp/mcp-tool-registry';
 // Export specific types from mcp-types to avoid conflicts
 export type {
   MCPRequest,
@@ -94,7 +94,7 @@ export type {
   MCPTool,
   MCPToolCall,
   // SwarmAgent, SwarmStatus, SwarmTask will come from types/index
-} from './coordination/mcp/types/mcp-types';
+} from './coordination/swarm/mcp/types';
 // Swarm-zen integration (use public API instead of direct core access)
 export {
   createSwarm,
@@ -232,7 +232,7 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
 
   // Initialize stdio MCP only if explicitly enabled (for temporary Claude Code coordination)
   if (finalConfig.mcp.stdio.enabled) {
-    const { MCPServer } = await import('./coordination/mcp/mcp-server');
+    const { MCPServer } = await import('./coordination/swarm/mcp/mcp-server');
     const stdioMcpServer = new MCPServer();
     await stdioMcpServer.start();
   }

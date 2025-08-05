@@ -380,5 +380,4 @@ export async function demonstrateSwarmDI(): Promise<void> {
   }
 }
 
-// Export for testing
-export { EnhancedSwarmCoordinator };
+// EnhancedSwarmCoordinator is already exported above with export class

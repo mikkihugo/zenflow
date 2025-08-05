@@ -991,8 +991,8 @@ claude-zen rollback --version 2.0.0-alpha.72 --preserve-state
 ## 🆘 **Getting Additional Help**
 
 ### **Support Channels**
-- **GitHub Issues**: https://github.com/ruvnet/claude-zen-flow/issues
-- **Discussions**: https://github.com/ruvnet/claude-zen-flow/discussions
+- **GitHub Issues**: https://github.com/mikkihugo/claude-code-zen/issues
+- **Discussions**: https://github.com/mikkihugo/claude-code-zen/discussions
 - **Documentation**: https://docs.anthropic.com/en/docs/claude-code
 
 ### **Diagnostic Information to Include**
@@ -1011,7 +1011,7 @@ claude-zen logs --since 24h --level error
 ```
 
 ### **Community Resources**
-- **Examples Repository**: https://github.com/ruvnet/claude-zen-flow/examples
+- **Examples Repository**: https://github.com/mikkihugo/claude-code-zen/examples
 - **Performance Tuning Guide**: [Performance Guide](../performance/optimization-strategies.md)
 - **Integration Examples**: [Integration Guide](../integration/external-systems.md)
 

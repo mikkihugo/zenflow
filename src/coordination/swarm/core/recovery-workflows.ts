@@ -19,7 +19,17 @@ import { Logger } from './logger';
 import { generateId } from './utils';
 
 export class RecoveryWorkflows extends EventEmitter {
-  constructor(options = {}) {
+  public options: any;
+  public logger: any;
+  public workflows: Map<string, any>;
+  public activeRecoveries: Map<string, any>;
+  public recoveryHistory: Map<string, any>;
+  public healthMonitor: any;
+  public mcpTools: any;
+  public connectionManager: any;
+  public stats: any;
+
+  constructor(options: any = {}) {
     super();
 
     this.options = {
@@ -178,6 +188,9 @@ export class RecoveryWorkflows extends EventEmitter {
       workflowId: workflow.id,
       status: 'running',
       startTime: new Date(startTime),
+      endTime: null as Date | null,
+      duration: 0,
+      error: null as string | null,
       context,
       steps: [],
       currentStep: 0,
@@ -299,6 +312,10 @@ export class RecoveryWorkflows extends EventEmitter {
       name: step.name,
       status: 'running',
       startTime: new Date(stepStartTime),
+      endTime: null as Date | null,
+      duration: 0,
+      error: null as string | null,
+      result: null as any,
       context: step.context || {},
     };
 

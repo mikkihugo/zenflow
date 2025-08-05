@@ -94,4 +94,4 @@ export interface WasmFallback {
 }
 
 /** WASM fallback implementation */
-export const wasmFallback: WasmFallback;
+// export const wasmFallback: WasmFallback;

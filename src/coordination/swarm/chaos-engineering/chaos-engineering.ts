@@ -41,16 +41,21 @@ interface ExperimentExecution {
   startTime: Date;
   endTime: Date | null;
   duration: number;
-  error: Error | null;
+  error: string | null;
   parameters: any;
   phases: ExperimentPhase[];
   currentPhase: string;
   failureInjected: boolean;
   recoveryTriggered: boolean;
   recoveryCompleted: boolean;
-  blastRadius: string;
+  blastRadius: number;
   metadata: any;
   injectionResult?: any;
+  cancellationReason?: string;
+  completedAt?: Date;
+  impactMetrics?: any;
+  recoveryExecution?: any;
+  recoveryTime?: number;
 }
 
 interface ChaosExperiment {
@@ -58,13 +63,17 @@ interface ChaosExperiment {
   name: string;
   description: string;
   type: string;
+  category: string;
   failureType?: string;
   parameters: any;
   duration: number;
   cooldown?: number;
-  blastRadius: string;
+  blastRadius: number;
   safetyChecks: string[];
   metadata: any;
+  enabled: boolean;
+  expectedRecovery: string[];
+  createdAt: Date;
 }
 
 export class ChaosEngineering extends EventEmitter {
@@ -173,10 +182,11 @@ export class ChaosEngineering extends EventEmitter {
    * Register a chaos experiment
    */
   registerExperiment(name, experimentDefinition) {
-    const experiment = {
+    const experiment: ChaosExperiment = {
       id: generateId('experiment'),
       name,
       description: experimentDefinition.description || '',
+      type: experimentDefinition.type || 'custom',
       category: experimentDefinition.category || 'custom',
       failureType: experimentDefinition.failureType,
       parameters: experimentDefinition.parameters || {},
@@ -259,7 +269,7 @@ export class ChaosEngineering extends EventEmitter {
     const executionId = generateId('execution');
     const startTime = Date.now();
 
-    const execution = {
+    const execution: ExperimentExecution = {
       id: executionId,
       experimentName,
       experimentId: experiment.id,
@@ -267,7 +277,7 @@ export class ChaosEngineering extends EventEmitter {
       startTime: new Date(startTime),
       endTime: null as Date | null,
       duration: 0,
-      error: null as Error | null,
+      error: null as string | null,
       parameters: { ...experiment.parameters, ...overrideParams },
       phases: [],
       currentPhase: 'preparation',
@@ -1115,8 +1125,8 @@ export class ChaosEngineering extends EventEmitter {
       );
     }
 
-    execution.status = 'cancelled';
-    execution.cancellationReason = reason;
+    (execution as any).status = 'cancelled';
+    (execution as any).cancellationReason = reason;
     execution.endTime = new Date();
 
     this.logger.info(`Chaos experiment cancelled: ${execution.experimentName}`, {

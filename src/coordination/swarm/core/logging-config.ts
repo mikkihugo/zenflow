@@ -124,7 +124,7 @@ export class LoggingConfig {
 
     // Update all existing loggers
     for (const logger of this.loggers.values()) {
-      logger.level = logger.constructor.LOG_LEVELS[level.toUpperCase()];
+      logger.level = level.toUpperCase();
     }
   }
 

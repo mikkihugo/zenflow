@@ -63,14 +63,9 @@ should_use_dev_fallback() {
 # Use Node.js - prefer built files over source
 if [ -f "$ROOT_DIR/dist/interfaces/terminal/main.js" ]; then
   # Try production mode first
-  if should_use_dev_fallback "$@"; then
-    # Use development mode for discover and help commands
-    echo "🧠 Claude-Zen: Using development mode"
-    cd "$ROOT_DIR" && exec npx tsx src/interfaces/terminal/main.ts "$@"
-  else
-    # Use production mode for other commands
-    cd "$ROOT_DIR" && exec node dist/interfaces/terminal/main.js "$@"
-  fi
+  # Always use tsx for now due to ESM import issues in dist
+  echo "🧠 Claude-Zen: Using development mode"
+  cd "$ROOT_DIR" && exec npx tsx src/interfaces/terminal/main.ts "$@"
 else
   # Built files not found - this should trigger a build
   echo "🧠 Claude-Zen v$VERSION - Distribution files not found"
@@ -81,6 +76,6 @@ else
   echo "For development mode only:"
   echo "  npx tsx src/interfaces/terminal/main.ts"
   echo ""
-  echo "Documentation: https://github.com/ruvnet/claude-zen"
+  echo "Documentation: https://github.com/mikkihugo/claude-code-zen"
   exit 1
 fi

@@ -424,7 +424,7 @@ describe('Comprehensive Error Handling System Integration', () => {
 
 describe('MCP Error Handling Integration', () => {
   it('should wrap MCP tools with error handling automatically', async () => {
-    const { MCPToolWrapper } = await import('../../coordination/mcp/core/error-handler');
+    const { MCPToolWrapper } = await import('../../coordination/swarm/mcp/error-handler');
 
     const mockTool = {
       name: 'test_tool',
@@ -460,7 +460,7 @@ describe('MCP Error Handling Integration', () => {
   });
 
   it('should validate MCP tool parameters', async () => {
-    const { MCPParameterValidator } = await import('../../coordination/mcp/core/error-handler');
+    const { MCPParameterValidator } = await import('../../coordination/swarm/mcp/error-handler');
 
     const schema = {
       type: 'object',

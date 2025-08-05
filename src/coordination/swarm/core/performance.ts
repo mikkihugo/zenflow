@@ -7,6 +7,8 @@ import { promises as fs } from 'node:fs';
 import { ZenSwarm } from './index-complete';
 
 class PerformanceCLI {
+  public ruvSwarm: any;
+
   constructor() {
     this.ruvSwarm = null;
   }
@@ -30,7 +32,7 @@ class PerformanceCLI {
     const outputFile = this.getArg(args, '--output');
 
     try {
-      const analysis = {
+      const analysis: any = {
         metadata: {
           timestamp: new Date().toISOString(),
           taskId,
@@ -344,10 +346,10 @@ class PerformanceCLI {
       });
       let totalShown = 0;
       for (const [_priority, items] of Object.entries(groupedSuggestions)) {
-        if (items.length === 0) {
+        if ((items as any[]).length === 0) {
           continue;
         }
-        for (const _item of items) {
+        for (const _item of (items as any[])) {
           totalShown++;
         }
       }

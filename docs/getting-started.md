@@ -21,7 +21,7 @@ claude-zen --version
 ### **Local Development Setup**
 ```bash
 # Clone repository
-git clone https://github.com/ruvnet/claude-zen-flow.git
+git clone https://github.com/mikkihugo/claude-code-zen.git
 cd claude-zen-flow
 
 # Install dependencies
@@ -250,8 +250,8 @@ claude-zen --debug status
 - **Troubleshooting**: [troubleshooting.md](troubleshooting.md)
 
 ### **Community & Support**
-- **GitHub Issues**: https://github.com/ruvnet/claude-zen-flow/issues
-- **Discussions**: https://github.com/ruvnet/claude-zen-flow/discussions
+- **GitHub Issues**: https://github.com/mikkihugo/claude-code-zen/issues
+- **Discussions**: https://github.com/mikkihugo/claude-code-zen/discussions
 - **Documentation**: https://docs.anthropic.com/en/docs/claude-code
 
 ### **Quick Commands Reference**

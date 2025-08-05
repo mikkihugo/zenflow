@@ -45,7 +45,7 @@ class ZenSwarmHooks {
       // Dynamic import to avoid module resolution issues
       try {
         const { SwarmPersistencePooled } = await import(
-          '../../../database/persistence/persistence-pooled.js'
+          '../../../../database/persistence/persistence-pooled.js'
         );
         this.persistence = new SwarmPersistencePooled();
       } catch (error) {

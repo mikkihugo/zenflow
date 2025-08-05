@@ -18,7 +18,30 @@ import { ErrorFactory } from './errors';
 import { Logger } from './logger';
 
 export class MonitoringDashboard extends EventEmitter {
-  constructor(options = {}) {
+  public options: any;
+  public logger: any;
+  
+  // Data storage properties
+  private metrics: Map<string, any[]>;
+  private aggregatedMetrics: Map<number, Map<string, any>>;
+  private alerts: Map<string, any>;
+  private trends: Map<string, any[]>;
+  private healthStatus: Map<string, any>;
+  
+  // Real-time streaming properties
+  private streamingClients: Set<any>;
+  private lastUpdate: Date;
+  
+  // Integration points
+  private healthMonitor: any;
+  private recoveryWorkflows: any;
+  private connectionManager: any;
+  private mcpTools: any;
+  
+  // Aggregation timer
+  private aggregationTimer: NodeJS.Timeout | null;
+
+  constructor(options: any = {}) {
     super();
 
     this.options = {
@@ -496,7 +519,7 @@ export class MonitoringDashboard extends EventEmitter {
    * Aggregate system metrics
    */
   aggregateSystemMetrics(aggregations, timestamp) {
-    const systemMetrics = {
+    const systemMetrics: any = {
       memoryUsage: process.memoryUsage(),
       cpuUsage: process.cpuUsage(),
       uptime: process.uptime(),

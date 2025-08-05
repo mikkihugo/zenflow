@@ -8,6 +8,9 @@ const SecureGHCoordinator = require('../github-coordinator/gh-cli-coordinator-se
 const CommandSanitizer = require('./command-sanitizer');
 
 class SecurityTester {
+  public testResults: any[];
+  public failedTests: any[];
+
   constructor() {
     this.testResults = [];
     this.failedTests = [];

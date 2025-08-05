@@ -11,11 +11,11 @@ class CommandSanitizer {
    * Safe command execution using spawn instead of execSync
    * Prevents command injection by using argument arrays
    */
-  static async safeExec(command, args = [], options = {}) {
+  static async safeExec(command: string, args: string[] = [], options: any = {}) {
     return new Promise((resolve, reject) => {
       const child = spawn(command, args, {
         ...options,
-        stdio: options.stdio || 'pipe',
+        stdio: (options as any).stdio || 'pipe',
       });
 
       let stdout = '';

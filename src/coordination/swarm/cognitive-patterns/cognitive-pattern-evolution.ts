@@ -96,11 +96,11 @@ class CognitivePatternEvolution {
       name: 'Divergent Thinking',
       description: 'Explore multiple creative solutions',
       characteristics: {
-        searchStrategy: 'random',
+        searchStrategy: 'undirected',
         explorationRate: 0.8,
         exploitationRate: 0.2,
         decisionMaking: 'exploratory',
-        patternRecognition: 'flexible_match',
+        patternRecognition: 'fuzzy_match',
       },
       adaptationRules: {
         increaseCreativity: (context) => context.noveltyScore > 0.6,
@@ -114,11 +114,11 @@ class CognitivePatternEvolution {
       name: 'Lateral Thinking',
       description: 'Approach problems from unexpected angles',
       characteristics: {
-        searchStrategy: 'lateral',
+        searchStrategy: 'conceptual',
         explorationRate: 0.6,
         exploitationRate: 0.4,
-        decisionMaking: 'innovative',
-        patternRecognition: 'analogical',
+        decisionMaking: 'exploratory',
+        patternRecognition: 'fuzzy_match',
       },
       adaptationRules: {
         seekAlternatives: (context) => context.standardSolutionFailed,
@@ -132,11 +132,11 @@ class CognitivePatternEvolution {
       name: 'Systems Thinking',
       description: 'Consider holistic interconnections and emergent properties',
       characteristics: {
-        searchStrategy: 'holistic',
+        searchStrategy: 'systematic',
         explorationRate: 0.4,
         exploitationRate: 0.6,
-        decisionMaking: 'systemic',
-        patternRecognition: 'pattern_networks',
+        decisionMaking: 'analytical',
+        patternRecognition: 'abstraction_layers',
       },
       adaptationRules: {
         mapConnections: (context) => context.systemComplexity > 0.7,
@@ -1032,7 +1032,7 @@ class CognitivePatternEvolution {
     const hybrid = {
       name: `Hybrid: ${template1.name} + ${template2.name}`,
       description: `Combination of ${template1.name.toLowerCase()} and ${template2.name.toLowerCase()}`,
-      characteristics: {},
+      characteristics: {} as PatternCharacteristics,
       adaptationRules: {},
     };
 
@@ -1337,7 +1337,7 @@ class CognitivePatternEvolution {
         totalPatterns += agentData.activePatterns.length;
 
         // Calculate growth score based on evolution success rate and pattern complexity
-        const successRate = metrics.successfulEvolutions / Math.max(1, metrics.totalEvolutions);
+        const successRate = metrics.successfulAdaptations / Math.max(1, metrics.totalEvolutions);
         const complexityBonus = agentData.activePatterns.length * 0.1;
         const agentGrowthScore = successRate * (1 + complexityBonus);
 

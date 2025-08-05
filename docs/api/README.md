@@ -329,9 +329,9 @@ curl http://localhost:3000/mcp/v2/tools
 - **Mock Servers**: Available for development and testing
 
 ### **Community**
-- **GitHub Issues**: https://github.com/ruvnet/claude-zen-flow/issues
-- **API Discussions**: https://github.com/ruvnet/claude-zen-flow/discussions
-- **Examples**: https://github.com/ruvnet/claude-zen-flow/tree/main/examples/api
+- **GitHub Issues**: https://github.com/mikkihugo/claude-code-zen/issues
+- **API Discussions**: https://github.com/mikkihugo/claude-code-zen/discussions
+- **Examples**: https://github.com/mikkihugo/claude-code-zen/tree/main/examples/api
 
 ---
 
