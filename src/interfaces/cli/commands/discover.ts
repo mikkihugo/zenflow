@@ -15,11 +15,33 @@ import { createLogger } from '../../../core/logger';
 import { createAGUI } from '../../agui/agui-adapter';
 import { ProjectContextAnalyzer } from '../../../knowledge/project-context-analyzer';
 import { SessionMemoryStore } from '../../../memory/memory';
+import { configManager } from '../../../config/config-manager';
 import { render } from 'ink';
 import meow from 'meow';
 import React from 'react';
 
 const logger = createLogger({ prefix: 'DiscoverCommand' });
+
+// Get discovery configuration from the config system
+const getDiscoveryDefaults = () => {
+  const config = configManager.getConfig();
+  return {
+    MIN_CONFIDENCE: 0.0,
+    MAX_CONFIDENCE: 1.0,
+    DEFAULT_CONFIDENCE: config.discovery?.defaultConfidence || 0.95,
+    MIN_ITERATIONS: 1,
+    MAX_ITERATIONS: config.discovery?.maxIterations || 20,
+    DEFAULT_ITERATIONS: config.discovery?.defaultIterations || 5,
+    MIN_AGENTS: 1,
+    MAX_AGENTS: config.swarm?.maxAgents || 100,
+    DEFAULT_AGENTS: config.swarm?.defaultAgents || 20,
+    OPERATION_TIMEOUT: config.discovery?.timeout || 300000, // 5 minutes
+    MEMORY_PATH_SUFFIX: '.claude-zen/memory.json',
+    RESEARCH_THRESHOLD: config.discovery?.researchThreshold || 0.6,
+    SKIP_VALIDATION: config.discovery?.skipValidation || false,
+    DEFAULT_TOPOLOGY: config.swarm?.defaultTopology || 'auto'
+  };
+};
 
 export interface DiscoverOptions {
   project?: string;
@@ -153,6 +175,12 @@ export class DiscoverCommand {
    * Main execution method - orchestrates the complete pipeline
    */
   async execute(projectPath: string, options: DiscoverOptions): Promise<void> {
+    const defaults = getDiscoveryDefaults();
+    const operationTimeout = setTimeout(() => {
+      logger.error('Discovery operation timed out');
+      throw new Error(`Discovery operation exceeded timeout of ${defaults.OPERATION_TIMEOUT}ms`);
+    }, defaults.OPERATION_TIMEOUT);
+    
     try {
       const resolvedPath = resolve(projectPath);
 
@@ -170,12 +198,42 @@ export class DiscoverCommand {
         return this.executeInteractive(resolvedPath, options);
       }
 
-      const confidence = Number(options.confidence) || 0.8;
-      const maxIterations = Number(options.maxIterations) || 5;
-      const maxAgents = Number(options.maxAgents) || 20;
+      // Get configuration defaults
+      const defaults = getDiscoveryDefaults();
+      
+      // Validate and normalize options with production defaults
+      const confidence = Math.max(
+        defaults.MIN_CONFIDENCE,
+        Math.min(
+          defaults.MAX_CONFIDENCE,
+          Number(options.confidence) || defaults.DEFAULT_CONFIDENCE
+        )
+      );
+      
+      const maxIterations = Math.max(
+        defaults.MIN_ITERATIONS,
+        Math.min(
+          defaults.MAX_ITERATIONS,
+          Number(options.maxIterations) || defaults.DEFAULT_ITERATIONS
+        )
+      );
+      
+      const maxAgents = Math.max(
+        defaults.MIN_AGENTS,
+        Math.min(
+          defaults.MAX_AGENTS,
+          Number(options.maxAgents) || defaults.DEFAULT_AGENTS
+        )
+      );
+      
+      // Override defaults with options
+      const topology = options.topology || defaults.DEFAULT_TOPOLOGY;
+      const skipValidation = options.skipValidation ?? defaults.SKIP_VALIDATION;
+      const researchThreshold = defaults.RESEARCH_THRESHOLD;
 
-      if (confidence < 0 || confidence > 1) {
-        throw new Error('Confidence must be between 0.0 and 1.0');
+      // Validate confidence range
+      if (confidence < defaults.MIN_CONFIDENCE || confidence > defaults.MAX_CONFIDENCE) {
+        throw new Error(`Confidence must be between ${defaults.MIN_CONFIDENCE} and ${defaults.MAX_CONFIDENCE}`);
       }
 
       logger.info('🚀 Starting Auto-Discovery System');
@@ -287,7 +345,7 @@ export class DiscoverCommand {
           {
             targetConfidence: confidence,
             maxIterations,
-            researchThreshold: 0.6,
+            researchThreshold,
           }
         );
 
@@ -427,8 +485,36 @@ export class DiscoverCommand {
 
       const duration = (performance.now() - this.startTime) / 1000;
       logger.info(`🎉 Auto-discovery completed in ${duration.toFixed(2)}s`);
+      
+      // Clear timeout on success
+      clearTimeout(operationTimeout);
     } catch (error) {
+      // Clear timeout on error
+      clearTimeout(operationTimeout);
+      
       logger.error('💥 Auto-discovery failed:', error);
+      
+      // Production error recovery
+      if (error instanceof Error) {
+        // Log structured error for monitoring
+        logger.error('Discovery error details:', {
+          message: error.message,
+          stack: error.stack,
+          projectPath,
+          options,
+          duration: (performance.now() - this.startTime) / 1000,
+        });
+        
+        // Suggest recovery actions
+        if (error.message.includes('does not exist')) {
+          logger.info('💡 Ensure the project path exists and you have read permissions');
+        } else if (error.message.includes('timeout')) {
+          logger.info('💡 Try reducing the scope or increasing the timeout in configuration');
+        } else if (error.message.includes('memory')) {
+          logger.info('💡 Consider running with fewer agents or on a machine with more memory');
+        }
+      }
+      
       process.exit(1);
     }
   }
