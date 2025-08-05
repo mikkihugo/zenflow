@@ -20,6 +20,8 @@ export * as Utils from './utils/index';
 
 // Coordination System - All swarm and orchestration functionality
 export * as Coordination from './coordination/index';
+// SPARC Methodology System - Systematic development workflow
+export * as SPARC from './coordination/swarm/sparc/index';
 // Database System - All persistence and database functionality
 export * as Database from './database/index';
 // Memory System - All memory-related functionality
@@ -28,8 +30,6 @@ export * as Memory from './memory/index';
 export * as Neural from './neural/index';
 // Performance Optimization System - All performance optimization functionality
 export * as Optimization from './optimization/index';
-// SPARC Methodology System - Systematic development workflow
-export * as SPARC from './workflows/sparc/index';
 // Workflow System - All workflow execution and management
 export * as Workflows from './workflows/index';
 
@@ -83,6 +83,13 @@ export * as Integration from './integration/index';
 // SWARM AND COORDINATION SYSTEMS
 // =============================================================================
 
+// Swarm-zen integration (use public API instead of direct core access)
+export {
+  createSwarm,
+  // Export specific items to avoid conflicts
+  SwarmOrchestrator,
+  // SwarmConfig and SwarmState will come from types/index
+} from './coordination/public-api';
 // Core MCP integration
 export * from './coordination/swarm/mcp/mcp-server';
 export * from './coordination/swarm/mcp/mcp-tool-registry';
@@ -95,13 +102,6 @@ export type {
   MCPToolCall,
   // SwarmAgent, SwarmStatus, SwarmTask will come from types/index
 } from './coordination/swarm/mcp/types';
-// Swarm-zen integration (use public API instead of direct core access)
-export {
-  createSwarm,
-  // Export specific items to avoid conflicts
-  SwarmOrchestrator,
-  // SwarmConfig and SwarmState will come from types/index
-} from './coordination/public-api';
 
 // Utils and core services
 export * from './core/logger';
@@ -255,7 +255,7 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
 
   // Initialize SPARC methodology system if enabled
   if (finalConfig.sparc.enabled) {
-    const { SPARC } = await import('./sparc/index');
+    const { SPARC } = await import('./coordination/swarm/sparc/index');
     const _sparcEngine = SPARC.getEngine();
   }
 

@@ -4,8 +4,11 @@
  */
 
 import { DatabaseController } from '../../../database/controllers/database-controller';
-import { KuzuAdapter, DatabaseProviderFactory } from '../../../database/providers/database-providers';
 import type { DatabaseConfig } from '../../../database/providers/database-providers';
+import {
+  type DatabaseProviderFactory,
+  KuzuAdapter,
+} from '../../../database/providers/database-providers';
 
 // Mock logger
 const mockLogger = {
@@ -54,17 +57,13 @@ describe('Kuzu Graph Database Integration', () => {
     mockFactory.createGraphAdapter = jest.fn().mockReturnValue(mockKuzuAdapter);
 
     // Create database controller
-    databaseController = new DatabaseController(
-      mockFactory,
-      kuzuConfig,
-      mockLogger
-    );
+    databaseController = new DatabaseController(mockFactory, kuzuConfig, mockLogger);
   });
 
   describe('Graph Query Operations', () => {
     it('should execute Cypher queries successfully', async () => {
       const cypherQuery = 'MATCH (n:Person) RETURN n LIMIT 10';
-      
+
       const response = await databaseController.executeGraphQuery({
         cypher: cypherQuery,
         params: [],
@@ -81,7 +80,7 @@ describe('Kuzu Graph Database Integration', () => {
     it('should handle parameterized Cypher queries', async () => {
       const cypherQuery = 'MATCH (n:Person {name: $name}) RETURN n';
       const params = ['Alice'];
-      
+
       const response = await databaseController.executeGraphQuery({
         cypher: cypherQuery,
         params,
@@ -93,7 +92,7 @@ describe('Kuzu Graph Database Integration', () => {
 
     it('should return error for invalid Cypher queries', async () => {
       const invalidQuery = 'INVALID CYPHER SYNTAX';
-      
+
       const response = await databaseController.executeGraphQuery({
         cypher: invalidQuery,
         params: [],
@@ -106,7 +105,7 @@ describe('Kuzu Graph Database Integration', () => {
 
     it('should detect and route Cypher queries in regular query endpoint', async () => {
       const cypherQuery = 'MATCH (n) RETURN count(n)';
-      
+
       const response = await databaseController.executeQuery({
         sql: cypherQuery,
         params: [],
@@ -136,12 +135,8 @@ describe('Kuzu Graph Database Integration', () => {
     it('should return error for non-graph adapters', async () => {
       // Create non-graph configuration
       const sqliteConfig = { ...kuzuConfig, type: 'sqlite' as const };
-      
-      const sqliteController = new DatabaseController(
-        mockFactory,
-        sqliteConfig,
-        mockLogger
-      );
+
+      const sqliteController = new DatabaseController(mockFactory, sqliteConfig, mockLogger);
 
       const response = await sqliteController.getGraphSchema();
 
@@ -177,10 +172,8 @@ describe('Kuzu Graph Database Integration', () => {
 
       // Verify metric calculations
       if (stats.totalNodes > 0) {
-        expect(stats.averageConnections).toBe(
-          (stats.totalRelationships * 2) / stats.totalNodes
-        );
-        
+        expect(stats.averageConnections).toBe((stats.totalRelationships * 2) / stats.totalNodes);
+
         if (stats.totalNodes > 1) {
           const maxPossibleEdges = (stats.totalNodes * (stats.totalNodes - 1)) / 2;
           expect(stats.graphDensity).toBe(stats.totalRelationships / maxPossibleEdges);
@@ -201,7 +194,8 @@ describe('Kuzu Graph Database Integration', () => {
           params: [],
         },
         {
-          cypher: 'MATCH (a:Person {name: "Alice"}), (b:Person {name: "Bob"}) CREATE (a)-[:KNOWS]->(b)',
+          cypher:
+            'MATCH (a:Person {name: "Alice"}), (b:Person {name: "Bob"}) CREATE (a)-[:KNOWS]->(b)',
           params: [],
         },
       ];
@@ -269,7 +263,7 @@ describe('Kuzu Graph Database Integration', () => {
 
         // Should route to graph adapter for Cypher-like queries
         expect(response.success).toBe(true);
-        
+
         // For mixed SQL/Cypher, check that it's handled appropriately
         if (query.toLowerCase().startsWith('select')) {
           // SQL queries should not be routed to graph adapter
@@ -302,14 +296,14 @@ describe('Kuzu Graph Database Integration', () => {
   describe('Graph Database Configuration', () => {
     it('should recognize Kuzu adapter configuration', async () => {
       const status = await databaseController.getDatabaseStatus();
-      
+
       expect(status.success).toBe(true);
       expect(status.data.adapter).toBe('kuzu');
     });
 
     it('should include graph-specific configuration in analytics', async () => {
       const analytics = await databaseController.getDatabaseAnalytics();
-      
+
       expect(analytics.success).toBe(true);
       expect(analytics.data.configuration.type).toBe('kuzu');
       expect(analytics.data.configuration).toBeDefined();

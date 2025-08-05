@@ -13,28 +13,20 @@ describe('Database Adapter Interface Consistency', () => {
   it('validates interface consistency through TypeScript compilation', () => {
     // The fact that this test file compiles means our interfaces are consistent
     // because TypeScript would fail compilation if there were interface mismatches
-    
+
     const interfaceRequirements = {
       DatabaseAdapter: [
         'connect',
-        'disconnect', 
+        'disconnect',
         'query',
         'execute',
         'transaction',
         'health',
         'getSchema',
-        'getConnectionStats'
+        'getConnectionStats',
       ],
-      GraphDatabaseAdapter: [
-        'queryGraph',
-        'getNodeCount',
-        'getRelationshipCount'
-      ],
-      VectorDatabaseAdapter: [
-        'vectorSearch',
-        'addVectors',
-        'createIndex'
-      ]
+      GraphDatabaseAdapter: ['queryGraph', 'getNodeCount', 'getRelationshipCount'],
+      VectorDatabaseAdapter: ['vectorSearch', 'addVectors', 'createIndex'],
     };
 
     // Verify interface requirements are documented

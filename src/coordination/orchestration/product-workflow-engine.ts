@@ -25,8 +25,6 @@ import type {
   VisionDocumentEntity,
 } from '../../database/entities/product-entities';
 import type { DocumentService } from '../../database/services/document-service';
-import { SPARCEngineCore } from '../../workflows/sparc/core/sparc-engine';
-import type { ProjectSpecification, SPARCPhase, SPARCProject } from '../../workflows/sparc/types/sparc-types';
 import type {
   CompletedStepInfo,
   StepExecutionResult,
@@ -42,6 +40,12 @@ import type {
   WorkflowStepResults,
   WorkflowStepState,
 } from '../../types/workflow-types';
+import { SPARCEngineCore } from '../swarm/sparc/core/sparc-engine';
+import type {
+  ProjectSpecification,
+  SPARCPhase,
+  SPARCProject,
+} from '../swarm/sparc/types/sparc-types';
 
 const logger = createLogger({ prefix: 'ProductWorkflow' });
 

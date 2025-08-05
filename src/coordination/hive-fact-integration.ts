@@ -11,6 +11,7 @@ import { createLogger } from '@core/logger';
 import type { FACTSearchQuery, FACTStorageStats } from '@knowledge/storage-interface';
 import type { HiveSwarmCoordinator } from './hive-swarm-sync';
 import type { HiveFACTConfig, UniversalFact } from './hive-types';
+
 // import { FACTExternalOrchestrator } from './mcp/tools/fact-external-integration'; // TODO: Migrate to unified MCP
 
 const logger = createLogger({ prefix: 'Hive-FACT' });
@@ -41,7 +42,7 @@ export class HiveFACTSystem extends EventEmitter {
     //       cacheSize: this.config.cacheSize,
     //     });
     //   }
-    // 
+    //
   }
 
   /**
@@ -221,9 +222,9 @@ export class HiveFACTSystem extends EventEmitter {
       //   priority: 'high',
       //   useCache: true,
       // });
-      const result = { 
-        consolidatedKnowledge: '', 
-        sources: [] 
+      const result = {
+        consolidatedKnowledge: '',
+        sources: [],
       }; // TODO: Implement with unified MCP
 
       // Convert to universal fact
@@ -234,13 +235,19 @@ export class HiveFACTSystem extends EventEmitter {
         subject,
         content: {
           summary: `Information about ${subject}`,
-          details: result.consolidatedKnowledge || 'No details available'
+          details: result.consolidatedKnowledge || 'No details available',
         },
-        source: Array.isArray(result.sources) && result.sources.length > 0 ? result.sources.join(',') : 'unknown',
+        source:
+          Array.isArray(result.sources) && result.sources.length > 0
+            ? result.sources.join(',')
+            : 'unknown',
         confidence: this.calculateConfidence(result),
         timestamp: Date.now(),
         metadata: {
-          source: Array.isArray(result.sources) && result.sources.length > 0 ? result.sources.join(',') : 'unknown',  
+          source:
+            Array.isArray(result.sources) && result.sources.length > 0
+              ? result.sources.join(',')
+              : 'unknown',
           timestamp: Date.now(),
           confidence: this.calculateConfidence(result),
           ttl: this.getTTLForFactType(type),
@@ -323,7 +330,9 @@ export class HiveFACTSystem extends EventEmitter {
    */
   private calculateConfidence(result: any): number {
     const sourceCount = Array.isArray(result.sources) ? result.sources.length : 0;
-    const hasErrors = Array.isArray(result.sources) ? result.sources.some((s: any) => s && s.error) : false;
+    const hasErrors = Array.isArray(result.sources)
+      ? result.sources.some((s: any) => s && s.error)
+      : false;
 
     let confidence = 0.5; // Base confidence
     confidence += sourceCount * 0.1; // More sources = higher confidence
@@ -365,9 +374,9 @@ export class HiveFACTSystem extends EventEmitter {
         type: 'general',
         category: 'search', // Add required category field
         subject: query.query,
-        content: { 
+        content: {
           insight: `Search result for: ${query.query}`,
-          source: 'external_search' 
+          source: 'external_search',
         },
         source: 'external_search',
         confidence: 0.7,

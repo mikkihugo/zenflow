@@ -3,8 +3,8 @@
  * Single stdio MCP server combining coordination and swarm functionality
  */
 
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio';
 import { Server as MCPServer } from '@modelcontextprotocol/sdk/server/mcp';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio';
 import { createLogger } from '../../../core/logger';
 import type { MCPServerConfig } from './types';
 
@@ -20,32 +20,32 @@ export class StdioMcpServer {
       timeout: 30000,
       logLevel: 'info',
       maxConcurrentRequests: 10,
-      ...config
+      ...config,
     };
 
     this.transport = new StdioServerTransport();
     this.server = new MCPServer(
       {
         name: 'claude-zen-unified',
-        version: '2.0.0-alpha.73'
+        version: '2.0.0-alpha.73',
       },
       {
         capabilities: {
           tools: {},
           resources: {},
           prompts: {},
-          logging: {}
-        }
+          logging: {},
+        },
       }
     );
   }
 
   async start(): Promise<void> {
     logger.info('Starting unified MCP server for Claude Code CLI');
-    
+
     // Register all tools from the tool registry
     await this.registerTools();
-    
+
     // Connect server to transport
     await this.server.connect(this.transport);
     logger.info('Unified MCP server started successfully');

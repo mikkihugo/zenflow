@@ -12,6 +12,9 @@ export { AdvancedCLIEngine, AdvancedCommandRegistry } from './AdvancedCLIEngine'
 // Enhanced Terminal Router
 export { default as EnhancedTerminalRouter } from './EnhancedTerminalRouter';
 
+// SPARC Swarm Commands
+export { createSPARCSwarmCommands } from './sparc-swarm-commands';
+
 // Type Definitions
 export * from './types/AdvancedCLITypes';
 

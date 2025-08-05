@@ -1,6 +1,6 @@
 /**
  * @fileoverview End-to-end test for CLI discover command with auto-swarms
- * 
+ *
  * Tests the complete integration pipeline from discover.ts
  */
 
@@ -39,25 +39,32 @@ describe('CLI Discover Auto-Swarm Integration', () => {
     // Calculate resource constraints (same logic as discover.ts)
     const mockConfidenceResult = {
       domains: new Map([
-        ['test-domain', {
-          name: 'test-domain',
-          path: '/test',
-          files: ['test.ts'],
-          confidence: { overall: 0.8, domainClarity: 0.8, consistency: 0.8 },
-          suggestedConcepts: ['test'],
-          technologies: ['typescript'],
-          relatedDomains: [],
-          validations: [],
-          research: [],
-          refinementHistory: [],
-        }]
-      ])
+        [
+          'test-domain',
+          {
+            name: 'test-domain',
+            path: '/test',
+            files: ['test.ts'],
+            confidence: { overall: 0.8, domainClarity: 0.8, consistency: 0.8 },
+            suggestedConcepts: ['test'],
+            technologies: ['typescript'],
+            relatedDomains: [],
+            validations: [],
+            research: [],
+            refinementHistory: [],
+          },
+        ],
+      ]),
     };
 
     const calculateResourceConstraints = () => {
       const baseCpuLimit = Math.min(8, Math.max(2, mockConfidenceResult.domains.size * 2));
-      const baseMemoryLimit = mockConfidenceResult.domains.size < 3 ? '2GB' : 
-                            mockConfidenceResult.domains.size < 6 ? '4GB' : '8GB';
+      const baseMemoryLimit =
+        mockConfidenceResult.domains.size < 3
+          ? '2GB'
+          : mockConfidenceResult.domains.size < 6
+            ? '4GB'
+            : '8GB';
       const baseMaxAgents = Math.min(10 * mockConfidenceResult.domains.size, 50);
 
       return {
@@ -72,11 +79,17 @@ describe('CLI Discover Auto-Swarm Integration', () => {
     const swarmCoordinator = await createPublicSwarmCoordinator();
     const hiveSync = new HiveSwarmCoordinator(eventBus);
 
-    const swarmFactory = new AutoSwarmFactory(swarmCoordinator, hiveSync, mockMemoryStore, mockAgui, {
-      enableHumanValidation: false, // Skip validation for test
-      maxSwarmsPerDomain: 1,
-      resourceConstraints: calculateResourceConstraints(),
-    });
+    const swarmFactory = new AutoSwarmFactory(
+      swarmCoordinator,
+      hiveSync,
+      mockMemoryStore,
+      mockAgui,
+      {
+        enableHumanValidation: false, // Skip validation for test
+        maxSwarmsPerDomain: 1,
+        resourceConstraints: calculateResourceConstraints(),
+      }
+    );
 
     // Track events (same as discover.ts)
     const events: any[] = [];
@@ -91,12 +104,12 @@ describe('CLI Discover Auto-Swarm Integration', () => {
     // Verify results
     expect(swarmConfigs).toHaveLength(1);
     expect(swarmConfigs[0].domain).toBe('test-domain');
-    
+
     // Verify events were fired
-    expect(events.some(e => e.type === 'start')).toBe(true);
-    expect(events.some(e => e.type === 'created')).toBe(true);
-    expect(events.some(e => e.type === 'initialized')).toBe(true);
-    expect(events.some(e => e.type === 'complete')).toBe(true);
+    expect(events.some((e) => e.type === 'start')).toBe(true);
+    expect(events.some((e) => e.type === 'created')).toBe(true);
+    expect(events.some((e) => e.type === 'initialized')).toBe(true);
+    expect(events.some((e) => e.type === 'complete')).toBe(true);
 
     // Verify resource constraints calculation
     const constraints = calculateResourceConstraints();
@@ -107,14 +120,14 @@ describe('CLI Discover Auto-Swarm Integration', () => {
 
   it('should handle deployment verification', async () => {
     const { createPublicSwarmCoordinator } = await import('../../coordination/public-api');
-    
+
     // Test deployment verification logic
     const swarmCoordinator = await createPublicSwarmCoordinator();
-    
+
     const mockConfig = {
       id: 'test-swarm-123',
       name: 'Test Swarm',
-      domain: 'test'
+      domain: 'test',
     };
 
     // Simulate health check
@@ -125,7 +138,7 @@ describe('CLI Discover Auto-Swarm Integration', () => {
         name: mockConfig.name,
         healthy: status.state !== 'error',
         agentCount: status.agentCount,
-        uptime: status.uptime
+        uptime: status.uptime,
       };
 
       expect(verificationResult).toBeDefined();

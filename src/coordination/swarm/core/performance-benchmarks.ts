@@ -294,8 +294,10 @@ class PerformanceBenchmarks {
 
       // Calculate performance score
       const avgAllocationTime =
-        (Object.values(results.allocation).reduce((acc: any, a: any) => acc + a.avgTimePerAllocation, 0) as number) /
-        Object.keys(results.allocation).length;
+        (Object.values(results.allocation).reduce(
+          (acc: any, a: any) => acc + a.avgTimePerAllocation,
+          0
+        ) as number) / Object.keys(results.allocation).length;
 
       results.performanceScore = Math.max(0, 100 - avgAllocationTime); // Good if under 1ms average
     } catch (error) {
@@ -573,8 +575,10 @@ class PerformanceBenchmarks {
 
       // Calculate performance score
       const avgEfficiency =
-        (Object.values(results.taskTypes).reduce((acc: any, t: any) => acc + t.efficiency, 0) as number) /
-        Object.keys(results.taskTypes).length;
+        (Object.values(results.taskTypes).reduce(
+          (acc: any, t: any) => acc + t.efficiency,
+          0
+        ) as number) / Object.keys(results.taskTypes).length;
 
       results.performanceScore = Math.min(100, avgEfficiency * 100);
     } catch (error) {
@@ -858,7 +862,12 @@ class PerformanceBenchmarks {
 
     for (const [category, data] of Object.entries(results.benchmarks)) {
       if ((data as any).performanceScore !== undefined) {
-        rows.push([category, 'Performance Score', (data as any).performanceScore, (data as any).performanceScore]);
+        rows.push([
+          category,
+          'Performance Score',
+          (data as any).performanceScore,
+          (data as any).performanceScore,
+        ]);
       }
     }
 

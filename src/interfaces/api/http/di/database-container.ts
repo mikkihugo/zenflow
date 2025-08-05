@@ -213,13 +213,16 @@ class MockDatabaseAdapter {
     };
   }
 
-  async query(sql: string, params?: any[]): Promise<{
+  async query(
+    sql: string,
+    params?: any[]
+  ): Promise<{
     rows: any[];
     fields: Array<{ name: string; type: string }>;
     rowCount: number;
   }> {
     // Simulate query execution
-    await new Promise(resolve => setTimeout(resolve, Math.random() * 10));
+    await new Promise((resolve) => setTimeout(resolve, Math.random() * 10));
 
     // Return mock data based on query type
     if (sql.toLowerCase().includes('select')) {
@@ -244,13 +247,16 @@ class MockDatabaseAdapter {
     };
   }
 
-  async execute(sql: string, params?: any[]): Promise<{
+  async execute(
+    sql: string,
+    params?: any[]
+  ): Promise<{
     affectedRows: number;
     insertId?: any;
     executionTime: number;
   }> {
     // Simulate command execution
-    await new Promise(resolve => setTimeout(resolve, Math.random() * 5));
+    await new Promise((resolve) => setTimeout(resolve, Math.random() * 5));
 
     return {
       affectedRows: 1,
@@ -337,9 +343,9 @@ class SimplifiedDatabaseController {
     this.config = {
       type: 'sqlite',
       database: ':memory:',
-      pool: { min: 1, max: 5, idle: 30 }
+      pool: { min: 1, max: 5, idle: 30 },
     };
-    
+
     const factory = new MockDatabaseProviderFactory();
     this.adapter = factory.createAdapter(this.config);
     this.adapter.connect();
@@ -762,9 +768,7 @@ class SimplifiedDatabaseController {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
 
-      this.logger.info(
-        `Migration ${request.version} completed successfully in ${executionTime}ms`
-      );
+      this.logger.info(`Migration ${request.version} completed successfully in ${executionTime}ms`);
 
       return {
         success: true,

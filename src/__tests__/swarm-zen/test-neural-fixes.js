@@ -124,7 +124,7 @@ async function testPatternParsing() {
     assertContains(
       result3.stdout,
       'Cognitive: convergent, divergent, lateral, systems, critical, abstract',
-      'Cognitive patterns list'
+      'Cognitive patterns list',
     );
     assertContains(result3.stdout, 'Models: attention, lstm, transformer', 'Model patterns list');
   } else {
@@ -152,7 +152,7 @@ async function testMemoryOptimization() {
           testResults.passed.push(`${pattern}: Memory optimized (${memoryUsage} MB)`);
         } else if (memoryUsage >= 200 && memoryUsage <= 350) {
           testResults.warnings.push(
-            `${pattern}: Memory slightly outside target (${memoryUsage} MB)`
+            `${pattern}: Memory slightly outside target (${memoryUsage} MB)`,
           );
         } else {
           testResults.failed.push(`${pattern}: Memory not optimized (${memoryUsage} MB)`);
@@ -190,7 +190,7 @@ async function testPersistenceIndicators() {
     assertPattern(
       result.stdout,
       /Training Sessions:\s*\d+\s*sessions/,
-      'Training sessions display'
+      'Training sessions display',
     );
 
     // Check for saved models count with 📁 indicator
@@ -267,7 +267,7 @@ async function testPatternSwitching() {
 
         if (variance < 50) {
           testResults.passed.push(
-            `${pattern}: Stable memory across switches (variance: ${variance} MB)`
+            `${pattern}: Stable memory across switches (variance: ${variance} MB)`,
           );
         } else {
           testResults.warnings.push(`${pattern}: Higher memory variance (${variance} MB)`);

@@ -195,7 +195,7 @@ export class WasmModuleTestDouble {
       return !this.actualCalls.some(
         (call) =>
           call.method === expectation.method &&
-          JSON.stringify(call.args) === JSON.stringify(expectation.args)
+          JSON.stringify(call.args) === JSON.stringify(expectation.args),
       );
     });
 
@@ -203,7 +203,7 @@ export class WasmModuleTestDouble {
       throw new Error(
         `Unmet expectations:\n${unmetExpectations
           .map((e) => `  - ${e.method}(${e.args.join(', ')})`)
-          .join('\n')}`
+          .join('\n')}`,
       );
     }
   }

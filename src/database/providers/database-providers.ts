@@ -6,9 +6,8 @@
  * @description Enhanced database providers with DI integration for Issue #63
  */
 
-import { injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
-import {
+import type {
+  ConnectionStats,
   DatabaseAdapter,
   ExecuteResult,
   IConfig,
@@ -16,8 +15,9 @@ import {
   QueryResult,
   SchemaInfo,
   TransactionContext,
-  ConnectionStats,
 } from '../../core/interfaces/base-interfaces';
+import { injectable } from '../../di/decorators/injectable';
+import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
 
 import {
   type DatabaseResult,
@@ -107,7 +107,7 @@ export interface GraphDatabaseAdapter extends DatabaseAdapter {
 }
 
 /**
- * Vector database specific extensions  
+ * Vector database specific extensions
  * Extends the base DatabaseAdapter with vector-specific operations
  */
 export interface VectorDatabaseAdapter extends DatabaseAdapter {
@@ -173,7 +173,7 @@ export interface DatabaseConfig {
 export class DatabaseProviderFactory {
   constructor(
     private logger: ILogger,
-    private config: IConfig,
+    private config: IConfig
   ) {}
 
   /**
@@ -927,7 +927,7 @@ export class KuzuAdapter implements GraphDatabaseAdapter {
     try {
       // Kuzu node count implementation would go here
       await this.simulateAsync(10);
-      
+
       // Mock result for demonstration
       return 1000;
     } catch (error) {
@@ -943,7 +943,7 @@ export class KuzuAdapter implements GraphDatabaseAdapter {
     try {
       // Kuzu relationship count implementation would go here
       await this.simulateAsync(10);
-      
+
       // Mock result for demonstration
       return 2500;
     } catch (error) {
@@ -1032,18 +1032,18 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
     try {
       // Import and initialize LanceDBInterface with config options
       const { default: LanceDBInterface } = await import('../lancedb-interface');
-      
+
       const lanceConfig = {
         dbPath: this.config.database || './data/vectors.lance',
         vectorDim: this.config.options?.vectorSize || 384,
         similarity: this.config.options?.metricType || 'cosine',
         indexType: this.config.options?.indexType || 'IVF_PQ',
-        batchSize: this.config.options?.batchSize || 1000
+        batchSize: this.config.options?.batchSize || 1000,
       };
 
       this.lanceInterface = new LanceDBInterface(lanceConfig);
       await this.lanceInterface.initialize();
-      
+
       this.connected = true;
       this.connectionStats.active = 1;
       this.connectionStats.idle = 0;
@@ -1064,7 +1064,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
         await this.lanceInterface.shutdown();
         this.lanceInterface = null;
       }
-      
+
       this.connected = false;
       this.connectionStats.active = 0;
       this.connectionStats.idle = 1;
@@ -1084,34 +1084,34 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
     const startTime = Date.now();
 
     try {
-      // Support vector similarity SQL syntax like: 
+      // Support vector similarity SQL syntax like:
       // "SELECT * FROM vectors WHERE column <-> [0.1,0.2,0.3] LIMIT 5"
       if (sql.includes('<->') || sql.toLowerCase().includes('vector')) {
         // Parse vector query to extract table name, vector, and limit
-        const vectorMatch = sql.match(/\[([\d\.,\s]+)\]/);
+        const vectorMatch = sql.match(/\[([\d.,\s]+)\]/);
         const tableMatch = sql.match(/FROM\s+(\w+)/i);
         const limitMatch = sql.match(/LIMIT\s+(\d+)/i);
-        
+
         if (vectorMatch && tableMatch) {
           const vectorStr = vectorMatch[1];
           const tableName = tableMatch[1];
           const limit = limitMatch ? parseInt(limitMatch[1]) : 10;
-          
+
           // Parse vector from string
-          const queryVector = vectorStr.split(',').map(v => parseFloat(v.trim()));
-          
+          const queryVector = vectorStr.split(',').map((v) => parseFloat(v.trim()));
+
           // Use vector search
           const vectorResults = await this.vectorSearch(queryVector, limit);
-          
+
           const executionTime = Date.now() - startTime;
-          
+
           // Convert vector results to QueryResult format
           const result: QueryResult = {
-            rows: vectorResults.matches.map(match => ({
+            rows: vectorResults.matches.map((match) => ({
               id: match.id,
               vector: match.vector,
               score: match.score,
-              metadata: match.metadata
+              metadata: match.metadata,
             })),
             rowCount: vectorResults.matches.length,
             fields: [
@@ -1127,7 +1127,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
           return result;
         }
       }
-      
+
       // For other queries, return basic schema info
       const executionTime = Date.now() - startTime;
       const result: QueryResult = {
@@ -1157,7 +1157,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
     try {
       // Handle CREATE TABLE, INSERT, DELETE operations for vectors
       let affectedRows = 0;
-      
+
       if (sql.toLowerCase().includes('create table')) {
         // Extract table name and create it
         const tableMatch = sql.match(/CREATE TABLE\s+(\w+)/i);
@@ -1166,7 +1166,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
           await this.lanceInterface.createTable(tableName, {
             id: 'string',
             vector: `array<float>(${this.lanceInterface.config?.vectorDim || 384})`,
-            metadata: 'map<string, string>'
+            metadata: 'map<string, string>',
           });
           affectedRows = 1;
         }
@@ -1241,7 +1241,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
     try {
       // Use the real LanceDB interface for vector search
       const searchResults = await this.lanceInterface.searchSimilar('embeddings', query, limit);
-      
+
       const executionTime = Date.now() - startTime;
 
       // Convert LanceDBInterface results to VectorResult format
@@ -1269,20 +1269,22 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
 
     try {
       // Convert VectorData format to LanceDBInterface format
-      const documents = vectors.map(v => ({
+      const documents = vectors.map((v) => ({
         id: v.id.toString(),
         vector: v.vector,
         metadata: v.metadata || {},
-        timestamp: Date.now()
+        timestamp: Date.now(),
       }));
 
       // Use the real LanceDB interface for adding vectors
       const result = await this.lanceInterface.insertVectors('embeddings', documents);
-      
+
       if (result.errors.length > 0) {
-        this.logger.warn(`Added ${result.inserted}/${vectors.length} vectors, ${result.errors.length} errors`);
+        this.logger.warn(
+          `Added ${result.inserted}/${vectors.length} vectors, ${result.errors.length} errors`
+        );
       }
-      
+
       this.logger.debug(`Successfully added ${result.inserted} vectors to LanceDB`);
     } catch (error) {
       this.logger.error(`Failed to add vectors to LanceDB: ${error}`);
@@ -1299,9 +1301,9 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
       await this.lanceInterface.createTable('embeddings', {
         id: 'string',
         vector: `array<float>(${config.dimension})`,
-        metadata: 'map<string, string>'
+        metadata: 'map<string, string>',
       });
-      
+
       this.logger.debug(`Successfully created LanceDB index: ${config.name}`);
     } catch (error) {
       this.logger.error(`Failed to create LanceDB index: ${error}`);
@@ -1317,7 +1319,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
       // Get real schema info from LanceDB
       const stats = await this.lanceInterface.getStats();
       const vectorDim = this.lanceInterface.config?.vectorDim || 384;
-      
+
       const schemaInfo: SchemaInfo = {
         tables: [
           {

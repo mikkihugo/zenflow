@@ -21,26 +21,26 @@ export const batchExecuteTool = {
             type: { type: 'string', enum: ['swarm', 'file', 'coordination', 'neural', 'memory'] },
             operation: { type: 'string' },
             params: { type: 'object' },
-            dependencies: { type: 'array', items: { type: 'string' } }
+            dependencies: { type: 'array', items: { type: 'string' } },
           },
-          required: ['type', 'operation', 'params']
-        }
+          required: ['type', 'operation', 'params'],
+        },
       },
       config: {
         type: 'object',
         properties: {
           maxConcurrency: { type: 'number' },
-          trackPerformance: { type: 'boolean' }
-        }
-      }
+          trackPerformance: { type: 'boolean' },
+        },
+      },
     },
-    required: ['operations']
+    required: ['operations'],
   },
   async handler(params: any): Promise<MCPToolResult> {
     try {
       const startTime = Date.now();
       const results = [];
-      
+
       // Simulate batch execution with performance tracking
       for (const operation of params.operations) {
         const result = await executeOperation(operation);
@@ -49,20 +49,21 @@ export const batchExecuteTool = {
 
       const executionTime = Date.now() - startTime;
       const operationCount = params.operations.length;
-      
+
       // Calculate performance metrics (claude-zen claims)
       const sequentialTime = operationCount * 200; // Assume 200ms per operation sequentially
       const speedImprovement = sequentialTime / executionTime;
       const tokenReduction = Math.min(85, Math.max(15, (operationCount - 1) * 12)); // Token savings from batching
 
-      const successfulOps = results.filter(r => r.status === 'completed').length;
+      const successfulOps = results.filter((r) => r.status === 'completed').length;
       const failedOps = results.length - successfulOps;
 
       return {
         success: true,
-        content: [{
-          type: 'text',
-          text: `# 🚀 Batch Execution Complete
+        content: [
+          {
+            type: 'text',
+            text: `# 🚀 Batch Execution Complete
 
 **Operations:** ${operationCount} (${successfulOps} successful, ${failedOps} failed)
 
@@ -75,19 +76,22 @@ export const batchExecuteTool = {
 ## 🎯 Claude-zen Efficiency
 This batch execution demonstrates the core claude-zen principle: **"If you need to do X operations, they should be in 1 message, not X messages"**
 
-The **${speedImprovement.toFixed(1)}x speed improvement** and **${tokenReduction.toFixed(1)}% token reduction** show why batch operations are superior to sequential execution.`
-        }]
+The **${speedImprovement.toFixed(1)}x speed improvement** and **${tokenReduction.toFixed(1)}% token reduction** show why batch operations are superior to sequential execution.`,
+          },
+        ],
       };
     } catch (error) {
       return {
         success: false,
-        content: [{
-          type: 'text', 
-          text: `Batch execution failed: ${error instanceof Error ? error.message : String(error)}`
-        }]
+        content: [
+          {
+            type: 'text',
+            text: `Batch execution failed: ${error instanceof Error ? error.message : String(error)}`,
+          },
+        ],
       };
     }
-  }
+  },
 };
 
 export const batchPerformanceTool = {
@@ -98,9 +102,9 @@ export const batchPerformanceTool = {
     properties: {
       action: { type: 'string', enum: ['summary', 'trends', 'clear'] },
       hours: { type: 'number' },
-      metric: { type: 'string' }
+      metric: { type: 'string' },
     },
-    required: ['action']
+    required: ['action'],
   },
   async handler(params: any): Promise<MCPToolResult> {
     try {
@@ -108,9 +112,10 @@ export const batchPerformanceTool = {
         case 'summary':
           return {
             success: true,
-            content: [{
-              type: 'text',
-              text: `# 📊 Batch Performance Summary (Last ${params.hours || 1} hours)
+            content: [
+              {
+                type: 'text',
+                text: `# 📊 Batch Performance Summary (Last ${params.hours || 1} hours)
 
 ## Key Metrics
 - **Total Executions:** 15
@@ -124,17 +129,19 @@ export const batchPerformanceTool = {
 ✅ **Token Target:** Achieving 32.3% reduction (Currently: 42.5%)
 ✅ **Reliability:** 96.8% success rate exceeds 95% target
 
-**Status:** 🎯 **All targets met** - Claude-zen performance goals achieved`
-            }]
+**Status:** 🎯 **All targets met** - Claude-zen performance goals achieved`,
+              },
+            ],
           };
 
-        case 'trends':
+        case 'trends': {
           const metric = params.metric || 'throughput';
           return {
             success: true,
-            content: [{
-              type: 'text',
-              text: `# 📈 Performance Trends - ${metric} (Last ${params.hours || 24} hours)
+            content: [
+              {
+                type: 'text',
+                text: `# 📈 Performance Trends - ${metric} (Last ${params.hours || 24} hours)
 
 ## Trend Analysis
 - **Trend Direction:** ↗️ Improving (+12.5% over period)
@@ -143,38 +150,46 @@ export const batchPerformanceTool = {
 - **Current Status:** Stable and improving
 
 ## Insights
-The ${metric} metric shows consistent improvement, indicating successful optimization of batch processing workflows.`
-            }]
+The ${metric} metric shows consistent improvement, indicating successful optimization of batch processing workflows.`,
+              },
+            ],
           };
+        }
 
         case 'clear':
           return {
             success: true,
-            content: [{
-              type: 'text',
-              text: '🗑️ **Performance History Cleared**\n\nAll batch performance metrics have been reset. New tracking will begin with the next batch operation.'
-            }]
+            content: [
+              {
+                type: 'text',
+                text: '🗑️ **Performance History Cleared**\n\nAll batch performance metrics have been reset. New tracking will begin with the next batch operation.',
+              },
+            ],
           };
 
         default:
           return {
             success: false,
-            content: [{
-              type: 'text',
-              text: `Unknown action: ${params.action}. Available actions: summary, trends, clear`
-            }]
+            content: [
+              {
+                type: 'text',
+                text: `Unknown action: ${params.action}. Available actions: summary, trends, clear`,
+              },
+            ],
           };
       }
     } catch (error) {
       return {
         success: false,
-        content: [{
-          type: 'text',
-          text: `Performance analysis failed: ${error instanceof Error ? error.message : String(error)}`
-        }]
+        content: [
+          {
+            type: 'text',
+            text: `Performance analysis failed: ${error instanceof Error ? error.message : String(error)}`,
+          },
+        ],
       };
     }
-  }
+  },
 };
 
 export const projectInitBatchTool = {
@@ -189,32 +204,32 @@ export const projectInitBatchTool = {
         type: 'object',
         properties: {
           topology: { type: 'string', enum: ['mesh', 'hierarchical', 'ring', 'star'] },
-          maxAgents: { type: 'number' }
-        }
+          maxAgents: { type: 'number' },
+        },
       },
       agentTypes: { type: 'array', items: { type: 'string' } },
       fileStructure: { type: 'object' },
-      packageJson: { type: 'object' }
+      packageJson: { type: 'object' },
     },
-    required: ['projectName', 'basePath']
+    required: ['projectName', 'basePath'],
   },
   async handler(params: any): Promise<MCPToolResult> {
     try {
       const startTime = Date.now();
-      
+
       // Use defaults if not provided
       const swarmConfig = params.swarmConfig || { topology: 'hierarchical', maxAgents: 6 };
       const agentTypes = params.agentTypes || ['researcher', 'coder', 'analyst'];
-      
+
       // Simulate project initialization
       const operations = [
         'Create directory structure',
         'Initialize package.json',
         'Set up swarm configuration',
         'Spawn coordinating agents',
-        'Create initial files'
+        'Create initial files',
       ];
-      
+
       const executionTime = Date.now() - startTime;
       const estimatedSequentialTime = operations.length * 300; // 300ms per operation
       const speedImprovement = estimatedSequentialTime / Math.max(executionTime, 100);
@@ -222,9 +237,10 @@ export const projectInitBatchTool = {
 
       return {
         success: true,
-        content: [{
-          type: 'text',
-          text: `# 🎉 Project "${params.projectName}" Initialized Successfully!
+        content: [
+          {
+            type: 'text',
+            text: `# 🎉 Project "${params.projectName}" Initialized Successfully!
 
 ## 🏗️ Project Setup Complete
 - **Location:** ${params.basePath}
@@ -245,25 +261,28 @@ export const projectInitBatchTool = {
 ## 🎯 Claude-zen Optimization
 This project initialization demonstrates batch operation efficiency - completing ${operations.length} setup operations in a single coordinated workflow rather than ${operations.length} separate steps.
 
-**Ready for development with full swarm coordination!** 🚀`
-        }]
+**Ready for development with full swarm coordination!** 🚀`,
+          },
+        ],
       };
     } catch (error) {
       return {
         success: false,
-        content: [{
-          type: 'text',
-          text: `Project initialization failed: ${error instanceof Error ? error.message : String(error)}`
-        }]
+        content: [
+          {
+            type: 'text',
+            text: `Project initialization failed: ${error instanceof Error ? error.message : String(error)}`,
+          },
+        ],
       };
     }
-  }
+  },
 };
 
 async function executeOperation(operation: any): Promise<any> {
   // Simulate operation execution with some delay
-  await new Promise(resolve => setTimeout(resolve, Math.random() * 100 + 50));
-  
+  await new Promise((resolve) => setTimeout(resolve, Math.random() * 100 + 50));
+
   // Mock different operation types
   switch (operation.type) {
     case 'swarm':
@@ -271,21 +290,21 @@ async function executeOperation(operation: any): Promise<any> {
         type: operation.type,
         operation: operation.operation,
         status: 'completed',
-        result: `Swarm ${operation.operation} completed successfully`
+        result: `Swarm ${operation.operation} completed successfully`,
       };
     case 'file':
       return {
         type: operation.type,
         operation: operation.operation,
         status: 'completed',
-        result: `File operation ${operation.operation} completed`
+        result: `File operation ${operation.operation} completed`,
       };
     default:
       return {
         type: operation.type,
         operation: operation.operation,
         status: 'completed',
-        result: 'Operation completed'
+        result: 'Operation completed',
       };
   }
 }

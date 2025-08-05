@@ -4,8 +4,8 @@
  */
 
 import { DatabaseController } from '../src/database/controllers/database-controller';
-import { DatabaseProviderFactory, KuzuAdapter } from '../src/database/providers/database-providers';
 import type { DatabaseConfig } from '../src/database/providers/database-providers';
+import { DatabaseProviderFactory, KuzuAdapter } from '../src/database/providers/database-providers';
 
 // Mock logger for example
 const logger = {
@@ -52,7 +52,7 @@ export async function demonstrateKuzuIntegration() {
 
     // 2. Execute graph queries
     console.log('2. Executing Cypher queries...');
-    
+
     // Create some nodes
     const createPersons = await controller.executeGraphQuery({
       cypher: 'CREATE (alice:Person {name: "Alice", age: 30, role: "Developer"})',
@@ -68,7 +68,8 @@ export async function demonstrateKuzuIntegration() {
 
     // Create relationships
     const createRelationship = await controller.executeGraphQuery({
-      cypher: 'MATCH (p:Person {name: "Alice"}), (o:Organization {name: "TechCorp"}) CREATE (p)-[:WORKS_FOR {since: "2022"}]->(o)',
+      cypher:
+        'MATCH (p:Person {name: "Alice"}), (o:Organization {name: "TechCorp"}) CREATE (p)-[:WORKS_FOR {since: "2022"}]->(o)',
       params: [],
     });
     console.log(`   ✓ Created relationship: ${createRelationship.success}\n`);
@@ -79,11 +80,19 @@ export async function demonstrateKuzuIntegration() {
       cypher: 'MATCH (p:Person)-[r:WORKS_FOR]->(o:Organization) RETURN p, r, o',
       params: [],
     });
-    
+
     if (queryResult.success) {
-      console.log(`   Found ${queryResult.data.nodeCount} nodes and ${queryResult.data.relationshipCount} relationships`);
-      console.log(`   Nodes:`, queryResult.data.nodes.map(n => n.properties.name || n.labels.join(':')));
-      console.log(`   Relationships:`, queryResult.data.relationships.map(r => r.type));
+      console.log(
+        `   Found ${queryResult.data.nodeCount} nodes and ${queryResult.data.relationshipCount} relationships`
+      );
+      console.log(
+        `   Nodes:`,
+        queryResult.data.nodes.map((n) => n.properties.name || n.labels.join(':'))
+      );
+      console.log(
+        `   Relationships:`,
+        queryResult.data.relationships.map((r) => r.type)
+      );
     }
     console.log();
 
@@ -93,7 +102,7 @@ export async function demonstrateKuzuIntegration() {
       sql: 'MATCH (n) RETURN count(n) as totalNodes',
       params: [],
     });
-    
+
     if (autoDetectResult.success) {
       console.log(`   ✓ Cypher query automatically detected and routed to graph adapter`);
       console.log(`   Results:`, autoDetectResult.data.results.length, 'items returned');
@@ -103,7 +112,7 @@ export async function demonstrateKuzuIntegration() {
     // 5. Get graph schema information
     console.log('5. Retrieving graph schema...');
     const schema = await controller.getGraphSchema();
-    
+
     if (schema.success) {
       const stats = schema.data.graphStatistics;
       console.log(`   Total nodes: ${stats.totalNodes}`);
@@ -117,11 +126,11 @@ export async function demonstrateKuzuIntegration() {
     // 6. Get graph analytics
     console.log('6. Getting graph analytics...');
     const analytics = await controller.getGraphAnalytics();
-    
+
     if (analytics.success) {
       const graphStats = analytics.data.graphStatistics;
       const performance = analytics.data.performance;
-      
+
       console.log(`   Graph density: ${graphStats.graphDensity.toFixed(4)}`);
       console.log(`   Connected nodes: ${graphStats.connectivity.nodesWithConnections}`);
       console.log(`   Isolated nodes: ${graphStats.connectivity.isolatedNodes}`);
@@ -143,17 +152,20 @@ export async function demonstrateKuzuIntegration() {
           params: [],
         },
         {
-          cypher: 'MATCH (p:Person {name: "Bob"}), (o:Organization {name: "TechCorp"}) CREATE (p)-[:WORKS_FOR {since: "2023"}]->(o)',
+          cypher:
+            'MATCH (p:Person {name: "Bob"}), (o:Organization {name: "TechCorp"}) CREATE (p)-[:WORKS_FOR {since: "2023"}]->(o)',
           params: [],
         },
       ],
       continueOnError: false,
       includeData: true,
     });
-    
+
     if (batchOps.success) {
       const summary = batchOps.data.summary;
-      console.log(`   ✓ Batch completed: ${summary.successfulOperations}/${summary.totalOperations} operations successful`);
+      console.log(
+        `   ✓ Batch completed: ${summary.successfulOperations}/${summary.totalOperations} operations successful`
+      );
       console.log(`   Total nodes processed: ${summary.totalNodesProcessed}`);
       console.log(`   Total relationships processed: ${summary.totalRelationshipsProcessed}`);
     }
@@ -162,7 +174,6 @@ export async function demonstrateKuzuIntegration() {
     console.log('🎉 Kuzu Graph Database Integration Demo Complete!');
     console.log('   All graph database capabilities are working correctly.');
     console.log('   The Kuzu adapter is fully integrated and functional.');
-
   } catch (error) {
     console.error('❌ Demo failed:', error);
   }
@@ -181,19 +192,19 @@ export const graphUseCaseExamples = {
       'MATCH (p:Person)-[:FRIENDS]-(f:Person) RETURN p.name, f.name',
     ],
   },
-  
+
   knowledgeGraph: {
     description: 'Knowledge graph with concepts and relationships',
     queries: [
       'CREATE (ai:Concept {name: "Artificial Intelligence", type: "Technology"})',
-      'CREATE (ml:Concept {name: "Machine Learning", type: "Technology"})', 
+      'CREATE (ml:Concept {name: "Machine Learning", type: "Technology"})',
       'CREATE (nn:Concept {name: "Neural Networks", type: "Technology"})',
       'MATCH (ai:Concept {name: "Artificial Intelligence"}), (ml:Concept {name: "Machine Learning"}) CREATE (ai)-[:INCLUDES]->(ml)',
       'MATCH (ml:Concept {name: "Machine Learning"}), (nn:Concept {name: "Neural Networks"}) CREATE (ml)-[:INCLUDES]->(nn)',
       'MATCH (concept:Concept)-[:INCLUDES*]-(related:Concept) RETURN concept.name, related.name',
     ],
   },
-  
+
   dependencyAnalysis: {
     description: 'Software dependency and impact analysis',
     queries: [
@@ -205,7 +216,7 @@ export const graphUseCaseExamples = {
       'MATCH (m:Module)-[:DEPENDS_ON*]-(dep:Module) RETURN m.name, dep.name',
     ],
   },
-  
+
   organizationChart: {
     description: 'Organizational hierarchy and reporting structure',
     queries: [
@@ -231,7 +242,7 @@ export const kuzuConfigExamples = {
       maxNumThreads: 2,
     },
   },
-  
+
   production: {
     type: 'kuzu' as const,
     database: './data/prod-graph.kuzu',
@@ -240,7 +251,7 @@ export const kuzuConfigExamples = {
       maxNumThreads: 8,
     },
   },
-  
+
   testing: {
     type: 'kuzu' as const,
     database: ':memory:',

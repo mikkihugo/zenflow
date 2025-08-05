@@ -4,6 +4,7 @@
  */
 
 import { DaaService } from './daa-service';
+
 const daaService = new DaaService();
 
 export class DAA_MCPTools {
@@ -518,7 +519,9 @@ export class DAA_MCPTools {
 
       const { category = 'all', timeRange = '1h' } = params;
 
-      const metrics = await daaService.getPerformanceMetrics(category === 'all' ? undefined : category);
+      const metrics = await daaService.getPerformanceMetrics(
+        category === 'all' ? undefined : category
+      );
 
       const result = {
         metrics_category: category,

@@ -251,7 +251,7 @@ class AdvancedLintFixer {
       (_match, prop1, indent, prop2) => {
         fixes++;
         return `${prop1},\n${indent}${prop2}`;
-      }
+      },
     );
 
     // Fix missing commas in array literals
@@ -268,7 +268,7 @@ class AdvancedLintFixer {
           return `${item1},\n${indent}${item2}`;
         }
         return match;
-      }
+      },
     );
 
     this.updateStats('comma-expected', fixes);
@@ -326,7 +326,7 @@ class AdvancedLintFixer {
         (_match, varName, moduleName) => {
           fixes++;
           return `import ${varName} from '${moduleName}';`;
-        }
+        },
       );
 
       // Convert module.exports to export

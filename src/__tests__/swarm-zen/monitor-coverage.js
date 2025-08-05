@@ -22,7 +22,7 @@ async function main() {
 
   // Store initial metrics
   await execAsync(
-    `npx ruv-swarm hook notification --message "Initial coverage: Lines ${initial?.coverage.lines || 0}%, Branches ${initial?.coverage.branches || 0}%, Functions ${initial?.coverage.functions || 0}%, Statements ${initial?.coverage.statements || 0}%" --telemetry true`
+    `npx ruv-swarm hook notification --message "Initial coverage: Lines ${initial?.coverage.lines || 0}%, Branches ${initial?.coverage.branches || 0}%, Functions ${initial?.coverage.functions || 0}%, Statements ${initial?.coverage.statements || 0}%" --telemetry true`,
   );
   const monitoringInterval = await startLiveMonitoring(15000);
 
@@ -35,7 +35,7 @@ async function main() {
 
     // Store final metrics
     await execAsync(
-      `npx ruv-swarm hook notification --message "Session complete: Achieved ${final.coverage.lines.toFixed(1)}% line coverage" --telemetry true`
+      `npx ruv-swarm hook notification --message "Session complete: Achieved ${final.coverage.lines.toFixed(1)}% line coverage" --telemetry true`,
     );
 
     process.exit(0);

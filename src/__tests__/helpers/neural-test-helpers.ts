@@ -181,7 +181,7 @@ export class NeuralNetworkValidator {
    * Validate network topology
    */
   static validateTopology(topology: number[]): void {
-    expect(topology).toHaveLength.greaterThan(1);
+    expect(topology.length).toBeGreaterThan(1);
     topology.forEach((layerSize) => {
       expect(layerSize).toBeGreaterThan(0);
       expect(Number.isInteger(layerSize)).toBe(true);
@@ -198,8 +198,8 @@ export class NeuralNetworkValidator {
     const finalError = errors[errors.length - 1];
     const converged = finalError < config.convergenceThreshold;
 
-    expect(errors).toHaveLength.greaterThan(0);
-    expect(finalError).toBeFinite();
+    expect(errors.length).toBeGreaterThan(0);
+    expect(Number.isFinite(finalError)).toBe(true);
     expect(finalError).toBeGreaterThanOrEqual(0);
 
     if (converged) {
@@ -255,7 +255,7 @@ export class NeuralNetworkValidator {
 
     // Weights should be finite
     flatWeights.forEach((weight) => {
-      expect(weight).toBeFinite();
+      expect(Number.isFinite(weight)).toBe(true);
       expect(weight).not.toBeNaN();
     });
 
@@ -283,7 +283,7 @@ export class NeuralNetworkValidator {
 
     // Gradients should be finite
     flatGradients.forEach((gradient) => {
-      expect(gradient).toBeFinite();
+      expect(Number.isFinite(gradient)).toBe(true);
       expect(gradient).not.toBeNaN();
     });
 

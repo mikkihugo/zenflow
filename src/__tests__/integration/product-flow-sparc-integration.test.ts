@@ -10,6 +10,8 @@
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 import { nanoid } from 'nanoid';
 import { ProductWorkflowEngine } from '../../coordination/orchestration/product-workflow-engine';
+import { SPARCEngineCore } from '../../coordination/swarm/sparc/core/sparc-engine';
+import type { SPARCPhase, SPARCProject } from '../../coordination/swarm/sparc/types/sparc-types';
 import { ProductFlowSystem } from '../../core/product-flow-system';
 import { UnifiedMemorySystem } from '../../core/unified-memory-system';
 import type {
@@ -17,8 +19,6 @@ import type {
   TaskDocumentEntity,
 } from '../../database/entities/product-entities';
 import { DocumentService } from '../../database/services/document-service';
-import { SPARCEngineCore } from '../../workflows/sparc/core/sparc-engine';
-import type { SPARCPhase, SPARCProject } from '../../workflows/sparc/types/sparc-types';
 
 describe('Product Flow + SPARC Integration', () => {
   let productWorkflowEngine: ProductWorkflowEngine;

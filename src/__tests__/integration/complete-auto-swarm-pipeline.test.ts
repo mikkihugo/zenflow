@@ -1,6 +1,6 @@
 /**
  * @fileoverview Complete Auto-Swarm Pipeline Integration Test
- * 
+ *
  * Tests the full integration pipeline for Sub-task 2.3 requirements
  */
 
@@ -47,37 +47,42 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     const { AutoSwarmFactory } = await import('../../coordination/discovery/auto-swarm-factory');
 
     const testDomains = new Map([
-      ['database', {
-        name: 'database',
-        path: '/project/db',
-        files: Array.from({ length: 15 }, (_, i) => `model${i}.ts`),
-        confidence: { overall: 0.85, domainClarity: 0.9, consistency: 0.8 },
-        suggestedConcepts: ['database', 'models', 'queries'],
-        technologies: ['typescript', 'postgresql'],
-        relatedDomains: ['api'],
-        validations: [],
-        research: [],
-        refinementHistory: [],
-      }],
-      ['api', {
-        name: 'api',
-        path: '/project/api',
-        files: Array.from({ length: 8 }, (_, i) => `route${i}.ts`),
-        confidence: { overall: 0.9, domainClarity: 0.95, consistency: 0.85 },
-        suggestedConcepts: ['api', 'server', 'endpoints'],
-        technologies: ['typescript', 'express'],
-        relatedDomains: ['database'],
-        validations: [],
-        research: [],
-        refinementHistory: [],
-      }],
+      [
+        'database',
+        {
+          name: 'database',
+          path: '/project/db',
+          files: Array.from({ length: 15 }, (_, i) => `model${i}.ts`),
+          confidence: { overall: 0.85, domainClarity: 0.9, consistency: 0.8 },
+          suggestedConcepts: ['database', 'models', 'queries'],
+          technologies: ['typescript', 'postgresql'],
+          relatedDomains: ['api'],
+          validations: [],
+          research: [],
+          refinementHistory: [],
+        },
+      ],
+      [
+        'api',
+        {
+          name: 'api',
+          path: '/project/api',
+          files: Array.from({ length: 8 }, (_, i) => `route${i}.ts`),
+          confidence: { overall: 0.9, domainClarity: 0.95, consistency: 0.85 },
+          suggestedConcepts: ['api', 'server', 'endpoints'],
+          technologies: ['typescript', 'express'],
+          relatedDomains: ['database'],
+          validations: [],
+          research: [],
+          refinementHistory: [],
+        },
+      ],
     ]);
 
     // Dynamic resource constraints (as implemented in discover.ts)
     const calculateResourceConstraints = () => {
       const baseCpuLimit = Math.min(8, Math.max(2, testDomains.size * 2));
-      const baseMemoryLimit = testDomains.size < 3 ? '2GB' : 
-                            testDomains.size < 6 ? '4GB' : '8GB';
+      const baseMemoryLimit = testDomains.size < 3 ? '2GB' : testDomains.size < 6 ? '4GB' : '8GB';
       const baseMaxAgents = Math.min(10 * testDomains.size, 50);
 
       return {
@@ -105,11 +110,11 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
 
     // 4. Verify Success Criteria
     expect(swarmConfigs.length).toBeGreaterThan(0); // ✓ Swarms created for high-confidence domains
-    
+
     // ✓ Appropriate topologies selected
-    const databaseSwarm = swarmConfigs.find(c => c.domain === 'database');
-    const apiSwarm = swarmConfigs.find(c => c.domain === 'api');
-    
+    const databaseSwarm = swarmConfigs.find((c) => c.domain === 'database');
+    const apiSwarm = swarmConfigs.find((c) => c.domain === 'api');
+
     expect(databaseSwarm?.topology.type).toBe('hierarchical'); // Database complexity
     expect(apiSwarm?.topology.type).toBe('star'); // Centralized API service
 
@@ -121,24 +126,24 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     expect(totalAgents).toBeLessThanOrEqual(calculateResourceConstraints().maxTotalAgents);
 
     // ✓ Event system provides proper creation feedback
-    expect(events.some(e => e.type === 'start')).toBe(true);
-    expect(events.some(e => e.type === 'created')).toBe(true);
-    expect(events.some(e => e.type === 'initialized')).toBe(true);
-    expect(events.some(e => e.type === 'complete')).toBe(true);
+    expect(events.some((e) => e.type === 'start')).toBe(true);
+    expect(events.some((e) => e.type === 'created')).toBe(true);
+    expect(events.some((e) => e.type === 'initialized')).toBe(true);
+    expect(events.some((e) => e.type === 'complete')).toBe(true);
 
     // Verify appropriate agent configurations
-    expect(databaseSwarm?.agents.some(a => a.type === 'data-specialist')).toBe(true);
-    expect(apiSwarm?.agents.some(a => a.type === 'api-specialist')).toBe(true);
-    expect(swarmConfigs.every(c => c.agents.some(a => a.type === 'coordinator'))).toBe(true);
+    expect(databaseSwarm?.agents.some((a) => a.type === 'data-specialist')).toBe(true);
+    expect(apiSwarm?.agents.some((a) => a.type === 'api-specialist')).toBe(true);
+    expect(swarmConfigs.every((c) => c.agents.some((a) => a.type === 'coordinator'))).toBe(true);
 
     // 5. Test Expected Swarm Configuration Examples
     // Database domain: Hierarchical topology with specialized data agents
     expect(databaseSwarm?.topology.type).toBe('hierarchical');
-    expect(databaseSwarm?.agents.some(a => a.type === 'data-specialist')).toBe(true);
+    expect(databaseSwarm?.agents.some((a) => a.type === 'data-specialist')).toBe(true);
 
     // API domain: Star topology with API gateway agent
     expect(apiSwarm?.topology.type).toBe('star');
-    expect(apiSwarm?.agents.some(a => a.type === 'api-specialist')).toBe(true);
+    expect(apiSwarm?.agents.some((a) => a.type === 'api-specialist')).toBe(true);
   });
 
   it('should handle error scenarios gracefully', async () => {
@@ -171,30 +176,36 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     });
 
     const testDomains = new Map([
-      ['good-domain', {
-        name: 'good-domain',
-        path: '/project/good',
-        files: ['good.ts'],
-        confidence: { overall: 0.8, domainClarity: 0.8, consistency: 0.8 },
-        suggestedConcepts: ['good'],
-        technologies: ['typescript'],
-        relatedDomains: [],
-        validations: [],
-        research: [],
-        refinementHistory: [],
-      }],
-      ['failing-domain', {
-        name: 'failing-domain',
-        path: '/project/bad',
-        files: ['bad.ts'],
-        confidence: { overall: 0.8, domainClarity: 0.8, consistency: 0.8 },
-        suggestedConcepts: ['bad'],
-        technologies: ['typescript'],
-        relatedDomains: [],
-        validations: [],
-        research: [],
-        refinementHistory: [],
-      }],
+      [
+        'good-domain',
+        {
+          name: 'good-domain',
+          path: '/project/good',
+          files: ['good.ts'],
+          confidence: { overall: 0.8, domainClarity: 0.8, consistency: 0.8 },
+          suggestedConcepts: ['good'],
+          technologies: ['typescript'],
+          relatedDomains: [],
+          validations: [],
+          research: [],
+          refinementHistory: [],
+        },
+      ],
+      [
+        'failing-domain',
+        {
+          name: 'failing-domain',
+          path: '/project/bad',
+          files: ['bad.ts'],
+          confidence: { overall: 0.8, domainClarity: 0.8, consistency: 0.8 },
+          suggestedConcepts: ['bad'],
+          technologies: ['typescript'],
+          relatedDomains: [],
+          validations: [],
+          research: [],
+          refinementHistory: [],
+        },
+      ],
     ]);
 
     const errorEvents: any[] = [];
@@ -231,30 +242,36 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     });
 
     const largeDomains = new Map([
-      ['domain1', {
-        name: 'domain1',
-        path: '/project/domain1',
-        files: Array.from({ length: 50 }, (_, i) => `file${i}.ts`),
-        confidence: { overall: 0.8, domainClarity: 0.8, consistency: 0.8 },
-        suggestedConcepts: ['complex'],
-        technologies: ['typescript'],
-        relatedDomains: [],
-        validations: [],
-        research: [],
-        refinementHistory: [],
-      }],
-      ['domain2', {
-        name: 'domain2',
-        path: '/project/domain2',
-        files: Array.from({ length: 50 }, (_, i) => `file${i}.ts`),
-        confidence: { overall: 0.8, domainClarity: 0.8, consistency: 0.8 },
-        suggestedConcepts: ['complex'],
-        technologies: ['typescript'],
-        relatedDomains: [],
-        validations: [],
-        research: [],
-        refinementHistory: [],
-      }],
+      [
+        'domain1',
+        {
+          name: 'domain1',
+          path: '/project/domain1',
+          files: Array.from({ length: 50 }, (_, i) => `file${i}.ts`),
+          confidence: { overall: 0.8, domainClarity: 0.8, consistency: 0.8 },
+          suggestedConcepts: ['complex'],
+          technologies: ['typescript'],
+          relatedDomains: [],
+          validations: [],
+          research: [],
+          refinementHistory: [],
+        },
+      ],
+      [
+        'domain2',
+        {
+          name: 'domain2',
+          path: '/project/domain2',
+          files: Array.from({ length: 50 }, (_, i) => `file${i}.ts`),
+          confidence: { overall: 0.8, domainClarity: 0.8, consistency: 0.8 },
+          suggestedConcepts: ['complex'],
+          technologies: ['typescript'],
+          relatedDomains: [],
+          validations: [],
+          research: [],
+          refinementHistory: [],
+        },
+      ],
     ]);
 
     // Should throw error due to resource constraints

@@ -9,8 +9,8 @@
 
 import type { NextFunction, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
-import { LogLevel, log } from './logging';
 import type { AuthContext } from './auth';
+import { LogLevel, log } from './logging';
 
 /**
  * Rate limit configuration for different operation types
@@ -94,7 +94,7 @@ function createRateLimiter(
     statusCode: config.statusCode || 429,
     standardHeaders: true, // Return rate limit info in the headers
     legacyHeaders: false, // Disable the X-RateLimit-* headers
-    
+
     // Custom key generator based on IP and user (if authenticated)
     keyGenerator: (req: Request): string => {
       const ip = req.ip || req.connection.remoteAddress || 'unknown';
@@ -140,37 +140,25 @@ function createRateLimiter(
  * Light operations rate limiter
  * For status, schema, analytics endpoints
  */
-export const lightOperationsLimiter = createRateLimiter(
-  DATABASE_RATE_LIMITS.light,
-  'light'
-);
+export const lightOperationsLimiter = createRateLimiter(DATABASE_RATE_LIMITS.light, 'light');
 
 /**
  * Medium operations rate limiter
  * For query and execute endpoints
  */
-export const mediumOperationsLimiter = createRateLimiter(
-  DATABASE_RATE_LIMITS.medium,
-  'medium'
-);
+export const mediumOperationsLimiter = createRateLimiter(DATABASE_RATE_LIMITS.medium, 'medium');
 
 /**
  * Heavy operations rate limiter
  * For transaction and batch endpoints
  */
-export const heavyOperationsLimiter = createRateLimiter(
-  DATABASE_RATE_LIMITS.heavy,
-  'heavy'
-);
+export const heavyOperationsLimiter = createRateLimiter(DATABASE_RATE_LIMITS.heavy, 'heavy');
 
 /**
  * Administrative operations rate limiter
  * For migration endpoints
  */
-export const adminOperationsLimiter = createRateLimiter(
-  DATABASE_RATE_LIMITS.admin,
-  'admin'
-);
+export const adminOperationsLimiter = createRateLimiter(DATABASE_RATE_LIMITS.admin, 'admin');
 
 /**
  * Dynamic rate limiter based on operation type
@@ -237,10 +225,10 @@ export const authAwareDatabaseRateLimiter = (
   const isAuthenticated = req.auth?.isAuthenticated || false;
   const userRoles = req.auth?.user?.roles || [];
   const isAdmin = userRoles.includes('admin');
-  
+
   // Determine multiplier based on authentication status
   let multiplier = 1; // Default for anonymous users
-  
+
   if (isAdmin) {
     multiplier = 5; // Admins get 5x the rate limit
   } else if (isAuthenticated) {
@@ -275,7 +263,9 @@ export const authAwareDatabaseRateLimiter = (
  * Get current rate limit status for a request
  * Useful for monitoring and debugging
  */
-export const getRateLimitStatus = (req: Request): {
+export const getRateLimitStatus = (
+  req: Request
+): {
   remaining: number;
   limit: number;
   resetTime: Date;
@@ -296,13 +286,9 @@ export const getRateLimitStatus = (req: Request): {
  * Rate limit information middleware
  * Adds rate limit info to response headers for debugging
  */
-export const rateLimitInfoMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void => {
+export const rateLimitInfoMiddleware = (req: Request, res: Response, next: NextFunction): void => {
   const status = getRateLimitStatus(req);
-  
+
   // Add custom rate limit headers
   res.set({
     'X-Database-RateLimit-Remaining': status.remaining.toString(),
@@ -330,7 +316,7 @@ export const wouldBeRateLimited = async (
   // you would check against the actual rate limit store
   const config = DATABASE_RATE_LIMITS[operationType];
   const status = getRateLimitStatus(req);
-  
+
   return status.remaining <= 0;
 };
 

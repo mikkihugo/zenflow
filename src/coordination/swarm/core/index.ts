@@ -37,13 +37,13 @@ export * from '../../../neural/core/neural-network';
 export * from '../../../neural/wasm/wasm-loader';
 // Enhanced exports with neural capabilities
 export * from '../../agents/agent';
+export * from '../mcp/mcp-daa-tools';
 // Export the base implementation as BaseZenSwarm to avoid conflict
 export { ZenSwarm as BaseZenSwarm } from './base-swarm';
 export * from './errors';
 export * from './hooks';
 export * from './logger';
 export * from './logging-config';
-export * from '../mcp/mcp-daa-tools';
 export * from './monitoring-dashboard';
 export * from './native-hive-mind';
 export * from './performance';

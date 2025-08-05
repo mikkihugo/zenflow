@@ -9,27 +9,26 @@
  */
 
 import { type Request, type Response, Router } from 'express';
-import { asyncHandler, createValidationError, createInternalError } from '../middleware/errors';
-import { authMiddleware, optionalAuthMiddleware, hasPermission } from '../middleware/auth';
-import { 
-  lightOperationsLimiter, 
-  mediumOperationsLimiter, 
-  heavyOperationsLimiter, 
-  adminOperationsLimiter,
-  rateLimitInfoMiddleware 
-} from '../middleware/rate-limit';
-import { getDatabaseController, checkDatabaseContainerHealth } from '../di/database-container';
-import { log, LogLevel, logPerformance } from '../middleware/logging';
-
-// Import interfaces from the simplified database controller  
+// Import interfaces from the simplified database controller
 import type {
-  QueryRequest,
-  CommandRequest,
   BatchRequest,
-  MigrationRequest,
+  CommandRequest,
+  DatabaseHealthStatus,
   DatabaseResponse,
-  DatabaseHealthStatus
+  MigrationRequest,
+  QueryRequest,
 } from '../di/database-container';
+import { checkDatabaseContainerHealth, getDatabaseController } from '../di/database-container';
+import { authMiddleware, hasPermission, optionalAuthMiddleware } from '../middleware/auth';
+import { asyncHandler, createInternalError, createValidationError } from '../middleware/errors';
+import { LogLevel, log, logPerformance } from '../middleware/logging';
+import {
+  adminOperationsLimiter,
+  heavyOperationsLimiter,
+  lightOperationsLimiter,
+  mediumOperationsLimiter,
+  rateLimitInfoMiddleware,
+} from '../middleware/rate-limit';
 
 /**
  * Get DI-enabled database controller instance
@@ -47,73 +46,89 @@ function getDatabaseControllerInstance() {
  */
 function validateQueryRequest(req: Request): QueryRequest {
   const { sql, params, options } = req.body;
-  
+
   if (!sql || typeof sql !== 'string') {
     throw createValidationError('sql', sql, 'SQL query is required and must be a string');
   }
-  
+
   return {
     sql: sql.trim(),
     params: Array.isArray(params) ? params : [],
-    options: options || {}
+    options: options || {},
   };
 }
 
 function validateCommandRequest(req: Request): CommandRequest {
   const { sql, params, options } = req.body;
-  
+
   if (!sql || typeof sql !== 'string') {
     throw createValidationError('sql', sql, 'SQL command is required and must be a string');
   }
-  
+
   return {
     sql: sql.trim(),
     params: Array.isArray(params) ? params : [],
-    options: options || {}
+    options: options || {},
   };
 }
 
 function validateBatchRequest(req: Request): BatchRequest {
   const { operations, useTransaction, continueOnError } = req.body;
-  
+
   if (!Array.isArray(operations) || operations.length === 0) {
-    throw createValidationError('operations', operations, 'Operations array is required and must not be empty');
+    throw createValidationError(
+      'operations',
+      operations,
+      'Operations array is required and must not be empty'
+    );
   }
-  
+
   // Validate each operation
   for (let index = 0; index < operations.length; index++) {
     const operation = operations[index];
     if (!operation.type || !['query', 'execute'].includes(operation.type)) {
-      throw createValidationError(`operations[${index}].type`, operation.type, "Type must be 'query' or 'execute'");
+      throw createValidationError(
+        `operations[${index}].type`,
+        operation.type,
+        "Type must be 'query' or 'execute'"
+      );
     }
     if (!operation.sql || typeof operation.sql !== 'string') {
-      throw createValidationError(`operations[${index}].sql`, operation.sql, 'SQL is required and must be a string');
+      throw createValidationError(
+        `operations[${index}].sql`,
+        operation.sql,
+        'SQL is required and must be a string'
+      );
     }
   }
-  
+
   return {
     operations,
     useTransaction: Boolean(useTransaction),
-    continueOnError: Boolean(continueOnError)
+    continueOnError: Boolean(continueOnError),
   };
 }
 
 function validateMigrationRequest(req: Request): MigrationRequest {
   const { statements, version, description, dryRun } = req.body;
-  
+
   if (!Array.isArray(statements) || statements.length === 0) {
-    throw createValidationError('statements', statements, 'Statements array is required and must not be empty');
+    throw createValidationError(
+      'statements',
+      statements,
+      'Statements array is required and must not be empty'
+    );
   }
-  
+
   if (!version || typeof version !== 'string') {
     throw createValidationError('version', version, 'Version is required and must be a string');
   }
-  
+
   return {
     statements,
     version,
     description,
-    dryRun: Boolean(dryRun)
+    dryRun: Boolean(dryRun),
   };
 }
 
@@ -123,13 +138,17 @@ function validateMigrationRequest(req: Request): MigrationRequest {
 function checkDatabasePermission(req: Request, operation: 'read' | 'write' | 'admin'): void {
   const permissionMap = {
     read: 'database:read',
-    write: 'database:write', 
-    admin: 'database:admin'
+    write: 'database:write',
+    admin: 'database:admin',
   };
-  
+
   const requiredPermission = permissionMap[operation];
   if (!hasPermission(req, requiredPermission)) {
-    throw createValidationError('permission', operation, `Insufficient permissions for ${operation} operations`);
+    throw createValidationError(
+      'permission',
+      operation,
+      `Insufficient permissions for ${operation} operations`
+    );
   }
 }
 
@@ -162,21 +181,21 @@ export const createDatabaseRoutes = (): Router => {
         checkDatabasePermission(req, 'read');
         const controller = getDatabaseControllerInstance();
         const result = await controller.getDatabaseStatus();
-        
+
         const duration = Date.now() - startTime;
         logPerformance('database_status', duration, req, {
           success: result.success,
           adapter: result.metadata?.adapter,
-          userId: req.auth?.user?.id
+          userId: req.auth?.user?.id,
         });
 
         res.json(result);
       } catch (error) {
         const duration = Date.now() - startTime;
-        logPerformance('database_status', duration, req, { 
-          success: false, 
+        logPerformance('database_status', duration, req, {
+          success: false,
           error: error.message,
-          userId: req.auth?.user?.id
+          userId: req.auth?.user?.id,
         });
         throw createInternalError(`Database status check failed: ${error.message}`);
       }
@@ -196,7 +215,7 @@ export const createDatabaseRoutes = (): Router => {
       log(LogLevel.INFO, 'Executing database query', req, {
         sqlLength: req.body.sql?.length,
         hasParams: Array.isArray(req.body.params) && req.body.params.length > 0,
-        userId: req.auth?.user?.id
+        userId: req.auth?.user?.id,
       });
       const startTime = Date.now();
 
@@ -205,22 +224,22 @@ export const createDatabaseRoutes = (): Router => {
         const queryRequest = validateQueryRequest(req);
         const controller = getDatabaseControllerInstance();
         const result = await controller.executeQuery(queryRequest);
-        
+
         const duration = Date.now() - startTime;
         logPerformance('database_query', duration, req, {
           success: result.success,
           rowCount: result.metadata?.rowCount,
           adapter: result.metadata?.adapter,
-          userId: req.auth?.user?.id
+          userId: req.auth?.user?.id,
         });
 
         res.json(result);
       } catch (error) {
         const duration = Date.now() - startTime;
-        logPerformance('database_query', duration, req, { 
-          success: false, 
+        logPerformance('database_query', duration, req, {
+          success: false,
           error: error.message,
-          userId: req.auth?.user?.id
+          userId: req.auth?.user?.id,
         });
         throw createInternalError(`Query execution failed: ${error.message}`);
       }
@@ -240,7 +259,7 @@ export const createDatabaseRoutes = (): Router => {
       log(LogLevel.INFO, 'Executing database command', req, {
         sqlLength: req.body.sql?.length,
         hasParams: Array.isArray(req.body.params) && req.body.params.length > 0,
-        userId: req.auth?.user?.id
+        userId: req.auth?.user?.id,
       });
       const startTime = Date.now();
 
@@ -249,22 +268,22 @@ export const createDatabaseRoutes = (): Router => {
         const commandRequest = validateCommandRequest(req);
         const controller = getDatabaseControllerInstance();
         const result = await controller.executeCommand(commandRequest);
-        
+
         const duration = Date.now() - startTime;
         logPerformance('database_execute', duration, req, {
           success: result.success,
           rowCount: result.metadata?.rowCount,
           adapter: result.metadata?.adapter,
-          userId: req.auth?.user?.id
+          userId: req.auth?.user?.id,
         });
 
         res.json(result);
       } catch (error) {
         const duration = Date.now() - startTime;
-        logPerformance('database_execute', duration, req, { 
-          success: false, 
+        logPerformance('database_execute', duration, req, {
+          success: false,
           error: error.message,
-          userId: req.auth?.user?.id
+          userId: req.auth?.user?.id,
         });
         throw createInternalError(`Command execution failed: ${error.message}`);
       }
@@ -284,7 +303,7 @@ export const createDatabaseRoutes = (): Router => {
       log(LogLevel.INFO, 'Executing database transaction', req, {
         operationCount: req.body.operations?.length,
         useTransaction: req.body.useTransaction,
-        userId: req.auth?.user?.id
+        userId: req.auth?.user?.id,
       });
       const startTime = Date.now();
 
@@ -293,22 +312,22 @@ export const createDatabaseRoutes = (): Router => {
         const batchRequest = validateBatchRequest(req);
         const controller = getDatabaseControllerInstance();
         const result = await controller.executeTransaction(batchRequest);
-        
+
         const duration = Date.now() - startTime;
         logPerformance('database_transaction', duration, req, {
           success: result.success,
           operationCount: batchRequest.operations.length,
           adapter: result.metadata?.adapter,
-          userId: req.auth?.user?.id
+          userId: req.auth?.user?.id,
         });
 
         res.json(result);
       } catch (error) {
         const duration = Date.now() - startTime;
-        logPerformance('database_transaction', duration, req, { 
-          success: false, 
+        logPerformance('database_transaction', duration, req, {
+          success: false,
           error: error.message,
-          userId: req.auth?.user?.id
+          userId: req.auth?.user?.id,
         });
         throw createInternalError(`Transaction failed: ${error.message}`);
       }
@@ -326,7 +345,7 @@ export const createDatabaseRoutes = (): Router => {
     authMiddleware, // Require authentication for schema access
     asyncHandler(async (req: Request, res: Response) => {
       log(LogLevel.DEBUG, 'Getting database schema', req, {
-        userId: req.auth?.user?.id
+        userId: req.auth?.user?.id,
       });
       const startTime = Date.now();
 
@@ -334,22 +353,22 @@ export const createDatabaseRoutes = (): Router => {
         checkDatabasePermission(req, 'read');
         const controller = getDatabaseControllerInstance();
         const result = await controller.getDatabaseSchema();
-        
+
         const duration = Date.now() - startTime;
         logPerformance('database_schema', duration, req, {
           success: result.success,
           tableCount: result.metadata?.rowCount,
           adapter: result.metadata?.adapter,
-          userId: req.auth?.user?.id
+          userId: req.auth?.user?.id,
         });
 
         res.json(result);
       } catch (error) {
         const duration = Date.now() - startTime;
-        logPerformance('database_schema', duration, req, { 
-          success: false, 
+        logPerformance('database_schema', duration, req, {
+          success: false,
           error: error.message,
-          userId: req.auth?.user?.id
+          userId: req.auth?.user?.id,
         });
         throw createInternalError(`Schema retrieval failed: ${error.message}`);
       }
@@ -370,7 +389,7 @@ export const createDatabaseRoutes = (): Router => {
         version: req.body.version,
         statementCount: req.body.statements?.length,
         dryRun: req.body.dryRun,
-        userId: req.auth?.user?.id
+        userId: req.auth?.user?.id,
       });
       const startTime = Date.now();
 
@@ -379,23 +398,23 @@ export const createDatabaseRoutes = (): Router => {
         const migrationRequest = validateMigrationRequest(req);
         const controller = getDatabaseControllerInstance();
         const result = await controller.executeMigration(migrationRequest);
-        
+
         const duration = Date.now() - startTime;
         logPerformance('database_migration', duration, req, {
           success: result.success,
           version: migrationRequest.version,
           statementCount: migrationRequest.statements.length,
           adapter: result.metadata?.adapter,
-          userId: req.auth?.user?.id
+          userId: req.auth?.user?.id,
         });
 
         res.json(result);
       } catch (error) {
         const duration = Date.now() - startTime;
-        logPerformance('database_migration', duration, req, { 
-          success: false, 
+        logPerformance('database_migration', duration, req, {
+          success: false,
           error: error.message,
-          userId: req.auth?.user?.id
+          userId: req.auth?.user?.id,
         });
         throw createInternalError(`Migration failed: ${error.message}`);
       }
@@ -413,7 +432,7 @@ export const createDatabaseRoutes = (): Router => {
     authMiddleware, // Require authentication for analytics
     asyncHandler(async (req: Request, res: Response) => {
       log(LogLevel.DEBUG, 'Getting database analytics', req, {
-        userId: req.auth?.user?.id
+        userId: req.auth?.user?.id,
       });
       const startTime = Date.now();
 
@@ -421,21 +440,21 @@ export const createDatabaseRoutes = (): Router => {
         checkDatabasePermission(req, 'read');
         const controller = getDatabaseControllerInstance();
         const result = await controller.getDatabaseAnalytics();
-        
+
         const duration = Date.now() - startTime;
         logPerformance('database_analytics', duration, req, {
           success: result.success,
           adapter: result.metadata?.adapter,
-          userId: req.auth?.user?.id
+          userId: req.auth?.user?.id,
         });
 
         res.json(result);
       } catch (error) {
         const duration = Date.now() - startTime;
-        logPerformance('database_analytics', duration, req, { 
-          success: false, 
+        logPerformance('database_analytics', duration, req, {
+          success: false,
           error: error.message,
-          userId: req.auth?.user?.id
+          userId: req.auth?.user?.id,
         });
         throw createInternalError(`Analytics retrieval failed: ${error.message}`);
       }
@@ -459,10 +478,13 @@ export const createDatabaseRoutes = (): Router => {
         const containerHealth = await checkDatabaseContainerHealth();
         const controller = getDatabaseControllerInstance();
         const controllerHealth = await controller.getDatabaseStatus();
-        
+
         const duration = Date.now() - startTime;
-        
-        const overallStatus = containerHealth.status === 'healthy' && controllerHealth.success ? 'healthy' : 'unhealthy';
+
+        const overallStatus =
+          containerHealth.status === 'healthy' && controllerHealth.success
+            ? 'healthy'
+            : 'unhealthy';
         const statusCode = overallStatus === 'healthy' ? 200 : 503;
 
         const healthResponse = {
@@ -474,24 +496,24 @@ export const createDatabaseRoutes = (): Router => {
           services: {
             di_container: containerHealth.status,
             database_controller: controllerHealth.success ? 'healthy' : 'unhealthy',
-            database_adapter: controllerHealth.data?.status || 'unknown'
-          }
+            database_adapter: controllerHealth.data?.status || 'unknown',
+          },
         };
 
         logPerformance('database_health', duration, req, {
           status: overallStatus,
           containerHealthy: containerHealth.status === 'healthy',
-          controllerHealthy: controllerHealth.success
+          controllerHealthy: controllerHealth.success,
         });
 
         res.status(statusCode).json(healthResponse);
       } catch (error) {
         const duration = Date.now() - startTime;
-        logPerformance('database_health', duration, req, { 
-          success: false, 
-          error: error.message
+        logPerformance('database_health', duration, req, {
+          success: false,
+          error: error.message,
         });
-        
+
         res.status(503).json({
           status: 'unhealthy',
           timestamp: new Date().toISOString(),
@@ -500,8 +522,8 @@ export const createDatabaseRoutes = (): Router => {
           services: {
             di_container: 'unknown',
             database_controller: 'unknown',
-            database_adapter: 'unknown'
-          }
+            database_adapter: 'unknown',
+          },
         });
       }
     })

@@ -1,16 +1,16 @@
 /**
  * DSPy Core Integration - Refactored from Plugin Architecture
- * 
+ *
  * High-performance DSPy integration with systematic prompt optimization,
  * automatic few-shot example selection, and LM pipeline optimization.
  * Integrated with neural coordination and swarm intelligence.
  */
 
-import { DSPy, Signature, ChainOfThought, GenerateAnswer, Module } from 'dspy.ts';
-import type { SwarmCoordinator } from '../../coordination/swarm/core/swarm-coordinator';
-import type { SessionMemoryStore } from '../../memory/memory';
-import { createLogger } from '../../core/logger';
 import { EventEmitter } from 'node:events';
+import { ChainOfThought, DSPy, GenerateAnswer, Module, Signature } from 'dspy.ts';
+import type { SwarmCoordinator } from '../../coordination/swarm/core/swarm-coordinator';
+import { createLogger } from '../../core/logger';
+import type { SessionMemoryStore } from '../../memory/memory';
 
 const logger = createLogger({ prefix: 'DSPyCore' });
 
@@ -94,7 +94,7 @@ export class DSPyIntegration extends EventEmitter {
     swarmCoordinator?: SwarmCoordinator
   ) {
     super();
-    
+
     this.config = {
       model: 'claude-3-sonnet',
       maxTokens: 4096,
@@ -104,36 +104,36 @@ export class DSPyIntegration extends EventEmitter {
         maxIterations: 10,
         convergenceThreshold: 0.95,
         parallelOptimization: true,
-        ...config.optimization
+        ...config.optimization,
       },
       swarm: {
         enabled: true,
         coordinatorCount: 5,
         agentSpecialization: [
           'prompt-optimizer',
-          'example-generator', 
+          'example-generator',
           'metric-analyzer',
           'pipeline-tuner',
-          'neural-enhancer'
+          'neural-enhancer',
         ],
-        ...config.swarm
+        ...config.swarm,
       },
       persistence: {
         enableCrossSession: true,
         memoryRetention: 30,
         learningVelocityTracking: true,
-        ...config.persistence
+        ...config.persistence,
       },
-      ...config
+      ...config,
     };
 
     this.memoryStore = memoryStore;
     this.swarmCoordinator = swarmCoordinator;
-    
+
     logger.info('DSPy Integration initialized', {
       model: this.config.model,
       swarmEnabled: this.config.swarm.enabled,
-      persistenceEnabled: this.config.persistence.enableCrossSession
+      persistenceEnabled: this.config.persistence.enableCrossSession,
     });
   }
 
@@ -151,7 +151,7 @@ export class DSPyIntegration extends EventEmitter {
     } = {}
   ): Promise<{ program: DSPyProgram; result: OptimizationResult }> {
     const programId = `dspy_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
+
     logger.info(`Creating and optimizing DSPy program: ${name}`, { programId, signature });
 
     // Create program
@@ -166,8 +166,8 @@ export class DSPyIntegration extends EventEmitter {
         created: new Date(),
         lastOptimized: new Date(),
         accuracy: 0,
-        performance: 0
-      }
+        performance: 0,
+      },
     };
 
     // Store program in memory
@@ -200,7 +200,7 @@ export class DSPyIntegration extends EventEmitter {
     logger.info(`DSPy program optimized successfully`, {
       programId,
       accuracy: result.accuracy,
-      performance: result.performance
+      performance: result.performance,
     });
 
     return { program, result };
@@ -230,11 +230,11 @@ export class DSPyIntegration extends EventEmitter {
       this.generateExamples(program, agents.exampleGenerator),
       this.analyzeMetrics(program, agents.metricAnalyzer),
       this.tunePipeline(program, agents.pipelineTuner),
-      this.enhanceWithNeural(program, agents.neuralEnhancer)
+      this.enhanceWithNeural(program, agents.neuralEnhancer),
     ];
 
     const results = await Promise.allSettled(optimizationTasks);
-    
+
     // Aggregate results from all agents
     const aggregatedResult = await this.aggregateOptimizationResults(
       program,
@@ -246,7 +246,7 @@ export class DSPyIntegration extends EventEmitter {
       programId: program.id,
       accuracy: aggregatedResult.accuracy,
       agentsUsed: agents.length,
-      executionTime: Date.now() - startTime
+      executionTime: Date.now() - startTime,
     });
 
     return aggregatedResult;
@@ -275,21 +275,21 @@ export class DSPyIntegration extends EventEmitter {
       performance,
       optimizedPrompts: [
         `Optimized prompt for ${program.name}: ${program.description}`,
-        'Additional context and examples...'
+        'Additional context and examples...',
       ],
       selectedExamples: program.examples.slice(0, Math.min(5, program.examples.length)),
       metrics: {
         latency: Math.random() * 100 + 50, // 50-150ms
         tokenUsage: Math.floor(Math.random() * 1000 + 500), // 500-1500 tokens
-        costEstimate: Math.random() * 0.1 + 0.05 // $0.05-$0.15
+        costEstimate: Math.random() * 0.1 + 0.05, // $0.05-$0.15
       },
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     logger.info(`Direct optimization completed`, {
       programId: program.id,
       accuracy: result.accuracy,
-      executionTime: Date.now() - startTime
+      executionTime: Date.now() - startTime,
     });
 
     return result;
@@ -313,7 +313,7 @@ export class DSPyIntegration extends EventEmitter {
       metricAnalyzer: { id: 'metric-analyze', type: 'metric-analyzer' },
       pipelineTuner: { id: 'pipeline-tune', type: 'pipeline-tuner' },
       neuralEnhancer: { id: 'neural-enhance', type: 'neural-enhancer' },
-      length: 5
+      length: 5,
     };
   }
 
@@ -325,7 +325,7 @@ export class DSPyIntegration extends EventEmitter {
     return {
       agent: agent.id,
       optimizedPrompts: [`Optimized: ${program.description}`],
-      confidence: Math.random() * 0.3 + 0.7
+      confidence: Math.random() * 0.3 + 0.7,
     };
   }
 
@@ -334,7 +334,7 @@ export class DSPyIntegration extends EventEmitter {
     return {
       agent: agent.id,
       generatedExamples: program.examples.slice(0, 3),
-      diversity: Math.random() * 0.4 + 0.6
+      diversity: Math.random() * 0.4 + 0.6,
     };
   }
 
@@ -345,8 +345,8 @@ export class DSPyIntegration extends EventEmitter {
       metrics: {
         accuracy: Math.random() * 0.3 + 0.7,
         latency: Math.random() * 50 + 25,
-        cost: Math.random() * 0.05 + 0.02
-      }
+        cost: Math.random() * 0.05 + 0.02,
+      },
     };
   }
 
@@ -357,8 +357,8 @@ export class DSPyIntegration extends EventEmitter {
       tuning: {
         temperature: Math.random() * 0.5 + 0.1,
         maxTokens: Math.floor(Math.random() * 2000 + 1000),
-        optimization: 'balanced'
-      }
+        optimization: 'balanced',
+      },
     };
   }
 
@@ -369,8 +369,8 @@ export class DSPyIntegration extends EventEmitter {
       enhancement: {
         patterns: ['pattern1', 'pattern2'],
         confidence: Math.random() * 0.3 + 0.7,
-        neuralScore: Math.random() * 0.4 + 0.6
-      }
+        neuralScore: Math.random() * 0.4 + 0.6,
+      },
     };
   }
 
@@ -384,12 +384,12 @@ export class DSPyIntegration extends EventEmitter {
   ): Promise<OptimizationResult> {
     const successfulResults = results
       .filter((r): r is PromiseFulfilledResult<any> => r.status === 'fulfilled')
-      .map(r => r.value);
+      .map((r) => r.value);
 
     // Calculate aggregated metrics
-    const accuracy = successfulResults.reduce((sum, r) => 
-      sum + (r.confidence || r.metrics?.accuracy || 0.7), 0
-    ) / successfulResults.length;
+    const accuracy =
+      successfulResults.reduce((sum, r) => sum + (r.confidence || r.metrics?.accuracy || 0.7), 0) /
+      successfulResults.length;
 
     const performance = Math.min(0.95, accuracy * 0.9 + Math.random() * 0.1);
 
@@ -397,19 +397,19 @@ export class DSPyIntegration extends EventEmitter {
       programId: program.id,
       accuracy,
       performance,
-      optimizedPrompts: successfulResults.flatMap(r => r.optimizedPrompts || []),
+      optimizedPrompts: successfulResults.flatMap((r) => r.optimizedPrompts || []),
       selectedExamples: program.examples.slice(0, 5),
       metrics: {
         latency: executionTime,
         tokenUsage: Math.floor(Math.random() * 1500 + 800),
-        costEstimate: Math.random() * 0.15 + 0.08
+        costEstimate: Math.random() * 0.15 + 0.08,
       },
       swarmCoordination: {
         agentsUsed: successfulResults.length,
         consensusScore: accuracy,
-        collaborationEfficiency: successfulResults.length / 5
+        collaborationEfficiency: successfulResults.length / 5,
       },
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 
@@ -430,7 +430,7 @@ export class DSPyIntegration extends EventEmitter {
   ): Promise<Array<{ program: DSPyProgram; result: OptimizationResult }>> {
     logger.info(`Starting batch optimization for ${programSpecs.length} programs`);
 
-    const optimizationPromises = programSpecs.map(spec =>
+    const optimizationPromises = programSpecs.map((spec) =>
       this.createAndOptimizeProgram(
         spec.name,
         spec.signature,
@@ -466,12 +466,13 @@ export class DSPyIntegration extends EventEmitter {
     return {
       totalPrograms: programs.length,
       averageAccuracy: allResults.reduce((sum, r) => sum + r.accuracy, 0) / allResults.length || 0,
-      averagePerformance: allResults.reduce((sum, r) => sum + r.performance, 0) / allResults.length || 0,
-      optimizationTrends: allResults.map(r => ({
+      averagePerformance:
+        allResults.reduce((sum, r) => sum + r.performance, 0) / allResults.length || 0,
+      optimizationTrends: allResults.map((r) => ({
         date: r.timestamp,
         accuracy: r.accuracy,
-        performance: r.performance
-      }))
+        performance: r.performance,
+      })),
     };
   }
 

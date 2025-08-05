@@ -7,10 +7,10 @@
 
 import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
 import { ProductWorkflowEngine } from '../../coordination/orchestration/product-workflow-engine';
+import { SPARCEngineCore } from '../../coordination/swarm/sparc/core/sparc-engine';
 import { ProductFlowSystem } from '../../core/product-flow-system';
 import { UnifiedMemorySystem } from '../../core/unified-memory-system';
 import { DocumentService } from '../../database/services/document-service';
-import { SPARCEngineCore } from '../../workflows/sparc/core/sparc-engine';
 
 describe('E2E: Complete Product Flow → SPARC Integration', () => {
   let productFlowSystem: ProductFlowSystem;

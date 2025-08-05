@@ -1,6 +1,6 @@
 /**
  * @fileoverview Integration test for Auto-Swarm Factory dependency resolution
- * 
+ *
  * Tests the integration between discover.ts and auto-swarm factory components
  */
 
@@ -59,26 +59,31 @@ describe('Auto-Swarm Integration', () => {
 
     // Test event handling
     let eventFired = false;
-    factory.on('factory:start', () => { eventFired = true; });
+    factory.on('factory:start', () => {
+      eventFired = true;
+    });
 
     // Create a simple test domain
     const testDomains = new Map([
-      ['test-domain', {
-        name: 'test-domain',
-        path: '/test',
-        files: ['test.ts'],
-        confidence: { overall: 0.8, domainClarity: 0.8, consistency: 0.8 },
-        suggestedConcepts: ['test'],
-        technologies: ['typescript'],
-        relatedDomains: [],
-        validations: [],
-        research: [],
-        refinementHistory: [],
-      }]
+      [
+        'test-domain',
+        {
+          name: 'test-domain',
+          path: '/test',
+          files: ['test.ts'],
+          confidence: { overall: 0.8, domainClarity: 0.8, consistency: 0.8 },
+          suggestedConcepts: ['test'],
+          technologies: ['typescript'],
+          relatedDomains: [],
+          validations: [],
+          research: [],
+          refinementHistory: [],
+        },
+      ],
     ]);
 
     const configs = await factory.createSwarmsForDomains(testDomains);
-    
+
     expect(configs).toHaveLength(1);
     expect(eventFired).toBe(true);
   });

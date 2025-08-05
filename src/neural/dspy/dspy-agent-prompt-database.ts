@@ -1,14 +1,14 @@
 /**
  * DSPy Agent Prompt Database
- * 
+ *
  * Dedicated LanceDB vector database for storing and analyzing ALL agent prompts
  * across the entire Claude-Zen system. This enables DSPy neural enhancement
  * to automatically improve agent prompts through pattern analysis and optimization.
  */
 
-import { connect, Table } from '@lancedb/lancedb';
-import type { AgentType } from '../../types/agent-types';
+import { connect, type Table } from '@lancedb/lancedb';
 import { createLogger } from '../../core/logger';
+import type { AgentType } from '../../types/agent-types';
 
 const logger = createLogger({ prefix: 'DSPyAgentPromptDB' });
 
@@ -115,19 +115,19 @@ export class DSPyAgentPromptDatabase {
   private ensureClaudeDirectoryStructure(): void {
     const fs = require('fs');
     const path = require('path');
-    
+
     const baseDir = './.claude';
     const subdirs = [
-      'databases',     // LanceDB, SQLite databases
-      'hive',          // Hive mind coordination data
-      'cache',         // Embeddings, sessions, tools cache
-      'memory',        // Agent/swarm/neural memory
-      'logs',          // System logs
-      'analytics',     // Performance analytics
-      'neural',        // Neural patterns, models, DSPy data
-      'backups',       // System backups
-      'workflows',     // Workflow definitions
-      'agents'         // Agent-specific data
+      'databases', // LanceDB, SQLite databases
+      'hive', // Hive mind coordination data
+      'cache', // Embeddings, sessions, tools cache
+      'memory', // Agent/swarm/neural memory
+      'logs', // System logs
+      'analytics', // Performance analytics
+      'neural', // Neural patterns, models, DSPy data
+      'backups', // System backups
+      'workflows', // Workflow definitions
+      'agents', // Agent-specific data
     ];
 
     // Create base directory
@@ -137,7 +137,7 @@ export class DSPyAgentPromptDatabase {
     }
 
     // Create subdirectories
-    subdirs.forEach(subdir => {
+    subdirs.forEach((subdir) => {
       const dirPath = path.join(baseDir, subdir);
       if (!fs.existsSync(dirPath)) {
         fs.mkdirSync(dirPath, { recursive: true });
@@ -148,7 +148,7 @@ export class DSPyAgentPromptDatabase {
     // Create nested subdirectories for organization
     const nestedDirs = [
       'cache/embeddings',
-      'cache/sessions', 
+      'cache/sessions',
       'cache/tools',
       'cache/external-mcp',
       'memory/agents',
@@ -166,20 +166,20 @@ export class DSPyAgentPromptDatabase {
       'agents/prompts',
       'agents/instances',
       'backups/daily',
-      'backups/weekly'
+      'backups/weekly',
     ];
 
-    nestedDirs.forEach(nestedDir => {
+    nestedDirs.forEach((nestedDir) => {
       const dirPath = path.join(baseDir, nestedDir);
       if (!fs.existsSync(dirPath)) {
         fs.mkdirSync(dirPath, { recursive: true });
       }
     });
 
-    logger.info('Claude directory structure initialized', { 
+    logger.info('Claude directory structure initialized', {
       baseDir,
       subdirectories: subdirs.length,
-      nestedDirectories: nestedDirs.length
+      nestedDirectories: nestedDirs.length,
     });
   }
 
@@ -189,7 +189,7 @@ export class DSPyAgentPromptDatabase {
   async initialize(): Promise<void> {
     try {
       this.db = await connect(this.dbPath);
-      
+
       // Initialize Agent Prompts Table
       try {
         this.promptTable = await this.db.openTable('agent_prompts');
@@ -209,11 +209,11 @@ export class DSPyAgentPromptDatabase {
       }
 
       await this.populateInitialPrompts();
-      
-      logger.info('DSPy Agent Ecosystem Database initialized', { 
+
+      logger.info('DSPy Agent Ecosystem Database initialized', {
         dbPath: this.dbPath,
         promptTable: !!this.promptTable,
-        agentTable: !!this.agentTable
+        agentTable: !!this.agentTable,
       });
     } catch (error) {
       logger.error('Failed to initialize DSPy Agent Ecosystem Database', { error });
@@ -236,7 +236,7 @@ export class DSPyAgentPromptDatabase {
 
     const id = `${agentType}-${category}-${Date.now()}`;
     const promptVector = await this.generateEmbedding(prompt);
-    
+
     const record: AgentPromptRecord = {
       id,
       agentType,
@@ -249,19 +249,19 @@ export class DSPyAgentPromptDatabase {
         updatedAt: new Date().toISOString(),
         tags: [],
         domain: this.inferDomain(agentType),
-        ...metadata
-      }
+        ...metadata,
+      },
     };
 
     await this.promptTable.add([record]);
-    
-    logger.debug('Stored agent prompt', { 
-      id, 
-      agentType, 
-      category, 
-      promptLength: prompt.length 
+
+    logger.debug('Stored agent prompt', {
+      id,
+      agentType,
+      category,
+      promptLength: prompt.length,
     });
-    
+
     return id;
   }
 
@@ -279,26 +279,26 @@ export class DSPyAgentPromptDatabase {
     }
 
     const queryVector = await this.generateEmbedding(queryPrompt);
-    
+
     let query = this.promptTable.search(queryVector).limit(limit);
-    
+
     if (agentType) {
       query = query.where(`agentType = '${agentType}'`);
     }
-    
+
     if (category) {
       query = query.where(`category = '${category}'`);
     }
 
     const results = await query.toArray();
-    
-    logger.debug('Found similar prompts', { 
+
+    logger.debug('Found similar prompts', {
       queryLength: queryPrompt.length,
       resultsCount: results.length,
       agentType,
-      category 
+      category,
     });
-    
+
     return results;
   }
 
@@ -310,11 +310,8 @@ export class DSPyAgentPromptDatabase {
       throw new Error('Database not initialized');
     }
 
-    const results = await this.promptTable
-      .search()
-      .where(`agentType = '${agentType}'`)
-      .toArray();
-    
+    const results = await this.promptTable.search().where(`agentType = '${agentType}'`).toArray();
+
     return results;
   }
 
@@ -336,18 +333,15 @@ export class DSPyAgentPromptDatabase {
     }
 
     // Get the current record
-    const currentRecords = await this.promptTable
-      .search()
-      .where(`id = '${promptId}'`)
-      .toArray();
-    
+    const currentRecords = await this.promptTable.search().where(`id = '${promptId}'`).toArray();
+
     if (currentRecords.length === 0) {
       throw new Error(`Prompt with id ${promptId} not found`);
     }
 
     const currentRecord = currentRecords[0];
     const optimizedVector = await this.generateEmbedding(optimizedPrompt);
-    
+
     // Create new optimized version
     const optimizedRecord: AgentPromptRecord = {
       ...currentRecord,
@@ -362,23 +356,23 @@ export class DSPyAgentPromptDatabase {
           accuracy: optimizationData.optimizedAccuracy,
           effectiveness: optimizationData.optimizedAccuracy / optimizationData.baselineAccuracy,
           usageCount: 0,
-          successRate: 0
+          successRate: 0,
         },
         optimization: {
           optimizedBy: optimizationData.optimizedBy,
           optimizationRound: (currentRecord.metadata.optimization?.optimizationRound || 0) + 1,
           baselinePrompt: currentRecord.prompt,
-          improvements: optimizationData.improvements
-        }
-      }
+          improvements: optimizationData.improvements,
+        },
+      },
     };
 
     await this.promptTable.add([optimizedRecord]);
-    
+
     logger.info('Updated prompt with optimization', {
       originalId: promptId,
       optimizedId: optimizedRecord.id,
-      accuracyImprovement: optimizationData.optimizedAccuracy - optimizationData.baselineAccuracy
+      accuracyImprovement: optimizationData.optimizedAccuracy - optimizationData.baselineAccuracy,
     });
   }
 
@@ -402,36 +396,50 @@ export class DSPyAgentPromptDatabase {
 
     const allRecords = await this.promptTable
       .search()
-      .where("metadata.optimization IS NOT NULL")
+      .where('metadata.optimization IS NOT NULL')
       .toArray();
 
     const totalOptimizations = allRecords.length;
     const improvements = allRecords
-      .map(record => record.metadata.performanceMetrics?.effectiveness || 1)
-      .filter(eff => eff > 1);
-    
-    const averageImprovement = improvements.reduce((sum, imp) => sum + imp, 0) / improvements.length || 1;
-    
+      .map((record) => record.metadata.performanceMetrics?.effectiveness || 1)
+      .filter((eff) => eff > 1);
+
+    const averageImprovement =
+      improvements.reduce((sum, imp) => sum + imp, 0) / improvements.length || 1;
+
     const topImprovements = allRecords
-      .filter(record => record.metadata.performanceMetrics?.effectiveness && record.metadata.performanceMetrics.effectiveness > 1)
-      .sort((a, b) => (b.metadata.performanceMetrics?.effectiveness || 0) - (a.metadata.performanceMetrics?.effectiveness || 0))
+      .filter(
+        (record) =>
+          record.metadata.performanceMetrics?.effectiveness &&
+          record.metadata.performanceMetrics.effectiveness > 1
+      )
+      .sort(
+        (a, b) =>
+          (b.metadata.performanceMetrics?.effectiveness || 0) -
+          (a.metadata.performanceMetrics?.effectiveness || 0)
+      )
       .slice(0, 10)
-      .map(record => ({
+      .map((record) => ({
         agentType: record.agentType,
         category: record.category,
         improvement: record.metadata.performanceMetrics?.effectiveness || 0,
-        techniques: record.metadata.optimization?.improvements || []
+        techniques: record.metadata.optimization?.improvements || [],
       }));
 
     // Extract common improvement patterns
-    const allImprovements = allRecords.flatMap(record => record.metadata.optimization?.improvements || []);
-    const improvementCounts = allImprovements.reduce((counts, improvement) => {
-      counts[improvement] = (counts[improvement] || 0) + 1;
-      return counts;
-    }, {} as Record<string, number>);
-    
+    const allImprovements = allRecords.flatMap(
+      (record) => record.metadata.optimization?.improvements || []
+    );
+    const improvementCounts = allImprovements.reduce(
+      (counts, improvement) => {
+        counts[improvement] = (counts[improvement] || 0) + 1;
+        return counts;
+      },
+      {} as Record<string, number>
+    );
+
     const commonPatterns = Object.entries(improvementCounts)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 5)
       .map(([pattern]) => pattern);
 
@@ -439,7 +447,7 @@ export class DSPyAgentPromptDatabase {
       totalOptimizations,
       averageImprovement,
       topImprovements,
-      commonPatterns
+      commonPatterns,
     };
   }
 
@@ -449,7 +457,7 @@ export class DSPyAgentPromptDatabase {
   private async populateInitialPrompts(): Promise<void> {
     // Check if already populated
     if (!this.promptTable) return;
-    
+
     const existingCount = await this.promptTable.countRows();
     if (existingCount > 0) {
       logger.debug('Database already populated', { existingPrompts: existingCount });
@@ -457,30 +465,53 @@ export class DSPyAgentPromptDatabase {
     }
 
     logger.info('Populating database with initial agent prompts...');
-    
+
     // Get all agent types and create comprehensive prompts for each
     const allAgentTypes: AgentType[] = [
       // Core Foundation Agents
-      'coder', 'analyst', 'researcher', 'coordinator', 'tester', 'architect',
-      'debug', 'queen', 'specialist', 'reviewer', 'optimizer', 'documenter',
-      
+      'coder',
+      'analyst',
+      'researcher',
+      'coordinator',
+      'tester',
+      'architect',
+      'debug',
+      'queen',
+      'specialist',
+      'reviewer',
+      'optimizer',
+      'documenter',
+
       // Development Agents
-      'requirements-engineer', 'design-architect', 'task-planner', 'developer',
-      'system-architect', 'frontend-dev', 'fullstack-dev', 'api-dev',
-      
+      'requirements-engineer',
+      'design-architect',
+      'task-planner',
+      'developer',
+      'system-architect',
+      'frontend-dev',
+      'fullstack-dev',
+      'api-dev',
+
       // Testing Agents
-      'unit-tester', 'integration-tester', 'e2e-tester', 'performance-tester',
-      
+      'unit-tester',
+      'integration-tester',
+      'e2e-tester',
+      'performance-tester',
+
       // DSPy Neural Enhancement Agents
-      'prompt-optimizer', 'example-generator', 'metric-analyzer', 'pipeline-tuner', 'neural-enhancer',
-      
+      'prompt-optimizer',
+      'example-generator',
+      'metric-analyzer',
+      'pipeline-tuner',
+      'neural-enhancer',
+
       // Add more as needed...
     ];
 
     for (const agentType of allAgentTypes) {
       await this.createAgentPrompts(agentType);
     }
-    
+
     logger.info('Initial agent prompts populated', { agentTypes: allAgentTypes.length });
   }
 
@@ -489,22 +520,17 @@ export class DSPyAgentPromptDatabase {
    */
   private async createAgentPrompts(agentType: AgentType): Promise<void> {
     const prompts = this.generateAgentPrompts(agentType);
-    
+
     for (const [category, prompt] of Object.entries(prompts)) {
-      await this.storeAgentPrompt(
-        agentType,
-        category as AgentPromptRecord['category'],
-        prompt,
-        {
-          tags: this.generateTags(agentType, category),
-          performanceMetrics: {
-            accuracy: 0.8, // Default baseline
-            effectiveness: 1.0,
-            usageCount: 0,
-            successRate: 0.8
-          }
-        }
-      );
+      await this.storeAgentPrompt(agentType, category as AgentPromptRecord['category'], prompt, {
+        tags: this.generateTags(agentType, category),
+        performanceMetrics: {
+          accuracy: 0.8, // Default baseline
+          effectiveness: 1.0,
+          usageCount: 0,
+          successRate: 0.8,
+        },
+      });
     }
   }
 
@@ -512,19 +538,20 @@ export class DSPyAgentPromptDatabase {
    * Generate comprehensive prompts for any agent type
    */
   private generateAgentPrompts(agentType: AgentType): Record<string, string> {
-    const agentName = agentType.split('-').map(word => 
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ');
+    const agentName = agentType
+      .split('-')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
 
     return {
       system: `You are a specialized ${agentName} agent in the Claude-Zen swarm coordination system. Your role is critical to the success of complex multi-agent workflows.`,
-      
+
       behavior: this.generateBehaviorPrompt(agentType),
-      
+
       expertise: this.generateExpertisePrompt(agentType),
-      
+
       task: this.generateTaskPrompt(agentType),
-      
+
       instruction: `When working as a ${agentName}:
 1. Analyze the current context and requirements
 2. Apply your specialized knowledge and skills
@@ -532,13 +559,13 @@ export class DSPyAgentPromptDatabase {
 4. Deliver high-quality results within scope
 5. Document your decisions and rationale
 6. Provide feedback for continuous improvement`,
-      
+
       optimization: `Optimization guidelines for ${agentName}:
 - Focus on your core competencies
 - Leverage swarm intelligence and coordination
 - Continuously learn from successful patterns
 - Adapt to changing requirements and contexts
-- Maintain quality while optimizing for efficiency`
+- Maintain quality while optimizing for efficiency`,
     };
   }
 
@@ -547,17 +574,21 @@ export class DSPyAgentPromptDatabase {
    */
   private generateBehaviorPrompt(agentType: AgentType): string {
     const behaviorMap: Partial<Record<AgentType, string>> = {
-      'coder': 'Write clean, efficient, and maintainable code following best practices.',
-      'analyst': 'Analyze complex data and requirements to provide actionable insights.',
-      'researcher': 'Conduct thorough research and gather relevant information.',
-      'coordinator': 'Coordinate between multiple agents and manage workflow dependencies.',
-      'tester': 'Design and execute comprehensive testing strategies.',
-      'architect': 'Design scalable system architectures and technical solutions.',
+      coder: 'Write clean, efficient, and maintainable code following best practices.',
+      analyst: 'Analyze complex data and requirements to provide actionable insights.',
+      researcher: 'Conduct thorough research and gather relevant information.',
+      coordinator: 'Coordinate between multiple agents and manage workflow dependencies.',
+      tester: 'Design and execute comprehensive testing strategies.',
+      architect: 'Design scalable system architectures and technical solutions.',
       'prompt-optimizer': 'Systematically optimize prompts for maximum LLM performance.',
-      'neural-enhancer': 'Automatically enhance workflows using neural intelligence and pattern recognition.'
+      'neural-enhancer':
+        'Automatically enhance workflows using neural intelligence and pattern recognition.',
     };
-    
-    return behaviorMap[agentType] || `Perform specialized tasks related to ${agentType} with excellence and attention to detail.`;
+
+    return (
+      behaviorMap[agentType] ||
+      `Perform specialized tasks related to ${agentType} with excellence and attention to detail.`
+    );
   }
 
   /**
@@ -565,16 +596,18 @@ export class DSPyAgentPromptDatabase {
    */
   private generateExpertisePrompt(agentType: AgentType): string {
     const expertiseMap: Partial<Record<AgentType, string>> = {
-      'coder': 'Programming languages, frameworks, design patterns, code quality, testing.',
-      'analyst': 'Data analysis, requirements gathering, business process modeling, metrics.',
-      'researcher': 'Information gathering, source evaluation, synthesis, documentation.',
-      'coordinator': 'Project management, workflow orchestration, dependency management.',
-      'tester': 'Test design, automation, quality assurance, bug identification.',
-      'architect': 'System design, scalability, performance, security, integration patterns.',
-      'prompt-optimizer': 'Prompt engineering, few-shot learning, instruction tuning, optimization techniques.',
-      'neural-enhancer': 'Neural intelligence, cognitive patterns, adaptive learning, automatic optimization.'
+      coder: 'Programming languages, frameworks, design patterns, code quality, testing.',
+      analyst: 'Data analysis, requirements gathering, business process modeling, metrics.',
+      researcher: 'Information gathering, source evaluation, synthesis, documentation.',
+      coordinator: 'Project management, workflow orchestration, dependency management.',
+      tester: 'Test design, automation, quality assurance, bug identification.',
+      architect: 'System design, scalability, performance, security, integration patterns.',
+      'prompt-optimizer':
+        'Prompt engineering, few-shot learning, instruction tuning, optimization techniques.',
+      'neural-enhancer':
+        'Neural intelligence, cognitive patterns, adaptive learning, automatic optimization.',
     };
-    
+
     return expertiseMap[agentType] || `Specialized knowledge and skills in ${agentType} domain.`;
   }
 
@@ -597,15 +630,15 @@ export class DSPyAgentPromptDatabase {
     // In a real implementation, this would use OpenAI's embedding API
     // For now, create a mock embedding based on text characteristics
     const embedding = new Array(768).fill(0);
-    
+
     // Simple hash-based embedding for demonstration
     for (let i = 0; i < text.length && i < 768; i++) {
       embedding[i % 768] += text.charCodeAt(i) / 255;
     }
-    
+
     // Normalize
     const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
-    return embedding.map(val => val / magnitude);
+    return embedding.map((val) => val / magnitude);
   }
 
   /**
@@ -615,7 +648,8 @@ export class DSPyAgentPromptDatabase {
     if (agentType.includes('test')) return 'testing';
     if (agentType.includes('dev') || agentType === 'coder') return 'development';
     if (agentType.includes('arch')) return 'architecture';
-    if (agentType.includes('dspy') || ['prompt-optimizer', 'neural-enhancer'].includes(agentType)) return 'neural-enhancement';
+    if (agentType.includes('dspy') || ['prompt-optimizer', 'neural-enhancer'].includes(agentType))
+      return 'neural-enhancement';
     if (agentType.includes('coord')) return 'coordination';
     return 'general';
   }
@@ -625,11 +659,11 @@ export class DSPyAgentPromptDatabase {
    */
   private generateTags(agentType: AgentType, category: string): string[] {
     const tags = [agentType, category, this.inferDomain(agentType)];
-    
+
     if (agentType.includes('dspy')) tags.push('dspy', 'neural');
     if (agentType.includes('test')) tags.push('quality-assurance');
     if (agentType.includes('dev') || agentType === 'coder') tags.push('programming');
-    
+
     return tags;
   }
 
@@ -665,7 +699,7 @@ export class DSPyAgentPromptDatabase {
       systemVector: await this.generateEmbedding(currentPrompts.systemPrompt),
       behaviorVector: await this.generateEmbedding(currentPrompts.behaviorPrompt),
       expertiseVector: await this.generateEmbedding(currentPrompts.expertisePrompt),
-      taskVector: await this.generateEmbedding(currentPrompts.taskPrompt)
+      taskVector: await this.generateEmbedding(currentPrompts.taskPrompt),
     };
 
     const agentRecord: AgentInstanceRecord = {
@@ -681,7 +715,7 @@ export class DSPyAgentPromptDatabase {
         averageResponseTime: 0,
         errorRate: 0,
         successRate: 1.0,
-        lastActivity: new Date().toISOString()
+        lastActivity: new Date().toISOString(),
       },
       learningHistory: [],
       optimizationHistory: [],
@@ -691,12 +725,12 @@ export class DSPyAgentPromptDatabase {
         version: '1.0.0',
         domain: this.inferDomain(agentType),
         specialization: capabilities,
-        tags: this.generateTags(agentType, 'instance')
-      }
+        tags: this.generateTags(agentType, 'instance'),
+      },
     };
 
     await this.agentTable.add([agentRecord]);
-    
+
     logger.info('Registered agent instance', { agentId, agentType, swarmId });
   }
 
@@ -718,29 +752,31 @@ export class DSPyAgentPromptDatabase {
     }
 
     // Get current agent record
-    const currentRecords = await this.agentTable
-      .search()
-      .where(`id = '${agentId}'`)
-      .toArray();
-    
+    const currentRecords = await this.agentTable.search().where(`id = '${agentId}'`).toArray();
+
     if (currentRecords.length === 0) {
       logger.warn('Agent not found for performance update', { agentId });
       return;
     }
 
     const currentRecord = currentRecords[0];
-    
+
     // Update performance metrics
     const updatedPerformance = {
-      tasksCompleted: currentRecord.performance.tasksCompleted + (performanceUpdate.taskCompleted ? 1 : 0),
-      averageResponseTime: (currentRecord.performance.averageResponseTime + performanceUpdate.responseTime) / 2,
-      errorRate: performanceUpdate.errorOccurred ? 
-        (currentRecord.performance.errorRate + 1) / (currentRecord.performance.tasksCompleted + 1) :
-        currentRecord.performance.errorRate * currentRecord.performance.tasksCompleted / (currentRecord.performance.tasksCompleted + 1),
-      successRate: performanceUpdate.taskCompleted ?
-        (currentRecord.performance.successRate * currentRecord.performance.tasksCompleted + 1) / (currentRecord.performance.tasksCompleted + 1) :
-        currentRecord.performance.successRate * currentRecord.performance.tasksCompleted / (currentRecord.performance.tasksCompleted + 1),
-      lastActivity: new Date().toISOString()
+      tasksCompleted:
+        currentRecord.performance.tasksCompleted + (performanceUpdate.taskCompleted ? 1 : 0),
+      averageResponseTime:
+        (currentRecord.performance.averageResponseTime + performanceUpdate.responseTime) / 2,
+      errorRate: performanceUpdate.errorOccurred
+        ? (currentRecord.performance.errorRate + 1) / (currentRecord.performance.tasksCompleted + 1)
+        : (currentRecord.performance.errorRate * currentRecord.performance.tasksCompleted) /
+          (currentRecord.performance.tasksCompleted + 1),
+      successRate: performanceUpdate.taskCompleted
+        ? (currentRecord.performance.successRate * currentRecord.performance.tasksCompleted + 1) /
+          (currentRecord.performance.tasksCompleted + 1)
+        : (currentRecord.performance.successRate * currentRecord.performance.tasksCompleted) /
+          (currentRecord.performance.tasksCompleted + 1),
+      lastActivity: new Date().toISOString(),
     };
 
     // Add to learning history
@@ -749,51 +785,47 @@ export class DSPyAgentPromptDatabase {
       task: performanceUpdate.taskDescription,
       performance: performanceUpdate.taskCompleted ? 1 : 0,
       feedback: performanceUpdate.feedback || '',
-      adaptations: [] // Could be filled by neural enhancement
+      adaptations: [], // Could be filled by neural enhancement
     };
 
     // Update the record
     await this.agentTable.delete(`id = '${agentId}'`);
-    await this.agentTable.add([{
-      ...currentRecord,
-      performance: updatedPerformance,
-      learningHistory: [...currentRecord.learningHistory, learningEntry],
-      metadata: {
-        ...currentRecord.metadata,
-        updatedAt: new Date().toISOString()
-      }
-    }]);
+    await this.agentTable.add([
+      {
+        ...currentRecord,
+        performance: updatedPerformance,
+        learningHistory: [...currentRecord.learningHistory, learningEntry],
+        metadata: {
+          ...currentRecord.metadata,
+          updatedAt: new Date().toISOString(),
+        },
+      },
+    ]);
 
-    logger.debug('Updated agent performance', { 
-      agentId, 
+    logger.debug('Updated agent performance', {
+      agentId,
       taskCompleted: performanceUpdate.taskCompleted,
-      newSuccessRate: updatedPerformance.successRate
+      newSuccessRate: updatedPerformance.successRate,
     });
   }
 
   /**
    * Find agents similar to a given agent (by prompt similarity)
    */
-  async findSimilarAgents(
-    agentId: string,
-    limit: number = 5
-  ): Promise<AgentInstanceRecord[]> {
+  async findSimilarAgents(agentId: string, limit: number = 5): Promise<AgentInstanceRecord[]> {
     if (!this.agentTable) {
       throw new Error('Agent table not initialized');
     }
 
     // Get the reference agent
-    const referenceAgent = await this.agentTable
-      .search()
-      .where(`id = '${agentId}'`)
-      .toArray();
-    
+    const referenceAgent = await this.agentTable.search().where(`id = '${agentId}'`).toArray();
+
     if (referenceAgent.length === 0) {
       return [];
     }
 
     const refAgent = referenceAgent[0];
-    
+
     // Search by system prompt similarity (could also combine other vectors)
     const similarAgents = await this.agentTable
       .search(refAgent.promptVectors.systemVector)
@@ -812,10 +844,7 @@ export class DSPyAgentPromptDatabase {
       throw new Error('Agent table not initialized');
     }
 
-    return await this.agentTable
-      .search()
-      .where(`swarmId = '${swarmId}'`)
-      .toArray();
+    return await this.agentTable.search().where(`swarmId = '${swarmId}'`).toArray();
   }
 
   /**
@@ -833,23 +862,24 @@ export class DSPyAgentPromptDatabase {
       throw new Error('Agent table not initialized');
     }
 
-    const currentRecords = await this.agentTable
-      .search()
-      .where(`id = '${agentId}'`)
-      .toArray();
-    
+    const currentRecords = await this.agentTable.search().where(`id = '${agentId}'`).toArray();
+
     if (currentRecords.length === 0) {
       throw new Error(`Agent ${agentId} not found`);
     }
 
     const currentRecord = currentRecords[0];
-    
+
     // Generate new vectors for optimized prompts
     const newPromptVectors = {
       systemVector: await this.generateEmbedding(optimizationData.optimizedPrompts.systemPrompt),
-      behaviorVector: await this.generateEmbedding(optimizationData.optimizedPrompts.behaviorPrompt),
-      expertiseVector: await this.generateEmbedding(optimizationData.optimizedPrompts.expertisePrompt),
-      taskVector: await this.generateEmbedding(optimizationData.optimizedPrompts.taskPrompt)
+      behaviorVector: await this.generateEmbedding(
+        optimizationData.optimizedPrompts.behaviorPrompt
+      ),
+      expertiseVector: await this.generateEmbedding(
+        optimizationData.optimizedPrompts.expertisePrompt
+      ),
+      taskVector: await this.generateEmbedding(optimizationData.optimizedPrompts.taskPrompt),
     };
 
     // Add optimization history entry
@@ -858,27 +888,29 @@ export class DSPyAgentPromptDatabase {
       optimizedBy: 'neural-enhancer' as const,
       changedPrompts: Object.keys(optimizationData.optimizedPrompts),
       performanceImprovement: optimizationData.performanceImprovement,
-      techniques: optimizationData.techniques
+      techniques: optimizationData.techniques,
     };
 
     // Update the agent with optimized prompts
     await this.agentTable.delete(`id = '${agentId}'`);
-    await this.agentTable.add([{
-      ...currentRecord,
-      currentPrompts: optimizationData.optimizedPrompts,
-      promptVectors: newPromptVectors,
-      optimizationHistory: [...currentRecord.optimizationHistory, optimizationEntry],
-      metadata: {
-        ...currentRecord.metadata,
-        updatedAt: new Date().toISOString(),
-        version: this.incrementVersion(currentRecord.metadata.version)
-      }
-    }]);
+    await this.agentTable.add([
+      {
+        ...currentRecord,
+        currentPrompts: optimizationData.optimizedPrompts,
+        promptVectors: newPromptVectors,
+        optimizationHistory: [...currentRecord.optimizationHistory, optimizationEntry],
+        metadata: {
+          ...currentRecord.metadata,
+          updatedAt: new Date().toISOString(),
+          version: this.incrementVersion(currentRecord.metadata.version),
+        },
+      },
+    ]);
 
     logger.info('Optimized agent prompts', {
       agentId,
       performanceImprovement: optimizationData.performanceImprovement,
-      techniques: optimizationData.techniques
+      techniques: optimizationData.techniques,
     });
   }
 
@@ -908,41 +940,49 @@ export class DSPyAgentPromptDatabase {
     }
 
     const allAgents = await this.agentTable.search().toArray();
-    const activeAgents = allAgents.filter(agent => 
-      agent.status !== 'offline' && 
-      new Date(agent.performance.lastActivity) > new Date(Date.now() - 24 * 60 * 60 * 1000)
+    const activeAgents = allAgents.filter(
+      (agent) =>
+        agent.status !== 'offline' &&
+        new Date(agent.performance.lastActivity) > new Date(Date.now() - 24 * 60 * 60 * 1000)
     );
 
-    const averagePerformance = allAgents.reduce((sum, agent) => 
-      sum + agent.performance.successRate, 0) / allAgents.length;
+    const averagePerformance =
+      allAgents.reduce((sum, agent) => sum + agent.performance.successRate, 0) / allAgents.length;
 
     const topPerformingAgents = allAgents
       .sort((a, b) => b.performance.successRate - a.performance.successRate)
       .slice(0, 10)
-      .map(agent => ({
+      .map((agent) => ({
         id: agent.id,
         type: agent.agentType,
         successRate: agent.performance.successRate,
-        optimizations: agent.optimizationHistory.length
+        optimizations: agent.optimizationHistory.length,
       }));
 
-    const allOptimizations = allAgents.flatMap(agent => agent.optimizationHistory);
+    const allOptimizations = allAgents.flatMap((agent) => agent.optimizationHistory);
     const optimizationImpact = {
       totalOptimizations: allOptimizations.length,
-      averageImprovement: allOptimizations.reduce((sum, opt) => 
-        sum + opt.performanceImprovement, 0) / allOptimizations.length || 0,
-      mostEffectiveTechniques: this.getMostFrequentTechniques(allOptimizations)
+      averageImprovement:
+        allOptimizations.reduce((sum, opt) => sum + opt.performanceImprovement, 0) /
+          allOptimizations.length || 0,
+      mostEffectiveTechniques: this.getMostFrequentTechniques(allOptimizations),
     };
 
-    const agentTypeDistribution = allAgents.reduce((dist, agent) => {
-      dist[agent.agentType] = (dist[agent.agentType] || 0) + 1;
-      return dist;
-    }, {} as Record<AgentType, number>);
+    const agentTypeDistribution = allAgents.reduce(
+      (dist, agent) => {
+        dist[agent.agentType] = (dist[agent.agentType] || 0) + 1;
+        return dist;
+      },
+      {} as Record<AgentType, number>
+    );
 
-    const domainCoverage = allAgents.reduce((coverage, agent) => {
-      coverage[agent.metadata.domain] = (coverage[agent.metadata.domain] || 0) + 1;
-      return coverage;
-    }, {} as Record<string, number>);
+    const domainCoverage = allAgents.reduce(
+      (coverage, agent) => {
+        coverage[agent.metadata.domain] = (coverage[agent.metadata.domain] || 0) + 1;
+        return coverage;
+      },
+      {} as Record<string, number>
+    );
 
     return {
       totalAgents: allAgents.length,
@@ -951,7 +991,7 @@ export class DSPyAgentPromptDatabase {
       topPerformingAgents,
       optimizationImpact,
       agentTypeDistribution,
-      domainCoverage
+      domainCoverage,
     };
   }
 
@@ -960,14 +1000,17 @@ export class DSPyAgentPromptDatabase {
    */
   private getMostFrequentTechniques(optimizations: Array<{ techniques: string[] }>): string[] {
     const techniqueCounts = optimizations
-      .flatMap(opt => opt.techniques)
-      .reduce((counts, technique) => {
-        counts[technique] = (counts[technique] || 0) + 1;
-        return counts;
-      }, {} as Record<string, number>);
+      .flatMap((opt) => opt.techniques)
+      .reduce(
+        (counts, technique) => {
+          counts[technique] = (counts[technique] || 0) + 1;
+          return counts;
+        },
+        {} as Record<string, number>
+      );
 
     return Object.entries(techniqueCounts)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 5)
       .map(([technique]) => technique);
   }

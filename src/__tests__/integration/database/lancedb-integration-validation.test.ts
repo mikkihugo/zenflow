@@ -3,7 +3,7 @@
  * Validates that our implementation is correctly integrated
  */
 
-import { describe, it, expect } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 
 describe('LanceDB Integration Validation', () => {
   it('should have LanceDB dependency available', async () => {
@@ -17,12 +17,12 @@ describe('LanceDB Integration Validation', () => {
     // Test that our LanceDBInterface exists and has required methods
     const { default: LanceDBInterface } = await import('../../../database/lancedb-interface');
     expect(LanceDBInterface).toBeDefined();
-    
+
     const instance = new LanceDBInterface({
       dbPath: './test-path',
-      vectorDim: 128
+      vectorDim: 128,
     });
-    
+
     expect(instance.initialize).toBeDefined();
     expect(instance.searchSimilar).toBeDefined();
     expect(instance.insertVectors).toBeDefined();
@@ -33,23 +33,23 @@ describe('LanceDB Integration Validation', () => {
     // Test that our adapter has the required vector methods
     const { LanceDBAdapter } = await import('../../../database/providers/database-providers');
     expect(LanceDBAdapter).toBeDefined();
-    
+
     const mockLogger = {
       debug: () => {},
       info: () => {},
       warn: () => {},
       error: () => {},
-      configure: async () => {}
+      configure: async () => {},
     };
-    
+
     const config = {
       type: 'lancedb' as const,
       database: './test.lance',
-      options: { vectorSize: 128 }
+      options: { vectorSize: 128 },
     };
-    
+
     const adapter = new LanceDBAdapter(config, mockLogger);
-    
+
     // Check vector-specific methods exist
     expect(adapter.vectorSearch).toBeDefined();
     expect(adapter.addVectors).toBeDefined();
@@ -62,9 +62,11 @@ describe('LanceDB Integration Validation', () => {
 
   it('should have database controller with vector endpoints', async () => {
     // Test that the controller has vector methods
-    const { DatabaseController } = await import('../../../database/controllers/database-controller');
+    const { DatabaseController } = await import(
+      '../../../database/controllers/database-controller'
+    );
     expect(DatabaseController).toBeDefined();
-    
+
     // Check that vector methods exist on the prototype
     expect(DatabaseController.prototype.vectorSearch).toBeDefined();
     expect(DatabaseController.prototype.addVectors).toBeDefined();
@@ -75,23 +77,23 @@ describe('LanceDB Integration Validation', () => {
   it('should have proper vector interfaces defined', async () => {
     // Test that vector interfaces are properly exported
     const module = await import('../../../database/providers/database-providers');
-    
+
     // These should be available as types, but we can test the class implements them
     expect(module.LanceDBAdapter).toBeDefined();
-    
+
     const mockLogger = {
       debug: () => {},
       info: () => {},
       warn: () => {},
       error: () => {},
-      configure: async () => {}
+      configure: async () => {},
     };
-    
+
     const adapter = new module.LanceDBAdapter(
       { type: 'lancedb', database: './test.lance' },
       mockLogger
     );
-    
+
     // Test that it implements VectorDatabaseAdapter interface
     expect(typeof adapter.vectorSearch).toBe('function');
     expect(typeof adapter.addVectors).toBe('function');

@@ -1,6 +1,6 @@
 /**
  * DSPy Workflow System - Pre-built optimization workflows
- * 
+ *
  * Provides template-based workflows for common DSPy optimization patterns:
  * - Rapid Prototyping: Quick optimization for early development
  * - Production Ready: Comprehensive optimization for production
@@ -8,11 +8,11 @@
  * - Research & Development: Experimental optimization with advanced techniques
  */
 
-import { DSPy, Module, Signature } from 'dspy.ts';
-import type { DSPyProgram, OptimizationResult, DSPyConfig } from './dspy-core';
-import type { SessionMemoryStore } from '../../memory/memory';
-import { createLogger } from '../../core/logger';
 import { EventEmitter } from 'node:events';
+import { DSPy, Module, Signature } from 'dspy.ts';
+import { createLogger } from '../../core/logger';
+import type { SessionMemoryStore } from '../../memory/memory';
+import type { DSPyConfig, DSPyProgram, OptimizationResult } from './dspy-core';
 
 const logger = createLogger({ prefix: 'DSPyWorkflows' });
 
@@ -92,9 +92,9 @@ export class DSPyWorkflowTemplates {
           parameters: {
             maxIterations: 3,
             strategy: 'conservative',
-            exampleCount: 5
+            exampleCount: 5,
           },
-          required: true
+          required: true,
         },
         {
           id: 'quick-validation',
@@ -104,9 +104,9 @@ export class DSPyWorkflowTemplates {
           timeout: 15000,
           parameters: {
             testSize: 10,
-            metrics: ['accuracy', 'latency']
+            metrics: ['accuracy', 'latency'],
           },
-          required: true
+          required: true,
         },
         {
           id: 'performance-check',
@@ -115,21 +115,21 @@ export class DSPyWorkflowTemplates {
           dependencies: ['quick-validation'],
           timeout: 10000,
           parameters: {
-            thresholds: { accuracy: 0.7, latency: 1000 }
+            thresholds: { accuracy: 0.7, latency: 1000 },
           },
-          required: false
-        }
+          required: false,
+        },
       ],
       retryLogic: {
         maxRetries: 2,
         backoffStrategy: 'linear',
-        baseDelay: 1000
+        baseDelay: 1000,
       },
       successCriteria: {
         minAccuracy: 0.7,
-        maxLatency: 1000
+        maxLatency: 1000,
       },
-      fallbackStrategy: 'simplified'
+      fallbackStrategy: 'simplified',
     };
   }
 
@@ -153,9 +153,9 @@ export class DSPyWorkflowTemplates {
             maxIterations: 10,
             strategy: 'aggressive',
             exampleCount: 50,
-            crossValidation: true
+            crossValidation: true,
           },
-          required: true
+          required: true,
         },
         {
           id: 'robustness-testing',
@@ -167,9 +167,9 @@ export class DSPyWorkflowTemplates {
             testSize: 100,
             adversarialTesting: true,
             edgeCases: true,
-            metrics: ['accuracy', 'latency', 'consistency', 'robustness']
+            metrics: ['accuracy', 'latency', 'consistency', 'robustness'],
           },
-          required: true
+          required: true,
         },
         {
           id: 'performance-tuning',
@@ -180,9 +180,9 @@ export class DSPyWorkflowTemplates {
           parameters: {
             optimizeLatency: true,
             optimizeCost: true,
-            targetThroughput: 100
+            targetThroughput: 100,
           },
-          required: true
+          required: true,
         },
         {
           id: 'production-analysis',
@@ -193,9 +193,9 @@ export class DSPyWorkflowTemplates {
           parameters: {
             scalabilityAnalysis: true,
             costProjection: true,
-            monitoringSetup: true
+            monitoringSetup: true,
           },
-          required: true
+          required: true,
         },
         {
           id: 'final-validation',
@@ -206,22 +206,22 @@ export class DSPyWorkflowTemplates {
           parameters: {
             productionSimulation: true,
             loadTesting: true,
-            failoverTesting: true
+            failoverTesting: true,
           },
-          required: true
-        }
+          required: true,
+        },
       ],
       retryLogic: {
         maxRetries: 3,
         backoffStrategy: 'exponential',
-        baseDelay: 2000
+        baseDelay: 2000,
       },
       successCriteria: {
         minAccuracy: 0.9,
         maxLatency: 500,
-        maxCost: 0.1
+        maxCost: 0.1,
       },
-      fallbackStrategy: 'previous'
+      fallbackStrategy: 'previous',
     };
   }
 
@@ -244,9 +244,9 @@ export class DSPyWorkflowTemplates {
           parameters: {
             historicalData: true,
             patternRecognition: true,
-            trendAnalysis: true
+            trendAnalysis: true,
           },
-          required: true
+          required: true,
         },
         {
           id: 'adaptive-optimization',
@@ -258,9 +258,9 @@ export class DSPyWorkflowTemplates {
             learningRate: 0.1,
             adaptiveStrategy: true,
             memoryUtilization: true,
-            knowledgeTransfer: true
+            knowledgeTransfer: true,
           },
-          required: true
+          required: true,
         },
         {
           id: 'incremental-validation',
@@ -271,9 +271,9 @@ export class DSPyWorkflowTemplates {
           parameters: {
             incrementalTesting: true,
             comparisonBaseline: true,
-            improvementTracking: true
+            improvementTracking: true,
           },
-          required: true
+          required: true,
         },
         {
           id: 'knowledge-integration',
@@ -284,20 +284,20 @@ export class DSPyWorkflowTemplates {
           parameters: {
             knowledgeBase: true,
             crossSessionLearning: true,
-            patternStorage: true
+            patternStorage: true,
           },
-          required: false
-        }
+          required: false,
+        },
       ],
       retryLogic: {
         maxRetries: 5,
         backoffStrategy: 'exponential',
-        baseDelay: 1500
+        baseDelay: 1500,
       },
       successCriteria: {
-        minAccuracy: 0.85
+        minAccuracy: 0.85,
       },
-      fallbackStrategy: 'previous'
+      fallbackStrategy: 'previous',
     };
   }
 
@@ -321,9 +321,9 @@ export class DSPyWorkflowTemplates {
             experimentalTechniques: true,
             multiObjective: true,
             bayesianOptimization: true,
-            neuralArchitectureSearch: true
+            neuralArchitectureSearch: true,
           },
-          required: true
+          required: true,
         },
         {
           id: 'advanced-analysis',
@@ -335,9 +335,9 @@ export class DSPyWorkflowTemplates {
             causalAnalysis: true,
             featureImportance: true,
             interpretability: true,
-            uncertaintyQuantification: true
+            uncertaintyQuantification: true,
           },
-          required: true
+          required: true,
         },
         {
           id: 'ablation-studies',
@@ -348,9 +348,9 @@ export class DSPyWorkflowTemplates {
           parameters: {
             componentAnalysis: true,
             sensitivityAnalysis: true,
-            contributionMapping: true
+            contributionMapping: true,
           },
-          required: false
+          required: false,
         },
         {
           id: 'novel-techniques',
@@ -362,20 +362,20 @@ export class DSPyWorkflowTemplates {
             metaLearning: true,
             fewShotLearning: true,
             transferLearning: true,
-            emergentBehaviors: true
+            emergentBehaviors: true,
           },
-          required: false
-        }
+          required: false,
+        },
       ],
       retryLogic: {
         maxRetries: 10,
         backoffStrategy: 'exponential',
-        baseDelay: 3000
+        baseDelay: 3000,
       },
       successCriteria: {
-        minAccuracy: 0.95
+        minAccuracy: 0.95,
       },
-      fallbackStrategy: 'simplified'
+      fallbackStrategy: 'simplified',
     };
   }
 }
@@ -417,8 +417,8 @@ export class DSPyWorkflowExecutor extends EventEmitter {
         totalSteps: workflow.steps.length,
         successfulSteps: 0,
         parallelEfficiency: 0,
-        resourceUtilization: 0
-      }
+        resourceUtilization: 0,
+      },
     };
 
     this.activeExecutions.set(workflowId, result);
@@ -445,9 +445,8 @@ export class DSPyWorkflowExecutor extends EventEmitter {
         workflowId,
         success: result.success,
         executionTime: result.executionTime,
-        completedSteps: result.completedSteps.length
+        completedSteps: result.completedSteps.length,
       });
-
     } catch (error) {
       result.success = false;
       result.executionTime = Date.now() - startTime;
@@ -477,14 +476,14 @@ export class DSPyWorkflowExecutor extends EventEmitter {
     result: WorkflowExecutionResult
   ): Promise<void> {
     const stepGroups = this.organizeStepsByDependencies(workflow.steps);
-    
+
     for (const stepGroup of stepGroups) {
-      const stepPromises = stepGroup.map(step => 
+      const stepPromises = stepGroup.map((step) =>
         this.executeStep(step, program, dataset, result)
       );
 
       const stepResults = await Promise.allSettled(stepPromises);
-      
+
       stepResults.forEach((stepResult, index) => {
         const step = stepGroup[index];
         if (stepResult.status === 'fulfilled') {
@@ -520,23 +519,22 @@ export class DSPyWorkflowExecutor extends EventEmitter {
         result.completedSteps.push(step.id);
         result.stepResults.set(step.id, stepResult);
 
-        this.emit('workflow:step:completed', { 
-          workflowId: result.workflowId, 
-          stepId: step.id, 
-          stepResult 
+        this.emit('workflow:step:completed', {
+          workflowId: result.workflowId,
+          stepId: step.id,
+          stepResult,
         });
-
       } catch (error) {
         result.failedSteps.push(step.id);
-        
+
         if (step.required) {
           throw new Error(`Required step ${step.id} failed: ${error}`);
         }
 
-        this.emit('workflow:step:failed', { 
-          workflowId: result.workflowId, 
-          stepId: step.id, 
-          error 
+        this.emit('workflow:step:failed', {
+          workflowId: result.workflowId,
+          stepId: step.id,
+          error,
         });
       }
     }
@@ -556,10 +554,10 @@ export class DSPyWorkflowExecutor extends EventEmitter {
     logger.debug(`Executing workflow step: ${step.name}`, { stepId: step.id });
 
     const stepStartTime = Date.now();
-    
+
     // Simulate step execution based on type
     let stepResult: any;
-    
+
     switch (step.type) {
       case 'optimization':
         stepResult = await this.executeOptimizationStep(step, program, dataset);
@@ -578,7 +576,7 @@ export class DSPyWorkflowExecutor extends EventEmitter {
     }
 
     const stepExecutionTime = Date.now() - stepStartTime;
-    
+
     if (stepExecutionTime > step.timeout) {
       throw new Error(`Step ${step.id} exceeded timeout of ${step.timeout}ms`);
     }
@@ -600,7 +598,7 @@ export class DSPyWorkflowExecutor extends EventEmitter {
       type: 'optimization',
       accuracy,
       optimizedPrompts: [`Optimized for ${step.name}`],
-      improvements: accuracy > 0.85 ? 'significant' : 'moderate'
+      improvements: accuracy > 0.85 ? 'significant' : 'moderate',
     };
   }
 
@@ -612,14 +610,14 @@ export class DSPyWorkflowExecutor extends EventEmitter {
     // Simulate validation step
     const testSize = step.parameters.testSize || 10;
     const passed = Math.floor(testSize * (Math.random() * 0.3 + 0.7));
-    
+
     return {
       type: 'validation',
       testSize,
       passed,
       failed: testSize - passed,
       accuracy: passed / testSize,
-      metrics: step.parameters.metrics || ['accuracy']
+      metrics: step.parameters.metrics || ['accuracy'],
     };
   }
 
@@ -635,8 +633,8 @@ export class DSPyWorkflowExecutor extends EventEmitter {
       improvements: {
         latency: `${Math.floor(Math.random() * 30 + 10)}% faster`,
         cost: `${Math.floor(Math.random() * 20 + 5)}% cheaper`,
-        throughput: `${Math.floor(Math.random() * 40 + 20)}% higher`
-      }
+        throughput: `${Math.floor(Math.random() * 40 + 20)}% higher`,
+      },
     };
   }
 
@@ -650,7 +648,7 @@ export class DSPyWorkflowExecutor extends EventEmitter {
       type: 'analysis',
       insights: ['Pattern A detected', 'Optimization B recommended', 'Performance C improved'],
       recommendations: ['Increase batch size', 'Adjust temperature', 'Add more examples'],
-      confidence: Math.random() * 0.3 + 0.7
+      confidence: Math.random() * 0.3 + 0.7,
     };
   }
 
@@ -663,8 +661,8 @@ export class DSPyWorkflowExecutor extends EventEmitter {
     const completed = new Set<string>();
 
     while (remaining.length > 0) {
-      const currentGroup = remaining.filter(step => 
-        step.dependencies.every(dep => completed.has(dep))
+      const currentGroup = remaining.filter((step) =>
+        step.dependencies.every((dep) => completed.has(dep))
       );
 
       if (currentGroup.length === 0) {
@@ -672,7 +670,7 @@ export class DSPyWorkflowExecutor extends EventEmitter {
       }
 
       groups.push(currentGroup);
-      currentGroup.forEach(step => {
+      currentGroup.forEach((step) => {
         completed.add(step.id);
         remaining.splice(remaining.indexOf(step), 1);
       });
@@ -695,9 +693,9 @@ export class DSPyWorkflowExecutor extends EventEmitter {
       }
 
       visiting.add(step.id);
-      
-      step.dependencies.forEach(depId => {
-        const depStep = steps.find(s => s.id === depId);
+
+      step.dependencies.forEach((depId) => {
+        const depStep = steps.find((s) => s.id === depId);
         if (depStep) {
           visit(depStep);
         }
@@ -708,13 +706,16 @@ export class DSPyWorkflowExecutor extends EventEmitter {
       sorted.push(step);
     };
 
-    steps.forEach(step => visit(step));
+    steps.forEach((step) => visit(step));
     return sorted;
   }
 
-  private validateSuccessCriteria(workflow: WorkflowConfig, result: WorkflowExecutionResult): boolean {
+  private validateSuccessCriteria(
+    workflow: WorkflowConfig,
+    result: WorkflowExecutionResult
+  ): boolean {
     const criteria = workflow.successCriteria;
-    
+
     // Check if final result meets criteria
     if (result.finalResult) {
       if (criteria.minAccuracy && result.finalResult.accuracy < criteria.minAccuracy) {
@@ -730,7 +731,8 @@ export class DSPyWorkflowExecutor extends EventEmitter {
 
     // Check completion rate
     const completionRate = result.completedSteps.length / result.metrics.totalSteps;
-    if (completionRate < 0.8) { // At least 80% completion
+    if (completionRate < 0.8) {
+      // At least 80% completion
       return false;
     }
 
@@ -742,7 +744,7 @@ export class DSPyWorkflowExecutor extends EventEmitter {
     result: WorkflowExecutionResult
   ): Promise<void> {
     logger.info(`Applying fallback strategy: ${workflow.fallbackStrategy}`, {
-      workflowId: result.workflowId
+      workflowId: result.workflowId,
     });
 
     switch (workflow.fallbackStrategy) {

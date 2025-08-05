@@ -433,8 +433,12 @@ export class DiscoverCommand {
           // Calculate optimal resource constraints based on system and domain characteristics
           const calculateResourceConstraints = () => {
             const baseCpuLimit = Math.min(8, Math.max(2, confidenceResult.domains.size * 2));
-            const baseMemoryLimit = confidenceResult.domains.size < 3 ? '2GB' : 
-                                  confidenceResult.domains.size < 6 ? '4GB' : '8GB';
+            const baseMemoryLimit =
+              confidenceResult.domains.size < 3
+                ? '2GB'
+                : confidenceResult.domains.size < 6
+                  ? '4GB'
+                  : '8GB';
             const baseMaxAgents = Math.min(maxAgents * confidenceResult.domains.size, 50);
 
             return {
@@ -501,7 +505,7 @@ export class DiscoverCommand {
           // Verify swarm deployment and health
           if (swarmConfigs.length > 0) {
             logger.info('🔍 Verifying swarm deployment...');
-            
+
             const verificationResults = await Promise.allSettled(
               swarmConfigs.map(async (config) => {
                 try {
@@ -512,7 +516,7 @@ export class DiscoverCommand {
                     name: config.name,
                     healthy: status.state !== 'error',
                     agentCount: status.agentCount,
-                    uptime: status.uptime
+                    uptime: status.uptime,
                   };
                 } catch (error) {
                   logger.warn(`❌ Health check failed for swarm ${config.name}:`, error);
@@ -520,20 +524,22 @@ export class DiscoverCommand {
                     swarmId: config.id,
                     name: config.name,
                     healthy: false,
-                    error: error instanceof Error ? error.message : 'Unknown error'
+                    error: error instanceof Error ? error.message : 'Unknown error',
                   };
                 }
               })
             );
 
             const healthySwarms = verificationResults.filter(
-              result => result.status === 'fulfilled' && result.value.healthy
+              (result) => result.status === 'fulfilled' && result.value.healthy
             ).length;
 
             if (healthySwarms === swarmConfigs.length) {
               logger.info(`✅ All ${swarmConfigs.length} swarms passed health verification`);
             } else {
-              logger.warn(`⚠️  ${healthySwarms}/${swarmConfigs.length} swarms passed health verification`);
+              logger.warn(
+                `⚠️  ${healthySwarms}/${swarmConfigs.length} swarms passed health verification`
+              );
             }
 
             // Add verification results to stats

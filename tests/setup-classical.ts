@@ -39,7 +39,7 @@ function setupPerformanceMonitoring() {
 
 function initializeTestDataGenerators() {
   // Seed random number generator for reproducible tests
-  Math.seedrandom = (seed: string) => {
+  (Math as any).seedrandom = (seed: string) => {
     const seedNum = hashCode(seed);
     let x = Math.sin(seedNum) * 10000;
     return () => {
@@ -176,9 +176,6 @@ function hashCode(str: string): number {
   }
 };
 
-// Extended timeout for computational tests
-jest.setTimeout(60000);
-
 declare global {
   namespace NodeJS {
     interface Global {
@@ -209,9 +206,5 @@ declare global {
       expectArrayNearlyEqual(actual: number[], expected: number[], tolerance?: number): void;
       expectMatrixNearlyEqual(actual: number[][], expected: number[][], tolerance?: number): void;
     }
-  }
-
-  namespace Math {
-    var seedrandom: (seed: string) => () => number;
   }
 }

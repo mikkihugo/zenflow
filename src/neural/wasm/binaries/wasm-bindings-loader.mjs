@@ -193,7 +193,7 @@ class WasmBindingsLoader {
     imports.wbg.__wbg_get_67b2ba62fc30de12 = () =>
       handleError(
         (arg0, arg1) => addHeapObject(Reflect.get(getObject(arg0), getObject(arg1))),
-        arguments
+        arguments,
       );
 
     imports.wbg.__wbg_get_b9b93047fe3cf45b = (arg0, arg1) =>

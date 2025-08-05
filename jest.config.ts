@@ -34,9 +34,20 @@ const config: Config = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
 
   roots: ['<rootDir>/src', '<rootDir>/tests'],
-  testMatch: ['<rootDir>/tests/**/*.test.ts', '<rootDir>/src/__tests__/**/*.test.ts'],
+  testMatch: [
+    '<rootDir>/tests/**/*.test.ts', 
+    '<rootDir>/src/__tests__/**/*.test.ts',
+    '<rootDir>/src/__tests__/**/*.test.js'
+  ],
 
-  setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
+  // Configure jest-extended and all setup files
+  setupFilesAfterEnv: [
+    'jest-extended/all',
+    '<rootDir>/tests/setup.ts',
+    '<rootDir>/tests/setup-london.ts',
+    '<rootDir>/tests/setup-classical.ts',
+    '<rootDir>/tests/setup-hybrid.ts'
+  ],
 };
 
 export default config;

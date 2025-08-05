@@ -76,9 +76,6 @@ function setupDefaultMocks() {
   });
 };
 
-// Performance assertion timeout (London TDD focuses on interaction timing)
-jest.setTimeout(30000);
-
 declare global {
   namespace NodeJS {
     interface Global {

@@ -6,19 +6,19 @@
  * @description Enhanced database controller with DI integration for Issue #63
  */
 
+import type { ConnectionStats, IConfig, ILogger } from '../../core/interfaces/base-interfaces';
 import { inject } from '../../di/decorators/inject';
 import { injectable } from '../../di/decorators/injectable';
 import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
-import type { ConnectionStats, ILogger, IConfig } from '../../core/interfaces/base-interfaces';
 import type {
   DatabaseAdapter,
   DatabaseConfig,
   DatabaseProviderFactory,
   GraphDatabaseAdapter,
+  IndexConfig,
+  VectorData,
   VectorDatabaseAdapter,
   VectorResult,
-  VectorData,
-  IndexConfig,
 } from '../providers/database-providers';
 
 /**
@@ -1139,7 +1139,7 @@ export class DatabaseController {
 
       const schema = await this.adapter.getSchema();
       const graphAdapter = this.adapter as GraphDatabaseAdapter;
-      
+
       // Get graph-specific statistics
       const [nodeCount, relationshipCount] = await Promise.all([
         graphAdapter.getNodeCount(),
@@ -1227,7 +1227,7 @@ export class DatabaseController {
           totalNodes: nodeCount,
           totalRelationships: relationshipCount,
           averageConnections: nodeCount > 0 ? (relationshipCount * 2) / nodeCount : 0,
-          graphDensity: nodeCount > 1 ? relationshipCount / (nodeCount * (nodeCount - 1) / 2) : 0,
+          graphDensity: nodeCount > 1 ? relationshipCount / ((nodeCount * (nodeCount - 1)) / 2) : 0,
           connectivity: {
             nodesWithConnections: nodeCount > 0 ? Math.min(relationshipCount, nodeCount) : 0,
             isolatedNodes: Math.max(0, nodeCount - relationshipCount),
@@ -1300,7 +1300,9 @@ export class DatabaseController {
     const startTime = Date.now();
 
     try {
-      this._logger.debug(`Executing graph batch operations: ${request.operations.length} operations`);
+      this._logger.debug(
+        `Executing graph batch operations: ${request.operations.length} operations`
+      );
 
       if (!this.isGraphAdapter()) {
         throw new Error('Graph batch operations not supported by current database adapter');
@@ -1319,14 +1321,16 @@ export class DatabaseController {
       for (const operation of request.operations) {
         try {
           const result = await graphAdapter.queryGraph(operation.cypher, operation.params);
-          
+
           results.push({
             cypher: operation.cypher,
             params: operation.params,
             success: true,
             nodeCount: result.nodes.length,
             relationshipCount: result.relationships.length,
-            data: request.includeData ? { nodes: result.nodes, relationships: result.relationships } : undefined,
+            data: request.includeData
+              ? { nodes: result.nodes, relationships: result.relationships }
+              : undefined,
           });
 
           totalNodes += result.nodes.length;
@@ -1424,7 +1428,7 @@ export class DatabaseController {
   private async routeToGraphQuery(request: GraphQueryRequest): Promise<DatabaseResponse> {
     try {
       const graphResponse = await this.executeGraphQuery(request);
-      
+
       // Convert graph response format to standard query response format
       if (graphResponse.success && graphResponse.data) {
         return {
@@ -1433,20 +1437,20 @@ export class DatabaseController {
             query: request.cypher,
             parameters: request.params,
             results: [
-              ...graphResponse.data.nodes.map(node => ({ type: 'node', ...node })),
-              ...graphResponse.data.relationships.map(rel => ({ type: 'relationship', ...rel }))
+              ...graphResponse.data.nodes.map((node) => ({ type: 'node', ...node })),
+              ...graphResponse.data.relationships.map((rel) => ({ type: 'relationship', ...rel })),
             ],
             fields: [
               { name: 'type', type: 'string', nullable: false },
               { name: 'id', type: 'string', nullable: false },
-              { name: 'data', type: 'object', nullable: true }
+              { name: 'data', type: 'object', nullable: true },
             ],
             nodeCount: graphResponse.data.nodeCount,
             relationshipCount: graphResponse.data.relationshipCount,
           },
         };
       }
-      
+
       return graphResponse;
     } catch (error) {
       throw error;
@@ -1479,9 +1483,9 @@ export class DatabaseController {
     const startTime = Date.now();
 
     try {
-      this._logger.debug('Executing vector similarity search', { 
-        vectorDim: request.vector.length, 
-        limit: request.limit 
+      this._logger.debug('Executing vector similarity search', {
+        vectorDim: request.vector.length,
+        limit: request.limit,
       });
 
       // Check if adapter supports vector operations
@@ -1503,15 +1507,15 @@ export class DatabaseController {
           query: {
             vectorDim: request.vector.length,
             limit: request.limit || 10,
-            metric: request.metric || 'cosine'
-          }
+            metric: request.metric || 'cosine',
+          },
         },
         metadata: {
           rowCount: result.matches.length,
           executionTime,
           timestamp: Date.now(),
-          adapter: 'lancedb'
-        }
+          adapter: 'lancedb',
+        },
       };
     } catch (error: any) {
       const executionTime = Date.now() - startTime;
@@ -1526,8 +1530,8 @@ export class DatabaseController {
           rowCount: 0,
           executionTime,
           timestamp: Date.now(),
-          adapter: 'lancedb'
-        }
+          adapter: 'lancedb',
+        },
       };
     }
   }
@@ -1540,8 +1544,8 @@ export class DatabaseController {
     const startTime = Date.now();
 
     try {
-      this._logger.debug('Adding vectors to database', { 
-        count: request.vectors.length 
+      this._logger.debug('Adding vectors to database', {
+        count: request.vectors.length,
       });
 
       // Check if adapter supports vector operations
@@ -1550,12 +1554,12 @@ export class DatabaseController {
       }
 
       const vectorAdapter = this.adapter as VectorDatabaseAdapter;
-      
+
       // Convert request format to VectorData format
-      const vectorData: VectorData[] = request.vectors.map(v => ({
+      const vectorData: VectorData[] = request.vectors.map((v) => ({
         id: v.id,
         vector: v.vector,
-        metadata: v.metadata
+        metadata: v.metadata,
       }));
 
       await vectorAdapter.addVectors(vectorData);
@@ -1567,14 +1571,14 @@ export class DatabaseController {
         success: true,
         data: {
           inserted: request.vectors.length,
-          table: request.table || 'embeddings'
+          table: request.table || 'embeddings',
         },
         metadata: {
           rowCount: request.vectors.length,
           executionTime,
           timestamp: Date.now(),
-          adapter: 'lancedb'
-        }
+          adapter: 'lancedb',
+        },
       };
     } catch (error: any) {
       const executionTime = Date.now() - startTime;
@@ -1589,8 +1593,8 @@ export class DatabaseController {
           rowCount: 0,
           executionTime,
           timestamp: Date.now(),
-          adapter: 'lancedb'
-        }
+          adapter: 'lancedb',
+        },
       };
     }
   }
@@ -1614,8 +1618,8 @@ export class DatabaseController {
       const connectionStats = await this.adapter.getConnectionStats();
 
       // Find vector tables in schema
-      const vectorTables = schema.tables.filter(table => 
-        table.columns.some(col => col.type.includes('VECTOR'))
+      const vectorTables = schema.tables.filter((table) =>
+        table.columns.some((col) => col.type.includes('VECTOR'))
       );
 
       const executionTime = Date.now() - startTime;
@@ -1625,24 +1629,24 @@ export class DatabaseController {
         success: true,
         data: {
           vectorTables: vectorTables.length,
-          tables: vectorTables.map(table => ({
+          tables: vectorTables.map((table) => ({
             name: table.name,
-            vectorColumns: table.columns.filter(col => col.type.includes('VECTOR')),
-            indexes: table.indexes
+            vectorColumns: table.columns.filter((col) => col.type.includes('VECTOR')),
+            indexes: table.indexes,
           })),
           connectionStats,
           capabilities: {
             vectorSearch: true,
             similarityMetrics: ['cosine', 'euclidean', 'dot'],
-            indexTypes: ['IVF_PQ', 'HNSW', 'FLAT']
-          }
+            indexTypes: ['IVF_PQ', 'HNSW', 'FLAT'],
+          },
         },
         metadata: {
           rowCount: vectorTables.length,
           executionTime,
           timestamp: Date.now(),
-          adapter: 'lancedb'
-        }
+          adapter: 'lancedb',
+        },
       };
     } catch (error: any) {
       const executionTime = Date.now() - startTime;
@@ -1657,8 +1661,8 @@ export class DatabaseController {
           rowCount: 0,
           executionTime,
           timestamp: Date.now(),
-          adapter: 'lancedb'
-        }
+          adapter: 'lancedb',
+        },
       };
     }
   }
@@ -1671,9 +1675,9 @@ export class DatabaseController {
     const startTime = Date.now();
 
     try {
-      this._logger.debug('Creating vector index', { 
+      this._logger.debug('Creating vector index', {
         name: request.name,
-        dimension: request.dimension 
+        dimension: request.dimension,
       });
 
       // Check if adapter supports vector operations
@@ -1682,12 +1686,12 @@ export class DatabaseController {
       }
 
       const vectorAdapter = this.adapter as VectorDatabaseAdapter;
-      
+
       const indexConfig: IndexConfig = {
         name: request.name,
         dimension: request.dimension,
         metric: request.metric,
-        type: request.type
+        type: request.type,
       };
 
       await vectorAdapter.createIndex(indexConfig);
@@ -1701,14 +1705,14 @@ export class DatabaseController {
           indexName: request.name,
           dimension: request.dimension,
           metric: request.metric,
-          type: request.type || 'auto'
+          type: request.type || 'auto',
         },
         metadata: {
           rowCount: 1,
           executionTime,
           timestamp: Date.now(),
-          adapter: 'lancedb'
-        }
+          adapter: 'lancedb',
+        },
       };
     } catch (error: any) {
       const executionTime = Date.now() - startTime;
@@ -1723,8 +1727,8 @@ export class DatabaseController {
           rowCount: 0,
           executionTime,
           timestamp: Date.now(),
-          adapter: 'lancedb'
-        }
+          adapter: 'lancedb',
+        },
       };
     }
   }

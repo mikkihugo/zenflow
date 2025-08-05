@@ -263,21 +263,21 @@ class IntegrationTestRunner {
     }
 
     const criticalFailures = this.results.suites.filter(
-      (s) => s.critical && s.status !== 'PASSED'
+      (s) => s.critical && s.status !== 'PASSED',
     ).length;
 
     if (criticalFailures > 0) {
     }
 
     const performanceFailures = this.results.suites.filter(
-      (s) => s.name.includes('Performance') && s.status !== 'PASSED'
+      (s) => s.name.includes('Performance') && s.status !== 'PASSED',
     ).length;
 
     if (performanceFailures > 0) {
     }
 
     const resilienceFailures = this.results.suites.filter(
-      (s) => s.name.includes('Resilience') && s.status !== 'PASSED'
+      (s) => s.name.includes('Resilience') && s.status !== 'PASSED',
     ).length;
 
     if (resilienceFailures > 0) {

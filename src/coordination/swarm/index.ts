@@ -11,3 +11,5 @@ export { default as ConnectionManager } from './connection-management/connection
 export * from './core/index';
 // Main swarm exports
 export { default as SwarmCore } from './core/index';
+// SPARC Methodology for Swarm Implementation
+export * from './sparc/index';

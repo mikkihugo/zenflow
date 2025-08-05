@@ -167,12 +167,12 @@ export class LanceDBInterface extends EventEmitter {
       for (const batch of batches) {
         try {
           // Convert to proper format for LanceDB
-          const records = batch.map(doc => ({
+          const records = batch.map((doc) => ({
             id: doc.id,
             vector: doc.vector,
             metadata: doc.metadata || {},
             timestamp: doc.timestamp || Date.now(),
-            ...doc // spread any additional properties
+            ...doc, // spread any additional properties
           }));
           await table.add(records);
           inserted += batch.length;

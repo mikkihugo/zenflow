@@ -3,9 +3,12 @@
  * Test the real LanceDB adapter implementation
  */
 
-import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
-import { LanceDBAdapter, DatabaseConfig } from '../../../database/providers/database-providers';
-import { ILogger } from '../../../core/types';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import type { ILogger } from '../../../core/types';
+import {
+  type DatabaseConfig,
+  LanceDBAdapter,
+} from '../../../database/providers/database-providers';
 
 // Mock logger for tests
 const mockLogger: ILogger = {
@@ -28,8 +31,8 @@ describe('LanceDB Adapter Integration', () => {
         vectorSize: 128,
         metricType: 'cosine',
         indexType: 'IVF_PQ',
-        batchSize: 100
-      }
+        batchSize: 100,
+      },
     };
 
     adapter = new LanceDBAdapter(config, mockLogger);
@@ -65,15 +68,14 @@ describe('LanceDB Adapter Integration', () => {
 
   it('should support vector operations interface', async () => {
     const testVector = Array.from({ length: 128 }, () => Math.random());
-    
+
     try {
       await adapter.connect();
-      
+
       // Test vector search (may fail but should not throw interface errors)
       const searchResult = await adapter.vectorSearch(testVector, 5);
       expect(searchResult).toHaveProperty('matches');
       expect(searchResult).toHaveProperty('executionTime');
-      
     } catch (error) {
       // Expected - testing interface compliance, not actual functionality
       expect(error).toBeDefined();
@@ -85,19 +87,19 @@ describe('LanceDB Adapter Integration', () => {
       {
         id: 'test-1',
         vector: Array.from({ length: 128 }, () => Math.random()),
-        metadata: { type: 'test' }
+        metadata: { type: 'test' },
       },
       {
-        id: 'test-2', 
+        id: 'test-2',
         vector: Array.from({ length: 128 }, () => Math.random()),
-        metadata: { type: 'test' }
-      }
+        metadata: { type: 'test' },
+      },
     ];
 
     try {
       await adapter.connect();
       await adapter.addVectors(testVectors);
-      
+
       // If we get here, interface is working
       expect(true).toBe(true);
     } catch (error) {
@@ -110,15 +112,14 @@ describe('LanceDB Adapter Integration', () => {
     try {
       await adapter.connect();
       const schema = await adapter.getSchema();
-      
+
       expect(schema).toHaveProperty('tables');
       expect(schema).toHaveProperty('views');
       expect(schema).toHaveProperty('version');
-      
+
       // Should have embeddings table
-      const embeddingsTable = schema.tables.find(t => t.name === 'embeddings');
+      const embeddingsTable = schema.tables.find((t) => t.name === 'embeddings');
       expect(embeddingsTable).toBeDefined();
-      
     } catch (error) {
       // Expected in test environment
       expect(error).toBeDefined();
@@ -126,17 +127,16 @@ describe('LanceDB Adapter Integration', () => {
   });
 
   it('should support vector SQL queries', async () => {
-    const vectorQuery = "SELECT * FROM vectors WHERE vector <-> [0.1,0.2,0.3] LIMIT 5";
-    
+    const vectorQuery = 'SELECT * FROM vectors WHERE vector <-> [0.1,0.2,0.3] LIMIT 5';
+
     try {
       await adapter.connect();
       const result = await adapter.query(vectorQuery);
-      
+
       expect(result).toHaveProperty('rows');
       expect(result).toHaveProperty('rowCount');
       expect(result).toHaveProperty('fields');
       expect(result).toHaveProperty('executionTime');
-      
     } catch (error) {
       // Expected in test environment
       expect(error).toBeDefined();
@@ -145,7 +145,7 @@ describe('LanceDB Adapter Integration', () => {
 
   it('should handle connection stats', async () => {
     const stats = await adapter.getConnectionStats();
-    
+
     expect(stats).toHaveProperty('total');
     expect(stats).toHaveProperty('active');
     expect(stats).toHaveProperty('idle');

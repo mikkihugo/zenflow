@@ -30,7 +30,7 @@ export class MCPToolWrapper {
         logger.error(`Tool ${toolName} failed:`, error);
         return {
           success: false,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         };
       }
     };

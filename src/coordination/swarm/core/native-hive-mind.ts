@@ -92,7 +92,7 @@ export class NativeHiveMind extends EventEmitter {
       // });
       // await this.unifiedPersistence.initialize();
 
-      // Initialize ruv-swarm with available method  
+      // Initialize ruv-swarm with available method
       this.ruvSwarm = await ZenSwarm.create({
         topology: this.options.defaultTopology,
         maxAgents: this.options.maxAgents,
@@ -483,7 +483,13 @@ export class NativeHiveMind extends EventEmitter {
   /**
    * NATIVE: Relationship formation (NEW - not available in MCP)
    */
-  async formRelationship(fromEntity: any, toEntity: any, relationshipType: string, strength: number = 1.0, metadata: any = {}) {
+  async formRelationship(
+    fromEntity: any,
+    toEntity: any,
+    relationshipType: string,
+    strength: number = 1.0,
+    metadata: any = {}
+  ) {
     if (!this.options.enableGraphRelationships) return;
 
     // TODO: Create relationships (after unified MCP implementation)

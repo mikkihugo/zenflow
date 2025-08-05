@@ -83,11 +83,11 @@ export type AgentType =
   | 'ai-ml-specialist'
 
   // DSPy Neural Enhancement Agents
-  | 'prompt-optimizer'      // DSPy prompt optimization specialist
-  | 'example-generator'     // DSPy few-shot example generation
-  | 'metric-analyzer'       // DSPy performance metrics analysis
-  | 'pipeline-tuner'        // DSPy LM pipeline optimization
-  | 'neural-enhancer'       // DSPy neural workflow enhancement
+  | 'prompt-optimizer' // DSPy prompt optimization specialist
+  | 'example-generator' // DSPy few-shot example generation
+  | 'metric-analyzer' // DSPy performance metrics analysis
+  | 'pipeline-tuner' // DSPy LM pipeline optimization
+  | 'neural-enhancer' // DSPy neural workflow enhancement
 
   // UI/UX Enhancement Agents
   | 'ux-designer' // User experience design

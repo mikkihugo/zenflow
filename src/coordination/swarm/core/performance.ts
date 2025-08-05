@@ -349,7 +349,7 @@ class PerformanceCLI {
         if ((items as any[]).length === 0) {
           continue;
         }
-        for (const _item of (items as any[])) {
+        for (const _item of items as any[]) {
           totalShown++;
         }
       }

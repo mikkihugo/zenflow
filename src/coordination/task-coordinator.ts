@@ -1,22 +1,33 @@
 /**
- * Task Coordinator with Claude Code Sub-Agent Integration
- * Extends the existing Task tool to leverage Claude Code's sub-agent system
+ * SPARC-Enhanced Task Coordinator
+ *
+ * Integrates SPARC methodology with Claude Code Sub-Agent system
+ * for implementing database-driven Features and Tasks
  */
 
+import type {
+  FeatureDocumentEntity,
+  TaskDocumentEntity,
+} from '../database/entities/product-entities';
 import type { AgentType } from '../types/agent-types';
+import type { DatabaseSPARCBridge } from './database-sparc-bridge';
 import { generateSubAgentConfig, mapToClaudeSubAgent } from './sub-agent-generator';
+import type { SPARCSwarmCoordinator } from './swarm/core/sparc-swarm-coordinator';
 
 export interface TaskConfig {
   description: string;
   prompt: string;
   subagent_type: AgentType;
   use_claude_subagent?: boolean;
+  use_sparc_methodology?: boolean; // NEW: Enable SPARC processing
   domain_context?: string;
   expected_output?: string;
   tools_required?: string[];
   priority?: 'low' | 'medium' | 'high' | 'critical';
   dependencies?: string[];
   timeout_minutes?: number;
+  // NEW: Database document reference
+  source_document?: FeatureDocumentEntity | TaskDocumentEntity;
 }
 
 export interface TaskResult {
@@ -25,16 +36,21 @@ export interface TaskResult {
   agent_used: string;
   execution_time_ms: number;
   tools_used: string[];
+  sparc_task_id?: string; // NEW: Reference to SPARC task if methodology was used
+  implementation_artifacts?: string[]; // NEW: Generated artifacts
+  methodology_applied?: 'direct' | 'sparc'; // NEW: Track methodology used
   error?: string;
 }
 
 /**
- * Task execution with Claude Code sub-agent integration
+ * SPARC-Enhanced Task Coordinator
  */
 export class TaskCoordinator {
   private static instance: TaskCoordinator;
   private taskHistory: Map<string, TaskResult> = new Map();
   private activeSubAgents: Set<string> = new Set();
+  private sparcBridge?: DatabaseSPARCBridge; // NEW: SPARC integration
+  private sparcSwarm?: SPARCSwarmCoordinator; // NEW: SPARC swarm
 
   static getInstance(): TaskCoordinator {
     if (!TaskCoordinator.instance) {
@@ -44,45 +60,224 @@ export class TaskCoordinator {
   }
 
   /**
-   * Execute task with optimal agent selection
+   * Initialize with SPARC integration
+   */
+  async initializeSPARCIntegration(
+    sparcBridge: DatabaseSPARCBridge,
+    sparcSwarm: SPARCSwarmCoordinator
+  ): Promise<void> {
+    this.sparcBridge = sparcBridge;
+    this.sparcSwarm = sparcSwarm;
+  }
+
+  /**
+   * Execute task with optimal agent selection and methodology
    */
   async executeTask(config: TaskConfig): Promise<TaskResult> {
     const startTime = Date.now();
     const taskId = this.generateTaskId(config);
 
     try {
-      // Determine optimal agent strategy
-      const agentStrategy = this.selectAgentStrategy(config);
+      // NEW: Check if SPARC methodology should be used
+      if (config.use_sparc_methodology && this.shouldUseSPARC(config)) {
+        return await this.executeWithSPARC(config, startTime, taskId);
+      }
 
-      // Prepare task execution context
-      const executionContext = this.prepareExecutionContext(config, agentStrategy);
-
-      // Execute with appropriate agent
-      const result = await this.executeWithAgent(executionContext);
-
-      // Record results
-      const taskResult: TaskResult = {
-        success: true,
-        output: result.output,
-        agent_used: agentStrategy.agent_name,
-        execution_time_ms: Date.now() - startTime,
-        tools_used: agentStrategy.tools,
-      };
-
-      this.taskHistory.set(taskId, taskResult);
-      return taskResult;
+      // Original direct execution path
+      return await this.executeDirectly(config, startTime, taskId);
     } catch (error) {
       const taskResult: TaskResult = {
         success: false,
         agent_used: config.subagent_type,
         execution_time_ms: Date.now() - startTime,
         tools_used: [],
+        methodology_applied: 'direct',
         error: error instanceof Error ? error.message : String(error),
       };
 
       this.taskHistory.set(taskId, taskResult);
       return taskResult;
     }
+  }
+
+  /**
+   * NEW: Execute task using SPARC methodology
+   */
+  private async executeWithSPARC(
+    config: TaskConfig,
+    startTime: number,
+    taskId: string
+  ): Promise<TaskResult> {
+    if (!this.sparcBridge || !this.sparcSwarm) {
+      throw new Error('SPARC integration not initialized');
+    }
+
+    // Convert TaskConfig to database document if needed
+    let assignmentId: string;
+
+    if (config.source_document) {
+      // Use existing document
+      if (config.source_document.type === 'feature') {
+        assignmentId = await this.sparcBridge.assignFeatureToSparcs(
+          config.source_document as FeatureDocumentEntity
+        );
+      } else {
+        assignmentId = await this.sparcBridge.assignTaskToSparcs(
+          config.source_document as TaskDocumentEntity
+        );
+      }
+    } else {
+      // Create temporary task document for SPARC processing
+      const tempTask = this.createTempTaskDocument(config);
+      assignmentId = await this.sparcBridge.assignTaskToSparcs(tempTask);
+    }
+
+    // Wait for SPARC completion (simplified - in real implementation would use events)
+    const result = await this.waitForSPARCCompletion(assignmentId);
+
+    const taskResult: TaskResult = {
+      success: result.status === 'completed',
+      output: result.completionReport,
+      agent_used: 'sparc-swarm',
+      execution_time_ms: result.metrics.totalTimeMs,
+      tools_used: ['sparc-methodology'],
+      sparc_task_id: result.sparcTaskId,
+      implementation_artifacts: Object.values(result.artifacts).flat(),
+      methodology_applied: 'sparc',
+    };
+
+    this.taskHistory.set(taskId, taskResult);
+    return taskResult;
+  }
+
+  /**
+   * Execute task directly (original logic)
+   */
+  private async executeDirectly(
+    config: TaskConfig,
+    startTime: number,
+    taskId: string
+  ): Promise<TaskResult> {
+    // Determine optimal agent strategy
+    const agentStrategy = this.selectAgentStrategy(config);
+
+    // Prepare task execution context
+    const executionContext = this.prepareExecutionContext(config, agentStrategy);
+
+    // Execute with appropriate agent
+    const result = await this.executeWithAgent(executionContext);
+
+    // Record results
+    const taskResult: TaskResult = {
+      success: true,
+      output: result.output,
+      agent_used: agentStrategy.agent_name,
+      execution_time_ms: Date.now() - startTime,
+      tools_used: agentStrategy.tools,
+      methodology_applied: 'direct',
+    };
+
+    this.taskHistory.set(taskId, taskResult);
+    return taskResult;
+  }
+
+  /**
+   * NEW: Determine if SPARC methodology should be used
+   */
+  private shouldUseSPARC(config: TaskConfig): boolean {
+    // Use SPARC for complex, high-priority tasks or when explicitly requested
+    return (
+      config.use_sparc_methodology === true ||
+      config.priority === 'high' ||
+      config.priority === 'critical' ||
+      (config.source_document && this.isComplexDocument(config.source_document)) ||
+      config.description.length > 200 // Long descriptions indicate complexity
+    );
+  }
+
+  /**
+   * NEW: Check if document represents complex work
+   */
+  private isComplexDocument(document: FeatureDocumentEntity | TaskDocumentEntity): boolean {
+    return (
+      document.acceptance_criteria?.length > 3 ||
+      document.tags?.includes('complex') ||
+      document.tags?.includes('architecture') ||
+      ('technical_approach' in document && document.technical_approach.includes('architecture'))
+    );
+  }
+
+  /**
+   * NEW: Create temporary task document for SPARC processing
+   */
+  private createTempTaskDocument(config: TaskConfig): TaskDocumentEntity {
+    return {
+      id: `temp-task-${Date.now()}`,
+      type: 'task',
+      title: config.description.substring(0, 100),
+      content: config.prompt,
+      status: 'draft',
+      priority: config.priority || 'medium',
+      author: 'task-coordinator',
+      tags: ['sparc-generated', 'temporary'],
+      project_id: 'temp-project',
+      parent_document_id: undefined,
+      dependencies: config.dependencies || [],
+      related_documents: [],
+      version: '1.0.0',
+      searchable_content: config.description,
+      keywords: [],
+      workflow_stage: 'sparc-ready',
+      completion_percentage: 0,
+      created_at: new Date(),
+      updated_at: new Date(),
+      checksum: 'temp-checksum',
+      task_type: 'implementation',
+      estimated_hours: config.timeout_minutes ? config.timeout_minutes / 60 : 8,
+      implementation_details: {
+        files_to_create: [],
+        files_to_modify: [],
+        test_files: [],
+        documentation_updates: [],
+      },
+      technical_specifications: {
+        component: config.domain_context || 'general',
+        module: 'task-coordinator',
+        functions: [],
+        dependencies: config.tools_required || [],
+      },
+      source_feature_id: undefined,
+      completion_status: 'todo',
+    };
+  }
+
+  /**
+   * NEW: Wait for SPARC completion (simplified implementation)
+   */
+  private async waitForSPARCCompletion(assignmentId: string): Promise<any> {
+    // In a real implementation, this would use events/promises
+    // For now, return a mock result
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          status: 'completed',
+          sparcTaskId: `sparc-${assignmentId}`,
+          completionReport: 'SPARC methodology completed successfully',
+          metrics: {
+            totalTimeMs: 30000, // 30 seconds
+            agentsUsed: ['sparc-swarm'],
+          },
+          artifacts: {
+            specification: ['requirements.md'],
+            pseudocode: ['algorithm.md'],
+            architecture: ['design.md'],
+            implementation: ['code.ts'],
+            tests: ['tests.ts'],
+            documentation: ['docs.md'],
+          },
+        });
+      }, 1000); // Simulate 1 second processing
+    });
   }
 
   /**

@@ -1,11 +1,11 @@
 /**
  * Unified MCP Tools for Claude Code CLI Integration
- * 
+ *
  * Single stdio MCP server providing ALL coordination and swarm functionality:
  * - Coordination: Task orchestration, resource management, workflow execution
  * - Swarm: Agent management, swarm coordination, performance monitoring
  * - Combined: Intelligent task distribution, coordinated swarm execution
- * 
+ *
  * This replaces separate coordination/mcp and swarm/mcp servers with one unified server.
  */
 

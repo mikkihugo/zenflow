@@ -86,7 +86,7 @@ describe('Memory and Resource Edge Cases', () => {
 
         const memoryAfterGC = process.memoryUsage();
         expect(memoryAfterGC.heapUsed).toBeLessThan(
-          initialMemory.heapUsed + 200 * 1024 * 1024 // 200MB limit
+          initialMemory.heapUsed + 200 * 1024 * 1024, // 200MB limit
         );
       } finally {
         // Cleanup
@@ -190,7 +190,7 @@ describe('Memory and Resource Edge Cases', () => {
                 obj.destroy();
                 resolve();
               }, Math.random() * 100);
-            })
+            }),
           );
         }
       }
