@@ -4,6 +4,13 @@
  * Provides unified access to vector, graph, relational, and multi-engine coordination
  */
 
+// Import classes for internal use
+import { DatabaseCoordinator, type DatabaseEngine, type DatabaseQuery } from './core/database-coordinator';
+import { QueryOptimizer } from './optimization/query-optimizer';
+import { LanceDBInterface } from './lancedb-interface';
+import { KuzuAdvancedInterface } from './kuzu-advanced-interface';
+import { SwarmDatabase } from './swarm-database';
+
 // Advanced coordination and optimization
 export {
   type CoordinationStrategy,

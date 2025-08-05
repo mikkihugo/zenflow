@@ -44,6 +44,20 @@ export interface APIServerConfig {
 }
 
 /**
+ * API Client Configuration
+ * Configuration for API client instances
+ */
+export interface APIClientConfig {
+  readonly baseURL: string;
+  readonly timeout: number;
+  readonly retryAttempts: number;
+  readonly retryDelay: number;
+  readonly enableAuth: boolean;
+  readonly authToken?: string;
+  readonly headers?: Record<string, string>;
+}
+
+/**
  * Default server configuration with secure defaults
  */
 export const DEFAULT_API_CONFIG: APIServerConfig = {

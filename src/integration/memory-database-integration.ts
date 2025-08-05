@@ -196,10 +196,10 @@ export async function createIntegratedSystem() {
         database: databaseStats,
         integration: {
           totalOperations:
-            memoryStats.coordinator?.decisions.total + databaseStats.coordinator?.queries.total,
+            (memoryStats.coordinator?.decisions?.total || 0) + (databaseStats.coordinator?.queries?.total || 0),
           averageLatency:
-            ((memoryStats.monitor?.metrics?.averageLatency || 0) +
-              (databaseStats.coordinator?.queries.averageLatency || 0)) /
+            ((memoryStats.current?.averageLatency || 0) +
+              (databaseStats.coordinator?.queries?.averageLatency || 0)) /
             2,
           systemUtilization: {
             memory: memoryStats.backends || 0,

@@ -8,9 +8,18 @@
  */
 
 // Import domain-specific schemas
-export * from '../../../coordination/schemas';
 export * from './common';
 export * from './neural';
+
+// Re-export coordination types that are actually available
+export type {
+  Agent,
+  CoordinationError,
+  HealthStatus,
+  PerformanceMetrics,
+  SwarmConfig,
+  Task,
+} from '../../../../coordination/schemas';
 
 /**
  * Complete OpenAPI 3.0 Schema Definition

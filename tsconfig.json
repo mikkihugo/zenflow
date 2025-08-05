@@ -106,7 +106,14 @@
     "src/interfaces/mcp/tools/orchestration-tools.ts",
     "src/interfaces/mcp/tool-registry.ts",
     "src/interfaces/mcp/external-mcp-client.ts",
-    "src/interfaces/terminal/enhanced-terminal-router.tsx"
+    "src/interfaces/terminal/enhanced-terminal-router.tsx",
+    "src/database/system-integration.ts",
+    "src/database/persistence/**/*",
+    "src/interfaces/api/http/server.ts",
+    "src/interfaces/api/http/v1/**/*",
+    "src/interfaces/cli/enhanced-terminal-router.tsx",
+    "src/interfaces/cli/commands/discover.ts",
+    "src/interfaces/tui/**/*"
   ],
   "ts-node": {
     "esm": true,

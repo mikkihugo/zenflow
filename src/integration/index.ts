@@ -91,7 +91,17 @@ export class IntegrationFactory {
 
     if (!IntegrationFactory.coordinators.has(key)) {
       const { MultiSystemCoordinator } = await import('./multi-system-coordinator');
-      const coordinator = new MultiSystemCoordinator(systems);
+      
+      // Create a simple logger for the coordinator
+      const logger = {
+        debug: (msg: string, meta?: any) => console.debug(`[MultiSystemCoordinator] ${msg}`, meta),
+        info: (msg: string, meta?: any) => console.info(`[MultiSystemCoordinator] ${msg}`, meta),
+        warn: (msg: string, meta?: any) => console.warn(`[MultiSystemCoordinator] ${msg}`, meta),
+        error: (msg: string, meta?: any) => console.error(`[MultiSystemCoordinator] ${msg}`, meta),
+      };
+      
+      // Create coordinator with logger and systems config
+      const coordinator = new (MultiSystemCoordinator as any)(logger, { systems });
       IntegrationFactory.coordinators.set(key, coordinator);
     }
 

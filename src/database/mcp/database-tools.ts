@@ -590,7 +590,12 @@ export const databaseMonitorTool: MCPTool = {
         metrics: {},
         alerts: [],
         engines: {},
-        system: {},
+        system: {
+          coordinator: undefined as any,
+          optimizer: undefined as any,
+          cache: undefined as any,
+          health: undefined as any,
+        },
       };
 
       // Collect coordinator metrics
@@ -742,7 +747,12 @@ export const databaseHealthCheckTool: MCPTool = {
       const healthReport = {
         overall: 'healthy',
         timestamp: Date.now(),
-        components: {},
+        components: {
+          coordinator: undefined as any,
+          optimizer: undefined as any,
+          engines: undefined as any,
+          cache: undefined as any,
+        },
         issues: [],
         recommendations: [],
         repairs: [],

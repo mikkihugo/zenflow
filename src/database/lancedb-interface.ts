@@ -5,7 +5,7 @@
 import { EventEmitter } from 'node:events';
 import { type Connection, connect, type Table } from '@lancedb/lancedb';
 
-interface LanceDBConfig {
+export interface LanceDBConfig {
   dbPath?: string;
   dbName?: string;
   vectorDim?: number;
@@ -16,26 +16,42 @@ interface LanceDBConfig {
   [key: string]: any;
 }
 
-interface VectorDocument {
+export interface VectorDocument {
   id: string;
   vector: number[];
   metadata?: Record<string, any>;
   timestamp?: number;
 }
 
-interface SearchResult {
+export interface SearchResult {
   id: string;
   score: number;
   metadata?: Record<string, any>;
   document?: VectorDocument;
 }
 
-interface LanceDBStats {
+export interface LanceDBStats {
   totalVectors: number;
   totalTables: number;
   averageSearchTime: number;
   indexedVectors: number;
   cacheHitRate: number;
+}
+
+// Additional missing types that are referenced in database/index.ts
+export interface ClusteringOptions {
+  numClusters?: number;
+  maxIterations?: number;
+  tolerance?: number;
+  algorithm?: 'kmeans' | 'dbscan' | 'hierarchical';
+  metric?: 'cosine' | 'euclidean' | 'manhattan';
+}
+
+export interface ClusterResult {
+  clusterId: number;
+  documents: VectorDocument[];
+  centroid: number[];
+  score: number;
 }
 
 export class LanceDBInterface extends EventEmitter {

@@ -8,6 +8,10 @@
  * @fileoverview Main entry point for REST API layer
  */
 
+// Import server types for internal use
+import { APIServerConfig, APIClientConfig, APIServer } from './server';
+import { APIClient } from './client';
+
 export type { APIClientConfig, PaginationOptions, RequestOptions } from './client';
 // ===== API CLIENT SDK =====
 export { APIClient, apiClient, createAPIClient } from './client';
