@@ -418,6 +418,7 @@ export class SwarmSynchronizer extends EventEmitter {
         responseType: 'ack',
         responseData: this.gatherLocalState(),
         processingTime: 10,
+        sourceSwarmId: this.swarmId, // Added to match interface and usage expectations
       });
     }
   }

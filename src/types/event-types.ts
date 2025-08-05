@@ -612,7 +612,6 @@ export interface SwarmKnowledgeInjectPayload extends BaseEventPayload {
   };
   readonly distributionScope: 'all-agents' | 'specific-agents' | 'agent-type' | 'swarm-local';
   readonly targetAgents?: readonly string[];
-  readonly source: string;
   readonly persistenceRequested?: boolean;
 }
 
@@ -902,6 +901,7 @@ export interface SwarmSyncResponsePayload extends BaseEventPayload {
   readonly responseType: 'ack' | 'nack' | 'partial' | 'error';
   readonly responseData?: unknown;
   readonly processingTime: number;
+  readonly sourceSwarmId?: string; // Added to match usage in swarm-synchronization.ts
   readonly error?: {
     readonly code: string;
     readonly message: string;

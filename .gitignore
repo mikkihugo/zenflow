@@ -122,3 +122,4 @@ memory_tasks.json
 # Development artifacts
 analyze-imports.js
 enhanced-issue-*.md
+event-payload-demo.ts
