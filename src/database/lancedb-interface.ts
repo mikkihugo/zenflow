@@ -59,8 +59,6 @@ export class LanceDBInterface extends EventEmitter {
       cacheSize: config.cacheSize ?? 10000,
       ...config,
     };
-
-    this.maxCacheSize = this.config.cacheSize;
   }
 
   /** Initialize LanceDB connection and create tables */
@@ -168,7 +166,15 @@ export class LanceDBInterface extends EventEmitter {
 
       for (const batch of batches) {
         try {
-          await table.add(batch);
+          // Convert to proper format for LanceDB
+          const records = batch.map(doc => ({
+            id: doc.id,
+            vector: doc.vector,
+            metadata: doc.metadata || {},
+            timestamp: doc.timestamp || Date.now(),
+            ...doc // spread any additional properties
+          }));
+          await table.add(records);
           inserted += batch.length;
         } catch (error) {
           errors.push({ batch: batch.length, error });

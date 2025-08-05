@@ -15,6 +15,10 @@ import type {
   DatabaseConfig,
   DatabaseProviderFactory,
   GraphDatabaseAdapter,
+  VectorDatabaseAdapter,
+  VectorResult,
+  VectorData,
+  IndexConfig,
 } from '../providers/database-providers';
 
 /**
@@ -173,6 +177,48 @@ export interface GraphBatchRequest {
   continueOnError?: boolean;
   /** Whether to include full data in response */
   includeData?: boolean;
+}
+
+/**
+ * Request interface for vector search operations
+ */
+export interface VectorSearchRequest {
+  /** Query vector for similarity search */
+  vector: number[];
+  /** Maximum number of results to return */
+  limit?: number;
+  /** Filter criteria for metadata */
+  filter?: Record<string, any>;
+  /** Distance metric to use */
+  metric?: 'cosine' | 'euclidean' | 'dot';
+}
+
+/**
+ * Request interface for adding vectors
+ */
+export interface VectorAddRequest {
+  /** Vectors to add to the database */
+  vectors: Array<{
+    id: string | number;
+    vector: number[];
+    metadata?: Record<string, any>;
+  }>;
+  /** Table name to insert into */
+  table?: string;
+}
+
+/**
+ * Request interface for vector index creation
+ */
+export interface VectorIndexRequest {
+  /** Index name */
+  name: string;
+  /** Vector dimension */
+  dimension: number;
+  /** Distance metric */
+  metric: 'cosine' | 'euclidean' | 'dot';
+  /** Index type */
+  type?: string;
 }
 
 /**
@@ -1423,5 +1469,270 @@ export class DatabaseController {
     // This would be implemented based on the actual schema structure
     // For now, return a default set for Kuzu
     return ['KNOWS', 'WORKS_FOR', 'LOCATED_IN', 'PARTICIPATED_IN'];
+  }
+
+  /**
+   * POST /api/database/vector/search
+   * Perform vector similarity search
+   */
+  async vectorSearch(request: VectorSearchRequest): Promise<DatabaseResponse> {
+    const startTime = Date.now();
+
+    try {
+      this._logger.debug('Executing vector similarity search', { 
+        vectorDim: request.vector.length, 
+        limit: request.limit 
+      });
+
+      // Check if adapter supports vector operations
+      if (!this.isVectorAdapter(this.adapter)) {
+        throw new Error('Current database adapter does not support vector operations');
+      }
+
+      const vectorAdapter = this.adapter as VectorDatabaseAdapter;
+      const result = await vectorAdapter.vectorSearch(request.vector, request.limit || 10);
+
+      const executionTime = Date.now() - startTime;
+      this.updateMetrics(executionTime, true);
+
+      return {
+        success: true,
+        data: {
+          matches: result.matches,
+          executionTime: result.executionTime,
+          query: {
+            vectorDim: request.vector.length,
+            limit: request.limit || 10,
+            metric: request.metric || 'cosine'
+          }
+        },
+        metadata: {
+          rowCount: result.matches.length,
+          executionTime,
+          timestamp: Date.now(),
+          adapter: 'lancedb'
+        }
+      };
+    } catch (error: any) {
+      const executionTime = Date.now() - startTime;
+      this.updateMetrics(executionTime, false);
+
+      this._logger.error('Vector search failed:', error);
+
+      return {
+        success: false,
+        error: `Vector search operation failed: ${error.message}`,
+        metadata: {
+          rowCount: 0,
+          executionTime,
+          timestamp: Date.now(),
+          adapter: 'lancedb'
+        }
+      };
+    }
+  }
+
+  /**
+   * POST /api/database/vector/add
+   * Add vectors to the database
+   */
+  async addVectors(request: VectorAddRequest): Promise<DatabaseResponse> {
+    const startTime = Date.now();
+
+    try {
+      this._logger.debug('Adding vectors to database', { 
+        count: request.vectors.length 
+      });
+
+      // Check if adapter supports vector operations
+      if (!this.isVectorAdapter(this.adapter)) {
+        throw new Error('Current database adapter does not support vector operations');
+      }
+
+      const vectorAdapter = this.adapter as VectorDatabaseAdapter;
+      
+      // Convert request format to VectorData format
+      const vectorData: VectorData[] = request.vectors.map(v => ({
+        id: v.id,
+        vector: v.vector,
+        metadata: v.metadata
+      }));
+
+      await vectorAdapter.addVectors(vectorData);
+
+      const executionTime = Date.now() - startTime;
+      this.updateMetrics(executionTime, true);
+
+      return {
+        success: true,
+        data: {
+          inserted: request.vectors.length,
+          table: request.table || 'embeddings'
+        },
+        metadata: {
+          rowCount: request.vectors.length,
+          executionTime,
+          timestamp: Date.now(),
+          adapter: 'lancedb'
+        }
+      };
+    } catch (error: any) {
+      const executionTime = Date.now() - startTime;
+      this.updateMetrics(executionTime, false);
+
+      this._logger.error('Vector insertion failed:', error);
+
+      return {
+        success: false,
+        error: `Vector insertion operation failed: ${error.message}`,
+        metadata: {
+          rowCount: 0,
+          executionTime,
+          timestamp: Date.now(),
+          adapter: 'lancedb'
+        }
+      };
+    }
+  }
+
+  /**
+   * GET /api/database/vector/stats
+   * Get vector database statistics
+   */
+  async getVectorStats(): Promise<DatabaseResponse> {
+    const startTime = Date.now();
+
+    try {
+      this._logger.debug('Getting vector database statistics');
+
+      // Check if adapter supports vector operations
+      if (!this.isVectorAdapter(this.adapter)) {
+        throw new Error('Current database adapter does not support vector operations');
+      }
+
+      const schema = await this.adapter.getSchema();
+      const connectionStats = await this.adapter.getConnectionStats();
+
+      // Find vector tables in schema
+      const vectorTables = schema.tables.filter(table => 
+        table.columns.some(col => col.type.includes('VECTOR'))
+      );
+
+      const executionTime = Date.now() - startTime;
+      this.updateMetrics(executionTime, true);
+
+      return {
+        success: true,
+        data: {
+          vectorTables: vectorTables.length,
+          tables: vectorTables.map(table => ({
+            name: table.name,
+            vectorColumns: table.columns.filter(col => col.type.includes('VECTOR')),
+            indexes: table.indexes
+          })),
+          connectionStats,
+          capabilities: {
+            vectorSearch: true,
+            similarityMetrics: ['cosine', 'euclidean', 'dot'],
+            indexTypes: ['IVF_PQ', 'HNSW', 'FLAT']
+          }
+        },
+        metadata: {
+          rowCount: vectorTables.length,
+          executionTime,
+          timestamp: Date.now(),
+          adapter: 'lancedb'
+        }
+      };
+    } catch (error: any) {
+      const executionTime = Date.now() - startTime;
+      this.updateMetrics(executionTime, false);
+
+      this._logger.error('Vector stats retrieval failed:', error);
+
+      return {
+        success: false,
+        error: `Vector statistics retrieval failed: ${error.message}`,
+        metadata: {
+          rowCount: 0,
+          executionTime,
+          timestamp: Date.now(),
+          adapter: 'lancedb'
+        }
+      };
+    }
+  }
+
+  /**
+   * POST /api/database/vector/index
+   * Create or optimize vector index
+   */
+  async createVectorIndex(request: VectorIndexRequest): Promise<DatabaseResponse> {
+    const startTime = Date.now();
+
+    try {
+      this._logger.debug('Creating vector index', { 
+        name: request.name,
+        dimension: request.dimension 
+      });
+
+      // Check if adapter supports vector operations
+      if (!this.isVectorAdapter(this.adapter)) {
+        throw new Error('Current database adapter does not support vector operations');
+      }
+
+      const vectorAdapter = this.adapter as VectorDatabaseAdapter;
+      
+      const indexConfig: IndexConfig = {
+        name: request.name,
+        dimension: request.dimension,
+        metric: request.metric,
+        type: request.type
+      };
+
+      await vectorAdapter.createIndex(indexConfig);
+
+      const executionTime = Date.now() - startTime;
+      this.updateMetrics(executionTime, true);
+
+      return {
+        success: true,
+        data: {
+          indexName: request.name,
+          dimension: request.dimension,
+          metric: request.metric,
+          type: request.type || 'auto'
+        },
+        metadata: {
+          rowCount: 1,
+          executionTime,
+          timestamp: Date.now(),
+          adapter: 'lancedb'
+        }
+      };
+    } catch (error: any) {
+      const executionTime = Date.now() - startTime;
+      this.updateMetrics(executionTime, false);
+
+      this._logger.error('Vector index creation failed:', error);
+
+      return {
+        success: false,
+        error: `Vector index creation failed: ${error.message}`,
+        metadata: {
+          rowCount: 0,
+          executionTime,
+          timestamp: Date.now(),
+          adapter: 'lancedb'
+        }
+      };
+    }
+  }
+
+  /**
+   * Check if adapter supports vector operations
+   */
+  private isVectorAdapter(adapter: DatabaseAdapter): adapter is VectorDatabaseAdapter {
+    return 'vectorSearch' in adapter && 'addVectors' in adapter && 'createIndex' in adapter;
   }
 }
