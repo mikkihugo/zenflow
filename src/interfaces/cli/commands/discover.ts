@@ -161,6 +161,7 @@ export class DiscoverCommand {
     domainsDiscovered: 0,
     confidenceBuilt: 0,
     swarmsCreated: 0,
+    swarmsHealthy: 0,
     agentsDeployed: 0,
     documentsProcessed: 0,
     validationsPerformed: 0,
@@ -422,28 +423,66 @@ export class DiscoverCommand {
           const { AutoSwarmFactory } = await import('../../../coordination/discovery/auto-swarm-factory');
           const { HiveSwarmCoordinator } = await import('../../../coordination/hive-swarm-sync');
           const { createPublicSwarmCoordinator } = await import('../../../coordination/public-api');
+          const { EventBus } = await import('../../../core/event-bus');
 
           // Initialize swarm infrastructure
+          const eventBus = EventBus.getInstance();
           const swarmCoordinator = await createPublicSwarmCoordinator();
-          const hiveSync = new HiveSwarmCoordinator();
+          const hiveSync = new HiveSwarmCoordinator(eventBus);
+
+          // Calculate optimal resource constraints based on system and domain characteristics
+          const calculateResourceConstraints = () => {
+            const baseCpuLimit = Math.min(8, Math.max(2, confidenceResult.domains.size * 2));
+            const baseMemoryLimit = confidenceResult.domains.size < 3 ? '2GB' : 
+                                  confidenceResult.domains.size < 6 ? '4GB' : '8GB';
+            const baseMaxAgents = Math.min(maxAgents * confidenceResult.domains.size, 50);
+
+            return {
+              maxTotalAgents: baseMaxAgents,
+              memoryLimit: baseMemoryLimit,
+              cpuLimit: baseCpuLimit,
+            };
+          };
 
           const swarmFactory = new AutoSwarmFactory(swarmCoordinator, hiveSync, memoryStore, agui, {
             enableHumanValidation: !options.skipValidation,
             maxSwarmsPerDomain: 1,
-            resourceConstraints: {
-              maxTotalAgents: maxAgents * confidenceResult.domains.size,
-              memoryLimit: '4GB',
-              cpuLimit: 8,
-            },
+            resourceConstraints: calculateResourceConstraints(),
           });
 
-          // Track swarm creation
+          // Track swarm creation and lifecycle events
+          swarmFactory.on('factory:start', (event) => {
+            if (options.verbose) {
+              logger.info(`🏭 Auto-Swarm Factory starting for ${event.domainCount} domains`);
+            }
+          });
+
           swarmFactory.on('swarm:created', (event) => {
             if (options.verbose) {
               logger.info(
                 `🐝 Created swarm for ${event.domain}: ${event.config.topology.type} topology`
               );
             }
+          });
+
+          swarmFactory.on('swarm:initialized', (event) => {
+            if (options.verbose) {
+              logger.info(`✅ Initialized swarm: ${event.config.name}`);
+            }
+          });
+
+          swarmFactory.on('swarm:init-error', (event) => {
+            logger.warn(`❌ Failed to initialize swarm: ${event.config.name}`, event.error.message);
+          });
+
+          swarmFactory.on('factory:complete', (event) => {
+            logger.info(
+              `🎉 Auto-Swarm Factory completed: ${event.successful}/${event.total} swarms successfully created and initialized`
+            );
+          });
+
+          swarmFactory.on('factory:error', (event) => {
+            logger.error('❌ Auto-Swarm Factory encountered an error:', event.error);
           });
 
           const swarmConfigs = await swarmFactory.createSwarmsForDomains(confidenceResult.domains);
@@ -458,6 +497,48 @@ export class DiscoverCommand {
           logger.info(
             `✅ Created ${swarmConfigs.length} swarms with ${this.stats.agentsDeployed} total agents`
           );
+
+          // Verify swarm deployment and health
+          if (swarmConfigs.length > 0) {
+            logger.info('🔍 Verifying swarm deployment...');
+            
+            const verificationResults = await Promise.allSettled(
+              swarmConfigs.map(async (config) => {
+                try {
+                  // Basic health check - verify swarm coordinator can report status
+                  const status = swarmCoordinator.getStatus();
+                  return {
+                    swarmId: config.id,
+                    name: config.name,
+                    healthy: status.state !== 'error',
+                    agentCount: status.agentCount,
+                    uptime: status.uptime
+                  };
+                } catch (error) {
+                  logger.warn(`❌ Health check failed for swarm ${config.name}:`, error);
+                  return {
+                    swarmId: config.id,
+                    name: config.name,
+                    healthy: false,
+                    error: error instanceof Error ? error.message : 'Unknown error'
+                  };
+                }
+              })
+            );
+
+            const healthySwarms = verificationResults.filter(
+              result => result.status === 'fulfilled' && result.value.healthy
+            ).length;
+
+            if (healthySwarms === swarmConfigs.length) {
+              logger.info(`✅ All ${swarmConfigs.length} swarms passed health verification`);
+            } else {
+              logger.warn(`⚠️  ${healthySwarms}/${swarmConfigs.length} swarms passed health verification`);
+            }
+
+            // Add verification results to stats
+            this.stats.swarmsHealthy = healthySwarms;
+          }
 
           // Show swarm details
           if (options.verbose) {

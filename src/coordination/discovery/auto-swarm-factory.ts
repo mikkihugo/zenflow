@@ -209,20 +209,20 @@ export class AutoSwarmFactory extends EventEmitter {
       }
 
       // Initialize all approved swarms
-      await this.initializeSwarms(successfulConfigs);
+      const initializedConfigs = await this.initializeSwarms(successfulConfigs);
 
       logger.info(
-        `🎉 Auto-Swarm Factory completed: ${successfulConfigs.length}/${confidentDomains.size} swarms created`,
+        `🎉 Auto-Swarm Factory completed: ${initializedConfigs.length}/${confidentDomains.size} swarms created and initialized`,
       );
 
       this.emit('factory:complete', {
         total: confidentDomains.size,
-        successful: successfulConfigs.length,
-        configs: successfulConfigs,
+        successful: initializedConfigs.length,
+        configs: initializedConfigs,
         timestamp: Date.now(),
       });
 
-      return successfulConfigs;
+      return initializedConfigs;
     } catch (error) {
       logger.error('Auto-Swarm Factory failed:', error);
       this.emit('factory:error', { error });
@@ -685,7 +685,7 @@ export class AutoSwarmFactory extends EventEmitter {
   /**
    * Initialize all approved swarms
    */
-  private async initializeSwarms(configs: SwarmConfig[]): Promise<void> {
+  private async initializeSwarms(configs: SwarmConfig[]): Promise<SwarmConfig[]> {
     logger.info(`🚀 Initializing ${configs.length} swarms...`);
 
     const initPromises = configs.map(async (config) => {
@@ -710,12 +710,15 @@ export class AutoSwarmFactory extends EventEmitter {
       } catch (error) {
         logger.error(`Failed to initialize swarm ${config.name}:`, error);
         this.emit('swarm:init-error', { config, error });
-        throw error;
+        return null; // Return null instead of throwing
       }
     });
 
-    await Promise.all(initPromises);
-    logger.info('🎉 All swarms successfully initialized!');
+    const results = await Promise.all(initPromises);
+    const successfulInits = results.filter(Boolean) as SwarmConfig[];
+    
+    logger.info(`🎉 Swarm initialization completed: ${successfulInits.length}/${configs.length} swarms initialized!`);
+    return successfulInits;
   }
 
   /**
