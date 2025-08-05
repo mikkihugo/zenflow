@@ -6,8 +6,10 @@
  * @description Enhanced database providers with DI integration for Issue #63
  */
 
-import type {
-  ConnectionStats,
+import { inject, injectable } from '../../di/decorators/injectable';
+import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
+import {
+
   DatabaseAdapter,
   ExecuteResult,
   IConfig,
@@ -29,6 +31,95 @@ import {
 
 // Re-export DatabaseAdapter for external use
 export { DatabaseAdapter } from '../../core/interfaces/base-interfaces';
+
+/**
+ * Graph database specific result interface
+ */
+export interface GraphResult {
+  /** Graph nodes */
+  nodes: Array<{
+    id: any;
+    labels: string[];
+    properties: Record<string, any>;
+  }>;
+  /** Graph relationships */
+  relationships: Array<{
+    id: any;
+    type: string;
+    startNodeId: any;
+    endNodeId: any;
+    properties: Record<string, any>;
+  }>;
+  /** Query execution time */
+  executionTime: number;
+}
+
+/**
+ * Vector database specific result interface
+ */
+export interface VectorResult {
+  /** Matching vectors with scores */
+  matches: Array<{
+    id: any;
+    vector: number[];
+    score: number;
+    metadata?: Record<string, any>;
+  }>;
+  /** Query execution time */
+  executionTime: number;
+}
+
+/**
+ * Vector data interface for adding vectors
+ */
+export interface VectorData {
+  /** Vector ID */
+  id: any;
+  /** Vector values */
+  vector: number[];
+  /** Optional metadata */
+  metadata?: Record<string, any>;
+}
+
+/**
+ * Vector index configuration
+ */
+export interface IndexConfig {
+  /** Index name */
+  name: string;
+  /** Vector dimension */
+  dimension: number;
+  /** Distance metric */
+  metric: 'cosine' | 'euclidean' | 'dot';
+  /** Index type */
+  type?: string;
+}
+
+/**
+ * Graph database specific extensions
+ * Extends the base DatabaseAdapter with graph-specific operations
+ */
+export interface GraphDatabaseAdapter extends DatabaseAdapter {
+  /** Execute a graph query (e.g., Cypher) */
+  queryGraph(cypher: string, params?: any[]): Promise<GraphResult>;
+  /** Get total number of nodes in the graph */
+  getNodeCount(): Promise<number>;
+  /** Get total number of relationships in the graph */
+  getRelationshipCount(): Promise<number>;
+}
+
+/**
+ * Vector database specific extensions  
+ * Extends the base DatabaseAdapter with vector-specific operations
+ */
+export interface VectorDatabaseAdapter extends DatabaseAdapter {
+  /** Perform vector similarity search */
+  vectorSearch(query: number[], limit?: number): Promise<VectorResult>;
+  /** Add vectors to the database */
+  addVectors(vectors: VectorData[]): Promise<void>;
+  /** Create a vector index */
+  createIndex(config: IndexConfig): Promise<void>;
+}
 
 /**
  * Configuration interface for database adapters
@@ -80,11 +171,11 @@ export interface DatabaseConfig {
  * Factory for creating database adapter providers
  * Uses dependency injection for logger and configuration
  */
-@Injectable()
+@injectable
 export class DatabaseProviderFactory {
   constructor(
-    @Inject(CORE_TOKENS.Logger) private logger: ILogger,
-    @Inject(CORE_TOKENS.Config) private config: IConfig,
+    private logger: ILogger,
+    private config: IConfig,
   ) {}
 
   /**
@@ -102,9 +193,9 @@ export class DatabaseProviderFactory {
         case 'sqlite':
           return new SQLiteAdapter(config, this.logger);
         case 'kuzu':
-          return new KuzuAdapter(config, this.logger);
+          return new KuzuAdapter(config, this.logger) as GraphDatabaseAdapter;
         case 'lancedb':
-          return new LanceDBAdapter(config, this.logger);
+          return new LanceDBAdapter(config, this.logger) as VectorDatabaseAdapter;
         case 'mysql':
           return new MySQLAdapter(config, this.logger);
         default:
@@ -117,12 +208,30 @@ export class DatabaseProviderFactory {
       );
     }
   }
+
+  /**
+   * Create a graph database adapter (Kuzu)
+   * @param config Database configuration for Kuzu
+   * @returns GraphDatabaseAdapter implementation
+   */
+  createGraphAdapter(config: DatabaseConfig & { type: 'kuzu' }): GraphDatabaseAdapter {
+    return new KuzuAdapter(config, this.logger);
+  }
+
+  /**
+   * Create a vector database adapter (LanceDB)
+   * @param config Database configuration for LanceDB
+   * @returns VectorDatabaseAdapter implementation
+   */
+  createVectorAdapter(config: DatabaseConfig & { type: 'lancedb' }): VectorDatabaseAdapter {
+    return new LanceDBAdapter(config, this.logger);
+  }
 }
 
 /**
  * PostgreSQL database adapter implementation
  */
-@Injectable()
+@injectable
 export class PostgreSQLAdapter implements DatabaseAdapter {
   private connected = false;
   private connectionStats: ConnectionStats = {
@@ -397,7 +506,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
 /**
  * SQLite database adapter implementation
  */
-@Injectable()
+@injectable
 export class SQLiteAdapter implements DatabaseAdapter {
   private connected = false;
   private connectionStats: ConnectionStats = {
@@ -619,8 +728,8 @@ export class SQLiteAdapter implements DatabaseAdapter {
 /**
  * Kuzu graph database adapter implementation
  */
-@Injectable()
-export class KuzuAdapter implements DatabaseAdapter {
+@injectable
+export class KuzuAdapter implements GraphDatabaseAdapter {
   private connected = false;
   private connectionStats: ConnectionStats = {
     total: 1,
@@ -766,6 +875,85 @@ export class KuzuAdapter implements DatabaseAdapter {
     }
   }
 
+  // Graph-specific methods implementation
+  async queryGraph(cypher: string, params?: any[]): Promise<GraphResult> {
+    this.logger.debug(`Executing Kuzu graph query: ${cypher}`);
+    await this.ensureConnected();
+
+    const startTime = Date.now();
+
+    try {
+      // Kuzu graph query implementation would go here
+      await this.simulateAsync(25);
+
+      const executionTime = Date.now() - startTime;
+
+      // Mock graph result for demonstration
+      const result: GraphResult = {
+        nodes: [
+          {
+            id: 1,
+            labels: ['Person'],
+            properties: { name: 'Alice', age: 30 },
+          },
+          {
+            id: 2,
+            labels: ['Person'],
+            properties: { name: 'Bob', age: 25 },
+          },
+        ],
+        relationships: [
+          {
+            id: 1,
+            type: 'KNOWS',
+            startNodeId: 1,
+            endNodeId: 2,
+            properties: { since: '2020' },
+          },
+        ],
+        executionTime,
+      };
+
+      this.logger.debug(`Kuzu graph query completed in ${executionTime}ms`);
+      return result;
+    } catch (error) {
+      this.logger.error(`Kuzu graph query failed: ${error}`);
+      throw error;
+    }
+  }
+
+  async getNodeCount(): Promise<number> {
+    this.logger.debug('Getting Kuzu node count');
+    await this.ensureConnected();
+
+    try {
+      // Kuzu node count implementation would go here
+      await this.simulateAsync(10);
+      
+      // Mock result for demonstration
+      return 1000;
+    } catch (error) {
+      this.logger.error(`Failed to get Kuzu node count: ${error}`);
+      throw error;
+    }
+  }
+
+  async getRelationshipCount(): Promise<number> {
+    this.logger.debug('Getting Kuzu relationship count');
+    await this.ensureConnected();
+
+    try {
+      // Kuzu relationship count implementation would go here
+      await this.simulateAsync(10);
+      
+      // Mock result for demonstration
+      return 2500;
+    } catch (error) {
+      this.logger.error(`Failed to get Kuzu relationship count: ${error}`);
+      throw error;
+    }
+  }
+
   async getSchema(): Promise<SchemaInfo> {
     this.logger.debug('Getting Kuzu schema information');
     await this.ensureConnected();
@@ -823,8 +1011,8 @@ export class KuzuAdapter implements DatabaseAdapter {
 /**
  * LanceDB vector database adapter implementation
  */
-@Injectable()
-export class LanceDBAdapter implements DatabaseAdapter {
+@injectable
+export class LanceDBAdapter implements VectorDatabaseAdapter {
   private connected = false;
   private connectionStats: ConnectionStats = {
     total: 1,
@@ -974,6 +1162,76 @@ export class LanceDBAdapter implements DatabaseAdapter {
     }
   }
 
+  // Vector-specific methods implementation
+  async vectorSearch(query: number[], limit: number = 10): Promise<VectorResult> {
+    this.logger.debug(`Executing LanceDB vector search with limit: ${limit}`);
+    await this.ensureConnected();
+
+    const startTime = Date.now();
+
+    try {
+      // LanceDB vector search implementation would go here
+      await this.simulateAsync(40);
+
+      const executionTime = Date.now() - startTime;
+
+      // Mock vector search result for demonstration
+      const result: VectorResult = {
+        matches: [
+          {
+            id: 1,
+            vector: [0.1, 0.2, 0.3],
+            score: 0.95,
+            metadata: { type: 'document', title: 'Sample Doc 1' },
+          },
+          {
+            id: 2,
+            vector: [0.2, 0.3, 0.4],
+            score: 0.87,
+            metadata: { type: 'document', title: 'Sample Doc 2' },
+          },
+        ],
+        executionTime,
+      };
+
+      this.logger.debug(`LanceDB vector search completed in ${executionTime}ms`);
+      return result;
+    } catch (error) {
+      this.logger.error(`LanceDB vector search failed: ${error}`);
+      throw error;
+    }
+  }
+
+  async addVectors(vectors: VectorData[]): Promise<void> {
+    this.logger.debug(`Adding ${vectors.length} vectors to LanceDB`);
+    await this.ensureConnected();
+
+    try {
+      // LanceDB add vectors implementation would go here
+      await this.simulateAsync(20 * vectors.length);
+      
+      this.logger.debug(`Successfully added ${vectors.length} vectors to LanceDB`);
+    } catch (error) {
+      this.logger.error(`Failed to add vectors to LanceDB: ${error}`);
+      throw error;
+    }
+  }
+
+  async createIndex(config: IndexConfig): Promise<void> {
+    this.logger.debug(`Creating LanceDB index: ${config.name}`);
+    await this.ensureConnected();
+
+    try {
+      // LanceDB create index implementation would go here
+      await this.simulateAsync(50);
+      
+      this.logger.debug(`Successfully created LanceDB index: ${config.name}`);
+    } catch (error) {
+      this.logger.error(`Failed to create LanceDB index: ${error}`);
+      throw error;
+    }
+  }
+
   async getSchema(): Promise<SchemaInfo> {
     this.logger.debug('Getting LanceDB schema information');
     await this.ensureConnected();
@@ -1038,7 +1296,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
 /**
  * MySQL database adapter implementation
  */
-@Injectable()
+@injectable
 export class MySQLAdapter implements DatabaseAdapter {
   private connected = false;
   private connectionStats: ConnectionStats = {
