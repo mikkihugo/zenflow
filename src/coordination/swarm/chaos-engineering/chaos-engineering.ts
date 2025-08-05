@@ -23,12 +23,56 @@ import {
 import { createLogger } from '../../../core/logger';
 import { generateId } from '../core/utils';
 
+// Type definitions for chaos engineering
+interface ExperimentPhase {
+  name: string;
+  status: 'running' | 'completed' | 'failed';
+  startTime: Date;
+  endTime: Date | null;
+  duration: number;
+  error: string | null;
+}
+
+interface ExperimentExecution {
+  id: string;
+  experimentName: string;
+  experimentId: string;
+  status: 'running' | 'completed' | 'failed';
+  startTime: Date;
+  endTime: Date | null;
+  duration: number;
+  error: Error | null;
+  parameters: any;
+  phases: ExperimentPhase[];
+  currentPhase: string;
+  failureInjected: boolean;
+  recoveryTriggered: boolean;
+  recoveryCompleted: boolean;
+  blastRadius: string;
+  metadata: any;
+  injectionResult?: any;
+}
+
+interface ChaosExperiment {
+  id: string;
+  name: string;
+  description: string;
+  type: string;
+  failureType?: string;
+  parameters: any;
+  duration: number;
+  cooldown?: number;
+  blastRadius: string;
+  safetyChecks: string[];
+  metadata: any;
+}
+
 export class ChaosEngineering extends EventEmitter {
   private options: any;
   private logger: any;
-  private experiments: Map<string, any>;
-  private activeExperiments: Map<string, any>;
-  private experimentHistory: Map<string, any>;
+  private experiments: Map<string, ChaosExperiment>;
+  private activeExperiments: Map<string, ExperimentExecution>;
+  private experimentHistory: Map<string, ExperimentExecution[]>;
   private failureInjectors: Map<string, any>;
   private safetyChecks: Map<string, any>;
   private emergencyStop: boolean;
@@ -660,7 +704,7 @@ export class ChaosEngineering extends EventEmitter {
       this.logger.debug(`Waiting for cooldown period: ${experiment.cooldown}ms`, {
         executionId: execution.id,
       });
-      await new Promise((resolve) => setTimeout(resolve, experiment.cooldown));
+      await new Promise<void>((resolve) => setTimeout(resolve, experiment.cooldown));
     }
   }
 
