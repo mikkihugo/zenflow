@@ -243,7 +243,8 @@ export class ADRProposalSystem {
   }
 
   /**
-   * Propose ADR-001 for the document workflow automation system
+   * Propose ADR for the document workflow automation system
+   * (ADR number will be automatically assigned by the system)
    */
   async proposeDocumentWorkflowADR(): Promise<ADRDocumentEntity> {
     return this.proposeADR({
