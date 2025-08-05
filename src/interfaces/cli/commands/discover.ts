@@ -254,8 +254,26 @@ export class DiscoverCommand {
       });
       await memoryStore.initialize();
 
-      const projectAnalyzer = new ProjectContextAnalyzer(resolvedPath);
-      const projectContext = await projectAnalyzer.analyzeProject();
+      const projectAnalyzer = new ProjectContextAnalyzer({
+        projectRoot: resolvedPath,
+        swarmConfig: {
+          maxAgents: 5,
+          agentSpecializations: ['dependency', 'framework', 'api'],
+          factConfig: {
+            factRepoPath: process.env.FACT_REPO_PATH || '/tmp/fact',
+            anthropicApiKey: process.env.ANTHROPIC_API_KEY || 'dummy',
+          },
+        },
+        analysisDepth: 'medium',
+        autoUpdate: false,
+        cacheDuration: 1,
+        priorityThresholds: {
+          critical: 0.8,
+          high: 0.5,
+          medium: 0.2,
+        },
+      });
+      const projectContext = await projectAnalyzer.analyzeProjectContext();
 
       this.stats.documentsProcessed = (projectContext as any).documents?.length || 0;
       logger.info(`✅ Analyzed project: ${projectContext.name || 'Unknown'}`);
@@ -899,7 +917,7 @@ ${results.configurations
         for (const dir of subdirs) {
           if (domainPatterns.includes(dir.toLowerCase())) {
             const dirPath = path.join(srcPath, dir);
-            const files = this.getFilesRecursively(dirPath);
+            const files = await this.getFilesRecursively(dirPath);
 
             domains.push({
               id: `domain-${dir}-${Date.now()}`,
@@ -958,9 +976,9 @@ ${results.configurations
   /**
    * Get files recursively from directory
    */
-  private getFilesRecursively(dirPath: string): string[] {
-    const fs = require('node:fs');
-    const path = require('node:path');
+  private async getFilesRecursively(dirPath: string): Promise<string[]> {
+    const fs = await import('node:fs');
+    const path = await import('node:path');
     const files: string[] = [];
 
     try {
@@ -972,7 +990,7 @@ ${results.configurations
         if (item.isDirectory()) {
           // Skip node_modules, dist, build directories
           if (!['node_modules', 'dist', 'build', '.git'].includes(item.name)) {
-            files.push(...this.getFilesRecursively(fullPath));
+            files.push(...(await this.getFilesRecursively(fullPath)));
           }
         } else if (item.isFile()) {
           // Include TypeScript and JavaScript files

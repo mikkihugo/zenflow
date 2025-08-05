@@ -3005,7 +3005,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
    * Initialize all coordination systems
    */
   private initializeSystems(): void {
-    this.expertiseDiscovery = new ExpertiseDiscoverySystem(
+    this.expertiseDiscovery = new ExpertiseDiscoverySystemImpl(
       this.config.expertiseDiscovery,
       this.logger,
       this.eventBus
@@ -3520,6 +3520,23 @@ interface ExpertiseDiscoverySystem {
   incorporateSpecialization(specialization: any): Promise<void>;
   shutdown(): Promise<void>;
   on(event: string, handler: Function): void;
+}
+
+// Placeholder implementation for ExpertiseDiscoverySystem
+class ExpertiseDiscoverySystemImpl implements ExpertiseDiscoverySystem {
+  constructor(private config: any, private logger: any, private eventBus: any) {}
+
+  async incorporateSpecialization(specialization: any): Promise<void> {
+    // Placeholder implementation
+  }
+
+  async shutdown(): Promise<void> {
+    // Placeholder implementation
+  }
+
+  on(event: string, handler: Function): void {
+    // Placeholder implementation
+  }
 }
 
 // Additional placeholder interfaces would be defined here...

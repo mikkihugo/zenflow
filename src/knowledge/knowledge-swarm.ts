@@ -53,7 +53,6 @@ export interface KnowledgeSwarmResult {
 export type SwarmAgent = SwarmKnowledgeAgent;
 export type SwarmQuery = KnowledgeQuery;
 export type SwarmResult = KnowledgeSwarmResult;
-export { FACTResult } from './knowledge-client';
 
 interface KnowledgeAgent {
   id: string;
