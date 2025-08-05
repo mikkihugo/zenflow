@@ -598,8 +598,10 @@ export class USLFactory implements IServiceFactory {
     switch (serviceType) {
       case ServiceType.DATA:
       case ServiceType.WEB_DATA:
-        const { DataService } = await import('./implementations/data-service');
-        return new DataService(config as DataServiceConfig);
+      case ServiceType.DOCUMENT:
+        // Use the enhanced DataServiceAdapter for unified data operations
+        const { DataServiceAdapter } = await import('./adapters/data-service-adapter');
+        return new DataServiceAdapter(config as any);
         
       case ServiceType.WEB:
       case ServiceType.API:

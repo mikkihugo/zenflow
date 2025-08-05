@@ -104,6 +104,24 @@ export type { NeuralService } from './implementations/neural-service';
 export type { MemoryService } from './implementations/memory-service';
 export type { DatabaseService } from './implementations/database-service';
 
+// Data service adapters (enhanced implementations)
+export {
+  DataServiceAdapter,
+  DataServiceFactory,
+  DataServiceHelper,
+  DataServiceUtils,
+  globalDataServiceFactory,
+  type DataServiceAdapterConfig,
+  type DataOperationResult,
+  type BatchOperationConfig,
+  type DataValidationResult,
+  type EnhancedSearchOptions,
+  type DataAggregationOptions,
+  type TransformationStep,
+  createDataServiceAdapter,
+  createDefaultDataServiceAdapterConfig
+} from './adapters';
+
 /**
  * USL Main Interface
  * 
@@ -148,7 +166,7 @@ export class USL {
   }
 
   /**
-   * Create and register a data service
+   * Create and register a data service (uses enhanced DataServiceAdapter)
    */
   async createDataService(
     name: string,
@@ -164,6 +182,53 @@ export class USL {
     });
     
     return await globalUSLFactory.create(config);
+  }
+
+  /**
+   * Create web data service adapter (optimized for web operations)
+   */
+  async createWebDataService(
+    name: string,
+    options: Partial<DataServiceAdapterConfig> = {}
+  ): Promise<DataServiceAdapter> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+    
+    const adapter = await globalDataServiceFactory.createWebDataAdapter(name, options);
+    return adapter;
+  }
+
+  /**
+   * Create document service adapter (optimized for database operations)
+   */
+  async createDocumentService(
+    name: string,
+    databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
+    options: Partial<DataServiceAdapterConfig> = {}
+  ): Promise<DataServiceAdapter> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+    
+    const adapter = await globalDataServiceFactory.createDocumentAdapter(name, databaseType, options);
+    return adapter;
+  }
+
+  /**
+   * Create unified data service adapter (both web and document operations)
+   */
+  async createUnifiedDataService(
+    name: string,
+    databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
+    options: Partial<DataServiceAdapterConfig> = {}
+  ): Promise<DataServiceAdapter> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+    
+    const adapter = await globalDataServiceFactory.createUnifiedDataAdapter(name, databaseType, options);
+    return adapter;
   }
 
   /**
@@ -755,6 +820,9 @@ export const USLHelpers = {
 
 // Export common service creation functions
 export const createDataService = usl.createDataService.bind(usl);
+export const createWebDataService = usl.createWebDataService.bind(usl);
+export const createDocumentService = usl.createDocumentService.bind(usl);
+export const createUnifiedDataService = usl.createUnifiedDataService.bind(usl);
 export const createWebService = usl.createWebService.bind(usl);
 export const createCoordinationService = usl.createCoordinationService.bind(usl);
 export const createNeuralService = usl.createNeuralService.bind(usl);
