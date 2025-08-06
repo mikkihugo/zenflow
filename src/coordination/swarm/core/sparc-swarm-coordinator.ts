@@ -326,7 +326,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
     // Use code review and quality assurance agents
     for (const agent of agents) {
-      if (agent.type === 'CodeReviewer' || agent.type === 'QualityAssuranceSpecialist') {
+      if (agent.type === 'reviewer' || agent.type === 'tester') {
         await this.assignTaskToAgent(agent.id, {
           id: `refine-${sparcTask.id}-${agent.id}`,
           type: 'refinement',
@@ -351,7 +351,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
     // Use testing and deployment agents
     for (const agent of agents) {
-      if (agent.type === 'TestingSpecialist' || agent.type === 'DeploymentSpecialist') {
+      if (agent.type === 'tester' || agent.type === 'deployment-ops') {
         await this.assignTaskToAgent(agent.id, {
           id: `complete-${sparcTask.id}-${agent.id}`,
           type: 'completion',
@@ -401,14 +401,14 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
    */
   private getPhaseSpecialists(phase: SPARCPhase): AgentType[] {
     const specialists: Record<SPARCPhase, AgentType[]> = {
-      specification: ['BusinessAnalyst', 'RequirementsAnalyst', 'ProductManager'],
+      specification: ['analyst', 'requirements_analyst', 'planner'],
       pseudocode: ['design-architect', 'system-architect', 'coder'],
       architecture: ['system-architect', 'architect', 'database-architect'],
-      refinement: ['CodeReviewer', 'QualityAssuranceSpecialist', 'PerformanceOptimizer'],
-      completion: ['TestingSpecialist', 'DeploymentSpecialist', 'ValidationSpecialist'],
+      refinement: ['reviewer', 'tester', 'optimizer'],
+      completion: ['tester', 'deployment-ops', 'production-validator'],
     };
 
-    return specialists[phase] || ['GeneralPurposeAgent'];
+    return specialists[phase] || ['specialist'];
   }
 
   /**
