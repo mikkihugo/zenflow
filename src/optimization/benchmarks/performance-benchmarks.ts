@@ -10,6 +10,12 @@ import type {
   SwarmOptimizer,
   WasmOptimizer,
 } from '../interfaces/optimization-interfaces';
+import {
+  NEURAL_PERFORMANCE_TARGETS,
+  SWARM_PERFORMANCE_TARGETS,
+  DATA_PERFORMANCE_TARGETS,
+  WASM_PERFORMANCE_TARGETS,
+} from '../interfaces/optimization-interfaces';
 
 export interface BenchmarkResult {
   domain: string;

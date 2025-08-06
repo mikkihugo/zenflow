@@ -85,6 +85,7 @@ export class ChaosEngineering extends EventEmitter {
   private healthMonitor: any;
   private recoveryWorkflows: any;
   private connectionManager: any;
+  private mcpTools: any; // MCP tools for chaos engineering operations
 
   constructor(options: any = {}) {
     super();

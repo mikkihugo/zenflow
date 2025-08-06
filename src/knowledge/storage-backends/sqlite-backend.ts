@@ -1,12 +1,15 @@
 /**
- * SQLite Backend for FACT Storage
+ * SQLite Backend for FACT Storage using Unified DAL
  *
  * Lightweight, embedded SQLite storage with JSON support
+ * Refactored to use the unified Database Access Layer instead of direct SQLite
  */
 
 import { existsSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
-import Database from 'better-sqlite3';
+// Use DAL instead of direct database access
+import { DatabaseProviderFactory } from '../../database/providers/database-providers';
+import type { DatabaseAdapter, DatabaseConfig } from '../../database/providers/database-providers';
 import type {
   FACTKnowledgeEntry,
   FACTSearchQuery,
@@ -24,18 +27,11 @@ interface SQLiteBackendConfig {
 
 export class SQLiteBackend implements FACTStorageBackend {
   private config: SQLiteBackendConfig;
-  private db?: Database.Database;
-  private prepared: {
-    insert?: Database.Statement;
-    select?: Database.Statement;
-    search?: Database.Statement;
-    searchFTS?: Database.Statement;
-    cleanup?: Database.Statement;
-    stats?: Database.Statement;
-    delete?: Database.Statement;
-  } = {};
+  private dalAdapter?: DatabaseAdapter;
+  private dalFactory: DatabaseProviderFactory;
+  private isInitialized = false;
 
-  constructor(config: Partial<SQLiteBackendConfig> = {}) {
+  constructor(config: Partial<SQLiteBackendConfig> = {}, dalFactory?: DatabaseProviderFactory) {
     this.config = {
       dbPath: path.join(process.cwd(), '.claude', 'fact-storage.db'),
       tableName: 'fact_knowledge',
@@ -44,24 +40,42 @@ export class SQLiteBackend implements FACTStorageBackend {
       enablePerformanceIndexes: true,
       ...config,
     };
+    
+    // Use provided factory or create a minimal one
+    this.dalFactory = dalFactory || new DatabaseProviderFactory(
+      console, // Simple logger for now
+      {} // Minimal config
+    );
   }
 
   async initialize(): Promise<void> {
+    if (this.isInitialized) {
+      return;
+    }
+
     // Ensure directory exists
     const dbDir = path.dirname(this.config.dbPath);
     if (!existsSync(dbDir)) {
       mkdirSync(dbDir, { recursive: true });
     }
 
-    // Open database
-    this.db = new Database(this.config.dbPath);
+    // Create DAL configuration for SQLite
+    const dalConfig: DatabaseConfig = {
+      type: 'sqlite',
+      database: this.config.dbPath,
+      options: {
+        readonly: false,
+        fileMustExist: false,
+        timeout: 5000,
+        wal: this.config.enableWAL
+      }
+    };
 
-    // Enable WAL mode for better performance
-    if (this.config.enableWAL) {
-      this.db.pragma('journal_mode = WAL');
-    }
+    // Create DAL adapter
+    this.dalAdapter = this.dalFactory.createAdapter(dalConfig);
+    await this.dalAdapter.connect();
 
-    // Create tables
+    // Create tables using DAL
     await this.createTables();
 
     // Create indexes
@@ -69,8 +83,7 @@ export class SQLiteBackend implements FACTStorageBackend {
       await this.createIndexes();
     }
 
-    // Prepare statements
-    await this.prepareStatements();
+    this.isInitialized = true;
   }
 
   async store(entry: FACTKnowledgeEntry): Promise<void> {

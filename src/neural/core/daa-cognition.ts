@@ -124,13 +124,13 @@ export class DAACognition {
 
     const adaptation = {
       id: adaptationId,
-      feedback,
-      timestamp: new Date(),
-      changes: this.calculateAdaptations(feedback),
+      trigger: 'feedback_adaptation',
+      change: this.calculateAdaptations(feedback),
+      effectiveness: feedback.success ? 0.8 : 0.4,
     };
 
     // Apply adaptations
-    this.applyAdaptations(adaptation.changes);
+    this.applyAdaptations(adaptation.change);
 
     this.adaptations.set(adaptationId, adaptation);
     return adaptation;

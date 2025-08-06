@@ -892,6 +892,7 @@ export class ZenSwarm implements SwarmEventEmitter {
 export class SwarmWrapper {
   public id: string;
   private ruvSwarm: ZenSwarm;
+  private wasmSwarm: any; // WASM swarm instance
   public agents: Map<string, Agent>;
   private tasks: Map<string, TaskWrapper>;
 

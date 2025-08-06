@@ -42,6 +42,22 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
   private wasmLoader: WasmModuleLoader;
   protected options: ExtendedSwarmOptions;
 
+  // Properties referenced in the class methods
+  protected isRunning: boolean = false;
+  protected coordinationDao?: any; // ICoordinationDao when persistence is enabled
+  protected neuralProcessor?: any; // WASM neural processor when available
+  protected metrics: {
+    tasksCreated: number;
+    tasksCompleted: number;
+    tasksFailed: number;
+    messagesProcessed: number;
+    cognitiveLoad: number;
+    averageResponseTime: number;
+    neuralNetworkAccuracy: number;
+    swarmEfficiency: number;
+    timestamp: number;
+  };
+
   constructor(options: SwarmOptions = {}) {
     super();
 

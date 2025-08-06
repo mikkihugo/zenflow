@@ -36,6 +36,7 @@ export class MonitoringDashboard extends EventEmitter {
   private healthMonitor: any;
   private recoveryWorkflows: any;
   private connectionManager: any;
+  private mcpTools: any; // MCP tools for dashboard operations
 
   // Aggregation timer
   private aggregationTimer: NodeJS.Timeout | null;

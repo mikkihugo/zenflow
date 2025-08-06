@@ -720,9 +720,12 @@ export interface ValidationResult {
 
 export interface ValidationReport {
   overall: boolean;
+  approved?: boolean; // Alias for overall
   score: number;
+  overallScore?: number; // Alias for score
   results: ValidationResult[];
   recommendations: string[];
+  validationResults?: ValidationResult[]; // Alias for results
 }
 
 export interface CompletionValidation {
@@ -820,7 +823,7 @@ export type AlgorithmDependency = StructureRelationship;
 export type ComponentDiagram = Component[];
 export type DataFlowDiagram = DataFlowConnection[];
 export type DeploymentPlan = DeploymentUnit[];
-export type ArchitecturalValidation = ValidationResult[];
+export type ArchitecturalValidation = ValidationReport;
 export type GapAnalysis = RefinementChange[];
 export type OptimizationPlan = RefinementStrategy[];
 export type AlgorithmRefinement = RefinementChange;

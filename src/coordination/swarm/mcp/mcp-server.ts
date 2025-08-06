@@ -14,6 +14,7 @@ import type { MCPServerConfig } from './types';
 const logger = createLogger({ prefix: 'UnifiedMCPServer' });
 
 export class StdioMcpServer {
+  private config: MCPServerConfig;
   private server: McpServer;
   private transport: StdioServerTransport;
   private toolRegistry: SwarmTools;

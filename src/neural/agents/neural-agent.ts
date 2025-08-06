@@ -957,7 +957,7 @@ class NeuralAgentFactory {
 // Lazy load to avoid circular dependency
 setImmediate(() => {
   import('../core/network')
-    .catch(() => import('./neural'))
+    .catch(() => import('../core/neural'))
     .catch(() => null)
     .then((neural) => {
       if (neural) {

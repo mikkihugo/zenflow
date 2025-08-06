@@ -5,7 +5,7 @@
  * Enables distributed SPARC development using existing agent types and coordination protocols.
  */
 
-import { TaskAPI } from '../../coordination/api';
+import { TaskAPI } from '../../../api';
 import { type TaskConfig, TaskCoordinator } from '../../coordination/task-coordinator';
 import type { AgentType } from '../../types/agent-types';
 import type { SPARCPhase, SPARCProject } from '../types/sparc-types';

@@ -397,6 +397,7 @@ export class SystemDiagnostics {
   private samples: SystemSample[];
   private maxSamples: number;
   private monitorInterval?: NodeJS.Timeout | null;
+  private startTime: number = 0;
 
   constructor(logger?: LoggerInterface | null) {
     this.logger = logger || loggingConfig.getLogger('diagnostics', { level: 'DEBUG' });

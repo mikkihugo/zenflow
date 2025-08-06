@@ -32,6 +32,7 @@ export class DefaultHookManager extends EventEmitter {
   private config: HookManagerConfig;
   private activeHooks = new Set<string>();
   private logger: any;
+  private performanceOptimizer: any;
 
   constructor(hookSystem?: HookSystem, config?: Partial<HookManagerConfig>) {
     super();

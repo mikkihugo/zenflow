@@ -4,6 +4,15 @@
  */
 
 export class NeuralCoordinationProtocol {
+  public nodes: Map<string, any>;
+  public messages: any[];
+  public options: {
+    syncInterval: number;
+    maxMessages: number;
+    compressionEnabled: boolean;
+    [key: string]: any;
+  };
+
   constructor(options = {}) {
     this.nodes = new Map();
     this.messages = [];

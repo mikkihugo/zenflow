@@ -123,6 +123,7 @@ export class Agent extends EventEmitter implements AgentComponent {
   private taskHistory: TaskResult[] = [];
   private maxConcurrentTasks = 1;
   private resourceLimits: ResourceRequirements;
+  private config: any = {}; // Configuration object for agent settings
 
   constructor(
     id: string,

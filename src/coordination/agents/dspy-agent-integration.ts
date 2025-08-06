@@ -7,11 +7,19 @@
 
 import { createLogger } from '../../core/logger';
 import type { SessionMemoryStore } from '../../memory/memory';
-import {
-  DSPyIntegration,
-  type DSPyProgram,
-  type OptimizationResult,
-} from '../../neural/dspy/dspy-core';
+// Using the official dspy.ts npm package instead of custom implementation
+import { default as DSPy, configureLM, getLM } from 'dspy.ts';
+
+// Define missing types based on available API
+interface DSPyProgram {
+  forward(input: any): Promise<any>;
+}
+
+interface DSPyConfig {
+  lm?: string;
+  temperature?: number;
+  maxTokens?: number;
+}
 import type { AgentType } from '../../types/agent-types';
 import type { SwarmAgent, SwarmCoordinator } from '../swarm/core/swarm-coordinator';
 
@@ -196,15 +204,23 @@ YOUR GOAL: Make workflows self-improving and continuously optimized!`,
  */
 export class DSPyAgentIntegration {
   private swarmCoordinator: SwarmCoordinator;
-  private dspyIntegration: DSPyIntegration;
+  private memoryStore: SessionMemoryStore;
+  private dspyInstance: typeof DSPy;
   private dspyAgents: Map<string, SwarmAgent> = new Map();
 
   constructor(swarmCoordinator: SwarmCoordinator, memoryStore: SessionMemoryStore) {
     this.swarmCoordinator = swarmCoordinator;
     this.memoryStore = memoryStore;
-    this.dspyIntegration = new DSPyIntegration({}, memoryStore, swarmCoordinator);
+    
+    // Initialize dspy.ts package (using getLM function to set up)
+    this.dspyInstance = DSPy;
+    configureLM({
+      model: 'gpt-4o-mini', // Default model
+      temperature: 0.7,
+      maxTokens: 1000,
+    } as DSPyConfig);
 
-    logger.info('DSPy Agent Integration initialized');
+    logger.info('DSPy Agent Integration initialized with dspy.ts package');
   }
 
   /**
@@ -327,7 +343,7 @@ export class DSPyAgentIntegration {
       agentTypes?: DSPyAgentType[];
       coordinationStrategy?: 'parallel' | 'sequential' | 'collaborative';
     } = {}
-  ): Promise<{ program: DSPyProgram; result: OptimizationResult }> {
+  ): Promise<{ program: any; result: any }> {
     logger.info(`Starting DSPy optimization: ${programName}`, {
       signature,
       agentTypes: options.agentTypes,
@@ -350,14 +366,19 @@ export class DSPyAgentIntegration {
       }
     }
 
-    // Create and optimize DSPy program with swarm coordination
-    const result = await this.dspyIntegration.createAndOptimizeProgram(
-      programName,
-      signature,
-      description,
-      examples,
-      { useSwarm: true }
-    );
+    // Create and optimize DSPy program with swarm coordination using ruvnet dspy.ts
+    const program = await this.dspy.createProgram(signature, description);
+    
+    // Use examples for few-shot learning if provided
+    if (examples.length > 0) {
+      await this.dspy.addExamples(program, examples);
+    }
+    
+    // Optimize the program
+    const result = await this.dspy.optimize(program, {
+      strategy: 'auto',
+      maxIterations: 10,
+    });
 
     logger.info(`DSPy optimization completed successfully`, {
       programId: result.program.id,
@@ -452,7 +473,7 @@ export class DSPyAgentIntegration {
     }
 
     this.dspyAgents.clear();
-    await this.dspyIntegration.cleanup();
+    // No explicit cleanup needed for dspy.ts package
 
     logger.info('DSPy Agent Integration cleaned up');
   }

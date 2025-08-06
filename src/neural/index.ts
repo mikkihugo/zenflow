@@ -17,15 +17,16 @@ export { NeuralAgent } from './agents/index';
 // export * from './coordination/index';
 // Core neural components (specific exports to avoid conflicts)
 export {
-  Neural,
-  NeuralCore,
+  // Neural, // Not available in core/index
+  // NeuralCore, // Not available in core/index  
   NeuralCoreCLI,
   NeuralNetwork as CoreNeuralNetwork,
   NeuralNetworkManager,
 } from './core/index';
 // Neural models and presets
-export { NeuralPresets } from './models/index';
+export { NEURAL_PRESETS as NeuralPresets } from './models/index';
 // Neural Bridge (main interface)
 export { NeuralBridge, NeuralBridge as default } from './neural-bridge';
 // Public API for external access
-export { createNeuralNetwork, initializeWASM } from './public-api';
+// export { createNeuralNetwork, initializeWASM } from './public-api'; // TODO: Fix public-api exports
+export { createNeuralWASM } from './public-api';
