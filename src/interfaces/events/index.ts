@@ -321,8 +321,8 @@ export class UEL {
    * ```
    */
   async initialize(config?: {
-    logger?: any;
-    config?: any;
+    logger?: Console | { debug: Function; info: Function; warn: Function; error: Function };
+    config?: Record<string, unknown>;
     autoRegisterFactories?: boolean;
     enableValidation?: boolean;
     enableCompatibility?: boolean;
@@ -750,7 +750,7 @@ export class UEL {
   }> {
     const factoryStats = this.factory?.getStats() || {
       totalManagers: 0,
-      managersByType: {} as any,
+      managersByType: {} as Record<string, number>,
       managersByStatus: {},
       cacheSize: 0,
       transactions: 0,
@@ -923,9 +923,9 @@ export class UEL {
   /**
    * Analyze existing system EventEmitter usage
    */
-  async analyzeSystemEventEmitters(systems: { [key: string]: any }): Promise<{
+  async analyzeSystemEventEmitters(systems: { [key: string]: unknown }): Promise<{
     totalSystems: number;
-    systemAnalyses: { [key: string]: any };
+    systemAnalyses: { [key: string]: { emitters: number; listeners: number; complexity: string } };
     migrationRecommendations: string[];
     overallComplexity: 'low' | 'medium' | 'high';
   }> {
@@ -967,7 +967,7 @@ export class UEL {
    * @param type
    */
   async migrateEventEmitter(
-    emitter: any, // EventEmitter
+    emitter: { on: Function; off?: Function; emit: Function; listeners?: Function }, // EventEmitter-like interface
     name: string,
     type: EventManagerType = EventManagerTypes.SYSTEM
   ): Promise<UELCompatibleEventEmitter | null> {
@@ -984,7 +984,7 @@ export class UEL {
    * @param eventType
    * @param schema
    */
-  registerEventTypeSchema(eventType: string, schema: any): void {
+  registerEventTypeSchema(eventType: string, schema: Record<string, unknown>): void {
     if (this.validationFramework) {
       this.validationFramework.registerEventTypeSchema(eventType, schema);
     }
@@ -1139,7 +1139,7 @@ export const UELHelpers = {
       enableCompatibility?: boolean;
       healthMonitoring?: boolean;
       autoRegisterFactories?: boolean;
-      logger?: any;
+      logger?: Console | { debug: Function; info: Function; warn: Function; error: Function };
     } = {}
   ): Promise<UEL> {
     await uel.initialize({
@@ -1265,7 +1265,7 @@ export const UELHelpers = {
    *
    * @param observerSystem
    */
-  async migrateObserverSystem(observerSystem: any): Promise<{
+  async migrateObserverSystem(observerSystem: { observers: unknown[]; notify: Function }): Promise<{
     success: boolean;
     migratedManagers: string[];
     errors: string[];
@@ -1358,7 +1358,7 @@ export const UELHelpers = {
   /**
    * Perform comprehensive health check on all event managers
    */
-  async performHealthCheck(): Promise<Record<string, { healthy: boolean; details?: any }>> {
+  async performHealthCheck(): Promise<Record<string, { healthy: boolean; details?: Record<string, unknown> }>> {
     const healthStatus = await uel.getHealthStatus();
 
     return healthStatus.reduce(
@@ -1377,7 +1377,7 @@ export const UELHelpers = {
         };
         return acc;
       },
-      {} as Record<string, { healthy: boolean; details?: any }>
+      {} as Record<string, { healthy: boolean; details?: Record<string, unknown> }>
     );
   },
 

@@ -138,6 +138,9 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Register an agent with the coordination protocol
+   *
+   * @param agentId
+   * @param agent
    */
   async registerAgent(agentId: string, agent: any) {
     const nodeInfo = {
@@ -146,11 +149,11 @@ export class NeuralCoordinationProtocol {
       status: 'active',
       messageCount: 0,
       lastSeen: new Date(),
-      capabilities: agent.modelType || 'unknown'
+      capabilities: agent.modelType || 'unknown',
     };
 
     this.nodes.set(agentId, nodeInfo);
-    
+
     // Send registration message to other nodes
     for (const otherId of Array.from(this.nodes.keys())) {
       if (otherId !== agentId) {
@@ -158,7 +161,7 @@ export class NeuralCoordinationProtocol {
           type: 'agent_registration',
           agentId,
           capabilities: nodeInfo.capabilities,
-          timestamp: new Date()
+          timestamp: new Date(),
         });
       }
     }
@@ -168,6 +171,8 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Initialize a coordination session
+   *
+   * @param session
    */
   async initializeSession(session: any) {
     const sessionInfo = {
@@ -175,7 +180,7 @@ export class NeuralCoordinationProtocol {
       agentIds: session.agentIds || [],
       strategy: session.strategy || 'federated',
       startTime: new Date(),
-      status: 'active'
+      status: 'active',
     };
 
     // Register all agents in the session
@@ -186,7 +191,7 @@ export class NeuralCoordinationProtocol {
           status: 'active',
           messageCount: 0,
           lastSeen: new Date(),
-          capabilities: 'unknown'
+          capabilities: 'unknown',
         });
       }
     }
@@ -202,6 +207,8 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Coordinate agents in a session
+   *
+   * @param session
    */
   async coordinate(session: any) {
     const sessionInfo = this.sessions?.get(session.id);
@@ -221,7 +228,7 @@ export class NeuralCoordinationProtocol {
           patternUpdates: this.generatePatternUpdates(),
           collaborationScore: Math.random() * 100,
           newPatterns: [],
-          timestamp: new Date()
+          timestamp: new Date(),
         };
 
         coordinationResults.set(agentId, coordination);
@@ -239,6 +246,8 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Get coordination results for a session
+   *
+   * @param sessionId
    */
   async getResults(sessionId: string) {
     return this.coordinationResults?.get(sessionId) || null;
@@ -252,28 +261,28 @@ export class NeuralCoordinationProtocol {
       totalNodes: this.nodes.size,
       totalMessages: this.messages.length,
       activeSessions: this.sessions?.size || 0,
-      averageMessageCount: this.calculateAverageMessageCount()
+      averageMessageCount: this.calculateAverageMessageCount(),
     };
   }
 
   private generateWeightAdjustments() {
     return {
       layer_0: Array.from({ length: 10 }, () => (Math.random() - 0.5) * 0.1),
-      layer_1: Array.from({ length: 10 }, () => (Math.random() - 0.5) * 0.1)
+      layer_1: Array.from({ length: 10 }, () => (Math.random() - 0.5) * 0.1),
     };
   }
 
   private generatePatternUpdates() {
     return {
       pattern_1: { type: 'enhancement', factor: 1.1 },
-      pattern_2: { type: 'refinement', factor: 0.95 }
+      pattern_2: { type: 'refinement', factor: 0.95 },
     };
   }
 
   private calculateAverageMessageCount() {
     const nodes = Array.from(this.nodes.values());
     if (nodes.length === 0) return 0;
-    
+
     const total = nodes.reduce((sum, node) => sum + (node.messageCount || 0), 0);
     return total / nodes.length;
   }

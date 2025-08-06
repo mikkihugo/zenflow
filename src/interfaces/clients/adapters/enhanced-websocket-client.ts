@@ -415,6 +415,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    *
    * @param message
    * @param options
+   * @param _options
    */
   async sendMessage<T = any>(
     message: WebSocketMessage<T>,

@@ -45,7 +45,7 @@ describe('SwarmPersistence Tests', () => {
         SELECT name FROM sqlite_master 
         WHERE type='table' 
         ORDER BY name
-      `
+      `,
         )
         .all();
 
@@ -73,7 +73,7 @@ describe('SwarmPersistence Tests', () => {
         SELECT name FROM sqlite_master 
         WHERE type='index' 
         ORDER BY name
-      `
+      `,
         )
         .all();
 
@@ -483,7 +483,7 @@ describe('SwarmPersistence Tests', () => {
           `
         INSERT INTO events (swarm_id, event_type, event_data, timestamp)
         VALUES (?, ?, ?, ?)
-      `
+      `,
         )
         .run(swarmId, 'old_event', '{}', oldTimestamp);
 

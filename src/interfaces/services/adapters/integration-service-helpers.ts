@@ -468,6 +468,7 @@ export class IntegrationServiceHelper {
    * @param data.resourceData
    * @param data.queryParams
    * @param config
+   * @param _config
    */
   async manageResource<T>(
     operation: 'create' | 'read' | 'update' | 'delete' | 'list',

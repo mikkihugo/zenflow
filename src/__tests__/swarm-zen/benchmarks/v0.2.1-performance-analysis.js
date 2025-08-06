@@ -251,15 +251,15 @@ Version 0.2.1 introduces critical fixes and performance improvements to the neur
 
 ### Key Achievements:
 ${this.results.fixes
-  .filter((f) => f.fixed)
-  .map((f) => `- ✅ ${f.issue}: ${f.impact}`)
-  .join('\n')}
+    .filter((f) => f.fixed)
+    .map((f) => `- ✅ ${f.issue}: ${f.impact}`)
+    .join('\n')}
 
 ### Outstanding Issues:
 ${this.results.fixes
-  .filter((f) => !f.fixed)
-  .map((f) => `- ⚠️ ${f.issue}: ${f.recommendation}`)
-  .join('\n')}
+    .filter((f) => !f.fixed)
+    .map((f) => `- ⚠️ ${f.issue}: ${f.recommendation}`)
+    .join('\n')}
 
 ## Performance Metrics
 
@@ -315,9 +315,9 @@ ${this.results.fixes
 
 ### Immediate Actions:
 ${this.results.fixes
-  .filter((f) => !f.fixed)
-  .map((f) => `1. ${f.recommendation}`)
-  .join('\n')}
+    .filter((f) => !f.fixed)
+    .map((f) => `1. ${f.recommendation}`)
+    .join('\n')}
 
 ### Future Enhancements:
 1. Implement SIMD support for additional performance gains
@@ -342,7 +342,7 @@ The system is now more robust, with ${(this.results.metrics.inputValidation?.sco
     // Also save raw data
     await fs.writeFile(
       path.join(__dirname, 'v0.2.1-performance-data.json'),
-      JSON.stringify(this.results, null, 2)
+      JSON.stringify(this.results, null, 2),
     );
 
     return report;

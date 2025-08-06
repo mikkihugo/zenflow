@@ -988,6 +988,12 @@ export class DocumentManager {
    * @param notificationConfig.template
    * @param notificationConfig.channel
    * @param notificationConfig.urgency
+   * @param _document
+   * @param _notificationConfig
+   * @param _notificationConfig.recipients
+   * @param _notificationConfig.template
+   * @param _notificationConfig.channel
+   * @param _notificationConfig.urgency
    */
   private async sendWorkflowNotification(
     _document: BaseDocumentEntity,

@@ -397,6 +397,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
    *
    * @param phase
    * @param sparcTask
+   * @param _sparcTask
    */
   private selectPhaseAgents(phase: SPARCPhase, _sparcTask: SPARCTask): SwarmAgent[] {
     const allAgents = this.getAgents();

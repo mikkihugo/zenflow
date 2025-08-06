@@ -118,16 +118,19 @@ export class MetaLearningFramework {
 
   /**
    * Adapt configuration for an agent
+   *
+   * @param agentId
+   * @param config
    */
   async adaptConfiguration(agentId: string, config: any) {
     const agentHistory = this.taskHistory.get(agentId) || [];
-    
+
     if (agentHistory.length === 0) {
       return config; // No history, return original config
     }
 
     // Find best performing configuration from history
-    const bestTask = agentHistory.reduce((best, task) => 
+    const bestTask = agentHistory.reduce((best, task) =>
       task.performance > best.performance ? task : best
     );
 
@@ -135,7 +138,7 @@ export class MetaLearningFramework {
     const adaptedConfig = {
       ...config,
       learningRate: bestTask.config?.learningRate || config.learningRate,
-      architecture: bestTask.config?.architecture || config.architecture
+      architecture: bestTask.config?.architecture || config.architecture,
     };
 
     return adaptedConfig;
@@ -143,17 +146,21 @@ export class MetaLearningFramework {
 
   /**
    * Optimize training options for an agent
+   *
+   * @param agentId
+   * @param options
    */
   async optimizeTraining(agentId: string, options: any) {
     const agentHistory = this.taskHistory.get(agentId) || [];
-    
+
     if (agentHistory.length === 0) {
       return options;
     }
 
     // Analyze historical training performance
     const recentTasks = agentHistory.slice(-5);
-    const avgPerformance = recentTasks.reduce((sum, task) => sum + task.performance, 0) / recentTasks.length;
+    const avgPerformance =
+      recentTasks.reduce((sum, task) => sum + task.performance, 0) / recentTasks.length;
 
     const optimizedOptions = { ...options };
 
@@ -169,18 +176,23 @@ export class MetaLearningFramework {
 
   /**
    * Preserve learning state for an agent
+   *
+   * @param agentId
    */
   async preserveState(agentId: string) {
     return {
       agentId,
       taskHistory: this.taskHistory.get(agentId) || [],
       learningStrategies: Array.from(this.learningStrategies.values()),
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 
   /**
    * Restore learning state for an agent
+   *
+   * @param agentId
+   * @param state
    */
   async restoreState(agentId: string, state: any) {
     if (state && state.taskHistory) {
@@ -191,14 +203,16 @@ export class MetaLearningFramework {
 
   /**
    * Extract experiences for an agent
+   *
+   * @param agentId
    */
   async extractExperiences(agentId: string) {
     const history = this.taskHistory.get(agentId) || [];
-    return history.map(task => ({
+    return history.map((task) => ({
       taskId: task.id,
       performance: task.performance,
       strategy: task.strategy,
-      timestamp: task.timestamp
+      timestamp: task.timestamp,
     }));
   }
 
@@ -206,14 +220,16 @@ export class MetaLearningFramework {
    * Get meta-learning statistics
    */
   getStatistics() {
-    const totalTasks = Array.from(this.taskHistory.values())
-      .reduce((sum, history) => sum + history.length, 0);
-    
+    const totalTasks = Array.from(this.taskHistory.values()).reduce(
+      (sum, history) => sum + history.length,
+      0
+    );
+
     return {
       totalAgents: this.taskHistory.size,
       totalTasks,
       strategies: this.learningStrategies.size,
-      averagePerformance: this.calculateAveragePerformance()
+      averagePerformance: this.calculateAveragePerformance(),
     };
   }
 }

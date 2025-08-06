@@ -152,7 +152,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
         const network = await neuralManager.createAdvancedNeuralModel(
           `agent-${template}`,
           template,
-          { requiresCreativity: true, requiresPrecision: true }
+          { requiresCreativity: true, requiresPrecision: true },
         );
 
         expect(network).toBeDefined();
@@ -164,7 +164,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
 
     test('should handle invalid template gracefully', async () => {
       await expect(
-        neuralManager.createAdvancedNeuralModel('agent-invalid', 'invalid_template')
+        neuralManager.createAdvancedNeuralModel('agent-invalid', 'invalid_template'),
       ).rejects.toThrow('Invalid template: invalid_template');
     });
 
@@ -265,7 +265,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
 
       const loaded = await neuralManager.loadNetworkState(
         'save-load-test',
-        '/tmp/test-network.json'
+        '/tmp/test-network.json',
       );
       expect(loaded).toBe(true);
     });
@@ -297,7 +297,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
             `preset-${category}-${presetName}`,
             category,
             presetName,
-            { customParam: 'test' }
+            { customParam: 'test' },
           );
 
           expect(agent).toBeDefined();
@@ -351,7 +351,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
             `complete-${modelType}`,
             modelType,
             'base',
-            { requiresCreativity: true }
+            { requiresCreativity: true },
           );
 
           expect(agent).toBeDefined();
@@ -376,7 +376,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
         try {
           const agent = await neuralManager.createAgentForUseCase(
             `usecase-${useCase.replace(/\s+/g, '-')}`,
-            useCase
+            useCase,
           );
 
           expect(agent).toBeDefined();
@@ -433,7 +433,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
           agentId,
           'nlp',
           'bert_base',
-          { customUpdate: true }
+          { customUpdate: true },
         );
 
         expect(updatedAgent).toBeDefined();
@@ -757,7 +757,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
           ...task,
           neuralAnalysis: expect.any(Object),
           cognitiveState: expect.any(Object),
-        })
+        }),
       );
     });
 
@@ -774,7 +774,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
           result: expect.any(Object),
           performance: expect.any(Object),
           cognitiveState: expect.any(Object),
-        })
+        }),
       );
     });
 
@@ -790,7 +790,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
           task: 'learning-test',
           performance: expect.any(Object),
           networkState: expect.any(Object),
-        })
+        }),
       );
     });
 
@@ -1403,7 +1403,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
       await benchmarkCLI.run([]);
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('ruv-swarm Performance Benchmark')
+        expect.stringContaining('ruv-swarm Performance Benchmark'),
       );
       expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Test Type: comprehensive'));
       expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Iterations: 10'));
@@ -1433,11 +1433,11 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
       });
 
       await expect(benchmarkCLI.compare(['file1.json'])).rejects.toThrow(
-        'process.exit() was called'
+        'process.exit() was called',
       );
 
       expect(errorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Please provide two benchmark result files')
+        expect.stringContaining('Please provide two benchmark result files'),
       );
 
       consoleSpy.mockRestore();
@@ -1502,7 +1502,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
       expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('WASM Performance:'));
       expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Swarm Coordination:'));
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Neural Network Performance:')
+        expect.stringContaining('Neural Network Performance:'),
       );
 
       consoleSpy.mockRestore();
@@ -1536,7 +1536,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
         await performanceCLI.optimize([target, '--dry-run']);
 
         expect(consoleSpy).toHaveBeenCalledWith(
-          expect.stringContaining('Performance Optimization')
+          expect.stringContaining('Performance Optimization'),
         );
         expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining(`Target: ${target}`));
         expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Dry Run (simulation)'));
@@ -1563,13 +1563,13 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
       await performanceCLI.suggest([]);
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Performance Optimization Suggestions')
+        expect.stringContaining('Performance Optimization Suggestions'),
       );
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('optimization opportunities identified')
+        expect.stringContaining('optimization opportunities identified'),
       );
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Quick optimization commands:')
+        expect.stringContaining('Quick optimization commands:'),
       );
 
       consoleSpy.mockRestore();
@@ -1748,7 +1748,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
       // Test invalid preset name
       expect(() => {
         getModelPreset('transformer', 'invalid_preset');
-      }).toThrow("No preset named 'invalid_preset' for model type: transformer");
+      }).toThrow('No preset named \'invalid_preset\' for model type: transformer');
     });
 
     test('should test complete neural presets structure', () => {
@@ -1825,7 +1825,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
 
     test('should validate neural model factory error handling', async () => {
       await expect(createNeuralModel('unknown_model')).rejects.toThrow(
-        'Unknown neural model type: unknown_model'
+        'Unknown neural model type: unknown_model',
       );
     });
 

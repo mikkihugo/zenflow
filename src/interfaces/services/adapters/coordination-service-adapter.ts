@@ -1192,6 +1192,7 @@ export class CoordinationServiceAdapter implements IService {
    * @param operation
    * @param params
    * @param options
+   * @param _options
    */
   private async performOperation<T = any>(
     operation: string,

@@ -57,9 +57,10 @@ export function getPreset(category, presetName) {
   if (presetName) {
     // Two-argument version - look by category and preset name
     const presets = Object.values(NEURAL_PRESETS);
-    return presets.find(preset => 
-      preset.type === category && 
-      (preset.id === presetName || preset.name.toLowerCase().includes(presetName.toLowerCase()))
+    return presets.find(
+      (preset) =>
+        preset.type === category &&
+        (preset.id === presetName || preset.name.toLowerCase().includes(presetName.toLowerCase()))
     );
   } else {
     // Single-argument version (legacy) - category is actually presetId

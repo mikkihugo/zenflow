@@ -1128,6 +1128,7 @@ export class CommandExecutionEngine {
    * Handle swarm monitor command - real-time swarm monitoring
    *
    * @param context
+   * @param _context
    */
   private static async handleSwarmMonitor(_context: ExecutionContext): Promise<CommandResult> {
     try {
@@ -1159,6 +1160,7 @@ export class CommandExecutionEngine {
    * Handle swarm metrics command - agent metrics
    *
    * @param context
+   * @param _context
    */
   private static async handleSwarmMetrics(_context: ExecutionContext): Promise<CommandResult> {
     try {

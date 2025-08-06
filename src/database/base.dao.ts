@@ -385,6 +385,7 @@ export abstract class BaseDao<T> implements IDao<T> {
    * Handle object-based queries (for NoSQL-like databases)
    *
    * @param customQuery
+   * @param _customQuery
    */
   protected async executeObjectQuery(_customQuery: CustomQuery): Promise<any> {
     // Default implementation - subclasses can override for NoSQL support

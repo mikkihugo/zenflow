@@ -1,8 +1,8 @@
 /**
  * DSPy-Enhanced MCP Tools
- * 
+ *
  * Intelligent MCP tools powered by DSPy for:
- * - Smart project analysis and recommendations  
+ * - Smart project analysis and recommendations
  * - Intelligent code generation and fixes
  * - Automated workflow optimization
  * - Context-aware task orchestration
@@ -35,7 +35,13 @@ export interface MCPToolResponse {
 export class DSPyEnhancedMCPTools {
   private dspy: DSPy;
   private programs: Map<string, DSPyProgram> = new Map();
-  private toolUsageHistory: Array<{ tool: string; input: any; output: any; success: boolean; timestamp: Date }> = [];
+  private toolUsageHistory: Array<{
+    tool: string;
+    input: any;
+    output: any;
+    success: boolean;
+    timestamp: Date;
+  }> = [];
 
   constructor() {
     this.dspy = new DSPy({
@@ -89,6 +95,8 @@ export class DSPyEnhancedMCPTools {
 
   /**
    * Enhanced project analysis tool
+   *
+   * @param request
    */
   async analyzeProject(request: MCPToolRequest): Promise<MCPToolResponse> {
     const program = this.programs.get('project_analysis');
@@ -98,11 +106,11 @@ export class DSPyEnhancedMCPTools {
 
     try {
       const { projectPath, files, userRequest } = request.parameters;
-      
+
       const result = await this.dspy.execute(program, {
         project_structure: { projectPath, files: files?.slice(0, 50) }, // Limit for token efficiency
         user_request: userRequest || 'General project analysis',
-        context: request.context || {}
+        context: request.context || {},
       });
 
       this.recordToolUsage('project_analysis', request.parameters, result, true);
@@ -113,11 +121,11 @@ export class DSPyEnhancedMCPTools {
           analysis: result.analysis,
           recommendations: result.recommendations || [],
           priorityActions: result.priority_actions || [],
-          complexityScore: result.complexity_score || 50
+          complexityScore: result.complexity_score || 50,
         },
         reasoning: result.reasoning || 'DSPy project analysis applied',
         confidence: result.confidence || 0.8,
-        followupActions: this.generateFollowupActions(result.priority_actions)
+        followupActions: this.generateFollowupActions(result.priority_actions),
       };
     } catch (error) {
       logger.error('Project analysis failed:', error);
@@ -128,6 +136,8 @@ export class DSPyEnhancedMCPTools {
 
   /**
    * Enhanced code generation tool
+   *
+   * @param request
    */
   async generateCode(request: MCPToolRequest): Promise<MCPToolResponse> {
     const program = this.programs.get('code_generation');
@@ -137,14 +147,14 @@ export class DSPyEnhancedMCPTools {
 
     try {
       const { requirements, existingCode, fileType } = request.parameters;
-      
+
       const result = await this.dspy.execute(program, {
         requirements,
         existing_code: existingCode || '',
         project_context: {
           fileType: fileType || 'typescript',
-          ...request.context
-        }
+          ...request.context,
+        },
       });
 
       this.recordToolUsage('code_generation', request.parameters, result, true);
@@ -155,11 +165,11 @@ export class DSPyEnhancedMCPTools {
           generatedCode: result.generated_code,
           explanation: result.explanation,
           integrationSteps: result.integration_steps || [],
-          testingSuggestions: result.testing_suggestions || []
+          testingSuggestions: result.testing_suggestions || [],
         },
         reasoning: 'DSPy intelligent code generation',
         confidence: result.confidence || 0.85,
-        suggestions: result.optimization_tips || []
+        suggestions: result.optimization_tips || [],
       };
     } catch (error) {
       logger.error('Code generation failed:', error);
@@ -170,6 +180,8 @@ export class DSPyEnhancedMCPTools {
 
   /**
    * Enhanced error resolution tool
+   *
+   * @param request
    */
   async resolveError(request: MCPToolRequest): Promise<MCPToolResponse> {
     const program = this.programs.get('error_resolution');
@@ -179,16 +191,16 @@ export class DSPyEnhancedMCPTools {
 
     try {
       const { errorMessage, fileName, lineNumber, codeContext } = request.parameters;
-      
+
       const result = await this.dspy.execute(program, {
         error_details: {
           message: errorMessage,
           file: fileName,
           line: lineNumber,
-          type: this.classifyErrorType(errorMessage)
+          type: this.classifyErrorType(errorMessage),
         },
         code_context: codeContext || '',
-        project_info: request.context || {}
+        project_info: request.context || {},
       });
 
       this.recordToolUsage('error_resolution', request.parameters, result, true);
@@ -199,11 +211,11 @@ export class DSPyEnhancedMCPTools {
           solution: result.solution,
           fixCode: result.fix_code,
           preventionTips: result.prevention_tips || [],
-          severity: this.assessErrorSeverity(errorMessage)
+          severity: this.assessErrorSeverity(errorMessage),
         },
         reasoning: result.explanation || 'DSPy error resolution applied',
         confidence: result.confidence || 0.75,
-        followupActions: ['test-fix', 'validate-solution']
+        followupActions: ['test-fix', 'validate-solution'],
       };
     } catch (error) {
       logger.error('Error resolution failed:', error);
@@ -214,6 +226,8 @@ export class DSPyEnhancedMCPTools {
 
   /**
    * Enhanced workflow optimization tool
+   *
+   * @param request
    */
   async optimizeWorkflow(request: MCPToolRequest): Promise<MCPToolResponse> {
     const program = this.programs.get('workflow_optimization');
@@ -223,11 +237,11 @@ export class DSPyEnhancedMCPTools {
 
     try {
       const { currentWorkflow, userGoals, constraints } = request.parameters;
-      
+
       const result = await this.dspy.execute(program, {
         current_workflow: currentWorkflow || {},
         user_goals: userGoals || 'Improve development efficiency',
-        project_constraints: constraints || {}
+        project_constraints: constraints || {},
       });
 
       this.recordToolUsage('workflow_optimization', request.parameters, result, true);
@@ -238,11 +252,11 @@ export class DSPyEnhancedMCPTools {
           optimizedWorkflow: result.optimized_workflow,
           improvementSuggestions: result.improvement_suggestions || [],
           automationOpportunities: result.automation_opportunities || [],
-          estimatedTimeSaving: this.calculateTimeSaving(result.optimized_workflow)
+          estimatedTimeSaving: this.calculateTimeSaving(result.optimized_workflow),
         },
         reasoning: 'DSPy workflow optimization analysis',
         confidence: result.confidence || 0.8,
-        suggestions: result.implementation_tips || []
+        suggestions: result.implementation_tips || [],
       };
     } catch (error) {
       logger.error('Workflow optimization failed:', error);
@@ -253,6 +267,8 @@ export class DSPyEnhancedMCPTools {
 
   /**
    * Enhanced task orchestration tool
+   *
+   * @param request
    */
   async orchestrateTask(request: MCPToolRequest): Promise<MCPToolResponse> {
     const program = this.programs.get('task_orchestration');
@@ -262,11 +278,11 @@ export class DSPyEnhancedMCPTools {
 
     try {
       const { taskRequest, availableTools, projectState } = request.parameters;
-      
+
       const result = await this.dspy.execute(program, {
         task_request: taskRequest,
         available_tools: (availableTools || []).join(', '),
-        project_state: projectState || {}
+        project_state: projectState || {},
       });
 
       this.recordToolUsage('task_orchestration', request.parameters, result, true);
@@ -278,11 +294,11 @@ export class DSPyEnhancedMCPTools {
           toolSequence: result.tool_sequence || [],
           riskAssessment: result.risk_assessment || {},
           successPrediction: result.success_prediction || 0.7,
-          estimatedDuration: this.estimateTaskDuration(result.tool_sequence?.length || 1)
+          estimatedDuration: this.estimateTaskDuration(result.tool_sequence?.length || 1),
         },
         reasoning: 'DSPy task orchestration planning',
         confidence: result.confidence || 0.8,
-        followupActions: ['execute-plan', 'monitor-progress']
+        followupActions: ['execute-plan', 'monitor-progress'],
       };
     } catch (error) {
       logger.error('Task orchestration failed:', error);
@@ -296,17 +312,21 @@ export class DSPyEnhancedMCPTools {
    */
   getToolStats() {
     const recentUsage = this.toolUsageHistory.filter(
-      usage => Date.now() - usage.timestamp.getTime() < 3600000 // Last hour
+      (usage) => Date.now() - usage.timestamp.getTime() < 3600000 // Last hour
     );
 
-    const successRate = recentUsage.length > 0 
-      ? recentUsage.filter(usage => usage.success).length / recentUsage.length 
-      : 0;
+    const successRate =
+      recentUsage.length > 0
+        ? recentUsage.filter((usage) => usage.success).length / recentUsage.length
+        : 0;
 
-    const toolUsageCounts = recentUsage.reduce((acc, usage) => {
-      acc[usage.tool] = (acc[usage.tool] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const toolUsageCounts = recentUsage.reduce(
+      (acc, usage) => {
+        acc[usage.tool] = (acc[usage.tool] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     return {
       totalTools: this.programs.size,
@@ -314,21 +334,27 @@ export class DSPyEnhancedMCPTools {
       recentUsage: recentUsage.length,
       successRate: Math.round(successRate * 100),
       popularTools: Object.entries(toolUsageCounts)
-        .sort(([,a], [,b]) => b - a)
+        .sort(([, a], [, b]) => b - a)
         .slice(0, 5)
         .map(([tool, count]) => ({ tool, count })),
-      totalUsageHistory: this.toolUsageHistory.length
+      totalUsageHistory: this.toolUsageHistory.length,
     };
   }
 
   /**
    * Learn from tool usage outcomes
+   *
+   * @param toolName
+   * @param parameters
+   * @param success
+   * @param actualResult
    */
   updateToolOutcome(toolName: string, parameters: any, success: boolean, actualResult?: any) {
-    const usage = this.toolUsageHistory.find(u => 
-      u.tool === toolName && 
-      JSON.stringify(u.input) === JSON.stringify(parameters) &&
-      Date.now() - u.timestamp.getTime() < 300000 // Within last 5 minutes
+    const usage = this.toolUsageHistory.find(
+      (u) =>
+        u.tool === toolName &&
+        JSON.stringify(u.input) === JSON.stringify(parameters) &&
+        Date.now() - u.timestamp.getTime() < 300000 // Within last 5 minutes
     );
 
     if (usage) {
@@ -338,7 +364,7 @@ export class DSPyEnhancedMCPTools {
       }
 
       logger.debug(`Updated tool outcome: ${toolName} -> ${success ? 'success' : 'failure'}`);
-      
+
       // Trigger learning update for the specific program
       this.trainProgramFromOutcome(toolName, usage);
     }
@@ -350,7 +376,7 @@ export class DSPyEnhancedMCPTools {
       input,
       output,
       success,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     // Keep only last 500 entries
@@ -363,14 +389,16 @@ export class DSPyEnhancedMCPTools {
     const program = this.programs.get(programType);
     if (program && usage.success) {
       try {
-        await this.dspy.addExamples(program, [{
-          input: usage.input,
-          output: usage.output
-        }]);
+        await this.dspy.addExamples(program, [
+          {
+            input: usage.input,
+            output: usage.output,
+          },
+        ]);
 
         await this.dspy.optimize(program, {
           strategy: 'auto',
-          maxIterations: 2
+          maxIterations: 2,
         });
 
         logger.debug(`Training applied to ${programType} from successful outcome`);
@@ -385,35 +413,39 @@ export class DSPyEnhancedMCPTools {
       success: false,
       result: { error: message, details: error?.message },
       confidence: 0,
-      reasoning: 'Error occurred during DSPy tool execution'
+      reasoning: 'Error occurred during DSPy tool execution',
     };
   }
 
   private classifyErrorType(errorMessage: string): string {
     if (errorMessage.includes('Cannot find module')) return 'import-error';
-    if (errorMessage.includes('Type') && errorMessage.includes('is not assignable')) return 'type-error';
-    if (errorMessage.includes('Property') && errorMessage.includes('does not exist')) return 'property-error';
+    if (errorMessage.includes('Type') && errorMessage.includes('is not assignable'))
+      return 'type-error';
+    if (errorMessage.includes('Property') && errorMessage.includes('does not exist'))
+      return 'property-error';
     if (errorMessage.includes('Syntax')) return 'syntax-error';
     return 'general-error';
   }
 
   private assessErrorSeverity(errorMessage: string): 'low' | 'medium' | 'high' | 'critical' {
-    if (errorMessage.includes('Cannot find module') || errorMessage.includes('ReferenceError')) return 'high';
+    if (errorMessage.includes('Cannot find module') || errorMessage.includes('ReferenceError'))
+      return 'high';
     if (errorMessage.includes('TypeError') || errorMessage.includes('SyntaxError')) return 'medium';
-    if (errorMessage.includes('Property') && errorMessage.includes('does not exist')) return 'medium';
+    if (errorMessage.includes('Property') && errorMessage.includes('does not exist'))
+      return 'medium';
     return 'low';
   }
 
   private generateFollowupActions(priorityActions: string[]): string[] {
     const followups = ['review-recommendations'];
-    
-    if (priorityActions?.some(action => action.includes('test'))) {
+
+    if (priorityActions?.some((action) => action.includes('test'))) {
       followups.push('run-tests');
     }
-    if (priorityActions?.some(action => action.includes('refactor'))) {
+    if (priorityActions?.some((action) => action.includes('refactor'))) {
       followups.push('plan-refactoring');
     }
-    if (priorityActions?.some(action => action.includes('security'))) {
+    if (priorityActions?.some((action) => action.includes('security'))) {
       followups.push('security-audit');
     }
 
@@ -439,7 +471,7 @@ export class DSPyEnhancedMCPTools {
 
   private estimateTaskDuration(toolCount: number): string {
     const minutes = Math.max(5, toolCount * 3); // 3 minutes per tool minimum
-    
+
     if (minutes < 60) {
       return `${minutes} minutes`;
     }

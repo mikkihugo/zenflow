@@ -1033,7 +1033,7 @@ export class CognitivePatternSelector {
     // Cognitive pattern alignment
     if (requirements.cognitivePreference) {
       const hasPreferred = preset.cognitivePatterns.some(
-        (p) => p === requirements.cognitivePreference
+        (p) => p === requirements.cognitivePreference,
       );
       if (hasPreferred) {
         score += 0.2;
@@ -1194,7 +1194,7 @@ export class NeuralAdaptationEngine {
   suggestHyperparameters(history) {
     // Analyze successful adaptations
     const successfulAdaptations = history.adaptations.filter(
-      (a) => a.performanceGain.accuracyGain > 0
+      (a) => a.performanceGain.accuracyGain > 0,
     );
 
     if (successfulAdaptations.length === 0) {
@@ -1235,7 +1235,7 @@ export class NeuralAdaptationEngine {
     const isImproving = recentPerformance.every(
       (a, i) =>
         i === 0 ||
-        a.performanceGain.accuracyGain >= recentPerformance[i - 1].performanceGain.accuracyGain
+        a.performanceGain.accuracyGain >= recentPerformance[i - 1].performanceGain.accuracyGain,
     );
 
     if (isImproving) {

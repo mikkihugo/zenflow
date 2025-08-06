@@ -12,14 +12,19 @@ import type {
   CompletionEngine,
   CompletionValidation,
   ComplianceCheck,
+  Component,
   DeploymentArtifact,
   DeploymentArtifacts,
   DocumentationArtifact,
   DocumentationGeneration,
   ImplementationArtifacts,
+  PerformanceOptimization,
   ProductionReadinessCheck,
   QualityGate,
   RefinementResult,
+  ScalabilityOptimization,
+  SecurityOptimization,
+  SystemArchitecture,
   TestArtifact,
   TestGeneration,
   ValidationResult,
@@ -400,7 +405,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   // Code generation helper methods
-  private async generateServiceCode(component: any): Promise<CodeArtifact> {
+  private async generateServiceCode(component: Component): Promise<CodeArtifact> {
     return {
       id: nanoid(),
       name: `${component.name}.ts`,
@@ -413,7 +418,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateServiceInterface(component: any): Promise<CodeArtifact> {
+  private async generateServiceInterface(component: Component): Promise<CodeArtifact> {
     return {
       id: nanoid(),
       name: `I${component.name}.ts`,
@@ -426,7 +431,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateServiceConfiguration(component: any): Promise<CodeArtifact> {
+  private async generateServiceConfiguration(component: Component): Promise<CodeArtifact> {
     return {
       id: nanoid(),
       name: `${component.name.toLowerCase()}.config.ts`,
@@ -439,7 +444,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateRepositoryCode(component: any): Promise<CodeArtifact> {
+  private async generateRepositoryCode(component: Component): Promise<CodeArtifact> {
     return {
       id: nanoid(),
       name: `${component.name}Repository.ts`,
@@ -452,7 +457,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateDataModelCode(component: any): Promise<CodeArtifact> {
+  private async generateDataModelCode(component: Component): Promise<CodeArtifact> {
     return {
       id: nanoid(),
       name: `${component.name}Model.ts`,
@@ -465,7 +470,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateMigrationScripts(component: any): Promise<CodeArtifact> {
+  private async generateMigrationScripts(component: Component): Promise<CodeArtifact> {
     return {
       id: nanoid(),
       name: `001_create_${component.name.toLowerCase()}_table.sql`,
@@ -478,7 +483,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateAPIControllers(architecture: any): Promise<CodeArtifact> {
+  private async generateAPIControllers(architecture: SystemArchitecture): Promise<CodeArtifact> {
     return {
       id: nanoid(),
       name: 'ApiControllers.ts',
@@ -491,7 +496,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateAPIRoutes(architecture: any): Promise<CodeArtifact> {
+  private async generateAPIRoutes(architecture: SystemArchitecture): Promise<CodeArtifact> {
     return {
       id: nanoid(),
       name: 'routes.ts',
@@ -504,7 +509,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateAPIMiddleware(architecture: any): Promise<CodeArtifact> {
+  private async generateAPIMiddleware(architecture: SystemArchitecture): Promise<CodeArtifact> {
     return {
       id: nanoid(),
       name: 'middleware.ts',
@@ -556,7 +561,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateSecurityFramework(securityOpts: any[]): Promise<CodeArtifact> {
+  private async generateSecurityFramework(securityOpts: SecurityOptimization[]): Promise<CodeArtifact> {
     return {
       id: nanoid(),
       name: 'SecurityFramework.ts',
@@ -570,7 +575,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   // Test generation helper methods
-  private async generateUnitTests(component: any): Promise<TestArtifact> {
+  private async generateUnitTests(component: Component): Promise<TestArtifact> {
     return {
       id: nanoid(),
       name: `${component.name}.test.ts`,
@@ -583,7 +588,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateIntegrationTests(architecture: any): Promise<TestArtifact> {
+  private async generateIntegrationTests(architecture: SystemArchitecture): Promise<TestArtifact> {
     return {
       id: nanoid(),
       name: 'integration.test.ts',
@@ -596,7 +601,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateE2ETests(architecture: any): Promise<TestArtifact> {
+  private async generateE2ETests(architecture: SystemArchitecture): Promise<TestArtifact> {
     return {
       id: nanoid(),
       name: 'e2e.test.ts',
@@ -609,7 +614,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generatePerformanceTests(performanceOpts: any[]): Promise<TestArtifact> {
+  private async generatePerformanceTests(performanceOpts: PerformanceOptimization[]): Promise<TestArtifact> {
     return {
       id: nanoid(),
       name: 'performance.test.js',
@@ -622,7 +627,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateSecurityTests(securityOpts: any[]): Promise<TestArtifact> {
+  private async generateSecurityTests(securityOpts: SecurityOptimization[]): Promise<TestArtifact> {
     return {
       id: nanoid(),
       name: 'security.test.ts',
@@ -635,7 +640,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateLoadTests(scalabilityOpts: any[]): Promise<TestArtifact> {
+  private async generateLoadTests(scalabilityOpts: ScalabilityOptimization[]): Promise<TestArtifact> {
     return {
       id: nanoid(),
       name: 'load.test.js',
@@ -649,7 +654,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   // Documentation generation helper methods
-  private async generateAPIDocumentation(architecture: any): Promise<DocumentationArtifact> {
+  private async generateAPIDocumentation(architecture: SystemArchitecture): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
       name: 'API Documentation',
@@ -662,7 +667,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateArchitectureDocumentation(
-    architecture: any
+    architecture: SystemArchitecture
   ): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
@@ -675,7 +680,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateUserDocumentation(architecture: any): Promise<DocumentationArtifact> {
+  private async generateUserDocumentation(architecture: SystemArchitecture): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
       name: 'User Documentation',
@@ -687,7 +692,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateDeveloperDocumentation(refinement: any): Promise<DocumentationArtifact> {
+  private async generateDeveloperDocumentation(refinement: RefinementResult): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
       name: 'Developer Documentation',
@@ -699,7 +704,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateDeploymentDocumentation(refinement: any): Promise<DocumentationArtifact> {
+  private async generateDeploymentDocumentation(refinement: RefinementResult): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
       name: 'Deployment Guide',
@@ -711,7 +716,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateTroubleshootingGuide(refinement: any): Promise<DocumentationArtifact> {
+  private async generateTroubleshootingGuide(refinement: RefinementResult): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
       name: 'Troubleshooting Guide',
@@ -723,7 +728,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateSecurityDocumentation(securityOpts: any[]): Promise<DocumentationArtifact> {
+  private async generateSecurityDocumentation(securityOpts: SecurityOptimization[]): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
       name: 'Security Documentation',
@@ -736,7 +741,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   // Deployment artifact generation helper methods
-  private async generateDockerfiles(architecture: any): Promise<DeploymentArtifact> {
+  private async generateDockerfiles(architecture: SystemArchitecture): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'Dockerfiles',
@@ -747,7 +752,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateDockerCompose(architecture: any): Promise<DeploymentArtifact> {
+  private async generateDockerCompose(architecture: SystemArchitecture): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'docker-compose.yml',
@@ -758,7 +763,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateKubernetesManifests(architecture: any): Promise<DeploymentArtifact> {
+  private async generateKubernetesManifests(architecture: SystemArchitecture): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'Kubernetes Manifests',
@@ -769,7 +774,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateKubernetesConfigMaps(architecture: any): Promise<DeploymentArtifact> {
+  private async generateKubernetesConfigMaps(architecture: SystemArchitecture): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'ConfigMaps',
@@ -780,7 +785,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateKubernetesSecrets(securityOpts: any[]): Promise<DeploymentArtifact> {
+  private async generateKubernetesSecrets(securityOpts: SecurityOptimization[]): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'Secrets',
@@ -791,7 +796,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateCIPipeline(refinement: any): Promise<DeploymentArtifact> {
+  private async generateCIPipeline(refinement: RefinementResult): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'CI Pipeline',
@@ -802,7 +807,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateCDPipeline(refinement: any): Promise<DeploymentArtifact> {
+  private async generateCDPipeline(refinement: RefinementResult): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'CD Pipeline',

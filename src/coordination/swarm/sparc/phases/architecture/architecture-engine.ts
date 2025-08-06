@@ -59,6 +59,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
    * Design system architecture from specification and pseudocode
    *
    * @param spec
+   * @param _spec
    * @param pseudocode
    */
   async designSystemArchitecture(

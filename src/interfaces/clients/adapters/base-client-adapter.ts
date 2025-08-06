@@ -377,6 +377,8 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClient 
    * @param level
    * @param message
    * @param meta
+   * @param _message
+   * @param _meta
    */
   protected log(level: 'debug' | 'info' | 'warn' | 'error', _message: string, _meta?: any): void {
     if (this.config.logging?.enabled) {

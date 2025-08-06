@@ -18,7 +18,7 @@ export { NeuralAgent } from './agents/index';
 // Core neural components (specific exports to avoid conflicts)
 export {
   // Neural, // Not available in core/index
-  // NeuralCore, // Not available in core/index  
+  // NeuralCore, // Not available in core/index
   NeuralCoreCLI,
   NeuralNetwork as CoreNeuralNetwork,
   NeuralNetworkManager,

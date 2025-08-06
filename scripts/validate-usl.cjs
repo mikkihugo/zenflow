@@ -734,7 +734,7 @@ class USLValidator {
 
           if (jsdocCount >= 5) {
             this.logSuccess(
-              `Good JSDoc coverage in ${path.basename(filePath)}: ${jsdocCount} comments`
+              `Good JSDoc coverage in ${path.basename(filePath)}: ${jsdocCount} comments`,
             );
             score += 2;
             section.details?.push({
@@ -743,7 +743,7 @@ class USLValidator {
             });
           } else {
             this.logWarning(
-              `Low JSDoc coverage in ${path.basename(filePath)}: ${jsdocCount} comments`
+              `Low JSDoc coverage in ${path.basename(filePath)}: ${jsdocCount} comments`,
             );
             section.details?.push({
               type: 'warning',
@@ -769,7 +769,7 @@ class USLValidator {
           : 'fail';
 
     this.logInfo(
-      `Documentation validation score: ${this.validationResults.sections.documentation.score}/${maxScore}`
+      `Documentation validation score: ${this.validationResults.sections.documentation.score}/${maxScore}`,
     );
   }
 
@@ -872,7 +872,7 @@ class USLValidator {
         section.status === 'pass' ? 'green' : section.status === 'warning' ? 'yellow' : 'red';
       this.log(
         `  ${name.charAt(0).toUpperCase() + name.slice(1)}: ${section.status.toUpperCase()} (${section.score}/100)`,
-        sectionColor
+        sectionColor,
       );
     });
 

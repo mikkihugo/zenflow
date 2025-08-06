@@ -76,7 +76,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         try {
           await assert.rejects(
             () => ZenSwarm.initialize({ enableNeuralNetworks: true }),
-            /Failed to initialize ruv-swarm/
+            /Failed to initialize ruv-swarm/,
           );
         } finally {
           WasmModuleLoader.prototype.initialize = originalInit;
@@ -101,11 +101,11 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         // Should gracefully degrade features
         assert(
           typeof instance.features.neural_networks === 'boolean',
-          'Should set neural networks feature'
+          'Should set neural networks feature',
         );
         assert(
           typeof instance.features.forecasting === 'boolean',
-          'Should set forecasting feature'
+          'Should set forecasting feature',
         );
 
         testInstances.push(instance);
@@ -265,7 +265,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
               description: 'Test task',
               requiredCapabilities: ['testing'],
             }),
-          /No agents available/
+          /No agents available/,
         );
 
         testInstances.push(instance);
@@ -543,7 +543,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         await assert.rejects(
           () => service.adaptAgent('non-existent', {}),
-          /Agent non-existent not found/
+          /Agent non-existent not found/,
         );
 
         testInstances.push(service);
@@ -597,7 +597,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
             { id: 'step1', task: async () => 'result1' },
             { id: 'step2', task: async () => 'result2' },
           ],
-          {}
+          {},
         );
 
         assert.strictEqual(workflow.id, 'test-workflow');
@@ -621,7 +621,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         await assert.rejects(
           () => service.executeWorkflow('non-existent'),
-          /Workflow non-existent not found/
+          /Workflow non-existent not found/,
         );
 
         testInstances.push(service);
@@ -655,7 +655,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         await assert.rejects(
           () => service.shareKnowledge('non-existent', ['target'], {}),
-          /Source agent non-existent not found/
+          /Source agent non-existent not found/,
         );
 
         testInstances.push(service);
@@ -756,7 +756,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         await assert.rejects(
           () => service.makeDecision('non-existent', {}),
-          /Agent non-existent not found/
+          /Agent non-existent not found/,
         );
 
         testInstances.push(service);
@@ -826,7 +826,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         assert.strictEqual(results.length, 3);
         assert(
           results.every((r) => r.success),
-          'All agents should be created successfully'
+          'All agents should be created successfully',
         );
 
         testInstances.push(service);
@@ -848,7 +848,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         assert.strictEqual(results.length, 2);
         assert(
           results.every((r) => r.success),
-          'All decisions should succeed'
+          'All decisions should succeed',
         );
 
         testInstances.push(service);

@@ -220,6 +220,7 @@ export class USL {
    * Initialize USL system
    *
    * @param {USLFactoryConfig} [config] Optional factory configuration
+   * @param _config
    * @returns {Promise<void>} Promise that resolves when initialization is complete
    * @throws {ServiceInitializationError} When initialization fails
    * @description Initializes the USL system with optional configuration

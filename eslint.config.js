@@ -52,7 +52,7 @@ export default [
     },
     rules: {
       '@typescript-eslint/no-unused-vars': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-explicit-any': 'warn',
       'prefer-const': 'warn',
       'no-var': 'error',
       // JSDoc rules for unified architecture documentation

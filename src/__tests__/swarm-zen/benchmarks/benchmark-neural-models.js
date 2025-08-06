@@ -218,8 +218,8 @@ class NeuralBenchmark {
           analysis,
         },
         null,
-        2
-      )
+        2,
+      ),
     );
 
     // Display summary
@@ -256,13 +256,13 @@ class NeuralBenchmark {
 
     // Generate recommendations
     const bestAccuracy = Object.entries(analysis.performance).sort(
-      (a, b) => b[1].accuracy - a[1].accuracy
+      (a, b) => b[1].accuracy - a[1].accuracy,
     )[0];
     const bestSpeed = Object.entries(analysis.performance).sort(
-      (a, b) => b[1].inferenceSpeed - a[1].inferenceSpeed
+      (a, b) => b[1].inferenceSpeed - a[1].inferenceSpeed,
     )[0];
     const mostEfficient = Object.entries(analysis.memory).sort(
-      (a, b) => b[1].efficiency - a[1].efficiency
+      (a, b) => b[1].efficiency - a[1].efficiency,
     )[0];
 
     analysis.recommendations = [

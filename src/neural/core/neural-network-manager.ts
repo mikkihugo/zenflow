@@ -456,9 +456,10 @@ class NeuralNetworkManager {
     }
 
     // Load neural module if not already loaded
-    const neuralModule = this.wasmLoader && (this.wasmLoader as any).loadModule 
-      ? await (this.wasmLoader as any).loadModule('neural')
-      : null;
+    const neuralModule =
+      this.wasmLoader && (this.wasmLoader as any).loadModule
+        ? await (this.wasmLoader as any).loadModule('neural')
+        : null;
 
     if (!neuralModule || neuralModule.isPlaceholder) {
       console.warn('Neural network module not available, using simulation');
@@ -871,7 +872,12 @@ class NeuralNetworkManager {
    * @param {string} presetName - Name of the preset
    * @param {object} customConfig - Optional custom configuration overrides
    */
-  async createAgentFromCompletePreset(agentId: string, modelType: string, presetName: string, customConfig: any = {}) {
+  async createAgentFromCompletePreset(
+    agentId: string,
+    modelType: string,
+    presetName: string,
+    customConfig: any = {}
+  ) {
     const preset = COMPLETE_NEURAL_PRESETS[modelType]?.[presetName];
     if (!preset) {
       throw new Error(`Complete preset not found: ${modelType}/${presetName}`);
@@ -969,7 +975,7 @@ class NeuralNetworkManager {
       return this.createAgentFromPreset(
         agentId,
         bestMatch.type, // Use type instead of category
-        bestMatch.id,   // Use id instead of presetName
+        bestMatch.id, // Use id instead of presetName
         customConfig
       );
     }
@@ -977,7 +983,7 @@ class NeuralNetworkManager {
     return this.createAgentFromPreset(
       agentId,
       recommendedPreset.type, // Use type instead of category
-      recommendedPreset.id,   // Use id instead of presetName
+      recommendedPreset.id, // Use id instead of presetName
       customConfig
     );
   }

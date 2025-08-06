@@ -61,7 +61,7 @@ export function createNeuralModel(modelType, config = {}) {
 
   // If modelType is actually config object (legacy usage)
   const actualConfig = typeof modelType === 'object' ? modelType : config;
-  
+
   return {
     ...actualConfig,
     created: new Date(),

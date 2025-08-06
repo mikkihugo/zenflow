@@ -1,6 +1,6 @@
 /**
  * DSPy Integration Manager
- * 
+ *
  * Central coordination point for all DSPy-powered systems:
  * - Core operations (code analysis, generation, error diagnosis)
  * - Swarm intelligence (agent selection, topology optimization)
@@ -9,10 +9,10 @@
  */
 
 import { DSPy } from 'dspy.ts';
-import { createLogger } from './logger';
-import DSPyEnhancedOperations from './dspy-enhanced-operations';
 import DSPySwarmIntelligence from '../coordination/swarm/dspy-swarm-intelligence';
 import DSPyEnhancedMCPTools from '../interfaces/mcp/dspy-enhanced-tools';
+import DSPyEnhancedOperations from './dspy-enhanced-operations';
+import { createLogger } from './logger';
 
 const logger = createLogger({ prefix: 'DSPyIntegrationManager' });
 
@@ -59,18 +59,18 @@ export class DSPyIntegrationManager {
       enableUnifiedLearning: true,
       learningInterval: 600000, // 10 minutes
       maxHistorySize: 2000,
-      ...config
+      ...config,
     };
 
     this.initializeSystems();
-    
+
     if (this.config.enableUnifiedLearning) {
       this.startUnifiedLearning();
     }
 
     logger.info('DSPy Integration Manager initialized', {
       model: this.config.model,
-      unifiedLearning: this.config.enableUnifiedLearning
+      unifiedLearning: this.config.enableUnifiedLearning,
     });
   }
 
@@ -82,7 +82,7 @@ export class DSPyIntegrationManager {
     this.swarmIntelligence = new DSPySwarmIntelligence({
       model: this.config.model,
       temperature: this.config.temperature,
-      enableContinuousLearning: false // Managed by unified learning
+      enableContinuousLearning: false, // Managed by unified learning
     });
 
     // Initialize MCP tools system
@@ -91,143 +91,258 @@ export class DSPyIntegrationManager {
 
   /**
    * Analyze code with DSPy intelligence
+   *
+   * @param code
+   * @param taskType
+   * @param context
    */
   async analyzeCode(code: string, taskType: string = 'general', context?: any) {
     const startTime = Date.now();
-    
+
     try {
       const result = await this.coreOperations.analyzeCode(code, taskType);
-      
-      this.recordUnifiedLearning('core', 'code_analysis', {
-        code: code.substring(0, 200), // Truncate for storage
-        taskType,
-        context
-      }, result, true, result.confidence, Date.now() - startTime);
+
+      this.recordUnifiedLearning(
+        'core',
+        'code_analysis',
+        {
+          code: code.substring(0, 200), // Truncate for storage
+          taskType,
+          context,
+        },
+        result,
+        true,
+        result.confidence,
+        Date.now() - startTime
+      );
 
       return {
         ...result,
-        enhancedInsights: await this.getEnhancedInsights('code_analysis', result)
+        enhancedInsights: await this.getEnhancedInsights('code_analysis', result),
       };
     } catch (error) {
-      this.recordUnifiedLearning('core', 'code_analysis', { code, taskType }, null, false, 0, Date.now() - startTime);
+      this.recordUnifiedLearning(
+        'core',
+        'code_analysis',
+        { code, taskType },
+        null,
+        false,
+        0,
+        Date.now() - startTime
+      );
       throw error;
     }
   }
 
   /**
    * Generate code with DSPy intelligence
+   *
+   * @param requirements
+   * @param context
+   * @param styleGuide
    */
   async generateCode(requirements: string, context: string, styleGuide?: string) {
     const startTime = Date.now();
-    
+
     try {
       const result = await this.coreOperations.generateCode(requirements, context, styleGuide);
-      
-      this.recordUnifiedLearning('core', 'code_generation', {
-        requirements,
-        context: context.substring(0, 200),
-        styleGuide
-      }, result, true, 0.85, Date.now() - startTime);
+
+      this.recordUnifiedLearning(
+        'core',
+        'code_generation',
+        {
+          requirements,
+          context: context.substring(0, 200),
+          styleGuide,
+        },
+        result,
+        true,
+        0.85,
+        Date.now() - startTime
+      );
 
       return {
         ...result,
         qualityScore: await this.assessCodeQuality(result.code),
-        integrationRecommendations: await this.getIntegrationRecommendations(result.code, context)
+        integrationRecommendations: await this.getIntegrationRecommendations(result.code, context),
       };
     } catch (error) {
-      this.recordUnifiedLearning('core', 'code_generation', { requirements, context }, null, false, 0, Date.now() - startTime);
+      this.recordUnifiedLearning(
+        'core',
+        'code_generation',
+        { requirements, context },
+        null,
+        false,
+        0,
+        Date.now() - startTime
+      );
       throw error;
     }
   }
 
   /**
    * Diagnose errors with DSPy intelligence
+   *
+   * @param errorMessage
+   * @param codeContext
+   * @param filePath
    */
   async diagnoseError(errorMessage: string, codeContext: string, filePath: string) {
     const startTime = Date.now();
-    
+
     try {
       const result = await this.coreOperations.diagnoseError(errorMessage, codeContext, filePath);
-      
-      this.recordUnifiedLearning('core', 'error_diagnosis', {
-        errorMessage,
-        filePath,
-        context: codeContext.substring(0, 200)
-      }, result, true, result.confidence, Date.now() - startTime);
+
+      this.recordUnifiedLearning(
+        'core',
+        'error_diagnosis',
+        {
+          errorMessage,
+          filePath,
+          context: codeContext.substring(0, 200),
+        },
+        result,
+        true,
+        result.confidence,
+        Date.now() - startTime
+      );
 
       return {
         ...result,
         similarIssues: await this.findSimilarIssues(errorMessage),
-        preventionStrategy: await this.generatePreventionStrategy(result)
+        preventionStrategy: await this.generatePreventionStrategy(result),
       };
     } catch (error) {
-      this.recordUnifiedLearning('core', 'error_diagnosis', { errorMessage, filePath }, null, false, 0, Date.now() - startTime);
+      this.recordUnifiedLearning(
+        'core',
+        'error_diagnosis',
+        { errorMessage, filePath },
+        null,
+        false,
+        0,
+        Date.now() - startTime
+      );
       throw error;
     }
   }
 
   /**
    * Select optimal agents with DSPy intelligence
+   *
+   * @param taskRequirements
+   * @param availableAgents
    */
   async selectOptimalAgents(taskRequirements: any, availableAgents: any[]) {
     const startTime = Date.now();
-    
+
     try {
-      const result = await this.swarmIntelligence.selectOptimalAgents(taskRequirements, availableAgents);
-      
-      this.recordUnifiedLearning('swarm', 'agent_selection', {
+      const result = await this.swarmIntelligence.selectOptimalAgents(
         taskRequirements,
-        agentCount: availableAgents.length
-      }, result, true, result.confidence, Date.now() - startTime);
+        availableAgents
+      );
+
+      this.recordUnifiedLearning(
+        'swarm',
+        'agent_selection',
+        {
+          taskRequirements,
+          agentCount: availableAgents.length,
+        },
+        result,
+        true,
+        result.confidence,
+        Date.now() - startTime
+      );
 
       return {
         ...result,
-        performancePrediction: await this.predictAgentPerformance(result.selectedAgents, taskRequirements),
-        riskAssessment: await this.assessSelectionRisk(result)
+        performancePrediction: await this.predictAgentPerformance(
+          result.selectedAgents,
+          taskRequirements
+        ),
+        riskAssessment: await this.assessSelectionRisk(result),
       };
     } catch (error) {
-      this.recordUnifiedLearning('swarm', 'agent_selection', { taskRequirements }, null, false, 0, Date.now() - startTime);
+      this.recordUnifiedLearning(
+        'swarm',
+        'agent_selection',
+        { taskRequirements },
+        null,
+        false,
+        0,
+        Date.now() - startTime
+      );
       throw error;
     }
   }
 
   /**
    * Optimize swarm topology with DSPy intelligence
+   *
+   * @param currentTopology
+   * @param taskLoad
+   * @param agentPerformance
+   * @param communicationPatterns
    */
-  async optimizeTopology(currentTopology: string, taskLoad: any, agentPerformance: any[], communicationPatterns: any) {
+  async optimizeTopology(
+    currentTopology: string,
+    taskLoad: any,
+    agentPerformance: any[],
+    communicationPatterns: any
+  ) {
     const startTime = Date.now();
-    
+
     try {
       const result = await this.swarmIntelligence.optimizeTopology(
-        currentTopology, 
-        taskLoad, 
-        agentPerformance, 
-        communicationPatterns
-      );
-      
-      this.recordUnifiedLearning('swarm', 'topology_optimization', {
         currentTopology,
         taskLoad,
-        agentCount: agentPerformance.length
-      }, result, true, 0.8, Date.now() - startTime);
+        agentPerformance,
+        communicationPatterns
+      );
+
+      this.recordUnifiedLearning(
+        'swarm',
+        'topology_optimization',
+        {
+          currentTopology,
+          taskLoad,
+          agentCount: agentPerformance.length,
+        },
+        result,
+        true,
+        0.8,
+        Date.now() - startTime
+      );
 
       return {
         ...result,
         migrationPlan: await this.generateMigrationPlan(currentTopology, result.optimalTopology),
-        rollbackStrategy: await this.generateRollbackStrategy(currentTopology, result)
+        rollbackStrategy: await this.generateRollbackStrategy(currentTopology, result),
       };
     } catch (error) {
-      this.recordUnifiedLearning('swarm', 'topology_optimization', { currentTopology }, null, false, 0, Date.now() - startTime);
+      this.recordUnifiedLearning(
+        'swarm',
+        'topology_optimization',
+        { currentTopology },
+        null,
+        false,
+        0,
+        Date.now() - startTime
+      );
       throw error;
     }
   }
 
   /**
    * Enhanced MCP tool execution
+   *
+   * @param toolName
+   * @param parameters
+   * @param context
    */
   async executeMCPTool(toolName: string, parameters: any, context?: any) {
     const startTime = Date.now();
-    
+
     try {
       const request = { toolName, parameters, context };
       let result;
@@ -252,28 +367,57 @@ export class DSPyIntegrationManager {
           throw new Error(`Unknown MCP tool: ${toolName}`);
       }
 
-      this.recordUnifiedLearning('mcp', toolName, parameters, result, result.success, result.confidence || 0.7, Date.now() - startTime);
+      this.recordUnifiedLearning(
+        'mcp',
+        toolName,
+        parameters,
+        result,
+        result.success,
+        result.confidence || 0.7,
+        Date.now() - startTime
+      );
 
       return {
         ...result,
         crossSystemInsights: await this.getCrossSystemInsights(toolName, result),
-        optimizationSuggestions: await this.getOptimizationSuggestions(result)
+        optimizationSuggestions: await this.getOptimizationSuggestions(result),
       };
     } catch (error) {
-      this.recordUnifiedLearning('mcp', toolName, parameters, null, false, 0, Date.now() - startTime);
+      this.recordUnifiedLearning(
+        'mcp',
+        toolName,
+        parameters,
+        null,
+        false,
+        0,
+        Date.now() - startTime
+      );
       throw error;
     }
   }
 
   /**
    * Update operation outcome for unified learning
+   *
+   * @param system
+   * @param operation
+   * @param parameters
+   * @param success
+   * @param actualResult
    */
-  updateOperationOutcome(system: 'core' | 'swarm' | 'mcp', operation: string, parameters: any, success: boolean, actualResult?: any) {
-    const entry = this.unifiedLearningHistory.find(e => 
-      e.system === system && 
-      e.operation === operation &&
-      JSON.stringify(e.input) === JSON.stringify(parameters) &&
-      Date.now() - e.timestamp.getTime() < 300000 // Within last 5 minutes
+  updateOperationOutcome(
+    system: 'core' | 'swarm' | 'mcp',
+    operation: string,
+    parameters: any,
+    success: boolean,
+    actualResult?: any
+  ) {
+    const entry = this.unifiedLearningHistory.find(
+      (e) =>
+        e.system === system &&
+        e.operation === operation &&
+        JSON.stringify(e.input) === JSON.stringify(parameters) &&
+        Date.now() - e.timestamp.getTime() < 300000 // Within last 5 minutes
     );
 
     if (entry) {
@@ -282,15 +426,21 @@ export class DSPyIntegrationManager {
         entry.output.actual_result = actualResult;
       }
 
-      logger.debug(`Updated operation outcome: ${system}.${operation} -> ${success ? 'success' : 'failure'}`);
-      
+      logger.debug(
+        `Updated operation outcome: ${system}.${operation} -> ${success ? 'success' : 'failure'}`
+      );
+
       // Update specific system outcomes
       switch (system) {
         case 'core':
           // Core operations handles its own learning
           break;
         case 'swarm':
-          this.swarmIntelligence.updateDecisionOutcome(entry.output.decision_id || operation, success, actualResult);
+          this.swarmIntelligence.updateDecisionOutcome(
+            entry.output.decision_id || operation,
+            success,
+            actualResult
+          );
           break;
         case 'mcp':
           this.mcpTools.updateToolOutcome(operation, parameters, success, actualResult);
@@ -308,12 +458,13 @@ export class DSPyIntegrationManager {
     const mcpStats = this.mcpTools.getToolStats();
 
     const recentHistory = this.unifiedLearningHistory.filter(
-      e => Date.now() - e.timestamp.getTime() < 3600000 // Last hour
+      (e) => Date.now() - e.timestamp.getTime() < 3600000 // Last hour
     );
 
-    const overallSuccessRate = recentHistory.length > 0 
-      ? recentHistory.filter(e => e.success).length / recentHistory.length 
-      : 0;
+    const overallSuccessRate =
+      recentHistory.length > 0
+        ? recentHistory.filter((e) => e.success).length / recentHistory.length
+        : 0;
 
     const learningVelocity = this.calculateLearningVelocity();
     const systemHealth = this.assessSystemHealth(overallSuccessRate, learningVelocity);
@@ -327,8 +478,8 @@ export class DSPyIntegrationManager {
         totalDecisions: this.unifiedLearningHistory.length,
         overallSuccessRate: Math.round(overallSuccessRate * 100),
         learningVelocity,
-        systemHealth
-      }
+        systemHealth,
+      },
     };
   }
 
@@ -337,16 +488,16 @@ export class DSPyIntegrationManager {
    */
   async getHealthReport() {
     const stats = await this.getSystemStats();
-    
+
     return {
       overall: stats.unified.systemHealth,
       systems: {
         core: stats.coreOperations.readyPrograms > 0 ? 'healthy' : 'degraded',
         swarm: stats.swarmIntelligence.successRate > 70 ? 'healthy' : 'degraded',
-        mcp: stats.mcpTools.successRate > 70 ? 'healthy' : 'degraded'
+        mcp: stats.mcpTools.successRate > 70 ? 'healthy' : 'degraded',
       },
       recommendations: this.generateHealthRecommendations(stats),
-      lastUpdate: new Date()
+      lastUpdate: new Date(),
     };
   }
 
@@ -366,7 +517,7 @@ export class DSPyIntegrationManager {
       output: { ...output, executionTime },
       success,
       confidence,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     // Maintain history size limit
@@ -385,14 +536,14 @@ export class DSPyIntegrationManager {
 
   private async performUnifiedLearning() {
     const recentHistory = this.unifiedLearningHistory.filter(
-      e => Date.now() - e.timestamp.getTime() < this.config.learningInterval!
+      (e) => Date.now() - e.timestamp.getTime() < this.config.learningInterval!
     );
 
     if (recentHistory.length < 10) return; // Need minimum examples
 
     // Analyze cross-system patterns
     const patterns = this.analyzeCrossSystemPatterns(recentHistory);
-    
+
     // Apply learnings to improve system coordination
     if (patterns.length > 0) {
       await this.applyCrossSystemLearnings(patterns);
@@ -405,10 +556,14 @@ export class DSPyIntegrationManager {
     const patterns = [];
 
     // Pattern: Code generation followed by error diagnosis
-    const codeGenErrors = history.filter((e, i) => 
-      e.system === 'core' && e.operation === 'code_generation' && e.success &&
-      i < history.length - 1 &&
-      history[i + 1].system === 'core' && history[i + 1].operation === 'error_diagnosis'
+    const codeGenErrors = history.filter(
+      (e, i) =>
+        e.system === 'core' &&
+        e.operation === 'code_generation' &&
+        e.success &&
+        i < history.length - 1 &&
+        history[i + 1].system === 'core' &&
+        history[i + 1].operation === 'error_diagnosis'
     );
 
     if (codeGenErrors.length > 2) {
@@ -416,14 +571,13 @@ export class DSPyIntegrationManager {
         type: 'code_quality_improvement',
         description: 'Code generation leading to errors - improve generation quality',
         frequency: codeGenErrors.length,
-        systems: ['core']
+        systems: ['core'],
       });
     }
 
     // Pattern: Agent selection followed by poor performance
-    const poorAgentSelection = history.filter((e, i) =>
-      e.system === 'swarm' && e.operation === 'agent_selection' &&
-      e.confidence < 0.6
+    const poorAgentSelection = history.filter(
+      (e, i) => e.system === 'swarm' && e.operation === 'agent_selection' && e.confidence < 0.6
     );
 
     if (poorAgentSelection.length > 2) {
@@ -431,7 +585,7 @@ export class DSPyIntegrationManager {
         type: 'agent_selection_improvement',
         description: 'Low confidence in agent selections - improve selection criteria',
         frequency: poorAgentSelection.length,
-        systems: ['swarm']
+        systems: ['swarm'],
       });
     }
 
@@ -460,11 +614,11 @@ export class DSPyIntegrationManager {
   private async getEnhancedInsights(operation: string, result: any): Promise<string[]> {
     // Cross-system insights based on historical patterns
     const insights = [];
-    
+
     if (operation === 'code_analysis' && result.complexity > 70) {
       insights.push('High complexity detected - consider refactoring recommendations');
     }
-    
+
     if (result.confidence < 0.7) {
       insights.push('Low confidence result - consider gathering more context');
     }
@@ -478,17 +632,17 @@ export class DSPyIntegrationManager {
     const comments = (code.match(/\/\//g) || []).length;
     const complexity = Math.min(100, Math.max(0, 100 - lines / 10));
     const documentation = Math.min(100, (comments / lines) * 100 * 10);
-    
+
     return Math.round((complexity + documentation) / 2);
   }
 
   private async getIntegrationRecommendations(code: string, context: string): Promise<string[]> {
     const recommendations = [];
-    
+
     if (code.includes('import') && !context.includes('package.json')) {
       recommendations.push('Verify all imports are available in package.json');
     }
-    
+
     if (code.includes('async') && !code.includes('try')) {
       recommendations.push('Add error handling for async operations');
     }
@@ -498,14 +652,15 @@ export class DSPyIntegrationManager {
 
   private async findSimilarIssues(errorMessage: string): Promise<string[]> {
     const similarIssues = this.unifiedLearningHistory
-      .filter(e => 
-        e.system === 'core' && 
-        e.operation === 'error_diagnosis' && 
-        e.success &&
-        e.input.errorMessage && 
-        this.calculateSimilarity(e.input.errorMessage, errorMessage) > 0.7
+      .filter(
+        (e) =>
+          e.system === 'core' &&
+          e.operation === 'error_diagnosis' &&
+          e.success &&
+          e.input.errorMessage &&
+          this.calculateSimilarity(e.input.errorMessage, errorMessage) > 0.7
       )
-      .map(e => e.input.errorMessage)
+      .map((e) => e.input.errorMessage)
       .slice(0, 3);
 
     return similarIssues;
@@ -513,11 +668,11 @@ export class DSPyIntegrationManager {
 
   private async generatePreventionStrategy(result: any): Promise<string[]> {
     const strategies = ['Follow coding best practices'];
-    
+
     if (result.diagnosis?.includes('type')) {
       strategies.push('Use stricter TypeScript configuration');
     }
-    
+
     if (result.diagnosis?.includes('import')) {
       strategies.push('Implement import validation in CI/CD');
     }
@@ -525,31 +680,37 @@ export class DSPyIntegrationManager {
     return strategies;
   }
 
-  private async predictAgentPerformance(selectedAgents: string[], taskRequirements: any): Promise<any> {
+  private async predictAgentPerformance(
+    selectedAgents: string[],
+    taskRequirements: any
+  ): Promise<any> {
     return {
       estimatedSuccessRate: 0.85,
       estimatedDuration: '15 minutes',
-      riskFactors: []
+      riskFactors: [],
     };
   }
 
   private async assessSelectionRisk(result: any): Promise<any> {
     return {
       level: result.confidence > 0.8 ? 'low' : 'medium',
-      factors: result.confidence < 0.7 ? ['Low confidence in selection'] : []
+      factors: result.confidence < 0.7 ? ['Low confidence in selection'] : [],
     };
   }
 
-  private async generateMigrationPlan(currentTopology: string, optimalTopology: string): Promise<string[]> {
+  private async generateMigrationPlan(
+    currentTopology: string,
+    optimalTopology: string
+  ): Promise<string[]> {
     if (currentTopology === optimalTopology) {
       return ['No migration needed'];
     }
-    
+
     return [
       'Prepare new topology configuration',
       'Gradually migrate agents',
       'Monitor performance during transition',
-      'Complete migration and verify'
+      'Complete migration and verify',
     ];
   }
 
@@ -557,19 +718,22 @@ export class DSPyIntegrationManager {
     return [
       'Save current configuration',
       'Monitor performance metrics',
-      'Rollback if performance degrades > 20%'
+      'Rollback if performance degrades > 20%',
     ];
   }
 
   private async getCrossSystemInsights(toolName: string, result: any): Promise<string[]> {
     const insights = [];
-    
+
     // Look for patterns across systems
-    const recentCore = this.unifiedLearningHistory.filter(e => 
-      e.system === 'core' && Date.now() - e.timestamp.getTime() < 600000
+    const recentCore = this.unifiedLearningHistory.filter(
+      (e) => e.system === 'core' && Date.now() - e.timestamp.getTime() < 600000
     );
-    
-    if (toolName === 'error_resolution' && recentCore.some(e => e.operation === 'code_generation')) {
+
+    if (
+      toolName === 'error_resolution' &&
+      recentCore.some((e) => e.operation === 'code_generation')
+    ) {
       insights.push('Recent code generation may be related to this error');
     }
 
@@ -578,11 +742,11 @@ export class DSPyIntegrationManager {
 
   private async getOptimizationSuggestions(result: any): Promise<string[]> {
     const suggestions = [];
-    
+
     if (result.confidence < 0.8) {
       suggestions.push('Gather more context for better results');
     }
-    
+
     if (result.result?.complexity > 70) {
       suggestions.push('Consider breaking down complex operations');
     }
@@ -592,13 +756,16 @@ export class DSPyIntegrationManager {
 
   private calculateLearningVelocity(): number {
     const recent = this.unifiedLearningHistory.filter(
-      e => Date.now() - e.timestamp.getTime() < 3600000
+      (e) => Date.now() - e.timestamp.getTime() < 3600000
     );
-    
+
     return recent.length; // Simple metric - decisions per hour
   }
 
-  private assessSystemHealth(successRate: number, learningVelocity: number): 'excellent' | 'good' | 'fair' | 'poor' {
+  private assessSystemHealth(
+    successRate: number,
+    learningVelocity: number
+  ): 'excellent' | 'good' | 'fair' | 'poor' {
     if (successRate > 0.9 && learningVelocity > 20) return 'excellent';
     if (successRate > 0.8 && learningVelocity > 10) return 'good';
     if (successRate > 0.7 && learningVelocity > 5) return 'fair';
@@ -607,15 +774,15 @@ export class DSPyIntegrationManager {
 
   private generateHealthRecommendations(stats: DSPySystemStats): string[] {
     const recommendations = [];
-    
+
     if (stats.unified.overallSuccessRate < 80) {
       recommendations.push('Increase training data quality and quantity');
     }
-    
+
     if (stats.unified.learningVelocity < 10) {
       recommendations.push('Increase system usage to improve learning velocity');
     }
-    
+
     if (stats.coreOperations.readyPrograms < 3) {
       recommendations.push('Initialize remaining core operation programs');
     }
@@ -627,8 +794,8 @@ export class DSPyIntegrationManager {
     // Simple similarity calculation - in production would use more sophisticated methods
     const words1 = str1.toLowerCase().split(/\s+/);
     const words2 = str2.toLowerCase().split(/\s+/);
-    const commonWords = words1.filter(word => words2.includes(word));
-    
+    const commonWords = words1.filter((word) => words2.includes(word));
+
     return commonWords.length / Math.max(words1.length, words2.length);
   }
 }

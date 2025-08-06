@@ -5,10 +5,10 @@
  * system, with specialized prompts defining each agent's behavior and expertise.
  */
 
+// Using the official dspy.ts npm package instead of custom implementation
+import { configureLM, default as DSPy, getLM } from 'dspy.ts';
 import { createLogger } from '../../core/logger';
 import type { SessionMemoryStore } from '../../memory/memory';
-// Using the official dspy.ts npm package instead of custom implementation
-import { default as DSPy, configureLM, getLM } from 'dspy.ts';
 
 // Define missing types based on available API
 interface DSPyProgram {
@@ -20,6 +20,7 @@ interface DSPyConfig {
   temperature?: number;
   maxTokens?: number;
 }
+
 import type { AgentType } from '../../types/agent-types';
 import type { SwarmAgent, SwarmCoordinator } from '../swarm/core/swarm-coordinator';
 
@@ -211,7 +212,7 @@ export class DSPyAgentIntegration {
   constructor(swarmCoordinator: SwarmCoordinator, memoryStore: SessionMemoryStore) {
     this.swarmCoordinator = swarmCoordinator;
     this.memoryStore = memoryStore;
-    
+
     // Initialize dspy.ts package (using getLM function to set up)
     this.dspyInstance = DSPy;
     configureLM({
@@ -368,12 +369,12 @@ export class DSPyAgentIntegration {
 
     // Create and optimize DSPy program with swarm coordination using ruvnet dspy.ts
     const program = await this.dspy.createProgram(signature, description);
-    
+
     // Use examples for few-shot learning if provided
     if (examples.length > 0) {
       await this.dspy.addExamples(program, examples);
     }
-    
+
     // Optimize the program
     const result = await this.dspy.optimize(program, {
       strategy: 'auto',

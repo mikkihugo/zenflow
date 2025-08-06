@@ -91,7 +91,7 @@ async function testWASMCompatibility() {
     addTestResult(
       'WASM Module Loading',
       'passed',
-      `WASM loaded successfully on ${process.platform}`
+      `WASM loaded successfully on ${process.platform}`,
     );
 
     // Test basic WASM operation
@@ -147,7 +147,7 @@ async function testMemoryAllocation() {
       `Heap: ${(memUsage.heapUsed / 1024 / 1024).toFixed(2)}MB`,
       {
         memoryUsage: memUsage,
-      }
+      },
     );
   } catch (error) {
     addTestResult('Memory Allocation', 'failed', error.message);
@@ -213,13 +213,13 @@ async function testConcurrency() {
       addTestResult(
         'Concurrent Agent Creation',
         'failed',
-        `Expected 10 agents, got ${swarm.agents.length}`
+        `Expected 10 agents, got ${swarm.agents.length}`,
       );
     }
 
     // Test concurrent task execution
     const taskPromises = swarm.agents.map((agent) =>
-      agent.assignTask({ type: 'test', data: 'concurrent' })
+      agent.assignTask({ type: 'test', data: 'concurrent' }),
     );
 
     await Promise.all(taskPromises);

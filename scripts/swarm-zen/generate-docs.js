@@ -103,7 +103,7 @@ function parseSourceFile(content, filePath) {
 
   // Extract classes
   const classMatches = content.matchAll(
-    /export\s+class\s+(\w+)(?:\s+extends\s+(\w+))?\s*{([^}]+)}/g
+    /export\s+class\s+(\w+)(?:\s+extends\s+(\w+))?\s*{([^}]+)}/g,
   );
   for (const match of classMatches) {
     const [, name, parent, body] = match;
@@ -122,7 +122,7 @@ function parseSourceFile(content, filePath) {
 
   // Extract functions
   const functionMatches = content.matchAll(
-    /export\s+(?:async\s+)?function\s+(\w+)\s*\(([^)]*)\)(?:\s*:\s*([^{]+))?\s*{/g
+    /export\s+(?:async\s+)?function\s+(\w+)\s*\(([^)]*)\)(?:\s*:\s*([^{]+))?\s*{/g,
   );
   for (const match of functionMatches) {
     const [, name, params, returnType] = match;
@@ -138,7 +138,7 @@ function parseSourceFile(content, filePath) {
 
   // Extract interfaces (TypeScript)
   const interfaceMatches = content.matchAll(
-    /export\s+interface\s+(\w+)(?:\s+extends\s+([^{]+))?\s*{([^}]+)}/g
+    /export\s+interface\s+(\w+)(?:\s+extends\s+([^{]+))?\s*{([^}]+)}/g,
   );
   for (const match of interfaceMatches) {
     const [, name, parent, body] = match;
@@ -168,7 +168,7 @@ function parseSourceFile(content, filePath) {
 
   // Extract constants
   const constMatches = content.matchAll(
-    /export\s+const\s+(\w+)(?:\s*:\s*([^=]+))?\s*=\s*([^;]+);/g
+    /export\s+const\s+(\w+)(?:\s*:\s*([^=]+))?\s*=\s*([^;]+);/g,
   );
   for (const match of constMatches) {
     const [, name, type, value] = match;
@@ -208,7 +208,7 @@ function extractMethods(body) {
 function extractProperties(body) {
   const properties = [];
   const propertyMatches = body.matchAll(
-    /(?:readonly\s+)?(\w+)(?:\s*:\s*([^;=]+))?(?:\s*=\s*([^;]+))?;/g
+    /(?:readonly\s+)?(\w+)(?:\s*:\s*([^;=]+))?(?:\s*=\s*([^;]+))?;/g,
   );
 
   for (const match of propertyMatches) {
@@ -353,8 +353,8 @@ npm install ${packageInfo.name}
 ## Classes
 
 ${apiInfo.classes
-  .map(
-    (cls) => `
+    .map(
+      (cls) => `
 ### ${cls.name}
 
 ${cls.documentation || '*No description available*'}
@@ -367,12 +367,12 @@ ${cls.parent ? `**Extends**: \`${cls.parent}\`` : ''}
 ${
   cls.properties.length > 0
     ? cls.properties
-        .map(
-          (prop) => `
+      .map(
+        (prop) => `
 - **${prop.name}**${prop.readonly ? ' *(readonly)*' : ''}: \`${prop.type || 'any'}\`${prop.defaultValue ? ` = \`${prop.defaultValue}\`` : ''}
-`
-        )
-        .join('')
+`,
+      )
+      .join('')
     : '*No public properties*'
 }
 
@@ -381,8 +381,8 @@ ${
 ${
   cls.methods.length > 0
     ? cls.methods
-        .map(
-          (method) => `
+      .map(
+        (method) => `
 ##### ${method.name}(${method.parameters.map((p) => `${p.name}${p.optional ? '?' : ''}: ${p.type || 'any'}`).join(', ')})${method.returnType ? `: ${method.returnType}` : ''}
 
 ${method.isAsync ? '*Async method*' : ''}
@@ -391,31 +391,31 @@ ${method.isAsync ? '*Async method*' : ''}
 ${
   method.parameters.length > 0
     ? method.parameters
-        .map(
-          (p) => `
+      .map(
+        (p) => `
 - **${p.name}**${p.optional ? ' *(optional)*' : ''}: \`${p.type || 'any'}\`${p.defaultValue ? ` = \`${p.defaultValue}\`` : ''}
-`
-        )
-        .join('')
+`,
+      )
+      .join('')
     : '*No parameters*'
 }
 
-`
-        )
-        .join('')
+`,
+      )
+      .join('')
     : '*No public methods*'
 }
 
 ---
-`
-  )
-  .join('')}
+`,
+    )
+    .join('')}
 
 ## Functions
 
 ${apiInfo.functions
-  .map(
-    (func) => `
+    .map(
+      (func) => `
 ### ${func.name}(${func.parameters.map((p) => `${p.name}${p.optional ? '?' : ''}: ${p.type || 'any'}`).join(', ')})${func.returnType ? `: ${func.returnType}` : ''}
 
 ${func.documentation || '*No description available*'}
@@ -426,25 +426,25 @@ ${func.documentation || '*No description available*'}
 ${
   func.parameters.length > 0
     ? func.parameters
-        .map(
-          (p) => `
+      .map(
+        (p) => `
 - **${p.name}**${p.optional ? ' *(optional)*' : ''}: \`${p.type || 'any'}\`${p.defaultValue ? ` = \`${p.defaultValue}\`` : ''}
-`
-        )
-        .join('')
+`,
+      )
+      .join('')
     : '*No parameters*'
 }
 
 ---
-`
-  )
-  .join('')}
+`,
+    )
+    .join('')}
 
 ## Interfaces
 
 ${apiInfo.interfaces
-  .map(
-    (iface) => `
+    .map(
+      (iface) => `
 ### ${iface.name}
 
 ${iface.documentation || '*No description available*'}
@@ -460,23 +460,23 @@ ${iface.properties.map((prop) => `  ${prop.name}${prop.optional ? '?' : ''}: ${p
 
 **Properties:**
 ${iface.properties
-  .map(
-    (prop) => `
+    .map(
+      (prop) => `
 - **${prop.name}**${prop.optional ? ' *(optional)*' : ''}: \`${prop.type}\`
-`
-  )
-  .join('')}
+`,
+    )
+    .join('')}
 
 ---
-`
-  )
-  .join('')}
+`,
+    )
+    .join('')}
 
 ## Types
 
 ${apiInfo.types
-  .map(
-    (type) => `
+    .map(
+      (type) => `
 ### ${type.name}
 
 ${type.documentation || '*No description available*'}
@@ -488,15 +488,15 @@ type ${type.name} = ${type.definition};
 \`\`\`
 
 ---
-`
-  )
-  .join('')}
+`,
+    )
+    .join('')}
 
 ## Constants
 
 ${apiInfo.constants
-  .map(
-    (constant) => `
+    .map(
+      (constant) => `
 ### ${constant.name}
 
 ${constant.documentation || '*No description available*'}
@@ -506,9 +506,9 @@ ${constant.documentation || '*No description available*'}
 **Value**: \`${constant.value}\`
 
 ---
-`
-  )
-  .join('')}
+`,
+    )
+    .join('')}
 
 ## Generated Information
 
@@ -536,8 +536,8 @@ ${examples.map((example) => `- [${example.name}](#${example.name.toLowerCase().r
 ---
 
 ${examples
-  .map(
-    (example) => `
+    .map(
+      (example) => `
 ## ${example.name}
 
 ${example.description}
@@ -549,9 +549,9 @@ ${example.content}
 \`\`\`
 
 ---
-`
-  )
-  .join('')}
+`,
+    )
+    .join('')}
 
 ## Running Examples
 
@@ -1007,7 +1007,7 @@ ${(await findSourceFiles(CONFIG.sourceDir)).map((file) => `- ${path.relative(CON
     log('Documentation generation completed successfully!');
     log(`Files generated in: ${CONFIG.outputDir}`);
     log(
-      `- API Reference: ${apiInfo.classes.length} classes, ${apiInfo.functions.length} functions`
+      `- API Reference: ${apiInfo.classes.length} classes, ${apiInfo.functions.length} functions`,
     );
     log(`- Examples: ${examples.length} examples`);
     log(`- CLI Documentation: Complete command reference`);

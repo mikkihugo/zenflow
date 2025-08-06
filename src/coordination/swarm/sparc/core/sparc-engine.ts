@@ -12,10 +12,10 @@
  */
 
 import { nanoid } from 'nanoid';
+import { DocumentDrivenSystem } from '../../../../core/document-driven-system';
 // Using mock implementations for missing modules - TODO: Implement proper modules
 import { TaskAPI } from '../../../api';
 import { TaskCoordinator } from '../../../task-coordinator';
-import { DocumentDrivenSystem } from '../../../../core/document-driven-system';
 // import { MemorySystem } from '../../../../core/memory-system';
 // import { WorkflowEngine } from '../../../../core/workflow-engine';
 import { ProjectManagementIntegration } from '../integrations/project-management-integration';

@@ -1,6 +1,6 @@
 /**
  * DSPy-Enhanced Claude Code Operations
- * 
+ *
  * Integrates ruvnet dspy.ts into core Claude Code operations for:
  * - Intelligent code analysis and generation
  * - Automated prompt optimization for different tasks
@@ -23,7 +23,7 @@ export class DSPyEnhancedOperations {
       temperature: 0.1, // Lower temperature for code operations
       maxTokens: 2000,
     });
-    
+
     this.initializePrograms();
   }
 
@@ -33,8 +33,8 @@ export class DSPyEnhancedOperations {
       'code: string, task_type: string -> analysis: string, suggestions: string[], complexity: number',
       'Analyze code and provide intelligent insights, suggestions, and complexity assessment'
     );
-    
-    // Error Diagnosis Program  
+
+    // Error Diagnosis Program
     const errorDiagnosisProgram = await this.dspy.createProgram(
       'error_message: string, code_context: string, file_path: string -> diagnosis: string, fix_suggestions: string[], confidence: number',
       'Diagnose TypeScript/JavaScript errors and provide targeted fix suggestions'
@@ -69,6 +69,9 @@ export class DSPyEnhancedOperations {
 
   /**
    * Analyze code using DSPy intelligence
+   *
+   * @param code
+   * @param taskType
    */
   async analyzeCode(code: string, taskType: string = 'general') {
     const program = this.programs.get('code_analysis');
@@ -76,19 +79,23 @@ export class DSPyEnhancedOperations {
 
     const result = await this.dspy.execute(program, {
       code,
-      task_type: taskType
+      task_type: taskType,
     });
 
     return {
       analysis: result.analysis,
       suggestions: result.suggestions,
       complexity: result.complexity,
-      confidence: result.confidence || 0.8
+      confidence: result.confidence || 0.8,
     };
   }
 
   /**
-   * Diagnose errors using DSPy intelligence  
+   * Diagnose errors using DSPy intelligence
+   *
+   * @param errorMessage
+   * @param codeContext
+   * @param filePath
    */
   async diagnoseError(errorMessage: string, codeContext: string, filePath: string) {
     const program = this.programs.get('error_diagnosis');
@@ -97,84 +104,114 @@ export class DSPyEnhancedOperations {
     const result = await this.dspy.execute(program, {
       error_message: errorMessage,
       code_context: codeContext,
-      file_path: filePath
+      file_path: filePath,
     });
 
     return {
       diagnosis: result.diagnosis,
       fixSuggestions: result.fix_suggestions,
       confidence: result.confidence,
-      severity: this.assessErrorSeverity(errorMessage)
+      severity: this.assessErrorSeverity(errorMessage),
     };
   }
 
   /**
    * Generate code using DSPy intelligence
+   *
+   * @param requirements
+   * @param context
+   * @param styleGuide
    */
-  async generateCode(requirements: string, context: string, styleGuide: string = 'typescript-strict') {
+  async generateCode(
+    requirements: string,
+    context: string,
+    styleGuide: string = 'typescript-strict'
+  ) {
     const program = this.programs.get('code_generation');
     if (!program) throw new Error('Code generation program not initialized');
 
     const result = await this.dspy.execute(program, {
       requirements,
       context,
-      style_guide: styleGuide
+      style_guide: styleGuide,
     });
 
     return {
       code: result.code,
       explanation: result.explanation,
       tests: result.tests,
-      estimatedComplexity: this.estimateComplexity(result.code)
+      estimatedComplexity: this.estimateComplexity(result.code),
     };
   }
 
   /**
    * Orchestrate tasks using DSPy intelligence
+   *
+   * @param taskDescription
+   * @param availableAgents
+   * @param projectContext
    */
-  async orchestrateTask(taskDescription: string, availableAgents: string[], projectContext: string) {
+  async orchestrateTask(
+    taskDescription: string,
+    availableAgents: string[],
+    projectContext: string
+  ) {
     const program = this.programs.get('task_orchestration');
     if (!program) throw new Error('Task orchestration program not initialized');
 
     const result = await this.dspy.execute(program, {
       task_description: taskDescription,
       available_agents: availableAgents.join(', '),
-      project_context: projectContext
+      project_context: projectContext,
     });
 
     return {
       executionPlan: result.execution_plan,
       agentAssignments: result.agent_assignments,
       priorityOrder: result.priority_order,
-      estimatedDuration: this.estimateDuration(result.execution_plan?.length || 0)
+      estimatedDuration: this.estimateDuration(result.execution_plan?.length || 0),
     };
   }
 
   /**
    * Optimize swarm using DSPy intelligence
+   *
+   * @param currentTopology
+   * @param taskRequirements
+   * @param performanceMetrics
    */
-  async optimizeSwarm(currentTopology: string, taskRequirements: string[], performanceMetrics: object) {
+  async optimizeSwarm(
+    currentTopology: string,
+    taskRequirements: string[],
+    performanceMetrics: object
+  ) {
     const program = this.programs.get('swarm_optimization');
     if (!program) throw new Error('Swarm optimization program not initialized');
 
     const result = await this.dspy.execute(program, {
       current_topology: currentTopology,
       task_requirements: taskRequirements.join(', '),
-      performance_metrics: JSON.stringify(performanceMetrics)
+      performance_metrics: JSON.stringify(performanceMetrics),
     });
 
     return {
       optimizedTopology: result.optimized_topology,
       agentRebalancing: result.agent_rebalancing,
       performancePrediction: result.performance_prediction,
-      optimizationReasoning: result.reasoning || 'DSPy optimization applied'
+      optimizationReasoning: result.reasoning || 'DSPy optimization applied',
     };
   }
 
   /**
    * Train DSPy programs with examples from successful operations
+   *
+   * @param operationType
+   * @param examples
    */
-  async trainFromSuccessfulOperations(operationType: string, examples: Array<{ input: any; output: any; success: boolean }>) {
+  async trainFromSuccessfulOperations(
+    operationType: string,
+    examples: Array<{ input: any; output: any; success: boolean }>
+  ) {
     const program = this.programs.get(operationType);
     if (!program) {
       logger.warn(`Program ${operationType} not found for training`);
@@ -182,16 +219,18 @@ export class DSPyEnhancedOperations {
     }
 
     // Filter for successful examples only
-    const successfulExamples = examples.filter(ex => ex.success);
-    
+    const successfulExamples = examples.filter((ex) => ex.success);
+
     if (successfulExamples.length > 0) {
       await this.dspy.addExamples(program, successfulExamples);
       await this.dspy.optimize(program, {
         strategy: 'auto',
-        maxIterations: 5
+        maxIterations: 5,
       });
 
-      logger.info(`Trained ${operationType} program with ${successfulExamples.length} successful examples`);
+      logger.info(
+        `Trained ${operationType} program with ${successfulExamples.length} successful examples`
+      );
     }
   }
 
@@ -202,14 +241,17 @@ export class DSPyEnhancedOperations {
     return {
       totalPrograms: this.programs.size,
       programTypes: Array.from(this.programs.keys()),
-      readyPrograms: Array.from(this.programs.values()).length
+      readyPrograms: Array.from(this.programs.values()).length,
     };
   }
 
   private assessErrorSeverity(errorMessage: string): 'low' | 'medium' | 'high' | 'critical' {
-    if (errorMessage.includes('Cannot find module') || errorMessage.includes('does not exist')) return 'high';
-    if (errorMessage.includes('Type') && errorMessage.includes('is not assignable')) return 'medium';
-    if (errorMessage.includes('Property') && errorMessage.includes('does not exist')) return 'medium';
+    if (errorMessage.includes('Cannot find module') || errorMessage.includes('does not exist'))
+      return 'high';
+    if (errorMessage.includes('Type') && errorMessage.includes('is not assignable'))
+      return 'medium';
+    if (errorMessage.includes('Property') && errorMessage.includes('does not exist'))
+      return 'medium';
     return 'low';
   }
 

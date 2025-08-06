@@ -251,7 +251,7 @@ describe('Error Recovery and Resilience Integration', () => {
           swarm.orchestrateTask({
             task: `Task ${i}`,
             persistent: true,
-          })
+          }),
         );
       }
 
@@ -452,7 +452,7 @@ describe('Error Recovery and Resilience Integration', () => {
             type: 'update',
             priority: i < 50 ? 'low' : 'high',
             data: `Message ${i}`,
-          })
+          }),
         );
       }
 
@@ -496,7 +496,7 @@ describe('Error Recovery and Resilience Integration', () => {
             await swarm.spawnAgent({
               type: 'coder',
               ephemeral: true,
-            })
+            }),
           );
         }
 
@@ -505,7 +505,7 @@ describe('Error Recovery and Resilience Integration', () => {
           swarm.executeAgentTask(agent.id, {
             task: 'Memory intensive operation',
             data: Buffer.alloc(1024 * 1024), // 1MB per task
-          })
+          }),
         );
 
         await Promise.all(tasks);
@@ -559,7 +559,7 @@ describe('Error Recovery and Resilience Integration', () => {
             task: `High load task ${i}`,
             priority: i < 10 ? 'high' : 'normal',
             estimatedLoad: 1,
-          })
+          }),
         );
       }
 
@@ -580,7 +580,7 @@ describe('Error Recovery and Resilience Integration', () => {
       // High priority tasks should complete
       const highPriorityResults = results.slice(0, 10);
       const highPriorityCompleted = highPriorityResults.filter(
-        (r) => r.status === 'fulfilled'
+        (r) => r.status === 'fulfilled',
       ).length;
       expect(highPriorityCompleted).to.be.at.least(8);
 
